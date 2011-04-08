@@ -41,5 +41,6 @@ public class DescriptionView extends WebView {
         	String html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, true, NonLocalImages, NonLocalImagesUrl);
         	this.loadDataWithBaseURL("fake://fake.de", html, mimeType, encoding, null);
         }
+        this.getSettings().setLightTouchEnabled(true);
 	}
 }
