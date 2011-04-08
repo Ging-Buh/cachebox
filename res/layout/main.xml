@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+    <LinearLayout android:layout_alignParentBottom="true" 
+    	android:layout_height="wrap_content" 
+    	android:layout_width="match_parent" android:id="@+id/layoutButtons">
+    	
+        <Button android:layout_height="match_parent" 
+        	android:layout_width="wrap_content"
+        	android:layout_weight="1" 
+        	android:onClick="onClickDB" 
+        	android:text="@string/DB" android:id="@+id/buttonDB" android:layout_marginTop="2dip">
+        </Button>
+        <Button android:layout_width="wrap_content"
+        	android:layout_height="match_parent" 
+        	android:layout_weight="1" android:id="@+id/buttonCache" android:text="@string/Cache" android:layout_marginTop="2dip">
+        </Button>
+        <Button android:layout_width="wrap_content"
+        	android:layout_height="match_parent" 
+        	android:layout_weight="1" 
+        	android:id="@+id/buttonMap" android:text="@string/Map" android:layout_marginTop="2dip">
+        </Button>
+        <Button android:layout_width="wrap_content"
+        	android:layout_height="match_parent" 
+        	android:layout_weight="1" 
+        	android:id="@+id/buttonInfo" 
+        	android:text="@string/Info" android:layout_marginTop="2dip">
+        </Button>
+        <Button android:layout_width="wrap_content"
+        	android:layout_height="match_parent" 
+        	android:layout_weight="1" 
+        	android:id="@+id/buttonMisc" 
+        	android:text="@string/Misc" android:layout_marginTop="2dip">
+        </Button>
+    </LinearLayout>
+    <FrameLayout android:layout_alignParentLeft="true" android:layout_height="wrap_content" android:layout_above="@+id/layoutButtons" android:layout_below="@+id/layoutTop" android:layout_width="match_parent" android:id="@+id/layoutContent">
+    </FrameLayout>
+    <RelativeLayout android:layout_alignParentTop="true" android:layout_width="match_parent" android:id="@+id/layoutTop" android:layout_height="30dip">
+        <FrameLayout android:id="@+id/frameClock" android:layout_alignParentRight="true" android:layout_height="match_parent" android:layout_width="wrap_content"></FrameLayout>
+        <FrameLayout android:layout_width="wrap_content" android:layout_alignParentLeft="true" android:id="@+id/frameCacheName" android:layout_toLeftOf="@+id/frameClock" android:layout_height="match_parent"></FrameLayout>
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/miCacheList" android:title="@string/CacheList"></item>
+    <item android:id="@+id/miAutoResort" android:checked="false" android:title="AutoResort" android:checkable="true"></item>
+</menu>

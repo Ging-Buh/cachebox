@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, main!</string>
+    <string name="app_name">droidcachebox</string>
+    <string name="DB">DB</string>
+    <string name="Cache">Cache</string>
+    <string name="Info">Info</string>
+    <string name="Misc">Misc</string>
+    <string name="Map">Map</string>
+    <string name="CacheList">Cache List</string>
+</resources>
