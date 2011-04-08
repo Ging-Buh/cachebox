@@ -57,8 +57,7 @@ public class MapView extends SurfaceView implements PositionEvent {
 	
 		setWillNotDraw(false);
 		holder = getHolder();
-	
-	
+		
         this.buttonZoomIn = new Button(this.getContext());
         this.buttonZoomIn.setOnClickListener(new OnClickListener() {
             @Override
@@ -74,6 +73,11 @@ public class MapView extends SurfaceView implements PositionEvent {
             }
           });
 
+        ArrayList<android.view.View> buttons = new ArrayList<android.view.View>();
+        buttons.add(buttonZoomIn);
+        buttons.add(buttonZoomOut);
+        this.addTouchables(buttons);
+        
         font.setTextSize(9);
         font.setFakeBoldText(true);
         fontSmall.setTextSize(8);
@@ -91,36 +95,6 @@ public class MapView extends SurfaceView implements PositionEvent {
 		{
 			return;
 		}
-/*
-		canvas.drawText(text, 5, 30, paint);
-
-	      Descriptor desc = new Descriptor(4377, 2846, 13);
-
-	      Bitmap bitmap = Manager.LoadLocalBitmap(CurrentLayer, desc);
-	      if (bitmap != null)
-	    	  canvas.drawBitmap(bitmap, 0, 0, paint);
-
-	      desc = new Descriptor(4378, 2846, 13);
-	      bitmap = Manager.LoadLocalBitmap(CurrentLayer, desc);
-	      if (bitmap != null)
-	    	  canvas.drawBitmap(bitmap, 256, 0, paint);
-	      
-	      desc = new Descriptor(4377, 2847, 13);
-	      bitmap = Manager.LoadLocalBitmap(CurrentLayer, desc);
-	      if (bitmap != null)
-	    	  canvas.drawBitmap(bitmap, 0, 256, paint);
-	      
-	      desc = new Descriptor(4378, 2847, 13);
-	      bitmap = Manager.LoadLocalBitmap(CurrentLayer, desc);
-	      if (bitmap != null)
-	    	  canvas.drawBitmap(bitmap, 256, 256, paint);
-	      
-*/	      
-	      
-	      
-	      
-	      
-//	      invalidate();
 	}
 
     @Override
@@ -311,18 +285,18 @@ public class MapView extends SurfaceView implements PositionEvent {
     /// <summary>
     /// Horizontaler Skalierungsfaktor bei DpiAwareRendering
     /// </summary>
-    protected float dpiScaleFactorX = 1;
+    protected float dpiScaleFactorX = 2;
 
     /// <summary>
     /// Vertikaler Skalierungsfaktor bei DpiAwareRendering
     /// </summary>
-    protected float dpiScaleFactorY = 1;
+    protected float dpiScaleFactorY = 2;
 
     // TODO: Dies schlau berechnen!
     /// <summary>
     /// Größe des Kachel-Caches
     /// </summary>
-    final int numMaxTiles = 128;
+    final int numMaxTiles = 32;
 
     // Vorberechnete Werte
     protected int halfWidth = 0;
@@ -1454,7 +1428,7 @@ public class MapView extends SurfaceView implements PositionEvent {
             tile = loadedTiles.get(desc.GetHashCode());
           }
 
-          if (tileVisible(tile.Descriptor))
+          if ((tile != null) && (tileVisible(tile.Descriptor)))
           {
             renderTile(tile);
           }
