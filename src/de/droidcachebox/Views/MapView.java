@@ -13,6 +13,7 @@ import de.droidcachebox.Geocaching.Cache.CacheTypes;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.MysterySolution;
 import de.droidcachebox.Geocaching.Waypoint;
+import android.R.color;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -25,6 +26,8 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -39,13 +42,14 @@ import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
+import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Map.Descriptor.PointD;
 import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Map.Manager;
 import de.droidcachebox.Map.Tile;
 
-public class MapView extends SurfaceView implements PositionEvent {
+public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMenu {
 	private Button buttonZoomIn;
 	private Button buttonZoomOut;
     /**
@@ -117,10 +121,62 @@ public class MapView extends SurfaceView implements PositionEvent {
         zoomChanged();
     }
 
+    private String debugString1 = "";
+    private String debugString2 = "";
+   
+    private boolean multiTouch = false;
+    private double lastMultiTouchDist = 0;
+    private double multiTouchFaktor = 1;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        int eX = (int)event.getX();
-        int eY = (int)event.getY();
+        int eX = (int)event.getX(0);
+        int eY = (int)event.getY(0);
+        int eX2 = (int)event.getX(1);
+        int eY2 = (int)event.getY(1);
+        double multiTouchDist = Math.sqrt(Math.pow(event.getX(1) - event.getX(), 2) + Math.pow(event.getY(1) - event.getY(), 2));
+//        debugString1 = eX + "-" + eY;
+//        debugString2 = eX2 + "-" + eY2;
+        if (event.getPointerCount() > 1)
+        {
+        	if (multiTouch)
+        	{
+        		if (lastMultiTouchDist > multiTouchDist * 1.5)
+        		{
+        			zoomOut();
+        			lastMultiTouchDist /= 2; //multiTouchDist;
+        		}
+        		else if (lastMultiTouchDist < multiTouchDist * 0.75)
+        		{
+        			zoomIn();
+        			lastMultiTouchDist *= 2; //multiTouchDist;
+        		}
+        	} else
+    			lastMultiTouchDist = multiTouchDist;
+
+        	
+        	if (lastMultiTouchDist > 0)
+        		multiTouchFaktor = multiTouchDist / lastMultiTouchDist;
+        	else 
+        		multiTouchFaktor = 1;
+        	debugString1 = "f: " + multiTouchFaktor;
+        	
+        	eX = (int)(event.getX(0) + (event.getX(1) - event.getX(0)) / 2);
+        	eY = (int)(event.getY(0) + (event.getY(1) - event.getY(0)) / 2);
+        	if (!multiTouch)
+        	{
+        		dragStartX = lastClickX = eX;
+        		dragStartY = lastClickY = eY;
+        	}
+        	multiTouch = true;
+        } else
+        {
+        	if(multiTouch)
+        	{
+        		dragStartX = lastClickX = eX;
+        		dragStartY = lastClickY = eY;        		
+        	}
+        	multiTouch = false;
+        }
         
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -134,6 +190,7 @@ public class MapView extends SurfaceView implements PositionEvent {
 //                invalidate();
                 break;
             case MotionEvent.ACTION_UP:
+            	multiTouchFaktor = 1;
             	MapView_MouseUp(eX, eY);
 //                touch_up();
 //                invalidate();
@@ -157,11 +214,11 @@ public class MapView extends SurfaceView implements PositionEvent {
       Config.AcceptChanges();
 
       CurrentLayer = newLayer;
-/*      lock (loadedTiles)
+      synchronized (loadedTiles)
       {
         ClearCachedTiles();
         Render(true);
-      }*/
+      }
     }
     /// <summary>
     /// Tile Manager
@@ -656,8 +713,7 @@ public class MapView extends SurfaceView implements PositionEvent {
     private Bitmap loadBestFit(Layer CurrentLayer, Descriptor desc)
     {
       Descriptor available = new Descriptor(desc);
-      Bitmap result = null;
-/*
+
       // Determine best available tile
       Bitmap tile = null;
       do
@@ -670,18 +726,19 @@ public class MapView extends SurfaceView implements PositionEvent {
 
       // No tile available. Use Background color (so that at least
       // routes are painted!)
-      Bitmap result = new Bitmap(256, 256);
-      Graphics graphics = Graphics.FromImage(result);
+      Bitmap result = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_4444);
+      Canvas graphics = new Canvas(result);
 
       if (tile == null)
       {
-        graphics.FillRectangle(backBrush, 0, 0, result.Width, result.Height);
-        graphics.Dispose();
+    	  
+    	  graphics.drawRect(0, 0, result.getWidth(), result.getHeight(), backBrush);
+//    	  graphics.restore();
       }
       else
       {
         // Load and interpolate
-        int scale = (int)Math.Pow(2, desc.Zoom - available.Zoom);
+        int scale = (int)Math.pow(2, desc.Zoom - available.Zoom);
         int x = available.X * scale;
         int y = available.Y * scale;
         int width = 256 / scale;
@@ -689,10 +746,11 @@ public class MapView extends SurfaceView implements PositionEvent {
         int px = (desc.X - x) * width;
         int py = (desc.Y - y) * width;
 
-        graphics.DrawImage(tile, new Rectangle(0, 0, result.Width, result.Height), new Rectangle(px, py, width, width), GraphicsUnit.Pixel);
-        graphics.Dispose();
+        graphics.drawBitmap(tile, new Rect(px, py, px + width, py + width), new Rect(0, 0, result.getWidth(), result.getHeight()), backBrush);
+//        graphics.DrawImage(tile, new Rectangle(0, 0, result.Width, result.Height), new Rectangle(px, py, width, width), GraphicsUnit.Pixel);
+//        graphics.restore();
       }
-*/
+
       return result;
     }
 /*
@@ -1155,6 +1213,11 @@ public class MapView extends SurfaceView implements PositionEvent {
 		  int x = (int)((wpi.MapX * adjustmentCurrentToCacheZoom * dpiScaleFactorX - screenCenter.X)) + halfWidth;
 		  int y = (int)((wpi.MapY * adjustmentCurrentToCacheZoom * dpiScaleFactorY - screenCenter.Y)) + halfHeight;
 		
+		  x = x - width / 2;
+		  y = y - height / 2;
+		  x = (int)Math.round(x * multiTouchFaktor + width / 2);
+		  y = (int)Math.round(y * multiTouchFaktor + height / 2);
+		  
 		  int imageX = x;
 		  int imageY = y;
 		
@@ -1282,7 +1345,8 @@ public class MapView extends SurfaceView implements PositionEvent {
 
     void drawImage(Bitmap image, int x, int y, int width, int height)
     {
-        canvas.drawBitmap(image, x, y, null);
+        canvas.drawBitmap(image, new Rect(0, 0, image.getWidth(), image.getHeight()), new Rect(x, y, x + width, y + height), null);
+//        graphics.DrawImage(image, new Rectangle(x, y, width, height), 0, 0, image.Width, image.Height, GraphicsUnit.Pixel);
     }
     void drawImage(Drawable image, int x, int y, int width, int height)
     {
@@ -1436,8 +1500,9 @@ public class MapView extends SurfaceView implements PositionEvent {
       renderCaches();
 
       renderPositionAndMarker();
-      /*
+
       renderScale();
+      /*
       RenderTargetArrow();
 
 
@@ -1457,6 +1522,17 @@ public class MapView extends SurfaceView implements PositionEvent {
     	  if (can != null)
     	  {
      		  can.drawBitmap(offScreenBmp, 0, 0, null);
+     	      if (!debugString1.equals("") || !debugString2.equals(""))
+     	      {
+     		      Paint debugPaint = new Paint();
+     		      debugPaint.setTextSize(20);
+     		      debugPaint.setColor(Color.WHITE);
+     		      debugPaint.setStyle(Style.FILL);
+     		      can.drawRect(new Rect(50, 20, 300, 100), debugPaint);
+     		      debugPaint.setColor(Color.BLACK);
+     		      can.drawText(debugString1, 50, 50, debugPaint);
+     		      can.drawText(debugString2, 50, 80, debugPaint);
+     	      }
     		  holder.unlockCanvasAndPost(can);
     	  }
     	  
@@ -1645,10 +1721,10 @@ public class MapView extends SurfaceView implements PositionEvent {
     	double x = screenCenter.X / (256 * dpiScaleFactorX);
     	double y = screenCenter.Y / (256 * dpiScaleFactorY);
 
-    	x1 = (int)Math.floor(x - width / (256 * dpiScaleFactorX * 2));
-    	x2 = (int)Math.floor(x + width / (256 * dpiScaleFactorX * 2));
-    	y1 = (int)Math.floor(y - height / (256 * dpiScaleFactorY * 2));
-    	y2 = (int)Math.floor(y + height / (256 * dpiScaleFactorY * 2));
+    	x1 = (int)Math.floor(x - width/multiTouchFaktor / (256 * dpiScaleFactorX * 2));
+    	x2 = (int)Math.floor(x + width/multiTouchFaktor / (256 * dpiScaleFactorX * 2));
+    	y1 = (int)Math.floor(y - height/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
+    	y2 = (int)Math.floor(y + height/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
     	return new Rect(x1, y1, x2, y2);
     }
 
@@ -1661,10 +1737,16 @@ public class MapView extends SurfaceView implements PositionEvent {
       tile.Age = 0;
 
       Point pt = ToScreen(tile.Descriptor.X, tile.Descriptor.Y, tile.Descriptor.Zoom);
+      // relativ zu Zentrum
+      pt.x = pt.x - width / 2;
+      pt.y = pt.y - height / 2;
+      // skalieren
+      pt.x = (int) Math.round(pt.x * multiTouchFaktor + width / 2);
+      pt.y = (int) Math.round(pt.y * multiTouchFaktor + height / 2);
 
       if (tile.State == Tile.TileState.Present || tile.State == Tile.TileState.LowResolution)
       {
-        drawImage(tile.Image, pt.x, pt.y, (int)(256.0f * dpiScaleFactorX), (int)(256.0f * dpiScaleFactorY));
+        drawImage(tile.Image, pt.x, pt.y, (int)(256.0f * dpiScaleFactorX * multiTouchFaktor), (int)(256.0f * dpiScaleFactorY * multiTouchFaktor));
         return;
       }
       try
@@ -1681,6 +1763,15 @@ public class MapView extends SurfaceView implements PositionEvent {
     }
 
     Point ToScreen(double x, double y, int zoom)
+    {
+      double adjust = Math.pow(2, (Zoom - zoom));
+      x = x * adjust * 256 * dpiScaleFactorX;
+      y = y * adjust * 256 * dpiScaleFactorY;
+
+      return new Point((int)(x - screenCenter.X) + halfWidth, (int)(y - screenCenter.Y) + halfHeight);
+    }
+
+    Point ToScreen(double x, double y, double zoom)
     {
       double adjust = Math.pow(2, (Zoom - zoom));
       x = x * adjust * 256 * dpiScaleFactorX;
@@ -1958,7 +2049,7 @@ public class MapView extends SurfaceView implements PositionEvent {
 */
     Paint font = new Paint();
     Paint fontSmall = new Paint();
-/*
+
     /// <summary>
     /// Zeichnet den Maﬂstab. pixelsPerKm muss durch zoomChanged
     /// initialisiert sein! und graphics auch!
@@ -1967,18 +2058,32 @@ public class MapView extends SurfaceView implements PositionEvent {
     {
       int pos = 0;
       int start = 0;
+      Paint[] brushes = new Paint[2];
+      brushes[0] = new Paint();
+      brushes[0].setColor(Color.BLACK);
+      brushes[0].setStyle(Style.FILL);
+      brushes[1] = new Paint();
+      brushes[1].setColor(Color.WHITE);
+      brushes[1].setStyle(Style.FILL);
+      
       for (int i = 1; i <= scaleUnits; i++)
       {
         pos = (int)(scaleLength * ((double)i / scaleUnits) * pixelsPerMeter);
-        graphics.FillRectangle(brushes[i % 2], start + scaleLeft, height - lineHeight / 2 - lineHeight / 4, pos - start, lineHeight / 2);
+        Paint fillPaint = new Paint();
+        
+        canvas.drawRect(new Rect(start + scaleLeft, height - lineHeight / 2 - lineHeight / 4, pos + scaleLeft, height - lineHeight / 4), brushes[i % 2]);
+//        graphics.FillRectangle(brushes[i % 2], start + scaleLeft, height - lineHeight / 2 - lineHeight / 4, pos - start, lineHeight / 2);
         start = pos;
       }
 
-      graphics.DrawRectangle(blackPen, scaleLeft - 1, height - lineHeight / 2 - lineHeight / 4 - 1, pos + 1, lineHeight / 2 + 1);
-
+      Paint blackPen = new Paint();
+      blackPen.setColor(Color.BLACK);
+      canvas.drawRect(new Rect(scaleLeft - 1, height - lineHeight / 2 - lineHeight / 4 - 1, scaleLeft + pos, height - lineHeight / 4 + 1), blackPen);
+//      graphics.DrawRectangle(blackPen, scaleLeft - 1, height - lineHeight / 2 - lineHeight / 4 - 1, pos + 1, lineHeight / 2 + 1);
+/*
       String distanceString;
       if (UnitFormatter.ImperialUnits)
-        distanceString = String.Format(NumberFormatInfo.InvariantInfo, "{0:0.00}mi", scaleLength / 1609.3);
+    	  distanceString = String.Format(NumberFormatInfo.InvariantInfo, "{0:0.00}mi", scaleLength / 1609.3);
       else
         if (scaleLength <= 500)
           distanceString = String.Format("{0:0}m", scaleLength);
@@ -1989,8 +2094,9 @@ public class MapView extends SurfaceView implements PositionEvent {
         }
 
       graphics.DrawString(distanceString, font, brushes[0], scaleLeft + pos + lineHeight / 2, height - lineHeight);
+*/
     }
-
+/*
     private void MapView_DoubleClick(object sender, EventArgs e)
     {
 
@@ -2463,22 +2569,20 @@ public class MapView extends SurfaceView implements PositionEvent {
       }
 
     }
-
+*/
     public void ClearCachedTiles()
     {
-      lock (loadedTiles)
+      synchronized (loadedTiles)
       {
-        foreach (Descriptor desc in loadedTiles.Keys)
-          if (loadedTiles[desc].Image != null)
-            loadedTiles[desc].Image.Dispose();
+        for (long hash : loadedTiles.keySet())
+          if (loadedTiles.get(hash).Image != null)
+            loadedTiles.get(hash).Image.recycle();
 
-        loadedTiles.Clear();
+        loadedTiles.clear();
       }
 
-      GC.Collect();
-      GC.WaitForPendingFinalizers();
     }
-
+/*
     Point cacheArrowCenter = new Point(int.MinValue, int.MinValue);
     Font distanceFont = new Font(FontFamily.GenericSansSerif, 9, FontStyle.Regular);
 
@@ -2895,6 +2999,26 @@ public class MapView extends SurfaceView implements PositionEvent {
             setCenter(new Coordinate(Global.LastValidPosition));
 
         Render(false);
+	}
+
+	@Override
+	public boolean ItemSelected(MenuItem item) {
+		switch (item.getItemId())
+		{
+			case R.id.plus: 
+				zoomIn();
+				return true;
+			case R.id.minus:
+				zoomOut();
+				return true;
+			case R.id.hubertmedia:
+				SetCurrentLayer(MapView.Manager.GetLayerByName("Hubermedia Bavaria", "Hubermedia Bavaria", ""));
+				return true;
+			case R.id.googleearth:
+				SetCurrentLayer(MapView.Manager.GetLayerByName("Google Earth", "Google Earth", ""));
+				return true;
+		}
+		return false;
 	}
 
 }

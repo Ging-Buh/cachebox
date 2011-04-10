@@ -8,6 +8,7 @@ import de.droidcachebox.Components.ClockView;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
+import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.DescriptionView;
@@ -55,12 +56,14 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private FrameLayout frameClock;
 	
 // Views
+	private ViewOptionsMenu aktView;
 	private CacheNameView cacheNameView;
 	private ClockView clockView;
 	private MapView mapView;
 	private CacheListView cacheListView;
 	private LogView logView;
 	private DescriptionView descriptionView;
+	
 	// Powermanager
     protected PowerManager.WakeLock mWakeLock;
     // GPS
@@ -181,6 +184,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
             public void onClick(View v) {
             	frame.removeAllViews();
                 frame.addView(mapView);
+                aktView = mapView;
             }
           });
         
@@ -214,7 +218,20 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
             this.mWakeLock.release();
             super.onDestroy();
     }
+
+    /** hook into menu button for activity */
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
+//      populateMenu(menu);
+    	getMenuInflater().inflate(R.menu.menu_mapview, menu);
+      return super.onCreateOptionsMenu(menu);
+    }
     
+    /** when menu button option selected */
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    	if (aktView != null)
+    		return aktView.ItemSelected(item);
+    	return super.onOptionsItemSelected(item);
+    }    
     public boolean onPrepareContextMenu(Menu menu)
     {
     	menu.clear();
@@ -272,7 +289,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     		return true;
     	// Map
     	case R.id.miMapView:
-    		frame.addView(descriptionView);
+    		frame.addView(mapView);
+    		aktView = mapView;
     		return true;
     	// Info
     	case R.id.miLogView:
