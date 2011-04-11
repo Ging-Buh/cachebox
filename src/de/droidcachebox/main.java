@@ -135,7 +135,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	    	Database.FieldNotes = new Database(DatabaseType.FieldNotes); 
 //	        Database.Data.StartUp("/sdcard/db3 [1].db3");
 	    	File path = Environment.getExternalStorageDirectory();
-	        Database.Data.StartUp(path.getPath() + "/daheim.db3");
+	        Database.Data.StartUp(path.getPath() + "/cachebox.db3");
 	        Database.Data.Query.LoadCaches("");
         }
         Descriptor.Init();
