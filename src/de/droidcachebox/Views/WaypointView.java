@@ -1,10 +1,12 @@
 package de.droidcachebox.Views;
 
-import java.util.List;
 
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 
+import de.droidcachebox.Events.SelectedCacheEvent;
+import de.droidcachebox.Events.SelectedCacheEventList;
+import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.CacheList;
 import de.droidcachebox.Geocaching.Waypoint;
@@ -14,16 +16,17 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
-public class WaypointView extends ListView {
+public class WaypointView extends ListView implements SelectedCacheEvent, ViewOptionsMenu {
 	
-	private Cache cache;
-
+	CustomAdapter lvAdapter;
+	
 	private Paint paint;
 	/**
 	 * Constructor
@@ -31,17 +34,19 @@ public class WaypointView extends ListView {
 	public WaypointView(final Context context) {
 		super(context);
 
-		
+		SelectedCacheEventList.Add(this);
 		this.setAdapter(null);
-		CustomAdapter lvAdapter = new CustomAdapter(getContext(), Global.SelectedCache());
+		lvAdapter = new CustomAdapter(getContext(), Global.SelectedCache());
 		this.setAdapter(lvAdapter);
 		this.setLongClickable(true);
 		this.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-        		Cache cache = Database.Data.Query.get(arg2);
-        		Global.SelectedCache(cache);
+				Waypoint aktWaypoint = null;
+				if (arg2 > 0)
+					aktWaypoint = Global.SelectedCache().waypoints.get(arg2 - 1);
+        		Global.SelectedWaypoint(Global.SelectedCache(), aktWaypoint);
 				return true;
 			}
 		});
@@ -72,17 +77,25 @@ public class WaypointView extends ListView {
 	        this.cache = cache;
 	    }
 	 
+	    public void setCache(Cache cache) {
+	    	this.cache = cache;
+	    
+	    }
 	    public int getCount() {
 	    	if (cache != null)
-	    		return cache.waypoints.size();
+	    		return cache.waypoints.size() + 1;
 	    	else
-	    		return 0;
+	    		return 1;
 	    }
 	 
 	    public Object getItem(int position) {
 	    	if (cache != null)
-	    		return cache.waypoints.get(position);
-	    	else
+	    	{
+	    		if (position == 0)
+	    			return cache;
+	    		else
+	    			return cache.waypoints.get(position - 1);
+	    	} else
 	    		return null;
 	    }
 	 
@@ -94,9 +107,16 @@ public class WaypointView extends ListView {
 	    {
 	    	if (cache != null)
 	    	{
-		        Waypoint waypoint = cache.waypoints.get(position);
-		        WaypointViewItem v = new WaypointViewItem(context, cache);
-		        return v;
+	    		if (position == 0)
+	    		{
+	    			WaypointViewItem v = new WaypointViewItem(context, cache, null);
+	    			return v;
+	    		} else
+	    		{
+			        Waypoint waypoint = cache.waypoints.get(position - 1);
+			        WaypointViewItem v = new WaypointViewItem(context, cache, waypoint);
+			        return v;
+	    		}
 	    	} else
 	    		return null;
 	    }
@@ -105,6 +125,21 @@ public class WaypointView extends ListView {
 	            Log.v(LOG_TAG, "Row button clicked");
 	    }*/
 	 
+	}
+
+	@Override
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
+		// TODO Auto-generated method stub
+		this.setAdapter(null);
+		lvAdapter = new CustomAdapter(getContext(), cache);
+		this.setAdapter(lvAdapter);
+		lvAdapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public boolean ItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
 

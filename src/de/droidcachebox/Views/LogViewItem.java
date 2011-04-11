@@ -1,29 +1,43 @@
 package de.droidcachebox.Views;
 
+import java.text.BreakIterator;
+import java.text.DateFormat;
+
 import de.droidcachebox.Global;
 import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Waypoint;
+import de.droidcachebox.Geocaching.LogEntry;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Align;
 import android.graphics.Rect;
+import android.graphics.Paint.Align;
+import android.text.Layout.Alignment;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.view.View;
 import android.view.View.MeasureSpec;
-import android.widget.LinearLayout;
 
-public class WaypointViewItem extends View {
+public class LogViewItem extends View {
     private Cache cache;
-    private Waypoint waypoint;
+    private LogEntry logEntry;
     private int mAscent;
     private int width;
-
-	public WaypointViewItem(Context context, Cache cache, Waypoint waypoint) {
+    private int height;
+    private TextPaint textPaint;
+    private StaticLayout layoutComment;
+    private StaticLayout layoutFinder;
+    private StaticLayout layoutDate;
+    
+	public LogViewItem(Context context, Cache cache, LogEntry logEntry) {
 		// TODO Auto-generated constructor stub
 		super(context);
         this.cache = cache;
-        this.waypoint = waypoint;
+        this.logEntry = logEntry;
+        
+        textPaint = new TextPaint(Global.ListItemTextPaint[0]);
+        textPaint.setTextSize(24);
+//        textPaint.setSubpixelText(true);
         
         this.setBackgroundColor(Global.ListItemBackgroundPaint[0].getColor());
        }
@@ -32,7 +46,7 @@ public class WaypointViewItem extends View {
 	@Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(measureWidth(widthMeasureSpec),
-                /*measureHeight(heightMeasureSpec)*/76);
+                measureHeight(heightMeasureSpec));
 	}
     
     /**
@@ -58,6 +72,12 @@ public class WaypointViewItem extends View {
             }
         }
         width = specSize;
+        
+      	layoutComment = new StaticLayout(logEntry.Comment, textPaint, width, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+      	layoutFinder = new StaticLayout(logEntry.Finder, textPaint, width, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+      	DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+      	layoutDate = new StaticLayout(df.format(logEntry.Timestamp), textPaint, width, Alignment.ALIGN_OPPOSITE, 1.0f, 0.0f, false);
+        
         return result;
     }
 
@@ -79,11 +99,16 @@ public class WaypointViewItem extends View {
             // Measure the text (beware: ascent is a negative number)
             result = (int) (-mAscent + Global.ListItemBackgroundPaint[0].descent()) + getPaddingTop()
                     + getPaddingBottom();
+          	result += layoutComment.getHeight();
+            result += layoutFinder.getHeight();
+
             if (specMode == MeasureSpec.AT_MOST) {
                 // Respect AT_MOST value if that was what is called for by measureSpec
                 result = Math.min(result, specSize);
             }
-        }
+        }        
+
+        height = result;
         return result;
     }
     /**
@@ -95,19 +120,21 @@ public class WaypointViewItem extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int paintID = 0;
-        if(waypoint == Global.SelectedWaypoint())
-        	paintID = 1;
         canvas.drawRect(new Rect(0, 0, width, 75), Global.ListItemBackgroundPaint[paintID]);
 
-        String title = cache.Name;
-        if (waypoint != null)
-        	title = waypoint.Title;
-      	canvas.drawText(title, 5, 30, Global.ListItemTextPaint[paintID]);
-      	Paint tmpPaint = new Paint(Global.ListItemTextPaint[paintID]);
-      	tmpPaint.setTextAlign(Align.RIGHT);
-      	float dist = cache.Distance();
-      	if (waypoint != null)
-      		dist = waypoint.Distance();
-      	canvas.drawText(Float.toString(dist), width - 10, 70, tmpPaint);
+        layoutFinder.draw(canvas);
+//        canvas.translate(width-100, 0);
+        layoutDate.draw(canvas);
+//        canvas.translate(-width+100, 0);
+        
+     	
+      	canvas.translate(0, layoutFinder.getHeight());
+      	layoutComment.draw(canvas);
+      	canvas.translate(0, -layoutFinder.getHeight());
+
+      	Paint li = new Paint();
+      	li.setColor(Color.BLACK);
+      	canvas.drawLine(0, height-2, width, height-2, li);
     }
+
 }

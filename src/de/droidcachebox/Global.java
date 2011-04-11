@@ -45,6 +45,7 @@ public class Global {
     public static void SelectedCache(Cache cache)
     {
     	selectedCache = cache;
+    	selectedWaypoint = null;
     	SelectedCacheEventList.Call(cache, null);
     }
     public static Cache SelectedCache()
@@ -53,8 +54,9 @@ public class Global {
     }
 
     protected static Waypoint selectedWaypoint = null;
-    public static void SelectedWaypoint(Waypoint waypoint)
+    public static void SelectedWaypoint(Cache cache, Waypoint waypoint)
     {
+    	selectedCache = cache;
     	selectedWaypoint = waypoint;
     	SelectedCacheEventList.Call(selectedCache, waypoint);
     }

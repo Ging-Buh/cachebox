@@ -293,37 +293,44 @@ public class Cache implements Comparable<Cache> {
     /// URL des Caches
     /// </summary>
     public String Url;
-/*    
-    public List<LogEntry> Logs
+    
+    public ArrayList<LogEntry> Logs()
     {
-        get
+        ArrayList<LogEntry> result = new ArrayList<LogEntry>();
+
+        Cursor reader = Database.Data.myDB.rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@cacheid order by Timestamp desc", new String[] { Long.toString(this.Id) });
+
+    	reader.moveToFirst();
+        while(reader.isAfterLast() == false)
         {
-            List<LogEntry> result = new List<LogEntry>();
-
-            System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
-
-            SqlCeCommand command = new SqlCeCommand("select CacheId, Timestamp, Finder, Type, Comment from Logs where CacheId=@cacheid order by Timestamp desc", Database.Data.Connection);
-            command.Parameters.Add("@cacheid", DbType.Int64).Value = this.Id;
-            SqlCeDataReader reader = command.ExecuteReader();
-
-            while (reader.Read())
-                result.Add(new LogEntry(reader, true));
-
-            reader.Dispose();
-            command.Dispose();
-
-            System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
-
-            return result;
+        	LogEntry logent = new LogEntry(reader, true); 
+            result.add(logent);
+            reader.moveToNext();
         }
-    }
+        reader.close();
+        /*
+        System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
+
+        SqlCeCommand command = new SqlCeCommand("select CacheId, Timestamp, Finder, Type, Comment from Logs where CacheId=@cacheid order by Timestamp desc", Database.Data.Connection);
+        command.Parameters.Add("@cacheid", DbType.Int64).Value = this.Id;
+        SqlCeDataReader reader = command.ExecuteReader();
+
+        while (reader.Read())
+            result.Add(new LogEntry(reader, true));
+
+        reader.Dispose();
+        command.Dispose();
+
+        System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
 */
+        return result;
+    }
+
 
     /// Entfernung von der letzten gültigen Position
     public float Distance()
     {
-//        Coordinate fromPos = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
-    	Coordinate fromPos = Global.Marker;
+        Coordinate fromPos = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
     	Waypoint waypoint = this.GetFinalWaypoint();
         // Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die Diszanzberechnung vom Final aus gemacht werden
         // If a mystery has a final waypoint, the distance will be calculated to the final not the the cache coordinates

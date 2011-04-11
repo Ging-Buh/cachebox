@@ -142,12 +142,12 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         	{
         		if (lastMultiTouchDist > multiTouchDist * 1.5)
         		{
-        			zoomOut();
+        			zoomOut(false);
         			lastMultiTouchDist /= 2; //multiTouchDist;
         		}
         		else if (lastMultiTouchDist < multiTouchDist * 0.75)
         		{
-        			zoomIn();
+        			zoomIn(false);
         			lastMultiTouchDist *= 2; //multiTouchDist;
         		}
         	} else
@@ -158,7 +158,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         		multiTouchFaktor = multiTouchDist / lastMultiTouchDist;
         	else 
         		multiTouchFaktor = 1;
-        	debugString1 = "f: " + multiTouchFaktor;
+//        	debugString1 = "f: " + multiTouchFaktor;
         	
         	eX = (int)(event.getX(0) + (event.getX(1) - event.getX(0)) / 2);
         	eY = (int)(event.getY(0) + (event.getY(1) - event.getY(0)) / 2);
@@ -925,21 +925,34 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     }
 
 */
-    private Drawable getUnderlayIcon(Cache cache)
+    private Drawable getUnderlayIcon(Cache cache, Waypoint waypoint)
     {
-        if ((cache == null) || (cache == Global.SelectedCache()))
+        if (waypoint == null)
         {
-            if (cache.Archived || !cache.Available)
-                return Global.NewMapOverlay.get(2).get(3);
-            else
+	        if ((cache == null) || (cache == Global.SelectedCache()))
+	        {
+	            if (cache.Archived || !cache.Available)
+	                return Global.NewMapOverlay.get(2).get(3);
+	            else
+	                return Global.NewMapOverlay.get(2).get(1);
+	        }
+	        else
+	        {
+	            if (cache.Archived || !cache.Available)
+	                return Global.NewMapOverlay.get(2).get(2);
+	            else
+	                return Global.NewMapOverlay.get(2).get(0);
+	        }
+        } else
+        {
+            if (waypoint == Global.SelectedWaypoint())
+            {
                 return Global.NewMapOverlay.get(2).get(1);
-        }
-        else
-        {
-            if (cache.Archived || !cache.Available)
-                return Global.NewMapOverlay.get(2).get(2);
+            }
             else
+            {
                 return Global.NewMapOverlay.get(2).get(0);
+            }        	
         }
     }
 
@@ -987,7 +1000,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
             wpi.Cache = Global.SelectedCache();
             wpi.Waypoint = wp;
             wpi.Selected = (Global.SelectedWaypoint() == wp);
-            wpi.UnderlayIcon = getUnderlayIcon(wpi.Cache);
+            wpi.UnderlayIcon = getUnderlayIcon(wpi.Cache, wpi.Waypoint);
 
             int x = (int)(wpi.MapX * dpiScaleFactorX * adjustmentCurrentToCacheZoom - screenCenter.X) + halfWidth;
             int y = (int)(wpi.MapY * dpiScaleFactorY * adjustmentCurrentToCacheZoom - screenCenter.Y) + halfHeight;
@@ -1031,7 +1044,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         wpi.MapY = cache.MapY;
         wpi.Icon = (cache.Owner.equalsIgnoreCase(gcLogin) && (gcLogin.length() > 0)) ? Global.NewMapIcons.get(2).get(20) : (cache.Found()) ? Global.NewMapIcons.get(2).get(19) : (cache.MysterySolved() && (cache.Type == CacheTypes.Mystery)) ? Global.NewMapIcons.get(2).get(21) : Global.NewMapIcons.get(2).get((int)cache.Type.ordinal());
         wpi.Icon = Global.NewMapIcons.get(2).get(cache.GetMapIconId(gcLogin));
-        wpi.UnderlayIcon = getUnderlayIcon(cache);
+        wpi.UnderlayIcon = getUnderlayIcon(cache, wpi.Waypoint);
           
         if ((iconSize < 2) && (cache != Global.SelectedCache()))  // der SelectedCache wird immer mit den großen Symbolen dargestellt!
         {
@@ -1108,7 +1121,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
           if (iconSize == 2)
           {
               wpiF.Icon = (solution.Cache.Type == CacheTypes.Mystery) ? Global.NewMapIcons.get(2).get(21) : Global.NewMapIcons.get(2).get(18);
-              wpiF.UnderlayIcon = getUnderlayIcon(solution.Cache);
+              wpiF.UnderlayIcon = getUnderlayIcon(solution.Cache, solution.Waypoint);
               if ((hideCacheWithFinal) && (solution.Cache.Type == CacheTypes.Mystery) && solution.Cache.MysterySolved() && solution.Cache.HasFinalWaypoint())
               {
                   if (Global.SelectedCache() != solution.Cache)
@@ -1875,6 +1888,10 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
     private void zoomIn()
     {
+    	zoomIn(true);    
+    }
+    private void zoomIn(boolean doRender)
+    {
       if (Zoom < maxZoom)
       {
 /*        zoomScaleTimer.Enabled = false;*/
@@ -1893,7 +1910,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         updateCacheList();
 
         renderZoomScaleActive = true;
-        Render(false);
+        if (doRender)
+        	Render(false);
 /*        zoomScaleTimer.Enabled = true;*/
       }
     }
@@ -1969,6 +1987,10 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     
     private void zoomOut()
     {
+    	zoomOut(true);
+    }
+    private void zoomOut(boolean doRender)
+    {
       if (Zoom > minZoom)
       {
 /*        zoomScaleTimer.Enabled = false;*/
@@ -1987,7 +2009,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         zoomChanged();
         updateCacheList();
         renderZoomScaleActive = true;
-        Render(false);
+        if (doRender)
+        	Render(false);
 /*        zoomScaleTimer.Enabled = true;*/
 
       }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import de.droidcachebox.Global;
 
+import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.DescriptionImageGrabber;
 import android.content.Context;
@@ -11,10 +12,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 
-public class DescriptionView extends WebView {
+public class DescriptionView extends WebView implements ViewOptionsMenu {
 
 	/**
 	 * Constructor
@@ -42,5 +44,11 @@ public class DescriptionView extends WebView {
         	this.loadDataWithBaseURL("fake://fake.de", html, mimeType, encoding, null);
         }
         this.getSettings().setLightTouchEnabled(true);
+	}
+
+	@Override
+	public boolean ItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

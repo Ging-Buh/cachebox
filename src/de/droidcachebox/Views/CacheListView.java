@@ -5,6 +5,7 @@ import java.util.List;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 
+import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.CacheList;
 import android.R.drawable;
@@ -13,13 +14,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
-public class CacheListView extends ListView {
+public class CacheListView extends ListView implements ViewOptionsMenu {
 	
 
 	private Paint paint;
@@ -85,7 +87,7 @@ public class CacheListView extends ListView {
 	    public View getView(int position, View convertView, ViewGroup parent)
 	    {
 	        Cache cache = cacheList.get(position);
-	        CacheListViewItem v = new CacheListViewItem(context, cache );
+	        CacheListViewItem v = new CacheListViewItem(context, cache);
 	 
 	        //v.setBackgroundColor((position % 2) == 1 ? Color.rgb(50,50,50) : Color.BLACK);
 	 
@@ -97,6 +99,12 @@ public class CacheListView extends ListView {
 	            Log.v(LOG_TAG, "Row button clicked");
 	    }*/
 	 
+	}
+
+	@Override
+	public boolean ItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
 

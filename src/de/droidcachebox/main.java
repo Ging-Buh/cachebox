@@ -140,13 +140,14 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         }
         Descriptor.Init();
 
+        Global.SelectedCache(Database.Data.Query.get(0));
         mapView = new MapView(this, "Map-View");
         mapView.Initialize();
         mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.GetString("CurrentMapLayer"), Config.GetString("CurrentMapLayer"), "");
         
         cacheListView = new CacheListView(this);
         waypointView = new WaypointView(this);
-        logView = new LogView(this, "Log-View");
+        logView = new LogView(this);
         descriptionView = new DescriptionView(this, "Cache-Beschreibung");
         
         this.buttonDB = (Button)this.findViewById(R.id.buttonDB);
@@ -284,11 +285,17 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     		return true;
     	case R.id.miCacheList:
     		frame.addView(cacheListView);
+    		aktView = cacheListView;
     		return true;
     	// Cache
     	case R.id.miDescription:
     		descriptionView.setCache(Global.SelectedCache());
     		frame.addView(descriptionView);
+    		aktView = descriptionView;
+    		return true;
+    	case R.id.miWaypoints:
+    		frame.addView(waypointView);
+    		aktView = waypointView;
     		return true;
     	// Map
     	case R.id.miMapView:
@@ -298,6 +305,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     	// Info
     	case R.id.miLogView:
     		frame.addView(logView);
+    		aktView = logView;
     		return true;
     	// Misc
     	case R.id.miClose:

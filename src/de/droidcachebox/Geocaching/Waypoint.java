@@ -1,6 +1,8 @@
 package de.droidcachebox.Geocaching;
 
 import android.database.Cursor;
+import android.location.Location;
+import de.droidcachebox.Global;
 import de.droidcachebox.Geocaching.Cache.CacheTypes;
 
 public class Waypoint {
@@ -181,20 +183,21 @@ public class Waypoint {
         command.ExecuteNonQuery();
         command.Dispose();
     }
-
+*/
     /// <summary>
     /// Entfernung von der letzten gültigen Position
     /// </summary>
-    public float Distance
+    public float Distance()
     {
-        get
-        {
-            Coordinate fromPos = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
-            return (float)Datum.WGS84.Distance(Latitude, Longitude, fromPos.Latitude, fromPos.Longitude);
-        }
+        Coordinate fromPos = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
+
+    	Coordinate toPos = new Coordinate(Latitude, Longitude);
+        float[] dist = new float[4];
+        Location.distanceBetween(fromPos.Latitude, fromPos.Longitude, toPos.Latitude, toPos.Longitude, dist);
+        return dist[0];
     }
 
-
+/*
     public override int GetHashCode()
     {
         return GcCode.GetHashCode();
