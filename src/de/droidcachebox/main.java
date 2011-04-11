@@ -14,6 +14,7 @@ import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.LogView;
 import de.droidcachebox.Views.MapView;
+import de.droidcachebox.Views.WaypointView;
 import de.droidcachebox.Database;
 import de.droidcachebox.Database.DatabaseType;
 import de.droidcachebox.Geocaching.Cache;
@@ -61,6 +62,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private ClockView clockView;
 	private MapView mapView;
 	private CacheListView cacheListView;
+	private WaypointView waypointView;
 	private LogView logView;
 	private DescriptionView descriptionView;
 	
@@ -143,6 +145,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.GetString("CurrentMapLayer"), Config.GetString("CurrentMapLayer"), "");
         
         cacheListView = new CacheListView(this);
+        waypointView = new WaypointView(this);
         logView = new LogView(this, "Log-View");
         descriptionView = new DescriptionView(this, "Cache-Beschreibung");
         
