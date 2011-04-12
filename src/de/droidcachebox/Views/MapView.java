@@ -17,6 +17,7 @@ import de.droidcachebox.Geocaching.MysterySolution;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.R.color;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Canvas.VertexMode;
@@ -28,6 +29,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -85,15 +87,19 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         buttons.add(buttonZoomIn);
         buttons.add(buttonZoomOut);
         this.addTouchables(buttons);
+        scale = getContext().getResources().getDisplayMetrics().density;
         
         font.setTextSize(9);
         font.setFakeBoldText(true);
-        fontSmall.setTextSize(8);
+        fontSmall.setTextSize(12 * scale);
         PositionEventList.Add(this);
 
         zoomScaleTimer = new Timer();
+        
 	}
-
+	
+	final float scale;
+	
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
@@ -615,9 +621,10 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
       // Skalierungsfaktoren bestimmen
       if (Config.GetBool("OsmDpiAwareRendering"))
       {
-          dpiScaleFactorX = dpiScaleFactorY = 2;
+//          dpiScaleFactorX = dpiScaleFactorY = 1;
 /*        dpiScaleFactorX = this.AutoScaleDimensions.Width / 96.0f;
         dpiScaleFactorY = this.AutoScaleDimensions.Height / 96.0f;*/
+          dpiScaleFactorX = dpiScaleFactorY = getContext().getResources().getDisplayMetrics().density;
       }
       else
         dpiScaleFactorX = dpiScaleFactorY = 1;
@@ -1212,21 +1219,21 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
 		for (WaypointRenderInfo wpi : wpToRender)
 		{
-		  int halfIconWidth = (int)((wpi.Icon.getMinimumWidth() * dpiScaleFactorX) / 2);
-		  int IconWidth = (int)(wpi.Icon.getMinimumWidth() * dpiScaleFactorX);
+		  int halfIconWidth = (int)((wpi.Icon.getMinimumWidth()/* * dpiScaleFactorX*/) / 2);
+		  int IconWidth = (int)(wpi.Icon.getMinimumWidth()/* * dpiScaleFactorX*/);
 		  int halfOverlayWidth = halfIconWidth;
 		  int OverlayWidth = IconWidth;
 		  if (wpi.OverlayIcon != null)
 		  {
-		      halfOverlayWidth = (int)((wpi.OverlayIcon.getMinimumWidth() * dpiScaleFactorX) / 2);
-		      OverlayWidth = (int)(wpi.OverlayIcon.getMinimumWidth() * dpiScaleFactorX);
+		      halfOverlayWidth = (int)((wpi.OverlayIcon.getMinimumWidth()/* * dpiScaleFactorX*/) / 2);
+		      OverlayWidth = (int)(wpi.OverlayIcon.getMinimumWidth()/* * dpiScaleFactorX*/);
 		  }
 		  int halfUnderlayWidth = halfIconWidth;
 		  int UnderlayWidth = IconWidth;
 		  if (wpi.UnderlayIcon != null)
 		  {
-		      halfUnderlayWidth = (int)((wpi.UnderlayIcon.getMinimumWidth() * dpiScaleFactorX) / 2);
-		      UnderlayWidth = (int)(wpi.UnderlayIcon.getMinimumWidth() * dpiScaleFactorX);
+		      halfUnderlayWidth = (int)((wpi.UnderlayIcon.getMinimumWidth()/* * dpiScaleFactorX*/) / 2);
+		      UnderlayWidth = (int)(wpi.UnderlayIcon.getMinimumWidth()/* * dpiScaleFactorX*/);
 		  }
 		
 		  int x = (int)((wpi.MapX * adjustmentCurrentToCacheZoom * dpiScaleFactorX - screenCenter.X)) + halfWidth;
@@ -1304,26 +1311,27 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		  if (showTitles && (Zoom >= 14))
 		  {
 		    int yoffset = 0;
+		    yoffset = (int)(fontSmall.getTextSize());
 		
 		    String wpName;                // draw Final Waypoint of not Selected Caches like the caches self because the cache will not be shown
-		if (drawAsWaypoint)
-		{  // Aktiver WP -> Titel oder GCCode
-		  wpName = (wpi.Waypoint.Title == "") ? wpi.Waypoint.GcCode : wpi.Waypoint.Title;
-		  fontSmall.setColor(Color.WHITE);
-		  canvas.drawText(wpName, x + halfIconWidth + 4, y, fontSmall);
-		  fontSmall.setColor(Color.BLACK);
-		  canvas.drawText(wpName, x + halfIconWidth + 5, y + 1, fontSmall);
-		}
-		else 
-		{  // Aktiver Cache -> Cachename
-		      wpName = wpi.Cache.Name;
-		      if (showRating)
-		        yoffset = 10;
-		      float fwidth = fontSmall.measureText(wpName);
-			  fontSmall.setColor(Color.WHITE);
-		      canvas.drawText(wpName, x - fwidth / 2, y + halfIconWidth + yoffset, fontSmall);
-			  fontSmall.setColor(Color.BLACK);
-		      canvas.drawText(wpName, (x - fwidth / 2) + 1, y + halfIconWidth + yoffset + 1, fontSmall);
+		    if (drawAsWaypoint)
+		    {  // Aktiver WP -> Titel oder GCCode
+		    	wpName = (wpi.Waypoint.Title == "") ? wpi.Waypoint.GcCode : wpi.Waypoint.Title;
+		    	fontSmall.setColor(Color.WHITE);
+		    	canvas.drawText(wpName, x + halfIconWidth + 4, y, fontSmall);
+		    	fontSmall.setColor(Color.BLACK);
+		    	canvas.drawText(wpName, x + halfIconWidth + 5, y + 1, fontSmall);
+		    }
+		    else 
+		    {  // Aktiver Cache -> Cachename
+		    	wpName = wpi.Cache.Name;
+		    	if (showRating)
+		    		yoffset += 10 * dpiScaleFactorX;
+		    	float fwidth = fontSmall.measureText(wpName);
+		    	fontSmall.setColor(Color.WHITE);
+		    	canvas.drawText(wpName, x - fwidth / 2, y + halfIconWidth + yoffset, fontSmall);
+		    	fontSmall.setColor(Color.BLACK);
+		    	canvas.drawText(wpName, (x - fwidth / 2) + 1, y + halfIconWidth + yoffset + 1, fontSmall);
 		    }
 		  }
 		
@@ -1503,12 +1511,12 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 	          {
 	            if (!loadedTiles.containsKey(desc.GetHashCode()))
 	            {
-	/*              preemptTile();
+	              preemptTile();
 	
-	              loadedTiles.put(desc, new Tile(desc, null, Tile.TileState.Disposed));
+	              loadedTiles.put(desc.GetHashCode(), new Tile(desc, null, Tile.TileState.Disposed));
 	
-	              queueTile(desc);*/
-	            	LoadTile(desc);
+	              queueTile(desc);
+//	            	LoadTile(desc);
 	            }
 	            tile = loadedTiles.get(desc.GetHashCode());
 	          }
@@ -1667,21 +1675,29 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     }
 */
     LinkedList<Descriptor> queuedTiles = new LinkedList<Descriptor>();
+    queueProcessor queueProcessor = null;
 /*
     Thread queueProcessor = null;
 */
     private Descriptor threadDesc;
-    private void queueTile(Descriptor desc)
+    @SuppressWarnings("unchecked")
+	private void queueTile(Descriptor desc)
     {
       // Alternative Implementierung mit Threadpools...
       // ThreadPool.QueueUserWorkItem(new WaitCallback(LoadTile), new Descriptor(desc));
     	
       synchronized (queuedTiles)
       {
-        if (queuedTiles.contains(desc))
+        if (queuedTiles.contains(desc.GetHashCode()))
           return;
 
         queuedTiles.add(desc);
+
+        if (queueProcessor == null)
+        {
+	        queueProcessor = new queueProcessor();
+	        queueProcessor.execute(queuedTiles);
+        }
 /*        if (queueProcessor == null)
         {
           queueProcessor = new Thread(new ThreadStart(queueProcessorEntryPoint));
@@ -1690,6 +1706,61 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
           queueProcessor.Start();
         }*/
       }
+    }
+    
+    private class queueProcessor extends AsyncTask<LinkedList<Descriptor>, Integer, Integer> {
+
+		@Override
+		protected Integer doInBackground(LinkedList<Descriptor>... params) {
+			// TODO Auto-generated method stub
+			boolean queueEmpty = false;
+			
+			try
+			{
+			
+				do
+			    {
+					Descriptor desc = null;
+					synchronized (queuedTiles)
+					{
+						desc = queuedTiles.poll();
+					}
+			
+					if (desc.Zoom == Zoom)
+						LoadTile(desc);
+					else
+					{
+						// Da das Image fur diesen Tile nicht geladen wurde, da der Zoom-Faktor des Tiles nicht gleich
+						// dem aktuellen ist muss dieser Tile wieder aus loadedTile entfernt werden, da sonst bei
+						// spterem Wechsel des Zoom-Faktors dieses Tile nicht angezeigt wird.
+						// Dies passiert bei schnellem Wechsel des Zoom-Faktors, wenn noch nicht alle aktuellen Tiles geladen waren.
+						if (loadedTiles.containsKey(desc.GetHashCode()))
+							loadedTiles.remove(desc.GetHashCode());
+					}
+			
+			
+					synchronized (queuedTiles)
+					{
+						queueEmpty = queuedTiles.size() < 1;
+					}
+			
+			    } while (!queueEmpty);
+			}	
+			catch (Exception exc)
+			{
+				String forDebug = exc.getMessage();
+			}
+			finally
+			{
+			    // damit im Falle einer Exception der Thread neu gestartet wird
+//			    queueProcessor = null;
+			}
+		return null;
+	}
+
+	     protected void onPostExecute(Integer result) {
+	         queueProcessor = null;
+	     }    	
     }
 /*
     void queueProcessorEntryPoint()

@@ -39,6 +39,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -79,6 +80,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
         SelectedCacheEventList.Add(this);
 
@@ -135,7 +137,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	    	Database.FieldNotes = new Database(DatabaseType.FieldNotes); 
 //	        Database.Data.StartUp("/sdcard/db3 [1].db3");
 	    	File path = Environment.getExternalStorageDirectory();
-	        Database.Data.StartUp(path.getPath() + "/daheim.db3");
+	        Database.Data.StartUp(path.getPath() + "/cachebox.db3");
 	        Database.Data.Query.LoadCaches("");
         }
         Descriptor.Init();
