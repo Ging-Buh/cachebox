@@ -28,6 +28,9 @@ public class Config {
 	{
 		if (key == "ImperialUnits")
 			return false;
+		else if (key == "OsmDpiAwareRendering")
+			return true;
+		
 		return false;
 	}
 	

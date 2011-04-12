@@ -6,6 +6,6 @@
     <string name="Cache">Cache</string>
     <string name="Info">Info</string>
     <string name="Misc">Misc</string>
-    <string name="Map">Map</string>
+    <string name="Map">Karte</string>
     <string name="CacheList">Cache List</string>
 </resources>

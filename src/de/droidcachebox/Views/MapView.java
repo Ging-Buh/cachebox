@@ -7,6 +7,8 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Cache.CacheTypes;
@@ -52,6 +54,8 @@ import de.droidcachebox.Map.Tile;
 public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMenu {
 	private Button buttonZoomIn;
 	private Button buttonZoomOut;
+	private Timer zoomScaleTimer;
+	private TimerTask zoomTimerTask;
     /**
 	 * Constructor
 	 */
@@ -86,6 +90,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         font.setFakeBoldText(true);
         fontSmall.setTextSize(8);
         PositionEventList.Add(this);
+
+        zoomScaleTimer = new Timer();
 	}
 
 	@Override
@@ -342,12 +348,12 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     /// <summary>
     /// Horizontaler Skalierungsfaktor bei DpiAwareRendering
     /// </summary>
-    protected float dpiScaleFactorX = 2;
+    protected float dpiScaleFactorX = 1;
 
     /// <summary>
     /// Vertikaler Skalierungsfaktor bei DpiAwareRendering
     /// </summary>
-    protected float dpiScaleFactorY = 2;
+    protected float dpiScaleFactorY = 1;
 
     // TODO: Dies schlau berechnen!
     /// <summary>
@@ -609,7 +615,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
       // Skalierungsfaktoren bestimmen
       if (Config.GetBool("OsmDpiAwareRendering"))
       {
-          dpiScaleFactorX = dpiScaleFactorY = 1;
+          dpiScaleFactorX = dpiScaleFactorY = 2;
 /*        dpiScaleFactorX = this.AutoScaleDimensions.Width / 96.0f;
         dpiScaleFactorY = this.AutoScaleDimensions.Height / 96.0f;*/
       }
@@ -1432,128 +1438,132 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     PointD lastRenderedPosition = new PointD(Double.MAX_VALUE, Double.MAX_VALUE);
     public void Render(boolean overrideRepaintInteligence)
     {
-      if (Database.Data.Query == null)
-        return;
-      if (offScreenBmp == null)
-        return;
-
-      // Aufruf ggf. im richtigen Thread starten
-/*      if (InvokeRequired)
-      {
-        Invoke(new EmptyDelegate(Render), overrideRepaintInteligence);
-        return;
-      }*/
-
-      // Wenn sich bei der Ansicht nichts getan hat braucht sie auch nicht gerendert werden.
-      if (!overrideRepaintInteligence)
-      {
-/*
-        if (lastRenderZoomScale == renderZoomScaleActive && lastWpCount == wpToRender.Count && lastHeading == ((Global.Locator != null) ? Global.Locator.Heading : 0) && lastPosition.Latitude == Global.LastValidPosition.Latitude && lastPosition.Longitude == Global.LastValidPosition.Longitude && lastZoom == Zoom && !tilesFinished && lastRenderedPosition.X == screenCenter.X && lastRenderedPosition.Y == screenCenter.Y)
-          return;
-*/
-
-        lastRenderZoomScale = renderZoomScaleActive;
-        lastWpCount = wpToRender.size();
-        tilesFinished = false;
-        lastPosition.Latitude = Global.LastValidPosition.Latitude;
-        lastPosition.Longitude = Global.LastValidPosition.Longitude;
-        lastHeading = 0;
-/*        lastHeading = (Global.Locator != null) ? Global.Locator.Heading : 0;*/
-        lastZoom = Zoom;
-        lastRenderedPosition.X = screenCenter.X;
-        lastRenderedPosition.Y = screenCenter.Y;
-      }
-
-      synchronized (loadedTiles)
-      {
-        for (Tile tile : loadedTiles.values())
-          tile.Age++;
-      }
-      
-      int xFrom;
-      int xTo;
-      int yFrom;
-      int yTo;
-      Rect tmp = getTileRange();
-      xFrom = tmp.left;
-      xTo = tmp.right;
-      yFrom = tmp.top;
-      yTo = tmp.bottom;
-
-      // Kacheln beantragen
-      for (int x = xFrom; x <= xTo; x++)
-        for (int y = yFrom; y <= yTo; y++)
-        {
-          if (x < 0 || y < 0 || x >= Descriptor.TilesPerLine[Zoom] || y >= Descriptor.TilesPerColumn[Zoom])
-            continue;
-
-          Descriptor desc = new Descriptor(x, y, Zoom);
-
-          Tile tile;
-
-          synchronized (loadedTiles)
-          {
-            if (!loadedTiles.containsKey(desc.GetHashCode()))
-            {
-/*              preemptTile();
-
-              loadedTiles.put(desc, new Tile(desc, null, Tile.TileState.Disposed));
-
-              queueTile(desc);*/
-            	LoadTile(desc);
-            }
-            tile = loadedTiles.get(desc.GetHashCode());
-          }
-
-          if ((tile != null) && (tileVisible(tile.Descriptor)))
-          {
-            renderTile(tile);
-          }
-        }
-      renderCaches();
-
-      renderPositionAndMarker();
-
-      renderScale();
-      /*
-      RenderTargetArrow();
-
-
-      if (renderZoomScaleActive)
-        renderZoomScale();
-
-      if (loaderThread != null)
-        renderLoaderInfo();
-
-
-      if (showCompass)
-        renderCompass();
-*/
-      try
-      {
-    	  Canvas can = holder.lockCanvas(null);
-    	  if (can != null)
-    	  {
-     		  can.drawBitmap(offScreenBmp, 0, 0, null);
-     	      if (!debugString1.equals("") || !debugString2.equals(""))
-     	      {
-     		      Paint debugPaint = new Paint();
-     		      debugPaint.setTextSize(20);
-     		      debugPaint.setColor(Color.WHITE);
-     		      debugPaint.setStyle(Style.FILL);
-     		      can.drawRect(new Rect(50, 20, 300, 100), debugPaint);
-     		      debugPaint.setColor(Color.BLACK);
-     		      can.drawText(debugString1, 50, 50, debugPaint);
-     		      can.drawText(debugString2, 50, 80, debugPaint);
-     	      }
-    		  holder.unlockCanvasAndPost(can);
-    	  }
-    	  
-//        this.CreateGraphics().DrawImage(offScreenBmp, 0, 0);
-      }
-      catch (Exception ex)
-      {
-      }
+     	synchronized (this)
+     	{
+	      if (Database.Data.Query == null)
+	        return;
+	      if (offScreenBmp == null)
+	        return;
+	
+	      // Aufruf ggf. im richtigen Thread starten
+	/*      if (InvokeRequired)
+	      {
+	        Invoke(new EmptyDelegate(Render), overrideRepaintInteligence);
+	        return;
+	      }*/
+	
+	      // Wenn sich bei der Ansicht nichts getan hat braucht sie auch nicht gerendert werden.
+	      if (!overrideRepaintInteligence)
+	      {
+	
+	        if (lastRenderZoomScale == renderZoomScaleActive && lastWpCount == wpToRender.size() && lastHeading == ((Global.Location != null) ? Global.Location.getBearing() : 0) && lastPosition.Latitude == Global.LastValidPosition.Latitude && lastPosition.Longitude == Global.LastValidPosition.Longitude && lastZoom == Zoom && !tilesFinished && lastRenderedPosition.X == screenCenter.X && lastRenderedPosition.Y == screenCenter.Y)
+	          return;
+	
+	
+	        lastRenderZoomScale = renderZoomScaleActive;
+	        lastWpCount = wpToRender.size();
+	        tilesFinished = false;
+	        lastPosition.Latitude = Global.LastValidPosition.Latitude;
+	        lastPosition.Longitude = Global.LastValidPosition.Longitude;
+	        lastHeading = 0;
+	/*        lastHeading = (Global.Locator != null) ? Global.Locator.Heading : 0;*/
+	        lastZoom = Zoom;
+	        lastRenderedPosition.X = screenCenter.X;
+	        lastRenderedPosition.Y = screenCenter.Y;
+	      }
+	
+	      synchronized (loadedTiles)
+	      {
+	        for (Tile tile : loadedTiles.values())
+	          tile.Age++;
+	      }
+	      
+	      int xFrom;
+	      int xTo;
+	      int yFrom;
+	      int yTo;
+	      Rect tmp = getTileRange();
+	      xFrom = tmp.left;
+	      xTo = tmp.right;
+	      yFrom = tmp.top;
+	      yTo = tmp.bottom;
+	
+	      // Kacheln beantragen
+	      for (int x = xFrom; x <= xTo; x++)
+	        for (int y = yFrom; y <= yTo; y++)
+	        {
+	          if (x < 0 || y < 0 || x >= Descriptor.TilesPerLine[Zoom] || y >= Descriptor.TilesPerColumn[Zoom])
+	            continue;
+	
+	          Descriptor desc = new Descriptor(x, y, Zoom);
+	
+	          Tile tile;
+	
+	          synchronized (loadedTiles)
+	          {
+	            if (!loadedTiles.containsKey(desc.GetHashCode()))
+	            {
+	/*              preemptTile();
+	
+	              loadedTiles.put(desc, new Tile(desc, null, Tile.TileState.Disposed));
+	
+	              queueTile(desc);*/
+	            	LoadTile(desc);
+	            }
+	            tile = loadedTiles.get(desc.GetHashCode());
+	          }
+	
+	          if ((tile != null) && (tileVisible(tile.Descriptor)))
+	          {
+	            renderTile(tile);
+	          }
+	        }
+	      renderCaches();
+	
+	      renderPositionAndMarker();
+	
+	      renderScale();
+	      /*
+	      RenderTargetArrow();
+	*/
+	
+	      if (renderZoomScaleActive)
+	        renderZoomScale();
+	/*
+	      if (loaderThread != null)
+	        renderLoaderInfo();
+	
+	
+	      if (showCompass)
+	        renderCompass();
+	*/
+	      try
+	      {
+	    	  Canvas can = holder.lockCanvas(null);
+	    	  if (can != null)
+	    	  {
+	     		  can.drawBitmap(offScreenBmp, 0, 0, null);
+	     	      if (!debugString1.equals("") || !debugString2.equals(""))
+	     	      {
+	     		      Paint debugPaint = new Paint();
+	     		      debugPaint.setTextSize(20);
+	     		      debugPaint.setColor(Color.WHITE);
+	     		      debugPaint.setStyle(Style.FILL);
+	     		      can.drawRect(new Rect(50, 20, 300, 100), debugPaint);
+	     		      debugPaint.setColor(Color.BLACK);
+	     		      can.drawText(debugString1, 50, 50, debugPaint);
+	     		      can.drawText(debugString2, 50, 80, debugPaint);
+	     	      }
+	    		  holder.unlockCanvasAndPost(can);
+	    	  }
+	    	  
+	//        this.CreateGraphics().DrawImage(offScreenBmp, 0, 0);
+	      }
+	      catch (Exception ex)
+	      {
+	      }
+	      
+		}
     }
 /*
     Brush orangeBrush = new SolidBrush(Color.Orange);
@@ -1894,7 +1904,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     {
       if (Zoom < maxZoom)
       {
-/*        zoomScaleTimer.Enabled = false;*/
+        zoomScaleTimer.cancel();
+
         centerOsmSpace.X *= 2;
         centerOsmSpace.Y *= 2;
         screenCenter.X *= 2;
@@ -1913,7 +1924,34 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         if (doRender)
         	Render(false);
 /*        zoomScaleTimer.Enabled = true;*/
+        try
+        {
+        	startZoomScaleTimer();
+        } catch (Exception ex)
+        { 
+        	return;
+        }
       }
+    }
+    
+    private void startZoomScaleTimer()
+    {
+        zoomTimerTask = new TimerTask() {
+        	@Override
+        	public void run()
+        	{
+        		renderZoomScaleActive = false;
+        		try
+        		{
+        			Render(false);
+        		} catch (Exception exc)
+        		{
+        			return;
+        		}
+        	}
+        };
+        zoomScaleTimer = new Timer();
+        zoomScaleTimer.schedule(zoomTimerTask, 1000);    	
     }
 /*
     Brush redBrush = new SolidBrush(Color.Red);
@@ -1993,7 +2031,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     {
       if (Zoom > minZoom)
       {
-/*        zoomScaleTimer.Enabled = false;*/
+        zoomScaleTimer.cancel();
 
         screenCenter.X /= 2;
         screenCenter.Y /= 2;
@@ -2011,6 +2049,13 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         renderZoomScaleActive = true;
         if (doRender)
         	Render(false);
+        try
+        {
+        	startZoomScaleTimer();
+        } catch (Exception ex)
+        {
+        	return;
+        }
 /*        zoomScaleTimer.Enabled = true;*/
 
       }
@@ -2264,32 +2309,53 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
     private void renderZoomScale()
     {
-/*
-      int topRow = bZoomIn.Top + bZoomIn.Height + bZoomIn.Height / 2;
-      int bottomRow = bZoomOut.Top - bZoomOut.Height / 2;
-      int centerColumn = bZoomIn.Left + bZoomIn.Width / 2;
-      int halfWidth = (bZoomIn.Width / 5);
+//      int topRow = bZoomIn.Top + bZoomIn.Height + bZoomIn.Height / 2;
+//      int bottomRow = bZoomOut.Top - bZoomOut.Height / 2;
+//      int centerColumn = bZoomIn.Left + bZoomIn.Width / 2;
+//      int halfWidth = (bZoomIn.Width / 5);
+      int topRow = 50;
+      int bottomRow = height - 50;
+      int centerColumn = 50;
+      int halfWidth = 20;
 
-      graphics.DrawLine(blackPen, centerColumn, topRow, centerColumn, bottomRow);
+      Paint paint = new Paint();
+      paint.setColor(Color.BLACK);
+      canvas.drawLine(centerColumn, topRow, centerColumn, bottomRow, paint);
 
       float numSteps = maxZoom - minZoom;
       for (int i = minZoom; i <= maxZoom; i++)
       {
         int y = (int)((1 - ((float)(i - minZoom)) / numSteps) * (bottomRow - topRow)) + topRow;
 
+    	Paint font = new Paint();
+    	font.setTextSize(24);
+    	font.setFakeBoldText(true);
+    	Paint white = new Paint();
+    	white.setColor(Color.WHITE);
+    	white.setStyle(Style.FILL);
+    	Paint black = new Paint();
+    	black.setColor(Color.BLACK);
+    	black.setStyle(Style.STROKE);
+
         if (i == Zoom)
         {
-          String label = Zoom.ToString();
-          SizeF sizeF = graphics.MeasureString(label, font);
-          Size size = new Size((int)sizeF.Width, (int)sizeF.Height);
-          graphics.FillRectangle(whiteBrush, centerColumn - size.Width / 2 - lineHeight / 2, y - size.Height / 2, size.Width + lineHeight, size.Height);
-          graphics.DrawRectangle(blackPen, centerColumn - size.Width / 2 - 1 - lineHeight / 2, y - size.Height / 2 - 1, size.Width + lineHeight + 1, size.Height + 1);
-          graphics.DrawString(label, font, blackBrush, centerColumn - size.Width / 2, y - size.Height / 2);
+        	
+        	String label = String.valueOf(Zoom);
+        	int textWidth = (int)font.measureText(label);
+        	int textHeight = 28;
+        	Rect bounds = new Rect();
+        	font.getTextBounds(label, 0, label.length(), bounds);
+        	textWidth = bounds.width();
+        	textHeight = (int)(bounds.height() * 1.5);
+//          SizeF sizeF = graphics.MeasureString(label, font);
+//          Size size = new Size((int)sizeF.Width, (int)sizeF.Height);
+        	canvas.drawRect(new Rect(centerColumn - textWidth / 2 - lineHeight / 2, y - textHeight / 2, centerColumn - textWidth / 2 - lineHeight / 2 + textWidth + lineHeight, y - textHeight / 2 + textHeight), white);
+        	canvas.drawRect(new Rect(centerColumn - textWidth / 2 - 1 - lineHeight / 2, y - textHeight / 2 - 1, centerColumn - textWidth / 2 - 1 - lineHeight / 2 + textWidth + lineHeight + 1, y - textHeight / 2 - 1 + textHeight + 1), black);
+        	canvas.drawText(label, centerColumn - textWidth / 2, y + textHeight / 2, font);
         }
         else
-          graphics.DrawLine(blackPen, centerColumn - halfWidth, y, centerColumn + halfWidth, y);
+          canvas.drawLine(centerColumn - halfWidth, y, centerColumn + halfWidth, y, black);
       }
-*/
     }
 /*
     private void zoomScaleTimer_Tick(object sender, EventArgs e)
