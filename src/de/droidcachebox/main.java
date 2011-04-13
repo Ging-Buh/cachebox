@@ -191,6 +191,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
             	frame.removeAllViews();
                 frame.addView(mapView);
                 aktView = mapView;
+                mapView.Render(true);
             }
           });
         
@@ -303,6 +304,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     	case R.id.miMapView:
     		frame.addView(mapView);
     		aktView = mapView;
+            mapView.Render(true);
     		return true;
     	// Info
     	case R.id.miLogView:

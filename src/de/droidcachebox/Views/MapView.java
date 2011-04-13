@@ -57,6 +57,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		super(context);
 	
 		setWillNotDraw(false);
+		
 		holder = getHolder();
 		
         this.buttonZoomIn = new Button(this.getContext());
@@ -130,6 +131,9 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     private boolean multiTouch = false;
     private double lastMultiTouchDist = 0;
     private double multiTouchFaktor = 1;
+    private Point mouseDownPos;
+    private boolean mouseMoved;
+    
     @Override
     public boolean onTouchEvent(MotionEvent event) {
     	int eX = (int)event.getX(0);
@@ -199,18 +203,35 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+            	mouseDownPos = new Point(eX, eY);
+            	mouseMoved = false;
             	MapView_MouseDown(eX, eY);
 //                touch_start(x, y);
 //                invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
-            	MapView_MouseMove(eX, eY);
+            	if (!mouseMoved)
+            	{
+            		Point akt = new Point(eX, eY);
+            		mouseMoved = ((Math.abs(akt.x - mouseDownPos.x) < 5) && Math.abs(akt.y - mouseDownPos.y) < 5);
+            	}
+            	if (mouseMoved)
+            		MapView_MouseMove(eX, eY);
 //                touch_move(x, y);
 //                invalidate();
                 break;
             case MotionEvent.ACTION_UP:
             	multiTouchFaktor = 1;
-            	MapView_MouseUp(eX, eY);
+            	if (mouseMoved)
+            		MapView_MouseUp(eX, eY);
+            	else
+            	{
+            		// click!!!!
+            		MapView_Click(eX, eY);
+                	mouseDownPos = null;
+            		return false;
+            	}
+            	mouseDownPos = null;
 //                touch_up();
 //                invalidate();
                 break;
@@ -649,7 +670,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
       updateCacheList();
 /* dieses Render hier nur zum testen!!!!!!!!!!!!!!!!!!!!!!!!*/      
-//      Render(false);
+//      Render(true);
 
     }
 /*
@@ -2422,18 +2443,18 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
       canvas.drawText(distanceString, scaleLeft + pos + lineHeight / 2, height - lineHeight / 2, font);
       //graphics.DrawString(distanceString, font, brushes[0], scaleLeft + pos + lineHeight / 2, height - lineHeight);
     }
-/*
-    private void MapView_DoubleClick(object sender, EventArgs e)
+
+    private void MapView_Click(int eX, int eY)
     {
 
       WaypointRenderInfo minWpi = new WaypointRenderInfo();
       minWpi.Cache = null;
 
-      int minDist = int.MaxValue;
+      int minDist = Integer.MAX_VALUE;
       // Überprüfen, auf welchen Cache geklickt wurde
-      for (int i = wpToRender.Count - 1; i >= 0; i--)
+      for (int i = wpToRender.size() - 1; i >= 0; i--)
       {
-        WaypointRenderInfo wpi = wpToRender[i];
+        WaypointRenderInfo wpi = wpToRender.get(i);
         int x = (int)(wpi.MapX * adjustmentCurrentToCacheZoom * dpiScaleFactorX - screenCenter.X) + halfWidth;
         int y = (int)(wpi.MapY * adjustmentCurrentToCacheZoom * dpiScaleFactorY - screenCenter.Y) + halfHeight;
 
@@ -2451,7 +2472,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
       if (minWpi.Cache == null)
         return;
 
-      int legalWidth = (int)(minWpi.Icon.Width * dpiScaleFactorX * 1.5f);
+      int legalWidth = (int)(minWpi.Icon.copyBounds().width() * dpiScaleFactorX * 1.5f);
 
       if (minDist > (legalWidth * legalWidth))
         return;
@@ -2459,20 +2480,23 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
       if (minWpi.Waypoint != null)
       {
         // Wegpunktliste ausrichten
-        Global.SelectedCache = minWpi.Cache;
-        Global.SelectedWaypoint = minWpi.Waypoint;
+        Global.SelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
         //FormMain.WaypointListPanel.AlignSelected();
+        updateCacheList();
+        Render(true);
       }
       else
       {
         // Cacheliste ausrichten
-        Global.SelectedCache = minWpi.Cache;
+        Global.SelectedCache(minWpi.Cache);
         //                Global.SelectedWaypoint = null;
         //                FormMain.CacheListPanel.AlignSelected();
+        updateCacheList();
+        Render(true);
       }
-      this.Focus();
+//      this.Focus();
     }
-
+/*
     private void button3_Click(object sender, EventArgs e)
     {
       if (Global.Marker.Valid)
