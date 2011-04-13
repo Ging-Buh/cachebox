@@ -84,8 +84,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         setContentView(R.layout.main);
         SelectedCacheEventList.Add(this);
 
-        Global.InitPaints();
-        Global.InitIcons(this);
+       
         
         frameCacheName = (FrameLayout)this.findViewById(R.id.frameCacheName);
         cacheNameView = new CacheNameView(this);
@@ -124,23 +123,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		locationManager.requestLocationUpdates(provider, 1000, 1, this);                
         
         
-        File dir = new File(Config.GetString("MapPackFolder"));
-        String[] files = dir.list();
-        for (String file : files)
-        {
-        	MapView.Manager.LoadMapPack(Config.GetString("MapPackFolder") + "/" + file);
-        }
-        if (Database.Data == null)
-        {
-	        // initialize Database
-	        Database.Data = new Database(DatabaseType.CacheBox);
-	    	Database.FieldNotes = new Database(DatabaseType.FieldNotes); 
-//	        Database.Data.StartUp("/sdcard/db3 [1].db3");
-	    	File path = Environment.getExternalStorageDirectory();
-	        Database.Data.StartUp(path.getPath() + "/cachebox.db3");
-	        Database.Data.Query.LoadCaches("");
-        }
-        Descriptor.Init();
+
 
         Global.SelectedCache(Database.Data.Query.get(0));
         mapView = new MapView(this, "Map-View");

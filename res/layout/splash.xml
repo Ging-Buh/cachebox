@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_height="wrap_content" android:layout_width="match_parent">
+    <FrameLayout android:id="@+id/frameLayout1" android:layout_height="match_parent" android:layout_width="match_parent">
+        <ImageView 
+	        android:src="@drawable/splash_back" 
+	        android:id="@+id/imageView1" 
+	        android:layout_width="match_parent" 
+	        android:layout_height="match_parent">
+        </ImageView>
+        <ProgressBar 
+	        	android:id="@+id/splash_progressbar"
+	            android:layout_width="fill_parent"
+				android:layout_height="50px"
+				style="?android:attr/progressBarStyleHorizontal" android:layout_gravity="bottom">
+			</ProgressBar>
+		<LinearLayout 
+
+	        android:layout_height="50px" 
+	        android:id="@+id/lin_progress_bar" 
+	         
+	        android:layout_width="match_parent" 
+	        android:layout_gravity="bottom">
+	        <TextView
+		        android:id="@+id/splash_TextView" 
+		        android:gravity="center_vertical"
+	            android:textStyle="bold" 
+	            android:text="Loading..."
+	            android:textSize="23px"
+	            android:textColor="#808080" 
+	            android:layout_height="wrap_content" 
+	            android:layout_width="match_parent" 
+	            >
+        	</TextView>
+	        
+        
+    </LinearLayout>
+    </FrameLayout>
+</LinearLayout>
