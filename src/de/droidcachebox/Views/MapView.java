@@ -22,6 +22,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RotateDrawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.view.MenuItem;
@@ -753,8 +754,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
       // kann man die Karte ja gut mal neu rendern!
       tilesFinished = true;
 
-//      if (tileVisible(desc))
-//        Render(true);
+      if (tileVisible(desc))
+        Render(true);
     }
 
     private Bitmap loadBestFit(Layer CurrentLayer, Descriptor desc, boolean loadFromManager)
@@ -939,8 +940,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		        			// kann man die Karte ja gut mal neu rendern!
 		        			tilesFinished = true;
 
-		        			// if (tileVisible(loadedTiles[desc]))
-		        			Render(true);
+		        			if (tileVisible(desc))
+		        				Render(true);
 
 		        		}
 		        		else
@@ -1533,31 +1534,42 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		    Rect bounds = img.getBounds();
 		    int halfSmallStarWidth = (int)(((double)img.getMinimumWidth() / 2.0) * dpiScaleFactorX);
 		    int smallStarWidth = (int)((double)img.getMinimumWidth() * dpiScaleFactorX);
-		    img.setBounds(x - halfSmallStarWidth, y + halfIconWidth, smallStarWidth, smallStarHeight);
+		    img.setBounds(x - halfSmallStarWidth, y + halfUnderlayWidth + 2, x - halfSmallStarWidth + smallStarWidth, y + halfUnderlayWidth + 2 + smallStarHeight);
 		    img.draw(canvas);
 		    img.setBounds(bounds);
-//		    canvas.DrawImage(img, new Rectangle(x - halfSmallStarWidth, y + halfIconWidth, smallStarWidth, smallStarHeight), 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, imageAttributes);
 		  }
 		
 		  // Show D/T-Rating
-/*		  if (showDT && (wpToRender.Count <= mapMaxCachesLabel) && (!drawAsWaypoint) && (Zoom >= 14))
+		  if (showDT && (!drawAsWaypoint) && (Zoom >= 14))
 		  {
-		    Bitmap imgDx = Global.SmallStarIcons[(int)Math.Min(wpi.Cache.Difficulty * 2, 5 * 2)];
-		    Bitmap imgD = new Bitmap(imgDx.Height, imgDx.Width);
-		    InternalRotateImage(270, imgDx, imgD);
-		    int halfSmallStarHeightD = (int)(((double)imgD.Width / 2.0) * dpiScaleFactorY);
-		    int smallStarHeightD = (int)((double)imgD.Height * dpiScaleFactorY);
-		    graphics.DrawImage(imgD, new Rectangle(x - halfIconWidth - smallStarHeight - 4, y + halfIconWidth - smallStarHeightD, smallStarHeight, smallStarHeightD), 0, 0, imgD.Width, imgD.Height, GraphicsUnit.Pixel, imageAttributes);
-		
+		    Drawable imgDx = Global.SmallStarIcons[(int)Math.min(wpi.Cache.Difficulty * 2, 5 * 2)];
+		    Rect bounds = imgDx.getBounds();
+		    int smallStarHeightD = (int)((double)imgDx.getMinimumWidth() * dpiScaleFactorY);
+		    imgDx.setBounds(x - halfUnderlayWidth, y - halfUnderlayWidth - smallStarHeight - 2, x - halfUnderlayWidth + smallStarHeightD, y - halfUnderlayWidth - smallStarHeight - 2 + smallStarHeight);
+		    canvas.rotate(270, x, y);
+		    imgDx.draw(canvas);
+		    canvas.rotate(90, x, y);
+		    imgDx.setBounds(bounds);
+
+		    
+		    imgDx = Global.SmallStarIcons[(int)Math.min(wpi.Cache.Terrain * 2, 5 * 2)];
+		    bounds = imgDx.getBounds();
+		    smallStarHeightD = (int)((double)imgDx.getMinimumWidth() * dpiScaleFactorY);
+		    imgDx.setBounds(x - halfUnderlayWidth, y + halfUnderlayWidth + 2, x - halfUnderlayWidth + smallStarHeightD, y + halfUnderlayWidth + 2 + smallStarHeight);
+		    canvas.rotate(270, x, y);
+		    imgDx.draw(canvas);
+		    canvas.rotate(90, x, y);
+		    imgDx.setBounds(bounds);
+		    /*		
 		    Bitmap imgTx = Global.SmallStarIcons[(int)Math.Min(wpi.Cache.Terrain * 2, 5 * 2)];
 		    Bitmap imgT = new Bitmap(imgTx.Height, imgTx.Width);
 		    InternalRotateImage(270, imgTx, imgT);
 		    int halfSmallStarHeightT = (int)(((double)imgT.Height / 2.0) * dpiScaleFactorY);
 		    int smallStarHeightT = (int)((double)imgT.Height * dpiScaleFactorY);
 		    graphics.DrawImage(imgT, new Rectangle(x + halfIconWidth + 4, y + halfIconWidth - smallStarHeightT, smallStarHeight, smallStarHeightT), 0, 0, imgT.Width, imgT.Height, GraphicsUnit.Pixel, imageAttributes);
+*/		
 		
-		
-		  }*/
+		  }
 		}
     }
 
@@ -1580,10 +1592,24 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     /// <returns>true, wenn die Kachel sichtbar ist, sonst false</returns>
     boolean tileVisible(Descriptor tile)
     {
-      Point p1 = ToScreen(tile.X, tile.Y, tile.Zoom);
-      Point p2 = ToScreen(tile.X + 1, tile.Y + 1, tile.Zoom);
+        Point p1 = ToScreen(tile.X, tile.Y, tile.Zoom);
+        Point p2 = ToScreen(tile.X + 1, tile.Y + 1, tile.Zoom);
 
-      return (p1.x < width && p2.x >= 0 && p1.y < height && p2.y >= 0);
+        // relativ zu Zentrum
+        p1.x = p1.x - width / 2;
+        p1.y = p1.y - height / 2;
+        // skalieren
+        p1.x = (int) Math.round(p1.x * multiTouchFaktor + width / 2);
+        p1.y = (int) Math.round(p1.y * multiTouchFaktor + height / 2);
+        // relativ zu Zentrum
+        p2.x = p2.x - width / 2;
+        p2.y = p2.y - height / 2;
+        // skalieren
+        p2.x = (int) Math.round(p2.x * multiTouchFaktor + width / 2);
+        p2.y = (int) Math.round(p2.y * multiTouchFaktor + height / 2);
+    	
+
+        return (p1.x < width && p2.x >= 0 && p1.y < height && p2.y >= 0);
     }
 
     /// <summary>
@@ -1686,7 +1712,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 	      xTo = tmp.right;
 	      yFrom = tmp.top;
 	      yTo = tmp.bottom;
-	
+
 	      // Kacheln beantragen
 	      for (int x = xFrom; x <= xTo; x++)
 	        for (int y = yFrom; y <= yTo; y++)
