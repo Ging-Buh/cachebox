@@ -189,6 +189,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         		dragStartY = lastClickY = eY;
         	}
         	multiTouch = true;
+        	mouseMoved = true;
         } else
         {
         	if(multiTouch)
@@ -213,7 +214,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
             	if (!mouseMoved)
             	{
             		Point akt = new Point(eX, eY);
-            		mouseMoved = ((Math.abs(akt.x - mouseDownPos.x) < 5) && Math.abs(akt.y - mouseDownPos.y) < 5);
+            		mouseMoved = ((Math.abs(akt.x - mouseDownPos.x) > 5) || Math.abs(akt.y - mouseDownPos.y) > 5);
             	}
             	if (mouseMoved)
             		MapView_MouseMove(eX, eY);
