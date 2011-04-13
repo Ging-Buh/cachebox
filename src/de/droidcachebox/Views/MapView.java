@@ -27,6 +27,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.Shader.TileMode;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -92,6 +94,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         font.setTextSize(9);
         font.setFakeBoldText(true);
         fontSmall.setTextSize(12 * scale);
+        fontSmall.setFakeBoldText(true);
         PositionEventList.Add(this);
 
         zoomScaleTimer = new Timer();
@@ -141,26 +144,40 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     private double multiTouchFaktor = 1;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        int eX = (int)event.getX(0);
-        int eY = (int)event.getY(0);
-        int eX2 = (int)event.getX(1);
-        int eY2 = (int)event.getY(1);
-        double multiTouchDist = Math.sqrt(Math.pow(event.getX(1) - event.getX(), 2) + Math.pow(event.getY(1) - event.getY(), 2));
-//        debugString1 = eX + "-" + eY;
-//        debugString2 = eX2 + "-" + eY2;
+    	int eX = (int)event.getX(0);
+    	int eY = (int)event.getY(0);
         if (event.getPointerCount() > 1)
         {
+        	int eX2 = (int)event.getX(1);
+        	int eY2 = (int)event.getY(1);
+        	double multiTouchDist = Math.sqrt(Math.pow(event.getX(1) - event.getX(), 2) + Math.pow(event.getY(1) - event.getY(), 2));
+        	if (!multiTouch)
+        		lastMultiTouchDist = multiTouchDist;
+//        debugString1 = "" + multiTouchDist;
+//        debugString2 = "" + lastMultiTouchDist;
+        	if (Zoom >= maxZoom)
+        	{
+        		if (multiTouchDist > lastMultiTouchDist)
+        			multiTouchDist = lastMultiTouchDist;
+        	}
+        	if (Zoom <= minZoom)
+        	{
+        		if (multiTouchDist < lastMultiTouchDist)
+        			multiTouchDist = lastMultiTouchDist;
+        	
+        	}
+
         	if (multiTouch)
         	{
         		if (lastMultiTouchDist > multiTouchDist * 1.5)
         		{
         			zoomOut(false);
-        			lastMultiTouchDist /= 2; //multiTouchDist;
+       				lastMultiTouchDist /= 2; //multiTouchDist;
         		}
         		else if (lastMultiTouchDist < multiTouchDist * 0.75)
         		{
         			zoomIn(false);
-        			lastMultiTouchDist *= 2; //multiTouchDist;
+               		lastMultiTouchDist *= 2; //multiTouchDist;
         		}
         	} else
     			lastMultiTouchDist = multiTouchDist;
@@ -246,7 +263,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     /// <summary>
     /// Instanz des Loaders
     /// </summary>
-    Thread loaderThread = null;
+    loaderThread loaderThread = null;
 
     /// <summary>
     /// Liste mit den darzustellenden Wegpunkten
@@ -374,8 +391,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     protected int height = 0;
     protected int halfIconSize = 10;
 
-    protected int lineHeight = 16;
-    protected int smallLineHeight = 12;
+    protected int lineHeight = 24;
+    protected int smallLineHeight = 16;
 
     double adjustmentCurrentToCacheZoom = 1;
 /*
@@ -625,6 +642,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 /*        dpiScaleFactorX = this.AutoScaleDimensions.Width / 96.0f;
         dpiScaleFactorY = this.AutoScaleDimensions.Height / 96.0f;*/
           dpiScaleFactorX = dpiScaleFactorY = getContext().getResources().getDisplayMetrics().density;
+          dpiScaleFactorX = dpiScaleFactorY = 1;
       }
       else
         dpiScaleFactorX = dpiScaleFactorY = 1;
@@ -667,7 +685,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     /// </summary>
     /// <param name="state">Descriptor der zu ladenen Kachel. Typlos, damit
     /// man es als WorkItem queuen kann!</param>
-    protected void LoadTile(Object state)
+    @SuppressWarnings("unchecked")
+	protected void LoadTile(Object state)
     {
       Descriptor desc = (Descriptor) state;
 
@@ -683,20 +702,23 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
       if (bitmap == null)
       {
-/*        if (Config.GetBool("AllowInternetAccess"))
+        if (Config.GetBool("AllowInternetAccess"))
         {
-          lock (wishlist)
+          synchronized (wishlist)
           {
-            wishlist.Add(desc);
+            wishlist.add(desc);
             if (loaderThread == null)
             {
+    	        loaderThread = new loaderThread();
+    	        loaderThread.execute(wishlist);
+/*
               loaderThread = new Thread(new ThreadStart(loaderThreadEntryPoint));
               loaderThread.Priority = ThreadPriority.BelowNormal;
-              loaderThread.Start();
+              loaderThread.Start();*/
             }
           }
         }
-*/
+
         // Upscale coarser map tile
         bitmap = loadBestFit(CurrentLayer, desc);
         tileState = Tile.TileState.LowResolution;
@@ -725,46 +747,53 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
     private Bitmap loadBestFit(Layer CurrentLayer, Descriptor desc)
     {
-      Descriptor available = new Descriptor(desc);
+    	Descriptor available = new Descriptor(desc);
 
-      // Determine best available tile
-      Bitmap tile = null;
-      do
-      {
-        available.X /= 2;
-        available.Y /= 2;
-        available.Zoom--;
-
-      } while (available.Zoom >= 0 && (tile = Manager.LoadLocalBitmap(CurrentLayer, available)) == null);
-
-      // No tile available. Use Background color (so that at least
-      // routes are painted!)
-      Bitmap result = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_4444);
-      Canvas graphics = new Canvas(result);
-
-      if (tile == null)
-      {
-    	  
-    	  graphics.drawRect(0, 0, result.getWidth(), result.getHeight(), backBrush);
+    	// Determine best available tile
+    	Bitmap tile = null;
+    	try
+    	{
+    		do
+    		{
+    			available.X /= 2;
+    			available.Y /= 2;
+    			available.Zoom--;
+    			
+    		} while (available.Zoom >= 0 && (tile = Manager.LoadLocalBitmap(CurrentLayer, available)) == null);
+    	} catch (Exception ex)
+    	{
+    		tile = null;
+    	}
+    	// No tile available. Use Background color (so that at least
+    	// routes are painted!)
+    	Bitmap result = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_4444);
+    	Canvas graphics = new Canvas(result);
+    	
+    	if (tile == null)
+    	{
+    		Paint paint = new Paint(backBrush);
+    		paint.setColor(Color.YELLOW);
+    		paint.setAlpha(50);
+    		graphics.drawRect(0, 0, result.getWidth(), result.getHeight(), paint/*backBrush*/);
 //    	  graphics.restore();
-      }
-      else
-      {
-        // Load and interpolate
-        int scale = (int)Math.pow(2, desc.Zoom - available.Zoom);
-        int x = available.X * scale;
-        int y = available.Y * scale;
-        int width = 256 / scale;
+    	}
+    	else
+    	{
+    		// Load and interpolate
+    		int scale = (int)Math.pow(2, desc.Zoom - available.Zoom);
+    		int x = available.X * scale;
+    		int y = available.Y * scale;
+    		int width = 256 / scale;
 
-        int px = (desc.X - x) * width;
-        int py = (desc.Y - y) * width;
+    		int px = (desc.X - x) * width;
+    		int py = (desc.Y - y) * width;
 
-        graphics.drawBitmap(tile, new Rect(px, py, px + width, py + width), new Rect(0, 0, result.getWidth(), result.getHeight()), backBrush);
+    		graphics.drawBitmap(tile, new Rect(px, py, px + width, py + width), new Rect(0, 0, result.getWidth(), result.getHeight()), backBrush);
 //        graphics.DrawImage(tile, new Rectangle(0, 0, result.Width, result.Height), new Rectangle(px, py, width, width), GraphicsUnit.Pixel);
 //        graphics.restore();
-      }
-
-      return result;
+    	}
+    	
+    	return result;
     }
 /*
     private void scaleUpBitmap(ref Bitmap bitmap)
@@ -809,7 +838,149 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
       }
 
     }
+
+    private class loaderThread extends AsyncTask<ArrayList<Descriptor>, Integer, Integer> {
+
+		@Override
+		protected Integer doInBackground(ArrayList<Descriptor>... params) {
+			try
+		    {
+				Descriptor desc = null;
+
+		        while (true)
+		        {
+		        	synchronized (wishlist)
+		        	{
+		        		if (wishlist.size() == 0)
+		        			break;
+
+		        		// Den raussuchen, der im Augenblick am meisten sichtbar ist
+		        		int minDist = Integer.MAX_VALUE;
+
+		        		// Alle beantragten Kacheln die nicht der
+		        		// aktuellen Zoomstufe entsprechen, rausschmeissen
+		        		for (int i = 0; i < wishlist.size(); i++)
+		        		{
+		        			if (wishlist.get(i).Zoom != Zoom)
+		        			{
+		        				loadedTiles.remove(wishlist.get(i).GetHashCode());
+		        				wishlist.remove(i);
+		        				i = -1;
+		        			}
+		        		}
+
+		        		for (Descriptor candidate : wishlist)
+		        		{
+		        			int dist = Integer.MAX_VALUE;
+		        			if (candidate.Zoom == Zoom)
+		        			{
+		        				Point p1 = ToScreen(candidate.X, candidate.Y, candidate.Zoom);
+		        				p1.x += (int)(128 * dpiScaleFactorX);
+		        				p1.y += (int)(128 * dpiScaleFactorY);
+		        				
+		        				dist = (p1.x - halfWidth) * (p1.x - halfWidth) + (p1.y - halfHeight) * (p1.y - halfHeight);
+		        			}
+
+		        			if (dist < minDist)
+		        			{
+		        				desc = candidate;
+		        				minDist = dist;
+		        			}
+		        		}
+
+		        		wishlist.remove(desc);
+		        	}
+		        	try
+		        	{
+		        		if (Manager.CacheTile(CurrentLayer, desc))
+		        		{
+		        			Bitmap bitmap = MapView.Manager.LoadLocalBitmap(CurrentLayer, desc);
+		        			
+		        			if (bitmap == null)
+		        			{
+		        				// Laden der Kachel fehlgeschlagen! Tile wieder aus loadedTiles
+		        				// entfernen
+		        				loadedTiles.remove(desc.GetHashCode());
+		        				continue;
+		        			}
 /*
+		        			if (OnTileLoaded != null)
+		        				OnTileLoaded(bitmap, desc);
+*/
+/*
+		        			if (Config.GetBool("OsmDpiAwareRendering") && (dpiScaleFactorX != 1 || dpiScaleFactorY != 1))
+		        				scaleUpBitmap(ref bitmap);
+*/		        				
+
+
+
+		        			addLoadedTile(desc, bitmap, Tile.TileState.Present);
+
+		        			// Kachel erfolgreich geladen. Wenn die Kachel sichtbar ist
+		        			// kann man die Karte ja gut mal neu rendern!
+		        			tilesFinished = true;
+
+		        			// if (tileVisible(loadedTiles[desc]))
+		        			Render(true);
+
+		        		}
+		        		else
+		        		{
+		        			// Kachel nicht geladen, noch ein Versuch!
+		        			//lock (loadedTiles)
+		        			//    if (loadedTiles.ContainsKey(desc))
+		        			//        loadedTiles.Remove(desc);
+
+		        			continue;
+		        		}
+/*
+		        		boolean LowMemory = Global.GetAvailableDiscSpace(Config.GetString("TileCacheFolder")) < ((long)1024 * 1024);
+		        		if (LowMemory)
+		        		{
+		        			MessageBox.Show("Device is running low on memory! Internet access will shut down now. Please free some memory e.g. by deleting unused tiles!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+		#if DEBUG
+		              Global.AddLog("MapView.loaderThreadEntryPoint: device is low on memory");
+		#endif
+							Config.Set("AllowInternetAccess", false);
+		              		Config.AcceptChanges();
+		              		break;
+		        		}*/
+		        	}
+		        	catch (Exception exc)
+		        	{
+		        		// Fehler aufgetreten! Kachel nochmal laden!
+		        		if (desc != null)
+		        		{
+		        			synchronized (loadedTiles)
+		        			{
+		        				if (loadedTiles.containsKey(desc.GetHashCode()))
+		        					loadedTiles.remove(desc.GetHashCode());
+		        			}
+		        		}
+/*
+		#if DEBUG
+		            Global.AddLog("MapView.loaderThreadEntryPoint: exception caught: " + exc.ToString());
+		#endif*/
+		        	}
+
+		        }
+
+		        synchronized (wishlist)
+		        {
+		          	loaderThread = null;
+		        }
+		    }
+		    catch (Exception ex) { }
+		    return null;
+		}
+
+	     protected void onPostExecute(Integer result) {
+	    	 loaderThread = null;
+		     Render(true);
+	     }    	
+    }
+
+    /*
     void loaderThreadEntryPoint()
     {
       try
@@ -1327,11 +1498,11 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		    	wpName = wpi.Cache.Name;
 		    	if (showRating)
 		    		yoffset += 10 * dpiScaleFactorX;
-		    	float fwidth = fontSmall.measureText(wpName);
+		    	int fwidth = (int)(fontSmall.measureText(wpName) / 2);
 		    	fontSmall.setColor(Color.WHITE);
-		    	canvas.drawText(wpName, x - fwidth / 2, y + halfIconWidth + yoffset, fontSmall);
+		    	canvas.drawText(wpName, x - fwidth, y + halfIconWidth + yoffset, fontSmall);
 		    	fontSmall.setColor(Color.BLACK);
-		    	canvas.drawText(wpName, (x - fwidth / 2) + 1, y + halfIconWidth + yoffset + 1, fontSmall);
+		    	canvas.drawText(wpName, (x - fwidth) + 1, y + halfIconWidth + yoffset + 1, fontSmall);
 		    }
 		  }
 		
@@ -1714,10 +1885,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		protected Integer doInBackground(LinkedList<Descriptor>... params) {
 			// TODO Auto-generated method stub
 			boolean queueEmpty = false;
-			
 			try
 			{
-			
 				do
 			    {
 					Descriptor desc = null;
@@ -1727,7 +1896,9 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 					}
 			
 					if (desc.Zoom == Zoom)
+					{
 						LoadTile(desc);
+					}
 					else
 					{
 						// Da das Image fur diesen Tile nicht geladen wurde, da der Zoom-Faktor des Tiles nicht gleich
@@ -1736,14 +1907,11 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 						// Dies passiert bei schnellem Wechsel des Zoom-Faktors, wenn noch nicht alle aktuellen Tiles geladen waren.
 						if (loadedTiles.containsKey(desc.GetHashCode()))
 							loadedTiles.remove(desc.GetHashCode());
-					}
-			
-			
+					}			
 					synchronized (queuedTiles)
 					{
 						queueEmpty = queuedTiles.size() < 1;
-					}
-			
+					}			
 			    } while (!queueEmpty);
 			}	
 			catch (Exception exc)
@@ -1841,15 +2009,29 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
       if (tile.State == Tile.TileState.Present || tile.State == Tile.TileState.LowResolution)
       {
         drawImage(tile.Image, pt.x, pt.y, (int)(256.0f * dpiScaleFactorX * multiTouchFaktor), (int)(256.0f * dpiScaleFactorY * multiTouchFaktor));
+        Paint paintt = new Paint(backBrush);
+        paintt.setColor(Color.GREEN);
+        if (tile.State == Tile.TileState.LowResolution)
+        	paintt.setColor(Color.RED);
+        canvas.drawLine(pt.x, pt.y, pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor), pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor), paintt);
+        canvas.drawLine(pt.x, pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor), pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor), pt.y, paintt);
         return;
       }
       try
       {
-    	  canvas.drawRect(pt.x, pt.y, (int)(256 * dpiScaleFactorX), (int)(256 * dpiScaleFactorY), backBrush);
-    	  Paint paint = new Paint();
-    	  paint.setColor(Color.WHITE);
-    	  canvas.drawLine(0, 0, 100, 100, paint);
+    	  Bitmap bit = loadBestFit(CurrentLayer, tile.Descriptor);
+    	  if (bit != null)
+    	  {
+    		  // skaliere letztes Tile solange bis das Tile mit richtigem Zoom geladen ist.
+    		  // um ohne Verzerrungen oder Lücken zu zoomen und scrollen
+    		  tile.Image = bit;
+    		  tile.State = Tile.TileState.LowResolution;
+    	      drawImage(bit, pt.x, pt.y, (int)(256.0f * dpiScaleFactorX * multiTouchFaktor), (int)(256.0f * dpiScaleFactorY * multiTouchFaktor));
+    	  } else
+    		  canvas.drawRect(pt.x, pt.y, pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor), pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor), backBrush);
         //.FillRectangle(backBrush, pt.X, pt.Y, (int)(256 * dpiScaleFactorX), (int)(256 * dpiScaleFactorY));
+          canvas.drawLine(pt.x, pt.y, pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor), pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor), fontSmall);
+          canvas.drawLine(pt.x, pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor), pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor), pt.y, fontSmall);
       }
       catch (Exception ex)
       {
@@ -1931,7 +2113,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     {
       dragging = false;
       updateCacheList();
-      Render(false);
+      Render(true);
 
 /*      if (arrowHitWhenDown && Math.Sqrt(((e.X - cacheArrowCenter.X) * (e.X - cacheArrowCenter.X) + (e.Y - cacheArrowCenter.Y) * (e.Y - cacheArrowCenter.Y))) < (lineHeight * 1.5f))
       {

@@ -11,7 +11,7 @@ public class Config {
 		else if (key == "MapPackFolder")
 			return "/sdcard/program files/cachebox/repository/maps";
 		else if (key == "CurrentMapLayer")
-			return "Hubermedia Bavaria";
+			return "Mapnik"; //"Hubermedia Bavaria";
 		return "";			
 	}
 	
@@ -29,6 +29,8 @@ public class Config {
 		if (key == "ImperialUnits")
 			return false;
 		else if (key == "OsmDpiAwareRendering")
+			return true;
+		else if (key == "AllowInternetAccess")
 			return true;
 		
 		return false;

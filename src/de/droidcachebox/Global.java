@@ -148,6 +148,17 @@ public class Global {
     	return file.exists();
     }
 
+    public static boolean DirectoryExists(String folder)
+    {
+    	File f = new File(folder);
+    	if (f.isDirectory())
+    		return true;
+    	else
+    	{
+    		// have the object build the directory structure, if needed.
+    		return f.mkdirs();
+    	}
+    }
     public static void InitIcons(Context context)
     {
     	Resources res = context.getResources();
