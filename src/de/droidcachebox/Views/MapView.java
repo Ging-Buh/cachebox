@@ -1,5 +1,6 @@
 package de.droidcachebox.Views;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -79,7 +80,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         this.addTouchables(buttons);
         scale = getContext().getResources().getDisplayMetrics().density;
         
-        font.setTextSize(9);
+        font.setTextSize(14 * scale);
         font.setFakeBoldText(true);
         fontSmall.setTextSize(12 * scale);
         fontSmall.setFakeBoldText(true);
@@ -114,8 +115,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
         
         scaleLeft = 0;// button2.Left + button2.Width + lineHeight;
-//       scaleWidth = width - scaleLeft - (int)this.CreateGraphics().MeasureString("100km ", Font).Width + 1;
-        scaleWidth = 50;
+        scaleWidth = width - scaleLeft - (int)font.measureText("100km ") + 1;
         
 
         offScreenBmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
@@ -1417,7 +1417,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		
 		  if ((Zoom >= zoomCross) && (wpi.Selected))
 		  {
-		    int size = (int)(10 * dpiScaleFactorX);
+		    int size = (int)(halfIconWidth);
 		
 		    float lineWidth = 2.0f;
 		
@@ -1434,7 +1434,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		    CrossBluePen.setColor(Color.BLUE);
 		    CrossBluePen.setStrokeWidth(lineWidth * dpiScaleFactorX);
 		    Paint CrossRedPen = new Paint();
-		    CrossRedPen.setColor(Color.BLUE);
+		    CrossRedPen.setColor(Color.RED);
 		    CrossRedPen.setStrokeWidth(lineWidth * dpiScaleFactorX);
 		
 		    Paint cachePen = CrossMagentaPen;
@@ -1446,6 +1446,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		      else if (wpi.Cache.Type == CacheTypes.Mystery) cachePen = CrossBluePen;
 		
 		      Paint selectedPen = wpi.Selected ? CrossRedPen : cachePen;
+		      selectedPen.setStyle(Style.STROKE);
 		
 		      canvas.drawRect(x - size, y - size, x + size, y + size, selectedPen);
 		      canvas.drawLine(x - size, y, x - size / 2, y, selectedPen);
@@ -2386,29 +2387,40 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         pos = (int)(scaleLength * ((double)i / scaleUnits) * pixelsPerMeter);
         
         canvas.drawRect(new Rect(start + scaleLeft, height - lineHeight / 2 - lineHeight / 4, pos + scaleLeft, height - lineHeight / 4), brushes[i % 2]);
-//        graphics.FillRectangle(brushes[i % 2], start + scaleLeft, height - lineHeight / 2 - lineHeight / 4, pos - start, lineHeight / 2);
         start = pos;
       }
 
       Paint blackPen = new Paint();
       blackPen.setColor(Color.BLACK);
-      canvas.drawRect(new Rect(scaleLeft - 1, height - lineHeight / 2 - lineHeight / 4 - 1, scaleLeft + pos, height - lineHeight / 4 + 1), blackPen);
-//      graphics.DrawRectangle(blackPen, scaleLeft - 1, height - lineHeight / 2 - lineHeight / 4 - 1, pos + 1, lineHeight / 2 + 1);
-/*
+      blackPen.setStyle(Style.STROKE);
+      canvas.drawRect(new Rect(scaleLeft - 1, height - lineHeight / 2 - lineHeight / 4, scaleLeft + pos, height - lineHeight / 4), blackPen);
+
       String distanceString;
+      
       if (UnitFormatter.ImperialUnits)
-    	  distanceString = String.Format(NumberFormatInfo.InvariantInfo, "{0:0.00}mi", scaleLength / 1609.3);
+      {
+//    	  distanceString = String.format("{0:0.00}mi", scaleLength / 1609.3);
+          NumberFormat nf = NumberFormat.getInstance();
+          nf.setMaximumFractionDigits(2);
+          distanceString = nf.format(scaleLength / 1609.3) + "mi";
+      }
       else
         if (scaleLength <= 500)
-          distanceString = String.Format("{0:0}m", scaleLength);
+        {
+          NumberFormat nf = NumberFormat.getInstance();
+          nf.setMaximumFractionDigits(0);
+          distanceString = nf.format(scaleLength) + "m";
+        }
         else
         {
           double length = scaleLength / 1000;
-          distanceString = length.ToString(NumberFormatInfo.InvariantInfo) + "km";
-        }
+          NumberFormat nf = NumberFormat.getInstance();
+          nf.setMaximumFractionDigits(0);
+          distanceString = nf.format(length) + "km";
+      }
 
-      graphics.DrawString(distanceString, font, brushes[0], scaleLeft + pos + lineHeight / 2, height - lineHeight);
-*/
+      canvas.drawText(distanceString, scaleLeft + pos + lineHeight / 2, height - lineHeight / 2, font);
+      //graphics.DrawString(distanceString, font, brushes[0], scaleLeft + pos + lineHeight / 2, height - lineHeight);
     }
 /*
     private void MapView_DoubleClick(object sender, EventArgs e)
@@ -2600,7 +2612,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         	canvas.drawText(label, centerColumn - textWidth / 2, y + textHeight / 2, font);
         }
         else
-          canvas.drawLine(centerColumn - halfWidth, y, centerColumn + halfWidth, y, black);
+        	canvas.drawLine(centerColumn - halfWidth, y, centerColumn + halfWidth, y, black);
       }
     }
 /*
