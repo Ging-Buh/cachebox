@@ -46,18 +46,19 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
 public class main extends Activity implements SelectedCacheEvent, LocationListener {
-	private Button buttonDB;
-	private Button buttonCache;
-	private Button buttonMap;
-	private Button buttonInfo;
-	private Button buttonMisc;
+	private ImageButton buttonDB;
+	private ImageButton buttonCache;
+	private ImageButton buttonMap;
+	private ImageButton buttonInfo;
+	private ImageButton buttonMisc;
 	private FrameLayout frame;
-	private LinearLayout layoutButtons;
+//	private LinearLayout layoutButtons;
 	private FrameLayout frameCacheName;
 	private FrameLayout frameClock;
 	
@@ -119,8 +120,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         clockView = new ClockView(this);
         frameClock.addView(clockView);
 
-        layoutButtons = (LinearLayout)this.findViewById(R.id.layoutButtons);
-        layoutButtons.setBackgroundColor(Global.TitleBarColor);
+      //  layoutButtons = (LinearLayout)this.findViewById(R.id.layoutButtons);
+      //  layoutButtons.setBackgroundColor(Global.TitleBarColor);
         
         frame = (FrameLayout)this.findViewById(R.id.layoutContent);
         frame.setBackgroundColor(Global.EmptyBackground);
@@ -160,7 +161,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         logView = new LogView(this);
         descriptionView = new DescriptionView(this, "Cache-Beschreibung");
         
-        this.buttonDB = (Button)this.findViewById(R.id.buttonDB);
+        this.buttonDB = (ImageButton)this.findViewById(R.id.buttonDB);
         registerForContextMenu(buttonDB);
         this.buttonDB.setOnClickListener(new OnClickListener() {
             @Override
@@ -180,7 +181,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			}
 		});
 */
-        this.buttonCache = (Button)this.findViewById(R.id.buttonCache);
+        this.buttonCache = (ImageButton)this.findViewById(R.id.buttonCache);
         registerForContextMenu(buttonCache);
         this.buttonCache.setOnClickListener(new OnClickListener() {
             @Override
@@ -191,7 +192,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
             }
           });
         
-        this.buttonMap = (Button)this.findViewById(R.id.buttonMap);
+        this.buttonMap = (ImageButton)this.findViewById(R.id.buttonMap);
         registerForContextMenu(buttonMap);
         this.buttonMap.setOnClickListener(new OnClickListener() {
             @Override
@@ -204,7 +205,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
           });
         
         
-        this.buttonInfo = (Button)this.findViewById(R.id.buttonInfo);
+        this.buttonInfo = (ImageButton)this.findViewById(R.id.buttonInfo);
         registerForContextMenu(buttonInfo);
         this.buttonInfo.setOnClickListener(new OnClickListener() {
             @Override
@@ -214,7 +215,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
             }
           });
         
-        this.buttonMisc = (Button)this.findViewById(R.id.buttonMisc);
+        this.buttonMisc = (ImageButton)this.findViewById(R.id.buttonMisc);
         registerForContextMenu(buttonMisc);
         this.buttonMisc.setOnClickListener(new OnClickListener() {
             @Override

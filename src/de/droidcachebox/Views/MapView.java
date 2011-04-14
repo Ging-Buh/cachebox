@@ -2125,7 +2125,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
       if (tile.State == Tile.TileState.Present || tile.State == Tile.TileState.LowResolution)
       {
         drawImage(canvas, tile.Image, pt.x, pt.y, (int)(256.0f * dpiScaleFactorX * multiTouchFaktor), (int)(256.0f * dpiScaleFactorY * multiTouchFaktor));
-/*        
+ 
+  // Draw Kachel marker      
         Paint paintt = new Paint(backBrush);
         paintt.setColor(Color.GREEN);
         paintt.setStyle(Style.STROKE);
@@ -2135,7 +2136,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         canvas.drawRect(brect, paintt);
         canvas.drawLine(brect.left, brect.top, brect.right, brect.bottom, paintt);
         canvas.drawLine(brect.right, brect.top, brect.left, brect.bottom, paintt);
-*/
+
         return;
       }
       try
