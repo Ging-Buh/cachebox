@@ -16,7 +16,13 @@ public class PositionEventList {
 		{
 			event.PositionChanged(location);
 		}
-	
+	}
+	public static void Call(float heading)
+	{
+		for (PositionEvent event : list)
+		{
+			event.OrientationChanged(heading);
+		}
 	}
 
 }

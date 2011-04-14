@@ -24,6 +24,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -72,11 +76,31 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     // GPS
 	private LocationManager locationManager;
 	private String provider;
-	
+	// Compass
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
+    private float[] mCompassValues;
+    
 	// to store, which menu should be viewd
 	private enum nextMenuType { nmDB, nmCache, nmMap, nmInfo, nmMisc }
 	private nextMenuType nextMenu = nextMenuType.nmDB;
-    /** Called when the activity is first created. */
+
+	
+	
+    final SensorEventListener mListener = new SensorEventListener() {
+        public void onSensorChanged(SensorEvent event) {
+        	mCompassValues = event.values;
+        	PositionEventList.Call(mCompassValues[0]);
+        }
+
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+    };
+    
+	
+	
+	
+	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +108,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         setContentView(R.layout.main);
         SelectedCacheEventList.Add(this);
 
-       
+        mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);       
         
         frameCacheName = (FrameLayout)this.findViewById(R.id.frameCacheName);
         cacheNameView = new CacheNameView(this);
@@ -200,6 +225,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
           });
         
 
+        
+        
         mapView.OnShow();
     }
 
@@ -208,6 +235,15 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
             this.mWakeLock.release();
             super.onDestroy();
     }
+    
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        mSensorManager.registerListener(mListener, mSensor,
+                SensorManager.SENSOR_DELAY_GAME);
+    }
 
     /** hook into menu button for activity */
     @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -215,7 +251,12 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     	getMenuInflater().inflate(R.menu.menu_mapview, menu);
       return super.onCreateOptionsMenu(menu);
     }
-    
+
+    @Override public boolean onPrepareOptionsMenu(Menu menu) {
+    	aktView.BeforeShowMenu(menu);
+      return super.onPrepareOptionsMenu(menu);
+    }
+
     /** when menu button option selected */
     @Override public boolean onOptionsItemSelected(MenuItem item) {
     	if (aktView != null)

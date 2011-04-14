@@ -5,8 +5,10 @@
     <item android:title="-" android:id="@+id/minus"></item>
     <item android:id="@+id/layer" android:title="Layer">
         <menu>
-            <item android:title="Google Earth" android:id="@+id/googleearth"></item>
-            <item android:title="Huber Media Bavaria" android:id="@+id/hubertmedia"></item>
+            <item android:title="Google Earth" android:id="@+id/googleearth" android:checkable="true"></item>
+            <item android:title="Huber Media Bavaria" android:id="@+id/hubertmedia" android:checkable="true"></item>
+            <item android:title="Mapnik" android:id="@+id/mapnik" android:checkable="true" android:checked="true"></item>
         </menu>
     </item>
+    <item android:id="@+id/miAlignCompass" android:title="Align to Compass" android:checked="false" android:checkable="true"></item>
 </menu>

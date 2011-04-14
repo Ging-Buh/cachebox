@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Cache.CacheTypes;
@@ -15,6 +16,7 @@ import de.droidcachebox.Geocaching.Waypoint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint.Style;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -22,11 +24,13 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.RotateDrawable;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.SystemClock;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.SubMenu;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -122,6 +126,16 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
         offScreenBmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
         canvas = new Canvas(offScreenBmp);
+        offScreenBmpOverlay = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
+        if (alignToCompass)
+        	canvasOverlay = new Canvas(offScreenBmpOverlay);
+        else
+        	canvasOverlay = canvas;
+        
+        canvasHeading = 0;
+        drawingWidth = width;
+        drawingHeight = height;
+//        canvas.rotate(45, width / 2, height / 2);
 
         zoomChanged();
     }
@@ -135,14 +149,42 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     private Point mouseDownPos;
     private boolean mouseMoved;
     
+    private Point rotate(Point p, float heading)
+    {
+    	float[] src = {p.x, p.y};
+        float[] dist = new float[2];
+        Matrix mat = new Matrix();
+    	mat.setRotate(heading, width / 2, height / 2);
+    	mat.mapPoints(dist, src);
+    	return new Point((int)dist[0], (int)dist[1]);
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
     	int eX = (int)event.getX(0);
     	int eY = (int)event.getY(0);
+    	// bei gedrehter Map hier die Punkte drehen
+
+    	if (alignToCompass)
+    	{
+	    	Point rot = rotate(new Point(eX, eY), canvasHeading);
+	    	eX = rot.x;
+	    	eY = rot.y;
+    	}
+    	
         if (event.getPointerCount() > 1)
         {
         	int eX2 = (int)event.getX(1);
         	int eY2 = (int)event.getY(1);
+        	if (alignToCompass)
+        	{
+	        	Point rot = rotate(new Point(eX2, eY2), canvasHeading);
+	        	eX2 = rot.x;
+	        	eY2 = rot.y;
+        	}
+        	
+        	
+        	
         	double multiTouchDist = Math.sqrt(Math.pow(eX2 - eX, 2) + Math.pow(eY2 - eY, 2));
         	if (!multiTouch)
         		lastMultiTouchDist = multiTouchDist;
@@ -182,8 +224,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         		multiTouchFaktor = 1;
 //        	debugString1 = "f: " + multiTouchFaktor;
         	
-        	eX = (int)(event.getX(0) + (event.getX(1) - event.getX(0)) / 2);
-        	eY = (int)(event.getY(0) + (event.getY(1) - event.getY(0)) / 2);
+        	eX = (int)(eX + (eX2 - eX) / 2);
+        	eY = (int)(eY + (eY2 - eY) / 2);
         	if (!multiTouch)
         	{
         		dragStartX = lastClickX = eX;
@@ -322,6 +364,11 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     boolean showCompass = true;
 
     /// <summary>
+    /// true, falls die Map-Anzeige am Compass ausgerichtet werden soll
+    /// </summary>
+    boolean alignToCompass = false;
+    
+    /// <summary>
     /// Spiegelung des Logins bei Gc, damit ich das nicht dauernd aus der
     /// Config lesen muss.
     /// </summary>
@@ -373,6 +420,10 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     protected PointD screenCenter = new PointD(0, 0);
 
     protected Canvas canvas = null;
+    protected Canvas canvasOverlay = null;
+    protected float canvasHeading = 0;
+    protected int drawingWidth = 0;
+    protected int drawingHeight = 0;
 
     public int Zoom = 14;
 
@@ -1181,8 +1232,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
       int xFrom = -halfIconSize;
       int yFrom = -halfIconSize;
-      int xTo = width + halfIconSize;
-      int yTo = height + halfIconSize;
+      int xTo = drawingWidth + halfIconSize;
+      int yTo = drawingHeight + halfIconSize;
 
       ArrayList<WaypointRenderInfo> result = new ArrayList<WaypointRenderInfo>();
 
@@ -1435,6 +1486,15 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		  x = (int)Math.round(x * multiTouchFaktor + width / 2);
 		  y = (int)Math.round(y * multiTouchFaktor + height / 2);
 		  
+		  // drehen
+		  if (alignToCompass)
+		  {
+			  Point res = rotate(new Point(x, y), - canvasHeading);
+			  x = res.x;
+			  y = res.y;
+		  }
+		  
+		  
 		  int imageX = x;
 		  int imageY = y;
 		
@@ -1471,27 +1531,28 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		      Paint selectedPen = wpi.Selected ? CrossRedPen : cachePen;
 		      selectedPen.setStyle(Style.STROKE);
 		
-		      canvas.drawRect(x - size, y - size, x + size, y + size, selectedPen);
-		      canvas.drawLine(x - size, y, x - size / 2, y, selectedPen);
-		      canvas.drawLine(x + size / 2, y, x + size, y, selectedPen);
-		      canvas.drawLine(x, y - size, x, y - size / 2, selectedPen);
-		      canvas.drawLine(x, y + size / 2, x, y + size, selectedPen);
-		      canvas.drawLine(x - 2 * size - 5, y - 2 * size - 5, x - size, y - size, selectedPen);
+		      canvasOverlay.drawRect(x - size, y - size, x + size, y + size, selectedPen);
+		      canvasOverlay.drawLine(x - size, y, x - size / 2, y, selectedPen);
+		      canvasOverlay.drawLine(x + size / 2, y, x + size, y, selectedPen);
+		      canvasOverlay.drawLine(x, y - size, x, y - size / 2, selectedPen);
+		      canvasOverlay.drawLine(x, y + size / 2, x, y + size, selectedPen);
+		      canvasOverlay.drawLine(x - 2 * size - 5, y - 2 * size - 5, x - size, y - size, selectedPen);
 		
 		      imageX = x - 2 * size - 5;
 		      imageY = y - 2 * size - 5;
 		    }
 		  }
-		
+	
+		  
 		  if (wpi.UnderlayIcon != null)
-		      drawImage(wpi.UnderlayIcon, imageX - halfUnderlayWidth, imageY - halfUnderlayWidth, UnderlayWidth, UnderlayWidth);
-		  drawImage(wpi.Icon, imageX - halfIconWidth, imageY - halfIconWidth, IconWidth, IconWidth);
+		      drawImage(canvasOverlay, wpi.UnderlayIcon, imageX - halfUnderlayWidth, imageY - halfUnderlayWidth, UnderlayWidth, UnderlayWidth);
+		  drawImage(canvasOverlay, wpi.Icon, imageX - halfIconWidth, imageY - halfIconWidth, IconWidth, IconWidth);
 		  if (wpi.OverlayIcon != null)
-		      drawImage(wpi.OverlayIcon, imageX - halfOverlayWidth, imageY - halfOverlayWidth, OverlayWidth, OverlayWidth);
+		      drawImage(canvasOverlay, wpi.OverlayIcon, imageX - halfOverlayWidth, imageY - halfOverlayWidth, OverlayWidth, OverlayWidth);
 		
 		  if (wpi.Cache.Favorit())
 		  {
-			  Global.PutImageTargetHeight(canvas, Global.Icons[19], imageX, imageY, (int)(14.0f * dpiScaleFactorY));
+			  Global.PutImageTargetHeight(canvasOverlay, Global.Icons[19], imageX, imageY, (int)(14.0f * dpiScaleFactorY));
 		  }
 		
 		  boolean drawAsWaypoint = wpi.Waypoint != null;
@@ -1510,9 +1571,9 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		    {  // Aktiver WP -> Titel oder GCCode
 		    	wpName = (wpi.Waypoint.Title == "") ? wpi.Waypoint.GcCode : wpi.Waypoint.Title;
 		    	fontSmall.setColor(Color.WHITE);
-		    	canvas.drawText(wpName, x + halfIconWidth + 4, y, fontSmall);
+		    	canvasOverlay.drawText(wpName, x + halfIconWidth + 4, y, fontSmall);
 		    	fontSmall.setColor(Color.BLACK);
-		    	canvas.drawText(wpName, x + halfIconWidth + 5, y + 1, fontSmall);
+		    	canvasOverlay.drawText(wpName, x + halfIconWidth + 5, y + 1, fontSmall);
 		    }
 		    else 
 		    {  // Aktiver Cache -> Cachename
@@ -1521,9 +1582,9 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		    		yoffset += 10 * dpiScaleFactorX;
 		    	int fwidth = (int)(fontSmall.measureText(wpName) / 2);
 		    	fontSmall.setColor(Color.WHITE);
-		    	canvas.drawText(wpName, x - fwidth, y + halfIconWidth + yoffset, fontSmall);
+		    	canvasOverlay.drawText(wpName, x - fwidth, y + halfIconWidth + yoffset, fontSmall);
 		    	fontSmall.setColor(Color.BLACK);
-		    	canvas.drawText(wpName, (x - fwidth) + 1, y + halfIconWidth + yoffset + 1, fontSmall);
+		    	canvasOverlay.drawText(wpName, (x - fwidth) + 1, y + halfIconWidth + yoffset + 1, fontSmall);
 		    }
 		  }
 		
@@ -1535,7 +1596,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		    int halfSmallStarWidth = (int)(((double)img.getMinimumWidth() / 2.0) * dpiScaleFactorX);
 		    int smallStarWidth = (int)((double)img.getMinimumWidth() * dpiScaleFactorX);
 		    img.setBounds(x - halfSmallStarWidth, y + halfUnderlayWidth + 2, x - halfSmallStarWidth + smallStarWidth, y + halfUnderlayWidth + 2 + smallStarHeight);
-		    img.draw(canvas);
+		    img.draw(canvasOverlay);
 		    img.setBounds(bounds);
 		  }
 		
@@ -1546,9 +1607,9 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		    Rect bounds = imgDx.getBounds();
 		    int smallStarHeightD = (int)((double)imgDx.getMinimumWidth() * dpiScaleFactorY);
 		    imgDx.setBounds(x - halfUnderlayWidth, y - halfUnderlayWidth - smallStarHeight - 2, x - halfUnderlayWidth + smallStarHeightD, y - halfUnderlayWidth - smallStarHeight - 2 + smallStarHeight);
-		    canvas.rotate(270, x, y);
-		    imgDx.draw(canvas);
-		    canvas.rotate(90, x, y);
+		    canvasOverlay.rotate(270, x, y);
+		    imgDx.draw(canvasOverlay);
+		    canvasOverlay.rotate(90, x, y);
 		    imgDx.setBounds(bounds);
 
 		    
@@ -1556,9 +1617,9 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		    bounds = imgDx.getBounds();
 		    smallStarHeightD = (int)((double)imgDx.getMinimumWidth() * dpiScaleFactorY);
 		    imgDx.setBounds(x - halfUnderlayWidth, y + halfUnderlayWidth + 2, x - halfUnderlayWidth + smallStarHeightD, y + halfUnderlayWidth + 2 + smallStarHeight);
-		    canvas.rotate(270, x, y);
-		    imgDx.draw(canvas);
-		    canvas.rotate(90, x, y);
+		    canvasOverlay.rotate(270, x, y);
+		    imgDx.draw(canvasOverlay);
+		    canvasOverlay.rotate(90, x, y);
 		    imgDx.setBounds(bounds);
 		    /*		
 		    Bitmap imgTx = Global.SmallStarIcons[(int)Math.Min(wpi.Cache.Terrain * 2, 5 * 2)];
@@ -1573,15 +1634,15 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		}
     }
 
-    void drawImage(Bitmap image, int x, int y, int width, int height)
+    void drawImage(Canvas aCanvas, Bitmap image, int x, int y, int width, int height)
     {
-        canvas.drawBitmap(image, new Rect(0, 0, image.getWidth(), image.getHeight()), new Rect(x, y, x + width, y + height), null);
+        aCanvas.drawBitmap(image, new Rect(0, 0, image.getWidth(), image.getHeight()), new Rect(x, y, x + width, y + height), null);
 //        graphics.DrawImage(image, new Rectangle(x, y, width, height), 0, 0, image.Width, image.Height, GraphicsUnit.Pixel);
     }
-    void drawImage(Drawable image, int x, int y, int width, int height)
+    void drawImage(Canvas aCanvas, Drawable image, int x, int y, int width, int height)
     {
     	image.setBounds(x, y, x+width, y+height);
-    	image.draw(canvas);
+    	image.draw(aCanvas);
     }
 
     /// <summary>
@@ -1743,6 +1804,11 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 	            renderTile(tile);
 	          }
 	        }
+	      if (alignToCompass)
+	      {
+	    	  offScreenBmpOverlay.eraseColor(Color.TRANSPARENT);
+	      }
+
 	      renderCaches();
 	
 	      renderPositionAndMarker();
@@ -1768,6 +1834,10 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 	    	  if (can != null)
 	    	  {
 	     		  can.drawBitmap(offScreenBmp, 0, 0, null);
+	     		  if (alignToCompass)
+	     		  {
+	     			  can.drawBitmap(offScreenBmpOverlay, 0, 0, null);
+	     		  }
 	     	      if (!debugString1.equals("") || !debugString2.equals(""))
 	     	      {
 	     		      Paint debugPaint = new Paint();
@@ -2029,10 +2099,10 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     	double x = screenCenter.X / (256 * dpiScaleFactorX);
     	double y = screenCenter.Y / (256 * dpiScaleFactorY);
 
-    	x1 = (int)Math.floor(x - width/multiTouchFaktor / (256 * dpiScaleFactorX * 2));
-    	x2 = (int)Math.floor(x + width/multiTouchFaktor / (256 * dpiScaleFactorX * 2));
-    	y1 = (int)Math.floor(y - height/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
-    	y2 = (int)Math.floor(y + height/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
+    	x1 = (int)Math.floor(x - drawingWidth/multiTouchFaktor / (256 * dpiScaleFactorX * 2));
+    	x2 = (int)Math.floor(x + drawingWidth/multiTouchFaktor / (256 * dpiScaleFactorX * 2));
+    	y1 = (int)Math.floor(y - drawingHeight/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
+    	y2 = (int)Math.floor(y + drawingHeight/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
     	return new Rect(x1, y1, x2, y2);
     }
 
@@ -2054,7 +2124,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
       if (tile.State == Tile.TileState.Present || tile.State == Tile.TileState.LowResolution)
       {
-        drawImage(tile.Image, pt.x, pt.y, (int)(256.0f * dpiScaleFactorX * multiTouchFaktor), (int)(256.0f * dpiScaleFactorY * multiTouchFaktor));
+        drawImage(canvas, tile.Image, pt.x, pt.y, (int)(256.0f * dpiScaleFactorX * multiTouchFaktor), (int)(256.0f * dpiScaleFactorY * multiTouchFaktor));
+/*        
         Paint paintt = new Paint(backBrush);
         paintt.setColor(Color.GREEN);
         paintt.setStyle(Style.STROKE);
@@ -2064,6 +2135,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         canvas.drawRect(brect, paintt);
         canvas.drawLine(brect.left, brect.top, brect.right, brect.bottom, paintt);
         canvas.drawLine(brect.right, brect.top, brect.left, brect.bottom, paintt);
+*/
         return;
       }
       try
@@ -2075,7 +2147,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     		  // um ohne Verzerrungen oder Lücken zu zoomen und scrollen
     		  tile.Image = bit;
     		  tile.State = Tile.TileState.LowResolution;
-    	      drawImage(bit, pt.x, pt.y, (int)(256.0f * dpiScaleFactorX * multiTouchFaktor), (int)(256.0f * dpiScaleFactorY * multiTouchFaktor));
+    	      drawImage(canvas, bit, pt.x, pt.y, (int)(256.0f * dpiScaleFactorX * multiTouchFaktor), (int)(256.0f * dpiScaleFactorY * multiTouchFaktor));
     	  } else
     		  canvas.drawRect(pt.x, pt.y, pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor), pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor), backBrush);
         //.FillRectangle(backBrush, pt.X, pt.Y, (int)(256 * dpiScaleFactorX), (int)(256 * dpiScaleFactorY));
@@ -2115,6 +2187,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     /// </summary>
     int scaleWidth;
     Bitmap offScreenBmp = null;
+    // für die Overlays (renderScale, renderZoomScale...), die nicht gedreht werden dürfen
+    Bitmap offScreenBmpOverlay = null;
     /*
     private void MapView_Resize(object sender, EventArgs e)
     {
@@ -2434,14 +2508,14 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
       {
         pos = (int)(scaleLength * ((double)i / scaleUnits) * pixelsPerMeter);
         
-        canvas.drawRect(new Rect(start + scaleLeft, height - lineHeight / 2 - lineHeight / 4, pos + scaleLeft, height - lineHeight / 4), brushes[i % 2]);
+        canvasOverlay.drawRect(new Rect(start + scaleLeft, height - lineHeight / 2 - lineHeight / 4, pos + scaleLeft, height - lineHeight / 4), brushes[i % 2]);
         start = pos;
       }
 
       Paint blackPen = new Paint();
       blackPen.setColor(Color.BLACK);
       blackPen.setStyle(Style.STROKE);
-      canvas.drawRect(new Rect(scaleLeft - 1, height - lineHeight / 2 - lineHeight / 4, scaleLeft + pos, height - lineHeight / 4), blackPen);
+      canvasOverlay.drawRect(new Rect(scaleLeft - 1, height - lineHeight / 2 - lineHeight / 4, scaleLeft + pos, height - lineHeight / 4), blackPen);
 
       String distanceString;
       
@@ -2467,7 +2541,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
           distanceString = nf.format(length) + "km";
       }
 
-      canvas.drawText(distanceString, scaleLeft + pos + lineHeight / 2, height - lineHeight / 2, font);
+      canvasOverlay.drawText(distanceString, scaleLeft + pos + lineHeight / 2, height - lineHeight / 2, font);
       //graphics.DrawString(distanceString, font, brushes[0], scaleLeft + pos + lineHeight / 2, height - lineHeight);
     }
 
@@ -2630,7 +2704,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
       Paint paint = new Paint();
       paint.setColor(Color.BLACK);
-      canvas.drawLine(centerColumn, topRow, centerColumn, bottomRow, paint);
+      canvasOverlay.drawLine(centerColumn, topRow, centerColumn, bottomRow, paint);
 
       float numSteps = maxZoom - minZoom;
       for (int i = minZoom; i <= maxZoom; i++)
@@ -2658,12 +2732,12 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         	font.getTextBounds(label, 0, label.length(), bounds);
         	textWidth = bounds.width();
         	textHeight = (int)(bounds.height() * 1.5);
-        	canvas.drawRect(new Rect(centerColumn - textWidth / 2 - lineHeight / 2, y - textHeight / 2, centerColumn - textWidth / 2 - lineHeight / 2 + textWidth + lineHeight, y - textHeight / 2 + textHeight), white);
-        	canvas.drawRect(new Rect(centerColumn - textWidth / 2 - 1 - lineHeight / 2, y - textHeight / 2 - 1, centerColumn - textWidth / 2 - 1 - lineHeight / 2 + textWidth + lineHeight + 1, y - textHeight / 2 - 1 + textHeight + 1), black);
-        	canvas.drawText(label, centerColumn - textWidth / 2, y + textHeight / 2, font);
+        	canvasOverlay.drawRect(new Rect(centerColumn - textWidth / 2 - lineHeight / 2, y - textHeight / 2, centerColumn - textWidth / 2 - lineHeight / 2 + textWidth + lineHeight, y - textHeight / 2 + textHeight), white);
+        	canvasOverlay.drawRect(new Rect(centerColumn - textWidth / 2 - 1 - lineHeight / 2, y - textHeight / 2 - 1, centerColumn - textWidth / 2 - 1 - lineHeight / 2 + textWidth + lineHeight + 1, y - textHeight / 2 - 1 + textHeight + 1), black);
+        	canvasOverlay.drawText(label, centerColumn - textWidth / 2, y + textHeight / 2, font);
         }
         else
-        	canvas.drawLine(centerColumn - halfWidth, y, centerColumn + halfWidth, y, black);
+        	canvasOverlay.drawLine(centerColumn - halfWidth, y, centerColumn + halfWidth, y, black);
       }
     }
 /*
@@ -3415,8 +3489,104 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 			case R.id.googleearth:
 				SetCurrentLayer(MapView.Manager.GetLayerByName("Google Earth", "Google Earth", ""));
 				return true;
+			case R.id.mapnik:
+				SetCurrentLayer(MapView.Manager.GetLayerByName("Mapnik", "Mapnik", ""));
+				return true;
+			
+			case R.id.miAlignCompass:
+				alignToCompass = !alignToCompass;
+		        if (alignToCompass)
+		        	canvasOverlay = new Canvas(offScreenBmpOverlay);
+		        else
+		        	canvasOverlay = canvas;
+				if (!alignToCompass)
+				{
+					changeOrientation(0);				
+					Render(true);
+				}
+				return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void BeforeShowMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		try
+		{
+			MenuItem mi = menu.findItem(R.id.layer);
+			if (mi != null)
+			{
+				SubMenu subMenu = mi.getSubMenu();
+				MenuItem mi2 = subMenu.findItem(R.id.mapnik);
+				mi2.setChecked(CurrentLayer.Name.equals(mi2.getTitle()));
+			}
+			mi = menu.findItem(R.id.miAlignCompass);
+			mi.setCheckable(alignToCompass);
+		} catch (Exception exc)
+		{
+			return;
+		}
+	}
+
+	int anzCompassValues = 0;
+	float compassValue = 0;
+	long lastCompassTick = -99999;
+	@Override
+	public void OrientationChanged(float heading) {
+		if (!alignToCompass)
+			return;
+		anzCompassValues++;
+		compassValue += heading;
+
+		long aktTick = SystemClock.uptimeMillis();
+		if (aktTick < lastCompassTick + 200)
+		{
+			// do not update view now, only every 200 millisec
+			return;
+		}
+		if (anzCompassValues == 0)
+		{
+			lastCompassTick = aktTick;
+			return;
+		}
+		// Durchschnitts Richtung berechnen
+		heading = compassValue / anzCompassValues;
+		anzCompassValues = 0;
+		compassValue = 0;
+
+		changeOrientation(heading);
+		lastCompassTick = aktTick;
+	}
+	
+	private void changeOrientation(float heading)
+	{
+		if (canvas == null)
+			return;
+		canvas.rotate(canvasHeading - heading, offScreenBmp.getWidth() / 2, offScreenBmp.getHeight() / 2);
+		canvasHeading = heading;
+		
+		// da die Map gedreht in die offScreenBmp gezeichnet werden soll, muss der Bereich, der gezeichnet werden soll größer sein, wenn gedreht wird.
+		double w = offScreenBmp.getWidth();
+		double h = offScreenBmp.getHeight();
+		if (heading >= 180)
+			heading -= 180;
+		if (heading > 90)
+			heading = 180 - heading;
+		double alpha = heading / 180 * Math.PI;
+		double beta = Math.atan(w / h);
+		double gammaW = Math.PI / 2 - alpha - beta;
+		// halbe Länge der Diagonalen
+		double diagonal = Math.sqrt(Math.pow(w, 2) + Math.pow(h, 2)) / 2;
+		drawingWidth = (int)(Math.cos(gammaW) * diagonal * 2);
+		
+		double gammaH = alpha - beta;
+		drawingHeight = (int)(Math.cos(gammaH) * diagonal * 2);
+
+//		debugString1 = Math.round(alpha / Math.PI * 180) + " - " + Math.round(beta / Math.PI * 180)  + " - " + Math.round(gammaW / Math.PI * 180) + " - " + Math.round(gammaH / Math.PI * 180);
+//		debugString2 = "h = " + drawingHeight + " - w = " + drawingWidth;
+		Render(true);
+	
 	}
 
 }

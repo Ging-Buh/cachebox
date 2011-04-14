@@ -75,11 +75,11 @@ public class splash extends Activity
 	 
 	 private void Initial()
 	 {
-		    setProgressState(20, "Ini UI ...");
+//		    setProgressState(20, "Ini UI ...");
 		 	Global.InitPaints();
 	        Global.InitIcons(this);
 	        
-	        setProgressState(40, "Load Map ...");
+//	        setProgressState(40, "Load Map ...");
 	        File dir = new File(Config.GetString("MapPackFolder"));
 	        String[] files = dir.list();
 	        for (String file : files)
@@ -87,7 +87,7 @@ public class splash extends Activity
 	        	MapView.Manager.LoadMapPack(Config.GetString("MapPackFolder") + "/" + file);
 	        }
 	        
-	        setProgressState(60, "Load Caches ...");
+//	        setProgressState(60, "Load Caches ...");
 	        if (Database.Data == null)
 	        {
 		        // initialize Database

@@ -14,6 +14,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,6 +106,12 @@ public class CacheListView extends ListView implements ViewOptionsMenu {
 	public boolean ItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void BeforeShowMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

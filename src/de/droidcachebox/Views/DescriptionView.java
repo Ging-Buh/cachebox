@@ -12,6 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
@@ -50,5 +51,11 @@ public class DescriptionView extends WebView implements ViewOptionsMenu {
 	public boolean ItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void BeforeShowMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		
 	}
 }

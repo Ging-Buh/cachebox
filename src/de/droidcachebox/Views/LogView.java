@@ -12,6 +12,7 @@ import de.droidcachebox.Geocaching.Waypoint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -130,6 +131,12 @@ public class LogView extends ListView implements SelectedCacheEvent, ViewOptions
 		lvAdapter = new CustomAdapter(getContext(), cache);
 		this.setAdapter(lvAdapter);
 		lvAdapter.notifyDataSetChanged();		
+	}
+
+	@Override
+	public void BeforeShowMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
