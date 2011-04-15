@@ -126,11 +126,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
         offScreenBmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
         canvas = new Canvas(offScreenBmp);
-        offScreenBmpOverlay = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
-        if (alignToCompass)
-        	canvasOverlay = new Canvas(offScreenBmpOverlay);
-        else
-        	canvasOverlay = canvas;
+        canvasOverlay = canvas;
         
         canvasHeading = 0;
         drawingWidth = width;
@@ -1724,6 +1720,10 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     PointD lastRenderedPosition = new PointD(Double.MAX_VALUE, Double.MAX_VALUE);
     public void Render(boolean overrideRepaintInteligence)
     {
+    	if (canvas == null)
+    		return;
+    	float tmpCanvasHeading = canvasHeading;
+    	
     	synchronized (this)
      	{
 	      if (Database.Data.Query == null)
@@ -1774,6 +1774,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 	      yFrom = tmp.top;
 	      yTo = tmp.bottom;
 
+	      canvas.rotate(-tmpCanvasHeading, width / 2, height / 2);
+
 	      // Kacheln beantragen
 	      for (int x = xFrom; x <= xTo; x++)
 	        for (int y = yFrom; y <= yTo; y++)
@@ -1804,11 +1806,10 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 	            renderTile(tile);
 	          }
 	        }
-	      if (alignToCompass)
-	      {
-	    	  offScreenBmpOverlay.eraseColor(Color.TRANSPARENT);
-	      }
+	      
+	      canvas.rotate(tmpCanvasHeading, width / 2, height / 2);
 
+	      canvasOverlay = canvas;
 	      renderCaches();
 	
 	      renderPositionAndMarker();
@@ -1834,10 +1835,6 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 	    	  if (can != null)
 	    	  {
 	     		  can.drawBitmap(offScreenBmp, 0, 0, null);
-	     		  if (alignToCompass)
-	     		  {
-	     			  can.drawBitmap(offScreenBmpOverlay, 0, 0, null);
-	     		  }
 	     	      if (!debugString1.equals("") || !debugString2.equals(""))
 	     	      {
 	     		      Paint debugPaint = new Paint();
@@ -2188,8 +2185,6 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     /// </summary>
     int scaleWidth;
     Bitmap offScreenBmp = null;
-    // für die Overlays (renderScale, renderZoomScale...), die nicht gedreht werden dürfen
-    Bitmap offScreenBmpOverlay = null;
     /*
     private void MapView_Resize(object sender, EventArgs e)
     {
@@ -3496,10 +3491,6 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 			
 			case R.id.miAlignCompass:
 				alignToCompass = !alignToCompass;
-		        if (alignToCompass)
-		        	canvasOverlay = new Canvas(offScreenBmpOverlay);
-		        else
-		        	canvasOverlay = canvas;
 				if (!alignToCompass)
 				{
 					changeOrientation(0);				
@@ -3564,7 +3555,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 	{
 		if (canvas == null)
 			return;
-		canvas.rotate(canvasHeading - heading, offScreenBmp.getWidth() / 2, offScreenBmp.getHeight() / 2);
+//		canvas.rotate(canvasHeading - heading, offScreenBmp.getWidth() / 2, offScreenBmp.getHeight() / 2);
 		canvasHeading = heading;
 		
 		// da die Map gedreht in die offScreenBmp gezeichnet werden soll, muss der Bereich, der gezeichnet werden soll größer sein, wenn gedreht wird.
