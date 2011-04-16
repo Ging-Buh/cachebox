@@ -14,6 +14,13 @@ public class Config {
 			return "Mapnik"; //"Hubermedia Bavaria";
 		return "";			
 	}
+
+	public static String GetDBConfigString(String key)
+	{
+		if (key == "SpoilerFolder")
+			return "/sdcard/program files/cachebox/repository/spoilers";
+		return "";
+	}
 	
 	public static double GetDouble(String key)
 	{

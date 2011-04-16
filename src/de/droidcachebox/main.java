@@ -14,6 +14,7 @@ import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.LogView;
 import de.droidcachebox.Views.MapView;
+import de.droidcachebox.Views.SpoilerView;
 import de.droidcachebox.Views.WaypointView;
 import de.droidcachebox.Database;
 import de.droidcachebox.Database.DatabaseType;
@@ -38,6 +39,7 @@ import android.os.PowerManager;
 import android.os.SystemClock;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -52,6 +54,7 @@ import android.widget.TextView;
 
 
 public class main extends Activity implements SelectedCacheEvent, LocationListener {
+    LayoutInflater inflater;
 	private ImageButton buttonDB;
 	private ImageButton buttonCache;
 	private ImageButton buttonMap;
@@ -71,6 +74,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private WaypointView waypointView;
 	private LogView logView;
 	private DescriptionView descriptionView;
+	private SpoilerView spoilerView;
 	
 	// Powermanager
     protected PowerManager.WakeLock mWakeLock;
@@ -109,6 +113,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         setContentView(R.layout.main);
         SelectedCacheEventList.Add(this);
 
+        inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        
         mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);       
         
@@ -160,6 +166,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         waypointView = new WaypointView(this);
         logView = new LogView(this);
         descriptionView = new DescriptionView(this, "Cache-Beschreibung");
+        spoilerView = new SpoilerView(this, inflater);
         
         this.buttonDB = (ImageButton)this.findViewById(R.id.buttonDB);
         registerForContextMenu(buttonDB);
@@ -335,6 +342,10 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     	case R.id.miLogView:
     		frame.addView(logView);
     		aktView = logView;
+    		return true;
+    	case R.id.miSpoilerView:
+    		frame.addView(spoilerView);
+    		aktView = spoilerView;
     		return true;
     	// Misc
     	case R.id.miClose:

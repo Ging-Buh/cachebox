@@ -1,14 +1,18 @@
 package de.droidcachebox.Geocaching;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.Map.Descriptor;
+import de.droidcachebox.Views.MapView;
 import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
@@ -598,6 +602,8 @@ public class Cache implements Comparable<Cache> {
 
         MapX = 256.0 * Descriptor.LongitudeToTileX(MapZoomLevel, Longitude);
         MapY = 256.0 * Descriptor.LatitudeToTileY(MapZoomLevel, Latitude);
+        
+        SpoilerExists();
     }
 /*
     public override int GetHashCode()
@@ -654,72 +660,54 @@ public class Cache implements Comparable<Cache> {
 
         return 0;
     }
-
-    List<String> spoilerRessources = null;
-    public List<String> SpoilerRessources
+*/
+    ArrayList<String> spoilerRessources = null;
+    public ArrayList<String> SpoilerRessources()
     {
-        get
+        if (spoilerRessources == null)
         {
-            if (spoilerRessources == null)
-            {
-                ReloadSpoilerRessources();
-            }
-
-            return spoilerRessources;
+            ReloadSpoilerRessources();
         }
 
-        set
-        {
-            spoilerRessources = value;
-        }
+        return spoilerRessources;
+    }
+    public void SpoilerRessources(ArrayList<String> value)
+    {
+        spoilerRessources = value;
     }
 
     public void ReloadSpoilerRessources()
     {
-        spoilerRessources = new List<string>();
+        spoilerRessources = new ArrayList<String>();
 
-        string path = Config.GetDBConfigString("SpoilerFolder");
-        string imagePath =  path + "\\" + GcCode.Substring(0, 4);
-        bool imagePathDirExists = Directory.Exists(imagePath);
+        String path = Config.GetDBConfigString("SpoilerFolder");
+        String directory = path + "/" + GcCode.substring(0, 4);
 
-        string[] oldFilesStructure = Directory.GetFiles(path, GcCode + "*");
-
-        if (oldFilesStructure.Length != 0)
-        {
-            if (!imagePathDirExists)
-            {
-                Directory.CreateDirectory(imagePath);
-            }
-
-            foreach (string oldFile in oldFilesStructure)
-            {
-                string newFile = imagePath + "\\" + oldFile.Substring(oldFile.LastIndexOf("\\") + 1);
-
-                if (!File.Exists(newFile))
-                {
-                    File.Move(oldFile, newFile);
-                }
-                else
-                {
-                    File.Delete(oldFile);
-                }
-            }
-        }
-
-        String directory = path + "\\" + GcCode.Substring(0, 4);
-
-        if (!Directory.Exists(directory))
+        if (!Global.DirectoryExists(directory))
             return;
 
-        String[] dummy = Directory.GetFiles(directory, GcCode.ToUpper() + "*.*");
-        foreach (String image in dummy)
+        
+        File dir = new File(directory);
+        FilenameFilter filter = new FilenameFilter() {			
+			@Override
+			public boolean accept(File dir, String filename) {
+				// TODO Auto-generated method stub
+				filename = filename.toLowerCase();
+				if (filename.indexOf(GcCode.toLowerCase()) == 0)
+				{
+		            if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png") || filename.endsWith(".gif"))
+		            	return true;
+				}
+				return false;
+			}
+		};
+        String[] files = dir.list(filter);
+
+        for (String image : files)
         {
-            String imgFile = image.ToLower();
-            if (imgFile.EndsWith(".jpg") || imgFile.EndsWith(".jpeg") || imgFile.EndsWith(".bmp") || imgFile.EndsWith(".png") || imgFile.EndsWith(".gif"))
-                spoilerRessources.Add(image);
-
+        	spoilerRessources.add(image);
         }
-
+/*
         // Add own taken photo
         directory = Config.GetString("UserImageFolder");
 
@@ -738,17 +726,14 @@ public class Cache implements Comparable<Cache> {
             }
 
         }
-
+*/
     }
 
-    public bool SpoilerExists
+    public boolean SpoilerExists()
     {
-        get
-        {
-            return SpoilerRessources.Count > 0;
-        }
+        return SpoilerRessources().size() > 0;
     }
-*/    
+    
     public int GetMapIconId(String gcLogin)
     {
     	if (this.Owner.equalsIgnoreCase(gcLogin) && (gcLogin.length() > 0))
