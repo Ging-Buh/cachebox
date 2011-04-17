@@ -2,6 +2,7 @@ package de.droidcachebox;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -13,6 +14,7 @@ import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Map.Descriptor;
+import de.droidcachebox.TranslationEngine.LangStrings;
 import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.LogView;
@@ -73,8 +75,14 @@ public class splash extends Activity
 	        
 	 }
 	 
-	 private void Initial()
+	 private void Initial() 
 	 {
+		 
+// Read Config
+		 
+		 Config.readConfigFile(getAssets());
+		 
+		 
 		setProgressState(20, "Ini UI ...");
 		 	Global.InitPaints();
 	        Global.InitIcons(this);
@@ -82,9 +90,12 @@ public class splash extends Activity
         setProgressState(40, "Load Map ...");
 	        File dir = new File(Config.GetString("MapPackFolder"));
 	        String[] files = dir.list();
-	        for (String file : files)
+	        if (files.length>0)
 	        {
-	        	MapView.Manager.LoadMapPack(Config.GetString("MapPackFolder") + "/" + file);
+	        for (String file : files)
+		        {
+		        	MapView.Manager.LoadMapPack(Config.GetString("MapPackFolder") + "/" + file);
+		        }
 	        }
 	        
 	    setProgressState(60, "Load Caches ...");
@@ -100,6 +111,7 @@ public class splash extends Activity
 	        }
 	        Descriptor.Init();
 	        
+	        Config.AcceptChanges();
 	        
 	        // Initial Ready Show main
 	        finish();

@@ -1,0 +1,338 @@
+Deutsch
+// Main Menu
+	Misc = Mehr
+	Find = Info
+	Nav = Nav
+	Cache = Cache
+	DB = DB
+	Description = Beschreibung
+	MakeSelection = Auswahl zulassen
+	Waypoints = Wegpunkte
+	Notes = Notizen
+	Solver = Solver
+	Favorite = Favorit
+	Map = Karte
+	Compass = Kompass
+	Radar = Radar
+	Tracks = Tracks
+	ShowLogs =Zeige Logs
+	MyFieldNotes = Meine Fieldnotes
+	hint = Hint
+	spoiler = Spoiler
+	about = Über cachebox!
+	settings = Einstellungen
+	tools = Tools
+	import = Import
+	quit = Beenden (Klick)\n Minimieren (halten)
+	found = Gefunden!
+	DNF = Nicht gefunden!
+	maintenance = Bedarf Wartung
+	AddNote = Fieldnote hinzufügen
+	ClearCurrentFieldNote = Lösche aktuelle Fieldnote
+	ShowRecentNotes = Zeige neue Fieldnotes
+	ManageNotes = Fieldnotes verwalten
+	DeleteAllNotes = Lösche alle Fieldnotes
+	DeleteAllFieldNotesQuestion = Sollen wirklich alle Fieldnotes gelöscht werden?
+	cacheList = Liste
+	filter = Filter
+	search = Suchen
+	ResortList = Liste \n neu Sortieren
+	AutoResort = Automatisch \n Sortieren
+	record = Aufnahme
+	pause = Pause
+	stop = Stop
+	export = Export
+	TrackRec = Track Aufzeichnung
+	VoiceRec = Sprach Aufzeichnung
+	createPQ = Erstelle Pocket Query
+	uploadFieldNotes = Fieldnotes hochladen
+	TomTom = TomTom
+	GPX = GPX
+	GoogleMap = Google Map
+	TakePhoto = Foto machen
+	RecVideo = Video aufnehmen
+	ChkUpdate = Suche nach Updates
+	manage = DB Auswahl 
+
+// AboutViewPanel
+	caches_found = Gefundene Caches:
+	gps = GPS:
+	not_active = nicht Aktive
+	not_detected = nicht erkannt
+	sats_nr = Sats:
+	Hdop = Hdop:
+	alt = Höhe:
+	waiting_for_fix = Auf Signal warten
+	not_responding = not responding
+	waypoint = Wegpunkt:
+	coordinate = Koordinate:
+	current = Aktuell:
+
+// MsgBox texts
+	Error = Fehler
+	Warning = Warnung!
+	thisNotWork = Das funktioniert nicht!
+
+	Open_getcachebox_Link = Öffne www.getcachebox.net im Browser
+	allowInetConn = Ausgeschaltene Internetverbindung! Wollen Sie diesen Verweis trotzdem öffnen?
+	
+	Open_Cache_Link = Öffne Cache im Browser
+	Cann_not_open_cache_browser = Kann Cache nicht im Browser öffnen!
+
+	CanntProcessUpdateFiles = Kann aktualisierte Dateien nicht bearbeiten!
+	ErrDbStartup = Fehler während des Datenbankanlaufs!
+	ErrDbFNStartup = Fehler während des Fieldnote Datenbankanlaufs!
+	CanntCreateProxy = Cannot create Proxy!
+	
+	Quit? = cachebox beenden?
+	QuitReally = Wollen Sie cachebox wirklich schließen?
+	
+	uploadFieldNotes? = Fieldnotes zu geocaching.com hochladen? Dies könnte Kosten verursachen!
+	NoFindsLogged = Sie haben keine Funde mit Cachebox geloggt!
+	
+	CreatePQ? = Möchten Sie ein Pocket Query auf geocaching.com erstellen? Dies könnte Kosten verursachen!
+	
+	CanntOpenRecentNotes = Kann neue Fieldnotes nicht im Browser öffnen
+	
+	ShowSpoiler = Zeige Spoiler
+	spoilSearch = Spoiler wirklich Suchen?
+	
+	ErrStartExternViewer = Beim starten des Externen Bildbetrachters
+	
+	downloadSpoiler = Download Spoiler
+	downloadSpoiler? = Spoiler wirklich herrunter Laden?
+	NoSpoiler = Keine Spoiler vorhanden.
+	NoCacheSelect = Kein Cache angewählt.
+	NoAccessAllowed = Internet Verbindung nicht erlaubt! Schalten Sie die Verbindung in den Einstellungen ein, um Spoiler herrunter zu Laden.
+	
+	ErrNoCam = Es gab einen Fehler! Es scheint so, als ob Ihr Gerät keine Kamera hat!
+	
+	AppUpdate = Update Application
+	AccessUpdate? = Erlaube eine Internet Verbindung, um jetzt nach Updates zu suchen?
+	
+	ErrLanchUpdater = Start Fehler des Updaters!
+	
+	upToDate = Die Installierte Version ist auf dem neusten Stand!
+	
+	ErrChkUpdate = Checking for updates failed...
+
+	ErrSqlUpdate = Die Datenbank [%dbfile%] ist keine Sql3.0 Datenbank. Möglicherweise ist die Datenbank defekt. Soll die DB repariert werden?\nDies kann längere Zeit dauern (abhängig von der Größe der Datenbank)!
+	
+
+// Splash screan Messages
+	openDB = Öffne Datenbank...
+	IniUI = Initialisieren der Benutzer Oberfläche...
+	LoadMapPack = Lade Kartensätze...
+	LoadCaches = Lade Caches...
+	
+
+// Forms
+
+	// general
+		cancel = Abbrechen
+		confirm = Wählen
+		ok = Ok	
+
+	// FormSelectDB
+		NewDB = Neue DB
+		SelDB = Wähle Datenbank
+		AutoStart = Automatischer Start
+		AutoStartTime = Nach %s Sekunden
+		AutoStartDisabled = Deaktiviert
+		StartWithoutSelection = Ohne Auswahl
+		
+		
+	// DatabaseChangedForm
+		DatabaseChangedForm.Text = Datenbank Strukture geändert
+		DatabaseChangedForm.Msg = Glückwünsch, sie haben ihre Cachebox aktualisiert! Die Datenbankstruktur hat sich geändert und muss aktualisiert werden. Dies wird den Import beträchtlich verlangsamen, es wird empfohlen eine neue Datenbank anzulegen. 
+		deleteDB = lösche DB
+		convert = Konvertieren
+		
+	// FormNewDB
+		InsNewDBName = Neuen DB Namen eingeben
+		UseDefaultRep = Gemeinsames Repository?
+
+	// FormCreatePocketQuery
+		connecting = Connecting...
+		createPQ = Create Pocket Query
+		ErrCreatePQ =  Error while trying to create a pocket query!
+		ErrLogInCreatePq = Login Error while trying to create a pocket query! Wrong login information?
+		ServerTimeout = Server Timeout...
+		NetConnectProb = Network connecting problems!
+		NoGCpassword = You didn't specify your GC password!
+		
+	// FormDownloadCacheImage
+		LowMemOperationCancel = Device is running low on memory! This operation will now cancel!
+		ImportImage = Importing Images
+		
+	//WaypointViewPanel
+		Projection = Projizierung
+		EnterMan = Manuell Eingeben
+		FromGps = vom GPS
+		details = Details
+		delete = Löschen
+		DecDeg = Decimal Degrees
+		DegMin = Deg, Min
+		DegMinSec = Deg, Min, Sec
+		utm = UTM
+		addWaypoint = Weg Punkt hinzufügen
+		?replaceCoord = Wollen Sie die Koordinaten wirklich ersetzen?
+		!replaceCoord = Koordinaten ersetzen
+		!DelWP = Weg Punkt Löschen
+		?DelWP = Wollen Sie wirklich diesen Weg Punkt löschen?
+		N = N
+		E = O
+		Zone = Zone 
+		FromClipboard = von Zwischenablage
+		PasteCoord = Koordinaten einfügen
+		CopyCoord = Koordinaten kopieren
+		CopyGcCode = GcCode kopieren
+
+	//SolverViewPanel
+		Solve = Berech.
+		Funct. = Funkt.
+		Select. = Ausw.
+		Keyb. = Keyb.
+		PasteClip = Einfügen
+		AsCenter = Als Zentrum setzen
+		AddWaypoint = Waypoint hinzufügen
+		Clipboard = Zwischenablage
+		
+	//GetSolverFunction
+		getSolverFunction = Solver Funtion einfügen
+		groups = Gruppen
+		functions = Funktionen
+		otherNames = Andere Namen
+
+	//Solver
+		solverGroupText = Text
+		solverGroupNumbers = Zahlen
+		solverGroupCoordinates = Koordinaten
+		solverErrParamCount = Diese Funktion benötigt %s Parameter
+
+	//Solver Functions
+		solverFuncAlphaSum = AlphaSum
+		solverDescAlphaSum = Summe aller Positionen aller Zeichen im Alphabet
+		solverFuncAlphaPos = AlphaPos
+		solverDescAlphaPos = Position des ersten Zeichens im Alphabet
+		solverFuncPhoneCode = HandyCode
+		solverDescPhoneCode = Position des ersten Zeichens auf der Handy-Tastatur
+		solverFuncPhoneSum = HandySum
+		solverDescPhoneSum = Summe aller Positionen aller Zeichen auf der Handy-Tastatur
+		solverFuncLength = Länge
+		solverDescLength = Anzahl der Zeichen im String
+		solverFuncCrosstotal = Quersumme
+		solverDescCrosstotal = Summe aller einzelnen Ziffern der Zahl. \nBeispiel: QS(123456) = 21
+		solverFuncICrosstotal = IQuersumme
+		solverDescICrosstotal = Iterierte (einstellige) Quersumme bis das Ergebnis einstellig ist. \nBeispiel: IQS(123456) = 3
+		solverFuncCrossproduct = Querprodukt
+		solverDescCrossprocuct = Produkt aller einzelnen Ziffern der Zahl. \nBeispiel: QP(1234) = 24
+		solverFuncICrossproduct = IQuerprodukt
+		solverDescICrossproduct = Iteriertes (einstelliges) Querprodukt bis das Ergebnis einstellig ist. \nBeispiel: IQP(1234) = 8
+		solverFuncRom2Dec = Rom2Dec
+		solverDescRom2Dec = Römische Zahl in Dezimalzahl umwandeln.
+		solverFuncPrimenumber = Primzahl
+		solverDescPrimenumber = Primzahl(n) liefert die n-te Primzahl. \nBeispiel: Primzahl(5) = 11
+		solverFuncPrimeIndex = PrimIndex
+		solverDescPrimeIndex = PrimIndex(x) liefert den Index der Primzahl x. \nExample: PrimIndex(11) = 5
+		solverFuncProjection = Projektion
+		solverDescProjection = Projektion einer Koordinate. \nProjektion(koord; länge; winkel)
+		solverFuncIntersection = Schnittpunkt
+		solverDescIntersection = Schnittpunkt von 2 Linien (koord1-koord2) mit (koord3-koord4). \nSchnittpunkt(koord1; koord2; koord3; koord4)
+		solverFuncCrossbearing = Kreuzpeilung
+		solverDescCrossbearing = Kreuzpeilung zwischen 2 Punkten und 2 Richtungen \nKreuzpeilung(coord1; winkel1; coord2; winkel2)
+		solverFuncBearing = Peilung
+		solverDescBearing = Liefert den Winkel der Peilung von coord1 nach coord2 \nPeilung(coord1; coord2)
+		solverFuncDistance = Abstand
+		solverDescDistance = Liefert den Abstand zwischen den beiden Punkten (coord1 und coord2) in Meter \nAbstand(coord1; coord2)
+		solverFuncInt = Ganzzahl
+		solverDescInt = Liefert die Ganzzahl vor dem Komma \nGanzzahl(-5,7) = 5
+		solverFuncRound = Runden
+		solverDescRound = Rundet die Zahl auf x Stellen \nRunden(1,8672; 2) = 1.87
+		solverFuncPi = Pi
+		solverDescPi = Liefert die Zahl Pi \nPi() = 3,14159265358979
+		solverFuncReverse = Reverse
+		solverDescReverse = Kehrt die Zeichenkette um \nReverse("ABC") = CBA
+		solverFuncRot13 = Rot13
+		solverDescRot13 = Liefert die Rot13 Entschlüsselung \nRot13("ABC") = NOP
+		
+	//CompassViewPanel
+		SatHdop = Sats/Hdop:
+		BearSpeed = Richt./Geschw.:
+		distance = Entfernung:
+		Align = Aus- \n richten
+		AlignGps = Richtung \n GPS
+		AlignHtc = Richtung \n HTC
+		
+	//Searchform
+		SearchCache = Suche Caches
+		Filter = Filter
+		Search = Suchen
+		Next = Nächster
+		Title = Title
+		GCCode =GC-Code
+		Owner = Owner
+		
+	//ProjectionForm
+		Projection = Projektion
+		Distance = Entfernung 
+		Bearing = Richtung
+		
+//Settings
+
+	//GPS
+	CompatibleWithGpsModDriver? = Kompatibel mit ModDriver?
+	UseCellId = Verwende CellId für die erste Position.
+	UseHtcCompass = Verwende Htc Kompass
+	DescHtcLevel = Schwellwert für HTC oder GPS Kompass.\n-1 = GPS wird überhaupt nicht verwendet.
+	
+	//Data
+	AdjustFounds = Anzahl der Funde anpassen . . .
+	LoadFounds = Lade Anzahl der Funde von gc.com
+	DeleteLogs = Lösche Logs
+	ButKeepLeast = aber behalte mindestens
+	ResetFavorites = Favoriten zurücksetzen (Demarkieren)
+	ResetListingChanged = listing changed zurücksetzen ...
+	DeleteFieldNotes = Lösche alle Fieldnotes ...
+	RemoveCaches = Lösche Caches ...
+	ArchiveFilterSelection? = Sie haben vor, alle Caches, aus Ihren Filtereinstellungen als 'archiviert' zu Kenzeichnen. Sind Sie sicher, dass Sie das wollen?
+	ArchiveFilterSelection! = Archiviere Caches
+	DelCaches? = Sie haben vor, alle Caches, aus Ihren Filtereinstellungen zu löschen. Sind Sie sicher, dass Sie das wollen?
+	DelCaches! = Lösche Caches
+	ArchiveFilterSelection = Archiviere gefilterte Caches
+	DeleteFilterSelection = Lösche gefilterte Caches
+	DelLogs = Sie wollen die Logs löschen? Während des nächsten Imports werden die Logs gelöscht. Sind Sie sicher, dass Sie das wollen?
+	PleaseConfirm = Bitte bestätigen! 
+	comboBoxLogLifeItem_0 = sofort
+	comboBoxLogLifeItem_1 = nach 1 Monat
+	comboBoxLogLifeItem_2 = nach 2 Monaten
+	comboBoxLogLifeItem_3 = nach 3 Monaten
+	comboBoxLogLifeItem_4 = nach 4 Monaten
+	comboBoxLogLifeItem_5 = nach 5 Monaten
+	comboBoxLogLifeItem_6 = nach 6 Monaten
+	DelFieldNotes? = Sie haben vor, alle Ihre Fieldnotes zu löschen. Sind Sie sicher, dass Sie das wollen?
+	DelFieldNotes! = Lösche Fieldnotes
+	ResetFavorites? = Sie haben vor, alle 'favorit-markers' zurück zu setzen. Sind Sie sicher, dass Sie das wollen? 
+	ResetFavorites! = Reset favorites
+	ResetListingChanged? = Sie haben vor, alle 'listing changed' Markierungen zurück zu setzen. Sind Sie sicher, dass Sie das wollen?
+	ResetListingChanged! = Reset listing changed
+	LoadFinds? = Lade Anzahl der Funde von geocaching.com? Das könnte Kosten verursachen!
+	LoadFinds! = Lade Anzahl der Funde
+	LogInErrorLoadFinds = Login Error while trying to get number of finds! Wrong information?
+	CannotResolveHost = Kann Host nicht erreichen!
+	ServerTimeout = Zeitüberschreitung Verbindungsaufbau ...
+	FoundsSetTo = Funde auf %s gesetzt!
+	
+	//FormAdjustFounds
+	AdjustFinds = Funde anpassen
+	TelMeFounds = Sage mir, wie viele Caches Du bis jetzt gefunden hast:
+	
+	//MiscSettings
+	units = Einheit:	
+	AllowInternet = Erlaube Internet Verb.
+	ShowKeypad = Zeige Tastatur
+	SuppressPowerSaving = Unterdrücke Power Save
+	UploadAllFieldnotes = Alle Fieldnotes senden(Ignoriere Datum)
+	LogIn = Login Name bei geocaching.com
+	GCPW = Passwort bei geocaching.com
+	GCVotePW = GcVote Passwort 

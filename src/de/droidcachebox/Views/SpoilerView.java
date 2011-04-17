@@ -95,7 +95,7 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
 			filename = filename.substring(3);
 		spoilerFilename.setText(filename);
 		
-        String file = Config.GetDBConfigString("SpoilerFolder") + "/" + Global.SelectedCache().GcCode.substring(0, 4) + "/" + Global.SelectedCache().SpoilerRessources().get(position);
+        String file = Config.GetString("SpoilerFolder") + "/" + Global.SelectedCache().GcCode.substring(0, 4) + "/" + Global.SelectedCache().SpoilerRessources().get(position);
         bmp = BitmapFactory.decodeFile(file);
         spoilerImage.setImage(bmp, spoilerImage.getWidth(), spoilerImage.getHeight());
     }
@@ -128,7 +128,7 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView i = new ImageView(mContext);
 
-            String file = Config.GetDBConfigString("SpoilerFolder") + "/" + Global.SelectedCache().GcCode.substring(0, 4) + "/" + Global.SelectedCache().SpoilerRessources().get(position);
+            String file = Config.GetString("SpoilerFolder") + "/" + Global.SelectedCache().GcCode.substring(0, 4) + "/" + Global.SelectedCache().SpoilerRessources().get(position);
             Bitmap bit = BitmapFactory.decodeFile(file);
             i.setImageBitmap(bit);
 //            i.setImageResource(mThumbIds[position]);

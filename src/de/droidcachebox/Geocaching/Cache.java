@@ -680,7 +680,7 @@ public class Cache implements Comparable<Cache> {
     {
         spoilerRessources = new ArrayList<String>();
 
-        String path = Config.GetDBConfigString("SpoilerFolder");
+        String path = Config.GetString("SpoilerFolder");
         String directory = path + "/" + GcCode.substring(0, 4);
 
         if (!Global.DirectoryExists(directory))

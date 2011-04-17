@@ -18,12 +18,17 @@ import android.location.Location;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
+import de.droidcachebox.TranslationEngine.LangStrings;
 
 
 public class Global {
     public static final int CurrentRevision = 1;
+    public static final String CurrentVersion = "0.0.";
+    public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
     public static final int LatestDatabaseFieldNoteChange = 1001;
+    
+    public static LangStrings Translations;
     
     public static Coordinate Marker = new Coordinate(48.12425, 12.16460);
 
