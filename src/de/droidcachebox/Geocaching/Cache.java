@@ -204,69 +204,70 @@ public class Cache implements Comparable<Cache> {
                 command.Dispose();
             }
         }
-
+*/
         private int noteCheckSum = 0;   // for Replication
-        public string Note
+        public String Note()
         {
-            get
+        	String resultString = "";
+            Cursor c = Database.Data.myDB.rawQuery("select Notes from Caches where Id=?", new String[] { String.valueOf(Id) });
+            c.moveToFirst();
+            while(c.isAfterLast() == false)
             {
-                SqlCeCommand command = new SqlCeCommand("select Notes from Caches where Id=@id", Database.Data.Connection);
-                command.Parameters.Add("@id", DbType.Int64).Value = Id;
-                String resultString = command.ExecuteScalar().ToString();
-                command.Dispose();
-                noteCheckSum = (int)Global.sdbm(resultString);
-                return resultString;
-            }
-            set
-            {
-                int newNoteCheckSum = (int)Global.sdbm(value);
-                Replication.NoteChanged(this.Id, noteCheckSum, newNoteCheckSum);
-                if (newNoteCheckSum != noteCheckSum)
-                {
-                    SqlCeCommand command = new SqlCeCommand("update Caches set Notes=@Note, HasUserData=@true where Id=@id", Database.Data.Connection);
-                    command.Parameters.Add("@Note", DbType.String).Value = value;
-                    command.Parameters.Add("@true", DbType.Boolean).Value = true;
-                    command.Parameters.Add("@id", DbType.Int64).Value = Id;
-                    command.ExecuteNonQuery();
-                    command.Dispose();
-                    noteCheckSum = newNoteCheckSum;
-                }
-            }
-
+                resultString = c.getString(0);
+                break;
+            };
+            noteCheckSum = (int)Global.sdbm(resultString);
+            return resultString;
+        }
+        
+        public void Note(String value)
+        {
+/*        	int newNoteCheckSum = (int)Global.sdbm(value);
+//        	Replication.NoteChanged(this.Id, noteCheckSum, newNoteCheckSum);
+        	if (newNoteCheckSum != noteCheckSum)
+        	{
+        		SqlCeCommand command = new SqlCeCommand("update Caches set Notes=@Note, HasUserData=@true where Id=@id", Database.Data.Connection);
+        		command.Parameters.Add("@Note", DbType.String).Value = value;
+        		command.Parameters.Add("@true", DbType.Boolean).Value = true;
+        		command.Parameters.Add("@id", DbType.Int64).Value = Id;
+        		command.ExecuteNonQuery();
+        		command.Dispose();
+        		noteCheckSum = newNoteCheckSum;
+            }*/
         }
 
         private int solverCheckSum = 0;   // for Replication
-        public string Solver
+        public String Solver()
         {
-            get
+        	String resultString = "";
+            Cursor c = Database.Data.myDB.rawQuery("select Solver from Caches where Id=?", new String[] { String.valueOf(Id) });
+            c.moveToFirst();
+            while(c.isAfterLast() == false)
             {
-                SqlCeCommand command = new SqlCeCommand("select Solver from Caches where Id=@id", Database.Data.Connection);
+                resultString = c.getString(0);
+                break;
+            };
+            noteCheckSum = (int)Global.sdbm(resultString);
+            return resultString;
+        }
+        public void Solver(String value)
+        {
+/*            int newSolverCheckSum = (int)Global.sdbm(value);
+            Replication.SolverChanged(this.Id, solverCheckSum, newSolverCheckSum);
+            if (newSolverCheckSum != solverCheckSum)
+            {
+                SqlCeCommand command = new SqlCeCommand("update Caches set Solver=@Solver, HasUserData=@true where Id=@id", Database.Data.Connection);
+                command.Parameters.Add("@Solver", DbType.String).Value = value;
+                command.Parameters.Add("@true", DbType.Boolean).Value = true;
                 command.Parameters.Add("@id", DbType.Int64).Value = Id;
-                String resultString = command.ExecuteScalar().ToString();
+                command.ExecuteNonQuery();
                 command.Dispose();
-                solverCheckSum = (int)Global.sdbm(resultString);
-                return resultString;
-            }
-            set
-            {
-                int newSolverCheckSum = (int)Global.sdbm(value);
-                Replication.SolverChanged(this.Id, solverCheckSum, newSolverCheckSum);
-                if (newSolverCheckSum != solverCheckSum)
-                {
-                    SqlCeCommand command = new SqlCeCommand("update Caches set Solver=@Solver, HasUserData=@true where Id=@id", Database.Data.Connection);
-                    command.Parameters.Add("@Solver", DbType.String).Value = value;
-                    command.Parameters.Add("@true", DbType.Boolean).Value = true;
-                    command.Parameters.Add("@id", DbType.Int64).Value = Id;
-                    command.ExecuteNonQuery();
-                    command.Dispose();
-                    solverCheckSum = newSolverCheckSum;
-                }
-            }
-
+                solverCheckSum = newSolverCheckSum;
+            }*/
         }
         
 
- */
+ 
     // Name der Tour, wenn die GPX-Datei aus GCTour importiert wurde
     public String TourName;
 

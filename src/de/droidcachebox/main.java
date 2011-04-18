@@ -14,6 +14,8 @@ import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.LogView;
 import de.droidcachebox.Views.MapView;
+import de.droidcachebox.Views.NotesView;
+import de.droidcachebox.Views.SolverView;
 import de.droidcachebox.Views.SpoilerView;
 import de.droidcachebox.Views.WaypointView;
 import de.droidcachebox.Database;
@@ -75,6 +77,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private LogView logView;
 	private DescriptionView descriptionView;
 	private SpoilerView spoilerView;
+	private NotesView notesView;
+	private SolverView solverView;
 	
 	// Powermanager
     protected PowerManager.WakeLock mWakeLock;
@@ -167,6 +171,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         logView = new LogView(this);
         descriptionView = new DescriptionView(this, "Cache-Beschreibung");
         spoilerView = new SpoilerView(this, inflater);
+        notesView = new NotesView(this, inflater);
+        solverView = new SolverView(this, inflater);
         
         this.buttonDB = (ImageButton)this.findViewById(R.id.buttonDB);
         registerForContextMenu(buttonDB);
@@ -331,6 +337,14 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     	case R.id.miWaypoints:
     		frame.addView(waypointView);
     		aktView = waypointView;
+    		return true;
+    	case R.id.miNotes:
+    		frame.addView(notesView);
+    		aktView = notesView;
+    		return true;
+    	case R.id.miSolver:
+    		frame.addView(solverView);
+    		aktView = solverView;
     		return true;
     	// Map
     	case R.id.miMapView:
