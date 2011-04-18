@@ -18,13 +18,13 @@ public class ClockView extends View {
 		// TODO Auto-generated constructor stub
 		paint = new Paint();
 		// set's the paint's colour
-		paint.setColor(Global.TitleBarText);
+		paint.setColor(Global.Colors.TitleBarText);
 		// set's paint's text size
 		paint.setTextSize(25);
 		// smooth's out the edges of what is being drawn
 		paint.setAntiAlias(true);
 		
-		this.setBackgroundColor(Global.TitleBarColor);
+		this.setBackgroundColor(Global.Colors.TitleBarColor);
 	}
 	
 	@Override

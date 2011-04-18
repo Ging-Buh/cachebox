@@ -2,6 +2,7 @@ package de.droidcachebox.Views;
 
 import java.util.List;
 
+import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 
@@ -46,8 +47,8 @@ public class CacheListView extends ListView implements ViewOptionsMenu {
 				return true;
 			}
 		});
-		this.setBackgroundColor(Global.EmptyBackground);
-		this.setCacheColorHint(Global.TitleBarColor);
+		this.setBackgroundColor(Config.GetBool("nightMode")? Global.Colors.Night.EmptyBackground : Global.Colors.Day.EmptyBackground);
+		this.setCacheColorHint(Global.Colors.TitleBarColor);
 		this.setDividerHeight(5);
 		this.setDivider(getBackground());
 		

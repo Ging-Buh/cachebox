@@ -3,6 +3,7 @@ package de.droidcachebox.Views;
 import java.text.BreakIterator;
 import java.text.DateFormat;
 
+import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.LogEntry;
@@ -35,11 +36,11 @@ public class LogViewItem extends View {
         this.cache = cache;
         this.logEntry = logEntry;
         
-        textPaint = new TextPaint(Global.ListItemTextPaint[0]);
+        textPaint = new TextPaint(Config.GetBool("nightMode")? Global.Paints.Night.Text.noselected : Global.Paints.Day.Text.noselected );
         textPaint.setTextSize(24);
 //        textPaint.setSubpixelText(true);
         
-        this.setBackgroundColor(Global.ListItemBackgroundPaint[0].getColor());
+        this.setBackgroundColor(Config.GetBool("nightMode")? Global.Colors.Night.EmptyBackground : Global.Colors.Day.EmptyBackground);
        }
 
 	
@@ -64,7 +65,7 @@ public class LogViewItem extends View {
             result = specSize;
         } else {
             // Measure the text
-            result = (int) Global.ListItemBackgroundPaint[0].measureText(cache.Name) + getPaddingLeft()
+            result = (int) Global.Paints.Day.ListBackground.measureText(cache.Name) + getPaddingLeft()
                     + getPaddingRight();
             if (specMode == MeasureSpec.AT_MOST) {
                 // Respect AT_MOST value if that was what is called for by measureSpec
@@ -91,13 +92,13 @@ public class LogViewItem extends View {
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
 
-        mAscent = (int) Global.ListItemBackgroundPaint[0].ascent();
+        mAscent = (int) Global.Paints.Day.ListBackground.ascent();
         if (specMode == MeasureSpec.EXACTLY) {
             // We were told how big to be
             result = specSize;
         } else {
             // Measure the text (beware: ascent is a negative number)
-            result = (int) (-mAscent + Global.ListItemBackgroundPaint[0].descent()) + getPaddingTop()
+            result = (int) (-mAscent + Global.Paints.Day.ListBackground.descent()) + getPaddingTop()
                     + getPaddingBottom();
           	result += layoutComment.getHeight();
             result += layoutFinder.getHeight();
@@ -120,7 +121,7 @@ public class LogViewItem extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int paintID = 0;
-        canvas.drawRect(new Rect(0, 0, width, 75), Global.ListItemBackgroundPaint[paintID]);
+        canvas.drawPaint(Config.GetBool("nightMode")? Global.Paints.Night.ListBackground : Global.Paints.Day.ListBackground);
 
         layoutFinder.draw(canvas);
 //        canvas.translate(width-100, 0);

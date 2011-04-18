@@ -134,7 +134,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
       //  layoutButtons.setBackgroundColor(Global.TitleBarColor);
         
         frame = (FrameLayout)this.findViewById(R.id.layoutContent);
-        frame.setBackgroundColor(Global.EmptyBackground);
+        frame.setBackgroundColor(Config.GetBool("nightMode")? Global.Colors.Night.EmptyBackground : Global.Colors.Day.EmptyBackground);
+        
         
         // Ausschalten verhindern
         /* This code together with the one in onDestroy() 

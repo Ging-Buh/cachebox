@@ -1,6 +1,7 @@
 package de.droidcachebox.Views;
 
 
+import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 
@@ -51,8 +52,8 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				return true;
 			}
 		});
-		this.setBackgroundColor(Global.EmptyBackground);
-		this.setCacheColorHint(Global.TitleBarColor);
+		this.setBackgroundColor(Config.GetBool("nightMode")? Global.Colors.Night.EmptyBackground : Global.Colors.Day.EmptyBackground);
+		this.setCacheColorHint(Global.Colors.TitleBarColor);
 		this.setDividerHeight(5);
 		this.setDivider(getBackground());
 		

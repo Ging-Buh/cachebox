@@ -2,6 +2,7 @@ package de.droidcachebox.Views;
 
 import java.util.ArrayList;
 
+import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
@@ -48,8 +49,8 @@ public class LogView extends ListView implements SelectedCacheEvent, ViewOptions
 				return true;
 			}
 		});
-		this.setBackgroundColor(Global.EmptyBackground);
-		this.setCacheColorHint(Global.TitleBarColor);
+		this.setBackgroundColor(Config.GetBool("nightMode")? Global.Colors.Night.EmptyBackground : Global.Colors.Day.EmptyBackground);
+		this.setCacheColorHint(Global.Colors.TitleBarColor);
 		this.setDividerHeight(5);
 		this.setDivider(getBackground());
 		

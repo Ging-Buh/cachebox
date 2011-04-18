@@ -1,5 +1,6 @@
 package de.droidcachebox.Views;
 
+import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Waypoint;
@@ -25,7 +26,7 @@ public class WaypointViewItem extends View {
         this.cache = cache;
         this.waypoint = waypoint;
         
-        this.setBackgroundColor(Global.ListItemBackgroundPaint[0].getColor());
+        this.setBackgroundColor(Config.GetBool("nightMode")? Global.Colors.Night.ListBackground : Global.Colors.Day.ListBackground);
        }
 
 	
@@ -50,7 +51,7 @@ public class WaypointViewItem extends View {
             result = specSize;
         } else {
             // Measure the text
-            result = (int) Global.ListItemBackgroundPaint[0].measureText(cache.Name) + getPaddingLeft()
+            result = (int) Global.Paints.Day.ListBackground.measureText(cache.Name) + getPaddingLeft()
                     + getPaddingRight();
             if (specMode == MeasureSpec.AT_MOST) {
                 // Respect AT_MOST value if that was what is called for by measureSpec
@@ -71,13 +72,13 @@ public class WaypointViewItem extends View {
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
 
-        mAscent = (int) Global.ListItemBackgroundPaint[0].ascent();
+        mAscent = (int) Global.Paints.Day.ListBackground.ascent();
         if (specMode == MeasureSpec.EXACTLY) {
             // We were told how big to be
             result = specSize;
         } else {
             // Measure the text (beware: ascent is a negative number)
-            result = (int) (-mAscent + Global.ListItemBackgroundPaint[0].descent()) + getPaddingTop()
+            result = (int) (-mAscent + Global.Paints.Day.ListBackground.descent()) + getPaddingTop()
                     + getPaddingBottom();
             if (specMode == MeasureSpec.AT_MOST) {
                 // Respect AT_MOST value if that was what is called for by measureSpec
@@ -97,13 +98,15 @@ public class WaypointViewItem extends View {
         int paintID = 0;
         if(waypoint == Global.SelectedWaypoint())
         	paintID = 1;
-        canvas.drawRect(new Rect(0, 0, width, 75), Global.ListItemBackgroundPaint[paintID]);
+        
+        Paint DrawBackPaint = new Paint( (paintID == 1)? Global.Paints.Day.selectedBack : Config.GetBool("nightMode")? Global.Paints.Night.ListBackground : Global.Paints.Day.ListBackground);
+        canvas.drawPaint(DrawBackPaint);
 
         String title = cache.Name;
         if (waypoint != null)
         	title = waypoint.Title;
-      	canvas.drawText(title, 5, 30, Global.ListItemTextPaint[paintID]);
-      	Paint tmpPaint = new Paint(Global.ListItemTextPaint[paintID]);
+      	canvas.drawText(title, 5, 30, Config.GetBool("nightMode")? Global.Paints.Night.Text.noselected : Global.Paints.Day.Text.noselected);
+      	Paint tmpPaint = new Paint(Config.GetBool("nightMode")? Global.Paints.Night.Text.noselected : Global.Paints.Day.Text.noselected);
       	tmpPaint.setTextAlign(Align.RIGHT);
       	float dist = cache.Distance();
       	if (waypoint != null)

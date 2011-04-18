@@ -84,7 +84,7 @@ public class splash extends Activity
 		 
 		 
 		setProgressState(20, "Ini UI ...");
-		 	Global.InitPaints();
+		 	Global.Paints.init();
 	        Global.InitIcons(this);
 	        
         setProgressState(40, "Load Map ...");

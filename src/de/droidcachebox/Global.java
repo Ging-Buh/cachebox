@@ -35,6 +35,11 @@ public class Global {
     // Icons
     public static Drawable[] Icons = null;
     public static Drawable[] SmallStarIcons;
+    public static Drawable[] CacheIconsBig;
+    public static Drawable[] CacheIconsBigFound;
+    public static Drawable[] BatteryIcons;
+    public static Drawable[] LogIcons;
+    
     // New Map Icons
     public static ArrayList<ArrayList<Drawable>> NewMapIcons = new ArrayList<ArrayList<Drawable>>();
     public static ArrayList<ArrayList<Drawable>> NewMapOverlay = new ArrayList<ArrayList<Drawable>>();
@@ -70,38 +75,101 @@ public class Global {
     	return selectedWaypoint;
     }
 
-    // Colors
-    public static int TitleBarColor = Color.parseColor("#8B9D5F");
-    public static int TitleBarText = Color.BLACK;
-    public static int ListBackground = Color.parseColor("#F4F7ED");
-    public static int ListSeperator = Color.parseColor("#8B9D5F");
-    public static int EmptyBackground = Color.parseColor("#CAD4B2");
-    // Paints
-    public static Paint[] ListItemBackgroundPaint = new Paint[2];
-    public static Paint[] ListItemTextPaint = new Paint[2];
-    public static void InitPaints()
+    
+    public static class Paints
     {
-    	// Hintergrund für Listen
-    	// nicht selected
-    	ListItemBackgroundPaint[0] = new Paint();
-    	ListItemBackgroundPaint[0].setColor(Color.parseColor("#FFFFFF"));
-    	// selected
-    	ListItemBackgroundPaint[1] = new Paint();
-    	ListItemBackgroundPaint[1].setColor(Color.parseColor("#FFD240"));
-    	// Text für Listen
-    	// nicht selected
-    	ListItemTextPaint[0] = new Paint();
-    	ListItemTextPaint[0].setColor(Color.BLACK);
-    	ListItemTextPaint[0].setAntiAlias(true);
-    	ListItemTextPaint[0].setTextSize(24);
-    	// selected
-    	ListItemTextPaint[1] = new Paint();
-    	ListItemTextPaint[1].setColor(Color.BLACK);
-    	ListItemTextPaint[1].setAntiAlias(true);
-    	ListItemTextPaint[1].setTextSize(24);
-    	ListItemTextPaint[1].setFakeBoldText(true);
     	
-    	
+    	public static class Day
+    		 {
+	    		public static Paint ListSeperator;
+				public static Paint selectedBack;   
+	 		    public static Paint ListBackground; 
+	 		    
+	 		    public static class Text
+	 		    {
+	 		    	public static Paint selected;
+	 		    	public static Paint noselected;
+	 		    }
+    		 }
+    		 
+    	public static class Night
+    		 {
+    			public static Paint ListSeperator;
+    			public static Paint selectedBack;   
+     		    public static Paint ListBackground; 
+     		    
+     		   public static class Text
+	 		    {
+	 		    	public static Paint selected;
+	 		    	public static Paint noselected;
+	 		    }
+    		 }
+    		 
+    	public static void init()
+    	{
+    		Night.ListBackground=new Paint();
+    		Night.ListBackground.setColor(Colors.Night.ListBackground);
+    		Night.ListSeperator=new Paint();
+    		Night.ListSeperator.setColor(Colors.Night.ListSeperator);
+    		Night.selectedBack=new Paint();
+    		Night.selectedBack.setColor(Colors.Night.SelectedBackground);
+    		Night.Text.selected = new Paint();
+    		Night.Text.selected.setColor(Colors.Night.Foreground);
+    		Night.Text.selected.setAntiAlias(true);
+    		Night.Text.selected.setTextSize(24);
+        	Night.Text.noselected = new Paint();
+    		Night.Text.noselected.setColor(Colors.Night.Foreground);
+    		Night.Text.noselected.setAntiAlias(true);
+    		Night.Text.noselected.setTextSize(24);
+    		Night.Text.noselected.setFakeBoldText(true);
+    		
+    		
+    		Day.ListBackground=new Paint();
+    		Day.ListBackground.setColor(Colors.Day.ListBackground);
+    		Day.ListSeperator=new Paint();
+    		Day.ListSeperator.setColor(Colors.Day.ListSeperator);
+    		Day.selectedBack=new Paint();
+    		Day.selectedBack.setColor(Colors.Day.SelectedBackground);
+    		Day.Text.selected = new Paint();
+    		Day.Text.selected.setColor(Colors.Day.Foreground);
+    		Day.Text.selected.setAntiAlias(true);
+    		Day.Text.selected.setTextSize(24);
+    		Day.Text.noselected = new Paint();
+    		Day.Text.noselected.setColor(Colors.Day.Foreground);
+    		Day.Text.noselected.setAntiAlias(true);
+    		Day.Text.noselected.setTextSize(24);
+    		Day.Text.noselected.setFakeBoldText(true);
+    		
+    	}
+    		 
+    }
+    
+    public static class Colors
+    {
+    	 	public static int TitleBarColor = Color.parseColor("#8B9D5F");
+    	    public static int TitleBarText = Color.BLACK;
+    	    
+    	    
+    	    
+    	    public static class Day
+    	    {
+    	    	public static int ListBackground = Color.parseColor("#FFFFFF");
+    	    	public static int ListSeperator = Color.parseColor("#8B9D5F");
+    	    	public static int EmptyBackground = Color.parseColor("#CAD4B2");
+    	    	public static int Foreground = Color.parseColor("#000000");
+    	    	public static int SelectedBackground = Color.parseColor("#ffd240");
+    	    	
+    	    }
+    	    
+    	    public static class Night
+    	    {
+    	    	public static int ListBackground = Color.parseColor("#000000");
+    	    	public static int ListSeperator = Color.parseColor("#8B9D5F");
+    	    	public static int EmptyBackground = Color.parseColor("#8E8E8E");
+    	    	public static int Foreground = Color.parseColor("#FFFFFF");
+    	    	public static int SelectedBackground = Color.parseColor("#ffd240");
+    	    }
+    	    
     }
 
     /// <summary>
@@ -276,5 +344,77 @@ public class Global {
         		res.getDrawable(R.drawable.smallstars_4),
         		res.getDrawable(R.drawable.smallstars_4_5),
         		res.getDrawable(R.drawable.smallstars_5) };
+        
+       
+        BatteryIcons = new Drawable[] { 
+        		res.getDrawable(R.drawable.bat0),
+        		res.getDrawable(R.drawable.bat1),
+        		res.getDrawable(R.drawable.bat2),
+        		res.getDrawable(R.drawable.bat3),
+        };
+        		
+
+        CacheIconsBig = new Drawable[] { 
+        		res.getDrawable(R.drawable.big_0),
+        		res.getDrawable(R.drawable.big_1),
+        		res.getDrawable(R.drawable.big_2),
+        		res.getDrawable(R.drawable.big_3),
+        		res.getDrawable(R.drawable.big_4),
+        		res.getDrawable(R.drawable.big_5),
+        		res.getDrawable(R.drawable.big_6),
+        		res.getDrawable(R.drawable.big_7),
+        		res.getDrawable(R.drawable.big_8),
+        		res.getDrawable(R.drawable.big_9),
+        		res.getDrawable(R.drawable.big_10),
+        		res.getDrawable(R.drawable.big_11),
+        		res.getDrawable(R.drawable.big_12),
+        		res.getDrawable(R.drawable.big_13),
+        		res.getDrawable(R.drawable.big_14),
+        		res.getDrawable(R.drawable.big_15),
+        		res.getDrawable(R.drawable.big_16),
+        		res.getDrawable(R.drawable.big_17),
+        		res.getDrawable(R.drawable.big_18),
+        };
+        
+        
+        CacheIconsBigFound = new Drawable[] { 
+        		res.getDrawable(R.drawable.big_0),
+        		res.getDrawable(R.drawable.big_1),
+        		res.getDrawable(R.drawable.big_2),
+        		res.getDrawable(R.drawable.big_3),
+        		res.getDrawable(R.drawable.big_4),
+        		res.getDrawable(R.drawable.big_5),
+        		res.getDrawable(R.drawable.big_6),
+        		res.getDrawable(R.drawable.big_7),
+        		res.getDrawable(R.drawable.big_8),
+        		res.getDrawable(R.drawable.big_9),
+        		res.getDrawable(R.drawable.big_10),
+
+        };
+        
+        LogIcons = new Drawable[] { 
+        		res.getDrawable(R.drawable.log0),
+        		res.getDrawable(R.drawable.log1),
+        		res.getDrawable(R.drawable.log2),
+        		res.getDrawable(R.drawable.log3),
+        		res.getDrawable(R.drawable.log4),
+        		res.getDrawable(R.drawable.log5),
+        		res.getDrawable(R.drawable.log6),
+        		res.getDrawable(R.drawable.log7),
+        		res.getDrawable(R.drawable.log8),
+        		res.getDrawable(R.drawable.log9),
+        		res.getDrawable(R.drawable.log10),
+        		res.getDrawable(R.drawable.log11),
+        		res.getDrawable(R.drawable.log12),
+        		res.getDrawable(R.drawable.log13),
+
+        };
+       
+          
+        
     }
+
+
+
+
 }
