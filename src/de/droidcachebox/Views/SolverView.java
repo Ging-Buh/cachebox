@@ -11,6 +11,9 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
@@ -19,8 +22,10 @@ import android.widget.TextView;
 public class SolverView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent{
 	Context context;
 	EditText edSolver;
+	EditText edResult;
 	Cache aktCache;
 	boolean mustLoadSolver;
+	Button bSolve;
 
 	public SolverView(Context context, LayoutInflater inflater) {
 		super(context);
@@ -31,7 +36,23 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu, Selected
 		this.addView(solverLayout);
         edSolver = (EditText) findViewById(R.id.solverText);
         edSolver.setTextColor(Color.BLACK);
-}
+        edResult = (EditText) findViewById(R.id.solverResult);
+        edResult.setEnabled(false);
+        bSolve = (Button) findViewById(R.id.solverButtonSolve);
+        bSolve.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	solve();
+            }
+          });
+        
+	}
+
+	protected void solve() {
+		edResult.setText(edSolver.getText().toString());
+		
+		
+	}
 
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
