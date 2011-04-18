@@ -20,10 +20,11 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu, Selected
 	Context context;
 	EditText edSolver;
 	Cache aktCache;
+	boolean mustLoadSolver;
 
 	public SolverView(Context context, LayoutInflater inflater) {
 		super(context);
-
+		mustLoadSolver = false;
 		SelectedCacheEventList.Add(this);
 
 		RelativeLayout solverLayout = (RelativeLayout)inflater.inflate(R.layout.solverview, null, false);
@@ -34,8 +35,11 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu, Selected
 
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
-		aktCache = cache;
-		edSolver.setText(cache.Solver());
+		if (aktCache != cache)
+		{
+			mustLoadSolver = true;
+			aktCache = cache;
+		}
 	}
 
 	@Override
@@ -48,6 +52,22 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu, Selected
 	public void BeforeShowMenu(Menu menu) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void OnShow() {
+		// TODO Auto-generated method stub
+		if (mustLoadSolver)
+		{
+			edSolver.setText(aktCache.GetSolver());
+			mustLoadSolver = false;
+		}
+	}
+
+	@Override
+	public void OnHide() {
+		// Save changed Solver text
+		aktCache.SetSolver(edSolver.getText().toString());		
 	}
 
 }

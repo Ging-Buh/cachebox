@@ -148,5 +148,17 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void OnShow() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void OnHide() {
+		// TODO Auto-generated method stub
+		
+	}
 }
 

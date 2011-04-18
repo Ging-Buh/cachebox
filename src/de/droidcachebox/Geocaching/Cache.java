@@ -13,6 +13,7 @@ import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Views.MapView;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
@@ -206,7 +207,7 @@ public class Cache implements Comparable<Cache> {
         }
 */
         private int noteCheckSum = 0;   // for Replication
-        public String Note()
+        public String GetNote()
         {
         	String resultString = "";
             Cursor c = Database.Data.myDB.rawQuery("select Notes from Caches where Id=?", new String[] { String.valueOf(Id) });
@@ -220,24 +221,24 @@ public class Cache implements Comparable<Cache> {
             return resultString;
         }
         
-        public void Note(String value)
+        public void SetNote(String value)
         {
-/*        	int newNoteCheckSum = (int)Global.sdbm(value);
+            int newNoteCheckSum = (int)Global.sdbm(value);
+            
 //        	Replication.NoteChanged(this.Id, noteCheckSum, newNoteCheckSum);
-        	if (newNoteCheckSum != noteCheckSum)
-        	{
-        		SqlCeCommand command = new SqlCeCommand("update Caches set Notes=@Note, HasUserData=@true where Id=@id", Database.Data.Connection);
-        		command.Parameters.Add("@Note", DbType.String).Value = value;
-        		command.Parameters.Add("@true", DbType.Boolean).Value = true;
-        		command.Parameters.Add("@id", DbType.Int64).Value = Id;
-        		command.ExecuteNonQuery();
-        		command.Dispose();
-        		noteCheckSum = newNoteCheckSum;
-            }*/
+          if (newNoteCheckSum != noteCheckSum)
+          {
+              ContentValues args = new ContentValues();
+              args.put("Notes", value);
+              args.put("HasUserData", true);
+              
+              Database.Data.myDB.update("Caches", args, "id=" + Id, null);
+              noteCheckSum = newNoteCheckSum;
+          }
         }
 
         private int solverCheckSum = 0;   // for Replication
-        public String Solver()
+        public String GetSolver()
         {
         	String resultString = "";
             Cursor c = Database.Data.myDB.rawQuery("select Solver from Caches where Id=?", new String[] { String.valueOf(Id) });
@@ -250,20 +251,20 @@ public class Cache implements Comparable<Cache> {
             noteCheckSum = (int)Global.sdbm(resultString);
             return resultString;
         }
-        public void Solver(String value)
+        public void SetSolver(String value)
         {
-/*            int newSolverCheckSum = (int)Global.sdbm(value);
-            Replication.SolverChanged(this.Id, solverCheckSum, newSolverCheckSum);
+            int newSolverCheckSum = (int)Global.sdbm(value);
+            
+//            Replication.SolverChanged(this.Id, solverCheckSum, newSolverCheckSum);
             if (newSolverCheckSum != solverCheckSum)
             {
-                SqlCeCommand command = new SqlCeCommand("update Caches set Solver=@Solver, HasUserData=@true where Id=@id", Database.Data.Connection);
-                command.Parameters.Add("@Solver", DbType.String).Value = value;
-                command.Parameters.Add("@true", DbType.Boolean).Value = true;
-                command.Parameters.Add("@id", DbType.Int64).Value = Id;
-                command.ExecuteNonQuery();
-                command.Dispose();
+                ContentValues args = new ContentValues();
+                args.put("Solver", value);
+                args.put("HasUserData", true);
+                
+                Database.Data.myDB.update("Caches", args, "id=" + Id, null);
                 solverCheckSum = newSolverCheckSum;
-            }*/
+            }
         }
         
 

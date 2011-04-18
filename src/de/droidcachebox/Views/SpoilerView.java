@@ -159,4 +159,17 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
 */
 	}
 
+	@Override
+	public void OnShow() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void OnHide() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

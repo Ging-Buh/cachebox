@@ -636,6 +636,11 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 */
     public void OnShow()
     {
+    	Render(true);
+    }
+    
+    public void InitializeMap()
+    {
     	gcLogin = "Ging-Buh";
     	mapMaxCachesDisplay = 50;
     	mapMaxCachesDisplayLarge = 100;
@@ -718,9 +723,6 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 */
 
       updateCacheList();
-/* dieses Render hier nur zum testen!!!!!!!!!!!!!!!!!!!!!!!!*/      
-//      Render(true);
-
     }
 /*
     public void OnHide()
@@ -1811,8 +1813,10 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
 	      canvasOverlay = canvas;
 	      renderCaches();
-	
+
+	      canvas.rotate(-tmpCanvasHeading, width / 2, height / 2);
 	      renderPositionAndMarker();
+	      canvas.rotate(tmpCanvasHeading, width / 2, height / 2);
 	
 	      renderScale();
 	      /*
@@ -3579,6 +3583,12 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 //		debugString2 = "h = " + drawingHeight + " - w = " + drawingWidth;
 		Render(true);
 	
+	}
+
+	@Override
+	public void OnHide() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

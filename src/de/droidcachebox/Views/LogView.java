@@ -22,7 +22,8 @@ import android.widget.ListView;
 
 public class LogView extends ListView implements SelectedCacheEvent, ViewOptionsMenu{
 
-	private Paint paint;
+	Cache aktCache;
+	boolean mustLoad;
 	CustomAdapter lvAdapter;
 	/**
 	 * Constructor
@@ -30,11 +31,11 @@ public class LogView extends ListView implements SelectedCacheEvent, ViewOptions
 	private String text;
 	public LogView(Context context) {
 		super(context);
+		mustLoad = false;
 
 		SelectedCacheEventList.Add(this);
 		this.setAdapter(null);
-		lvAdapter = new CustomAdapter(getContext(), Global.SelectedCache());
-		this.setAdapter(lvAdapter);
+
 		this.setLongClickable(true);
 		this.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
@@ -126,15 +127,34 @@ public class LogView extends ListView implements SelectedCacheEvent, ViewOptions
 
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
-		// TODO Auto-generated method stub
-		this.setAdapter(null);
-		lvAdapter = new CustomAdapter(getContext(), cache);
-		this.setAdapter(lvAdapter);
-		lvAdapter.notifyDataSetChanged();		
+		if (aktCache != cache)
+		{
+			aktCache = cache;
+			mustLoad = true;
+		}
 	}
 
 	@Override
 	public void BeforeShowMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void OnShow() {
+		// TODO Auto-generated method stub
+		if (mustLoad)
+		{
+			this.setAdapter(null);
+			lvAdapter = new CustomAdapter(getContext(), aktCache);
+			this.setAdapter(lvAdapter);
+			lvAdapter.notifyDataSetChanged();
+			mustLoad = false;
+		}
+	}
+
+	@Override
+	public void OnHide() {
 		// TODO Auto-generated method stub
 		
 	}

@@ -3,6 +3,7 @@ package de.droidcachebox;
 import java.io.BufferedReader;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,11 +11,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Type;
 
 import java.util.HashMap;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.os.Environment;
 
 public class Config {
 	
@@ -115,6 +118,16 @@ public class Config {
                  
                  try {
                 	 //Filereader = new BufferedReader(new InputStreamReader(AssetMgr.open(ConfigName)));
+                	 
+                	 String state = Environment.getExternalStorageState();                	 
+                	 if (!Environment.MEDIA_MOUNTED.equals(state)) {
+                		 // External Storage not mounted or not readable
+                		 initialized = false;
+                		 return;                		 
+                	 }
+                	 
+                	 File fileex = Environment.getExternalStorageDirectory();
+
                 	 Filereader = new BufferedReader(new FileReader(ConfigName));
                    String line;
                  

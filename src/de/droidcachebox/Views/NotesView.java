@@ -11,30 +11,35 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class NotesView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent {
 	Context context;
-	TextView tvNotes;
+	EditText edNotes;
 	Cache aktCache;
+	boolean mustLoadNotes;
 
 	public NotesView(Context context, LayoutInflater inflater) {
 		super(context);
-
+		mustLoadNotes = false;
 		SelectedCacheEventList.Add(this);
 
 		RelativeLayout notesLayout = (RelativeLayout)inflater.inflate(R.layout.notesview, null, false);
 		this.addView(notesLayout);
-        tvNotes = (TextView) findViewById(R.id.notesText);
-        tvNotes.setTextColor(Color.BLACK);
+        edNotes = (EditText) findViewById(R.id.notesText);
+        edNotes.setTextColor(Color.BLACK);
 }
 
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
-		aktCache = cache;
-		tvNotes.setText(cache.Note());
+		if (aktCache != cache)
+		{
+			mustLoadNotes = true;
+			aktCache = cache;
+		}
 	}
 
 	@Override
@@ -47,6 +52,22 @@ public class NotesView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	public void BeforeShowMenu(Menu menu) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void OnShow() {
+		if (mustLoadNotes)
+		{
+			edNotes.setText(aktCache.GetNote());
+			mustLoadNotes = false;
+		}
+		
+	}
+
+	@Override
+	public void OnHide() {
+		// Save changed Note text
+		aktCache.SetNote(edNotes.getText().toString());		
 	}
 
 }

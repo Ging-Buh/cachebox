@@ -158,10 +158,6 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		Location location = locationManager.getLastKnownLocation(provider);
 		locationManager.requestLocationUpdates(provider, 1000, 1, this);                
         
-        
-
-
-        Global.SelectedCache(Database.Data.Query.get(0));
         mapView = new MapView(this, "Map-View");
         mapView.Initialize();
         mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.GetString("CurrentMapLayer"), Config.GetString("CurrentMapLayer"), "");
@@ -179,8 +175,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         this.buttonDB.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-            	frame.removeAllViews();
-                frame.addView(cacheListView);
+            	showView(cacheListView);
             }
           });
 //      this.buttonDB.setLongClickable(true);
@@ -199,9 +194,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         this.buttonCache.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-            	frame.removeAllViews();
-        		descriptionView.setCache(Global.SelectedCache());
-                frame.addView(descriptionView);
+            	showView(descriptionView);
             }
           });
         
@@ -210,10 +203,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         this.buttonMap.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-            	frame.removeAllViews();
-                frame.addView(mapView);
-                aktView = mapView;
-                mapView.Render(true);
+            	showView(mapView);
             }
           });
         
@@ -223,8 +213,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         this.buttonInfo.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-            	frame.removeAllViews();
-                frame.addView(logView);
+            	showView(logView);
             }
           });
         
@@ -238,10 +227,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
             }
           });
         
-
-        
-        
-        mapView.OnShow();
+        mapView.InitializeMap();
+        Global.SelectedCache(Database.Data.Query.get(0));
     }
 
     @Override
@@ -325,41 +312,31 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     			item.setChecked(true);
     		return true;
     	case R.id.miCacheList:
-    		frame.addView(cacheListView);
-    		aktView = cacheListView;
+    		showView(cacheListView);
     		return true;
     	// Cache
     	case R.id.miDescription:
-    		descriptionView.setCache(Global.SelectedCache());
-    		frame.addView(descriptionView);
-    		aktView = descriptionView;
+    		showView(descriptionView);
     		return true;
     	case R.id.miWaypoints:
-    		frame.addView(waypointView);
-    		aktView = waypointView;
+    		showView(waypointView);
     		return true;
     	case R.id.miNotes:
-    		frame.addView(notesView);
-    		aktView = notesView;
+    		showView(notesView);
     		return true;
     	case R.id.miSolver:
-    		frame.addView(solverView);
-    		aktView = solverView;
+    		showView(solverView);
     		return true;
     	// Map
     	case R.id.miMapView:
-    		frame.addView(mapView);
-    		aktView = mapView;
-            mapView.Render(true);
+    		showView(mapView);
     		return true;
     	// Info
     	case R.id.miLogView:
-    		frame.addView(logView);
-    		aktView = logView;
+    		showView(logView);
     		return true;
     	case R.id.miSpoilerView:
-    		frame.addView(spoilerView);
-    		aktView = spoilerView;
+    		showView(spoilerView);
     		return true;
     	// Misc
     	case R.id.miClose:
@@ -369,6 +346,16 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			return super.onOptionsItemSelected(item);
     	}
     }    
+    
+    private void showView(ViewOptionsMenu view)
+    {
+    	if (aktView != null)
+    		aktView.OnHide();
+    	aktView = view;
+    	frame.removeAllViews();
+    	frame.addView((View) aktView);
+    	aktView.OnShow();    
+    }
     
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
