@@ -104,7 +104,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
 		try
 		{
-			Render(false);
+			Render(true);
 		} catch (Exception exc)
 		{
 			return;
@@ -636,7 +636,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 */
     public void OnShow()
     {
-    	Render(true);
+//    	Render(true);
     }
     
     public void InitializeMap()
@@ -836,7 +836,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     				Tile ttile = loadedTiles.get(available.GetHashCode());
     				tile = ttile.Image;
     			}
-    		} while (available.Zoom >= 0 && (tile == null));
+    		} while (available.Zoom >= 1 && (tile == null));
     	}
     	// No tile available. Use Background color (so that at least
     	// routes are painted!)
@@ -1658,17 +1658,17 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         p1.x = p1.x - width / 2;
         p1.y = p1.y - height / 2;
         // skalieren
-        p1.x = (int) Math.round(p1.x * multiTouchFaktor + width / 2);
-        p1.y = (int) Math.round(p1.y * multiTouchFaktor + height / 2);
+        p1.x = (int) Math.round(p1.x * multiTouchFaktor + drawingWidth/ 2);
+        p1.y = (int) Math.round(p1.y * multiTouchFaktor + drawingHeight / 2);
         // relativ zu Zentrum
         p2.x = p2.x - width / 2;
         p2.y = p2.y - height / 2;
         // skalieren
-        p2.x = (int) Math.round(p2.x * multiTouchFaktor + width / 2);
-        p2.y = (int) Math.round(p2.y * multiTouchFaktor + height / 2);
+        p2.x = (int) Math.round(p2.x * multiTouchFaktor + drawingWidth / 2);
+        p2.y = (int) Math.round(p2.y * multiTouchFaktor + drawingHeight / 2);
     	
 
-        return (p1.x < width && p2.x >= 0 && p1.y < height && p2.y >= 0);
+        return (p1.x < drawingWidth && p2.x >= 0 && p1.y < drawingHeight && p2.y >= 0);
     }
 
     /// <summary>
@@ -1704,15 +1704,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     	  } catch (Exception ex) { }
       }
     }
-/*
 
-    protected override void OnPaint(PaintEventArgs e)
-    {
-      Render(true);
-    }
-
-    delegate void EmptyDelegate(bool overrideRepaintIntelligence);
-*/
     boolean lastRenderZoomScale = false;
     boolean tilesFinished = false;
     int lastZoom = Integer.MIN_VALUE;
@@ -2127,7 +2119,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
       {
         drawImage(canvas, tile.Image, pt.x, pt.y, (int)(256.0f * dpiScaleFactorX * multiTouchFaktor), (int)(256.0f * dpiScaleFactorY * multiTouchFaktor));
  
-  // Draw Kachel marker      
+        // Draw Kachel marker      
         Paint paintt = new Paint(backBrush);
         paintt.setColor(Color.GREEN);
         paintt.setStyle(Style.STROKE);
@@ -2140,6 +2132,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
         return;
       }
+
       try
       {
     	  Bitmap bit = loadBestFit(CurrentLayer, tile.Descriptor, false);
@@ -2158,6 +2151,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
       }
       catch (Exception ex)
       {
+		  canvas.drawRect(pt.x, pt.y, pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor), pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor), backBrush);
       }
     }
 
