@@ -15,36 +15,53 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.widget.LinearLayout;
+import android.widget.AbsListView.LayoutParams;
 
 public class CacheListViewItem extends View {
     private Cache cache;
     private int mAscent;
     private int width;
     private int height;
-    
+    private int rightBorder;
     
     
     /// <summary>
     /// Höhe einer Zeile auf dem Zielgerät
     /// </summary>
-    private int lineHeight = 16;
-    
-    private int imgSize = 16;
+    private int lineHeight = 37;
+    private int imgSize = 37;
 
+    /// <summary>
+    /// Spiegelung des Logins bei Gc, damit ich das nicht dauernd aus der
+    /// Config lesen muss.
+    /// </summary>
+    String gcLogin = "";
+    
+    
+    
+    
 	public CacheListViewItem(Context context, Cache cache) {
 		// TODO Auto-generated constructor stub
 		super(context);
         this.cache = cache;
-        
+        gcLogin = Config.GetString("GcLogin");
         this.setBackgroundColor(Config.GetBool("nightMode")? Global.Colors.Night.ListBackground : Global.Colors.Day.ListBackground);
        }
 
 	
 	@Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(measureWidth(widthMeasureSpec),75);
+       
+        
+        
+        // Berechne Höhe so das 7 Einträge in die Liste passen
+        this.height = (int) CacheListView.windowH / 7;
+        this.imgSize = (int) (this.height / 1.5);
+        this.lineHeight = (int) this.height / 3;
+        this.rightBorder = this.height;
+        
+        setMeasuredDimension(measureWidth(widthMeasureSpec),this.height);
               //  measureHeight(heightMeasureSpec));
-        this.height = 75;
 	}
     
     /**
@@ -96,7 +113,7 @@ public class CacheListViewItem extends View {
                 result = Math.min(result, specSize);
             }
         }
-        height = result;
+     
         return result;
     }
     /**
@@ -128,8 +145,8 @@ public class CacheListViewItem extends View {
         if (cache.Rating > 0)
             Global.PutImageTargetHeight(canvas, Global.SmallStarIcons[(int)(cache.Rating * 2)], 0, y + imgSize, lineHeight / 2);
 
-       Paint NamePaint = (cache == Global.SelectedCache())? Config.GetBool("nightMode")? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected : Config.GetBool("nightMode")? Global.Paints.Night.Text.noselected: Global.Paints.Day.Text.noselected;  
-       canvas.drawText(cache.Name, 5, 30, NamePaint);
+       Paint NamePaint = (cache == Global.SelectedCache())? Config.GetBool("nightMode")? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected : Config.GetBool("nightMode")? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected;  
+       canvas.drawText(cache.Name, imgSize + 2, 30, NamePaint);
 
         //  if (Global.LastValidPosition.Valid || Global.Marker.Valid)
         //  {
@@ -155,9 +172,9 @@ public class CacheListViewItem extends View {
         
                
           if (cache.Found()) // Todo Longri Draw Icons width Transparence
-              Global.PutImageTargetHeight(canvas, Global.CacheIconsBigFound[cache.Type.ordinal()], 0, 30, imgSize);
+              Global.PutImageTargetHeight(canvas, Global.CacheIconsBigFound[cache.Type.ordinal()], 0, 0, imgSize);
           else
-              Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.Type.ordinal()], 0, 30, imgSize);
+              Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.Type.ordinal()], 0, 0, imgSize);
 
           if (cache.Favorit())
          {
@@ -174,10 +191,10 @@ public class CacheListViewItem extends View {
              Global.PutImageTargetHeight(canvas, Global.Icons[24], 0, y, lineHeight);
           }
 
-        //  if (cache.Owner == gcLogin && !String.IsNullOrEmpty(gcLogin))
-          //  {
-          //      Global.PutImageTargetHeight(canvas, Global.MapIcons[20], 0, y, lineHeight);
-          //  }
+         if (cache.Owner == gcLogin && !(gcLogin == ""))
+           {
+               Global.PutImageTargetHeight(canvas,Global.NewMapIcons.get(2).get(20), 0, y, lineHeight);
+           }
 
 
         //  if (cache.MysterySolved && !cache.Archived)
@@ -190,34 +207,28 @@ public class CacheListViewItem extends View {
         //      Global.PutImageTargetHeight(gfx, Global.MapIcons[22], 0, y + imgSize - 15, lineHeight, colorKeyIcons);
         //  }
 
+         Paint DTPaint =  Config.GetBool("nightMode")? Global.Paints.Night.Text.noselected: Global.Paints.Day.Text.noselected ;
+        int left = x + imgSize + 3;
+        canvas.drawText("D",left, y + lineHeight * 2, DTPaint);
+          left += lineHeight / 2;
 
-        //  int left = x + imgSize + 3;
-        //  gfx.DrawString("D", font, blackBrush, left, y + lineHeight * 2);
-        //  left += lineHeight / 2;
+            left += Global.PutImageTargetHeight(canvas, Global.SmallStarIcons[(int)(cache.Difficulty * 2)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
 
-        //  if (cache == Global.SelectedCache)
-        //      left += Global.PutImageTargetHeight(gfx, Global.StarIcons[(int)(cache.Difficulty * 2)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2, colorKeyStarIcons);
-        //  else
-        //      left += Global.PutImageTargetHeight(gfx, Global.StarIcons[(int)(cache.Difficulty * 2)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
+         left += lineHeight;
 
-        //  left += lineHeight;
-
-        //  gfx.DrawString("T", font, blackBrush, left, y + lineHeight * 2);
-        //  left += lineHeight / 2;
-        //  if (cache == Global.SelectedCache)
-        //      left += Global.PutImageTargetHeight(gfx, Global.StarIcons[(int)(cache.Terrain * 2)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2, colorKeyStarIcons);
-        //  else
-        //      left += Global.PutImageTargetHeight(gfx, Global.StarIcons[(int)(cache.Terrain * 2)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
+         canvas.drawText("T", left, y + lineHeight * 2 , DTPaint);
+         left += lineHeight / 2;
+         left += Global.PutImageTargetHeight(canvas, Global.SmallStarIcons[(int)(cache.Terrain * 2)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
 
 
-        //  int numTb = cache.NumTravelbugs;
-        //  if (numTb > 0)
-        //  {
-        //      int tbWidth = Global.PutImageTargetHeight(gfx, Global.Icons[0], width - rightBorder, y + lineHeight, lineHeight);
+          int numTb = cache.NumTravelbugs;
+         if (numTb > 0)
+          {
+              int tbWidth = Global.PutImageTargetHeight(canvas, Global.Icons[0], width - rightBorder, y + lineHeight, lineHeight);
 
-        //      if (numTb > 1)
-        //          gfx.DrawString("x" + numTb.ToString(), font, blackBrush, width - rightBorder + tbWidth, y + lineHeight + 1);
-        //  }
+              if (numTb > 1)
+            	  canvas.drawText("x" + String.valueOf(numTb), width - rightBorder + tbWidth, y + lineHeight + 1 , DTPaint);
+          }
         	
       	
       	

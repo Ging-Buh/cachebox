@@ -41,13 +41,16 @@ import android.os.PowerManager;
 import android.os.SystemClock;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -63,7 +66,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private ImageButton buttonInfo;
 	private ImageButton buttonMisc;
 	private FrameLayout frame;
-//	private LinearLayout layoutButtons;
+	private LinearLayout layoutButtons;
 	private FrameLayout frameCacheName;
 	private FrameLayout frameClock;
 	
@@ -80,6 +83,10 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private NotesView notesView;
 	private SolverView solverView;
 	
+	int width;
+    int height;
+
+	
 	// Powermanager
     protected PowerManager.WakeLock mWakeLock;
     // GPS
@@ -94,6 +101,10 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private enum nextMenuType { nmDB, nmCache, nmMap, nmInfo, nmMisc }
 	private nextMenuType nextMenu = nextMenuType.nmDB;
 
+	
+	
+	
+   
 	
 	
     final SensorEventListener mListener = new SensorEventListener() {
@@ -116,6 +127,12 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
         SelectedCacheEventList.Add(this);
+        
+        WindowManager w = getWindowManager();
+        Display d = w.getDefaultDisplay();
+         this.width = d.getWidth();
+         this.height = d.getHeight();
+
 
         inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
@@ -130,8 +147,15 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         clockView = new ClockView(this);
         frameClock.addView(clockView);
 
-      //  layoutButtons = (LinearLayout)this.findViewById(R.id.layoutButtons);
-      //  layoutButtons.setBackgroundColor(Global.TitleBarColor);
+        layoutButtons = (LinearLayout)this.findViewById(R.id.layoutButtons);
+   //     try{
+   //     layoutButtons.setLayoutParams(new LayoutParams(width, 200));    //layout(0, 200, 0, 0);
+   //     }
+   //     catch (Exception e)
+   //     {
+   //     	layoutButtons = (LinearLayout)this.findViewById(R.id.layoutButtons);
+   //     }
+        
         
         frame = (FrameLayout)this.findViewById(R.id.layoutContent);
         frame.setBackgroundColor(Config.GetBool("nightMode")? Global.Colors.Night.EmptyBackground : Global.Colors.Day.EmptyBackground);
@@ -189,7 +213,9 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				return true;
 			}
 		});
-*/
+		
+		
+		*/
         this.buttonCache = (ImageButton)this.findViewById(R.id.buttonCache);
         registerForContextMenu(buttonCache);
         this.buttonCache.setOnClickListener(new OnClickListener() {
@@ -231,6 +257,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         mapView.InitializeMap();
         Global.SelectedCache(Database.Data.Query.get(0));
     }
+    
+  
 
     @Override
     public void onDestroy() {
@@ -343,6 +371,9 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     	case R.id.miClose:
     		finish();
     		return true;
+    	case R.id.miDayNight:
+    		changeDayNight();
+    		return true;
 		default:
 			return super.onOptionsItemSelected(item);
     	}
@@ -380,6 +411,14 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 /*    	TextView textview = (TextView)this.findViewById(R.id.textCacheName);
     	textview.setText(cache.Name);*/
     }
+    
+    public void changeDayNight()
+    {
+    	Boolean value = Config.GetBool("nightMode");
+    	value = !value;
+    	Config.Set("nightMode",value);
+    }
+    
 
 	@Override
 	public void onLocationChanged(Location location) {

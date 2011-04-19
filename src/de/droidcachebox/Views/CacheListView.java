@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 public class CacheListView extends ListView implements ViewOptionsMenu {
@@ -52,7 +53,19 @@ public class CacheListView extends ListView implements ViewOptionsMenu {
 		this.setDividerHeight(5);
 		this.setDivider(getBackground());
 		
+		
 	}
+	
+	 	static public int windowW=0;
+	    static public int windowH=0 ;
+	    @Override
+	    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) 
+	    {
+	    // we overriding onMeasure because this is where the application gets its right size.
+	    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+	    windowW = getMeasuredWidth();
+	    windowH = getMeasuredHeight();
+	    }
 
 	public class CustomAdapter extends BaseAdapter /*implements OnClickListener*/ {
 		 

@@ -117,11 +117,12 @@ public class Global {
     		Night.Text.selected.setColor(Colors.Night.Foreground);
     		Night.Text.selected.setAntiAlias(true);
     		Night.Text.selected.setTextSize(24);
+    		Night.Text.selected.setFakeBoldText(true);
         	Night.Text.noselected = new Paint();
     		Night.Text.noselected.setColor(Colors.Night.Foreground);
     		Night.Text.noselected.setAntiAlias(true);
     		Night.Text.noselected.setTextSize(24);
-    		Night.Text.noselected.setFakeBoldText(true);
+    		
     		
     		
     		Day.ListBackground=new Paint();
@@ -134,11 +135,12 @@ public class Global {
     		Day.Text.selected.setColor(Colors.Day.Foreground);
     		Day.Text.selected.setAntiAlias(true);
     		Day.Text.selected.setTextSize(24);
+    		Day.Text.selected.setFakeBoldText(true);
     		Day.Text.noselected = new Paint();
     		Day.Text.noselected.setColor(Colors.Day.Foreground);
     		Day.Text.noselected.setAntiAlias(true);
     		Day.Text.noselected.setTextSize(24);
-    		Day.Text.noselected.setFakeBoldText(true);
+    		
     		
     	}
     		 
@@ -183,8 +185,11 @@ public class Global {
     /// <param name="height"></param>
     public static int PutImageTargetHeight(Canvas canvas, Drawable image, int x, int y, int height)
     {
-        float scale = (float)height / (float)image.getBounds().height();
-        int width = (int)Math.round(image.getBounds().width() * scale);
+       // float scale = (float)height / (float)image.getBounds().height();
+       // int width = (int)Math.round(image.getBounds().width() * scale);
+        
+        float scale = (float)height / (float)image.getIntrinsicHeight();
+        int width = (int)Math.round(image.getIntrinsicWidth() * scale);
 
         Rect oldBounds = image.getBounds();
         image.setBounds(x, y, x + width, y + height);
