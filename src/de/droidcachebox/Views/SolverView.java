@@ -6,6 +6,8 @@ import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Waypoint;
+import de.droidcachebox.Solver.Solver;
+import de.droidcachebox.Solver.SolverZeile;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SolverView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent{
 	Context context;
@@ -49,9 +52,42 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu, Selected
 	}
 
 	protected void solve() {
-		edResult.setText(edSolver.getText().toString());
-		
-		
+		Solver solver = new Solver(edSolver.getText().toString());
+		if (!solver.Solve())
+		{
+			Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+		}
+	    edResult.setText("");
+	    String result = "";
+	    for (SolverZeile zeile : solver)
+	    {
+	    	result += zeile.Solution + "\n";
+	    }
+/*		
+	      if ((Solver.MissingVariables != null) && (Solver.MissingVariables.Count > 0))
+	      { 
+	        // es sind nicht alle Variablen zugewiesen
+	        // Abfrage, ob die Deklarationen eingefügt werden sollen
+	        string message = "";
+	        foreach (string s in Solver.MissingVariables.Keys)
+	        {
+	          if (message != "")
+	            message += ", ";
+	          message += s;
+	        }
+	        if (MessageBox.Show("Insert declarations for the missing variables:" + Environment.NewLine + message, "Missing variables", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+	        {
+	          string missing = "";
+	          foreach (string s in Solver.MissingVariables.Keys)
+	          {
+	            missing += s + "=" + Environment.NewLine;
+	            tbLösung.Text = Environment.NewLine + tbLösung.Text;
+	          }
+	          textBox1.Text = missing + textBox1.Text;
+	        }
+	      }
+*/
+	    edResult.setText(result);
 	}
 
 	@Override
