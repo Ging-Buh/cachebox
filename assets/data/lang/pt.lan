@@ -1,0 +1,339 @@
+Portugues
+// Main Menu
+	Misc = Misc
+	Find = Logs
+	Nav = Nav
+	Cache = Cache
+	DB = BD
+	Description = Descrição
+	MakeSelection = Seleccionar
+	Waypoints = Waypoints
+	Notes = Notas
+	Solver = Solver
+	Favorite = Favorito
+	Map = Mapa
+	Compass = Compasso
+	Radar = Radar
+	Tracks = Trilhos
+	ShowLogs = Mostrar Registos
+	MyFieldNotes = Notas de Campo
+	hint = Dica
+	spoiler = Spoiler
+	about = Sobre!
+	settings = Opções
+	tools = Ferramentas
+	import = Importar
+	quit = Sair
+	found = Encontrada!
+	DNF = Não Encontrada!
+	maintenance = Precisa Manutenção
+	AddNote = Adicionar Nota
+	ClearCurrentFieldNote = Limpar Nota Actual
+	ShowRecentNotes = Mostras Notas Recentes
+	ManageNotes = Gerir Notas
+	DeleteAllNotes = Apagar todas as Notas
+	DeleteAllFieldNotesQuestion = Está prestes a apagar todas as notas. Tem a certeza?
+	cacheList = Lista
+	filter = Filtrar
+	search = Procurar
+	ResortList = Reordenar Lista
+	AutoResort = Ordenação Automática
+	record = Gravar
+	pause = Pausa
+	stop = Parar
+	export = Exportar
+	TrackRec = Gravação Trilhos
+	VoiceRec = Gravação Voz
+	createPQ = Criar Pocket Query
+	uploadFieldNotes = Enviar Notas Campo
+	TomTom = TomTom
+	GPX = GPX
+	GoogleMap = Google Map
+	TakePhoto = Tirar Foto
+	RecVideo = Gravar Vídeo
+	ChkUpdate = Procurar Actualizações
+	manage = Gerir
+	
+
+// AboutViewPanel
+	caches_found = Caches Encontradas:
+	gps = GPS:
+	not_active = inactivo
+	not_detected = não detectado
+	sats_nr = Sats:
+	Hdop = Hdop:
+	alt = Alt:
+	waiting_for_fix = A esperar sinal
+	not_responding = sem resposta
+	waypoint = Waypoint:
+	coordinate = Coord:
+	current = Actual:
+
+// MsgBox texts
+	Error = Erro
+	Warning = Atenção!
+	thisNotWork = Isto não funciona!
+
+	Open_getcachebox_Link = Abrir www.getcachebox.net no browser
+	allowInetConn = Conexão internet desligada! Pretende abrir o link na mesma?
+	
+	Open_Cache_Link = Abrir cache no browser
+	Cann_not_open_cache_browser = Impossível abrir cache no browser
+	
+	CanntProcessUpdateFiles = Não foi possível processar actualização!
+	ErrDbStartup = Erro durante a inicialização da BD!
+	ErrDbFNStartup = Erro durante a inicialização da BD de Notas!
+	CanntCreateProxy = Impossível criar proxy!
+	
+	Quit? = Sair do cachebox?
+	QuitReally = Tem a certeza que deseja sair do cachebox?
+	
+	uploadFieldNotes? = Enviar Notas Campo para geocaching.com? Isto pode implicar custos!
+	NoFindsLogged = Não tem registos feitos com o Cachebox!
+	
+	CreatePQ? = Criar Pocket Query @ geocaching.com? Isto pode implicar custos!
+	
+	CanntOpenRecentNotes = Impossível abrir notas de campo no browser
+	
+	ShowSpoiler = Mostrar Spoiler
+	spoilSearch = Tem a certeza?
+	
+	ErrStartExternViewer = Erro ao iniciar visualizador externo
+	
+	downloadSpoiler = Descarregar spoiler
+	downloadSpoiler? = Tem a certeza?
+	NoSpoiler = Não existem spoilers.
+	NoCacheSelect = Nenhuma cache seleccionada.
+	NoAccessAllowed = Acesso Internet desligado! Active nas configurações para descarregar spoilers.
+	
+	ErrNoCam = Ocorreu um erro! Parece que o dispositivo não tem câmara fotográfica!
+	
+	AppUpdate = Actualizar aplicação
+	AccessUpdate? = Aceder à Internet para verificar existência de updates?
+	
+	ErrLanchUpdater = Execução de Actualização falhou!
+	
+	upToDate = A versão instalada é a mais actual!
+	
+	ErrChkUpdate = Verificação de actualizações falhou...
+	
+	ErrSqlUpdate = A BD [%dbfile%] não tem a versão correcta. É possível que o ficheiro esteja corrupto. Tentar reparar?\nEsta operação pode demorar algum tempo (dependendo do tamanho da BD)!
+	
+	
+// Splash screan Messages
+	openDB = A abrir base de dados...
+	IniUI = A inicializar o Interface...
+	LoadMapPack = A carregar mapas...
+	LoadCaches = A carregar caches...
+	
+	
+// Forms
+
+	// general
+		cancel = Cancelar
+		confirm = OK
+		ok = Ok
+	
+	
+	// FormSelectDB
+		NewDB = Nova BD
+		SelDB = Seleccionar BD 
+		AutoStart = Arranque automático
+		AutoStartTime = Depois de %s segundos
+		AutoStartDisabled = Desactivado
+		StartWithoutSelection = Sem escolher
+		
+	// DatabaseChangedForm
+		DatabaseChangedForm.Text = O formato da BD mudou
+		DatabaseChangedForm.Msg = Parabéns por actualizar o Cachebox! O formato da BD mudou e precisa de ser actualizado. Isto irá tornar mais lenta a importação, pelo que se recomenda criar uma nova BD.
+		deleteDB = Apagar BD
+		convert = Converter
+		
+	// FormNewDB
+		InsNewDBName = Insira o nome da Nova BD
+		UseDefaultRep = Usar Repositório por defeito?
+		
+	// FormCreatePocketQuery
+       connecting = Em ligação...
+       createPQ = Criar Pocket Query
+       ErrCreatePQ =  Ocorreu um erro durante a criação da pocket query!
+       ErrLogInCreatePq = Ocorreu um erro de identificação durante a criação da pocket query! Dados de identificação inválidos?
+       ServerTimeout = Tempo de espera ultrapassado...
+       NetConnectProb = Problemas de ligação de rede!
+       NoGCpassword = Não especificou a sua senha do GC!
+		
+	// FormDownloadCacheImage
+		LowMemOperationCancel = O dispositivo está a ficar com pouca memória! Esta operação irá ser cancelada!
+		ImportImage = A importar Imagens
+		
+	//WaypointViewPanel
+		Projection = Projecção
+		EnterMan = Introd. Manualmente
+		FromGps = Do GPS
+		details = Detalhes
+		delete = Apagar
+		DecDeg = Graus Decimais
+		DegMin = Graus, Min
+		DegMinSec = Graus, Min, Seg
+		utm = UTM
+		addWaypoint = adicionar Waypoint
+		?replaceCoord = Tem a certeza que quer substituir as coordenadas?
+		!replaceCoord = Substituir coordenadas
+		!DelWP = Apagar Waypoint
+		?DelWP = Tem a certeza que quer apagar este waypoint?
+		N = N
+		E = E
+		Zone = Zone
+		FromClipboard = De Clipboard
+		PasteCoord = Colar Coordenadas
+		CopyCoord = Copiar Coordenadas
+		CopyGcCode = Copiar Código
+		
+	//SolverViewPanel
+		Solve = Resolver
+		Funct. = Funcões
+		Select. = Selecc.
+		Keyb. = Tecl.
+		PasteClip = Colar
+		AsCenter = Como Centro
+		AddWaypoint = Adic. Waypoint
+		Clipboard = Área de Transferência
+		
+	//GetSolverFunction
+		getSolverFunction = Inserir Função Solver
+		groups = Grupos
+		functions = Funções
+		otherNames = Outros Nomes
+
+	//Solver
+		solverGroupText = Texto
+		solverGroupNumbers = Números
+		solverGroupCoordinates = Coordenadas
+
+	//Solver Functions
+		solverFuncAlphaSum = SomaAlfa
+		solverDescAlphaSum = Somatório de todas as posições de todos os caracteres do Alfabeto
+		solverFuncAlphaPos = PosAlfa
+		solverDescAlphaPos = Posição do primeiro caractere no Alfabeto
+		solverFuncPhoneCode = CodTelef
+		solverDescPhoneCode = Posição do primeiro caractere no teclado de um telefone
+		solverFuncHandySum = SomaTelef
+		solverDescPhoneSum = Somatório de todas as posições de todos os caracteres do teclado de um telefone
+		solverFuncLength = Comprimento
+		solverDescLength = Número de caracteres de um texto
+		solverFuncCrosstotal = Crosstotal
+		solverDescCrosstotal = Sum of all single numbers in the number. \nExample: CT(123456) = 21
+		solverFuncICrosstotal = ICrosstotal
+		solverDescICrosstotal = Iterated Crosstotal until result has only 1 digit. \nExample: ICT(123456) = 3
+		solverFuncCrossproduct = Crossproduct
+		solverDescCrossprocuct = Product of all single numbers in the number. \nExample: CP(1234) = 24
+		solverFuncICrossproduct = ICrossproduct
+		solverDescICrossproduct = Iterated Crosstotal until result has only 1 digit. \nExample: ICP(1234) = 8
+		solverFuncRom2Dec = Rom2Dec
+		solverDescRom2Dec = Roman numerals to decimal
+		solverFuncPrimenumber = Primenumber
+		solverDescPrimenumber = Primenumber(x) Gives the x-th prime number. \nExample: Primenumber(5) = 11
+		solverFuncPrimeIndex = PrimeIndex
+		solverDescPrimeIndex = PrimeIndex(y) Gives the index of the prime number y. \nExample: PrimeIndex(11) = 5
+		solverFuncProjection = Projection
+		solverDescProjection = Projection of Coordinate. \nProjection(coord; length; angle)
+		solverFuncIntersection = Intersection
+		solverDescIntersection = Intersection of 2 Lines (coord1-coord2) with (coord3-coord4). \nIntersection(coord1; coord2; coord3; coord4)
+		solverFuncCrossbearing = Crossbearing
+		solverDescCrossbearing = Crossbearing between 2 points and 2 directions \nCrossbearing(coord1; angle1; coord2; angle2)
+		solverFuncBearing = Bearing
+		solverDescBearing = Gives the bearing from coord1 to coord2 \nBearing(coord1; coord2)
+		solverFuncDistance = Distance
+		solverDescDistance = Gives the distance between coord1 and coord2 in Meter \nDistance(coord1; coord2)
+		solverFuncInt = Int
+		solverDescInt = Gives the number before the Komma \nInt(-5.8) = 5
+		solverFuncRound = Round
+		solverDescRound = Rounds the number to x digits \nRound(1.8672; 2) = 1.87
+		solverFuncPi = Pi
+		solverDescPi = Gives the number Pi \nPi() = 3.14159265358979
+		solverFuncReverse = Reverse
+		solverDescReverse = Reverses the string \nReverse("ABC") = CBA
+		solverFuncRot13 = Rot13
+		solverDescRot13 = Gives the Rot13 encryption \nRot13("ABC") = NOP
+		
+	//CompassViewPanel
+		SatHdop = Sats/Hdop:
+		BearSpeed = Dir/Veloc:
+		distance = Distância:
+		Align = Align
+		AlignGps = Align \n GPS
+		AlignHtc = Align \n HTC
+		
+	//Searchform
+		SearchCache = Procurar Caches
+		Filter = Filtrar
+		Search = Procurar
+		Next = Seguinte
+		Title = Título
+		GCCode =Código
+		Owner = Owner
+		
+	//ProjectionForm
+		Projection = Projecção
+		Distance = Distância
+		Bearing = Azimute
+		
+//Settings
+
+	//GPS
+	CompatibleWithGpsModDriver? = Compatível com GpsModDriver?
+	UseCellId = Usar Antenas GSM para posição inicial sem gps.
+	UseHtcCompass = Usar bússola Htc
+	DescHtcLevel = Rácio de velocidade para bússola HTC ou GPS. \n-1 = GPS não é usado de todo.
+	
+	//Data
+	AdjustFounds = Ajustar número de finds...
+	LoadFounds = Carregar número de finds de gc.com
+	DeleteLogs = Apagar Logs
+	ButKeepLeast = mas manter pelo menos
+	ResetFavorites = Desmarcar favoritos...
+	ResetListingChanged = Limpar campo de descrição alterada...
+	RemoveCaches = Remover caches ...
+	ArchiveFilterSelection? = Está prestes a marcar todas as caches no actual filtro como arquivadas. Tem a certeza que pretende continuar?
+	ArchiveFilterSelection! = a arquivar Caches
+	DeleteFieldNotes = Apagar todas as field notes ...
+	DelCaches? = Está prestes a apagar todas as caches no actual filtro. Tem a certeza que pretende continuar?
+	DelCaches! = Apagar caches
+	ArchiveFilterSelection = Arquivar a selecção actual
+	DeleteFilterSelection = Apagar a selecção actual
+	DelLogs = Escolheu apagar os logs imediatamente. Na próxima importação todos os logs serão apagados. Tem a certeza que pretende continuar?
+	PleaseConfirm = Confirme por favor!
+	comboBoxLogLifeItem_0 = imediatamente
+	comboBoxLogLifeItem_1 = mais de 1 mês
+	comboBoxLogLifeItem_2 = mais de 2 mês
+	comboBoxLogLifeItem_3 = mais de 3 mês
+	comboBoxLogLifeItem_4 = mais de 4 mês
+	comboBoxLogLifeItem_5 = mais de 5 mês
+	comboBoxLogLifeItem_6 = mais de 6 mês
+	DelFieldNotes? = Está prestes a apagar todas as fieldnotes. Tem a certeza que pretende continuar?
+	DelFieldNotes! = Apagar Fieldnotes
+	ResetFavorites? = Está prestes a desmarcar todos os favoritos. Tem a certeza que pretende continuar?
+	ResetFavorites! = Desmarcar favoritos
+	ResetListingChanged? = Está prestes a desmarcar todos os 'listing changed'. Tem a certeza que pretende continuar?
+	ResetListingChanged! = Desmarcar 'listing changed'
+	LoadFinds! = Carregar o número de founds do geocaching.com? Isto pode implicar custos!
+	LoadFinds? = Carregar número de founds
+	LogInErrorLoadFinds = Erro na autenticação ao tentar obter o número de finds! Dados errados?
+	CannotResolveHost = Não consegue encontrar o servidor!
+	ServerTimeout = Tempo de ligação excedido...
+	FoundsSetTo = Número de finds definido: %s
+	
+	//FormAdjustFounds
+	AdjustFinds = Ajustar finds
+	TelMeFounds = Diz quantas caches tens encontradas actualmente:
+	
+	//MiscSettings
+	units = Unidades:	
+	AllowInternet = Permitir acesso Internet
+	ShowKeypad = Mostrar Teclado
+	SuppressPowerSaving = Evitar 'Power Saving'
+	UploadAllFieldnotes = Enviar todas as Fieldnotes? (Ignorar Data)
+	LogIn = Login no geocaching.com
+	GCPW = Password no geocaching.com
+	GCVotePW = Password GcVote 
+			
