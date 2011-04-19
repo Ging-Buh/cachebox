@@ -39,7 +39,17 @@ public class CacheListView extends ListView implements ViewOptionsMenu {
 		CustomAdapter lvAdapter = new CustomAdapter(getContext(), Database.Data.Query);
 		this.setAdapter(lvAdapter);
 		this.setLongClickable(true);
-		this.setOnItemLongClickListener(new OnItemLongClickListener() {
+		this.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+        		Cache cache = Database.Data.Query.get(arg2);
+        		Global.SelectedCache(cache);
+        		invalidate();
+				return;
+			}
+		});
+/*		this.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
@@ -47,7 +57,7 @@ public class CacheListView extends ListView implements ViewOptionsMenu {
         		Global.SelectedCache(cache);
 				return true;
 			}
-		});
+		});*/
 		this.setBackgroundColor(Config.GetBool("nightMode")? Global.Colors.Night.EmptyBackground : Global.Colors.Day.EmptyBackground);
 		this.setCacheColorHint(Global.Colors.TitleBarColor);
 		this.setDividerHeight(5);
