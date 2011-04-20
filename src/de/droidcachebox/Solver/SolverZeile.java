@@ -54,10 +54,11 @@ public class SolverZeile {
       // Auflistungen, Variablen, Konstanten und Strings
       searchLists();
       debug = entities.ToString();
-/*
+
       // alle Operatoren herausfinden
       searchOperators(false);
-
+      debug = entities.ToString();
+/*
       // Functionen suchen
       searchFunctions();
       
@@ -176,7 +177,7 @@ public class SolverZeile {
         	TempEntity tEntity = (TempEntity)entity;
         	if (tEntity.Text.equals(""))
         		continue;
-        	if (tEntity.Text.substring(0, 1).equals('"')) continue;   // in String mit Anfuehrungszeichen kann kein Operator stecken!
+        	if (tEntity.Text.substring(0, 1).equals("\"")) continue;   // in String mit Anfuehrungszeichen kann kein Operator stecken!
 
         	for (ArrayList<String> ops : Solver.operatoren.values())
         	{
@@ -345,12 +346,12 @@ public class SolverZeile {
         }
         entities.Pack();
     }
-/*
-    internal static bool IsOperator(string s)
+
+    static boolean IsOperator(String s)
     {
-      foreach (List<string> olist in CBSolver.Solver.operatoren.Values)
+      for (ArrayList<String> olist : Solver.operatoren.values())
       {
-        foreach (string op in olist)
+        for (String op : olist)
         {
           if (op == s)
             return true;
@@ -358,26 +359,27 @@ public class SolverZeile {
       }
       return false;
     }
-    internal class tmpListEntity
+
+    private class tmpListEntity
     {
-      internal string text;
-      internal bool isFunction = false;
-      internal bool isOperator = false;
-      internal bool isVariable = false;
-      internal tmpListEntity(string text)
+      String text;
+      boolean isFunction = false;
+      boolean isOperator = false;
+      boolean isVariable = false;
+      tmpListEntity(String text)
       {
         this.text = text;
-        if (text.Length == 0)
+        if (text.length() == 0)
           return;
-        this.isFunction = CBSolver.Solver.functions.isFunction(text);
+        this.isFunction = Solver.functions.isFunction(text);
         this.isOperator = IsOperator(text);
-        isVariable = ((text[0] == '#') && (text[text.Length - 1] == '#'));
+        isVariable = ((text.substring(0, 1).equals("#")) && (text.substring(text.length() - 1, text.length()).equals("#")));
       }
     }
-*/
+
     private void searchLists()
     {
-/*        int ie = 0;
+        int ie = 0;
 
         for (ie = 0; ie < entities.size(); ie++)
         {
@@ -389,91 +391,92 @@ public class SolverZeile {
         	if (tEntity.IsLinks)
         		continue;
         	String s = tEntity.Text.trim();
-        	if (s == "")
+        	if (s.equals(""))
         		continue;
-        	if (s.substring(0, 1).equals('"'))
+        	if (s.substring(0, 1).equals("\""))
         		continue;    // im String nichts trennen
         	AuflistungEntity aEntity = new AuflistungEntity(entity.Id);
 
         	ArrayList<tmpListEntity> sList = new ArrayList<tmpListEntity>();
-        string tmp = "";
-        bool isVariable = false;
-        for (int ii = 0; ii < s.Length; ii++)
-        {
-          if ((s[ii] == ' ') && (!isVariable))
-          {
-            if (tmp.Length > 0)
-              sList.Add(new tmpListEntity(tmp));
-            tmp = "";
-          }
-          else if (s[ii] == '#')
-          {
-            if (!isVariable)
-            {
-              if (tmp.Length > 0)
-                sList.Add(new tmpListEntity(tmp));
-              tmp = "#";
-              isVariable = true;  // hier beginnt eine interne Variable
-            }
-            else
-            {
-              isVariable = false;  // hier endet die Variable
-              sList.Add(new tmpListEntity(tmp + "#"));
-              tmp = "";
-            }
-          }
-          else if (IsOperator(s[ii].ToString()))
-          {
-            if (tmp.Length > 0)
-              sList.Add(new tmpListEntity(tmp));
-            tmp = s[ii].ToString();
-            sList.Add(new tmpListEntity(tmp));
-            tmp = "";
-          } else
-            tmp += s[ii];
-        }
-        if (tmp.Length > 0)
-          sList.Add(new tmpListEntity(tmp));
-        tmp = "";
-        for (int li = 0; li < sList.Count; li++)
-        {
-          tmpListEntity tmp1 = sList[li];
-          tmp += tmp1.text;
-          if (li == sList.Count - 1)
-          {
-            TempEntity temp = new TempEntity(-1, tmp);
-            aEntity.Liste.Add(temp);
-            break;
-          }
-          tmpListEntity tmp2 = sList[li + 1];
-          bool trennen = true;
-          // nicht trennen, wenn eine der beiden Seiten ein Operator ist
-          if ((tmp1.isOperator) || (tmp2.isOperator))
-            trennen = false;
-          // nicht trennen nach funktionsnamen
-          if (tmp1.isFunction)
-            trennen = false;
+        	String tmp = "";
+        	boolean isVariable = false;
+        	for (int ii = 0; ii < s.length(); ii++)
+        	{
+        		if ((s.substring(ii, ii+1).equals(" ")) && (!isVariable))
+        		{
+        			if (tmp.length() > 0)
+        				sList.add(new tmpListEntity(tmp));
+        			tmp = "";
+        		}
+        		else if (s.substring(ii, ii+1).equals("#"))
+        		{
+        			if (!isVariable)
+        			{
+        				if (tmp.length() > 0)
+        					sList.add(new tmpListEntity(tmp));
+        				tmp = "#";
+        				isVariable = true;  // hier beginnt eine interne Variable
+        			}
+        			else
+        			{
+        				isVariable = false;  // hier endet die Variable
+        				sList.add(new tmpListEntity(tmp + "#"));
+        				tmp = "";
+        			}
+        		}
+        		else if (IsOperator(s.substring(ii, ii+1).toString()))
+        		{
+        			if (tmp.length() > 0)
+        				sList.add(new tmpListEntity(tmp));
+        			tmp = s.substring(ii, ii+1).toString();
+        			sList.add(new tmpListEntity(tmp));
+        			tmp = "";
+        		} else
+        			tmp += s.substring(ii, ii+1);
+        	}
+        	if (tmp.length() > 0)
+        		sList.add(new tmpListEntity(tmp));
+        	tmp = "";
+        	for (int li = 0; li < sList.size(); li++)
+        	{
+        		tmpListEntity tmp1 = sList.get(li);
+        		tmp += tmp1.text;
+        		if (li == sList.size() - 1)
+        		{
+        			TempEntity temp = new TempEntity(-1, tmp);
+        			aEntity.Liste.add(temp);
+        			break;
+        		}
+        		tmpListEntity tmp2 = sList.get(li + 1);
+        		boolean trennen = true;
+        		// nicht trennen, wenn eine der beiden Seiten ein Operator ist
+        		if ((tmp1.isOperator) || (tmp2.isOperator))
+        			trennen = false;
+        		// nicht trennen nach funktionsnamen
+        		if (tmp1.isFunction)
+        			trennen = false;
           
-          if (trennen)
-          {
-            TempEntity temp = new TempEntity(-1, tmp);
-            aEntity.Liste.Add(temp);
-            tmp = "";
-          }
-        }
-        if (aEntity.Liste.Count > 1)
-        {
-          // Auflistung nur erstellen, wenn mehr als 1 Eintrag!!!
-          foreach (Entity eee in entities.Values)
-            eee.ReplaceTemp(entities[entities.Keys[ie]], aEntity);
-          entities[entities.Keys[ie]] = aEntity;
-
-          foreach (Entity ent in aEntity.Liste)
-            entities.Insert(ent);
-        }
+        		if (trennen)
+        		{
+        			TempEntity temp = new TempEntity(-1, tmp);
+        			aEntity.Liste.add(temp);
+        			tmp = "";
+        		}
+        	}
+        	if (aEntity.Liste.size() > 1)
+        	{
+        		// Auflistung nur erstellen, wenn mehr als 1 Eintrag!!!
+        		for (Entity eee : entities.values())
+          		eee.ReplaceTemp(entity, aEntity);
+//        		eee.ReplaceTemp(entities[entities.Keys[ie]], aEntity);
+        		entities.put(entity.Id, aEntity);
+        		
+        		for (Entity ent : aEntity.Liste)
+        		entities.Insert(ent);
+        	}
 
       }
-*/
+
       entities.Pack();
     }
 /*

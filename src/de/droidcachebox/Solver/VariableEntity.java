@@ -24,11 +24,11 @@ public class VariableEntity extends Entity {
 	@Override
 	public String Berechne()
 	{
-/*		if (CBSolver.Solver.variablen.ContainsKey(name.ToLower()))
+		if (Solver.Variablen.containsKey(Name.toLowerCase()))
 		{
-			return CBSolver.Solver.variablen[Name.toLowerCase()];
+			return Solver.Variablen.get(Name.toLowerCase());
 		}
-		else*/
+		else
 			return "Fehler";
 	}
 
