@@ -26,9 +26,9 @@ public class EntityList extends TreeMap<Integer, Entity> {
     {
     	var.trim();
     	if (var.length() < 3) return null;
-    	if (!var.substring(0, 1).equals('#')) return null;
-    	if (!var.substring(var.length() - 1).equals('#')) return null;
-    	String sNr = var.substring(1, var.length() - 2);
+    	if (!var.substring(0, 1).equals("#")) return null;
+    	if (!var.substring(var.length() - 1).equals("#")) return null;
+    	String sNr = var.substring(1, var.length() - 1);
     	try
     	{
     		int id = Integer.valueOf(sNr);
@@ -43,28 +43,27 @@ public class EntityList extends TreeMap<Integer, Entity> {
     public void Pack()
     {
       // alle TempEntities herausloeschen, die nur einen Verweis auf ein anderes TempEntity haben
-      int ie = 0;
-      for (ie = 0; ie < this.size(); ie++)
-      {
-        Entity entity = this.get(ie);
-        if (!(entity instanceof TempEntity))
-        	continue;
-        TempEntity tEntity = (TempEntity)entity;
-        Entity inhalt = getEntity(tEntity.Text);
-        if (inhalt != null)
+        int ie = 0;
+
+        for (ie = 0; ie < this.size(); ie++)
         {
-          // dieses Entity loeschen und alle Verweise auf dieses Entity umleiten auf inhalt
-          for (Entity ee : this.values())
-          {
-            ee.ReplaceTemp(entity, inhalt);
-            /*            TempEntity tee = ee as TempEntity;
-                        if (tee == null) continue;
-                        tee.Text = tee.Text.Replace("#" + tEntity.Id + "#", "#" + inhalt.Id + "#");*/
-          }
-          this.remove(entity.Id);
-          ie--;
+        	Object[] coll = this.values().toArray();
+      	  	Entity entity = (Entity) coll[ie];
+      	  	if (!(entity instanceof TempEntity))
+      	  		continue;
+      	  	TempEntity tEntity = (TempEntity)entity;
+      	  	Entity inhalt = getEntity(tEntity.Text);
+      	  	if (inhalt != null)
+      	  	{
+      	  		// dieses Entity loeschen und alle Verweise auf dieses Entity umleiten auf inhalt
+      	  		for (Entity ee : this.values())
+      	  		{
+      	  			ee.ReplaceTemp(entity, inhalt);
+      	  		}
+      	  		this.remove(entity.Id);
+      	  		ie--;
+      	  	}
         }
-      }
     }
     public String ToString()
     {

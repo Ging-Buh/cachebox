@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/miClose" android:title="Close"></item>
-    <item android:id="@+id/miDayNight" android:title="Day/Night"></item>
+    <item android:title="Day/Night" android:id="@+id/miDayNight"></item><item android:title="Close" android:id="@+id/miClose"></item>
+    
 </menu>

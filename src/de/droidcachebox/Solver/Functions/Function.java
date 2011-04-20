@@ -29,11 +29,11 @@ public abstract class Function {
         if (pos < 0)
           return false;
         int pos1 = pos + function.length();  // 1. #
-        if (!tEntity.Text.substring(pos1, pos1).equals('#'))
+        if (!(tEntity.Text.charAt(pos1) == '#'))
           return false;
         if (pos1 + 1 >= tEntity.Text.length())
           return false;
-        int pos2 = tEntity.Text.toLowerCase().indexOf('#', pos1 + 1);
+        int pos2 = tEntity.Text.toLowerCase().indexOf("#", pos1 + 1);
         if (pos2 < pos1)
           return false;
         if (pos2 != tEntity.Text.length() - 1)
@@ -70,11 +70,11 @@ public abstract class Function {
     }
     public boolean isFunction(String s)
     {
-      if (Name().toLowerCase() == s.toLowerCase())
+      if (Name().toLowerCase().equals(s.toLowerCase()))
         return true;
       for (String name2 : Names)
       {
-        if (name2.toLowerCase() == s.toLowerCase())
+        if (name2.toLowerCase().equals(s.toLowerCase()))
           return true;
       }
       return false;

@@ -30,6 +30,13 @@ public class OperatorEntity extends Entity {
       list.add(rechts);
     }
 
+    public static String DoubleToString(double wert)
+    {
+    	String value = String.valueOf(wert);
+    	if (Math.round(wert) == wert)
+    		value = String.valueOf((int)(Math.round(wert)));    	
+    	return value;
+    }
     @Override
     public String Berechne()
     {
@@ -41,19 +48,19 @@ public class OperatorEntity extends Entity {
     	  double dLinks = Double.parseDouble(lLinks);
     	  double dRechts = Double.parseDouble(lRechts);
     	  if (op.equals("+"))
-    		  result = String.valueOf(dLinks + dRechts);
+    		  result = DoubleToString(dLinks + dRechts);
     	  else if (op.equals("-"))
-    		  result = String.valueOf(dLinks - dRechts);
+    		  result = DoubleToString(dLinks - dRechts);
     	  else if (op.equals("*"))
-        	  result = String.valueOf(dLinks * dRechts);
+        	  result = DoubleToString(dLinks * dRechts);
     	  else if (op.equals("/"))
-    		  result = String.valueOf(dLinks / dRechts);
+    		  result = DoubleToString(dLinks / dRechts);
     	  else if (op.equals(":")) {    		  
-    		  result = String.valueOf(dLinks);
+    		  result = DoubleToString(dLinks);
     		  while (result.length() < dRechts)
     			  result = '0' + result;
     	  } else if (op.equals("^"))
-          		result = String.valueOf(Math.pow(dLinks, dRechts));
+    		  result = DoubleToString(Math.pow(dLinks, dRechts));
       }
       catch (Exception ex)
       {
@@ -66,7 +73,7 @@ public class OperatorEntity extends Entity {
     @Override
     public String ToString()
     {
-      return "O" + Id + op + "(" + links + "," + rechts + ")";
+      return "O" + Id + op + "(" + links.ToString() + "," + rechts.ToString() + ")";
     }
 
 }

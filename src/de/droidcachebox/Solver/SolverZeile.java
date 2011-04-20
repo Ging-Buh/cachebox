@@ -1,7 +1,10 @@
 package de.droidcachebox.Solver;
 
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class SolverZeile {
     private Solver solver;
@@ -58,66 +61,71 @@ public class SolverZeile {
       // alle Operatoren herausfinden
       searchOperators(false);
       debug = entities.ToString();
-/*
+
       // Functionen suchen
       searchFunctions();
+      debug = entities.ToString();
       
       // Variablen, Konstanten und Strings
       searchVariables();
+      debug = entities.ToString();
       
       entities.Pack();
+      debug = entities.ToString();
 
       // Alle Entities holen, die Bestandteil eines anderen sind
-      List<Entity> list = new List<Entity>();
-      foreach (Entity ent in entities.Values)
+      ArrayList<Entity> list = new ArrayList<Entity>();
+      for (Entity ent : entities.values())
       {
-        ent.GetAllEntities(list);
+    	  ent.GetAllEntities(list);
       }
       // diese koennen dann geloescht werden
-      foreach (Entity ent in list)
+      for (Entity ent : list)
       {
-        entities.Remove(ent.Id);
+        entities.remove(ent.Id);
       }
       // es sollte nur 1 Entity uebrig bleiben. Dies beinhaltet dann die komplette Formel
-      if (entities.Values.Count >= 1)
+      if (entities.values().size() >= 1)
       {
-        solution = entities.Values[0].Berechne();
-        entities.Values[0].GetAllEntities(list);
-        SortedList<string, int> missingVariables = null;
-        foreach (Entity tent in list)
+        Solution = entities.get(entities.firstKey()).Berechne();
+        entities.get(entities.firstKey()).GetAllEntities(list);
+        
+        SortedMap<String, Integer> missingVariables = null;
+        for (Entity tent : list)
         {
           // store Missing Variables in global List
           // store Missing Variables in local List too (only for this line)
-          if (tent is TempEntity)
+          if (tent instanceof TempEntity)
           {
-            if ((tent as TempEntity).Text.Trim() == "")
+        	  TempEntity tempent = (TempEntity)tent;
+            if (tempent.Text.trim().equals(""))
               continue;
             // store in global list
             if (Solver.MissingVariables == null)
-              Solver.MissingVariables = new SortedList<string, int>();
-            if (!Solver.MissingVariables.Keys.Contains((tent as TempEntity).Text))
-              Solver.MissingVariables.Add((tent as TempEntity).Text, 0);
+              Solver.MissingVariables = new TreeMap<String, Integer>();
+            if (!Solver.MissingVariables.containsKey(tempent.Text))
+              Solver.MissingVariables.put(tempent.Text, 0);
             // store in local list
             if (missingVariables == null)
-              missingVariables = new SortedList<string, int>();
-            if (!missingVariables.ContainsKey((tent as TempEntity).Text))
-              missingVariables.Add((tent as TempEntity).Text, 0);
+              missingVariables = new TreeMap<String, Integer>();
+            if (!missingVariables.containsKey(tempent.Text))
+              missingVariables.put(tempent.Text, 0);
           }
         }
-        if ((missingVariables != null) && (missingVariables.Count > 0))
+        if ((missingVariables != null) && (missingVariables.size() > 0))
         {
-          solution = "missing: ";
-          bool first = true;
-          foreach (string s in missingVariables.Keys)
+          Solution = "missing: ";
+          boolean first = true;
+          for (String s : missingVariables.keySet())
           {
             if (!first)
-              solution += ", ";
+              Solution += ", ";
             first = false;
-            solution += s;
+            Solution += s;
           }
         }
       }
-*/
+
       return true;
     }
 
@@ -206,7 +214,7 @@ public class SolverZeile {
         				TempEntity rechts = new TempEntity(-1, tEntity.Text.substring(pos + op.length(), tEntity.Text.length()));
         				entities.Insert(rechts);
         				Entity oEntity;
-        				if (op == "=")
+        				if (op.equals("="))
         					oEntity = new ZuweisungEntity(-1, links, rechts);
         				else
         					oEntity = new OperatorEntity(-1, links, op, rechts);
@@ -218,6 +226,7 @@ public class SolverZeile {
         		}
         	}
         }
+        String debug = entities.ToString();
         entities.Pack();
     }
 
@@ -267,27 +276,30 @@ public class SolverZeile {
       }
       entities.Pack();
     }
-/*
+
     private void searchFunctions()
     {
-      // functionen heraussuchen
-      int ie = 0;
-      for (ie = 0; ie < entities.Count; ie++)
-      {
-        Entity entity = entities.Values[ie];
-        TempEntity tEntity = entity as TempEntity;
-        if (tEntity == null) continue;
-        if (tEntity.Text == "") continue;
-        if (tEntity.Text[0] == '"') continue;   // in String mit Anfuehrungszeichen kann keine Funktion stecken!
-        while (true)
+    	// functionen heraussuchen
+        int ie = 0;
+
+        for (ie = 0; ie < entities.size(); ie++)
         {
-          if (!CBSolver.Solver.functions.InsertEntities(tEntity, entities))
-            break;
+      	  Object[] coll = entities.values().toArray();
+      	  Entity entity = (Entity) coll[ie];
+      	  if (!(entity instanceof TempEntity))
+      		  continue;
+          TempEntity tEntity = (TempEntity)entity;
+          if (tEntity.Text.equals("")) continue;
+          if (tEntity.Text.substring(0, 1).equals("\"")) continue;   // in String mit Anfuehrungszeichen kann keine Funktion stecken!
+          while (true)
+          {
+        	  if (!Solver.functions.InsertEntities(tEntity, entities))
+        		  break;
+          }
         }
-      }
-      entities.Pack();
+        entities.Pack();
     }
-*/
+
     private void searchStrings()
     {
         int ie = 0;
@@ -318,7 +330,7 @@ public class SolverZeile {
       	  			// alles vor dem ersten "" abtrennen
       	  			TempEntity te = new TempEntity(-1, s.substring(0, pos));
       	  			aEntity.Liste.add(te);
-      	  			s = s.substring(pos, s.length() - pos);
+      	  			s = s.substring(pos, s.length());
       	  			pos2 -= pos;
       	  			pos = 0;
       	  		}
@@ -353,7 +365,7 @@ public class SolverZeile {
       {
         for (String op : olist)
         {
-          if (op == s)
+          if (op.equals(s))
             return true;
         }
       }
@@ -479,73 +491,77 @@ public class SolverZeile {
 
       entities.Pack();
     }
-/*
+
     private void searchVariables()
     {
-      int ie = 0;
-      for (ie = 0; ie < entities.Count; ie++)
-      {
-        Entity entity = entities.Values[ie];
-        TempEntity tEntity = entity as TempEntity;
-        if (tEntity == null) continue;
-        string s = tEntity.Text.Trim();
-        if (s == "") break;
-        if (s[0] == '$')
-        {
-          // GC-Koordinate suchen
-          CoordinateEntity cEntity = new CoordinateEntity(-1, s.Substring(1, s.Length - 1));
-          string var = entities.Insert(cEntity);
-          tEntity.Text = var;
-          s = "";
-        }
-        if ((s.Length >= 2) && (s[0] == '"') && (s[s.Length - 1] == '"'))
-        {
-          // dies ist ein String -> in StringEntity umwandeln
-          StringEntity sEntity = new StringEntity(-1, s.Substring(1, s.Length - 2));
-          string var = entities.Insert(sEntity);
-          tEntity.Text = var;
-          s = "";
-        }
-        if (s.Length > 0)
-        {
-          // evtl. als Zahl versuchen
-          try
-          {
-            string sz = s;
-            sz = sz.Replace(".", Global.DecimalSeparator);
-            sz = sz.Replace(",", Global.DecimalSeparator);
+        int ie = 0;
 
-            double zahl = Convert.ToDouble(sz);
-            ConstantEntity cEntity = new ConstantEntity(-1, zahl);
-            string var = entities.Insert(cEntity);
-            tEntity.Text = var;
-            s = "";
-          }
-          catch (Exception)
-          {
-            // Exception -> keine Zahl
-          }
-        }
-        if (s.Length > 0)
+        for (ie = 0; ie < entities.size(); ie++)
         {
-          // evtl. eine Variable
-          if (tEntity.IsLinks)
-          {
-            // Variable bei Bedarf erzeugen
-            if (!CBSolver.Solver.variablen.ContainsKey(s.ToLower()))
-              CBSolver.Solver.variablen.Add(s.ToLower(), "");
-          }
-          if (CBSolver.Solver.variablen.ContainsKey(s.ToLower()))
-          {
-            VariableEntity vEntity = new VariableEntity(-1, s.ToLower());
-            string var = entities.Insert(vEntity);
-            tEntity.Text = var;
-            s = "";
-          }
-        }
+        	Object[] coll = entities.values().toArray();
+      	  	Entity entity = (Entity) coll[ie];
+        	if (!(entity instanceof TempEntity))
+        		continue;
+        	TempEntity tEntity = (TempEntity)entity;
+        	String s = tEntity.Text.trim();
+        	if (s == "") break;
+/*        	if (s.charAt(0) == '$')
+        	{
+        		// GC-Koordinate suchen
+        		CoordinateEntity cEntity = new CoordinateEntity(-1, s.Substring(1, s.Length - 1));
+        		string var = entities.Insert(cEntity);
+        		tEntity.Text = var;
+        		s = "";
+        	}*/
+        	if ((s.length() >= 2) && (s.charAt(0) == '"') && (s.charAt(s.length() - 1) == '"'))
+        	{
+        		// dies ist ein String -> in StringEntity umwandeln
+        		StringEntity sEntity = new StringEntity(-1, s.substring(1, s.length() - 1));
+        		String var = entities.Insert(sEntity);
+        		tEntity.Text = var;
+        		s = "";
+        	}
+        	if (s.length() > 0)
+        	{
+        		// evtl. als Zahl versuchen
+        		try
+        		{
+        			String sz = s;
+        			DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+        			char sep = '.';
+        			sz = sz.replace('.', sep);
+        			sz = sz.replace(',', sep);
 
-      }
-      entities.Pack();
+        			double zahl = Double.valueOf(sz);
+        			ConstantEntity cEntity = new ConstantEntity(-1, zahl);
+        			String var = entities.Insert(cEntity);
+        			tEntity.Text = var;
+        			s = "";
+        		}
+        		catch (Exception ex)
+        		{
+        			// Exception -> keine Zahl
+        		}
+        	}
+        	if (s.length() > 0)
+        	{
+        		// evtl. eine Variable
+        		if (tEntity.IsLinks)
+        		{
+        			// Variable bei Bedarf erzeugen
+        			if (!Solver.Variablen.containsKey(s.toLowerCase()))
+        				Solver.Variablen.put(s.toLowerCase(), "");
+        		}
+        		if (Solver.Variablen.containsKey(s.toLowerCase()))
+        		{
+        			VariableEntity vEntity = new VariableEntity(-1, s.toLowerCase());
+        			String var = entities.Insert(vEntity);
+        			tEntity.Text = var;
+        			s = "";
+        		}
+        	}
+        }
+        entities.Pack();
     }
-*/
+
 }
