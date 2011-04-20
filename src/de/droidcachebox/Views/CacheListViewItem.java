@@ -3,15 +3,18 @@ package de.droidcachebox.Views;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.Components.StringFunctions;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Coordinate;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.widget.LinearLayout;
@@ -56,9 +59,9 @@ public class CacheListViewItem extends View {
         
         // Berechne Höhe so das 7 Einträge in die Liste passen
         this.height = (int) CacheListView.windowH / 7;
-        this.imgSize = (int) (this.height / 1.5);
+        this.imgSize = (int) (this.height / 1.2);
         this.lineHeight = (int) this.height / 3;
-        this.rightBorder = this.height;
+        this.rightBorder =(int) (this.height * 1.5);
         
         setMeasuredDimension(measureWidth(widthMeasureSpec),this.height);
               //  measureHeight(heightMeasureSpec));
@@ -116,6 +119,14 @@ public class CacheListViewItem extends View {
      
         return result;
     }
+    
+    
+    
+    
+    
+    
+   static double fakeBearing =0;
+    
     /**
      * Render the text
      * 
@@ -124,30 +135,38 @@ public class CacheListViewItem extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-       
-        //canvas.drawRect(new Rect(0, 0, width, 75), Global.ListItemBackgroundPaint[paintID]);
-
-        //canvas.drawText(cache.Name, 5, 30, Global.ListItemTextPaint[paintID]);
-      	//Paint tmpPaint = new Paint(Global.ListItemTextPaint[paintID]);
-      	//tmpPaint.setTextAlign(Align.RIGHT);
-      	//	canvas.drawText(Float.toString(cache.Distance()), width - 10, 70, tmpPaint);
-      	
-      	// Drawing Ported 
-      	
+           	
       	int x=0;
       	int y=0;
+        Boolean notAvailable = (!cache.Available && !cache.Archived);
+        Boolean Night = Config.GetBool("nightMode");
+        Boolean GlobalSelected = cache == Global.SelectedCache();
         
-        
-        Paint DrawBackPaint = new Paint( (cache == Global.SelectedCache())? Global.Paints.Day.selectedBack : Config.GetBool("nightMode")? Global.Paints.Night.ListBackground : Global.Paints.Day.ListBackground);
+        Paint DrawBackPaint = new Paint( (GlobalSelected)? Global.Paints.Day.selectedBack : Night? Global.Paints.Night.ListBackground : Global.Paints.Day.ListBackground);
       	canvas.drawPaint(DrawBackPaint);
        
         
         if (cache.Rating > 0)
-            Global.PutImageTargetHeight(canvas, Global.SmallStarIcons[(int)(cache.Rating * 2)], 0, y + imgSize, lineHeight / 2);
+            Global.PutImageTargetHeight(canvas, Global.StarIcons[(int)(cache.Rating * 2)], 0, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
 
-       Paint NamePaint = (cache == Global.SelectedCache())? Config.GetBool("nightMode")? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected : Config.GetBool("nightMode")? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected;  
-       canvas.drawText(cache.Name, imgSize + 2, 30, NamePaint);
-
+       Paint NamePaint = new Paint( (GlobalSelected)? Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected : Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected);  
+       if(notAvailable)
+       {
+	       NamePaint.setColor(Color.RED);
+	       NamePaint.setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+       }
+       
+       String[] WrapText = StringFunctions.TextWarpArray(cache.Name, 23);
+       
+       
+       String Line1 =WrapText[0];
+       
+       canvas.drawText(Line1, imgSize + 5, 27, NamePaint);
+       if (!StringFunctions.IsNullOrEmpty(WrapText[1]))
+       {
+    	   String Line2 =WrapText[1];
+    	   canvas.drawText(Line2, imgSize + 5, 50, NamePaint);
+       }
         //  if (Global.LastValidPosition.Valid || Global.Marker.Valid)
         //  {
         //      Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
@@ -165,26 +184,29 @@ public class CacheListViewItem extends View {
 
         //      gfx.DrawString(UnitFormatter.DistanceString(cache.Distance), font, blackBrush, width - rightBorder + 2, y + lineHeight * 2);
         //  }
+       
+       
+       // Draw Arrow
+       Global.PutImageTargetHeight(canvas, Global.Arrows[1],fakeBearing++,(int)( width - rightBorder/2) ,(int)(lineHeight /8), (int)(lineHeight*2.4));
 
-        Paint Linepaint = Config.GetBool("nightMode")? Global.Paints.Night.ListSeperator : Global.Paints.Day.ListSeperator;
+        Paint Linepaint = Night? Global.Paints.Night.ListSeperator : Global.Paints.Day.ListSeperator;
         canvas.drawLine(x, y + this.height - 2, width, y + this.height - 2,Linepaint); 
         canvas.drawLine(x, y + this.height - 3, width, y + this.height - 3,Linepaint);
         
-               
-          if (cache.Found()) // Todo Longri Draw Icons width Transparence
-              Global.PutImageTargetHeight(canvas, Global.CacheIconsBigFound[cache.Type.ordinal()], 0, 0, imgSize);
-          else
-              Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.Type.ordinal()], 0, 0, imgSize);
+          Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.Type.ordinal()], 0, 0, imgSize);     
+          if (cache.Found())
+          {
+        	  int pos =imgSize - (int) (imgSize/1.5);
+              Global.PutImageTargetHeight(canvas, Global.Icons[2], pos, pos, imgSize/2);//Smile
+          }
+              
 
           if (cache.Favorit())
          {
             Global.PutImageTargetHeight(canvas, Global.Icons[19], 0, y, lineHeight);
          }
 
-          if (!cache.Available && !cache.Archived)
-         {
-              Global.PutImageTargetHeight(canvas, Global.Icons[25], 0, y, lineHeight);
-         }
+         
 
           if (cache.Archived)
           {
@@ -199,26 +221,26 @@ public class CacheListViewItem extends View {
 
         //  if (cache.MysterySolved && !cache.Archived)
         //  {
-        //      Global.PutImageTargetHeight(gfx, Global.MapIcons[21], 0, y, lineHeight, colorKeyIcons);
+        //      Global.PutImageTargetHeight(canvas, Global.MapIcons[21], 0, y, lineHeight);
         //  }
 
         //  if (cache.ListingChanged)
         //  {
-        //      Global.PutImageTargetHeight(gfx, Global.MapIcons[22], 0, y + imgSize - 15, lineHeight, colorKeyIcons);
+        //      Global.PutImageTargetHeight(canvas, Global.MapIcons[22], 0, y + imgSize - 15, lineHeight);
         //  }
 
-         Paint DTPaint =  Config.GetBool("nightMode")? Global.Paints.Night.Text.noselected: Global.Paints.Day.Text.noselected ;
-        int left = x + imgSize + 3;
-        canvas.drawText("D",left, y + lineHeight * 2, DTPaint);
-          left += lineHeight / 2;
+         Paint DTPaint =  Night? Global.Paints.Night.Text.noselected: Global.Paints.Day.Text.noselected ;
+        int left = x + imgSize + 5;
+        canvas.drawText("D",left,(int) ((lineHeight * 2) + (lineHeight/1.4) ) , DTPaint);
+          left += (DTPaint.getTextSize());
 
-            left += Global.PutImageTargetHeight(canvas, Global.SmallStarIcons[(int)(cache.Difficulty * 2)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
+            left += Global.PutImageTargetHeight(canvas, Global.StarIcons[(int)(cache.Difficulty * 2)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
 
-         left += lineHeight;
+         left += (DTPaint.getTextSize());
 
-         canvas.drawText("T", left, y + lineHeight * 2 , DTPaint);
-         left += lineHeight / 2;
-         left += Global.PutImageTargetHeight(canvas, Global.SmallStarIcons[(int)(cache.Terrain * 2)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
+         canvas.drawText("T", left,(int) ((lineHeight * 2) + (lineHeight/1.4) ) , DTPaint);
+         left += (DTPaint.getTextSize());
+         left += Global.PutImageTargetHeight(canvas, Global.StarIcons[(int)(cache.Terrain * 2)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
 
 
           int numTb = cache.NumTravelbugs;
@@ -227,12 +249,21 @@ public class CacheListViewItem extends View {
               int tbWidth = Global.PutImageTargetHeight(canvas, Global.Icons[0], width - rightBorder, y + lineHeight, lineHeight);
 
               if (numTb > 1)
-            	  canvas.drawText("x" + String.valueOf(numTb), width - rightBorder + tbWidth, y + lineHeight + 1 , DTPaint);
+            	  canvas.drawText("x" + String.valueOf(numTb), width - rightBorder + tbWidth+2, (int)( y + lineHeight + (lineHeight/1.4)) , DTPaint);
           }
         	
       	
-      	
-      	
-      	
+         
+         // Wenn nicht Available dann Komplettes item aus Grauen
+         if (notAvailable)
+         {
+              Global.PutImageTargetHeight(canvas, Global.Icons[25], 0, y, lineHeight);
+              int Alpha = (GlobalSelected)? 100 : Night ? 50 : 160;
+              DrawBackPaint.setAlpha(Alpha);
+              canvas.drawRect(new Rect(0,0,this.width,this.height-2), DrawBackPaint);
+         }
     }
+
+
+
 }

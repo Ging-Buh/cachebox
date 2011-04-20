@@ -11,8 +11,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import de.droidcachebox.Geocaching.Cache;
@@ -35,10 +37,11 @@ public class Global {
     // Icons
     public static Drawable[] Icons = null;
     public static Drawable[] SmallStarIcons;
+    public static Drawable[] StarIcons;
     public static Drawable[] CacheIconsBig;
-    public static Drawable[] CacheIconsBigFound;
     public static Drawable[] BatteryIcons;
     public static Drawable[] LogIcons;
+    public static Drawable[] Arrows;
     
     // New Map Icons
     public static ArrayList<ArrayList<Drawable>> NewMapIcons = new ArrayList<ArrayList<Drawable>>();
@@ -198,6 +201,46 @@ public class Global {
 
         return width;
     }
+    
+    
+  /// <summary>
+    /// Zeichnet das Bild und skaliert es proportional so, dass es die
+    /// übergebene füllt.
+    /// </summary>
+    /// <param name="graphics"></param>
+    /// <param name="image"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="height"></param>
+    public static int PutImageTargetHeight(Canvas canvas, Drawable image,double Angle, int x, int y, int height)
+    {
+    	Bitmap bmp = ((BitmapDrawable)image).getBitmap();
+    	
+    	// Getting width & height of the given image.
+    	int w = bmp.getWidth();
+    	int h = bmp.getHeight();
+    	// Setting post rotate to 90
+    	Matrix mtx = new Matrix();
+    	mtx.postRotate((float) Angle);
+    	// Rotating Bitmap
+    	Bitmap rotatedBMP = Bitmap.createBitmap(bmp, 0, 0, w, h, mtx, true);
+    	BitmapDrawable bmd = new BitmapDrawable(rotatedBMP);
+
+    	
+        
+        float scale = (float)height / (float)bmd.getIntrinsicHeight();
+        int width = (int)Math.round(bmd.getIntrinsicWidth() * scale);
+
+        Rect oldBounds = bmd.getBounds();
+        bmd.setBounds(x, y, x + width, y + height);
+        bmd.draw(canvas);
+        bmd.setBounds(oldBounds);
+
+        return width;
+    }
+    
+    
+    
     /// <summary>
     ///     SDBM-Hash algorithm for storing hash values into the database. This is neccessary to be compatible to the CacheBox@Home project. Because the
     ///     standard .net Hash algorithm differs from compact edition to the normal edition.
@@ -310,7 +353,7 @@ public class Global {
         Icons = new Drawable[] { 
         		res.getDrawable(R.drawable.bug),
         		res.getDrawable(R.drawable.addwaypoint),
-        		res.getDrawable(R.drawable.icon_smile),
+        		res.getDrawable(R.drawable.smilie_gross),
         		res.getDrawable(R.drawable.download),
         		res.getDrawable(R.drawable.icon_sad),
         		res.getDrawable(R.drawable.maintenance),
@@ -336,6 +379,14 @@ public class Global {
         		res.getDrawable(R.drawable.checkbox_crossed), // 25
         		res.getDrawable(R.drawable.map22), // 26
 };
+        
+        Arrows = new Drawable[] { 
+        		res.getDrawable(R.drawable.arrow),
+        		res.getDrawable(R.drawable.arrow_small),
+        		
+
+};
+
 
         SmallStarIcons = new Drawable[] { 
         		res.getDrawable(R.drawable.smallstars_0),
@@ -349,6 +400,19 @@ public class Global {
         		res.getDrawable(R.drawable.smallstars_4),
         		res.getDrawable(R.drawable.smallstars_4_5),
         		res.getDrawable(R.drawable.smallstars_5) };
+        
+        StarIcons = new Drawable[] { 
+        		res.getDrawable(R.drawable.stars0),
+        		res.getDrawable(R.drawable.stars0_5),
+        		res.getDrawable(R.drawable.stars1),
+        		res.getDrawable(R.drawable.stars1_5),
+        		res.getDrawable(R.drawable.stars2),
+        		res.getDrawable(R.drawable.stars2_5),
+        		res.getDrawable(R.drawable.stars3),
+        		res.getDrawable(R.drawable.stars3_5),
+        		res.getDrawable(R.drawable.stars4),
+        		res.getDrawable(R.drawable.stars4_5),
+        		res.getDrawable(R.drawable.stars5) };
         
        
         BatteryIcons = new Drawable[] { 
@@ -382,20 +446,6 @@ public class Global {
         };
         
         
-        CacheIconsBigFound = new Drawable[] { 
-        		res.getDrawable(R.drawable.big_0),
-        		res.getDrawable(R.drawable.big_1),
-        		res.getDrawable(R.drawable.big_2),
-        		res.getDrawable(R.drawable.big_3),
-        		res.getDrawable(R.drawable.big_4),
-        		res.getDrawable(R.drawable.big_5),
-        		res.getDrawable(R.drawable.big_6),
-        		res.getDrawable(R.drawable.big_7),
-        		res.getDrawable(R.drawable.big_8),
-        		res.getDrawable(R.drawable.big_9),
-        		res.getDrawable(R.drawable.big_10),
-
-        };
         
         LogIcons = new Drawable[] { 
         		res.getDrawable(R.drawable.log0),
