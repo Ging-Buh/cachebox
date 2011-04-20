@@ -7,6 +7,7 @@ public interface ViewOptionsMenu  {
 
 	public boolean ItemSelected(MenuItem item);
 	public void BeforeShowMenu(Menu menu);
+	public int GetMenuId();
 	public void OnShow();
 	public void OnHide();
 }

@@ -150,4 +150,10 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu, Selected
 		aktCache.SetSolver(edSolver.getText().toString());		
 	}
 
+	@Override
+	public int GetMenuId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

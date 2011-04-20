@@ -161,5 +161,11 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public int GetMenuId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
 

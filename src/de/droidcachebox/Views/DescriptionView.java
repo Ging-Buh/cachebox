@@ -92,4 +92,10 @@ public class DescriptionView extends WebView implements ViewOptionsMenu, Selecte
 			mustLoadDescription = true;
 		}
 	}
+
+	@Override
+	public int GetMenuId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

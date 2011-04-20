@@ -85,6 +85,7 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
 	}
 	Bitmap bmp;
 	
+	@Override
 	public void onItemSelected(AdapterView parent, View v, int position, long id) {
     //    mSwitcher.setImageResource(mImageIds[position]);
 		String filename = Global.SelectedCache().SpoilerRessources().get(position);
@@ -100,6 +101,7 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
         spoilerImage.setImage(bmp, spoilerImage.getWidth(), spoilerImage.getHeight());
     }
 
+	@Override
     public void onNothingSelected(AdapterView parent) {
     }
 
@@ -170,6 +172,13 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
 	public void OnHide() {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public int GetMenuId() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

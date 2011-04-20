@@ -70,4 +70,10 @@ public class NotesView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		aktCache.SetNote(edNotes.getText().toString());		
 	}
 
+	@Override
+	public int GetMenuId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

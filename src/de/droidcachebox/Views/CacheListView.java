@@ -149,5 +149,11 @@ public class CacheListView extends ListView implements ViewOptionsMenu {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public int GetMenuId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
 

@@ -279,12 +279,16 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
     /** hook into menu button for activity */
     @Override public boolean onCreateOptionsMenu(Menu menu) {
-//      populateMenu(menu);
-    	getMenuInflater().inflate(R.menu.menu_mapview, menu);
-      return super.onCreateOptionsMenu(menu);
+  		return super.onCreateOptionsMenu(menu);
     }
 
     @Override public boolean onPrepareOptionsMenu(Menu menu) {
+		menu.clear();
+    	int menuId = aktView.GetMenuId();
+    	if (menuId > 0)
+    	{
+    		getMenuInflater().inflate(menuId, menu);
+    	}
     	aktView.BeforeShowMenu(menu);
       return super.onPrepareOptionsMenu(menu);
     }

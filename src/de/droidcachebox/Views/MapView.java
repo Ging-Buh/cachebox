@@ -3477,7 +3477,10 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 			case R.id.minus:
 				zoomOut();
 				return true;
-			case R.id.hubertmedia:
+			case 0:
+				SetCurrentLayer(MapView.Manager.GetLayerByName(item.getTitle().toString(), item.getTitle().toString(), ""));
+				return true;
+/*			case R.id.hubertmedia:
 				SetCurrentLayer(MapView.Manager.GetLayerByName("Hubermedia Bavaria", "Hubermedia Bavaria", ""));
 				return true;
 			case R.id.googleearth:
@@ -3486,7 +3489,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 			case R.id.mapnik:
 				SetCurrentLayer(MapView.Manager.GetLayerByName("Mapnik", "Mapnik", ""));
 				return true;
-			
+	*/		
 			case R.id.miAlignCompass:
 				alignToCompass = !alignToCompass;
 				if (!alignToCompass)
@@ -3501,15 +3504,22 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
 	@Override
 	public void BeforeShowMenu(Menu menu) {
-		// TODO Auto-generated method stub
 		try
 		{
 			MenuItem mi = menu.findItem(R.id.layer);
 			if (mi != null)
 			{
 				SubMenu subMenu = mi.getSubMenu();
-				MenuItem mi2 = subMenu.findItem(R.id.mapnik);
-				mi2.setChecked(CurrentLayer.Name.equals(mi2.getTitle()));
+				subMenu.clear();
+				for (Layer layer : Manager.Layers)
+				{
+					MenuItem mi22 = subMenu.add(layer.Name);
+					if (layer == CurrentLayer)
+					{
+						mi22.setCheckable(true);
+						mi22.setChecked(true);
+					}					
+				}
 			}
 			mi = menu.findItem(R.id.miAlignCompass);
 			mi.setCheckable(alignToCompass);
@@ -3517,6 +3527,12 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		{
 			return;
 		}
+	}
+	
+	@Override
+	public int GetMenuId()
+	{
+		return R.menu.menu_mapview;
 	}
 
 	int anzCompassValues = 0;
