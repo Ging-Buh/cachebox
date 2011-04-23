@@ -9,6 +9,7 @@ import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.DescriptionView;
@@ -36,6 +37,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
@@ -111,6 +113,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     final SensorEventListener mListener = new SensorEventListener() {
         public void onSensorChanged(SensorEvent event) {
         	mCompassValues = event.values;
+        	Global.Locator.setCompassHeading(mCompassValues[0]); 
         	PositionEventList.Call(mCompassValues[0]);
         }
 
@@ -183,6 +186,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		criteria.setPowerRequirement(Criteria.POWER_LOW);
 		provider = LocationManager.GPS_PROVIDER;
 		Location location = locationManager.getLastKnownLocation(provider);
+		Global.Locator = new Locator();
 		locationManager.requestLocationUpdates(provider, 1000, 1, this);                
         
         mapView = new MapView(this, "Map-View");
@@ -429,7 +433,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	@Override
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
-		Global.Location = location;
+		Global.Locator.setLocation(location);
 		PositionEventList.Call(location);
 	}
 
@@ -448,6 +452,9 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
-		
+		if (status == LocationProvider.TEMPORARILY_UNAVAILABLE)
+			Global.Locator.setLocation(null);
+		if (status == LocationProvider.OUT_OF_SERVICE)
+			Global.Locator.setLocation(null);
 	}
 }

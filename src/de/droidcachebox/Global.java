@@ -20,6 +20,7 @@ import android.location.Location;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
+import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.TranslationEngine.LangStrings;
 
 
@@ -52,7 +53,10 @@ public class Global {
     /// Letzte bekannte Position
     /// </summary>
     public static Coordinate LastValidPosition = new Coordinate();
-    public static Location Location = null;
+    /// <summary>
+    /// Instanz des GPS-Parsers
+    /// </summary>
+    public static Locator Locator = null;
 
     protected static Cache selectedCache = null;
     public static void SelectedCache(Cache cache)

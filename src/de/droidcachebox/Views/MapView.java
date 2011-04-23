@@ -1736,7 +1736,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 	      if (!overrideRepaintInteligence)
 	      {
 	
-	        if (lastRenderZoomScale == renderZoomScaleActive && lastWpCount == wpToRender.size() && lastHeading == ((Global.Location != null) ? Global.Location.getBearing() : 0) && lastPosition.Latitude == Global.LastValidPosition.Latitude && lastPosition.Longitude == Global.LastValidPosition.Longitude && lastZoom == Zoom && !tilesFinished && lastRenderedPosition.X == screenCenter.X && lastRenderedPosition.Y == screenCenter.Y)
+	        if (lastRenderZoomScale == renderZoomScaleActive && lastWpCount == wpToRender.size() && lastHeading == ((Global.Locator != null) && (Global.Locator.getLocation() != null) ? Global.Locator.getHeading() : 0) && lastPosition.Latitude == Global.LastValidPosition.Latitude && lastPosition.Longitude == Global.LastValidPosition.Longitude && lastZoom == Zoom && !tilesFinished && lastRenderedPosition.X == screenCenter.X && lastRenderedPosition.Y == screenCenter.Y)
 	          return;
 	
 	
@@ -2334,14 +2334,21 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     void renderPositionAndMarker()
     {
 
-    	if (Global.Location != null)
+    	if (Global.Locator != null)
     	{
 	        // Position auf der Karte
 	        Point pt = ToScreen(Descriptor.LongitudeToTileX(Zoom, Global.LastValidPosition.Longitude), Descriptor.LatitudeToTileY(Zoom, Global.LastValidPosition.Latitude), Zoom);
 	
 	        int size = lineHeight;
 	
-	        double courseRad = Global.Location.getBearing() * Math.PI / 180.0;
+	        debugString1 = String.valueOf(Global.Locator.getCompassHeading());
+	        if (Global.Locator.getLocation() != null)
+	        	debugString2 = Global.Locator.getLocation().getBearing() + " - " + Global.Locator.getLocation().getSpeed() * 3600 / 1000 + "kmh";
+	        else
+	        	debugString2 = "";
+	        
+	        double courseRad = Global.Locator.getHeading() * Math.PI / 180.0;
+	        boolean lastUsedCompass = Global.Locator.LastUsedCompass;
 	        float dirX = (float)Math.sin(courseRad);
 	        float dirY = (float)-Math.cos(courseRad);
 	
@@ -2372,7 +2379,10 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 	        path.lineTo(dir[2].x, dir[2].y);
 	        path.lineTo(dir[0].x, dir[0].y);
 	        Paint paint = new Paint();
-	        paint.setColor(Color.RED);
+	        if (lastUsedCompass)
+	        	paint.setColor(Color.BLACK);	// bei magnet. Kompass
+	        else
+	        	paint.setColor(Color.RED);		// bei GPS Kompass
 	        paint.setStyle(Style.FILL);
 	        canvas.drawPath(path, paint);
     	}
@@ -3571,6 +3581,13 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 			return;
 //		canvas.rotate(canvasHeading - heading, offScreenBmp.getWidth() / 2, offScreenBmp.getHeight() / 2);
 		canvasHeading = heading;
+		// liefert die Richtung (abhängig von der Geschwindigkeit von Kompass oder GPS
+		if (!Global.Locator.UseCompass() && alignToCompass)
+		{
+			// GPS-Richtung soll verwendet werden!
+			canvasHeading = Global.Locator.getHeading();
+			heading = canvasHeading;
+		}
 		
 		// da die Map gedreht in die offScreenBmp gezeichnet werden soll, muss der Bereich, der gezeichnet werden soll größer sein, wenn gedreht wird.
 		double w = offScreenBmp.getWidth();

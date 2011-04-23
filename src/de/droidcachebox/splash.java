@@ -99,16 +99,16 @@ public class splash extends Activity
 	        }
 	        
 	    setProgressState(60, "Load Caches ...");
-	        if (Database.Data == null)
-	        {
-		        // initialize Database
-		        Database.Data = new Database(DatabaseType.CacheBox);
-		    	Database.FieldNotes = new Database(DatabaseType.FieldNotes); 
+	        if (Database.Data != null)
+	        	Database.Data = null;
+	        // initialize Database
+	        Database.Data = new Database(DatabaseType.CacheBox);
+	        Database.FieldNotes = new Database(DatabaseType.FieldNotes); 
 //		        Database.Data.StartUp("/sdcard/db3 [1].db3");
-		    	File path = Environment.getExternalStorageDirectory();
-		        Database.Data.StartUp(path.getPath() + "/cachebox.db3");
-		        Database.Data.Query.LoadCaches("");
-	        }
+	        File path = Environment.getExternalStorageDirectory();
+	        Database.Data.StartUp(path.getPath() + "/cachebox.db3");
+	        Database.Data.Query.LoadCaches("");
+
 	        Descriptor.Init();
 	        
 	        Config.AcceptChanges();
