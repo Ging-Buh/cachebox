@@ -1,5 +1,7 @@
 package de.droidcachebox.Geocaching;
 
+import android.location.Location;
+
 public class Coordinate {
 	public boolean Valid;
 	public double Latitude = 0;
@@ -84,4 +86,42 @@ public class Coordinate {
       return result;
     }
 
+    public static double Bearing(Coordinate coord1, Coordinate coord2)
+    {
+        return Bearing(coord1.Latitude, coord1.Longitude, coord2.Latitude, coord2.Longitude);
+    }
+    /// <summary>
+    /// Berechnet den Kurs von from nach to auf einer Kugel
+    /// </summary>
+    /// <param name="fromLatitude"></param>
+    /// <param name="fromLongitude"></param>
+    /// <param name="toLatitude"></param>
+    /// <param name="toLongitude"></param>
+    /// <returns></returns>
+    public static double Bearing(double fromLatitude, double fromLongitude, double toLatitude, double toLongitude)
+    {
+    	Location loc = new Location("");
+    	loc.setLatitude(fromLatitude);
+    	loc.setLongitude(fromLongitude);
+    	
+    	Location loc2 = new Location("");
+    	loc2.setLatitude(toLatitude);
+    	loc2.setLongitude(toLongitude);
+
+    	return loc.bearingTo(loc2);
+    	
+/*    	
+    	if (fromLatitude == toLatitude && fromLongitude == toLongitude)
+            return 0;
+
+        double latFromRad = fromLatitude * Math.PI / 180.0;
+        double latToRad = toLatitude * Math.PI / 180.0;
+        double lonFromRad = fromLongitude * Math.PI / 180.0;
+        double lonToRad = toLongitude * Math.PI / 180.0;
+
+        double x = Math.cos(latFromRad) * Math.sin(latToRad) - Math.sin(latFromRad) * Math.cos(latToRad) * Math.cos(lonFromRad - lonToRad);
+        double y = -Math.sin(lonFromRad - lonToRad) * Math.cos(latToRad);
+
+        return -(Math.atan2(y, x) * 180.0 / Math.PI);*/
+    }
 }
