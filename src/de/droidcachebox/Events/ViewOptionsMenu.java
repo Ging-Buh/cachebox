@@ -1,5 +1,6 @@
 package de.droidcachebox.Events;
 
+import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -10,4 +11,5 @@ public interface ViewOptionsMenu  {
 	public int GetMenuId();
 	public void OnShow();
 	public void OnHide();
+	public void ActivityResult(int requestCode, int resultCode, Intent data);
 }

@@ -21,6 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Views.Forms.EditCoordinate"></activity>
+        <activity android:name=".Views.Forms.EditWaypoint"></activity>
 
     </application>
 </manifest>

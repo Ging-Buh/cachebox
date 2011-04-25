@@ -72,8 +72,8 @@ public class CacheList extends ArrayList<Cache> {
 	                        MysterySolution solution = new MysterySolution();
 	                        solution.Cache = cache;
 	                        solution.Waypoint = wp;
-	                        solution.Latitude = wp.Latitude;
-	                        solution.Longitude = wp.Longitude;
+	                        solution.Latitude = wp.Coordinate.Latitude;
+	                        solution.Longitude = wp.Coordinate.Longitude;
 	                        MysterySolutions.add(solution);
 	                    }
                 	}

@@ -46,7 +46,7 @@
         	android:text="@string/Misc" android:layout_marginTop="2dip" android:background="@drawable/misc_button_image_selector">
         </ImageButton>
     </LinearLayout>
-    <FrameLayout android:layout_alignParentLeft="true" android:layout_height="wrap_content" android:layout_above="@+id/layoutButtons" android:layout_below="@+id/layoutTop" android:layout_width="match_parent" android:id="@+id/layoutContent">
+    <FrameLayout android:layout_alignParentLeft="true" android:layout_height="wrap_content" android:layout_above="@+id/layoutButtons" android:layout_below="@+id/layoutTop" android:layout_width="match_parent" android:id="@+id/layoutContent" android:alwaysDrawnWithCache="true">
     </FrameLayout>
     <RelativeLayout android:layout_alignParentTop="true" android:layout_width="match_parent" android:id="@+id/layoutTop" android:layout_height="30dip">
         <FrameLayout android:id="@+id/frameClock" android:layout_alignParentRight="true" android:layout_height="match_parent" android:layout_width="wrap_content"></FrameLayout>

@@ -12,6 +12,7 @@ import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -101,10 +102,6 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
         spoilerImage.setImage(bmp, spoilerImage.getWidth(), spoilerImage.getHeight());
     }
 
-	@Override
-    public void onNothingSelected(AdapterView parent) {
-    }
-
     public class ImageAdapter extends BaseAdapter {
         public ImageAdapter(Context c) {
             mContext = c;
@@ -179,6 +176,20 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
 	public int GetMenuId() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+
+	@Override
+	public void onNothingSelected(AdapterView<?> arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void ActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

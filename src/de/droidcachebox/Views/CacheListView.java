@@ -14,6 +14,7 @@ import de.droidcachebox.Geocaching.CacheList;
 import de.droidcachebox.Geocaching.Coordinate;
 import android.R.drawable;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -171,6 +172,12 @@ public class CacheListView extends ListView implements ViewOptionsMenu,PositionE
 
 	@Override
 	public void OrientationChanged(float heading) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void ActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		
 	}

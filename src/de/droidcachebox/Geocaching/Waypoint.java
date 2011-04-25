@@ -1,22 +1,30 @@
 package de.droidcachebox.Geocaching;
 
+import java.io.Serializable;
+
 import android.database.Cursor;
 import android.location.Location;
 import de.droidcachebox.Global;
 import de.droidcachebox.Geocaching.Cache.CacheTypes;
 
-public class Waypoint {
-    /// Id des dazugehörigen Caches in der Datenbank von geocaching.com
+public class Waypoint implements Serializable {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 67610567646416L;
+
+	/// Id des dazugehörigen Caches in der Datenbank von geocaching.com
     public long CacheId;
 
     /// Waypoint Code
     public String GcCode;
 
+    public Coordinate Coordinate;
     /// Breitengrad
-    public double Latitude;
+    public double Latitude() { return Coordinate.Latitude; } 
 
     /// Längengrad
-    public double Longitude;
+    public double Longitude() { return Coordinate.Longitude; }
 
     /// Titel des Wegpunktes
     public String Title;
@@ -36,11 +44,12 @@ public class Waypoint {
     /// Lösung einer QTA
     public String Clue;
 
+    
     public Waypoint()
     {
         CacheId = -1;
         GcCode = "";
-        Latitude = Longitude = 0;
+        Coordinate = new Coordinate();
         Description = "";
     }
     
@@ -50,8 +59,9 @@ public class Waypoint {
     {
         GcCode = reader.getString(0);
         CacheId = reader.getLong(1);
-        Latitude = reader.getDouble(2);
-        Longitude = reader.getDouble(3);
+        double latitude = reader.getDouble(2);
+        double longitude = reader.getDouble(3);
+    	Coordinate = new Coordinate(latitude, longitude);
         Description = reader.getString(4);
         Type = CacheTypes.values()[reader.getShort(5)];
         IsSyncExcluded = reader.getInt(6) == 1;
@@ -80,8 +90,8 @@ public class Waypoint {
     {
         GcCode = gcCode;
         CacheId = cacheId;
-        Latitude = latitude;
-        Longitude = longitude;
+        Coordinate.Latitude = latitude;
+        Coordinate.Longitude = longitude;
         Description = description;
         Type = type;
         IsSyncExcluded = true;
@@ -191,9 +201,8 @@ public class Waypoint {
     {
         Coordinate fromPos = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
 
-    	Coordinate toPos = new Coordinate(Latitude, Longitude);
         float[] dist = new float[4];
-        Location.distanceBetween(fromPos.Latitude, fromPos.Longitude, toPos.Latitude, toPos.Longitude, dist);
+        Location.distanceBetween(fromPos.Latitude, fromPos.Longitude, Coordinate.Latitude, Coordinate.Longitude, dist);
         return dist[0];
     }
 

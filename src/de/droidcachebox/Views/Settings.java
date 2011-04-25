@@ -15,6 +15,7 @@ import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Waypoint;
 import de.droidcachebox.TranslationEngine.LangStrings.Langs;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -210,6 +211,12 @@ public class Settings extends FrameLayout implements ViewOptionsMenu,SelectedLan
 	@Override
 	public void SelectedLangChangedEvent() {
 		setLang();
+		
+	}
+
+	@Override
+	public void ActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
 		
 	}
 

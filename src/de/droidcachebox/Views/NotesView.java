@@ -7,6 +7,7 @@ import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -74,6 +75,12 @@ public class NotesView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	public int GetMenuId() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void ActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

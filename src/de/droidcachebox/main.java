@@ -23,9 +23,11 @@ import de.droidcachebox.Views.WaypointView;
 import de.droidcachebox.Database;
 import de.droidcachebox.Database.DatabaseType;
 import de.droidcachebox.Geocaching.Cache;
+import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -124,6 +126,12 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     };
     
 	
+    @Override
+	protected void onActivityResult(int requestCode, int resultCode,
+		Intent data) {
+    	aktView.ActivityResult(requestCode, resultCode, data);
+    }
+
 	
 	
 	/** Called when the activity is first created. */
@@ -189,7 +197,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.GetString("CurrentMapLayer"), Config.GetString("CurrentMapLayer"), "");
         
         cacheListView = new CacheListView(this);
-        waypointView = new WaypointView(this);
+        waypointView = new WaypointView(this, this);
         logView = new LogView(this);
         descriptionView = new DescriptionView(this, "Cache-Beschreibung");
         spoilerView = new SpoilerView(this, inflater);
@@ -454,5 +462,11 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			Global.Locator.setLocation(null);
 		if (status == LocationProvider.OUT_OF_SERVICE)
 			Global.Locator.setLocation(null);
+	}
+	
+	
+	public void EditCoordinate(Coordinate coord)
+	{
+		
 	}
 }

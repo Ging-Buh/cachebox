@@ -11,6 +11,7 @@ import de.droidcachebox.Solver.SolverZeile;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -154,6 +155,12 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu, Selected
 	public int GetMenuId() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void ActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

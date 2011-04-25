@@ -14,6 +14,7 @@ import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.MysterySolution;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -1246,8 +1247,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
           for (Waypoint wp : wps)
           {
             WaypointRenderInfo wpi = new WaypointRenderInfo();
-            wpi.MapX = 256 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, wp.Longitude);
-            wpi.MapY = 256 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, wp.Latitude);
+            wpi.MapX = 256 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, wp.Coordinate.Longitude);
+            wpi.MapY = 256 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, wp.Coordinate.Latitude);
             wpi.Icon = Global.NewMapIcons.get(2).get((int)wp.Type.ordinal());
             wpi.UnderlayIcon = Global.NewMapOverlay.get(2).get(0);
             wpi.Cache = Global.SelectedCache();
@@ -3614,6 +3615,12 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
 	@Override
 	public void OnHide() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void ActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		
 	}

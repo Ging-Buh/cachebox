@@ -11,6 +11,7 @@ import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.LogEntry;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.Menu;
@@ -164,6 +165,12 @@ public class LogView extends ListView implements SelectedCacheEvent, ViewOptions
 	public int GetMenuId() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void ActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

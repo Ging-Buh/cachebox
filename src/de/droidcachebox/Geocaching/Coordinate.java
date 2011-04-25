@@ -1,8 +1,16 @@
 package de.droidcachebox.Geocaching;
 
+import java.io.IOException;
+import java.io.Serializable;
+
 import android.location.Location;
 
-public class Coordinate {
+public class Coordinate implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1235642315487L;
+	
 	public boolean Valid;
 	public double Latitude = 0;
 	public double Longitude = 0;
@@ -28,7 +36,7 @@ public class Coordinate {
       this.Elevation = parent.Elevation;
       this.Valid = parent.Valid;
     }
-
+        
     /// <summary>
     /// Projiziert die übergebene Koordinate
     /// </summary>

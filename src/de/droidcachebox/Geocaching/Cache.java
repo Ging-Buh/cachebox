@@ -342,7 +342,7 @@ public class Cache implements Comparable<Cache> {
         // If a mystery has a final waypoint, the distance will be calculated to the final not the the cache coordinates
     	Coordinate toPos = new Coordinate(Latitude, Longitude);
         if (waypoint != null)
-        	toPos = new Coordinate(waypoint.Latitude, waypoint.Longitude);
+        	toPos = new Coordinate(waypoint.Coordinate.Latitude, waypoint.Coordinate.Longitude);
         float[] dist = new float[4];
         Location.distanceBetween(fromPos.Latitude, fromPos.Longitude, toPos.Latitude, toPos.Longitude, dist);
         cachedDistance = dist[0];

@@ -4,19 +4,28 @@ package de.droidcachebox.Views;
 import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
+import de.droidcachebox.main;
+import de.droidcachebox.splash;
 
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.CacheList;
+import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
+import de.droidcachebox.Views.Forms.EditCoordinate;
+import de.droidcachebox.Views.Forms.EditWaypoint;
 import android.R.drawable;
+import android.app.Activity;
+import android.app.Instrumentation.ActivityMonitor;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,14 +37,16 @@ import android.widget.ListView;
 public class WaypointView extends ListView implements SelectedCacheEvent, ViewOptionsMenu {
 	
 	CustomAdapter lvAdapter;
+	Activity parentActivity;
+	Waypoint aktWaypoint = null;
 	
 	private Paint paint;
 	/**
 	 * Constructor
 	 */
-	public WaypointView(final Context context) {
+	public WaypointView(final Context context, final Activity parentActivity) {
 		super(context);
-
+		this.parentActivity = parentActivity;
 		SelectedCacheEventList.Add(this);
 		this.setAdapter(null);
 		lvAdapter = new CustomAdapter(getContext(), Global.SelectedCache());
@@ -45,10 +56,18 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				Waypoint aktWaypoint = null;
+				aktWaypoint = null;
 				if (arg2 > 0)
 					aktWaypoint = Global.SelectedCache().waypoints.get(arg2 - 1);
         		Global.SelectedWaypoint(Global.SelectedCache(), aktWaypoint);
+    	        
+        		
+        		Intent mainIntent = new Intent().setClass(getContext(), EditWaypoint.class);
+    	        Bundle b = new Bundle();
+    	        b.putSerializable("Waypoint", aktWaypoint);
+    	        mainIntent.putExtras(b);
+        		parentActivity.startActivityForResult(mainIntent, 0);
+        		
 				return true;
 			}
 		});
@@ -57,6 +76,19 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 		this.setDividerHeight(5);
 		this.setDivider(getBackground());
 		
+	}
+
+	public void ActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		Bundle bundle = data.getExtras();
+		if (bundle != null)
+		{
+			Waypoint waypoint = (Waypoint)bundle.getSerializable("WaypointResult");
+			if (waypoint != null)
+			{
+				aktWaypoint.Title = waypoint.Title;
+			}
+		}
 	}
 
 	public class CustomAdapter extends BaseAdapter /*implements OnClickListener*/ {
