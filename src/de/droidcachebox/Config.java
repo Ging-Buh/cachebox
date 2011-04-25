@@ -22,7 +22,7 @@ import android.os.Environment;
 public class Config {
 	
 	
-	
+	public static final String WorkPath = "/sdcard/program files/cachebox";
 	public static final String ConfigName = "/sdcard/program files/cachebox/cachebox.config";
 
 	 public static String GetString(String key)
@@ -100,6 +100,12 @@ public class Config {
     public static void readConfigFile(AssetManager mgr) 
     {
     	AssetMgr = mgr;
+    	initialized=false;
+    	checkInitialization();
+    }
+    public static void readConfigFile() 
+    {
+    	initialized=false;
     	checkInitialization();
     }
     
@@ -159,8 +165,8 @@ public class Config {
 	
     public static void validateDefaultConfigFile()
     {
-     //   validateSetting("LanguagePath", Global.AppPath + "\\data\\lang");
-     //   validateSetting("Sel_LanguagePath", Global.AppPath + "\\data\\lang\\en.lan");
+        validateSetting("LanguagePath", "/sdcard/program files/cachebox/data/lang");
+        validateSetting("Sel_LanguagePath", "/sdcard/program files/cachebox/data/lang/en.lan");
         validateSetting("DatabasePath", "/sdcard/cachebox.sdf");
         validateSetting("TileCacheFolder", "/sdcard/program files/cachebox/cache");
 //        validateSetting("PocketQueryFolder", Global.AppPath + "\\PocketQuery");

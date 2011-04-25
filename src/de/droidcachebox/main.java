@@ -16,6 +16,7 @@ import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.LogView;
 import de.droidcachebox.Views.MapView;
 import de.droidcachebox.Views.NotesView;
+import de.droidcachebox.Views.Settings;
 import de.droidcachebox.Views.SolverView;
 import de.droidcachebox.Views.SpoilerView;
 import de.droidcachebox.Views.WaypointView;
@@ -85,6 +86,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private SpoilerView spoilerView;
 	private NotesView notesView;
 	private SolverView solverView;
+	private Settings settingsView;
 	
 	int width;
     int height;
@@ -152,14 +154,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         clockView = new ClockView(this);
         frameClock.addView(clockView);
 
-        layoutButtons = (LinearLayout)this.findViewById(R.id.layoutButtons);
-   //     try{
-   //     layoutButtons.setLayoutParams(new LayoutParams(width, 200));    //layout(0, 200, 0, 0);
-   //     }
-   //     catch (Exception e)
-   //     {
-   //     	layoutButtons = (LinearLayout)this.findViewById(R.id.layoutButtons);
-   //     }
+        settingsView = new Settings(this,inflater);
         
         
         frame = (FrameLayout)this.findViewById(R.id.layoutContent);
@@ -383,6 +378,9 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     		return true;
     	case R.id.miDayNight:
     		changeDayNight();
+    		return true;
+    	case R.id.miSettings:
+    		showView(settingsView);
     		return true;
 		default:
 			return super.onOptionsItemSelected(item);

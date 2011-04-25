@@ -335,4 +335,6 @@ English
 	UploadAllFieldnotes = Upload All Fieldnotes? (Ignore Date)
 	LogIn = Login at geocaching.com
 	GCPW = Password at geocaching.com
-	GCVotePW = GcVote Password 
+	GCVotePW = GcVote Password
+	SelectLanguage = Select Language
+	save = save

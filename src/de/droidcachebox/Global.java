@@ -31,7 +31,7 @@ public class Global {
     public static final int LatestDatabaseChange = 1002;
     public static final int LatestDatabaseFieldNoteChange = 1001;
     
-    public static LangStrings Translations;
+    public static LangStrings Translations = new LangStrings();
     
     public static Coordinate Marker = new Coordinate(48.12425, 12.16460);
 

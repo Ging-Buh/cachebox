@@ -9,6 +9,7 @@ import java.util.TimerTask;
 
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Components.ClockView;
+import de.droidcachebox.Components.copyAssetFolder;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
@@ -80,8 +81,19 @@ public class splash extends Activity
 		 
 // Read Config
 		 
-		 Config.readConfigFile(getAssets());
+		 // copy AssetFolder
+		 String[] exclude = new String[]{"webkit","sounds","images"};
+		 copyAssetFolder myCopie = new copyAssetFolder();
+		 myCopie.copyAll(getAssets(), Config.WorkPath, exclude);
 		 
+		 
+		 Config.readConfigFile(getAssets());
+		 try {
+			Global.Translations.ReadTranslationsFile(Config.GetString("Sel_LanguagePath"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		 
 		setProgressState(20, "Ini UI ...");
 		 	Global.Paints.init();
@@ -90,14 +102,16 @@ public class splash extends Activity
         setProgressState(40, "Load Map ...");
 	        File dir = new File(Config.GetString("MapPackFolder"));
 	        String[] files = dir.list();
-	        if (files.length>0)
+	        if (!(files == null))
 	        {
-	        for (String file : files)
+		        if (files.length>0)
 		        {
-		        	MapView.Manager.LoadMapPack(Config.GetString("MapPackFolder") + "/" + file);
+			        for (String file : files)
+				        {
+				        	MapView.Manager.LoadMapPack(Config.GetString("MapPackFolder") + "/" + file);
+				        }
 		        }
 	        }
-	        
 	    setProgressState(60, "Load Caches ...");
 	        if (Database.Data != null)
 	        	Database.Data = null;

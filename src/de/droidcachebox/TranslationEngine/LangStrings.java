@@ -3,6 +3,8 @@ package de.droidcachebox.TranslationEngine;
 import java.io.*;
 import java.util.ArrayList;
 import de.droidcachebox.Components.StringFunctions;
+import de.droidcachebox.Events.SelectedLangChangedEventList;
+
 import android.os.Environment;
 
 public class LangStrings 
@@ -24,8 +26,25 @@ public class LangStrings
         }
         public String IdString;
         public String Translation;
+        
     }
 
+    
+    ///<summary>
+    /// Eine Structure, welche den Namen und deren Pfad aufnimmt
+    ///</summery>
+    public class Langs
+    {
+    	public Langs(String Name, String Pfad)
+    	{
+    		this.Name = Name;
+    		this.Path = Pfad;
+    	}
+    	public String Name;
+    	public String Path;
+    }
+    
+    
     public ArrayList<_Translations> _StringList = new ArrayList<_Translations>();
     private ArrayList<_Translations> _RefTranslation;
 
@@ -43,11 +62,12 @@ public class LangStrings
     /// <returns>Name der Sprach-Datei</returns>
     public String getLangNameFromFile(String FilePath) throws IOException
     {
-    	String ApplicationPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-       
+    	
     	 BufferedReader reader;
-    	 reader = new BufferedReader(new FileReader(ApplicationPath + FilePath));
-    	 return reader.readLine().trim();
+    	 reader = new BufferedReader(new FileReader(FilePath));
+    	 String Value = reader.readLine().trim();
+    	 reader.close();
+    	 return Value;
     }
 
     /// <summary>
@@ -60,15 +80,16 @@ public class LangStrings
 
         if (_RefTranslation == null)
         {
-            int pos = FilePath.lastIndexOf("\\")+1;
-            String RefPath = FilePath.regionMatches(pos, "", pos, FilePath.length() - pos) + "en.lan";
+            int pos = FilePath.lastIndexOf("/")+1;
+            String LangFileName = FilePath.substring(pos);
+            String RefPath = FilePath.replace(LangFileName, "en.lan");
             _RefTranslation = ReadFile(RefPath);
         }
         if (FilePath.endsWith("lang"))
             FilePath = FilePath.replace(".lang", ".lan");
         _StringList = ReadFile(FilePath);
 
-     // TODO   if (LangChanged != null) { LangChanged(); } // Fire changed event if not null
+        SelectedLangChangedEventList.Call();
     }
 
     private ArrayList<_Translations> ReadFile(String FilePath) throws IOException
@@ -80,18 +101,18 @@ public class LangStrings
         // get Encoding
         
         BufferedReader reader;
-   	    reader = new BufferedReader(new FileReader(ApplicationPath + FilePath));
+   	    reader = new BufferedReader(new FileReader(FilePath));
    	    String encoding =reader.readLine().trim();
    	             
 
    	    BufferedReader Filereader;
         if (encoding == "utf8")
         {
-        	Filereader = new BufferedReader( new InputStreamReader(new FileInputStream(ApplicationPath + FilePath), "UTF8"));
+        	Filereader = new BufferedReader( new InputStreamReader(new FileInputStream( FilePath), "UTF8"));
         }
         else
         {
-        	Filereader = new BufferedReader(new InputStreamReader(new FileInputStream(ApplicationPath + FilePath)));
+        	Filereader = new BufferedReader(new InputStreamReader(new FileInputStream(FilePath)));
         }
             // Read and display lines from the file until the end of 
             // the file is reached:
@@ -138,7 +159,7 @@ public class LangStrings
         String retString = "";
         for (_Translations tmp : _StringList)
         {
-            if (tmp.IdString == StringId)
+            if (tmp.IdString.equals(StringId))
             {
                 retString = tmp.Translation;
                 break;
@@ -149,7 +170,7 @@ public class LangStrings
         {
             for (_Translations tmp : _RefTranslation)
             {
-                if (tmp.IdString == StringId)
+                if (tmp.IdString.equals(StringId))
                 {
                     retString = tmp.Translation;
                     break;
@@ -164,4 +185,32 @@ public class LangStrings
 
         return retString;
     }
+
+    public ArrayList<Langs> GetLangs(String FilePath)
+    {
+    	ArrayList<Langs> Temp = new ArrayList<Langs>();
+    	
+    	File Dir = new File(FilePath);
+    	final ArrayList<String> files = new ArrayList<String>();
+    	Dir.listFiles(new FileFilter(){
+    	 
+    	public boolean accept(File f) { Object Path = f.getAbsolutePath();
+    	files.add((String) Path); return false;}});
+    	 
+    	for (String tmp : files)
+    	{
+    		try {
+				String tmpName = getLangNameFromFile(tmp);
+				Temp.add(new Langs(tmpName,tmp));
+    			} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+    	}
+    	
+    	return Temp;
+    }
+
+
 }

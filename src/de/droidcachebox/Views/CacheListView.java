@@ -6,15 +6,19 @@ import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 
+import de.droidcachebox.Events.PositionEvent;
+import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.CacheList;
+import de.droidcachebox.Geocaching.Coordinate;
 import android.R.drawable;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +28,7 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-public class CacheListView extends ListView implements ViewOptionsMenu {
+public class CacheListView extends ListView implements ViewOptionsMenu,PositionEvent {
 	
 
 	private Paint paint;
@@ -62,7 +66,7 @@ public class CacheListView extends ListView implements ViewOptionsMenu {
 		this.setCacheColorHint(Global.Colors.TitleBarColor);
 		this.setDividerHeight(5);
 		this.setDivider(getBackground());
-		
+		PositionEventList.Add(this);
 		
 	}
 	
@@ -154,6 +158,21 @@ public class CacheListView extends ListView implements ViewOptionsMenu {
 	public int GetMenuId() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void PositionChanged(Location location) 
+	{
+		Global.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());
+		Global.Marker.Valid=false;
+		this.invalidate();
+		
+	}
+
+	@Override
+	public void OrientationChanged(float heading) {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

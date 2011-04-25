@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:id="@+id/settings_LinearLayout" 
+	android:gravity="bottom" android:layout_height="match_parent" android:orientation="vertical" android:layout_width="match_parent">
+	<ScrollView
+		android:layout_height="wrap_content" 
+		android:layout_width="match_parent">
+	    
+  	  <TableLayout 
+	    android:id="@+id/settings_tableLayout1" 
+	    android:layout_width="match_parent" 
+	    android:layout_height="wrap_content"
+	    android:collapseColumns="1" 
+	    android:layout_gravity="fill_vertical">
+       	
+		    <Spinner 
+			    android:layout_height="wrap_content" 
+			    android:id="@+id/settings_LangCombo" 
+			    android:layout_width="wrap_content" 
+			    android:layout_marginTop="10dip"></Spinner>
+		   	<Button 
+			   	android:typeface="monospace" 
+			   	android:text="Login - Settings" 
+			   	android:layout_height="wrap_content" 
+			   	android:layout_width="wrap_content" 
+			   	android:id="@+id/toggle_button_login" 
+			   	android:layout_marginTop="10dip"></Button>
+		    
+		    <TableRow 
+			    android:id="@+id/settings_tableRowLogIn" 
+			    android:layout_height="wrap_content" 
+			    android:layout_width="match_parent"
+			    android:visibility="gone">
+	
+			    		<include android:layout_height="wrap_content" android:id="@layout/settings_login" layout="@layout/settings_login" android:layout_width="match_parent" android:layout_marginLeft="10dip" android:layout_marginRight="10dip" android:layout_weight="1"></include>			    
+			 
+		    </TableRow>
+		    
+	    
+    	</TableLayout>
+
+	</ScrollView>
+
+	<LinearLayout 
+		android:id="@+id/settings_savecancel_linearlayout" 
+		android:layout_width="match_parent" 
+		android:layout_height="wrap_content" 
+		android:baselineAligned="false">
+			<Button 
+				android:text="Save" 
+				android:layout_height="wrap_content" 
+				android:id="@+id/settings_save" 
+				android:layout_marginTop="10dip" android:layout_width="wrap_content" android:textSize="20dip" android:layout_marginRight="10dip" android:layout_marginLeft="10dip"></Button>
+			<Button 
+				android:text="Cancel" 
+				android:layout_height="wrap_content" 
+				android:id="@+id/settings_cancel" 
+				android:layout_marginTop="10dip" android:layout_width="wrap_content" android:textSize="20dip" android:layout_marginRight="10dip" android:layout_marginLeft="10dip"></Button>
+		    	    
+	</LinearLayout>
+</LinearLayout>

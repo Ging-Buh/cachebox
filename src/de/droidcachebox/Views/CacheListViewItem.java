@@ -3,6 +3,7 @@ package de.droidcachebox.Views;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Components.StringFunctions;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Coordinate;
@@ -141,8 +142,10 @@ public class CacheListViewItem extends View {
         Boolean notAvailable = (!cache.Available && !cache.Archived);
         Boolean Night = Config.GetBool("nightMode");
         Boolean GlobalSelected = cache == Global.SelectedCache();
+        int IconPos = imgSize - (int) (imgSize/1.5);
         
         Paint DrawBackPaint = new Paint( (GlobalSelected)? Global.Paints.Day.selectedBack : Night? Global.Paints.Night.ListBackground : Global.Paints.Day.ListBackground);
+        Paint DTPaint =  Night? Global.Paints.Night.Text.noselected: Global.Paints.Day.Text.noselected ;
       	canvas.drawPaint(DrawBackPaint);
        
         
@@ -167,28 +170,27 @@ public class CacheListViewItem extends View {
     	   String Line2 =WrapText[1];
     	   canvas.drawText(Line2, imgSize + 5, 50, NamePaint);
        }
-        //  if (Global.LastValidPosition.Valid || Global.Marker.Valid)
-        //  {
-        //      Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
-        //      double heading = (Global.Locator != null) ? Global.Locator.Heading : 0;
+          if (Global.LastValidPosition.Valid || Global.Marker.Valid)
+          {
+              Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
+              double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
 
-        //      // FillArrow: Luftfahrt
-        //      // Bearing: Luftfahrt
-        //      // Heading: Im Uhrzeigersinn, Geocaching-Norm
+              // FillArrow: Luftfahrt
+              // Bearing: Luftfahrt
+              // Heading: Im Uhrzeigersinn, Geocaching-Norm
 
-        //      double bearing = -Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
-        //      double relativeBearing = bearing - heading + 180;
-        //      double relativeBearingRad = relativeBearing * Math.PI / 180.0;
+              double bearing = -Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
+              double relativeBearing = bearing - heading + 180;
+           //   double relativeBearingRad = relativeBearing * Math.PI / 180.0;
 
-        //      Arrow.FillArrow(gfx, Arrow.HeadingBug, blackPen, (Global.NearestCache == cache) ? redBrush : orangeBrush, width - lineHeight, y + lineHeight, lineHeight, -relativeBearingRad);
+		        // Draw Arrow
+		       Global.PutImageTargetHeight(canvas, Global.Arrows[1],-relativeBearing,(int)( width - rightBorder/2) ,(int)(lineHeight /8), (int)(lineHeight*2.4));
 
-        //      gfx.DrawString(UnitFormatter.DistanceString(cache.Distance), font, blackBrush, width - rightBorder + 2, y + lineHeight * 2);
-        //  }
+		       canvas.drawText(UnitFormatter.DistanceString(cache.Distance()), width - rightBorder + 2, (int) ((lineHeight * 2) + (lineHeight/1.4)), DTPaint);
+         }
        
        
-       // Draw Arrow
-       Global.PutImageTargetHeight(canvas, Global.Arrows[1],fakeBearing++,(int)( width - rightBorder/2) ,(int)(lineHeight /8), (int)(lineHeight*2.4));
-
+      
         Paint Linepaint = Night? Global.Paints.Night.ListSeperator : Global.Paints.Day.ListSeperator;
         canvas.drawLine(x, y + this.height - 2, width, y + this.height - 2,Linepaint); 
         canvas.drawLine(x, y + this.height - 3, width, y + this.height - 3,Linepaint);
@@ -196,8 +198,8 @@ public class CacheListViewItem extends View {
           Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.Type.ordinal()], 0, 0, imgSize);     
           if (cache.Found())
           {
-        	  int pos =imgSize - (int) (imgSize/1.5);
-              Global.PutImageTargetHeight(canvas, Global.Icons[2], pos, pos, imgSize/2);//Smile
+        	  
+              Global.PutImageTargetHeight(canvas, Global.Icons[2], IconPos, IconPos, imgSize/2);//Smile
           }
               
 
@@ -213,9 +215,9 @@ public class CacheListViewItem extends View {
              Global.PutImageTargetHeight(canvas, Global.Icons[24], 0, y, lineHeight);
           }
 
-         if (cache.Owner == gcLogin && !(gcLogin == ""))
+         if (cache.Owner.equals(gcLogin) && !(gcLogin.equals("")))
            {
-               Global.PutImageTargetHeight(canvas,Global.NewMapIcons.get(2).get(20), 0, y, lineHeight);
+               Global.PutImageTargetHeight(canvas,Global.Icons[17], IconPos, IconPos, imgSize/2);
            }
 
 
@@ -229,7 +231,7 @@ public class CacheListViewItem extends View {
         //      Global.PutImageTargetHeight(canvas, Global.MapIcons[22], 0, y + imgSize - 15, lineHeight);
         //  }
 
-         Paint DTPaint =  Night? Global.Paints.Night.Text.noselected: Global.Paints.Day.Text.noselected ;
+        
         int left = x + imgSize + 5;
         canvas.drawText("D",left,(int) ((lineHeight * 2) + (lineHeight/1.4) ) , DTPaint);
           left += (DTPaint.getTextSize());

@@ -334,5 +334,7 @@ utf8
 	LogIn = Connexion au site geocaching.com
 	GCPW = Mot de passe pour geocaching.com
 	GCVotePW = Mote de passe pour GcVote 
+        SelectLanguage = Select Language
+	save = save
 		
 

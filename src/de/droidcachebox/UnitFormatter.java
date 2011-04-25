@@ -1,5 +1,7 @@
 package de.droidcachebox;
 
+import java.text.NumberFormat;
+
 public class UnitFormatter {
 
 	
@@ -25,16 +27,14 @@ public class UnitFormatter {
         /// <returns></returns>
         public static String DistanceStringMetric(float distance)
         {
-/*        	
+        	
             if (distance <= 500)
-                return String.Format(NumberFormatInfo.InvariantInfo, "{0:0}m", distance);
+                return String.format("%.0f", distance) + "m";
 
             if (distance < 10000)
-                return String.Format(NumberFormatInfo.InvariantInfo, "{0:0.00}km", distance / 1000);
+                return String.format("%.2f", distance / 1000) + "km";
 
-            return String.Format(NumberFormatInfo.InvariantInfo, "{0:0.0}km", distance / 1000);
-*/
-        	return "not implemented";
+            return String.format("%.0f", distance / 1000) + "km";
         }
 
         /// <summary>
@@ -44,19 +44,19 @@ public class UnitFormatter {
         /// <returns></returns>
         public static String DistanceStringImperial(float distance)
         {
-/*
+
             float yards = distance / 0.9144f;
             float miles = yards / 1760;
 
             if (yards < 1000)
-                return String.Format(NumberFormatInfo.InvariantInfo, "{0:0}yd", yards);
+                return String.format( "%.0f", yards) + "yd";
 
             if (miles < 10)
-                return String.Format(NumberFormatInfo.InvariantInfo, "{0:0.00}mi", miles);
+                return String.format( "%.2f", miles) + "mi";
 
-            return String.Format(NumberFormatInfo.InvariantInfo, "{0:0.0}mi", miles);
-*/
-        	return "not implemented";
+            return String.format( "%.1f", miles) + "mi";
+
+        	
         }
 
         public static String SpeedString(float kmh)
