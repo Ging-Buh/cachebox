@@ -2,6 +2,7 @@ package de.droidcachebox.Events;
 
 import java.util.ArrayList;
 
+import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.Geocaching.Coordinate;
 
@@ -24,6 +25,8 @@ public class PositionEventList {
 	}
 	public static void Call(float heading)
 	{
+		if (!Config.GetBool("HtcCompass"))
+			return;		
 		for (PositionEvent event : list)
 		{
 			event.OrientationChanged(heading);

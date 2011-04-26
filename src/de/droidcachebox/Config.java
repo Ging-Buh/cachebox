@@ -256,15 +256,11 @@ public class Config {
             keyLookup.put(key, value);
     }
     
-    
-    
     public static void Set(String key, String value)
     {
         checkInitialization();
         keyLookup.put(key, value);
     }
-
-   
 
     public static void Set(String key, double value)
     {

@@ -2342,11 +2342,11 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 	
 	        int size = lineHeight;
 	
-	        debugString1 = String.valueOf(Global.Locator.getCompassHeading());
+/*	        debugString1 = String.valueOf(Global.Locator.getCompassHeading());
 	        if (Global.Locator.getLocation() != null)
 	        	debugString2 = Global.Locator.getLocation().getBearing() + " - " + Global.Locator.getLocation().getSpeed() * 3600 / 1000 + "kmh";
 	        else
-	        	debugString2 = "";
+	        	debugString2 = "";*/
 	        
 	        double courseRad = Global.Locator.getHeading() * Math.PI / 180.0;
 	        boolean lastUsedCompass = Global.Locator.LastUsedCompass;

@@ -1,6 +1,7 @@
 package de.droidcachebox.Locator;
 
 import android.location.Location;
+import de.droidcachebox.Config;
 import de.droidcachebox.Geocaching.Coordinate;
 
 public class Locator {
@@ -48,6 +49,15 @@ public class Locator {
     	}
     }
     
+    public float SpeedOverGround()
+    {
+    	if (Location.hasSpeed())
+    	{
+    		return Location.getSpeed() * 3600 / 1000;    			
+    	} else
+    		return 0;
+    }
+    
     public Locator()
     {
     	this.Location = null;
@@ -57,9 +67,11 @@ public class Locator {
     {
     	synchronized (this)
     	{
+    		if (!Config.GetBool("HtcCompass"))
+    			return false;
     		if (CompassHeading < 0) 
     			return false;	// kein Kompass Wert -> Komapass nicht verwenden!
-    		if ((Location != null) && Location.hasBearing() && Location.hasSpeed() && (Location.getSpeed() > 5 * 1000 / 3600))
+    		if ((Location != null) && Location.hasBearing() && (SpeedOverGround() > Config.GetInt("HtcLevel")))
     			return false;	// Geschwindigkeit > 5 km/h -> GPs Kompass verwenden
 
     		return true;    				
