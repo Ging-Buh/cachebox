@@ -5,6 +5,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Components.StringFunctions;
+import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Coordinate;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.widget.LinearLayout;
@@ -179,12 +181,12 @@ public class CacheListViewItem extends View {
               // Bearing: Luftfahrt
               // Heading: Im Uhrzeigersinn, Geocaching-Norm
 
-              double bearing = -Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
-              double relativeBearing = bearing - heading + 180;
+              double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
+              double relativeBearing = bearing - heading;
            //   double relativeBearingRad = relativeBearing * Math.PI / 180.0;
 
 		        // Draw Arrow
-		       Global.PutImageTargetHeight(canvas, Global.Arrows[1],-relativeBearing,(int)( width - rightBorder/2) ,(int)(lineHeight /8), (int)(lineHeight*2.4));
+		       Global.PutImageTargetHeight(canvas, Global.Arrows[1],relativeBearing,(int)( width - rightBorder/2) ,(int)(lineHeight /8), (int)(lineHeight*2.4));
 
 		       canvas.drawText(UnitFormatter.DistanceString(cache.Distance()), width - rightBorder + 2, (int) ((lineHeight * 2) + (lineHeight/1.4)), DTPaint);
          }
@@ -265,7 +267,5 @@ public class CacheListViewItem extends View {
               canvas.drawRect(new Rect(0,0,this.width,this.height-2), DrawBackPaint);
          }
     }
-
-
 
 }

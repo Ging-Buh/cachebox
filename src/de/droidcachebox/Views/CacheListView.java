@@ -29,7 +29,7 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-public class CacheListView extends ListView implements ViewOptionsMenu,PositionEvent {
+public class CacheListView extends ListView implements ViewOptionsMenu, PositionEvent {
 	
 
 	private Paint paint;
@@ -164,8 +164,6 @@ public class CacheListView extends ListView implements ViewOptionsMenu,PositionE
 	@Override
 	public void PositionChanged(Location location) 
 	{
-		Global.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());
-		Global.Marker.Valid=false;
 		this.invalidate();
 		
 	}
@@ -173,7 +171,7 @@ public class CacheListView extends ListView implements ViewOptionsMenu,PositionE
 	@Override
 	public void OrientationChanged(float heading) {
 		// TODO Auto-generated method stub
-		
+		this.invalidate();
 	}
 
 	@Override

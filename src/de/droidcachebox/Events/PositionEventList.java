@@ -2,6 +2,9 @@ package de.droidcachebox.Events;
 
 import java.util.ArrayList;
 
+import de.droidcachebox.Global;
+import de.droidcachebox.Geocaching.Coordinate;
+
 import android.location.Location;
 
 public class PositionEventList {
@@ -12,6 +15,8 @@ public class PositionEventList {
 	}
 	public static void Call(Location location)
 	{
+		Global.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());
+		Global.Marker.Valid=false;
 		for (PositionEvent event : list)
 		{
 			event.PositionChanged(location);
