@@ -61,13 +61,14 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 					aktWaypoint = Global.SelectedCache().waypoints.get(arg2 - 1);
         		Global.SelectedWaypoint(Global.SelectedCache(), aktWaypoint);
     	        
-        		
-        		Intent mainIntent = new Intent().setClass(getContext(), EditWaypoint.class);
-    	        Bundle b = new Bundle();
-    	        b.putSerializable("Waypoint", aktWaypoint);
-    	        mainIntent.putExtras(b);
-        		parentActivity.startActivityForResult(mainIntent, 0);
-        		
+        		if (aktWaypoint != null)
+        		{
+	        		Intent mainIntent = new Intent().setClass(getContext(), EditWaypoint.class);
+	    	        Bundle b = new Bundle();
+	    	        b.putSerializable("Waypoint", aktWaypoint);
+	    	        mainIntent.putExtras(b);
+	        		parentActivity.startActivityForResult(mainIntent, 0);
+        		}
 				return true;
 			}
 		});
@@ -87,6 +88,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 			if (waypoint != null)
 			{
 				aktWaypoint.Title = waypoint.Title;
+				aktWaypoint.Type = waypoint.Type;
 			}
 		}
 	}

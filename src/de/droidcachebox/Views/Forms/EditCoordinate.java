@@ -25,8 +25,11 @@ public class EditCoordinate extends Activity {
 	                android.R.layout.simple_spinner_item, mStrings);
 	        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	        s1.setAdapter(adapter);
+	        
+	        // übergebene Koordinate auslesen
 	        Bundle bundle = getIntent().getExtras();
 	        Coordinate coord = (Coordinate)bundle.getSerializable("Coord");
+	        
 	        EditText et = (EditText) findViewById(R.id.edco_titleedit);
 	        et.setText(coord.Latitude + " - " + coord.Longitude);
 	        aktIntent = getIntent();
