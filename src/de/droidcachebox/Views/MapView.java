@@ -648,8 +648,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     	zoomCross = 15;
 /*      gcLogin = Config.GetString("GcLogin");
       mapMaxCachesDisplay = Config.GetInt("MapMaxCachesDisplay_config");
-      mapMaxCachesDisplayLarge = Config.GetInt("mapMaxCachesDisplayLarge_config");
-      zoomCross = Config.GetInt("ZoomCross");*/
+      mapMaxCachesDisplayLarge = Config.GetInt("mapMaxCachesDisplayLarge_config");*/
+      zoomCross = Config.GetInt("ZoomCross");
     	
 
 //      hideFindsButton.ButtonImage = (hideMyFinds) ? Global.Icons[6] : Global.Icons[7];
@@ -1497,7 +1497,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 		  int imageX = x;
 		  int imageY = y;
 		
-		  if ((Zoom >= zoomCross) && (wpi.Selected))
+		  if ((Zoom >= zoomCross) && (wpi.Selected) && (wpi.Waypoint == Global.SelectedWaypoint()))
 		  {
 		    int size = (int)(halfIconWidth);
 		
