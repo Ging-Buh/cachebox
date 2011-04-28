@@ -167,6 +167,7 @@ public class Global {
     	    	public static int EmptyBackground = Color.parseColor("#CAD4B2");
     	    	public static int Foreground = Color.parseColor("#000000");
     	    	public static int SelectedBackground = Color.parseColor("#ffd240");
+    	    	public static int ControlColorFilter = Color.parseColor("#BBCD8F");
     	    	
     	    }
     	    
@@ -177,6 +178,7 @@ public class Global {
     	    	public static int EmptyBackground = Color.parseColor("#8E8E8E");
     	    	public static int Foreground = Color.parseColor("#FFFFFF");
     	    	public static int SelectedBackground = Color.parseColor("#ffd240");
+    	    	public static int ControlColorFilter = Color.parseColor("#5B6D2F");
     	    }
     	    
     }

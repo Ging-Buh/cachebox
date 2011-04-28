@@ -5,6 +5,8 @@ import java.util.Map;
 
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Components.ClockView;
+import de.droidcachebox.Events.ColorChangedEvent;
+import de.droidcachebox.Events.ColorChangedEventList;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
@@ -16,10 +18,11 @@ import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.LogView;
 import de.droidcachebox.Views.MapView;
 import de.droidcachebox.Views.NotesView;
-import de.droidcachebox.Views.Settings;
 import de.droidcachebox.Views.SolverView;
 import de.droidcachebox.Views.SpoilerView;
 import de.droidcachebox.Views.WaypointView;
+import de.droidcachebox.Views.Forms.EditWaypoint;
+import de.droidcachebox.Views.Forms.Settings;
 import de.droidcachebox.Database;
 import de.droidcachebox.Database.DatabaseType;
 import de.droidcachebox.Geocaching.Cache;
@@ -64,7 +67,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
-public class main extends Activity implements SelectedCacheEvent, LocationListener {
+public class main extends Activity implements SelectedCacheEvent, ColorChangedEvent, LocationListener {
     LayoutInflater inflater;
 	private ImageButton buttonDB;
 	private ImageButton buttonCache;
@@ -88,7 +91,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private SpoilerView spoilerView;
 	private NotesView notesView;
 	private SolverView solverView;
-	private Settings settingsView;
+	
 	
 	int width;
     int height;
@@ -141,7 +144,10 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.main);
+        
+        // add Event Handler
         SelectedCacheEventList.Add(this);
+        ColorChangedEventList.Add(this);
         
         WindowManager w = getWindowManager();
         Display d = w.getDefaultDisplay();
@@ -162,7 +168,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
         clockView = new ClockView(this);
         frameClock.addView(clockView);
 
-        settingsView = new Settings(this,inflater);
+      
         
         
         frame = (FrameLayout)this.findViewById(R.id.layoutContent);
@@ -384,10 +390,14 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     		finish();
     		return true;
     	case R.id.miDayNight:
-    		changeDayNight();
+    		Config.changeDayNight();
     		return true;
     	case R.id.miSettings:
-    		showView(settingsView);
+    	final Intent mainIntent = new Intent().setClass( this, Settings.class);
+
+    		this.startActivity(mainIntent);
+    		
+		
     		return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -433,13 +443,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     	textview.setText(cache.Name);*/
     }
     
-    public void changeDayNight()
-    {
-    	Boolean value = Config.GetBool("nightMode");
-    	value = !value;
-    	Config.Set("nightMode",value);
-    }
-    
+       
 
 	@Override
 	public void onLocationChanged(Location location) {
@@ -472,6 +476,14 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	
 	public void EditCoordinate(Coordinate coord)
 	{
+		
+	}
+
+
+
+	@Override
+	public void ColorChangedEvent() {
+		// TODO Auto-generated method stub
 		
 	}
 }

@@ -15,6 +15,9 @@ import java.lang.reflect.Type;
 
 import java.util.HashMap;
 
+import de.droidcachebox.Events.ColorChangedEventList;
+import de.droidcachebox.Events.SelectedLangChangedEventList;
+
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Environment;
@@ -25,7 +28,7 @@ public class Config {
 	public static final String WorkPath = "/sdcard/program files/cachebox";
 	public static final String ConfigName = "/sdcard/program files/cachebox/cachebox.config";
 
-	 public static String GetString(String key)
+	public static String GetString(String key)
      {
          checkInitialization();
 
@@ -36,8 +39,6 @@ public class Config {
              return value;
      }
 
-
-	
     public static double GetDouble(String key)
     {
         checkInitialization();
@@ -90,7 +91,13 @@ public class Config {
         }
     }
 	
-
+    public static void changeDayNight()
+    {
+    	Boolean value = Config.GetBool("nightMode");
+    	value = !value;
+    	Config.Set("nightMode",value);
+    	ColorChangedEventList.Call();
+    }
 	
 	 static HashMap<String, String> keyLookup = null;
 

@@ -1,4 +1,4 @@
-package de.droidcachebox.Views;
+package de.droidcachebox.Views.Forms;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,18 +6,19 @@ import java.util.ArrayList;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Events.SelectedCacheEvent;
-import de.droidcachebox.Events.SelectedCacheEventList;
-import de.droidcachebox.Events.SelectedLangChangedEvent;
+import de.droidcachebox.main;
+import de.droidcachebox.splash;
+import de.droidcachebox.Events.ColorChangedEvent;
+import de.droidcachebox.Events.ColorChangedEventList;
 import de.droidcachebox.Events.SelectedLangChangedEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Waypoint;
 import de.droidcachebox.TranslationEngine.LangStrings.Langs;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.view.LayoutInflater;
+import android.graphics.*;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,25 +27,28 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class Settings extends FrameLayout implements ViewOptionsMenu,SelectedLangChangedEvent {
+
+
+import de.droidcachebox.Events.SelectedLangChangedEvent;
+
+public class Settings extends Activity implements ViewOptionsMenu,SelectedLangChangedEvent,ColorChangedEvent {
 	Context context;
 	
 
-	public Settings(Context context, LayoutInflater inflater) {
-		super(context);
-		this.context = context;
-		LinearLayout settingsLayout = (LinearLayout)inflater.inflate(R.layout.settings, null, false);
-		this.addView(settingsLayout);
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.settings);
+				
 		SelectedLangChangedEventList.Add(this);
-       
+        ColorChangedEventList.Add(this);
+		
+        SettingsLayout = (LinearLayout) this.findViewById(R.id.settings_LinearLayout);
+        
 		SaveButton = (Button)this.findViewById(R.id.settings_save);
 		SaveButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -54,6 +58,8 @@ public class Settings extends FrameLayout implements ViewOptionsMenu,SelectedLan
 	        	Config.Set("GcPass",EditTextGCPW.getEditableText().toString());
 	        	Config.Set("GcVotePassword",EditTextGCVotePW.getEditableText().toString());
             	Config.AcceptChanges();
+            	
+            	setMainActivity();
             }
           });
 		
@@ -62,7 +68,7 @@ public class Settings extends FrameLayout implements ViewOptionsMenu,SelectedLan
             @Override
             public void onClick(View v) {
             	Config.readConfigFile();
-            	FillSettings();
+            	setMainActivity();
             }
           });
 
@@ -106,7 +112,8 @@ public class Settings extends FrameLayout implements ViewOptionsMenu,SelectedLan
             @Override
             public void onClick(View v) 
             {
-            	LogInTableRow.setVisibility((LogInTableRow.getVisibility() == View.VISIBLE )? GONE : VISIBLE);
+            	LogInTableRow.setVisibility((LogInTableRow.getVisibility() == View.VISIBLE )? View.GONE : View.VISIBLE);
+            	
             }
           });
 		
@@ -116,10 +123,13 @@ public class Settings extends FrameLayout implements ViewOptionsMenu,SelectedLan
 		EditTextGCName = (EditText)this.findViewById(R.id.settings_editText1);
 		EditTextGCPW = (EditText)this.findViewById(R.id.settings_editText2);
 		EditTextGCVotePW = (EditText)this.findViewById(R.id.settings_editText3);
-
+		
+		FillSettings();
 		setLang();
+		setColor();
 }
 
+	private LinearLayout SettingsLayout;
 	private Spinner LangCombo;
 	private Button SaveButton;
 	private Button CancelButton;
@@ -131,6 +141,15 @@ public class Settings extends FrameLayout implements ViewOptionsMenu,SelectedLan
 	private EditText EditTextGCName;
 	private EditText EditTextGCPW;
 	private EditText EditTextGCVotePW;
+	
+	
+	
+	private void setMainActivity()
+	{
+		finish();
+        Intent mainIntent = new Intent().setClass(this,main.class);
+		startActivity(mainIntent);
+	}
 	
 	private void setLang()
 	{
@@ -144,7 +163,26 @@ public class Settings extends FrameLayout implements ViewOptionsMenu,SelectedLan
 	
 	private void setColor()
 	{
-	
+		boolean day = !Config.GetBool("nightMode");
+		SettingsLayout.setBackgroundColor(day? Global.Colors.Day.ListBackground : Global.Colors.Night.ListBackground);
+		SaveButton.setTextColor(day? Global.Colors.Day.Foreground : Global.Colors.Night.Foreground);
+		SaveButton.getBackground().setColorFilter(day? Global.Colors.Day.ControlColorFilter : Global.Colors.Night.ControlColorFilter, PorterDuff.Mode.MULTIPLY);
+		CancelButton.setTextColor(day? Global.Colors.Day.Foreground : Global.Colors.Night.Foreground);
+		CancelButton.getBackground().setColorFilter(day? Global.Colors.Day.ControlColorFilter : Global.Colors.Night.ControlColorFilter, PorterDuff.Mode.MULTIPLY);
+		EditTextGCName.setTextColor(day? Global.Colors.Day.Foreground : Global.Colors.Night.Foreground);
+		EditTextGCName.getBackground().setColorFilter(day? Global.Colors.Day.ControlColorFilter : Global.Colors.Night.ControlColorFilter, PorterDuff.Mode.MULTIPLY);
+		EditTextGCPW.setTextColor(day? Global.Colors.Day.Foreground : Global.Colors.Night.Foreground);
+		EditTextGCPW.getBackground().setColorFilter(day? Global.Colors.Day.ControlColorFilter : Global.Colors.Night.ControlColorFilter, PorterDuff.Mode.MULTIPLY);
+		EditTextGCVotePW.setTextColor(day? Global.Colors.Day.Foreground : Global.Colors.Night.Foreground);
+		EditTextGCVotePW.getBackground().setColorFilter(day? Global.Colors.Day.ControlColorFilter : Global.Colors.Night.ControlColorFilter, PorterDuff.Mode.MULTIPLY);
+		ToggleLogInView.setTextColor(day? Global.Colors.Day.Foreground : Global.Colors.Night.Foreground);
+		ToggleLogInView.getBackground().setColorFilter(day? Global.Colors.Day.ControlColorFilter : Global.Colors.Night.ControlColorFilter, PorterDuff.Mode.MULTIPLY);
+		
+		//LangCombo.TextColor(day? Global.Colors.Day.Foreground : Global.Colors.Night.Foreground);
+		LangCombo.getBackground().setColorFilter(day? Global.Colors.Day.ControlColorFilter : Global.Colors.Night.ControlColorFilter, PorterDuff.Mode.MULTIPLY);
+		
+		
+		
 	}
 	
 	private void FillSettings()
@@ -152,9 +190,8 @@ public class Settings extends FrameLayout implements ViewOptionsMenu,SelectedLan
 		EditTextGCName.setText(Config.GetString("GcLogin"));
 		EditTextGCPW.setText(Config.GetString("GcPass"));
 		EditTextGCVotePW.setText(Config.GetString("GcVotePassword"));
-		
 		fillLangCombo();
-		this.invalidate();
+		
 	}
 	
 	ArrayList<Langs> Sprachen;
@@ -170,7 +207,7 @@ public class Settings extends FrameLayout implements ViewOptionsMenu,SelectedLan
 				selection = index;
 			items[index++]=tmp.Name;
 		}
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,android.R.layout.simple_spinner_item, items); 
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, items); 
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); 
 		LangCombo.setAdapter(adapter);
 		LangCombo.setSelection(selection);
@@ -179,17 +216,6 @@ public class Settings extends FrameLayout implements ViewOptionsMenu,SelectedLan
 	
 	
 
-	@Override
-	public boolean ItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void BeforeShowMenu(Menu menu) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void OnShow() 
@@ -209,15 +235,33 @@ public class Settings extends FrameLayout implements ViewOptionsMenu,SelectedLan
 	}
 
 	@Override
-	public void SelectedLangChangedEvent() {
+	public void SelectedLangChangedEvent() 
+	{
 		setLang();
-		
 	}
 
 	@Override
 	public void ActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean ItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void BeforeShowMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void ColorChangedEvent() 
+	{
+		setColor();
 	}
 
 }
