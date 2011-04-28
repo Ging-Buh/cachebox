@@ -2,10 +2,15 @@ package de.droidcachebox.TranslationEngine;
 
 import java.io.*;
 import java.util.ArrayList;
+
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
 import de.droidcachebox.Components.StringFunctions;
 import de.droidcachebox.Events.SelectedLangChangedEventList;
 
 import android.os.Environment;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 
 public class LangStrings 
 {
@@ -186,6 +191,18 @@ public class LangStrings
         return retString;
     }
 
+    // übersetzt den Titel eines MenuItems
+    public void TranslateMenuItem(ContextMenu menu, int id, String StringId)
+    {
+    	try
+    	{
+    		MenuItem mi = menu.findItem(id);
+    		if (mi != null)
+    			mi.setTitle(Global.Translations.Get(StringId));
+    	} catch (Exception exc)
+    	{ }
+    }
+    
     public ArrayList<Langs> GetLangs(String FilePath)
     {
     	ArrayList<Langs> Temp = new ArrayList<Langs>();

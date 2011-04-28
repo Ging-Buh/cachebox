@@ -7,8 +7,7 @@
     	android:orientation="horizontal" 
     	android:id="@+id/edco_buttonlayout" 
     	android:layout_width="match_parent" 
-    	android:layout_alignParentBottom="true" 
-    	android:layout_height="40dip">
+    	android:layout_alignParentBottom="true" android:layout_height="55dip">
         	<Button android:layout_weight="1" android:layout_width="match_parent" android:text="Button" android:layout_height="match_parent" android:id="@+id/edco_ok"></Button>
         	<Button android:layout_weight="1" android:layout_width="match_parent" android:text="Button" android:layout_height="match_parent" android:id="@+id/edco_cancel"></Button>
     </LinearLayout>

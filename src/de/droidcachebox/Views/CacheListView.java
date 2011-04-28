@@ -43,7 +43,7 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 		this.setAdapter(null);
 		CustomAdapter lvAdapter = new CustomAdapter(getContext(), Database.Data.Query);
 		this.setAdapter(lvAdapter);
-		this.setLongClickable(true);
+//		this.setLongClickable(true);
 		this.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,

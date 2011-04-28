@@ -4,6 +4,7 @@ package de.droidcachebox.Views;
 import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
+import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.splash;
 
@@ -14,6 +15,7 @@ import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.CacheList;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
+import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Views.Forms.EditCoordinate;
 import de.droidcachebox.Views.Forms.EditWaypoint;
 import android.R.drawable;
@@ -28,11 +30,13 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class WaypointView extends ListView implements SelectedCacheEvent, ViewOptionsMenu {
 	
@@ -51,25 +55,14 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 		this.setAdapter(null);
 		lvAdapter = new CustomAdapter(getContext(), Global.SelectedCache());
 		this.setAdapter(lvAdapter);
-		this.setLongClickable(true);
-		this.setOnItemLongClickListener(new OnItemLongClickListener() {
+		this.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				aktWaypoint = null;
 				if (arg2 > 0)
 					aktWaypoint = Global.SelectedCache().waypoints.get(arg2 - 1);
         		Global.SelectedWaypoint(Global.SelectedCache(), aktWaypoint);
-    	        
-        		if (aktWaypoint != null)
-        		{
-	        		Intent mainIntent = new Intent().setClass(getContext(), EditWaypoint.class);
-	    	        Bundle b = new Bundle();
-	    	        b.putSerializable("Waypoint", aktWaypoint);
-	    	        mainIntent.putExtras(b);
-	        		parentActivity.startActivityForResult(mainIntent, 0);
-        		}
-				return true;
 			}
 		});
 		this.setBackgroundColor(Config.GetBool("nightMode")? Global.Colors.Night.EmptyBackground : Global.Colors.Day.EmptyBackground);
@@ -81,6 +74,8 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 
 	public void ActivityResult(int requestCode, int resultCode, Intent data)
 	{
+		if (data == null)
+			return;
 		Bundle bundle = data.getExtras();
 		if (bundle != null)
 		{
@@ -89,6 +84,10 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 			{
 				aktWaypoint.Title = waypoint.Title;
 				aktWaypoint.Type = waypoint.Type;
+				aktWaypoint.Coordinate = waypoint.Coordinate;
+				aktWaypoint.Description = waypoint.Description;
+				aktWaypoint.Clue = waypoint.Clue;
+				aktWaypoint.UpdateDatabase();
 			}
 		}
 	}
@@ -174,14 +173,31 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 
 	@Override
 	public boolean ItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
-		return false;
+		if (aktWaypoint != null)
+		{
+    		Intent mainIntent = new Intent().setClass(getContext(), EditWaypoint.class);
+	        Bundle b = new Bundle();
+	        b.putSerializable("Waypoint", aktWaypoint);
+	        mainIntent.putExtras(b);
+    		parentActivity.startActivityForResult(mainIntent, 0);
+		}
+		return true;
 	}
 
 	@Override
 	public void BeforeShowMenu(Menu menu) {
-		// TODO Auto-generated method stub
-		
+		try
+		{
+			MenuItem mi = menu.findItem(R.id.menu_waypointview_edit);
+			if (mi != null)
+			{
+				mi.setTitle(Global.Translations.Get("edit"));
+				mi.setVisible(aktWaypoint != null);
+			}
+		} catch (Exception exc)
+		{
+			return;
+		}
 	}
 
 	@Override
@@ -198,8 +214,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 
 	@Override
 	public int GetMenuId() {
-		// TODO Auto-generated method stub
-		return 0;
+		return R.menu.menu_waypointview;
 	}
 }
 

@@ -320,7 +320,6 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
     	// Cache
     	case nmCache:
     		menuId = R.menu.menu_cache;
-    		getMenuInflater().inflate(menuId, menu);
     		break;
     	// Map
     	case nmMap:
@@ -413,8 +412,14 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
       if (v == buttonDB)
     	  inflater.inflate(R.menu.menu_db, menu);
       else if (v == buttonCache)
+      {
     	  inflater.inflate(R.menu.menu_cache, menu);
-      else if (v == buttonMap)
+    	  Global.Translations.TranslateMenuItem(menu, R.id.miSolver, "Solver");
+    	  Global.Translations.TranslateMenuItem(menu, R.id.miNotes, "Notes");
+    	  Global.Translations.TranslateMenuItem(menu, R.id.miDescription, "Description");
+    	  Global.Translations.TranslateMenuItem(menu, R.id.miWaypoints, "Waypoints");
+    	  
+      } else if (v == buttonMap)
     	  inflater.inflate(R.menu.menu_map, menu);
       else if (v == buttonInfo)
     	  inflater.inflate(R.menu.menu_info, menu);

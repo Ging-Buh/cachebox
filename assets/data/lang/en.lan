@@ -133,7 +133,7 @@ English
 		cancel = Cancel
 		confirm = Confirm
 		ok = Ok
-	
+		edit = Edit	
 	
 	// FormSelectDB
 		NewDB = New DB
@@ -188,6 +188,7 @@ English
 		PasteCoord = Paste Coordinates
 		CopyCoord = Copy Coordinates
 		CopyGcCode = Copy GcCode
+		type = Type
 
 	//SolverViewPanel
 		Solve = Solve

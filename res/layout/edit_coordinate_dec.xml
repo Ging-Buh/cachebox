@@ -3,5 +3,27 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
-    <EditText android:text="EditText" android:id="@+id/editText1" android:layout_width="wrap_content" android:layout_height="wrap_content"></EditText>
+    <TableLayout 
+    	android:layout_height="match_parent" 
+    	android:layout_width="match_parent" android:id="@+id/edco_dec_tablelayout">
+        	<TableRow 
+        		android:id="@+id/edco_dec_tablerow_lat" android:layout_height="wrap_content" android:layout_width="wrap_content">
+            		<Button 
+            			android:text="N" 
+            			android:layout_height="wrap_content" 
+            			android:layout_width="55dip" android:id="@+id/edco_dec_lat_direction">
+            		</Button>
+            		<EditText 
+            			android:layout_height="wrap_content" 
+            			android:text="EditText" 
+            			android:layout_weight="5" android:layout_width="match_parent" android:id="@+id/edco_dec_lat_value">
+            		</EditText>
+            		<TextView android:id="@+id/edco_dec_lat_unit" android:layout_height="wrap_content" android:text="°" android:layout_width="20dip"></TextView>
+        	</TableRow>
+        <TableRow android:id="@+id/edco_dec_tablerow_lon" android:layout_height="wrap_content" android:layout_width="wrap_content">
+            <Button android:text="E" android:layout_height="wrap_content" android:id="@+id/edco_dec_lon_directioin" android:layout_width="wrap_content"></Button>
+            <EditText android:layout_height="wrap_content" android:text="EditText" android:layout_width="match_parent" android:layout_weight="1" android:id="@+id/edco_dec_lon_value"></EditText>
+            <TextView android:text="°" android:id="@+id/edco_dec_lon_unit" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+        </TableRow>
+    </TableLayout>
 </LinearLayout>

@@ -2,8 +2,10 @@ package de.droidcachebox.Geocaching;
 
 import java.io.Serializable;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.location.Location;
+import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.Geocaching.Cache.CacheTypes;
 
@@ -75,15 +77,14 @@ public class Waypoint implements Serializable {
     private int createCheckSum()
     {
         // for Replication
-    	return 0;
-/*        string sCheckSum = GcCode;
-        sCheckSum += Global.FormatLatitudeDM(Latitude);
-        sCheckSum += Global.FormatLongitudeDM(Longitude);
+        String sCheckSum = GcCode;
+        sCheckSum += Global.FormatLatitudeDM(Latitude());
+        sCheckSum += Global.FormatLongitudeDM(Longitude());
         sCheckSum += Description;
-        sCheckSum += Type.ToString();
+        sCheckSum += Type.ordinal();
         sCheckSum += Clue;
         sCheckSum += Title;
-        return (int)Global.sdbm(sCheckSum);*/
+        return (int)Global.sdbm(sCheckSum);
     }
 
     public Waypoint(String gcCode, CacheTypes type, String description, double latitude, double longitude, long cacheId, String clue, String title)
@@ -149,41 +150,48 @@ public class Waypoint implements Serializable {
         commandUserData.ExecuteNonQuery();
         commandUserData.Dispose();
     }
+*/
 
     public void UpdateDatabase()
     {
         int newCheckSum = createCheckSum();
-        Replication.WaypointChanged(CacheId, checkSum, newCheckSum, GcCode);
+//        Replication.WaypointChanged(CacheId, checkSum, newCheckSum, GcCode);
         if (newCheckSum != checkSum)
         {
-            SqlCeCommand command = new SqlCeCommand("update Waypoint set Latitude=@latitude, Longitude=@longitude, Description=@description, Type=@type, SyncExclude=@syncexclude, UserWaypoint=@userwaypoint,Clue=@clue, Title=@title where (CacheId=@cacheid and GcCode=@gccode)", Database.Data.Connection);
-            command.Parameters.Add("@gccode", DbType.String).Value = GcCode;
-            command.Parameters.Add("@cacheid", DbType.Int64).Value = CacheId;
-            command.Parameters.Add("@latitude", DbType.Double).Value = Latitude;
-            command.Parameters.Add("@longitude", DbType.Double).Value = Longitude;
-            command.Parameters.Add("@description", DbType.String).Value = Description;
-            command.Parameters.Add("@type", DbType.Int16).Value = Type;
+            ContentValues args = new ContentValues();
+            args.put("gccode", GcCode);
+            args.put("cacheid", CacheId);
+            args.put("latitude", Latitude());
+            args.put("longitude", Longitude());
+            args.put("description", Description);
+            args.put("type", Type.ordinal());
+            args.put("syncexclude", IsSyncExcluded);
+            args.put("userwaypoint", IsUserWaypoint);
+            args.put("clue", Clue);
+            args.put("title", Title);
+            try
+            {
+            Database.Data.myDB.update("Waypoint", args, "CacheId=" + CacheId + " and GcCode=\"" + GcCode + "\"", null);
+            } catch (Exception exc)
+            {
+            	return;
+            
+            }
 
-
-
-
-            command.Parameters.Add("@syncexclude", DbType.Boolean).Value = IsSyncExcluded;
-            command.Parameters.Add("@userwaypoint", DbType.Boolean).Value = IsUserWaypoint;
-            command.Parameters.Add("@clue", DbType.String).Value = Clue;
-            command.Parameters.Add("@title", DbType.String).Value = Title;
-            command.ExecuteNonQuery();
-            command.Dispose();
-
-            SqlCeCommand commandUserData = new SqlCeCommand("update Caches set HasUserData=@hasUserData where Id=@id", Database.Data.Connection);
-            commandUserData.Parameters.Add("@hasUserData", DbType.Boolean).Value = true;
-            commandUserData.Parameters.Add("@id", DbType.Int64).Value = CacheId;
-            commandUserData.ExecuteNonQuery();
-            commandUserData.Dispose();
+            args = new ContentValues();
+            args.put("hasUserData", true);
+            try
+            {
+            Database.Data.myDB.update("Caches", args, "Id=" + CacheId, null);
+            } catch (Exception exc)
+            {
+            	return;
+            }
 
             checkSum = newCheckSum;
         }
     }
-
+/*
     public void DeleteFromDatabase()
     {
         int newCheckSum = 0;

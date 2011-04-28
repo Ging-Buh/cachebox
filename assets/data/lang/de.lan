@@ -19,7 +19,7 @@ Deutsch
 	MyFieldNotes = Meine Fieldnotes
 	hint = Hint
 	spoiler = Spoiler
-	about = Über cachebox!
+	about = Ãœber cachebox!
 	settings = Einstellungen
 	tools = Tools
 	import = Import
@@ -27,12 +27,12 @@ Deutsch
 	found = Gefunden!
 	DNF = Nicht gefunden!
 	maintenance = Bedarf Wartung
-	AddNote = Fieldnote hinzufügen
-	ClearCurrentFieldNote = Lösche aktuelle Fieldnote
+	AddNote = Fieldnote hinzufÃ¼gen
+	ClearCurrentFieldNote = LÃ¶sche aktuelle Fieldnote
 	ShowRecentNotes = Zeige neue Fieldnotes
 	ManageNotes = Fieldnotes verwalten
-	DeleteAllNotes = Lösche alle Fieldnotes
-	DeleteAllFieldNotesQuestion = Sollen wirklich alle Fieldnotes gelöscht werden?
+	DeleteAllNotes = LÃ¶sche alle Fieldnotes
+	DeleteAllFieldNotesQuestion = Sollen wirklich alle Fieldnotes gelÃ¶scht werden?
 	cacheList = Liste
 	filter = Filter
 	search = Suchen
@@ -61,7 +61,7 @@ Deutsch
 	not_detected = nicht erkannt
 	sats_nr = Sats:
 	Hdop = Hdop:
-	alt = Höhe:
+	alt = HÃ¶he:
 	waiting_for_fix = Auf Signal warten
 	not_responding = not responding
 	waypoint = Wegpunkt:
@@ -73,26 +73,26 @@ Deutsch
 	Warning = Warnung!
 	thisNotWork = Das funktioniert nicht!
 
-	Open_getcachebox_Link = Öffne www.getcachebox.net im Browser
-	allowInetConn = Ausgeschaltene Internetverbindung! Wollen Sie diesen Verweis trotzdem öffnen?
+	Open_getcachebox_Link = Ã–ffne www.getcachebox.net im Browser
+	allowInetConn = Ausgeschaltene Internetverbindung! Wollen Sie diesen Verweis trotzdem Ã¶ffnen?
 	
-	Open_Cache_Link = Öffne Cache im Browser
-	Cann_not_open_cache_browser = Kann Cache nicht im Browser öffnen!
+	Open_Cache_Link = Ã–ffne Cache im Browser
+	Cann_not_open_cache_browser = Kann Cache nicht im Browser Ã¶ffnen!
 
 	CanntProcessUpdateFiles = Kann aktualisierte Dateien nicht bearbeiten!
-	ErrDbStartup = Fehler während des Datenbankanlaufs!
-	ErrDbFNStartup = Fehler während des Fieldnote Datenbankanlaufs!
+	ErrDbStartup = Fehler wÃ¤hrend des Datenbankanlaufs!
+	ErrDbFNStartup = Fehler wÃ¤hrend des Fieldnote Datenbankanlaufs!
 	CanntCreateProxy = Cannot create Proxy!
 	
 	Quit? = cachebox beenden?
-	QuitReally = Wollen Sie cachebox wirklich schließen?
+	QuitReally = Wollen Sie cachebox wirklich schlieÃŸen?
 	
-	uploadFieldNotes? = Fieldnotes zu geocaching.com hochladen? Dies könnte Kosten verursachen!
+	uploadFieldNotes? = Fieldnotes zu geocaching.com hochladen? Dies kÃ¶nnte Kosten verursachen!
 	NoFindsLogged = Sie haben keine Funde mit Cachebox geloggt!
 	
-	CreatePQ? = Möchten Sie ein Pocket Query auf geocaching.com erstellen? Dies könnte Kosten verursachen!
+	CreatePQ? = MÃ¶chten Sie ein Pocket Query auf geocaching.com erstellen? Dies kÃ¶nnte Kosten verursachen!
 	
-	CanntOpenRecentNotes = Kann neue Fieldnotes nicht im Browser öffnen
+	CanntOpenRecentNotes = Kann neue Fieldnotes nicht im Browser Ã¶ffnen
 	
 	ShowSpoiler = Zeige Spoiler
 	spoilSearch = Spoiler wirklich Suchen?
@@ -102,10 +102,10 @@ Deutsch
 	downloadSpoiler = Download Spoiler
 	downloadSpoiler? = Spoiler wirklich herrunter Laden?
 	NoSpoiler = Keine Spoiler vorhanden.
-	NoCacheSelect = Kein Cache angewählt.
+	NoCacheSelect = Kein Cache angewÃ¤hlt.
 	NoAccessAllowed = Internet Verbindung nicht erlaubt! Schalten Sie die Verbindung in den Einstellungen ein, um Spoiler herrunter zu Laden.
 	
-	ErrNoCam = Es gab einen Fehler! Es scheint so, als ob Ihr Gerät keine Kamera hat!
+	ErrNoCam = Es gab einen Fehler! Es scheint so, als ob Ihr GerÃ¤t keine Kamera hat!
 	
 	AppUpdate = Update Application
 	AccessUpdate? = Erlaube eine Internet Verbindung, um jetzt nach Updates zu suchen?
@@ -116,13 +116,13 @@ Deutsch
 	
 	ErrChkUpdate = Checking for updates failed...
 
-	ErrSqlUpdate = Die Datenbank [%dbfile%] ist keine Sql3.0 Datenbank. Möglicherweise ist die Datenbank defekt. Soll die DB repariert werden?\nDies kann längere Zeit dauern (abhängig von der Größe der Datenbank)!
+	ErrSqlUpdate = Die Datenbank [%dbfile%] ist keine Sql3.0 Datenbank. MÃ¶glicherweise ist die Datenbank defekt. Soll die DB repariert werden?\nDies kann lÃ¤ngere Zeit dauern (abhÃ¤ngig von der GrÃ¶ÃŸe der Datenbank)!
 	
 
 // Splash screan Messages
-	openDB = Öffne Datenbank...
-	IniUI = Initialisieren der Benutzer Oberfläche...
-	LoadMapPack = Lade Kartensätze...
+	openDB = Ã–ffne Datenbank...
+	IniUI = Initialisieren der Benutzer OberflÃ¤che...
+	LoadMapPack = Lade KartensÃ¤tze...
 	LoadCaches = Lade Caches...
 	
 
@@ -130,12 +130,13 @@ Deutsch
 
 	// general
 		cancel = Abbrechen
-		confirm = Wählen
-		ok = Ok	
+		confirm = WÃ¤hlen
+		ok = Ok
+		edit = Ã„ndern
 
 	// FormSelectDB
 		NewDB = Neue DB
-		SelDB = Wähle Datenbank
+		SelDB = WÃ¤hle Datenbank
 		AutoStart = Automatischer Start
 		AutoStartTime = Nach %s Sekunden
 		AutoStartDisabled = Deaktiviert
@@ -143,9 +144,9 @@ Deutsch
 		
 		
 	// DatabaseChangedForm
-		DatabaseChangedForm.Text = Datenbank Strukture geändert
-		DatabaseChangedForm.Msg = Glückwünsch, sie haben ihre Cachebox aktualisiert! Die Datenbankstruktur hat sich geändert und muss aktualisiert werden. Dies wird den Import beträchtlich verlangsamen, es wird empfohlen eine neue Datenbank anzulegen. 
-		deleteDB = lösche DB
+		DatabaseChangedForm.Text = Datenbank Strukture geÃ¤ndert
+		DatabaseChangedForm.Msg = GlÃ¼ckwÃ¼nsch, sie haben ihre Cachebox aktualisiert! Die Datenbankstruktur hat sich geÃ¤ndert und muss aktualisiert werden. Dies wird den Import betrÃ¤chtlich verlangsamen, es wird empfohlen eine neue Datenbank anzulegen. 
+		deleteDB = lÃ¶sche DB
 		convert = Konvertieren
 		
 	// FormNewDB
@@ -170,36 +171,37 @@ Deutsch
 		EnterMan = Manuell Eingeben
 		FromGps = vom GPS
 		details = Details
-		delete = Löschen
+		delete = LÃ¶schen
 		DecDeg = Decimal Degrees
 		DegMin = Deg, Min
 		DegMinSec = Deg, Min, Sec
 		utm = UTM
-		addWaypoint = Weg Punkt hinzufügen
+		addWaypoint = Weg Punkt hinzufÃ¼gen
 		?replaceCoord = Wollen Sie die Koordinaten wirklich ersetzen?
 		!replaceCoord = Koordinaten ersetzen
-		!DelWP = Weg Punkt Löschen
-		?DelWP = Wollen Sie wirklich diesen Weg Punkt löschen?
+		!DelWP = Weg Punkt LÃ¶schen
+		?DelWP = Wollen Sie wirklich diesen Weg Punkt lÃ¶schen?
 		N = N
 		E = O
 		Zone = Zone 
 		FromClipboard = von Zwischenablage
-		PasteCoord = Koordinaten einfügen
+		PasteCoord = Koordinaten einfÃ¼gen
 		CopyCoord = Koordinaten kopieren
 		CopyGcCode = GcCode kopieren
-
+		type = Typ
+		
 	//SolverViewPanel
 		Solve = Berech.
 		Funct. = Funkt.
 		Select. = Ausw.
 		Keyb. = Keyb.
-		PasteClip = Einfügen
+		PasteClip = EinfÃ¼gen
 		AsCenter = Als Zentrum setzen
-		AddWaypoint = Waypoint hinzufügen
+		AddWaypoint = Waypoint hinzufÃ¼gen
 		Clipboard = Zwischenablage
 		
 	//GetSolverFunction
-		getSolverFunction = Solver Funtion einfügen
+		getSolverFunction = Solver Funtion einfÃ¼gen
 		groups = Gruppen
 		functions = Funktionen
 		otherNames = Andere Namen
@@ -208,7 +210,7 @@ Deutsch
 		solverGroupText = Text
 		solverGroupNumbers = Zahlen
 		solverGroupCoordinates = Koordinaten
-		solverErrParamCount = Diese Funktion benötigt %s Parameter
+		solverErrParamCount = Diese Funktion benÃ¶tigt %s Parameter
 
 	//Solver Functions
 		solverFuncAlphaSum = AlphaSum
@@ -219,7 +221,7 @@ Deutsch
 		solverDescPhoneCode = Position des ersten Zeichens auf der Handy-Tastatur
 		solverFuncPhoneSum = HandySum
 		solverDescPhoneSum = Summe aller Positionen aller Zeichen auf der Handy-Tastatur
-		solverFuncLength = Länge
+		solverFuncLength = LÃ¤nge
 		solverDescLength = Anzahl der Zeichen im String
 		solverFuncCrosstotal = Quersumme
 		solverDescCrosstotal = Summe aller einzelnen Ziffern der Zahl. \nBeispiel: QS(123456) = 21
@@ -230,13 +232,13 @@ Deutsch
 		solverFuncICrossproduct = IQuerprodukt
 		solverDescICrossproduct = Iteriertes (einstelliges) Querprodukt bis das Ergebnis einstellig ist. \nBeispiel: IQP(1234) = 8
 		solverFuncRom2Dec = Rom2Dec
-		solverDescRom2Dec = Römische Zahl in Dezimalzahl umwandeln.
+		solverDescRom2Dec = RÃ¶mische Zahl in Dezimalzahl umwandeln.
 		solverFuncPrimenumber = Primzahl
 		solverDescPrimenumber = Primzahl(n) liefert die n-te Primzahl. \nBeispiel: Primzahl(5) = 11
 		solverFuncPrimeIndex = PrimIndex
 		solverDescPrimeIndex = PrimIndex(x) liefert den Index der Primzahl x. \nExample: PrimIndex(11) = 5
 		solverFuncProjection = Projektion
-		solverDescProjection = Projektion einer Koordinate. \nProjektion(koord; länge; winkel)
+		solverDescProjection = Projektion einer Koordinate. \nProjektion(koord; lÃ¤nge; winkel)
 		solverFuncIntersection = Schnittpunkt
 		solverDescIntersection = Schnittpunkt von 2 Linien (koord1-koord2) mit (koord3-koord4). \nSchnittpunkt(koord1; koord2; koord3; koord4)
 		solverFuncCrossbearing = Kreuzpeilung
@@ -254,7 +256,7 @@ Deutsch
 		solverFuncReverse = Reverse
 		solverDescReverse = Kehrt die Zeichenkette um \nReverse("ABC") = CBA
 		solverFuncRot13 = Rot13
-		solverDescRot13 = Liefert die Rot13 Entschlüsselung \nRot13("ABC") = NOP
+		solverDescRot13 = Liefert die Rot13 EntschlÃ¼sselung \nRot13("ABC") = NOP
 		
 	//CompassViewPanel
 		SatHdop = Sats/Hdop:
@@ -268,7 +270,7 @@ Deutsch
 		SearchCache = Suche Caches
 		Filter = Filter
 		Search = Suchen
-		Next = Nächster
+		Next = NÃ¤chster
 		Title = Title
 		GCCode =GC-Code
 		Owner = Owner
@@ -282,27 +284,27 @@ Deutsch
 
 	//GPS
 	CompatibleWithGpsModDriver? = Kompatibel mit ModDriver?
-	UseCellId = Verwende CellId für die erste Position.
+	UseCellId = Verwende CellId fÃ¼r die erste Position.
 	UseHtcCompass = Verwende Htc Kompass
-	DescHtcLevel = Schwellwert für HTC oder GPS Kompass.\n-1 = GPS wird überhaupt nicht verwendet.
+	DescHtcLevel = Schwellwert fÃ¼r HTC oder GPS Kompass.\n-1 = GPS wird Ã¼berhaupt nicht verwendet.
 	
 	//Data
 	AdjustFounds = Anzahl der Funde anpassen . . .
 	LoadFounds = Lade Anzahl der Funde von gc.com
-	DeleteLogs = Lösche Logs
+	DeleteLogs = LÃ¶sche Logs
 	ButKeepLeast = aber behalte mindestens
-	ResetFavorites = Favoriten zurücksetzen (Demarkieren)
-	ResetListingChanged = listing changed zurücksetzen ...
-	DeleteFieldNotes = Lösche alle Fieldnotes ...
-	RemoveCaches = Lösche Caches ...
+	ResetFavorites = Favoriten zurÃ¼cksetzen (Demarkieren)
+	ResetListingChanged = listing changed zurÃ¼cksetzen ...
+	DeleteFieldNotes = LÃ¶sche alle Fieldnotes ...
+	RemoveCaches = LÃ¶sche Caches ...
 	ArchiveFilterSelection? = Sie haben vor, alle Caches, aus Ihren Filtereinstellungen als 'archiviert' zu Kenzeichnen. Sind Sie sicher, dass Sie das wollen?
 	ArchiveFilterSelection! = Archiviere Caches
-	DelCaches? = Sie haben vor, alle Caches, aus Ihren Filtereinstellungen zu löschen. Sind Sie sicher, dass Sie das wollen?
-	DelCaches! = Lösche Caches
+	DelCaches? = Sie haben vor, alle Caches, aus Ihren Filtereinstellungen zu lÃ¶schen. Sind Sie sicher, dass Sie das wollen?
+	DelCaches! = LÃ¶sche Caches
 	ArchiveFilterSelection = Archiviere gefilterte Caches
-	DeleteFilterSelection = Lösche gefilterte Caches
-	DelLogs = Sie wollen die Logs löschen? Während des nächsten Imports werden die Logs gelöscht. Sind Sie sicher, dass Sie das wollen?
-	PleaseConfirm = Bitte bestätigen! 
+	DeleteFilterSelection = LÃ¶sche gefilterte Caches
+	DelLogs = Sie wollen die Logs lÃ¶schen? WÃ¤hrend des nÃ¤chsten Imports werden die Logs gelÃ¶scht. Sind Sie sicher, dass Sie das wollen?
+	PleaseConfirm = Bitte bestÃ¤tigen! 
 	comboBoxLogLifeItem_0 = sofort
 	comboBoxLogLifeItem_1 = nach 1 Monat
 	comboBoxLogLifeItem_2 = nach 2 Monaten
@@ -310,17 +312,17 @@ Deutsch
 	comboBoxLogLifeItem_4 = nach 4 Monaten
 	comboBoxLogLifeItem_5 = nach 5 Monaten
 	comboBoxLogLifeItem_6 = nach 6 Monaten
-	DelFieldNotes? = Sie haben vor, alle Ihre Fieldnotes zu löschen. Sind Sie sicher, dass Sie das wollen?
-	DelFieldNotes! = Lösche Fieldnotes
-	ResetFavorites? = Sie haben vor, alle 'favorit-markers' zurück zu setzen. Sind Sie sicher, dass Sie das wollen? 
+	DelFieldNotes? = Sie haben vor, alle Ihre Fieldnotes zu lÃ¶schen. Sind Sie sicher, dass Sie das wollen?
+	DelFieldNotes! = LÃ¶sche Fieldnotes
+	ResetFavorites? = Sie haben vor, alle 'favorit-markers' zurÃ¼ck zu setzen. Sind Sie sicher, dass Sie das wollen? 
 	ResetFavorites! = Reset favorites
-	ResetListingChanged? = Sie haben vor, alle 'listing changed' Markierungen zurück zu setzen. Sind Sie sicher, dass Sie das wollen?
+	ResetListingChanged? = Sie haben vor, alle 'listing changed' Markierungen zurÃ¼ck zu setzen. Sind Sie sicher, dass Sie das wollen?
 	ResetListingChanged! = Reset listing changed
-	LoadFinds? = Lade Anzahl der Funde von geocaching.com? Das könnte Kosten verursachen!
+	LoadFinds? = Lade Anzahl der Funde von geocaching.com? Das kÃ¶nnte Kosten verursachen!
 	LoadFinds! = Lade Anzahl der Funde
 	LogInErrorLoadFinds = Login Error while trying to get number of finds! Wrong information?
 	CannotResolveHost = Kann Host nicht erreichen!
-	ServerTimeout = Zeitüberschreitung Verbindungsaufbau ...
+	ServerTimeout = ZeitÃ¼berschreitung Verbindungsaufbau ...
 	FoundsSetTo = Funde auf %s gesetzt!
 	
 	//FormAdjustFounds
@@ -331,11 +333,11 @@ Deutsch
 	units = Einheit:	
 	AllowInternet = Erlaube Internet Verb.
 	ShowKeypad = Zeige Tastatur
-	SuppressPowerSaving = Unterdrücke Power Save
+	SuppressPowerSaving = UnterdrÃ¼cke Power Save
 	UploadAllFieldnotes = Alle Fieldnotes senden(Ignoriere Datum)
 	LogIn = Login Name bei geocaching.com
 	GCPW = Passwort bei geocaching.com
 	GCVotePW = GcVote Passwort 
-	SelectLanguage = Wähle eine Sprache
+	SelectLanguage = WÃ¤hle eine Sprache
 	save = Speichern
 	

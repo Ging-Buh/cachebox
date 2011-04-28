@@ -1,23 +1,39 @@
 package de.droidcachebox.Views.Forms;
 
+import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.Events.SelectedLangChangedEvent;
+import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
 import de.droidcachebox.Geocaching.Cache.CacheTypes;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.TextView;
 
 public class EditWaypoint extends Activity {
 	private Intent aktIntent;
 	private Waypoint waypoint;
+	Button bCoord = null;
+	Button bOK = null;
+	Button bCancel = null;
+	TextView tvCacheName = null;
+	TextView tvTyp = null;
+	TextView tvTitle = null;
+	TextView tvDescription = null;
+	EditText etDescription = null;
+	TextView tvClue = null;
+	EditText etClue = null;
 	
 	public void onCreate(Bundle savedInstanceState) 
 	{
@@ -28,8 +44,20 @@ public class EditWaypoint extends Activity {
         Bundle bundle = getIntent().getExtras();
         waypoint = (Waypoint)bundle.getSerializable("Waypoint");
         
+
+        bCoord = (Button) findViewById(R.id.edwp_buttoncoord);
+        bCoord.setFocusable(true);
+        bCoord.setFocusableInTouchMode(true);
+		bCoord.requestFocus();
+		final EditText et = (EditText) findViewById(R.id.edwp_titleedit);
+        tvCacheName = (TextView) findViewById(R.id.edwp_cachename);
+        tvTyp = (TextView) findViewById(R.id.edwp_typtext);
+        tvTitle = (TextView) findViewById(R.id.edwp_titletext);
+        tvDescription = (TextView) findViewById(R.id.edwp_descriptiontext);
+        etDescription = (EditText) findViewById(R.id.edwp_descriptionedit);
+        tvClue = (TextView) findViewById(R.id.edwp_cluetext);
+        etClue = (EditText) findViewById(R.id.edwp_clueedit);
         
-        final EditText et = (EditText) findViewById(R.id.edwp_titleedit);
         et.setText(waypoint.Title);
         aktIntent = getIntent();
 
@@ -96,7 +124,7 @@ public class EditWaypoint extends Activity {
                 });
 	        
         // Coordinate Button
-        final Button bCoord = (Button) findViewById(R.id.edwp_buttoncoord);
+        bCoord.setText(waypoint.Coordinate.FormatCoordinate());
         bCoord.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v) {
@@ -110,13 +138,14 @@ public class EditWaypoint extends Activity {
         });
 
         // OK Button
-        Button but = (Button) findViewById(R.id.edwp_ok);
-        but.setText("OK");
-        but.setOnClickListener(new OnClickListener() {
+        bOK = (Button) findViewById(R.id.edwp_ok);
+        bOK.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v) {
         		
         		waypoint.Title = et.getText().toString();
+        		waypoint.Description = etDescription.getText().toString();
+        		waypoint.Clue = etClue.getText().toString();
         		aktIntent.putExtra("SOMETHING", "EXTRAS");
         		Bundle extras = new Bundle();
         		extras.putSerializable("WaypointResult", waypoint);
@@ -126,21 +155,49 @@ public class EditWaypoint extends Activity {
         	}
         });
         // Abbrechen Button
-        Button butc = (Button) findViewById(R.id.edwp_cancel);
-        butc.setText("Cancel");
-        butc.setOnClickListener(new OnClickListener() {
+        bCancel = (Button) findViewById(R.id.edwp_cancel);
+        bCancel.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v) {
-
         		aktIntent.putExtra("SOMETHING", "EXTRAS");
         		setResult(RESULT_CANCELED, aktIntent);
         		finish();	            	
         	}
         });
-	        
-	 }
 
-	 private static final String[] mStrings = {
-		 "Reference", "Stage of a Multicache", "Question to answer", "Trailhead", "Parking Area", "Final"
-	 };
+        // Default values
+        etDescription.setText(waypoint.Description);
+        etClue.setText(waypoint.Clue);
+        // Translations
+        bOK.setText(Global.Translations.Get("ok"));
+		bCancel.setText(Global.Translations.Get("cancel"));
+		tvCacheName.setText(Global.SelectedCache().Name);
+		tvTyp.setText(Global.Translations.Get("type"));
+		tvTitle.setText(Global.Translations.Get("Title"));
+		tvDescription.setText(Global.Translations.Get("Description"));
+		tvClue.setText("Clue");
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode,
+		Intent data) {
+		if (data == null)
+			return;
+		Bundle bundle = data.getExtras();
+		if (bundle != null)
+		{
+			Coordinate coord = (Coordinate)bundle.getSerializable("CoordResult");
+			if (coord != null)
+			{
+				waypoint.Coordinate.Latitude = coord.Latitude;
+				waypoint.Coordinate.Longitude = coord.Longitude;
+		        bCoord.setText(waypoint.Coordinate.FormatCoordinate());
+			}
+		}
+    }
+
+    private static final String[] mStrings = {
+    	"Reference", "Stage of a Multicache", "Question to answer", "Trailhead", "Parking Area", "Final"
+    };
+
 }

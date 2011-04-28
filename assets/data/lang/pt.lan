@@ -5,7 +5,7 @@ Portugues
 	Nav = Nav
 	Cache = Cache
 	DB = BD
-	Description = DescriÁ„o
+	Description = Descri√ß√£o
 	MakeSelection = Seleccionar
 	Waypoints = Waypoints
 	Notes = Notas
@@ -20,38 +20,38 @@ Portugues
 	hint = Dica
 	spoiler = Spoiler
 	about = Sobre!
-	settings = OpÁıes
+	settings = Op√ß√µes
 	tools = Ferramentas
 	import = Importar
 	quit = Sair
 	found = Encontrada!
-	DNF = N„o Encontrada!
-	maintenance = Precisa ManutenÁ„o
+	DNF = N√£o Encontrada!
+	maintenance = Precisa Manuten√ß√£o
 	AddNote = Adicionar Nota
 	ClearCurrentFieldNote = Limpar Nota Actual
 	ShowRecentNotes = Mostras Notas Recentes
 	ManageNotes = Gerir Notas
 	DeleteAllNotes = Apagar todas as Notas
-	DeleteAllFieldNotesQuestion = Est· prestes a apagar todas as notas. Tem a certeza?
+	DeleteAllFieldNotesQuestion = Est√° prestes a apagar todas as notas. Tem a certeza?
 	cacheList = Lista
 	filter = Filtrar
 	search = Procurar
 	ResortList = Reordenar Lista
-	AutoResort = OrdenaÁ„o Autom·tica
+	AutoResort = Ordena√ß√£o Autom√°tica
 	record = Gravar
 	pause = Pausa
 	stop = Parar
 	export = Exportar
-	TrackRec = GravaÁ„o Trilhos
-	VoiceRec = GravaÁ„o Voz
+	TrackRec = Grava√ß√£o Trilhos
+	VoiceRec = Grava√ß√£o Voz
 	createPQ = Criar Pocket Query
 	uploadFieldNotes = Enviar Notas Campo
 	TomTom = TomTom
 	GPX = GPX
 	GoogleMap = Google Map
 	TakePhoto = Tirar Foto
-	RecVideo = Gravar VÌdeo
-	ChkUpdate = Procurar ActualizaÁıes
+	RecVideo = Gravar V√≠deo
+	ChkUpdate = Procurar Actualiza√ß√µes
 	manage = Gerir
 	
 
@@ -59,7 +59,7 @@ Portugues
 	caches_found = Caches Encontradas:
 	gps = GPS:
 	not_active = inactivo
-	not_detected = n„o detectado
+	not_detected = n√£o detectado
 	sats_nr = Sats:
 	Hdop = Hdop:
 	alt = Alt:
@@ -71,29 +71,29 @@ Portugues
 
 // MsgBox texts
 	Error = Erro
-	Warning = AtenÁ„o!
-	thisNotWork = Isto n„o funciona!
+	Warning = Aten√ß√£o!
+	thisNotWork = Isto n√£o funciona!
 
 	Open_getcachebox_Link = Abrir www.getcachebox.net no browser
-	allowInetConn = Conex„o internet desligada! Pretende abrir o link na mesma?
+	allowInetConn = Conex√£o internet desligada! Pretende abrir o link na mesma?
 	
 	Open_Cache_Link = Abrir cache no browser
-	Cann_not_open_cache_browser = ImpossÌvel abrir cache no browser
+	Cann_not_open_cache_browser = Imposs√≠vel abrir cache no browser
 	
-	CanntProcessUpdateFiles = N„o foi possÌvel processar actualizaÁ„o!
-	ErrDbStartup = Erro durante a inicializaÁ„o da BD!
-	ErrDbFNStartup = Erro durante a inicializaÁ„o da BD de Notas!
-	CanntCreateProxy = ImpossÌvel criar proxy!
+	CanntProcessUpdateFiles = N√£o foi poss√≠vel processar actualiza√ß√£o!
+	ErrDbStartup = Erro durante a inicializa√ß√£o da BD!
+	ErrDbFNStartup = Erro durante a inicializa√ß√£o da BD de Notas!
+	CanntCreateProxy = Imposs√≠vel criar proxy!
 	
 	Quit? = Sair do cachebox?
 	QuitReally = Tem a certeza que deseja sair do cachebox?
 	
 	uploadFieldNotes? = Enviar Notas Campo para geocaching.com? Isto pode implicar custos!
-	NoFindsLogged = N„o tem registos feitos com o Cachebox!
+	NoFindsLogged = N√£o tem registos feitos com o Cachebox!
 	
 	CreatePQ? = Criar Pocket Query @ geocaching.com? Isto pode implicar custos!
 	
-	CanntOpenRecentNotes = ImpossÌvel abrir notas de campo no browser
+	CanntOpenRecentNotes = Imposs√≠vel abrir notas de campo no browser
 	
 	ShowSpoiler = Mostrar Spoiler
 	spoilSearch = Tem a certeza?
@@ -102,22 +102,22 @@ Portugues
 	
 	downloadSpoiler = Descarregar spoiler
 	downloadSpoiler? = Tem a certeza?
-	NoSpoiler = N„o existem spoilers.
+	NoSpoiler = N√£o existem spoilers.
 	NoCacheSelect = Nenhuma cache seleccionada.
-	NoAccessAllowed = Acesso Internet desligado! Active nas configuraÁıes para descarregar spoilers.
+	NoAccessAllowed = Acesso Internet desligado! Active nas configura√ß√µes para descarregar spoilers.
 	
-	ErrNoCam = Ocorreu um erro! Parece que o dispositivo n„o tem c‚mara fotogr·fica!
+	ErrNoCam = Ocorreu um erro! Parece que o dispositivo n√£o tem c√¢mara fotogr√°fica!
 	
-	AppUpdate = Actualizar aplicaÁ„o
-	AccessUpdate? = Aceder ‡ Internet para verificar existÍncia de updates?
+	AppUpdate = Actualizar aplica√ß√£o
+	AccessUpdate? = Aceder √† Internet para verificar exist√™ncia de updates?
 	
-	ErrLanchUpdater = ExecuÁ„o de ActualizaÁ„o falhou!
+	ErrLanchUpdater = Execu√ß√£o de Actualiza√ß√£o falhou!
 	
-	upToDate = A vers„o instalada È a mais actual!
+	upToDate = A vers√£o instalada √© a mais actual!
 	
-	ErrChkUpdate = VerificaÁ„o de actualizaÁıes falhou...
+	ErrChkUpdate = Verifica√ß√£o de actualiza√ß√µes falhou...
 	
-	ErrSqlUpdate = A BD [%dbfile%] n„o tem a vers„o correcta. … possÌvel que o ficheiro esteja corrupto. Tentar reparar?\nEsta operaÁ„o pode demorar algum tempo (dependendo do tamanho da BD)!
+	ErrSqlUpdate = A BD [%dbfile%] n√£o tem a vers√£o correcta. √â poss√≠vel que o ficheiro esteja corrupto. Tentar reparar?\nEsta opera√ß√£o pode demorar algum tempo (dependendo do tamanho da BD)!
 	
 	
 // Splash screan Messages
@@ -133,41 +133,41 @@ Portugues
 		cancel = Cancelar
 		confirm = OK
 		ok = Ok
-	
+		edit = Edit
 	
 	// FormSelectDB
 		NewDB = Nova BD
 		SelDB = Seleccionar BD 
-		AutoStart = Arranque autom·tico
+		AutoStart = Arranque autom√°tico
 		AutoStartTime = Depois de %s segundos
 		AutoStartDisabled = Desactivado
 		StartWithoutSelection = Sem escolher
 		
 	// DatabaseChangedForm
 		DatabaseChangedForm.Text = O formato da BD mudou
-		DatabaseChangedForm.Msg = ParabÈns por actualizar o Cachebox! O formato da BD mudou e precisa de ser actualizado. Isto ir· tornar mais lenta a importaÁ„o, pelo que se recomenda criar uma nova BD.
+		DatabaseChangedForm.Msg = Parab√©ns por actualizar o Cachebox! O formato da BD mudou e precisa de ser actualizado. Isto ir√° tornar mais lenta a importa√ß√£o, pelo que se recomenda criar uma nova BD.
 		deleteDB = Apagar BD
 		convert = Converter
 		
 	// FormNewDB
 		InsNewDBName = Insira o nome da Nova BD
-		UseDefaultRep = Usar RepositÛrio por defeito?
+		UseDefaultRep = Usar Reposit√≥rio por defeito?
 		
 	// FormCreatePocketQuery
-††† †††connecting = Em ligaÁ„o...
-††† †††createPQ = Criar Pocket Query
-††† †††ErrCreatePQ = †Ocorreu um erro durante a criaÁ„o da pocket query!
-††† †††ErrLogInCreatePq = Ocorreu um erro de identificaÁ„o durante a criaÁ„o da pocket query! Dados de identificaÁ„o inv·lidos?
-††† †††ServerTimeout = Tempo de espera ultrapassado...
-††† †††NetConnectProb = Problemas de ligaÁ„o de rede!
-††† †††NoGCpassword = N„o especificou a sua senha do GC!
+¬†¬†¬† ¬†¬†¬†connecting = Em liga√ß√£o...
+¬†¬†¬† ¬†¬†¬†createPQ = Criar Pocket Query
+¬†¬†¬† ¬†¬†¬†ErrCreatePQ = ¬†Ocorreu um erro durante a cria√ß√£o da pocket query!
+¬†¬†¬† ¬†¬†¬†ErrLogInCreatePq = Ocorreu um erro de identifica√ß√£o durante a cria√ß√£o da pocket query! Dados de identifica√ß√£o inv√°lidos?
+¬†¬†¬† ¬†¬†¬†ServerTimeout = Tempo de espera ultrapassado...
+¬†¬†¬† ¬†¬†¬†NetConnectProb = Problemas de liga√ß√£o de rede!
+¬†¬†¬† ¬†¬†¬†NoGCpassword = N√£o especificou a sua senha do GC!
 		
 	// FormDownloadCacheImage
-		LowMemOperationCancel = O dispositivo est· a ficar com pouca memÛria! Esta operaÁ„o ir· ser cancelada!
+		LowMemOperationCancel = O dispositivo est√° a ficar com pouca mem√≥ria! Esta opera√ß√£o ir√° ser cancelada!
 		ImportImage = A importar Imagens
 		
 	//WaypointViewPanel
-		Projection = ProjecÁ„o
+		Projection = Projec√ß√£o
 		EnterMan = Introd. Manualmente
 		FromGps = Do GPS
 		details = Detalhes
@@ -187,40 +187,41 @@ Portugues
 		FromClipboard = De Clipboard
 		PasteCoord = Colar Coordenadas
 		CopyCoord = Copiar Coordenadas
-		CopyGcCode = Copiar CÛdigo
-		
+		CopyGcCode = Copiar C√≥digo
+		type = Type
+				
 	//SolverViewPanel
 		Solve = Resolver
-		Funct. = Funcıes
+		Funct. = Func√µes
 		Select. = Selecc.
 		Keyb. = Tecl.
 		PasteClip = Colar
 		AsCenter = Como Centro
 		AddWaypoint = Adic. Waypoint
-		Clipboard = ¡rea de TransferÍncia
+		Clipboard = √Årea de Transfer√™ncia
 		
 	//GetSolverFunction
-		getSolverFunction = Inserir FunÁ„o Solver
+		getSolverFunction = Inserir Fun√ß√£o Solver
 		groups = Grupos
-		functions = FunÁıes
+		functions = Fun√ß√µes
 		otherNames = Outros Nomes
 
 	//Solver
 		solverGroupText = Texto
-		solverGroupNumbers = N˙meros
+		solverGroupNumbers = N√∫meros
 		solverGroupCoordinates = Coordenadas
 
 	//Solver Functions
 		solverFuncAlphaSum = SomaAlfa
-		solverDescAlphaSum = SomatÛrio de todas as posiÁıes de todos os caracteres do Alfabeto
+		solverDescAlphaSum = Somat√≥rio de todas as posi√ß√µes de todos os caracteres do Alfabeto
 		solverFuncAlphaPos = PosAlfa
-		solverDescAlphaPos = PosiÁ„o do primeiro caractere no Alfabeto
+		solverDescAlphaPos = Posi√ß√£o do primeiro caractere no Alfabeto
 		solverFuncPhoneCode = CodTelef
-		solverDescPhoneCode = PosiÁ„o do primeiro caractere no teclado de um telefone
+		solverDescPhoneCode = Posi√ß√£o do primeiro caractere no teclado de um telefone
 		solverFuncHandySum = SomaTelef
-		solverDescPhoneSum = SomatÛrio de todas as posiÁıes de todos os caracteres do teclado de um telefone
+		solverDescPhoneSum = Somat√≥rio de todas as posi√ß√µes de todos os caracteres do teclado de um telefone
 		solverFuncLength = Comprimento
-		solverDescLength = N˙mero de caracteres de um texto
+		solverDescLength = N√∫mero de caracteres de um texto
 		solverFuncCrosstotal = Crosstotal
 		solverDescCrosstotal = Sum of all single numbers in the number. \nExample: CT(123456) = 21
 		solverFuncICrosstotal = ICrosstotal
@@ -259,7 +260,7 @@ Portugues
 	//CompassViewPanel
 		SatHdop = Sats/Hdop:
 		BearSpeed = Dir/Veloc:
-		distance = Dist‚ncia:
+		distance = Dist√¢ncia:
 		Align = Align
 		AlignGps = Align \n GPS
 		AlignHtc = Align \n HTC
@@ -269,59 +270,59 @@ Portugues
 		Filter = Filtrar
 		Search = Procurar
 		Next = Seguinte
-		Title = TÌtulo
-		GCCode =CÛdigo
+		Title = T√≠tulo
+		GCCode =C√≥digo
 		Owner = Owner
 		
 	//ProjectionForm
-		Projection = ProjecÁ„o
-		Distance = Dist‚ncia
+		Projection = Projec√ß√£o
+		Distance = Dist√¢ncia
 		Bearing = Azimute
 		
 //Settings
 
 	//GPS
-	CompatibleWithGpsModDriver? = CompatÌvel com GpsModDriver?
-	UseCellId = Usar Antenas GSM para posiÁ„o inicial sem gps.
-	UseHtcCompass = Usar b˙ssola Htc
-	DescHtcLevel = R·cio de velocidade para b˙ssola HTC ou GPS. \n-1 = GPS n„o È usado de todo.
+	CompatibleWithGpsModDriver? = Compat√≠vel com GpsModDriver?
+	UseCellId = Usar Antenas GSM para posi√ß√£o inicial sem gps.
+	UseHtcCompass = Usar b√∫ssola Htc
+	DescHtcLevel = R√°cio de velocidade para b√∫ssola HTC ou GPS. \n-1 = GPS n√£o √© usado de todo.
 	
 	//Data
-	AdjustFounds = Ajustar n˙mero de finds...
-	LoadFounds = Carregar n˙mero de finds de gc.com
+	AdjustFounds = Ajustar n√∫mero de finds...
+	LoadFounds = Carregar n√∫mero de finds de gc.com
 	DeleteLogs = Apagar Logs
 	ButKeepLeast = mas manter pelo menos
 	ResetFavorites = Desmarcar favoritos...
-	ResetListingChanged = Limpar campo de descriÁ„o alterada...
+	ResetListingChanged = Limpar campo de descri√ß√£o alterada...
 	RemoveCaches = Remover caches ...
-	ArchiveFilterSelection? = Est· prestes a marcar todas as caches no actual filtro como arquivadas. Tem a certeza que pretende continuar?
+	ArchiveFilterSelection? = Est√° prestes a marcar todas as caches no actual filtro como arquivadas. Tem a certeza que pretende continuar?
 	ArchiveFilterSelection! = a arquivar Caches
 	DeleteFieldNotes = Apagar todas as field notes ...
-	DelCaches? = Est· prestes a apagar todas as caches no actual filtro. Tem a certeza que pretende continuar?
+	DelCaches? = Est√° prestes a apagar todas as caches no actual filtro. Tem a certeza que pretende continuar?
 	DelCaches! = Apagar caches
-	ArchiveFilterSelection = Arquivar a selecÁ„o actual
-	DeleteFilterSelection = Apagar a selecÁ„o actual
-	DelLogs = Escolheu apagar os logs imediatamente. Na prÛxima importaÁ„o todos os logs ser„o apagados. Tem a certeza que pretende continuar?
+	ArchiveFilterSelection = Arquivar a selec√ß√£o actual
+	DeleteFilterSelection = Apagar a selec√ß√£o actual
+	DelLogs = Escolheu apagar os logs imediatamente. Na pr√≥xima importa√ß√£o todos os logs ser√£o apagados. Tem a certeza que pretende continuar?
 	PleaseConfirm = Confirme por favor!
 	comboBoxLogLifeItem_0 = imediatamente
-	comboBoxLogLifeItem_1 = mais de 1 mÍs
-	comboBoxLogLifeItem_2 = mais de 2 mÍs
-	comboBoxLogLifeItem_3 = mais de 3 mÍs
-	comboBoxLogLifeItem_4 = mais de 4 mÍs
-	comboBoxLogLifeItem_5 = mais de 5 mÍs
-	comboBoxLogLifeItem_6 = mais de 6 mÍs
-	DelFieldNotes? = Est· prestes a apagar todas as fieldnotes. Tem a certeza que pretende continuar?
+	comboBoxLogLifeItem_1 = mais de 1 m√™s
+	comboBoxLogLifeItem_2 = mais de 2 m√™s
+	comboBoxLogLifeItem_3 = mais de 3 m√™s
+	comboBoxLogLifeItem_4 = mais de 4 m√™s
+	comboBoxLogLifeItem_5 = mais de 5 m√™s
+	comboBoxLogLifeItem_6 = mais de 6 m√™s
+	DelFieldNotes? = Est√° prestes a apagar todas as fieldnotes. Tem a certeza que pretende continuar?
 	DelFieldNotes! = Apagar Fieldnotes
-	ResetFavorites? = Est· prestes a desmarcar todos os favoritos. Tem a certeza que pretende continuar?
+	ResetFavorites? = Est√° prestes a desmarcar todos os favoritos. Tem a certeza que pretende continuar?
 	ResetFavorites! = Desmarcar favoritos
-	ResetListingChanged? = Est· prestes a desmarcar todos os 'listing changed'. Tem a certeza que pretende continuar?
+	ResetListingChanged? = Est√° prestes a desmarcar todos os 'listing changed'. Tem a certeza que pretende continuar?
 	ResetListingChanged! = Desmarcar 'listing changed'
-	LoadFinds! = Carregar o n˙mero de founds do geocaching.com? Isto pode implicar custos!
-	LoadFinds? = Carregar n˙mero de founds
-	LogInErrorLoadFinds = Erro na autenticaÁ„o ao tentar obter o n˙mero de finds! Dados errados?
-	CannotResolveHost = N„o consegue encontrar o servidor!
-	ServerTimeout = Tempo de ligaÁ„o excedido...
-	FoundsSetTo = N˙mero de finds definido: %s
+	LoadFinds! = Carregar o n√∫mero de founds do geocaching.com? Isto pode implicar custos!
+	LoadFinds? = Carregar n√∫mero de founds
+	LogInErrorLoadFinds = Erro na autentica√ß√£o ao tentar obter o n√∫mero de finds! Dados errados?
+	CannotResolveHost = N√£o consegue encontrar o servidor!
+	ServerTimeout = Tempo de liga√ß√£o excedido...
+	FoundsSetTo = N√∫mero de finds definido: %s
 	
 	//FormAdjustFounds
 	AdjustFinds = Ajustar finds
