@@ -46,6 +46,20 @@
 			    		<include android:layout_height="wrap_content" android:id="@layout/edit_coordinate_min" layout="@layout/edit_coordinate_min" android:layout_width="match_parent" android:layout_marginLeft="10dip" android:layout_marginRight="10dip" android:layout_weight="1"></include>			    
 
             </TableRow>
+            <TableRow 
+            	android:id="@+id/edco_table_sec" 
+            	android:layout_width="wrap_content" 
+            	android:layout_height="wrap_content">
+			    		<include android:layout_height="wrap_content" android:id="@layout/edit_coordinate_min" layout="@layout/edit_coordinate_sec" android:layout_width="match_parent" android:layout_marginLeft="10dip" android:layout_marginRight="10dip" android:layout_weight="1"></include>			    
+
+            </TableRow>
+            <TableRow 
+            	android:id="@+id/edco_table_utm" 
+            	android:layout_width="wrap_content" 
+            	android:layout_height="wrap_content">
+			    		<include android:layout_height="wrap_content" android:id="@layout/edit_coordinate_utm" layout="@layout/edit_coordinate_utm" android:layout_width="match_parent" android:layout_marginLeft="10dip" android:layout_marginRight="10dip" android:layout_weight="1"></include>			    
+
+            </TableRow>
         </TableLayout>
     </ScrollView>
 </RelativeLayout>

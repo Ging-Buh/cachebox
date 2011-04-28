@@ -25,6 +25,8 @@ public class EditCoordinate extends Activity {
 	Coordinate coord;
 	TableRow trDec;
 	TableRow trMin;
+	TableRow trSec;
+	TableRow trUtm;
 // Allgemein
 	ToggleButton bDec;
     ToggleButton bMin;
@@ -43,7 +45,20 @@ public class EditCoordinate extends Activity {
 	EditText tbMLonDeg;
 	EditText tbMLonMin;
 	// Deg - Min - Sec
+	Button bSLat;
+	EditText tbSLatDeg;
+	EditText tbSLatMin;
+	EditText tbSLatSec;
+	Button bSLon;
+	EditText tbSLonDeg;
+	EditText tbSLonMin;
+	EditText tbSLonSec;
 	// Utm
+	EditText tbUX;
+	EditText tbUY;
+	EditText tbUZone;
+	Button bUX;
+	Button bUY;
 	
 	public void onCreate(Bundle savedInstanceState) 
 	{
@@ -60,6 +75,10 @@ public class EditCoordinate extends Activity {
 		trDec.setVisibility(View.GONE);
 		trMin =(TableRow)this.findViewById(R.id.edco_table_min);
 		trMin.setVisibility(View.VISIBLE);
+		trSec = (TableRow)this.findViewById(R.id.edco_table_sec);
+		trSec.setVisibility(View.GONE);
+		trUtm = (TableRow)this.findViewById(R.id.edco_table_utm);
+		trUtm.setVisibility(View.GONE);
 		
 		// Allgemein
 		bDec = (ToggleButton) findViewById(R.id.edco_dec);
@@ -79,7 +98,20 @@ public class EditCoordinate extends Activity {
 		tbMLonDeg = (EditText) findViewById(R.id.edco_min_lon_value_dec);
 		tbMLonMin = (EditText) findViewById(R.id.edco_min_lon_value_min);
 		// Deg - Min - Sec
+		bSLat = (Button) findViewById(R.id.edco_sec_lat_direction);
+		tbSLatDeg = (EditText) findViewById(R.id.edco_sec_lat_value_dec);
+		tbSLatMin = (EditText) findViewById(R.id.edco_sec_lat_value_min);
+		tbSLatSec = (EditText) findViewById(R.id.edco_sec_lat_value_sec);
+		bSLon = (Button) findViewById(R.id.edco_sec_lon_direction);
+		tbSLonDeg = (EditText) findViewById(R.id.edco_sec_lon_value_dec);
+		tbSLonMin = (EditText) findViewById(R.id.edco_sec_lon_value_min);
+		tbSLonSec = (EditText) findViewById(R.id.edco_sec_lon_value_sec);
 		// Utm
+		tbUX = (EditText) findViewById(R.id.edco_utm_x_value);
+		tbUY = (EditText) findViewById(R.id.edco_utm_y_value);
+		tbUZone = (EditText) findViewById(R.id.edco_utm_zone_value);
+		bUX = (Button) findViewById(R.id.edco_utm_x_direction);
+		bUY = (Button) findViewById(R.id.edco_utm_y_directioin);
         
         bDec.setText("Dec");
         bDec.setTextOff("Dec");
@@ -202,8 +234,10 @@ public class EditCoordinate extends Activity {
 		 {
 		 case 0:
      		// show Degrees
+         	trDec.setVisibility(View.VISIBLE);
          	trMin.setVisibility(View.GONE);	        		
-         	trDec.setVisibility(View.VISIBLE);	        		
+         	trSec.setVisibility(View.GONE);
+         	trUtm.setVisibility(View.GONE);
          	bDec.setChecked(true);
          	bMin.setChecked(false);
          	bSec.setChecked(false);
@@ -217,6 +251,8 @@ public class EditCoordinate extends Activity {
      		// show Degree - Minute
          	trDec.setVisibility(View.GONE);	        		
          	trMin.setVisibility(View.VISIBLE);	        			        		
+         	trSec.setVisibility(View.GONE);
+         	trUtm.setVisibility(View.GONE);
          	bDec.setChecked(false);
          	bMin.setChecked(true);
          	bSec.setChecked(false);
@@ -225,8 +261,8 @@ public class EditCoordinate extends Activity {
          	if (coord.Longitude > 0) bMLon.setText("E"); else bMLon.setText("W");
 
          	double deg = (int)Math.abs(coord.Latitude);
-             double frac = Math.abs(coord.Latitude) - deg;
-             double min = frac * 60;
+         	double frac = Math.abs(coord.Latitude) - deg;
+         	double min = frac * 60;
          	tbMLatDeg.setText(String.format("%.0f", deg));
          	tbMLatMin.setText(String.format("%.3f", min));
 
@@ -240,15 +276,44 @@ public class EditCoordinate extends Activity {
      		// show Degree - Minute - Second
          	trMin.setVisibility(View.GONE);	        		
          	trDec.setVisibility(View.GONE);	        		
+         	trSec.setVisibility(View.VISIBLE);
+         	trUtm.setVisibility(View.GONE);
          	bDec.setChecked(false);
          	bMin.setChecked(false);
          	bSec.setChecked(true);
          	bUtm.setChecked(false);
+         	
+            deg = Math.abs((int)coord.Latitude);
+            frac = Math.abs(coord.Latitude) - deg;
+            min = frac * 60;
+            int imin = (int)min;
+            frac = min - imin;
+            double sec = frac * 60;
+
+         	if (coord.Latitude > 0) bSLat.setText("N");	else bSLat.setText("S");
+            tbSLatDeg.setText(String.format("%.0f", deg));
+            tbSLatMin.setText(String.valueOf(imin));
+            tbSLatSec.setText(String.format("%.2f", sec));
+
+            deg = Math.abs((int)coord.Longitude);
+            frac = Math.abs(coord.Longitude) - deg;
+            min = frac * 60;
+            imin = (int)min;
+            frac = min - imin;
+            sec = frac * 60;
+
+         	if (coord.Longitude > 0) bSLon.setText("E"); else bSLon.setText("W");
+            tbSLonDeg.setText(String.format("%.0f", deg));
+            tbSLonMin.setText(String.valueOf(imin));
+            tbSLonSec.setText(String.format("%.2f", sec));
+
          	break;
 		 case 3:
      		// show UTM
          	trMin.setVisibility(View.GONE);	        		
          	trDec.setVisibility(View.GONE);	        		
+         	trSec.setVisibility(View.GONE);
+         	trUtm.setVisibility(View.VISIBLE);
          	bDec.setChecked(false);
          	bMin.setChecked(false);
          	bSec.setChecked(false);
@@ -275,8 +340,8 @@ public class EditCoordinate extends Activity {
          	break;
 		 case 2:
      		// show Degree - Minute - Second
-//             scoord += cbSLat.Text + " " + tbSLatDeg.Text + "° " + tbSLatMin.Text + "' " + tbSLatSec.Text + "''";
-//             scoord += " " + cbSLon.Text + " " + tbSLonDeg.Text + "° " + tbSLonMin.Text + "' " + tbSLonSec.Text + "''";
+             scoord += bSLat.getText() + " " + tbSLatDeg.getText() + "° " + tbSLatMin.getText() + "' " + tbSLatSec.getText() + "''";
+             scoord += " " + bSLon.getText() + " " + tbSLonDeg.getText() + "° " + tbSLonMin.getText() + "' " + tbSLonSec.getText() + "''";
          	break;
 		 case 3:
      		// show UTM

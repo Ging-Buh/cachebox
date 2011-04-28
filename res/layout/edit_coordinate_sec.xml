@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+    <TableLayout android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/edco_sec_tablelayout">
+        <TableRow android:id="@+id/edco_sec_tablerow_lat" android:layout_height="wrap_content" android:layout_width="wrap_content">
+            <Button android:layout_height="wrap_content" android:layout_width="55dip" android:text="N" android:id="@+id/edco_sec_lat_direction"></Button>
+            <EditText android:layout_height="wrap_content" android:id="@+id/edco_sec_lat_value_dec" android:layout_width="match_parent" android:layout_weight="1"></EditText>
+            <TextView android:id="@+id/edco_sec_lat_unit_dec" android:layout_height="wrap_content" android:text="°" android:layout_width="wrap_content"></TextView>
+            <EditText android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/edco_sec_lat_value_min" android:layout_weight="1"></EditText>
+            <TextView android:id="@+id/edco_sec_lat_unit_min" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="'"></TextView>
+            <EditText android:layout_height="wrap_content" android:id="@+id/edco_sec_lat_value_sec" android:layout_width="match_parent" android:layout_weight="2"></EditText>
+            <TextView android:layout_height="wrap_content" android:text="''" android:layout_width="wrap_content" android:id="@+id/edco_sec_lat_unit_sec"></TextView>
+        </TableRow>
+        <TableRow android:id="@+id/edco_sec_tablerow_lon" android:layout_height="wrap_content" android:layout_width="wrap_content">
+            <Button android:layout_height="wrap_content" android:id="@+id/edco_sec_lon_direction" android:layout_width="wrap_content" android:text="E"></Button>
+            <EditText android:layout_height="wrap_content" android:id="@+id/edco_sec_lon_value_dec" android:layout_width="match_parent" android:layout_weight="1"></EditText>
+            <TextView android:id="@+id/edco_sec_lon_unit_dec" android:layout_height="wrap_content" android:text="°" android:layout_width="wrap_content"></TextView>
+            <EditText android:layout_height="wrap_content" android:id="@+id/edco_sec_lon_value_min" android:layout_width="match_parent" android:layout_weight="1"></EditText>
+            <TextView android:id="@+id/edco_sec_lon_unit_min" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="'"></TextView>
+            <EditText android:layout_height="wrap_content" android:id="@+id/edco_sec_lon_value_sec" android:layout_weight="2" android:layout_width="match_parent"></EditText>
+            <TextView android:layout_height="wrap_content" android:text="''" android:layout_width="wrap_content" android:id="@+id/edco_sec_lon_unit_sec"></TextView>
+        </TableRow>
+    </TableLayout>
+</LinearLayout>

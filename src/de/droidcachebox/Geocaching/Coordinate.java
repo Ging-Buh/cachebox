@@ -145,10 +145,10 @@ public class Coordinate implements Serializable {
         {
           // Decimal - Minute - Second
           lat = Integer.valueOf(llat.get(0));
-          lat += Integer.valueOf(llat.get(1)) / 60;
+          lat += Double.valueOf(llat.get(1)) / 60;
           lat += Double.valueOf(llat.get(2)) / 3600;
           lon = Integer.valueOf(llon.get(0));
-          lon += Integer.valueOf(llon.get(1)) / 60;
+          lon += Double.valueOf(llon.get(1)) / 60;
           lon += Double.valueOf(llon.get(2)) / 3600;
         }
       }
