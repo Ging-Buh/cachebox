@@ -131,7 +131,10 @@ utf8
 		cancel = Annuler
 		confirm = Confirmer
 		ok = Ok	
-	
+		edit = Edit	
+		close = Schließen
+		decode = Decode
+			
 	// FormSelectDB
 		NewDB = Nouvelle base
 		SelDB = Choisir la base 

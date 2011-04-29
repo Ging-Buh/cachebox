@@ -22,6 +22,7 @@ import de.droidcachebox.Views.SolverView;
 import de.droidcachebox.Views.SpoilerView;
 import de.droidcachebox.Views.WaypointView;
 import de.droidcachebox.Views.Forms.EditWaypoint;
+import de.droidcachebox.Views.Forms.HintDialog;
 import de.droidcachebox.Views.Forms.Settings;
 import de.droidcachebox.Database;
 import de.droidcachebox.Database.DatabaseType;
@@ -392,6 +393,19 @@ public class main extends Activity implements SelectedCacheEvent, ColorChangedEv
     	case R.id.miSpoilerView:
     		showView(spoilerView);
     		return true;
+    	case R.id.miHint:
+    		if (Global.selectedCache == null)
+    			return true;
+    		String hint = Global.selectedCache.Hint();
+    		if (hint.equals(""))
+    			return true;
+    		
+    		final Intent hintIntent = new Intent().setClass(this, HintDialog.class);
+	        Bundle b = new Bundle();
+	        b.putSerializable("Hint", hint);
+	        hintIntent.putExtras(b);
+    		this.startActivity(hintIntent);
+    		return true;
     	// Misc
     	case R.id.miClose:
     		finish();
@@ -439,8 +453,18 @@ public class main extends Activity implements SelectedCacheEvent, ColorChangedEv
       } else if (v == buttonMap)
     	  inflater.inflate(R.menu.menu_map, menu);
       else if (v == buttonInfo)
+      {
     	  inflater.inflate(R.menu.menu_info, menu);
-      else if (v == buttonMisc)
+    	  
+    	  // Menu Item Hint enabled / disabled
+    	  boolean enabled = false;
+    	  if ((Global.selectedCache != null) && (!Global.selectedCache.Hint().equals("")))
+    		  enabled = true;
+    	  MenuItem mi = menu.findItem(R.id.miHint);
+    	  if (mi != null)
+    		  mi.setEnabled(enabled);
+    	  Global.Translations.TranslateMenuItem(menu, R.id.miHint, "hint");
+      } else if (v == buttonMisc)
     	  inflater.inflate(R.menu.menu_misc, menu);
     }
     

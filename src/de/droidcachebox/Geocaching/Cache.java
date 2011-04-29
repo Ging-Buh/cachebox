@@ -380,23 +380,24 @@ public class Cache implements Comparable<Cache> {
 
         return description;
 }
-/*
-    protected String hint = String.Empty;
-    public String Hint
+
+    protected String hint = "";
+    public String Hint()
     {
-        get
-        {
-            if (String.IsNullOrEmpty(hint))
+    	if (hint.equals(""))
+    	{
+            Cursor reader = Database.Data.myDB.rawQuery("select Hint from Caches where Id=?", new String[] { Long.toString(this.Id) } );
+        	reader.moveToFirst();
+            while(reader.isAfterLast() == false)
             {
-                SqlCeCommand command = new SqlCeCommand("select Hint from Caches where Id=@id", Database.Data.Connection);
-                command.Parameters.Add("@id", DbType.Int64).Value = this.Id;
-                hint = command.ExecuteScalar().ToString();
-                command.Dispose();
+            	hint = reader.getString(0);
+                reader.moveToNext();
             }
-            return hint;
-        }
+            reader.close();
+    	}
+    	return hint;
     }
-*/
+
     public ArrayList<Waypoint> waypoints = null;
 /*
     public List<Waypoint> Waypoints

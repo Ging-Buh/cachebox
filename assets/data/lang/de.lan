@@ -133,6 +133,8 @@ Deutsch
 		confirm = Wählen
 		ok = Ok
 		edit = Ändern
+		close = Schließen
+		decode = Dekodieren
 
 	// FormSelectDB
 		NewDB = Neue DB

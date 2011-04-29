@@ -134,7 +134,9 @@ English
 		confirm = Confirm
 		ok = Ok
 		edit = Edit	
-	
+		close = Close
+		decode = Decode
+			
 	// FormSelectDB
 		NewDB = New DB
 		SelDB = Select Database 

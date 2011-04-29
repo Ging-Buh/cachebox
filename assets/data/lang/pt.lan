@@ -134,6 +134,8 @@ Portugues
 		confirm = OK
 		ok = Ok
 		edit = Edit
+		close = Close	
+		decode = Decode
 	
 	// FormSelectDB
 		NewDB = Nova BD

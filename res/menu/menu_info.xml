@@ -3,4 +3,5 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/miLogView" android:title="LogView"></item>
     <item android:id="@+id/miSpoilerView" android:title="Spoilers"></item>
+    <item android:title="Hint" android:id="@+id/miHint"></item>
 </menu>
