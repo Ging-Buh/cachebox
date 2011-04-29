@@ -6,16 +6,16 @@
     <TableLayout android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/edco_min_tablelayout">
         <TableRow android:id="@+id/edco_min_tablerow_lat" android:layout_height="wrap_content" android:layout_width="wrap_content">
             <Button android:layout_height="wrap_content" android:layout_width="55dip" android:text="N" android:id="@+id/edco_min_lat_direction"></Button>
-            <EditText android:layout_height="wrap_content" android:id="@+id/edco_min_lat_value_dec" android:layout_width="match_parent" android:layout_weight="1"></EditText>
+            <EditText android:layout_height="wrap_content" android:id="@+id/edco_min_lat_value_dec" android:layout_width="match_parent" android:layout_weight="1" android:numeric="integer"></EditText>
             <TextView android:id="@+id/edco_min_lat_unit_dec" android:layout_height="wrap_content" android:text="°" android:layout_width="wrap_content"></TextView>
-            <EditText android:layout_height="wrap_content" android:text="EditText" android:id="@+id/edco_min_lat_value_min" android:layout_width="match_parent" android:layout_weight="2"></EditText>
+            <EditText android:numeric="decimal" android:layout_height="wrap_content" android:text="EditText" android:id="@+id/edco_min_lat_value_min" android:layout_width="match_parent" android:layout_weight="2"></EditText>
             <TextView android:id="@+id/edco_min_lat_unit_min" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="'"></TextView>
         </TableRow>
         <TableRow android:id="@+id/edco_min_tablerow_lon" android:layout_height="wrap_content" android:layout_width="wrap_content">
             <Button android:layout_height="wrap_content" android:id="@+id/edco_min_lon_direction" android:layout_width="wrap_content" android:text="E"></Button>
-            <EditText android:layout_height="wrap_content" android:id="@+id/edco_min_lon_value_dec" android:layout_width="match_parent" android:layout_weight="1"></EditText>
+            <EditText android:layout_height="wrap_content" android:id="@+id/edco_min_lon_value_dec" android:layout_width="match_parent" android:layout_weight="1" android:numeric="integer"></EditText>
             <TextView android:id="@+id/edco_min_lon_unit_dec" android:layout_height="wrap_content" android:text="°" android:layout_width="wrap_content"></TextView>
-            <EditText android:layout_height="wrap_content" android:text="EditText" android:id="@+id/edco_min_lon_value_min" android:layout_width="match_parent" android:layout_weight="2"></EditText>
+            <EditText android:numeric="decimal" android:layout_height="wrap_content" android:text="EditText" android:id="@+id/edco_min_lon_value_min" android:layout_width="match_parent" android:layout_weight="2"></EditText>
             <TextView android:id="@+id/edco_min_lon_unit_min" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="'"></TextView>
         </TableRow>
     </TableLayout>

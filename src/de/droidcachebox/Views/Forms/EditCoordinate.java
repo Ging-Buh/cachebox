@@ -5,6 +5,7 @@ import java.text.NumberFormat;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Geocaching.Coordinate;
+import de.droidcachebox.UTM.UTMConvert;
 import android.R.string;
 import android.app.Activity;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import android.widget.ToggleButton;
 public class EditCoordinate extends Activity {
 	private Intent aktIntent;
 	private int aktPage = -1;  // Deg-Min
+    UTMConvert convert = new UTMConvert();
 
 	Coordinate coord;
 	TableRow trDec;
@@ -318,7 +320,28 @@ public class EditCoordinate extends Activity {
          	bMin.setChecked(false);
          	bSec.setChecked(false);
          	bUtm.setChecked(true);
-         	break;		 
+
+            double nording = 0;
+            double easting = 0;
+            String zone = "";
+            convert.iLatLon2UTM(coord.Latitude, coord.Longitude);
+            nording = convert.UTMNorthing;
+            easting = convert.UTMEasting;
+            zone = convert.sUtmZone;
+//            tbUY.setText(String.Format(NumberFormatInfo.InvariantInfo, "{0:0}", Math.Floor(nording)));
+//            tbUX.setText(String.Format(NumberFormatInfo.InvariantInfo, "{0:0}", Math.Floor(easting)));
+            tbUY.setText(String.format("%.1f", nording));
+            tbUX.setText(String.format("%.1f", easting));
+            tbUZone.setText(zone);
+            if (coord.Latitude > 0)
+                bUY.setText("N");
+            else if (coord.Latitude < 0)
+                bUY.setText("S");
+            if (coord.Longitude > 0)
+                bUX.setText("E");
+            else if (coord.Longitude < 0)
+                bUX.setText("W");
+            break;         	
 		 }
 		 aktPage = newPage;
 	 }
@@ -345,7 +368,7 @@ public class EditCoordinate extends Activity {
          	break;
 		 case 3:
      		// show UTM
-//             scoord += tbZone.Text + " " + tbEasting.Text + " " + tbNording.Text;
+             scoord += tbUZone.getText() + " " + tbUX.getText() + " " + tbUY.getText();
 			 break;		 
 		 }
 		 Coordinate newCoord = new Coordinate(scoord);

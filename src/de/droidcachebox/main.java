@@ -48,6 +48,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Display;
@@ -288,6 +289,13 @@ public class main extends Activity implements SelectedCacheEvent, ColorChangedEv
 
         mSensorManager.registerListener(mListener, mSensor,
                 SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    @Override
+    protected void onStop()
+    {
+        mSensorManager.unregisterListener(mListener);
+        super.onStop();
     }
 
     /** hook into menu button for activity */

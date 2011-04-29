@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import de.droidcachebox.Global;
+import de.droidcachebox.UTM.UTMConvert;
 
 import android.location.Location;
 
@@ -56,21 +57,24 @@ public class Coordinate implements Serializable {
           String snording = utm[2];
           try
           {
-            double nording = Double.valueOf(snording);
-            double easting = Double.valueOf(seasting);
-//            UTM.Convert convert = new UTM.Convert();
-            double ddlat = 0;
-            double ddlon = 0;
-//            convert.iUTM2LatLon(nording, easting, zone, ref ddlat, ref ddlon);
-            // Ergebnis runden, da sonst Koordinaten wie 47° 60' herauskommen!
-//            ddlat = Math.round(ddlat, 6);
-//            ddlon = Math.round(ddlon, 6);
-            this.Valid = true;
-            this.Latitude = ddlat;
-            this.Longitude = ddlon;
-            return;
-          } catch(Exception ex)
-          {
+        	  snording = snording.replace(",", ".");
+        	  seasting = seasting.replace(",", ".");
+        	  double nording = Double.valueOf(snording);
+        	  double easting = Double.valueOf(seasting);
+        	  UTMConvert convert = new UTMConvert();
+        	  double ddlat = 0;
+        	  double ddlon = 0;
+        	  convert.iUTM2LatLon(nording, easting, zone);
+        	  ddlat = convert.dLat;
+        	  ddlon = convert.dLon;
+        	  //	Ergebnis runden, da sonst Koordinaten wie 47° 60' herauskommen!
+        	  ddlat = Math.rint(ddlat * 1000000) / 1000000;
+        	  ddlon = Math.rint(ddlon * 1000000) / 1000000;
+        	  this.Valid = true;
+        	  this.Latitude = ddlat;
+        	  this.Longitude = ddlon;
+        	  return;
+          } catch(Exception ex) {
           }
         }
       }

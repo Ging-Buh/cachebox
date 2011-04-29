@@ -21,6 +21,7 @@
             			android:layout_height="wrap_content" 
             			android:layout_weight="5" 
             			android:layout_width="match_parent" 
+						android:numeric="decimal"
             			android:id="@+id/edco_utm_x_value">
             		</EditText>
         	</TableRow>
@@ -38,6 +39,7 @@
             			android:layout_height="wrap_content" 
             			android:layout_width="match_parent" 
             			android:layout_weight="1" 
+            			android:numeric="decimal"
             			android:id="@+id/edco_utm_y_value">
             		</EditText>
         	</TableRow>
