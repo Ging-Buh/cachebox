@@ -147,8 +147,6 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private void setMainActivity()
 	{
 		finish();
-        Intent mainIntent = new Intent().setClass(this,main.class);
-		startActivity(mainIntent);
 	}
 	
 	private void setLang()

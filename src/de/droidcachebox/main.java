@@ -356,7 +356,6 @@ public class main extends Activity implements SelectedCacheEvent, ColorChangedEv
     
     public boolean onContextItemSelected(MenuItem item)
     {
-		frame.removeAllViews();
     	switch (item.getItemId())
     	{
     	// DB
@@ -401,7 +400,7 @@ public class main extends Activity implements SelectedCacheEvent, ColorChangedEv
     		Config.changeDayNight();
     		return true;
     	case R.id.miSettings:
-    	final Intent mainIntent = new Intent().setClass( this, Settings.class);
+    		final Intent mainIntent = new Intent().setClass( this, Settings.class);
 
     		this.startActivity(mainIntent);
     		
