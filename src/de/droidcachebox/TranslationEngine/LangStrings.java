@@ -10,6 +10,7 @@ import de.droidcachebox.Events.SelectedLangChangedEventList;
 
 import android.os.Environment;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuItem;
 
 public class LangStrings 
@@ -192,7 +193,7 @@ public class LangStrings
     }
 
     // übersetzt den Titel eines MenuItems
-    public void TranslateMenuItem(ContextMenu menu, int id, String StringId)
+    public void TranslateMenuItem(Menu menu, int id, String StringId)
     {
     	try
     	{

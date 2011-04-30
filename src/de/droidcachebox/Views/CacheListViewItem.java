@@ -181,7 +181,7 @@ public class CacheListViewItem extends View {
               // Bearing: Luftfahrt
               // Heading: Im Uhrzeigersinn, Geocaching-Norm
 
-              double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
+              double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude(), cache.Longitude());
               double relativeBearing = bearing - heading;
            //   double relativeBearingRad = relativeBearing * Math.PI / 180.0;
 

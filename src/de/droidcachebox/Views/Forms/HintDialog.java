@@ -28,7 +28,6 @@ public class HintDialog extends Activity {
         bClose = (Button) findViewById(R.id.hintdialog_button_close);
         bDecode = (Button) findViewById(R.id.hintdialog_button_decode);
         etHint = (EditText) findViewById(R.id.hintdialog_text);
-        etHint.setEnabled(false);
     
         etHint.setText(hint);
         bClose.setOnClickListener(new OnClickListener() {

@@ -91,8 +91,7 @@ public class Waypoint implements Serializable {
     {
         GcCode = gcCode;
         CacheId = cacheId;
-        Coordinate.Latitude = latitude;
-        Coordinate.Longitude = longitude;
+        Coordinate = new Coordinate(latitude, longitude);
         Description = description;
         Type = type;
         IsSyncExcluded = true;
@@ -100,27 +99,38 @@ public class Waypoint implements Serializable {
         Clue = clue;
         Title = title;
     }
-/*
-    public static bool GcCodeExists(String gcCode)
-    {
-        SqlCeCommand command = new SqlCeCommand("select count(GcCode) from Waypoint where GcCode=@gccode", Database.Data.Connection);
-        command.Parameters.Add("@gccode", DbType.String).Value = gcCode;
-        int count = int.Parse(command.ExecuteScalar().ToString());
-        command.Dispose();
 
-        return count > 0;
+    public static boolean GcCodeExists(String gcCode)
+    {
+        Cursor c = Database.Data.myDB.rawQuery("select GcCode from Waypoint where GcCode=@gccode", new String[] { gcCode });
+        try
+        {
+            c.moveToFirst();
+            while(c.isAfterLast() == false)
+            {
+            	c.close();
+            	return true;
+            };
+        }
+        catch (Exception exc)
+        {
+            return false;
+        }
+        c.close();
+
+        return false;
     }
 
-    public static String CreateFreeGcCode(String cacheGcCode)
+    public static String CreateFreeGcCode(String cacheGcCode) throws Exception
     {
-        String suffix = cacheGcCode.Substring(2);
+        String suffix = cacheGcCode.substring(2);
         String firstCharCandidates = "CBXADEFGHIJKLMNOPQRSTUVWYZ0123456789";
         String secondCharCandidates = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-        for (int i = 0; i < firstCharCandidates.Length; i++)
-            for (int j = 0; j < secondCharCandidates.Length; j++)
+        for (int i = 0; i < firstCharCandidates.length(); i++)
+            for (int j = 0; j < secondCharCandidates.length(); j++)
             {
-                String gcCode = firstCharCandidates.Substring(i, 1) + secondCharCandidates.Substring(j, 1) + suffix;
+                String gcCode = firstCharCandidates.substring(i, i+1) + secondCharCandidates.substring(j, j+1) + suffix;
                 if (!GcCodeExists(gcCode))
                     return gcCode;
             }
@@ -130,27 +140,33 @@ public class Waypoint implements Serializable {
     public void WriteToDatabase()
     {
         int newCheckSum = createCheckSum();
-        Replication.WaypointChanged(CacheId, checkSum, newCheckSum, GcCode);
-        SqlCeCommand command = new SqlCeCommand("insert into Waypoint(GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title) values (@gccode, @cacheid, @latitude, @longitude, @description, @type, @syncexclude, @userwaypoint, @clue, @title)", Database.Data.Connection);
-        command.Parameters.Add("@gccode", DbType.String).Value = GcCode;
-        command.Parameters.Add("@cacheid", DbType.Int64).Value = CacheId;
-        command.Parameters.Add("@latitude", DbType.Double).Value = Latitude;
-        command.Parameters.Add("@longitude", DbType.Double).Value = Longitude;
-        command.Parameters.Add("@description", DbType.String).Value = Description;
-        command.Parameters.Add("@type", DbType.Int16).Value = Type;
-        command.Parameters.Add("@syncexclude", DbType.Boolean).Value = IsSyncExcluded;
-        command.Parameters.Add("@userwaypoint", DbType.Boolean).Value = IsUserWaypoint;
-        command.Parameters.Add("@clue", DbType.String).Value = Clue;
-        command.Parameters.Add("@title", DbType.String).Value = Title;
-        command.ExecuteNonQuery();
+//        Replication.WaypointChanged(CacheId, checkSum, newCheckSum, GcCode);
+        ContentValues args = new ContentValues();
+        args.put("gccode", GcCode);
+        args.put("cacheid", CacheId);
+        args.put("latitude", Latitude());
+        args.put("longitude", Longitude());
+        args.put("description", Description);
+        args.put("type", Type.ordinal());
+        args.put("syncexclude", IsSyncExcluded);
+        args.put("userwaypoint", IsUserWaypoint);
+        args.put("clue", Clue);
+        args.put("title", Title);
 
-        SqlCeCommand commandUserData = new SqlCeCommand("update Caches set HasUserData=@hasUserData where Id=@id", Database.Data.Connection);
-        commandUserData.Parameters.Add("@hasUserData", DbType.Boolean).Value = true;
-        commandUserData.Parameters.Add("@id", DbType.Int64).Value = CacheId;
-        commandUserData.ExecuteNonQuery();
-        commandUserData.Dispose();
+        try
+        {
+        	Database.Data.myDB.insert("Waypoint", null, args);
+        	
+            args = new ContentValues();
+            args.put("hasUserData", true);
+        	Database.Data.myDB.update("Caches", args, "Id=" + CacheId, null);
+        } catch (Exception exc)
+        {
+        	return;
+        
+        }
     }
-*/
+
 
     public void UpdateDatabase()
     {
@@ -171,7 +187,7 @@ public class Waypoint implements Serializable {
             args.put("title", Title);
             try
             {
-            Database.Data.myDB.update("Waypoint", args, "CacheId=" + CacheId + " and GcCode=\"" + GcCode + "\"", null);
+            	Database.Data.myDB.update("Waypoint", args, "CacheId=" + CacheId + " and GcCode=\"" + GcCode + "\"", null);
             } catch (Exception exc)
             {
             	return;
@@ -191,17 +207,20 @@ public class Waypoint implements Serializable {
             checkSum = newCheckSum;
         }
     }
-/*
+
     public void DeleteFromDatabase()
     {
         int newCheckSum = 0;
-        Replication.WaypointDelete(CacheId, checkSum, newCheckSum, GcCode);
-        SqlCeCommand command = new SqlCeCommand("delete from Waypoint where GcCode=@gccode", Database.Data.Connection);
-        command.Parameters.Add("@gccode", DbType.String).Value = GcCode;
-        command.ExecuteNonQuery();
-        command.Dispose();
+//        Replication.WaypointDelete(CacheId, checkSum, newCheckSum, GcCode);
+        try
+        {
+        	Database.Data.myDB.delete("Caches", "Id=" + CacheId, null);
+        } catch (Exception exc)
+        {
+        	return;
+        }
     }
-*/
+
     /// <summary>
     /// Entfernung von der letzten gültigen Position
     /// </summary>

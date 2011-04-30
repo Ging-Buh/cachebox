@@ -12,6 +12,7 @@ import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
+import de.droidcachebox.Geocaching.Cache.CacheTypes;
 import de.droidcachebox.Geocaching.CacheList;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
@@ -20,8 +21,10 @@ import de.droidcachebox.Views.Forms.EditCoordinate;
 import de.droidcachebox.Views.Forms.EditWaypoint;
 import android.R.drawable;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Instrumentation.ActivityMonitor;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -43,6 +46,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 	CustomAdapter lvAdapter;
 	Activity parentActivity;
 	Waypoint aktWaypoint = null;
+	boolean createNewWaypoint = false;
 	
 	private Paint paint;
 	/**
@@ -82,12 +86,23 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 			Waypoint waypoint = (Waypoint)bundle.getSerializable("WaypointResult");
 			if (waypoint != null)
 			{
-				aktWaypoint.Title = waypoint.Title;
-				aktWaypoint.Type = waypoint.Type;
-				aktWaypoint.Coordinate = waypoint.Coordinate;
-				aktWaypoint.Description = waypoint.Description;
-				aktWaypoint.Clue = waypoint.Clue;
-				aktWaypoint.UpdateDatabase();
+				if (createNewWaypoint)
+				{
+					Global.SelectedCache().waypoints.add(waypoint);
+					this.setAdapter(lvAdapter);
+					aktWaypoint = waypoint;
+					Global.SelectedWaypoint(Global.SelectedCache(), waypoint);
+					waypoint.WriteToDatabase();
+					
+				} else
+				{
+					aktWaypoint.Title = waypoint.Title;
+					aktWaypoint.Type = waypoint.Type;
+					aktWaypoint.Coordinate = waypoint.Coordinate;
+					aktWaypoint.Description = waypoint.Description;
+					aktWaypoint.Clue = waypoint.Clue;
+					aktWaypoint.UpdateDatabase();
+				}
 			}
 		}
 	}
@@ -173,13 +188,61 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 
 	@Override
 	public boolean ItemSelected(MenuItem item) {
-		if (aktWaypoint != null)
+		switch (item.getItemId())
 		{
-    		Intent mainIntent = new Intent().setClass(getContext(), EditWaypoint.class);
-	        Bundle b = new Bundle();
-	        b.putSerializable("Waypoint", aktWaypoint);
-	        mainIntent.putExtras(b);
-    		parentActivity.startActivityForResult(mainIntent, 0);
+			case R.id.menu_waypointview_edit: 
+			if (aktWaypoint != null)
+			{
+				createNewWaypoint = false;
+	    		Intent mainIntent = new Intent().setClass(getContext(), EditWaypoint.class);
+		        Bundle b = new Bundle();
+		        b.putSerializable("Waypoint", aktWaypoint);
+		        mainIntent.putExtras(b);
+	    		parentActivity.startActivityForResult(mainIntent, 0);
+			}
+			break;
+			case R.id.menu_waypointview_new:
+				createNewWaypoint = true;
+				String newGcCode = "";
+				try {
+					newGcCode = Waypoint.CreateFreeGcCode(Global.SelectedCache().GcCode);
+				} catch (Exception e) {
+					// 	TODO Auto-generated catch block
+					return true;
+				}
+				Coordinate coord = Global.LastValidPosition;
+				if ((coord == null) || (!coord.Valid))
+					coord = Global.SelectedCache().Coordinate;
+                Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", coord.Latitude, coord.Longitude, Global.SelectedCache().Id, "", "manual");
+				Intent mainIntent = new Intent().setClass(getContext(), EditWaypoint.class);
+				Bundle b = new Bundle();
+				b.putSerializable("Waypoint", newWP);
+				mainIntent.putExtras(b);
+	    		parentActivity.startActivityForResult(mainIntent, 0);
+				break;
+			case R.id.menu_waypointview_delete:
+				DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+				    @Override
+				    public void onClick(DialogInterface dialog, int which) {
+				        switch (which){
+				        case DialogInterface.BUTTON_POSITIVE:
+				            //Yes button clicked
+				        	aktWaypoint.DeleteFromDatabase();
+				        	Global.SelectedCache().waypoints.remove(aktWaypoint);
+				        	Global.SelectedWaypoint(Global.SelectedCache(), null);
+				            break;
+				        case DialogInterface.BUTTON_NEGATIVE:
+				            //No button clicked
+				            break;
+				        }
+				    }
+				};
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+				builder.setMessage(Global.Translations.Get("?DelWP") + "\n\n[" + aktWaypoint.Title + "]")
+					.setTitle(Global.Translations.Get("!DelWP"))
+					.setPositiveButton(Global.Translations.Get("yes"), dialogClickListener)
+				    .setNegativeButton(Global.Translations.Get("no"), dialogClickListener).show();
 		}
 		return true;
 	}
@@ -193,6 +256,13 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 			{
 				mi.setTitle(Global.Translations.Get("edit"));
 				mi.setVisible(aktWaypoint != null);
+			}
+			Global.Translations.TranslateMenuItem(menu, R.id.menu_waypointview_new, "addWaypoint");
+			mi = menu.findItem(R.id.menu_waypointview_delete);
+			if (mi != null)
+			{
+				mi.setTitle(Global.Translations.Get("delete"));
+				mi.setVisible((aktWaypoint != null) && (aktWaypoint.IsUserWaypoint));
 			}
 		} catch (Exception exc)
 		{

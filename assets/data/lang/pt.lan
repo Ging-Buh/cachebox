@@ -136,6 +136,8 @@ Portugues
 		edit = Edit
 		close = Close	
 		decode = Decode
+		yes = Yes
+		no = No
 	
 	// FormSelectDB
 		NewDB = Nova BD

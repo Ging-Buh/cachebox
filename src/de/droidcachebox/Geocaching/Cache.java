@@ -65,10 +65,11 @@ public class Cache implements Comparable<Cache> {
     public String GcCode;
     /// Name des Caches
     public String Name;
+    public Coordinate Coordinate = new Coordinate(); 
     /// Breitengrad
-    public double Latitude;
+    public double Latitude() { return Coordinate.Latitude; }
     /// Längengrad
-    public double Longitude;
+    public double Longitude() { return Coordinate.Longitude; }
     /// Durchschnittliche Bewertung des Caches von GcVote
     public float Rating;
     /// Größe des Caches. Bei Wikipediaeinträgen enthält dieses Feld den Radius in m
@@ -340,7 +341,7 @@ public class Cache implements Comparable<Cache> {
     	Waypoint waypoint = this.GetFinalWaypoint();
         // Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die Diszanzberechnung vom Final aus gemacht werden
         // If a mystery has a final waypoint, the distance will be calculated to the final not the the cache coordinates
-    	Coordinate toPos = new Coordinate(Latitude, Longitude);
+    	Coordinate toPos = Coordinate;
         if (waypoint != null)
         	toPos = new Coordinate(waypoint.Coordinate.Latitude, waypoint.Coordinate.Longitude);
         float[] dist = new float[4];
@@ -552,8 +553,7 @@ public class Cache implements Comparable<Cache> {
     {
         Id = reader.getLong(0);
         GcCode = reader.getString(1).trim();
-        Latitude = reader.getDouble(2);
-        Longitude = reader.getDouble(3);
+        Coordinate = new Coordinate(reader.getDouble(2), reader.getDouble(3));
         Name = reader.getString(4).trim();
         Size = reader.getInt(5);
         Difficulty = ((float)reader.getShort(6)) / 2;
@@ -603,8 +603,8 @@ public class Cache implements Comparable<Cache> {
         else
             CorrectedCoordinates = false;
 
-        MapX = 256.0 * Descriptor.LongitudeToTileX(MapZoomLevel, Longitude);
-        MapY = 256.0 * Descriptor.LatitudeToTileY(MapZoomLevel, Latitude);
+        MapX = 256.0 * Descriptor.LongitudeToTileX(MapZoomLevel, Longitude());
+        MapY = 256.0 * Descriptor.LatitudeToTileY(MapZoomLevel, Latitude());
         
         SpoilerExists();
     }

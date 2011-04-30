@@ -136,6 +136,8 @@ English
 		edit = Edit	
 		close = Close
 		decode = Decode
+		yes = Yes
+		no = No
 			
 	// FormSelectDB
 		NewDB = New DB

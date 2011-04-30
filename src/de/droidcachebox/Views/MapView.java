@@ -680,7 +680,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
             if (Database.Data.Query.size() > 0)
             {
               // Koordinaten des ersten Caches der Datenbank nehmen
-              setCenter(new Coordinate(Database.Data.Query.get(0).Latitude, Database.Data.Query.get(0).Longitude));
+              setCenter(new Coordinate(Database.Data.Query.get(0).Latitude(), Database.Data.Query.get(0).Longitude()));
               positionInitialized = true;
 //              tabButtonTrackPosition.Down = false;
             }

@@ -134,6 +134,8 @@ utf8
 		edit = Edit	
 		close = Schließen
 		decode = Decode
+		yes = Yes
+		no = No
 			
 	// FormSelectDB
 		NewDB = Nouvelle base
