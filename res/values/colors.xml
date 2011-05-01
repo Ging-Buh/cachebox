@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <drawable name="EmptyBackgroundNight">#8E8E8E</drawable>
+    <drawable name="EmptyBackgroundDay">#CAD4B2</drawable>
+</resources>

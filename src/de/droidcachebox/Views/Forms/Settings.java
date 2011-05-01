@@ -41,6 +41,10 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	
 
 	public void onCreate(Bundle savedInstanceState) {
+		if (Config.GetBool("nightMode"))
+			setTheme(R.style.ThemeNight);
+		else
+			setTheme(R.style.ThemeDay);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
 				
@@ -161,6 +165,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	
 	private void setColor()
 	{
+		/*
 		boolean day = !Config.GetBool("nightMode");
 		SettingsLayout.setBackgroundColor(day? Global.Colors.Day.ListBackground : Global.Colors.Night.ListBackground);
 		SaveButton.setTextColor(day? Global.Colors.Day.Foreground : Global.Colors.Night.Foreground);
@@ -180,7 +185,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		LangCombo.getBackground().setColorFilter(day? Global.Colors.Day.ControlColorFilter : Global.Colors.Night.ControlColorFilter, PorterDuff.Mode.MULTIPLY);
 		
 		
-		
+		*/
 	}
 	
 	private void FillSettings()
