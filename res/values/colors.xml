@@ -2,4 +2,5 @@
 <resources>
     <drawable name="EmptyBackgroundNight">#8E8E8E</drawable>
     <drawable name="EmptyBackgroundDay">#CAD4B2</drawable>
+    <drawable name="MapViewPanel">#40000000</drawable>
 </resources>

@@ -200,7 +200,7 @@ public class main extends Activity implements SelectedCacheEvent, ColorChangedEv
 		Global.Locator = new Locator();
 		locationManager.requestLocationUpdates(provider, 1000, 1, this);                
         
-        mapView = new MapView(this, "Map-View");
+        mapView = new MapView(this, inflater);
         mapView.Initialize();
         mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.GetString("CurrentMapLayer"), Config.GetString("CurrentMapLayer"), "");
         

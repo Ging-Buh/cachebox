@@ -28,6 +28,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.SystemClock;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -36,6 +37,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.ToggleButton;
+import android.widget.ZoomControls;
 import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
@@ -43,6 +47,8 @@ import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
+import de.droidcachebox.Events.SelectedCacheEvent;
+import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Map.Descriptor.PointD;
@@ -50,40 +56,69 @@ import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Map.Manager;
 import de.droidcachebox.Map.Tile;
 
-public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMenu {
-	private Button buttonZoomIn;
-	private Button buttonZoomOut;
+public class MapView extends RelativeLayout implements SelectedCacheEvent, PositionEvent, ViewOptionsMenu {
 	private Timer zoomScaleTimer;
 	private TimerTask zoomTimerTask;
-    /**
+	private SurfaceView surface;
+	private ZoomControls zoomControls;
+	private ToggleButton buttonTrackPosition;
+	/**
 	 * Constructor
 	 */
 	SurfaceHolder holder;
-	public MapView(Context context, String text) {
+	public MapView(Context context, LayoutInflater inflater) {
 		super(context);
 	
+		RelativeLayout mapviewLayout = (RelativeLayout)inflater.inflate(R.layout.mapview, null, false);
+		this.addView(mapviewLayout);
+
+		surface = (SurfaceView) findViewById(R.id.mapview_surface);
+		
 		setWillNotDraw(false);
 		
-		holder = getHolder();
-		
-        this.buttonZoomIn = new Button(this.getContext());
-        this.buttonZoomIn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            	zoomIn();
-            }
-          });
-        this.buttonZoomOut = new Button(this.getContext());
-        this.buttonZoomOut.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            	zoomOut();
-            }
-          });
+		holder = surface.getHolder();
 
+		buttonTrackPosition = (ToggleButton) findViewById(R.id.mapview_trackposition);
+		buttonTrackPosition.setText("Pos");
+		buttonTrackPosition.setTextOff("Pos");
+		buttonTrackPosition.setTextOn("Pos");
+        this.buttonTrackPosition.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Global.Marker.Valid)
+                {
+                  buttonTrackPosition.setChecked(true);
+                  startAnimation(new Coordinate(Global.Marker.Latitude, Global.Marker.Longitude));
+                  return;
+                }
+
+                if (Global.LastValidPosition != null && Global.LastValidPosition.Valid)
+                {
+                  buttonTrackPosition.setChecked(true);
+                  startAnimation(Global.LastValidPosition);
+                  return;
+                }
+            }
+          });
+		
+		zoomControls = (ZoomControls) findViewById(R.id.mapview_zoom);
+        zoomControls.setOnZoomInClickListener(new ZoomControls.OnClickListener() 
+        { 
+        	public void onClick(View v) {
+        		zoomIn();
+        	} 
+        	
+        }); 
+        /* zoom controls out */ 
+        zoomControls.setOnZoomOutClickListener(new ZoomControls.OnClickListener() 
+        { 
+        	public void onClick(View v) {
+        		zoomOut();
+        	} 
+        	
+        });		
+        
         ArrayList<android.view.View> buttons = new ArrayList<android.view.View>();
-        buttons.add(buttonZoomIn);
-        buttons.add(buttonZoomOut);
         this.addTouchables(buttons);
         scale = getContext().getResources().getDisplayMetrics().density;
         
@@ -92,6 +127,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         fontSmall.setTextSize(12 * scale);
         fontSmall.setFakeBoldText(true);
         PositionEventList.Add(this);
+        SelectedCacheEventList.Add(this);
 
         zoomScaleTimer = new Timer();
         
@@ -606,7 +642,28 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
 
       graphics.Dispose();
     }
+*/
+	@Override
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
+//		if (Global.autoResort)
+//			return;
+		
+		if (cache == null)
+			return;
+/*
+		if (InvokeRequired)
+		{
+			Invoke(new targetChangedDelegate(OnTargetChanged), new object[] { cache, waypoint });
+			return;
+		}*/
+		positionInitialized = true;
+		buttonTrackPosition.setChecked(false);
+		Coordinate target = (waypoint != null) ? new Coordinate(waypoint.Latitude(), waypoint.Longitude()) : new Coordinate(cache.Latitude(), cache.Longitude());
+		startAnimation(target);
+		
+	}
 
+  /*
     delegate void targetChangedDelegate(Cache cache, Waypoint waypoint);
     void OnTargetChanged(Cache cache, Waypoint waypoint)
     {
@@ -665,7 +722,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         {
           setCenter(new Coordinate(lat, lon));
           positionInitialized = true;
-//          tabButtonTrackPosition.Down = false;
+          buttonTrackPosition.setChecked(false);
         }
         else
         {
@@ -682,7 +739,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
               // Koordinaten des ersten Caches der Datenbank nehmen
               setCenter(new Coordinate(Database.Data.Query.get(0).Latitude(), Database.Data.Query.get(0).Longitude()));
               positionInitialized = true;
-//              tabButtonTrackPosition.Down = false;
+              buttonTrackPosition.setChecked(false);
             }
             else
             {
@@ -2212,19 +2269,19 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     int dragStartY = 0;
     int lastClickX = 0;
     int lastClickY = 0;
-/*
-    bool arrowHitWhenDown = false;
-*/
+
+    boolean arrowHitWhenDown = false;
+
     private void MapView_MouseDown(int eX, int eY)
     {
       dragging = true;
 /*      animationTimer.Enabled = false;*/
-//      tabButtonTrackPosition.Down = false;
+      buttonTrackPosition.setChecked(false);
 
       lastClickX = dragStartX = eX;
       lastClickY = dragStartY = eY;
 
-/*      arrowHitWhenDown = Math.Sqrt(((e.X - cacheArrowCenter.X) * (e.X - cacheArrowCenter.X) + (e.Y - cacheArrowCenter.Y) * (e.Y - cacheArrowCenter.Y))) < (lineHeight * 1.5f);*/
+      arrowHitWhenDown = Math.sqrt(((eX - cacheArrowCenter.x) * (eX - cacheArrowCenter.x) + (eY - cacheArrowCenter.y) * (eY - cacheArrowCenter.y))) < (lineHeight * 1.5f);
     }
 
     private void MapView_MouseUp(int eX, int eY)
@@ -2233,15 +2290,15 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
       updateCacheList();
       Render(true);
 
-/*      if (arrowHitWhenDown && Math.Sqrt(((e.X - cacheArrowCenter.X) * (e.X - cacheArrowCenter.X) + (e.Y - cacheArrowCenter.Y) * (e.Y - cacheArrowCenter.Y))) < (lineHeight * 1.5f))
+      if (arrowHitWhenDown && Math.sqrt(((eX - cacheArrowCenter.x) * (eX - cacheArrowCenter.x) + (eY - cacheArrowCenter.y) * (eY - cacheArrowCenter.y))) < (lineHeight * 1.5f))
       {
-        Coordinate target = (Global.SelectedWaypoint != null) ? new Coordinate(Global.SelectedWaypoint.Latitude, Global.SelectedWaypoint.Longitude) : new Coordinate(Global.SelectedCache.Latitude, Global.SelectedCache.Longitude);
+        Coordinate target = (Global.SelectedWaypoint() != null) ? new Coordinate(Global.SelectedWaypoint().Latitude(), Global.SelectedWaypoint().Longitude()) : new Coordinate(Global.SelectedCache().Latitude(), Global.SelectedCache().Longitude());
 
         startAnimation(target);
-        cacheArrowCenter.X = int.MinValue;
-        cacheArrowCenter.Y = int.MinValue;
+        cacheArrowCenter.x = Integer.MIN_VALUE;
+        cacheArrowCenter.y = Integer.MIN_VALUE;
       }
-      arrowHitWhenDown = false;*/
+      arrowHitWhenDown = false;
     }
 
     private Coordinate lastMouseCoordinate = null;
@@ -2283,10 +2340,12 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         screenCenter.Y *= 2;
 
         Zoom++;
-        buttonZoomOut.setEnabled(true);
+		zoomControls.setIsZoomOutEnabled(true); 
 
         if (Zoom >= maxZoom)
-        	buttonZoomIn.setEnabled(false);
+        {
+    		zoomControls.setIsZoomInEnabled(false); 
+        }
 
         zoomChanged();
         updateCacheList();
@@ -2418,10 +2477,12 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         centerOsmSpace.Y /= 2;
 
         Zoom--;
-        buttonZoomIn.setEnabled(true);
+		zoomControls.setIsZoomInEnabled(true); 
 
         if (Zoom == minZoom)
-          buttonZoomOut.setEnabled(false);
+        {
+          zoomControls.setIsZoomOutEnabled(false);
+        }
 
         zoomChanged();
         updateCacheList();
@@ -2620,17 +2681,17 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
       }
     }
 
-
+*/
     /// <summary>
     /// Ausgangspunkt der Animation
     /// </summary>
-    PointD animateFrom = new PointD();
+    PointD animateFrom = new PointD(0, 0);
 
     /// <summary>
     /// Zielpunkt der Animation
     /// </summary>
-    PointD animateTo = new PointD();
-
+    PointD animateTo = new PointD(0, 0);
+/*
     // Zeitpunkt des Startes der Animation
     long animationStart;
 
@@ -2638,16 +2699,25 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
     /// Dauer der Animation in ms
     /// </summary>
     const int animationDuration = 500;
-
+*/
     void startAnimation(Coordinate target)
     {
-      animationStart = Environment.TickCount;
-      animateFrom.X = screenCenter.X;
-      animateFrom.Y = screenCenter.Y;
+//    	animationStart = Environment.TickCount;
+    	animateFrom.X = screenCenter.X;
+    	animateFrom.Y = screenCenter.Y;
 
-      animateTo.X = dpiScaleFactorX * 256 * Descriptor.LongitudeToTileX(Zoom, target.Longitude);
-      animateTo.Y = dpiScaleFactorY * 256 * Descriptor.LatitudeToTileY(Zoom, target.Latitude);
+    	animateTo.X = dpiScaleFactorX * 256 * Descriptor.LongitudeToTileX(Zoom, target.Longitude);
+    	animateTo.Y = dpiScaleFactorY * 256 * Descriptor.LatitudeToTileY(Zoom, target.Latitude);
 
+    	screenCenter.X = animateTo.X;
+        screenCenter.Y = animateTo.Y;
+
+        centerOsmSpace.X = screenCenter.X / dpiScaleFactorX;
+        centerOsmSpace.Y = screenCenter.Y / dpiScaleFactorY;
+        updateCacheList();
+        Render(false);
+    	
+    	/*
       double xDiff = animateFrom.X - animateTo.X;
       double yDiff = animateFrom.Y - animateTo.Y;
 
@@ -2665,8 +2735,9 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
         updateCacheList();
         Render(false);
       }
+  */
     }
-
+/*
     private void animationTimer_Tick(object sender, EventArgs e)
     {
       double scale = Math.Min(1.0, ((double)Environment.TickCount - (double)animationStart) / (double)animationDuration);
@@ -3059,8 +3130,8 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
       }
 
     }
-/*
-    Point cacheArrowCenter = new Point(int.MinValue, int.MinValue);
+    Point cacheArrowCenter = new Point(Integer.MIN_VALUE, Integer.MAX_VALUE);
+    /*
     Font distanceFont = new Font(FontFamily.GenericSansSerif, 9, FontStyle.Regular);
 
     public void RenderTargetArrow()
@@ -3472,7 +3543,7 @@ public class MapView extends SurfaceView implements PositionEvent, ViewOptionsMe
             }
         }
 */
-/*        if (tabButtonTrackPosition.Down && !animationTimer.Enabled)*/
+        if (buttonTrackPosition.isChecked()/* && !animationTimer.Enabled*/)
             setCenter(new Coordinate(Global.LastValidPosition));
 
         Render(false);
