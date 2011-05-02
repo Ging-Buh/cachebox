@@ -142,6 +142,8 @@ public class main extends Activity implements SelectedCacheEvent, ColorChangedEv
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	setTheme(R.style.Theme_day);
+    	
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

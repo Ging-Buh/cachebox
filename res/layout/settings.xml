@@ -9,7 +9,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent">
 	<ScrollView
 		android:layout_height="wrap_content" 
-		android:layout_width="match_parent">
+		android:layout_width="match_parent"
+		android:layout_weight="1">
 	    
   	  <TableLayout 
 	    android:id="@+id/settings_tableLayout1" 
@@ -37,7 +38,39 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 			    android:layout_width="match_parent"
 			    android:visibility="gone">
 	
-			    		<include android:layout_height="wrap_content" android:id="@layout/settings_login" layout="@layout/settings_login" android:layout_width="match_parent" android:layout_marginLeft="10dip" android:layout_marginRight="10dip" android:layout_weight="1"></include>			    
+			 <include 
+				 android:layout_height="wrap_content" 
+				 android:id="@layout/settings_login" 
+				 layout="@layout/settings_login" 
+				 android:layout_width="match_parent" 
+				 android:layout_marginLeft="10dip" 
+				 android:layout_marginRight="10dip" 
+				 android:layout_weight="1"></include>			    
+			 
+		    </TableRow>
+		    
+		    <Button 
+			   	android:typeface="monospace" 
+			   	android:text="GPS" 
+			   	android:layout_height="wrap_content" 
+			   	android:layout_width="wrap_content" 
+			   	android:id="@+id/toggle_button_gps" 
+			   	android:layout_marginTop="10dip"></Button>
+			   	
+		    <TableRow 
+			    android:id="@+id/settings_tableRowgps" 
+			    android:layout_height="wrap_content" 
+			    android:layout_width="match_parent"
+			    android:visibility="gone">
+	
+			 <include 
+				 android:layout_height="wrap_content" 
+				 android:id="@layout/settings_gps" 
+				 layout="@layout/settings_gps" 
+				 android:layout_width="match_parent" 
+				 android:layout_marginLeft="10dip" 
+				 android:layout_marginRight="10dip" 
+				 android:layout_weight="1"></include>			    
 			 
 		    </TableRow>
 		    

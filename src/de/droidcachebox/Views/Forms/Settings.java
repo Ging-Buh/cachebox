@@ -42,9 +42,9 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 
 	public void onCreate(Bundle savedInstanceState) {
 		if (Config.GetBool("nightMode"))
-			setTheme(R.style.ThemeNight);
+			setTheme(R.style.Theme_night);
 		else
-			setTheme(R.style.ThemeDay);
+			setTheme(R.style.Theme_day);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
 				
@@ -128,6 +128,18 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		EditTextGCPW = (EditText)this.findViewById(R.id.settings_editText2);
 		EditTextGCVotePW = (EditText)this.findViewById(R.id.settings_editText3);
 		
+		GPSTableRow =(TableRow)this.findViewById(R.id.settings_tableRowgps);
+		ToggleGPSView = (Button)this.findViewById(R.id.toggle_button_gps);
+		ToggleGPSView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) 
+            {
+            	GPSTableRow.setVisibility((GPSTableRow.getVisibility() == View.VISIBLE )? View.GONE : View.VISIBLE);
+            	
+            }
+          });
+		
+		
 		FillSettings();
 		setLang();
 		setColor();
@@ -145,8 +157,8 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private EditText EditTextGCName;
 	private EditText EditTextGCPW;
 	private EditText EditTextGCVotePW;
-	
-	
+	private Button ToggleGPSView;
+	private TableRow GPSTableRow;
 	
 	private void setMainActivity()
 	{
