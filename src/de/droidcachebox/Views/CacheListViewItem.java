@@ -163,26 +163,22 @@ public class CacheListViewItem extends View {
         int IconPos = imgSize - (int) (imgSize/1.5);
         
         
-        Paint DrawBackPaint;
-        
-       // DrawBackPaint = new Paint( (GlobalSelected)? Global.Paints.Day.selectedBack : Night? Global.Paints.Night.ListBackground : Global.Paints.Day.ListBackground);
-        
-        
+        Paint DrawBackPaint = new Paint(Global.Paints.ListBackground);
         if (BackColorChanger)
         {
-        	 DrawBackPaint = new Paint( (GlobalSelected)? Global.Paints.Day.selectedBack : Night? Global.Paints.Night.ListBackground : Global.Paints.Day.ListBackground);
+        	 DrawBackPaint.setColor((GlobalSelected)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground));
         }
         else
         {
-        	 DrawBackPaint = new Paint( (GlobalSelected)? Global.Paints.Day.selectedBack : Night? Global.Paints.Night.ListBackground_second : Global.Paints.Day.ListBackground_second);
+        	DrawBackPaint.setColor((GlobalSelected)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground_secend));
         }
-        
+        canvas.drawPaint(DrawBackPaint);
+	
         
         
         
         Paint DTPaint =  Night? Global.Paints.Night.Text.noselected: Global.Paints.Day.Text.noselected ;
-      	canvas.drawPaint(DrawBackPaint);
-       
+      	      
         
         if (cache.Rating > 0)
             Global.PutImageTargetHeight(canvas, Global.StarIcons[(int)(cache.Rating * 2)], 0, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);

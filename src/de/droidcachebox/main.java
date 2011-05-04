@@ -2,6 +2,7 @@ package de.droidcachebox;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheNameView;
@@ -31,6 +32,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources.Theme;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -136,7 +139,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	aktView.ActivityResult(requestCode, resultCode, data);
     }
 
-	
+   
 	
 	/** Called when the activity is first created. */
     @Override
@@ -147,9 +150,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.main);
         
-           
-        
-        
+              
         // add Event Handler
         SelectedCacheEventList.Add(this);
        

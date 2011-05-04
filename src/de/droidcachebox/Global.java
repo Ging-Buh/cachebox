@@ -2,11 +2,14 @@ package de.droidcachebox;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import de.droidcachebox.Events.SelectedCacheEventList;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.Resources.Theme;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -91,7 +94,7 @@ public class Global {
     
     public static class Paints
     {
-    	
+    	public static Paint ListBackground;
     	public static class Day
     		 {
 	    		public static Paint ListSeperator;
@@ -123,9 +126,9 @@ public class Global {
     	public static void init(Context context)
         {
         	Resources res = context.getResources();
-    		
+        	ListBackground=new Paint();
     		Night.ListBackground_second=new Paint();
-    		Night.ListBackground_second.setColor(res.getColor(R.color.Night_ListBackground_second));
+    		
     		Night.ListBackground=new Paint();
     		Night.ListBackground.setColor(res.getColor(R.color.Night_ListBackground));
     		Night.ListSeperator=new Paint();
@@ -147,7 +150,7 @@ public class Global {
     		Day.ListBackground=new Paint();
     		Day.ListBackground.setColor(res.getColor(R.color.Day_ListBackground));
     		Day.ListBackground_second=new Paint();
-    		Day.ListBackground_second.setColor(res.getColor(R.color.Day_ListBackground_second));
+    		
     		Day.ListSeperator=new Paint();
     		Day.ListSeperator.setColor(res.getColor(R.color.Day_ListSeperator));
     		Day.selectedBack=new Paint();
@@ -273,6 +276,7 @@ public class Global {
     }
     public static void InitIcons(Context context)
     {
+    	
     	Resources res = context.getResources();
         // NewMapIcons[0] contains the 8x8 Bitmaps
         NewMapIcons.add(new ArrayList<Drawable>());
@@ -507,5 +511,21 @@ public class Global {
     }
 
 
+    
+    static TypedArray themeStyles;
+    final private static int[] colorAttrs = new int[]{R.attr.ListBackground, R.attr.ListBackground_secend, R.attr.ListBackground_select};
+    
+    public static void initTheme(Context context)
+    {
+    	Theme t = context.getTheme();
+    	Arrays.sort(colorAttrs);
+    	themeStyles = t.obtainStyledAttributes(colorAttrs);
+    }
+    
+    public static int getColor(int attrResid) 
+    {
+    	return (int)themeStyles.getColor(Arrays.binarySearch(colorAttrs,attrResid), 0);
+    }
+	
 
 }

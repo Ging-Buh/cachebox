@@ -6,7 +6,7 @@
 
 <!-- Day -->
 	    <color name="Day_ListBackground">#FFFFFF</color>
-	    <color name="Day_ListBackground_second">#EEEEEE</color>
+	    <color name="Day_ListBackground_secend">#EEEEEE</color>
 	    <color name="Day_ListSeperator">#8B9D5F</color>	    
 	    <color name="Day_EmptyBackground">#CAD4B2</color>
 	    <color name="Day_Foreground">#000000</color>
@@ -18,7 +18,7 @@
 	    
 <!-- Night -->
 	    <color name="Night_ListBackground">#000000</color>
-	    <color name="Night_ListBackground_second">#444444</color>
+	    <color name="Night_ListBackground_secend">#444444</color>
 	    <color name="Night_ListSeperator">#8B9D5F</color>
 	    <color name="Night_EmptyBackground">#8E8E8E</color>	    
 	    <color name="Night_Foreground">#FFFFFF</color>	    

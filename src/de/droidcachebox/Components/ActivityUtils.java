@@ -1,12 +1,13 @@
 package de.droidcachebox.Components;
 
+import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import android.app.Activity;
 import android.content.Intent;
 
 public class ActivityUtils
 {
-	private static int sTheme;
+	private static int sTheme = 1;
 
 	public final static int THEME_DEFAULT = 0;
 	public final static int THEME_DAY = 1;
@@ -38,6 +39,10 @@ public class ActivityUtils
 		case THEME_NIGHT:
 			activity.setTheme(R.style.Theme_night);
 			break;
+		
 		}
+		
+		Global.initTheme(activity);	
+		
 	}
 }

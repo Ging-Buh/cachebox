@@ -35,7 +35,7 @@ public class WaypointViewItem extends View {
         }
         else
         {
-        	this.setBackgroundColor(Config.GetBool("nightMode")? R.color.Night_ListBackground_second : R.color.Day_ListBackground_second);
+        	this.setBackgroundColor(Config.GetBool("nightMode")? R.color.Night_ListBackground_secend : R.color.Day_ListBackground_secend);
         }
         BackColorChanger = !BackColorChanger;
        }
@@ -62,7 +62,7 @@ public class WaypointViewItem extends View {
             result = specSize;
         } else {
             // Measure the text
-            result = (int) Global.Paints.Day.ListBackground.measureText(cache.Name) + getPaddingLeft()
+            result = (int) Global.Paints.Day.Text.selected.measureText(cache.Name) + getPaddingLeft()
                     + getPaddingRight();
             if (specMode == MeasureSpec.AT_MOST) {
                 // Respect AT_MOST value if that was what is called for by measureSpec
@@ -83,13 +83,13 @@ public class WaypointViewItem extends View {
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
 
-        mAscent = (int) Global.Paints.Day.ListBackground.ascent();
+        mAscent = (int) Global.Paints.Day.Text.selected.ascent();
         if (specMode == MeasureSpec.EXACTLY) {
             // We were told how big to be
             result = specSize;
         } else {
             // Measure the text (beware: ascent is a negative number)
-            result = (int) (-mAscent + Global.Paints.Day.ListBackground.descent()) + getPaddingTop()
+            result = (int) (-mAscent + Global.Paints.Day.Text.selected.descent()) + getPaddingTop()
                     + getPaddingBottom();
             if (specMode == MeasureSpec.AT_MOST) {
                 // Respect AT_MOST value if that was what is called for by measureSpec
@@ -110,7 +110,7 @@ public class WaypointViewItem extends View {
         if(waypoint == Global.SelectedWaypoint())
         	paintID = 1;
         
-        Paint DrawBackPaint = new Paint( (paintID == 1)? Global.Paints.Day.selectedBack : Config.GetBool("nightMode")? Global.Paints.Night.ListBackground : Global.Paints.Day.ListBackground);
+        Paint DrawBackPaint = new Paint( (paintID == 1)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground));
         canvas.drawPaint(DrawBackPaint);
 
         String title = cache.Name;
