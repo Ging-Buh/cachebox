@@ -69,18 +69,12 @@ public class UnitFormatter {
 
         public static String SpeedStringMetric(float kmh)
         {
-/*
-            return String.Format(NumberFormatInfo.InvariantInfo, "{0:0.00} km/h", kmh);
-*/
-        	return "not implemented";
+            return String.format("%.2f km/h", kmh);
         }
 
         public static String SpeedStringImperial(float kmh)
         {
-/*
-             return String.Format(NumberFormatInfo.InvariantInfo, "{0:0.00} mph", kmh / 1.6093f);
- */
-        	return "not implemented";
+            return String.format("%.2f mph", kmh / 1.6093f);
         }
 	
 	

@@ -51,7 +51,7 @@ public class Locator {
     
     public float SpeedOverGround()
     {
-    	if (Location.hasSpeed())
+    	if ((Location != null) && (Location.hasSpeed()))
     	{
     		return Location.getSpeed() * 3600 / 1000;    			
     	} else

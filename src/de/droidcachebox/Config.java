@@ -25,8 +25,8 @@ import android.os.Environment;
 public class Config {
 	
 	
-	public static final String WorkPath = "/sdcard/program files/cachebox";
-	public static final String ConfigName = "/sdcard/program files/cachebox/cachebox.config";
+    public static final String WorkPath = Environment.getExternalStorageDirectory() + "/cachebox";
+	public static final String ConfigName = WorkPath + "/cachebox.config";
 
 	public static String GetString(String key)
      {
@@ -172,14 +172,14 @@ public class Config {
 	
     public static void validateDefaultConfigFile()
     {
-        validateSetting("LanguagePath", "/sdcard/program files/cachebox/data/lang");
-        validateSetting("Sel_LanguagePath", "/sdcard/program files/cachebox/data/lang/en.lan");
-        validateSetting("DatabasePath", "/sdcard/cachebox.sdf");
-        validateSetting("TileCacheFolder", "/sdcard/program files/cachebox/cache");
+        validateSetting("LanguagePath", WorkPath + "/cachebox/data/lang");
+        validateSetting("Sel_LanguagePath", WorkPath + "/cachebox/data/lang/en.lan");
+        validateSetting("DatabasePath", WorkPath + "/cachebox.sdf");
+        validateSetting("TileCacheFolder", WorkPath + "/cachebox/cache");
 //        validateSetting("PocketQueryFolder", Global.AppPath + "\\PocketQuery");
-        validateSetting("DescriptionImageFolder", "/sdcard/program files/cachebox/repository/images");
-        validateSetting("MapPackFolder", "/sdcard/program files/cachebox/repository/maps");
-        validateSetting("SpoilerFolder", "/sdcard/program files/cachebox/repository/spoilers");
+        validateSetting("DescriptionImageFolder", WorkPath + "/cachebox/repository/images");
+        validateSetting("MapPackFolder", WorkPath + "/repository/maps");
+        validateSetting("SpoilerFolder", WorkPath + "/repository/spoilers");
 //        validateSetting("UserImageFolder", Global.AppPath + "\\User\\Media");
 //        validateSetting("TrackFolder", Global.AppPath + "\\User\\Tracks");
 //        validateSetting("FieldNotesHtmlPath", Global.AppPath + "\\User\\fieldnotes.html");

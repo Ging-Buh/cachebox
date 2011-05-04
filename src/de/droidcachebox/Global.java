@@ -22,6 +22,7 @@ import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
 import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.TranslationEngine.LangStrings;
+import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global {
@@ -30,6 +31,11 @@ public class Global {
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
     public static final int LatestDatabaseFieldNoteChange = 1001;
+    
+    // for MapView
+	public static SmoothScrollingTyp SmoothScrolling = SmoothScrollingTyp.normal;
+    
+    
     
     public static LangStrings Translations = new LangStrings();
     
@@ -168,7 +174,8 @@ public class Global {
     	    	public static int Foreground = Color.parseColor("#000000");
     	    	public static int SelectedBackground = Color.parseColor("#ffd240");
     	    	public static int ControlColorFilter = Color.parseColor("#BBCD8F");
-    	    	
+    	    	public static int ColorCompassPanel = Color.parseColor("#64000000");
+    	    	public static int ColorCompassText = Color.WHITE;
     	    }
     	    
     	    public static class Night
@@ -179,6 +186,8 @@ public class Global {
     	    	public static int Foreground = Color.parseColor("#FFFFFF");
     	    	public static int SelectedBackground = Color.parseColor("#ffd240");
     	    	public static int ControlColorFilter = Color.parseColor("#5B6D2F");
+    	    	public static int ColorCompassPanel = Color.parseColor("#64000000");
+    	    	public static int ColorCompassText = Color.WHITE;
     	    }
     	    
     }

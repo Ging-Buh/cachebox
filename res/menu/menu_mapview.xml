@@ -11,4 +11,12 @@
         </menu>
     </item>
     <item android:id="@+id/miAlignCompass" android:title="Align to Compass" android:checked="false" android:checkable="true"></item>
+	<item android:id="@+id/mapview_smooth" android:title="Smooth Scrolling">
+        <menu>
+	        <item android:id="@+id/mapview_smooth_none" android:title="None" android:checkable="true"></item>
+    	    <item android:id="@+id/mapview_smooth_normal" android:title="Normal" android:checkable="true"></item>
+        	<item android:id="@+id/mapview_smooth_fine" android:title="Fine" android:checkable="true"></item>
+        	<item android:id="@+id/mapview_smooth_superfine" android:title="Superfine" android:checkable="true"></item>
+        </menu>
+    </item>
 </menu>

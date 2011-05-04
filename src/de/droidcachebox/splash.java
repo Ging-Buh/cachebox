@@ -119,8 +119,7 @@ public class splash extends Activity
 	        Database.Data = new Database(DatabaseType.CacheBox);
 	        Database.FieldNotes = new Database(DatabaseType.FieldNotes); 
 //		        Database.Data.StartUp("/sdcard/db3 [1].db3");
-	        File path = Environment.getExternalStorageDirectory();
-	        Database.Data.StartUp(path.getPath() + "/cachebox.db3");
+	        Database.Data.StartUp(Config.WorkPath + "/cachebox.db3");
 	        Database.Data.Query.LoadCaches("");
 
 	        Descriptor.Init();
