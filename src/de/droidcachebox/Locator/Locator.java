@@ -11,6 +11,7 @@ public class Locator {
     	synchronized (this)
     	{
     		Location = value;
+    		LastValidPosition = new Coordinate(value.getLatitude(), value.getLongitude());
     	}
     }
     public Location getLocation()
