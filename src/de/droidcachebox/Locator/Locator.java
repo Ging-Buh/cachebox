@@ -2,6 +2,8 @@ package de.droidcachebox.Locator;
 
 import android.location.Location;
 import de.droidcachebox.Config;
+import de.droidcachebox.Global;
+import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Geocaching.Coordinate;
 
 public class Locator {
@@ -11,7 +13,6 @@ public class Locator {
     	synchronized (this)
     	{
     		Location = value;
-    		LastValidPosition = new Coordinate(value.getLatitude(), value.getLongitude());
     	}
     }
     public Location getLocation()
@@ -25,11 +26,6 @@ public class Locator {
     /// Aktuelle Position des Empfängers
     /// </summary>
     public Coordinate Position = new Coordinate();
-
-    /// <summary>
-    /// Letzte gültige Position des Empfängers
-    /// </summary>
-    public Coordinate LastValidPosition = new Coordinate();
 
     /// <summary>
     /// Aktueller Winkel des mag. Kompass
@@ -57,6 +53,13 @@ public class Locator {
     		return Location.getSpeed() * 3600 / 1000;    			
     	} else
     		return 0;
+    }
+    public String SpeedString()
+    {
+    	if ((Location != null) && (Location.hasSpeed()))
+    		return UnitFormatter.SpeedString(Global.Locator.SpeedOverGround());
+    	else
+    		return "-----";
     }
     
     public Locator()

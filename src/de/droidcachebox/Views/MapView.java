@@ -2001,7 +2001,14 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
       // Position ist entweder GPS-Position oder die des Markers, wenn
       // dieser gesetzt wurde.
-      Coordinate position = (Global.Marker != null && Global.Marker.Valid) ? Global.Marker : (Global.Locator != null) ? Global.Locator.LastValidPosition : new Coordinate();
+      Coordinate position = null;
+      if ((Global.Marker != null) && (Global.Marker.Valid))
+    	  position = Global.Marker;
+      else if (Global.LastValidPosition != null)
+    	  position = Global.LastValidPosition;
+      else
+    	  position = new Coordinate();
+    	  
       // Koordinaten
       if (position.Valid)
       {
@@ -2017,7 +2024,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         if (Global.Locator != null)
         {
         	paint.setTextAlign(Align.LEFT);
-            canvasOverlay.drawText(UnitFormatter.SpeedString(Global.Locator.SpeedOverGround()), leftString, top + topText + 5 + smallLineHeight, paint);
+            canvasOverlay.drawText(Global.Locator.SpeedString(), leftString, top + topText + 5 + smallLineHeight, paint);
         }
       }
 /*
