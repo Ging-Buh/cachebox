@@ -29,6 +29,7 @@ public class CacheListViewItem extends View {
     private int width;
     private int height;
     private int rightBorder;
+    private  boolean BackColorChanger = false;
     
     
     /// <summary>
@@ -46,12 +47,27 @@ public class CacheListViewItem extends View {
     
     
     
-	public CacheListViewItem(Context context, Cache cache) {
+	public CacheListViewItem(Context context, Cache cache, Boolean BackColorId) {
 		// TODO Auto-generated constructor stub
 		super(context);
         this.cache = cache;
         gcLogin = Config.GetString("GcLogin");
-        this.setBackgroundColor(Config.GetBool("nightMode")? Global.Colors.Night.ListBackground : Global.Colors.Day.ListBackground);
+        BackColorChanger = BackColorId;
+        /*
+        this.setBackgroundColor(Config.GetBool("nightMode")? R.color.Night_ListBackground : R.color.Day_ListBackground);
+        
+        
+        if (BackColorChanger)
+        {
+        	this.setBackgroundColor(Config.GetBool("nightMode")? R.color.Night_ListBackground : R.color.Day_ListBackground);
+        }
+        else
+        {
+        	this.setBackgroundColor(Config.GetBool("nightMode")? R.color.Night_ListBackground_second : R.color.Day_ListBackground_second);
+        }
+        BackColorChanger = !BackColorChanger;*/
+         
+        
        }
 
 	
@@ -146,7 +162,24 @@ public class CacheListViewItem extends View {
         Boolean GlobalSelected = cache == Global.SelectedCache();
         int IconPos = imgSize - (int) (imgSize/1.5);
         
-        Paint DrawBackPaint = new Paint( (GlobalSelected)? Global.Paints.Day.selectedBack : Night? Global.Paints.Night.ListBackground : Global.Paints.Day.ListBackground);
+        
+        Paint DrawBackPaint;
+        
+       // DrawBackPaint = new Paint( (GlobalSelected)? Global.Paints.Day.selectedBack : Night? Global.Paints.Night.ListBackground : Global.Paints.Day.ListBackground);
+        
+        
+        if (BackColorChanger)
+        {
+        	 DrawBackPaint = new Paint( (GlobalSelected)? Global.Paints.Day.selectedBack : Night? Global.Paints.Night.ListBackground : Global.Paints.Day.ListBackground);
+        }
+        else
+        {
+        	 DrawBackPaint = new Paint( (GlobalSelected)? Global.Paints.Day.selectedBack : Night? Global.Paints.Night.ListBackground_second : Global.Paints.Day.ListBackground_second);
+        }
+        
+        
+        
+        
         Paint DTPaint =  Night? Global.Paints.Night.Text.noselected: Global.Paints.Day.Text.noselected ;
       	canvas.drawPaint(DrawBackPaint);
        

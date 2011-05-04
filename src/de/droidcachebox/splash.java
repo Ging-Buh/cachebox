@@ -8,7 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.droidcachebox.Components.CacheNameView;
-import de.droidcachebox.Components.ClockView;
+
 import de.droidcachebox.Components.copyAssetFolder;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
@@ -96,7 +96,7 @@ public class splash extends Activity
 		}
 		 
 		setProgressState(20, "Ini UI ...");
-		 	Global.Paints.init();
+		 	Global.Paints.init(this);
 	        Global.InitIcons(this);
 	        
         setProgressState(40, "Load Map ...");

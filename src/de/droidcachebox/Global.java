@@ -97,6 +97,7 @@ public class Global {
 	    		public static Paint ListSeperator;
 				public static Paint selectedBack;   
 	 		    public static Paint ListBackground; 
+	 		    public static Paint ListBackground_second;
 	 		    
 	 		    public static class Text
 	 		    {
@@ -109,7 +110,8 @@ public class Global {
     		 {
     			public static Paint ListSeperator;
     			public static Paint selectedBack;   
-     		    public static Paint ListBackground; 
+     		    public static Paint ListBackground;
+     		    public static Paint ListBackground_second;
      		    
      		   public static class Text
 	 		    {
@@ -118,39 +120,45 @@ public class Global {
 	 		    }
     		 }
     		 
-    	public static void init()
-    	{
+    	public static void init(Context context)
+        {
+        	Resources res = context.getResources();
+    		
+    		Night.ListBackground_second=new Paint();
+    		Night.ListBackground_second.setColor(res.getColor(R.color.Night_ListBackground_second));
     		Night.ListBackground=new Paint();
-    		Night.ListBackground.setColor(Colors.Night.ListBackground);
+    		Night.ListBackground.setColor(res.getColor(R.color.Night_ListBackground));
     		Night.ListSeperator=new Paint();
-    		Night.ListSeperator.setColor(Colors.Night.ListSeperator);
+    		Night.ListSeperator.setColor(res.getColor(R.color.Night_ListSeperator));
     		Night.selectedBack=new Paint();
-    		Night.selectedBack.setColor(Colors.Night.SelectedBackground);
+    		Night.selectedBack.setColor(res.getColor(R.color.Night_SelectedBackground));
     		Night.Text.selected = new Paint();
-    		Night.Text.selected.setColor(Colors.Night.Foreground);
+    		Night.Text.selected.setColor(res.getColor(R.color.Night_Foreground));
     		Night.Text.selected.setAntiAlias(true);
     		Night.Text.selected.setTextSize(24);
     		Night.Text.selected.setFakeBoldText(true);
         	Night.Text.noselected = new Paint();
-    		Night.Text.noselected.setColor(Colors.Night.Foreground);
+    		Night.Text.noselected.setColor(res.getColor(R.color.Night_Foreground));
     		Night.Text.noselected.setAntiAlias(true);
     		Night.Text.noselected.setTextSize(24);
     		
     		
     		
     		Day.ListBackground=new Paint();
-    		Day.ListBackground.setColor(Colors.Day.ListBackground);
+    		Day.ListBackground.setColor(res.getColor(R.color.Day_ListBackground));
+    		Day.ListBackground_second=new Paint();
+    		Day.ListBackground_second.setColor(res.getColor(R.color.Day_ListBackground_second));
     		Day.ListSeperator=new Paint();
-    		Day.ListSeperator.setColor(Colors.Day.ListSeperator);
+    		Day.ListSeperator.setColor(res.getColor(R.color.Day_ListSeperator));
     		Day.selectedBack=new Paint();
-    		Day.selectedBack.setColor(Colors.Day.SelectedBackground);
+    		Day.selectedBack.setColor(res.getColor(R.color.Day_SelectedBackground));
     		Day.Text.selected = new Paint();
-    		Day.Text.selected.setColor(Colors.Day.Foreground);
+    		Day.Text.selected.setColor(res.getColor(R.color.Day_Foreground));
     		Day.Text.selected.setAntiAlias(true);
     		Day.Text.selected.setTextSize(24);
     		Day.Text.selected.setFakeBoldText(true);
     		Day.Text.noselected = new Paint();
-    		Day.Text.noselected.setColor(Colors.Day.Foreground);
+    		Day.Text.noselected.setColor(res.getColor(R.color.Day_Foreground));
     		Day.Text.noselected.setAntiAlias(true);
     		Day.Text.noselected.setTextSize(24);
     		
@@ -159,39 +167,7 @@ public class Global {
     		 
     }
     
-    public static class Colors
-    {
-    	 	public static int TitleBarColor = Color.parseColor("#8B9D5F");
-    	    public static int TitleBarText = Color.BLACK;
-    	    
-    	    
-    	    
-    	    public static class Day
-    	    {
-    	    	public static int ListBackground = Color.parseColor("#FFFFFF");
-    	    	public static int ListSeperator = Color.parseColor("#8B9D5F");
-    	    	public static int EmptyBackground = Color.parseColor("#CAD4B2");
-    	    	public static int Foreground = Color.parseColor("#000000");
-    	    	public static int SelectedBackground = Color.parseColor("#ffd240");
-    	    	public static int ControlColorFilter = Color.parseColor("#BBCD8F");
-    	    	public static int ColorCompassPanel = Color.parseColor("#64000000");
-    	    	public static int ColorCompassText = Color.WHITE;
-    	    }
-    	    
-    	    public static class Night
-    	    {
-    	    	public static int ListBackground = Color.parseColor("#000000");
-    	    	public static int ListSeperator = Color.parseColor("#8B9D5F");
-    	    	public static int EmptyBackground = Color.parseColor("#8E8E8E");
-    	    	public static int Foreground = Color.parseColor("#FFFFFF");
-    	    	public static int SelectedBackground = Color.parseColor("#ffd240");
-    	    	public static int ControlColorFilter = Color.parseColor("#5B6D2F");
-    	    	public static int ColorCompassPanel = Color.parseColor("#64000000");
-    	    	public static int ColorCompassText = Color.WHITE;
-    	    }
-    	    
-    }
-
+ 
     /// <summary>
     /// Zeichnet das Bild und skaliert es proportional so, dass es die
     /// übergebene füllt.

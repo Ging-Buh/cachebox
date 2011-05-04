@@ -1,12 +1,10 @@
 package de.droidcachebox;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Map;
-
+import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheNameView;
-import de.droidcachebox.Components.ClockView;
-import de.droidcachebox.Events.ColorChangedEvent;
-import de.droidcachebox.Events.ColorChangedEventList;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
@@ -69,7 +67,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
-public class main extends Activity implements SelectedCacheEvent, ColorChangedEvent, LocationListener {
+public class main extends Activity implements SelectedCacheEvent,LocationListener {
     LayoutInflater inflater;
 	private ImageButton buttonDB;
 	private ImageButton buttonCache;
@@ -77,23 +75,24 @@ public class main extends Activity implements SelectedCacheEvent, ColorChangedEv
 	private ImageButton buttonInfo;
 	private ImageButton buttonMisc;
 	private FrameLayout frame;
-	private LinearLayout layoutButtons;
+	
 	private FrameLayout frameCacheName;
-	private FrameLayout frameClock;
+	
 	
 // Views
-	private ViewOptionsMenu aktView;
+	private static Integer aktViewId = -1;
+	private ViewOptionsMenu aktView = null;
 	private CacheNameView cacheNameView;
-	private ClockView clockView;
-	private MapView mapView;
-	private CacheListView cacheListView;
-	private WaypointView waypointView;
-	private LogView logView;
-	private DescriptionView descriptionView;
-	private SpoilerView spoilerView;
-	private NotesView notesView;
-	private SolverView solverView;
 	
+	private MapView mapView;					// ID 0
+	private CacheListView cacheListView;		// ID 1
+	private WaypointView waypointView;			// ID 2
+	private LogView logView;					// ID 3
+	private DescriptionView descriptionView;	// ID 4
+	private SpoilerView spoilerView;			// ID 5
+	private NotesView notesView;				// ID 6
+	private SolverView solverView;				// ID 7
+	private ArrayList<View> ViewList = new ArrayList<View>();
 	
 	int width;
     int height;
@@ -142,16 +141,18 @@ public class main extends Activity implements SelectedCacheEvent, ColorChangedEv
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	setTheme(R.style.Theme_day);
-    	
+    	ActivityUtils.onActivityCreateSetTheme(this);    	
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.main);
         
+           
+        
+        
         // add Event Handler
         SelectedCacheEventList.Add(this);
-        ColorChangedEventList.Add(this);
+       
         
         WindowManager w = getWindowManager();
         Display d = w.getDefaultDisplay();
@@ -168,17 +169,11 @@ public class main extends Activity implements SelectedCacheEvent, ColorChangedEv
         cacheNameView = new CacheNameView(this);
         frameCacheName.addView(cacheNameView);
         
-        frameClock = (FrameLayout)this.findViewById(R.id.frameClock);
-        clockView = new ClockView(this);
-        frameClock.addView(clockView);
-
-      
+             
         
         
         frame = (FrameLayout)this.findViewById(R.id.layoutContent);
-        frame.setBackgroundColor(Config.GetBool("nightMode")? Global.Colors.Night.EmptyBackground : Global.Colors.Day.EmptyBackground);
-        
-        
+     
         // Ausschalten verhindern
         /* This code together with the one in onDestroy() 
          * will make the screen be always on until this Activity gets destroyed. */
@@ -275,9 +270,28 @@ public class main extends Activity implements SelectedCacheEvent, ColorChangedEv
         
         mapView.InitializeMap();
         Global.SelectedCache(Database.Data.Query.get(0));
+        
+        
+        fillViewList();
+        if (aktViewId != -1)
+        {// Zeige letzte gespeicherte View beim neustart der Activity
+        	showView(aktViewId);
+        	
+        }
     }
     
+    void fillViewList()
+    {
+    	ViewList.add(mapView);				// ID 0
+    	ViewList.add(cacheListView);		// ID 1
+    	ViewList.add(waypointView);			// ID 2
+    	ViewList.add(logView);				// ID 3
+    	ViewList.add(descriptionView);		// ID 4
+    	ViewList.add(spoilerView);			// ID 5
+    	ViewList.add(notesView);			// ID 6
+    	ViewList.add(solverView);			// ID 7		
   
+    }
 
     @Override
     public void onDestroy() {
@@ -414,6 +428,7 @@ public class main extends Activity implements SelectedCacheEvent, ColorChangedEv
     		return true;
     	case R.id.miDayNight:
     		Config.changeDayNight();
+    		ActivityUtils.changeToTheme(this,Config.GetBool("nightMode")? ActivityUtils.THEME_NIGHT : ActivityUtils.THEME_DAY );
     		return true;
     	case R.id.miSettings:
     		final Intent mainIntent = new Intent().setClass( this, Settings.class);
@@ -427,6 +442,12 @@ public class main extends Activity implements SelectedCacheEvent, ColorChangedEv
     	}
     }    
     
+    
+    private void showView(Integer viewId)
+    {
+    	showView((ViewOptionsMenu)ViewList.get(viewId));
+    }
+    
     private void showView(ViewOptionsMenu view)
     {
     	if (aktView != null)
@@ -434,7 +455,8 @@ public class main extends Activity implements SelectedCacheEvent, ColorChangedEv
     	aktView = view;
     	frame.removeAllViews();
     	frame.addView((View) aktView);
-    	aktView.OnShow();    
+    	aktView.OnShow();  
+    	aktViewId=ViewList.indexOf(aktView);
     }
     
     @Override
@@ -514,9 +536,4 @@ public class main extends Activity implements SelectedCacheEvent, ColorChangedEv
 
 
 
-	@Override
-	public void ColorChangedEvent() {
-		// TODO Auto-generated method stub
-		
-	}
 }

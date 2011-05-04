@@ -3,4 +3,29 @@
     <drawable name="EmptyBackgroundNight">#8E8E8E</drawable>
     <drawable name="EmptyBackgroundDay">#CAD4B2</drawable>
     <drawable name="MapViewPanel">#40000000</drawable>
+
+<!-- Day -->
+	    <color name="Day_ListBackground">#FFFFFF</color>
+	    <color name="Day_ListBackground_second">#EEEEEE</color>
+	    <color name="Day_ListSeperator">#8B9D5F</color>	    
+	    <color name="Day_EmptyBackground">#CAD4B2</color>
+	    <color name="Day_Foreground">#000000</color>
+	    <color name="Day_SelectedBackground">#ffd240</color>
+	    <color name="Day_TitleBarColor">#8B9D5F</color>
+	    <color name="Day_TitleBarText">#000000</color>
+	    <color name="Day_ColorCompassPanel">#64000000</color>
+	    <color name="Day_ColorCompassText">#FFFFFF</color>
+	    
+<!-- Night -->
+	    <color name="Night_ListBackground">#000000</color>
+	    <color name="Night_ListBackground_second">#444444</color>
+	    <color name="Night_ListSeperator">#8B9D5F</color>
+	    <color name="Night_EmptyBackground">#8E8E8E</color>	    
+	    <color name="Night_Foreground">#FFFFFF</color>	    
+	    <color name="Night_SelectedBackground">#ffd240</color>	    
+	    <color name="Night_TitleBarColor">#8B9D5F</color>	    
+	    <color name="Night_TitleBarText">#FFFFFF</color>	    
+		<color name="Night_ColorCompassPanel">#64000000</color>
+	    <color name="Night_ColorCompassText">#FFFFFF</color>
+
 </resources>

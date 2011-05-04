@@ -1,11 +1,14 @@
 package de.droidcachebox.Components;
 
+import de.droidcachebox.Config;
 import de.droidcachebox.Global;
+import de.droidcachebox.R;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.View;
@@ -14,18 +17,19 @@ public class CacheNameView extends View implements SelectedCacheEvent {
 
 	private Cache cache;
 	private Paint paint;
+	private Resources res;
 	
 	public CacheNameView(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
-
+		res = context.getResources();
 		SelectedCacheEventList.Add(this);
 		
-		this.setBackgroundColor(Global.Colors.TitleBarColor);
+		this.setBackgroundColor(Config.GetBool("nightMode")? res.getColor(R.color.Night_TitleBarColor) : res.getColor(R.color.Day_TitleBarColor));
 		// TODO Auto-generated constructor stub
 		paint = new Paint();
 		// set's the paint's colour
-		paint.setColor(Global.Colors.TitleBarText);
+		paint.setColor(Config.GetBool("nightMode")? res.getColor(R.color.Night_TitleBarText) : res.getColor(R.color.Day_TitleBarText));
 		// set's paint's text size
 		paint.setTextSize(25);
 		// smooth's out the edges of what is being drawn

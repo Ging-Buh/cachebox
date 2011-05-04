@@ -70,6 +70,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	private SurfaceView surface;
 	private ZoomControls zoomControls;
 	private ToggleButton buttonTrackPosition;
+	private Context myContext;
 	AnimationThread animationThread;
 	/**
 	 * Constructor
@@ -77,7 +78,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	SurfaceHolder holder;
 	public MapView(Context context, LayoutInflater inflater) {
 		super(context);
-	
+		myContext = context;
+		
 		RelativeLayout mapviewLayout = (RelativeLayout)inflater.inflate(R.layout.mapview, null, false);
 		this.addView(mapviewLayout);
 
@@ -1995,7 +1997,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       int leftString = left + buttonTrackPosition.getHeight() + 5;
 
       Paint paint = new Paint();
-      paint.setColor(Global.Colors.Day.ColorCompassPanel);
+      paint.setColor(myContext.getResources().getColor(R.color.Day_ColorCompassPanel));
       paint.setStyle(Style.FILL);
       canvasOverlay.drawRect(left, top, right, bottom, paint);
 
@@ -2017,7 +2019,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
         paint = new Paint(fontSmall);
         paint.setTextAlign(Align.RIGHT);
-        paint.setColor(Global.Colors.Day.ColorCompassText);
+        paint.setColor(myContext.getResources().getColor(R.color.Day_ColorCompassText));
         canvasOverlay.drawText(textLatitude, right - 5, top + topText, paint);
         canvasOverlay.drawText(textLongitude, right - 5, top + smallLineHeight + topText, paint);
 

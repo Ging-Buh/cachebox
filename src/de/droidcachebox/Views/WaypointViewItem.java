@@ -2,8 +2,10 @@ package de.droidcachebox.Views;
 
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
+import de.droidcachebox.R;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Waypoint;
+import android.R.bool;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -19,6 +21,7 @@ public class WaypointViewItem extends View {
     private Waypoint waypoint;
     private int mAscent;
     private int width;
+    private static boolean BackColorChanger = false; 
 
 	public WaypointViewItem(Context context, Cache cache, Waypoint waypoint) {
 		// TODO Auto-generated constructor stub
@@ -26,7 +29,15 @@ public class WaypointViewItem extends View {
         this.cache = cache;
         this.waypoint = waypoint;
         
-        this.setBackgroundColor(Config.GetBool("nightMode")? Global.Colors.Night.ListBackground : Global.Colors.Day.ListBackground);
+        if (BackColorChanger)
+        {
+        	this.setBackgroundColor(Config.GetBool("nightMode")? R.color.Night_ListBackground : R.color.Day_ListBackground);
+        }
+        else
+        {
+        	this.setBackgroundColor(Config.GetBool("nightMode")? R.color.Night_ListBackground_second : R.color.Day_ListBackground_second);
+        }
+        BackColorChanger = !BackColorChanger;
        }
 
 	

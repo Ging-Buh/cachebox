@@ -3,13 +3,14 @@ package de.droidcachebox.Views.Forms;
 import java.io.IOException;
 import java.util.ArrayList;
 
+
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.splash;
-import de.droidcachebox.Events.ColorChangedEvent;
-import de.droidcachebox.Events.ColorChangedEventList;
+import de.droidcachebox.Components.ActivityUtils;
+
 import de.droidcachebox.Events.SelectedLangChangedEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Waypoint;
@@ -36,21 +37,17 @@ import android.widget.TextView;
 
 import de.droidcachebox.Events.SelectedLangChangedEvent;
 
-public class Settings extends Activity implements ViewOptionsMenu,SelectedLangChangedEvent,ColorChangedEvent {
+public class Settings extends Activity implements ViewOptionsMenu,SelectedLangChangedEvent {
 	Context context;
 	
 
 	public void onCreate(Bundle savedInstanceState) {
-		if (Config.GetBool("nightMode"))
-			setTheme(R.style.Theme_night);
-		else
-			setTheme(R.style.Theme_day);
+		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
 				
 		SelectedLangChangedEventList.Add(this);
-        ColorChangedEventList.Add(this);
-		
+      
         SettingsLayout = (LinearLayout) this.findViewById(R.id.settings_LinearLayout);
         
 		SaveButton = (Button)this.findViewById(R.id.settings_save);
@@ -142,7 +139,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		
 		FillSettings();
 		setLang();
-		setColor();
+		
 }
 
 	private LinearLayout SettingsLayout;
@@ -175,31 +172,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		LabelGcVoPw.setText(Global.Translations.Get("GCVotePW"));
 	}
 	
-	private void setColor()
-	{
-		/*
-		boolean day = !Config.GetBool("nightMode");
-		SettingsLayout.setBackgroundColor(day? Global.Colors.Day.ListBackground : Global.Colors.Night.ListBackground);
-		SaveButton.setTextColor(day? Global.Colors.Day.Foreground : Global.Colors.Night.Foreground);
-		SaveButton.getBackground().setColorFilter(day? Global.Colors.Day.ControlColorFilter : Global.Colors.Night.ControlColorFilter, PorterDuff.Mode.MULTIPLY);
-		CancelButton.setTextColor(day? Global.Colors.Day.Foreground : Global.Colors.Night.Foreground);
-		CancelButton.getBackground().setColorFilter(day? Global.Colors.Day.ControlColorFilter : Global.Colors.Night.ControlColorFilter, PorterDuff.Mode.MULTIPLY);
-		EditTextGCName.setTextColor(day? Global.Colors.Day.Foreground : Global.Colors.Night.Foreground);
-		EditTextGCName.getBackground().setColorFilter(day? Global.Colors.Day.ControlColorFilter : Global.Colors.Night.ControlColorFilter, PorterDuff.Mode.MULTIPLY);
-		EditTextGCPW.setTextColor(day? Global.Colors.Day.Foreground : Global.Colors.Night.Foreground);
-		EditTextGCPW.getBackground().setColorFilter(day? Global.Colors.Day.ControlColorFilter : Global.Colors.Night.ControlColorFilter, PorterDuff.Mode.MULTIPLY);
-		EditTextGCVotePW.setTextColor(day? Global.Colors.Day.Foreground : Global.Colors.Night.Foreground);
-		EditTextGCVotePW.getBackground().setColorFilter(day? Global.Colors.Day.ControlColorFilter : Global.Colors.Night.ControlColorFilter, PorterDuff.Mode.MULTIPLY);
-		ToggleLogInView.setTextColor(day? Global.Colors.Day.Foreground : Global.Colors.Night.Foreground);
-		ToggleLogInView.getBackground().setColorFilter(day? Global.Colors.Day.ControlColorFilter : Global.Colors.Night.ControlColorFilter, PorterDuff.Mode.MULTIPLY);
 		
-		//LangCombo.TextColor(day? Global.Colors.Day.Foreground : Global.Colors.Night.Foreground);
-		LangCombo.getBackground().setColorFilter(day? Global.Colors.Day.ControlColorFilter : Global.Colors.Night.ControlColorFilter, PorterDuff.Mode.MULTIPLY);
-		
-		
-		*/
-	}
-	
 	private void FillSettings()
 	{
 		EditTextGCName.setText(Config.GetString("GcLogin"));
@@ -273,10 +246,5 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		
 	}
 
-	@Override
-	public void ColorChangedEvent() 
-	{
-		setColor();
-	}
-
+	
 }

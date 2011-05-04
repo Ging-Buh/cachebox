@@ -5,6 +5,7 @@ import java.text.DateFormat;
 
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
+import de.droidcachebox.R;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.LogEntry;
 import android.content.Context;
@@ -29,6 +30,8 @@ public class LogViewItem extends View {
     private StaticLayout layoutComment;
     private StaticLayout layoutFinder;
     private StaticLayout layoutDate;
+    private static boolean BackColorChanger=false;
+    
     
 	public LogViewItem(Context context, Cache cache, LogEntry logEntry) {
 		// TODO Auto-generated constructor stub
@@ -40,7 +43,16 @@ public class LogViewItem extends View {
         textPaint.setTextSize(24);
 //        textPaint.setSubpixelText(true);
         
-        this.setBackgroundColor(Config.GetBool("nightMode")? Global.Colors.Night.EmptyBackground : Global.Colors.Day.EmptyBackground);
+        if (BackColorChanger)
+        {
+        	this.setBackgroundColor(Config.GetBool("nightMode")? R.color.Night_ListBackground : R.color.Day_ListBackground);
+        }
+        else
+        {
+        	this.setBackgroundColor(Config.GetBool("nightMode")? R.color.Night_ListBackground_second : R.color.Day_ListBackground_second);
+        }
+        BackColorChanger = !BackColorChanger;
+        
        }
 
 	

@@ -15,7 +15,7 @@ import java.lang.reflect.Type;
 
 import java.util.HashMap;
 
-import de.droidcachebox.Events.ColorChangedEventList;
+
 import de.droidcachebox.Events.SelectedLangChangedEventList;
 
 import android.content.Context;
@@ -96,7 +96,7 @@ public class Config {
     	Boolean value = Config.GetBool("nightMode");
     	value = !value;
     	Config.Set("nightMode",value);
-    	ColorChangedEventList.Call();
+    	
     }
 	
 	 static HashMap<String, String> keyLookup = null;
@@ -172,12 +172,12 @@ public class Config {
 	
     public static void validateDefaultConfigFile()
     {
-        validateSetting("LanguagePath", WorkPath + "/cachebox/data/lang");
-        validateSetting("Sel_LanguagePath", WorkPath + "/cachebox/data/lang/en.lan");
+        validateSetting("LanguagePath", WorkPath + "/data/lang");
+        validateSetting("Sel_LanguagePath", WorkPath + "/data/lang/en.lan");
         validateSetting("DatabasePath", WorkPath + "/cachebox.sdf");
-        validateSetting("TileCacheFolder", WorkPath + "/cachebox/cache");
+        validateSetting("TileCacheFolder", WorkPath + "/cache");
 //        validateSetting("PocketQueryFolder", Global.AppPath + "\\PocketQuery");
-        validateSetting("DescriptionImageFolder", WorkPath + "/cachebox/repository/images");
+        validateSetting("DescriptionImageFolder", WorkPath + "/repository/images");
         validateSetting("MapPackFolder", WorkPath + "/repository/maps");
         validateSetting("SpoilerFolder", WorkPath + "/repository/spoilers");
 //        validateSetting("UserImageFolder", Global.AppPath + "\\User\\Media");
