@@ -15,16 +15,10 @@ import de.droidcachebox.Geocaching.MysterySolution;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
+import android.content.res.ColorStateList;
+import android.graphics.*;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.opengl.GLSurfaceView.Renderer;
@@ -45,7 +39,10 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.widget.ZoomControls;
 import de.droidcachebox.Config;
@@ -69,21 +66,50 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	private TimerTask zoomTimerTask;
 	private SurfaceView surface;
 	private ZoomControls zoomControls;
-	private ToggleButton buttonTrackPosition;
+	private Button buttonTrackPosition;
+	// Compass Panel
+	private LinearLayout tlPanel;
+	private TextView tvDistance;
+	private TextView tvSpeed;
+	private TextView tvLatitude;
+	private TextView tvLongitude;
+	
 	private Context myContext;
 	AnimationThread animationThread;
+	// 0 -> frei
+	// 1 -> Position auf GPS gelockt
+	// 2 -> Position auf GPS gelockt und Touch abgeschaltet
+	int lockPosition;
+	
+	boolean useLockPosition;
 	/**
 	 * Constructor
 	 */
 	SurfaceHolder holder;
 	public MapView(Context context, LayoutInflater inflater) {
 		super(context);
+		lockPosition = 0;
+		useLockPosition = true;
 		myContext = context;
 		
 		RelativeLayout mapviewLayout = (RelativeLayout)inflater.inflate(R.layout.mapview, null, false);
 		this.addView(mapviewLayout);
 
 		surface = (SurfaceView) findViewById(R.id.mapview_surface);
+		tlPanel = (LinearLayout) findViewById(R.id.mapview_compasspanel);
+		tvDistance = (TextView) findViewById(R.id.mapview_panel_distance);
+		tvSpeed = (TextView) findViewById(R.id.mapview_panel_speed);
+		tvLatitude = (TextView) findViewById(R.id.mapview_panel_lat);
+		tvLongitude = (TextView) findViewById(R.id.mapview_panel_lon);
+		tvSpeed.setTextColor(Color.WHITE);
+		tvDistance.setTextColor(Color.WHITE);
+		tvLatitude.setTextColor(Color.WHITE);
+		tvLongitude.setTextColor(Color.WHITE);
+		tvDistance.setText("");
+		tvSpeed.setText("-----");
+		tvLatitude.setText("");
+		tvLongitude.setText("");
+		tlPanel.setBackgroundColor(Color.parseColor("#80000000"));
 		
 		setWillNotDraw(false);
 		
@@ -92,28 +118,30 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		animationThread = new AnimationThread();
 		animationThread.start();
 		
-		buttonTrackPosition = (ToggleButton) findViewById(R.id.mapview_trackposition);
+		buttonTrackPosition = (Button) findViewById(R.id.mapview_trackposition);
 		buttonTrackPosition.setText("Pos");
-		buttonTrackPosition.setTextOff("Pos");
-		buttonTrackPosition.setTextOn("Pos");
         this.buttonTrackPosition.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Global.Marker.Valid)
-                {
-                  buttonTrackPosition.setChecked(true);
-                  startAnimation(new Coordinate(Global.Marker.Latitude, Global.Marker.Longitude));
-                  return;
-                }
-
-                if (Global.LastValidPosition != null && Global.LastValidPosition.Valid)
-                {
-                  buttonTrackPosition.setChecked(true);
-                  startAnimation(Global.LastValidPosition);
-                  return;
-                }
-                
-                
+            	if (useLockPosition)
+            	{
+            		switch (lockPosition)
+            		{
+            		case 0:
+            			setLockPosition(1);
+            			return;
+            		case 1:
+            			setLockPosition(2);
+            			return;
+            		case 2:
+            			setLockPosition(1);
+            			return;
+            		}
+            	}
+            	if (lockPosition == 0)
+            		setLockPosition(1);
+            	else
+            		setLockPosition(0);
             }
           });
 		
@@ -150,6 +178,39 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 	
 	final float scale;
+
+	private void setLockPosition(int value)
+	{
+		lockPosition = value;
+		switch (lockPosition)
+		{
+		case 0:
+			buttonTrackPosition.setText("Free");
+			buttonTrackPosition.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);		
+			break;
+		case 1:
+			buttonTrackPosition.setText("GPS");
+			buttonTrackPosition.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);		
+			break;
+		case 2:
+			buttonTrackPosition.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);		
+			buttonTrackPosition.setText("FIX");
+			break;
+		}
+		if (lockPosition > 0)
+		{
+    	    if (Global.Marker.Valid)
+            {
+    	    	startAnimation(new Coordinate(Global.Marker.Latitude, Global.Marker.Longitude));
+    	    	return;
+            }
+            if (Global.LastValidPosition != null && Global.LastValidPosition.Valid)
+            {
+    	    	startAnimation(Global.LastValidPosition);
+    	    	return;
+            }		
+		}
+	}
 	
 	@Override
 	protected void onDraw(Canvas canvas) {
@@ -216,6 +277,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+    	if (lockPosition == 2) 
+    		return true;
+    	
     	int eX = (int)event.getX(0);
     	int eY = (int)event.getY(0);
     	// bei gedrehter Map hier die Punkte drehen
@@ -725,7 +789,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			return;
 		}*/
 		positionInitialized = true;
-		buttonTrackPosition.setChecked(false);
+		
+		setLockPosition(0);
 		Coordinate target = (waypoint != null) ? new Coordinate(waypoint.Latitude(), waypoint.Longitude()) : new Coordinate(cache.Latitude(), cache.Longitude());
 		startAnimation(target);
 		
@@ -790,7 +855,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         {
           setCenter(new Coordinate(lat, lon));
           positionInitialized = true;
-          buttonTrackPosition.setChecked(false);
+          setLockPosition(0);
         }
         else
         {
@@ -807,7 +872,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
               // Koordinaten des ersten Caches der Datenbank nehmen
               setCenter(new Coordinate(Database.Data.Query.get(0).Latitude(), Database.Data.Query.get(0).Longitude()));
               positionInitialized = true;
-              buttonTrackPosition.setChecked(false);
+              setLockPosition(0);
             }
             else
             {
@@ -1845,7 +1910,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	if (canvas == null)
     		return;
     	float tmpCanvasHeading = canvasHeading;
-    	
+
     	synchronized (this)
      	{
 	      if (Database.Data.Query == null)
@@ -1950,8 +2015,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        renderLoaderInfo();
 	
 */	
-	      if (showCompass)
-	        renderCompass();
+//	      if (showCompass)
+//	        renderCompass();
 	
 	      try
 	      {
@@ -1984,6 +2049,34 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 /*
     Brush orangeBrush = new SolidBrush(Color.Orange);
 */
+    private void refreshCompassPanel()
+    {
+    	tvDistance.setText("");
+    	tvSpeed.setText(Global.Locator.SpeedString());
+
+        // Position ist entweder GPS-Position oder die des Markers, wenn
+        // dieser gesetzt wurde.
+        Coordinate position = null;
+        if ((Global.Marker != null) && (Global.Marker.Valid))
+      	  position = Global.Marker;
+        else if (Global.LastValidPosition != null)
+      	  position = Global.LastValidPosition;
+        else
+      	  position = new Coordinate();
+      	  
+        // Koordinaten
+        if (position.Valid)
+        {
+            String textLatitude = Global.FormatLatitudeDM(position.Latitude);
+            String textLongitude = Global.FormatLongitudeDM(position.Longitude);
+	    	tvLatitude.setText(textLatitude);
+	    	tvLongitude.setText(textLongitude);        	
+        }else
+        {
+	    	tvLatitude.setText("");
+	    	tvLongitude.setText("");
+        }
+    }
     private void renderCompass()
     {
       // Position der Anzeigen berechnen
@@ -2359,7 +2452,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     {
       dragging = true;
 /*      animationTimer.Enabled = false;*/
-      buttonTrackPosition.setChecked(false);
+      setLockPosition(0);
 
       lastClickX = dragStartX = eX;
       lastClickY = dragStartY = eY;
@@ -3644,10 +3737,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
             }
         }
 */
-        if (buttonTrackPosition.isChecked()/* && !animationTimer.Enabled*/)
+        if (lockPosition >= 1/* && !animationTimer.Enabled*/)
             setCenter(new Coordinate(Global.LastValidPosition));
 
         Render(false);
+        refreshCompassPanel();
 	}
 
 	@Override
@@ -3674,12 +3768,12 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				return true;
 	*/		
 			case R.id.miAlignCompass:
-				alignToCompass = !alignToCompass;
-				if (!alignToCompass)
+				if (alignToCompass)
 				{
 					changeOrientation(0);				
 					Render(true);
 				}
+				alignToCompass = !alignToCompass;
 				return true;
 			case R.id.mapview_smooth_none:
 				Global.SmoothScrolling = SmoothScrollingTyp.none;
@@ -3777,6 +3871,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		changeOrientation(heading);
 		lastCompassTick = aktTick;
+		
+        refreshCompassPanel();
 	}
 	
 	private void changeOrientation(float heading)
@@ -3792,6 +3888,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			newCanvasHeading = Global.Locator.getHeading();
 			heading = newCanvasHeading;
 		}
+
 		animationThread.rotateTo(newCanvasHeading);
 		
 		// da die Map gedreht in die offScreenBmp gezeichnet werden soll, muss der Bereich, der gezeichnet werden soll größer sein, wenn gedreht wird.
@@ -3935,123 +4032,120 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				            Bundle br = new Bundle();
 
 				            boolean fertigHeading = true;  
-				            boolean changeHeading = false;
-				            float aktHeading = correctHeading(canvasHeading);
-				            double aktX = screenCenter.X;
-				            double aktY = screenCenter.Y;
-				            
-							if (headingInitialized && (Math.abs(aktHeading - toHeading) > 0.3f))
-							{
-					            float step = rotationDirection(aktHeading, toHeading);
-								aktHeading += step;
-								aktHeading = correctHeading(aktHeading);
-								
-								changeHeading = true;
-	
-								if (Math.abs(aktHeading - toHeading) < 0.3f)
-									fertigHeading = true;
-								else
-									fertigHeading = false;
-								br.putBoolean("ChangeHeading", true);
-					            br.putFloat("Heading", aktHeading);
-							} else
-								br.putBoolean("ChangeHeading", false);
-
 				            boolean fertigZoom = true;
-				            boolean changeZoom = false;
-				            int aktZoom = Zoom;
-							double faktor = multiTouchFaktor;
-							if (faktor < 1)
-							{
-								// runden auf 0.05;
-								faktor = Math.rint(faktor * smoothScrolling.AnimationSteps()*2) / (smoothScrolling.AnimationSteps()*2);
-								if (faktor < 0.74)
-									faktor = 0.75;
-							}
-							if (faktor > 1)
-							{
-								// runden auf 0.1;
-								faktor = Math.rint(faktor * smoothScrolling.AnimationSteps()*2) / (smoothScrolling.AnimationSteps()*2);
-								if (faktor > 1.5)
-									faktor = 1.5;
-							}
-							if (zoomInitialized && ((aktZoom != toZoom) || (Math.abs(faktor - toFaktor) >= 0.001)))
-							{
-								changeZoom = true;
-								double diff;
-								if (aktZoom + faktor > toZoom + toFaktor)
-								{
-									diff = -1;
-									if (faktor <= 1.0001)
-										diff /= 2;
-								} else
-								{
-									diff = 1;
-									if (faktor < 0.99999)
-										diff /= 2;
-								}
-
-								faktor += diff / smoothScrolling.AnimationSteps();
-								if (faktor > 1.5)
-								{
-									aktZoom++;
-							        toX *= 2;
-							        toY *= 2;
-							        aktX *= 2;
-							        aktY *= 2;
-									faktor = faktor / 2;
-								}
-								if (faktor < 0.75)
-								{
-									aktZoom--;
-							        toX /= 2;
-							        toY /= 2;
-							        aktX /= 2;
-							        aktY /= 2;
-									faktor = faktor * 2;
-								}
-								
-								if ((aktZoom == toZoom) && (Math.abs(faktor - toFaktor) < 0.001))
-									fertigZoom = false;
-								else
-									fertigZoom = false;
-								br.putBoolean("ChangeZoom", true);
-					            br.putInt("Zoom", aktZoom);
-					            br.putDouble("Faktor", faktor);
-							} else
-								br.putBoolean("ChangeZoom", false);
-
-							
 				            boolean fertigPos = true;
-				            boolean changePos = false;
-				            if (posInitialized && ((Math.abs(aktX - toX) > 1.1) || Math.abs(aktY - toY) > 1.1))
-				            {
-				            	changePos = true;
-				            	fertigPos = false;
 
-					            double scale = 1/posFaktor;
-				            	
-					            double dx = (toX - aktX) * scale;
-					            double dy = (toY - aktY) * scale;
+				            synchronized(animationThread)
+							{
+
+					            float aktHeading = correctHeading(canvasHeading);
+					            double aktX = screenCenter.X;
+					            double aktY = screenCenter.Y;
 					            
-					            double x = aktX + dx;
-					            double y = aktY + dy;
+								if (headingInitialized && (Math.abs(aktHeading - toHeading) > 0.3f))
+								{
+						            float step = rotationDirection(aktHeading, toHeading);
+									aktHeading += step;
+									aktHeading = correctHeading(aktHeading);
 									
-					            if (posDirect)
+									if (Math.abs(aktHeading - toHeading) < 0.3f)
+										fertigHeading = true;
+									else
+										fertigHeading = false;
+									br.putBoolean("ChangeHeading", true);
+						            br.putFloat("Heading", aktHeading);
+								} else
+									br.putBoolean("ChangeHeading", false);
+	
+					            int aktZoom = Zoom;
+								double faktor = multiTouchFaktor;
+								if (faktor < 1)
+								{
+									// runden auf 0.05;
+									faktor = Math.rint(faktor * smoothScrolling.AnimationSteps()*2) / (smoothScrolling.AnimationSteps()*2);
+									if (faktor < 0.74)
+										faktor = 0.75;
+								}
+								if (faktor > 1)
+								{
+									// runden auf 0.1;
+									faktor = Math.rint(faktor * smoothScrolling.AnimationSteps()*2) / (smoothScrolling.AnimationSteps()*2);
+									if (faktor > 1.5)
+										faktor = 1.5;
+								}
+								if (zoomInitialized && ((aktZoom != toZoom) || (Math.abs(faktor - toFaktor) >= 0.001)))
+								{
+									double diff;
+									if (aktZoom + faktor > toZoom + toFaktor)
+									{
+										diff = -1;
+										if (faktor <= 1.0001)
+											diff /= 2;
+									} else
+									{
+										diff = 1;
+										if (faktor < 0.99999)
+											diff /= 2;
+									}
+	
+									faktor += diff / smoothScrolling.AnimationSteps();
+									if (faktor > 1.5)
+									{
+										aktZoom++;
+								        toX *= 2;
+								        toY *= 2;
+								        aktX *= 2;
+								        aktY *= 2;
+										faktor = faktor / 2;
+									}
+									if (faktor < 0.75)
+									{
+										aktZoom--;
+								        toX /= 2;
+								        toY /= 2;
+								        aktX /= 2;
+								        aktY /= 2;
+										faktor = faktor * 2;
+									}
+									
+									if ((aktZoom == toZoom) && (Math.abs(faktor - toFaktor) < 0.001))
+										fertigZoom = false;
+									else
+										fertigZoom = false;
+									br.putBoolean("ChangeZoom", true);
+						            br.putInt("Zoom", aktZoom);
+						            br.putDouble("Faktor", faktor);
+								} else
+									br.putBoolean("ChangeZoom", false);
+	
+								
+					            if (posInitialized && ((Math.abs(aktX - toX) > 1.1) || Math.abs(aktY - toY) > 1.1))
 					            {
-					            	x = toX;
-					            	y = toY;					            	
-					            }
-					            br.putDouble("x", x);
-					            br.putDouble("y", y);
-				            	
-				            	br.putBoolean("ChangePos", true);
-				            } else
-				            	br.putBoolean("ChangePos", false);
+					            	fertigPos = false;
+	
+						            double scale = 1/posFaktor;
+					            	
+						            double dx = (toX - aktX) * scale;
+						            double dy = (toY - aktY) * scale;
+						            
+						            double x = aktX + dx;
+						            double y = aktY + dy;
+										
+						            if (posDirect)
+						            {
+						            	x = toX;
+						            	y = toY;					            	
+						            }
+						            br.putDouble("x", x);
+						            br.putDouble("y", y);
+					            	
+					            	br.putBoolean("ChangePos", true);
+					            } else
+					            	br.putBoolean("ChangePos", false);
 
 							
 							
-							
+							}
 																	            
 				            // Nachricht senden
 				            br.putBoolean("updateCacheList", fertigHeading && fertigZoom && fertigPos);
@@ -4092,7 +4186,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				            
 				            if (fertigHeading && fertigZoom && fertigPos)
 				            	break;
-						}					
+						}			
 						animationFertig = true;
 					}
 					
@@ -4198,7 +4292,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				animationThread.headingInitialized = true;
 				animationThread.toHeading = lastNewHeading;
 			}
-			handler.removeMessages(4);
+//			handler.removeMessages(4);
         	handler.sendEmptyMessage(4);			
 		}
 		public void stopMove() {

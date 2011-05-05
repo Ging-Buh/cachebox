@@ -4,6 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Events.PositionEventList;
@@ -22,6 +25,7 @@ import de.droidcachebox.Views.SpoilerView;
 import de.droidcachebox.Views.WaypointView;
 import de.droidcachebox.Views.Forms.EditWaypoint;
 import de.droidcachebox.Views.Forms.HintDialog;
+import de.droidcachebox.Views.Forms.ScreenLock;
 import de.droidcachebox.Views.Forms.Settings;
 import de.droidcachebox.Database;
 import de.droidcachebox.Database.DatabaseType;
@@ -47,7 +51,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.util.Log;
@@ -68,6 +74,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class main extends Activity implements SelectedCacheEvent,LocationListener {
@@ -136,10 +143,49 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     @Override
 	protected void onActivityResult(int requestCode, int resultCode,
 		Intent data) {
+    	if (requestCode == 12345)
+    	{
+    		counterStopped = false;
+    		counter.start();
+    		return;
+    	}
     	aktView.ActivityResult(requestCode, resultCode, data);
     }
 
-   
+
+    private class MyCount extends CountDownTimer {
+    	public MyCount(long millisInFuture, long countDownInterval) {
+    		 super(millisInFuture, countDownInterval);
+    		 }        	
+    	@Override
+    	public void onFinish() {
+    		startScreenLock();
+//    		Toast.makeText(getApplicationContext(), "timer", Toast.LENGTH_LONG).show();
+    	}
+		@Override
+		public void onTick(long millisUntilFinished) {
+			// TODO Auto-generated method stub
+			
+		}        
+    }
+    MyCount counter = null;
+    private boolean counterStopped = false;
+    public void startScreenLock()
+    {
+		counter.cancel();
+		counterStopped = true;
+		final Intent mainIntent = new Intent().setClass( this, ScreenLock.class);
+		this.startActivityForResult(mainIntent, 12345);
+    }
+    
+    @Override
+    public void onUserInteraction(){
+    	if (counterStopped)
+    		return;
+    	if (counter != null)
+    		counter.start();
+
+    }
 	
 	/** Called when the activity is first created. */
     @Override
@@ -149,8 +195,25 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.main);
+        /*
+        final Handler handler = new Handler();        
+        aTimer = new Timer("ScreenLockTimer");
+        TimerTask blinkTimerTask = new TimerTask() {
+            public void run() {
+                handler.post(new Runnable() {
+                       
+                       public void run() {   
+                    	   Toast.makeText(getApplicationContext(), "timer", Toast.LENGTH_SHORT).show();
+                       }
+                });
+            }
+        };        
+        aTimer.schedule(blinkTimerTask, 30000);
+*/
+        counter = new MyCount(60000, 60000);
+        counter.start();
+
         
-              
         // add Event Handler
         SelectedCacheEventList.Add(this);
        
@@ -297,6 +360,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     @Override
     public void onDestroy() {
             this.mWakeLock.release();
+    		counter.cancel();
             super.onDestroy();
     }
     
@@ -304,7 +368,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     protected void onResume()
     {
         super.onResume();
-
+        counter.start();
         mSensorManager.registerListener(mListener, mSensor,
                 SensorManager.SENSOR_DELAY_GAME);
     }
@@ -313,6 +377,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     protected void onStop()
     {
         mSensorManager.unregisterListener(mListener);
+		counter.cancel();
         super.onStop();
     }
 
@@ -426,6 +491,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	// Misc
     	case R.id.miClose:
     		finish();
+    		return true;
+    	case R.id.miScreenLock:
+    		startScreenLock();
     		return true;
     	case R.id.miDayNight:
     		Config.changeDayNight();
