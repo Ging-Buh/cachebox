@@ -5,5 +5,12 @@
   android:layout_height="match_parent">
     <SurfaceView android:layout_alignParentLeft="true" android:id="@+id/mapview_surface" android:layout_width="match_parent" android:layout_height="match_parent"></SurfaceView>
     <ToggleButton android:id="@+id/mapview_trackposition" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="ToggleButton" android:layout_alignParentRight="true" android:layout_alignParentTop="true" android:layout_marginRight="10dip" android:layout_marginTop="10dip"></ToggleButton>
-    <ZoomControls android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_alignParentBottom="true" android:layout_alignParentRight="true" android:layout_marginRight="5dip" android:id="@+id/mapview_zoom"></ZoomControls>
+    <ZoomControls 
+    android:layout_height="wrap_content" 
+    android:layout_width="wrap_content" 
+    android:layout_alignParentBottom="true" 
+    android:layout_alignParentRight="true" 
+    android:layout_marginRight="5dip" 
+    android:id="@+id/mapview_zoom" 
+    style="ZoomStyle"></ZoomControls>
 </RelativeLayout>

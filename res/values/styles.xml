@@ -20,6 +20,28 @@
     <style name="Day_Toggle_Button">
         <item name="android:background">@drawable/day_btn_toggle_bg</item>
         <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+    
+    <style name="Night_Toggle_Button">
+        <item name="android:background">@drawable/night_btn_toggle_bg</item>
+        <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+    
+    <style name="day_ZoomControls">
+        <item name="android:gravity">bottom</item>
+        <item name="android:paddingLeft">15dip</item>
+        <item name="android:paddingRight">15dip</item>
+    </style>
+    
+    <style name="night_ZoomControls">
+    	<item name="android:background">@drawable/night_btn_toggle_bg</item>
+        <item name="android:gravity">top</item>
+        <item name="android:paddingLeft">15dip</item>
+        <item name="android:paddingRight">15dip</item>
     </style>
     
     

@@ -10,7 +10,8 @@
 	    <item name="android:buttonStyleToggle">@style/Day_Toggle_Button</item>
 	    <item name="ListBackground">@color/Day_ListBackground</item>
 	    <item name="ListBackground_secend">@color/Day_ListBackground_secend</item>
-	    <item name="ListBackground_select">@color/Day_SelectedBackground</item>   
+	    <item name="ListBackground_select">@color/Day_SelectedBackground</item> 
+		<item name="ZoomStyle">@style/day_ZoomControls</item> 
     </style>
     
     
@@ -20,10 +21,11 @@
  		<item name="android:textSize">12sp</item>
 	    <item name="android:textColor">#FF0000</item>
 	    <item name="android:buttonStyle">@style/Night_Button</item>
-	    <item name="android:buttonStyleToggle">@style/Day_Toggle_Button</item>
+	    <item name="android:buttonStyleToggle">@style/Night_Toggle_Button</item>
 	    <item name="ListBackground">@color/Night_ListBackground</item>
 	    <item name="ListBackground_secend">@color/Night_ListBackground_secend</item>
 	    <item name="ListBackground_select">@color/Night_SelectedBackground</item>
+	    <item name="ZoomStyle">@style/day_ZoomControls</item>
     </style>
 
 
