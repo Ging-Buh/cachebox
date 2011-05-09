@@ -5,9 +5,11 @@
 		<attr name="ListBackground_secend" format="reference|color"/>
 		<attr name="ListBackground_select" format="reference|color"/>
 		<attr name="ZoomStyle" format="reference"/>
+		<attr name="DropDownBackground" format="reference|color" />
 	</declare-styleable>
 	
 	
-	<!-- http://stackoverflow.com/questions/2695646/declaring-a-custom-android-ui-element-using-xml -->
+	
+	
 	
 </resources>

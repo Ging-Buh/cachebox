@@ -10,6 +10,7 @@ import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.splash;
 import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Components.Animations;
 
 import de.droidcachebox.Events.SelectedLangChangedEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
@@ -20,13 +21,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.*;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -45,12 +55,14 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
-				
+		
+		context = this.getBaseContext();
+		
+		
 		SelectedLangChangedEventList.Add(this);
       
-        SettingsLayout = (LinearLayout) this.findViewById(R.id.settings_LinearLayout);
+		findViewsById();
         
-		SaveButton = (Button)this.findViewById(R.id.settings_save);
 		SaveButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) 
@@ -64,7 +76,6 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
             }
           });
 		
-		CancelButton = (Button)this.findViewById(R.id.settings_cancel);
 		CancelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,9 +84,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
             }
           });
 
-		LangCombo = (Spinner)this.findViewById(R.id.settings_LangCombo);
-		LangCombo.setOnItemSelectedListener(
-			    new AdapterView.OnItemSelectedListener() {
+		LangCombo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
 					@Override
 					public void onItemSelected(AdapterView<?> arg0, View arg1,
@@ -107,40 +116,145 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 			    }
 			);
 		
-		LogInTableRow =(TableRow)this.findViewById(R.id.settings_tableRowLogIn);
-		ToggleLogInView = (Button)this.findViewById(R.id.toggle_button_login);
+		
+		
+		
 		ToggleLogInView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) 
             {
-            	LogInTableRow.setVisibility((LogInTableRow.getVisibility() == View.VISIBLE )? View.GONE : View.VISIBLE);
-            	
+            	Animations.ToggleViewSlideUp_Down(LogInTableRow,context);
             }
           });
-		
-		LabelGcName =(TextView)this.findViewById(R.id.settings_textView1);
-		LabelGcPW =(TextView)this.findViewById(R.id.settings_textView2);
-		LabelGcVoPw =(TextView)this.findViewById(R.id.settings_textView3);
-		EditTextGCName = (EditText)this.findViewById(R.id.settings_editText1);
-		EditTextGCPW = (EditText)this.findViewById(R.id.settings_editText2);
-		EditTextGCVotePW = (EditText)this.findViewById(R.id.settings_editText3);
-		
-		GPSTableRow =(TableRow)this.findViewById(R.id.settings_tableRowgps);
-		ToggleGPSView = (Button)this.findViewById(R.id.toggle_button_gps);
 		ToggleGPSView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) 
             {
-            	GPSTableRow.setVisibility((GPSTableRow.getVisibility() == View.VISIBLE )? View.GONE : View.VISIBLE);
-            	
+            	Animations.ToggleViewSlideUp_Down(GPSTableRow,context);
             }
           });
 		
+		checkBoxUseCelltower.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				Boolean newState = !Config.GetBool("UseCelltower");
+				Config.Set("UseCelltower", newState);
+				
+			}
+		});
+		
+		checkBoxHTCCompass.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				Boolean newState = !Config.GetBool("HtcCompass");
+				Config.Set("HtcCompass", newState);
+				chkCompassLevelViewState();
+			}
+		});
+		
+		EditCompassLevel.addTextChangedListener(new TextWatcher()
+        {
+  
+		@Override
+		public void afterTextChanged(Editable arg0) {
+			try
+			{
+			int newState = Integer.parseInt(EditCompassLevel.getText().toString());
+			Config.Set("HtcLevel", newState);
+			}
+			catch(Exception e)
+			{}
+
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+				int arg3) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onTextChanged(CharSequence arg0, int arg1, int arg2,
+				int arg3) {
+			// TODO Auto-generated method stub
+			
+		}
+}); 
+		EditTextGCName.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+					int arg3) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				Config.Set("GcLogin", EditTextGCName.getText().toString());
+				
+			}
+		});
+		EditTextGCPW.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+					int arg3) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				Config.Set("GcPass", EditTextGCName.getText().toString());
+				
+			}
+		});
+		EditTextGCVotePW.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+					int arg3) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				Config.Set("GcVotePassword", EditTextGCName.getText().toString());
+				
+			}
+		});
 		
 		FillSettings();
 		setLang();
 		
 }
+	
+	
+	
+	
 
 	private LinearLayout SettingsLayout;
 	private Spinner LangCombo;
@@ -156,10 +270,38 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private EditText EditTextGCVotePW;
 	private Button ToggleGPSView;
 	private TableRow GPSTableRow;
+	private CheckBox checkBoxUseCelltower;
+	private CheckBox checkBoxHTCCompass;
+	private TextView DescCompassLevel;
+	private EditText EditCompassLevel;
+	
 	
 	private void setMainActivity()
 	{
 		finish();
+	}
+	
+	private void findViewsById()
+	{
+		SettingsLayout = (LinearLayout) this.findViewById(R.id.settings_LinearLayout);
+        LangCombo = (Spinner)this.findViewById(R.id.settings_LangCombo);
+		CancelButton = (Button)this.findViewById(R.id.settings_cancel);
+		SaveButton = (Button)this.findViewById(R.id.settings_save);
+		LangCombo = (Spinner)this.findViewById(R.id.settings_LangCombo);
+		LogInTableRow =(TableRow)this.findViewById(R.id.settings_tableRowLogIn);
+		ToggleLogInView = (Button)this.findViewById(R.id.toggle_button_login);
+		LabelGcName =(TextView)this.findViewById(R.id.settings_textView1);
+		LabelGcPW =(TextView)this.findViewById(R.id.settings_textView2);
+		LabelGcVoPw =(TextView)this.findViewById(R.id.settings_textView3);
+		EditTextGCName = (EditText)this.findViewById(R.id.settings_editText1);
+		EditTextGCPW = (EditText)this.findViewById(R.id.settings_editText2);
+		EditTextGCVotePW = (EditText)this.findViewById(R.id.settings_editText3);
+		GPSTableRow =(TableRow)this.findViewById(R.id.settings_tableRowgps);
+		ToggleGPSView = (Button)this.findViewById(R.id.toggle_button_gps);
+		checkBoxUseCelltower = (CheckBox)this.findViewById(R.id.settings_use_cell_id);
+		checkBoxHTCCompass = (CheckBox)this.findViewById(R.id.settings_use_intern_compass);
+		EditCompassLevel = (EditText)this.findViewById(R.id.settings_compass_level_edit);
+		DescCompassLevel = (TextView)this.findViewById(R.id.settings_compass_info_text);
 	}
 	
 	private void setLang()
@@ -170,6 +312,9 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		LabelGcName.setText(Global.Translations.Get("LogIn"));
 		LabelGcPW.setText(Global.Translations.Get("GCPW"));
 		LabelGcVoPw.setText(Global.Translations.Get("GCVotePW"));
+		 checkBoxUseCelltower.setText(Global.Translations.Get("UseCellId"));
+         checkBoxHTCCompass.setText(Global.Translations.Get("UseHtcCompass"));
+         DescCompassLevel.setText(Global.Translations.Get("DescHtcLevel"));
 	}
 	
 		
@@ -179,7 +324,26 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		EditTextGCPW.setText(Config.GetString("GcPass"));
 		EditTextGCVotePW.setText(Config.GetString("GcVotePassword"));
 		fillLangCombo();
+		checkBoxUseCelltower.setChecked(Config.GetBool("UseCelltower"));
+		checkBoxHTCCompass.setChecked(Config.GetBool("HtcCompass"));
+		EditCompassLevel.setText(String.valueOf(Config.GetInt("HtcLevel")));
+		chkCompassLevelViewState();
 		
+	}
+	
+	
+	private void chkCompassLevelViewState()
+	{
+		if (Config.GetBool("HtcCompass"))
+		{			
+			DescCompassLevel.setEnabled(true);
+			EditCompassLevel.setEnabled(true);
+		}
+		else
+		{
+			DescCompassLevel.setEnabled(false);
+			EditCompassLevel.setEnabled(false);
+		}
 	}
 	
 	ArrayList<Langs> Sprachen;

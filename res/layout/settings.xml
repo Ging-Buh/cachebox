@@ -43,8 +43,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 				 android:id="@layout/settings_login" 
 				 layout="@layout/settings_login" 
 				 android:layout_width="match_parent" 
-				 android:layout_marginLeft="10dip" 
-				 android:layout_marginRight="10dip" 
+				 android:layout_marginLeft="2dip" 
+				 android:layout_marginRight="2dip" 
 				 android:layout_weight="1"></include>			    
 			 
 		    </TableRow>
@@ -68,8 +68,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 				 android:id="@layout/settings_gps" 
 				 layout="@layout/settings_gps" 
 				 android:layout_width="match_parent" 
-				 android:layout_marginLeft="10dip" 
-				 android:layout_marginRight="10dip" 
+				 android:layout_marginLeft="2dip" 
+				 android:layout_marginRight="2dip" 
 				 android:layout_weight="1"></include>			    
 			 
 		    </TableRow>

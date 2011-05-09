@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="ThemeHintDialog" parent="android:style/Theme.Dialog">@style/Theme.HintDialog</style>
-    
-    
-    <style name="Day_Button">
-        <item name="android:background">@drawable/day_btn</item>
-        <item name="android:focusable">true</item>
-        <item name="android:clickable">true</item>
-        <item name="android:gravity">center_vertical|center_horizontal</item>
-    </style>
-  	<style name="Theme.Transparent" parent="android:Theme">
+    <style name="Theme.Transparent" parent="android:Theme">
 	    <item name="android:windowIsTranslucent">true</item>
     	<item name="android:windowBackground">@android:color/transparent</item>
     	<item name="android:windowContentOverlay">@null</item>
     	<item name="android:windowNoTitle">true</item>
     	<item name="android:backgroundDimEnabled">false</item>
   	</style>
-  	    
+    
+<!-- Button -->    
+    <style name="Day_Button">
+        <item name="android:background">@drawable/day_btn</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
     <style name="Night_Button">
         <item name="android:background">@drawable/night_btn</item>
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
         <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
-    
+
+<!-- Toggle Button -->    
     <style name="Day_Toggle_Button">
         <item name="android:background">@drawable/day_btn_toggle_bg</item>
         <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
@@ -36,6 +36,22 @@
         <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
         <item name="android:clickable">true</item>
         <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+    
+    
+<!-- ChkBox -->
+    <style name="Day_chkBox">
+        <item name="android:background">@drawable/day_btn_check_label_background</item>
+        <item name="android:button">@drawable/day_btn_check</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    
+    <style name="Night_chkBox">
+        <item name="android:background">@drawable/night_btn_check_label_background</item>
+        <item name="android:button">@drawable/night_btn_check</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
     
     <style name="day_ZoomControls">
