@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:hug=" http://schemas.android.com/apk/res/android/de.droidcachebox"
  	android:id="@+id/compassLayout" 
  	android:gravity="bottom" 
 	android:layout_height="match_parent" 

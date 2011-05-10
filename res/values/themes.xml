@@ -14,6 +14,10 @@
 	    <item name="android:checkboxStyle">@style/Day_chkBox</item>
 	    <item name="DropDownBackground">@drawable/popup_bottom_bright</item> 
 		<item name="ZoomStyle">@style/day_ZoomControls</item> 
+		<item name="Compass_rimColorFilter">@color/Day_Compass_rimColorFilter</item>
+		<item name="Compass_faceColorFilter">@color/Day_Compass_faceColorFilter</item>
+		<item name="Compass_TextColor">@color/Day_Compass_TextColor</item>
+		<item name="Compass_N_TextColor">@color/Day_Compass_N_TextColor</item> 
     </style>
     
     
@@ -30,7 +34,10 @@
 	    <item name="android:buttonStyleToggle">@style/Night_Toggle_Button</item>
 	    <item name="android:checkboxStyle">@style/Night_chkBox</item>
 		<item name="DropDownBackground">@drawable/popup_bottom_dark</item>
-	    <item name="ZoomStyle">@style/day_ZoomControls</item>
+	    <item name="Compass_rimColorFilter">@color/Night_Compass_rimColorFilter</item>
+		<item name="Compass_faceColorFilter">@color/Night_Compass_faceColorFilter</item>
+		<item name="Compass_TextColor">@color/Night_Compass_TextColor</item>
+		<item name="Compass_N_TextColor">@color/Night_Compass_N_TextColor</item>  
     </style>
 
 

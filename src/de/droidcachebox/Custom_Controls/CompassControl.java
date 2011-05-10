@@ -1,10 +1,10 @@
 package de.droidcachebox.Custom_Controls;
 
-import java.util.List;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
@@ -19,15 +19,11 @@ import android.graphics.RadialGradient;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.os.Handler;
+
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.View.MeasureSpec;
+
 
 public final class CompassControl extends View {
 
@@ -39,6 +35,16 @@ public final class CompassControl extends View {
 	public CompassControl(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
+		TypedArray a = context.obtainStyledAttributes(attrs,
+		        R.styleable.CompassControlStyle);
+
+		
+		rimColorFilter =  a.getColor(R.styleable.CompassControlStyle_Compass_rimColorFilter, rimColorFilter);
+		faceColorFilter =  a.getColor(R.styleable.CompassControlStyle_Compass_faceColorFilter, faceColorFilter);
+		TextColor =  a.getColor(R.styleable.CompassControlStyle_Compass_TextColor, TextColor);
+		N_TextColor =  a.getColor(R.styleable.CompassControlStyle_Compass_N_TextColor, N_TextColor);
+		
+		a.recycle();
 	}
 
 	public CompassControl(Context context, AttributeSet attrs, int defStyle) {
@@ -97,10 +103,11 @@ public final class CompassControl extends View {
 	private float handAcceleration = 0.0f;
 	private long lastHandMoveTime = -1L;
 	
-	
-	
-	
-	
+	//Stylable Colors
+	private int rimColorFilter = Color.argb(255, 0, 50, 0);
+	private int faceColorFilter = Color.argb(255, 30, 255, 30);
+	private int TextColor = Color.argb(255, 0, 0, 0);
+	private int N_TextColor = Color.argb(255, 200, 0, 0);
 	
 	
 	private void init() {
@@ -242,14 +249,26 @@ public final class CompassControl extends View {
 		return 300;
 	}
 
-	private void drawRim(Canvas canvas) {
+	private void drawRim(Canvas canvas) 
+	{
+		// set the ColorFilter to Paints
+		LightingColorFilter colorFilter = new LightingColorFilter(0xff888888, rimColorFilter);
+		rimPaint.setColorFilter(colorFilter);
+		rimCirclePaint.setColorFilter(colorFilter);
+		rimShadowPaint.setColorFilter(colorFilter);
+		
 		// first, draw the metallic body
 		canvas.drawOval(rimRect, rimPaint);
 		// now the outer rim circle
 		canvas.drawOval(rimRect, rimCirclePaint);
 	}
 	
-	private void drawFace(Canvas canvas) {		
+	private void drawFace(Canvas canvas) 
+	{
+		// set the ColorFilter to Paints
+		LightingColorFilter colorFilter = new LightingColorFilter(0xffffffff, faceColorFilter);
+		facePaint.setColorFilter(colorFilter);
+		
 		canvas.drawOval(faceRect, facePaint);
 		// draw the inner rim circle
 		canvas.drawOval(faceRect, rimCirclePaint);
@@ -258,6 +277,7 @@ public final class CompassControl extends View {
 	}
 
 	private void drawScale(Canvas canvas) {
+		scalePaint.setColor(TextColor);
 		canvas.drawOval(scaleRect, scalePaint);
 
 		canvas.save(Canvas.MATRIX_SAVE_FLAG);
@@ -267,7 +287,7 @@ public final class CompassControl extends View {
 			float y2 = y1 - 0.020f;
 			
 			//restore Color and Size
-			scalePaint.setColor(0x9f004d0f);
+			scalePaint.setColor(TextColor);
 			scalePaint.setTextSize(0.045f);
 			
 			canvas.drawLine(0.5f, y1, 0.5f, y2, scalePaint);
@@ -279,7 +299,7 @@ public final class CompassControl extends View {
 				{
 					valueString="N";
 					scalePaint.setTextSize(0.06f);
-					scalePaint.setColor(Color.RED);
+					scalePaint.setColor(N_TextColor);
 				}
 				else if (value == 90)
 				{
@@ -375,10 +395,7 @@ public final class CompassControl extends View {
 		drawHand(canvas);
 		
 		canvas.restore();
-	
-		if (handNeedsToMove()) {
-			moveHand();
-		}
+			
 	}
 
 	@Override
