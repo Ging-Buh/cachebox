@@ -238,7 +238,6 @@ public class CacheListViewItem extends View {
         }
         
         
-        Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.Type.ordinal()], 0, 0, imgSize);     
           if (cache.Found())
           {
         	  
