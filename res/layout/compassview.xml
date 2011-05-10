@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+ 	android:id="@+id/compassLayout" 
+ 	android:gravity="bottom" 
+	android:layout_height="match_parent" 
+	android:orientation="vertical" 
+	android:layout_width="match_parent">
+		
+	    <TextView 
+	    android:layout_alignParentLeft="true" 
+	    android:id="@+id/textView1" 
+	    android:layout_height="wrap_content" 
+	    android:layout_width="match_parent" 
+	    android:background="@color/Day_ColorCompassPanel" 
+	    android:text="Platzhalter Für Cache Beschreibung Im Design des CacheListItems"
+	    android:gravity="top"
+	    android:layout_weight="1"></TextView>
+	
+	
+		<LinearLayout 
+		android:id="@+id/CompassLinearLayout" 
+		android:layout_width="match_parent" 
+		android:layout_height="wrap_content" 
+		android:baselineAligned="false">
+		
+			<de.droidcachebox.Custom_Controls.CompassControl
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content" 
+		    android:id="@+id/Compass"
+		    android:gravity="bottom"
+		    android:layout_weight="1"/>    
+		</LinearLayout>
+		
+</LinearLayout>

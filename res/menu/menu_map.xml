@@ -2,4 +2,5 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/miMapView" android:title="Map"></item>
+    <item android:id="@+id/miCompassView" android:title="Compass"></item>
 </menu>

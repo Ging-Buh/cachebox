@@ -16,6 +16,7 @@ import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Views.CacheListView;
+import de.droidcachebox.Views.CompassView;
 import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.LogView;
 import de.droidcachebox.Views.MapView;
@@ -102,6 +103,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	private SpoilerView spoilerView;			// ID 5
 	private NotesView notesView;				// ID 6
 	private SolverView solverView;				// ID 7
+	private CompassView compassView;			// ID 8
 	private ArrayList<View> ViewList = new ArrayList<View>();
 	
 	int width;
@@ -265,6 +267,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         mapView.Initialize();
         mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.GetString("CurrentMapLayer"), Config.GetString("CurrentMapLayer"), "");
         
+        compassView = new CompassView(this, inflater);
         cacheListView = new CacheListView(this);
         waypointView = new WaypointView(this, this);
         logView = new LogView(this);
@@ -353,8 +356,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	ViewList.add(descriptionView);		// ID 4
     	ViewList.add(spoilerView);			// ID 5
     	ViewList.add(notesView);			// ID 6
-    	ViewList.add(solverView);			// ID 7		
-  
+    	ViewList.add(solverView);			// ID 7	
+    	ViewList.add(compassView);			// ID 8	
+    	
     }
 
     @Override
@@ -506,6 +510,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     		
 		
     		return true;
+    	case R.id.miCompassView:
+    		showView(compassView);
+    		return true;	
+    		
 		default:
 			return super.onOptionsItemSelected(item);
     	}
