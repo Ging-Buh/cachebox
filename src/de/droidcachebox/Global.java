@@ -438,6 +438,7 @@ public class Global {
         		res.getDrawable(R.drawable.big_16),
         		res.getDrawable(R.drawable.big_17),
         		res.getDrawable(R.drawable.big_18),
+        		res.getDrawable(R.drawable.big_19),
         };
         
         

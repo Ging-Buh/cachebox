@@ -226,7 +226,19 @@ public class CacheListViewItem extends View {
         canvas.drawLine(x, y + this.height - 2, width, y + this.height - 2,Linepaint); 
         canvas.drawLine(x, y + this.height - 3, width, y + this.height - 3,Linepaint);
         
-          Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.Type.ordinal()], 0, 0, imgSize);     
+          
+        
+        if (cache.MysterySolved())
+        {
+        	Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[19], 0, 0, imgSize); 
+        }
+        else
+        {
+        	Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.Type.ordinal()], 0, 0, imgSize); 
+        }
+        
+        
+        Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.Type.ordinal()], 0, 0, imgSize);     
           if (cache.Found())
           {
         	  
