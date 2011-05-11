@@ -2,6 +2,8 @@ package de.droidcachebox.Views;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.UnitFormatter;
+import de.droidcachebox.Custom_Controls.CacheInfoControl;
 import de.droidcachebox.Custom_Controls.CompassControl;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
@@ -28,7 +30,8 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 	private Context context;
 	private Cache aktCache;
 	private CompassControl compassControl;
-
+	private CacheInfoControl DescriptionTextView;
+	
 	public CompassView(Context context, LayoutInflater inflater) {
 		super(context);
 		
@@ -39,7 +42,24 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
         
 		
 		 compassControl = (CompassControl)findViewById(R.id.Compass);
+		 DescriptionTextView = (CacheInfoControl)findViewById(R.id.CompassDescriptionView);
+		 
+		
 }
+	
+	static public int windowW=0;
+    static public int windowH=0 ;
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) 
+    {
+    // we overriding onMeasure because this is where the application gets its right size.
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    windowW = getMeasuredWidth();
+    windowH = getMeasuredHeight();
+    }
+	
+	
+	
 
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
@@ -47,6 +67,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 		{
 			
 			aktCache = cache;
+			DescriptionTextView.setCache(aktCache);
 		}
 	}
 
@@ -100,9 +121,9 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
             double relativeBearing = bearing - heading;
          //   double relativeBearingRad = relativeBearing * Math.PI / 180.0;
 
-		
-            compassControl.setCompassHeading(heading);
-    		compassControl.setCacheHeading(relativeBearing);
+              		
+    		compassControl.setInfo(heading, relativeBearing, UnitFormatter.DistanceString(aktCache.Distance()));
+    		
         }
 	}
 
@@ -122,9 +143,9 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
             double relativeBearing = bearing - heading;
          //   double relativeBearingRad = relativeBearing * Math.PI / 180.0;
 
+				
+		compassControl.setInfo(heading, relativeBearing, UnitFormatter.DistanceString(aktCache.Distance()));
 		
-		compassControl.setCompassHeading(heading);
-		compassControl.setCacheHeading(relativeBearing);
         }
 	}
 

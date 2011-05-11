@@ -70,18 +70,14 @@ public final class CompassControl extends View {
 	private Paint scalePaint;
 	private RectF scaleRect;
 	
-	private Paint titlePaint;	
-	private Path titlePath;
+	private Paint distancePaint;	
+	private Path distancePath;
 
 	private Paint arrowPaint;
 	private Bitmap arrow;
 	private Matrix arrowMatrix;
 	private float arrowScale;
-	
-	private Paint handPaint;
-	private Path handPath;
-	private Paint handScrewPaint;
-	
+		
 	private Paint backgroundPaint; 
 	// end drawing tools
 	
@@ -94,20 +90,15 @@ public final class CompassControl extends View {
 	private static int cacheDegree = 90; // Richtung zum Cache
 	private static final int minDegrees = 0;
 	private static final int maxDegrees = 360;
-	
-	// hand dynamics -- all are angular expressed in F degrees
-	private boolean handInitialized = false;
-	private float handPosition = centerDegree;
-	private float handTarget = centerDegree;
-	private float handVelocity = 0.0f;
-	private float handAcceleration = 0.0f;
-	private long lastHandMoveTime = -1L;
+		
 	
 	//Stylable Colors
 	private int rimColorFilter = Color.argb(255, 0, 50, 0);
 	private int faceColorFilter = Color.argb(255, 30, 255, 30);
 	private int TextColor = Color.argb(255, 0, 0, 0);
 	private int N_TextColor = Color.argb(255, 200, 0, 0);
+	
+	private String distance = "Entfernung";
 	
 	
 	private void init() {
@@ -175,16 +166,16 @@ public final class CompassControl extends View {
 		scaleRect.set(faceRect.left + scalePosition, faceRect.top + scalePosition,
 					  faceRect.right - scalePosition, faceRect.bottom - scalePosition);
 
-		titlePaint = new Paint();
-		titlePaint.setColor(0xaf946109);
-		titlePaint.setAntiAlias(true);
-		titlePaint.setTypeface(Typeface.DEFAULT_BOLD);
-		titlePaint.setTextAlign(Paint.Align.CENTER);
-		titlePaint.setTextSize(0.09f);
-		titlePaint.setTextScaleX(0.8f);
+		distancePaint = new Paint();
+		distancePaint.setColor(0xaf946109);
+		distancePaint.setAntiAlias(true);
+		distancePaint.setTypeface(Typeface.DEFAULT_BOLD);
+		distancePaint.setTextAlign(Paint.Align.CENTER);
+		distancePaint.setTextSize(0.12f);
+		distancePaint.setTextScaleX(0.8f);
 
-		titlePath = new Path();
-		titlePath.addArc(new RectF(0.24f, 0.24f, 0.76f, 0.76f), -180.0f, -180.0f);
+		distancePath = new Path();
+		distancePath.addArc(new RectF(0.24f, 0.24f, 0.76f, 0.76f), -180.0f, -180.0f);
 
 		arrowPaint = new Paint();
 		arrowPaint.setFilterBitmap(true);
@@ -193,26 +184,6 @@ public final class CompassControl extends View {
 		arrowScale = (1.0f / arrow.getWidth()) * 0.3f;;
 		arrowMatrix.setScale(arrowScale, arrowScale);
 
-		handPaint = new Paint();
-		handPaint.setAntiAlias(true);
-		handPaint.setColor(0xff392f2c);		
-		handPaint.setShadowLayer(0.01f, -0.005f, -0.005f, 0x7f000000);
-		handPaint.setStyle(Paint.Style.FILL);	
-		
-		handPath = new Path();
-		handPath.moveTo(0.5f, 0.5f + 0.2f);
-		handPath.lineTo(0.5f - 0.010f, 0.5f + 0.2f - 0.007f);
-		handPath.lineTo(0.5f - 0.002f, 0.5f - 0.32f);
-		handPath.lineTo(0.5f + 0.002f, 0.5f - 0.32f);
-		handPath.lineTo(0.5f + 0.010f, 0.5f + 0.2f - 0.007f);
-		handPath.lineTo(0.5f, 0.5f + 0.2f);
-		handPath.addCircle(0.5f, 0.5f, 0.025f, Path.Direction.CW);
-		
-		handScrewPaint = new Paint();
-		handScrewPaint.setAntiAlias(true);
-		handScrewPaint.setColor(0xff493f3c);
-		handScrewPaint.setStyle(Paint.Style.FILL);
-		
 		backgroundPaint = new Paint();
 		backgroundPaint.setFilterBitmap(true);
 	}
@@ -335,14 +306,11 @@ public final class CompassControl extends View {
 	}
 	
 	
+
 	
-	private float degreeToAngle(float degree) {
-		return (degree - centerDegree) / 2.0f * degreesPerNick;
-	}
-	
-	private void drawTitle(Canvas canvas) {
+	private void drawDistance(Canvas canvas) {
 		
-		canvas.drawTextOnPath("Entfernung", titlePath, 0.0f,0.0f, titlePaint);				
+		canvas.drawTextOnPath(distance, distancePath, 0.0f,0.0f, distancePaint);				
 	}
 	
 	private void drawArrow(Canvas canvas) {
@@ -363,17 +331,7 @@ public final class CompassControl extends View {
         }
 	}
 
-	private void drawHand(Canvas canvas) {
-		if (handInitialized) {
-			float handAngle = degreeToAngle(handPosition);
-			canvas.save(Canvas.MATRIX_SAVE_FLAG);
-			canvas.rotate(handAngle, 0.5f, 0.5f);
-			canvas.drawPath(handPath, handPaint);
-			canvas.restore();
-			
-			canvas.drawCircle(0.5f, 0.5f, 0.01f, handScrewPaint);
-		}
-	}
+	
 
 	private void drawBackground(Canvas canvas) {
 		if (background == null) {
@@ -391,9 +349,10 @@ public final class CompassControl extends View {
 		canvas.save(Canvas.MATRIX_SAVE_FLAG);
 		canvas.scale(scale, scale);
 
+		drawScale(canvas);
+		drawDistance(canvas);
 		drawArrow(canvas);
-		drawHand(canvas);
-		
+			
 		canvas.restore();
 			
 	}
@@ -418,55 +377,15 @@ public final class CompassControl extends View {
 		
 		drawRim(backgroundCanvas);
 		drawFace(backgroundCanvas);
-		drawScale(backgroundCanvas);
-		drawTitle(backgroundCanvas);		
+				
 	}
 
-	private boolean handNeedsToMove() {
-		return Math.abs(handPosition - handTarget) > 0.01f;
-	}
 	
-	private void moveHand() {
-		if (! handNeedsToMove()) {
-			return;
-		}
-		
-		if (lastHandMoveTime != -1L) {
-			long currentTime = System.currentTimeMillis();
-			float delta = (currentTime - lastHandMoveTime) / 1000.0f;
-
-			float direction = Math.signum(handVelocity);
-			if (Math.abs(handVelocity) < 90.0f) {
-				handAcceleration = 5.0f * (handTarget - handPosition);
-			} else {
-				handAcceleration = 0.0f;
-			}
-			handPosition += handVelocity * delta;
-			handVelocity += handAcceleration * delta;
-			if ((handTarget - handPosition) * direction < 0.01f * direction) {
-				handPosition = handTarget;
-				handVelocity = 0.0f;
-				handAcceleration = 0.0f;
-				lastHandMoveTime = -1L;
-			} else {
-				lastHandMoveTime = System.currentTimeMillis();				
-			}
-			invalidate();
-		} else {
-			lastHandMoveTime = System.currentTimeMillis();
-			moveHand();
-		}
-	}
-	
-	public void setCompassHeading(double Degree)
+	public void setInfo(double CompassHeading, double CacheBearing, String CacheDistance)
 	{
-		centerDegree=(int) Degree;
-		this.invalidate();
-	}
-	
-	public void setCacheHeading(double Degree)
-	{
-		cacheDegree=(int) Degree;
+		cacheDegree=(int) CacheBearing;
+		centerDegree=(int) CompassHeading;
+		distance=CacheDistance;
 		this.invalidate();
 	}
 }

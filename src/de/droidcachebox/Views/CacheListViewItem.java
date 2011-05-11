@@ -263,10 +263,7 @@ public class CacheListViewItem extends View {
            }
 
 
-        //  if (cache.MysterySolved && !cache.Archived)
-        //  {
-        //      Global.PutImageTargetHeight(canvas, Global.MapIcons[21], 0, y, lineHeight);
-        //  }
+        
 
         //  if (cache.ListingChanged)
         //  {
