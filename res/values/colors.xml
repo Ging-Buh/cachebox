@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <drawable name="EmptyBackgroundNight">#8E8E8E</drawable>
+    <drawable name="EmptyBackgroundNight">#48573e</drawable>
     <drawable name="EmptyBackgroundDay">#CAD4B2</drawable>
     <drawable name="MapViewPanel">#40000000</drawable>
 

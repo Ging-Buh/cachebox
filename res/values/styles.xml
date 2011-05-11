@@ -23,6 +23,21 @@
         <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
 
+
+<!-- Spinner  -->
+	<style name="day_Spinner">
+        <item name="android:background">@drawable/day_btn_dropdown</item>
+        <item name="android:clickable">true</item>
+       
+    </style>
+    
+    <style name="night_Spinner">
+        <item name="android:background">@drawable/night_btn_dropdown</item>
+        <item name="android:clickable">true</item>
+    </style>
+    
+	
+
 <!-- Toggle Button -->    
     <style name="Day_Toggle_Button">
         <item name="android:background">@drawable/day_btn_toggle_bg</item>

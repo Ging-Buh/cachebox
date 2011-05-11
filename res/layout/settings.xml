@@ -6,7 +6,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 	android:gravity="bottom" 
 	android:layout_height="match_parent" 
 	android:orientation="vertical" 
-	android:layout_width="match_parent">
+	android:layout_width="match_parent"
+	>
 	<ScrollView
 		android:layout_height="wrap_content" 
 		android:layout_width="match_parent"
@@ -23,9 +24,12 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 			    android:layout_height="wrap_content" 
 			    android:id="@+id/settings_LangCombo" 
 			    android:layout_width="wrap_content" 
-			    android:layout_marginTop="10dip"></Spinner>
+			    android:layout_marginTop="10dip"
+			    style="@style/day_Spinner"
+			    
+			    ></Spinner>
 		   	<Button 
-			   	android:typeface="monospace" 
+			   	 
 			   	android:text="Login - Settings" 
 			   	android:layout_height="wrap_content" 
 			   	android:layout_width="wrap_content" 
@@ -50,7 +54,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    </TableRow>
 		    
 		    <Button 
-			   	android:typeface="monospace" 
+			   	 
 			   	android:text="GPS" 
 			   	android:layout_height="wrap_content" 
 			   	android:layout_width="wrap_content" 

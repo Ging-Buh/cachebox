@@ -6,7 +6,7 @@
 	    <item name="ListBackground_secend">@color/Day_ListBackground_secend</item>
 	    <item name="ListBackground_select">@color/Day_SelectedBackground</item>
         <item name="android:windowTitleSize">20dip</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">15sp</item>
 	    <item name="android:textColor">#333</item>
 	    <item name="android:textStyle">bold</item>
         <item name="android:buttonStyle">@style/Day_Button</item>
@@ -17,7 +17,8 @@
 		<item name="Compass_rimColorFilter">@color/Day_Compass_rimColorFilter</item>
 		<item name="Compass_faceColorFilter">@color/Day_Compass_faceColorFilter</item>
 		<item name="Compass_TextColor">@color/Day_Compass_TextColor</item>
-		<item name="Compass_N_TextColor">@color/Day_Compass_N_TextColor</item> 
+		<item name="Compass_N_TextColor">@color/Day_Compass_N_TextColor</item>
+		<item name="android:spinnerStyle">@style/day_Spinner</item>  
     </style>
     
     
@@ -27,8 +28,8 @@
 	    <item name="ListBackground_secend">@color/Night_ListBackground_secend</item>
 	    <item name="ListBackground_select">@color/Night_SelectedBackground</item>
         <item name="android:windowTitleSize">20dip</item>
-        <item name="android:textSize">12sp</item>
-	    <item name="android:textColor">#FF0000</item>
+        <item name="android:textSize">15sp</item>
+	    <item name="android:textColor">#aaaaaa</item>
  		<item name="android:textStyle">bold</item>
 	    <item name="android:buttonStyle">@style/Night_Button</item>
 	    <item name="android:buttonStyleToggle">@style/Night_Toggle_Button</item>
@@ -37,7 +38,8 @@
 	    <item name="Compass_rimColorFilter">@color/Night_Compass_rimColorFilter</item>
 		<item name="Compass_faceColorFilter">@color/Night_Compass_faceColorFilter</item>
 		<item name="Compass_TextColor">@color/Night_Compass_TextColor</item>
-		<item name="Compass_N_TextColor">@color/Night_Compass_N_TextColor</item>  
+		<item name="Compass_N_TextColor">@color/Night_Compass_N_TextColor</item>
+		<item name="android:spinnerStyle">@style/night_Spinner</item>    
     </style>
 
 

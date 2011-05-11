@@ -15,4 +15,6 @@
 		<attr name="Compass_TextColor" format="reference|color" /><!-- (255, 0, 0, 0) -->
 		<attr name="Compass_N_TextColor" format="reference|color" /><!-- (255, 200, 0, 0) -->
 	</declare-styleable>
+	
+		
 </resources>
