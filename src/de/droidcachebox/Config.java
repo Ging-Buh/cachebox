@@ -181,7 +181,7 @@ public class Config {
         validateSetting("MapPackFolder", WorkPath + "/repository/maps");
         validateSetting("SpoilerFolder", WorkPath + "/repository/spoilers");
 //        validateSetting("UserImageFolder", Global.AppPath + "\\User\\Media");
-//        validateSetting("TrackFolder", Global.AppPath + "\\User\\Tracks");
+        validateSetting("TrackFolder", WorkPath + "/User/Tracks");
 //        validateSetting("FieldNotesHtmlPath", Global.AppPath + "\\User\\fieldnotes.html");
 //        validateSetting("FieldNotesGarminPath", Global.AppPath + "\\User\\geocache_visits.txt");
 //        validateSetting("GPXExportPath", Global.AppPath + "\\User\\cachebox_export.gpx");

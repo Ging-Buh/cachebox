@@ -126,7 +126,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 	
 	
-	
    
 	
 	
@@ -266,7 +265,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         mapView = new MapView(this, inflater);
         mapView.Initialize();
         mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.GetString("CurrentMapLayer"), Config.GetString("CurrentMapLayer"), "");
-        
+        Global.TrackDistance = Config.GetInt("TrackDistance");
+
         compassView = new CompassView(this, inflater);
         cacheListView = new CacheListView(this);
         waypointView = new WaypointView(this, this);
@@ -582,6 +582,47 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		// TODO Auto-generated method stub
 		Global.Locator.setLocation(location);
 		PositionEventList.Call(location);
+/*
+            if (!initialResortAfterFirstFixCompleted && sender.LastValidPosition.Valid)
+            {
+                if (Global.SelectedCache == null)
+                    Resort(null);
+                initialResortAfterFirstFixCompleted = true;
+            }
+            if (!initialFixSoundCompleted && Global.Locator.NumSatellites > 0)
+            {
+                Sound oSound = new Sound(Global.AppPath + "\\data\\sounds\\GPS_Fix.wav");
+                oSound.Play();
+                initialFixSoundCompleted = true;
+            }
+*/
+            TrackRecorder.recordPosition();
+/*
+            if (curView != null)
+                (curView as ViewPanel).OnPositionChanged(Global.Locator);
+
+            // schau die 50 nächsten Caches durch, wenn einer davon näher ist als der aktuell nächste -> umsortieren und raus
+            // only when showing Map or cacheList
+            if (Global.autoResort && (curView == views[4] || curView == views[2]))
+            {
+                int z = 0;
+                if (!(Global.NearestCache == null))
+                    foreach (Geocaching.Cache cache in Geocaching.Cache.Query)
+                    {
+                        z++;
+                        if (z >= 50)
+                            return;
+                        if (cache.Distance < Global.NearestCache.Distance)
+                        {
+                            Resort(null);
+                            Sound oSound = new Sound(Global.AppPath + "\\data\\sounds\\AutoResort.wav");
+                            oSound.Play();
+                            return;
+                        }
+                    }
+            }
+		
+ */
 	}
 
 	@Override

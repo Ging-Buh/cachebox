@@ -16,7 +16,11 @@ import de.droidcachebox.Global;
 
 import de.droidcachebox.Geocaching.Cache;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.text.method.DateTimeKeyListener;
 
 public class Pack implements Comparable<Pack> {
@@ -317,7 +321,7 @@ public class Pack implements Comparable<Pack> {
         long nextOffset = Long.reverseBytes(reader.readLong());
         long length = nextOffset - tileOffset;
 
-        if (length == 0)
+        if (length == 0)  
           return null;
 
         
@@ -325,12 +329,15 @@ public class Pack implements Comparable<Pack> {
         byte[] buffer = new byte[(int)length];
         stream.read(buffer, 0, (int)length);
         // Bitmap noch mal Kopieren, da sonst bei Google Maps Karten ein Fehler wegen Indexed Bitmap... aufgetreten ist.?.
-        Bitmap result = BitmapFactory.decodeByteArray(buffer, 0, (int)length);
+        Bitmap result2 = BitmapFactory.decodeByteArray(buffer, 0, (int)length);
+        Bitmap result = result2.copy(Config.RGB_565, true);
+        result2.recycle();
 
         return result;
       }
       catch (Exception exc)
       {
+    	  String s = exc.getMessage(); 
 /*#if DEBUG
         Global.AddLog("Pack.LoadFromBoundingBox: Out of memory!" + exc.ToString());
         Global.AddMemoryLog();

@@ -1,5 +1,6 @@
 package de.droidcachebox.Views;
 
+import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -40,12 +41,14 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.widget.ZoomControls;
+import android.widget.ImageView.ScaleType;
 import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
@@ -60,6 +63,7 @@ import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Map.Descriptor.PointD;
 import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Map.Manager;
+import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.Map.Tile;
 
 public class MapView extends RelativeLayout implements SelectedCacheEvent, PositionEvent, ViewOptionsMenu {
@@ -74,6 +78,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	private TextView tvSpeed;
 	private TextView tvLatitude;
 	private TextView tvLongitude;
+	private ImageView ivCompass;
 	
 	private Context myContext;
 	AnimationThread animationThread;
@@ -102,6 +107,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		tvSpeed = (TextView) findViewById(R.id.mapview_panel_speed);
 		tvLatitude = (TextView) findViewById(R.id.mapview_panel_lat);
 		tvLongitude = (TextView) findViewById(R.id.mapview_panel_lon);
+		ivCompass = (ImageView) findViewById(R.id.mapview_panel_compass);
 		tvSpeed.setTextColor(Color.WHITE);
 		tvDistance.setTextColor(Color.WHITE);
 		tvLatitude.setTextColor(Color.WHITE);
@@ -176,6 +182,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
         zoomScaleTimer = new Timer();
         
+		ivCompass.setImageDrawable(Global.Arrows[1]);
+		
 	}
 	
 	final float scale;
@@ -377,6 +385,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
             	lastMouseMoveTickCount = 0;
             	mouseDownPos = new Point(eX, eY);
             	mouseMoved = false;
+            	// Nachlauf stoppen, falls aktiv
+        		Coordinate coord = new Coordinate(Descriptor.TileYToLatitude(Zoom, screenCenter.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, screenCenter.X / (256.0)));
+        		animationThread.moveTo(coord, smoothScrolling.AnimationSteps()*2, false);
+            	
             	MapView_MouseDown(eX, eY);
 //                touch_start(x, y);
 //                invalidate();
@@ -427,7 +439,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	            		PointD nachlauf = new PointD(screenCenter.X, screenCenter.Y);
 	            		nachlauf.X -= dx * newPosFaktor / dt * smoothScrolling.AnimationWait();
 	            		nachlauf.Y -= dy * newPosFaktor / dt * smoothScrolling.AnimationWait();
-	            		Coordinate coord = new Coordinate(Descriptor.TileYToLatitude(Zoom, nachlauf.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, nachlauf.X / (256.0)));
+	            		coord = new Coordinate(Descriptor.TileYToLatitude(Zoom, nachlauf.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, nachlauf.X / (256.0)));
 	            		mouseMoved = false;
 	            		animationThread.moveTo(coord, smoothScrolling.AnimationSteps()*2, false);
             		} else
@@ -452,7 +464,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     public static MapView View = null;
 /*    public delegate void TileLoadedHandler(Bitmap bitmap, Descriptor desc);
     public event TileLoadedHandler OnTileLoaded = null;*/
-//    private int aktuelleRouteCount = 0;
+    private int aktuelleRouteCount = 0;
 
     /// <summary>
     /// Aktuell betrachteter Layer
@@ -713,35 +725,74 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
       if (Config.GetString("RouteOverlay").Length > 0 && File.Exists(Config.GetString("RouteOverlay")))
         Routes.Add(LoadRoute(Config.GetString("RouteOverlay"), new Pen(Color.Purple, 4), Config.GetInt("TrackDistance")));
-      else
-        Routes.Add(new Route(new Pen(Color.Purple, 4), "-empty- Routeoverlay"));
+      else*/
+      Paint paint = new Paint();
+      paint.setColor(Color.WHITE);
+      paint.setStrokeWidth(4);
+      RouteOverlay.Routes.add(new RouteOverlay.Route(paint, "-empty- Routeoverlay"));
 
-      Global.AktuelleRoute = new Route(new Pen(Color.Blue, 4), "actual Track");
+      paint = new Paint();
+      paint.setColor(Color.BLUE);
+      paint.setStrokeWidth(4);
+      
+      Global.AktuelleRoute = new RouteOverlay.Route(paint, "actual Track");
       Global.AktuelleRoute.ShowRoute = true;
-      Routes.Add(Global.AktuelleRoute);
+      RouteOverlay.Routes.add(Global.AktuelleRoute);
 
       //Load Routes for Autoload
-      if (System.IO.Directory.Exists(Config.GetString("TrackFolder") + "\\Autoload"))
+/*
+	        File dir = new File(Config.GetString("MapPackFolder"));
+	        String[] files = dir.list();
+	        if (!(files == null))
+	        {
+		        if (files.length>0)
+		        {
+			        for (String file : files)
+				        {
+				        	MapView.Manager.LoadMapPack(Config.GetString("MapPackFolder") + "/" + file);
+				        }
+		        }
+	        }
+      
+ */
+      String trackPath = Config.GetString("TrackFolder") + "/Autoload";
+      if (Global.DirectoryExists(trackPath))
       {
-        String[] dummy = Directory.GetFiles(Config.GetString("TrackFolder") + "\\Autoload", "*.gpx");
-        foreach (String gpx in dummy)
-        {
-          String gpxFile = gpx.ToLower();
-          if (gpxFile.EndsWith(".gpx"))
-          {
-            Color[] ColorField = new Color[8] { Color.Red, Color.Yellow, Color.Black, Color.DarkOrange, Color.Green, Color.LightBlue, Color.MediumAquamarine, Color.Gray };
-            Color TrackColor;
-            TrackColor = ColorField[(Routes.Count - 2) % 8];
-            Routes.Add(LoadRoute(gpxFile, new Pen(TrackColor, 4), Config.GetInt("TrackDistance")));
-          }
-
-        }
+    	  File dir = new File(trackPath);
+    	  String[] files = dir.list();
+    	  if (!(files == null))
+    	  {
+    		  if (files.length>0)
+    		  {
+    			  for (String file : files)
+    			  {
+    				  int[] ColorField = new int[8];
+    				  ColorField[0] = Color.RED;
+    				  ColorField[1] = Color.YELLOW;
+    				  ColorField[2] = Color.BLACK;
+    				  ColorField[3] = Color.LTGRAY;
+    				  ColorField[4] =  Color.GREEN;
+    				  ColorField[5] = Color.BLUE;
+    				  ColorField[6] = Color.CYAN;
+    				  ColorField[7] = Color.GRAY;
+    				  int TrackColor;
+    				  TrackColor = ColorField[(RouteOverlay.Routes.size() - 2) % 8];
+    				  
+    				  paint = new Paint();
+    				  paint.setColor(TrackColor);
+    				  paint.setStrokeWidth(4);
+    				  RouteOverlay.Routes.add(RouteOverlay.LoadRoute(trackPath + "/" + file, paint, Config.GetInt("TrackDistance")));
+    				  
+    			  }
+    		  }
+    	  }
       }
       else
       {
-        System.IO.Directory.CreateDirectory(Config.GetString("TrackFolder") + "\\Autoload");
+    	  File sddir = new File(trackPath);
+    	  sddir.mkdirs();
       }
-*/
+
     }
 /*
     void MapView_MouseWheel(object sender, MouseEventArgs e)
@@ -751,15 +802,14 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       else
         zoomOut();
     }
-
-    void MapView_OnTileLoaded(Bitmap bitmap, Descriptor desc)
+*/
+    void OnTileLoaded(Bitmap bitmap, Descriptor desc)
     {
-      // wegen dem Fehler mit den Indexed bitmap.
-      Graphics graphics = Graphics.FromImage(bitmap);
-      RenderRoute(graphics, bitmap, desc);
-
+//        canvas = new Canvas(bitmap);
+//        RouteOverlay.RenderRoute(canvas, bitmap, desc, dpiScaleFactorX, dpiScaleFactorY);
+/*
       if (nightMode)
-      {
+      { 
         unsafe
         {
           Rectangle bounds = new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height);
@@ -774,10 +824,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
           bitmap.UnlockBits(bitmapData);
         };
       };
-
-      graphics.Dispose();
-    }
 */
+
+    }
+
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
 //		if (Global.autoResort)
@@ -835,7 +885,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     
     public void InitializeMap()
     {
-    	gcLogin = "Ging-Buh";
+    	gcLogin = Config.GetString("GcLogin");
     	mapMaxCachesDisplay = 50;
     	mapMaxCachesDisplayLarge = 100;
     	zoomCross = 15;
@@ -949,6 +999,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       Descriptor desc = (Descriptor) state;
 
       Bitmap bitmap = Manager.LoadLocalBitmap(CurrentLayer, desc);
+      Canvas canv = new Canvas(bitmap);
+      RouteOverlay.RenderRoute(canv, bitmap, desc, dpiScaleFactorX, dpiScaleFactorY);
 /*      if (bitmap != null)
       {
         // error while painting bitmaps with indexed format (png from Mapnik
@@ -992,8 +1044,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
       addLoadedTile(desc, bitmap, tileState);
 
-/*      if (OnTileLoaded != null)
-        OnTileLoaded(bitmap, desc);*/
+/*      if (OnTileLoaded != null)*/
+//      OnTileLoaded(bitmap, desc);
 
       // Kachel erfolgreich geladen. Wenn die Kachel sichtbar ist
       // kann man die Karte ja gut mal neu rendern!
@@ -2079,6 +2131,22 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	    	tvLatitude.setText("");
 	    	tvLongitude.setText("");
         }
+
+      
+        int aWidth = buttonTrackPosition.getMeasuredHeight();
+        int aHeight= ivCompass.getHeight();
+        aWidth = 100;
+        aHeight = 100;
+        ivCompass.setScaleType(ScaleType.MATRIX);
+		Matrix matrix = new Matrix();
+        double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, Global.SelectedCache().Latitude(), Global.SelectedCache().Longitude());
+        double relativeBearing = bearing - Global.Locator.getHeading();
+		matrix.setRotate((float)relativeBearing);
+		matrix.postScale(0.8f, 0.8f);
+		matrix.preTranslate(-aWidth / 2, -aHeight / 2);
+		matrix.postTranslate(aWidth / 2, aHeight / 2);
+		ivCompass.setImageMatrix(matrix);
+		ivCompass.invalidate();
     }
     private void renderCompass()
     {
@@ -2262,7 +2330,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			}	
 			catch (Exception exc)
 			{
-//				String forDebug = exc.getMessage();
+
+				String forDebug = exc.getMessage();
 			}
 			finally
 			{
@@ -3698,52 +3767,53 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	public void PositionChanged(Location location) {
 		Global.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());
         // Muss der aktive Track gezeichnet werden?
-/*        if (Global.AktuelleRoute.ShowRoute)
+        if (Global.AktuelleRoute.ShowRoute)
         {
             // Map Tiles aktualisieren, wenn der AktiveTrack erweitert wurde!
-            if ((Global.AktuelleRoute.Points.Count > aktuelleRouteCount) && (Global.AktuelleRoute.Points.Count > 1))
+            if ((Global.AktuelleRoute.Points.size() > aktuelleRouteCount) && (Global.AktuelleRoute.Points.size() > 1))
             {
                 // Liste aller neuen Punkte erstellen incl. dem letzten.
-                List<PointD> punkte = new List<PointD>();
-                for (int i = aktuelleRouteCount - 1; i < Global.AktuelleRoute.Points.Count; i++)
+                ArrayList<PointD> punkte = new ArrayList<PointD>();
+                for (int i = aktuelleRouteCount - 1; i < Global.AktuelleRoute.Points.size(); i++)
                 {
                     if (i < 0) continue;
-                    punkte.Add(Global.AktuelleRoute.Points[i]);
+                    punkte.add(Global.AktuelleRoute.Points.get(i));
                 }
-                aktuelleRouteCount = Global.AktuelleRoute.Points.Count;
+                aktuelleRouteCount = Global.AktuelleRoute.Points.size();
 
-                Pen pen = Global.AktuelleRoute.Pen;
-                lock (loadedTiles)
+                Paint paint = Global.AktuelleRoute.paint;
+                synchronized (loadedTiles)
                 {
-                    foreach (KeyValuePair<Descriptor, Tile> tile in loadedTiles)
+                    for (long hash : loadedTiles.keySet())
                     {
-                        if (tile.Value.Image == null) continue;
-                        Graphics graphics = Graphics.FromImage(tile.Value.Image);
+                    	Tile tile = loadedTiles.get(hash);
+                        if (tile.Image == null) continue;
+                        Canvas canvas = new Canvas(tile.Image);
 
-                        double tileX = tile.Key.X * 256 * dpiScaleFactorX;
-                        double tileY = tile.Key.Y * 256 * dpiScaleFactorY;
+                        double tileX = tile.Descriptor.X * 256 * dpiScaleFactorX;
+                        double tileY = tile.Descriptor.Y * 256 * dpiScaleFactorY;
 
-                        double adjustmentX = Math.Pow(2, tile.Key.Zoom - projectionZoomLevel) * 256 * dpiScaleFactorX;
-                        double adjustmentY = Math.Pow(2, tile.Key.Zoom - projectionZoomLevel) * 256 * dpiScaleFactorY;
+                        double adjustmentX = Math.pow(2, tile.Descriptor.Zoom - RouteOverlay.projectionZoomLevel) * 256 * dpiScaleFactorX;
+                        double adjustmentY = Math.pow(2, tile.Descriptor.Zoom - RouteOverlay.projectionZoomLevel) * 256 * dpiScaleFactorY;
 
-                        for (int j = 0; j < (punkte.Count - 1); j++)
+                        for (int j = 0; j < (punkte.size() - 1); j++)
                         {
-                            graphics.DrawLine(pen, (int)(punkte[j].X * adjustmentX - tileX),
-                                (int)(punkte[j].Y * adjustmentY - tileY),
-                                (int)(punkte[j + 1].X * adjustmentX - tileX),
-                                (int)(punkte[j + 1].Y * adjustmentY - tileY));
+                        	canvas.drawLine((int)(punkte.get(j).X * adjustmentX - tileX), 
+                        					(int)(punkte.get(j).Y * adjustmentY - tileY), 
+                        					(int)(punkte.get(j + 1).X * adjustmentX - tileX), 
+                        					(int)(punkte.get(j + 1).Y * adjustmentY - tileY), paint);
                         }
-                        if (punkte.Count > 0)
+                        if (punkte.size() > 0)
                         {
-                            double x = (punkte[punkte.Count - 1].X * adjustmentX - tileX);
-                            double y = (punkte[punkte.Count - 1].Y * adjustmentY - tileY);
+                            double x = (punkte.get(punkte.size() - 1).X * adjustmentX - tileX);
+                            double y = (punkte.get(punkte.size() - 1).Y * adjustmentY - tileY);
                             //                            graphics.DrawString(x.ToString() + " - " + y.ToString(), fontSmall, new SolidBrush(Color.Black), 20, 20);
                         }
                     }
                 }
             }
         }
-*/
+
         if (lockPosition >= 1/* && !animationTimer.Enabled*/)
             setCenter(new Coordinate(Global.LastValidPosition));
 
@@ -3855,8 +3925,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	long lastCompassTick = -99999;
 	@Override
 	public void OrientationChanged(float heading) {
-		if (!alignToCompass)
-			return;
 		anzCompassValues++;
 		compassValue += heading;
 
@@ -3876,7 +3944,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		anzCompassValues = 0;
 		compassValue = 0;
 
-		changeOrientation(heading);
+		if (alignToCompass)
+			changeOrientation(heading);
 		lastCompassTick = aktTick;
 		
         refreshCompassPanel();

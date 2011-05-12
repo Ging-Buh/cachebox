@@ -24,6 +24,7 @@ import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
 import de.droidcachebox.Locator.Locator;
+import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.TranslationEngine.LangStrings;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
@@ -37,7 +38,8 @@ public class Global {
     
     // for MapView
 	public static SmoothScrollingTyp SmoothScrolling = SmoothScrollingTyp.normal;
-    
+	public static RouteOverlay.Route AktuelleRoute = null;
+    public static long TrackDistance;
     
     
     public static LangStrings Translations = new LangStrings();

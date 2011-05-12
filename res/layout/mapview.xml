@@ -5,9 +5,9 @@
   android:layout_height="match_parent">
     <SurfaceView android:layout_alignParentLeft="true" android:id="@+id/mapview_surface" android:layout_width="match_parent" android:layout_height="match_parent"></SurfaceView>
     <LinearLayout android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_toLeftOf="@+id/mapview_trackposition" android:layout_alignParentLeft="true" android:id="@+id/mapview_compasspanel" android:layout_marginLeft="5dip" android:layout_marginRight="5dip" android:gravity="center_vertical" android:layout_alignTop="@+id/mapview_trackposition">
-        <ImageView android:layout_width="wrap_content" android:src="@drawable/icon" android:id="@+id/mapview_panel_compass" android:layout_height="wrap_content"></ImageView>
+        <ImageView android:src="@drawable/icon" android:id="@+id/mapview_panel_compass" android:layout_width="45dip" android:layout_height="45dip"></ImageView>
         <LinearLayout android:layout_height="match_parent" android:id="@+id/linearLayout1" android:orientation="vertical" android:layout_width="match_parent" android:layout_weight="1">
-            <TextView android:id="@+id/mapview_panel_distance" android:layout_width="wrap_content" android:text="TextView" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center_vertical"></TextView>
+            <TextView android:id="@+id/mapview_panel_distance" android:layout_width="wrap_content" android:text="TextView" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center_vertical" android:textStyle="bold"></TextView>
             <TextView android:id="@+id/mapview_panel_speed" android:layout_width="wrap_content" android:text="TextView" android:layout_weight="1" android:layout_height="match_parent" android:gravity="center_vertical"></TextView>
         </LinearLayout>
         <LinearLayout android:layout_height="match_parent" android:id="@+id/linearLayout2" android:orientation="vertical" android:layout_width="wrap_content">
