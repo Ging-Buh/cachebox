@@ -342,8 +342,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         
         fillViewList();
         if (aktViewId != -1)
-        {// Zeige letzte gespeicherte View beim neustart der Activity
+        {
+        	// Zeige letzte gespeicherte View beim neustart der Activity
         	showView(aktViewId);
+        	
+        	// Initialisiere Icons neu.
+        	 Global.InitIcons(this, Config.GetBool("nightMode"));
         	
         }
     }

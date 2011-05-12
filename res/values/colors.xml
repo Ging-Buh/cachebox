@@ -27,7 +27,7 @@
 	    <color name="Night_ListSeperator">#8B9D5F</color>
 	    <color name="Night_EmptyBackground">#8E8E8E</color>	    
 	    <color name="Night_Foreground">#FFFFFF</color>	    
-	    <color name="Night_SelectedBackground">#ffd240</color>	    
+	    <color name="Night_SelectedBackground">#b08f2c</color>	    
 	    <color name="Night_TitleBarColor">#8B9D5F</color>	    
 	    <color name="Night_TitleBarText">#FFFFFF</color>	    
 		<color name="Night_ColorCompassPanel">#64000000</color>

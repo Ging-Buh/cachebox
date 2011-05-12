@@ -277,8 +277,13 @@ public class Global {
     		return f.mkdirs();
     	}
     }
-    public static void InitIcons(Context context)
+    
+    // N = Nachtmodus! Wenn true werden andere Icons geladen!
+    public static void InitIcons(Context context, Boolean N)
     {
+    	 NewMapIcons = new ArrayList<ArrayList<Drawable>>();
+    	 NewMapOverlay = new ArrayList<ArrayList<Drawable>>();
+    	    
     	
     	Resources res = context.getResources();
         // NewMapIcons[0] contains the 8x8 Bitmaps
@@ -349,7 +354,7 @@ public class Global {
         NewMapOverlay.get(2).add(res.getDrawable(R.drawable.map_20x20_selected_deact));
     
         Icons = new Drawable[] { 
-        		res.getDrawable(R.drawable.bug),
+        		res.getDrawable(N? R.drawable.night_tb : R.drawable.day_tb ),
         		res.getDrawable(R.drawable.addwaypoint),
         		res.getDrawable(R.drawable.smilie_gross),
         		res.getDrawable(R.drawable.download),
