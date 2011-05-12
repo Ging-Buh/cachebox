@@ -11,10 +11,16 @@ import java.util.Date;
 import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.UnitFormatter;
+import de.droidcachebox.Components.StringFunctions;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Views.MapView;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationManager;
 
@@ -748,4 +754,164 @@ public class Cache implements Comparable<Cache> {
     	
     	return Type.ordinal();
     }
+    
+    
+    
+//Draw Metods
+    public enum DrawStyle
+    {
+    	all,		// alle infos
+    	withoutBearing;	//ohne Richtungs-Pfeil
+    };
+    
+    public void DrawInfo(Canvas canvas,int height, int width,int iconSize,int lineHeight, int rightBorder, int BackgroundColor, DrawStyle drawStyle)
+    {
+      	int x=0;
+      	int y=0;
+      	Canvas MesureCanvas = new Canvas();
+      	int VoteWidth = Global.PutImageTargetHeight(MesureCanvas, Global.StarIcons[(int)(this.Rating * 2)],-90, 0, 0, (int) (height*0.65));
+      	MesureCanvas = null;
+      	Boolean notAvailable = (!this.Available && !this.Archived);
+        Boolean Night = Config.GetBool("nightMode");
+        Boolean GlobalSelected = this == Global.SelectedCache();
+        int IconPos = iconSize - (int) (iconSize/1.5);
+        
+        
+        Paint DrawBackPaint = new Paint(Global.Paints.ListBackground);
+        DrawBackPaint.setColor(BackgroundColor);
+        canvas.drawPaint(DrawBackPaint);
+	 
+        Paint DTPaint =  Night? Global.Paints.Night.Text.noselected: Global.Paints.Day.Text.noselected ;
+      	      
+        
+        if (this.Rating > 0)
+            Global.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Rating * 2)],-90, 2, 0, (int) (height*0.65));
+
+       Paint NamePaint = new Paint( (GlobalSelected)? Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected : Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected);  
+       if(notAvailable)
+       {
+	       NamePaint.setColor(Color.RED);
+	       NamePaint.setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+       }
+       
+       String[] WrapText = StringFunctions.TextWarpArray(this.Name, 23);
+       
+       
+       String Line1 =WrapText[0];
+       
+       canvas.drawText(Line1, VoteWidth + iconSize + 5, 27, NamePaint);
+       if (!StringFunctions.IsNullOrEmpty(WrapText[1]))
+       {
+    	   String Line2 =WrapText[1];
+    	   canvas.drawText(Line2, VoteWidth + iconSize + 5, 50, NamePaint);
+       }
+          
+       if (drawStyle != DrawStyle.withoutBearing) DrawBearing(canvas, lineHeight, width, rightBorder, DTPaint);
+       
+      
+        Paint Linepaint = Night? Global.Paints.Night.ListSeperator : Global.Paints.Day.ListSeperator;
+        canvas.drawLine(x, y + height - 2, width, y + height - 2,Linepaint); 
+        canvas.drawLine(x, y + height - 3, width, y + height - 3,Linepaint);
+        
+          
+        
+        if (this.MysterySolved())
+        {
+        	Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[19], VoteWidth, 0 , iconSize); 
+        }
+        else
+        {
+        	Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[this.Type.ordinal()], VoteWidth,  0 , iconSize); 
+        }
+        
+        
+          if (this.Found())
+          {
+        	  
+              Global.PutImageTargetHeight(canvas, Global.Icons[2], IconPos, IconPos, iconSize/2);//Smile
+          }
+              
+
+          if (this.Favorit())
+         {
+            Global.PutImageTargetHeight(canvas, Global.Icons[19], 0, y, lineHeight);
+         }
+
+         
+
+          if (this.Archived)
+          {
+             Global.PutImageTargetHeight(canvas, Global.Icons[24], 0, y, lineHeight);
+          }
+
+         if (this.Owner.equals(Config.GetString("GcLogin")) && !(Config.GetString("GcLogin").equals("")))
+           {
+               Global.PutImageTargetHeight(canvas,Global.Icons[17], IconPos, IconPos, iconSize/2);
+           }
+
+
+        
+
+        //  if (cache.ListingChanged)
+        //  {
+        //      Global.PutImageTargetHeight(canvas, Global.MapIcons[22], 0, y + imgSize - 15, lineHeight);
+        //  }
+
+        
+        int left = 5;
+        int space = (int) (DTPaint.getTextSize()*0.8);
+        int tab = (int) (DTPaint.getTextSize());
+        canvas.drawText("S",left,(int) ((lineHeight * 2) + (lineHeight/1.4) ) , DTPaint);
+        	left += space;
+        	left += Global.PutImageTargetHeight(canvas, Global.SizeIcons[(int)(this.Size)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
+        
+        	left += tab;	
+        canvas.drawText("D",left,(int) ((lineHeight * 2) + (lineHeight/1.4) ) , DTPaint);
+          left += space;
+
+            left += Global.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Difficulty * 2)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
+
+            left += tab;
+
+         canvas.drawText("T", left,(int) ((lineHeight * 2) + (lineHeight/1.4) ) , DTPaint);
+         left += space;
+         left += Global.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Terrain * 2)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
+
+
+          int numTb = this.NumTravelbugs;
+         if (numTb > 0)
+          {
+              int tbWidth = Global.PutImageTargetHeight(canvas, Global.Icons[0], width - rightBorder, y + lineHeight, lineHeight);
+
+              if (numTb > 1)
+            	  canvas.drawText("x" + String.valueOf(numTb), width - rightBorder + tbWidth+2, (int)( y + lineHeight + (lineHeight/1.4)) , DTPaint);
+          }
+        	
+    	
+    }
+    
+    private void DrawBearing(Canvas canvas, int lineHeight, int width, int rightBorder, Paint DTPaint)
+    {
+    	if (Global.LastValidPosition.Valid || Global.Marker.Valid)
+        {
+            Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
+            double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
+
+            // FillArrow: Luftfahrt
+            // Bearing: Luftfahrt
+            // Heading: Im Uhrzeigersinn, Geocaching-Norm
+
+            double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, this.Latitude(), this.Longitude());
+            double relativeBearing = bearing - heading;
+         //   double relativeBearingRad = relativeBearing * Math.PI / 180.0;
+
+		        // Draw Arrow
+		       Global.PutImageTargetHeight(canvas, Global.Arrows[1],relativeBearing,(int)( width - rightBorder/2) ,(int)(lineHeight /8), (int)(lineHeight*2.4));
+
+		       canvas.drawText(UnitFormatter.DistanceString(this.Distance()), width - rightBorder + 2, (int) ((lineHeight * 2) + (lineHeight/1.4)), DTPaint);
+       }
+    }
+    
+    
+    
 }

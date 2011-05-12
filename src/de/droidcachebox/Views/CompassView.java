@@ -20,11 +20,14 @@ import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+
 
 public class CompassView extends FrameLayout implements ViewOptionsMenu,PositionEvent, SelectedCacheEvent {
 	private Context context;
@@ -43,7 +46,6 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 		
 		 compassControl = (CompassControl)findViewById(R.id.Compass);
 		 DescriptionTextView = (CacheInfoControl)findViewById(R.id.CompassDescriptionView);
-		 
 		
 }
 	
@@ -56,6 +58,9 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     windowW = getMeasuredWidth();
     windowH = getMeasuredHeight();
+    
+    DescriptionTextView.setHeight(windowW/3);
+    
     }
 	
 	
@@ -67,7 +72,8 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 		{
 			
 			aktCache = cache;
-			DescriptionTextView.setCache(aktCache);
+			
+			DescriptionTextView.setCache(aktCache, Global.getColor(R.attr.myBackground));
 		}
 	}
 
@@ -84,14 +90,16 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 	}
 
 	@Override
-	public void OnShow() {
-		
+	public void OnShow() 
+	{
 		
 	}
 
 	@Override
-	public void OnHide() {
-			
+	public void OnHide() 
+	{
+		
+	
 	}
 
 	@Override

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <drawable name="EmptyBackgroundNight">#48573e</drawable>
-    <drawable name="EmptyBackgroundDay">#CAD4B2</drawable>
+    
     <drawable name="MapViewPanel">#40000000</drawable>
 
 <!-- Day -->
+		<color name="EmptyBackgroundDay">#CAD4B2</color>
 	    <color name="Day_ListBackground">#FFFFFF</color>
 	    <color name="Day_ListBackground_secend">#EEEEEE</color>
 	    <color name="Day_ListSeperator">#8B9D5F</color>	    
@@ -21,6 +21,7 @@
 	    <color name="Day_Compass_N_TextColor">#EE0000</color>
 	    
 <!-- Night -->
+		<color name="EmptyBackgroundNight">#48573e</color>
 	    <color name="Night_ListBackground">#000000</color>
 	    <color name="Night_ListBackground_secend">#444444</color>
 	    <color name="Night_ListSeperator">#8B9D5F</color>

@@ -74,6 +74,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -86,7 +87,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	private ImageButton buttonInfo;
 	private ImageButton buttonMisc;
 	private FrameLayout frame;
-	
+	private RelativeLayout TopLayout;
 	private FrameLayout frameCacheName;
 	
 	
@@ -234,7 +235,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         cacheNameView = new CacheNameView(this);
         frameCacheName.addView(cacheNameView);
         
-             
+        TopLayout=(RelativeLayout)this.findViewById(R.id.layoutTop);     
         
         
         frame = (FrameLayout)this.findViewById(R.id.layoutContent);
@@ -512,6 +513,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     		return true;
     	case R.id.miCompassView:
     		showView(compassView);
+    		HideLayoutTop();
     		return true;	
     		
 		default:
@@ -534,6 +536,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	frame.addView((View) aktView);
     	aktView.OnShow();  
     	aktViewId=ViewList.indexOf(aktView);
+    	ShowLayoutTop();
     }
     
     @Override
@@ -652,6 +655,14 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		
 	}
 
+	private void HideLayoutTop()
+	{
+		TopLayout.setVisibility(View.GONE);
+	}
 
-
+	private void ShowLayoutTop()
+	{
+		TopLayout.setVisibility(View.VISIBLE);
+	}
+	
 }

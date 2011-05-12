@@ -50,6 +50,7 @@ public class Global {
     public static Drawable[] Icons = null;
     public static Drawable[] SmallStarIcons;
     public static Drawable[] StarIcons;
+    public static Drawable[] SizeIcons;
     public static Drawable[] CacheIconsBig;
     public static Drawable[] BatteryIcons;
     public static Drawable[] LogIcons;
@@ -411,6 +412,14 @@ public class Global {
         		res.getDrawable(R.drawable.stars4_5),
         		res.getDrawable(R.drawable.stars5) };
         
+        SizeIcons = new Drawable[] 
+                { 
+        		res.getDrawable(R.drawable.micro),
+        		res.getDrawable(R.drawable.small),
+        		res.getDrawable(R.drawable.regular),
+        		res.getDrawable(R.drawable.large),
+        		res.getDrawable(R.drawable.other)
+        		};
        
         BatteryIcons = new Drawable[] { 
         		res.getDrawable(R.drawable.bat0),
@@ -516,7 +525,7 @@ public class Global {
 
     
     static TypedArray themeStyles;
-    final private static int[] colorAttrs = new int[]{R.attr.ListBackground, R.attr.ListBackground_secend, R.attr.ListBackground_select};
+    final private static int[] colorAttrs = new int[]{R.attr.ListBackground, R.attr.ListBackground_secend, R.attr.ListBackground_select,R.attr.myBackground};
     
     public static void initTheme(Context context)
     {
