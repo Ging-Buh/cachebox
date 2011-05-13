@@ -54,6 +54,7 @@ import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.TrackRecorder;
 import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
@@ -985,8 +986,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       Descriptor desc = (Descriptor) state;
 
       Bitmap bitmap = Manager.LoadLocalBitmap(CurrentLayer, desc);
-      Canvas canv = new Canvas(bitmap);
-      RouteOverlay.RenderRoute(canv, bitmap, desc, dpiScaleFactorX, dpiScaleFactorY);
+/*      Canvas canv = new Canvas(bitmap);
+      RouteOverlay.RenderRoute(canv, bitmap, desc, dpiScaleFactorX, dpiScaleFactorY);*/
+      
+      
 /*      if (bitmap != null)
       {
         // error while painting bitmaps with indexed format (png from Mapnik
@@ -3786,12 +3789,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	public boolean ItemSelected(MenuItem item) {
 		switch (item.getItemId())
 		{
-			case R.id.plus: 
-				zoomIn();
-				return true;
-			case R.id.minus:
-				zoomOut();
-				return true;
 			case 0:
 				SetCurrentLayer(MapView.Manager.GetLayerByName(item.getTitle().toString(), item.getTitle().toString(), ""));
 				return true;
@@ -3824,6 +3821,15 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				return true;
 			case R.id.mapview_smooth_superfine:
 				Global.SmoothScrolling = SmoothScrollingTyp.superfine;
+				return true;
+			case R.id.mapview_startrecording:
+				TrackRecorder.StartRecording();
+				return true;
+			case R.id.mapview_pauserecording:
+				TrackRecorder.PauseRecording();
+				return true;
+			case R.id.mapview_stoprecording:
+				TrackRecorder.StopRecording();
 				return true;
 		}
 		return false;
@@ -3869,6 +3875,15 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				if (mi2 != null)
 					mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.superfine);
 			}
+			mi = menu.findItem(R.id.mapview_startrecording);
+			if (mi != null)
+				mi.setEnabled(!TrackRecorder.recording);
+			mi = menu.findItem(R.id.mapview_pauserecording);
+			if (mi != null)
+				mi.setEnabled(TrackRecorder.recording);
+			mi = menu.findItem(R.id.mapview_stoprecording);
+			if (mi != null)
+				mi.setEnabled(TrackRecorder.recording);
 		} catch (Exception exc)
 		{
 			return;

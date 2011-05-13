@@ -368,9 +368,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
     @Override
     public void onDestroy() {
-            this.mWakeLock.release();
-    		counter.cancel();
-            super.onDestroy();
+    		if (isFinishing())
+    		{
+                this.mWakeLock.release();
+        		counter.cancel();
+        		TrackRecorder.StopRecording();
+    		}
+			super.onDestroy();
     }
     
     @Override

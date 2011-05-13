@@ -328,10 +328,8 @@ public class Pack implements Comparable<Pack> {
         stream.skip(tileOffset - offset - 16);
         byte[] buffer = new byte[(int)length];
         stream.read(buffer, 0, (int)length);
-        // Bitmap noch mal Kopieren, da sonst bei Google Maps Karten ein Fehler wegen Indexed Bitmap... aufgetreten ist.?.
-        Bitmap result2 = BitmapFactory.decodeByteArray(buffer, 0, (int)length);
-        Bitmap result = result2.copy(Config.RGB_565, true);
-        result2.recycle();
+
+        Bitmap result = BitmapFactory.decodeByteArray(buffer, 0, (int)length);
 
         return result;
       }

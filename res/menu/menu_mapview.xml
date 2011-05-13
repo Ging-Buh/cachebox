@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="+" android:id="@+id/plus"></item>
-    <item android:title="-" android:id="@+id/minus"></item>
+    <item android:title="Start Recording" android:id="@+id/mapview_startrecording"></item>
+    <item android:title="Pause Recording" android:id="@+id/mapview_pauserecording"></item>
+    <item android:title="Stop Recording" android:id="@+id/mapview_stoprecording"></item>
     <item android:id="@+id/layer" android:title="Layer">
         <menu>
             <item android:title="Google Earth" android:id="@+id/googleearth" android:checkable="true"></item>
@@ -17,6 +18,6 @@
     	    <item android:id="@+id/mapview_smooth_normal" android:title="Normal" android:checkable="true"></item>
         	<item android:id="@+id/mapview_smooth_fine" android:title="Fine" android:checkable="true"></item>
         	<item android:id="@+id/mapview_smooth_superfine" android:title="Superfine" android:checkable="true"></item>
-        </menu>
-    </item>
+        </menu> 
+	</item>
 </menu>
