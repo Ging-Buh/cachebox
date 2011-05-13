@@ -281,4 +281,11 @@ public class Coordinate implements Serializable {
 
         return -(Math.atan2(y, x) * 180.0 / Math.PI);*/
     }
+    
+    public float Distance(Coordinate coord)
+    {
+        float[] dist = new float[4];
+        Location.distanceBetween(Latitude, Longitude, coord.Latitude, coord.Longitude, dist);
+        return dist[0];    	
+    }
 }

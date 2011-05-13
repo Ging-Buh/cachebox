@@ -46,6 +46,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.ZoomControls;
 import android.widget.ImageView.ScaleType;
@@ -78,7 +79,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	private TextView tvSpeed;
 	private TextView tvLatitude;
 	private TextView tvLongitude;
-	private ImageView ivCompass;
 	
 	private Context myContext;
 	AnimationThread animationThread;
@@ -102,22 +102,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		this.addView(mapviewLayout);
 
 		surface = (SurfaceView) findViewById(R.id.mapview_surface);
-		tlPanel = (LinearLayout) findViewById(R.id.mapview_compasspanel);
-		tvDistance = (TextView) findViewById(R.id.mapview_panel_distance);
-		tvSpeed = (TextView) findViewById(R.id.mapview_panel_speed);
-		tvLatitude = (TextView) findViewById(R.id.mapview_panel_lat);
-		tvLongitude = (TextView) findViewById(R.id.mapview_panel_lon);
-		ivCompass = (ImageView) findViewById(R.id.mapview_panel_compass);
-		tvSpeed.setTextColor(Color.WHITE);
-		tvDistance.setTextColor(Color.WHITE);
-		tvLatitude.setTextColor(Color.WHITE);
-		tvLongitude.setTextColor(Color.WHITE);
-		tvDistance.setText("");
-		tvSpeed.setText("-----");
-		tvLatitude.setText("");
-		tvLongitude.setText("");
-		tlPanel.setBackgroundColor(Color.parseColor("#80000000"));
-		
+
 		setWillNotDraw(false);
 		
 		holder = surface.getHolder();
@@ -182,8 +167,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
         zoomScaleTimer = new Timer();
         
-		ivCompass.setImageDrawable(Global.Arrows[1]);
-		
 	}
 	
 	final float scale;
@@ -289,175 +272,178 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	if (lockPosition == 2) 
     		return true;
     	
-    	int eX = (int)event.getX(0);
-    	int eY = (int)event.getY(0);
-    	// bei gedrehter Map hier die Punkte drehen
-
-    	animationThread.stopMove();
-    	
-    	if (alignToCompass)
+    	synchronized (this)
     	{
-	    	Point rot = rotate(new Point(eX, eY), canvasHeading);
-	    	eX = rot.x;
-	    	eY = rot.y;
-    	}
-    	
-        if (event.getPointerCount() > 1)
-        {
-        	int eX2 = (int)event.getX(1);
-        	int eY2 = (int)event.getY(1);
-        	if (alignToCompass)
-        	{
-	        	Point rot = rotate(new Point(eX2, eY2), canvasHeading);
-	        	eX2 = rot.x;
-	        	eY2 = rot.y;
-        	}
-        	
-        	
-        	
-        	double multiTouchDist = Math.sqrt(Math.pow(eX2 - eX, 2) + Math.pow(eY2 - eY, 2));
-        	if (!multiTouch)
-        		lastMultiTouchDist = multiTouchDist;
-//        debugString1 = "" + multiTouchDist;
-//        debugString2 = "" + lastMultiTouchDist;
-        	if (Zoom >= maxZoom)
-        	{
-        		if (multiTouchDist > lastMultiTouchDist)
-        			multiTouchDist = lastMultiTouchDist;
-        	}
-        	if (Zoom <= minZoom)
-        	{
-        		if (multiTouchDist < lastMultiTouchDist)
-        			multiTouchDist = lastMultiTouchDist;
-        	
-        	}
-
-        	if (multiTouch)
-        	{
-        		if (lastMultiTouchDist > multiTouchDist * 1.5)
-        		{
-        			zoomOutDirect(false);
-       				lastMultiTouchDist /= 2; //multiTouchDist;
-        		}
-        		else if (lastMultiTouchDist < multiTouchDist * 0.75)
-        		{
-        			zoomInDirect(false);
-               		lastMultiTouchDist *= 2; //multiTouchDist;
-        		}
-        	} else
-    			lastMultiTouchDist = multiTouchDist;
-
-        	
-        	if (lastMultiTouchDist > 0)
-        		multiTouchFaktor = multiTouchDist / lastMultiTouchDist;
-        	else 
-        		multiTouchFaktor = 1;
-//        	debugString1 = "f: " + multiTouchFaktor;
-        	
-        	eX = (int)(eX + (eX2 - eX) / 2);
-        	eY = (int)(eY + (eY2 - eY) / 2);
-        	if (!multiTouch)
-        	{
-        		dragStartX = lastClickX = eX;
-        		dragStartY = lastClickY = eY;
-        	}
-        	multiTouch = true;
-        	mouseMoved = true;
-        } else
-        {
-        	if(multiTouch)
-        	{
-        		dragStartX = lastClickX = eX;
-        		dragStartY = lastClickY = eY;        		
-        	}
-        	multiTouch = false;
-        	if (renderZoomScaleActive)
-        		startZoomScaleTimer();
-        }
-        
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-            	lastMouseMoveTickPos = 0;
-            	lastMouseMoveTick = SystemClock.uptimeMillis();
-            	lastMouseMoveTickDiff[lastMouseMoveTickPos] = 0;
-            	lastMousePos = new Point(eX, eY);
-            	lastMouseDiff[lastMouseMoveTickPos] = new Point(0, 0);
-            	lastMouseMoveTickCount = 0;
-            	mouseDownPos = new Point(eX, eY);
-            	mouseMoved = false;
-            	// Nachlauf stoppen, falls aktiv
-        		Coordinate coord = new Coordinate(Descriptor.TileYToLatitude(Zoom, screenCenter.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, screenCenter.X / (256.0)));
-        		animationThread.moveTo(coord, smoothScrolling.AnimationSteps()*2, false);
-            	
-            	MapView_MouseDown(eX, eY);
-//                touch_start(x, y);
-//                invalidate();
-                break;
-            case MotionEvent.ACTION_MOVE:
-            	lastMouseMoveTickDiff[lastMouseMoveTickPos] = SystemClock.uptimeMillis() - lastMouseMoveTick;
-            	lastMouseMoveTick = SystemClock.uptimeMillis();
-            	lastMouseDiff[lastMouseMoveTickPos] = new Point(eX - lastMousePos.x, eY - lastMousePos.y);
-            	lastMouseMoveTickPos++;
-            	lastMouseMoveTickCount++;
-            	if (lastMouseMoveTickPos > 4)
-            		lastMouseMoveTickPos = 0;
-            	lastMousePos = new Point(eX, eY);
-            	if (!mouseMoved)
-            	{
-            		Point akt = new Point(eX, eY);
-            		mouseMoved = ((Math.abs(akt.x - mouseDownPos.x) > 5) || Math.abs(akt.y - mouseDownPos.y) > 5);
-            	}
-            	if (mouseMoved)
-            		MapView_MouseMove(eX, eY);
-//                touch_move(x, y);
-//                invalidate();
-                break;
-            case MotionEvent.ACTION_UP:
-//            	multiTouchFaktor = 1;
-            	if ((multiTouchFaktor < 0.99) || (multiTouchFaktor > 1.01))
-            		animationThread.zoomTo(Zoom);
-            	if (mouseMoved)
-            	{
-//            		MapView_MouseUp(eX, eY);
-            		// Nachlauf der Map
-            		double dx = 0;
-            		double dy = 0;
-            		double dt = 0;
-            		int count = Math.min(5, lastMouseMoveTickCount);
-            		if (Global.SmoothScrolling != SmoothScrollingTyp.none)
-            		{
-	            		int newPosFaktor = 5 * 50 / smoothScrolling.AnimationWait();
-	            		for (int i = 0; i < count; i++)
+	    	int eX = (int)event.getX(0);
+	    	int eY = (int)event.getY(0);
+	    	// bei gedrehter Map hier die Punkte drehen
+	
+	    	animationThread.stopMove();
+	    	
+	    	if (alignToCompass)
+	    	{
+		    	Point rot = rotate(new Point(eX, eY), canvasHeading);
+		    	eX = rot.x;
+		    	eY = rot.y;
+	    	}
+	    	
+	        if (event.getPointerCount() > 1)
+	        {
+	        	int eX2 = (int)event.getX(1);
+	        	int eY2 = (int)event.getY(1);
+	        	if (alignToCompass)
+	        	{
+		        	Point rot = rotate(new Point(eX2, eY2), canvasHeading);
+		        	eX2 = rot.x;
+		        	eY2 = rot.y;
+	        	}
+	        	
+	        	
+	        	
+	        	double multiTouchDist = Math.sqrt(Math.pow(eX2 - eX, 2) + Math.pow(eY2 - eY, 2));
+	        	if (!multiTouch)
+	        		lastMultiTouchDist = multiTouchDist;
+	//        debugString1 = "" + multiTouchDist;
+	//        debugString2 = "" + lastMultiTouchDist;
+	        	if (Zoom >= maxZoom)
+	        	{
+	        		if (multiTouchDist > lastMultiTouchDist)
+	        			multiTouchDist = lastMultiTouchDist;
+	        	}
+	        	if (Zoom <= minZoom)
+	        	{
+	        		if (multiTouchDist < lastMultiTouchDist)
+	        			multiTouchDist = lastMultiTouchDist;
+	        	
+	        	}
+	
+	        	if (multiTouch)
+	        	{
+	        		if (lastMultiTouchDist > multiTouchDist * 1.5)
+	        		{
+	        			zoomOutDirect(false);
+	       				lastMultiTouchDist /= 2; //multiTouchDist;
+	        		}
+	        		else if (lastMultiTouchDist < multiTouchDist * 0.75)
+	        		{
+	        			zoomInDirect(false);
+	               		lastMultiTouchDist *= 2; //multiTouchDist;
+	        		}
+	        	} else
+	    			lastMultiTouchDist = multiTouchDist;
+	
+	        	
+	        	if (lastMultiTouchDist > 0)
+	        		multiTouchFaktor = multiTouchDist / lastMultiTouchDist;
+	        	else 
+	        		multiTouchFaktor = 1;
+	//        	debugString1 = "f: " + multiTouchFaktor;
+	        	
+	        	eX = (int)(eX + (eX2 - eX) / 2);
+	        	eY = (int)(eY + (eY2 - eY) / 2);
+	        	if (!multiTouch)
+	        	{
+	        		dragStartX = lastClickX = eX;
+	        		dragStartY = lastClickY = eY;
+	        	}
+	        	multiTouch = true;
+	        	mouseMoved = true;
+	        } else
+	        {
+	        	if(multiTouch)
+	        	{
+	        		dragStartX = lastClickX = eX;
+	        		dragStartY = lastClickY = eY;        		
+	        	}
+	        	multiTouch = false;
+	        	if (renderZoomScaleActive)
+	        		startZoomScaleTimer();
+	        }
+	        
+	        switch (event.getAction()) {
+	            case MotionEvent.ACTION_DOWN:
+	            	lastMouseMoveTickPos = 0;
+	            	lastMouseMoveTick = SystemClock.uptimeMillis();
+	            	lastMouseMoveTickDiff[lastMouseMoveTickPos] = 0;
+	            	lastMousePos = new Point(eX, eY);
+	            	lastMouseDiff[lastMouseMoveTickPos] = new Point(0, 0);
+	            	lastMouseMoveTickCount = 0;
+	            	mouseDownPos = new Point(eX, eY);
+	            	mouseMoved = false;
+	            	// Nachlauf stoppen, falls aktiv
+	        		Coordinate coord = new Coordinate(Descriptor.TileYToLatitude(Zoom, screenCenter.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, screenCenter.X / (256.0)));
+	        		animationThread.moveTo(coord, smoothScrolling.AnimationSteps()*2, false);
+	            	
+	            	MapView_MouseDown(eX, eY);
+	//                touch_start(x, y);
+	//                invalidate();
+	                break;
+	            case MotionEvent.ACTION_MOVE:
+	            	lastMouseMoveTickDiff[lastMouseMoveTickPos] = SystemClock.uptimeMillis() - lastMouseMoveTick;
+	            	lastMouseMoveTick = SystemClock.uptimeMillis();
+	            	lastMouseDiff[lastMouseMoveTickPos] = new Point(eX - lastMousePos.x, eY - lastMousePos.y);
+	            	lastMouseMoveTickPos++;
+	            	lastMouseMoveTickCount++;
+	            	if (lastMouseMoveTickPos > 4)
+	            		lastMouseMoveTickPos = 0;
+	            	lastMousePos = new Point(eX, eY);
+	            	if (!mouseMoved)
+	            	{
+	            		Point akt = new Point(eX, eY);
+	            		mouseMoved = ((Math.abs(akt.x - mouseDownPos.x) > 5) || Math.abs(akt.y - mouseDownPos.y) > 5);
+	            	}
+	            	if (mouseMoved)
+	            		MapView_MouseMove(eX, eY);
+	//                touch_move(x, y);
+	//                invalidate();
+	                break;
+	            case MotionEvent.ACTION_UP:
+	//            	multiTouchFaktor = 1;
+	            	if ((multiTouchFaktor < 0.99) || (multiTouchFaktor > 1.01))
+	            		animationThread.zoomTo(Zoom);
+	            	if (mouseMoved)
+	            	{
+	//            		MapView_MouseUp(eX, eY);
+	            		// Nachlauf der Map
+	            		double dx = 0;
+	            		double dy = 0;
+	            		double dt = 0;
+	            		int count = Math.min(5, lastMouseMoveTickCount);
+	            		if (Global.SmoothScrolling != SmoothScrollingTyp.none)
 	            		{
-	            			dx += lastMouseDiff[i].x;
-	            			dy += lastMouseDiff[i].y;
-	            			dt += lastMouseMoveTickDiff[i];
-	            		}
-	            		dx /= count;
-	            		dy /= count;
-	            		dt /= count;
-	            		PointD nachlauf = new PointD(screenCenter.X, screenCenter.Y);
-	            		nachlauf.X -= dx * newPosFaktor / dt * smoothScrolling.AnimationWait();
-	            		nachlauf.Y -= dy * newPosFaktor / dt * smoothScrolling.AnimationWait();
-	            		coord = new Coordinate(Descriptor.TileYToLatitude(Zoom, nachlauf.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, nachlauf.X / (256.0)));
-	            		mouseMoved = false;
-	            		animationThread.moveTo(coord, smoothScrolling.AnimationSteps()*2, false);
-            		} else
-                		MapView_MouseUp(eX, eY);
-
-            	}
-            	else
-            	{
-            		// click!!!!
-            		MapView_Click(eX, eY);
-                	mouseDownPos = null;
-            		return false;
-            	}
-            	mouseDownPos = null;
-//                touch_up();
-//                invalidate();
-                break;
-        }
+		            		int newPosFaktor = 5 * 50 / smoothScrolling.AnimationWait();
+		            		for (int i = 0; i < count; i++)
+		            		{
+		            			dx += lastMouseDiff[i].x;
+		            			dy += lastMouseDiff[i].y;
+		            			dt += lastMouseMoveTickDiff[i];
+		            		}
+		            		dx /= count;
+		            		dy /= count;
+		            		dt /= count;
+		            		PointD nachlauf = new PointD(screenCenter.X, screenCenter.Y);
+		            		nachlauf.X -= dx * newPosFaktor / dt * smoothScrolling.AnimationWait();
+		            		nachlauf.Y -= dy * newPosFaktor / dt * smoothScrolling.AnimationWait();
+		            		coord = new Coordinate(Descriptor.TileYToLatitude(Zoom, nachlauf.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, nachlauf.X / (256.0)));
+		            		mouseMoved = false;
+		            		animationThread.moveTo(coord, smoothScrolling.AnimationSteps()*2, false);
+	            		} else
+	                		MapView_MouseUp(eX, eY);
+	
+	            	}
+	            	else
+	            	{
+	            		// click!!!!
+	            		MapView_Click(eX, eY);
+	                	mouseDownPos = null;
+	            		return false;
+	            	}
+	            	mouseDownPos = null;
+	//                touch_up();
+	//                invalidate();
+	                break;
+	        }
+    	}
         return true;
     }
 
@@ -1853,9 +1839,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    Rect bounds = imgDx.getBounds();
 		    int smallStarHeightD = (int)((double)imgDx.getMinimumWidth() * dpiScaleFactorY);
 		    imgDx.setBounds(x - halfUnderlayWidth, y - halfUnderlayWidth - smallStarHeight - 2, x - halfUnderlayWidth + smallStarHeightD, y - halfUnderlayWidth - smallStarHeight - 2 + smallStarHeight);
+		    
+		    canvasOverlay.save();
 		    canvasOverlay.rotate(270, x, y);
 		    imgDx.draw(canvasOverlay);
-		    canvasOverlay.rotate(90, x, y);
+		    canvasOverlay.restore();
 		    imgDx.setBounds(bounds);
 
 		    
@@ -1863,9 +1851,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    bounds = imgDx.getBounds();
 		    smallStarHeightD = (int)((double)imgDx.getMinimumWidth() * dpiScaleFactorY);
 		    imgDx.setBounds(x - halfUnderlayWidth, y + halfUnderlayWidth + 2, x - halfUnderlayWidth + smallStarHeightD, y + halfUnderlayWidth + 2 + smallStarHeight);
+		    canvasOverlay.save();
 		    canvasOverlay.rotate(270, x, y);
 		    imgDx.draw(canvasOverlay);
-		    canvasOverlay.rotate(90, x, y);
+		    canvasOverlay.restore();
 		    imgDx.setBounds(bounds);
 		    /*		
 		    Bitmap imgTx = Global.SmallStarIcons[(int)Math.Min(wpi.Cache.Terrain * 2, 5 * 2)];
@@ -1965,189 +1954,156 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	if (canvas == null)
     		return;
     	
-    	synchronized (this)
-     	{
-    		float tmpCanvasHeading = canvasHeading;
-	      if (Database.Data.Query == null)
-	        return;
-	      if (offScreenBmp == null)
-	        return;
+    	try
+    	{
+	    	synchronized (this)
+	     	{
+	    		float tmpCanvasHeading = canvasHeading;
+		      if (Database.Data.Query == null)
+		        return;
+		      if (offScreenBmp == null)
+		        return;
+		
+		      // Aufruf ggf. im richtigen Thread starten
+		/*      if (InvokeRequired)
+		      {
+		        Invoke(new EmptyDelegate(Render), overrideRepaintInteligence);
+		        return;
+		      }*/
+		
+		      // Wenn sich bei der Ansicht nichts getan hat braucht sie auch nicht gerendert werden.
+		      if (!overrideRepaintInteligence)
+		      {
+		
+		        if (lastRenderZoomScale == renderZoomScaleActive && lastWpCount == wpToRender.size() && lastHeading == ((Global.Locator != null) && (Global.Locator.getLocation() != null) ? Global.Locator.getHeading() : 0) && lastPosition.Latitude == Global.LastValidPosition.Latitude && lastPosition.Longitude == Global.LastValidPosition.Longitude && lastZoom == Zoom && !tilesFinished && lastRenderedPosition.X == screenCenter.X && lastRenderedPosition.Y == screenCenter.Y)
+		          return;
+		
+		
+		        lastRenderZoomScale = renderZoomScaleActive;
+		        lastWpCount = wpToRender.size();
+		        tilesFinished = false;
+		        lastPosition.Latitude = Global.LastValidPosition.Latitude;
+		        lastPosition.Longitude = Global.LastValidPosition.Longitude;
+		        lastHeading = 0;
+		/*        lastHeading = (Global.Locator != null) ? Global.Locator.Heading : 0;*/
+		        lastZoom = Zoom;
+		        lastRenderedPosition.X = screenCenter.X;
+		        lastRenderedPosition.Y = screenCenter.Y;
+		      }
+		
+		      synchronized (loadedTiles)
+		      {
+		        for (Tile tile : loadedTiles.values())
+		          tile.Age++;
+		      }
+		      
+		      int xFrom;
+		      int xTo;
+		      int yFrom;
+		      int yTo;
+		      Rect tmp = getTileRange();
+		      xFrom = tmp.left;
+		      xTo = tmp.right;
+		      yFrom = tmp.top;
+		      yTo = tmp.bottom;
 	
-	      // Aufruf ggf. im richtigen Thread starten
-	/*      if (InvokeRequired)
-	      {
-	        Invoke(new EmptyDelegate(Render), overrideRepaintInteligence);
-	        return;
-	      }*/
+		      canvas.save();
+		      canvas.rotate(-tmpCanvasHeading, width / 2, height / 2);
 	
-	      // Wenn sich bei der Ansicht nichts getan hat braucht sie auch nicht gerendert werden.
-	      if (!overrideRepaintInteligence)
-	      {
+		      // Kacheln beantragen
+		      for (int x = xFrom; x <= xTo; x++)
+		        for (int y = yFrom; y <= yTo; y++)
+		        {
+		          if (x < 0 || y < 0 || x >= Descriptor.TilesPerLine[Zoom] || y >= Descriptor.TilesPerColumn[Zoom])
+		            continue;
+		
+		          Descriptor desc = new Descriptor(x, y, Zoom);
+		
+		          Tile tile;
+		
+		          synchronized (loadedTiles)
+		          {
+		            if (!loadedTiles.containsKey(desc.GetHashCode()))
+		            {
+		              preemptTile();
+		
+		              loadedTiles.put(desc.GetHashCode(), new Tile(desc, null, Tile.TileState.Disposed));
+		
+		              queueTile(desc);
+	//	            	LoadTile(desc);
+		            }
+		            tile = loadedTiles.get(desc.GetHashCode());
+		          }
+		
+		          if ((tile != null) && (tileVisible(tile.Descriptor)))
+		          {
+		            renderTile(tile);
+		          }
+		        }
+		      
+		      canvas.restore();
 	
-	        if (lastRenderZoomScale == renderZoomScaleActive && lastWpCount == wpToRender.size() && lastHeading == ((Global.Locator != null) && (Global.Locator.getLocation() != null) ? Global.Locator.getHeading() : 0) && lastPosition.Latitude == Global.LastValidPosition.Latitude && lastPosition.Longitude == Global.LastValidPosition.Longitude && lastZoom == Zoom && !tilesFinished && lastRenderedPosition.X == screenCenter.X && lastRenderedPosition.Y == screenCenter.Y)
-	          return;
+		      canvasOverlay = canvas;
+		      renderCaches();
 	
-	
-	        lastRenderZoomScale = renderZoomScaleActive;
-	        lastWpCount = wpToRender.size();
-	        tilesFinished = false;
-	        lastPosition.Latitude = Global.LastValidPosition.Latitude;
-	        lastPosition.Longitude = Global.LastValidPosition.Longitude;
-	        lastHeading = 0;
-	/*        lastHeading = (Global.Locator != null) ? Global.Locator.Heading : 0;*/
-	        lastZoom = Zoom;
-	        lastRenderedPosition.X = screenCenter.X;
-	        lastRenderedPosition.Y = screenCenter.Y;
-	      }
-	
-	      synchronized (loadedTiles)
-	      {
-	        for (Tile tile : loadedTiles.values())
-	          tile.Age++;
-	      }
-	      
-	      int xFrom;
-	      int xTo;
-	      int yFrom;
-	      int yTo;
-	      Rect tmp = getTileRange();
-	      xFrom = tmp.left;
-	      xTo = tmp.right;
-	      yFrom = tmp.top;
-	      yTo = tmp.bottom;
-
-	      canvas.rotate(-tmpCanvasHeading, width / 2, height / 2);
-
-	      // Kacheln beantragen
-	      for (int x = xFrom; x <= xTo; x++)
-	        for (int y = yFrom; y <= yTo; y++)
-	        {
-	          if (x < 0 || y < 0 || x >= Descriptor.TilesPerLine[Zoom] || y >= Descriptor.TilesPerColumn[Zoom])
-	            continue;
-	
-	          Descriptor desc = new Descriptor(x, y, Zoom);
-	
-	          Tile tile;
-	
-	          synchronized (loadedTiles)
-	          {
-	            if (!loadedTiles.containsKey(desc.GetHashCode()))
-	            {
-	              preemptTile();
-	
-	              loadedTiles.put(desc.GetHashCode(), new Tile(desc, null, Tile.TileState.Disposed));
-	
-	              queueTile(desc);
-//	            	LoadTile(desc);
-	            }
-	            tile = loadedTiles.get(desc.GetHashCode());
-	          }
-	
-	          if ((tile != null) && (tileVisible(tile.Descriptor)))
-	          {
-	            renderTile(tile);
-	          }
-	        }
-	      
-	      canvas.rotate(tmpCanvasHeading, width / 2, height / 2);
-
-	      canvasOverlay = canvas;
-	      renderCaches();
-
-	      canvas.rotate(-tmpCanvasHeading, width / 2, height / 2);
-	      renderPositionAndMarker();
-	      canvas.rotate(tmpCanvasHeading, width / 2, height / 2);
-	
-	      renderScale();
-	      /*
-	      RenderTargetArrow();
-	*/
-	
-	      if (renderZoomScaleActive)
-	        renderZoomScale();
-	/*
-	      if (loaderThread != null)
-	        renderLoaderInfo();
-	
-*/	
-//	      if (showCompass)
-//	        renderCompass();
-	
-	      try
-	      {
-	    	  Canvas can = holder.lockCanvas(null);
-	    	  if (can != null)
-	    	  {
-	     		  can.drawBitmap(offScreenBmp, 0, 0, null);
-	     	      if (!debugString1.equals("") || !debugString2.equals(""))
-	     	      {
-	     		      Paint debugPaint = new Paint();
-	     		      debugPaint.setTextSize(20);
-	     		      debugPaint.setColor(Color.WHITE);
-	     		      debugPaint.setStyle(Style.FILL);
-	     		      can.drawRect(new Rect(50, 70, 300, 130), debugPaint);
-	     		      debugPaint.setColor(Color.BLACK);
-	     		      can.drawText(debugString1, 50, 100, debugPaint);
-	     		      can.drawText(debugString2, 50, 130, debugPaint);
-	     	      }
-	    		  holder.unlockCanvasAndPost(can);
-	    	  }
-	    	  
-	//        this.CreateGraphics().DrawImage(offScreenBmp, 0, 0);
-	      }
-	      catch (Exception ex)
-	      {
-	      }
-	      
-		}
+		      canvas.save();
+		      canvas.rotate(-tmpCanvasHeading, width / 2, height / 2);
+		      renderPositionAndMarker();
+		      canvas.restore();
+		
+		      renderScale();
+		      /*
+		      RenderTargetArrow();
+		*/
+		
+		      if (renderZoomScaleActive)
+		        renderZoomScale();
+		/*
+		      if (loaderThread != null)
+		        renderLoaderInfo();
+		
+	*/	
+		      if (showCompass)
+		        renderCompass();
+		
+		      try
+		      {
+		    	  Canvas can = holder.lockCanvas(null);
+		    	  if (can != null)
+		    	  {
+		     		  can.drawBitmap(offScreenBmp, 0, 0, null);
+		     	      if (!debugString1.equals("") || !debugString2.equals(""))
+		     	      {
+		     		      Paint debugPaint = new Paint();
+		     		      debugPaint.setTextSize(20);
+		     		      debugPaint.setColor(Color.WHITE);
+		     		      debugPaint.setStyle(Style.FILL);
+		     		      can.drawRect(new Rect(50, 70, 300, 130), debugPaint);
+		     		      debugPaint.setColor(Color.BLACK);
+		     		      can.drawText(debugString1, 50, 100, debugPaint);
+		     		      can.drawText(debugString2, 50, 130, debugPaint);
+		     	      }
+		    		  holder.unlockCanvasAndPost(can);
+		    	  }
+		    	  
+		//        this.CreateGraphics().DrawImage(offScreenBmp, 0, 0);
+		      }
+		      catch (Exception ex)
+		      {
+		    	  Toast.makeText(getContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+		      }
+		      
+			}
+    	} catch (Exception exc)
+    	{
+    		Toast.makeText(getContext(), exc.getMessage(), Toast.LENGTH_LONG).show();    		
+    	}
     }
+    	
 /*
     Brush orangeBrush = new SolidBrush(Color.Orange);
 */
-    private void refreshCompassPanel()
-    {
-    	tvDistance.setText("");
-    	tvSpeed.setText(Global.Locator.SpeedString());
 
-        // Position ist entweder GPS-Position oder die des Markers, wenn
-        // dieser gesetzt wurde.
-        Coordinate position = null;
-        if ((Global.Marker != null) && (Global.Marker.Valid))
-      	  position = Global.Marker;
-        else if (Global.LastValidPosition != null)
-      	  position = Global.LastValidPosition;
-        else
-      	  position = new Coordinate();
-      	  
-        // Koordinaten
-        if (position.Valid)
-        {
-            String textLatitude = Global.FormatLatitudeDM(position.Latitude);
-            String textLongitude = Global.FormatLongitudeDM(position.Longitude);
-	    	tvLatitude.setText(textLatitude);
-	    	tvLongitude.setText(textLongitude);        	
-        }else
-        {
-	    	tvLatitude.setText("");
-	    	tvLongitude.setText("");
-        }
-
-      
-        int aWidth = buttonTrackPosition.getMeasuredHeight();
-        int aHeight= ivCompass.getHeight();
-        aWidth = 100;
-        aHeight = 100;
-        ivCompass.setScaleType(ScaleType.MATRIX);
-		Matrix matrix = new Matrix();
-        double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, Global.SelectedCache().Latitude(), Global.SelectedCache().Longitude());
-        double relativeBearing = bearing - Global.Locator.getHeading();
-		matrix.setRotate((float)relativeBearing);
-		matrix.postScale(0.8f, 0.8f);
-		matrix.preTranslate(-aWidth / 2, -aHeight / 2);
-		matrix.postTranslate(aWidth / 2, aHeight / 2);
-		ivCompass.setImageMatrix(matrix);
-		ivCompass.invalidate();
-    }
     private void renderCompass()
     {
       // Position der Anzeigen berechnen
@@ -2156,9 +2112,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       int top = buttonTrackPosition.getTop();
       int compassCenter = buttonTrackPosition.getHeight() / 2;
       int bottom = buttonTrackPosition.getTop() + buttonTrackPosition.getHeight();
-      int topText = ((bottom - top) - (smallLineHeight * 2 + 5)) / 2;
 
-      int leftString = left + buttonTrackPosition.getHeight() + 5;
+      int leftString = left + buttonTrackPosition.getHeight() + 10;
 
       Paint paint = new Paint();
       paint.setColor(myContext.getResources().getColor(R.color.Day_ColorCompassPanel));
@@ -2181,45 +2136,52 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         String textLatitude = Global.FormatLatitudeDM(position.Latitude);
         String textLongitude = Global.FormatLongitudeDM(position.Longitude);
 
-        paint = new Paint(fontSmall);
+        paint = new Paint(font);
         paint.setTextAlign(Align.RIGHT);
         paint.setColor(myContext.getResources().getColor(R.color.Day_ColorCompassText));
-        canvasOverlay.drawText(textLatitude, right - 5, top + topText, paint);
-        canvasOverlay.drawText(textLongitude, right - 5, top + smallLineHeight + topText, paint);
+        canvasOverlay.drawText(textLatitude, right - 5, top + compassCenter - 10, paint);
+        canvasOverlay.drawText(textLongitude, right - 5, bottom - 10, paint);
 
         if (Global.Locator != null)
         {
         	paint.setTextAlign(Align.LEFT);
-            canvasOverlay.drawText(Global.Locator.SpeedString(), leftString, top + topText + 5 + smallLineHeight, paint);
+            canvasOverlay.drawText(Global.Locator.SpeedString(), leftString, top + compassCenter - 10, paint);
         }
       }
-/*
+
       // Gps empfang ?
-      if (Global.SelectedCache != null && position.Valid)
+      if (Global.SelectedCache() != null && position.Valid)
       {
         // Distanz einzeichnen
         float distance = 0;
 
-        if (Global.SelectedWaypoint == null)
-          distance = Datum.WGS84.Distance(position.Latitude, position.Longitude, Global.SelectedCache.Latitude, Global.SelectedCache.Longitude);
+        if (Global.SelectedWaypoint() == null)
+          distance = position.Distance(Global.SelectedCache().Coordinate);
         else
-          distance = Datum.WGS84.Distance(position.Latitude, position.Longitude, Global.SelectedWaypoint.Latitude, Global.SelectedWaypoint.Longitude);
+          distance = position.Distance(Global.SelectedWaypoint().Coordinate);
 
         String text = UnitFormatter.DistanceString(distance);
-        graphics.DrawString(text, font, whiteBrush, leftString, top + topText);
+        canvas.drawText(text, leftString, bottom - 10, paint);
 
         // Kompassnadel zeichnen
         if (Global.Locator != null)
         {
-          Coordinate cache = (Global.SelectedWaypoint != null) ? new Coordinate(Global.SelectedWaypoint.Latitude, Global.SelectedWaypoint.Longitude) : new Coordinate(Global.SelectedCache.Latitude, Global.SelectedCache.Longitude);
-          double bearing = -Coordinate.Bearing(Global.Locator.LastValidPosition.Latitude, Global.Locator.LastValidPosition.Longitude, cache.Latitude, cache.Longitude);
-          double relativeBearing = bearing - Global.Locator.Heading;
+          Coordinate cache = (Global.SelectedWaypoint() != null) ? Global.SelectedWaypoint().Coordinate : Global.SelectedCache().Coordinate;
+          double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
+          double relativeBearing = bearing - Global.Locator.getHeading();
           double relativeBearingRad = relativeBearing * Math.PI / 180.0;
 
-          Cachebox.Drawing.Arrow.FillArrow(graphics, Cachebox.Drawing.Arrow.HeadingArrow, blackPen, orangeBrush, left + compassCenter, top + compassCenter, compassCenter, relativeBearingRad);
+          int cs = canvas.save(123);
+          int awidth = compassCenter * 2;
+          int aheight = compassCenter * 2;
+          Global.Arrows[1].setBounds(left, top, left + awidth, top + aheight);
+          canvas.rotate((float)relativeBearing, (float)(left + compassCenter), (float)(top + compassCenter));
+          Global.Arrows[1].draw(canvas);
+          canvas.restoreToCount(cs);
+//          Cachebox.Drawing.Arrow.FillArrow(graphics, Cachebox.Drawing.Arrow.HeadingArrow, blackPen, orangeBrush, left + compassCenter, top + compassCenter, compassCenter, relativeBearingRad);
         }
       }
-*/
+
     }
 /*
     Global.BlendFunction blend = new Global.BlendFunction(100, 0);
@@ -3818,7 +3780,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
             setCenter(new Coordinate(Global.LastValidPosition));
 
         Render(false);
-        refreshCompassPanel();
 	}
 
 	@Override
@@ -3946,9 +3907,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		if (alignToCompass)
 			changeOrientation(heading);
+
 		lastCompassTick = aktTick;
-		
-        refreshCompassPanel();
 	}
 	
 	private void changeOrientation(float heading)
@@ -4062,7 +4022,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 							updateCacheList();
 						if (bundle.getBoolean("doRender"))
 						{
-							Render(true);
+							try
+							{
+								Render(true);								
+							} catch (Exception exc)
+							{
+								Toast.makeText(getContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+							}
 						}
 					}
 					sendEmptyMessage(5);  // im UI Thread ausführen
