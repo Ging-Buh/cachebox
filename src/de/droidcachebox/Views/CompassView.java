@@ -39,7 +39,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 		super(context);
 		
 		SelectedCacheEventList.Add(this);
-		PositionEventList.Add(this);
+		
 		LinearLayout CompassLayout = (LinearLayout)inflater.inflate(R.layout.compassview, null, false);
 		this.addView(CompassLayout);
         
@@ -92,13 +92,13 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 	@Override
 	public void OnShow() 
 	{
-		
+		PositionEventList.Add(this);
 	}
 
 	@Override
 	public void OnHide() 
 	{
-		
+		PositionEventList.Remove(this);
 	
 	}
 

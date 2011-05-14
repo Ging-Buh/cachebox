@@ -11,6 +11,10 @@ public class SelectedCacheEventList {
 	{
 		list.add(event);	
 	}
+	public static void Remove (SelectedCacheEvent event)
+	{
+		list.remove(event);
+	}
 	public static void Call(Cache cache, Waypoint waypoint)
 	{
 		for (SelectedCacheEvent event : list)

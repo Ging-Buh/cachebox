@@ -14,6 +14,12 @@ public class PositionEventList {
 	{
 		list.add(event);	
 	}
+	
+	public static void Remove(PositionEvent event)
+	{
+		list.remove(event);	
+	}
+	
 	public static void Call(Location location)
 	{
 		Global.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());

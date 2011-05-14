@@ -68,7 +68,7 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 		this.setCacheColorHint(R.color.Day_TitleBarColor);
 		this.setDividerHeight(5);
 		this.setDivider(getBackground());
-		PositionEventList.Add(this);
+		
 		
 	}
 	
@@ -147,13 +147,13 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 
 	@Override
 	public void OnShow() {
-		// TODO Auto-generated method stub
+		PositionEventList.Add(this);
 		
 	}
 
 	@Override
 	public void OnHide() {
-		// TODO Auto-generated method stub
+		PositionEventList.Remove(this);
 		
 	}
 
