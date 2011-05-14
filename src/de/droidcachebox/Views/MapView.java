@@ -600,6 +600,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     protected Hashtable<Long, Tile> loadedTiles = new Hashtable<Long, Tile>();
 
     /// <summary>
+    /// Hashtabelle mit Kacheln der GPX Tracks zum Overlay über die MapTiles
+    /// </summary>
+    protected Hashtable<Long, Tile> trackTiles = new Hashtable<Long, Tile>();
+
+    /// <summary>
     /// Horizontaler Skalierungsfaktor bei DpiAwareRendering
     /// </summary>
     protected float dpiScaleFactorX = 1;
@@ -614,6 +619,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     /// Größe des Kachel-Caches
     /// </summary>
     final int numMaxTiles = 64;
+    final int numMaxTrackTiles = 32;
 
     // Vorberechnete Werte
     protected int halfWidth = 0;
@@ -1044,6 +1050,39 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         Render(true);
     }
 
+    /// <summary>
+    /// Zeichnet eine Kachel mit den Tracks und legt sie in trackTiles ab.
+    /// </summary>
+    /// <param name="state">Descriptor der zu ladenen Kachel. Typlos, damit
+    /// man es als WorkItem queuen kann!</param>
+	protected void LoadTrackTile(Descriptor desc)
+    {
+      Bitmap bitmap = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_4444);
+      Paint ppp = new Paint();
+      ppp.setColor(Color.argb(255, 0, 0, 0));
+      ppp.setStyle(Style.FILL);
+      
+      Canvas canv = new Canvas(bitmap);
+//      canvas.drawRect(0, 0, 255, 255, ppp);
+      RouteOverlay.RenderRoute(canv, bitmap, desc, dpiScaleFactorX, dpiScaleFactorY);
+      
+      Tile.TileState tileState = Tile.TileState.Disposed;
+
+      tileState = Tile.TileState.Present;
+
+      if (bitmap == null)
+        return;
+
+      addTrackTile(desc, bitmap, tileState);
+
+      // Kachel erfolgreich geladen. Wenn die Kachel sichtbar ist
+      // kann man die Karte ja gut mal neu rendern!
+      tilesFinished = true;
+
+      if (tileVisible(desc))
+        Render(true);
+    }
+
     private Bitmap loadBestFit(Layer CurrentLayer, Descriptor desc, boolean loadFromManager)
     {
     	Descriptor available = new Descriptor(desc);
@@ -1140,6 +1179,32 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         {
           Tile tile = new Tile(desc, bitmap, state);
           loadedTiles.put(desc.GetHashCode(), tile);
+        }
+      }
+
+    }
+
+    void addTrackTile(Descriptor desc, Bitmap bitmap, Tile.TileState state)
+    {
+      synchronized (trackTiles)
+      {
+        if (trackTiles.containsKey(desc.GetHashCode()))
+        {
+          // Wenn die Kachel schon geladen wurde und die neu zu registrierende Kachel
+          // weniger aktuell ist, behalten wir besser die alte!
+          if (trackTiles.get(desc.GetHashCode()).State == Tile.TileState.Present && state != Tile.TileState.Present)
+            return;
+
+          if (trackTiles.get(desc.GetHashCode()).Image != null)
+            trackTiles.get(desc.GetHashCode()).Image.recycle();
+
+          trackTiles.get(desc.GetHashCode()).State = state; // (bitmap != null) ? Tile.TileState.Present : Tile.TileState.Disposed;
+          trackTiles.get(desc.GetHashCode()).Image = bitmap;
+        }
+        else
+        {
+          Tile tile = new Tile(desc, bitmap, state);
+          trackTiles.put(desc.GetHashCode(), tile);
         }
       }
 
@@ -1916,33 +1981,69 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     /// </summary>
     protected void preemptTile()
     {
-      //List<Tile> tiles = new List<Tile>();
-      //tiles.AddRange(loadedTiles.Values);
-
-      // Ist Auslagerung überhaupt nötig?
-      if (numLoadedTiles() <= numMaxTiles)
-        return;
-
-      // Kachel mit maximalem Alter suchen
-      int maxAge = Integer.MIN_VALUE;
-      Descriptor maxDesc = null;
-
-      for (Tile tile : loadedTiles.values())
-        if (tile.Image != null && tile.Age > maxAge)
-        {
-          maxAge = tile.Age;
-          maxDesc = tile.Descriptor;
-        }
-
-      // Instanz freigeben und Eintrag löschen
-      if (maxDesc != null)
-      {
-    	  try
-    	  {
-    		  loadedTiles.get(maxDesc.GetHashCode()).destroy();
-    		  loadedTiles.remove(maxDesc.GetHashCode());
-    	  } catch (Exception ex) { }
-      }
+	  //List<Tile> tiles = new List<Tile>();
+	  //tiles.AddRange(loadedTiles.Values);
+	
+	  // Ist Auslagerung überhaupt nötig?
+	  if (numLoadedTiles() <= numMaxTiles)
+	    return;
+	
+	  synchronized (loadedTiles)
+	  {
+		  // Kachel mit maximalem Alter suchen
+		  int maxAge = Integer.MIN_VALUE;
+		  Descriptor maxDesc = null;
+		
+		  for (Tile tile : loadedTiles.values())
+		    if (tile.Image != null && tile.Age > maxAge)
+		    {
+		      maxAge = tile.Age;
+		      maxDesc = tile.Descriptor;
+		    }
+		
+		  // Instanz freigeben und Eintrag löschen
+		  if (maxDesc != null)
+		  {
+			  try
+			  {
+				  loadedTiles.get(maxDesc.GetHashCode()).destroy();
+				  loadedTiles.remove(maxDesc.GetHashCode());
+			  } catch (Exception ex) { }
+		  }
+	  }
+    }
+	
+	
+	  // das ganze noch für die TrackTiles
+    protected void preemptTrackTile()
+    {
+	  // Ist Auslagerung überhaupt nötig?
+	  if (numTrackTiles() <= numMaxTrackTiles)
+	    return;
+	
+	  synchronized (trackTiles)
+	  {
+		  // Kachel mit maximalem Alter suchen
+		  int maxAge = Integer.MIN_VALUE;
+		  Descriptor maxDesc = null;
+		
+		  for (Tile tile : trackTiles.values())
+		    if (tile.Image != null && tile.Age > maxAge)
+		    {
+		      maxAge = tile.Age;
+		      maxDesc = tile.Descriptor;
+		    }
+		
+		  // Instanz freigeben und Eintrag löschen
+		  if (maxDesc != null)
+		  {
+			  try
+			  {
+				  trackTiles.get(maxDesc.GetHashCode()).destroy();
+				  trackTiles.remove(maxDesc.GetHashCode());
+			  } catch (Exception ex) { }
+		  }
+	  }
     }
 
     boolean lastRenderZoomScale = false;
@@ -1957,6 +2058,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	if (canvas == null)
     		return;
     	
+    	debugString1 = queuedTiles.size() + " / " + queuedTrackTiles.size();
+    	debugString2 = loadedTiles.size() + " / " + trackTiles.size();
     	try
     	{
 	    	synchronized (this)
@@ -1999,17 +2102,32 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		        for (Tile tile : loadedTiles.values())
 		          tile.Age++;
 		      }
+		      synchronized (trackTiles)
+		      {
+		        for (Tile tile : trackTiles.values())
+		          tile.Age++;
+		      }
 		      
 		      int xFrom;
 		      int xTo;
 		      int yFrom;
 		      int yTo;
-		      Rect tmp = getTileRange();
+		      Rect tmp = getTileRange(1.5f);
 		      xFrom = tmp.left;
 		      xTo = tmp.right;
 		      yFrom = tmp.top;
 		      yTo = tmp.bottom;
-	
+
+		      int xFromTrack;
+		      int xToTrack;
+		      int yFromTrack;
+		      int yToTrack;
+		      Rect tmpTrack = getTileRange(1f);
+		      xFromTrack = tmpTrack.left;
+		      xToTrack = tmpTrack.right;
+		      yFromTrack = tmpTrack.top;
+		      yToTrack = tmpTrack.bottom;
+		      
 		      canvas.save();
 		      canvas.rotate(-tmpCanvasHeading, width / 2, height / 2);
 	
@@ -2023,7 +2141,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		          Descriptor desc = new Descriptor(x, y, Zoom);
 		
 		          Tile tile;
-		
+		          Tile trackTile;
 		          synchronized (loadedTiles)
 		          {
 		            if (!loadedTiles.containsKey(desc.GetHashCode()))
@@ -2033,14 +2151,31 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		              loadedTiles.put(desc.GetHashCode(), new Tile(desc, null, Tile.TileState.Disposed));
 		
 		              queueTile(desc);
-	//	            	LoadTile(desc);
 		            }
 		            tile = loadedTiles.get(desc.GetHashCode());
+		            
+		            if (( x >= xFromTrack) && (x <= xToTrack) && (y >= yFromTrack) && (y <= yToTrack))
+		            {
+			            if (!trackTiles.containsKey(desc.GetHashCode()))
+			            {
+			            	preemptTrackTile();
+			            	
+			            	trackTiles.put(desc.GetHashCode(), new Tile(desc, null, Tile.TileState.Disposed));
+			            	
+			            	queueTrackTile(desc);
+			            }
+			            trackTile = trackTiles.get(desc.GetHashCode());
+		            } else
+		            	trackTile = null;
 		          }
 		
 		          if ((tile != null) && (tileVisible(tile.Descriptor)))
 		          {
-		            renderTile(tile);
+		            renderTile(tile, true);
+		          }
+		          if ((trackTile != null) && (tileVisible(trackTile.Descriptor)))
+		          {
+		            renderTile(trackTile, false);
 		          }
 		        }
 		      
@@ -2075,7 +2210,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    	  if (can != null)
 		    	  {
 		     		  can.drawBitmap(offScreenBmp, 0, 0, null);
-		     	      if (!debugString1.equals("") || !debugString2.equals(""))
+/*		     	      if (!debugString1.equals("") || !debugString2.equals(""))
 		     	      {
 		     		      Paint debugPaint = new Paint();
 		     		      debugPaint.setTextSize(20);
@@ -2085,7 +2220,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		     		      debugPaint.setColor(Color.BLACK);
 		     		      can.drawText(debugString1, 50, 100, debugPaint);
 		     		      can.drawText(debugString2, 50, 130, debugPaint);
-		     	      }
+		     	      }*/
 		    		  holder.unlockCanvasAndPost(can);
 		    	  }
 		    	  
@@ -2115,13 +2250,26 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       int top = buttonTrackPosition.getTop();
       int compassCenter = buttonTrackPosition.getHeight() / 2;
       int bottom = buttonTrackPosition.getTop() + buttonTrackPosition.getHeight();
+      int debugPos1 = 0;
+      int debugPos2 = 0;
+      int debugHeight = 0;
+      if (!debugString1.equals(""))
+      {
+    	  debugHeight += 24;
+    	  debugPos1 = bottom + debugHeight - 10;
+      }
+      if (!debugString2.equals(""))
+      {
+    	  debugHeight += 24;
+    	  debugPos2 = bottom + debugHeight - 10;
+      }
 
       int leftString = left + buttonTrackPosition.getHeight() + 10;
 
       Paint paint = new Paint();
       paint.setColor(myContext.getResources().getColor(R.color.Day_ColorCompassPanel));
       paint.setStyle(Style.FILL);
-      canvasOverlay.drawRect(left, top, right, bottom, paint);
+      canvasOverlay.drawRect(left, top, right, bottom + debugHeight, paint);
 
       // Position ist entweder GPS-Position oder die des Markers, wenn
       // dieser gesetzt wurde.
@@ -2149,6 +2297,15 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         {
         	paint.setTextAlign(Align.LEFT);
             canvasOverlay.drawText(Global.Locator.SpeedString(), leftString, top + compassCenter - 10, paint);
+        }
+
+        if (!debugString1.equals(""))
+        {
+        	canvasOverlay.drawText("D1: " + debugString1, leftString, debugPos1, paint);
+        }
+        if (!debugString2.equals(""))
+        {
+        	canvasOverlay.drawText("D2: " + debugString2, leftString, debugPos2, paint);
         }
       }
 
@@ -2225,6 +2382,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     }
 */
     LinkedList<Descriptor> queuedTiles = new LinkedList<Descriptor>();
+    LinkedList<Descriptor> queuedTrackTiles = new LinkedList<Descriptor>();
     queueProcessor queueProcessor = null;
 /*
     Thread queueProcessor = null;
@@ -2249,16 +2407,30 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        queueProcessor = new queueProcessor();
 	        queueProcessor.execute(queuedTiles);
         }
-/*        if (queueProcessor == null)
-        {
-          queueProcessor = new Thread(new ThreadStart(queueProcessorEntryPoint));
-          queueProcessor.Priority = ThreadPriority.BelowNormal;
-          queueProcessor.IsBackground = true;
-          queueProcessor.Start();
-        }*/
       }
     }
-    
+
+    @SuppressWarnings("unchecked")
+	private void queueTrackTile(Descriptor desc)
+    {
+      // Alternative Implementierung mit Threadpools...
+      // ThreadPool.QueueUserWorkItem(new WaitCallback(LoadTile), new Descriptor(desc));
+    	
+      synchronized (queuedTrackTiles)
+      {
+        if (queuedTrackTiles.contains(desc.GetHashCode()))
+          return;
+
+        queuedTrackTiles.add(desc);
+
+        if (queueProcessor == null)
+        {
+	        queueProcessor = new queueProcessor();
+	        queueProcessor.execute(queuedTiles);
+        }
+      }
+    }
+
     private class queueProcessor extends AsyncTask<LinkedList<Descriptor>, Integer, Integer> {
 
 		@Override
@@ -2269,27 +2441,53 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				do
 			    {
 					Descriptor desc = null;
+					if (queuedTiles.size() > 0)
+					{
+						synchronized (queuedTiles)
+						{
+							desc = queuedTiles.poll();
+						}
+				
+						if (desc.Zoom == Zoom)
+						{
+							LoadTile(desc);
+						}
+						else
+						{
+							// Da das Image fur diesen Tile nicht geladen wurde, da der Zoom-Faktor des Tiles nicht gleich
+							// dem aktuellen ist muss dieser Tile wieder aus loadedTile entfernt werden, da sonst bei
+							// spterem Wechsel des Zoom-Faktors dieses Tile nicht angezeigt wird.
+							// Dies passiert bei schnellem Wechsel des Zoom-Faktors, wenn noch nicht alle aktuellen Tiles geladen waren.
+							if (loadedTiles.containsKey(desc.GetHashCode()))
+								loadedTiles.remove(desc.GetHashCode());
+						}
+					} else if (trackTiles.size() > 0)
+					{
+						// wenn keine Tiles mehr geladen werden müssen, dann die TrackTiles erstellen
+						desc = null;
+						synchronized (queuedTrackTiles)
+						{
+							desc = queuedTrackTiles.poll();
+						}
+				
+						if (desc.Zoom == Zoom)
+						{
+							LoadTrackTile(desc);
+						}
+						else
+						{
+							// Da das Image fur diesen Tile nicht geladen wurde, da der Zoom-Faktor des Tiles nicht gleich
+							// dem aktuellen ist muss dieser Tile wieder aus loadedTile entfernt werden, da sonst bei
+							// spterem Wechsel des Zoom-Faktors dieses Tile nicht angezeigt wird.
+							// Dies passiert bei schnellem Wechsel des Zoom-Faktors, wenn noch nicht alle aktuellen Tiles geladen waren.
+							if (trackTiles.containsKey(desc.GetHashCode()))
+								trackTiles.remove(desc.GetHashCode());
+						}			
+					
+					}
 					synchronized (queuedTiles)
 					{
-						desc = queuedTiles.poll();
-					}
-			
-					if (desc.Zoom == Zoom)
-					{
-						LoadTile(desc);
-					}
-					else
-					{
-						// Da das Image fur diesen Tile nicht geladen wurde, da der Zoom-Faktor des Tiles nicht gleich
-						// dem aktuellen ist muss dieser Tile wieder aus loadedTile entfernt werden, da sonst bei
-						// spterem Wechsel des Zoom-Faktors dieses Tile nicht angezeigt wird.
-						// Dies passiert bei schnellem Wechsel des Zoom-Faktors, wenn noch nicht alle aktuellen Tiles geladen waren.
-						if (loadedTiles.containsKey(desc.GetHashCode()))
-							loadedTiles.remove(desc.GetHashCode());
-					}			
-					synchronized (queuedTiles)
-					{
-						queueEmpty = queuedTiles.size() < 1;
+						queueEmpty = (queuedTiles.size() < 1) && (trackTiles.size() < 1);
 					}			
 			    } while (!queueEmpty);
 			}	
@@ -2354,7 +2552,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     }
 
 */
-    Rect getTileRange()
+    Rect getTileRange(float rangeFactor)
     {
     	int x1;
     	int y1;
@@ -2364,8 +2562,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	double y = screenCenter.Y / (256 * dpiScaleFactorY);
 
     	// preload more Tiles than necessary to ensure more smooth scrolling
-    	int dWidth = (int)(drawingWidth * 1.5);
-    	int dHeight= (int)(drawingHeight * 1.5);
+    	int dWidth = (int)(drawingWidth * rangeFactor);
+    	int dHeight= (int)(drawingHeight * rangeFactor);
     	x1 = (int)Math.floor(x - dWidth/multiTouchFaktor / (256 * dpiScaleFactorX * 2));
     	x2 = (int)Math.floor(x + dWidth/multiTouchFaktor / (256 * dpiScaleFactorX * 2));
     	y1 = (int)Math.floor(y - dHeight/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
@@ -2377,7 +2575,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
     Rect tileRect = new Rect(0, 0, 256, 256);
 
-    void renderTile(Tile tile)
+    void renderTile(Tile tile, boolean drawBestFit)
     {
       tile.Age = 0;
 
@@ -2407,6 +2605,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         return;
       }
 
+      if (!drawBestFit) 
+    	  return;
       try
       {
     	  Bitmap bit = loadBestFit(CurrentLayer, tile.Descriptor, false);
@@ -3546,6 +3746,15 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         		cnt++;
         return cnt;
     }
+
+    int numTrackTiles()
+    {
+        int cnt = 0;
+        for (Tile tile : trackTiles.values())
+        	if (tile.Image != null)
+        		cnt++;
+        return cnt;
+    }
 /*
 
     private static void InternalRotateImage(int rotationAngle,
@@ -3747,11 +3956,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
                 aktuelleRouteCount = Global.AktuelleRoute.Points.size();
 
                 Paint paint = Global.AktuelleRoute.paint;
-                synchronized (loadedTiles)
+                synchronized (trackTiles)
                 {
-                    for (long hash : loadedTiles.keySet())
+                    for (long hash : trackTiles.keySet())
                     {
-                    	Tile tile = loadedTiles.get(hash);
+                    	Tile tile = trackTiles.get(hash);
                         if (tile.Image == null) continue;
                         Canvas canvas = new Canvas(tile.Image);
 
