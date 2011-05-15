@@ -116,12 +116,14 @@ public class splash extends Activity
 	        if (Database.Data != null)
 	        	Database.Data = null;
 	        // initialize Database
-	        Database.Data = new Database(DatabaseType.CacheBox);
-	        Database.FieldNotes = new Database(DatabaseType.FieldNotes); 
-//		        Database.Data.StartUp("/sdcard/db3 [1].db3");
+	        Database.Data = new Database(DatabaseType.CacheBox, this);
 	        Database.Data.StartUp(Config.WorkPath + "/cachebox.db3");
 	        Database.Data.Query.LoadCaches("");
 
+	        Database.FieldNotes = new Database(DatabaseType.FieldNotes, this); 
+	        if (!Global.DirectoryExists(Config.WorkPath + "/User")) return;
+	        Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
+	        
 	        Descriptor.Init();
 	        
 	        Config.AcceptChanges();
