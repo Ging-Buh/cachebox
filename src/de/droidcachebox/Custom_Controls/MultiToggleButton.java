@@ -192,6 +192,7 @@ public class MultiToggleButton extends Button implements OnClickListener {
 		if(StateId>State.size()-1) StateId = 0;
 		aktState = State.get(StateId);
 		this.setText(aktState.Text);
+		this.invalidate();
 	}
 	
 	public void clearStates()

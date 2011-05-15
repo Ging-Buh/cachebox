@@ -56,6 +56,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.TrackRecorder;
 import de.droidcachebox.UnitFormatter;
+import de.droidcachebox.Custom_Controls.MultiToggleButton;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
@@ -74,7 +75,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	private TimerTask zoomTimerTask;
 	private SurfaceView surface;
 	private ZoomControls zoomControls;
-	private Button buttonTrackPosition;
+	private MultiToggleButton buttonTrackPosition;
 	// Compass Panel
 	private LinearLayout tlPanel;
 	private TextView tvDistance;
@@ -112,12 +113,17 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		animationThread = new AnimationThread();
 		animationThread.start();
 		
-		buttonTrackPosition = (Button) findViewById(R.id.mapview_trackposition);
-		buttonTrackPosition.setText("Pos");
+		buttonTrackPosition = (MultiToggleButton) findViewById(R.id.mapview_trackposition);
+		buttonTrackPosition.clearStates();
+		buttonTrackPosition.addState("Free", Color.GRAY);
+		buttonTrackPosition.addState("GPS", Color.GREEN);
+		buttonTrackPosition.addState("FIX", Color.RED);
         this.buttonTrackPosition.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-            	if (useLockPosition)
+            	buttonTrackPosition.onClick(v);
+            	
+            	/*if (useLockPosition)
             	{
             		switch (lockPosition)
             		{
@@ -134,8 +140,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
             	}
             	if (lockPosition == 0)
             		setLockPosition(1);
-            	else
-            		setLockPosition(0);
+            	else*/
+            		setLockPosition(buttonTrackPosition.getState());
             }
           });
 		
@@ -176,21 +182,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	private void setLockPosition(int value)
 	{
 		lockPosition = value;
-		switch (lockPosition)
-		{
-		case 0:
-			buttonTrackPosition.setText("Free");
-			buttonTrackPosition.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);		
-			break;
-		case 1:
-			buttonTrackPosition.setText("GPS");
-			buttonTrackPosition.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);		
-			break;
-		case 2:
-			buttonTrackPosition.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);		
-			buttonTrackPosition.setText("FIX");
-			break;
-		}
+
 		if (lockPosition > 0)
 		{
     	    if (Global.Marker.Valid)
@@ -203,6 +195,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	    	startAnimation(Global.LastValidPosition);
     	    	return;
             }		
+		}
+		else
+		{
+			buttonTrackPosition.setState(0);
 		}
 	}
 	

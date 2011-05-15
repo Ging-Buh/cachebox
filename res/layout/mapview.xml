@@ -4,7 +4,17 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
     <SurfaceView android:layout_alignParentLeft="true" android:id="@+id/mapview_surface" android:layout_width="match_parent" android:layout_height="match_parent"></SurfaceView>
-    <Button android:id="@+id/mapview_trackposition" android:text="ToggleButton" android:layout_alignParentRight="true" android:layout_alignParentTop="true" android:layout_marginRight="10dip" android:layout_marginTop="10dip" android:layout_width="50dip" android:layout_height="45dip"></Button>
+    <de.droidcachebox.Custom_Controls.MultiToggleButton
+    android:id="@+id/mapview_trackposition" 
+    android:text="ToggleButton" 
+    android:layout_alignParentRight="true" 
+    android:layout_alignParentTop="true" 
+    android:layout_marginRight="10dip" 
+    android:layout_marginTop="10dip" 
+    android:layout_width="50dip" 
+    android:layout_height="45dip"/>
+    
+    
     <ZoomControls 
     android:layout_height="wrap_content" 
     android:layout_width="wrap_content" 
