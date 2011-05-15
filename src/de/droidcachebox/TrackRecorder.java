@@ -8,11 +8,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.SimpleTimeZone;
 
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Location;
 
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Map.Descriptor.PointD;
+import de.droidcachebox.Map.RouteOverlay;
 
 public class TrackRecorder {
 
@@ -29,6 +32,14 @@ public class TrackRecorder {
 
     public static void StartRecording()
     { 
+        Paint paint = new Paint();
+        paint.setColor(Color.BLUE);
+        paint.setStrokeWidth(4);
+        
+        Global.AktuelleRoute = new RouteOverlay.Route(paint, "actual Track");
+        Global.AktuelleRoute.ShowRoute = true;
+        RouteOverlay.Routes.add(Global.AktuelleRoute);
+
         String directory = Config.GetString("TrackFolder");
         if (!Global.DirectoryExists(directory))
             return;

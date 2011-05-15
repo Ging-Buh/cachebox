@@ -720,19 +720,17 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       if (Config.GetString("RouteOverlay").Length > 0 && File.Exists(Config.GetString("RouteOverlay")))
         Routes.Add(LoadRoute(Config.GetString("RouteOverlay"), new Pen(Color.Purple, 4), Config.GetInt("TrackDistance")));
       else*/
-      Paint paint = new Paint();
-      paint.setColor(Color.WHITE);
-      paint.setStrokeWidth(4);
-      RouteOverlay.Routes.add(new RouteOverlay.Route(paint, "-empty- Routeoverlay"));
 
-      paint = new Paint();
+      RouteOverlay.Routes.clear();
+/*      
+      Paint paint = new Paint();
       paint.setColor(Color.BLUE);
       paint.setStrokeWidth(4);
       
       Global.AktuelleRoute = new RouteOverlay.Route(paint, "actual Track");
-      Global.AktuelleRoute.ShowRoute = true;
+      Global.AktuelleRoute.ShowRoute = false;
       RouteOverlay.Routes.add(Global.AktuelleRoute);
-
+*/
       //Load Routes for Autoload
 /*
 	        File dir = new File(Config.GetString("MapPackFolder"));
@@ -770,9 +768,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     				  ColorField[6] = Color.CYAN;
     				  ColorField[7] = Color.GRAY;
     				  int TrackColor;
-    				  TrackColor = ColorField[(RouteOverlay.Routes.size() - 2) % 8];
+    				  TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
     				  
-    				  paint = new Paint();
+    				  Paint paint = new Paint();
     				  paint.setColor(TrackColor);
     				  paint.setStrokeWidth(4);
     				  RouteOverlay.Routes.add(RouteOverlay.LoadRoute(trackPath + "/" + file, paint, Config.GetInt("TrackDistance")));
@@ -2156,7 +2154,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		            }
 		            tile = loadedTiles.get(desc.GetHashCode());
 		            
-		            if (( x >= xFromTrack) && (x <= xToTrack) && (y >= yFromTrack) && (y <= yToTrack))
+		            if ((RouteOverlay.Routes.size() > 0) && ( x >= xFromTrack) && (x <= xToTrack) && (y >= yFromTrack) && (y <= yToTrack))
 		            {
 			            if (!trackTiles.containsKey(desc.GetHashCode()))
 			            {
@@ -3943,7 +3941,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	public void PositionChanged(Location location) {
 		Global.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());
         // Muss der aktive Track gezeichnet werden?
-        if (Global.AktuelleRoute.ShowRoute)
+        if ((Global.AktuelleRoute != null) && Global.AktuelleRoute.ShowRoute)
         {
             // Map Tiles aktualisieren, wenn der AktiveTrack erweitert wurde!
             if ((Global.AktuelleRoute.Points.size() > aktuelleRouteCount) && (Global.AktuelleRoute.Points.size() > 1))
