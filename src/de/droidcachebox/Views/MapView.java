@@ -69,6 +69,7 @@ import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.Map.Tile;
 
 public class MapView extends RelativeLayout implements SelectedCacheEvent, PositionEvent, ViewOptionsMenu {
+	private boolean isVisible;  // true, when MapView is visible
 	private Timer zoomScaleTimer;
 	private TimerTask zoomTimerTask;
 	private SurfaceView surface;
@@ -873,6 +874,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 */
     public void OnShow()
     {
+    	isVisible = true;
 //    	Render(true);
     }
     
@@ -3988,10 +3990,14 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
             }
         }
 
-        if (lockPosition >= 1/* && !animationTimer.Enabled*/)
-            setCenter(new Coordinate(Global.LastValidPosition));
-
-        Render(false);
+        if (isVisible)
+        {
+        	// draw Map only when MapView is visible
+	        if (lockPosition >= 1/* && !animationTimer.Enabled*/)
+	            setCenter(new Coordinate(Global.LastValidPosition));
+	
+	        Render(false);
+        }
 	}
 
 	@Override
@@ -4176,8 +4182,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 	@Override
 	public void OnHide() {
-		// TODO Auto-generated method stub
-		
+		isVisible = false;		
 	}
 
 	@Override
