@@ -74,8 +74,7 @@ public final class CacheInfoControl extends View {
 	
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		Log.d("Cachebox", "Width spec: " + MeasureSpec.toString(widthMeasureSpec));
-		Log.d("Cachebox", "Height spec: " + MeasureSpec.toString(heightMeasureSpec));
+		
 		
 		/*int widthMode = MeasureSpec.getMode(widthMeasureSpec);
 		int widthSize = this.width = MeasureSpec.getSize(widthMeasureSpec);

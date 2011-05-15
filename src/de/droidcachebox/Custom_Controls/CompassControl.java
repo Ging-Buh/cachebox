@@ -108,7 +108,7 @@ public final class CompassControl extends View {
 
 	
 	private void initDrawingTools() {
-		rimRect = new RectF(0.1f, 0.1f, 0.9f, 0.9f);
+		rimRect = new RectF(0.05f, 0.05f, 0.95f, 0.95f);
 
 		// the linear gradient is a bit skewed for realism
 		rimPaint = new Paint();
@@ -171,11 +171,11 @@ public final class CompassControl extends View {
 		distancePaint.setAntiAlias(true);
 		distancePaint.setTypeface(Typeface.DEFAULT_BOLD);
 		distancePaint.setTextAlign(Paint.Align.CENTER);
-		distancePaint.setTextSize(0.12f);
-		distancePaint.setTextScaleX(0.8f);
+		distancePaint.setTextSize(0.14f);
+		distancePaint.setTextScaleX(0.9f);
 
 		distancePath = new Path();
-		distancePath.addArc(new RectF(0.24f, 0.24f, 0.76f, 0.76f), -180.0f, -180.0f);
+		distancePath.addArc(new RectF(0.20f, 0.20f, 0.8f, 0.8f), -180.0f, -180.0f);
 
 		arrowPaint = new Paint();
 		arrowPaint.setFilterBitmap(true);
@@ -374,7 +374,7 @@ public final class CompassControl extends View {
 		Canvas backgroundCanvas = new Canvas(background);
 		float scale = (float) getWidth();		
 		backgroundCanvas.scale(scale, scale);
-		
+		//backgroundCanvas.drawColor(Color.RED);
 		drawRim(backgroundCanvas);
 		drawFace(backgroundCanvas);
 				

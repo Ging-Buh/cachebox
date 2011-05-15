@@ -17,5 +17,12 @@
 		<attr name="Compass_N_TextColor" format="reference|color" /><!-- (255, 200, 0, 0) -->
 	</declare-styleable>
 	
+	<declare-styleable name="MultiToggleButtonStyle">
+		<attr name="MultiToggleButton_Background" format="reference" />
+		<attr name="MultiToggleButton_Background_pressed" format="reference" />
+		<attr name="MultiToggleButton_Led" format="reference" />
+	</declare-styleable>
+	
+	
 		
 </resources>

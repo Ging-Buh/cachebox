@@ -5,10 +5,13 @@ import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Custom_Controls.CacheInfoControl;
 import de.droidcachebox.Custom_Controls.CompassControl;
+import de.droidcachebox.Custom_Controls.MultiToggleButton;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
+import de.droidcachebox.Events.SelectedLangChangedEvent;
+import de.droidcachebox.Events.SelectedLangChangedEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Coordinate;
@@ -26,29 +29,45 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 
 
-public class CompassView extends FrameLayout implements ViewOptionsMenu,PositionEvent, SelectedCacheEvent {
+public class CompassView extends FrameLayout implements ViewOptionsMenu,PositionEvent, SelectedCacheEvent, SelectedLangChangedEvent {
 	private Context context;
 	private Cache aktCache;
 	private CompassControl compassControl;
 	private CacheInfoControl DescriptionTextView;
+	private RelativeLayout ToggleButtonLayout;
+	private MultiToggleButton AlignButton;
 	
 	public CompassView(Context context, LayoutInflater inflater) {
 		super(context);
 		
 		SelectedCacheEventList.Add(this);
 		
-		LinearLayout CompassLayout = (LinearLayout)inflater.inflate(R.layout.compassview, null, false);
+		RelativeLayout  CompassLayout = (RelativeLayout )inflater.inflate(R.layout.compassview, null, false);
 		this.addView(CompassLayout);
-        
 		
 		 compassControl = (CompassControl)findViewById(R.id.Compass);
 		 DescriptionTextView = (CacheInfoControl)findViewById(R.id.CompassDescriptionView);
-		
+		 ToggleButtonLayout = (RelativeLayout)findViewById(R.id.layoutCompassToggle);
+		 AlignButton = (MultiToggleButton)findViewById(R.id.CompassAlignButton);
+		 AlignButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) 
+			{
+				AlignButton.onClick(arg0);
+				align = (AlignButton.getState() == 0)?  false : true;
+				
+			}
+		});
+		 
+		SelectedLangChangedEventList.Add(this);
+		SelectedLangChangedEvent();
 }
-	
+	private Boolean align = false;
 	static public int windowW=0;
     static public int windowH=0 ;
     @Override
@@ -60,7 +79,8 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
     windowH = getMeasuredHeight();
     
     DescriptionTextView.setHeight(windowW/3);
-    
+    ToggleButtonLayout.getLayoutParams().height= windowW + 20;
+
     }
 	
 	
@@ -121,6 +141,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
         {
             Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
             double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
+            if(!align)heading = 0; 
             // FillArrow: Luftfahrt
             // Bearing: Luftfahrt
             // Heading: Im Uhrzeigersinn, Geocaching-Norm
@@ -129,7 +150,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
             double relativeBearing = bearing - heading;
          //   double relativeBearingRad = relativeBearing * Math.PI / 180.0;
 
-              		
+             		
     		compassControl.setInfo(heading, relativeBearing, UnitFormatter.DistanceString(aktCache.Distance()));
     		
         }
@@ -143,6 +164,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
         {
             Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
             double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
+            if(!align)heading = 0;
             // FillArrow: Luftfahrt
             // Bearing: Luftfahrt
             // Heading: Im Uhrzeigersinn, Geocaching-Norm
@@ -150,11 +172,22 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
             double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, aktCache.Latitude(), aktCache.Longitude());
             double relativeBearing = bearing - heading;
          //   double relativeBearingRad = relativeBearing * Math.PI / 180.0;
-
+            
 				
 		compassControl.setInfo(heading, relativeBearing, UnitFormatter.DistanceString(aktCache.Distance()));
 		
         }
+	}
+
+
+
+
+	@Override
+	public void SelectedLangChangedEvent() {
+		 AlignButton.clearStates();
+		 AlignButton.addState(Global.Translations.Get("Align"), Color.GRAY);
+		 AlignButton.addState(Global.Translations.Get("Align"), Color.GREEN);
+		 AlignButton.setState(align? 1 : 0);
 	}
 
 }

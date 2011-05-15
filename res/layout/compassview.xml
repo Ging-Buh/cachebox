@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout 
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:hug=" http://schemas.android.com/apk/res/android/de.droidcachebox"
  	android:id="@+id/compassLayout" 
- 	android:gravity="bottom" 
-	android:layout_height="match_parent" 
-	android:orientation="vertical" 
-	android:layout_width="match_parent">
+ 	
+	android:layout_width="fill_parent"
+	android:orientation="vertical" 	android:layout_height="fill_parent" >
 		
-		
-		
-		<LinearLayout 
-		android:id="@+id/InfoLinearLayout" 
-		android:layout_width="match_parent" 
-		android:layout_height="wrap_content" 
-		android:baselineAligned="false">
-		
-		
-		    <de.droidcachebox.Custom_Controls.CacheInfoControl
+	<de.droidcachebox.Custom_Controls.CacheInfoControl
 		    android:id="@+id/CompassDescriptionView" 
 		    android:layout_height="wrap_content" 
-		    android:layout_width="fill_parent" 
-		    android:gravity="top"
-		    android:layout_weight="1"/>
-		
-		</LinearLayout>
-		
-		
-		<LinearLayout 
-		android:id="@+id/CompassLinearLayout" 
-		android:layout_width="match_parent" 
-		android:layout_height="wrap_content" 
-		android:baselineAligned="false">
-		
-			<de.droidcachebox.Custom_Controls.CompassControl
-		    android:id="@+id/Compass"
+		    
+		    
 		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content" 
-		    android:gravity="bottom"
-		    android:layout_weight="1"/>    
-		</LinearLayout>
+		    android:layout_alignParentTop="true"/>	
 		
-</LinearLayout>
+	<de.droidcachebox.Custom_Controls.CompassControl
+		    android:id="@+id/Compass"
+		    android:layout_height="wrap_content" 
+		   
+		    
+		    android:layout_width="fill_parent"
+		    android:layout_alignParentBottom="true"/>   
+      
+  
+ <RelativeLayout android:layout_alignParentBottom="true" android:layout_width="fill_parent" android:id="@+id/layoutCompassToggle" android:layout_height="fill_parent" android:gravity="right">
+      
+      
+      
+      <de.droidcachebox.Custom_Controls.MultiToggleButton
+   android:id="@+id/CompassAlignButton" 
+   android:text="ToggleButton" 
+      
+   android:layout_width="65dip" 
+   android:layout_height="58dip" 
+   android:layout_marginRight="2dip"/> 
+ </RelativeLayout>
+		
+		
+		
+</RelativeLayout >
+
+
