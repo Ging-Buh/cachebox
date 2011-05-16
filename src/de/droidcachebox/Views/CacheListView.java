@@ -160,17 +160,22 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 		return 0;
 	}
 
+	private long lastRender;
 	@Override
 	public void PositionChanged(Location location) 
 	{
+		if(lastRender + 2000 > System.currentTimeMillis())return;
 		this.invalidate();
-		
+		lastRender = System.currentTimeMillis();
 	}
 
+	
+	
 	@Override
 	public void OrientationChanged(float heading) {
-		// TODO Auto-generated method stub
+		if(lastRender + 2000 > System.currentTimeMillis())return;
 		this.invalidate();
+		lastRender = System.currentTimeMillis();
 	}
 
 	@Override

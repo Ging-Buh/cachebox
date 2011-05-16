@@ -419,11 +419,11 @@ public class Global {
         
         SizeIcons = new Drawable[] 
                 { 
+        		res.getDrawable(R.drawable.other),
         		res.getDrawable(R.drawable.micro),
         		res.getDrawable(R.drawable.small),
         		res.getDrawable(R.drawable.regular),
-        		res.getDrawable(R.drawable.large),
-        		res.getDrawable(R.drawable.other)
+        		res.getDrawable(R.drawable.large)
         		};
        
         BatteryIcons = new Drawable[] { 

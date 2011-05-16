@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import de.droidcachebox.Config;
@@ -849,14 +850,6 @@ public class Cache implements Comparable<Cache> {
                Global.PutImageTargetHeight(canvas,Global.Icons[17], IconPos, IconPos, iconSize/2);
            }
 
-
-        
-
-        //  if (cache.ListingChanged)
-        //  {
-        //      Global.PutImageTargetHeight(canvas, Global.MapIcons[22], 0, y + imgSize - 15, lineHeight);
-        //  }
-
         
         int left = 5;
         int space = (int) (DTPaint.getTextSize()*0.8);
@@ -890,25 +883,28 @@ public class Cache implements Comparable<Cache> {
     	
     }
     
+    
+    private long lastRender = System.currentTimeMillis();
+    private String cacheDistance="";
+    private double cacheBearing=0;
     private void DrawBearing(Canvas canvas, int lineHeight, int width, int rightBorder, Paint DTPaint)
     {
+    	
     	if (Global.LastValidPosition.Valid || Global.Marker.Valid)
         {
-            Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
-            double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
-
-            // FillArrow: Luftfahrt
-            // Bearing: Luftfahrt
-            // Heading: Im Uhrzeigersinn, Geocaching-Norm
-
-            double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, this.Latitude(), this.Longitude());
-            double relativeBearing = bearing - heading;
-         //   double relativeBearingRad = relativeBearing * Math.PI / 180.0;
-
-		        // Draw Arrow
-		       Global.PutImageTargetHeight(canvas, Global.Arrows[1],relativeBearing,(int)( width - rightBorder/2) ,(int)(lineHeight /8), (int)(lineHeight*2.4));
-
-		       canvas.drawText(UnitFormatter.DistanceString(this.Distance()), width - rightBorder + 2, (int) ((lineHeight * 2) + (lineHeight/1.4)), DTPaint);
+    		if((lastRender + 2000 < System.currentTimeMillis()))
+    		{
+	            Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
+	            double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
+	            double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, this.Latitude(), this.Longitude());
+	            cacheBearing = bearing - heading;
+	            cacheDistance=UnitFormatter.DistanceString(this.Distance());
+			       
+			    lastRender = System.currentTimeMillis();
+    		}
+    		Global.PutImageTargetHeight(canvas, Global.Arrows[1],cacheBearing,(int)( width - rightBorder/2) ,(int)(lineHeight /8), (int)(lineHeight*2.4));
+		    canvas.drawText(cacheDistance, width - rightBorder + 2, (int) ((lineHeight * 2) + (lineHeight/1.4)), DTPaint);
+		       
        }
     }
     
