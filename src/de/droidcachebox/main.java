@@ -48,6 +48,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Criteria;
+import android.location.GpsStatus.Listener;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -376,6 +377,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
                 this.mWakeLock.release();
         		counter.cancel();
         		TrackRecorder.StopRecording();
+        		locationManager.removeUpdates(this);
     		}
 			super.onDestroy();
     }
