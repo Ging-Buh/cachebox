@@ -75,6 +75,17 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 		this.setDivider(getBackground());
 		
 	}
+	
+	static public int windowW=0;
+    static public int windowH=0 ;
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) 
+    {
+    // we overriding onMeasure because this is where the application gets its right size.
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    windowW = getMeasuredWidth();
+    windowH = getMeasuredHeight();
+    }
 
 	public void ActivityResult(int requestCode, int resultCode, Intent data)
 	{
@@ -157,14 +168,15 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 	    {
 	    	if (cache != null)
 	    	{
+	    		 Boolean BackGroundChanger = ((position % 2) == 1);
 	    		if (position == 0)
 	    		{
-	    			WaypointViewItem v = new WaypointViewItem(context, cache, null);
+	    			WaypointViewItem v = new WaypointViewItem(context, cache, null,BackGroundChanger);
 	    			return v;
 	    		} else
 	    		{
 			        Waypoint waypoint = cache.waypoints.get(position - 1);
-			        WaypointViewItem v = new WaypointViewItem(context, cache, waypoint);
+			        WaypointViewItem v = new WaypointViewItem(context, cache, waypoint,BackGroundChanger);
 			        return v;
 	    		}
 	    	} else

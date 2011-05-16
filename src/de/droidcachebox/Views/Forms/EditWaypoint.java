@@ -175,7 +175,7 @@ public class EditWaypoint extends Activity {
 		tvTyp.setText(Global.Translations.Get("type"));
 		tvTitle.setText(Global.Translations.Get("Title"));
 		tvDescription.setText(Global.Translations.Get("Description"));
-		tvClue.setText("Clue");
+		tvClue.setText(Global.Translations.Get("Clue"));
 	}
 
 	@Override

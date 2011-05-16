@@ -193,6 +193,7 @@ Deutsch
 		CopyCoord = Koordinaten kopieren
 		CopyGcCode = GcCode kopieren
 		type = Typ
+		Clue = Hinweis
 		
 	//SolverViewPanel
 		Solve = Berech.

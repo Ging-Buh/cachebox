@@ -193,6 +193,7 @@ English
 		CopyCoord = Copy Coordinates
 		CopyGcCode = Copy GcCode
 		type = Type
+		Clue = Clue
 
 	//SolverViewPanel
 		Solve = Solve

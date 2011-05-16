@@ -762,14 +762,14 @@ public class Cache implements Comparable<Cache> {
     public enum DrawStyle
     {
     	all,		// alle infos
-    	withoutBearing;	//ohne Richtungs-Pfeil
+    	withoutBearing,	//ohne Richtungs-Pfeil
+    	withoutSeparator; //ohne unterster trennLinie 
     };
     
-    public void DrawInfo(Canvas canvas,int height, int width,int iconSize,int lineHeight, int rightBorder, int BackgroundColor, DrawStyle drawStyle)
+    
+    public void DrawInfo(Canvas canvas,int x, int y,int height, int width,int iconSize,int lineHeight, int rightBorder, int BackgroundColor, DrawStyle drawStyle)
     {
-      	int x=0;
-      	int y=0;
-      	Canvas MesureCanvas = new Canvas();
+    	Canvas MesureCanvas = new Canvas();
       	int VoteWidth = Global.PutImageTargetHeight(MesureCanvas, Global.StarIcons[(int)(this.Rating * 2)],-90, 0, 0, (int) (height*0.65));
       	MesureCanvas = null;
       	Boolean notAvailable = (!this.Available && !this.Archived);
@@ -786,7 +786,7 @@ public class Cache implements Comparable<Cache> {
       	      
         
         if (this.Rating > 0)
-            Global.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Rating * 2)],-90, 2, 0, (int) (height*0.65));
+            Global.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Rating * 2)],-90, x+2, y, (int) (height*0.65));
 
        Paint NamePaint = new Paint( (GlobalSelected)? Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected : Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected);  
        if(notAvailable)
@@ -800,73 +800,74 @@ public class Cache implements Comparable<Cache> {
        
        String Line1 =WrapText[0];
        
-       canvas.drawText(Line1, VoteWidth + iconSize + 5, 27, NamePaint);
+       canvas.drawText(Line1,x+ VoteWidth + iconSize + 5,y+ 27, NamePaint);
        if (!StringFunctions.IsNullOrEmpty(WrapText[1]))
        {
     	   String Line2 =WrapText[1];
-    	   canvas.drawText(Line2, VoteWidth + iconSize + 5, 50, NamePaint);
+    	   canvas.drawText(Line2,x+ VoteWidth + iconSize + 5,y+ 50, NamePaint);
        }
           
-       if (drawStyle != DrawStyle.withoutBearing) DrawBearing(canvas, lineHeight, width, rightBorder, DTPaint);
+       if (drawStyle != DrawStyle.withoutBearing) DrawBearing(canvas,x,y, lineHeight, width, rightBorder, DTPaint);
        
-      
+       if (drawStyle != DrawStyle.withoutSeparator)
+       {
         Paint Linepaint = Night? Global.Paints.Night.ListSeperator : Global.Paints.Day.ListSeperator;
         canvas.drawLine(x, y + height - 2, width, y + height - 2,Linepaint); 
         canvas.drawLine(x, y + height - 3, width, y + height - 3,Linepaint);
-        
+       }
           
         
         if (this.MysterySolved())
         {
-        	Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[19], VoteWidth, 0 , iconSize); 
+        	Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[19],x+ VoteWidth, y , iconSize); 
         }
         else
         {
-        	Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[this.Type.ordinal()], VoteWidth,  0 , iconSize); 
+        	Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[this.Type.ordinal()],x+ VoteWidth,  y , iconSize); 
         }
         
         
           if (this.Found())
           {
         	  
-              Global.PutImageTargetHeight(canvas, Global.Icons[2], IconPos, IconPos, iconSize/2);//Smile
+              Global.PutImageTargetHeight(canvas, Global.Icons[2],x+ IconPos,y+ IconPos, iconSize/2);//Smile
           }
               
 
           if (this.Favorit())
          {
-            Global.PutImageTargetHeight(canvas, Global.Icons[19], 0, y, lineHeight);
+            Global.PutImageTargetHeight(canvas, Global.Icons[19], x, y, lineHeight);
          }
 
          
 
           if (this.Archived)
           {
-             Global.PutImageTargetHeight(canvas, Global.Icons[24], 0, y, lineHeight);
+             Global.PutImageTargetHeight(canvas, Global.Icons[24], x, y, lineHeight);
           }
 
          if (this.Owner.equals(Config.GetString("GcLogin")) && !(Config.GetString("GcLogin").equals("")))
            {
-               Global.PutImageTargetHeight(canvas,Global.Icons[17], IconPos, IconPos, iconSize/2);
+               Global.PutImageTargetHeight(canvas,Global.Icons[17],x+ IconPos,y+ IconPos, iconSize/2);
            }
 
         
-        int left = 5;
+        int left = x+ 5;
         int space = (int) (DTPaint.getTextSize()*0.8);
         int tab = (int) (DTPaint.getTextSize());
-        canvas.drawText("S",left,(int) ((lineHeight * 2) + (lineHeight/1.4) ) , DTPaint);
+        canvas.drawText("S",left,y+(int) ((lineHeight * 2) + (lineHeight/1.4) ) , DTPaint);
         	left += space;
         	left += Global.PutImageTargetHeight(canvas, Global.SizeIcons[(int)(this.Size)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
         
         	left += tab;	
-        canvas.drawText("D",left,(int) ((lineHeight * 2) + (lineHeight/1.4) ) , DTPaint);
+        canvas.drawText("D",left,y+(int) ((lineHeight * 2) + (lineHeight/1.4) ) , DTPaint);
           left += space;
 
             left += Global.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Difficulty * 2)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
 
             left += tab;
 
-         canvas.drawText("T", left,(int) ((lineHeight * 2) + (lineHeight/1.4) ) , DTPaint);
+         canvas.drawText("T", left,y+(int) ((lineHeight * 2) + (lineHeight/1.4) ) , DTPaint);
          left += space;
          left += Global.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Terrain * 2)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
 
@@ -874,12 +875,18 @@ public class Cache implements Comparable<Cache> {
           int numTb = this.NumTravelbugs;
          if (numTb > 0)
           {
-              int tbWidth = Global.PutImageTargetHeight(canvas, Global.Icons[0], width - rightBorder, y + lineHeight, lineHeight);
+              int tbWidth = Global.PutImageTargetHeight(canvas, Global.Icons[0],y+ width - rightBorder, y + lineHeight, lineHeight);
 
               if (numTb > 1)
-            	  canvas.drawText("x" + String.valueOf(numTb), width - rightBorder + tbWidth+2, (int)( y + lineHeight + (lineHeight/1.4)) , DTPaint);
+            	  canvas.drawText("x" + String.valueOf(numTb),y+ width - rightBorder + tbWidth+2, (int)( y + lineHeight + (lineHeight/1.4)) , DTPaint);
           }
         	
+    }
+    public void DrawInfo(Canvas canvas,int height, int width,int iconSize,int lineHeight, int rightBorder, int BackgroundColor, DrawStyle drawStyle)
+    {
+      	int x=0;
+      	int y=0;
+      	DrawInfo( canvas,x, y, height,  width, iconSize, lineHeight,  rightBorder,  BackgroundColor,  drawStyle);
     	
     }
     
@@ -887,7 +894,7 @@ public class Cache implements Comparable<Cache> {
     private long lastRender = System.currentTimeMillis();
     private String cacheDistance="";
     private double cacheBearing=0;
-    private void DrawBearing(Canvas canvas, int lineHeight, int width, int rightBorder, Paint DTPaint)
+    private void DrawBearing(Canvas canvas,int x, int y, int lineHeight, int width, int rightBorder, Paint DTPaint)
     {
     	
     	if (Global.LastValidPosition.Valid || Global.Marker.Valid)
@@ -902,8 +909,8 @@ public class Cache implements Comparable<Cache> {
 			       
 			    lastRender = System.currentTimeMillis();
     		}
-    		Global.PutImageTargetHeight(canvas, Global.Arrows[1],cacheBearing,(int)( width - rightBorder/2) ,(int)(lineHeight /8), (int)(lineHeight*2.4));
-		    canvas.drawText(cacheDistance, width - rightBorder + 2, (int) ((lineHeight * 2) + (lineHeight/1.4)), DTPaint);
+    		Global.PutImageTargetHeight(canvas, Global.Arrows[1],cacheBearing,x+(int)( width - rightBorder/2) ,y+(int)(lineHeight /8), (int)(lineHeight*2.4));
+		    canvas.drawText(cacheDistance,x+ width - rightBorder + 2,y+ (int) ((lineHeight * 2) + (lineHeight/1.4)), DTPaint);
 		       
        }
     }

@@ -190,6 +190,7 @@ utf8
 		PasteCoord = Coller les coordonnées
 		CopyCoord = Copier les coordonnées
 		CopyGcCode = Copier le code GC
+		Clue = Clue
 
 	//SolverViewPanel
 		Solve = Résolution

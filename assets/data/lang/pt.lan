@@ -193,6 +193,7 @@ Portugues
 		CopyCoord = Copiar Coordenadas
 		CopyGcCode = Copiar Código
 		type = Type
+		Clue = Clue
 				
 	//SolverViewPanel
 		Solve = Resolver
