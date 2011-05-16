@@ -189,7 +189,7 @@ public class WaypointViewItem extends View {
         	top += lineHeight;
         	canvas.drawText(Global.FormatLatitudeDM(waypoint.Latitude()) + " / " + Global.FormatLongitudeDM(waypoint.Longitude()), left, top,tmpPaint);
         	top += lineHeight;
-        	canvas.drawText(waypoint.Clue, left, top,tmpPaint);
+        	if (waypoint.Clue != null)canvas.drawText(waypoint.Clue, left, top,tmpPaint);
         	
         	// draw Arrow and distance
         	if (Global.LastValidPosition.Valid || Global.Marker.Valid)
