@@ -110,15 +110,13 @@ public class LogView extends ListView implements SelectedCacheEvent, ViewOptions
 	    	if (cache != null)
 	    	{
 		        LogEntry logEntry = logs.get(position);
-		        LogViewItem v = new LogViewItem(context, cache, logEntry);
+		        Boolean BackGroundChanger = ((position % 2) == 1);
+		        LogViewItem v = new LogViewItem(context, cache, logEntry,BackGroundChanger);
 		        return v;
 	    	} else
 	    		return null;
 	    }
 	 
-	    /*public void onClick(View v) {
-	            Log.v(LOG_TAG, "Row button clicked");
-	    }*/
 	 
 	}
 

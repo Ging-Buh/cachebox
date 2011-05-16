@@ -530,7 +530,7 @@ public class Global {
 
     
     static TypedArray themeStyles;
-    final private static int[] colorAttrs = new int[]{R.attr.ListBackground, R.attr.ListBackground_secend, R.attr.ListBackground_select,R.attr.myBackground};
+    final private static int[] colorAttrs = new int[]{R.attr.ListBackground, R.attr.ListBackground_secend, R.attr.ListBackground_select,R.attr.myBackground,R.attr.ListSeparator};
     
     public static void initTheme(Context context)
     {

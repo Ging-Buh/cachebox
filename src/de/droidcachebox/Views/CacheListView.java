@@ -121,9 +121,6 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 	        Boolean BackGroundChanger = ((position % 2) == 1);
 	        CacheListViewItem v = new CacheListViewItem(context, cache,BackGroundChanger);
 	 
-	        //v.setBackgroundColor((position % 2) == 1 ? Color.rgb(50,50,50) : Color.BLACK);
-	 
-	        /*v.setOnClickListener(new OnItemClickListener(position));*/
 	        return v;
 	    }
 	 

@@ -1,8 +1,6 @@
 package de.droidcachebox.Views;
 
-import java.text.BreakIterator;
-import java.text.DateFormat;
-
+import java.text.SimpleDateFormat;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
@@ -13,12 +11,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.Paint.Align;
+import android.graphics.RectF;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.view.View;
-import android.view.View.MeasureSpec;
+
 
 public class LogViewItem extends View {
     private Cache cache;
@@ -29,29 +27,19 @@ public class LogViewItem extends View {
     private TextPaint textPaint;
     private StaticLayout layoutComment;
     private StaticLayout layoutFinder;
-    private StaticLayout layoutDate;
-    private static boolean BackColorChanger=false;
     
+    private boolean BackColorChanger=false;
+    private final int CornerSize =20;
     
-	public LogViewItem(Context context, Cache cache, LogEntry logEntry) {
-		// TODO Auto-generated constructor stub
+	public LogViewItem(Context context, Cache cache, LogEntry logEntry, Boolean BackColorId) {
+		
 		super(context);
         this.cache = cache;
         this.logEntry = logEntry;
         
         textPaint = new TextPaint(Config.GetBool("nightMode")? Global.Paints.Night.Text.noselected : Global.Paints.Day.Text.noselected );
         textPaint.setTextSize(24);
-//        textPaint.setSubpixelText(true);
-        
-        if (BackColorChanger)
-        {
-        	this.setBackgroundColor(Config.GetBool("nightMode")? R.color.Night_ListBackground : R.color.Day_ListBackground);
-        }
-        else
-        {
-        	this.setBackgroundColor(Config.GetBool("nightMode")? R.color.Night_ListBackground_secend : R.color.Day_ListBackground_secend);
-        }
-        BackColorChanger = !BackColorChanger;
+        BackColorChanger = BackColorId;
         
        }
 
@@ -86,11 +74,11 @@ public class LogViewItem extends View {
         }
         width = specSize;
         
-      	layoutComment = new StaticLayout(logEntry.Comment, textPaint, width, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-      	layoutFinder = new StaticLayout(logEntry.Finder, textPaint, width, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-      	DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-      	layoutDate = new StaticLayout(df.format(logEntry.Timestamp), textPaint, width, Alignment.ALIGN_OPPOSITE, 1.0f, 0.0f, false);
+        int innerWidth = width - (CornerSize*2);
         
+      	layoutComment = new StaticLayout(logEntry.Comment, textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+      	layoutFinder = new StaticLayout(logEntry.Finder, textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+      	        
         return result;
     }
 
@@ -121,6 +109,7 @@ public class LogViewItem extends View {
             }
         }        
 
+        result +=CornerSize*2;
         height = result;
         return result;
     }
@@ -131,24 +120,60 @@ public class LogViewItem extends View {
      */
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        int paintID = 0;
-        Paint drawPaint = new Paint(Global.getColor(R.attr.ListBackground));
-        canvas.drawPaint(drawPaint);
+       super.onDraw(canvas);
+       int rowHeight = (int) (layoutFinder.getHeight()*1.5)+CornerSize;
+       int LineXPos = (rowHeight/2)+(layoutFinder.getHeight()/2)-5;
+       Boolean Night = Config.GetBool("nightMode");
+       Paint NamePaint = new Paint( Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected);
+       NamePaint.setFakeBoldText(true);
+       NamePaint.setTextSize(layoutFinder.getHeight());
+       Paint Linepaint = Night? Global.Paints.Night.ListSeperator : Global.Paints.Day.ListSeperator;
+       Linepaint.setAntiAlias(true);
+      
+       canvas.drawColor(Global.getColor(R.attr.myBackground));
 
-        layoutFinder.draw(canvas);
-//        canvas.translate(width-100, 0);
-        layoutDate.draw(canvas);
-//        canvas.translate(-width+100, 0);
-        
-     	
-      	canvas.translate(0, layoutFinder.getHeight());
-      	layoutComment.draw(canvas);
-      	canvas.translate(0, -layoutFinder.getHeight());
+       Paint BackPaint = new Paint();
+       BackPaint.setAntiAlias(true);
+      
+       final Rect rect = new Rect(7, 7, width-7, height-7);
+       final RectF rectF = new RectF(rect);
+       
+       final Rect outerRect = new Rect(5, 5, width-5, height-5);
+       final RectF OuterRectF = new RectF(outerRect);
 
-      	Paint li = new Paint();
-      	li.setColor(Color.BLACK);
-      	canvas.drawLine(0, height-2, width, height-2, li);
+       canvas.drawRoundRect( OuterRectF,CornerSize,CornerSize, Linepaint);
+      
+       BackPaint.setColor((BackColorChanger)? Global.getColor(R.attr.ListBackground_secend): Global.getColor(R.attr.ListBackground));
+       canvas.drawRoundRect( rectF,CornerSize-2,CornerSize-2, BackPaint);
+
+       // Kopfzeile
+       final Rect KopfRect = new Rect(5, 5, width-5, rowHeight);;
+       final RectF KopfRectF = new RectF(KopfRect);
+       canvas.drawRoundRect( KopfRectF,CornerSize,CornerSize, Linepaint);
+       canvas.drawRect(new Rect(5, rowHeight-CornerSize, width-5, rowHeight), Linepaint);
+       
+       int space = (logEntry.TypeIcon >= 0) ? Global.PutImageTargetHeight(canvas, Global.LogIcons[logEntry.TypeIcon],CornerSize/2, 8, rowHeight-10) + 4 : 0;
+
+       SimpleDateFormat postFormater = new SimpleDateFormat("dd/MM/yyyy"); 
+       String dateString = postFormater.format(logEntry.Timestamp); 
+       canvas.drawText(logEntry.Finder, space + CornerSize/2, LineXPos, NamePaint);
+       
+       NamePaint.setFakeBoldText(false);
+       int DateLength = (int) NamePaint.measureText(dateString);
+       canvas.drawText(dateString, width - DateLength-10, LineXPos, NamePaint);
+      
+       
+       canvas.drawLine(5, rowHeight - 2, width-5, rowHeight - 2,Linepaint); 
+       canvas.drawLine(5, rowHeight - 3, width-5, rowHeight - 3,Linepaint);
+       
+       
+       // Körper
+        canvas.translate(CornerSize, rowHeight + CornerSize);
+     	layoutComment.draw(canvas);
+     	canvas.translate(-CornerSize, -rowHeight - CornerSize);
+       
+     	  
+          
     }
 
 }
