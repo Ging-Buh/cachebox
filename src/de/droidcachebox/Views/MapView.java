@@ -4110,6 +4110,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	long lastCompassTick = -99999;
 	@Override
 	public void OrientationChanged(float heading) {
+		if (!isVisible) return;
+		
 		anzCompassValues++;
 		compassValue += heading;
 
