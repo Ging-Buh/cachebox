@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/fieldnotesview_found" android:title="Found!" android:icon="R.drawable.smiel_gross"></item>
-    <item android:id="@+id/fieldnotesview_notfound" android:title="Not Found!"></item>
+    <item android:id="@+id/fieldnotesview_found" android:title="Found!" android:icon="@drawable/icon_smile"></item>
+    <item android:id="@+id/fieldnotesview_notfound" android:title="Not Found!" android:icon="@drawable/icon_sad"></item>
     <item android:id="@+id/fieldnotesview_maintenance" android:title="Needs Maintenance"></item>
     <item android:id="@+id/fieldnotesview_addnote" android:title="Add Note"></item>
     <item android:id="@+id/fieldnotesview_manage" android:title="Manage Fieldnotes">
