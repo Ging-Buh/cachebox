@@ -76,13 +76,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	private SurfaceView surface;
 	private ZoomControls zoomControls;
 	private MultiToggleButton buttonTrackPosition;
-	// Compass Panel
-	private LinearLayout tlPanel;
-	private TextView tvDistance;
-	private TextView tvSpeed;
-	private TextView tvLatitude;
-	private TextView tvLongitude;
-	
+
 	private Context myContext;
 	AnimationThread animationThread;
 	// 0 -> frei

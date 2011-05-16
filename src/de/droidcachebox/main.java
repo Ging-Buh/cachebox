@@ -18,6 +18,7 @@ import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.CompassView;
 import de.droidcachebox.Views.DescriptionView;
+import de.droidcachebox.Views.FieldNotesView;
 import de.droidcachebox.Views.LogView;
 import de.droidcachebox.Views.MapView;
 import de.droidcachebox.Views.NotesView;
@@ -105,6 +106,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	private NotesView notesView;				// ID 6
 	private SolverView solverView;				// ID 7
 	private CompassView compassView;			// ID 8
+	private FieldNotesView fieldNotesView;		// ID 9
 	private ArrayList<View> ViewList = new ArrayList<View>();
 	
 	int width;
@@ -272,6 +274,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         cacheListView = new CacheListView(this);
         waypointView = new WaypointView(this, this);
         logView = new LogView(this);
+        fieldNotesView = new FieldNotesView(this);
         descriptionView = new DescriptionView(this, "Cache-Beschreibung");
         spoilerView = new SpoilerView(this, inflater);
         notesView = new NotesView(this, inflater);
@@ -363,7 +366,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	ViewList.add(notesView);			// ID 6
     	ViewList.add(solverView);			// ID 7	
     	ViewList.add(compassView);			// ID 8	
-    	
+    	ViewList.add(fieldNotesView);		// ID 9
     }
 
     @Override
@@ -500,6 +503,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        b.putSerializable("Hint", hint);
 	        hintIntent.putExtras(b);
     		this.startActivity(hintIntent);
+    		return true;
+    	case R.id.miFieldNotes:
+    		showView(fieldNotesView);
     		return true;
     	// Misc
     	case R.id.miClose:

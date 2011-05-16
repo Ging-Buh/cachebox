@@ -794,7 +794,7 @@ public class Cache implements Comparable<Cache> {
 	       NamePaint.setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
        }
        
-       String[] WrapText = StringFunctions.TextWarpArray(this.Name, 23);
+       String[] WrapText = StringFunctions.TextWarpArray(this.Name, 30);
        
        
        String Line1 =WrapText[0];

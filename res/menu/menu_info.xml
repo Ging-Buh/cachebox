@@ -4,4 +4,5 @@
     <item android:id="@+id/miLogView" android:title="LogView"></item>
     <item android:id="@+id/miSpoilerView" android:title="Spoilers"></item>
     <item android:title="Hint" android:id="@+id/miHint"></item>
+    <item android:id="@+id/miFieldNotes" android:title="Field Notes"></item>
 </menu>
