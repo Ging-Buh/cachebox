@@ -38,6 +38,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -47,6 +48,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 	Activity parentActivity;
 	Waypoint aktWaypoint = null;
 	boolean createNewWaypoint = false;
+	Cache aktCache = null;
 	
 	private Paint paint;
 	/**
@@ -66,6 +68,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				aktWaypoint = null;
 				if (arg2 > 0)
 					aktWaypoint = Global.SelectedCache().waypoints.get(arg2 - 1);
+        		aktCache = Global.SelectedCache();
         		Global.SelectedWaypoint(Global.SelectedCache(), aktWaypoint);
 			}
 		});
@@ -191,11 +194,16 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
-		// TODO Auto-generated method stub
-		this.setAdapter(null);
-		lvAdapter = new CustomAdapter(getContext(), cache);
-		this.setAdapter(lvAdapter);
-		lvAdapter.notifyDataSetChanged();
+		if (aktCache != cache)
+		{
+			// Liste nur dann neu Erstellen, wenn der aktuelle Cache geändert wurde
+			aktCache = cache;
+			this.setAdapter(null);
+			lvAdapter = new CustomAdapter(getContext(), cache);
+			this.setAdapter(lvAdapter);
+			lvAdapter.notifyDataSetChanged();
+		} else
+			invalidate();
 	}
 
 	@Override
@@ -284,8 +292,23 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 
 	@Override
 	public void OnShow() {
-		// TODO Auto-generated method stub
-		
+		// aktuellen Waypoint in der List anzeigen
+		if (Global.SelectedWaypoint() != null)
+		{
+			aktWaypoint = Global.SelectedWaypoint();
+			int id = 0;
+			
+			for (Waypoint wp : aktCache.waypoints)
+			{
+				id++;
+				if (wp == aktWaypoint)
+				{
+					this.setSelection(id - 2);
+					break;
+				}
+			}
+		} else
+			this.setSelection(0);
 	}
 
 	@Override

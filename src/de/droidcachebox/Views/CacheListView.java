@@ -13,6 +13,7 @@ import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.CacheList;
 import de.droidcachebox.Geocaching.Coordinate;
+import de.droidcachebox.Geocaching.Waypoint;
 import android.R.drawable;
 import android.content.Context;
 import android.content.Intent;
@@ -145,7 +146,23 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 	@Override
 	public void OnShow() {
 		PositionEventList.Add(this);
-		
+
+		// aktuellen Cache in der List anzeigen
+		if (Global.SelectedCache() != null)
+		{
+			int id = 0;
+			
+			for (Cache ca : Database.Data.Query)
+			{
+				if (ca == Global.SelectedCache())
+				{
+					this.setSelection(id - 2);
+					break;
+				}
+				id++;
+			}
+		} else
+			this.setSelection(0);		
 	}
 
 	@Override
