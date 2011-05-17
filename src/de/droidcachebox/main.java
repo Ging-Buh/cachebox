@@ -379,6 +379,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
                 this.mWakeLock.release();
         		counter.cancel();
         		TrackRecorder.StopRecording();
+        		// GPS Verbindung beenden
         		locationManager.removeUpdates(this);
     		}
 			super.onDestroy();
