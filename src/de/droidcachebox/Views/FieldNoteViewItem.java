@@ -8,6 +8,8 @@ import de.droidcachebox.Geocaching.FieldNoteEntry;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.View;
 import android.view.View.MeasureSpec;
 
@@ -17,13 +19,14 @@ public class FieldNoteViewItem extends View {
     private int width;
     private int height;
     private int rightBorder;
+    private final int CornerSize =20;
     private boolean BackColorChanger = false;
        
     /// <summary>
     /// Höhe einer Zeile auf dem Zielgerät
     /// </summary>
-    private int lineHeight = 37;
-    private int imgSize = 37;
+    private int lineHeight = 50;
+    private int imgSize = 50;
 
     public FieldNoteViewItem(Context context, FieldNoteEntry fieldnote, Boolean BackColorId) {
 		super(context);
@@ -108,19 +111,42 @@ public class FieldNoteViewItem extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        boolean selected = false;
+        if (this.fieldnote == FieldNotesView.aktFieldNote)
+        	selected = true;
         
-        Boolean GlobalSelected = false;
         int BackgroundColor;
         if (BackColorChanger)
         {
-        	BackgroundColor = (GlobalSelected)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground);
+        	BackgroundColor = (selected)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground);
         }
         else
         {
-        	BackgroundColor = (GlobalSelected)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground_secend);
+        	BackgroundColor = (selected)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground_secend);
         }
         
-        canvas.drawText(fieldnote.CacheName, 10, 30, new Paint());
+        Paint BackPaint = new Paint();
+        BackPaint.setAntiAlias(true);
+       
+        final Rect rect = new Rect(7, 7, width-7, height-7);
+        final RectF rectF = new RectF(rect);
+        
+        final Rect outerRect = new Rect(5, 5, width-5, height-5);
+        final RectF OuterRectF = new RectF(outerRect);
+        BackPaint.setColor(BackgroundColor);
+        canvas.drawRoundRect( rectF,CornerSize-2,CornerSize-2, BackPaint);
+        canvas.drawText(fieldnote.CacheName, 70, 20, new Paint());
+        canvas.drawText(fieldnote.comment, 70, 35, new Paint());
+        canvas.drawText(fieldnote.gcCode, 70, 50, new Paint());
+        canvas.drawText("#" + fieldnote.foundNumber, 70, 65, new Paint());
+        canvas.drawText(fieldnote.timestamp.toLocaleString(), 200, 70, new Paint());
+        canvas.drawText("Id:" + fieldnote.Id, 250, 35, new Paint());
+        canvas.drawText("CacheId:" + fieldnote.CacheId, 250, 50, new Paint());
+
+        if (fieldnote.typeIcon >= 0) 
+        	Global.PutImageTargetHeight(canvas, Global.LogIcons[fieldnote.typeIcon], 10, 20, 50);
+        
         
         
     }

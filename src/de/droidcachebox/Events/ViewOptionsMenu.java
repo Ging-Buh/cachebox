@@ -12,4 +12,7 @@ public interface ViewOptionsMenu  {
 	public void OnShow();
 	public void OnHide();
 	public void ActivityResult(int requestCode, int resultCode, Intent data);
+	public int GetContextMenuId();
+	public void BeforeShowContextMenu(Menu menu);
+	public boolean ContextMenuItemSelected(MenuItem item);
 }

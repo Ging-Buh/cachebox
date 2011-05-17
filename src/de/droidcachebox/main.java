@@ -68,6 +68,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -275,7 +276,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         cacheListView = new CacheListView(this);
         waypointView = new WaypointView(this, this);
         logView = new LogView(this);
-        fieldNotesView = new FieldNotesView(this);
+        fieldNotesView = new FieldNotesView(this, this);
+        registerForContextMenu(fieldNotesView);
         descriptionView = new DescriptionView(this, "Cache-Beschreibung");
         spoilerView = new SpoilerView(this, inflater);
         notesView = new NotesView(this, inflater);
@@ -457,6 +459,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     
     public boolean onContextItemSelected(MenuItem item)
     {
+    	// First check whether this is a MenuItem of a View
+    	if ((aktView != null) && (aktView.ContextMenuItemSelected(item)))
+    		return true;
+    	
     	switch (item.getItemId())
     	{
     	// DB
@@ -508,6 +514,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     		return true;
     	case R.id.miFieldNotes:
     		showView(fieldNotesView);
+    		// beim Anzeigen der FieldNotesView gleich das Optionsmenü zeigen
+    		openOptionsMenu();
     		return true;
     	// Misc
     	case R.id.miClose:
@@ -560,6 +568,20 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
                                     ContextMenuInfo menuInfo) {
       super.onCreateContextMenu(menu, v, menuInfo);
       MenuInflater inflater = getMenuInflater();
+      
+      if (v instanceof ViewOptionsMenu)
+      {
+    	  int id = ((ViewOptionsMenu)v).GetContextMenuId();
+    	  if (id > 0)
+    	  {
+        	  inflater.inflate(id, menu);
+        	  ((ViewOptionsMenu)v).BeforeShowContextMenu(menu);
+    	  }
+    	  return;
+      }
+      
+      
+      
       if (v == buttonDB)
     	  inflater.inflate(R.menu.menu_db, menu);
       else if (v == buttonCache)

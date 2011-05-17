@@ -1,7 +1,10 @@
 package de.droidcachebox.Views;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
@@ -13,10 +16,16 @@ import de.droidcachebox.Geocaching.FieldNoteEntry;
 import de.droidcachebox.Geocaching.FieldNoteList;
 import de.droidcachebox.Geocaching.Waypoint;
 import de.droidcachebox.Views.CacheListView.CustomAdapter;
+import de.droidcachebox.Views.Forms.EditFieldNote;
+import de.droidcachebox.Views.Forms.EditWaypoint;
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Path.FillType;
+import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,24 +36,30 @@ import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class FieldNotesView extends ListView implements SelectedCacheEvent, ViewOptionsMenu {
-
-	public FieldNotesView(Context context) {
+	public static FieldNoteEntry aktFieldNote;
+	private int aktFieldNoteIndex = -1;
+	Activity parentActivity;
+	FieldNoteList lFieldNotes;
+	CustomAdapter lvAdapter;
+	
+	public FieldNotesView(Context context, final Activity parentActivity) {
 		super(context);
+		this.parentActivity = parentActivity;
 
-		FieldNoteList lFieldNotes = new FieldNoteList();
-		lFieldNotes.LoadFieldNotes();
+		lFieldNotes = new FieldNoteList();
 
 		this.setAdapter(null);
-		CustomAdapter lvAdapter = new CustomAdapter(getContext(), lFieldNotes);
+		lvAdapter = new CustomAdapter(getContext(), lFieldNotes);
 		this.setAdapter(lvAdapter);
 //		this.setLongClickable(true);
 		this.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-//        		Cache cache = Database.Data.Query.get(arg2);
-//        		Global.SelectedCache(cache);
-//        		invalidate();
+				
+				aktFieldNote = lFieldNotes.get(arg2);
+				aktFieldNoteIndex = arg2;
+        		invalidate();
 				return;
 			}
 		});
@@ -105,33 +120,83 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 		switch (item.getItemId())
 		{
 			case R.id.fieldnotesview_found:
-				addNewFieldnote();
+				addNewFieldnote(1);
+				return true;
+			case R.id.fieldnotesview_notfound:
+				addNewFieldnote(2);
+				return true;
+			case R.id.fieldnotesview_maintenance:
+				addNewFieldnote(3);
+				return true;
+			case R.id.fieldnotesview_addnote:
+				addNewFieldnote(4);
 				return true;
 		}
 		return false;
 	}
 
-	private void addNewFieldnote() {
+	private void addNewFieldnote(int type) {
 		Cache cache = Global.SelectedCache();
 
-//        "select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id from FieldNotes order by FoundNumber DESC, Timestamp DESC"
-        ContentValues args = new ContentValues();
-        args.put("id", cache.Id);
-        args.put("gccode", cache.GcCode);
-        args.put("name", cache.Name);
-        args.put("timestamp", new Date().toString());
-        args.put("type", 1);
-        args.put("foundnumber", 1);
-        args.put("comment", "Test Test Test");
-        try
-        {
-        	Database.FieldNotes.myDB.insert("Fieldnotes", null, args);
-        } catch (Exception exc)
-        {
-        	return;       
-        }
-        
+		FieldNoteEntry newFieldNote = new FieldNoteEntry(type);
+		newFieldNote.CacheName = cache.Name;
+		newFieldNote.gcCode = cache.GcCode;
+		newFieldNote.foundNumber = Config.GetInt("FoundOffset");
+		newFieldNote.timestamp = new Date();
+		newFieldNote.CacheId = cache.Id;
+		newFieldNote.comment = "";
+		newFieldNote.CacheUrl = cache.Url;
+
+		FieldNoteList fnl = new FieldNoteList();
+		fnl.LoadFieldNotes("CacheId=" + cache.Id + " and Type=" + type);
+		if (fnl.size() > 0)
+		{
+			// für diesen Cache ist bereits eine FieldNote vom typ vorhanden 
+			// -> diese ändern und keine neue erstellen
+			FieldNoteEntry nfne = fnl.get(0);
+			int index = 0;
+			for (FieldNoteEntry nfne2 : lFieldNotes)
+			{
+				if (nfne2.Id == nfne.Id)
+				{
+					newFieldNote = nfne;
+					aktFieldNote = nfne;
+					aktFieldNoteIndex = index;
+				}
+				index++;
+			}
+		}
 		
+		
+		switch (type)
+		{
+		case 1:
+			if (!cache.Found())
+				newFieldNote.foundNumber++;	// 
+			if (newFieldNote.comment.equals(""))
+				newFieldNote.comment = ReplaceTemplate(Config.GetString("FoundTemplate"), newFieldNote);
+			// wenn eine FieldNote Found erzeugt werden soll und der Cache noch nicht gefunden war -> foundNumber um 1 erhöhen
+			break;
+		case 2:
+			if (newFieldNote.comment.equals(""))
+				newFieldNote.comment = ReplaceTemplate(Config.GetString("DNFTemplate"), aktFieldNote);
+			break;
+		case 3:
+			if (newFieldNote.comment.equals(""))
+				newFieldNote.comment = ReplaceTemplate(Config.GetString("NeedsMaintenanceTemplate"), aktFieldNote);
+			break;
+		case 4:
+			if (newFieldNote.comment.equals(""))
+				newFieldNote.comment = ReplaceTemplate(Config.GetString("AddNoteTemplate"), aktFieldNote);
+			break;
+		}
+		
+		Intent mainIntent = new Intent().setClass(getContext(), EditFieldNote.class);
+        Bundle b = new Bundle();
+        b.putSerializable("FieldNote", newFieldNote);
+        mainIntent.putExtras(b);
+        
+		parentActivity.startActivityForResult(mainIntent, 0);
 		
 	}
 
@@ -150,7 +215,8 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 	@Override
 	public void OnShow() {
 		// TODO Auto-generated method stub
-		
+		if (lFieldNotes.size() == 0)
+			lFieldNotes.LoadFieldNotes("");
 	}
 
 	@Override
@@ -161,7 +227,36 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 
 	@Override
 	public void ActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
+		if (data == null)
+			return;
+		Bundle bundle = data.getExtras();
+		if (bundle != null)
+		{																	   	
+			FieldNoteEntry fieldNote = (FieldNoteEntry)bundle.getSerializable("FieldNoteResult");
+			if (fieldNote != null)
+			{
+				if ((aktFieldNote != null) && (fieldNote.Id == aktFieldNote.Id))
+				{
+					// Änderungen in aktFieldNote übernehmen
+					lFieldNotes.remove(aktFieldNoteIndex);
+					aktFieldNote = fieldNote;
+					lFieldNotes.add(aktFieldNoteIndex, aktFieldNote);
+					aktFieldNote.UpdateDatabase();
+				} else
+				{
+					// neue FieldNote
+					lFieldNotes.add(0, fieldNote);
+					fieldNote.WriteToDatabase();
+					aktFieldNote = fieldNote;
+					
+					Global.SelectedCache().Found(true);
+	                Config.Set("FoundOffset", aktFieldNote.foundNumber);
+	                Config.AcceptChanges();
+					
+				}
+				lvAdapter.notifyDataSetChanged();
+			}
+		}
 		
 	}
 
@@ -171,4 +266,51 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 		
 	}
 
+	@Override
+	public int GetContextMenuId() {
+		// TODO Auto-generated method stub
+		return R.menu.cmenu_fieldnotesview;
+	}
+
+	@Override
+	public void BeforeShowContextMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		MenuItem mi = menu.findItem(R.id.c_fnv_edit);
+		if (mi !=null)
+			mi.setEnabled(aktFieldNote != null);
+	}
+
+	@Override
+	public boolean ContextMenuItemSelected(MenuItem item) {
+		switch (item.getItemId())
+		{
+		case R.id.c_fnv_edit:
+			Intent mainIntent = new Intent().setClass(getContext(), EditFieldNote.class);
+	        Bundle b = new Bundle();
+	        b.putSerializable("FieldNote", aktFieldNote);
+	        mainIntent.putExtras(b);
+			parentActivity.startActivityForResult(mainIntent, 0);		
+			return true;
+		}
+		return false;
+	}
+
+    private String ReplaceTemplate(String template, FieldNoteEntry fieldNote)
+    {
+        DateFormat iso8601Format = new SimpleDateFormat("HH:mm");
+        String stime = iso8601Format.format(fieldNote.timestamp);
+        iso8601Format = new SimpleDateFormat("dd-MM-yyyy");
+        String sdate = iso8601Format.format(fieldNote.timestamp);
+
+    	template = template.replace("<br>", "\n");
+        template = template.replace("##finds##", String.valueOf(fieldNote.foundNumber));
+        template = template.replace("##date##", sdate);
+        template = template.replace("##time##", stime);
+        template = template.replace("##owner##", Global.SelectedCache().Owner);
+        template = template.replace("##gcusername##", Config.GetString("GcLogin"));
+//        template = template.replace("##gcvote##", comboBoxVote.SelectedIndex.ToString());
+        return template;
+    }
+
 }
+

@@ -182,6 +182,10 @@ public class Cache implements Comparable<Cache> {
     public void Found(boolean value)
     {
         found = value;
+        
+        ContentValues args = new ContentValues();
+        args.put("found", value);
+        Database.Data.myDB.update("Caches", args, "Id=" + Id, null);
 /*        SqlCeCommand command = new SqlCeCommand("update Caches set Found=@found where Id=@id", Database.Data.Connection);
         command.Parameters.Add("@found", DbType.Boolean).Value = value;
         command.Parameters.Add("@id", DbType.Int64).Value = Id;

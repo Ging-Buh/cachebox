@@ -17,10 +17,21 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
 	{
 	}
 	
-	public void LoadFieldNotes()
+	public void LoadFieldNotes(String where)
 	{
 		this.clear();
-        Cursor reader = Database.FieldNotes.myDB.rawQuery("select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id from FieldNotes order by FoundNumber DESC, Timestamp DESC", null);
+		String sql = "select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url from FieldNotes";
+		if (!where.equals(""))
+			sql += " where " + where;
+		sql += " order by FoundNumber DESC, Timestamp DESC"; 
+		Cursor reader = null;
+		try
+		{
+        reader = Database.FieldNotes.myDB.rawQuery(sql, null);
+		} catch (Exception exc)
+		{
+			String s = exc.getMessage();
+		}
     	reader.moveToFirst();
         while(reader.isAfterLast() == false)
         {

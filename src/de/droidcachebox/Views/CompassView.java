@@ -190,4 +190,31 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 		 AlignButton.setState(align? 1 : 0);
 	}
 
+
+
+
+	@Override
+	public int GetContextMenuId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+
+
+	@Override
+	public void BeforeShowContextMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	@Override
+	public boolean ContextMenuItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
