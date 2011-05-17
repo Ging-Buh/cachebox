@@ -27,16 +27,14 @@ import android.widget.RelativeLayout;
 public class CacheListViewItem extends View {
     private Cache cache;
     private int mAscent;
-    private int width;
-    private int height;
-    private int rightBorder;
+    private static int width;
+    private static int height = 0;
+    private static int rightBorder;
+    private static Rect drawRec;
     private boolean BackColorChanger = false;
        
-    /// <summary>
-    /// Höhe einer Zeile auf dem Zielgerät
-    /// </summary>
-    private int lineHeight = 37;
-    private int imgSize = 37;
+    
+    private static int imgSize = 0;
 
     /// <summary>
     /// Spiegelung des Logins bei Gc, damit ich das nicht dauernd aus der
@@ -60,16 +58,17 @@ public class CacheListViewItem extends View {
 	@Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
        
+        if (this.height == 0) // Höhe ist noch nicht berechnet 
+        {
+        	this.width = measureWidth(widthMeasureSpec);
+        	this.height = (int) (Global.scaledFontSize_normal * 4.9);
+        	this.imgSize = (int) (this.height / 1.2);
+	        this.rightBorder =(int) (this.height * 1.5);
+	        this.drawRec = new Rect(5,2,this.width - 5,this.height-2);
+        }
         
-        
-        // Berechne Höhe so das 7 Einträge in die Liste passen
-        this.height = (int) CacheListView.windowH / 7;
-        this.imgSize = (int) (this.height / 1.2);
-        this.lineHeight = (int) this.height / 3;
-        this.rightBorder =(int) (this.height * 1.5);
-        
-        setMeasuredDimension(measureWidth(widthMeasureSpec),this.height);
-              //  measureHeight(heightMeasureSpec));
+        setMeasuredDimension(this.width, this.height);
+            
 	}
     
     /**
@@ -131,7 +130,7 @@ public class CacheListViewItem extends View {
     
     
    static double fakeBearing =0;
-    
+   static final Rect myRec = new Rect(2,1, width-2, height-1); 
     /**
      * Render the text
      * 
@@ -152,7 +151,7 @@ public class CacheListViewItem extends View {
         	BackgroundColor = (GlobalSelected)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground_secend);
         }
         
-        cache.DrawInfo(canvas, height, width, imgSize, lineHeight, rightBorder, BackgroundColor, Cache.DrawStyle.all);
+        cache.DrawInfo(canvas, drawRec, BackgroundColor, Cache.DrawStyle.all);
         
         
     }

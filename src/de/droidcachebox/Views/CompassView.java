@@ -1,5 +1,6 @@
 package de.droidcachebox.Views;
 
+import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
@@ -50,6 +51,8 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 		RelativeLayout  CompassLayout = (RelativeLayout )inflater.inflate(R.layout.compassview, null, false);
 		this.addView(CompassLayout);
 		
+		this.setBackgroundColor(Global.getColor(R.attr.EmptyBackground));//Global.getColor(R.attr.myBackground)
+		
 		 compassControl = (CompassControl)findViewById(R.id.Compass);
 		 DescriptionTextView = (CacheInfoControl)findViewById(R.id.CompassDescriptionView);
 		 ToggleButtonLayout = (RelativeLayout)findViewById(R.id.layoutCompassToggle);
@@ -79,8 +82,8 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
     windowW = getMeasuredWidth();
     windowH = getMeasuredHeight();
     
-    DescriptionTextView.setHeight(windowW/3);
-    ToggleButtonLayout.getLayoutParams().height= windowW + 20;
+    DescriptionTextView.setHeight((int) (Global.scaledFontSize_normal * 4.9));
+    ToggleButtonLayout.getLayoutParams().height= windowW + 30;
 
     }
 	
@@ -94,7 +97,13 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 			aktCache = cache;
 			aktWaypoint = waypoint;
 			
-			DescriptionTextView.setCache(aktCache, Global.getColor(R.attr.myBackground));
+			int cacheInfoBackColor = Global.getColor(R.attr.ListBackground_select);
+			if (aktWaypoint != null)
+            {
+				cacheInfoBackColor = Global.getColor(R.attr.ListBackground_secend); // Cache ist nicht selectiert
+            }
+			
+			DescriptionTextView.setCache(aktCache, cacheInfoBackColor);
 		}
 	}
 

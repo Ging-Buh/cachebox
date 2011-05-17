@@ -181,11 +181,12 @@ public class WaypointViewItem extends View {
         }
         
         int LineColor = Global.getColor(R.attr.ListSeparator);
-        ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(5, 5, width-5, height-5), 2, LineColor, BackgroundColor, CornerSize);
+        Rect DrawingRec = new Rect(5, 5, width-5, height-5);
+        ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, BackgroundColor);
         
         if (waypoint == null) // this Item is the Cache
         {
-             cache.DrawInfo(canvas,CornerSize/2,CornerSize, innerHeight, innerWidth, imgSize, this.height/5, rightBorder, Color.TRANSPARENT, Cache.DrawStyle.withoutSeparator);    
+             cache.DrawInfo(canvas, DrawingRec, BackgroundColor, Cache.DrawStyle.withoutSeparator);    
         }
         else
         {	
@@ -198,7 +199,7 @@ public class WaypointViewItem extends View {
         	int iconWidth = 0;
         	// draw icon
         	if (((int)waypoint.Type.ordinal()) < Global.CacheIconsBig.length)
-        		iconWidth=Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[(int)waypoint.Type.ordinal()], CornerSize/2,CornerSize, imgSize);
+        		iconWidth=ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[(int)waypoint.Type.ordinal()], CornerSize/2,CornerSize, imgSize);
 
         	// draw Text info
         	left += iconWidth;
@@ -219,7 +220,7 @@ public class WaypointViewItem extends View {
     			       
     			  
         		
-        		Global.PutImageTargetHeight(canvas, Global.Arrows[1],cacheBearing,(int)( width - rightBorder/2) ,(int)(lineHeight /8), (int)(lineHeight*2.4));
+    	            ActivityUtils.PutImageTargetHeight(canvas, Global.Arrows[1],cacheBearing,(int)( width - rightBorder/2) ,(int)(lineHeight /8), (int)(lineHeight*2.4));
     		    canvas.drawText(cacheDistance, innerWidth - bounds.width() - (CornerSize*2), top, tmpPaint);
     		       
            }

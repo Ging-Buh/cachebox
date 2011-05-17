@@ -3,6 +3,7 @@ package de.droidcachebox.Views;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.FieldNoteEntry;
 import android.content.Context;
@@ -145,7 +146,7 @@ public class FieldNoteViewItem extends View {
         canvas.drawText("CacheId:" + fieldnote.CacheId, 250, 50, new Paint());
 
         if (fieldnote.typeIcon >= 0) 
-        	Global.PutImageTargetHeight(canvas, Global.LogIcons[fieldnote.typeIcon], 10, 20, 50);
+        	ActivityUtils.PutImageTargetHeight(canvas, Global.LogIcons[fieldnote.typeIcon], 10, 20, 50);
         
         
         

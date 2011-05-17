@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<declare-styleable name="UseColors">
+		<attr name="EmptyBackground" format="reference|color"/>
 		<attr name="myBackground" format="reference|color"/>
 		<attr name="TextColor" format="reference|color"/>
 		<attr name="ListBackground" format="reference|color"/>

@@ -4,10 +4,14 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.StaticLayout;
 
 public class ActivityUtils
@@ -60,6 +64,11 @@ public class ActivityUtils
      	return layout.getHeight();
 	}
 
+	public static void drawFillRoundRecWithBorder(Canvas canvas, Rect rec, int BorderSize, int BorderColor, int FillColor)
+	{
+		drawFillRoundRecWithBorder(canvas, rec, BorderSize, BorderColor, FillColor, Global.scaledFontSize_normal);
+	}
+	
 	public static void drawFillRoundRecWithBorder(Canvas canvas, Rect rec, int BorderSize, int BorderColor, int FillColor, int CornerSize)
 	{
 		Paint drawPaint = new Paint();
@@ -80,6 +89,71 @@ public class ActivityUtils
 	    canvas.drawRoundRect( rectF,CornerSize-BorderSize,CornerSize-BorderSize, drawPaint);
 
 	}
+	
+	
+
+    /// <summary>
+    /// Zeichnet das Bild und skaliert es proportional so, dass es die
+    /// übergebene füllt.
+    /// </summary>
+    /// <param name="graphics"></param>
+    /// <param name="image"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="height"></param>
+    public static int PutImageTargetHeight(Canvas canvas, Drawable image, int x, int y, int height)
+    {
+       // float scale = (float)height / (float)image.getBounds().height();
+       // int width = (int)Math.round(image.getBounds().width() * scale);
+        
+        float scale = (float)height / (float)image.getIntrinsicHeight();
+        int width = (int)Math.round(image.getIntrinsicWidth() * scale);
+
+        Rect oldBounds = image.getBounds();
+        image.setBounds(x, y, x + width, y + height);
+        image.draw(canvas);
+        image.setBounds(oldBounds);
+
+        return width;
+    }
+    
+    
+  /// <summary>
+    /// Zeichnet das Bild und skaliert es proportional so, dass es die
+    /// übergebene füllt.
+    /// </summary>
+    /// <param name="graphics"></param>
+    /// <param name="image"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="height"></param>
+    public static int PutImageTargetHeight(Canvas canvas, Drawable image,double Angle, int x, int y, int height)
+    {
+    	Bitmap bmp = ((BitmapDrawable)image).getBitmap();
+    	
+    	// Getting width & height of the given image.
+    	int w = bmp.getWidth();
+    	int h = bmp.getHeight();
+    	// Setting post rotate to 90
+    	Matrix mtx = new Matrix();
+    	mtx.postRotate((float) Angle);
+    	// Rotating Bitmap
+    	Bitmap rotatedBMP = Bitmap.createBitmap(bmp, 0, 0, w, h, mtx, true);
+    	BitmapDrawable bmd = new BitmapDrawable(rotatedBMP);
+
+    	
+        
+        float scale = (float)height / (float)bmd.getIntrinsicHeight();
+        int width = (int)Math.round(bmd.getIntrinsicWidth() * scale);
+
+        Rect oldBounds = bmd.getBounds();
+        bmd.setBounds(x, y, x + width, y + height);
+        bmd.draw(canvas);
+        bmd.setBounds(oldBounds);
+
+        return width;
+    }
+    
 
 
 }

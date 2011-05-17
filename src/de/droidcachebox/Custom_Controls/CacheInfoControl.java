@@ -163,7 +163,7 @@ public final class CacheInfoControl extends View {
 		 {
 			 UseColor = Global.getColor(R.attr.ListBackground);
 		 }
-		 aktCache.DrawInfo(canvas, height, width, imgSize, lineHeight, rightBorder, UseColor, Cache.DrawStyle.withoutBearing);
+		 aktCache.DrawInfo(canvas, width, height, UseColor, Cache.DrawStyle.withoutBearing);
 	     
 			
 		canvas.restore();

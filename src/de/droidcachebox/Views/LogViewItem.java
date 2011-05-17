@@ -148,7 +148,7 @@ public class LogViewItem extends View {
        canvas.drawRoundRect( KopfRectF,CornerSize,CornerSize, Linepaint);
        canvas.drawRect(new Rect(5, rowHeight-CornerSize, width-5, rowHeight), Linepaint);
        
-       int space = (logEntry.TypeIcon >= 0) ? Global.PutImageTargetHeight(canvas, Global.LogIcons[logEntry.TypeIcon],CornerSize/2, 8, rowHeight-10) + 4 : 0;
+       int space = (logEntry.TypeIcon >= 0) ? ActivityUtils.PutImageTargetHeight(canvas, Global.LogIcons[logEntry.TypeIcon],CornerSize/2, 8, rowHeight-10) + 4 : 0;
 
        SimpleDateFormat postFormater = new SimpleDateFormat("dd/MM/yyyy"); 
        String dateString = postFormater.format(logEntry.Timestamp); 

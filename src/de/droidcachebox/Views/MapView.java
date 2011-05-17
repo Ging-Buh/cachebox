@@ -56,6 +56,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.TrackRecorder;
 import de.droidcachebox.UnitFormatter;
+import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
@@ -1842,7 +1843,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		
 		  if (wpi.Cache.Favorit())
 		  {
-			  Global.PutImageTargetHeight(canvasOverlay, Global.Icons[19], imageX, imageY, (int)(14.0f * dpiScaleFactorY));
+			  ActivityUtils.PutImageTargetHeight(canvasOverlay, Global.Icons[19], imageX, imageY, (int)(14.0f * dpiScaleFactorY));
 		  }
 		
 		  boolean drawAsWaypoint = wpi.Waypoint != null;

@@ -6,25 +6,21 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-
 import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Components.ActivityUtils;
-import de.droidcachebox.Components.StringFunctions;
 import de.droidcachebox.Map.Descriptor;
-import de.droidcachebox.Views.MapView;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.location.Location;
-import android.location.LocationManager;
 import android.text.StaticLayout;
 import android.text.Layout.Alignment;
 import android.text.TextPaint;
@@ -776,58 +772,121 @@ public class Cache implements Comparable<Cache> {
     
     private StaticLayout layoutCacheName;
     
-    
-    public void DrawInfo(Canvas canvas,int x, int y,int height, int width,int iconSize,int lineHeight, int rightBorder, int BackgroundColor, DrawStyle drawStyle)
+    public void DrawInfo(Canvas canvas, int width,int height, int BackgroundColor, DrawStyle drawStyle)
     {
-    	Canvas MesureCanvas = new Canvas();
-      	int VoteWidth = Global.PutImageTargetHeight(MesureCanvas, Global.StarIcons[(int)(this.Rating * 2)],-90, 0, 0, (int) (height*0.65));
-      	MesureCanvas = null;
-      	Boolean notAvailable = (!this.Available && !this.Archived);
-        Boolean Night = Config.GetBool("nightMode");
-        Boolean GlobalSelected = this == Global.SelectedCache();
-        int IconPos = iconSize - (int) (iconSize/1.5);
-        
-        
-        Paint DrawBackPaint = new Paint(Global.Paints.ListBackground);
-        DrawBackPaint.setColor(BackgroundColor);
-        canvas.drawPaint(DrawBackPaint);
+      	int x=0;
+      	int y=0;
+      	Rect DrawRect = new Rect(x,y,width,height);
+      	DrawInfo( canvas, DrawRect, BackgroundColor,  drawStyle);
+    }
+    
+    
+    // Static Mesured Member
+    private static final int iconSize = (int) (Global.scaledFontSize_normal * 3.5);
+    private static int VoteWidth = 0;
+    private static int rightBorder = 0;
+    private static int nameLayoutWidth = 0;
+    private static Paint DTPaint;
+    private final static int space = (int) (Global.scaledFontSize_normal*0.8);
+    private final static int tab = (int) (Global.scaledFontSize_normal*0.7);
+     
+    public void DrawInfo(Canvas canvas,Rect rec, int BackgroundColor, DrawStyle drawStyle)
+    {
+    	// init
+    		Boolean notAvailable = (!this.Available && !this.Archived);
+            Boolean Night = Config.GetBool("nightMode");
+            Boolean GlobalSelected = this == Global.SelectedCache();
+            final int left = rec.left + Global.scaledFontSize_normal/2;
+            final int top = rec.top + 4;
+            final int width = rec.width() - 4;
+            final int height = rec.height() - 4;
+            final int SDTLineTop = height-Global.scaledFontSize_normal;
+            final int SDTImageTop = SDTLineTop + Global.scaledFontSize_normal;
+            	
+    	// Mesure
+    		if (VoteWidth == 0) // Grössen noch nicht berechnet
+    		{
+		    	Canvas MesureCanvas = new Canvas();
+		      	VoteWidth = ActivityUtils.PutImageTargetHeight(MesureCanvas, Global.StarIcons[(int)(this.Rating * 2)],-90, 0, 0, (int) (iconSize * 0.8));
+		      	MesureCanvas = null;
+		      	rightBorder = (int) (height * 0.8);
+		      	nameLayoutWidth = width - VoteWidth - iconSize - rightBorder ;
+		      	DTPaint = new Paint();
+	    	    DTPaint.setTextSize(Global.scaledFontSize_normal);
+	    	    DTPaint.setAntiAlias(true);
+    		}
+    		DTPaint.setColor(Global.getColor(R.attr.TextColor));
+    		
+    	// Draw roundetRect
+    		ActivityUtils.drawFillRoundRecWithBorder(canvas, rec, 2, Global.getColor(R.attr.ListSeparator), BackgroundColor);
+    		
+    	// Draw Vote
+    		if (this.Rating > 0)
+    			ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Rating * 2)],-90, left, top , (int) (iconSize * 0.8));
+    	
+    	// Draw Icon
+    		 if (this.MysterySolved())
+    	        {
+    			 	ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[19],left + VoteWidth, top , iconSize); 
+    	        }
+    	        else
+    	        {
+    	        	ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[this.Type.ordinal()], left  + VoteWidth,  top , iconSize); 
+    	        }
+    	
+    	// Draw Cache Name
+    		 TextPaint NamePaint = new TextPaint( (GlobalSelected)? Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected : Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected);  
+    	     if(notAvailable)
+    	     {
+	    		 NamePaint.setColor(Color.RED);
+	    		 NamePaint.setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+    	     }
+    	     layoutCacheName = new StaticLayout(this.Name, NamePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+    	     int LayoutHeight = ActivityUtils.drawStaticLayout(canvas, layoutCacheName, left + VoteWidth + iconSize + 5, top);
+    	       
+    	// over draw 3. Cache name line
+    	     if(layoutCacheName.getLineCount()>2)
+    	     {
+    	    	 Paint backPaint = new Paint();
+    	    	 backPaint.setColor(BackgroundColor); // Color.RED
+    	    	 int VislinesHeight = LayoutHeight*2/layoutCacheName.getLineCount();
+    	    	 canvas.drawRect(new Rect(left + VoteWidth + iconSize + 5,top + VislinesHeight,nameLayoutWidth+left + VoteWidth + iconSize + 5,top+LayoutHeight+VislinesHeight-4), backPaint);
+    	     }
+    	     
+    	// Draw S/D/T
+    	     int SDTleft = left+ 5;
+    	     
+    	     canvas.drawText("S",SDTleft,SDTImageTop , DTPaint);
+    	     SDTleft += space;
+    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.SizeIcons[(int)(this.Size)], SDTleft, SDTLineTop, Global.scaledFontSize_normal);
+    	     SDTleft += tab;	
+    	     canvas.drawText("D",SDTleft,SDTImageTop , DTPaint);
+    	     SDTleft += space;
+    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Difficulty * 2)],SDTleft, SDTLineTop, Global.scaledFontSize_normal);
+    	     SDTleft += tab;
+    	     canvas.drawText("T", SDTleft,SDTImageTop , DTPaint);
+    	     SDTleft += space;
+    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Terrain * 2)], SDTleft, SDTLineTop, Global.scaledFontSize_normal);
+
+    	     
+    	/*
+    	
+      	
+       
 	 
-        Paint DTPaint =  Night? Global.Paints.Night.Text.noselected: Global.Paints.Day.Text.noselected ;
+          Night? Global.Paints.Night.Text.noselected: Global.Paints.Day.Text.noselected ;
       	      
         
-        if (this.Rating > 0)
-            Global.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Rating * 2)],-90, x+2, y, (int) (height*0.65));
+        
 
-       TextPaint NamePaint = new TextPaint( (GlobalSelected)? Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected : Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected);  
-       if(notAvailable)
-       {
-	       NamePaint.setColor(Color.RED);
-	       NamePaint.setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-       }
-       
-       int nameLayoutWidth = width - VoteWidth - iconSize - rightBorder ; 
-       layoutCacheName = new StaticLayout(this.Name, NamePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-       ActivityUtils.drawStaticLayout(canvas, layoutCacheName, x+ VoteWidth + iconSize + 5, y);
-       
+      
           
        if (drawStyle != DrawStyle.withoutBearing) DrawBearing(canvas,x,y, lineHeight, width, rightBorder, DTPaint);
        
-       if (drawStyle != DrawStyle.withoutSeparator)
-       {
-        Paint Linepaint = Night? Global.Paints.Night.ListSeperator : Global.Paints.Day.ListSeperator;
-        canvas.drawLine(x, y + height - 2, width, y + height - 2,Linepaint); 
-        canvas.drawLine(x, y + height - 3, width, y + height - 3,Linepaint);
-       }
+       
           
         
-        if (this.MysterySolved())
-        {
-        	Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[19],x+ VoteWidth, y , iconSize); 
-        }
-        else
-        {
-        	Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[this.Type.ordinal()],x+ VoteWidth,  y , iconSize); 
-        }
+       
         
         
           if (this.Found())
@@ -855,25 +914,7 @@ public class Cache implements Comparable<Cache> {
            }
 
         
-        int left = x+ 5;
-        int space = (int) (DTPaint.getTextSize()*0.8);
-        int tab = (int) (DTPaint.getTextSize());
-        canvas.drawText("S",left,y+(int) ((lineHeight * 2) + (lineHeight/1.4) ) , DTPaint);
-        	left += space;
-        	left += Global.PutImageTargetHeight(canvas, Global.SizeIcons[(int)(this.Size)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
         
-        	left += tab;	
-        canvas.drawText("D",left,y+(int) ((lineHeight * 2) + (lineHeight/1.4) ) , DTPaint);
-          left += space;
-
-            left += Global.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Difficulty * 2)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
-
-            left += tab;
-
-         canvas.drawText("T", left,y+(int) ((lineHeight * 2) + (lineHeight/1.4) ) , DTPaint);
-         left += space;
-         left += Global.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Terrain * 2)], left, y + lineHeight * 2 + lineHeight / 4, lineHeight / 2);
-
 
           int numTb = this.NumTravelbugs;
          if (numTb > 0)
@@ -882,16 +923,10 @@ public class Cache implements Comparable<Cache> {
 
               if (numTb > 1)
             	  canvas.drawText("x" + String.valueOf(numTb),y+ width - rightBorder + tbWidth+2, (int)( y + lineHeight + (lineHeight/1.4)) , DTPaint);
-          }
+          }*/
         	
     }
-    public void DrawInfo(Canvas canvas,int height, int width,int iconSize,int lineHeight, int rightBorder, int BackgroundColor, DrawStyle drawStyle)
-    {
-      	int x=0;
-      	int y=0;
-      	DrawInfo( canvas,x, y, height,  width, iconSize, lineHeight,  rightBorder,  BackgroundColor,  drawStyle);
-    	
-    }
+   
     
     
     private long lastRender = System.currentTimeMillis();
@@ -912,7 +947,7 @@ public class Cache implements Comparable<Cache> {
 			       
 			    lastRender = System.currentTimeMillis();
     		}
-    		Global.PutImageTargetHeight(canvas, Global.Arrows[1],cacheBearing,x+(int)( width - rightBorder/2) ,y+(int)(lineHeight /8), (int)(lineHeight*2.4));
+    		ActivityUtils.PutImageTargetHeight(canvas, Global.Arrows[1],cacheBearing,x+(int)( width - rightBorder/2) ,y+(int)(lineHeight /8), (int)(lineHeight*2.4));
 		    canvas.drawText(cacheDistance,x+ width - rightBorder + 2,y+ (int) ((lineHeight * 2) + (lineHeight/1.4)), DTPaint);
 		       
        }
