@@ -51,7 +51,12 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
         		Cache cache = Database.Data.Query.get(arg2);
-        		Global.SelectedCache(cache);
+        		
+        		Waypoint finalWp = null;
+        		if (cache.HasFinalWaypoint())
+        			finalWp = cache.GetFinalWaypoint();
+        		Global.SelectedWaypoint(cache, finalWp);
+
         		invalidate();
 				return;
 			}

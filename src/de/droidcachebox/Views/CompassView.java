@@ -36,6 +36,7 @@ import android.widget.ToggleButton;
 public class CompassView extends FrameLayout implements ViewOptionsMenu,PositionEvent, SelectedCacheEvent, SelectedLangChangedEvent {
 	private Context context;
 	private Cache aktCache;
+	private Waypoint aktWaypoint;
 	private CompassControl compassControl;
 	private CacheInfoControl DescriptionTextView;
 	private RelativeLayout ToggleButtonLayout;
@@ -88,10 +89,10 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
-		if (aktCache != cache)
-		{
-			
+		if ((aktCache != cache) || (aktWaypoint != waypoint))
+		{			
 			aktCache = cache;
+			aktWaypoint = waypoint;
 			
 			DescriptionTextView.setCache(aktCache, Global.getColor(R.attr.myBackground));
 		}
@@ -146,12 +147,19 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
             // Bearing: Luftfahrt
             // Heading: Im Uhrzeigersinn, Geocaching-Norm
 
-            double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, aktCache.Latitude(), aktCache.Longitude());
+            Coordinate dest = aktCache.Coordinate;
+            float distance = aktCache.Distance();
+            if (aktWaypoint != null)
+            {
+            	dest = aktWaypoint.Coordinate;
+            	distance = aktWaypoint.Distance();
+            }
+            double bearing = Coordinate.Bearing(position, dest);
             double relativeBearing = bearing - heading;
          //   double relativeBearingRad = relativeBearing * Math.PI / 180.0;
 
              		
-    		compassControl.setInfo(heading, relativeBearing, UnitFormatter.DistanceString(aktCache.Distance()));
+    		compassControl.setInfo(heading, relativeBearing, UnitFormatter.DistanceString(distance));
     		
         }
 	}
@@ -169,12 +177,19 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
             // Bearing: Luftfahrt
             // Heading: Im Uhrzeigersinn, Geocaching-Norm
 
-            double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, aktCache.Latitude(), aktCache.Longitude());
+            Coordinate dest = aktCache.Coordinate;
+            float distance = aktCache.Distance();
+            if (aktWaypoint != null)
+            {
+            	dest = aktWaypoint.Coordinate;
+            	distance = aktWaypoint.Distance();
+            }
+            double bearing = Coordinate.Bearing(position, dest);
             double relativeBearing = bearing - heading;
          //   double relativeBearingRad = relativeBearing * Math.PI / 180.0;
             
 				
-		compassControl.setInfo(heading, relativeBearing, UnitFormatter.DistanceString(aktCache.Distance()));
+		compassControl.setInfo(heading, relativeBearing, UnitFormatter.DistanceString(distance));
 		
         }
 	}
