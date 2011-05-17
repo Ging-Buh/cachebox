@@ -14,6 +14,7 @@ import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
+import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.StringFunctions;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Views.MapView;
@@ -24,6 +25,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationManager;
+import android.text.StaticLayout;
+import android.text.Layout.Alignment;
+import android.text.TextPaint;
 
 
 public class Cache implements Comparable<Cache> {
@@ -770,6 +774,8 @@ public class Cache implements Comparable<Cache> {
     	withoutSeparator; //ohne unterster trennLinie 
     };
     
+    private StaticLayout layoutCacheName;
+    
     
     public void DrawInfo(Canvas canvas,int x, int y,int height, int width,int iconSize,int lineHeight, int rightBorder, int BackgroundColor, DrawStyle drawStyle)
     {
@@ -792,24 +798,17 @@ public class Cache implements Comparable<Cache> {
         if (this.Rating > 0)
             Global.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Rating * 2)],-90, x+2, y, (int) (height*0.65));
 
-       Paint NamePaint = new Paint( (GlobalSelected)? Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected : Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected);  
+       TextPaint NamePaint = new TextPaint( (GlobalSelected)? Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected : Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected);  
        if(notAvailable)
        {
 	       NamePaint.setColor(Color.RED);
 	       NamePaint.setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
        }
        
-       String[] WrapText = StringFunctions.TextWarpArray(this.Name, 30);
+       int nameLayoutWidth = width - VoteWidth - iconSize - rightBorder ; 
+       layoutCacheName = new StaticLayout(this.Name, NamePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+       ActivityUtils.drawStaticLayout(canvas, layoutCacheName, x+ VoteWidth + iconSize + 5, y);
        
-       
-       String Line1 =WrapText[0];
-       
-       canvas.drawText(Line1,x+ VoteWidth + iconSize + 5,y+ 27, NamePaint);
-       if (!StringFunctions.IsNullOrEmpty(WrapText[1]))
-       {
-    	   String Line2 =WrapText[1];
-    	   canvas.drawText(Line2,x+ VoteWidth + iconSize + 5,y+ 50, NamePaint);
-       }
           
        if (drawStyle != DrawStyle.withoutBearing) DrawBearing(canvas,x,y, lineHeight, width, rightBorder, DTPaint);
        

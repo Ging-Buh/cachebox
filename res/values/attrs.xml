@@ -2,6 +2,7 @@
 <resources>
 	<declare-styleable name="UseColors">
 		<attr name="myBackground" format="reference|color"/>
+		<attr name="TextColor" format="reference|color"/>
 		<attr name="ListBackground" format="reference|color"/>
 		<attr name="ListBackground_secend" format="reference|color"/>
 		<attr name="ListBackground_select" format="reference|color"/>

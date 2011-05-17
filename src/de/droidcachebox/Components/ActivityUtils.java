@@ -4,6 +4,11 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.text.StaticLayout;
 
 public class ActivityUtils
 {
@@ -45,4 +50,36 @@ public class ActivityUtils
 		Global.initTheme(activity);	
 		
 	}
+
+
+	public static int drawStaticLayout(Canvas canvas,StaticLayout layout,int x, int y)
+	{
+		canvas.translate(x,y);
+		layout.draw(canvas);
+     	canvas.translate(-x, -y);
+     	return layout.getHeight();
+	}
+
+	public static void drawFillRoundRecWithBorder(Canvas canvas, Rect rec, int BorderSize, int BorderColor, int FillColor, int CornerSize)
+	{
+		Paint drawPaint = new Paint();
+		drawPaint.setAntiAlias(true);
+		
+	    final Rect outerRect = rec;
+	    final RectF OuterRectF = new RectF(outerRect);
+
+	    drawPaint.setColor(BorderColor);
+	    canvas.drawRoundRect( OuterRectF,CornerSize,CornerSize, drawPaint);
+	    
+	    
+	    
+	    final Rect rect = new Rect(rec.left+BorderSize,rec.top+BorderSize, rec.right-BorderSize,rec.bottom-BorderSize);
+	    final RectF rectF = new RectF(rect);
+	       
+	    drawPaint.setColor(FillColor);
+	    canvas.drawRoundRect( rectF,CornerSize-BorderSize,CornerSize-BorderSize, drawPaint);
+
+	}
+
+
 }

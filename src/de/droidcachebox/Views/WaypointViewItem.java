@@ -4,6 +4,7 @@ import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
+import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
@@ -15,6 +16,9 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Paint.Align;
 import android.graphics.Rect;
+import android.text.StaticLayout;
+import android.text.TextPaint;
+import android.text.Layout.Alignment;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.widget.LinearLayout;
@@ -28,7 +32,6 @@ public class WaypointViewItem extends View {
     private boolean BackColorChanger = false;
     private final int CornerSize =20;
     private int rightBorder;
-    private int lineHeight;
     private int imgSize;
 
 	public WaypointViewItem(Context context, Cache cache, Waypoint waypoint, Boolean BackColorId) {
@@ -41,16 +44,48 @@ public class WaypointViewItem extends View {
        }
 
 	
+	private StaticLayout LayoutName; 
+	private StaticLayout LayoutDesc;
+	private StaticLayout LayoutCord;
+	private StaticLayout LayoutClue;
+	private TextPaint LayoutTextPaint;
+	private TextPaint LayoutTextPaintBold;
+	private int LineSep;
+	
 	@Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-       
-		 // Berechne Höhe so das 7 Einträge in die Liste passen
-        this.height = (int) WaypointView.windowH / 5;
-        this.imgSize = (int) (this.height * 0.6);
-        this.lineHeight = (int) this.height / 4;
-        this.rightBorder =(int) (this.height );
+		measureWidth(widthMeasureSpec);
+		this.imgSize = (int) ((WaypointView.windowH / 5) * 0.6);
+		this.rightBorder =(int)(WaypointView.windowH / 5);
+		int TextWidth = this.width- this.imgSize - this.rightBorder; 
+		
+		Rect bounds = new Rect();
+		LayoutTextPaint = new TextPaint();
+		LayoutTextPaint.setTextSize(Global.scaledFontSize_normal);
+		LayoutTextPaint.getTextBounds("T", 0, 1, bounds);
+		LineSep = bounds.height()/3;
+		
+		if (waypoint == null) // this Item is the Cache
+        {
+			this.height = bounds.height()*7;
+        }
+		else
+		{
+			String Clue = "";
+			if (waypoint.Clue != null)
+				Clue = waypoint.Clue;
+			LayoutTextPaint.setAntiAlias(true);
+			LayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
+			LayoutCord = new StaticLayout(Global.FormatLatitudeDM(waypoint.Latitude()) + " / " + Global.FormatLongitudeDM(waypoint.Longitude()), LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+			LayoutDesc = new StaticLayout(waypoint.Description, LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+			LayoutClue = new StaticLayout(Clue, LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+			LayoutTextPaintBold = new TextPaint(LayoutTextPaint);
+			LayoutTextPaintBold.setFakeBoldText(true);
+			LayoutName = new StaticLayout(waypoint.GcCode + ": " + waypoint.Title, LayoutTextPaintBold, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+			this.height = (LineSep*5)+ LayoutCord.getHeight()+LayoutDesc.getHeight()+LayoutClue.getHeight()+LayoutName.getHeight();
+		}
         
-        setMeasuredDimension(measureWidth(widthMeasureSpec),this.height);
+        setMeasuredDimension(this.width,this.height);
 		
 	}
     
@@ -130,24 +165,11 @@ public class WaypointViewItem extends View {
         Boolean Night = Config.GetBool("nightMode");
         Paint NamePaint = new Paint( Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected);
         NamePaint.setFakeBoldText(true);
-       // NamePaint.setTextSize(layoutFinder.getHeight());
+        
         Paint Linepaint = Night? Global.Paints.Night.ListSeperator : Global.Paints.Day.ListSeperator;
         Linepaint.setAntiAlias(true);
        
         canvas.drawColor(Global.getColor(R.attr.myBackground));
-
-        Paint BackPaint = new Paint();
-        BackPaint.setAntiAlias(true);
-       
-        final Rect rect = new Rect(7, 7, width-7, height-7);
-        final RectF rectF = new RectF(rect);
-        
-        final Rect outerRect = new Rect(5, 5, width-5, height-5);
-        final RectF OuterRectF = new RectF(outerRect);
-
-        canvas.drawRoundRect( OuterRectF,CornerSize,CornerSize, Linepaint);
-       
-        
         int BackgroundColor;
         if (BackColorChanger)
         {
@@ -158,18 +180,18 @@ public class WaypointViewItem extends View {
         	BackgroundColor = (isSelected)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground_secend);
         }
         
-        BackPaint.setColor(BackgroundColor);
-        canvas.drawRoundRect( rectF,CornerSize-2,CornerSize-2, BackPaint);
+        int LineColor = Global.getColor(R.attr.ListSeparator);
+        ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(5, 5, width-5, height-5), 2, LineColor, BackgroundColor, CornerSize);
         
         if (waypoint == null) // this Item is the Cache
         {
-             cache.DrawInfo(canvas,CornerSize/2,CornerSize, innerHeight, innerWidth, imgSize, lineHeight, rightBorder, Color.TRANSPARENT, Cache.DrawStyle.withoutSeparator);    
+             cache.DrawInfo(canvas,CornerSize/2,CornerSize, innerHeight, innerWidth, imgSize, this.height/5, rightBorder, Color.TRANSPARENT, Cache.DrawStyle.withoutSeparator);    
         }
         else
         {	
         	Paint tmpPaint = new Paint(Config.GetBool("nightMode")? Global.Paints.Night.Text.noselected : Global.Paints.Day.Text.noselected);
-        	int left= 20;
-        	int top = 30;
+        	int left= 15;
+        	int top = LineSep *2;
         	Rect bounds = new Rect();
         	tmpPaint.getTextBounds("471km", 0, 4, bounds);
         	int lineHeight = bounds.height()+10;
@@ -179,17 +201,11 @@ public class WaypointViewItem extends View {
         		iconWidth=Global.PutImageTargetHeight(canvas, Global.CacheIconsBig[(int)waypoint.Type.ordinal()], CornerSize/2,CornerSize, imgSize);
 
         	// draw Text info
-        	String title = waypoint.GcCode + ": " + waypoint.Title;
         	left += iconWidth;
-        	tmpPaint.setFakeBoldText(true);
-        	canvas.drawText(title, left, top,tmpPaint);
-        	top += lineHeight;
-        	tmpPaint.setFakeBoldText(false);
-        	canvas.drawText(waypoint.Description, left, top,tmpPaint);
-        	top += lineHeight;
-        	canvas.drawText(Global.FormatLatitudeDM(waypoint.Latitude()) + " / " + Global.FormatLongitudeDM(waypoint.Longitude()), left, top,tmpPaint);
-        	top += lineHeight;
-        	if (waypoint.Clue != null)canvas.drawText(waypoint.Clue, left, top,tmpPaint);
+        	top += ActivityUtils.drawStaticLayout(canvas, LayoutName, left, top);
+        	top += ActivityUtils.drawStaticLayout(canvas, LayoutDesc, left, top);
+        	top += ActivityUtils.drawStaticLayout(canvas, LayoutCord, left, top);
+        	if (waypoint.Clue != null)ActivityUtils.drawStaticLayout(canvas, LayoutClue, left, top);
         	
         	// draw Arrow and distance
         	if (Global.LastValidPosition.Valid || Global.Marker.Valid)

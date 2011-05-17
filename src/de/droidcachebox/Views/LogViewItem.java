@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.LogEntry;
 import android.content.Context;
@@ -38,7 +39,7 @@ public class LogViewItem extends View {
         this.logEntry = logEntry;
         
         textPaint = new TextPaint(Config.GetBool("nightMode")? Global.Paints.Night.Text.noselected : Global.Paints.Day.Text.noselected );
-        textPaint.setTextSize(24);
+        textPaint.setTextSize(Global.scaledFontSize_normal);
         BackColorChanger = BackColorId;
         
        }
@@ -126,26 +127,21 @@ public class LogViewItem extends View {
        Boolean Night = Config.GetBool("nightMode");
        Paint NamePaint = new Paint( Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected);
        NamePaint.setFakeBoldText(true);
-       NamePaint.setTextSize(layoutFinder.getHeight());
+       NamePaint.setTextSize(Global.scaledFontSize_normal);
        Paint Linepaint = Night? Global.Paints.Night.ListSeperator : Global.Paints.Day.ListSeperator;
        Linepaint.setAntiAlias(true);
+       int LineColor = Global.getColor(R.attr.ListSeparator);
       
        canvas.drawColor(Global.getColor(R.attr.myBackground));
 
        Paint BackPaint = new Paint();
        BackPaint.setAntiAlias(true);
       
-       final Rect rect = new Rect(7, 7, width-7, height-7);
-       final RectF rectF = new RectF(rect);
+       ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(5, 5, width-5, height-5), 2, 
+    		   LineColor,(BackColorChanger)? Global.getColor(R.attr.ListBackground_secend): Global.getColor(R.attr.ListBackground), 
+    						   CornerSize);
        
-       final Rect outerRect = new Rect(5, 5, width-5, height-5);
-       final RectF OuterRectF = new RectF(outerRect);
-
-       canvas.drawRoundRect( OuterRectF,CornerSize,CornerSize, Linepaint);
       
-       BackPaint.setColor((BackColorChanger)? Global.getColor(R.attr.ListBackground_secend): Global.getColor(R.attr.ListBackground));
-       canvas.drawRoundRect( rectF,CornerSize-2,CornerSize-2, BackPaint);
-
        // Kopfzeile
        final Rect KopfRect = new Rect(5, 5, width-5, rowHeight);;
        final RectF KopfRectF = new RectF(KopfRect);
@@ -168,9 +164,8 @@ public class LogViewItem extends View {
        
        
        // Körper
-        canvas.translate(CornerSize, rowHeight + CornerSize);
-     	layoutComment.draw(canvas);
-     	canvas.translate(-CornerSize, -rowHeight - CornerSize);
+       ActivityUtils.drawStaticLayout(canvas, layoutComment, CornerSize, rowHeight + CornerSize);
+       
        
      	  
           

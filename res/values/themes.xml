@@ -3,6 +3,7 @@
     <style name="Theme_day" parent="android:Theme">
     	<item name="android:windowBackground">@color/EmptyBackgroundDay</item>
     	<item name="myBackground">@color/EmptyBackgroundDay</item>
+    	<item name="TextColor">@color/Day_Foreground</item>
     	<item name="ListBackground">@color/Day_ListBackground</item>
 	    <item name="ListBackground_secend">@color/Day_ListBackground_secend</item>
 	    <item name="ListBackground_select">@color/Day_SelectedBackground</item>
@@ -30,6 +31,7 @@
     <style name="Theme_night" parent="android:Theme">
         <item name="android:windowBackground">@color/EmptyBackgroundNight</item>
         <item name="myBackground">@color/EmptyBackgroundNight</item>
+        <item name="TextColor">@color/Night_Foreground</item>
         <item name="ListBackground">@color/Night_ListBackground</item>
 	    <item name="ListBackground_secend">@color/Night_ListBackground_secend</item>
 	    <item name="ListBackground_select">@color/Night_SelectedBackground</item>

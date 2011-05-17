@@ -41,7 +41,7 @@ public class Global {
 	public static RouteOverlay.Route AktuelleRoute = null;
     public static long TrackDistance;
     
-    
+    public static int scaledFontSize_normal;
     public static LangStrings Translations = new LangStrings();
     
     public static Coordinate Marker = new Coordinate(48.12425, 12.16460);
@@ -129,6 +129,7 @@ public class Global {
     	public static void init(Context context)
         {
         	Resources res = context.getResources();
+        	scaledFontSize_normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
         	ListBackground=new Paint();
     		Night.ListBackground_second=new Paint();
     		
@@ -141,12 +142,12 @@ public class Global {
     		Night.Text.selected = new Paint();
     		Night.Text.selected.setColor(res.getColor(R.color.Night_Foreground));
     		Night.Text.selected.setAntiAlias(true);
-    		Night.Text.selected.setTextSize(24);
+    		Night.Text.selected.setTextSize(scaledFontSize_normal);
     		Night.Text.selected.setFakeBoldText(true);
         	Night.Text.noselected = new Paint();
     		Night.Text.noselected.setColor(res.getColor(R.color.Night_Foreground));
     		Night.Text.noselected.setAntiAlias(true);
-    		Night.Text.noselected.setTextSize(24);
+    		Night.Text.noselected.setTextSize(scaledFontSize_normal);
     		
     		
     		
@@ -161,12 +162,12 @@ public class Global {
     		Day.Text.selected = new Paint();
     		Day.Text.selected.setColor(res.getColor(R.color.Day_Foreground));
     		Day.Text.selected.setAntiAlias(true);
-    		Day.Text.selected.setTextSize(24);
+    		Day.Text.selected.setTextSize(scaledFontSize_normal);
     		Day.Text.selected.setFakeBoldText(true);
     		Day.Text.noselected = new Paint();
     		Day.Text.noselected.setColor(res.getColor(R.color.Day_Foreground));
     		Day.Text.noselected.setAntiAlias(true);
-    		Day.Text.noselected.setTextSize(24);
+    		Day.Text.noselected.setTextSize(scaledFontSize_normal);
     		
     		
     	}
@@ -530,7 +531,7 @@ public class Global {
 
     
     static TypedArray themeStyles;
-    final private static int[] colorAttrs = new int[]{R.attr.ListBackground, R.attr.ListBackground_secend, R.attr.ListBackground_select,R.attr.myBackground,R.attr.ListSeparator};
+    final private static int[] colorAttrs = new int[]{R.attr.ListBackground, R.attr.ListBackground_secend, R.attr.ListBackground_select,R.attr.myBackground,R.attr.ListSeparator,R.attr.TextColor};
     
     public static void initTheme(Context context)
     {
