@@ -117,7 +117,7 @@ public class splash extends Activity
 	        	Database.Data = null;
 	        // initialize Database
 	        Database.Data = new Database(DatabaseType.CacheBox, this);
-	        Database.Data.StartUp(Config.WorkPath + "/cachebox.db3");
+	        Database.Data.StartUp(Config.WorkPath + "/CacheBox.db3");
 	        Database.Data.Query.LoadCaches("");
 
 	        Database.FieldNotes = new Database(DatabaseType.FieldNotes, this); 
