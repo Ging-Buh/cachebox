@@ -61,7 +61,7 @@ public class CacheListViewItem extends View {
         if (this.height == 0) // Höhe ist noch nicht berechnet 
         {
         	this.width = measureWidth(widthMeasureSpec);
-        	this.height = (int) (Global.scaledFontSize_normal * 4.9);
+        	this.height = (int) (Global.scaledFontSize_normal * 5);
         	this.imgSize = (int) (this.height / 1.2);
 	        this.rightBorder =(int) (this.height * 1.5);
 	        this.drawRec = new Rect(5,2,this.width - 5,this.height-2);

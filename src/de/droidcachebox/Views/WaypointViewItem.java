@@ -8,6 +8,7 @@ import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
+import de.droidcachebox.Geocaching.Cache.DrawStyle;
 import android.R.bool;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -156,12 +157,6 @@ public class WaypointViewItem extends View {
         	isSelected=true;
         }
         
-        
-        int innerHeight = height - (CornerSize*2);
-        int innerWidth = width - (CornerSize);
-        
-        int rowHeight = 35; // (int) (layoutFinder.getHeight()*1.5)+CornerSize;
-        int LineXPos = 20; // (rowHeight/2)+(layoutFinder.getHeight()/2)-5;
         Boolean Night = Config.GetBool("nightMode");
         Paint NamePaint = new Paint( Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected);
         NamePaint.setFakeBoldText(true);
@@ -195,7 +190,6 @@ public class WaypointViewItem extends View {
         	int top = LineSep *2;
         	Rect bounds = new Rect();
         	tmpPaint.getTextBounds("471km", 0, 4, bounds);
-        	int lineHeight = bounds.height()+10;
         	int iconWidth = 0;
         	// draw icon
         	if (((int)waypoint.Type.ordinal()) < Global.CacheIconsBig.length)
@@ -209,21 +203,9 @@ public class WaypointViewItem extends View {
         	if (waypoint.Clue != null)ActivityUtils.drawStaticLayout(canvas, LayoutClue, left, top);
         	
         	// draw Arrow and distance
-        	if (Global.LastValidPosition.Valid || Global.Marker.Valid)
-            {
-        		
-    	            Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
-    	            double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
-    	            double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, waypoint.Latitude(), waypoint.Longitude());
-    	            double cacheBearing = bearing - heading;
-    	            String cacheDistance = UnitFormatter.DistanceString(waypoint.Distance());
-    			       
-    			  
-        		
-    	            ActivityUtils.PutImageTargetHeight(canvas, Global.Arrows[1],cacheBearing,(int)( width - rightBorder/2) ,(int)(lineHeight /8), (int)(lineHeight*2.4));
-    		    canvas.drawText(cacheDistance, innerWidth - bounds.width() - (CornerSize*2), top, tmpPaint);
-    		       
-           }
+        	// Draw Bearing
+        	if (Cache.BearingRec!=null)
+        		cache.DrawBearing(canvas,Cache.BearingRec,waypoint);
         	
          
         }

@@ -220,10 +220,10 @@ public class Config {
         validateSetting("NavigationProvider", "http://129.206.229.146/openrouteservice/php/OpenLSRS_DetermineRoute.php");
         validateSetting("TrackRecorderStartup", "false");
         validateSetting("MapShowCompass", "true");
-        validateSetting("FoundTemplate", "<br>###finds##, ##time##, Found it with Cachebox!");
-        validateSetting("DNFTemplate", "<br>##time##. Logged it with Cachebox!");
-        validateSetting("NeedsMaintenanceTemplate", "Logged it with Cachebox!");
-        validateSetting("AddNoteTemplate", "Logged it with Cachebox!");
+        validateSetting("FoundTemplate", "<br>###finds##, ##time##, Found it with DroidCachebox!");
+        validateSetting("DNFTemplate", "<br>##time##. Logged it with DroidCachebox!");
+        validateSetting("NeedsMaintenanceTemplate", "Logged it with DroidCachebox!");
+        validateSetting("AddNoteTemplate", "Logged it with DroidCachebox!");
         validateSetting("ResortRepaint", "false");
         validateSetting("TrackDistance", "3");
         validateSetting("MapMaxCachesLabel", "12");

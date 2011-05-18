@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -127,31 +128,42 @@ public class ActivityUtils
     /// <param name="x"></param>
     /// <param name="y"></param>
     /// <param name="height"></param>
-    public static int PutImageTargetHeight(Canvas canvas, Drawable image,double Angle, int x, int y, int height)
+    public static int PutImageTargetHeight(Canvas canvas, Drawable image,double Angle, int x, int y, int newHeight)
     {
-    	Bitmap bmp = ((BitmapDrawable)image).getBitmap();
+
+    	float scale = (float)newHeight / (float)image.getIntrinsicHeight();
+    	int newWidth = (int)Math.round(image.getIntrinsicWidth() * scale);
     	
-    	// Getting width & height of the given image.
-    	int w = bmp.getWidth();
-    	int h = bmp.getHeight();
-    	// Setting post rotate to 90
-    	Matrix mtx = new Matrix();
-    	mtx.postRotate((float) Angle);
-    	// Rotating Bitmap
-    	Bitmap rotatedBMP = Bitmap.createBitmap(bmp, 0, 0, w, h, mtx, true);
-    	BitmapDrawable bmd = new BitmapDrawable(rotatedBMP);
+    	Bitmap bmp = ((BitmapDrawable)image).getBitmap();
+    	int width = bmp.getWidth();
+    	int height = bmp.getHeight();
+    	
+
+    	
+    	float scaleWidth = ((float) newWidth) / width;
+    	float scaleHeight = ((float) newHeight) / height;
+    	 // createa matrix for the manipulation
+    	Matrix matrix = new Matrix();
+    	 // resize the bit map
+    	matrix.postScale(scaleWidth, scaleHeight);
+    	 // rotate the Bitmap
+    	matrix.postRotate((float) Angle);
+    	 // recreate the new Bitmap
+    	Bitmap resizedBitmap = Bitmap.createBitmap(bmp, 0, 0,
+    	                   width, height, matrix, true);
+    	 // make a Drawable from Bitmap to allow to set the BitMap
+    	 // to the ImageView, ImageButton or what ever
+    	 BitmapDrawable bmd = new BitmapDrawable(resizedBitmap);
+
 
     	
         
-        float scale = (float)height / (float)bmd.getIntrinsicHeight();
-        int width = (int)Math.round(bmd.getIntrinsicWidth() * scale);
-
-        Rect oldBounds = bmd.getBounds();
-        bmd.setBounds(x, y, x + width, y + height);
+        bmd.setBounds(x, y,x+ bmd.getIntrinsicWidth(),y+ bmd.getIntrinsicHeight());
         bmd.draw(canvas);
-        bmd.setBounds(oldBounds);
+       
 
-        return width;
+        return bmd.getIntrinsicWidth();
+
     }
     
 

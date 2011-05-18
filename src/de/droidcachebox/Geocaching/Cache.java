@@ -787,28 +787,29 @@ public class Cache implements Comparable<Cache> {
     private static int rightBorder = 0;
     private static int nameLayoutWidth = 0;
     private static Paint DTPaint;
-    private final static int space = (int) (Global.scaledFontSize_normal*0.8);
-    private final static int tab = (int) (Global.scaledFontSize_normal*0.7);
-     
+    private final static int space = (int) (Global.scaledFontSize_normal*0.7);
+    private final static int tab = (int) (Global.scaledFontSize_normal*0.6);
+    public static Rect BearingRec; 
     public void DrawInfo(Canvas canvas,Rect rec, int BackgroundColor, DrawStyle drawStyle)
     {
     	// init
     		Boolean notAvailable = (!this.Available && !this.Archived);
             Boolean Night = Config.GetBool("nightMode");
             Boolean GlobalSelected = this == Global.SelectedCache();
-            final int left = rec.left + Global.scaledFontSize_normal/2;
-            final int top = rec.top + 4;
-            final int width = rec.width() - 4;
-            final int height = rec.height() - 4;
-            final int SDTLineTop = height-Global.scaledFontSize_normal;
-            final int SDTImageTop = SDTLineTop + Global.scaledFontSize_normal;
+            final int halfCornerSize = Global.scaledFontSize_normal/2;
+            final int left = rec.left + halfCornerSize;
+            final int top = rec.top + halfCornerSize;
+            final int width = rec.width() - halfCornerSize;
+            final int height = rec.height() - halfCornerSize;
+            final int SDTImageTop = (int) (height-(Global.scaledFontSize_normal/1.5));
+            final int SDTLineTop = SDTImageTop + Global.scaledFontSize_normal;
             	
     	// Mesure
     		if (VoteWidth == 0) // Grössen noch nicht berechnet
     		{
-		    	Canvas MesureCanvas = new Canvas();
-		      	VoteWidth = ActivityUtils.PutImageTargetHeight(MesureCanvas, Global.StarIcons[(int)(this.Rating * 2)],-90, 0, 0, (int) (iconSize * 0.8));
-		      	MesureCanvas = null;
+		    	
+		      	VoteWidth = Global.scaledFontSize_normal/2;
+		      	
 		      	rightBorder = (int) (height * 0.8);
 		      	nameLayoutWidth = width - VoteWidth - iconSize - rightBorder ;
 		      	DTPaint = new Paint();
@@ -822,16 +823,16 @@ public class Cache implements Comparable<Cache> {
     		
     	// Draw Vote
     		if (this.Rating > 0)
-    			ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Rating * 2)],-90, left, top , (int) (iconSize * 0.8));
+    			ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Rating * 2)],-90,left, top , (int) (Global.scaledFontSize_normal*0.8));
     	
     	// Draw Icon
     		 if (this.MysterySolved())
     	        {
-    			 	ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[19],left + VoteWidth, top , iconSize); 
+    			 	ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[19],left + VoteWidth, top - (int) (Global.scaledFontSize_normal / 2) , iconSize); 
     	        }
     	        else
     	        {
-    	        	ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[this.Type.ordinal()], left  + VoteWidth,  top , iconSize); 
+    	        	ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[this.Type.ordinal()], left  + VoteWidth, top - (int) (Global.scaledFontSize_normal / 2) , iconSize); 
     	        }
     	
     	// Draw Cache Name
@@ -854,105 +855,107 @@ public class Cache implements Comparable<Cache> {
     	     }
     	     
     	// Draw S/D/T
-    	     int SDTleft = left+ 5;
+    	     int SDTleft = left+ 2;
     	     
-    	     canvas.drawText("S",SDTleft,SDTImageTop , DTPaint);
+    	     canvas.drawText("S",SDTleft,SDTLineTop , DTPaint);
     	     SDTleft += space;
-    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.SizeIcons[(int)(this.Size)], SDTleft, SDTLineTop, Global.scaledFontSize_normal);
+    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.SizeIcons[(int)(this.Size)], SDTleft, SDTImageTop, Global.scaledFontSize_normal);
     	     SDTleft += tab;	
-    	     canvas.drawText("D",SDTleft,SDTImageTop , DTPaint);
+    	     canvas.drawText("D",SDTleft,SDTLineTop , DTPaint);
     	     SDTleft += space;
-    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Difficulty * 2)],SDTleft, SDTLineTop, Global.scaledFontSize_normal);
+    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Difficulty * 2)],SDTleft, SDTImageTop, Global.scaledFontSize_normal);
     	     SDTleft += tab;
-    	     canvas.drawText("T", SDTleft,SDTImageTop , DTPaint);
+    	     canvas.drawText("T", SDTleft,SDTLineTop , DTPaint);
     	     SDTleft += space;
-    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Terrain * 2)], SDTleft, SDTLineTop, Global.scaledFontSize_normal);
-
+    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Terrain * 2)], SDTleft, SDTImageTop, Global.scaledFontSize_normal);
+    	     SDTleft += tab;
     	     
-    	/*
     	
-      	
-       
-	 
-          Night? Global.Paints.Night.Text.noselected: Global.Paints.Day.Text.noselected ;
-      	      
-        
-        
-
-      
-          
-       if (drawStyle != DrawStyle.withoutBearing) DrawBearing(canvas,x,y, lineHeight, width, rightBorder, DTPaint);
-       
-       
-          
-        
-       
-        
-        
-          if (this.Found())
+    	     
+    	// Draw TB
+    	     int numTb = this.NumTravelbugs;
+             if (numTb > 0)
+              {
+            	 SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[0],-90,SDTleft, (int) (SDTImageTop - (Global.scaledFontSize_normal/2.8)) , Global.scaledFontSize_normal*3);
+                  //SDTleft += space;
+                 if (numTb > 1)
+                	 canvas.drawText("x" + String.valueOf(numTb),SDTleft, SDTLineTop , DTPaint);
+              }
+    	
+             
+        // Draw Bearing
+    	     if (BearingRec==null) BearingRec = new Rect(rec.right-rightBorder,rec.top,rec.right,(int) (SDTImageTop*0.9));
+    	     if (drawStyle != DrawStyle.withoutBearing) DrawBearing(canvas,BearingRec);
+    	
+    	  if (this.Found())
           {
         	  
-              Global.PutImageTargetHeight(canvas, Global.Icons[2],x+ IconPos,y+ IconPos, iconSize/2);//Smile
+    		  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[2],left  + VoteWidth+iconSize/2,top - (int) (Global.scaledFontSize_normal / 2)+iconSize/2, iconSize/2);//Smile
           }
               
 
           if (this.Favorit())
          {
-            Global.PutImageTargetHeight(canvas, Global.Icons[19], x, y, lineHeight);
+        	  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[19],left + VoteWidth, top - (int) (Global.scaledFontSize_normal / 2) , iconSize/2);
          }
 
          
 
           if (this.Archived)
           {
-             Global.PutImageTargetHeight(canvas, Global.Icons[24], x, y, lineHeight);
+        	  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[24], left + VoteWidth, top - (int) (Global.scaledFontSize_normal / 2), iconSize/2);
           }
 
          if (this.Owner.equals(Config.GetString("GcLogin")) && !(Config.GetString("GcLogin").equals("")))
            {
-               Global.PutImageTargetHeight(canvas,Global.Icons[17],x+ IconPos,y+ IconPos, iconSize/2);
+        	 ActivityUtils.PutImageTargetHeight(canvas,Global.Icons[17],left  + VoteWidth+iconSize/2,top - (int) (Global.scaledFontSize_normal / 2)+iconSize/2, iconSize/2);
            }
-
-        
-        
-
-          int numTb = this.NumTravelbugs;
-         if (numTb > 0)
-          {
-              int tbWidth = Global.PutImageTargetHeight(canvas, Global.Icons[0],y+ width - rightBorder, y + lineHeight, lineHeight);
-
-              if (numTb > 1)
-            	  canvas.drawText("x" + String.valueOf(numTb),y+ width - rightBorder + tbWidth+2, (int)( y + lineHeight + (lineHeight/1.4)) , DTPaint);
-          }*/
-        	
+       	
     }
    
     
     
     private long lastRender = System.currentTimeMillis();
-    private String cacheDistance="";
-    private double cacheBearing=0;
-    private void DrawBearing(Canvas canvas,int x, int y, int lineHeight, int width, int rightBorder, Paint DTPaint)
+    
+    private void DrawBearing(Canvas canvas,Rect drawingRec)
     {
     	
     	if (Global.LastValidPosition.Valid || Global.Marker.Valid)
         {
-    		if((lastRender + 2000 < System.currentTimeMillis()))
-    		{
-	            Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
+    		    Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
 	            double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
 	            double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, this.Latitude(), this.Longitude());
-	            cacheBearing = bearing - heading;
-	            cacheDistance=UnitFormatter.DistanceString(this.Distance());
-			       
-			    lastRender = System.currentTimeMillis();
-    		}
-    		ActivityUtils.PutImageTargetHeight(canvas, Global.Arrows[1],cacheBearing,x+(int)( width - rightBorder/2) ,y+(int)(lineHeight /8), (int)(lineHeight*2.4));
-		    canvas.drawText(cacheDistance,x+ width - rightBorder + 2,y+ (int) ((lineHeight * 2) + (lineHeight/1.4)), DTPaint);
-		       
+	            double cacheBearing = bearing - heading;
+	            String cacheDistance=UnitFormatter.DistanceString(this.Distance());
+	            DrawBearing(canvas,drawingRec,cacheDistance,cacheBearing);   
+			
        }
     }
     
+    
+    public void DrawBearing(Canvas canvas,Rect drawingRec, Waypoint waypoint)
+    {
+    	if (Global.LastValidPosition.Valid || Global.Marker.Valid)
+        {
+    		    Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
+	            double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
+	            double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, waypoint.Latitude(), waypoint.Longitude());
+	            double waypointBearing = bearing - heading;
+	            String waypointDistance=UnitFormatter.DistanceString(this.Distance());
+	            DrawBearing(canvas,drawingRec,waypointDistance,waypointBearing);
+			   
+    		
+    		
+       }
+    }
+    
+    
+    private void DrawBearing (Canvas canvas,Rect drawingRec, String Distance, double Bearing)
+    {
+    	ActivityUtils.PutImageTargetHeight(canvas, Global.Arrows[1],Bearing,drawingRec.left,drawingRec.top,(int) (drawingRec.height()*0.9));
+	    canvas.drawText(Distance,drawingRec.left,drawingRec.bottom, DTPaint);
+	       
+    }
     
     
 }
