@@ -183,7 +183,7 @@ public class Config {
 //        validateSetting("UserImageFolder", Global.AppPath + "\\User\\Media");
         validateSetting("TrackFolder", WorkPath + "/User/Tracks");
 //        validateSetting("FieldNotesHtmlPath", Global.AppPath + "\\User\\fieldnotes.html");
-//        validateSetting("FieldNotesGarminPath", Global.AppPath + "\\User\\geocache_visits.txt");
+        validateSetting("FieldNotesGarminPath", WorkPath + "/User/geocache_visits.txt");
 //        validateSetting("GPXExportPath", Global.AppPath + "\\User\\cachebox_export.gpx");
         validateSetting("SaveFieldNotesHtml", "true");
 

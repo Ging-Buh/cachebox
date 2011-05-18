@@ -242,6 +242,8 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 					aktFieldNote = fieldNote;
 					lFieldNotes.add(aktFieldNoteIndex, aktFieldNote);
 					aktFieldNote.UpdateDatabase();
+
+					FieldNoteList.CreateVisitsTxt();
 				} else
 				{
 					// neue FieldNote
@@ -253,13 +255,14 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 	                Config.Set("FoundOffset", aktFieldNote.foundNumber);
 	                Config.AcceptChanges();
 					
+					FieldNoteList.CreateVisitsTxt();
 				}
 				lvAdapter.notifyDataSetChanged();
 			}
 		}
 		
 	}
-
+	
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
 		// TODO Auto-generated method stub

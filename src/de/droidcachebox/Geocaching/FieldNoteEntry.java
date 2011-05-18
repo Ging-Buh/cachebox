@@ -99,6 +99,14 @@ public class FieldNoteEntry implements Serializable {
         }
     }
     
+    public String GetDateTimeString()
+    {
+        SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String sDate = datFormat.format(timestamp);
+        datFormat = new SimpleDateFormat("hh:mm:ss");
+        sDate += "T" + datFormat.format(timestamp) + "Z";
+        return sDate;
+    }
     public void WriteToDatabase()
     {
         ContentValues args = new ContentValues();
