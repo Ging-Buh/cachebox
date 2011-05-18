@@ -19,8 +19,10 @@ import de.droidcachebox.Views.CacheListView.CustomAdapter;
 import de.droidcachebox.Views.Forms.EditFieldNote;
 import de.droidcachebox.Views.Forms.EditWaypoint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Path.FillType;
@@ -117,6 +119,7 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 	
 	@Override
 	public boolean ItemSelected(MenuItem item) {
+		Global.AddLog("Hallo Log");
 		switch (item.getItemId())
 		{
 			case R.id.fieldnotesview_found:
@@ -266,7 +269,6 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -281,6 +283,12 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 		MenuItem mi = menu.findItem(R.id.c_fnv_edit);
 		if (mi !=null)
 			mi.setEnabled(aktFieldNote != null);
+		mi = menu.findItem(R.id.c_fnv_delete);
+		if (mi != null)
+			mi.setEnabled(aktFieldNote != null);
+		mi = menu.findItem(R.id.c_fnv_selectcache);
+		if (mi != null)
+			mi.setEnabled((aktFieldNote != null) && (Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode) != null));
 	}
 
 	@Override
@@ -288,11 +296,13 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 		switch (item.getItemId())
 		{
 		case R.id.c_fnv_edit:
-			Intent mainIntent = new Intent().setClass(getContext(), EditFieldNote.class);
-	        Bundle b = new Bundle();
-	        b.putSerializable("FieldNote", aktFieldNote);
-	        mainIntent.putExtras(b);
-			parentActivity.startActivityForResult(mainIntent, 0);		
+			editFieldNote();
+			return true;
+		case R.id.c_fnv_delete:
+			deleteFieldNote();
+			return true;
+		case R.id.c_fnv_selectcache:
+			selectCacheFromFieldNote();
 			return true;
 		}
 		return false;
@@ -315,5 +325,64 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
         return template;
     }
 
+    private void editFieldNote()
+    {
+		Intent mainIntent = new Intent().setClass(getContext(), EditFieldNote.class);
+        Bundle b = new Bundle();
+        b.putSerializable("FieldNote", aktFieldNote);
+        mainIntent.putExtras(b);
+		parentActivity.startActivityForResult(mainIntent, 0);		    	
+    }
+    
+    private void deleteFieldNote()
+    {
+		// aktuell selectierte FieldNote löschen
+		if (aktFieldNote == null)
+			return;
+		Cache cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);    	
+    
+    
+		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialog, int which) {
+		        switch (which){
+		        case DialogInterface.BUTTON_POSITIVE:
+		            // Yes button clicked
+		        	// delete aktFieldNote
+		        	aktFieldNote.DeleteFromDatabase();
+
+		        	lFieldNotes.remove(aktFieldNote);
+					aktFieldNote = null;
+					aktFieldNoteIndex = -1;
+					
+					lvAdapter.notifyDataSetChanged();
+		            break;
+		        case DialogInterface.BUTTON_NEGATIVE:
+		            // No button clicked
+		        	// do nothing
+		            break;
+		        }
+		    }
+		};
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+		String message = "Soll die FieldNote\n\n[" + aktFieldNote.typeString + "]\n\ndes Caches" + "\n\n[" + aktFieldNote.CacheName + "]\n\n gelöscht werden?";
+		if (aktFieldNote.type == 1)
+			message += "\n\nDer Found Status des Caches wird dabei zurückgesetzt!";
+		builder.setMessage(message)
+			.setTitle("Delete Fieldnote")
+			.setPositiveButton(Global.Translations.Get("yes"), dialogClickListener)
+		    .setNegativeButton(Global.Translations.Get("no"), dialogClickListener).show();
+    }
+    
+    private void selectCacheFromFieldNote()
+    {
+		if (aktFieldNote == null)
+			return;
+		Cache cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
+		if (cache != null)
+			Global.SelectedCache(cache);    	
+    }
 }
+
 

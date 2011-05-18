@@ -91,4 +91,13 @@ public class CacheList extends ArrayList<Cache> {
         Collections.sort(this);
     }
 	
+    public Cache GetCacheByGcCode(String GcCode)
+    {
+    	for (Cache cache : this)
+    	{
+    		if (cache.GcCode.equalsIgnoreCase(GcCode))
+    			return cache;
+    	}
+    	return null;
+    }
 }

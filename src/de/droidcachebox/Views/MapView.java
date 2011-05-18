@@ -206,6 +206,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			Render(true);
 		} catch (Exception exc)
 		{
+			Global.AddLog("MV:onDraw - " + exc.getMessage());
 			return;
 		}
 	}
@@ -1319,10 +1320,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		        					loadedTiles.remove(desc.GetHashCode());
 		        			}
 		        		}
-/*
-		#if DEBUG
-		            Global.AddLog("MapView.loaderThreadEntryPoint: exception caught: " + exc.ToString());
-		#endif*/
+		        		Global.AddLog("MapView.loaderThreadEntryPoint: exception caught: " + exc.getMessage());
 		        	}
 
 		        }
@@ -1332,7 +1330,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		          	loaderThread = null;
 		        }
 		    }
-		    catch (Exception ex) { }
+		    catch (Exception ex) 
+		    {
+				Global.AddLog("MV:doInBackground - " + ex.getMessage());	    	
+		    }
 		    return null;
 		}
 
@@ -1999,7 +2000,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			  {
 				  loadedTiles.get(maxDesc.GetHashCode()).destroy();
 				  loadedTiles.remove(maxDesc.GetHashCode());
-			  } catch (Exception ex) { }
+			  } catch (Exception ex)
+			  {
+					Global.AddLog("MV:preemptTile - " + ex.getMessage());				  
+			  }
 		  }
 	  }
     }
@@ -2032,7 +2036,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			  {
 				  trackTiles.get(maxDesc.GetHashCode()).destroy();
 				  trackTiles.remove(maxDesc.GetHashCode());
-			  } catch (Exception ex) { }
+			  } catch (Exception ex)
+			  {
+					Global.AddLog("MV:preemptTrack - " + ex.getMessage());				  
+			  }
 		  }
 	  }
     }
@@ -2219,13 +2226,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		      }
 		      catch (Exception ex)
 		      {
-		    	  Toast.makeText(getContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+					Global.AddLog("MV:Render1 - " + ex.getMessage());
 		      }
 		      
 			}
     	} catch (Exception exc)
     	{
-    		Toast.makeText(getContext(), exc.getMessage(), Toast.LENGTH_LONG).show();    		
+			Global.AddLog("MV:Render2 - " + exc.getMessage());
     	}
     }
     	
@@ -2434,58 +2441,72 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 					Descriptor desc = null;
 					if (queuedTiles.size() > 0)
 					{
-						synchronized (queuedTiles)
+						try
 						{
-							desc = queuedTiles.poll();
-						}
-				
-						if (desc.Zoom == Zoom)
+							synchronized (queuedTiles)
+							{
+								desc = queuedTiles.poll();
+							}
+					
+							if (desc.Zoom == Zoom)
+							{
+								LoadTile(desc);
+							}
+							else
+							{
+								// Da das Image fur diesen Tile nicht geladen wurde, da der Zoom-Faktor des Tiles nicht gleich
+								// dem aktuellen ist muss dieser Tile wieder aus loadedTile entfernt werden, da sonst bei
+								// spterem Wechsel des Zoom-Faktors dieses Tile nicht angezeigt wird.
+								// Dies passiert bei schnellem Wechsel des Zoom-Faktors, wenn noch nicht alle aktuellen Tiles geladen waren.
+								if (loadedTiles.containsKey(desc.GetHashCode()))
+									loadedTiles.remove(desc.GetHashCode());
+							}
+						} catch (Exception ex1)
 						{
-							LoadTile(desc);
+							Global.AddLog("MV:queueProcessor1 - " + ex1.getMessage());
 						}
-						else
-						{
-							// Da das Image fur diesen Tile nicht geladen wurde, da der Zoom-Faktor des Tiles nicht gleich
-							// dem aktuellen ist muss dieser Tile wieder aus loadedTile entfernt werden, da sonst bei
-							// spterem Wechsel des Zoom-Faktors dieses Tile nicht angezeigt wird.
-							// Dies passiert bei schnellem Wechsel des Zoom-Faktors, wenn noch nicht alle aktuellen Tiles geladen waren.
-							if (loadedTiles.containsKey(desc.GetHashCode()))
-								loadedTiles.remove(desc.GetHashCode());
-						}
-					} else if (trackTiles.size() > 0)
+					} else if (queuedTrackTiles.size() > 0)
 					{
-						// wenn keine Tiles mehr geladen werden müssen, dann die TrackTiles erstellen
-						desc = null;
-						synchronized (queuedTrackTiles)
+						try
 						{
-							desc = queuedTrackTiles.poll();
+							// wenn keine Tiles mehr geladen werden müssen, dann die TrackTiles erstellen
+							desc = null;
+							synchronized (queuedTrackTiles)
+							{
+								desc = queuedTrackTiles.poll();
+							}
+					
+							if (desc.Zoom == Zoom)
+							{
+								LoadTrackTile(desc);
+							}
+							else
+							{
+								// Da das Image fur diesen Tile nicht geladen wurde, da der Zoom-Faktor des Tiles nicht gleich
+								// dem aktuellen ist muss dieser Tile wieder aus loadedTile entfernt werden, da sonst bei
+								// spterem Wechsel des Zoom-Faktors dieses Tile nicht angezeigt wird.
+								// Dies passiert bei schnellem Wechsel des Zoom-Faktors, wenn noch nicht alle aktuellen Tiles geladen waren.
+								if (trackTiles.containsKey(desc.GetHashCode()))
+									trackTiles.remove(desc.GetHashCode());
+							}			
+						} catch (Exception ex1)
+						{
+							Global.AddLog("MV:queueProcessor2 - " + ex1.getMessage());
 						}
-				
-						if (desc.Zoom == Zoom)
-						{
-							LoadTrackTile(desc);
-						}
-						else
-						{
-							// Da das Image fur diesen Tile nicht geladen wurde, da der Zoom-Faktor des Tiles nicht gleich
-							// dem aktuellen ist muss dieser Tile wieder aus loadedTile entfernt werden, da sonst bei
-							// spterem Wechsel des Zoom-Faktors dieses Tile nicht angezeigt wird.
-							// Dies passiert bei schnellem Wechsel des Zoom-Faktors, wenn noch nicht alle aktuellen Tiles geladen waren.
-							if (trackTiles.containsKey(desc.GetHashCode()))
-								trackTiles.remove(desc.GetHashCode());
-						}			
 					
 					}
 					synchronized (queuedTiles)
 					{
-						queueEmpty = (queuedTiles.size() < 1) && (trackTiles.size() < 1);
+						synchronized (queuedTrackTiles)
+						{
+							queueEmpty = (queuedTiles.size() < 1) && (queuedTrackTiles.size() < 1);
+						}
 					}			
 			    } while (!queueEmpty);
 			}	
 			catch (Exception exc)
 			{
-
-				String forDebug = exc.getMessage();
+				Global.AddLog("MV:queueProcessor - " + exc.getMessage());
 			}
 			finally
 			{
@@ -2616,6 +2637,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       }
       catch (Exception ex)
       {
+    	  Global.AddLog("MV:RenderTile - " + ex.getMessage());
 		  canvas.drawRect(pt.x, pt.y, pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor), pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor), backBrush);
       }
     }
@@ -2791,7 +2813,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         			zoomTimerTask = null;
         		} catch (Exception exc)
         		{
-        			return;
+					Global.AddLog("MV:ZoomTimerTask - " + exc.getMessage());
+					return;
         		}
         	}
         };
@@ -4090,6 +4113,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				mi.setEnabled(TrackRecorder.recording);
 		} catch (Exception exc)
 		{
+			Global.AddLog("MV:BeforeShowMenu - " + exc.getMessage());
 			return;
 		}
 	}
@@ -4247,7 +4271,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 								Render(true);								
 							} catch (Exception exc)
 							{
-								Toast.makeText(getContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+								Global.AddLog("MV:messageHandler - " + exc.getMessage());
 							}
 						}
 					}
@@ -4450,7 +4474,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				            	{
 				            		Thread.sleep(delay);
 				            	} 
-							} catch (InterruptedException e) { }							
+							} catch (InterruptedException e) 
+							{
+								Global.AddLog("MV:TimerInterrupt - " + e.getMessage());								
+							}							
 			            	
 			            	messageHandler.handleMessage(ret);		// im animationThread ausführen
 

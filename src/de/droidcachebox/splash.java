@@ -78,7 +78,8 @@ public class splash extends Activity
 	 
 	 private void Initial() 
 	 {
-		 
+		 Global.AddLog("------" + Global.CurrentRevision + "-------");
+
 // Read Config
 		 
 		 // copy AssetFolder

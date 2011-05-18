@@ -1,8 +1,11 @@
 package de.droidcachebox;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 import de.droidcachebox.Events.SelectedCacheEventList;
 
@@ -30,7 +33,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global {
-    public static final int CurrentRevision = 1;
+    public static final int CurrentRevision = 107;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
@@ -487,4 +490,31 @@ public class Global {
     }
 	
 
+    static class LockClass { };
+    static LockClass lockObject = new LockClass();
+    public static boolean Debug = true;
+    /// <summary>
+    /// Fügt die übergebene Zeile in debug.txt ein
+    /// </summary>
+    /// <param name="line">anzuhängener Text</param>
+    public static void AddLog(String line)
+    {
+    	if (!Debug)
+    		return;
+        synchronized (lockObject)
+        {
+        	File file = new File(Config.WorkPath + "/debug.txt");
+        	FileWriter writer;
+        	try {
+				writer = new FileWriter(file, true);
+				writer.write(new Date().toLocaleString() + " - " + line + "\n");
+	            writer.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+    }
+
+    
 }

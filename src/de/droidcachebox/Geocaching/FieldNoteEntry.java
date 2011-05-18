@@ -168,5 +168,15 @@ public class FieldNoteEntry implements Serializable {
         	return;       
         }
     }
+
+	public void DeleteFromDatabase() {
+		try
+		{
+			Database.FieldNotes.myDB.delete("FieldNotes", "id=" + Id, null);
+		} catch (Exception exc)
+		{
+			return;
+		}		
+	}
     	
 }
