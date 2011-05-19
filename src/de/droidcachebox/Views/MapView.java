@@ -611,8 +611,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     /// <summary>
     /// Größe des Kachel-Caches
     /// </summary>
-    final int numMaxTiles = 64;
-    final int numMaxTrackTiles = 32;
+    final int numMaxTiles = 32;
+    final int numMaxTrackTiles = 16;
 
     // Vorberechnete Werte
     protected int halfWidth = 0;
@@ -2603,17 +2603,19 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       {
         drawImage(canvas, tile.Image, pt.x, pt.y, (int)(256.0f * dpiScaleFactorX * multiTouchFaktor), (int)(256.0f * dpiScaleFactorY * multiTouchFaktor));
  
-        // Draw Kachel marker      
-        Paint paintt = new Paint(backBrush);
-        paintt.setColor(Color.GREEN);
-        paintt.setStyle(Style.STROKE);
-        if (tile.State == Tile.TileState.LowResolution)
-        	paintt.setColor(Color.RED);
-        Rect brect = new Rect(pt.x+5, pt.y+5, pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor)-5, pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor)-5);
-        canvas.drawRect(brect, paintt);
-        canvas.drawLine(brect.left, brect.top, brect.right, brect.bottom, paintt);
-        canvas.drawLine(brect.right, brect.top, brect.left, brect.bottom, paintt);
-
+        if (drawBestFit)
+        {
+	        // Draw Kachel marker      
+	        Paint paintt = new Paint(backBrush);
+	        paintt.setColor(Color.GREEN);
+	        paintt.setStyle(Style.STROKE);
+	        if (tile.State == Tile.TileState.LowResolution)
+	        	paintt.setColor(Color.RED);
+	        Rect brect = new Rect(pt.x+5, pt.y+5, pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor)-5, pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor)-5);
+	        canvas.drawRect(brect, paintt);
+	        canvas.drawLine(brect.left, brect.top, brect.right, brect.bottom, paintt);
+	        canvas.drawLine(brect.right, brect.top, brect.left, brect.bottom, paintt);
+        }
         return;
       }
 
@@ -4124,13 +4126,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		return R.menu.menu_mapview;
 	}
 
-	int anzCompassValues = 0;
+/*	int anzCompassValues = 0;
 	float compassValue = 0;
-	long lastCompassTick = -99999;
+	long lastCompassTick = -99999;*/
 	@Override
 	public void OrientationChanged(float heading) {
 		if (!isVisible) return;
-		
+/*		
 		anzCompassValues++;
 		compassValue += heading;
 
@@ -4149,11 +4151,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		heading = compassValue / anzCompassValues;
 		anzCompassValues = 0;
 		compassValue = 0;
-
+*/
 		if (alignToCompass)
 			changeOrientation(heading);
 
-		lastCompassTick = aktTick;
+//		lastCompassTick = aktTick;
 	}
 	
 	private void changeOrientation(float heading)
