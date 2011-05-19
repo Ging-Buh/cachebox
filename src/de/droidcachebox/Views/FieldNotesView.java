@@ -153,6 +153,7 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 		newFieldNote.CacheId = cache.Id;
 		newFieldNote.comment = "";
 		newFieldNote.CacheUrl = cache.Url;
+		newFieldNote.fillType();
 
 		FieldNoteList fnl = new FieldNoteList();
 		fnl.LoadFieldNotes("CacheId=" + cache.Id + " and Type=" + type);
