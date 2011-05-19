@@ -25,12 +25,12 @@ public class LogViewItem extends View {
     private int mAscent;
     private int width;
     private int height;
-    private TextPaint textPaint;
+    private static TextPaint textPaint;
     private StaticLayout layoutComment;
     private StaticLayout layoutFinder;
     
     private boolean BackColorChanger=false;
-    private final int CornerSize =20;
+    
     
 	public LogViewItem(Context context, Cache cache, LogEntry logEntry, Boolean BackColorId) {
 		
@@ -38,8 +38,13 @@ public class LogViewItem extends View {
         this.cache = cache;
         this.logEntry = logEntry;
         
-        textPaint = new TextPaint(Config.GetBool("nightMode")? Global.Paints.Night.Text.noselected : Global.Paints.Day.Text.noselected );
-        textPaint.setTextSize(Global.scaledFontSize_normal);
+        if(textPaint==null)
+        {
+        	textPaint = new TextPaint();
+        	textPaint.setTextSize(Global.scaledFontSize_normal);
+        	textPaint.setColor(Global.getColor(R.attr.TextColor));
+        }
+        
         BackColorChanger = BackColorId;
         
        }
@@ -66,7 +71,7 @@ public class LogViewItem extends View {
             result = specSize;
         } else {
             // Measure the text
-            result = (int) Global.Paints.Day.Text.selected.measureText(cache.Name) + getPaddingLeft()
+            result = (int) textPaint.measureText(cache.Name) + getPaddingLeft()
                     + getPaddingRight();
             if (specMode == MeasureSpec.AT_MOST) {
                 // Respect AT_MOST value if that was what is called for by measureSpec
@@ -75,7 +80,7 @@ public class LogViewItem extends View {
         }
         width = specSize;
         
-        int innerWidth = width - (CornerSize*2);
+        int innerWidth = width - (Global.CornerSize*2);
         
       	layoutComment = new StaticLayout(logEntry.Comment, textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
       	layoutFinder = new StaticLayout(logEntry.Finder, textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
@@ -93,13 +98,13 @@ public class LogViewItem extends View {
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
 
-        mAscent = (int) Global.Paints.Day.Text.selected.ascent();
+        mAscent = (int) textPaint.ascent();
         if (specMode == MeasureSpec.EXACTLY) {
             // We were told how big to be
             result = specSize;
         } else {
             // Measure the text (beware: ascent is a negative number)
-            result = (int) (-mAscent + Global.Paints.Day.Text.selected.descent()) + getPaddingTop()
+            result = (int) (-mAscent + textPaint.descent()) + getPaddingTop()
                     + getPaddingBottom();
           	result += layoutComment.getHeight();
             result += layoutFinder.getHeight();
@@ -110,61 +115,70 @@ public class LogViewItem extends View {
             }
         }        
 
-        result +=CornerSize*2;
+        result +=Global.CornerSize*2;
         height = result;
         return result;
     }
-    /**
-     * Render the text
-     * 
-     * @see android.view.View#onDraw(android.graphics.Canvas)
-     */
+    
+    
+    // static Member
+    private static Paint Linepaint;
+    private static Paint NamePaint;
+    private static int headHeight;
+    private static int headLinePos;
     @Override
     protected void onDraw(Canvas canvas) {
-       super.onDraw(canvas);
-       int rowHeight = (int) (layoutFinder.getHeight()*1.5)+CornerSize;
-       int LineXPos = (rowHeight/2)+(layoutFinder.getHeight()/2)-5;
-       Boolean Night = Config.GetBool("nightMode");
-       Paint NamePaint = new Paint( Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected);
-       NamePaint.setFakeBoldText(true);
-       NamePaint.setTextSize(Global.scaledFontSize_normal);
-       Paint Linepaint = Night? Global.Paints.Night.ListSeperator : Global.Paints.Day.ListSeperator;
-       Linepaint.setAntiAlias(true);
-       int LineColor = Global.getColor(R.attr.ListSeparator);
       
-       canvas.drawColor(Global.getColor(R.attr.myBackground));
-
-       Paint BackPaint = new Paint();
-       BackPaint.setAntiAlias(true);
-      
+       //initial
+       if (Linepaint==null)
+       {
+    	   Linepaint = new Paint();
+           Linepaint.setAntiAlias(true);
+           Linepaint.setColor(Global.getColor(R.attr.ListSeparator));
+       }
+       if (NamePaint==null)
+       {
+    	   NamePaint = new Paint();
+           NamePaint.setFakeBoldText(true);
+           NamePaint.setTextSize(Global.scaledFontSize_normal);
+           NamePaint.setColor(Global.getColor(R.attr.TextColor));
+       }
+       if (headHeight<1||headLinePos<1)
+       {
+    	   headHeight = (int) (layoutFinder.getHeight()*1.5)+Global.CornerSize;
+    	   headLinePos = (headHeight/2)+(layoutFinder.getHeight()/2)-5;
+       }
+       
+           
        ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(5, 5, width-5, height-5), 2, 
-    		   LineColor,(BackColorChanger)? Global.getColor(R.attr.ListBackground_secend): Global.getColor(R.attr.ListBackground), 
-    						   CornerSize);
+    		   Global.getColor(R.attr.ListSeparator),(BackColorChanger)? Global.getColor(R.attr.ListBackground_secend): Global.getColor(R.attr.ListBackground), 
+    				   Global.CornerSize);
        
       
        // Kopfzeile
-       final Rect KopfRect = new Rect(5, 5, width-5, rowHeight);;
+       final Rect KopfRect = new Rect(5, 5, width-5, headHeight);;
        final RectF KopfRectF = new RectF(KopfRect);
-       canvas.drawRoundRect( KopfRectF,CornerSize,CornerSize, Linepaint);
-       canvas.drawRect(new Rect(5, rowHeight-CornerSize, width-5, rowHeight), Linepaint);
+       canvas.drawRoundRect( KopfRectF,Global.CornerSize,Global.CornerSize, Linepaint);
+       canvas.drawRect(new Rect(5, headHeight-Global.CornerSize, width-5, headHeight), Linepaint);
        
-       int space = (logEntry.TypeIcon >= 0) ? ActivityUtils.PutImageTargetHeight(canvas, Global.LogIcons[logEntry.TypeIcon],CornerSize/2, 8, rowHeight-10) + 4 : 0;
+       int space = (logEntry.TypeIcon >= 0) ? ActivityUtils.PutImageTargetHeight(canvas, Global.LogIcons[logEntry.TypeIcon],Global.CornerSize/2, 8, headHeight-10) + 4 : 0;
 
-       SimpleDateFormat postFormater = new SimpleDateFormat("dd/MM/yyyy"); 
-       String dateString = postFormater.format(logEntry.Timestamp); 
-       canvas.drawText(logEntry.Finder, space + CornerSize/2, LineXPos, NamePaint);
+       
+       canvas.drawText(logEntry.Finder, space + Global.CornerSize/2, headLinePos, NamePaint);
        
        NamePaint.setFakeBoldText(false);
+       SimpleDateFormat postFormater = new SimpleDateFormat("dd/MM/yyyy"); 
+       String dateString = postFormater.format(logEntry.Timestamp); 
        int DateLength = (int) NamePaint.measureText(dateString);
-       canvas.drawText(dateString, width - DateLength-10, LineXPos, NamePaint);
+       canvas.drawText(dateString, width - DateLength-10, headLinePos, NamePaint);
       
        
-       canvas.drawLine(5, rowHeight - 2, width-5, rowHeight - 2,Linepaint); 
-       canvas.drawLine(5, rowHeight - 3, width-5, rowHeight - 3,Linepaint);
+       canvas.drawLine(5, headHeight - 2, width-5, headHeight - 2,Linepaint); 
+       canvas.drawLine(5, headHeight - 3, width-5, headHeight - 3,Linepaint);
        
        
        // Körper
-       ActivityUtils.drawStaticLayout(canvas, layoutComment, CornerSize, rowHeight + CornerSize);
+       ActivityUtils.drawStaticLayout(canvas, layoutComment, Global.CornerSize, headHeight + Global.CornerSize);
        
        
      	  

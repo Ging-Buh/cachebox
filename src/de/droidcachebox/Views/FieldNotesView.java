@@ -66,6 +66,10 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 			}
 		});
 
+		this.setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
+		this.setCacheColorHint(R.color.Day_TitleBarColor);
+		this.setDividerHeight(5);
+		this.setDivider(getBackground());
 		
 		
 	}

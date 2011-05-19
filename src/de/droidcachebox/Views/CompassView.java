@@ -51,7 +51,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 		RelativeLayout  CompassLayout = (RelativeLayout )inflater.inflate(R.layout.compassview, null, false);
 		this.addView(CompassLayout);
 		
-		this.setBackgroundColor(Global.getColor(R.attr.EmptyBackground));//Global.getColor(R.attr.myBackground)
+		this.setBackgroundColor(Global.getColor(R.attr.myBackground));
 		
 		 compassControl = (CompassControl)findViewById(R.id.Compass);
 		 DescriptionTextView = (CacheInfoControl)findViewById(R.id.CompassDescriptionView);

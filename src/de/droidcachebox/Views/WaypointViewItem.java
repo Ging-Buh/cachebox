@@ -105,7 +105,7 @@ public class WaypointViewItem extends View {
             result = specSize;
         } else {
             // Measure the text
-            result = (int) Global.Paints.Day.Text.selected.measureText(cache.Name) + getPaddingLeft()
+            result = (int) Global.Paints.mesurePaint.measureText(cache.Name) + getPaddingLeft()
                     + getPaddingRight();
             if (specMode == MeasureSpec.AT_MOST) {
                 // Respect AT_MOST value if that was what is called for by measureSpec
@@ -126,13 +126,13 @@ public class WaypointViewItem extends View {
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
 
-        mAscent = (int) Global.Paints.Day.Text.selected.ascent();
+        mAscent = (int) Global.Paints.mesurePaint.ascent();
         if (specMode == MeasureSpec.EXACTLY) {
             // We were told how big to be
             result = specSize;
         } else {
             // Measure the text (beware: ascent is a negative number)
-            result = (int) (-mAscent + Global.Paints.Day.Text.selected.descent()) + getPaddingTop()
+            result = (int) (-mAscent + Global.Paints.mesurePaint.descent()) + getPaddingTop()
                     + getPaddingBottom();
             if (specMode == MeasureSpec.AT_MOST) {
                 // Respect AT_MOST value if that was what is called for by measureSpec
@@ -148,21 +148,12 @@ public class WaypointViewItem extends View {
      */
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        
-        
+       
         Boolean isSelected = false;
         if (Global.SelectedWaypoint() == waypoint ||(( Global.SelectedCache()== cache && !(waypoint == null)&& Global.SelectedWaypoint() == waypoint )))
         {
         	isSelected=true;
         }
-        
-        Boolean Night = Config.GetBool("nightMode");
-        Paint NamePaint = new Paint( Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected);
-        NamePaint.setFakeBoldText(true);
-        
-        Paint Linepaint = Night? Global.Paints.Night.ListSeperator : Global.Paints.Day.ListSeperator;
-        Linepaint.setAntiAlias(true);
        
         canvas.drawColor(Global.getColor(R.attr.myBackground));
         int BackgroundColor;
@@ -185,11 +176,10 @@ public class WaypointViewItem extends View {
         }
         else
         {	
-        	Paint tmpPaint = new Paint(Config.GetBool("nightMode")? Global.Paints.Night.Text.noselected : Global.Paints.Day.Text.noselected);
+        	
         	int left= 15;
         	int top = LineSep *2;
-        	Rect bounds = new Rect();
-        	tmpPaint.getTextBounds("471km", 0, 4, bounds);
+        	
         	int iconWidth = 0;
         	// draw icon
         	if (((int)waypoint.Type.ordinal()) < Global.CacheIconsBig.length)

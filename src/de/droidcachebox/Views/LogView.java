@@ -51,7 +51,7 @@ public class LogView extends ListView implements SelectedCacheEvent, ViewOptions
 				return true;
 			}
 		});
-		this.setBackgroundColor(Config.GetBool("nightMode")? R.color.Night_EmptyBackground : R.color.Day_EmptyBackground);
+		this.setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
 		this.setCacheColorHint(R.color.Day_TitleBarColor);
 		this.setDividerHeight(5);
 		this.setDivider(getBackground());

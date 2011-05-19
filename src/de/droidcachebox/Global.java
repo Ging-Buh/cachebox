@@ -44,7 +44,10 @@ public class Global {
 	public static RouteOverlay.Route AktuelleRoute = null;
     public static long TrackDistance;
     
+    //Sizes
     public static int scaledFontSize_normal;
+    public static int CornerSize;
+    
     public static LangStrings Translations = new LangStrings();
     
     public static Coordinate Marker = new Coordinate(48.12425, 12.16460);
@@ -100,57 +103,47 @@ public class Global {
     
     public static class Paints
     {
+    	public static Paint mesurePaint;
     	public static Paint ListBackground;
     	public static class Day
     		 {
-	    		public static Paint ListSeperator;
+	    		
 				public static Paint selectedBack;   
 	 		    public static Paint ListBackground; 
 	 		    public static Paint ListBackground_second;
 	 		    
-	 		    public static class Text
-	 		    {
-	 		    	public static Paint selected;
-	 		    	public static Paint noselected;
-	 		    }
+	 		   
     		 }
     		 
     	public static class Night
     		 {
-    			public static Paint ListSeperator;
+    			
     			public static Paint selectedBack;   
      		    public static Paint ListBackground;
      		    public static Paint ListBackground_second;
      		    
-     		   public static class Text
-	 		    {
-	 		    	public static Paint selected;
-	 		    	public static Paint noselected;
-	 		    }
+     		   
     		 }
     		 
     	public static void init(Context context)
         {
         	Resources res = context.getResources();
+        	
+        	// calc sizes
         	scaledFontSize_normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
+        	CornerSize = scaledFontSize_normal/2;
+        	
+        	mesurePaint = new Paint();
+        	mesurePaint.setTextSize(scaledFontSize_normal);
+        	
         	ListBackground=new Paint();
     		Night.ListBackground_second=new Paint();
     		
     		Night.ListBackground=new Paint();
     		Night.ListBackground.setColor(res.getColor(R.color.Night_ListBackground));
-    		Night.ListSeperator=new Paint();
-    		Night.ListSeperator.setColor(res.getColor(R.color.Night_ListSeperator));
+    		
     		Night.selectedBack=new Paint();
     		Night.selectedBack.setColor(res.getColor(R.color.Night_SelectedBackground));
-    		Night.Text.selected = new Paint();
-    		Night.Text.selected.setColor(res.getColor(R.color.Night_Foreground));
-    		Night.Text.selected.setAntiAlias(true);
-    		Night.Text.selected.setTextSize(scaledFontSize_normal);
-    		Night.Text.selected.setFakeBoldText(true);
-        	Night.Text.noselected = new Paint();
-    		Night.Text.noselected.setColor(res.getColor(R.color.Night_Foreground));
-    		Night.Text.noselected.setAntiAlias(true);
-    		Night.Text.noselected.setTextSize(scaledFontSize_normal);
     		
     		
     		
@@ -158,19 +151,10 @@ public class Global {
     		Day.ListBackground.setColor(res.getColor(R.color.Day_ListBackground));
     		Day.ListBackground_second=new Paint();
     		
-    		Day.ListSeperator=new Paint();
-    		Day.ListSeperator.setColor(res.getColor(R.color.Day_ListSeperator));
+    		
     		Day.selectedBack=new Paint();
     		Day.selectedBack.setColor(res.getColor(R.color.Day_SelectedBackground));
-    		Day.Text.selected = new Paint();
-    		Day.Text.selected.setColor(res.getColor(R.color.Day_Foreground));
-    		Day.Text.selected.setAntiAlias(true);
-    		Day.Text.selected.setTextSize(scaledFontSize_normal);
-    		Day.Text.selected.setFakeBoldText(true);
-    		Day.Text.noselected = new Paint();
-    		Day.Text.noselected.setColor(res.getColor(R.color.Day_Foreground));
-    		Day.Text.noselected.setAntiAlias(true);
-    		Day.Text.noselected.setTextSize(scaledFontSize_normal);
+    		
     		
     		
     	}

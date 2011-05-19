@@ -67,7 +67,7 @@ public class ActivityUtils
 
 	public static void drawFillRoundRecWithBorder(Canvas canvas, Rect rec, int BorderSize, int BorderColor, int FillColor)
 	{
-		drawFillRoundRecWithBorder(canvas, rec, BorderSize, BorderColor, FillColor, Global.scaledFontSize_normal);
+		drawFillRoundRecWithBorder(canvas, rec, BorderSize, BorderColor, FillColor, Global.CornerSize);
 	}
 	
 	public static void drawFillRoundRecWithBorder(Canvas canvas, Rect rec, int BorderSize, int BorderColor, int FillColor, int CornerSize)

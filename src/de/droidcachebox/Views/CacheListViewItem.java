@@ -58,16 +58,16 @@ public class CacheListViewItem extends View {
 	@Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
        
-        if (this.height == 0) // Höhe ist noch nicht berechnet 
+        if (CacheListViewItem.height == 0) // Höhe ist noch nicht berechnet 
         {
-        	this.width = measureWidth(widthMeasureSpec);
-        	this.height = (int) (Global.scaledFontSize_normal * 5);
-        	this.imgSize = (int) (this.height / 1.2);
-	        this.rightBorder =(int) (this.height * 1.5);
-	        this.drawRec = new Rect(5,2,this.width - 5,this.height-2);
+        	CacheListViewItem.width = measureWidth(widthMeasureSpec);
+        	CacheListViewItem.height = (int) (Global.scaledFontSize_normal * 5);
+        	CacheListViewItem.imgSize = (int) (CacheListViewItem.height / 1.2);
+	        CacheListViewItem.rightBorder =(int) (CacheListViewItem.height * 1.5);
+	        CacheListViewItem.drawRec = new Rect(5,2,CacheListViewItem.width - 5,CacheListViewItem.height-2);
         }
         
-        setMeasuredDimension(this.width, this.height);
+        setMeasuredDimension(CacheListViewItem.width, CacheListViewItem.height);
             
 	}
     
@@ -138,7 +138,6 @@ public class CacheListViewItem extends View {
      */
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
         
         Boolean GlobalSelected = cache == Global.SelectedCache();
         int BackgroundColor;

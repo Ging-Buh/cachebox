@@ -705,7 +705,7 @@ public class Cache implements Comparable<Cache> {
         FilenameFilter filter = new FilenameFilter() {			
 			@Override
 			public boolean accept(File dir, String filename) {
-				// TODO Auto-generated method stub
+				
 				filename = filename.toLowerCase();
 				if (filename.indexOf(GcCode.toLowerCase()) == 0)
 				{
@@ -790,6 +790,7 @@ public class Cache implements Comparable<Cache> {
     private final static int space = (int) (Global.scaledFontSize_normal*0.7);
     private final static int tab = (int) (Global.scaledFontSize_normal*0.6);
     public static Rect BearingRec; 
+    private static TextPaint namePaint;
     public void DrawInfo(Canvas canvas,Rect rec, int BackgroundColor, DrawStyle drawStyle)
     {
     	// init
@@ -816,6 +817,16 @@ public class Cache implements Comparable<Cache> {
 	    	    DTPaint.setTextSize(Global.scaledFontSize_normal);
 	    	    DTPaint.setAntiAlias(true);
     		}
+    		if (namePaint==null)
+    		{
+    			namePaint = new TextPaint();
+    			namePaint.setTextSize(Global.scaledFontSize_normal);
+    		}
+    		
+    	// reset namePaint attr
+    		namePaint.setColor(Global.getColor(R.attr.TextColor));
+    		namePaint.setFlags(Paint.FAKE_BOLD_TEXT_FLAG);
+    		
     		DTPaint.setColor(Global.getColor(R.attr.TextColor));
     		
     	// Draw roundetRect
@@ -836,13 +847,13 @@ public class Cache implements Comparable<Cache> {
     	        }
     	
     	// Draw Cache Name
-    		 TextPaint NamePaint = new TextPaint( (GlobalSelected)? Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected : Night? Global.Paints.Night.Text.selected: Global.Paints.Day.Text.selected);  
+    		   
     	     if(notAvailable)
     	     {
-	    		 NamePaint.setColor(Color.RED);
-	    		 NamePaint.setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+    	    	 namePaint.setColor(Color.RED);
+    	    	 namePaint.setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
     	     }
-    	     layoutCacheName = new StaticLayout(this.Name, NamePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+    	     layoutCacheName = new StaticLayout(this.Name, namePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
     	     int LayoutHeight = ActivityUtils.drawStaticLayout(canvas, layoutCacheName, left + VoteWidth + iconSize + 5, top);
     	       
     	// over draw 3. Cache name line
@@ -896,7 +907,7 @@ public class Cache implements Comparable<Cache> {
 
           if (this.Favorit())
          {
-        	  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[19],left + VoteWidth, top - (int) (Global.scaledFontSize_normal / 2) , iconSize/2);
+        	  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[19],left + VoteWidth + 2, top , iconSize/2);
          }
 
          
@@ -915,8 +926,7 @@ public class Cache implements Comparable<Cache> {
    
     
     
-    private long lastRender = System.currentTimeMillis();
-    
+   
     private void DrawBearing(Canvas canvas,Rect drawingRec)
     {
     	
@@ -924,7 +934,7 @@ public class Cache implements Comparable<Cache> {
         {
     		    Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
 	            double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
-	            double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, this.Latitude(), this.Longitude());
+	            double bearing = de.droidcachebox.Geocaching.Coordinate.Bearing(position.Latitude, position.Longitude, this.Latitude(), this.Longitude());
 	            double cacheBearing = bearing - heading;
 	            String cacheDistance=UnitFormatter.DistanceString(this.Distance());
 	            DrawBearing(canvas,drawingRec,cacheDistance,cacheBearing);   
@@ -939,7 +949,7 @@ public class Cache implements Comparable<Cache> {
         {
     		    Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
 	            double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
-	            double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, waypoint.Latitude(), waypoint.Longitude());
+	            double bearing = de.droidcachebox.Geocaching.Coordinate.Bearing(position.Latitude, position.Longitude, waypoint.Latitude(), waypoint.Longitude());
 	            double waypointBearing = bearing - heading;
 	            String waypointDistance=UnitFormatter.DistanceString(this.Distance());
 	            DrawBearing(canvas,drawingRec,waypointDistance,waypointBearing);

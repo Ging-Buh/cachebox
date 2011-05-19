@@ -1,5 +1,7 @@
 package de.droidcachebox.Views;
 
+import java.text.SimpleDateFormat;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
@@ -8,47 +10,70 @@ import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.FieldNoteEntry;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.text.StaticLayout;
+import android.text.TextPaint;
+import android.text.Layout.Alignment;
 import android.view.View;
 import android.view.View.MeasureSpec;
 
 public class FieldNoteViewItem extends View {
 	private FieldNoteEntry fieldnote;
     private int mAscent;
-    private int width;
-    private int height;
-    private int rightBorder;
-    private final int CornerSize =20;
+    private static int width;
+    private int height = 0;
+    private static int rightBorder;
     private boolean BackColorChanger = false;
-       
-    /// <summary>
-    /// Höhe einer Zeile auf dem Zielgerät
-    /// </summary>
-    private int lineHeight = 50;
-    private int imgSize = 50;
-
+    private StaticLayout layoutTypeText;
+    private StaticLayout layoutComment;
+    private static TextPaint textPaint;
+    private static int drawTextHeight;
+    
     public FieldNoteViewItem(Context context, FieldNoteEntry fieldnote, Boolean BackColorId) {
 		super(context);
 
         this.fieldnote = fieldnote;
         BackColorChanger = BackColorId;
+        
+        if(textPaint==null)
+        {
+        	textPaint = new TextPaint();
+        	textPaint.setTextSize(Global.scaledFontSize_normal);
+        	textPaint.setColor(Global.getColor(R.attr.TextColor));
+        	textPaint.setAntiAlias(true);
+        }
+     
 	}
 
 	@Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
        
-        
-        
-        // Berechne Höhe so das 7 Einträge in die Liste passen
-        this.height = (int) FieldNotesView.windowH / 7;
-        this.imgSize = (int) (this.height / 1.2);
-        this.lineHeight = (int) this.height / 3;
-        this.rightBorder =(int) (this.height * 1.5);
-        
-        setMeasuredDimension(measureWidth(widthMeasureSpec),this.height);
-              //  measureHeight(heightMeasureSpec));
+		 if (height == 0) // Höhe ist noch nicht berechnet 
+	        {
+			 FieldNoteViewItem.width = measureWidth(widthMeasureSpec);
+			 height = 0;
+			 FieldNoteViewItem.rightBorder =(int) (height * 1.5);
+	        }
+		 if (headHeight<1||headLinePos<1)
+	        {
+	     	   headHeight = (int) (layoutTypeText.getHeight()*1.5)+Global.CornerSize;
+	     	   headLinePos = (headHeight/2)+(layoutTypeText.getHeight()/2)-5;
+	        }
+		 
+		 Rect bounds = new Rect();
+	     Global.Paints.mesurePaint.getTextBounds("T", 0, 1, bounds);
+	     drawTextHeight=bounds.height();
+		 
+		 height += headHeight 						// höhe der Kopf Zeile
+			 	+ iconSize							// höhe cacheIcon
+		 		+ drawTextHeight				  	// höhe GC-Code draw
+		 		+ Global.CornerSize*2				// ???
+		 		+ layoutComment.getHeight();		// höhe des comment Textes
+	     setMeasuredDimension(FieldNoteViewItem.width, height);
+	            
 	}
 
     /**
@@ -66,14 +91,20 @@ public class FieldNoteViewItem extends View {
             result = specSize;
         } else {
             // Measure the text
-            result = (int) Global.Paints.Day.ListBackground.measureText(fieldnote.CacheName) + getPaddingLeft()
+            result = (int) Global.Paints.mesurePaint.measureText(fieldnote.CacheName) + getPaddingLeft()
                     + getPaddingRight();
             if (specMode == MeasureSpec.AT_MOST) {
                 // Respect AT_MOST value if that was what is called for by measureSpec
                 result = Math.min(result, specSize);
             }
         }
+        
         width = specSize;
+        int innerWidth = width - (Global.CornerSize*2);
+        layoutTypeText = new StaticLayout(fieldnote.typeString, textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+        layoutComment = new StaticLayout(fieldnote.comment, textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+        
+        
         return result;
     }
 
@@ -87,13 +118,13 @@ public class FieldNoteViewItem extends View {
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
 
-        mAscent = (int) Global.Paints.Day.ListBackground.ascent();
+        mAscent = (int) Global.Paints.mesurePaint.ascent();
         if (specMode == MeasureSpec.EXACTLY) {
             // We were told how big to be
             result = specSize;
         } else {
             // Measure the text (beware: ascent is a negative number)
-            result = (int) (-mAscent + Global.Paints.Day.ListBackground.descent()) + getPaddingTop()
+            result = (int) (-mAscent + Global.Paints.mesurePaint.descent()) + getPaddingTop()
                     + getPaddingBottom();
             if (specMode == MeasureSpec.AT_MOST) {
                 // Respect AT_MOST value if that was what is called for by measureSpec
@@ -104,20 +135,52 @@ public class FieldNoteViewItem extends View {
         return result;
     }
 
-    /**
-     * Render the text
-     * 
-     * @see android.view.View#onDraw(android.graphics.Canvas)
-     */
+ // static Member
+    private static Paint Linepaint;
+    private static Paint TextPaint;
+    private static int headHeight;
+    private static int headLinePos;
+    private static final int iconSize = (int) (Global.scaledFontSize_normal * 3.5);
+    private static TextPaint cacheNamePaint;
+    private static int nameLayoutWidth = 0;
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
+        
+        //initial
+        if (Linepaint==null)
+        {
+     	   Linepaint = new Paint();
+            Linepaint.setAntiAlias(true);
+            Linepaint.setColor(Global.getColor(R.attr.ListSeparator));
+        }
+        if (TextPaint==null)
+        {
+     	   TextPaint = new Paint();
+     	   TextPaint.setAntiAlias(true);
+           TextPaint.setFakeBoldText(true);
+           TextPaint.setTextSize(Global.scaledFontSize_normal);
+           TextPaint.setColor(Global.getColor(R.attr.TextColor));
+        }
+        if (cacheNamePaint==null)
+		{
+        	cacheNamePaint = new TextPaint();
+        	cacheNamePaint.setAntiAlias(true);
+        	cacheNamePaint.setTextSize(Global.scaledFontSize_normal);
+        	cacheNamePaint.setColor(Global.getColor(R.attr.TextColor));
+            cacheNamePaint.setFlags(Paint.FAKE_BOLD_TEXT_FLAG);
+		}
+        if(nameLayoutWidth==0)
+        {
+        	nameLayoutWidth = width - iconSize - rightBorder ;
+        }
+		
+	
         boolean selected = false;
         if (this.fieldnote == FieldNotesView.aktFieldNote)
         	selected = true;
         
-        int BackgroundColor;
+       
+		int BackgroundColor;
         if (BackColorChanger)
         {
         	BackgroundColor = (selected)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground);
@@ -127,26 +190,73 @@ public class FieldNoteViewItem extends View {
         	BackgroundColor = (selected)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground_secend);
         }
         
-        Paint BackPaint = new Paint();
-        BackPaint.setAntiAlias(true);
-       
-        final Rect rect = new Rect(7, 7, width-7, height-7);
-        final RectF rectF = new RectF(rect);
         
-        final Rect outerRect = new Rect(5, 5, width-5, height-5);
-        final RectF OuterRectF = new RectF(outerRect);
-        BackPaint.setColor(BackgroundColor);
-        canvas.drawRoundRect( rectF,CornerSize-2,CornerSize-2, BackPaint);
-        canvas.drawText(fieldnote.CacheName, 70, 20, new Paint());
+        ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(5, 5, width-5, height-5), 2, 
+     		   Global.getColor(R.attr.ListSeparator),(BackColorChanger)? Global.getColor(R.attr.ListBackground_secend): Global.getColor(R.attr.ListBackground), 
+     						   Global.CornerSize);
+        
+       
+        // Kopfzeile
+	        final Rect KopfRect = new Rect(5, 5, width-5, headHeight);;
+	        final RectF KopfRectF = new RectF(KopfRect);
+	        canvas.drawRoundRect( KopfRectF,Global.CornerSize,Global.CornerSize, Linepaint);
+	        canvas.drawRect(new Rect(5, headHeight-Global.CornerSize, width-5, headHeight), Linepaint);
+	        
+	        //Icon
+	        	int space = (fieldnote.typeIcon >= 0) ? ActivityUtils.PutImageTargetHeight(canvas, Global.LogIcons[fieldnote.typeIcon],Global.CornerSize/2, 8, headHeight-10) + 4 : 0;
+	        
+	        // typeString
+	        	canvas.drawText(fieldnote.typeString, space + Global.CornerSize/2, headLinePos, TextPaint);
+	       
+	        // Time/Date
+		        TextPaint.setFakeBoldText(false);
+		        SimpleDateFormat postFormater = new SimpleDateFormat("hh:mm - dd/MM/yyyy"); 
+		        String dateString = postFormater.format(fieldnote.timestamp); 
+		        int DateLength = (int) TextPaint.measureText(dateString);
+		        canvas.drawText(dateString, width - DateLength-10, headLinePos, TextPaint);
+        
+        // Info Körper
+		    int left = Global.CornerSize;     
+		    int top = headHeight;    
+		     // 1st Line Icon and Name
+		        
+			     // Draw Icon
+		    		ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[fieldnote.cacheType], left  , top - (int) (Global.scaledFontSize_normal / 2) , iconSize); 
+		    	   
+		    	 // Draw Cache Name
+		    		StaticLayout layoutCacheName = new StaticLayout(fieldnote.CacheName, cacheNamePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		    	    int LayoutHeight = ActivityUtils.drawStaticLayout(canvas, layoutCacheName, left + iconSize + 5, top);
+		    	       
+		    	 // over draw 3st Cache name line
+		    	     if(layoutCacheName.getLineCount()>2)
+		    	     {
+		    	    	 Paint backPaint = new Paint();
+		    	    	 backPaint.setColor(BackgroundColor); // Color.RED
+		    	    	 int VislinesHeight = LayoutHeight*2/layoutCacheName.getLineCount();
+		    	    	 canvas.drawRect(new Rect(left + iconSize + 5,top + VislinesHeight,nameLayoutWidth+left + iconSize + 5,top+LayoutHeight+VislinesHeight-4), backPaint);
+		    	     }
+		    	     
+		     // 2st Line Infos
+		    	//GC-Code
+		    	     top += iconSize;
+		    	     canvas.drawText(fieldnote.gcCode, left, top, cacheNamePaint);
+		    	     top+=drawTextHeight;
+	    	    // comment
+		    	     ActivityUtils.drawStaticLayout(canvas, layoutComment, left, top);
+		        
+		        
+		        
+		        
+		        
+        /*canvas.drawText(fieldnote.CacheName, 70, 20, new Paint());
         canvas.drawText(fieldnote.comment, 70, 35, new Paint());
         canvas.drawText(fieldnote.gcCode, 70, 50, new Paint());
         canvas.drawText("#" + fieldnote.foundNumber, 70, 65, new Paint());
         canvas.drawText(fieldnote.timestamp.toLocaleString(), 200, 70, new Paint());
         canvas.drawText("Id:" + fieldnote.Id, 250, 35, new Paint());
         canvas.drawText("CacheId:" + fieldnote.CacheId, 250, 50, new Paint());
-
-        if (fieldnote.typeIcon >= 0) 
-        	ActivityUtils.PutImageTargetHeight(canvas, Global.LogIcons[fieldnote.typeIcon], 10, 20, 50);
+*/
+        
         
         
         
