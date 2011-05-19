@@ -165,9 +165,10 @@ public class FieldNoteViewItem extends View {
 		{
         	cacheNamePaint = new TextPaint();
         	cacheNamePaint.setAntiAlias(true);
+        	cacheNamePaint.setFakeBoldText(true);
         	cacheNamePaint.setTextSize(Global.scaledFontSize_normal);
         	cacheNamePaint.setColor(Global.getColor(R.attr.TextColor));
-            cacheNamePaint.setFlags(Paint.FAKE_BOLD_TEXT_FLAG);
+            
 		}
         if(nameLayoutWidth==0)
         {

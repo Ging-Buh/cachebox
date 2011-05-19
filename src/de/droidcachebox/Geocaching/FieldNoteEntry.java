@@ -80,7 +80,7 @@ public class FieldNoteEntry implements Serializable {
         if (type == 2)
         {
             typeString = "Did not find!";
-            typeIconId = R.drawable.icon_sad;
+            typeIconId = R.drawable.log1;
             typeIcon = 1;
         }
 

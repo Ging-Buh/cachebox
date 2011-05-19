@@ -43,6 +43,7 @@ public class LogViewItem extends View {
         	textPaint = new TextPaint();
         	textPaint.setTextSize(Global.scaledFontSize_normal);
         	textPaint.setColor(Global.getColor(R.attr.TextColor));
+        	textPaint.setAntiAlias(true);
         }
         
         BackColorChanger = BackColorId;
@@ -140,6 +141,7 @@ public class LogViewItem extends View {
        {
     	   NamePaint = new Paint();
            NamePaint.setFakeBoldText(true);
+           NamePaint.setAntiAlias(true);
            NamePaint.setTextSize(Global.scaledFontSize_normal);
            NamePaint.setColor(Global.getColor(R.attr.TextColor));
        }

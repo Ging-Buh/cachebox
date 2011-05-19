@@ -284,7 +284,7 @@ public class Global {
         		res.getDrawable(R.drawable.addwaypoint),
         		res.getDrawable(R.drawable.smilie_gross),
         		res.getDrawable(R.drawable.download),
-        		res.getDrawable(R.drawable.icon_sad),
+        		res.getDrawable(R.drawable.log1),
         		res.getDrawable(R.drawable.maintenance),
         		res.getDrawable(R.drawable.checkbox_checked),
         		res.getDrawable(R.drawable.checkbox_unchecked),
