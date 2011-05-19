@@ -611,8 +611,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     /// <summary>
     /// Größe des Kachel-Caches
     /// </summary>
-    final int numMaxTiles = 32;
-    final int numMaxTrackTiles = 16;
+    final int numMaxTiles = 64;
+    final int numMaxTrackTiles = 32;
 
     // Vorberechnete Werte
     protected int halfWidth = 0;
@@ -2764,64 +2764,82 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     }
     private void zoomIn(boolean doRender)
     {
-    	animationThread.zoomTo(Zoom+1);    
+    	try
+    	{
+    		animationThread.zoomTo(Zoom+1);
+    	} catch(Exception exc)
+    	{
+    		Global.AddLog("zoomIn: " + exc.getMessage());
+    	}
     }
     private void zoomInDirect(boolean doRender)
     {
       if (Zoom < maxZoom)
       {
-        zoomScaleTimer.cancel();
-
-        centerOsmSpace.X *= 2;
-        centerOsmSpace.Y *= 2;
-        screenCenter.X *= 2;
-        screenCenter.Y *= 2;
-        animationThread.toX *= 2;
-        animationThread.toY *= 2;
-
-        Zoom++;
-        animationThread.toZoom = Zoom;
-        animationThread.toFaktor = 1;
-		zoomControls.setIsZoomOutEnabled(true); 
-
-        if (Zoom >= maxZoom)
-        {
-    		zoomControls.setIsZoomInEnabled(false); 
-        }
-        zoomChanged();
-      //  updateCacheList();
-
-        renderZoomScaleActive = true;
-        if (doRender)
-        {
-        	Render(false);
-        	startZoomScaleTimer();
-        }    
-      }
+    	  try
+    	  {
+    		  zoomScaleTimer.cancel();
+		
+    		  centerOsmSpace.X *= 2;
+    		  centerOsmSpace.Y *= 2;
+    		  screenCenter.X *= 2;
+    		  screenCenter.Y *= 2;
+    		  animationThread.toX *= 2;
+    		  animationThread.toY *= 2;
+		
+    		  Zoom++;
+    		  animationThread.toZoom = Zoom;
+    		  animationThread.toFaktor = 1;
+    		  zoomControls.setIsZoomOutEnabled(true); 
+    		  
+    		  if (Zoom >= maxZoom)
+    		  {
+    			  zoomControls.setIsZoomInEnabled(false); 
+    		  }
+    		  zoomChanged();
+    		  //  updateCacheList();
+		
+    		  renderZoomScaleActive = true;
+    		  if (doRender)
+    		  {
+    			  Render(false);
+    			  startZoomScaleTimer();
+    		  }    
+      		} catch(Exception exc)
+      		{
+      			Global.AddLog("zoomInDirect: " + exc.getMessage());
+      		}
+      	}
     }
     
     private void startZoomScaleTimer()
     {
     	if (zoomTimerTask != null)
     		return;
-        zoomTimerTask = new TimerTask() {
-        	@Override
-        	public void run()
-        	{
-        		renderZoomScaleActive = false;
-        		try
-        		{
-        			Render(false);
-        			zoomTimerTask = null;
-        		} catch (Exception exc)
-        		{
-					Global.AddLog("MV:ZoomTimerTask - " + exc.getMessage());
-					return;
-        		}
-        	}
-        };
-        zoomScaleTimer = new Timer();
-        zoomScaleTimer.schedule(zoomTimerTask, 1000);    	
+    	try
+    	{
+	        zoomTimerTask = new TimerTask() {
+	        	@Override
+	        	public void run()
+	        	{
+	        		renderZoomScaleActive = false;
+	        		try
+	        		{
+	        			Render(false);
+	        			zoomTimerTask = null;
+	        		} catch (Exception exc)
+	        		{
+						Global.AddLog("MV:ZoomTimerTask - " + exc.getMessage());
+						return;
+	        		}
+	        	}
+	        };
+	        zoomScaleTimer = new Timer();
+	        zoomScaleTimer.schedule(zoomTimerTask, 1000);
+    	} catch(Exception exc)
+    	{
+    		Global.AddLog("startZoomScaleTimer: " + exc.getMessage());
+    	}
     }
 /*
     Brush redBrush = new SolidBrush(Color.Red);
@@ -2909,40 +2927,53 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     }
     private void zoomOut(boolean doRender)
     {
-    	animationThread.zoomTo(Zoom-1);
+    	try
+    	{
+    		animationThread.zoomTo(Zoom-1);
+    	} catch(Exception exc)
+    	{
+    		Global.AddLog("zoomOut: " + exc.getMessage());
+    	}
     }
     private void zoomOutDirect(boolean doRender)
     {
-      if (Zoom > minZoom)
-      {
-        zoomScaleTimer.cancel();
+    	if (Zoom > minZoom)
+    	{
+    		try
+    		{
+    			zoomScaleTimer.cancel();
+    			
+    			screenCenter.X /= 2;
+    			screenCenter.Y /= 2;
+    			centerOsmSpace.X /= 2;
+    			centerOsmSpace.Y /= 2;
+    			animationThread.toX /= 2;
+    			animationThread.toY /= 2;
+    			
+    			Zoom--;
+    			animationThread.toZoom = Zoom;
+    			animationThread.toFaktor = 1;
+    			zoomControls.setIsZoomInEnabled(true); 
 
-        screenCenter.X /= 2;
-        screenCenter.Y /= 2;
-        centerOsmSpace.X /= 2;
-        centerOsmSpace.Y /= 2;
-        animationThread.toX /= 2;
-        animationThread.toY /= 2;
-
-        Zoom--;
-        animationThread.toZoom = Zoom;
-        animationThread.toFaktor = 1;
-		zoomControls.setIsZoomInEnabled(true); 
-
-        if (Zoom == minZoom)
-        {
-          zoomControls.setIsZoomOutEnabled(false);
-        }
-
-        zoomChanged();
-//        updateCacheList();
-        renderZoomScaleActive = true;
-        if (doRender)
-        {
-        	Render(false);
-        	startZoomScaleTimer();
-        }
-      }
+    			if (Zoom == minZoom)
+    			{
+    				zoomControls.setIsZoomOutEnabled(false);
+    			}
+    			
+    			zoomChanged();
+    			//        updateCacheList();
+    			renderZoomScaleActive = true;
+    			if (doRender)
+    			{
+    				Render(false);
+    				startZoomScaleTimer();
+    			}
+    		} catch(Exception exc)
+    		{
+    			Global.AddLog("zoomOutDirect: " + exc.getMessage());
+    		}
+    		
+    	}
     }
 
     double pixelsPerMeter;
@@ -2963,40 +2994,46 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     /// </summary>
     private void zoomChanged()
     {
-      int[] scaleNumUnits = new int[] { 4, 3, 4, 3, 4, 5, 3 };
-      float[] scaleSteps = new float[] { 1, 1.5f, 2, 3, 4, 5, 7.5f };
+    	try
+    	{
+    		int[] scaleNumUnits = new int[] { 4, 3, 4, 3, 4, 5, 3 };
+    		float[] scaleSteps = new float[] { 1, 1.5f, 2, 3, 4, 5, 7.5f };
 /*
       if (animationTimer != null)
         animationTimer.Enabled = false;
 */
-      adjustmentCurrentToCacheZoom = Math.pow(2, Zoom - Cache.MapZoomLevel);
+    		adjustmentCurrentToCacheZoom = Math.pow(2, Zoom - Cache.MapZoomLevel);
 
-      // Infos für den Maßstab neu berechnen
-      Coordinate dummy = Coordinate.Project(center.Latitude, center.Longitude, 90, 1000);
-      double l1 = Descriptor.LongitudeToTileX(Zoom, center.Longitude);
-      double l2 = Descriptor.LongitudeToTileX(Zoom, dummy.Longitude);
-      double diff = Math.abs(l2 - l1);
-      pixelsPerMeter = (diff * 256 * dpiScaleFactorX) / 1000;
-
-      int multiplyer = 1;
-      double scaleSize = 0;
-      int idx = 0;
-      while (scaleSize < (scaleWidth * 0.45))
-      {
-        scaleLength = multiplyer * scaleSteps[idx] * ((UnitFormatter.ImperialUnits) ? 1.6093 : 1);
-        scaleUnits = scaleNumUnits[idx];
-
-        scaleSize = pixelsPerMeter * scaleLength;
-
-        idx++;
-        if (idx == scaleNumUnits.length)
-        {
-          idx = 0;
-          multiplyer *= 10;
-        }
-      }
+    		// Infos für den Maßstab neu berechnen
+    		Coordinate dummy = Coordinate.Project(center.Latitude, center.Longitude, 90, 1000);
+    		double l1 = Descriptor.LongitudeToTileX(Zoom, center.Longitude);
+    		double l2 = Descriptor.LongitudeToTileX(Zoom, dummy.Longitude);
+    		double diff = Math.abs(l2 - l1);
+    		pixelsPerMeter = (diff * 256 * dpiScaleFactorX) / 1000;
+    		
+    		int multiplyer = 1;
+    		double scaleSize = 0;
+    		int idx = 0;
+    		while (scaleSize < (scaleWidth * 0.45))
+    		{
+    			scaleLength = multiplyer * scaleSteps[idx] * ((UnitFormatter.ImperialUnits) ? 1.6093 : 1);
+    			scaleUnits = scaleNumUnits[idx];
+    			
+    			scaleSize = pixelsPerMeter * scaleLength;
+    			
+    			idx++;
+    			if (idx == scaleNumUnits.length)
+    			{
+    				idx = 0;
+    				multiplyer *= 10;
+    			}
+    		}
+    	} catch(Exception exc)
+    	{
+    		Global.AddLog("PosChanged: " + exc.getMessage());
+    	}
     }
-/*
+  /*
     Brush[] brushes = new Brush[] { new SolidBrush(Color.Black), new SolidBrush(Color.White) };
 */
     Paint font = new Paint();
@@ -3959,57 +3996,68 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         // Muss der aktive Track gezeichnet werden?
         if ((Global.AktuelleRoute != null) && Global.AktuelleRoute.ShowRoute)
         {
-            // Map Tiles aktualisieren, wenn der AktiveTrack erweitert wurde!
-            if ((Global.AktuelleRoute.Points.size() > aktuelleRouteCount) && (Global.AktuelleRoute.Points.size() > 1))
-            {
-                // Liste aller neuen Punkte erstellen incl. dem letzten.
-                ArrayList<PointD> punkte = new ArrayList<PointD>();
-                for (int i = aktuelleRouteCount - 1; i < Global.AktuelleRoute.Points.size(); i++)
-                {
-                    if (i < 0) continue;
-                    punkte.add(Global.AktuelleRoute.Points.get(i));
-                }
-                aktuelleRouteCount = Global.AktuelleRoute.Points.size();
-
-                Paint paint = Global.AktuelleRoute.paint;
-                synchronized (trackTiles)
-                {
-                    for (long hash : trackTiles.keySet())
-                    {
-                    	Tile tile = trackTiles.get(hash);
-                        if (tile.Image == null) continue;
-                        Canvas canvas = new Canvas(tile.Image);
-
-                        double tileX = tile.Descriptor.X * 256 * dpiScaleFactorX;
-                        double tileY = tile.Descriptor.Y * 256 * dpiScaleFactorY;
-
-                        double adjustmentX = Math.pow(2, tile.Descriptor.Zoom - RouteOverlay.projectionZoomLevel) * 256 * dpiScaleFactorX;
-                        double adjustmentY = Math.pow(2, tile.Descriptor.Zoom - RouteOverlay.projectionZoomLevel) * 256 * dpiScaleFactorY;
-
-                        for (int j = 0; j < (punkte.size() - 1); j++)
-                        {
-                        	canvas.drawLine((int)(punkte.get(j).X * adjustmentX - tileX), 
-                        					(int)(punkte.get(j).Y * adjustmentY - tileY), 
-                        					(int)(punkte.get(j + 1).X * adjustmentX - tileX), 
-                        					(int)(punkte.get(j + 1).Y * adjustmentY - tileY), paint);
-                        }
-                        if (punkte.size() > 0)
-                        {
-                            double x = (punkte.get(punkte.size() - 1).X * adjustmentX - tileX);
-                            double y = (punkte.get(punkte.size() - 1).Y * adjustmentY - tileY);
-                            //                            graphics.DrawString(x.ToString() + " - " + y.ToString(), fontSmall, new SolidBrush(Color.Black), 20, 20);
-                        }
-                    }
-                }
-            }
+        	try
+        	{
+	            // Map Tiles aktualisieren, wenn der AktiveTrack erweitert wurde!
+	            if ((Global.AktuelleRoute.Points.size() > aktuelleRouteCount) && (Global.AktuelleRoute.Points.size() > 1))
+	            {
+	                // Liste aller neuen Punkte erstellen incl. dem letzten.
+	                ArrayList<PointD> punkte = new ArrayList<PointD>();
+	                for (int i = aktuelleRouteCount - 1; i < Global.AktuelleRoute.Points.size(); i++)
+	                {
+	                    if (i < 0) continue;
+	                    punkte.add(Global.AktuelleRoute.Points.get(i));
+	                }
+	                aktuelleRouteCount = Global.AktuelleRoute.Points.size();
+	
+	                Paint paint = Global.AktuelleRoute.paint;
+	                synchronized (trackTiles)
+	                {
+	                    for (long hash : trackTiles.keySet())
+	                    {
+	                    	Tile tile = trackTiles.get(hash);
+	                        if (tile.Image == null) continue;
+	                        Canvas canvas = new Canvas(tile.Image);
+	
+	                        double tileX = tile.Descriptor.X * 256 * dpiScaleFactorX;
+	                        double tileY = tile.Descriptor.Y * 256 * dpiScaleFactorY;
+	
+	                        double adjustmentX = Math.pow(2, tile.Descriptor.Zoom - RouteOverlay.projectionZoomLevel) * 256 * dpiScaleFactorX;
+	                        double adjustmentY = Math.pow(2, tile.Descriptor.Zoom - RouteOverlay.projectionZoomLevel) * 256 * dpiScaleFactorY;
+	
+	                        for (int j = 0; j < (punkte.size() - 1); j++)
+	                        {
+	                        	canvas.drawLine((int)(punkte.get(j).X * adjustmentX - tileX), 
+	                        					(int)(punkte.get(j).Y * adjustmentY - tileY), 
+	                        					(int)(punkte.get(j + 1).X * adjustmentX - tileX), 
+	                        					(int)(punkte.get(j + 1).Y * adjustmentY - tileY), paint);
+	                        }
+	                        if (punkte.size() > 0)
+	                        {
+	                            double x = (punkte.get(punkte.size() - 1).X * adjustmentX - tileX);
+	                            double y = (punkte.get(punkte.size() - 1).Y * adjustmentY - tileY);
+	                            //                            graphics.DrawString(x.ToString() + " - " + y.ToString(), fontSmall, new SolidBrush(Color.Black), 20, 20);
+	                        }
+	                    }
+	                }
+	            }
+        	} catch(Exception exc)
+        	{
+        		Global.AddLog("PosChanged: " + exc.getMessage());
+        	}
         }
 
         if (isVisible)
         {
+        	try
+        	{
         	// draw Map only when MapView is visible
-	        if (lockPosition >= 1/* && !animationTimer.Enabled*/)
-	            setCenter(new Coordinate(Global.LastValidPosition));
-	
+        		if (lockPosition >= 1/* && !animationTimer.Enabled*/)
+        			setCenter(new Coordinate(Global.LastValidPosition));
+        	} catch(Exception exc)
+        	{
+        		Global.AddLog("PosChanged SC: " + exc.getMessage());
+        	}
 	        Render(false);
         }
 	}
@@ -4163,38 +4211,46 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		if (canvas == null)
 			return;
 //		canvas.rotate(canvasHeading - heading, offScreenBmp.getWidth() / 2, offScreenBmp.getHeight() / 2);
-		float newCanvasHeading = heading;
-		// liefert die Richtung (abhängig von der Geschwindigkeit von Kompass oder GPS
-		if (!Global.Locator.UseCompass() && alignToCompass)
+		
+		try
 		{
-			// GPS-Richtung soll verwendet werden!
-			newCanvasHeading = Global.Locator.getHeading();
-			heading = newCanvasHeading;
-		}
-
-		animationThread.rotateTo(newCanvasHeading);
-		
-		// da die Map gedreht in die offScreenBmp gezeichnet werden soll, muss der Bereich, der gezeichnet werden soll größer sein, wenn gedreht wird.
-		double w = offScreenBmp.getWidth();
-		double h = offScreenBmp.getHeight();
-		if (heading >= 180)
-			heading -= 180;
-		if (heading > 90)
-			heading = 180 - heading;
-		double alpha = heading / 180 * Math.PI;
-		double beta = Math.atan(w / h);
-		double gammaW = Math.PI / 2 - alpha - beta;
-		// halbe Länge der Diagonalen
-		double diagonal = Math.sqrt(Math.pow(w, 2) + Math.pow(h, 2)) / 2;
-		drawingWidth = (int)(Math.cos(gammaW) * diagonal * 2);
-		
-		double gammaH = alpha - beta;
-		drawingHeight = (int)(Math.cos(gammaH) * diagonal * 2);
-
-//		debugString1 = Math.round(alpha / Math.PI * 180) + " - " + Math.round(beta / Math.PI * 180)  + " - " + Math.round(gammaW / Math.PI * 180) + " - " + Math.round(gammaH / Math.PI * 180);
-//		debugString2 = "h = " + drawingHeight + " - w = " + drawingWidth;
-		Render(true);
+			
+			float newCanvasHeading = heading;
+			// liefert die Richtung (abhängig von der Geschwindigkeit von Kompass oder GPS
+			if (!Global.Locator.UseCompass() && alignToCompass)
+			{
+				// GPS-Richtung soll verwendet werden!
+				newCanvasHeading = Global.Locator.getHeading();
+				heading = newCanvasHeading;
+			}
 	
+			animationThread.rotateTo(newCanvasHeading);
+			
+			// da die Map gedreht in die offScreenBmp gezeichnet werden soll, muss der Bereich, der gezeichnet werden soll größer sein, wenn gedreht wird.
+			double w = offScreenBmp.getWidth();
+			double h = offScreenBmp.getHeight();
+			if (heading >= 180)
+				heading -= 180;
+			if (heading > 90)
+				heading = 180 - heading;
+			double alpha = heading / 180 * Math.PI;
+			double beta = Math.atan(w / h);
+			double gammaW = Math.PI / 2 - alpha - beta;
+			// halbe Länge der Diagonalen
+			double diagonal = Math.sqrt(Math.pow(w, 2) + Math.pow(h, 2)) / 2;
+			drawingWidth = (int)(Math.cos(gammaW) * diagonal * 2);
+			
+			double gammaH = alpha - beta;
+			drawingHeight = (int)(Math.cos(gammaH) * diagonal * 2);
+	
+	//		debugString1 = Math.round(alpha / Math.PI * 180) + " - " + Math.round(beta / Math.PI * 180)  + " - " + Math.round(gammaW / Math.PI * 180) + " - " + Math.round(gammaH / Math.PI * 180);
+	//		debugString2 = "h = " + drawingHeight + " - w = " + drawingWidth;
+			Render(true);
+    	} catch(Exception exc)
+    	{
+    		Global.AddLog("OrientChanged: " + exc.getMessage());
+    	}
+
 	}
 
 	@Override
@@ -4219,70 +4275,82 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			{
 				if (msg.what == 4)
 				{
-					synchronized (this)
+					try
 					{
-						boolean changeHeading = bundle.getBoolean("ChangeHeading");
-						if (changeHeading)
+						synchronized (this)
 						{
-							float newHeading = bundle.getFloat("Heading");
-							canvasHeading = newHeading;
-						}
-						boolean changeZoom = bundle.getBoolean("ChangeZoom");
-						if (changeZoom)
-						{
-							int zoom = bundle.getInt("Zoom");
-							double faktor = bundle.getDouble("Faktor");
-							while (zoom > Zoom)
+							boolean changeHeading = bundle.getBoolean("ChangeHeading");
+							if (changeHeading)
 							{
-								Zoom++;
-						        centerOsmSpace.X *= 2;
-						        centerOsmSpace.Y *= 2;
-						        screenCenter.X *= 2;
-						        screenCenter.Y *= 2;
+								float newHeading = bundle.getFloat("Heading");
+								canvasHeading = newHeading;
 							}
-							while (zoom < Zoom)
+							boolean changeZoom = bundle.getBoolean("ChangeZoom");
+							if (changeZoom)
 							{
-								Zoom--;
-						        centerOsmSpace.X /= 2;
-						        centerOsmSpace.Y /= 2;
-						        screenCenter.X /= 2;
-						        screenCenter.Y /= 2;
+								int zoom = bundle.getInt("Zoom");
+								double faktor = bundle.getDouble("Faktor");
+								while (zoom > Zoom)
+								{
+									Zoom++;
+							        centerOsmSpace.X *= 2;
+							        centerOsmSpace.Y *= 2;
+							        screenCenter.X *= 2;
+							        screenCenter.Y *= 2;
+								}
+								while (zoom < Zoom)
+								{
+									Zoom--;
+							        centerOsmSpace.X /= 2;
+							        centerOsmSpace.Y /= 2;
+							        screenCenter.X /= 2;
+							        screenCenter.Y /= 2;
+								}
+								multiTouchFaktor = faktor;
+						        renderZoomScaleActive = true;
+						        startZoomScaleTimer();
+						        zoomChanged();
 							}
-							multiTouchFaktor = faktor;
-					        renderZoomScaleActive = true;
-					        startZoomScaleTimer();
-					        zoomChanged();
-						}
-						boolean changePos = bundle.getBoolean("ChangePos");
-						if (changePos)
-						{
-							double x = bundle.getDouble("x");
-							double y = bundle.getDouble("y");
-							screenCenter.X = x;
-							screenCenter.Y = y;
-				            centerOsmSpace.X = screenCenter.X / dpiScaleFactorX;
-				            centerOsmSpace.Y = screenCenter.Y / dpiScaleFactorY;
-						}
-						boolean updateCacheList = bundle.getBoolean("updateCacheList");
-						if (updateCacheList)
-							updateCacheList();
-						if (bundle.getBoolean("doRender"))
-						{
-							try
+							boolean changePos = bundle.getBoolean("ChangePos");
+							if (changePos)
 							{
-								Render(true);								
-							} catch (Exception exc)
+								double x = bundle.getDouble("x");
+								double y = bundle.getDouble("y");
+								screenCenter.X = x;
+								screenCenter.Y = y;
+					            centerOsmSpace.X = screenCenter.X / dpiScaleFactorX;
+					            centerOsmSpace.Y = screenCenter.Y / dpiScaleFactorY;
+							}
+							boolean updateCacheList = bundle.getBoolean("updateCacheList");
+							if (updateCacheList)
+								updateCacheList();
+							if (bundle.getBoolean("doRender"))
 							{
-								Global.AddLog("MV:messageHandler - " + exc.getMessage());
+								try
+								{
+									Render(true);								
+								} catch (Exception exc)
+								{
+									Global.AddLog("MV:messageHandler - " + exc.getMessage());
+								}
 							}
 						}
-					}
-					sendEmptyMessage(5);  // im UI Thread ausführen
+						sendEmptyMessage(5);  // im UI Thread ausführen
+		        	} catch(Exception exc)
+		        	{
+		        		Global.AddLog("MessageHandler 4: " + exc.getMessage());
+		        	}
 				}
 				if (msg.what == 5)
 				{
-			    	zoomControls.setIsZoomOutEnabled(Zoom > minZoom); 
-		    		zoomControls.setIsZoomInEnabled(Zoom < maxZoom); 
+					try
+					{
+						zoomControls.setIsZoomOutEnabled(Zoom > minZoom); 
+						zoomControls.setIsZoomInEnabled(Zoom < maxZoom);
+		        	} catch(Exception exc)
+		        	{
+		        		Global.AddLog("MessageHander 5: " + exc.getMessage());
+		        	}
 					
 				}
 			}
@@ -4315,181 +4383,188 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				public void handleMessage(Message msg) {
 					if (msg.what == 4)
 					{
-						animationFertig = false;
-						long nextTick = 0;
-			            boolean doUpdateCacheList = false;
-						
-						while (true)
+						try
 						{
-							// zur Rückgabe
-				            Message ret = new Message();
-				            Bundle br = new Bundle();
-
-				            boolean fertigHeading = true;  
-				            boolean fertigZoom = true;
-				            boolean fertigPos = true;
-				            synchronized(animationThread)
+							animationFertig = false;
+							long nextTick = 0;
+				            boolean doUpdateCacheList = false;
+							
+							while (true)
 							{
-					            float aktHeading = correctHeading(canvasHeading);
-					            double aktX = screenCenter.X;
-					            double aktY = screenCenter.Y;
-					            
-								if (headingInitialized && (Math.abs(aktHeading - toHeading) > 0.3f))
-								{
-						            float step = rotationDirection(aktHeading, toHeading);
-									aktHeading += step;
-									aktHeading = correctHeading(aktHeading);
-									
-									if (Math.abs(aktHeading - toHeading) < 0.3f)
-										fertigHeading = true;
-									else
-										fertigHeading = false;
-									br.putBoolean("ChangeHeading", true);
-						            br.putFloat("Heading", aktHeading);
-								} else
-									br.putBoolean("ChangeHeading", false);
+								// zur Rückgabe
+					            Message ret = new Message();
+					            Bundle br = new Bundle();
 	
-								if (!mouseMoved)
+					            boolean fertigHeading = true;  
+					            boolean fertigZoom = true;
+					            boolean fertigPos = true;
+					            synchronized(animationThread)
 								{
-									// Zoom und Position nur dann ändern, wenn nicht gerade ein MouseMove aktiv ist
-						            int aktZoom = Zoom;
-									double faktor = multiTouchFaktor;
-									if (faktor < 1)
+						            float aktHeading = correctHeading(canvasHeading);
+						            double aktX = screenCenter.X;
+						            double aktY = screenCenter.Y;
+						            
+									if (headingInitialized && (Math.abs(aktHeading - toHeading) > 0.3f))
 									{
-										// runden auf 0.05;
-										faktor = Math.rint(faktor * smoothScrolling.AnimationSteps()*2) / (smoothScrolling.AnimationSteps()*2);
-										if (faktor < 0.74)
-											faktor = 0.75;
-									}
-									if (faktor > 1)
-									{
-										// runden auf 0.1;
-										faktor = Math.rint(faktor * smoothScrolling.AnimationSteps()*2) / (smoothScrolling.AnimationSteps()*2);
-										if (faktor > 1.5)
-											faktor = 1.5;
-									}
-									if (zoomInitialized && ((aktZoom != toZoom) || (Math.abs(faktor - toFaktor) >= 0.001)))
-									{
-										double diff;
-										if (aktZoom + faktor > toZoom + toFaktor)
-										{
-											diff = -1;
-											if (faktor <= 1.0001)
-												diff /= 2;
-										} else
-										{
-											diff = 1;
-											if (faktor < 0.99999)
-												diff /= 2;
-										}
-		
-										faktor += diff / smoothScrolling.AnimationSteps();
-										if (faktor > 1.5)
-										{
-											aktZoom++;
-									        toX *= 2;
-									        toY *= 2;
-									        aktX *= 2;
-									        aktY *= 2;
-											faktor = faktor / 2;
-										}
-										if (faktor < 0.75)
-										{
-											aktZoom--;
-									        toX /= 2;
-									        toY /= 2;
-									        aktX /= 2;
-									        aktY /= 2;
-											faktor = faktor * 2;
-										}
+							            float step = rotationDirection(aktHeading, toHeading);
+										aktHeading += step;
+										aktHeading = correctHeading(aktHeading);
 										
-										if ((aktZoom == toZoom) && (Math.abs(faktor - toFaktor) < 0.001))
-											fertigZoom = false;
+										if (Math.abs(aktHeading - toHeading) < 0.3f)
+											fertigHeading = true;
 										else
-											fertigZoom = false;
-										doUpdateCacheList = true;
-										br.putBoolean("ChangeZoom", true);
-							            br.putInt("Zoom", aktZoom);
-							            br.putDouble("Faktor", faktor);
+											fertigHeading = false;
+										br.putBoolean("ChangeHeading", true);
+							            br.putFloat("Heading", aktHeading);
 									} else
-										br.putBoolean("ChangeZoom", false);
+										br.putBoolean("ChangeHeading", false);
 		
-									
-						            if (posInitialized && ((Math.abs(aktX - toX) > 1.1) || Math.abs(aktY - toY) > 1.1))
-						            {
-						            	fertigPos = false;
-						            	doUpdateCacheList = true;
-		
-							            double scale = 1/posFaktor;
-						            	
-							            double dx = (toX - aktX) * scale;
-							            double dy = (toY - aktY) * scale;
-							            
-							            double x = aktX + dx;
-							            double y = aktY + dy;
+									if (!mouseMoved)
+									{
+										// Zoom und Position nur dann ändern, wenn nicht gerade ein MouseMove aktiv ist
+							            int aktZoom = Zoom;
+										double faktor = multiTouchFaktor;
+										if (faktor < 1)
+										{
+											// runden auf 0.05;
+											faktor = Math.rint(faktor * smoothScrolling.AnimationSteps()*2) / (smoothScrolling.AnimationSteps()*2);
+											if (faktor < 0.74)
+												faktor = 0.75;
+										}
+										if (faktor > 1)
+										{
+											// runden auf 0.1;
+											faktor = Math.rint(faktor * smoothScrolling.AnimationSteps()*2) / (smoothScrolling.AnimationSteps()*2);
+											if (faktor > 1.5)
+												faktor = 1.5;
+										}
+										if (zoomInitialized && ((aktZoom != toZoom) || (Math.abs(faktor - toFaktor) >= 0.001)))
+										{
+											double diff;
+											if (aktZoom + faktor > toZoom + toFaktor)
+											{
+												diff = -1;
+												if (faktor <= 1.0001)
+													diff /= 2;
+											} else
+											{
+												diff = 1;
+												if (faktor < 0.99999)
+													diff /= 2;
+											}
+			
+											faktor += diff / smoothScrolling.AnimationSteps();
+											if (faktor > 1.5)
+											{
+												aktZoom++;
+										        toX *= 2;
+										        toY *= 2;
+										        aktX *= 2;
+										        aktY *= 2;
+												faktor = faktor / 2;
+											}
+											if (faktor < 0.75)
+											{
+												aktZoom--;
+										        toX /= 2;
+										        toY /= 2;
+										        aktX /= 2;
+										        aktY /= 2;
+												faktor = faktor * 2;
+											}
 											
-							            if (posDirect)
+											if ((aktZoom == toZoom) && (Math.abs(faktor - toFaktor) < 0.001))
+												fertigZoom = false;
+											else
+												fertigZoom = false;
+											doUpdateCacheList = true;
+											br.putBoolean("ChangeZoom", true);
+								            br.putInt("Zoom", aktZoom);
+								            br.putDouble("Faktor", faktor);
+										} else
+											br.putBoolean("ChangeZoom", false);
+			
+										
+							            if (posInitialized && ((Math.abs(aktX - toX) > 1.1) || Math.abs(aktY - toY) > 1.1))
 							            {
-							            	x = toX;
-							            	y = toY;					            	
-							            }
-							            br.putDouble("x", x);
-							            br.putDouble("y", y);
-						            	
-						            	br.putBoolean("ChangePos", true);
-						            } else
-						            	br.putBoolean("ChangePos", false);
+							            	fertigPos = false;
+							            	doUpdateCacheList = true;
+			
+								            double scale = 1/posFaktor;
+							            	
+								            double dx = (toX - aktX) * scale;
+								            double dy = (toY - aktY) * scale;
+								            
+								            double x = aktX + dx;
+								            double y = aktY + dy;
+												
+								            if (posDirect)
+								            {
+								            	x = toX;
+								            	y = toY;					            	
+								            }
+								            br.putDouble("x", x);
+								            br.putDouble("y", y);
+							            	
+							            	br.putBoolean("ChangePos", true);
+							            } else
+							            	br.putBoolean("ChangePos", false);
+									}
+								
+								
 								}
-							
-							
-							}
-																	            
-				            // Nachricht senden
-							// Cache Liste nach dem Drehen nicht aktualisieren, da der sichtbare Bereich sich fast nicht ändert
-				            // und sowieso mit UpdateCacheList mehr Caches geladen werden, wie angezeigt...
-				            br.putBoolean("updateCacheList", /*fertigHeading && */fertigZoom && fertigPos && doUpdateCacheList);
-				            ret.setData(br);
-				            ret.what = 4;
-				            
-				            
-			            	long delay;
-			            	if(nextTick == 0)
-			            	{
-			            		// ersten Durchlauf sofort zeichnen!
-			            		delay = 0;
-								nextTick = SystemClock.uptimeMillis();			            		
-			            	} else
-			            	{
-			            		delay = nextTick - SystemClock.uptimeMillis();
-			            		if ((delay < 0) && (fertigHeading && fertigZoom && fertigPos))
-			            			delay = 0;		// das letzte Rendern muss gemacht werden!!
-			            	}
-			            	
-			            	br.putBoolean("doRender", delay >= 0);
-			            	// nur rendern, wenn noch nicht zu viel Zeitvergangen ist...
-			            	// ansonsten überspringen
-			            	// Pause abwarten
-			            	// Pause
-				            try 
-				            {
-				            	if (delay > 0)
+																		            
+					            // Nachricht senden
+								// Cache Liste nach dem Drehen nicht aktualisieren, da der sichtbare Bereich sich fast nicht ändert
+					            // und sowieso mit UpdateCacheList mehr Caches geladen werden, wie angezeigt...
+					            br.putBoolean("updateCacheList", /*fertigHeading && */fertigZoom && fertigPos && doUpdateCacheList);
+					            ret.setData(br);
+					            ret.what = 4;
+					            
+					            
+				            	long delay;
+				            	if(nextTick == 0)
 				            	{
-				            		Thread.sleep(delay);
-				            	} 
-							} catch (InterruptedException e) 
-							{
-								Global.AddLog("MV:TimerInterrupt - " + e.getMessage());								
-							}							
-			            	
-			            	messageHandler.handleMessage(ret);		// im animationThread ausführen
-
-			            	// nächstes Rendern bei:
-				            nextTick += smoothScrolling.AnimationWait();
-				            
-				            if (fertigHeading && fertigZoom && fertigPos)
-				            	break;
-						}			
-						animationFertig = true;
+				            		// ersten Durchlauf sofort zeichnen!
+				            		delay = 0;
+									nextTick = SystemClock.uptimeMillis();			            		
+				            	} else
+				            	{
+				            		delay = nextTick - SystemClock.uptimeMillis();
+				            		if ((delay < 0) && (fertigHeading && fertigZoom && fertigPos))
+				            			delay = 0;		// das letzte Rendern muss gemacht werden!!
+				            	}
+				            	
+				            	br.putBoolean("doRender", delay >= 0);
+				            	// nur rendern, wenn noch nicht zu viel Zeitvergangen ist...
+				            	// ansonsten überspringen
+				            	// Pause abwarten
+				            	// Pause
+					            try 
+					            {
+					            	if (delay > 0)
+					            	{
+					            		Thread.sleep(delay);
+					            	} 
+								} catch (InterruptedException e) 
+								{
+									Global.AddLog("MV:TimerInterrupt - " + e.getMessage());								
+								}							
+				            	
+				            	messageHandler.handleMessage(ret);		// im animationThread ausführen
+	
+				            	// nächstes Rendern bei:
+					            nextTick += smoothScrolling.AnimationWait();
+					            
+					            if (fertigHeading && fertigZoom && fertigPos)
+					            	break;
+							}			
+							animationFertig = true;
+			        	} catch(Exception exc)
+			        	{
+			        		Global.AddLog("AnimationThread: " + exc.getMessage());
+			        	}
+						
 					}
 					
 				}
@@ -4508,24 +4583,32 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	    
 	    private float rotationDirection(float fromHeading, float toHeading)
 	    {
-	    	float distance = toHeading - fromHeading;
-	    	if (distance > 180)
+	    	try
 	    	{
-	    		distance = distance - 360;
-	    	}
-	    	if (distance <= -180)
-	    	{
-	    		distance = 360 + distance;
-	    	}
-	    	float direction = 1;
-	    	if (distance < 0)
-	    		direction = -1;
-
-	    	int steps = smoothScrolling.AnimationSteps();
-	    	double faktor = Math.sqrt((double)steps);
-	    	
-	    	return (float) (Math.max(Math.abs(distance) / faktor, 0.5f) * direction);
+		    	float distance = toHeading - fromHeading;
+		    	if (distance > 180)
+		    	{
+		    		distance = distance - 360;
+		    	}
+		    	if (distance <= -180)
+		    	{
+		    		distance = 360 + distance;
+		    	}
+		    	float direction = 1;
+		    	if (distance < 0)
+		    		direction = -1;
+	
+		    	int steps = smoothScrolling.AnimationSteps();
+		    	double faktor = Math.sqrt((double)steps);
+		    	
+		    	return (float) (Math.max(Math.abs(distance) / faktor, 0.5f) * direction);
+        	} catch(Exception exc)
+        	{
+        		Global.AddLog("rotationDirection: " + exc.getMessage());
+        		return 0;
+        	}
 	    }
+	    	
 	    
 
 		public void moveTo(Coordinate target)
@@ -4534,75 +4617,105 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		}
 		public void moveTo(Coordinate target, int anzsteps, boolean useDirect)
 		{
-			double newPosFaktor = anzsteps / 5 + 1;
-
-			PointD animateFrom = new PointD(screenCenter.X, screenCenter.Y);
-			PointD animateTo = new PointD(0, 0);
-            animateTo.X = dpiScaleFactorX * 256 * Descriptor.LongitudeToTileX(Zoom, target.Longitude);
-            animateTo.Y = dpiScaleFactorY * 256 * Descriptor.LatitudeToTileY(Zoom, target.Latitude);			
-            double xDiff = animateFrom.X - animateTo.X;
-            double yDiff = animateFrom.Y - animateTo.Y;
-            center = target;
-            if ((Math.sqrt(xDiff * xDiff + yDiff * yDiff) < 2 * 256 * dpiScaleFactorX) || (!useDirect))
-            {
-            	synchronized(animationThread)
-            	{
-            		animationThread.posFaktor = newPosFaktor;
-            		animationThread.posInitialized = true;
-            		animationThread.toX = animateTo.X;
-            		animationThread.toY = animateTo.Y;
-            		animationThread.posDirect = false;
-            	}
-            	handler.sendEmptyMessage(4);
-            } else
-            {
-                // Zu weit! Wir gehen ohne Animation direkt zum Ziel!
-            	synchronized(animationThread)
-            	{
-            		animationThread.posFaktor = newPosFaktor;
-            		animationThread.posInitialized = true;
-            		animationThread.toX = animateTo.X;
-            		animationThread.toY = animateTo.Y;
-            		animationThread.posDirect = true;
-            	}
-            	handler.sendEmptyMessage(4);
-            }
+			try
+			{
+				double newPosFaktor = anzsteps / 5 + 1;
+	
+				PointD animateFrom = new PointD(screenCenter.X, screenCenter.Y);
+				PointD animateTo = new PointD(0, 0);
+	            animateTo.X = dpiScaleFactorX * 256 * Descriptor.LongitudeToTileX(Zoom, target.Longitude);
+	            animateTo.Y = dpiScaleFactorY * 256 * Descriptor.LatitudeToTileY(Zoom, target.Latitude);			
+	            double xDiff = animateFrom.X - animateTo.X;
+	            double yDiff = animateFrom.Y - animateTo.Y;
+	            center = target;
+	            if ((Math.sqrt(xDiff * xDiff + yDiff * yDiff) < 2 * 256 * dpiScaleFactorX) || (!useDirect))
+	            {
+	            	synchronized(animationThread)
+	            	{
+	            		animationThread.posFaktor = newPosFaktor;
+	            		animationThread.posInitialized = true;
+	            		animationThread.toX = animateTo.X;
+	            		animationThread.toY = animateTo.Y;
+	            		animationThread.posDirect = false;
+	            	}
+	            	handler.sendEmptyMessage(4);
+	            } else
+	            {
+	                // Zu weit! Wir gehen ohne Animation direkt zum Ziel!
+	            	synchronized(animationThread)
+	            	{
+	            		animationThread.posFaktor = newPosFaktor;
+	            		animationThread.posInitialized = true;
+	            		animationThread.toX = animateTo.X;
+	            		animationThread.toY = animateTo.Y;
+	            		animationThread.posDirect = true;
+	            	}
+	            	handler.sendEmptyMessage(4);
+	            }
+        	} catch(Exception exc)
+        	{
+        		Global.AddLog("moveTo: " + exc.getMessage());
+        	}
 		}
 
 		public void zoomTo(int newZoom)
 		{
-			synchronized(animationThread)
+			try
 			{
-				animationThread.zoomInitialized = true;
-				animationThread.toZoom = newZoom;
-				animationThread.toFaktor = 1;
-			}
-        	handler.sendEmptyMessage(4);			
-		}
+				synchronized(animationThread)
+				{
+					animationThread.zoomInitialized = true;
+					animationThread.toZoom = newZoom;
+					animationThread.toFaktor = 1;
+				}
+	        	handler.sendEmptyMessage(4);			
+        	} catch(Exception exc)
+        	{
+        		Global.AddLog("ZoomTo: " + exc.getMessage());
+        	}
+}
 
 		private float lastNewHeading = -999;
 		public void rotateTo(float newHeading)
 		{
-			if (!alignToCompass)
-				return;
-			if (Math.abs(lastNewHeading - newHeading) < 1)
-				return;
-			lastNewHeading = newHeading;
-
-			synchronized(animationThread)
+			try
 			{
-				animationThread.headingInitialized = true;
-				animationThread.toHeading = lastNewHeading;
-			}
-//			handler.removeMessages(4);
-        	handler.sendEmptyMessage(4);			
+				if (!alignToCompass)
+					return;
+				if (Math.abs(lastNewHeading - newHeading) < 1)
+					return;
+				lastNewHeading = newHeading;
+	
+				synchronized(animationThread)
+				{
+					animationThread.headingInitialized = true;
+					animationThread.toHeading = lastNewHeading;
+				}
+	//			handler.removeMessages(4);
+	        	handler.sendEmptyMessage(4);
+        	} catch(Exception exc)
+        	{
+        		Global.AddLog("rotateTo " + exc.getMessage());
+        	}
 		}
 		public void stopMove() {
-			handler.sendEmptyMessage(1);
+			try
+			{
+				handler.sendEmptyMessage(1);
+        	} catch(Exception exc)
+        	{
+        		Global.AddLog("stopMove: " + exc.getMessage());
+        	}
 		}
 		
 		public void beendeThread() {
-			handler.getLooper().quit();
+			try
+			{
+				handler.getLooper().quit();
+        	} catch(Exception exc)
+        	{
+        		Global.AddLog("beendeThread: " + exc.getMessage());
+        	}			
 		}
 	}
 	
