@@ -64,7 +64,7 @@ public class FieldNoteEntry implements Serializable {
     
     }
     
-    private void fillType()
+    public void fillType()
     {
         if (type == 1)
         {
