@@ -18,6 +18,7 @@ import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.CompassView;
 import de.droidcachebox.Views.DescriptionView;
+import de.droidcachebox.Views.EmptyViewTemplate;
 import de.droidcachebox.Views.FieldNotesView;
 import de.droidcachebox.Views.LogView;
 import de.droidcachebox.Views.MapView;
@@ -109,6 +110,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	private SolverView solverView;				// ID 7
 	private CompassView compassView;			// ID 8
 	private FieldNotesView fieldNotesView;		// ID 9
+	private EmptyViewTemplate TestEmpty;		// ID 10
 	private ArrayList<View> ViewList = new ArrayList<View>();
 	
 	int width;
@@ -282,6 +284,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         spoilerView = new SpoilerView(this, inflater);
         notesView = new NotesView(this, inflater);
         solverView = new SolverView(this, inflater);
+        TestEmpty = new EmptyViewTemplate(this, inflater);
         
         this.buttonDB = (ImageButton)this.findViewById(R.id.buttonDB);
         registerForContextMenu(buttonDB);
@@ -370,6 +373,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	ViewList.add(solverView);			// ID 7	
     	ViewList.add(compassView);			// ID 8	
     	ViewList.add(fieldNotesView);		// ID 9
+    	ViewList.add(TestEmpty);			// ID 10
     }
 
     @Override
@@ -550,7 +554,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	case R.id.miRecordVideo:
     		Toast.makeText(this, "Video", Toast.LENGTH_SHORT).show(); 
     		return true;	
-
+    	
+    	case R.id.miTestEmpty:
+    		showView(TestEmpty);
+    		return true;
+    		
     	default:
 			return super.onOptionsItemSelected(item);
     	}
