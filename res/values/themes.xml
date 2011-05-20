@@ -25,7 +25,8 @@
 		<item name="android:spinnerStyle">@style/day_Spinner</item> 
 		<item name="MultiToggleButton_Background">@drawable/day_btn_default_normal</item>
 		<item name="MultiToggleButton_Background_pressed">@drawable/day_btn_default_normal_pressed</item>
-		<item name="MultiToggleButton_Led">@drawable/day_btn_toggle_off</item> 
+		<item name="MultiToggleButton_Led">@drawable/day_btn_toggle_off</item>
+		
     </style>
     
     
@@ -55,6 +56,8 @@
 		<item name="MultiToggleButton_Background_pressed">@drawable/night_btn_default_small_pressed</item>
 		<item name="MultiToggleButton_Led">@drawable/night_btn_toggle_off</item>      
     </style>
+    
+    
 
 
 </resources>

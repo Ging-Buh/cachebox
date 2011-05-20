@@ -6,9 +6,10 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheNameView;
+import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
+import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
@@ -36,7 +37,10 @@ import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources.Theme;
@@ -93,7 +97,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	private FrameLayout frame;
 	private RelativeLayout TopLayout;
 	private FrameLayout frameCacheName;
-	
+	public static Activity mainActivity;
 	
 // Views
 	private static Integer aktViewId = -1;
@@ -203,6 +207,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.main);
+        
+        mainActivity= this;
+        
         /*
         final Handler handler = new Handler();        
         aTimer = new Timer("ScreenLockTimer");
@@ -427,144 +434,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	if (aktView != null)
     		return aktView.ItemSelected(item);
     	return super.onOptionsItemSelected(item);
-    }    
-    public boolean onPrepareContextMenu(Menu menu)
-    {
-    	menu.clear();
-    	int menuId = 0;
-    	switch(nextMenu)
-    	{
-    	// DB
-    	case nmDB:
-    		menuId = R.menu.menu_db;
-    		getMenuInflater().inflate(menuId, menu);
-    		break;
-    	// Cache
-    	case nmCache:
-    		menuId = R.menu.menu_cache;
-    		break;
-    	// Map
-    	case nmMap:
-    		menuId = R.menu.menu_map;
-    		getMenuInflater().inflate(menuId, menu);
-    		break;
-    	// Info
-    	case nmInfo:
-    		menuId = R.menu.menu_info;
-    		getMenuInflater().inflate(menuId, menu);
-    		break;
-    	// Misc
-    	case nmMisc:
-    		menuId = R.menu.menu_misc;
-    		getMenuInflater().inflate(menuId, menu);
-    		break;
-    	}
-    	return super.onCreateOptionsMenu(menu);
-    }
+    } 
     
-    public boolean onContextItemSelected(MenuItem item)
-    {
-    	// First check whether this is a MenuItem of a View
-    	if ((aktView != null) && (aktView.ContextMenuItemSelected(item)))
-    		return true;
-    	
-    	switch (item.getItemId())
-    	{
-    	// DB
-    	case R.id.miAutoResort:
-    		if (item.isChecked())
-    			item.setChecked(false);
-    		else
-    			item.setChecked(true);
-    		return true;
-    	case R.id.miCacheList:
-    		showView(cacheListView);
-    		return true;
-    	// Cache
-    	case R.id.miDescription:
-    		showView(descriptionView);
-    		return true;
-    	case R.id.miWaypoints:
-    		showView(waypointView);
-    		return true;
-    	case R.id.miNotes:
-    		showView(notesView);
-    		return true;
-    	case R.id.miSolver:
-    		showView(solverView);
-    		return true;
-    	// Map
-    	case R.id.miMapView:
-    		showView(mapView);
-    		return true;
-    	// Info
-    	case R.id.miLogView:
-    		showView(logView);
-    		return true;
-    	case R.id.miSpoilerView:
-    		showView(spoilerView);
-    		return true;
-    	case R.id.miHint:
-    		if (Global.selectedCache == null)
-    			return true;
-    		String hint = Global.selectedCache.Hint();
-    		if (hint.equals(""))
-    			return true;
-    		
-    		final Intent hintIntent = new Intent().setClass(this, HintDialog.class);
-	        Bundle b = new Bundle();
-	        b.putSerializable("Hint", hint);
-	        hintIntent.putExtras(b);
-    		this.startActivity(hintIntent);
-    		return true;
-    	case R.id.miFieldNotes:
-    		showView(fieldNotesView);
-    		// beim Anzeigen der FieldNotesView gleich das Optionsmenü zeigen
-    		openOptionsMenu();
-    		return true;
-    	// Misc
-    	case R.id.miScreenLock:
-    		startScreenLock();
-    		return true;
-    	case R.id.miDayNight:
-    		Config.changeDayNight();
-    		ActivityUtils.changeToTheme(this,Config.GetBool("nightMode")? ActivityUtils.THEME_NIGHT : ActivityUtils.THEME_DAY );
-    		return true;
-    	case R.id.miSettings:
-    		final Intent mainIntent = new Intent().setClass( this, Settings.class);
-
-    		this.startActivity(mainIntent);
-    		return true;
-    		
-    	case R.id.miCompassView:
-    		showView(compassView);
-    		HideLayoutTop();
-    		return true;	
-    		
-    	case R.id.miVoiceRecorder:
-    		Toast.makeText(this, "Voice", Toast.LENGTH_SHORT).show(); 
-    		return true;	
-    		
-    	case R.id.miTakePhoto:
-    		Toast.makeText(this, "Take Photo", Toast.LENGTH_SHORT).show(); 
-//    		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-//    		startActivityForResult(intent, 0);	
-   		return true;	
-    		
-    	case R.id.miRecordVideo:
-    		Toast.makeText(this, "Video", Toast.LENGTH_SHORT).show(); 
-    		return true;	
-    	
-    	case R.id.miTestEmpty:
-    		showView(TestEmpty);
-    		return true;
-    		
-    	default:
-			return super.onOptionsItemSelected(item);
-    	}
-    }    
-    
-    
+  
     private void showView(Integer viewId)
     {
     	showView((ViewOptionsMenu)ViewList.get(viewId));
@@ -581,6 +453,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	aktViewId=ViewList.indexOf(aktView);
     	ShowLayoutTop();
     }
+    
+    
+    
+    private IconContextMenu icm;
     
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
@@ -602,20 +478,141 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
       
       
       if (v == buttonDB)
-    	  inflater.inflate(R.menu.menu_db, menu);
-      else if (v == buttonCache)
       {
-    	  inflater.inflate(R.menu.menu_cache, menu);
-    	  Global.Translations.TranslateMenuItem(menu, R.id.miSolver, "Solver");
-    	  Global.Translations.TranslateMenuItem(menu, R.id.miNotes, "Notes");
-    	  Global.Translations.TranslateMenuItem(menu, R.id.miDescription, "Description");
-    	  Global.Translations.TranslateMenuItem(menu, R.id.miWaypoints, "Waypoints");
+    	  icm = new IconContextMenu(this, R.menu.menu_db);
+		icm.setOnIconContextItemSelectedListener(new IconContextItemSelectedListener() 
+		{
+			
+			@Override
+			public void onIconContextItemSelected(MenuItem item, Object info) 
+			{
+				switch (item.getItemId())
+		    	{
+				// DB
+		    	case R.id.miAutoResort:
+		    		if (item.isChecked())
+		    			item.setChecked(false);
+		    		else
+		    			item.setChecked(true);
+		    		break;
+		    	case R.id.miCacheList:
+		    		showView(cacheListView);
+		    		break;
+		    	
+		    	}
+		    }
+		});
+  	  icm.show();
+      }
+  	  else if (v == buttonCache)
+      {
     	  
-      } else if (v == buttonMap)
-    	  inflater.inflate(R.menu.menu_map, menu);
+    	 
+    	  
+    	  icm = new IconContextMenu(this, R.menu.menu_cache);
+  		icm.setOnIconContextItemSelectedListener(new IconContextItemSelectedListener() 
+  		{
+  			@Override
+  			public void onIconContextItemSelected(MenuItem item, Object info) 
+  			{
+  				switch (item.getItemId())
+  		    	{
+  			// Cache
+  		    	case R.id.miDescription:
+  		    		showView(descriptionView);
+  		    		break;
+  		    	case R.id.miWaypoints:
+  		    		showView(waypointView);
+  		    		break;
+  		    	case R.id.miNotes:
+  		    		showView(notesView);
+  		    		break;
+  		    	case R.id.miSolver:
+  		    		showView(solverView);
+  		    		break;
+  					
+  		    	}
+  		    }
+  		});
+    	  
+    	  Menu IconMenu=icm.getMenu();
+    	  Global.Translations.TranslateMenuItem(IconMenu, R.id.miSolver, "Solver");
+    	  Global.Translations.TranslateMenuItem(IconMenu, R.id.miNotes, "Notes");
+    	  Global.Translations.TranslateMenuItem(IconMenu, R.id.miDescription, "Description");
+    	  Global.Translations.TranslateMenuItem(IconMenu, R.id.miWaypoints, "Waypoints");
+    	  icm.show();
+      } 
+  	  else if (v == buttonMap)
+      {
+    	icm = new IconContextMenu(this, R.menu.menu_map);
+		icm.setOnIconContextItemSelectedListener(new IconContextItemSelectedListener() 
+		{
+			
+			@Override
+			public void onIconContextItemSelected(MenuItem item, Object info) 
+			{
+				switch (item.getItemId())
+		    	{
+				// Nav
+		    	case R.id.miCompassView:
+		    		showView(compassView);
+		    		HideLayoutTop();
+		    		break;
+		    	
+		    	case R.id.miMapView:
+		    		showView(mapView);
+		    		
+		    		break;
+		    		
+		    	default:
+					
+		    	}
+		    }
+		});
+  	  icm.show();
+  	     	 
+      }
       else if (v == buttonInfo)
       {
-    	  inflater.inflate(R.menu.menu_info, menu);
+    	 
+    	icm = new IconContextMenu(this, R.menu.menu_info);
+  		icm.setOnIconContextItemSelectedListener(new IconContextItemSelectedListener() 
+  		{
+  			
+  			@Override
+  			public void onIconContextItemSelected(MenuItem item, Object info) 
+  			{
+  				switch (item.getItemId())
+  		    	{
+  			// Info
+  		    	case R.id.miLogView:
+  		    		showView(logView);
+  		    		break;
+  		    	case R.id.miSpoilerView:
+  		    		showView(spoilerView);
+  		    		break;
+  		    	case R.id.miHint:
+  		    		if (Global.selectedCache == null)
+  		    			break;
+  		    		String hint = Global.selectedCache.Hint();
+  		    		if (hint.equals(""))
+  		    			break;
+  		    		
+  		    		final Intent hintIntent = new Intent().setClass(mainActivity, HintDialog.class);
+  			        Bundle b = new Bundle();
+  			        b.putSerializable("Hint", hint);
+  			        hintIntent.putExtras(b);
+  			      mainActivity.startActivity(hintIntent);
+  		    		break;
+  		    	case R.id.miFieldNotes:
+  		    		showView(fieldNotesView);
+  		    		// beim Anzeigen der FieldNotesView gleich das Optionsmenü zeigen
+  		    		openOptionsMenu();
+  		    		break;				
+  		    	}
+  		    }
+  		});
+    	  icm.show();
     	  
     	  // Menu Item Hint enabled / disabled
     	  boolean enabled = false;
@@ -625,8 +622,68 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	  if (mi != null)
     		  mi.setEnabled(enabled);
     	  Global.Translations.TranslateMenuItem(menu, R.id.miHint, "hint");
-      } else if (v == buttonMisc)
-    	  inflater.inflate(R.menu.menu_misc, menu);
+      } 
+      else if (v == buttonMisc)
+      {   		
+    	    
+    	icm = new IconContextMenu(this, R.menu.menu_misc);
+		icm.setOnIconContextItemSelectedListener(new IconContextItemSelectedListener() {
+			
+			@Override
+			public void onIconContextItemSelected(MenuItem item, Object info) {
+				switch (item.getItemId())
+		    	{
+				// Misc
+		    	case R.id.miScreenLock:
+		    		startScreenLock();
+		    		break;
+		    	case R.id.miDayNight:
+		    		Config.changeDayNight();
+		    		ActivityUtils.changeToTheme(mainActivity,Config.GetBool("nightMode")? ActivityUtils.THEME_NIGHT : ActivityUtils.THEME_DAY );
+		    		Toast.makeText(mainActivity, "changeDayNight", Toast.LENGTH_SHORT).show();
+		    		break;
+		    	case R.id.miSettings:
+		    		final Intent mainIntent = new Intent().setClass( mainActivity, Settings.class);
+
+		    		mainActivity.startActivity(mainIntent);
+		    		break;
+		    		
+		    	case R.id.miCompassView:
+		    		showView(compassView);
+		    		HideLayoutTop();
+		    		break;
+		    		
+		    	case R.id.miVoiceRecorder:
+		    		Toast.makeText(mainActivity, "Voice", Toast.LENGTH_SHORT).show(); 
+		    		break;	
+		    		
+		    	case R.id.miTakePhoto:
+		    		Toast.makeText(mainActivity, "Take Photo", Toast.LENGTH_SHORT).show(); 
+//		    		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+//		    		startActivityForResult(intent, 0);	
+		    		break;
+		    		
+		    	case R.id.miRecordVideo:
+		    		Toast.makeText(mainActivity, "Video", Toast.LENGTH_SHORT).show(); 
+		    		break;	
+		    	
+		    	case R.id.miTestEmpty:
+		    		showView(TestEmpty);
+		    		break;
+		    		
+		    	default:
+					
+		    	}
+		    }
+		});
+		  Menu IconMenu=icm.getMenu();
+		  Global.Translations.TranslateMenuItem(IconMenu, R.id.miSettings, "settings");
+	  	  
+	  	  icm.show();
+    	 
+      }
+    	  
+    	 
     }
     
     public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
@@ -721,5 +778,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	{
 		TopLayout.setVisibility(View.VISIBLE);
 	}
+	
 	
 }

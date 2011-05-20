@@ -175,7 +175,10 @@ public class FieldNoteViewItem extends View {
         	nameLayoutWidth = width - iconSize - rightBorder ;
         }
 		
-	
+        textPaint.setColor(Global.getColor(R.attr.TextColor));
+        TextPaint.setColor(Global.getColor(R.attr.TextColor));
+        cacheNamePaint.setColor(Global.getColor(R.attr.TextColor));
+        
         boolean selected = false;
         if (this.fieldnote == FieldNotesView.aktFieldNote)
         	selected = true;
