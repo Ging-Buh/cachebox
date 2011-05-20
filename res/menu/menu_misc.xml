@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="Day/Night" android:id="@+id/miDayNight"></item><item android:id="@+id/miSettings" android:title="Settings"></item><item android:id="@+id/miScreenLock" android:title="ScreenLock"></item><item android:title="Close" android:id="@+id/miClose"></item>
-    
-    
-    
+    <item android:title="Day/Night" android:id="@+id/miDayNight"></item>
+    <item android:title="Settings" android:id="@+id/miSettings"></item>
+    <item android:title="Voice Recorder" android:id="@+id/miVoiceRecorder"></item> 
+    <item android:title="Take Photo" android:id="@+id/miTakePhoto"></item>  
+    <item android:title="Record Video" android:id="@+id/miRecordVideo"></item>  
+    <item android:title="ScreenLock" android:id="@+id/miScreenLock"></item>
 </menu>

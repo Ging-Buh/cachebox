@@ -519,9 +519,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     		openOptionsMenu();
     		return true;
     	// Misc
-    	case R.id.miClose:
-    		finish();
-    		return true;
     	case R.id.miScreenLock:
     		startScreenLock();
     		return true;
@@ -533,15 +530,28 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     		final Intent mainIntent = new Intent().setClass( this, Settings.class);
 
     		this.startActivity(mainIntent);
-    		
-		
     		return true;
+    		
     	case R.id.miCompassView:
     		showView(compassView);
     		HideLayoutTop();
     		return true;	
     		
-		default:
+    	case R.id.miVoiceRecorder:
+    		Toast.makeText(this, "Voice", Toast.LENGTH_SHORT).show(); 
+    		return true;	
+    		
+    	case R.id.miTakePhoto:
+    		Toast.makeText(this, "Take Photo", Toast.LENGTH_SHORT).show(); 
+//    		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+//    		startActivityForResult(intent, 0);	
+   		return true;	
+    		
+    	case R.id.miRecordVideo:
+    		Toast.makeText(this, "Video", Toast.LENGTH_SHORT).show(); 
+    		return true;	
+
+    	default:
 			return super.onOptionsItemSelected(item);
     	}
     }    
