@@ -26,8 +26,7 @@
 		<item name="MultiToggleButton_Background">@drawable/day_btn_default_normal</item>
 		<item name="MultiToggleButton_Background_pressed">@drawable/day_btn_default_normal_pressed</item>
 		<item name="MultiToggleButton_Led">@drawable/day_btn_toggle_off</item>
-		
-    </style>
+	</style>
     
     
     <style name="Theme_night" parent="android:Theme">
