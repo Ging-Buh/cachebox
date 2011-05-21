@@ -2905,6 +2905,16 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        	paint.setColor(Color.RED);		// bei GPS Kompass
 	        paint.setStyle(Style.FILL);
 	        canvas.drawPath(path, paint);
+	        
+	        if ((Global.Locator.getLocation() != null) && (Global.Locator.getLocation().hasAccuracy()))
+	        {
+	        	float radius = Global.Locator.getLocation().getAccuracy();
+	        	debugString1 = String.valueOf(radius) + "m";
+	        	Paint circlePaint = new Paint();
+	        	circlePaint.setColor(Color.argb(55, 0, 0, 0));
+	        	circlePaint.setStrokeWidth(5);
+	        	canvas.drawCircle(pt.x, pt.y, (float) (pixelsPerMeter * radius), circlePaint);
+	        }
     	}
 /*	
 	      // Marker rendern
@@ -3009,7 +3019,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		double l1 = Descriptor.LongitudeToTileX(Zoom, center.Longitude);
     		double l2 = Descriptor.LongitudeToTileX(Zoom, dummy.Longitude);
     		double diff = Math.abs(l2 - l1);
-    		pixelsPerMeter = (diff * 256 * dpiScaleFactorX) / 1000;
+    		pixelsPerMeter = (diff * 256 * dpiScaleFactorX * multiTouchFaktor) / 1000;
     		
     		int multiplyer = 1;
     		double scaleSize = 0;
