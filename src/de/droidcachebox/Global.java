@@ -204,6 +204,17 @@ public class Global {
     	}
     }
     
+    public static String RemoveInvalidFatChars(String str)
+    {
+        String[] invalidChars = new String[] { ":", "\\", "/", "<", ">", "?", "*", "|", "\"", ";" };
+        
+        for (int i = 0; i < invalidChars.length; i++)
+            str = str.replace(invalidChars[i], "");
+
+        return str;
+    }
+
+    
     // N = Nachtmodus! Wenn true werden andere Icons geladen!
     public static void InitIcons(Context context, Boolean N)
     {

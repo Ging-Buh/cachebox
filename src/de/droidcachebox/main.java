@@ -1,8 +1,10 @@
 package de.droidcachebox;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -58,12 +60,15 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.provider.MediaStore;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -135,7 +140,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	private enum nextMenuType { nmDB, nmCache, nmMap, nmInfo, nmMisc }
 	private nextMenuType nextMenu = nextMenuType.nmDB;
 
-	
+	// Media
+	private Uri imageUri;
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 0;
+    private static File mediafile = null;
+    public Date timestamp;
+    	 
 	
    
 	
@@ -155,6 +165,18 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     @Override
 	protected void onActivityResult(int requestCode, int resultCode,
 		Intent data) {
+
+    	if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK){
+                Log.d("DroidCachebox","Picture taken!!!");
+                return;
+            } else
+            {
+                Log.d("DroidCachebox","Picture NOT taken!!!");
+                return;
+            }
+        }
+
     	if (requestCode == 12345)
     	{
     		counterStopped = false;
@@ -658,9 +680,32 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    		break;	
 		    		
 		    	case R.id.miTakePhoto:
-		    		Toast.makeText(mainActivity, "Take Photo", Toast.LENGTH_SHORT).show(); 
-//		    		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-//		    		startActivityForResult(intent, 0);	
+		            Log.d("DroidCachebox", "Starting camera on the phone...");
+		            
+		    		//define the file-name to save photo taken by Camera activity
+		            String directory = Config.GetString("UserImageFolder");
+		            if (!Global.DirectoryExists(directory))
+		            {
+		                Log.d("DroidCachebox", "Media-Folder does not exist...");
+		                break;
+		            }
+		           
+		            String basename = GetDateTimeString();
+		            
+		            if (Global.selectedCache != null)
+		            {
+		                basename += Global.RemoveInvalidFatChars(Global.selectedCache.GcCode + "-" + Global.selectedCache.Name).substring(0, 32);
+		                //Title = Global.selectedCache.Name;
+		            }
+
+		            
+		            mediafile = new File(directory + "/" + basename + ".jpg");
+
+		    		final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		    		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediafile));
+		    		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+		    		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+
 		    		break;
 		    		
 		    	case R.id.miRecordVideo:
@@ -779,5 +824,15 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		TopLayout.setVisibility(View.VISIBLE);
 	}
 	
+    public String GetDateTimeString()
+    {
+    	timestamp = new Date();
+    	SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String sDate = datFormat.format(timestamp);
+        datFormat = new SimpleDateFormat("hhmmss");
+        sDate += " " + datFormat.format(timestamp);
+        return sDate;
+    }
+
 	
 }
