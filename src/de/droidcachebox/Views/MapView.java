@@ -4128,7 +4128,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 					{
 						mi22.setCheckable(true);
 						mi22.setChecked(true);
-					}					
+					}
 				}
 			}
 			mi = menu.findItem(R.id.miAlignCompass);

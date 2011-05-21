@@ -11,6 +11,8 @@ public class Layer {
 
     public String Url = "";
 
+    public boolean isMapsForge = false;
+    
     public Layer(String name, String friendlyName, String url)
     {
       Name = name;

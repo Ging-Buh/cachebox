@@ -15,6 +15,7 @@ import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Map.Descriptor;
+import de.droidcachebox.Map.Layer;
 import de.droidcachebox.TranslationEngine.LangStrings;
 import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.DescriptionView;
@@ -109,7 +110,14 @@ public class splash extends Activity
 		        {
 			        for (String file : files)
 				        {
-				        	MapView.Manager.LoadMapPack(Config.GetString("MapPackFolder") + "/" + file);
+			        		if (Global.GetFileExtension(file).equalsIgnoreCase("pack"))
+			        			MapView.Manager.LoadMapPack(Config.GetString("MapPackFolder") + "/" + file);
+			        		if (Global.GetFileExtension(file).equalsIgnoreCase("map"))
+			        		{
+			        			Layer layer = new  Layer(file, file, "");
+			        			layer.isMapsForge = true;
+			        			MapView.Manager.Layers.add(layer);
+			        		}
 				        }
 		        }
 	        }

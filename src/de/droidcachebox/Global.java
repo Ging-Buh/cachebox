@@ -203,6 +203,14 @@ public class Global {
     		return f.mkdirs();
     	}
     }
+ 
+    public static String GetFileExtension(String filename)
+    {
+	    int dotposition= filename.lastIndexOf(".");
+//	    String filename_Without_Ext = filename.substring(0, dotposition);
+	    String ext = filename.substring(dotposition + 1, filename.length());
+	    return ext;
+    }
     
     public static String RemoveInvalidFatChars(String str)
     {

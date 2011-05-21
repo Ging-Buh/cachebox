@@ -15,11 +15,18 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.mapsforge.android.maps.CanvasRenderer;
+import org.mapsforge.android.maps.MapDatabase;
+import org.mapsforge.android.maps.MapGeneratorJob;
+import org.mapsforge.android.maps.MapViewMode;
+import org.mapsforge.android.maps.Tile;
 
 import de.droidcachebox.Global;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.Config;
+import android.graphics.Color;
 
 public class Manager {
 
@@ -37,11 +44,14 @@ public class Manager {
 
     public ArrayList<Pack> mapPacks = new ArrayList<Pack>();
 
+    public ArrayList<String> mapsForgeMaps = new ArrayList<String>();
+    
     public Manager()
     {
-      Layers.add(new Layer("Mapnik", "Mapnik", "http://a.tile.openstreetmap.org/"));
-      Layers.add(new Layer("OSM Cycle Map", "Open Cycle Map", "http://b.andy.sandbox.cloudmade.com/tiles/cycle/"));
-      Layers.add(new Layer("TilesAtHome", "Osmarender", "http://a.tah.openstreetmap.org/Tiles/tile/"));
+//        Layers.add(new Layer("MapsForge", "MapsForge", ""));
+        Layers.add(new Layer("Mapnik", "Mapnik", "http://a.tile.openstreetmap.org/"));
+        Layers.add(new Layer("OSM Cycle Map", "Open Cycle Map", "http://b.andy.sandbox.cloudmade.com/tiles/cycle/"));
+        Layers.add(new Layer("TilesAtHome", "Osmarender", "http://a.tah.openstreetmap.org/Tiles/tile/"));
     }
     /*
 
@@ -104,8 +114,35 @@ public class Manager {
     /// <param name="layer">Layer</param>
     /// <param name="desc">Descriptor der Kachel</param>
     /// <returns>Bitmap oder null, falls Kachel nicht lokal vorliegt</returns>
+    private MapDatabase mapDatabase = null;
+    private CanvasRenderer renderer = null;
+    private Bitmap tileBitmap = null;
+    private String mapsForgeFile = "";
     public Bitmap LoadLocalBitmap(Layer layer, Descriptor desc)
     {
+    	if (layer.isMapsForge)
+    	{
+	    	if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name)))
+	    	{
+	    		mapDatabase = new MapDatabase();
+	    		mapDatabase.openFile(de.droidcachebox.Config.GetString("MapPackFolder") + "/" + layer.Name);
+	    		renderer = new CanvasRenderer();
+	    		renderer.setDatabase(mapDatabase);
+				tileBitmap = Bitmap.createBitmap(256, 256, Config.RGB_565);
+				renderer.setupMapGenerator(tileBitmap);
+				mapsForgeFile = layer.Name;
+	    	}
+			Tile tile = new Tile(desc.X, desc.Y, (byte)desc.Zoom);
+			MapGeneratorJob job = new MapGeneratorJob(tile, MapViewMode.CANVAS_RENDERER, "xxx", 1.333f, false, false, false);
+
+			renderer.setupMapGenerator(tileBitmap);
+			renderer.executeJob(job);
+			Bitmap bit = renderer.tileBitmap.copy(Config.RGB_565, true);
+			return bit;
+    	}
+
+    	
+    	
       try
       {
         // Schauen, ob Tile im Cache liegt
