@@ -196,7 +196,7 @@ public class FieldNoteViewItem extends View {
         
         
         ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(5, 5, width-5, height-5), 2, 
-     		   Global.getColor(R.attr.ListSeparator),(BackColorChanger)? Global.getColor(R.attr.ListBackground_secend): Global.getColor(R.attr.ListBackground), 
+     		   Global.getColor(R.attr.ListSeparator), BackgroundColor, 
      						   Global.CornerSize);
         
        
