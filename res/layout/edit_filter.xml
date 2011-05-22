@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  android:layout_width="match_parent" 
+  android:layout_height="match_parent" 
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout 
+    	android:orientation="horizontal" 
+    	android:id="@+id/edco_buttonlayout" 
+    	android:layout_width="match_parent" 
+    	android:layout_alignParentBottom="true" android:layout_height="55dip">
+        	<Button android:layout_weight="1" android:layout_width="match_parent" android:text="Button" android:layout_height="match_parent" android:id="@+id/edco_ok"></Button>
+        	<Button android:layout_weight="1" android:layout_width="match_parent" android:text="Button" android:layout_height="match_parent" android:id="@+id/edco_cancel"></Button>
+    </LinearLayout>
+    <LinearLayout 
+    	android:orientation="horizontal" 
+    	android:id="@+id/edco_toplayout" 
+    	android:layout_width="match_parent" 
+    	android:layout_alignParentTop="true" 
+    	android:paddingTop="5dip" android:layout_height="55dip">
+        	<de.droidcachebox.Custom_Controls.MultiToggleButton android:layout_weight="1" android:layout_width="match_parent" android:text="Presets" android:layout_height="match_parent" android:id="@+id/edfi_pre"/>
+        	<de.droidcachebox.Custom_Controls.MultiToggleButton android:layout_weight="1" android:layout_width="match_parent" android:text="Settings" android:layout_height="match_parent" android:id="@+id/edfi_set"/>
+        	
+    </LinearLayout>
+    <ScrollView 
+    	android:id="@+id/scrollView1" 
+    	android:layout_width="match_parent" 
+    	android:layout_height="match_parent" 
+    	android:layout_above="@+id/edco_buttonlayout" 
+    	android:layout_below="@+id/edco_toplayout">
+        <TableLayout 
+        	android:layout_width="match_parent" 
+        	android:id="@+id/edco_tableLayout" 
+        	android:layout_height="match_parent">
+            <TableRow 
+            	android:id="@+id/edfi_table_pre" 
+            	android:layout_width="wrap_content" 
+            	android:layout_height="wrap_content">
+			    		<include android:layout_height="wrap_content" android:id="@layout/edit_filter_presets" layout="@layout/edit_filter_presets" android:layout_width="match_parent" android:layout_marginLeft="10dip" android:layout_marginRight="10dip" android:layout_weight="1"></include>			    
+
+            </TableRow>
+            <TableRow 
+            	android:id="@+id/edfi_table_set" 
+            	android:layout_width="wrap_content" 
+            	android:layout_height="wrap_content">
+			    		<include android:layout_height="wrap_content" android:id="@layout/edit_filter_settings" layout="@layout/edit_filter_settings" android:layout_width="match_parent" android:layout_marginLeft="10dip" android:layout_marginRight="10dip" android:layout_weight="1"></include>			    
+
+            </TableRow>
+            
+        </TableLayout>
+    </ScrollView>
+</RelativeLayout>

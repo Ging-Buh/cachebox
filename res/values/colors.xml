@@ -19,6 +19,8 @@
 	    <color name="Day_Compass_faceColorFilter">#1EFF1E</color>
 	    <color name="Day_Compass_TextColor">#000000</color>
 	    <color name="Day_Compass_N_TextColor">#EE0000</color>
+	    <color name="Day_toggle_on">#00EE00</color>
+	    <color name="Day_toggle_off">#EEEEEE</color>
 	    
 <!-- Night -->
 		<color name="Night_Background">#48573e</color>
@@ -34,6 +36,8 @@
 	    <color name="Night_ColorCompassText">#FFFFFF</color>
 		<color name="Night_Compass_rimColorFilter">#001000</color>
 	    <color name="Night_Compass_faceColorFilter">#000000</color>
-	    <color name="Night_Compass_TextColor">#aaffaa</color>
+	    <color name="Night_Compass_TextColor">#AAFFAA</color>
 	    <color name="Night_Compass_N_TextColor">#ff0000</color>
+	    <color name="Night_toggle_on">#00EE00</color>
+	    <color name="Night_toggle_off">#EEEEEE</color>
 </resources>

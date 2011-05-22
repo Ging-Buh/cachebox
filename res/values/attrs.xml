@@ -10,6 +10,8 @@
 		<attr name="ListSeparator" format="reference|color"/>
 		<attr name="ZoomStyle" format="reference"/>
 		<attr name="DropDownBackground" format="reference|color" />
+		<attr name="ToggleBtColor_off" format="reference|color"/>
+		<attr name="ToggleBtColor_on" format="reference|color"/>
 	</declare-styleable>
 	
 	

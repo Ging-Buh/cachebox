@@ -29,6 +29,7 @@ import de.droidcachebox.Views.NotesView;
 import de.droidcachebox.Views.SolverView;
 import de.droidcachebox.Views.SpoilerView;
 import de.droidcachebox.Views.WaypointView;
+import de.droidcachebox.Views.Forms.EditFilterSettings;
 import de.droidcachebox.Views.Forms.EditWaypoint;
 import de.droidcachebox.Views.Forms.HintDialog;
 import de.droidcachebox.Views.Forms.ScreenLock;
@@ -521,6 +522,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    		showView(cacheListView);
 		    		break;
 		    	
+		    	case R.id.miFilterset:
+		    		final Intent mainIntent = new Intent().setClass( mainActivity, EditFilterSettings.class);
+		    		mainActivity.startActivity(mainIntent);
+		    		break;
+		    	
 		    	}
 		    }
 		});
@@ -666,7 +672,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    		break;
 		    	case R.id.miSettings:
 		    		final Intent mainIntent = new Intent().setClass( mainActivity, Settings.class);
-
 		    		mainActivity.startActivity(mainIntent);
 		    		break;
 		    		

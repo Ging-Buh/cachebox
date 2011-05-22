@@ -82,7 +82,7 @@ public class MultiToggleButton extends Button implements OnClickListener {
 		
        
         
-       setMeasuredDimension(chosenDimension, chosenDimension);
+       setMeasuredDimension(widthSize, heightSize);
        
 	}
 	
