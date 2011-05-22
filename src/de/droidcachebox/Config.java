@@ -180,7 +180,7 @@ public class Config {
         validateSetting("DescriptionImageFolder", WorkPath + "/repository/images");
         validateSetting("MapPackFolder", WorkPath + "/repository/maps");
         validateSetting("SpoilerFolder", WorkPath + "/repository/spoilers");
-//        validateSetting("UserImageFolder", Global.AppPath + "\\User\\Media");
+        validateSetting("UserImageFolder", WorkPath + "/User/Media");
         validateSetting("TrackFolder", WorkPath + "/User/Tracks");
 //        validateSetting("FieldNotesHtmlPath", Global.AppPath + "\\User\\fieldnotes.html");
         validateSetting("FieldNotesGarminPath", WorkPath + "/User/geocache_visits.txt");

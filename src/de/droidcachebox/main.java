@@ -143,7 +143,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 	// Media
 	private Uri imageUri;
-    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 0;
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
     private static File mediafile = null;
     public Date timestamp;
     	 
@@ -736,6 +736,14 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	 
     }
     
+    public boolean onContextItemSelected(MenuItem item)	 
+    {     	 
+    	// First check whether this is a MenuItem of a View	 
+    	if ((aktView != null) && (aktView.ContextMenuItemSelected(item)))	 
+    		return true;
+    	return false;
+    }
+
     public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
     {
 /*    	TextView textview = (TextView)this.findViewById(R.id.textCacheName);

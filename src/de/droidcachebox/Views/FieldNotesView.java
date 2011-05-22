@@ -180,7 +180,8 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 		{
 		case 1:
 			if (!cache.Found())
-				newFieldNote.foundNumber++;	// 
+				newFieldNote.foundNumber++;	//
+			newFieldNote.fillType();
 			if (newFieldNote.comment.equals(""))
 				newFieldNote.comment = ReplaceTemplate(Config.GetString("FoundTemplate"), newFieldNote);
 			// wenn eine FieldNote Found erzeugt werden soll und der Cache noch nicht gefunden war -> foundNumber um 1 erhöhen
