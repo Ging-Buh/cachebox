@@ -30,7 +30,7 @@ import de.droidcachebox.Views.NotesView;
 import de.droidcachebox.Views.SolverView;
 import de.droidcachebox.Views.SpoilerView;
 import de.droidcachebox.Views.WaypointView;
-import de.droidcachebox.Views.Forms.EditFilterSettings;
+import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
 import de.droidcachebox.Views.Forms.EditWaypoint;
 import de.droidcachebox.Views.Forms.HintDialog;
 import de.droidcachebox.Views.Forms.ScreenLock;

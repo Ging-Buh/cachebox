@@ -1,4 +1,4 @@
-package de.droidcachebox.Views.Forms;
+package de.droidcachebox.Views.FilterSettings;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.TableRow;
 import android.widget.ToggleButton;
 
@@ -64,7 +66,7 @@ public class EditFilterSettings extends Activity {
 			}
 		});
 		
-        Button bOK = (Button) findViewById(R.id.edco_ok);
+        Button bOK = (Button) findViewById(R.id.edfi_ok);
         bOK.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,7 +74,7 @@ public class EditFilterSettings extends Activity {
             	finish();	            	
             }
           });
-        Button bCancel = (Button) findViewById(R.id.edco_cancel);
+        Button bCancel = (Button) findViewById(R.id.edfi_cancel);
         bCancel.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,11 +99,18 @@ public class EditFilterSettings extends Activity {
 	
 	private void initialPresets()
 	{
-		
+		PresetListView presetLV = new PresetListView(this, this);
+		FrameLayout presetLayout = (FrameLayout) findViewById(R.id.layout_filter_presets);
+		presetLayout.removeAllViews();
+		presetLayout.addView(presetLV);
 	}
 	
 	private void initialSettings()
 	{
+		FilterSetListView filterSetLV = new FilterSetListView(this, this);
+		FrameLayout filterSetLayout = (FrameLayout) findViewById(R.id.layout_filter_setting);
+		filterSetLayout.removeAllViews();
+		filterSetLayout.addView(filterSetLV);
 		
 	}
 	

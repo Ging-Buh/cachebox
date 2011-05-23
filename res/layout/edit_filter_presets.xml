@@ -10,7 +10,7 @@
   android:id="@+id/layout_filter_presets" 
   android:alwaysDrawnWithCache="true"
  >
-      <TextView android:text="Platzhalter ListView Presets" android:id="@+id/textView1" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+     <!--  <TextView android:text="Platzhalter ListView Presets" android:id="@+id/textView1" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView> -->
   
   </FrameLayout>  
 </LinearLayout>
