@@ -825,6 +825,41 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			Global.Locator.setLocation(null);
 	}
 	
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    Log.d("SolHunter", "Key event code "+keyCode);
+	    if (keyCode == KeyEvent.KEYCODE_BACK) 
+	    {
+				DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+				    @Override
+				    public void onClick(DialogInterface dialog, int which) {
+				        switch (which){
+				        case DialogInterface.BUTTON_POSITIVE:
+				            //Yes button clicked
+				            try {
+								finish();
+							} catch (Throwable e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+				            break;
+				        case DialogInterface.BUTTON_NEGATIVE:
+				            //No button clicked
+				            break;
+				        }
+				    }
+				};
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setMessage("Close DroidCB?")
+//					.setTitle(Global.Translations.Get("!DelWP"))
+					.setPositiveButton(Global.Translations.Get("yes"), dialogClickListener)
+				    .setNegativeButton(Global.Translations.Get("no"), dialogClickListener).show();
+			return true;
+    	}
+    	return false;
+    }
+	
 	public void EditCoordinate(Coordinate coord)
 	{
 		
