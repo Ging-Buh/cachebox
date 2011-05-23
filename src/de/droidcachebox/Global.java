@@ -212,6 +212,18 @@ public class Global {
 	    return ext;
     }
     
+    public static String GetFileNameWithoutExtension(String filename)
+    {
+	    int dotposition= filename.lastIndexOf(".");
+	    if (dotposition >= 0)
+	    	filename = filename.substring(dotposition-1);
+	    int slashposition = filename.lastIndexOf("/");
+	    if (slashposition >= 0)
+	    	filename = filename.substring(slashposition + 1, filename.length());
+	    return filename;
+    	
+    }
+    
     public static String RemoveInvalidFatChars(String str)
     {
         String[] invalidChars = new String[] { ":", "\\", "/", "<", ">", "?", "*", "|", "\"", ";" };

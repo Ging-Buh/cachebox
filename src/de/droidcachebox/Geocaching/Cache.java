@@ -14,6 +14,8 @@ import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Map.Descriptor;
+import de.droidcachebox.Map.Layer;
+import de.droidcachebox.Views.MapView;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Canvas;
@@ -617,7 +619,7 @@ public class Cache implements Comparable<Cache> {
         MapX = 256.0 * Descriptor.LongitudeToTileX(MapZoomLevel, Longitude());
         MapY = 256.0 * Descriptor.LatitudeToTileY(MapZoomLevel, Latitude());
         
-        SpoilerExists();
+//        SpoilerExists();
     }
 /*
     public override int GetHashCode()
@@ -719,28 +721,41 @@ public class Cache implements Comparable<Cache> {
 
         for (String image : files)
         {
-        	spoilerRessources.add(image);
+        	spoilerRessources.add(directory + "/" + image);
         }
-/*
+
         // Add own taken photo
         directory = Config.GetString("UserImageFolder");
 
-        if (!Directory.Exists(directory))
+        if (!Global.DirectoryExists(directory))
             return;
 
-        String[] dummy1 = Directory.GetFiles(directory, "*" + GcCode.ToUpper() + "*.*");
-        foreach (String photo in dummy1)
+        dir = new File(directory);
+        filter = new FilenameFilter() {			
+			@Override
+			public boolean accept(File dir, String filename) {
+				
+				filename = filename.toLowerCase();
+				if (filename.indexOf(GcCode.toLowerCase()) >= 0)
+					return true;
+				return false;
+			}
+		};
+        files = dir.list(filter);
+        if (!(files == null))
         {
-            String imgFile = photo.ToLower();
-            String TestString = Path.GetDirectoryName(photo) + "\\GPS_" + Path.GetFileName(photo);
-            if (!File.Exists(TestString)) //only add if no GPS_.... file exists
-            {
-                if (imgFile.EndsWith(".jpg") || imgFile.EndsWith(".jpeg") || imgFile.EndsWith(".bmp") || imgFile.EndsWith(".png") || imgFile.EndsWith(".gif"))
-                    spoilerRessources.Add(photo);
-            }
-
+	        if (files.length>0)
+	        {
+		        for (String file : files)
+			        {
+		        		String ext = Global.GetFileExtension(file);
+		        		if (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg") || ext.equalsIgnoreCase("bmp") || ext.equalsIgnoreCase("png") || ext.equalsIgnoreCase("gif"))
+		        		{
+		        			spoilerRessources.add(directory + "/" + file);
+		        		}
+			        }
+	        }
         }
-*/
     }
 
     public boolean SpoilerExists()

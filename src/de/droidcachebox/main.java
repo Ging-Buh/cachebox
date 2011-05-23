@@ -74,6 +74,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -640,15 +641,18 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
   		    	}
   		    }
   		});
-    	  icm.show();
     	  
     	  // Menu Item Hint enabled / disabled
     	  boolean enabled = false;
     	  if ((Global.selectedCache != null) && (!Global.selectedCache.Hint().equals("")))
     		  enabled = true;
-    	  MenuItem mi = menu.findItem(R.id.miHint);
+    	  MenuItem mi = icm.menu.findItem(R.id.miHint);
     	  if (mi != null)
     		  mi.setEnabled(enabled);
+    	  mi = icm.menu.findItem(R.id.miSpoilerView);
+    	  if (mi != null)
+    		  mi.setEnabled(Global.selectedCache.SpoilerExists());
+    	  icm.show();
     	  Global.Translations.TranslateMenuItem(menu, R.id.miHint, "hint");
       } 
       else if (v == buttonMisc)
@@ -820,7 +824,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		if (status == LocationProvider.OUT_OF_SERVICE)
 			Global.Locator.setLocation(null);
 	}
-	
 	
 	public void EditCoordinate(Coordinate coord)
 	{

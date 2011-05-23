@@ -1,6 +1,7 @@
 package de.droidcachebox.Views;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
@@ -45,11 +46,13 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
 	Cache aktCache;
 	TextView spoilerFilename;
 	TouchImageView spoilerImage;
+	ArrayList<Bitmap> lBitmaps;
     
 	public SpoilerView(Context context, LayoutInflater inflater) {
 		super(context);
 		this.context = context;
-
+		lBitmaps = new ArrayList<Bitmap>();
+		
 		aktCache = null;
 
 		SelectedCacheEventList.Add(this);
@@ -91,14 +94,16 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
     //    mSwitcher.setImageResource(mImageIds[position]);
 		String filename = Global.SelectedCache().SpoilerRessources().get(position);
 		filename = filename.substring(0, filename.lastIndexOf("."));
+		filename = Global.GetFileNameWithoutExtension(filename);
 		if (filename.indexOf(aktCache.GcCode) == 0)
 			filename = filename.substring(aktCache.GcCode.length());
 		if (filename.indexOf(" - ") == 0)
 			filename = filename.substring(3);
 		spoilerFilename.setText(filename);
 		
-        String file = Config.GetString("SpoilerFolder") + "/" + Global.SelectedCache().GcCode.substring(0, 4) + "/" + Global.SelectedCache().SpoilerRessources().get(position);
-        bmp = BitmapFactory.decodeFile(file);
+/*        String file = Global.SelectedCache().SpoilerRessources().get(position);
+        bmp = BitmapFactory.decodeFile(file);*/
+		bmp = lBitmaps.get(position);
         spoilerImage.setImage(bmp, spoilerImage.getWidth(), spoilerImage.getHeight());
     }
 
@@ -127,8 +132,11 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView i = new ImageView(mContext);
 
-            String file = Config.GetString("SpoilerFolder") + "/" + Global.SelectedCache().GcCode.substring(0, 4) + "/" + Global.SelectedCache().SpoilerRessources().get(position);
-            Bitmap bit = BitmapFactory.decodeFile(file);
+            String file = Global.SelectedCache().SpoilerRessources().get(position);
+            Bitmap bit = null;
+       		bit = lBitmaps.get(position);
+            if (bit == null)
+            	return null;
             i.setImageBitmap(bit);
 //            i.setImageResource(mThumbIds[position]);
             i.setAdjustViewBounds(true);
@@ -147,7 +155,12 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
 		// TODO Auto-generated method stub
 
 		aktCache = cache;
-
+		lBitmaps.clear();
+		for (String filename : cache.SpoilerRessources())
+		{
+			Bitmap bmp = BitmapFactory.decodeFile(filename);
+			lBitmaps.add(bmp);
+		}
         Gallery g = (Gallery) findViewById(R.id.spoilerGallery);
         g.setAdapter(new ImageAdapter(context));		
 /*

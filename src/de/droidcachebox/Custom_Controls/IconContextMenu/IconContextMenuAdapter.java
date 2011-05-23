@@ -41,6 +41,7 @@ public class IconContextMenuAdapter extends BaseAdapter {
         res.setText(item.getTitle());
         res.setCompoundDrawablesWithIntrinsicBounds( null, null,item.getIcon(), null);
               
+        res.setEnabled(item.isEnabled());
         return res;
     }
 }

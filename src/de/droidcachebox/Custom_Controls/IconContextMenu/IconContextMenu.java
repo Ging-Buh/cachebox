@@ -16,7 +16,7 @@ public class IconContextMenu {
 	}
 	
 	private AlertDialog dialog;
-	private final Menu menu;
+	public final Menu menu;
 	
 	private IconContextItemSelectedListener iconContextItemSelectedListener;
 	private Object info;
@@ -43,7 +43,12 @@ public class IconContextMenu {
 	        @Override
 	        public void onClick(DialogInterface dialog, int which) {
 	        	if (iconContextItemSelectedListener != null) {
-	        		iconContextItemSelectedListener.onIconContextItemSelected(adapter.getItem(which), info);
+	        		{
+	        			if(adapter.getItem(which).isEnabled())
+	        			{
+	        				iconContextItemSelectedListener.onIconContextItemSelected(adapter.getItem(which), info);
+	        			}
+	        		}
 	        	}
 	        }
         })
