@@ -2076,9 +2076,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     {
     	if (canvas == null)
     		return;
-    	
-    	debugString1 = queuedTiles.size() + " / " + queuedTrackTiles.size();
-    	debugString2 = loadedTiles.size() + " / " + trackTiles.size();
+
+/*    	debugString1 = queuedTiles.size() + " / " + queuedTrackTiles.size();
+    	debugString2 = loadedTiles.size() + " / " + trackTiles.size();*/
     	try
     	{
 	    	synchronized (this)
@@ -2634,7 +2634,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
  
         if (drawBestFit)
         {
-	        // Draw Kachel marker      
+	        // Draw Kachel marker
+        	/*
 	        Paint paintt = new Paint(backBrush);
 	        paintt.setColor(Color.GREEN);
 	        paintt.setStyle(Style.STROKE);
@@ -2644,6 +2645,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        canvas.drawRect(brect, paintt);
 	        canvas.drawLine(brect.left, brect.top, brect.right, brect.bottom, paintt);
 	        canvas.drawLine(brect.right, brect.top, brect.left, brect.bottom, paintt);
+	        */
         }
         return;
       }
@@ -2945,7 +2947,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        if ((Global.Locator.getLocation() != null) && (Global.Locator.getLocation().hasAccuracy()))
 	        {
 	        	float radius = Global.Locator.getLocation().getAccuracy();
-	        	debugString1 = String.valueOf(radius) + "m";
+//	        	debugString1 = String.valueOf(radius) + "m";
 	        	Paint circlePaint = new Paint();
 	        	circlePaint.setColor(Color.argb(55, 0, 0, 0));
 	        	circlePaint.setStrokeWidth(5);
