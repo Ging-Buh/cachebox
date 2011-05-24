@@ -19,7 +19,7 @@ import de.droidcachebox.Map.RouteOverlay;
 
 public class TrackRecorder {
 
-	ArrayList<String> waypointXml = new ArrayList<String>();
+	static ArrayList<String> waypointXml = new ArrayList<String>();
 
 //    StreamWriter outStream = null;
     private static File gpxfile = null;
@@ -82,19 +82,20 @@ public class TrackRecorder {
 
 //        updateRecorderButtonAccessibility();
     }
-/*
-    private void AnnotateMedia(String friendlyName, String mediaPath, Coordinate coordinate, DateTime timestamp)
+
+    public static void AnnotateMedia(String friendlyName, String mediaPath, Coordinate coordinate, String timestamp)
     {
-        String xml = "<wpt lat=\"" + coordinate.Latitude.ToString(NumberFormatInfo.InvariantInfo) + "\" lon=\"" + coordinate.Longitude.ToString(NumberFormatInfo.InvariantInfo) + "\">\n" +
-            "   <ele>" + String.Format(NumberFormatInfo.InvariantInfo, "{0:0.00}", Global.Locator.LastValidPosition.Elevation) + "</ele>\n" +
-            "   <time>" + String.Format(NumberFormatInfo.InvariantInfo, "{0:0000}-{1:00}-{2:00}T{3:00}:{4:00}:{5:00}Z", timestamp.Year, timestamp.Month, timestamp.Day, timestamp.Hour, timestamp.Minute, timestamp.Second) + "</time>\n" +
+        String xml = "<wpt lat=\"" + String.valueOf(coordinate.Longitude) + "\" lon=\"" + String.valueOf(coordinate.Longitude) + "\">\n" +
+            "   <ele>" + String.valueOf(Global.LastValidPosition.Elevation) + "</ele>\n" +
+            "   <time>" + timestamp + "</time>\n" +
             "   <name>" + friendlyName + "</name>\n" +
             "   <link href=\"" + mediaPath + "\" />\n" +
             "</wpt>";
 
-        waypointXml.Add(xml);
+        waypointXml.add(xml);
+      
     }
-*/
+
     public static void recordPosition()
     {    	
         PointD NewPoint;
@@ -152,12 +153,12 @@ public class TrackRecorder {
         try {
 			writer.append("</trkseg>\n");
 	        writer.append("</trk>\n");
-/*
-        foreach (String waypoint in waypointXml)
-            outStream.WriteLine(waypoint);
 
-        waypointXml = new List<string>();
-*/        
+	        for (String item: waypointXml)
+	        	writer.append(item);
+
+	        waypointXml.clear();
+        
 	        writer.append("</gpx>\n");
 	        writer.flush();
 	        writer.close();

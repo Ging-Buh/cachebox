@@ -144,11 +144,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	private nextMenuType nextMenu = nextMenuType.nmDB;
 
 	// Media
-	private Uri imageUri;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
     private static File mediafile = null;
-    public Date timestamp;
-    	 
+    private static String mediaTimeString = null; 
+    private static String basename = null;
+    private static String mediaCacheName = null;
+	    	 
 	
    
 	
@@ -169,14 +170,19 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	protected void onActivityResult(int requestCode, int resultCode,
 		Intent data) {
 
+    	// Intent Result Take Photo
     	if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK){
                 Log.d("DroidCachebox","Picture taken!!!");
                 Global.selectedCache.ReloadSpoilerRessources();
                 String MediaFolder = Config.GetString("UserImageFolder");
             	String TrackFolder = Config.GetString("TrackFolder");
-            	String relativPath = getRelativePath(MediaFolder, TrackFolder, "\\"); 
-                return;
+            	String relativPath = getRelativePath(MediaFolder, TrackFolder, "/"); 
+            	// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
+            	mediaTimeString = GetTrackDateTimeString();
+            	TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", Global.Locator.Position, mediaTimeString);
+            	
+            	return;
             } else
             {
                 Log.d("DroidCachebox","Picture NOT taken!!!");
@@ -704,15 +710,19 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		                break;
 		            }
 		           
-		            String basename = GetDateTimeString();
+		            basename = GetDateTimeString();
 		            
 		            if (Global.selectedCache != null)
 		            {
-		                basename += Global.RemoveInvalidFatChars(Global.selectedCache.GcCode + "-" + Global.selectedCache.Name).substring(0, 32);
+		            	mediaCacheName = Global.RemoveInvalidFatChars(Global.selectedCache.GcCode + "-" + Global.selectedCache.Name).substring(0, 32);
 		                //Title = Global.selectedCache.Name;
 		            }
+		            else
+		            {
+		            	mediaCacheName = "Image";
+		            }
 
-		            
+		            basename += " " + mediaCacheName;
 		            mediafile = new File(directory + "/" + basename + ".jpg");
 
 		    		final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -882,14 +892,26 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	
     public String GetDateTimeString()
     {
-    	timestamp = new Date();
-    	SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String sDate = datFormat.format(timestamp);
+        Date now = new Date();
+        SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String sDate = datFormat.format(now);
         datFormat = new SimpleDateFormat("hhmmss");
-        sDate += " " + datFormat.format(timestamp);
+        sDate += " " + datFormat.format(now);
         return sDate;
     }
 
+    public String GetTrackDateTimeString()
+    {
+        Date now = new Date();
+        SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String sDate = datFormat.format(now);
+        datFormat = new SimpleDateFormat("hh:mm:ss");
+        sDate += "T" + datFormat.format(now) + "Z";
+        return sDate;
+    }
+
+    
+    
     public static String getRelativePath(String targetPath, String basePath, String pathSeparator) 
     {   //  We need the -1 argument to split to make sure we get a trailing      
     	//  "" token if the base ends in the path separator and is therefore     
@@ -927,7 +949,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         }     
         else 
         {         
-        	int numDirsUp = base.length - commonIndex - 1;        
+        	int numDirsUp = base.length - commonIndex;        
         	//  The number of directories we have to backtrack is the length of         
         	//  the base path MINUS the number of common path elements, minus         
         	//  one because the last element in the path isn't a directory.         
