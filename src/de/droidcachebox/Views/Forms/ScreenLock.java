@@ -1,13 +1,18 @@
 package de.droidcachebox.Views.Forms;
 
+import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.ActivityUtils;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -57,8 +62,9 @@ public class ScreenLock extends Activity {
 			@Override
 			public void onStartTrackingTouch(SeekBar arg0) 
 			{
+				if (counter != null)
+					counter.cancel();
 				lastValue=arg0.getProgress();
-				
 			}
 			
 			@Override
@@ -109,6 +115,15 @@ public class ScreenLock extends Activity {
 		}        
     }
 	
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    Log.d("SolHunter", "Key event code "+keyCode);
+	    if (keyCode == KeyEvent.KEYCODE_BACK) 
+	    {
+			return true;
+    	}
+    	return false;
+    }
 	
 
 }
