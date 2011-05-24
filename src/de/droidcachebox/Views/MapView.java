@@ -163,8 +163,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         
         font.setTextSize(14 * scale);
         font.setFakeBoldText(true);
+        font.setAntiAlias(true);
         fontSmall.setTextSize(12 * scale);
         fontSmall.setFakeBoldText(true);
+        fontSmall.setAntiAlias(true);
         PositionEventList.Add(this);
         SelectedCacheEventList.Add(this);
 
@@ -3146,7 +3148,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
           distanceString = nf.format(length) + "km";
       }
 
-      canvasOverlay.drawText(distanceString, scaleLeft + pos + lineHeight / 2, height - lineHeight / 2, font);
+      canvasOverlay.drawText(distanceString, scaleLeft + pos + lineHeight / 2, height, font);
       //graphics.DrawString(distanceString, font, brushes[0], scaleLeft + pos + lineHeight / 2, height - lineHeight);
     }
 
