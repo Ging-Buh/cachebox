@@ -338,6 +338,8 @@ public class Global {
         		res.getDrawable(R.drawable.not_available),  // 24
         		res.getDrawable(R.drawable.checkbox_crossed), // 25
         		res.getDrawable(R.drawable.map22), // 26
+        		res.getDrawable(R.drawable.chk_icon), // 27
+        		res.getDrawable(R.drawable.delete_icon), // 28
 };
         
         Arrows = new Drawable[] { 

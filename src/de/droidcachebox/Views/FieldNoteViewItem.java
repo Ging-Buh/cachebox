@@ -48,9 +48,21 @@ public class FieldNoteViewItem extends View {
      
 	}
 
+    private Boolean isNullHeightItem=false;
+	public FieldNoteViewItem(Context context) 
+	{
+		super(context);
+		isNullHeightItem=true;
+	}
+
 	@Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-       
+       if(isNullHeightItem)
+       {
+    	   height=0;
+       }
+       else
+       {
 		 if (height == 0) // Höhe ist noch nicht berechnet 
 	        {
 			 FieldNoteViewItem.width = measureWidth(widthMeasureSpec);
@@ -72,7 +84,10 @@ public class FieldNoteViewItem extends View {
 		 		+ drawTextHeight				  	// höhe GC-Code draw
 		 		+ Global.CornerSize*2				// ???
 		 		+ layoutComment.getHeight();		// höhe des comment Textes
-	     setMeasuredDimension(FieldNoteViewItem.width, height);
+       }
+		 
+		 
+		 setMeasuredDimension(FieldNoteViewItem.width, height);
 	            
 	}
 
@@ -146,6 +161,8 @@ public class FieldNoteViewItem extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         
+    	if(isNullHeightItem)return;
+    	
         //initial
         if (Linepaint==null)
         {
