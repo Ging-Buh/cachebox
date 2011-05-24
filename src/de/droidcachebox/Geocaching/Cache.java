@@ -464,104 +464,105 @@ public class Cache implements Comparable<Cache> {
 
 */
 
-/*
-    public enum Attributes: ulong
+    
+
+    public enum Attributes
     {
-        Dogs = 1UL << 1,
-        Fee = 1UL << 2,
-        ClimbingGear = 1UL << 3,
-        Boat = 1UL << 4,
-        Scuba = 1UL << 5,
-        Kids = 1UL << 6,
-        TakesLess = 1UL << 7,
-        ScenicView = 1UL << 8,
-        SignificantHike = 1UL << 9,
-        Climbing = 1UL << 10,
-        Wading = 1UL << 11,
-        Swimming = 1UL << 12,
-        Anytime = 1UL << 13,
-        Night = 1UL << 14,
-        Winter = 1UL << 15,
-        PoisonPlants = 1UL << 16,
-        Snakes = 1UL << 17,
-        Ticks = 1UL << 18,
-        AbandonedMines = 1UL << 19,
-        Cliff = 1UL << 20,
-        Hunting = 1UL << 21,
-        Dangerous = 1UL << 22,
-        WheelchairAccessible = 1UL << 23,
-        Parking = 1UL << 24,
-        PublicTransportation = 1UL << 25,
-        Drinking = 1UL << 26,
-        Restrooms = 1UL << 27,
-        Telephone = 1UL << 28,
-        Picnic = 1UL << 29,
-        Camping = 1UL << 30,
-        Bicycles = 1UL << 31,
-        Motorcycles = 1UL << 32,
-        Quads = 1UL << 33,
-        Offroad = 1UL << 34,
-        Snowmobiles = 1UL << 35,
-        Horses = 1UL << 36,
-        Campfires = 1UL << 37,
-        Thorns = 1UL << 38,
-        Stealth = 1UL << 39,
-        Stroller = 1UL << 40,
-        NeedsMaintenance = 1UL << 41,
-        Livestock = 1UL << 42,
-        Flashlight = 1UL << 43,
-        TruckDriver = 1UL << 44,
-        FieldPuzzle = 1UL << 45,
-        UVLight = 1UL << 46,
-        Snowshoes = 1UL << 47,
-        CrossCountrySkiis = 1UL << 48,
-        SpecialTool = 1UL << 49,
-        NightCache = 1UL << 50,
-        ParkAndGrab = 1UL << 51,
-        AbandonedStructure = 1UL << 52,
-        ShortHike = 1UL << 53,
-        MediumHike = 1UL << 54,
-        LongHike = 1UL << 55,
-        FuelNearby = 1UL << 56,
-        FoodNearby = 1UL << 57,
-
-        Default = 0,
+    	Dogs ,
+    	Fee ,
+    	ClimbingGear ,
+    	Boat ,
+    	Scuba,
+    	Kids,
+    	TakesLess,
+    	ScenicView ,
+    	SignificantHike ,
+    	Climbing,
+    	Wading,
+    	Swimming,
+    	Anytime,
+    	Night ,
+    	Winter ,
+    	PoisonPlants,
+    	Snakes ,
+    	Ticks ,
+    	AbandonedMines,
+    	Cliff ,
+    	Hunting ,
+    	Dangerous ,
+    	WheelchairAccessible ,
+    	Parking,
+    	PublicTransportation ,
+    	Drinking ,
+    	Restrooms ,
+    	Telephone ,
+    	Picnic ,
+    	Camping ,
+    	Bicycles ,
+    	Motorcycles ,
+    	Quads ,
+    	Offroad ,
+    	Snowmobiles ,
+    	Horses ,
+    	Campfires ,
+    	Thorns ,
+    	Stealth ,
+    	Stroller ,
+    	NeedsMaintenance,
+    	Livestock ,
+    	Flashlight ,
+    	TruckDriver ,
+    	FieldPuzzle ,
+    	UVLight ,
+    	Snowshoes ,
+    	CrossCountrySkiis,
+    	SpecialTool ,
+    	NightCache ,
+    	ParkAndGrab ,
+    	AbandonedStructure ,
+    	ShortHike ,
+    	MediumHike ,
+    	LongHike ,
+    	FuelNearby ,
+    	FoodNearby ,
     }
-
+      	
+ /*
     protected ulong attributesPositive = 0;
     public ulong AttributesPositive
     {
-        get
-        {
-            if (attributesPositive == 0)
-            {
-                SqlCeCommand command = new SqlCeCommand("select AttributesPositive from Caches where Id=@id", Database.Data.Connection);
-                command.Parameters.Add("@id", DbType.Int64).Value = this.Id;
-                String data = command.ExecuteScalar().ToString();
-                attributesPositive = (data.Length > 0) ? ulong.Parse(data) : 0;
-                command.Dispose();
-            }
-            return attributesPositive;
-        }
+    get
+    {
+    if (attributesPositive == 0)
+    {
+    SqlCeCommand command = new SqlCeCommand("select AttributesPositive from Caches where Id=@id", Database.Data.Connection);
+    command.Parameters.Add("@id", DbType.Int64).Value = this.Id;
+    String data = command.ExecuteScalar().ToString();
+    attributesPositive = (data.Length > 0) ? ulong.Parse(data) : 0;
+    command.Dispose();
+    }
+    return attributesPositive;
+    }
     }
 
     protected ulong attributesNegative = 0;
     public ulong AttributesNegative
     {
-        get
-        {
-            if (attributesNegative == 0)
-            {
-                SqlCeCommand command = new SqlCeCommand("select AttributesNegative from Caches where Id=@id", Database.Data.Connection);
-                command.Parameters.Add("@id", DbType.Int64).Value = this.Id;
-                String data = command.ExecuteScalar().ToString();
-                attributesNegative = (data.Length > 0)? ulong.Parse(data) : 0;
-                command.Dispose();
-            }
-            return attributesNegative;
-        }
+    get
+    {
+    if (attributesNegative == 0)
+    {
+    SqlCeCommand command = new SqlCeCommand("select AttributesNegative from Caches where Id=@id", Database.Data.Connection);
+    command.Parameters.Add("@id", DbType.Int64).Value = this.Id;
+    String data = command.ExecuteScalar().ToString();
+    attributesNegative = (data.Length > 0)? ulong.Parse(data) : 0;
+    command.Dispose();
     }
-*/
+    return attributesNegative;
+    }
+    }
+    */
+
     public Cache(Cursor reader)
     {
         Id = reader.getLong(0);

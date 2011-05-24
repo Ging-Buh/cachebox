@@ -18,7 +18,7 @@ public class Database {
     public long DatabaseId = 0;  // for Database replication with WinCachebox
     public long MasterDatabaseId = 0;
     protected int latestDatabaseChange = 0;
-    public SQLiteDatabase myDB = null;
+    public static SQLiteDatabase myDB = null;
     public CacheList Query;
         
 	public Database(DatabaseType databaseType, Activity activity) {

@@ -512,6 +512,8 @@ public class Global {
     static class LockClass { };
     static LockClass lockObject = new LockClass();
     public static boolean Debug = true;
+	public static FilterProperties LastFilter = null;
+	
     /// <summary>
     /// Fügt die übergebene Zeile in debug.txt ein
     /// </summary>

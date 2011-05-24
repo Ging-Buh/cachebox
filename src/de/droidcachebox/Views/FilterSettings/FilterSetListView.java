@@ -155,6 +155,38 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 		this.setAdapter(lvAdapter);
 
 		this.setOnItemClickListener(new OnItemClickListener() {
+			
+	        public String[] presets = new String[] {
+	            // All Caches
+	            "0,0,0,0,0,0,0,0,0,1,5,1,5,0,4,0,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,", 
+
+	            // All Caches to find
+	            "-1,-1,-1,-1,0,0,0,0,0,1,5,1,5,0,4,0,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,", 
+
+	            // Quick Cache
+	            "-1,-1,-1,-1,0,0,0,0,0,1,2.5,1,2.5,0,4,0,5,True,False,False,True,True,False,False,False,False,False,False,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
+
+	            // Fetch some Travelbugs
+	            "-1,-1,0,0,1,0,0,0,0,1,3,1,3,0,4,0,5,True,False,False,False,False,False,False,False,False,False,False,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
+
+	            // Drop off Travelbugs
+	            "-1,-1,0,0,0,0,0,0,0,1,3,1,3,2,4,0,5,True,False,False,False,False,False,False,False,False,False,False,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
+
+	            // Highlights
+	            "-1,-1,0,0,0,0,0,0,0,1,5,1,5,0,4,3.5,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
+
+	            // Favoriten
+	            "0,0,0,0,0,1,0,0,0,1,5,1,5,0,4,0,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,", 
+
+	            // prepare to archive
+	            "0,0,-1,-1,0,-1,-1,-1,0,1,5,1,5,0,4,0,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
+	            
+	            // Listing Changed
+	            "0,0,0,0,0,0,0,1,0,1,5,1,5,0,4,0,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"
+
+	    };
+			
+			
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
