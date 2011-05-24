@@ -558,22 +558,27 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     }
     public void setCenter(Coordinate value)
     {
-    	if (center == null)
-    		center = new Coordinate(48.124258, 12.164580);
-        positionInitialized = true;
-/*
-        if (animationTimer != null)
-          animationTimer.Enabled = false;
-*/
-        if (center == value)
-          return;
+    	synchronized (this)
+    	{
+	    	
+	    	if (center == null)
+	    		center = new Coordinate(48.124258, 12.164580);
+	        positionInitialized = true;
+	/*
+	        if (animationTimer != null)
+	          animationTimer.Enabled = false;
+	*/
+	        if (center == value)
+	          return;
+	
+	        center = value;
+	        centerOsmSpace = Descriptor.ToWorld(Descriptor.LongitudeToTileX(Zoom, center.Longitude), Descriptor.LatitudeToTileY(Zoom, center.Latitude), Zoom, Zoom);
+	        screenCenter.X = Math.round(centerOsmSpace.X * dpiScaleFactorX);
+	        screenCenter.Y = Math.round(centerOsmSpace.Y * dpiScaleFactorY);
+	        animationThread.toX = screenCenter.X;
+	        animationThread.toY = screenCenter.Y;
+    	}
 
-        center = value;
-        centerOsmSpace = Descriptor.ToWorld(Descriptor.LongitudeToTileX(Zoom, center.Longitude), Descriptor.LatitudeToTileY(Zoom, center.Latitude), Zoom, Zoom);
-        screenCenter.X = Math.round(centerOsmSpace.X * dpiScaleFactorX);
-        screenCenter.Y = Math.round(centerOsmSpace.Y * dpiScaleFactorY);
-        animationThread.toX = screenCenter.X;
-        animationThread.toY = screenCenter.Y;
         updateCacheList();
     }
 
@@ -611,8 +616,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     /// <summary>
     /// Größe des Kachel-Caches
     /// </summary>
-    final int numMaxTiles = 64;
-    final int numMaxTrackTiles = 32;
+    final int numMaxTiles = 30;
+    final int numMaxTrackTiles = 12;
 
     // Vorberechnete Werte
     protected int halfWidth = 0;
@@ -1161,11 +1166,15 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
           if (loadedTiles.get(desc.GetHashCode()).State == Tile.TileState.Present && state != Tile.TileState.Present)
             return;
 
-          if (loadedTiles.get(desc.GetHashCode()).Image != null)
-            loadedTiles.get(desc.GetHashCode()).Image.recycle();
+          Tile tile = loadedTiles.get(desc.GetHashCode()); 
+          if (tile.Image != null)
+          {
+            tile.Image.recycle();
+            tile.Image = null;
+          }
 
-          loadedTiles.get(desc.GetHashCode()).State = state; // (bitmap != null) ? Tile.TileState.Present : Tile.TileState.Disposed;
-          loadedTiles.get(desc.GetHashCode()).Image = bitmap;
+          tile.State = state; // (bitmap != null) ? Tile.TileState.Present : Tile.TileState.Disposed;
+          tile.Image = bitmap;
         }
         else
         {
@@ -1187,11 +1196,15 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
           if (trackTiles.get(desc.GetHashCode()).State == Tile.TileState.Present && state != Tile.TileState.Present)
             return;
 
-          if (trackTiles.get(desc.GetHashCode()).Image != null)
-            trackTiles.get(desc.GetHashCode()).Image.recycle();
+          Tile tile = trackTiles.get(desc.GetHashCode());
+          if (tile.Image != null)
+          {
+            tile.Image.recycle();
+            tile.Image = null;
+          }
 
-          trackTiles.get(desc.GetHashCode()).State = state; // (bitmap != null) ? Tile.TileState.Present : Tile.TileState.Disposed;
-          trackTiles.get(desc.GetHashCode()).Image = bitmap;
+          tile.State = state; // (bitmap != null) ? Tile.TileState.Present : Tile.TileState.Disposed;
+          tile.Image = bitmap;
         }
         else
         {
@@ -1226,7 +1239,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		        		{
 		        			if (wishlist.get(i).Zoom != Zoom)
 		        			{
+		        				Tile tile = loadedTiles.get(wishlist.get(i).GetHashCode());
 		        				loadedTiles.remove(wishlist.get(i).GetHashCode());
+		        				tile.destroy();
 		        				wishlist.remove(i);
 		        				i = -1;
 		        			}
@@ -1317,7 +1332,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		        			synchronized (loadedTiles)
 		        			{
 		        				if (loadedTiles.containsKey(desc.GetHashCode()))
+		        				{
+		        					Tile tile = loadedTiles.get(desc.GetHashCode());		        			
 		        					loadedTiles.remove(desc.GetHashCode());
+		        					tile.destroy();
+		        				}
 		        			}
 		        		}
 		        		Global.AddLog("MapView.loaderThreadEntryPoint: exception caught: " + exc.getMessage());
@@ -1998,8 +2017,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		  {
 			  try
 			  {
-				  loadedTiles.get(maxDesc.GetHashCode()).destroy();
+				  Tile tile = loadedTiles.get(maxDesc.GetHashCode());
 				  loadedTiles.remove(maxDesc.GetHashCode());
+				  tile.destroy();
 			  } catch (Exception ex)
 			  {
 					Global.AddLog("MV:preemptTile - " + ex.getMessage());				  
@@ -2034,7 +2054,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		  {
 			  try
 			  {
-				  trackTiles.get(maxDesc.GetHashCode()).destroy();
+				  Tile tile = trackTiles.get(maxDesc.GetHashCode());
+				  tile.destroy();
 				  trackTiles.remove(maxDesc.GetHashCode());
 			  } catch (Exception ex)
 			  {
@@ -2459,7 +2480,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 								// spterem Wechsel des Zoom-Faktors dieses Tile nicht angezeigt wird.
 								// Dies passiert bei schnellem Wechsel des Zoom-Faktors, wenn noch nicht alle aktuellen Tiles geladen waren.
 								if (loadedTiles.containsKey(desc.GetHashCode()))
+								{
+									Tile tile = loadedTiles.get(desc.GetHashCode());
 									loadedTiles.remove(desc.GetHashCode());
+									tile.destroy();
+								}
 							}
 						} catch (Exception ex1)
 						{
@@ -2487,7 +2512,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 								// spterem Wechsel des Zoom-Faktors dieses Tile nicht angezeigt wird.
 								// Dies passiert bei schnellem Wechsel des Zoom-Faktors, wenn noch nicht alle aktuellen Tiles geladen waren.
 								if (trackTiles.containsKey(desc.GetHashCode()))
+								{
+									Tile tile = trackTiles.get(desc.GetHashCode());
+									tile.destroy();
 									trackTiles.remove(desc.GetHashCode());
+								}
 							}			
 						} catch (Exception ex1)
 						{
@@ -2759,58 +2788,65 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     }
 
     private void zoomIn()
-    {    	
-    	zoomIn(true);
+    {
+  		zoomIn(true);
     }
     private void zoomIn(boolean doRender)
     {
-    	try
+    	synchronized (this)
     	{
-    		animationThread.zoomTo(Zoom+1);
-    	} catch(Exception exc)
-    	{
-    		Global.AddLog("zoomIn: " + exc.getMessage());
+	    	try
+	    	{
+	    		animationThread.zoomTo(Zoom+1);
+	    	} catch(Exception exc)
+	    	{
+	    		Global.AddLog("zoomIn: " + exc.getMessage());
+	    	}
     	}
     }
     private void zoomInDirect(boolean doRender)
     {
-      if (Zoom < maxZoom)
-      {
-    	  try
-    	  {
-    		  zoomScaleTimer.cancel();
-		
-    		  centerOsmSpace.X *= 2;
-    		  centerOsmSpace.Y *= 2;
-    		  screenCenter.X *= 2;
-    		  screenCenter.Y *= 2;
-    		  animationThread.toX *= 2;
-    		  animationThread.toY *= 2;
-		
-    		  Zoom++;
-    		  animationThread.toZoom = Zoom;
-    		  animationThread.toFaktor = 1;
-    		  zoomControls.setIsZoomOutEnabled(true); 
-    		  
-    		  if (Zoom >= maxZoom)
-    		  {
-    			  zoomControls.setIsZoomInEnabled(false); 
-    		  }
-    		  zoomChanged();
-    		  //  updateCacheList();
-		
-    		  renderZoomScaleActive = true;
-    		  if (doRender)
-    		  {
-    			  Render(false);
-    			  startZoomScaleTimer();
-    		  }    
-      		} catch(Exception exc)
-      		{
-      			Global.AddLog("zoomInDirect: " + exc.getMessage());
-      		}
-      	}
+    	synchronized (this)
+    	{
+	      if (Zoom < maxZoom)
+	      {
+	    	  try
+	    	  {
+	    		  zoomScaleTimer.cancel();
+			
+	    		  centerOsmSpace.X *= 2;
+	    		  centerOsmSpace.Y *= 2;
+	    		  screenCenter.X *= 2;
+	    		  screenCenter.Y *= 2;
+	    		  animationThread.toX *= 2;
+	    		  animationThread.toY *= 2;
+			
+	    		  Zoom++;
+	    		  animationThread.toZoom = Zoom;
+	    		  animationThread.toFaktor = 1;
+	    		  zoomControls.setIsZoomOutEnabled(true); 
+	    		  
+	    		  if (Zoom >= maxZoom)
+	    		  {
+	    			  zoomControls.setIsZoomInEnabled(false); 
+	    		  }
+	    		  zoomChanged();
+	    		  //  updateCacheList();
+			
+	    		  renderZoomScaleActive = true;
+	    		  if (doRender)
+	    		  {
+	    			  Render(false);
+	    			  startZoomScaleTimer();
+	    		  }    
+	      		} catch(Exception exc)
+	      		{
+	      			Global.AddLog("zoomInDirect: " + exc.getMessage());
+	      		}
+	      	}
+    	}
     }
+    	
     
     private void startZoomScaleTimer()
     {
@@ -2937,52 +2973,58 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     }
     private void zoomOut(boolean doRender)
     {
-    	try
+    	synchronized (this)
     	{
-    		animationThread.zoomTo(Zoom-1);
-    	} catch(Exception exc)
-    	{
-    		Global.AddLog("zoomOut: " + exc.getMessage());
+	    	try
+	    	{
+	    		animationThread.zoomTo(Zoom-1);
+	    	} catch(Exception exc)
+	    	{
+	    		Global.AddLog("zoomOut: " + exc.getMessage());
+	    	}
     	}
     }
     private void zoomOutDirect(boolean doRender)
     {
-    	if (Zoom > minZoom)
+    	synchronized (this)
     	{
-    		try
-    		{
-    			zoomScaleTimer.cancel();
-    			
-    			screenCenter.X /= 2;
-    			screenCenter.Y /= 2;
-    			centerOsmSpace.X /= 2;
-    			centerOsmSpace.Y /= 2;
-    			animationThread.toX /= 2;
-    			animationThread.toY /= 2;
-    			
-    			Zoom--;
-    			animationThread.toZoom = Zoom;
-    			animationThread.toFaktor = 1;
-    			zoomControls.setIsZoomInEnabled(true); 
-
-    			if (Zoom == minZoom)
-    			{
-    				zoomControls.setIsZoomOutEnabled(false);
-    			}
-    			
-    			zoomChanged();
-    			//        updateCacheList();
-    			renderZoomScaleActive = true;
-    			if (doRender)
-    			{
-    				Render(false);
-    				startZoomScaleTimer();
-    			}
-    		} catch(Exception exc)
-    		{
-    			Global.AddLog("zoomOutDirect: " + exc.getMessage());
-    		}
-    		
+	    	if (Zoom > minZoom)
+	    	{
+	    		try
+	    		{
+	    			zoomScaleTimer.cancel();
+	    			
+	    			screenCenter.X /= 2;
+	    			screenCenter.Y /= 2;
+	    			centerOsmSpace.X /= 2;
+	    			centerOsmSpace.Y /= 2;
+	    			animationThread.toX /= 2;
+	    			animationThread.toY /= 2;
+	    			
+	    			Zoom--;
+	    			animationThread.toZoom = Zoom;
+	    			animationThread.toFaktor = 1;
+	    			zoomControls.setIsZoomInEnabled(true); 
+	
+	    			if (Zoom == minZoom)
+	    			{
+	    				zoomControls.setIsZoomOutEnabled(false);
+	    			}
+	    			
+	    			zoomChanged();
+	    			//        updateCacheList();
+	    			renderZoomScaleActive = true;
+	    			if (doRender)
+	    			{
+	    				Render(false);
+	    				startZoomScaleTimer();
+	    			}
+	    		} catch(Exception exc)
+	    		{
+	    			Global.AddLog("zoomOutDirect: " + exc.getMessage());
+	    		}
+	    		
+	    	}
     	}
     }
 
