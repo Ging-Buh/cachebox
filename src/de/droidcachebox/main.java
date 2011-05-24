@@ -714,7 +714,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		            
 		            if (Global.selectedCache != null)
 		            {
-		            	mediaCacheName = Global.RemoveInvalidFatChars(Global.selectedCache.GcCode + "-" + Global.selectedCache.Name).substring(0, 32);
+		            	String validName=Global.RemoveInvalidFatChars(Global.selectedCache.GcCode + "-" + Global.selectedCache.Name);
+		            	mediaCacheName = validName.substring(0,(validName.length()>32)? 32 : validName.length());
 		                //Title = Global.selectedCache.Name;
 		            }
 		            else
