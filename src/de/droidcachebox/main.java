@@ -180,7 +180,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
             	String relativPath = getRelativePath(MediaFolder, TrackFolder, "/"); 
             	// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
             	mediaTimeString = GetTrackDateTimeString();
-            	TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", Global.Locator.Position, mediaTimeString);
+            	TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", Global.LastValidPosition, mediaTimeString);
             	
             	return;
             } else
