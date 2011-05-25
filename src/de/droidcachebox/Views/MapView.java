@@ -367,99 +367,103 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-            	lastMouseMoveTickPos = 0;
-            	lastMouseMoveTick = SystemClock.uptimeMillis();
-            	lastMouseMoveTickDiff[lastMouseMoveTickPos] = 0;
-            	lastMousePos = new Point(eX, eY);
-            	lastMouseDiff[lastMouseMoveTickPos] = new Point(0, 0);
-            	lastMouseMoveTickCount = 0;
-            	mouseDownPos = new Point(eX, eY);
-            	mouseMoved = false;
-            	// Nachlauf stoppen, falls aktiv
-
-            	Coordinate coord = null;
-            	try
-            	{
+		    	synchronized (screenCenter)
+		    	{
+	            	lastMouseMoveTickPos = 0;
+	            	lastMouseMoveTick = SystemClock.uptimeMillis();
+	            	lastMouseMoveTickDiff[lastMouseMoveTickPos] = 0;
+	            	lastMousePos = new Point(eX, eY);
+	            	lastMouseDiff[lastMouseMoveTickPos] = new Point(0, 0);
+	            	lastMouseMoveTickCount = 0;
+	            	mouseDownPos = new Point(eX, eY);
+	            	mouseMoved = false;
+	            	// Nachlauf stoppen, falls aktiv
+	
+	            	Coordinate coord = null;
             		coord = new Coordinate(Descriptor.TileYToLatitude(Zoom, screenCenter.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, screenCenter.X / (256.0)));
-        		} finally
-        		{
-        		}
-
-        		animationThread.moveTo(coord, smoothScrolling.AnimationSteps()*2, false);
-            	
-            	MapView_MouseDown(eX, eY);
+	
+	        		animationThread.moveTo(coord, smoothScrolling.AnimationSteps()*2, false);
+	            	
+	            	MapView_MouseDown(eX, eY);
+		    	}
 //                touch_start(x, y);
 //                invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
-            	lastMouseMoveTickDiff[lastMouseMoveTickPos] = SystemClock.uptimeMillis() - lastMouseMoveTick;
-            	lastMouseMoveTick = SystemClock.uptimeMillis();
-            	lastMouseDiff[lastMouseMoveTickPos] = new Point(eX - lastMousePos.x, eY - lastMousePos.y);
-            	lastMouseMoveTickPos++;
-            	lastMouseMoveTickCount++;
-            	if (lastMouseMoveTickPos > 4)
-            		lastMouseMoveTickPos = 0;
-            	lastMousePos = new Point(eX, eY);
-            	if (!mouseMoved)
-            	{
-            		Point akt = new Point(eX, eY);
-            		mouseMoved = ((Math.abs(akt.x - mouseDownPos.x) > 5) || Math.abs(akt.y - mouseDownPos.y) > 5);
-            	}
-            	if (mouseMoved)
-            		MapView_MouseMove(eX, eY);
-//                touch_move(x, y);
-//                invalidate();
+		    	synchronized (screenCenter)
+		    	{
+	            	lastMouseMoveTickDiff[lastMouseMoveTickPos] = SystemClock.uptimeMillis() - lastMouseMoveTick;
+	            	lastMouseMoveTick = SystemClock.uptimeMillis();
+	            	lastMouseDiff[lastMouseMoveTickPos] = new Point(eX - lastMousePos.x, eY - lastMousePos.y);
+	            	lastMouseMoveTickPos++;
+	            	lastMouseMoveTickCount++;
+	            	if (lastMouseMoveTickPos > 4)
+	            		lastMouseMoveTickPos = 0;
+	            	lastMousePos = new Point(eX, eY);
+	            	if (!mouseMoved)
+	            	{
+	            		Point akt = new Point(eX, eY);
+	            		mouseMoved = ((Math.abs(akt.x - mouseDownPos.x) > 5) || Math.abs(akt.y - mouseDownPos.y) > 5);
+	            	}
+	            	if (mouseMoved)
+	            		MapView_MouseMove(eX, eY);
+	//                touch_move(x, y);
+	//                invalidate();
+		    	}
                 break;
             case MotionEvent.ACTION_UP:
 //            	multiTouchFaktor = 1;
-            	if ((multiTouchFaktor < 0.99) || (multiTouchFaktor > 1.01))
-            		animationThread.zoomTo(Zoom);
-            	if (mouseMoved)
-            	{
-//            		MapView_MouseUp(eX, eY);
-            		// Nachlauf der Map
-            		double dx = 0;
-            		double dy = 0;
-            		double dt = 0;
-            		int count = Math.min(5, lastMouseMoveTickCount);
-            		if (Global.SmoothScrolling != SmoothScrollingTyp.none)
-            		{
-	            		int newPosFaktor = 5 * 50 / smoothScrolling.AnimationWait();
-	            		for (int i = 0; i < count; i++)
+		    	synchronized (screenCenter)
+		    	{
+	            	if ((multiTouchFaktor < 0.99) || (multiTouchFaktor > 1.01))
+	            		animationThread.zoomTo(Zoom);
+	            	if (mouseMoved)
+	            	{
+	//            		MapView_MouseUp(eX, eY);
+	            		// Nachlauf der Map
+	            		double dx = 0;
+	            		double dy = 0;
+	            		double dt = 0;
+	            		int count = Math.min(5, lastMouseMoveTickCount);
+	            		if (Global.SmoothScrolling != SmoothScrollingTyp.none)
 	            		{
-	            			dx += lastMouseDiff[i].x;
-	            			dy += lastMouseDiff[i].y;
-	            			dt += lastMouseMoveTickDiff[i];
-	            		}
-	            		dx /= count;
-	            		dy /= count;
-	            		dt /= count;
-	            		PointD nachlauf = new PointD(0, 0);
-	            		try
-	            		{
-	            			nachlauf = new PointD(screenCenter.X, screenCenter.Y);
-	            		} finally
-	            		{
-	            		}
-	            		nachlauf.X -= dx * newPosFaktor / dt * smoothScrolling.AnimationWait();
-	            		nachlauf.Y -= dy * newPosFaktor / dt * smoothScrolling.AnimationWait();
-	            		coord = new Coordinate(Descriptor.TileYToLatitude(Zoom, nachlauf.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, nachlauf.X / (256.0)));
-	            		mouseMoved = false;
-	            		animationThread.moveTo(coord, smoothScrolling.AnimationSteps()*2, false);
-            		} else
-                		MapView_MouseUp(eX, eY);
-
-            	}
-            	else
-            	{
-            		// click!!!!
-            		MapView_Click(eX, eY);
-                	mouseDownPos = null;
-            		return false;
-            	}
-            	mouseDownPos = null;
-//                touch_up();
-//                invalidate();
+		            		int newPosFaktor = 5 * 50 / smoothScrolling.AnimationWait();
+		            		for (int i = 0; i < count; i++)
+		            		{
+		            			dx += lastMouseDiff[i].x;
+		            			dy += lastMouseDiff[i].y;
+		            			dt += lastMouseMoveTickDiff[i];
+		            		}
+		            		dx /= count;
+		            		dy /= count;
+		            		dt /= count;
+		            		PointD nachlauf = new PointD(0, 0);
+		            		try
+		            		{
+		            			nachlauf = new PointD(screenCenter.X, screenCenter.Y);
+		            		} finally
+		            		{
+		            		}
+		            		nachlauf.X -= dx * newPosFaktor / dt * smoothScrolling.AnimationWait();
+		            		nachlauf.Y -= dy * newPosFaktor / dt * smoothScrolling.AnimationWait();
+		            		Coordinate coord = new Coordinate(Descriptor.TileYToLatitude(Zoom, nachlauf.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, nachlauf.X / (256.0)));
+		            		mouseMoved = false;
+		            		animationThread.moveTo(coord, smoothScrolling.AnimationSteps()*2, false);
+	            		} else
+	                		MapView_MouseUp(eX, eY);
+	
+	            	}
+	            	else
+	            	{
+	            		// click!!!!
+	            		MapView_Click(eX, eY);
+	                	mouseDownPos = null;
+	            		return false;
+	            	}
+	            	mouseDownPos = null;
+	//                touch_up();
+	//                invalidate();
+		    	}
                 break;
         }
         return true;
@@ -587,7 +591,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     }
     public void setCenter(Coordinate value)
     {
-    	try
+    	synchronized (screenCenter)
     	{
 	    	
 	    	if (center == null)
@@ -606,8 +610,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        screenCenter.Y = Math.round(centerOsmSpace.Y * dpiScaleFactorY);
 	        animationThread.toX = screenCenter.X;
 	        animationThread.toY = screenCenter.Y;
-		} finally
-		{
 		}
 
         updateCacheList();
@@ -984,14 +986,12 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
       // Falls DpiAwareRendering geändert wurde, müssen diese Werte ent-
       // sprechend angepasst werden.
-      try
+      synchronized (screenCenter)
       {
 	      screenCenter.X = Math.round(centerOsmSpace.X * dpiScaleFactorX);
 	      screenCenter.Y = Math.round(centerOsmSpace.Y * dpiScaleFactorY);
 	      animationThread.toX = screenCenter.X;
 	      animationThread.toY = screenCenter.Y;
-      } finally
-      {
       }
       
 /*
@@ -1626,248 +1626,244 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     {
       if (Database.Data.Query == null)
         return;
-
-      int iconSize = 0; // 8x8
-      if ((Zoom >= 12) && (Zoom <= 13))
-          iconSize = 1; // 13x13
-      else if (Zoom > 13)
-          iconSize = 2;  // default Images
-
-      int xFrom = -halfIconSize - drawingWidth / 2;
-      int yFrom = -halfIconSize - drawingHeight / 2;
-      int xTo = drawingWidth + halfIconSize + drawingWidth / 2;
-      int yTo = drawingHeight + halfIconSize + drawingWidth / 2;
-
-      ArrayList<WaypointRenderInfo> result = new ArrayList<WaypointRenderInfo>();
-
-      // Wegpunkte in Zeichenliste eintragen, unabhängig davon, wo
-      // sie auf dem Bildschirm sind
-      if (Global.SelectedCache() != null)
+      synchronized (screenCenter)
       {
-        if (!(hideMyFinds && Global.SelectedCache().Found()))
-        {
-          ArrayList<Waypoint> wps = Global.SelectedCache().waypoints;
+	
+	      int iconSize = 0; // 8x8
+	      if ((Zoom >= 12) && (Zoom <= 13))
+	          iconSize = 1; // 13x13
+	      else if (Zoom > 13)
+	          iconSize = 2;  // default Images
+	
+	      int xFrom = -halfIconSize - drawingWidth / 2;
+	      int yFrom = -halfIconSize - drawingHeight / 2;
+	      int xTo = drawingWidth + halfIconSize + drawingWidth / 2;
+	      int yTo = drawingHeight + halfIconSize + drawingWidth / 2;
+	
+	      ArrayList<WaypointRenderInfo> result = new ArrayList<WaypointRenderInfo>();
+	
+	      // Wegpunkte in Zeichenliste eintragen, unabhängig davon, wo
+	      // sie auf dem Bildschirm sind
+	      if (Global.SelectedCache() != null)
+	      {
+	        if (!(hideMyFinds && Global.SelectedCache().Found()))
+	        {
+	          ArrayList<Waypoint> wps = Global.SelectedCache().waypoints;
+	
+	          for (Waypoint wp : wps)
+	          {
+	            WaypointRenderInfo wpi = new WaypointRenderInfo();
+	            wpi.MapX = 256 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, wp.Coordinate.Longitude);
+	            wpi.MapY = 256 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, wp.Coordinate.Latitude);
+	            wpi.Icon = Global.NewMapIcons.get(2).get((int)wp.Type.ordinal());
+	            wpi.UnderlayIcon = Global.NewMapOverlay.get(2).get(0);
+	            wpi.Cache = Global.SelectedCache();
+	            wpi.Waypoint = wp;
+	            wpi.Selected = (Global.SelectedWaypoint() == wp);
+	            wpi.UnderlayIcon = getUnderlayIcon(wpi.Cache, wpi.Waypoint);
+	
+	           	int x = (int)(wpi.MapX * dpiScaleFactorX * adjustmentCurrentToCacheZoom - screenCenter.X) + halfWidth;
+	           	int y = (int)(wpi.MapY * dpiScaleFactorY * adjustmentCurrentToCacheZoom - screenCenter.Y) + halfHeight;
+	
+	            if ((x < xFrom || y < yFrom || x > xTo || y > yTo))
+	              continue;
+	
+	            result.add(wpi);
+	          }
+	        }
+	      }
+	
+	      // Und Caches auch. Diese allerdings als zweites, da sie WPs überzeichnen
+	      // sollen
+	      for (Cache cache : Database.Data.Query)
+	      {
+	        if (hideMyFinds && cache.Found())
+	          continue;
+	
+	        int x = 0;
+	        int y = 0;
+	        try
+	        {
+	        	x = (int)(cache.MapX * dpiScaleFactorX * adjustmentCurrentToCacheZoom - screenCenter.X) + halfWidth;
+	        	y = (int)(cache.MapY * dpiScaleFactorY * adjustmentCurrentToCacheZoom - screenCenter.Y) + halfHeight;
+			} finally
+			{
+			}
+	        
+	
+	        if ((x < xFrom || y < yFrom || x > xTo || y > yTo) && cache != Global.SelectedCache())
+	          continue;
+	
+	        if ((hideCacheWithFinal) && (cache.Type == CacheTypes.Mystery) && cache.MysterySolved() && cache.HasFinalWaypoint())
+	        {
+	          // Wenn ein Mystery-Cache einen Final-Waypoint hat, hier die Koordinaten des Caches nicht zeichnen.
+	          // Der Final-Waypoint wird später mit allen notwendigen Informationen gezeichnet. 
+	          // Die Koordinaten des Caches sind in den allermeisten Fällen irrelevant.
+	          // Damit wird von einem gelösten Mystery nur noch eine Koordinate in der Map gezeichnet, wenn der Cache nicht Selected ist.
+	          // Sobald der Cache Selected ist, werden der Cache und alle seine Waypoints gezeichnet.
+	          if (cache != Global.SelectedCache())
+	            continue;
+	        }
+	
+	        WaypointRenderInfo wpi = new WaypointRenderInfo();
+	        wpi.UnderlayIcon = null;
+	        wpi.OverlayIcon = null;
+	        wpi.MapX = cache.MapX;
+	        wpi.MapY = cache.MapY;
+	        wpi.Icon = (cache.Owner.equalsIgnoreCase(gcLogin) && (gcLogin.length() > 0)) ? Global.NewMapIcons.get(2).get(20) : (cache.Found()) ? Global.NewMapIcons.get(2).get(19) : (cache.MysterySolved() && (cache.Type == CacheTypes.Mystery)) ? Global.NewMapIcons.get(2).get(21) : Global.NewMapIcons.get(2).get((int)cache.Type.ordinal());
+	        wpi.Icon = Global.NewMapIcons.get(2).get(cache.GetMapIconId(gcLogin));
+	        wpi.UnderlayIcon = getUnderlayIcon(cache, wpi.Waypoint);
+	          
+	        if ((iconSize < 2) && (cache != Global.SelectedCache()))  // der SelectedCache wird immer mit den großen Symbolen dargestellt!
+	        {
+	            int iconId = 0;
+	            wpi.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(0);  // rectangular shaddow
+	            if (cache.Archived || !cache.Available)
+	                wpi.OverlayIcon = Global.NewMapOverlay.get(iconSize).get(3); 
+	            switch (cache.Type)
+	            {
+	                case Traditional: iconId = 0; break;
+	                case Letterbox: iconId = 0; break;
+	                case Multi: iconId = 1; break;
+	                case Event: iconId = 2; break;
+	                case MegaEvent: iconId = 2; break;
+	                case Virtual: iconId = 3; break;
+	                case Camera: iconId = 3; break;
+	                case Earth: iconId = 3; break;
+	                case Mystery:
+	                    {
+	                        if (cache.HasFinalWaypoint())
+	                            iconId = 5;
+	                        else
+	                            iconId = 4;
+	                        break;
+	                    }
+	                case Wherigo: iconId = 4; break;
+	            }
+	            if (cache.Found())
+	            {
+	                iconId = 6;
+	                wpi.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(1);  // round shaddow
+	            }
+	            if (cache.Owner.equalsIgnoreCase(gcLogin) && (gcLogin.length() > 0))
+	            {
+	                iconId = 7;
+	                wpi.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(2);  // star shaddow
+	            }
+	            wpi.Icon = Global.NewMapIcons.get(iconSize).get(iconId);
+	        }
+	        
+	        wpi.Cache = cache;
+	        wpi.Waypoint = null;
+	        wpi.Selected = (Global.SelectedCache() == cache);
+	
+	        result.add(wpi);
+	      }
+	
+	      // Final-Waypoints von Mysteries einzeichnen
+	      for (MysterySolution solution : Database.Data.Query.MysterySolutions)
+	      {
+	          // bei allen Caches ausser den Mysterys sollen die Finals nicht gezeichnet werden, wenn der Zoom klein ist
+	          if ((Zoom < 14) && (solution.Cache.Type != CacheTypes.Mystery))
+	              continue;
+	          
+	          if (Global.SelectedCache() == solution.Cache)
+	              continue;   // is already in list
+	
+	          if (hideMyFinds && solution.Cache.Found())
+	              continue;
+	
+	          double mapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, solution.Longitude);
+	          double mapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, solution.Latitude);
+	
+	          int x = 0;
+	          int y = 0;
+	          try
+	          {
+	        	  x = (int)(mapX * dpiScaleFactorX * adjustmentCurrentToCacheZoom - screenCenter.X) + halfWidth;
+	        	  y = (int)(mapY * dpiScaleFactorY * adjustmentCurrentToCacheZoom - screenCenter.Y) + halfHeight;
+	          } finally
+	          {
+	          }
+	
+	          if ((x < xFrom || y < yFrom || x > xTo || y > yTo))
+	              continue;
+	
+	          WaypointRenderInfo wpiF = new WaypointRenderInfo();
+	          wpiF.MapX = mapX;
+	          wpiF.MapY = mapY;
+	
+	          if (iconSize == 2)
+	          {
+	              wpiF.Icon = (solution.Cache.Type == CacheTypes.Mystery) ? Global.NewMapIcons.get(2).get(21) : Global.NewMapIcons.get(2).get(18);
+	              wpiF.UnderlayIcon = getUnderlayIcon(solution.Cache, solution.Waypoint);
+	              if ((hideCacheWithFinal) && (solution.Cache.Type == CacheTypes.Mystery) && solution.Cache.MysterySolved() && solution.Cache.HasFinalWaypoint())
+	              {
+	                  if (Global.SelectedCache() != solution.Cache)
+	                  {
+	                      // die Icons aller geloesten Mysterys evtl. aendern, wenn der Cache gefunden oder ein Eigener ist.
+	                      // change the icon of solved mysterys if necessary when the cache is found or own
+	                      if (solution.Cache.Found())
+	                          wpiF.Icon = Global.NewMapIcons.get(2).get(19);
+	                      if (solution.Cache.Owner.equalsIgnoreCase(gcLogin) && (gcLogin.length() > 0))
+	                          wpiF.Icon = Global.NewMapIcons.get(2).get(20);
+	                  }
+	                  else
+	                  {
+	                      // das Icon des geloesten Mysterys als Final anzeigen, wenn dieser Selected ist
+	                      // show the Icon of solved mysterys as final when cache is selected
+	                      wpiF.Icon = Global.NewMapIcons.get(2).get((int)solution.Waypoint.Type.ordinal());
+	                  }
+	              }
+	          }
+	          else
+	          {
+	              int iconId = 0;
+	              wpiF.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(0);  // rectangular shaddow
+	              if (solution.Cache.Archived || !solution.Cache.Available)
+	                wpiF.OverlayIcon = Global.NewMapOverlay.get(iconSize).get(3);
+	              switch (solution.Cache.Type)
+	              {
+	                  case Traditional: iconId = 0; break;
+	                  case Letterbox: iconId = 0; break;
+	                  case Multi: iconId = 1; break;
+	                  case Event: iconId = 2; break;
+	                  case MegaEvent: iconId = 2; break;
+	                  case Virtual: iconId = 3; break;
+	                  case Camera: iconId = 3; break;
+	                  case Earth: iconId = 3; break;
+	                  case Mystery:
+	                      {
+	                          if (solution.Cache.HasFinalWaypoint())
+	                              iconId = 5;
+	                          else
+	                              iconId = 4;
+	                          break;
+	                      }
+	                  case Wherigo: iconId = 4; break;
+	              }
+	
+	              if (solution.Cache.Found())
+	              {
+	                  iconId = 6;
+	                  wpiF.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(1);  // round shaddow
+	              }
+	              if (solution.Cache.Owner.equalsIgnoreCase(gcLogin) && (gcLogin.length() > 0))
+	              {
+	                  iconId = 7;
+	                  wpiF.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(2);  // start shaddow
+	              }
+	              wpiF.Icon = Global.NewMapIcons.get(iconSize).get(iconId);
+	          }
+	          wpiF.Cache = solution.Cache;
+	          wpiF.Waypoint = solution.Waypoint;
+	          wpiF.Selected = (Global.SelectedWaypoint() == solution.Waypoint);
+	          result.add(wpiF);
+	      }
+	
+	      wpToRender = result;
 
-          for (Waypoint wp : wps)
-          {
-            WaypointRenderInfo wpi = new WaypointRenderInfo();
-            wpi.MapX = 256 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, wp.Coordinate.Longitude);
-            wpi.MapY = 256 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, wp.Coordinate.Latitude);
-            wpi.Icon = Global.NewMapIcons.get(2).get((int)wp.Type.ordinal());
-            wpi.UnderlayIcon = Global.NewMapOverlay.get(2).get(0);
-            wpi.Cache = Global.SelectedCache();
-            wpi.Waypoint = wp;
-            wpi.Selected = (Global.SelectedWaypoint() == wp);
-            wpi.UnderlayIcon = getUnderlayIcon(wpi.Cache, wpi.Waypoint);
-
-            int x = 0;
-            int y = 0;
-            try
-            {
-            	x = (int)(wpi.MapX * dpiScaleFactorX * adjustmentCurrentToCacheZoom - screenCenter.X) + halfWidth;
-            	y = (int)(wpi.MapY * dpiScaleFactorY * adjustmentCurrentToCacheZoom - screenCenter.Y) + halfHeight;
-    		} finally
-    		{
-    		}
-
-            if ((x < xFrom || y < yFrom || x > xTo || y > yTo))
-              continue;
-
-            result.add(wpi);
-          }
-        }
       }
-
-      // Und Caches auch. Diese allerdings als zweites, da sie WPs überzeichnen
-      // sollen
-      for (Cache cache : Database.Data.Query)
-      {
-        if (hideMyFinds && cache.Found())
-          continue;
-
-        int x = 0;
-        int y = 0;
-        try
-        {
-        	x = (int)(cache.MapX * dpiScaleFactorX * adjustmentCurrentToCacheZoom - screenCenter.X) + halfWidth;
-        	y = (int)(cache.MapY * dpiScaleFactorY * adjustmentCurrentToCacheZoom - screenCenter.Y) + halfHeight;
-		} finally
-		{
-		}
-        
-
-        if ((x < xFrom || y < yFrom || x > xTo || y > yTo) && cache != Global.SelectedCache())
-          continue;
-
-        if ((hideCacheWithFinal) && (cache.Type == CacheTypes.Mystery) && cache.MysterySolved() && cache.HasFinalWaypoint())
-        {
-          // Wenn ein Mystery-Cache einen Final-Waypoint hat, hier die Koordinaten des Caches nicht zeichnen.
-          // Der Final-Waypoint wird später mit allen notwendigen Informationen gezeichnet. 
-          // Die Koordinaten des Caches sind in den allermeisten Fällen irrelevant.
-          // Damit wird von einem gelösten Mystery nur noch eine Koordinate in der Map gezeichnet, wenn der Cache nicht Selected ist.
-          // Sobald der Cache Selected ist, werden der Cache und alle seine Waypoints gezeichnet.
-          if (cache != Global.SelectedCache())
-            continue;
-        }
-
-        WaypointRenderInfo wpi = new WaypointRenderInfo();
-        wpi.UnderlayIcon = null;
-        wpi.OverlayIcon = null;
-        wpi.MapX = cache.MapX;
-        wpi.MapY = cache.MapY;
-        wpi.Icon = (cache.Owner.equalsIgnoreCase(gcLogin) && (gcLogin.length() > 0)) ? Global.NewMapIcons.get(2).get(20) : (cache.Found()) ? Global.NewMapIcons.get(2).get(19) : (cache.MysterySolved() && (cache.Type == CacheTypes.Mystery)) ? Global.NewMapIcons.get(2).get(21) : Global.NewMapIcons.get(2).get((int)cache.Type.ordinal());
-        wpi.Icon = Global.NewMapIcons.get(2).get(cache.GetMapIconId(gcLogin));
-        wpi.UnderlayIcon = getUnderlayIcon(cache, wpi.Waypoint);
-          
-        if ((iconSize < 2) && (cache != Global.SelectedCache()))  // der SelectedCache wird immer mit den großen Symbolen dargestellt!
-        {
-            int iconId = 0;
-            wpi.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(0);  // rectangular shaddow
-            if (cache.Archived || !cache.Available)
-                wpi.OverlayIcon = Global.NewMapOverlay.get(iconSize).get(3); 
-            switch (cache.Type)
-            {
-                case Traditional: iconId = 0; break;
-                case Letterbox: iconId = 0; break;
-                case Multi: iconId = 1; break;
-                case Event: iconId = 2; break;
-                case MegaEvent: iconId = 2; break;
-                case Virtual: iconId = 3; break;
-                case Camera: iconId = 3; break;
-                case Earth: iconId = 3; break;
-                case Mystery:
-                    {
-                        if (cache.HasFinalWaypoint())
-                            iconId = 5;
-                        else
-                            iconId = 4;
-                        break;
-                    }
-                case Wherigo: iconId = 4; break;
-            }
-            if (cache.Found())
-            {
-                iconId = 6;
-                wpi.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(1);  // round shaddow
-            }
-            if (cache.Owner.equalsIgnoreCase(gcLogin) && (gcLogin.length() > 0))
-            {
-                iconId = 7;
-                wpi.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(2);  // star shaddow
-            }
-            wpi.Icon = Global.NewMapIcons.get(iconSize).get(iconId);
-        }
-        
-        wpi.Cache = cache;
-        wpi.Waypoint = null;
-        wpi.Selected = (Global.SelectedCache() == cache);
-
-        result.add(wpi);
-      }
-
-      // Final-Waypoints von Mysteries einzeichnen
-      for (MysterySolution solution : Database.Data.Query.MysterySolutions)
-      {
-          // bei allen Caches ausser den Mysterys sollen die Finals nicht gezeichnet werden, wenn der Zoom klein ist
-          if ((Zoom < 14) && (solution.Cache.Type != CacheTypes.Mystery))
-              continue;
-          
-          if (Global.SelectedCache() == solution.Cache)
-              continue;   // is already in list
-
-          if (hideMyFinds && solution.Cache.Found())
-              continue;
-
-          double mapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, solution.Longitude);
-          double mapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, solution.Latitude);
-
-          int x = 0;
-          int y = 0;
-          try
-          {
-        	  x = (int)(mapX * dpiScaleFactorX * adjustmentCurrentToCacheZoom - screenCenter.X) + halfWidth;
-        	  y = (int)(mapY * dpiScaleFactorY * adjustmentCurrentToCacheZoom - screenCenter.Y) + halfHeight;
-          } finally
-          {
-          }
-
-          if ((x < xFrom || y < yFrom || x > xTo || y > yTo))
-              continue;
-
-          WaypointRenderInfo wpiF = new WaypointRenderInfo();
-          wpiF.MapX = mapX;
-          wpiF.MapY = mapY;
-
-          if (iconSize == 2)
-          {
-              wpiF.Icon = (solution.Cache.Type == CacheTypes.Mystery) ? Global.NewMapIcons.get(2).get(21) : Global.NewMapIcons.get(2).get(18);
-              wpiF.UnderlayIcon = getUnderlayIcon(solution.Cache, solution.Waypoint);
-              if ((hideCacheWithFinal) && (solution.Cache.Type == CacheTypes.Mystery) && solution.Cache.MysterySolved() && solution.Cache.HasFinalWaypoint())
-              {
-                  if (Global.SelectedCache() != solution.Cache)
-                  {
-                      // die Icons aller geloesten Mysterys evtl. aendern, wenn der Cache gefunden oder ein Eigener ist.
-                      // change the icon of solved mysterys if necessary when the cache is found or own
-                      if (solution.Cache.Found())
-                          wpiF.Icon = Global.NewMapIcons.get(2).get(19);
-                      if (solution.Cache.Owner.equalsIgnoreCase(gcLogin) && (gcLogin.length() > 0))
-                          wpiF.Icon = Global.NewMapIcons.get(2).get(20);
-                  }
-                  else
-                  {
-                      // das Icon des geloesten Mysterys als Final anzeigen, wenn dieser Selected ist
-                      // show the Icon of solved mysterys as final when cache is selected
-                      wpiF.Icon = Global.NewMapIcons.get(2).get((int)solution.Waypoint.Type.ordinal());
-                  }
-              }
-          }
-          else
-          {
-              int iconId = 0;
-              wpiF.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(0);  // rectangular shaddow
-              if (solution.Cache.Archived || !solution.Cache.Available)
-                wpiF.OverlayIcon = Global.NewMapOverlay.get(iconSize).get(3);
-              switch (solution.Cache.Type)
-              {
-                  case Traditional: iconId = 0; break;
-                  case Letterbox: iconId = 0; break;
-                  case Multi: iconId = 1; break;
-                  case Event: iconId = 2; break;
-                  case MegaEvent: iconId = 2; break;
-                  case Virtual: iconId = 3; break;
-                  case Camera: iconId = 3; break;
-                  case Earth: iconId = 3; break;
-                  case Mystery:
-                      {
-                          if (solution.Cache.HasFinalWaypoint())
-                              iconId = 5;
-                          else
-                              iconId = 4;
-                          break;
-                      }
-                  case Wherigo: iconId = 4; break;
-              }
-
-              if (solution.Cache.Found())
-              {
-                  iconId = 6;
-                  wpiF.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(1);  // round shaddow
-              }
-              if (solution.Cache.Owner.equalsIgnoreCase(gcLogin) && (gcLogin.length() > 0))
-              {
-                  iconId = 7;
-                  wpiF.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(2);  // start shaddow
-              }
-              wpiF.Icon = Global.NewMapIcons.get(iconSize).get(iconId);
-          }
-          wpiF.Cache = solution.Cache;
-          wpiF.Waypoint = solution.Waypoint;
-          wpiF.Selected = (Global.SelectedWaypoint() == solution.Waypoint);
-          result.add(wpiF);
-      }
-
-      wpToRender = result;
-
     }
 /*
     Pen boldRedPen = new Pen(Color.Red, 4);
@@ -1903,15 +1899,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		      UnderlayWidth = (int)(wpi.UnderlayIcon.getMinimumWidth()/* * dpiScaleFactorX*/);
 		  }
 		
-		  int x = 0;
-		  int y = 0;
-		  try
-		  {			  
-			  x = (int)((wpi.MapX * adjustmentCurrentToCacheZoom * dpiScaleFactorX - screenCenter.X)) + halfWidth;
-			  y = (int)((wpi.MapY * adjustmentCurrentToCacheZoom * dpiScaleFactorY - screenCenter.Y)) + halfHeight;
-		  } finally
-		  {
-		  }
+		  int x = (int)((wpi.MapX * adjustmentCurrentToCacheZoom * dpiScaleFactorX - screenCenter.X)) + halfWidth;
+		  int y = (int)((wpi.MapY * adjustmentCurrentToCacheZoom * dpiScaleFactorY - screenCenter.Y)) + halfHeight;
 		
 		  x = x - width / 2;
 		  y = y - height / 2;
@@ -2202,8 +2191,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     int lastWpCount = 0;
     PointD lastRenderedPosition = new PointD(Double.MAX_VALUE, Double.MAX_VALUE);
 
-    final Lock renderLock = new ReentrantLock();
-        
     public void Render(boolean overrideRepaintInteligence)
     {
     	if (canvas == null)
@@ -2215,8 +2202,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	{
 	    	try
 	    	{
-		    	renderLock.lock();
-		    	try
+		    	
+		    	synchronized (screenCenter)
 		     	{
 		        	float tmpCanvasHeading = canvasHeading;
 		    		if (Database.Data.Query == null)
@@ -2416,9 +2403,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    			Global.AddLog("MV:Render1 - " + ex.getMessage());
 		    		}
 		    		
-		     	} finally
-		     	{
-		     		renderLock.unlock();
 		     	}
 	    	} catch (Exception exc)
 	    	{
@@ -2807,21 +2791,24 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 */
     Rect getTileRange(float rangeFactor)
     {
-    	int x1;
-    	int y1;
-    	int x2;
-    	int y2;
-    	double x = screenCenter.X / (256 * dpiScaleFactorX);
-    	double y = screenCenter.Y / (256 * dpiScaleFactorY);
-
-    	// preload more Tiles than necessary to ensure more smooth scrolling
-    	int dWidth = (int)(drawingWidth * rangeFactor);
-    	int dHeight= (int)(drawingHeight * rangeFactor);
-    	x1 = (int)Math.floor(x - dWidth/multiTouchFaktor / (256 * dpiScaleFactorX * 2));
-    	x2 = (int)Math.floor(x + dWidth/multiTouchFaktor / (256 * dpiScaleFactorX * 2));
-    	y1 = (int)Math.floor(y - dHeight/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
-    	y2 = (int)Math.floor(y + dHeight/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
-    	return new Rect(x1, y1, x2, y2);
+    	synchronized (screenCenter)
+    	{
+    		int x1;
+    		int y1;
+    		int x2;
+    		int y2;
+    		double x = screenCenter.X / (256 * dpiScaleFactorX);
+    		double y = screenCenter.Y / (256 * dpiScaleFactorY);
+    		
+    		// preload more Tiles than necessary to ensure more smooth scrolling
+    		int dWidth = (int)(drawingWidth * rangeFactor);
+    		int dHeight= (int)(drawingHeight * rangeFactor);
+    		x1 = (int)Math.floor(x - dWidth/multiTouchFaktor / (256 * dpiScaleFactorX * 2));
+    		x2 = (int)Math.floor(x + dWidth/multiTouchFaktor / (256 * dpiScaleFactorX * 2));
+    		y1 = (int)Math.floor(y - dHeight/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
+    		y2 = (int)Math.floor(y + dHeight/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
+    		return new Rect(x1, y1, x2, y2);
+    	}
     }
 
     Paint backBrush;
@@ -2889,20 +2876,27 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
     Point ToScreen(double x, double y, int zoom)
     {
-      double adjust = Math.pow(2, (Zoom - zoom));
-      x = x * adjust * 256 * dpiScaleFactorX;
-      y = y * adjust * 256 * dpiScaleFactorY;
-
-      return new Point((int)(x - screenCenter.X) + halfWidth, (int)(y - screenCenter.Y) + halfHeight);
+    	synchronized (screenCenter)
+    	{
+    		double adjust = Math.pow(2, (Zoom - zoom));
+    		x = x * adjust * 256 * dpiScaleFactorX;
+    		y = y * adjust * 256 * dpiScaleFactorY;
+    		
+    		return new Point((int)(x - screenCenter.X) + halfWidth, (int)(y - screenCenter.Y) + halfHeight);
+    	}
     }
 
     Point ToScreen(double x, double y, double zoom)
     {
-      double adjust = Math.pow(2, (Zoom - zoom));
-      x = x * adjust * 256 * dpiScaleFactorX;
-      y = y * adjust * 256 * dpiScaleFactorY;
+    	synchronized (screenCenter)
+    	{
 
-      return new Point((int)(x - screenCenter.X) + halfWidth, (int)(y - screenCenter.Y) + halfHeight);
+    		double adjust = Math.pow(2, (Zoom - zoom));
+    		x = x * adjust * 256 * dpiScaleFactorX;
+    		y = y * adjust * 256 * dpiScaleFactorY;
+
+    		return new Point((int)(x - screenCenter.X) + halfWidth, (int)(y - screenCenter.Y) + halfHeight);
+    	}
     }
 
     /// <summary>
@@ -3016,7 +3010,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     }
     private void zoomIn(boolean doRender)
     {
-    	synchronized (this)
+    	synchronized (screenCenter)
     	{
 	    	try
 	    	{
@@ -3029,7 +3023,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     }
     private void zoomInDirect(boolean doRender)
     {
-    	synchronized (this)
+    	synchronized (screenCenter)
     	{
 	      if (Zoom < maxZoom)
 	      {
@@ -3196,7 +3190,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     }
     private void zoomOut(boolean doRender)
     {
-    	synchronized (this)
+    	synchronized (screenCenter)
     	{
 	    	try
 	    	{
@@ -3209,7 +3203,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     }
     private void zoomOutDirect(boolean doRender)
     {
-    	synchronized (this)
+    	synchronized (screenCenter)
     	{
 	    	if (Zoom > minZoom)
 	    	{
@@ -4554,6 +4548,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 	@Override
 	public void OnHide() {
+		ClearCachedTiles();
 		isVisible = false;		
 	}
 
@@ -4576,8 +4571,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				{
 					try
 					{
-						renderLock.lock();
-						try
+				    	synchronized (screenCenter)
 						{
 							boolean changeHeading = bundle.getBoolean("ChangeHeading");
 							if (changeHeading)
@@ -4634,9 +4628,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 									Global.AddLog("MV:messageHandler - " + exc.getMessage());
 								}
 							}
-						} finally
-						{
-							renderLock.unlock();
 						}
 						sendEmptyMessage(5);  // im UI Thread ausführen
 		        	} catch(Exception exc)
@@ -4705,8 +4696,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 					            try
 								{
 						            float aktHeading = correctHeading(canvasHeading);
-						            double aktX = screenCenter.X;
-						            double aktY = screenCenter.Y;
+						    		double aktX = 0;
+						    		double aktY = 0;
+							    	synchronized (screenCenter)
+							    	{
+							    		aktX = screenCenter.X;
+							    		aktY = screenCenter.Y;
+							    	}
 						            
 									if (headingInitialized && (Math.abs(aktHeading - toHeading) > 0.3f))
 									{
@@ -4926,9 +4922,14 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		{
 			try
 			{
+
 				double newPosFaktor = anzsteps / 5 + 1;
 	
-				PointD animateFrom = new PointD(screenCenter.X, screenCenter.Y);
+				PointD animateFrom = new PointD(0, 0);
+				synchronized (screenCenter)
+				{
+					animateFrom = new PointD(screenCenter.X, screenCenter.Y);
+				}
 				PointD animateTo = new PointD(0, 0);
 	            animateTo.X = dpiScaleFactorX * 256 * Descriptor.LongitudeToTileX(Zoom, target.Longitude);
 	            animateTo.Y = dpiScaleFactorY * 256 * Descriptor.LatitudeToTileY(Zoom, target.Latitude);			
