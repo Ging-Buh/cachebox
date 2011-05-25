@@ -38,6 +38,7 @@ public class TrackRecorder {
         
         Global.AktuelleRoute = new RouteOverlay.Route(paint, "actual Track");
         Global.AktuelleRoute.ShowRoute = true;
+        Global.aktuelleRouteCount = 0;
         RouteOverlay.Routes.add(Global.AktuelleRoute);
 
         String directory = Config.GetString("TrackFolder");
