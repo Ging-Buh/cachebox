@@ -413,10 +413,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
                 break;
             case MotionEvent.ACTION_UP:
 //            	multiTouchFaktor = 1;
-		    	synchronized (screenCenter)
-		    	{
-	            	if ((multiTouchFaktor < 0.99) || (multiTouchFaktor > 1.01))
-	            		animationThread.zoomTo(Zoom);
+            	if ((multiTouchFaktor < 0.99) || (multiTouchFaktor > 1.01))
+            		animationThread.zoomTo(Zoom);
+            	synchronized (screenCenter)
+            	{
 	            	if (mouseMoved)
 	            	{
 	//            		MapView_MouseUp(eX, eY);
