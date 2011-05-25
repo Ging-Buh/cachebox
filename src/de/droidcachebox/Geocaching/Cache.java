@@ -842,6 +842,7 @@ public class Cache implements Comparable<Cache> {
     	// reset namePaint attr
     		namePaint.setColor(Global.getColor(R.attr.TextColor));
     		namePaint.setFlags(Paint.FAKE_BOLD_TEXT_FLAG);
+			namePaint.setAntiAlias(true);
     		
     		DTPaint.setColor(Global.getColor(R.attr.TextColor));
     		
