@@ -86,7 +86,7 @@ public class TrackRecorder {
 
     public static void AnnotateMedia(String friendlyName, String mediaPath, Coordinate coordinate, String timestamp)
     {
-        String xml = "<wpt lat=\"" + String.valueOf(coordinate.Longitude) + "\" lon=\"" + String.valueOf(coordinate.Longitude) + "\">\n" +
+        String xml = "<wpt lat=\"" + String.valueOf(coordinate.Latitude) + "\" lon=\"" + String.valueOf(coordinate.Longitude) + "\">\n" +
             "   <ele>" + String.valueOf(Global.LastValidPosition.Elevation) + "</ele>\n" +
             "   <time>" + timestamp + "</time>\n" +
             "   <name>" + friendlyName + "</name>\n" +
