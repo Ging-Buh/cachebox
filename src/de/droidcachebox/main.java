@@ -49,12 +49,14 @@ import de.droidcachebox.Geocaching.Waypoint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.database.Cursor;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
+import android.content.ContentValues;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -154,6 +156,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 61216517;
     private static final int CAPTURE_VOICE_ACTIVITY_REQUEST_CODE = 61216518;
+    private static Uri cameraVideoURI;
     private static File mediafile = null;
     private static String mediaTimeString = null; 
     private static String basename = null;
@@ -205,10 +208,28 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
             if (resultCode == RESULT_OK){
                 Log.d("DroidCachebox","Video taken!!!");
                 //Global.selectedCache.ReloadSpoilerRessources();
+
+                String[] projection = { MediaStore.Video.Media.DATA, MediaStore.Video.Media.SIZE  };
+                Cursor cursor = managedQuery(cameraVideoURI, projection, null, null, null);
+                int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+                cursor.moveToFirst();
+                String recordedVideoFilePath = cursor.getString(column_index_data);
+                
+                String ext = Global.GetFileExtension(recordedVideoFilePath);
                 String MediaFolder = Config.GetString("UserImageFolder");
+
+                // Video in Media-Ordner verschieben
+                File  source = new File(recordedVideoFilePath);
+                File destination = new File(MediaFolder + "/" + basename + "." + ext);
+                // Datei wird umbenannt/verschoben
+                if(!source.renameTo(destination))
+                {
+                	Log.d("DroidCachebox","Fehler beim Umbenennen der Datei: " + source.getName());
+                }
+                
             	String TrackFolder = Config.GetString("TrackFolder");
             	String relativPath = getRelativePath(MediaFolder, TrackFolder, "/"); 
-            	TrackRecorder.AnnotateMedia(basename + ".3gp", relativPath + "/" + basename + ".3gp", mediaCoordinate , mediaTimeString);
+            	TrackRecorder.AnnotateMedia(basename + "." + ext, relativPath + "/" + basename + "." + ext, mediaCoordinate , mediaTimeString);
             	
             	return;
             } else
@@ -848,11 +869,16 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	            	mediaTimeString = GetTrackDateTimeString();
 	            	mediaCoordinate = Global.LastValidPosition;
 	            	
+		    		ContentValues values = new ContentValues();  
+		    		values.put(MediaStore.Video.Media.TITLE, "captureTemp.mp4");  
+		    		cameraVideoURI = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);  
+
 		    		final Intent videointent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 		    		videointent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediafile));
-		    		videointent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-		    		startActivityForResult(videointent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+		    		videointent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+		    		//videointent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, MAXIMUM_VIDEO_SIZE);               
 
+		    		startActivityForResult(videointent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
 		    		break;	
 		    	
 		    	case R.id.miTestEmpty:
