@@ -7,6 +7,8 @@ import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 
+import de.droidcachebox.Events.CachListChangedEventList;
+import de.droidcachebox.Events.CacheListChangedEvent;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
@@ -31,9 +33,9 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-public class CacheListView extends ListView implements ViewOptionsMenu, PositionEvent {
+public class CacheListView extends ListView implements ViewOptionsMenu, PositionEvent, CacheListChangedEvent {
 	
-
+	private CustomAdapter lvAdapter;
 	private Paint paint;
 	/**
 	 * Constructor
@@ -41,9 +43,9 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 	public CacheListView(final Context context) {
 		super(context);
 
-		
+		CachListChangedEventList.Add(this);
 		this.setAdapter(null);
-		CustomAdapter lvAdapter = new CustomAdapter(getContext(), Database.Data.Query);
+		lvAdapter = new CustomAdapter(getContext(), Database.Data.Query);
 		this.setAdapter(lvAdapter);
 //		this.setLongClickable(true);
 		this.setOnItemClickListener(new OnItemClickListener() {
@@ -61,21 +63,23 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 				return;
 			}
 		});
-/*		this.setOnItemLongClickListener(new OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-        		Cache cache = Database.Data.Query.get(arg2);
-        		Global.SelectedCache(cache);
-				return true;
-			}
-		});*/
+
 		this.setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
 		this.setCacheColorHint(R.color.Day_TitleBarColor);
 		this.setDividerHeight(5);
 		this.setDivider(getBackground());
 		
 		
+	}
+	
+	
+	
+	public void CacheListChangedEvent()
+	{
+		this.setAdapter(null);
+		lvAdapter = new CustomAdapter(getContext(), Database.Data.Query);
+		this.setAdapter(lvAdapter);
+		lvAdapter.notifyDataSetChanged();
 	}
 	
 	 	static public int windowW=0;

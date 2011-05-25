@@ -192,14 +192,19 @@ public class LangStrings
         return retString;
     }
 
-    // übersetzt den Titel eines MenuItems
     public void TranslateMenuItem(Menu menu, int id, String StringId)
+    {
+    	TranslateMenuItem(menu, id, StringId,"");
+    }
+    
+    // übersetzt den Titel eines MenuItems
+    public void TranslateMenuItem(Menu menu, int id, String StringId, String zusatz)
     {
     	try
     	{
     		MenuItem mi = menu.findItem(id);
     		if (mi != null)
-    			mi.setTitle(Global.Translations.Get(StringId));
+    			mi.setTitle(Global.Translations.Get(StringId)+ zusatz);
     	} catch (Exception exc)
     	{ }
     }

@@ -136,6 +136,14 @@ public class PresetListViewItem extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         
+    	boolean PresetEquelsFilter = false;
+    	if(Global.LastFilter!=null)
+    	{
+	    	if(Global.LastFilter.ToString().equals(mPresetEntry.getPresetString()))
+	    	{
+	    		PresetEquelsFilter = true;
+	    	}
+    	}
         //initial
     	 int left = Global.CornerSize;
          int top = Global.CornerSize;
@@ -158,19 +166,15 @@ public class PresetListViewItem extends View {
         textPaint.setColor(Global.getColor(R.attr.TextColor));
        
         
-        boolean selected = false;
-        if (this.mPresetEntry == PresetListView.aktPreset)
-        	selected = true;
-        
-       
+               
 		int BackgroundColor;
         if (BackColorChanger)
         {
-        	BackgroundColor = (selected)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground);
+        	BackgroundColor = (PresetEquelsFilter)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground);
         }
         else
         {
-        	BackgroundColor = (selected)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground_secend);
+        	BackgroundColor = (PresetEquelsFilter)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground_secend);
         }
         
         

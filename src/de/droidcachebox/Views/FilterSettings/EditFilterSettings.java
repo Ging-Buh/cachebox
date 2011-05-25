@@ -1,9 +1,13 @@
 package de.droidcachebox.Views.FilterSettings;
 
+import de.droidcachebox.Database;
+import de.droidcachebox.FilterProperties;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
+import de.droidcachebox.Events.CachListChangedEventList;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
@@ -14,6 +18,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TableRow;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class EditFilterSettings extends Activity {
@@ -69,8 +74,10 @@ public class EditFilterSettings extends Activity {
         Button bOK = (Button) findViewById(R.id.edfi_ok);
         bOK.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-
+            public void onClick(View v) 
+            {
+            	ApplyFilter(Global.LastFilter);
+            	Toast.makeText(main.mainActivity, "Applay filter. Found " + String.valueOf(Database.Data.Query.size()) + " Caches!", Toast.LENGTH_LONG).show();
             	finish();	            	
             }
           });
@@ -146,5 +153,36 @@ public class EditFilterSettings extends Activity {
 		}
 		switchVisibility();
 	}
-		
+	
+	
+	 public static void ApplyFilter(FilterProperties props)
+	    {
+	       // Cursor.Current = Cursors.WaitCursor;
+
+	    	String sqlWhere =props.getSqlWhere();
+	        Global.AddLog("Main.ApplyFilter: " + sqlWhere);
+	        
+	        Database.Data.Query.clear();
+	        Database.Data.Query.LoadCaches(sqlWhere);
+	        CachListChangedEventList.Call();
+	      //  cacheListButton.Caption = Global.Translations.Get("cacheList") + " (" + Convert.ToString(Global.CacheCount) + ")";
+
+	        //Resort(null);
+
+	     //   Cursor.Current = Cursors.Default;
+
+	       /* if ((Global.LastFilter.ToString() == "") || (Global.LastFilter.ToString() == FilterPresets.presets[0]))
+	        {
+	            holdButton_DB.BackColor = System.Drawing.Color.FromArgb(231, 239, 206);
+	        }
+	        else
+	        {
+	            holdButton_DB.BackColor = Color.Salmon;
+	        };
+
+	        holdButton_DB.Refresh();
+	        CacheListPanel.CacheListChanged(); // Lade CacheListItems in der dragList
+	       */
+	    }
+	
 }

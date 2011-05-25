@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import android.database.Cursor;
 import android.widget.ArrayAdapter;
 import de.droidcachebox.Database;
+import de.droidcachebox.Global;
 import de.droidcachebox.Geocaching.Cache.CacheTypes;
 
 public class CacheList extends ArrayList<Cache> {
@@ -51,7 +52,15 @@ public class CacheList extends ArrayList<Cache> {
         reader.close();
 
 
-    	reader = Database.Data.myDB.rawQuery("select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates from Caches " + ((where.length() > 0) ? "where " + where : where), null);
+        try
+        {
+        	reader = Database.Data.myDB.rawQuery("select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates from Caches " + ((where.length() > 0) ? "where " + where : where), null);
+    	
+        }
+        catch(Exception e)
+        {
+        	Global.AddLog("CacheList.LoadCaches: " + e.getMessage());
+        }
     	reader.moveToFirst();
     	
         while(reader.isAfterLast() == false)

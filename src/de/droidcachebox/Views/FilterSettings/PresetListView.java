@@ -43,6 +43,36 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class PresetListView extends ListView implements ViewOptionsMenu {
 
+	public static final String[] presets = new String[] {
+            // All Caches
+            "0,0,0,0,0,0,0,0,0,1.0,5.0,1.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,", 
+
+            // All Caches to find
+            "-1,-1,-1,-1,0,0,0,0,0,1.0,5.0,1.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,", 
+
+            // Quick Cache
+            "-1,-1,-1,-1,0,0,0,0,0,1.0,2.5,1.0,2.5,0.0,4.0,0.0,5.0,true,false,false,true,true,false,false,false,false,false,false,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,",
+
+            // Fetch some Travelbugs
+            "-1,-1,0,0,1,0,0,0,0,1.0,3.0,1.0,3.0,0.0,4.0,0.0,5.0,true,false,false,false,false,false,false,false,false,false,false,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,",
+
+            // Drop off Travelbugs
+            "-1,-1,0,0,0,0,0,0,0,1.0,3.0,1.0,3.0,2.0,4.0,0.0,5.0,true,false,false,false,false,false,false,false,false,false,false,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,",
+
+            // Highlights
+            "-1,-1,0,0,0,0,0,0,0,1.0,5.0,1.0,5.0,0.0,4.0,3.5,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,",
+
+            // Favoriten
+            "0,0,0,0,0,1,0,0,0,1.0,5.0,1.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,", 
+
+            // prepare to archive
+            "0,0,-1,-1,0,-1,-1,-1,0,1.0,5.0,1.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,",
+            
+            // Listing Changed
+            "0,0,0,0,0,0,0,1,0,1.0,5.0,1.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,"
+
+    };
+	
 	public static PresetEntry aktPreset;
 	
 	//private Activity parentActivity;
@@ -53,16 +83,18 @@ public class PresetListView extends ListView implements ViewOptionsMenu {
 	{
 		private String mName;
 		private Drawable mIcon;
+		private String mPresetString;
 		
-		
-		public PresetEntry(String Name, Drawable Icon)
+		public PresetEntry(String Name, Drawable Icon, String PresetString)
 		{
 			mName=Name;
 			mIcon=Icon;
+			mPresetString=PresetString;
 		}
 		
 		public String getName(){return mName;}
 		public Drawable getIcone(){return mIcon;}
+		public String getPresetString(){return mPresetString;}
 	}
 	
 	
@@ -79,36 +111,7 @@ public class PresetListView extends ListView implements ViewOptionsMenu {
 
 		this.setOnItemClickListener(new OnItemClickListener() 
 		{
-	        public String[] presets = new String[] {
-	            // All Caches
-	            "0,0,0,0,0,0,0,0,0,1,5,1,5,0,4,0,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,", 
-
-	            // All Caches to find
-	            "-1,-1,-1,-1,0,0,0,0,0,1,5,1,5,0,4,0,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,", 
-
-	            // Quick Cache
-	            "-1,-1,-1,-1,0,0,0,0,0,1,2.5,1,2.5,0,4,0,5,True,False,False,True,True,False,False,False,False,False,False,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
-
-	            // Fetch some Travelbugs
-	            "-1,-1,0,0,1,0,0,0,0,1,3,1,3,0,4,0,5,True,False,False,False,False,False,False,False,False,False,False,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
-
-	            // Drop off Travelbugs
-	            "-1,-1,0,0,0,0,0,0,0,1,3,1,3,2,4,0,5,True,False,False,False,False,False,False,False,False,False,False,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
-
-	            // Highlights
-	            "-1,-1,0,0,0,0,0,0,0,1,5,1,5,0,4,3.5,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
-
-	            // Favoriten
-	            "0,0,0,0,0,1,0,0,0,1,5,1,5,0,4,0,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,", 
-
-	            // prepare to archive
-	            "0,0,-1,-1,0,-1,-1,-1,0,1,5,1,5,0,4,0,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
-	            
-	            // Listing Changed
-	            "0,0,0,0,0,0,0,1,0,1,5,1,5,0,4,0,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"
-
-	    };
-			
+	        	
 			
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
@@ -248,22 +251,22 @@ public class PresetListView extends ListView implements ViewOptionsMenu {
 	
 	private void fillPresetList()
 	{
-		addPresetItem(Global.Icons[18], "All caches" );
-		addPresetItem(Global.Icons[2], "All caches to find" );
-		addPresetItem(Global.CacheIconsBig[0], "Quick caches" );
-		addPresetItem(Global.Icons[15], "Grab some travelbugs" );
-		addPresetItem(Global.Icons[16], "Drop off travelbugs" );
-		addPresetItem(Global.Icons[17], "Highlights" );
-		addPresetItem(Global.Icons[19], "Favorites" );
-		addPresetItem(Global.Icons[22], "Prepare to archive" );
-		addPresetItem(Global.Icons[26], "Listing changed" );
+		addPresetItem(Global.Icons[18], "All caches" ,presets[0] );
+		addPresetItem(Global.Icons[2], "All caches to find",presets[1] );
+		addPresetItem(Global.CacheIconsBig[0], "Quick caches",presets[2] );
+		addPresetItem(Global.Icons[15], "Grab some travelbugs",presets[3] );
+		addPresetItem(Global.Icons[16], "Drop off travelbugs",presets[4] );
+		addPresetItem(Global.Icons[17], "Highlights",presets[5] );
+		addPresetItem(Global.Icons[19], "Favorites",presets[6] );
+		addPresetItem(Global.Icons[22], "Prepare to archive",presets[7] );
+		addPresetItem(Global.Icons[26], "Listing changed",presets[8] );
 
 	}
 	
-	private void addPresetItem(Drawable Icon, String Name)
+	private void addPresetItem(Drawable Icon, String Name, String PresetString)
 	{
 		if(lPresets==null)lPresets=new ArrayList<PresetListView.PresetEntry>();
-		lPresets.add(new PresetEntry(Name,Icon));
+		lPresets.add(new PresetEntry(Name,Icon,PresetString));
 	}
 	
     

@@ -356,11 +356,13 @@ public class FilterProperties
             {
                 andParts.add("( PlacedBy like '%" + filterOwner + "%' or Owner like '%" + filterOwner + "%' )");
             }
-            return join(" and ", (String[]) andParts.toArray());
+            
+                       
+            return join(" and ", andParts);
         
     }
 
-	public static String join(String separator , String[] array) 
+	public static String join(String separator , ArrayList<String> array) 
 	{
 		String retString="";
 		
@@ -369,7 +371,7 @@ public class FilterProperties
 		{
 			retString += tmp ;
 			count++;
-			if (count<array.length)retString +=separator;
+			if (count<array.size())retString +=separator;
 		}
 		return retString;
 	}

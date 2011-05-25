@@ -9,10 +9,15 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import org.mapsforge.preprocessing.highwayHierarchies.hierarchyComputation.util.DBConnection;
+
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
+import de.droidcachebox.Events.CachListChangedEventList;
+import de.droidcachebox.Events.CacheListChangedEvent;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
@@ -31,6 +36,7 @@ import de.droidcachebox.Views.SolverView;
 import de.droidcachebox.Views.SpoilerView;
 import de.droidcachebox.Views.WaypointView;
 import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
+import de.droidcachebox.Views.FilterSettings.PresetListView;
 import de.droidcachebox.Views.Forms.EditWaypoint;
 import de.droidcachebox.Views.Forms.HintDialog;
 import de.droidcachebox.Views.Forms.ScreenLock;
@@ -52,6 +58,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -95,7 +102,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class main extends Activity implements SelectedCacheEvent,LocationListener {
+public class main extends Activity implements SelectedCacheEvent,LocationListener,CacheListChangedEvent {
     LayoutInflater inflater;
 	private ImageButton buttonDB;
 	private ImageButton buttonCache;
@@ -266,7 +273,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         
         // add Event Handler
         SelectedCacheEventList.Add(this);
-       
+        CachListChangedEventList.Add(this);
         
         WindowManager w = getWindowManager();
         Display d = w.getDefaultDisplay();
@@ -542,6 +549,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    	}
 		    }
 		});
+		Menu IconMenu=icm.getMenu();
+		Global.Translations.TranslateMenuItem(IconMenu, R.id.miCacheList, "cacheList","  (" + String.valueOf(Database.Data.Query.size()) + ")" );
+		Global.Translations.TranslateMenuItem(IconMenu, R.id.miFilterset, "filter");
+		Global.Translations.TranslateMenuItem(IconMenu, R.id.miAutoResort, "AutoResort");
   	  icm.show();
       }
   	  else if (v == buttonCache)
@@ -552,6 +563,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	  icm = new IconContextMenu(this, R.menu.menu_cache);
   		icm.setOnIconContextItemSelectedListener(new IconContextItemSelectedListener() 
   		{
+
   			@Override
   			public void onIconContextItemSelected(MenuItem item, Object info) 
   			{
@@ -962,5 +974,27 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         relative += targetPath.substring(common.length());     
         return relative; 
     }
+
+    
+   
+	@Override
+	public void CacheListChangedEvent() 
+	{
+		//Database.Data.Query.size();
+		if ((Global.LastFilter.ToString().equals("")) || (Global.LastFilter.ToString().equals(PresetListView.presets[0])))
+        {
+			this.buttonDB.getBackground().clearColorFilter();
+            
+        }
+        else
+        {
+        	this.buttonDB.getBackground().setColorFilter(Color.argb(255, 250, 128, 114), Mode.MULTIPLY); //Color.Salmon;
+        	
+        };
+        
+	}
 	
+   
+    
+    
 }
