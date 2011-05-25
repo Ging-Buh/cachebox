@@ -57,7 +57,7 @@ public class TrackRecorder {
 		            Date now = new Date();
 		            SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
 		            String sDate = datFormat.format(now);
-		            datFormat = new SimpleDateFormat("hh:mm:ss");
+		            datFormat = new SimpleDateFormat("HH:mm:ss");
 		            sDate += "T" + datFormat.format(now) + "Z";
 
 		            writer.append("<time>" + sDate+ "</time>\n"); 
@@ -118,7 +118,7 @@ public class TrackRecorder {
 	            Date now = new Date();
 	            SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
 	            String sDate = datFormat.format(now);
-	            datFormat = new SimpleDateFormat("hh:mm:ss");
+	            datFormat = new SimpleDateFormat("HH:mm:ss");
 	            sDate += "T" + datFormat.format(now) + "Z";
 	            writer.append("   <time>" + sDate + "</time>\n");
 	            writer.append("   <course>" + String.valueOf(Global.Locator.getHeading()) + "</course>\n");

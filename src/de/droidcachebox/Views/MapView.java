@@ -4287,6 +4287,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	@Override
 	public void PositionChanged(Location location) {
 		Global.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());
+		Global.LastValidPosition.Elevation = location.getAltitude();
         // Muss der aktive Track gezeichnet werden?
         if ((Global.AktuelleRoute != null) && Global.AktuelleRoute.ShowRoute)
         {

@@ -896,7 +896,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         Date now = new Date();
         SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
         String sDate = datFormat.format(now);
-        datFormat = new SimpleDateFormat("hhmmss");
+        datFormat = new SimpleDateFormat("HHmmss");
         sDate += " " + datFormat.format(now);
         return sDate;
     }
@@ -906,7 +906,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         Date now = new Date();
         SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
         String sDate = datFormat.format(now);
-        datFormat = new SimpleDateFormat("hh:mm:ss");
+        datFormat = new SimpleDateFormat("HH:mm:ss");
         sDate += "T" + datFormat.format(now) + "Z";
         return sDate;
     }
