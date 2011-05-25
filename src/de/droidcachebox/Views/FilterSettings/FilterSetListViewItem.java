@@ -51,9 +51,10 @@ public class FilterSetListViewItem extends View {
 
     public FilterSetEntry getFilterSetEntry(){return mFilterSetEntry;}
     
-    public void addChild(FilterSetListViewItem item)
+    public FilterSetListViewItem addChild(FilterSetListViewItem item)
 	{
 		mChildList.add(item);
+		return item;
 	}
     
     public void toggleChildeViewState()
@@ -269,7 +270,7 @@ public class FilterSetListViewItem extends View {
     		Global.Icons[27].draw(canvas);
     		Global.Icons[27].setBounds(oldBounds);
     	}
-    	else if(this.mFilterSetEntry.getState()==2)
+    	else if(this.mFilterSetEntry.getState()==-1)
     	{
     		Rect oldBounds =  Global.Icons[28].getBounds();
     		Global.Icons[28].setBounds(rChkBounds);
@@ -369,6 +370,52 @@ public class FilterSetListViewItem extends View {
 	public void stateClick() 
 	{
 		this.mFilterSetEntry.stateClick();
+	}
+
+	public void setValue(int value) 
+	{
+		
+		this.mFilterSetEntry.setState(value);
+		
+	}
+	
+	public void setValue(float value) 
+	{
+		this.mFilterSetEntry.setState(value);
+		
+	}
+
+	public int getChecked() 
+	{
+		return mFilterSetEntry.getState();
+	}
+
+	public float getValue() 
+	{
+		return (float) mFilterSetEntry.getNumState();
+	}
+
+	public FilterSetListViewItem getChild(int i) 
+	{
+		return mChildList.get(i);
+	}
+
+	public void setValue(boolean b) 
+	{
+		this.mFilterSetEntry.setState(b? 1:0);
+	}
+
+	public int getChildLength() 
+	{
+		return mChildList.size();
+	}
+
+	public boolean getBoolean() 
+	{
+		if(mFilterSetEntry.getState()==1)
+			return false;
+		
+		return true;
 	}
     
 }

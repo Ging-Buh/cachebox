@@ -27,6 +27,9 @@ public class EditFilterSettings extends Activity {
 	private MultiToggleButton btSet;
 	private TableRow trPre;
 	private TableRow trSet;
+	private PresetListView lvPre;
+	private FilterSetListView lvSet;
+
 	
 	public void onCreate(Bundle savedInstanceState) 
 	{
@@ -106,18 +109,18 @@ public class EditFilterSettings extends Activity {
 	
 	private void initialPresets()
 	{
-		PresetListView presetLV = new PresetListView(this, this);
+		lvPre = new PresetListView(this, this);
 		FrameLayout presetLayout = (FrameLayout) findViewById(R.id.layout_filter_presets);
 		presetLayout.removeAllViews();
-		presetLayout.addView(presetLV);
+		presetLayout.addView(lvPre);
 	}
 	
 	private void initialSettings()
 	{
-		FilterSetListView filterSetLV = new FilterSetListView(this, this);
+		lvSet = new FilterSetListView(this, this);
 		FrameLayout filterSetLayout = (FrameLayout) findViewById(R.id.layout_filter_setting);
 		filterSetLayout.removeAllViews();
-		filterSetLayout.addView(filterSetLV);
+		filterSetLayout.addView(lvSet);
 		
 	}
 	
@@ -137,6 +140,7 @@ public class EditFilterSettings extends Activity {
 		{
 			trPre.setVisibility(View.GONE);
 			trSet.setVisibility(View.VISIBLE);
+			lvSet.OnShow();
 		}
 	}
 	private void switchVisibility(int state)

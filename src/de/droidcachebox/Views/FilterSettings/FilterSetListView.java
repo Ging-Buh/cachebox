@@ -1,38 +1,18 @@
 package de.droidcachebox.Views.FilterSettings;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-
-import de.droidcachebox.Config;
-import de.droidcachebox.Database;
+import de.droidcachebox.FilterProperties;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.CacheList;
-import de.droidcachebox.Geocaching.FieldNoteEntry;
-import de.droidcachebox.Geocaching.FieldNoteList;
-import de.droidcachebox.Geocaching.Waypoint;
 import de.droidcachebox.Views.FieldNoteViewItem;
-import de.droidcachebox.Views.CacheListView.CustomAdapter;
-import de.droidcachebox.Views.Forms.EditFieldNote;
-import de.droidcachebox.Views.Forms.EditWaypoint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.database.Cursor;
-import android.graphics.Path.FillType;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.provider.OpenableColumns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -41,20 +21,46 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class FilterSetListView extends ListView implements ViewOptionsMenu {
 
 	public static FilterSetEntry aktFilterSetEntry;
-	
-	
+	public static final int COLLABSE_BUTTON_ITEM=0;
+	public static final int CHECK_ITEM=1;
+	public static final int THREE_STATE_ITEM=2;
+	public static final int NUMERICK_ITEM=3;
+	public static float lastTouchX;
+	public static float lastTouchY;
+	public static int windowW=0;
+    public static int windowH=0 ;
+    
+    private static FilterSetListViewItem NotAvailable;
+	private static FilterSetListViewItem Archived;
+	private static FilterSetListViewItem Finds;
+	private static FilterSetListViewItem Own;
+	private static FilterSetListViewItem ContainsTravelBugs;
+	private static FilterSetListViewItem Favorites;
+	private static FilterSetListViewItem HasUserData;
+	private static FilterSetListViewItem ListingChanged;
+	private static FilterSetListViewItem WithManualWaypoint;
+	private static FilterSetListViewItem minTerrain;
+	private static FilterSetListViewItem maxTerrain;
+	private static FilterSetListViewItem minDifficulty;
+	private static FilterSetListViewItem maxDifficulty;
+	private static FilterSetListViewItem minContainerSize;
+	private static FilterSetListViewItem maxContainerSize;
+	private static FilterSetListViewItem minRating;
+	private static FilterSetListViewItem maxRating;
+	private static FilterSetListViewItem Types;
+	private static FilterSetListViewItem Attr ;
+    
 	private ArrayList<FilterSetEntry> lFilterSets;
 	private ArrayList<FilterSetListViewItem>lFilterSetListViewItems;
 	private CustomAdapter lvAdapter;
-	public static float lastTouchX;
-	public static float lastTouchY;
+	private Context mContext;
 	
- 	public static class FilterSetEntry
+	
+	public static class FilterSetEntry
 	{
 		private String mName;
 		private Drawable mIcon;
@@ -93,6 +99,10 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 		public void setState(int State)
 		{
 			mState=State;
+		}
+		public void setState(float State)
+		{
+			mNumerickState=State;
 		}
 		
 		public String getName(){return mName;}
@@ -134,16 +144,13 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 			}
 			else if(mItemType==FilterSetListView.THREE_STATE_ITEM)
 			{
-				if(mState>2)mState=0;
+				if(mState>1)mState=-1;
 			}
 		}
 		
 	}
 	
-	
-	
-	private Context mContext;
-	public FilterSetListView(Context context, final Activity parentActivity) {
+ 	public FilterSetListView(Context context, final Activity parentActivity) {
 		super(context);
 		mContext=context;
 
@@ -154,42 +161,15 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 		lvAdapter = new CustomAdapter(getContext(), lFilterSets, lFilterSetListViewItems);
 		this.setAdapter(lvAdapter);
 
-		this.setOnItemClickListener(new OnItemClickListener() {
+		this.setOnItemClickListener(new OnItemClickListener() 
+		{
 			
-	        public String[] presets = new String[] {
-	            // All Caches
-	            "0,0,0,0,0,0,0,0,0,1,5,1,5,0,4,0,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,", 
-
-	            // All Caches to find
-	            "-1,-1,-1,-1,0,0,0,0,0,1,5,1,5,0,4,0,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,", 
-
-	            // Quick Cache
-	            "-1,-1,-1,-1,0,0,0,0,0,1,2.5,1,2.5,0,4,0,5,True,False,False,True,True,False,False,False,False,False,False,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
-
-	            // Fetch some Travelbugs
-	            "-1,-1,0,0,1,0,0,0,0,1,3,1,3,0,4,0,5,True,False,False,False,False,False,False,False,False,False,False,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
-
-	            // Drop off Travelbugs
-	            "-1,-1,0,0,0,0,0,0,0,1,3,1,3,2,4,0,5,True,False,False,False,False,False,False,False,False,False,False,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
-
-	            // Highlights
-	            "-1,-1,0,0,0,0,0,0,0,1,5,1,5,0,4,3.5,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
-
-	            // Favoriten
-	            "0,0,0,0,0,1,0,0,0,1,5,1,5,0,4,0,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,", 
-
-	            // prepare to archive
-	            "0,0,-1,-1,0,-1,-1,-1,0,1,5,1,5,0,4,0,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,",
-	            
-	            // Listing Changed
-	            "0,0,0,0,0,0,0,1,0,1,5,1,5,0,4,0,5,True,True,True,True,True,True,True,True,True,True,True,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"
-
-	    };
-			
+	       		
 			
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
+					int arg2, long arg3) 
+			{
 				if(((FilterSetListViewItem)arg1).getFilterSetEntry().getItemType()==FilterSetListView.COLLABSE_BUTTON_ITEM)
 					collabseButton_Clicked((FilterSetListViewItem) arg1);
 				lvAdapter.notifyDataSetInvalidated();
@@ -207,10 +187,12 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 					if(plusBtnHitRec.contains((int)FilterSetListView.lastTouchX, (int)FilterSetListView.lastTouchY))
 					{
 						((FilterSetListViewItem)arg1).plusClick();
+						SaveFilter();
 					}
 					else if(minusBtnHitRec.contains((int)FilterSetListView.lastTouchX, (int)FilterSetListView.lastTouchY))
 					{
 						((FilterSetListViewItem)arg1).minusClick();
+						SaveFilter();
 					}
 				}
 				
@@ -221,12 +203,19 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 					if(plusBtnHitRec.contains((int)FilterSetListView.lastTouchX, (int)FilterSetListView.lastTouchY))
 					{
 						((FilterSetListViewItem)arg1).stateClick();
+						SaveFilter();
 					}
 					
 				}
 				
 				return;
 			}
+			
+			private void SaveFilter()
+			{
+				Global.LastFilter = FilterSetListView.SaveFilterProperties();
+			}
+			
 		});
 		
 		this.setOnTouchListener(new OnTouchListener() {
@@ -247,10 +236,7 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 		
 	}
 
- 	static public int windowW=0;
-    static public int windowH=0 ;
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) 
+ 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) 
     {
     // we overriding onMeasure because this is where the application gets its right size.
     	super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -293,12 +279,7 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 	    }
 	}
 	
-	
-	
-	
-	
-	@Override
-	public boolean ItemSelected(MenuItem item) {
+    public boolean ItemSelected(MenuItem item) {
 		
 		switch (item.getItemId())
 		{
@@ -321,8 +302,12 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 	}
 
 	@Override
-	public void OnShow() {
-		// TODO Auto-generated method stub
+	public void OnShow() 
+	{
+		if(Global.LastFilter != null && !Global.LastFilter.ToString().equals(""))
+		{
+			LoadFilterProperties(Global.LastFilter);
+		}
 	
 	}
 
@@ -343,8 +328,6 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 		
 	}
 	
-
-	@Override
 	public int GetContextMenuId() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -365,40 +348,35 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 		return false;
 	}
 
-	public static final int COLLABSE_BUTTON_ITEM=0;
-	public static final int CHECK_ITEM=1;
-	public static final int THREE_STATE_ITEM=2;
-	public static final int NUMERICK_ITEM=3;
-	
 	private void fillFilterSetList()
 	{
 		Resources res = mContext.getResources();
 		
 		// add General
 		FilterSetListViewItem General = addFilterSetCollabseItem(null, "General", COLLABSE_BUTTON_ITEM);
-		General.addChild(addFilterSetItem(  Global.Icons[25], "disabled", CHECK_ITEM ));
-		General.addChild(addFilterSetItem(  Global.Icons[24], "archived", CHECK_ITEM ));
-		General.addChild(addFilterSetItem(  Global.Icons[2], "my finds", CHECK_ITEM ));
-		General.addChild(addFilterSetItem(  Global.Icons[17], "my own caches", CHECK_ITEM ));
-		General.addChild(addFilterSetItem(  Global.Icons[10], "with trackables", CHECK_ITEM ));
-		General.addChild(addFilterSetItem(  Global.Icons[19], "favorites", CHECK_ITEM ));            
-		General.addChild(addFilterSetItem(  Global.Icons[21], "has user data", CHECK_ITEM ));
-		General.addChild(addFilterSetItem(  Global.Icons[26], "listing changed", CHECK_ITEM ));
-		General.addChild(addFilterSetItem(  Global.Icons[26], "manual waypoint", CHECK_ITEM ));
+		NotAvailable = General.addChild(addFilterSetItem(  Global.Icons[25], "disabled", THREE_STATE_ITEM ));
+		Archived = General.addChild(addFilterSetItem(  Global.Icons[24], "archived", THREE_STATE_ITEM ));
+		Finds = General.addChild(addFilterSetItem(  Global.Icons[2], "my finds", THREE_STATE_ITEM ));
+		Own = General.addChild(addFilterSetItem(  Global.Icons[17], "my own caches", THREE_STATE_ITEM ));
+		ContainsTravelBugs = General.addChild(addFilterSetItem(  Global.Icons[10], "with trackables", THREE_STATE_ITEM ));
+		Favorites = General.addChild(addFilterSetItem(  Global.Icons[19], "favorites", THREE_STATE_ITEM ));            
+		HasUserData = General.addChild(addFilterSetItem(  Global.Icons[21], "has user data", THREE_STATE_ITEM ));
+		ListingChanged = General.addChild(addFilterSetItem(  Global.Icons[26], "listing changed", THREE_STATE_ITEM ));
+		WithManualWaypoint = General.addChild(addFilterSetItem(  Global.Icons[26], "manual waypoint", THREE_STATE_ITEM ));
 		
 		// add D/T
 		FilterSetListViewItem DT = addFilterSetCollabseItem(null, "D / T", COLLABSE_BUTTON_ITEM);
-		DT.addChild(addFilterSetItem( Global.StarIcons, "Min. Difficulty", NUMERICK_ITEM, 1, 5, 1, 0.5f));
-		DT.addChild(addFilterSetItem( Global.StarIcons, "Max. Difficulty", NUMERICK_ITEM, 1, 5, 5, 0.5f));
-		DT.addChild(addFilterSetItem( Global.StarIcons, "Min. Terrain", NUMERICK_ITEM, 1, 5, 1, 0.5f));
-		DT.addChild(addFilterSetItem( Global.StarIcons, "Max. Terrain", NUMERICK_ITEM, 1, 5, 5, 0.5f));
-		DT.addChild(addFilterSetItem( Global.SizeIcons, "Min. Container Size", NUMERICK_ITEM, 0, 4, 0, 1));
-		DT.addChild(addFilterSetItem( Global.SizeIcons, "Max. Container Size", NUMERICK_ITEM, 0, 4, 4, 1));
-		DT.addChild(addFilterSetItem( Global.StarIcons, "Min. Rating", NUMERICK_ITEM, 0, 5, 0, 0.5f));
-		DT.addChild(addFilterSetItem( Global.StarIcons, "Max. Rating", NUMERICK_ITEM, 0, 5, 5, 0.5f));
+		minDifficulty = DT.addChild(addFilterSetItem( Global.StarIcons, "Min. Difficulty", NUMERICK_ITEM, 1, 5, 1, 0.5f));
+		maxDifficulty = DT.addChild(addFilterSetItem( Global.StarIcons, "Max. Difficulty", NUMERICK_ITEM, 1, 5, 5, 0.5f));
+		minTerrain = DT.addChild(addFilterSetItem( Global.StarIcons, "Min. Terrain", NUMERICK_ITEM, 1, 5, 1, 0.5f));
+		maxTerrain = DT.addChild(addFilterSetItem( Global.StarIcons, "Max. Terrain", NUMERICK_ITEM, 1, 5, 5, 0.5f));
+		minContainerSize = DT.addChild(addFilterSetItem( Global.SizeIcons, "Min. Container Size", NUMERICK_ITEM, 0, 4, 0, 1));
+		maxContainerSize = DT.addChild(addFilterSetItem( Global.SizeIcons, "Max. Container Size", NUMERICK_ITEM, 0, 4, 4, 1));
+		minRating = DT.addChild(addFilterSetItem( Global.StarIcons, "Min. Rating", NUMERICK_ITEM, 0, 5, 0, 0.5f));
+		maxRating = DT.addChild(addFilterSetItem( Global.StarIcons, "Max. Rating", NUMERICK_ITEM, 0, 5, 5, 0.5f));
 		
 		// add CacheTypes
-		FilterSetListViewItem Types = addFilterSetCollabseItem(null, "Cache Types", COLLABSE_BUTTON_ITEM);
+		Types = addFilterSetCollabseItem(null, "Cache Types", COLLABSE_BUTTON_ITEM);
 		Types.addChild(addFilterSetItem( Global.CacheIconsBig[0], "Traditional", CHECK_ITEM ));
 		Types.addChild(addFilterSetItem( Global.CacheIconsBig[1], "Multi-Cache", CHECK_ITEM ));
 		Types.addChild(addFilterSetItem( Global.CacheIconsBig[2], "Mystery", CHECK_ITEM ));
@@ -412,7 +390,7 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 		Types.addChild(addFilterSetItem( Global.CacheIconsBig[10], "Wherigo", CHECK_ITEM ));
 		
 		//add Attributes
-		FilterSetListViewItem Attr = addFilterSetCollabseItem(null, "Attributes", COLLABSE_BUTTON_ITEM);
+		Attr = addFilterSetCollabseItem(null, "Attributes", COLLABSE_BUTTON_ITEM);
 		Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_1_1), "Dogs", THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_32_1), "Bicycles", THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_33_1), "Motorcycles", THREE_STATE_ITEM ));
@@ -531,13 +509,81 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 		return v;
 	}
 	
-    
-	
 	private void collabseButton_Clicked(FilterSetListViewItem item)
 	{
 		item.toggleChildeViewState();
 		this.invalidate();
 	}
+	
+
+	
+	public void LoadFilterProperties(FilterProperties props)
+    {
+        NotAvailable.setValue(props.NotAvailable);
+        Archived.setValue(props.Archived);
+        Finds.setValue(props.Finds);
+        Own.setValue(props.Own);
+        ContainsTravelBugs.setValue(props.ContainsTravelbugs);
+        Favorites.setValue(props.Favorites);           
+        HasUserData.setValue(props.HasUserData);
+        ListingChanged.setValue(props.ListingChanged);
+        WithManualWaypoint.setValue(props.WithManualWaypoint);
+        
+        minTerrain.setValue(props.MinTerrain);
+        maxTerrain.setValue(props.MaxTerrain);
+        minDifficulty.setValue(props.MinDifficulty);
+        maxDifficulty.setValue(props.MaxDifficulty);
+        minContainerSize.setValue(props.MinContainerSize);
+        maxContainerSize.setValue(props.MaxContainerSize);
+        minRating.setValue(props.MinRating);
+        maxRating.setValue(props.MaxRating);
+        
+
+        for (int i = 0; i < 11; i++)
+        	Types.getChild(i).setValue(props.cacheTypes[i]);
+
+        for (int i = 0; i < Attr.getChildLength(); i++)
+        {
+            if (i < props.attributesFilter.length)
+            	Attr.getChild(i).setValue(props.attributesFilter[i]);
+        }
+
+    }
+	
+	public static FilterProperties SaveFilterProperties()
+     {
+         FilterProperties props = new FilterProperties();
+         props.NotAvailable = NotAvailable.getChecked();
+         props.Archived = Archived.getChecked();
+         props.Finds = Finds.getChecked();
+         props.Own = Own.getChecked();
+         props.ContainsTravelbugs = ContainsTravelBugs.getChecked();
+         props.Favorites = Favorites.getChecked();            
+         props.HasUserData = HasUserData.getChecked();
+         props.ListingChanged = ListingChanged.getChecked();
+         props.WithManualWaypoint = WithManualWaypoint.getChecked();
+
+         props.MinDifficulty = minDifficulty.getValue();
+         props.MaxDifficulty = maxDifficulty.getValue();
+         props.MinTerrain = minTerrain.getValue();
+         props.MaxTerrain = maxTerrain.getValue();
+         props.MinContainerSize = minContainerSize.getValue();
+         props.MaxContainerSize = maxContainerSize.getValue();
+         props.MinRating = minRating.getValue();
+         props.MaxRating = maxRating.getValue();
+
+         for (int i = 0; i < 11; i++)
+             props.cacheTypes[i] = Types.getChild(i).getBoolean();
+
+         for (int i = 0; i < Attr.getChildLength(); i++)
+         {
+             if (i < props.attributesFilter.length)
+                 props.attributesFilter[i] = Attr.getChild(i).getChecked();
+         }
+        
+         return props;
+     }
+
 	
 }
 
