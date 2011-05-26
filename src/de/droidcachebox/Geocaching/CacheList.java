@@ -113,6 +113,7 @@ public class CacheList extends ArrayList<Cache> {
     
     public void Resort()
     {
+        Global.ResortAtWork = true;
 //        Cursor.Current = Cursors.WaitCursor;
 
         // Alle Distanzen aktualisieren
@@ -140,5 +141,6 @@ public class CacheList extends ArrayList<Cache> {
          CachListChangedEventList.Call();
 
 //        Cursor.Current = Cursors.Default;    	
+         Global.ResortAtWork = false;
     }
 }

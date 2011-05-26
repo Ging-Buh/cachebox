@@ -23,6 +23,8 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnPreparedListener;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
@@ -43,7 +45,8 @@ public class Global {
 	public static SmoothScrollingTyp SmoothScrolling = SmoothScrollingTyp.normal;
 	public static RouteOverlay.Route AktuelleRoute = null;
     public static int aktuelleRouteCount = 0;
-
+    public static boolean ResortAtWork = false;
+    
     public static long TrackDistance;
     
     //Sizes
@@ -554,6 +557,27 @@ public class Global {
 				e.printStackTrace();
 			}
         }
+    }
+    
+    public static void PlaySound(String soundFile)
+    {
+    	if (!Config.GetBool("PlaySounds"))
+    		return;
+    	MediaPlayer mp = new MediaPlayer();
+        mp.setOnPreparedListener(new OnPreparedListener() { 
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.start();
+            }
+        });
+        try 
+        {
+			mp.setDataSource(Config.WorkPath + "/data/sound/" + soundFile);
+            mp.prepare();
+		} catch (Exception e) {
+			Global.AddLog("Error PlaySound: " + Config.WorkPath + "/data/sound/" + soundFile + " - " + e.getMessage());
+			e.printStackTrace();
+		}    	
     }
 
     

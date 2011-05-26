@@ -1,6 +1,7 @@
 package de.droidcachebox;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,6 +72,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -91,6 +93,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewManager;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -608,6 +611,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    		Global.autoResort = !(Global.autoResort);
 		            
 		            Config.Set("AutoResort", Global.autoResort);
+
+		            if (Global.autoResort)
+		            	Database.Data.Query.Resort();
 		    		break;
 		    	
 		    	}
@@ -921,53 +927,53 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     }
     
        
+    boolean initialResortAfterFirstFixCompleted = false;
+    boolean initialFixSoundCompleted = false;
+    
 
 	@Override
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
 		Global.Locator.setLocation(location);
 		PositionEventList.Call(location);
-/*
-            if (!initialResortAfterFirstFixCompleted && sender.LastValidPosition.Valid)
-            {
-                if (Global.SelectedCache == null)
-                    Resort(null);
-                initialResortAfterFirstFixCompleted = true;
-            }
-            if (!initialFixSoundCompleted && Global.Locator.NumSatellites > 0)
-            {
-                Sound oSound = new Sound(Global.AppPath + "\\data\\sounds\\GPS_Fix.wav");
-                oSound.Play();
-                initialFixSoundCompleted = true;
-            }
-*/
-            TrackRecorder.recordPosition();
-/*
-            if (curView != null)
-                (curView as ViewPanel).OnPositionChanged(Global.Locator);
 
-            // schau die 50 nächsten Caches durch, wenn einer davon näher ist als der aktuell nächste -> umsortieren und raus
-            // only when showing Map or cacheList
-            if (Global.autoResort && (curView == views[4] || curView == views[2]))
-            {
+        if (!initialResortAfterFirstFixCompleted && Global.LastValidPosition.Valid)
+        {
+            if (Global.SelectedCache() == null)
+                Database.Data.Query.Resort();
+            initialResortAfterFirstFixCompleted = true;
+        }
+        if (!initialFixSoundCompleted && Global.LastValidPosition.Valid)
+        {
+        	Global.PlaySound("GPS_Fix.wav");
+        	initialFixSoundCompleted = true;
+        }
+
+		TrackRecorder.recordPosition();
+        // schau die 50 nächsten Caches durch, wenn einer davon näher ist als der aktuell nächste -> umsortieren und raus
+        // only when showing Map or cacheList
+		if (!Global.ResortAtWork)
+		{
+			if (Global.autoResort && ((aktView == mapView) || (aktView == cacheListView)))
+			{
                 int z = 0;
-                if (!(Global.NearestCache == null))
-                    foreach (Geocaching.Cache cache in Geocaching.Cache.Query)
+                if (!(Global.NearestCache() == null))
+                {
+                    for (Cache cache : Database.Data.Query)
                     {
                         z++;
                         if (z >= 50)
                             return;
-                        if (cache.Distance < Global.NearestCache.Distance)
+                        if (cache.Distance() < Global.NearestCache().Distance())
                         {
-                            Resort(null);
-                            Sound oSound = new Sound(Global.AppPath + "\\data\\sounds\\AutoResort.wav");
-                            oSound.Play();
+                            Database.Data.Query.Resort();
+                            Global.PlaySound("AutoResort.wav");
                             return;
                         }
                     }
-            }
-		
- */
+                }
+			}
+		}
 	}
 
 	@Override

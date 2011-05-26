@@ -855,8 +855,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
-//		if (Global.autoResort)
-//			return;
+		if (Global.autoResort)
+			return;
 		
 		if (cache == null)
 			return;
@@ -3415,6 +3415,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         updateCacheList();
         Render(true);
       }
+      // Shutdown Autoresort
+      Global.autoResort = false;
 //      this.Focus();
     }
 /*
