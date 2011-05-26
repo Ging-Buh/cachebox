@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/miLogView" android:title="LogView"></item>
-    <item android:id="@+id/miSpoilerView" android:title="Spoilers"></item>
-    <item android:title="Hint" android:id="@+id/miHint"></item>
-    <item android:id="@+id/miFieldNotes" android:title="Field Notes"></item>
+    <item android:id="@+id/miLogView" android:title="LogView" android:icon="@drawable/list_icon"></item>
+    <item android:id="@+id/miSpoilerView" android:title="Spoilers" android:icon="@drawable/images_icon"></item>
+    <item android:title="Hint" android:id="@+id/miHint" android:icon="@drawable/hint_icon"></item>
+    <item android:id="@+id/miFieldNotes" android:title="Field Notes" android:icon="@drawable/note_icon"></item>
 </menu>

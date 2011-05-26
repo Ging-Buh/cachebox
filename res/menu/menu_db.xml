@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/miCacheList" android:title="@string/CacheList"></item>
+    <item android:id="@+id/miCacheList" android:title="@string/CacheList" android:icon="@drawable/list_icon"></item>
     <item android:title="Filter" android:id="@+id/miFilterset" android:icon="@drawable/filter"></item>
-    <item android:title="Manage" android:id="@+id/miManageDB"></item>
-    <item android:id="@+id/miResort" android:title="Resort"></item>
-    <item android:checked="false" android:id="@+id/miAutoResort" android:title="AutoResort" android:checkable="true"></item>
+    <item android:title="Manage" android:id="@+id/miManageDB" android:icon="@drawable/manage_db"></item>
+    <item android:id="@+id/miResort" android:title="Resort" android:icon="@drawable/sort_icon"></item>
+    <item android:checked="false" android:id="@+id/miAutoResort" android:title="AutoResort" android:checkable="true" android:icon="@drawable/sort_icon"></item>
     
 </menu>
