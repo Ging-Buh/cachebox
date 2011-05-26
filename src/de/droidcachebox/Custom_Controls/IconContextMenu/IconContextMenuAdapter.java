@@ -1,5 +1,6 @@
 package de.droidcachebox.Custom_Controls.IconContextMenu;
 
+import de.droidcachebox.Global;
 import android.content.Context;
 import android.view.*;
 import android.widget.*;
@@ -39,7 +40,22 @@ public class IconContextMenuAdapter extends BaseAdapter {
 
         res.setTag(item);
         res.setText(item.getTitle());
-        res.setCompoundDrawablesWithIntrinsicBounds( null, null,item.getIcon(), null);
+        if(item.isCheckable())
+        {
+        	if(item.isChecked())
+        	{
+        		res.setCompoundDrawablesWithIntrinsicBounds( Global.ChkIcons[1], null,item.getIcon(), null);
+        	}
+        	else
+        	{
+        		res.setCompoundDrawablesWithIntrinsicBounds( Global.ChkIcons[0], null,item.getIcon(), null);
+        	}
+        }
+        else
+        {
+        	res.setCompoundDrawablesWithIntrinsicBounds( null, null,item.getIcon(), null);
+        }
+        
               
         res.setEnabled(item.isEnabled());
         return res;

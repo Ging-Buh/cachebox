@@ -63,6 +63,7 @@ public class Global {
     public static Drawable[] BatteryIcons;
     public static Drawable[] LogIcons;
     public static Drawable[] Arrows;
+    public static Drawable[] ChkIcons;
     
     // New Map Icons
     public static ArrayList<ArrayList<Drawable>> NewMapIcons = new ArrayList<ArrayList<Drawable>>();
@@ -448,7 +449,12 @@ public class Global {
 
         };
        
-          
+        ChkIcons = new Drawable[] { 
+        		res.getDrawable(N? R.drawable.night_btn_check_off : R.drawable.day_btn_check_off  ),
+        		res.getDrawable(N? R.drawable.night_btn_check_on : R.drawable.day_btn_check_on  ),
+        		
+
+};  
         
     }
 
@@ -525,6 +531,7 @@ public class Global {
     static LockClass lockObject = new LockClass();
     public static boolean Debug = true;
 	public static FilterProperties LastFilter = null;
+	public static boolean autoResort;
 	
     /// <summary>
     /// Fügt die übergebene Zeile in debug.txt ein

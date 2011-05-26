@@ -605,10 +605,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    		Database.Data.Query.Resort();
 		    		break;
 		    	case R.id.miAutoResort:
-		    		if (item.isChecked())
-		    			item.setChecked(false);
-		    		else
-		    			item.setChecked(true);
+		    		Global.autoResort = !(Global.autoResort);
+		            
+		            Config.Set("AutoResort", Global.autoResort);
 		    		break;
 		    	
 		    	}
@@ -619,7 +618,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		Global.Translations.TranslateMenuItem(IconMenu, R.id.miFilterset, "filter");
 		Global.Translations.TranslateMenuItem(IconMenu, R.id.miManageDB, "manage");
 		Global.Translations.TranslateMenuItem(IconMenu, R.id.miResort, "ResortList");
-		Global.Translations.TranslateMenuItem(IconMenu, R.id.miAutoResort, "AutoResort");
+		MenuItem miAutoResort = Global.Translations.TranslateMenuItem(IconMenu, R.id.miAutoResort, "AutoResort");
+		miAutoResort.setCheckable(true);
+		miAutoResort.setChecked(Global.autoResort);
+		//AutoResortButton.ButtonImage = (Global.autoResort) ? Global.Icons[6] : Global.Icons[7];
   	  icm.show();
       }
   	  else if (v == buttonCache)
