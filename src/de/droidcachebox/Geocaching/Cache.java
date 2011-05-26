@@ -468,6 +468,7 @@ public class Cache implements Comparable<Cache> {
 
     public enum Attributes
     {
+    	Default,
     	Dogs,
     	Fee,
     	ClimbingGear ,
@@ -528,43 +529,48 @@ public class Cache implements Comparable<Cache> {
     }
     public static long GetAttributeIndex(Attributes attrib)
     {
-    	return ((long)1) << (attrib.ordinal()+1);
+    	return ((long)1) << (attrib.ordinal());
     }
- /*
-    protected ulong attributesPositive = 0;
-    public ulong AttributesPositive
+ 
+    protected long attributesPositive = 0;
+    public long AttributesPositive()
     {
-    get
-    {
-    if (attributesPositive == 0)
-    {
-    SqlCeCommand command = new SqlCeCommand("select AttributesPositive from Caches where Id=@id", Database.Data.Connection);
-    command.Parameters.Add("@id", DbType.Int64).Value = this.Id;
-    String data = command.ExecuteScalar().ToString();
-    attributesPositive = (data.Length > 0) ? ulong.Parse(data) : 0;
-    command.Dispose();
-    }
-    return attributesPositive;
-    }
+    	if (attributesPositive == 0)
+    	{
+            Cursor c = Database.Data.myDB.rawQuery("select AttributesPositive from Caches where Id=?", new String[] { String.valueOf(Id) });
+            c.moveToFirst();
+            while(c.isAfterLast() == false)
+            {
+            	if (!c.isNull(0))
+            		attributesPositive = c.getLong(0);
+            	else
+            		attributesPositive = 0;
+                break;
+            };
+            c.close();
+    	}
+    	return attributesPositive;
     }
 
-    protected ulong attributesNegative = 0;
-    public ulong AttributesNegative
+    protected long attributesNegative = 0;
+    public long AttributesNegative()
     {
-    get
-    {
-    if (attributesNegative == 0)
-    {
-    SqlCeCommand command = new SqlCeCommand("select AttributesNegative from Caches where Id=@id", Database.Data.Connection);
-    command.Parameters.Add("@id", DbType.Int64).Value = this.Id;
-    String data = command.ExecuteScalar().ToString();
-    attributesNegative = (data.Length > 0)? ulong.Parse(data) : 0;
-    command.Dispose();
+    	if (attributesNegative == 0)
+    	{
+            Cursor c = Database.Data.myDB.rawQuery("select AttributesNegative from Caches where Id=?", new String[] { String.valueOf(Id) });
+            c.moveToFirst();
+            while(c.isAfterLast() == false)
+            {
+            	if (!c.isNull(0))
+            		attributesNegative = c.getLong(0);
+            	else
+            		attributesNegative = 0;
+                break;
+            };
+            c.close();
+    	}
+    	return attributesNegative;
     }
-    return attributesNegative;
-    }
-    }
-    */
 
     public Cache(Cursor reader)
     {
