@@ -137,9 +137,9 @@ public class PresetListViewItem extends View {
     protected void onDraw(Canvas canvas) {
         
     	boolean PresetEquelsFilter = false;
-    	if(Global.LastFilter!=null)
+    	if(EditFilterSettings.tmpFilterProps!=null)
     	{
-	    	if(Global.LastFilter.ToString().equals(mPresetEntry.getPresetString()))
+	    	if(EditFilterSettings.tmpFilterProps.ToString().equals(mPresetEntry.getPresetString()))
 	    	{
 	    		PresetEquelsFilter = true;
 	    	}

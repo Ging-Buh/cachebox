@@ -117,7 +117,7 @@ public class PresetListView extends ListView implements ViewOptionsMenu {
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				
-				Global.LastFilter = new FilterProperties(presets[arg2]);
+				EditFilterSettings.tmpFilterProps = new FilterProperties(presets[arg2]);
 				
         		invalidate();
 				return;

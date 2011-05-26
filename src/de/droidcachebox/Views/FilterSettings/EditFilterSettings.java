@@ -12,6 +12,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -20,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TableRow;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+import android.app.ProgressDialog;
 
 public class EditFilterSettings extends Activity {
 
@@ -29,13 +32,17 @@ public class EditFilterSettings extends Activity {
 	private TableRow trSet;
 	private PresetListView lvPre;
 	private FilterSetListView lvSet;
-
+	public static FilterProperties tmpFilterProps;
+	public static Activity filterActivity;
 	
 	public void onCreate(Bundle savedInstanceState) 
 	{
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.edit_filter);
+		
+		filterActivity=this;
+		tmpFilterProps=Global.LastFilter;
 		
 		btPre = (MultiToggleButton) findViewById(R.id.edfi_pre);
 		btSet = (MultiToggleButton) findViewById(R.id.edfi_set);
@@ -79,9 +86,9 @@ public class EditFilterSettings extends Activity {
             @Override
             public void onClick(View v) 
             {
+            	Global.LastFilter=tmpFilterProps;
             	ApplyFilter(Global.LastFilter);
-            	Toast.makeText(main.mainActivity, "Applay filter. Found " + String.valueOf(Database.Data.Query.size()) + " Caches!", Toast.LENGTH_LONG).show();
-            	finish();	            	
+            	            	
             }
           });
         Button bCancel = (Button) findViewById(R.id.edfi_cancel);
@@ -158,35 +165,54 @@ public class EditFilterSettings extends Activity {
 		switchVisibility();
 	}
 	
-	
-	 public static void ApplyFilter(FilterProperties props)
+		
+	private static ProgressDialog pd;
+	private static FilterProperties props;
+	public static void ApplyFilter(FilterProperties Props)
 	    {
-	       // Cursor.Current = Cursors.WaitCursor;
+			props = Props;
+		  pd = ProgressDialog.show(EditFilterSettings.filterActivity, "", 
+                 Global.Translations.Get("LoadCaches"), true);
+		
+		  Thread thread = new Thread()
+		  {
+		      @Override
+		      public void run() 
+		      {
+		    	  String sqlWhere =props.getSqlWhere();
+			      Global.AddLog("Main.ApplyFilter: " + sqlWhere);
+			      Database.Data.Query.clear();
+			      Database.Data.Query.LoadCaches(sqlWhere);
+			      messageHandler.sendMessage(messageHandler.obtainMessage(1));
+		      }
 
-	    	String sqlWhere =props.getSqlWhere();
-	        Global.AddLog("Main.ApplyFilter: " + sqlWhere);
-	        
-	        Database.Data.Query.clear();
-	        Database.Data.Query.LoadCaches(sqlWhere);
-	        CachListChangedEventList.Call();
-	      //  cacheListButton.Caption = Global.Translations.Get("cacheList") + " (" + Convert.ToString(Global.CacheCount) + ")";
+		  };
 
-	        //Resort(null);
+		  thread.start();
 
-	     //   Cursor.Current = Cursors.Default;
-
-	       /* if ((Global.LastFilter.ToString() == "") || (Global.LastFilter.ToString() == FilterPresets.presets[0]))
-	        {
-	            holdButton_DB.BackColor = System.Drawing.Color.FromArgb(231, 239, 206);
-	        }
-	        else
-	        {
-	            holdButton_DB.BackColor = Color.Salmon;
-	        };
-
-	        holdButton_DB.Refresh();
-	        CacheListPanel.CacheListChanged(); // Lade CacheListItems in der dragList
-	       */
+	
 	    }
+	
+	// Instantiating the Handler associated with the main thread.
+	  private static Handler messageHandler = new Handler() {
+
+	      @Override
+	      public void handleMessage(Message msg) 
+	      {
+	    	  switch(msg.what) 
+	    	  {
+	    	  case 1:
+	    	  	{
+	    	  		CachListChangedEventList.Call();
+	    	  		pd.dismiss();
+	    	  		Toast.makeText(main.mainActivity, "Applay filter. Found " + String.valueOf(Database.Data.Query.size()) + " Caches!", Toast.LENGTH_LONG).show();
+	    	  		EditFilterSettings.filterActivity.finish();	
+	    	  	}
+		 	     
+	    	  }
+	    	  
+	      }
+
+	  };
 	
 }

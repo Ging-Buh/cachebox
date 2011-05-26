@@ -187,12 +187,12 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 					if(plusBtnHitRec.contains((int)FilterSetListView.lastTouchX, (int)FilterSetListView.lastTouchY))
 					{
 						((FilterSetListViewItem)arg1).plusClick();
-						SaveFilter();
+						SetFilter();
 					}
 					else if(minusBtnHitRec.contains((int)FilterSetListView.lastTouchX, (int)FilterSetListView.lastTouchY))
 					{
 						((FilterSetListViewItem)arg1).minusClick();
-						SaveFilter();
+						SetFilter();
 					}
 				}
 				
@@ -203,7 +203,7 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 					if(plusBtnHitRec.contains((int)FilterSetListView.lastTouchX, (int)FilterSetListView.lastTouchY))
 					{
 						((FilterSetListViewItem)arg1).stateClick();
-						SaveFilter();
+						SetFilter();
 					}
 					
 				}
@@ -211,9 +211,9 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 				return;
 			}
 			
-			private void SaveFilter()
+			private void SetFilter()
 			{
-				Global.LastFilter = FilterSetListView.SaveFilterProperties();
+				EditFilterSettings.tmpFilterProps = FilterSetListView.SaveFilterProperties();
 			}
 			
 		});
@@ -304,9 +304,9 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 	@Override
 	public void OnShow() 
 	{
-		if(Global.LastFilter != null && !Global.LastFilter.ToString().equals(""))
+		if(EditFilterSettings.tmpFilterProps != null && !EditFilterSettings.tmpFilterProps.ToString().equals(""))
 		{
-			LoadFilterProperties(Global.LastFilter);
+			LoadFilterProperties(EditFilterSettings.tmpFilterProps);
 		}
 	
 	}
