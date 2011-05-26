@@ -76,7 +76,7 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 	
 	public void CacheListChangedEvent()
 	{
-		this.setAdapter(null);
+    	this.setAdapter(null);
 		lvAdapter = new CustomAdapter(getContext(), Database.Data.Query);
 		this.setAdapter(lvAdapter);
 		lvAdapter.notifyDataSetChanged();

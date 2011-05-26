@@ -468,8 +468,8 @@ public class Cache implements Comparable<Cache> {
 
     public enum Attributes
     {
-    	Dogs ,
-    	Fee ,
+    	Dogs,
+    	Fee,
     	ClimbingGear ,
     	Boat ,
     	Scuba,
@@ -526,7 +526,10 @@ public class Cache implements Comparable<Cache> {
     	FuelNearby ,
     	FoodNearby ,
     }
-      	
+    public static long GetAttributeIndex(Attributes attrib)
+    {
+    	return ((long)1) << (attrib.ordinal()+1);
+    }
  /*
     protected ulong attributesPositive = 0;
     public ulong AttributesPositive

@@ -325,11 +325,14 @@ public class FilterProperties
             {
                 if (attributesFilter[i] != 0)
                 {
+                	long value = Cache.GetAttributeIndex(attributeLookup.get(i));
+                	
                     if (attributesFilter[i] == 1)
-                        andParts.add("AttributesPositive & Convert(bigint, " + attributeLookup.get(i) + ") > 0");
+                        andParts.add("AttributesPositive & " + value + " > 0");
                     else
-                        andParts.add("AttributesNegative & Convert(bigint, " + attributeLookup.get(i) + ") > 0");
+                        andParts.add("AttributesNegative & " + value + " > 0");
                 }
+                
             }
 
             if (GPXFilenameIds.size() != 0)

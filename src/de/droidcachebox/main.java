@@ -591,12 +591,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 				switch (item.getItemId())
 		    	{
 				// DB
-		    	case R.id.miAutoResort:
-		    		if (item.isChecked())
-		    			item.setChecked(false);
-		    		else
-		    			item.setChecked(true);
-		    		break;
 		    	case R.id.miCacheList:
 		    		showView(cacheListView);
 		    		break;
@@ -605,6 +599,17 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    		final Intent mainIntent = new Intent().setClass( mainActivity, EditFilterSettings.class);
 		    		mainActivity.startActivity(mainIntent);
 		    		break;
+		    	case R.id.miManageDB:
+		    		break;
+		    	case R.id.miResort:
+		    		Database.Data.Query.Resort();
+		    		break;
+		    	case R.id.miAutoResort:
+		    		if (item.isChecked())
+		    			item.setChecked(false);
+		    		else
+		    			item.setChecked(true);
+		    		break;
 		    	
 		    	}
 		    }
@@ -612,17 +617,16 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		Menu IconMenu=icm.getMenu();
 		Global.Translations.TranslateMenuItem(IconMenu, R.id.miCacheList, "cacheList","  (" + String.valueOf(Database.Data.Query.size()) + ")" );
 		Global.Translations.TranslateMenuItem(IconMenu, R.id.miFilterset, "filter");
+		Global.Translations.TranslateMenuItem(IconMenu, R.id.miManageDB, "manage");
+		Global.Translations.TranslateMenuItem(IconMenu, R.id.miResort, "ResortList");
 		Global.Translations.TranslateMenuItem(IconMenu, R.id.miAutoResort, "AutoResort");
   	  icm.show();
       }
   	  else if (v == buttonCache)
       {
-    	  
-    	 
-    	  
-    	  icm = new IconContextMenu(this, R.menu.menu_cache);
-  		icm.setOnIconContextItemSelectedListener(new IconContextItemSelectedListener() 
-  		{
+   		  icm = new IconContextMenu(this, R.menu.menu_cache);
+  		  icm.setOnIconContextItemSelectedListener(new IconContextItemSelectedListener() 
+  		  {
 
   			@Override
   			public void onIconContextItemSelected(MenuItem item, Object info) 
@@ -1113,20 +1117,17 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	public void CacheListChangedEvent() 
 	{
 		//Database.Data.Query.size();
-		if ((Global.LastFilter.ToString().equals("")) || (Global.LastFilter.ToString().equals(PresetListView.presets[0])))
+		if ((Global.LastFilter == null) || (Global.LastFilter.ToString().equals("")) || (Global.LastFilter.ToString().equals(PresetListView.presets[0])))
         {
 			this.buttonDB.getBackground().clearColorFilter();
-            
         }
         else
         {
         	this.buttonDB.getBackground().setColorFilter(Color.argb(255, 250, 128, 114), Mode.MULTIPLY); //Color.Salmon;
-        	
-        };
-        
+        };        
 	}
 	
-   
+ 
     
     
 }

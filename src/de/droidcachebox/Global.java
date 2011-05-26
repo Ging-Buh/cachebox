@@ -90,6 +90,16 @@ public class Global {
     	return selectedCache;
     }
 
+    private static Cache nearestCache = null;
+    public static Cache NearestCache()
+    {
+    	return nearestCache;
+    }
+    public static void NearestCache(Cache nearest)
+    {
+    	nearestCache = nearest;
+    }
+    
     protected static Waypoint selectedWaypoint = null;
     public static void SelectedWaypoint(Cache cache, Waypoint waypoint)
     {

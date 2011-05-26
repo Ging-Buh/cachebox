@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.widget.ArrayAdapter;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
+import de.droidcachebox.Events.CachListChangedEventList;
 import de.droidcachebox.Geocaching.Cache.CacheTypes;
 
 public class CacheList extends ArrayList<Cache> {
@@ -108,5 +109,36 @@ public class CacheList extends ArrayList<Cache> {
     			return cache;
     	}
     	return null;
+    }
+    
+    public void Resort()
+    {
+//        Cursor.Current = Cursors.WaitCursor;
+
+        // Alle Distanzen aktualisieren
+        for (Cache cache : this)
+        {
+            cache.Distance();
+        }
+
+        Collections.sort(this);
+
+         // Nächsten Cache auswählen
+         if (this.size() > 0)
+         {
+        	 Cache nextCache = this.get(0);
+        	 // Wenn der nachste Cache ein Mystery mit Final Waypoint ist 
+        	 // -> gleich den Final Waypoint auswahlen!!!
+        	 // When the next Cache is a mystery with final waypoint
+        	 // -> activate the final waypoint!!!
+        	 Waypoint waypoint = nextCache.GetFinalWaypoint();
+        	 Global.SelectedWaypoint(nextCache, waypoint);
+        	 // Global.SelectedCache = Geocaching.Cache.Query[0];
+        	 Global.NearestCache(nextCache);
+         }
+
+         CachListChangedEventList.Call();
+
+//        Cursor.Current = Cursors.Default;    	
     }
 }
