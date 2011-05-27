@@ -488,11 +488,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       try
       {
         ClearCachedTiles();
-        Render(true);
       } finally
       {
     	  loadedTilesLock.unlock();
       }
+      Render(true);
     }
     /// <summary>
     /// Tile Manager
@@ -1293,31 +1293,24 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		        		// Alle beantragten Kacheln die nicht der
 		        		// aktuellen Zoomstufe entsprechen, rausschmeissen
-		        		wishlistLock.lock();
-		        		try
+		        		for (int i = 0; i < wishlist.size(); i++)
 		        		{
-			        		for (int i = 0; i < wishlist.size(); i++)
-			        		{
-			        			if (wishlist.get(i).Zoom != Zoom)
-			        			{
-			        				loadedTilesLock.lock();
-			        				try
-			        				{
-				        				Tile tile = loadedTiles.get(wishlist.get(i).GetHashCode());
-				        				loadedTiles.remove(wishlist.get(i).GetHashCode());
-				        				tile.destroy();
-				        				wishlist.remove(i);
-				        				i = -1;
-			        				} finally
-			        				{
-			        					loadedTilesLock.unlock();
-			        				}
-			        			}
-			        		}
-						} finally
-						{
-							wishlistLock.unlock();
-						}
+		        			if (wishlist.get(i).Zoom != Zoom)
+		        			{
+		        				loadedTilesLock.lock();
+		        				try
+		        				{
+			        				Tile tile = loadedTiles.get(wishlist.get(i).GetHashCode());
+			        				loadedTiles.remove(wishlist.get(i).GetHashCode());
+			        				tile.destroy();
+			        				wishlist.remove(i);
+			        				i = -1;
+		        				} finally
+		        				{
+		        					loadedTilesLock.unlock();
+		        				}
+		        			}
+		        		}
 
 		        		for (Descriptor candidate : wishlist)
 		        		{
@@ -1432,14 +1425,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		        }
 
-		        wishlistLock.lock();
-		        try
-		        {
-		          	loaderThread = null;
-	            } finally
-	            {
-	          	  wishlistLock.unlock();
-	            }
+		        loaderThread = null;
 		    }
 		    catch (Exception ex) 
 		    {
@@ -2986,8 +2972,15 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		{
     			screenCenter.X += dragStartX - eX;
     			screenCenter.Y += dragStartY - eY;
-    			animationThread.toX = screenCenter.X;
-    			animationThread.toY = screenCenter.Y;
+    			animationLock.lock();
+    			try
+    			{
+    				animationThread.toX = screenCenter.X;
+    				animationThread.toY = screenCenter.Y;
+    			} finally
+    			{
+    				animationLock.unlock();
+    			}
     			centerOsmSpace.X = screenCenter.X / dpiScaleFactorX;
     			centerOsmSpace.Y = screenCenter.Y / dpiScaleFactorY;
     			
@@ -4694,18 +4687,20 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 					            boolean fertigHeading = true;  
 					            boolean fertigZoom = true;
 					            boolean fertigPos = true;
+
+					            float aktHeading = correctHeading(canvasHeading);
+					    		double aktX = 0;
+					    		double aktY = 0;
+						    	synchronized (screenCenter)
+						    	{
+						    		aktX = screenCenter.X;
+						    		aktY = screenCenter.Y;
+						    	}
+					            
 					            animationLock.lock();
 					            try
-								{
-						            float aktHeading = correctHeading(canvasHeading);
-						    		double aktX = 0;
-						    		double aktY = 0;
-							    	synchronized (screenCenter)
-							    	{
-							    		aktX = screenCenter.X;
-							    		aktY = screenCenter.Y;
-							    	}
-						            
+					            {
+					            	Global.AddLog("animlock1");
 									if (headingInitialized && (Math.abs(aktHeading - toHeading) > 0.3f))
 									{
 							            float step = rotationDirection(aktHeading, toHeading);
@@ -4813,6 +4808,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 							            	br.putBoolean("ChangePos", false);
 									}
 								
+					            	Global.AddLog("animlock2");
 								
 						    	} finally
 						    	{
