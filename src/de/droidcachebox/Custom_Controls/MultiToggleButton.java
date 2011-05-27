@@ -1,5 +1,7 @@
 package de.droidcachebox.Custom_Controls;
 
+
+
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -215,5 +217,22 @@ public class MultiToggleButton extends Button implements OnClickListener {
 		return StateId;
 	}
 	
+	public static void initialOn_Off_ToggleStates(MultiToggleButton bt)
+	{
+		String ButtonTxt = (String) bt.getText();
+		bt.clearStates();
+		bt.addState(ButtonTxt, Global.getColor(R.attr.ToggleBtColor_off));
+		bt.addState(ButtonTxt, Global.getColor(R.attr.ToggleBtColor_on));
+		
+	}
+
+	public static void initialOn_Off_ToggleStates(MultiToggleButton bt,
+			String txtOn, String txtOff) 
+	{
+		bt.clearStates();
+		bt.addState(txtOff, Global.getColor(R.attr.ToggleBtColor_off));
+		bt.addState(txtOn, Global.getColor(R.attr.ToggleBtColor_on));
+		
+	}
 	
 }

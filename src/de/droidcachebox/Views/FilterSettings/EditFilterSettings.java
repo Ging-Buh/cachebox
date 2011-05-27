@@ -51,8 +51,8 @@ public class EditFilterSettings extends Activity {
 		btSet.setText(Global.Translations.Get("filterSet"));*/
 		btPre.setText("Preset");
 		btSet.setText("Setting");
-		initialMultiToggleStates(btPre);
-		initialMultiToggleStates(btSet);
+		MultiToggleButton.initialOn_Off_ToggleStates(btPre);
+		MultiToggleButton.initialOn_Off_ToggleStates(btSet);
 		
 		trPre = (TableRow) findViewById(R.id.edfi_table_pre);
 		trSet = (TableRow) findViewById(R.id.edfi_table_set);
@@ -104,14 +104,7 @@ public class EditFilterSettings extends Activity {
         bCancel.setText(Global.Translations.Get("cancel"));
 	}
 	
-	private void initialMultiToggleStates(MultiToggleButton bt)
-	{
-		String ButtonTxt = (String) bt.getText();
-		bt.clearStates();
-		bt.addState(ButtonTxt, Global.getColor(R.attr.ToggleBtColor_off));
-		bt.addState(ButtonTxt, Global.getColor(R.attr.ToggleBtColor_on));
-		
-	}
+	
 	
 	
 	private void initialPresets()

@@ -4,6 +4,7 @@ import java.text.NumberFormat;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.Custom_Controls.MultiToggleButton;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.UTM.UTMConvert;
 import android.R.string;
@@ -30,10 +31,10 @@ public class EditCoordinate extends Activity {
 	TableRow trSec;
 	TableRow trUtm;
 // Allgemein
-	ToggleButton bDec;
-    ToggleButton bMin;
-	ToggleButton bSec;
-	ToggleButton bUtm;
+	MultiToggleButton bDec;
+	MultiToggleButton bMin;
+	MultiToggleButton bSec;
+	MultiToggleButton bUtm;
 	// Deg
 	Button bDLat;
 	EditText tbDLat;
@@ -83,10 +84,15 @@ public class EditCoordinate extends Activity {
 		trUtm.setVisibility(View.GONE);
 		
 		// Allgemein
-		bDec = (ToggleButton) findViewById(R.id.edco_dec);
-        bMin = (ToggleButton) findViewById(R.id.edco_min);
-		bSec = (ToggleButton) findViewById(R.id.edco_sec);
-		bUtm = (ToggleButton) findViewById(R.id.edco_utm);
+		bDec = (MultiToggleButton) findViewById(R.id.edco_dec);
+        bMin = (MultiToggleButton) findViewById(R.id.edco_min);
+		bSec = (MultiToggleButton) findViewById(R.id.edco_sec);
+		bUtm = (MultiToggleButton) findViewById(R.id.edco_utm);
+		MultiToggleButton.initialOn_Off_ToggleStates(bDec,"Dec","Dec");
+		MultiToggleButton.initialOn_Off_ToggleStates(bMin,"Min","Min");
+		MultiToggleButton.initialOn_Off_ToggleStates(bSec,"Sec","Sec");
+		MultiToggleButton.initialOn_Off_ToggleStates(bUtm,"UTM","UTM");
+		
 		// Deg
 		bDLat = (Button) findViewById(R.id.edco_dec_lat_direction);
 		tbDLat = (EditText) findViewById(R.id.edco_dec_lat_value);
@@ -115,37 +121,28 @@ public class EditCoordinate extends Activity {
 		bUX = (Button) findViewById(R.id.edco_utm_x_direction);
 		bUY = (Button) findViewById(R.id.edco_utm_y_directioin);
         
-        bDec.setText("Dec");
-        bDec.setTextOff("Dec");
-        bDec.setTextOn("Dec");
+        
         bDec.setOnClickListener(new OnClickListener(){
         	@Override
         	public void onClick(View v) {
         		showPage(0);
         	}
         });
-        bMin.setText("Min");
-        bMin.setTextOff("Min");
-        bMin.setTextOn("Min");
-        bMin.setChecked(true);
+        
+        bMin.setState(1);
         bMin.setOnClickListener(new OnClickListener(){
         	@Override
         	public void onClick(View v) {
         		showPage(1);
         	}
         });
-        bSec.setText("Sec");
-        bSec.setTextOff("Sec");
-        bSec.setTextOn("Sec");
+        
         bSec.setOnClickListener(new OnClickListener(){
         	@Override
         	public void onClick(View v) {
         		showPage(2);
         	}
         });
-        bUtm.setText("UTM");
-        bUtm.setTextOff("UTM");
-        bUtm.setTextOn("UTM");
         bUtm.setOnClickListener(new OnClickListener(){
         	@Override
         	public void onClick(View v) {
@@ -240,10 +237,10 @@ public class EditCoordinate extends Activity {
          	trMin.setVisibility(View.GONE);	        		
          	trSec.setVisibility(View.GONE);
          	trUtm.setVisibility(View.GONE);
-         	bDec.setChecked(true);
-         	bMin.setChecked(false);
-         	bSec.setChecked(false);
-         	bUtm.setChecked(false);
+         	bDec.setState(1);
+         	bMin.setState(0);
+         	bSec.setState(0);
+         	bUtm.setState(0);
          	if (coord.Latitude > 0) bDLat.setText("N");	else bDLat.setText("S");
          	if (coord.Longitude > 0) bDLon.setText("E"); else bDLon.setText("W");
          	tbDLat.setText(String.format("%.5f", coord.Latitude));
@@ -255,10 +252,10 @@ public class EditCoordinate extends Activity {
          	trMin.setVisibility(View.VISIBLE);	        			        		
          	trSec.setVisibility(View.GONE);
          	trUtm.setVisibility(View.GONE);
-         	bDec.setChecked(false);
-         	bMin.setChecked(true);
-         	bSec.setChecked(false);
-         	bUtm.setChecked(false);
+         	bDec.setState(0);
+         	bMin.setState(1);
+         	bSec.setState(0);
+         	bUtm.setState(0);
          	if (coord.Latitude > 0) bMLat.setText("N");	else bMLat.setText("S");
          	if (coord.Longitude > 0) bMLon.setText("E"); else bMLon.setText("W");
 
@@ -280,10 +277,10 @@ public class EditCoordinate extends Activity {
          	trDec.setVisibility(View.GONE);	        		
          	trSec.setVisibility(View.VISIBLE);
          	trUtm.setVisibility(View.GONE);
-         	bDec.setChecked(false);
-         	bMin.setChecked(false);
-         	bSec.setChecked(true);
-         	bUtm.setChecked(false);
+         	bDec.setState(0);
+         	bMin.setState(0);
+         	bSec.setState(1);
+         	bUtm.setState(0);
          	
             deg = Math.abs((int)coord.Latitude);
             frac = Math.abs(coord.Latitude) - deg;
@@ -316,10 +313,10 @@ public class EditCoordinate extends Activity {
          	trDec.setVisibility(View.GONE);	        		
          	trSec.setVisibility(View.GONE);
          	trUtm.setVisibility(View.VISIBLE);
-         	bDec.setChecked(false);
-         	bMin.setChecked(false);
-         	bSec.setChecked(false);
-         	bUtm.setChecked(true);
+         	bDec.setState(0);
+         	bMin.setState(0);
+         	bSec.setState(0);
+         	bUtm.setState(1);
 
             double nording = 0;
             double easting = 0;
