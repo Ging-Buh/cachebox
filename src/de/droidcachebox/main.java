@@ -73,6 +73,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -161,10 +162,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     private static final int CAPTURE_VOICE_ACTIVITY_REQUEST_CODE = 61216518;
     private static Uri cameraVideoURI;
     private static File mediafile = null;
+    private static String mediafilename = null;
     private static String mediaTimeString = null; 
     private static String basename = null;
     private static String mediaCacheName = null;
     private static Coordinate mediaCoordinate = null;
+    private static Boolean VoiceRecIsStart = false;
+    private MediaRecorder mRecorder = null;
 	    	 
 	
    
@@ -243,7 +247,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         }
 
     	// Intent Result Record Voice
-    	if (requestCode == CAPTURE_VOICE_ACTIVITY_REQUEST_CODE) {
+/*    	if (requestCode == CAPTURE_VOICE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK){
                 Log.d("DroidCachebox","Voice taken!!!");
                 //Global.selectedCache.ReloadSpoilerRessources();
@@ -258,7 +262,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
                 Log.d("DroidCachebox","Voice NOT taken!!!");
                 return;
             }
-        }
+        }*/
 
     	if (requestCode == 12345)
     	{
@@ -497,6 +501,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         		TrackRecorder.StopRecording();
         		// GPS Verbindung beenden
         		locationManager.removeUpdates(this);
+                if (mRecorder != null) 
+                {            
+	    	        mRecorder.stop();
+                	mRecorder.release();            
+                	mRecorder = null;
+                }
     		}
 			super.onDestroy();
     }
@@ -780,47 +790,75 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    		break;
 		    		
 		    	case R.id.miVoiceRecorder:
-		            Log.d("DroidCachebox", "Starting voice recorder on the phone...");
-		            
-		    		//define the file-name to save voice taken by activity
-		            String directory = Config.GetString("UserImageFolder");
-		            if (!Global.DirectoryExists(directory))
-		            {
-		                Log.d("DroidCachebox", "Media-Folder does not exist...");
-		                break;
-		            }
-		           
-		            basename = GetDateTimeString();
-		            
-		            if (Global.selectedCache != null)
-		            {
-		            	String validName=Global.RemoveInvalidFatChars(Global.selectedCache.GcCode + "-" + Global.selectedCache.Name);
-		            	mediaCacheName = validName.substring(0,(validName.length()>32)? 32 : validName.length());
-		                //Title = Global.selectedCache.Name;
-		            }
-		            else
-		            {
-		            	mediaCacheName = "Voice";
-		            }
+		    		if (!VoiceRecIsStart) // Voice Recorder starten
+		    		{
+			            Log.d("DroidCachebox", "Starting voice recorder on the phone...");
+			            
+			    		//define the file-name to save voice taken by activity
+			            String directory = Config.GetString("UserImageFolder");
+			            if (!Global.DirectoryExists(directory))
+			            {
+			                Log.d("DroidCachebox", "Media-Folder does not exist...");
+			                break;
+			            }
+			           
+			            basename = GetDateTimeString();
+			            
+			            if (Global.selectedCache != null)
+			            {
+			            	String validName=Global.RemoveInvalidFatChars(Global.selectedCache.GcCode + "-" + Global.selectedCache.Name);
+			            	mediaCacheName = validName.substring(0,(validName.length()>32)? 32 : validName.length());
+			                //Title = Global.selectedCache.Name;
+			            }
+			            else
+			            {
+			            	mediaCacheName = "Voice";
+			            }
+	
+			            basename += " " + mediaCacheName;
+			            mediafilename = (directory + "/" + basename + ".3gp");
+			            
+			            mRecorder = new MediaRecorder();
+			            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+			            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+			            mRecorder.setOutputFile(mediafilename);
+			            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+			            try 
+			            {            
+			            	mRecorder.prepare();
+			            	} 
+			            catch (IOException e) 
+			            {           
+			            	Log.d("DroidCachebox", "Voice Recorder prepare() failed");        
+			            	}        
+			            mRecorder.start();	
 
-		            basename += " " + mediaCacheName;
-		            mediafile = new File(directory + "/" + basename + ".amr");
-		            
-	            	// Da eine Voice keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
-	            	mediaTimeString = GetTrackDateTimeString();
-	            	mediaCoordinate = Global.LastValidPosition;
+			            String MediaFolder = Config.GetString("UserImageFolder");
+		            	String TrackFolder = Config.GetString("TrackFolder");
+		            	String relativPath = getRelativePath(MediaFolder, TrackFolder, "/"); 
+		            	// Da eine Voice keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
+		            	TrackRecorder.AnnotateMedia(basename + ".3gp", relativPath + "/" + basename + ".3gp", Global.LastValidPosition, GetTrackDateTimeString());
+			    		Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
-		    		final Intent voiceintent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-		    		voiceintent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediafile));
-		    		voiceintent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-		    		startActivityForResult(voiceintent, CAPTURE_VOICE_ACTIVITY_REQUEST_CODE);
-		    		break;	
+			            VoiceRecIsStart = true;
+			    		break;	
+		    		}
+		    		else
+		    		{	// Voice Recorder stoppen
+			            Log.d("DroidCachebox", "Stoping voice recorder on the phone...");
+		    	        mRecorder.stop();
+		    	        mRecorder.release();
+		    	        mRecorder = null;		    			
+			    		Toast.makeText(mainActivity, "Stop Voice Recorder", Toast.LENGTH_SHORT).show();
+			            VoiceRecIsStart = false;
+			            break;
+		    		}
 		    		
 		    	case R.id.miTakePhoto:
 		            Log.d("DroidCachebox", "Starting camera on the phone...");
 		            
 		    		//define the file-name to save photo taken by Camera activity
-		            directory = Config.GetString("UserImageFolder");
+		            String directory = Config.GetString("UserImageFolder");
 		            if (!Global.DirectoryExists(directory))
 		            {
 		                Log.d("DroidCachebox", "Media-Folder does not exist...");

@@ -183,7 +183,7 @@ public class TrackRecorder {
 */
     private static String generateTrackFileName()
     {
-        SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd-hhmmss");
+        SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
         String sDate = datFormat.format(new Date());
         	
         return "Track_" + sDate + ".gpx";
