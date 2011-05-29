@@ -159,7 +159,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	// Media
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 61216517;
-    private static final int CAPTURE_VOICE_ACTIVITY_REQUEST_CODE = 61216518;
     private static Uri cameraVideoURI;
     private static File mediafile = null;
     private static String mediafilename = null;
@@ -169,11 +168,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     private static Coordinate mediaCoordinate = null;
     private static Boolean VoiceRecIsStart = false;
     private MediaRecorder mRecorder = null;
-	    	 
-	
-   
-	
-	
+
+    
     final SensorEventListener mListener = new SensorEventListener() {
         public void onSensorChanged(SensorEvent event) {
         	mCompassValues = event.values;
@@ -197,9 +193,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
                 Global.selectedCache.ReloadSpoilerRessources();
                 String MediaFolder = Config.GetString("UserImageFolder");
             	String TrackFolder = Config.GetString("TrackFolder");
-            	String relativPath = getRelativePath(MediaFolder, TrackFolder, "/"); 
+            	String relativPath = Global.getRelativePath(MediaFolder, TrackFolder, "/"); 
             	// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
-            	mediaTimeString = GetTrackDateTimeString();
+            	mediaTimeString = Global.GetTrackDateTimeString();
             	TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", Global.LastValidPosition, mediaTimeString);
             	
             	return;
@@ -235,7 +231,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
                 }
                 
             	String TrackFolder = Config.GetString("TrackFolder");
-            	String relativPath = getRelativePath(MediaFolder, TrackFolder, "/"); 
+            	String relativPath = Global.getRelativePath(MediaFolder, TrackFolder, "/"); 
             	TrackRecorder.AnnotateMedia(basename + "." + ext, relativPath + "/" + basename + "." + ext, mediaCoordinate , mediaTimeString);
             	
             	return;
@@ -245,24 +241,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
                 return;
             }
         }
-
-    	// Intent Result Record Voice
-/*    	if (requestCode == CAPTURE_VOICE_ACTIVITY_REQUEST_CODE) {
-            if (resultCode == RESULT_OK){
-                Log.d("DroidCachebox","Voice taken!!!");
-                //Global.selectedCache.ReloadSpoilerRessources();
-                String MediaFolder = Config.GetString("UserImageFolder");
-            	String TrackFolder = Config.GetString("TrackFolder");
-            	String relativPath = getRelativePath(MediaFolder, TrackFolder, "/"); 
-            	TrackRecorder.AnnotateMedia(basename + ".amr", relativPath + "/" + basename + ".amr", mediaCoordinate, mediaTimeString);
-            	
-            	return;
-            } else
-            {
-                Log.d("DroidCachebox","Voice NOT taken!!!");
-                return;
-            }
-        }*/
 
     	if (requestCode == 12345)
     	{
@@ -501,6 +479,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         		TrackRecorder.StopRecording();
         		// GPS Verbindung beenden
         		locationManager.removeUpdates(this);
+        		// Voice Recorder stoppen
                 if (mRecorder != null) 
                 {            
 	    	        mRecorder.stop();
@@ -736,7 +715,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
   			        Bundle b = new Bundle();
   			        b.putSerializable("Hint", hint);
   			        hintIntent.putExtras(b);
-  			      mainActivity.startActivity(hintIntent);
+  			        mainActivity.startActivity(hintIntent);
   		    		break;
   		    	case R.id.miFieldNotes:
   		    		showView(fieldNotesView);
@@ -802,7 +781,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			                break;
 			            }
 			           
-			            basename = GetDateTimeString();
+			            basename = Global.GetDateTimeString();
 			            
 			            if (Global.selectedCache != null)
 			            {
@@ -835,9 +814,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 			            String MediaFolder = Config.GetString("UserImageFolder");
 		            	String TrackFolder = Config.GetString("TrackFolder");
-		            	String relativPath = getRelativePath(MediaFolder, TrackFolder, "/"); 
+		            	String relativPath = Global.getRelativePath(MediaFolder, TrackFolder, "/"); 
 		            	// Da eine Voice keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
-		            	TrackRecorder.AnnotateMedia(basename + ".3gp", relativPath + "/" + basename + ".3gp", Global.LastValidPosition, GetTrackDateTimeString());
+		            	TrackRecorder.AnnotateMedia(basename + ".3gp", relativPath + "/" + basename + ".3gp", Global.LastValidPosition, Global.GetTrackDateTimeString());
 			    		Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
 			            VoiceRecIsStart = true;
@@ -865,7 +844,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		                break;
 		            }
 		           
-		            basename = GetDateTimeString();
+		            basename = Global.GetDateTimeString();
 		            
 		            if (Global.selectedCache != null)
 		            {
@@ -899,7 +878,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		                break;
 		            }
 		           
-		            basename = GetDateTimeString();
+		            basename = Global.GetDateTimeString();
 		            
 		            if (Global.selectedCache != null)
 		            {
@@ -916,7 +895,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		            mediafile = new File(directory + "/" + basename + ".3gp");
 		            
 	            	// Da ein Video keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
-	            	mediaTimeString = GetTrackDateTimeString();
+	            	mediaTimeString = Global.GetTrackDateTimeString();
 	            	mediaCoordinate = Global.LastValidPosition;
 	            	
 		    		ContentValues values = new ContentValues();  
@@ -1085,77 +1064,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		TopLayout.setVisibility(View.VISIBLE);
 	}
 	
-    public String GetDateTimeString()
-    {
-        Date now = new Date();
-        SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String sDate = datFormat.format(now);
-        datFormat = new SimpleDateFormat("HHmmss");
-        sDate += " " + datFormat.format(now);
-        return sDate;
-    }
-
-    public String GetTrackDateTimeString()
-    {
-        Date now = new Date();
-        SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String sDate = datFormat.format(now);
-        datFormat = new SimpleDateFormat("HH:mm:ss");
-        sDate += "T" + datFormat.format(now) + "Z";
-        return sDate;
-    }
-
-    
-    
-    public static String getRelativePath(String targetPath, String basePath, String pathSeparator) 
-    {   //  We need the -1 argument to split to make sure we get a trailing      
-    	//  "" token if the base ends in the path separator and is therefore     
-    	//  a directory. We require directory paths to end in the path     
-    	//  separator -- otherwise they are indistinguishable from files.     
-    	String[] base = basePath.split(Pattern.quote(pathSeparator), -1);     
-    	String[] target = targetPath.split(Pattern.quote(pathSeparator), 0);     
-    	//  First get all the common elements. Store them as a string,    
-    	//  and also count how many of them there are.      
-    	String common = "";     
-    	int commonIndex = 0;     
-    	for (int i = 0; i < target.length && i < base.length; i++) 
-    	{         
-    		if (target[i].equals(base[i])) 
-    		{             
-    			common += target[i] + pathSeparator;             
-    			commonIndex++;         
-    		}         
-    		else break;     
-    	}     
-
-        if (commonIndex == 0)     
-        {         //  Whoops -- not even a single common path element. This most         
-        	//  likely indicates differing drive letters, like C: and D:.          
-        	//  These paths cannot be relativized. Return the target path.         
-        	return targetPath;         
-        	//  This should never happen when all absolute paths
-        	//  begin with / as in *nix.      
-        }     
-        String relative = "";     
-        if (base.length == commonIndex) 
-        {         
-        	//  Comment this out if you prefer that a relative path not start with ./         
-        	//relative = "." + pathSeparator;     
-        }     
-        else 
-        {         
-        	int numDirsUp = base.length - commonIndex;        
-        	//  The number of directories we have to backtrack is the length of         
-        	//  the base path MINUS the number of common path elements, minus         
-        	//  one because the last element in the path isn't a directory.         
-        	for (int i = 1; i <= (numDirsUp); i++) 
-        	{             
-        		relative += ".." + pathSeparator;         
-        	}     
-        }     
-        relative += targetPath.substring(common.length());     
-        return relative; 
-    }
 
     
    
