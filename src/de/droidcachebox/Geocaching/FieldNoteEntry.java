@@ -103,7 +103,7 @@ public class FieldNoteEntry implements Serializable {
     {
         SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
         String sDate = datFormat.format(timestamp);
-        datFormat = new SimpleDateFormat("hh:mm:ss");
+        datFormat = new SimpleDateFormat("HH:mm:ss");
         sDate += "T" + datFormat.format(timestamp) + "Z";
         return sDate;
     }
