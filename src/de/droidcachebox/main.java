@@ -553,7 +553,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     private IconContextMenu icm;
     
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
+    public void onCreateContextMenu(final ContextMenu menu, View v,
                                     ContextMenuInfo menuInfo) {
       super.onCreateContextMenu(menu, v, menuInfo);
       MenuInflater inflater = getMenuInflater();
@@ -919,8 +919,19 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    	}
 		    }
 		});
-		  Menu IconMenu=icm.getMenu();
-		  Global.Translations.TranslateMenuItem(IconMenu, R.id.miSettings, "settings");
+		
+		Menu IconMenu=icm.getMenu();
+		Global.Translations.TranslateMenuItem(IconMenu, R.id.miSettings, "settings");
+      	try
+    	{
+    		MenuItem mi = IconMenu.findItem(R.id.miVoiceRecorder);
+    		if (mi != null)
+    			if (!VoiceRecIsStart)
+    				mi.setTitle("Voice Recorder");
+    			else
+    				mi.setTitle("Stop Voice Rec.");
+    	} catch (Exception exc)
+    	{ }
 	  	  
 	  	  icm.show();
     	 
