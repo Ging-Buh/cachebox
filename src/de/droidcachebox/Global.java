@@ -43,6 +43,14 @@ public class Global {
     public static final int LatestDatabaseChange = 1002;
     public static final int LatestDatabaseFieldNoteChange = 1001;
     
+    public static final boolean Debug = true;
+	
+    
+    
+    public static FilterProperties LastFilter = null;
+	public static boolean autoResort;
+    
+    
     // for MapView
 	public static SmoothScrollingTyp SmoothScrolling = SmoothScrollingTyp.normal;
 	public static RouteOverlay.Route AktuelleRoute = null;
@@ -608,9 +616,7 @@ public class Global {
 
     static class LockClass { };
     static LockClass lockObject = new LockClass();
-    public static boolean Debug = true;
-	public static FilterProperties LastFilter = null;
-	public static boolean autoResort;
+    
 	
     /// <summary>
     /// Fügt die übergebene Zeile in debug.txt ein

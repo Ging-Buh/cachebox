@@ -148,6 +148,14 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
             	Animations.ToggleViewSlideUp_Down(MiscTableRow,context,SettingsScrollView,ToggleMiscView);
             }
           });
+		ToggleDebugView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) 
+            {
+            	Animations.ToggleViewSlideUp_Down(DebugTableRow,context,SettingsScrollView,ToggleDebugView);
+            }
+          });
+		
 		
 		checkBoxUseCelltower.setOnClickListener(new OnClickListener() {
 			
@@ -337,7 +345,9 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private TextView DescSmothScroll;
 	private TextView DescTrackRec;
 	private TextView DescTrackCount;
-	
+	private Button ToggleDebugView;
+	private TableRow DebugTableRow;
+	private CheckBox chkAllowInetAccess;
 	
 	
 	private void findViewsById()
@@ -382,6 +392,9 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		DescSmothScroll=(TextView)this.findViewById(R.id.settings_desc_Smooth_Scrolling);
 		DescTrackRec=(TextView)this.findViewById(R.id.settings_desc_Track_Rec);
 		DescTrackCount=(TextView)this.findViewById(R.id.settings_desc_Track_count);
+		ToggleDebugView = (Button)this.findViewById(R.id.toggle_button_debug);
+		DebugTableRow =(TableRow)this.findViewById(R.id.settings_tableRow_debug);
+		chkAllowInetAccess=(CheckBox)this.findViewById(R.id.settings_allow_internet_access);
 	}
 	
 	private void setLang()
@@ -395,6 +408,8 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		checkBoxUseCelltower.setText(Global.Translations.Get("UseCellId"));
         checkBoxHTCCompass.setText(Global.Translations.Get("UseHtcCompass"));
         DescCompassLevel.setText(Global.Translations.Get("DescHtcLevel"));
+        chkAllowInetAccess.setText(Global.Translations.Get("AllowInternet"));
+        
 	}
 	
 		
@@ -423,6 +438,12 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		SmoothScrolling.setSelection(smoth.indexOf(SmoothScrollingTyp.valueOf(Config.GetString("SmoothScrolling"))));
 		
 		TrackDistance.setSelection(distance.indexOf(Config.GetInt("TrackDistance")));
+		
+		chkAllowInetAccess.setChecked(Config.GetBool("AllowInternetAccess"));
+		
+		if(Global.Debug)
+			ToggleDebugView.setVisibility(View.VISIBLE);
+		
 		}
 		catch(Exception e)
 		{
@@ -445,6 +466,8 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	String debug = ((SmoothScrollingTyp) SmoothScrolling.getSelectedItem()).name();
     	Config.Set("SmoothScrolling",debug);
     	Config.Set("TrackDistance",(Integer) TrackDistance.getSelectedItem());
+    	
+    	Config.Set("AllowInternetAccess",chkAllowInetAccess.isChecked());
     	
     	Config.AcceptChanges();
 		finish();
@@ -558,7 +581,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		ToggleGPSView.setHeight(Height);
 		ToggleMapView.setHeight(Height);
 		ToggleMiscView.setHeight(Height);
-		
+		ToggleDebugView.setHeight(Height);
 	}
 
 	

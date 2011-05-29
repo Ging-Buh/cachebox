@@ -128,6 +128,35 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 			 
 		    </TableRow>
 		    
+		    
+		    
+		    
+		    
+	<!-- Debug Settings visibility="gone" bei Global.Debugg == true -->		    
+		    <Button 
+			   	 
+			   	android:text="Debug" 
+			   	android:layout_height="wrap_content" 
+			   	android:layout_width="wrap_content" 
+			   	android:id="@+id/toggle_button_debug" 
+			   	android:layout_marginTop="10dip"
+			   	android:visibility="gone"></Button>
+			   	
+		    <TableRow 
+			    android:id="@+id/settings_tableRow_debug" 
+			    android:layout_height="wrap_content" 
+			    android:layout_width="match_parent"
+			    android:visibility="gone">
+	
+			 <include 
+				 android:layout_height="wrap_content" 
+				 android:id="@layout/settings_debug" 
+				 layout="@layout/settings_debug" 
+				 android:layout_width="match_parent" 
+				 android:layout_weight="1"></include>			    
+			 
+		    </TableRow>
+		    
 	    
     	</TableLayout>
 
