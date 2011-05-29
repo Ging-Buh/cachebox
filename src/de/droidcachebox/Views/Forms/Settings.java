@@ -16,9 +16,11 @@ import de.droidcachebox.Events.SelectedLangChangedEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Waypoint;
 import de.droidcachebox.TranslationEngine.LangStrings.Langs;
+import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.*;
 import android.os.Bundle;
 import android.text.Editable;
@@ -29,6 +31,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.View.OnKeyListener;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -39,6 +42,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -56,23 +60,21 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
 		
+		Bundle bundle = getIntent().getExtras();
+        int PerformButtonClickID  = (Integer)bundle.getSerializable("Show");
+        
+		
 		context = this.getBaseContext();
-		
-		
+				
 		SelectedLangChangedEventList.Add(this);
       
 		findViewsById();
-        
+		        
 		SaveButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) 
             {
-	            Config.Set("GcLogin",EditTextGCName.getEditableText().toString());
-	        	Config.Set("GcPass",EditTextGCPW.getEditableText().toString());
-	        	Config.Set("GcVotePassword",EditTextGCVotePW.getEditableText().toString());
-            	Config.AcceptChanges();
-            	
-            	setMainActivity();
+	            SaveSettings();
             }
           });
 		
@@ -80,7 +82,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
             @Override
             public void onClick(View v) {
             	Config.readConfigFile();
-            	setMainActivity();
+            	SaveSettings();
             }
           });
 
@@ -117,20 +119,33 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 			);
 		
 		
-		
-		
 		ToggleLogInView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) 
             {
-            	Animations.ToggleViewSlideUp_Down(LogInTableRow,context);
+            	Animations.ToggleViewSlideUp_Down(LogInTableRow,context,SettingsScrollView,ToggleLogInView);
             }
           });
 		ToggleGPSView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) 
             {
-            	Animations.ToggleViewSlideUp_Down(GPSTableRow,context);
+            	Animations.ToggleViewSlideUp_Down(GPSTableRow,context,SettingsScrollView,ToggleGPSView);
+            }
+          });
+		ToggleMapView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) 
+            {
+            	Animations.ToggleViewSlideUp_Down(MapTableRow,context,SettingsScrollView,ToggleMapView);
+            	
+            }
+          });
+		ToggleMiscView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) 
+            {
+            	Animations.ToggleViewSlideUp_Down(MiscTableRow,context,SettingsScrollView,ToggleMiscView);
             }
           });
 		
@@ -250,13 +265,41 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		FillSettings();
 		setLang();
 		
+		OnShow();
+		
+		if (PerformButtonClickID!=-1)
+		{
+			PerformeButtonClick(PerformButtonClickID);
+		}
 }
-	
-	
-	
-	
 
+	
+	private void PerformeButtonClick(int index)
+	{
+		switch (index)
+		{
+			case 1:
+				ToggleLogInView.performClick();
+				break;
+				
+			case 2:
+				ToggleGPSView.performClick();
+				break;
+				
+			case 3:
+				ToggleMapView.performClick();
+				break;
+				
+			case 4:
+				ToggleMiscView.performClick();
+				break;
+		
+		}
+	}
+	
+	
 	private LinearLayout SettingsLayout;
+	private ScrollView SettingsScrollView;
 	private Spinner LangCombo;
 	private Button SaveButton;
 	private Button CancelButton;
@@ -274,16 +317,33 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private CheckBox checkBoxHTCCompass;
 	private TextView DescCompassLevel;
 	private EditText EditCompassLevel;
+	private Button ToggleMapView;
+	private TableRow MapTableRow;
+	private Button ToggleMiscView;
+	private TableRow MiscTableRow;
+	private CheckBox chkMapink;
+	private CheckBox chkCycleMap;
+	private CheckBox chkOsmarenerer;
+	private Spinner OsmMinLevel;
+	private Spinner OsmMaxLevel;
+	private Spinner ZoomCross;
+	private Spinner SmoothScrolling;
+	private Spinner TrackDistance;
+	private CheckBox chkTrackStart;
+	private TextView DescMapLayer;
+	private TextView DescOsmMinLevel;
+	private TextView DescOsmMaxLevel;
+	private TextView DescZoomCrossLevel;
+	private TextView DescSmothScroll;
+	private TextView DescTrackRec;
+	private TextView DescTrackCount;
 	
 	
-	private void setMainActivity()
-	{
-		finish();
-	}
 	
 	private void findViewsById()
 	{
 		SettingsLayout = (LinearLayout) this.findViewById(R.id.settings_LinearLayout);
+		SettingsScrollView = (ScrollView) this.findViewById(R.id.settings_scrollView);
         LangCombo = (Spinner)this.findViewById(R.id.settings_LangCombo);
 		CancelButton = (Button)this.findViewById(R.id.settings_cancel);
 		SaveButton = (Button)this.findViewById(R.id.settings_save);
@@ -302,6 +362,26 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		checkBoxHTCCompass = (CheckBox)this.findViewById(R.id.settings_use_intern_compass);
 		EditCompassLevel = (EditText)this.findViewById(R.id.settings_compass_level_edit);
 		DescCompassLevel = (TextView)this.findViewById(R.id.settings_compass_info_text);
+		ToggleMapView = (Button)this.findViewById(R.id.toggle_button_map);
+		MapTableRow =(TableRow)this.findViewById(R.id.settings_tableRow_map);
+		ToggleMiscView = (Button)this.findViewById(R.id.toggle_button_misc);
+		MiscTableRow =(TableRow)this.findViewById(R.id.settings_tableRow_misc);
+		chkMapink=(CheckBox)this.findViewById(R.id.settings_Mapnik);
+		chkCycleMap=(CheckBox)this.findViewById(R.id.settings_Cycle_Map);
+		chkOsmarenerer=(CheckBox)this.findViewById(R.id.settings_Osmarenderer);
+		OsmMinLevel=(Spinner)this.findViewById(R.id.settings_spinner_OSM_min);
+		OsmMaxLevel=(Spinner)this.findViewById(R.id.settings_spinner_OSM_max);
+		ZoomCross=(Spinner)this.findViewById(R.id.settings_spinner_Zoom_Cross);
+		SmoothScrolling=(Spinner)this.findViewById(R.id.settings_spinner_Smooth_Scrolling);
+		TrackDistance=(Spinner)this.findViewById(R.id.settings_spinner_Track_Count);
+		chkTrackStart=(CheckBox)this.findViewById(R.id.settings_chk_Start_track);
+		DescMapLayer=(TextView)this.findViewById(R.id.settings_desc_map_layer);
+		DescOsmMinLevel=(TextView)this.findViewById(R.id.settings_desc_OSM_min);
+		DescOsmMaxLevel=(TextView)this.findViewById(R.id.settings_desc_OSM_max);
+		DescZoomCrossLevel=(TextView)this.findViewById(R.id.settings_desc_ZoomCross);
+		DescSmothScroll=(TextView)this.findViewById(R.id.settings_desc_Smooth_Scrolling);
+		DescTrackRec=(TextView)this.findViewById(R.id.settings_desc_Track_Rec);
+		DescTrackCount=(TextView)this.findViewById(R.id.settings_desc_Track_count);
 	}
 	
 	private void setLang()
@@ -312,14 +392,16 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		LabelGcName.setText(Global.Translations.Get("LogIn"));
 		LabelGcPW.setText(Global.Translations.Get("GCPW"));
 		LabelGcVoPw.setText(Global.Translations.Get("GCVotePW"));
-		 checkBoxUseCelltower.setText(Global.Translations.Get("UseCellId"));
-         checkBoxHTCCompass.setText(Global.Translations.Get("UseHtcCompass"));
-         DescCompassLevel.setText(Global.Translations.Get("DescHtcLevel"));
+		checkBoxUseCelltower.setText(Global.Translations.Get("UseCellId"));
+        checkBoxHTCCompass.setText(Global.Translations.Get("UseHtcCompass"));
+        DescCompassLevel.setText(Global.Translations.Get("DescHtcLevel"));
 	}
 	
 		
 	private void FillSettings()
 	{
+		try
+		{
 		EditTextGCName.setText(Config.GetString("GcLogin"));
 		EditTextGCPW.setText(Config.GetString("GcPass"));
 		EditTextGCVotePW.setText(Config.GetString("GcVotePassword"));
@@ -328,9 +410,45 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		checkBoxHTCCompass.setChecked(Config.GetBool("HtcCompass"));
 		EditCompassLevel.setText(String.valueOf(Config.GetInt("HtcLevel")));
 		chkCompassLevelViewState();
+		fillLevelSpinner();
+		fillSmothSpinner();
+		fillTrackDistanceSpinner();
+		chkTrackStart.setChecked(Config.GetBool("TrackRecorderStartup"));
+		chkMapink.setChecked(Config.GetBool("ImportLayerOsm"));
+		chkCycleMap.setChecked(Config.GetBool("ImportLayerOcm"));
+		chkOsmarenerer.setChecked(Config.GetBool("ImportLayerOsma"));
+		OsmMinLevel.setSelection(Config.GetInt("OsmMinLevel"));
+		OsmMaxLevel.setSelection(Config.GetInt("OsmMaxLevel"));
+		ZoomCross.setSelection(Integer.parseInt(Config.GetString("ZoomCross"))-14);
+		SmoothScrolling.setSelection(smoth.indexOf(SmoothScrollingTyp.valueOf(Config.GetString("SmoothScrolling"))));
 		
+		TrackDistance.setSelection(distance.indexOf(Config.GetInt("TrackDistance")));
+		}
+		catch(Exception e)
+		{
+			
+		}
 	}
 	
+	private void SaveSettings()
+	{
+		Config.Set("GcLogin",EditTextGCName.getEditableText().toString());
+    	Config.Set("GcPass",EditTextGCPW.getEditableText().toString());
+    	Config.Set("GcVotePassword",EditTextGCVotePW.getEditableText().toString());
+    	Config.Set("TrackRecorderStartup",chkTrackStart.isChecked());
+    	Config.Set("ImportLayerOsm",chkMapink.isChecked());
+    	Config.Set("ImportLayerOcm",chkCycleMap.isChecked());
+    	Config.Set("ImportLayerOsma",chkOsmarenerer.isChecked());
+    	Config.Set("OsmMinLevel",(Integer) OsmMinLevel.getSelectedItem());
+    	Config.Set("OsmMaxLevel",(Integer) OsmMaxLevel.getSelectedItem());
+    	Config.Set("ZoomCross",(Integer) ZoomCross.getSelectedItem());
+    	String debug = ((SmoothScrollingTyp) SmoothScrolling.getSelectedItem()).name();
+    	Config.Set("SmoothScrolling",debug);
+    	Config.Set("TrackDistance",(Integer) TrackDistance.getSelectedItem());
+    	
+    	Config.AcceptChanges();
+		finish();
+	}	
 	
 	private void chkCompassLevelViewState()
 	{
@@ -366,12 +484,90 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		
 	}
 	
+	private void fillLevelSpinner()
+	{
+		Integer Level[] = new Integer[21];
+		Integer CrossLevel[] = new Integer[8];
+				
+		for (int i =0; i<22; i++)
+		{
+			if(i<21)
+				Level[i]=i;
+			
+			if(i>13)
+				CrossLevel[i-14]=i;
+				
+		}
+		
+		ArrayAdapter<Integer> minAdapter = new ArrayAdapter<Integer>(this,android.R.layout.simple_spinner_item, Level); 
+		minAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		
+		ArrayAdapter<Integer> maxAdapter = new ArrayAdapter<Integer>(this,android.R.layout.simple_spinner_item, Level); 
+		maxAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		
+		ArrayAdapter<Integer> crossAdapter = new ArrayAdapter<Integer>(this,android.R.layout.simple_spinner_item, CrossLevel); 
+		crossAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		
+		OsmMinLevel.setAdapter(minAdapter);
+		OsmMaxLevel.setAdapter(maxAdapter);
+		ZoomCross.setAdapter(crossAdapter);
+	}
+	
+	
+	
+	private ArrayList<SmoothScrollingTyp> smoth; 
+	
+	
+	private void fillSmothSpinner()
+	{
+		smoth= new ArrayList<SmoothScrollingTyp>();
+		SmoothScrollingTyp[] tmp = SmoothScrollingTyp.values();
+		for ( SmoothScrollingTyp item : tmp)
+		{
+			smoth.add(item);
+		}
+		
+		ArrayAdapter<SmoothScrollingTyp> smothAdapter = new ArrayAdapter<SmoothScrollingTyp>(this,android.R.layout.simple_spinner_item, smoth); 
+		smothAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		SmoothScrolling.setAdapter(smothAdapter);
+	}
+	
+	Integer[] TrackDistanceArray = new Integer[]{1,3,5,10,20};
+	ArrayList<Integer> distance = new ArrayList<Integer>();
+	
+	private void fillTrackDistanceSpinner()
+	{
+		distance = new ArrayList<Integer>();
+		
+		for ( Integer item : TrackDistanceArray)
+		{
+			distance.add(item);
+		}
+		
+		ArrayAdapter<Integer> TrackCountsAdapter = new ArrayAdapter<Integer>(this,android.R.layout.simple_spinner_item, distance); 
+		TrackCountsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		TrackDistance.setAdapter(TrackCountsAdapter);
+	}
+
+ 	private void setButtonHeight() 
+	{
+		// setzt die höhe der Buttons auf die Höhe der ComboBox
+		int Height = (int) (Global.scaledFontSize_normal*4);
+		LangCombo.setMinimumHeight(Height);
+		ToggleLogInView.setHeight(Height);
+		ToggleGPSView.setHeight(Height);
+		ToggleMapView.setHeight(Height);
+		ToggleMiscView.setHeight(Height);
+		
+	}
+
 	
 
 
 	@Override
 	public void OnShow() 
 	{
+		setButtonHeight();
 		FillSettings();
 	}
 

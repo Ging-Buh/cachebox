@@ -760,6 +760,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    		break;
 		    	case R.id.miSettings:
 		    		final Intent mainIntent = new Intent().setClass( mainActivity, Settings.class);
+		    		Bundle b = new Bundle();
+  			        b.putSerializable("Show", -1);
+  			        mainIntent.putExtras(b);
 		    		mainActivity.startActivity(mainIntent);
 		    		break;
 		    		

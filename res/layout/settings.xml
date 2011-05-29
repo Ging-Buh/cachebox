@@ -11,7 +11,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 	<ScrollView
 		android:layout_height="wrap_content" 
 		android:layout_width="match_parent"
-		android:layout_weight="1">
+		android:layout_weight="1"
+		android:id="@+id/settings_scrollView">
 	    
   	  <TableLayout 
 	    android:id="@+id/settings_tableLayout1" 
@@ -28,6 +29,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 			    style="@style/day_Spinner"
 			    
 			    ></Spinner>
+			    
+	<!-- LogIn Settings -->		    
 		   	<Button 
 			   	 
 			   	android:text="Login - Settings" 
@@ -47,12 +50,10 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 				 android:id="@layout/settings_login" 
 				 layout="@layout/settings_login" 
 				 android:layout_width="match_parent" 
-				 android:layout_marginLeft="2dip" 
-				 android:layout_marginRight="2dip" 
 				 android:layout_weight="1"></include>			    
 			 
 		    </TableRow>
-		    
+   <!-- Gps Settings -->		    
 		    <Button 
 			   	 
 			   	android:text="GPS" 
@@ -72,8 +73,57 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 				 android:id="@layout/settings_gps" 
 				 layout="@layout/settings_gps" 
 				 android:layout_width="match_parent" 
-				 android:layout_marginLeft="2dip" 
-				 android:layout_marginRight="2dip" 
+				 android:layout_weight="1"></include>			    
+			 
+		    </TableRow>
+		    
+		    
+	<!-- Map Settings -->		    
+		    <Button 
+			   	 
+			   	android:text="Map" 
+			   	android:layout_height="wrap_content" 
+			   	android:layout_width="wrap_content" 
+			   	android:id="@+id/toggle_button_map" 
+			   	android:layout_marginTop="10dip"></Button>
+			   	
+		    <TableRow 
+			    android:id="@+id/settings_tableRow_map" 
+			    android:layout_height="wrap_content" 
+			    android:layout_width="match_parent"
+			    android:visibility="gone">
+	
+			 <include 
+				 android:layout_height="wrap_content" 
+				 android:id="@layout/settings_map" 
+				 layout="@layout/settings_map" 
+				 android:layout_width="match_parent" 
+				 android:layout_weight="1"></include>			    
+			 
+		    </TableRow>
+		    
+		    
+		    
+	<!-- Misc Settings -->		    
+		    <Button 
+			   	 
+			   	android:text="Misc" 
+			   	android:layout_height="wrap_content" 
+			   	android:layout_width="wrap_content" 
+			   	android:id="@+id/toggle_button_misc" 
+			   	android:layout_marginTop="10dip"></Button>
+			   	
+		    <TableRow 
+			    android:id="@+id/settings_tableRow_misc" 
+			    android:layout_height="wrap_content" 
+			    android:layout_width="match_parent"
+			    android:visibility="gone">
+	
+			 <include 
+				 android:layout_height="wrap_content" 
+				 android:id="@layout/settings_misc" 
+				 layout="@layout/settings_misc" 
+				 android:layout_width="match_parent" 
 				 android:layout_weight="1"></include>			    
 			 
 		    </TableRow>
@@ -84,22 +134,23 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 	</ScrollView>
 
 	<LinearLayout 
-		android:id="@+id/settings_savecancel_linearlayout" 
-		android:layout_width="match_parent" 
-		android:layout_height="wrap_content" 
-		android:baselineAligned="false">
-			<Button 
-				android:text="Save" 
-				android:layout_weight="1"
-				android:layout_height="wrap_content" 
-				android:id="@+id/settings_save" 
-				android:layout_marginTop="10dip" android:layout_width="wrap_content" android:textSize="20dip" android:layout_marginRight="10dip" android:layout_marginLeft="10dip"></Button>
-			<Button 
-				android:text="Cancel" 
-				android:layout_weight="1"
-				android:layout_height="wrap_content" 
-				android:id="@+id/settings_cancel" 
-				android:layout_marginTop="10dip" android:layout_width="wrap_content" android:textSize="20dip" android:layout_marginRight="10dip" android:layout_marginLeft="10dip"></Button>
-		    	    
-	</LinearLayout>
+    	android:orientation="horizontal" 
+    	android:id="@+id/settings_savecancel_linearlayout" 
+    	android:layout_width="match_parent" 
+    	android:layout_alignParentBottom="true" android:layout_height="55dip">
+        	<Button 
+			android:layout_weight="1" 
+			android:layout_width="match_parent" 
+			android:text="Button" 
+			android:layout_height="match_parent" 
+			android:id="@+id/settings_save">
+		</Button>
+        	<Button 
+			android:layout_weight="1" 
+			android:layout_width="match_parent" 
+			android:text="Button" 
+			android:layout_height="match_parent" 
+			android:id="@+id/settings_cancel">
+		</Button>
+    </LinearLayout>
 </LinearLayout>

@@ -17,6 +17,7 @@ import java.util.HashMap;
 
 
 import de.droidcachebox.Events.SelectedLangChangedEventList;
+import de.droidcachebox.Views.FilterSettings.PresetListView;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -230,7 +231,7 @@ public class Config {
         validateSetting("MapMaxCachesDisplay_config", "10000");
         validateSetting("SoundApproachDistance", "50");
         validateSetting("mapMaxCachesDisplayLarge_config", "75");
-//        validateSetting("Filter", FilterPresets.presets[0]);
+        validateSetting("Filter", PresetListView.presets[0].toString());
         validateSetting("ZoomCross", "16");
         validateSetting("GpsDriverMethod", "default");
 //        validateSetting("TomTomExportFolder", Global.AppPath + "\\user");
@@ -250,6 +251,7 @@ public class Config {
 
         validateSetting("HtcCompass", "false");
         validateSetting("HtcLevel", "30");
+        validateSetting("SmoothScrolling", "none");
 
 //        validateSetting("OtherRepositoriesFolder", Global.AppPath + "\\Repositories");
 

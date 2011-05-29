@@ -2,17 +2,21 @@ package de.droidcachebox.Components;
 
 import de.droidcachebox.R;
 import android.content.Context;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ScrollView;
 
 public class Animations 
 {
 	/*
 	 * Schaltet die Visibility eines View um und animiert dabei ein Slidedown/Slideup
 	 */
-	public static void ToggleViewSlideUp_Down(final View v, Context context)
+	public static void ToggleViewSlideUp_Down(final View v, Context context,final ScrollView scrollView, final Button button)
 	{
 		if(v.getVisibility() == View.VISIBLE)
     	{
@@ -39,6 +43,30 @@ public class Animations
     		Animation mShowAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_out_down);
     		v.startAnimation(mShowAnimation);
     		v.setVisibility(View.VISIBLE);
+    		mShowAnimation.setAnimationListener(new AnimationListener() {
+    		    @Override
+    		    public void onAnimationStart(Animation animation) {
+    		    }
+
+    		    @Override
+    		    public void onAnimationRepeat(Animation animation) {
+    		    }
+
+    		    @Override
+    		    public void onAnimationEnd(Animation animation) {
+    		    	Rect r = new Rect();
+    				Point offset = new Point();
+    				scrollView.getChildVisibleRect(button, r, offset);
+    				scrollView.scrollTo(offset.x, offset.y);
+    		    }
+    		});
+    		
+    		
+    		
+    		
     	}
+		
+		
+		
 	}
 }

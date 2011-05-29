@@ -14,6 +14,7 @@
 		<attr name="ToggleBtColor_on" format="reference|color"/>
 		<attr name="DropDownButton" format="reference|color" />
 		<attr name="DropDownButton_pressed" format="reference|color" />
+		<attr name="Settings_Group" format="reference|color" />
 	</declare-styleable>
 	
 	

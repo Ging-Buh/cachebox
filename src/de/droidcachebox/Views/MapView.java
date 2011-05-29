@@ -58,6 +58,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.TrackRecorder;
 import de.droidcachebox.UnitFormatter;
+import de.droidcachebox.main;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
 import de.droidcachebox.Events.PositionEvent;
@@ -71,6 +72,7 @@ import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Map.Manager;
 import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.Map.Tile;
+import de.droidcachebox.Views.Forms.Settings;
 
 public class MapView extends RelativeLayout implements SelectedCacheEvent, PositionEvent, ViewOptionsMenu {
 	private boolean isVisible;  // true, when MapView is visible
@@ -4396,6 +4398,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			case R.id.mapview_stoprecording:
 				TrackRecorder.StopRecording();
 				return true;
+			case R.id.mapview_go_settings:
+				final Intent mainIntent = new Intent().setClass( main.mainActivity, Settings.class);
+	    		Bundle b = new Bundle();
+			        b.putSerializable("Show", 3); //Show Settings und setze ein PerformClick auf den MapSettings Button! (3)
+			        mainIntent.putExtras(b);
+	    		main.mainActivity.startActivity(mainIntent);
+	    		return true;
 		}
 		return false;
 	}
