@@ -13,6 +13,7 @@ import java.util.TimerTask;
 
 import org.mapsforge.preprocessing.highwayHierarchies.hierarchyComputation.util.DBConnection;
 
+import de.droidcachebox.ExtAudioRecorder;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
@@ -167,7 +168,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     private static String mediaCacheName = null;
     private static Coordinate mediaCoordinate = null;
     private static Boolean VoiceRecIsStart = false;
-    private MediaRecorder mRecorder = null;
+    private ExtAudioRecorder extAudioRecorder = null;
 
     
     final SensorEventListener mListener = new SensorEventListener() {
@@ -480,11 +481,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         		// GPS Verbindung beenden
         		locationManager.removeUpdates(this);
         		// Voice Recorder stoppen
-                if (mRecorder != null) 
+                if (extAudioRecorder != null) 
                 {            
-	    	        mRecorder.stop();
-                	mRecorder.release();            
-                	mRecorder = null;
+		            extAudioRecorder.stop();
+		            extAudioRecorder.release();
+		            extAudioRecorder = null;
                 }
     		}
 			super.onDestroy();
@@ -798,28 +799,21 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			            }
 	
 			            basename += " " + mediaCacheName;
-			            mediafilename = (directory + "/" + basename + ".3gp");
+			            mediafilename = (directory + "/" + basename + ".wav");
 			            
-			            mRecorder = new MediaRecorder();
-			            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-			            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-			            mRecorder.setOutputFile(mediafilename);
-			            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-			            try 
-			            {            
-			            	mRecorder.prepare();
-			            	} 
-			            catch (IOException e) 
-			            {           
-			            	Log.d("DroidCachebox", "Voice Recorder prepare() failed");        
-			            	}        
-			            mRecorder.start();	
+			            // Start recording
+			            //extAudioRecorder = ExtAudioRecorder.getInstanse(true);	  // Compressed recording (AMR)
+			            extAudioRecorder = ExtAudioRecorder.getInstanse(false); // Uncompressed recording (WAV)
+
+			            extAudioRecorder.setOutputFile(mediafilename);
+			            extAudioRecorder.prepare();
+			            extAudioRecorder.start();
 
 			            String MediaFolder = Config.GetString("UserImageFolder");
 		            	String TrackFolder = Config.GetString("TrackFolder");
 		            	String relativPath = Global.getRelativePath(MediaFolder, TrackFolder, "/"); 
 		            	// Da eine Voice keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
-		            	TrackRecorder.AnnotateMedia(basename + ".3gp", relativPath + "/" + basename + ".3gp", Global.LastValidPosition, Global.GetTrackDateTimeString());
+		            	TrackRecorder.AnnotateMedia(basename + ".wav", relativPath + "/" + basename + ".wav", Global.LastValidPosition, Global.GetTrackDateTimeString());
 			    		Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
 			            VoiceRecIsStart = true;
@@ -828,9 +822,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    		else
 		    		{	// Voice Recorder stoppen
 			            Log.d("DroidCachebox", "Stoping voice recorder on the phone...");
-		    	        mRecorder.stop();
-		    	        mRecorder.release();
-		    	        mRecorder = null;		    			
+			            // Stop recording
+			            extAudioRecorder.stop();
+			            extAudioRecorder.release();
+			            extAudioRecorder = null;
+			            
 			    		Toast.makeText(mainActivity, "Stop Voice Recorder", Toast.LENGTH_SHORT).show();
 			            VoiceRecIsStart = false;
 			            break;
