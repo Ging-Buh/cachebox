@@ -169,21 +169,30 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     private static String mediaTimeString = null; 
     private static String basename = null;
     private static String mediaCacheName = null;
-    private static Coordinate mediaCoordinate = null;
-    
+    private static Coordinate mediaCoordinate = null; 
     private ExtAudioRecorder extAudioRecorder = null;
-
-    
-    
-    
     private static Boolean mVoiceRecIsStart = false;
+
     
     private Boolean getVoiceRecIsStart(){return mVoiceRecIsStart;}
     private void setVoiceRecIsStart(Boolean value)
     {
     	mVoiceRecIsStart=value;
     	if(mVoiceRecIsStart)
-    	{ Mic_Icon.SetOn();} else { Mic_Icon.SetOff();}
+    	{ Mic_Icon.SetOn();} 
+    	else 
+    	{   // Aufnahme stoppen
+    		Mic_Icon.SetOff();
+            if (extAudioRecorder != null) 
+            {            
+	            extAudioRecorder.stop();
+	            extAudioRecorder.release();
+	            extAudioRecorder = null;
+	    		Toast.makeText(mainActivity, "Stop Voice Recorder", Toast.LENGTH_SHORT).show();
+            }
+    		counterStopped = false; // ScreenLock-Counter wieder starten
+    		counter.start();
+    	}
     	
     }
     
@@ -427,13 +436,15 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         Mic_Icon = (Mic_On_Flash)this.findViewById(R.id.mic_flash);
         Mic_Icon.SetOff(); 
         //Mic_Icon.SetOn(); // Debug Animation Time ohne Voice Rec 
+
         Mic_Icon.setOnClickListener(new OnClickListener() 
         {
 			
 			@Override
 			public void onClick(View v) 
 			{
-				setVoiceRecIsStart(false);
+				// Stoppe Aufnahme durch klick auf Mikrofon-Icon
+				setVoiceRecIsStart(false); 
 			}
 		}); 
         
@@ -852,17 +863,15 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			    		Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
 			            setVoiceRecIsStart(true);
+			    		counter.cancel();			// Während der Aufnahme Screen-Lock-Counter stoppen
+			    		counterStopped = true;
+
 			    		break;	
 		    		}
 		    		else
 		    		{	// Voice Recorder stoppen
 			            Log.d("DroidCachebox", "Stoping voice recorder on the phone...");
 			            // Stop recording
-			            extAudioRecorder.stop();
-			            extAudioRecorder.release();
-			            extAudioRecorder = null;
-			            
-			    		Toast.makeText(mainActivity, "Stop Voice Recorder", Toast.LENGTH_SHORT).show();
 			    		setVoiceRecIsStart(false);
 			            break;
 		    		}
