@@ -4,9 +4,11 @@ import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
+import de.droidcachebox.main;
 import de.droidcachebox.Custom_Controls.CacheInfoControl;
 import de.droidcachebox.Custom_Controls.CompassControl;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
+import de.droidcachebox.Custom_Controls.WayPointInfoControl;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
@@ -42,8 +44,13 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 	private CacheInfoControl DescriptionTextView;
 	private RelativeLayout ToggleButtonLayout;
 	private MultiToggleButton AlignButton;
-	
-	public CompassView(Context context, LayoutInflater inflater) {
+	private WayPointInfoControl WP_info;
+	private Boolean align = false;
+	static public int windowW=0;
+    static public int windowH=0 ;
+    
+	public CompassView(Context context, LayoutInflater inflater) 
+	{
 		super(context);
 		
 		SelectedCacheEventList.Add(this);
@@ -56,6 +63,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 		 compassControl = (CompassControl)findViewById(R.id.Compass);
 		 DescriptionTextView = (CacheInfoControl)findViewById(R.id.CompassDescriptionView);
 		 ToggleButtonLayout = (RelativeLayout)findViewById(R.id.layoutCompassToggle);
+		 WP_info = (WayPointInfoControl)findViewById(R.id.WaypointDescriptionView);
 		 AlignButton = (MultiToggleButton)findViewById(R.id.CompassAlignButton);
 		 AlignButton.setOnClickListener(new OnClickListener() {
 			
@@ -68,12 +76,24 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 			}
 		});
 		 
+		 DescriptionTextView.setOnClickListener(onDescClick);
+		 WP_info.setOnClickListener(onDescClick);
+		 
 		SelectedLangChangedEventList.Add(this);
 		SelectedLangChangedEvent();
-}
-	private Boolean align = false;
-	static public int windowW=0;
-    static public int windowH=0 ;
+	}
+	
+	final View.OnClickListener onDescClick = new OnClickListener() 
+	{
+		
+		@Override
+		public void onClick(View v) 
+		{
+			((main) main.mainActivity).showView(2);
+			
+		}
+	};
+	
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) 
     {
@@ -101,7 +121,14 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 			if (aktWaypoint != null)
             {
 				cacheInfoBackColor = Global.getColor(R.attr.ListBackground_secend); // Cache ist nicht selectiert
+				WP_info.setWaypoint(aktWaypoint);
+				DescriptionTextView.setVisibility(View.GONE);
             }
+			else
+			{
+				DescriptionTextView.setVisibility(View.VISIBLE);
+				WP_info.setWaypoint(null);
+			}
 			
 			DescriptionTextView.setCache(aktCache, cacheInfoBackColor);
 		}

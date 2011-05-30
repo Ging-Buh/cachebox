@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout 
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:hug=" http://schemas.android.com/apk/res/android/de.droidcachebox"
- 	android:id="@+id/compassLayout" 
- 	
-	android:layout_width="fill_parent"
-	android:orientation="vertical" 	android:layout_height="fill_parent" >
-		
-	<de.droidcachebox.Custom_Controls.CacheInfoControl
-		    android:id="@+id/CompassDescriptionView" 
-		    android:layout_height="wrap_content" 
-		    
-		    
-		    android:layout_width="fill_parent"
-		    android:layout_alignParentTop="true" android:layout_marginLeft="2dip" android:layout_marginRight="2dip" android:layout_marginTop="1dip"/>	
-		
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:hug=" http://schemas.android.com/apk/res/android/de.droidcachebox"
+	android:id="@+id/compassLayout" android:layout_width="fill_parent"
+	android:orientation="vertical" android:layout_height="fill_parent">
+
+	<LinearLayout android:layout_height="wrap_content" android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_alignParentTop="true">
+		<de.droidcachebox.Custom_Controls.CacheInfoControl
+			android:id="@+id/CompassDescriptionView" android:layout_height="wrap_content"
+			android:layout_width="fill_parent" 
+			android:layout_marginLeft="2dip" android:layout_marginRight="2dip"
+			android:layout_marginTop="1dip" />
+
+
+		<de.droidcachebox.Custom_Controls.WayPointInfoControl
+			android:id="@+id/WaypointDescriptionView" android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:layout_marginLeft="2dip"
+			android:layout_marginRight="2dip" android:layout_marginTop="1dip" />
+
+	</LinearLayout>
+
+
+
 	<de.droidcachebox.Custom_Controls.CompassControl
-		    android:id="@+id/Compass"
-		    android:layout_height="wrap_content" 
-		   
-		    
-		    android:layout_width="fill_parent"
-		    android:layout_alignParentBottom="true"/>   
-      
-  
- <RelativeLayout android:layout_alignParentBottom="true" android:layout_width="fill_parent" android:id="@+id/layoutCompassToggle" android:layout_height="fill_parent" android:gravity="right">
-      
-      
-      
-      <de.droidcachebox.Custom_Controls.MultiToggleButton
-   android:id="@+id/CompassAlignButton" 
-   android:text="ToggleButton" 
-      
-   android:layout_width="65dip" 
-   android:layout_height="58dip" 
-   android:layout_marginRight="2dip"/> 
- </RelativeLayout>
-		
-		
-		
-</RelativeLayout >
+		android:id="@+id/Compass" android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:layout_alignParentBottom="true" />
+
+
+	<RelativeLayout android:layout_alignParentBottom="true"
+		android:layout_width="fill_parent" android:id="@+id/layoutCompassToggle"
+		android:layout_height="fill_parent" android:gravity="right">
+
+		<de.droidcachebox.Custom_Controls.MultiToggleButton
+			android:id="@+id/CompassAlignButton" android:text="ToggleButton"
+			android:layout_width="65dip" android:layout_height="58dip"
+			android:layout_marginRight="2dip" />
+	</RelativeLayout>
+
+
+
+</RelativeLayout>
 
 

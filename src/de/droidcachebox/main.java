@@ -531,7 +531,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     } 
     
   
-    private void showView(Integer viewId)
+    public void showView(Integer viewId)
     {
     	showView((ViewOptionsMenu)ViewList.get(viewId));
     }
@@ -545,7 +545,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	frame.addView((View) aktView);
     	aktView.OnShow();  
     	aktViewId=ViewList.indexOf(aktView);
-    	ShowLayoutTop();
+    	
     }
     
     
@@ -669,7 +669,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 				// Nav
 		    	case R.id.miCompassView:
 		    		showView(compassView);
-		    		HideLayoutTop();
+		    		
 		    		break;
 		    	
 		    	case R.id.miMapView:
@@ -768,7 +768,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    		
 		    	case R.id.miCompassView:
 		    		showView(compassView);
-		    		HideLayoutTop();
+		    		
 		    		break;
 		    		
 		    	case R.id.miVoiceRecorder:
@@ -1068,18 +1068,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		
 	}
 
-	private void HideLayoutTop()
-	{
-		TopLayout.setVisibility(View.GONE);
-	}
-
-	private void ShowLayoutTop()
-	{
-		TopLayout.setVisibility(View.VISIBLE);
-	}
 	
-
-    
    
 	@Override
 	public void CacheListChangedEvent() 

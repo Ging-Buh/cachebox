@@ -34,7 +34,14 @@ public class WaypointViewItem extends View {
     private final int CornerSize =20;
     private int rightBorder;
     private int imgSize;
-
+    private StaticLayout LayoutName; 
+	private StaticLayout LayoutDesc;
+	private StaticLayout LayoutCord;
+	private StaticLayout LayoutClue;
+	private TextPaint LayoutTextPaint;
+	private TextPaint LayoutTextPaintBold;
+	private int LineSep;
+	
 	public WaypointViewItem(Context context, Cache cache, Waypoint waypoint, Boolean BackColorId) {
 		// TODO Auto-generated constructor stub
 		super(context);
@@ -45,13 +52,7 @@ public class WaypointViewItem extends View {
        }
 
 	
-	private StaticLayout LayoutName; 
-	private StaticLayout LayoutDesc;
-	private StaticLayout LayoutCord;
-	private StaticLayout LayoutClue;
-	private TextPaint LayoutTextPaint;
-	private TextPaint LayoutTextPaintBold;
-	private int LineSep;
+	
 	
 	@Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
