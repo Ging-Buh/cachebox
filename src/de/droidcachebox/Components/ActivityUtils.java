@@ -6,11 +6,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.StaticLayout;
@@ -115,6 +117,24 @@ public class ActivityUtils
         image.draw(canvas);
         image.setBounds(oldBounds);
 
+        return width;
+    }
+    
+    
+    public static int PutImageTargetHeightColor(Canvas canvas, Drawable image, int x, int y, int height, int color)
+    {
+       // float scale = (float)height / (float)image.getBounds().height();
+       // int width = (int)Math.round(image.getBounds().width() * scale);
+        
+        float scale = (float)height / (float)image.getIntrinsicHeight();
+        int width = (int)Math.round(image.getIntrinsicWidth() * scale);
+
+        Rect oldBounds = image.getBounds();
+        image.setBounds(x, y, x + width, y + height);
+        image.setColorFilter(color, Mode.MULTIPLY);
+        image.draw(canvas);
+        image.setBounds(oldBounds);
+        image.clearColorFilter();
         return width;
     }
     

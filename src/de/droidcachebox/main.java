@@ -16,6 +16,7 @@ import org.mapsforge.preprocessing.highwayHierarchies.hierarchyComputation.util.
 import de.droidcachebox.ExtAudioRecorder;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheNameView;
+import de.droidcachebox.Custom_Controls.Mic_On_Flash;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
 import de.droidcachebox.Events.CachListChangedEventList;
@@ -100,6 +101,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -120,6 +122,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	private RelativeLayout TopLayout;
 	private FrameLayout frameCacheName;
 	public static Activity mainActivity;
+	private Mic_On_Flash Mic_Icon;
 	
 // Views
 	private static Integer aktViewId = -1;
@@ -167,9 +170,22 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     private static String basename = null;
     private static String mediaCacheName = null;
     private static Coordinate mediaCoordinate = null;
-    private static Boolean VoiceRecIsStart = false;
+    
     private ExtAudioRecorder extAudioRecorder = null;
 
+    
+    
+    
+    private static Boolean mVoiceRecIsStart = false;
+    
+    private Boolean getVoiceRecIsStart(){return mVoiceRecIsStart;}
+    private void setVoiceRecIsStart(Boolean value)
+    {
+    	mVoiceRecIsStart=value;
+    	if(mVoiceRecIsStart)
+    	{ Mic_Icon.SetOn();} else { Mic_Icon.SetOff();}
+    	
+    }
     
     final SensorEventListener mListener = new SensorEventListener() {
         public void onSensorChanged(SensorEvent event) {
@@ -326,6 +342,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
          this.width = d.getWidth();
          this.height = d.getHeight();
 
+         
+        //set Mic_Icon Pos
+        
+        // Mic_Icon.setLayoutParams(new AbsoluteLayout.LayoutParams(50, 50, 10, 10));
 
         inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
@@ -402,6 +422,21 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		
 		
 		*/
+        
+        
+        Mic_Icon = (Mic_On_Flash)this.findViewById(R.id.mic_flash);
+        Mic_Icon.SetOff(); 
+        //Mic_Icon.SetOn(); // Debug Animation Time ohne Voice Rec 
+        Mic_Icon.setOnClickListener(new OnClickListener() 
+        {
+			
+			@Override
+			public void onClick(View v) 
+			{
+				setVoiceRecIsStart(false);
+			}
+		}); 
+        
         this.buttonCache = (ImageButton)this.findViewById(R.id.buttonCache);
         registerForContextMenu(buttonCache);
         this.buttonCache.setOnClickListener(new OnClickListener() {
@@ -773,7 +808,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    		break;
 		    		
 		    	case R.id.miVoiceRecorder:
-		    		if (!VoiceRecIsStart) // Voice Recorder starten
+		    		if (!getVoiceRecIsStart()) // Voice Recorder starten
 		    		{
 			            Log.d("DroidCachebox", "Starting voice recorder on the phone...");
 			            
@@ -816,7 +851,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		            	TrackRecorder.AnnotateMedia(basename + ".wav", relativPath + "/" + basename + ".wav", Global.LastValidPosition, Global.GetTrackDateTimeString());
 			    		Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
-			            VoiceRecIsStart = true;
+			            setVoiceRecIsStart(true);
 			    		break;	
 		    		}
 		    		else
@@ -828,7 +863,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			            extAudioRecorder = null;
 			            
 			    		Toast.makeText(mainActivity, "Stop Voice Recorder", Toast.LENGTH_SHORT).show();
-			            VoiceRecIsStart = false;
+			    		setVoiceRecIsStart(false);
 			            break;
 		    		}
 		    		
@@ -925,7 +960,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	{
     		MenuItem mi = IconMenu.findItem(R.id.miVoiceRecorder);
     		if (mi != null)
-    			if (!VoiceRecIsStart)
+    			if (!getVoiceRecIsStart())
     				mi.setTitle("Voice Recorder");
     			else
     				mi.setTitle("Stop Voice Rec.");

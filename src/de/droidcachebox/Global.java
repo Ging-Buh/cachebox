@@ -440,6 +440,7 @@ public class Global {
         		res.getDrawable(R.drawable.map22), // 26
         		res.getDrawable(R.drawable.chk_icon), // 27
         		res.getDrawable(R.drawable.delete_icon), // 28
+        		res.getDrawable(R.drawable.voice_rec_icon), // 29
 };
         
         Arrows = new Drawable[] { 
