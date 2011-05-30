@@ -412,7 +412,7 @@ public class FilterSetListViewItem extends View {
 
 	public boolean getBoolean() 
 	{
-		if(mFilterSetEntry.getState()==1)
+		if(mFilterSetEntry.getState()==0)
 			return false;
 		
 		return true;
