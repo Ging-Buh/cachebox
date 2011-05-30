@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import de.droidcachebox.Components.CacheNameView;
 
@@ -22,6 +24,8 @@ import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.LogView;
 import de.droidcachebox.Views.MapView;
 import de.droidcachebox.Views.WaypointView;
+import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
+import de.droidcachebox.Views.Forms.SelectDB;
 import de.droidcachebox.Database;
 import de.droidcachebox.Database.DatabaseType;
 import de.droidcachebox.Geocaching.Cache;
@@ -57,25 +61,30 @@ import android.widget.TextView;
 
 public class splash extends Activity 
 {
-	 public void onCreate(Bundle savedInstanceState) 
-	 {
-	        super.onCreate(savedInstanceState);
-	        setContentView(R.layout.splash);
-	        myProgressBar=(ProgressBar)findViewById(R.id.splash_progressbar);
-	        myTextView= (TextView)findViewById(R.id.splash_TextView);
-	        TimerTask task = new TimerTask()
-	        {
-	        	@Override
-	        	public void run()
-	        	{
-	        		Initial();
-	        	}
-	        };
-	       
-	        Timer timer = new Timer();
-	        timer.schedule(task, 1000);
-	        
+	public static Activity mainActivity;
+
+	public void onCreate(Bundle savedInstanceState) 
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.splash);
+		myProgressBar=(ProgressBar)findViewById(R.id.splash_progressbar);
+		myTextView= (TextView)findViewById(R.id.splash_TextView);
+
+		mainActivity = this;
+		TimerTask task = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				Initial();
+			}
+		};
+		       
+		Timer timer = new Timer();
+		timer.schedule(task, 1000);
 	 }
+
+	 public static Lock selectDBLock;
 	 
 	 private void Initial() 
 	 {
@@ -124,9 +133,41 @@ public class splash extends Activity
 	    setProgressState(60, "Load Caches ...");
 	        if (Database.Data != null)
 	        	Database.Data = null;
+
+	        
+	        
+	        // search number of DB3 files
+	        FileList fileList = null; 
+	        try
+	        {
+	        	fileList = new FileList(Config.WorkPath, "DB3");
+	        } catch (Exception ex)
+	        {
+	        	Global.AddLog(ex.getMessage());
+	        }
+			if (fileList.size() > 1)
+			{
+				// show Database Selection
+	    		Intent selectDBIntent = new Intent().setClass(mainActivity, SelectDB.class);
+	    		//Bundle b = new Bundle();
+			        //b.putSerializable("Waypoint", aktWaypoint);
+			        //mainIntent.putExtras(b);
+	    		mainActivity.startActivityForResult(selectDBIntent, 546132);
+			} else
+			{
+				Initial2();
+			}
+	 }
+	 
+	 private void Initial2()
+	 {
+	        
+
 	        // initialize Database
 	        Database.Data = new Database(DatabaseType.CacheBox, this);
-	        Database.Data.StartUp(Config.WorkPath + "/CacheBox.db3");
+	        String database = Config.GetString("DatabasePath");
+	        Database.Data.StartUp(database);
+//	        Database.Data.StartUp(Config.WorkPath + "/CacheBox.db3");
 	        Database.Data.Query.LoadCaches("");
 
 	        Database.FieldNotes = new Database(DatabaseType.FieldNotes, this); 
@@ -159,9 +200,33 @@ public class splash extends Activity
 		 //	    };
 		 //}).start();
 
-		 
-		 
-		 
 	 }
 
+	    @Override
+		protected void onActivityResult(int requestCode, int resultCode,
+			Intent data) {
+
+	    	// SelectDB
+	    	if (requestCode == 546132)
+	    	{	    		
+	    		if (resultCode == RESULT_CANCELED)
+	    		{
+	    			finish();
+	    		} else
+	    		{
+		    		TimerTask task = new TimerTask()
+		    		{
+		    			@Override
+		    			public void run()
+		    			{
+		    				Initial2();
+		    			}
+		    		};
+		    		       
+		    		Timer timer = new Timer();
+		    		timer.schedule(task, 1000);
+	    		}
+	    	}
+	    }
+	 
 }

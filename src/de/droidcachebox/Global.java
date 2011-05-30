@@ -249,7 +249,24 @@ public class Global {
 	    return filename;
     	
     }
-    
+
+    public static String GetFileName(String filename)
+    {
+	    int slashposition = filename.lastIndexOf("/");
+	    if (slashposition >= 0)
+	    	filename = filename.substring(slashposition + 1, filename.length());
+	    return filename;
+    	
+    }
+
+	public static String GetDirectoryName(String filename) 
+	{
+	    int slashposition = filename.lastIndexOf("/");
+	    if (slashposition >= 0)
+	    	filename = filename.substring(0, slashposition);
+	    return filename;
+	}
+
   
     public static String getRelativePath(String targetPath, String basePath, String pathSeparator) 
     {   //  We need the -1 argument to split to make sure we get a trailing      
@@ -662,6 +679,5 @@ public class Global {
 			e.printStackTrace();
 		}    	
     }
-
     
 }

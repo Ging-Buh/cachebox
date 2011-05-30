@@ -58,7 +58,6 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.TrackRecorder;
 import de.droidcachebox.UnitFormatter;
-import de.droidcachebox.main;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
 import de.droidcachebox.Events.PositionEvent;
@@ -72,7 +71,6 @@ import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Map.Manager;
 import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.Map.Tile;
-import de.droidcachebox.Views.Forms.Settings;
 
 public class MapView extends RelativeLayout implements SelectedCacheEvent, PositionEvent, ViewOptionsMenu {
 	private boolean isVisible;  // true, when MapView is visible
@@ -1030,7 +1028,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     {
     	Descriptor desc = (Descriptor) state;
 
-    	Bitmap bitmap = Manager.LoadLocalBitmap(CurrentLayer, desc);
+		Global.AddLog("lt1-" + loadedTiles.size());
+		Bitmap bitmap = Manager.LoadLocalBitmap(CurrentLayer, desc);
+		Global.AddLog("lt2");
 /*      Canvas canv = new Canvas(bitmap);
       RouteOverlay.RenderRoute(canv, bitmap, desc, dpiScaleFactorX, dpiScaleFactorY);*/
       
@@ -1100,7 +1100,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     /// man es als WorkItem queuen kann!</param>
 	protected void LoadTrackTile(Descriptor desc)
     {
+		Global.AddLog("ltt1-" + trackTiles.size());
       Bitmap bitmap = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_4444);
+		Global.AddLog("ltt2");
       Paint ppp = new Paint();
       ppp.setColor(Color.argb(255, 0, 0, 0));
       ppp.setStyle(Style.FILL);
@@ -1166,7 +1168,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	}
     	// No tile available. Use Background color (so that at least
     	// routes are painted!)
+		Global.AddLog("lbf1-" + loadedTiles.size());
     	Bitmap result = Bitmap.createBitmap(256, 256, Bitmap.Config.RGB_565);
+		Global.AddLog("lbf2");
     	Canvas graphics = new Canvas(result);
     	
     	if (tile == null)
@@ -4398,13 +4402,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			case R.id.mapview_stoprecording:
 				TrackRecorder.StopRecording();
 				return true;
-			case R.id.mapview_go_settings:
-				final Intent mainIntent = new Intent().setClass( main.mainActivity, Settings.class);
-	    		Bundle b = new Bundle();
-			        b.putSerializable("Show", 3); //Show Settings und setze ein PerformClick auf den MapSettings Button! (3)
-			        mainIntent.putExtras(b);
-	    		main.mainActivity.startActivity(mainIntent);
-	    		return true;
 		}
 		return false;
 	}
@@ -4709,7 +4706,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 					            animationLock.lock();
 					            try
 					            {
-					            	Global.AddLog("animlock1");
 									if (headingInitialized && (Math.abs(aktHeading - toHeading) > 0.3f))
 									{
 							            float step = rotationDirection(aktHeading, toHeading);
@@ -4817,7 +4813,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 							            	br.putBoolean("ChangePos", false);
 									}
 								
-					            	Global.AddLog("animlock2");
 								
 						    	} finally
 						    	{

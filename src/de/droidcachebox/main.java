@@ -43,6 +43,7 @@ import de.droidcachebox.Views.FilterSettings.PresetListView;
 import de.droidcachebox.Views.Forms.EditWaypoint;
 import de.droidcachebox.Views.Forms.HintDialog;
 import de.droidcachebox.Views.Forms.ScreenLock;
+import de.droidcachebox.Views.Forms.SelectDB;
 import de.droidcachebox.Views.Forms.Settings;
 import de.droidcachebox.Database;
 import de.droidcachebox.Database.DatabaseType;
@@ -212,6 +213,15 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	protected void onActivityResult(int requestCode, int resultCode,
 		Intent data) {
 
+    	// SelectDB
+    	if (requestCode == 546132)
+    	{
+    		if (resultCode == RESULT_OK)
+    		{
+    			Toast.makeText(getApplicationContext(), "DB wechsel momentan nur mit Neustart...", Toast.LENGTH_LONG).show();
+    		}
+    		return;
+    	}
     	// Intent Result Take Photo
     	if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK){
@@ -639,6 +649,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    		mainActivity.startActivity(mainIntent);
 		    		break;
 		    	case R.id.miManageDB:
+		    		Intent selectDBIntent = new Intent().setClass(mainActivity, SelectDB.class);
+/*			        Bundle b = new Bundle();
+			        b.putSerializable("Waypoint", aktWaypoint);
+			        mainIntent.putExtras(b);*/
+		    		mainActivity.startActivityForResult(selectDBIntent, 546132);
 		    		break;
 		    	case R.id.miResort:
 		    		Database.Data.Query.Resort();

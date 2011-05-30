@@ -3,6 +3,7 @@ package de.droidcachebox;
 import java.io.File;
 
 import de.droidcachebox.Geocaching.CacheList;
+import de.droidcachebox.Views.Forms.SelectDB;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
