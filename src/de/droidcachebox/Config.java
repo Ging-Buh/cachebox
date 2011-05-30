@@ -175,7 +175,7 @@ public class Config {
     {
         validateSetting("LanguagePath", WorkPath + "/data/lang");
         validateSetting("Sel_LanguagePath", WorkPath + "/data/lang/en.lan");
-        validateSetting("DatabasePath", WorkPath + "/cachebox.sdf");
+        validateSetting("DatabasePath", WorkPath + "/cachebox.db3");
         validateSetting("TileCacheFolder", WorkPath + "/cache");
 //        validateSetting("PocketQueryFolder", Global.AppPath + "\\PocketQuery");
         validateSetting("DescriptionImageFolder", WorkPath + "/repository/images");
@@ -252,6 +252,7 @@ public class Config {
         validateSetting("HtcCompass", "false");
         validateSetting("HtcLevel", "30");
         validateSetting("SmoothScrolling", "none");
+        
 
 //        validateSetting("OtherRepositoriesFolder", Global.AppPath + "\\Repositories");
 
