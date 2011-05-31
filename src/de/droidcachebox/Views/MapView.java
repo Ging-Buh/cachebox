@@ -17,6 +17,7 @@ import de.droidcachebox.Geocaching.Cache.CacheTypes;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.MysterySolution;
 import de.droidcachebox.Geocaching.Waypoint;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -28,6 +29,8 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Debug;
+import android.os.Debug.MemoryInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -2187,6 +2190,24 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     {
     	if (canvas == null)
     		return;
+
+    	ActivityManager activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
+		android.app.ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+		activityManager.getMemoryInfo(memoryInfo);
+
+		int pid [] = {android.os.Process.myPid()};
+
+		
+		android.os.Debug.MemoryInfo[] mi = activityManager.getProcessMemoryInfo(pid);
+
+		// calculate total_bytes_used using mi...
+
+		long available_bytes = activityManager.getMemoryClass();
+		debugString1 = "Gesamt: " + available_bytes * 1024 + " kB";
+		debugString2 = "Free: " + (available_bytes * 1024 - Debug.getNativeHeapAllocatedSize() / 1024) + " kB";
+		
+		
+		
 
 /*    	debugString1 = queuedTiles.size() + " / " + queuedTrackTiles.size();
     	debugString2 = loadedTiles.size() + " / " + trackTiles.size();*/
