@@ -29,6 +29,7 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 
+import android.os.CountDownTimer;
 import android.os.Debug;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -59,15 +60,21 @@ import android.widget.RelativeLayout.LayoutParams;
 
 public final class DebugInfoPanel extends View 
 {
+	private ActivityManager activityManager;
+	private android.app.ActivityManager.MemoryInfo memoryInfo;
 
 	public DebugInfoPanel(Context context) 
 	{
 		super(context);
+		activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
+		memoryInfo = new ActivityManager.MemoryInfo();
 	}
 
 	public DebugInfoPanel(Context context, AttributeSet attrs) 
 	{
 		super(context, attrs);
+		activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
+		memoryInfo = new ActivityManager.MemoryInfo();
 		
 		
 		
@@ -120,6 +127,8 @@ public final class DebugInfoPanel extends View
 				return true;
 			}
 		});
+        counter = new MyCount(500, 500);
+        counter.start();
 	}
 
 	public DebugInfoPanel(Context context, AttributeSet attrs, int defStyle) 
@@ -197,21 +206,17 @@ public final class DebugInfoPanel extends View
 	     drawMemInfo(canvas);
 	     
 	     
-	     invalidate();
-	     
 	}
 	
 	
 	private void drawMemInfo(Canvas canvas)
 	{
-		ActivityManager activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
-		android.app.ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-		activityManager.getMemoryInfo(memoryInfo);
+/*		activityManager.getMemoryInfo(memoryInfo);
 
 		int pid [] = {android.os.Process.myPid()};
 
 		
-		android.os.Debug.MemoryInfo[] mi = activityManager.getProcessMemoryInfo(pid);
+		android.os.Debug.MemoryInfo[] mi = activityManager.getProcessMemoryInfo(pid);*/
 
 		// calculate total_bytes_used using mi...
 
@@ -224,9 +229,26 @@ public final class DebugInfoPanel extends View
 		
 		ActivityUtils.drawStaticLayout(canvas, LayoutMemInfo, left, top);
 		
-		
 	}
 	
+    private class MyCount extends CountDownTimer {
+    	public MyCount(long millisInFuture, long countDownInterval) {
+    		 super(millisInFuture, countDownInterval);
+    		 }        	
+    	@Override
+    	public void onFinish() {
+    		invalidate();
+    		this.start();
+//    		Toast.makeText(getApplicationContext(), "timer", Toast.LENGTH_LONG).show();
+    	}
+		@Override
+		public void onTick(long millisUntilFinished) {
+			// TODO Auto-generated method stub
+			
+		}        
+    }
+    MyCount counter = null;
+
 
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) 
