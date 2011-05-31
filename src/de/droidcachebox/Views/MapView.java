@@ -82,6 +82,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	private SurfaceView surface;
 	private ZoomControls zoomControls;
 	private MultiToggleButton buttonTrackPosition;
+	private String debugString1 = "";
+	private String debugString2 = "";
 
 	private Context myContext;
 	AnimationThread animationThread;
@@ -120,30 +122,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		buttonTrackPosition.addState("Free", Color.GRAY);
 		buttonTrackPosition.addState("GPS", Color.GREEN);
 		buttonTrackPosition.addState("FIX", Color.RED);
-        this.buttonTrackPosition.setOnClickListener(new OnClickListener() {
+        this.buttonTrackPosition.setOnClickListener(new OnClickListener() 
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) 
+            {
             	buttonTrackPosition.onClick(v);
-            	
-            	/*if (useLockPosition)
-            	{
-            		switch (lockPosition)
-            		{
-            		case 0:
-            			setLockPosition(1);
-            			return;
-            		case 1:
-            			setLockPosition(2);
-            			return;
-            		case 2:
-            			setLockPosition(1);
-            			return;
-            		}
-            	}
-            	if (lockPosition == 0)
-            		setLockPosition(1);
-            	else*/
-            		setLockPosition(buttonTrackPosition.getState());
+            	setLockPosition(buttonTrackPosition.getState());
             }
           });
 		
@@ -245,8 +230,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         zoomChanged();
     }
 
-    private String debugString1 = "";
-    private String debugString2 = "";
+   
    
     private boolean multiTouch = false;
     private double lastMultiTouchDist = 0;
@@ -2191,22 +2175,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	if (canvas == null)
     		return;
 
-    	ActivityManager activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
-		android.app.ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-		activityManager.getMemoryInfo(memoryInfo);
-
-		int pid [] = {android.os.Process.myPid()};
-
-		
-		android.os.Debug.MemoryInfo[] mi = activityManager.getProcessMemoryInfo(pid);
-
-		// calculate total_bytes_used using mi...
-
-		long available_bytes = activityManager.getMemoryClass();
-		debugString1 = "Gesamt: " + available_bytes * 1024 + " kB";
-		debugString2 = "Free: " + (available_bytes * 1024 - Debug.getNativeHeapAllocatedSize() / 1024) + " kB";
-		
-		
+    	
 		
 
 /*    	debugString1 = queuedTiles.size() + " / " + queuedTrackTiles.size();

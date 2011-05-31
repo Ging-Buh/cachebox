@@ -270,6 +270,19 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 			}
 		});
 		
+		chkDebugShowPanel.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Boolean newState = !Config.GetBool("DebugShowPanel");
+				Config.Set("DebugShowPanel", newState);
+				((main) main.mainActivity).setDebugVisible();
+				
+			}
+		});
+		
+		
+		
 		FillSettings();
 		setLang();
 		
@@ -348,7 +361,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private Button ToggleDebugView;
 	private TableRow DebugTableRow;
 	private CheckBox chkAllowInetAccess;
-	
+	private CheckBox chkDebugShowPanel;
 	
 	private void findViewsById()
 	{
@@ -395,6 +408,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		ToggleDebugView = (Button)this.findViewById(R.id.toggle_button_debug);
 		DebugTableRow =(TableRow)this.findViewById(R.id.settings_tableRow_debug);
 		chkAllowInetAccess=(CheckBox)this.findViewById(R.id.settings_allow_internet_access);
+		chkDebugShowPanel = (CheckBox)this.findViewById(R.id.settings_debug_chkShow);
 	}
 	
 	private void setLang()
@@ -440,6 +454,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		TrackDistance.setSelection(distance.indexOf(Config.GetInt("TrackDistance")));
 		
 		chkAllowInetAccess.setChecked(Config.GetBool("AllowInternetAccess"));
+		chkDebugShowPanel.setChecked(Config.GetBool("DebugShowPanel"));
 		
 		if(Global.Debug)
 			ToggleDebugView.setVisibility(View.VISIBLE);
@@ -468,6 +483,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	Config.Set("TrackDistance",(Integer) TrackDistance.getSelectedItem());
     	
     	Config.Set("AllowInternetAccess",chkAllowInetAccess.isChecked());
+    	Config.Set("DebugShowPanel",chkDebugShowPanel.isChecked());
     	
     	Config.AcceptChanges();
 		finish();

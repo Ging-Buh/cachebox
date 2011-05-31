@@ -16,6 +16,7 @@ import org.mapsforge.preprocessing.highwayHierarchies.hierarchyComputation.util.
 import de.droidcachebox.ExtAudioRecorder;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheNameView;
+import de.droidcachebox.Custom_Controls.DebugInfoPanel;
 import de.droidcachebox.Custom_Controls.Mic_On_Flash;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
@@ -124,6 +125,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	private FrameLayout frameCacheName;
 	public static Activity mainActivity;
 	private Mic_On_Flash Mic_Icon;
+	private DebugInfoPanel debugInfoPanel;
 	
 // Views
 	private static Integer aktViewId = -1;
@@ -377,6 +379,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         
         TopLayout=(RelativeLayout)this.findViewById(R.id.layoutTop);     
         
+        debugInfoPanel=(DebugInfoPanel)this.findViewById(R.id.debugInfo);
         
         frame = (FrameLayout)this.findViewById(R.id.layoutContent);
      
@@ -510,6 +513,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         	 Global.InitIcons(this, Config.GetBool("nightMode"));
         	
         }
+        
+        
+        
+        setDebugVisible();
+        
     }
     
     void fillViewList()
@@ -1139,7 +1147,17 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
         };        
 	}
 	
- 
+	public void setDebugVisible()
+	{
+		if(Config.GetBool("DebugShowPanel"))
+		{
+			debugInfoPanel.setVisibility(View.VISIBLE);
+		}
+		else
+		{
+			debugInfoPanel.setVisibility(View.GONE);
+		}
+	}
     
     
 }

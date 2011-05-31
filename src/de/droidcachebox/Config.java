@@ -252,7 +252,8 @@ public class Config {
         validateSetting("HtcCompass", "false");
         validateSetting("HtcLevel", "30");
         validateSetting("SmoothScrolling", "none");
-        
+
+        validateSetting("DebugShowPanel", "false");
 
 //        validateSetting("OtherRepositoriesFolder", Global.AppPath + "\\Repositories");
 
