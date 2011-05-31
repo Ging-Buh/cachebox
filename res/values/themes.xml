@@ -29,6 +29,7 @@
 		<item name="ToggleBtColor_off">@color/Day_toggle_off</item>
 		<item name="ToggleBtColor_on">@color/Day_toggle_on</item>
 		<item name="Settings_Group">@drawable/day_settings_group</item>
+		<item name="SlideDownColorFilter">@color/Day_SlideDownColorFilter</item>
 		
 	</style>
     
@@ -60,7 +61,8 @@
 		<item name="MultiToggleButton_Led">@drawable/night_btn_toggle_off</item>
 		<item name="ToggleBtColor_off">@color/Night_toggle_off</item>
 		<item name="ToggleBtColor_on">@color/Night_toggle_on</item>
-		<item name="Settings_Group">@drawable/night_settings_group</item>      
+		<item name="Settings_Group">@drawable/night_settings_group</item>
+		<item name="SlideDownColorFilter">@color/Day_SlideDownColorFilter</item>     
     </style>
     
     

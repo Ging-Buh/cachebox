@@ -77,6 +77,7 @@ public class Global {
     public static Drawable[] LogIcons;
     public static Drawable[] Arrows;
     public static Drawable[] ChkIcons;
+    public static Drawable[] BtnIcons;
     
     // New Map Icons
     public static ArrayList<ArrayList<Drawable>> NewMapIcons = new ArrayList<ArrayList<Drawable>>();
@@ -554,12 +555,17 @@ public class Global {
 
         };
        
-        ChkIcons = new Drawable[] { 
-        		res.getDrawable(N? R.drawable.night_btn_check_off : R.drawable.day_btn_check_off  ),
-        		res.getDrawable(N? R.drawable.night_btn_check_on : R.drawable.day_btn_check_on  ),
-        		
-
-};  
+        ChkIcons = new Drawable[] 
+                { 
+	        		res.getDrawable(N? R.drawable.night_btn_check_off : R.drawable.day_btn_check_off  ),
+	        		res.getDrawable(N? R.drawable.night_btn_check_on : R.drawable.day_btn_check_on  ),
+        		};
+        
+        BtnIcons = new Drawable[] 
+                                { 
+                	        		res.getDrawable(N? R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal ),
+                	        		
+                        		}; 
         
     }
 
@@ -616,7 +622,7 @@ public class Global {
        {R.attr.ListBackground, R.attr.ListBackground_secend, 
     	R.attr.ListBackground_select,R.attr.myBackground,R.attr.ListSeparator,
     	R.attr.TextColor,R.attr.EmptyBackground,
-    	R.attr.ToggleBtColor_off,R.attr.ToggleBtColor_on
+    	R.attr.ToggleBtColor_off,R.attr.ToggleBtColor_on,R.attr.SlideDownColorFilter
        };
     
     public static void initTheme(Context context)

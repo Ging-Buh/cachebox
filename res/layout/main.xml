@@ -45,9 +45,10 @@
 		<RelativeLayout android:layout_alignParentTop="true"
 			android:layout_width="match_parent" android:id="@+id/layoutTop"
 			android:layout_height="30dip">
-			<FrameLayout android:layout_alignParentLeft="true"
-				android:id="@+id/frameCacheName" android:layout_toLeftOf="@+id/frameClock"
-				android:layout_height="match_parent" android:layout_width="match_parent" android:layout_marginBottom="70dip" android:layout_marginRight="10dip"></FrameLayout>
+			<FrameLayout 
+				android:id="@+id/frameCacheName" 
+				android:layout_height="fill_parent" android:layout_width="fill_parent">
+			</FrameLayout>
 		</RelativeLayout>
 	</RelativeLayout>
 	

@@ -459,6 +459,8 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		if(Global.Debug)
 			ToggleDebugView.setVisibility(View.VISIBLE);
 		
+		
+		
 		}
 		catch(Exception e)
 		{
@@ -484,6 +486,8 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	
     	Config.Set("AllowInternetAccess",chkAllowInetAccess.isChecked());
     	Config.Set("DebugShowPanel",chkDebugShowPanel.isChecked());
+    	
+    	
     	
     	Config.AcceptChanges();
 		finish();

@@ -9,6 +9,7 @@ import java.util.TreeMap;
 
 import android.database.Cursor;
 import android.widget.ArrayAdapter;
+import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.Events.CachListChangedEventList;
@@ -49,6 +50,7 @@ public class CacheList extends ArrayList<Cache> {
             }
             wpList.add(wp);
             reader.moveToNext();
+            
         }
         reader.close();
 
@@ -94,6 +96,7 @@ public class CacheList extends ArrayList<Cache> {
 
 //            ++Global.CacheCount;
             reader.moveToNext();
+            
         }
 
         reader.close();

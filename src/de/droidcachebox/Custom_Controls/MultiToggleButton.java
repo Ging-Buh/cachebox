@@ -77,7 +77,7 @@ public class MultiToggleButton extends Button implements OnClickListener {
 		int chosenWidth = chooseDimension(widthMode, widthSize);
 		int chosenHeight = chooseDimension(heightMode, heightSize);
 		
-		int chosenDimension = Math.min(chosenWidth, chosenHeight);
+		Math.min(chosenWidth, chosenHeight);
 		
 		
 
@@ -115,39 +115,7 @@ public class MultiToggleButton extends Button implements OnClickListener {
          int ledHeight = 0;
          int ledWidth = 0;
          
-        /*
-          
-         int BackHeight = 0;
-         int BackWidth = 0;
-         
-        if(this.isPressed())
-         {
-        	 final Drawable finalBackgroundMarkDrawable = mBackgroundDrawablePressed;
- 	        if (finalBackgroundMarkDrawable != null) {
- 	        	Rect mRect = new Rect();
- 	        	
-	        	mRect.set(0, 0, width, height);
- 	        	finalBackgroundMarkDrawable.setBounds(mRect);
- 	        	BackHeight = finalBackgroundMarkDrawable.getIntrinsicHeight();
-	        	BackWidth = finalBackgroundMarkDrawable.getIntrinsicWidth();
- 	           
- 	            finalBackgroundMarkDrawable.draw(canvas);
- 	        }
-         }
-         else
-         {
-	        final Drawable finalBackgroundMarkDrawable = mBackgroundDrawable;
-	        if (finalBackgroundMarkDrawable != null) {
-	        	Rect mRect = new Rect();
-	        	
-	        	mRect.set(0, 0, width, height);
-	        	finalBackgroundMarkDrawable.setBounds(mRect);
-	        	BackHeight = finalBackgroundMarkDrawable.getIntrinsicHeight();
-	        	BackWidth = finalBackgroundMarkDrawable.getIntrinsicWidth();
-	           
-	            finalBackgroundMarkDrawable.draw(canvas);
-	        }
-         }  */
+        
 	        
          final Drawable finalLed = mLedDrawable;
 	        if (finalLed != null) {

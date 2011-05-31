@@ -15,6 +15,7 @@
 		<attr name="DropDownButton" format="reference|color" />
 		<attr name="DropDownButton_pressed" format="reference|color" />
 		<attr name="Settings_Group" format="reference|color" />
+		<attr name="SlideDownColorFilter" format="reference|color" />
 	</declare-styleable>
 	
 	
@@ -30,6 +31,7 @@
 		<attr name="MultiToggleButton_Background_pressed" format="reference" />
 		<attr name="MultiToggleButton_Led" format="reference" />
 	</declare-styleable>
+	
 	
 		
 		
