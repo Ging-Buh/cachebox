@@ -12,4 +12,18 @@
 	    android:id="@+id/settings_debug_chkShow">
     </CheckBox>
     
+    <CheckBox 
+	    android:text="Show Memory Info" 
+	    android:layout_width="match_parent" 
+	    android:layout_height="wrap_content" 
+	    android:id="@+id/settings_debug_chkMemory">
+    </CheckBox>
+    
+    <CheckBox 
+	    android:text="Show Debug msg" 
+	    android:layout_width="match_parent" 
+	    android:layout_height="wrap_content" 
+	    android:id="@+id/settings_debug_chkMsg">
+    </CheckBox>
+    
 </LinearLayout>

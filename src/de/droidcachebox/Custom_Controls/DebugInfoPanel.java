@@ -145,9 +145,15 @@ public final class DebugInfoPanel extends View
 	private TextPaint LayoutTextPaint;
 	private int LineSep;
 	private StaticLayout LayoutMemInfo;
+	private StaticLayout LayoutMsg;
 	private int ContentWidth;
 	private float lastX;
 	private float lastY;
+	private String Msg="";
+	
+	
+	
+	
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) 
 	{
@@ -162,15 +168,15 @@ public final class DebugInfoPanel extends View
 		ContentWidth=width-(Global.CornerSize*2);
 		
 		LayoutMemInfo = new StaticLayout("1. Zeile " + StringFunctions.newLine() + "2.Zeile" + StringFunctions.newLine() + "3.Zeile", LayoutTextPaint, ContentWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-		
+		LayoutMsg = new StaticLayout(Msg, LayoutTextPaint, ContentWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		
 		
 		
 		
 		// Calc height
 		this.height = 0;
-		this.height += (LineSep*4)+ LayoutMemInfo.getHeight();
-		
+		if (Config.GetBool("DebugMemory")) this.height += (LineSep*4)+ LayoutMemInfo.getHeight();
+		if (Config.GetBool("DebugShowMsg")) this.height += (LineSep*2)+ LayoutMsg.getHeight();
 		
 		
         setMeasuredDimension(this.width, this.height);
@@ -196,27 +202,26 @@ public final class DebugInfoPanel extends View
 	protected void onDraw(Canvas canvas) 
 	{
 		 int LineColor = Color.argb(200, 200, 255, 200);
-		 int BackColor = Color.argb(100, 50, 70, 50);
+		 
 	     Rect DrawingRec = new Rect(0,0, width, height);
-	     ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, BackColor);
+	     ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, Global.getColor(R.attr.SlideDownBackColor));
 	     
 	     
 	     left=Global.CornerSize;
 	     top=Global.CornerSize;
-	     drawMemInfo(canvas);
+	     if (Config.GetBool("DebugMemory"))drawMemInfo(canvas);
 	     
-	     
+	     if (Config.GetBool("DebugShowMsg"))drawMsg(canvas);
 	}
 	
 	
+	private void drawMsg(Canvas canvas) 
+	{
+		top += ActivityUtils.drawStaticLayout(canvas, LayoutMsg, left, top);
+	}
+
 	private void drawMemInfo(Canvas canvas)
 	{
-/*		activityManager.getMemoryInfo(memoryInfo);
-
-		int pid [] = {android.os.Process.myPid()};
-
-		
-		android.os.Debug.MemoryInfo[] mi = activityManager.getProcessMemoryInfo(pid);*/
 
 		// calculate total_bytes_used using mi...
 
@@ -227,7 +232,7 @@ public final class DebugInfoPanel extends View
 		LayoutMemInfo = new StaticLayout(line1 + StringFunctions.newLine() +line2 + StringFunctions.newLine() + line3, LayoutTextPaint, ContentWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 	    
 		
-		ActivityUtils.drawStaticLayout(canvas, LayoutMemInfo, left, top);
+		top += ActivityUtils.drawStaticLayout(canvas, LayoutMemInfo, left, top);
 		
 	}
 	
@@ -262,4 +267,9 @@ public final class DebugInfoPanel extends View
 		this.invalidate();
 	}
 	
+	public void setMsg(String msg)
+	{
+		Msg=msg;
+		this.requestLayout();
+	}
 }

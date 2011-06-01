@@ -189,6 +189,10 @@ public class Global {
     }
     
  
+    public static void setDebugMsg(String msg)
+    {
+    	((main) main.mainActivity).setDebugMsg(msg);
+    }
     
     
     /// <summary>
@@ -622,7 +626,8 @@ public class Global {
        {R.attr.ListBackground, R.attr.ListBackground_secend, 
     	R.attr.ListBackground_select,R.attr.myBackground,R.attr.ListSeparator,
     	R.attr.TextColor,R.attr.EmptyBackground,
-    	R.attr.ToggleBtColor_off,R.attr.ToggleBtColor_on,R.attr.SlideDownColorFilter
+    	R.attr.ToggleBtColor_off,R.attr.ToggleBtColor_on,R.attr.SlideDownColorFilter,
+    	R.attr.SlideDownBackColor
        };
     
     public static void initTheme(Context context)

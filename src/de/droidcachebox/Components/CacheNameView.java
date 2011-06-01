@@ -17,36 +17,17 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.View.MeasureSpec;
 
-public class CacheNameView extends View implements SelectedCacheEvent {
+public class CacheNameView extends View 
+{
 
-	private Cache cache;
-	private Paint paint;
-	private Resources res;
 	
-	public CacheNameView(Context context) {
+	
+	public CacheNameView(Context context) 
+	{
 		super(context);
-		// TODO Auto-generated constructor stub
-		res = context.getResources();
-		SelectedCacheEventList.Add(this);
-		
-		this.setBackgroundColor(Config.GetBool("nightMode")? res.getColor(R.color.Night_TitleBarColor) : res.getColor(R.color.Day_TitleBarColor));
-		// TODO Auto-generated constructor stub
-		paint = new Paint();
-		// set's the paint's colour
-		paint.setColor(Config.GetBool("nightMode")? res.getColor(R.color.Night_TitleBarText) : res.getColor(R.color.Day_TitleBarText));
-		// set's paint's text size
-		paint.setTextSize(25);
-		// smooth's out the edges of what is being drawn
-		paint.setAntiAlias(true);
 		
 	}
 
-	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
-		// TODO Auto-generated method stub
-		this.cache = cache;
-		invalidate();
-	}
 	
 	private int height;
 	private int width;
@@ -96,11 +77,7 @@ public class CacheNameView extends View implements SelectedCacheEvent {
 		Slide.setColorFilter(new PorterDuffColorFilter(Global.getColor(R.attr.SlideDownColorFilter), android.graphics.PorterDuff.Mode.MULTIPLY ));
    	 	
 		Slide.draw(canvas);
-		
-		if (cache == null)
-			return;
-
-		canvas.drawText(cache.Name, 5, 30, paint);
+				
 		
 	}
 }

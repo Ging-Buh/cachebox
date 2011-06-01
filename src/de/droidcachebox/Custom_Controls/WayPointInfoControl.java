@@ -67,7 +67,7 @@ public final class WayPointInfoControl extends View
     private Waypoint waypoint;
     private int mAscent;
     private boolean BackColorChanger = false;
-    private final int CornerSize =20;
+    private final int CornerSize =Global.CornerSize;
     private int rightBorder;
     private int imgSize;
     private StaticLayout LayoutName; 

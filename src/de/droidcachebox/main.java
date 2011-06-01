@@ -16,9 +16,10 @@ import org.mapsforge.preprocessing.highwayHierarchies.hierarchyComputation.util.
 import de.droidcachebox.ExtAudioRecorder;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheNameView;
-import de.droidcachebox.Custom_Controls.CacheInfoSlider;
+import de.droidcachebox.Components.StringFunctions;
 import de.droidcachebox.Custom_Controls.DebugInfoPanel;
 import de.droidcachebox.Custom_Controls.Mic_On_Flash;
+import de.droidcachebox.Custom_Controls.downSlider;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
 import de.droidcachebox.Events.CachListChangedEventList;
@@ -160,6 +161,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		private FrameLayout frame;
 		private RelativeLayout TopLayout;
 		private FrameLayout frameCacheName;
+		private downSlider InfoDownSlider;
 		
 		private Mic_On_Flash Mic_Icon;
 		private DebugInfoPanel debugInfoPanel;
@@ -1090,6 +1092,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	frameCacheName = (FrameLayout)this.findViewById(R.id.frameCacheName);
     	TopLayout=(RelativeLayout)this.findViewById(R.id.layoutTop);     
         frame = (FrameLayout)this.findViewById(R.id.layoutContent);
+        InfoDownSlider = (downSlider)this.findViewById(R.id.downSlider); 
         
         debugInfoPanel=(DebugInfoPanel)this.findViewById(R.id.debugInfo);
         Mic_Icon = (Mic_On_Flash)this.findViewById(R.id.mic_flash);
@@ -1244,25 +1247,53 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	{
 		cacheNameView = new CacheNameView(this);
 		frameCacheName.addView(cacheNameView);
-		cacheNameView.setOnTouchListener(new OnTouchListener() 
+		InfoDownSlider.setOnTouchListener(new OnTouchListener() 
 		{
 			
-			@Override
-			public boolean onTouch(View arg0, MotionEvent arg1) 
+			boolean drag;
+			@Override public boolean onTouch(View v, MotionEvent event) 
 			{
-				// Show CacheInfoSlider
-				showCacheInfoSlider();
-				return false;
+				 // events when touching the screen
+
+				 int eventaction = event.getAction();
+				 int X = (int)event.getX();
+				 int Y = (int)event.getY();
+				  if(InfoDownSlider.contains(X, Y)) drag=true;
+				 
+				 
+				 switch (eventaction ) 
+				 {
+				 	case MotionEvent.ACTION_DOWN: // touch down so check if the finger is on a ball
+				 		setDebugMsg("Down");
+				 		break;
+
+
+				 	case MotionEvent.ACTION_MOVE: // touch drag with the ball
+					 // move the balls the same as the finger
+				
+				 		setDebugMsg("Move:" + StringFunctions.newLine()+ "x= " + X + StringFunctions.newLine() + "y= " + Y);
+				 		if (drag)InfoDownSlider.setPos(Y-25); //y - 25 minus halbe Button Höhe
+				 		break;
+				 		
+				 	case MotionEvent.ACTION_UP:
+				 		if (drag)InfoDownSlider.ActionUp();
+				 		drag=false;
+				 		break;
+
+				 }
+				
+				if(drag)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
 			}
 		});
 	}
-    
-	private void showCacheInfoSlider()
-	{
-		final Intent mainIntent = new Intent().setClass( this, CacheInfoSlider.class);
-		this.startActivityForResult(mainIntent, 123456);
-	}
-	
+ 	
 	
 	/*
 	 * Setter
@@ -1280,6 +1311,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			}
 		}
 	
+	 public void setDebugMsg(String msg)
+	 {
+		 debugInfoPanel.setMsg(msg);
+	 }
+	 
 	 public void setVoiceRecIsStart(Boolean value)
 	    {
 	    	mVoiceRecIsStart=value;

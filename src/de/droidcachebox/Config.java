@@ -254,6 +254,8 @@ public class Config {
         validateSetting("SmoothScrolling", "none");
 
         validateSetting("DebugShowPanel", "false");
+        validateSetting("DebugMemory", "false");
+        validateSetting("DebugShowMsg", "false");
 
 //        validateSetting("OtherRepositoriesFolder", Global.AppPath + "\\Repositories");
 

@@ -32,7 +32,6 @@
         <activity android:name=".Views.Forms.EditFieldNote"></activity>
         <activity android:name=".Views.FilterSettings.EditFilterSettings"></activity>
         <activity android:name=".Views.Forms.SelectDB"></activity>
-        <activity android:name=".Custom_Controls.CacheInfoSlider" android:theme="@style/Theme.Transparent.Dim"></activity>
 
     </application>
 </manifest>
