@@ -136,12 +136,21 @@ public final class downSlider extends View implements SelectedCacheEvent
 	private Cache mCache;
 	private Waypoint mWaypoint;
 	private int CacheInfoHeight= 0;
+	private Paint paint;
     
 	@Override
 	protected void onDraw(Canvas canvas) 
 	{
 	
 		if(CacheInfoHeight==0)CacheInfoHeight = (int) (Global.scaledFontSize_normal * 4.9);
+		
+		if (paint==null)
+		{
+			paint = new Paint();
+			paint.setColor(Global.getColor(R.attr.TextColor));
+			paint.setTextSize(Global.scaledFontSize_normal);
+			paint.setAntiAlias(true);
+		}
 		
 		final Drawable Slide = Global.BtnIcons[0];
 		
@@ -166,7 +175,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 			return;
 
    	 	// draw Cache Name
-		canvas.drawText(mCache.Name,5,yPos+ 30, CacheNameView.paint);
+		canvas.drawText(mCache.Name,5,yPos+ 30, paint);
    	 	
    	 	// draw WP Info
    	 	int versatz=-yPos+WPInfoHeight;
