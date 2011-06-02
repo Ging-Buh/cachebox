@@ -72,6 +72,11 @@ public class NotesView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	}
 
 	@Override
+	public void OnFree() {
+		
+	}
+	
+	@Override
 	public int GetMenuId() {
 		// TODO Auto-generated method stub
 		return 0;

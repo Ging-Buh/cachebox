@@ -636,6 +636,11 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	}
 
 	@Override
+	public void OnFree() {
+		
+	}
+
+	@Override
 	public int GetMenuId() {
 		// TODO Auto-generated method stub
 		return 0;

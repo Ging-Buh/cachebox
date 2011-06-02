@@ -152,6 +152,11 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu, Selected
 	}
 
 	@Override
+	public void OnFree() {
+		
+	}
+	
+	@Override
 	public int GetMenuId() {
 		// TODO Auto-generated method stub
 		return 0;

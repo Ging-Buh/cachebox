@@ -27,6 +27,7 @@ import de.droidcachebox.Events.CacheListChangedEvent;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
+import de.droidcachebox.Events.SelectedLangChangedEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.Descriptor;
@@ -606,6 +607,27 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			            extAudioRecorder.release();
 			            extAudioRecorder = null;
 	                }
+	                Global.SelectedCache(null);
+	                SelectedCacheEventList.list.clear();
+	                PositionEventList.list.clear();
+	                SelectedCacheEventList.list.clear();
+	                SelectedLangChangedEventList.list.clear();
+	                CachListChangedEventList.list.clear();
+	                aktView = null;
+	                for (View vom : ViewList)
+	                {
+	                	if (vom instanceof ViewOptionsMenu)
+	                	{
+	                		((ViewOptionsMenu)vom).OnFree();
+	                	}	                		
+	                }
+	                ViewList.clear();
+	                TestEmpty = null;
+	                cacheListView = null;
+	                mapView = null;
+	                descriptionView = null;
+	                mainActivity = null;
+	                debugInfoPanel = null;
 	    		}
 				super.onDestroy();
 	    } 

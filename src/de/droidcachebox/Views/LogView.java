@@ -161,6 +161,11 @@ public class LogView extends ListView implements SelectedCacheEvent, ViewOptions
 	}
 
 	@Override
+	public void OnFree() {
+		
+	}
+
+	@Override
 	public int GetMenuId() {
 		// TODO Auto-generated method stub
 		return 0;

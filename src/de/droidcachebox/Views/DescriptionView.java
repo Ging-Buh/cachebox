@@ -165,11 +165,15 @@ public class DescriptionView extends WebView implements ViewOptionsMenu, Selecte
 		}
 		
 	}
-
+	
 	@Override
 	public void OnHide() {
 		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	public void OnFree() {
+		this.destroy();
 	}
 
 	@Override

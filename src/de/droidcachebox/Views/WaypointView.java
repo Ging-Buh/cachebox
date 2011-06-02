@@ -318,6 +318,11 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 	}
 
 	@Override
+	public void OnFree() {
+		
+	}
+
+	@Override
 	public int GetMenuId() {
 		return R.menu.menu_waypointview;
 	}

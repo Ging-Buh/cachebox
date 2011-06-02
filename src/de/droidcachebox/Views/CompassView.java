@@ -160,6 +160,11 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 	}
 
 	@Override
+	public void OnFree() {
+		
+	}
+
+	@Override
 	public int GetMenuId() {
 		// TODO Auto-generated method stub
 		return 0;

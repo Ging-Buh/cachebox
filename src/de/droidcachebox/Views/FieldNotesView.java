@@ -235,6 +235,11 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 	}
 
 	@Override
+	public void OnFree() {
+		
+	}
+
+	@Override
 	public void ActivityResult(int requestCode, int resultCode, Intent data) {
 		if (data == null)
 			return;

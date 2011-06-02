@@ -115,7 +115,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		holder = surface.getHolder();
 
 		animationThread = new AnimationThread();
-		animationThread.start();
+//		animationThread.start();
 		
 		buttonTrackPosition = (MultiToggleButton) findViewById(R.id.mapview_trackposition);
 		buttonTrackPosition.clearStates();
@@ -456,7 +456,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         return true;
     }
 
-    public static MapView View = null;
 /*    public delegate void TileLoadedHandler(Bitmap bitmap, Descriptor desc);
     public event TileLoadedHandler OnTileLoaded = null;*/
 
@@ -893,6 +892,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     public void OnShow()
     {
     	isVisible = true;
+    	if (!animationThread.isAlive())
+    		animationThread.start();
 //    	Render(true);
     }
     
@@ -4540,8 +4541,19 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	@Override
 	public void OnHide() {
 		ClearCachedTiles();
-		isVisible = false;		
+		isVisible = false;
+    	if (animationThread.isAlive())
+    		animationThread.stop();
 	}
+
+	@Override
+	public void OnFree() {
+		animationThread.beendeThread();
+		if (animationThread.isAlive())
+			animationThread.stop();
+		animationThread = null;
+	}
+
 
 	@Override
 	public void ActivityResult(int requestCode, int resultCode, Intent data) {

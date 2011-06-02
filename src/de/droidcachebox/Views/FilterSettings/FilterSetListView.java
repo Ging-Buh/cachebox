@@ -318,6 +318,11 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 	}
 
 	@Override
+	public void OnFree() {
+		
+	}
+
+	@Override
 	public void ActivityResult(int requestCode, int resultCode, Intent data) {
 		if (data == null)
 			return;

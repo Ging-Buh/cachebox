@@ -11,6 +11,7 @@ public interface ViewOptionsMenu  {
 	public int GetMenuId();
 	public void OnShow();
 	public void OnHide();
+	public void OnFree();
 	public void ActivityResult(int requestCode, int resultCode, Intent data);
 	public int GetContextMenuId();
 	public void BeforeShowContextMenu(Menu menu);

@@ -12,9 +12,11 @@ import java.util.concurrent.locks.ReentrantLock;
 import de.droidcachebox.Components.CacheNameView;
 
 import de.droidcachebox.Components.copyAssetFolder;
+import de.droidcachebox.Events.CachListChangedEventList;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
+import de.droidcachebox.Events.SelectedLangChangedEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Map.Layer;
@@ -84,7 +86,15 @@ public class splash extends Activity
 		timer.schedule(task, 1000);
 	 }
 
-	 public static Lock selectDBLock;
+
+	@Override public void onDestroy() 
+	{
+		if (isFinishing())
+		{
+			mainActivity = null;
+		}
+		super.onDestroy();
+	} 
 	 
 	 private void Initial() 
 	 {

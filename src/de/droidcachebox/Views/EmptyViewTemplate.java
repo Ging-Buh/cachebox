@@ -82,6 +82,11 @@ public class EmptyViewTemplate extends FrameLayout implements ViewOptionsMenu, S
 	}
 
 	@Override
+	public void OnFree() {
+		
+	}
+
+	@Override
 	public int GetMenuId() 
 	{
 		return 0;
