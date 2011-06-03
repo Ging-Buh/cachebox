@@ -594,8 +594,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        centerOsmSpace = Descriptor.ToWorld(Descriptor.LongitudeToTileX(Zoom, center.Longitude), Descriptor.LatitudeToTileY(Zoom, center.Latitude), Zoom, Zoom);
 	        screenCenter.X = Math.round(centerOsmSpace.X * dpiScaleFactorX);
 	        screenCenter.Y = Math.round(centerOsmSpace.Y * dpiScaleFactorY);
-	        animationThread.toX = screenCenter.X;
-	        animationThread.toY = screenCenter.Y;
+	        if (animationThread != null)
+	        {
+	        	animationThread.toX = screenCenter.X;
+	        	animationThread.toY = screenCenter.Y;
+	        }
 		}
 
         updateCacheList();
@@ -978,8 +981,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       {
 	      screenCenter.X = Math.round(centerOsmSpace.X * dpiScaleFactorX);
 	      screenCenter.Y = Math.round(centerOsmSpace.Y * dpiScaleFactorY);
-	      animationThread.toX = screenCenter.X;
-	      animationThread.toY = screenCenter.Y;
+	      if (animationThread != null)
+	      {
+	    	  animationThread.toX = screenCenter.X;
+	    	  animationThread.toY = screenCenter.Y;
+	      }
       }
       
 /*
@@ -3448,7 +3454,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 */
     void startAnimation(Coordinate target)
     {
-  
+    	if (animationThread == null)
+    		return;
     	animationThread.moveTo(target);
     	
 //    	animationStart = Environment.TickCount;
@@ -4542,16 +4549,20 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	public void OnHide() {
 		ClearCachedTiles();
 		isVisible = false;
-    	if (animationThread.isAlive())
+		
+    	if ((animationThread != null) && (animationThread.isAlive()))
     		animationThread.stop();
 	}
 
 	@Override
 	public void OnFree() {
-		animationThread.beendeThread();
-		if (animationThread.isAlive())
-			animationThread.stop();
-		animationThread = null;
+		if (animationThread != null)
+		{
+			animationThread.beendeThread();
+			if (animationThread.isAlive())
+				animationThread.stop();
+			animationThread = null;
+		}
 	}
 
 

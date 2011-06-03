@@ -136,6 +136,11 @@ public final class DebugInfoPanel extends View
 		super(context, attrs, defStyle);
 	}
 	
+	public void OnFree()
+	{
+		counter.cancel();
+		counter = null;
+	}
 	
 	/*
 	 *  Private Member

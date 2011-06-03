@@ -73,7 +73,7 @@ public class NotesView extends FrameLayout implements ViewOptionsMenu, SelectedC
 
 	@Override
 	public void OnFree() {
-		
+		aktCache = null;
 	}
 	
 	@Override

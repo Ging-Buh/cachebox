@@ -102,6 +102,7 @@ public class SelectDB extends Activity {
         		
         		aktIntent.putExtra("SOMETHING", "EXTRAS");
         		setResult(RESULT_OK, aktIntent);
+        		AktFile = null;
         		finish();
         	}
         });

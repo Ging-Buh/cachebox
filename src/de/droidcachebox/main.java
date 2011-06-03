@@ -625,11 +625,14 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	                TestEmpty = null;
 	                cacheListView = null;
 	                mapView = null;
+	                notesView = null;
 	                descriptionView = null;
 	                mainActivity = null;
+	                debugInfoPanel.OnFree();
 	                debugInfoPanel = null;
 	    		}
 				super.onDestroy();
+				System.exit(0);
 	    } 
 	
     
