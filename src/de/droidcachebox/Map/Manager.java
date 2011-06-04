@@ -135,7 +135,8 @@ public class Manager {
 			Tile tile = new Tile(desc.X, desc.Y, (byte)desc.Zoom);
 			MapGeneratorJob job = new MapGeneratorJob(tile, MapViewMode.CANVAS_RENDERER, "xxx", 1.333f, false, false, false);
 
-			renderer.setupMapGenerator(tileBitmap);
+//			renderer.setupMapGenerator(tileBitmap);
+			renderer.prepareMapGeneration();
 			renderer.executeJob(job);
 			Bitmap bit = renderer.tileBitmap.copy(Config.RGB_565, true);
 			return bit;
