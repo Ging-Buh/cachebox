@@ -31,6 +31,7 @@
 		<item name="Settings_Group">@drawable/day_settings_group</item>
 		<item name="SlideDownColorFilter">@color/Day_SlideDownColorFilter</item>
 		<item name="SlideDownBackColor">@color/Day_SlideDownBackColor</item>
+		<item name="LinkLabelColor">@color/Day_LinkLabelColor</item>
 	</style>
     
     
@@ -63,7 +64,8 @@
 		<item name="ToggleBtColor_on">@color/Night_toggle_on</item>
 		<item name="Settings_Group">@drawable/night_settings_group</item>
 		<item name="SlideDownColorFilter">@color/Day_SlideDownColorFilter</item>
-		<item name="SlideDownBackColor">@color/Night_SlideDownBackColor</item>     
+		<item name="SlideDownBackColor">@color/Night_SlideDownBackColor</item>
+		<item name="LinkLabelColor">@color/Night_LinkLabelColor</item>     
     </style>
     
     

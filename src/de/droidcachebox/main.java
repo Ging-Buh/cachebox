@@ -31,6 +31,7 @@ import de.droidcachebox.Events.SelectedLangChangedEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.Descriptor;
+import de.droidcachebox.Views.AboutView;
 import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.CompassView;
 import de.droidcachebox.Views.DescriptionView;
@@ -182,12 +183,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		private CompassView compassView;			// ID 8
 		private FieldNotesView fieldNotesView;		// ID 9
 		private EmptyViewTemplate TestEmpty;		// ID 10
+		private AboutView aboutView;				// ID 11
 		private ArrayList<View> ViewList = new ArrayList<View>();
 		private int lastBtnDBView=1;
 	    private int lastBtnCacheView=4;
 	    private int lastBtnNavView=0;
 	    private int lastBtnInfoView=3;
-	    private int lastBtnMiscView=102;
+	    private int lastBtnMiscView=11;
 	    ArrayList <Integer> btnDBActionIds ;
 	    ArrayList <Integer> btnCacheActionIds ;
 	    ArrayList <Integer> btnNavActionIds ;
@@ -298,6 +300,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        	// Initialisiere Icons neu.
 	        	 Global.InitIcons(this, Config.GetBool("nightMode"));
 	        }
+	        else
+	        {
+	        	// Zeige About View als erstes!
+	        	showView(11);
+	        }
 	        
 	        
 	        
@@ -343,6 +350,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		}
     
 		@Override public void onLocationChanged(Location location) {
+			
+			
 			
 			Global.Locator.setLocation(location);
 			PositionEventList.Call(location);
@@ -905,6 +914,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 		    		startActivityForResult(videointent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
 		    		break;	
+		    		
+		    		
+		    	case R.id.miAbout:
+		    		showView(11);
+		    		break;
 		    	
 		    	case R.id.miTestEmpty:
 		    		showView(10);
@@ -918,6 +932,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		
 		Menu IconMenu=icm.getMenu();
 		Global.Translations.TranslateMenuItem(IconMenu, R.id.miSettings, "settings");
+		Global.Translations.TranslateMenuItem(IconMenu, R.id.miAbout, "about");
       	try
     	{
     		MenuItem mi = IconMenu.findItem(R.id.miVoiceRecorder);
@@ -1142,6 +1157,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		notesView = new NotesView(this, inflater);
 		solverView = new SolverView(this, inflater);
 		TestEmpty = new EmptyViewTemplate(this, inflater);
+		aboutView = new AboutView(this, inflater);
 		
 		ViewList.add(mapView);				// ID 0
     	ViewList.add(cacheListView);		// ID 1
@@ -1154,6 +1170,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	ViewList.add(compassView);			// ID 8	
     	ViewList.add(fieldNotesView);		// ID 9
     	ViewList.add(TestEmpty);			// ID 10
+    	ViewList.add(aboutView);			// ID 11
 	}
 
 	private void initialLocationManager() 
@@ -1259,6 +1276,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		
 		btnMiscActionIds = new ArrayList<Integer>();
 		btnMiscActionIds.add(102);	//Settings
+		btnMiscActionIds.add(11);	//About
 		
 		
 	}

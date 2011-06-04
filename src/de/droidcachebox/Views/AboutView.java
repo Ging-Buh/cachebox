@@ -1,0 +1,257 @@
+package de.droidcachebox.Views;
+
+import de.droidcachebox.Config;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.Events.CachListChangedEventList;
+import de.droidcachebox.Events.PositionEvent;
+import de.droidcachebox.Events.PositionEventList;
+import de.droidcachebox.Events.SelectedCacheEvent;
+import de.droidcachebox.Events.SelectedCacheEventList;
+import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Geocaching.Cache;
+import de.droidcachebox.Geocaching.Waypoint;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.location.Location;
+import android.location.LocationListener;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent, PositionEvent {
+	Context context;
+	Cache aktCache;
+	
+	ProgressBar myProgressBar;
+	TextView myTextView;
+	TextView versionTextView;
+	TextView descTextView;
+	TextView CachesFoundLabel;
+	TextView lblGPS;
+	TextView GPS;
+	TextView lblAccuracy;
+	TextView Accuracy;
+	TextView lblWP;
+	TextView WP;
+	TextView lblCord;
+	TextView Cord;
+	TextView lblCurrent;
+	TextView Current;
+	
+	public AboutView(Context context, LayoutInflater inflater) 
+	{
+		super(context);
+		
+		SelectedCacheEventList.Add(this);
+
+		FrameLayout notesLayout = (FrameLayout)inflater.inflate(R.layout.about, null, false);
+		this.addView(notesLayout);
+		
+		findViewById();
+		setText();
+		
+		 // add Event Handler
+        SelectedCacheEventList.Add(this);
+        PositionEventList.Add(this);
+		
+		
+		
+		
+		CachesFoundLabel.setOnClickListener(new OnClickListener() 
+		{
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+	}
+	
+	private void findViewById()
+	{
+		CachesFoundLabel=(TextView)findViewById(R.id.about_CachesFoundLabel);
+		descTextView=(TextView)findViewById(R.id.splash_textViewDesc);
+		versionTextView=(TextView)findViewById(R.id.splash_textViewVersion);
+		myTextView= (TextView)findViewById(R.id.splash_TextView);
+		lblGPS=(TextView)findViewById(R.id.about_lblGPS);
+		GPS=(TextView)findViewById(R.id.about_GPS);
+		lblAccuracy=(TextView)findViewById(R.id.about_lblAccuracy);
+		Accuracy=(TextView)findViewById(R.id.about_Accuracy);
+		lblWP=(TextView)findViewById(R.id.about_lblWP);
+		WP=(TextView)findViewById(R.id.about_WP);
+		lblCord=(TextView)findViewById(R.id.about_lblCord);
+		Cord=(TextView)findViewById(R.id.about_Cord);
+		lblCurrent=(TextView)findViewById(R.id.about_lblCurrent);
+		Current=(TextView)findViewById(R.id.about_Current);
+		
+		
+		
+		//set LinkLable Color
+		CachesFoundLabel.setTextColor(Global.getColor(R.attr.LinkLabelColor));
+		
+		//Set Progressbar from Splash unvisible and release the Obj.
+		myProgressBar=(ProgressBar)findViewById(R.id.splash_progressbar);
+		myProgressBar.setVisibility(View.GONE);
+		myProgressBar=null;
+	}
+	
+	private void setText()
+	{
+		versionTextView.setText(Global.getVersionString());
+		descTextView.setText(Global.splashMsg);
+		
+		lblGPS.setText(Global.Translations.Get("gps"));
+        
+         lblWP.setText(Global.Translations.Get("waypoint"));
+         lblCord.setText(Global.Translations.Get("coordinate"));
+         lblCurrent.setText(Global.Translations.Get("current"));
+		
+         GPS.setText(Global.Translations.Get("not_active"));
+		
+		
+		
+		refrechText();
+	}
+	
+	private void refrechText()
+	{
+		CachesFoundLabel.setText(Global.Translations.Get("caches_found") + " " + String.valueOf(Config.GetInt("FoundOffset")));
+		if (Global.SelectedCache() != null)
+            if (Global.SelectedWaypoint() != null)
+            {
+            	WP.setText(Global.SelectedWaypoint().GcCode);
+            	Cord.setText(Global.FormatLatitudeDM(Global.SelectedWaypoint().Latitude()) + " " + Global.FormatLongitudeDM(Global.SelectedWaypoint().Longitude()));
+            }
+            else
+            {
+            	WP.setText(Global.SelectedCache().GcCode);
+            	Cord.setText(Global.FormatLatitudeDM(Global.SelectedCache().Latitude()) + " " + Global.FormatLongitudeDM(Global.SelectedCache().Longitude()));
+            }
+	}
+
+	@Override
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) 
+	{
+		refrechText();
+	}
+
+	@Override
+	public boolean ItemSelected(MenuItem item) 
+	{
+		return false;
+	}
+
+	@Override
+	public void BeforeShowMenu(Menu menu) 
+	{
+	}
+
+	@Override
+	public void OnShow() 
+	{
+	}
+
+	@Override
+	public void OnHide() 
+	{
+	}
+
+	@Override
+	public void OnFree() {
+		
+	}
+
+	@Override
+	public int GetMenuId() 
+	{
+		return 0;
+	}
+
+	@Override
+	public void ActivityResult(int requestCode, int resultCode, Intent data) 
+	{
+	}
+
+	@Override
+	public int GetContextMenuId() 
+	{
+		return 0;
+	}
+
+	@Override
+	public void BeforeShowContextMenu(Menu menu) 
+	{
+	}
+
+	@Override
+	public boolean ContextMenuItemSelected(MenuItem item) 
+	{
+		return false;
+	}
+
+
+
+	@Override
+	public void PositionChanged(Location location) 
+	{
+		 if ((Global.Locator.getLocation() != null) && (Global.Locator.getLocation().hasAccuracy()))
+	        {
+	        	float radius = Global.Locator.getLocation().getAccuracy();
+	        	Accuracy.setText("+/- " + String.valueOf(radius) + "m");
+	        }
+		 else
+		 {
+			 Accuracy.setText("");
+		 }
+		 if (Global.Locator.getLocation() != null)
+		 {
+			 Current.setText(Global.FormatLatitudeDM(Global.Locator.getLocation().getLatitude()) + " " + Global.FormatLongitudeDM(Global.Locator.getLocation().getLongitude()));
+			 GPS.setText(Global.Translations.Get("alt") + " " + String.valueOf(Global.Locator.getAlt())+ "m");
+		 }
+		 
+		 if (Global.Locator == null)
+         {
+             GPS.setText(Global.Translations.Get("not_detected"));
+             return;
+         }
+
+		 
+		 //TODO add this if the Locator is correct implemented
+		 /*if (Global.Locator.IsGpsResponding())
+         {
+             if (Global.Locator.Position.Valid)
+             {
+                 //lblGps.setText("OK";
+                 lblGPS.setText(Global.Translations.Get("sats_nr") + " " + Global.Locator.NumSatellites + " " + Global.Translations.Get("Hdop") + " " + Global.Locator.HDOP.ToString("F1", CultureInfo.InvariantCulture) + " " + Global.Translations.Get("alt") + " " + Global.Locator.Position.Elevation.ToString("0"));
+                 labelCoordinatesCurrent.Text = Global.FormatLatitudeDM(Global.Locator.Position.Latitude) + " " + Global.FormatLongitudeDM(Global.Locator.Position.Longitude);
+
+             }
+             else
+                 lblGPS.setText(Global.Translations.Get("waiting_for_fix"));
+         }
+         else
+             lblGPS.setText(Global.Translations.Get("not_responding"));*/
+				 
+	}
+
+	@Override
+	public void OrientationChanged(float heading) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

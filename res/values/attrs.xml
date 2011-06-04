@@ -17,6 +17,7 @@
 		<attr name="Settings_Group" format="reference|color" />
 		<attr name="SlideDownColorFilter" format="reference|color" />
 		<attr name="SlideDownBackColor" format="reference|color" />
+		<attr name="LinkLabelColor" format="reference|color" />
 	</declare-styleable>
 	
 	

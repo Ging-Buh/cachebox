@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import de.droidcachebox.Components.StringFunctions;
 import de.droidcachebox.Events.SelectedCacheEventList;
 
 import android.content.Context;
@@ -42,6 +43,15 @@ public class Global {
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
     public static final int LatestDatabaseFieldNoteChange = 1001;
+    
+    
+    public static final String br = StringFunctions.newLine();
+    public static final String splashMsg =
+    	"Team Cachebox (2010)" + br +
+    	"www.team-cachebox.de" + br +
+    	"Cache Icons Copyright 2009," + br +
+    	"Groundspeak Inc.Used with permission" + br + br +
+    	"Support under: www.geoclub.de/viewforum.php?f=114 ";
     
     public static final boolean Debug = true;
 	
@@ -100,6 +110,7 @@ public class Global {
     	selectedWaypoint = null;
     	SelectedCacheEventList.Call(cache, null);
     }
+    
     public static Cache SelectedCache()
     {
     	return selectedCache;
@@ -627,7 +638,7 @@ public class Global {
     	R.attr.ListBackground_select,R.attr.myBackground,R.attr.ListSeparator,
     	R.attr.TextColor,R.attr.EmptyBackground,
     	R.attr.ToggleBtColor_off,R.attr.ToggleBtColor_on,R.attr.SlideDownColorFilter,
-    	R.attr.SlideDownBackColor
+    	R.attr.SlideDownBackColor,R.attr.LinkLabelColor 
        };
     
     public static void initTheme(Context context)
@@ -690,5 +701,13 @@ public class Global {
 			e.printStackTrace();
 		}    	
     }
+    
+    public static String getVersionString()
+    {
+    	final String ret = "Version: " + CurrentVersion + String.valueOf(CurrentRevision) + "  " 
+    	+ (VersionPrefix.equals("")? "" : "(" + VersionPrefix + ")");
+    	return ret;
+    }
+
     
 }

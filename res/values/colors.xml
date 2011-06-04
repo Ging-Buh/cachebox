@@ -44,4 +44,6 @@
 	    <color name="Night_toggle_off">#EEEEEE</color>
 	    <color name="Night_SlideDownColorFilter">#99ff99</color>
 	    <color name="Night_SlideDownBackColor">#cccce1cc</color>
+	    <color name="Day_LinkLabelColor">#0000aa</color>
+	    <color name="Night_LinkLabelColor">#0000aa</color>
 </resources>

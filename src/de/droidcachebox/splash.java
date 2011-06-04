@@ -35,6 +35,7 @@ import de.droidcachebox.Geocaching.Waypoint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -44,6 +45,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.view.ContextMenu;
@@ -65,13 +67,24 @@ public class splash extends Activity
 {
 	public static Activity mainActivity;
 
+	ProgressBar myProgressBar;
+	TextView myTextView;
+	TextView versionTextView;
+	TextView descTextView;
+	Handler handler;
+	
+	
 	public void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
+		//setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.splash);
 		myProgressBar=(ProgressBar)findViewById(R.id.splash_progressbar);
 		myTextView= (TextView)findViewById(R.id.splash_TextView);
-
+		versionTextView=(TextView)findViewById(R.id.splash_textViewVersion);
+		versionTextView.setText(Global.getVersionString());
+		descTextView=(TextView)findViewById(R.id.splash_textViewDesc);
+		descTextView.setText(Global.splashMsg);
 		mainActivity = this;
 		TimerTask task = new TimerTask()
 		{
@@ -84,6 +97,8 @@ public class splash extends Activity
 		       
 		Timer timer = new Timer();
 		timer.schedule(task, 1000);
+		
+		
 	 }
 
 
@@ -91,6 +106,8 @@ public class splash extends Activity
 	{
 		if (isFinishing())
 		{
+			versionTextView=null;
+			myTextView=null;
 			mainActivity = null;
 		}
 		super.onDestroy();
@@ -194,21 +211,34 @@ public class splash extends Activity
     		startActivity(mainIntent);
 	 }
 	 
-	 ProgressBar myProgressBar;
-	 TextView myTextView;
+	 
+
 	 private void setProgressState(int progress, final String msg)
 	 {
 		 myProgressBar.setProgress(progress);
 		 
 		 
 		 // TODO Set msg
-		 // new Thread(new Runnable() 
-		 // {
-		 //	    public void run() 
-		 //	    {
-		 //	    	myTextView.setText(msg);
-		 //	    };
-		 //}).start();
+		 /*new Thread(new Runnable() 
+		  {
+		 	    public void run() 
+		 	    {
+		 	    	myTextView.setText(msg);
+		 	    };
+		 }).start();*/
+		 
+		 Thread t = new Thread() {
+			    public void run() {
+			        runOnUiThread(new Runnable() {
+			            @Override
+			            public void run() {
+			            	myTextView.setText(msg);
+			            }
+			        });
+			    }
+			};
+
+			t.start();
 
 	 }
 

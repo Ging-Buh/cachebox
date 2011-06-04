@@ -7,19 +7,19 @@ import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Geocaching.Coordinate;
 
 public class Locator {
-    private Location Location = null;
+    private Location location = null;
     public void setLocation(Location value)
     {
     	synchronized (this)
     	{
-    		Location = value;
+    		location = value;
     	}
     }
     public Location getLocation()
     {
     	synchronized (this)
     	{
-    		return Location;
+    		return location;
     	}
     }
     /// <summary>
@@ -48,15 +48,15 @@ public class Locator {
     
     public float SpeedOverGround()
     {
-    	if ((Location != null) && (Location.hasSpeed()))
+    	if ((location != null) && (location.hasSpeed()))
     	{
-    		return Location.getSpeed() * 3600 / 1000;    			
+    		return location.getSpeed() * 3600 / 1000;    			
     	} else
     		return 0;
     }
     public String SpeedString()
     {
-    	if ((Location != null) && (Location.hasSpeed()))
+    	if ((location != null) && (location.hasSpeed()))
     		return UnitFormatter.SpeedString(Global.Locator.SpeedOverGround());
     	else
     		return "-----";
@@ -64,7 +64,7 @@ public class Locator {
     
     public Locator()
     {
-    	this.Location = null;
+    	this.location = null;
     }
     
     public boolean UseCompass()
@@ -75,7 +75,7 @@ public class Locator {
     			return false;
     		if (CompassHeading < 0) 
     			return false;	// kein Kompass Wert -> Komapass nicht verwenden!
-    		if ((Location != null) && Location.hasBearing() && (SpeedOverGround() > Config.GetInt("HtcLevel")))
+    		if ((location != null) && location.hasBearing() && (SpeedOverGround() > Config.GetInt("HtcLevel")))
     			return false;	// Geschwindigkeit > 5 km/h -> GPs Kompass verwenden
 
     		return true;    				
@@ -92,12 +92,16 @@ public class Locator {
     		{
     			LastUsedCompass = true;
     			return CompassHeading;	// Compass Heading ausgeben, wenn Geschwindigkeit klein ist
-    		} else if ((Location != null) && (Location.hasBearing()))
+    		} else if ((location != null) && (location.hasBearing()))
 	    	{
 	    		// GPS Heading ausgeben, wenn Geschwindigkeit größer ist	    		
-	    		return Location.getBearing();
+	    		return location.getBearing();
 	    	}
     	}
     	return 0;
     }
+	public double getAlt() 
+	{
+		return location.getAltitude();
+	}
 }

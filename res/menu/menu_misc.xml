@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="Day/Night" android:id="@+id/miDayNight" android:icon="@drawable/d_n"></item>
+    <item android:title="About" android:id="@+id/miAbout" android:icon="@drawable/cb"></item><item android:title="Day/Night" android:id="@+id/miDayNight" android:icon="@drawable/d_n"></item>
     <item android:title="Settings" android:id="@+id/miSettings" android:icon="@drawable/settings"></item>
     <item android:title="Voice Recorder" android:id="@+id/miVoiceRecorder" android:icon="@drawable/voice_rec_icon"></item> 
     <item android:title="Take Photo" android:id="@+id/miTakePhoto" android:icon="@drawable/log10"></item>  
     <item android:title="Record Video" android:id="@+id/miRecordVideo" android:icon="@drawable/video_icon"></item>  
     <item android:title="ScreenLock" android:id="@+id/miScreenLock" android:icon="@drawable/lock_icon"></item>  
-    <item android:title="Test Empty" android:id="@+id/miTestEmpty"></item>  
+    <item android:title="Test Empty" android:id="@+id/miTestEmpty"></item>
+      
         
    
 </menu>
