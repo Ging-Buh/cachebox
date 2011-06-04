@@ -154,6 +154,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    private ExtAudioRecorder extAudioRecorder = null;
 	    private boolean initialResortAfterFirstFixCompleted = false;
 	    private boolean initialFixSoundCompleted = false;
+	    private boolean approachSoundCompleted = false;
 	    
 		private ImageButton buttonDB;
 		private ImageButton buttonCache;
@@ -346,7 +347,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     
 	    @Override public void SelectedCacheChanged(Cache cache, Waypoint waypoint) 
 		{
-			
+	    	approachSoundCompleted = false;
 		}
     
 		@Override public void onLocationChanged(Location location) {
@@ -367,6 +368,22 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        	Global.PlaySound("GPS_Fix.wav");
 	        	initialFixSoundCompleted = true;
 	        }
+	        
+	        if (Global.SelectedCache() != null)
+	        {
+		        float distance = Global.SelectedCache().Distance();
+	            if (Global.SelectedWaypoint() != null)
+	            {
+	            	distance = Global.SelectedWaypoint().Distance();
+	            }
+		        
+		        if (!approachSoundCompleted && (distance< Config.GetInt("SoundApproachDistance")))
+		        {
+		        	Global.PlaySound("Approach.wav");
+		        	approachSoundCompleted = true;
+		        }
+	        }
+	        
 
 			TrackRecorder.recordPosition();
 	        // schau die 50 nächsten Caches durch, wenn einer davon näher ist als der aktuell nächste -> umsortieren und raus

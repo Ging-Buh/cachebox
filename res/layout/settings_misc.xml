@@ -11,5 +11,23 @@
 	    android:layout_height="wrap_content" 
 	    android:id="@+id/settings_allow_internet_access">
     </CheckBox>
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:stretchColumns="0">
+		<TableRow>
+			<TextView
+				android:id="@+id/settings_desc_Approach_Sound" 
+				android:layout_height="wrap_content" 
+				android:text="Approach Sound [m]" 
+				android:layout_width="wrap_content">
+			</TextView>
+        	<Spinner
+	        	android:id="@+id/settings_spinner_Approach_Sound" 
+	        	android:layout_height="wrap_content" 
+	        	android:layout_width="100dip">
+        	</Spinner>
+        </TableRow>
+	</TableLayout>
     
 </LinearLayout>

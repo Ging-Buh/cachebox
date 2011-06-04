@@ -364,6 +364,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private CheckBox chkDebugShowPanel;
 	private CheckBox chkDebugMemory;
 	private CheckBox chkDebugMsg;
+	private Spinner ApproachSound;
 	
 	private void findViewsById()
 	{
@@ -413,6 +414,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		chkDebugShowPanel = (CheckBox)this.findViewById(R.id.settings_debug_chkShow);
 		chkDebugMemory = (CheckBox)this.findViewById(R.id.settings_debug_chkMemory);
 		chkDebugMsg = (CheckBox)this.findViewById(R.id.settings_debug_chkMsg);
+		ApproachSound = (Spinner)this.findViewById(R.id.settings_spinner_Approach_Sound);
 	}
 	
 	private void setLang()
@@ -464,6 +466,9 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		chkDebugMemory.setChecked(Config.GetBool("DebugMemory"));
 		chkDebugMsg.setChecked(Config.GetBool("DebugShowMsg"));
 		
+		fillApproachSpinner();
+		ApproachSound.setSelection(approachValues.indexOf(Config.GetInt("SoundApproachDistance")));
+		
 		if(Global.Debug)
 			ToggleDebugView.setVisibility(View.VISIBLE);
 		
@@ -497,7 +502,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	Config.Set("DebugMemory",chkDebugMemory.isChecked());
     	Config.Set("DebugShowMsg",chkDebugMsg.isChecked());
     	
-    	
+    	Config.Set("SoundApproachDistance",(Integer) ApproachSound.getSelectedItem());
     	
     	
     	
@@ -589,6 +594,22 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		ArrayAdapter<SmoothScrollingTyp> smothAdapter = new ArrayAdapter<SmoothScrollingTyp>(this,android.R.layout.simple_spinner_item, smoth); 
 		smothAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		SmoothScrolling.setAdapter(smothAdapter);
+	}
+	
+	
+	ArrayList<Integer> approachValues= new ArrayList<Integer>();
+	Integer[] approach = new Integer[]{0,2,10,25,50,100,200,500,1000};
+	private void fillApproachSpinner()
+	{
+		
+		for ( Integer item : approach)
+		{
+			approachValues.add(item);
+		}
+		
+		ArrayAdapter<Integer> approachAdapter = new ArrayAdapter<Integer>(this,android.R.layout.simple_spinner_item, approachValues); 
+		approachAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		ApproachSound.setAdapter(approachAdapter);
 	}
 	
 	Integer[] TrackDistanceArray = new Integer[]{1,3,5,10,20};

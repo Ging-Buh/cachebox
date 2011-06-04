@@ -47,7 +47,7 @@ public class Global {
     
     public static final String br = StringFunctions.newLine();
     public static final String splashMsg =
-    	"Team Cachebox (2010)" + br +
+    	"Team Cachebox (2011)" + br +
     	"www.team-cachebox.de" + br +
     	"Cache Icons Copyright 2009," + br +
     	"Groundspeak Inc.Used with permission" + br + br +
