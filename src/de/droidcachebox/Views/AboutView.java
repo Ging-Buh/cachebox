@@ -14,6 +14,8 @@ import de.droidcachebox.Geocaching.Waypoint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
@@ -52,6 +54,8 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	TextView Cord;
 	TextView lblCurrent;
 	TextView Current;
+	Bitmap bitmap = null;
+	Bitmap logo = null;
 		
 	public AboutView(Context context, LayoutInflater inflater) 
 	{
@@ -266,14 +270,26 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	{
 		Resources res = getResources();
 		
-		((ImageView) findViewById(R.id.splash_BackImage)).setImageDrawable(res.getDrawable(R.drawable.splash_back));
-		((ImageView) findViewById(R.id.splash_Logo)).setImageDrawable(res.getDrawable(R.drawable.cachebox_logo));
+		bitmap = BitmapFactory.decodeResource(res, R.drawable.splash_back);
+		logo = BitmapFactory.decodeResource(res, R.drawable.cachebox_logo);
+		((ImageView) findViewById(R.id.splash_BackImage)).setImageBitmap(bitmap);
+		((ImageView) findViewById(R.id.splash_Logo)).setImageBitmap(logo);
 		
 	}
 	private void ReleaseImages()
 	{
-		((ImageView) findViewById(R.id.splash_BackImage)).setImageBitmap(Global.EmptyBmp);
-		((ImageView) findViewById(R.id.splash_Logo)).setImageBitmap(Global.EmptyBmp);
+		((ImageView) findViewById(R.id.splash_BackImage)).setImageResource(0);
+		((ImageView) findViewById(R.id.splash_Logo)).setImageResource(0);
+		if (bitmap != null)
+		{
+			bitmap.recycle();
+			bitmap = null;
+		}
+		if (logo != null)
+		{
+			logo.recycle();
+			logo = null;
+		}
 	}
 	
 }

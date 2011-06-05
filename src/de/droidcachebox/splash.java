@@ -38,6 +38,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -76,7 +77,8 @@ public class splash extends Activity
 	TextView versionTextView;
 	TextView descTextView;
 	Handler handler;
-	
+	Bitmap bitmap;
+	Bitmap logo;
 	
 	public void onCreate(Bundle savedInstanceState) 
 	{
@@ -285,9 +287,10 @@ public class splash extends Activity
 	{
 		Resources res = getResources();
 		
-		((ImageView) findViewById(R.id.splash_BackImage)).setImageDrawable(res.getDrawable(R.drawable.splash_back));
-		((ImageView) findViewById(R.id.splash_Logo)).setImageDrawable(res.getDrawable(R.drawable.cachebox_logo));
-			
+		bitmap = BitmapFactory.decodeResource(res, R.drawable.splash_back);
+		logo = BitmapFactory.decodeResource(res, R.drawable.cachebox_logo);
+		((ImageView) findViewById(R.id.splash_BackImage)).setImageBitmap(bitmap);
+		((ImageView) findViewById(R.id.splash_Logo)).setImageBitmap(logo);			
 	}
 	
 	
@@ -296,8 +299,17 @@ public class splash extends Activity
 	
 	private void ReleaseImages()
 	{
-		((ImageView) findViewById(R.id.splash_BackImage)).setImageBitmap(Global.EmptyBmp);
-		((ImageView) findViewById(R.id.splash_Logo)).setImageBitmap(Global.EmptyBmp);
-		
+		((ImageView) findViewById(R.id.splash_BackImage)).setImageResource(0);
+		((ImageView) findViewById(R.id.splash_Logo)).setImageResource(0);
+		if (bitmap != null)
+		{
+			bitmap.recycle();
+			bitmap = null;
+		}
+		if (logo != null)
+		{
+			logo.recycle();
+			logo = null;
+		}
 	}
 }
