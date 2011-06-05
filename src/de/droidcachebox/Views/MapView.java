@@ -84,7 +84,12 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	private MultiToggleButton buttonTrackPosition;
 	private String debugString1 = "";
 	private String debugString2 = "";
-
+	private ActivityManager activityManager;
+	private long available_bytes;
+	
+	private float rangeFactorTiles = 1.0f;
+	private float rangeFactorTrack = 1.0f;
+	
 	private Context myContext;
 	AnimationThread animationThread;
 	private Lock animationLock = new ReentrantLock();
@@ -104,6 +109,16 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		lockPosition = 0;
 		useLockPosition = true;
 		myContext = context;
+
+		activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
+		available_bytes = activityManager.getMemoryClass();
+		if (available_bytes > 31)
+		{
+			// Geräte mit mindestens 32MB verfügbar 
+			rangeFactorTiles = 1.5f;
+			numMaxTiles = 48;
+			numMaxTrackTiles = 24;
+		}
 		
 		RelativeLayout mapviewLayout = (RelativeLayout)inflater.inflate(R.layout.mapview, null, false);
 		this.addView(mapviewLayout);
@@ -641,8 +656,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     /// <summary>
     /// Größe des Kachel-Caches
     /// </summary>
-    final int numMaxTiles = 30;
-    final int numMaxTrackTiles = 12;
+    private int numMaxTiles = 24;
+    private int numMaxTrackTiles = 12;
 
     // Vorberechnete Werte
     protected int halfWidth = 0;
@@ -1020,11 +1035,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     @SuppressWarnings("unchecked")
 	protected void LoadTile(Object state)
     {
+    	// damit die Anzahl der loadedTiles wirklich nicht viel größer ist als angegeben
+    	preemptTile();
     	Descriptor desc = (Descriptor) state;
 
-		Global.AddLog("lt1-" + loadedTiles.size());
 		Bitmap bitmap = Manager.LoadLocalBitmap(CurrentLayer, desc);
-		Global.AddLog("lt2");
 /*      Canvas canv = new Canvas(bitmap);
       RouteOverlay.RenderRoute(canv, bitmap, desc, dpiScaleFactorX, dpiScaleFactorY);*/
       
@@ -1094,9 +1109,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     /// man es als WorkItem queuen kann!</param>
 	protected void LoadTrackTile(Descriptor desc)
     {
-		Global.AddLog("ltt1-" + trackTiles.size());
+    	// damit die Anzahl der loadedTiles wirklich nicht viel größer ist als angegeben
+    	preemptTrackTile();
       Bitmap bitmap = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_4444);
-		Global.AddLog("ltt2");
       Paint ppp = new Paint();
       ppp.setColor(Color.argb(255, 0, 0, 0));
       ppp.setStyle(Style.FILL);
@@ -1162,9 +1177,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	}
     	// No tile available. Use Background color (so that at least
     	// routes are painted!)
-		Global.AddLog("lbf1-" + loadedTiles.size());
     	Bitmap result = Bitmap.createBitmap(256, 256, Bitmap.Config.RGB_565);
-		Global.AddLog("lbf2");
     	Canvas graphics = new Canvas(result);
     	
     	if (tile == null)
@@ -2098,30 +2111,33 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	  loadedTilesLock.lock();
 	  try
 	  {
-		  // Kachel mit maximalem Alter suchen
-		  int maxAge = Integer.MIN_VALUE;
-		  Descriptor maxDesc = null;
-		
-		  for (Tile tile : loadedTiles.values())
-		    if (tile.Image != null && tile.Age > maxAge)
-		    {
-		      maxAge = tile.Age;
-		      maxDesc = tile.Descriptor;
-		    }
-		
-		  // Instanz freigeben und Eintrag löschen
-		  if (maxDesc != null)
+		  do
 		  {
-			  try
+			  // Kachel mit maximalem Alter suchen
+			  int maxAge = Integer.MIN_VALUE;
+			  Descriptor maxDesc = null;
+			
+			  for (Tile tile : loadedTiles.values())
+			    if (tile.Image != null && tile.Age > maxAge)
+			    {
+			      maxAge = tile.Age;
+			      maxDesc = tile.Descriptor;
+			    }
+			
+			  // Instanz freigeben und Eintrag löschen
+			  if (maxDesc != null)
 			  {
-				  Tile tile = loadedTiles.get(maxDesc.GetHashCode());
-				  loadedTiles.remove(maxDesc.GetHashCode());
-				  tile.destroy();
-			  } catch (Exception ex)
-			  {
-					Global.AddLog("MV:preemptTile - " + ex.getMessage());				  
+				  try
+				  {
+					  Tile tile = loadedTiles.get(maxDesc.GetHashCode());
+					  loadedTiles.remove(maxDesc.GetHashCode());
+					  tile.destroy();
+				  } catch (Exception ex)
+				  {
+						Global.AddLog("MV:preemptTile - " + ex.getMessage());				  
+				  }
 			  }
-		  }
+		  } while (numLoadedTiles() > numMaxTiles);
       } finally
       {
     	  loadedTilesLock.unlock();
@@ -2139,30 +2155,33 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	trackTilesLock.lock();
     	try
     	{
-    		// Kachel mit maximalem Alter suchen
-    		int maxAge = Integer.MIN_VALUE;
-    		Descriptor maxDesc = null;
-    		
-    		for (Tile tile : trackTiles.values())
-    			if (tile.Image != null && tile.Age > maxAge)
-    			{
-    				maxAge = tile.Age;
-    				maxDesc = tile.Descriptor;
-    			}
-    		
-    		// Instanz freigeben und Eintrag löschen
-    		if (maxDesc != null)
+    		do
     		{
-    			try
-    			{
-    				Tile tile = trackTiles.get(maxDesc.GetHashCode());
-    				tile.destroy();
-    				trackTiles.remove(maxDesc.GetHashCode());
-    			} catch (Exception ex)
-    			{
-						Global.AddLog("MV:preemptTrack - " + ex.getMessage());				  
-    			}
-    		}
+	    		// Kachel mit maximalem Alter suchen
+	    		int maxAge = Integer.MIN_VALUE;
+	    		Descriptor maxDesc = null;
+	    		
+	    		for (Tile tile : trackTiles.values())
+	    			if (tile.Image != null && tile.Age > maxAge)
+	    			{
+	    				maxAge = tile.Age;
+	    				maxDesc = tile.Descriptor;
+	    			}
+	    		
+	    		// Instanz freigeben und Eintrag löschen
+	    		if (maxDesc != null)
+	    		{
+	    			try
+	    			{
+	    				Tile tile = trackTiles.get(maxDesc.GetHashCode());
+	    				tile.destroy();
+	    				trackTiles.remove(maxDesc.GetHashCode());
+	    			} catch (Exception ex)
+	    			{
+							Global.AddLog("MV:preemptTrack - " + ex.getMessage());				  
+	    			}
+	    		}
+    		} while (numTrackTiles() > numMaxTrackTiles);
         } finally
         {
       	  trackTilesLock.unlock();
@@ -2182,11 +2201,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	if (canvas == null)
     		return;
 
-    	
-		
-
-/*    	debugString1 = queuedTiles.size() + " / " + queuedTrackTiles.size();
-    	debugString2 = loadedTiles.size() + " / " + trackTiles.size();*/
+//    	debugString1 = loadedTiles.size() + " / " + trackTiles.size() + " / " + numLoadedTiles();
+//    	debugString2 = available_bytes * 1024 - Debug.getNativeHeapAllocatedSize() / 1024 + " kB";
     	try
     	{
 	    	try
@@ -2254,7 +2270,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    		int xTo;
 		    		int yFrom;
 		    		int yTo;
-		    		Rect tmp = getTileRange(1.5f);
+		    		Rect tmp = getTileRange(rangeFactorTiles);
 		    		xFrom = tmp.left;
 		    		xTo = tmp.right;
 		    		yFrom = tmp.top;
@@ -2264,7 +2280,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    		int xToTrack;
 		    		int yFromTrack;
 		    		int yToTrack;
-		    		Rect tmpTrack = getTileRange(1f);
+		    		Rect tmpTrack = getTileRange(rangeFactorTrack);
 		    		xFromTrack = tmpTrack.left;
 		    		xToTrack = tmpTrack.right;
 		    		yFromTrack = tmpTrack.top;
@@ -4888,6 +4904,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				}
 			};
 			Looper.loop();
+			System.gc();
 		}
 
 	    private float correctHeading(float heading)

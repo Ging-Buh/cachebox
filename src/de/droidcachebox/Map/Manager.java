@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -24,6 +25,7 @@ import org.mapsforge.android.maps.Tile;
 import de.droidcachebox.Global;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.Config;
 import android.graphics.Color;
@@ -138,8 +140,18 @@ public class Manager {
 //			renderer.setupMapGenerator(tileBitmap);
 			renderer.prepareMapGeneration();
 			renderer.executeJob(job);
-			Bitmap bit = renderer.tileBitmap.copy(Config.RGB_565, true);
-			return bit;
+//			Bitmap bit = renderer.tileBitmap.copy(Config.RGB_565, true);
+			
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+            renderer.tileBitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+			Bitmap bitj = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.size());
+			try {
+				baos.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return bitj;
     	}
 
     	

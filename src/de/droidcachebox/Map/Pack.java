@@ -1,5 +1,6 @@
 package de.droidcachebox.Map;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -331,7 +332,12 @@ public class Pack implements Comparable<Pack> {
 
         Bitmap result = BitmapFactory.decodeByteArray(buffer, 0, (int)length);
 
-        return result;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+        result.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+		Bitmap bitj = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.size());
+		result.recycle();
+		baos.close();
+        return bitj;
       }
       catch (Exception exc)
       {
