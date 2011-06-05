@@ -3,7 +3,7 @@
 	android:layout_height="wrap_content" android:layout_width="match_parent">
 	<FrameLayout android:id="@+id/frameLayout1"
 		android:layout_height="match_parent" android:layout_width="match_parent">
-		<ImageView android:src="@drawable/splash_back"
+		<ImageView android:id="@+id/splash_BackImage"
 
 			android:layout_width="match_parent" android:layout_height="match_parent"
 			android:scaleType="centerCrop">
@@ -25,8 +25,8 @@
 
 		</LinearLayout>
 		<ImageView android:scaleType="fitCenter"
-			android:layout_width="wrap_content" android:id="@+id/imageView1"
-			android:src="@drawable/cachebox_logo" android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:id="@+id/splash_Logo"
+			android:layout_height="wrap_content"
 			android:layout_gravity="center_horizontal" android:layout_marginLeft="50dip" android:layout_marginRight="50dip" android:layout_marginTop="20dip"></ImageView>
 		<TextView android:text="Version" android:id="@+id/splash_textViewVersion"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"

@@ -13,8 +13,10 @@ import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -26,6 +28,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -49,7 +52,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	TextView Cord;
 	TextView lblCurrent;
 	TextView Current;
-	
+		
 	public AboutView(Context context, LayoutInflater inflater) 
 	{
 		super(context);
@@ -61,6 +64,8 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		
 		findViewById();
 		setText();
+		
+		
 		
 		 // add Event Handler
         SelectedCacheEventList.Add(this);
@@ -163,15 +168,18 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	@Override
 	public void OnShow() 
 	{
+		LoadImages();
 	}
 
 	@Override
 	public void OnHide() 
 	{
+		ReleaseImages();
 	}
 
 	@Override
-	public void OnFree() {
+	public void OnFree() 
+	{
 		
 	}
 
@@ -254,4 +262,18 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		
 	}
 
+	private void LoadImages()
+	{
+		Resources res = getResources();
+		
+		((ImageView) findViewById(R.id.splash_BackImage)).setImageDrawable(res.getDrawable(R.drawable.splash_back));
+		((ImageView) findViewById(R.id.splash_Logo)).setImageDrawable(res.getDrawable(R.drawable.cachebox_logo));
+		
+	}
+	private void ReleaseImages()
+	{
+		((ImageView) findViewById(R.id.splash_BackImage)).setImageBitmap(Global.EmptyBmp);
+		((ImageView) findViewById(R.id.splash_Logo)).setImageBitmap(Global.EmptyBmp);
+	}
+	
 }

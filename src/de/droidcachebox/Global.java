@@ -59,7 +59,7 @@ public class Global {
     
     public static FilterProperties LastFilter = null;
 	public static boolean autoResort;
-    
+	public static Bitmap EmptyBmp = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // kleinst mögliches Bmp 
     
     // for MapView
 	public static SmoothScrollingTyp SmoothScrolling = SmoothScrollingTyp.normal;
