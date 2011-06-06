@@ -141,20 +141,21 @@ public final class downSlider extends View implements SelectedCacheEvent
 	@Override
 	protected void onDraw(Canvas canvas) 
 	{
+		int FSize = (int) (Global.scaledFontSize_normal*1.2);
 	
-		if(CacheInfoHeight==0)CacheInfoHeight = (int) (Global.scaledFontSize_normal * 4.9);
+		if(CacheInfoHeight==0)CacheInfoHeight = (int) (FSize * 4.7);
 		
 		if (paint==null)
 		{
 			paint = new Paint();
 			paint.setColor(Global.getColor(R.attr.TextColor));
-			paint.setTextSize(Global.scaledFontSize_normal);
+			paint.setTextSize(FSize);
 			paint.setAntiAlias(true);
 		}
 		
 		final Drawable Slide = Global.BtnIcons[0];
 		
-		mBtnRec.set(-10, yPos, width+10 , yPos+50);
+		mBtnRec.set(-10, yPos - 2, width+10 , yPos + 2 + CacheNameView.getMyHeight());
 		Slide.setBounds(mBtnRec);
    	 	
 		Slide.setColorFilter(new PorterDuffColorFilter(Global.getColor(R.attr.SlideDownColorFilter), android.graphics.PorterDuff.Mode.MULTIPLY ));
@@ -175,7 +176,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 			return;
 
    	 	// draw Cache Name
-		canvas.drawText(mCache.Name,5,yPos+ 30, paint);
+		canvas.drawText(mCache.Name,5,yPos + (FSize + (FSize/3)), paint);
    	 	
    	 	// draw WP Info
    	 	int versatz=-yPos+WPInfoHeight;
@@ -231,12 +232,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 		Log.d("Cachebox", "Size changed to " + w + "x" + h);
 	}
 	
-	/*public void setHeight(int MyHeight)
-	{
-		this.height = MyHeight;
-		this.invalidate();
-	}
-	*/
+
 	public void setPos(int Pos)
 	{
 		yPos=(Pos<0)? 0 : Pos;
@@ -256,7 +252,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 	{
 		if (yPos>height*0.7)
 		{
-			yPos=height-50;
+			yPos=height-CacheNameView.getMyHeight();
 		}
 		else
 		{
@@ -297,6 +293,8 @@ public final class downSlider extends View implements SelectedCacheEvent
 		WPLayoutName = new StaticLayout(waypoint.GcCode + ": " + waypoint.Title, WPLayoutTextPaintBold, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		WPInfoHeight = (LineSep*5)+ WPLayoutCord.getHeight()+WPLayoutDesc.getHeight()+WPLayoutClue.getHeight()+WPLayoutName.getHeight();
 		}
+		
+		this.invalidate();
 		
 	}
 	

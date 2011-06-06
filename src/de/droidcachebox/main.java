@@ -1305,7 +1305,15 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	
     private void initialCaheInfoSlider() 
 	{
+    	
+    	// Set Layout Hight
+    	RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, (int) (Global.scaledFontSize_normal*2.2));
+    	TopLayout.setLayoutParams(lp);
+    	
+    	
+    	
 		cacheNameView = new CacheNameView(this);
+		cacheNameView.setHeight((int) (Global.scaledFontSize_normal*2.2));
 		frameCacheName.addView(cacheNameView);
 		InfoDownSlider.setOnTouchListener(new OnTouchListener() 
 		{

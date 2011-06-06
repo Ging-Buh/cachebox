@@ -110,7 +110,7 @@ public class ActivityUtils
        // int width = (int)Math.round(image.getBounds().width() * scale);
         
         float scale = (float)height / (float)image.getIntrinsicHeight();
-        int width = (int)Math.round(image.getIntrinsicWidth() * scale);
+        int width = (int)Math.round((float)image.getIntrinsicWidth() * scale);
 
         Rect oldBounds = image.getBounds();
         image.setBounds(x, y, x + width, y + height);
@@ -152,7 +152,49 @@ public class ActivityUtils
     {
 
     	float scale = (float)newHeight / (float)image.getIntrinsicHeight();
-    	int newWidth = (int)Math.round(image.getIntrinsicWidth() * scale);
+    	float newWidth = (int)Math.round((float)image.getIntrinsicWidth() * scale);
+    	
+    	Bitmap bmp = ((BitmapDrawable)image).getBitmap();
+    	int width = bmp.getWidth();
+    	int height = bmp.getHeight();
+    	
+
+    	
+    	float scaleWidth = ((float) newWidth) / width;
+    	float scaleHeight = ((float) newHeight) / height;
+    	 // createa matrix for the manipulation
+    	Matrix matrix = new Matrix();
+    	 // resize the bit map
+    	matrix.postScale(scaleWidth, scaleHeight);
+    	 // rotate the Bitmap
+    	matrix.postRotate((float) Angle);
+    	 // recreate the new Bitmap
+    	Bitmap resizedBitmap = Bitmap.createBitmap(bmp, 0, 0,
+    	                   width, height, matrix, true);
+    	 // make a Drawable from Bitmap to allow to set the BitMap
+    	 // to the ImageView, ImageButton or what ever
+    	 BitmapDrawable bmd = new BitmapDrawable(resizedBitmap);
+
+
+    	
+        
+        bmd.setBounds(x, y,x+ bmd.getIntrinsicWidth(),y+ bmd.getIntrinsicHeight());
+        bmd.draw(canvas);
+       
+
+        return bmd.getIntrinsicWidth();
+
+    }
+    
+    
+    
+    public static int PutImageScale(Canvas canvas, Drawable image,double Angle, int x, int y, double scale)
+    {
+    	
+    	if(scale==0.0) return 0;
+
+    	float newWidth = (int)Math.round((float)image.getIntrinsicWidth() * scale);
+    	float newHeight = (int)Math.round((float)image.getIntrinsicHeight() * scale);
     	
     	Bitmap bmp = ((BitmapDrawable)image).getBitmap();
     	int width = bmp.getWidth();

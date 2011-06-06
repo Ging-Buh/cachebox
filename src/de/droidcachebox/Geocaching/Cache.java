@@ -836,8 +836,8 @@ public class Cache implements Comparable<Cache> {
 		    	
 		      	VoteWidth = Global.scaledFontSize_normal/2;
 		      	
-		      	rightBorder = (int) (height * 0.8);
-		      	nameLayoutWidth = width - VoteWidth - iconSize - rightBorder ;
+		      	rightBorder = (int) (height * 0.7);
+		      	nameLayoutWidth = width - VoteWidth - iconSize - rightBorder - ((int)Global.scaledFontSize_normal/2);
 		      	DTPaint = new Paint();
 	    	    DTPaint.setTextSize(Global.scaledFontSize_normal);
 	    	    DTPaint.setAntiAlias(true);
@@ -860,7 +860,7 @@ public class Cache implements Comparable<Cache> {
     		
     	// Draw Vote
     		if (this.Rating > 0)
-    			ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int)(this.Rating * 2)],-90,left, top , (int) (Global.scaledFontSize_normal*0.8));
+    			ActivityUtils.PutImageScale(canvas, Global.StarIcons[(int)(this.Rating * 2)],-90,left, top , (double)Global.scaledFontSize_normal/60);
     	
     	// Draw Icon
     		 if (this.MysterySolved())
@@ -878,6 +878,7 @@ public class Cache implements Comparable<Cache> {
     	     {
     	    	 namePaint.setColor(Color.RED);
     	    	 namePaint.setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+    	    	 DTPaint.setAntiAlias(true);
     	     }
     	     layoutCacheName = new StaticLayout(this.Name, namePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
     	     int LayoutHeight = ActivityUtils.drawStaticLayout(canvas, layoutCacheName, left + VoteWidth + iconSize + 5, top);
@@ -913,7 +914,7 @@ public class Cache implements Comparable<Cache> {
     	     int numTb = this.NumTravelbugs;
              if (numTb > 0)
               {
-            	 SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[0],-90,SDTleft, (int) (SDTImageTop - (Global.scaledFontSize_normal/2.8)) , Global.scaledFontSize_normal*3);
+            	 SDTleft += ActivityUtils.PutImageScale(canvas, Global.Icons[0],-90,SDTleft, SDTImageTop -1 , (double)Global.scaledFontSize_normal/30);
                   //SDTleft += space;
                  if (numTb > 1)
                 	 canvas.drawText("x" + String.valueOf(numTb),SDTleft, SDTLineTop , DTPaint);
@@ -921,7 +922,7 @@ public class Cache implements Comparable<Cache> {
     	
              
         // Draw Bearing
-    	     if (BearingRec==null) BearingRec = new Rect(rec.right-rightBorder,rec.top,rec.right,(int) (SDTImageTop*0.9));
+    	     if (BearingRec==null) BearingRec = new Rect(rec.right-rightBorder,rec.top,rec.right,(int) (SDTImageTop*0.8));
     	     if (drawStyle != DrawStyle.withoutBearing) DrawBearing(canvas,BearingRec);
     	
     	  if (this.Found())
@@ -988,7 +989,10 @@ public class Cache implements Comparable<Cache> {
     
     private void DrawBearing (Canvas canvas,Rect drawingRec, String Distance, double Bearing)
     {
-    	ActivityUtils.PutImageTargetHeight(canvas, Global.Arrows[1],Bearing,drawingRec.left,drawingRec.top,(int) (drawingRec.height()*0.9));
+    	
+    	double scale =(double) Global.scaledFontSize_normal / 30;
+    	
+    	ActivityUtils.PutImageScale(canvas, Global.Arrows[1],Bearing,drawingRec.left,drawingRec.top,scale);
 	    canvas.drawText(Distance,drawingRec.left,drawingRec.bottom, DTPaint);
 	       
     }

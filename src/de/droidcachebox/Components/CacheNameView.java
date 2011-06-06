@@ -29,7 +29,7 @@ public class CacheNameView extends View
 	}
 
 	
-	private int height;
+	private static int height;
 	private int width;
 	
 	
@@ -37,11 +37,11 @@ public class CacheNameView extends View
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) 
 	{
 		this.width = measure(widthMeasureSpec);
-		this.height = measure(heightMeasureSpec);
+		height = measure(heightMeasureSpec);
 		
         
       
-        setMeasuredDimension(this.width, this.height);
+        setMeasuredDimension(this.width, height);
 	}
 	
 	
@@ -80,4 +80,21 @@ public class CacheNameView extends View
 				
 		
 	}
+
+
+	public void setHeight(int newheight)
+	{
+		height = newheight;
+		
+        
+	      
+        setMeasuredDimension(this.width, height);
+	}
+
+	
+	public static int getMyHeight()
+	{
+		return height;
+	}
+	
 }
