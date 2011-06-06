@@ -2,6 +2,8 @@ package de.droidcachebox.Views.Forms;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.droidcachebox.Config;
 import de.droidcachebox.Database;
@@ -17,10 +19,14 @@ import de.droidcachebox.Views.MapView;
 import de.droidcachebox.Views.WaypointViewItem;
 import de.droidcachebox.Views.WaypointView.CustomAdapter;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -32,6 +38,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
 public class SelectDB extends Activity {
+    public static boolean autoStart;
+    private int autoStartTime = 10;
+    private int autoStartCounter = 0;
 	private String DBPath;
 	private Intent aktIntent;
 	private Button bNew;
@@ -41,6 +50,8 @@ public class SelectDB extends Activity {
 	private ListView lvFiles;
 	CustomAdapter lvAdapter;
 	public static File AktFile = null;
+	private Handler mHandler;
+	private Runnable mUpdateUITimerTask;
 	
 	public void onCreate(Bundle savedInstanceState) 
 	{
@@ -88,24 +99,7 @@ public class SelectDB extends Activity {
                 	Toast.makeText(getApplicationContext(), "Please select Database!", Toast.LENGTH_SHORT).show();
                 	return;
                 }
-/*
-                Config.Set("MultiDBAutoStartTime", autoStartTime);
-                Config.Set("MultiDBAsk", autoStartTime >= 0);
-                Config.AcceptChanges();
-*/
-                String name = AktFile.getName();
-//            	Toast.makeText(getApplicationContext(), name, Toast.LENGTH_SHORT).show();
-
-                String path = DBPath + "/" + name;
-//            	Toast.makeText(getApplicationContext(), path, Toast.LENGTH_SHORT).show();
-                
-                Config.Set("DatabasePath", path);
-                Config.AcceptChanges();
-        		
-        		aktIntent.putExtra("SOMETHING", "EXTRAS");
-        		setResult(RESULT_OK, aktIntent);
-        		AktFile = null;
-        		finish();
+                selectDB();
         	}
         });
 
@@ -125,25 +119,9 @@ public class SelectDB extends Activity {
         	@Override
         	public void onClick(View v) {
         		stopTimer();
-/*
-            stopTimer();
-            Cachebox.Views.FormNewDB form = new Cachebox.Views.FormNewDB(DBPath);
-            DialogResult result = form.ShowDialog();
 
-            if (result == DialogResult.OK)
-            {
-                dragList1.Items.Clear();
-
-//                string DBPath = System.IO.Path.GetDirectoryName(Config.GetString("DatabasePath"));
-
-                System.IO.DirectoryInfo rootDir = new System.IO.DirectoryInfo(DBPath);
-                System.IO.FileInfo[] DBs = rootDir.GetFiles("*.sdf");
-
-                InitList(DBs);
-            }
-
- */
-         	}
+        		showDialog(123);
+        	}
  
         });
 
@@ -151,7 +129,8 @@ public class SelectDB extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				
+
+				stopTimer();
 				File file = null;
 				if (arg2 >= 0)
 				{
@@ -170,7 +149,70 @@ public class SelectDB extends Activity {
 		lvFiles.setCacheColorHint(R.color.Day_TitleBarColor);
 		lvFiles.setDividerHeight(5);
 		lvFiles.setDivider(lvFiles.getBackground());
+		
+
+    	mUpdateUITimerTask = new Runnable() {
+    	    public void run() {
+    	        if (autoStartCounter == 0)
+    	        {
+    	    		stopTimer();
+    	    		selectDB();
+    	        }
+    	        else
+    	        {
+    	            autoStartCounter--;
+    	            bAutostart.setText(autoStartCounter + "\n" + Global.Translations.Get("confirm"));
+    	        	mHandler.postDelayed(mUpdateUITimerTask, 1000);    	            
+    	        }
+    	    }
+    	};
+    	mHandler = new Handler();        
+		
+		
+        autoStartTime = Config.GetInt("MultiDBAutoStartTime");
+        autoStartCounter = autoStartTime;
+        bAutostart.setText(autoStartCounter + "\n" + Global.Translations.Get("confirm"));
+        setAutoStartText();
+        if ((autoStart && autoStartTime > 0) && (AktFile != null))
+        {
+        	mHandler.postDelayed(mUpdateUITimerTask, 1000);
+        }
+        else
+            stopTimer();
+
 	}
+
+	
+	protected void selectDB() {
+        Config.Set("MultiDBAutoStartTime", autoStartTime);
+        Config.Set("MultiDBAsk", autoStartTime >= 0);
+		
+		String name = AktFile.getName();
+//    	Toast.makeText(getApplicationContext(), name, Toast.LENGTH_SHORT).show();
+
+        String path = DBPath + "/" + name;
+//    	Toast.makeText(getApplicationContext(), path, Toast.LENGTH_SHORT).show();
+        
+        Config.Set("DatabasePath", path);
+        Config.AcceptChanges();
+		
+		aktIntent.putExtra("SOMETHING", "EXTRAS");
+		setResult(RESULT_OK, aktIntent);
+		AktFile = null;
+		finish();
+	}
+
+
+	private void setAutoStartText() {
+	    if (autoStartTime < 0)
+            bAutostart.setText(Global.Translations.Get("AutoStart") + "\n" + Global.Translations.Get("StartWithoutSelection"));
+        else if (autoStartTime == 0)
+            bAutostart.setText(Global.Translations.Get("AutoStart") + "\n" + Global.Translations.Get("AutoStartDisabled"));
+        else
+            bAutostart.setText(Global.Translations.Get("AutoStart") + "\n" + Global.Translations.Get("AutoStartTime").replace("%s", String.valueOf(autoStartTime)));		
+	}
+
+
 
 	public class CustomAdapter extends BaseAdapter {
 		  
@@ -212,11 +254,63 @@ public class SelectDB extends Activity {
 	}
 
 	
-	
 	private void stopTimer()
 	{
-		
+		mHandler.removeCallbacks(mUpdateUITimerTask);
+		bAutostart.setText(Global.Translations.Get("confirm"));
 	}
 	
-	
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) 
+        {
+        case 123:
+        	final CharSequence[] cs = new String[6];
+            cs[0] = Global.Translations.Get("StartWithoutSelection");
+            cs[1] = Global.Translations.Get("AutoStartDisabled");
+            cs[2] = Global.Translations.Get("AutoStartTime").replace("%s", "5");
+            cs[3] = Global.Translations.Get("AutoStartTime").replace("%s", "10");
+            cs[4] = Global.Translations.Get("AutoStartTime").replace("%s", "25");
+            cs[5] = Global.Translations.Get("AutoStartTime").replace("%s", "60");
+        	
+            return new AlertDialog.Builder(this)
+            .setTitle("Titel")
+            .setItems(cs, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+
+                    switch (which)
+                    {
+		            case 0:
+			            autoStartTime = -1;
+			            setAutoStartText();
+		               	break;
+                    case 1:
+			            autoStartTime = 0;
+			            setAutoStartText();
+                    	break;
+                    case 2:
+                    	autoStartTime = 5;
+            			setAutoStartText();
+                    	break;
+                    case 3:
+			            autoStartTime = 10;
+			            setAutoStartText();
+                    	break;
+                    case 4:
+			            autoStartTime = 25;
+			            setAutoStartText();
+                    	break;
+                    case 5:
+			            autoStartTime = 60;
+			            setAutoStartText();
+                    	break;
+               
+                    }
+                	
+                }
+            })
+            .create();
+        }
+        return null;
+    }
 }

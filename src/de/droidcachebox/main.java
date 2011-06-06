@@ -486,7 +486,44 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    	{
 	    		if (resultCode == RESULT_OK)
 	    		{
-	    			Toast.makeText(getApplicationContext(), "DB wechsel momentan nur mit Neustart...", Toast.LENGTH_LONG).show();
+//	    			Toast.makeText(getApplicationContext(), "DB wechsel momentan nur mit Neustart...", Toast.LENGTH_LONG).show();
+	                Database db = new Database(Database.DatabaseType.CacheBox, mainActivity);
+	                if (!db.StartUp(Config.GetString("DatabasePath")))
+	                    return;
+	                Database.Data = null;
+	                Database.Data = db;
+/*	    		
+	                SqlCeCommand command = new SqlCeCommand(" select GcCode from FieldNotes WHERE Type = 1 ", Database.FieldNotes.Connection);
+	                SqlCeDataReader reader = command.ExecuteReader();
+	                if (reader == null)
+	                    throw new Exception("Startup: Cannot execute SQL statement Copy Founds to TB");
+	                string GcCode = "";
+	                while (reader.Read())
+	                    GcCode += "'" + reader.GetString(0) + "', ";
+	                if (GcCode.Length > 0)
+	                {
+	                    GcCode = GcCode.Substring(0, GcCode.Length - 2);
+	                    SqlCeCommand commandUpdate = new SqlCeCommand(" UPDATE Caches SET Found = 1 WHERE GcCode IN (" + GcCode + ") ", Database.Data.Connection);
+	                    int founds = commandUpdate.ExecuteNonQuery();
+	                }
+*/
+	                Global.LastFilter = (Config.GetString("Filter").length() == 0) ? new FilterProperties(PresetListView.presets[0]) : new FilterProperties(Config.GetString("Filter"));
+//	                filterSettings.LoadFilterProperties(Global.LastFilter);
+
+					String sqlWhere = Global.LastFilter.getSqlWhere();
+					Global.AddLog("Main.ApplyFilter: " + sqlWhere);
+					Database.Data.Query.clear();
+					Database.Data.Query.LoadCaches(sqlWhere);
+
+//	                Database.Data.GPXFilenameUpdateCacheCount();
+
+	                Global.SelectedCache(null);
+	                Global.SelectedWaypoint(null, null);
+
+	                // after the database is changed the custom MapPacks has to be loaded
+//	                loadMapPacks(true);
+	                
+	                CachListChangedEventList.Call();
 	    		}
 	    		return;
 	    	}
@@ -1105,6 +1142,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    		showView(101);//Filtersettings
 		    		break;
 		    	case R.id.miManageDB:
+		    		SelectDB.autoStart = false;
 		    		Intent selectDBIntent = new Intent().setClass(mainActivity, SelectDB.class);
 /*			        Bundle b = new Bundle();
 			        b.putSerializable("Waypoint", aktWaypoint);

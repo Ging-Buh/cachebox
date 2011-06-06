@@ -2,8 +2,10 @@ package de.droidcachebox;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
-public class FileList extends ArrayList<File> {
+public class FileList extends ArrayList<File> implements Comparator<File> {
 	/**
 	 * 
 	 */
@@ -27,6 +29,23 @@ public class FileList extends ArrayList<File> {
 			        }
 	        }
         }
+        Resort();
+    }
+	
+	public void Resort()
+	{
+        Collections.sort(this, this);
+	}
+
+	@Override
+	public int compare(File object1, File object2) {
+		// TODO Auto-generated method stub
+		if (object1.lastModified() > object2.lastModified())
+			return 1;
+		else if (object1.lastModified() < object2.lastModified())
+			return -1;
+		else
+			return 0;
 	}
 
 }

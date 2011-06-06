@@ -63,6 +63,7 @@ import de.droidcachebox.TrackRecorder;
 import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
+import de.droidcachebox.Events.CachListChangedEventList;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
@@ -74,8 +75,9 @@ import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Map.Manager;
 import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.Map.Tile;
+import de.droidcachebox.Views.CacheListView.CustomAdapter;
 
-public class MapView extends RelativeLayout implements SelectedCacheEvent, PositionEvent, ViewOptionsMenu {
+public class MapView extends RelativeLayout implements SelectedCacheEvent, PositionEvent, ViewOptionsMenu, de.droidcachebox.Events.CacheListChangedEvent {
 	private boolean isVisible;  // true, when MapView is visible
 	private Timer zoomScaleTimer;
 	private TimerTask zoomTimerTask;
@@ -175,6 +177,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         fontSmall.setFakeBoldText(true);
         fontSmall.setAntiAlias(true);
         PositionEventList.Add(this);
+		CachListChangedEventList.Add(this);
         SelectedCacheEventList.Add(this);
 
         zoomScaleTimer = new Timer();
@@ -5135,5 +5138,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	public boolean ContextMenuItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public void CacheListChangedEvent()
+	{
+		if (!isVisible)
+			return;	// nur wenn sichtbar
+		updateCacheList();
+    	Render(true);
 	}
 }

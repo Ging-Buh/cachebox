@@ -184,10 +184,11 @@ public class splash extends Activity
 	        {
 	        	Global.AddLog(ex.getMessage());
 	        }
-			if (fileList.size() > 1)
+			if ((fileList.size() > 1) && Config.GetBool("MultiDBAsk"))
 			{
 				// show Database Selection
 	    		Intent selectDBIntent = new Intent().setClass(mainActivity, SelectDB.class);
+	    		SelectDB.autoStart = true;
 	    		//Bundle b = new Bundle();
 			        //b.putSerializable("Waypoint", aktWaypoint);
 			        //mainIntent.putExtras(b);
