@@ -1,8 +1,12 @@
 package de.droidcachebox.Views;
 
+import java.util.List;
+
+import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+
 import de.droidcachebox.Events.CachListChangedEventList;
 import de.droidcachebox.Events.CacheListChangedEvent;
 import de.droidcachebox.Events.PositionEvent;
@@ -10,9 +14,15 @@ import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.CacheList;
+import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
+import android.R.drawable;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,14 +30,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 public class CacheListView extends ListView implements ViewOptionsMenu, PositionEvent, CacheListChangedEvent {
 	
 	private CustomAdapter lvAdapter;
-	
-	
-	
+	private Paint paint;
+	/**
+	 * Constructor
+	 */
 	public CacheListView(final Context context) {
 		super(context);
 
@@ -82,6 +94,16 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 	    }
 
 	public class CustomAdapter extends BaseAdapter /*implements OnClickListener*/ {
+		 
+		/*private class OnItemClickListener implements OnClickListener{
+		    private int mPosition;
+		    OnItemClickListener(int position){
+		            mPosition = position;
+		    }
+		    public void onClick(View arg0) {
+		            Log.v("ddd", "onItemClick at position" + mPosition);
+		    }
+		}*/
 	 
 	    private Context context;
 	    private CacheList cacheList;
@@ -112,18 +134,21 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 	        return v;
 	    }
 	 
+	    /*public void onClick(View v) {
+	            Log.v(LOG_TAG, "Row button clicked");
+	    }*/
 	 
 	}
 
 	@Override
 	public boolean ItemSelected(MenuItem item) {
-		
+		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void BeforeShowMenu(Menu menu) {
-	
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -162,7 +187,7 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 
 	@Override
 	public int GetMenuId() {
-		
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -186,24 +211,25 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 
 	@Override
 	public void ActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public int GetContextMenuId() {
-		
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void BeforeShowContextMenu(Menu menu) {
-		
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean ContextMenuItemSelected(MenuItem item) {
-		
+		// TODO Auto-generated method stub
 		return false;
 	}
 }

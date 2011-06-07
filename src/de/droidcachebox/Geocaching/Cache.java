@@ -816,13 +816,13 @@ public class Cache implements Comparable<Cache> {
     private final static int tab = (int) (Global.scaledFontSize_normal*0.6);
     public static Rect BearingRec; 
     private static TextPaint namePaint;
-    private static final int halfCornerSize = Global.scaledFontSize_normal/2;
     public void DrawInfo(Canvas canvas,Rect rec, int BackgroundColor, DrawStyle drawStyle)
     {
     	// init
     		Boolean notAvailable = (!this.Available && !this.Archived);
-           
-            
+            Boolean Night = Config.GetBool("nightMode");
+            Boolean GlobalSelected = this == Global.SelectedCache();
+            final int halfCornerSize = Global.scaledFontSize_normal/2;
             final int left = rec.left + halfCornerSize;
             final int top = rec.top + halfCornerSize;
             final int width = rec.width() - halfCornerSize;
@@ -986,9 +986,12 @@ public class Cache implements Comparable<Cache> {
        }
     }
     
-   private final static double scale =(double) Global.scaledFontSize_normal / 30;
-      private void DrawBearing (Canvas canvas,Rect drawingRec, String Distance, double Bearing)
+    
+    private void DrawBearing (Canvas canvas,Rect drawingRec, String Distance, double Bearing)
     {
+    	
+    	double scale =(double) Global.scaledFontSize_normal / 30;
+    	
     	ActivityUtils.PutImageScale(canvas, Global.Arrows[1],Bearing,drawingRec.left,drawingRec.top,scale);
 	    canvas.drawText(Distance,drawingRec.left,drawingRec.bottom, DTPaint);
 	       

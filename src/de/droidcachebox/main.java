@@ -1176,7 +1176,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		MenuItem miAutoResort = Global.Translations.TranslateMenuItem(IconMenu, R.id.miAutoResort, "AutoResort");
 		miAutoResort.setCheckable(true);
 		miAutoResort.setChecked(Global.autoResort);
-		
+		//AutoResortButton.ButtonImage = (Global.autoResort) ? Global.Icons[6] : Global.Icons[7];
   	  icm.show();
 	}
     
@@ -1205,7 +1205,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    
 	private void initialViews() 
 	{
-	 	compassView =  new CompassView(this, inflater);
+		compassView = new CompassView(this, inflater);
 		cacheListView = new CacheListView(this);
 		waypointView = new WaypointView(this, this);
 		logView = new LogView(this);
