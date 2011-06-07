@@ -2370,9 +2370,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    		canvas.restore();
 			
 		    		renderScale();
-		    		/*
-			      RenderTargetArrow();
-			*/
+		    		
+		    		RenderTargetArrow();
+			
 			
 		    		if (renderZoomScaleActive)
 		    			renderZoomScale();
@@ -2965,17 +2965,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       dragging = false;
       updateCacheList();
       Render(true);
-/*
-      if (arrowHitWhenDown && Math.sqrt(((eX - cacheArrowCenter.x) * (eX - cacheArrowCenter.x) + (eY - cacheArrowCenter.y) * (eY - cacheArrowCenter.y))) < (lineHeight * 1.5f))
-      {
-        Coordinate target = (Global.SelectedWaypoint() != null) ? new Coordinate(Global.SelectedWaypoint().Latitude(), Global.SelectedWaypoint().Longitude()) : new Coordinate(Global.SelectedCache().Latitude(), Global.SelectedCache().Longitude());
-
-        startAnimation(target);
-        cacheArrowCenter.x = Integer.MIN_VALUE;
-        cacheArrowCenter.y = Integer.MIN_VALUE;
-      }
-      arrowHitWhenDown = false;
-*/
     }
 
     private Coordinate lastMouseCoordinate = null;
@@ -3382,6 +3371,17 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
     private void MapView_Click(int eX, int eY)
     {
+        if (arrowHitWhenDown && Math.sqrt(((eX - cacheArrowCenter.x) * (eX - cacheArrowCenter.x) + (eY - cacheArrowCenter.y) * (eY - cacheArrowCenter.y))) < (lineHeight * 1.5f))
+        {
+          Coordinate target = (Global.SelectedWaypoint() != null) ? new Coordinate(Global.SelectedWaypoint().Latitude(), Global.SelectedWaypoint().Longitude()) : new Coordinate(Global.SelectedCache().Latitude(), Global.SelectedCache().Longitude());
+
+          startAnimation(target);
+          cacheArrowCenter.x = Integer.MIN_VALUE;
+          cacheArrowCenter.y = Integer.MIN_VALUE;
+          arrowHitWhenDown = false;
+          return;
+        }
+
 
       WaypointRenderInfo minWpi = new WaypointRenderInfo();
       minWpi.Cache = null;
@@ -3911,23 +3911,22 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     Point cacheArrowCenter = new Point(Integer.MIN_VALUE, Integer.MAX_VALUE);
     /*
     Font distanceFont = new Font(FontFamily.GenericSansSerif, 9, FontStyle.Regular);
-
+*/
     public void RenderTargetArrow()
     {
-      cacheArrowCenter.X = int.MinValue;
-      cacheArrowCenter.Y = int.MinValue;
+      cacheArrowCenter.x = Integer.MIN_VALUE;
+      cacheArrowCenter.y = Integer.MAX_VALUE;
 
-      if (Global.SelectedCache == null)
+      if (Global.SelectedCache() == null)
         return;
 
-      double lat = (Global.SelectedWaypoint != null) ? Global.SelectedWaypoint.Latitude : Global.SelectedCache.Latitude;
-      double lon = (Global.SelectedWaypoint != null) ? Global.SelectedWaypoint.Longitude : Global.SelectedCache.Longitude;
+      Coordinate coord = (Global.SelectedWaypoint() != null) ? Global.SelectedWaypoint().Coordinate : Global.SelectedCache().Coordinate;
+      
+//      float distance = Datum.WGS84.Distance(center.Latitude, center.Longitude, lat, lon);
+      float distance = center.Distance(coord);
 
-      Coordinate center = Center;
-      float distance = Datum.WGS84.Distance(center.Latitude, center.Longitude, lat, lon);
-
-      double x = 256.0 * Map.Descriptor.LongitudeToTileX(Zoom, lon) * dpiScaleFactorX;
-      double y = 256.0 * Map.Descriptor.LatitudeToTileY(Zoom, lat) * dpiScaleFactorY;
+      double x = 256.0 * Descriptor.LongitudeToTileX(Zoom, coord.Longitude) * dpiScaleFactorX;
+      double y = 256.0 * Descriptor.LatitudeToTileY(Zoom, coord.Latitude) * dpiScaleFactorY;
 
       int halfHeight = height / 2;
       int halfWidth = width / 2;
@@ -3942,12 +3941,12 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       double cx = dirx;
       double cy = diry;
 
-      int toprow = -halfHeight + ((showCompass) ? (button1.Height + button1.Top) : 0);
+      int toprow = -halfHeight + ((showCompass) ? (buttonTrackPosition.getTop() + buttonTrackPosition.getHeight()) : 0);
 
       if (cy > halfHeight - lineHeight)
       {
         cx = clip(0, 0, cy, cx, halfHeight - lineHeight);
-        cy = halfHeight;
+        cy = halfHeight - lineHeight;
       }
 
       if (cy < toprow)
@@ -3967,16 +3966,20 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         cy = clip(0, 0, cx, cy, -halfWidth);
         cx = -halfWidth;
       }
-
-      clipLineCircle(-halfWidth, -halfHeight, button1.Width * 1.5, 0, 0, ref cx, ref cy);
-      clipLineCircle(halfWidth, -halfHeight, button1.Width * 1.5, 0, 0, ref cx, ref cy);
-      clipLineCircle(-halfWidth, halfHeight, button1.Width * 1.5, 0, 0, ref cx, ref cy);
-      clipLineCircle(halfWidth, halfHeight, button1.Width * 1.5, 0, 0, ref cx, ref cy);
-
+/*
+      clipX2 = cx;
+      clipY2 = cy;
+      clipLineCircle(-halfWidth, -halfHeight, buttonTrackPosition.getWidth() * 1.5, 0, 0);
+      clipLineCircle(halfWidth, -halfHeight, buttonTrackPosition.getWidth()* 1.5, 0, 0);
+      clipLineCircle(-halfWidth, halfHeight, buttonTrackPosition.getWidth()* 1.5, 0, 0);
+      clipLineCircle(halfWidth, halfHeight, buttonTrackPosition.getWidth()* 1.5, 0, 0);
+      cx = clipX2;
+      cy = clipY2;
+*/
       // Position auf der Karte
       Point pt = new Point((int)(cx + halfWidth), (int)(cy + halfHeight));
 
-      double length = Math.Sqrt(cx * cx + cy * cy);
+      double length = Math.sqrt(cx * cx + cy * cy);
 
       int size = lineHeight;
 
@@ -3987,59 +3990,74 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       float crossY = dirX;
 
       Point[] dir = new Point[3];
-      dir[0].X = (int)(pt.X);
-      dir[0].Y = (int)(pt.Y);
+      dir[0] = new Point((int)(pt.x), (int)(pt.y));
 
       // x/y -> -y/x
-      dir[1].X = (int)(pt.X + dirX * 1.5f * size - crossX * size * 0.5f);
-      dir[1].Y = (int)(pt.Y + dirY * 1.5f * size - crossY * size * 0.5f);
+      dir[1] = new Point();
+      dir[1].x = (int)(pt.x + dirX * 1.5f * size - crossX * size * 0.5f);
+      dir[1].y = (int)(pt.y + dirY * 1.5f * size - crossY * size * 0.5f);
 
-      dir[2].X = (int)(pt.X + dirX * 1.5f * size + crossX * size * 0.5f);
-      dir[2].Y = (int)(pt.Y + dirY * 1.5f * size + crossY * size * 0.5f);
+      dir[2] = new Point();
+      dir[2].x = (int)(pt.x + dirX * 1.5f * size + crossX * size * 0.5f);
+      dir[2].y = (int)(pt.y + dirY * 1.5f * size + crossY * size * 0.5f);
 
-      if (Math.Abs(dirx) > (width / 2) || Math.Abs(diry) > (height / 2))
+      if (Math.abs(dirx) > (width / 2) || Math.abs(diry) > (height / 2))
       {
-        graphics.FillPolygon(redBrush, dir);
-        graphics.DrawPolygon(blackPen, dir);
+/*        graphics.FillPolygon(redBrush, dir);
+        graphics.DrawPolygon(blackPen, dir);*/
+    	  Paint paint = new Paint();
+    	  paint.setStyle(Style.FILL);
+    	  paint.setColor(Color.RED);
+    	  Path path = new Path();
+    	  path.moveTo(dir[0].x, dir[0].y);
+    	  path.lineTo(dir[1].x, dir[1].y);
+    	  path.lineTo(dir[2].x, dir[2].y);
+    	  path.lineTo(dir[0].x, dir[0].y);
+    	  canvas.drawPath(path, paint);
+    	  paint.setStyle(Style.STROKE);
+    	  paint.setColor(Color.BLACK);
+    	  canvas.drawPath(path, paint);    	  
       }
 
-      float fontCenterX = pt.X + dirX * 2.2f * size;
-      float fontCenterY = pt.Y + dirY * 2.2f * size;
+      float fontCenterX = pt.x + dirX * 2.2f * size;
+      float fontCenterY = pt.y + dirY * 2.2f * size;
 
       // Anzeige Pfeile zum Ziel auf Karte mit Waypoint abfrage
       String text = UnitFormatter.DistanceString(distance);
-
+/*
       SizeF textSize = graphics.MeasureString(text, distanceFont);
 
-      if (Math.Abs(dirx) > (width / 2) || Math.Abs(diry) > (height / 2))
+      if (Math.abs(dirx) > (width / 2) || Math.abs(diry) > (height / 2))
         graphics.DrawString(text, distanceFont, blackBrush, fontCenterX - textSize.Width / 2, fontCenterY - textSize.Height / 2);
-
-      cacheArrowCenter.X = (int)(pt.X + dirX * 1.5f * size);
-      cacheArrowCenter.Y = (int)(pt.Y + dirY * 1.5f * size);
+*/
+      cacheArrowCenter.x = (int)(pt.x + dirX * 1.5f * size);
+      cacheArrowCenter.y = (int)(pt.y + dirY * 1.5f * size);
     }
 
-
-    private void clipLineCircle(double cx, double cy, double r, double x1, double y1, ref double x2, ref double y2)
+    private double clipX2;
+    private double clipY2;
+    
+    private void clipLineCircle(double cx, double cy, double r, double x1, double y1)
     {
-      if (((cx - x2) * (cx - x2) + (cy - y2) * (cy - y2)) > r * r)
+      if (((cx - clipX2) * (cx - clipX2) + (cy - clipY2) * (cy - clipY2)) > r * r)
         return;
 
-      double a = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
-      double b = 2 * ((x2 - x1) * (x1 - cx) + (y2 - y1) * (y1 - cy));
+      double a = (clipX2 - x1) * (clipX2 - x1) + (clipY2 - y1) * (clipY2 - y1);
+      double b = 2 * ((clipX2 - x1) * (x1 - cx) + (clipY2 - y1) * (y1 - cy));
       double c = cx * cx + cy * cy + x1 * x1 + y1 * y1 - 2 * (cx * x1 + cy * y1) - r * r;
 
-      double u = (-b - Math.Sqrt(b * b - 4 * a * c)) / (2 * a);
+      double u = (-b - Math.sqrt(b * b - 4 * a * c)) / (2 * a);
       double behaviour = b * b - 4 * a * c;
 
-      x2 = x1 + u * (x2 - x1);
-      y2 = y1 + u * (y2 - y1);
+      clipX2 = x1 + u * (clipX2 - x1);
+      clipY2 = y1 + u * (clipY2 - y1);
     }
 
     double clip(double a, double b, double c, double d, double clip)
     {
       return b + ((clip - a) / (c - a)) * (d - b);
     }
-
+/*
 
     internal void UpdateLayerButtons()
     {
