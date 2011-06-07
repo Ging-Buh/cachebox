@@ -23,11 +23,19 @@ public class SimpleCrypto
 	{                
 		if (encrypted.length()==0)
 			return encrypted;
-		byte[] rawKey = getRawKey(seed.getBytes());                
-		byte[] enc = toByte(encrypted);                
-		byte[] result = decrypt(rawKey, enc);                
-		return new String(result);        
-		}        
+		try
+		{
+			byte[] rawKey = getRawKey(seed.getBytes());                
+			byte[] enc = toByte(encrypted);                
+			byte[] result = decrypt(rawKey, enc);
+			String res = new String(result);
+			return res;
+		} catch (Exception ex)
+		{
+			// Fehler beim decrypt -> könnte daher kommen, dass der String (encrypted) nicht verschlüsselt war!
+			return encrypted;
+		}
+	}        
 	
 	
 	private static byte[] getRawKey(byte[] seed) throws Exception 

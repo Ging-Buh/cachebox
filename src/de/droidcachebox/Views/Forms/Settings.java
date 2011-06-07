@@ -487,7 +487,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		}
 		catch(Exception e)
 		{
-			
+			Global.AddLog("Error Settings: " + e.getMessage());
 		}
 	}
 	
