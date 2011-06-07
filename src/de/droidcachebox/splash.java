@@ -31,6 +31,7 @@ import de.droidcachebox.Views.Forms.SelectDB;
 import de.droidcachebox.Database;
 import de.droidcachebox.Database.DatabaseType;
 import de.droidcachebox.Geocaching.Cache;
+import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.app.Activity;
 import android.content.Context;
@@ -174,6 +175,10 @@ public class splash extends Activity
 	        	Database.Data = null;
 
 	        
+	        double lat = Config.GetDouble("MapInitLatitude");
+	        double lon = Config.GetDouble("MapInitLongitude");
+	        if ((lat != -1000) && (lon != -1000))
+	        	Global.LastValidPosition = new Coordinate(lat, lon);
 	        
 	        // search number of DB3 files
 	        FileList fileList = null; 

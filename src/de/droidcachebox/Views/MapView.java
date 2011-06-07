@@ -577,7 +577,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
     boolean hideMyFinds = false;
 
-    protected Coordinate center = new Coordinate(48.124258, 12.164580);
+    public Coordinate center = new Coordinate(48.0, 12.0);
 
     PointD centerOsmSpace = new PointD(0, 0);
 /*
@@ -600,7 +600,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	{
 	    	
 	    	if (center == null)
-	    		center = new Coordinate(48.124258, 12.164580);
+	    		center = new Coordinate(48.0, 12.0);
 	        positionInitialized = true;
 	/*
 	        if (animationTimer != null)
@@ -965,8 +965,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
             }
             else
             {
-              // Wenns auch den nicht gibt, nehme Oldenburg :)
-              setCenter(new Coordinate(48.124258, 12.164580));
+              // Wenns auch den nicht gibt...)
+              setCenter(new Coordinate(48.0, 12.0));
             }
           }
         }
@@ -2205,8 +2205,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	if (canvas == null)
     		return;
 
-//    	debugString1 = loadedTiles.size() + " / " + trackTiles.size() + " / " + numLoadedTiles();
-//    	debugString2 = available_bytes * 1024 - Debug.getNativeHeapAllocatedSize() / 1024 + " kB";
+    	debugString1 = loadedTiles.size() + " / " + trackTiles.size() + " / " + numLoadedTiles();
+    	debugString2 = available_bytes * 1024 - Debug.getNativeHeapAllocatedSize() / 1024 + " kB";
     	try
     	{
 	    	try

@@ -76,7 +76,7 @@ public class Global {
     
     public static LangStrings Translations = new LangStrings();
     
-    public static Coordinate Marker = new Coordinate(48.12425, 12.16460);
+    public static Coordinate Marker = new Coordinate();
 
     // Icons
     public static Bitmap[] Icons = null;

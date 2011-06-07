@@ -658,6 +658,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		{
 	    		if (isFinishing())
 	    		{
+	                Config.Set("MapInitLatitude", mapView.center.Latitude);
+	                Config.Set("MapInitLongitude", mapView.center.Longitude);
+	                Config.AcceptChanges();
+
 	                this.mWakeLock.release();
 	        		counter.cancel();
 	        		TrackRecorder.StopRecording();
@@ -1249,7 +1253,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 	private void initialMapView() 
 	{
-		mapView = new MapView(this, inflater);
+        mapView = new MapView(this, inflater);
 		mapView.Initialize();
 		mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.GetString("CurrentMapLayer"), Config.GetString("CurrentMapLayer"), "");
 		Global.TrackDistance = Config.GetInt("TrackDistance");
