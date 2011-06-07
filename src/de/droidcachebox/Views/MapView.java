@@ -24,6 +24,7 @@ import android.content.res.ColorStateList;
 import android.graphics.*;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -2517,9 +2518,12 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
           int cs = canvas.save(123);
           int awidth = compassCenter * 2;
           int aheight = compassCenter * 2;
-          Global.Arrows[1].setBounds(left, top, left + awidth, top + aheight);
+          
+          BitmapDrawable d = new BitmapDrawable(Global.Arrows[1]);
+          
+          d.setBounds(left, top, left + awidth, top + aheight);
           canvas.rotate((float)relativeBearing, (float)(left + compassCenter), (float)(top + compassCenter));
-          Global.Arrows[1].draw(canvas);
+          d.draw(canvas);
           canvas.restoreToCount(cs);
 //          Cachebox.Drawing.Arrow.FillArrow(graphics, Cachebox.Drawing.Arrow.HeadingArrow, blackPen, orangeBrush, left + compassCenter, top + compassCenter, compassCenter, relativeBearingRad);
         }

@@ -6,8 +6,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -95,20 +93,10 @@ public class ActivityUtils
 	
 	
 
-    /// <summary>
-    /// Zeichnet das Bild und skaliert es proportional so, dass es die
-    /// übergebene füllt.
-    /// </summary>
-    /// <param name="graphics"></param>
-    /// <param name="image"></param>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
-    /// <param name="height"></param>
+   
     public static int PutImageTargetHeight(Canvas canvas, Drawable image, int x, int y, int height)
     {
-       // float scale = (float)height / (float)image.getBounds().height();
-       // int width = (int)Math.round(image.getBounds().width() * scale);
-        
+               
         float scale = (float)height / (float)image.getIntrinsicHeight();
         int width = (int)Math.round((float)image.getIntrinsicWidth() * scale);
 
@@ -120,12 +108,25 @@ public class ActivityUtils
         return width;
     }
     
+    public static int PutImageTargetHeight(Canvas canvas, Bitmap image, int x, int y, int height)
+    {
+    	
+    	Drawable d =new BitmapDrawable(image);
+               
+        float scale = (float)height / (float)d.getIntrinsicHeight();
+        int width = (int)Math.round((float)d.getIntrinsicWidth() * scale);
+
+        Rect oldBounds = d.getBounds();
+        d.setBounds(x, y, x + width, y + height);
+        d.draw(canvas);
+        d.setBounds(oldBounds);
+
+        return width;
+    }
+    
     
     public static int PutImageTargetHeightColor(Canvas canvas, Drawable image, int x, int y, int height, int color)
     {
-       // float scale = (float)height / (float)image.getBounds().height();
-       // int width = (int)Math.round(image.getBounds().width() * scale);
-        
         float scale = (float)height / (float)image.getIntrinsicHeight();
         int width = (int)Math.round(image.getIntrinsicWidth() * scale);
 
@@ -138,16 +139,23 @@ public class ActivityUtils
         return width;
     }
     
+    public static int PutImageTargetHeightColor(Canvas canvas, Bitmap image, int x, int y, int height, int color)
+    {
+    	Drawable d =new BitmapDrawable(image);
+    	
+        float scale = (float)height / (float)d.getIntrinsicHeight();
+        int width = (int)Math.round(d.getIntrinsicWidth() * scale);
+
+        Rect oldBounds = d.getBounds();
+        d.setBounds(x, y, x + width, y + height);
+        d.setColorFilter(color, Mode.MULTIPLY);
+        d.draw(canvas);
+        d.setBounds(oldBounds);
+        d.clearColorFilter();
+        return width;
+    }
     
-  /// <summary>
-    /// Zeichnet das Bild und skaliert es proportional so, dass es die
-    /// übergebene füllt.
-    /// </summary>
-    /// <param name="graphics"></param>
-    /// <param name="image"></param>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
-    /// <param name="height"></param>
+  
     public static int PutImageTargetHeight(Canvas canvas, Drawable image,double Angle, int x, int y, int newHeight)
     {
 
@@ -181,8 +189,18 @@ public class ActivityUtils
         bmd.setBounds(x, y,x+ bmd.getIntrinsicWidth(),y+ bmd.getIntrinsicHeight());
         bmd.draw(canvas);
        
-
-        return bmd.getIntrinsicWidth();
+        final int returnWidth = bmd.getIntrinsicWidth();
+        
+        
+      //aufräumen 
+        bmd = null;
+        resizedBitmap.recycle();
+        resizedBitmap=null;
+        bmp=null;
+        System.gc();
+        
+        
+        return returnWidth;
 
     }
     
@@ -223,8 +241,71 @@ public class ActivityUtils
         bmd.setBounds(x, y,x+ bmd.getIntrinsicWidth(),y+ bmd.getIntrinsicHeight());
         bmd.draw(canvas);
        
+        final int returnWidth = bmd.getIntrinsicWidth();
+        
+        
+        //aufräumen 
+        bmd = null;
+        resizedBitmap.recycle();
+        resizedBitmap=null;
+        bmp=null;
+        System.gc();
+        
+        
+        return returnWidth;
 
-        return bmd.getIntrinsicWidth();
+
+    }
+    
+    
+    public static int PutImageScale(Canvas canvas, Bitmap image,double Angle, int x, int y, double scale)
+    {
+    	
+    	if(scale==0.0) return 0;
+
+    	float newWidth = (int)Math.round((float)image.getWidth() * scale);
+    	float newHeight = (int)Math.round((float)image.getHeight() * scale);
+    	
+    	
+    	int width = image.getWidth();
+    	int height = image.getHeight();
+    	
+
+    	
+    	float scaleWidth = ((float) newWidth) / width;
+    	float scaleHeight = ((float) newHeight) / height;
+    	 // createa matrix for the manipulation
+    	Matrix matrix = new Matrix();
+    	 // resize the bit map
+    	matrix.postScale(scaleWidth, scaleHeight);
+    	 // rotate the Bitmap
+    	matrix.postRotate((float) Angle);
+    	 // recreate the new Bitmap
+    	Bitmap resizedBitmap = Bitmap.createBitmap(image, 0, 0,
+    	                   width, height, matrix, true);
+    	 // make a Drawable from Bitmap to allow to set the BitMap
+    	 // to the ImageView, ImageButton or what ever
+    	 BitmapDrawable bmd = new BitmapDrawable(resizedBitmap);
+
+
+    	
+        
+        bmd.setBounds(x, y,x+ bmd.getIntrinsicWidth(),y+ bmd.getIntrinsicHeight());
+        bmd.draw(canvas);
+       
+        final int returnWidth = bmd.getIntrinsicWidth();
+        
+        
+        //aufräumen 
+        bmd = null;
+        resizedBitmap.recycle();
+        resizedBitmap=null;
+        image=null;
+        System.gc();
+        
+        
+        return returnWidth;
+
 
     }
     

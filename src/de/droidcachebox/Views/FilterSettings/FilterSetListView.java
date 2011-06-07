@@ -10,7 +10,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
@@ -64,7 +66,7 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 	{
 		private String mName;
 		private Drawable mIcon;
-		private Drawable[] mIconArray;
+		private Bitmap[] mIconArray;
 		private int mState=0;
 		private int mItemType;
 		private int ID;
@@ -84,7 +86,15 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 			ID= IdCounter++;
 		}
 		
-		public FilterSetEntry(String Name, Drawable[] Icons, int itemType, double min, double max, double iniValue, double Step) 
+		public FilterSetEntry(String Name, Bitmap Icon, int itemType)
+		{
+			mName=Name;
+			mIcon=new BitmapDrawable(Icon);
+			mItemType=itemType;
+			ID= IdCounter++;
+		}
+		
+		public FilterSetEntry(String Name, Bitmap[] Icons, int itemType, double min, double max, double iniValue, double Step) 
 		{
 			mName=Name;
 			mIconArray=Icons;
@@ -114,7 +124,7 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 				{
 					double ArrayMultiplier = (mIconArray.length>5)? 2:1;
 					
-					return mIconArray[(int)(mNumerickState*ArrayMultiplier)];
+					return new BitmapDrawable(mIconArray[(int)(mNumerickState*ArrayMultiplier)]);
 				}catch(Exception e){}
 				
 			}
@@ -462,7 +472,8 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 
 	}
 	
-	private FilterSetListViewItem addFilterSetItem(Drawable[] Icons,
+		
+	private FilterSetListViewItem addFilterSetItem(Bitmap[] Icons,
 			String Name, int ItemType, double i, double j, double k, double f) 
 	{
 
@@ -483,6 +494,23 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 	}
 
 	private FilterSetListViewItem addFilterSetItem(Drawable Icon, String Name, int ItemType)
+	{
+		if(lFilterSets==null)
+		{
+			lFilterSets = new ArrayList<FilterSetListView.FilterSetEntry>();
+			lFilterSetListViewItems = new ArrayList<FilterSetListViewItem>();
+		}
+		FilterSetEntry tmp = new FilterSetEntry(Name,Icon,ItemType);
+		lFilterSets.add(tmp);
+		Boolean BackGroundChanger = ((lFilterSets.size() % 2) == 1);
+		FilterSetListViewItem v = new FilterSetListViewItem(mContext, tmp, BackGroundChanger);
+		// inital mit GONE
+		v.setVisibility(View.GONE);
+		lFilterSetListViewItems.add(v);
+		return v;
+	}
+	
+	private FilterSetListViewItem addFilterSetItem(Bitmap Icon, String Name, int ItemType)
 	{
 		if(lFilterSets==null)
 		{

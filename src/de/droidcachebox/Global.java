@@ -1,5 +1,6 @@
 package de.droidcachebox;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -38,7 +39,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global {
-    public static final int CurrentRevision = 113;
+    public static final int CurrentRevision = 192;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
@@ -78,15 +79,15 @@ public class Global {
     public static Coordinate Marker = new Coordinate(48.12425, 12.16460);
 
     // Icons
-    public static Drawable[] Icons = null;
+    public static Bitmap[] Icons = null;
     public static Drawable[] SmallStarIcons;
-    public static Drawable[] StarIcons;
-    public static Drawable[] SizeIcons;
-    public static Drawable[] CacheIconsBig;
-    public static Drawable[] BatteryIcons;
-    public static Drawable[] LogIcons;
-    public static Drawable[] Arrows;
-    public static Drawable[] ChkIcons;
+    public static Bitmap[] StarIcons;
+    public static Bitmap[] SizeIcons;
+    public static Bitmap[] CacheIconsBig;
+   
+    public static Bitmap[] LogIcons;
+    public static Bitmap[] Arrows;
+    public static Bitmap[] ChkIcons;
     public static Drawable[] BtnIcons;
     
     // New Map Icons
@@ -443,42 +444,42 @@ public class Global {
         NewMapOverlay.get(2).add(res.getDrawable(R.drawable.map_20x20_shaddowrect_deact));
         NewMapOverlay.get(2).add(res.getDrawable(R.drawable.map_20x20_selected_deact));
     
-        Icons = new Drawable[] { 
-        		res.getDrawable(N? R.drawable.night_tb : R.drawable.day_tb ),
-        		res.getDrawable(R.drawable.addwaypoint),
-        		res.getDrawable(R.drawable.smilie_gross),
-        		res.getDrawable(R.drawable.download),
-        		res.getDrawable(R.drawable.log1),
-        		res.getDrawable(R.drawable.maintenance),
-        		res.getDrawable(R.drawable.checkbox_checked),
-        		res.getDrawable(R.drawable.checkbox_unchecked),
-        		res.getDrawable(R.drawable.sonne),
-        		res.getDrawable(R.drawable.mond),
-        		res.getDrawable(R.drawable.travelbug),
-        		res.getDrawable(R.drawable.collapse),
-        		res.getDrawable(R.drawable.expand),
-        		res.getDrawable(R.drawable.enabled),
-        		res.getDrawable(R.drawable.disabled),
-        		res.getDrawable(R.drawable.retrieve_tb),
-        		res.getDrawable(R.drawable.drop_tb),
-        		res.getDrawable(R.drawable.star),
-        		res.getDrawable(R.drawable.earth),
-        		res.getDrawable(R.drawable.favorit),
-        		res.getDrawable(R.drawable.file),
-        		res.getDrawable(R.drawable.userdata),
-        		res.getDrawable(R.drawable.delete),  // 22
-        		res.getDrawable(R.drawable.archiv), // 23
-        		res.getDrawable(R.drawable.not_available),  // 24
-        		res.getDrawable(R.drawable.checkbox_crossed), // 25
-        		res.getDrawable(R.drawable.map22), // 26
-        		res.getDrawable(R.drawable.chk_icon), // 27
-        		res.getDrawable(R.drawable.delete_icon), // 28
-        		res.getDrawable(R.drawable.voice_rec_icon), // 29
+        Icons = new Bitmap[] { 
+        		getCompressBmp(res,N? R.drawable.night_tb : R.drawable.day_tb ),
+        		getCompressBmp(res,R.drawable.addwaypoint),
+        		getCompressBmp(res,R.drawable.smilie_gross),
+        		getCompressBmp(res,R.drawable.download),
+        		getCompressBmp(res,R.drawable.log1),
+        		getCompressBmp(res,R.drawable.maintenance),
+        		getCompressBmp(res,R.drawable.checkbox_checked),
+        		getCompressBmp(res,R.drawable.checkbox_unchecked),
+        		getCompressBmp(res,R.drawable.sonne),
+        		getCompressBmp(res,R.drawable.mond),
+        		getCompressBmp(res,R.drawable.travelbug),
+        		getCompressBmp(res,R.drawable.collapse),
+        		getCompressBmp(res,R.drawable.expand),
+        		getCompressBmp(res,R.drawable.enabled),
+        		getCompressBmp(res,R.drawable.disabled),
+        		getCompressBmp(res,R.drawable.retrieve_tb),
+        		getCompressBmp(res,R.drawable.drop_tb),
+        		getCompressBmp(res,R.drawable.star),
+        		getCompressBmp(res,R.drawable.earth),
+        		getCompressBmp(res,R.drawable.favorit),
+        		getCompressBmp(res,R.drawable.file),
+        		getCompressBmp(res,R.drawable.userdata),
+        		getCompressBmp(res,R.drawable.delete),  // 22
+        		getCompressBmp(res,R.drawable.archiv), // 23
+        		getCompressBmp(res,R.drawable.not_available),  // 24
+        		getCompressBmp(res,R.drawable.checkbox_crossed), // 25
+        		getCompressBmp(res,R.drawable.map22), // 26
+        		getCompressBmp(res,R.drawable.chk_icon), // 27
+        		getCompressBmp(res,R.drawable.delete_icon), // 28
+        		getCompressBmp(res,R.drawable.voice_rec_icon), // 29
 };
         
-        Arrows = new Drawable[] { 
-        		res.getDrawable(R.drawable.arrow),
-        		res.getDrawable(R.drawable.arrow_small),
+        Arrows = new Bitmap[] { 
+        		getCompressBmp(res,R.drawable.arrow),
+        		getCompressBmp(res,R.drawable.arrow_small),
         		
 
 };
@@ -497,83 +498,77 @@ public class Global {
         		res.getDrawable(R.drawable.smallstars_4_5),
         		res.getDrawable(R.drawable.smallstars_5) };
         
-        StarIcons = new Drawable[] { 
-        		res.getDrawable(R.drawable.stars0),
-        		res.getDrawable(R.drawable.stars0_5),
-        		res.getDrawable(R.drawable.stars1),
-        		res.getDrawable(R.drawable.stars1_5),
-        		res.getDrawable(R.drawable.stars2),
-        		res.getDrawable(R.drawable.stars2_5),
-        		res.getDrawable(R.drawable.stars3),
-        		res.getDrawable(R.drawable.stars3_5),
-        		res.getDrawable(R.drawable.stars4),
-        		res.getDrawable(R.drawable.stars4_5),
-        		res.getDrawable(R.drawable.stars5) };
+        StarIcons = new Bitmap[] { 
+        		getCompressBmp(res,R.drawable.stars0),
+        		getCompressBmp(res,R.drawable.stars0_5),
+        		getCompressBmp(res,R.drawable.stars1),
+        		getCompressBmp(res,R.drawable.stars1_5),
+        		getCompressBmp(res,R.drawable.stars2),
+        		getCompressBmp(res,R.drawable.stars2_5),
+        		getCompressBmp(res,R.drawable.stars3),
+        		getCompressBmp(res,R.drawable.stars3_5),
+        		getCompressBmp(res,R.drawable.stars4),
+        		getCompressBmp(res,R.drawable.stars4_5),
+        		getCompressBmp(res,R.drawable.stars5) };
         
-        SizeIcons = new Drawable[] 
+        SizeIcons = new Bitmap[] 
                 { 
-        		res.getDrawable(R.drawable.other),
-        		res.getDrawable(R.drawable.micro),
-        		res.getDrawable(R.drawable.small),
-        		res.getDrawable(R.drawable.regular),
-        		res.getDrawable(R.drawable.large)
+        		getCompressBmp(res,R.drawable.other),
+        		getCompressBmp(res,R.drawable.micro),
+        		getCompressBmp(res,R.drawable.small),
+        		getCompressBmp(res,R.drawable.regular),
+        		getCompressBmp(res,R.drawable.large)
         		};
        
-        BatteryIcons = new Drawable[] { 
-        		res.getDrawable(R.drawable.bat0),
-        		res.getDrawable(R.drawable.bat1),
-        		res.getDrawable(R.drawable.bat2),
-        		res.getDrawable(R.drawable.bat3),
-        };
-        		
+      
 
-        CacheIconsBig = new Drawable[] { 
-        		res.getDrawable(R.drawable.big_0),
-        		res.getDrawable(R.drawable.big_1),
-        		res.getDrawable(R.drawable.big_2),
-        		res.getDrawable(R.drawable.big_3),
-        		res.getDrawable(R.drawable.big_4),
-        		res.getDrawable(R.drawable.big_5),
-        		res.getDrawable(R.drawable.big_6),
-        		res.getDrawable(R.drawable.big_7),
-        		res.getDrawable(R.drawable.big_8),
-        		res.getDrawable(R.drawable.big_9),
-        		res.getDrawable(R.drawable.big_10),
-        		res.getDrawable(R.drawable.big_11),
-        		res.getDrawable(R.drawable.big_12),
-        		res.getDrawable(R.drawable.big_13),
-        		res.getDrawable(R.drawable.big_14),
-        		res.getDrawable(R.drawable.big_15),
-        		res.getDrawable(R.drawable.big_16),
-        		res.getDrawable(R.drawable.big_17),
-        		res.getDrawable(R.drawable.big_18),
-        		res.getDrawable(R.drawable.big_19),
+        CacheIconsBig = new Bitmap[] { 
+        		getCompressBmp(res,R.drawable.big_0),
+        		getCompressBmp(res,R.drawable.big_1),
+        		getCompressBmp(res,R.drawable.big_2),
+        		getCompressBmp(res,R.drawable.big_3),
+        		getCompressBmp(res,R.drawable.big_4),
+        		getCompressBmp(res,R.drawable.big_5),
+        		getCompressBmp(res,R.drawable.big_6),
+        		getCompressBmp(res,R.drawable.big_7),
+        		getCompressBmp(res,R.drawable.big_8),
+        		getCompressBmp(res,R.drawable.big_9),
+        		getCompressBmp(res,R.drawable.big_10),
+        		getCompressBmp(res,R.drawable.big_11),
+        		getCompressBmp(res,R.drawable.big_12),
+        		getCompressBmp(res,R.drawable.big_13),
+        		getCompressBmp(res,R.drawable.big_14),
+        		getCompressBmp(res,R.drawable.big_15),
+        		getCompressBmp(res,R.drawable.big_16),
+        		getCompressBmp(res,R.drawable.big_17),
+        		getCompressBmp(res,R.drawable.big_18),
+        		getCompressBmp(res,R.drawable.big_19),
         };
         
         
         
-        LogIcons = new Drawable[] { 
-        		res.getDrawable(R.drawable.log0),
-        		res.getDrawable(R.drawable.log1),
-        		res.getDrawable(R.drawable.log2),
-        		res.getDrawable(R.drawable.log3),
-        		res.getDrawable(R.drawable.log4),
-        		res.getDrawable(R.drawable.log5),
-        		res.getDrawable(R.drawable.log6),
-        		res.getDrawable(R.drawable.log7),
-        		res.getDrawable(R.drawable.log8),
-        		res.getDrawable(R.drawable.log9),
-        		res.getDrawable(R.drawable.log10),
-        		res.getDrawable(R.drawable.log11),
-        		res.getDrawable(R.drawable.log12),
-        		res.getDrawable(R.drawable.log13),
+        LogIcons = new Bitmap[] { 
+        		getCompressBmp(res, R.drawable.log0),
+        		getCompressBmp(res, R.drawable.log1),
+        		getCompressBmp(res, R.drawable.log2),
+        		getCompressBmp(res, R.drawable.log3),
+        		getCompressBmp(res, R.drawable.log4),
+        		getCompressBmp(res, R.drawable.log5),
+        		getCompressBmp(res, R.drawable.log6),
+        		getCompressBmp(res, R.drawable.log7),
+        		getCompressBmp(res, R.drawable.log8),
+        		getCompressBmp(res, R.drawable.log9),
+        		getCompressBmp(res, R.drawable.log10),
+        		getCompressBmp(res, R.drawable.log11),
+        		getCompressBmp(res, R.drawable.log12),
+        		getCompressBmp(res, R.drawable.log13),
 
         };
        
-        ChkIcons = new Drawable[] 
+        ChkIcons = new Bitmap[] 
                 { 
-	        		res.getDrawable(N? R.drawable.night_btn_check_off : R.drawable.day_btn_check_off  ),
-	        		res.getDrawable(N? R.drawable.night_btn_check_on : R.drawable.day_btn_check_on  ),
+	        		getCompressBmp(res,N? R.drawable.night_btn_check_off : R.drawable.day_btn_check_off  ),
+	        		getCompressBmp(res,N? R.drawable.night_btn_check_on : R.drawable.day_btn_check_on  ),
         		};
         
         BtnIcons = new Drawable[] 
@@ -583,6 +578,24 @@ public class Global {
                         		}; 
         
     }
+    
+    
+    private static Bitmap getCompressBmp(Resources res, int ResID )
+    {
+    	//Bitmap bit = renderer.tileBitmap.copy(Config.RGB_565, true);
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+		BitmapFactory.decodeResource(res, ResID).compress(Bitmap.CompressFormat.PNG, 20, baos);
+		Bitmap bitj = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.size());
+		try {
+			baos.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return bitj;
+    }
+    
 
     static String FormatDM(double coord, String positiveDirection, String negativeDirection)
     {

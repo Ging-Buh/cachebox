@@ -28,7 +28,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Path.FillType;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
@@ -89,6 +91,14 @@ public class PresetListView extends ListView implements ViewOptionsMenu {
 		{
 			mName=Name;
 			mIcon=Icon;
+			mPresetString=PresetString;
+		}
+		
+		
+		public PresetEntry(String Name, Bitmap Icon, String PresetString)
+		{
+			mName=Name;
+			mIcon=new BitmapDrawable(Icon);
 			mPresetString=PresetString;
 		}
 		
@@ -268,7 +278,7 @@ public class PresetListView extends ListView implements ViewOptionsMenu {
 
 	}
 	
-	private void addPresetItem(Drawable Icon, String Name, String PresetString)
+	private void addPresetItem(Bitmap Icon, String Name, String PresetString)
 	{
 		if(lPresets==null)lPresets=new ArrayList<PresetListView.PresetEntry>();
 		lPresets.add(new PresetEntry(Name,Icon,PresetString));

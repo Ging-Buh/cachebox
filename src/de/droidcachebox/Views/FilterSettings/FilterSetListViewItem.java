@@ -12,6 +12,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -251,10 +252,13 @@ public class FilterSetListViewItem extends View {
     	drawRightChkBox(canvas);
     	if(this.mFilterSetEntry.getState()==1)
     	{
-    		Rect oldBounds =  Global.Icons[27].getBounds();
-    		Global.Icons[27].setBounds(rChkBounds);
-    		Global.Icons[27].draw(canvas);
-    		Global.Icons[27].setBounds(oldBounds);
+    		
+    		Drawable d =new BitmapDrawable(Global.Icons[27]);
+    		
+    		Rect oldBounds =  d.getBounds();
+    		d.setBounds(rChkBounds);
+    		d.draw(canvas);
+    		d.setBounds(oldBounds);
     	}
     	
     }
@@ -265,17 +269,19 @@ public class FilterSetListViewItem extends View {
     	drawRightChkBox(canvas);
     	if(this.mFilterSetEntry.getState()==1)
     	{
-    		Rect oldBounds =  Global.Icons[27].getBounds();
-    		Global.Icons[27].setBounds(rChkBounds);
-    		Global.Icons[27].draw(canvas);
-    		Global.Icons[27].setBounds(oldBounds);
+    		Drawable d =new BitmapDrawable(Global.Icons[27]);
+    		Rect oldBounds =  d.getBounds();
+    		d.setBounds(rChkBounds);
+    		d.draw(canvas);
+    		d.setBounds(oldBounds);
     	}
     	else if(this.mFilterSetEntry.getState()==-1)
     	{
-    		Rect oldBounds =  Global.Icons[28].getBounds();
-    		Global.Icons[28].setBounds(rChkBounds);
-    		Global.Icons[28].draw(canvas);
-    		Global.Icons[28].setBounds(oldBounds);
+    		Drawable d =new BitmapDrawable(Global.Icons[28]);
+    		Rect oldBounds =  d.getBounds();
+    		d.setBounds(rChkBounds);
+    		d.draw(canvas);
+    		d.setBounds(oldBounds);
     	}
     }
     
