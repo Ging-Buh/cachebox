@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.SimpleCrypto;
 import de.droidcachebox.main;
 import de.droidcachebox.splash;
 import de.droidcachebox.Components.ActivityUtils;
@@ -244,8 +245,13 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 			
 			@Override
 			public void afterTextChanged(Editable arg0) {
-				Config.Set("GcPass", EditTextGCName.getText().toString());
-				
+				try {
+					Config.Set("GcPass",SimpleCrypto.encrypt("DCB",EditTextGCPW.getEditableText().toString()));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		
 			}
 		});
 		EditTextGCVotePW.addTextChangedListener(new TextWatcher() {
@@ -265,8 +271,12 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 			
 			@Override
 			public void afterTextChanged(Editable arg0) {
-				Config.Set("GcVotePassword", EditTextGCName.getText().toString());
-				
+		    	try {
+					Config.Set("GcVotePassword",SimpleCrypto.encrypt("DCB",EditTextGCVotePW.getEditableText().toString()));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		
@@ -438,8 +448,8 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		try
 		{
 		EditTextGCName.setText(Config.GetString("GcLogin"));
-		EditTextGCPW.setText(Config.GetString("GcPass"));
-		EditTextGCVotePW.setText(Config.GetString("GcVotePassword"));
+		EditTextGCPW.setText(SimpleCrypto.decrypt("DCB", Config.GetString("GcPass")));
+		EditTextGCVotePW.setText(SimpleCrypto.decrypt("DCB", Config.GetString("GcVotePassword")));
 		fillLangCombo();
 		checkBoxUseCelltower.setChecked(Config.GetBool("UseCelltower"));
 		checkBoxHTCCompass.setChecked(Config.GetBool("HtcCompass"));
@@ -484,8 +494,13 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private void SaveSettings()
 	{
 		Config.Set("GcLogin",EditTextGCName.getEditableText().toString());
-    	Config.Set("GcPass",EditTextGCPW.getEditableText().toString());
-    	Config.Set("GcVotePassword",EditTextGCVotePW.getEditableText().toString());
+    	try {
+			Config.Set("GcPass",SimpleCrypto.encrypt("DCB",EditTextGCPW.getEditableText().toString()));
+	    	Config.Set("GcVotePassword",SimpleCrypto.encrypt("DCB",EditTextGCVotePW.getEditableText().toString()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	Config.Set("TrackRecorderStartup",chkTrackStart.isChecked());
     	Config.Set("ImportLayerOsm",chkMapink.isChecked());
     	Config.Set("ImportLayerOcm",chkCycleMap.isChecked());
