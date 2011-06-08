@@ -27,6 +27,7 @@ import de.droidcachebox.Views.LogView;
 import de.droidcachebox.Views.MapView;
 import de.droidcachebox.Views.WaypointView;
 import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
+import de.droidcachebox.Views.FilterSettings.PresetListView;
 import de.droidcachebox.Views.Forms.SelectDB;
 import de.droidcachebox.Database;
 import de.droidcachebox.Database.DatabaseType;
@@ -207,19 +208,27 @@ public class splash extends Activity
 	 private void Initial2()
 	 {
 	        
-
+		 	String FilterString = Config.GetString("Filter");
+	        Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(PresetListView.presets[0]) : new FilterProperties(FilterString);
+	        String sqlWhere =Global.LastFilter.getSqlWhere();
+	        
+	        
 	        // initialize Database
 	        Database.Data = new Database(DatabaseType.CacheBox, this);
 	        String database = Config.GetString("DatabasePath");
 	        Database.Data.StartUp(database);
 //	        Database.Data.StartUp(Config.WorkPath + "/CacheBox.db3");
-	        Database.Data.Query.LoadCaches("");
+	        Database.Data.Query.LoadCaches(sqlWhere);
 
 	        Database.FieldNotes = new Database(DatabaseType.FieldNotes, this); 
 	        if (!Global.DirectoryExists(Config.WorkPath + "/User")) return;
 	        Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 	        
 	        Descriptor.Init();
+	        
+	        
+	        
+            
 	        
 	        Config.AcceptChanges();
 	        

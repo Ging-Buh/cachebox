@@ -308,6 +308,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        }
 	        
 	        
+	        CacheListChangedEvent();
+	        
 	        
 	        setDebugVisible();
 	        

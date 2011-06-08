@@ -1,5 +1,6 @@
 package de.droidcachebox.Views.FilterSettings;
 
+import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.FilterProperties;
 import de.droidcachebox.Global;
@@ -88,7 +89,12 @@ public class EditFilterSettings extends Activity {
             {
             	Global.LastFilter=tmpFilterProps;
             	ApplyFilter(Global.LastFilter);
-            	            	
+            	
+            	
+            	//Save selected filter
+            	Config.Set("Filter", Global.LastFilter.ToString());
+                Config.AcceptChanges();
+            	
             }
           });
         Button bCancel = (Button) findViewById(R.id.edfi_cancel);
