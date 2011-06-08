@@ -38,7 +38,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global {
-    public static final int CurrentRevision = 194;
+    public static final int CurrentRevision = 196;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
@@ -474,6 +474,7 @@ public class Global {
         		res.getDrawable(R.drawable.chk_icon), // 27
         		res.getDrawable(R.drawable.delete_icon), // 28
         		res.getDrawable(R.drawable.voice_rec_icon), // 29
+        		res.getDrawable(R.drawable.satellite), // 30
 };
         
         Arrows = new Drawable[] { 

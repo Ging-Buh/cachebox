@@ -89,6 +89,7 @@ public class splash extends Activity
 		setContentView(R.layout.splash);
 		myProgressBar=(ProgressBar)findViewById(R.id.splash_progressbar);
 		myTextView= (TextView)findViewById(R.id.splash_TextView);
+		myTextView.setTextColor(Color.BLACK);
 		versionTextView=(TextView)findViewById(R.id.splash_textViewVersion);
 		versionTextView.setText(Global.getVersionString());
 		descTextView=(TextView)findViewById(R.id.splash_textViewDesc);
@@ -147,11 +148,11 @@ public class splash extends Activity
 			e.printStackTrace();
 		}
 		 
-		setProgressState(20, "Ini UI ...");
+		setProgressState(20, Global.Translations.Get("IniUI"));
 		 	Global.Paints.init(this);
 	        Global.InitIcons(this, false);
 	        
-        setProgressState(40, "Load Map ...");
+        setProgressState(40, Global.Translations.Get("LoadMapPack"));
 	        File dir = new File(Config.GetString("MapPackFolder"));
 	        String[] files = dir.list();
 	        if (!(files == null))
@@ -171,7 +172,7 @@ public class splash extends Activity
 				        }
 		        }
 	        }
-	    setProgressState(60, "Load Caches ...");
+	    setProgressState(60, Global.Translations.Get("LoadCaches"));
 	        if (Database.Data != null)
 	        	Database.Data = null;
 
@@ -244,16 +245,7 @@ public class splash extends Activity
 	 {
 		 myProgressBar.setProgress(progress);
 		 
-		 
-		 // TODO Set msg
-		 /*new Thread(new Runnable() 
-		  {
-		 	    public void run() 
-		 	    {
-		 	    	myTextView.setText(msg);
-		 	    };
-		 }).start();*/
-		 
+				 
 		 Thread t = new Thread() {
 			    public void run() {
 			        runOnUiThread(new Runnable() {

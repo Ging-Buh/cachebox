@@ -128,7 +128,9 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
          lblWP.setText(Global.Translations.Get("waypoint"));
          lblCord.setText(Global.Translations.Get("coordinate"));
          lblCurrent.setText(Global.Translations.Get("current"));
-		
+         lblAccuracy.setText(Global.Translations.Get("accuracy"));
+         
+         
          GPS.setText(Global.Translations.Get("not_active"));
 		
 		

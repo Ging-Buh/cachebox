@@ -68,6 +68,8 @@ English
 	waypoint = Waypoint:
 	coordinate = Coordinate:
 	current = Current:
+	sats = Satellites:
+	accuracy = Accuracy:
 
 // MsgBox texts
 	Error = Error

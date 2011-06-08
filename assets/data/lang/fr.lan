@@ -68,6 +68,8 @@ utf8
 	waypoint = Point:
 	coordinate = Coordonnées:
 	current = Courant:
+	sats = Satellites:
+	accuracy = Accuracy:
 
 // MsgBox texts
 	Error = Erreur

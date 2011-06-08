@@ -67,6 +67,8 @@ Deutsch
 	waypoint = Wegpunkt:
 	coordinate = Koordinate:
 	current = Aktuell:
+	sats = Satelliten:
+	accuracy = Genauigkeit:
 
 // MsgBox texts
 	Error = Fehler

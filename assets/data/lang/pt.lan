@@ -68,6 +68,8 @@ Portugues
 	waypoint = Waypoint:
 	coordinate = Coord:
 	current = Actual:
+	sats = Satellites:
+	accuracy = Accuracy:
 
 // MsgBox texts
 	Error = Erro

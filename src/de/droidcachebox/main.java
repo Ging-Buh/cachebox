@@ -358,6 +358,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			
 			Global.Locator.setLocation(location);
 			PositionEventList.Call(location);
+			
+			InfoDownSlider.setNewLocation(location);
 
 	        if (!initialResortAfterFirstFixCompleted && Global.LastValidPosition.Valid)
 	        {

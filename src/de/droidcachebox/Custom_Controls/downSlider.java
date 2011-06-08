@@ -35,6 +35,7 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 
 import android.text.Layout.Alignment;
 import android.text.StaticLayout;
@@ -96,7 +97,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 	private TextPaint WPLayoutTextPaintBold;
 	private int LineSep;
 	private int WPInfoHeight=0;
-		
+	private int GPSInfoHeight=0;	
 	
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) 
@@ -177,16 +178,23 @@ public final class downSlider extends View implements SelectedCacheEvent
 
    	 	// draw Cache Name
 		canvas.drawText(mCache.Name,5,yPos + (FSize + (FSize/3)), paint);
+		
+		
+		// draw GPS Info
+		int versatz = -yPos+GPSInfoHeight;
+		canvas.translate(0,-versatz);
+		drawGPSInfo(canvas);
+		canvas.restore();
    	 	
    	 	// draw WP Info
-   	 	int versatz=-yPos+WPInfoHeight;
+   	 	versatz += WPInfoHeight;
    	 	canvas.translate(0,-versatz);
    	 	Boolean WPisDraw = drawWPInfo(canvas);
 		canvas.restore();
    	 	
    	 
    	 	// draw Cache Info
-		versatz +=CacheInfoHeight;
+		versatz += CacheInfoHeight;
 		canvas.translate(5,-versatz);
    	 	mCache.DrawInfo(canvas, width - 10, CacheInfoHeight, WPisDraw? Global.getColor(R.attr.ListBackground) : Global.getColor(R.attr.ListBackground_select), DrawStyle.withoutBearing);
    	 	canvas.restore();
@@ -225,6 +233,33 @@ public final class downSlider extends View implements SelectedCacheEvent
 					
 		return true;
 	}
+	
+	
+	private Boolean drawGPSInfo(Canvas canvas) 
+	{
+		if(GPSInfoHeight==0)
+				return false;
+		 
+		 
+		 int LineColor = Global.getColor(R.attr.ListSeparator);
+		 Rect DrawingRec = new Rect(5, 5, width-5, GPSInfoHeight-5);
+		 ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, Global.getColor(R.attr.ListBackground));
+  
+  
+		 int left= 15;
+		 int top = LineSep *2;
+		
+		 int iconWidth = 0;
+		 // draw icon
+		 iconWidth=ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[30], CornerSize/2,CornerSize, imgSize);
+
+		 // draw Text info
+		 left += iconWidth;
+		 top += ActivityUtils.drawStaticLayout(canvas, GPSLayout, left, top);
+		 					
+		return true;
+	}
+	
 
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) 
@@ -296,6 +331,52 @@ public final class downSlider extends View implements SelectedCacheEvent
 		
 		this.invalidate();
 		
+	}
+
+	private String mLatitude="";
+	private String mLongitude="";
+	private String mHdop;
+	private String mSats;
+	private String mAccuracy;
+	private String mAlt;
+	private TextPaint GPSLayoutTextPaint;
+	
+	private StaticLayout GPSLayout;
+	
+	public void setNewLocation(Location location) 
+	{
+		mHdop = String.valueOf(location.getExtras().getFloat("hdop"));
+		mSats = String.valueOf(location.getExtras().getInt("satellites"));
+		mAccuracy = String.valueOf(location.getAccuracy());
+		mAlt = String.valueOf(location.getAltitude());
+		mLatitude = Global.FormatLatitudeDM(location.getLatitude());
+		mLongitude = Global.FormatLongitudeDM(location.getLongitude());
+		
+		String br = StringFunctions.newLine();
+		String Text= 
+			Global.Translations.Get("current")+ " " + mLatitude + " " + mLongitude + br +
+			Global.Translations.Get("alt") + " " + mAlt + "m" + br +
+			Global.Translations.Get("accuracy") + "  +/- " + mAccuracy + "m" + br +
+			Global.Translations.Get("sats") + " " + mSats + br +
+			"Hdop: " + mHdop ;
+		
+	
+		
+		if(GPSLayoutTextPaint==null)
+		{
+			GPSLayoutTextPaint = new TextPaint();
+			GPSLayoutTextPaint.setTextSize(Global.scaledFontSize_normal);
+			GPSLayoutTextPaint.setAntiAlias(true);
+			GPSLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
+		}
+		
+		int TextWidth = this.width- this.imgSize;
+		GPSLayout = new StaticLayout(Text , GPSLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		GPSInfoHeight = (mLatitude.equals(""))? 0 : (LineSep * 4) + GPSLayout.getHeight();
+		
+		
+		
+		this.invalidate();
 	}
 	
 }
