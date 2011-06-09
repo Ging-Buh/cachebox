@@ -257,6 +257,9 @@ public class Config {
         validateSetting("DebugMemory", "false");
         validateSetting("DebugShowMsg", "false");
 
+        validateSetting("LockH", "1");
+        validateSetting("LockM", "0");
+        
 //        validateSetting("OtherRepositoriesFolder", Global.AppPath + "\\Repositories");
 
         AcceptChanges();

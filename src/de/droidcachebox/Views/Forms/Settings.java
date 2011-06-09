@@ -47,6 +47,7 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 
 
@@ -112,7 +113,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 
 					@Override
 					public void onNothingSelected(AdapterView<?> arg0) {
-						// TODO Auto-generated method stub
+						
 						
 					}
 			       
@@ -376,6 +377,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private CheckBox chkDebugMsg;
 	private Spinner ApproachSound;
 	private CheckBox chkDebugMarker;
+	private TimePicker ScreenLockTimePicker;
 	
 	
 	private void findViewsById()
@@ -428,6 +430,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		chkDebugMsg = (CheckBox)this.findViewById(R.id.settings_debug_chkMsg);
 		ApproachSound = (Spinner)this.findViewById(R.id.settings_spinner_Approach_Sound);
 		chkDebugMarker = (CheckBox)this.findViewById(R.id.settings_debug_chkMarker);
+		ScreenLockTimePicker = (TimePicker)this.findViewById(R.id.settings_ScreenLock_timePicker);
 	}
 	
 	private void setLang()
@@ -488,6 +491,10 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		
 		
 		
+		ScreenLockTimePicker.setCurrentHour(Config.GetInt("LockH"));
+		ScreenLockTimePicker.setCurrentMinute(Config.GetInt("LockM"));
+		
+		
 		}
 		catch(Exception e)
 		{
@@ -525,7 +532,11 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	
     	Config.Set("SoundApproachDistance",(Integer) ApproachSound.getSelectedItem());
     	
-    	
+    	int H=ScreenLockTimePicker.getCurrentHour();
+    	int M =ScreenLockTimePicker.getCurrentMinute();
+    	Config.Set("LockH",H);
+    	Config.Set("LockM",M);
+    	((main) main.mainActivity).setCounterNew(((H*60)+M)*1000);
     	
     	((main) main.mainActivity).setDebugVisible();
     	((main) main.mainActivity).setDebugMsg("");

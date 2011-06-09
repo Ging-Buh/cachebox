@@ -201,7 +201,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		// Powermanager
 	    protected PowerManager.WakeLock mWakeLock;
 	    // GPS
-		private LocationManager locationManager;
+		public LocationManager locationManager;
 		private String provider;
 		// Compass
 	    private SensorManager mSensorManager;
@@ -257,7 +257,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	        mainActivity= this;
 
-	        counter = new MyCount(60000, 60000);
+	        
+	        int Time = ((Config.GetInt("LockH")*60)+Config.GetInt("LockM"))*1000;
+	        counter = new MyCount(Time, Time);
 	        counter.start();
 
 	        findViewsById();
@@ -1454,12 +1456,18 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    }
 
 	@Override
-	public void onNmeaReceived(long timestamp, String nmea) {
+	public void onNmeaReceived(long timestamp, String nmea) 
+	{
 		// TODO Auto-generated method stub
         Global.AddLog("NMEA: " + nmea);		
 	}
 
-	 
+	 public void setCounterNew(int value)
+	 {
+		 counter.cancel();
+		 counter = new MyCount(value,value);
+		 counter.start();
+	 }
 	 
 	 
 	 

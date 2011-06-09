@@ -1,10 +1,9 @@
 package de.droidcachebox.Custom_Controls;
 
 
-import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.UnitFormatter;
+import de.droidcachebox.main;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Components.StringFunctions;
@@ -12,38 +11,22 @@ import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Cache.DrawStyle;
-import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
-import de.droidcachebox.Views.CacheListView;
-import de.droidcachebox.Views.WaypointView;
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapShader;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.LightingColorFilter;
-import android.graphics.LinearGradient;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.RadialGradient;
 import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Shader;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-
+import android.location.LocationManager;
+import android.os.Handler;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.View.MeasureSpec;
 
 
 
@@ -270,9 +253,48 @@ public final class downSlider extends View implements SelectedCacheEvent
 
 	public void setPos(int Pos)
 	{
-		yPos=(Pos<0)? 0 : Pos;
+		if(Pos>0)
+		{
+			yPos=Pos;
+			
+			if(!isVisible)
+				startUpdateTimer();
+			
+			isVisible=true;
+		}
+		else
+		{
+			yPos=0;
+			isVisible=false;
+		}
+		
+		
 		this.invalidate();
 	}
+	
+	private void startUpdateTimer() 
+	{
+		handler.postDelayed(task,400);
+	}
+	
+	Handler handler = new Handler();
+	Runnable task = new Runnable() 
+	{
+		
+		@Override
+		public void run() 
+		{
+			String provider = LocationManager.GPS_PROVIDER;
+			Location location = ((main) main.mainActivity).locationManager.getLastKnownLocation(provider);
+			setNewLocation(location);
+			
+			//getAllSatellites();
+			
+			if(isVisible)
+				handler.postDelayed(task,400);
+		}
+	};
+
 	public int getPos()
 	{
 		return yPos;
@@ -292,6 +314,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 		else
 		{
 			yPos=0;
+			isVisible=false;
 		}
 		
 		
@@ -333,22 +356,30 @@ public final class downSlider extends View implements SelectedCacheEvent
 		
 	}
 
+	
+	private Boolean isVisible=false;
+	
 	private String mLatitude="";
 	private String mLongitude="";
-	private String mHdop;
 	private String mSats;
 	private String mAccuracy;
 	private String mAlt;
 	private TextPaint GPSLayoutTextPaint;
+	private static double mAltCorrectionFactor = 0.0;
 	
 	private StaticLayout GPSLayout;
 	
+
 	public void setNewLocation(Location location) 
 	{
-		mHdop = String.valueOf(location.getExtras().getFloat("hdop"));
+		
+		if(this.width==0)return;
+		
+		
+		
 		mSats = String.valueOf(location.getExtras().getInt("satellites"));
 		mAccuracy = String.valueOf(location.getAccuracy());
-		mAlt = String.valueOf(location.getAltitude());
+		mAlt = String.valueOf(location.getAltitude()+ mAltCorrectionFactor);
 		mLatitude = Global.FormatLatitudeDM(location.getLatitude());
 		mLongitude = Global.FormatLongitudeDM(location.getLongitude());
 		
@@ -357,8 +388,8 @@ public final class downSlider extends View implements SelectedCacheEvent
 			Global.Translations.Get("current")+ " " + mLatitude + " " + mLongitude + br +
 			Global.Translations.Get("alt") + " " + mAlt + "m" + br +
 			Global.Translations.Get("accuracy") + "  +/- " + mAccuracy + "m" + br +
-			Global.Translations.Get("sats") + " " + mSats + br +
-			"Hdop: " + mHdop ;
+			Global.Translations.Get("sats") + " " + mSats ;
+			
 		
 	
 		
@@ -378,5 +409,42 @@ public final class downSlider extends View implements SelectedCacheEvent
 		
 		this.invalidate();
 	}
+	
+	
+	public static void setAltCorrectionFactor(double value)
+	{
+		mAltCorrectionFactor=value;
+	}
+	
+	
+	
+	
+	/*
+	 * Wollte eigentlich mit dieser Funktion die Anzahl der Satellieten und deren Signalstärke
+	 * in einem BalkenDiagramm darstellen. Mangels Funktions Umfang meines HD2 muss ich das auf später
+	 * verschieben, bis ich ein richtiges Android Gerät habe.
+	 * 
+	 * Longri
+	 */
+	
+	/*
+	private int mNumSatellites;
+	private static String satellites[] = new String[20];
+	
+	private void getAllSatellites() 
+	{
+		final GpsStatus gps_status = ((main) main.mainActivity).locationManager.getGpsStatus(null);
+		
+			final Iterator<GpsSatellite> sats = gps_status.getSatellites().iterator();
+			this.mNumSatellites = 0;
+			while (sats.hasNext()) 
+			{
+				GpsSatellite temp = sats.next();
+				satellites[this.mNumSatellites]=Float.toString(temp.getSnr());
+				this.mNumSatellites++;
+			}
+	}*/
+
+	
 	
 }

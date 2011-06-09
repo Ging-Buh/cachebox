@@ -8,24 +8,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.regex.Pattern;
-
 import de.droidcachebox.Components.StringFunctions;
 import de.droidcachebox.Events.SelectedCacheEventList;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import de.droidcachebox.Geocaching.Cache;
@@ -38,7 +29,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global {
-    public static final int CurrentRevision = 196;
+    public static final int CurrentRevision = 199;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
