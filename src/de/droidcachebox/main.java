@@ -76,6 +76,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Criteria;
 import android.location.GpsStatus.Listener;
+import android.location.GpsStatus.NmeaListener;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -117,9 +118,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.location.GpsStatus;
 
-
-public class main extends Activity implements SelectedCacheEvent,LocationListener,CacheListChangedEvent 
+public class main extends Activity implements SelectedCacheEvent,LocationListener,CacheListChangedEvent, GpsStatus.NmeaListener 
 {
 	/*
 	 * private static member
@@ -282,7 +283,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
 	        this.mWakeLock.acquire();
 	        
-	        initialLocationManager();                
+	        initialLocationManager();
 	        initialMapView();
 	        initialViews();
 	        initalMicIcon(); 
@@ -1253,6 +1254,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		Location location = locationManager.getLastKnownLocation(provider);
 		Global.Locator = new Locator();
 		locationManager.requestLocationUpdates(provider, 1000, 1, this);
+		Global.AddLog("NMEALISTENER: " + locationManager.addNmeaListener(this));
 	}
 
 	private void initialMapView() 
@@ -1450,9 +1452,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    	}
 	    	
 	    }
-	    
-	
-	 
+
+	@Override
+	public void onNmeaReceived(long timestamp, String nmea) {
+		// TODO Auto-generated method stub
+        Global.AddLog("NMEA: " + nmea);		
+	}
+
 	 
 	 
 	 
