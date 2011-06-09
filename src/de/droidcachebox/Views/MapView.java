@@ -35,6 +35,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -61,6 +62,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.TrackRecorder;
 import de.droidcachebox.UnitFormatter;
+import de.droidcachebox.main;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
 import de.droidcachebox.Events.CachListChangedEventList;
@@ -111,6 +113,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		lockPosition = 0;
 		useLockPosition = true;
 		myContext = context;
+		
+		Global.SmoothScrolling = SmoothScrollingTyp.valueOf(Config.GetString("SmoothScrolling"));
 
 		activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
 		available_bytes = activityManager.getMemoryClass();
@@ -2842,17 +2846,18 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         if (drawBestFit)
         {
 	        // Draw Kachel marker
-        	/*
-	        Paint paintt = new Paint(backBrush);
-	        paintt.setColor(Color.GREEN);
-	        paintt.setStyle(Style.STROKE);
-	        if (tile.State == Tile.TileState.LowResolution)
-	        	paintt.setColor(Color.RED);
-	        Rect brect = new Rect(pt.x+5, pt.y+5, pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor)-5, pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor)-5);
-	        canvas.drawRect(brect, paintt);
-	        canvas.drawLine(brect.left, brect.top, brect.right, brect.bottom, paintt);
-	        canvas.drawLine(brect.right, brect.top, brect.left, brect.bottom, paintt);
-	        */
+        	if(Config.GetBool("DebugShowMarker"))
+        	{
+		        Paint paintt = new Paint(backBrush);
+		        paintt.setColor(Color.GREEN);
+		        paintt.setStyle(Style.STROKE);
+		        if (tile.State == Tile.TileState.LowResolution)
+		        	paintt.setColor(Color.RED);
+		        Rect brect = new Rect(pt.x+5, pt.y+5, pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor)-5, pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor)-5);
+		        canvas.drawRect(brect, paintt);
+		        canvas.drawLine(brect.left, brect.top, brect.right, brect.bottom, paintt);
+		        canvas.drawLine(brect.right, brect.top, brect.left, brect.bottom, paintt);
+        	}
         }
         return;
       }
@@ -4417,16 +4422,16 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				alignToCompass = !alignToCompass;
 				return true;
 			case R.id.mapview_smooth_none:
-				Global.SmoothScrolling = SmoothScrollingTyp.none;
+				setSmotthScrolling(SmoothScrollingTyp.none);
 				return true;
 			case R.id.mapview_smooth_normal:
-				Global.SmoothScrolling = SmoothScrollingTyp.normal;
+				setSmotthScrolling(SmoothScrollingTyp.normal);
 				return true;
 			case R.id.mapview_smooth_fine:
-				Global.SmoothScrolling = SmoothScrollingTyp.fine;
+				setSmotthScrolling(SmoothScrollingTyp.fine);
 				return true;
 			case R.id.mapview_smooth_superfine:
-				Global.SmoothScrolling = SmoothScrollingTyp.superfine;
+				setSmotthScrolling(SmoothScrollingTyp.superfine);
 				return true;
 			case R.id.mapview_startrecording:
 				TrackRecorder.StartRecording();
@@ -4437,8 +4442,22 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			case R.id.mapview_stoprecording:
 				TrackRecorder.StopRecording();
 				return true;
+				
+			case R.id.mapview_go_settings:
+				final Intent mainIntent = new Intent().setClass( main.mainActivity,de.droidcachebox.Views.Forms.Settings.class);
+		   		Bundle b = new Bundle();
+			        b.putSerializable("Show", 3); //Show Settings und setze ein PerformClick auf den MapSettings Button! (3)
+			        mainIntent.putExtras(b);
+		   		main.mainActivity.startActivity(mainIntent);
+		   		return true;
 		}
 		return false;
+	}
+
+	private void setSmotthScrolling(SmoothScrollingTyp typ) 
+	{
+		Global.SmoothScrolling = typ;
+		Config.Set("SmoothScrolling",typ.toString());
 	}
 
 	@Override

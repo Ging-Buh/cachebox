@@ -26,4 +26,11 @@
 	    android:id="@+id/settings_debug_chkMsg">
     </CheckBox>
     
+    <CheckBox 
+	    android:text="Show Kachel marker in MapView" 
+	    android:layout_width="match_parent" 
+	    android:layout_height="wrap_content" 
+	    android:id="@+id/settings_debug_chkMarker">
+    </CheckBox>
+    
 </LinearLayout>

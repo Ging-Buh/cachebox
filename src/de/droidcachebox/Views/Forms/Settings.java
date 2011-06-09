@@ -375,6 +375,8 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private CheckBox chkDebugMemory;
 	private CheckBox chkDebugMsg;
 	private Spinner ApproachSound;
+	private CheckBox chkDebugMarker;
+	
 	
 	private void findViewsById()
 	{
@@ -425,6 +427,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		chkDebugMemory = (CheckBox)this.findViewById(R.id.settings_debug_chkMemory);
 		chkDebugMsg = (CheckBox)this.findViewById(R.id.settings_debug_chkMsg);
 		ApproachSound = (Spinner)this.findViewById(R.id.settings_spinner_Approach_Sound);
+		chkDebugMarker = (CheckBox)this.findViewById(R.id.settings_debug_chkMarker);
 	}
 	
 	private void setLang()
@@ -475,6 +478,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		chkDebugShowPanel.setChecked(Config.GetBool("DebugShowPanel"));
 		chkDebugMemory.setChecked(Config.GetBool("DebugMemory"));
 		chkDebugMsg.setChecked(Config.GetBool("DebugShowMsg"));
+		chkDebugMarker.setChecked(Config.GetBool("DebugShowMarker"));
 		
 		fillApproachSpinner();
 		ApproachSound.setSelection(approachValues.indexOf(Config.GetInt("SoundApproachDistance")));
@@ -508,14 +512,16 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	Config.Set("OsmMinLevel",(Integer) OsmMinLevel.getSelectedItem());
     	Config.Set("OsmMaxLevel",(Integer) OsmMaxLevel.getSelectedItem());
     	Config.Set("ZoomCross",(Integer) ZoomCross.getSelectedItem());
-    	String debug = ((SmoothScrollingTyp) SmoothScrolling.getSelectedItem()).name();
-    	Config.Set("SmoothScrolling",debug);
+    	String SmoothScrollingString = ((SmoothScrollingTyp) SmoothScrolling.getSelectedItem()).name();
+    	Global.SmoothScrolling = SmoothScrollingTyp.valueOf(SmoothScrollingString);
+    	Config.Set("SmoothScrolling",SmoothScrollingString);
     	Config.Set("TrackDistance",(Integer) TrackDistance.getSelectedItem());
     	
     	Config.Set("AllowInternetAccess",chkAllowInetAccess.isChecked());
     	Config.Set("DebugShowPanel",chkDebugShowPanel.isChecked());
     	Config.Set("DebugMemory",chkDebugMemory.isChecked());
     	Config.Set("DebugShowMsg",chkDebugMsg.isChecked());
+    	Config.Set("DebugShowMarker",chkDebugMarker.isChecked());
     	
     	Config.Set("SoundApproachDistance",(Integer) ApproachSound.getSelectedItem());
     	
