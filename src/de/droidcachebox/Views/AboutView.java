@@ -3,6 +3,7 @@ package de.droidcachebox.Views;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
 import de.droidcachebox.Events.CachListChangedEventList;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
@@ -21,6 +22,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent, PositionEvent {
 	Context context;
@@ -82,8 +85,37 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		{
 			
 			@Override
-			public void onClick(View arg0) {
+			public void onClick(View arg0) 
+			{
 				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		WP.setOnClickListener(new OnClickListener() 
+		{
+			
+			@Override
+			public void onClick(View arg0) 
+			{
+				 if (Global.SelectedCache()== null)
+		                return;
+
+		            if (!Config.GetBool("AllowInternetAccess"))
+		            {
+		            	Toast.makeText(main.mainActivity, Global.Translations.Get("allowInetConn"), Toast.LENGTH_SHORT).show();
+		                return;
+		            }
+		            
+		            try
+		            {
+		            	Intent browserIntent = new Intent("android.intent.action.VIEW", Uri.parse(Global.SelectedCache().Url.trim()));
+		            	main.mainActivity.startActivity(browserIntent);
+		            }
+		            catch (Exception exc)
+		            {
+		            	Toast.makeText(main.mainActivity, Global.Translations.Get("Cann_not_open_cache_browser") + " (" + Global.SelectedCache().Url.trim() + ")", Toast.LENGTH_SHORT).show();
+                    }
 				
 			}
 		});
@@ -111,6 +143,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		
 		//set LinkLable Color
 		CachesFoundLabel.setTextColor(Global.getColor(R.attr.LinkLabelColor));
+		WP.setTextColor(Global.getColor(R.attr.LinkLabelColor));
 		
 		//Set Progressbar from Splash unvisible and release the Obj.
 		myProgressBar=(ProgressBar)findViewById(R.id.splash_progressbar);

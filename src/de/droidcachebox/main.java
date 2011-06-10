@@ -667,6 +667,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			if(isRestart)
 			{
 				super.onDestroy();
+				isRestart=false;
 			}
 			else
 			{
