@@ -285,7 +285,8 @@ public final class downSlider extends View implements SelectedCacheEvent
 		public void run() 
 		{
 			String provider = LocationManager.GPS_PROVIDER;
-			Location location = ((main) main.mainActivity).locationManager.getLastKnownLocation(provider);
+			Location location = Global.Locator.getLocation();
+//			Location location = ((main) main.mainActivity).locationManager.getLastKnownLocation(provider);
 			
 			if(location!=null)
 			{
