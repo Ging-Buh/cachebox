@@ -28,6 +28,8 @@ public class DescriptionView extends WebView implements ViewOptionsMenu, Selecte
 	private boolean mustLoadDescription;
 	private Cache aktCache;
 	private HashMap<Cache.Attributes, Integer> attributeLookup;
+	private ArrayList<String> NonLocalImages = new ArrayList<String>();
+	private ArrayList<String> NonLocalImagesUrl = new ArrayList<String>();
 	
 	/**
 	 * Constructor
@@ -110,10 +112,10 @@ public class DescriptionView extends WebView implements ViewOptionsMenu, Selecte
         final String encoding = "utf-8";
         if (cache != null)
         {
-        	ArrayList<String> NonLocalImages = new ArrayList<String>();
-        	ArrayList<String> NonLocalImagesUrl = new ArrayList<String>();
+        	NonLocalImages = new ArrayList<String>();
+        	NonLocalImagesUrl = new ArrayList<String>();
         	String cachehtml =  cache.GetDescription();
-        	String html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, true, NonLocalImages, NonLocalImagesUrl);
+        	String html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, !Config.GetBool("AllowInternetAccess"), NonLocalImages, NonLocalImagesUrl);
         	
             if (!Config.GetBool("DescriptionNoAttributes"))
                 html = getAttributesHtml(cache.AttributesPositive(), cache.AttributesNegative()) + html;
@@ -122,6 +124,15 @@ public class DescriptionView extends WebView implements ViewOptionsMenu, Selecte
         	this.loadDataWithBaseURL("fake://fake.de", html, mimeType, encoding, null);
         }
         this.getSettings().setLightTouchEnabled(true);
+        
+        
+     // Falls nicht geladene Bilder vorliegen und eine Internetverbindung
+     // erlaubt ist, diese laden und Bilder erneut auflösen
+        if (Config.GetBool("AllowInternetAccess") && NonLocalImagesUrl.size() > 0)
+        {
+        	loaderThread.start();
+        }
+        
 	}
 
     private String getAttributesHtml(long attributesPositive, long attributesNegative)
@@ -144,6 +155,52 @@ public class DescriptionView extends WebView implements ViewOptionsMenu, Selecte
         return sb.toString();
     }
 
+    
+       
+    
+    
+    
+    // Threding methods to reload images if allowd
+	Thread loaderThread = new Thread() 
+    {
+		@Override
+	    public void run() 
+	    {
+	                Boolean imagesFetched = false;
+			
+			        while (NonLocalImagesUrl != null && NonLocalImagesUrl.size()> 0)
+			        {
+			            String local, url;
+			            local = NonLocalImages.get(0);
+			            url = NonLocalImagesUrl.get(0);
+			            NonLocalImagesUrl.remove(0);
+			            NonLocalImages.remove(0);
+			            
+			
+			            if (DescriptionImageGrabber.Download(url, local))
+			            {
+			                imagesFetched = true;
+			
+			               /* if (Global.GetAvailableDiscSpace(Config.GetDBConfigString("DescriptionImageFolder")) < (1024 * 1024))
+			                {
+			                    MessageBox.Show("You are running low on memory! Internet connection will close now.", "Low Memory!");
+			                    Config.Set("AllowInternetAccess", false);
+			                    Config.AcceptChanges();
+			                    break;
+			                }*/
+			            }
+			        }
+			               // Fertig!
+			        if (imagesFetched)
+			        	setCache(aktCache);
+			    
+	    }
+    };
+ 
+    
+    
+    
+    
 	@Override
 	public boolean ItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub

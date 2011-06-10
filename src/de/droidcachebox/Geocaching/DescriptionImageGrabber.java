@@ -1,10 +1,21 @@
 package de.droidcachebox.Geocaching;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+
+import org.apache.http.HttpRequest;
+import org.apache.http.util.ByteArrayBuffer;
 
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 public class DescriptionImageGrabber {
@@ -171,4 +182,45 @@ public class DescriptionImageGrabber {
       return html;
     }
 
+	  public static Boolean Download(String uri, String local)
+      {
+          try
+          {
+              String localDir = local.substring(0, local.lastIndexOf("/"));
+
+              if (!Global.DirectoryExists(localDir)) return false;
+
+              URL aURL = new URL(uri.replace("&amp;", "&"));
+             
+                  
+                  File file = new File(local);
+
+
+                  URLConnection con = aURL.openConnection();
+
+                  InputStream is = con.getInputStream();
+                  BufferedInputStream bis = new BufferedInputStream(is);
+
+                  ByteArrayBuffer baf = new ByteArrayBuffer(50);
+                  int current = 0;
+                  while ((current = bis.read()) != -1) {
+                          baf.append((byte) current);
+                  }
+
+                  FileOutputStream fos = new FileOutputStream(file);
+                  fos.write(baf.toByteArray());
+                  fos.close();
+
+         
+
+             
+
+              return true;
+          }
+          catch (Exception e)
+          {
+              return false;
+          }
+      }
+	
 }
