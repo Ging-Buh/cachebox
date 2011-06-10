@@ -286,12 +286,16 @@ public final class downSlider extends View implements SelectedCacheEvent
 		{
 			String provider = LocationManager.GPS_PROVIDER;
 			Location location = ((main) main.mainActivity).locationManager.getLastKnownLocation(provider);
-			setNewLocation(location);
 			
-			//getAllSatellites();
-			
-			if(isVisible)
-				handler.postDelayed(task,400);
+			if(location!=null)
+			{
+				setNewLocation(location);
+				
+				//getAllSatellites();
+				
+				if(isVisible)
+					handler.postDelayed(task,400);
+			}
 		}
 	};
 
