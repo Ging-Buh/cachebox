@@ -100,8 +100,21 @@ public class Locator {
     	}
     	return 0;
     }
+    
+    public double altCorrection = 0;
+    
 	public double getAlt() 
 	{
-		return location.getAltitude();
+		return location.getAltitude() - altCorrection;
+	}
+	
+	public String getAltString()
+	{
+		String result = String.format("%.0f", getAlt()) + " m";
+		if (altCorrection > 0)			
+			result += " (+" + String.format("%.0f", altCorrection) + " m)";
+		else if (altCorrection < 0)			
+			result += " (" + String.format("%.0f", altCorrection) + " m)";
+		return result;
 	}
 }

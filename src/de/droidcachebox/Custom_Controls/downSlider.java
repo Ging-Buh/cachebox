@@ -365,7 +365,6 @@ public final class downSlider extends View implements SelectedCacheEvent
 	private String mAccuracy;
 	private String mAlt;
 	private TextPaint GPSLayoutTextPaint;
-	private static double mAltCorrectionFactor = 0.0;
 	
 	private StaticLayout GPSLayout;
 	
@@ -379,7 +378,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 		
 		mSats = String.valueOf(location.getExtras().getInt("satellites"));
 		mAccuracy = String.valueOf(location.getAccuracy());
-		mAlt = String.valueOf(location.getAltitude()+ mAltCorrectionFactor);
+		mAlt = Global.Locator.getAltString();
 		mLatitude = Global.FormatLatitudeDM(location.getLatitude());
 		mLongitude = Global.FormatLongitudeDM(location.getLongitude());
 		
@@ -410,11 +409,6 @@ public final class downSlider extends View implements SelectedCacheEvent
 		this.invalidate();
 	}
 	
-	
-	public static void setAltCorrectionFactor(double value)
-	{
-		mAltCorrectionFactor=value;
-	}
 	
 	
 	

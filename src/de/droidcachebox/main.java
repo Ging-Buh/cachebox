@@ -1264,7 +1264,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		Location location = locationManager.getLastKnownLocation(provider);
 		Global.Locator = new Locator();
 		locationManager.requestLocationUpdates(provider, 1000, 1, this);
-		Global.AddLog("NMEALISTENER: " + locationManager.addNmeaListener(this));
+		locationManager.addNmeaListener(this);
 	}
 
 	private void initialMapView() 
@@ -1467,7 +1467,23 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	public void onNmeaReceived(long timestamp, String nmea) 
 	{
 		// TODO Auto-generated method stub
-        Global.AddLog("NMEA: " + nmea);		
+		if (nmea.substring(0, 6).equalsIgnoreCase("$GPGGA"))
+		{
+			String[] s = nmea.split(",");
+			try
+			{
+				if (s[11].equals(""))
+					return;
+				double altCorrection = Double.valueOf(s[11]);
+				Global.AddLog("AltCorrection: " + String.valueOf(altCorrection));
+				Global.Locator.altCorrection = altCorrection;
+				// Höhenkorrektur ändert sich normalerweise nicht, einmal auslesen reicht...
+				locationManager.removeNmeaListener(this);
+			} catch (Exception exc)
+			{
+				// keine Höhenkorrektur vorhanden
+			}
+		}
 	}
 
 	 public void setCounterNew(int value)

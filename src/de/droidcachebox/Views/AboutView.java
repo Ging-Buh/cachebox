@@ -234,7 +234,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		 if (Global.Locator.getLocation() != null)
 		 {
 			 Current.setText(Global.FormatLatitudeDM(Global.Locator.getLocation().getLatitude()) + " " + Global.FormatLongitudeDM(Global.Locator.getLocation().getLongitude()));
-			 GPS.setText(Global.Translations.Get("alt") + " " + String.valueOf(Global.Locator.getAlt())+ "m");
+			 GPS.setText(Global.Translations.Get("alt") + " " + Global.Locator.getAltString());
 		 }
 		 
 		 if (Global.Locator == null)
