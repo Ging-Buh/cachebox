@@ -128,10 +128,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	
 		private static Integer aktViewId = -1;
 	
-	/*
-	 * public static member
-	 */
-		public static Activity mainActivity;
 		// Media
 	    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
 	    private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 61216517;
@@ -144,6 +140,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    private static Coordinate mediaCoordinate = null; 
 	    
 	    private static Boolean mVoiceRecIsStart = false;
+	/*
+	 * public static member
+	 */
+		public static Activity mainActivity;
+		public static Boolean isRestart=false;
 	
     
     /*
@@ -663,6 +664,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 		@Override public void onDestroy() 
 		{
+			if(isRestart)
+			{
+				super.onDestroy();
+			}
+			else
+			{
 	    		if (isFinishing())
 	    		{
 	                Config.Set("MapInitLatitude", mapView.center.Latitude);
@@ -707,6 +714,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    		}
 				super.onDestroy();
 				System.exit(0);
+			}
 	    } 
 	
     

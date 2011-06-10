@@ -2,6 +2,7 @@ package de.droidcachebox.Components;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -32,6 +33,7 @@ public class ActivityUtils
 	public static void changeToTheme(Activity activity, int theme)
 	{
 		sTheme = theme;
+		main.isRestart=true;
 		activity.finish();
 
 		activity.startActivity(new Intent(activity, activity.getClass()));
