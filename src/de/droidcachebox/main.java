@@ -127,6 +127,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	 */
 	
 		private static Integer aktViewId = -1;
+	    private static long GPSTimeStamp = 0;
 	
 		// Media
 	    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
@@ -203,7 +204,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    protected PowerManager.WakeLock mWakeLock;
 	    // GPS
 		public LocationManager locationManager;
-		private String provider;
 		// Compass
 	    private SensorManager mSensorManager;
 	    private Sensor mSensor;
@@ -355,11 +355,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		{
 	    	approachSoundCompleted = false;
 		}
-    
-		@Override public void onLocationChanged(Location location) {
-			
-			
-			
+
+	    public void newLocationReceived (Location location)
+	    {
 			Global.Locator.setLocation(location);
 			PositionEventList.Call(location);
 			
@@ -418,6 +416,29 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	                }
 				}
 			}
+	    	
+	    }
+	    
+		@Override public void onLocationChanged(Location location) {
+			
+			if ( location.getProvider().equalsIgnoreCase(LocationManager.GPS_PROVIDER)) // Neue Position von GPS-Empfänger
+			{
+				newLocationReceived (location);
+		        GPSTimeStamp = java.lang.System.currentTimeMillis();
+		        return;
+			}
+			
+			if ( location.getProvider().equalsIgnoreCase(LocationManager.NETWORK_PROVIDER)) // Neue Position von Netzwerk
+			{
+				if ((java.lang.System.currentTimeMillis() - GPSTimeStamp) > 10000) //Wenn 10 Sekunden kein gültiges GPS Signal
+				{
+					newLocationReceived (location);
+		    		Toast.makeText(mainActivity, "Network-Position", Toast.LENGTH_SHORT).show();
+				}
+			}
+			
+			
+			
 		}
 
 		@Override public void onProviderDisabled(String provider) 
@@ -430,10 +451,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 		@Override public void onStatusChanged(String provider, int status, Bundle extras) 
 		{
-			if (status == LocationProvider.TEMPORARILY_UNAVAILABLE)
-				Global.Locator.setLocation(null);
-			if (status == LocationProvider.OUT_OF_SERVICE)
-				Global.Locator.setLocation(null);
 		}
 		
 	    @Override public boolean onKeyDown(int keyCode, KeyEvent event) 
@@ -1255,16 +1272,16 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		// Define the criteria how to select the locatioin provider -> use
 		// default
-		Criteria criteria = new Criteria();
+		Criteria criteria = new Criteria(); // noch nötig ???
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
 		criteria.setAltitudeRequired(false);
 		criteria.setBearingRequired(false);
 		criteria.setCostAllowed(true);
 		criteria.setPowerRequirement(Criteria.POWER_LOW);
-		provider = LocationManager.GPS_PROVIDER;
-		Location location = locationManager.getLastKnownLocation(provider);
+
 		Global.Locator = new Locator();
-		locationManager.requestLocationUpdates(provider, 1000, 1, this);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, this);
 		locationManager.addNmeaListener(this);
 	}
 
@@ -1467,7 +1484,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	@Override
 	public void onNmeaReceived(long timestamp, String nmea) 
 	{
-		// TODO Auto-generated method stub
 		if (nmea.substring(0, 6).equalsIgnoreCase("$GPGGA"))
 		{
 			String[] s = nmea.split(",");
