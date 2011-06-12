@@ -3939,6 +3939,15 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       double dirx = x - screenCenter.X;
       double diry = y - screenCenter.Y;
 
+      float[] poi = {(float) dirx , (float) diry};
+      float[] res = new float[2];
+      Matrix mat = new Matrix();
+      mat.preRotate(-canvasHeading);
+      mat.mapPoints(res, poi);
+      dirx = res[0];
+      diry = res[1];
+      
+
       //  if (!(Math.Abs(dirx) > (width / 2) || Math.Abs(diry) > (height / 2)))
       // Ziel sichtbar, Pfeil nicht rendern
       //     return;
