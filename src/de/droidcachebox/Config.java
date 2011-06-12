@@ -233,14 +233,10 @@ public class Config {
         validateSetting("mapMaxCachesDisplayLarge_config", "75");
         validateSetting("Filter", PresetListView.presets[0].toString());
         validateSetting("ZoomCross", "16");
-        validateSetting("GpsDriverMethod", "default");
 //        validateSetting("TomTomExportFolder", Global.AppPath + "\\user");
         validateSetting("GCAutoSyncCachesFound", "true");
         validateSetting("GCAdditionalImageDownload", "false");
         validateSetting("GCRequestDelay", "10");
-
-        validateSetting("Camera_Resolution_Width", "640");
-        validateSetting("Camera_Resolution_Height", "480");
 
         validateSetting("MultiDBAsk", "true");
         validateSetting("MultiDBAutoStartTime", "0");
