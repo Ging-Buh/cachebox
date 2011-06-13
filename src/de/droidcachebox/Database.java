@@ -6,6 +6,7 @@ import de.droidcachebox.Geocaching.CacheList;
 import de.droidcachebox.Views.Forms.SelectDB;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
 
@@ -62,7 +63,7 @@ public class Database {
 
     	try
     	{
-    		activity.openOrCreateDatabase(databasePath, activity.MODE_WORLD_WRITEABLE, null);
+    		activity.openOrCreateDatabase(databasePath, Context.MODE_WORLD_WRITEABLE, null);
     	} catch (Exception exc)
     	{
     		String s = exc.getMessage();

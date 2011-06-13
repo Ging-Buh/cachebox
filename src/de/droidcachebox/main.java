@@ -81,6 +81,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -257,6 +258,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        
 	        inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	        mainActivity= this;
+			mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 	        
 	        int Time = ((Config.GetInt("LockH")*60)+Config.GetInt("LockM"))*1000;

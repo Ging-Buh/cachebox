@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Canvas;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -27,6 +28,7 @@ public class ScreenLock extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.screenlock);
+		this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		RelativeLayout layout = (RelativeLayout)findViewById(R.layout.screenlock);
 		
 		Slider = (SeekBar) findViewById(R.id.unlock_slider);
