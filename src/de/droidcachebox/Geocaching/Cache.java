@@ -970,7 +970,8 @@ public class Cache implements Comparable<Cache> {
     }
     
     
-    public void DrawBearing(Canvas canvas,Rect drawingRec, Waypoint waypoint)
+    @SuppressWarnings("unused")
+	public void DrawBearing(Canvas canvas,Rect drawingRec, Waypoint waypoint)
     {
     	if (Global.LastValidPosition.Valid || Global.Marker.Valid)
         {
@@ -978,7 +979,12 @@ public class Cache implements Comparable<Cache> {
 	            double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
 	            double bearing = de.droidcachebox.Geocaching.Coordinate.Bearing(position.Latitude, position.Longitude, waypoint.Latitude(), waypoint.Longitude());
 	            double waypointBearing = bearing - heading;
-	            String waypointDistance=UnitFormatter.DistanceString(this.Distance());
+	            float distance = 0;
+	            if (waypoint == null)
+	            	distance = this.Distance();
+	            else
+	            	distance = waypoint.Distance();
+	            String waypointDistance=UnitFormatter.DistanceString(distance);
 	            DrawBearing(canvas,drawingRec,waypointDistance,waypointBearing);
 			   
     		
