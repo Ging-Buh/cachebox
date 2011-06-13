@@ -159,16 +159,6 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
           });
 		
 		
-		checkBoxUseCelltower.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				Boolean newState = !Config.GetBool("UseCelltower");
-				Config.Set("UseCelltower", newState);
-				
-			}
-		});
-		
 		checkBoxHTCCompass.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -345,7 +335,6 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private EditText EditTextGCVotePW;
 	private Button ToggleGPSView;
 	private TableRow GPSTableRow;
-	private CheckBox checkBoxUseCelltower;
 	private CheckBox checkBoxHTCCompass;
 	private TextView DescCompassLevel;
 	private EditText EditCompassLevel;
@@ -398,7 +387,6 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		EditTextGCVotePW = (EditText)this.findViewById(R.id.settings_editText3);
 		GPSTableRow =(TableRow)this.findViewById(R.id.settings_tableRowgps);
 		ToggleGPSView = (Button)this.findViewById(R.id.toggle_button_gps);
-		checkBoxUseCelltower = (CheckBox)this.findViewById(R.id.settings_use_cell_id);
 		checkBoxHTCCompass = (CheckBox)this.findViewById(R.id.settings_use_intern_compass);
 		EditCompassLevel = (EditText)this.findViewById(R.id.settings_compass_level_edit);
 		DescCompassLevel = (TextView)this.findViewById(R.id.settings_compass_info_text);
@@ -441,7 +429,6 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		LabelGcName.setText(Global.Translations.Get("LogIn"));
 		LabelGcPW.setText(Global.Translations.Get("GCPW"));
 		LabelGcVoPw.setText(Global.Translations.Get("GCVotePW"));
-		checkBoxUseCelltower.setText(Global.Translations.Get("UseCellId"));
         checkBoxHTCCompass.setText(Global.Translations.Get("UseHtcCompass"));
         DescCompassLevel.setText(Global.Translations.Get("DescHtcLevel"));
         chkAllowInetAccess.setText(Global.Translations.Get("AllowInternet"));
@@ -457,7 +444,6 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		EditTextGCPW.setText(SimpleCrypto.decrypt("DCB", Config.GetString("GcPass")));
 		EditTextGCVotePW.setText(SimpleCrypto.decrypt("DCB", Config.GetString("GcVotePassword")));
 		fillLangCombo();
-		checkBoxUseCelltower.setChecked(Config.GetBool("UseCelltower"));
 		checkBoxHTCCompass.setChecked(Config.GetBool("HtcCompass"));
 		EditCompassLevel.setText(String.valueOf(Config.GetInt("HtcLevel")));
 		chkCompassLevelViewState();

@@ -290,7 +290,6 @@ English
 
 	//GPS
 	CompatibleWithGpsModDriver? = Compatible with GpsModDriver?
-	UseCellId = Use CellId for initial location.
 	UseHtcCompass = Use Htc Compass
 	DescHtcLevel = Speed level for HTC or GPS compass. \n-1 = GPS is not used at all.
 	

@@ -290,7 +290,6 @@ Portugues
 
 	//GPS
 	CompatibleWithGpsModDriver? = Compatível com GpsModDriver?
-	UseCellId = Usar Antenas GSM para posição inicial sem gps.
 	UseHtcCompass = Usar bússola Htc
 	DescHtcLevel = Rácio de velocidade para bússola HTC ou GPS. \n-1 = GPS não é usado de todo.
 	

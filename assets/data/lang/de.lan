@@ -291,7 +291,6 @@ Deutsch
 
 	//GPS
 	CompatibleWithGpsModDriver? = Kompatibel mit ModDriver?
-	UseCellId = Verwende CellId für die erste Position.
 	UseHtcCompass = Verwende Htc Kompass
 	DescHtcLevel = Schwellwert für HTC oder GPS Kompass.\n-1 = GPS wird überhaupt nicht verwendet.
 	

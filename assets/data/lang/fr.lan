@@ -288,7 +288,6 @@ utf8
 
 	//GPS
 	CompatibleWithGpsModDriver? = Compatible avec GpsModDriver?
-	UseCellId = Utilisation de l'info CellId pour la localisation initiale
 	UseHtcCompass = Utilisation de la boussole HTV
 	DescHtcLevel = Niveau de vitesse pour la boussole. \n-1 = GPS non utilisé.
 	
