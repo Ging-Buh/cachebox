@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.regex.Pattern;
-import de.droidcachebox.Components.StringFunctions;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import android.content.Context;
 import android.content.res.Resources;
@@ -29,14 +28,14 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global {
-    public static final int CurrentRevision = 211;
+    public static final int CurrentRevision = 212;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
     public static final int LatestDatabaseFieldNoteChange = 1001;
     
     
-    public static final String br = StringFunctions.newLine();
+    public static final String br = String.format("%n");
     public static final String splashMsg =
     	"Team Cachebox (2011)" + br +
     	"www.team-cachebox.de" + br +

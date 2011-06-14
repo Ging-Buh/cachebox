@@ -6,7 +6,6 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Components.ActivityUtils;
-import de.droidcachebox.Components.StringFunctions;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;

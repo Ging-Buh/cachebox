@@ -16,7 +16,6 @@ import org.mapsforge.preprocessing.highwayHierarchies.hierarchyComputation.util.
 import de.droidcachebox.ExtAudioRecorder;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheNameView;
-import de.droidcachebox.Components.StringFunctions;
 import de.droidcachebox.Custom_Controls.DebugInfoPanel;
 import de.droidcachebox.Custom_Controls.Mic_On_Flash;
 import de.droidcachebox.Custom_Controls.downSlider;
@@ -261,7 +260,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 	        
-	        int Time = ((Config.GetInt("LockH")*60)+Config.GetInt("LockM"))*1000;
+	        int Time = ((Config.GetInt("LockM")*60)+Config.GetInt("LockSec"))*1000;
 	        counter = new MyCount(Time, Time);
 	        counter.start();
 
@@ -1204,9 +1203,16 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    }
 		});
 		Menu IconMenu=icm.getMenu();
+		
+		String DBName = Config.GetString("DatabasePath");
+		int Pos = DBName.lastIndexOf("/");
+		DBName= DBName.substring(Pos+1);
+    	Pos=DBName.lastIndexOf(".");
+    	DBName=DBName.substring(0, Pos);
+		
 		Global.Translations.TranslateMenuItem(IconMenu, R.id.miCacheList, "cacheList","  (" + String.valueOf(Database.Data.Query.size()) + ")" );
 		Global.Translations.TranslateMenuItem(IconMenu, R.id.miFilterset, "filter");
-		Global.Translations.TranslateMenuItem(IconMenu, R.id.miManageDB, "manage");
+		Global.Translations.TranslateMenuItem(IconMenu, R.id.miManageDB, "manage" ,"  (" + DBName + ")");
 		Global.Translations.TranslateMenuItem(IconMenu, R.id.miResort, "ResortList");
 		MenuItem miAutoResort = Global.Translations.TranslateMenuItem(IconMenu, R.id.miAutoResort, "AutoResort");
 		miAutoResort.setCheckable(true);
@@ -1417,7 +1423,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 				 	case MotionEvent.ACTION_MOVE: // touch drag with the ball
 					 // move the balls the same as the finger
 				
-				 		setDebugMsg("Move:" + StringFunctions.newLine()+ "x= " + X + StringFunctions.newLine() + "y= " + Y);
+				 		setDebugMsg("Move:" + String.format("%n")+ "x= " + X + String.format("%n") + "y= " + Y);
 				 		if (drag)InfoDownSlider.setPos(Y-25); //y - 25 minus halbe Button Höhe
 				 		break;
 				 		

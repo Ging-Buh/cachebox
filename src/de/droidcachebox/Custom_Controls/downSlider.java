@@ -6,7 +6,6 @@ import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheNameView;
-import de.droidcachebox.Components.StringFunctions;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Geocaching.Cache;
@@ -387,7 +386,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 		mLatitude = Global.FormatLatitudeDM(location.getLatitude());
 		mLongitude = Global.FormatLongitudeDM(location.getLongitude());
 		
-		String br = StringFunctions.newLine();
+		String br = String.format("%n");
 		String Text= 
 			Global.Translations.Get("current")+ " " + mLatitude + " " + mLongitude + br +
 			Global.Translations.Get("alt") + " " + mAlt + "m" + br +

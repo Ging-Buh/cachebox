@@ -1,7 +1,16 @@
 package de.droidcachebox.Views.Forms;
 
 import java.io.IOException;
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.List;
+
+import de.droidcachebox.Custom_Controls.wheel.adapters.NumericWheelAdapter;
+
+import de.droidcachebox.Custom_Controls.wheel.OnWheelChangedListener;
+import de.droidcachebox.Custom_Controls.wheel.OnWheelScrollListener;
+import de.droidcachebox.Custom_Controls.wheel.WheelView;
+import de.droidcachebox.Custom_Controls.wheel.adapters.AbstractWheelAdapter;
 
 
 import de.droidcachebox.Config;
@@ -31,9 +40,11 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnKeyListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
@@ -42,6 +53,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -283,6 +295,10 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		});
 		
 		
+		 initWheel(ScreenLock_wheel_m,0,10);
+	     initWheel(ScreenLock_wheel_sec,0,60);
+	     
+		
 		
 		FillSettings();
 		setLang();
@@ -366,10 +382,11 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private CheckBox chkDebugMsg;
 	private Spinner ApproachSound;
 	private CheckBox chkDebugMarker;
-	private TimePicker ScreenLockTimePicker;
+    private WheelView ScreenLock_wheel_m ;
+    private WheelView ScreenLock_wheel_sec ;
 	
 	
-	private void findViewsById()
+ 	private void findViewsById()
 	{
 		SettingsLayout = (LinearLayout) this.findViewById(R.id.settings_LinearLayout);
 		SettingsScrollView = (ScrollView) this.findViewById(R.id.settings_scrollView);
@@ -418,7 +435,8 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		chkDebugMsg = (CheckBox)this.findViewById(R.id.settings_debug_chkMsg);
 		ApproachSound = (Spinner)this.findViewById(R.id.settings_spinner_Approach_Sound);
 		chkDebugMarker = (CheckBox)this.findViewById(R.id.settings_debug_chkMarker);
-		ScreenLockTimePicker = (TimePicker)this.findViewById(R.id.settings_ScreenLock_timePicker);
+		ScreenLock_wheel_m = (WheelView)this.findViewById(R.id.settings_ScreenLock_m);
+		ScreenLock_wheel_sec = (WheelView)this.findViewById(R.id.settings_ScreenLock_sec);
 	}
 	
 	private void setLang()
@@ -472,13 +490,16 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		fillApproachSpinner();
 		ApproachSound.setSelection(approachValues.indexOf(Config.GetInt("SoundApproachDistance")));
 		
+		ScreenLock_wheel_m.setCurrentItem(Config.GetInt("LockM"));
+		ScreenLock_wheel_sec.setCurrentItem(Config.GetInt("LockSec"));
+		
 		if(Global.Debug)
 			ToggleDebugView.setVisibility(View.VISIBLE);
 		
 		
 		
-		ScreenLockTimePicker.setCurrentHour(Config.GetInt("LockH"));
-		ScreenLockTimePicker.setCurrentMinute(Config.GetInt("LockM"));
+	//	ScreenLockTimePicker.setCurrentHour(Config.GetInt("LockH"));
+	//	ScreenLockTimePicker.setCurrentMinute(Config.GetInt("LockM"));
 		
 		
 		}
@@ -518,11 +539,11 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	
     	Config.Set("SoundApproachDistance",(Integer) ApproachSound.getSelectedItem());
     	
-    	int H=ScreenLockTimePicker.getCurrentHour();
-    	int M =ScreenLockTimePicker.getCurrentMinute();
-    	Config.Set("LockH",H);
+    	int M=ScreenLock_wheel_m.getCurrentItem();
+    	int Sec =ScreenLock_wheel_sec.getCurrentItem();
     	Config.Set("LockM",M);
-    	((main) main.mainActivity).setCounterNew(((H*60)+M)*1000);
+    	Config.Set("LockSec",Sec);
+    	((main) main.mainActivity).setCounterNew(((M*60)+Sec)*1000);
     	
     	((main) main.mainActivity).setDebugVisible();
     	((main) main.mainActivity).setDebugMsg("");
@@ -727,5 +748,60 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		return false;
 	}
 
-	
+	/**
+     * Initializes wheel
+     * @param id the wheel widget Id
+     */
+    private void initWheel(WheelView wheel, int min, int max) {
+        wheel.setViewAdapter(new NumericWheelAdapter(this, min, max));
+        wheel.setVisibleItems(3);
+        
+        wheel.addChangingListener(changedListener);
+        wheel.addScrollingListener(scrolledListener);
+        wheel.setCyclic(true);
+        wheel.setEnabled(true);
+    }
+    
+    // Wheel scrolled flag
+    private boolean wheelScrolled = false;
+    
+    // Wheel scrolled listener
+    OnWheelScrollListener scrolledListener = new OnWheelScrollListener() {
+        public void onScrollingStarted(WheelView wheel) {
+            wheelScrolled = true;
+        }
+        public void onScrollingFinished(WheelView wheel) {
+            wheelScrolled = false;
+            updateStatus();
+        }
+    };
+    
+    // Wheel changed listener
+    private OnWheelChangedListener changedListener = new OnWheelChangedListener() {
+        public void onChanged(WheelView wheel, int oldValue, int newValue) {
+            if (!wheelScrolled) {
+                updateStatus();
+            }
+        }
+    };
+    
+    /**
+     * Updates status
+     */
+    private void updateStatus() 
+    {
+        
+    }
+
+    
+    /**
+     * Returns wheel by Id
+     * @param id the wheel Id
+     * @return the wheel with passed Id
+     */
+    private WheelView getWheel(int id) {
+        return (WheelView) findViewById(id);
+    }
+    
+ 
 }

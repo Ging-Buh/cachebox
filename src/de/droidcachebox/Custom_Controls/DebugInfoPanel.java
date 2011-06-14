@@ -6,7 +6,6 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Components.ActivityUtils;
-import de.droidcachebox.Components.StringFunctions;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Views.CacheListView;
@@ -172,7 +171,7 @@ public final class DebugInfoPanel extends View
 		LineSep = bounds.height()/3;
 		ContentWidth=width-(Global.CornerSize*2);
 		
-		LayoutMemInfo = new StaticLayout("1. Zeile " + StringFunctions.newLine() + "2.Zeile" + StringFunctions.newLine() + "3.Zeile", LayoutTextPaint, ContentWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		LayoutMemInfo = new StaticLayout("1. Zeile " + String.format("%n") + "2.Zeile" + String.format("%n") + "3.Zeile", LayoutTextPaint, ContentWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		LayoutMsg = new StaticLayout(Msg, LayoutTextPaint, ContentWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		
 		
@@ -234,7 +233,7 @@ public final class DebugInfoPanel extends View
 		String line1 = "Memory Info:";
 		String line2 = "Gesamt: " + available_bytes * 1024 + " kB";
 		String line3 = "Free: " + (available_bytes * 1024 - Debug.getNativeHeapAllocatedSize() / 1024) + " kB";
-		LayoutMemInfo = new StaticLayout(line1 + StringFunctions.newLine() +line2 + StringFunctions.newLine() + line3, LayoutTextPaint, ContentWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		LayoutMemInfo = new StaticLayout(line1 + String.format("%n") +line2 + String.format("%n") + line3, LayoutTextPaint, ContentWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 	    
 		
 		top += ActivityUtils.drawStaticLayout(canvas, LayoutMemInfo, left, top);

@@ -26,8 +26,20 @@
 				android:layout_height="wrap_content" android:text="Screen Lock "
 				android:layout_width="wrap_content">
 			</TextView>
-			<TimePicker android:id="@+id/settings_ScreenLock_timePicker" android:layout_width="wrap_content" android:layout_height="wrap_content"></TimePicker>
-			
+			<LinearLayout android:layout_marginTop="44dp"
+				android:layout_gravity="center_horizontal" android:layout_width="wrap_content"
+				android:layout_height="wrap_content">
+
+				<de.droidcachebox.Custom_Controls.wheel.WheelView
+					android:id="@+id/settings_ScreenLock_m" android:layout_height="wrap_content"
+					android:layout_width="50dp" />
+				<de.droidcachebox.Custom_Controls.wheel.WheelView
+					android:id="@+id/settings_ScreenLock_sec" android:layout_height="wrap_content"
+					android:layout_width="50dp" />
+				
+			</LinearLayout>
+
+
 		</TableRow>
 	</TableLayout>
 

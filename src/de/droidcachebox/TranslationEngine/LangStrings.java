@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Components.StringFunctions;
 import de.droidcachebox.Events.SelectedLangChangedEventList;
 
 import android.os.Environment;
@@ -82,7 +81,7 @@ public class LangStrings
     /// <param name="FilePath">Voller Pfad zur Sprach Datei.</param>
     public void ReadTranslationsFile(String FilePath) throws IOException
     {
-        if (StringFunctions.IsNullOrEmpty(FilePath)) { return; }
+        if (FilePath.equals("")) { return; }
 
         if (_RefTranslation == null)
         {
@@ -142,7 +141,7 @@ public class LangStrings
 
                 String readID = line.substring(0, pos - 1);
                 String readTransl = line.substring(pos + 1);
-                String ReplacedRead = readTransl.trim().replace("\\n", StringFunctions.newLine());
+                String ReplacedRead = readTransl.trim().replace("\\n", String.format("%n"));
                 Temp.add(new _Translations(readID.trim(), ReplacedRead));
             }
         
