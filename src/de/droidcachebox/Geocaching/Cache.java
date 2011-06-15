@@ -775,7 +775,7 @@ public class Cache implements Comparable<Cache> {
     
     public int GetMapIconId(String gcLogin)
     {
-    	if (this.Owner.equalsIgnoreCase(gcLogin) && (gcLogin.length() > 0))
+    	if (this.Owner.toLowerCase().equals(gcLogin) && (gcLogin.length() > 0))
     		return 20;
     	if (this.found)
     		return 19;
@@ -933,9 +933,9 @@ public class Cache implements Comparable<Cache> {
               
 
           if (this.Favorit())
-         {
+          {
         	  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[19],left + VoteWidth + 2, top , iconSize/2);
-         }
+          }
 
          
 
@@ -944,10 +944,11 @@ public class Cache implements Comparable<Cache> {
         	  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[24], left + VoteWidth, top - (int) (Global.scaledFontSize_normal / 2), iconSize/2);
           }
 
-         if (this.Owner.equals(Config.GetString("GcLogin")) && !(Config.GetString("GcLogin").equals("")))
-           {
-        	 ActivityUtils.PutImageTargetHeight(canvas,Global.Icons[17],left  + VoteWidth+iconSize/2,top - (int) (Global.scaledFontSize_normal / 2)+iconSize/2, iconSize/2);
-           }
+          String gcLogin = Config.GetString("GcLogin").toLowerCase(); 
+          if (this.Owner.toLowerCase().equals(gcLogin) && !(gcLogin.equals("")))
+          {
+        	  ActivityUtils.PutImageTargetHeight(canvas,Global.Icons[17],left  + VoteWidth+iconSize/2,top - (int) (Global.scaledFontSize_normal / 2)+iconSize/2, iconSize/2);
+          }
        	
     }
    
