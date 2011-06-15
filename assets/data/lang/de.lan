@@ -131,7 +131,7 @@ Deutsch
 // Forms
 
 	// general
-		cancel = Abbrechen
+		cancel = Beenden
 		confirm = Wählen
 		ok = Ok
 		edit = Ändern
@@ -139,6 +139,10 @@ Deutsch
 		decode = Dekodieren
 		yes = Ja
 		no = Nein
+		abort = Abbrechen
+		retry = Wiederholen
+		ignore = Ignorieren
+		
 
 	// FormSelectDB
 		NewDB = Neue DB

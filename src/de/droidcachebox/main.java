@@ -44,11 +44,16 @@ import de.droidcachebox.Views.SpoilerView;
 import de.droidcachebox.Views.WaypointView;
 import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
 import de.droidcachebox.Views.FilterSettings.PresetListView;
+import de.droidcachebox.Views.Forms.DialogResult;
 import de.droidcachebox.Views.Forms.EditWaypoint;
 import de.droidcachebox.Views.Forms.HintDialog;
+import de.droidcachebox.Views.Forms.MessageBox;
+import de.droidcachebox.Views.Forms.MessageBoxButtons;
+import de.droidcachebox.Views.Forms.MessageBoxIcon;
 import de.droidcachebox.Views.Forms.ScreenLock;
 import de.droidcachebox.Views.Forms.SelectDB;
 import de.droidcachebox.Views.Forms.Settings;
+import de.droidcachebox.Views.Forms.message_box_dialog;
 import de.droidcachebox.Database;
 import de.droidcachebox.Database.DatabaseType;
 import de.droidcachebox.Geocaching.Cache;
@@ -128,6 +133,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	
 		private static Integer aktViewId = -1;
 	    private static long GPSTimeStamp = 0;
+	    
 	
 		// Media
 	    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
@@ -466,7 +472,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 					    {
 					        switch (which)
 					        {
-					        case DialogInterface.BUTTON_POSITIVE:
+					        case -1:
 					            //Yes button clicked
 					            try {
 									finish();
@@ -475,18 +481,15 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 									e.printStackTrace();
 								}
 					            break;
-					        case DialogInterface.BUTTON_NEGATIVE:
+					        case -2:
 					            //No button clicked
+					        	dialog.dismiss();
 					            break;
 					        }
 					    }
 					};
-
-					AlertDialog.Builder builder = new AlertDialog.Builder(this);
-					builder.setMessage("Close DroidCB?")
-//						.setTitle(Global.Translations.Get("!DelWP"))
-						.setPositiveButton(Global.Translations.Get("yes"), dialogClickListener)
-					    .setNegativeButton(Global.Translations.Get("no"), dialogClickListener).show();
+					MessageBox.Show("Close DroidCB?","Question",MessageBoxButtons.YesNo,MessageBoxIcon.Question,dialogClickListener);
+					
 				return true;
 	    	}
 	    	return false;
@@ -772,7 +775,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			else if(v==buttonMisc){showView(lastBtnMiscView);}
 		}
 	};
-    
+	
+	    
 	private final SensorEventListener mListener = new SensorEventListener() 
 	    {
 	        public void onSensorChanged(SensorEvent event) 
@@ -786,6 +790,27 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        {
 	        }
 	    };
+	
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	   	    
+	    /**
+	     * Build the desired Dialog
+	     */
+	    @Override
+	    public Dialog onCreateDialog(int dialogId, Bundle b) 
+	    {
+	    	return MessageBox.CreateDialog(dialogId, b);
+	    }
+	    
 	    
     
     

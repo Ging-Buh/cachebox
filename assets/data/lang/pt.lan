@@ -140,6 +140,9 @@ Portugues
 		decode = Decode
 		yes = Yes
 		no = No
+		abort = Abort
+		retry = Retry
+		ignore = Ignore
 	
 	// FormSelectDB
 		NewDB = Nova BD

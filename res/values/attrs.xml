@@ -18,6 +18,7 @@
 		<attr name="SlideDownColorFilter" format="reference|color" />
 		<attr name="SlideDownBackColor" format="reference|color" />
 		<attr name="LinkLabelColor" format="reference|color" />
+		<attr name="MsgBoxBack" format="reference|color" />
 	</declare-styleable>
 	
 	

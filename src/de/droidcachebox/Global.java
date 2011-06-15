@@ -465,6 +465,10 @@ public class Global {
         		res.getDrawable(R.drawable.delete_icon), // 28
         		res.getDrawable(R.drawable.voice_rec_icon), // 29
         		res.getDrawable(R.drawable.satellite), // 30
+        		res.getDrawable(R.drawable.close_icon), // 31
+        		res.getDrawable(R.drawable.info_icon), // 32
+        		res.getDrawable(R.drawable.warning_icon), // 33
+        		res.getDrawable(R.drawable.help_icon), // 34
 };
         
         Arrows = new Drawable[] { 
