@@ -85,7 +85,7 @@ public class splash extends Activity
 	public void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-		//setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.splash);
 		myProgressBar=(ProgressBar)findViewById(R.id.splash_progressbar);
 		myTextView= (TextView)findViewById(R.id.splash_TextView);
