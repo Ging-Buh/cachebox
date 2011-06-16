@@ -13,7 +13,9 @@ import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Waypoint;
 import de.droidcachebox.Views.Forms.NumerickInputBox;
+import de.droidcachebox.Views.Forms.numerik_inputbox_dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -40,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent, PositionEvent {
+
 	Context context;
 	Cache aktCache;
 	
@@ -60,10 +63,14 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	TextView Current;
 	Bitmap bitmap = null;
 	Bitmap logo = null;
-		
-	public AboutView(Context context, LayoutInflater inflater) 
+	
+	public static AboutView Me;
+	
+	public AboutView(Context context, final LayoutInflater inflater) 
 	{
 		super(context);
+		
+		Me=this;
 		
 		SelectedCacheEventList.Add(this);
 
@@ -88,10 +95,13 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 			@Override
 			public void onClick(View arg0) 
 			{
-				NumerickInputBox.Show(Global.Translations.Get("AdjustFinds"),Global.Translations.Get("TelMeFounds"),Config.GetInt("FoundOffset"), null);
-				
+				NumerickInputBox.Show(Global.Translations.Get("AdjustFinds"),Global.Translations.Get("TelMeFounds"),Config.GetInt("FoundOffset"), DialogListner);
 			}
 		});
+		
+		
+		 
+		 
 		
 		WP.setOnClickListener(new OnClickListener() 
 		{
@@ -119,9 +129,47 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
                     }
 				
 			}
+			
+			
+			
+			
 		});
 		
 	}
+	
+	
+	protected static final  DialogInterface.OnClickListener  DialogListner = new  DialogInterface.OnClickListener() 
+	   { 
+		
+		@Override public void onClick(DialogInterface dialog, int button) 
+			{
+				String text =((numerik_inputbox_dialog) dialog).editText.getText().toString();
+				// Behandle das ergebniss
+				switch (button)
+				{
+					case -1: // ok Clicket
+						int newFounds = Integer.parseInt(text);
+
+		                Config.Set("FoundOffset", newFounds );
+		                Config.AcceptChanges();
+
+						break;
+					case -2: // cancel clicket
+						Toast.makeText(main.mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
+						break;
+					case -3:
+						Toast.makeText(main.mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
+						break;
+				}
+				
+				dialog.dismiss();
+				AboutView.Me.refrechText();
+			}
+			
+	    };
+	
+	
+	
 	
 	private void findViewById()
 	{
@@ -172,7 +220,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		refrechText();
 	}
 	
-	private void refrechText()
+	public void refrechText()
 	{
 		CachesFoundLabel.setText(Global.Translations.Get("caches_found") + " " + String.valueOf(Config.GetInt("FoundOffset")));
 		if (Global.SelectedCache() != null)
@@ -186,6 +234,8 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
             	WP.setText(Global.SelectedCache().GcCode);
             	Cord.setText(Global.FormatLatitudeDM(Global.SelectedCache().Latitude()) + " " + Global.FormatLongitudeDM(Global.SelectedCache().Longitude()));
             }
+		
+		this.invalidate();
 	}
 
 	@Override

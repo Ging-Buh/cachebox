@@ -302,7 +302,7 @@ public class numerik_inputbox_dialog extends android.app.Dialog
 					 
 	    }
 	    
-	    private static EditText editText;
+	    public static EditText editText;
 	    
 	    public static View.OnClickListener numButtonClickListner = new View.OnClickListener() 
 	    {

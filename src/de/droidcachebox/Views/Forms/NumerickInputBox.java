@@ -1,5 +1,6 @@
 package de.droidcachebox.Views.Forms;
 
+import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
@@ -24,12 +25,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.app.Dialog;
 /**
- * Zeigt eine InputBox an, das Text, Schaltflächen und Symbole mit Informationen und Anweisungen für den Benutzer enthalten kann. 
+ * Zeigt eine InputBox an, in welcher der Benutzer ein Int Wert eintragen kann. 
  * 
  * 
  * Da nicht auf ein Result gewartet werden kann, muss ein DialogInterface.OnClickListener()
@@ -45,50 +47,41 @@ public class NumerickInputBox
 	
 	
 	/**
-	 * Zeigt ein Meldungsfeld mit angegebenem Text an.
-	 * 
-	 * Im Meldungsfeld wird standardmäßig die Schaltfläche OK angezeigt. 
-	 * Das Meldungsfeld enthält keine Beschriftung im Titel und kein Icon.
-	 * 
+	 * @param title Der Titel der Ausgegeben werden soll.
 	 * @param msg Die Message, welche ausgegeben werden soll.
+	 * @param InitialValue Der Wert, welcher beim Anzeigen angezeigt werden soll
      * @param Listener Welcher die Events der Buttons behandelt
      * 
-     * 
-     * <pre> <b>Wenn eine Message nicht behandelt werden soll, reicht volgendes Beispiel:</b>
-     * {@code
-     * MessageBox.Show("Test",null);
-     * }
-     * </pre>
-     * 
      *<pre>
-     * <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() benötigt:</b>
      * {@code
-     * 	MessageBox.Show("Test",DialogListner)
-     * 	
-     *  private final  DialogInterface.OnClickListener  DialogListner = new  DialogInterface.OnClickListener() 
-	 *   {
-	 *		@Override
-	 *		public void onClick(DialogInterface dialog, int button) 
-	 *		{
-	 *			// Behandle das ergebniss
-	 *			switch (button)
-	 *			{
-	 *				case -1:
-	 *					Toast.makeText(mainActivity, "Click Button 1", Toast.LENGTH_SHORT).show();
-	 *					break;
-	 *				case -2:
-	 *					Toast.makeText(mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
-	 *					break;
-	 *				case -3:
-	 *					Toast.makeText(mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
-	 *					break;
-	 *			}
-	 *			
-	 *			dialog.dismiss();
-	 *		}
-	 *		
-	 *    };
-	 * }
+      	NumerickInputBox.Show(Global.Translations.Get("AdjustFinds"),Global.Translations.Get("TelMeFounds"),Config.GetInt("FoundOffset"), DialogListner);
+     	
+     	protected static final  DialogInterface.OnClickListener  DialogListner = new  DialogInterface.OnClickListener() 
+	   { 
+		
+		@Override public void onClick(DialogInterface dialog, int button) 
+			{
+				String text =((numerik_inputbox_dialog) dialog).editText.getText().toString();
+				// Behandle das ergebniss
+				switch (button)
+				{
+					case -1: // ok Clicket
+						Toast.makeText(main.mainActivity, "Eingabe = " + text, Toast.LENGTH_SHORT).show();
+						break;
+					case -2: // cancel clicket
+						Toast.makeText(main.mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
+						break;
+					case -3:
+						Toast.makeText(main.mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
+						break;
+				}
+				
+				dialog.dismiss();
+			}
+			
+	    };
+	
+     * }
 	 * </pre>
      * 
      * 
