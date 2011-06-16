@@ -3994,7 +3994,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       Point pt = new Point((int)(cx + halfWidth), (int)(cy + halfHeight));
 
       double length = Math.sqrt(cx * cx + cy * cy);
-
+      
       int size = lineHeight;
 
       float dirX = -(float)(cx / length);
@@ -4390,7 +4390,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         	}
         }
         
-        if (Config.GetBool("MoveMapCenterWithSpeed"))
+        if (Config.GetBool("MoveMapCenterWithSpeed") && alignToCompass && (lockPosition >= 1))
         { 
 	        if (location.hasSpeed())
 	        {
