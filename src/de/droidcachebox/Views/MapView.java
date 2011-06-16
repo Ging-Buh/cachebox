@@ -2819,7 +2819,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		x2 = (int)Math.floor(x + dWidth/multiTouchFaktor / (256 * dpiScaleFactorX * 2));
     		y1 = (int)Math.floor(y - dHeight/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
     		y2 = (int)Math.floor(y + dHeight/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
-    		debugString1 = y1 + " - " + y2;
     		return new Rect(x1, y1, x2, y2);
     	}
     }
