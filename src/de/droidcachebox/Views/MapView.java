@@ -118,7 +118,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
 		available_bytes = activityManager.getMemoryClass();
-		if (available_bytes > 33)
+		if (available_bytes > 31)
 		{
 			// Geräte mit mindestens 32MB verfügbar 
 			rangeFactorTiles = 1.5f;
