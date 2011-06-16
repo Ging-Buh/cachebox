@@ -23,26 +23,98 @@
 
 
 		<EditText android:id="@+id/editNumber" android:layout_height="wrap_content"
-			android:layout_width="fill_parent" 
-			style="@style/DialogText" android:text="33"/>
+			android:layout_width="fill_parent" style="@style/DialogText"
+			android:text="33" />
 
 	</LinearLayout>
 
-	<LinearLayout android:orientation="horizontal"
+	<LinearLayout android:orientation="vertical"
 		android:background="@drawable/footer" android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
 
-		<Button android:id="@+id/positiveButton"
-			android:layout_marginTop="3dip" android:layout_width="0dip"
-			android:layout_weight="1" android:layout_height="55dip"
-			android:singleLine="true" android:maxWidth="100dip" />
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+
+			<Button android:id="@+id/num1" android:text="1"
+				android:layout_marginTop="3dip" android:layout_width="0dip"
+				android:layout_weight="1" android:layout_height="55dip"
+				android:singleLine="true" android:maxWidth="100dip" />
+
+			<Button android:id="@+id/num2" android:text="2"
+				android:layout_marginTop="3dip" android:layout_width="0dip"
+				android:layout_weight="1" android:layout_height="55dip"
+				android:singleLine="true" android:maxWidth="100dip" />
 
 
-		<Button android:id="@+id/negativeButton"
-			android:layout_marginTop="3dip" android:layout_width="0dip"
-			android:layout_weight="1" android:layout_height="55dip"
-			android:singleLine="true" android:maxWidth="100dip" />
+			<Button android:id="@+id/num3" android:text="3"
+				android:layout_marginTop="3dip" android:layout_width="0dip"
+				android:layout_weight="1" android:layout_height="55dip"
+				android:singleLine="true" android:maxWidth="100dip" />
+				
+			<Button android:id="@+id/positiveButton"
+				android:layout_marginTop="3dip" android:layout_width="0dip"
+				android:layout_weight="2" android:layout_height="55dip"
+				android:singleLine="true" android:maxWidth="100dip" />
 
+		</LinearLayout>
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+
+			<Button android:id="@+id/num4" android:text="4"
+				android:layout_marginTop="3dip" android:layout_width="0dip"
+				android:layout_weight="1" android:layout_height="55dip"
+				android:singleLine="true" android:maxWidth="100dip" />
+
+			<Button android:id="@+id/num5" android:text="5"
+				android:layout_marginTop="3dip" android:layout_width="0dip"
+				android:layout_weight="1" android:layout_height="55dip"
+				android:singleLine="true" android:maxWidth="100dip" />
+
+
+			<Button android:id="@+id/num6" android:text="6"
+				android:layout_marginTop="3dip" android:layout_width="0dip"
+				android:layout_weight="1" android:layout_height="55dip"
+				android:singleLine="true" android:maxWidth="100dip" />
+				
+			<Button android:id="@+id/negativeButton"
+				android:layout_marginTop="3dip" android:layout_width="0dip"
+				android:layout_weight="2" android:layout_height="55dip"
+				android:singleLine="true" android:maxWidth="100dip" />
+			
+
+		</LinearLayout>
+		
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+
+			<Button android:id="@+id/num7" android:text="7"
+				android:layout_marginTop="3dip" android:layout_width="0dip"
+				android:layout_weight="1" android:layout_height="55dip"
+				android:singleLine="true" android:maxWidth="100dip" />
+
+			<Button android:id="@+id/num8" android:text="8"
+				android:layout_marginTop="3dip" android:layout_width="0dip"
+				android:layout_weight="1" android:layout_height="55dip"
+				android:singleLine="true" android:maxWidth="100dip" />
+
+
+			<Button android:id="@+id/num9" android:text="9"
+				android:layout_marginTop="3dip" android:layout_width="0dip"
+				android:layout_weight="1" android:layout_height="55dip"
+				android:singleLine="true" android:maxWidth="100dip" />
+				
+			<Button android:id="@+id/num0" android:text="0"
+				android:layout_marginTop="3dip" android:layout_width="0dip"
+				android:layout_weight="1" android:layout_height="55dip"
+				android:singleLine="true" android:maxWidth="100dip" />
+				
+			<Button android:id="@+id/del" android:text="DEL"
+				android:layout_marginTop="3dip" android:layout_width="0dip"
+				android:layout_weight="1" android:layout_height="55dip"
+				android:singleLine="true" android:maxWidth="100dip" />
+			
+
+		</LinearLayout>
+		
 	</LinearLayout>
-
 </LinearLayout>

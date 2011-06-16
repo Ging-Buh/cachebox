@@ -19,6 +19,7 @@ import android.view.KeyEvent;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -27,6 +28,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.ImageView;
+
 
 public class numerik_inputbox_dialog extends android.app.Dialog 
 {
@@ -268,9 +270,30 @@ public class numerik_inputbox_dialog extends android.app.Dialog
 	            }
 	            
 	            // set the value
-	           ((EditText) layout.findViewById(R.id.editNumber)).setText(String.valueOf(value));
-	           ((EditText) layout.findViewById(R.id.editNumber)).setTextSize((float) (Global.scaledFontSize_normal*0.8)); 
+	            editText =(EditText) layout.findViewById(R.id.editNumber);
+	            editText.setText(String.valueOf(value));
+	            editText.setTextSize((float) (Global.scaledFontSize_normal*0.8)); 
 	           
+	            
+	            // disable soft keyboard
+	           
+	            ((InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE))
+	            .showSoftInput(editText, InputMethodManager.HIDE_NOT_ALWAYS); 
+	           
+	           
+	           
+	           // NumButton Handler
+	           ((Button) layout.findViewById(R.id.num0)).setOnClickListener(numButtonClickListner);
+	           ((Button) layout.findViewById(R.id.num1)).setOnClickListener(numButtonClickListner);
+	           ((Button) layout.findViewById(R.id.num2)).setOnClickListener(numButtonClickListner);
+	           ((Button) layout.findViewById(R.id.num3)).setOnClickListener(numButtonClickListner);
+	           ((Button) layout.findViewById(R.id.num4)).setOnClickListener(numButtonClickListner);
+	           ((Button) layout.findViewById(R.id.num5)).setOnClickListener(numButtonClickListner);
+	           ((Button) layout.findViewById(R.id.num6)).setOnClickListener(numButtonClickListner);
+	           ((Button) layout.findViewById(R.id.num7)).setOnClickListener(numButtonClickListner);
+	           ((Button) layout.findViewById(R.id.num8)).setOnClickListener(numButtonClickListner);
+	           ((Button) layout.findViewById(R.id.num9)).setOnClickListener(numButtonClickListner);
+	           ((Button) layout.findViewById(R.id.del)).setOnClickListener(delButtonClickListner);     
 	            
 	            dialog.setContentView(layout);
 	            return dialog;
@@ -278,5 +301,49 @@ public class numerik_inputbox_dialog extends android.app.Dialog
 
 					 
 	    }
+	    
+	    private static EditText editText;
+	    
+	    public static View.OnClickListener numButtonClickListner = new View.OnClickListener() 
+	    {
+			@Override
+			public void onClick(View v) 
+			{
+				int cursor = editText.getSelectionStart();
+                int selLength = editText.getSelectionEnd()-editText.getSelectionStart();
+                String text = editText.getText().toString();
+                text = text.substring(0, cursor) + ((Button)v).getText() + text.substring(cursor + selLength);
+                editText.setText(text);
+                editText.setSelection(cursor + 1, cursor + 1);
+			}
+		};
+		
+	    
+	    public static View.OnClickListener delButtonClickListner = new View.OnClickListener() 
+	    {
+			@Override
+			public void onClick(View v) 
+			{
+				int cursor = editText.getSelectionStart();
+				int selLength = editText.getSelectionEnd()-editText.getSelectionStart();
+				String text = editText.getText().toString();
+		            if (editText.getSelectionStart() > 0 && selLength == 0)
+		            {
+		            	editText.setText( text.substring(0, cursor - 1) + text.substring(cursor));
+		            	editText.setSelection(cursor - 1, cursor - 1);
+		               
+		                return;
+		            }
+
+		            if (selLength > 0)
+		            {
+		            	editText.setText( text.substring(0, cursor) + text.substring(cursor + selLength));
+		            	editText.setSelection(cursor, cursor);
+		                
+		                return;
+		            }
+				
+			}
+		};
 	 
 	}
