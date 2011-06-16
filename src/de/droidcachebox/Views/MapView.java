@@ -118,7 +118,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
 		available_bytes = activityManager.getMemoryClass();
-		if (available_bytes > 31)
+		if (available_bytes > 33)
 		{
 			// Geräte mit mindestens 32MB verfügbar 
 			rangeFactorTiles = 1.5f;
@@ -271,7 +271,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	float[] src = {p.x, p.y};
         float[] dist = new float[2];
         Matrix mat = new Matrix();
-    	mat.setRotate(heading, width / 2, height / 2);
+    	mat.setRotate(heading, width / 2, halfHeight);
     	mat.mapPoints(dist, src);
     	return new Point((int)dist[0], (int)dist[1]);
     }
@@ -1910,9 +1910,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		  int y = (int)((wpi.MapY * adjustmentCurrentToCacheZoom * dpiScaleFactorY - screenCenter.Y)) + halfHeight;
 		
 		  x = x - width / 2;
-		  y = y - height / 2;
+		  y = y - halfHeight;
 		  x = (int)Math.round(x * multiTouchFaktor + width / 2);
-		  y = (int)Math.round(y * multiTouchFaktor + height / 2);
+		  y = (int)Math.round(y * multiTouchFaktor + halfHeight);
 		  
 		  // drehen
 		  if (alignToCompass)
@@ -2089,17 +2089,16 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
         // relativ zu Zentrum
         p1.x = p1.x - width / 2;
-        p1.y = p1.y - height / 2;
+        p1.y = p1.y - (height - halfHeight);
         // skalieren
         p1.x = (int) Math.round(p1.x * multiTouchFaktor + drawingWidth/ 2);
         p1.y = (int) Math.round(p1.y * multiTouchFaktor + drawingHeight / 2);
         // relativ zu Zentrum
         p2.x = p2.x - width / 2;
-        p2.y = p2.y - height / 2;
+        p1.y = p2.y - halfHeight;
         // skalieren
         p2.x = (int) Math.round(p2.x * multiTouchFaktor + drawingWidth / 2);
         p2.y = (int) Math.round(p2.y * multiTouchFaktor + drawingHeight / 2);
-    	
 
         return (p1.x < drawingWidth && p2.x >= 0 && p1.y < drawingHeight && p2.y >= 0);
     }
@@ -2295,7 +2294,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    		yToTrack = tmpTrack.bottom;
 			      
 		    		canvas.save();
-		    		canvas.rotate(-tmpCanvasHeading, width / 2, height / 2);
+		    		canvas.rotate(-tmpCanvasHeading, width / 2, halfHeight);
 	
 		    		try
 		    		{
@@ -2370,7 +2369,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    		renderCaches();
 		
 		    		canvas.save();
-		    		canvas.rotate(-tmpCanvasHeading, width / 2, height / 2);
+		    		canvas.rotate(-tmpCanvasHeading, width / 2, halfHeight);
 		    		renderPositionAndMarker();
 		    		canvas.restore();
 			
@@ -2811,7 +2810,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		int x2;
     		int y2;
     		double x = screenCenter.X / (256 * dpiScaleFactorX);
-    		double y = screenCenter.Y / (256 * dpiScaleFactorY);
+    		double y = (screenCenter.Y - halfHeight + height / 2) / (256 * dpiScaleFactorY);
     		
     		// preload more Tiles than necessary to ensure more smooth scrolling
     		int dWidth = (int)(drawingWidth * rangeFactor);
@@ -2820,6 +2819,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		x2 = (int)Math.floor(x + dWidth/multiTouchFaktor / (256 * dpiScaleFactorX * 2));
     		y1 = (int)Math.floor(y - dHeight/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
     		y2 = (int)Math.floor(y + dHeight/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
+    		debugString1 = y1 + " - " + y2;
     		return new Rect(x1, y1, x2, y2);
     	}
     }
@@ -2835,10 +2835,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       Point pt = ToScreen(tile.Descriptor.X, tile.Descriptor.Y, tile.Descriptor.Zoom);
       // relativ zu Zentrum
       pt.x = pt.x - width / 2;
-      pt.y = pt.y - height / 2;
+      pt.y = pt.y - halfHeight;
       // skalieren
       pt.x = (int) Math.round(pt.x * multiTouchFaktor + width / 2);
-      pt.y = (int) Math.round(pt.y * multiTouchFaktor + height / 2);
+      pt.y = (int) Math.round(pt.y * multiTouchFaktor + halfHeight);
 
       if (tile.State == Tile.TileState.Present || tile.State == Tile.TileState.LowResolution)
       {
@@ -2982,7 +2982,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	{
     		PointD point = new PointD(0, 0);
     		point.X = screenCenter.X + (eX - this.width / 2) / dpiScaleFactorX;
-    		point.Y = screenCenter.Y + (eY - this.height / 2) / dpiScaleFactorY;;
+    		point.Y = screenCenter.Y + (eY - this.halfHeight) / dpiScaleFactorY;;
     		lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(Zoom, point.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, point.X / (256.0)));
     		
     		if (dragging)
@@ -3938,7 +3938,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       int halfWidth = width / 2;
 
       double dirx = x - screenCenter.X;
-      double diry = y - screenCenter.Y;
+      double diry = y - screenCenter.Y + this.halfHeight - this.height / 2;
 
       float[] poi = {(float) dirx , (float) diry};
       float[] res = new float[2];
@@ -4390,6 +4390,20 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         		Global.AddLog("PosChanged: " + exc.getMessage());
         	}
         }
+        
+        if (Config.GetBool("MoveMapCenterWithSpeed"))
+        { 
+//	        if (location.hasSpeed())
+	        {
+	        	double maxSpeed = Config.GetInt("MoveMapCenterMaxSpeed");
+	        	int diff = (int)((double)(height) / 3 * 20/*location.getSpeed()*/ / maxSpeed);
+	        	if (diff > height / 3)
+	        		diff = height / 3;
+	        	
+	        	halfHeight = height / 2 + diff;
+	        }
+        } else
+        	halfHeight = height / 2;
 
         if (isVisible)
         {

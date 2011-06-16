@@ -23,6 +23,10 @@
 	    android:layout_height="wrap_content" 
 	    android:id="@+id/settings_Osmarenderer" android:text="Osmarenderer" android:layout_weight="1">
     </CheckBox>
+    <CheckBox 
+    	android:layout_width="match_parent" android:id="@+id/settings_moveMapCenterWithSpeed" android:layout_height="wrap_content"
+    	android:text="Move Map-Center with Speed"  android:layout_weight="1">
+    </CheckBox>
     </LinearLayout>
     
     <TableLayout

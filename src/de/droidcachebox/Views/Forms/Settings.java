@@ -181,6 +181,15 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 			}
 		});
 		
+		cbMoveMapCenterWithSpeed.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				Boolean newState = !Config.GetBool("MoveMapCenterWithSpeed");
+				Config.Set("MoveMapCenterWithSpeed", newState);
+			}
+		});
+
 		EditCompassLevel.addTextChangedListener(new TextWatcher()
         {
   
@@ -352,6 +361,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private Button ToggleGPSView;
 	private TableRow GPSTableRow;
 	private CheckBox checkBoxHTCCompass;
+	private CheckBox cbMoveMapCenterWithSpeed;
 	private TextView DescCompassLevel;
 	private EditText EditCompassLevel;
 	private Button ToggleMapView;
@@ -405,6 +415,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		GPSTableRow =(TableRow)this.findViewById(R.id.settings_tableRowgps);
 		ToggleGPSView = (Button)this.findViewById(R.id.toggle_button_gps);
 		checkBoxHTCCompass = (CheckBox)this.findViewById(R.id.settings_use_intern_compass);
+		cbMoveMapCenterWithSpeed= (CheckBox)this.findViewById(R.id.settings_moveMapCenterWithSpeed);
 		EditCompassLevel = (EditText)this.findViewById(R.id.settings_compass_level_edit);
 		DescCompassLevel = (TextView)this.findViewById(R.id.settings_compass_info_text);
 		ToggleMapView = (Button)this.findViewById(R.id.toggle_button_map);
@@ -473,6 +484,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		chkMapink.setChecked(Config.GetBool("ImportLayerOsm"));
 		chkCycleMap.setChecked(Config.GetBool("ImportLayerOcm"));
 		chkOsmarenerer.setChecked(Config.GetBool("ImportLayerOsma"));
+		cbMoveMapCenterWithSpeed.setChecked(Config.GetBool("MoveMapCenterWithSpeed"));
 		OsmMinLevel.setSelection(Config.GetInt("OsmMinLevel"));
 		OsmMaxLevel.setSelection(Config.GetInt("OsmMaxLevel"));
 		ZoomCross.setSelection(Integer.parseInt(Config.GetString("ZoomCross"))-14);
