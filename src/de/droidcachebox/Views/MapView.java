@@ -4393,10 +4393,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         
         if (Config.GetBool("MoveMapCenterWithSpeed"))
         { 
-//	        if (location.hasSpeed())
+	        if (location.hasSpeed())
 	        {
 	        	double maxSpeed = Config.GetInt("MoveMapCenterMaxSpeed");
-	        	int diff = (int)((double)(height) / 3 * 20/*location.getSpeed()*/ / maxSpeed);
+	        	int diff = (int)((double)(height) / 3 * location.getSpeed() / maxSpeed);
 	        	if (diff > height / 3)
 	        		diff = height / 3;
 	        	
