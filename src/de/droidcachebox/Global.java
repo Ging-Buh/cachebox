@@ -28,7 +28,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global {
-    public static final int CurrentRevision = 212;
+    public static final int CurrentRevision = 217;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
@@ -68,16 +68,100 @@ public class Global {
     public static Coordinate Marker = new Coordinate();
 
     // Icons
+    /**
+     * <b>Ein Array mit Icons als Drawable</b>
+     * <br>
+     * 			<br>Index 0 =<img src="doc-files/night_tb.png" width=32 height=32> <img src="doc-files/day_tb.png" width=32 height=32>
+        		<br>Index 1 =<img src="doc-files/addwaypoint.png" width=32 height=32>
+        		<br>Index 2 =<img src="doc-files/smilie_gross.gif" width=32 height=32>
+        		<br>Index 3 =<img src="doc-files/download.png" width=32 height=32>
+        		<br>Index 4 =<img src="doc-files/log1.png" width=32 height=32>
+        		<br>Index 5 =<img src="doc-files/maintenance.png" width=32 height=32>
+        		<br>Index 6 =<img src="doc-files/checkbox_checked.png" width=32 height=32>
+        		<br>Index 7 =<img src="doc-files/checkbox_unchecked.png" width=32 height=32>
+        		<br>Index 8 =<img src="doc-files/sonne.png" width=32 height=32>
+        		<br>Index 9 =<img src="doc-files/mond.png" width=32 height=32>
+        		<br>Index 10 =<img src="doc-files/travelbug.gif" width=32 height=32>
+        		<br>Index 11 =<img src="doc-files/collapse.png" width=32 height=32>
+        		<br>Index 12 =<img src="doc-files/expand.png" width=32 height=32>
+        		<br>Index 13 =<img src="doc-files/enabled.png" width=32 height=32>
+        		<br>Index 14 =<img src="doc-files/disabled.png" width=32 height=32>
+        		<br>Index 15 =<img src="doc-files/retrieve_tb.png" width=32 height=32>
+        		<br>Index 16 =<img src="doc-files/drop_tb.png" width=32 height=32>
+        		<br>Index 17 =<img src="doc-files/star.png" width=32 height=32>
+        		<br>Index 18 =<img src="doc-files/earth.png" width=32 height=32>
+        		<br>Index 19 =<img src="doc-files/favorit.png" width=32 height=32>
+        		<br>Index 20 =<img src="doc-files/file.png" width=32 height=32>
+        		<br>Index 21 =<img src="doc-files/userdata.jpg" width=32 height=32>
+        		<br>Index 22 =<img src="doc-files/delete.jpg" width=32 height=32>  
+        		<br>Index 23 =<img src="doc-files/archiv.png" width=32 height=32> 
+        		<br>Index 24 =<img src="doc-files/not_available.jpg" width=32 height=32> 
+        		<br>Index 25 =<img src="doc-files/checkbox_crossed.png" width=32 height=32> 
+        		<br>Index 26 =<img src="doc-files/map22.png" width=32 height=32> 
+        		<br>Index 27 =<img src="doc-files/chk_icon.png" width=32 height=32> 
+        		<br>Index 28 =<img src="doc-files/delete_icon.png" width=32 height=32> 
+        		<br>Index 29 =<img src="doc-files/voice_rec_icon.png" width=32 height=32> 
+        		<br>Index 30 =<img src="doc-files/satellite.png" width=32 height=32> 
+        		<br>Index 31 =<img src="doc-files/close_icon.png" width=32 height=32> 
+        		<br>Index 32 =<img src="doc-files/info_icon.png" width=32 height=32> 
+        		<br>Index 33 =<img src="doc-files/warning_icon.png" width=32 height=32> 
+        		<br>Index 34 =<img src="doc-files/help_icon.png" width=32 height=32> 
+     */
     public static Drawable[] Icons = null;
-    public static Drawable[] SmallStarIcons = null;
-    public static Drawable[] StarIcons = null;
-    public static Drawable[] SizeIcons = null;
-    public static Drawable[] CacheIconsBig = null;
-    public static Drawable[] BatteryIcons = null;
-    public static Drawable[] LogIcons = null;
-    public static Drawable[] Arrows = null;
-    public static Drawable[] ChkIcons = null;
-    public static Drawable[] BtnIcons = null;
+    public static Drawable[] SmallStarIcons= null;
+    public static Drawable[] StarIcons= null;
+    public static Drawable[] SizeIcons= null;
+    
+    /**
+     * <b>Ein Array mit CacheIcons als Drawable</b>
+     * <br>
+     * 
+     *          <br>Index 0 =<img src="doc-files/big_0.gif" width=32 height=32>
+        		<br>Index 1 =<img src="doc-files/big_1.gif" width=32 height=32>
+        		<br>Index 2 =<img src="doc-files/big_2.gif" width=32 height=32>
+        		<br>Index 3 =<img src="doc-files/big_3.gif" width=32 height=32>
+        		<br>Index 4 =<img src="doc-files/big_4.gif" width=32 height=32>
+        		<br>Index 5 =<img src="doc-files/big_5.gif" width=32 height=32>
+        		<br>Index 6 =<img src="doc-files/big_6.gif" width=32 height=32>
+        		<br>Index 7 =<img src="doc-files/big_7.png" width=32 height=32>
+        		<br>Index 8 =<img src="doc-files/big_8.gif" width=32 height=32>
+        		<br>Index 9 =<img src="doc-files/big_9.gif" width=32 height=32>
+        		<br>Index 10 =<img src="doc-files/big_10.gif" width=32 height=32>
+        		<br>Index 11 =<img src="doc-files/big_11.png" width=32 height=32>
+        		<br>Index 12 =<img src="doc-files/big_12.png" width=32 height=32>
+        		<br>Index 13 =<img src="doc-files/big_13.png" width=32 height=32>
+        		<br>Index 14 =<img src="doc-files/big_14.png" width=32 height=32>
+        		<br>Index 15 =<img src="doc-files/big_15.png" width=32 height=32>
+        		<br>Index 16 =<img src="doc-files/big_16.png" width=32 height=32>
+        		<br>Index 17 =<img src="doc-files/big_17.png" width=32 height=32>
+        		<br>Index 18 =<img src="doc-files/big_18.png" width=32 height=32>
+        		<br>Index 19 =<img src="doc-files/big_19.gif" width=32 height=32>
+     */
+    public static Drawable[] CacheIconsBig= null;
+    public static Drawable[] BatteryIcons= null;
+    
+    /**
+     * <b>Ein Array mit LogIcons als Drawable</b>
+     * <br>
+     * 			 <br>Index 0 =<img src="doc-files/log0.gif" width=32 height=32>
+        		 <br>Index 1 =<img src="doc-files/log1.png" width=32 height=32>
+        		 <br>Index 2 =<img src="doc-files/log2.png" width=32 height=32>
+        		 <br>Index 3 =<img src="doc-files/log3.png" width=32 height=32>
+        		 <br>Index 4 =<img src="doc-files/log4.png" width=32 height=32>
+        		 <br>Index 5 =<img src="doc-files/log5.png" width=32 height=32>
+        		 <br>Index 6 =<img src="doc-files/log6.png" width=32 height=32>
+        		 <br>Index 7 =<img src="doc-files/log7.png" width=32 height=32>
+        		 <br>Index 8 =<img src="doc-files/log8.png" width=32 height=32>
+        		 <br>Index 9 =<img src="doc-files/log9.png" width=32 height=32>
+        		 <br>Index 10 =<img src="doc-files/log10.png" width=32 height=32>
+        		 <br>Index 11 =<img src="doc-files/log11.jpg" width=32 height=32>
+        		 <br>Index 12 =<img src="doc-files/log12.jpg" width=32 height=32>
+        		 <br>Index 13 =<img src="doc-files/log13.png" width=32 height=32>
+     */
+    public static Drawable[] LogIcons= null;
+    public static Drawable[] Arrows= null;
+    public static Drawable[] ChkIcons= null;
+    public static Drawable[] BtnIcons= null;
     
     // New Map Icons
     public static ArrayList<ArrayList<Drawable>> NewMapIcons = null;

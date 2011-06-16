@@ -342,6 +342,7 @@ Deutsch
 	//MiscSettings
 	units = Einheit:	
 	AllowInternet = Erlaube Internet Verb.
+	AllowLandscape = Erlaube Landscape Ansicht
 	ShowKeypad = Zeige Tastatur
 	SuppressPowerSaving = Unterdrücke Power Save
 	UploadAllFieldnotes = Alle Fieldnotes senden(Ignoriere Datum)

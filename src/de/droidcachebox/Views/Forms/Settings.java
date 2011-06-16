@@ -384,7 +384,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private CheckBox chkDebugMarker;
     private WheelView ScreenLock_wheel_m ;
     private WheelView ScreenLock_wheel_sec ;
-	
+    private CheckBox chkAllowLandscape;
 	
  	private void findViewsById()
 	{
@@ -437,6 +437,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		chkDebugMarker = (CheckBox)this.findViewById(R.id.settings_debug_chkMarker);
 		ScreenLock_wheel_m = (WheelView)this.findViewById(R.id.settings_ScreenLock_m);
 		ScreenLock_wheel_sec = (WheelView)this.findViewById(R.id.settings_ScreenLock_sec);
+		chkAllowLandscape = (CheckBox)this.findViewById(R.id.settings_allow_LandScape);
 	}
 	
 	private void setLang()
@@ -450,7 +451,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
         checkBoxHTCCompass.setText(Global.Translations.Get("UseHtcCompass"));
         DescCompassLevel.setText(Global.Translations.Get("DescHtcLevel"));
         chkAllowInetAccess.setText(Global.Translations.Get("AllowInternet"));
-        
+        chkAllowLandscape.setText(Global.Translations.Get("AllowLandscape"));
 	}
 	
 		
@@ -496,11 +497,8 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		if(Global.Debug)
 			ToggleDebugView.setVisibility(View.VISIBLE);
 		
-		
-		
-	//	ScreenLockTimePicker.setCurrentHour(Config.GetInt("LockH"));
-	//	ScreenLockTimePicker.setCurrentMinute(Config.GetInt("LockM"));
-		
+		chkAllowLandscape.setChecked(Config.GetBool("AllowLandscape"));
+	
 		
 		}
 		catch(Exception e)
@@ -547,7 +545,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	
     	((main) main.mainActivity).setDebugVisible();
     	((main) main.mainActivity).setDebugMsg("");
-    	
+    	Config.Set("AllowLandscape",chkAllowLandscape.isChecked());
     	
     	Config.AcceptChanges();
 		finish();

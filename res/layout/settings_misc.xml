@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_height="match_parent" android:orientation="vertical"
 	android:layout_width="match_parent" android:background="?attr/DropDownBackground">
+	<CheckBox android:layout_height="wrap_content" android:id="@+id/settings_allow_LandScape"
+		android:text="CheckBox" android:layout_width="match_parent"></CheckBox>
 	<CheckBox android:text="CheckBox" android:layout_width="match_parent"
 		android:layout_height="wrap_content" android:id="@+id/settings_allow_internet_access">
 	</CheckBox>
@@ -36,7 +38,7 @@
 				<de.droidcachebox.Custom_Controls.wheel.WheelView
 					android:id="@+id/settings_ScreenLock_sec" android:layout_height="wrap_content"
 					android:layout_width="50dp" />
-				
+
 			</LinearLayout>
 
 

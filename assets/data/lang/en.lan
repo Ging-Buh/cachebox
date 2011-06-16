@@ -340,6 +340,7 @@ English
 	//MiscSettings
 	units = Units:	
 	AllowInternet = Allow Internet Access
+	AllowLandscape = Allow Landscape view
 	ShowKeypad = Show Keypad
 	SuppressPowerSaving = Suppress Power Saving
 	UploadAllFieldnotes = Upload All Fieldnotes? (Ignore Date)

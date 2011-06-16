@@ -338,6 +338,7 @@ utf8
 	//MiscSettings
 	units = Unités:	
 	AllowInternet = Accès Internet autorisé
+	AllowLandscape = Allow Landscape view
 	ShowKeypad = Clavier visible
 	SuppressPowerSaving = Arrêt de la mise en veille
 	UploadAllFieldnotes = Téléchargement de toutes les notes? (Date ignorée)

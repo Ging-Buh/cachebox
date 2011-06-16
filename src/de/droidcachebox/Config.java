@@ -255,7 +255,7 @@ public class Config {
 
         validateSetting("LockM", "1");
         validateSetting("LockSec", "0");
-        
+        validateSetting("AllowLandscape", "false");
 //        validateSetting("OtherRepositoriesFolder", Global.AppPath + "\\Repositories");
 
         AcceptChanges();

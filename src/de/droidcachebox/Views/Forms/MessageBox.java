@@ -20,15 +20,15 @@ import android.app.Dialog;
  * übergeben werden.
  * 
  * @author Longri
+ * 
+ * Basiert auf dem Sample Code von Antoine Vianey.
+ * Zu finden unter http://code.google.com/p/androgames-sample/
  *
  */
 public class MessageBox 
 {
 	private static DialogInterface.OnClickListener listner;
-	public static final int SHOW1 	= 1;
-	public static final int SHOW2 	= 2;
-	public static final int SHOW3 	= 3;
-	public static final int SHOW4 	= 4;
+	
 	
 	/**
 	 * Zeigt ein Meldungsfeld mit angegebenem Text an.
@@ -84,7 +84,7 @@ public class MessageBox
 		listner = Listener;
 		Bundle b = new Bundle();
         b.putString("msg",msg);
-        main.mainActivity.showDialog(SHOW1,b);
+        main.mainActivity.showDialog(DialogID.MSG_BOX_1,b);
 	}
 	
 	
@@ -145,7 +145,7 @@ public class MessageBox
 		Bundle b = new Bundle();
         b.putString("msg",msg);
         b.putString("title",title);
-        main.mainActivity.showDialog(SHOW2,b);
+        main.mainActivity.showDialog(DialogID.MSG_BOX_2,b);
 	}
 	
 	
@@ -209,7 +209,7 @@ public class MessageBox
         b.putString("msg",msg);
         b.putString("title",title);
         b.putInt("buttons", buttons.ordinal());
-        main.mainActivity.showDialog(SHOW3,b);
+        main.mainActivity.showDialog(DialogID.MSG_BOX_3,b);
 	}
 	
 	
@@ -272,7 +272,7 @@ public class MessageBox
         b.putString("title",title);
         b.putInt("buttons", buttons.ordinal());
         b.putInt("icon", icon.ordinal());
-        main.mainActivity.showDialog(SHOW4,b);
+        main.mainActivity.showDialog(DialogID.MSG_BOX_4,b);
 	}
 	
 	
@@ -305,7 +305,7 @@ public class MessageBox
     	Dialog dialog = null;
     	switch (dialogId) 
     	{
-	    	case MessageBox.SHOW1 :
+	    	case DialogID.MSG_BOX_1 :
 	    		message_box_dialog.Builder customBuilder = new
 	    		message_box_dialog.Builder(main.mainActivity);
 				customBuilder	.setTitle("")
@@ -314,7 +314,7 @@ public class MessageBox
 	            dialog = customBuilder.create();
 	    		break;
 	    
-	    	case MessageBox.SHOW2 :
+	    	case DialogID.MSG_BOX_2 :
 	    		message_box_dialog.Builder customBuilder2 = new
 	    		message_box_dialog.Builder(main.mainActivity);
 				customBuilder2	.setTitle(b.getString("title"))
@@ -323,7 +323,7 @@ public class MessageBox
 	            dialog = customBuilder2.create();
 	    		break;
 	    		
-	    	case MessageBox.SHOW3 :
+	    	case DialogID.MSG_BOX_3 :
 	    		
 			setButtonCaptions(b);
 	    		message_box_dialog.Builder customBuilder3 = new
@@ -337,7 +337,7 @@ public class MessageBox
 	    		break;
 	    		
 	    		
-	    	case MessageBox.SHOW4 :
+	    	case DialogID.MSG_BOX_4 :
 	    		
 				setButtonCaptions(b);
 				setIcon(b); 

@@ -12,6 +12,7 @@ import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Waypoint;
+import de.droidcachebox.Views.Forms.NumerickInputBox;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -87,7 +88,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 			@Override
 			public void onClick(View arg0) 
 			{
-				// TODO Auto-generated method stub
+				NumerickInputBox.Show(Global.Translations.Get("AdjustFinds"),Global.Translations.Get("TelMeFounds"),Config.GetInt("FoundOffset"), null);
 				
 			}
 		});

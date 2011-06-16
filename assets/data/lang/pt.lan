@@ -340,6 +340,7 @@ Portugues
 	//MiscSettings
 	units = Unidades:	
 	AllowInternet = Permitir acesso Internet
+	AllowLandscape = Allow Landscape view
 	ShowKeypad = Mostrar Teclado
 	SuppressPowerSaving = Evitar 'Power Saving'
 	UploadAllFieldnotes = Enviar todas as Fieldnotes? (Ignorar Data)
