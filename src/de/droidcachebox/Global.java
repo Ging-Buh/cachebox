@@ -69,19 +69,19 @@ public class Global {
 
     // Icons
     public static Drawable[] Icons = null;
-    public static Drawable[] SmallStarIcons;
-    public static Drawable[] StarIcons;
-    public static Drawable[] SizeIcons;
-    public static Drawable[] CacheIconsBig;
-    public static Drawable[] BatteryIcons;
-    public static Drawable[] LogIcons;
-    public static Drawable[] Arrows;
-    public static Drawable[] ChkIcons;
-    public static Drawable[] BtnIcons;
+    public static Drawable[] SmallStarIcons = null;
+    public static Drawable[] StarIcons = null;
+    public static Drawable[] SizeIcons = null;
+    public static Drawable[] CacheIconsBig = null;
+    public static Drawable[] BatteryIcons = null;
+    public static Drawable[] LogIcons = null;
+    public static Drawable[] Arrows = null;
+    public static Drawable[] ChkIcons = null;
+    public static Drawable[] BtnIcons = null;
     
     // New Map Icons
-    public static ArrayList<ArrayList<Drawable>> NewMapIcons = new ArrayList<ArrayList<Drawable>>();
-    public static ArrayList<ArrayList<Drawable>> NewMapOverlay = new ArrayList<ArrayList<Drawable>>();
+    public static ArrayList<ArrayList<Drawable>> NewMapIcons = null;
+    public static ArrayList<ArrayList<Drawable>> NewMapOverlay = null;
     
     
     /// <summary>
@@ -361,221 +361,252 @@ public class Global {
     // N = Nachtmodus! Wenn true werden andere Icons geladen!
     public static void InitIcons(Context context, Boolean N)
     {
-    	 NewMapIcons = new ArrayList<ArrayList<Drawable>>();
-    	 NewMapOverlay = new ArrayList<ArrayList<Drawable>>();
-    	    
-    	
     	Resources res = context.getResources();
-        // NewMapIcons[0] contains the 8x8 Bitmaps
-        NewMapIcons.add(new ArrayList<Drawable>());
-        NewMapIcons.get(0).add(res.getDrawable(R.drawable.map_8x8_green));
-        NewMapIcons.get(0).add(res.getDrawable(R.drawable.map_8x8_yellow));
-        NewMapIcons.get(0).add(res.getDrawable(R.drawable.map_8x8_red));
-        NewMapIcons.get(0).add(res.getDrawable(R.drawable.map_8x8_white));
-        NewMapIcons.get(0).add(res.getDrawable(R.drawable.map_8x8_blue));
-        NewMapIcons.get(0).add(res.getDrawable(R.drawable.map_8x8_violet));
-        NewMapIcons.get(0).add(res.getDrawable(R.drawable.map_8x8_found));
-        NewMapIcons.get(0).add(res.getDrawable(R.drawable.map_8x8_own));
-        
-        // NewMapIcons[1] contains the 13x13 Bitmaps
-        NewMapIcons.add(new ArrayList<Drawable>());
-        NewMapIcons.get(1).add(res.getDrawable(R.drawable.map_13x13_green));
-        NewMapIcons.get(1).add(res.getDrawable(R.drawable.map_13x13_yellow));
-        NewMapIcons.get(1).add(res.getDrawable(R.drawable.map_13x13_red));
-        NewMapIcons.get(1).add(res.getDrawable(R.drawable.map_13x13_white));
-        NewMapIcons.get(1).add(res.getDrawable(R.drawable.map_13x13_blue));
-        NewMapIcons.get(1).add(res.getDrawable(R.drawable.map_13x13_violet));
-        NewMapIcons.get(1).add(res.getDrawable(R.drawable.map_13x13_found));
-        NewMapIcons.get(1).add(res.getDrawable(R.drawable.map_13x13_own));
-        
-        // NewMapIcons[2] contains the normal 20x20 Bitmaps
-        NewMapIcons.add(new ArrayList<Drawable>());        
-    	NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_0));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_1));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_2));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_3));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_4));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_5));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_6));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_7));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_8));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_9));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_10));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_12));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_12));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_13));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_14));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_15));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_16));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_17));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_18));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_19));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_20));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_21));
-        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_22));
-
-        // Overlays for Icons
-        NewMapOverlay.add(new ArrayList<Drawable>());  // 8x8
-        NewMapOverlay.get(0).add(res.getDrawable(R.drawable.map_8x8_shaddowrect));
-        NewMapOverlay.get(0).add(res.getDrawable(R.drawable.map_8x8_shaddowround));
-        NewMapOverlay.get(0).add(res.getDrawable(R.drawable.map_8x8_shaddowstar));
-        NewMapOverlay.get(0).add(res.getDrawable(R.drawable.map_8x8_strikeout));
-
-        NewMapOverlay.add(new ArrayList<Drawable>());  // 13x13
-        NewMapOverlay.get(1).add(res.getDrawable(R.drawable.map_13x13_shaddowrect));
-        NewMapOverlay.get(1).add(res.getDrawable(R.drawable.map_13x13_shaddowround));
-        NewMapOverlay.get(1).add(res.getDrawable(R.drawable.map_13x13_shaddowstar));
-        NewMapOverlay.get(1).add(res.getDrawable(R.drawable.map_13x13_strikeout));
-
-        NewMapOverlay.add(new ArrayList<Drawable>());  // 20x20
-        NewMapOverlay.get(2).add(res.getDrawable(R.drawable.map_20x20_shaddowrect));
-        NewMapOverlay.get(2).add(res.getDrawable(R.drawable.map_20x20_selected));
-        NewMapOverlay.get(2).add(res.getDrawable(R.drawable.map_20x20_shaddowrect_deact));
-        NewMapOverlay.get(2).add(res.getDrawable(R.drawable.map_20x20_selected_deact));
+    	if (NewMapIcons == null)
+    	{
+    		
+	    	 NewMapIcons = new ArrayList<ArrayList<Drawable>>();
+	    	 NewMapOverlay = new ArrayList<ArrayList<Drawable>>();
+	    	    
+	    	
+	        // NewMapIcons[0] contains the 8x8 Bitmaps
+	        NewMapIcons.add(new ArrayList<Drawable>());
+	        NewMapIcons.get(0).add(res.getDrawable(R.drawable.map_8x8_green));
+	        NewMapIcons.get(0).add(res.getDrawable(R.drawable.map_8x8_yellow));
+	        NewMapIcons.get(0).add(res.getDrawable(R.drawable.map_8x8_red));
+	        NewMapIcons.get(0).add(res.getDrawable(R.drawable.map_8x8_white));
+	        NewMapIcons.get(0).add(res.getDrawable(R.drawable.map_8x8_blue));
+	        NewMapIcons.get(0).add(res.getDrawable(R.drawable.map_8x8_violet));
+	        NewMapIcons.get(0).add(res.getDrawable(R.drawable.map_8x8_found));
+	        NewMapIcons.get(0).add(res.getDrawable(R.drawable.map_8x8_own));
+	        
+	        // NewMapIcons[1] contains the 13x13 Bitmaps
+	        NewMapIcons.add(new ArrayList<Drawable>());
+	        NewMapIcons.get(1).add(res.getDrawable(R.drawable.map_13x13_green));
+	        NewMapIcons.get(1).add(res.getDrawable(R.drawable.map_13x13_yellow));
+	        NewMapIcons.get(1).add(res.getDrawable(R.drawable.map_13x13_red));
+	        NewMapIcons.get(1).add(res.getDrawable(R.drawable.map_13x13_white));
+	        NewMapIcons.get(1).add(res.getDrawable(R.drawable.map_13x13_blue));
+	        NewMapIcons.get(1).add(res.getDrawable(R.drawable.map_13x13_violet));
+	        NewMapIcons.get(1).add(res.getDrawable(R.drawable.map_13x13_found));
+	        NewMapIcons.get(1).add(res.getDrawable(R.drawable.map_13x13_own));
+	        
+	        // NewMapIcons[2] contains the normal 20x20 Bitmaps
+	        NewMapIcons.add(new ArrayList<Drawable>());        
+	    	NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_0));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_1));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_2));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_3));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_4));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_5));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_6));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_7));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_8));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_9));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_10));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_12));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_12));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_13));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_14));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_15));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_16));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_17));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_18));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_19));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_20));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_21));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_22));
+	
+	        // Overlays for Icons
+	        NewMapOverlay.add(new ArrayList<Drawable>());  // 8x8
+	        NewMapOverlay.get(0).add(res.getDrawable(R.drawable.map_8x8_shaddowrect));
+	        NewMapOverlay.get(0).add(res.getDrawable(R.drawable.map_8x8_shaddowround));
+	        NewMapOverlay.get(0).add(res.getDrawable(R.drawable.map_8x8_shaddowstar));
+	        NewMapOverlay.get(0).add(res.getDrawable(R.drawable.map_8x8_strikeout));
+	
+	        NewMapOverlay.add(new ArrayList<Drawable>());  // 13x13
+	        NewMapOverlay.get(1).add(res.getDrawable(R.drawable.map_13x13_shaddowrect));
+	        NewMapOverlay.get(1).add(res.getDrawable(R.drawable.map_13x13_shaddowround));
+	        NewMapOverlay.get(1).add(res.getDrawable(R.drawable.map_13x13_shaddowstar));
+	        NewMapOverlay.get(1).add(res.getDrawable(R.drawable.map_13x13_strikeout));
+	
+	        NewMapOverlay.add(new ArrayList<Drawable>());  // 20x20
+	        NewMapOverlay.get(2).add(res.getDrawable(R.drawable.map_20x20_shaddowrect));
+	        NewMapOverlay.get(2).add(res.getDrawable(R.drawable.map_20x20_selected));
+	        NewMapOverlay.get(2).add(res.getDrawable(R.drawable.map_20x20_shaddowrect_deact));
+	        NewMapOverlay.get(2).add(res.getDrawable(R.drawable.map_20x20_selected_deact));
+    	}
     
-        Icons = new Drawable[] { 
-        		res.getDrawable(N? R.drawable.night_tb : R.drawable.day_tb ),
-        		res.getDrawable(R.drawable.addwaypoint),
-        		res.getDrawable(R.drawable.smilie_gross),
-        		res.getDrawable(R.drawable.download),
-        		res.getDrawable(R.drawable.log1),
-        		res.getDrawable(R.drawable.maintenance),
-        		res.getDrawable(R.drawable.checkbox_checked),
-        		res.getDrawable(R.drawable.checkbox_unchecked),
-        		res.getDrawable(R.drawable.sonne),
-        		res.getDrawable(R.drawable.mond),
-        		res.getDrawable(R.drawable.travelbug),
-        		res.getDrawable(R.drawable.collapse),
-        		res.getDrawable(R.drawable.expand),
-        		res.getDrawable(R.drawable.enabled),
-        		res.getDrawable(R.drawable.disabled),
-        		res.getDrawable(R.drawable.retrieve_tb),
-        		res.getDrawable(R.drawable.drop_tb),
-        		res.getDrawable(R.drawable.star),
-        		res.getDrawable(R.drawable.earth),
-        		res.getDrawable(R.drawable.favorit),
-        		res.getDrawable(R.drawable.file),
-        		res.getDrawable(R.drawable.userdata),
-        		res.getDrawable(R.drawable.delete),  // 22
-        		res.getDrawable(R.drawable.archiv), // 23
-        		res.getDrawable(R.drawable.not_available),  // 24
-        		res.getDrawable(R.drawable.checkbox_crossed), // 25
-        		res.getDrawable(R.drawable.map22), // 26
-        		res.getDrawable(R.drawable.chk_icon), // 27
-        		res.getDrawable(R.drawable.delete_icon), // 28
-        		res.getDrawable(R.drawable.voice_rec_icon), // 29
-        		res.getDrawable(R.drawable.satellite), // 30
-        		res.getDrawable(R.drawable.close_icon), // 31
-        		res.getDrawable(R.drawable.info_icon), // 32
-        		res.getDrawable(R.drawable.warning_icon), // 33
-        		res.getDrawable(R.drawable.help_icon), // 34
-};
+    	if (Icons == null)
+    	{
+	        Icons = new Drawable[] { 
+	        		res.getDrawable(N? R.drawable.night_tb : R.drawable.day_tb ),
+	        		res.getDrawable(R.drawable.addwaypoint),
+	        		res.getDrawable(R.drawable.smilie_gross),
+	        		res.getDrawable(R.drawable.download),
+	        		res.getDrawable(R.drawable.log1),
+	        		res.getDrawable(R.drawable.maintenance),
+	        		res.getDrawable(R.drawable.checkbox_checked),
+	        		res.getDrawable(R.drawable.checkbox_unchecked),
+	        		res.getDrawable(R.drawable.sonne),
+	        		res.getDrawable(R.drawable.mond),
+	        		res.getDrawable(R.drawable.travelbug),
+	        		res.getDrawable(R.drawable.collapse),
+	        		res.getDrawable(R.drawable.expand),
+	        		res.getDrawable(R.drawable.enabled),
+	        		res.getDrawable(R.drawable.disabled),
+	        		res.getDrawable(R.drawable.retrieve_tb),
+	        		res.getDrawable(R.drawable.drop_tb),
+	        		res.getDrawable(R.drawable.star),
+	        		res.getDrawable(R.drawable.earth),
+	        		res.getDrawable(R.drawable.favorit),
+	        		res.getDrawable(R.drawable.file),
+	        		res.getDrawable(R.drawable.userdata),
+	        		res.getDrawable(R.drawable.delete),  // 22
+	        		res.getDrawable(R.drawable.archiv), // 23
+	        		res.getDrawable(R.drawable.not_available),  // 24
+	        		res.getDrawable(R.drawable.checkbox_crossed), // 25
+	        		res.getDrawable(R.drawable.map22), // 26
+	        		res.getDrawable(R.drawable.chk_icon), // 27
+	        		res.getDrawable(R.drawable.delete_icon), // 28
+	        		res.getDrawable(R.drawable.voice_rec_icon), // 29
+	        		res.getDrawable(R.drawable.satellite), // 30
+	        		res.getDrawable(R.drawable.close_icon), // 31
+	        		res.getDrawable(R.drawable.info_icon), // 32
+	        		res.getDrawable(R.drawable.warning_icon), // 33
+	        		res.getDrawable(R.drawable.help_icon), // 34
+	        };
+    	}
         
-        Arrows = new Drawable[] { 
-        		res.getDrawable(R.drawable.arrow),
-        		res.getDrawable(R.drawable.arrow_small),
+    	if (Arrows == null)
+    	{
+	        Arrows = new Drawable[] { 
+	        		res.getDrawable(R.drawable.arrow),
+	        		res.getDrawable(R.drawable.arrow_small),
+	        };        		
+
+    	}
+
+    	if (SmallStarIcons == null)
+    	{
+	        SmallStarIcons = new Drawable[] { 
+	        		res.getDrawable(R.drawable.smallstars_0),
+	        		res.getDrawable(R.drawable.smallstars_0_5),
+	        		res.getDrawable(R.drawable.smallstars_1),
+	        		res.getDrawable(R.drawable.smallstars_1_5),
+	        		res.getDrawable(R.drawable.smallstars_2),
+	        		res.getDrawable(R.drawable.smallstars_2_5),
+	        		res.getDrawable(R.drawable.smallstars_3),
+	        		res.getDrawable(R.drawable.smallstars_3_5),
+	        		res.getDrawable(R.drawable.smallstars_4),
+	        		res.getDrawable(R.drawable.smallstars_4_5),
+	        		res.getDrawable(R.drawable.smallstars_5) };
+    	}
+
+    	if (StarIcons == null)
+    	{
+	        StarIcons = new Drawable[] { 
+	        		res.getDrawable(R.drawable.stars0),
+	        		res.getDrawable(R.drawable.stars0_5),
+	        		res.getDrawable(R.drawable.stars1),
+	        		res.getDrawable(R.drawable.stars1_5),
+	        		res.getDrawable(R.drawable.stars2),
+	        		res.getDrawable(R.drawable.stars2_5),
+	        		res.getDrawable(R.drawable.stars3),
+	        		res.getDrawable(R.drawable.stars3_5),
+	        		res.getDrawable(R.drawable.stars4),
+	        		res.getDrawable(R.drawable.stars4_5),
+	        		res.getDrawable(R.drawable.stars5) };
+    	}
+
+    	if (SizeIcons == null)
+    	{
+	        SizeIcons = new Drawable[] 
+	                { 
+	        		res.getDrawable(R.drawable.other),
+	        		res.getDrawable(R.drawable.micro),
+	        		res.getDrawable(R.drawable.small),
+	        		res.getDrawable(R.drawable.regular),
+	        		res.getDrawable(R.drawable.large)
+	        		};
+    	}
+       
+    	if (BatteryIcons == null)
+    	{
+	        BatteryIcons = new Drawable[] { 
+	        		res.getDrawable(R.drawable.bat0),
+	        		res.getDrawable(R.drawable.bat1),
+	        		res.getDrawable(R.drawable.bat2),
+	        		res.getDrawable(R.drawable.bat3),
+	        };
+    	}
         		
 
-};
+    	if (CacheIconsBig == null)
+    	{
+	        CacheIconsBig = new Drawable[] { 
+	        		res.getDrawable(R.drawable.big_0),
+	        		res.getDrawable(R.drawable.big_1),
+	        		res.getDrawable(R.drawable.big_2),
+	        		res.getDrawable(R.drawable.big_3),
+	        		res.getDrawable(R.drawable.big_4),
+	        		res.getDrawable(R.drawable.big_5),
+	        		res.getDrawable(R.drawable.big_6),
+	        		res.getDrawable(R.drawable.big_7),
+	        		res.getDrawable(R.drawable.big_8),
+	        		res.getDrawable(R.drawable.big_9),
+	        		res.getDrawable(R.drawable.big_10),
+	        		res.getDrawable(R.drawable.big_11),
+	        		res.getDrawable(R.drawable.big_12),
+	        		res.getDrawable(R.drawable.big_13),
+	        		res.getDrawable(R.drawable.big_14),
+	        		res.getDrawable(R.drawable.big_15),
+	        		res.getDrawable(R.drawable.big_16),
+	        		res.getDrawable(R.drawable.big_17),
+	        		res.getDrawable(R.drawable.big_18),
+	        		res.getDrawable(R.drawable.big_19),
+	        };
+    	}
+        
 
+    	if (LogIcons == null)
+    	{
+	        LogIcons = new Drawable[] { 
+	        		res.getDrawable(R.drawable.log0),
+	        		res.getDrawable(R.drawable.log1),
+	        		res.getDrawable(R.drawable.log2),
+	        		res.getDrawable(R.drawable.log3),
+	        		res.getDrawable(R.drawable.log4),
+	        		res.getDrawable(R.drawable.log5),
+	        		res.getDrawable(R.drawable.log6),
+	        		res.getDrawable(R.drawable.log7),
+	        		res.getDrawable(R.drawable.log8),
+	        		res.getDrawable(R.drawable.log9),
+	        		res.getDrawable(R.drawable.log10),
+	        		res.getDrawable(R.drawable.log11),
+	        		res.getDrawable(R.drawable.log12),
+	        		res.getDrawable(R.drawable.log13),
+	
+	        };
+    	}
 
-        SmallStarIcons = new Drawable[] { 
-        		res.getDrawable(R.drawable.smallstars_0),
-        		res.getDrawable(R.drawable.smallstars_0_5),
-        		res.getDrawable(R.drawable.smallstars_1),
-        		res.getDrawable(R.drawable.smallstars_1_5),
-        		res.getDrawable(R.drawable.smallstars_2),
-        		res.getDrawable(R.drawable.smallstars_2_5),
-        		res.getDrawable(R.drawable.smallstars_3),
-        		res.getDrawable(R.drawable.smallstars_3_5),
-        		res.getDrawable(R.drawable.smallstars_4),
-        		res.getDrawable(R.drawable.smallstars_4_5),
-        		res.getDrawable(R.drawable.smallstars_5) };
-        
-        StarIcons = new Drawable[] { 
-        		res.getDrawable(R.drawable.stars0),
-        		res.getDrawable(R.drawable.stars0_5),
-        		res.getDrawable(R.drawable.stars1),
-        		res.getDrawable(R.drawable.stars1_5),
-        		res.getDrawable(R.drawable.stars2),
-        		res.getDrawable(R.drawable.stars2_5),
-        		res.getDrawable(R.drawable.stars3),
-        		res.getDrawable(R.drawable.stars3_5),
-        		res.getDrawable(R.drawable.stars4),
-        		res.getDrawable(R.drawable.stars4_5),
-        		res.getDrawable(R.drawable.stars5) };
-        
-        SizeIcons = new Drawable[] 
-                { 
-        		res.getDrawable(R.drawable.other),
-        		res.getDrawable(R.drawable.micro),
-        		res.getDrawable(R.drawable.small),
-        		res.getDrawable(R.drawable.regular),
-        		res.getDrawable(R.drawable.large)
-        		};
-       
-        BatteryIcons = new Drawable[] { 
-        		res.getDrawable(R.drawable.bat0),
-        		res.getDrawable(R.drawable.bat1),
-        		res.getDrawable(R.drawable.bat2),
-        		res.getDrawable(R.drawable.bat3),
-        };
-        		
+    	if (ChkIcons == null)
+    	{
+	        ChkIcons = new Drawable[] 
+	                { 
+		        		res.getDrawable(N? R.drawable.night_btn_check_off : R.drawable.day_btn_check_off  ),
+		        		res.getDrawable(N? R.drawable.night_btn_check_on : R.drawable.day_btn_check_on  ),
+	        		};
+    	}
 
-        CacheIconsBig = new Drawable[] { 
-        		res.getDrawable(R.drawable.big_0),
-        		res.getDrawable(R.drawable.big_1),
-        		res.getDrawable(R.drawable.big_2),
-        		res.getDrawable(R.drawable.big_3),
-        		res.getDrawable(R.drawable.big_4),
-        		res.getDrawable(R.drawable.big_5),
-        		res.getDrawable(R.drawable.big_6),
-        		res.getDrawable(R.drawable.big_7),
-        		res.getDrawable(R.drawable.big_8),
-        		res.getDrawable(R.drawable.big_9),
-        		res.getDrawable(R.drawable.big_10),
-        		res.getDrawable(R.drawable.big_11),
-        		res.getDrawable(R.drawable.big_12),
-        		res.getDrawable(R.drawable.big_13),
-        		res.getDrawable(R.drawable.big_14),
-        		res.getDrawable(R.drawable.big_15),
-        		res.getDrawable(R.drawable.big_16),
-        		res.getDrawable(R.drawable.big_17),
-        		res.getDrawable(R.drawable.big_18),
-        		res.getDrawable(R.drawable.big_19),
-        };
-        
-        
-        
-        LogIcons = new Drawable[] { 
-        		res.getDrawable(R.drawable.log0),
-        		res.getDrawable(R.drawable.log1),
-        		res.getDrawable(R.drawable.log2),
-        		res.getDrawable(R.drawable.log3),
-        		res.getDrawable(R.drawable.log4),
-        		res.getDrawable(R.drawable.log5),
-        		res.getDrawable(R.drawable.log6),
-        		res.getDrawable(R.drawable.log7),
-        		res.getDrawable(R.drawable.log8),
-        		res.getDrawable(R.drawable.log9),
-        		res.getDrawable(R.drawable.log10),
-        		res.getDrawable(R.drawable.log11),
-        		res.getDrawable(R.drawable.log12),
-        		res.getDrawable(R.drawable.log13),
-
-        };
-       
-        ChkIcons = new Drawable[] 
-                { 
-	        		res.getDrawable(N? R.drawable.night_btn_check_off : R.drawable.day_btn_check_off  ),
-	        		res.getDrawable(N? R.drawable.night_btn_check_on : R.drawable.day_btn_check_on  ),
-        		};
-        
-        BtnIcons = new Drawable[] 
-                                { 
-                	        		res.getDrawable(N? R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal ),
-                	        		
-                        		}; 
+    	if (BtnIcons == null)
+    	{
+	        BtnIcons = new Drawable[] 
+	                                { 
+	                	        		res.getDrawable(N? R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal ),
+	                	        		
+	                        		};
+    	}
         
     }
 

@@ -133,6 +133,18 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	
 		private static Integer aktViewId = -1;
 	    private static long GPSTimeStamp = 0;
+		private static MapView mapView = null;					// ID 0
+		private static CacheListView cacheListView = null;		// ID 1
+		private static WaypointView waypointView = null;			// ID 2
+		private static LogView logView = null;					// ID 3
+		private static DescriptionView descriptionView = null;	// ID 4
+		private static SpoilerView spoilerView = null;			// ID 5
+		private static NotesView notesView = null;				// ID 6
+		private static SolverView solverView = null;				// ID 7
+		private static CompassView compassView = null;			// ID 8
+		private static FieldNotesView fieldNotesView = null;		// ID 9
+		private static EmptyViewTemplate TestEmpty = null;		// ID 10
+		private static AboutView aboutView = null;				// ID 11
 	    
 	
 		// Media
@@ -182,18 +194,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		private ViewOptionsMenu aktView = null;
 		private CacheNameView cacheNameView;
 		
-		private MapView mapView;					// ID 0
-		private CacheListView cacheListView;		// ID 1
-		private WaypointView waypointView;			// ID 2
-		private LogView logView;					// ID 3
-		private DescriptionView descriptionView;	// ID 4
-		private SpoilerView spoilerView;			// ID 5
-		private NotesView notesView;				// ID 6
-		private SolverView solverView;				// ID 7
-		private CompassView compassView;			// ID 8
-		private FieldNotesView fieldNotesView;		// ID 9
-		private EmptyViewTemplate TestEmpty;		// ID 10
-		private AboutView aboutView;				// ID 11
 		private ArrayList<View> ViewList = new ArrayList<View>();
 		private int lastBtnDBView=1;
 	    private int lastBtnCacheView=4;
@@ -258,8 +258,14 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    	ActivityUtils.onActivityCreateSetTheme(this);    	
 	        super.onCreate(savedInstanceState);
 	        requestWindowFeature(Window.FEATURE_NO_TITLE);
-	        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//	        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+	        try
+	        {
 	        setContentView(R.layout.main);
+	        } catch (Exception exc)
+	        {
+	        	Global.AddLog("ocMain: " + exc.getMessage());
+	        }
 	        
 	        inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	        mainActivity= this;
@@ -685,6 +691,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 		@Override public void onDestroy() 
 		{
+			frame.removeAllViews();
 			if(isRestart)
 			{
 				super.onDestroy();
@@ -733,9 +740,14 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	                mainActivity = null;
 	                debugInfoPanel.OnFree();
 	                debugInfoPanel = null;
+	    			super.onDestroy();
+					System.exit(0);
+	    		} else
+	    		{
+	    			if (aktView != null)
+	    				aktView.OnHide();
+	    			super.onDestroy();
 	    		}
-				super.onDestroy();
-				System.exit(0);
 			}
 	    } 
 	
@@ -880,9 +892,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    	{
 				// Misc
 		    	case R.id.miScreenLock:
-		    		startScreenLock();
+			        startScreenLock();
 		    		break;
 		    	case R.id.miDayNight:
+		    		frame.removeAllViews();
 		    		Config.changeDayNight();
 		    		ActivityUtils.changeToTheme(mainActivity,Config.GetBool("nightMode")? ActivityUtils.THEME_NIGHT : ActivityUtils.THEME_DAY );
 		    		Toast.makeText(mainActivity, "changeDayNight", Toast.LENGTH_SHORT).show();
@@ -1271,18 +1284,29 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    
 	private void initialViews() 
 	{
-		compassView = new CompassView(this, inflater);
-		cacheListView = new CacheListView(this);
-		waypointView = new WaypointView(this, this);
-		logView = new LogView(this);
-		fieldNotesView = new FieldNotesView(this, this);
+		if (compassView == null)
+			compassView = new CompassView(this, inflater);
+		if (cacheListView == null)
+			cacheListView = new CacheListView(this);
+		if (waypointView == null)
+			waypointView = new WaypointView(this, this);
+		if (logView == null)
+			logView = new LogView(this);
+		if (fieldNotesView == null)
+			fieldNotesView = new FieldNotesView(this, this);
 		registerForContextMenu(fieldNotesView);
-		descriptionView = new DescriptionView(this, "Cache-Beschreibung");
-		spoilerView = new SpoilerView(this, inflater);
-		notesView = new NotesView(this, inflater);
-		solverView = new SolverView(this, inflater);
-		TestEmpty = new EmptyViewTemplate(this, inflater);
-		aboutView = new AboutView(this, inflater);
+		if (descriptionView == null)
+			descriptionView = new DescriptionView(this, "Cache-Beschreibung");
+		if (spoilerView == null)
+			spoilerView = new SpoilerView(this, inflater);
+		if (notesView == null)
+			notesView = new NotesView(this, inflater);
+		if (solverView == null)
+			solverView = new SolverView(this, inflater);
+		if (TestEmpty == null)
+			TestEmpty = new EmptyViewTemplate(this, inflater);
+		if (aboutView == null)
+			aboutView = new AboutView(this, inflater);
 		
 		ViewList.add(mapView);				// ID 0
     	ViewList.add(cacheListView);		// ID 1
@@ -1320,11 +1344,14 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 	private void initialMapView() 
 	{
-        mapView = new MapView(this, inflater);
-		mapView.Initialize();
-		mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.GetString("CurrentMapLayer"), Config.GetString("CurrentMapLayer"), "");
-		Global.TrackDistance = Config.GetInt("TrackDistance");
-		mapView.InitializeMap();
+		if (mapView == null)
+		{
+	        mapView = new MapView(this, inflater);
+			mapView.Initialize();
+			mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.GetString("CurrentMapLayer"), Config.GetString("CurrentMapLayer"), "");
+			Global.TrackDistance = Config.GetInt("TrackDistance");
+			mapView.InitializeMap();
+		}		
 	}
 	
 	private void initalMicIcon() {
