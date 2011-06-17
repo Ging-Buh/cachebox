@@ -291,6 +291,27 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 				}
 			}
 		});
+		EditTextGCJoker.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+					int arg3) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				Config.Set("GcJoker", EditTextGCJoker.getText().toString());
+				
+			}
+		});
 		
 		chkDebugShowPanel.setOnClickListener(new OnClickListener() {
 			
@@ -355,9 +376,11 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private TextView LabelGcName;
 	private TextView LabelGcPW;
 	private TextView LabelGcVoPw;
+	private TextView LabelGcJoker;
 	private EditText EditTextGCName;
 	private EditText EditTextGCPW;
 	private EditText EditTextGCVotePW;
+	private EditText EditTextGCJoker;
 	private Button ToggleGPSView;
 	private TableRow GPSTableRow;
 	private CheckBox checkBoxHTCCompass;
@@ -409,9 +432,11 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		LabelGcName =(TextView)this.findViewById(R.id.settings_textView1);
 		LabelGcPW =(TextView)this.findViewById(R.id.settings_textView2);
 		LabelGcVoPw =(TextView)this.findViewById(R.id.settings_textView3);
+		LabelGcJoker =(TextView)this.findViewById(R.id.settings_textView4);
 		EditTextGCName = (EditText)this.findViewById(R.id.settings_editText1);
 		EditTextGCPW = (EditText)this.findViewById(R.id.settings_editText2);
 		EditTextGCVotePW = (EditText)this.findViewById(R.id.settings_editText3);
+		EditTextGCJoker = (EditText)this.findViewById(R.id.settings_editText4);
 		GPSTableRow =(TableRow)this.findViewById(R.id.settings_tableRowgps);
 		ToggleGPSView = (Button)this.findViewById(R.id.toggle_button_gps);
 		checkBoxHTCCompass = (CheckBox)this.findViewById(R.id.settings_use_intern_compass);
@@ -459,6 +484,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		LabelGcName.setText(Global.Translations.Get("LogIn"));
 		LabelGcPW.setText(Global.Translations.Get("GCPW"));
 		LabelGcVoPw.setText(Global.Translations.Get("GCVotePW"));
+		LabelGcJoker.setText(Global.Translations.Get("GCJoker"));
         checkBoxHTCCompass.setText(Global.Translations.Get("UseHtcCompass"));
         DescCompassLevel.setText(Global.Translations.Get("DescHtcLevel"));
         chkAllowInetAccess.setText(Global.Translations.Get("AllowInternet"));
@@ -473,6 +499,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		EditTextGCName.setText(Config.GetString("GcLogin"));
 		EditTextGCPW.setText(SimpleCrypto.decrypt("DCB", Config.GetString("GcPass")));
 		EditTextGCVotePW.setText(SimpleCrypto.decrypt("DCB", Config.GetString("GcVotePassword")));
+		EditTextGCJoker.setText(Config.GetString("GcJoker"));
 		fillLangCombo();
 		checkBoxHTCCompass.setChecked(Config.GetBool("HtcCompass"));
 		EditCompassLevel.setText(String.valueOf(Config.GetInt("HtcLevel")));
@@ -522,6 +549,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private void SaveSettings()
 	{
 		Config.Set("GcLogin",EditTextGCName.getEditableText().toString());
+		Config.Set("GcJoker",EditTextGCJoker.getEditableText().toString());
     	try {
 			Config.Set("GcPass",SimpleCrypto.encrypt("DCB",EditTextGCPW.getEditableText().toString()));
 	    	Config.Set("GcVotePassword",SimpleCrypto.encrypt("DCB",EditTextGCVotePW.getEditableText().toString()));

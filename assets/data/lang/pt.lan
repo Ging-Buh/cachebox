@@ -18,6 +18,7 @@ Portugues
 	ShowLogs = Mostrar Registos
 	MyFieldNotes = Notas de Campo
 	hint = Dica
+	joker = Telefone joker
 	spoiler = Spoiler
 	about = Sobre!
 	settings = Opções
@@ -347,6 +348,7 @@ Portugues
 	LogIn = Login no geocaching.com
 	GCPW = Password no geocaching.com
 	GCVotePW = Password GcVote
+	GCJoker = MD5-Hash no gcJoker.de
 	SelectLanguage = Select Language
 	save = save
 			

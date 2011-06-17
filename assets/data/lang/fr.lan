@@ -18,6 +18,7 @@ utf8
 	ShowLogs = Journal
 	MyFieldNotes = Mes notes
 	hint = Indice
+	joker = Joker Téléphonique
 	spoiler = Photo indice
 	about = A propos de cachebox!
 	settings = Paramètres
@@ -345,7 +346,8 @@ utf8
 	LogIn = Connexion au site geocaching.com
 	GCPW = Mot de passe pour geocaching.com
 	GCVotePW = Mote de passe pour GcVote 
-        SelectLanguage = Select Language
+	GCJoker = MD5-Hash au site gcJoker.de
+    SelectLanguage = Select Language
 	save = save
 		
 

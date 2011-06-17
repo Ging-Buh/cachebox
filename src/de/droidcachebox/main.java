@@ -1157,9 +1157,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	  mi = icm.menu.findItem(R.id.miSpoilerView);
     	  if (mi != null)
     		  mi.setEnabled(Global.selectedCache.SpoilerExists());
-    	  icm.show();
     	  Menu IconMenu=icm.getMenu();
     	  Global.Translations.TranslateMenuItem(IconMenu, R.id.miHint, "hint");
+    	  Global.Translations.TranslateMenuItem(IconMenu, R.id.miTelJoker, "joker");
+    	  icm.show();
 	}
 
 	private void initialBtnNavContextMenu() 

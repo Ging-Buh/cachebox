@@ -18,6 +18,7 @@ English
 	ShowLogs = Show Logs
 	MyFieldNotes = My Fieldnotes
 	hint = Hint
+	joker = Telephon-Joker
 	spoiler = Spoiler
 	about = About cachebox!
 	settings = Settings
@@ -347,5 +348,6 @@ English
 	LogIn = Login at geocaching.com
 	GCPW = Password at geocaching.com
 	GCVotePW = GcVote Password
+	GCJoker = MD5-Hash at gcJoker.de
 	SelectLanguage = Select Language
 	save = save
