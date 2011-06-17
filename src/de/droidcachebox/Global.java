@@ -18,6 +18,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.os.Messenger;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
@@ -25,10 +26,13 @@ import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.TranslationEngine.LangStrings;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
+import de.droidcachebox.Views.Forms.MessageBox;
+import de.droidcachebox.Views.Forms.MessageBoxButtons;
+import de.droidcachebox.Views.Forms.MessageBoxIcon;
 
 
 public class Global {
-    public static final int CurrentRevision = 224;
+    public static final int CurrentRevision = 228;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
@@ -768,10 +772,10 @@ public class Global {
     static LockClass lockObject = new LockClass();
     
 	
-    /// <summary>
-    /// Fügt die übergebene Zeile in debug.txt ein
-    /// </summary>
-    /// <param name="line">anzuhängener Text</param>
+    /**
+     * Schreibt einen Log Eintrag in die debug.txt, wenn Global.Debug == true!
+     * @param line Meldung die gelogt werden soll.
+     */
     public static void AddLog(String line)
     {
     	if (!Debug)
@@ -789,6 +793,22 @@ public class Global {
 				e.printStackTrace();
 			}
         }
+    }
+    
+    
+    /**
+     * Schreibt einen Log Eintrag in die debug.txt, wenn Global.Debug == true!
+     * @param line Meldung die gelogt werden soll.
+     * @param withMsgBox wenn true, wird die Meldung zusätzlich in einer MessageBox ausgegeben. 
+     */
+    public static void AddLog(String line, Boolean withMsgBox)
+    {
+    	if (!Debug)
+    		return;
+    	 AddLog(line);
+    	 
+    	 if(withMsgBox)
+    		 MessageBox.Show(line, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
     }
     
     public static void PlaySound(String soundFile)

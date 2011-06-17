@@ -175,24 +175,24 @@ public class DescriptionView extends WebView implements ViewOptionsMenu, Selecte
 			            url = NonLocalImagesUrl.get(0);
 			            NonLocalImagesUrl.remove(0);
 			            NonLocalImages.remove(0);
-			            
-			
-			            if (DescriptionImageGrabber.Download(url, local))
-			            {
-			                imagesFetched = true;
-			
-			               /* if (Global.GetAvailableDiscSpace(Config.GetDBConfigString("DescriptionImageFolder")) < (1024 * 1024))
-			                {
-			                    MessageBox.Show("You are running low on memory! Internet connection will close now.", "Low Memory!");
-			                    Config.Set("AllowInternetAccess", false);
-			                    Config.AcceptChanges();
-			                    break;
-			                }*/
-			            }
+			            try {
+							if (DescriptionImageGrabber.Download(url, local))
+							{
+							    imagesFetched = true;
+							}
+						} catch (Exception e) {
+							
+							Global.AddLog("ERROR :DescriptionImageGrabber.Download(url, local) \n" + e.getMessage(), true);
+						}
 			        }
 			               // Fertig!
-			        if (imagesFetched)
-			        	setCache(aktCache);
+			        try {
+						if (imagesFetched)
+							setCache(aktCache);
+					} catch (Exception e) 
+					{
+						Global.AddLog("ERROR : Beim neu setzen der Images nach dem Laden (DescriptionView)\n" + e.getMessage(), true);
+					}
 			    
 	    }
     };
