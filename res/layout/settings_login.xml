@@ -29,8 +29,7 @@
 		    android:layout_height="wrap_content" 
 		    android:id="@+id/settings_editText2" 
 		    android:password="false" 
-		    android:singleLine="true" 
-		    android:inputType="text">
+		    android:singleLine="true" android:inputType="text|textPassword">
 	    </EditText>
 	    <TextView 
 		    android:id="@+id/settings_textView3" 
@@ -44,8 +43,7 @@
 		    android:layout_height="wrap_content" 
 		    android:id="@+id/settings_editText3" 
 		    android:password="false" 
-		    android:singleLine="true" 
-		    android:inputType="text">
+		    android:singleLine="true" android:inputType="text|textPassword">
 	    </EditText>
 	    <TextView 
 	    	android:id="@+id/settings_textView4" 

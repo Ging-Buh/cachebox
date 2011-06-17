@@ -1,5 +1,6 @@
 package de.droidcachebox.Views;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,6 +19,9 @@ import de.droidcachebox.Geocaching.Waypoint;
 import de.droidcachebox.Views.CacheListView.CustomAdapter;
 import de.droidcachebox.Views.Forms.EditFieldNote;
 import de.droidcachebox.Views.Forms.EditWaypoint;
+import de.droidcachebox.Views.Forms.MessageBox;
+import de.droidcachebox.Views.Forms.MessageBoxButtons;
+import de.droidcachebox.Views.Forms.MessageBoxIcon;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -27,6 +31,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Path.FillType;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -138,9 +143,71 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 			case R.id.fieldnotesview_addnote:
 				addNewFieldnote(4);
 				return true;
+			case R.id.fieldnotesview_upload:
+				UploadFieldnotes();
+				return true;
 		}
 		return false;
 	}
+	
+	
+	private void UploadFieldnotes()
+    {
+        String name = Config.GetString("DatabasePath");
+        File file = new File(name);
+        name = file.getName().replace(".db3", "").replace(" ", "");
+        String dirFileName = Config.GetString("FieldNotesGarminPath");
+        file = new File(dirFileName);
+        String fileName = file.getName();
+        dirFileName = file.getParent();
+        String path = dirFileName +"/" + fileName;
+
+        if (Global.FileExists(path))
+        {
+            MessageBox.Show(Global.Translations.Get("uploadFieldNotes?"), 
+            		Global.Translations.Get("uploadFieldNotes"), 
+            		MessageBoxButtons.YesNo, 
+            		MessageBoxIcon.Question, 
+            		UploadFieldnotesDialogListner);
+            
+        }
+        else
+        {
+        	MessageBox.Show(Global.Translations.Get("NoFindsLogged"), 
+        			Global.Translations.Get("thisNotWork"),
+        			MessageBoxButtons.OK,
+        			MessageBoxIcon.Information,null);
+        }
+            
+
+    }
+	
+	private final  DialogInterface.OnClickListener  UploadFieldnotesDialogListner = new  DialogInterface.OnClickListener() 
+	   { @Override public void onClick(DialogInterface dialog, int button) 
+			{
+				// Behandle das ergebniss
+				switch (button)
+				{
+					case -1:
+						//UploadFieldNotesForm.Show();
+						break;
+					case -2:
+						
+						break;
+								}
+				
+				dialog.dismiss();
+			}
+			
+	    };
+	    
+	
+	
+	 
+	 
+	 
+	
+	
 
 	private void addNewFieldnote(int type) {
 		Cache cache = Global.SelectedCache();
@@ -153,6 +220,7 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 		newFieldNote.CacheId = cache.Id;
 		newFieldNote.comment = "";
 		newFieldNote.CacheUrl = cache.Url;
+		newFieldNote.cacheType= cache.Type.ordinal();
 		newFieldNote.fillType();
 
 		FieldNoteList fnl = new FieldNoteList();

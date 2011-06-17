@@ -32,7 +32,7 @@ import de.droidcachebox.Views.Forms.MessageBoxIcon;
 
 
 public class Global {
-    public static final int CurrentRevision = 228;
+    public static final int CurrentRevision = 230;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
@@ -306,12 +306,22 @@ public class Global {
         return hash; 
     }
     
+    /**
+     * Überprüft ob ein File exestiert!
+     * @param filename
+     * @return true, wenn das File Exestiert, ansonsten false.
+     */
     public static boolean FileExists(String filename)
     {
     	File file = new File(filename);
     	return file.exists();
     }
 
+    /**
+     * Überprüft ob ein Ordner exestiert und legt ihn an, wenn er nicht exestiert.
+     * @param folder Pfad des Ordners
+     * @return true wenn er exestiert oder Angelegt wurde. false wenn das Anlegen nicht Funktioniert hat.
+     */
     public static boolean DirectoryExists(String folder)
     {
     	File f = new File(folder);
