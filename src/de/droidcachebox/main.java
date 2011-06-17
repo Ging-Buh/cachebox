@@ -1136,6 +1136,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
   		    		// beim Anzeigen der FieldNotesView gleich das Optionsmenü zeigen
   		    		openOptionsMenu();
   		    		break;				
+  		    	case R.id.miTelJoker:
+  		    		//showView(9);
+  		    		// beim Anzeigen der FieldNotesView gleich das Optionsmenü zeigen
+  		    		//openOptionsMenu();
+		    		Toast.makeText(mainActivity, "Telephone Joker", Toast.LENGTH_SHORT).show();
+
+  		    		break;				
   		    	}
   		    }
   		});

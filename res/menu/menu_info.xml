@@ -5,4 +5,5 @@
     <item android:id="@+id/miSpoilerView" android:title="Spoilers" android:icon="@drawable/images_icon"></item>
     <item android:title="Hint" android:id="@+id/miHint" android:icon="@drawable/hint_icon"></item>
     <item android:id="@+id/miFieldNotes" android:title="Field Notes" android:icon="@drawable/note_icon"></item>
+    <item android:id="@+id/miTelJoker" android:title="Telephone Joker" android:icon="@drawable/joker_phone"></item>
 </menu>
