@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
+import de.droidcachebox.main;
 
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
@@ -17,6 +18,7 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -130,10 +132,44 @@ public class DescriptionView extends WebView implements ViewOptionsMenu, Selecte
      // erlaubt ist, diese laden und Bilder erneut auflösen
         if (Config.GetBool("AllowInternetAccess") && NonLocalImagesUrl.size() > 0)
         {
+        	downloadThread = new Thread() {
+                public void run() {
+                	        			
+        	        while (NonLocalImagesUrl != null && NonLocalImagesUrl.size()> 0)
+        	        {
+        	            String local, url;
+        	            local = NonLocalImages.get(0);
+        	            url = NonLocalImagesUrl.get(0);
+        	            NonLocalImagesUrl.remove(0);
+        	            NonLocalImages.remove(0);
+        	            try 
+        	            {
+        					DescriptionImageGrabber.Download(url, local);
+        				} catch (Exception e) 
+        				{
+        					String Msg = (e==null)? "" : e.getMessage();
+        					Global.AddLog("ERROR :DescriptionImageGrabber.Download(url, local) \n" + Msg, true);
+        				}
+        	        }
+                     downloadReadyHandler.post(downloadComplete);
+                }
+            };
         	loaderThread.start();
         }
         
 	}
+	
+	 final Handler downloadReadyHandler = new Handler();
+	 Thread downloadThread;
+	    
+	    final Runnable downloadComplete = new Runnable() 
+	    {
+		    public void run() 
+		    {
+		    	 setCache(aktCache);
+		    }
+	    };
+	
 
     private String getAttributesHtml(long attributesPositive, long attributesNegative)
     {
@@ -155,7 +191,12 @@ public class DescriptionView extends WebView implements ViewOptionsMenu, Selecte
         return sb.toString();
     }
 
+   
     
+    
+    
+    //downloadThread.start();
+
        
     
     
@@ -166,40 +207,33 @@ public class DescriptionView extends WebView implements ViewOptionsMenu, Selecte
 		@Override
 	    public void run() 
 	    {
-	                Boolean imagesFetched = false;
-			
-			        while (NonLocalImagesUrl != null && NonLocalImagesUrl.size()> 0)
-			        {
-			            String local, url;
-			            local = NonLocalImages.get(0);
-			            url = NonLocalImagesUrl.get(0);
-			            NonLocalImagesUrl.remove(0);
-			            NonLocalImages.remove(0);
-			            try {
-							if (DescriptionImageGrabber.Download(url, local))
-							{
-							    imagesFetched = true;
-							}
-						} catch (Exception e) {
-							
-							Global.AddLog("ERROR :DescriptionImageGrabber.Download(url, local) \n" + e.getMessage(), true);
-						}
-			        }
+	                
 			               // Fertig!
 			        try {
-						if (imagesFetched)
-							setCache(aktCache);
+						
+						{
+							main.mainActivity.runOnUiThread(new Runnable() 
+							{
+					               @Override
+					               public void run() 
+					               {
+					            	
+					               }
+					           });
+
+						}
+							
 					} catch (Exception e) 
 					{
-						Global.AddLog("ERROR : Beim neu setzen der Images nach dem Laden (DescriptionView)\n" + e.getMessage(), true);
+						String Msg = (e==null)? "" : e.getMessage();
+						Global.AddLog("ERROR : Beim neu setzen der Images nach dem Laden (DescriptionView)\n" + Msg, true);
 					}
 			    
 	    }
     };
  
     
-    
-    
+     
     
 	@Override
 	public boolean ItemSelected(MenuItem item) {
