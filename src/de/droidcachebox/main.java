@@ -59,6 +59,7 @@ import de.droidcachebox.Views.Forms.numerik_inputbox_dialog;
 import de.droidcachebox.Database;
 import de.droidcachebox.Database.DatabaseType;
 import de.droidcachebox.Geocaching.Cache;
+import de.droidcachebox.Geocaching.CacheList;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.app.Activity;
@@ -316,9 +317,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        initialButtons();
 	        initialCaheInfoSlider();
 	        
-	        Global.SelectedCache(Database.Data.Query.get(0));
-	        
-	        
+	        // Saarfuchs: hier war ein OutOfBoundsIndex-Exception, wenn keine Caches in der Datenbank waren  
+	        CacheList cacheList = Database.Data.Query;
+	        if( cacheList.size() > 0 ) {
+				Cache cache = cacheList.get(0);
+				Global.SelectedCache(cache);
+	        }
 	        
 	        if (aktViewId != -1)
 	        {
