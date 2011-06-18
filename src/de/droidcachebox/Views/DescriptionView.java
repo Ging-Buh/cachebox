@@ -128,35 +128,35 @@ public class DescriptionView extends WebView implements ViewOptionsMenu, Selecte
         this.getSettings().setLightTouchEnabled(true);
         
         
-     // Falls nicht geladene Bilder vorliegen und eine Internetverbindung
-     // erlaubt ist, diese laden und Bilder erneut auflösen
-        if (Config.GetBool("AllowInternetAccess") && NonLocalImagesUrl.size() > 0)
-        {
-        	downloadThread = new Thread() {
-                public void run() {
-                	        			
-        	        while (NonLocalImagesUrl != null && NonLocalImagesUrl.size()> 0)
-        	        {
-        	            String local, url;
-        	            local = NonLocalImages.get(0);
-        	            url = NonLocalImagesUrl.get(0);
-        	            NonLocalImagesUrl.remove(0);
-        	            NonLocalImages.remove(0);
-        	            try 
-        	            {
-        					DescriptionImageGrabber.Download(url, local);
-        				} catch (Exception e) 
-        				{
-        					String Msg = (e==null)? "" : e.getMessage();
-        					Global.AddLog("ERROR :DescriptionImageGrabber.Download(url, local) \n" + Msg, true);
-        				}
-        	        }
-                     downloadReadyHandler.post(downloadComplete);
-                }
-            };
-        	loaderThread.start();
-        }
-        
+		// Falls nicht geladene Bilder vorliegen und eine Internetverbindung
+		// erlaubt ist, diese laden und Bilder erneut auflösen
+		if (Config.GetBool("AllowInternetAccess")
+				&& NonLocalImagesUrl.size() > 0) {
+			downloadThread = new Thread() {
+				public void run() {
+
+					while (NonLocalImagesUrl != null && NonLocalImagesUrl.size() > 0) {
+						String local, url;
+						local = NonLocalImages.get(0);
+						url = NonLocalImagesUrl.get(0);
+						NonLocalImagesUrl.remove(0);
+						NonLocalImages.remove(0);
+						try {
+							DescriptionImageGrabber.Download(url, local);
+						} catch (Exception e) {
+							String Msg = (e == null) ? "" : e.getMessage();
+							Global.AddLog( "ERROR :DescriptionImageGrabber.Download(url, local) \n" + Msg, true);
+						}
+					}
+					downloadReadyHandler.post(downloadComplete);
+				}
+			};
+			// Saarfuchs - verstehe hier nicht was der loaderThread soll???
+			// Müsste doch der downloadThread sein?!
+			// loaderThread.start();
+			downloadThread.start();
+		}
+
 	}
 	
 	 final Handler downloadReadyHandler = new Handler();
@@ -200,7 +200,7 @@ public class DescriptionView extends WebView implements ViewOptionsMenu, Selecte
        
     
     
-    
+    // @Todo braucht man den - der tut doch nix????
     // Threding methods to reload images if allowd
 	Thread loaderThread = new Thread() 
     {
