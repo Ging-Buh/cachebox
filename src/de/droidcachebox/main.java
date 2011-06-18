@@ -1159,8 +1159,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	  if (mi != null)
     		  mi.setEnabled(enabled);
     	  mi = icm.menu.findItem(R.id.miSpoilerView);
-    	  if (mi != null)
-    		  mi.setEnabled(Global.selectedCache.SpoilerExists());
+    	  // Saarfuchs: hier musste noch abgetestet werden, dass auch ein Cache selektiert ist, sonst Absturz
+    	  if (mi != null && Global.selectedCache!=null ) {
+    		  mi.setEnabled( Global.selectedCache.SpoilerExists() );
+    	  }
+    	  else {
+    		  mi.setEnabled( false );
+    	  }
     	  Menu IconMenu=icm.getMenu();
     	  Global.Translations.TranslateMenuItem(IconMenu, R.id.miHint, "hint");
     	  Global.Translations.TranslateMenuItem(IconMenu, R.id.miTelJoker, "joker");
