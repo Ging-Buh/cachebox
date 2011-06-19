@@ -413,6 +413,7 @@ public class Cache implements Comparable<Cache> {
     }
 
     public ArrayList<Waypoint> waypoints = null;
+
 /*
     public List<Waypoint> Waypoints
     {

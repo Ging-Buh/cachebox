@@ -135,6 +135,7 @@ utf8
 		confirm = Confirmer
 		ok = Ok	
 		edit = Edit	
+		call = Appeler
 		close = Schließen
 		decode = Decode
 		yes = Yes

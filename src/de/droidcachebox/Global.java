@@ -21,6 +21,7 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Messenger;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Coordinate;
+import de.droidcachebox.Geocaching.JokerList;
 import de.droidcachebox.Geocaching.Waypoint;
 import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.RouteOverlay;
@@ -32,7 +33,7 @@ import de.droidcachebox.Views.Forms.MessageBox;
 
 
 public class Global {
-    public static final int CurrentRevision = 235;
+    public static final int CurrentRevision = 236;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
@@ -48,6 +49,7 @@ public class Global {
     	"Support under: www.geoclub.de/viewforum.php?f=114 ";
     
     public static final boolean Debug = true;
+	public static JokerList Jokers = new JokerList();
 	
     
     

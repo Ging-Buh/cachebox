@@ -1,17 +1,15 @@
 package de.droidcachebox;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import org.mapsforge.preprocessing.highwayHierarchies.hierarchyComputation.util.DBConnection;
 
 import de.droidcachebox.ExtAudioRecorder;
 import de.droidcachebox.Components.ActivityUtils;
@@ -29,13 +27,13 @@ import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.SelectedLangChangedEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Locator.Locator;
-import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Views.AboutView;
 import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.CompassView;
 import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.EmptyViewTemplate;
 import de.droidcachebox.Views.FieldNotesView;
+import de.droidcachebox.Views.JokerView;
 import de.droidcachebox.Views.LogView;
 import de.droidcachebox.Views.MapView;
 import de.droidcachebox.Views.NotesView;
@@ -45,7 +43,6 @@ import de.droidcachebox.Views.WaypointView;
 import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
 import de.droidcachebox.Views.FilterSettings.PresetListView;
 import de.droidcachebox.Views.Forms.DialogID;
-import de.droidcachebox.Views.Forms.EditWaypoint;
 import de.droidcachebox.Views.Forms.HintDialog;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;
@@ -55,25 +52,21 @@ import de.droidcachebox.Views.Forms.Settings;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.NumerikInputBox;
 import de.droidcachebox.Database;
-import de.droidcachebox.Database.DatabaseType;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.CacheList;
 import de.droidcachebox.Geocaching.Coordinate;
+import de.droidcachebox.Geocaching.JokerEntry;
+import de.droidcachebox.Geocaching.JokerList;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.database.Cursor;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Resources.Theme;
-import android.content.res.TypedArray;
 import android.content.ContentValues;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -89,6 +82,8 @@ import android.location.LocationProvider;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -136,16 +131,17 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    private static long GPSTimeStamp = 0;
 		private static MapView mapView = null;					// ID 0
 		private static CacheListView cacheListView = null;		// ID 1
-		private static WaypointView waypointView = null;			// ID 2
+		private static WaypointView waypointView = null;		// ID 2
 		private static LogView logView = null;					// ID 3
 		private static DescriptionView descriptionView = null;	// ID 4
 		private static SpoilerView spoilerView = null;			// ID 5
 		private static NotesView notesView = null;				// ID 6
-		private static SolverView solverView = null;				// ID 7
+		private static SolverView solverView = null;			// ID 7
 		private static CompassView compassView = null;			// ID 8
-		private static FieldNotesView fieldNotesView = null;		// ID 9
+		private static FieldNotesView fieldNotesView = null;	// ID 9
 		private static EmptyViewTemplate TestEmpty = null;		// ID 10
 		private static AboutView aboutView = null;				// ID 11
+		private static JokerView jokerView = null;				// ID 12
 	    
 	
 		// Media
@@ -758,6 +754,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	                cacheListView = null;
 	                mapView = null;
 	                notesView = null;
+	                jokerView = null;
 	                descriptionView = null;
 	                mainActivity = null;
 	                debugInfoPanel.OnFree();
@@ -825,23 +822,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        }
 	    };
 	
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
 	   	    
 	    
-	    
-    
-    
-    
-
     
 	public void showView(Integer ID)
     {
@@ -1127,9 +1109,75 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
   		    		//showView(9);
   		    		// beim Anzeigen der FieldNotesView gleich das Optionsmenü zeigen
   		    		//openOptionsMenu();
-		    		Toast.makeText(mainActivity, "Telephone Joker", Toast.LENGTH_SHORT).show();
-
-  		    		break;				
+  		    		if (Global.Jokers.isEmpty())
+  		    		{ // Wenn Telefonjoker-Liste leer neu laden
+	  		    		try
+	  		    		{
+	  			    		Toast.makeText(mainActivity, "Connecting...Please wait...", Toast.LENGTH_LONG).show();
+	  		    			URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.GetString("GcJoker") + "&wpt=" + Global.selectedCache.GcCode);
+	  		    			URLConnection urlConnection = url.openConnection();
+	  		    			HttpURLConnection httpConnection=(HttpURLConnection)urlConnection;
+	  		    			
+	  		    			//Get the HTTP response code
+	  		    			if(httpConnection.getResponseCode()==HttpURLConnection.HTTP_OK)
+	  		    			{
+	  		    				InputStream inputStream = httpConnection.getInputStream();
+	  		    				if(inputStream != null)
+	  		    				{
+	  		    					String line;
+	  		    					try
+	  		    					{
+	  		    						BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+	  		    						while((line=reader.readLine()) != null)
+	  		    						{
+	  		    							String[] s = line.split(";",7);
+	  		    							try
+	  		    							{
+	  		    								if (s[0].equals("2")) 	// 2 entspricht Fehler, Fehlerursache ist in S[1]
+	  		    								{
+	  		    									MessageBox.Show(s[1],null);
+	  		    									break;
+	  		    								}
+	  		    								if (s[0].equals("1")) 	// 1 entspricht Warnung, Ursache ist in S[1]
+	  		    								{						// es können aber noch gültige Einträge folgen
+	  		    									MessageBox.Show(s[1],null);
+	  		    								}
+	  		    								if (s[0].equals("0")) 	// Normaler Eintrag
+	  		    								{
+	  		    									Global.Jokers.AddJoker(s[1], s[2], s[3], s[4], s[5], s[6]);
+	  		    								}
+	  		    							} catch (Exception exc)
+	  		    							{
+	  		    								//
+	  		    					        	Global.AddLog("ocMain: " + exc.getMessage());
+	 		    								break;
+	  		    							}
+	  		    						}
+	  		    			        	Global.AddLog("Open JokerView...");
+	 		    	  		    		showView(12);
+	  		    					}
+	  		    					finally
+	  		    					{
+	  		    						inputStream.close();
+	  		    					}
+	  		    				}
+	  		    			 }
+	  		    		}
+	  		    		catch(MalformedURLException urlEx){
+	  			        	Global.AddLog("ocMain: " + urlEx.getMessage());
+	  		                Log.d("DroidCachebox",urlEx.getMessage());		
+	  		    			 }
+	  		    		catch (IOException ioEx){
+	  			        	Global.AddLog("ocMain: " + ioEx.getMessage());
+	  		                Log.d("DroidCachebox",ioEx.getMessage());	
+	  		                MessageBox.Show("Fehler bei Internetzugriff",null);
+	  		    			 }
+	  		    		catch(Exception ex){
+	  			        	Global.AddLog("ocMain: " + ex.getMessage());
+	  		                Log.d("DroidCachebox",ex.getMessage());		
+	  		    		}
+  		    	}
+   		    		break;				
   		    	}
   		    }
   		});
@@ -1149,6 +1197,14 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	  else {
     		  mi.setEnabled( false );
     	  }
+    	  // Menu Item Telefonjoker enabled / disabled abhänging von gcJoker MD5
+    	  enabled = false;
+    	  if (Config.GetString("GcJoker") != "")
+    		  enabled = true;
+    	  mi = icm.menu.findItem(R.id.miTelJoker);
+    	  if (mi != null)
+    		  mi.setEnabled(enabled);
+
     	  Menu IconMenu=icm.getMenu();
     	  Global.Translations.TranslateMenuItem(IconMenu, R.id.miHint, "hint");
     	  Global.Translations.TranslateMenuItem(IconMenu, R.id.miTelJoker, "joker");
@@ -1330,6 +1386,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			TestEmpty = new EmptyViewTemplate(this, inflater);
 		if (aboutView == null)
 			aboutView = new AboutView(this, inflater);
+		if (jokerView == null)
+			jokerView = new JokerView(this, this);
 		
 		ViewList.add(mapView);				// ID 0
     	ViewList.add(cacheListView);		// ID 1
@@ -1343,6 +1401,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	ViewList.add(fieldNotesView);		// ID 9
     	ViewList.add(TestEmpty);			// ID 10
     	ViewList.add(aboutView);			// ID 11
+    	ViewList.add(jokerView);			// ID 12
+
 	}
 
 	private void initialLocationManager() 
@@ -1424,6 +1484,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			compassView			// ID 8	
 			fieldNotesView		// ID 9
 			TestEmpty			// ID 10
+			jokerView			// ID 12
 			
 			Activitys:
 			filterSettings		// ID 101
@@ -1449,6 +1510,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		btnInfoActionIds = new ArrayList<Integer>();
 		btnInfoActionIds.add(3);	//logView
 		btnInfoActionIds.add(9);	//fieldNotesView
+		btnInfoActionIds.add(12);	//jokerView
 		
 		btnMiscActionIds = new ArrayList<Integer>();
 		btnMiscActionIds.add(102);	//Settings
