@@ -123,10 +123,12 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 				cacheInfoBackColor = Global.getColor(R.attr.ListBackground_secend); // Cache ist nicht selectiert
 				WP_info.setWaypoint(aktWaypoint);
 				DescriptionTextView.setVisibility(View.GONE);
+				WP_info.setVisibility(View.VISIBLE);
             }
 			else
 			{
 				DescriptionTextView.setVisibility(View.VISIBLE);
+				WP_info.setVisibility(View.GONE);
 				WP_info.setWaypoint(null);
 			}
 			

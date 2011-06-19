@@ -932,11 +932,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    		
 		    		break;
 		    		
-		    	case R.id.miCompassView:
-		    		showView(8);
-		    		
-		    		break;
-		    		
+		    	
 		    	case R.id.miVoiceRecorder:
 		    		if (!getVoiceRecIsStart()) // Voice Recorder starten
 		    		{

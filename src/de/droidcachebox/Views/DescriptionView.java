@@ -151,9 +151,6 @@ public class DescriptionView extends WebView implements ViewOptionsMenu, Selecte
 					downloadReadyHandler.post(downloadComplete);
 				}
 			};
-			// Saarfuchs - verstehe hier nicht was der loaderThread soll???
-			// Müsste doch der downloadThread sein?!
-			// loaderThread.start();
 			downloadThread.start();
 		}
 
@@ -191,49 +188,7 @@ public class DescriptionView extends WebView implements ViewOptionsMenu, Selecte
         return sb.toString();
     }
 
-   
     
-    
-    
-    //downloadThread.start();
-
-       
-    
-    
-    // @Todo braucht man den - der tut doch nix????
-    // Threding methods to reload images if allowd
-	Thread loaderThread = new Thread() 
-    {
-		@Override
-	    public void run() 
-	    {
-	                
-			               // Fertig!
-			        try {
-						
-						{
-							main.mainActivity.runOnUiThread(new Runnable() 
-							{
-					               @Override
-					               public void run() 
-					               {
-					            	
-					               }
-					           });
-
-						}
-							
-					} catch (Exception e) 
-					{
-						String Msg = (e==null)? "" : e.getMessage();
-						Global.AddLog("ERROR : Beim neu setzen der Images nach dem Laden (DescriptionView)\n" + Msg, true);
-					}
-			    
-	    }
-    };
- 
-    
-     
     
 	@Override
 	public boolean ItemSelected(MenuItem item) {
