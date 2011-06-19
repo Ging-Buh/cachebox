@@ -1113,7 +1113,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
   		    		{ // Wenn Telefonjoker-Liste leer neu laden
 	  		    		try
 	  		    		{
-	  			    		Toast.makeText(mainActivity, "Connecting...Please wait...", Toast.LENGTH_LONG).show();
 	  		    			URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.GetString("GcJoker") + "&wpt=" + Global.selectedCache.GcCode);
 	  		    			URLConnection urlConnection = url.openConnection();
 	  		    			HttpURLConnection httpConnection=(HttpURLConnection)urlConnection;

@@ -21,7 +21,6 @@ public class JokerViewItem extends View {
     private int width;
     private int height;
     private boolean BackColorChanger = false;
-//    private final int CornerSize =20;
     private int rightBorder;
     private int imgSize;
     private StaticLayout LayoutName; 

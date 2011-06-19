@@ -31,6 +31,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 	CustomAdapter lvAdapter;
 	Activity parentActivity;
 	Cache aktCache = null;
+	JokerEntry aktJoker = null;
 	
 	private Paint paint;
 	/**
@@ -45,13 +46,27 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 		this.setAdapter(lvAdapter);
 		this.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-/*				aktWaypoint = null;
-				if (arg2 > 0)
-					aktWaypoint = Global.SelectedCache().waypoints.get(arg2 - 1);
-        		aktCache = Global.SelectedCache();
-        		Global.SelectedWaypoint(Global.SelectedCache(), aktWaypoint);*/
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				String TelephoneNumber;
+				
+				TelephoneNumber = null;
+				if (arg2 >= 0) // Nummer raussuchen und unzulässige Zeichen entfernen
+					TelephoneNumber = Global.Jokers.get(arg2).Telefon.replaceAll("[^\\d\\+]", "");
+				
+				// Telefonnummer wählen
+				/*try {
+					Intent callIntent = new Intent(Intent.ACTION_CALL);
+					callIntent.setData(Uri.parse("tel:" + TelephoneNumber));
+					startActivity(callIntent);
+					TelephonyManager tManager = (TelephonyManager)
+					getSystemService(Context.TELEPHONY_SERVICE);
+					listener = new ListenToPhoneState();
+					tManager.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
+					} 
+				catch (ActivityNotFoundException activityException) {
+					Log.e("telephony-example", "Call failed", activityException);
+					}
+				}*/
 			}
 		});
 		this.setBackgroundColor(Config.GetBool("nightMode")? R.color.Night_EmptyBackground : R.color.Day_EmptyBackground);
@@ -124,7 +139,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 	    }
 	    public int getCount() {
 	    	if (cache != null)
-	    		return Global.Jokers.size() + 1;
+	    		return Global.Jokers.size();
 	    	else
 	    		return 0;
 	    }
@@ -132,10 +147,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 	    public Object getItem(int position) {
 	    	if (cache != null)
 	    	{
-	    		if (position == 0)
-	    			return cache;
-	    		else
-	    			return Global.Jokers.get(position - 1);
+    			return Global.Jokers.get(position);
 	    	} else
 	    		return null;
 	    }
