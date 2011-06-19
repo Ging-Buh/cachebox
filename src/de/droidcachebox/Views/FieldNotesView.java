@@ -19,9 +19,10 @@ import de.droidcachebox.Geocaching.Waypoint;
 import de.droidcachebox.Views.CacheListView.CustomAdapter;
 import de.droidcachebox.Views.Forms.EditFieldNote;
 import de.droidcachebox.Views.Forms.EditWaypoint;
-import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;
+import de.droidcachebox.Views.Forms.MessageBox;
+import de.droidcachebox.Views.Forms.ProgressDialog;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -189,7 +190,7 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 				switch (button)
 				{
 					case -1:
-						//UploadFieldNotesForm.Show();
+						ProgressDialog.Show("Upload FieldNotes", null);
 						break;
 					case -2:
 						

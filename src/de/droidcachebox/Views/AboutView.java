@@ -12,8 +12,7 @@ import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Waypoint;
-import de.droidcachebox.Views.Forms.NumerickInputBox;
-import de.droidcachebox.Views.Forms.numerik_inputbox_dialog;
+import de.droidcachebox.Views.Forms.NumerikInputBox;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -95,7 +94,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 			@Override
 			public void onClick(View arg0) 
 			{
-				NumerickInputBox.Show(Global.Translations.Get("AdjustFinds"),Global.Translations.Get("TelMeFounds"),Config.GetInt("FoundOffset"), DialogListner);
+				NumerikInputBox.Show(Global.Translations.Get("AdjustFinds"),Global.Translations.Get("TelMeFounds"),Config.GetInt("FoundOffset"), DialogListner);
 			}
 		});
 		
@@ -143,7 +142,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		
 		@Override public void onClick(DialogInterface dialog, int button) 
 			{
-				String text =((numerik_inputbox_dialog) dialog).editText.getText().toString();
+				String text =((NumerikInputBox) dialog).editText.getText().toString();
 				// Behandle das ergebniss
 				switch (button)
 				{

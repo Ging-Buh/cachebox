@@ -47,15 +47,13 @@ import de.droidcachebox.Views.FilterSettings.PresetListView;
 import de.droidcachebox.Views.Forms.DialogID;
 import de.droidcachebox.Views.Forms.EditWaypoint;
 import de.droidcachebox.Views.Forms.HintDialog;
-import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;
-import de.droidcachebox.Views.Forms.NumerickInputBox;
 import de.droidcachebox.Views.Forms.ScreenLock;
 import de.droidcachebox.Views.Forms.SelectDB;
 import de.droidcachebox.Views.Forms.Settings;
-import de.droidcachebox.Views.Forms.message_box_dialog;
-import de.droidcachebox.Views.Forms.numerik_inputbox_dialog;
+import de.droidcachebox.Views.Forms.MessageBox;
+import de.droidcachebox.Views.Forms.NumerikInputBox;
 import de.droidcachebox.Database;
 import de.droidcachebox.Database.DatabaseType;
 import de.droidcachebox.Geocaching.Cache;
@@ -838,17 +836,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    
 	    
 	   	    
-	    /**
-	     * Build the desired Dialog
-	     */
-	    @Override
-	    public Dialog onCreateDialog(int dialogId, Bundle b) 
-	    {
-	    	if (dialogId > 0 && dialogId < 5)return MessageBox.CreateDialog(dialogId, b);
-	    	if (dialogId == DialogID.NUMERICK_INPUT)return NumerickInputBox.CreateDialog(dialogId, b);
-	    	
-	    	return null;
-	    }
 	    
 	    
     

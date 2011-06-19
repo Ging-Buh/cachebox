@@ -2,9 +2,11 @@ package de.droidcachebox.Views.Forms;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
 import de.droidcachebox.Components.ActivityUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Canvas;
@@ -23,6 +25,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -30,15 +33,49 @@ import android.widget.TextView;
 import android.widget.ImageView;
 
 
-public class numerik_inputbox_dialog extends android.app.Dialog 
+public class ProgressDialog extends android.app.Dialog 
 {
+private static DialogInterface.OnClickListener listner;
+	
+	
+	
+	public static void Show (String title, DialogInterface.OnClickListener Listener)
+	{
+		listner = Listener;
+	 	if(listner==null) // setze standard Listner zu schliessen des Dialogs, falls kein LÖistner angegeben wurde
+		{
+			listner = new DialogInterface.OnClickListener() 
+			{
+				@Override
+				public void onClick(DialogInterface dialog, int which) 
+				{
+					dialog.dismiss();
+				}
+			};
+		}
+		
+		
+    			Dialog dialog = null;
+    	   		ProgressDialog.Builder customBuilder = new
+	    		ProgressDialog.Builder(main.mainActivity);
+				customBuilder	.setTitle(title)
+								.setPositiveButton(Global.Translations.Get("ok"),listner)
+								.setNegativeButton(Global.Translations.Get("cancel"),listner);
+	            dialog = customBuilder.create();
+	    		
+	            dialog.show();
+	    	
+    	
+    	
+    }
+
  
-    public numerik_inputbox_dialog(Context context, int theme) 
+    public ProgressDialog(Context context, int theme) 
     {
         super(context, theme);
     }
  
-    public numerik_inputbox_dialog(Context context) 
+    public ProgressDialog(Context context) 
     {
         super(context);
     }
@@ -47,7 +84,8 @@ public class numerik_inputbox_dialog extends android.app.Dialog
     /**
 	 * Helper class for creating a custom dialog
 	 */
-	    public static class Builder {
+	    public static class Builder 
+	    {
 	 
 	        private Context context;
 	        private String title;
@@ -55,6 +93,11 @@ public class numerik_inputbox_dialog extends android.app.Dialog
 	        private String positiveButtonText;
 	        private String negativeButtonText;
 	        private int value;
+	        
+	        private TextView titleTextView;
+	        private TextView messageTextView;
+	        private TextView progressMessageTextView;
+	        private ProgressBar progressBar;
 	        
 	        private View contentView;
 	        
@@ -189,17 +232,22 @@ public class numerik_inputbox_dialog extends android.app.Dialog
 	            this.negativeButtonClickListener = listener;
 	            return this;
 	        }
+	        
+	        
+	        
+	        
+	        
 	 
 	        /**
 	         * Create the custom dialog
 	         */
-	        public numerik_inputbox_dialog create() {
+	        public ProgressDialog create() {
 	            LayoutInflater inflater = (LayoutInflater) context
 	                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	            // instantiate the dialog with the custom Theme
-	            final numerik_inputbox_dialog dialog = new numerik_inputbox_dialog(context, 
+	            final ProgressDialog dialog = new ProgressDialog(context, 
 	            		R.style.Dialog);
-	            View layout = inflater.inflate(R.layout.numerik_inputbox_layout, null);
+	            View layout = inflater.inflate(R.layout.progress_dialog_layout, null);
 	            dialog.addContentView(layout, new LayoutParams(
 	                    LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 	            // set the dialog title
@@ -269,81 +317,20 @@ public class numerik_inputbox_dialog extends android.app.Dialog
 	                                        LayoutParams.WRAP_CONTENT));
 	            }
 	            
-	            // set the value
-	            editText =(EditText) layout.findViewById(R.id.editNumber);
-	            editText.setText(String.valueOf(value));
-	            editText.setTextSize((float) (Global.scaledFontSize_normal*0.8)); 
-	           
-	            
-	            // disable soft keyboard
-	           
-	            ((InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE))
-	            .showSoftInput(editText, InputMethodManager.HIDE_NOT_ALWAYS); 
-	           
-	           
-	           
-	           // NumButton Handler
-	           ((Button) layout.findViewById(R.id.num0)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num1)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num2)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num3)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num4)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num5)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num6)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num7)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num8)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num9)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.del)).setOnClickListener(delButtonClickListner);     
 	            
 	            dialog.setContentView(layout);
 	            return dialog;
 	        }
 
+	        public void setProgress(String ProgressMsg, int value)
+			{
+			
+		       // messageTextView;
+		       progressMessageTextView.setText(ProgressMsg);
+		       progressBar.setProgress(value);
+		       
+			}
 					 
 	    }
 	    
-	    public static EditText editText;
-	    
-	    public static View.OnClickListener numButtonClickListner = new View.OnClickListener() 
-	    {
-			@Override
-			public void onClick(View v) 
-			{
-				int cursor = editText.getSelectionStart();
-                int selLength = editText.getSelectionEnd()-editText.getSelectionStart();
-                String text = editText.getText().toString();
-                text = text.substring(0, cursor) + ((Button)v).getText() + text.substring(cursor + selLength);
-                editText.setText(text);
-                editText.setSelection(cursor + 1, cursor + 1);
-			}
-		};
-		
-	    
-	    public static View.OnClickListener delButtonClickListner = new View.OnClickListener() 
-	    {
-			@Override
-			public void onClick(View v) 
-			{
-				int cursor = editText.getSelectionStart();
-				int selLength = editText.getSelectionEnd()-editText.getSelectionStart();
-				String text = editText.getText().toString();
-		            if (editText.getSelectionStart() > 0 && selLength == 0)
-		            {
-		            	editText.setText( text.substring(0, cursor - 1) + text.substring(cursor));
-		            	editText.setSelection(cursor - 1, cursor - 1);
-		               
-		                return;
-		            }
-
-		            if (selLength > 0)
-		            {
-		            	editText.setText( text.substring(0, cursor) + text.substring(cursor + selLength));
-		            	editText.setSelection(cursor, cursor);
-		                
-		                return;
-		            }
-				
-			}
-		};
-	 
 	}

@@ -26,13 +26,13 @@ import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.TranslationEngine.LangStrings;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
-import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;
+import de.droidcachebox.Views.Forms.MessageBox;
 
 
 public class Global {
-    public static final int CurrentRevision = 230;
+    public static final int CurrentRevision = 235;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
