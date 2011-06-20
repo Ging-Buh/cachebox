@@ -65,7 +65,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 				
 				// Telefonnummer wählen
 				try {
-				 	TelephoneNumber = "0xxxxxx"; // Telefonnummer zum testen
+				 	//TelephoneNumber = "0........."; // Telefonnummer zum testen
 					Intent callIntent = new Intent(Intent.ACTION_CALL);
 					callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					callIntent.setData(Uri.parse("tel:" + TelephoneNumber));
@@ -75,7 +75,8 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 					tManager.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
 					} 
 				catch (ActivityNotFoundException activityException) {
-					Log.e("telephony-example", "Call failed", activityException);
+			        Global.AddLog("JokerView: Call failed " + activityException.getMessage());		
+					Log.e("DroidCachebox", "Call failed", activityException);
 					}
 				}
 			});
@@ -260,16 +261,5 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
-	/*	private class ListenToPhoneState extends PhoneStateListener {
-	
-	public void onCallStateChanged(int state, String incommingNumber){
-		if (state == TelephonyManager.CALL_STATE_IDLE){
-			finish();
-			startActivity(new Intent(getBaseContext(), MainActivity.class));
-		}
-	}
-	
-}*/
 }
 
