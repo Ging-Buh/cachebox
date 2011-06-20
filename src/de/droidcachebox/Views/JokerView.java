@@ -4,7 +4,9 @@ package de.droidcachebox.Views;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
 
+import de.droidcachebox.Components.ListenToPhoneState;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
@@ -13,11 +15,14 @@ import de.droidcachebox.Geocaching.JokerEntry;
 import de.droidcachebox.Geocaching.JokerList;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +31,10 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
+
+
 
 public class JokerView extends ListView implements SelectedCacheEvent, ViewOptionsMenu {
 	
@@ -33,7 +42,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 	Activity parentActivity;
 	Cache aktCache = null;
 	JokerEntry aktJoker = null;
-	
+	ListenToPhoneState listener = new ListenToPhoneState();
 	private Paint paint;
 	/**
 	 * Constructor
@@ -55,22 +64,23 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 					TelephoneNumber = Global.Jokers.get(arg2).Telefon.replaceAll("[^\\d\\+]", "");
 				
 				// Telefonnummer wählen
-				/*try {
+				try {
 				 	TelephoneNumber = "0xxxxxx"; // Telefonnummer zum testen
 					Intent callIntent = new Intent(Intent.ACTION_CALL);
 					callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					callIntent.setData(Uri.parse("tel:" + TelephoneNumber));
-		    		startActivity(callIntent);
-					TelephonyManager tManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+					parentActivity.startActivity(callIntent);
+					TelephonyManager tManager = (TelephonyManager)parentActivity.getSystemService(Context.TELEPHONY_SERVICE);
 					listener = new ListenToPhoneState();
 					tManager.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
 					} 
 				catch (ActivityNotFoundException activityException) {
 					Log.e("telephony-example", "Call failed", activityException);
 					}
-				}*/
-			}
-		});
+				}
+			});
+	
+		
 		this.setBackgroundColor(Config.GetBool("nightMode")? R.color.Night_EmptyBackground : R.color.Day_EmptyBackground);
 		this.setCacheColorHint(R.color.Day_TitleBarColor);
 		this.setDividerHeight(5);
