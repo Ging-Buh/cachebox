@@ -1152,8 +1152,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	 		    								break;
 	  		    							}
 	  		    						}
-	  		    			        	Global.AddLog("Open JokerView...");
-	 		    	  		    		showView(12);
+	  		    						if (Global.Jokers.isEmpty()){
+	  		    							MessageBox.Show("Keine Joker bekannt",null);
+	  		    						}
+	  		    						else {
+		  		    			        	Global.AddLog("Open JokerView...");
+		 		    	  		    		showView(12);
+	  		    						}
 	  		    					}
 	  		    					finally
 	  		    					{

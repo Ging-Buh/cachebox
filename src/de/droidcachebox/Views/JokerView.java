@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,11 +56,12 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 				
 				// Telefonnummer wählen
 				/*try {
+				 	TelephoneNumber = "0xxxxxx"; // Telefonnummer zum testen
 					Intent callIntent = new Intent(Intent.ACTION_CALL);
+					callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					callIntent.setData(Uri.parse("tel:" + TelephoneNumber));
-					startActivity(callIntent);
-					TelephonyManager tManager = (TelephonyManager)
-					getSystemService(Context.TELEPHONY_SERVICE);
+		    		startActivity(callIntent);
+					TelephonyManager tManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 					listener = new ListenToPhoneState();
 					tManager.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
 					} 
@@ -248,5 +250,16 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	/*	private class ListenToPhoneState extends PhoneStateListener {
+	
+	public void onCallStateChanged(int state, String incommingNumber){
+		if (state == TelephonyManager.CALL_STATE_IDLE){
+			finish();
+			startActivity(new Intent(getBaseContext(), MainActivity.class));
+		}
+	}
+	
+}*/
 }
 
