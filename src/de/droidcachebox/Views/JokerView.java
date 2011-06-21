@@ -54,9 +54,9 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 		this.setAdapter(null);
 		lvAdapter = new CustomAdapter(getContext(), Global.SelectedCache());
 		this.setAdapter(lvAdapter);
-		this.setOnItemClickListener(new OnItemClickListener() {
+		this.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 				String TelephoneNumber;
 				
 				TelephoneNumber = null;
@@ -65,7 +65,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 				
 				// Telefonnummer wählen
 				try {
-				 	//TelephoneNumber = "0........."; // Telefonnummer zum testen
+				 	//TelephoneNumber = "0......."; // Telefonnummer zum testen
 					Intent callIntent = new Intent(Intent.ACTION_CALL);
 					callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					callIntent.setData(Uri.parse("tel:" + TelephoneNumber));
@@ -73,10 +73,12 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 					TelephonyManager tManager = (TelephonyManager)parentActivity.getSystemService(Context.TELEPHONY_SERVICE);
 					listener = new ListenToPhoneState();
 					tManager.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
+					return true;
 					} 
 				catch (ActivityNotFoundException activityException) {
 			        Global.AddLog("JokerView: Call failed " + activityException.getMessage());		
 					Log.e("DroidCachebox", "Call failed", activityException);
+					return false;
 					}
 				}
 			});

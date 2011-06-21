@@ -4,7 +4,7 @@ import android.util.Log;
 
 public class Lg {
         
-        private static final String LOG_TAG = "x";
+        private static final String LOG_TAG = "DroidCachebox";
         
 
         public static void verbose(final String message) {
