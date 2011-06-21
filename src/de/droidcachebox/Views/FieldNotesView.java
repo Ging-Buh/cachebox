@@ -9,6 +9,7 @@ import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.Events.ProgresssChangedEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
@@ -186,11 +187,10 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 	private final  DialogInterface.OnClickListener  UploadFieldnotesDialogListner = new  DialogInterface.OnClickListener() 
 	   { @Override public void onClick(DialogInterface dialog, int button) 
 			{
-				// Behandle das ergebniss
 				switch (button)
 				{
 					case -1:
-						ProgressDialog.Show("Upload FieldNotes", null);
+						UploadFieldNotes();
 						break;
 					case -2:
 						
@@ -204,9 +204,68 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 	    
 	
 	
-	 
-	 
-	 
+	private  void UploadFieldNotes()
+	{
+		Thread UploadFieldNotesdThread = new Thread() 
+		{
+			public void run() 
+			{
+				ProgresssChangedEventList.Call("Was tue ich hier eigentlich?","", 0);
+				
+				//Tue was zu tun ist
+				for(int i = 0; i < 100; i++)
+			    {
+						//Progress status Melden
+			        	ProgresssChangedEventList.Call("Thread Läuft" + String.valueOf(i), i);
+			        	
+			        	try 
+			        	{
+			        		if(ThreadCancel) // wenn im ProgressDialog Cancel gedrückt wurde.
+			        			break;
+			        		
+							Thread.sleep(500);
+						} 
+			        	catch (InterruptedException e) 
+						{
+							e.printStackTrace();
+						}
+			    }
+				if(!ThreadCancel)
+				{
+					ProgressDialog.Ready(); 				//Dem Progress Dialog melden, dass der Thread fertig ist!
+					ProgressHandler.post(ProgressReady);	// auf das Ende des Threads reagieren
+				}
+			}
+		};
+		
+		
+		// ProgressDialog Anzeigen und den Abarbeitungs Thread übergeben.
+		ProgressDialog.Show("Upload FieldNotes", UploadFieldNotesdThread, ProgressCanceld);
+				
+	}
+	
+	private Boolean ThreadCancel = false; 
+	final Runnable ProgressCanceld = new Runnable() 
+    {
+	    public void run() 
+	    {
+	    	ThreadCancel=true;
+	    	MessageBox.Show("Progress abgebrochen!");
+	    }
+    };
+    
+    final Handler ProgressHandler = new Handler();
+	final Runnable ProgressReady = new Runnable() 
+    {
+	    public void run() 
+	    {
+	    	MessageBox.Show("Leider Funktioniert der Upload noch nicht./nDie Anzeige ist nur ein UI-Test!", "Schade", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+	    }
+    };
+    
+    	
+    
+    
 	
 	
 

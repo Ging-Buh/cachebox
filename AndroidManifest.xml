@@ -35,6 +35,7 @@
         <activity android:name=".Views.Forms.EditFieldNote"></activity>
         <activity android:name=".Views.FilterSettings.EditFilterSettings"></activity>
         <activity android:name=".Views.Forms.SelectDB"></activity>
+        <activity android:name=".Views.Forms.ProgressDialog" android:theme="@style/ThemeHintDialog"></activity>
 
     </application>
 </manifest>

@@ -149,6 +149,7 @@ public class DescriptionView extends WebView implements ViewOptionsMenu, Selecte
 						}
 					}
 					downloadReadyHandler.post(downloadComplete);
+					
 				}
 			};
 			downloadThread.start();

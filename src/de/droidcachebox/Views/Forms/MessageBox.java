@@ -56,6 +56,34 @@ public class MessageBox extends android.app.Dialog {
 	 * Das Meldungsfeld enth‰lt keine Beschriftung im Titel und kein Icon.
 	 * 
 	 * @param msg Die Message, welche ausgegeben werden soll.
+     * 
+     * 
+     * <pre> Beispiel:</b>
+     * {@code
+     * MessageBox.Show("Test");
+     * }
+     * </pre>
+     * 
+     * 
+     * 
+	 */
+	public static void Show (String msg)
+	{
+		listner = null;
+		Bundle b = new Bundle();
+        b.putString("msg",msg);
+        Dialog dialog = CreateDialog(DialogID.MSG_BOX_1,b);
+        dialog.show();
+        
+	}
+	
+	/**
+	 * Zeigt ein Meldungsfeld mit angegebenem Text an.
+	 * 
+	 * Im Meldungsfeld wird standardm‰ﬂig die Schaltfl‰che OK angezeigt. 
+	 * Das Meldungsfeld enth‰lt keine Beschriftung im Titel und kein Icon.
+	 * 
+	 * @param msg Die Message, welche ausgegeben werden soll.
      * @param Listener Welcher die Events der Buttons behandelt
      * 
      * 
