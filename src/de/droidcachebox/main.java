@@ -311,11 +311,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        initialButtons();
 	        initialCaheInfoSlider();
 	        
-	        // Saarfuchs: hier war ein OutOfBoundsIndex-Exception, wenn keine Caches in der Datenbank waren  
-	        CacheList cacheList = Database.Data.Query;
-	        if( cacheList.size() > 0 ) {
-				Cache cache = cacheList.get(0);
-				Global.SelectedCache(cache);
+	        if(Global.SelectedCache()==null)
+	        {
+		        CacheList cacheList = Database.Data.Query;
+		        if( cacheList.size() > 0 ) {
+					Cache cache = cacheList.get(0);
+					Global.SelectedCache(cache);
+		        }
 	        }
 	        
 	        if (aktViewId != -1)
@@ -779,8 +781,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     {
 		counter.cancel();
 		counterStopped = true;
-		final Intent mainIntent = new Intent().setClass( this, ScreenLock.class);
-		this.startActivityForResult(mainIntent, 12345);
+		// ScreenLock nur Starten, wenn der Config Wert größer 10 sec ist.
+		// Das verhindert das selber aussperren!
+		if(!(Config.GetInt("LockM")==0 && Config.GetInt("LockSec")<10))
+		{
+			final Intent mainIntent = new Intent().setClass( this, ScreenLock.class);
+			this.startActivityForResult(mainIntent, 12345);
+		}
     }
     
     

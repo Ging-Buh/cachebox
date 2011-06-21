@@ -258,8 +258,13 @@ public class Config {
         validateSetting("AllowLandscape", "false");
         validateSetting("MoveMapCenterWithSpeed", "false");
         validateSetting("MoveMapCenterMaxSpeed", "20");
+        validateSetting("lastZoomLevel", "14");
+        
+        
 //        validateSetting("OtherRepositoriesFolder", Global.AppPath + "\\Repositories");
 
+        
+        
         AcceptChanges();
     }
 

@@ -223,7 +223,7 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 			        		if(ThreadCancel) // wenn im ProgressDialog Cancel gedrückt wurde.
 			        			break;
 			        		
-							Thread.sleep(500);
+							Thread.sleep(50);
 						} 
 			        	catch (InterruptedException e) 
 						{
@@ -259,7 +259,8 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
     {
 	    public void run() 
 	    {
-	    	MessageBox.Show("Leider Funktioniert der Upload noch nicht./nDie Anzeige ist nur ein UI-Test!", "Schade", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+	    	String Br = String.format("%n");
+	    	MessageBox.Show("Leider Funktioniert der Upload noch nicht."+Br+"Die Anzeige ist nur ein UI-Test!", "Schade", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
 	    }
     };
     
