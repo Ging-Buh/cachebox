@@ -45,6 +45,7 @@ import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
 import de.droidcachebox.Views.FilterSettings.PresetListView;
 import de.droidcachebox.Views.Forms.DialogID;
 import de.droidcachebox.Views.Forms.HintDialog;
+import de.droidcachebox.Views.Forms.ImportDialog;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;
 import de.droidcachebox.Views.Forms.ScreenLock;
@@ -859,6 +860,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     			final Intent mainIntent1 = new Intent().setClass( mainActivity, EditFilterSettings.class);
 	    		mainActivity.startActivity(mainIntent1);
 	    		break;
+	    	
+    		case 103: // Filtersettings
+    			final Intent mainIntent2 = new Intent().setClass( mainActivity, ImportDialog.class);
+	    		mainActivity.startActivity(mainIntent2);
+	    		break;
+	    	
     		}
     		    		
     	}
@@ -1056,6 +1063,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    	
 		    	case R.id.miTestEmpty:
 		    		showView(10);
+		    		break;
+		    		
+		    	case R.id.miImport:
+		    		showView(103);
 		    		break;
 		    		
 		    	default:

@@ -36,6 +36,7 @@
         <activity android:name=".Views.FilterSettings.EditFilterSettings"></activity>
         <activity android:name=".Views.Forms.SelectDB"></activity>
         <activity android:name=".Views.Forms.ProgressDialog" android:theme="@style/ThemeHintDialog"></activity>
+        <activity android:name=".Views.Forms.ImportDialog" android:theme="@style/ThemeHintDialog"></activity>
 
     </application>
 </manifest>

@@ -195,6 +195,7 @@ public class ProgressDialog extends Activity implements ProgressChangedEvent,Vie
 		
 	}
 	
+		
 	public static void Ready()
 	{
 		Me.finish();
@@ -254,7 +255,7 @@ public class ProgressDialog extends Activity implements ProgressChangedEvent,Vie
 	{
 		// Registriere Progress Changed Event
         ProgresssChangedEventList.Add(this);
-        ProgressThread.start();
+        if(ProgressThread!=null)ProgressThread.start();
                 
 	}
 

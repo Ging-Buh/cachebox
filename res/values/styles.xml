@@ -1,131 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="ThemeHintDialog" parent="android:style/Theme.Dialog">@style/Theme.HintDialog
-    
-    <item name="android:windowBackground">@android:color/transparent</item>
-<item name="android:windowFrame">@null</item>
-<item name="android:windowContentOverlay">@null</item>
-<item name="android:windowIsFloating">true</item>
-<item name="android:backgroundDimEnabled">true</item>
-<item name="android:windowIsTranslucent">true</item>
-<item name="android:windowNoTitle">true</item>
-<item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item> 
-<item name="android:buttonStyle">@style/Day_Button</item>    
-   
-    </style>
-    
-    
-    
-    
-    
-    <style name="Theme.Transparent" parent="android:Theme">
-	    <item name="android:windowIsTranslucent">true</item>
-    	<item name="android:windowBackground">@android:color/transparent</item>
-    	<item name="android:windowContentOverlay">@null</item>
-    	<item name="android:windowNoTitle">true</item>
-    	<item name="android:backgroundDimEnabled">false</item>
-  	</style>
-  	
-  	<style name="Theme.Transparent.Dim" parent="android:Theme">
-	    <item name="android:windowIsTranslucent">true</item>
-    	<item name="android:windowBackground">@android:color/transparent</item>
-    	<item name="android:windowContentOverlay">@null</item>
-    	<item name="android:windowNoTitle">true</item>
-    	<item name="android:backgroundDimEnabled">true</item>
-  	</style>
-    
-<!-- Button -->    
-    <style name="Day_Button">
-        <item name="android:background">@drawable/day_btn</item>
-        <item name="android:focusable">true</item>
-        <item name="android:clickable">true</item>
-        <item name="android:gravity">center_vertical|center_horizontal</item>
-        <item name="TextColor">@color/Day_Foreground</item> 
-    </style>
-    <style name="Night_Button">
-        <item name="android:background">@drawable/night_btn</item>
-        <item name="android:focusable">true</item>
-        <item name="android:clickable">true</item>
-        <item name="android:gravity">center_vertical|center_horizontal</item>
-        <item name="TextColor">@color/Night_Foreground</item> 
-    </style>
+	<style name="ThemeHintDialog" parent="android:style/Theme.Dialog">
+		@style/Theme.HintDialog
 
+		<item name="android:windowBackground">@android:color/transparent</item>
+		<item name="android:windowFrame">@null</item>
+		<item name="android:windowContentOverlay">@null</item>
+		<item name="android:windowIsFloating">true</item>
+		<item name="android:backgroundDimEnabled">true</item>
+		<item name="android:windowIsTranslucent">true</item>
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+		<item name="android:buttonStyle">@style/Day_Button</item>
+		<item name="TextColor">@color/Day_Foreground</item>
 
-<!-- Spinner  -->
-	<style name="day_Spinner">
-        <item name="android:background">@drawable/day_btn_dropdown</item>
-        <item name="android:clickable">true</item>
-       
-    </style>
-    
-    <style name="night_Spinner">
-        <item name="android:background">@drawable/night_btn_dropdown</item>
-        <item name="android:clickable">true</item>
-    </style>
-    
-	
-
-<!-- Toggle Button -->    
-    <style name="Day_Toggle_Button">
-        <item name="android:background">@drawable/day_btn_toggle_bg</item>
-        <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
-        <item name="android:clickable">true</item>
-        <item name="android:gravity">center_vertical|center_horizontal</item>
-    </style>
-    
-    <style name="Night_Toggle_Button">
-        <item name="android:background">@drawable/night_btn_toggle_bg</item>
-        <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
-        <item name="android:clickable">true</item>
-        <item name="android:gravity">center_vertical|center_horizontal</item>
-    </style>
-    
-    
-<!-- ChkBox -->
-    <style name="Day_chkBox">
-        <item name="android:background">@drawable/day_btn_check_label_background</item>
-        <item name="android:button">@drawable/day_btn_check</item>
-        <item name="android:clickable">true</item>
-        <item name="android:gravity">center_vertical</item>
-    </style>
-    
-    <style name="Night_chkBox">
-        <item name="android:background">@drawable/night_btn_check_label_background</item>
-        <item name="android:button">@drawable/night_btn_check</item>
-        <item name="android:clickable">true</item>
-        <item name="android:gravity">center_vertical</item>
-    </style>
-    
-    <style name="day_ZoomControls">
-        <item name="android:gravity">bottom</item>
-        <item name="android:paddingLeft">15dip</item>
-        <item name="android:paddingRight">15dip</item>
-    </style>
-    
-    <style name="night_ZoomControls">
-    	<item name="android:background">@drawable/night_btn_toggle_bg</item>
-        <item name="android:gravity">top</item>
-        <item name="android:paddingLeft">15dip</item>
-        <item name="android:paddingRight">15dip</item>
-    </style>
-    
-    
-<!-- MessageBox Dialog -->
-
-	    <style name="DialogText">
-        <item name="android:textColor">#FF000000</item>
-        <item name="android:textSize">12sp</item>
-    </style>
-
-    <style name="DialogText.Title">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-    
-    <style name="Dialog" parent="android:style/Theme.Dialog">
-		<item name="android:windowBackground">@null</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">true</item>
 	</style>
-    
+
+
+
+
+
+	<style name="Theme.Transparent" parent="android:Theme">
+		<item name="android:windowIsTranslucent">true</item>
+		<item name="android:windowBackground">@android:color/transparent</item>
+		<item name="android:windowContentOverlay">@null</item>
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:backgroundDimEnabled">false</item>
+	</style>
+
+	<style name="Theme.Transparent.Dim" parent="android:Theme">
+		<item name="android:windowIsTranslucent">true</item>
+		<item name="android:windowBackground">@android:color/transparent</item>
+		<item name="android:windowContentOverlay">@null</item>
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:backgroundDimEnabled">true</item>
+	</style>
+
+	<!-- Button -->
+	<style name="Day_Button">
+		<item name="android:background">@drawable/day_btn</item>
+		<item name="android:focusable">true</item>
+		<item name="android:clickable">true</item>
+		<item name="android:gravity">center_vertical|center_horizontal</item>
+		<item name="TextColor">@color/Day_Foreground</item>
+	</style>
+	<style name="Night_Button">
+		<item name="android:background">@drawable/night_btn</item>
+		<item name="android:focusable">true</item>
+		<item name="android:clickable">true</item>
+		<item name="android:gravity">center_vertical|center_horizontal</item>
+		<item name="TextColor">@color/Night_Foreground</item>
+	</style>
+
+
+	<!-- Spinner -->
+	<style name="day_Spinner">
+		<item name="android:background">@drawable/day_btn_dropdown</item>
+		<item name="android:clickable">true</item>
+
+	</style>
+
+	<style name="night_Spinner">
+		<item name="android:background">@drawable/night_btn_dropdown</item>
+		<item name="android:clickable">true</item>
+	</style>
+
+
+
+	<!-- Toggle Button -->
+	<style name="Day_Toggle_Button">
+		<item name="android:background">@drawable/day_btn_toggle_bg</item>
+		<item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
+		<item name="android:clickable">true</item>
+		<item name="android:gravity">center_vertical|center_horizontal</item>
+	</style>
+
+	<style name="Night_Toggle_Button">
+		<item name="android:background">@drawable/night_btn_toggle_bg</item>
+		<item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
+		<item name="android:clickable">true</item>
+		<item name="android:gravity">center_vertical|center_horizontal</item>
+	</style>
+
+
+	<!-- ChkBox -->
+	<style name="Day_chkBox">
+		<item name="android:background">@drawable/day_btn_check_label_background</item>
+		<item name="android:button">@drawable/day_btn_check</item>
+		<item name="android:clickable">true</item>
+		<item name="android:gravity">center_vertical</item>
+	</style>
+
+	<style name="Night_chkBox">
+		<item name="android:background">@drawable/night_btn_check_label_background</item>
+		<item name="android:button">@drawable/night_btn_check</item>
+		<item name="android:clickable">true</item>
+		<item name="android:gravity">center_vertical</item>
+	</style>
+
+	<style name="day_ZoomControls">
+		<item name="android:gravity">bottom</item>
+		<item name="android:paddingLeft">15dip</item>
+		<item name="android:paddingRight">15dip</item>
+	</style>
+
+	<style name="night_ZoomControls">
+		<item name="android:background">@drawable/night_btn_toggle_bg</item>
+		<item name="android:gravity">top</item>
+		<item name="android:paddingLeft">15dip</item>
+		<item name="android:paddingRight">15dip</item>
+	</style>
+
+
+	<!-- MessageBox Dialog -->
+
+	<style name="DialogText">
+		<item name="android:textColor">#FF000000</item>
+		<item name="android:textSize">12sp</item>
+	</style>
+
+	<style name="DialogText.Title">
+		<item name="android:textSize">16sp</item>
+		<item name="android:textStyle">bold</item>
+	</style>
+
+	<style name="Dialog" parent="android:style/Theme.Dialog">
+		<item name="android:windowBackground">@null</item>
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowIsFloating">true</item>
+	</style>
+
 </resources>

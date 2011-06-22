@@ -331,6 +331,12 @@ public class Config {
         
     }
 
+	public static String GetStringEncrypted(String key) 
+	{
+		// TODO Auto-generated method stub
+		return "";
+	}
+
 }
 
 
