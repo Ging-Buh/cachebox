@@ -4,7 +4,6 @@ package de.droidcachebox.Views;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.main;
 
 import de.droidcachebox.Components.ListenToPhoneState;
 import de.droidcachebox.Events.SelectedCacheEvent;
@@ -12,15 +11,14 @@ import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.JokerEntry;
-import de.droidcachebox.Geocaching.JokerList;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
@@ -31,8 +29,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 
 
 
@@ -43,7 +39,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 	Cache aktCache = null;
 	JokerEntry aktJoker = null;
 	ListenToPhoneState listener = new ListenToPhoneState();
-	private Paint paint;
+
 	/**
 	 * Constructor
 	 */
@@ -65,7 +61,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 				
 				// Telefonnummer wählen
 				try {
-				 	//TelephoneNumber = "0......."; // Telefonnummer zum testen
+				 	//TelephoneNumber = "0..."; // Telefonnummer zum testen
 					Intent callIntent = new Intent(Intent.ACTION_CALL);
 					callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					callIntent.setData(Uri.parse("tel:" + TelephoneNumber));
@@ -192,42 +188,15 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 
 	@Override
 	public boolean ItemSelected(MenuItem item) {
-		switch (item.getItemId())
-		{
-			case R.id.menu_jokerview_call: 
-/*			if (aktWaypoint != null)
-			{
-				createNewWaypoint = false;
-	    		Intent mainIntent = new Intent().setClass(getContext(), EditWaypoint.class);
-		        Bundle b = new Bundle();
-		        b.putSerializable("Waypoint", aktWaypoint);
-		        mainIntent.putExtras(b);
-	    		parentActivity.startActivityForResult(mainIntent, 0);
-			}*/
-			break;
-		}
-		return true;
+		return false;
 	}
 
 	@Override
 	public void BeforeShowMenu(Menu menu) {
-		try
-		{
-			MenuItem mi = menu.findItem(R.id.menu_jokerview_call);
-			if (mi != null)
-			{
-				mi.setTitle(Global.Translations.Get("call"));
-//				mi.setVisible(aktWaypoint != null);
-			}
-		} catch (Exception exc)
-		{
-			return;
-		}
 	}
 
 	@Override
 	public void OnShow() {
-		// aktuellen Joker in der List anzeigen
 	}
 
 	@Override
@@ -243,7 +212,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 
 	@Override
 	public int GetMenuId() {
-		return R.menu.menu_jokerview;
+		return 0;
 	}
 
 	@Override
