@@ -793,7 +793,8 @@ public class Cache implements Comparable<Cache> {
     {
     	all,		// alle infos
     	withoutBearing,	//ohne Richtungs-Pfeil
-    	withoutSeparator; //ohne unterster trennLinie 
+    	withoutSeparator, //ohne unterster trennLinie
+    	withOwner; //ohne unterster trennLinie
     };
     
     private StaticLayout layoutCacheName;
@@ -881,7 +882,13 @@ public class Cache implements Comparable<Cache> {
     	    	 namePaint.setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
     	    	 DTPaint.setAntiAlias(true);
     	     }
-    	     layoutCacheName = new StaticLayout(this.Name, namePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+    	     
+    	     SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy"); 
+		     String dateString = postFormater.format(this.DateHidden); 
+    	     
+    	     String drawName = (drawStyle==DrawStyle.withOwner)? "by " + this.Owner + ", "+ dateString:this.Name;
+    	     
+    	     layoutCacheName = new StaticLayout(drawName, namePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
     	     int LayoutHeight = ActivityUtils.drawStaticLayout(canvas, layoutCacheName, left + VoteWidth + iconSize + 5, top);
     	       
     	// over draw 3. Cache name line

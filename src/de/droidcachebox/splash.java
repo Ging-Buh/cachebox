@@ -12,6 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import de.droidcachebox.Components.CacheNameView;
 
 import de.droidcachebox.Components.copyAssetFolder;
+import de.droidcachebox.Custom_Controls.DescriptionViewControl;
 import de.droidcachebox.Events.CachListChangedEventList;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
@@ -22,7 +23,6 @@ import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Map.Layer;
 import de.droidcachebox.TranslationEngine.LangStrings;
 import de.droidcachebox.Views.CacheListView;
-import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.LogView;
 import de.droidcachebox.Views.MapView;
 import de.droidcachebox.Views.WaypointView;

@@ -6,6 +6,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Geocaching.Cache;
+import de.droidcachebox.Geocaching.Cache.DrawStyle;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Views.CacheListView;
 import android.content.Context;
@@ -145,6 +146,11 @@ public final class CacheInfoControl extends View {
     }
 
 
+    private DrawStyle style = DrawStyle.withoutBearing;
+    public void setStyle(DrawStyle newStyle)
+    {
+    	style=newStyle;
+    }
 
 	@Override
 	protected void onDraw(Canvas canvas) {
@@ -162,7 +168,7 @@ public final class CacheInfoControl extends View {
 		 {
 			 UseColor = Global.getColor(R.attr.ListBackground);
 		 }
-		 aktCache.DrawInfo(canvas, width, height, UseColor, Cache.DrawStyle.withoutBearing);
+		 aktCache.DrawInfo(canvas, width, height, UseColor, style);
 	     
 			
 		canvas.restore();

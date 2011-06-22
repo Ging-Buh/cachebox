@@ -15,6 +15,7 @@ import de.droidcachebox.ExtAudioRecorder;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Custom_Controls.DebugInfoPanel;
+import de.droidcachebox.Custom_Controls.DescriptionViewControl;
 import de.droidcachebox.Custom_Controls.Mic_On_Flash;
 import de.droidcachebox.Custom_Controls.downSlider;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
@@ -30,7 +31,6 @@ import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Views.AboutView;
 import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.CompassView;
-import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.EmptyViewTemplate;
 import de.droidcachebox.Views.FieldNotesView;
 import de.droidcachebox.Views.JokerView;
@@ -40,6 +40,7 @@ import de.droidcachebox.Views.NotesView;
 import de.droidcachebox.Views.SolverView;
 import de.droidcachebox.Views.SpoilerView;
 import de.droidcachebox.Views.WaypointView;
+import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
 import de.droidcachebox.Views.FilterSettings.PresetListView;
 import de.droidcachebox.Views.Forms.DialogID;
@@ -318,6 +319,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 					Cache cache = cacheList.get(0);
 					Global.SelectedCache(cache);
 		        }
+	        }
+	        else // Activity wurde neu Gestartet
+	        {
+	        	Global.SelectedCache(Global.SelectedCache());
 	        }
 	        
 	        if (aktViewId != -1)
@@ -1386,7 +1391,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			fieldNotesView = new FieldNotesView(this, this);
 		registerForContextMenu(fieldNotesView);
 		if (descriptionView == null)
-			descriptionView = new DescriptionView(this, "Cache-Beschreibung");
+			descriptionView = new DescriptionView(this, inflater);
 		if (spoilerView == null)
 			spoilerView = new SpoilerView(this, inflater);
 		if (notesView == null)
