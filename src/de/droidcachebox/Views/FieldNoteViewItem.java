@@ -6,9 +6,11 @@ import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.FieldNoteEntry;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -17,10 +19,12 @@ import android.graphics.RectF;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.Layout.Alignment;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.MeasureSpec;
 
-public class FieldNoteViewItem extends View {
+public class FieldNoteViewItem extends View implements ViewOptionsMenu  {
 	private FieldNoteEntry fieldnote;
     private int mAscent;
     private static int width;
@@ -282,4 +286,64 @@ public class FieldNoteViewItem extends View {
         
         
     }
+
+	@Override
+	public boolean ItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void BeforeShowMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int GetMenuId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void OnShow() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void OnHide() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void OnFree() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void ActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int GetContextMenuId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void BeforeShowContextMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean ContextMenuItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

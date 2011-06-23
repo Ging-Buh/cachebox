@@ -44,7 +44,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class FieldNotesView extends ListView implements SelectedCacheEvent, ViewOptionsMenu {
+public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 	public static FieldNoteEntry aktFieldNote;
 	private int aktFieldNoteIndex = -1;
 	Activity parentActivity;
@@ -147,6 +147,9 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 				return true;
 			case R.id.fieldnotesview_upload:
 				UploadFieldnotes();
+				return true;
+			case R.id.fieldnotesview_deleteall:
+				deleteAllFieldNote();
 				return true;
 		}
 		return false;
@@ -305,6 +308,8 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 		}
 		
 		
+		
+		
 		switch (type)
 		{
 		case 1:
@@ -317,15 +322,15 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 			break;
 		case 2:
 			if (newFieldNote.comment.equals(""))
-				newFieldNote.comment = ReplaceTemplate(Config.GetString("DNFTemplate"), aktFieldNote);
+				newFieldNote.comment = ReplaceTemplate(Config.GetString("DNFTemplate"), newFieldNote);
 			break;
 		case 3:
 			if (newFieldNote.comment.equals(""))
-				newFieldNote.comment = ReplaceTemplate(Config.GetString("NeedsMaintenanceTemplate"), aktFieldNote);
+				newFieldNote.comment = ReplaceTemplate(Config.GetString("NeedsMaintenanceTemplate"), newFieldNote);
 			break;
 		case 4:
 			if (newFieldNote.comment.equals(""))
-				newFieldNote.comment = ReplaceTemplate(Config.GetString("AddNoteTemplate"), aktFieldNote);
+				newFieldNote.comment = ReplaceTemplate(Config.GetString("AddNoteTemplate"), newFieldNote);
 			break;
 		}
 		
@@ -406,11 +411,8 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 		
 	}
 	
-	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
-		// TODO Auto-generated method stub
-	}
-
+	
+	
 	@Override
 	public int GetContextMenuId() {
 		// TODO Auto-generated method stub
@@ -418,8 +420,9 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 	}
 
 	@Override
-	public void BeforeShowContextMenu(Menu menu) {
-		// TODO Auto-generated method stub
+	public void BeforeShowContextMenu(Menu menu) 
+	{
+			
 		MenuItem mi = menu.findItem(R.id.c_fnv_edit);
 		if (mi !=null)
 			mi.setEnabled(aktFieldNote != null);
@@ -481,6 +484,7 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 			return;
 		Cache cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);    	
     
+		
     
 		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 		    @Override
@@ -505,15 +509,53 @@ public class FieldNotesView extends ListView implements SelectedCacheEvent, View
 		    }
 		};
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+		
 		String message = "Soll die FieldNote\n\n[" + aktFieldNote.typeString + "]\n\ndes Caches" + "\n\n[" + aktFieldNote.CacheName + "]\n\n gelöscht werden?";
 		if (aktFieldNote.type == 1)
 			message += "\n\nDer Found Status des Caches wird dabei zurückgesetzt!";
-		builder.setMessage(message)
-			.setTitle("Delete Fieldnote")
-			.setPositiveButton(Global.Translations.Get("yes"), dialogClickListener)
-		    .setNegativeButton(Global.Translations.Get("no"), dialogClickListener).show();
+		
+		MessageBox.Show(message, "Delete Fieldnote", MessageBoxButtons.YesNo, dialogClickListener);
+		
+	
     }
+    
+    
+    private void deleteAllFieldNote()
+    {
+		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialog, int which) {
+		        switch (which){
+		        case DialogInterface.BUTTON_POSITIVE:
+		            // Yes button clicked
+		        	// delete aktFieldNote
+		        	for(FieldNoteEntry entry : lFieldNotes)
+		        	{
+			        	entry.DeleteFromDatabase();
+		        
+					}
+		        	
+		        	lFieldNotes.clear();
+		        	aktFieldNote = null;
+					aktFieldNoteIndex = -1;
+					lvAdapter.notifyDataSetChanged();
+		        	break;
+		            
+		        case DialogInterface.BUTTON_NEGATIVE:
+		            // No button clicked
+		        	// do nothing
+		            break;
+		        }
+		        dialog.dismiss();
+
+		    }
+		};
+		String message = "Sollen alle FieldNotes gelöscht werden?";
+		MessageBox.Show(message, "Delete Fieldnote", MessageBoxButtons.YesNo, MessageBoxIcon.Warning , dialogClickListener);
+		
+	
+    }
+    
     
     private void selectCacheFromFieldNote()
     {
