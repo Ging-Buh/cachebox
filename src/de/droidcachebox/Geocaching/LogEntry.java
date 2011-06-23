@@ -16,7 +16,7 @@ public class LogEntry {
     /// <summary>
     /// Logtyp, z.B. "Found it!"
     /// </summary>
-    public short Type = -1;
+    public Integer Type = -1;
 
     /// <summary>
     /// Index des zu verwendenden Bildchens
@@ -73,5 +73,17 @@ public class LogEntry {
         }
       }
     }
+
+	public LogEntry() 
+	{
+	}
+
+	public void writeToDB() 
+	{
+		// this muss jetzt irgendwie in die DB!!
+		
+	}
+	
+		
 
 }

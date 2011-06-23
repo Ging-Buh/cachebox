@@ -1,7 +1,7 @@
 package de.droidcachebox.Geocaching;
 
 import java.io.Serializable;
-
+import java.util.Date;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.location.Location;
@@ -56,6 +56,8 @@ public class Waypoint implements Serializable {
     }
     
     private int checkSum = 0;   // for replication
+
+	public Date time;
 
     public Waypoint(Cursor reader)
     {
@@ -233,19 +235,49 @@ public class Waypoint implements Serializable {
         return dist[0];
     }
 
-/*
-    public override int GetHashCode()
-    {
-        return GcCode.GetHashCode();
-    }
+	public void setLatitude(double parseDouble) 
+	{
+		Coordinate.Latitude = parseDouble;
+	}
 
-    public override bool Equals(object obj)
-    {
-        if (obj.GetType() != this.GetType())
-            return false;
+	public void setLongitude(double parseDouble) 
+	{
+		Coordinate.Longitude = parseDouble;
+	}
 
-        return ((Waypoint)obj).GcCode == this.GcCode;
-    }
-*/
+	/**
+	 * 
+	 * @param strText
+	 */
+	public void parseTypeString(String strText)
+	{
+		// Log.d(TAG, "Parsing type string: " + strText);
+		
+		/* Geocaching.com cache types are in the form
+		 * 		Geocache|Multi-cache
+		 * 		Waypoint|Question to Answer
+		 * 		Waypoint|Stages of a Multicache
+		 * Other pages / bcaching.com results do not contain the | separator,
+		 * so make sure that the parsing functionality does work with both variants
+		 */
+		
+		String[] arrSplitted = strText.split("\\|");
+		if (arrSplitted[0].toLowerCase().equals("geocache"))
+		{
+			this.Type = CacheTypes.Cache;
+		}
+		else
+		{
+			String strCacheType;
+			if (arrSplitted.length > 1)
+				strCacheType = arrSplitted[1];
+			else
+				strCacheType = arrSplitted[0];
+				
+			String[] strFirstWord = strCacheType.split(" ");
+			this.Type = CacheTypes.valueOf(strFirstWord[0]);
+		}
+		// Log.d(TAG, "Waypoint type: " + this.mWaypointType.toString());
+	}
 
 }

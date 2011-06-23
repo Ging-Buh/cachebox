@@ -227,7 +227,7 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
          
          
          
-         Thread UploadFieldNotesdThread = new Thread() 
+         Thread ImportThread = new Thread() 
          {
              public void run() 
              {
@@ -271,7 +271,7 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
          
          
          
-         ProgressDialog.Show("Import",UploadFieldNotesdThread, ProgressCanceld);
+         ProgressDialog.Show("Import",ImportThread, ProgressCanceld);
          
        finish();
        

@@ -7,6 +7,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+
 import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
@@ -49,7 +51,57 @@ public class Cache implements Comparable<Cache> {
         MultiQuestion, // = 15,
         Trailhead, // = 16,
         ParkingArea, // = 17,
-        Final // = 18,
+        Final, // = 18,
+        Cache // = 19,
+;
+
+		/**
+	 * 
+	 * @param string
+	 * @return
+	 */
+	public static CacheTypes parseString(String string)
+	{
+		// Remove trailing " cache" or " hybrid" fragments
+		if (string.contains(" "))
+			string = string.substring(0, string.indexOf(" "));
+		// Remove trailing "-cache" fragments
+		if (string.contains("-"))
+			string = string.substring(0, string.indexOf("-"));
+
+		// Replace some opencaching.de / geotoad cache types
+		if (string.toLowerCase().equals("multicache"))
+			string = "Multi";
+		if (string.toLowerCase().equals("wherigo")) // note the missing "e"
+			string = "Whereigo";
+		if (string.toLowerCase().equals("other"))
+			string = "Mystery";
+		
+		// If no cache type is given, use "Unknown"
+		if (string.length() == 0)
+			string = "Unknown";
+		
+		try
+		{
+			return valueOf(string);
+		}
+		catch (Exception ex)
+		{
+			CacheTypes cacheType = CacheTypes.Undefined;
+			Boolean blnCacheTypeFound = false;
+			for (CacheTypes ct : CacheTypes.values())
+			{
+				if (ct.toString().toLowerCase().equals(string.toLowerCase()))
+				{
+					cacheType = ct;
+					blnCacheTypeFound = true;
+				}
+			}
+			if (!blnCacheTypeFound)
+				System.out.println("Handle cache type: " + string);
+			return cacheType;
+		}
+	}
     };
 	
     @Override
@@ -395,7 +447,7 @@ public class Cache implements Comparable<Cache> {
         return description;
 }
 
-    protected String hint = "";
+    public String hint = "";
     public String Hint()
     {
     	if (hint.equals(""))
@@ -647,7 +699,12 @@ public class Cache implements Comparable<Cache> {
     }
 */
 
-/*
+    public Cache() 
+    {
+    	 waypoints= new ArrayList<Waypoint>();
+	}
+
+	/*
     public static Cache GetCacheByCacheId(long cacheId)
     {
         foreach (Cache cache in Query)
@@ -788,6 +845,25 @@ public class Cache implements Comparable<Cache> {
     
     
     
+    /**
+	 * Converts the type string into an element of the CacheType enumeration.
+	 * @param strText
+	 */
+	public void parseCacheTypeString(String type)
+	{
+    	this.Type = CacheTypes.parseString(type);		
+	}
+    
+    
+	
+	
+	
+	
+	
+	
+	
+	
+    
 //Draw Metods
     public enum DrawStyle
     {
@@ -798,6 +874,10 @@ public class Cache implements Comparable<Cache> {
     };
     
     private StaticLayout layoutCacheName;
+	
+	public String shortDescription;
+	
+	public String longDescription;
     
     public void DrawInfo(Canvas canvas, int width,int height, int BackgroundColor, DrawStyle drawStyle)
     {
@@ -1011,6 +1091,11 @@ public class Cache implements Comparable<Cache> {
 	    canvas.drawText(Distance,drawingRec.left,drawingRec.bottom, DTPaint);
 	       
     }
+	public void WriteToDatabase() 
+	{
+	  // this muss jetzt irgendwie in die DB!!
+		
+	}
     
     
 }
