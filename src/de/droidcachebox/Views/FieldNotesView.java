@@ -37,6 +37,7 @@ import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -154,6 +155,7 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 		}
 		return false;
 	}
+	
 	
 	
 	private void UploadFieldnotes()
@@ -436,31 +438,54 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 			
 		MenuItem mi = menu.findItem(R.id.c_fnv_edit);
 		if (mi !=null)
+		{
 			mi.setEnabled(aktFieldNote != null);
+			mi.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+				
+				@Override
+				public boolean onMenuItemClick(MenuItem item) {
+					editFieldNote();
+					return false;
+				}
+			});
+		}	
 		mi = menu.findItem(R.id.c_fnv_delete);
 		if (mi != null)
+		{
 			mi.setEnabled(aktFieldNote != null);
+			mi.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+				
+				@Override
+				public boolean onMenuItemClick(MenuItem item) {
+					deleteFieldNote();
+					return false;
+				}
+			});
+		}
+			
 		mi = menu.findItem(R.id.c_fnv_selectcache);
 		if (mi != null)
+		{
 			mi.setEnabled((aktFieldNote != null) && (Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode) != null));
+			mi.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+				
+				@Override
+				public boolean onMenuItemClick(MenuItem item) {
+					selectCacheFromFieldNote();
+					return false;
+				}
+			});
+		}
 	}
 
 	@Override
 	public boolean ContextMenuItemSelected(MenuItem item) {
-		switch (item.getItemId())
-		{
-		case R.id.c_fnv_edit:
-			editFieldNote();
-			return true;
-		case R.id.c_fnv_delete:
-			deleteFieldNote();
-			return true;
-		case R.id.c_fnv_selectcache:
-			selectCacheFromFieldNote();
-			return true;
-		}
+		
 		return false;
 	}
+	
+	
+	
 
     private String ReplaceTemplate(String template, FieldNoteEntry fieldNote)
     {
@@ -517,6 +542,7 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 		        	// do nothing
 		            break;
 		        }
+		        dialog.dismiss();
 		    }
 		};
 
