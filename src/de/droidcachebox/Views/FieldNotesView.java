@@ -275,7 +275,14 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 
 	private void addNewFieldnote(int type) {
 		Cache cache = Global.SelectedCache();
-
+		
+		if(cache==null)
+		{
+			MessageBox.Show(Global.Translations.Get("NoCacheSelect"), Global.Translations.Get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+			return;
+		}
+		
+		
 		FieldNoteEntry newFieldNote = new FieldNoteEntry(type);
 		newFieldNote.CacheName = cache.Name;
 		newFieldNote.gcCode = cache.GcCode;
@@ -287,21 +294,25 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 		newFieldNote.cacheType= cache.Type.ordinal();
 		newFieldNote.fillType();
 
+		aktFieldNoteIndex=-1;
+		aktFieldNote=newFieldNote;
+		
 		FieldNoteList fnl = new FieldNoteList();
-		fnl.LoadFieldNotes("CacheId=" + cache.Id + " and Type=" + type);
-		if (fnl.size() > 0)
+		fnl.LoadFieldNotes("CacheId=" + cache.Id); // + " and Type=" + type);
+		if (fnl.size() > 0 && (newFieldNote.type==1 || newFieldNote.type==2))
 		{
 			// für diesen Cache ist bereits eine FieldNote vom typ vorhanden 
 			// -> diese ändern und keine neue erstellen
+			/* Das aber nur bei LogType 1 oder 2 (Found/DitNotFount)
+			 * needMaintance oder Note können zusätzlich angelegt werden  */
 			FieldNoteEntry nfne = fnl.get(0);
 			int index = 0;
 			for (FieldNoteEntry nfne2 : lFieldNotes)
 			{
-				if (nfne2.Id == nfne.Id)
+				if(nfne2.type==1 || nfne2.type==2 )
 				{
-					newFieldNote = nfne;
 					aktFieldNote = nfne;
-					aktFieldNoteIndex = index;
+					aktFieldNoteIndex = index;	
 				}
 				index++;
 			}
@@ -383,7 +394,7 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 			FieldNoteEntry fieldNote = (FieldNoteEntry)bundle.getSerializable("FieldNoteResult");
 			if (fieldNote != null)
 			{
-				if ((aktFieldNote != null) && (fieldNote.Id == aktFieldNote.Id))
+				if ((aktFieldNote != null) && (aktFieldNoteIndex !=-1))
 				{
 					// Änderungen in aktFieldNote übernehmen
 					lFieldNotes.remove(aktFieldNoteIndex);

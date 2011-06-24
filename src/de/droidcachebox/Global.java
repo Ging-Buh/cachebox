@@ -18,7 +18,6 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
-import android.os.Messenger;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.JokerList;
@@ -33,7 +32,7 @@ import de.droidcachebox.Views.Forms.MessageBox;
 
 
 public class Global {
-    public static final int CurrentRevision = 249;
+    public static final int CurrentRevision = 250;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
