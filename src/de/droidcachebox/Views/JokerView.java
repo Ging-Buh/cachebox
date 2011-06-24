@@ -1,6 +1,7 @@
 package de.droidcachebox.Views;
 
 
+import nonGuiClasses.Logger;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
@@ -71,9 +72,9 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 					tManager.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
 					return true;
 					} 
-				catch (ActivityNotFoundException activityException) {
-			        Global.AddLog("JokerView: Call failed " + activityException.getMessage());		
-					Log.e("DroidCachebox", "Call failed", activityException);
+				catch (ActivityNotFoundException e) {
+			        Logger.Error("JokerView.onItemLongClick", "Call failed", e);		
+					Log.e("DroidCachebox", "Call failed", e);
 					return false;
 					}
 				}

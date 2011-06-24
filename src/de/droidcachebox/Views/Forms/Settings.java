@@ -5,6 +5,8 @@ import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import nonGuiClasses.Logger;
+
 import de.droidcachebox.Custom_Controls.wheel.adapters.NumericWheelAdapter;
 
 import de.droidcachebox.Custom_Controls.wheel.OnWheelChangedListener;
@@ -542,7 +544,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		}
 		catch(Exception e)
 		{
-			Global.AddLog("Error Settings: " + e.getMessage());
+			Logger.Error("Settings.FillSettings()", "", e);
 		}
 	}
 	

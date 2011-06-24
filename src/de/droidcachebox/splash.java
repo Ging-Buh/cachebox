@@ -3,71 +3,31 @@ package de.droidcachebox;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-import de.droidcachebox.Components.CacheNameView;
+import nonGuiClasses.Logger;
 
-import de.droidcachebox.Components.copyAssetFolder;
-import de.droidcachebox.Custom_Controls.DescriptionViewControl;
-import de.droidcachebox.Events.CachListChangedEventList;
-import de.droidcachebox.Events.PositionEventList;
-import de.droidcachebox.Events.SelectedCacheEvent;
-import de.droidcachebox.Events.SelectedCacheEventList;
-import de.droidcachebox.Events.SelectedLangChangedEventList;
-import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Map.Descriptor;
-import de.droidcachebox.Map.Layer;
-import de.droidcachebox.TranslationEngine.LangStrings;
-import de.droidcachebox.Views.CacheListView;
-import de.droidcachebox.Views.LogView;
-import de.droidcachebox.Views.MapView;
-import de.droidcachebox.Views.WaypointView;
-import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
-import de.droidcachebox.Views.FilterSettings.PresetListView;
-import de.droidcachebox.Views.Forms.SelectDB;
-import de.droidcachebox.Database;
-import de.droidcachebox.Database.DatabaseType;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Coordinate;
-import de.droidcachebox.Geocaching.Waypoint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.os.PowerManager;
-import android.os.SystemClock;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import de.droidcachebox.Database.DatabaseType;
+import de.droidcachebox.Components.copyAssetFolder;
+import de.droidcachebox.Geocaching.Coordinate;
+import de.droidcachebox.Map.Descriptor;
+import de.droidcachebox.Map.Layer;
+import de.droidcachebox.Views.MapView;
+import de.droidcachebox.Views.FilterSettings.PresetListView;
+import de.droidcachebox.Views.Forms.SelectDB;
 
 
 public class splash extends Activity 
@@ -130,7 +90,9 @@ public class splash extends Activity
 	 
 	 private void Initial() 
 	 {
-		 Global.AddLog("------" + Global.CurrentRevision + "-------");
+		 Logger.setDebug(Global.Debug);
+		 
+		 Logger.General("------" + Global.CurrentRevision + "-------");
 
 // Read Config
 		 
@@ -189,7 +151,7 @@ public class splash extends Activity
 	        	fileList = new FileList(Config.WorkPath, "DB3");
 	        } catch (Exception ex)
 	        {
-	        	Global.AddLog(ex.getMessage());
+	        	Logger.Error("slpash.Initial()", "search number of DB3 files", ex);
 	        }
 			if ((fileList.size() > 1) && Config.GetBool("MultiDBAsk"))
 			{

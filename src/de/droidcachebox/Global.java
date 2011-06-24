@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.regex.Pattern;
+
+import nonGuiClasses.ILog;
+import nonGuiClasses.Logger;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import android.content.Context;
 import android.content.res.Resources;
@@ -31,8 +34,8 @@ import de.droidcachebox.Views.Forms.MessageBoxIcon;
 import de.droidcachebox.Views.Forms.MessageBox;
 
 
-public class Global {
-    public static final int CurrentRevision = 250;
+public class Global implements ILog {
+    public static final int CurrentRevision = 251;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
@@ -778,50 +781,7 @@ public class Global {
     	return (int)themeStyles.getColor(Arrays.binarySearch(colorAttrs,attrResid), 0);
     }
 	
-
-    static class LockClass { };
-    static LockClass lockObject = new LockClass();
-    
-	
-    /**
-     * Schreibt einen Log Eintrag in die debug.txt, wenn Global.Debug == true!
-     * @param line Meldung die gelogt werden soll.
-     */
-    public static void AddLog(String line)
-    {
-    	if (!Debug)
-    		return;
-        synchronized (lockObject)
-        {
-        	File file = new File(Config.WorkPath + "/debug.txt");
-        	FileWriter writer;
-        	try {
-				writer = new FileWriter(file, true);
-				writer.write(new Date().toLocaleString() + " - " + line + "\n");
-	            writer.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
-    }
-    
-    
-    /**
-     * Schreibt einen Log Eintrag in die debug.txt, wenn Global.Debug == true!
-     * @param line Meldung die gelogt werden soll.
-     * @param withMsgBox wenn true, wird die Meldung zusätzlich in einer MessageBox ausgegeben. 
-     */
-    public static void AddLog(String line, Boolean withMsgBox)
-    {
-    	if (!Debug)
-    		return;
-    	 AddLog(line);
-    	 
-    	 if(withMsgBox)
-    		 MessageBox.Show(line, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
-    }
-    
+       
     public static void PlaySound(String soundFile)
     {
     	if (!Config.GetBool("PlaySounds"))
@@ -837,8 +797,10 @@ public class Global {
         {
 			mp.setDataSource(Config.WorkPath + "/data/sound/" + soundFile);
             mp.prepare();
-		} catch (Exception e) {
-			Global.AddLog("Error PlaySound: " + Config.WorkPath + "/data/sound/" + soundFile + " - " + e.getMessage());
+		} 
+        catch (Exception e) 
+		{
+			Logger.Error("Global.PlaySound()", Config.WorkPath + "/data/sound/" + soundFile ,e);
 			e.printStackTrace();
 		}    	
     }
@@ -849,6 +811,30 @@ public class Global {
     	+ (VersionPrefix.equals("")? "" : "(" + VersionPrefix + ")");
     	return ret;
     }
+    
+    
+    static class LockClass { };
+    static LockClass lockObject = new LockClass();
+
+    /**
+     * Empfängt die gelogten Meldungen und schreibt sie in die Debug.txt
+     */
+	@Override public void receiveLog(String Msg) 
+	{
+		synchronized (lockObject)
+        {
+        	File file = new File(Config.WorkPath + "/debug.txt");
+        	FileWriter writer;
+        	try {
+				writer = new FileWriter(file, true);
+				writer.write(Msg);
+	            writer.close();
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+			}
+        }
+	}
 
     
 }

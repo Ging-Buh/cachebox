@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 
+import nonGuiClasses.Logger;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Cache.Attributes;
 
@@ -162,11 +163,7 @@ public class FilterProperties
         }
         catch (Exception exc)
         {
-        	if(exc!=null)
-        	{
-        		Global.AddLog("FilterProperties Construct - " + exc.getMessage());
-        	}
-        		
+        	Logger.Error("FilterProperties.FilterProperties()","",exc);
         }
     }
 

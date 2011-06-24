@@ -130,7 +130,7 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 	
 	@Override
 	public boolean ItemSelected(MenuItem item) {
-		Global.AddLog("Hallo Log");
+		
 		switch (item.getItemId())
 		{
 			case R.id.fieldnotesview_found:

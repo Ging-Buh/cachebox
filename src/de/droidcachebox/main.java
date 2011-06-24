@@ -11,6 +11,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
+import nonGuiClasses.Logger;
+
 import de.droidcachebox.ExtAudioRecorder;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheNameView;
@@ -271,7 +273,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        setContentView(R.layout.main);
 	        } catch (Exception exc)
 	        {
-	        	Global.AddLog("ocMain: " + exc.getMessage());
+	        	Logger.Error("main.onCreate()","setContentView", exc);
 	        }
 	        
 	        inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -564,7 +566,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 //	                filterSettings.LoadFilterProperties(Global.LastFilter);
 
 					String sqlWhere = Global.LastFilter.getSqlWhere();
-					Global.AddLog("Main.ApplyFilter: " + sqlWhere);
+					Logger.General("Main.ApplyFilter: " + sqlWhere);
 					Database.Data.Query.clear();
 					Database.Data.Query.LoadCaches(sqlWhere);
 
@@ -1170,8 +1172,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	  		    								}
 	  		    							} catch (Exception exc)
 	  		    							{
-	  		    								//
-	  		    					        	Global.AddLog("ocMain: " + exc.getMessage());
+	  		    					        	Logger.Error("main.initialBtnInfoContextMenu()", "HTTP response Jokers", exc);
 	 		    								break;
 	  		    							}
 	  		    						}
@@ -1179,7 +1180,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	  		    							MessageBox.Show("Keine Joker bekannt",null);
 	  		    						}
 	  		    						else {
-		  		    			        	Global.AddLog("Open JokerView...");
+		  		    			        	Logger.General("Open JokerView...");
 		 		    	  		    		showView(12);
 	  		    						}
 	  		    					}
@@ -1191,16 +1192,16 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	  		    			 }
 	  		    		}
 	  		    		catch(MalformedURLException urlEx){
-	  			        	Global.AddLog("ocMain: " + urlEx.getMessage());
+	  		    			Logger.Error("main.initialBtnInfoContextMenu()", "MalformedURLException HTTP response Jokers", urlEx);
 	  		                Log.d("DroidCachebox",urlEx.getMessage());		
 	  		    			 }
 	  		    		catch (IOException ioEx){
-	  			        	Global.AddLog("ocMain: " + ioEx.getMessage());
+	  		    			Logger.Error("main.initialBtnInfoContextMenu()", "IOException HTTP response Jokers", ioEx);
 	  		                Log.d("DroidCachebox",ioEx.getMessage());	
 	  		                MessageBox.Show("Fehler bei Internetzugriff",null);
 	  		    			 }
 	  		    		catch(Exception ex){
-	  			        	Global.AddLog("ocMain: " + ex.getMessage());
+	  		    			Logger.Error("main.initialBtnInfoContextMenu()", "HTTP response Jokers", ex);
 	  		                Log.d("DroidCachebox",ex.getMessage());		
 	  		    		}
   		    	}
@@ -1664,7 +1665,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 				if (s[11].equals(""))
 					return;
 				double altCorrection = Double.valueOf(s[11]);
-				Global.AddLog("AltCorrection: " + String.valueOf(altCorrection));
+				Logger.General("AltCorrection: " + String.valueOf(altCorrection));
 				Global.Locator.altCorrection = altCorrection;
 				// Höhenkorrektur ändert sich normalerweise nicht, einmal auslesen reicht...
 				locationManager.removeNmeaListener(this);
@@ -1682,21 +1683,4 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		 counter.start();
 	 }
 	 
-	 
-	 
-	 
-	 
-	 /* public boolean onContextItemSelected(MenuItem item)	 
-	    {     	 
-	    	// First check whether this is a MenuItem of a View	 
-	    	if ((aktView != null) && (aktView.ContextMenuItemSelected(item)))	 
-	    		return true;
-	    	return false;
-	    }*/
-	 
-	 
-	 
-	
-	
-    
 }

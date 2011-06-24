@@ -12,6 +12,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import nonGuiClasses.Logger;
+
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Cache.CacheTypes;
 import de.droidcachebox.Geocaching.Coordinate;
@@ -222,7 +224,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			Render(true);
 		} catch (Exception exc)
 		{
-			Global.AddLog("MV:onDraw - " + exc.getMessage());
+			Logger.Error("MapView.onDraw", "", exc);
 			return;
 		}
 	}
@@ -1442,7 +1444,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		        		    	  loadedTilesLock.unlock();
 		        		      }
 		        		}
-		        		Global.AddLog("MapView.loaderThreadEntryPoint: exception caught: " + exc.getMessage());
+		        		Logger.Error("MapView.loaderThreadEntryPoint", "exception caught", exc);
 		        	}
 
 		        }
@@ -1451,7 +1453,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    }
 		    catch (Exception ex) 
 		    {
-				Global.AddLog("MV:doInBackground - " + ex.getMessage());	    	
+		    	Logger.Error("MapView.doInBackground()","", ex);	    	
 		    }
 		    return null;
 		}
@@ -2142,7 +2144,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 					  tile.destroy();
 				  } catch (Exception ex)
 				  {
-						Global.AddLog("MV:preemptTile - " + ex.getMessage());				  
+					  Logger.Error("MapView.preemptTile()","", ex);				  
 				  }
 			  }
 		  } while (numLoadedTiles() > numMaxTiles);
@@ -2186,7 +2188,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	    				trackTiles.remove(maxDesc.GetHashCode());
 	    			} catch (Exception ex)
 	    			{
-							Global.AddLog("MV:preemptTrack - " + ex.getMessage());				  
+	    				Logger.Error("MapView.preemptTrackTile()","",ex);				  
 	    			}
 	    		}
     		} while (numTrackTiles() > numMaxTrackTiles);
@@ -2362,7 +2364,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    		}
 		    		catch (Exception ex)
 		    		{
-		    			Global.AddLog("MV:Render1 - " + ex.getMessage());
+		    			Logger.Error("MapView.Render()","1",ex);
 		    		}
 		    		canvas.restore();
 		    		
@@ -2413,13 +2415,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    		}
 		    		catch (Exception ex)
 		    		{
-		    			Global.AddLog("MV:Render1 - " + ex.getMessage());
+		    			Logger.Error("MapView.Render()","2",ex);
 		    		}
 		    		
 		     	}
 	    	} catch (Exception exc)
 	    	{
-				Global.AddLog("MV:Render2 - " + exc.getMessage());
+	    		Logger.Error("MapView.Render()","3",exc);
 	    	}
     	} finally
     	{
@@ -2678,7 +2680,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 							}
 						} catch (Exception ex1)
 						{
-							Global.AddLog("MV:queueProcessor1 - " + ex1.getMessage());
+							Logger.Error("MapView.queueProcessor.doInBackground()","1",ex1);
 						}
 					} else if (queuedTrackTiles.size() > 0)
 					{
@@ -2719,9 +2721,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			    					trackTilesLock.unlock();
 			    				}
 							}			
-						} catch (Exception ex1)
+						} catch (Exception ex2)
 						{
-							Global.AddLog("MV:queueProcessor2 - " + ex1.getMessage());
+							Logger.Error("MapView.queueProcessor.doInBackground()","2",ex2);
 						}
 					
 					}
@@ -2742,9 +2744,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			    	}
 			    } while (!queueEmpty);
 			}	
-			catch (Exception exc)
+			catch (Exception ex3)
 			{
-				Global.AddLog("MV:queueProcessor - " + exc.getMessage());
+				Logger.Error("MapView.queueProcessor.doInBackground()","3",ex3);
 			}
 			finally
 			{
@@ -2883,7 +2885,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       }
       catch (Exception ex)
       {
-    	  Global.AddLog("MV:RenderTile - " + ex.getMessage());
+    	  Logger.Error("MapView.RenderTile", "",ex);
 		  canvas.drawRect(pt.x, pt.y, pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor), pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor), backBrush);
       }
     }
@@ -3027,7 +3029,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	    		animationThread.zoomTo(Zoom+1);
 	    	} catch(Exception exc)
 	    	{
-	    		Global.AddLog("zoomIn: " + exc.getMessage());
+	    		Logger.Error("MapView.zoomIn","",exc);
 	    	}
     	}
     }
@@ -3068,7 +3070,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	    		  }    
 	      		} catch(Exception exc)
 	      		{
-	      			Global.AddLog("zoomInDirect: " + exc.getMessage());
+	      			Logger.Error("MapView.zoomInDirect()","",exc);
 	      		}
 	      	}
     	}
@@ -3092,7 +3094,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        			zoomTimerTask = null;
 	        		} catch (Exception exc)
 	        		{
-						Global.AddLog("MV:ZoomTimerTask - " + exc.getMessage());
+	        			Logger.Error("MapView.ZoomTimerTask","",exc);
 						return;
 	        		}
 	        	}
@@ -3101,7 +3103,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        zoomScaleTimer.schedule(zoomTimerTask, 1000);
     	} catch(Exception exc)
     	{
-    		Global.AddLog("startZoomScaleTimer: " + exc.getMessage());
+    		Logger.Error("MapView.startZoomScaleTimer()","",exc);
     	}
     }
 /*
@@ -3207,7 +3209,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	    		animationThread.zoomTo(Zoom-1);
 	    	} catch(Exception exc)
 	    	{
-	    		Global.AddLog("zoomOut: " + exc.getMessage());
+	    		Logger.Error("MapView.zoomOut()","",exc);
 	    	}
     	}
     }
@@ -3248,7 +3250,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	    			}
 	    		} catch(Exception exc)
 	    		{
-	    			Global.AddLog("zoomOutDirect: " + exc.getMessage());
+	    			Logger.Error("MapView.zoomOutDirect()","",exc);
 	    		}
 	    		
 	    	}
@@ -3309,7 +3311,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		}
     	} catch(Exception exc)
     	{
-    		Global.AddLog("PosChanged: " + exc.getMessage());
+    		Logger.Error("MapView.zoomChanged()","",exc);
     	}
     }
   /*
@@ -4387,7 +4389,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	            }
         	} catch(Exception exc)
         	{
-        		Global.AddLog("PosChanged: " + exc.getMessage());
+        		Logger.Error("MapView.PositionChanged()","1",exc);
         	}
         }
         
@@ -4414,7 +4416,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         			setCenter(new Coordinate(Global.LastValidPosition));
         	} catch(Exception exc)
         	{
-        		Global.AddLog("PosChanged SC: " + exc.getMessage());
+        		Logger.Error("MapView.PositionChanged()","2",exc);
         	}
 	        Render(false);
         }
@@ -4535,7 +4537,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				mi.setEnabled(TrackRecorder.recording);
 		} catch (Exception exc)
 		{
-			Global.AddLog("MV:BeforeShowMenu - " + exc.getMessage());
+			Logger.Error("MapView.BeforeShowMenu()","",exc);
 			return;
 		}
 	}
@@ -4620,7 +4622,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			Render(true);
     	} catch(Exception exc)
     	{
-    		Global.AddLog("OrientChanged: " + exc.getMessage());
+    		Logger.Error("MapView.changeOrientation()","",exc);
     	}
 
 	}
@@ -4719,14 +4721,14 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 									Render(true);								
 								} catch (Exception exc)
 								{
-									Global.AddLog("MV:messageHandler - " + exc.getMessage());
+									Logger.Error("MapView.messageHandler()","Render",exc);
 								}
 							}
 						}
 						sendEmptyMessage(5);  // im UI Thread ausführen
 		        	} catch(Exception exc)
 		        	{
-		        		Global.AddLog("MessageHandler 4: " + exc.getMessage());
+		        		Logger.Error("MapView.messageHandler()","4",exc);
 		        	}
 				}
 				if (msg.what == 5)
@@ -4737,7 +4739,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 						zoomControls.setIsZoomInEnabled(Zoom < maxZoom);
 		        	} catch(Exception exc)
 		        	{
-		        		Global.AddLog("MessageHander 5: " + exc.getMessage());
+		        		Logger.Error("MapView.messageHandler()","5",exc);
 		        	}
 					
 				}
@@ -4946,7 +4948,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 					            	} 
 								} catch (InterruptedException e) 
 								{
-									Global.AddLog("MV:TimerInterrupt - " + e.getMessage());								
+									Logger.Error("MapView.AnimationThread.handleMessage()","TimerInterrupt",e);								
 								}							
 				            	
 				            	messageHandler.handleMessage(ret);		// im animationThread ausführen
@@ -4960,7 +4962,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 							animationFertig = true;
 			        	} catch(Exception exc)
 			        	{
-			        		Global.AddLog("AnimationThread: " + exc.getMessage());
+			        		Logger.Error("MapView.AnimationThread.handleMessage()","",exc);
 			        	}
 						
 					}
@@ -5003,7 +5005,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    	return (float) (Math.max(Math.abs(distance) / faktor, 0.5f) * direction);
         	} catch(Exception exc)
         	{
-        		Global.AddLog("rotationDirection: " + exc.getMessage());
+        		Logger.Error("MapView.AnimationThread.rotationDirection()","",exc);
         		return 0;
         	}
 	    }
@@ -5066,7 +5068,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	            }
         	} catch(Exception exc)
         	{
-        		Global.AddLog("moveTo: " + exc.getMessage());
+        		Logger.Error("MapView.AnimationThread.moveTo()","",exc);
         	}
 		}
 
@@ -5091,7 +5093,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        	handler.sendEmptyMessage(4);			
         	} catch(Exception exc)
         	{
-        		Global.AddLog("ZoomTo: " + exc.getMessage());
+        		Logger.Error("MapView.AnimationThread.ZoomTo","",exc);
         	}
 }
 
@@ -5119,7 +5121,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        	handler.sendEmptyMessage(4);
         	} catch(Exception exc)
         	{
-        		Global.AddLog("rotateTo " + exc.getMessage());
+        		Logger.Error("MapView.AnimationThread.rotateTo","",exc);
         	}
 		}
 		public void stopMove() {
@@ -5128,7 +5130,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				handler.sendEmptyMessage(1);
         	} catch(Exception exc)
         	{
-        		Global.AddLog("stopMove: " + exc.getMessage());
+        		Logger.Error("MapView.AnimationThread.stopMove","",exc);
         	}
 		}
 		
@@ -5138,7 +5140,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				handler.getLooper().quit();
         	} catch(Exception exc)
         	{
-        		Global.AddLog("beendeThread: " + exc.getMessage());
+        		Logger.Error("MapView.AnimationThread.beendeThread","",exc);
         	}			
 		}
 	}

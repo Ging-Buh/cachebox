@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import nonGuiClasses.Logger;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
@@ -197,31 +199,31 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
 	@Override
 	public void OnShow() {
 		// TODO Auto-generated method stub
-		Global.AddLog("sv1");
+		Logger.DEBUG("sv1");
 		aktCache = Global.SelectedCache();
 		lBitmaps.clear();
 		aktCache.ReloadSpoilerRessources();
-		Global.AddLog("sv2");
+		Logger.DEBUG("sv2");
 		for (String filename : aktCache.SpoilerRessources())
 		{
 			try
 			{
-				Global.AddLog("sv3");
+				Logger.DEBUG("sv3");
 				Bitmap bmp = BitmapFactory.decodeFile(filename);
-				Global.AddLog("sv4");
+				Logger.DEBUG("sv4");
 
 				lBitmaps.add(getResizedBitmap(bmp, 200, 100));
-				Global.AddLog("sv5");
+				Logger.DEBUG("sv5");
 				bmp.recycle();
-				Global.AddLog("sv6");
+				Logger.DEBUG("sv6");
 			} catch (Exception exc)
 			{
-				Global.AddLog("SpoilerView: AddBitmap - " + exc.getMessage());
+				Logger.Error("SpoilerView.onShow()", "AddBitmap", exc);
 			}
 		}
-		Global.AddLog("sv7");
+		Logger.DEBUG("sv7");
         g.setAdapter(new ImageAdapter(context));		
-		Global.AddLog("sv8");
+		Logger.DEBUG("sv8");
 	}
 
 

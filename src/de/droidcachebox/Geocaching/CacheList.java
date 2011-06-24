@@ -7,6 +7,8 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 
+import nonGuiClasses.Logger;
+
 import android.database.Cursor;
 import android.widget.ArrayAdapter;
 import de.droidcachebox.Config;
@@ -62,7 +64,7 @@ public class CacheList extends ArrayList<Cache> {
         }
         catch(Exception e)
         {
-        	Global.AddLog("CacheList.LoadCaches: " + e.getMessage());
+        	Logger.Error("CacheList.LoadCaches()", "reader = Database.Data.myDB.rawQuery(....", e);
         }
     	reader.moveToFirst();
     	

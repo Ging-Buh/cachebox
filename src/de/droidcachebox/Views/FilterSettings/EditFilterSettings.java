@@ -1,5 +1,6 @@
 package de.droidcachebox.Views.FilterSettings;
 
+import nonGuiClasses.Logger;
 import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.FilterProperties;
@@ -179,7 +180,7 @@ public class EditFilterSettings extends Activity {
 		      public void run() 
 		      {
 		    	  String sqlWhere =props.getSqlWhere();
-			      Global.AddLog("Main.ApplyFilter: " + sqlWhere);
+			      Logger.General("Main.ApplyFilter: " + sqlWhere);
 			      Database.Data.Query.clear();
 			      Database.Data.Query.LoadCaches(sqlWhere);
 			      messageHandler.sendMessage(messageHandler.obtainMessage(1));

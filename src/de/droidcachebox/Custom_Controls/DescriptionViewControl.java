@@ -3,6 +3,8 @@ package de.droidcachebox.Custom_Controls;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import nonGuiClasses.Logger;
+
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
@@ -161,8 +163,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
 						try {
 							DescriptionImageGrabber.Download(url, local);
 						} catch (Exception e) {
-							String Msg = (e == null) ? "" : e.getMessage();
-							Global.AddLog( "ERROR :DescriptionImageGrabber.Download(url, local) \n" + Msg, true);
+							Logger.Error("DescriptionViewControl.setCache()","downloadThread run()", e);
 						}
 					}
 					downloadReadyHandler.post(downloadComplete);
