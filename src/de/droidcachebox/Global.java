@@ -34,8 +34,8 @@ import de.droidcachebox.Views.Forms.MessageBoxIcon;
 import de.droidcachebox.Views.Forms.MessageBox;
 
 
-public class Global implements ILog {
-    public static final int CurrentRevision = 251;
+public class Global{
+    public static final int CurrentRevision = 252;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
@@ -812,29 +812,6 @@ public class Global implements ILog {
     	return ret;
     }
     
-    
-    static class LockClass { };
-    static LockClass lockObject = new LockClass();
-
-    /**
-     * Empfängt die gelogten Meldungen und schreibt sie in die Debug.txt
-     */
-	@Override public void receiveLog(String Msg) 
-	{
-		synchronized (lockObject)
-        {
-        	File file = new File(Config.WorkPath + "/debug.txt");
-        	FileWriter writer;
-        	try {
-				writer = new FileWriter(file, true);
-				writer.write(Msg);
-	            writer.close();
-			} catch (IOException e) {
-				
-				e.printStackTrace();
-			}
-        }
-	}
-
+   
     
 }

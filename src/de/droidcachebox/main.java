@@ -2,6 +2,7 @@ package de.droidcachebox;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,13 +12,13 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
+import nonGuiClasses.ILog;
 import nonGuiClasses.Logger;
 
 import de.droidcachebox.ExtAudioRecorder;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Custom_Controls.DebugInfoPanel;
-import de.droidcachebox.Custom_Controls.DescriptionViewControl;
 import de.droidcachebox.Custom_Controls.Mic_On_Flash;
 import de.droidcachebox.Custom_Controls.downSlider;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
@@ -45,7 +46,6 @@ import de.droidcachebox.Views.WaypointView;
 import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
 import de.droidcachebox.Views.FilterSettings.PresetListView;
-import de.droidcachebox.Views.Forms.DialogID;
 import de.droidcachebox.Views.Forms.HintDialog;
 import de.droidcachebox.Views.Forms.ImportDialog;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
@@ -54,16 +54,12 @@ import de.droidcachebox.Views.Forms.ScreenLock;
 import de.droidcachebox.Views.Forms.SelectDB;
 import de.droidcachebox.Views.Forms.Settings;
 import de.droidcachebox.Views.Forms.MessageBox;
-import de.droidcachebox.Views.Forms.NumerikInputBox;
 import de.droidcachebox.Database;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.CacheList;
 import de.droidcachebox.Geocaching.Coordinate;
-import de.droidcachebox.Geocaching.JokerEntry;
-import de.droidcachebox.Geocaching.JokerList;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.app.Activity;
-import android.app.Dialog;
 import android.database.Cursor;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -77,26 +73,15 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Criteria;
-import android.location.GpsStatus.Listener;
-import android.location.GpsStatus.NmeaListener;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Environment;
-import android.os.Handler;
 import android.os.PowerManager;
-import android.os.SystemClock;
 import android.provider.MediaStore;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -109,23 +94,16 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.view.ViewConfiguration;
-import android.view.ViewManager;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AbsoluteLayout;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.location.GpsStatus;
 
-public class main extends Activity implements SelectedCacheEvent,LocationListener,CacheListChangedEvent, GpsStatus.NmeaListener 
+public class main extends Activity implements SelectedCacheEvent,LocationListener,CacheListChangedEvent, GpsStatus.NmeaListener, ILog 
 {
 	/*
 	 * private static member
@@ -267,7 +245,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        {
 	        	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 	        }
-      
+	        
+	        Logger.Add(this);
+	        
 	        try
 	        {
 	        setContentView(R.layout.main);
@@ -1682,5 +1662,34 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		 counter = new MyCount(value,value);
 		 counter.start();
 	 }
+
+	
+	 
+	 
+	 
+	 static class LockClass { };
+	 static LockClass lockObject = new LockClass();
+
+	 
+	 /**
+	     * Empfängt die gelogten Meldungen und schreibt sie in die Debug.txt
+	     */
+		@Override public void receiveLog(String Msg) 
+		{
+			synchronized (lockObject)
+	        {
+	        	File file = new File(Config.WorkPath + "/debug.txt");
+	        	FileWriter writer;
+	        	try {
+					writer = new FileWriter(file, true);
+					writer.write(Msg);
+		            writer.close();
+				} catch (IOException e) {
+					
+					e.printStackTrace();
+				}
+	        }
+		}
+	 
 	 
 }

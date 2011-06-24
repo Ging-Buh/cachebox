@@ -2,6 +2,8 @@ package de.droidcachebox.Geocaching;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import nonGuiClasses.Logger;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.location.Location;
@@ -216,10 +218,10 @@ public class Waypoint implements Serializable {
 //        Replication.WaypointDelete(CacheId, checkSum, newCheckSum, GcCode);
         try
         {
-        	Database.Data.myDB.delete("Caches", "Id=" + CacheId, null);
+        	Database.Data.myDB.delete("Waypoint", "GcCode='" + GcCode+"'", null);
         } catch (Exception exc)
         {
-        	return;
+        	Logger.Error("Waypoint.DeleteFromDataBase()","", exc);
         }
     }
 

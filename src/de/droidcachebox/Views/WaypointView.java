@@ -1,46 +1,36 @@
 package de.droidcachebox.Views;
 
 
+
+
+import nonGuiClasses.Logger;
 import de.droidcachebox.Config;
-import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.main;
-import de.droidcachebox.splash;
-
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Cache.CacheTypes;
-import de.droidcachebox.Geocaching.CacheList;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
-import de.droidcachebox.Map.Layer;
-import de.droidcachebox.Views.Forms.EditCoordinate;
 import de.droidcachebox.Views.Forms.EditWaypoint;
-import android.R.drawable;
+import de.droidcachebox.Views.Forms.MessageBox;
+import de.droidcachebox.Views.Forms.MessageBoxButtons;
+import de.droidcachebox.Views.Forms.MessageBoxIcon;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Instrumentation.ActivityMonitor;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class WaypointView extends ListView implements SelectedCacheEvent, ViewOptionsMenu {
 	
@@ -50,7 +40,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 	boolean createNewWaypoint = false;
 	Cache aktCache = null;
 	
-	private Paint paint;
+	
 	/**
 	 * Constructor
 	 */
@@ -250,19 +240,18 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				        	aktWaypoint.DeleteFromDatabase();
 				        	Global.SelectedCache().waypoints.remove(aktWaypoint);
 				        	Global.SelectedWaypoint(Global.SelectedCache(), null);
+				        	lvAdapter.notifyDataSetChanged();
 				            break;
 				        case DialogInterface.BUTTON_NEGATIVE:
 				            //No button clicked
 				            break;
 				        }
+				        dialog.dismiss();
 				    }
 				};
 
-				AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-				builder.setMessage(Global.Translations.Get("?DelWP") + "\n\n[" + aktWaypoint.Title + "]")
-					.setTitle(Global.Translations.Get("!DelWP"))
-					.setPositiveButton(Global.Translations.Get("yes"), dialogClickListener)
-				    .setNegativeButton(Global.Translations.Get("no"), dialogClickListener).show();
+				MessageBox.Show(Global.Translations.Get("?DelWP") + "\n\n[" + aktWaypoint.Title + "]", Global.Translations.Get("!DelWP"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, dialogClickListener);
+							
 		}
 		return true;
 	}
@@ -284,9 +273,9 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				mi.setTitle(Global.Translations.Get("delete"));
 				mi.setVisible((aktWaypoint != null) && (aktWaypoint.IsUserWaypoint));
 			}
-		} catch (Exception exc)
+		} catch (Exception e)
 		{
-			return;
+			Logger.Error("WaypointView.BeforeShowMenu()", menu.toString(), e);
 		}
 	}
 

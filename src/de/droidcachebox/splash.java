@@ -91,7 +91,7 @@ public class splash extends Activity
 	 private void Initial() 
 	 {
 		 Logger.setDebug(Global.Debug);
-		 
+		
 		 Logger.General("------" + Global.CurrentRevision + "-------");
 
 // Read Config
