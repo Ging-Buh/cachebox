@@ -7,7 +7,6 @@ import de.droidcachebox.Global;
 import de.droidcachebox.Geocaching.Coordinate;
 
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.SystemClock;
 
 public class PositionEventList {
@@ -24,16 +23,11 @@ public class PositionEventList {
 	
 	public static void Call(Location location)
 	{
-        // if the GPS-Signal ist ok
-		if ( location.getProvider().equalsIgnoreCase(LocationManager.GPS_PROVIDER))
-		{
-			Global.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());
-		}
+		Global.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());
 		Global.Marker.Valid=false;
 		for (PositionEvent event : list)
 		{
 			event.PositionChanged(location);
-
 		}
 	}
 
