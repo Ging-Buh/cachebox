@@ -127,6 +127,14 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			numMaxTiles = 48;
 			numMaxTrackTiles = 24;
 		}
+		if (available_bytes < 20)
+		{
+			// Geräte mit nur 16MB verfügbar
+			// Minimalausstattung verwenden
+			rangeFactorTiles = 1.0f;
+			numMaxTiles = 12;
+			numMaxTrackTiles = 12;
+		}
 		
 		RelativeLayout mapviewLayout = (RelativeLayout)inflater.inflate(R.layout.mapview, null, false);
 		this.addView(mapviewLayout);
@@ -2971,6 +2979,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     private void MapView_MouseUp(int eX, int eY)
     {
       dragging = false;
+      mouseMoved = false;
       updateCacheList();
       Render(true);
     }
@@ -5077,7 +5086,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			// save zoom level
 			Config.Set("lastZoomLevel", newZoom);
 			Config.AcceptChanges();
-			
+
 			try
 			{
 				animationLock.lock();
@@ -5095,7 +5104,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         	{
         		Logger.Error("MapView.AnimationThread.ZoomTo","",exc);
         	}
-}
+		}
 
 		private float lastNewHeading = -999;
 		public void rotateTo(float newHeading)
