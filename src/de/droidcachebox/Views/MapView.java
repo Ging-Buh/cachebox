@@ -4643,6 +4643,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		
     	if ((animationThread != null) && (animationThread.isAlive()))
     		animationThread.stop();
+    	
+		// save zoom level
+    	if (Config.GetInt("lastZoomLevel") != Zoom)
+    	{
+			Config.Set("lastZoomLevel", Zoom);
+			Config.AcceptChanges();
+    	}
 	}
 
 	@Override
@@ -5083,9 +5090,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		public void zoomTo(int newZoom)
 		{
-			// save zoom level
-			Config.Set("lastZoomLevel", newZoom);
-			Config.AcceptChanges();
 
 			try
 			{

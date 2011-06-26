@@ -731,6 +731,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	                SelectedCacheEventList.list.clear();
 	                SelectedLangChangedEventList.list.clear();
 	                CachListChangedEventList.list.clear();
+	                if (aktView != null)
+	                {
+	                	aktView.OnHide();
+	                	aktView.OnFree();
+	                }
 	                aktView = null;
 	                for (View vom : ViewList)
 	                {
