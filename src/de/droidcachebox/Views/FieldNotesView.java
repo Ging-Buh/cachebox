@@ -284,44 +284,41 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 			return;
 		}
 		
-		
-		FieldNoteEntry newFieldNote = new FieldNoteEntry(type);
-		newFieldNote.CacheName = cache.Name;
-		newFieldNote.gcCode = cache.GcCode;
-		newFieldNote.foundNumber = Config.GetInt("FoundOffset");
-		newFieldNote.timestamp = new Date();
-		newFieldNote.CacheId = cache.Id;
-		newFieldNote.comment = "";
-		newFieldNote.CacheUrl = cache.Url;
-		newFieldNote.cacheType= cache.Type.ordinal();
-		newFieldNote.fillType();
-
-		aktFieldNoteIndex=-1;
-		aktFieldNote=newFieldNote;
-		
-		FieldNoteList fnl = new FieldNoteList();
-		fnl.LoadFieldNotes("CacheId=" + cache.Id); // + " and Type=" + type);
-		if (fnl.size() > 0 && (newFieldNote.type==1 || newFieldNote.type==2))
+		FieldNoteEntry newFieldNote = null;
+		if ((type == 1) || (type == 2))
 		{
-			// für diesen Cache ist bereits eine FieldNote vom typ vorhanden 
-			// -> diese ändern und keine neue erstellen
-			/* Das aber nur bei LogType 1 oder 2 (Found/DitNotFount)
-			 * needMaintance oder Note können zusätzlich angelegt werden  */
-			FieldNoteEntry nfne = fnl.get(0);
+			// nachsehen, ob für diesen Cache bereits eine FieldNote des Types angelegt wurde
+			// und gegebenenfalls diese ändern und keine neue anlegen
+			// gilt nur für Found It! und DNF. 
+			// needMaintance oder Note können zusätzlich angelegt werden
 			int index = 0;
-			for (FieldNoteEntry nfne2 : lFieldNotes)
+			for (FieldNoteEntry nfne : lFieldNotes)
 			{
-				if(nfne2.type==1 || nfne2.type==2 )
+				if ((nfne.CacheId == cache.Id) && (nfne.type == type)) 
 				{
-					aktFieldNote = nfne;
-					aktFieldNoteIndex = index;	
+					newFieldNote = nfne;
+					aktFieldNote = newFieldNote;
+					aktFieldNoteIndex = index;
 				}
 				index++;
 			}
 		}
 		
-		
-		
+		if (newFieldNote == null)
+		{
+			newFieldNote = new FieldNoteEntry(type);
+			newFieldNote.CacheName = cache.Name;
+			newFieldNote.gcCode = cache.GcCode;
+			newFieldNote.foundNumber = Config.GetInt("FoundOffset");
+			newFieldNote.timestamp = new Date();
+			newFieldNote.CacheId = cache.Id;
+			newFieldNote.comment = "";
+			newFieldNote.CacheUrl = cache.Url;
+			newFieldNote.cacheType= cache.Type.ordinal();
+			newFieldNote.fillType();
+			aktFieldNoteIndex=-1;
+			aktFieldNote=newFieldNote;
+		}
 		
 		switch (type)
 		{
@@ -411,10 +408,16 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 					lFieldNotes.add(0, fieldNote);
 					fieldNote.WriteToDatabase();
 					aktFieldNote = fieldNote;
-					
-					Global.SelectedCache().Found(true);
-	                Config.Set("FoundOffset", aktFieldNote.foundNumber);
-	                Config.AcceptChanges();
+					if (fieldNote.type == 1)
+					{
+						// Found it! -> Cache als gefunden markieren
+						if (!Global.SelectedCache().Found())
+						{
+							Global.SelectedCache().Found(true);
+			                Config.Set("FoundOffset", aktFieldNote.foundNumber);
+			                Config.AcceptChanges();
+						}
+					}
 					
 					FieldNoteList.CreateVisitsTxt();
 				}

@@ -235,7 +235,7 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu  {
 	       
 	        // Time/Date
 		        TextPaint.setFakeBoldText(false);
-		        SimpleDateFormat postFormater = new SimpleDateFormat("hh:mm - dd/MM/yyyy"); 
+		        SimpleDateFormat postFormater = new SimpleDateFormat("HH:mm - dd/MM/yyyy"); 
 		        String dateString = postFormater.format(fieldnote.timestamp); 
 		        int DateLength = (int) TextPaint.measureText(dateString);
 		        canvas.drawText(dateString, width - DateLength-10, headLinePos, TextPaint);
