@@ -35,7 +35,7 @@ import de.droidcachebox.Views.Forms.MessageBox;
 
 
 public class Global{
-    public static final int CurrentRevision = 253;
+    public static final int CurrentRevision = 259;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;

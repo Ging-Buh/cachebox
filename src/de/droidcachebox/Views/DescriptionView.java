@@ -82,16 +82,19 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	@Override
 	public void OnShow() 
 	{
+		WebControl.OnShow();
 	}
 
 	@Override
 	public void OnHide() 
 	{
+		WebControl.OnHide();
 	}
 
 	@Override
-	public void OnFree() {
-		
+	public void OnFree() 
+	{
+		WebControl.OnFree();
 	}
 
 	@Override

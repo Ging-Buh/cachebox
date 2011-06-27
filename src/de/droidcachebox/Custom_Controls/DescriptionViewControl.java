@@ -7,9 +7,6 @@ import nonGuiClasses.Logger;
 
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.main;
-
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
@@ -18,22 +15,17 @@ import de.droidcachebox.Geocaching.DescriptionImageGrabber;
 import de.droidcachebox.Geocaching.Waypoint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.webkit.WebView;
 
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu, SelectedCacheEvent {
 
 	private boolean mustLoadDescription;
 	private Cache aktCache;
+	private Boolean isVisible=false;
 	private HashMap<Cache.Attributes, Integer> attributeLookup;
 	private ArrayList<String> NonLocalImages = new ArrayList<String>();
 	private ArrayList<String> NonLocalImagesUrl = new ArrayList<String>();
@@ -127,6 +119,9 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
 		
 	}
 	
+	
+	private int downloadTryCounter=0;
+	
 	public void setCache(Cache cache)
 	{
         final String mimeType = "text/html";
@@ -152,8 +147,21 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
 		if (Config.GetBool("AllowInternetAccess")
 				&& NonLocalImagesUrl.size() > 0) {
 			downloadThread = new Thread() {
-				public void run() {
+				public void run() 
+				{
 
+					if(downloadTryCounter>0)
+					{
+						try 
+						{
+							Thread.sleep(100);
+						} catch (InterruptedException e) 
+						{
+							Logger.Error("DescriptionViewControl.setCache()", "Thread.sleep fehler", e);
+							e.printStackTrace();
+						}
+					}
+					
 					while (NonLocalImagesUrl != null && NonLocalImagesUrl.size() > 0) {
 						String local, url;
 						local = NonLocalImages.get(0);
@@ -182,7 +190,9 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
 	    {
 		    public void run() 
 		    {
-		    	setCache(aktCache);
+		    	Global.setDebugMsg("Reload " + String.valueOf(downloadTryCounter++));
+		    	if(downloadTryCounter<10) // nur 10 Download versuche zu lassen
+		    		setCache(aktCache);
 		    }
 	    };
 	
@@ -222,7 +232,11 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
 	}
 
 	@Override
-	public void OnShow() {
+	public void OnShow() 
+	{
+		if(downloadTryCounter>9)mustLoadDescription=true; //Versuchs nochmal mit dem Download
+		downloadTryCounter=0;
+		isVisible=true;
 		if (mustLoadDescription)
 		{
 			setCache(aktCache);
@@ -232,12 +246,28 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
 	}
 	
 	@Override
-	public void OnHide() {
-		// TODO Auto-generated method stub
+	public void OnHide() 
+	{
+		try 
+		{
+			this.clearCache(true);
+		} catch (Exception e) 
+		{
+			Logger.Error("DescriptionViewControl.OnHide()", "clearCache", e);
+				e.printStackTrace();
+		}
+		isVisible=false;
 	}
 
 	@Override
-	public void OnFree() {
+	public void OnFree() 
+	{
+		try 
+		{
+			this.clearCache(true);
+		} catch (Exception e) {
+				e.printStackTrace();
+		}
 		this.destroy();
 	}
 
@@ -248,7 +278,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
 		{
 			aktCache = cache;
 			mustLoadDescription = true;
-			setCache(aktCache);
+			if(isVisible)
+				setCache(aktCache); //Wenn die View nicht sichtbar, brauch auch das HTML nicht geladen werden!
 		}
 	}
 
