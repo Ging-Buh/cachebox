@@ -420,6 +420,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     private WheelView ScreenLock_wheel_m ;
     private WheelView ScreenLock_wheel_sec ;
     private CheckBox chkAllowLandscape;
+    private TextView DescScreenLock;
 	
  	private void findViewsById()
 	{
@@ -476,6 +477,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		ScreenLock_wheel_m = (WheelView)this.findViewById(R.id.settings_ScreenLock_m);
 		ScreenLock_wheel_sec = (WheelView)this.findViewById(R.id.settings_ScreenLock_sec);
 		chkAllowLandscape = (CheckBox)this.findViewById(R.id.settings_allow_LandScape);
+		DescScreenLock=(TextView)this.findViewById(R.id.settings_desc_ScreenLock);
 	}
 	
 	private void setLang()
@@ -491,6 +493,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
         DescCompassLevel.setText(Global.Translations.Get("DescHtcLevel"));
         chkAllowInetAccess.setText(Global.Translations.Get("AllowInternet"));
         chkAllowLandscape.setText(Global.Translations.Get("AllowLandscape"));
+        DescScreenLock.setText("Screen lock [min/sec]" + String.format("%n") + "(<5sec = off)");
 	}
 	
 		

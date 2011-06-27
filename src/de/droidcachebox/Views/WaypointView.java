@@ -106,6 +106,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 					aktWaypoint.Description = waypoint.Description;
 					aktWaypoint.Clue = waypoint.Clue;
 					aktWaypoint.UpdateDatabase();
+					lvAdapter.notifyDataSetChanged();
 				}
 			}
 		}

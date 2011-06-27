@@ -39,6 +39,7 @@ public class WaypointViewItem extends View {
 	private StaticLayout LayoutCord;
 	private StaticLayout LayoutClue;
 	private TextPaint LayoutTextPaint;
+	private TextPaint LayoutTextPaintRed;
 	private TextPaint LayoutTextPaintBold;
 	private int LineSep;
 	
@@ -80,9 +81,14 @@ public class WaypointViewItem extends View {
 			LayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
 			LayoutCord = new StaticLayout(Global.FormatLatitudeDM(waypoint.Latitude()) + " / " + Global.FormatLongitudeDM(waypoint.Longitude()), LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 			LayoutDesc = new StaticLayout(waypoint.Description, LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-			LayoutClue = new StaticLayout(Clue, LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+			
 			LayoutTextPaintBold = new TextPaint(LayoutTextPaint);
 			LayoutTextPaintBold.setFakeBoldText(true);
+			LayoutTextPaintRed = new TextPaint(LayoutTextPaint);
+			LayoutTextPaintRed.setColor(Color.RED);
+			
+			LayoutClue = new StaticLayout(Clue, LayoutTextPaintRed, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+			
 			LayoutName = new StaticLayout(waypoint.GcCode + ": " + waypoint.Title, LayoutTextPaintBold, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 			this.height = (LineSep*5)+ LayoutCord.getHeight()+LayoutDesc.getHeight()+LayoutClue.getHeight()+LayoutName.getHeight();
 		}
