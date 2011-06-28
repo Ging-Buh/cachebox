@@ -6,7 +6,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.LogEntry;
+import CB_Core.Types.LogEntry;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;

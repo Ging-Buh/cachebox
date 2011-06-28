@@ -8,14 +8,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-import org.apache.http.HttpRequest;
 import org.apache.http.util.ByteArrayBuffer;
 
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 public class DescriptionImageGrabber {

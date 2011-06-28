@@ -1,18 +1,17 @@
 package de.droidcachebox.Views.Forms;
 
+
+import CB_Core.Enums.CacheTypes;
+
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Events.SelectedLangChangedEvent;
 import de.droidcachebox.Geocaching.Coordinate;
 import de.droidcachebox.Geocaching.Waypoint;
-import de.droidcachebox.Geocaching.Cache.CacheTypes;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;

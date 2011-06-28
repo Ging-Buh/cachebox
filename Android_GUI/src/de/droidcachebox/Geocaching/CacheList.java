@@ -11,7 +11,7 @@ import android.database.Cursor;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.Events.CachListChangedEventList;
-import de.droidcachebox.Geocaching.Cache.CacheTypes;
+import CB_Core.Enums.CacheTypes;
 
 public class CacheList extends ArrayList<Cache> {
 	 

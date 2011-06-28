@@ -7,6 +7,8 @@ import java.util.HashMap;
 
 
 
+import CB_Core.Types.LogEntry;
+
 import com.ximpleware.extended.AutoPilotHuge;
 import com.ximpleware.extended.NavExceptionHuge;
 import com.ximpleware.extended.VTDExceptionHuge;
@@ -15,7 +17,6 @@ import com.ximpleware.extended.VTDNavHuge;
 import com.ximpleware.extended.XMLBuffer;
 
 import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.LogEntry;
 import de.droidcachebox.Geocaching.Waypoint;
 
 public class GPXFileReader 
@@ -514,7 +515,7 @@ public class GPXFileReader
 					
 					vn.pop();
 					
-					logEntry.writeToDB();
+					// Todo logEntry.writeToDB();
 				}
 			} while (vn.toElement(VTDNavHuge.NEXT_SIBLING));
 	

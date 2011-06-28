@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import CB_Core.Enums.CacheTypes;
+import CB_Core.Types.LogEntry;
 
 import de.droidcachebox.Config;
 import de.droidcachebox.Database;
@@ -30,79 +32,9 @@ import android.text.Layout.Alignment;
 import android.text.TextPaint;
 
 
-public class Cache implements Comparable<Cache> {
-    public enum CacheTypes
-    {
-        Traditional, // = 0,
-        Multi, // = 1,
-        Mystery, // = 2,
-        Camera, // = 3,
-        Earth, // = 4,
-        Event, // = 5,
-        MegaEvent, // = 6,
-        CITO, // = 7,
-        Virtual, // = 8,
-        Letterbox, // = 9,
-        Wherigo, // = 10,
-        ReferencePoint, // = 11,
-        Wikipedia, // = 12,
-        Undefined, // = 13,
-        MultiStage, // = 14,
-        MultiQuestion, // = 15,
-        Trailhead, // = 16,
-        ParkingArea, // = 17,
-        Final, // = 18,
-        Cache // = 19,
-;
+public class Cache implements Comparable<Cache> 
+{
 
-		/**
-	 * 
-	 * @param string
-	 * @return
-	 */
-	public static CacheTypes parseString(String string)
-	{
-		// Remove trailing " cache" or " hybrid" fragments
-		if (string.contains(" "))
-			string = string.substring(0, string.indexOf(" "));
-		// Remove trailing "-cache" fragments
-		if (string.contains("-"))
-			string = string.substring(0, string.indexOf("-"));
-
-		// Replace some opencaching.de / geotoad cache types
-		if (string.toLowerCase().equals("multicache"))
-			string = "Multi";
-		if (string.toLowerCase().equals("wherigo")) // note the missing "e"
-			string = "Whereigo";
-		if (string.toLowerCase().equals("other"))
-			string = "Mystery";
-		
-		// If no cache type is given, use "Unknown"
-		if (string.length() == 0)
-			string = "Unknown";
-		
-		try
-		{
-			return valueOf(string);
-		}
-		catch (Exception ex)
-		{
-			CacheTypes cacheType = CacheTypes.Undefined;
-			Boolean blnCacheTypeFound = false;
-			for (CacheTypes ct : CacheTypes.values())
-			{
-				if (ct.toString().toLowerCase().equals(string.toLowerCase()))
-				{
-					cacheType = ct;
-					blnCacheTypeFound = true;
-				}
-			}
-			if (!blnCacheTypeFound)
-				System.out.println("Handle cache type: " + string);
-			return cacheType;
-		}
-	}
-    };
 	
     @Override
     public int compareTo(Cache c2) {
@@ -375,28 +307,51 @@ public class Cache implements Comparable<Cache> {
     	reader.moveToFirst();
         while(reader.isAfterLast() == false)
         {
-        	LogEntry logent = new LogEntry(reader, true); 
+        	LogEntry logent = getLogEntry(reader, true); 
             result.add(logent);
             reader.moveToNext();
         }
         reader.close();
-        /*
-        System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
-
-        SqlCeCommand command = new SqlCeCommand("select CacheId, Timestamp, Finder, Type, Comment from Logs where CacheId=@cacheid order by Timestamp desc", Database.Data.Connection);
-        command.Parameters.Add("@cacheid", DbType.Int64).Value = this.Id;
-        SqlCeDataReader reader = command.ExecuteReader();
-
-        while (reader.Read())
-            result.Add(new LogEntry(reader, true));
-
-        reader.Dispose();
-        command.Dispose();
-
-        System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
-*/
+        
         return result;
     }
+    
+    private LogEntry getLogEntry(Cursor reader, boolean filterBbCode)
+    {
+    	LogEntry retLogEntry = new LogEntry();
+    	
+    	retLogEntry.CacheId = reader.getLong(0);
+    	      
+    	      String sDate = reader.getString(1);
+    	      DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	      try {
+    	    	  retLogEntry.Timestamp = iso8601Format.parse(sDate);
+    	      } catch (ParseException e) {
+    	      }
+    	      retLogEntry.Finder = reader.getString(2);
+    	      retLogEntry.TypeIcon = reader.getInt(3);
+    	      retLogEntry.Comment = reader.getString(4);
+    	      Id = reader.getLong(5);
+
+    	      if (filterBbCode)
+    	      {
+    	        int lIndex;
+
+    	        while ((lIndex = retLogEntry.Comment.indexOf('[')) >= 0)
+    	        {
+    	          int rIndex = retLogEntry.Comment.indexOf(']', lIndex);
+
+    	          if (rIndex == -1)
+    	            break;
+
+    	          retLogEntry.Comment = retLogEntry.Comment.substring(0, lIndex) + retLogEntry.Comment.substring(rIndex + 1);
+    	        }
+  	      }
+    	      
+    	 return retLogEntry;
+    }
+
+   
 
 
     /// Entfernung von der letzten gültigen Position

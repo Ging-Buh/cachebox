@@ -9,7 +9,7 @@ import android.database.Cursor;
 import android.location.Location;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
-import de.droidcachebox.Geocaching.Cache.CacheTypes;
+import CB_Core.Enums.CacheTypes;
 
 public class Waypoint implements Serializable {
     /**
