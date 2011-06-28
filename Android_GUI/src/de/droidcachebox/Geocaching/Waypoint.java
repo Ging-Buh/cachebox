@@ -3,7 +3,7 @@ package de.droidcachebox.Geocaching;
 import java.io.Serializable;
 import java.util.Date;
 
-import nonGuiClasses.Logger;
+import CB_Core.Log.Logger;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.location.Location;

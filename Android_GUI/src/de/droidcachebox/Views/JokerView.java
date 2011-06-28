@@ -1,7 +1,7 @@
 package de.droidcachebox.Views;
 
 
-import nonGuiClasses.Logger;
+import CB_Core.Log.Logger;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;

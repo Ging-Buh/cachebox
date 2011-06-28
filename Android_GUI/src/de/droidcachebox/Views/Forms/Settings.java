@@ -1,71 +1,45 @@
 package de.droidcachebox.Views.Forms;
 
 import java.io.IOException;
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
-import java.util.List;
 
-import nonGuiClasses.Logger;
-
-import de.droidcachebox.Custom_Controls.wheel.adapters.NumericWheelAdapter;
-
-import de.droidcachebox.Custom_Controls.wheel.OnWheelChangedListener;
-import de.droidcachebox.Custom_Controls.wheel.OnWheelScrollListener;
-import de.droidcachebox.Custom_Controls.wheel.WheelView;
-import de.droidcachebox.Custom_Controls.wheel.adapters.AbstractWheelAdapter;
-
-
-import de.droidcachebox.Config;
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.SimpleCrypto;
-import de.droidcachebox.main;
-import de.droidcachebox.splash;
-import de.droidcachebox.Components.ActivityUtils;
-import de.droidcachebox.Components.Animations;
-
-import de.droidcachebox.Events.SelectedLangChangedEventList;
-import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.Waypoint;
-import de.droidcachebox.TranslationEngine.LangStrings.Langs;
-import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
+import CB_Core.Log.Logger;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.graphics.*;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.View.OnKeyListener;
-import android.view.ViewGroup.LayoutParams;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.TimePicker;
-
-
-
+import de.droidcachebox.Config;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.SimpleCrypto;
+import de.droidcachebox.main;
+import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Components.Animations;
+import de.droidcachebox.Custom_Controls.wheel.OnWheelChangedListener;
+import de.droidcachebox.Custom_Controls.wheel.OnWheelScrollListener;
+import de.droidcachebox.Custom_Controls.wheel.WheelView;
+import de.droidcachebox.Custom_Controls.wheel.adapters.NumericWheelAdapter;
 import de.droidcachebox.Events.SelectedLangChangedEvent;
+import de.droidcachebox.Events.SelectedLangChangedEventList;
+import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.TranslationEngine.LangStrings.Langs;
+import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 public class Settings extends Activity implements ViewOptionsMenu,SelectedLangChangedEvent {
 	Context context;

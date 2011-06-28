@@ -3,7 +3,7 @@ package de.droidcachebox.Custom_Controls;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import nonGuiClasses.Logger;
+import CB_Core.Log.Logger;
 
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;

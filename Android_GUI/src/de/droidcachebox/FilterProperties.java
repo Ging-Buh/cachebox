@@ -1,10 +1,9 @@
 package de.droidcachebox;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.HashMap;
+import CB_Core.Log.Logger;
 
-import nonGuiClasses.Logger;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Cache.Attributes;
 

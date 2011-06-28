@@ -12,7 +12,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import nonGuiClasses.Logger;
+import CB_Core.Log.Logger;
 
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Cache.CacheTypes;

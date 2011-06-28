@@ -1,4 +1,4 @@
-package nonGuiClasses;
+package CB_Core.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -125,6 +125,7 @@ public class Logger
 	 * Sendet die aufbereitete Msg von Error,Debug oder General
 	 * @param Msg
 	 */
+	@SuppressWarnings("deprecation")
 	private static void sendMsg(String Msg)
 	{
 		

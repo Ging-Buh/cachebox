@@ -1,16 +1,13 @@
 package de.droidcachebox;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-import nonGuiClasses.ILog;
-import nonGuiClasses.Logger;
+import CB_Core.Log.Logger;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import android.content.Context;
 import android.content.res.Resources;
@@ -29,13 +26,10 @@ import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.TranslationEngine.LangStrings;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
-import de.droidcachebox.Views.Forms.MessageBoxButtons;
-import de.droidcachebox.Views.Forms.MessageBoxIcon;
-import de.droidcachebox.Views.Forms.MessageBox;
 
 
 public class Global{
-    public static final int CurrentRevision = 260;
+    public static final int CurrentRevision = 263;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;

@@ -1,6 +1,6 @@
 package de.droidcachebox.Views.FilterSettings;
 
-import nonGuiClasses.Logger;
+import CB_Core.Log.Logger;
 import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.FilterProperties;
@@ -11,8 +11,6 @@ import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
 import de.droidcachebox.Events.CachListChangedEventList;
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,10 +18,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.TableRow;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 import android.app.ProgressDialog;
 
 public class EditFilterSettings extends Activity {

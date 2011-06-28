@@ -12,8 +12,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-import nonGuiClasses.ILog;
-import nonGuiClasses.Logger;
+import CB_Core.Log.ILog;
+import CB_Core.Log.Logger;
 
 import de.droidcachebox.ExtAudioRecorder;
 import de.droidcachebox.Components.ActivityUtils;

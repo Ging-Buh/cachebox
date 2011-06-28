@@ -3,6 +3,7 @@
 	<name>droidcachebox</name>
 	<comment></comment>
 	<projects>
+		<project>Cachebox Core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

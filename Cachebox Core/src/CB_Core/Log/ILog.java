@@ -1,4 +1,4 @@
-package nonGuiClasses;
+package CB_Core.Log;
 
 /**
  * Klassen die dieses Interface Implementieren, empfangen eine Msg wann auch immer eine Meldung abgesetzt wurde.

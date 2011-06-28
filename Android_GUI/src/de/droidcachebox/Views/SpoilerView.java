@@ -1,12 +1,8 @@
 package de.droidcachebox.Views;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import CB_Core.Log.Logger;
 
-import nonGuiClasses.Logger;
-
-import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.TouchImageView;
@@ -15,38 +11,25 @@ import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.Waypoint;
-import de.droidcachebox.Map.Descriptor;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.PointF;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.os.SystemClock;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.Gallery;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Gallery.LayoutParams;
 
 public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, SelectedCacheEvent, AdapterView.OnItemSelectedListener{
 

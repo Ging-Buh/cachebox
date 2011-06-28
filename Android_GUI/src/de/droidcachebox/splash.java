@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import nonGuiClasses.Logger;
+import CB_Core.Log.Logger;
 
 import android.app.Activity;
 import android.content.Intent;

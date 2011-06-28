@@ -2,16 +2,12 @@ package de.droidcachebox.Geocaching;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
 
-import nonGuiClasses.Logger;
+import CB_Core.Log.Logger;
 
 import android.database.Cursor;
-import android.widget.ArrayAdapter;
-import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.Events.CachListChangedEventList;
