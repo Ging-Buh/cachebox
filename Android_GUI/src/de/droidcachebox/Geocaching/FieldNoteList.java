@@ -40,7 +40,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
 		Cursor reader = null;
 		try
 		{
-        reader = Database.FieldNotes.myDB.rawQuery(sql, null);
+			reader = Database.FieldNotes.myDB.rawQuery(sql, null);
 		} catch (Exception exc)
 		{
 			String s = exc.getMessage();
@@ -83,5 +83,70 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		};
+	}
+	
+	public void DeleteFieldNoteByCacheId(long cacheId, int type)
+	{
+		int foundNumber = 0;
+		FieldNoteEntry fne = null;
+		// löscht eine evtl. vorhandene FieldNote vom type für den Cache cacheId
+		for (FieldNoteEntry fn : this)
+		{
+			if ((fn.CacheId == cacheId) && (fn.type == type))
+			{
+				fne = fn;
+			}
+		}
+		if (fne != null)
+		{
+			if (fne.type == 1)
+				foundNumber = fne.foundNumber;
+			this.remove(fne);
+			fne.DeleteFromDatabase();
+		}
+		decreaseFoundNumber(foundNumber);
+	}
+
+	public void DeleteFieldNote(long id, int type)
+	{
+		int foundNumber = 0;
+		FieldNoteEntry fne = null;
+		// löscht eine evtl. vorhandene FieldNote vom type für den Cache cacheId
+		for (FieldNoteEntry fn : this)
+		{
+			if (fn.Id == id)
+			{
+				fne = fn;
+			}
+		}
+		if (fne != null)
+		{
+			if (fne.type == 1)
+				foundNumber = fne.foundNumber;
+			this.remove(fne);
+			fne.DeleteFromDatabase();
+		}
+		decreaseFoundNumber(foundNumber);
+	}
+
+	public void decreaseFoundNumber(int deletedFoundNumber)
+	{
+		if (deletedFoundNumber > 0)
+		{
+			// alle FoundNumbers anpassen, die größer sind
+			for (FieldNoteEntry fn : this)
+			{
+				if ((fn.type == 1) && (fn.foundNumber > deletedFoundNumber))
+				{
+					int oldFoundNumber = fn.foundNumber;
+					fn.foundNumber--;
+					String s = fn.comment;
+					s = fn.comment.replaceAll("#" + oldFoundNumber, "#" + fn.foundNumber);
+					fn.comment = s;
+					fn.fillType();
+					fn.UpdateDatabase();			
+				}
+			}
+		}
 	}
 }

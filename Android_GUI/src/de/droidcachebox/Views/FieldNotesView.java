@@ -417,6 +417,17 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 			                Config.Set("FoundOffset", aktFieldNote.foundNumber);
 			                Config.AcceptChanges();
 						}
+					} else if (fieldNote.type == 2)
+					{
+						// DidNotFound -> Cache als nicht gefunden markieren
+						if (Global.SelectedCache().Found())
+						{
+							Global.SelectedCache().Found(false);
+			                Config.Set("FoundOffset", Config.GetInt("FoundOffset") - 1);
+			                Config.AcceptChanges();
+						}
+						// und eine evtl. vorhandene FieldNote FoundIt löschen
+						lFieldNotes.DeleteFieldNoteByCacheId(Global.SelectedCache().Id, 1);
 					}
 					
 					FieldNoteList.CreateVisitsTxt();
@@ -521,7 +532,23 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 		// aktuell selectierte FieldNote löschen
 		if (aktFieldNote == null)
 			return;
-		Cache cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);    	
+//		final Cache cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
+		
+		// suche den Cache aus der DB. 
+		// Nicht aus der aktuellen Query, da dieser herausgefiltert sein könnte
+		CacheList lCaches = new CacheList();
+		lCaches.LoadCaches("Id = " + aktFieldNote.CacheId);
+		Cache tmpCache = null;
+		if (lCaches.size() > 0)
+			tmpCache = lCaches.get(0);
+		final Cache cache = tmpCache;
+	
+		if (cache == null)
+		{
+			String message = "The Cache [" + aktFieldNote.CacheName + "] is not in the actual DB. \nThis FieldNote can not be deleted!";
+			MessageBox.Show(message);
+			return;
+		}
     
 		
     
@@ -532,10 +559,19 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 		        case DialogInterface.BUTTON_POSITIVE:
 		            // Yes button clicked
 		        	// delete aktFieldNote
-		        	aktFieldNote.DeleteFromDatabase();
+		        	if (cache != null)
+		        	{
+		        		if (cache.Found())
+		        		{
+		        			cache.Found(false);
+		        			cache.WriteToDatabase();
+			                Config.Set("FoundOffset", Config.GetInt("FoundOffset") - 1);
+			                Config.AcceptChanges();		        			
+		        		}
+		        	}
+		        	lFieldNotes.DeleteFieldNote(aktFieldNote.Id, aktFieldNote.type);
 
-		        	lFieldNotes.remove(aktFieldNote);
-					aktFieldNote = null;
+		        	aktFieldNote = null;
 					aktFieldNoteIndex = -1;
 					
 					lvAdapter.notifyDataSetChanged();
