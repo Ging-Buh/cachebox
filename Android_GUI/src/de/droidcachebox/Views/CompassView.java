@@ -190,7 +190,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
             // Bearing: Luftfahrt
             // Heading: Im Uhrzeigersinn, Geocaching-Norm
 
-            Coordinate dest = aktCache.Coordinate;
+            Coordinate dest = aktCache.Pos;
             float distance = aktCache.Distance(position);
             if (aktWaypoint != null)
             {
@@ -220,7 +220,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
             // Bearing: Luftfahrt
             // Heading: Im Uhrzeigersinn, Geocaching-Norm
 
-            Coordinate dest = aktCache.Coordinate;
+            Coordinate dest = aktCache.Pos;
             float distance = aktCache.Distance(position);
             if (aktWaypoint != null)
             {

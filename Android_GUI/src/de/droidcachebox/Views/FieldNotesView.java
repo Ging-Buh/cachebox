@@ -324,7 +324,7 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 		switch (type)
 		{
 		case 1:
-			if (!cache.Found())
+			if (!cache.Found)
 				newFieldNote.foundNumber++;	//
 			newFieldNote.fillType();
 			if (newFieldNote.comment.equals(""))
@@ -412,18 +412,18 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 					if (fieldNote.type == 1)
 					{
 						// Found it! -> Cache als gefunden markieren
-						if (!Global.SelectedCache().Found())
+						if (!Global.SelectedCache().Found)
 						{
-							Global.SelectedCache().Found(true);
+							Global.SelectedCache().Found=true;
 			                Config.Set("FoundOffset", aktFieldNote.foundNumber);
 			                Config.AcceptChanges();
 						}
 					} else if (fieldNote.type == 2)
 					{
 						// DidNotFound -> Cache als nicht gefunden markieren
-						if (Global.SelectedCache().Found())
+						if (Global.SelectedCache().Found)
 						{
-							Global.SelectedCache().Found(false);
+							Global.SelectedCache().Found=false;
 			                Config.Set("FoundOffset", Config.GetInt("FoundOffset") - 1);
 			                Config.AcceptChanges();
 						}
@@ -562,9 +562,9 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 		        	// delete aktFieldNote
 		        	if (cache != null)
 		        	{
-		        		if (cache.Found())
+		        		if (cache.Found)
 		        		{
-		        			cache.Found(false);
+		        			cache.Found=false;
 		        			Database.WriteToDatabase(cache);
 			                Config.Set("FoundOffset", Config.GetInt("FoundOffset") - 1);
 			                Config.AcceptChanges();		        			

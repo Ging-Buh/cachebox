@@ -224,7 +224,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				}
 				Coordinate coord = Global.LastValidPosition;
 				if ((coord == null) || (!coord.Valid))
-					coord = Global.SelectedCache().Coordinate;
+					coord = Global.SelectedCache().Pos;
                 Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", coord.Latitude, coord.Longitude, Global.SelectedCache().Id, "", "manual");
 				Intent mainIntent = new Intent().setClass(getContext(), EditWaypoint.class);
 				Bundle b = new Bundle();

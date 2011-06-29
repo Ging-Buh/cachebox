@@ -378,7 +378,7 @@ public class Database {
 	    
 	    public void Found(boolean value, Cache cache)
 	    {
-	    	cache.found = value;
+	    	cache.Found = value;
 	        
 	        ContentValues args = new ContentValues();
 	        args.put("found", value);
@@ -537,7 +537,7 @@ public class Database {
         	Waypoint waypoint = cache.GetFinalWaypoint();
             // Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die Diszanzberechnung vom Final aus gemacht werden
             // If a mystery has a final waypoint, the distance will be calculated to the final not the the cache coordinates
-        	Coordinate toPos = cache.Coordinate;
+        	Coordinate toPos = cache.Pos;
             if (waypoint != null)
             	toPos = new Coordinate(waypoint.Coordinate.Latitude, waypoint.Coordinate.Longitude);
             float[] dist = new float[4];
@@ -588,7 +588,7 @@ public class Database {
         	Cache cache = new Cache();
         	cache.Id = reader.getLong(0);
         	cache.GcCode = reader.getString(1).trim();
-        	cache.Coordinate = new Coordinate(reader.getDouble(2), reader.getDouble(3));
+        	cache.Pos = new Coordinate(reader.getDouble(2), reader.getDouble(3));
         	cache.Name = reader.getString(4).trim();
         	cache.Size = reader.getInt(5);
         	cache.Difficulty = ((float)reader.getShort(6)) / 2;
@@ -596,7 +596,7 @@ public class Database {
         	cache.Archived = reader.getInt(8) != 0;
         	cache.Available = reader.getInt(9) != 0;
             int ifound = reader.getInt(10);
-            cache.found = reader.getInt(10) != 0;
+            cache.Found = reader.getInt(10) != 0;
             cache.Type = CacheTypes.values()[reader.getShort(11)];
             cache.PlacedBy = reader.getString(12).trim();
             cache.Owner = reader.getString(13).trim();
@@ -613,9 +613,9 @@ public class Database {
             cache.GcId = reader.getString(17).trim();
             cache.Rating = ((float)reader.getShort(18)) / 100.0f;
             if (reader.getInt(19) > 0)
-            	cache.favorit = true;
+            	cache.Favorit = true;
             else
-            	cache.favorit = false;
+            	cache.Favorit = false;
             cache.TourName = reader.getString(20).trim();
 
             if (reader.getString(21) != "")

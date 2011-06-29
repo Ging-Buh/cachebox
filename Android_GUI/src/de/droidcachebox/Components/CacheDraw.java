@@ -176,14 +176,14 @@ public class CacheDraw
     	     if (BearingRec==null) BearingRec = new Rect(rec.right-rightBorder,rec.top,rec.right,(int) (SDTImageTop*0.8));
     	     if (drawStyle != DrawStyle.withoutBearing) DrawBearing(cache,canvas,BearingRec);
     	
-    	  if (cache.Found())
+    	  if (cache.Found)
           {
         	  
     		  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[2],left  + VoteWidth+iconSize/2,top - (int) (Global.scaledFontSize_normal / 2)+iconSize/2, iconSize/2);//Smile
           }
               
 
-          if (cache.Favorit())
+          if (cache.Favorit)
           {
         	  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[19],left + VoteWidth + 2, top , iconSize/2);
           }

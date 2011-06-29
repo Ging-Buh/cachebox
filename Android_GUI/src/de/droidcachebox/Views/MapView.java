@@ -1648,7 +1648,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	      // sie auf dem Bildschirm sind
 	      if (Global.SelectedCache() != null)
 	      {
-	        if (!(hideMyFinds && Global.SelectedCache().Found()))
+	        if (!(hideMyFinds && Global.SelectedCache().Found))
 	        {
 	          ArrayList<Waypoint> wps = Global.SelectedCache().waypoints;
 	
@@ -1679,7 +1679,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	      // sollen
 	      for (Cache cache : Database.Data.Query)
 	      {
-	        if (hideMyFinds && cache.Found())
+	        if (hideMyFinds && cache.Found)
 	          continue;
 	
 	        int x = 0;
@@ -1712,7 +1712,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        wpi.OverlayIcon = null;
 	        wpi.MapX = cache.MapX;
 	        wpi.MapY = cache.MapY;
-	        wpi.Icon = (cache.Owner.toLowerCase().equals(gcLogin) && (gcLogin.length() > 0)) ? Global.NewMapIcons.get(2).get(20) : (cache.Found()) ? Global.NewMapIcons.get(2).get(19) : (cache.MysterySolved() && (cache.Type == CacheTypes.Mystery)) ? Global.NewMapIcons.get(2).get(21) : Global.NewMapIcons.get(2).get((int)cache.Type.ordinal());
+	        wpi.Icon = (cache.Owner.toLowerCase().equals(gcLogin) && (gcLogin.length() > 0)) ? Global.NewMapIcons.get(2).get(20) : (cache.Found) ? Global.NewMapIcons.get(2).get(19) : (cache.MysterySolved() && (cache.Type == CacheTypes.Mystery)) ? Global.NewMapIcons.get(2).get(21) : Global.NewMapIcons.get(2).get((int)cache.Type.ordinal());
 	        wpi.Icon = Global.NewMapIcons.get(2).get(cache.GetMapIconId(gcLogin));
 	        wpi.UnderlayIcon = getUnderlayIcon(cache, wpi.Waypoint);
 	          
@@ -1742,7 +1742,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	                    }
 	                case Wherigo: iconId = 4; break;
 	            }
-	            if (cache.Found())
+	            if (cache.Found)
 	            {
 	                iconId = 6;
 	                wpi.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(1);  // round shaddow
@@ -1772,7 +1772,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	          if (Global.SelectedCache() == solution.Cache)
 	              continue;   // is already in list
 	
-	          if (hideMyFinds && solution.Cache.Found())
+	          if (hideMyFinds && solution.Cache.Found)
 	              continue;
 	
 	          double mapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, solution.Longitude);
@@ -1805,7 +1805,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	                  {
 	                      // die Icons aller geloesten Mysterys evtl. aendern, wenn der Cache gefunden oder ein Eigener ist.
 	                      // change the icon of solved mysterys if necessary when the cache is found or own
-	                      if (solution.Cache.Found())
+	                      if (solution.Cache.Found)
 	                          wpiF.Icon = Global.NewMapIcons.get(2).get(19);
 	                      if (solution.Cache.Owner.toLowerCase().equals(gcLogin) && (gcLogin.length() > 0))
 	                          wpiF.Icon = Global.NewMapIcons.get(2).get(20);
@@ -1845,7 +1845,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	                  case Wherigo: iconId = 4; break;
 	              }
 	
-	              if (solution.Cache.Found())
+	              if (solution.Cache.Found)
 	              {
 	                  iconId = 6;
 	                  wpiF.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(1);  // round shaddow
@@ -1973,7 +1973,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		  if (wpi.OverlayIcon != null)
 		      drawImage(canvasOverlay, wpi.OverlayIcon, imageX - halfOverlayWidth, imageY - halfOverlayWidth, OverlayWidth, OverlayWidth);
 		
-		  if (wpi.Cache.Favorit())
+		  if (wpi.Cache.Favorit)
 		  {
 			  ActivityUtils.PutImageTargetHeight(canvasOverlay, Global.Icons[19], imageX, imageY, (int)(14.0f * dpiScaleFactorY));
 		  }
@@ -2498,7 +2498,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         float distance = 0;
 
         if (Global.SelectedWaypoint() == null)
-          distance = position.Distance(Global.SelectedCache().Coordinate);
+          distance = position.Distance(Global.SelectedCache().Pos);
         else
           distance = position.Distance(Global.SelectedWaypoint().Coordinate);
 
@@ -2508,7 +2508,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         // Kompassnadel zeichnen
         if (Global.Locator != null)
         {
-          Coordinate cache = (Global.SelectedWaypoint() != null) ? Global.SelectedWaypoint().Coordinate : Global.SelectedCache().Coordinate;
+          Coordinate cache = (Global.SelectedWaypoint() != null) ? Global.SelectedWaypoint().Coordinate : Global.SelectedCache().Pos;
           double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
           double relativeBearing = bearing - Global.Locator.getHeading();
           double relativeBearingRad = relativeBearing * Math.PI / 180.0;
@@ -3921,7 +3921,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       if (Global.SelectedCache() == null)
         return;
 
-      Coordinate coord = (Global.SelectedWaypoint() != null) ? Global.SelectedWaypoint().Coordinate : Global.SelectedCache().Coordinate;
+      Coordinate coord = (Global.SelectedWaypoint() != null) ? Global.SelectedWaypoint().Coordinate : Global.SelectedCache().Pos;
       
 //      float distance = Datum.WGS84.Distance(center.Latitude, center.Longitude, lat, lon);
       float distance = center.Distance(coord);
