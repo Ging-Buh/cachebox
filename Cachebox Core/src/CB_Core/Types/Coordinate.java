@@ -8,9 +8,7 @@ import CB_Core.Converter.UTMConvert;
 
 
 public class Coordinate implements Serializable {
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1235642315487L;
 	
 	public boolean Valid;
@@ -25,7 +23,7 @@ public class Coordinate implements Serializable {
     private double mLon1 = 0.0;
     private double mLat2 = 0.0;
     private double mLon2 = 0.0;
-    private float mDistance = 0.0f;
+   // private float mDistance = 0.0f;
     private float mInitialBearing = 0.0f;
 	
     //Scratchpad
@@ -305,7 +303,6 @@ public class Coordinate implements Serializable {
                 mLon1 = Longitude;
                 mLat2 = dest.Latitude;
                 mLon2 = dest.Longitude;
-                mDistance = mResults[0];
                 mInitialBearing = mResults[1];
             }
             return mInitialBearing;

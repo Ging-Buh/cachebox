@@ -291,7 +291,7 @@ public class Database {
 		 	WP.CacheId = reader.getLong(1);
 	        double latitude = reader.getDouble(2);
 	        double longitude = reader.getDouble(3);
-	        WP.Coordinate = new Coordinate(latitude, longitude);
+	        WP.Pos = new Coordinate(latitude, longitude);
 	        WP.Description = reader.getString(4);
 	        WP.Type = CacheTypes.values()[reader.getShort(5)];
 	        WP.IsSyncExcluded = reader.getInt(6) == 1;
@@ -539,7 +539,7 @@ public class Database {
             // If a mystery has a final waypoint, the distance will be calculated to the final not the the cache coordinates
         	Coordinate toPos = cache.Pos;
             if (waypoint != null)
-            	toPos = new Coordinate(waypoint.Coordinate.Latitude, waypoint.Coordinate.Longitude);
+            	toPos = new Coordinate(waypoint.Pos.Latitude, waypoint.Pos.Longitude);
             float[] dist = new float[4];
             Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude, toPos.Latitude, toPos.Longitude, dist);
             return (float)dist[0];

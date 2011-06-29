@@ -1,4 +1,4 @@
-package de.droidcachebox.Events;
+package CB_Core.TranslationEngine;
 
 import java.util.ArrayList;
 
@@ -17,7 +17,7 @@ public class SelectedLangChangedEventList
 	{
 		for (SelectedLangChangedEvent event : list)
 		{
-			event.SelectedLangChangedEvent();
+			event.SelectedLangChangedEventCalled();
 		}
 	
 	}

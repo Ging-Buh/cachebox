@@ -1655,8 +1655,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	          for (Waypoint wp : wps)
 	          {
 	            WaypointRenderInfo wpi = new WaypointRenderInfo();
-	            wpi.MapX = 256 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, wp.Coordinate.Longitude);
-	            wpi.MapY = 256 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, wp.Coordinate.Latitude);
+	            wpi.MapX = 256 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, wp.Pos.Longitude);
+	            wpi.MapY = 256 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, wp.Pos.Latitude);
 	            wpi.Icon = Global.NewMapIcons.get(2).get((int)wp.Type.ordinal());
 	            wpi.UnderlayIcon = Global.NewMapOverlay.get(2).get(0);
 	            wpi.Cache = Global.SelectedCache();
@@ -2500,7 +2500,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         if (Global.SelectedWaypoint() == null)
           distance = position.Distance(Global.SelectedCache().Pos);
         else
-          distance = position.Distance(Global.SelectedWaypoint().Coordinate);
+          distance = position.Distance(Global.SelectedWaypoint().Pos);
 
         String text = UnitFormatter.DistanceString(distance);
         canvas.drawText(text, leftString, bottom - 10, paint);
@@ -2508,7 +2508,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         // Kompassnadel zeichnen
         if (Global.Locator != null)
         {
-          Coordinate cache = (Global.SelectedWaypoint() != null) ? Global.SelectedWaypoint().Coordinate : Global.SelectedCache().Pos;
+          Coordinate cache = (Global.SelectedWaypoint() != null) ? Global.SelectedWaypoint().Pos : Global.SelectedCache().Pos;
           double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
           double relativeBearing = bearing - Global.Locator.getHeading();
           double relativeBearingRad = relativeBearing * Math.PI / 180.0;
@@ -3921,7 +3921,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       if (Global.SelectedCache() == null)
         return;
 
-      Coordinate coord = (Global.SelectedWaypoint() != null) ? Global.SelectedWaypoint().Coordinate : Global.SelectedCache().Pos;
+      Coordinate coord = (Global.SelectedWaypoint() != null) ? Global.SelectedWaypoint().Pos : Global.SelectedCache().Pos;
       
 //      float distance = Datum.WGS84.Distance(center.Latitude, center.Longitude, lat, lon);
       float distance = center.Distance(coord);

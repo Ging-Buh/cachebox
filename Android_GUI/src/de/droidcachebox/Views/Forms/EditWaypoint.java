@@ -124,14 +124,14 @@ public class EditWaypoint extends Activity {
                 });
 	        
         // Coordinate Button
-        bCoord.setText(waypoint.Coordinate.FormatCoordinate());
+        bCoord.setText(waypoint.Pos.FormatCoordinate());
         bCoord.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v) {
         		// Koordinaten Dialog öffnen
         		Intent coordIntent = new Intent().setClass(bCoord.getContext(), EditCoordinate.class);
     	        Bundle b = new Bundle();
-    	        b.putSerializable("Coord", waypoint.Coordinate);
+    	        b.putSerializable("Coord", waypoint.Pos);
     	        coordIntent.putExtras(b);
         		startActivityForResult(coordIntent, 0);
         	}
@@ -189,9 +189,9 @@ public class EditWaypoint extends Activity {
 			Coordinate coord = (Coordinate)bundle.getSerializable("CoordResult");
 			if (coord != null)
 			{
-				waypoint.Coordinate.Latitude = coord.Latitude;
-				waypoint.Coordinate.Longitude = coord.Longitude;
-		        bCoord.setText(waypoint.Coordinate.FormatCoordinate());
+				waypoint.Pos.Latitude = coord.Latitude;
+				waypoint.Pos.Longitude = coord.Longitude;
+		        bCoord.setText(waypoint.Pos.FormatCoordinate());
 			}
 		}
     }

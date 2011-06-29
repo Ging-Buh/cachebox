@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
+import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
@@ -32,7 +33,6 @@ import de.droidcachebox.Events.CacheListChangedEvent;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
-import de.droidcachebox.Events.SelectedLangChangedEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Views.AboutView;
@@ -1067,8 +1067,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		});
 		
 		Menu IconMenu=icm.getMenu();
-		Global.Translations.TranslateMenuItem(IconMenu, R.id.miSettings, "settings");
-		Global.Translations.TranslateMenuItem(IconMenu, R.id.miAbout, "about");
+		Global.TranslateMenuItem(IconMenu, R.id.miSettings, "settings");
+		Global.TranslateMenuItem(IconMenu, R.id.miAbout, "about");
       	try
     	{
     		MenuItem mi = IconMenu.findItem(R.id.miVoiceRecorder);
@@ -1223,8 +1223,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     		  mi.setEnabled(enabled);
 
     	  Menu IconMenu=icm.getMenu();
-    	  Global.Translations.TranslateMenuItem(IconMenu, R.id.miHint, "hint");
-    	  Global.Translations.TranslateMenuItem(IconMenu, R.id.miTelJoker, "joker");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miHint, "hint");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miTelJoker, "joker");
     	  icm.show();
 	}
 
@@ -1288,10 +1288,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
   		});
     	  
     	  Menu IconMenu=icm.getMenu();
-    	  Global.Translations.TranslateMenuItem(IconMenu, R.id.miSolver, "Solver");
-    	  Global.Translations.TranslateMenuItem(IconMenu, R.id.miNotes, "Notes");
-    	  Global.Translations.TranslateMenuItem(IconMenu, R.id.miDescription, "Description");
-    	  Global.Translations.TranslateMenuItem(IconMenu, R.id.miWaypoints, "Waypoints");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Solver");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miNotes, "Notes");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miDescription, "Description");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miWaypoints, "Waypoints");
     	  icm.show();
 	}
 
@@ -1344,11 +1344,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	Pos=DBName.lastIndexOf(".");
     	DBName=DBName.substring(0, Pos);
 		
-		Global.Translations.TranslateMenuItem(IconMenu, R.id.miCacheList, "cacheList","  (" + String.valueOf(Database.Data.Query.size()) + ")" );
-		Global.Translations.TranslateMenuItem(IconMenu, R.id.miFilterset, "filter");
-		Global.Translations.TranslateMenuItem(IconMenu, R.id.miManageDB, "manage" ,"  (" + DBName + ")");
-		Global.Translations.TranslateMenuItem(IconMenu, R.id.miResort, "ResortList");
-		MenuItem miAutoResort = Global.Translations.TranslateMenuItem(IconMenu, R.id.miAutoResort, "AutoResort");
+		Global.TranslateMenuItem(IconMenu, R.id.miCacheList, "cacheList","  (" + String.valueOf(Database.Data.Query.size()) + ")" );
+		Global.TranslateMenuItem(IconMenu, R.id.miFilterset, "filter");
+		Global.TranslateMenuItem(IconMenu, R.id.miManageDB, "manage" ,"  (" + DBName + ")");
+		Global.TranslateMenuItem(IconMenu, R.id.miResort, "ResortList");
+		MenuItem miAutoResort = Global.TranslateMenuItem(IconMenu, R.id.miAutoResort, "AutoResort");
 		miAutoResort.setCheckable(true);
 		miAutoResort.setChecked(Global.autoResort);
 		//AutoResortButton.ButtonImage = (Global.autoResort) ? Global.Icons[6] : Global.Icons[7];

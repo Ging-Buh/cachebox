@@ -17,12 +17,12 @@ public class Waypoint implements Serializable {
     /// Waypoint Code
     public String GcCode;
 
-    public Coordinate Coordinate;
+    public Coordinate Pos;
     /// Breitengrad
-    public double Latitude() { return Coordinate.Latitude; } 
+    public double Latitude() { return Pos.Latitude; } 
 
     /// Längengrad
-    public double Longitude() { return Coordinate.Longitude; }
+    public double Longitude() { return Pos.Longitude; }
 
     /// Titel des Wegpunktes
     public String Title;
@@ -47,7 +47,7 @@ public class Waypoint implements Serializable {
     {
         CacheId = -1;
         GcCode = "";
-        Coordinate = new Coordinate();
+        Pos = new Coordinate();
         Description = "";
     }
     
@@ -63,7 +63,7 @@ public class Waypoint implements Serializable {
     {
         GcCode = gcCode;
         CacheId = cacheId;
-        Coordinate = new Coordinate(latitude, longitude);
+        Pos = new Coordinate(latitude, longitude);
         Description = description;
         Type = type;
         IsSyncExcluded = true;
@@ -81,18 +81,18 @@ public class Waypoint implements Serializable {
     {
         
         float[] dist = new float[4];
-        Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude, Coordinate.Latitude, Coordinate.Longitude, dist);
+        Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude, Pos.Latitude, Pos.Longitude, dist);
         return dist[0];
     }
 
 	public void setLatitude(double parseDouble) 
 	{
-		Coordinate.Latitude = parseDouble;
+		Pos.Latitude = parseDouble;
 	}
 
 	public void setLongitude(double parseDouble) 
 	{
-		Coordinate.Longitude = parseDouble;
+		Pos.Longitude = parseDouble;
 	}
 
 	/**

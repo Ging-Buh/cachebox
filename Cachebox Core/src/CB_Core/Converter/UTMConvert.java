@@ -120,8 +120,9 @@ public class UTMConvert {
       double phi1Rad = mu + (3 * e1 / 2 - 27 * e1 * e1 * e1 / 32) * Math.sin(2 * mu)
             + (21 * e1 * e1 / 16 - 55 * e1 * e1 * e1 * e1 / 32) * Math.sin(4 * mu)
             + (151 * e1 * e1 * e1 / 96) * Math.sin(6 * mu);
+      
       // convert to degrees
-      double phi1 = phi1Rad * dCvtRad2Deg;
+      //double phi1 = phi1Rad * dCvtRad2Deg;
 
       double N1 = dEquatorialRadius / Math.sqrt(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad));
       double T1 = Math.tan(phi1Rad) * Math.tan(phi1Rad);
@@ -179,7 +180,7 @@ public class UTMConvert {
       return (iUTM_Zone_Num);
     }
 
-    /// <summary>
+    /*/// <summary>
     /// 
     /// </summary>
     /// <param name="Lat"></param>
@@ -189,7 +190,7 @@ public class UTMConvert {
       if (dLat >= 0)
         return ("N");
       return ("S");
-    }
+    }*/
 
     /// <summary>
     /// 

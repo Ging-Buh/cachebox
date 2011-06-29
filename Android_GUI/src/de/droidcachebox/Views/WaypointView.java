@@ -103,7 +103,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				{
 					aktWaypoint.Title = waypoint.Title;
 					aktWaypoint.Type = waypoint.Type;
-					aktWaypoint.Coordinate = waypoint.Coordinate;
+					aktWaypoint.Pos = waypoint.Pos;
 					aktWaypoint.Description = waypoint.Description;
 					aktWaypoint.Clue = waypoint.Clue;
 					Database.UpdateDatabase(aktWaypoint);
@@ -268,7 +268,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				mi.setTitle(Global.Translations.Get("edit"));
 				mi.setVisible(aktWaypoint != null);
 			}
-			Global.Translations.TranslateMenuItem(menu, R.id.menu_waypointview_new, "addWaypoint");
+			Global.TranslateMenuItem(menu, R.id.menu_waypointview_new, "addWaypoint");
 			mi = menu.findItem(R.id.menu_waypointview_delete);
 			if (mi != null)
 			{

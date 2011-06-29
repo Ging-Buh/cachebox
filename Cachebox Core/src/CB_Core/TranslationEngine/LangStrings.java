@@ -1,16 +1,9 @@
-package de.droidcachebox.TranslationEngine;
+package CB_Core.TranslationEngine;
 
 import java.io.*;
 import java.util.ArrayList;
 
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.Events.SelectedLangChangedEventList;
 
-import android.os.Environment;
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuItem;
 
 public class LangStrings 
 {
@@ -54,11 +47,7 @@ public class LangStrings
     private ArrayList<_Translations> _RefTranslation;
 
    
-    // <summary>
-    // Wird ausgelöst, wenn sich die geladene Sprach-Datei geändert hat. 
-    // </summary>
-  //  public event languageChangedEventHandler LangChanged;
-   
+ 
 
     /// <summary>
     /// Gibt den Namen der angegebenen Sprach-Datei zurück.
@@ -99,7 +88,7 @@ public class LangStrings
 
     private ArrayList<_Translations> ReadFile(String FilePath) throws IOException
     {
-    	String ApplicationPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+    	
     	ArrayList<_Translations> Temp = new ArrayList<_Translations>();
         String line;
 
@@ -191,24 +180,7 @@ public class LangStrings
         return retString;
     }
 
-    public MenuItem TranslateMenuItem(Menu menu, int id, String StringId)
-    {
-    	return TranslateMenuItem(menu, id, StringId,"");
-    }
     
-    // übersetzt den Titel eines MenuItems
-    public MenuItem TranslateMenuItem(Menu menu, int id, String StringId, String zusatz)
-    {
-    	try
-    	{
-    		MenuItem mi = menu.findItem(id);
-    		if (mi != null)
-    			mi.setTitle(Global.Translations.Get(StringId)+ zusatz);
-    		return mi;
-    	} catch (Exception exc)
-    	{ }
-    	return null;
-    }
     
     public ArrayList<Langs> GetLangs(String FilePath)
     {

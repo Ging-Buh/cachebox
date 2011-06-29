@@ -13,9 +13,9 @@ import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
-import de.droidcachebox.Events.SelectedLangChangedEvent;
-import de.droidcachebox.Events.SelectedLangChangedEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import CB_Core.TranslationEngine.SelectedLangChangedEvent;
+import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
@@ -80,7 +80,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 		 WP_info.setOnClickListener(onDescClick);
 		 
 		SelectedLangChangedEventList.Add(this);
-		SelectedLangChangedEvent();
+		SelectedLangChangedEventCalled();
 	}
 	
 	final View.OnClickListener onDescClick = new OnClickListener() 
@@ -194,7 +194,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
             float distance = aktCache.Distance(position);
             if (aktWaypoint != null)
             {
-            	dest = aktWaypoint.Coordinate;
+            	dest = aktWaypoint.Pos;
             	distance = aktWaypoint.Distance(position);
             }
             double bearing = Coordinate.Bearing(position, dest);
@@ -224,7 +224,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
             float distance = aktCache.Distance(position);
             if (aktWaypoint != null)
             {
-            	dest = aktWaypoint.Coordinate;
+            	dest = aktWaypoint.Pos;
             	distance = aktWaypoint.Distance(position);
             }
             double bearing = Coordinate.Bearing(position, dest);
@@ -241,7 +241,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 
 
 	@Override
-	public void SelectedLangChangedEvent() {
+	public void SelectedLangChangedEventCalled() {
 		 AlignButton.clearStates();
 		 AlignButton.addState(Global.Translations.Get("Align"), Color.GRAY);
 		 AlignButton.addState(Global.Translations.Get("Align"), Color.GREEN);

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 import CB_Core.Log.Logger;
+import CB_Core.TranslationEngine.LangStrings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
@@ -21,10 +22,11 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.view.Menu;
+import android.view.MenuItem;
 import de.droidcachebox.Geocaching.JokerList;
 import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.RouteOverlay;
-import de.droidcachebox.TranslationEngine.LangStrings;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
@@ -807,5 +809,25 @@ public class Global{
     }
     
    
+    
+    public static MenuItem TranslateMenuItem(Menu menu, int id, String StringId)
+    {
+    	return TranslateMenuItem(menu, id, StringId,"");
+    }
+    
+    
+    public static MenuItem TranslateMenuItem(Menu menu, int id, String StringId, String zusatz)
+    {
+    	try
+    	{
+    		MenuItem mi = menu.findItem(id);
+    		if (mi != null)
+    			mi.setTitle(Global.Translations.Get(StringId)+ zusatz);
+    		return mi;
+    	} catch (Exception exc)
+    	{ }
+    	return null;
+    }
+    
     
 }

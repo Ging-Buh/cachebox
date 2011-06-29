@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import CB_Core.Log.Logger;
+import CB_Core.TranslationEngine.SelectedLangChangedEvent;
+import CB_Core.TranslationEngine.SelectedLangChangedEventList;
+import CB_Core.TranslationEngine.LangStrings.Langs;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -35,10 +38,7 @@ import de.droidcachebox.Custom_Controls.wheel.OnWheelChangedListener;
 import de.droidcachebox.Custom_Controls.wheel.OnWheelScrollListener;
 import de.droidcachebox.Custom_Controls.wheel.WheelView;
 import de.droidcachebox.Custom_Controls.wheel.adapters.NumericWheelAdapter;
-import de.droidcachebox.Events.SelectedLangChangedEvent;
-import de.droidcachebox.Events.SelectedLangChangedEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.TranslationEngine.LangStrings.Langs;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 public class Settings extends Activity implements ViewOptionsMenu,SelectedLangChangedEvent {
@@ -724,7 +724,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	}
 
 	@Override
-	public void SelectedLangChangedEvent() 
+	public void SelectedLangChangedEventCalled() 
 	{
 		setLang();
 	}

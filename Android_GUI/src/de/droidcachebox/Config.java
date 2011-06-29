@@ -16,9 +16,9 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 
 
-import de.droidcachebox.Events.SelectedLangChangedEventList;
 import de.droidcachebox.Views.FilterSettings.PresetListView;
 
+import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Environment;
