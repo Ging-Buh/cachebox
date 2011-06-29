@@ -17,6 +17,11 @@ import CB_Core.Types.LogEntry;
 public class Cache implements Comparable<Cache> 
 {
 
+	/**
+	 * wird in jedem Cache Obj benötigt, um eine Cache-Liste nach der entfernung zum User, zu Sortieren.
+	 */
+	private Coordinate aktUserPos;
+	
 	 public  int noteCheckSum = 0;   // for Replication
 	 public  int solverCheckSum = 0;   // for Replication
 	 
@@ -65,6 +70,17 @@ public class Cache implements Comparable<Cache>
     public boolean Favorit()
     {
     	return favorit;
+    }
+    
+    
+    /**
+     * Setzt die aktuelle User Position.
+     * @param pos
+     */
+    public void setAktUserPos(Coordinate pos)
+    {
+    	aktUserPos = pos;
+    	cachedDistance = Distance(aktUserPos);
     }
     
     public void Favorit(boolean value)
@@ -204,7 +220,7 @@ public class Cache implements Comparable<Cache>
         if (cachedDistance != 0)
             return cachedDistance;
         else
-            return 0;//Distance();
+            return Distance(aktUserPos);
     }
 
     /// <summary>
@@ -391,9 +407,10 @@ public class Cache implements Comparable<Cache>
 	
 	public float Distance(Coordinate fromPos)
     {
-        
+        if(fromPos==null)return 0;
         float[] dist = new float[4];
         Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude, Coordinate.Latitude, Coordinate.Longitude, dist);
+        cachedDistance=dist[0];
         return dist[0];
     }
     
