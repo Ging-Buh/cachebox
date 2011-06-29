@@ -5,24 +5,16 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
-
 import org.apache.http.util.EncodingUtils;
 
 import de.droidcachebox.Global;
 
-import de.droidcachebox.Geocaching.Cache;
+
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.text.method.DateTimeKeyListener;
 
 public class Pack implements Comparable<Pack> {
 

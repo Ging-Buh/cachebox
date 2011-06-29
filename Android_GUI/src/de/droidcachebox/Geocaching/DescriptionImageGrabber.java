@@ -13,6 +13,7 @@ import org.apache.http.util.ByteArrayBuffer;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 
+import CB_Core.Types.Cache;
 import android.net.Uri;
 
 public class DescriptionImageGrabber {

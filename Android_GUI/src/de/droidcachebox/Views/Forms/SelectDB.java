@@ -1,23 +1,12 @@
 package de.droidcachebox.Views.Forms;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import de.droidcachebox.Config;
-import de.droidcachebox.Database;
 import de.droidcachebox.FileList;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.splash;
 import de.droidcachebox.Components.ActivityUtils;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Waypoint;
-import de.droidcachebox.Map.Layer;
-import de.droidcachebox.Views.MapView;
-import de.droidcachebox.Views.WaypointViewItem;
-import de.droidcachebox.Views.WaypointView.CustomAdapter;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;

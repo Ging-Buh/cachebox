@@ -6,6 +6,9 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import CB_Core.Log.Logger;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Coordinate;
+import CB_Core.Types.Waypoint;
 
 import android.database.Cursor;
 import de.droidcachebox.Database;
@@ -39,7 +42,7 @@ public class CacheList extends ArrayList<Cache> {
     	reader.moveToFirst();
         while(reader.isAfterLast() == false)
         {
-            Waypoint wp = new Waypoint(reader);
+            Waypoint wp = Database.getWaypoint(reader);
             if (wp.CacheId != aktCacheID)
             {
                 aktCacheID = wp.CacheId;
@@ -66,7 +69,7 @@ public class CacheList extends ArrayList<Cache> {
     	
         while(reader.isAfterLast() == false)
         {
-            Cache cache = new Cache(reader);
+            Cache cache = Database.getCache(reader);
             
             this.add(cache);
             if (waypoints.containsKey(cache.Id))
@@ -116,11 +119,11 @@ public class CacheList extends ArrayList<Cache> {
     {
         Global.ResortAtWork = true;
 //        Cursor.Current = Cursors.WaitCursor;
-
+        Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
         // Alle Distanzen aktualisieren
         for (Cache cache : this)
         {
-            cache.Distance();
+            cache.Distance(position);
         }
 
         Collections.sort(this);

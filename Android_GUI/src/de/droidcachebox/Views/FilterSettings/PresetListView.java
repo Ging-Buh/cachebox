@@ -1,37 +1,16 @@
 package de.droidcachebox.Views.FilterSettings;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-
-import de.droidcachebox.Config;
-import de.droidcachebox.Database;
 import de.droidcachebox.FilterProperties;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.CacheList;
-import de.droidcachebox.Geocaching.FieldNoteEntry;
-import de.droidcachebox.Geocaching.FieldNoteList;
-import de.droidcachebox.Geocaching.Waypoint;
-import de.droidcachebox.Views.FieldNoteViewItem;
-import de.droidcachebox.Views.CacheListView.CustomAdapter;
-import de.droidcachebox.Views.Forms.EditFieldNote;
-import de.droidcachebox.Views.Forms.EditWaypoint;
+
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Path.FillType;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.provider.OpenableColumns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class PresetListView extends ListView implements ViewOptionsMenu {
 

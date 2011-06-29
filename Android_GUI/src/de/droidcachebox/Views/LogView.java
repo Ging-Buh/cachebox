@@ -3,14 +3,15 @@ package de.droidcachebox.Views;
 import java.util.ArrayList;
 
 import de.droidcachebox.Config;
+import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Waypoint;
+import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
+import CB_Core.Types.Waypoint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -79,7 +80,7 @@ public class LogView extends ListView implements SelectedCacheEvent, ViewOptions
 	        this.context = context;
 	        this.cache = cache;
 	        logs = new ArrayList<LogEntry>();
-	        logs = cache.Logs();
+	        logs = Database.Logs(cache);// cache.Logs();
 	    }
 	 
 	    public void setCache(Cache cache) {

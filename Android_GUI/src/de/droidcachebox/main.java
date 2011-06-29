@@ -14,9 +14,13 @@ import java.util.ArrayList;
 
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Coordinate;
+import CB_Core.Types.Waypoint;
 
 import de.droidcachebox.ExtAudioRecorder;
 import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Custom_Controls.DebugInfoPanel;
 import de.droidcachebox.Custom_Controls.Mic_On_Flash;
@@ -55,10 +59,7 @@ import de.droidcachebox.Views.Forms.SelectDB;
 import de.droidcachebox.Views.Forms.Settings;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Database;
-import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.CacheList;
-import de.droidcachebox.Geocaching.Coordinate;
-import de.droidcachebox.Geocaching.Waypoint;
 import android.app.Activity;
 import android.database.Cursor;
 import android.content.Context;
@@ -390,10 +391,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        
 	        if (Global.SelectedCache() != null)
 	        {
-		        float distance = Global.SelectedCache().Distance();
+	        	 Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
+	        	
+		        float distance = Global.SelectedCache().Distance(position);
 	            if (Global.SelectedWaypoint() != null)
 	            {
-	            	distance = Global.SelectedWaypoint().Distance();
+	            	distance = Global.SelectedWaypoint().Distance(position);
 	            }
 		        
 		        if (!approachSoundCompleted && (distance< Config.GetInt("SoundApproachDistance")))
@@ -414,12 +417,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	                int z = 0;
 	                if (!(Global.NearestCache() == null))
 	                {
+	                	 Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
 	                    for (Cache cache : Database.Data.Query)
 	                    {
 	                        z++;
 	                        if (z >= 50)
 	                            return;
-	                        if (cache.Distance() < Global.NearestCache().Distance())
+	                        if (cache.Distance(position) < Global.NearestCache().Distance(position))
 	                        {
 	                            Database.Data.Query.Resort();
 	                            Global.PlaySound("AutoResort.wav");
@@ -568,7 +572,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	            if (resultCode == RESULT_OK)
 	            {
 	                Log.d("DroidCachebox","Picture taken!!!");
-	                Global.selectedCache.ReloadSpoilerRessources();
+	                CacheDraw.ReloadSpoilerRessources(Global.selectedCache);
 	                String MediaFolder = Config.GetString("UserImageFolder");
 	            	String TrackFolder = Config.GetString("TrackFolder");
 	            	String relativPath = Global.getRelativePath(MediaFolder, TrackFolder, "/"); 
@@ -1100,7 +1104,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
   		    	case R.id.miHint:
   		    		if (Global.selectedCache == null)
   		    			break;
-  		    		String hint = Global.selectedCache.Hint();
+  		    		String hint = Database.Hint(Global.selectedCache);
   		    		if (hint.equals(""))
   		    			break;
   		    		
@@ -1197,7 +1201,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	  
     	  // Menu Item Hint enabled / disabled
     	  boolean enabled = false;
-    	  if ((Global.selectedCache != null) && (!Global.selectedCache.Hint().equals("")))
+    	  if ((Global.selectedCache != null) && (!Database.Hint(Global.selectedCache).equals("")))
     		  enabled = true;
     	  MenuItem mi = icm.menu.findItem(R.id.miHint);
     	  if (mi != null)

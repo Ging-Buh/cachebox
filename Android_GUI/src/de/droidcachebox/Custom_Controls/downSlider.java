@@ -5,12 +5,14 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Components.CacheDraw;
+import de.droidcachebox.Components.CacheDraw.DrawStyle;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Cache.DrawStyle;
-import de.droidcachebox.Geocaching.Waypoint;
+
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -178,7 +180,7 @@ public final class downSlider extends View implements SelectedCacheEvent
    	 	// draw Cache Info
 		versatz += CacheInfoHeight;
 		canvas.translate(5,-versatz);
-   	 	mCache.DrawInfo(canvas, width - 10, CacheInfoHeight, WPisDraw? Global.getColor(R.attr.ListBackground) : Global.getColor(R.attr.ListBackground_select), DrawStyle.withoutBearing);
+   	 	CacheDraw.DrawInfo(mCache,canvas, width - 10, CacheInfoHeight, WPisDraw? Global.getColor(R.attr.ListBackground) : Global.getColor(R.attr.ListBackground_select), DrawStyle.withoutBearing);
    	 	canvas.restore();
    	 	
    	

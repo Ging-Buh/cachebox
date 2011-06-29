@@ -1,21 +1,13 @@
 package de.droidcachebox.Components;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Events.SelectedCacheEvent;
-import de.droidcachebox.Events.SelectedCacheEventList;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Waypoint;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.view.View.MeasureSpec;
 
 public class CacheNameView extends View 
 {

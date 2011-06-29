@@ -6,11 +6,11 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Components.ActivityUtils;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Coordinate;
-import de.droidcachebox.Geocaching.Waypoint;
+
 import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.WaypointView;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;

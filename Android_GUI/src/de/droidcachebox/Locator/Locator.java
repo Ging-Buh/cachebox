@@ -1,10 +1,11 @@
 package de.droidcachebox.Locator;
 
+import CB_Core.Types.Coordinate;
 import android.location.Location;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.UnitFormatter;
-import de.droidcachebox.Geocaching.Coordinate;
+
 
 public class Locator {
     private Location location = null;

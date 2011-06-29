@@ -3,16 +3,18 @@ package de.droidcachebox.Custom_Controls;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import CB_Core.Enums.Attributes;
 import CB_Core.Log.Logger;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 
 import de.droidcachebox.Config;
+import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.Cache;
 import de.droidcachebox.Geocaching.DescriptionImageGrabber;
-import de.droidcachebox.Geocaching.Waypoint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -26,7 +28,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
 	private boolean mustLoadDescription;
 	private Cache aktCache;
 	private Boolean isVisible=false;
-	private HashMap<Cache.Attributes, Integer> attributeLookup;
+	private HashMap<Attributes, Integer> attributeLookup;
 	private ArrayList<String> NonLocalImages = new ArrayList<String>();
 	private ArrayList<String> NonLocalImagesUrl = new ArrayList<String>();
 	
@@ -47,65 +49,65 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
 		this.getSettings().setSupportZoom(true);
 		this.getSettings().setBuiltInZoomControls(true);
         
-        attributeLookup = new HashMap<Cache.Attributes, Integer>();
-        attributeLookup.put(Cache.Attributes.Default, 0);
-        attributeLookup.put(Cache.Attributes.Dogs, 1);
-        attributeLookup.put(Cache.Attributes.Fee, 2);
-        attributeLookup.put(Cache.Attributes.ClimbingGear, 3);
-        attributeLookup.put(Cache.Attributes.Boat, 4);
-        attributeLookup.put(Cache.Attributes.Scuba, 5);
-        attributeLookup.put(Cache.Attributes.Kids, 6);
-        attributeLookup.put(Cache.Attributes.TakesLess, 7);
-        attributeLookup.put(Cache.Attributes.ScenicView, 8);
-        attributeLookup.put(Cache.Attributes.SignificantHike, 9);
-        attributeLookup.put(Cache.Attributes.Climbing, 10);
-        attributeLookup.put(Cache.Attributes.Wading, 11);
-        attributeLookup.put(Cache.Attributes.Swimming, 12);
-        attributeLookup.put(Cache.Attributes.Anytime, 13);
-        attributeLookup.put(Cache.Attributes.Night, 14);
-        attributeLookup.put(Cache.Attributes.Winter, 15);
-        attributeLookup.put(Cache.Attributes.PoisonPlants, 17);
-        attributeLookup.put(Cache.Attributes.Snakes, 18);
-        attributeLookup.put(Cache.Attributes.Ticks, 19);
-        attributeLookup.put(Cache.Attributes.AbandonedMines, 20);
-        attributeLookup.put(Cache.Attributes.Cliff, 21);
-        attributeLookup.put(Cache.Attributes.Hunting, 22);
-        attributeLookup.put(Cache.Attributes.Dangerous, 23);
-        attributeLookup.put(Cache.Attributes.WheelchairAccessible, 24);
-        attributeLookup.put(Cache.Attributes.Parking, 25);
-        attributeLookup.put(Cache.Attributes.PublicTransportation, 26);
-        attributeLookup.put(Cache.Attributes.Drinking, 27);
-        attributeLookup.put(Cache.Attributes.Restrooms, 28);
-        attributeLookup.put(Cache.Attributes.Telephone, 29);
-        attributeLookup.put(Cache.Attributes.Picnic, 30);
-        attributeLookup.put(Cache.Attributes.Camping, 31);
-        attributeLookup.put(Cache.Attributes.Bicycles, 32);
-        attributeLookup.put(Cache.Attributes.Motorcycles, 33);
-        attributeLookup.put(Cache.Attributes.Quads, 34);
-        attributeLookup.put(Cache.Attributes.Offroad, 35);
-        attributeLookup.put(Cache.Attributes.Snowmobiles, 36);
-        attributeLookup.put(Cache.Attributes.Horses, 37);
-        attributeLookup.put(Cache.Attributes.Campfires, 38);
-        attributeLookup.put(Cache.Attributes.Thorns, 39);
-        attributeLookup.put(Cache.Attributes.Stealth, 40);
-        attributeLookup.put(Cache.Attributes.Stroller, 41);
-        attributeLookup.put(Cache.Attributes.NeedsMaintenance, 42);
-        attributeLookup.put(Cache.Attributes.Livestock, 43);
-        attributeLookup.put(Cache.Attributes.Flashlight, 44);
-        attributeLookup.put(Cache.Attributes.TruckDriver, 46);
-        attributeLookup.put(Cache.Attributes.FieldPuzzle, 47);
-        attributeLookup.put(Cache.Attributes.UVLight, 48);
-        attributeLookup.put(Cache.Attributes.Snowshoes, 49);
-        attributeLookup.put(Cache.Attributes.CrossCountrySkiis, 50);
-        attributeLookup.put(Cache.Attributes.SpecialTool, 51);
-        attributeLookup.put(Cache.Attributes.NightCache, 52);
-        attributeLookup.put(Cache.Attributes.ParkAndGrab, 53);
-        attributeLookup.put(Cache.Attributes.AbandonedStructure, 54);
-        attributeLookup.put(Cache.Attributes.ShortHike, 55);
-        attributeLookup.put(Cache.Attributes.MediumHike, 56);
-        attributeLookup.put(Cache.Attributes.LongHike, 57);
-        attributeLookup.put(Cache.Attributes.FuelNearby, 58);
-        attributeLookup.put(Cache.Attributes.FoodNearby, 59);
+        attributeLookup = new HashMap<Attributes, Integer>();
+        attributeLookup.put(Attributes.Default, 0);
+        attributeLookup.put(Attributes.Dogs, 1);
+        attributeLookup.put(Attributes.Fee, 2);
+        attributeLookup.put(Attributes.ClimbingGear, 3);
+        attributeLookup.put(Attributes.Boat, 4);
+        attributeLookup.put(Attributes.Scuba, 5);
+        attributeLookup.put(Attributes.Kids, 6);
+        attributeLookup.put(Attributes.TakesLess, 7);
+        attributeLookup.put(Attributes.ScenicView, 8);
+        attributeLookup.put(Attributes.SignificantHike, 9);
+        attributeLookup.put(Attributes.Climbing, 10);
+        attributeLookup.put(Attributes.Wading, 11);
+        attributeLookup.put(Attributes.Swimming, 12);
+        attributeLookup.put(Attributes.Anytime, 13);
+        attributeLookup.put(Attributes.Night, 14);
+        attributeLookup.put(Attributes.Winter, 15);
+        attributeLookup.put(Attributes.PoisonPlants, 17);
+        attributeLookup.put(Attributes.Snakes, 18);
+        attributeLookup.put(Attributes.Ticks, 19);
+        attributeLookup.put(Attributes.AbandonedMines, 20);
+        attributeLookup.put(Attributes.Cliff, 21);
+        attributeLookup.put(Attributes.Hunting, 22);
+        attributeLookup.put(Attributes.Dangerous, 23);
+        attributeLookup.put(Attributes.WheelchairAccessible, 24);
+        attributeLookup.put(Attributes.Parking, 25);
+        attributeLookup.put(Attributes.PublicTransportation, 26);
+        attributeLookup.put(Attributes.Drinking, 27);
+        attributeLookup.put(Attributes.Restrooms, 28);
+        attributeLookup.put(Attributes.Telephone, 29);
+        attributeLookup.put(Attributes.Picnic, 30);
+        attributeLookup.put(Attributes.Camping, 31);
+        attributeLookup.put(Attributes.Bicycles, 32);
+        attributeLookup.put(Attributes.Motorcycles, 33);
+        attributeLookup.put(Attributes.Quads, 34);
+        attributeLookup.put(Attributes.Offroad, 35);
+        attributeLookup.put(Attributes.Snowmobiles, 36);
+        attributeLookup.put(Attributes.Horses, 37);
+        attributeLookup.put(Attributes.Campfires, 38);
+        attributeLookup.put(Attributes.Thorns, 39);
+        attributeLookup.put(Attributes.Stealth, 40);
+        attributeLookup.put(Attributes.Stroller, 41);
+        attributeLookup.put(Attributes.NeedsMaintenance, 42);
+        attributeLookup.put(Attributes.Livestock, 43);
+        attributeLookup.put(Attributes.Flashlight, 44);
+        attributeLookup.put(Attributes.TruckDriver, 46);
+        attributeLookup.put(Attributes.FieldPuzzle, 47);
+        attributeLookup.put(Attributes.UVLight, 48);
+        attributeLookup.put(Attributes.Snowshoes, 49);
+        attributeLookup.put(Attributes.CrossCountrySkiis, 50);
+        attributeLookup.put(Attributes.SpecialTool, 51);
+        attributeLookup.put(Attributes.NightCache, 52);
+        attributeLookup.put(Attributes.ParkAndGrab, 53);
+        attributeLookup.put(Attributes.AbandonedStructure, 54);
+        attributeLookup.put(Attributes.ShortHike, 55);
+        attributeLookup.put(Attributes.MediumHike, 56);
+        attributeLookup.put(Attributes.LongHike, 57);
+        attributeLookup.put(Attributes.FuelNearby, 58);
+        attributeLookup.put(Attributes.FoodNearby, 59);
 		
 	}
 
@@ -130,11 +132,11 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
         {
         	NonLocalImages = new ArrayList<String>();
         	NonLocalImagesUrl = new ArrayList<String>();
-        	String cachehtml =  cache.GetDescription();
+        	String cachehtml =  Database.GetDescription(cache);
         	String html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, !Config.GetBool("AllowInternetAccess"), NonLocalImages, NonLocalImagesUrl);
         	
             if (!Config.GetBool("DescriptionNoAttributes"))
-                html = getAttributesHtml(cache.AttributesPositive(), cache.AttributesNegative()) + html;
+                html = getAttributesHtml(Database.AttributesPositive(cache), Database.AttributesNegative(cache)) + html;
         	
         	
         	this.loadDataWithBaseURL("fake://fake.de", html, mimeType, encoding, null);
@@ -201,14 +203,14 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
     {
         StringBuilder sb = new StringBuilder();
 
-        for (Cache.Attributes attribute : attributeLookup.keySet())
+        for (Attributes attribute : attributeLookup.keySet())
         {
-        	long att = Cache.GetAttributeIndex(attribute);
+        	long att = Attributes.GetAttributeIndex(attribute);
         	long and = att & attributesPositive;
             if ((att & attributesPositive) > 0)
                 sb.append("<img style=\"border: 1px white solid;\" src=\"file://" + Config.WorkPath + "/data/Attributes/att_" + attributeLookup.get(attribute).toString() + "_1.gif\">");
         }
-        for (Cache.Attributes attribute : attributeLookup.keySet())
+        for (Attributes attribute : attributeLookup.keySet())
             if (((long)attribute.ordinal() & attributesNegative) > 0)
                 sb.append("<img style=\"border: 1px white solid;\" src=\"file://" + Config.WorkPath + "/data/Attributes/att_" + attributeLookup.get(attribute).toString() + "_0.gif\">");
 

@@ -2,15 +2,17 @@ package de.droidcachebox.Views;
 
 import java.util.ArrayList;
 import CB_Core.Log.Logger;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Components.TouchImageView;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Waypoint;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -185,7 +187,7 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
 		Logger.DEBUG("sv1");
 		aktCache = Global.SelectedCache();
 		lBitmaps.clear();
-		aktCache.ReloadSpoilerRessources();
+		CacheDraw.ReloadSpoilerRessources(aktCache);
 		Logger.DEBUG("sv2");
 		for (String filename : aktCache.SpoilerRessources())
 		{

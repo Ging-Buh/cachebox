@@ -2,27 +2,22 @@ package de.droidcachebox.Views;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.Components.CacheDraw.DrawStyle;
 import de.droidcachebox.Custom_Controls.CacheInfoControl;
 import de.droidcachebox.Custom_Controls.DescriptionViewControl;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Cache.DrawStyle;
-import de.droidcachebox.Geocaching.Waypoint;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent {
 	Context context;

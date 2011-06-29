@@ -1,13 +1,15 @@
 package de.droidcachebox.Views;
 
+import de.droidcachebox.Database;
 import de.droidcachebox.R;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Waypoint;
+
 import de.droidcachebox.Solver.Solver;
 import de.droidcachebox.Solver.SolverZeile;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -140,7 +142,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu, Selected
 		// TODO Auto-generated method stub
 		if (mustLoadSolver)
 		{
-			edSolver.setText(aktCache.GetSolver());
+			edSolver.setText(Database.GetSolver(aktCache));
 			mustLoadSolver = false;
 		}
 	}
@@ -148,7 +150,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu, Selected
 	@Override
 	public void OnHide() {
 		// Save changed Solver text
-		aktCache.SetSolver(edSolver.getText().toString());		
+		Database.SetSolver(aktCache,edSolver.getText().toString());		
 	}
 
 	@Override

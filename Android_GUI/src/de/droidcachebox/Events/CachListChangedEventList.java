@@ -3,8 +3,6 @@ package de.droidcachebox.Events;
 import java.util.ArrayList;
 
 import de.droidcachebox.Global;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Waypoint;
 
 public class CachListChangedEventList 
 {

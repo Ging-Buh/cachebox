@@ -5,10 +5,11 @@ import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Cache.DrawStyle;
-import de.droidcachebox.Geocaching.Coordinate;
+
+import de.droidcachebox.Components.CacheDraw;
+import de.droidcachebox.Components.CacheDraw.DrawStyle;
 import de.droidcachebox.Views.CacheListView;
+import CB_Core.Types.Cache;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -168,7 +169,7 @@ public final class CacheInfoControl extends View {
 		 {
 			 UseColor = Global.getColor(R.attr.ListBackground);
 		 }
-		 aktCache.DrawInfo(canvas, width, height, UseColor, style);
+		 CacheDraw.DrawInfo(aktCache,canvas, width, height, UseColor, style);
 	     
 			
 		canvas.restore();

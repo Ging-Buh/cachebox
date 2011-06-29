@@ -1,11 +1,13 @@
 package de.droidcachebox.Views;
 
+import de.droidcachebox.Database;
 import de.droidcachebox.R;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Waypoint;
+
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -59,7 +61,7 @@ public class NotesView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	public void OnShow() {
 		if (mustLoadNotes)
 		{
-			edNotes.setText(aktCache.GetNote());
+			edNotes.setText(Database.GetNote(aktCache));
 			mustLoadNotes = false;
 		}
 		
@@ -68,7 +70,7 @@ public class NotesView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	@Override
 	public void OnHide() {
 		// Save changed Note text
-		aktCache.SetNote(edNotes.getText().toString());		
+		Database.SetNote(aktCache,edNotes.getText().toString());		
 	}
 
 	@Override

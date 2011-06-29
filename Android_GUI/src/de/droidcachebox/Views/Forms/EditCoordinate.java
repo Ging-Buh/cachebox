@@ -5,8 +5,9 @@ import java.text.NumberFormat;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
-import de.droidcachebox.Geocaching.Coordinate;
+
 import de.droidcachebox.UTM.UTMConvert;
+import CB_Core.Types.Coordinate;
 import android.R.string;
 import android.app.Activity;
 import android.content.Intent;

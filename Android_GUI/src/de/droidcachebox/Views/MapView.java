@@ -11,12 +11,14 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import CB_Core.Log.Logger;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Coordinate;
+import CB_Core.Types.Waypoint;
 import CB_Core.Enums.CacheTypes;
 
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Coordinate;
+
 import de.droidcachebox.Geocaching.MysterySolution;
-import de.droidcachebox.Geocaching.Waypoint;
+
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;

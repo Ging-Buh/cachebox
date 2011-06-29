@@ -4,8 +4,9 @@ import de.droidcachebox.R;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Waypoint;
+
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;

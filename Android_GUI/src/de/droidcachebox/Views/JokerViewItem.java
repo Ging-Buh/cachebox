@@ -3,9 +3,12 @@ package de.droidcachebox.Views;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.ActivityUtils;
-import de.droidcachebox.Geocaching.Cache;
+import de.droidcachebox.Components.CacheDraw;
+import de.droidcachebox.Components.CacheDraw.DrawStyle;
+
 import de.droidcachebox.Geocaching.JokerEntry;
 import de.droidcachebox.Geocaching.JokerList;
+import CB_Core.Types.Cache;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -160,7 +163,7 @@ public class JokerViewItem extends View {
         
         if (joker == null) // this Item is the Cache
         {
-             cache.DrawInfo(canvas, DrawingRec, BackgroundColor, Cache.DrawStyle.withoutSeparator);    
+             CacheDraw.DrawInfo(cache,canvas, DrawingRec, BackgroundColor, DrawStyle.withoutSeparator);    
         }
         else
         {	

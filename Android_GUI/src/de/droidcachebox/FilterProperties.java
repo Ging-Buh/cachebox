@@ -2,10 +2,11 @@ package de.droidcachebox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import CB_Core.Enums.Attributes;
 import CB_Core.Log.Logger;
 
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Cache.Attributes;
+
 
 public class FilterProperties
 {
@@ -251,77 +252,77 @@ public class FilterProperties
                 andParts.add("Type in (" + csvTypes + ")");
             }
             
-            Attributes test = Cache.Attributes.Offroad;
+            Attributes test = Attributes.Offroad;
 
             HashMap<Integer, Attributes> attributeLookup;
             attributeLookup = new HashMap<Integer, Attributes>();
-            attributeLookup.put(0, Cache.Attributes.Dogs);
-            attributeLookup.put(1, Cache.Attributes.Bicycles);
-            attributeLookup.put(2, Cache.Attributes.Motorcycles);
-            attributeLookup.put(3, Cache.Attributes.Quads);
-            attributeLookup.put(4, Cache.Attributes.Offroad);
-            attributeLookup.put(5, Cache.Attributes.Snowmobiles);
-            attributeLookup.put(6, Cache.Attributes.Horses);
-            attributeLookup.put(7, Cache.Attributes.Campfires);
-            attributeLookup.put(8, Cache.Attributes.TruckDriver);
+            attributeLookup.put(0, Attributes.Dogs);
+            attributeLookup.put(1, Attributes.Bicycles);
+            attributeLookup.put(2, Attributes.Motorcycles);
+            attributeLookup.put(3, Attributes.Quads);
+            attributeLookup.put(4, Attributes.Offroad);
+            attributeLookup.put(5, Attributes.Snowmobiles);
+            attributeLookup.put(6, Attributes.Horses);
+            attributeLookup.put(7, Attributes.Campfires);
+            attributeLookup.put(8, Attributes.TruckDriver);
 
-            attributeLookup.put(9, Cache.Attributes.Fee);
-            attributeLookup.put(10, Cache.Attributes.ClimbingGear);
-            attributeLookup.put(11, Cache.Attributes.Boat);
-            attributeLookup.put(12, Cache.Attributes.Scuba);
-            attributeLookup.put(13, Cache.Attributes.Flashlight);
-            attributeLookup.put(14, Cache.Attributes.UVLight);
-            attributeLookup.put(15, Cache.Attributes.Snowshoes);
-            attributeLookup.put(16, Cache.Attributes.CrossCountrySkiis);
-            attributeLookup.put(17, Cache.Attributes.SpecialTool);
+            attributeLookup.put(9, Attributes.Fee);
+            attributeLookup.put(10, Attributes.ClimbingGear);
+            attributeLookup.put(11, Attributes.Boat);
+            attributeLookup.put(12, Attributes.Scuba);
+            attributeLookup.put(13, Attributes.Flashlight);
+            attributeLookup.put(14, Attributes.UVLight);
+            attributeLookup.put(15, Attributes.Snowshoes);
+            attributeLookup.put(16, Attributes.CrossCountrySkiis);
+            attributeLookup.put(17, Attributes.SpecialTool);
 
-            attributeLookup.put(18, Cache.Attributes.Kids);
-            attributeLookup.put(19, Cache.Attributes.TakesLess);
-            attributeLookup.put(20, Cache.Attributes.ScenicView);
-            attributeLookup.put(21, Cache.Attributes.SignificantHike);
-            attributeLookup.put(22, Cache.Attributes.Climbing);
-            attributeLookup.put(23, Cache.Attributes.Wading);
-            attributeLookup.put(24, Cache.Attributes.Swimming);
-            attributeLookup.put(25, Cache.Attributes.Anytime);
-            attributeLookup.put(26, Cache.Attributes.Night);
-            attributeLookup.put(27, Cache.Attributes.Winter);
-            attributeLookup.put(28, Cache.Attributes.Stealth);
-            attributeLookup.put(29, Cache.Attributes.NeedsMaintenance);
-            attributeLookup.put(30, Cache.Attributes.Livestock);
-            attributeLookup.put(31, Cache.Attributes.FieldPuzzle);
-            attributeLookup.put(32, Cache.Attributes.NightCache);
-            attributeLookup.put(33, Cache.Attributes.ParkAndGrab);
-            attributeLookup.put(34, Cache.Attributes.AbandonedStructure);
-            attributeLookup.put(35, Cache.Attributes.ShortHike);
-            attributeLookup.put(36, Cache.Attributes.MediumHike);
-            attributeLookup.put(37, Cache.Attributes.LongHike);
+            attributeLookup.put(18, Attributes.Kids);
+            attributeLookup.put(19, Attributes.TakesLess);
+            attributeLookup.put(20, Attributes.ScenicView);
+            attributeLookup.put(21, Attributes.SignificantHike);
+            attributeLookup.put(22, Attributes.Climbing);
+            attributeLookup.put(23, Attributes.Wading);
+            attributeLookup.put(24, Attributes.Swimming);
+            attributeLookup.put(25, Attributes.Anytime);
+            attributeLookup.put(26, Attributes.Night);
+            attributeLookup.put(27, Attributes.Winter);
+            attributeLookup.put(28, Attributes.Stealth);
+            attributeLookup.put(29, Attributes.NeedsMaintenance);
+            attributeLookup.put(30, Attributes.Livestock);
+            attributeLookup.put(31, Attributes.FieldPuzzle);
+            attributeLookup.put(32, Attributes.NightCache);
+            attributeLookup.put(33, Attributes.ParkAndGrab);
+            attributeLookup.put(34, Attributes.AbandonedStructure);
+            attributeLookup.put(35, Attributes.ShortHike);
+            attributeLookup.put(36, Attributes.MediumHike);
+            attributeLookup.put(37, Attributes.LongHike);
 
-            attributeLookup.put(38, Cache.Attributes.PoisonPlants);
-            attributeLookup.put(39, Cache.Attributes.Snakes);
-            attributeLookup.put(40, Cache.Attributes.Ticks);
-            attributeLookup.put(41, Cache.Attributes.AbandonedMines);
-            attributeLookup.put(42, Cache.Attributes.Cliff);
-            attributeLookup.put(43, Cache.Attributes.Hunting);
-            attributeLookup.put(44, Cache.Attributes.Dangerous);
-            attributeLookup.put(45, Cache.Attributes.Thorns);
+            attributeLookup.put(38, Attributes.PoisonPlants);
+            attributeLookup.put(39, Attributes.Snakes);
+            attributeLookup.put(40, Attributes.Ticks);
+            attributeLookup.put(41, Attributes.AbandonedMines);
+            attributeLookup.put(42, Attributes.Cliff);
+            attributeLookup.put(43, Attributes.Hunting);
+            attributeLookup.put(44, Attributes.Dangerous);
+            attributeLookup.put(45, Attributes.Thorns);
 
-            attributeLookup.put(46, Cache.Attributes.WheelchairAccessible);
-            attributeLookup.put(47, Cache.Attributes.Parking);
-            attributeLookup.put(48, Cache.Attributes.PublicTransportation);
-            attributeLookup.put(49, Cache.Attributes.Drinking);
-            attributeLookup.put(50, Cache.Attributes.Restrooms);
-            attributeLookup.put(51, Cache.Attributes.Telephone);
-            attributeLookup.put(52, Cache.Attributes.Picnic);
-            attributeLookup.put(53, Cache.Attributes.Camping);
-            attributeLookup.put(54, Cache.Attributes.Stroller);
-            attributeLookup.put(55, Cache.Attributes.FuelNearby);
-            attributeLookup.put(56, Cache.Attributes.FoodNearby);
+            attributeLookup.put(46, Attributes.WheelchairAccessible);
+            attributeLookup.put(47, Attributes.Parking);
+            attributeLookup.put(48, Attributes.PublicTransportation);
+            attributeLookup.put(49, Attributes.Drinking);
+            attributeLookup.put(50, Attributes.Restrooms);
+            attributeLookup.put(51, Attributes.Telephone);
+            attributeLookup.put(52, Attributes.Picnic);
+            attributeLookup.put(53, Attributes.Camping);
+            attributeLookup.put(54, Attributes.Stroller);
+            attributeLookup.put(55, Attributes.FuelNearby);
+            attributeLookup.put(56, Attributes.FoodNearby);
 
             for (int i = 0; i < attributesFilter.length; i++)
             {
                 if (attributesFilter[i] != 0)
                 {
-                	long value = Cache.GetAttributeIndex(attributeLookup.get(i));
+                	long value = GetAttributeIndex(attributeLookup.get(i));
                 	
                     if (attributesFilter[i] == 1)
                         andParts.add("AttributesPositive & " + value + " > 0");
@@ -361,6 +362,13 @@ public class FilterProperties
         
     }
 
+    
+    public static long GetAttributeIndex(Attributes attrib)
+    {
+    	return ((long)1) << (attrib.ordinal());
+    }
+ 
+    
 	public static String join(String separator , ArrayList<String> array) 
 	{
 		String retString="";

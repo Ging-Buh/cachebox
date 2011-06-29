@@ -4,17 +4,18 @@ package de.droidcachebox.Views;
 
 
 import CB_Core.Log.Logger;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Coordinate;
+import CB_Core.Types.Waypoint;
 import CB_Core.Enums.CacheTypes;
 
 import de.droidcachebox.Config;
+import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Coordinate;
-import de.droidcachebox.Geocaching.Waypoint;
 import de.droidcachebox.Views.Forms.EditWaypoint;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
@@ -96,7 +97,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 					this.setAdapter(lvAdapter);
 					aktWaypoint = waypoint;
 					Global.SelectedWaypoint(Global.SelectedCache(), waypoint);
-					waypoint.WriteToDatabase();
+					Database.WriteToDatabase(waypoint);
 					
 				} else
 				{
@@ -105,7 +106,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 					aktWaypoint.Coordinate = waypoint.Coordinate;
 					aktWaypoint.Description = waypoint.Description;
 					aktWaypoint.Clue = waypoint.Clue;
-					aktWaypoint.UpdateDatabase();
+					Database.UpdateDatabase(aktWaypoint);
 					lvAdapter.notifyDataSetChanged();
 				}
 			}
@@ -216,7 +217,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				createNewWaypoint = true;
 				String newGcCode = "";
 				try {
-					newGcCode = Waypoint.CreateFreeGcCode(Global.SelectedCache().GcCode);
+					newGcCode = Database.CreateFreeGcCode(Global.SelectedCache().GcCode);
 				} catch (Exception e) {
 					// 	TODO Auto-generated catch block
 					return true;
@@ -238,7 +239,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				        switch (which){
 				        case DialogInterface.BUTTON_POSITIVE:
 				            //Yes button clicked
-				        	aktWaypoint.DeleteFromDatabase();
+				        	Database.DeleteFromDatabase(aktWaypoint);
 				        	Global.SelectedCache().waypoints.remove(aktWaypoint);
 				        	Global.SelectedWaypoint(Global.SelectedCache(), null);
 				        	lvAdapter.notifyDataSetChanged();

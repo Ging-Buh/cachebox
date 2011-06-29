@@ -4,9 +4,11 @@ import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
+import de.droidcachebox.Components.CacheDraw;
+import de.droidcachebox.Components.CacheDraw.DrawStyle;
 import de.droidcachebox.Events.PositionEvent;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Coordinate;
+
+import CB_Core.Types.Cache;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -149,7 +151,7 @@ public class CacheListViewItem extends View {
         	BackgroundColor = (GlobalSelected)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground_secend);
         }
         
-        cache.DrawInfo(canvas, drawRec, BackgroundColor, Cache.DrawStyle.all);
+        CacheDraw.DrawInfo(cache,canvas, drawRec, BackgroundColor, DrawStyle.all);
         
         
     }

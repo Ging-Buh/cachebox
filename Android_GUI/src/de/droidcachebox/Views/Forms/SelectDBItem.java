@@ -5,9 +5,7 @@ import java.io.File;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.ActivityUtils;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Waypoint;
-import de.droidcachebox.Views.WaypointView;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -15,7 +13,6 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.Layout.Alignment;
 import android.view.View;
-import android.view.View.MeasureSpec;
 
 public class SelectDBItem extends View {
 	private File file;

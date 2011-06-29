@@ -4,8 +4,9 @@ import java.util.ArrayList;
 
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
-import de.droidcachebox.Geocaching.Coordinate;
 
+
+import CB_Core.Types.Coordinate;
 import android.location.Location;
 import android.os.SystemClock;
 

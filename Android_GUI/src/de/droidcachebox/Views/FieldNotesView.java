@@ -12,11 +12,11 @@ import de.droidcachebox.R;
 import de.droidcachebox.Events.ProgresssChangedEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.Cache;
+
 import de.droidcachebox.Geocaching.CacheList;
 import de.droidcachebox.Geocaching.FieldNoteEntry;
 import de.droidcachebox.Geocaching.FieldNoteList;
-import de.droidcachebox.Geocaching.Waypoint;
+
 import de.droidcachebox.Views.CacheListView.CustomAdapter;
 import de.droidcachebox.Views.Forms.EditFieldNote;
 import de.droidcachebox.Views.Forms.EditWaypoint;
@@ -24,6 +24,7 @@ import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.ProgressDialog;
+import CB_Core.Types.Cache;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -564,7 +565,7 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 		        		if (cache.Found())
 		        		{
 		        			cache.Found(false);
-		        			cache.WriteToDatabase();
+		        			Database.WriteToDatabase(cache);
 			                Config.Set("FoundOffset", Config.GetInt("FoundOffset") - 1);
 			                Config.AcceptChanges();		        			
 		        		}

@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Geocaching.FieldNoteEntry;
-import de.droidcachebox.Geocaching.Waypoint;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

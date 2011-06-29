@@ -3,7 +3,6 @@ package de.droidcachebox.Views.Forms;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
-import de.droidcachebox.Geocaching.Waypoint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;

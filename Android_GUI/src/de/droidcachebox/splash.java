@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_Core.Log.Logger;
+import CB_Core.Types.Coordinate;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -22,7 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import de.droidcachebox.Database.DatabaseType;
 import de.droidcachebox.Components.copyAssetFolder;
-import de.droidcachebox.Geocaching.Coordinate;
+
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Views.MapView;

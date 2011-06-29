@@ -12,10 +12,11 @@ import de.droidcachebox.Events.CacheListChangedEvent;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.Cache;
+
 import de.droidcachebox.Geocaching.CacheList;
-import de.droidcachebox.Geocaching.Coordinate;
-import de.droidcachebox.Geocaching.Waypoint;
+
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import android.R.drawable;
 import android.content.Context;
 import android.content.Intent;

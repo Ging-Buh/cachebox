@@ -1,27 +1,18 @@
 package de.droidcachebox.Views.FilterSettings;
 
-import java.text.SimpleDateFormat;
-
-import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.ActivityUtils;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.FieldNoteEntry;
-import de.droidcachebox.Views.FieldNoteViewItem;
-import de.droidcachebox.Views.FieldNotesView;
+
 import de.droidcachebox.Views.FilterSettings.PresetListView.PresetEntry;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.Layout.Alignment;
 import android.view.View;
-import android.view.View.MeasureSpec;
 
 public class PresetListViewItem extends View {
 	private PresetEntry mPresetEntry;

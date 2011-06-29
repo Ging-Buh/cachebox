@@ -7,7 +7,9 @@ import java.util.HashMap;
 
 
 
+import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
+import CB_Core.Types.Waypoint;
 
 import com.ximpleware.extended.AutoPilotHuge;
 import com.ximpleware.extended.NavExceptionHuge;
@@ -16,8 +18,8 @@ import com.ximpleware.extended.VTDGenHuge;
 import com.ximpleware.extended.VTDNavHuge;
 import com.ximpleware.extended.XMLBuffer;
 
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Waypoint;
+import de.droidcachebox.Database;
+
 
 public class GPXFileReader 
 {
@@ -262,11 +264,11 @@ public class GPXFileReader
 
 			if (foundCacheRecord)
 			{
-				currentCache.WriteToDatabase();
+				Database.WriteToDatabase(currentCache);
 			}
 			else
 			{
-				wpt.WriteToDatabase();
+				Database.WriteToDatabase(wpt);
 			}
 
 			vn.pop();

@@ -16,9 +16,9 @@ import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.SelectedLangChangedEvent;
 import de.droidcachebox.Events.SelectedLangChangedEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Coordinate;
-import de.droidcachebox.Geocaching.Waypoint;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Coordinate;
+import CB_Core.Types.Waypoint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -191,11 +191,11 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
             // Heading: Im Uhrzeigersinn, Geocaching-Norm
 
             Coordinate dest = aktCache.Coordinate;
-            float distance = aktCache.Distance();
+            float distance = aktCache.Distance(position);
             if (aktWaypoint != null)
             {
             	dest = aktWaypoint.Coordinate;
-            	distance = aktWaypoint.Distance();
+            	distance = aktWaypoint.Distance(position);
             }
             double bearing = Coordinate.Bearing(position, dest);
             double relativeBearing = bearing - heading;
@@ -221,11 +221,11 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
             // Heading: Im Uhrzeigersinn, Geocaching-Norm
 
             Coordinate dest = aktCache.Coordinate;
-            float distance = aktCache.Distance();
+            float distance = aktCache.Distance(position);
             if (aktWaypoint != null)
             {
             	dest = aktWaypoint.Coordinate;
-            	distance = aktWaypoint.Distance();
+            	distance = aktWaypoint.Distance(position);
             }
             double bearing = Coordinate.Bearing(position, dest);
             double relativeBearing = bearing - heading;

@@ -2,11 +2,12 @@ package de.droidcachebox.Views.Forms;
 
 
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Types.Coordinate;
+import CB_Core.Types.Waypoint;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Geocaching.Coordinate;
-import de.droidcachebox.Geocaching.Waypoint;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

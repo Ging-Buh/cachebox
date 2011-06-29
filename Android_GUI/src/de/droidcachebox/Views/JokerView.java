@@ -2,6 +2,8 @@ package de.droidcachebox.Views;
 
 
 import CB_Core.Log.Logger;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
@@ -10,9 +12,9 @@ import de.droidcachebox.Components.ListenToPhoneState;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.Cache;
+
 import de.droidcachebox.Geocaching.JokerEntry;
-import de.droidcachebox.Geocaching.Waypoint;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;

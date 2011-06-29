@@ -6,23 +6,17 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.LightingColorFilter;
-import android.graphics.Paint;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ScaleDrawable;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.widget.Button;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Geocaching.Cache;
+
 import android.view.View.OnClickListener;
 
 public class MultiToggleButton extends Button implements OnClickListener {

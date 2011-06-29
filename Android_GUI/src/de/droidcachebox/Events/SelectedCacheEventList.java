@@ -2,8 +2,9 @@ package de.droidcachebox.Events;
 
 import java.util.ArrayList;
 
-import de.droidcachebox.Geocaching.Cache;
-import de.droidcachebox.Geocaching.Waypoint;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
+
 
 public class SelectedCacheEventList {
 	public static ArrayList<SelectedCacheEvent> list = new ArrayList<SelectedCacheEvent>();

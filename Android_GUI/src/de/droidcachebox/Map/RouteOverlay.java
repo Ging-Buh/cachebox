@@ -8,9 +8,10 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-import de.droidcachebox.Geocaching.Coordinate;
+
 import de.droidcachebox.Map.Descriptor.PointD;
 
+import CB_Core.Types.Coordinate;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;

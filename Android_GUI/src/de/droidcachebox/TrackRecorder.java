@@ -8,11 +8,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.SimpleTimeZone;
 
+import CB_Core.Types.Coordinate;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.location.Location;
 
-import de.droidcachebox.Geocaching.Coordinate;
+
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Map.Descriptor.PointD;
 import de.droidcachebox.Map.RouteOverlay;
