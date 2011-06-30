@@ -5,6 +5,7 @@
   android:orientation="vertical" 
   android:layout_width="match_parent"
   android:background="?attr/DropDownBackground">
+   
     <CheckBox 
 	    android:text="Show Debug Info Panel" 
 	    android:layout_width="match_parent" 
@@ -31,6 +32,13 @@
 	    android:layout_width="match_parent" 
 	    android:layout_height="wrap_content" 
 	    android:id="@+id/settings_debug_chkMarker">
+    </CheckBox>
+    
+    <CheckBox 
+	    android:text="Show Log" 
+	    android:layout_width="match_parent" 
+	    android:layout_height="wrap_content" 
+	    android:id="@+id/settings_debug_chkLog">
     </CheckBox>
     
 </LinearLayout>

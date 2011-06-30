@@ -1,5 +1,6 @@
 package CB_Core.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -90,8 +91,10 @@ public class Logger
 		if(e != null && e.getMessage()!=null)
 			Ex = "Ex = [" + e.getMessage() + "]";
 		
+		String Short = "[ERR]" + Name + " [" + Msg + "] ";
 		Msg = "[ERROR]- at " + Name + "- [" + Msg + "] " + Ex  ;
-		sendMsg(Msg);
+		
+		sendMsg(Msg,Short);
 	}
 	
 	
@@ -101,9 +104,10 @@ public class Logger
 	 */
 	public static void General(String Msg) 
 	{
+		String Short = "[GEN] [" + Msg + "] " ;
 		Msg = "[GENERAL]- [" + Msg + "] " ;
-		sendMsg(Msg);
 		
+		sendMsg(Msg,Short);
 	}
 	
 	
@@ -115,8 +119,9 @@ public class Logger
 	{
 		if(mDebug)
 		{
-			Msg = "[GENERAL]- [" + Msg + "] " ;
-			sendMsg(Msg);
+			Msg = "[DEBUG]- [" + Msg + "] " ;
+			String Short = "[DEB] [" + Msg + "] " ;
+			sendMsg(Msg,Short);
 		}
 	}
 	
@@ -125,16 +130,26 @@ public class Logger
 	 * Sendet die aufbereitete Msg von Error,Debug oder General
 	 * @param Msg
 	 */
-	@SuppressWarnings("deprecation")
-	private static void sendMsg(String Msg)
+	private static void sendMsg(String Msg , String Short)
 	{
 		
 		//add Timestamp 
-		Msg = new Date().toLocaleString() + " - " + Msg + "\n";
+		Date now = new Date();
+		
+	       SimpleDateFormat postFormater = new SimpleDateFormat("mm:ss"); 
+	       String dateString = postFormater.format(now); 
+	       
+	       SimpleDateFormat postFormater2 = new SimpleDateFormat("dd/MM hh:mm:ss"); 
+	       String dateString2 = postFormater2.format(now); 
+		
+	       Short = dateString + Short + "\n";
+	       Msg = dateString2 + " - " + Msg + "\n";
+		
 		
 		for (ILog event : list)
 		{
         	event.receiveLog(Msg);
+        	event.receiveShortLog(Short);
 		}
 	}
 

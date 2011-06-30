@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.SimpleTimeZone;
 
+import CB_Core.FileIO;
 import CB_Core.Types.Coordinate;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -43,7 +44,7 @@ public class TrackRecorder {
         RouteOverlay.Routes.add(Global.AktuelleRoute);
 
         String directory = Config.GetString("TrackFolder");
-        if (!Global.DirectoryExists(directory))
+        if (!FileIO.DirectoryExists(directory))
             return;
 
         

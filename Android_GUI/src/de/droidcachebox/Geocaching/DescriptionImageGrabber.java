@@ -13,6 +13,7 @@ import org.apache.http.util.ByteArrayBuffer;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 
+import CB_Core.FileIO;
 import CB_Core.Types.Cache;
 import android.net.Uri;
 
@@ -135,7 +136,7 @@ public class DescriptionImageGrabber {
             Uri imgUri = Uri.parse(/*baseUri, */src);  // NICHT ORGINAL!!!!!!!!!
             String localFile = BuildImageFilename(Cache.GcCode, imgUri);
 
-            if (Global.FileExists(localFile))
+            if (FileIO.FileExists(localFile))
             {
               int idx = 0;
 
@@ -186,7 +187,7 @@ public class DescriptionImageGrabber {
           {
               String localDir = local.substring(0, local.lastIndexOf("/"));
 
-              if (!Global.DirectoryExists(localDir)) return false;
+              if (!FileIO.DirectoryExists(localDir)) return false;
 
               URL aURL = new URL(uri.replace("&amp;", "&"));
              

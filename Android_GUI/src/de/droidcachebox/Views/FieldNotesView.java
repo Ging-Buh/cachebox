@@ -9,7 +9,6 @@ import de.droidcachebox.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Events.ProgresssChangedEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
@@ -24,6 +23,8 @@ import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.ProgressDialog;
+import CB_Core.FileIO;
+import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.Types.Cache;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -170,7 +171,7 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
         dirFileName = file.getParent();
         String path = dirFileName +"/" + fileName;
 
-        if (Global.FileExists(path))
+        if (FileIO.FileExists(path))
         {
             MessageBox.Show(Global.Translations.Get("uploadFieldNotes?"), 
             		Global.Translations.Get("uploadFieldNotes"), 

@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
+import CB_Core.FileIO;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
@@ -249,6 +250,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        
 	        Logger.Add(this);
 	        
+	        	        
 	        try
 	        {
 	        setContentView(R.layout.main);
@@ -267,6 +269,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        counter.start();
 
 	        findViewsById();
+	        
+	        if (aktViewId == -1)Logger.General("------ Start Rev: " + Global.CurrentRevision + "-------");
 	        
 	        // add Event Handler
 	        SelectedCacheEventList.Add(this);
@@ -575,7 +579,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	                CacheDraw.ReloadSpoilerRessources(Global.selectedCache);
 	                String MediaFolder = Config.GetString("UserImageFolder");
 	            	String TrackFolder = Config.GetString("TrackFolder");
-	            	String relativPath = Global.getRelativePath(MediaFolder, TrackFolder, "/"); 
+	            	String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/"); 
 	            	// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
 	            	mediaTimeString = Global.GetTrackDateTimeString();
 	            	TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", Global.LastValidPosition, mediaTimeString);
@@ -600,7 +604,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	                cursor.moveToFirst();
 	                String recordedVideoFilePath = cursor.getString(column_index_data);
 	                
-	                String ext = Global.GetFileExtension(recordedVideoFilePath);
+	                String ext = FileIO.GetFileExtension(recordedVideoFilePath);
 	                String MediaFolder = Config.GetString("UserImageFolder");
 
 	                // Video in Media-Ordner verschieben
@@ -613,7 +617,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	                }
 	                
 	            	String TrackFolder = Config.GetString("TrackFolder");
-	            	String relativPath = Global.getRelativePath(MediaFolder, TrackFolder, "/"); 
+	            	String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/"); 
 	            	TrackRecorder.AnnotateMedia(basename + "." + ext, relativPath + "/" + basename + "." + ext, mediaCoordinate , mediaTimeString);
 	            	
 	            	return;
@@ -919,7 +923,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			            
 			    		//define the file-name to save voice taken by activity
 			            String directory = Config.GetString("UserImageFolder");
-			            if (!Global.DirectoryExists(directory))
+			            if (!FileIO.DirectoryExists(directory))
 			            {
 			                Log.d("DroidCachebox", "Media-Folder does not exist...");
 			                break;
@@ -929,7 +933,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			            
 			            if (Global.selectedCache != null)
 			            {
-			            	String validName=Global.RemoveInvalidFatChars(Global.selectedCache.GcCode + "-" + Global.selectedCache.Name);
+			            	String validName=FileIO.RemoveInvalidFatChars(Global.selectedCache.GcCode + "-" + Global.selectedCache.Name);
 			            	mediaCacheName = validName.substring(0,(validName.length()>32)? 32 : validName.length());
 			                //Title = Global.selectedCache.Name;
 			            }
@@ -951,7 +955,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 			            String MediaFolder = Config.GetString("UserImageFolder");
 		            	String TrackFolder = Config.GetString("TrackFolder");
-		            	String relativPath = Global.getRelativePath(MediaFolder, TrackFolder, "/"); 
+		            	String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/"); 
 		            	// Da eine Voice keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
 		            	TrackRecorder.AnnotateMedia(basename + ".wav", relativPath + "/" + basename + ".wav", Global.LastValidPosition, Global.GetTrackDateTimeString());
 			    		Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
@@ -975,7 +979,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		            
 		    		//define the file-name to save photo taken by Camera activity
 		            String directory = Config.GetString("UserImageFolder");
-		            if (!Global.DirectoryExists(directory))
+		            if (!FileIO.DirectoryExists(directory))
 		            {
 		                Log.d("DroidCachebox", "Media-Folder does not exist...");
 		                break;
@@ -985,7 +989,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		            
 		            if (Global.selectedCache != null)
 		            {
-		            	String validName=Global.RemoveInvalidFatChars(Global.selectedCache.GcCode + "-" + Global.selectedCache.Name);
+		            	String validName=FileIO.RemoveInvalidFatChars(Global.selectedCache.GcCode + "-" + Global.selectedCache.Name);
 		            	mediaCacheName = validName.substring(0,(validName.length()>32)? 32 : validName.length());
 		                //Title = Global.selectedCache.Name;
 		            }
@@ -1009,7 +1013,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		            
 		    		//define the file-name to save video taken by Camera activity
 		            directory = Config.GetString("UserImageFolder");
-		            if (!Global.DirectoryExists(directory))
+		            if (!FileIO.DirectoryExists(directory))
 		            {
 		                Log.d("DroidCachebox", "Media-Folder does not exist...");
 		                break;
@@ -1019,7 +1023,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		            
 		            if (Global.selectedCache != null)
 		            {
-		            	String validName=Global.RemoveInvalidFatChars(Global.selectedCache.GcCode + "-" + Global.selectedCache.Name);
+		            	String validName=FileIO.RemoveInvalidFatChars(Global.selectedCache.GcCode + "-" + Global.selectedCache.Name);
 		            	mediaCacheName = validName.substring(0,(validName.length()>32)? 32 : validName.length());
 		                //Title = Global.selectedCache.Name;
 		            }
@@ -1699,6 +1703,17 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 				}
 	        }
 		}
+
+	
+		/**
+		 * Empfängt die gelogten Meldungen in kurz Form und schreibt sie
+		 * ins Debung Panel, wenn dieses sichtbar ist!
+		 */
+	@Override public void receiveShortLog(String Msg) 
+	{
+		debugInfoPanel.addLogMsg(Msg);
+		
+	}
 	 
 	 
 }

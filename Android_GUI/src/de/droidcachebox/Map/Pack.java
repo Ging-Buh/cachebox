@@ -13,6 +13,7 @@ import org.apache.http.util.EncodingUtils;
 import de.droidcachebox.Global;
 
 
+import CB_Core.FileIO;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -213,7 +214,7 @@ public class Pack implements Comparable<Pack> {
             // Dateigröße ermitteln
             String local = Layer.GetLocalFilename(new Descriptor(x, y, bbox.Zoom));
 
-            if (Global.FileExists(local))
+            if (FileIO.FileExists(local))
             {
               File info = new File(local);
               if (info.lastModified() < MaxAge)
@@ -223,7 +224,7 @@ public class Pack implements Comparable<Pack> {
               Layer.DownloadTile(new Descriptor(x, y, bbox.Zoom));
 
             // Nicht vorhandene Tiles haben die Länge 0
-            if (!Global.FileExists(local))
+            if (!FileIO.FileExists(local))
               offset += 0;
             else
             {

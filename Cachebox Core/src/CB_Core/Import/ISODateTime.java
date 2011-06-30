@@ -1,4 +1,4 @@
-package nonGuiClasses.fromOpenGpx;
+package CB_Core.Import;
 
 import java.text.DateFormat;
 import java.text.ParseException;

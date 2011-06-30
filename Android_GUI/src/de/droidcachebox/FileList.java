@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import CB_Core.FileIO;
+
 public class FileList extends ArrayList<File> implements Comparator<File> {
 	/**
 	 * 
@@ -21,7 +23,7 @@ public class FileList extends ArrayList<File> implements Comparator<File> {
 	        {
 		        for (String file : files)
 			        {
-		        		if (Global.GetFileExtension(file).equalsIgnoreCase(extension))
+		        		if (FileIO.GetFileExtension(file).equalsIgnoreCase(extension))
 		        		{
 		        			File newfile = new File(file);
 		        			this.add(newfile);

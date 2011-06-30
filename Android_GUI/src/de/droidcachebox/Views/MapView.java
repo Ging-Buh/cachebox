@@ -10,6 +10,7 @@ import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import CB_Core.FileIO;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
@@ -786,7 +787,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       
  */
       String trackPath = Config.GetString("TrackFolder") + "/Autoload";
-      if (Global.DirectoryExists(trackPath))
+      if (FileIO.DirectoryExists(trackPath))
       {
     	  File dir = new File(trackPath);
     	  String[] files = dir.list();

@@ -24,21 +24,13 @@ import android.widget.RelativeLayout.LayoutParams;
 
 
 
-/*
- * Control Tamplate zum Copieren!
+/**
+ * Das Debug Panel ist ein Panel, das auf der main Activity verschiebbar
+ * ist und Debug Meldungen je nach Settings anzeigt!
  * 
- * XML Layout einbindung über :
- * 
-    <de.droidcachebox.Custom_Controls.Control_Tamplate
-			android:id="@+id/myName" android:layout_height="wrap_content"
-			android:layout_width="fill_parent" android:layout_marginLeft="2dip"
-			android:layout_marginRight="2dip" android:layout_marginTop="1dip" />
+ * @author Longri
+ *
  */
-
-
-
-
-
 public final class DebugInfoPanel extends View 
 {
 	private ActivityManager activityManager;
@@ -132,11 +124,12 @@ public final class DebugInfoPanel extends View
 	private int LineSep;
 	private StaticLayout LayoutMemInfo;
 	private StaticLayout LayoutMsg;
+	private StaticLayout LayoutLogMsg;
 	private int ContentWidth;
 	private float lastX;
 	private float lastY;
 	private String Msg="";
-	
+	private String Log="";
 	
 	
 	
@@ -155,15 +148,32 @@ public final class DebugInfoPanel extends View
 		
 		LayoutMemInfo = new StaticLayout("1. Zeile " + String.format("%n") + "2.Zeile" + String.format("%n") + "3.Zeile", LayoutTextPaint, ContentWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		LayoutMsg = new StaticLayout(Msg, LayoutTextPaint, ContentWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-		
-		
+
+
+		LayoutLogMsg = new StaticLayout(Log, LayoutTextPaint, ContentWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		int LineCount = LayoutLogMsg.getLineCount();
+		if(LineCount>5)
+		{
+			String[] Lines = Log.split(String.format("%n"));
+			
+			String newLog="";
+			for(int i = 0; i< Lines.length; i++)
+			{
+				if(i>Lines.length-5)
+				{
+					newLog+=Lines[i];
+				}
+			}
+			
+			LayoutLogMsg = new StaticLayout(newLog, LayoutTextPaint, ContentWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		}
 		
 		
 		// Calc height
 		this.height = 0;
 		if (Config.GetBool("DebugMemory")) this.height += (LineSep*4)+ LayoutMemInfo.getHeight();
 		if (Config.GetBool("DebugShowMsg")) this.height += (LineSep*2)+ LayoutMsg.getHeight();
-		
+		if (Config.GetBool("DebugShowLog")) this.height += (LineSep*2)+ LayoutLogMsg.getHeight();
 		
         setMeasuredDimension(this.width, this.height);
 	}
@@ -198,12 +208,19 @@ public final class DebugInfoPanel extends View
 	     if (Config.GetBool("DebugMemory"))drawMemInfo(canvas);
 	     
 	     if (Config.GetBool("DebugShowMsg"))drawMsg(canvas);
+	     
+	     if (Config.GetBool("DebugShowLog"))drawLogMsg(canvas);
 	}
 	
 	
 	private void drawMsg(Canvas canvas) 
 	{
 		top += ActivityUtils.drawStaticLayout(canvas, LayoutMsg, left, top);
+	}
+	
+	private void drawLogMsg(Canvas canvas)
+	{
+		top += ActivityUtils.drawStaticLayout(canvas, LayoutLogMsg, left, top);
 	}
 
 	private void drawMemInfo(Canvas canvas)
@@ -241,11 +258,7 @@ public final class DebugInfoPanel extends View
     MyCount counter = null;
 
 
-	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) 
-	{
-		Log.d("Cachebox", "Size changed to " + w + "x" + h);
-	}
+	
 	
 	public void setHeight(int MyHeight)
 	{
@@ -256,6 +269,13 @@ public final class DebugInfoPanel extends View
 	public void setMsg(String msg)
 	{
 		Msg=msg;
+		this.requestLayout();
+	}
+	
+	public void addLogMsg(String Msg)
+	{
+		Log +=Msg;
+		
 		this.requestLayout();
 	}
 }

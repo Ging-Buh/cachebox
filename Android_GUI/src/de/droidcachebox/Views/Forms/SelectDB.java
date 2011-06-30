@@ -7,6 +7,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.ActivityUtils;
 
+import CB_Core.FileIO;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -49,8 +50,8 @@ public class SelectDB extends Activity {
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.selectdb);
 
-		DBPath = Global.GetDirectoryName(Config.GetString("DatabasePath"));
-		String DBFile = Global.GetFileName(Config.GetString("DatabasePath"));
+		DBPath = FileIO.GetDirectoryName(Config.GetString("DatabasePath"));
+		String DBFile = FileIO.GetFileName(Config.GetString("DatabasePath"));
 //		Toast.makeText(getApplicationContext(), DBPath, Toast.LENGTH_LONG).show();
 		
 		aktIntent = getIntent();

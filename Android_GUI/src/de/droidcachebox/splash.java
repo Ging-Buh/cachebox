@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Core.FileIO;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Coordinate;
 
@@ -93,9 +94,7 @@ public class splash extends Activity
 	 {
 		 Logger.setDebug(Global.Debug);
 		
-		 Logger.General("------" + Global.CurrentRevision + "-------");
-
-// Read Config
+		 // Read Config
 		 
 		 // copy AssetFolder
 		 String[] exclude = new String[]{"webkit","sounds","images"};
@@ -124,9 +123,9 @@ public class splash extends Activity
 		        {
 			        for (String file : files)
 				        {
-			        		if (Global.GetFileExtension(file).equalsIgnoreCase("pack"))
+			        		if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack"))
 			        			MapView.Manager.LoadMapPack(Config.GetString("MapPackFolder") + "/" + file);
-			        		if (Global.GetFileExtension(file).equalsIgnoreCase("map"))
+			        		if (FileIO.GetFileExtension(file).equalsIgnoreCase("map"))
 			        		{
 			        			Layer layer = new  Layer(file, file, "");
 			        			layer.isMapsForge = true;
@@ -185,7 +184,7 @@ public class splash extends Activity
 	        Database.Data.Query.LoadCaches(sqlWhere);
 
 	        Database.FieldNotes = new Database(DatabaseType.FieldNotes, this); 
-	        if (!Global.DirectoryExists(Config.WorkPath + "/User")) return;
+	        if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
 	        Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 	        
 	        Descriptor.Init();

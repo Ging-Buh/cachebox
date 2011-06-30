@@ -1,13 +1,13 @@
 package de.droidcachebox.Views.Forms;
 
-import nonGuiClasses.Importer;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
-import de.droidcachebox.Events.ProgressChangedEvent;
-import de.droidcachebox.Events.ProgresssChangedEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import CB_Core.Events.ProgressChangedEvent;
+import CB_Core.Events.ProgresssChangedEventList;
+import CB_Core.Import.Importer;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -232,14 +232,14 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
              public void run() 
              {
             	 Importer importer = new Importer();
-            	 
+            	String directoryPath = Config.GetString("PocketQueryFolder");
                          try 
                          {
                          if(checkImportPQfromGC.isChecked())importer.importGC();
                          Thread.sleep(1000);
                          if(checkBoxImportGpxFromMail.isChecked())importer.importMail();
                          Thread.sleep(1000);
-                         if(checkBoxImportGPX.isChecked())importer.importGpx();
+                         if(checkBoxImportGPX.isChecked())importer.importGpx(directoryPath);
                          Thread.sleep(1000);
                          if(checkBoxGcVote.isChecked())importer.importGcVote();
                          Thread.sleep(1000);

@@ -1,11 +1,8 @@
-package nonGuiClasses.fromOpenGpx;
+package CB_Core.Import;
 
 import java.io.File;
-import java.text.AttributedCharacterIterator.Attribute;
 import java.util.Date;
 import java.util.HashMap;
-
-
 
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
@@ -18,7 +15,7 @@ import com.ximpleware.extended.VTDGenHuge;
 import com.ximpleware.extended.VTDNavHuge;
 import com.ximpleware.extended.XMLBuffer;
 
-import de.droidcachebox.Database;
+
 
 
 public class GPXFileReader 
@@ -264,11 +261,11 @@ public class GPXFileReader
 
 			if (foundCacheRecord)
 			{
-				Database.WriteToDatabase(currentCache);
+				//TOOD Database.WriteToDatabase(currentCache);
 			}
 			else
 			{
-				Database.WriteToDatabase(wpt);
+				//TODO Database.WriteToDatabase(wpt);
 			}
 
 			vn.pop();

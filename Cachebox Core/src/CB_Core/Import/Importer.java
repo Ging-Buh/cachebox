@@ -1,13 +1,12 @@
-package nonGuiClasses;
+package CB_Core.Import;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 
-import nonGuiClasses.fromOpenGpx.GPXFileReader;
-import de.droidcachebox.Config;
-import de.droidcachebox.Global;
-import de.droidcachebox.Events.ProgresssChangedEventList;
+import CB_Core.FileIO;
+import CB_Core.Events.ProgresssChangedEventList;
+
 
 public class Importer 
 {
@@ -18,13 +17,13 @@ public class Importer
 		
 	}
 	
-	public void importGpx()
+	public void importGpx(String directoryPath)
 	{
 		GPXFileReader gpxFileReader = new GPXFileReader();
 		
 		ProgresssChangedEventList.Call("import GPX", "", 0);
 		
-		String[] FileList = GetFilesToLoad();
+		String[] FileList = GetFilesToLoad(directoryPath);
 		
 		for(String File : FileList)
 		{
@@ -64,12 +63,12 @@ public class Importer
 	
 	
 	
-	 private String[] GetFilesToLoad()
+	 private String[] GetFilesToLoad(String directoryPath)
      {
          // GPX sortieren
-         String directoryPath = Config.GetString("PocketQueryFolder");
+         
 
-         Global.DirectoryExists(directoryPath);
+         FileIO.DirectoryExists(directoryPath);
            
 
          ArrayList<String> files = new ArrayList<String>();

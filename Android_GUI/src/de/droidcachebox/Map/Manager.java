@@ -24,6 +24,7 @@ import org.mapsforge.android.maps.Tile;
 
 import de.droidcachebox.Global;
 
+import CB_Core.FileIO;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -163,7 +164,7 @@ public class Manager {
 
         long cachedTileAge = 0;
 
-        if (Global.FileExists(cachedTileFilename))
+        if (FileIO.FileExists(cachedTileFilename))
         {
           File info = new File(cachedTileFilename);
           cachedTileAge = info.lastModified();
@@ -219,7 +220,7 @@ public class Manager {
     	// Falls Kachel schon geladen wurde, kann sie übersprungen werden
     	synchronized (this)
     	{
-    		if (Global.FileExists(filename))
+    		if (FileIO.FileExists(filename))
     			return true;
     	}
 
@@ -242,7 +243,7 @@ public class Manager {
         		// Verzeichnis anlegen
     	        synchronized (this)
         		{
-    	        	if (!Global.DirectoryExists(path))
+    	        	if (!FileIO.DirectoryExists(path))
     	        		return false;
         		}
         		// Datei schreiben

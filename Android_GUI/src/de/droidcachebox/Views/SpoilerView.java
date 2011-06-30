@@ -1,6 +1,8 @@
 package de.droidcachebox.Views;
 
 import java.util.ArrayList;
+
+import CB_Core.FileIO;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
@@ -94,7 +96,7 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
 			return;
 		String filename = Global.SelectedCache().SpoilerRessources().get(position);
 		filename = filename.substring(0, filename.lastIndexOf("."));
-		filename = Global.GetFileNameWithoutExtension(filename);
+		filename = FileIO.GetFileNameWithoutExtension(filename);
 		if (filename.indexOf(aktCache.GcCode) == 0)
 			filename = filename.substring(aktCache.GcCode.length());
 		if (filename.indexOf(" - ") == 0)

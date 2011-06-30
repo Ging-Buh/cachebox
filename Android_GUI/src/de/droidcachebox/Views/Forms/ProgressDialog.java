@@ -3,9 +3,9 @@ package de.droidcachebox.Views.Forms;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
-import de.droidcachebox.Events.ProgressChangedEvent;
-import de.droidcachebox.Events.ProgresssChangedEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import CB_Core.Events.ProgressChangedEvent;
+import CB_Core.Events.ProgresssChangedEventList;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -317,7 +317,7 @@ public class ProgressDialog extends Activity implements ProgressChangedEvent,Vie
 
 	
 	@Override
-	public void ProgressChangedEvent(String Msg,String ProgressMessage, int Progress) 
+	public void ProgressChangedEventCalled(String Msg,String ProgressMessage, int Progress) 
 	{
 		setProgress(Msg,ProgressMessage, Progress);	
 		

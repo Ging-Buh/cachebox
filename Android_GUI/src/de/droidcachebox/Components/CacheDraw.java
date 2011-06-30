@@ -18,6 +18,7 @@ import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 
+import CB_Core.FileIO;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 
@@ -263,7 +264,7 @@ public class CacheDraw
 	        String path = Config.GetString("SpoilerFolder");
 	        String directory = path + "/" + cache.GcCode.substring(0, 4);
 
-	        if (!Global.DirectoryExists(directory))
+	        if (!FileIO.DirectoryExists(directory))
 	            return;
 
 	        
@@ -291,7 +292,7 @@ public class CacheDraw
 	        // Add own taken photo
 	        directory = Config.GetString("UserImageFolder");
 
-	        if (!Global.DirectoryExists(directory))
+	        if (!FileIO.DirectoryExists(directory))
 	            return;
 
 	        dir = new File(directory);
@@ -312,7 +313,7 @@ public class CacheDraw
 		        {
 			        for (String file : files)
 				        {
-			        		String ext = Global.GetFileExtension(file);
+			        		String ext = FileIO.GetFileExtension(file);
 			        		if (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg") || ext.equalsIgnoreCase("bmp") || ext.equalsIgnoreCase("png") || ext.equalsIgnoreCase("gif"))
 			        		{
 			        			cache.spoilerRessources.add(directory + "/" + file);

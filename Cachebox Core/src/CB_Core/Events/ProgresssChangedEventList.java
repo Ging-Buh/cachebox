@@ -1,4 +1,4 @@
-package de.droidcachebox.Events;
+package CB_Core.Events;
 
 import java.util.ArrayList;
 
@@ -16,7 +16,7 @@ public class ProgresssChangedEventList
 	{
 		for (ProgressChangedEvent event : list)
 		{
-			event.ProgressChangedEvent(Msg,ProgressMessage,Progress);
+			event.ProgressChangedEventCalled(Msg,ProgressMessage,Progress);
 		}
 	
 	}
@@ -25,7 +25,7 @@ public class ProgresssChangedEventList
 	{
 		for (ProgressChangedEvent event : list)
 		{
-			event.ProgressChangedEvent("",Msg,Progress);
+			event.ProgressChangedEventCalled("",Msg,Progress);
 		}
 	
 	}

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import de.droidcachebox.Geocaching.CacheList;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Views.Forms.SelectDB;
+import CB_Core.FileIO;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
@@ -52,7 +53,7 @@ public class Database {
 	{
 		if (myDB == null)
 		{
-			if (!Global.FileExists(databasePath))
+			if (!FileIO.FileExists(databasePath))
 				Reset();
 
 			try

@@ -8,4 +8,6 @@ package CB_Core.Log;
 public interface ILog 
 {
 	public void receiveLog(String Msg);
+	
+	public void receiveShortLog(String Msg);
 }

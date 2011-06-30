@@ -389,6 +389,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private CheckBox chkDebugShowPanel;
 	private CheckBox chkDebugMemory;
 	private CheckBox chkDebugMsg;
+	private CheckBox chkDebugLog;
 	private Spinner ApproachSound;
 	private CheckBox chkDebugMarker;
     private WheelView ScreenLock_wheel_m ;
@@ -446,6 +447,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		chkDebugShowPanel = (CheckBox)this.findViewById(R.id.settings_debug_chkShow);
 		chkDebugMemory = (CheckBox)this.findViewById(R.id.settings_debug_chkMemory);
 		chkDebugMsg = (CheckBox)this.findViewById(R.id.settings_debug_chkMsg);
+		chkDebugLog = (CheckBox)this.findViewById(R.id.settings_debug_chkLog);
 		ApproachSound = (Spinner)this.findViewById(R.id.settings_spinner_Approach_Sound);
 		chkDebugMarker = (CheckBox)this.findViewById(R.id.settings_debug_chkMarker);
 		ScreenLock_wheel_m = (WheelView)this.findViewById(R.id.settings_ScreenLock_m);
@@ -505,6 +507,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		chkDebugMemory.setChecked(Config.GetBool("DebugMemory"));
 		chkDebugMsg.setChecked(Config.GetBool("DebugShowMsg"));
 		chkDebugMarker.setChecked(Config.GetBool("DebugShowMarker"));
+		chkDebugLog.setChecked(Config.GetBool("DebugShowLog"));
 		
 		fillApproachSpinner();
 		ApproachSound.setSelection(approachValues.indexOf(Config.GetInt("SoundApproachDistance")));
@@ -529,11 +532,13 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	{
 		Config.Set("GcLogin",EditTextGCName.getEditableText().toString());
 		Config.Set("GcJoker",EditTextGCJoker.getEditableText().toString());
-    	try {
+    	try 
+    	{
 			Config.Set("GcPass",SimpleCrypto.encrypt("DCB",EditTextGCPW.getEditableText().toString()));
 	    	Config.Set("GcVotePassword",SimpleCrypto.encrypt("DCB",EditTextGCVotePW.getEditableText().toString()));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) 
+		{
+			Logger.Error("Settings.SaveSettings()", "Save GcPass/ GcVotePass", e);
 			e.printStackTrace();
 		}
     	Config.Set("TrackRecorderStartup",chkTrackStart.isChecked());
@@ -553,6 +558,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	Config.Set("DebugMemory",chkDebugMemory.isChecked());
     	Config.Set("DebugShowMsg",chkDebugMsg.isChecked());
     	Config.Set("DebugShowMarker",chkDebugMarker.isChecked());
+    	Config.Set("DebugShowLog",chkDebugLog.isChecked());
     	
     	Config.Set("SoundApproachDistance",(Integer) ApproachSound.getSelectedItem());
     	
