@@ -302,7 +302,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		
 		
 		 initWheel(ScreenLock_wheel_m,0,10);
-	     initWheel(ScreenLock_wheel_sec,0,60);
+	     initWheel(ScreenLock_wheel_sec,0,59);
 	     
 		
 		
