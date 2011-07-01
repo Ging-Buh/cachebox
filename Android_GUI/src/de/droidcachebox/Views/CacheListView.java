@@ -162,11 +162,14 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 		{
 			int id = 0;
 			
+			int first = this.getFirstVisiblePosition();
+			int last =this.getLastVisiblePosition();
 			for (Cache ca : Database.Data.Query)
 			{
 				if (ca == Global.SelectedCache())
 				{
-					this.setSelection(id - 2);
+					if(!(first<id && last>id))
+						this.setSelection(id - 2);
 					break;
 				}
 				id++;

@@ -284,6 +284,9 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 	@Override
 	public void OnShow() {
 		// aktuellen Waypoint in der List anzeigen
+		int first = this.getFirstVisiblePosition();
+		int last = this.getLastVisiblePosition();
+
 		if (Global.SelectedWaypoint() != null)
 		{
 			aktWaypoint = Global.SelectedWaypoint();
@@ -294,7 +297,8 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				id++;
 				if (wp == aktWaypoint)
 				{
-					this.setSelection(id - 2);
+					if(!(first<id && last>id))
+						this.setSelection(id - 2);
 					break;
 				}
 			}
