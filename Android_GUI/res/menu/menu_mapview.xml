@@ -21,4 +21,5 @@
         </menu> 
 	</item>
 	<item android:id="@+id/mapview_go_settings" android:title="Settings"></item>
+	<item android:title="Search Caches" android:id="@+id/mapview_searchcaches"></item>
 </menu>

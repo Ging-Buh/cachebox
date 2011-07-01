@@ -114,7 +114,17 @@ public class CacheList extends ArrayList<Cache> {
     	}
     	return null;
     }
-    
+
+    public Cache GetCacheById(long cacheId)
+    {
+    	for (Cache cache : this)
+    	{
+    		if (cache.Id == cacheId)
+    			return cache;
+    	}
+    	return null;
+    }
+
     public void Resort()
     {
         Global.ResortAtWork = true;

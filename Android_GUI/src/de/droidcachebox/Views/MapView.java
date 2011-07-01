@@ -65,6 +65,7 @@ import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Map.Manager;
 import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.Map.Tile;
+import de.droidcachebox.Views.Forms.MessageBox;
 
 public class MapView extends RelativeLayout implements SelectedCacheEvent, PositionEvent, ViewOptionsMenu, de.droidcachebox.Events.CacheListChangedEvent {
 	private boolean isVisible;  // true, when MapView is visible
@@ -4470,6 +4471,36 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			        mainIntent.putExtras(b);
 		   		main.mainActivity.startActivity(mainIntent);
 		   		return true;
+			case R.id.mapview_searchcaches:
+				String accessToken = Config.GetString("GcAPI");
+				if (accessToken.length() == 0)
+				{
+					MessageBox.Show("No AccessToken for Groundspeak API found!");
+					return true;
+				}
+				PointD point = new PointD(0, 0);
+				point.X = screenCenter.X / dpiScaleFactorX;
+				point.Y = screenCenter.Y / dpiScaleFactorY;;
+				lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(Zoom, point.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, point.X / (256.0)));
+
+				ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+				String result = CB_Core.Api.GroundspeakAPI.SearchForGeocachesJSON(accessToken, lastMouseCoordinate, 5000, 10, apiCaches);
+				if (apiCaches.size() > 0)
+				{
+					for (Cache cache : apiCaches)
+					{
+			            cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
+			            cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
+			            if (Database.Data.Query.GetCacheById(cache.Id) == null)
+			            {
+			            	Database.Data.Query.add(cache);
+			            }
+					}
+					updateCacheList();
+					Render(true);
+				}
+				MessageBox.Show(result);
+				return true;
 		}
 		return false;
 	}

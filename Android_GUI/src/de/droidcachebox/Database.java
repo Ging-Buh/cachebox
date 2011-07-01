@@ -639,8 +639,8 @@ public class Database {
             else
             	cache.CorrectedCoordinates = false;
 
-            cache.MapX = 256.0 * Descriptor.LongitudeToTileX(cache.MapZoomLevel, cache.Longitude());
-            cache.MapY = 256.0 * Descriptor.LatitudeToTileY(cache.MapZoomLevel, cache.Latitude());
+            cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
+            cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
             
             return cache;
         }

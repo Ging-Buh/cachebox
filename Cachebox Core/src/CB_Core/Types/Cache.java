@@ -18,6 +18,26 @@ public class Cache implements Comparable<Cache>
 	 */
 	private static Coordinate aktUserPos;
 	
+	public static long GenerateCacheId(String GcCode)
+	{
+		long result = 0;
+		char[] dummy = GcCode.toCharArray();
+		byte[] byteDummy = new byte[8];
+		for (int i = 0; i < 8; i++)
+		{
+			if (i < GcCode.length())
+				byteDummy[i] = (byte)dummy[i];
+			else
+				byteDummy[i] = 0;
+		}
+		for (int i = 7; i >= 0; i--) 
+		{
+			result *= 256;
+			result += byteDummy[i];
+		}
+		return result;
+	}
+	
 	
 	
 	/*
