@@ -20,6 +20,76 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 
 public class GroundspeakAPI {
+	
+	/**
+	 * Load Number of founds form geocaching.com
+	 */
+	public static int GetCachesFound(String accessToken)
+	{ 
+		String result = "";
+
+		try
+		{
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httppost = new HttpPost("https://staging.api.groundspeak.com/Live/V1Beta/geocaching.svc/GetYourUserProfile");
+			String requestString = "";
+			requestString = "{";
+			requestString += "\"AccessToken\":\"" + accessToken + "\",";
+			requestString += "\"ProfileOptions\":{";
+			requestString += "}";
+			requestString += "}";
+			
+			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));		    			 
+			httppost.setHeader("Accept", "application/json");
+			httppost.setHeader("Content-type", "application/json");
+			
+			// Execute HTTP Post Request
+			HttpResponse response = httpclient.execute(httppost);
+
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					response.getEntity().getContent()));
+			String line = "";
+			while ((line = rd.readLine()) != null) {
+				result += line + "\n";
+			}
+
+
+			// Parse JSON Result
+			try 
+			{
+				JSONTokener tokener = new JSONTokener(result);
+				JSONObject json = (JSONObject) tokener.nextValue();
+				JSONObject status = json.getJSONObject("Status");
+				if (status.getInt("StatusCode") == 0)
+				{
+					result = "";
+					JSONArray caches = json.getJSONArray("Geocaches");
+					JSONObject profile = json.getJSONObject("Profile");
+					JSONObject user = (JSONObject) profile.getJSONObject("User");						
+					return user.getInt("FindCount");
+					
+				} else
+				{
+					result = "StatusCode = " + status.getInt("StatusCode");
+					return (-1);
+				}
+			
+			
+			
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		} catch (Exception ex)
+		{
+			System.out.println(ex.getMessage());
+			return (-1);
+		}
+		
+		return (-1);
+	}
+
 	public static String SearchForGeocachesJSON(String accessToken, Coordinate pos, float distanceInMeters, int number, ArrayList<Cache> cacheList)
 	{ 
 		String result = "";
@@ -30,7 +100,7 @@ public class GroundspeakAPI {
 			HttpPost httppost = new HttpPost("https://staging.api.groundspeak.com/Live/V1Beta/geocaching.svc/SearchForGeocachesJSON?format=json");
 			String requestString = "";
 			requestString = "{";
-			requestString += "\"AccessToken\":\"3sQ6dZySWvrDGtvcF9SnZ5/44ek=\",";
+			requestString += "\"AccessToken\":\"" + accessToken + "\",";
 			requestString += "\"IsLite\":true,";
 			requestString += "\"StartIndex\":0,";
 			requestString += "\"MaxPerPage\":" + String.valueOf(number) + ",";

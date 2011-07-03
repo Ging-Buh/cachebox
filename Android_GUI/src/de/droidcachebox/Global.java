@@ -22,6 +22,8 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import de.droidcachebox.Geocaching.JokerList;
@@ -31,7 +33,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 275;
+    public static final int CurrentRevision = 278;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
@@ -704,5 +706,30 @@ public class Global{
     	return null;
     }
     
+    public boolean isOnline()
+    {
+/*    	ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+	    if (netInfo != null && netInfo.isConnectedOrConnecting())
+	    {
+	    	return true;
+	    }*/
+	    return false;
+    }
+
+    public boolean APIisOnline()
+    {
+    	if (Config.GetString("GcAPI").length() == 0)
+    	{
+        	Logger.General("global.APIisOnline() -Invalid AccessToken");
+    		return false;
+    	}
+	    if (isOnline())
+	    {
+	    	return true;
+	    }
+	    return false;
+    }
+
     
 }
