@@ -4472,8 +4472,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		   		main.mainActivity.startActivity(mainIntent);
 		   		return true;
 			case R.id.mapview_searchcaches:
-				Config.Set("GcAPI", "3sQ6dZySWvrDGtvcF9SnZ5/44ek=");
-				Config.AcceptChanges();
 				String accessToken = Config.GetString("GcAPI");
 				if (accessToken.length() == 0)
 				{
@@ -4502,9 +4500,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 					Render(true);
 				}
 				MessageBox.Show(result);
-				
-				int founds = CB_Core.Api.GroundspeakAPI.GetCachesFound(accessToken);
-				return true;
 		}
 		return false;
 	}
