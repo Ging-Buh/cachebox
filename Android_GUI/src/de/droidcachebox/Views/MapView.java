@@ -4472,6 +4472,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		   		main.mainActivity.startActivity(mainIntent);
 		   		return true;
 			case R.id.mapview_searchcaches:
+				Config.Set("GcAPI", "3sQ6dZySWvrDGtvcF9SnZ5/44ek=");
+				Config.AcceptChanges();
 				String accessToken = Config.GetString("GcAPI");
 				if (accessToken.length() == 0)
 				{
@@ -4484,7 +4486,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(Zoom, point.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, point.X / (256.0)));
 
 				ArrayList<Cache> apiCaches = new ArrayList<Cache>();
-				String result = CB_Core.Api.GroundspeakAPI.SearchForGeocachesJSON(accessToken, lastMouseCoordinate, 5000, 10, apiCaches);
+				String result = CB_Core.Api.GroundspeakAPI.SearchForGeocachesJSON(accessToken, lastMouseCoordinate, 50000, 30, apiCaches);
 				if (apiCaches.size() > 0)
 				{
 					for (Cache cache : apiCaches)
@@ -4500,6 +4502,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 					Render(true);
 				}
 				MessageBox.Show(result);
+				
+				int founds = CB_Core.Api.GroundspeakAPI.GetCachesFound(accessToken);
 				return true;
 		}
 		return false;
