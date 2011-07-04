@@ -38,7 +38,7 @@ public class ScreenLock extends Activity {
 			@Override
 			public void onStopTrackingTouch(SeekBar arg0) 
 			{
-				if(arg0.getProgress()>90 || arg0.getProgress()<10 )
+				if(arg0.getProgress()>80 || arg0.getProgress()<20 )  // tower27 - hab es etwas unempfindlicher gemacht (80 und 20 statt 90 und 10)
 				{
 					finish();
 				}
