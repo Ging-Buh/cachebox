@@ -481,7 +481,7 @@ public class Database {
         	      retLogEntry.Finder = reader.getString(2);
         	      retLogEntry.TypeIcon = reader.getInt(3);
         	      retLogEntry.Comment = reader.getString(4);
-        	      cache.Id = reader.getLong(5);
+        	      retLogEntry.Id = reader.getLong(5);
 
         	      if (filterBbCode)
         	      {
