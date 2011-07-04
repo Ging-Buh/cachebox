@@ -2,6 +2,7 @@ package de.droidcachebox.Locator;
 
 import CB_Core.Types.Coordinate;
 import android.location.Location;
+import android.location.LocationManager;
 import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.UnitFormatter;
@@ -117,5 +118,22 @@ public class Locator {
 		else if (altCorrection < 0)			
 			result += " (" + String.format("%.0f", altCorrection) + " m)";
 		return result;
+	}
+	
+	public boolean isGPSprovided()
+	{
+		return (location.getProvider().equalsIgnoreCase(LocationManager.GPS_PROVIDER));
+	}
+
+	public String ProviderString()
+	{
+		if (isGPSprovided())
+		{
+			return "GPS";
+		}
+		else
+		{
+			return "Cell";
+		}	
 	}
 }

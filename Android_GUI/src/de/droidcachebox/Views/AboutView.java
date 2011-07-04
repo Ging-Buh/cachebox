@@ -163,7 +163,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 				}
 				
 				dialog.dismiss();
-				AboutView.Me.refrechText();
+				AboutView.Me.refreshText();
 			}
 			
 	    };
@@ -217,10 +217,10 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		
 		
 		
-		refrechText();
+		refreshText();
 	}
 	
-	public void refrechText()
+	public void refreshText()
 	{
 		CachesFoundLabel.setText(Global.Translations.Get("caches_found") + " " + String.valueOf(Config.GetInt("FoundOffset")));
 		if (Global.SelectedCache() != null)
@@ -241,7 +241,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) 
 	{
-		refrechText();
+		refreshText();
 	}
 
 	@Override
@@ -309,7 +309,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		 if ((Global.Locator.getLocation() != null) && (Global.Locator.getLocation().hasAccuracy()))
 	        {
 	        	float radius = Global.Locator.getLocation().getAccuracy();
-	        	Accuracy.setText("+/- " + String.valueOf(radius) + "m");
+	        	Accuracy.setText("+/- " + String.valueOf(radius) + "m (" + Global.Locator.ProviderString()+")");
 	        }
 		 else
 		 {

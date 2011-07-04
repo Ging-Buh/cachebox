@@ -103,7 +103,7 @@ public class TrackRecorder {
     {    	
         PointD NewPoint;
   
-        if (writer == null || pauseRecording || (Global.Locator != null && !Global.LastValidPosition.Valid))
+        if (writer == null || pauseRecording || (Global.Locator != null && !Global.LastValidPosition.Valid) || !Global.Locator.isGPSprovided())
             return;
 
         // wurden seit dem letzten aufgenommenen Wegpunkt mehr als x Meter zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
