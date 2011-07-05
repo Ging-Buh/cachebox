@@ -73,7 +73,10 @@ public class GroundspeakAPI {
 					
 				} else
 				{
-					result = "StatusCode = " + status.getInt("StatusCode");
+					result = "StatusCode = " + status.getInt("StatusCode") + "\n";
+					result += status.getString("StatusMessage") + "\n";
+					result += status.getString("ExceptionDetails");
+					
 					return (-1);
 				}
 			
@@ -222,7 +225,9 @@ public class GroundspeakAPI {
 					}
 				} else
 				{
-					result = "StatusCode = " + status.getInt("StatusCode");
+					result = "StatusCode = " + status.getInt("StatusCode") + "\n";
+					result += status.getString("StatusMessage") + "\n";
+					result += status.getString("ExceptionDetails");
 				}
 			
 			
