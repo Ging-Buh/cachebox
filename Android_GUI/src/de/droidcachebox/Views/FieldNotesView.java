@@ -26,6 +26,7 @@ import de.droidcachebox.Views.Forms.ProgressDialog;
 import CB_Core.FileIO;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -640,8 +641,11 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 		if (aktFieldNote == null)
 			return;
 		Cache cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
+		Waypoint finalWp = null;
+		if (cache.HasFinalWaypoint())
+			finalWp = cache.GetFinalWaypoint();
 		if (cache != null)
-			Global.SelectedCache(cache);    	
+			Global.SelectedWaypoint(cache, finalWp);    	
     }
 }
 

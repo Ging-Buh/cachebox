@@ -58,6 +58,8 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
         		Waypoint finalWp = null;
         		if (cache.HasFinalWaypoint())
         			finalWp = cache.GetFinalWaypoint();
+        		// shutdown AutoResort when selecting a cache by hand
+        		Global.autoResort = false;
         		Global.SelectedWaypoint(cache, finalWp);
 
         		invalidate();

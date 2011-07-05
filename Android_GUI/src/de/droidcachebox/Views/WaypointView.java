@@ -60,6 +60,8 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				if (arg2 > 0)
 					aktWaypoint = Global.SelectedCache().waypoints.get(arg2 - 1);
         		aktCache = Global.SelectedCache();
+        		// shutdown AutoResort when selecting a cache or waypoint by hand
+        		Global.autoResort = false;
         		Global.SelectedWaypoint(Global.SelectedCache(), aktWaypoint);
 			}
 		});
