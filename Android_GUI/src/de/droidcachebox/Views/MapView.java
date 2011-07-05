@@ -916,12 +916,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	isVisible = true;
     	if (!animationThread.isAlive())
     		animationThread.start();
-    	Zoom = Config.GetInt("lastZoomLevel");
-    	animationThread.zoomTo(Zoom);
     }
     
     public void InitializeMap()
     {
+    	Zoom = Config.GetInt("lastZoomLevel");
     	gcLogin = Config.GetString("GcLogin").toLowerCase();
     	mapMaxCachesDisplay = 50;
     	mapMaxCachesDisplayLarge = 100;
