@@ -570,7 +570,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	int Sec =ScreenLock_wheel_sec.getCurrentItem();
     	Config.Set("LockM",M);
     	Config.Set("LockSec",Sec);
-    	((main) main.mainActivity).setCounterNew(((M*60)+Sec)*1000);
+    	((main) main.mainActivity).setScreenLockTimerNew(((M*60)+Sec)*1000);
     	
     	((main) main.mainActivity).setDebugVisible();
     	((main) main.mainActivity).setDebugMsg("");

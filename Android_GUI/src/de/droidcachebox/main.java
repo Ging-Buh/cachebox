@@ -203,7 +203,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		private Boolean getVoiceRecIsStart(){return mVoiceRecIsStart;}
 		
 		// Screenlock Counter
-		private MyCount counter = null;
+		private ScreenLockTimer counter = null;
 		private boolean counterStopped = false;
 		
 		private IconContextMenu icm;
@@ -211,9 +211,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	/*
 	 * Classes
 	 */
-	 private class MyCount extends CountDownTimer 
+	 private class ScreenLockTimer extends CountDownTimer 
 	 {
-    	public MyCount(long millisInFuture, long countDownInterval) 
+    	public ScreenLockTimer(long millisInFuture, long countDownInterval) 
     	{
     		 super(millisInFuture, countDownInterval);
     	}        	
@@ -265,7 +265,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 	        
 	        int Time = ((Config.GetInt("LockM")*60)+Config.GetInt("LockSec"))*1000;
-	        counter = new MyCount(Time, Time);
+	        counter = new ScreenLockTimer(Time, Time);
 	        counter.start();
 
 	        findViewsById();
@@ -1669,10 +1669,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		}
 	}
 
-	 public void setCounterNew(int value)
+	 public void setScreenLockTimerNew(int value)
 	 {
 		 counter.cancel();
-		 counter = new MyCount(value,value);
+		 counter = new ScreenLockTimer(value,value);
 		 counter.start();
 	 }
 
