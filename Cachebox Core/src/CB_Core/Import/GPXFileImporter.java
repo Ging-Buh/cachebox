@@ -1,9 +1,8 @@
 package CB_Core.Import;
 
-import java.io.FileReader;
 import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,6 +15,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
+import CB_Core.Types.LogEntry;
 
 public class GPXFileImporter {
 	
@@ -124,7 +124,9 @@ public class GPXFileImporter {
 			        } else if (tagName.equalsIgnoreCase( "groundspeak:long_description" ) ){
 			        	cache.longDescription = parser.nextText();
 			        } else if (tagName.equalsIgnoreCase( "groundspeak:encoded_hints" ) ){
-			        	cache.hint = parser.nextText();
+			    		cache.hint = parser.nextText();
+			        } else if (tagName.equalsIgnoreCase( "groundspeak:logs" ) ){
+			        	parseWptCacheLogsElement(parser, cache);
 			        } else {
 			        	skipUntilEndTag(parser, tagName);
 			        }
@@ -137,6 +139,35 @@ public class GPXFileImporter {
 		    }
 			eventType = parser.next();
 		}
+	}
+
+	private void parseWptCacheLogsElement(KXmlParser parser, Cache cache) throws Exception {
+		boolean done = false;
+		int eventType = parser.next();
+		while (eventType != XmlPullParser.END_DOCUMENT && !done){
+            String tagName = parser.getName();
+			switch (eventType){
+			    case XmlPullParser.START_TAG:
+			        if (tagName.equalsIgnoreCase( "xxgroundspeak:log" ) ){
+			        	LogEntry log = parseWptCacheLogsLogElement(parser, cache);
+			        } else {
+			        	skipUntilEndTag(parser, tagName);
+			        }
+			        break;
+			    case XmlPullParser.END_TAG:
+			        if (tagName.equalsIgnoreCase( "groundspeak:logs" ) ){
+			        	done = true;
+			        }
+			        break;
+		    }
+			eventType = parser.next();
+		}
+	}
+
+	private LogEntry parseWptCacheLogsLogElement(KXmlParser parser, Cache cache) throws Exception {
+		LogEntry log = new LogEntry();
+		cache.Name = parser.nextText();
+		return log;
 	}
 
 	private void skipUntilEndTag(KXmlParser parser, String tagName)
