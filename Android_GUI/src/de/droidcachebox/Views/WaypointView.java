@@ -3,6 +3,7 @@ package de.droidcachebox.Views;
 
 
 
+import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
@@ -224,7 +225,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 					// 	TODO Auto-generated catch block
 					return true;
 				}
-				Coordinate coord = Global.LastValidPosition;
+				Coordinate coord = GlobalCore.LastValidPosition;
 				if ((coord == null) || (!coord.Valid))
 					coord = Global.SelectedCache().Pos;
                 Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", coord.Latitude, coord.Longitude, Global.SelectedCache().Id, "", "manual");

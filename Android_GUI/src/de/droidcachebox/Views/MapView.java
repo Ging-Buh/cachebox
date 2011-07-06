@@ -11,6 +11,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
@@ -192,14 +193,14 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		if (lockPosition > 0)
 		{
-    	    if (Global.Marker.Valid)
+    	    if (GlobalCore.Marker.Valid)
             {
-    	    	startAnimation(new Coordinate(Global.Marker.Latitude, Global.Marker.Longitude));
+    	    	startAnimation(new Coordinate(GlobalCore.Marker.Latitude, GlobalCore.Marker.Longitude));
     	    	return;
             }
-            if (Global.LastValidPosition != null && Global.LastValidPosition.Valid)
+            if (GlobalCore.LastValidPosition != null && GlobalCore.LastValidPosition.Valid)
             {
-    	    	startAnimation(Global.LastValidPosition);
+    	    	startAnimation(GlobalCore.LastValidPosition);
     	    	return;
             }		
 		}
@@ -949,9 +950,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         else
         {
           // GPS-Position bekannt?
-          if (Global.LastValidPosition.Valid)
+          if (GlobalCore.LastValidPosition.Valid)
           {
-            setCenter(new Coordinate(Global.LastValidPosition));
+            setCenter(new Coordinate(GlobalCore.LastValidPosition));
             positionInitialized = true;
           }
           else
@@ -2233,7 +2234,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			      // Wenn sich bei der Ansicht nichts getan hat braucht sie auch nicht gerendert werden.
 		    		if (!overrideRepaintInteligence)
 		    		{
-		    			if (lastRenderZoomScale == renderZoomScaleActive && lastWpCount == wpToRender.size() && lastHeading == ((Global.Locator != null) && (Global.Locator.getLocation() != null) ? Global.Locator.getHeading() : 0) && lastPosition.Latitude == Global.LastValidPosition.Latitude && lastPosition.Longitude == Global.LastValidPosition.Longitude && lastZoom == Zoom && !tilesFinished && lastRenderedPosition.X == screenCenter.X && lastRenderedPosition.Y == screenCenter.Y)
+		    			if (lastRenderZoomScale == renderZoomScaleActive && lastWpCount == wpToRender.size() && lastHeading == ((Global.Locator != null) && (Global.Locator.getLocation() != null) ? Global.Locator.getHeading() : 0) && lastPosition.Latitude == GlobalCore.LastValidPosition.Latitude && lastPosition.Longitude == GlobalCore.LastValidPosition.Longitude && lastZoom == Zoom && !tilesFinished && lastRenderedPosition.X == screenCenter.X && lastRenderedPosition.Y == screenCenter.Y)
 		    			{
 		    				return;
 		    			}
@@ -2241,8 +2242,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    			lastRenderZoomScale = renderZoomScaleActive;
 		    			lastWpCount = wpToRender.size();
 		    			tilesFinished = false;
-		    			lastPosition.Latitude = Global.LastValidPosition.Latitude;
-		    			lastPosition.Longitude = Global.LastValidPosition.Longitude;
+		    			lastPosition.Latitude = GlobalCore.LastValidPosition.Latitude;
+		    			lastPosition.Longitude = GlobalCore.LastValidPosition.Longitude;
 		    			lastHeading = 0;
 		    			/*        lastHeading = (Global.Locator != null) ? Global.Locator.Heading : 0;*/
 		    			lastZoom = Zoom;
@@ -2457,10 +2458,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       // Position ist entweder GPS-Position oder die des Markers, wenn
       // dieser gesetzt wurde.
       Coordinate position = null;
-      if ((Global.Marker != null) && (Global.Marker.Valid))
-    	  position = Global.Marker;
-      else if (Global.LastValidPosition != null)
-    	  position = Global.LastValidPosition;
+      if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid))
+    	  position = GlobalCore.Marker;
+      else if (GlobalCore.LastValidPosition != null)
+    	  position = GlobalCore.LastValidPosition;
       else
     	  position = new Coordinate();
     	  
@@ -3116,7 +3117,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	if (Global.Locator != null)
     	{
 	        // Position auf der Karte
-	        Point pt = ToScreen(Descriptor.LongitudeToTileX(Zoom, Global.LastValidPosition.Longitude), Descriptor.LatitudeToTileY(Zoom, Global.LastValidPosition.Latitude), Zoom);
+	        Point pt = ToScreen(Descriptor.LongitudeToTileX(Zoom, GlobalCore.LastValidPosition.Longitude), Descriptor.LatitudeToTileY(Zoom, GlobalCore.LastValidPosition.Latitude), Zoom);
 	
 	        int size = lineHeight;
 	
@@ -4327,8 +4328,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 	@Override
 	public void PositionChanged(Location location) {
-		Global.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());
-		Global.LastValidPosition.Elevation = location.getAltitude();
+		GlobalCore.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());
+		GlobalCore.LastValidPosition.Elevation = location.getAltitude();
         // Muss der aktive Track gezeichnet werden?
         if ((Global.AktuelleRoute != null) && Global.AktuelleRoute.ShowRoute)
         {
@@ -4407,7 +4408,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         	{
         	// draw Map only when MapView is visible
         		if (lockPosition >= 1/* && !animationTimer.Enabled*/)
-        			setCenter(new Coordinate(Global.LastValidPosition));
+        			setCenter(new Coordinate(GlobalCore.LastValidPosition));
         	} catch(Exception exc)
         	{
         		Logger.Error("MapView.PositionChanged()","2",exc);

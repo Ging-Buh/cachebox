@@ -70,8 +70,9 @@ public class Global{
     public static int CornerSize;
     
     public static LangStrings Translations = new LangStrings();
-    
-    public static Coordinate Marker = new Coordinate();
+
+    // ausgelagert in den Core
+//    public static Coordinate Marker = new Coordinate();
 
     // Icons
     /**
@@ -177,7 +178,8 @@ public class Global{
     /// <summary>
     /// Letzte bekannte Position
     /// </summary>
-    public static Coordinate LastValidPosition = new Coordinate();
+    // ausgelagert in den Core
+//    public static Coordinate LastValidPosition = new Coordinate();
     /// <summary>
     /// Instanz des GPS-Parsers
     /// </summary>

@@ -3,6 +3,7 @@ package CB_Core.Types;
 import java.io.Serializable;
 import java.util.Date;
 
+import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheTypes;
 
 public class Waypoint implements Serializable {
@@ -77,9 +78,9 @@ public class Waypoint implements Serializable {
     /// <summary>
     /// Entfernung von der letzten gültigen Position
     /// </summary>
-    public float Distance(Coordinate fromPos)
+    public float Distance()
     {
-        
+    	Coordinate fromPos = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
         float[] dist = new float[4];
         Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude, Pos.Latitude, Pos.Longitude, dist);
         return dist[0];

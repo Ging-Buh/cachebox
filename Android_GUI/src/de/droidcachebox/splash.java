@@ -7,7 +7,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
+import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 
 import android.app.Activity;
@@ -142,7 +144,9 @@ public class splash extends Activity
 	        double lat = Config.GetDouble("MapInitLatitude");
 	        double lon = Config.GetDouble("MapInitLongitude");
 	        if ((lat != -1000) && (lon != -1000))
-	        	Global.LastValidPosition = new Coordinate(lat, lon);
+	        {
+	        	GlobalCore.LastValidPosition = new Coordinate(lat, lon);
+	        }
 	        
 	        // search number of DB3 files
 	        FileList fileList = null; 

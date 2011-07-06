@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
@@ -128,12 +129,10 @@ public class CacheList extends ArrayList<Cache> {
     public void Resort()
     {
         Global.ResortAtWork = true;
-//        Cursor.Current = Cursors.WaitCursor;
-        Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
-        // Alle Distanzen aktualisieren
+// Alle Distanzen aktualisieren
         for (Cache cache : this)
         {
-            cache.Distance(position);
+            cache.Distance(true);
         }
 
         Collections.sort(this);

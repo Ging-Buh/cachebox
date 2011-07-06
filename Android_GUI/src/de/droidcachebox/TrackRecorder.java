@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.SimpleTimeZone;
 
 import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 import CB_Core.Types.Coordinate;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -89,7 +90,7 @@ public class TrackRecorder {
     public static void AnnotateMedia(String friendlyName, String mediaPath, Coordinate coordinate, String timestamp)
     {
         String xml = "<wpt lat=\"" + String.valueOf(coordinate.Latitude) + "\" lon=\"" + String.valueOf(coordinate.Longitude) + "\">\n" +
-            "   <ele>" + String.valueOf(Global.LastValidPosition.Elevation) + "</ele>\n" +
+            "   <ele>" + String.valueOf(GlobalCore.LastValidPosition.Elevation) + "</ele>\n" +
             "   <time>" + timestamp + "</time>\n" +
             "   <name>" + friendlyName + "</name>\n" +
             "   <link href=\"" + mediaPath + "\" />\n" +
@@ -103,20 +104,20 @@ public class TrackRecorder {
     {    	
         PointD NewPoint;
   
-        if (writer == null || pauseRecording || (Global.Locator != null && !Global.LastValidPosition.Valid) || !Global.Locator.isGPSprovided())
+        if (writer == null || pauseRecording || (Global.Locator != null && !GlobalCore.LastValidPosition.Valid) || !Global.Locator.isGPSprovided())
             return;
 
         // wurden seit dem letzten aufgenommenen Wegpunkt mehr als x Meter zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
         float[] dist = new float[4];
-        Location.distanceBetween(LastRecordedPosition.Latitude, LastRecordedPosition.Longitude, Global.LastValidPosition.Latitude, Global.LastValidPosition.Longitude, dist);
+        Location.distanceBetween(LastRecordedPosition.Latitude, LastRecordedPosition.Longitude, GlobalCore.LastValidPosition.Latitude, GlobalCore.LastValidPosition.Longitude, dist);
         float cachedDistance = dist[0];
         
 //        if ((float)Datum.WGS84.Distance(LastRecordedPosition.Latitude, LastRecordedPosition.Longitude, Global.LastValidPosition.Latitude, Global.LastValidPosition.Longitude) > Global.TrackDistance)
         if (cachedDistance > Global.TrackDistance) 
         {
             try {
-				writer.append("<trkpt lat=\"" + String.valueOf(Global.LastValidPosition.Latitude) + "\" lon=\"" + String.valueOf(Global.LastValidPosition.Longitude) + "\">\n");
-	            writer.append("   <ele>" + String.valueOf(Global.LastValidPosition.Elevation) + "</ele>\n");
+				writer.append("<trkpt lat=\"" + String.valueOf(GlobalCore.LastValidPosition.Latitude) + "\" lon=\"" + String.valueOf(GlobalCore.LastValidPosition.Longitude) + "\">\n");
+	            writer.append("   <ele>" + String.valueOf(GlobalCore.LastValidPosition.Elevation) + "</ele>\n");
 	            Date now = new Date();
 	            SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
 	            String sDate = datFormat.format(now);
@@ -132,10 +133,10 @@ public class TrackRecorder {
 				e.printStackTrace();
 			}
 
-            NewPoint = new PointD(Descriptor.LongitudeToTileX(15, Global.LastValidPosition.Longitude),
-                                  Descriptor.LatitudeToTileY(15, Global.LastValidPosition.Latitude));
+            NewPoint = new PointD(Descriptor.LongitudeToTileX(15, GlobalCore.LastValidPosition.Longitude),
+                                  Descriptor.LatitudeToTileY(15, GlobalCore.LastValidPosition.Latitude));
             Global.AktuelleRoute.Points.add(NewPoint);
-            LastRecordedPosition = new Coordinate(Global.LastValidPosition);
+            LastRecordedPosition = new Coordinate(GlobalCore.LastValidPosition);
         }
     }
 

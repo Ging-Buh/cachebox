@@ -3,6 +3,7 @@ package CB_Core.Types;
 import java.util.ArrayList;
 import java.util.Date;
 
+import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheTypes;
 
 
@@ -13,11 +14,6 @@ public class Cache implements Comparable<Cache>
 	 * Private Member
 	 */
 
-	/**
-	 * wird in jedem Cache Obj benötigt, um eine Cache-Liste, nach der Entfernung zum User, zu Sortieren.
-	 */
-	private static Coordinate aktUserPos;
-	
 	public static long GenerateCacheId(String GcCode)
 	{
 		long result = 0;
@@ -246,17 +242,6 @@ public class Cache implements Comparable<Cache>
      * Getter/Setter 
      */
 
-    /**
-     * Setzt die aktuelle User Position die zum Sortieren einer CacheList benötigt wird.
-     * @param pos
-     */
-    public void setAktUserPos(Coordinate pos)
-    {
-    	aktUserPos = pos;
-    	cachedDistance = Distance(aktUserPos);
-    }
-    
-     
     
     /**
      * wenn ein Wegpunkt "Final" existiert, ist das mystery-Rätsel gelöst.
@@ -319,7 +304,7 @@ public class Cache implements Comparable<Cache>
         if (cachedDistance != 0)
             return cachedDistance;
         else
-            return Distance(aktUserPos);
+            return Distance(true);
     }
 
     /**
@@ -389,20 +374,25 @@ public class Cache implements Comparable<Cache>
 	 * Gibt die Entfernung  zur übergebenen User Position als Float zurück 
 	 * und Speichert die Aktueller User Position für alle Caches ab.
 	 * 
-	 * @param fromPos Aktuelle User Position
 	 * @return Entfernung  zur übergebenen User Position als Float
 	 */
-	public float Distance(Coordinate fromPos)
+
+    public float Distance(boolean useFinal)
     {
-        if(fromPos==null)return 0;
-        float[] dist = new float[4];
-        Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude, Pos.Latitude, Pos.Longitude, dist);
-        cachedDistance=dist[0];
-        return dist[0];
+    	Coordinate fromPos = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
+    	Waypoint waypoint = null;
+    	if (useFinal)
+    		waypoint = this.GetFinalWaypoint();
+    	// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die Diszanzberechnung vom Final aus gemacht werden
+    	// If a mystery has a final waypoint, the distance will be calculated to the final not the the cache coordinates
+    	Coordinate toPos = Pos;
+    	if (waypoint != null)
+    		toPos = new Coordinate(waypoint.Pos.Latitude, waypoint.Pos.Longitude);
+    	float[] dist = new float[4];
+    	Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude, toPos.Latitude, toPos.Longitude, dist);
+    	cachedDistance = dist[0];
+    	return (float)cachedDistance;
     }
-    
-	
-	
 	
 	
 	/*

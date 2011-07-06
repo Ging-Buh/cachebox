@@ -38,7 +38,7 @@ public class CacheTest extends TestCase {
 		coordinate2.Latitude = 49.427700;
 		coordinate2.Longitude = 6.204300;
 		
-		float distance = mCache.Distance(coordinate2);
+		float distance = mCache.Distance(true);
 		// assertTrue( "Entfernung muss 100m sein", distance==99.384 );
 		
 	}

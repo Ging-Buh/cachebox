@@ -6,6 +6,7 @@ import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 
 
+import CB_Core.GlobalCore;
 import CB_Core.Types.Coordinate;
 import android.location.Location;
 import android.location.LocationManager;
@@ -27,14 +28,14 @@ public class PositionEventList {
 	{
 		if (location.getProvider().equalsIgnoreCase(LocationManager.GPS_PROVIDER))
 		{
-			Global.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());
-			Global.LastValidPosition.Valid = true;
+			GlobalCore.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());
+			GlobalCore.LastValidPosition.Valid = true;
 		}
 		else
 		{
-			Global.LastValidPosition.Valid = false;
+			GlobalCore.LastValidPosition.Valid = false;
 		}
-		Global.Marker.Valid=false;
+		GlobalCore.Marker.Valid=false;
 		for (PositionEvent event : list)
 		{
 			event.PositionChanged(location);

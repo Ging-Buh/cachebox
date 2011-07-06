@@ -19,6 +19,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 
 import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 
@@ -210,13 +211,13 @@ public class CacheDraw
     private static void DrawBearing(Cache cache, Canvas canvas,Rect drawingRec)
     {
     	
-    	if (Global.LastValidPosition.Valid || Global.Marker.Valid)
+    	if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
         {
-    		    Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
+    		    Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
 	            double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
 	            double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude(), cache.Longitude());
 	            double cacheBearing = bearing - heading;
-	            String cacheDistance=UnitFormatter.DistanceString(cache.Distance(position));
+	            String cacheDistance=UnitFormatter.DistanceString(cache.Distance(false));
 	            DrawBearing(cache,canvas,drawingRec,cacheDistance,cacheBearing);   
 			
        }
@@ -226,17 +227,17 @@ public class CacheDraw
     
 	public void DrawBearing(Cache cache,Canvas canvas,Rect drawingRec, Waypoint waypoint)
     {
-    	if (Global.LastValidPosition.Valid || Global.Marker.Valid)
+    	if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
         {
-    		    Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
+    		    Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
 	            double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
 	            double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, waypoint.Latitude(), waypoint.Longitude());
 	            double waypointBearing = bearing - heading;
 	            float distance = 0;
 	            if (waypoint == null)
-	            	distance = cache.Distance(position);
+	            	distance = cache.Distance(false);
 	            else
-	            	distance = waypoint.Distance(position);
+	            	distance = waypoint.Distance();
 	            String waypointDistance=UnitFormatter.DistanceString(distance);
 	            DrawBearing(cache,canvas,drawingRec,waypointDistance,waypointBearing);
 			   

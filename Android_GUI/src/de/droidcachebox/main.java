@@ -13,6 +13,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 
 import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
@@ -381,13 +382,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			
 			InfoDownSlider.setNewLocation(location);
 
-	        if (!initialResortAfterFirstFixCompleted && Global.LastValidPosition.Valid)
+	        if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)
 	        {
 	            if (Global.SelectedCache() == null)
 	                Database.Data.Query.Resort();
 	            initialResortAfterFirstFixCompleted = true;
 	        }
-	        if (!initialFixSoundCompleted && Global.LastValidPosition.Valid)
+	        if (!initialFixSoundCompleted && GlobalCore.LastValidPosition.Valid)
 	        {
 	        	Global.PlaySound("GPS_Fix.wav");
 	        	initialFixSoundCompleted = true;
@@ -395,12 +396,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        
 	        if (Global.SelectedCache() != null)
 	        {
-	        	 Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
-	        	
-		        float distance = Global.SelectedCache().Distance(position);
+		        float distance = Global.SelectedCache().Distance(false);
 	            if (Global.SelectedWaypoint() != null)
 	            {
-	            	distance = Global.SelectedWaypoint().Distance(position);
+	            	distance = Global.SelectedWaypoint().Distance();
 	            }
 		        
 		        if (!approachSoundCompleted && (distance< Config.GetInt("SoundApproachDistance")))
@@ -421,13 +420,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	                int z = 0;
 	                if (!(Global.NearestCache() == null))
 	                {
-	                	 Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
 	                    for (Cache cache : Database.Data.Query)
 	                    {
 	                        z++;
 	                        if (z >= 50)
 	                            return;
-	                        if (cache.Distance(position) < Global.NearestCache().Distance(position))
+	                        if (cache.Distance(true) < Global.NearestCache().Distance(true))
 	                        {
 	                            Database.Data.Query.Resort();
 	                            Global.PlaySound("AutoResort.wav");
@@ -582,7 +580,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	            	String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/"); 
 	            	// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
 	            	mediaTimeString = Global.GetTrackDateTimeString();
-	            	TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", Global.LastValidPosition, mediaTimeString);
+	            	TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", GlobalCore.LastValidPosition, mediaTimeString);
 	            	
 	            	return;
 	            } else
@@ -957,7 +955,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		            	String TrackFolder = Config.GetString("TrackFolder");
 		            	String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/"); 
 		            	// Da eine Voice keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
-		            	TrackRecorder.AnnotateMedia(basename + ".wav", relativPath + "/" + basename + ".wav", Global.LastValidPosition, Global.GetTrackDateTimeString());
+		            	TrackRecorder.AnnotateMedia(basename + ".wav", relativPath + "/" + basename + ".wav", GlobalCore.LastValidPosition, Global.GetTrackDateTimeString());
 			    		Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
 			            setVoiceRecIsStart(true);
@@ -1037,7 +1035,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		            
 	            	// Da ein Video keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
 	            	mediaTimeString = Global.GetTrackDateTimeString();
-	            	mediaCoordinate = Global.LastValidPosition;
+	            	mediaCoordinate = GlobalCore.LastValidPosition;
 	            	
 		    		ContentValues values = new ContentValues();  
 		    		values.put(MediaStore.Video.Media.TITLE, "captureTemp.mp4");  

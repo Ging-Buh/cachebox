@@ -14,6 +14,7 @@ import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import CB_Core.GlobalCore;
 import CB_Core.TranslationEngine.SelectedLangChangedEvent;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.Types.Cache;
@@ -181,9 +182,9 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 	@Override
 	public void PositionChanged(Location location) 
 	{
-		if (Global.LastValidPosition.Valid || Global.Marker.Valid)
+		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
         {
-            Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
+            Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
             double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
             if(!align)heading = 0; 
             // FillArrow: Luftfahrt
@@ -191,11 +192,11 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
             // Heading: Im Uhrzeigersinn, Geocaching-Norm
 
             Coordinate dest = aktCache.Pos;
-            float distance = aktCache.Distance(position);
+            float distance = aktCache.Distance(false);
             if (aktWaypoint != null)
             {
             	dest = aktWaypoint.Pos;
-            	distance = aktWaypoint.Distance(position);
+            	distance = aktWaypoint.Distance();
             }
             double bearing = Coordinate.Bearing(position, dest);
             double relativeBearing = bearing - heading;
@@ -211,9 +212,9 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 	public void OrientationChanged(float Testheading) 
 	{
 		
-		if (Global.LastValidPosition.Valid || Global.Marker.Valid)
+		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
         {
-            Coordinate position = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
+            Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
             double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
             if(!align)heading = 0;
             // FillArrow: Luftfahrt
@@ -221,11 +222,11 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
             // Heading: Im Uhrzeigersinn, Geocaching-Norm
 
             Coordinate dest = aktCache.Pos;
-            float distance = aktCache.Distance(position);
+            float distance = aktCache.Distance(false);
             if (aktWaypoint != null)
             {
             	dest = aktWaypoint.Pos;
-            	distance = aktWaypoint.Distance(position);
+            	distance = aktWaypoint.Distance();
             }
             double bearing = Coordinate.Bearing(position, dest);
             double relativeBearing = bearing - heading;

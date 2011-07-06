@@ -3,6 +3,7 @@ package de.droidcachebox.Custom_Controls;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import CB_Core.GlobalCore;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -314,7 +315,7 @@ public final class CompassControl extends View {
 	}
 	
 	private void drawArrow(Canvas canvas) {
-		if (Global.LastValidPosition.Valid || Global.Marker.Valid)
+		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
         {
 			canvas.save(Canvas.MATRIX_SAVE_FLAG);
 			canvas.rotate(cacheDegree, 0.5f, 0.5f);
