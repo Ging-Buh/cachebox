@@ -33,7 +33,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 290;
+    public static final int CurrentRevision = 291;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
@@ -707,21 +707,49 @@ public class Global{
     	{ }
     	return null;
     }
-    
-    public boolean isOnline()
+   
+	/**
+	 * isOnline
+	 * Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen
+	 */
+    public static boolean isOnline()
     {
-/*    	ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    	ConnectivityManager cm = (ConnectivityManager) main.mainActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
 	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
 	    if (netInfo != null && netInfo.isConnectedOrConnecting())
 	    {
 	    	return true;
-	    }*/
+	    }
 	    return false;
     }
 
-    public boolean APIisOnline()
+	/**
+	 * APIisOnline
+	 * Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen
+	 * und ein API Access Token vorhanden ist.
+	 */
+    public static boolean APIisOnline()
     {
     	if (Config.GetString("GcAPI").length() == 0)
+    	{
+        	Logger.General("global.APIisOnline() -Invalid AccessToken");
+    		return false;
+    	}
+	    if (isOnline())
+	    {
+	    	return true;
+	    }
+	    return false;
+    }
+
+	/**
+	 * JokerisOnline
+	 * Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen
+	 * und ein Passwort für gcJoker.de vorhanden ist.
+	 */
+    public static boolean JokerisOnline()
+    {
+    	if (Config.GetString("GcJoker").length() == 0)
     	{
         	Logger.General("global.APIisOnline() -Invalid AccessToken");
     		return false;

@@ -1218,7 +1218,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	  }
     	  // Menu Item Telefonjoker enabled / disabled abhänging von gcJoker MD5
     	  enabled = false;
-    	  if (Config.GetString("GcJoker") != "")
+    	  if (Global.JokerisOnline())
     		  enabled = true;
     	  mi = icm.menu.findItem(R.id.miTelJoker);
     	  if (mi != null)

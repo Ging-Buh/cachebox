@@ -38,7 +38,6 @@ public class GroundspeakAPI {
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
 			requestString += "\"ProfileOptions\":{";
-//			requestString += "\"GeocacheData\":true";
 			requestString += "}";
 			requestString += "}";
 			
@@ -55,10 +54,8 @@ public class GroundspeakAPI {
 			while ((line = rd.readLine()) != null) {
 				result += line + "\n";
 			}
-
-
-			// Parse JSON Result
-			try 
+			
+			try // Parse JSON Result
 			{
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
@@ -66,7 +63,6 @@ public class GroundspeakAPI {
 				if (status.getInt("StatusCode") == 0)
 				{
 					result = "";
-//					JSONArray caches = json.getJSONArray("Geocaches");
 					JSONObject profile = json.getJSONObject("Profile");
 					JSONObject user = (JSONObject) profile.getJSONObject("User");						
 					return user.getInt("FindCount");
@@ -79,9 +75,7 @@ public class GroundspeakAPI {
 					
 					return (-1);
 				}
-			
-			
-			
+
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
