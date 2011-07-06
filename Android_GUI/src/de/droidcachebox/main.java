@@ -902,18 +902,18 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    	case R.id.miScreenLock:
 			        startScreenLock();
 		    		break;
+		    		
 		    	case R.id.miDayNight:
 		    		frame.removeAllViews();
 		    		Config.changeDayNight();
 		    		ActivityUtils.changeToTheme(mainActivity,Config.GetBool("nightMode")? ActivityUtils.THEME_NIGHT : ActivityUtils.THEME_DAY );
 		    		Toast.makeText(mainActivity, "changeDayNight", Toast.LENGTH_SHORT).show();
 		    		break;
+		    		
 		    	case R.id.miSettings:
 		    		showView(102);
-		    		
 		    		break;
 		    		
-		    	
 		    	case R.id.miVoiceRecorder:
 		    		if (!getVoiceRecIsStart()) // Voice Recorder starten
 		    		{

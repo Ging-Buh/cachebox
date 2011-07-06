@@ -4683,11 +4683,12 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		   		return true;
 			case R.id.mapview_searchcaches:
 				String accessToken = Config.GetString("GcAPI");
+				/* nicht mehr nötig das Menü in diesem Fall ausgegraut ist
 				if (accessToken.length() == 0)
 				{
 					MessageBox.Show("No AccessToken for Groundspeak API found!");
 					return true;
-				}
+				}*/
 				PointD point = new PointD(0, 0);
 				point.X = screenCenter.X / dpiScaleFactorX;
 				point.Y = screenCenter.Y / dpiScaleFactorY;;
@@ -4769,6 +4770,12 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			mi = menu.findItem(R.id.mapview_stoprecording);
 			if (mi != null)
 				mi.setEnabled(TrackRecorder.recording);
+			
+			// Search Caches
+			mi = menu.findItem(R.id.mapview_searchcaches);
+			if (mi != null)
+				mi.setEnabled(Global.APIisOnline());
+
 		} catch (Exception exc)
 		{
 			Logger.Error("MapView.BeforeShowMenu()","",exc);
