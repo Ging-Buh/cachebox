@@ -246,6 +246,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         drawingHeight = height;
 //        canvas.rotate(45, width / 2, height / 2);
 
+        updateCacheList();
         zoomChanged();
     }
 
