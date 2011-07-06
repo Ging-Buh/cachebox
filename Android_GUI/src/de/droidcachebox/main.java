@@ -1210,7 +1210,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     		  mi.setEnabled(enabled);
     	  mi = icm.menu.findItem(R.id.miSpoilerView);
     	  // Saarfuchs: hier musste noch abgetestet werden, dass auch ein Cache selektiert ist, sonst Absturz
-    	  if (mi != null && Global.selectedCache!=null ) {
+    	  if (mi != null && Global.selectedCache!=null ) 
+    	  {
     		  mi.setEnabled( Global.selectedCache.SpoilerExists() );
     	  }
     	  else {
@@ -1514,7 +1515,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		
 		btnDBActionIds = new ArrayList<Integer>();
 		btnDBActionIds.add(1);  	//cacheListView 
-		btnDBActionIds.add(101);  	//filterSettings
+//		btnDBActionIds.add(101);  	//filterSettings
 		
 		btnCacheActionIds = new ArrayList<Integer>();
 		btnCacheActionIds.add(4);	//descriptionView
@@ -1528,11 +1529,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		
 		btnInfoActionIds = new ArrayList<Integer>();
 		btnInfoActionIds.add(3);	//logView
+		btnInfoActionIds.add(5);	//SpoilerView
 		btnInfoActionIds.add(9);	//fieldNotesView
 		btnInfoActionIds.add(12);	//jokerView
 		
 		btnMiscActionIds = new ArrayList<Integer>();
-		btnMiscActionIds.add(102);	//Settings
+//		btnMiscActionIds.add(102);	//Settings
 		btnMiscActionIds.add(11);	//About
 		
 		
