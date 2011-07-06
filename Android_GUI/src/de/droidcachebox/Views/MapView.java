@@ -3,6 +3,7 @@ package de.droidcachebox.Views;
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -31,6 +32,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -53,6 +55,7 @@ import de.droidcachebox.TrackRecorder;
 import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.main;
 import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
 import de.droidcachebox.Events.CachListChangedEventList;
 import de.droidcachebox.Events.PositionEvent;
@@ -67,6 +70,7 @@ import de.droidcachebox.Map.Manager;
 import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.Map.Tile;
 import de.droidcachebox.Views.Forms.MessageBox;
+
 
 public class MapView extends RelativeLayout implements SelectedCacheEvent, PositionEvent, ViewOptionsMenu, de.droidcachebox.Events.CacheListChangedEvent {
 	private boolean isVisible;  // true, when MapView is visible
@@ -183,7 +187,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
         zoomScaleTimer = new Timer();
         
-	}
+       	}
 	
 	final float scale;
 
@@ -410,7 +414,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	            	if (!mouseMoved)
 	            	{
 	            		Point akt = new Point(eX, eY);
-	            		mouseMoved = ((Math.abs(akt.x - mouseDownPos.x) > 5) || Math.abs(akt.y - mouseDownPos.y) > 5);
+	            		mouseMoved = ((Math.abs(akt.x - mouseDownPos.x) > 10) || Math.abs(akt.y - mouseDownPos.y) > 10);
 	            	}
 	            	if (mouseMoved)
 	            		MapView_MouseMove(eX, eY);
@@ -698,6 +702,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     int zoomCross = 16;
 
     boolean nightMode = false;
+	
 /*
     public MapView()
     {
@@ -1885,6 +1890,29 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
     	int smallStarHeight = (int)((double)Global.SmallStarIcons[1].getMinimumHeight() * dpiScaleFactorY);
 
+    	
+    	//Set Cache has open Bubble to the last!
+    	int index=0;
+    	int openBubbleIndex=-1;
+    	for (WaypointRenderInfo wpi1 : wpToRender)
+		{
+    		 if(wpi1.Cache.Id==BubleCacheId)
+			    {
+    			 openBubbleIndex=index;
+    			  break;
+			    }
+    		 index++;
+		}
+    	
+    	if(openBubbleIndex>-1)
+    	{
+    		WaypointRenderInfo wpi2 = wpToRender.get(index);
+	    	wpToRender.remove(index);
+	    	wpToRender.add(wpi2);
+    	}
+	
+	
+    	
 		for (WaypointRenderInfo wpi : wpToRender)
 		{
 		  int halfIconWidth = (int)((wpi.Icon.getMinimumWidth()/* * dpiScaleFactorX*/) / 2);
@@ -2060,6 +2088,20 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 */		
 		
 		  }
+		  
+		  
+		// Draw bouble
+		    if(wpi.Cache.Id==BubleCacheId && wpi.Waypoint==null && isBubbleShow)
+		    {
+		    	float scale = 0.7f;
+		    	int BubbleWidth=430;
+		    	int BubbleHeight=100;
+		    	BubbleDrawRec=new Rect(x,y,x+BubbleWidth,y+BubbleHeight);
+		    	BubbleDrawRec.offset(-((int)((BubbleWidth/2)*scale)),-((int)((8+halfUnderlayWidth+BubbleHeight)*scale)));
+		    	CacheDraw.DrawInfo(wpi.Cache, canvasOverlay, BubbleDrawRec, -1, CacheDraw.DrawStyle.withoutBearing,scale);
+		    	
+		    }
+		  
 		}
     }
 
@@ -3315,6 +3357,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 */
     Paint font = new Paint();
     Paint fontSmall = new Paint();
+	
 
     /// <summary>
     /// Zeichnet den Maﬂstab. pixelsPerKm muss durch zoomChanged
@@ -3373,8 +3416,135 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       //graphics.DrawString(distanceString, font, brushes[0], scaleLeft + pos + lineHeight / 2, height - lineHeight);
     }
 
+    
+    /**
+     * Point of last ClickEvent
+     */
+    private Point LastMapViewClickPoint;
+    
+    /**
+     * Time at last ClickEvent
+     */
+    private Date LastMapViewClickTime;
+    
+    /**
+     * true when a double click on MapView
+     * </br></br>
+     * Double click is detected, when the second click is max 1sec after the first
+     * and on the same point (tolerance +/- 20)
+     */
+    private Boolean isDoubleClick=false;
+    
+    /** 
+     * true when a dobble click on showing bubble 
+     */
+    private Boolean isSelected=false;
+    
+    /**
+     * set true to show Bubble from Cache with BubleCacheId
+     */
+    private boolean isBubbleShow;
+	
+    /**
+     * is true when click on showing bubble
+     */
+    private Boolean isBubbleClick;
+    
+    /**
+     * CacheID of the Cache showing Bubble
+     */
+    private long BubleCacheId;
+    
+    /**
+     * Rectangle to Draw Bubble or detect click inside
+     */
+	private Rect BubbleDrawRec;
+	
+	/**
+	 * time span to wait for doble click detection
+	 */
+	private final int DOBLE_CLICK_TIME=320; 
+	
+	private doubleClickWaitTimer counter = new doubleClickWaitTimer(0,0);
+	private boolean counterStopped = false;
+
+	private class doubleClickWaitTimer extends CountDownTimer 
+		 {
+	    	public doubleClickWaitTimer(long millisInFuture, long countDownInterval) 
+	    	{
+	    		 super(millisInFuture, countDownInterval);
+	    	}        	
+	    	@Override
+	    	public void onFinish() 
+	    	{
+	    		isBubbleShow=!isBubbleShow;
+	    		Render(true);
+	    	}
+			@Override
+			public void onTick(long millisUntilFinished) 
+			{
+			}        
+	    }
+
+    
     private void MapView_Click(int eX, int eY)
     {
+    	long TimeDistance = 0;
+    	isSelected=false;
+    	if(LastMapViewClickTime!=null)
+    	{
+    		TimeDistance=new Date().getTime()-LastMapViewClickTime.getTime();
+        	
+        	if((TimeDistance>100) && (TimeDistance<DOBLE_CLICK_TIME))
+        	{
+        		Rect testDoubleClickRec = new Rect(eX-20,eY-20,eX+20,eY+20);
+        		if(testDoubleClickRec.contains(LastMapViewClickPoint.x,LastMapViewClickPoint.y))
+        		{
+        			isDoubleClick=true;
+        		}
+        		else
+        		{
+        			isDoubleClick=false;
+        		}
+        	}
+        	else
+        	{
+        		isDoubleClick=false;
+        	}
+    	}
+    	else
+    	{
+    		isDoubleClick=false;
+    	}
+    	
+    	LastMapViewClickPoint= new Point(eX,eY);
+    	LastMapViewClickTime= new Date();
+    	
+    	if(isBubbleShow && BubbleDrawRec!=null && BubbleDrawRec.contains(eX, eY))// Bubble gedr¸ckt
+    	{
+    		isBubbleClick=true;
+    		if(isDoubleClick)
+    		{
+    			isSelected=true;
+    		}
+
+    		Render(true);
+    	}
+    	else
+    	{
+    		isBubbleClick=false;
+    	}
+    	
+    	/*//Debug Msg
+    	String D0= isBubbleShow? "1":"0";
+    	String D1= isBubbleClick? "1":"0";
+    	String D2= isDoubleClick? "1":"0";
+    	String D3= isSelected? "1":"0";
+    	Logger.DEBUG("isBubbleShow=" + D0);
+    	Logger.DEBUG("isBubbleclick=" + D1);
+    	Logger.DEBUG("isDoubleclick=" + D2 + " " + String.valueOf(TimeDistance));
+    	Logger.DEBUG("isSelected=" + D3);*/
+    	
         if (arrowHitWhenDown && Math.sqrt(((eX - cacheArrowCenter.x) * (eX - cacheArrowCenter.x) + (eY - cacheArrowCenter.y) * (eY - cacheArrowCenter.y))) < (lineHeight * 1.5f))
         {
           Coordinate target = (Global.SelectedWaypoint() != null) ? new Coordinate(Global.SelectedWaypoint().Latitude(), Global.SelectedWaypoint().Longitude()) : new Coordinate(Global.SelectedCache().Latitude(), Global.SelectedCache().Longitude());
@@ -3390,6 +3560,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       WaypointRenderInfo minWpi = new WaypointRenderInfo();
       minWpi.Cache = null;
 
+      Cache BubbleCache = null;
       int minDist = Integer.MAX_VALUE;
       // ‹berpr¸fen, auf welchen Cache geklickt wurde
       for (int i = wpToRender.size() - 1; i >= 0; i--)
@@ -3406,9 +3577,44 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         {
           minDist = dist;
           minWpi = wpi;
+          
         }
+        if(isSelected)
+        {
+        	if(wpi.Cache.Id==BubleCacheId)
+        	{
+        		BubbleCache=wpi.Cache;
+        		minWpi = wpi;
+        	}
+        }
+        
       }
 
+      
+      
+      if(isSelected)
+      {
+    	  	counter.cancel();
+	        Global.SelectedCache(BubbleCache);
+	        CacheDraw.ReleaseCacheBMP();
+	        updateCacheList(); 
+	        isBubbleShow=true;
+	        BubleCacheId=minWpi.Cache.Id;
+	        // Shutdown Autoresort
+	        Global.autoResort = false;
+      }
+      else
+      {
+    	  if(isBubbleClick && !(isDoubleClick))
+    	  {
+    		  // switch show not now, wait for double click
+    		 
+    				 counter.cancel();
+    				 counter = new doubleClickWaitTimer(DOBLE_CLICK_TIME,DOBLE_CLICK_TIME);
+    				 counter.start();
+    	  }
+      }
+      
       if (minWpi.Cache == null)
         return;
 
@@ -3426,16 +3632,19 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         Render(true);
       }
       else
-      {
-        // Cacheliste ausrichten
-        Global.SelectedCache(minWpi.Cache);
-        //                Global.SelectedWaypoint = null;
-        //                FormMain.CacheListPanel.AlignSelected();
-        updateCacheList();
-        Render(true);
+      {    	  
+    	  
+    	 
+    		    isBubbleShow=true;
+		        BubleCacheId=minWpi.Cache.Id;
+		        
+    	 
+
+    	  Render(true);
+       
       }
-      // Shutdown Autoresort
-      Global.autoResort = false;
+      
+       
 //      this.Focus();
     }
 /*

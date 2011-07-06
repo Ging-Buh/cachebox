@@ -119,8 +119,8 @@ public class Logger
 	{
 		if(mDebug)
 		{
-			Msg = "[DEBUG]- [" + Msg + "] " ;
 			String Short = "[DEB] [" + Msg + "] " ;
+			Msg = "[DEBUG]- [" + Msg + "] " ;
 			sendMsg(Msg,Short);
 		}
 	}
@@ -142,8 +142,8 @@ public class Logger
 	       SimpleDateFormat postFormater2 = new SimpleDateFormat("dd/MM hh:mm:ss"); 
 	       String dateString2 = postFormater2.format(now); 
 		
-	       Short = dateString + Short + "\n";
-	       Msg = dateString2 + " - " + Msg + "\n";
+	       Short = dateString + Short + String.format("%n");
+	       Msg = dateString2 + " - " + Msg + String.format("%n");
 		
 		
 		for (ILog event : list)

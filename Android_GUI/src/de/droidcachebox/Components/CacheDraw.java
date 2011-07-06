@@ -10,6 +10,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -35,7 +36,7 @@ public class CacheDraw
     	all,		// alle infos
     	withoutBearing,	//ohne Richtungs-Pfeil
     	withoutSeparator, //ohne unterster trennLinie
-    	withOwner; //ohne unterster trennLinie
+    	withOwner; //mit Owner statt Name
     };
     
     private static StaticLayout layoutCacheName;
@@ -63,18 +64,70 @@ public class CacheDraw
     private final static int tab = (int) (Global.scaledFontSize_normal*0.6);
     public static Rect BearingRec; 
     private static TextPaint namePaint;
+    
+    // Die Cached Bmp wird nur zur Darstellung als Bubble in der 
+    // MapView benötigt.
+    private static Bitmap CachedBitmap;
+    private static long CachedBitmapId = -1;
+    private static Paint CachedBitmapPaitnt;
+    
+    
+    public  static void ReleaseCacheBMP()
+    {
+    	CachedBitmap.recycle();
+    	CachedBitmap=null;
+    	CachedBitmapId=-1;
+    }
+    
+    public static void DrawInfo(Cache cache, Canvas canvas,Rect rec, int BackgroundColor, DrawStyle drawStyle,float scale)
+    {
+    	if (CachedBitmap==null || !(CachedBitmapId== cache.Id))
+    	{
+    		CachedBitmap = Bitmap.createBitmap(rec.width(), rec.height(), Bitmap.Config.ARGB_8888);
+        	Rect newRec= new Rect(0,0,rec.width(),rec.height());
+        	Canvas scaledCanvas = new Canvas(CachedBitmap);
+        	scaledCanvas.drawColor(Color.TRANSPARENT);
+        	DrawInfo(cache, scaledCanvas,newRec, BackgroundColor, Color.RED, drawStyle);
+        	CachedBitmapId=cache.Id;
+    	}
+    	    	
+    	if(CachedBitmapPaitnt==null)
+    	{
+    		CachedBitmapPaitnt = new Paint();
+    		CachedBitmapPaitnt.setAntiAlias(true);
+    		CachedBitmapPaitnt.setFilterBitmap(true);
+    		CachedBitmapPaitnt.setDither(true);
+    	}
+    	
+
+    	    	
+    	canvas.save();
+    	canvas.scale(scale, scale);
+    	canvas.drawBitmap(CachedBitmap, rec.left/scale, rec.top/scale, CachedBitmapPaitnt);
+    	//canvas.drawBitmap(newBmp, newRec, rec, paint);
+    	canvas.restore();
+    	
+    }
+    
     public static void DrawInfo(Cache cache, Canvas canvas,Rect rec, int BackgroundColor, DrawStyle drawStyle)
+    {
+    	DrawInfo(cache, canvas,rec, BackgroundColor,-1, drawStyle);
+    }
+    
+    public static void DrawInfo(Cache cache, Canvas canvas,Rect rec, int BackgroundColor,int BorderColor, DrawStyle drawStyle)
     {
     	// init
     		Boolean notAvailable = (!cache.Available && !cache.Archived);
             Boolean Night = Config.GetBool("nightMode");
             Boolean GlobalSelected = cache == Global.SelectedCache();
+            if(BackgroundColor==-1)BackgroundColor= GlobalSelected? Global.getColor(R.attr.ListBackground_select):Global.getColor(R.attr.ListBackground);
+            if(BorderColor==-1)BorderColor= Global.getColor(R.attr.ListSeparator);
             final int halfCornerSize = Global.scaledFontSize_normal/2;
             final int left = rec.left + halfCornerSize;
             final int top = rec.top + halfCornerSize;
             final int width = rec.width() - halfCornerSize;
             final int height = rec.height() - halfCornerSize;
-            final int SDTImageTop = (int) (height-(Global.scaledFontSize_normal/1.5));
+            final int SDTImageTop = (int) (height-(Global.scaledFontSize_normal/1.5))+ rec.top;
             final int SDTLineTop = SDTImageTop + Global.scaledFontSize_normal;
             	
     	// Mesure
@@ -103,7 +156,7 @@ public class CacheDraw
     		DTPaint.setColor(Global.getColor(R.attr.TextColor));
     		
     	// Draw roundetRect
-    		ActivityUtils.drawFillRoundRecWithBorder(canvas, rec, 2, Global.getColor(R.attr.ListSeparator), BackgroundColor);
+    		ActivityUtils.drawFillRoundRecWithBorder(canvas, rec, 2, BorderColor, BackgroundColor);
     		
     	// Draw Vote
     		if (cache.Rating > 0)
