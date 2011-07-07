@@ -575,7 +575,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	            if (resultCode == RESULT_OK)
 	            {
 	                Log.d("DroidCachebox","Picture taken!!!");
-	                CacheDraw.ReloadSpoilerRessources(Global.selectedCache);
+	                Global.selectedCache.ReloadSpoilerRessources();
 	                String MediaFolder = Config.GetString("UserImageFolder");
 	            	String TrackFolder = Config.GetString("TrackFolder");
 	            	String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/"); 

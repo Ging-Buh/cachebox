@@ -346,12 +346,12 @@ public class Cache implements Comparable<Cache>
         return SpoilerRessources().size() > 0;
     }
     
-    public static void ReloadSpoilerRessources(final Cache cache)
+    public void ReloadSpoilerRessources()
     {
-    	cache.spoilerRessources = new ArrayList<String>();
+    	spoilerRessources = new ArrayList<String>();
 
     	String path = Config.GetString("SpoilerFolder");
-    	String directory = path + "/" + cache.GcCode.substring(0, 4);
+    	String directory = path + "/" + GcCode.substring(0, 4);
 
     	if (!FileIO.DirectoryExists(directory))
     		return;
@@ -363,7 +363,7 @@ public class Cache implements Comparable<Cache>
     		public boolean accept(File dir, String filename) {
 					
     			filename = filename.toLowerCase();
-    			if (filename.indexOf(cache.GcCode.toLowerCase()) == 0)
+    			if (filename.indexOf(GcCode.toLowerCase()) == 0)
     			{
     				if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png") || filename.endsWith(".gif"))
     					return true;
@@ -375,7 +375,7 @@ public class Cache implements Comparable<Cache>
 
     	for (String image : files)
     	{
-    		cache.spoilerRessources.add(directory + "/" + image);
+    		spoilerRessources.add(directory + "/" + image);
     	}
 
     	// Add own taken photo
@@ -390,7 +390,7 @@ public class Cache implements Comparable<Cache>
     		public boolean accept(File dir, String filename) {
 					
     			filename = filename.toLowerCase();
-    			if (filename.indexOf(cache.GcCode.toLowerCase()) >= 0)
+    			if (filename.indexOf(GcCode.toLowerCase()) >= 0)
     				return true;
     			return false;
     		}
@@ -405,7 +405,7 @@ public class Cache implements Comparable<Cache>
     				String ext = FileIO.GetFileExtension(file);
     				if (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg") || ext.equalsIgnoreCase("bmp") || ext.equalsIgnoreCase("png") || ext.equalsIgnoreCase("gif"))
     				{
-    					cache.spoilerRessources.add(directory + "/" + file);
+    					spoilerRessources.add(directory + "/" + file);
     				}
     			}
     		}
