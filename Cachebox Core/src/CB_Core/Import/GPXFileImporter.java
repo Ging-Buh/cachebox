@@ -12,6 +12,7 @@ import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
@@ -129,6 +130,8 @@ public class GPXFileImporter {
 			        	cache.Difficulty = Float.parseFloat( parser.nextText() );
 			        } else if (tagName.equalsIgnoreCase( "groundspeak:terrain" ) ){
 			        	cache.Terrain = Float.parseFloat( parser.nextText() );
+			        } else if (tagName.equalsIgnoreCase( "groundspeak:attributes" ) ){
+			        	parseWptCacheAttributesElement(parser, cache);
 			        } else if (tagName.equalsIgnoreCase( "groundspeak:short_description" ) ){
 			        	// TODO im nicht HTML-Fall die Zeilenumbrüche ersetzen
 			        	cache.shortDescription = parser.nextText();
@@ -145,6 +148,46 @@ public class GPXFileImporter {
 			        break;
 			    case XmlPullParser.END_TAG:
 			        if (tagName.equalsIgnoreCase( "groundspeak:cache" ) ){
+			        	done = true;
+			        }
+			        break;
+		    }
+			eventType = parser.next();
+		}
+	}
+
+	private void parseWptCacheAttributesElement(KXmlParser parser, Cache cache) throws Exception {
+		boolean done = false;
+		int eventType = parser.next();
+		while (eventType != XmlPullParser.END_DOCUMENT && !done){
+            String tagName = parser.getName();
+			switch (eventType){
+			    case XmlPullParser.START_TAG:
+			        if (tagName.equalsIgnoreCase( "groundspeak:attribute" ) ) {
+			        	int attrGcComId = -1;
+			        	int attrGcComVal = -1;
+			    		if( parser.getAttributeCount() == 2 ) {
+			    			if( parser.getAttributeName( 0 ).equalsIgnoreCase( "id" ) ) {
+			    				attrGcComId = Integer.parseInt( parser.getAttributeValue( 0 ) );
+			    			}
+			    			if( parser.getAttributeName( 1 ).equalsIgnoreCase( "inc" ) ) {
+			    				attrGcComVal = Integer.parseInt( parser.getAttributeValue( 1 ) );
+			    			}
+			    		}
+			    		if( attrGcComId>0 && attrGcComVal!=-1 ) {
+			    			if( attrGcComVal > 0 ) {
+			    				cache.addAttributePositive( Attributes.getAttributeEnumByGcComId( attrGcComId ) );
+			    			}
+			    			else {
+			    				cache.addAttributeNegative( Attributes.getAttributeEnumByGcComId( attrGcComId ) );
+			    			}
+			    		}
+			        } else {
+			        	skipUntilEndTag(parser, tagName);
+			        }
+			        break;
+			    case XmlPullParser.END_TAG:
+			        if (tagName.equalsIgnoreCase( "groundspeak:attributes" ) ){
 			        	done = true;
 			        }
 			        break;

@@ -8,6 +8,7 @@ import java.util.Date;
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
+import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 
@@ -467,6 +468,16 @@ public class Cache implements Comparable<Cache>
     	return (float)cachedDistance;
     }
 	
+    public void addAttributePositive( Attributes attribute )
+    {
+		attributesPositive |= Attributes.GetAttributeIndex(attribute);
+    }
+    
+    public void addAttributeNegative( Attributes attribute )
+    {
+		attributesNegative |= Attributes.GetAttributeIndex(attribute);								
+    }
+    
 	
 	/*
 	 * Overrides

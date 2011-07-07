@@ -162,13 +162,13 @@ public class GroundspeakAPI {
 							JSONObject jAttribute = jAttributes.getJSONObject(j);
 							int AttributeTypeId = jAttribute.getInt("AttributeTypeID");
 							Boolean isOn = jAttribute.getBoolean("IsOn");
-							Attributes att = getAttributeEnum(AttributeTypeId);
+							Attributes att = Attributes.getAttributeEnumByGcComId(AttributeTypeId);
 							if (isOn)
 							{
-								cache.attributesPositive |= Attributes.GetAttributeIndex(att);
+								cache.addAttributePositive(att);
 							} else
 							{
-								cache.attributesNegative |= Attributes.GetAttributeIndex(att);								
+								cache.addAttributeNegative(att);								
 							}
 						}
 						cache.Available = jCache.getBoolean("Available");

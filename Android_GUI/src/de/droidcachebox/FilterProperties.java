@@ -253,7 +253,7 @@ public class FilterProperties
                 andParts.add("Type in (" + csvTypes + ")");
             }
             
-            Attributes test = Attributes.Offroad;
+            // Attributes test = Attributes.Offroad;
 
             HashMap<Integer, Attributes> attributeLookup;
             attributeLookup = new HashMap<Integer, Attributes>();
@@ -323,7 +323,7 @@ public class FilterProperties
             {
                 if (attributesFilter[i] != 0)
                 {
-                	long value = GetAttributeIndex(attributeLookup.get(i));
+                	long value = Attributes.GetAttributeIndex(attributeLookup.get(i));
                 	
                     if (attributesFilter[i] == 1)
                         andParts.add("AttributesPositive & " + value + " > 0");
@@ -363,12 +363,6 @@ public class FilterProperties
         
     }
 
-    
-    public static long GetAttributeIndex(Attributes attrib)
-    {
-    	return ((long)1) << (attrib.ordinal());
-    }
- 
     
 	public static String join(String separator , ArrayList<String> array) 
 	{
