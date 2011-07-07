@@ -152,7 +152,7 @@ English
 		AutoStart = Automatic start
 		AutoStartTime = After %s seconds
 		AutoStartDisabled = Disabled
-		StartWithoutSelection = Without selection
+		StartWithoutSelection = automatic start disabled
 		
 	// DatabaseChangedForm
 		DatabaseChangedForm.Text = Database Scheme Changed

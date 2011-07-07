@@ -152,7 +152,7 @@ Deutsch
 		AutoStart = Automatischer Start
 		AutoStartTime = Nach %s Sekunden
 		AutoStartDisabled = Deaktiviert
-		StartWithoutSelection = Ohne Auswahl
+		StartWithoutSelection = Automatischer Start deaktiviert
 		
 		
 	// DatabaseChangedForm

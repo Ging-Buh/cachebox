@@ -159,17 +159,19 @@ public class SelectDB extends Activity {
     	mHandler = new Handler();        
 		
 		
-        autoStartTime = Config.GetInt("MultiDBAutoStartTime");
-        autoStartCounter = autoStartTime;
-        bAutostart.setText(autoStartCounter + "\n" + Global.Translations.Get("confirm"));
-        setAutoStartText();
-        if ((autoStart && autoStartTime > 0) && (AktFile != null))
-        {
-        	mHandler.postDelayed(mUpdateUITimerTask, 1000);
-        }
-        else
-            stopTimer();
-
+    	autoStartTime = Config.GetInt("MultiDBAutoStartTime");
+    	if (autoStartTime>0)
+    	{
+    		autoStartCounter = autoStartTime;
+    		bAutostart.setText(autoStartCounter + "\n" + Global.Translations.Get("confirm"));
+    		setAutoStartText();
+    		if ((autoStart && autoStartTime > 0) && (AktFile != null))
+    		{
+    			mHandler.postDelayed(mUpdateUITimerTask, 1000);
+    		}
+    		else
+    			stopTimer();
+    	}
 	}
 
 	
