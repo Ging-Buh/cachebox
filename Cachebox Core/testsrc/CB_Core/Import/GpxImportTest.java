@@ -2,8 +2,10 @@ package CB_Core.Import;
 
 import java.util.Iterator;
 
+import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
+import CB_Core.Types.LogEntry;
 import junit.framework.TestCase;
 
 public class GpxImportTest extends TestCase {
@@ -35,6 +37,7 @@ public class GpxImportTest extends TestCase {
 		assertEquals( "Placed by falsch", "Team Rabbits", cache.PlacedBy );
 		assertEquals( "Owner falsch", "Team Rabbits", cache.Owner );
 		assertTrue( "Typ ist falsch", cache.Type == CacheTypes.Traditional );
+		assertTrue( "Size ist falsch", cache.Size == CacheSizes.small );
 		assertTrue( "Difficulty ist falsch", cache.Difficulty == 2 );
 		assertTrue( "Terrain", cache.Terrain == 5 );
 		
@@ -44,9 +47,10 @@ public class GpxImportTest extends TestCase {
 		
 		assertEquals( "Hint falsch", "wenn du ihn nicht findest, findet er dich!!", cache.hint );
 		
+		Iterator<LogEntry> logIterator = importHandler.getLogIterator();
+		LogEntry log = logIterator.next();
 		
 		
-
 	}
 
 }

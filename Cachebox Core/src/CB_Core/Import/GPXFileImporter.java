@@ -12,6 +12,7 @@ import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
@@ -23,6 +24,7 @@ public class GPXFileImporter {
 	private static SimpleDateFormat datePattern2 = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss'Z'" );
 
 	private String mGpxFileName;
+	private IImportHandler mImportHandler; 
 	
 	public GPXFileImporter(String gpxFileName) {
 		super();
@@ -30,6 +32,7 @@ public class GPXFileImporter {
 	}
 	
 	public void doImport( IImportHandler importHandler ) throws Exception {
+		mImportHandler = importHandler;
 		KXmlParser parser = new KXmlParser();
 		Reader fr = new InputStreamReader( new FileInputStream(mGpxFileName), "UTF-8" );
         parser.setInput(fr);  
@@ -47,7 +50,7 @@ public class GPXFileImporter {
                     	// TODO GPX-Elemente noch bearbeiten?
                     } else if (tagName.equalsIgnoreCase( "wpt" ) ){
                     	Cache cache = parseWptElement( parser );
-                    	importHandler.handleCache( cache );
+                    	mImportHandler.handleCache( cache );
                     }
                     break;
                 case XmlPullParser.END_TAG:
@@ -58,6 +61,8 @@ public class GPXFileImporter {
             }
         	eventType = parser.next();
         }
+        
+        mImportHandler = null;
     }
 
 	private Cache parseWptElement( KXmlParser parser ) throws Exception {
@@ -115,6 +120,8 @@ public class GPXFileImporter {
 			        	cache.Owner = parser.nextText();
 			        } else if (tagName.equalsIgnoreCase( "groundspeak:type" ) ){
 			        	cache.Type = CacheTypes.parseString( parser.nextText() );
+			        } else if (tagName.equalsIgnoreCase( "groundspeak:container" ) ){
+			        	cache.Size = CacheSizes.parseString( parser.nextText() );
 			        } else if (tagName.equalsIgnoreCase( "groundspeak:difficulty" ) ){
 			        	cache.Difficulty = Float.parseFloat( parser.nextText() );
 			        } else if (tagName.equalsIgnoreCase( "groundspeak:terrain" ) ){
@@ -148,7 +155,7 @@ public class GPXFileImporter {
             String tagName = parser.getName();
 			switch (eventType){
 			    case XmlPullParser.START_TAG:
-			        if (tagName.equalsIgnoreCase( "xxgroundspeak:log" ) ){
+			        if (tagName.equalsIgnoreCase( "groundspeak:log" ) ){
 			        	LogEntry log = parseWptCacheLogsLogElement(parser, cache);
 			        } else {
 			        	skipUntilEndTag(parser, tagName);
@@ -166,7 +173,29 @@ public class GPXFileImporter {
 
 	private LogEntry parseWptCacheLogsLogElement(KXmlParser parser, Cache cache) throws Exception {
 		LogEntry log = new LogEntry();
-		cache.Name = parser.nextText();
+		
+		boolean done = false;
+		int eventType = parser.next();
+		while (eventType != XmlPullParser.END_DOCUMENT && !done){
+            String tagName = parser.getName();
+			switch (eventType){
+			    case XmlPullParser.START_TAG:
+			        if (tagName.equalsIgnoreCase( "xxgroundspeak:log" ) ){
+			        	//
+			        } else {
+			        	skipUntilEndTag(parser, tagName);
+			        }
+			        break;
+			    case XmlPullParser.END_TAG:
+			        if (tagName.equalsIgnoreCase( "groundspeak:log" ) ){
+			        	mImportHandler.handleLog( log );
+			        	done = true;
+			        }
+			        break;
+		    }
+			eventType = parser.next();
+		}
+		
 		return log;
 	}
 
