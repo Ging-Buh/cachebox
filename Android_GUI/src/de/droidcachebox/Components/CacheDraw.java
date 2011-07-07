@@ -5,7 +5,6 @@ import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
@@ -19,6 +18,7 @@ import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 
+import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.Types.Cache;

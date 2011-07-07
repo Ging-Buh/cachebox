@@ -1,6 +1,5 @@
 package de.droidcachebox.Views;
 
-import de.droidcachebox.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
@@ -12,6 +11,7 @@ import de.droidcachebox.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
 import de.droidcachebox.Views.Forms.NumerikInputBox;
+import CB_Core.Config;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
@@ -95,7 +95,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 			@Override
 			public void onClick(View arg0) 
 			{
-				NumerikInputBox.Show(Global.Translations.Get("AdjustFinds"),Global.Translations.Get("TelMeFounds"),Config.GetInt("FoundOffset"), DialogListner);
+				NumerikInputBox.Show(Global.Translations.Get("AdjustFinds"),Global.Translations.Get("TelMeFounds"),CB_Core.Config.GetInt("FoundOffset"), DialogListner);
 			}
 		});
 		

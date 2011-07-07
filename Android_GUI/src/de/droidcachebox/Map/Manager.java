@@ -128,7 +128,7 @@ public class Manager {
 	    	if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name)))
 	    	{
 	    		mapDatabase = new MapDatabase();
-	    		mapDatabase.openFile(de.droidcachebox.Config.GetString("MapPackFolder") + "/" + layer.Name);
+	    		mapDatabase.openFile(CB_Core.Config.GetString("MapPackFolder") + "/" + layer.Name);
 	    		renderer = new CanvasRenderer();
 	    		renderer.setDatabase(mapDatabase);
 				tileBitmap = Bitmap.createBitmap(256, 256, Config.RGB_565);

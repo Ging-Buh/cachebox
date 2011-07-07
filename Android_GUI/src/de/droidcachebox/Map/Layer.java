@@ -1,6 +1,6 @@
 package de.droidcachebox.Map;
 
-import de.droidcachebox.Config;
+import CB_Core.Config;
 
 
 public class Layer {

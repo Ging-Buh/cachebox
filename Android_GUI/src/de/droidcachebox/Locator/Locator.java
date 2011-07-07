@@ -3,7 +3,7 @@ package de.droidcachebox.Locator;
 import CB_Core.Types.Coordinate;
 import android.location.Location;
 import android.location.LocationManager;
-import de.droidcachebox.Config;
+import CB_Core.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.UnitFormatter;
 

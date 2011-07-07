@@ -10,7 +10,7 @@ import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 import CB_Core.Enums.CacheTypes;
 
-import de.droidcachebox.Config;
+import CB_Core.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;

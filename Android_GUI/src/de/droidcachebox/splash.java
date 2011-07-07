@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
@@ -20,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -97,6 +99,8 @@ public class splash extends Activity
 		 Logger.setDebug(Global.Debug);
 		
 		 // Read Config
+		 String workPath = Environment.getExternalStorageDirectory() + "/cachebox";
+		 Config.Initialize(workPath, workPath + "/cachebox.config");
 		 
 		 // copy AssetFolder
 		 String[] exclude = new String[]{"webkit","sounds","images"};
@@ -104,7 +108,7 @@ public class splash extends Activity
 		 myCopie.copyAll(getAssets(), Config.WorkPath, exclude);
 		 
 		 
-		 Config.readConfigFile(getAssets());
+		 Config.readConfigFile(/*getAssets()*/);
 		 try {
 			Global.Translations.ReadTranslationsFile(Config.GetString("Sel_LanguagePath"));
 		} catch (IOException e) {

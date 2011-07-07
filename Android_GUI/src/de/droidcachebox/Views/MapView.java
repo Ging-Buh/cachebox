@@ -47,7 +47,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.ZoomControls;
-import de.droidcachebox.Config;
+import CB_Core.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;

@@ -1,4 +1,4 @@
-package de.droidcachebox;
+package CB_Core;
 
 import java.io.BufferedReader;
 
@@ -7,28 +7,22 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.lang.reflect.Type;
-
 import java.util.HashMap;
 
-
-import de.droidcachebox.Views.FilterSettings.PresetListView;
-
-import CB_Core.TranslationEngine.SelectedLangChangedEventList;
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Environment;
+import CB_Core.Log.Logger;
 
 public class Config {
 	
 	
-    public static final String WorkPath = Environment.getExternalStorageDirectory() + "/cachebox";
-	public static final String ConfigName = WorkPath + "/cachebox.config";
+    public static String WorkPath = "";
+	public static String ConfigName = "";
 
+	public static void Initialize(String workPath, String configName)
+	{
+		WorkPath = workPath;
+		ConfigName = configName;
+	}
+	
 	public static String GetString(String key)
      {
          checkInitialization();
@@ -104,20 +98,12 @@ public class Config {
 
      static boolean initialized = false;
 
-     static AssetManager AssetMgr;
-    public static void readConfigFile(AssetManager mgr) 
-    {
-    	AssetMgr = mgr;
-    	initialized=false;
-    	checkInitialization();
-    }
     public static void readConfigFile() 
     {
     	initialized=false;
     	checkInitialization();
     }
     
-     
 	static void checkInitialization()
      {
          if (initialized)
@@ -132,15 +118,14 @@ public class Config {
                  
                  try {
                 	 //Filereader = new BufferedReader(new InputStreamReader(AssetMgr.open(ConfigName)));
-                	 
+/*                	 
                 	 String state = Environment.getExternalStorageState();                	 
                 	 if (!Environment.MEDIA_MOUNTED.equals(state)) {
                 		 // External Storage not mounted or not readable
                 		 initialized = false;
                 		 return;                		 
                 	 }
-                	 
-                	 File fileex = Environment.getExternalStorageDirectory();
+*/                	 
 
                 	 Filereader = new BufferedReader(new FileReader(ConfigName));
                    String line;
@@ -162,6 +147,7 @@ public class Config {
 					  Filereader.close(); 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
+					Logger.Error("ReadConfig", "Error when accessing cachebox.config!", e);
 					e.printStackTrace();
 				}
 
@@ -231,7 +217,7 @@ public class Config {
         validateSetting("MapMaxCachesDisplay_config", "10000");
         validateSetting("SoundApproachDistance", "50");
         validateSetting("mapMaxCachesDisplayLarge_config", "75");
-        validateSetting("Filter", PresetListView.presets[0].toString());
+//        validateSetting("Filter", PresetListView.presets[0].toString());
         validateSetting("ZoomCross", "16");
 //        validateSetting("TomTomExportFolder", Global.AppPath + "\\user");
         validateSetting("GCAutoSyncCachesFound", "true");

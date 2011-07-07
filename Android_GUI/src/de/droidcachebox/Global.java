@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import CB_Core.Config;
 import CB_Core.Log.Logger;
 import CB_Core.TranslationEngine.LangStrings;
 import CB_Core.Types.Cache;
@@ -33,7 +34,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 293;
+    public static final int CurrentRevision = 299;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;

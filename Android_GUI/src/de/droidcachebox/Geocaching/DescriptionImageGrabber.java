@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import org.apache.http.util.ByteArrayBuffer;
 
-import de.droidcachebox.Config;
+import CB_Core.Config;
 import de.droidcachebox.Global;
 
 import CB_Core.FileIO;

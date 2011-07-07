@@ -2,6 +2,8 @@ package de.droidcachebox;
 
 import java.text.NumberFormat;
 
+import CB_Core.Config;
+
 public class UnitFormatter {
 
 	

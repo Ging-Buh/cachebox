@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import android.database.Cursor;
-import de.droidcachebox.Config;
+import CB_Core.Config;
 import de.droidcachebox.Database;
 
 public class FieldNoteList extends ArrayList<FieldNoteEntry> {

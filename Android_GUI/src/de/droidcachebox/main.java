@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
+import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.Log.ILog;

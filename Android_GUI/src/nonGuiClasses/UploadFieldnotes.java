@@ -18,7 +18,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.net.Uri;
 
-import de.droidcachebox.Config;
+import CB_Core.Config;
 import de.droidcachebox.Geocaching.FieldNoteEntry;
 
 

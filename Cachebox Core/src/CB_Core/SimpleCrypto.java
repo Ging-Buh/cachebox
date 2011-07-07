@@ -1,4 +1,4 @@
-package de.droidcachebox;
+package CB_Core;
 
 import java.security.SecureRandom;
 

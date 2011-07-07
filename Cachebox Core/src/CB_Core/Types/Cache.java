@@ -1,8 +1,12 @@
 package CB_Core.Types;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Date;
 
+import CB_Core.Config;
+import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
@@ -316,7 +320,7 @@ public class Cache implements Comparable<Cache>
     {
         if (spoilerRessources == null)
         {
-           // ReloadSpoilerRessources();
+           ReloadSpoilerRessources();
         }
 
         return spoilerRessources;
@@ -341,6 +345,73 @@ public class Cache implements Comparable<Cache>
     	if(SpoilerRessources()==null)return false;
         return SpoilerRessources().size() > 0;
     }
+    
+    public static void ReloadSpoilerRessources(final Cache cache)
+    {
+    	cache.spoilerRessources = new ArrayList<String>();
+
+    	String path = Config.GetString("SpoilerFolder");
+    	String directory = path + "/" + cache.GcCode.substring(0, 4);
+
+    	if (!FileIO.DirectoryExists(directory))
+    		return;
+
+	        
+    	File dir = new File(directory);
+    	FilenameFilter filter = new FilenameFilter() {			
+    		@Override
+    		public boolean accept(File dir, String filename) {
+					
+    			filename = filename.toLowerCase();
+    			if (filename.indexOf(cache.GcCode.toLowerCase()) == 0)
+    			{
+    				if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png") || filename.endsWith(".gif"))
+    					return true;
+    			}
+    			return false;
+    		}
+    	};
+    	String[] files = dir.list(filter);
+
+    	for (String image : files)
+    	{
+    		cache.spoilerRessources.add(directory + "/" + image);
+    	}
+
+    	// Add own taken photo
+    	directory = Config.GetString("UserImageFolder");
+
+    	if (!FileIO.DirectoryExists(directory))
+    		return;
+
+    	dir = new File(directory);
+    	filter = new FilenameFilter() {			
+    		@Override
+    		public boolean accept(File dir, String filename) {
+					
+    			filename = filename.toLowerCase();
+    			if (filename.indexOf(cache.GcCode.toLowerCase()) >= 0)
+    				return true;
+    			return false;
+    		}
+    	};
+    	files = dir.list(filter);
+    	if (!(files == null))
+    	{
+    		if (files.length>0)
+    		{
+    			for (String file : files)
+    			{
+    				String ext = FileIO.GetFileExtension(file);
+    				if (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg") || ext.equalsIgnoreCase("bmp") || ext.equalsIgnoreCase("png") || ext.equalsIgnoreCase("gif"))
+    				{
+    					cache.spoilerRessources.add(directory + "/" + file);
+    				}
+    			}
+    		}
+    	}
+    }
+    
     
     /**
      * Returns the MapIconId of this Cache

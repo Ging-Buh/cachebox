@@ -1,7 +1,7 @@
 package de.droidcachebox.Custom_Controls;
 
 
-import de.droidcachebox.Config;
+import CB_Core.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.ActivityUtils;

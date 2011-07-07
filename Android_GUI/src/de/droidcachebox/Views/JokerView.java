@@ -4,7 +4,7 @@ package de.droidcachebox.Views;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
-import de.droidcachebox.Config;
+import CB_Core.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 

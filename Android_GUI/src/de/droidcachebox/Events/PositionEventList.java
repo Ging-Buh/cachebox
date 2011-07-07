@@ -2,7 +2,7 @@ package de.droidcachebox.Events;
 
 import java.util.ArrayList;
 
-import de.droidcachebox.Config;
+import CB_Core.Config;
 import de.droidcachebox.Global;
 
 

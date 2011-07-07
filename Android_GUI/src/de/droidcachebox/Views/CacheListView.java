@@ -2,7 +2,7 @@ package de.droidcachebox.Views;
 
 import java.util.List;
 
-import de.droidcachebox.Config;
+import CB_Core.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;

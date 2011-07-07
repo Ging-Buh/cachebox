@@ -3,6 +3,7 @@ package de.droidcachebox;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import CB_Core.Config;
 import CB_Core.Enums.Attributes;
 import CB_Core.Log.Logger;
 

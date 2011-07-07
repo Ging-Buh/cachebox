@@ -1,7 +1,7 @@
 package de.droidcachebox.Views.FilterSettings;
 
 import CB_Core.Log.Logger;
-import de.droidcachebox.Config;
+import CB_Core.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.FilterProperties;
 import de.droidcachebox.Global;
