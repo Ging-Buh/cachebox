@@ -29,8 +29,9 @@ public class GpxImportTest extends TestCase {
 		assertEquals( "GcCode falsch", "GC2T9RW", cache.GcCode );
 		assertEquals( "DateHidden falsch", "Sat Apr 16 07:00:00 CEST 2011", cache.DateHidden.toString() );
 		assertEquals( "url falsch", "http://www.geocaching.com/seek/cache_details.aspx?guid=f26f18bd-9aaa-4499-944b-3e8cb62e41a7", cache.Url );
+		assertTrue( "Found ist falsch", cache.Found );
 
-		assertTrue( "Id ist falsch", cache.Id == 2190117 );
+		assertEquals( "Id ist falsch", cache.GcId, "2190117" );
 		assertTrue( "ist available ist falsch", cache.Available );
 		assertFalse( "ist archived ist falsch", cache.Archived );
 		assertEquals( "Name falsch", "der Hampir - T5 - ", cache.Name );

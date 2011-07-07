@@ -79,10 +79,13 @@ public class GPXFileImporter {
 			    case XmlPullParser.START_TAG:
 			        if (tagName.equalsIgnoreCase( "name" ) ){
 			        	cache.GcCode = parser.nextText();
+			        	cache.Id = Cache.GenerateCacheId( cache.GcCode );
 			        } else if (tagName.equalsIgnoreCase( "time" ) ){
 			        	parseWptTimeElement(parser, cache);
 			        } else if (tagName.equalsIgnoreCase( "url" ) ){
 			        	cache.Url = parser.nextText();
+			        } else if (tagName.equalsIgnoreCase( "sym" ) ){
+			        	cache.Found = parser.nextText().equalsIgnoreCase( "Geocache Found" );
 			        } else if (tagName.equalsIgnoreCase( "groundspeak:cache" ) ){
 			        	parseWptCacheElement( parser, cache );
 			        } else {
@@ -127,8 +130,10 @@ public class GPXFileImporter {
 			        } else if (tagName.equalsIgnoreCase( "groundspeak:terrain" ) ){
 			        	cache.Terrain = Float.parseFloat( parser.nextText() );
 			        } else if (tagName.equalsIgnoreCase( "groundspeak:short_description" ) ){
+			        	// TODO im nicht HTML-Fall die Zeilenumbrüche ersetzen
 			        	cache.shortDescription = parser.nextText();
 			        } else if (tagName.equalsIgnoreCase( "groundspeak:long_description" ) ){
+			        	// TODO im nicht HTML-Fall die Zeilenumbrüche ersetzen
 			        	cache.longDescription = parser.nextText();
 			        } else if (tagName.equalsIgnoreCase( "groundspeak:encoded_hints" ) ){
 			    		cache.hint = parser.nextText();
@@ -214,7 +219,7 @@ public class GPXFileImporter {
 		int attributeCount = parser.getAttributeCount();
 		for( int i=0; i<attributeCount; ++i ) {
 			if( parser.getAttributeName( i ).equalsIgnoreCase( "id" ) ) {
-				cache.Id = Long.parseLong( parser.getAttributeValue( i ) );
+				cache.GcId = parser.getAttributeValue( i );
 			}
 			else if( parser.getAttributeName( i ).equalsIgnoreCase( "available" ) ) {
 				if( parser.getAttributeValue( i ).equalsIgnoreCase( "True" ) ) {

@@ -62,6 +62,7 @@ public class Cache implements Comparable<Cache>
 	 * Id des Caches bei geocaching.com. Wird zumm Loggen benötigt und von
      * geotoad nicht exportiert
      */
+    // TODO Warum ist das ein String?
     public String GcId;
     /**
 	 * Id des Caches in der Datenbank von geocaching.com
