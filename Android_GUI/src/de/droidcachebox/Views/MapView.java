@@ -1890,29 +1890,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
     	int smallStarHeight = (int)((double)Global.SmallStarIcons[1].getMinimumHeight() * dpiScaleFactorY);
 
+    	int bubbleX = 0;
+    	int bubbleY = 0;
     	
-    	//Set Cache has open Bubble to the last!
-    	int index=0;
-    	int openBubbleIndex=-1;
-    	for (WaypointRenderInfo wpi1 : wpToRender)
-		{
-    		 if(wpi1.Cache.Id==BubleCacheId)
-			    {
-    			 openBubbleIndex=index;
-    			  break;
-			    }
-    		 index++;
-		}
-    	
-    	if(openBubbleIndex>-1)
-    	{
-    		WaypointRenderInfo wpi2 = wpToRender.get(index);
-	    	wpToRender.remove(index);
-	    	wpToRender.add(wpi2);
-    	}
-	
-	
-    	
+    	int halfUnderlayWidth = 0;
 		for (WaypointRenderInfo wpi : wpToRender)
 		{
 		  int halfIconWidth = (int)((wpi.Icon.getMinimumWidth()/* * dpiScaleFactorX*/) / 2);
@@ -1924,7 +1905,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		      halfOverlayWidth = (int)((wpi.OverlayIcon.getMinimumWidth()/* * dpiScaleFactorX*/) / 2);
 		      OverlayWidth = (int)(wpi.OverlayIcon.getMinimumWidth()/* * dpiScaleFactorX*/);
 		  }
-		  int halfUnderlayWidth = halfIconWidth;
+		  halfUnderlayWidth = halfIconWidth;
 		  int UnderlayWidth = IconWidth;
 		  if (wpi.UnderlayIcon != null)
 		  {
@@ -2090,18 +2071,23 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		  }
 		  
 		  
-		// Draw bouble
-		    if(wpi.Cache.Id==BubleCacheId && wpi.Waypoint==null && isBubbleShow)
-		    {
-		    	float scale = 0.7f;
-		    	int BubbleWidth=430;
-		    	int BubbleHeight=100;
-		    	BubbleDrawRec=new Rect(x,y,x+BubbleWidth,y+BubbleHeight);
-		    	BubbleDrawRec.offset(-((int)((BubbleWidth/2)*scale)),-((int)((8+halfUnderlayWidth+BubbleHeight)*scale)));
-		    	CacheDraw.DrawInfo(wpi.Cache, canvasOverlay, BubbleDrawRec, -1, CacheDraw.DrawStyle.withoutBearing,scale);
-		    	
-		    }
+		  if (wpi.Cache.Id == BubbleCacheId && isBubbleShow)
+		  {
+			  bubbleX = x;
+			  bubbleY = y;
+		  }
 		  
+		}
+		// Draw Bubble
+		if (isBubbleShow && (BubbleCache != null))
+		{
+			float scale = 0.7f;
+			int BubbleWidth = 430;
+			int BubbleHeight = 100;
+			BubbleDrawRec = new Rect(bubbleX, bubbleY, bubbleX + BubbleWidth, bubbleY + BubbleHeight);
+			BubbleDrawRec.offset(-((int)((BubbleWidth / 2) * scale)), -((int)((8 + halfUnderlayWidth + BubbleHeight) * scale)));
+			CacheDraw.DrawInfo(BubbleCache, canvasOverlay, BubbleDrawRec, -1, CacheDraw.DrawStyle.withoutBearing,scale);
+			  
 		}
     }
 
@@ -3172,35 +3158,30 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        boolean lastUsedCompass = Global.Locator.LastUsedCompass;
 	        float dirX = (float)Math.sin(courseRad);
 	        float dirY = (float)-Math.cos(courseRad);
-
+	
 	        Paint paint = new Paint();
 	        int MyColor;
 	        MyColor = Color.RED;
 	        if (lastUsedCompass)
-	        	MyColor = Color.BLUE;	// bei magnet. Kompass
-
+	        	MyColor = Color.BLUE;   // bei magnet. Kompass
 	        // first triangle
 	        long size = Math.round(1.8 * lineHeight);
 	        Path path = triaglePath(pt, size, dirX, dirY);
-	        paint.setColor(MyColor);	// bei magnet. Kompass
+	        paint.setColor(MyColor);        // bei magnet. Kompass
 	        paint.setStyle(Style.FILL);
 	        canvas.drawPath(path, paint);
-	        
 	        // second triangle
 	        size = Math.round(1.4 * lineHeight);
 	        path = triaglePath(pt, size, dirX, dirY);
-	        paint.setColor(Color.WHITE);	// bei magnet. Kompass
+	        paint.setColor(Color.WHITE);    // bei magnet. Kompass
 	        paint.setStyle(Style.FILL);
 	        canvas.drawPath(path, paint);
-	        
 	        //third triangle, a little bit smaller
 	        size = lineHeight;
 	        path = triaglePath(pt, size, dirX, dirY);
-	        paint.setColor(MyColor);	// bei magnet. Kompass
+	        paint.setColor(MyColor);        // bei magnet. Kompass
 	        paint.setStyle(Style.FILL);
 	        canvas.drawPath(path, paint);
-
-	        
 	        
 	        
 	        
@@ -3227,36 +3208,37 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 */
     }
 
-	private Path triaglePath(Point pt, long size, float dirX, float dirY) {
-		Point[] dir = new Point[3];
-		dir[0] = new Point();
-		dir[0].x = (int)(pt.x + dirX * size * 0.75f);
-		dir[0].y = (int)(pt.y + dirY * size * 0.75f);
-
-		// x/y -> -y/x
-		dir[1] = new Point();
-		dir[1].x = (int)(pt.x - dirY * size / 3.0f - dirX * size * 0.25f);
-		dir[1].y = (int)(pt.y + dirX * size / 3.0f - dirY * size * 0.25f);
-
-		dir[2] = new Point();
-		dir[2].x = (int)(pt.x + dirY * size / 3.0f - dirX * size * 0.25f);
-		dir[2].y = (int)(pt.y - dirX * size / 3.0f - dirY * size * 0.25f);
-
-		float[] verts = new float[6];
-		for (int i = 0; i < 3; i++)
-		{
-			verts[i*2] = dir[i].x;
-			verts[i*2+1] = dir[i].y;	        
-		}
-
-		Path path = new Path();
-		path.moveTo(dir[0].x, dir[0].y);
-		path.lineTo(dir[1].x, dir[1].y);
-		path.lineTo(dir[2].x, dir[2].y);
-		path.lineTo(dir[0].x, dir[0].y);
-		return path;
-	}
-
+    private Path triaglePath(Point pt, long size, float dirX, float dirY) 
+    {
+    	Point[] dir = new Point[3];
+    	dir[0] = new Point();
+    	dir[0].x = (int)(pt.x + dirX * size * 0.75f);
+    	dir[0].y = (int)(pt.y + dirY * size * 0.75f);
+    	
+    	// x/y -> -y/x
+    	dir[1] = new Point();
+    	dir[1].x = (int)(pt.x - dirY * size / 3.0f - dirX * size * 0.25f);
+    	dir[1].y = (int)(pt.y + dirX * size / 3.0f - dirY * size * 0.25f);
+    	
+    	dir[2] = new Point();
+    	dir[2].x = (int)(pt.x + dirY * size / 3.0f - dirX * size * 0.25f);
+    	dir[2].y = (int)(pt.y - dirX * size / 3.0f - dirY * size * 0.25f);
+    	
+    	float[] verts = new float[6];
+    	for (int i = 0; i < 3; i++)
+    	{
+    		verts[i*2] = dir[i].x;
+    		verts[i*2+1] = dir[i].y;
+    	}
+    	
+    	Path path = new Path();
+    	path.moveTo(dir[0].x, dir[0].y);
+    	path.lineTo(dir[1].x, dir[1].y);
+    	path.lineTo(dir[2].x, dir[2].y);
+    	path.lineTo(dir[0].x, dir[0].y);
+    	return path;
+    }
+    
     int minZoom;
     int maxZoom;
     
@@ -3443,24 +3425,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     }
 
     
-    /**
-     * Point of last ClickEvent
-     */
-    private Point LastMapViewClickPoint;
-    
-    /**
-     * Time at last ClickEvent
-     */
-    private Date LastMapViewClickTime;
-    
-    /**
-     * true when a double click on MapView
-     * </br></br>
-     * Double click is detected, when the second click is max 1sec after the first
-     * and on the same point (tolerance +/- 20)
-     */
-    private Boolean isDoubleClick=false;
-    
+  
     /** 
      * true when a dobble click on showing bubble 
      */
@@ -3479,98 +3444,43 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     /**
      * CacheID of the Cache showing Bubble
      */
-    private long BubleCacheId;
+    private long BubbleCacheId = -1;
+    
+    /**
+     * Cache showing Bubble
+     */
+    private Cache BubbleCache = null;
+    private Waypoint BubbleWaypoint = null;
     
     /**
      * Rectangle to Draw Bubble or detect click inside
      */
 	private Rect BubbleDrawRec;
 	
-	/**
-	 * time span to wait for doble click detection
-	 */
-	private final int DOBLE_CLICK_TIME=320; 
-	
-	private doubleClickWaitTimer counter = new doubleClickWaitTimer(0,0);
-	private boolean counterStopped = false;
-
-	private class doubleClickWaitTimer extends CountDownTimer 
-		 {
-	    	public doubleClickWaitTimer(long millisInFuture, long countDownInterval) 
-	    	{
-	    		 super(millisInFuture, countDownInterval);
-	    	}        	
-	    	@Override
-	    	public void onFinish() 
-	    	{
-	    		isBubbleShow=!isBubbleShow;
-	    		Render(true);
-	    	}
-			@Override
-			public void onTick(long millisUntilFinished) 
-			{
-			}        
-	    }
-
-    
     private void MapView_Click(int eX, int eY)
     {
-    	long TimeDistance = 0;
-    	isSelected=false;
-    	if(LastMapViewClickTime!=null)
+    	if ((BubbleCache != null) && isBubbleShow && BubbleDrawRec != null && BubbleDrawRec.contains(eX, eY)) // Bubble gedrückt
     	{
-    		TimeDistance=new Date().getTime()-LastMapViewClickTime.getTime();
-        	
-        	if((TimeDistance>100) && (TimeDistance<DOBLE_CLICK_TIME))
-        	{
-        		Rect testDoubleClickRec = new Rect(eX-20,eY-20,eX+20,eY+20);
-        		if(testDoubleClickRec.contains(LastMapViewClickPoint.x,LastMapViewClickPoint.y))
-        		{
-        			isDoubleClick=true;
-        		}
-        		else
-        		{
-        			isDoubleClick=false;
-        		}
-        	}
-        	else
-        	{
-        		isDoubleClick=false;
-        	}
+    		// Click inside Bubble -> hide Bubble and select Cache
+    		 Global.SelectedWaypoint(BubbleCache, BubbleWaypoint);
+    		 CacheDraw.ReleaseCacheBMP();
+    		 isBubbleShow = false;
+    		 BubbleCacheId = -1;
+    		 BubbleCache = null;
+    		 BubbleWaypoint = null;
+    		 // Shutdown Autoresort
+    		 Global.autoResort = false;
+    		 Render(true);
+    		 // do nothing else with this click
+    		 return;
     	}
-    	else
+    	else if (isBubbleShow)
     	{
-    		isDoubleClick=false;
-    	}
-    	
-    	LastMapViewClickPoint= new Point(eX,eY);
-    	LastMapViewClickTime= new Date();
-    	
-    	if(isBubbleShow && BubbleDrawRec!=null && BubbleDrawRec.contains(eX, eY))// Bubble gedrückt
-    	{
-    		isBubbleClick=true;
-    		if(isDoubleClick)
-    		{
-    			isSelected=true;
-    		}
-
+    		// Click outside Bubble -> hide Bubble
+    		isBubbleShow = false;
     		Render(true);
     	}
-    	else
-    	{
-    		isBubbleClick=false;
-    	}
-    	
-    	/*//Debug Msg
-    	String D0= isBubbleShow? "1":"0";
-    	String D1= isBubbleClick? "1":"0";
-    	String D2= isDoubleClick? "1":"0";
-    	String D3= isSelected? "1":"0";
-    	Logger.DEBUG("isBubbleShow=" + D0);
-    	Logger.DEBUG("isBubbleclick=" + D1);
-    	Logger.DEBUG("isDoubleclick=" + D2 + " " + String.valueOf(TimeDistance));
-    	Logger.DEBUG("isSelected=" + D3);*/
-    	
+
         if (arrowHitWhenDown && Math.sqrt(((eX - cacheArrowCenter.x) * (eX - cacheArrowCenter.x) + (eY - cacheArrowCenter.y) * (eY - cacheArrowCenter.y))) < (lineHeight * 1.5f))
         {
           Coordinate target = (Global.SelectedWaypoint() != null) ? new Coordinate(Global.SelectedWaypoint().Latitude(), Global.SelectedWaypoint().Longitude()) : new Coordinate(Global.SelectedCache().Latitude(), Global.SelectedCache().Longitude());
@@ -3586,7 +3496,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       WaypointRenderInfo minWpi = new WaypointRenderInfo();
       minWpi.Cache = null;
 
-      Cache BubbleCache = null;
       int minDist = Integer.MAX_VALUE;
       // Überprüfen, auf welchen Cache geklickt wurde
       for (int i = wpToRender.size() - 1; i >= 0; i--)
@@ -3605,40 +3514,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
           minWpi = wpi;
           
         }
-        if(isSelected)
-        {
-        	if(wpi.Cache.Id==BubleCacheId)
-        	{
-        		BubbleCache=wpi.Cache;
-        		minWpi = wpi;
-        	}
-        }
         
-      }
-
-      
-      
-      if(isSelected)
-      {
-    	  	counter.cancel();
-	        Global.SelectedCache(BubbleCache);
-	        CacheDraw.ReleaseCacheBMP();
-	        updateCacheList(); 
-	        isBubbleShow=true;
-	        BubleCacheId=minWpi.Cache.Id;
-	        // Shutdown Autoresort
-	        Global.autoResort = false;
-      }
-      else
-      {
-    	  if(isBubbleClick && !(isDoubleClick))
-    	  {
-    		  // switch show not now, wait for double click
-    		 
-    				 counter.cancel();
-    				 counter = new doubleClickWaitTimer(DOBLE_CLICK_TIME,DOBLE_CLICK_TIME);
-    				 counter.start();
-    	  }
       }
       
       if (minWpi.Cache == null)
@@ -3651,23 +3527,44 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
       if (minWpi.Waypoint != null)
       {
-        // Wegpunktliste ausrichten
-        Global.SelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
-        //FormMain.WaypointListPanel.AlignSelected();
-        updateCacheList();
-        Render(true);
+    	  if (Global.SelectedCache() != minWpi.Cache)
+    	  {
+    		  // Show Bubble
+         	  isBubbleShow = true;
+        	  BubbleCacheId = minWpi.Cache.Id;
+        	  BubbleCache = minWpi.Cache;
+        	  BubbleWaypoint = minWpi.Waypoint;
+    		        
+        	  Render(true);      
+    		  
+    	  } else
+    	  {
+    		  // do not show Bubble because there will not be selected a different cache but only a different waypoint
+    		  // Wegpunktliste ausrichten
+    		  Global.SelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
+    		  //FormMain.WaypointListPanel.AlignSelected();
+    		  //        updateCacheList();
+    		  Render(true); 
+    	  }
+
       }
       else
-      {    	  
-    	  
-    	 
-    		    isBubbleShow=true;
-		        BubleCacheId=minWpi.Cache.Id;
-		        
-    	 
-
-    	  Render(true);
-       
+      {    	 
+    	  if (Global.SelectedCache() != minWpi.Cache)
+    	  {
+         	  isBubbleShow = true;
+        	  BubbleCacheId = minWpi.Cache.Id;
+        	  BubbleCache = minWpi.Cache;
+    		        
+        	  Render(true);      
+    	  } else
+    	  {
+    		  // do not show Bubble because there will not be selected a different cache but only a different waypoint
+  			// Cacheliste ausrichten
+			Global.SelectedCache(minWpi.Cache);
+			// updateCacheList();  		
+			Render(true); 
+    	  }
       }
       
        
