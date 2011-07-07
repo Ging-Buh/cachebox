@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 
+import CB_Core.Enums.CacheSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
@@ -343,7 +344,7 @@ public class GPXFileReader
 				}
 				else if (currentElementName.equalsIgnoreCase("container"))
 				{
-					currentCache.Size= sizeLookup.get((vn.toNormalizedString(vn.getText())).toLowerCase());
+					currentCache.Size= CacheSizes.parseString((vn.toNormalizedString(vn.getText())));
 				}
 				else if (currentElementName.equalsIgnoreCase("difficulty"))
 				{

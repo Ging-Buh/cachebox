@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import CB_Core.Enums.Attributes;
+import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
@@ -207,7 +208,7 @@ public class GroundspeakAPI {
 						cache.shortDescription = jCache.getString("ShortDescription");
 						JSONObject jContainer = jCache.getJSONObject("ContainerType");
 						int jSize = jContainer.getInt("ContainerTypeId");
-						cache.Size = getCacheSize(jSize);
+						cache.Size = CacheSizes.parseInt( getCacheSize(jSize) );
 						cache.solverCheckSum = 0;
 						cache.Terrain = (float)jCache.getDouble("Terrain");
 						cache.Type = CacheTypes.Traditional;

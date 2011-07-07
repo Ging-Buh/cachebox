@@ -203,7 +203,7 @@ public class CacheDraw
     	     
     	     canvas.drawText("S",SDTleft,SDTLineTop , DTPaint);
     	     SDTleft += space;
-    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.SizeIcons[(int)(cache.Size)], SDTleft, SDTImageTop, Global.scaledFontSize_normal);
+    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.SizeIcons[(int)(cache.Size.ordinal())], SDTleft, SDTImageTop, Global.scaledFontSize_normal);
     	     SDTleft += tab;	
     	     canvas.drawText("D",SDTleft,SDTLineTop , DTPaint);
     	     SDTleft += space;

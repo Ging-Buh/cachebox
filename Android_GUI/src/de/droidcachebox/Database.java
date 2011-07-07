@@ -10,6 +10,7 @@ import de.droidcachebox.Geocaching.CacheList;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Views.Forms.SelectDB;
 import CB_Core.FileIO;
+import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
@@ -591,7 +592,7 @@ public class Database {
         	cache.GcCode = reader.getString(1).trim();
         	cache.Pos = new Coordinate(reader.getDouble(2), reader.getDouble(3));
         	cache.Name = reader.getString(4).trim();
-        	cache.Size = reader.getInt(5);
+        	cache.Size = CacheSizes.parseInt( reader.getInt(5) );
         	cache.Difficulty = ((float)reader.getShort(6)) / 2;
         	cache.Terrain = ((float)reader.getShort(7)) / 2;
         	cache.Archived = reader.getInt(8) != 0;

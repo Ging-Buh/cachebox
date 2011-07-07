@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import CB_Core.GlobalCore;
+import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 
 
@@ -90,7 +91,7 @@ public class Cache implements Comparable<Cache>
     /**
 	 * Größe des Caches. Bei Wikipediaeinträgen enthält dieses Feld den Radius in m
      */
-    public int Size;
+    public CacheSizes Size;
     /**
 	 * Schwierigkeit des Caches
      */
