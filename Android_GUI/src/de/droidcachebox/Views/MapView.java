@@ -3162,8 +3162,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        // Position auf der Karte
 	        Point pt = ToScreen(Descriptor.LongitudeToTileX(Zoom, GlobalCore.LastValidPosition.Longitude), Descriptor.LatitudeToTileY(Zoom, GlobalCore.LastValidPosition.Latitude), Zoom);
 	
-	        int size = lineHeight;
-	
 /*	        debugString1 = String.valueOf(Global.Locator.getCompassHeading());
 	        if (Global.Locator.getLocation() != null)
 	        	debugString2 = Global.Locator.getLocation().getBearing() + " - " + Global.Locator.getLocation().getSpeed() * 3600 / 1000 + "kmh";
@@ -3174,40 +3172,38 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        boolean lastUsedCompass = Global.Locator.LastUsedCompass;
 	        float dirX = (float)Math.sin(courseRad);
 	        float dirY = (float)-Math.cos(courseRad);
-	
-	        Point[] dir = new Point[3];
-	        dir[0] = new Point();
-	        dir[0].x = (int)(pt.x + dirX * size * 0.75f);
-	        dir[0].y = (int)(pt.y + dirY * size * 0.75f);
-	
-	        // x/y -> -y/x
-	        dir[1] = new Point();
-	        dir[1].x = (int)(pt.x - dirY * size / 3.0f - dirX * size * 0.25f);
-	        dir[1].y = (int)(pt.y + dirX * size / 3.0f - dirY * size * 0.25f);
-	
-	        dir[2] = new Point();
-	        dir[2].x = (int)(pt.x + dirY * size / 3.0f - dirX * size * 0.25f);
-	        dir[2].y = (int)(pt.y - dirX * size / 3.0f - dirY * size * 0.25f);
-	
-	        float[] verts = new float[6];
-	        for (int i = 0; i < 3; i++)
-	        {
-	        	verts[i*2] = dir[i].x;
-	        	verts[i*2+1] = dir[i].y;	        
-	        }
 
-	        Path path = new Path();
-	        path.moveTo(dir[0].x, dir[0].y);
-	        path.lineTo(dir[1].x, dir[1].y);
-	        path.lineTo(dir[2].x, dir[2].y);
-	        path.lineTo(dir[0].x, dir[0].y);
 	        Paint paint = new Paint();
+	        int MyColor;
+	        MyColor = Color.RED;
 	        if (lastUsedCompass)
-	        	paint.setColor(Color.BLACK);	// bei magnet. Kompass
-	        else
-	        	paint.setColor(Color.RED);		// bei GPS Kompass
+	        	MyColor = Color.BLUE;	// bei magnet. Kompass
+
+	        // first triangle
+	        long size = Math.round(1.8 * lineHeight);
+	        Path path = triaglePath(pt, size, dirX, dirY);
+	        paint.setColor(MyColor);	// bei magnet. Kompass
 	        paint.setStyle(Style.FILL);
 	        canvas.drawPath(path, paint);
+	        
+	        // second triangle
+	        size = Math.round(1.4 * lineHeight);
+	        path = triaglePath(pt, size, dirX, dirY);
+	        paint.setColor(Color.WHITE);	// bei magnet. Kompass
+	        paint.setStyle(Style.FILL);
+	        canvas.drawPath(path, paint);
+	        
+	        //third triangle, a little bit smaller
+	        size = lineHeight;
+	        path = triaglePath(pt, size, dirX, dirY);
+	        paint.setColor(MyColor);	// bei magnet. Kompass
+	        paint.setStyle(Style.FILL);
+	        canvas.drawPath(path, paint);
+
+	        
+	        
+	        
+	        
 	        
 	        if ((Global.Locator.getLocation() != null) && (Global.Locator.getLocation().hasAccuracy()))
 	        {
@@ -3230,6 +3226,36 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	    }
 */
     }
+
+	private Path triaglePath(Point pt, long size, float dirX, float dirY) {
+		Point[] dir = new Point[3];
+		dir[0] = new Point();
+		dir[0].x = (int)(pt.x + dirX * size * 0.75f);
+		dir[0].y = (int)(pt.y + dirY * size * 0.75f);
+
+		// x/y -> -y/x
+		dir[1] = new Point();
+		dir[1].x = (int)(pt.x - dirY * size / 3.0f - dirX * size * 0.25f);
+		dir[1].y = (int)(pt.y + dirX * size / 3.0f - dirY * size * 0.25f);
+
+		dir[2] = new Point();
+		dir[2].x = (int)(pt.x + dirY * size / 3.0f - dirX * size * 0.25f);
+		dir[2].y = (int)(pt.y - dirX * size / 3.0f - dirY * size * 0.25f);
+
+		float[] verts = new float[6];
+		for (int i = 0; i < 3; i++)
+		{
+			verts[i*2] = dir[i].x;
+			verts[i*2+1] = dir[i].y;	        
+		}
+
+		Path path = new Path();
+		path.moveTo(dir[0].x, dir[0].y);
+		path.lineTo(dir[1].x, dir[1].y);
+		path.lineTo(dir[2].x, dir[2].y);
+		path.lineTo(dir[0].x, dir[0].y);
+		return path;
+	}
 
     int minZoom;
     int maxZoom;
