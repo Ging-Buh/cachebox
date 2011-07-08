@@ -1,7 +1,6 @@
 package CB_Core.Import;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.text.ParseException;
@@ -15,13 +14,14 @@ import org.xmlpull.v1.XmlPullParserException;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.LogEntry;
 
 public class GPXFileImporter {
 	
-	private static SimpleDateFormat datePattern1 = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.S'Z'" );
+	private static SimpleDateFormat datePattern1 = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.S" );
 	private static SimpleDateFormat datePattern2 = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss'Z'" );
 
 	private String mGpxFileName;
@@ -82,7 +82,7 @@ public class GPXFileImporter {
 			        	cache.GcCode = parser.nextText();
 			        	cache.Id = Cache.GenerateCacheId( cache.GcCode );
 			        } else if (tagName.equalsIgnoreCase( "time" ) ){
-			        	parseWptTimeElement(parser, cache);
+			        	cache.DateHidden = parseDate( parser.nextText() );
 			        } else if (tagName.equalsIgnoreCase( "url" ) ){
 			        	cache.Url = parser.nextText();
 			        } else if (tagName.equalsIgnoreCase( "sym" ) ){
@@ -205,6 +205,9 @@ public class GPXFileImporter {
 			    case XmlPullParser.START_TAG:
 			        if (tagName.equalsIgnoreCase( "groundspeak:log" ) ){
 			        	LogEntry log = parseWptCacheLogsLogElement(parser, cache);
+			        	if( log != null ) {
+			        		mImportHandler.handleLog( log );
+			        	}
 			        } else {
 			        	skipUntilEndTag(parser, tagName);
 			        }
@@ -221,15 +224,25 @@ public class GPXFileImporter {
 
 	private LogEntry parseWptCacheLogsLogElement(KXmlParser parser, Cache cache) throws Exception {
 		LogEntry log = new LogEntry();
-		
+		log.CacheId = cache.Id;
+		String attrValue = getAttributeValueFromParser(parser, "id" );
+		if( attrValue!=null ) {
+			log.Id = Long.parseLong( attrValue );
+		}
 		boolean done = false;
 		int eventType = parser.next();
 		while (eventType != XmlPullParser.END_DOCUMENT && !done){
             String tagName = parser.getName();
 			switch (eventType){
 			    case XmlPullParser.START_TAG:
-			        if (tagName.equalsIgnoreCase( "xxgroundspeak:log" ) ){
-			        	//
+			        if (tagName.equalsIgnoreCase( "groundspeak:date" ) ){
+			        	log.Timestamp = parseDate( parser.nextText() );
+			        } else if (tagName.equalsIgnoreCase( "groundspeak:finder" ) ){
+			        	log.Finder = parser.nextText();
+			        } else if (tagName.equalsIgnoreCase( "groundspeak:text" ) ){
+			        	log.Comment = parser.nextText();
+			        } else if (tagName.equalsIgnoreCase( "groundspeak:type" ) ){
+			        	log.Type = LogTypes.parseString( parser.nextText() );
 			        } else {
 			        	skipUntilEndTag(parser, tagName);
 			        }
@@ -247,8 +260,17 @@ public class GPXFileImporter {
 		return log;
 	}
 
-	private void skipUntilEndTag(KXmlParser parser, String tagName)
-			throws XmlPullParserException, IOException {
+	private String getAttributeValueFromParser(KXmlParser parser, String attrName ) {
+		String attrValue = null;
+		for( int i=0; i<parser.getAttributeCount(); ++i ) {
+			if( parser.getAttributeName( i ).equalsIgnoreCase( attrName ) ) {
+				attrValue = parser.getAttributeValue( i );
+			}
+		}
+		return attrValue;
+	}
+
+	private void skipUntilEndTag(KXmlParser parser, String tagName) throws Exception {
 		while( true ) {
 			if( parser.next() == XmlPullParser.END_TAG ) {
 				if( parser.getName().equalsIgnoreCase( tagName ) ) {
@@ -283,21 +305,22 @@ public class GPXFileImporter {
 		}
 	}
 
-	
-	private void parseWptTimeElement(KXmlParser parser, Cache cache) throws Exception {
-		String text = parser.nextText();
-		Date date = parseDate(datePattern1, text);
+	private static Date parseDate( String text ) throws Exception {
+		Date date = parseDateWithFormat(datePattern1, text);
 		if( date != null ) {
-			cache.DateHidden = date;
+			return date;
 		} else {
-			date = parseDate(datePattern2, text);
+			date = parseDateWithFormat(datePattern2, text);
 			if( date != null ) {
-				cache.DateHidden = date;
+				return date;
+			}
+			else {
+				throw new XmlPullParserException( "Illegal date format" );
 			}
 		}
 	}
 
-	private Date parseDate(SimpleDateFormat df, String text) throws Exception {
+	private static Date parseDateWithFormat(SimpleDateFormat df, String text) throws Exception {
 		// TODO hier müsste mal über die Zeitzone nachgedacht werden - 
 		// irgendwas ist an den Daten, die von GC.com kommen, komisch 
 		Date date = null;

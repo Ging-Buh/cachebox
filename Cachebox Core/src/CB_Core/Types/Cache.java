@@ -473,11 +473,20 @@ public class Cache implements Comparable<Cache>
 		attributesPositive |= Attributes.GetAttributeIndex(attribute);
     }
     
+    public boolean isAttributePositiveSet( Attributes attribute )
+    {
+    	return (attributesPositive & Attributes.GetAttributeIndex(attribute)) > 0;
+    }
+	
     public void addAttributeNegative( Attributes attribute )
     {
 		attributesNegative |= Attributes.GetAttributeIndex(attribute);								
     }
     
+    public boolean isAttributeNegativeSet( Attributes attribute )
+    {
+    	return (attributesNegative & Attributes.GetAttributeIndex(attribute)) > 0;
+    }
 	
 	/*
 	 * Overrides

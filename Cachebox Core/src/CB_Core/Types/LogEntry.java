@@ -1,6 +1,7 @@
 package CB_Core.Types;
 
 import java.util.Date;
+import CB_Core.Enums.LogTypes;
 
 public class LogEntry 
 {
@@ -13,7 +14,7 @@ public class LogEntry
     /**
     * Logtyp, z.B. "Found it!"
     */
-    public Integer Type = -1;
+    public LogTypes Type;
 
     /**
     * Index des zu verwendenden Bildchens

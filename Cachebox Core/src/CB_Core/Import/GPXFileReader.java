@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import CB_Core.Enums.CacheSizes;
+import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
@@ -33,13 +34,6 @@ public class GPXFileReader
     private HashMap<String, Integer> sizeLookup = new HashMap<String, Integer>();
 	
     
-    /// <summary>
-    /// Wird verwendet, um das Type-Feld der Logs nachzuschlagen
-    /// </summary>
-    private HashMap<String, Integer> logLookup = new HashMap<String, Integer>();
-
-	
-	
 	/**
 	 * 
 	 */
@@ -54,35 +48,7 @@ public class GPXFileReader
         sizeLookup.put("not chosen", 0);
         sizeLookup.put("virtual", 0);
         sizeLookup.put("other", 0);
-        
-        
-     // Log-Typen (Groundspeak, GSAK)
-        logLookup.put("found it", 0);
-        logLookup.put("found", 0);
-        logLookup.put("didn't find it", 1);
-        logLookup.put("not found", 1);
-        logLookup.put("write note", 2);
-        logLookup.put("publish listing", 3);
-        logLookup.put("enable listing", 4);
-        logLookup.put("needs maintenance", 5);
-        logLookup.put("temporarily disable listing", 6);
-        logLookup.put("owner maintenance", 7);
-        logLookup.put("update coordinates", 7);
-        logLookup.put("will attend", 8);
-        logLookup.put("attended", 9);
-        logLookup.put("webcam photo taken", 10);
-        logLookup.put("archive", 11);
-        logLookup.put("unarchive", 11);
-        logLookup.put("post reviewer note", 12);
-        logLookup.put("needs archived", 13);
-
-        // GeoToad
-        logLookup.put("other", 2);
-        logLookup.put("note", 2);
-        logLookup.put("geocoins: ", 2);
-        logLookup.put("cache disabled!", 6);
-        logLookup.put("retract listing", 11);
-        
+       
 	}
 
 	/**
@@ -496,7 +462,7 @@ public class GPXFileReader
 						}
 						else if (subElementName.equalsIgnoreCase("type"))
 						{
-							logEntry.Type= sizeLookup.get((vn.toNormalizedString(vn.getText())).toLowerCase());
+							logEntry.Type= LogTypes.parseString( vn.toNormalizedString(vn.getText()) );
 						}
 						else if (subElementName.equalsIgnoreCase("finder") || subElementName.equalsIgnoreCase("geocacher"))
 						{

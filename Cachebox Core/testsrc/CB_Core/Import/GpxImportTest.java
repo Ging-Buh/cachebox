@@ -2,8 +2,10 @@ package CB_Core.Import;
 
 import java.util.Iterator;
 
+import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import junit.framework.TestCase;
@@ -40,7 +42,11 @@ public class GpxImportTest extends TestCase {
 		assertTrue( "Typ ist falsch", cache.Type == CacheTypes.Traditional );
 		assertTrue( "Size ist falsch", cache.Size == CacheSizes.small );
 		assertTrue( "Difficulty ist falsch", cache.Difficulty == 2 );
-		assertTrue( "Terrain", cache.Terrain == 5 );
+		assertTrue( "Terrain ist falsch", cache.Terrain == 5 );
+		
+		assertTrue( "Attribut falsch", cache.isAttributePositiveSet( Attributes.Bicycles ) );
+		assertFalse( "Attribut falsch", cache.isAttributeNegativeSet( Attributes.Bicycles ) );
+		assertFalse( "Attribut falsch", cache.isAttributePositiveSet( Attributes.Boat ) );
 		
 		// TODO Beschreibungstexte überprüfen
 		// System.out.println( cache.shortDescription );
@@ -51,6 +57,15 @@ public class GpxImportTest extends TestCase {
 		Iterator<LogEntry> logIterator = importHandler.getLogIterator();
 		LogEntry log = logIterator.next();
 		
+		assertEquals( "CacheId ist falsch", log.CacheId, 24578729153020743L );
+		assertEquals( "Id ist falsch", log.Id, 170855167 );
+		assertEquals( "Timestamp falsch", "Mon Jul 04 19:00:00 CEST 2011", log.Timestamp.toString() );
+		assertEquals( "Finder falsch", "SaarFuchs", log.Finder );
+		assertTrue( "LogTyp falsch", log.Type == LogTypes.found );
+
+		// TODO Beschreibungstexte überprüfen
+		// System.out.println( log.Comment );
+
 		
 	}
 
