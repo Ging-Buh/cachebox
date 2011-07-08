@@ -3,18 +3,18 @@ package de.droidcachebox.Views;
 import java.util.List;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 
-import de.droidcachebox.Events.CachListChangedEventList;
-import de.droidcachebox.Events.CacheListChangedEvent;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
-import de.droidcachebox.Geocaching.CacheList;
+import CB_Core.Types.CacheList;
 
+import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.R.drawable;
@@ -34,7 +34,7 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-public class CacheListView extends ListView implements ViewOptionsMenu, PositionEvent, CacheListChangedEvent {
+public class CacheListView extends ListView implements ViewOptionsMenu, PositionEvent, CB_Core.Events.CacheListChangedEvent {
 	
 	private CustomAdapter lvAdapter;
 	private Paint paint;
@@ -60,7 +60,7 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
         			finalWp = cache.GetFinalWaypoint();
         		// shutdown AutoResort when selecting a cache by hand
         		Global.autoResort = false;
-        		Global.SelectedWaypoint(cache, finalWp);
+        		GlobalCore.SelectedWaypoint(cache, finalWp);
 
         		invalidate();
 				return;
@@ -160,7 +160,7 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 		PositionEventList.Add(this);
 
 		// aktuellen Cache in der List anzeigen
-		if (Global.SelectedCache() != null)
+		if (GlobalCore.SelectedCache() != null)
 		{
 			int id = 0;
 			
@@ -168,7 +168,7 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 			int last =this.getLastVisiblePosition();
 			for (Cache ca : Database.Data.Query)
 			{
-				if (ca == Global.SelectedCache())
+				if (ca == GlobalCore.SelectedCache())
 				{
 					if(!(first<id && last>id))
 						this.setSelection(id - 2);

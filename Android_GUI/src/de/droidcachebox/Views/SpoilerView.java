@@ -3,16 +3,16 @@ package de.droidcachebox.Views;
 import java.util.ArrayList;
 
 import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 
-import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Components.TouchImageView;
-import de.droidcachebox.Events.SelectedCacheEvent;
-import de.droidcachebox.Events.SelectedCacheEventList;
+import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
 import android.content.Context;
@@ -94,7 +94,7 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
     //    mSwitcher.setImageResource(mImageIds[position]);
 		if(aktCache == null)
 			return;
-		String filename = Global.SelectedCache().SpoilerRessources().get(position);
+		String filename = GlobalCore.SelectedCache().SpoilerRessources().get(position);
 		filename = filename.substring(0, filename.lastIndexOf("."));
 		filename = FileIO.GetFileNameWithoutExtension(filename);
 		if (filename.indexOf(aktCache.GcCode) == 0)
@@ -102,7 +102,7 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
 		if (filename.indexOf(" - ") == 0)
 			filename = filename.substring(3);
 		spoilerFilename.setText(filename);
-        String file = Global.SelectedCache().SpoilerRessources().get(position);
+        String file = GlobalCore.SelectedCache().SpoilerRessources().get(position);
 		
 		// das Laden sollte noch in einen Thread ausgelagert werden
         nextBitmap = file;
@@ -140,7 +140,7 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView i = new ImageView(mContext);
 
-            String file = Global.SelectedCache().SpoilerRessources().get(position);
+            String file = GlobalCore.SelectedCache().SpoilerRessources().get(position);
             Bitmap bit = null;
        		bit = lBitmaps.get(position);
             if (bit == null)
@@ -187,7 +187,7 @@ public class SpoilerView extends FrameLayout  implements ViewOptionsMenu, Select
 	public void OnShow() {
 		// TODO Auto-generated method stub
 		Logger.DEBUG("sv1");
-		aktCache = Global.SelectedCache();
+		aktCache = GlobalCore.SelectedCache();
 		lBitmaps.clear();
 		CacheDraw.ReloadSpoilerRessources(aktCache);
 		Logger.DEBUG("sv2");

@@ -5,12 +5,13 @@ import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 
 import de.droidcachebox.Components.ListenToPhoneState;
-import de.droidcachebox.Events.SelectedCacheEvent;
-import de.droidcachebox.Events.SelectedCacheEventList;
+import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
 import de.droidcachebox.Geocaching.JokerEntry;
@@ -51,7 +52,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 		this.parentActivity = parentActivity;
 		SelectedCacheEventList.Add(this);
 		this.setAdapter(null);
-		lvAdapter = new CustomAdapter(getContext(), Global.SelectedCache());
+		lvAdapter = new CustomAdapter(getContext(), GlobalCore.SelectedCache());
 		this.setAdapter(lvAdapter);
 		this.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override

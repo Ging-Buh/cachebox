@@ -1,4 +1,4 @@
-package de.droidcachebox.Events;
+package CB_Core.Events;
 
 // this is an interface for all Objects which sould receive the selectedCacheChanged Event
 import java.util.ArrayList;

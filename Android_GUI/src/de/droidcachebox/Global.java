@@ -10,10 +10,7 @@ import java.util.regex.Pattern;
 import CB_Core.Config;
 import CB_Core.Log.Logger;
 import CB_Core.TranslationEngine.LangStrings;
-import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
-import CB_Core.Types.Waypoint;
-import de.droidcachebox.Events.SelectedCacheEventList;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;
@@ -62,7 +59,6 @@ public class Global{
 	public static SmoothScrollingTyp SmoothScrolling = SmoothScrollingTyp.normal;
 	public static RouteOverlay.Route AktuelleRoute = null;
     public static int aktuelleRouteCount = 0;
-    public static boolean ResortAtWork = false;
     
     public static long TrackDistance;
     
@@ -186,42 +182,6 @@ public class Global{
     /// </summary>
     public static Locator Locator = null;
 
-    protected static Cache selectedCache = null;
-    public static void SelectedCache(Cache cache)
-    {
-    	selectedCache = cache;
-    	selectedWaypoint = null;
-    	SelectedCacheEventList.Call(cache, null);
-    }
-    
-    public static Cache SelectedCache()
-    {
-    	return selectedCache;
-    }
-
-    private static Cache nearestCache = null;
-    public static Cache NearestCache()
-    {
-    	return nearestCache;
-    }
-    public static void NearestCache(Cache nearest)
-    {
-    	nearestCache = nearest;
-    }
-    
-    protected static Waypoint selectedWaypoint = null;
-    public static void SelectedWaypoint(Cache cache, Waypoint waypoint)
-    {
-    	selectedCache = cache;
-    	selectedWaypoint = waypoint;
-    	SelectedCacheEventList.Call(selectedCache, waypoint);
-    }
-    public static Waypoint SelectedWaypoint()
-    {
-    	return selectedWaypoint;
-    }
-
-    
     public static class Paints
     {
     	public static Paint mesurePaint;

@@ -1,8 +1,6 @@
-package de.droidcachebox.Events;
+package CB_Core.Events;
 
 import java.util.ArrayList;
-
-import de.droidcachebox.Global;
 
 public class CachListChangedEventList 
 {

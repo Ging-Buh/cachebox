@@ -3,15 +3,16 @@ package de.droidcachebox.Views;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
-import de.droidcachebox.Events.CachListChangedEventList;
+import CB_Core.Events.CachListChangedEventList;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
-import de.droidcachebox.Events.SelectedCacheEvent;
-import de.droidcachebox.Events.SelectedCacheEventList;
+import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
 import de.droidcachebox.Views.Forms.NumerikInputBox;
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
@@ -109,7 +110,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 			@Override
 			public void onClick(View arg0) 
 			{
-				 if (Global.SelectedCache()== null)
+				 if (GlobalCore.SelectedCache()== null)
 		                return;
 
 		            if (!Config.GetBool("AllowInternetAccess"))
@@ -120,12 +121,12 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		            
 		            try
 		            {
-		            	Intent browserIntent = new Intent("android.intent.action.VIEW", Uri.parse(Global.SelectedCache().Url.trim()));
+		            	Intent browserIntent = new Intent("android.intent.action.VIEW", Uri.parse(GlobalCore.SelectedCache().Url.trim()));
 		            	main.mainActivity.startActivity(browserIntent);
 		            }
 		            catch (Exception exc)
 		            {
-		            	Toast.makeText(main.mainActivity, Global.Translations.Get("Cann_not_open_cache_browser") + " (" + Global.SelectedCache().Url.trim() + ")", Toast.LENGTH_SHORT).show();
+		            	Toast.makeText(main.mainActivity, Global.Translations.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.SelectedCache().Url.trim() + ")", Toast.LENGTH_SHORT).show();
                     }
 				
 			}
@@ -223,16 +224,16 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	public void refreshText()
 	{
 		CachesFoundLabel.setText(Global.Translations.Get("caches_found") + " " + String.valueOf(Config.GetInt("FoundOffset")));
-		if (Global.SelectedCache() != null)
-            if (Global.SelectedWaypoint() != null)
+		if (GlobalCore.SelectedCache() != null)
+            if (GlobalCore.SelectedWaypoint() != null)
             {
-            	WP.setText(Global.SelectedWaypoint().GcCode);
-            	Cord.setText(Global.FormatLatitudeDM(Global.SelectedWaypoint().Latitude()) + " " + Global.FormatLongitudeDM(Global.SelectedWaypoint().Longitude()));
+            	WP.setText(GlobalCore.SelectedWaypoint().GcCode);
+            	Cord.setText(Global.FormatLatitudeDM(GlobalCore.SelectedWaypoint().Latitude()) + " " + Global.FormatLongitudeDM(GlobalCore.SelectedWaypoint().Longitude()));
             }
             else
             {
-            	WP.setText(Global.SelectedCache().GcCode);
-            	Cord.setText(Global.FormatLatitudeDM(Global.SelectedCache().Latitude()) + " " + Global.FormatLongitudeDM(Global.SelectedCache().Longitude()));
+            	WP.setText(GlobalCore.SelectedCache().GcCode);
+            	Cord.setText(Global.FormatLatitudeDM(GlobalCore.SelectedCache().Latitude()) + " " + Global.FormatLongitudeDM(GlobalCore.SelectedCache().Longitude()));
             }
 		
 		this.invalidate();

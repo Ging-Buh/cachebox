@@ -1,6 +1,7 @@
 package de.droidcachebox.Views;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
@@ -140,7 +141,7 @@ public class CacheListViewItem extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         
-        Boolean GlobalSelected = cache == Global.SelectedCache();
+        Boolean GlobalSelected = cache == GlobalCore.SelectedCache();
         int BackgroundColor;
         if (BackColorChanger)
         {

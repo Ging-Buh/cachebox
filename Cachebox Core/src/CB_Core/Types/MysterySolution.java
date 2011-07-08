@@ -1,4 +1,4 @@
-package de.droidcachebox.Geocaching;
+package CB_Core.Types;
 
 public class MysterySolution {
     public CB_Core.Types.Cache Cache;

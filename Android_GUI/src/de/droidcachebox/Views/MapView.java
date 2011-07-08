@@ -18,9 +18,10 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Events.CachListChangedEventList;
 
 
-import de.droidcachebox.Geocaching.MysterySolution;
+import CB_Core.Types.MysterySolution;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -57,11 +58,10 @@ import de.droidcachebox.main;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
-import de.droidcachebox.Events.CachListChangedEventList;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
-import de.droidcachebox.Events.SelectedCacheEvent;
-import de.droidcachebox.Events.SelectedCacheEventList;
+import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Map.Descriptor.PointD;
@@ -72,7 +72,7 @@ import de.droidcachebox.Map.Tile;
 import de.droidcachebox.Views.Forms.MessageBox;
 
 
-public class MapView extends RelativeLayout implements SelectedCacheEvent, PositionEvent, ViewOptionsMenu, de.droidcachebox.Events.CacheListChangedEvent {
+public class MapView extends RelativeLayout implements SelectedCacheEvent, PositionEvent, ViewOptionsMenu, CB_Core.Events.CacheListChangedEvent {
 	private boolean isVisible;  // true, when MapView is visible
 	private Timer zoomScaleTimer;
 	private TimerTask zoomTimerTask;
@@ -1597,7 +1597,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     {
         if (waypoint == null)
         {
-	        if ((cache == null) || (cache == Global.SelectedCache()))
+	        if ((cache == null) || (cache == GlobalCore.SelectedCache()))
 	        {
 	            if (cache.Archived || !cache.Available)
 	                return Global.NewMapOverlay.get(2).get(3);
@@ -1613,7 +1613,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        }
         } else
         {
-            if (waypoint == Global.SelectedWaypoint())
+            if (waypoint == GlobalCore.SelectedWaypoint())
             {
                 return Global.NewMapOverlay.get(2).get(1);
             }
@@ -1654,11 +1654,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	
 	      // Wegpunkte in Zeichenliste eintragen, unabhängig davon, wo
 	      // sie auf dem Bildschirm sind
-	      if (Global.SelectedCache() != null)
+	      if (GlobalCore.SelectedCache() != null)
 	      {
-	        if (!(hideMyFinds && Global.SelectedCache().Found))
+	        if (!(hideMyFinds && GlobalCore.SelectedCache().Found))
 	        {
-	          ArrayList<Waypoint> wps = Global.SelectedCache().waypoints;
+	          ArrayList<Waypoint> wps = GlobalCore.SelectedCache().waypoints;
 	
 	          for (Waypoint wp : wps)
 	          {
@@ -1667,9 +1667,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	            wpi.MapY = 256 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, wp.Pos.Latitude);
 	            wpi.Icon = Global.NewMapIcons.get(2).get((int)wp.Type.ordinal());
 	            wpi.UnderlayIcon = Global.NewMapOverlay.get(2).get(0);
-	            wpi.Cache = Global.SelectedCache();
+	            wpi.Cache = GlobalCore.SelectedCache();
 	            wpi.Waypoint = wp;
-	            wpi.Selected = (Global.SelectedWaypoint() == wp);
+	            wpi.Selected = (GlobalCore.SelectedWaypoint() == wp);
 	            wpi.UnderlayIcon = getUnderlayIcon(wpi.Cache, wpi.Waypoint);
 	
 	           	int x = (int)(wpi.MapX * dpiScaleFactorX * adjustmentCurrentToCacheZoom - screenCenter.X) + halfWidth;
@@ -1701,7 +1701,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			}
 	        
 	
-	        if ((x < xFrom || y < yFrom || x > xTo || y > yTo) && cache != Global.SelectedCache())
+	        if ((x < xFrom || y < yFrom || x > xTo || y > yTo) && cache != GlobalCore.SelectedCache())
 	          continue;
 	
 	        if ((hideCacheWithFinal) && (cache.Type == CacheTypes.Mystery) && cache.MysterySolved() && cache.HasFinalWaypoint())
@@ -1711,7 +1711,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	          // Die Koordinaten des Caches sind in den allermeisten Fällen irrelevant.
 	          // Damit wird von einem gelösten Mystery nur noch eine Koordinate in der Map gezeichnet, wenn der Cache nicht Selected ist.
 	          // Sobald der Cache Selected ist, werden der Cache und alle seine Waypoints gezeichnet.
-	          if (cache != Global.SelectedCache())
+	          if (cache != GlobalCore.SelectedCache())
 	            continue;
 	        }
 	
@@ -1724,7 +1724,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        wpi.Icon = Global.NewMapIcons.get(2).get(cache.GetMapIconId(gcLogin));
 	        wpi.UnderlayIcon = getUnderlayIcon(cache, wpi.Waypoint);
 	          
-	        if ((iconSize < 2) && (cache != Global.SelectedCache()))  // der SelectedCache wird immer mit den großen Symbolen dargestellt!
+	        if ((iconSize < 2) && (cache != GlobalCore.SelectedCache()))  // der SelectedCache wird immer mit den großen Symbolen dargestellt!
 	        {
 	            int iconId = 0;
 	            wpi.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(0);  // rectangular shaddow
@@ -1765,7 +1765,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        
 	        wpi.Cache = cache;
 	        wpi.Waypoint = null;
-	        wpi.Selected = (Global.SelectedCache() == cache);
+	        wpi.Selected = (GlobalCore.SelectedCache() == cache);
 	
 	        result.add(wpi);
 	      }
@@ -1777,7 +1777,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	          if ((Zoom < 14) && (solution.Cache.Type != CacheTypes.Mystery))
 	              continue;
 	          
-	          if (Global.SelectedCache() == solution.Cache)
+	          if (GlobalCore.SelectedCache() == solution.Cache)
 	              continue;   // is already in list
 	
 	          if (hideMyFinds && solution.Cache.Found)
@@ -1809,7 +1809,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	              wpiF.UnderlayIcon = getUnderlayIcon(solution.Cache, solution.Waypoint);
 	              if ((hideCacheWithFinal) && (solution.Cache.Type == CacheTypes.Mystery) && solution.Cache.MysterySolved() && solution.Cache.HasFinalWaypoint())
 	              {
-	                  if (Global.SelectedCache() != solution.Cache)
+	                  if (GlobalCore.SelectedCache() != solution.Cache)
 	                  {
 	                      // die Icons aller geloesten Mysterys evtl. aendern, wenn der Cache gefunden oder ein Eigener ist.
 	                      // change the icon of solved mysterys if necessary when the cache is found or own
@@ -1867,7 +1867,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	          }
 	          wpiF.Cache = solution.Cache;
 	          wpiF.Waypoint = solution.Waypoint;
-	          wpiF.Selected = (Global.SelectedWaypoint() == solution.Waypoint);
+	          wpiF.Selected = (GlobalCore.SelectedWaypoint() == solution.Waypoint);
 	          result.add(wpiF);
 	      }
 	
@@ -1933,7 +1933,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		  int imageX = x;
 		  int imageY = y;
 		
-		  if ((Zoom >= zoomCross) && (wpi.Selected) && (wpi.Waypoint == Global.SelectedWaypoint()))
+		  if ((Zoom >= zoomCross) && (wpi.Selected) && (wpi.Waypoint == GlobalCore.SelectedWaypoint()))
 		  {
 		    int size = (int)(halfIconWidth);
 		
@@ -1991,7 +1991,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		  }
 		
 		  boolean drawAsWaypoint = wpi.Waypoint != null;
-		  if ((Global.SelectedCache() != wpi.Cache) && hideCacheWithFinal && (wpi.Cache.Type == CacheTypes.Mystery))
+		  if ((GlobalCore.SelectedCache() != wpi.Cache) && hideCacheWithFinal && (wpi.Cache.Type == CacheTypes.Mystery))
 		    // Waypoints (=final) of not selected caches should be drawn like the cache self because the cache is not drawn
 		    drawAsWaypoint = false;
 		
@@ -2523,15 +2523,15 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       }
 
       // Gps empfang ?
-      if (Global.SelectedCache() != null && position.Valid)
+      if (GlobalCore.SelectedCache() != null && position.Valid)
       {
         // Distanz einzeichnen
         float distance = 0;
 
-        if (Global.SelectedWaypoint() == null)
-          distance = position.Distance(Global.SelectedCache().Pos);
+        if (GlobalCore.SelectedWaypoint() == null)
+          distance = position.Distance(GlobalCore.SelectedCache().Pos);
         else
-          distance = position.Distance(Global.SelectedWaypoint().Pos);
+          distance = position.Distance(GlobalCore.SelectedWaypoint().Pos);
 
         String text = UnitFormatter.DistanceString(distance);
         canvas.drawText(text, leftString, bottom - 10, paint);
@@ -2539,7 +2539,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         // Kompassnadel zeichnen
         if (Global.Locator != null)
         {
-          Coordinate cache = (Global.SelectedWaypoint() != null) ? Global.SelectedWaypoint().Pos : Global.SelectedCache().Pos;
+          Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos : GlobalCore.SelectedCache().Pos;
           double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
           double relativeBearing = bearing - Global.Locator.getHeading();
           double relativeBearingRad = relativeBearing * Math.PI / 180.0;
@@ -3462,7 +3462,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	if ((BubbleCache != null) && isBubbleShow && BubbleDrawRec != null && BubbleDrawRec.contains(eX, eY)) // Bubble gedrückt
     	{
     		// Click inside Bubble -> hide Bubble and select Cache
-    		 Global.SelectedWaypoint(BubbleCache, BubbleWaypoint);
+    		 GlobalCore.SelectedWaypoint(BubbleCache, BubbleWaypoint);
     		 CacheDraw.ReleaseCacheBMP();
     		 isBubbleShow = false;
     		 BubbleCacheId = -1;
@@ -3483,7 +3483,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
         if (arrowHitWhenDown && Math.sqrt(((eX - cacheArrowCenter.x) * (eX - cacheArrowCenter.x) + (eY - cacheArrowCenter.y) * (eY - cacheArrowCenter.y))) < (lineHeight * 1.5f))
         {
-          Coordinate target = (Global.SelectedWaypoint() != null) ? new Coordinate(Global.SelectedWaypoint().Latitude(), Global.SelectedWaypoint().Longitude()) : new Coordinate(Global.SelectedCache().Latitude(), Global.SelectedCache().Longitude());
+          Coordinate target = (GlobalCore.SelectedWaypoint() != null) ? new Coordinate(GlobalCore.SelectedWaypoint().Latitude(), GlobalCore.SelectedWaypoint().Longitude()) : new Coordinate(GlobalCore.SelectedCache().Latitude(), GlobalCore.SelectedCache().Longitude());
 
           startAnimation(target);
           cacheArrowCenter.x = Integer.MIN_VALUE;
@@ -3527,7 +3527,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
       if (minWpi.Waypoint != null)
       {
-    	  if (Global.SelectedCache() != minWpi.Cache)
+    	  if (GlobalCore.SelectedCache() != minWpi.Cache)
     	  {
     		  // Show Bubble
          	  isBubbleShow = true;
@@ -3541,7 +3541,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	  {
     		  // do not show Bubble because there will not be selected a different cache but only a different waypoint
     		  // Wegpunktliste ausrichten
-    		  Global.SelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
+    		  GlobalCore.SelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
     		  //FormMain.WaypointListPanel.AlignSelected();
     		  //        updateCacheList();
     		  Render(true); 
@@ -3550,7 +3550,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       }
       else
       {    	 
-    	  if (Global.SelectedCache() != minWpi.Cache)
+    	  if (GlobalCore.SelectedCache() != minWpi.Cache)
     	  {
          	  isBubbleShow = true;
         	  BubbleCacheId = minWpi.Cache.Id;
@@ -3561,7 +3561,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	  {
     		  // do not show Bubble because there will not be selected a different cache but only a different waypoint
   			// Cacheliste ausrichten
-			Global.SelectedCache(minWpi.Cache);
+			GlobalCore.SelectedCache(minWpi.Cache);
 			// updateCacheList();  		
 			Render(true); 
     	  }
@@ -4053,10 +4053,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       cacheArrowCenter.x = Integer.MIN_VALUE;
       cacheArrowCenter.y = Integer.MAX_VALUE;
 
-      if (Global.SelectedCache() == null)
+      if (GlobalCore.SelectedCache() == null)
         return;
 
-      Coordinate coord = (Global.SelectedWaypoint() != null) ? Global.SelectedWaypoint().Pos : Global.SelectedCache().Pos;
+      Coordinate coord = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos : GlobalCore.SelectedCache().Pos;
       
 //      float distance = Datum.WGS84.Distance(center.Latitude, center.Longitude, lat, lon);
       float distance = center.Distance(coord);

@@ -1,40 +1,25 @@
-package de.droidcachebox.Geocaching;
+package de.droidcachebox.DAO;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import CB_Core.GlobalCore;
+import CB_Core.Enums.CacheTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
-
 import android.database.Cursor;
 import de.droidcachebox.Database;
-import de.droidcachebox.Global;
-import de.droidcachebox.Events.CachListChangedEventList;
-import CB_Core.Enums.CacheTypes;
+import CB_Core.Types.CacheList;
+import CB_Core.Types.MysterySolution;
 
-public class CacheList extends ArrayList<Cache> {
-	 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	public ArrayList<MysterySolution> MysterySolutions;
-
-	public CacheList() {
-		
-	}
-
-    public void LoadCaches(String where)
+public class CacheListDAO {
+    public void ReadCacheList(CacheList cacheList, String where)
     {
     	SortedMap<Long, ArrayList<Waypoint>> waypoints;
     	waypoints = new TreeMap<Long, ArrayList<Waypoint>>();
-        MysterySolutions = new ArrayList<MysterySolution>();
+        cacheList.MysterySolutions = new ArrayList<MysterySolution>();
         // zuerst alle Waypoints einlesen
         ArrayList<Waypoint> wpList = new ArrayList<Waypoint>();
         long aktCacheID = -1;
@@ -72,7 +57,7 @@ public class CacheList extends ArrayList<Cache> {
         {
             Cache cache = Database.getCache(reader);
             
-            this.add(cache);
+            cacheList.add(cache);
             if (waypoints.containsKey(cache.Id))
             {
             	cache.waypoints = waypoints.get(cache.Id);
@@ -88,7 +73,7 @@ public class CacheList extends ArrayList<Cache> {
 	                        solution.Waypoint = wp;
 	                        solution.Latitude = wp.Pos.Latitude;
 	                        solution.Longitude = wp.Pos.Longitude;
-	                        MysterySolutions.add(solution);
+	                        cacheList.MysterySolutions.add(solution);
 	                    }
                 	}
                 	
@@ -103,57 +88,7 @@ public class CacheList extends ArrayList<Cache> {
 
         reader.close();
 //        Query.Sort();
-        Collections.sort(this);
-    }
-	
-    public Cache GetCacheByGcCode(String GcCode)
-    {
-    	for (Cache cache : this)
-    	{
-    		if (cache.GcCode.equalsIgnoreCase(GcCode))
-    			return cache;
-    	}
-    	return null;
-    }
-
-    public Cache GetCacheById(long cacheId)
-    {
-    	for (Cache cache : this)
-    	{
-    		if (cache.Id == cacheId)
-    			return cache;
-    	}
-    	return null;
-    }
-
-    public void Resort()
-    {
-        Global.ResortAtWork = true;
-// Alle Distanzen aktualisieren
-        for (Cache cache : this)
-        {
-            cache.Distance(true);
-        }
-
-        Collections.sort(this);
-
-         // Nächsten Cache auswählen
-         if (this.size() > 0)
-         {
-        	 Cache nextCache = this.get(0);
-        	 // Wenn der nachste Cache ein Mystery mit Final Waypoint ist 
-        	 // -> gleich den Final Waypoint auswahlen!!!
-        	 // When the next Cache is a mystery with final waypoint
-        	 // -> activate the final waypoint!!!
-        	 Waypoint waypoint = nextCache.GetFinalWaypoint();
-        	 Global.SelectedWaypoint(nextCache, waypoint);
-        	 // Global.SelectedCache = Geocaching.Cache.Query[0];
-        	 Global.NearestCache(nextCache);
-         }
-
-         CachListChangedEventList.Call();
-
-//        Cursor.Current = Cursors.Default;    	
-         Global.ResortAtWork = false;
+        Collections.sort(cacheList);
+    	
     }
 }

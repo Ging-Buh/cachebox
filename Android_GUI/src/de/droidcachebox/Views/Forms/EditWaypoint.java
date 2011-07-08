@@ -1,6 +1,7 @@
 package de.droidcachebox.Views.Forms;
 
 
+import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
@@ -171,7 +172,7 @@ public class EditWaypoint extends Activity {
         // Translations
         bOK.setText(Global.Translations.Get("ok"));
 		bCancel.setText(Global.Translations.Get("cancel"));
-		tvCacheName.setText(Global.SelectedCache().Name);
+		tvCacheName.setText(GlobalCore.SelectedCache().Name);
 		tvTyp.setText(Global.Translations.Get("type"));
 		tvTitle.setText(Global.Translations.Get("Title"));
 		tvDescription.setText(Global.Translations.Get("Description"));

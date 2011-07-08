@@ -9,7 +9,8 @@ import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
-import de.droidcachebox.Events.CachListChangedEventList;
+import de.droidcachebox.DAO.CacheListDAO;
+import CB_Core.Events.CachListChangedEventList;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -178,7 +179,8 @@ public class EditFilterSettings extends Activity {
 		    	  String sqlWhere =props.getSqlWhere();
 			      Logger.General("Main.ApplyFilter: " + sqlWhere);
 			      Database.Data.Query.clear();
-			      Database.Data.Query.LoadCaches(sqlWhere);
+			      CacheListDAO cacheListDAO = new CacheListDAO();
+			      cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
 			      messageHandler.sendMessage(messageHandler.obtainMessage(1));
 		      }
 

@@ -6,9 +6,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import de.droidcachebox.Geocaching.CacheList;
+import de.droidcachebox.Global;
+import CB_Core.Types.CacheList;
 import de.droidcachebox.Map.Descriptor;
-import de.droidcachebox.Views.Forms.SelectDB;
 import CB_Core.FileIO;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;

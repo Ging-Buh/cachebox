@@ -6,13 +6,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Events.SelectedCacheEvent;
+import de.droidcachebox.DAO.CacheListDAO;
+import CB_Core.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
-import de.droidcachebox.Geocaching.CacheList;
+import CB_Core.Types.CacheList;
 import de.droidcachebox.Geocaching.FieldNoteEntry;
 import de.droidcachebox.Geocaching.FieldNoteList;
 
@@ -279,7 +281,7 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 	
 
 	private void addNewFieldnote(int type) {
-		Cache cache = Global.SelectedCache();
+		Cache cache = GlobalCore.SelectedCache();
 		
 		if(cache==null)
 		{
@@ -414,23 +416,23 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 					if (fieldNote.type == 1)
 					{
 						// Found it! -> Cache als gefunden markieren
-						if (!Global.SelectedCache().Found)
+						if (!GlobalCore.SelectedCache().Found)
 						{
-							Global.SelectedCache().Found=true;
+							GlobalCore.SelectedCache().Found=true;
 			                Config.Set("FoundOffset", aktFieldNote.foundNumber);
 			                Config.AcceptChanges();
 						}
 					} else if (fieldNote.type == 2)
 					{
 						// DidNotFound -> Cache als nicht gefunden markieren
-						if (Global.SelectedCache().Found)
+						if (GlobalCore.SelectedCache().Found)
 						{
-							Global.SelectedCache().Found=false;
+							GlobalCore.SelectedCache().Found=false;
 			                Config.Set("FoundOffset", Config.GetInt("FoundOffset") - 1);
 			                Config.AcceptChanges();
 						}
 						// und eine evtl. vorhandene FieldNote FoundIt löschen
-						lFieldNotes.DeleteFieldNoteByCacheId(Global.SelectedCache().Id, 1);
+						lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.SelectedCache().Id, 1);
 					}
 					
 					FieldNoteList.CreateVisitsTxt();
@@ -515,7 +517,7 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
         template = template.replace("##finds##", String.valueOf(fieldNote.foundNumber));
         template = template.replace("##date##", sdate);
         template = template.replace("##time##", stime);
-        template = template.replace("##owner##", Global.SelectedCache().Owner);
+        template = template.replace("##owner##", GlobalCore.SelectedCache().Owner);
         template = template.replace("##gcusername##", Config.GetString("GcLogin"));
 //        template = template.replace("##gcvote##", comboBoxVote.SelectedIndex.ToString());
         return template;
@@ -540,7 +542,8 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 		// suche den Cache aus der DB. 
 		// Nicht aus der aktuellen Query, da dieser herausgefiltert sein könnte
 		CacheList lCaches = new CacheList();
-		lCaches.LoadCaches("Id = " + aktFieldNote.CacheId);
+		CacheListDAO cacheListDAO = new CacheListDAO();
+		cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId);
 		Cache tmpCache = null;
 		if (lCaches.size() > 0)
 			tmpCache = lCaches.get(0);
@@ -645,7 +648,7 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 		if (cache.HasFinalWaypoint())
 			finalWp = cache.GetFinalWaypoint();
 		if (cache != null)
-			Global.SelectedWaypoint(cache, finalWp);    	
+			GlobalCore.SelectedWaypoint(cache, finalWp);    	
     }
 }
 

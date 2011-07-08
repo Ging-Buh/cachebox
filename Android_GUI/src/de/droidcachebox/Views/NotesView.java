@@ -2,8 +2,8 @@ package de.droidcachebox.Views;
 
 import de.droidcachebox.Database;
 import de.droidcachebox.R;
-import de.droidcachebox.Events.SelectedCacheEvent;
-import de.droidcachebox.Events.SelectedCacheEventList;
+import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
 import CB_Core.Types.Cache;

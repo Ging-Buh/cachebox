@@ -26,6 +26,7 @@ import android.os.Handler;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import de.droidcachebox.DAO.CacheListDAO;
 import de.droidcachebox.Database.DatabaseType;
 import de.droidcachebox.Components.copyAssetFolder;
 
@@ -189,7 +190,8 @@ public class splash extends Activity
 	        String database = Config.GetString("DatabasePath");
 	        Database.Data.StartUp(database);
 //	        Database.Data.StartUp(Config.WorkPath + "/CacheBox.db3");
-	        Database.Data.Query.LoadCaches(sqlWhere);
+	        CacheListDAO cacheListDAO = new CacheListDAO();
+	        cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
 
 	        Database.FieldNotes = new Database(DatabaseType.FieldNotes, this); 
 	        if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;

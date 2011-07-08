@@ -119,7 +119,7 @@ public class CacheDraw
     	// init
     		Boolean notAvailable = (!cache.Available && !cache.Archived);
             Boolean Night = Config.GetBool("nightMode");
-            Boolean GlobalSelected = cache == Global.SelectedCache();
+            Boolean GlobalSelected = cache == GlobalCore.SelectedCache();
             if(BackgroundColor==-1)BackgroundColor= GlobalSelected? Global.getColor(R.attr.ListBackground_select):Global.getColor(R.attr.ListBackground);
             if(BorderColor==-1)BorderColor= Global.getColor(R.attr.ListSeparator);
             final int halfCornerSize = Global.scaledFontSize_normal/2;

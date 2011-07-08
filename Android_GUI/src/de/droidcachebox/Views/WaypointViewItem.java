@@ -1,6 +1,7 @@
 package de.droidcachebox.Views;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
@@ -158,7 +159,7 @@ public class WaypointViewItem extends View {
     protected void onDraw(Canvas canvas) {
        
         Boolean isSelected = false;
-        if (Global.SelectedWaypoint() == waypoint ||(( Global.SelectedCache()== cache && !(waypoint == null)&& Global.SelectedWaypoint() == waypoint )))
+        if (GlobalCore.SelectedWaypoint() == waypoint ||(( GlobalCore.SelectedCache()== cache && !(waypoint == null)&& GlobalCore.SelectedWaypoint() == waypoint )))
         {
         	isSelected=true;
         }

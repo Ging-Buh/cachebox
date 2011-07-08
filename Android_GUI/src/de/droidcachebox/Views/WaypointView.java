@@ -14,8 +14,8 @@ import CB_Core.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Events.SelectedCacheEvent;
-import de.droidcachebox.Events.SelectedCacheEventList;
+import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Views.Forms.EditWaypoint;
 import de.droidcachebox.Views.Forms.MessageBox;
@@ -51,7 +51,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 		this.parentActivity = parentActivity;
 		SelectedCacheEventList.Add(this);
 		this.setAdapter(null);
-		lvAdapter = new CustomAdapter(getContext(), Global.SelectedCache());
+		lvAdapter = new CustomAdapter(getContext(), GlobalCore.SelectedCache());
 		this.setAdapter(lvAdapter);
 		this.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -59,11 +59,11 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 					int arg2, long arg3) {
 				aktWaypoint = null;
 				if (arg2 > 0)
-					aktWaypoint = Global.SelectedCache().waypoints.get(arg2 - 1);
-        		aktCache = Global.SelectedCache();
+					aktWaypoint = GlobalCore.SelectedCache().waypoints.get(arg2 - 1);
+        		aktCache = GlobalCore.SelectedCache();
         		// shutdown AutoResort when selecting a cache or waypoint by hand
         		Global.autoResort = false;
-        		Global.SelectedWaypoint(Global.SelectedCache(), aktWaypoint);
+        		GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), aktWaypoint);
 			}
 		});
 		this.setBackgroundColor(Config.GetBool("nightMode")? R.color.Night_EmptyBackground : R.color.Day_EmptyBackground);
@@ -96,10 +96,10 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 			{
 				if (createNewWaypoint)
 				{
-					Global.SelectedCache().waypoints.add(waypoint);
+					GlobalCore.SelectedCache().waypoints.add(waypoint);
 					this.setAdapter(lvAdapter);
 					aktWaypoint = waypoint;
-					Global.SelectedWaypoint(Global.SelectedCache(), waypoint);
+					GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), waypoint);
 					Database.WriteToDatabase(waypoint);
 					
 				} else
@@ -220,15 +220,15 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				createNewWaypoint = true;
 				String newGcCode = "";
 				try {
-					newGcCode = Database.CreateFreeGcCode(Global.SelectedCache().GcCode);
+					newGcCode = Database.CreateFreeGcCode(GlobalCore.SelectedCache().GcCode);
 				} catch (Exception e) {
 					// 	TODO Auto-generated catch block
 					return true;
 				}
 				Coordinate coord = GlobalCore.LastValidPosition;
 				if ((coord == null) || (!coord.Valid))
-					coord = Global.SelectedCache().Pos;
-                Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", coord.Latitude, coord.Longitude, Global.SelectedCache().Id, "", "manual");
+					coord = GlobalCore.SelectedCache().Pos;
+                Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", coord.Latitude, coord.Longitude, GlobalCore.SelectedCache().Id, "", "manual");
 				Intent mainIntent = new Intent().setClass(getContext(), EditWaypoint.class);
 				Bundle b = new Bundle();
 				b.putSerializable("Waypoint", newWP);
@@ -243,8 +243,8 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				        case DialogInterface.BUTTON_POSITIVE:
 				            //Yes button clicked
 				        	Database.DeleteFromDatabase(aktWaypoint);
-				        	Global.SelectedCache().waypoints.remove(aktWaypoint);
-				        	Global.SelectedWaypoint(Global.SelectedCache(), null);
+				        	GlobalCore.SelectedCache().waypoints.remove(aktWaypoint);
+				        	GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), null);
 				        	lvAdapter.notifyDataSetChanged();
 				            break;
 				        case DialogInterface.BUTTON_NEGATIVE:
@@ -290,9 +290,9 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 		int first = this.getFirstVisiblePosition();
 		int last = this.getLastVisiblePosition();
 
-		if (Global.SelectedWaypoint() != null)
+		if (GlobalCore.SelectedWaypoint() != null)
 		{
-			aktWaypoint = Global.SelectedWaypoint();
+			aktWaypoint = GlobalCore.SelectedWaypoint();
 			int id = 0;
 			
 			for (Waypoint wp : aktCache.waypoints)
