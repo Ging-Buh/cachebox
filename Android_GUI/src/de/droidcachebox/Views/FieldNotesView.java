@@ -10,6 +10,7 @@ import CB_Core.GlobalCore;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.DAO.CacheDAO;
 import de.droidcachebox.DAO.CacheListDAO;
 import CB_Core.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.ViewOptionsMenu;
@@ -418,7 +419,9 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 						// Found it! -> Cache als gefunden markieren
 						if (!GlobalCore.SelectedCache().Found)
 						{
-							GlobalCore.SelectedCache().Found=true;
+							GlobalCore.SelectedCache().Found = true;
+							CacheDAO cacheDAO = new CacheDAO();
+							cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
 			                Config.Set("FoundOffset", aktFieldNote.foundNumber);
 			                Config.AcceptChanges();
 						}
@@ -427,7 +430,9 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 						// DidNotFound -> Cache als nicht gefunden markieren
 						if (GlobalCore.SelectedCache().Found)
 						{
-							GlobalCore.SelectedCache().Found=false;
+							GlobalCore.SelectedCache().Found = false;
+							CacheDAO cacheDAO = new CacheDAO();
+							cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
 			                Config.Set("FoundOffset", Config.GetInt("FoundOffset") - 1);
 			                Config.AcceptChanges();
 						}
