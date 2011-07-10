@@ -53,9 +53,10 @@ public class CacheListDAO {
         }
     	reader.moveToFirst();
     	
+    	CacheDAO cacheDAO = new CacheDAO();
         while(reader.isAfterLast() == false)
         {
-            Cache cache = Database.getCache(reader);
+            Cache cache = cacheDAO.ReadFromCursor(reader);
             
             cacheList.add(cache);
             if (waypoints.containsKey(cache.Id))

@@ -58,6 +58,7 @@ import de.droidcachebox.main;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
+import de.droidcachebox.DAO.CacheDAO;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import CB_Core.Events.SelectedCacheEvent;
@@ -4621,6 +4622,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				String result = CB_Core.Api.GroundspeakAPI.SearchForGeocachesJSON(accessToken, lastMouseCoordinate, 50000, 30, apiCaches);
 				if (apiCaches.size() > 0)
 				{
+					Database.Data.myDB.beginTransaction();
 					for (Cache cache : apiCaches)
 					{
 			            cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
@@ -4628,10 +4630,16 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			            if (Database.Data.Query.GetCacheById(cache.Id) == null)
 			            {
 			            	Database.Data.Query.add(cache);
+			            	CacheDAO cacheDAO = new CacheDAO();
+			            	cacheDAO.WriteToDatabase(cache);
 			            }
 					}
+					Database.Data.myDB.setTransactionSuccessful();
+					Database.Data.myDB.endTransaction();
+			
 					updateCacheList();
 					Render(true);
+					
 				}
 				MessageBox.Show(result);
 		}

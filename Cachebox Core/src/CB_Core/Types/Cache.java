@@ -228,6 +228,7 @@ public class Cache implements Comparable<Cache>
 	
     /**
      * Ausführliche Beschreibung des Caches
+     * Nur für Import Zwecke. Ist normalerweise leer, da die Description bei aus Speicherplatz Gründen bei Bedarf aus der DB geladen wird
      */
     public String longDescription;
     

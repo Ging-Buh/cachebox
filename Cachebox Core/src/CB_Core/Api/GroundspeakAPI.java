@@ -102,7 +102,7 @@ public class GroundspeakAPI {
 			String requestString = "";
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
-			requestString += "\"IsLite\":true,";
+			requestString += "\"IsLite\":false,";
 			requestString += "\"StartIndex\":0,";
 			requestString += "\"MaxPerPage\":" + String.valueOf(number) + ",";
 			requestString += "\"PointRadius\":{";
@@ -194,7 +194,7 @@ public class GroundspeakAPI {
 						cache.hint = jCache.getString("EncodedHints");
 						cache.Id = Cache.GenerateCacheId(cache.GcCode);
 						cache.listingChanged = false;
-						cache.longDescription = "";
+						cache.longDescription = jCache.getString("LongDescription");
 						cache.Name = jCache.getString("Name");
 						cache.noteCheckSum = 0;
 						cache.NumTravelbugs = jCache.getInt("TrackableCount");

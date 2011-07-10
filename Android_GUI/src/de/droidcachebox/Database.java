@@ -378,17 +378,6 @@ public class Database {
 	    
 	    // Methodes für Cache
 	    
-	    public void Found(boolean value, Cache cache)
-	    {
-	    	cache.Found = value;
-	        
-	        ContentValues args = new ContentValues();
-	        args.put("found", value);
-	        Database.Data.myDB.update("Caches", args, "Id=" + cache.Id, null);
-
-	    }
-	    
-	   
         public static String GetNote(Cache cache)
         {
         	String resultString = "";
@@ -509,7 +498,8 @@ public class Database {
         	reader.moveToFirst();
             while(reader.isAfterLast() == false)
             {
-            	description = reader.getString(0);
+            	if (reader.getString(0) != null)
+            		description = reader.getString(0);
                 reader.moveToNext();
             }
             reader.close();
@@ -584,7 +574,7 @@ public class Database {
         	}
         	return cache.attributesNegative;
         }
-
+/*
         public static Cache getCache(Cursor reader)
         {
         	Cache cache = new Cache();
@@ -597,7 +587,6 @@ public class Database {
         	cache.Terrain = ((float)reader.getShort(7)) / 2;
         	cache.Archived = reader.getInt(8) != 0;
         	cache.Available = reader.getInt(9) != 0;
-            int ifound = reader.getInt(10);
             cache.Found = reader.getInt(10) != 0;
             cache.Type = CacheTypes.values()[reader.getShort(11)];
             cache.PlacedBy = reader.getString(12).trim();
@@ -645,7 +634,7 @@ public class Database {
             
             return cache;
         }
-        
+*/        
     	public static void WriteToDatabase(Cache cache) 
     	{
     	  // this muss jetzt irgendwie in die DB!!
