@@ -1,16 +1,12 @@
 package de.droidcachebox;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.regex.Pattern;
-
 import CB_Core.Config;
 import CB_Core.Log.Logger;
 import CB_Core.TranslationEngine.LangStrings;
-import CB_Core.Types.Coordinate;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;
@@ -31,7 +27,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 300;
+    public static final int CurrentRevision = 311;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
@@ -49,7 +45,7 @@ public class Global{
     public static final boolean Debug = true;
 	public static JokerList Jokers = new JokerList();
 	
-    
+   
     
     public static FilterProperties LastFilter = null;
 	public static boolean autoResort;
@@ -61,7 +57,7 @@ public class Global{
     public static int aktuelleRouteCount = 0;
     
     public static long TrackDistance;
-    
+         
     //Sizes
     public static int scaledFontSize_normal;
     public static int CornerSize;

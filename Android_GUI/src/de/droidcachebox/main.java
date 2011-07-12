@@ -50,6 +50,7 @@ import de.droidcachebox.Views.MapView;
 import de.droidcachebox.Views.NotesView;
 import de.droidcachebox.Views.SolverView;
 import de.droidcachebox.Views.SpoilerView;
+import de.droidcachebox.Views.TrackListView;
 import de.droidcachebox.Views.WaypointView;
 import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
@@ -129,7 +130,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		private static EmptyViewTemplate TestEmpty = null;		// ID 10
 		private static AboutView aboutView = null;				// ID 11
 		private static JokerView jokerView = null;				// ID 12
-	    
+	    private static TrackListView tracklistView= null; 		// ID 13
 	
 		// Media
 	    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
@@ -1319,6 +1320,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    	case R.id.miCacheList:
 		    		showView(1);
 		    		break;
+		    		
+		    	case R.id.miTrackList:
+		    		showView(13);
+		    		break;
 		    	
 		    	case R.id.miFilterset:
 		    		showView(101);//Filtersettings
@@ -1419,6 +1424,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			aboutView = new AboutView(this, inflater);
 		if (jokerView == null)
 			jokerView = new JokerView(this, this);
+		if (tracklistView == null)
+			tracklistView = new TrackListView(this, this);
 		
 		ViewList.add(mapView);				// ID 0
     	ViewList.add(cacheListView);		// ID 1
@@ -1433,7 +1440,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	ViewList.add(TestEmpty);			// ID 10
     	ViewList.add(aboutView);			// ID 11
     	ViewList.add(jokerView);			// ID 12
-
+    	ViewList.add(tracklistView);		// ID 13
+    	
 	}
 
 	private void initialLocationManager() 

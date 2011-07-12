@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_tracklistview_generate" android:title="Generate">
+        <menu>
+            <item android:title="Point2Point" android:id="@+id/menu_tracklistview_point2point"></item>
+            <item android:title="Projection" android:id="@+id/menu_tracklistview_projection"></item>
+            <item android:title="Circle" android:id="@+id/menu_tracklistview_circle"></item>
+        </menu>
+    </item>
+    <item android:title="Load" android:id="@+id/menu_tracklistview_load"></item>
+    <item android:title="Delete" android:id="@+id/menu_tracklistview_delete"></item>
+</menu>

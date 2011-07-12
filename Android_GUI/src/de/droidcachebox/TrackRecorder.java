@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.SimpleTimeZone;
-
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;

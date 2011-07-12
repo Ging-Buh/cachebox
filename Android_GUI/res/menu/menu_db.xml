@@ -6,5 +6,6 @@
     <item android:title="Manage" android:id="@+id/miManageDB" android:icon="@drawable/manage_db"></item>
     <item android:id="@+id/miResort" android:title="Resort" android:icon="@drawable/sort_icon"></item>
     <item android:checked="false" android:id="@+id/miAutoResort" android:title="AutoResort" android:checkable="true" android:icon="@drawable/sort_icon"></item>
+    <item android:id="@+id/miTrackList" android:title="Track List"></item>
     
 </menu>
