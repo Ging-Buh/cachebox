@@ -1097,7 +1097,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		return;
 
 /*      if (Config.GetBool("OsmDpiAwareRendering") && (dpiScaleFactorX != 1 || dpiScaleFactorY != 1))
-        scaleUpBitmap(ref bitmap);*/
+        scaleUpBitmap(bitmap);*/
 
     	addLoadedTile(desc, bitmap, tileState);
 

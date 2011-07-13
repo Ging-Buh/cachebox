@@ -127,7 +127,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 	{
 		int FSize = (int) (Global.scaledFontSize_normal*1.2);
 	
-		if(CacheInfoHeight==0)CacheInfoHeight = (int) (FSize * 4.7);
+		if(CacheInfoHeight==0)CacheInfoHeight = (int) (FSize * 5.5);
 		
 		if (paint==null)
 		{

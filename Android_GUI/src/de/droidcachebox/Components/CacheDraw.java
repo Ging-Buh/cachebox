@@ -346,7 +346,7 @@ public class CacheDraw
         {
         	if(l.TypeIcon==0)//Found Icon
         	{
-        		SimpleDateFormat postFormater = new SimpleDateFormat("dd/MM/yyyy"); 
+        		SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy"); 
         		FoundDate = postFormater.format(l.Timestamp);
         		break;
         	}
