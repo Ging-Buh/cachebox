@@ -6,6 +6,7 @@ package de.droidcachebox.Views;
 import CB_Core.Types.Coordinate;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
+import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Map.Descriptor;
@@ -16,6 +17,7 @@ import de.droidcachebox.Views.Forms.EditCoordinate;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;
+import de.droidcachebox.Views.Forms.projectionCoordinate;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -265,7 +267,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	private void HandleGenerate_Point2Point() 
 	{
 		MessageBox.Show("HandleGenerate_Point2Point() on Line:267");
-		showEditCord(P2P_GET_FIRST_POINT);
+		showEditCoord(P2P_GET_FIRST_POINT);
 	}
 
 	/**
@@ -275,7 +277,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	private void HandleGenerate_Projection() 
 	{
 		MessageBox.Show("HandleGenerate_Projection() on Line:277");
-		
+		showEditCoord(PROJECT_GET_FIRST_POINT);
 	}
 
 	/**
@@ -301,9 +303,16 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	 * 
 	 * @param NextStep Schritt zur behandlung des ActivityResults
 	 */
-	private void showEditCord(int NextStep)
+	private void showEditCoord(int NextStep)
 	{
 		nextStep=NextStep;
+		String Title ="";
+		switch (nextStep)
+		{
+			case P2P_GET_FIRST_POINT:Title="set From Pos";break;
+			case P2P_GET_SECEND_POINT:Title="set To Pos";break;
+			case PROJECT_GET_FIRST_POINT:Title="set From Pos";break;
+		}
 		
 		Coordinate coord = GlobalCore.LastValidPosition;
 		if ((coord == null) || (!coord.Valid))
@@ -325,12 +334,46 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 		Intent coordIntent = new Intent().setClass(getContext(), EditCoordinate.class);
         Bundle b = new Bundle();
         b.putSerializable("Coord", coord);
+        b.putSerializable("Title", Title);
         coordIntent.putExtras(b);
         parentActivity.startActivityForResult(coordIntent, 0);
 		
 	}
 	
-	
+	private void showProjectCoord(int NextStep)
+	{
+		nextStep=NextStep;
+		String Title ="";
+		switch (nextStep)
+		{
+			
+			case PROJECT_GET_PROJECT_VALUES:Title="get Projection";break;
+		}
+		
+		Coordinate coord = GlobalCore.LastValidPosition;
+		if ((coord == null) || (!coord.Valid))
+			if(GlobalCore.SelectedCache()!=null)
+			{
+				coord = GlobalCore.SelectedCache().Pos;
+			}
+			else
+			{
+				coord=null;
+			}
+			
+		if (coord==null)
+		{
+			coord=new Coordinate(0.0,0.0);
+		}
+				
+		// Projection Dialog öffnen
+		Intent coordIntent = new Intent().setClass(getContext(), projectionCoordinate.class);
+        Bundle b = new Bundle();
+        b.putSerializable("Coord", coord);
+        b.putSerializable("Title", Global.Translations.Get("Projection"));
+        coordIntent.putExtras(b);
+        parentActivity.startActivityForResult(coordIntent, 0);
+	}
 		
 	public void ActivityResult(int requestCode, int resultCode, Intent data)
 	{
@@ -346,7 +389,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 				{
 					Lon1= coord.Longitude;
 					Lat1= coord.Latitude;
-					showEditCord(P2P_GET_SECEND_POINT);
+					showEditCoord(P2P_GET_SECEND_POINT);
 					
 				}else if (nextStep==P2P_GET_SECEND_POINT)
 				{
@@ -358,6 +401,29 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 					paint.setColor(TrackColor);
 					paint.setStrokeWidth(3);
 					RouteOverlay.Routes.add(GenP2PRoute(Lat1, Lon1, Lat2, Lon2, paint));
+					lvAdapter.notifyDataSetChanged();
+					resetStep();
+				}else if (nextStep==PROJECT_GET_FIRST_POINT)
+				{
+					Lon1= coord.Longitude;
+					Lat1= coord.Latitude;
+					showProjectCoord(PROJECT_GET_PROJECT_VALUES);
+					
+				}else if (nextStep==PROJECT_GET_PROJECT_VALUES)
+				{
+					Lon2= coord.Longitude;
+					Lat2= coord.Latitude;
+					
+					Coordinate FromCoord = new Coordinate(Lat1,Lon1);
+					
+					double distance = coord.bearingTo(FromCoord);
+					double bearing = coord.bearingTo(FromCoord); //vieleicht noch um 180° drehen?
+					
+					int TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
+					Paint paint = new Paint();
+					paint.setColor(TrackColor);
+					paint.setStrokeWidth(3);
+					RouteOverlay.Routes.add(GenProjectRoute(Lat1, Lon1, distance, bearing, paint));
 					lvAdapter.notifyDataSetChanged();
 					resetStep();
 				}

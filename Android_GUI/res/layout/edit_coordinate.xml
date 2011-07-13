@@ -11,11 +11,16 @@
         	<Button android:layout_weight="1" android:layout_width="match_parent" android:text="Button" android:layout_height="match_parent" android:id="@+id/edco_ok"></Button>
         	<Button android:layout_weight="1" android:layout_width="match_parent" android:text="Button" android:layout_height="match_parent" android:id="@+id/edco_cancel"></Button>
     </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:id="@+id/edco_titlelayout"
+		android:layout_width="match_parent" android:layout_alignParentTop="true"
+		android:layout_height="50dip">
+		<TextView android:layout_width="match_parent" android:text="TextView" android:layout_height="match_parent" android:id="@+id/edco_titleview"></TextView>
+	</LinearLayout>
     <LinearLayout 
     	android:orientation="horizontal" 
     	android:id="@+id/edco_toplayout" 
     	android:layout_width="match_parent" 
-    	android:layout_alignParentTop="true" 
+    	android:layout_below="@+id/edco_titlelayout"
     	android:layout_height="50dip">
         	<de.droidcachebox.Custom_Controls.MultiToggleButton android:layout_weight="1" android:layout_width="match_parent" android:text="Dec" android:layout_height="match_parent" android:id="@+id/edco_dec"></de.droidcachebox.Custom_Controls.MultiToggleButton>
         	<de.droidcachebox.Custom_Controls.MultiToggleButton android:layout_weight="1" android:layout_width="match_parent" android:text="Min" android:layout_height="match_parent" android:id="@+id/edco_min"></de.droidcachebox.Custom_Controls.MultiToggleButton>

@@ -17,10 +17,12 @@ import de.droidcachebox.R;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Views.Forms.EditCoordinate;
 import de.droidcachebox.Views.Forms.EditWaypoint;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;
+import de.droidcachebox.Views.Forms.projectionCoordinate;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -113,6 +115,28 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 					lvAdapter.notifyDataSetChanged();
 				}
 			}
+			
+			Coordinate coord = (Coordinate)bundle.getSerializable("CoordResult");
+			if (coord != null)
+			{
+				if (createNewWaypoint)
+				{
+					String newGcCode = "";
+					try {
+						newGcCode = Database.CreateFreeGcCode(GlobalCore.SelectedCache().GcCode);
+					} catch (Exception e) {
+						
+						return ;
+					}
+					Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", coord.Latitude, coord.Longitude, GlobalCore.SelectedCache().Id, "", "projiziert");
+					GlobalCore.SelectedCache().waypoints.add(newWP);
+					this.setAdapter(lvAdapter);
+					aktWaypoint = newWP;
+					GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), newWP);
+					Database.WriteToDatabase(newWP);
+					
+				} 
+			}
 		}
 	}
 
@@ -202,7 +226,8 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 	}
 
 	@Override
-	public boolean ItemSelected(MenuItem item) {
+	public boolean ItemSelected(MenuItem item) 
+	{
 		switch (item.getItemId())
 		{
 			case R.id.menu_waypointview_edit: 
@@ -234,6 +259,25 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				b.putSerializable("Waypoint", newWP);
 				mainIntent.putExtras(b);
 	    		parentActivity.startActivityForResult(mainIntent, 0);
+				break;
+			case R.id.menu_waypointview_project:
+				createNewWaypoint = true;
+				
+				Coordinate coord2 = GlobalCore.LastValidPosition;
+				if(aktCache!=null)
+				{
+					coord2=aktCache.Pos;
+				}else if(aktWaypoint!=null)
+				{
+					coord2=aktWaypoint.Pos;
+				}
+				
+				Intent coordIntent = new Intent().setClass(getContext(), projectionCoordinate.class);
+		        Bundle b2 = new Bundle();
+		        b2.putSerializable("Coord", coord2);
+		        b2.putSerializable("Title", Global.Translations.Get("Projection"));
+		        coordIntent.putExtras(b2);
+		        parentActivity.startActivityForResult(coordIntent, 0);
 				break;
 			case R.id.menu_waypointview_delete:
 				DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -277,6 +321,12 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 			{
 				mi.setTitle(Global.Translations.Get("delete"));
 				mi.setVisible((aktWaypoint != null) && (aktWaypoint.IsUserWaypoint));
+			}
+			mi = menu.findItem(R.id.menu_waypointview_project);
+			if (mi != null)
+			{
+				mi.setTitle(Global.Translations.Get("Projection"));
+				mi.setVisible((aktWaypoint != null || aktCache!=null));
 			}
 		} catch (Exception e)
 		{

@@ -148,9 +148,17 @@ public class TrackListViewItem extends View {
         
         if(LayoutName==null)
         {   
-        	
+        	String Name ="";
+        	if(route.Name==null || route.Name.equals(""))
+        	{
+        		Name= "no Name";
+        	}
+        	else
+        	{
+        		Name = route.Name;
+        	}
         	int TextWidth = this.width- lBounds.left - (this.width-rBounds.left); 
-        	LayoutName = new StaticLayout(route.Name, textPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+        	LayoutName = new StaticLayout(Name, textPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 			
         }
         

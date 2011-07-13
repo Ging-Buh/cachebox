@@ -17,12 +17,15 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 public class EditCoordinate extends Activity {
 	private Intent aktIntent;
+	private String Title ="";
 	private int aktPage = -1;  // Deg-Min
     UTMConvert convert = new UTMConvert();
 
@@ -63,6 +66,8 @@ public class EditCoordinate extends Activity {
 	EditText tbUZone;
 	Button bUX;
 	Button bUY;
+	private TextView TitleView;
+	private LinearLayout TitleLayout;
 	
 	public void onCreate(Bundle savedInstanceState) 
 	{
@@ -72,9 +77,12 @@ public class EditCoordinate extends Activity {
 		// übergebene Koordinate auslesen
 		Bundle bundle = getIntent().getExtras();
 		coord = (Coordinate)bundle.getSerializable("Coord");
-	        
+		Title = (String)bundle.getSerializable("Title");
+		
         aktIntent = getIntent();
 
+        TitleView=(TextView)this.findViewById(R.id.edco_titleview);
+        TitleLayout=(LinearLayout)this.findViewById(R.id.edco_titlelayout);
 		trDec =(TableRow)this.findViewById(R.id.edco_table_dec);
 		trDec.setVisibility(View.GONE);
 		trMin =(TableRow)this.findViewById(R.id.edco_table_min);
@@ -93,6 +101,14 @@ public class EditCoordinate extends Activity {
 		MultiToggleButton.initialOn_Off_ToggleStates(bMin,"Min","Min");
 		MultiToggleButton.initialOn_Off_ToggleStates(bSec,"Sec","Sec");
 		MultiToggleButton.initialOn_Off_ToggleStates(bUtm,"UTM","UTM");
+		if(Title==null || Title.equals(""))
+		{
+			TitleLayout.setVisibility(View.GONE);
+		}
+        else
+		{
+        	TitleView.setText(Title);
+		}
 		
 		// Deg
 		bDLat = (Button) findViewById(R.id.edco_dec_lat_direction);
