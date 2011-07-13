@@ -3,7 +3,6 @@ package de.droidcachebox.Custom_Controls;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.main;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Components.CacheDraw.DrawStyle;
@@ -164,6 +163,11 @@ public final class downSlider extends View implements SelectedCacheEvent
 		canvas.drawText(mCache.Name,5,yPos + (FSize + (FSize/3)), paint);
 		
 		
+		
+		//Draw only is visible
+		if(yPos<1)
+			return;
+		
 		// draw GPS Info
 		int versatz = -yPos+GPSInfoHeight;
 		canvas.translate(0,-versatz);
@@ -180,7 +184,7 @@ public final class downSlider extends View implements SelectedCacheEvent
    	 	// draw Cache Info
 		versatz += CacheInfoHeight;
 		canvas.translate(5,-versatz);
-   	 	CacheDraw.DrawInfo(mCache,canvas, width - 10, CacheInfoHeight, WPisDraw? Global.getColor(R.attr.ListBackground) : Global.getColor(R.attr.ListBackground_select), DrawStyle.withoutBearing);
+   	 	CacheDraw.DrawInfo(mCache,canvas, width - 10, CacheInfoHeight, WPisDraw? Global.getColor(R.attr.ListBackground) : Global.getColor(R.attr.ListBackground_select), DrawStyle.withOwnerAndName);
    	 	canvas.restore();
    	 	
    	

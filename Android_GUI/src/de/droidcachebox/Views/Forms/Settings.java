@@ -397,6 +397,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     private WheelView ScreenLock_wheel_sec ;
     private CheckBox chkAllowLandscape;
     private TextView DescScreenLock;
+    private CheckBox chkDPIaware;
 	
  	private void findViewsById()
 	{
@@ -456,6 +457,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		ScreenLock_wheel_sec = (WheelView)this.findViewById(R.id.settings_ScreenLock_sec);
 		chkAllowLandscape = (CheckBox)this.findViewById(R.id.settings_allow_LandScape);
 		DescScreenLock=(TextView)this.findViewById(R.id.settings_desc_ScreenLock);
+		chkDPIaware = (CheckBox)this.findViewById(R.id.settings_DPIaware);
 	}
 	
 	private void setLang()
@@ -495,6 +497,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		chkMapink.setChecked(Config.GetBool("ImportLayerOsm"));
 		chkCycleMap.setChecked(Config.GetBool("ImportLayerOcm"));
 		chkOsmarenerer.setChecked(Config.GetBool("ImportLayerOsma"));
+		chkDPIaware.setChecked(Config.GetBool("OsmDpiAwareRendering"));
 		cbMoveMapCenterWithSpeed.setChecked(Config.GetBool("MoveMapCenterWithSpeed"));
 		OsmMinLevel.setSelection(Config.GetInt("OsmMinLevel"));
 		OsmMaxLevel.setSelection(Config.GetInt("OsmMaxLevel"));
@@ -549,6 +552,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	Config.Set("ImportLayerOsm",chkMapink.isChecked());
     	Config.Set("ImportLayerOcm",chkCycleMap.isChecked());
     	Config.Set("ImportLayerOsma",chkOsmarenerer.isChecked());
+    	Config.Set("OsmDpiAwareRendering",chkDPIaware.isChecked());
     	Config.Set("OsmMinLevel",(Integer) OsmMinLevel.getSelectedItem());
     	Config.Set("OsmMaxLevel",(Integer) OsmMaxLevel.getSelectedItem());
     	Config.Set("ZoomCross",(Integer) ZoomCross.getSelectedItem());

@@ -99,6 +99,11 @@
         	</Spinner>
         </TableRow>
 	</TableLayout>
+	<CheckBox 
+    	android:layout_width="match_parent" android:id="@+id/settings_DPIaware" android:layout_height="wrap_content"
+    	android:text="DPI-aware rendering"  android:layout_weight="1">
+    </CheckBox>
+	
 	<LinearLayout 
     android:layout_height="wrap_content" 
     android:id="@+id/linearLayout1"

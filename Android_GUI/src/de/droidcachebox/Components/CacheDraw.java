@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
@@ -21,8 +22,10 @@ import android.text.TextPaint;
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
+import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
+import CB_Core.Types.LogEntry;
 
 import CB_Core.Types.Waypoint;
 
@@ -36,10 +39,12 @@ public class CacheDraw
     	all,		// alle infos
     	withoutBearing,	//ohne Richtungs-Pfeil
     	withoutSeparator, //ohne unterster trennLinie
-    	withOwner; //mit Owner statt Name
+    	withOwner, //mit Owner statt Name
+    	withOwnerAndName; // mit Owner und Name
     };
     
     private static StaticLayout layoutCacheName;
+    private static StaticLayout layoutCacheOwner;
 	
 	public String shortDescription;
 	
@@ -190,12 +195,28 @@ public class CacheDraw
     	     int LayoutHeight = ActivityUtils.drawStaticLayout(canvas, layoutCacheName, left + VoteWidth + iconSize + 5, top);
     	       
     	// over draw 3. Cache name line
+    	     int VislinesHeight = LayoutHeight*2/layoutCacheName.getLineCount();
     	     if(layoutCacheName.getLineCount()>2)
     	     {
     	    	 Paint backPaint = new Paint();
     	    	 backPaint.setColor(BackgroundColor); // Color.RED
-    	    	 int VislinesHeight = LayoutHeight*2/layoutCacheName.getLineCount();
+
     	    	 canvas.drawRect(new Rect(left + VoteWidth + iconSize + 5,top + VislinesHeight,nameLayoutWidth+left + VoteWidth + iconSize + 5,top+LayoutHeight+VislinesHeight-4), backPaint);
+    	     }
+    	     
+    	     
+    	// Draw owner and Last Found
+    	     if (drawStyle==DrawStyle.withOwnerAndName)
+    	     {
+    	    	 String DrawText="by " + cache.Owner + ", "+ dateString;
+    	    	 String LastFound = getLastFoundLogDate(cache);
+    	    	 if(!LastFound.equals(""))
+    	    	 {
+    	    		 DrawText += String.format("%n");
+    	    		 DrawText += "last found: " + LastFound;
+    	    	 }
+    	    	 layoutCacheOwner = new StaticLayout(DrawText , namePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+    	    	 ActivityUtils.drawStaticLayout(canvas, layoutCacheOwner, left + VoteWidth + iconSize + 5, top + VislinesHeight);
     	     }
     	     
     	// Draw S/D/T
@@ -228,8 +249,13 @@ public class CacheDraw
     	
              
         // Draw Bearing
-    	     if (BearingRec==null) BearingRec = new Rect(rec.right-rightBorder,rec.top,rec.right,(int) (SDTImageTop*0.8));
-    	     if (drawStyle != DrawStyle.withoutBearing) DrawBearing(cache,canvas,BearingRec);
+    	     
+    	     if (drawStyle != DrawStyle.withoutBearing && drawStyle != DrawStyle.withOwnerAndName)
+    	     {
+    	    	 if (BearingRec==null) BearingRec = new Rect(rec.right-rightBorder,rec.top,rec.right,(int) (SDTImageTop*0.8));
+    	    	 DrawBearing(cache,canvas,BearingRec);
+    	     }
+    	    	
     	
     	  if (cache.Found)
           {
@@ -310,6 +336,23 @@ public class CacheDraw
 	       
     }
 
+    
+    private static String getLastFoundLogDate(Cache cache)
+    {
+    	String FoundDate="";
+    	ArrayList<LogEntry> logs = new ArrayList<LogEntry>();
+        logs = Database.Logs(cache);// cache.Logs();
+        for (LogEntry l : logs)
+        {
+        	if(l.TypeIcon==0)//Found Icon
+        	{
+        		SimpleDateFormat postFormater = new SimpleDateFormat("dd/MM/yyyy"); 
+        		FoundDate = postFormater.format(l.Timestamp);
+        		break;
+        	}
+        }
+        return FoundDate;
+    }
 	
 	  public static void ReloadSpoilerRessources(final Cache cache)
 	    {

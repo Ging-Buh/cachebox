@@ -79,8 +79,13 @@ public class LogView extends ListView implements SelectedCacheEvent, ViewOptions
 	    	
 	        this.context = context;
 	        this.cache = cache;
+	        ArrayList<LogEntry> cleanLogs = new ArrayList<LogEntry>();
+	        cleanLogs = Database.Logs(cache);// cache.Logs();
+	        
+	        //clean up logs
 	        logs = new ArrayList<LogEntry>();
-	        logs = Database.Logs(cache);// cache.Logs();
+	        for(LogEntry l:cleanLogs){if(l.TypeIcon!=-1)logs.add(l);}
+	       
 	    }
 	 
 	    public void setCache(Cache cache) {

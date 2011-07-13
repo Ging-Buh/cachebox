@@ -991,9 +991,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       // Skalierungsfaktoren bestimmen
       if (Config.GetBool("OsmDpiAwareRendering"))
       {
-//          dpiScaleFactorX = dpiScaleFactorY = 1;
-/*        dpiScaleFactorX = this.AutoScaleDimensions.Width / 96.0f;
-        dpiScaleFactorY = this.AutoScaleDimensions.Height / 96.0f;*/
+
           dpiScaleFactorX = dpiScaleFactorY = getContext().getResources().getDisplayMetrics().density;
           dpiScaleFactorX = dpiScaleFactorY = 1;
       }
@@ -1213,24 +1211,45 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	
     	return result;
     }
-/*
-    private void scaleUpBitmap(ref Bitmap bitmap)
+
+
+    
+    Paint CachedBitmapPaitnt;
+    private void scaleUpBitmap(Bitmap bitmap)
     {
       try
       {
-        Bitmap dummyBitmap = new Bitmap((int)(256.0f * dpiScaleFactorX), (int)(256.0f * dpiScaleFactorY));
-        Graphics dummy = Graphics.FromImage(dummyBitmap);
+    	  
+    	if(CachedBitmapPaitnt==null)
+      	{
+      		CachedBitmapPaitnt = new Paint();
+      		CachedBitmapPaitnt.setAntiAlias(true);
+      		CachedBitmapPaitnt.setFilterBitmap(true);
+      		CachedBitmapPaitnt.setDither(true);
+      	}  
+    	  
+        Bitmap dummyBitmap = Bitmap.createBitmap((int)(256.0f * dpiScaleFactorX), (int)(256.0f * dpiScaleFactorY),Bitmap.Config.RGB_565);
+        Canvas dummy = new Canvas(dummyBitmap);
+        
+        dummy.save();
+        dummy.scale(dpiScaleFactorX, dpiScaleFactorY);
+        
+    	 dummy.drawBitmap(bitmap, 0, 0, CachedBitmapPaitnt);
+        dummy.restore();
 
-        dummy.DrawImage(bitmap, new Rectangle(0, 0, dummyBitmap.Width, dummyBitmap.Height), new Rectangle(0, 0, bitmap.Width, bitmap.Height), GraphicsUnit.Pixel);
-        bitmap.Dispose();
+       
+        bitmap.recycle();
         bitmap = dummyBitmap;
-        dummy.Dispose();
+        
       }
-      catch (OutOfMemoryException)
+      catch(Exception e)
       {
       }
     }
-*/
+    
+    
+    
+    
     void addLoadedTile(Descriptor desc, Bitmap bitmap, Tile.TileState state)
     {
     	loadedTilesLock.lock();
@@ -1897,21 +1916,21 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	int halfUnderlayWidth = 0;
 		for (WaypointRenderInfo wpi : wpToRender)
 		{
-		  int halfIconWidth = (int)((wpi.Icon.getMinimumWidth()/* * dpiScaleFactorX*/) / 2);
-		  int IconWidth = (int)(wpi.Icon.getMinimumWidth()/* * dpiScaleFactorX*/);
+		  int halfIconWidth = (int)((wpi.Icon.getMinimumWidth() * dpiScaleFactorX) / 2);
+		  int IconWidth = (int)(wpi.Icon.getMinimumWidth() * dpiScaleFactorX);
 		  int halfOverlayWidth = halfIconWidth;
 		  int OverlayWidth = IconWidth;
 		  if (wpi.OverlayIcon != null)
 		  {
-		      halfOverlayWidth = (int)((wpi.OverlayIcon.getMinimumWidth()/* * dpiScaleFactorX*/) / 2);
-		      OverlayWidth = (int)(wpi.OverlayIcon.getMinimumWidth()/* * dpiScaleFactorX*/);
+		      halfOverlayWidth = (int)((wpi.OverlayIcon.getMinimumWidth() * dpiScaleFactorX) / 2);
+		      OverlayWidth = (int)(wpi.OverlayIcon.getMinimumWidth() * dpiScaleFactorX);
 		  }
 		  halfUnderlayWidth = halfIconWidth;
 		  int UnderlayWidth = IconWidth;
 		  if (wpi.UnderlayIcon != null)
 		  {
-		      halfUnderlayWidth = (int)((wpi.UnderlayIcon.getMinimumWidth()/* * dpiScaleFactorX*/) / 2);
-		      UnderlayWidth = (int)(wpi.UnderlayIcon.getMinimumWidth()/* * dpiScaleFactorX*/);
+		      halfUnderlayWidth = (int)((wpi.UnderlayIcon.getMinimumWidth() * dpiScaleFactorX) / 2);
+		      UnderlayWidth = (int)(wpi.UnderlayIcon.getMinimumWidth() * dpiScaleFactorX);
 		  }
 		
 		  int x = (int)((wpi.MapX * adjustmentCurrentToCacheZoom * dpiScaleFactorX - screenCenter.X)) + halfWidth;
@@ -2079,15 +2098,16 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		  }
 		  
 		}
-		// Draw Bubble
+	    // Draw Bubble
 		if (isBubbleShow && (BubbleCache != null))
 		{
+			
 			float scale = 0.7f;
 			int BubbleWidth = 430;
-			int BubbleHeight = 100;
+			int BubbleHeight = 140;
 			BubbleDrawRec = new Rect(bubbleX, bubbleY, bubbleX + BubbleWidth, bubbleY + BubbleHeight);
 			BubbleDrawRec.offset(-((int)((BubbleWidth / 2) * scale)), -((int)((8 + halfUnderlayWidth + BubbleHeight) * scale)));
-			CacheDraw.DrawInfo(BubbleCache, canvasOverlay, BubbleDrawRec, -1, CacheDraw.DrawStyle.withoutBearing,scale);
+			CacheDraw.DrawInfo(BubbleCache, canvasOverlay, BubbleDrawRec, -1, CacheDraw.DrawStyle.withOwnerAndName,scale);
 			  
 		}
     }
@@ -3560,7 +3580,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         	  Render(true);      
     	  } else
     	  {
-    		  // do not show Bubble because there will not be selected a different cache but only a different waypoint
+    		  isBubbleShow = true;
+        	  BubbleCacheId = minWpi.Cache.Id;
+        	  BubbleCache = minWpi.Cache;
   			// Cacheliste ausrichten
 			GlobalCore.SelectedCache(minWpi.Cache);
 			// updateCacheList();  		
