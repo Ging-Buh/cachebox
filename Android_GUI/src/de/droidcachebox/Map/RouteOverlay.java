@@ -87,18 +87,21 @@ public class RouteOverlay {
                             {
                                 // Begin of the Track detected?
                                 if (line.indexOf("<trk>") > -1)
+                                {
                                     inTrk = true;
+                                    continue;
+                                }
 
-                                continue;
-                            }
-                            else
-                            {
                                 // found <name>?
                                 if (line.indexOf("<name>") > -1)
                                 {
                                     ReadName = true;
                                     continue;
                                 }
+
+                            }
+                            else
+                            {
                             }
 
 
@@ -149,6 +152,15 @@ public class RouteOverlay {
                 if (route.Points.size() < 2)
                     route.Name = "no Route segment found";
 
+                if (route.Name == null) //Wenn GPX keinen Namen enthält den Filenamen verwenden
+                {
+                	int idx = file.lastIndexOf("/");
+                	if (idx == -1)
+                		route.Name = file;
+                	else
+                		route.Name = file.substring(idx+1);
+                }
+                
                 route.ShowRoute = true;
 
                 return route;
@@ -161,126 +173,6 @@ public class RouteOverlay {
 				e.printStackTrace();
 				return null;
 			}
-        	
-        	
-/*
-            try
-            {
-                BinaryReader reader = new BinaryReader(File.Open(file, FileMode.Open));
-                
-                Route route = new Route(pen, null);
-                route.FileName = Path.GetFileName(file);
-                
-                long length = reader.BaseStream.Length;
-                
-                String line = null;
-                bool inBody = false;
-                bool inTrk = false;
-                bool ReadName = false;
-
-                Coordinate lastAcceptedCoordinate = null;
-
-                StringBuilder sb = new StringBuilder();
-                while (reader.BaseStream.Position < length)
-                {
-
-                    char nextChar = reader.ReadChar();
-                    sb.Append(nextChar);
-
-                    if (nextChar == '>')
-                    {
-                        line = sb.ToString().Trim().ToLower();
-                        sb = new StringBuilder();
-
-                        // Read Routename form gpx file
-                        // attention it is possible that a gpx file contains more than 1 <trk> segments
-                        // In this case the first name was used
-                        if (ReadName && (route.Name == null))
-                        {
-                            route.Name = line.Substring(0,line.IndexOf("</name>"));
-                            ReadName = false;
-                            continue;
-                        }
-
-                        if (!inTrk)
-                        {
-                            // Begin of the Track detected?
-                            if (line.IndexOf("<trk>") > -1)
-                                inTrk = true;
-
-                            continue;
-                        }
-                        else
-                        {
-                            // found <name>?
-                            if (line.IndexOf("<name>") > -1)
-                            {
-                                ReadName = true;
-                                continue;
-                            }
-                        }
-
-
-                        if (!inBody)
-                        {
-                            // Anfang der Trackpoints gefunden?
-                            if (line.IndexOf("<trkseg>") > -1)
-                                inBody = true;
-
-                            continue;
-                        }
-
-                        // Ende gefunden?
-                        if (line.IndexOf("</trkseg>") > 0)
-                            break;
-
-                        if (line.IndexOf("<trkpt") > -1)
-                        {
-                            // Trackpoint lesen
-                            int lonIdx = line.IndexOf("lon=\"") + 5;
-                            int latIdx = line.IndexOf("lat=\"") + 5;
-
-                            int lonEndIdx = line.IndexOf("\"", lonIdx);
-                            int latEndIdx = line.IndexOf("\"", latIdx);
-
-                            String latStr = line.Substring(latIdx, latEndIdx - latIdx);
-                            String lonStr = line.Substring(lonIdx, lonEndIdx - lonIdx);
-
-                            double lat = double.Parse(latStr, NumberFormatInfo.InvariantInfo);
-                            double lon = double.Parse(lonStr, NumberFormatInfo.InvariantInfo);
-
-                            if (lastAcceptedCoordinate != null)
-                                if (Datum.WGS84.Distance(lat, lon, lastAcceptedCoordinate.Latitude, lastAcceptedCoordinate.Longitude) < minDistanceMeters)
-                                    continue;
-
-                            lastAcceptedCoordinate = new Coordinate(lat, lon);
-
-                            PointD projectedPoint = new PointD(Descriptor.LongitudeToTileX(projectionZoomLevel, lon),
-                                Descriptor.LatitudeToTileY(projectionZoomLevel, lat));
-
-                            route.Points.Add(projectedPoint);
-                        }
-                    }
-                }
-
-                reader.Close();
-                if (route.Points.Count < 2)
-                    route.Name = "no Route segment found";
-
-                route.ShowRoute = true;
-
-                return route;
-            }
-
-            catch (Exception exc)
-            {
-#if DEBUG
-                Global.AddLog("RouteOverlay.LoadRoute: " + exc.ToString());
-#endif
-                MessageBox.Show(exc.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-                return null;
-            }
-*/
         }
 
         public static void RenderRoute(Canvas canvas, Bitmap bitmap, Descriptor desc, float dpiScaleFactorX, float dpiScaleFactorY)
@@ -367,77 +259,6 @@ public class RouteOverlay {
                 }
             }
         }
-/*
-        public Route GenP2PRoute(double FromLat, double FromLon, double ToLat, double ToLon, Pen pen)
-        {
-            Route route = new Route(pen, null);
-
-            route.Name = "Point 2 Point Route";
-
-            PointD projectedPoint = new PointD(Descriptor.LongitudeToTileX(projectionZoomLevel, FromLon),
-                Descriptor.LatitudeToTileY(projectionZoomLevel, FromLat));
-            route.Points.Add(projectedPoint);
-            projectedPoint = new PointD(Descriptor.LongitudeToTileX(projectionZoomLevel, ToLon),
-                Descriptor.LatitudeToTileY(projectionZoomLevel, ToLat));
-            route.Points.Add(projectedPoint);
-
-            route.ShowRoute = true;
-
-            return route;
-        }
-
-        public Route GenCircleRoute(double FromLat, double FromLon, double Distance, Pen pen)
-        {
-            Route route = new Route(pen, null);
-
-            route.Name = "Circle Route";
-
-            Coordinate GEOPosition = new Coordinate();
-            GEOPosition.Latitude = FromLat;
-            GEOPosition.Longitude = FromLon;
-
-            Coordinate Projektion = new Coordinate();
-
-            for (int i = 0; i <= 360; i++)
-            {
-                Projektion = Coordinate.Project(GEOPosition.Latitude, GEOPosition.Longitude, (double)i, Distance);
-
-                PointD projectedPoint = new PointD(Descriptor.LongitudeToTileX(projectionZoomLevel, Projektion.Longitude),
-                                            Descriptor.LatitudeToTileY(projectionZoomLevel, Projektion.Latitude));
-                route.Points.Add(projectedPoint);
-
-            }
-
-            route.ShowRoute = true;
-
-            return route;
-        }
-
-        public Route GenProjectRoute(double FromLat, double FromLon, double Distance, double Bearing, Pen pen)
-        {
-            Route route = new Route(pen, null);
-
-            route.Name = "Projected Route";
-
-            Coordinate GEOPosition = new Coordinate();
-            GEOPosition.Latitude = FromLat;
-            GEOPosition.Longitude = FromLon;
-            PointD projectedPoint = new PointD(Descriptor.LongitudeToTileX(projectionZoomLevel, GEOPosition.Longitude),
-                                        Descriptor.LatitudeToTileY(projectionZoomLevel, GEOPosition.Latitude));
-            route.Points.Add(projectedPoint);
-
-            Coordinate Projektion = new Coordinate();
-
-            Projektion = Coordinate.Project(GEOPosition.Latitude, GEOPosition.Longitude, Bearing, Distance);
-
-            projectedPoint = new PointD(Descriptor.LongitudeToTileX(projectionZoomLevel, Projektion.Longitude),
-                                        Descriptor.LatitudeToTileY(projectionZoomLevel, Projektion.Latitude));
-            route.Points.Add(projectedPoint);
-            route.ShowRoute = true;
-
-            return route;
-        }
-*/
 }
 
 

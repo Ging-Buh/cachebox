@@ -811,7 +811,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     				  ColorField[1] = Color.YELLOW;
     				  ColorField[2] = Color.BLACK;
     				  ColorField[3] = Color.LTGRAY;
-    				  ColorField[4] =  Color.GREEN;
+    				  ColorField[4] = Color.GREEN;
     				  ColorField[5] = Color.BLUE;
     				  ColorField[6] = Color.CYAN;
     				  ColorField[7] = Color.GRAY;
