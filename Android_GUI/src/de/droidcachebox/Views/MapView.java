@@ -4067,6 +4067,23 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       	  loadedTilesLock.unlock();
         }
     }
+
+    public void ClearCachedTrackTiles()
+    {
+    	trackTilesLock.lock();
+    	try
+    	{
+    		for (long hash : trackTiles.keySet())
+    			if (trackTiles.get(hash).Image != null)
+    				trackTiles.get(hash).Image.recycle();
+    		
+    		trackTiles.clear();
+        } finally
+        {
+      	  trackTilesLock.unlock();
+        }
+    }
+
     Point cacheArrowCenter = new Point(Integer.MIN_VALUE, Integer.MAX_VALUE);
     /*
     Font distanceFont = new Font(FontFamily.GenericSansSerif, 9, FontStyle.Regular);
@@ -4824,6 +4841,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	@Override
 	public void OnHide() {
 		ClearCachedTiles();
+		ClearCachedTrackTiles();
 		isVisible = false;
 		
     	if ((animationThread != null) && (animationThread.isAlive()))
