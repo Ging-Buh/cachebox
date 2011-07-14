@@ -2,6 +2,7 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:icon="@drawable/favorit" android:checkable="true" android:id="@+id/mi_descview_favorite" android:title="Favorite"></item>
+    <item android:id="@+id/mi_descview_update" android:title="Reload Cache-Info(API)"></item>
 
 
 </menu>

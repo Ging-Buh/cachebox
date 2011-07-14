@@ -20,12 +20,14 @@ import CB_Core.GlobalCore;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Views.Forms.MessageBox;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Messenger;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -103,12 +105,17 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 			public void onIconContextItemSelected(MenuItem item, Object info) {
 				switch (item.getItemId())
 		    	{
-				// Misc
+				
 		    	case R.id.mi_descview_favorite:
 		    		aktCache.setFavorit(!aktCache.Favorit());
 		    		CacheDAO dao = new CacheDAO();
 		    		dao.UpdateDatabase(aktCache);
 		    		cacheInfo.invalidate();
+		    		break;
+		    	case R.id.mi_descview_update:
+		    		reloadCacheInfo();
+		    		break;
+		    		
 		    	default:
 					
 		    	}
@@ -122,6 +129,15 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 		
 		
 		
+	}
+	
+	private void reloadCacheInfo()
+	{
+		Cache reCache = aktCache; //Todo hole Info über API
+		CacheDAO dao = new CacheDAO();
+		dao.UpdateDatabase(reCache);
+		//Todo Update CachList
+		MessageBox.Show("TODO:API-Abfrage" + String.format("%n")+ "DescriptionView.java -> Line:136");
 	}
 
 	@Override
