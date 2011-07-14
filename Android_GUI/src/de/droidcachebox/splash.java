@@ -179,7 +179,7 @@ public class splash extends Activity
 	 
 	 private void Initial2()
 	 {
-	        
+		    setProgressState(62, Global.Translations.Get("LoadCaches")+ FileIO.GetFileName(Config.GetString("DatabasePath")));
 		 	String FilterString = Config.GetString("Filter");
 	        Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(PresetListView.presets[0]) : new FilterProperties(FilterString);
 	        String sqlWhere =Global.LastFilter.getSqlWhere();

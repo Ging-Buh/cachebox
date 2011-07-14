@@ -56,9 +56,9 @@ public class CacheDAO {
         cache.GcId = reader.getString(17).trim();
         cache.Rating = ((float)reader.getShort(18)) / 100.0f;
         if (reader.getInt(19) > 0)
-        	cache.Favorit = true;
+        	cache.setFavorit(true);
         else
-        	cache.Favorit = false;
+        	cache.setFavorit(false);
         if (reader.getString(20) != null)
         	cache.TourName = reader.getString(20).trim();
         else
@@ -160,4 +160,58 @@ public class CacheDAO {
         }	
     }
 
+	public void UpdateDatabase(Cache cache) 
+	{
+
+		ContentValues args = new ContentValues();
+        args.put("Id", cache.Id);
+        args.put("GcCode", cache.GcCode);
+        args.put("GcId", cache.GcId);
+        args.put("Latitude", cache.Pos.Latitude);
+        args.put("Longitude", cache.Pos.Longitude);
+        args.put("Name", cache.Name);
+        args.put("Size", cache.Size.ordinal());
+        args.put("Difficulty", (int)(cache.Difficulty * 2));
+        args.put("Terrain", (int)(cache.Terrain * 2));
+        args.put("Archived", cache.Archived ? 1 : 0);
+        args.put("Available", cache.Available ? 1 : 0);
+        args.put("Found", cache.Found);
+        args.put("Type", cache.Type.ordinal());
+        args.put("PlacedBy", cache.PlacedBy);
+        args.put("Owner", cache.Owner);
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String stimestamp = iso8601Format.format(cache.DateHidden);
+        args.put("DateHidden", stimestamp);
+        args.put("Hint", cache.hint);
+        if ((cache.longDescription != null) && (cache.longDescription != ""))
+        	args.put("Description", cache.longDescription);
+        cache.longDescription = "";	// clear longDescription because this will be loaded from database when used
+        args.put("Url", cache.Url);
+        args.put("NumTravelbugs", cache.NumTravelbugs);
+        args.put("Rating", (int)(cache.Rating * 100));
+//        args.put("Vote", cache.);
+//        args.put("VotePending", cache.);
+//        args.put("Notes", );
+//        args.put("Solver", cache.);
+        args.put("AttributesPositive", cache.attributesPositive);
+        args.put("AttributesNegative", cache.attributesNegative);
+//        args.put("ListingCheckSum", cache.);
+        args.put("GPXFilename_Id", cache.GPXFilename_ID);
+        args.put("Favorit", cache.Favorit() ? 1 : 0);
+        
+        try
+        {
+        	long anzahl = Database.Data.myDB.update("Caches", args,  "Id=" + cache.Id, null);
+            String s = anzahl + "";
+        	
+            args = new ContentValues();
+        } catch (Exception exc)
+        {
+        	Logger.Error("Ubdate Cache", "", exc);
+        
+        }	
+	}
+
+	
+	
 }

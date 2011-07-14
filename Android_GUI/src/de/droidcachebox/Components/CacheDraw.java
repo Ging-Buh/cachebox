@@ -264,7 +264,7 @@ public class CacheDraw
           }
               
 
-          if (cache.Favorit)
+          if (cache.Favorit())
           {
         	  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[19],left + VoteWidth + 2, top , iconSize/2);
           }

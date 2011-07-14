@@ -117,8 +117,13 @@ public class Cache implements Comparable<Cache>
     /**
 	 * Ist der Cache einer der Favoriten
      */
-    public boolean Favorit;
-    
+    public boolean Favorit(){return favorite;}
+    private boolean favorite;
+    public void setFavorit(boolean value)
+    {
+    	favorite=value;
+    	
+    }
     /**
      * for Replication
      */

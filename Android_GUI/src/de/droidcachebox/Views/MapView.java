@@ -2005,7 +2005,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		  if (wpi.OverlayIcon != null)
 		      drawImage(canvasOverlay, wpi.OverlayIcon, imageX - halfOverlayWidth, imageY - halfOverlayWidth, OverlayWidth, OverlayWidth);
 		
-		  if (wpi.Cache.Favorit)
+		  if (wpi.Cache.Favorit())
 		  {
 			  ActivityUtils.PutImageTargetHeight(canvasOverlay, Global.Icons[19], imageX, imageY, (int)(14.0f * dpiScaleFactorY));
 		  }

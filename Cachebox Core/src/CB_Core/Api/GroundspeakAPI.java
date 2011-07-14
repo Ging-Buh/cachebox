@@ -185,7 +185,7 @@ public class GroundspeakAPI {
 							Logger.Error("API", "SearchForGeocaches_ParseDate", exc);							
 						}
 						cache.Difficulty = (float)jCache.getDouble("Difficulty");
-						cache.Favorit = false;
+						cache.setFavorit(false);
 						cache.Found = jCache.getBoolean("HasbeenFoundbyUser");
 						cache.GcCode = jCache.getString("Code");
 						cache.GcId = jCache.getString("ID");

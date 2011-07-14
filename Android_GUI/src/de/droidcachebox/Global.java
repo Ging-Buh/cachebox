@@ -27,7 +27,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 315;
+    public static final int CurrentRevision = 317;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1002;
@@ -654,15 +654,19 @@ public class Global{
     
     public static MenuItem TranslateMenuItem(Menu menu, int id, String StringId, String zusatz)
     {
+    	MenuItem mi = menu.findItem(id);
     	try
     	{
-    		MenuItem mi = menu.findItem(id);
     		if (mi != null)
-    			mi.setTitle(Global.Translations.Get(StringId)+ zusatz);
-    		return mi;
-    	} catch (Exception exc)
-    	{ }
-    	return null;
+    		{
+    			String trans=Global.Translations.Get(StringId)+ zusatz;
+    			mi.setTitle(trans);
+    		}
+    	} catch (Exception e)
+    	{ 
+    		Logger.Error("Global.TranslateMenuItem()", "", e);
+    	}
+    	return mi;
     }
    
 	/**

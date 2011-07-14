@@ -366,8 +366,9 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 	}
 
 	@Override
-	public int GetMenuId() {
-		// TODO Auto-generated method stub
+	public int GetMenuId() 
+	{
+		
 		return R.menu.menu_fieldnotesview;
 	}
 

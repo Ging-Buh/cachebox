@@ -1,23 +1,40 @@
 package de.droidcachebox.Views;
 
+import java.io.File;
+
+import de.droidcachebox.ExtAudioRecorder;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.TrackRecorder;
+import de.droidcachebox.main;
+import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheDraw.DrawStyle;
 import de.droidcachebox.Custom_Controls.CacheInfoControl;
 import de.droidcachebox.Custom_Controls.DescriptionViewControl;
+import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
+import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
+import de.droidcachebox.DAO.CacheDAO;
+import CB_Core.Config;
+import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent {
 	Context context;
@@ -69,9 +86,42 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 		return false;
 	}
 
+	private IconContextMenu icm;
+	
 	@Override
 	public void BeforeShowMenu(Menu menu) 
 	{
+		MenuItem miFavorite = Global.TranslateMenuItem(menu, R.id.mi_descview_favorite, "Favorite");
+		miFavorite.setCheckable(true);
+		miFavorite.setChecked(aktCache.Favorit());
+		
+		icm = new IconContextMenu(main.mainActivity, menu);
+				
+		icm.setOnIconContextItemSelectedListener(new IconContextItemSelectedListener() {
+			
+			@Override
+			public void onIconContextItemSelected(MenuItem item, Object info) {
+				switch (item.getItemId())
+		    	{
+				// Misc
+		    	case R.id.mi_descview_favorite:
+		    		aktCache.setFavorit(!aktCache.Favorit());
+		    		CacheDAO dao = new CacheDAO();
+		    		dao.UpdateDatabase(aktCache);
+		    		cacheInfo.invalidate();
+		    	default:
+					
+		    	}
+		    }
+		});
+		
+		menu=icm.getMenu();
+		
+	  	  
+	  	  icm.show();
+		
+		
+		
 	}
 
 	@Override
@@ -95,7 +145,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	@Override
 	public int GetMenuId() 
 	{
-		return 0;
+		return R.menu.menu_descview;
 	}
 
 	@Override

@@ -1370,7 +1370,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		MenuItem miAutoResort = Global.TranslateMenuItem(IconMenu, R.id.miAutoResort, "AutoResort");
 		miAutoResort.setCheckable(true);
 		miAutoResort.setChecked(Global.autoResort);
-		//AutoResortButton.ButtonImage = (Global.autoResort) ? Global.Icons[6] : Global.Icons[7];
+		
   	  icm.show();
 	}
     
