@@ -103,13 +103,21 @@ public class splash extends Activity
 		 String workPath = Environment.getExternalStorageDirectory() + "/cachebox";
 		 Config.Initialize(workPath, workPath + "/cachebox.config");
 		 
-		 // copy AssetFolder
-		 String[] exclude = new String[]{"webkit","sounds","images"};
-		 copyAssetFolder myCopie = new copyAssetFolder();
-		 myCopie.copyAll(getAssets(), Config.WorkPath, exclude);
-		 
-		 
 		 Config.readConfigFile(/*getAssets()*/);
+		 
+		 // copy AssetFolder only if Rev-Number changed, like at new installation
+		 if(Config.GetInt("installRev")<Global.CurrentRevision)
+		 {
+			 String[] exclude = new String[]{"webkit","sounds","images"};
+			 copyAssetFolder myCopie = new copyAssetFolder();
+			 myCopie.copyAll(getAssets(), Config.WorkPath, exclude);
+			 Config.Set("installRev", Global.CurrentRevision);
+			 Config.AcceptChanges();
+		 }
+		
+		
+		 
+		 
 		 try {
 			Global.Translations.ReadTranslationsFile(Config.GetString("Sel_LanguagePath"));
 		} catch (IOException e) {
