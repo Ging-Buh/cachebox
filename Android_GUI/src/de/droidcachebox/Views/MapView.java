@@ -16,6 +16,7 @@ import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
+import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
@@ -59,6 +60,8 @@ import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
 import de.droidcachebox.DAO.CacheDAO;
+import de.droidcachebox.DAO.LogDAO;
+import de.droidcachebox.DAO.WaypointDAO;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import CB_Core.Events.SelectedCacheEvent;
@@ -4699,7 +4702,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(Zoom, point.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, point.X / (256.0)));
 
 				ArrayList<Cache> apiCaches = new ArrayList<Cache>();
-				String result = CB_Core.Api.GroundspeakAPI.SearchForGeocachesJSON(accessToken, lastMouseCoordinate, 50000, 30, apiCaches);
+				ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+				String result = CB_Core.Api.GroundspeakAPI.SearchForGeocachesJSON(accessToken, lastMouseCoordinate, 50000, 10, apiCaches, apiLogs);
 				if (apiCaches.size() > 0)
 				{
 					Database.Data.myDB.beginTransaction();
@@ -4712,6 +4716,19 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			            	Database.Data.Query.add(cache);
 			            	CacheDAO cacheDAO = new CacheDAO();
 			            	cacheDAO.WriteToDatabase(cache);
+			            	for (LogEntry log : apiLogs)
+			            	{
+			            		if (log.CacheId != cache.Id) 
+			            			continue;
+			            		// Write Log to database
+			            		LogDAO logDAO = new LogDAO();
+			            		logDAO.WriteToDatabase(log);
+			            	}
+			            	for (Waypoint waypoint : cache.waypoints)
+			            	{
+			            		WaypointDAO waypointDAO = new WaypointDAO();
+			            		waypointDAO.WriteToDatabase(waypoint);
+			            	}
 			            }
 					}
 					Database.Data.myDB.setTransactionSuccessful();

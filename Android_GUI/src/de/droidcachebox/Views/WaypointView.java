@@ -16,6 +16,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import de.droidcachebox.DAO.WaypointDAO;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Views.Forms.EditCoordinate;
 import de.droidcachebox.Views.Forms.EditWaypoint;
@@ -102,7 +103,8 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 					this.setAdapter(lvAdapter);
 					aktWaypoint = waypoint;
 					GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), waypoint);
-					Database.WriteToDatabase(waypoint);
+		        	WaypointDAO waypointDAO = new WaypointDAO();
+					waypointDAO.WriteToDatabase(waypoint);
 					
 				} else
 				{
@@ -111,7 +113,8 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 					aktWaypoint.Pos = waypoint.Pos;
 					aktWaypoint.Description = waypoint.Description;
 					aktWaypoint.Clue = waypoint.Clue;
-					Database.UpdateDatabase(aktWaypoint);
+		        	WaypointDAO waypointDAO = new WaypointDAO();
+					waypointDAO.UpdateDatabase(aktWaypoint);
 					lvAdapter.notifyDataSetChanged();
 				}
 			}
@@ -133,7 +136,8 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 					this.setAdapter(lvAdapter);
 					aktWaypoint = newWP;
 					GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), newWP);
-					Database.WriteToDatabase(newWP);
+		        	WaypointDAO waypointDAO = new WaypointDAO();
+					waypointDAO.WriteToDatabase(newWP);
 					
 				} 
 			}

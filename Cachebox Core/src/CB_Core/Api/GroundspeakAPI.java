@@ -18,9 +18,12 @@ import org.json.JSONTokener;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Enums.LogTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
+import CB_Core.Types.LogEntry;
+import CB_Core.Types.Waypoint;
 
 public class GroundspeakAPI {
 	
@@ -91,7 +94,7 @@ public class GroundspeakAPI {
 		return (-1);
 	}
 
-	public static String SearchForGeocachesJSON(String accessToken, Coordinate pos, float distanceInMeters, int number, ArrayList<Cache> cacheList)
+	public static String SearchForGeocachesJSON(String accessToken, Coordinate pos, float distanceInMeters, int number, ArrayList<Cache> cacheList, ArrayList<LogEntry> logList)
 	{ 
 		String result = "";
 
@@ -201,8 +204,7 @@ public class GroundspeakAPI {
 						JSONObject jOwner = (JSONObject) jCache.getJSONObject("Owner");						
 						cache.Owner = jOwner.getString("UserName");
 						cache.PlacedBy = cache.Owner;
-						cache.Pos = new Coordinate();
-						cache.Pos = new Coordinate(pos.Latitude = jCache.getDouble("Latitude"), jCache.getDouble("Longitude"));
+						cache.Pos = new Coordinate(jCache.getDouble("Latitude"), jCache.getDouble("Longitude"));
 						cache.Rating = 0;
 //						cache.Rating =
 						cache.shortDescription = jCache.getString("ShortDescription");
@@ -217,6 +219,57 @@ public class GroundspeakAPI {
 						cache.Url = jCache.getString("Url");
 						
 						cacheList.add(cache);
+						// insert Logs
+						JSONArray logs = jCache.getJSONArray("GeocacheLogs");
+						for (int j = 0; j < logs.length(); j++)
+						{
+							JSONObject jLogs = (JSONObject) logs.get(j);
+							JSONObject jFinder = (JSONObject) jLogs.get("Finder");
+							JSONObject jLogType = (JSONObject) jLogs.get("LogType");
+							LogEntry log = new LogEntry();							
+							log.CacheId = cache.Id;
+							log.Comment = jLogs.getString("LogText");
+							log.Finder = jFinder.getString("UserName");
+							log.Id = jLogs.getInt("ID");
+							log.Timestamp = new Date();
+							try
+							{
+								String dateCreated = jLogs.getString("VisitDate");
+								int date1 = dateCreated.indexOf("/Date(");
+								int date2 = dateCreated.indexOf("-");
+								String date = (String) dateCreated.subSequence(date1 + 6, date2);
+								log.Timestamp = new Date(Long.valueOf(date));
+							} catch (Exception exc)
+							{
+								Logger.Error("API", "SearchForGeocaches_ParseLogDate", exc);							
+							}
+							log.Type = getLogType(jLogType.getInt("WptLogTypeId"));
+							logList.add(log);
+						}						
+						
+						// insert Waypoints
+						JSONArray waypoints = jCache.getJSONArray("AdditionalWaypoints");
+						for (int j = 0; j < waypoints.length(); j++)
+						{
+							JSONObject jWaypoints = (JSONObject) waypoints.get(j);
+							Waypoint waypoint = new Waypoint();
+							waypoint.CacheId = cache.Id;
+							waypoint.GcCode = jWaypoints.getString("Code") + cache.GcCode.substring(2, cache.GcCode.length());
+							try
+							{
+								waypoint.Pos = new Coordinate(jWaypoints.getDouble("Latitude"), jWaypoints.getDouble("Longitude"));
+							} catch (Exception ex)
+							{
+								// no Coordinates -> Lat/Lon = 0/0
+								waypoint.Pos = new Coordinate();
+							}
+							waypoint.Title = jWaypoints.getString("Name");
+							waypoint.Description = jWaypoints.getString("Description");
+							waypoint.Type = getCacheType(jWaypoints.getInt("WptTypeID"));
+							waypoint.Clue = jWaypoints.getString("Comment");
+							
+							cache.waypoints.add(waypoint);
+						}
 					}
 				} else
 				{
@@ -297,9 +350,57 @@ public class GroundspeakAPI {
 			return CacheTypes.Cache;  // GPS Adventures Exhibit
 		case 1858:
 			return CacheTypes.Wherigo;
+			
+			
+		case 217:
+			return CacheTypes.ParkingArea;
+		case 220: 
+			return CacheTypes.Final;
+		case 219: 
+			return CacheTypes.MultiStage;
+		case 218:
+			return CacheTypes.MultiQuestion;
+			
 		default:
 			return CacheTypes.Cache;
 			
+		}
+	}
+	
+	private static LogTypes getLogType(int apiTyp)
+	{
+		switch (apiTyp)
+		{
+		case 2:
+			return LogTypes.found;
+		case 3:
+			return LogTypes.didnt_find;
+		case 4:
+			return LogTypes.note;
+		case 5:
+			return LogTypes.archived;
+		case 7:
+			return LogTypes.needs_archived;
+		case 9:
+			return LogTypes.will_attend;
+		case 10:
+			return LogTypes.attended;
+		case 11:
+			return LogTypes.webcam_photo_taken;
+		case 12:
+			return LogTypes.enabled;
+		case 24:
+			return LogTypes.published;
+		case 45:
+			return LogTypes.needs_maintenance;
+		case 46:
+			return LogTypes.owner_maintenance;
+		case 18:
+			return LogTypes.reviewer_note;
+		case 22:			
+			return LogTypes.temporarily_disabled;
+		default:
+			return LogTypes.note;
 		}
 	}
 	

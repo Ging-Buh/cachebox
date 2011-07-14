@@ -28,7 +28,8 @@ public class CacheListDAO {
     	reader.moveToFirst();
         while(reader.isAfterLast() == false)
         {
-            Waypoint wp = Database.getWaypoint(reader);
+        	WaypointDAO waypointDAO = new WaypointDAO();
+            Waypoint wp = waypointDAO.getWaypoint(reader);
             if (wp.CacheId != aktCacheID)
             {
                 aktCacheID = wp.CacheId;
