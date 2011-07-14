@@ -22,4 +22,12 @@
 	</item>
 	<item android:id="@+id/mapview_go_settings" android:title="Settings"></item>
 	<item android:title="Search Caches" android:id="@+id/mapview_searchcaches"></item>
+	<item android:id="@+id/mimapview_view" android:title="View">
+		<menu>
+			<item android:id="@+id/miMap_HideFinds" android:title="Heide Finds" android:checkable="true"></item>
+			<item android:id="@+id/miMap_ShowRatings" android:title="Show Raiting" android:checkable="true"></item>
+			<item android:id="@+id/miMap_ShowDT" android:title="Show D/T" android:checkable="true"></item>
+			<item android:id="@+id/miMap_ShowTitles" android:title="Show Titles" android:checkable="true"></item>
+		</menu>
+	</item>
 </menu>

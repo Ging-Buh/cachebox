@@ -583,7 +583,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	Config.AcceptChanges();
     	
     	//reinital map
-    	main.mapView.setNewScale();
+    	main.mapView.setNewSettings();
     	
 		finish();
 	}	

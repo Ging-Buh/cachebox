@@ -194,8 +194,15 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
        	}
 	
 
-	public void setNewScale()
+	public void setNewSettings()
 	{
+		 showRating = Config.GetBool("MapShowRating");
+         showDT = Config.GetBool("MapShowDT");
+         showTitles = Config.GetBool("MapShowTitles");
+         hideMyFinds = Config.GetBool("MapHideMyFinds");
+         showCompass = Config.GetBool("MapShowCompass");
+         nightMode = Config.GetBool("nightMode");
+		
 		// Skalierungsfaktoren bestimmen
 	      if (Config.GetBool("OsmDpiAwareRendering"))
 	      {
@@ -215,6 +222,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         ClearCachedTiles();
 		Render(true);
 	}
+	
+
 
 	private void setLockPosition(int value)
 	{
@@ -951,7 +960,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	isVisible = true;
     	if (!animationThread.isAlive())
     		animationThread.start();
-    	setNewScale();
+    	setNewSettings();
     }
     
     public void InitializeMap()
@@ -1948,6 +1957,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	int halfUnderlayWidth = 0;
 		for (WaypointRenderInfo wpi : wpToRender)
 		{
+			
+			// Hide my finds
+			if(hideMyFinds && wpi.Cache.Found)continue;
+			
+			
 		  int halfIconWidth = (int)((wpi.Icon.getMinimumWidth()) / 2 * dpiScaleFactorX);
 		  int IconWidth = (int)(wpi.Icon.getMinimumWidth()* dpiScaleFactorX);
 		  int halfOverlayWidth = halfIconWidth;
@@ -4739,6 +4753,35 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 					
 				}
 				MessageBox.Show(result);
+		   		return true;
+			case R.id.miMap_HideFinds:
+				hideMyFinds=!hideMyFinds;
+				Config.Set("MapHideMyFinds", hideMyFinds);
+				Config.AcceptChanges();
+				Render(true);
+		   		return true;
+		   		
+			case R.id.miMap_ShowDT:
+				showDT=!showDT;
+				Config.Set("MapShowDT", showDT);
+				Config.AcceptChanges();
+				Render(true);
+		   		return true;
+		   	
+			case R.id.miMap_ShowRatings:
+				showRating=!showRating;
+				Config.Set("MapShowRating", showRating);
+				Config.AcceptChanges();
+				Render(true);
+		   		return true;
+		   	
+			case R.id.miMap_ShowTitles:
+				showTitles=!showTitles;
+				Config.Set("MapShowTitles", showTitles);
+				Config.AcceptChanges();
+				Render(true);
+		   		return true;
+		   		
 		}
 		return false;
 	}
@@ -4804,6 +4847,23 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			if (mi != null)
 				mi.setEnabled(Global.APIisOnline());
 
+			
+			
+			mi = menu.findItem(R.id.mimapview_view);
+			if (mi != null)
+			{
+				MenuItem miFinds = menu.findItem(R.id.miMap_HideFinds);
+				MenuItem miRaiting = menu.findItem(R.id.miMap_ShowRatings);
+				MenuItem miDT = menu.findItem(R.id.miMap_ShowDT);
+				MenuItem miTitles = menu.findItem(R.id.miMap_ShowTitles);
+				
+				miFinds.setChecked(hideMyFinds);
+				miRaiting.setChecked(showRating);
+				miDT.setChecked(showDT);
+				miTitles.setChecked(showTitles);
+			}
+			
+			
 		} catch (Exception exc)
 		{
 			Logger.Error("MapView.BeforeShowMenu()","",exc);
