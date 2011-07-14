@@ -174,12 +174,12 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         
         ArrayList<android.view.View> buttons = new ArrayList<android.view.View>();
         this.addTouchables(buttons);
-        scale = getContext().getResources().getDisplayMetrics().density;
         
-        font.setTextSize(14 * scale);
+        
+        font.setTextSize(20 * dpiScaleFactorX);
         font.setFakeBoldText(true);
         font.setAntiAlias(true);
-        fontSmall.setTextSize(12 * scale);
+        fontSmall.setTextSize(14 * dpiScaleFactorX);
         fontSmall.setFakeBoldText(true);
         fontSmall.setAntiAlias(true);
         PositionEventList.Add(this);
@@ -190,7 +190,28 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         
        	}
 	
-	final float scale;
+
+	public void setNewScale()
+	{
+		// Skalierungsfaktoren bestimmen
+	      if (Config.GetBool("OsmDpiAwareRendering"))
+	      {
+	    	  dpiScaleFactorX = dpiScaleFactorY = getContext().getResources().getDisplayMetrics().density;
+	      }
+	      else
+	      {
+	    	  dpiScaleFactorX = dpiScaleFactorY = 1;
+	      }
+		
+		font.setTextSize(20 * dpiScaleFactorX);
+        font.setFakeBoldText(true);
+        font.setAntiAlias(true);
+        fontSmall.setTextSize(14 * dpiScaleFactorX);
+        fontSmall.setFakeBoldText(true);
+        fontSmall.setAntiAlias(true);
+        ClearCachedTiles();
+		Render(true);
+	}
 
 	private void setLockPosition(int value)
 	{
@@ -484,9 +505,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 /*    public delegate void TileLoadedHandler(Bitmap bitmap, Descriptor desc);
     public event TileLoadedHandler OnTileLoaded = null;*/
 
-    /// <summary>
-    /// Aktuell betrachteter Layer
-    /// </summary>
+    /**
+    * Aktuell betrachteter Layer
+    */
     public Layer CurrentLayer = null;
     public void SetCurrentLayer(Layer newLayer)
     {
@@ -505,32 +526,32 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       }
       Render(true);
     }
-    /// <summary>
-    /// Tile Manager
-    /// </summary>
+    /**
+    * Tile Manager
+    */
     public static Manager Manager = new Manager();
 
-    /// <summary>
-    /// Wunschzettel. Diese Deskriptoren werden von loaderthread geladen
-    /// und instanziiert
-    /// </summary>
+    /**
+    * Wunschzettel. Diese Deskriptoren werden von loaderthread geladen
+    * und instanziiert
+    */
     ArrayList<Descriptor> wishlist = new ArrayList<Descriptor>();
     private Lock wishlistLock = new ReentrantLock();
 
-    /// <summary>
-    /// Instanz des Loaders
-    /// </summary>
+    /**
+    * Instanz des Loaders
+    */
     loaderThread loaderThread = null;
 
-    /// <summary>
-    /// Liste mit den darzustellenden Wegpunkten
-    /// </summary>
+    /**
+    * Liste mit den darzustellenden Wegpunkten
+    */
     ArrayList<WaypointRenderInfo> wpToRender = new ArrayList<WaypointRenderInfo>();
 
-    /// <summary>
-    /// Speichert die Informationen für einen im Sichtfeld befindlichen
-    /// Waypoint
-    /// </summary>
+    /**
+    * Speichert die Informationen für einen im Sichtfeld befindlichen
+    * Waypoint
+    */
     class WaypointRenderInfo
     {
       public double MapX;
@@ -543,42 +564,45 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       public boolean Selected;
     };
 
-    /// <summary>
-    /// true, falls das Rating der Caches angezeigt werden soll
-    /// </summary>
+    /**
+    * true, falls das Rating der Caches angezeigt werden soll
+    */
     boolean showRating = true;
 
+    /**
+     * true, falls die D/T Werte der Caches angezeigt werden soll
+     */
     boolean showDT = true;
 
-    /// <summary>
-    /// true, falls die WP-Beschriftungen gezeigt werden sollen
-    /// </summary>
+    /**
+    * true, falls die WP-Beschriftungen gezeigt werden sollen
+    */
     boolean showTitles = true;
 
-    /// <summary>
-    /// true, falls bei Mysterys mit Lösung (Final Waypoint) der Cache ausgeblendet werden soll, wenn der Cache nicht selected ist.
-    /// </summary>
+    /**
+    * true, falls bei Mysterys mit Lösung (Final Waypoint) der Cache ausgeblendet werden soll, wenn der Cache nicht selected ist.
+    */
     boolean hideCacheWithFinal = true;
 
-    /// <summary>
-    /// true, falls der kleine Kompass open angezeigt werden soll
-    /// </summary>
+    /**
+    * true, falls der kleine Kompass open angezeigt werden soll
+    */
     boolean showCompass = true;
 
-    /// <summary>
-    /// true, falls die Map-Anzeige am Compass ausgerichtet werden soll
-    /// </summary>
+    /**
+    * true, falls die Map-Anzeige am Compass ausgerichtet werden soll
+    */
     boolean alignToCompass = false;
     
-    /// <summary>
-    /// Spiegelung des Logins bei Gc, damit ich das nicht dauernd aus der
-    /// Config lesen muss.
-    /// </summary>
+    /**
+    * Spiegelung des Logins bei Gc, damit ich das nicht dauernd aus der
+    * Config lesen muss.
+    */
     String gcLogin = "";
 
-    /// <summary>
-    /// true, falls Center gültige Koordinaten enthält
-    /// </summary>
+    /**
+    * true, falls Center gültige Koordinaten enthält
+    */
     boolean positionInitialized = false;
 
     boolean hideMyFinds = false;
@@ -587,15 +611,15 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
     PointD centerOsmSpace = new PointD(0, 0);
 /*
-    ///// <summary>
-    ///// Wegpunkt des Markers. Wird bei go to als Ziel gesetzt
-    ///// </summary>
+    ///
+    /// Wegpunkt des Markers. Wird bei go to als Ziel gesetzt
+    //
     //Waypoint markerWaypoint = new Waypoint("MARKER", CacheTypes.ReferencePoint, "Marker", 0, 0, 0);
 */
-    /// <summary>
-    /// Der Kartenmittelpunkt. Wird dieser Wert überschrieben wird die
-    /// Liste sichtbarer Caches entsprechend aktualisiert.
-    /// </summary>
+    /**
+    * Der Kartenmittelpunkt. Wird dieser Wert überschrieben wird die
+    * Liste sichtbarer Caches entsprechend aktualisiert.
+    */
     public Coordinate getCenter()
     {
         return new Coordinate(Descriptor.TileYToLatitude(Zoom, centerOsmSpace.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, centerOsmSpace.X / (256.0)));
@@ -617,8 +641,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	
 	        center = value;
 	        centerOsmSpace = Descriptor.ToWorld(Descriptor.LongitudeToTileX(Zoom, center.Longitude), Descriptor.LatitudeToTileY(Zoom, center.Latitude), Zoom, Zoom);
-	        screenCenter.X = Math.round(centerOsmSpace.X * dpiScaleFactorX);
-	        screenCenter.Y = Math.round(centerOsmSpace.Y * dpiScaleFactorY);
+	        screenCenter.X = Math.round(centerOsmSpace.X  );
+	        screenCenter.Y = Math.round(centerOsmSpace.Y  );
 	        if (animationThread != null)
 	        {
 	        	animationThread.toX = screenCenter.X;
@@ -639,33 +663,33 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
     public int Zoom = 14;
 
-    /// <summary>
-    /// Hashtabelle mit geladenen Kacheln
-    /// </summary>
+    /**
+    * Hashtabelle mit geladenen Kacheln
+    */
     protected Hashtable<Long, Tile> loadedTiles = new Hashtable<Long, Tile>();
     final Lock loadedTilesLock = new ReentrantLock();
     
 
-    /// <summary>
-    /// Hashtabelle mit Kacheln der GPX Tracks zum Overlay über die MapTiles
-    /// </summary>
+    /**
+    * Hashtabelle mit Kacheln der GPX Tracks zum Overlay über die MapTiles
+    */
     protected Hashtable<Long, Tile> trackTiles = new Hashtable<Long, Tile>();
     final Lock trackTilesLock = new ReentrantLock();
 
-    /// <summary>
-    /// Horizontaler Skalierungsfaktor bei DpiAwareRendering
-    /// </summary>
-    protected float dpiScaleFactorX = 1;
+    /**
+    * Horizontaler Skalierungsfaktor bei DpiAwareRendering
+    */
+    public static float dpiScaleFactorX = 1;
 
-    /// <summary>
-    /// Vertikaler Skalierungsfaktor bei DpiAwareRendering
-    /// </summary>
-    protected float dpiScaleFactorY = 1;
+    /**
+    * Vertikaler Skalierungsfaktor bei DpiAwareRendering
+    */ 
+    public static float dpiScaleFactorY = 1;
 
     // TODO: Dies schlau berechnen!
-    /// <summary>
-    /// Größe des Kachel-Caches
-    /// </summary>
+    /**
+    * Größe des Kachel-Caches
+    */
     private int numMaxTiles = 24;
     private int numMaxTrackTiles = 12;
 
@@ -846,7 +870,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     void OnTileLoaded(Bitmap bitmap, Descriptor desc)
     {
 //        canvas = new Canvas(bitmap);
-//        RouteOverlay.RenderRoute(canvas, bitmap, desc, dpiScaleFactorX, dpiScaleFactorY);
+//        RouteOverlay.RenderRoute(canvas, bitmap, desc, , );
 /*
       if (nightMode)
       { 
@@ -924,6 +948,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	isVisible = true;
     	if (!animationThread.isAlive())
     		animationThread.start();
+    	setNewScale();
     }
     
     public void InitializeMap()
@@ -992,20 +1017,22 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       if (Config.GetBool("OsmDpiAwareRendering"))
       {
 
-          dpiScaleFactorX = dpiScaleFactorY = getContext().getResources().getDisplayMetrics().density;
-          dpiScaleFactorX = dpiScaleFactorY = 1;
+    	  dpiScaleFactorX = dpiScaleFactorY = getContext().getResources().getDisplayMetrics().density;
+          
       }
       else
-        dpiScaleFactorX = dpiScaleFactorY = 1;
-
-      //redPen = new Pen(Color.Red, (int)(dpiScaleFactorX * 1.4f));
+      {
+    	  dpiScaleFactorX = dpiScaleFactorY = 1;
+      }
+      main.setDebugMsg("dpi=" + String.valueOf(dpiScaleFactorX) );
+      //redPen = new Pen(Color.Red, (int)( * 1.4f));
 
       // Falls DpiAwareRendering geändert wurde, müssen diese Werte ent-
       // sprechend angepasst werden.
       synchronized (screenCenter)
       {
-	      screenCenter.X = Math.round(centerOsmSpace.X * dpiScaleFactorX);
-	      screenCenter.Y = Math.round(centerOsmSpace.Y * dpiScaleFactorY);
+	      screenCenter.X = Math.round(centerOsmSpace.X  );
+	      screenCenter.Y = Math.round(centerOsmSpace.Y  );
 	      if (animationThread != null)
 	      {
 	    	  animationThread.toX = screenCenter.X;
@@ -1014,7 +1041,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       }
       
 /*
-      halfIconSize = (int)((Global.NewMapIcons[2][0].Height * dpiScaleFactorX) / 2);
+      halfIconSize = (int)((Global.NewMapIcons[2][0].Height * ) / 2);
 */
 
       updateCacheList();
@@ -1036,12 +1063,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     }
 
 */
-    /// <summary>
-    /// Läd eine Kachel und legt sie in loadedTiles ab. Implementiert den
-    /// WaitCallback-Delegaten
-    /// </summary>
-    /// <param name="state">Descriptor der zu ladenen Kachel. Typlos, damit
-    /// man es als WorkItem queuen kann!</param>
+    /**
+    * Läd eine Kachel und legt sie in loadedTiles ab. Implementiert den
+    * WaitCallback-Delegaten
+    *
+    * <param name="state">Descriptor der zu ladenen Kachel. Typlos, damit
+    * man es als WorkItem queuen kann!</param>
+    */
     @SuppressWarnings("unchecked")
 	protected void LoadTile(Object state)
     {
@@ -1051,7 +1079,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		Bitmap bitmap = Manager.LoadLocalBitmap(CurrentLayer, desc);
 /*      Canvas canv = new Canvas(bitmap);
-      RouteOverlay.RenderRoute(canv, bitmap, desc, dpiScaleFactorX, dpiScaleFactorY);*/
+      RouteOverlay.RenderRoute(canv, bitmap, desc, , );*/
       
       
 /*      if (bitmap != null)
@@ -1096,7 +1124,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	if (bitmap == null)
     		return;
 
-/*      if (Config.GetBool("OsmDpiAwareRendering") && (dpiScaleFactorX != 1 || dpiScaleFactorY != 1))
+/*      if (Config.GetBool("OsmDpiAwareRendering") && ( != 1 ||  != 1))
         scaleUpBitmap(bitmap);*/
 
     	addLoadedTile(desc, bitmap, tileState);
@@ -1112,11 +1140,12 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		Render(true);
     }
 
-    /// <summary>
-    /// Zeichnet eine Kachel mit den Tracks und legt sie in trackTiles ab.
-    /// </summary>
-    /// <param name="state">Descriptor der zu ladenen Kachel. Typlos, damit
-    /// man es als WorkItem queuen kann!</param>
+    /**
+    * Zeichnet eine Kachel mit den Tracks und legt sie in trackTiles ab.
+    *
+    * <param name="state">Descriptor der zu ladenen Kachel. Typlos, damit
+    * man es als WorkItem queuen kann!</param>
+    */
 	protected void LoadTrackTile(Descriptor desc)
     {
     	// damit die Anzahl der loadedTiles wirklich nicht viel größer ist als angegeben
@@ -1128,7 +1157,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       
       Canvas canv = new Canvas(bitmap);
 //      canvas.drawRect(0, 0, 255, 255, ppp);
-      RouteOverlay.RenderRoute(canv, bitmap, desc, dpiScaleFactorX, dpiScaleFactorY);
+      RouteOverlay.RenderRoute(canv, bitmap, desc,1 ,1 );
       
       Tile.TileState tileState = Tile.TileState.Disposed;
 
@@ -1228,11 +1257,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       		CachedBitmapPaitnt.setDither(true);
       	}  
     	  
-        Bitmap dummyBitmap = Bitmap.createBitmap((int)(256.0f * dpiScaleFactorX), (int)(256.0f * dpiScaleFactorY),Bitmap.Config.RGB_565);
+        Bitmap dummyBitmap = Bitmap.createBitmap((int)(256.0f ), (int)(256.0f ),Bitmap.Config.RGB_565);
         Canvas dummy = new Canvas(dummyBitmap);
         
         dummy.save();
-        dummy.scale(dpiScaleFactorX, dpiScaleFactorY);
+        dummy.scale(1,1 );
         
     	 dummy.drawBitmap(bitmap, 0, 0, CachedBitmapPaitnt);
         dummy.restore();
@@ -1362,8 +1391,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		        			if (candidate.Zoom == Zoom)
 		        			{
 		        				Point p1 = ToScreen(candidate.X, candidate.Y, candidate.Zoom);
-		        				p1.x += (int)(128 * dpiScaleFactorX);
-		        				p1.y += (int)(128 * dpiScaleFactorY);
+		        				p1.x += (int)(128 );
+		        				p1.y += (int)(128 );
 		        				
 		        				dist = (p1.x - halfWidth) * (p1.x - halfWidth) + (p1.y - halfHeight) * (p1.y - halfHeight);
 		        			}
@@ -1407,7 +1436,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		        				OnTileLoaded(bitmap, desc);
 */
 /*
-		        			if (Config.GetBool("OsmDpiAwareRendering") && (dpiScaleFactorX != 1 || dpiScaleFactorY != 1))
+		        			if (Config.GetBool("OsmDpiAwareRendering") && ( != 1 ||  != 1))
 		        				scaleUpBitmap(ref bitmap);
 */		        				
 
@@ -1517,8 +1546,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
               if (candidate.Zoom == Zoom)
               {
                 Point p1 = ToScreen(candidate.X, candidate.Y, candidate.Zoom);
-                p1.X += (int)(128 * dpiScaleFactorX);
-                p1.Y += (int)(128 * dpiScaleFactorY);
+                p1.X += (int)(128 * );
+                p1.Y += (int)(128 * );
 
                 dist = (p1.X - halfWidth) * (p1.X - halfWidth) + (p1.Y - halfHeight) * (p1.Y - halfHeight);
               }
@@ -1549,7 +1578,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
               if (OnTileLoaded != null)
                 OnTileLoaded(bitmap, desc);
 
-              if (Config.GetBool("OsmDpiAwareRendering") && (dpiScaleFactorX != 1 || dpiScaleFactorY != 1))
+              if (Config.GetBool("OsmDpiAwareRendering") && ( != 1 ||  != 1))
                 scaleUpBitmap(ref bitmap);
 
 
@@ -1648,10 +1677,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     {
       updateCacheList();
     }
-    /// <summary>
-    /// Sucht aus dem aktuellen Query die Caches raus, die dargestellt
-    /// werden sollen und aktualisiert wpToRender entsprechend.
-    /// </summary>
+    /**
+    * Sucht aus dem aktuellen Query die Caches raus, die dargestellt
+    * werden sollen und aktualisiert wpToRender entsprechend.
+    */
     void updateCacheList()
     {
       if (Database.Data.Query == null)
@@ -1692,8 +1721,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	            wpi.Selected = (GlobalCore.SelectedWaypoint() == wp);
 	            wpi.UnderlayIcon = getUnderlayIcon(wpi.Cache, wpi.Waypoint);
 	
-	           	int x = (int)(wpi.MapX * dpiScaleFactorX * adjustmentCurrentToCacheZoom - screenCenter.X) + halfWidth;
-	           	int y = (int)(wpi.MapY * dpiScaleFactorY * adjustmentCurrentToCacheZoom - screenCenter.Y) + halfHeight;
+	           	int x = (int)(wpi.MapX *  adjustmentCurrentToCacheZoom - screenCenter.X) + halfWidth;
+	           	int y = (int)(wpi.MapY *  adjustmentCurrentToCacheZoom - screenCenter.Y) + halfHeight;
 	
 	            if ((x < xFrom || y < yFrom || x > xTo || y > yTo))
 	              continue;
@@ -1714,8 +1743,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        int y = 0;
 	        try
 	        {
-	        	x = (int)(cache.MapX * dpiScaleFactorX * adjustmentCurrentToCacheZoom - screenCenter.X) + halfWidth;
-	        	y = (int)(cache.MapY * dpiScaleFactorY * adjustmentCurrentToCacheZoom - screenCenter.Y) + halfHeight;
+	        	x = (int)(cache.MapX *  adjustmentCurrentToCacheZoom - screenCenter.X) + halfWidth;
+	        	y = (int)(cache.MapY *  adjustmentCurrentToCacheZoom - screenCenter.Y) + halfHeight;
 			} finally
 			{
 			}
@@ -1810,8 +1839,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	          int y = 0;
 	          try
 	          {
-	        	  x = (int)(mapX * dpiScaleFactorX * adjustmentCurrentToCacheZoom - screenCenter.X) + halfWidth;
-	        	  y = (int)(mapY * dpiScaleFactorY * adjustmentCurrentToCacheZoom - screenCenter.Y) + halfHeight;
+	        	  x = (int)(mapX *  adjustmentCurrentToCacheZoom - screenCenter.X) + halfWidth;
+	        	  y = (int)(mapY *  adjustmentCurrentToCacheZoom - screenCenter.Y) + halfHeight;
 	          } finally
 	          {
 	          }
@@ -1908,7 +1937,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     void renderCaches()
     {
 
-    	int smallStarHeight = (int)((double)Global.SmallStarIcons[1].getMinimumHeight() * dpiScaleFactorY);
+    	int smallStarHeight = (int)((double)Global.SmallStarIcons[1].getMinimumHeight());
 
     	int bubbleX = 0;
     	int bubbleY = 0;
@@ -1916,25 +1945,25 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	int halfUnderlayWidth = 0;
 		for (WaypointRenderInfo wpi : wpToRender)
 		{
-		  int halfIconWidth = (int)((wpi.Icon.getMinimumWidth() * dpiScaleFactorX) / 2);
-		  int IconWidth = (int)(wpi.Icon.getMinimumWidth() * dpiScaleFactorX);
+		  int halfIconWidth = (int)((wpi.Icon.getMinimumWidth()) / 2 * dpiScaleFactorX);
+		  int IconWidth = (int)(wpi.Icon.getMinimumWidth()* dpiScaleFactorX);
 		  int halfOverlayWidth = halfIconWidth;
 		  int OverlayWidth = IconWidth;
 		  if (wpi.OverlayIcon != null)
 		  {
-		      halfOverlayWidth = (int)((wpi.OverlayIcon.getMinimumWidth() * dpiScaleFactorX) / 2);
-		      OverlayWidth = (int)(wpi.OverlayIcon.getMinimumWidth() * dpiScaleFactorX);
+		      halfOverlayWidth = (int)((wpi.OverlayIcon.getMinimumWidth() ) / 2* dpiScaleFactorX);
+		      OverlayWidth = (int)(wpi.OverlayIcon.getMinimumWidth()* dpiScaleFactorX);
 		  }
 		  halfUnderlayWidth = halfIconWidth;
 		  int UnderlayWidth = IconWidth;
 		  if (wpi.UnderlayIcon != null)
 		  {
-		      halfUnderlayWidth = (int)((wpi.UnderlayIcon.getMinimumWidth() * dpiScaleFactorX) / 2);
-		      UnderlayWidth = (int)(wpi.UnderlayIcon.getMinimumWidth() * dpiScaleFactorX);
+		      halfUnderlayWidth = (int)((wpi.UnderlayIcon.getMinimumWidth()) / 2* dpiScaleFactorX);
+		      UnderlayWidth = (int)(wpi.UnderlayIcon.getMinimumWidth()* dpiScaleFactorX);
 		  }
 		
-		  int x = (int)((wpi.MapX * adjustmentCurrentToCacheZoom * dpiScaleFactorX - screenCenter.X)) + halfWidth;
-		  int y = (int)((wpi.MapY * adjustmentCurrentToCacheZoom * dpiScaleFactorY - screenCenter.Y)) + halfHeight;
+		  int x = (int)((wpi.MapX * adjustmentCurrentToCacheZoom - screenCenter.X)) + halfWidth;
+		  int y = (int)((wpi.MapY * adjustmentCurrentToCacheZoom - screenCenter.Y)) + halfHeight;
 		
 		  x = x - width / 2;
 		  y = y - halfHeight;
@@ -1961,19 +1990,19 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		
 		    Paint CrossGreenPen = new Paint();
 		    CrossGreenPen.setColor(Color.GREEN);
-		    CrossGreenPen.setStrokeWidth(lineWidth * dpiScaleFactorX);
+		    CrossGreenPen.setStrokeWidth(lineWidth );
 		    Paint CrossYellowPen = new Paint();
 		    CrossYellowPen.setColor(Color.YELLOW);
-		    CrossYellowPen.setStrokeWidth(lineWidth * dpiScaleFactorX);
+		    CrossYellowPen.setStrokeWidth(lineWidth );
 		    Paint CrossMagentaPen = new Paint();
 		    CrossMagentaPen.setColor(Color.MAGENTA);
-		    CrossMagentaPen.setStrokeWidth(lineWidth * dpiScaleFactorX);
+		    CrossMagentaPen.setStrokeWidth(lineWidth );
 		    Paint CrossBluePen = new Paint();
 		    CrossBluePen.setColor(Color.BLUE);
-		    CrossBluePen.setStrokeWidth(lineWidth * dpiScaleFactorX);
+		    CrossBluePen.setStrokeWidth(lineWidth );
 		    Paint CrossRedPen = new Paint();
 		    CrossRedPen.setColor(Color.RED);
-		    CrossRedPen.setStrokeWidth(lineWidth * dpiScaleFactorX);
+		    CrossRedPen.setStrokeWidth(lineWidth );
 		
 		    Paint cachePen = CrossMagentaPen;
 		
@@ -2007,7 +2036,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		
 		  if (wpi.Cache.Favorit())
 		  {
-			  ActivityUtils.PutImageTargetHeight(canvasOverlay, Global.Icons[19], imageX, imageY, (int)(14.0f * dpiScaleFactorY));
+			  ActivityUtils.PutImageTargetHeight(canvasOverlay, Global.Icons[19], imageX, imageY, (int)(14.0f ));
 		  }
 		
 		  boolean drawAsWaypoint = wpi.Waypoint != null;
@@ -2021,6 +2050,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    int yoffset = 0;
 		    yoffset = (int)(fontSmall.getTextSize());
 		
+		    main.setDebugMsg("FontSize=" + String.valueOf(yoffset));
+		    
 		    String wpName;                // draw Final Waypoint of not Selected Caches like the caches self because the cache will not be shown
 		    if (drawAsWaypoint)
 		    {  // Aktiver WP -> Titel oder GCCode
@@ -2034,7 +2065,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    {  // Aktiver Cache -> Cachename
 		    	wpName = wpi.Cache.Name;
 		    	if (showRating)
-		    		yoffset += 10 * dpiScaleFactorX;
+		    		yoffset += 10 ;
 		    	int fwidth = (int)(fontSmall.measureText(wpName) / 2);
 		    	fontSmall.setColor(Color.WHITE);
 		    	canvasOverlay.drawText(wpName, x - fwidth, y + halfIconWidth + yoffset, fontSmall);
@@ -2048,8 +2079,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		  {
 		    Drawable img = Global.SmallStarIcons[(int)Math.min(wpi.Cache.Rating * 2, 5 * 2)];
 		    Rect bounds = img.getBounds();
-		    int halfSmallStarWidth = (int)(((double)img.getMinimumWidth() / 2.0) * dpiScaleFactorX);
-		    int smallStarWidth = (int)((double)img.getMinimumWidth() * dpiScaleFactorX);
+		    int halfSmallStarWidth = (int)(((double)img.getMinimumWidth() / 2.0)* dpiScaleFactorX );
+		    int smallStarWidth = (int)((double)img.getMinimumWidth()* dpiScaleFactorX );
 		    img.setBounds(x - halfSmallStarWidth, y + halfUnderlayWidth + 2, x - halfSmallStarWidth + smallStarWidth, y + halfUnderlayWidth + 2 + smallStarHeight);
 		    img.draw(canvasOverlay);
 		    img.setBounds(bounds);
@@ -2060,7 +2091,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		  {
 		    Drawable imgDx = Global.SmallStarIcons[(int)Math.min(wpi.Cache.Difficulty * 2, 5 * 2)];
 		    Rect bounds = imgDx.getBounds();
-		    int smallStarHeightD = (int)((double)imgDx.getMinimumWidth() * dpiScaleFactorY);
+		    int smallStarHeightD = (int)((double)imgDx.getMinimumWidth()* dpiScaleFactorX );
 		    imgDx.setBounds(x - halfUnderlayWidth, y - halfUnderlayWidth - smallStarHeight - 2, x - halfUnderlayWidth + smallStarHeightD, y - halfUnderlayWidth - smallStarHeight - 2 + smallStarHeight);
 		    
 		    canvasOverlay.save();
@@ -2072,7 +2103,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    
 		    imgDx = Global.SmallStarIcons[(int)Math.min(wpi.Cache.Terrain * 2, 5 * 2)];
 		    bounds = imgDx.getBounds();
-		    smallStarHeightD = (int)((double)imgDx.getMinimumWidth() * dpiScaleFactorY);
+		    smallStarHeightD = (int)((double)imgDx.getMinimumWidth()* dpiScaleFactorX );
 		    imgDx.setBounds(x - halfUnderlayWidth, y + halfUnderlayWidth + 2, x - halfUnderlayWidth + smallStarHeightD, y + halfUnderlayWidth + 2 + smallStarHeight);
 		    canvasOverlay.save();
 		    canvasOverlay.rotate(270, x, y);
@@ -2083,8 +2114,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    Bitmap imgTx = Global.SmallStarIcons[(int)Math.Min(wpi.Cache.Terrain * 2, 5 * 2)];
 		    Bitmap imgT = new Bitmap(imgTx.Height, imgTx.Width);
 		    InternalRotateImage(270, imgTx, imgT);
-		    int halfSmallStarHeightT = (int)(((double)imgT.Height / 2.0) * dpiScaleFactorY);
-		    int smallStarHeightT = (int)((double)imgT.Height * dpiScaleFactorY);
+		    int halfSmallStarHeightT = (int)(((double)imgT.Height / 2.0) * );
+		    int smallStarHeightT = (int)((double)imgT.Height * );
 		    graphics.DrawImage(imgT, new Rectangle(x + halfIconWidth + 4, y + halfIconWidth - smallStarHeightT, smallStarHeight, smallStarHeightT), 0, 0, imgT.Width, imgT.Height, GraphicsUnit.Pixel, imageAttributes);
 */		
 		
@@ -2123,12 +2154,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	image.draw(aCanvas);
     }
 
-    /// <summary>
-    /// Überprüft, ob die übergebene Kachel im Darstellungsbereich des
-    /// Controls liegt
-    /// </summary>
-    /// <param name="tile">Die zu prüfende Kachel</param>
-    /// <returns>true, wenn die Kachel sichtbar ist, sonst false</returns>
+    /**
+    * Überprüft, ob die übergebene Kachel im Darstellungsbereich des
+    * Controls liegt
+    *
+    * <param name="tile">Die zu prüfende Kachel</param>
+    * <returns>true, wenn die Kachel sichtbar ist, sonst false</returns>
+    */
     boolean tileVisible(Descriptor tile)
     {
         Point p1 = ToScreen(tile.X, tile.Y, tile.Zoom);
@@ -2150,9 +2182,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         return (p1.x < drawingWidth && p2.x >= 0 && p1.y < drawingHeight && p2.y >= 0);
     }
 
-    /// <summary>
-    /// Lagert die am längsten nicht mehr verwendete Kachel aus
-    /// </summary>
+    /**
+    * Lagert die am längsten nicht mehr verwendete Kachel aus
+    */
     protected void preemptTile()
     {
 	  //List<Tile> tiles = new List<Tile>();
@@ -2856,16 +2888,16 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		int y1;
     		int x2;
     		int y2;
-    		double x = screenCenter.X / (256 * dpiScaleFactorX);
-    		double y = (screenCenter.Y - halfHeight + height / 2) / (256 * dpiScaleFactorY);
+    		double x = screenCenter.X / (256 );
+    		double y = (screenCenter.Y - halfHeight + height / 2) / (256);
     		
     		// preload more Tiles than necessary to ensure more smooth scrolling
     		int dWidth = (int)(drawingWidth * rangeFactor);
     		int dHeight= (int)(drawingHeight * rangeFactor);
-    		x1 = (int)Math.floor(x - dWidth/multiTouchFaktor / (256 * dpiScaleFactorX * 2));
-    		x2 = (int)Math.floor(x + dWidth/multiTouchFaktor / (256 * dpiScaleFactorX * 2));
-    		y1 = (int)Math.floor(y - dHeight/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
-    		y2 = (int)Math.floor(y + dHeight/multiTouchFaktor / (256 * dpiScaleFactorY * 2));
+    		x1 = (int)Math.floor(x - dWidth/multiTouchFaktor / (256 * 2));
+    		x2 = (int)Math.floor(x + dWidth/multiTouchFaktor / (256 * 2));
+    		y1 = (int)Math.floor(y - dHeight/multiTouchFaktor / (256 * 2));
+    		y2 = (int)Math.floor(y + dHeight/multiTouchFaktor / (256 * 2));
     		return new Rect(x1, y1, x2, y2);
     	}
     }
@@ -2888,7 +2920,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
       if (tile.State == Tile.TileState.Present || tile.State == Tile.TileState.LowResolution)
       {
-        drawImage(canvas, tile.Image, pt.x, pt.y, (int)(256.0f * dpiScaleFactorX * multiTouchFaktor), (int)(256.0f * dpiScaleFactorY * multiTouchFaktor));
+        drawImage(canvas, tile.Image, pt.x, pt.y, (int)(256.0f * multiTouchFaktor), (int)(256.0f * multiTouchFaktor));
  
         if (drawBestFit)
         {
@@ -2900,7 +2932,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		        paintt.setStyle(Style.STROKE);
 		        if (tile.State == Tile.TileState.LowResolution)
 		        	paintt.setColor(Color.RED);
-		        Rect brect = new Rect(pt.x+5, pt.y+5, pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor)-5, pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor)-5);
+		        Rect brect = new Rect(pt.x+5, pt.y+5, pt.x + (int)(256 * multiTouchFaktor)-5, pt.y + (int)(256 * multiTouchFaktor)-5);
 		        canvas.drawRect(brect, paintt);
 		        canvas.drawLine(brect.left, brect.top, brect.right, brect.bottom, paintt);
 		        canvas.drawLine(brect.right, brect.top, brect.left, brect.bottom, paintt);
@@ -2920,17 +2952,17 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		  // um ohne Verzerrungen oder Lücken zu zoomen und scrollen
     		  tile.Image = bit;
     		  tile.State = Tile.TileState.LowResolution;
-    	      drawImage(canvas, bit, pt.x, pt.y, (int)(256.0f * dpiScaleFactorX * multiTouchFaktor), (int)(256.0f * dpiScaleFactorY * multiTouchFaktor));
+    	      drawImage(canvas, bit, pt.x, pt.y, (int)(256.0f * multiTouchFaktor), (int)(256.0f * multiTouchFaktor));
     	  } else
-    		  canvas.drawRect(pt.x, pt.y, pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor), pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor), backBrush);
-        //.FillRectangle(backBrush, pt.X, pt.Y, (int)(256 * dpiScaleFactorX), (int)(256 * dpiScaleFactorY));
-          canvas.drawLine(pt.x, pt.y, pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor), pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor), fontSmall);
-          canvas.drawLine(pt.x, pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor), pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor), pt.y, fontSmall);
+    		  canvas.drawRect(pt.x, pt.y, pt.x + (int)(256 * multiTouchFaktor), pt.y + (int)(256 * multiTouchFaktor), backBrush);
+        //.FillRectangle(backBrush, pt.X, pt.Y, (int)(256 * ), (int)(256 * ));
+          canvas.drawLine(pt.x, pt.y, pt.x + (int)(256 * multiTouchFaktor), pt.y + (int)(256 * multiTouchFaktor), fontSmall);
+          canvas.drawLine(pt.x, pt.y + (int)(256 * multiTouchFaktor), pt.x + (int)(256 * multiTouchFaktor), pt.y, fontSmall);
       }
       catch (Exception ex)
       {
     	  Logger.Error("MapView.RenderTile", "",ex);
-		  canvas.drawRect(pt.x, pt.y, pt.x + (int)(256 * dpiScaleFactorX * multiTouchFaktor), pt.y + (int)(256 * dpiScaleFactorY * multiTouchFaktor), backBrush);
+		  canvas.drawRect(pt.x, pt.y, pt.x + (int)(256 *  multiTouchFaktor), pt.y + (int)(256 *  multiTouchFaktor), backBrush);
       }
     }
 
@@ -2939,8 +2971,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	synchronized (screenCenter)
     	{
     		double adjust = Math.pow(2, (Zoom - zoom));
-    		x = x * adjust * 256 * dpiScaleFactorX;
-    		y = y * adjust * 256 * dpiScaleFactorY;
+    		x = x * adjust * 256 ;
+    		y = y * adjust * 256 ;
     		
     		return new Point((int)(x - screenCenter.X) + halfWidth, (int)(y - screenCenter.Y) + halfHeight);
     	}
@@ -2952,21 +2984,21 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	{
 
     		double adjust = Math.pow(2, (Zoom - zoom));
-    		x = x * adjust * 256 * dpiScaleFactorX;
-    		y = y * adjust * 256 * dpiScaleFactorY;
+    		x = x * adjust * 256 ;
+    		y = y * adjust * 256 ;
 
     		return new Point((int)(x - screenCenter.X) + halfWidth, (int)(y - screenCenter.Y) + halfHeight);
     	}
     }
 
-    /// <summary>
-    /// an dieser x-Koordinate beginnt die Skala. Muss beim Resize neu gesetzt werden
-    /// </summary>
+    /**
+    * an dieser x-Koordinate beginnt die Skala. Muss beim Resize neu gesetzt werden
+    */
     int scaleLeft;
 
-    /// <summary>
-    /// Breite des Maßstabs
-    /// </summary>
+    /**
+    * Breite des Maßstabs
+    */
     int scaleWidth;
     Bitmap offScreenBmp = null;
     /*
@@ -3028,8 +3060,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	try
     	{
     		PointD point = new PointD(0, 0);
-    		point.X = screenCenter.X + (eX - this.width / 2) / dpiScaleFactorX;
-    		point.Y = screenCenter.Y + (eY - this.halfHeight) / dpiScaleFactorY;;
+    		point.X = screenCenter.X + (eX - this.width / 2)  ;
+    		point.Y = screenCenter.Y + (eY - this.halfHeight)  ;;
     		lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(Zoom, point.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, point.X / (256.0)));
     		
     		if (dragging)
@@ -3045,8 +3077,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     			{
     				animationLock.unlock();
     			}
-    			centerOsmSpace.X = screenCenter.X / dpiScaleFactorX;
-    			centerOsmSpace.Y = screenCenter.Y / dpiScaleFactorY;
+    			centerOsmSpace.X = screenCenter.X ;
+    			centerOsmSpace.Y = screenCenter.Y ;
     			
     			dragStartX = eX;
     			dragStartY = eY;
@@ -3326,20 +3358,20 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
     double pixelsPerMeter;
 
-    /// <summary>
-    /// Anzahl der Schritte auf dem Maßstab
-    /// </summary>
+    /**
+    * Anzahl der Schritte auf dem Maßstab
+    */
     int scaleUnits = 10;
 
-    /// <summary>
-    /// Länge des Maßstabs in Metern
-    /// </summary>
+    /**
+    * Länge des Maßstabs in Metern
+    */
     double scaleLength = 1000;
 
 
-    /// <summary>
-    /// Nachdem Zoom verändert wurde müssen einige Werte neu berechnet werden
-    /// </summary>
+    /**
+    * Nachdem Zoom verändert wurde müssen einige Werte neu berechnet werden
+    */
     private void zoomChanged()
     {
     	try
@@ -3357,7 +3389,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		double l1 = Descriptor.LongitudeToTileX(Zoom, center.Longitude);
     		double l2 = Descriptor.LongitudeToTileX(Zoom, dummy.Longitude);
     		double diff = Math.abs(l2 - l1);
-    		pixelsPerMeter = (diff * 256 * dpiScaleFactorX * multiTouchFaktor) / 1000;
+    		pixelsPerMeter = (diff * 256 * multiTouchFaktor) / 1000;
     		
     		int multiplyer = 1;
     		double scaleSize = 0;
@@ -3388,10 +3420,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     Paint fontSmall = new Paint();
 	
 
-    /// <summary>
-    /// Zeichnet den Maßstab. pixelsPerKm muss durch zoomChanged
-    /// initialisiert sein! und graphics auch!
-    /// </summary>
+    /**
+    * Zeichnet den Maßstab. pixelsPerKm muss durch zoomChanged
+    * initialisiert sein! und graphics auch!
+    */
     private void renderScale()
     {
       int pos = 0;
@@ -3522,8 +3554,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       for (int i = wpToRender.size() - 1; i >= 0; i--)
       {
         WaypointRenderInfo wpi = wpToRender.get(i);
-        int x = (int)(wpi.MapX * adjustmentCurrentToCacheZoom * dpiScaleFactorX - screenCenter.X) + halfWidth;
-        int y = (int)(wpi.MapY * adjustmentCurrentToCacheZoom * dpiScaleFactorY - screenCenter.Y) + halfHeight;
+        int x = (int)(wpi.MapX * adjustmentCurrentToCacheZoom *  - screenCenter.X) + halfWidth;
+        int y = (int)(wpi.MapY * adjustmentCurrentToCacheZoom *  - screenCenter.Y) + halfHeight;
 
         int xd = lastClickX - x;
         int yd = lastClickY - y;
@@ -3541,7 +3573,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       if (minWpi.Cache == null)
         return;
 
-      int legalWidth = (int)(minWpi.Icon.copyBounds().width() * dpiScaleFactorX * 1.5f);
+      int legalWidth = (int)(minWpi.Icon.copyBounds().width() * 1.5f);
 
       if (minDist > (legalWidth * legalWidth))
         return;
@@ -3612,22 +3644,22 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     }
 
 */
-    /// <summary>
-    /// Ausgangspunkt der Animation
-    /// </summary>
+    /**
+    * Ausgangspunkt der Animation
+    */
     PointD animateFrom = new PointD(0, 0);
 
-    /// <summary>
-    /// Zielpunkt der Animation
-    /// </summary>
+    /**
+    * Zielpunkt der Animation
+    */
     PointD animateTo = new PointD(0, 0);
 /*
     // Zeitpunkt des Startes der Animation
     long animationStart;
 
-    /// <summary>
+    ///
     /// Dauer der Animation in ms
-    /// </summary>
+    ///
     const int animationDuration = 500;
 */
     void startAnimation(Coordinate target)
@@ -3640,14 +3672,14 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 /*    	animateFrom.X = screenCenter.X;
     	animateFrom.Y = screenCenter.Y;
 
-    	animateTo.X = dpiScaleFactorX * 256 * Descriptor.LongitudeToTileX(Zoom, target.Longitude);
-    	animateTo.Y = dpiScaleFactorY * 256 * Descriptor.LatitudeToTileY(Zoom, target.Latitude);
+    	animateTo.X =  * 256 * Descriptor.LongitudeToTileX(Zoom, target.Longitude);
+    	animateTo.Y =  * 256 * Descriptor.LatitudeToTileY(Zoom, target.Latitude);
 
     	screenCenter.X = animateTo.X;
         screenCenter.Y = animateTo.Y;
 
-        centerOsmSpace.X = screenCenter.X / dpiScaleFactorX;
-        centerOsmSpace.Y = screenCenter.Y / dpiScaleFactorY;
+        centerOsmSpace.X = screenCenter.X / ;
+        centerOsmSpace.Y = screenCenter.Y / ;
         updateCacheList();
         Render(false);
 */    	
@@ -3657,15 +3689,15 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
       center = target;
 
-      if (Math.Sqrt(xDiff * xDiff + yDiff * yDiff) < 2 * 256 * dpiScaleFactorX)
+      if (Math.Sqrt(xDiff * xDiff + yDiff * yDiff) < 2 * 256 * )
         animationTimer.Enabled = true;
       else
       {
         // Zu weit! Wir gehen ohne Animation direkt zum Ziel!
         screenCenter.X = animateTo.X;
         screenCenter.Y = animateTo.Y;
-        centerOsmSpace.X = screenCenter.X / dpiScaleFactorX;
-        centerOsmSpace.Y = screenCenter.Y / dpiScaleFactorY;
+        centerOsmSpace.X = screenCenter.X / ;
+        centerOsmSpace.Y = screenCenter.Y / ;
         updateCacheList();
         Render(false);
       }
@@ -3682,8 +3714,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       screenCenter.X = Math.Round(x);
       screenCenter.Y = Math.Round(y);
 
-      centerOsmSpace.X = screenCenter.X / dpiScaleFactorX;
-      centerOsmSpace.Y = screenCenter.Y / dpiScaleFactorY;
+      centerOsmSpace.X = screenCenter.X / ;
+      centerOsmSpace.Y = screenCenter.Y / ;
 
       if (scale == 1.0)
       {
@@ -4101,8 +4133,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 //      float distance = Datum.WGS84.Distance(center.Latitude, center.Longitude, lat, lon);
       float distance = center.Distance(coord);
 
-      double x = 256.0 * Descriptor.LongitudeToTileX(Zoom, coord.Longitude) * dpiScaleFactorX;
-      double y = 256.0 * Descriptor.LatitudeToTileY(Zoom, coord.Latitude) * dpiScaleFactorY;
+      double x = 256.0 * Descriptor.LongitudeToTileX(Zoom, coord.Longitude) ;
+      double y = 256.0 * Descriptor.LatitudeToTileY(Zoom, coord.Latitude) ;
 
       int halfHeight = height / 2;
       int halfWidth = width / 2;
@@ -4530,11 +4562,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	                        if (tile.Image == null) continue;
 	                        Canvas canvas = new Canvas(tile.Image);
 	
-	                        double tileX = tile.Descriptor.X * 256 * dpiScaleFactorX;
-	                        double tileY = tile.Descriptor.Y * 256 * dpiScaleFactorY;
+	                        double tileX = tile.Descriptor.X * 256 ;
+	                        double tileY = tile.Descriptor.Y * 256 ;
 	
-	                        double adjustmentX = Math.pow(2, tile.Descriptor.Zoom - RouteOverlay.projectionZoomLevel) * 256 * dpiScaleFactorX;
-	                        double adjustmentY = Math.pow(2, tile.Descriptor.Zoom - RouteOverlay.projectionZoomLevel) * 256 * dpiScaleFactorY;
+	                        double adjustmentX = Math.pow(2, tile.Descriptor.Zoom - RouteOverlay.projectionZoomLevel) * 256 ;
+	                        double adjustmentY = Math.pow(2, tile.Descriptor.Zoom - RouteOverlay.projectionZoomLevel) * 256 ;
 	
 	                        for (int j = 0; j < (punkte.size() - 1); j++)
 	                        {
@@ -4653,8 +4685,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 					return true;
 				}*/
 				PointD point = new PointD(0, 0);
-				point.X = screenCenter.X / dpiScaleFactorX;
-				point.Y = screenCenter.Y / dpiScaleFactorY;;
+				point.X = screenCenter.X ;
+				point.Y = screenCenter.Y ;
 				lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(Zoom, point.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, point.X / (256.0)));
 
 				ArrayList<Cache> apiCaches = new ArrayList<Cache>();
@@ -4869,7 +4901,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 	@Override
 	public void ActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
@@ -4927,8 +4959,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 								double y = bundle.getDouble("y");
 								screenCenter.X = x;
 								screenCenter.Y = y;
-					            centerOsmSpace.X = screenCenter.X / dpiScaleFactorX;
-					            centerOsmSpace.Y = screenCenter.Y / dpiScaleFactorY;
+					            centerOsmSpace.X = screenCenter.X;
+					            centerOsmSpace.Y = screenCenter.Y;
 							}
 							boolean updateCacheList = bundle.getBoolean("updateCacheList");
 							if (updateCacheList)
@@ -5248,12 +5280,12 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 					animateFrom = new PointD(screenCenter.X, screenCenter.Y);
 				}
 				PointD animateTo = new PointD(0, 0);
-	            animateTo.X = dpiScaleFactorX * 256 * Descriptor.LongitudeToTileX(Zoom, target.Longitude);
-	            animateTo.Y = dpiScaleFactorY * 256 * Descriptor.LatitudeToTileY(Zoom, target.Latitude);			
+	            animateTo.X =  256 * Descriptor.LongitudeToTileX(Zoom, target.Longitude);
+	            animateTo.Y =  256 * Descriptor.LatitudeToTileY(Zoom, target.Latitude);			
 	            double xDiff = animateFrom.X - animateTo.X;
 	            double yDiff = animateFrom.Y - animateTo.Y;
 	            center = target;
-	            if ((Math.sqrt(xDiff * xDiff + yDiff * yDiff) < 2 * 256 * dpiScaleFactorX) || (!useDirect))
+	            if ((Math.sqrt(xDiff * xDiff + yDiff * yDiff) < 2 * 256 ) || (!useDirect))
 	            {
 	            	animationLock.lock();
 	            	try
@@ -5407,19 +5439,19 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 	@Override
 	public int GetContextMenuId() {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public void BeforeShowContextMenu(Menu menu) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public boolean ContextMenuItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 

@@ -581,6 +581,10 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	Config.Set("AllowLandscape",chkAllowLandscape.isChecked());
     	
     	Config.AcceptChanges();
+    	
+    	//reinital map
+    	main.mapView.setNewScale();
+    	
 		finish();
 	}	
 	

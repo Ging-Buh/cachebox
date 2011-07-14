@@ -117,7 +117,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	
 		private static Integer aktViewId = -1;
 	    private static long GPSTimeStamp = 0;
-		private static MapView mapView = null;					// ID 0
+		public static MapView mapView = null;					// ID 0
 		private static CacheListView cacheListView = null;		// ID 1
 		private static WaypointView waypointView = null;		// ID 2
 		private static LogView logView = null;					// ID 3
@@ -173,7 +173,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		private downSlider InfoDownSlider;
 		
 		private Mic_On_Flash Mic_Icon;
-		private DebugInfoPanel debugInfoPanel;
+		private static DebugInfoPanel debugInfoPanel;
 	
 		// Views
 		private ViewOptionsMenu aktView = null;
@@ -1640,7 +1640,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			}
 		}
 	
-	 public void setDebugMsg(String msg)
+	 public static void setDebugMsg(String msg)
 	 {
 		 debugInfoPanel.setMsg(msg);
 	 }

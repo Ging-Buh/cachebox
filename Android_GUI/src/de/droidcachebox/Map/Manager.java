@@ -23,6 +23,7 @@ import org.mapsforge.android.maps.MapViewMode;
 import org.mapsforge.android.maps.Tile;
 
 import de.droidcachebox.Global;
+import de.droidcachebox.Views.MapView;
 
 import CB_Core.FileIO;
 import android.graphics.Bitmap;
@@ -136,7 +137,14 @@ public class Manager {
 				mapsForgeFile = layer.Name;
 	    	}
 			Tile tile = new Tile(desc.X, desc.Y, (byte)desc.Zoom);
-			MapGeneratorJob job = new MapGeneratorJob(tile, MapViewMode.CANVAS_RENDERER, "xxx", 1.333f, false, false, false);
+			
+			/**
+			 * Original value = 1.333f
+			 * now 1.333 * dpiScaleFactorX from MapView
+			 */
+			float DPIawareFaktor = (float) (MapView.dpiScaleFactorX * 1.333);
+			
+			MapGeneratorJob job = new MapGeneratorJob(tile, MapViewMode.CANVAS_RENDERER, "xxx", DPIawareFaktor, false, false, false);
 
 //			renderer.setupMapGenerator(tileBitmap);
 			renderer.prepareMapGeneration();
