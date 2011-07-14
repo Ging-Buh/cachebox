@@ -176,7 +176,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         this.addTouchables(buttons);
         
         
-        font.setTextSize(20 * dpiScaleFactorX);
+        font.setTextSize(18 * dpiScaleFactorX);
         font.setFakeBoldText(true);
         font.setAntiAlias(true);
         fontSmall.setTextSize(14 * dpiScaleFactorX);
@@ -203,7 +203,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	    	  dpiScaleFactorX = dpiScaleFactorY = 1;
 	      }
 		
-		font.setTextSize(20 * dpiScaleFactorX);
+		font.setTextSize(18 * dpiScaleFactorX);
         font.setFakeBoldText(true);
         font.setAntiAlias(true);
         fontSmall.setTextSize(14 * dpiScaleFactorX);
@@ -3549,21 +3549,34 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       WaypointRenderInfo minWpi = new WaypointRenderInfo();
       minWpi.Cache = null;
 
-      int minDist = Integer.MAX_VALUE;
+    
       // Überprüfen, auf welchen Cache geklickt wurde
       for (int i = wpToRender.size() - 1; i >= 0; i--)
       {
         WaypointRenderInfo wpi = wpToRender.get(i);
-        int x = (int)(wpi.MapX * adjustmentCurrentToCacheZoom *  - screenCenter.X) + halfWidth;
-        int y = (int)(wpi.MapY * adjustmentCurrentToCacheZoom *  - screenCenter.Y) + halfHeight;
-
-        int xd = lastClickX - x;
-        int yd = lastClickY - y;
-
-        int dist = xd * xd + yd * yd;
-        if (dist < minDist)
+        
+		  int x = (int)((wpi.MapX * adjustmentCurrentToCacheZoom - screenCenter.X)) + halfWidth;
+		  int y = (int)((wpi.MapY * adjustmentCurrentToCacheZoom - screenCenter.Y)) + halfHeight;
+		
+		  x = x - width / 2;
+		  y = y - halfHeight;
+		  x = (int)Math.round(x * multiTouchFaktor + width / 2);
+		  y = (int)Math.round(y * multiTouchFaktor + halfHeight);
+		  
+		  // drehen
+		  if (alignToCompass)
+		  {
+			  Point res = rotate(new Point(x, y), - canvasHeading);
+			  x = res.x;
+			  y = res.y;
+		  }
+		
+		  int ClickToleranz = (int) (15*dpiScaleFactorX);
+		  Rect HitTestRec = new Rect(x-ClickToleranz,y-ClickToleranz,x+ClickToleranz,y+ClickToleranz);
+		
+        if (HitTestRec.contains(lastClickX, lastClickY))
         {
-          minDist = dist;
+         
           minWpi = wpi;
           
         }
@@ -3573,11 +3586,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       if (minWpi.Cache == null)
         return;
 
-      int legalWidth = (int)(minWpi.Icon.copyBounds().width() * 1.5f);
-
-      if (minDist > (legalWidth * legalWidth))
-        return;
-
+     
       if (minWpi.Waypoint != null)
       {
     	  if (GlobalCore.SelectedCache() != minWpi.Cache)
@@ -3755,7 +3764,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         dist = (bottomRow - topRow) / numSteps;
         
     	Paint font = new Paint();
-    	font.setTextSize(24);
+    	font.setTextSize(18);
     	font.setFakeBoldText(true);
     	Paint white = new Paint();
     	white.setColor(Color.WHITE);
