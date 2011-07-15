@@ -693,6 +693,8 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	{
 		
 		selectedItem=null;
+		lvAdapter.notifyDataSetInvalidated();
+		invalidate();
 	}
 
 	@Override
