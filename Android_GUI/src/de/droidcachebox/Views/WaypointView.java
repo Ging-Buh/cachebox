@@ -268,12 +268,13 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				createNewWaypoint = true;
 				
 				Coordinate coord2 = GlobalCore.LastValidPosition;
-				if(aktCache!=null)
+				if (aktWaypoint != null)
 				{
-					coord2=aktCache.Pos;
-				}else if(aktWaypoint!=null)
+					coord2 = aktWaypoint.Pos;
+				}
+				else if(aktCache != null)
 				{
-					coord2=aktWaypoint.Pos;
+					coord2 = aktCache.Pos;
 				}
 				
 				Intent coordIntent = new Intent().setClass(getContext(), projectionCoordinate.class);
