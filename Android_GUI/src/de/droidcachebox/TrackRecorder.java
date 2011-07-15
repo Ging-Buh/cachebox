@@ -40,6 +40,7 @@ public class TrackRecorder {
         
         Global.AktuelleRoute = new RouteOverlay.Route(paint, "actual Track");
         Global.AktuelleRoute.ShowRoute = true;
+        Global.AktuelleRoute.IsActualTrack = true;
         Global.aktuelleRouteCount = 0;
         RouteOverlay.Routes.add(Global.AktuelleRoute);
 
@@ -171,6 +172,8 @@ public class TrackRecorder {
 		}
         writer = null;
 
+        Global.AktuelleRoute.IsActualTrack = false;
+        Global.AktuelleRoute.Name = "recorded Track";
         pauseRecording = false;
         recording = false;
 //        updateRecorderButtonAccessibility();

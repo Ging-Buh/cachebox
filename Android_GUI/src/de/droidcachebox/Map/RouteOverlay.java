@@ -27,6 +27,7 @@ public class RouteOverlay {
 		public String Name;
 		public String FileName;
 		public boolean ShowRoute = false;
+		public boolean IsActualTrack = false;
 		
 		public Route(Paint paint, String name)
 		{

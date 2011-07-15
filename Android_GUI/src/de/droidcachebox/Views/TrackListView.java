@@ -266,7 +266,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	 */
 	private void HandleGenerate_Point2Point() 
 	{
-		MessageBox.Show("HandleGenerate_Point2Point() on Line:267");
+//		MessageBox.Show("HandleGenerate_Point2Point() on Line:267");
 		showEditCoord(P2P_GET_FIRST_POINT);
 	}
 
@@ -276,7 +276,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	 */
 	private void HandleGenerate_Projection() 
 	{
-		MessageBox.Show("HandleGenerate_Projection() on Line:277");
+//		MessageBox.Show("HandleGenerate_Projection() on Line:277");
 		showEditCoord(PROJECT_GET_FIRST_POINT);
 	}
 
@@ -285,10 +285,16 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	 */
 	private void HandleTrackDelete() 
 	{
-		MessageBox.Show("Handle Track Delete");
+//		MessageBox.Show("Handle Track Delete");
 		if(selectedItem==null)
 		{
 			MessageBox.Show("Kein Track zum Löschen gewählt!");
+			return;
+		}
+		
+		if (selectedItem.getRoute().IsActualTrack)
+		{
+			MessageBox.Show("Aktueller Track darf nicht gelöscht werden!");
 			return;
 		}
 		
