@@ -1640,9 +1640,23 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			}
 		}
 	
-	 public static void setDebugMsg(String msg)
+	 String debugMsg="";
+	 public void setDebugMsg(String msg)
 	 {
-		 debugInfoPanel.setMsg(msg);
+		 debugMsg=msg;
+		 Thread t = new Thread() {
+			    public void run() {
+			        runOnUiThread(new Runnable() {
+			            @Override
+			            public void run() {
+			            	debugInfoPanel.setMsg(debugMsg);
+			            }
+			        });
+			    }
+			};
+
+			t.start();
+		 
 	 }
 	 
 	 public void setVoiceRecIsStart(Boolean value)

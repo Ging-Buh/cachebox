@@ -268,6 +268,7 @@ public final class DebugInfoPanel extends View
 	
 	public void setMsg(String msg)
 	{
+		
 		Msg=msg;
 		this.requestLayout();
 	}

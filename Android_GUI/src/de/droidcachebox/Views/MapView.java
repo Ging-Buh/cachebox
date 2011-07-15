@@ -1036,7 +1036,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       {
     	  dpiScaleFactorX = dpiScaleFactorY = 1;
       }
-      main.setDebugMsg("dpi=" + String.valueOf(dpiScaleFactorX) );
+      ((main) main.mainActivity).setDebugMsg("dpi=" + String.valueOf(dpiScaleFactorX) );
       //redPen = new Pen(Color.Red, (int)( * 1.4f));
 
       // Falls DpiAwareRendering geändert wurde, müssen diese Werte ent-
@@ -2067,7 +2067,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    int yoffset = 0;
 		    yoffset = (int)(fontSmall.getTextSize());
 		
-		    main.setDebugMsg("FontSize=" + String.valueOf(yoffset));
+		    ((main) main.mainActivity).setDebugMsg("FontSize=" + String.valueOf(yoffset));
 		    
 		    String wpName;                // draw Final Waypoint of not Selected Caches like the caches self because the cache will not be shown
 		    if (drawAsWaypoint)

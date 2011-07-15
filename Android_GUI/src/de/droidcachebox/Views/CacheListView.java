@@ -1,5 +1,6 @@
 package de.droidcachebox.Views;
 
+import java.security.cert.LDAPCertStoreParameters;
 import java.util.List;
 
 import CB_Core.Config;
@@ -166,6 +167,11 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 			
 			int first = this.getFirstVisiblePosition();
 			int last =this.getLastVisiblePosition();
+			
+			if (last==-1 && Database.Data.Query.size()>0 )
+			{
+				lvAdapter.notifyDataSetChanged();
+			}
 			for (Cache ca : Database.Data.Query)
 			{
 				if (ca == GlobalCore.SelectedCache())

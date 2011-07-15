@@ -94,9 +94,13 @@ public class LogView extends ListView implements SelectedCacheEvent, ViewOptions
 	    }
 	    public int getCount() {
 	    	if (cache != null)
+	    	{
 	    		return logs.size();
+	    	}
 	    	else
+	    	{
 	    		return 0;
+	    	}
 	    }
 	 
 	    public Object getItem(int position) {
