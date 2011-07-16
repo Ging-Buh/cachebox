@@ -348,15 +348,20 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	
 	private void showProjectCoord(int NextStep)
 	{
+		Coordinate coord = GlobalCore.LastValidPosition;
+
 		nextStep=NextStep;
 		String Title ="";
 		switch (nextStep)
 		{
 			
-			case PROJECT_GET_PROJECT_VALUES:Title="get Projection";break;
+			case PROJECT_GET_PROJECT_VALUES:
+				Title="get Projection";
+				coord.Latitude=Lat1;
+				coord.Longitude=Lon1;
+				break;
 		}
 		
-		Coordinate coord = GlobalCore.LastValidPosition;
 		if ((coord == null) || (!coord.Valid))
 			if(GlobalCore.SelectedCache()!=null)
 			{
@@ -422,7 +427,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 					
 					Coordinate FromCoord = new Coordinate(Lat1,Lon1);
 					
-					double distance = coord.bearingTo(FromCoord);
+					double distance = coord.Distance(FromCoord);
 					double bearing = coord.bearingTo(FromCoord); //vieleicht noch um 180° drehen?
 					
 					int TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];

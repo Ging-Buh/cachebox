@@ -25,6 +25,7 @@ public class projectionCoordinate extends Activity {
 	TextView descBearing;
 	EditText valueDistance;
 	EditText valueBearing;
+	Button bCoord;
 
 	private LinearLayout TitleLayout;
 	
@@ -51,6 +52,7 @@ public class projectionCoordinate extends Activity {
         descBearing=(TextView)this.findViewById(R.id.proco_bear_directioin);
         valueDistance=(EditText)this.findViewById(R.id.proco_dist_value);
         valueBearing=(EditText)this.findViewById(R.id.proco_bear_value);
+        bCoord = (Button)this.findViewById(R.id.proco_buttoncoord);
         
         descDistance.setText(Global.Translations.Get("Distance"));
         descBearing.setText(Global.Translations.Get("Bearing"));
@@ -94,7 +96,20 @@ public class projectionCoordinate extends Activity {
             }
           });
        
-        
+        // Coordinate Button
+        bCoord.setText(coord.FormatCoordinate());
+        bCoord.setOnClickListener(new OnClickListener() {
+        	@Override
+        	public void onClick(View v) {
+        		// Koordinaten Dialog öffnen
+        		Intent coordIntent = new Intent().setClass(bCoord.getContext(), EditCoordinate.class);
+    	        Bundle b = new Bundle();
+    	        b.putSerializable("Coord", coord);
+    	        coordIntent.putExtras(b);
+        		startActivityForResult(coordIntent, 0);
+        	}
+        });
+
       
         
         // Translations
@@ -102,6 +117,25 @@ public class projectionCoordinate extends Activity {
         bCancel.setText(Global.Translations.Get("cancel"));
 	 }
 
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode,
+		Intent data) {
+		if (data == null)
+			return;
+		Bundle bundle = data.getExtras();
+		if (bundle != null)
+		{
+			Coordinate returnCoord = (Coordinate)bundle.getSerializable("CoordResult");
+			if (returnCoord != null)
+			{
+				coord=returnCoord;
+		        bCoord.setText(coord.FormatCoordinate());
+			}
+		}
+    }
+
+	
 	  
 	 private boolean parseView()
 	 {

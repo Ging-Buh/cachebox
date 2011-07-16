@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout android:layout_width="match_parent"
 	android:layout_height="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
-	<LinearLayout android:orientation="horizontal" android:id="@+id/proco_buttonlayout"
-		android:layout_width="match_parent" android:layout_alignParentBottom="true"
-		android:layout_height="55dip">
+	<LinearLayout android:orientation="horizontal"
+		android:id="@+id/proco_buttonlayout" android:layout_width="match_parent"
+		android:layout_alignParentBottom="true" android:layout_height="55dip">
 		<Button android:layout_weight="1" android:layout_width="match_parent"
 			android:text="Button" android:layout_height="match_parent"
 			android:id="@+id/proco_ok"></Button>
@@ -11,40 +11,43 @@
 			android:text="Button" android:layout_height="match_parent"
 			android:id="@+id/proco_cancel"></Button>
 	</LinearLayout>
-	<LinearLayout android:orientation="horizontal" android:id="@+id/proco_titlelayout"
+	<LinearLayout android:id="@+id/proco_titlelayout"
 		android:layout_width="match_parent" android:layout_alignParentTop="true"
-		android:layout_height="50dip">
-		<TextView android:layout_width="match_parent" android:text="TextView" android:layout_height="match_parent" android:id="@+id/proco_titleview"></TextView>
+		android:layout_height="wrap_content" android:orientation="vertical">
+		<TextView android:layout_width="match_parent" android:text="TextView"
+			android:layout_height="50dip"  android:id="@+id/proco_titleview"></TextView>
+		<Button android:layout_width="match_parent" android:text="Button"
+			android:layout_height="wrap_content" android:id="@+id/proco_buttoncoord"></Button>
 	</LinearLayout>
-	<ScrollView 
-		android:layout_width="fill_parent" android:layout_height="match_parent"
-		android:layout_above="@+id/proco_buttonlayout" android:layout_below="@+id/proco_titlelayout">
-		<TableLayout android:id="@+id/proco_dec_tablelayout" android:layout_height="wrap_content" android:layout_width="match_parent">
-					<TableRow android:id="@+id/proco_dec_tablerow_lat"
-						android:layout_height="wrap_content" android:layout_width="fill_parent">
-						<TextView android:text="Distance" android:layout_height="wrap_content"
-							 android:id="@+id/proco_dist_direction">
-						</TextView>
-						<EditText android:layout_height="wrap_content"
-							android:text="EditText" android:numeric="decimal"
-							android:layout_weight="5" android:layout_width="match_parent"
-							android:id="@+id/proco_dist_value">
-						</EditText>
-						<TextView 
-							android:layout_height="wrap_content" android:text="m"
-							android:layout_width="20dip"></TextView>
-					</TableRow>
-					<TableRow 
-						android:layout_height="wrap_content" android:layout_width="match_parent">
-						<TextView android:text="Bearing" android:layout_height="wrap_content"
-							android:id="@+id/proco_bear_directioin" android:layout_width="wrap_content"></TextView>
-						<EditText android:layout_height="wrap_content"
-							android:numeric="decimal" android:text="EditText"
-							android:layout_width="match_parent" android:layout_weight="5"
-							android:id="@+id/proco_bear_value"></EditText>
-						<TextView android:text="°" 
-							android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-					</TableRow>
-				</TableLayout>
-			</ScrollView>
+	<ScrollView android:layout_width="fill_parent"
+		android:layout_height="match_parent" android:layout_above="@+id/proco_buttonlayout"
+		android:layout_below="@+id/proco_titlelayout">
+		<TableLayout android:id="@+id/proco_dec_tablelayout"
+			android:layout_height="wrap_content" android:layout_width="match_parent">
+			<TableRow android:id="@+id/proco_dec_tablerow_lat"
+				android:layout_height="wrap_content" android:layout_width="fill_parent">
+				<TextView android:text="Distance" android:layout_height="wrap_content"
+					android:id="@+id/proco_dist_direction">
+				</TextView>
+				<EditText android:layout_height="wrap_content"
+					android:text="EditText" android:numeric="decimal"
+					android:layout_weight="5" android:layout_width="match_parent"
+					android:id="@+id/proco_dist_value">
+				</EditText>
+				<TextView android:layout_height="wrap_content"
+					android:text="m" android:layout_width="20dip"></TextView>
+			</TableRow>
+			<TableRow android:layout_height="wrap_content"
+				android:layout_width="match_parent">
+				<TextView android:text="Bearing" android:layout_height="wrap_content"
+					android:id="@+id/proco_bear_directioin" android:layout_width="wrap_content"></TextView>
+				<EditText android:layout_height="wrap_content"
+					android:numeric="decimal" android:text="EditText"
+					android:layout_width="match_parent" android:layout_weight="5"
+					android:id="@+id/proco_bear_value"></EditText>
+				<TextView android:text="°" android:layout_width="wrap_content"
+					android:layout_height="wrap_content"></TextView>
+			</TableRow>
+		</TableLayout>
+	</ScrollView>
 </RelativeLayout>
