@@ -74,7 +74,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	private static final int PROJECT_GET_FIRST_POINT=3;
 	private static final int PROJECT_GET_PROJECT_VALUES=4;
 	private static final int CIRCLE_GET_FIRST_POINT=5;
-	private static final int CIRCLE_GET_PROJECT_VALUE=5;
+	private static final int CIRCLE_GET_PROJECT_VALUE=6;
 	
 	private static double Lon1;
 	private static double Lat1;
@@ -256,7 +256,8 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	 */
 	private void HandleGenerate_Circle() 
 	{
-		MessageBox.Show("HandleGenerate_Circle() on Line:257");
+		MessageBox.Show("Noch umstellen auf Circle-Dialog");
+		showEditCoord(CIRCLE_GET_FIRST_POINT);
 		
 	}
 
@@ -266,7 +267,6 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	 */
 	private void HandleGenerate_Point2Point() 
 	{
-//		MessageBox.Show("HandleGenerate_Point2Point() on Line:267");
 		showEditCoord(P2P_GET_FIRST_POINT);
 	}
 
@@ -276,7 +276,6 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	 */
 	private void HandleGenerate_Projection() 
 	{
-//		MessageBox.Show("HandleGenerate_Projection() on Line:277");
 		showEditCoord(PROJECT_GET_FIRST_POINT);
 	}
 
@@ -318,6 +317,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 			case P2P_GET_FIRST_POINT:Title="set From Pos";break;
 			case P2P_GET_SECEND_POINT:Title="set To Pos";break;
 			case PROJECT_GET_FIRST_POINT:Title="set From Pos";break;
+			case CIRCLE_GET_FIRST_POINT:Title="set Center Pos";break;
 		}
 		
 		Coordinate coord = GlobalCore.LastValidPosition;
@@ -347,6 +347,46 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	}
 	
 	private void showProjectCoord(int NextStep)
+	{
+		Coordinate coord = GlobalCore.LastValidPosition;
+
+		nextStep=NextStep;
+		String Title ="";
+		switch (nextStep)
+		{
+			
+			case PROJECT_GET_PROJECT_VALUES:
+				Title="get Projection";
+				coord.Latitude=Lat1;
+				coord.Longitude=Lon1;
+				break;
+		}
+		
+		if ((coord == null) || (!coord.Valid))
+			if(GlobalCore.SelectedCache()!=null)
+			{
+				coord = GlobalCore.SelectedCache().Pos;
+			}
+			else
+			{
+				coord=null;
+			}
+			
+		if (coord==null)
+		{
+			coord=new Coordinate(0.0,0.0);
+		}
+				
+		// Projection Dialog öffnen
+		Intent coordIntent = new Intent().setClass(getContext(), projectionCoordinate.class);
+        Bundle b = new Bundle();
+        b.putSerializable("Coord", coord);
+        b.putSerializable("Title", Global.Translations.Get("Projection"));
+        coordIntent.putExtras(b);
+        parentActivity.startActivityForResult(coordIntent, 0);
+	}
+	
+	private void showCircle(int NextStep)
 	{
 		Coordinate coord = GlobalCore.LastValidPosition;
 
@@ -428,13 +468,36 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 					Coordinate FromCoord = new Coordinate(Lat1,Lon1);
 					
 					double distance = coord.Distance(FromCoord);
-					double bearing = coord.bearingTo(FromCoord); //vieleicht noch um 180° drehen?
+					double bearing = coord.bearingTo(FromCoord) + 180; //vieleicht noch um 180° drehen?
 					
 					int TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
 					Paint paint = new Paint();
 					paint.setColor(TrackColor);
 					paint.setStrokeWidth(3);
 					RouteOverlay.Routes.add(GenProjectRoute(Lat1, Lon1, distance, bearing, paint));
+					lvAdapter.notifyDataSetChanged();
+					resetStep();
+				
+				}else if (nextStep==CIRCLE_GET_FIRST_POINT)
+				{
+					Lon1= coord.Longitude;
+					Lat1= coord.Latitude;
+					showCircle(CIRCLE_GET_PROJECT_VALUE);
+					
+				}else if (nextStep==CIRCLE_GET_PROJECT_VALUE)
+				{
+					Lon2= coord.Longitude;
+					Lat2= coord.Latitude;
+					
+					Coordinate FromCoord = new Coordinate(Lat1,Lon1);
+					
+					double distance = coord.Distance(FromCoord);
+					
+					int TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
+					Paint paint = new Paint();
+					paint.setColor(TrackColor);
+					paint.setStrokeWidth(3);
+					RouteOverlay.Routes.add(GenCircleRoute(Lat1, Lon1, distance, paint));
 					lvAdapter.notifyDataSetChanged();
 					resetStep();
 				}
