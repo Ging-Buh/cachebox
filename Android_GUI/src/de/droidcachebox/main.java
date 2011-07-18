@@ -67,9 +67,11 @@ import de.droidcachebox.Database;
 import CB_Core.Types.CacheList;
 import android.app.Activity;
 import android.database.Cursor;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.ContentValues;
 import android.graphics.Color;
@@ -161,6 +163,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    private boolean initialResortAfterFirstFixCompleted = false;
 	    private boolean initialFixSoundCompleted = false;
 	    private boolean approachSoundCompleted = false;
+	    private boolean runsWithAkku = true;
 	    
 		private ImageButton buttonDB;
 		private ImageButton buttonCache;
@@ -254,7 +257,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        
 	        Logger.Add(this);
 	        
-	        	        
 	        try
 	        {
 	        setContentView(R.layout.main);
@@ -339,6 +341,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        
 	        if (Config.GetBool("TrackRecorderStartup"))TrackRecorder.StartRecording();
 	        
+	        this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));	        	        
 	    }
 
 	    /** hook into menu button for activity */
@@ -692,9 +695,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		@Override protected void onResume()
 		{
 			super.onResume();
-			counter.start();
+			if (runsWithAkku)
+				counter.start();
 			mSensorManager.registerListener(mListener, mSensor,SensorManager.SENSOR_DELAY_GAME);
-			if(!Config.GetBool("AllowLandscape"))
+	        this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));	        	        
+	        if(!Config.GetBool("AllowLandscape"))
 	        {
 	        	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	        }
@@ -707,6 +712,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		@Override protected void onStop()
 		{
 			mSensorManager.unregisterListener(mListener);
+			this.unregisterReceiver(this.mBatInfoReceiver);
 			counter.cancel();
 			super.onStop();
 		}
@@ -786,6 +792,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
    
     public void startScreenLock()
     {
+    	if (!runsWithAkku)
+    		return;
 		counter.cancel();
 		counterStopped = true;
 		// ScreenLock nur Starten, wenn der Config Wert größer 10 sec ist.
@@ -1337,7 +1345,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    		mainActivity.startActivityForResult(selectDBIntent, 546132);
 		    		break;
 		    	case R.id.miResort:
-	            	CacheDAO cacheDAO = new CacheDAO();
 	            	Database.Data.Query.Resort();
 		    		break;
 		    	case R.id.miAutoResort:
@@ -1347,7 +1354,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 		            if (Global.autoResort)
 		            {
-		            	cacheDAO = new CacheDAO();
 		            	Database.Data.Query.Resort();
 		            }
 		    		break;
@@ -1674,8 +1680,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		            extAudioRecorder = null;
 		    		Toast.makeText(mainActivity, "Stop Voice Recorder", Toast.LENGTH_SHORT).show();
 	            }
-	    		counterStopped = false; // ScreenLock-Counter wieder starten
-	    		counter.start();
+	            if (runsWithAkku)
+	            {
+	            	counterStopped = false; // ScreenLock-Counter wieder starten
+	            	counter.start();
+	            }
 	    	}
 	    	
 	    }
@@ -1706,7 +1715,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	 {
 		 counter.cancel();
 		 counter = new ScreenLockTimer(value,value);
-		 counter.start();
+		 if (runsWithAkku)
+			 counter.start();
 	 }
 
 	
@@ -1748,5 +1758,33 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		
 	}
 	 
+	private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver()
+	{
+		
+		@Override
+		
+		public void onReceive(Context arg0, Intent intent) 
+		{
+			int plugged = intent.getIntExtra("plugged", -1);
+			
+			if (runsWithAkku != (plugged == 0))
+			{
+				// if loading status has changed 
+				runsWithAkku = plugged == 0;
+				if (!runsWithAkku)
+				{
+					// activate counter when device runs with accu
+					counter.cancel();
+					counterStopped = true;
+				} else
+				{
+					// deactivate counter when device is plugged in
+					counter.start();
+					counterStopped = false;
+				}
+			}
+		}
+		
+	};
 	 
 }
