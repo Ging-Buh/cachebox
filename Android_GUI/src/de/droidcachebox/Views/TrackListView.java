@@ -395,8 +395,8 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 		switch (nextStep)
 		{
 			
-			case PROJECT_GET_PROJECT_VALUES:
-				Title="get Projection";
+			case CIRCLE_GET_PROJECT_VALUE:
+				Title="get Radius";
 				coord.Latitude=Lat1;
 				coord.Longitude=Lon1;
 				break;
