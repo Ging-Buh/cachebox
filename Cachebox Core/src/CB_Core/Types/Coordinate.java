@@ -240,6 +240,8 @@ public class Coordinate implements Serializable {
       try
       {
     	  g = ((a + b) == 0) ? 0 : Math.acos((Math.cos(c) - Math.cos(a) * Math.cos(b)) / (Math.sin(a) * Math.sin(b)));
+    	  if (Double.isNaN(g))
+    		  g = 0;
       } catch (Exception ex)
       {
     	  g = 0;
