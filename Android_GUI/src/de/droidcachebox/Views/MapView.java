@@ -2062,7 +2062,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    drawAsWaypoint = false;
 		
 		  // Beschriftung
-		  if (showTitles && (Zoom >= 14))
+		  if (showTitles && (Zoom >= 15))
 		  {
 		    int yoffset = 0;
 		    yoffset = (int)(fontSmall.getTextSize());
