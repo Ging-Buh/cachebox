@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="match_parent" android:orientation="vertical"
+	android:layout_width="match_parent" android:background="?attr/DropDownBackground">
+	<CheckBox android:text="Show Quick Button Panel"
+		android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:id="@+id/settings_quick_button_show">
+	</CheckBox>
+
+
+	<TableLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:stretchColumns="0">
+		<TableRow>
+			<LinearLayout android:layout_height="wrap_content"
+				android:layout_weight="1" android:id="@+id/linearLayout_Qiuck"
+				android:orientation="vertical" android:layout_width="match_parent"
+				android:background="?attr/Settings_Group">
+
+				<ListView android:id="@+id/settings_quick_list"
+					android:layout_height="wrap_content" android:text="platzhalter"
+					android:layout_width="wrap_content">
+				</ListView>
+
+
+			</LinearLayout>
+			<LinearLayout android:layout_weight="1"
+				android:layout_height="wrap_content" android:orientation="vertical"
+				android:layout_width="85dip">
+				<Button android:layout_width="match_parent" android:text="Up"
+					android:layout_height="55dip" android:id="@+id/settings_quick_up">
+				</Button>
+				<Button android:layout_width="match_parent" android:text="Down"
+					android:layout_height="55dip" android:id="@+id/settings_quick_down"
+					android:layout_marginTop="20dip">
+				</Button>
+				<Button android:layout_width="match_parent" android:text="Delete"
+					android:layout_height="55dip" android:id="@+id/settings_quick_del"
+					android:layout_marginTop="20dip">
+				</Button>
+				<Button android:layout_width="match_parent" android:text="Add"
+					android:layout_height="55dip" android:id="@+id/settings_quick_add"
+					android:layout_marginTop="20dip">
+				</Button>
+
+
+			</LinearLayout>
+		</TableRow>
+	</TableLayout>
+
+
+	<Spinner android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/settings_spinner_Action"
+		android:visibility="gone">
+	</Spinner>
+
+
+</LinearLayout>

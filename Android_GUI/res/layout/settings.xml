@@ -128,7 +128,31 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 			 
 		    </TableRow>
 		    
-		    
+	
+	<!-- Quick Button Settings -->		    
+		    <Button 
+			   	 
+			   	android:text="Quick Button" 
+			   	android:layout_height="wrap_content" 
+			   	android:layout_width="wrap_content" 
+			   	android:id="@+id/toggle_button_quick" 
+			   	android:layout_marginTop="10dip"></Button>
+			   	
+		    <TableRow 
+			    android:id="@+id/settings_tableRow_quick" 
+			    android:layout_height="wrap_content" 
+			    android:layout_width="match_parent"
+			    android:visibility="gone">
+	
+			 <include 
+				 android:layout_height="wrap_content" 
+				 android:id="@layout/settings_quick_button" 
+				 layout="@layout/settings_quick_button" 
+				 android:layout_width="match_parent" 
+				 android:layout_weight="1"></include>			    
+			 
+		    </TableRow>
+		    	    
 		    
 		    
 		    

@@ -4,12 +4,14 @@ import de.droidcachebox.R;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Handler.Callback;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ScrollView;
+import android.widget.TableRow;
 
 public class Animations 
 {
@@ -17,6 +19,11 @@ public class Animations
 	 * Schaltet die Visibility eines View um und animiert dabei ein Slidedown/Slideup
 	 */
 	public static void ToggleViewSlideUp_Down(final View v, Context context,final ScrollView scrollView, final Button button)
+	{
+		ToggleViewSlideUp_Down( v,context,scrollView, button, null);
+	}
+
+	public static void ToggleViewSlideUp_Down(final View v, Context context,final ScrollView scrollView, final Button button, final Callback AnimationReadyCallBack) 
 	{
 		if(v.getVisibility() == View.VISIBLE)
     	{
@@ -58,15 +65,15 @@ public class Animations
     				Point offset = new Point();
     				scrollView.getChildVisibleRect(button, r, offset);
     				scrollView.scrollTo(offset.x, offset.y);
+    				if(AnimationReadyCallBack!=null)
+    				{
+    					AnimationReadyCallBack.handleMessage(null);
+    				}
     		    }
     		});
     		
     		
-    		
-    		
-    	}
-		
-		
+    	}	
 		
 	}
 }

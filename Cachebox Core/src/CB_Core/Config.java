@@ -3,7 +3,6 @@ package CB_Core;
 import java.io.BufferedReader;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -113,21 +112,11 @@ public class Config {
 
          keyLookup =  new HashMap<String, String>();
          
-                 // c# TextReader reader = new StreamReader(Global.AppPath + "\\cachebox.config");
                  BufferedReader Filereader;
                  
-                 try {
-                	 //Filereader = new BufferedReader(new InputStreamReader(AssetMgr.open(ConfigName)));
-/*                	 
-                	 String state = Environment.getExternalStorageState();                	 
-                	 if (!Environment.MEDIA_MOUNTED.equals(state)) {
-                		 // External Storage not mounted or not readable
-                		 initialized = false;
-                		 return;                		 
-                	 }
-*/                	 
-
-                	 Filereader = new BufferedReader(new FileReader(ConfigName));
+                 try 
+                 {
+               	 Filereader = new BufferedReader(new FileReader(ConfigName));
                    String line;
                  
 					while ((line = Filereader.readLine()) != null)
@@ -146,7 +135,6 @@ public class Config {
 					
 					  Filereader.close(); 
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					Logger.Error("ReadConfig", "Error when accessing cachebox.config!", e);
 					e.printStackTrace();
 				}
@@ -245,7 +233,8 @@ public class Config {
         validateSetting("MoveMapCenterWithSpeed", "false");
         validateSetting("MoveMapCenterMaxSpeed", "20");
         validateSetting("lastZoomLevel", "14");
-        
+        validateSetting("quickButtonShow", "true");
+        validateSetting("quickButtonList", "1,2,3");
         
 //        validateSetting("OtherRepositoriesFolder", Global.AppPath + "\\Repositories");
 
@@ -289,14 +278,10 @@ public class Config {
 
     public static void AcceptChanges()
     {
-    	//file:///android_asset/
-    	
     	
     	BufferedWriter myFilewriter;
     	 try 
     	 {
-    		 //myFilewriter = AssetMgr.getLocales() 
-    		 
     		 myFilewriter = new BufferedWriter(new FileWriter(ConfigName));
 	
     	
@@ -310,7 +295,6 @@ public class Config {
     		 }
     		 myFilewriter.close();
     	 } catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
     	 }
 

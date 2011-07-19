@@ -7,22 +7,33 @@ import CB_Core.Log.Logger;
 import CB_Core.TranslationEngine.SelectedLangChangedEvent;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.TranslationEngine.LangStrings.Langs;
+import CB_Core.Types.MoveableList;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Handler.Callback;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TableRow;
@@ -38,12 +49,81 @@ import de.droidcachebox.Custom_Controls.wheel.OnWheelChangedListener;
 import de.droidcachebox.Custom_Controls.wheel.OnWheelScrollListener;
 import de.droidcachebox.Custom_Controls.wheel.WheelView;
 import de.droidcachebox.Custom_Controls.wheel.adapters.NumericWheelAdapter;
+import de.droidcachebox.Enums.Actions;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 public class Settings extends Activity implements ViewOptionsMenu,SelectedLangChangedEvent {
-	Context context;
-	
+	private Context context;
+	private LinearLayout SettingsLayout;
+	private ScrollView SettingsScrollView;
+	private Spinner LangCombo;
+	private Button SaveButton;
+	private Button CancelButton;
+	private Button ToggleLogInView;
+	private TableRow LogInTableRow;
+	private TextView LabelGcName;
+	private TextView LabelGcPW;
+	private TextView LabelGcVoPw;
+	private TextView LabelGcJoker;
+	private EditText EditTextGCName;
+	private EditText EditTextGCPW;
+	private EditText EditTextGCVotePW;
+	private EditText EditTextGCJoker;
+	private EditText EditTextGC_API;
+	private Button ToggleGPSView;
+	private TableRow GPSTableRow;
+	private CheckBox checkBoxHTCCompass;
+	private CheckBox cbMoveMapCenterWithSpeed;
+	private TextView DescCompassLevel;
+	private EditText EditCompassLevel;
+	private Button ToggleMapView;
+	private TableRow MapTableRow;
+	private Button ToggleMiscView;
+	private TableRow MiscTableRow;
+	private CheckBox chkMapink;
+	private CheckBox chkCycleMap;
+	private CheckBox chkOsmarenerer;
+	private Spinner OsmMinLevel;
+	private Spinner OsmMaxLevel;
+	private Spinner ZoomCross;
+	private Spinner SmoothScrolling;
+	private Spinner TrackDistance;
+	private CheckBox chkTrackStart;
+	private TextView DescMapLayer;
+	private TextView DescOsmMinLevel;
+	private TextView DescOsmMaxLevel;
+	private TextView DescZoomCrossLevel;
+	private TextView DescSmothScroll;
+	private TextView DescTrackRec;
+	private TextView DescTrackCount;
+	private Button ToggleDebugView;
+	private TableRow DebugTableRow;
+	private CheckBox chkAllowInetAccess;
+	private CheckBox chkDebugShowPanel;
+	private CheckBox chkDebugMemory;
+	private CheckBox chkDebugMsg;
+	private CheckBox chkDebugLog;
+	private Spinner ApproachSound;
+	private CheckBox chkDebugMarker;
+    private WheelView ScreenLock_wheel_m ;
+    private WheelView ScreenLock_wheel_sec ;
+    private CheckBox chkAllowLandscape;
+    private TextView DescScreenLock;
+    private CheckBox chkDPIaware;
+    private Button ToggleQuickView;
+	private TableRow QuickTableRow;
+	private CheckBox chkQuickButtonShow;
+	private ListView ActionListView;
+	private int ActionListSelectedIndex=-1;
+	private Button ActionListUp;
+	private Button ActionListDown;
+	private Button ActionListDel;
+	private Button ActionListAdd;
+	private Spinner ActionListAll;
+	MoveableList<Actions> ActionList;
+	ArrayList<Actions> AllActionList;
+	private boolean ActionListButtonAddClicked=false;
 
 	public void onCreate(Bundle savedInstanceState) {
 		ActivityUtils.onActivityCreateSetTheme(this);
@@ -145,7 +225,15 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
             	Animations.ToggleViewSlideUp_Down(DebugTableRow,context,SettingsScrollView,ToggleDebugView);
             }
           });
-		
+		ToggleQuickView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) 
+            {
+            	
+            	Animations.ToggleViewSlideUp_Down(QuickTableRow,context,SettingsScrollView,ToggleQuickView,AnimationReadyCallBack);
+            	
+            }
+          });
 		
 		checkBoxHTCCompass.setOnClickListener(new OnClickListener() {
 			
@@ -304,8 +392,92 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		 initWheel(ScreenLock_wheel_m,0,10);
 	     initWheel(ScreenLock_wheel_sec,0,59);
 	     
-		
-		
+	     
+	     
+	    fillActionsSpinner(); 
+	    ActionListView.setOnItemClickListener(new OnItemClickListener() 
+	     {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) 
+			{
+				
+				ActionListSelectedIndex=arg2;
+				refreshActionListView(false);
+			}
+		});
+	    ActionListUp.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) 
+			{
+				ActionListSelectedIndex=ActionList.MoveItem(ActionListSelectedIndex, -1);
+				refreshActionListView(false);
+			}
+		});
+	    ActionListDown.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) 
+			{
+				ActionListSelectedIndex=ActionList.MoveItem(ActionListSelectedIndex, +1);
+				refreshActionListView(false);
+			}
+		});
+	    ActionListDel.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) 
+			{
+				ActionList.remove(ActionListSelectedIndex);
+				refreshActionListView(true);
+			}
+		});
+	    ActionListAdd.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) 
+			{
+				ActionListAll.setSelection(AllActionList.size()-1);
+				ActionListAll.setVisibility(View.VISIBLE);
+				ActionListAll.performClick();
+			}
+		});
+	    ActionListAll.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) 
+			{
+				
+				if(ActionListAll.getVisibility()==View.VISIBLE && ActionListButtonAddClicked)
+				{
+					//neues Action Item ausgewählt.
+					if(ActionList==null)
+					{
+						ActionList=new MoveableList<Actions>();
+						ActionListView.setAdapter(QuickListBaseAdapter);
+					}
+					ActionList.add(AllActionList.get(arg2));
+					refreshActionListView(true);
+					ActionListButtonAddClicked=false;
+					ActionListAll.setVisibility(View.GONE);
+				}
+				else
+				{
+					ActionListButtonAddClicked=true;
+				}
+				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) 
+			{
+				ActionListAll.setVisibility(View.GONE);
+			}
+		});
+	    
 		FillSettings();
 		setLang();
 		
@@ -317,8 +489,32 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		}
 }
 
+	/**
+	 * Aktualisiert das ListView der ActionList
+	 * @param resize true, wenn die höhe neu berechnet werden soll.
+	 */
+	private void refreshActionListView(boolean resize)
+	{
+		QuickListBaseAdapter.notifyDataSetChanged();
+		ActionListView.invalidate();
+		if(resize)
+		{
+			ActivityUtils.setListViewHeightBasedOnChildren(ActionListView);
+		}
+	}
 	
-	private void PerformeButtonClick(int index)
+	private Callback AnimationReadyCallBack = new Callback() {
+		
+		@Override
+		public boolean handleMessage(Message arg0) 
+		{
+			ActivityUtils.setListViewHeightBasedOnChildren(ActionListView);
+			return false;
+		}
+	};
+	
+		
+ 	private void PerformeButtonClick(int index)
 	{
 		switch (index)
 		{
@@ -341,63 +537,6 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		}
 	}
 	
-	
-	private LinearLayout SettingsLayout;
-	private ScrollView SettingsScrollView;
-	private Spinner LangCombo;
-	private Button SaveButton;
-	private Button CancelButton;
-	private Button ToggleLogInView;
-	private TableRow LogInTableRow;
-	private TextView LabelGcName;
-	private TextView LabelGcPW;
-	private TextView LabelGcVoPw;
-	private TextView LabelGcJoker;
-	private EditText EditTextGCName;
-	private EditText EditTextGCPW;
-	private EditText EditTextGCVotePW;
-	private EditText EditTextGCJoker;
-	private EditText EditTextGC_API;
-	private Button ToggleGPSView;
-	private TableRow GPSTableRow;
-	private CheckBox checkBoxHTCCompass;
-	private CheckBox cbMoveMapCenterWithSpeed;
-	private TextView DescCompassLevel;
-	private EditText EditCompassLevel;
-	private Button ToggleMapView;
-	private TableRow MapTableRow;
-	private Button ToggleMiscView;
-	private TableRow MiscTableRow;
-	private CheckBox chkMapink;
-	private CheckBox chkCycleMap;
-	private CheckBox chkOsmarenerer;
-	private Spinner OsmMinLevel;
-	private Spinner OsmMaxLevel;
-	private Spinner ZoomCross;
-	private Spinner SmoothScrolling;
-	private Spinner TrackDistance;
-	private CheckBox chkTrackStart;
-	private TextView DescMapLayer;
-	private TextView DescOsmMinLevel;
-	private TextView DescOsmMaxLevel;
-	private TextView DescZoomCrossLevel;
-	private TextView DescSmothScroll;
-	private TextView DescTrackRec;
-	private TextView DescTrackCount;
-	private Button ToggleDebugView;
-	private TableRow DebugTableRow;
-	private CheckBox chkAllowInetAccess;
-	private CheckBox chkDebugShowPanel;
-	private CheckBox chkDebugMemory;
-	private CheckBox chkDebugMsg;
-	private CheckBox chkDebugLog;
-	private Spinner ApproachSound;
-	private CheckBox chkDebugMarker;
-    private WheelView ScreenLock_wheel_m ;
-    private WheelView ScreenLock_wheel_sec ;
-    private CheckBox chkAllowLandscape;
-    private TextView DescScreenLock;
-    private CheckBox chkDPIaware;
 	
  	private void findViewsById()
 	{
@@ -458,6 +597,15 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		chkAllowLandscape = (CheckBox)this.findViewById(R.id.settings_allow_LandScape);
 		DescScreenLock=(TextView)this.findViewById(R.id.settings_desc_ScreenLock);
 		chkDPIaware = (CheckBox)this.findViewById(R.id.settings_DPIaware);
+		QuickTableRow =(TableRow)this.findViewById(R.id.settings_tableRow_quick);
+		ToggleQuickView = (Button)this.findViewById(R.id.toggle_button_quick);
+		chkQuickButtonShow = (CheckBox)this.findViewById(R.id.settings_quick_button_show);
+		ActionListView = (ListView) findViewById(R.id.settings_quick_list);
+		ActionListUp = (Button) findViewById(R.id.settings_quick_up);
+		ActionListDown = (Button) findViewById(R.id.settings_quick_down);
+		ActionListDel = (Button) findViewById(R.id.settings_quick_del);
+		ActionListAdd = (Button) findViewById(R.id.settings_quick_add);
+		ActionListAll = (Spinner)this.findViewById(R.id.settings_spinner_Action);
 	}
 	
 	private void setLang()
@@ -525,7 +673,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 			ToggleDebugView.setVisibility(View.VISIBLE);
 		
 		chkAllowLandscape.setChecked(Config.GetBool("AllowLandscape"));
-	
+		fillQuickButton();
 		
 		}
 		catch(Exception e)
@@ -579,6 +727,19 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	((main) main.mainActivity).setDebugVisible();
     	((main) main.mainActivity).setDebugMsg("");
     	Config.Set("AllowLandscape",chkAllowLandscape.isChecked());
+    	
+    	String ActionsString="";
+    	int counter=0;
+    	for(Actions tmp : ActionList)
+    	{
+    		ActionsString+=String.valueOf(tmp.ordinal()); 
+    		if(counter<ActionList.size()-1)
+    		{
+    			ActionsString+=",";
+    		}
+    		counter++;
+    	}
+    	Config.Set("quickButtonList", ActionsString);
     	
     	Config.AcceptChanges();
     	
@@ -670,6 +831,32 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		SmoothScrolling.setAdapter(smothAdapter);
 	}
 	
+	private void fillActionsSpinner()
+	{
+		AllActionList= new ArrayList<Actions>();
+		Actions[] tmp = Actions.values();
+		for ( Actions item : tmp)
+		{
+			AllActionList.add(item);
+		}
+		
+		ArrayAdapter<Actions> ActionListAdapter = new ArrayAdapter<Actions>(this,android.R.layout.simple_spinner_item, AllActionList); 
+		ActionListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		ActionListAll.setAdapter(ActionListAdapter);
+	}
+
+	
+	private void fillQuickButton()
+	{
+		chkQuickButtonShow.setChecked(Config.GetBool("quickButtonShow"));
+		String ConfigActionList = Config.GetString("quickButtonList");
+		String[]ConfigList= ConfigActionList.split(",");
+		ActionList = Actions.getListFromConfig(ConfigList);
+		
+		ActionListView.setAdapter(QuickListBaseAdapter);
+		
+	}
+	
 	
 	ArrayList<Integer> approachValues= new ArrayList<Integer>();
 	Integer[] approach = new Integer[]{0,2,10,25,50,100,200,500,1000};
@@ -713,6 +900,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		ToggleMapView.setHeight(Height);
 		ToggleMiscView.setHeight(Height);
 		ToggleDebugView.setHeight(Height);
+		ToggleQuickView.setHeight(Height);
 	}
 
 	
@@ -723,6 +911,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	{
 		setButtonHeight();
 		FillSettings();
+		
 	}
 
 	@Override
@@ -828,15 +1017,64 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
         
     }
 
-    
-    /**
-     * Returns wheel by Id
-     * @param id the wheel Id
-     * @return the wheel with passed Id
-     */
-    private WheelView getWheel(int id) {
-        return (WheelView) findViewById(id);
-    }
-    
+   
  
+    
+    private BaseAdapter QuickListBaseAdapter = new BaseAdapter() {
+
+		@Override
+		public int getCount() 
+		{
+			if(ActionList==null)
+			{
+				return 0;
+			}
+			else
+			{
+				return ActionList.size();
+			}
+			
+		}
+
+		@Override
+		public Object getItem(int position) 
+		{
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position) 
+		{
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) 
+		{
+			if(ActionList==null)
+			{
+				return null;
+			}
+			
+			String Name = ActionList.get(position).name();
+			View retval = LayoutInflater.from(parent.getContext()).inflate(R.layout.quick_list_item, null);
+			TextView title = (TextView) retval.findViewById(R.id.title);
+			LinearLayout layout =(LinearLayout) retval.findViewById(R.id.layout);
+			title.setText(Name);
+			int BackGroundColor = (position!=ActionListSelectedIndex)? Global.getColor(R.attr.ListBackground):Global.getColor(R.attr.ListBackground_select);
+			layout.setBackgroundColor(BackGroundColor);
+			
+			//set item width to ListView width
+			/*int desiredWidth = MeasureSpec.makeMeasureSpec(ActionListView.getWidth(), MeasureSpec.AT_MOST);
+			ViewGroup.LayoutParams params = retval.getLayoutParams();
+	        params.width = desiredWidth;
+	        retval.setLayoutParams(params);
+*/	        
+			return retval;
+		}
+		
+	};
+    
+    
+    
 }

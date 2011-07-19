@@ -1754,7 +1754,20 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		 */
 	@Override public void receiveShortLog(String Msg) 
 	{
-		debugInfoPanel.addLogMsg(Msg);
+		 debugMsg=Msg;
+		 Thread t = new Thread() {
+			    public void run() {
+			        runOnUiThread(new Runnable() {
+			            @Override
+			            public void run() {
+			            	debugInfoPanel.addLogMsg(debugMsg);
+			            }
+			        });
+			    }
+			};
+
+			t.start();
+		
 		
 	}
 	 
