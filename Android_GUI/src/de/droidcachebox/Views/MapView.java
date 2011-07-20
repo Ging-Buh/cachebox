@@ -147,7 +147,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		buttonTrackPosition.clearStates();
 		buttonTrackPosition.addState("Free", Color.GRAY);
 		buttonTrackPosition.addState("GPS", Color.GREEN);
-		buttonTrackPosition.addState("FIX", Color.RED);
+		buttonTrackPosition.addState("Lock", Color.RED);
         this.buttonTrackPosition.setOnClickListener(new OnClickListener() 
         {
             @Override
@@ -1379,6 +1379,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		        		// Alle beantragten Kacheln die nicht der
 		        		// aktuellen Zoomstufe entsprechen, rausschmeissen
+		        		
 		        		for (int i = 0; i < wishlist.size(); i++)
 		        		{
 		        			if (wishlist.get(i).Zoom != Zoom)
