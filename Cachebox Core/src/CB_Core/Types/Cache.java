@@ -64,7 +64,7 @@ public class Cache implements Comparable<Cache>
      * geotoad nicht exportiert
      */
     // TODO Warum ist das ein String?
-    public String GcId;
+    public String GcId= "";
     /**
 	 * Id des Caches in der Datenbank von geocaching.com
      */
@@ -72,11 +72,11 @@ public class Cache implements Comparable<Cache>
     /**
 	 * Waypoint Code des Caches
      */
-    public String GcCode;
+    public String GcCode= "";
     /**
 	 * Name des Caches
      */
-    public String Name;
+    public String Name= "";
     
     /**
      * Die Coordinate, an der der Cache liegt.
@@ -152,28 +152,28 @@ public class Cache implements Comparable<Cache>
     /**
      * Name der Tour, wenn die GPX-Datei aus GCTour importiert wurde
      */
-    public String TourName;
+    public String TourName= "";
 
     
     /**
      * Name der GPX-Datei aus der importiert wurde
      */
-    public int GPXFilename_ID;
+    public int GPXFilename_ID=0;
 
     /**
     * Art des Caches
     */
-    public CacheTypes Type;
+    public CacheTypes Type = CacheTypes.Cache.Undefined;
 
     /**
     * Erschaffer des Caches
     */
-    public String PlacedBy;
+    public String PlacedBy= "";
 
     /**
     * Verantwortlicher
     */
-    public String Owner;
+    public String Owner= "";
 
     /**
     * Datum, an dem der Cache versteckt wurde
@@ -183,12 +183,12 @@ public class Cache implements Comparable<Cache>
     /**
     * URL des Caches
     */
-    public String Url;
+    public String Url= "";
    
     /**
      * Das Listing hat sich geändert!
      */
-    public boolean listingChanged;
+    public boolean listingChanged=false;
     
     /**
      * Positive Attribute des Caches
@@ -203,7 +203,7 @@ public class Cache implements Comparable<Cache>
     /**
      * Anzahl der Travelbugs und Coins, die sich in diesem Cache befinden
      */
-    public int NumTravelbugs;
+    public int NumTravelbugs=0;
 
     
     /**

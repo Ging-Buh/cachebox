@@ -16,7 +16,7 @@ public class Waypoint implements Serializable {
     public long CacheId;
 
     /// Waypoint Code
-    public String GcCode;
+    public String GcCode= "";
 
     public Coordinate Pos;
     /// Breitengrad
@@ -26,10 +26,10 @@ public class Waypoint implements Serializable {
     public double Longitude() { return Pos.Longitude; }
 
     /// Titel des Wegpunktes
-    public String Title;
+    public String Title= "";
 
     /// Kommentartext
-    public String Description;
+    public String Description= "";
 
     /// Art des Wegpunkts
     public CacheTypes Type;
@@ -41,7 +41,7 @@ public class Waypoint implements Serializable {
     public boolean IsSyncExcluded;
 
     /// Lösung einer QTA
-    public String Clue;
+    public String Clue= "";
 
     
     public Waypoint()
