@@ -5,16 +5,25 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import de.droidcachebox.Global;
 import CB_Core.Types.CacheList;
+import de.droidcachebox.DAO.CategoryDAO;
+import de.droidcachebox.DAO.GpxFilenameDAO;
 import de.droidcachebox.Map.Descriptor;
 import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
+import CB_Core.Types.Categories;
+import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
+import CB_Core.Types.GpxFilename;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import android.app.Activity;
@@ -148,7 +157,80 @@ public class Database {
 					
 				} catch (Exception exc)
 				{
-					String ex = exc.getMessage();
+					Logger.Error("AlterDatabase_0", "", exc);
+				}
+			} 
+			if (lastDatabaseSchemeVersion < 1003)
+			{
+				try
+				{
+					myDB.execSQL("CREATE TABLE [Locations] ([Id] integer not null primary key autoincrement, [Name] nvarchar (255) NULL, [Latitude] float NULL, [Longitude] float NULL);");
+					myDB.execSQL("CREATE INDEX [Locatioins_idx] ON [Locations] ([Id] ASC);");
+					
+					myDB.execSQL("CREATE TABLE [SdfExport] ([Id]  integer not null primary key autoincrement, [Description] nvarchar(255) NULL, [ExportPath] nvarchar(255) NULL, [MaxDistance] float NULL, [LocationID] Bigint NULL, [Filter] ntext NULL, [Update] bit NULL, [ExportImages] bit NULL, [ExportSpoilers] bit NULL, [ExportMaps] bit NULL, [OwnRepository] bit NULL, [ExportMapPacks] bit NULL, [MaxLogs] int NULL);");
+					myDB.execSQL("CREATE INDEX [SdfExport_idx] ON [SdfExport] ([Id] ASC);");
+	
+					myDB.execSQL("ALTER TABLE [CACHES] ADD [FirstImported] datetime NULL;");
+	
+					myDB.execSQL("CREATE TABLE [Category] ([Id]  integer not null primary key autoincrement, [GpxFilename] nvarchar(255) NULL, [Pinned] bit NULL default 0, [CacheCount] int NULL);");
+					myDB.execSQL("CREATE INDEX [Category_idx] ON [Category] ([Id] ASC);");
+	
+					myDB.execSQL("ALTER TABLE [GpxFilenames] ADD [CategoryId] bigint NULL;");
+	
+					myDB.execSQL("ALTER TABLE [Caches] add [state] nvarchar(50) NULL, [country] nvarchar(50) NULL;");
+				} catch (Exception exc)
+				{
+					Logger.Error("AlterDatabase_0", "", exc);
+				}
+			} 
+			if (lastDatabaseSchemeVersion < 1015)
+			{
+				// GpxFilenames mit Kategorien verknüpfen
+				// alte Category Tabelle löschen
+				Database.Data.myDB.delete("Category", "", null);
+				HashMap<Long, String> gpxFilenames = new HashMap<Long, String>();
+				HashMap<String, Long> categories = new HashMap<String, Long>();
+				Database.Data.myDB.beginTransaction();
+				try
+				{
+					Cursor reader = Database.Data.myDB.rawQuery("select ID, GPXFilename from GPXFilenames", null);
+					reader.moveToFirst();
+					while(reader.isAfterLast() == false)
+					{
+						long id = reader.getLong(0);
+						String gpxFilename = reader.getString(1);
+						gpxFilenames.put(id, gpxFilename);
+						reader.moveToNext();            
+					}
+					reader.close();
+					for (Entry<Long, String> entry : gpxFilenames.entrySet())
+					{
+						if (!categories.containsKey(entry.getValue()))
+						{
+							// add new Category
+							CategoryDAO categoryDAO = new CategoryDAO();
+							Category category = categoryDAO.CreateNewCategory(entry.getValue());
+							// and store
+							categories.put(entry.getValue(), category.Id);
+						}
+						if (categories.containsKey(entry.getValue()))
+						{
+							// and store CategoryId in GPXFilenames
+							ContentValues args = new ContentValues();
+							args.put("CategoryId", categories.get(entry.getValue()));
+							try
+							{
+								Database.Data.myDB.update("GpxFilenames", args, "Id=" + entry.getKey(), null);
+							} catch (Exception exc)
+							{
+								Logger.Error("Database", "Update_CategoryId", exc);			 
+							}    				        		
+						}
+					}
+					Database.Data.myDB.setTransactionSuccessful();
+				} finally
+				{
+					Database.Data.myDB.endTransaction();
 				}
 			}
 			break;
@@ -178,7 +260,7 @@ public class Database {
         Cursor c = null;
         try
         {
-        	c = myDB.rawQuery("select Value from Config where [Key]=?", new String[] { "DatabaseSchemeVersion" });
+        	c = myDB.rawQuery("select Value from Config where [Key]=?", new String[] { "DatabaseSchemeVersionWin" });
         } catch (Exception exc)
         { 
         	return -1;
@@ -204,13 +286,12 @@ public class Database {
 
 	private void SetDatabaseSchemeVersion() {
 		// TODO Auto-generated method stub
-//		myDB.execSQL("Update Config set Value=" + latestDatabaseChange + " where [Key]='DatabaseSchemeVersionx'");
 		ContentValues val = new ContentValues();
 		val.put("Value", latestDatabaseChange);
-		int anz = myDB.update("Config", val, "[Key]='DatabaseSchemeVersion'", null);
+		int anz = myDB.update("Config", val, "[Key]='DatabaseSchemeVersionWin'", null);
 		if (anz <= 0) {
 			// Update not possible because Key does not exist
-			val.put("Key", "DatabaseSchemeVersion");
+			val.put("Key", "DatabaseSchemeVersionWin");
 			myDB.insert("Config", null, val);
 		}
 												           	
@@ -537,4 +618,43 @@ public class Database {
     	  // this muss jetzt irgendwie in die DB!!
     		
     	}
+    	
+    	
+        public void GPXFilenameUpdateCacheCount()
+        {
+        	// welche GPXFilenamen sind in der DB erfasst
+        	myDB.beginTransaction();
+        	try
+        	{
+	        	Cursor reader = myDB.rawQuery("select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
+	        	reader.moveToFirst();
+	        	
+	            while(reader.isAfterLast() == false)
+	            {
+	            	long GPXFilename_ID = reader.getLong(0);
+	            	long CacheCount = reader.getLong(1);
+	
+	        		ContentValues val = new ContentValues();
+	        		val.put("CacheCount", CacheCount);
+	        		int anz = myDB.update("GPXFilenames", val, "ID = " + GPXFilename_ID, null);
+	
+	                reader.moveToNext();
+	            }
+	
+	            myDB.delete("GPXFilenames", "Cachecount is NULL or CacheCount = 0", null);
+	            myDB.delete("GPXFilenames", "ID not in (Select GPXFilename_ID From Caches)", null);
+	            reader.close();
+	    		myDB.setTransactionSuccessful();
+        	} finally
+        	{
+        		myDB.endTransaction();
+        	}
+
+            CategoryDAO categoryDAO = new CategoryDAO();
+            GlobalCore.Categories = new Categories();
+            categoryDAO.LoadCategoriesFromDatabase(GlobalCore.Categories);
+//        	GlobalCore.Categories.ReadFromFilter(Global.LastFilter);
+//        	GlobalCore.Categories.DeleteEmptyCategories();
+        }
+    	
 }

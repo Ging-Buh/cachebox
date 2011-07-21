@@ -15,13 +15,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import CB_Core.GlobalCore;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
+import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
+import CB_Core.Types.GpxFilename;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
@@ -94,7 +97,7 @@ public class GroundspeakAPI {
 		return (-1);
 	}
 
-	public static String SearchForGeocachesJSON(String accessToken, Coordinate pos, float distanceInMeters, int number, ArrayList<Cache> cacheList, ArrayList<LogEntry> logList)
+	public static String SearchForGeocachesJSON(String accessToken, Coordinate pos, float distanceInMeters, int number, ArrayList<Cache> cacheList, ArrayList<LogEntry> logList, long gpxFilenameId)
 	{ 
 		String result = "";
 
@@ -192,7 +195,7 @@ public class GroundspeakAPI {
 						cache.Found = jCache.getBoolean("HasbeenFoundbyUser");
 						cache.GcCode = jCache.getString("Code");
 						cache.GcId = jCache.getString("ID");
-						cache.GPXFilename_ID = -1;
+						cache.GPXFilename_ID = gpxFilenameId;
 						cache.hasUserData = false;
 						cache.hint = jCache.getString("EncodedHints");
 						cache.Id = Cache.GenerateCacheId(cache.GcCode);

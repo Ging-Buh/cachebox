@@ -65,7 +65,7 @@ public class CacheDAO {
         	cache.TourName = "";
 
         if (reader.getString(21) != "")
-        	cache.GPXFilename_ID = reader.getInt(21);
+        	cache.GPXFilename_ID = reader.getLong(21);
         else
         	cache.GPXFilename_ID = -1;
 

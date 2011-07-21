@@ -15,7 +15,9 @@ import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
+import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
+import CB_Core.Types.GpxFilename;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Core.Enums.CacheTypes;
@@ -60,6 +62,8 @@ import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
 import de.droidcachebox.DAO.CacheDAO;
+import de.droidcachebox.DAO.CategoryDAO;
+import de.droidcachebox.DAO.GpxFilenameDAO;
 import de.droidcachebox.DAO.LogDAO;
 import de.droidcachebox.DAO.WaypointDAO;
 import de.droidcachebox.Events.PositionEvent;
@@ -4741,9 +4745,21 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				point.Y = screenCenter.Y ;
 				lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(Zoom, point.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, point.X / (256.0)));
 
+	            // alle per API importierten Caches landen in der Category und GpxFilename 
+				// API-Import
+	            // Category suchen, die dazu gehört
+				CategoryDAO categoryDAO = new CategoryDAO();
+	            Category category = categoryDAO.GetCategory(GlobalCore.Categories, "API-Import");
+	            if (category == null)
+	                return true;   // should not happen!!!
+
+	            GpxFilename gpxFilename = categoryDAO.CreateNewGpxFilename(category, "API-Import");
+	            if (gpxFilename == null)
+	                return true;
+				
 				ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 				ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-				String result = CB_Core.Api.GroundspeakAPI.SearchForGeocachesJSON(accessToken, lastMouseCoordinate, 50000, 10, apiCaches, apiLogs);
+				String result = CB_Core.Api.GroundspeakAPI.SearchForGeocachesJSON(accessToken, lastMouseCoordinate, 50000, 10, apiCaches, apiLogs, gpxFilename.Id);
 				if (apiCaches.size() > 0)
 				{
 					Database.Data.myDB.beginTransaction();
@@ -4771,8 +4787,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			            	}
 			            }
 					}
-					Database.Data.myDB.setTransactionSuccessful();
+		            Database.Data.myDB.setTransactionSuccessful();
 					Database.Data.myDB.endTransaction();
+
+					Database.Data.GPXFilenameUpdateCacheCount();
 			
 					updateCacheList();
 					Render(true);

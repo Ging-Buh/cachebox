@@ -11,6 +11,7 @@ import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
+import CB_Core.Types.Categories;
 import CB_Core.Types.Coordinate;
 
 import android.app.Activity;
@@ -197,10 +198,14 @@ public class splash extends Activity
 	        Database.Data = new Database(DatabaseType.CacheBox, this);
 	        String database = Config.GetString("DatabasePath");
 	        Database.Data.StartUp(database);
-//	        Database.Data.StartUp(Config.WorkPath + "/CacheBox.db3");
+
+            GlobalCore.Categories = new Categories();
+            Database.Data.GPXFilenameUpdateCacheCount();
+
 	        CacheListDAO cacheListDAO = new CacheListDAO();
 	        cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
 
+	        
 	        Database.FieldNotes = new Database(DatabaseType.FieldNotes, this); 
 	        if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
 	        Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");

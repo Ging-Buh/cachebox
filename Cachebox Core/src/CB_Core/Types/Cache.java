@@ -158,7 +158,7 @@ public class Cache implements Comparable<Cache>
     /**
      * Name der GPX-Datei aus der importiert wurde
      */
-    public int GPXFilename_ID=0;
+    public long GPXFilename_ID=0;
 
     /**
     * Art des Caches

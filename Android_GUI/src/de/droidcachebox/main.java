@@ -20,6 +20,7 @@ import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.Types.Cache;
+import CB_Core.Types.Categories;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 
@@ -558,8 +559,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	                    int founds = commandUpdate.ExecuteNonQuery();
 	                }
 */
+	                GlobalCore.Categories = new Categories();
 	                Global.LastFilter = (Config.GetString("Filter").length() == 0) ? new FilterProperties(PresetListView.presets[0]) : new FilterProperties(Config.GetString("Filter"));
 //	                filterSettings.LoadFilterProperties(Global.LastFilter);
+	                Database.Data.GPXFilenameUpdateCacheCount();
 
 					String sqlWhere = Global.LastFilter.getSqlWhere();
 					Logger.General("Main.ApplyFilter: " + sqlWhere);

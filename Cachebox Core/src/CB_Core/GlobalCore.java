@@ -49,4 +49,6 @@ public class GlobalCore {
 		return selectedWaypoint;
 	}
 
+    public static CB_Core.Types.Categories Categories = null;
+
 }
