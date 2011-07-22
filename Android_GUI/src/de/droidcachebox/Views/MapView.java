@@ -2190,15 +2190,25 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         Point p2 = ToScreen(tile.X + 1, tile.Y + 1, tile.Zoom);
 
         // relativ zu Zentrum
-        p1.x = p1.x - width / 2;
-        p1.y = p1.y - (height - halfHeight);
+        //p1.x = p1.x - width / 2;
+        //p1.y = p1.y - height / 2;
+//		double x = (screenCenter.X - Math.sin(canvasHeading / 180 * Math.PI) * (height / 2 - halfHeight)) / (256 );
+//		double y = (screenCenter.Y + Math.cos(canvasHeading / 180 * Math.PI) * (height / 2 - halfHeight)) / (256);
+        
+        float diff = halfHeight - height / 2;
+
+        p1.x = p1.x - width / 2  - (int)(Math.sin(canvasHeading / 180 * Math.PI) * diff);
+        p1.y = p1.y - height / 2 - (int)diff + (int)(Math.cos(canvasHeading / 180 * Math.PI) * diff);
+        
         // skalieren
         p1.x = (int) Math.round(p1.x * multiTouchFaktor + drawingWidth/ 2);
         p1.y = (int) Math.round(p1.y * multiTouchFaktor + drawingHeight / 2);
         // relativ zu Zentrum
-        p2.x = p2.x - width / 2;
-        p1.y = p2.y - halfHeight;
+//        p2.x = p2.x - width / 2;
+//        p1.y = p2.y - height / 2 + (int)diff;
         // skalieren
+        p2.x = p2.x - width / 2 - (int)(Math.sin(canvasHeading / 180 * Math.PI) * diff);
+        p2.y = p2.y - height / 2 - (int)diff + (int)(Math.cos(canvasHeading / 180 * Math.PI) * diff);
         p2.x = (int) Math.round(p2.x * multiTouchFaktor + drawingWidth / 2);
         p2.y = (int) Math.round(p2.y * multiTouchFaktor + drawingHeight / 2);
 
@@ -2317,238 +2327,219 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	
     	overrideRepaintInteligence =overrideRepaintInteligence1;
     	
-    	Thread t = new Thread() {
-		    public void run() {
-		       main.mainActivity.runOnUiThread(new Runnable() {
-		            @Override
-		            public void run() 
+    	try
+    	{
+	    	try
+	    	{
+		    	
+		    	synchronized (screenCenter)
+		     	{
+		        	float tmpCanvasHeading = canvasHeading;
+		    		if (Database.Data.Query == null)
+		    		{
+		    			return;
+		    		}
+		    		if (offScreenBmp == null)
+		    		{
+		    			return;
+		    		}
+			
+			      // Aufruf ggf. im richtigen Thread starten
+			/*      if (InvokeRequired)
+			      {
+			        Invoke(new EmptyDelegate(Render), overrideRepaintInteligence);
+			        return;
+			      }*/
+			
+		    		// Wenn sich bei der Ansicht nichts getan hat braucht sie auch nicht gerendert werden.
+		    		if (!overrideRepaintInteligence)
+		    		{
+		    			if (lastRenderZoomScale == renderZoomScaleActive && lastWpCount == wpToRender.size() && lastHeading == ((Global.Locator != null) && (Global.Locator.getLocation() != null) ? Global.Locator.getHeading() : 0) && lastPosition.Latitude == GlobalCore.LastValidPosition.Latitude && lastPosition.Longitude == GlobalCore.LastValidPosition.Longitude && lastZoom == Zoom && !tilesFinished && lastRenderedPosition.X == screenCenter.X && lastRenderedPosition.Y == screenCenter.Y)
+		    			{
+		    				return;
+		    			}
+		
+		    			lastRenderZoomScale = renderZoomScaleActive;
+		    			lastWpCount = wpToRender.size();
+		    			tilesFinished = false;
+		    			lastPosition.Latitude = GlobalCore.LastValidPosition.Latitude;
+		    			lastPosition.Longitude = GlobalCore.LastValidPosition.Longitude;
+		    			lastHeading = 0;
+		    			/*        lastHeading = (Global.Locator != null) ? Global.Locator.Heading : 0;*/
+		    			lastZoom = Zoom;
+		    			lastRenderedPosition.X = screenCenter.X;
+		    			lastRenderedPosition.Y = screenCenter.Y;
+		    		}
+	
+		    		loadedTilesLock.lock();
+		    		try
+		    		{
+		    			for (Tile tile : loadedTiles.values())
+		    				tile.Age++;
+		    		} finally
+		    		{
+		    			loadedTilesLock.unlock();
+		    		}
+		    		trackTilesLock.lock();
+		    		try
+		    		{
+		    			for (Tile tile : trackTiles.values())
+		    				tile.Age++;
+		            } finally
 		            {
-				    	try
-				    	{
-					    	try
-					    	{
-						    	
-						    	synchronized (screenCenter)
-						     	{
-						        	float tmpCanvasHeading = canvasHeading;
-						    		if (Database.Data.Query == null)
-						    		{
-						    			return;
-						    		}
-						    		if (offScreenBmp == null)
-						    		{
-						    			return;
-						    		}
-							
-							      // Aufruf ggf. im richtigen Thread starten
-							/*      if (InvokeRequired)
-							      {
-							        Invoke(new EmptyDelegate(Render), overrideRepaintInteligence);
-							        return;
-							      }*/
-							
-							      // Wenn sich bei der Ansicht nichts getan hat braucht sie auch nicht gerendert werden.
-						    		if (!overrideRepaintInteligence)
-						    		{
-						    			if (lastRenderZoomScale == renderZoomScaleActive && lastWpCount == wpToRender.size() && lastHeading == ((Global.Locator != null) && (Global.Locator.getLocation() != null) ? Global.Locator.getHeading() : 0) && lastPosition.Latitude == GlobalCore.LastValidPosition.Latitude && lastPosition.Longitude == GlobalCore.LastValidPosition.Longitude && lastZoom == Zoom && !tilesFinished && lastRenderedPosition.X == screenCenter.X && lastRenderedPosition.Y == screenCenter.Y)
-						    			{
-						    				return;
-						    			}
-						
-						    			lastRenderZoomScale = renderZoomScaleActive;
-						    			lastWpCount = wpToRender.size();
-						    			tilesFinished = false;
-						    			lastPosition.Latitude = GlobalCore.LastValidPosition.Latitude;
-						    			lastPosition.Longitude = GlobalCore.LastValidPosition.Longitude;
-						    			lastHeading = 0;
-						    			/*        lastHeading = (Global.Locator != null) ? Global.Locator.Heading : 0;*/
-						    			lastZoom = Zoom;
-						    			lastRenderedPosition.X = screenCenter.X;
-						    			lastRenderedPosition.Y = screenCenter.Y;
-						    		}
-					
-						    		loadedTilesLock.lock();
-						    		try
-						    		{
-						    			for (Tile tile : loadedTiles.values())
-						    				tile.Age++;
-						    		} finally
-						    		{
-						    			loadedTilesLock.unlock();
-						    		}
-						    		trackTilesLock.lock();
-						    		try
-						    		{
-						    			for (Tile tile : trackTiles.values())
-						    				tile.Age++;
-						            } finally
-						            {
-						          	  trackTilesLock.unlock();
-						            }
-						    		
-						    		int xFrom;
-						    		int xTo;
-						    		int yFrom;
-						    		int yTo;
-						    		Rect tmp = getTileRange(rangeFactorTiles);
-						    		xFrom = tmp.left;
-						    		xTo = tmp.right;
-						    		yFrom = tmp.top;
-						    		yTo = tmp.bottom;
-					
-						    		int xFromTrack;
-						    		int xToTrack;
-						    		int yFromTrack;
-						    		int yToTrack;
-						    		Rect tmpTrack = getTileRange(rangeFactorTrack);
-						    		xFromTrack = tmpTrack.left;
-						    		xToTrack = tmpTrack.right;
-						    		yFromTrack = tmpTrack.top;
-						    		yToTrack = tmpTrack.bottom;
-							      
-						    		canvas.save();
-						    		canvas.rotate(-tmpCanvasHeading, width / 2, halfHeight);
-					
-						    		try
-						    		{
-							    		// 	Kacheln beantragen
-							    		for (int x = xFrom; x <= xTo; x++)
-							    		{
-							    			for (int y = yFrom; y <= yTo; y++)
-							    			{
-							    				if (x < 0 || y < 0 || x >= Descriptor.TilesPerLine[Zoom] || y >= Descriptor.TilesPerColumn[Zoom])
-							    					continue;
-								
-							    				Descriptor desc = new Descriptor(x, y, Zoom);
-								
-							    				Tile tile;
-							    				Tile trackTile;
-							    				
-							    				loadedTilesLock.lock();
-							    				try
-							    				{
-							    					if (!loadedTiles.containsKey(desc.GetHashCode()))
-							    					{
-							    						preemptTile();
-							    						
-							    						loadedTiles.put(desc.GetHashCode(), new Tile(desc, null, Tile.TileState.Disposed));
-								
-							    						queueTile(desc);
-							    					}
-							    					tile = loadedTiles.get(desc.GetHashCode());
-							    				} finally
-							    				{
-							    					loadedTilesLock.unlock();
-							    				}
-							    				trackTilesLock.lock();
-							    				try
-							    				{			            
-							    					if ((RouteOverlay.Routes.size() > 0) && ( x >= xFromTrack) && (x <= xToTrack) && (y >= yFromTrack) && (y <= yToTrack))
-							    					{
-							    						if (!trackTiles.containsKey(desc.GetHashCode()))
-							    						{
-							    							preemptTrackTile();
-							    							
-							    							trackTiles.put(desc.GetHashCode(), new Tile(desc, null, Tile.TileState.Disposed));
-							    							
-							    							queueTrackTile(desc);
-							    						}
-							    						trackTile = trackTiles.get(desc.GetHashCode());
-							    					} else
-							    						trackTile = null;
-							    				} finally
-							    				{
-							    					trackTilesLock.unlock();
-							    				}
-							    				
-							    				if ((tile != null) && (tileVisible(tile.Descriptor)))
-							    				{
-							    					renderTile(tile, true);
-							    				}
-							    				if ((trackTile != null) && (tileVisible(trackTile.Descriptor)))
-							    				{
-							    					renderTile(trackTile, false);
-							    				}
-							    			}
-							    		}
-						    		}
-						    		catch (Exception ex)
-						    		{
-						    			Logger.Error("MapView.Render()","1",ex);
-						    		}
-						    		canvas.restore();
-						    		
-						    		canvasOverlay = canvas;
-						    		renderCaches();
-						
-						    		canvas.save();
-						    		canvas.rotate(-tmpCanvasHeading, width / 2, halfHeight);
-						    		renderPositionAndMarker();
-						    		canvas.restore();
-							
-						    		renderScale();
-						    		
-						    		RenderTargetArrow();
-							
-							
-						    		if (renderZoomScaleActive)
-						    			renderZoomScale();
-							/*
-							      if (loaderThread != null)
-							        renderLoaderInfo();
-							
-						*/	
-						    		if (showCompass)
-						    			renderCompass();
-							
-						    		try
-						    		{
-						    			Canvas can = holder.lockCanvas(null);
-						    			if (can != null)
-						    			{
-						    				can.drawBitmap(offScreenBmp, 0, 0, null);
-						    				/*		     	      if (!debugString1.equals("") || !debugString2.equals(""))
-							     	      	{
-							     		      	Paint debugPaint = new Paint();
-							     		      debugPaint.setTextSize(20);
-							     		      debugPaint.setColor(Color.WHITE);
-							     		      debugPaint.setStyle(Style.FILL);
-							     		      can.drawRect(new Rect(50, 70, 300, 130), debugPaint);
-							     		      debugPaint.setColor(Color.BLACK);
-							     		      can.drawText(debugString1, 50, 100, debugPaint);
-							     		      can.drawText(debugString2, 50, 130, debugPaint);
-							     	      }*/
-						    				holder.unlockCanvasAndPost(can);
-						    			}
-							    	  
-							//        this.CreateGraphics().DrawImage(offScreenBmp, 0, 0);
-						    		}
-						    		catch (Exception ex)
-						    		{
-						    			Logger.Error("MapView.Render()","2",ex);
-						    		}
-						    		
-						     	}
-					    	} catch (Exception exc)
-					    	{
-					    		Logger.Error("MapView.Render()","3",exc);
-					    	}
-				    	} finally
-				    	{
-				    	}
-    	
-    	
-    	
+		          	  trackTilesLock.unlock();
 		            }
-		        });
-		    }
-		};
-
-		t.start();
-    	
-    	
-    	
-    	
+		    		
+		    		int xFrom;
+		    		int xTo;
+		    		int yFrom;
+		    		int yTo;
+		    		Rect tmp = getTileRange(rangeFactorTiles);
+		    		xFrom = tmp.left;
+		    		xTo = tmp.right;
+		    		yFrom = tmp.top;
+		    		yTo = tmp.bottom;
+	
+		    		int xFromTrack;
+		    		int xToTrack;
+		    		int yFromTrack;
+		    		int yToTrack;
+		    		Rect tmpTrack = getTileRange(rangeFactorTrack);
+		    		xFromTrack = tmpTrack.left;
+		    		xToTrack = tmpTrack.right;
+		    		yFromTrack = tmpTrack.top;
+		    		yToTrack = tmpTrack.bottom;
+			      
+		    		canvas.save();
+		    		canvas.rotate(-tmpCanvasHeading, width / 2, halfHeight);
+	
+		    		try
+		    		{
+			    		// 	Kacheln beantragen
+			    		for (int x = xFrom; x <= xTo; x++)
+			    		{
+			    			for (int y = yFrom; y <= yTo; y++)
+			    			{
+			    				if (x < 0 || y < 0 || x >= Descriptor.TilesPerLine[Zoom] || y >= Descriptor.TilesPerColumn[Zoom])
+			    					continue;
+				
+			    				Descriptor desc = new Descriptor(x, y, Zoom);
+				
+			    				Tile tile;
+			    				Tile trackTile;
+			    				
+			    				loadedTilesLock.lock();
+			    				try
+			    				{
+			    					if (!loadedTiles.containsKey(desc.GetHashCode()))
+			    					{
+			    						preemptTile();
+			    						
+			    						loadedTiles.put(desc.GetHashCode(), new Tile(desc, null, Tile.TileState.Disposed));
+				
+			    						queueTile(desc);
+			    					}
+			    					tile = loadedTiles.get(desc.GetHashCode());
+			    				} finally
+			    				{
+			    					loadedTilesLock.unlock();
+			    				}
+			    				trackTilesLock.lock();
+			    				try
+			    				{			            
+			    					if ((RouteOverlay.Routes.size() > 0) && ( x >= xFromTrack) && (x <= xToTrack) && (y >= yFromTrack) && (y <= yToTrack))
+			    					{
+			    						if (!trackTiles.containsKey(desc.GetHashCode()))
+			    						{
+			    							preemptTrackTile();
+			    							
+			    							trackTiles.put(desc.GetHashCode(), new Tile(desc, null, Tile.TileState.Disposed));
+			    							
+			    							queueTrackTile(desc);
+			    						}
+			    						trackTile = trackTiles.get(desc.GetHashCode());
+			    					} else
+			    						trackTile = null;
+			    				} finally
+			    				{
+			    					trackTilesLock.unlock();
+			    				}
+			    				
+			    				if ((tile != null) && (tileVisible(tile.Descriptor)))
+			    				{
+			    					renderTile(tile, true);
+			    				}
+			    				if ((trackTile != null) && (tileVisible(trackTile.Descriptor)))
+			    				{
+			    					renderTile(trackTile, false);
+			    				}
+			    			}
+			    		}
+		    		}
+		    		catch (Exception ex)
+		    		{
+		    			Logger.Error("MapView.Render()","1",ex);
+		    		}
+		    		canvas.restore();
+		    		
+		    		canvasOverlay = canvas;
+		    		renderCaches();
+		
+		    		canvas.save();
+		    		canvas.rotate(-tmpCanvasHeading, width / 2, halfHeight);
+		    		renderPositionAndMarker();
+		    		canvas.restore();
+			
+		    		renderScale();
+		    		
+		    		RenderTargetArrow();
+			
+			
+		    		if (renderZoomScaleActive)
+		    			renderZoomScale();
+			/*
+			      if (loaderThread != null)
+			        renderLoaderInfo();
+			
+		*/	
+		    		if (showCompass)
+		    			renderCompass();
+			
+		    		try
+		    		{
+		    			Canvas can = holder.lockCanvas(null);
+		    			if (can != null)
+		    			{
+		    				can.drawBitmap(offScreenBmp, 0, 0, null);
+		    				/*		     	      if (!debugString1.equals("") || !debugString2.equals(""))
+			     	      	{
+			     		      	Paint debugPaint = new Paint();
+			     		      debugPaint.setTextSize(20);
+			     		      debugPaint.setColor(Color.WHITE);
+			     		      debugPaint.setStyle(Style.FILL);
+			     		      can.drawRect(new Rect(50, 70, 300, 130), debugPaint);
+			     		      debugPaint.setColor(Color.BLACK);
+			     		      can.drawText(debugString1, 50, 100, debugPaint);
+			     		      can.drawText(debugString2, 50, 130, debugPaint);
+			     	      }*/
+		    				holder.unlockCanvasAndPost(can);
+		    			}
+			    	  
+			//        this.CreateGraphics().DrawImage(offScreenBmp, 0, 0);
+		    		}
+		    		catch (Exception ex)
+		    		{
+		    			Logger.Error("MapView.Render()","2",ex);
+		    		}
+		    		
+		     	}
+	    	} catch (Exception exc)
+	    	{
+	    		Logger.Error("MapView.Render()","3",exc);
+	    	}
+    	} finally
+    	{
+    	}
     }
     	
 /*
@@ -2935,9 +2926,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		int y1;
     		int x2;
     		int y2;
-    		double x = screenCenter.X / (256 );
-    		double y = (screenCenter.Y - halfHeight + height / 2) / (256);
-    		
+    		double x = (screenCenter.X - Math.sin(canvasHeading / 180 * Math.PI) * (height / 2 - halfHeight)) / (256 );
+    		double y = (screenCenter.Y + Math.cos(canvasHeading / 180 * Math.PI) * (height / 2 - halfHeight)) / (256);
+
     		// preload more Tiles than necessary to ensure more smooth scrolling
     		int dWidth = (int)(drawingWidth * rangeFactor);
     		int dHeight= (int)(drawingHeight * rangeFactor);
