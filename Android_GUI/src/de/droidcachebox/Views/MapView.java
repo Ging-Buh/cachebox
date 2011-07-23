@@ -3712,7 +3712,17 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     void startAnimation(Coordinate target)
     {
     	if (animationThread == null)
+    	{
+    		// Screencenter direkt auf die gegebenen Koordinaten setzen
+            animateTo.X =  256 * Descriptor.LongitudeToTileX(Zoom, target.Longitude);
+            animateTo.Y =  256 * Descriptor.LatitudeToTileY(Zoom, target.Latitude);
+            screenCenter.X = animateTo.X;
+            screenCenter.Y = animateTo.Y;
+            centerOsmSpace.X = screenCenter.X;
+            centerOsmSpace.Y = screenCenter.Y;
+            updateCacheList();
     		return;
+    	}
     	animationThread.moveTo(target);
     	
 //    	animationStart = Environment.TickCount;
