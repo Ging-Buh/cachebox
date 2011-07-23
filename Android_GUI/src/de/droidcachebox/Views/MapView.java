@@ -925,6 +925,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		
 		setLockPosition(0);
 		Coordinate target = (waypoint != null) ? new Coordinate(waypoint.Latitude(), waypoint.Longitude()) : new Coordinate(cache.Latitude(), cache.Longitude());
+		// CacheListe vor dem verschieben aktualisieren, damit während dem Verschieben der neue SelectedCache schon markiert ist.
+		updateCacheList();
 		startAnimation(target);
 		
 	}
