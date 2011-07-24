@@ -2147,7 +2147,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		  }
 		  
 		  
-		  if (wpi.Cache.Id == BubbleCacheId && isBubbleShow)
+		  if ((wpi.Cache.Id == BubbleCacheId) && (wpi.Waypoint == BubbleWaypoint) && isBubbleShow)
 		  {
 			  bubbleX = x;
 			  bubbleY = y;
@@ -3614,12 +3614,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		  int ClickToleranz = (int) (15*dpiScaleFactorX);
 		  Rect HitTestRec = new Rect(x-ClickToleranz,y-ClickToleranz,x+ClickToleranz,y+ClickToleranz);
 		
-        if (HitTestRec.contains(lastClickX, lastClickY))
-        {
-         
-          minWpi = wpi;
-          
-        }
+		  if (HitTestRec.contains(lastClickX, lastClickY))
+		  {
+			  minWpi = wpi;
+		  }
         
       }
       
