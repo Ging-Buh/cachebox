@@ -3074,14 +3074,23 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
     private void MapView_MouseDown(int eX, int eY)
     {
-      dragging = true;
-/*      animationTimer.Enabled = false;*/
-      setLockPosition(0);
+    	dragging = true;
+    	/*      animationTimer.Enabled = false;*/
+    	setLockPosition(0);
+    	
+    	lastClickX = dragStartX = eX;
+    	lastClickY = dragStartY = eY;
 
-      lastClickX = dragStartX = eX;
-      lastClickY = dragStartY = eY;
-
-      arrowHitWhenDown = Math.sqrt(((eX - cacheArrowCenter.x) * (eX - cacheArrowCenter.x) + (eY - cacheArrowCenter.y) * (eY - cacheArrowCenter.y))) < (lineHeight * 1.5f);
+    	// 	zurückdrehen, da eX und eY schon anhand der Map gedreht sind, die Bubbles aber nicht!
+  		int ebX = eX;
+  		int ebY = eY;
+  		if (alignToCompass)
+  		{
+  			Point res = rotate(new Point(eX, eY), - canvasHeading);
+  			ebX = res.x;
+  			ebY = res.y;
+  		}
+  		arrowHitWhenDown = Math.sqrt(((ebX - cacheArrowCenter.x) * (ebX - cacheArrowCenter.x) + (ebY - cacheArrowCenter.y) * (ebY - cacheArrowCenter.y))) < (lineHeight * 1.5f);
     }
 
     private void MapView_MouseUp(int eX, int eY)
@@ -3552,7 +3561,18 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	
     private void MapView_Click(int eX, int eY)
     {
-    	if ((BubbleCache != null) && isBubbleShow && BubbleDrawRec != null && BubbleDrawRec.contains(eX, eY)) // Bubble gedrückt
+
+    	
+    	// zurückdrehen, da eX und eY schon anhand der Map gedreht sind, die Bubbles aber nicht!
+    	int ebX = eX;
+    	int ebY = eY;
+    	if (alignToCompass)
+    	{
+    		Point res = rotate(new Point(eX, eY), - canvasHeading);
+    		ebX = res.x;
+    		ebY = res.y;
+    	}
+    	if ((BubbleCache != null) && isBubbleShow && BubbleDrawRec != null && BubbleDrawRec.contains(ebX, ebY)) // Bubble gedrückt
     	{
     		// Click inside Bubble -> hide Bubble and select Cache
     		 GlobalCore.SelectedWaypoint(BubbleCache, BubbleWaypoint);
@@ -3574,7 +3594,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		Render(true);
     	}
 
-        if (arrowHitWhenDown && Math.sqrt(((eX - cacheArrowCenter.x) * (eX - cacheArrowCenter.x) + (eY - cacheArrowCenter.y) * (eY - cacheArrowCenter.y))) < (lineHeight * 1.5f))
+        if (arrowHitWhenDown && Math.sqrt(((ebX - cacheArrowCenter.x) * (ebX - cacheArrowCenter.x) + (ebY - cacheArrowCenter.y) * (ebY - cacheArrowCenter.y))) < (lineHeight * 1.5f))
         {
           Coordinate target = (GlobalCore.SelectedWaypoint() != null) ? new Coordinate(GlobalCore.SelectedWaypoint().Latitude(), GlobalCore.SelectedWaypoint().Longitude()) : new Coordinate(GlobalCore.SelectedCache().Latitude(), GlobalCore.SelectedCache().Longitude());
 
@@ -3593,8 +3613,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       // Überprüfen, auf welchen Cache geklickt wurde
       for (int i = wpToRender.size() - 1; i >= 0; i--)
       {
-        WaypointRenderInfo wpi = wpToRender.get(i);
-        
+    	  WaypointRenderInfo wpi = wpToRender.get(i);
+    	  if (wpi.Cache == null)
+    		  continue;
 		  int x = (int)((wpi.MapX * adjustmentCurrentToCacheZoom - screenCenter.X)) + halfWidth;
 		  int y = (int)((wpi.MapY * adjustmentCurrentToCacheZoom - screenCenter.Y)) + halfHeight;
 		
@@ -3604,13 +3625,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		  y = (int)Math.round(y * multiTouchFaktor + halfHeight);
 		  
 		  // drehen
-		  if (alignToCompass)
+/*		  if (alignToCompass)
 		  {
 			  Point res = rotate(new Point(x, y), - canvasHeading);
 			  x = res.x;
 			  y = res.y;
 		  }
-		
+*/		
 		  int ClickToleranz = (int) (15*dpiScaleFactorX);
 		  Rect HitTestRec = new Rect(x-ClickToleranz,y-ClickToleranz,x+ClickToleranz,y+ClickToleranz);
 		
