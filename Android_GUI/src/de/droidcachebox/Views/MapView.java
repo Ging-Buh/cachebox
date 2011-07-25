@@ -3609,7 +3609,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       WaypointRenderInfo minWpi = new WaypointRenderInfo();
       minWpi.Cache = null;
 
-    
+      int minDist = Integer.MAX_VALUE;
       // Überprüfen, auf welchen Cache geklickt wurde
       for (int i = wpToRender.size() - 1; i >= 0; i--)
       {
@@ -3618,26 +3618,28 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		  continue;
 		  int x = (int)((wpi.MapX * adjustmentCurrentToCacheZoom - screenCenter.X)) + halfWidth;
 		  int y = (int)((wpi.MapY * adjustmentCurrentToCacheZoom - screenCenter.Y)) + halfHeight;
-		
+
+		  // Difference between Icon Center and Klick Position
+		  int xd = lastClickX - x;
+		  int yd = lastClickY - y;
+		  // Distance in Screen Koords
+		  int dist = xd * xd + yd * yd;
+
 		  x = x - width / 2;
 		  y = y - halfHeight;
 		  x = (int)Math.round(x * multiTouchFaktor + width / 2);
 		  y = (int)Math.round(y * multiTouchFaktor + halfHeight);
 		  
-		  // drehen
-/*		  if (alignToCompass)
-		  {
-			  Point res = rotate(new Point(x, y), - canvasHeading);
-			  x = res.x;
-			  y = res.y;
-		  }
-*/		
-		  int ClickToleranz = (int) (15*dpiScaleFactorX);
+		  int ClickToleranz = (int) (30*dpiScaleFactorX);
 		  Rect HitTestRec = new Rect(x-ClickToleranz,y-ClickToleranz,x+ClickToleranz,y+ClickToleranz);
 		
 		  if (HitTestRec.contains(lastClickX, lastClickY))
 		  {
-			  minWpi = wpi;
+		      if (dist < minDist)
+		      {
+		    	  minDist = dist;
+		    	  minWpi = wpi;
+		      }		  
 		  }
         
       }
