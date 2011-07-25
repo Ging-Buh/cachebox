@@ -18,6 +18,7 @@ public class projectionCoordinate extends Activity {
 	
 	Coordinate coord;
 	String Title;
+	boolean radius=false;
 	
 // Allgemein
 	TextView TitleView;
@@ -38,7 +39,7 @@ public class projectionCoordinate extends Activity {
 		Bundle bundle = getIntent().getExtras();
 		coord = (Coordinate)bundle.getSerializable("Coord");
 		Title = (String)bundle.getSerializable("Title");
-		
+		radius = (Boolean)bundle.getSerializable("Radius");
 		
 	        
         aktIntent = getIntent();
@@ -54,7 +55,15 @@ public class projectionCoordinate extends Activity {
         valueBearing=(EditText)this.findViewById(R.id.proco_bear_value);
         bCoord = (Button)this.findViewById(R.id.proco_buttoncoord);
         
-        descDistance.setText(Global.Translations.Get("Distance"));
+        
+        if(radius)
+        {
+        	descBearing.setVisibility(View.GONE);
+        	valueBearing.setVisibility(View.GONE);
+        	((TextView)this.findViewById(R.id.proco_bear_einheit)).setVisibility(View.GONE);
+        }
+        
+        descDistance.setText(radius? "Radius" : Global.Translations.Get("Distance"));
         descBearing.setText(Global.Translations.Get("Bearing"));
         valueDistance.setText("0");
         valueBearing.setText("0");

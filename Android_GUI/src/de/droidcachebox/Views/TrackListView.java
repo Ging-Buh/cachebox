@@ -256,7 +256,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	 */
 	private void HandleGenerate_Circle() 
 	{
-		MessageBox.Show("Noch umstellen auf Circle-Dialog");
+		
 		showEditCoord(CIRCLE_GET_FIRST_POINT);
 		
 	}
@@ -382,6 +382,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
         Bundle b = new Bundle();
         b.putSerializable("Coord", coord);
         b.putSerializable("Title", Global.Translations.Get("Projection"));
+        b.putSerializable("Radius", false);
         coordIntent.putExtras(b);
         parentActivity.startActivityForResult(coordIntent, 0);
 	}
@@ -421,7 +422,8 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 		Intent coordIntent = new Intent().setClass(getContext(), projectionCoordinate.class);
         Bundle b = new Bundle();
         b.putSerializable("Coord", coord);
-        b.putSerializable("Title", Global.Translations.Get("Projection"));
+        b.putSerializable("Title", "Circle");
+        b.putSerializable("Radius", true);
         coordIntent.putExtras(b);
         parentActivity.startActivityForResult(coordIntent, 0);
 	}

@@ -46,7 +46,7 @@
 					android:layout_width="match_parent" android:layout_weight="5"
 					android:id="@+id/proco_bear_value"></EditText>
 				<TextView android:text="°" android:layout_width="wrap_content"
-					android:layout_height="wrap_content"></TextView>
+					android:layout_height="wrap_content" android:id="@+id/proco_bear_einheit"></TextView>
 			</TableRow>
 		</TableLayout>
 	</ScrollView>

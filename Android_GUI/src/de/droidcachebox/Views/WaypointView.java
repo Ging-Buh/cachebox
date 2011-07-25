@@ -281,6 +281,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 		        Bundle b2 = new Bundle();
 		        b2.putSerializable("Coord", coord2);
 		        b2.putSerializable("Title", Global.Translations.Get("Projection"));
+		        b2.putSerializable("Radius", false);
 		        coordIntent.putExtras(b2);
 		        parentActivity.startActivityForResult(coordIntent, 0);
 				break;
