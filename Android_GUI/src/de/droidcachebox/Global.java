@@ -7,6 +7,7 @@ import java.util.Date;
 import CB_Core.Config;
 import CB_Core.Log.Logger;
 import CB_Core.TranslationEngine.LangStrings;
+import CB_Core.Types.MoveableList;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;
@@ -20,6 +21,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import de.droidcachebox.Custom_Controls.QuickButtonList.QuickButtonItem;
 import de.droidcachebox.Geocaching.JokerList;
 import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.RouteOverlay;
@@ -27,7 +32,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 344;
+    public static final int CurrentRevision = 345;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1015;
@@ -46,7 +51,12 @@ public class Global{
 	public static JokerList Jokers = new JokerList();
 	
    
-    
+	/**
+	 * Liste der Buttons in der QuickButton Leiste
+	 */
+	public static MoveableList<QuickButtonItem> QuickButtonList;
+	
+	    
     public static FilterProperties LastFilter = null;
 	public static boolean autoResort;
 	public static Bitmap EmptyBmp = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // kleinst mögliches Bmp 
@@ -538,7 +548,18 @@ public class Global{
 	        BtnIcons = new Drawable[] 
 	                                { 
 	                	        		res.getDrawable(N? R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal ),
-	                	        		
+	                	        		res.getDrawable(N? R.drawable.button : R.drawable.button ),
+	                	        		res.getDrawable(R.drawable.doc_icon),
+	                	        		res.getDrawable(R.drawable.big_16),
+	                	        		res.getDrawable(R.drawable.list_icon), //LogView braucht noch ein Icon
+	                	        		res.getDrawable(R.drawable.map),
+	                	        		res.getDrawable(R.drawable.compass),
+	                	        		res.getDrawable(R.drawable.list_icon), //CacheListView braucht noch ein Icon
+	                	        		res.getDrawable(R.drawable.list_icon), //TrackListView braucht noch ein Icon
+	                	        		res.getDrawable(R.drawable.log10),
+	                	        		res.getDrawable(R.drawable.video_icon),
+	                	        		res.getDrawable(R.drawable.voice_rec_icon),
+	                	        		res.getDrawable(R.drawable.star), //Live search braucht noch ein Icon
 	                        		};
     	}
         

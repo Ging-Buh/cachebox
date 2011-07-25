@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2011 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.droidcachebox.Views.Forms;
 
 import java.io.IOException;
@@ -32,6 +47,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -45,12 +61,15 @@ import CB_Core.SimpleCrypto;
 import de.droidcachebox.main;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.Animations;
+import de.droidcachebox.Custom_Controls.downSlider;
+import de.droidcachebox.Custom_Controls.QuickButtonList.QuickButtonItem;
 import de.droidcachebox.Custom_Controls.wheel.OnWheelChangedListener;
 import de.droidcachebox.Custom_Controls.wheel.OnWheelScrollListener;
 import de.droidcachebox.Custom_Controls.wheel.WheelView;
 import de.droidcachebox.Custom_Controls.wheel.adapters.NumericWheelAdapter;
 import de.droidcachebox.Enums.Actions;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 public class Settings extends Activity implements ViewOptionsMenu,SelectedLangChangedEvent {
@@ -121,7 +140,8 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private Button ActionListDel;
 	private Button ActionListAdd;
 	private Spinner ActionListAll;
-	MoveableList<Actions> ActionList;
+	private boolean ActionListChanged=false;
+	
 	ArrayList<Actions> AllActionList;
 	private boolean ActionListButtonAddClicked=false;
 
@@ -412,7 +432,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 			@Override
 			public void onClick(View arg0) 
 			{
-				ActionListSelectedIndex=ActionList.MoveItem(ActionListSelectedIndex, -1);
+				ActionListSelectedIndex=Global.QuickButtonList.MoveItem(ActionListSelectedIndex, -1);
 				refreshActionListView(false);
 			}
 		});
@@ -421,7 +441,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 			@Override
 			public void onClick(View arg0) 
 			{
-				ActionListSelectedIndex=ActionList.MoveItem(ActionListSelectedIndex, +1);
+				ActionListSelectedIndex=Global.QuickButtonList.MoveItem(ActionListSelectedIndex, +1);
 				refreshActionListView(false);
 			}
 		});
@@ -430,7 +450,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 			@Override
 			public void onClick(View arg0) 
 			{
-				ActionList.remove(ActionListSelectedIndex);
+				Global.QuickButtonList.remove(ActionListSelectedIndex);
 				refreshActionListView(true);
 			}
 		});
@@ -454,12 +474,12 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 				if(ActionListAll.getVisibility()==View.VISIBLE && ActionListButtonAddClicked)
 				{
 					//neues Action Item ausgewählt.
-					if(ActionList==null)
+					if(Global.QuickButtonList==null)
 					{
-						ActionList=new MoveableList<Actions>();
+						Global.QuickButtonList=new MoveableList<QuickButtonItem>();
 						ActionListView.setAdapter(QuickListBaseAdapter);
 					}
-					ActionList.add(AllActionList.get(arg2));
+					Global.QuickButtonList.add(new QuickButtonItem(context, AllActionList.get(arg2),Sizes.getButtonHeight()));
 					refreshActionListView(true);
 					ActionListButtonAddClicked=false;
 					ActionListAll.setVisibility(View.GONE);
@@ -501,6 +521,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		{
 			ActivityUtils.setListViewHeightBasedOnChildren(ActionListView);
 		}
+		((main) main.mainActivity).QuickButtonsAdapter.notifyDataSetChanged();
 	}
 	
 	private Callback AnimationReadyCallBack = new Callback() {
@@ -728,12 +749,16 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	((main) main.mainActivity).setDebugMsg("");
     	Config.Set("AllowLandscape",chkAllowLandscape.isChecked());
     	
+    	
+    	
+    	boolean QuickButtonShowChanged = (Config.GetBool("quickButtonShow")!=chkQuickButtonShow.isChecked());
+    	Config.Set("quickButtonShow",chkQuickButtonShow.isChecked());
     	String ActionsString="";
     	int counter=0;
-    	for(Actions tmp : ActionList)
+    	for(QuickButtonItem tmp : Global.QuickButtonList)
     	{
-    		ActionsString+=String.valueOf(tmp.ordinal()); 
-    		if(counter<ActionList.size()-1)
+    		ActionsString+=String.valueOf(tmp.getAction().ordinal()); 
+    		if(counter<Global.QuickButtonList.size()-1)
     		{
     			ActionsString+=",";
     		}
@@ -745,7 +770,10 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	
     	//reinital map
     	main.mapView.setNewSettings();
-    	
+    	if(QuickButtonShowChanged) 
+    	{
+    		downSlider.ButtonShowStateChanged();
+    	}
 		finish();
 	}	
 	
@@ -849,12 +877,8 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private void fillQuickButton()
 	{
 		chkQuickButtonShow.setChecked(Config.GetBool("quickButtonShow"));
-		String ConfigActionList = Config.GetString("quickButtonList");
-		String[]ConfigList= ConfigActionList.split(",");
-		ActionList = Actions.getListFromConfig(ConfigList);
-		
 		ActionListView.setAdapter(QuickListBaseAdapter);
-		
+		ActionListChanged=false;
 	}
 	
 	
@@ -1025,13 +1049,13 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		@Override
 		public int getCount() 
 		{
-			if(ActionList==null)
+			if(Global.QuickButtonList==null)
 			{
 				return 0;
 			}
 			else
 			{
-				return ActionList.size();
+				return Global.QuickButtonList.size();
 			}
 			
 		}
@@ -1051,25 +1075,22 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) 
 		{
-			if(ActionList==null)
+			if(Global.QuickButtonList==null)
 			{
 				return null;
 			}
 			
-			String Name = ActionList.get(position).name();
+			String Name = Global.QuickButtonList.get(position).getDesc();
 			View retval = LayoutInflater.from(parent.getContext()).inflate(R.layout.quick_list_item, null);
 			TextView title = (TextView) retval.findViewById(R.id.title);
+			ImageView image =(ImageView)retval.findViewById(R.id.image);
 			LinearLayout layout =(LinearLayout) retval.findViewById(R.id.layout);
 			title.setText(Name);
+			image.setImageDrawable(Global.QuickButtonList.get(position).getIcon());
 			int BackGroundColor = (position!=ActionListSelectedIndex)? Global.getColor(R.attr.ListBackground):Global.getColor(R.attr.ListBackground_select);
 			layout.setBackgroundColor(BackGroundColor);
 			
-			//set item width to ListView width
-			/*int desiredWidth = MeasureSpec.makeMeasureSpec(ActionListView.getWidth(), MeasureSpec.AT_MOST);
-			ViewGroup.LayoutParams params = retval.getLayoutParams();
-	        params.width = desiredWidth;
-	        retval.setLayoutParams(params);
-*/	        
+		
 			return retval;
 		}
 		

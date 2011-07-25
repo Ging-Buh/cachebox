@@ -32,12 +32,14 @@ package de.droidcachebox.Custom_Controls.QuickButtonList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
+import android.view.View.MeasureSpec;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -60,10 +62,24 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 	private OnItemSelectedListener mOnItemSelected;
 	private OnItemClickListener mOnItemClicked;
 	private boolean mDataChanged = false;
-	
+	private int width;
+	private int height;
 
-	public HorizontalListView(Context context, AttributeSet attrs) {
+	public HorizontalListView(Context context) 
+	{
+		super(context);
+		initView();
+	}
+	
+ 	public HorizontalListView(Context context, AttributeSet attrs) 
+ 	{
 		super(context, attrs);
+		initView();
+	}
+ 	
+ 	public HorizontalListView(Context context, AttributeSet attrs, int defStyle) 
+	{
+		super(context, attrs, defStyle);
 		initView();
 	}
 	
@@ -137,7 +153,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 
 	@Override
 	public void setSelection(int position) {
-		//TODO: implement
+		
 	}
 	
 	private void addAndMeasureChild(final View child, int viewPos) {
@@ -354,6 +370,50 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 		
 		
 	};
+
+
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) 
+	{
+		this.width = measure(widthMeasureSpec);
+		this.height = measure(heightMeasureSpec);
+		setMeasuredDimension(this.width, this.height);
+	}
+	
+	
+	
+    /**
+     * Determines the width of this view
+     * @param measureSpec A measureSpec packed into an int
+     * @return The width of the view, honoring constraints from measureSpec
+     */
+    private int measure(int measureSpec) 
+    {
+        int result = 0;
+        
+        int specSize = MeasureSpec.getSize(measureSpec);
+
+       
+            result = specSize;
+        
+        
+        return result;
+    }
+
+	
+	
+	public void setHeight(int newheight)
+	{
+		this.height = newheight;
+		setMeasuredDimension(this.width, this.height);
+	}
+
+	public QuickButtonItem get(int id) 
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 	
 

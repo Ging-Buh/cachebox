@@ -1,12 +1,32 @@
+/* 
+ * Copyright (C) 2011 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package de.droidcachebox.Custom_Controls;
 
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Components.CacheDraw.DrawStyle;
 import de.droidcachebox.Components.CacheNameView;
+import de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView;
+import de.droidcachebox.Ui.Sizes;
+import CB_Core.Config;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 
@@ -26,23 +46,8 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
-
-
-
-/*
- * Control Tamplate zum Copieren!
- * 
- * XML Layout einbindung über :
- * 
-    <de.droidcachebox.Custom_Controls.downSlider
-			android:id="@+id/myName" android:layout_height="wrap_content"
-			android:layout_width="fill_parent" android:layout_marginLeft="2dip"
-			android:layout_marginRight="2dip" android:layout_marginTop="1dip" />
- */
-
-
-
 
 
 public final class downSlider extends View implements SelectedCacheEvent 
@@ -57,6 +62,9 @@ public final class downSlider extends View implements SelectedCacheEvent
 	{
 		super(context, attrs);
 		SelectedCacheEventList.Add(this);
+		this.setOnTouchListener(myTouchListner);
+				
+		Me=this;
 	}
 
 	public downSlider(Context context, AttributeSet attrs, int defStyle) 
@@ -81,6 +89,10 @@ public final class downSlider extends View implements SelectedCacheEvent
 	private int LineSep;
 	private int WPInfoHeight=0;
 	private int GPSInfoHeight=0;	
+	private int QuickButtonHeight;
+	private int QuickButtonMaxHeight;
+	
+	private static downSlider Me;
 	
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) 
@@ -102,13 +114,23 @@ public final class downSlider extends View implements SelectedCacheEvent
      */
     private int measure(int measureSpec) 
     {
+    	QuickButtonMaxHeight=Sizes.getQuickButtonListHeight();
         int result = 0;
-        
         int specSize = MeasureSpec.getSize(measureSpec);
-
-       
-            result = specSize;
+        result = specSize;
         
+        if(!isInitial)
+        {
+        	if(Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow"))
+    		{
+    			setPos(QuickButtonMaxHeight);
+    		}
+    		else
+    		{
+    			setPos(0);
+    		}
+        	isInitial=true;
+        }
         
         return result;
     }
@@ -121,7 +143,55 @@ public final class downSlider extends View implements SelectedCacheEvent
 	private Waypoint mWaypoint;
 	private int CacheInfoHeight= 0;
 	private Paint paint;
-    
+    private boolean isInitial=false;
+	
+	
+	private OnTouchListener myTouchListner = new OnTouchListener() 
+	{
+		boolean drag;
+		@Override public boolean onTouch(View v, MotionEvent event) 
+		{
+			 // events when touching the screen
+
+			 int eventaction = event.getAction();
+			 int X = (int)event.getX();
+			 int Y = (int)event.getY();
+			  if(contains(X, Y)) drag=true;
+			 
+			 
+			 switch (eventaction ) 
+			 {
+			 	case MotionEvent.ACTION_DOWN: // touch down so check if the finger is on a ball
+//			 		setDebugMsg("Down");
+			 		break;
+
+
+			 	case MotionEvent.ACTION_MOVE: // touch drag with the ball
+				 // move the balls the same as the finger
+			
+//			 		setDebugMsg("Move:" + String.format("%n")+ "x= " + X + String.format("%n") + "y= " + Y);
+			 		if (drag)setPos(Y-25); //y - 25 minus halbe Button Höhe
+			 		break;
+			 		
+			 	case MotionEvent.ACTION_UP:
+			 		if (drag)ActionUp();
+			 		drag=false;
+			 		break;
+
+			 }
+			
+			if(drag)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	};
+	
+	
 	@Override
 	protected void onDraw(Canvas canvas) 
 	{
@@ -139,7 +209,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 		
 		final Drawable Slide = Global.BtnIcons[0];
 		
-		mBtnRec.set(-10, yPos - 2, width+10 , yPos + 2 + CacheNameView.getMyHeight());
+		mBtnRec.set(-10, yPos - 2, width+10 , (int) (yPos + 2 + Global.scaledFontSize_normal*2.2));
 		Slide.setBounds(mBtnRec);
    	 	
 		Slide.setColorFilter(new PorterDuffColorFilter(Global.getColor(R.attr.SlideDownColorFilter), android.graphics.PorterDuff.Mode.MULTIPLY ));
@@ -153,7 +223,7 @@ public final class downSlider extends View implements SelectedCacheEvent
    	 		backPaint.setColor(Global.getColor(R.attr.SlideDownBackColor));
    	 		//backPaint.setColor(Color.RED); //DEBUG RED
    	 	}
-   	 	mBackRec.set(-10, 0, width+10 , yPos+2);
+   	 	mBackRec.set(-10, QuickButtonHeight+2, width+10 , yPos+1);
    	 	canvas.drawRect(mBackRec, backPaint);
   
    	 	if (mCache == null)
@@ -165,30 +235,46 @@ public final class downSlider extends View implements SelectedCacheEvent
 		
 		
 		//Draw only is visible
-		if(yPos<1)
-			return;
+		if(Config.GetBool("quickButtonShow"))
+		{
+			if(yPos<=QuickButtonMaxHeight)
+				return;
+		}
+		else
+		{
+			if(yPos<=1)
+				return;
+		}
 		
+		
+		if(Config.GetBool("quickButtonShow"))
+		{
+			canvas.clipRect(mBackRec);
+		}
+		
+	 	 
+
 		// draw GPS Info
 		int versatz = -yPos+GPSInfoHeight;
 		canvas.translate(0,-versatz);
 		drawGPSInfo(canvas);
-		canvas.restore();
+		canvas.translate(0,+versatz);
+//		canvas.clipRect(mBackRec);
    	 	
+//		if(yPos>1)return;
    	 	// draw WP Info
    	 	versatz += WPInfoHeight;
    	 	canvas.translate(0,-versatz);
    	 	Boolean WPisDraw = drawWPInfo(canvas);
-		canvas.restore();
-   	 	
+		canvas.translate(0,+versatz);
+//		canvas.clipRect(mBackRec);
    	 
    	 	// draw Cache Info
 		versatz += CacheInfoHeight;
 		canvas.translate(5,-versatz);
    	 	CacheDraw.DrawInfo(mCache,canvas, width - 10, CacheInfoHeight, WPisDraw? Global.getColor(R.attr.ListBackground) : Global.getColor(R.attr.ListBackground_select), DrawStyle.withOwnerAndName);
-   	 	canvas.restore();
-   	 	
-   	
-		
+   	 	canvas.translate(0,+versatz);
+   	 	//canvas.clipRect(mBackRec);
 	}
 
 	
@@ -255,12 +341,45 @@ public final class downSlider extends View implements SelectedCacheEvent
 		Log.d("Cachebox", "Size changed to " + w + "x" + h);
 	}
 	
+	public static void ButtonShowStateChanged()
+	{
+		if(downSlider.Me != null)
+		{
+			if(Config.GetBool("quickButtonShow"))
+			{
+				downSlider.Me.setPos(downSlider.Me.QuickButtonMaxHeight);
+			}
+			else
+			{
+				downSlider.Me.setPos(0);
+			}
+		}
+		
+	}
 
 	public void setPos(int Pos)
 	{
-		if(Pos>0)
+		if(Pos>=0)
 		{
 			yPos=Pos;
+			if(Config.GetBool("quickButtonShow"))
+			{
+				if(Pos<=QuickButtonMaxHeight)
+				{
+					QuickButtonHeight=Pos;
+					((main)main.mainActivity).setTopButtonHeight(Pos);
+				}
+				else
+				{
+					QuickButtonHeight=QuickButtonMaxHeight;
+					((main)main.mainActivity).setTopButtonHeight(QuickButtonMaxHeight);
+				}
+			}
+			else
+			{
+				QuickButtonHeight=0;
+				((main)main.mainActivity).setTopButtonHeight(0);
+			}
 			
 			if(!isVisible)
 				startUpdateTimer();
@@ -317,13 +436,31 @@ public final class downSlider extends View implements SelectedCacheEvent
 	
 	public void ActionUp() // Slider zurück scrolllen lassen
 	{
-		if (yPos>height*0.7)
+		boolean QuickButtonShow = Config.GetBool("quickButtonShow");
+		
+		//check if QuickButtonList snap in
+		if(yPos>=(QuickButtonMaxHeight*0.5) && QuickButtonShow)
 		{
-			yPos=height-CacheNameView.getMyHeight();
+			QuickButtonHeight=QuickButtonMaxHeight;
+			Config.Set("quickButtonLastShow",true);
+			Config.AcceptChanges();
 		}
 		else
 		{
-			yPos=0;
+			QuickButtonHeight=0;
+			Config.Set("quickButtonLastShow",false);
+			Config.AcceptChanges();
+		}
+		
+		((main)main.mainActivity).setTopButtonHeight(QuickButtonHeight);
+		
+		if (yPos>height*0.7)
+		{
+			yPos=(int) (height-(Global.scaledFontSize_normal*2.2));
+		}
+		else
+		{
+			yPos=QuickButtonShow? QuickButtonHeight:0;
 			isVisible=false;
 		}
 		

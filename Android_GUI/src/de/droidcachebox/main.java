@@ -22,6 +22,7 @@ import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Coordinate;
+import CB_Core.Types.MoveableList;
 import CB_Core.Types.Waypoint;
 
 import de.droidcachebox.ExtAudioRecorder;
@@ -33,13 +34,17 @@ import de.droidcachebox.Custom_Controls.Mic_On_Flash;
 import de.droidcachebox.Custom_Controls.downSlider;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
+import de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView;
+import de.droidcachebox.Custom_Controls.QuickButtonList.QuickButtonItem;
 import de.droidcachebox.DAO.CacheDAO;
 import de.droidcachebox.DAO.CacheListDAO;
+import de.droidcachebox.Enums.Actions;
 import de.droidcachebox.Events.PositionEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Locator.Locator;
+import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.AboutView;
 import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.CompassView;
@@ -104,12 +109,19 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 import android.location.GpsStatus;
 
 public class main extends Activity implements SelectedCacheEvent,LocationListener,CB_Core.Events.CacheListChangedEvent, GpsStatus.NmeaListener, ILog 
@@ -172,9 +184,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		private ImageButton buttonInfo;
 		private ImageButton buttonMisc;
 		private FrameLayout frame;
-		private RelativeLayout TopLayout;
-		private FrameLayout frameCacheName;
+		private LinearLayout TopLayout;
+//		private LinearLayout frameCacheName;
 		private downSlider InfoDownSlider;
+		public HorizontalListView QuickButtonList;
 		
 		private Mic_On_Flash Mic_Icon;
 		private static DebugInfoPanel debugInfoPanel;
@@ -208,7 +221,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		private enum nextMenuType { nmDB, nmCache, nmMap, nmInfo, nmMisc }
 		private nextMenuType nextMenu = nextMenuType.nmDB;
 		
-		private Boolean getVoiceRecIsStart(){return mVoiceRecIsStart;}
+		public Boolean getVoiceRecIsStart(){return mVoiceRecIsStart;}
 		
 		// Screenlock Counter
 		private ScreenLockTimer counter = null;
@@ -270,6 +283,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        mainActivity= this;
 			mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
+			
+			//initial UiSizes
+			Sizes.initial(false);
 	        
 	        int Time = ((Config.GetInt("LockM")*60)+Config.GetInt("LockSec"))*1000;
 	        counter = new ScreenLockTimer(Time, Time);
@@ -789,8 +805,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    } 
 	
 		
-
-
     
    
     public void startScreenLock()
@@ -873,7 +887,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    		mainActivity.startActivity(mainIntent1);
 	    		break;
 	    	
-    		case 103: // Filtersettings
+    		case 103: // Import
     			final Intent mainIntent2 = new Intent().setClass( mainActivity, ImportDialog.class);
 	    		mainActivity.startActivity(mainIntent2);
 	    		break;
@@ -934,138 +948,14 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    		break;
 		    		
 		    	case R.id.miVoiceRecorder:
-		    		if (!getVoiceRecIsStart()) // Voice Recorder starten
-		    		{
-			            Log.d("DroidCachebox", "Starting voice recorder on the phone...");
-			            
-			    		//define the file-name to save voice taken by activity
-			            String directory = Config.GetString("UserImageFolder");
-			            if (!FileIO.DirectoryExists(directory))
-			            {
-			                Log.d("DroidCachebox", "Media-Folder does not exist...");
-			                break;
-			            }
-			           
-			            basename = Global.GetDateTimeString();
-			            
-			            if (GlobalCore.SelectedCache() != null)
-			            {
-			            	String validName=FileIO.RemoveInvalidFatChars(GlobalCore.SelectedCache().GcCode + "-" + GlobalCore.SelectedCache().Name);
-			            	mediaCacheName = validName.substring(0,(validName.length()>32)? 32 : validName.length());
-			                //Title = Global.SelectedCache().Name;
-			            }
-			            else
-			            {
-			            	mediaCacheName = "Voice";
-			            }
-	
-			            basename += " " + mediaCacheName;
-			            mediafilename = (directory + "/" + basename + ".wav");
-			            
-			            // Start recording
-			            //extAudioRecorder = ExtAudioRecorder.getInstanse(true);	  // Compressed recording (AMR)
-			            extAudioRecorder = ExtAudioRecorder.getInstanse(false); // Uncompressed recording (WAV)
-
-			            extAudioRecorder.setOutputFile(mediafilename);
-			            extAudioRecorder.prepare();
-			            extAudioRecorder.start();
-
-			            String MediaFolder = Config.GetString("UserImageFolder");
-		            	String TrackFolder = Config.GetString("TrackFolder");
-		            	String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/"); 
-		            	// Da eine Voice keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
-		            	TrackRecorder.AnnotateMedia(basename + ".wav", relativPath + "/" + basename + ".wav", GlobalCore.LastValidPosition, Global.GetTrackDateTimeString());
-			    		Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
-
-			            setVoiceRecIsStart(true);
-			    		counter.cancel();			// Während der Aufnahme Screen-Lock-Counter stoppen
-			    		counterStopped = true;
-
-			    		break;	
-		    		}
-		    		else
-		    		{	// Voice Recorder stoppen
-			            Log.d("DroidCachebox", "Stoping voice recorder on the phone...");
-			            // Stop recording
-			    		setVoiceRecIsStart(false);
-			            break;
-		    		}
-		    		
+		    		recVoice();
+		    		break;
 		    	case R.id.miTakePhoto:
-		            Log.d("DroidCachebox", "Starting camera on the phone...");
-		            
-		    		//define the file-name to save photo taken by Camera activity
-		            String directory = Config.GetString("UserImageFolder");
-		            if (!FileIO.DirectoryExists(directory))
-		            {
-		                Log.d("DroidCachebox", "Media-Folder does not exist...");
-		                break;
-		            }
-		           
-		            basename = Global.GetDateTimeString();
-		            
-		            if (GlobalCore.SelectedCache() != null)
-		            {
-		            	String validName=FileIO.RemoveInvalidFatChars(GlobalCore.SelectedCache().GcCode + "-" + GlobalCore.SelectedCache().Name);
-		            	mediaCacheName = validName.substring(0,(validName.length()>32)? 32 : validName.length());
-		                //Title = Global.SelectedCache().Name;
-		            }
-		            else
-		            {
-		            	mediaCacheName = "Image";
-		            }
-
-		            basename += " " + mediaCacheName;
-		            mediafile = new File(directory + "/" + basename + ".jpg");
-
-		    		final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		    		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediafile));
-		    		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-		    		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-
+		    		takePhoto();
 		    		break;
 		    		
 		    	case R.id.miRecordVideo:
-		            Log.d("DroidCachebox", "Starting video on the phone...");
-		            
-		    		//define the file-name to save video taken by Camera activity
-		            directory = Config.GetString("UserImageFolder");
-		            if (!FileIO.DirectoryExists(directory))
-		            {
-		                Log.d("DroidCachebox", "Media-Folder does not exist...");
-		                break;
-		            }
-		           
-		            basename = Global.GetDateTimeString();
-		            
-		            if (GlobalCore.SelectedCache() != null)
-		            {
-		            	String validName=FileIO.RemoveInvalidFatChars(GlobalCore.SelectedCache().GcCode + "-" + GlobalCore.SelectedCache().Name);
-		            	mediaCacheName = validName.substring(0,(validName.length()>32)? 32 : validName.length());
-		                //Title = Global.SelectedCache().Name;
-		            }
-		            else
-		            {
-		            	mediaCacheName = "Video";
-		            }
-
-		            basename += " " + mediaCacheName;
-		            mediafile = new File(directory + "/" + basename + ".3gp");
-		            
-	            	// Da ein Video keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
-	            	mediaTimeString = Global.GetTrackDateTimeString();
-	            	mediaCoordinate = GlobalCore.LastValidPosition;
-	            	
-		    		ContentValues values = new ContentValues();  
-		    		values.put(MediaStore.Video.Media.TITLE, "captureTemp.mp4");  
-		    		cameraVideoURI = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);  
-
-		    		final Intent videointent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-		    		videointent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediafile));
-		    		videointent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-		    		//videointent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, MAXIMUM_VIDEO_SIZE);               
-
-		    		startActivityForResult(videointent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+		    		recVideo();
 		    		break;	
 		    		
 		    		
@@ -1247,6 +1137,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	  Menu IconMenu=icm.getMenu();
     	  Global.TranslateMenuItem(IconMenu, R.id.miHint, "hint");
     	  Global.TranslateMenuItem(IconMenu, R.id.miTelJoker, "joker");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miLogView, "ShowLogs");
     	  icm.show();
 	}
 
@@ -1277,7 +1168,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    	}
 		    }
 		});
-  	  icm.show();
+		
+		Menu IconMenu=icm.getMenu();
+		Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Map");
+		Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Compass");
+		icm.show();
 	}
 
 	private void initialBtnCacheContextMenu() 
@@ -1376,6 +1271,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		Global.TranslateMenuItem(IconMenu, R.id.miFilterset, "filter");
 		Global.TranslateMenuItem(IconMenu, R.id.miManageDB, "manage" ,"  (" + DBName + ")");
 		Global.TranslateMenuItem(IconMenu, R.id.miResort, "ResortList");
+		Global.TranslateMenuItem(IconMenu, R.id.miTrackList, "Tracks");
 		MenuItem miAutoResort = Global.TranslateMenuItem(IconMenu, R.id.miAutoResort, "AutoResort");
 		miAutoResort.setCheckable(true);
 		miAutoResort.setChecked(Global.autoResort);
@@ -1391,8 +1287,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     
     private void findViewsById() 
     {
-    	frameCacheName = (FrameLayout)this.findViewById(R.id.frameCacheName);
-    	TopLayout=(RelativeLayout)this.findViewById(R.id.layoutTop);     
+//    	frameCacheName = (LinearLayout)this.findViewById(R.id.frameCacheName);
+    	TopLayout=(LinearLayout)this.findViewById(R.id.layoutTop);     
         frame = (FrameLayout)this.findViewById(R.id.layoutContent);
         InfoDownSlider = (downSlider)this.findViewById(R.id.downSlider); 
         
@@ -1404,6 +1300,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	buttonNav = (ImageButton)this.findViewById(R.id.buttonMap);
     	buttonInfo = (ImageButton)this.findViewById(R.id.buttonInfo);
     	buttonMisc = (ImageButton)this.findViewById(R.id.buttonMisc);
+    	
+    	cacheNameView =(CacheNameView)this.findViewById(R.id.main_cache_name_view);
+    	QuickButtonList = (HorizontalListView)this.findViewById(R.id.main_quick_button_list);
     }
 	    
 	private void initialViews() 
@@ -1576,68 +1475,191 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     private void initialCaheInfoSlider() 
 	{
     	
-    	// Set Layout Hight
-    	RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, (int) (Global.scaledFontSize_normal*2.2));
-    	TopLayout.setLayoutParams(lp);
-    	
-    	
-    	
-		cacheNameView = new CacheNameView(this);
+    	QuickButtonList.setHeight(Sizes.getQuickButtonListHeight());
+    	QuickButtonList.setAdapter(QuickButtonsAdapter);
+    	QuickButtonList.setOnItemClickListener(QuickButtonOnItemClickListner);
+    	String ConfigActionList = Config.GetString("quickButtonList");
+		String[]ConfigList= ConfigActionList.split(",");
+		Global.QuickButtonList = Actions.getListFromConfig(ConfigList);
+
 		cacheNameView.setHeight((int) (Global.scaledFontSize_normal*2.2));
-		frameCacheName.addView(cacheNameView);
-		InfoDownSlider.setOnTouchListener(new OnTouchListener() 
-		{
-			
-			boolean drag;
-			@Override public boolean onTouch(View v, MotionEvent event) 
-			{
-				 // events when touching the screen
 
-				 int eventaction = event.getAction();
-				 int X = (int)event.getX();
-				 int Y = (int)event.getY();
-				  if(InfoDownSlider.contains(X, Y)) drag=true;
-				 
-				 
-				 switch (eventaction ) 
-				 {
-				 	case MotionEvent.ACTION_DOWN: // touch down so check if the finger is on a ball
-				 		setDebugMsg("Down");
-				 		break;
-
-
-				 	case MotionEvent.ACTION_MOVE: // touch drag with the ball
-					 // move the balls the same as the finger
-				
-				 		setDebugMsg("Move:" + String.format("%n")+ "x= " + X + String.format("%n") + "y= " + Y);
-				 		if (drag)InfoDownSlider.setPos(Y-25); //y - 25 minus halbe Button Höhe
-				 		break;
-				 		
-				 	case MotionEvent.ACTION_UP:
-				 		if (drag)InfoDownSlider.ActionUp();
-				 		drag=false;
-				 		break;
-
-				 }
-				
-				if(drag)
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-		});
 	}
  	
+    OnItemClickListener QuickButtonOnItemClickListner = new OnItemClickListener() 
+    {
+
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) 
+		{
+			QuickButtonItem clicedItem = Global.QuickButtonList.get(arg2);
+			
+			switch (clicedItem.getActionId())
+	        {
+	        case 0:showView(4);break;
+	        case 1:showView(2);break;
+	        case 2:showView(3);break;
+	        case 3:showView(0);break;
+	        case 4:showView(8);break;
+	        case 5:showView(1);break;
+	        case 6:showView(13);break;
+	        case 7:takePhoto();break;
+	        case 8:recVideo();break;
+	        case 9:recVoice();break;
+	        case 10:MessageBox.Show("SearchAPI muss noch in eine eigene Methode refactoriert werden, damit die Suche auch von hier aus ausgelöst werden kann!");break;
+	        }
+			
+		}
+	};
+    
+    
+	
+	
+	private void takePhoto()
+	{
+        Log.d("DroidCachebox", "Starting camera on the phone...");
+        
+		//define the file-name to save photo taken by Camera activity
+        String directory = Config.GetString("UserImageFolder");
+        if (!FileIO.DirectoryExists(directory))
+        {
+            Log.d("DroidCachebox", "Media-Folder does not exist...");
+            return;
+        }
+       
+        basename = Global.GetDateTimeString();
+        
+        if (GlobalCore.SelectedCache() != null)
+        {
+        	String validName=FileIO.RemoveInvalidFatChars(GlobalCore.SelectedCache().GcCode + "-" + GlobalCore.SelectedCache().Name);
+        	mediaCacheName = validName.substring(0,(validName.length()>32)? 32 : validName.length());
+            //Title = Global.SelectedCache().Name;
+        }
+        else
+        {
+        	mediaCacheName = "Image";
+        }
+
+        basename += " " + mediaCacheName;
+        mediafile = new File(directory + "/" + basename + ".jpg");
+
+		final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediafile));
+		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+	}
+	
+	private void recVideo()
+	{
+		Log.d("DroidCachebox", "Starting video on the phone...");
+        
+		//define the file-name to save video taken by Camera activity
+        String directory = Config.GetString("UserImageFolder");
+        if (!FileIO.DirectoryExists(directory))
+        {
+            Log.d("DroidCachebox", "Media-Folder does not exist...");
+            return;
+        }
+       
+        basename = Global.GetDateTimeString();
+        
+        if (GlobalCore.SelectedCache() != null)
+        {
+        	String validName=FileIO.RemoveInvalidFatChars(GlobalCore.SelectedCache().GcCode + "-" + GlobalCore.SelectedCache().Name);
+        	mediaCacheName = validName.substring(0,(validName.length()>32)? 32 : validName.length());
+            //Title = Global.SelectedCache().Name;
+        }
+        else
+        {
+        	mediaCacheName = "Video";
+        }
+
+        basename += " " + mediaCacheName;
+        mediafile = new File(directory + "/" + basename + ".3gp");
+        
+    	// Da ein Video keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
+    	mediaTimeString = Global.GetTrackDateTimeString();
+    	mediaCoordinate = GlobalCore.LastValidPosition;
+    	
+		ContentValues values = new ContentValues();  
+		values.put(MediaStore.Video.Media.TITLE, "captureTemp.mp4");  
+		cameraVideoURI = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);  
+
+		final Intent videointent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+		videointent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediafile));
+		videointent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+		//videointent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, MAXIMUM_VIDEO_SIZE);               
+
+		startActivityForResult(videointent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+	}
+	
+	private void recVoice()
+	{
+		if (!getVoiceRecIsStart()) // Voice Recorder starten
+		{
+            Log.d("DroidCachebox", "Starting voice recorder on the phone...");
+            
+    		//define the file-name to save voice taken by activity
+            String directory = Config.GetString("UserImageFolder");
+            if (!FileIO.DirectoryExists(directory))
+            {
+                Log.d("DroidCachebox", "Media-Folder does not exist...");
+                return;
+            }
+           
+            basename = Global.GetDateTimeString();
+            
+            if (GlobalCore.SelectedCache() != null)
+            {
+            	String validName=FileIO.RemoveInvalidFatChars(GlobalCore.SelectedCache().GcCode + "-" + GlobalCore.SelectedCache().Name);
+            	mediaCacheName = validName.substring(0,(validName.length()>32)? 32 : validName.length());
+                //Title = Global.SelectedCache().Name;
+            }
+            else
+            {
+            	mediaCacheName = "Voice";
+            }
+
+            basename += " " + mediaCacheName;
+            mediafilename = (directory + "/" + basename + ".wav");
+            
+            // Start recording
+            //extAudioRecorder = ExtAudioRecorder.getInstanse(true);	  // Compressed recording (AMR)
+            extAudioRecorder = ExtAudioRecorder.getInstanse(false); // Uncompressed recording (WAV)
+
+            extAudioRecorder.setOutputFile(mediafilename);
+            extAudioRecorder.prepare();
+            extAudioRecorder.start();
+
+            String MediaFolder = Config.GetString("UserImageFolder");
+        	String TrackFolder = Config.GetString("TrackFolder");
+        	String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/"); 
+        	// Da eine Voice keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
+        	TrackRecorder.AnnotateMedia(basename + ".wav", relativPath + "/" + basename + ".wav", GlobalCore.LastValidPosition, Global.GetTrackDateTimeString());
+    		Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
+
+            setVoiceRecIsStart(true);
+    		counter.cancel();			// Während der Aufnahme Screen-Lock-Counter stoppen
+    		counterStopped = true;
+
+    		return;	
+		}
+		else
+		{	// Voice Recorder stoppen
+            Log.d("DroidCachebox", "Stoping voice recorder on the phone...");
+            // Stop recording
+    		setVoiceRecIsStart(false);
+            return;
+		}
+	}
+	
 	
 	/*
 	 * Setter
 	 */
 	  
-	 public void setDebugVisible()
+	public void setDebugVisible()
 		{
 			if(Config.GetBool("DebugShowPanel"))
 			{
@@ -1802,5 +1824,62 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		}
 		
 	};
-	 
+
+
+	int horizontalListViewHeigt; 
+	public void setTopButtonHeight(int value)
+	{
+		 horizontalListViewHeigt = value;
+		 Thread t = new Thread() {
+			    public void run() {
+			        runOnUiThread(new Runnable() {
+			            @Override
+			            public void run() {
+			            	QuickButtonList.setHeight(horizontalListViewHeigt);
+			        		QuickButtonList.invalidate();
+			        		TopLayout.requestLayout();
+			            }
+			        });
+			    }
+			};
+
+			t.start();
+		
+
+		
+	}
+
+
+
+	/**
+	 * Adapter für die QuickButton Lists. 
+	 * @author Longri
+	 */
+	public BaseAdapter QuickButtonsAdapter = new BaseAdapter() {
+
+		@Override
+		public int getCount() {
+			return Global.QuickButtonList.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) 
+		{
+			return Global.QuickButtonList.get(position);
+		}
+		
+	};
+
+
+
 }
