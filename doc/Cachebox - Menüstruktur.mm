@@ -2,7 +2,7 @@
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
 <node CREATED="1309788944060" ID="ID_810865721" MODIFIED="1309789506958" TEXT="Cachebox - Schalter und Men&#xfc;s">
 <node CREATED="1309788954879" ID="ID_1099735152" MODIFIED="1310370149581" POSITION="right" TEXT="1. Listen">
-<node CREATED="1309789053512" ID="ID_997570407" MODIFIED="1310021154929">
+<node CREATED="1309789053512" ID="ID_997570407" MODIFIED="1311659616277">
 <richcontent TYPE="NODE"><html>
   <head>
     
@@ -33,6 +33,9 @@
 <icon BUILTIN="full-2"/>
 </node>
 <node CREATED="1309789316139" ID="ID_1865459460" MODIFIED="1310021457219" TEXT="g - Datenbanken verwalten">
+<icon BUILTIN="full-2"/>
+</node>
+<node CREATED="1311659644615" ID="ID_1332734833" MODIFIED="1311659668100" TEXT="h- Autoresort">
 <icon BUILTIN="full-2"/>
 </node>
 </node>
@@ -141,12 +144,18 @@
 <node COLOR="#ff0000" CREATED="1310021009693" ID="ID_369389058" MODIFIED="1310021080896" TEXT="5.3 Day/Night"/>
 <node COLOR="#ff0000" CREATED="1309790656423" ID="ID_1712051080" MODIFIED="1310021370469" TEXT="5.4 ScreenLock"/>
 </node>
-<node CREATED="1309789512341" ID="ID_207718523" MODIFIED="1310022057309" POSITION="left">
+<node CREATED="1309789512341" ID="ID_207718523" MODIFIED="1311620126836" POSITION="left">
 <richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
+    <p>
+      Entwurf Tower27
+    </p>
+    <p>
+      
+    </p>
     <p>
       5 Schalter unten - wie bisher auch.
     </p>
@@ -172,10 +181,7 @@
       
     </p>
     <p>
-      <font color="#ff0000">rot</font>&#160;meine &#196;nderungen
-    </p>
-    <p>
-      
+      <font color="#ff0000">rot</font>&#160;meine &#196;nderungen (Longri)
     </p>
   </body>
 </html></richcontent>

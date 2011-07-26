@@ -669,7 +669,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         updateCacheList();
     }
 
-    protected PointD screenCenter = new PointD(0, 0);
+    public PointD screenCenter = new PointD(0, 0);
 
     protected Canvas canvas = null;
     protected Canvas canvasOverlay = null;
@@ -1701,7 +1701,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     * Sucht aus dem aktuellen Query die Caches raus, die dargestellt
     * werden sollen und aktualisiert wpToRender entsprechend.
     */
-    void updateCacheList()
+    public void updateCacheList()
     {
       if (Database.Data.Query == null)
         return;
@@ -3101,7 +3101,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       Render(true);
     }
 
-    private Coordinate lastMouseCoordinate = null;
+    public Coordinate lastMouseCoordinate = null;
 
     private void MapView_MouseMove(int eX, int eY)
     {
@@ -4756,72 +4756,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			        mainIntent.putExtras(b);
 		   		main.mainActivity.startActivity(mainIntent);
 		   		return true;
-			case R.id.mapview_searchcaches:
-				String accessToken = Config.GetString("GcAPI");
-				/* nicht mehr nötig das Menü in diesem Fall ausgegraut ist
-				if (accessToken.length() == 0)
-				{
-					MessageBox.Show("No AccessToken for Groundspeak API found!");
-					return true;
-				}*/
-				PointD point = new PointD(0, 0);
-				point.X = screenCenter.X ;
-				point.Y = screenCenter.Y ;
-				lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(Zoom, point.Y / (256.0)), Descriptor.TileXToLongitude(Zoom, point.X / (256.0)));
-
-	            // alle per API importierten Caches landen in der Category und GpxFilename 
-				// API-Import
-	            // Category suchen, die dazu gehört
-				CategoryDAO categoryDAO = new CategoryDAO();
-	            Category category = categoryDAO.GetCategory(GlobalCore.Categories, "API-Import");
-	            if (category == null)
-	                return true;   // should not happen!!!
-
-	            GpxFilename gpxFilename = categoryDAO.CreateNewGpxFilename(category, "API-Import");
-	            if (gpxFilename == null)
-	                return true;
-				
-				ArrayList<Cache> apiCaches = new ArrayList<Cache>();
-				ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-				String result = CB_Core.Api.GroundspeakAPI.SearchForGeocachesJSON(accessToken, lastMouseCoordinate, 50000, 10, apiCaches, apiLogs, gpxFilename.Id);
-				if (apiCaches.size() > 0)
-				{
-					Database.Data.myDB.beginTransaction();
-					for (Cache cache : apiCaches)
-					{
-			            cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
-			            cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
-			            if (Database.Data.Query.GetCacheById(cache.Id) == null)
-			            {
-			            	Database.Data.Query.add(cache);
-			            	CacheDAO cacheDAO = new CacheDAO();
-			            	cacheDAO.WriteToDatabase(cache);
-			            	for (LogEntry log : apiLogs)
-			            	{
-			            		if (log.CacheId != cache.Id) 
-			            			continue;
-			            		// Write Log to database
-			            		LogDAO logDAO = new LogDAO();
-			            		logDAO.WriteToDatabase(log);
-			            	}
-			            	for (Waypoint waypoint : cache.waypoints)
-			            	{
-			            		WaypointDAO waypointDAO = new WaypointDAO();
-			            		waypointDAO.WriteToDatabase(waypoint);
-			            	}
-			            }
-					}
-		            Database.Data.myDB.setTransactionSuccessful();
-					Database.Data.myDB.endTransaction();
-
-					Database.Data.GPXFilenameUpdateCacheCount();
 			
-					updateCacheList();
-					Render(true);
-					
-				}
-				MessageBox.Show(result);
-		   		return true;
 			case R.id.miMap_HideFinds:
 				hideMyFinds=!hideMyFinds;
 				Config.Set("MapHideMyFinds", hideMyFinds);
@@ -4849,7 +4784,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				Config.AcceptChanges();
 				Render(true);
 		   		return true;
-		   		
+		   	
+			case R.id.searchcaches_online:((main)main.mainActivity).searchOnline();break;
 		}
 		return false;
 	}
@@ -4910,10 +4846,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			if (mi != null)
 				mi.setEnabled(TrackRecorder.recording);
 			
-			// Search Caches
-			mi = menu.findItem(R.id.mapview_searchcaches);
-			if (mi != null)
-				mi.setEnabled(Global.APIisOnline());
+			
 
 			
 			

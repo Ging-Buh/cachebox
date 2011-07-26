@@ -21,7 +21,7 @@
         </menu> 
 	</item>
 	<item android:id="@+id/mapview_go_settings" android:title="Settings"></item>
-	<item android:title="Search Caches" android:id="@+id/mapview_searchcaches"></item>
+	<item android:title="Search Caches Online" android:id="@+id/searchcaches_online"></item>
 	<item android:id="@+id/mimapview_view" android:title="View">
 		<menu>
 			<item android:id="@+id/miMap_HideFinds" android:title="Heide Finds" android:checkable="true"></item>

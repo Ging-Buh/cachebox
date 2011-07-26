@@ -6,7 +6,7 @@
     <item android:title="Voice Recorder" android:id="@+id/miVoiceRecorder" android:icon="@drawable/voice_rec_icon"></item> 
     <item android:title="Take Photo" android:id="@+id/miTakePhoto" android:icon="@drawable/log10"></item>  
     <item android:title="Record Video" android:id="@+id/miRecordVideo" android:icon="@drawable/video_icon"></item>
-    <item android:title="Import" android:id="@+id/miImport" android:icon="@drawable/download"></item>   
+   
     <item android:title="ScreenLock" android:id="@+id/miScreenLock" android:icon="@drawable/lock_icon"></item>  
     <item android:title="Test Empty" android:id="@+id/miTestEmpty"></item>
       

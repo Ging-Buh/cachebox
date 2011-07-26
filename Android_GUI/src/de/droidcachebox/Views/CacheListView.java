@@ -8,6 +8,7 @@ import CB_Core.GlobalCore;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
 
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
@@ -151,8 +152,9 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 	}
 
 	@Override
-	public void BeforeShowMenu(Menu menu) {
-		// TODO Auto-generated method stub
+	public void BeforeShowMenu(Menu menu) 
+	{
+		((main)main.mainActivity).showCachelistViewContextMenu();
 		
 	}
 

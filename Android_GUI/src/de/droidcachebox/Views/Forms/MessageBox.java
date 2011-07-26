@@ -331,7 +331,11 @@ public class MessageBox extends android.app.Dialog {
 	}
 	
 	
-	
+	public static void Show(String msg, String title, MessageBoxIcon icon) 
+	{
+		Show(msg,title,MessageBoxButtons.OK,icon,null);
+		
+	}
 	
 	
 	
@@ -775,5 +779,7 @@ public class MessageBox extends android.app.Dialog {
 
 				 
     }
+
+	
  
 }

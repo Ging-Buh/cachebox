@@ -21,7 +21,10 @@ import CB_Core.Log.Logger;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
+import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
+import CB_Core.Types.GpxFilename;
+import CB_Core.Types.LogEntry;
 import CB_Core.Types.MoveableList;
 import CB_Core.Types.Waypoint;
 
@@ -38,12 +41,17 @@ import de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView;
 import de.droidcachebox.Custom_Controls.QuickButtonList.QuickButtonItem;
 import de.droidcachebox.DAO.CacheDAO;
 import de.droidcachebox.DAO.CacheListDAO;
+import de.droidcachebox.DAO.CategoryDAO;
+import de.droidcachebox.DAO.LogDAO;
+import de.droidcachebox.DAO.WaypointDAO;
 import de.droidcachebox.Enums.Actions;
 import de.droidcachebox.Events.PositionEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Locator.Locator;
+import de.droidcachebox.Map.Descriptor;
+import de.droidcachebox.Map.Descriptor.PointD;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.AboutView;
 import de.droidcachebox.Views.CacheListView;
@@ -72,6 +80,7 @@ import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Database;
 import CB_Core.Types.CacheList;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -94,6 +103,9 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -691,23 +703,23 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		      
 		      if (v == buttonDB)
 		      {
-		    	initialBtnDbContextMenu();
+		    	showBtnListsContextMenu();
 		      }
 		  	  else if (v == buttonCache)
 		      {
-		   		  initialBtnCacheContextMenu();
+		   		  showBtnCacheContextMenu();
 		      } 
 		  	  else if (v == buttonNav)
 		      {
-		    	initialBtnNavContextMenu();
+		    	showBtnNavContextMenu();
 		  	  }
 		      else if (v == buttonInfo)
 		      {
-		    	initialBtnInfoContextMenu();
+		    	showBtnToolsContextMenu();
 		      } 
 		      else if (v == buttonMisc)
 		      {   		
-		    	initialBtnMiscContextMenu();
+		    	showBtnMiscContextMenu();
 		      }
 		    }
 
@@ -919,63 +931,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     
 
     /*
-	 * Initial ContextMenu Methods
+	 * show ContextMenus
 	 */
 
-	private void initialBtnMiscContextMenu() 
+	private void showBtnMiscContextMenu() 
 	{
 		icm = new IconContextMenu(this, R.menu.menu_misc);
-		icm.setOnIconContextItemSelectedListener(new IconContextItemSelectedListener() {
-			
-			@Override
-			public void onIconContextItemSelected(MenuItem item, Object info) {
-				switch (item.getItemId())
-		    	{
-				// Misc
-		    	case R.id.miScreenLock:
-			        startScreenLock();
-		    		break;
-		    		
-		    	case R.id.miDayNight:
-		    		frame.removeAllViews();
-		    		Config.changeDayNight();
-		    		ActivityUtils.changeToTheme(mainActivity,Config.GetBool("nightMode")? ActivityUtils.THEME_NIGHT : ActivityUtils.THEME_DAY );
-		    		Toast.makeText(mainActivity, "changeDayNight", Toast.LENGTH_SHORT).show();
-		    		break;
-		    		
-		    	case R.id.miSettings:
-		    		showView(102);
-		    		break;
-		    		
-		    	case R.id.miVoiceRecorder:
-		    		recVoice();
-		    		break;
-		    	case R.id.miTakePhoto:
-		    		takePhoto();
-		    		break;
-		    		
-		    	case R.id.miRecordVideo:
-		    		recVideo();
-		    		break;	
-		    		
-		    		
-		    	case R.id.miAbout:
-		    		showView(11);
-		    		break;
-		    	
-		    	case R.id.miTestEmpty:
-		    		showView(10);
-		    		break;
-		    		
-		    	case R.id.miImport:
-		    		showView(103);
-		    		break;
-		    		
-		    	default:
-					
-		    	}
-		    }
-		});
+		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
 		
 		Menu IconMenu=icm.getMenu();
 		Global.TranslateMenuItem(IconMenu, R.id.miSettings, "settings");
@@ -994,121 +956,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	  	  icm.show();
 	}
 
-	private void initialBtnInfoContextMenu() 
+	private void showBtnToolsContextMenu() 
 	{
-		icm = new IconContextMenu(this, R.menu.menu_info);
-  		icm.setOnIconContextItemSelectedListener(new IconContextItemSelectedListener() 
-  		{
-  			
-  			@Override
-  			public void onIconContextItemSelected(MenuItem item, Object info) 
-  			{
-  				switch (item.getItemId())
-  		    	{
-  			// Info
-  		    	case R.id.miLogView:
-  		    		showView(3);
-  		    		break;
-  		    	case R.id.miSpoilerView:
-  		    		showView(5);
-  		    		break;
-  		    	case R.id.miHint:
-  		    		if (GlobalCore.SelectedCache() == null)
-  		    			break;
-  		    		String hint = Database.Hint(GlobalCore.SelectedCache());
-  		    		if (hint.equals(""))
-  		    			break;
-  		    		
-  		    		final Intent hintIntent = new Intent().setClass(mainActivity, HintDialog.class);
-  			        Bundle b = new Bundle();
-  			        b.putSerializable("Hint", hint);
-  			        hintIntent.putExtras(b);
-  			        mainActivity.startActivity(hintIntent);
-  		    		break;
-  		    	case R.id.miFieldNotes:
-  		    		showView(9);
-  		    		// beim Anzeigen der FieldNotesView gleich das Optionsmenü zeigen
-  		    		openOptionsMenu();
-  		    		break;				
-  		    	case R.id.miTelJoker:
-  		    		//showView(9);
-  		    		// beim Anzeigen der FieldNotesView gleich das Optionsmenü zeigen
-  		    		//openOptionsMenu();
-  		    		if (Global.Jokers.isEmpty())
-  		    		{ // Wenn Telefonjoker-Liste leer neu laden
-	  		    		try
-	  		    		{
-	  		    			URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.GetString("GcJoker") + "&wpt=" + GlobalCore.SelectedCache().GcCode);
-	  		    			URLConnection urlConnection = url.openConnection();
-	  		    			HttpURLConnection httpConnection=(HttpURLConnection)urlConnection;
-	  		    			
-	  		    			//Get the HTTP response code
-	  		    			if(httpConnection.getResponseCode()==HttpURLConnection.HTTP_OK)
-	  		    			{
-	  		    				InputStream inputStream = httpConnection.getInputStream();
-	  		    				if(inputStream != null)
-	  		    				{
-	  		    					String line;
-	  		    					try
-	  		    					{
-	  		    						BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-	  		    						while((line=reader.readLine()) != null)
-	  		    						{
-	  		    							String[] s = line.split(";",7);
-	  		    							try
-	  		    							{
-	  		    								if (s[0].equals("2")) 	// 2 entspricht Fehler, Fehlerursache ist in S[1]
-	  		    								{
-	  		    									MessageBox.Show(s[1],null);
-	  		    									break;
-	  		    								}
-	  		    								if (s[0].equals("1")) 	// 1 entspricht Warnung, Ursache ist in S[1]
-	  		    								{						// es können aber noch gültige Einträge folgen
-	  		    									MessageBox.Show(s[1],null);
-	  		    								}
-	  		    								if (s[0].equals("0")) 	// Normaler Eintrag
-	  		    								{
-	  		    									Global.Jokers.AddJoker(s[1], s[2], s[3], s[4], s[5], s[6]);
-	  		    								}
-	  		    							} catch (Exception exc)
-	  		    							{
-	  		    					        	Logger.Error("main.initialBtnInfoContextMenu()", "HTTP response Jokers", exc);
-	 		    								break;
-	  		    							}
-	  		    						}
-	  		    						if (Global.Jokers.isEmpty()){
-	  		    							MessageBox.Show("Keine Joker bekannt",null);
-	  		    						}
-	  		    						else {
-		  		    			        	Logger.General("Open JokerView...");
-		 		    	  		    		showView(12);
-	  		    						}
-	  		    					}
-	  		    					finally
-	  		    					{
-	  		    						inputStream.close();
-	  		    					}
-	  		    				}
-	  		    			 }
-	  		    		}
-	  		    		catch(MalformedURLException urlEx){
-	  		    			Logger.Error("main.initialBtnInfoContextMenu()", "MalformedURLException HTTP response Jokers", urlEx);
-	  		                Log.d("DroidCachebox",urlEx.getMessage());		
-	  		    			 }
-	  		    		catch (IOException ioEx){
-	  		    			Logger.Error("main.initialBtnInfoContextMenu()", "IOException HTTP response Jokers", ioEx);
-	  		                Log.d("DroidCachebox",ioEx.getMessage());	
-	  		                MessageBox.Show("Fehler bei Internetzugriff",null);
-	  		    			 }
-	  		    		catch(Exception ex){
-	  		    			Logger.Error("main.initialBtnInfoContextMenu()", "HTTP response Jokers", ex);
-	  		                Log.d("DroidCachebox",ex.getMessage());		
-	  		    		}
-  		    	}
-   		    		break;				
-  		    	}
-  		    }
-  		});
+		icm = new IconContextMenu(this, R.menu.menu_tools);
+  		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
     	  
     	  // Menu Item Hint enabled / disabled
     	  boolean enabled = false;
@@ -1141,33 +992,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	  icm.show();
 	}
 
-	private void initialBtnNavContextMenu() 
+	private void showBtnNavContextMenu() 
 	{
-		icm = new IconContextMenu(this, R.menu.menu_map);
-		icm.setOnIconContextItemSelectedListener(new IconContextItemSelectedListener() 
-		{
-			
-			@Override
-			public void onIconContextItemSelected(MenuItem item, Object info) 
-			{
-				switch (item.getItemId())
-		    	{
-				// Nav
-		    	case R.id.miCompassView:
-		    		showView(8);
-		    		
-		    		break;
-		    	
-		    	case R.id.miMapView:
-		    		showView(0);
-		    		
-		    		break;
-		    		
-		    	default:
-					
-		    	}
-		    }
-		});
+		icm = new IconContextMenu(this, R.menu.menu_nav);
+		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
 		
 		Menu IconMenu=icm.getMenu();
 		Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Map");
@@ -1175,34 +1003,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		icm.show();
 	}
 
-	private void initialBtnCacheContextMenu() 
+	private void showBtnCacheContextMenu() 
 	{
 		icm = new IconContextMenu(this, R.menu.menu_cache);
-  		  icm.setOnIconContextItemSelectedListener(new IconContextItemSelectedListener() 
-  		  {
-
-  			@Override
-  			public void onIconContextItemSelected(MenuItem item, Object info) 
-  			{
-  				switch (item.getItemId())
-  		    	{
-  			// Cache
-  		    	case R.id.miDescription:
-  		    		showView(4);
-  		    		break;
-  		    	case R.id.miWaypoints:
-  		    		showView(2);
-  		    		break;
-  		    	case R.id.miNotes:
-  		    		showView(6);
-  		    		break;
-  		    	case R.id.miSolver:
-  		    		showView(7);
-  		    		break;
-  					
-  		    	}
-  		    }
-  		});
+  		  icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
     	  
     	  Menu IconMenu=icm.getMenu();
     	  Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Solver");
@@ -1212,53 +1016,22 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	  icm.show();
 	}
 
-	private void initialBtnDbContextMenu() {
-		icm = new IconContextMenu(this, R.menu.menu_db);
-		icm.setOnIconContextItemSelectedListener(new IconContextItemSelectedListener() 
-		{
-			
-			@Override
-			public void onIconContextItemSelected(MenuItem item, Object info) 
-			{
-				switch (item.getItemId())
-		    	{
-				// DB
-		    	case R.id.miCacheList:
-		    		showView(1);
-		    		break;
-		    		
-		    	case R.id.miTrackList:
-		    		showView(13);
-		    		break;
-		    	
-		    	case R.id.miFilterset:
-		    		showView(101);//Filtersettings
-		    		break;
-		    	case R.id.miManageDB:
-		    		SelectDB.autoStart = false;
-		    		Intent selectDBIntent = new Intent().setClass(mainActivity, SelectDB.class);
-/*			        Bundle b = new Bundle();
-			        b.putSerializable("Waypoint", aktWaypoint);
-			        mainIntent.putExtras(b);*/
-		    		mainActivity.startActivityForResult(selectDBIntent, 546132);
-		    		break;
-		    	case R.id.miResort:
-	            	Database.Data.Query.Resort();
-		    		break;
-		    	case R.id.miAutoResort:
-		    		Global.autoResort = !(Global.autoResort);
-		            
-		            Config.Set("AutoResort", Global.autoResort);
-
-		            if (Global.autoResort)
-		            {
-		            	Database.Data.Query.Resort();
-		            }
-		    		break;
-		    	
-		    	}
-		    }
-		});
+	private void showBtnListsContextMenu() {
+		icm = new IconContextMenu(this, R.menu.menu_lists);
+		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
+		Menu IconMenu=icm.getMenu();
+		
+		Global.TranslateMenuItem(IconMenu, R.id.miCacheList, "cacheList","  (" + String.valueOf(Database.Data.Query.size()) + ")" );
+		Global.TranslateMenuItem(IconMenu, R.id.miTrackList, "Tracks");
+		
+		
+  	  icm.show();
+	}
+	
+	public void showCachelistViewContextMenu()
+	{
+		icm = new IconContextMenu(this, R.menu.menu_cache_list);
+		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
 		Menu IconMenu=icm.getMenu();
 		
 		String DBName = Config.GetString("DatabasePath");
@@ -1266,20 +1039,72 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		DBName= DBName.substring(Pos+1);
     	Pos=DBName.lastIndexOf(".");
     	DBName=DBName.substring(0, Pos);
-		
-		Global.TranslateMenuItem(IconMenu, R.id.miCacheList, "cacheList","  (" + String.valueOf(Database.Data.Query.size()) + ")" );
-		Global.TranslateMenuItem(IconMenu, R.id.miFilterset, "filter");
-		Global.TranslateMenuItem(IconMenu, R.id.miManageDB, "manage" ,"  (" + DBName + ")");
-		Global.TranslateMenuItem(IconMenu, R.id.miResort, "ResortList");
-		Global.TranslateMenuItem(IconMenu, R.id.miTrackList, "Tracks");
-		MenuItem miAutoResort = Global.TranslateMenuItem(IconMenu, R.id.miAutoResort, "AutoResort");
+    	
+    	Global.TranslateMenuItem(IconMenu, R.id.miManageDB, "manage" ,"  (" + DBName + ")");
+    	MenuItem miAutoResort = Global.TranslateMenuItem(IconMenu, R.id.miAutoResort, "AutoResort");
 		miAutoResort.setCheckable(true);
 		miAutoResort.setChecked(Global.autoResort);
+		Global.TranslateMenuItem(IconMenu, R.id.miResort, "ResortList");
+		Global.TranslateMenuItem(IconMenu, R.id.miFilterset, "filter");
 		
-  	  icm.show();
+		// Search Caches
+		MenuItem mi = IconMenu.findItem(R.id.searchcaches_online);
+		if (mi != null)
+			mi.setEnabled(Global.APIisOnline());
+		
+		icm.show();
 	}
     
   
+	IconContextItemSelectedListener OnIconContextItemSelectedListener = new IconContextItemSelectedListener() 
+	{
+		
+		@Override
+		public void onIconContextItemSelected(MenuItem item, Object info) 
+		{
+			
+			switch (item.getItemId())
+	    	{
+			case R.id.miScreenLock:startScreenLock();break;
+	    	case R.id.miDayNight:switchDayNight();break;
+	    	case R.id.miSettings:showView(102);break;
+	    	case R.id.miVoiceRecorder:recVoice();break;
+	    	case R.id.miRecordVideo:recVideo();break;	
+	    	case R.id.miAbout:showView(11);break;
+	    	case R.id.miTestEmpty:showView(10);break;
+	    	case R.id.miImport:showView(103);break;
+	    	case R.id.miLogView:showView(3);break;
+		    case R.id.miSpoilerView:showView(5);break;
+		    case R.id.miHint:showHint();break;
+		    case R.id.miFieldNotes:showView(9);openOptionsMenu();break;				
+		    case R.id.miTelJoker:showJoker();break;	
+		    case R.id.miCompassView:showView(8);break;
+	    	case R.id.miMapView:showView(0);break;
+	    	case R.id.miDescription:showView(4);break;
+		    case R.id.miWaypoints:showView(2);break;
+		    case R.id.miNotes:showView(6);break;
+		    case R.id.miSolver:showView(7);break;
+		    case R.id.miCacheList:showView(1);break;
+		    case R.id.miTrackList:showView(13);break;
+		    case R.id.miFilterset:showView(101);break;
+		    case R.id.miManageDB:showManageDB();break;
+		    case R.id.miResort:Database.Data.Query.Resort();break;
+		    case R.id.miAutoResort:switchAutoResort();break;
+		    case R.id.miSearch:ListSearch();break;
+		    case R.id.miAddCache:addCache();break;
+		    case R.id.searchcaches_online:searchOnline();break;
+		    case R.id.miTbList:showTbList();break;
+		    default:
+				
+	    	}
+		}
+
+	
+
+		
+
+		
+	};
 
 	/*
 	 * Initial Methods
@@ -1654,6 +1479,260 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		}
 	}
 	
+	private void showHint()
+	{
+		if (GlobalCore.SelectedCache() == null)
+			return;
+		String hint = Database.Hint(GlobalCore.SelectedCache());
+		if (hint.equals(""))
+			return;
+		
+		final Intent hintIntent = new Intent().setClass(mainActivity, HintDialog.class);
+        Bundle b = new Bundle();
+        b.putSerializable("Hint", hint);
+        hintIntent.putExtras(b);
+        mainActivity.startActivity(hintIntent);
+	}
+	
+	private void showJoker()
+	{
+		if (Global.Jokers.isEmpty())
+		{ // Wenn Telefonjoker-Liste leer neu laden
+  		try
+  		{
+  			URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.GetString("GcJoker") + "&wpt=" + GlobalCore.SelectedCache().GcCode);
+  			URLConnection urlConnection = url.openConnection();
+  			HttpURLConnection httpConnection=(HttpURLConnection)urlConnection;
+  			
+  			//Get the HTTP response code
+  			if(httpConnection.getResponseCode()==HttpURLConnection.HTTP_OK)
+  			{
+  				InputStream inputStream = httpConnection.getInputStream();
+  				if(inputStream != null)
+  				{
+  					String line;
+  					try
+  					{
+  						BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+  						while((line=reader.readLine()) != null)
+  						{
+  							String[] s = line.split(";",7);
+  							try
+  							{
+  								if (s[0].equals("2")) 	// 2 entspricht Fehler, Fehlerursache ist in S[1]
+  								{
+  									MessageBox.Show(s[1],null);
+  									break;
+  								}
+  								if (s[0].equals("1")) 	// 1 entspricht Warnung, Ursache ist in S[1]
+  								{						// es können aber noch gültige Einträge folgen
+  									MessageBox.Show(s[1],null);
+  								}
+  								if (s[0].equals("0")) 	// Normaler Eintrag
+  								{
+  									Global.Jokers.AddJoker(s[1], s[2], s[3], s[4], s[5], s[6]);
+  								}
+  							} catch (Exception exc)
+  							{
+  					        	Logger.Error("main.initialBtnInfoContextMenu()", "HTTP response Jokers", exc);
+ 								return;
+  							}
+  						}
+  						if (Global.Jokers.isEmpty()){
+  							MessageBox.Show("Keine Joker bekannt",null);
+  						}
+  						else {
+	    			        	Logger.General("Open JokerView...");
+	    	  		    		showView(12);
+  						}
+  					}
+  					finally
+  					{
+  						inputStream.close();
+  					}
+  				}
+  			 }
+  		}
+  		catch(MalformedURLException urlEx){
+  			Logger.Error("main.initialBtnInfoContextMenu()", "MalformedURLException HTTP response Jokers", urlEx);
+              Log.d("DroidCachebox",urlEx.getMessage());		
+  			 }
+  		catch (IOException ioEx){
+  			Logger.Error("main.initialBtnInfoContextMenu()", "IOException HTTP response Jokers", ioEx);
+              Log.d("DroidCachebox",ioEx.getMessage());	
+              MessageBox.Show("Fehler bei Internetzugriff",null);
+  			 }
+  		catch(Exception ex){
+  			Logger.Error("main.initialBtnInfoContextMenu()", "HTTP response Jokers", ex);
+              Log.d("DroidCachebox",ex.getMessage());		
+  		}
+	}
+	}
+	
+	private void showTbList()
+	{
+		MessageBox.Show("Die Trackable List ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
+	}
+	
+	private void switchDayNight() 
+	{
+		frame.removeAllViews();
+		Config.changeDayNight();
+		ActivityUtils.changeToTheme(mainActivity,Config.GetBool("nightMode")? ActivityUtils.THEME_NIGHT : ActivityUtils.THEME_DAY );
+		Toast.makeText(mainActivity, "changeDayNight", Toast.LENGTH_SHORT).show();
+	}
+	
+	private void switchAutoResort() 
+	{
+		Global.autoResort = !(Global.autoResort);
+		
+		Config.Set("AutoResort", Global.autoResort);
+
+		if (Global.autoResort)
+		{
+			Database.Data.Query.Resort();
+		}
+	}
+
+	private void showManageDB() 
+	{
+		SelectDB.autoStart = false;
+		Intent selectDBIntent = new Intent().setClass(mainActivity, SelectDB.class);
+		mainActivity.startActivityForResult(selectDBIntent, 546132);
+	}
+	
+	private void ListSearch()
+	{
+		MessageBox.Show("Die Suche ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
+	}
+	
+	private void addCache()
+	{
+		MessageBox.Show("Cache hinzufügen ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
+	}
+	
+	
+	private static ProgressDialog pd;
+	private String result;
+	public void searchOnline() 
+	{
+		 Thread thread = new Thread()
+		  {
+		      @Override
+		      public void run() 
+		      {
+
+		  		String accessToken = Config.GetString("GcAPI");
+
+		  		
+		  		Coordinate searchCoord = null;
+		  		
+		  		if(mapView.isShown())
+		  		{
+		  			PointD point = new PointD(0, 0);
+		  			point.X = mapView.screenCenter.X ;
+		  			point.Y = mapView.screenCenter.Y ;
+		  			mapView.lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(mapView.Zoom, point.Y / (256.0)), Descriptor.TileXToLongitude(mapView.Zoom, point.X / (256.0)));
+		  			searchCoord=mapView.lastMouseCoordinate;
+		  		}
+		  		else
+		  		{
+		  			searchCoord=GlobalCore.LastValidPosition;
+		  		}
+		  		
+		  		if(searchCoord==null)
+		  			return;
+		  		
+		  		// alle per API importierten Caches landen in der Category und GpxFilename 
+		  		// API-Import
+		  		// Category suchen, die dazu gehört
+		  		CategoryDAO categoryDAO = new CategoryDAO();
+		  		Category category = categoryDAO.GetCategory(GlobalCore.Categories, "API-Import");
+		  		if (category == null)
+		  		    return;   // should not happen!!!
+
+		  		GpxFilename gpxFilename = categoryDAO.CreateNewGpxFilename(category, "API-Import");
+		  		if (gpxFilename == null)
+		  		    return;
+		  		
+		  		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+		  		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+		  		result = CB_Core.Api.GroundspeakAPI.SearchForGeocachesJSON(accessToken, searchCoord, 50000, 10, apiCaches, apiLogs, gpxFilename.Id);
+		  		if (apiCaches.size() > 0)
+		  		{
+		  			Database.Data.myDB.beginTransaction();
+		  			for (Cache cache : apiCaches)
+		  			{
+		  		        cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
+		  		        cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
+		  		        if (Database.Data.Query.GetCacheById(cache.Id) == null)
+		  		        {
+		  		        	Database.Data.Query.add(cache);
+		  		        	CacheDAO cacheDAO = new CacheDAO();
+		  		        	cacheDAO.WriteToDatabase(cache);
+		  		        	for (LogEntry log : apiLogs)
+		  		        	{
+		  		        		if (log.CacheId != cache.Id) 
+		  		        			continue;
+		  		        		// Write Log to database
+		  		        		LogDAO logDAO = new LogDAO();
+		  		        		logDAO.WriteToDatabase(log);
+		  		        	}
+		  		        	for (Waypoint waypoint : cache.waypoints)
+		  		        	{
+		  		        		WaypointDAO waypointDAO = new WaypointDAO();
+		  		        		waypointDAO.WriteToDatabase(waypoint);
+		  		        	}
+		  		        }
+		  			}
+		  		    Database.Data.myDB.setTransactionSuccessful();
+		  			Database.Data.myDB.endTransaction();
+
+		  			Database.Data.GPXFilenameUpdateCacheCount();
+
+		  			if(mapView.isShown())
+		  			{
+		  				mapView.updateCacheList();
+		  				mapView.Render(true);
+		  			}
+		  			
+		  			
+		  		}
+		  		
+		    	 
+			      onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
+		      }
+
+		  };
+
+		  
+		  pd = ProgressDialog.show(this, "", 
+	                 "Search Online", true);
+		  thread.start();
+		
+		return ;
+	}
+	
+	
+	 private Handler onlineSearchReadyHandler = new Handler() {
+
+	      @Override
+	      public void handleMessage(Message msg) 
+	      {
+	    	  switch(msg.what) 
+	    	  {
+	    	  case 1:
+	    	  	{
+	    	  		
+	    	  		pd.dismiss();
+	    	  		MessageBox.Show(result);
+	    	  	}
+		 	     
+	    	  }
+	    	  
+	      }
+
+	  };
 	
 	/*
 	 * Setter

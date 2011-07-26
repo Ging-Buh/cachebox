@@ -32,7 +32,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 346;
+    public static final int CurrentRevision = 347;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1015;
@@ -554,7 +554,7 @@ public class Global{
 	                	        		res.getDrawable(R.drawable.list_icon), //LogView braucht noch ein Icon
 	                	        		res.getDrawable(R.drawable.map),
 	                	        		res.getDrawable(R.drawable.compass),
-	                	        		res.getDrawable(R.drawable.list_icon), //CacheListView braucht noch ein Icon
+	                	        		res.getDrawable(R.drawable.cache_list_icon), //CacheListView braucht noch ein Icon
 	                	        		res.getDrawable(R.drawable.list_icon), //TrackListView braucht noch ein Icon
 	                	        		res.getDrawable(R.drawable.log10),
 	                	        		res.getDrawable(R.drawable.video_icon),
