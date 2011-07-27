@@ -144,11 +144,11 @@ public final class downSlider extends View implements SelectedCacheEvent
 	private int CacheInfoHeight= 0;
 	private Paint paint;
     private boolean isInitial=false;
-	
+	private boolean drag;
 	
 	private OnTouchListener myTouchListner = new OnTouchListener() 
 	{
-		boolean drag;
+		
 		@Override public boolean onTouch(View v, MotionEvent event) 
 		{
 			 // events when touching the screen
@@ -195,6 +195,12 @@ public final class downSlider extends View implements SelectedCacheEvent
 	@Override
 	protected void onDraw(Canvas canvas) 
 	{
+		
+		if(!drag)
+		{
+			yPos=Config.GetBool("quickButtonShow")? QuickButtonHeight:0;
+		}
+		
 		int FSize = (int) (Global.scaledFontSize_normal*1.2);
 	
 		if(CacheInfoHeight==0)CacheInfoHeight = (int) (FSize * 5.5);
