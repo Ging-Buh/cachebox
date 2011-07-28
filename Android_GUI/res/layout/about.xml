@@ -8,7 +8,7 @@
 
 	<TextView android:text="Founds" android:id="@+id/about_CachesFoundLabel"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:layout_gravity="center_horizontal" android:layout_marginTop="250dip"></TextView>
+		android:layout_gravity="bottom|center" android:layout_marginBottom="120dip"></TextView>
 		
 	<TextView android:text="GPS:" android:id="@+id/about_lblGPS"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"

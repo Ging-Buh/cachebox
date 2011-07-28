@@ -32,7 +32,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 349;
+    public static final int CurrentRevision = 350;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1015;
@@ -44,8 +44,7 @@ public class Global{
     	"Team Cachebox (2011)" + br +
     	"www.team-cachebox.de" + br +
     	"Cache Icons Copyright 2009," + br +
-    	"Groundspeak Inc.Used with permission" + br + br +
-    	"Support under: www.geoclub.de/viewforum.php?f=114 ";
+    	"Groundspeak Inc.Used with permission" ;
     
     public static final boolean Debug = true;
 	public static JokerList Jokers = new JokerList();

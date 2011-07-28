@@ -90,7 +90,15 @@ public class CacheListDAO {
 
         reader.close();
 //        Query.Sort();
-        Collections.sort(cacheList);
+        try
+        {
+        	Collections.sort(cacheList);
+        }
+        catch(Exception e)
+        {
+        	Logger.Error("CacheListDAO.ReadCacheList()", "Sort ERROR", e);
+        }
+        
     	
     }
 }

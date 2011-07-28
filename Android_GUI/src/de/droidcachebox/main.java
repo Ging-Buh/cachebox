@@ -370,7 +370,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        
 	        if (Config.GetBool("TrackRecorderStartup"))TrackRecorder.StartRecording();
 	        
-	        this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));	        	        
+	        this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));	 
+	        
+	        
 	    }
 
 	    /** hook into menu button for activity */
@@ -738,6 +740,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        {
 	        	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 	        }
+	        
+	        InfoDownSlider.invalidate();
 		}
 
 		@Override protected void onStop()
@@ -805,6 +809,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	                mainActivity = null;
 	                debugInfoPanel.OnFree();
 	                debugInfoPanel = null;
+	                InfoDownSlider = null;
 	    			super.onDestroy();
 					System.exit(0);
 	    		} else
@@ -926,6 +931,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	frame.addView((View) aktView);
     	aktView.OnShow();  
     	aktViewId=ViewList.indexOf(aktView);
+    	InfoDownSlider.invalidate();
     }
     
     
@@ -940,7 +946,19 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
 		
 		Menu IconMenu=icm.getMenu();
-		Global.TranslateMenuItem(IconMenu, R.id.miSettings, "settings");
+		
+	  	  
+	  	  icm.show();
+	}
+
+	private void showBtnToolsContextMenu() 
+	{
+		icm = new IconContextMenu(this, R.menu.menu_tools);
+  		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
+    	
+  		Menu IconMenu=icm.getMenu();
+  		
+  		Global.TranslateMenuItem(IconMenu, R.id.miSettings, "settings");
 		Global.TranslateMenuItem(IconMenu, R.id.miAbout, "about");
       	try
     	{
@@ -952,14 +970,44 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     				mi.setTitle("Stop Voice Rec.");
     	} catch (Exception exc)
     	{ }
-	  	  
-	  	  icm.show();
+
+    	  icm.show();
+	}
+	
+	private void showTrackContextMenu() 
+	{
+		icm = new IconContextMenu(this, R.menu.menu_track);
+  		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
+    	
+  		Menu IconMenu=icm.getMenu();
+  		icm.show();
 	}
 
-	private void showBtnToolsContextMenu() 
+	private void showBtnNavContextMenu() 
 	{
-		icm = new IconContextMenu(this, R.menu.menu_tools);
-  		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
+		icm = new IconContextMenu(this, R.menu.menu_nav);
+		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
+		
+		Menu IconMenu=icm.getMenu();
+		Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Map");
+		Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Compass");
+		icm.show();
+	}
+
+	private void showBtnCacheContextMenu() 
+	{
+		icm = new IconContextMenu(this, R.menu.menu_cache);
+  		  icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
+    	  
+    	  Menu IconMenu=icm.getMenu();
+    	  Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Solver");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miNotes, "Notes");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miDescription, "Description");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miWaypoints, "Waypoints");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miHint, "hint");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miTelJoker, "joker");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miLogView, "ShowLogs");
+    	  
     	  
     	  // Menu Item Hint enabled / disabled
     	  boolean enabled = false;
@@ -985,34 +1033,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	  if (mi != null)
     		  mi.setEnabled(enabled);
 
-    	  Menu IconMenu=icm.getMenu();
-    	  Global.TranslateMenuItem(IconMenu, R.id.miHint, "hint");
-    	  Global.TranslateMenuItem(IconMenu, R.id.miTelJoker, "joker");
-    	  Global.TranslateMenuItem(IconMenu, R.id.miLogView, "ShowLogs");
-    	  icm.show();
-	}
-
-	private void showBtnNavContextMenu() 
-	{
-		icm = new IconContextMenu(this, R.menu.menu_nav);
-		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-		
-		Menu IconMenu=icm.getMenu();
-		Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Map");
-		Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Compass");
-		icm.show();
-	}
-
-	private void showBtnCacheContextMenu() 
-	{
-		icm = new IconContextMenu(this, R.menu.menu_cache);
-  		  icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
     	  
-    	  Menu IconMenu=icm.getMenu();
-    	  Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Solver");
-    	  Global.TranslateMenuItem(IconMenu, R.id.miNotes, "Notes");
-    	  Global.TranslateMenuItem(IconMenu, R.id.miDescription, "Description");
-    	  Global.TranslateMenuItem(IconMenu, R.id.miWaypoints, "Waypoints");
+    	  
     	  icm.show();
 	}
 
@@ -1071,7 +1093,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    	case R.id.miVoiceRecorder:recVoice();break;
 	    	case R.id.miRecordVideo:recVideo();break;	
 	    	case R.id.miAbout:showView(11);break;
-	    	case R.id.miTestEmpty:showView(10);break;
+//	    	case R.id.miTestEmpty:showView(10);break;
 	    	case R.id.miImport:showView(103);break;
 	    	case R.id.miLogView:showView(3);break;
 		    case R.id.miSpoilerView:showView(5);break;
@@ -1094,6 +1116,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    case R.id.miAddCache:addCache();break;
 		    case R.id.searchcaches_online:searchOnline();break;
 		    case R.id.miTbList:showTbList();break;
+		    case R.id.miTakePhoto:takePhoto();break;
+		    case R.id.miTrackRec:showTrackContextMenu();break;
+		    case R.id.miTrackStart:TrackRecorder.StartRecording();break;
+		    case R.id.miTrackStop:TrackRecorder.StopRecording();break;
+		    case R.id.miTrackPause:TrackRecorder.PauseRecording();break;
 		    default:
 				
 	    	}
@@ -1106,6 +1133,30 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		
 	};
 
+    OnItemClickListener QuickButtonOnItemClickListner = new OnItemClickListener() 
+    {
+    	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) 
+		{
+			QuickButtonItem clicedItem = Global.QuickButtonList.get(arg2);
+			
+			switch (clicedItem.getActionId())
+	        {
+	        case 0:showView(4);break;
+	        case 1:showView(2);break;
+	        case 2:showView(3);break;
+	        case 3:showView(0);break;
+	        case 4:showView(8);break;
+	        case 5:showView(1);break;
+	        case 6:showView(13);break;
+	        case 7:takePhoto();break;
+	        case 8:recVideo();break;
+	        case 9:recVoice();break;
+	        case 10:MessageBox.Show("SearchAPI muss noch in eine eigene Methode refactoriert werden, damit die Suche auch von hier aus ausgelöst werden kann!");break;
+	        }
+		}
+	};
+	
 	/*
 	 * Initial Methods
 	 */
@@ -1310,37 +1361,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		cacheNameView.setHeight((int) (Global.scaledFontSize_normal*2.2));
 
 	}
- 	
-    OnItemClickListener QuickButtonOnItemClickListner = new OnItemClickListener() 
-    {
-
-		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-				long arg3) 
-		{
-			QuickButtonItem clicedItem = Global.QuickButtonList.get(arg2);
-			
-			switch (clicedItem.getActionId())
-	        {
-	        case 0:showView(4);break;
-	        case 1:showView(2);break;
-	        case 2:showView(3);break;
-	        case 3:showView(0);break;
-	        case 4:showView(8);break;
-	        case 5:showView(1);break;
-	        case 6:showView(13);break;
-	        case 7:takePhoto();break;
-	        case 8:recVideo();break;
-	        case 9:recVoice();break;
-	        case 10:MessageBox.Show("SearchAPI muss noch in eine eigene Methode refactoriert werden, damit die Suche auch von hier aus ausgelöst werden kann!");break;
-	        }
-			
-		}
-	};
-    
-    
-	
-	
+ 		
 	private void takePhoto()
 	{
         Log.d("DroidCachebox", "Starting camera on the phone...");
@@ -1714,25 +1735,20 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	}
 	
 	
-	 private Handler onlineSearchReadyHandler = new Handler() {
-
-	      @Override
-	      public void handleMessage(Message msg) 
-	      {
+	private Handler onlineSearchReadyHandler = new Handler() 
+	{
+		public void handleMessage(Message msg) 
+	    {
 	    	  switch(msg.what) 
 	    	  {
 	    	  case 1:
 	    	  	{
-	    	  		
 	    	  		pd.dismiss();
 	    	  		MessageBox.Show(result);
 	    	  	}
-		 	     
-	    	  }
-	    	  
-	      }
-
-	  };
+		 	  }
+	    }
+	};
 	
 	/*
 	 * Setter

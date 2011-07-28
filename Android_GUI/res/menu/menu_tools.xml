@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/miLogView" android:title="LogView" android:icon="@drawable/list_icon"></item>
-    <item android:id="@+id/miSpoilerView" android:title="Spoilers" android:icon="@drawable/images_icon"></item>
-    <item android:title="Hint" android:id="@+id/miHint" android:icon="@drawable/hint_icon"></item>
-    <item android:id="@+id/miFieldNotes" android:title="Field Notes" android:icon="@drawable/note_icon"></item>
-    <item android:id="@+id/miTelJoker" android:title="Telephone Joker" android:icon="@drawable/joker_phone"></item>
+    <item android:id="@+id/miTrackRec" android:title="Track Recorder"></item>
+    <item android:title="Voice Recorder" android:id="@+id/miVoiceRecorder" android:icon="@drawable/voice_rec_icon"></item> 
+    <item android:title="Take Photo" android:id="@+id/miTakePhoto" android:icon="@drawable/log10"></item>  
+    <item android:title="Record Video" android:id="@+id/miRecordVideo" android:icon="@drawable/video_icon"></item>
+    
+   
 </menu>

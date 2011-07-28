@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/miTrackStart" android:title="Start"></item>
+	<item android:id="@+id/miTrackPause" android:title="Pause"></item>
+	<item android:id="@+id/miTrackStop" android:title="Stop"></item>
+
+</menu>
