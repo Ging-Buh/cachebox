@@ -4756,7 +4756,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			        mainIntent.putExtras(b);
 		   		main.mainActivity.startActivity(mainIntent);
 		   		return true;
-			
 			case R.id.miMap_HideFinds:
 				hideMyFinds=!hideMyFinds;
 				Config.Set("MapHideMyFinds", hideMyFinds);
@@ -4785,7 +4784,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				Render(true);
 		   		return true;
 		   	
-			case R.id.searchcaches_online:((main)main.mainActivity).searchOnline();break;
+			case R.id.searchcaches_online:
+				((main)main.mainActivity).searchOnline();
+				break;
 		}
 		return false;
 	}
@@ -4846,7 +4847,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			if (mi != null)
 				mi.setEnabled(TrackRecorder.recording);
 			
-			
+			// Search Caches	 
+            mi = menu.findItem(R.id.searchcaches_online);	 
+            if (mi != null)	 
+                    mi.setEnabled(Global.APIisOnline());			
 
 			
 			
