@@ -5,6 +5,7 @@ import CB_Core.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.FilterSettings.FilterSetListView;
 import de.droidcachebox.Views.FilterSettings.FilterSetListView.FilterSetEntry;
 import android.content.Context;
@@ -20,7 +21,7 @@ import android.view.View;
 
 public class FilterSetListViewItem extends View {
 	private FilterSetEntry mFilterSetEntry;
-    private int mAscent;
+   
     private static int width;
     private static int height = 0;
     private Context mContext;
@@ -42,7 +43,7 @@ public class FilterSetListViewItem extends View {
         if(textPaint==null)
         {
         	textPaint = new TextPaint();
-        	textPaint.setTextSize(Global.scaledFontSize_normal);
+        	textPaint.setTextSize(Sizes.getScaledFontSize_normal());
         	textPaint.setColor(Global.getColor(R.attr.TextColor));
         	textPaint.setAntiAlias(true);
         }
@@ -78,80 +79,17 @@ public class FilterSetListViewItem extends View {
 		
 		 width = PresetListView.windowW;
 		
-		 height = iconSize +(Global.CornerSize*2); 
-      
-		
-		
-								
-			 			 				
-	     setMeasuredDimension(width, height);
+		 height = Sizes.getIconSize() + Sizes.getCornerSize(); 
+ setMeasuredDimension(width, height);
 	            
 	}
 
-    /**
-     * Determines the width of this view
-     * @param measureSpec A measureSpec packed into an int
-     * @return The width of the view, honoring constraints from measureSpec
-     */
-    private int measureWidth(int measureSpec) {
-        int result = 0;
-        int specMode = MeasureSpec.getMode(measureSpec);
-        int specSize = MeasureSpec.getSize(measureSpec);
-
-       /* String EntryName=mPresetEntry.getName();
-        
-        if (specMode == MeasureSpec.EXACTLY) {
-            // We were told how big to be
-            result = specSize;
-        } else {
-            // Measure the text
-            result = (int) Global.Paints.mesurePaint.measureText(EntryName) + getPaddingLeft()
-                    + getPaddingRight();
-            if (specMode == MeasureSpec.AT_MOST) {
-                // Respect AT_MOST value if that was what is called for by measureSpec
-                result = Math.min(result, specSize);
-            }
-        }*/
-        
-        width = specSize;
-        
-      
-        
-        return result;
-    }
-
-    /**
-     * Determines the height of this view
-     * @param measureSpec A measureSpec packed into an int
-     * @return The height of the view, honoring constraints from measureSpec
-     */
-    private int measureHeight(int measureSpec) {
-        int result = 0;
-        int specMode = MeasureSpec.getMode(measureSpec);
-        int specSize = MeasureSpec.getSize(measureSpec);
-
-        mAscent = (int) Global.Paints.mesurePaint.ascent();
-        if (specMode == MeasureSpec.EXACTLY) {
-            // We were told how big to be
-            result = specSize;
-        } else {
-            // Measure the text (beware: ascent is a negative number)
-            result = (int) (-mAscent + Global.Paints.mesurePaint.descent()) + getPaddingTop()
-                    + getPaddingBottom();
-            if (specMode == MeasureSpec.AT_MOST) {
-                // Respect AT_MOST value if that was what is called for by measureSpec
-                result = Math.min(result, specSize);
-            }
-        }
-     
-        return result;
-    }
 
 //Draw Methods
     
     // static Member
     private static Paint TextPaint;
-    private static final int iconSize = (int) (Global.scaledFontSize_normal * 3.5);
+    
     // private Member
     int left;
     int top ;
@@ -161,21 +99,21 @@ public class FilterSetListViewItem extends View {
     {
         
         //initial
-    	left = Global.CornerSize;
-        top = Global.CornerSize;
+    	left = Sizes.getCornerSize();
+        top = Sizes.getCornerSize();
         
         if (TextPaint==null)
         {
      	   TextPaint = new Paint();
      	   TextPaint.setAntiAlias(true);
            TextPaint.setFakeBoldText(true);
-           TextPaint.setTextSize((float) (Global.scaledFontSize_normal*1.3));
+           TextPaint.setTextSize((float) (Sizes.getScaledFontSize_big()));
            TextPaint.setColor(Global.getColor(R.attr.TextColor));
         }
         
         if(layoutEntryName==null)
         {        	
-        	int innerWidth = width - (Global.CornerSize*2)- iconSize;
+        	int innerWidth = width - (Sizes.getCornerSize()*2)- Sizes.getIconSize();
             layoutEntryName = new StaticLayout(mFilterSetEntry.getName(), textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
         }
 		
@@ -201,7 +139,7 @@ public class FilterSetListViewItem extends View {
         {
         ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(5, 5, width-5, height-5), 2, 
      		   Global.getColor(R.attr.ListSeparator), BackgroundColor, 
-     						   Global.CornerSize);
+     		  Sizes.getCornerSize());
         }
         
         switch (this.mFilterSetEntry.getItemType())
@@ -305,7 +243,7 @@ public class FilterSetListViewItem extends View {
     	if (mTextPaint==null)
     	{
     		mTextPaint = new TextPaint();
-    		mTextPaint.setTextSize(Global.scaledFontSize_normal*3);
+    		mTextPaint.setTextSize(Sizes.getScaledFontSize_normal()*3);
     		mTextPaint.setColor(Global.getColor(R.attr.TextColor));
     		mTextPaint.setAntiAlias(true);
     		mTextPaint.setFakeBoldText(true);
@@ -331,8 +269,8 @@ public class FilterSetListViewItem extends View {
     	
     	if(mFilterSetEntry.getIcon()!=null)
     	{
-    		ActivityUtils.PutImageTargetHeight(canvas, mFilterSetEntry.getIcon(), left , top , iconSize/2);
-    		top += iconSize/1.5;
+    		ActivityUtils.PutImageTargetHeight(canvas, mFilterSetEntry.getIcon(), left , top , Sizes.getIconSize()/2);
+    		top += Sizes.getIconSize()/1.5;
     	}
     		
     }
@@ -341,7 +279,7 @@ public class FilterSetListViewItem extends View {
     private void drawIcon(Canvas canvas)
     {
     	if(mFilterSetEntry.getIcon()!=null)
-    		left +=ActivityUtils.PutImageTargetHeight(canvas, mFilterSetEntry.getIcon(), left , top , iconSize) + iconSize/2;
+    		left +=ActivityUtils.PutImageTargetHeight(canvas, mFilterSetEntry.getIcon(), left , top , Sizes.getIconSize()) + Sizes.getIconSize()/2;
     	
     }
     
@@ -356,7 +294,7 @@ public class FilterSetListViewItem extends View {
     	}
     	ActivityUtils.drawFillRoundRecWithBorder(canvas, rChkBounds, 3, 
 	     		   Global.getColor(R.attr.ListSeparator), BackgroundColor, 
-	     						   Global.CornerSize);
+	     		  Sizes.getCornerSize());
     }
 
 	public void plusClick() 

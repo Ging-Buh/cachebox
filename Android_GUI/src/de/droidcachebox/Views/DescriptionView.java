@@ -20,6 +20,7 @@ import CB_Core.GlobalCore;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.Forms.MessageBox;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
@@ -67,7 +68,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	    // we overriding onMeasure because this is where the application gets its right size.
 	    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	    	    
-	    cacheInfo.setHeight((int) (Global.scaledFontSize_normal * 4.9));
+	    cacheInfo.setHeight(Sizes.getCacheInfoHeight());
 	   
 	    }
 		

@@ -917,7 +917,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
  	private void setButtonHeight() 
 	{
 		// setzt die höhe der Buttons auf die Höhe der ComboBox
-		int Height = (int) (Global.scaledFontSize_normal*4);
+		int Height = (int) (Sizes.getScaledFontSize_normal()*4);
 		LangCombo.setMinimumHeight(Height);
 		ToggleLogInView.setHeight(Height);
 		ToggleGPSView.setHeight(Height);

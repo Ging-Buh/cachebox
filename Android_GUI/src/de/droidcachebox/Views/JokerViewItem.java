@@ -8,6 +8,7 @@ import de.droidcachebox.Components.CacheDraw.DrawStyle;
 
 import de.droidcachebox.Geocaching.JokerEntry;
 import de.droidcachebox.Geocaching.JokerList;
+import de.droidcachebox.Ui.Sizes;
 import CB_Core.Types.Cache;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -55,7 +56,7 @@ public class JokerViewItem extends View {
 		
 		Rect bounds = new Rect();
 		LayoutTextPaint = new TextPaint();
-		LayoutTextPaint.setTextSize(Global.scaledFontSize_normal);
+		LayoutTextPaint.setTextSize(Sizes.getScaledFontSize_normal());
 		LayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LineSep = bounds.height()/3;
 		

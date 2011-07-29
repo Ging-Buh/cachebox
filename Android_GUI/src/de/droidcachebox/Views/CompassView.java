@@ -13,7 +13,9 @@ import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.Log.Logger;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Ui.Sizes;
 import CB_Core.GlobalCore;
 import CB_Core.TranslationEngine.SelectedLangChangedEvent;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
@@ -89,9 +91,8 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 		
 		@Override
 		public void onClick(View v) 
-		{
+		{// bei click auf WP zeige WayPointView
 			((main) main.mainActivity).showView(2);
-			
 		}
 	};
 	
@@ -102,10 +103,18 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     windowW = getMeasuredWidth();
     windowH = getMeasuredHeight();
-    
-    DescriptionTextView.setHeight((int) (Global.scaledFontSize_normal * 4.9));
+   
+    DescriptionTextView.setHeight(Sizes.getCacheInfoHeight());
     ToggleButtonLayout.getLayoutParams().height= windowW + 30;
 
+    // berechne höhe des Compass Controls anhand des Vorhandenen platzes
+    // höhe= breite
+    
+    int compassHeight=0;
+    compassHeight=windowH-Sizes.getCacheInfoHeight()-150;
+
+    compassControl.setHeight(compassHeight);
+   
     }
 	
 	
@@ -211,6 +220,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 	@Override
 	public void OrientationChanged(float Testheading) 
 	{
+		if (aktCache==null)return;
 		
 		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
         {

@@ -1,30 +1,23 @@
 package de.droidcachebox.Views;
 
-import CB_Core.Config;
 import CB_Core.GlobalCore;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Components.CacheDraw.DrawStyle;
+import de.droidcachebox.Ui.Sizes;
 
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
-import android.R.bool;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.Layout.Alignment;
 import android.view.View;
-import android.view.View.MeasureSpec;
-import android.widget.LinearLayout;
 
 public class WaypointViewItem extends View {
     private Cache cache;
@@ -33,7 +26,7 @@ public class WaypointViewItem extends View {
     private int width;
     private int height;
     private boolean BackColorChanger = false;
-    private final int CornerSize =20;
+   
     private int rightBorder;
     private int imgSize;
     private StaticLayout LayoutName; 
@@ -66,7 +59,7 @@ public class WaypointViewItem extends View {
 		
 		Rect bounds = new Rect();
 		LayoutTextPaint = new TextPaint();
-		LayoutTextPaint.setTextSize(Global.scaledFontSize_normal);
+		LayoutTextPaint.setTextSize(Sizes.getScaledFontSize_normal());
 		LayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LineSep = bounds.height()/3;
 		
@@ -192,7 +185,7 @@ public class WaypointViewItem extends View {
         	int iconWidth = 0;
         	// draw icon
         	if (((int)waypoint.Type.ordinal()) < Global.CacheIconsBig.length)
-        		iconWidth=ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[(int)waypoint.Type.ordinal()], CornerSize/2,CornerSize, imgSize);
+        		iconWidth=ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[(int)waypoint.Type.ordinal()], Sizes.getHalfCornerSize(),Sizes.getCornerSize(), imgSize);
 
         	// draw Text info
         	left += iconWidth;

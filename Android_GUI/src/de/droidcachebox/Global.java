@@ -21,18 +21,16 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import de.droidcachebox.Custom_Controls.QuickButtonList.QuickButtonItem;
 import de.droidcachebox.Geocaching.JokerList;
 import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.RouteOverlay;
+import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 351;
+    public static final int CurrentRevision = 352;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1015;
@@ -68,8 +66,7 @@ public class Global{
     public static long TrackDistance;
          
     //Sizes
-    public static int scaledFontSize_normal;
-    public static int CornerSize;
+    
     
     public static LangStrings Translations = new LangStrings();
 
@@ -216,11 +213,10 @@ public class Global{
         	Resources res = context.getResources();
         	
         	// calc sizes
-        	scaledFontSize_normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
-        	CornerSize = scaledFontSize_normal/2;
+        	
         	
         	mesurePaint = new Paint();
-        	mesurePaint.setTextSize(scaledFontSize_normal);
+        	mesurePaint.setTextSize(Sizes.getScaledFontSize_normal());
         	
         	ListBackground=new Paint();
     		Night.ListBackground_second=new Paint();

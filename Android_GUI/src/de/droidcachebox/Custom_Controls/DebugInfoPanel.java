@@ -5,6 +5,7 @@ import CB_Core.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Ui.Sizes;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -140,11 +141,11 @@ public final class DebugInfoPanel extends View
 		this.height = measure(heightMeasureSpec);
 		Rect bounds = new Rect();
 		LayoutTextPaint = new TextPaint();
-		LayoutTextPaint.setTextSize(Global.scaledFontSize_normal);
+		LayoutTextPaint.setTextSize(Sizes.getScaledFontSize_normal());
 		LayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LayoutTextPaint.setColor(Color.WHITE);
 		LineSep = bounds.height()/3;
-		ContentWidth=width-(Global.CornerSize*2);
+		ContentWidth=width-(Sizes.getCornerSize()*2);
 		
 		LayoutMemInfo = new StaticLayout("1. Zeile " + String.format("%n") + "2.Zeile" + String.format("%n") + "3.Zeile", LayoutTextPaint, ContentWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		LayoutMsg = new StaticLayout(Msg, LayoutTextPaint, ContentWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
@@ -203,8 +204,8 @@ public final class DebugInfoPanel extends View
 	     ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, Global.getColor(R.attr.SlideDownBackColor));
 	     
 	     
-	     left=Global.CornerSize;
-	     top=Global.CornerSize;
+	     left=top=Sizes.getCornerSize();
+	    
 	     if (Config.GetBool("DebugMemory"))drawMemInfo(canvas);
 	     
 	     if (Config.GetBool("DebugShowMsg"))drawMsg(canvas);

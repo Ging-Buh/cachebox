@@ -7,6 +7,7 @@ import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.Components.ActivityUtils;
 
+import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.WaypointView;
 import CB_Core.Types.Cache;
@@ -66,7 +67,7 @@ public final class WayPointInfoControl extends View
     private Waypoint waypoint;
     private int mAscent;
     private boolean BackColorChanger = false;
-    private final int CornerSize =Global.CornerSize;
+   
     private int rightBorder;
     private int imgSize;
     private StaticLayout LayoutName; 
@@ -99,7 +100,7 @@ public final class WayPointInfoControl extends View
 		
 		Rect bounds = new Rect();
 		LayoutTextPaint = new TextPaint();
-		LayoutTextPaint.setTextSize(Global.scaledFontSize_normal);
+		LayoutTextPaint.setTextSize(Sizes.getScaledFontSize_normal());
 		LayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LineSep = bounds.height()/3;
         
@@ -164,7 +165,7 @@ public final class WayPointInfoControl extends View
      	int iconWidth = 0;
      	// draw icon
      	if (((int)waypoint.Type.ordinal()) < Global.CacheIconsBig.length)
-     		iconWidth=ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[(int)waypoint.Type.ordinal()], CornerSize/2,CornerSize, imgSize);
+     		iconWidth=ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[(int)waypoint.Type.ordinal()], Sizes.getHalfCornerSize(),Sizes.getCornerSize(), imgSize);
 
      	// draw Text info
      	left += iconWidth;

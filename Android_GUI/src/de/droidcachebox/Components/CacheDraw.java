@@ -9,6 +9,8 @@ import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
+import de.droidcachebox.Ui.Size;
+import de.droidcachebox.Ui.Sizes;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -60,13 +62,11 @@ public class CacheDraw
     
     
     // Static Mesured Member
-    private static final int iconSize = (int) (Global.scaledFontSize_normal * 3.5);
+   
     private static int VoteWidth = 0;
     private static int rightBorder = 0;
     private static int nameLayoutWidth = 0;
     private static Paint DTPaint;
-    private final static int space = (int) (Global.scaledFontSize_normal*0.7);
-    private final static int tab = (int) (Global.scaledFontSize_normal*0.6);
     public static Rect BearingRec; 
     private static TextPaint namePaint;
     
@@ -127,30 +127,30 @@ public class CacheDraw
             Boolean GlobalSelected = cache == GlobalCore.SelectedCache();
             if(BackgroundColor==-1)BackgroundColor= GlobalSelected? Global.getColor(R.attr.ListBackground_select):Global.getColor(R.attr.ListBackground);
             if(BorderColor==-1)BorderColor= Global.getColor(R.attr.ListSeparator);
-            final int halfCornerSize = Global.scaledFontSize_normal/2;
-            final int left = rec.left + halfCornerSize;
-            final int top = rec.top + halfCornerSize;
-            final int width = rec.width() - halfCornerSize;
-            final int height = rec.height() - halfCornerSize;
-            final int SDTImageTop = (int) (height-(Global.scaledFontSize_normal/1.5))+ rec.top;
-            final int SDTLineTop = SDTImageTop + Global.scaledFontSize_normal;
+            
+            final int left = rec.left + Sizes.getHalfCornerSize();
+            final int top = rec.top +  Sizes.getHalfCornerSize();
+            final int width = rec.width() -  Sizes.getHalfCornerSize();
+            final int height = rec.height() -  Sizes.getHalfCornerSize();
+            final int SDTImageTop = (int) (height-(Sizes.getScaledFontSize_normal()/1.5))+ rec.top-10;
+            final int SDTLineTop = SDTImageTop + Sizes.getScaledFontSize_normal();
             	
     	// Mesure
     		if (VoteWidth == 0) // Grössen noch nicht berechnet
     		{
 		    	
-		      	VoteWidth = Global.scaledFontSize_normal/2;
+		      	VoteWidth = Sizes.getScaledFontSize_normal()/2;
 		      	
 		      	rightBorder = (int) (height * 0.7);
-		      	nameLayoutWidth = width - VoteWidth - iconSize - rightBorder - ((int)Global.scaledFontSize_normal/2);
+		      	nameLayoutWidth = width - VoteWidth - Sizes.getIconSize() - rightBorder - (Sizes.getScaledFontSize_normal()/2);
 		      	DTPaint = new Paint();
-	    	    DTPaint.setTextSize(Global.scaledFontSize_normal);
+	    	    DTPaint.setTextSize(Sizes.getScaledFontSize_normal());
 	    	    DTPaint.setAntiAlias(true);
     		}
     		if (namePaint==null)
     		{
     			namePaint = new TextPaint();
-    			namePaint.setTextSize(Global.scaledFontSize_normal);
+    			namePaint.setTextSize(Sizes.getScaledFontSize_normal());
     		}
     		
     	// reset namePaint attr
@@ -165,16 +165,16 @@ public class CacheDraw
     		
     	// Draw Vote
     		if (cache.Rating > 0)
-    			ActivityUtils.PutImageScale(canvas, Global.StarIcons[(int)(cache.Rating * 2)],-90,left, top , (double)Global.scaledFontSize_normal/60);
+    			ActivityUtils.PutImageScale(canvas, Global.StarIcons[(int)(cache.Rating * 2)],-90,left, top , (double)Sizes.getScaledFontSize_normal()/60);
     	
     	// Draw Icon
     		 if (cache.MysterySolved())
     	        {
-    			 	ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[19],left + VoteWidth, top - (int) (Global.scaledFontSize_normal / 2) , iconSize); 
+    			 	ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[19],left + VoteWidth, top - (int) (Sizes.getScaledFontSize_normal() / 2) , Sizes.getIconSize()); 
     	        }
     	        else
     	        {
-    	        	ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.Type.ordinal()], left  + VoteWidth, top - (int) (Global.scaledFontSize_normal / 2) , iconSize); 
+    	        	ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.Type.ordinal()], left  + VoteWidth, top - (int) (Sizes.getScaledFontSize_normal() / 2) , Sizes.getIconSize()); 
     	        }
     	
     	// Draw Cache Name
@@ -192,7 +192,7 @@ public class CacheDraw
     	     String drawName = (drawStyle==DrawStyle.withOwner)? "by " + cache.Owner + ", "+ dateString:cache.Name;
     	     
     	     layoutCacheName = new StaticLayout(drawName, namePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-    	     int LayoutHeight = ActivityUtils.drawStaticLayout(canvas, layoutCacheName, left + VoteWidth + iconSize + 5, top);
+    	     int LayoutHeight = ActivityUtils.drawStaticLayout(canvas, layoutCacheName, left + VoteWidth + Sizes.getIconSize() + 5, top);
     	       
     	// over draw 3. Cache name line
     	     int VislinesHeight = LayoutHeight*2/layoutCacheName.getLineCount();
@@ -201,7 +201,7 @@ public class CacheDraw
     	    	 Paint backPaint = new Paint();
     	    	 backPaint.setColor(BackgroundColor); // Color.RED
 
-    	    	 canvas.drawRect(new Rect(left + VoteWidth + iconSize + 5,top + VislinesHeight,nameLayoutWidth+left + VoteWidth + iconSize + 5,top+LayoutHeight+VislinesHeight-4), backPaint);
+    	    	 canvas.drawRect(new Rect(left + VoteWidth + Sizes.getIconSize() + 5,top + VislinesHeight,nameLayoutWidth+left + VoteWidth + Sizes.getIconSize() + 5,top+LayoutHeight+VislinesHeight-4), backPaint);
     	     }
     	     
     	     
@@ -216,24 +216,24 @@ public class CacheDraw
     	    		 DrawText += "last found: " + LastFound;
     	    	 }
     	    	 layoutCacheOwner = new StaticLayout(DrawText , namePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-    	    	 ActivityUtils.drawStaticLayout(canvas, layoutCacheOwner, left + VoteWidth + iconSize + 5, top + VislinesHeight);
+    	    	 ActivityUtils.drawStaticLayout(canvas, layoutCacheOwner, left + VoteWidth + Sizes.getIconSize() + 5, top + VislinesHeight);
     	     }
     	     
     	// Draw S/D/T
     	     int SDTleft = left+ 2;
     	     
     	     canvas.drawText("S",SDTleft,SDTLineTop , DTPaint);
-    	     SDTleft += space;
-    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.SizeIcons[(int)(cache.Size.ordinal())], SDTleft, SDTImageTop, Global.scaledFontSize_normal);
-    	     SDTleft += tab;	
+    	     SDTleft += Sizes.getSpaceWidth();
+    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.SizeIcons[(int)(cache.Size.ordinal())], SDTleft, SDTImageTop, Sizes.getScaledFontSize_normal());
+    	     SDTleft += Sizes.getTabWidth();	
     	     canvas.drawText("D",SDTleft,SDTLineTop , DTPaint);
-    	     SDTleft += space;
-    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int)(cache.Difficulty * 2)],SDTleft, SDTImageTop, Global.scaledFontSize_normal);
-    	     SDTleft += tab;
+    	     SDTleft += Sizes.getSpaceWidth();
+    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int)(cache.Difficulty * 2)],SDTleft, SDTImageTop, Sizes.getScaledFontSize_normal());
+    	     SDTleft += Sizes.getTabWidth();
     	     canvas.drawText("T", SDTleft,SDTLineTop , DTPaint);
-    	     SDTleft += space;
-    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int)(cache.Terrain * 2)], SDTleft, SDTImageTop, Global.scaledFontSize_normal);
-    	     SDTleft += tab;
+    	     SDTleft += Sizes.getSpaceWidth();
+    	     SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int)(cache.Terrain * 2)], SDTleft, SDTImageTop, Sizes.getScaledFontSize_normal());
+    	     SDTleft += Sizes.getTabWidth();
     	     
     	
     	     
@@ -241,7 +241,7 @@ public class CacheDraw
     	     int numTb = cache.NumTravelbugs;
              if (numTb > 0)
               {
-            	 SDTleft += ActivityUtils.PutImageScale(canvas, Global.Icons[0],-90,SDTleft, SDTImageTop -1 , (double)Global.scaledFontSize_normal/30);
+            	 SDTleft += ActivityUtils.PutImageScale(canvas, Global.Icons[0],-90,SDTleft, SDTImageTop -1 , (double)Sizes.getScaledFontSize_normal()/30);
                   //SDTleft += space;
                  if (numTb > 1)
                 	 canvas.drawText("x" + String.valueOf(numTb),SDTleft, SDTLineTop , DTPaint);
@@ -252,7 +252,7 @@ public class CacheDraw
     	     
     	     if (drawStyle != DrawStyle.withoutBearing && drawStyle != DrawStyle.withOwnerAndName)
     	     {
-    	    	 if (BearingRec==null) BearingRec = new Rect(rec.right-rightBorder,rec.top,rec.right,(int) (SDTImageTop*0.8));
+    	    	 if (BearingRec==null) BearingRec = new Rect(rec.right-rightBorder,rec.top,rec.right,(int) (SDTImageTop*0.9));
     	    	 DrawBearing(cache,canvas,BearingRec);
     	     }
     	    	
@@ -260,26 +260,26 @@ public class CacheDraw
     	  if (cache.Found)
           {
         	  
-    		  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[2],left  + VoteWidth+iconSize/2,top - (int) (Global.scaledFontSize_normal / 2)+iconSize/2, iconSize/2);//Smile
+    		  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[2],left  + VoteWidth+Sizes.getIconSize()/2,top - (int) (Sizes.getScaledFontSize_normal() / 2)+Sizes.getIconSize()/2, Sizes.getIconSize()/2);//Smile
           }
               
 
           if (cache.Favorit())
           {
-        	  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[19],left + VoteWidth + 2, top , iconSize/2);
+        	  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[19],left + VoteWidth + 2, top , Sizes.getIconSize()/2);
           }
 
          
 
           if (cache.Archived)
           {
-        	  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[24], left + VoteWidth, top - (int) (Global.scaledFontSize_normal / 2), iconSize/2);
+        	  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[24], left + VoteWidth, top - (int) (Sizes.getScaledFontSize_normal() / 2), Sizes.getIconSize()/2);
           }
 
           String gcLogin = Config.GetString("GcLogin").toLowerCase(); 
           if (cache.Owner.toLowerCase().equals(gcLogin) && !(gcLogin.equals("")))
           {
-        	  ActivityUtils.PutImageTargetHeight(canvas,Global.Icons[17],left  + VoteWidth+iconSize/2,top - (int) (Global.scaledFontSize_normal / 2)+iconSize/2, iconSize/2);
+        	  ActivityUtils.PutImageTargetHeight(canvas,Global.Icons[17],left  + VoteWidth+Sizes.getIconSize()/2,top - (int) (Sizes.getScaledFontSize_normal() / 2)+Sizes.getIconSize()/2, Sizes.getIconSize()/2);
           }
        	
     }
@@ -329,7 +329,7 @@ public class CacheDraw
     private static void DrawBearing (Cache cache,Canvas canvas,Rect drawingRec, String Distance, double Bearing)
     {
     	
-    	double scale =(double) Global.scaledFontSize_normal / 30;
+    	double scale =(double) Sizes.getScaledFontSize_normal() / 30;
     	
     	ActivityUtils.PutImageScale(canvas, Global.Arrows[1],Bearing,drawingRec.left,drawingRec.top,scale);
 	    canvas.drawText(Distance,drawingRec.left,drawingRec.bottom, DTPaint);

@@ -4,6 +4,7 @@ package de.droidcachebox.Custom_Controls;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import CB_Core.GlobalCore;
+import CB_Core.Log.Logger;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -191,9 +192,7 @@ public final class CompassControl extends View {
 	
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		Log.d("Cachebox", "Width spec: " + MeasureSpec.toString(widthMeasureSpec));
-		Log.d("Cachebox", "Height spec: " + MeasureSpec.toString(heightMeasureSpec));
-		
+				
 		int widthMode = MeasureSpec.getMode(widthMeasureSpec);
 		int widthSize = MeasureSpec.getSize(widthMeasureSpec);
 		
@@ -346,7 +345,7 @@ public final class CompassControl extends View {
 	protected void onDraw(Canvas canvas) {
 		drawBackground(canvas);
 
-		float scale = (float) getWidth();		
+		float scale = (float) getHeight();		
 		canvas.save(Canvas.MATRIX_SAVE_FLAG);
 		canvas.scale(scale, scale);
 
@@ -360,7 +359,7 @@ public final class CompassControl extends View {
 
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		Log.d("Cachebox", "Size changed to " + w + "x" + h);
+		Logger.DEBUG("Compass Size Changed");
 		
 		regenerateBackground();
 	}
@@ -371,11 +370,15 @@ public final class CompassControl extends View {
 			background.recycle();
 		}
 		
+		if(getWidth()==0 || getHeight()==0 )
+		{
+			return;
+		}
+		
 		background = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
 		Canvas backgroundCanvas = new Canvas(background);
-		float scale = (float) getWidth();		
+		float scale = (float) getHeight();		
 		backgroundCanvas.scale(scale, scale);
-		//backgroundCanvas.drawColor(Color.RED);
 		drawRim(backgroundCanvas);
 		drawFace(backgroundCanvas);
 				
@@ -388,5 +391,12 @@ public final class CompassControl extends View {
 		centerDegree=(int) CompassHeading;
 		distance=CacheDistance;
 		this.invalidate();
+	}
+
+	public void setHeight(int value) 
+	{
+//		
+		setMeasuredDimension(value, value);
+		
 	}
 }

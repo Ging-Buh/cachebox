@@ -1,31 +1,35 @@
+/* 
+ * Copyright (C) 2011 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package de.droidcachebox.Views.Forms;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
-import de.droidcachebox.Components.ActivityUtils;
-import android.app.Activity;
-import android.app.AlertDialog;
+import de.droidcachebox.Ui.Sizes;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.KeyEvent;
 import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.ImageView;
 
@@ -682,7 +686,7 @@ public class MessageBox extends android.app.Dialog {
             if(title != null && !title.equals(""))
             {
             	((TextView) layout.findViewById(R.id.title)).setText(title);
-            	((TextView) layout.findViewById(R.id.title)).setTextSize((float) (Global.scaledFontSize_normal));
+            	((TextView) layout.findViewById(R.id.title)).setTextSize((float) (Sizes.getScaledFontSize_normal()));
             }
             else
             {
@@ -750,7 +754,7 @@ public class MessageBox extends android.app.Dialog {
             // set the content message
             if (message != null) {
                 ((TextView) layout.findViewById(R.id.message)).setText(message);
-                ((TextView) layout.findViewById(R.id.message)).setTextSize((float) (Global.scaledFontSize_normal*0.8));
+                ((TextView) layout.findViewById(R.id.message)).setTextSize((float) (Sizes.getScaledFontSize_small()));
             } else if (contentView != null) {
                 // if no message set
                 // add the contentView to the dialog body

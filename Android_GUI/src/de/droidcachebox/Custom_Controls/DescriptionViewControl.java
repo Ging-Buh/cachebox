@@ -267,7 +267,9 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
 		try 
 		{
 			this.clearCache(true);
-		} catch (Exception e) {
+		} catch (Exception e) 
+		{
+			Logger.Error("DescriptionViewControl.OnFree()", "clearCache", e);
 				e.printStackTrace();
 		}
 		this.destroy();

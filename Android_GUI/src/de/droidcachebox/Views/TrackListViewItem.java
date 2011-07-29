@@ -7,6 +7,7 @@ import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Custom_Controls.ColorDialog.AmbilWarnaDialog;
 import de.droidcachebox.Custom_Controls.ColorDialog.AmbilWarnaDialog.OnAmbilWarnaListener;
 import de.droidcachebox.Map.RouteOverlay.Route;
+import de.droidcachebox.Ui.Sizes;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -31,7 +32,7 @@ public class TrackListViewItem extends View {
 	
 	 // static Member
     private static TextPaint textPaint;
-    private static final int iconSize = (int) (Global.scaledFontSize_normal * 3.5);
+    
     // private Member
     int left;
     int top ;
@@ -57,7 +58,7 @@ public class TrackListViewItem extends View {
 		
 		measureWidth(widthMeasureSpec);
 		
-		height = iconSize +(Global.CornerSize*2); 
+		height = Sizes.getIconSize() +(Sizes.getCornerSize()*2); 
       
         setMeasuredDimension(this.width,this.height);
 		
@@ -91,8 +92,8 @@ public class TrackListViewItem extends View {
        
        
       //initial
-    	left = Global.CornerSize;
-        top = Global.CornerSize;
+    	left = Sizes.getCornerSize();
+        top = Sizes.getCornerSize();
         canvas.drawColor(Global.getColor(R.attr.myBackground));
        
         if (BackColorChanger)
@@ -131,7 +132,7 @@ public class TrackListViewItem extends View {
        
         ActivityUtils.drawFillRoundRecWithBorder(canvas, lColorBounds, 3, 
         		RouteColor, RouteColor, 
-	     						   Global.CornerSize);
+        		Sizes.getCornerSize());
         
         left +=lBounds.width();
        
@@ -142,7 +143,7 @@ public class TrackListViewItem extends View {
      	   textPaint = new TextPaint();
      	   textPaint.setAntiAlias(true);
            textPaint.setFakeBoldText(true);
-           textPaint.setTextSize((float) (Global.scaledFontSize_normal*1.3));
+           textPaint.setTextSize((float) (Sizes.getScaledFontSize_normal()*1.3));
            textPaint.setColor(Global.getColor(R.attr.TextColor));
         }
         
@@ -178,7 +179,7 @@ public class TrackListViewItem extends View {
     	}
     	ActivityUtils.drawFillRoundRecWithBorder(canvas, rChkBounds, 3, 
 	     		   Global.getColor(R.attr.ListSeparator), BackgroundColor, 
-	     						   Global.CornerSize);
+	     		  Sizes.getCornerSize());
     }
 
     public void switchCheked() 

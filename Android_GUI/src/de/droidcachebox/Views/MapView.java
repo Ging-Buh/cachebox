@@ -1008,18 +1008,27 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
           }
           else
           {
-            if (Database.Data.Query != null && Database.Data.Query.size() > 0)
-            {
-              // Koordinaten des ersten Caches der Datenbank nehmen
-              setCenter(new Coordinate(Database.Data.Query.get(0).Latitude(), Database.Data.Query.get(0).Longitude()));
-              positionInitialized = true;
-              setLockPosition(0);
-            }
-            else
-            {
-              // Wenns auch den nicht gibt...)
-              setCenter(new Coordinate(48.0, 12.0));
-            }
+        	  if(Database.Data.Query != null)
+        	  {
+        		  if (Database.Data.Query.size() > 0)
+		            {
+		              // Koordinaten des ersten Caches der Datenbank nehmen
+		              setCenter(new Coordinate(Database.Data.Query.get(0).Latitude(), Database.Data.Query.get(0).Longitude()));
+		              positionInitialized = true;
+		              setLockPosition(0);
+		            }
+		            else
+		            {
+		              // Wenns auch den nicht gibt...)
+		              setCenter(new Coordinate(48.0, 12.0));
+		            }
+        	  }
+        	  else
+	            {
+	              // Wenn Query == null
+	              setCenter(new Coordinate(48.0, 12.0));
+	            }
+            
           }
         }
 

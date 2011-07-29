@@ -51,4 +51,9 @@ public class Size
 	{
 		return new Rect(x,y,width+x,height+y);
 	}
+
+	public Rect getBounds(int x, int y, int k, int l) 
+	{
+		return new Rect(x,y,width+x+k,height+y+l);
+	}
 }

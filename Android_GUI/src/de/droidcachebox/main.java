@@ -122,6 +122,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -182,8 +183,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	 * private member
 	 */
 		private LayoutInflater inflater;
-		private int width;
-	    private int height;
+		
 	    private ExtAudioRecorder extAudioRecorder = null;
 	    private boolean initialResortAfterFirstFixCompleted = false;
 	    private boolean initialFixSoundCompleted = false;
@@ -297,7 +297,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 			
 			//initial UiSizes
-			Sizes.initial(false);
+			Sizes.initial(false,this);
 	        
 	        int Time = ((Config.GetInt("LockM")*60)+Config.GetInt("LockSec"))*1000;
 	        counter = new ScreenLockTimer(Time, Time);
@@ -311,10 +311,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        SelectedCacheEventList.Add(this);
 	        CachListChangedEventList.Add(this);
 	        
-	        WindowManager w = getWindowManager();
-	        Display d = w.getDefaultDisplay();
-	        width = d.getWidth();
-	        height = d.getHeight();
+	        
 
 	         
 	        mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
@@ -928,6 +925,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     		aktView.OnHide();
     	aktView = view;
     	frame.removeAllViews();
+    	ViewParent parent = ((View) aktView).getParent();
+    	if(parent != null)
+    	{
+    		// aktView ist noch gebunden, also lösen
+    		((FrameLayout)parent).removeAllViews();
+    	}
     	frame.addView((View) aktView);
     	aktView.OnShow();  
     	aktViewId=ViewList.indexOf(aktView);
@@ -1358,7 +1361,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		String[]ConfigList= ConfigActionList.split(",");
 		Global.QuickButtonList = Actions.getListFromConfig(ConfigList);
 
-		cacheNameView.setHeight((int) (Global.scaledFontSize_normal*2.2));
+		cacheNameView.setHeight(Sizes.getInfoSliderHeight());
 
 	}
  		
@@ -1933,6 +1936,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			            	QuickButtonList.setHeight(horizontalListViewHeigt);
 			        		QuickButtonList.invalidate();
 			        		TopLayout.requestLayout();
+			        		frame.requestLayout();
 			            }
 			        });
 			    }
@@ -1974,6 +1978,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		}
 		
 	};
+
+	public static int getQuickButtonHeight() 
+	{
+		return ((main)mainActivity).QuickButtonList.getHeight();
+	}
 
 
 

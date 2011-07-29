@@ -1,15 +1,14 @@
 package de.droidcachebox.Views;
 
 import java.text.SimpleDateFormat;
-import CB_Core.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Ui.Sizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -41,7 +40,7 @@ public class LogViewItem extends View {
         if(textPaint==null)
         {
         	textPaint = new TextPaint();
-        	textPaint.setTextSize(Global.scaledFontSize_normal);
+        	textPaint.setTextSize(Sizes.getScaledFontSize_normal());
         	textPaint.setColor(Global.getColor(R.attr.TextColor));
         	textPaint.setAntiAlias(true);
         }
@@ -81,7 +80,7 @@ public class LogViewItem extends View {
         }
         width = specSize;
         
-        int innerWidth = width - (Global.CornerSize*2);
+        int innerWidth = width - (Sizes.getCornerSize()*2);
         
       	layoutComment = new StaticLayout(logEntry.Comment, textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
       	layoutFinder = new StaticLayout(logEntry.Finder, textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
@@ -116,7 +115,7 @@ public class LogViewItem extends View {
             }
         }        
 
-        result +=Global.CornerSize*2;
+        result +=Sizes.getCornerSize()*2;
         height = result;
         return result;
     }
@@ -142,31 +141,31 @@ public class LogViewItem extends View {
     	   NamePaint = new Paint();
            NamePaint.setFakeBoldText(true);
            NamePaint.setAntiAlias(true);
-           NamePaint.setTextSize(Global.scaledFontSize_normal);
+           NamePaint.setTextSize(Sizes.getScaledFontSize_normal());
            NamePaint.setColor(Global.getColor(R.attr.TextColor));
        }
        if (headHeight<1||headLinePos<1)
        {
-    	   headHeight = (int) (layoutFinder.getHeight()*1.5)+Global.CornerSize;
+    	   headHeight = (int) (layoutFinder.getHeight()*1.5)+ Sizes.getCornerSize();
     	   headLinePos = (headHeight/2)+(layoutFinder.getHeight()/2)-5;
        }
        
            
        ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(5, 5, width-5, height-5), 2, 
     		   Global.getColor(R.attr.ListSeparator),(BackColorChanger)? Global.getColor(R.attr.ListBackground_secend): Global.getColor(R.attr.ListBackground), 
-    				   Global.CornerSize);
+    				   Sizes.getCornerSize());
        
       
        // Kopfzeile
        final Rect KopfRect = new Rect(5, 5, width-5, headHeight);;
        final RectF KopfRectF = new RectF(KopfRect);
-       canvas.drawRoundRect( KopfRectF,Global.CornerSize,Global.CornerSize, Linepaint);
-       canvas.drawRect(new Rect(5, headHeight-Global.CornerSize, width-5, headHeight), Linepaint);
+       canvas.drawRoundRect( KopfRectF,Sizes.getCornerSize(),Sizes.getCornerSize(), Linepaint);
+       canvas.drawRect(new Rect(5, headHeight-Sizes.getCornerSize(), width-5, headHeight), Linepaint);
        
-       int space = (logEntry.TypeIcon >= 0) ? ActivityUtils.PutImageTargetHeight(canvas, Global.LogIcons[logEntry.TypeIcon],Global.CornerSize/2, 8, headHeight-10) + 4 : 0;
+       int space = (logEntry.TypeIcon >= 0) ? ActivityUtils.PutImageTargetHeight(canvas, Global.LogIcons[logEntry.TypeIcon],Sizes.getHalfCornerSize(), 8, headHeight-10) + 4 : 0;
 
        
-       canvas.drawText(logEntry.Finder, space + Global.CornerSize/2, headLinePos, NamePaint);
+       canvas.drawText(logEntry.Finder, space + Sizes.getHalfCornerSize(), headLinePos, NamePaint);
        
        NamePaint.setFakeBoldText(false);
        SimpleDateFormat postFormater = new SimpleDateFormat("dd/MM/yyyy"); 
@@ -180,7 +179,7 @@ public class LogViewItem extends View {
        
        
        // Körper
-       ActivityUtils.drawStaticLayout(canvas, layoutComment, Global.CornerSize, headHeight + Global.CornerSize);
+       ActivityUtils.drawStaticLayout(canvas, layoutComment, Sizes.getCornerSize(), headHeight + Sizes.getCornerSize());
        
        
      	  

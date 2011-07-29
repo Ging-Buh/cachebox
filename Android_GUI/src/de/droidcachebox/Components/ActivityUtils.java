@@ -19,6 +19,7 @@ package de.droidcachebox.Components;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
+import de.droidcachebox.Ui.Sizes;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -92,7 +93,7 @@ public class ActivityUtils
 
 	public static void drawFillRoundRecWithBorder(Canvas canvas, Rect rec, int BorderSize, int BorderColor, int FillColor)
 	{
-		drawFillRoundRecWithBorder(canvas, rec, BorderSize, BorderColor, FillColor, Global.CornerSize);
+		drawFillRoundRecWithBorder(canvas, rec, BorderSize, BorderColor, FillColor, Sizes.getCornerSize());
 	}
 	
 	public static void drawFillRoundRecWithBorder(Canvas canvas, Rect rec, int BorderSize, int BorderColor, int FillColor, int CornerSize)

@@ -198,10 +198,10 @@ public final class downSlider extends View implements SelectedCacheEvent
 		
 		if(!drag)
 		{
-			yPos=Config.GetBool("quickButtonShow")? QuickButtonHeight:0;
+			QuickButtonHeight=Config.GetBool("quickButtonShow")? main.getQuickButtonHeight():0;
 		}
 		
-		int FSize = (int) (Global.scaledFontSize_normal*1.2);
+		int FSize = (int) (Sizes.getScaledFontSize_normal()*1.2);
 	
 		if(CacheInfoHeight==0)CacheInfoHeight = (int) (FSize * 5.5);
 		
@@ -215,7 +215,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 		
 		final Drawable Slide = Global.BtnIcons[0];
 		
-		mBtnRec.set(-10, yPos - 2, width+10 , (int) (yPos + 2 + Global.scaledFontSize_normal*2.2));
+		mBtnRec.set(-10, yPos - 2, width+10 , (int) (yPos + 2 + Sizes.getScaledFontSize_normal()*2.2));
 		Slide.setBounds(mBtnRec);
    	 	
 		Slide.setColorFilter(new PorterDuffColorFilter(Global.getColor(R.attr.SlideDownColorFilter), android.graphics.PorterDuff.Mode.MULTIPLY ));
@@ -284,7 +284,6 @@ public final class downSlider extends View implements SelectedCacheEvent
 	}
 
 	
-	private final int CornerSize =Global.CornerSize;
 	
 	private Boolean drawWPInfo(Canvas canvas) {
 		if(mWaypoint==null)
@@ -302,7 +301,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 		 int iconWidth = 0;
 		 // draw icon
 		 if (((int)mWaypoint.Type.ordinal()) < Global.CacheIconsBig.length)
-			iconWidth=ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[(int)mWaypoint.Type.ordinal()], CornerSize/2,CornerSize, imgSize);
+			iconWidth=ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[(int)mWaypoint.Type.ordinal()], Sizes.getHalfCornerSize(),Sizes.getCornerSize(), imgSize);
 
 		 // draw Text info
 		 left += iconWidth;
@@ -331,7 +330,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 		
 		 int iconWidth = 0;
 		 // draw icon
-		 iconWidth=ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[30], CornerSize/2,CornerSize, imgSize);
+		 iconWidth=ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[30], Sizes.getHalfCornerSize(),Sizes.getCornerSize(), imgSize);
 
 		 // draw Text info
 		 left += iconWidth;
@@ -462,7 +461,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 		
 		if (yPos>height*0.7)
 		{
-			yPos=(int) (height-(Global.scaledFontSize_normal*2.2));
+			yPos=(int) (height-(Sizes.getScaledFontSize_normal()*2.2));
 		}
 		else
 		{
@@ -484,7 +483,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 		
 		Rect bounds = new Rect();
 		WPLayoutTextPaint = new TextPaint();
-		WPLayoutTextPaint.setTextSize(Global.scaledFontSize_normal);
+		WPLayoutTextPaint.setTextSize(Sizes.getScaledFontSize_normal());
 		WPLayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LineSep = bounds.height()/3;
         
@@ -548,7 +547,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 		if(GPSLayoutTextPaint==null)
 		{
 			GPSLayoutTextPaint = new TextPaint();
-			GPSLayoutTextPaint.setTextSize(Global.scaledFontSize_normal);
+			GPSLayoutTextPaint.setTextSize(Sizes.getScaledFontSize_normal());
 			GPSLayoutTextPaint.setAntiAlias(true);
 			GPSLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
 		}

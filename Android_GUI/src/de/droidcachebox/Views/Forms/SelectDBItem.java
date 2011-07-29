@@ -5,6 +5,7 @@ import java.io.File;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Ui.Sizes;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -42,7 +43,7 @@ public class SelectDBItem extends View {
 		
 		Rect bounds = new Rect();
 		LayoutTextPaint = new TextPaint();
-		LayoutTextPaint.setTextSize(Global.scaledFontSize_normal);
+		LayoutTextPaint.setTextSize(Sizes.getScaledFontSize_normal());
 		LayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LayoutTextPaint.setAntiAlias(true);
 		LayoutTextPaintBold = new TextPaint(LayoutTextPaint);

@@ -4,6 +4,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.ActivityUtils;
 
+import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.FilterSettings.PresetListView.PresetEntry;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -16,10 +17,10 @@ import android.view.View;
 
 public class PresetListViewItem extends View {
 	private PresetEntry mPresetEntry;
-    private int mAscent;
+    
     private static int width;
     private static int height = 0;
-    private static int rightBorder;
+    
     private boolean BackColorChanger = false;
     private StaticLayout layoutEntryName;
    
@@ -35,7 +36,7 @@ public class PresetListViewItem extends View {
         if(textPaint==null)
         {
         	textPaint = new TextPaint();
-        	textPaint.setTextSize(Global.scaledFontSize_normal);
+        	textPaint.setTextSize(Sizes.getScaledFontSize_normal());
         	textPaint.setColor(Global.getColor(R.attr.TextColor));
         	textPaint.setAntiAlias(true);
         }
@@ -49,81 +50,20 @@ public class PresetListViewItem extends View {
 		
 		 width = PresetListView.windowW;
 		
-		 height = iconSize +(Global.CornerSize*2); 
-      
-		
-		
-								
-			 			 				
-	     setMeasuredDimension(width, height);
+		 height = Sizes.getIconSize() +(Sizes.getCornerSize()*2); 
+		 setMeasuredDimension(width, height);
 	            
 	}
 
-    /**
-     * Determines the width of this view
-     * @param measureSpec A measureSpec packed into an int
-     * @return The width of the view, honoring constraints from measureSpec
-     */
-    private int measureWidth(int measureSpec) {
-        int result = 0;
-        int specMode = MeasureSpec.getMode(measureSpec);
-        int specSize = MeasureSpec.getSize(measureSpec);
 
-       /* String EntryName=mPresetEntry.getName();
-        
-        if (specMode == MeasureSpec.EXACTLY) {
-            // We were told how big to be
-            result = specSize;
-        } else {
-            // Measure the text
-            result = (int) Global.Paints.mesurePaint.measureText(EntryName) + getPaddingLeft()
-                    + getPaddingRight();
-            if (specMode == MeasureSpec.AT_MOST) {
-                // Respect AT_MOST value if that was what is called for by measureSpec
-                result = Math.min(result, specSize);
-            }
-        }*/
-        
-        width = specSize;
-        
-      
-        
-        return result;
-    }
 
-    /**
-     * Determines the height of this view
-     * @param measureSpec A measureSpec packed into an int
-     * @return The height of the view, honoring constraints from measureSpec
-     */
-    private int measureHeight(int measureSpec) {
-        int result = 0;
-        int specMode = MeasureSpec.getMode(measureSpec);
-        int specSize = MeasureSpec.getSize(measureSpec);
 
-        mAscent = (int) Global.Paints.mesurePaint.ascent();
-        if (specMode == MeasureSpec.EXACTLY) {
-            // We were told how big to be
-            result = specSize;
-        } else {
-            // Measure the text (beware: ascent is a negative number)
-            result = (int) (-mAscent + Global.Paints.mesurePaint.descent()) + getPaddingTop()
-                    + getPaddingBottom();
-            if (specMode == MeasureSpec.AT_MOST) {
-                // Respect AT_MOST value if that was what is called for by measureSpec
-                result = Math.min(result, specSize);
-            }
-        }
-     
-        return result;
-    }
 
  // static Member
     
     private static Paint TextPaint;
     
-    private static final int iconSize = (int) (Global.scaledFontSize_normal * 3.5);
-    
+       
     @Override
     protected void onDraw(Canvas canvas) {
         
@@ -136,21 +76,21 @@ public class PresetListViewItem extends View {
 	    	}
     	}
         //initial
-    	 int left = Global.CornerSize;
-         int top = Global.CornerSize;
+    	 int left = Sizes.getCornerSize();
+         int top = Sizes.getCornerSize();
         
         if (TextPaint==null)
         {
      	   TextPaint = new Paint();
      	   TextPaint.setAntiAlias(true);
            TextPaint.setFakeBoldText(true);
-           TextPaint.setTextSize((float) (Global.scaledFontSize_normal*1.3));
+           TextPaint.setTextSize((float) (Sizes.getScaledFontSize_big()));
            TextPaint.setColor(Global.getColor(R.attr.TextColor));
         }
         
         if(layoutEntryName==null)
         {        	
-        	int innerWidth = width - (Global.CornerSize*2)- iconSize;
+        	int innerWidth = width - (Sizes.getCornerSize()*2)- Sizes.getIconSize();
             layoutEntryName = new StaticLayout(mPresetEntry.getName(), textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
         }
 		
@@ -171,11 +111,11 @@ public class PresetListViewItem extends View {
         
         ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(5, 5, width-5, height-5), 2, 
      		   Global.getColor(R.attr.ListSeparator), BackgroundColor, 
-     						   Global.CornerSize);
+     		  Sizes.getCornerSize());
         
         
         //draw Icon
-        left+= ActivityUtils.PutImageTargetHeight(canvas, mPresetEntry.getIcone(), left , top , iconSize)+Global.CornerSize/2;
+        left+= ActivityUtils.PutImageTargetHeight(canvas, mPresetEntry.getIcone(), left , top , Sizes.getIconSize())+Sizes.getHalfCornerSize();
         
         ActivityUtils.drawStaticLayout(canvas, layoutEntryName, left, top);
   
