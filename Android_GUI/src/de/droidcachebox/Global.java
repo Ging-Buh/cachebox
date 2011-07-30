@@ -30,7 +30,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 352;
+    public static final int CurrentRevision = 353;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1015;
@@ -555,6 +555,7 @@ public class Global{
 	                	        		res.getDrawable(R.drawable.video_icon),
 	                	        		res.getDrawable(R.drawable.voice_rec_icon),
 	                	        		res.getDrawable(R.drawable.star), //Live search braucht noch ein Icon
+	                	        		res.getDrawable(R.drawable.filter),
 	                        		};
     	}
         

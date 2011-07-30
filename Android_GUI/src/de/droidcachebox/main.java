@@ -1156,6 +1156,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        case 8:recVideo();break;
 	        case 9:recVoice();break;
 	        case 10:MessageBox.Show("SearchAPI muss noch in eine eigene Methode refactoriert werden, damit die Suche auch von hier aus ausgelöst werden kann!");break;
+	        case 11:showView(101);break;
+	        
 	        }
 		}
 	};

@@ -27,10 +27,13 @@ public class EditFilterSettings extends Activity {
 
 	private MultiToggleButton btPre;
 	private MultiToggleButton btSet;
+	private MultiToggleButton btCat;
 	private TableRow trPre;
 	private TableRow trSet;
+	private TableRow trCat;
 	private PresetListView lvPre;
 	private FilterSetListView lvSet;
+	private CategorieListView lvCat;
 	public static FilterProperties tmpFilterProps;
 	public static Activity filterActivity;
 	
@@ -45,21 +48,27 @@ public class EditFilterSettings extends Activity {
 		
 		btPre = (MultiToggleButton) findViewById(R.id.edfi_pre);
 		btSet = (MultiToggleButton) findViewById(R.id.edfi_set);
+		btCat = (MultiToggleButton) findViewById(R.id.edfi_cat);
 		// Translate 
 		/*btPre.setText(Global.Translations.Get("filterPreset"));
-		btSet.setText(Global.Translations.Get("filterSet"));*/
+		btSet.setText(Global.Translations.Get("filterSet"));
+		btCat.setText(Global.Translations.Get("category"));*/
 		btPre.setText("Preset");
 		btSet.setText("Setting");
+		btCat.setText("Category");
 		MultiToggleButton.initialOn_Off_ToggleStates(btPre);
 		MultiToggleButton.initialOn_Off_ToggleStates(btSet);
+		MultiToggleButton.initialOn_Off_ToggleStates(btCat);
 		
 		trPre = (TableRow) findViewById(R.id.edfi_table_pre);
 		trSet = (TableRow) findViewById(R.id.edfi_table_set);
+		trCat = (TableRow) findViewById(R.id.edfi_table_cat);
 		
 		switchVisibility(0);
 		
 		initialPresets();
 		initialSettings();
+		initialCategorieView();
 		fillListViews();
 		
 		btPre.setOnClickListener(new OnClickListener() {
@@ -80,11 +89,21 @@ public class EditFilterSettings extends Activity {
 			}
 		});
 		
+		btCat.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) 
+			{
+				switchVisibility(2);
+			}
+		});
+		
         Button bOK = (Button) findViewById(R.id.edfi_ok);
         bOK.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) 
             {
+            	lvCat.SetCategory();
             	Global.LastFilter=tmpFilterProps;
             	ApplyFilter(Global.LastFilter);
             	
@@ -128,6 +147,14 @@ public class EditFilterSettings extends Activity {
 		
 	}
 	
+	private void initialCategorieView()
+	{
+		lvCat = new CategorieListView(this, this);
+		FrameLayout categorieLayout = (FrameLayout) findViewById(R.id.layout_filter_categories);
+		categorieLayout.removeAllViews();
+		categorieLayout.addView(lvCat);
+	}
+	
 	private void fillListViews()
 	{
 	}
@@ -138,13 +165,23 @@ public class EditFilterSettings extends Activity {
 		{
 			trSet.setVisibility(View.GONE);
 			trPre.setVisibility(View.VISIBLE);
+			trCat.setVisibility(View.GONE);if(lvCat!=null)lvCat.SetCategory();
+			
 		}
 		
 		if(btSet.getState()==1)
 		{
 			trPre.setVisibility(View.GONE);
 			trSet.setVisibility(View.VISIBLE);
+			trCat.setVisibility(View.GONE);if(lvCat!=null)lvCat.SetCategory();
 			lvSet.OnShow();
+		}
+		if(btCat.getState()==1)
+		{
+			trPre.setVisibility(View.GONE);
+			trSet.setVisibility(View.GONE);
+			trCat.setVisibility(View.VISIBLE);
+			lvCat.OnShow();
 		}
 	}
 	private void switchVisibility(int state)
@@ -153,12 +190,21 @@ public class EditFilterSettings extends Activity {
 		{
 			btPre.setState(1);
 			btSet.setState(0);
+			btCat.setState(0);
 		}
 		if(state==1)
 		{
 			btPre.setState(0);
 			btSet.setState(1);
+			btCat.setState(0);
 		}
+		if(state==2)
+		{
+			btPre.setState(0);
+			btSet.setState(0);
+			btCat.setState(1);
+		}
+		
 		switchVisibility();
 	}
 	
@@ -167,6 +213,9 @@ public class EditFilterSettings extends Activity {
 	private static FilterProperties props;
 	public static void ApplyFilter(FilterProperties Props)
 	    {
+		
+		
+			
 			props = Props;
 		  pd = ProgressDialog.show(EditFilterSettings.filterActivity, "", 
                  Global.Translations.Get("LoadCaches"), true);

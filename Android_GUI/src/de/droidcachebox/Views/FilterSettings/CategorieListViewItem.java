@@ -1,11 +1,14 @@
 package de.droidcachebox.Views.FilterSettings;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import CB_Core.Config;
+import CB_Core.Types.GpxFilename;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
+import de.droidcachebox.Views.FilterSettings.CategorieListView.CategorieEntry;
 import de.droidcachebox.Views.FilterSettings.FilterSetListView;
 import de.droidcachebox.Views.FilterSettings.FilterSetListView.FilterSetEntry;
 import android.content.Context;
@@ -19,25 +22,27 @@ import android.text.TextPaint;
 import android.text.Layout.Alignment;
 import android.view.View;
 
-public class FilterSetListViewItem extends View {
-	private FilterSetEntry mFilterSetEntry;
+public class CategorieListViewItem extends View {
+	public CategorieEntry categorieEntry;
    
     private static int width;
     private static int height = 0;
     private Context mContext;
     private boolean BackColorChanger = false;
     private StaticLayout layoutEntryName;
+    private StaticLayout layoutEntryDate;
+    private StaticLayout layoutEntryCount;
     private Resources mRes;
-    private ArrayList<FilterSetListViewItem> mChildList = new ArrayList<FilterSetListViewItem>();
+    private ArrayList<CategorieListViewItem> mChildList = new ArrayList<CategorieListViewItem>();
     
     private static TextPaint textPaint;
   
     
-    public FilterSetListViewItem(Context context, FilterSetEntry fne, Boolean BackColorId) {
+    public CategorieListViewItem(Context context, CategorieEntry fne, Boolean BackColorId) {
 		super(context);
 		mContext=context;
 		mRes = mContext.getResources();
-        this.mFilterSetEntry = fne;
+        this.categorieEntry = fne;
         BackColorChanger = BackColorId;
         
         if(textPaint==null)
@@ -50,9 +55,9 @@ public class FilterSetListViewItem extends View {
      
 	}
 
-    public FilterSetEntry getFilterSetEntry(){return mFilterSetEntry;}
+    public CategorieEntry getCategorieEntry(){return categorieEntry;}
     
-    public FilterSetListViewItem addChild(FilterSetListViewItem item)
+    public CategorieListViewItem addChild(CategorieListViewItem item)
 	{
 		mChildList.add(item);
 		return item;
@@ -64,7 +69,7 @@ public class FilterSetListViewItem extends View {
     	{
     		int newState = (mChildList.get(0).getVisibility()== View.VISIBLE)? View.GONE : View.VISIBLE;
     		
-    		for(FilterSetListViewItem tmp : mChildList)
+    		for(CategorieListViewItem tmp : mChildList)
     		{
     			tmp.setVisibility(newState);
     		}
@@ -88,8 +93,8 @@ public class FilterSetListViewItem extends View {
 //Draw Methods
     
     // static Member
-    private static Paint TextPaint;
-    
+   
+    private static final SimpleDateFormat postFormater = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
     // private Member
     int left;
     int top ;
@@ -102,26 +107,52 @@ public class FilterSetListViewItem extends View {
     	left = Sizes.getCornerSize();
         top = Sizes.getCornerSize();
         
-        if (TextPaint==null)
-        {
-     	   TextPaint = new Paint();
-     	   TextPaint.setAntiAlias(true);
-           TextPaint.setFakeBoldText(true);
-           TextPaint.setTextSize((float) (Sizes.getScaledFontSize_big()));
-           TextPaint.setColor(Global.getColor(R.attr.TextColor));
-        }
+        if(rBounds == null || rChkBounds == null)
+    	{
+    		rBounds = new Rect(width-height-7, 7, width-7, height-7);// = right Button bounds
+    		int halfSize= rBounds.width()/4;
+    		int corrRecSize = (rBounds.width()-rBounds.height())/2;
+    		rChkBounds = new Rect(rBounds.left + halfSize,rBounds.top + halfSize-corrRecSize, rBounds.right - halfSize, rBounds.bottom - halfSize +corrRecSize );
+    	}
+       
         
         if(layoutEntryName==null)
         {        	
-        	int innerWidth = width - (Sizes.getCornerSize()*2)- Sizes.getIconSize();
-            layoutEntryName = new StaticLayout(mFilterSetEntry.getName(), textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+        	int innerWidth = width - (Sizes.getCornerSize()*2)- Sizes.getIconSize()- (width -rChkBounds.left)- Sizes.getIconSize()+30;
+        	int innerWidthName= innerWidth-100; 
+        	GpxFilename file = categorieEntry.getFile();
+        	
+        	String Name="";
+        	String Date="";
+        	String Count="";
+        	int Collaps=0;
+        	if(file!= null)
+        	{
+        		Name=file.GpxFileName;
+        		Date=postFormater.format(file.Imported);
+        		Count=String.valueOf(file.CacheCount);
+        	}
+        	else 
+        	{
+        		Name=categorieEntry.getCatName();
+        		Date=postFormater.format(categorieEntry.getCat().LastImported());
+        		Count=String.valueOf(categorieEntry.getCat().CacheCount());
+        		Collaps=120;
+        	}
+        	innerWidth+=Collaps;
+        	innerWidthName+=Collaps;
+        	Count+=" Caches";
+        	
+            layoutEntryName = new StaticLayout(Name, textPaint, innerWidthName, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+            layoutEntryDate = new StaticLayout(Date, textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+            layoutEntryCount = new StaticLayout(Count, textPaint, innerWidth, Alignment.ALIGN_OPPOSITE, 1.0f, 0.0f, false);
         }
 		
         textPaint.setColor(Global.getColor(R.attr.TextColor));
        
         
         boolean selected = false;
-        if (this.mFilterSetEntry == FilterSetListView.aktFilterSetEntry)
+        if (this.categorieEntry == CategorieListView.aktCategorieEntry)
         	selected = true;
         
        
@@ -135,28 +166,32 @@ public class FilterSetListViewItem extends View {
         	BackgroundColor = (selected)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground_secend);
         }
         
-        if(this.mFilterSetEntry.getItemType()!= FilterSetListView.COLLABSE_BUTTON_ITEM)
+        if(this.categorieEntry.getItemType()!= FilterSetListView.COLLABSE_BUTTON_ITEM)
         {
         ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(5, 5, width-5, height-5), 2, 
      		   Global.getColor(R.attr.ListSeparator), BackgroundColor, 
      		  Sizes.getCornerSize());
         }
         
-        switch (this.mFilterSetEntry.getItemType())
+        switch (this.categorieEntry.getItemType())
         {
         case FilterSetListView.COLLABSE_BUTTON_ITEM:drawCollabseButtonItem(canvas);break;
         case FilterSetListView.CHECK_ITEM:drawChkItem(canvas);break;
         case FilterSetListView.THREE_STATE_ITEM:drawThreeStateItem(canvas);break;
-        case FilterSetListView.NUMERICK_ITEM:drawNumerickItem(canvas);break;
+        
         }
        //draw Name 
-        left += ActivityUtils.drawStaticLayout(canvas, layoutEntryName, left, top);
+        ActivityUtils.drawStaticLayout(canvas, layoutEntryName, left, top);
         
-        if(this.mFilterSetEntry.getItemType()== FilterSetListView.NUMERICK_ITEM)
-        {
-        	canvas.drawText(String.valueOf(this.mFilterSetEntry.getNumState()), (float) (width/1.5), (float) (height/1.8), TextPaint);
-        }
-  
+      //draw Count
+        ActivityUtils.drawStaticLayout(canvas, layoutEntryCount, left, top);
+          
+        //draw Import Date
+        top += 52;
+        ActivityUtils.drawStaticLayout(canvas, layoutEntryDate, left, top);
+        
+        
+        
     }
     
     
@@ -178,6 +213,7 @@ public class FilterSetListViewItem extends View {
     		btnBack_pressed.setBounds(bounds);
     	}
     	
+    	left+=10;
     	
     	btnBack.draw(canvas);
     	
@@ -187,7 +223,7 @@ public class FilterSetListViewItem extends View {
     {
     	drawIcon(canvas);
     	drawRightChkBox(canvas);
-    	if(this.mFilterSetEntry.getState()==1)
+    	if(this.categorieEntry.getState()==1)
     	{
     		Rect oldBounds =  Global.Icons[27].getBounds();
     		Global.Icons[27].setBounds(rChkBounds);
@@ -201,14 +237,14 @@ public class FilterSetListViewItem extends View {
     {
     	drawIcon(canvas);
     	drawRightChkBox(canvas);
-    	if(this.mFilterSetEntry.getState()==1)
+    	if(this.categorieEntry.getState()==1)
     	{
     		Rect oldBounds =  Global.Icons[27].getBounds();
     		Global.Icons[27].setBounds(rChkBounds);
     		Global.Icons[27].draw(canvas);
     		Global.Icons[27].setBounds(oldBounds);
     	}
-    	else if(this.mFilterSetEntry.getState()==-1)
+    	else if(this.categorieEntry.getState()==-1)
     	{
     		Rect oldBounds =  Global.Icons[28].getBounds();
     		Global.Icons[28].setBounds(rChkBounds);
@@ -224,74 +260,19 @@ public class FilterSetListViewItem extends View {
     private static Rect lBounds;
     private static Rect rBounds;
     private static Rect rChkBounds;
-    private void drawNumerickItem(Canvas canvas)
-    {
-    	
-    	if(plusBtn==null || minusBtn==null)
-    	{
-    		boolean n = Config.GetBool("nightMode");
-    		plusBtn = mRes.getDrawable(n? R.drawable.day_btn_default_normal : R.drawable.night_btn_default_normal);
-    		minusBtn = mRes.getDrawable(n? R.drawable.day_btn_default_normal : R.drawable.night_btn_default_normal);
-    		
-    		lBounds = new Rect(7, 7, height, height-7);
-    		minusBtn.setBounds(lBounds);
-    		
-    		rBounds = new Rect(width-height-7, 7, width-7, height-7);
-    		plusBtn.setBounds(rBounds);
-    	}
-    	
-    	if (mTextPaint==null)
-    	{
-    		mTextPaint = new TextPaint();
-    		mTextPaint.setTextSize(Sizes.getScaledFontSize_normal()*3);
-    		mTextPaint.setColor(Global.getColor(R.attr.TextColor));
-    		mTextPaint.setAntiAlias(true);
-    		mTextPaint.setFakeBoldText(true);
-    		
-    		layoutMinus = new StaticLayout("-", mTextPaint, height-7, Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
-    		layoutPlus = new StaticLayout("+", mTextPaint, height-7, Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
-    	}
-    	
-    	//draw [-] Button
-    	minusBtn.draw(canvas);
-    	
-    	//draw [+] Button
-    	plusBtn.draw(canvas);
-    	
-    	//draw +/- on Button
-    	ActivityUtils.drawStaticLayout(canvas, layoutMinus, 4, top-3);
-		ActivityUtils.drawStaticLayout(canvas, layoutPlus, width-5-height, top);
-		
-    	
-    	left += minusBtn.getBounds().width() + minusBtn.getBounds().left;
-    	
-    	
-    	
-    	if(mFilterSetEntry.getIcon()!=null)
-    	{
-    		ActivityUtils.PutImageTargetHeight(canvas, mFilterSetEntry.getIcon(), left , top , Sizes.getIconSize()/2);
-    		top += Sizes.getIconSize()/1.5;
-    	}
-    		
-    }
+  
     
     
     private void drawIcon(Canvas canvas)
     {
-    	if(mFilterSetEntry.getIcon()!=null)
-    		left +=ActivityUtils.PutImageTargetHeight(canvas, mFilterSetEntry.getIcon(), left , top , Sizes.getIconSize()) + Sizes.getIconSize()/2;
+    	if(categorieEntry.getIcon()!=null)
+    		left +=ActivityUtils.PutImageTargetHeight(canvas, categorieEntry.getIcon(), left , top , Sizes.getIconSize()) + Sizes.getIconSize()/2;
     	
     }
     
     private void drawRightChkBox(Canvas canvas)
     {
-    	if(rBounds == null || rChkBounds == null)
-    	{
-    		rBounds = new Rect(width-height-7, 7, width-7, height-7);// = right Button bounds
-    		int halfSize= rBounds.width()/4;
-    		int corrRecSize = (rBounds.width()-rBounds.height())/2;
-    		rChkBounds = new Rect(rBounds.left + halfSize,rBounds.top + halfSize-corrRecSize, rBounds.right - halfSize, rBounds.bottom - halfSize +corrRecSize );
-    	}
+    	
     	ActivityUtils.drawFillRoundRecWithBorder(canvas, rChkBounds, 3, 
 	     		   Global.getColor(R.attr.ListSeparator), BackgroundColor, 
 	     		  Sizes.getCornerSize());
@@ -299,48 +280,48 @@ public class FilterSetListViewItem extends View {
 
 	public void plusClick() 
 	{
-		this.mFilterSetEntry.plusClick();
+		this.categorieEntry.plusClick();
 	}
 	public void minusClick() 
 	{
-		this.mFilterSetEntry.minusClick();
+		this.categorieEntry.minusClick();
 	}
 	public void stateClick() 
 	{
-		this.mFilterSetEntry.stateClick();
+		this.categorieEntry.stateClick();
 	}
 
 	public void setValue(int value) 
 	{
 		
-		this.mFilterSetEntry.setState(value);
+		this.categorieEntry.setState(value);
 		
 	}
 	
 	public void setValue(float value) 
 	{
-		this.mFilterSetEntry.setState(value);
+		this.categorieEntry.setState(value);
 		
 	}
 
 	public int getChecked() 
 	{
-		return mFilterSetEntry.getState();
+		return categorieEntry.getState();
 	}
 
 	public float getValue() 
 	{
-		return (float) mFilterSetEntry.getNumState();
+		return (float) categorieEntry.getNumState();
 	}
 
-	public FilterSetListViewItem getChild(int i) 
+	public CategorieListViewItem getChild(int i) 
 	{
 		return mChildList.get(i);
 	}
 
 	public void setValue(boolean b) 
 	{
-		this.mFilterSetEntry.setState(b? 1:0);
+		this.categorieEntry.setState(b? 1:0);
 	}
 
 	public int getChildLength() 
@@ -350,7 +331,7 @@ public class FilterSetListViewItem extends View {
 
 	public boolean getBoolean() 
 	{
-		if(mFilterSetEntry.getState()==0)
+		if(categorieEntry.getState()==0)
 			return false;
 		
 		return true;

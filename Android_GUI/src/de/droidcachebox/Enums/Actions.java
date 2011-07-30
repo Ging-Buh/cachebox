@@ -45,6 +45,7 @@ public enum Actions
 	TakeVideo,
 	VoiceRecord,
 	LiveSearch,
+	Filter,
 	
 	empty,;
 
@@ -100,6 +101,7 @@ public enum Actions
         	case 8:return Actions.TakeVideo;
         	case 9:return Actions.VoiceRecord;
         	case 10:return Actions.LiveSearch;
+        	case 11:return Actions.Filter;
         }
         return Actions.empty;
     }
@@ -119,6 +121,7 @@ public enum Actions
             case 8:return Global.BtnIcons[10]; //TakeVideo
             case 9:return Global.BtnIcons[11]; //VoiceRec
             case 10:return Global.BtnIcons[12]; //Live Search
+            case 11:return Global.BtnIcons[13]; //Filter
         }
 		return null;
 	}
@@ -138,6 +141,7 @@ public enum Actions
             case 8:return Global.Translations.Get("RecVideo");
             case 9:return Global.Translations.Get("VoiceRec");
             case 10:return Global.Translations.Get("Search");
+            case 11:return Global.Translations.Get("filter");
         }
 		return "empty";
 	}

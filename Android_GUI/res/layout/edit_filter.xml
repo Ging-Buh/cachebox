@@ -19,6 +19,7 @@
     	android:paddingTop="5dip" android:layout_height="55dip">
         	<de.droidcachebox.Custom_Controls.MultiToggleButton android:layout_weight="1" android:layout_width="match_parent" android:text="Presets" android:layout_height="match_parent" android:id="@+id/edfi_pre"/>
         	<de.droidcachebox.Custom_Controls.MultiToggleButton android:layout_weight="1" android:layout_width="match_parent" android:text="Settings" android:layout_height="match_parent" android:id="@+id/edfi_set"/>
+        	<de.droidcachebox.Custom_Controls.MultiToggleButton android:layout_weight="1" android:layout_width="match_parent" android:text="Categories" android:layout_height="match_parent" android:id="@+id/edfi_cat"/>
         	
     </LinearLayout>
     <RelativeLayout 
@@ -43,6 +44,14 @@
             	android:layout_width="wrap_content" 
             	android:layout_height="wrap_content">
 			    		<include android:layout_height="wrap_content" android:id="@layout/edit_filter_settings" layout="@layout/edit_filter_settings" android:layout_width="match_parent" android:layout_weight="1"></include>			    
+
+            </TableRow>
+            
+            <TableRow 
+            	android:id="@+id/edfi_table_cat" 
+            	android:layout_width="wrap_content" 
+            	android:layout_height="wrap_content">
+			    		<include android:layout_height="wrap_content" android:id="@layout/edit_filter_categories" layout="@layout/edit_filter_categories" android:layout_width="match_parent" android:layout_weight="1"></include>			    
 
             </TableRow>
             
