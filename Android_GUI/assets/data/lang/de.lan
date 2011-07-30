@@ -58,7 +58,7 @@ Deutsch
 // AboutViewPanel
 	caches_found = Gefundene Caches:
 	gps = GPS:
-	not_active = nicht Aktive
+	not_active = nicht Aktiv
 	not_detected = nicht erkannt
 	sats_nr = Sats:
 	Hdop = Hdop:
