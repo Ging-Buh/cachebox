@@ -49,6 +49,7 @@ public class splash extends Activity
 	Handler handler;
 	Bitmap bitmap;
 	Bitmap logo;
+	Bitmap gc_power_logo;
 	
 	public void onCreate(Bundle savedInstanceState) 
 	{
@@ -281,8 +282,10 @@ public class splash extends Activity
 		
 		bitmap = BitmapFactory.decodeResource(res, R.drawable.splash_back);
 		logo = BitmapFactory.decodeResource(res, R.drawable.cachebox_logo);
+		gc_power_logo= BitmapFactory.decodeResource(res, R.drawable.power_gc_live);
 		((ImageView) findViewById(R.id.splash_BackImage)).setImageBitmap(bitmap);
-		((ImageView) findViewById(R.id.splash_Logo)).setImageBitmap(logo);			
+		((ImageView) findViewById(R.id.splash_Logo)).setImageBitmap(logo);
+		((ImageView) findViewById(R.id.splash_GcPowerLogo)).setImageBitmap(gc_power_logo);
 	}
 	
 	

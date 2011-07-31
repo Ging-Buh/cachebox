@@ -30,7 +30,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 354;
+    public static final int CurrentRevision = 355;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1015;
@@ -112,6 +112,8 @@ public class Global{
         		<br>Index 32 =<img src="doc-files/info_icon.png" width=32 height=32> 
         		<br>Index 33 =<img src="doc-files/warning_icon.png" width=32 height=32> 
         		<br>Index 34 =<img src="doc-files/help_icon.png" width=32 height=32> 
+        		<br>Index 35 =<img src="doc-files/power_gc_live.png" width=32 height=32> 
+        		<br>Index 36 =<img src="doc-files/gc_live_icon.png" width=32 height=32> 
      */
     public static Drawable[] Icons = null;
     public static Drawable[] SmallStarIcons= null;
@@ -414,6 +416,8 @@ public class Global{
 	        		res.getDrawable(R.drawable.info_icon), // 32
 	        		res.getDrawable(R.drawable.warning_icon), // 33
 	        		res.getDrawable(R.drawable.help_icon), // 34
+	        		res.getDrawable(R.drawable.power_gc_live), // 35
+	        		res.getDrawable(R.drawable.gc_live_icon), // 36
 	        };
     	}
         

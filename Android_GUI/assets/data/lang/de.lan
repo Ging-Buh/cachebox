@@ -354,4 +354,10 @@ Deutsch
 	GCJoker = MD5-Hash bei gcJoker.de
 	SelectLanguage = Wähle eine Sprache
 	save = Speichern
-	
+
+
+//GC-Live
+
+	GC_title = Powerd by Geocaching Live
+	GC_upgrade = Upgrade to Geocaching.com Premium Membership today for US$30 per year to download the full details for up to 6000 caches per day, view all cache types in your area, and acces many more benefits. Visit Geocaching.com to ubgrade.
+	GC_basic = As a basic member of geocaching.com you can download full details of 3 caches per 24 hour period.

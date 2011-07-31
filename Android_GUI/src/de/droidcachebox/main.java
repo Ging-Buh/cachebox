@@ -1640,7 +1640,43 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	
 	private static ProgressDialog pd;
 	private String result;
+	
+	
+//	private 
+	
 	public void searchOnline() 
+	{
+		if(!Config.GetBool("PremiumMember"))
+		{
+			MessageBox.Show(Global.Translations.Get("GC_basic"), Global.Translations.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,PremiumMemberResult );
+		}
+		else
+		{
+			searchOnlineNow();
+		}
+	}
+	
+	private DialogInterface.OnClickListener PremiumMemberResult = new DialogInterface.OnClickListener() 
+	{
+
+		@Override
+		public void onClick(DialogInterface dialog, int button) 
+		{
+			switch (button)
+			{
+				case -1:
+					searchOnlineNow();
+					break;
+				
+			}
+			
+			dialog.dismiss();
+		
+
+		}
+	};
+	
+	private void searchOnlineNow() 
 	{
 		 Thread thread = new Thread()
 		  {
@@ -1750,6 +1786,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    	  	{
 	    	  		pd.dismiss();
 	    	  		MessageBox.Show(result);
+	    	  		
+	    	  		// zeige Werbung
+	    	  		if(!Config.GetBool("PremiumMember"))
+	    			{
+	    	  			MessageBox.Show(Global.Translations.Get("GC_upgrade"), Global.Translations.Get("GC_title"), MessageBoxButtons.OK, MessageBoxIcon.Powerd_by_GC_Live, null);
+	    			}
+	    	  		
 	    	  	}
 		 	  }
 	    }

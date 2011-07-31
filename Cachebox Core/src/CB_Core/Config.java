@@ -234,7 +234,8 @@ public class Config {
         validateSetting("MoveMapCenterMaxSpeed", "20");
         validateSetting("lastZoomLevel", "14");
         validateSetting("quickButtonShow", "true");
-        validateSetting("quickButtonList", "1,2,3");
+        validateSetting("quickButtonList", "5,0,1,3,2");
+        validateSetting("PremiumMember", "false");
         
 //        validateSetting("OtherRepositoriesFolder", Global.AppPath + "\\Repositories");
 

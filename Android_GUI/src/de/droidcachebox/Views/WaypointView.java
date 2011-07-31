@@ -172,7 +172,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 	    	if (cache != null)
 	    		return cache.waypoints.size() + 1;
 	    	else
-	    		return 1;
+	    		return 0;
 	    }
 	 
 	    public Object getItem(int position) {
@@ -346,6 +346,8 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 		int first = this.getFirstVisiblePosition();
 		int last = this.getLastVisiblePosition();
 
+		if (aktCache== null) return;
+		
 		if (GlobalCore.SelectedWaypoint() != null)
 		{
 			aktWaypoint = GlobalCore.SelectedWaypoint();

@@ -34,18 +34,18 @@ import CB_Core.Types.MoveableList;
  */
 public enum Actions 
 {
-	DescriptionView,
-	WaypointView,
-	LogView,
-	MapView,
-	CompassView,
-	CacheListView,
-	TrackListView,
-	TakePhoto,
-	TakeVideo,
-	VoiceRecord,
-	LiveSearch,
-	Filter,
+	DescriptionView,	//0
+	WaypointView,		//1
+	LogView,			//2
+	MapView,			//3
+	CompassView,		//4
+	CacheListView,		//5
+	TrackListView,		//6
+	TakePhoto,			//7
+	TakeVideo,			//8
+	VoiceRecord,		//9
+	LiveSearch,			//10
+	Filter,				//11
 	
 	empty,;
 

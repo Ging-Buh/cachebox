@@ -480,6 +480,8 @@ public class MessageBox extends android.app.Dialog {
 		case 6:icon = Global.Icons[34];break;
 		case 7:icon = Global.Icons[31];break;
 		case 8:icon = Global.Icons[33];break;
+		case 9:icon = Global.Icons[35];break;
+		case 10:icon = Global.Icons[36];break;
 		
 		default :icon = null;
 			

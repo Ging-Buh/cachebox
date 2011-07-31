@@ -141,6 +141,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private Button ActionListAdd;
 	private Spinner ActionListAll;
 	private boolean ActionListChanged=false;
+	private CheckBox chkPremiumMember;
 	
 	ArrayList<Actions> AllActionList;
 	private boolean ActionListButtonAddClicked=false;
@@ -627,6 +628,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		ActionListDel = (Button) findViewById(R.id.settings_quick_del);
 		ActionListAdd = (Button) findViewById(R.id.settings_quick_add);
 		ActionListAll = (Spinner)this.findViewById(R.id.settings_spinner_Action);
+		chkPremiumMember = (CheckBox)this.findViewById(R.id.settings_login_premium);
 	}
 	
 	private void setLang()
@@ -695,6 +697,8 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		
 		chkAllowLandscape.setChecked(Config.GetBool("AllowLandscape"));
 		fillQuickButton();
+		
+		chkPremiumMember.setChecked(Config.GetBool("PremiumMember"));
 		
 		}
 		catch(Exception e)
@@ -765,6 +769,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     		counter++;
     	}
     	Config.Set("quickButtonList", ActionsString);
+    	Config.Set("PremiumMember",chkPremiumMember.isChecked());
     	
     	Config.AcceptChanges();
     	

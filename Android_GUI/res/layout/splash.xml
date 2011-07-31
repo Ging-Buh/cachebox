@@ -28,6 +28,12 @@
 			android:layout_width="wrap_content" android:id="@+id/splash_Logo"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center_horizontal" android:layout_marginLeft="50dip" android:layout_marginRight="50dip" android:layout_marginTop="20dip"></ImageView>
+			
+		<ImageView android:scaleType="fitCenter"
+			android:layout_width="wrap_content" android:id="@+id/splash_GcPowerLogo"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal" android:layout_marginLeft="50dip" android:layout_marginRight="50dip" android:layout_marginTop="257dip"></ImageView>
+			
 		<TextView android:text="Version" android:id="@+id/splash_textViewVersion"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:layout_gravity="center_horizontal" android:textColor="#3B5D1F" android:layout_marginTop="90dip"></TextView>
