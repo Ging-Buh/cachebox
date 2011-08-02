@@ -8,6 +8,7 @@ import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Map.Descriptor.PointD;
@@ -143,8 +144,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 		});
 
 	
-		this.setDividerHeight(5);
-		this.setDivider(getBackground());
+		ActivityUtils.setListViewPropertys(this);
 		
 	}
 	

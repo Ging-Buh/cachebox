@@ -217,9 +217,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 		
 		mBtnRec.set(-10, yPos - 2, width+10 , (int) (yPos + 2 + Sizes.getScaledFontSize_normal()*2.2));
 		Slide.setBounds(mBtnRec);
-   	 	
-		Slide.setColorFilter(new PorterDuffColorFilter(Global.getColor(R.attr.SlideDownColorFilter), android.graphics.PorterDuff.Mode.MULTIPLY ));
-   	 	Slide.draw(canvas);
+   	  	Slide.draw(canvas);
 		
    	 	
    	 	// Draw Background

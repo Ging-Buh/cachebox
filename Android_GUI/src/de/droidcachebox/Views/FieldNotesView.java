@@ -10,6 +10,7 @@ import CB_Core.GlobalCore;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.DAO.CacheDAO;
 import de.droidcachebox.DAO.CacheListDAO;
 import CB_Core.Events.SelectedCacheEvent;
@@ -80,10 +81,7 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 			}
 		});
 
-		this.setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
-		this.setCacheColorHint(R.color.Day_TitleBarColor);
-		this.setDividerHeight(5);
-		this.setDivider(getBackground());
+		ActivityUtils.setListViewPropertys(this);
 		
 		
 	}

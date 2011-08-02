@@ -292,4 +292,14 @@ public class ActivityUtils
 		icon.setBounds(oldBounds);
 	}
 
+    
+    public static void setListViewPropertys(ListView list)
+    {
+    	list.setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
+    	list.setCacheColorHint(0);
+    	list.setDividerHeight(Sizes.getHalfCornerSize()*2);
+    	list.setDivider(list.getBackground());
+    }
+    
+    
 }

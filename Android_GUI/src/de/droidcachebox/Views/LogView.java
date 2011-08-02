@@ -8,6 +8,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
@@ -52,10 +53,7 @@ public class LogView extends ListView implements SelectedCacheEvent, ViewOptions
 				return true;
 			}
 		});
-		this.setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
-		this.setCacheColorHint(R.color.Day_TitleBarColor);
-		this.setDividerHeight(5);
-		this.setDivider(getBackground());
+		ActivityUtils.setListViewPropertys(this);
 		
 	}
 

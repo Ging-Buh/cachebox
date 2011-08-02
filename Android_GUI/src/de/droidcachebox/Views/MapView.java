@@ -3830,7 +3830,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 //      int bottomRow = bZoomOut.Top - bZoomOut.Height / 2;
 //      int centerColumn = bZoomIn.Left + bZoomIn.Width / 2;
 //      int halfWidth = (bZoomIn.Width / 5);
-      int topRow = 50;
+      int topRow = buttonTrackPosition.getTop() + buttonTrackPosition.getHeight()+10;
       int bottomRow = height - 50;
       int centerColumn = 50;
       int halfWidth = 20;

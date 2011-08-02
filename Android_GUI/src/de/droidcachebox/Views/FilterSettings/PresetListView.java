@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import de.droidcachebox.FilterProperties;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Ui.Sizes;
 
 import android.app.Activity;
 import android.content.Context;
@@ -102,10 +104,7 @@ public class PresetListView extends ListView implements ViewOptionsMenu {
 			}
 		});
 
-		this.setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
-		this.setCacheColorHint(R.color.Day_TitleBarColor);
-		this.setDividerHeight(5);
-		this.setDivider(getBackground());
+		ActivityUtils.setListViewPropertys(this);
 		
 		
 	}

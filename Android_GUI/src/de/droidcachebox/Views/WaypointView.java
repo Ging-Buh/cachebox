@@ -16,6 +16,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.DAO.WaypointDAO;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Views.Forms.EditCoordinate;
@@ -69,10 +70,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
         		GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), aktWaypoint);
 			}
 		});
-		this.setBackgroundColor(Config.GetBool("nightMode")? R.color.Night_EmptyBackground : R.color.Day_EmptyBackground);
-		this.setCacheColorHint(R.color.Day_TitleBarColor);
-		this.setDividerHeight(5);
-		this.setDivider(getBackground());
+		ActivityUtils.setListViewPropertys(this);
 		
 	}
 	

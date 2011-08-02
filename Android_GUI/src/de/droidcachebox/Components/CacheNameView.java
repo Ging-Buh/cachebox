@@ -74,10 +74,7 @@ public class CacheNameView extends View
 		Rect mRect = new Rect();
 		mRect.set(-10, -2, width+10 , height+2);
 		Slide.setBounds(mRect);
-   	 	
-		Slide.setColorFilter(new PorterDuffColorFilter(Global.getColor(R.attr.SlideDownColorFilter), android.graphics.PorterDuff.Mode.MULTIPLY ));
-   	 	
-		Slide.draw(canvas);
+   	 	Slide.draw(canvas);
 				
 		
 	}

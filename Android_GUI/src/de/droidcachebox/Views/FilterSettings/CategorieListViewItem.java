@@ -85,7 +85,8 @@ public class CategorieListViewItem extends View {
 		
 		 width = PresetListView.windowW;
 		
-		 height = Sizes.getIconSize() + Sizes.getCornerSize()*2; 
+		 height = Sizes.getIconSize() + Sizes.getCornerSize()*4; 
+		 
  setMeasuredDimension(width, height);
 	            
 	}
@@ -215,7 +216,7 @@ public class CategorieListViewItem extends View {
     		btnBack = mRes.getDrawable(n? R.drawable.day_btn_default_normal : R.drawable.night_btn_default_normal);
     		
     		
-    		Rect bounds = new Rect(3, 7, width-3, height);
+    		Rect bounds = new Rect(3, 7, width-3, height-7);
     		btnBack.setBounds(bounds);
     		
     	}
