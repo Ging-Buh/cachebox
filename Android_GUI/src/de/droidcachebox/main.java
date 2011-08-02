@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Log.ILog;
@@ -548,6 +549,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    @Override public void CacheListChangedEvent() 
 		{
 			//Database.Data.Query.size();
+	    	/*  Kurzfristig ausgeblendet, da der Vergleich wegen den neuen CategoryFilter nicht funktioniert. 
 			if ((Global.LastFilter == null) || (Global.LastFilter.ToString().equals("")) || (Global.LastFilter.ToString().equals(PresetListView.presets[0])))
 	        {
 				this.buttonDB.getBackground().clearColorFilter();
@@ -555,7 +557,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        else
 	        {
 	        	this.buttonDB.getBackground().setColorFilter(Color.argb(255, 250, 128, 114), Mode.MULTIPLY); //Color.Salmon;
-	        };        
+	        };
+	        */        
 		}
 		
 		@Override protected void onActivityResult(int requestCode, int resultCode,Intent data) 

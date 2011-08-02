@@ -1,7 +1,7 @@
 package de.droidcachebox.Views.FilterSettings;
 
 import java.util.ArrayList;
-import de.droidcachebox.FilterProperties;
+import CB_Core.FilterProperties;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.ActivityUtils;
@@ -350,6 +350,7 @@ public class CategorieListView extends ListView implements ViewOptionsMenu {
 				
 			}
 		}
+		GlobalCore.Categories.WriteToFilter(EditFilterSettings.tmpFilterProps);
 	}
 
  	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) 
@@ -477,6 +478,8 @@ public class CategorieListView extends ListView implements ViewOptionsMenu {
 	private void fillCategorieList()
 	{
 		Resources res = mContext.getResources();
+		
+		GlobalCore.Categories.ReadFromFilter(EditFilterSettings.tmpFilterProps);
 		
 		for (Category cat : GlobalCore.Categories)
 		{

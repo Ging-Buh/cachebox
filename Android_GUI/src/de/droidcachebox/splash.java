@@ -8,6 +8,7 @@ import java.util.TimerTask;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import CB_Core.Config;
+import CB_Core.FilterProperties;
 import CB_Core.Log.Logger;
 import CB_Core.TranslationEngine.LangStrings;
 import CB_Core.Types.MoveableList;
@@ -30,7 +31,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 358;
+    public static final int CurrentRevision = 359;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1015;

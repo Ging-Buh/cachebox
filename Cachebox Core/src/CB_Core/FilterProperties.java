@@ -1,4 +1,4 @@
-package de.droidcachebox;
+package CB_Core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +49,9 @@ public class FilterProperties
 
     public int[] attributesFilter = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-    public ArrayList<Integer> GPXFilenameIds = new ArrayList<Integer>();
+    public ArrayList<Long> GPXFilenameIds = new ArrayList<Long>();
+
+    public ArrayList<Long> Categories = new ArrayList<Long>();
 
     public String filterName = "";
     public String filterGcCode = "";
@@ -88,11 +90,17 @@ public class FilterProperties
         	tempGPX += GPXseperator + String.valueOf(GPXFilenameIds.get(i));
         }
 
-        result += seperator + tempGPX;
+        result += seperator + tempGPX;        
         result += seperator + filterName;
         result += seperator + filterGcCode;
         result += seperator + filterOwner;
 
+        String tempCategory = "";
+        for (long i : Categories)
+        {
+            tempCategory += GPXseperator + i;
+        }
+        result += seperator + tempCategory;
 
         return result;
     }
@@ -146,7 +154,7 @@ public class FilterProperties
 	            partsGPX= tempGPX.split(GPXseperator);
 	            for (int i = 1; i < partsGPX.length; i++)
 	            {
-	                GPXFilenameIds.add(Integer.parseInt(partsGPX[i]));
+	                GPXFilenameIds.add(Long.parseLong(partsGPX[i]));
 	            }
             }
             if (parts.length > cnt)
@@ -161,6 +169,18 @@ public class FilterProperties
                 filterOwner = parts[cnt++];
             else
                 filterOwner = "";
+            
+            
+            if (parts.length > cnt)
+	        {
+	            String tempGPX = parts[cnt++];
+	            String[] partsGPX = new String[]{};
+	            partsGPX= tempGPX.split(GPXseperator);
+	            for (int i = 1; i < partsGPX.length; i++)
+	            {
+	                Categories.add(Long.parseLong(partsGPX[i]));
+	            }
+            }
         }
         catch (Exception exc)
         {
@@ -336,7 +356,7 @@ public class FilterProperties
             if (GPXFilenameIds.size() != 0)
             {
                 String s = "";
-                for(int id : GPXFilenameIds)
+                for(long id : GPXFilenameIds)
                 {
                 	s += String.valueOf(id) + ",";
                 }

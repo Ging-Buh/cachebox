@@ -1,7 +1,7 @@
 package de.droidcachebox.Views.FilterSettings;
 
 import java.util.ArrayList;
-import de.droidcachebox.FilterProperties;
+import CB_Core.FilterProperties;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Components.ActivityUtils;
