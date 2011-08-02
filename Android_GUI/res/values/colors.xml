@@ -7,8 +7,8 @@
 		<color name="Day_Background">#CAD4B2</color>
 	    <color name="Day_ListBackground">#FFFFFF</color>
 	    <color name="Day_ListBackground_secend">#EEEEEE</color>
-	    <color name="Day_ListSeperator">#8B9D5F</color>	    
-	    <color name="Day_EmptyBackground">#4a630d</color>
+	    <color name="Day_ListSeperator">#4c5e21</color>	    
+	    <color name="Day_EmptyBackground">#dce3cc</color>
 	    <color name="Day_Foreground">#000000</color>
 	    <color name="Day_SelectedBackground">#ffd240</color>
 	    <color name="Day_TitleBarColor">#8B9D5F</color>

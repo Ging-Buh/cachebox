@@ -28,6 +28,7 @@ import android.graphics.Color;
 import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.PorterDuff.Mode;
@@ -100,6 +101,8 @@ public class ActivityUtils
 	{
 		Paint drawPaint = new Paint();
 		drawPaint.setAntiAlias(true);
+		drawPaint.setStyle(Style.STROKE);
+		drawPaint.setStrokeWidth(BorderSize);
 		
 	    final Rect outerRect = rec;
 	    final RectF OuterRectF = new RectF(outerRect);
@@ -113,6 +116,7 @@ public class ActivityUtils
 	    final RectF rectF = new RectF(rect);
 	       
 	    drawPaint.setColor(FillColor);
+	    drawPaint.setStyle(Style.FILL_AND_STROKE);
 	    canvas.drawRoundRect( rectF,CornerSize-BorderSize,CornerSize-BorderSize, drawPaint);
 
 	}
@@ -278,7 +282,14 @@ public class ActivityUtils
         listView.requestLayout();
     }
     
-    
-    
+
+
+    public static void drawIconBounds(Canvas canvas,Drawable icon,Rect bounds) 
+	{
+		Rect oldBounds =  icon.getBounds();
+		icon.setBounds(bounds);
+		icon.draw(canvas);
+		icon.setBounds(oldBounds);
+	}
 
 }

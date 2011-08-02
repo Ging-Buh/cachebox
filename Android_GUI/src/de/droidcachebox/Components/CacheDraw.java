@@ -9,6 +9,7 @@ import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
+import de.droidcachebox.Components.CacheDraw.DrawStyle;
 import de.droidcachebox.Ui.Size;
 import de.droidcachebox.Ui.Sizes;
 
@@ -419,6 +420,8 @@ public class CacheDraw
 		        }
 	        }
 	    }
+
+	
 
     
 }

@@ -2172,7 +2172,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			int BubbleHeight = 140;
 			BubbleDrawRec = new Rect(bubbleX, bubbleY, bubbleX + BubbleWidth, bubbleY + BubbleHeight);
 			BubbleDrawRec.offset(-((int)((BubbleWidth / 2) * scale)), -((int)((8 + halfUnderlayWidth + BubbleHeight) * scale)));
-			CacheDraw.DrawInfo(BubbleCache, canvasOverlay, BubbleDrawRec, -1, CacheDraw.DrawStyle.withOwnerAndName,scale);
+			Boolean GlobalSelected = BubbleCache == GlobalCore.SelectedCache();
+            int BackgroundColor= GlobalSelected? Global.getColor(R.attr.ListBackground_select):Global.getColor(R.attr.ListBackground);
+            BackgroundColor =Color.argb(200, Color.red(BackgroundColor), Color.green(BackgroundColor), Color.blue(BackgroundColor));
+			CacheDraw.DrawInfo(BubbleCache, canvasOverlay, BubbleDrawRec, BackgroundColor, CacheDraw.DrawStyle.withOwnerAndName,scale);
 			  
 		}
     }

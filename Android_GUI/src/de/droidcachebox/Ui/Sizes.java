@@ -159,6 +159,11 @@ public class Sizes
 	{
 		return CacheListDrawRec;
 	}
+
+	public static int getIconAddCorner() 
+	{
+		return iconSize + CornerSize ;
+	}
 	
 	
 	

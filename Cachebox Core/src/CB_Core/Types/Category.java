@@ -70,4 +70,31 @@ public class Category extends ArrayList<GpxFilename> implements Comparable<Categ
 			return 0;
 	}
 
+	/**
+	 * gibt den chk status der enthaltenen GpxFiles zurück
+	 * </br> 0 = keins ausgewählt
+	 * </br> 1 = alle ausgewählt
+	 * </br> -1 = nicht alle, aber mindestens eins ausgewählt
+	 * @return
+	 */
+	public int getChek() 
+	{
+		int result=0;
+		
+		int chkCounter=0;
+		int counter=0;
+		for (GpxFilename gpx : this)
+		{
+			if (gpx.Checked)chkCounter++;
+			
+			counter++;
+		}
+		
+		if(chkCounter==0)result=0;
+		else if (chkCounter==counter)result=1;
+		else result=-1;
+		
+		return result;
+	}
+
 }

@@ -30,7 +30,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 356;
+    public static final int CurrentRevision = 357;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1015;
@@ -113,7 +113,10 @@ public class Global{
         		<br>Index 33 =<img src="doc-files/warning_icon.png" width=32 height=32> 
         		<br>Index 34 =<img src="doc-files/help_icon.png" width=32 height=32> 
         		<br>Index 35 =<img src="doc-files/power_gc_live.png" width=32 height=32> 
-        		<br>Index 36 =<img src="doc-files/gc_live_icon.png" width=32 height=32> 
+        		<br>Index 36 =<img src="doc-files/gc_live_icon.png" width=32 height=32>
+        		<br>Index 37 =<img src="doc-files/pin_icon.png" width=32 height=32>
+        		<br>Index 38 =<img src="doc-files/pin_icon_disable.png" width=32 height=32> 
+        		<br>Index 39 =<img src="doc-files/chk_icon_disable.png" width=32 height=32> 
      */
     public static Drawable[] Icons = null;
     public static Drawable[] SmallStarIcons= null;
@@ -418,6 +421,9 @@ public class Global{
 	        		res.getDrawable(R.drawable.help_icon), // 34
 	        		res.getDrawable(R.drawable.power_gc_live), // 35
 	        		res.getDrawable(R.drawable.gc_live_icon), // 36
+	        		res.getDrawable(R.drawable.pin_icon), // 37
+	        		res.getDrawable(R.drawable.pin_icon_disable), // 38
+	        		res.getDrawable(R.drawable.chk_icon_disable), // 39
 	        };
     	}
         

@@ -14,6 +14,7 @@ import de.droidcachebox.Views.FilterSettings.FilterSetListView.FilterSetEntry;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -99,6 +100,12 @@ public class CategorieListViewItem extends View {
     int left;
     int top ;
     int BackgroundColor;
+    
+    private static Rect lPinBounds;
+    private static Rect rBounds;
+    private static Rect rChkBounds;
+    private static int halfSize=0;
+    
     @Override
     protected void onDraw(Canvas canvas) 
     {
@@ -107,19 +114,22 @@ public class CategorieListViewItem extends View {
     	left = Sizes.getCornerSize();
         top = Sizes.getCornerSize();
         
-        if(rBounds == null || rChkBounds == null)
+        if(rBounds == null || rChkBounds == null || lPinBounds==null)
     	{
     		rBounds = new Rect(width-height-7, 7, width-7, height-7);// = right Button bounds
-    		int halfSize= rBounds.width()/4;
+    		halfSize= rBounds.width()/4;
     		int corrRecSize = (rBounds.width()-rBounds.height())/2;
     		rChkBounds = new Rect(rBounds.left + halfSize,rBounds.top + halfSize-corrRecSize, rBounds.right - halfSize, rBounds.bottom - halfSize +corrRecSize );
+    		rChkBounds.offset(0, halfSize-Sizes.getCornerSize());
+    		lPinBounds = new Rect(rChkBounds);
+    		lPinBounds.offset(-(width - (halfSize *2) - rChkBounds.width()), 0);
     	}
        
         
         if(layoutEntryName==null)
         {        	
-        	int innerWidth = width - (Sizes.getCornerSize()*2)- Sizes.getIconSize()- (width -rChkBounds.left)- Sizes.getIconSize()+30;
-        	int innerWidthName= innerWidth-100; 
+        	int innerWidth = (width - (Sizes.getIconAddCorner()+ rChkBounds.width()))+halfSize;
+        	int innerWidthName= innerWidth-rBounds.width(); 
         	GpxFilename file = categorieEntry.getFile();
         	
         	String Name="";
@@ -137,7 +147,7 @@ public class CategorieListViewItem extends View {
         		Name=categorieEntry.getCatName();
         		Date=postFormater.format(categorieEntry.getCat().LastImported());
         		Count=String.valueOf(categorieEntry.getCat().CacheCount());
-        		Collaps=120;
+        		Collaps=Sizes.getCornerSize();
         	}
         	innerWidth+=Collaps;
         	innerWidthName+=Collaps;
@@ -196,39 +206,55 @@ public class CategorieListViewItem extends View {
     
     
     private static Drawable btnBack;
-    private static Drawable btnBack_pressed;
-    private static Drawable minusBtn;
-    private static Drawable plusBtn;
     
     private void drawCollabseButtonItem(Canvas canvas)
     {
-    	if(btnBack==null || btnBack_pressed==null)
+    	if(btnBack==null)
     	{
     		boolean n = Config.GetBool("nightMode");
-    		btnBack = mRes.getDrawable(n? R.drawable.day_btn_dropdown_normal : R.drawable.night_btn_dropdown_normal);
-    		btnBack_pressed = mRes.getDrawable(n? R.drawable.day_btn_dropdown_pressed : R.drawable.night_btn_dropdown_pressed);
+    		btnBack = mRes.getDrawable(n? R.drawable.day_btn_default_normal : R.drawable.night_btn_default_normal);
+    		
     		
     		Rect bounds = new Rect(3, 7, width-3, height);
     		btnBack.setBounds(bounds);
-    		btnBack_pressed.setBounds(bounds);
+    		
     	}
     	
-    	left+=10;
+    	left+=70;
     	
     	btnBack.draw(canvas);
+    	ActivityUtils.drawFillRoundRecWithBorder(canvas, rChkBounds, 3, 
+	     		   Global.getColor(R.attr.ListSeparator), Color.TRANSPARENT, 
+	     		  Sizes.getCornerSize());
     	
+    	int ChkState = this.categorieEntry.getCat().getChek();
+    	
+    	if (ChkState==1)ActivityUtils.drawIconBounds(canvas,Global.Icons[27],rChkBounds);
+    	if (ChkState==-1)ActivityUtils.drawIconBounds(canvas,Global.Icons[39],rChkBounds);
+    	
+    	drawPin(canvas);
     }
     
-    private void drawChkItem(Canvas canvas)
+    private void drawPin(Canvas canvas) 
+    {
+    	if(this.getCategorieEntry().getCat().pinned)
+    	{
+    		ActivityUtils.drawIconBounds(canvas,Global.Icons[37],lPinBounds);
+    	}
+    	else
+    	{
+    		ActivityUtils.drawIconBounds(canvas,Global.Icons[38],lPinBounds);
+    	}
+    			
+	}
+
+	private void drawChkItem(Canvas canvas)
     {
     	drawIcon(canvas);
     	drawRightChkBox(canvas);
     	if(this.categorieEntry.getState()==1)
     	{
-    		Rect oldBounds =  Global.Icons[27].getBounds();
-    		Global.Icons[27].setBounds(rChkBounds);
-    		Global.Icons[27].draw(canvas);
-    		Global.Icons[27].setBounds(oldBounds);
+    		ActivityUtils.drawIconBounds(canvas,Global.Icons[27],rChkBounds);
     	}
     	
     }
@@ -239,34 +265,25 @@ public class CategorieListViewItem extends View {
     	drawRightChkBox(canvas);
     	if(this.categorieEntry.getState()==1)
     	{
-    		Rect oldBounds =  Global.Icons[27].getBounds();
-    		Global.Icons[27].setBounds(rChkBounds);
-    		Global.Icons[27].draw(canvas);
-    		Global.Icons[27].setBounds(oldBounds);
+    		ActivityUtils.drawIconBounds(canvas,Global.Icons[27],rChkBounds);
     	}
     	else if(this.categorieEntry.getState()==-1)
     	{
-    		Rect oldBounds =  Global.Icons[28].getBounds();
-    		Global.Icons[28].setBounds(rChkBounds);
-    		Global.Icons[28].draw(canvas);
-    		Global.Icons[28].setBounds(oldBounds);
+    		ActivityUtils.drawIconBounds(canvas,Global.Icons[28],rChkBounds);
     	}
     }
     
     
-    private static TextPaint mTextPaint;
-    private static StaticLayout layoutPlus;
-    private static StaticLayout layoutMinus;
-    private static Rect lBounds;
-    private static Rect rBounds;
-    private static Rect rChkBounds;
-  
+
+    
     
     
     private void drawIcon(Canvas canvas)
     {
     	if(categorieEntry.getIcon()!=null)
-    		left +=ActivityUtils.PutImageTargetHeight(canvas, categorieEntry.getIcon(), left , top , Sizes.getIconSize()) + Sizes.getIconSize()/2;
+    	ActivityUtils.PutImageTargetHeight(canvas, categorieEntry.getIcon(), left , top , Sizes.getIconSize());
+    	left += Sizes.getIconAddCorner();
+
     	
     }
     
@@ -281,6 +298,7 @@ public class CategorieListViewItem extends View {
 	public void plusClick() 
 	{
 		this.categorieEntry.plusClick();
+		
 	}
 	public void minusClick() 
 	{

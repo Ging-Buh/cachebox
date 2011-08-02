@@ -54,6 +54,7 @@ public class CategorieListView extends ListView implements ViewOptionsMenu {
 		private Drawable mIcon;
 		private Drawable[] mIconArray;
 		private int mState=0;
+		
 		private int mItemType;
 		private int ID;
 		private static int IdCounter;
@@ -71,6 +72,7 @@ public class CategorieListView extends ListView implements ViewOptionsMenu {
 			mIcon=Icon;
 			mItemType=itemType;
 			ID= IdCounter++;
+			
 		}
 		
 		public CategorieEntry(Category cat, Drawable Icon, int itemType)
@@ -80,6 +82,7 @@ public class CategorieListView extends ListView implements ViewOptionsMenu {
 			mIcon=Icon;
 			mItemType=itemType;
 			ID= IdCounter++;
+			
 		}
 		
 		public CategorieEntry(GpxFilename file, Drawable[] Icons, int itemType, double min, double max, double iniValue, double Step) 
@@ -125,18 +128,56 @@ public class CategorieListView extends ListView implements ViewOptionsMenu {
 
 		public void plusClick() 
 		{
-			mNumerickState += mNumerickStep;
-			if(mNumerickState>mNumerickMax) mNumerickState = mNumerickMin;
+			
+			if(mItemType==COLLABSE_BUTTON_ITEM)
+			{
+				//collabs Button chk clicked
+				int State = mCat.getChek();
+				if (State == 0)
+				{//keins ausgewählt, also alle anwählen
+					
+					for(GpxFilename tmp : mCat)
+					{
+						tmp.Checked=true;
+					}
+					
+				}
+				else 
+				{//einer oder mehr ausgewählt, also alle abwählen
+					
+					for(GpxFilename tmp : mCat)
+					{
+						tmp.Checked=false;
+					}
+					
+				}
+			}
+			else
+			{
+				mNumerickState += mNumerickStep;
+				if(mNumerickState>mNumerickMax) mNumerickState = mNumerickMin;
+			}
+			
+			
 		}
 		public void minusClick() 
 		{
-			mNumerickState -= mNumerickStep;
-			if(mNumerickState<0) mNumerickState = mNumerickMax;
+			if(mItemType==COLLABSE_BUTTON_ITEM)
+			{
+				// Collabs Button Pin Clicked
+				this.mCat.pinned=!this.mCat.pinned;
+				
+			}
+			else
+			{
+				mNumerickState -= mNumerickStep;
+				if(mNumerickState<0) mNumerickState = mNumerickMax;
+			}
 		}
 		public void stateClick()
 		{
 			mState += 1;
-			if(mItemType==CategorieListView.CHECK_ITEM)
+			if(mItemType==CategorieListView.CHECK_ITEM || mItemType==CategorieListView.COLLABSE_BUTTON_ITEM)
 			{
 				if(mState>1)mState=0;
 			}
@@ -144,6 +185,7 @@ public class CategorieListView extends ListView implements ViewOptionsMenu {
 			{
 				if(mState>1)mState=-1;
 			}
+			
 		}
 
 		public String getCatName() 
@@ -180,16 +222,14 @@ public class CategorieListView extends ListView implements ViewOptionsMenu {
 			{
 				
 				
-				if(((CategorieListViewItem)arg1).getCategorieEntry().getItemType()==CategorieListView.COLLABSE_BUTTON_ITEM)
-					collabseButton_Clicked((CategorieListViewItem) arg1);
-				lvAdapter.notifyDataSetInvalidated();
-				invalidate();
+//				if(((CategorieListViewItem)arg1).getCategorieEntry().getItemType()==CategorieListView.COLLABSE_BUTTON_ITEM)
+					
 				
 				Rect HitRec = new Rect();
 				arg1.getHitRect(HitRec);
 				
 				Rect plusBtnHitRec = new Rect(HitRec.width()-HitRec.height(),HitRec.top,HitRec.right,HitRec.bottom);
-				Rect minusBtnHitRec = new Rect(HitRec.left,HitRec.top,HitRec.width()+HitRec.height(),HitRec.bottom);
+				Rect minusBtnHitRec = new Rect(HitRec.left,HitRec.top,HitRec.height(),HitRec.bottom);
 								
 				if(((CategorieListViewItem)arg1).getCategorieEntry().getItemType()== NUMERICK_ITEM)
 				{
@@ -213,11 +253,44 @@ public class CategorieListView extends ListView implements ViewOptionsMenu {
 					if(plusBtnHitRec.contains((int)CategorieListView.lastTouchX, (int)CategorieListView.lastTouchY))
 					{
 						((CategorieListViewItem)arg1).stateClick();
-						//SetCategory();
+						SetCategory();
 					}
 					
 				}
 				
+				if(((CategorieListViewItem)arg1).getCategorieEntry().getItemType()== COLLABSE_BUTTON_ITEM)
+				{
+					if(plusBtnHitRec.contains((int)CategorieListView.lastTouchX, (int)CategorieListView.lastTouchY))
+					{
+						((CategorieListViewItem)arg1).plusClick();
+						if(lCategories!=null)
+						{
+							for(CategorieEntry tmp : lCategories)
+							{
+								GpxFilename file = tmp.getFile();
+								if (file!=null)
+								{
+									tmp.setState(file.Checked? 1:0);
+								}
+								
+							}
+						}
+						SetCategory();
+					}
+					else if(minusBtnHitRec.contains((int)CategorieListView.lastTouchX, (int)CategorieListView.lastTouchY))
+					{
+						((CategorieListViewItem)arg1).minusClick();
+						SetCategory();
+					}
+					else
+					{
+						collabseButton_Clicked((CategorieListViewItem) arg1);
+						lvAdapter.notifyDataSetInvalidated();
+					}
+					
+					
+				}
+				invalidate();
 				return;
 			}
 			
@@ -257,7 +330,21 @@ public class CategorieListView extends ListView implements ViewOptionsMenu {
 					int index = cat.indexOf(file);
 					if(index!=-1)
 					{
-						cat.get(index).Checked=(tmp.categorieEntry.getState()==1)? true:false;
+						
+							cat.get(index).Checked=(tmp.categorieEntry.getState()==1)? true:false;
+						
+					}
+					else
+					{
+						if(tmp.getCategorieEntry().getCat()!=null)
+						{
+							if(cat==tmp.getCategorieEntry().getCat())
+							{
+								cat.pinned= tmp.getCategorieEntry().getCat().pinned;
+							}
+							
+						}
+						
 					}
 										
 				}
