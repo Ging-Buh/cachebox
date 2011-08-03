@@ -194,7 +194,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		private ImageButton buttonDB;
 		private ImageButton buttonCache;
 		private ImageButton buttonNav;
-		private ImageButton buttonInfo;
+		private ImageButton buttonTools;
 		private ImageButton buttonMisc;
 		private FrameLayout frame;
 		private LinearLayout TopLayout;
@@ -213,12 +213,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		private int lastBtnDBView=1;
 	    private int lastBtnCacheView=4;
 	    private int lastBtnNavView=0;
-	    private int lastBtnInfoView=3;
+	    private int lastBtnToolsView=-1;
 	    private int lastBtnMiscView=11;
 	    ArrayList <Integer> btnDBActionIds ;
 	    ArrayList <Integer> btnCacheActionIds ;
 	    ArrayList <Integer> btnNavActionIds ;
-	    ArrayList <Integer> btnInfoActionIds ;
+	    ArrayList <Integer> btnToolsActionIds ;
 	    ArrayList <Integer> btnMiscActionIds ;
 	    
 		// Powermanager
@@ -715,7 +715,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		      {
 		    	showBtnNavContextMenu();
 		  	  }
-		      else if (v == buttonInfo)
+		      else if (v == buttonTools)
 		      {
 		    	showBtnToolsContextMenu();
 		      } 
@@ -857,7 +857,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			
 			else if(v==buttonNav){showView(lastBtnNavView);}
 			
-			else if(v==buttonInfo){showView(lastBtnInfoView);}
+			else if(v==buttonTools){showView(lastBtnToolsView);}
 			
 			else if(v==buttonMisc){showView(lastBtnMiscView);}
 		}
@@ -883,6 +883,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     
 	public void showView(Integer ID)
     {
+		if(ID==-1)return;// keine Action
+		
     	if(!(ID>ViewList.size()))
     	{
     		showView((ViewOptionsMenu)ViewList.get(ID));
@@ -917,7 +919,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	if(btnDBActionIds.contains(ID)){lastBtnDBView=ID; return;}
     	if(btnCacheActionIds.contains(ID)){lastBtnCacheView=ID; return;}
     	if(btnNavActionIds.contains(ID)){lastBtnNavView=ID; return;}
-    	if(btnInfoActionIds.contains(ID)){lastBtnInfoView=ID; return;}
+    	if(btnToolsActionIds.contains(ID)){lastBtnToolsView=ID; return;}
     	if(btnMiscActionIds.contains(ID)){lastBtnMiscView=ID; return;}
     	
     }
@@ -1182,7 +1184,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	buttonDB = (ImageButton)this.findViewById(R.id.buttonDB);
     	buttonCache = (ImageButton)this.findViewById(R.id.buttonCache);
     	buttonNav = (ImageButton)this.findViewById(R.id.buttonMap);
-    	buttonInfo = (ImageButton)this.findViewById(R.id.buttonInfo);
+    	buttonTools = (ImageButton)this.findViewById(R.id.buttonInfo);
     	buttonMisc = (ImageButton)this.findViewById(R.id.buttonMisc);
     	
     	cacheNameView =(CacheNameView)this.findViewById(R.id.main_cache_name_view);
@@ -1293,8 +1295,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		registerForContextMenu(buttonNav);
 		this.buttonNav.setOnClickListener(ButtonOnClick);
 		
-		registerForContextMenu(buttonInfo);
-		this.buttonInfo.setOnClickListener(ButtonOnClick);
+		registerForContextMenu(buttonTools);
+		this.buttonTools.setOnClickListener(ButtonOnClick);
 		
 		registerForContextMenu(buttonMisc);
 		this.buttonMisc.setOnClickListener(ButtonOnClick);
@@ -1338,12 +1340,15 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		btnNavActionIds.add(0);		//mapView
 		btnNavActionIds.add(8);		//compassView
 		
-		btnInfoActionIds = new ArrayList<Integer>();
-		btnInfoActionIds.add(3);	//logView
-		btnInfoActionIds.add(5);	//SpoilerView
-		btnInfoActionIds.add(9);	//fieldNotesView
-		btnInfoActionIds.add(12);	//jokerView
+		btnToolsActionIds = new ArrayList<Integer>();
+		// der button hat keine Eindeutige Funktion mehr
+		// nur noch ein ContextMenu über LongPress
 		
+		/*btnToolsActionIds.add(3);	//logView
+		btnToolsActionIds.add(5);	//SpoilerView
+		btnToolsActionIds.add(9);	//fieldNotesView
+		btnToolsActionIds.add(12);	//jokerView
+*/		
 		btnMiscActionIds = new ArrayList<Integer>();
 //		btnMiscActionIds.add(102);	//Settings
 		btnMiscActionIds.add(11);	//About
@@ -1810,10 +1815,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			if(Config.GetBool("DebugShowPanel"))
 			{
 				debugInfoPanel.setVisibility(View.VISIBLE);
+				debugInfoPanel.onShow();
 			}
 			else
 			{
 				debugInfoPanel.setVisibility(View.GONE);
+				debugInfoPanel.onShow();
 			}
 		}
 	

@@ -49,7 +49,7 @@ public class PositionEventList {
 	public static void Call(float heading)
 	{
 		
-		if (!Config.GetBool("HtcCompass"))
+		if (!Config.getHtcCompass())
 			return;		
 	
 		anzCompassValues++;

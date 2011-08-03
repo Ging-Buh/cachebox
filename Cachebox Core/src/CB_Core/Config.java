@@ -299,6 +299,9 @@ public class Config {
 				e.printStackTrace();
     	 }
 
+    	 
+    	 // 
+    	 HtcCompass_ValueChanged=true;
         
     }
 
@@ -314,6 +317,36 @@ public class Config {
 			return "";
 		}
 	}
+	
+	
+	
+	
+	
+	/*
+	 * Nachfolgend die Getter von Einstellungen, welche sehr häufig abgerufen werden.
+	 * Diese Einstellungen werden zwischen gespeichert und erst bei einer Änderung aktualisiert.
+	 * Diese erspart das Parsen von Werten 
+	 */
+	
+	
+	/**
+	 * true wenn sich der Wert geändert hat
+	 */
+	private static boolean HtcCompass_ValueChanged=true;
+	
+	private static boolean mHtcCompass;
+	
+	public static boolean getHtcCompass()
+	{
+		if(HtcCompass_ValueChanged)
+		{
+			mHtcCompass = GetBool("");
+			HtcCompass_ValueChanged = false;
+		}
+		
+		return mHtcCompass;
+	}
+	
 
 }
 

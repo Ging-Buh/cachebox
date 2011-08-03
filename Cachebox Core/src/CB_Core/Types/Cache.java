@@ -113,7 +113,7 @@ public class Cache implements Comparable<Cache>
     /**
 	 * Ist der Cache derzeit auffindbar?
      */
-    public boolean Available;
+    public boolean Available; 
     /**
 	 * Ist der Cache einer der Favoriten
      */
@@ -237,6 +237,31 @@ public class Cache implements Comparable<Cache>
      */
     public String longDescription;
     
+    
+    /**
+     * Bin ich der Owner?
+     * </br>-1 noch nicht getestet
+     * </br>1 ja
+     * </br>0 nein
+     */
+    private int myCache=-1;
+    
+    private static String gcLogin = null;
+    
+    public boolean ImTheOwner()
+    {
+    	if(myCache==0)return false;
+    	if(myCache==1)return true;
+    	
+    	if(gcLogin == null)
+    	{
+    		gcLogin = Config.GetString("GcLogin").toLowerCase();
+    	}
+    	
+    	boolean ret = this.Owner.toLowerCase().equals(gcLogin);
+    	myCache = ret? 1:0;
+    	return ret;
+    }
 
     /*
      * Constructors
@@ -423,12 +448,11 @@ public class Cache implements Comparable<Cache>
     
     /**
      * Returns the MapIconId of this Cache
-     * @param gcLogin
      * @return interger
      */
-    public int GetMapIconId(String gcLogin)
+    public int GetMapIconId()
     {
-    	if (this.Owner.toLowerCase().equals(gcLogin) && (gcLogin.length() > 0))
+    	if (this.ImTheOwner())
     		return 20;
     	if (this.Found)
     		return 19;

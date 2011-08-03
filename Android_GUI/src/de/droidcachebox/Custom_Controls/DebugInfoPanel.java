@@ -101,8 +101,19 @@ public final class DebugInfoPanel extends View
 				return true;
 			}
 		});
-        counter = new MyCount(500, 500);
-        counter.start();
+       
+	}
+	
+	
+	public void onShow()
+	{
+		 counter = new MyCount(500, 500);
+	        counter.start();
+	}
+	
+	public void onHide()
+	{
+		counter.cancel();
 	}
 
 	public DebugInfoPanel(Context context, AttributeSet attrs, int defStyle) 

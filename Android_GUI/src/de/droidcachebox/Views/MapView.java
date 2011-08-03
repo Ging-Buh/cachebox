@@ -614,7 +614,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     * Spiegelung des Logins bei Gc, damit ich das nicht dauernd aus der
     * Config lesen muss.
     */
-    String gcLogin = "";
+//    String gcLogin = "";
 
     /**
     * true, falls Center gültige Koordinaten enthält
@@ -962,7 +962,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 */
     public void OnShow()
     {	
-    	gcLogin = Config.GetString("GcLogin").toLowerCase();
+//    	gcLogin = Config.GetString("GcLogin").toLowerCase();
     	isVisible = true;
     	animationThread = new AnimationThread();
     	if (!animationThread.isAlive())
@@ -973,7 +973,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     public void InitializeMap()
     {
     	Zoom = Config.GetInt("lastZoomLevel");
-    	gcLogin = Config.GetString("GcLogin").toLowerCase();
+//    	gcLogin = Config.GetString("GcLogin").toLowerCase();
     	mapMaxCachesDisplay = 50;
     	mapMaxCachesDisplayLarge = 100;
     	zoomCross = 15;
@@ -1798,8 +1798,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        wpi.OverlayIcon = null;
 	        wpi.MapX = cache.MapX;
 	        wpi.MapY = cache.MapY;
-	        wpi.Icon = (cache.Owner.toLowerCase().equals(gcLogin) && (gcLogin.length() > 0)) ? Global.NewMapIcons.get(2).get(20) : (cache.Found) ? Global.NewMapIcons.get(2).get(19) : (cache.MysterySolved() && (cache.Type == CacheTypes.Mystery)) ? Global.NewMapIcons.get(2).get(21) : Global.NewMapIcons.get(2).get((int)cache.Type.ordinal());
-	        wpi.Icon = Global.NewMapIcons.get(2).get(cache.GetMapIconId(gcLogin));
+	        wpi.Icon = (cache.ImTheOwner()) ? Global.NewMapIcons.get(2).get(20) : (cache.Found) ? Global.NewMapIcons.get(2).get(19) : (cache.MysterySolved() && (cache.Type == CacheTypes.Mystery)) ? Global.NewMapIcons.get(2).get(21) : Global.NewMapIcons.get(2).get((int)cache.Type.ordinal());
+	        wpi.Icon = Global.NewMapIcons.get(2).get(cache.GetMapIconId());
 	        wpi.UnderlayIcon = getUnderlayIcon(cache, wpi.Waypoint);
 	          
 	        if ((iconSize < 2) && (cache != GlobalCore.SelectedCache()))  // der SelectedCache wird immer mit den großen Symbolen dargestellt!
@@ -1833,7 +1833,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	                iconId = 6;
 	                wpi.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(1);  // round shaddow
 	            }
-	            if (cache.Owner.toLowerCase().equals(gcLogin) && (gcLogin.length() > 0))
+	            if (cache.ImTheOwner())
 	            {
 	                iconId = 7;
 	                wpi.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(2);  // star shaddow
@@ -1893,7 +1893,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	                      // change the icon of solved mysterys if necessary when the cache is found or own
 	                      if (solution.Cache.Found)
 	                          wpiF.Icon = Global.NewMapIcons.get(2).get(19);
-	                      if (solution.Cache.Owner.toLowerCase().equals(gcLogin) && (gcLogin.length() > 0))
+	                      if (solution.Cache.ImTheOwner())
 	                          wpiF.Icon = Global.NewMapIcons.get(2).get(20);
 	                  }
 	                  else
@@ -1936,7 +1936,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	                  iconId = 6;
 	                  wpiF.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(1);  // round shaddow
 	              }
-	              if (solution.Cache.Owner.toLowerCase().equals(gcLogin) && (gcLogin.length() > 0))
+	              if (solution.Cache.ImTheOwner())
 	              {
 	                  iconId = 7;
 	                  wpiF.UnderlayIcon = Global.NewMapOverlay.get(iconSize).get(2);  // start shaddow

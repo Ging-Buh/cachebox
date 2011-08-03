@@ -277,8 +277,8 @@ public class CacheDraw
         	  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[24], left + VoteWidth, top - (int) (Sizes.getScaledFontSize_normal() / 2), Sizes.getIconSize()/2);
           }
 
-          String gcLogin = Config.GetString("GcLogin").toLowerCase(); 
-          if (cache.Owner.toLowerCase().equals(gcLogin) && !(gcLogin.equals("")))
+          
+          if (cache.ImTheOwner())
           {
         	  ActivityUtils.PutImageTargetHeight(canvas,Global.Icons[17],left  + VoteWidth+Sizes.getIconSize()/2,top - (int) (Sizes.getScaledFontSize_normal() / 2)+Sizes.getIconSize()/2, Sizes.getIconSize()/2);
           }

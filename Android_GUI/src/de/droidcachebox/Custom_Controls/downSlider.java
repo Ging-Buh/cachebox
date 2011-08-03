@@ -384,14 +384,25 @@ public final class downSlider extends View implements SelectedCacheEvent
 				((main)main.mainActivity).setTopButtonHeight(0);
 			}
 			
-			if(!isVisible)
-				startUpdateTimer();
 			
-			isVisible=true;
 		}
 		else
 		{
 			yPos=0;
+			
+		}
+		
+		
+		//chk if info Visible then update info
+		int InfoBeginnAt = Config.GetBool("quickButtonShow")? QuickButtonMaxHeight:0;
+		if(yPos>InfoBeginnAt)
+		{
+			if(!isVisible)
+				startUpdateTimer();
+			isVisible=true;
+		}
+		else
+		{
 			isVisible=false;
 		}
 		
@@ -422,7 +433,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 				//getAllSatellites();
 				
 				if(isVisible)
-					handler.postDelayed(task,400);
+					handler.postDelayed(task,1200);
 			}
 		}
 	};
