@@ -340,7 +340,7 @@ public class Config {
 	{
 		if(HtcCompass_ValueChanged)
 		{
-			mHtcCompass = GetBool("");
+			mHtcCompass = GetBool("HtcCompass");
 			HtcCompass_ValueChanged = false;
 		}
 		
