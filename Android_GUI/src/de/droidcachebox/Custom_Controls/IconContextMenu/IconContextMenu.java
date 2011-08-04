@@ -2,6 +2,8 @@ package de.droidcachebox.Custom_Controls.IconContextMenu;
 
 
 
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
 import de.droidcachebox.main;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -52,9 +54,12 @@ public class IconContextMenu {
 	        	}
 	        }
         })
-        .setInverseBackgroundForced(false)
+        .setInverseBackgroundForced(true)
         .create();
-				
+		dialog.getListView().setHorizontalScrollBarEnabled(true);
+		dialog.getListView().setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
+		dialog.getListView().setScrollbarFadingEnabled(false);
+		
     }
 	
 	public void setInfo(Object info) {

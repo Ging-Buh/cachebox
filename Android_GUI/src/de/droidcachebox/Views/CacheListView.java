@@ -199,9 +199,9 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 	}
 
 	@Override
-	public int GetMenuId() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int GetMenuId() 
+	{
+			return 0;
 	}
 
 	private long lastRender;

@@ -1,6 +1,8 @@
 package de.droidcachebox.Custom_Controls.IconContextMenu;
 
 import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import CB_Core.Config;
 import android.content.Context;
 import android.view.*;
 import android.widget.*;
@@ -37,6 +39,9 @@ public class IconContextMenuAdapter extends BaseAdapter {
         if (res == null) {
         	res = (TextView) LayoutInflater.from(context).inflate(android.R.layout.select_dialog_item, null);
         }
+        
+        //set Text Color (day or night)
+        res.setTextColor(Global.getColor(R.attr.TextColor));
 
         res.setTag(item);
         res.setText(item.getTitle());

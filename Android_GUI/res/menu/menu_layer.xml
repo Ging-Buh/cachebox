@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:title="Google Earth" android:id="@+id/googleearth" android:checkable="true"></item><item android:title="Huber Media Bavaria" android:id="@+id/hubertmedia" android:checkable="true"></item><item android:title="Mapnik" android:id="@+id/mapnik" android:checkable="true" android:checked="true"></item>
+</menu>

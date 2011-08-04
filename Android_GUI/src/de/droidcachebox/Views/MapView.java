@@ -61,6 +61,7 @@ import de.droidcachebox.main;
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
+import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.droidcachebox.DAO.CacheDAO;
 import de.droidcachebox.DAO.CategoryDAO;
 import de.droidcachebox.DAO.GpxFilenameDAO;
@@ -583,17 +584,17 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     /**
     * true, falls das Rating der Caches angezeigt werden soll
     */
-    boolean showRating = true;
+    public boolean showRating = true;
 
     /**
      * true, falls die D/T Werte der Caches angezeigt werden soll
      */
-    boolean showDT = true;
+    public boolean showDT = true;
 
     /**
     * true, falls die WP-Beschriftungen gezeigt werden sollen
     */
-    boolean showTitles = true;
+    public boolean showTitles = true;
 
     /**
     * true, falls bei Mysterys mit Lösung (Final Waypoint) der Cache ausgeblendet werden soll, wenn der Cache nicht selected ist.
@@ -608,7 +609,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     /**
     * true, falls die Map-Anzeige am Compass ausgerichtet werden soll
     */
-    boolean alignToCompass = false;
+    public boolean alignToCompass = false;
     
     /**
     * Spiegelung des Logins bei Gc, damit ich das nicht dauernd aus der
@@ -621,7 +622,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     */
     boolean positionInitialized = false;
 
-    boolean hideMyFinds = false;
+    public boolean hideMyFinds = false;
 
     public Coordinate center = new Coordinate(48.0, 12.0);
 
@@ -4731,6 +4732,23 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				SetCurrentLayer(MapView.Manager.GetLayerByName("Mapnik", "Mapnik", ""));
 				return true;
 	*/		
+				
+			case R.id.mi_Track:
+				((main)main.mainActivity).showTrackContextMenu();
+				return true;
+				
+			case R.id.mapview_smooth:
+				((main)main.mainActivity).showMapSmoothMenu();
+				return true;
+			
+			case R.id.layer:
+				((main)main.mainActivity).showMapLayerMenu();
+				return true;
+				
+			case R.id.mimapview_view:
+				((main)main.mainActivity).showMapViewLayerMenu();
+				return true;	
+				
 			case R.id.miAlignCompass:
 				if (alignToCompass)
 				{
@@ -4751,16 +4769,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			case R.id.mapview_smooth_superfine:
 				setSmotthScrolling(SmoothScrollingTyp.superfine);
 				return true;
-			case R.id.mapview_startrecording:
-				TrackRecorder.StartRecording();
-				return true;
-			case R.id.mapview_pauserecording:
-				TrackRecorder.PauseRecording();
-				return true;
-			case R.id.mapview_stoprecording:
-				TrackRecorder.StopRecording();
-				return true;
-				
+							
 			case R.id.mapview_go_settings:
 				final Intent mainIntent = new Intent().setClass( main.mainActivity,de.droidcachebox.Views.Forms.Settings.class);
 		   		Bundle b = new Bundle();
@@ -4809,89 +4818,21 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		Config.Set("SmoothScrolling",typ.toString());
 	}
 
+	
+	
+	
+	
+		
 	@Override
-	public void BeforeShowMenu(Menu menu) {
-		try
-		{
-			MenuItem mi = menu.findItem(R.id.layer);
-			if (mi != null)
-			{
-				SubMenu subMenu = mi.getSubMenu();
-				subMenu.clear();
-				for (Layer layer : Manager.Layers)
-				{
-					MenuItem mi22 = subMenu.add(layer.Name);
-					if (layer == CurrentLayer)
-					{
-						mi22.setCheckable(true);
-						mi22.setChecked(true);
-					}
-				}
-			}
-			mi = menu.findItem(R.id.miAlignCompass);
-			mi.setCheckable(alignToCompass);
-			
-			// smoothScrolling
-			mi = menu.findItem(R.id.mapview_smooth);
-			if (mi != null)
-			{
-				SubMenu subMenu = mi.getSubMenu();
-				MenuItem mi2 = subMenu.findItem(R.id.mapview_smooth_none);
-				if (mi2 != null)
-					mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.none);
-				mi2 = subMenu.findItem(R.id.mapview_smooth_normal);
-				if (mi2 != null)
-					mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.normal);
-				mi2 = subMenu.findItem(R.id.mapview_smooth_fine);
-				if (mi2 != null)
-					mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.fine);
-				mi2 = subMenu.findItem(R.id.mapview_smooth_superfine);
-				if (mi2 != null)
-					mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.superfine);
-			}
-			mi = menu.findItem(R.id.mapview_startrecording);
-			if (mi != null)
-				mi.setEnabled(!TrackRecorder.recording);
-			mi = menu.findItem(R.id.mapview_pauserecording);
-			if (mi != null)
-				mi.setEnabled(TrackRecorder.recording);
-			mi = menu.findItem(R.id.mapview_stoprecording);
-			if (mi != null)
-				mi.setEnabled(TrackRecorder.recording);
-			
-			// Search Caches	 
-            mi = menu.findItem(R.id.searchcaches_online);	 
-            if (mi != null)	 
-                    mi.setEnabled(Global.APIisOnline());			
-
-			
-			
-			mi = menu.findItem(R.id.mimapview_view);
-			if (mi != null)
-			{
-				MenuItem miFinds = menu.findItem(R.id.miMap_HideFinds);
-				MenuItem miRaiting = menu.findItem(R.id.miMap_ShowRatings);
-				MenuItem miDT = menu.findItem(R.id.miMap_ShowDT);
-				MenuItem miTitles = menu.findItem(R.id.miMap_ShowTitles);
-				
-				miFinds.setChecked(hideMyFinds);
-				miRaiting.setChecked(showRating);
-				miDT.setChecked(showDT);
-				miTitles.setChecked(showTitles);
-			}
-			
-			
-		} catch (Exception exc)
-		{
-			Logger.Error("MapView.BeforeShowMenu()","",exc);
-			return;
-		}
+	public void BeforeShowMenu(Menu menu) 
+	{
+		((main)main.mainActivity).showMapViewContextMenu();
 	}
 	
 	@Override
 	public int GetMenuId()
 	{
-		return R.menu.menu_mapview;
+		return 0;//return R.menu.menu_mapview;
 	}
 
 /*	int anzCompassValues = 0;

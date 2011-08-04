@@ -1,33 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="Start Recording" android:id="@+id/mapview_startrecording"></item>
-    <item android:title="Pause Recording" android:id="@+id/mapview_pauserecording"></item>
-    <item android:title="Stop Recording" android:id="@+id/mapview_stoprecording"></item>
     <item android:id="@+id/layer" android:title="Layer">
-        <menu>
-            <item android:title="Google Earth" android:id="@+id/googleearth" android:checkable="true"></item>
-            <item android:title="Huber Media Bavaria" android:id="@+id/hubertmedia" android:checkable="true"></item>
-            <item android:title="Mapnik" android:id="@+id/mapnik" android:checkable="true" android:checked="true"></item>
-        </menu>
     </item>
     <item android:id="@+id/miAlignCompass" android:title="Align to Compass" android:checked="false" android:checkable="true"></item>
-	<item android:id="@+id/mapview_smooth" android:title="Smooth Scrolling">
-        <menu>
-	        <item android:id="@+id/mapview_smooth_none" android:title="None" android:checkable="true"></item>
-    	    <item android:id="@+id/mapview_smooth_normal" android:title="Normal" android:checkable="true"></item>
-        	<item android:id="@+id/mapview_smooth_fine" android:title="Fine" android:checkable="true"></item>
-        	<item android:id="@+id/mapview_smooth_superfine" android:title="Superfine" android:checkable="true"></item>
-        </menu> 
+	<item android:id="@+id/mapview_smooth" android:title="Smooth Scrolling"> 
 	</item>
-	<item android:id="@+id/mapview_go_settings" android:title="Settings"></item>
+	<item android:id="@+id/mapview_go_settings" android:title="Settings" android:visible="false"></item>
 	<item android:title="Search Caches Online" android:id="@+id/searchcaches_online"></item>
 	<item android:id="@+id/mimapview_view" android:title="View">
-		<menu>
-			<item android:id="@+id/miMap_HideFinds" android:title="Hide Finds" android:checkable="true"></item>
-			<item android:id="@+id/miMap_ShowRatings" android:title="Show Rating" android:checkable="true"></item>
-			<item android:id="@+id/miMap_ShowDT" android:title="Show D/T" android:checkable="true"></item>
-			<item android:id="@+id/miMap_ShowTitles" android:title="Show Titles" android:checkable="true"></item>
-		</menu>
 	</item>
+	<item android:title="Track Recorder" android:id="@+id/mi_Track"></item>
 </menu>

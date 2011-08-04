@@ -52,6 +52,7 @@ import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.Descriptor;
+import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Map.Descriptor.PointD;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.AboutView;
@@ -78,6 +79,7 @@ import de.droidcachebox.Views.Forms.ScreenLock;
 import de.droidcachebox.Views.Forms.SelectDB;
 import de.droidcachebox.Views.Forms.Settings;
 import de.droidcachebox.Views.Forms.MessageBox;
+import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 import de.droidcachebox.Database;
 import CB_Core.Types.CacheList;
 import android.app.Activity;
@@ -119,6 +121,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.View.OnClickListener;
@@ -982,7 +985,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	  icm.show();
 	}
 	
-	private void showTrackContextMenu() 
+	public void showTrackContextMenu() 
 	{
 		icm = new IconContextMenu(this, R.menu.menu_track);
   		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
@@ -1081,10 +1084,111 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		MenuItem mi = IconMenu.findItem(R.id.searchcaches_online);
 		if (mi != null)
 			mi.setEnabled(Global.APIisOnline());
+			mi.setIcon(Global.Icons[36]);
 		
 		icm.show();
 	}
+	
+	
+	public void showMapViewContextMenu()
+	{
+		icm = new IconContextMenu(this, R.menu.menu_mapview);
+		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
+		Menu menu=icm.getMenu();
+		
+
+		try
+		{
+			
+			
+			MenuItem mi = menu.findItem(R.id.miAlignCompass);
+			mi.setCheckable(mapView.alignToCompass);
+						
+			
+			
+			// Search Caches	 
+            mi = menu.findItem(R.id.searchcaches_online);	 
+            if (mi != null)	 
+                    mi.setEnabled(Global.APIisOnline());			
+
+			
+			
+		} catch (Exception exc)
+		{
+			Logger.Error("MapView.BeforeShowMenu()","",exc);
+			return;
+		}
+		
+		icm.show();
+	}
+	
+	public void showMapLayerMenu() 
+	{
+		icm = new IconContextMenu(this, R.menu.menu_layer);
+  		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
+    	
+  		Menu IconMenu=icm.getMenu();
+  		
+  		IconMenu.clear();
+			for (Layer layer : MapView.Manager.Layers)
+			{
+				MenuItem mi22 = IconMenu.add(layer.Name);
+				mi22.setCheckable(true);
+				if (layer == mapView.CurrentLayer)
+				{
+					mi22.setChecked(true);
+				}
+			}
+		icm.show();
+	}
+	
+	public void showMapSmoothMenu() 
+	{
+		icm = new IconContextMenu(this, R.menu.menu_smooth);
+  		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
+    	
+  		Menu IconMenu=icm.getMenu();
+  		
+				MenuItem mi2 = IconMenu.findItem(R.id.mapview_smooth_none);
+				if (mi2 != null)
+					mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.none);
+				mi2 = IconMenu.findItem(R.id.mapview_smooth_normal);
+				if (mi2 != null)
+					mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.normal);
+				mi2 = IconMenu.findItem(R.id.mapview_smooth_fine);
+				if (mi2 != null)
+					mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.fine);
+				mi2 = IconMenu.findItem(R.id.mapview_smooth_superfine);
+				if (mi2 != null)
+					mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.superfine);
+			
+			
+			
+		icm.show();
+	}
     
+	public void showMapViewLayerMenu() 
+	{
+		icm = new IconContextMenu(this, R.menu.menu_map_view_layer);
+  		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
+  		Menu IconMenu=icm.getMenu();
+
+			MenuItem miFinds = IconMenu.findItem(R.id.miMap_HideFinds);
+			MenuItem miRaiting = IconMenu.findItem(R.id.miMap_ShowRatings);
+			MenuItem miDT = IconMenu.findItem(R.id.miMap_ShowDT);
+			MenuItem miTitles = IconMenu.findItem(R.id.miMap_ShowTitles);
+			
+			miFinds.setChecked(mapView.hideMyFinds);
+			miRaiting.setChecked(mapView.showRating);
+			miDT.setChecked(mapView.showDT);
+			miTitles.setChecked(mapView.showTitles);
+					
+		icm.show();
+	}
+	
+	
+    
+	
   
 	IconContextItemSelectedListener OnIconContextItemSelectedListener = new IconContextItemSelectedListener() 
 	{
@@ -1130,6 +1234,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    case R.id.miTrackStop:TrackRecorder.StopRecording();break;
 		    case R.id.miTrackPause:TrackRecorder.PauseRecording();break;
 		    default:
+		    	if (aktView != null)
+		    		aktView.ItemSelected(item);
 				
 	    	}
 		}
