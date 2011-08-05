@@ -63,6 +63,8 @@ public class Animations
     		    public void onAnimationEnd(Animation animation) {
     		    	Rect r = new Rect();
     				Point offset = new Point();
+    				   				
+    				scrollView.requestLayout();
     				scrollView.getChildVisibleRect(button, r, offset);
     				scrollView.scrollTo(offset.x, offset.y);
     				if(AnimationReadyCallBack!=null)

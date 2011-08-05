@@ -119,18 +119,7 @@ public final class downSlider extends View implements SelectedCacheEvent
         int specSize = MeasureSpec.getSize(measureSpec);
         result = specSize;
         
-        if(!isInitial)
-        {
-        	if(Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow"))
-    		{
-    			setPos(QuickButtonMaxHeight);
-    		}
-    		else
-    		{
-    			setPos(0);
-    		}
-        	isInitial=true;
-        }
+       
         
         return result;
     }
@@ -195,6 +184,23 @@ public final class downSlider extends View implements SelectedCacheEvent
 	@Override
 	protected void onDraw(Canvas canvas) 
 	{
+		
+		/**
+		 * Beim ersten Zeichnen, wird der Letzte Zustand abgefragt!
+		 */
+		 if(!isInitial)
+	        {
+	        	if(Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow"))
+	    		{
+	    			setPos(QuickButtonMaxHeight);
+	    		}
+	    		else
+	    		{
+	    			setPos(0);
+	    		}
+	        	isInitial=true;
+	        }
+		
 		
 		if(!drag)
 		{

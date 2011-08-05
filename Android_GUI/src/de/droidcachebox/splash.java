@@ -34,6 +34,7 @@ import de.droidcachebox.Components.copyAssetFolder;
 
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Map.Layer;
+import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.MapView;
 import de.droidcachebox.Views.FilterSettings.PresetListView;
 import de.droidcachebox.Views.Forms.SelectDB;
@@ -129,7 +130,8 @@ public class splash extends Activity
 		}
 		 
 		setProgressState(20, Global.Translations.Get("IniUI"));
-		 	Global.Paints.init(this);
+		 	Sizes.initial(false, this);
+			Global.Paints.init(this);
 	        Global.InitIcons(this, false);
 	        
         setProgressState(40, Global.Translations.Get("LoadMapPack"));

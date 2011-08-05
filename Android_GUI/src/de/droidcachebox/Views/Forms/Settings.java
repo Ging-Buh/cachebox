@@ -143,6 +143,10 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private boolean ActionListChanged=false;
 	private CheckBox chkPremiumMember;
 	
+	
+	private Button[] ButtonList = new Button[]{ToggleLogInView,ToggleGPSView,ToggleMapView,ToggleMiscView,ToggleQuickView,ToggleDebugView} ;
+	private Button openToggleButton=null;
+	
 	ArrayList<Actions> AllActionList;
 	private boolean ActionListButtonAddClicked=false;
 
@@ -214,6 +218,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
             @Override
             public void onClick(View v) 
             {
+            	closeOpenToggleButton(ToggleLogInView);
             	Animations.ToggleViewSlideUp_Down(LogInTableRow,context,SettingsScrollView,ToggleLogInView);
             }
           });
@@ -221,6 +226,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
             @Override
             public void onClick(View v) 
             {
+            	closeOpenToggleButton(ToggleGPSView);
             	Animations.ToggleViewSlideUp_Down(GPSTableRow,context,SettingsScrollView,ToggleGPSView);
             }
           });
@@ -228,6 +234,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
             @Override
             public void onClick(View v) 
             {
+            	closeOpenToggleButton(ToggleMapView);
             	Animations.ToggleViewSlideUp_Down(MapTableRow,context,SettingsScrollView,ToggleMapView);
             	
             }
@@ -236,6 +243,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
             @Override
             public void onClick(View v) 
             {
+            	closeOpenToggleButton(ToggleMiscView);
             	Animations.ToggleViewSlideUp_Down(MiscTableRow,context,SettingsScrollView,ToggleMiscView);
             }
           });
@@ -243,6 +251,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
             @Override
             public void onClick(View v) 
             {
+            	closeOpenToggleButton(ToggleDebugView);
             	Animations.ToggleViewSlideUp_Down(DebugTableRow,context,SettingsScrollView,ToggleDebugView);
             }
           });
@@ -250,7 +259,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
             @Override
             public void onClick(View v) 
             {
-            	
+            	closeOpenToggleButton(ToggleQuickView);
             	Animations.ToggleViewSlideUp_Down(QuickTableRow,context,SettingsScrollView,ToggleQuickView,AnimationReadyCallBack);
             	
             }
@@ -508,7 +517,36 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		{
 			PerformeButtonClick(PerformButtonClickID);
 		}
+			
 }
+	
+	
+	
+	
+	/**
+	 * Schliesst einen schon geöffneten Button, 
+	 * wenn er geöffnet ist.
+	 * 
+	 * @param button 
+	 * 
+	 */
+	private void closeOpenToggleButton(Button button) 
+	{
+		if(openToggleButton!=null && openToggleButton != button)
+    	{
+    		//schliese offenen ToggleButton
+    		openToggleButton.performClick();
+    	}
+		
+		if(openToggleButton == button)
+		{
+			openToggleButton=null;
+		}
+		else
+		{
+			openToggleButton=button;
+		}
+	}
 
 	/**
 	 * Aktualisiert das ListView der ActionList

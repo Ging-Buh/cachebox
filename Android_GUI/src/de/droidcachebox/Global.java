@@ -31,7 +31,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 363;
+    public static final int CurrentRevision = 364;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1015;
@@ -349,7 +349,7 @@ public class Global{
 	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_8));
 	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_9));
 	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_10));
-	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_12));
+	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_11));
 	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_12));
 	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_13));
 	        NewMapIcons.get(2).add(res.getDrawable(R.drawable.map_20x20_14));
