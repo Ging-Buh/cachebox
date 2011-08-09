@@ -2,12 +2,14 @@ package de.droidcachebox.Views.Forms;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.Components.ActivityUtils;
 import CB_Core.Types.Coordinate;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -15,6 +17,8 @@ import android.widget.TextView;
 
 public class projectionCoordinate extends Activity {
 	private Intent aktIntent;
+	
+	public projectionCoordinate Me;
 	
 	Coordinate coord;
 	String Title;
@@ -27,6 +31,7 @@ public class projectionCoordinate extends Activity {
 	EditText valueDistance;
 	EditText valueBearing;
 	Button bCoord;
+	private LinearLayout NumPadLayout;
 
 	private LinearLayout TitleLayout;
 	
@@ -35,6 +40,8 @@ public class projectionCoordinate extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.projection_coordinate);
 
+		Me=this;
+		
 		// übergebene Koordinate auslesen
 		Bundle bundle = getIntent().getExtras();
 		coord = (Coordinate)bundle.getSerializable("Coord");
@@ -54,7 +61,9 @@ public class projectionCoordinate extends Activity {
         valueDistance=(EditText)this.findViewById(R.id.proco_dist_value);
         valueBearing=(EditText)this.findViewById(R.id.proco_bear_value);
         bCoord = (Button)this.findViewById(R.id.proco_buttoncoord);
-        
+        NumPadLayout=(LinearLayout)this.findViewById(R.id.NumPadLayout);
+        descDistance.setOnFocusChangeListener(onFocusChange);
+        descBearing.setOnFocusChangeListener(onFocusChange);
         
         if(radius)
         {
@@ -63,8 +72,6 @@ public class projectionCoordinate extends Activity {
         	((TextView)this.findViewById(R.id.proco_bear_einheit)).setVisibility(View.GONE);
         }
         
-        descDistance.setText(radius? "Radius" : Global.Translations.Get("Distance"));
-        descBearing.setText(Global.Translations.Get("Bearing"));
         valueDistance.setText("0");
         valueBearing.setText("0");
         
@@ -120,12 +127,47 @@ public class projectionCoordinate extends Activity {
         });
 
       
+        valueDistance.setOnFocusChangeListener(onFocusChange);
+        valueBearing.setOnFocusChangeListener(onFocusChange);
         
         // Translations
         bOK.setText(Global.Translations.Get("ok"));
         bCancel.setText(Global.Translations.Get("cancel"));
+        descBearing.setText(Global.Translations.Get("Bearing"));
+        descDistance.setText(radius? "Radius" : Global.Translations.Get("Distance"));
+        
+       //Disable OK/CANCEL from NumPadLayout
+        ((Button)this.findViewById(R.id.positiveButton)).setVisibility(View.INVISIBLE);
+        ((Button)this.findViewById(R.id.negativeButton)).setVisibility(View.INVISIBLE);
 	 }
 
+	private boolean editWidthSetted=false;
+	private OnFocusChangeListener onFocusChange = new OnFocusChangeListener() 
+	{
+		@Override
+		public void onFocusChange(View arg0, boolean arg1) 
+		{
+			if(!editWidthSetted)
+			{
+				 //after the first show set the width to the Bigger value
+		        Integer s1= descBearing.getWidth();
+		        Integer s2= descDistance.getWidth();
+		        int max =Math.max(s1, s2);
+		        descBearing.setWidth(max);
+		        descDistance.setWidth(max);
+		        editWidthSetted=true;
+			}
+			
+			
+			//wenn Eine EditBox den Focus bekommt!
+			if(EditText.class==(arg0.getClass()) && arg1)
+			{// unterscheide ob ein INT oder DBL Eingabe Feld
+						
+				ActivityUtils.initialNumPadDbl((Activity)Me,NumPadLayout,(EditText)arg0,((EditText) arg0).getText().toString(),null,null);
+				
+			}
+		}
+	};
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,

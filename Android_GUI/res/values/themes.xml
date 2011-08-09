@@ -5,6 +5,7 @@
     	<item name="EmptyBackground">@color/Day_EmptyBackground</item>
     	<item name="myBackground">@color/Day_Background</item>
     	<item name="TextColor">@color/Day_Foreground</item>
+    	<item name="TextColor_disable">@color/Day_Foreground_disable</item>
     	<item name="ListBackground">@color/Day_ListBackground</item>
 	    <item name="ListBackground_secend">@color/Day_ListBackground_secend</item>
 	    <item name="ListBackground_select">@color/Day_SelectedBackground</item>
@@ -41,6 +42,7 @@
         <item name="EmptyBackground">@color/Night_EmptyBackground</item>
         <item name="myBackground">@color/Night_Background</item>
         <item name="TextColor">@color/Night_Foreground</item>
+        <item name="TextColor_disable">@color/Night_Foreground_disable</item>
         <item name="ListBackground">@color/Night_ListBackground</item>
 	    <item name="ListBackground_secend">@color/Night_ListBackground_secend</item>
 	    <item name="ListBackground_select">@color/Night_SelectedBackground</item>

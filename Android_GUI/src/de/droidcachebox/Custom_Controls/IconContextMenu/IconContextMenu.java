@@ -54,7 +54,7 @@ public class IconContextMenu {
 	        	}
 	        }
         })
-        .setInverseBackgroundForced(true)
+        
         .create();
 		dialog.getListView().setHorizontalScrollBarEnabled(true);
 		dialog.getListView().setBackgroundColor(Global.getColor(R.attr.EmptyBackground));

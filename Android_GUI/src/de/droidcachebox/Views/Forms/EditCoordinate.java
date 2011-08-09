@@ -1,29 +1,39 @@
 package de.droidcachebox.Views.Forms;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
 
 import de.droidcachebox.UTM.UTMConvert;
 import CB_Core.Types.Coordinate;
 import android.R.string;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 public class EditCoordinate extends Activity {
+	
+	public EditCoordinate Me;
+	
 	private Intent aktIntent;
 	private String Title ="";
 	private int aktPage = -1;  // Deg-Min
@@ -68,12 +78,17 @@ public class EditCoordinate extends Activity {
 	Button bUY;
 	private TextView TitleView;
 	private LinearLayout TitleLayout;
+	private LinearLayout NumPadLayout;
+	
+	private ArrayList<Integer> dblEditTextList = new ArrayList<Integer>();
 	
 	public void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.edit_coordinate);
 
+		Me=this;
+		
 		// übergebene Koordinate auslesen
 		Bundle bundle = getIntent().getExtras();
 		coord = (Coordinate)bundle.getSerializable("Coord");
@@ -83,6 +98,8 @@ public class EditCoordinate extends Activity {
 
         TitleView=(TextView)this.findViewById(R.id.edco_titleview);
         TitleLayout=(LinearLayout)this.findViewById(R.id.edco_titlelayout);
+        NumPadLayout=(LinearLayout)this.findViewById(R.id.NumPadLayout);
+        
 		trDec =(TableRow)this.findViewById(R.id.edco_table_dec);
 		trDec.setVisibility(View.GONE);
 		trMin =(TableRow)this.findViewById(R.id.edco_table_min);
@@ -113,32 +130,76 @@ public class EditCoordinate extends Activity {
 		// Deg
 		bDLat = (Button) findViewById(R.id.edco_dec_lat_direction);
 		tbDLat = (EditText) findViewById(R.id.edco_dec_lat_value);
+		tbDLat.setOnFocusChangeListener(onFocusChange);
+				
 		bDLon = (Button) findViewById(R.id.edco_dec_lon_directioin);
 		tbDLon = (EditText) findViewById(R.id.edco_dec_lon_value);
+		tbDLon.setOnFocusChangeListener(onFocusChange);
 		// Deg - Min
 		bMLat = (Button) findViewById(R.id.edco_min_lat_direction);
 		tbMLatDeg = (EditText) findViewById(R.id.edco_min_lat_value_dec);
+		tbMLatDeg.setOnFocusChangeListener(onFocusChange);
 		tbMLatMin = (EditText) findViewById(R.id.edco_min_lat_value_min);
+		tbMLatMin.setOnFocusChangeListener(onFocusChange);
 		bMLon = (Button) findViewById(R.id.edco_min_lon_direction);
 		tbMLonDeg = (EditText) findViewById(R.id.edco_min_lon_value_dec);
+		tbMLonDeg.setOnFocusChangeListener(onFocusChange);
 		tbMLonMin = (EditText) findViewById(R.id.edco_min_lon_value_min);
+		tbMLonMin.setOnFocusChangeListener(onFocusChange);
 		// Deg - Min - Sec
 		bSLat = (Button) findViewById(R.id.edco_sec_lat_direction);
 		tbSLatDeg = (EditText) findViewById(R.id.edco_sec_lat_value_dec);
+		tbSLatDeg.setOnFocusChangeListener(onFocusChange);
 		tbSLatMin = (EditText) findViewById(R.id.edco_sec_lat_value_min);
+		tbSLatMin.setOnFocusChangeListener(onFocusChange);
 		tbSLatSec = (EditText) findViewById(R.id.edco_sec_lat_value_sec);
+		tbSLatSec.setOnFocusChangeListener(onFocusChange);
 		bSLon = (Button) findViewById(R.id.edco_sec_lon_direction);
 		tbSLonDeg = (EditText) findViewById(R.id.edco_sec_lon_value_dec);
+		tbSLonDeg.setOnFocusChangeListener(onFocusChange);
 		tbSLonMin = (EditText) findViewById(R.id.edco_sec_lon_value_min);
+		tbSLonMin.setOnFocusChangeListener(onFocusChange);
 		tbSLonSec = (EditText) findViewById(R.id.edco_sec_lon_value_sec);
+		tbSLonSec.setOnFocusChangeListener(onFocusChange);
 		// Utm
 		tbUX = (EditText) findViewById(R.id.edco_utm_x_value);
+		tbUX.setOnFocusChangeListener(onFocusChange);
 		tbUY = (EditText) findViewById(R.id.edco_utm_y_value);
+		tbUY.setOnFocusChangeListener(onFocusChange);
 		tbUZone = (EditText) findViewById(R.id.edco_utm_zone_value);
+		tbUZone.setOnFocusChangeListener(new OnFocusChangeListener() 
+		{
+			@Override
+			public void onFocusChange(View arg0, boolean arg1) 
+			{
+				if(!arg1) // if lost the Focus
+				{
+					// close the virtual keyboard
+					InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+					mgr.hideSoftInputFromWindow(tbUZone.getWindowToken(), 0);
+
+				}
+				
+			}
+		});
+		
 		bUX = (Button) findViewById(R.id.edco_utm_x_direction);
 		bUY = (Button) findViewById(R.id.edco_utm_y_directioin);
         
-        
+		
+		//fill dbl list of EditText Id´s
+		dblEditTextList.add(tbDLat.getId());
+		dblEditTextList.add(tbDLon.getId());
+		dblEditTextList.add(tbMLatMin.getId());
+		dblEditTextList.add(tbMLonMin.getId());
+		dblEditTextList.add(tbSLatSec.getId());
+		dblEditTextList.add(tbSLonSec.getId());
+		dblEditTextList.add(tbUX.getId());
+		dblEditTextList.add(tbUY.getId());
+		
+		((Button) NumPadLayout.findViewById(R.id.negativeButton)).setVisibility(View.INVISIBLE);
+		((Button) NumPadLayout.findViewById(R.id.positiveButton)).setVisibility(View.INVISIBLE);
+		
         bDec.setOnClickListener(new OnClickListener(){
         	@Override
         	public void onClick(View v) {
@@ -238,6 +299,32 @@ public class EditCoordinate extends Activity {
         bCancel.setText(Global.Translations.Get("cancel"));
 	 }
 
+	
+	
+	private OnFocusChangeListener onFocusChange = new OnFocusChangeListener() 
+	{
+		@Override
+		public void onFocusChange(View arg0, boolean arg1) 
+		{
+			//wenn Eine EditBox den Focus bekommt!
+			if(EditText.class==(arg0.getClass()) && arg1)
+			{// unterscheide ob ein INT oder DBL Eingabe Feld
+						
+				if(dblEditTextList.contains(arg0.getId()))
+				{
+					ActivityUtils.initialNumPadDbl((Activity)Me,NumPadLayout,(EditText)arg0,((EditText) arg0).getText().toString(),null,null);
+				}
+				else
+				{
+					ActivityUtils.initialNumPadInt((Activity)Me,NumPadLayout,(EditText)arg0,((EditText) arg0).getText().toString(),null,null);
+				}
+				
+				
+			}
+		}
+	};
+	
+		
 	 private static final String[] mStrings = {
 		 "Reference", "Stage of a Multicache", "Question to answer", "Trailhead", "Parking Area", "Final"
 	 };
@@ -287,6 +374,7 @@ public class EditCoordinate extends Activity {
          	min = frac * 60;
          	tbMLonDeg.setText(String.format("%.0f", deg));
          	tbMLonMin.setText(String.format("%.3f", min));
+         	
          	break;
 		 case 2:
      		// show Degree - Minute - Second

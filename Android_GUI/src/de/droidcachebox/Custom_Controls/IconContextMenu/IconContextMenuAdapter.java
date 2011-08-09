@@ -4,8 +4,10 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import CB_Core.Config;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.*;
 import android.widget.*;
+import android.graphics.PorterDuff.Mode;
 
 public class IconContextMenuAdapter extends BaseAdapter {
 	private Context context;
@@ -40,11 +42,18 @@ public class IconContextMenuAdapter extends BaseAdapter {
         	res = (TextView) LayoutInflater.from(context).inflate(android.R.layout.select_dialog_item, null);
         }
         
-        //set Text Color (day or night)
-        res.setTextColor(Global.getColor(R.attr.TextColor));
-
+        
         res.setTag(item);
         res.setText(item.getTitle());
+        
+        if(!item.isEnabled()) {
+        	item.getIcon().setColorFilter(Color.GRAY, Mode.SRC_IN);
+        	res.setTextColor(Color.GRAY);
+        } else {
+        	item.getIcon().setColorFilter(null);
+        	res.setTextColor(Global.getColor(R.attr.TextColor));
+        }
+        
         if(item.isCheckable())
         {
         	if(item.isChecked())
@@ -61,8 +70,14 @@ public class IconContextMenuAdapter extends BaseAdapter {
         	res.setCompoundDrawablesWithIntrinsicBounds( null, null,item.getIcon(), null);
         }
         
+        
+
+        
               
         res.setEnabled(item.isEnabled());
+       
+        res.setClickable(!item.isEnabled());
+       
         return res;
     }
 }

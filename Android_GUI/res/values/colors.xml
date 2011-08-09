@@ -10,6 +10,7 @@
 	    <color name="Day_ListSeperator">#4c5e21</color>	    
 	    <color name="Day_EmptyBackground">#CAD4B2</color>
 	    <color name="Day_Foreground">#000000</color>
+	    <color name="Day_Foreground_disable">#080808</color>
 	    <color name="Day_SelectedBackground">#ffd240</color>
 	    <color name="Day_TitleBarColor">#8B9D5F</color>
 	    <color name="Day_TitleBarText">#000000</color>
@@ -31,7 +32,8 @@
 	    <color name="Night_ListBackground_secend">#444444</color>
 	    <color name="Night_ListSeperator">#8B9D5F</color>
 	    <color name="Night_EmptyBackground">#000000</color>	    
-	    <color name="Night_Foreground">#FFFFFF</color>	    
+	    <color name="Night_Foreground">#FFFFFF</color>
+	    <color name="Night_Foreground_disable">#080808</color>	    
 	    <color name="Night_SelectedBackground">#b08f2c</color>	    
 	    <color name="Night_TitleBarColor">#8B9D5F</color>	    
 	    <color name="Night_TitleBarText">#FFFFFF</color>	    

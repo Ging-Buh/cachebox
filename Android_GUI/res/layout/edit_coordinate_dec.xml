@@ -17,9 +17,12 @@
             			android:layout_height="wrap_content" 
             			android:text="EditText" 
 						android:numeric="decimal"
-            			android:layout_weight="5" android:layout_width="match_parent" android:id="@+id/edco_dec_lat_value">
+            			android:layout_weight="5" 
+            			android:layout_width="match_parent" 
+            			android:id="@+id/edco_dec_lat_value">
             		</EditText>
-            		<TextView android:id="@+id/edco_dec_lat_unit" android:layout_height="wrap_content" android:text="°" android:layout_width="20dip"></TextView>
+            		<TextView android:id="@+id/edco_dec_lat_unit" 
+            		android:layout_height="wrap_content" android:text="°" android:layout_width="20dip"></TextView>
         	</TableRow>
         <TableRow android:id="@+id/edco_dec_tablerow_lon" android:layout_height="wrap_content" android:layout_width="wrap_content">
             <Button android:text="E" android:layout_height="wrap_content" android:id="@+id/edco_dec_lon_directioin" android:layout_width="wrap_content"></Button>

@@ -19,6 +19,7 @@ package de.droidcachebox.Views.Forms;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
+import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import android.app.Dialog;
 import android.content.Context;
@@ -100,7 +101,7 @@ private static DialogInterface.OnClickListener listner;
        
         
     	
-    	if(listner==null) // setze standard Listner zu schliessen des Dialogs, falls kein LÖistner angegeben wurde
+    	if(listner==null) // setze standard Listner zum schliessen des Dialogs, falls kein Listner angegeben wurde
 		{
 			listner = new DialogInterface.OnClickListener() 
 			{
@@ -341,7 +342,7 @@ private static DialogInterface.OnClickListener listner;
 	                    ((Button) layout.findViewById(R.id.negativeButton))
 	                            .setOnClickListener(new View.OnClickListener() {
 	                                public void onClick(View v) {
-	                                    positiveButtonClickListener.onClick(
+	                                	negativeButtonClickListener.onClick(
 	                                    		dialog, 
 	                                            DialogInterface.BUTTON_NEGATIVE);
 	                                }
@@ -352,6 +353,8 @@ private static DialogInterface.OnClickListener listner;
 	                layout.findViewById(R.id.negativeButton).setVisibility(
 	                        View.GONE);
 	            }
+	            
+	            
 	            // set the content message
 	            if (message != null) {
 	                ((TextView) layout.findViewById(R.id.message)).setText(message);
@@ -368,81 +371,23 @@ private static DialogInterface.OnClickListener listner;
 	                                        LayoutParams.WRAP_CONTENT));
 	            }
 	            
-	            // set the value
+	           
+	           
 	            editText =(EditText) layout.findViewById(R.id.editNumber);
-	            editText.setText(String.valueOf(value));
-	            editText.setTextSize((float) (Sizes.getScaledFontSize_small())); 
-	           
-	            
-	            // disable soft keyboard
-	           
-	            ((InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE))
-	            .showSoftInput(editText, InputMethodManager.HIDE_NOT_ALWAYS); 
-	           
-	           
-	           
-	           // NumButton Handler
-	           ((Button) layout.findViewById(R.id.num0)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num1)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num2)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num3)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num4)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num5)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num6)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num7)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num8)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.num9)).setOnClickListener(numButtonClickListner);
-	           ((Button) layout.findViewById(R.id.del)).setOnClickListener(delButtonClickListner);     
+	            ActivityUtils.initialNumPadInt(main.mainActivity,layout,editText,String.valueOf(value),null,null);     
 	            
 	            dialog.setContentView(layout);
 	            return dialog;
 	        }
-
-					 
+			 
 	    }
-	    
-	    public static EditText editText;
-	    
-	    public static View.OnClickListener numButtonClickListner = new View.OnClickListener() 
-	    {
-			@Override
-			public void onClick(View v) 
-			{
-				int cursor = editText.getSelectionStart();
-                int selLength = editText.getSelectionEnd()-editText.getSelectionStart();
-                String text = editText.getText().toString();
-                text = text.substring(0, cursor) + ((Button)v).getText() + text.substring(cursor + selLength);
-                editText.setText(text);
-                editText.setSelection(cursor + 1, cursor + 1);
-			}
-		};
-		
-	    
-	    public static View.OnClickListener delButtonClickListner = new View.OnClickListener() 
-	    {
-			@Override
-			public void onClick(View v) 
-			{
-				int cursor = editText.getSelectionStart();
-				int selLength = editText.getSelectionEnd()-editText.getSelectionStart();
-				String text = editText.getText().toString();
-		            if (editText.getSelectionStart() > 0 && selLength == 0)
-		            {
-		            	editText.setText( text.substring(0, cursor - 1) + text.substring(cursor));
-		            	editText.setSelection(cursor - 1, cursor - 1);
-		               
-		                return;
-		            }
 
-		            if (selLength > 0)
-		            {
-		            	editText.setText( text.substring(0, cursor) + text.substring(cursor + selLength));
-		            	editText.setSelection(cursor, cursor);
-		                
-		                return;
-		            }
-				
-			}
-		};
-	 
+			
+	    public static EditText editText;
+	  
+	    
+	    
+	    
+	    
+	  
 	}

@@ -24,29 +24,49 @@
 		android:layout_below="@+id/proco_titlelayout">
 		<TableLayout android:id="@+id/proco_dec_tablelayout"
 			android:layout_height="wrap_content" android:layout_width="match_parent">
+			
 			<TableRow android:id="@+id/proco_dec_tablerow_lat"
-				android:layout_height="wrap_content" android:layout_width="fill_parent">
+				android:layout_height="wrap_content" android:layout_width="match_parent">
+				<LinearLayout 
+		android:layout_width="match_parent" 
+		android:layout_height="wrap_content" android:orientation="horizontal">
+				
 				<TextView android:text="Distance" android:layout_height="wrap_content"
-					android:id="@+id/proco_dist_direction">
+					android:id="@+id/proco_dist_direction" android:layout_width="wrap_content">
 				</TextView>
 				<EditText android:layout_height="wrap_content"
 					android:text="EditText" android:numeric="decimal"
-					android:layout_weight="5" android:layout_width="match_parent"
-					android:id="@+id/proco_dist_value">
+            			android:layout_weight="5" 
+            			android:layout_width="match_parent" 
+					android:id="@+id/proco_dist_value" >
 				</EditText>
 				<TextView android:layout_height="wrap_content"
 					android:text="m" android:layout_width="20dip"></TextView>
+					</LinearLayout>
 			</TableRow>
 			<TableRow android:layout_height="wrap_content"
-				android:layout_width="match_parent">
+				android:layout_width="wrap_content">
+				<LinearLayout 
+		android:layout_width="match_parent" 
+		android:layout_height="wrap_content" android:orientation="horizontal">
 				<TextView android:text="Bearing" android:layout_height="wrap_content"
 					android:id="@+id/proco_bear_directioin" android:layout_width="wrap_content"></TextView>
 				<EditText android:layout_height="wrap_content"
-					android:numeric="decimal" android:text="EditText"
-					android:layout_width="match_parent" android:layout_weight="5"
+					android:text="EditText"
+					android:numeric="decimal"
+            			android:layout_weight="5" 
+            			android:layout_width="match_parent"  
 					android:id="@+id/proco_bear_value"></EditText>
-				<TextView android:text="°" android:layout_width="wrap_content"
+				<TextView android:text="°" android:layout_width="20dip"
 					android:layout_height="wrap_content" android:id="@+id/proco_bear_einheit"></TextView>
+			</LinearLayout>
+			</TableRow>
+			<TableRow 
+				android:layout_width="wrap_content" android:layout_height="wrap_content">
+				<include android:layout_height="wrap_content" android:id="@+id/NumPadLayout"
+					layout="@layout/numerik_keypad_layout" android:layout_width="match_parent"
+					android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
+					android:layout_weight="1"></include>
 			</TableRow>
 		</TableLayout>
 	</ScrollView>

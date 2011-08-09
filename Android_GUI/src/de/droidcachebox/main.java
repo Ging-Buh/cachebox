@@ -612,6 +612,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 //	                loadMapPacks(true);
 	                
 	                CachListChangedEventList.Call();
+	                
+	                // beim zurückkehren aus der DB-Auswahl muss der Slider neu initialisiert werden
+	                downSlider.isInitial=false;
 	    		}
 	    		return;
 	    	}
@@ -1008,6 +1011,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	private void showBtnCacheContextMenu() 
 	{
 		icm = new IconContextMenu(this, R.menu.menu_cache);
+		
   		  icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
     	  
     	  Menu IconMenu=icm.getMenu();
@@ -1024,10 +1028,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	  boolean enabled = false;
     	  if ((GlobalCore.SelectedCache() != null) && (!Database.Hint(GlobalCore.SelectedCache()).equals("")))
     		  enabled = true;
-    	  MenuItem mi = icm.menu.findItem(R.id.miHint);
+    	  MenuItem mi = IconMenu.findItem(R.id.miHint);
     	  if (mi != null)
     		  mi.setEnabled(enabled);
-    	  mi = icm.menu.findItem(R.id.miSpoilerView);
+    	  mi = IconMenu.findItem(R.id.miSpoilerView);
     	  // Saarfuchs: hier musste noch abgetestet werden, dass auch ein Cache selektiert ist, sonst Absturz
     	  if (mi != null && GlobalCore.SelectedCache()!=null ) 
     	  {
@@ -1040,7 +1044,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	  enabled = false;
     	  if (Global.JokerisOnline())
     		  enabled = true;
-    	  mi = icm.menu.findItem(R.id.miTelJoker);
+    	  mi = IconMenu.findItem(R.id.miTelJoker);
     	  if (mi != null)
     		  mi.setEnabled(enabled);
 

@@ -132,7 +132,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 	private Waypoint mWaypoint;
 	private int CacheInfoHeight= 0;
 	private Paint paint;
-    private boolean isInitial=false;
+    public static boolean isInitial=false;
 	private boolean drag;
 	
 	private OnTouchListener myTouchListner = new OnTouchListener() 

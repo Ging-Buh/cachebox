@@ -144,7 +144,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		
 		@Override public void onClick(DialogInterface dialog, int button) 
 			{
-				String text =((NumerikInputBox) dialog).editText.getText().toString();
+				String text =NumerikInputBox.editText.getText().toString();
 				// Behandle das ergebniss
 				switch (button)
 				{
