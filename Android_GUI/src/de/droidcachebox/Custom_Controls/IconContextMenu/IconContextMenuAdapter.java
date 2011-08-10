@@ -46,11 +46,14 @@ public class IconContextMenuAdapter extends BaseAdapter {
         res.setTag(item);
         res.setText(item.getTitle());
         
-        if(!item.isEnabled()) {
-        	item.getIcon().setColorFilter(Color.GRAY, Mode.SRC_IN);
+        if(!item.isEnabled()) 
+        {
+        	if(item.getIcon()!=null)item.getIcon().setColorFilter(Color.GRAY, Mode.SRC_IN);
         	res.setTextColor(Color.GRAY);
-        } else {
-        	item.getIcon().setColorFilter(null);
+        } 
+        else 
+        {
+        	if(item.getIcon()!=null)item.getIcon().setColorFilter(null);
         	res.setTextColor(Global.getColor(R.attr.TextColor));
         }
         
