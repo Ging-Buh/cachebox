@@ -302,6 +302,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			
 			//initial UiSizes
 			Sizes.initial(false,this);
+			downSlider.isInitial=false;
 	        
 	        int Time = ((Config.GetInt("LockM")*60)+Config.GetInt("LockSec"))*1000;
 	        counter = new ScreenLockTimer(Time, Time);
@@ -1023,17 +1024,18 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	  Global.TranslateMenuItem(IconMenu, R.id.miTelJoker, "joker");
     	  Global.TranslateMenuItem(IconMenu, R.id.miLogView, "ShowLogs");
     	  
+    	  boolean selectedCacheIsNull = (GlobalCore.SelectedCache() == null);
     	  
     	  // Menu Item Hint enabled / disabled
     	  boolean enabled = false;
-    	  if ((GlobalCore.SelectedCache() != null) && (!Database.Hint(GlobalCore.SelectedCache()).equals("")))
+    	  if (!selectedCacheIsNull && (!Database.Hint(GlobalCore.SelectedCache()).equals("")))
     		  enabled = true;
     	  MenuItem mi = IconMenu.findItem(R.id.miHint);
     	  if (mi != null)
     		  mi.setEnabled(enabled);
     	  mi = IconMenu.findItem(R.id.miSpoilerView);
     	  // Saarfuchs: hier musste noch abgetestet werden, dass auch ein Cache selektiert ist, sonst Absturz
-    	  if (mi != null && GlobalCore.SelectedCache()!=null ) 
+    	  if (mi != null && !selectedCacheIsNull ) 
     	  {
     		  mi.setEnabled( GlobalCore.SelectedCache().SpoilerExists() );
     	  }
@@ -1048,6 +1050,24 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	  if (mi != null)
     		  mi.setEnabled(enabled);
 
+    	  if(selectedCacheIsNull)
+    	  {
+    		  mi = IconMenu.findItem(R.id.miDescription);
+    		  mi.setEnabled(false);
+    		  
+    		  mi = IconMenu.findItem(R.id.miWaypoints);
+    		  mi.setEnabled(false);
+    		  
+    		  mi = IconMenu.findItem(R.id.miLogView);
+    		  mi.setEnabled(false);
+    		  
+    		  mi = IconMenu.findItem(R.id.miNotes);
+    		  mi.setEnabled(false);
+    		  
+    		  mi = IconMenu.findItem(R.id.miSolver);
+    		  mi.setEnabled(false);
+    	  }
+    	  
     	  
     	  
     	  icm.show();

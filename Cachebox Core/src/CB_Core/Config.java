@@ -90,7 +90,7 @@ public class Config {
     	Boolean value = Config.GetBool("nightMode");
     	value = !value;
     	Config.Set("nightMode",value);
-    	
+    	Config.AcceptChanges();
     }
 	
 	 static HashMap<String, String> keyLookup = null;

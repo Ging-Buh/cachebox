@@ -98,6 +98,8 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	@Override
 	public void BeforeShowMenu(Menu menu) 
 	{
+		if(aktCache==null) return;
+		
 		MenuItem miFavorite = Global.TranslateMenuItem(menu, R.id.mi_descview_favorite, "Favorite");
 		miFavorite.setCheckable(true);
 		miFavorite.setChecked(aktCache.Favorit());

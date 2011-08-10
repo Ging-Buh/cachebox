@@ -460,8 +460,13 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 			@Override
 			public void onClick(View arg0) 
 			{
-				Global.QuickButtonList.remove(ActionListSelectedIndex);
-				refreshActionListView(true);
+				if(ActionListSelectedIndex>-1 && Global.QuickButtonList.size()>ActionListSelectedIndex )
+				{
+					Global.QuickButtonList.remove(ActionListSelectedIndex);
+					refreshActionListView(true);
+					ActionListSelectedIndex=-1;
+				}
+				
 			}
 		});
 	    ActionListAdd.setOnClickListener(new OnClickListener() {
