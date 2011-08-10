@@ -362,6 +362,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        {
 	        	// Zeige About View als erstes!
 	        	showView(11);
+	        	
+	        	// chk if NightMode saved
+	        	if(Config.GetBool("nightMode"))
+	        	{
+	        		ActivityUtils.changeToTheme( mainActivity, ActivityUtils.THEME_NIGHT  );
+	        	}
 	        }
 	        
 	        
@@ -1334,7 +1340,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		if (fieldNotesView == null)
 			fieldNotesView = new FieldNotesView(this, this);
 		registerForContextMenu(fieldNotesView);
-		if (descriptionView == null)
+//		if (descriptionView == null)
 			descriptionView = new DescriptionView(this, inflater);
 		if (spoilerView == null)
 			spoilerView = new SpoilerView(this, inflater);

@@ -204,7 +204,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 		
 		if(!drag)
 		{
-			QuickButtonHeight=Config.GetBool("quickButtonShow")? main.getQuickButtonHeight():0;
+			yPos=QuickButtonHeight=Config.GetBool("quickButtonShow")? main.getQuickButtonHeight():0;
 		}
 		
 		int FSize = (int) (Sizes.getScaledFontSize_normal()*1.2);

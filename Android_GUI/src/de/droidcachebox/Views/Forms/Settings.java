@@ -442,6 +442,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 			@Override
 			public void onClick(View arg0) 
 			{
+				if(ActionListSelectedIndex<0 || ActionListSelectedIndex> Global.QuickButtonList.size())return; //wrong index
 				ActionListSelectedIndex=Global.QuickButtonList.MoveItem(ActionListSelectedIndex, -1);
 				refreshActionListView(false);
 			}
@@ -451,6 +452,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 			@Override
 			public void onClick(View arg0) 
 			{
+				if(ActionListSelectedIndex<0 || ActionListSelectedIndex> Global.QuickButtonList.size())return; //wrong index
 				ActionListSelectedIndex=Global.QuickButtonList.MoveItem(ActionListSelectedIndex, +1);
 				refreshActionListView(false);
 			}
