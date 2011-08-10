@@ -3,6 +3,7 @@ package de.droidcachebox.Views.Forms;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
+import de.droidcachebox.Ui.Sizes;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -28,6 +29,9 @@ public class HintDialog extends Activity {
         bDecode = (Button) findViewById(R.id.hintdialog_button_decode);
         etHint = (EditText) findViewById(R.id.hintdialog_text);
     
+        etHint.setMaxHeight(Sizes.getWindowHeight() - (Sizes.getButtonHeight()*4));
+        
+        
         etHint.setText(hint);
         bClose.setOnClickListener(new OnClickListener() {
             @Override
@@ -47,6 +51,9 @@ public class HintDialog extends Activity {
         bClose.setText(Global.Translations.Get("close"));
         bDecode.setText(Global.Translations.Get("decode"));
         this.setTitle(Global.Translations.Get("hint"));
+        
+        
+        
     }
 
 }

@@ -80,6 +80,16 @@ public class Sizes
 		CacheListDrawRec = CacheListItemSize.getBounds(5, 2,-5,-2);
 	}
 	
+	public static int getWindowHeight()
+	{
+		return windowHeight;
+	}
+	
+	public static int getWindowWidth()
+	{
+		return windowWidth;
+	}
+	
 	public static int getButtonHeight()
 	{
 		return Button.height;

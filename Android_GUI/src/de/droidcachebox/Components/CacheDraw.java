@@ -21,6 +21,7 @@ import android.graphics.Rect;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.text.TextUtils;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
@@ -66,6 +67,7 @@ public class CacheDraw
    
     private static int VoteWidth = 0;
     private static int rightBorder = 0;
+    private static int nameLayoutWidthRightBorder = 0;
     private static int nameLayoutWidth = 0;
     private static Paint DTPaint;
     public static Rect BearingRec; 
@@ -143,7 +145,8 @@ public class CacheDraw
 		      	VoteWidth = Sizes.getScaledFontSize_normal()/2;
 		      	
 		      	rightBorder = (int) (height * 0.7);
-		      	nameLayoutWidth = width - VoteWidth - Sizes.getIconSize() - rightBorder - (Sizes.getScaledFontSize_normal()/2);
+		      	nameLayoutWidthRightBorder = width - VoteWidth - Sizes.getIconSize() - rightBorder - (Sizes.getScaledFontSize_normal()/2);
+		      	nameLayoutWidth = width - VoteWidth - Sizes.getIconSize() - (Sizes.getScaledFontSize_normal()/2);
 		      	DTPaint = new Paint();
 	    	    DTPaint.setTextSize(Sizes.getScaledFontSize_normal());
 	    	    DTPaint.setAntiAlias(true);
@@ -192,7 +195,7 @@ public class CacheDraw
     	     
     	     String drawName = (drawStyle==DrawStyle.withOwner)? "by " + cache.Owner + ", "+ dateString:cache.Name;
     	     
-    	     layoutCacheName = new StaticLayout(drawName, namePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+    	     layoutCacheName = new StaticLayout(drawName, namePaint, nameLayoutWidthRightBorder, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
     	     int LayoutHeight = ActivityUtils.drawStaticLayout(canvas, layoutCacheName, left + VoteWidth + Sizes.getIconSize() + 5, top);
     	       
     	// over draw 3. Cache name line
@@ -202,7 +205,7 @@ public class CacheDraw
     	    	 Paint backPaint = new Paint();
     	    	 backPaint.setColor(BackgroundColor); // Color.RED
 
-    	    	 canvas.drawRect(new Rect(left + VoteWidth + Sizes.getIconSize() + 5,top + VislinesHeight,nameLayoutWidth+left + VoteWidth + Sizes.getIconSize() + 5,top+LayoutHeight+VislinesHeight-4), backPaint);
+    	    	 canvas.drawRect(new Rect(left + VoteWidth + Sizes.getIconSize() + 5,top + VislinesHeight,nameLayoutWidthRightBorder+left + VoteWidth + Sizes.getIconSize() + 5,top+LayoutHeight+VislinesHeight-4), backPaint);
     	     }
     	     
     	     
@@ -210,6 +213,16 @@ public class CacheDraw
     	     if (drawStyle==DrawStyle.withOwnerAndName)
     	     {
     	    	 String DrawText="by " + cache.Owner + ", "+ dateString;
+    	    	     	    	 
+    	    	 //trim Owner Name length
+    	    	 int counter =0;
+    	    	 do 
+    	    	 {
+    	    		 DrawText="by " + cache.Owner.substring(0, cache.Owner.length()-counter) + ", "+ dateString;
+    	    		 counter++;
+    	    	 }
+    	    	 while(((int) namePaint.measureText(DrawText))>=nameLayoutWidth);
+    	    	 
     	    	 String LastFound = getLastFoundLogDate(cache);
     	    	 if(!LastFound.equals(""))
     	    	 {
@@ -217,6 +230,8 @@ public class CacheDraw
     	    		 DrawText += "last found: " + LastFound;
     	    	 }
     	    	 layoutCacheOwner = new StaticLayout(DrawText , namePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+    	    	
+    	    	// layoutCacheOwner= new StaticLayout(DrawText, 0, 30, namePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL,  1.0f, 0.0f, false, TextUtils.TruncateAt.START, nameLayoutWidth);
     	    	 ActivityUtils.drawStaticLayout(canvas, layoutCacheOwner, left + VoteWidth + Sizes.getIconSize() + 5, top + VislinesHeight);
     	     }
     	     
