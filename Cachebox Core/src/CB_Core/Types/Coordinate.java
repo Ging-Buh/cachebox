@@ -116,13 +116,13 @@ public class Coordinate implements Serializable {
       String slon = "";
       if (ilat < 2)
       {
-        slat = text.substring(ilat + 1, ilon).trim().replace("°", "");
-        slon = text.substring(ilon + 1, text.length()).trim().replace("°", "");
+        slat = text.substring(ilat + 1, ilon).trim().replace("°", " ");
+        slon = text.substring(ilon + 1, text.length()).trim().replace("°", " ");
       }
       else
       {
-        slat = text.substring(0, ilat).trim().replace("°", "");
-        slon = text.substring(ilat+1, ilon - ilat - 1).trim().replace("°", "");
+        slat = text.substring(0, ilat).trim().replace("°", " ");
+        slon = text.substring(ilat+1, ilon - ilat - 1).trim().replace("°", " ");
       }
 
       String[] clat = slat.split(" ");
