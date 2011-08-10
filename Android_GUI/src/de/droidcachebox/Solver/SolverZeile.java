@@ -504,7 +504,7 @@ public class SolverZeile {
         		continue;
         	TempEntity tEntity = (TempEntity)entity;
         	String s = tEntity.Text.trim();
-        	if (s == "") break;
+        	if (s == "") continue;
 /*        	if (s.charAt(0) == '$')
         	{
         		// GC-Koordinate suchen
