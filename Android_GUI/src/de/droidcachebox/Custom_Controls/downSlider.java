@@ -46,6 +46,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -62,6 +63,9 @@ public final class downSlider extends View implements SelectedCacheEvent
 	{
 		super(context, attrs);
 		SelectedCacheEventList.Add(this);
+		
+		mGestureDetector = new GestureDetector(context, new LearnGestureListener());
+		
 		this.setOnTouchListener(myTouchListner);
 				
 		Me=this;
@@ -134,12 +138,21 @@ public final class downSlider extends View implements SelectedCacheEvent
 	private Paint paint;
     public static boolean isInitial=false;
 	private boolean drag;
+	private int lastDragYPos=0;
+	private boolean swipeUp=false;
+	private boolean swipeDown=false;
 	
 	private OnTouchListener myTouchListner = new OnTouchListener() 
 	{
 		
 		@Override public boolean onTouch(View v, MotionEvent event) 
 		{
+			
+			
+			mGestureDetector.onTouchEvent(event);
+			    
+			  			
+			
 			 // events when touching the screen
 
 			 int eventaction = event.getAction();
@@ -151,7 +164,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 			 switch (eventaction ) 
 			 {
 			 	case MotionEvent.ACTION_DOWN: // touch down so check if the finger is on a ball
-//			 		setDebugMsg("Down");
+			 		AnimationIsRunning=false;
 			 		break;
 
 
@@ -159,12 +172,23 @@ public final class downSlider extends View implements SelectedCacheEvent
 				 // move the balls the same as the finger
 			
 //			 		setDebugMsg("Move:" + String.format("%n")+ "x= " + X + String.format("%n") + "y= " + Y);
-			 		if (drag)setPos(Y-25); //y - 25 minus halbe Button Höhe
+			 		if (drag)
+			 		{
+			 			int value=Y-25;//y - 25 minus halbe Button Höhe
+			 			int buttom = (int) (height-(Sizes.getScaledFontSize_normal()*2.2));
+			 			if(value>buttom)value=buttom-1;
+			 			
+			 			setPos(value); 
+			 		}
 			 		break;
 			 		
 			 	case MotionEvent.ACTION_UP:
-			 		if (drag)ActionUp();
-			 		drag=false;
+			 		if (drag)
+			 			{
+			 				drag=false;
+			 				ActionUp();
+			 			}
+			 	
 			 		break;
 
 			 }
@@ -202,7 +226,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 	        }
 		
 		
-		if(!drag)
+		if(!drag && !AnimationIsRunning)
 		{
 			yPos=QuickButtonHeight=Config.GetBool("quickButtonShow")? main.getQuickButtonHeight():0;
 		}
@@ -238,9 +262,22 @@ public final class downSlider extends View implements SelectedCacheEvent
   
    	 	if (mCache == null)
 			return;
-
+   	 	
+   	 	
+   	 	// Draw Slide Icons
+   	 	final Drawable SlideIcon = (QuickButtonHeight>0)? Global.Icons[41] : Global.Icons[40];
+   	 	Rect SlideIconRec = new Rect(mBtnRec);
+   	 	SlideIconRec.set(SlideIconRec.left+10, SlideIconRec.top,SlideIconRec.height(),SlideIconRec.bottom);
+	   	SlideIcon.setBounds(SlideIconRec);
+	   	SlideIcon.draw(canvas);
+	   	
+	   	SlideIconRec.offset(width-SlideIconRec.width(), 0);
+	   	SlideIcon.setBounds(SlideIconRec);
+	   	SlideIcon.draw(canvas); 	
+	   	
+   	
    	 	// draw Cache Name
-		canvas.drawText(mCache.Name,5,yPos + (FSize + (FSize/3)), paint);
+		canvas.drawText(mCache.Name,20+SlideIconRec.width(),yPos + (FSize + (FSize/3)), paint);
 		
 		
 		
@@ -416,6 +453,27 @@ public final class downSlider extends View implements SelectedCacheEvent
 		this.invalidate();
 	}
 	
+	
+	 int tmpPos=0;
+	 public void setPos_onUI(final int Pos)
+	 {
+		 tmpPos=Pos;
+		 Thread t = new Thread() {
+			    public void run() {
+			    	((main)main.mainActivity).runOnUiThread(new Runnable() {
+			            @Override
+			            public void run() {
+			            	((main)main.mainActivity).InfoDownSlider.setPos(Pos);
+			            }
+			        });
+			    }
+			};
+
+			t.start();
+		 
+	 }
+	
+	
 	private void startUpdateTimer() 
 	{
 		handler.postDelayed(task,400);
@@ -474,15 +532,33 @@ public final class downSlider extends View implements SelectedCacheEvent
 		
 		((main)main.mainActivity).setTopButtonHeight(QuickButtonHeight);
 		
-		if (yPos>height*0.7)
+		if(swipeUp || swipeDown)
 		{
-			yPos=(int) (height-(Sizes.getScaledFontSize_normal()*2.2));
+			if(swipeUp)
+			{
+				startAnimationTo(QuickButtonShow? QuickButtonHeight:0);
+			}
+			else
+			{
+				startAnimationTo((int) (height-(Sizes.getScaledFontSize_normal()*2.2)));
+			}
+			swipeUp=swipeDown=false;
+			
 		}
 		else
 		{
-			yPos=QuickButtonShow? QuickButtonHeight:0;
-			isVisible=false;
+			if (yPos>height*0.7)
+			{
+				startAnimationTo((int) (height-(Sizes.getScaledFontSize_normal()*2.2)));
+			}
+			else
+			{
+				startAnimationTo(QuickButtonShow? QuickButtonHeight:0);
+				//isVisible=false;
+			}
 		}
+		
+		
 		
 		
 		invalidate();
@@ -578,7 +654,121 @@ public final class downSlider extends View implements SelectedCacheEvent
 	
 	
 	
+	private boolean AnimationIsRunning=false;
+	private final int AnimationTime=100;
+	private final double AnimationMulti= 2;
+	private int AnimationDirection=-1;
+	private int AnimationTarget=0;
+	private void startAnimationTo(int newYPos)
+	{
+		if(yPos==newYPos) return; // wir brauchen nichts Animieren
+		
+		AnimationIsRunning=true;
+		AnimationTarget=newYPos;
+		if(yPos>newYPos)AnimationDirection=-1;else AnimationDirection=1;
+		handler.postDelayed(AnimationTask,AnimationTime);
+	}
 	
+	Runnable AnimationTask = new Runnable() 
+	{
+		
+		@Override
+		public void run() 
+		{
+			
+			if(!AnimationIsRunning)return; // Animation wurde abgebrochen
+			
+			int newValue=0;
+			if(AnimationDirection==-1)
+			{
+				int tmp =yPos-AnimationTarget;
+				if(tmp<=0)// Div 0 vehindern
+				{
+					setPos_onUI(AnimationTarget);
+					AnimationIsRunning=false;
+				}
+				
+				newValue = (int) (yPos-(tmp / AnimationMulti));
+				if(newValue<=AnimationTarget)
+				{
+					setPos_onUI(AnimationTarget);
+					AnimationIsRunning=false;
+				}
+				else
+				{
+					setPos_onUI(newValue);
+					handler.postDelayed(AnimationTask,AnimationTime);
+				}
+			}
+			else
+			{
+				int tmp =AnimationTarget-yPos;
+				if(tmp<=0)// Div 0 vehindern
+				{
+					setPos_onUI(AnimationTarget);
+					AnimationIsRunning=false;
+				}
+				else
+				{
+					newValue = (int) (yPos+(tmp / AnimationMulti));
+					if(newValue>=AnimationTarget)
+					{
+						setPos_onUI(AnimationTarget);
+						AnimationIsRunning=false;
+					}
+					else
+					{
+						setPos_onUI(newValue);
+						handler.postDelayed(AnimationTask,AnimationTime);
+					}
+				}
+				
+			}
+			
+		}
+	};
+	
+	
+	private GestureDetector mGestureDetector;
+	
+	class LearnGestureListener extends GestureDetector.SimpleOnGestureListener{
+		  @Override
+		  public boolean onSingleTapUp(MotionEvent ev) {
+		    Log.d("onSingleTapUp",ev.toString());
+		    return true;
+		  }
+		  @Override
+		  public void onShowPress(MotionEvent ev) {
+		    Log.d("onShowPress",ev.toString());
+		  }
+		  @Override
+		  public void onLongPress(MotionEvent ev) {
+		    Log.d("onLongPress",ev.toString());
+		  }
+		  @Override
+		  public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+		    Log.d("onScroll",e1.toString());
+		    return true;
+		  }
+		  @Override
+		  public boolean onDown(MotionEvent ev) {
+		    Log.d("onDownd",ev.toString());
+		    return true;
+		  }
+		  @Override
+		  public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) 
+		  {
+			  if(velocityY>500)
+			  {
+				  swipeDown=true;
+			  }
+			  else if(velocityY<-500)
+			  {
+				  swipeUp=true;
+			  }
+		    return true;
+		  }
+		}
 	
 	/*
 	 * Wollte eigentlich mit dieser Funktion die Anzahl der Satellieten und deren Signalstärke

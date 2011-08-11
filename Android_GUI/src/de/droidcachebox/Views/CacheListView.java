@@ -1,33 +1,22 @@
 package de.droidcachebox.Views;
 
-import java.security.cert.LDAPCertStoreParameters;
-import java.util.List;
-
-import CB_Core.Config;
 import CB_Core.GlobalCore;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
-import de.droidcachebox.R;
 import de.droidcachebox.main;
 
 import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Ui.Sizes;
-
 import CB_Core.Types.CacheList;
 
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
-import android.R.drawable;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,13 +24,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 public class CacheListView extends ListView implements ViewOptionsMenu, PositionEvent, CB_Core.Events.CacheListChangedEvent {
 	
 	private CustomAdapter lvAdapter;
-	private Paint paint;
+	
 	/**
 	 * Constructor
 	 */
@@ -72,7 +60,8 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 		});
 
 		ActivityUtils.setListViewPropertys(this);
-		
+		this.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_LOW);
+		this.setChildrenDrawingCacheEnabled(true);
 		
 	}
 	
@@ -84,6 +73,9 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 		lvAdapter = new CustomAdapter(getContext(), Database.Data.Query);
 		this.setAdapter(lvAdapter);
 		lvAdapter.notifyDataSetChanged();
+		
+		
+		
 	}
 	
 	 	static public int windowW=0;

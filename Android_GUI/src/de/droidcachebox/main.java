@@ -204,7 +204,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		private FrameLayout frame;
 		private LinearLayout TopLayout;
 //		private LinearLayout frameCacheName;
-		private downSlider InfoDownSlider;
+		public downSlider InfoDownSlider;
 		public HorizontalListView QuickButtonList;
 		
 		private Mic_On_Flash Mic_Icon;

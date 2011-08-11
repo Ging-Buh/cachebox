@@ -31,7 +31,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 372;
+    public static final int CurrentRevision = 373;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1015;
@@ -117,7 +117,9 @@ public class Global{
         		<br>Index 36 =<img src="doc-files/gc_live_icon.png" width=32 height=32>
         		<br>Index 37 =<img src="doc-files/pin_icon.png" width=32 height=32>
         		<br>Index 38 =<img src="doc-files/pin_icon_disable.png" width=32 height=32> 
-        		<br>Index 39 =<img src="doc-files/chk_icon_disable.png" width=32 height=32> 
+        		<br>Index 39 =<img src="doc-files/chk_icon_disable.png" width=32 height=32>
+        		<br>Index 40 =<img src="doc-files/night_slider_down.png" width=32 height=32> <img src="doc-files/day_slider_down.png" width=32 height=32>
+        		<br>Index 41 =<img src="doc-files/night_slider_up_down.png" width=32 height=32> <img src="doc-files/day_slider_up_down.png" width=32 height=32>
      */
     public static Drawable[] Icons = null;
     public static Drawable[] SmallStarIcons= null;
@@ -427,6 +429,8 @@ public class Global{
 	        		res.getDrawable(R.drawable.pin_icon), // 37
 	        		res.getDrawable(R.drawable.pin_icon_disable), // 38
 	        		res.getDrawable(R.drawable.chk_icon_disable), // 39
+	        		res.getDrawable(N? R.drawable.night_slider_down : R.drawable.day_slider_down), // 40
+	        		res.getDrawable(N? R.drawable.night_slider_up_down : R.drawable.day_slider_up_down), // 41
 	        };
     	}
         
