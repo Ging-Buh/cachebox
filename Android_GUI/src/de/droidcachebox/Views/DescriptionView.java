@@ -59,7 +59,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 		cacheInfo = (CacheInfoControl)findViewById(R.id.CompassDescriptionView);
 		cacheInfo.setStyle(DrawStyle.withOwner);
 		WebControl = (DescriptionViewControl)findViewById(R.id.DescriptionViewControl);
-		
+		WebControl.setWillNotCacheDrawing(false);
 	}
 	
 	 @Override

@@ -25,7 +25,7 @@ import android.webkit.WebView;
 
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu, SelectedCacheEvent {
 
-	private boolean mustLoadDescription;
+	public static boolean mustLoadDescription;
 	private Cache aktCache;
 	private Boolean isVisible=false;
 	private HashMap<Attributes, Integer> attributeLookup;
@@ -252,7 +252,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
 	{
 		try 
 		{
-			this.clearCache(true);
+			//this.clearCache(true);
 		} catch (Exception e) 
 		{
 			Logger.Error("DescriptionViewControl.OnHide()", "clearCache", e);
@@ -266,7 +266,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
 	{
 		try 
 		{
-			this.clearCache(true);
+			//this.clearCache(true);
 		} catch (Exception e) 
 		{
 			Logger.Error("DescriptionViewControl.OnFree()", "clearCache", e);
@@ -278,13 +278,13 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
 		// TODO Auto-generated method stub
-		if (cache != aktCache)
-		{
+//		if (cache != aktCache)
+//		{
 			aktCache = cache;
 			mustLoadDescription = true;
 			if(isVisible)
 				setCache(aktCache); //Wenn die View nicht sichtbar, brauch auch das HTML nicht geladen werden!
-		}
+//		}
 	}
 
 	@Override

@@ -34,6 +34,7 @@ import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Custom_Controls.DebugInfoPanel;
+import de.droidcachebox.Custom_Controls.DescriptionViewControl;
 import de.droidcachebox.Custom_Controls.Mic_On_Flash;
 import de.droidcachebox.Custom_Controls.downSlider;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
@@ -71,6 +72,7 @@ import de.droidcachebox.Views.WaypointView;
 import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
 import de.droidcachebox.Views.FilterSettings.PresetListView;
+import de.droidcachebox.Views.FilterSettings.PresetListViewItem;
 import de.droidcachebox.Views.Forms.HintDialog;
 import de.droidcachebox.Views.Forms.ImportDialog;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
@@ -559,8 +561,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    @Override public void CacheListChangedEvent() 
 		{
 			//Database.Data.Query.size();
-	    	/*  Kurzfristig ausgeblendet, da der Vergleich wegen den neuen CategoryFilter nicht funktioniert. 
-			if ((Global.LastFilter == null) || (Global.LastFilter.ToString().equals("")) || (Global.LastFilter.ToString().equals(PresetListView.presets[0])))
+	    	//  Kurzfristig ausgeblendet, da der Vergleich wegen den neuen CategoryFilter nicht funktioniert. 
+			if ((Global.LastFilter == null) || (Global.LastFilter.ToString().equals("")) || (PresetListViewItem.chkPresetFilter(PresetListView.presets[0], Global.LastFilter.ToString())))
 	        {
 				this.buttonDB.getBackground().clearColorFilter();
 	        }
@@ -568,7 +570,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        {
 	        	this.buttonDB.getBackground().setColorFilter(Color.argb(255, 250, 128, 114), Mode.MULTIPLY); //Color.Salmon;
 	        };
-	        */        
+	                
 		}
 		
 		@Override protected void onActivityResult(int requestCode, int resultCode,Intent data) 
@@ -753,7 +755,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        {
 	        	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 	        }
-	        
+	        downSlider.isInitial=false;
 	        InfoDownSlider.invalidate();
 		}
 
@@ -1748,8 +1750,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	{
 		frame.removeAllViews();
 		Config.changeDayNight();
+		DescriptionViewControl.mustLoadDescription=true;
+		downSlider.isInitial=false;
 		ActivityUtils.changeToTheme(mainActivity,Config.GetBool("nightMode")? ActivityUtils.THEME_NIGHT : ActivityUtils.THEME_DAY );
 		Toast.makeText(mainActivity, "changeDayNight", Toast.LENGTH_SHORT).show();
+		
 	}
 	
 	private void switchAutoResort() 

@@ -70,7 +70,7 @@ public class PresetListViewItem extends View {
     	boolean PresetEquelsFilter = false;
     	if(EditFilterSettings.tmpFilterProps!=null)
     	{
-	    	if(EditFilterSettings.tmpFilterProps.ToString().equals(mPresetEntry.getPresetString()))
+	    	if(chkPresetFilter(mPresetEntry.getPresetString(),EditFilterSettings.tmpFilterProps.ToString()))
 	    	{
 	    		PresetEquelsFilter = true;
 	    	}
@@ -120,4 +120,29 @@ public class PresetListViewItem extends View {
         ActivityUtils.drawStaticLayout(canvas, layoutEntryName, left, top);
   
     }
+
+	/**
+	 * Vergleicht einen PresetString mit einem FilterString, wobei die Category einstellungen im FilterString ignoriert werden.
+	 * 
+	 * @param presetString Der Preset String, mit dem der Filter verglichen wird.
+	 * @param filterString Der Filter String, mit dem das Preset verglichen werden soll.
+	 * 
+	 * @return true wenn gleichheit
+	 */
+	public static boolean chkPresetFilter(String presetString, String filterString ) 
+	{
+		// exclude Category filter, cut String after 85 comma 
+		String probs = filterString;
+		String[] commaSplit = probs.split(",");
+		probs="";
+		if(commaSplit.length<85) return false;
+		for(int i = 0; i<85; i++)
+		{
+			probs+=commaSplit[i] + ",";
+		}
+		
+		probs+=",,,,";
+		
+		return probs.equals(presetString);
+	}
 }
