@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import CB_Core.Converter.Formatter;
 import CB_Core.Converter.UTMConvert;
+import CB_Core.Log.Logger;
 
 
 public class Coordinate implements Serializable {
@@ -56,6 +57,7 @@ public class Coordinate implements Serializable {
     public Coordinate(String text)
     {
       text = text.toUpperCase();
+      text = text.replace(",", ".");
       Valid = false;
 
       // UTM versuche
@@ -85,7 +87,9 @@ public class Coordinate implements Serializable {
         	  this.Latitude = ddlat;
         	  this.Longitude = ddlon;
         	  return;
-          } catch(Exception ex) {
+          } catch(Exception ex) 
+          {
+        	  Logger.Error("Coordinate(String text)", "UTM Versuche", ex);
           }
         }
       }
@@ -131,13 +135,19 @@ public class Coordinate implements Serializable {
       ArrayList<String> llon = new ArrayList<String>();
       for (String ss : clat)
       {
-        if (ss != "")
-          llat.add(ss);
+        if (!ss.equals(""))
+        {
+        	 llat.add(ss);
+        }
+         
       }
       for (String ss : clon)
       {
-        if (ss != "")
-          llon.add(ss);
+        if (!ss.equals(""))
+        {
+        	llon.add(ss);
+        }
+          
       }
 
       try
@@ -169,6 +179,7 @@ public class Coordinate implements Serializable {
       }
       catch (Exception exc)
       {
+    	  Logger.Error("Coordinate(String text)", "Valid Coord", exc);
         Valid = false;
         return;
       }

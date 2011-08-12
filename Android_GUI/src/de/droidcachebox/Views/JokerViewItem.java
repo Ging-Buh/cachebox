@@ -2,12 +2,12 @@ package de.droidcachebox.Views;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Components.CacheDraw.DrawStyle;
 
 import de.droidcachebox.Geocaching.JokerEntry;
 import de.droidcachebox.Geocaching.JokerList;
+import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import CB_Core.Types.Cache;
 import android.content.Context;

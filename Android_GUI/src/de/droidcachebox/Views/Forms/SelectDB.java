@@ -5,7 +5,7 @@ import CB_Core.Config;
 import de.droidcachebox.FileList;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Ui.ActivityUtils;
 
 import CB_Core.FileIO;
 import android.app.Activity;

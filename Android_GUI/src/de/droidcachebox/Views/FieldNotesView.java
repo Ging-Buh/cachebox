@@ -10,7 +10,6 @@ import CB_Core.GlobalCore;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.DAO.CacheDAO;
 import de.droidcachebox.DAO.CacheListDAO;
 import CB_Core.Events.SelectedCacheEvent;
@@ -20,6 +19,8 @@ import CB_Core.Types.CacheList;
 import de.droidcachebox.Geocaching.FieldNoteEntry;
 import de.droidcachebox.Geocaching.FieldNoteList;
 
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.AllContextMenuCallHandler;
 import de.droidcachebox.Views.CacheListView.CustomAdapter;
 import de.droidcachebox.Views.Forms.EditFieldNote;
 import de.droidcachebox.Views.Forms.EditWaypoint;
@@ -81,6 +82,21 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 			}
 		});
 
+		
+		this.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) 
+			{
+				aktFieldNote = lFieldNotes.get(arg2);
+				aktFieldNoteIndex = arg2;
+        		invalidate();
+        		AllContextMenuCallHandler.showFiledNotesView_ItemContextMenu();
+				return false;
+			}
+		});
+		
 		ActivityUtils.setListViewPropertys(this);
 		
 		
@@ -133,32 +149,6 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 	
 	
 	
-	@Override
-	public boolean ItemSelected(MenuItem item) {
-		
-		switch (item.getItemId())
-		{
-			case R.id.fieldnotesview_found:
-				addNewFieldnote(1);
-				return true;
-			case R.id.fieldnotesview_notfound:
-				addNewFieldnote(2);
-				return true;
-			case R.id.fieldnotesview_maintenance:
-				addNewFieldnote(3);
-				return true;
-			case R.id.fieldnotesview_addnote:
-				addNewFieldnote(4);
-				return true;
-			case R.id.fieldnotesview_upload:
-				UploadFieldnotes();
-				return true;
-			case R.id.fieldnotesview_deleteall:
-				deleteAllFieldNote();
-				return true;
-		}
-		return false;
-	}
 	
 	
 	
@@ -357,18 +347,7 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 		
 	}
 
-	@Override
-	public void BeforeShowMenu(Menu menu) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int GetMenuId() 
-	{
-		
-		return R.menu.menu_fieldnotesview;
-	}
+	
 
 	@Override
 	public void OnShow() {
@@ -449,64 +428,8 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 	
 	
 	
-	@Override
-	public int GetContextMenuId() {
-		// TODO Auto-generated method stub
-		return R.menu.cmenu_fieldnotesview;
-	}
-
-	@Override
-	public void BeforeShowContextMenu(Menu menu) 
-	{
-			
-		MenuItem mi = menu.findItem(R.id.c_fnv_edit);
-		if (mi !=null)
-		{
-			mi.setEnabled(aktFieldNote != null);
-			mi.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-				
-				@Override
-				public boolean onMenuItemClick(MenuItem item) {
-					editFieldNote();
-					return false;
-				}
-			});
-		}	
-		mi = menu.findItem(R.id.c_fnv_delete);
-		if (mi != null)
-		{
-			mi.setEnabled(aktFieldNote != null);
-			mi.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-				
-				@Override
-				public boolean onMenuItemClick(MenuItem item) {
-					deleteFieldNote();
-					return false;
-				}
-			});
-		}
-			
-		mi = menu.findItem(R.id.c_fnv_selectcache);
-		if (mi != null)
-		{
-			mi.setEnabled((aktFieldNote != null) && (Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode) != null));
-			mi.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-				
-				@Override
-				public boolean onMenuItemClick(MenuItem item) {
-					selectCacheFromFieldNote();
-					return false;
-				}
-			});
-		}
-	}
-
-	@Override
-	public boolean ContextMenuItemSelected(MenuItem item) {
-		
-		return false;
-	}
 	
+
 	
 	
 
@@ -645,15 +568,88 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
     
     private void selectCacheFromFieldNote()
     {
-		if (aktFieldNote == null)
+    	if (aktFieldNote == null)
 			return;
-		Cache cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
+    	
+    	// suche den Cache aus der DB. 
+		// Nicht aus der aktuellen Query, da dieser herausgefiltert sein könnte
+		CacheList lCaches = new CacheList();
+		CacheListDAO cacheListDAO = new CacheListDAO();
+		cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId);
+		Cache tmpCache = null;
+		if (lCaches.size() > 0)
+			tmpCache = lCaches.get(0);
+		Cache cache = tmpCache;
+	
+		if (cache == null)
+		{
+			String message = "The Cache [" + aktFieldNote.CacheName + "] is not in the actual DB. \nThis FieldNote can not be selected!";
+			MessageBox.Show(message);
+			return;
+		}
+    	
+    	
+		
+		cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
 		Waypoint finalWp = null;
 		if (cache.HasFinalWaypoint())
 			finalWp = cache.GetFinalWaypoint();
 		if (cache != null)
 			GlobalCore.SelectedWaypoint(cache, finalWp);    	
     }
+    
+    
+    
+    @Override public int GetMenuId() {return 0;}
+    @Override public int GetContextMenuId() {return 0;}
+    @Override public void BeforeShowContextMenu(Menu menu) {}
+    @Override public boolean ContextMenuItemSelected(MenuItem item) {return false;}
+    @Override
+	public boolean ItemSelected(MenuItem item) {
+		
+		switch (item.getItemId())
+		{
+			case R.id.fieldnotesview_found:
+				addNewFieldnote(1);
+				return true;
+			case R.id.fieldnotesview_notfound:
+				addNewFieldnote(2);
+				return true;
+			case R.id.fieldnotesview_maintenance:
+				addNewFieldnote(3);
+				return true;
+			case R.id.fieldnotesview_addnote:
+				addNewFieldnote(4);
+				return true;
+			case R.id.fieldnotesview_upload:
+				UploadFieldnotes();
+				return true;
+			case R.id.fieldnotesview_deleteall:
+				deleteAllFieldNote();
+				return true;
+			case R.id.c_fnv_edit:
+				editFieldNote();
+				return true;
+			case R.id.c_fnv_delete:
+				deleteFieldNote();
+				return true;
+			case R.id.c_fnv_selectcache:
+				selectCacheFromFieldNote();
+				return true;
+			case R.id.fieldnotesview_manage:
+				AllContextMenuCallHandler.showFiledNotesView_manageContextMenu();
+				return true;
+		}
+		return false;
+	}
+	
+    @Override
+    	public void BeforeShowMenu(Menu menu) 
+    	{
+    		AllContextMenuCallHandler.showFiledNotesViewContextMenu();
+    	}
+    
+    
 }
 
 

@@ -8,12 +8,14 @@ import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.main;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Map.Descriptor.PointD;
 import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.Map.RouteOverlay.Route;
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.AllContextMenuCallHandler;
 import de.droidcachebox.Views.Forms.EditCoordinate;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
@@ -214,33 +216,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	    	 
 	}
 
-	public boolean ItemSelected(MenuItem item) {
-		switch (item.getItemId())
-		{
-		case R.id.menu_tracklistview_delete:
-			HandleTrackDelete();
-			break;
-			
-		case R.id.menu_tracklistview_projection:
-			HandleGenerate_Projection();
-			break;
-			
-		case R.id.menu_tracklistview_point2point:
-			HandleGenerate_Point2Point();
-			break;
-			
-		case R.id.menu_tracklistview_circle:
-			HandleGenerate_Circle();
-			break;
-			
-		case R.id.menu_tracklistview_load:
-			HandleLoad();
-			break;
-			
 	
-		}
-		return true;
-	}
 
 	/**
 	 * Lädt einen Track in die RouteList
@@ -753,10 +729,6 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
     }
 
 
-	@Override
-	public void BeforeShowMenu(Menu menu) 
-	{
-	}
 
 	@Override
 	public void OnShow() 
@@ -779,26 +751,47 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 		
 	}
 
-	@Override
-	public int GetMenuId() {
-		return R.menu.menu_tracklistview;
+	
+	
+	@Override public int GetMenuId() {return 0;}
+	@Override public int GetContextMenuId() {return 0;}
+	@Override public void BeforeShowContextMenu(Menu menu) {}
+	@Override public boolean ContextMenuItemSelected(MenuItem item) {return false;}
+	
+	
+	public boolean ItemSelected(MenuItem item) {
+		switch (item.getItemId())
+		{
+		case R.id.menu_tracklistview_delete:
+			HandleTrackDelete();
+			break;
+			
+		case R.id.menu_tracklistview_projection:
+			HandleGenerate_Projection();
+			break;
+			
+		case R.id.menu_tracklistview_point2point:
+			HandleGenerate_Point2Point();
+			break;
+			
+		case R.id.menu_tracklistview_circle:
+			HandleGenerate_Circle();
+			break;
+			
+		case R.id.menu_tracklistview_load:
+			HandleLoad();
+			break;
+			
+	
+		}
+		return true;
 	}
-
+	
 	@Override
-	public int GetContextMenuId() {
-		
-		return 0;
-	}
-
-	@Override
-	public void BeforeShowContextMenu(Menu menu) {
-		
-	}
-
-	@Override
-	public boolean ContextMenuItemSelected(MenuItem item) {
-		
-		return false;
-	}
+		public void BeforeShowMenu(Menu menu) 
+		{
+			AllContextMenuCallHandler.showTrackListViewContextMenu();
+		}
+	
 }
 

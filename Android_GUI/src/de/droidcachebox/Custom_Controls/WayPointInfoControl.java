@@ -5,8 +5,8 @@ import CB_Core.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
-import de.droidcachebox.Components.ActivityUtils;
 
+import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.WaypointView;

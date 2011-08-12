@@ -27,10 +27,10 @@ import android.view.View.MeasureSpec;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
-import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Components.CacheDraw.DrawStyle;
 import de.droidcachebox.Enums.Actions;
+import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 
 /**

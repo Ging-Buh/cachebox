@@ -2,7 +2,7 @@ package de.droidcachebox.Views.Forms;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Ui.ActivityUtils;
 import CB_Core.Types.Coordinate;
 import android.app.Activity;
 import android.content.Intent;

@@ -6,7 +6,7 @@ import CB_Core.Config;
 import CB_Core.Types.GpxFilename;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.FilterSettings.CategorieListView.CategorieEntry;
 import de.droidcachebox.Views.FilterSettings.FilterSetListView;

@@ -7,7 +7,6 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.TrackRecorder;
 import de.droidcachebox.main;
-import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheDraw.DrawStyle;
 import de.droidcachebox.Custom_Controls.CacheInfoControl;
 import de.droidcachebox.Custom_Controls.DescriptionViewControl;
@@ -20,6 +19,8 @@ import CB_Core.GlobalCore;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.AllContextMenuCallHandler;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.Forms.MessageBox;
 import CB_Core.Types.Cache;
@@ -41,10 +42,10 @@ import android.widget.Toast;
 
 public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent {
 	Context context;
-	Cache aktCache;
+	public Cache aktCache;
 	
 	Button TestButton;
-	CacheInfoControl cacheInfo;
+	public CacheInfoControl cacheInfo;
 	DescriptionViewControl WebControl;
 	
 	public DescriptionView(Context context, LayoutInflater inflater) 
@@ -89,7 +90,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 		return false;
 	}
 
-	private IconContextMenu icm;
+	
 	
 	
 	
@@ -98,47 +99,10 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	@Override
 	public void BeforeShowMenu(Menu menu) 
 	{
-		if(aktCache==null) return;
-		
-		MenuItem miFavorite = Global.TranslateMenuItem(menu, R.id.mi_descview_favorite, "Favorite");
-		miFavorite.setCheckable(true);
-		miFavorite.setChecked(aktCache.Favorit());
-		
-		icm = new IconContextMenu(main.mainActivity, menu);
-				
-		icm.setOnIconContextItemSelectedListener(new IconContextItemSelectedListener() {
-			
-			@Override
-			public void onIconContextItemSelected(MenuItem item, Object info) {
-				switch (item.getItemId())
-		    	{
-				
-		    	case R.id.mi_descview_favorite:
-		    		aktCache.setFavorit(!aktCache.Favorit());
-		    		CacheDAO dao = new CacheDAO();
-		    		dao.UpdateDatabase(aktCache);
-		    		cacheInfo.invalidate();
-		    		break;
-		    	case R.id.mi_descview_update:
-		    		reloadCacheInfo();
-		    		break;
-		    		
-		    	default:
-					
-		    	}
-		    }
-		});
-		
-		menu=icm.getMenu();
-		
-	  	  
-	  	  icm.show();
-		
-		
-		
+		AllContextMenuCallHandler.showCacheDescViewContextMenu();
 	}
 	
-	private void reloadCacheInfo()
+	public void reloadCacheInfo()
 	{
 		Cache reCache = aktCache; //Todo hole Info über API
 		CacheDAO dao = new CacheDAO();
@@ -168,7 +132,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	@Override
 	public int GetMenuId() 
 	{
-		return R.menu.menu_descview;
+		return 0;
 	}
 
 	@Override

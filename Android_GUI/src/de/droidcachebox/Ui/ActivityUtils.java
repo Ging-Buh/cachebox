@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package de.droidcachebox.Components;
+package de.droidcachebox.Ui;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
-import de.droidcachebox.Ui.Sizes;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

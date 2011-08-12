@@ -2,7 +2,7 @@ package de.droidcachebox.Views.Forms;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Ui.ActivityUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

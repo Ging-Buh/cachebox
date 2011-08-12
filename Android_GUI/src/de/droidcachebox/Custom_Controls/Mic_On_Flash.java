@@ -4,7 +4,7 @@ package de.droidcachebox.Custom_Controls;
 import java.util.TimerTask;
 
 import de.droidcachebox.Global;
-import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Ui.ActivityUtils;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;

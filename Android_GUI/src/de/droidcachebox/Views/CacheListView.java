@@ -5,10 +5,11 @@ import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.main;
 
-import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.AllContextMenuCallHandler;
 import CB_Core.Types.CacheList;
 
 import CB_Core.Events.CachListChangedEventList;
@@ -145,7 +146,7 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 	@Override
 	public void BeforeShowMenu(Menu menu) 
 	{
-		((main)main.mainActivity).showCachelistViewContextMenu();
+		AllContextMenuCallHandler.showCachelistViewContextMenu();
 		
 	}
 

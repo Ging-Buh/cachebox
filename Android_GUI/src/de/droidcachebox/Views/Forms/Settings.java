@@ -59,7 +59,6 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import CB_Core.SimpleCrypto;
 import de.droidcachebox.main;
-import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.Animations;
 import de.droidcachebox.Custom_Controls.downSlider;
 import de.droidcachebox.Custom_Controls.QuickButtonList.QuickButtonItem;
@@ -69,6 +68,7 @@ import de.droidcachebox.Custom_Controls.wheel.WheelView;
 import de.droidcachebox.Custom_Controls.wheel.adapters.NumericWheelAdapter;
 import de.droidcachebox.Enums.Actions;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 

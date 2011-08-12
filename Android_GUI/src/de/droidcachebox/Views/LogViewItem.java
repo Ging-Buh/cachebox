@@ -3,7 +3,7 @@ package de.droidcachebox.Views;
 import java.text.SimpleDateFormat;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import CB_Core.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Components.ActivityUtils;
+import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.FilterSettings.FilterSetListView;
 import de.droidcachebox.Views.FilterSettings.FilterSetListView.FilterSetEntry;

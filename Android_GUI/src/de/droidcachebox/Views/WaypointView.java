@@ -16,9 +16,10 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
-import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.DAO.WaypointDAO;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.AllContextMenuCallHandler;
 import de.droidcachebox.Views.Forms.EditCoordinate;
 import de.droidcachebox.Views.Forms.EditWaypoint;
 import de.droidcachebox.Views.Forms.MessageBox;
@@ -42,9 +43,9 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 	
 	CustomAdapter lvAdapter;
 	Activity parentActivity;
-	Waypoint aktWaypoint = null;
+	public Waypoint aktWaypoint = null;
 	boolean createNewWaypoint = false;
-	Cache aktCache = null;
+	public Cache aktCache = null;
 	
 	
 	/**
@@ -227,6 +228,52 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 			invalidate();
 	}
 
+	
+	@Override
+	public void OnShow() {
+		// aktuellen Waypoint in der List anzeigen
+		int first = this.getFirstVisiblePosition();
+		int last = this.getLastVisiblePosition();
+
+		if (aktCache== null) return;
+		
+		if (GlobalCore.SelectedWaypoint() != null)
+		{
+			aktWaypoint = GlobalCore.SelectedWaypoint();
+			int id = 0;
+			
+			for (Waypoint wp : aktCache.waypoints)
+			{
+				id++;
+				if (wp == aktWaypoint)
+				{
+					if(!(first<id && last>id))
+						this.setSelection(id - 2);
+					break;
+				}
+			}
+		} else
+			this.setSelection(0);
+	}
+
+	@Override
+	public void OnHide() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void OnFree() {
+		
+	}
+
+	
+	
+	
+	@Override public int GetMenuId() {return 0;}
+	@Override public int GetContextMenuId() {return 0;}
+	@Override public void BeforeShowContextMenu(Menu menu) {}
+	@Override public boolean ContextMenuItemSelected(MenuItem item) {return false;}
 	@Override
 	public boolean ItemSelected(MenuItem item) 
 	{
@@ -310,93 +357,11 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 	}
 
 	@Override
-	public void BeforeShowMenu(Menu menu) {
-		try
-		{
-			MenuItem mi = menu.findItem(R.id.menu_waypointview_edit);
-			if (mi != null)
-			{
-				mi.setTitle(Global.Translations.Get("edit"));
-				mi.setVisible(aktWaypoint != null);
-			}
-			Global.TranslateMenuItem(menu, R.id.menu_waypointview_new, "addWaypoint");
-			mi = menu.findItem(R.id.menu_waypointview_delete);
-			if (mi != null)
-			{
-				mi.setTitle(Global.Translations.Get("delete"));
-				mi.setVisible((aktWaypoint != null) && (aktWaypoint.IsUserWaypoint));
-			}
-			mi = menu.findItem(R.id.menu_waypointview_project);
-			if (mi != null)
-			{
-				mi.setTitle(Global.Translations.Get("Projection"));
-				mi.setVisible((aktWaypoint != null || aktCache!=null));
-			}
-		} catch (Exception e)
-		{
-			Logger.Error("WaypointView.BeforeShowMenu()", menu.toString(), e);
-		}
+	public void BeforeShowMenu(Menu menu) 
+	{
+		AllContextMenuCallHandler.showWayPointViewContextMenu();
 	}
 
-	@Override
-	public void OnShow() {
-		// aktuellen Waypoint in der List anzeigen
-		int first = this.getFirstVisiblePosition();
-		int last = this.getLastVisiblePosition();
-
-		if (aktCache== null) return;
-		
-		if (GlobalCore.SelectedWaypoint() != null)
-		{
-			aktWaypoint = GlobalCore.SelectedWaypoint();
-			int id = 0;
-			
-			for (Waypoint wp : aktCache.waypoints)
-			{
-				id++;
-				if (wp == aktWaypoint)
-				{
-					if(!(first<id && last>id))
-						this.setSelection(id - 2);
-					break;
-				}
-			}
-		} else
-			this.setSelection(0);
-	}
-
-	@Override
-	public void OnHide() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void OnFree() {
-		
-	}
-
-	@Override
-	public int GetMenuId() {
-		return R.menu.menu_waypointview;
-	}
-
-	@Override
-	public int GetContextMenuId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void BeforeShowContextMenu(Menu menu) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean ContextMenuItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 }
 

@@ -58,7 +58,6 @@ import de.droidcachebox.R;
 import de.droidcachebox.TrackRecorder;
 import de.droidcachebox.UnitFormatter;
 import de.droidcachebox.main;
-import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
@@ -78,6 +77,8 @@ import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Map.Manager;
 import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.Map.Tile;
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.AllContextMenuCallHandler;
 import de.droidcachebox.Views.Forms.MessageBox;
 
 
@@ -4734,19 +4735,19 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	*/		
 				
 			case R.id.mi_Track:
-				((main)main.mainActivity).showTrackContextMenu();
+				AllContextMenuCallHandler.showTrackContextMenu();
 				return true;
 				
 			case R.id.mapview_smooth:
-				((main)main.mainActivity).showMapSmoothMenu();
+				AllContextMenuCallHandler.showMapSmoothMenu();
 				return true;
 			
 			case R.id.layer:
-				((main)main.mainActivity).showMapLayerMenu();
+				AllContextMenuCallHandler.showMapLayerMenu();
 				return true;
 				
 			case R.id.mimapview_view:
-				((main)main.mainActivity).showMapViewLayerMenu();
+				AllContextMenuCallHandler.showMapViewLayerMenu();
 				return true;	
 				
 			case R.id.miAlignCompass:
@@ -4826,7 +4827,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	@Override
 	public void BeforeShowMenu(Menu menu) 
 	{
-		((main)main.mainActivity).showMapViewContextMenu();
+		AllContextMenuCallHandler.showMapViewContextMenu();
 	}
 	
 	@Override

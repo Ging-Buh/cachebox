@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
 
 import de.droidcachebox.UTM.UTMConvert;
+import de.droidcachebox.Ui.ActivityUtils;
 import CB_Core.Types.Coordinate;
 import android.R.string;
 import android.app.Activity;
@@ -347,8 +347,8 @@ public class EditCoordinate extends Activity {
          	bUtm.setState(0);
          	if (coord.Latitude > 0) bDLat.setText("N");	else bDLat.setText("S");
          	if (coord.Longitude > 0) bDLon.setText("E"); else bDLon.setText("W");
-         	tbDLat.setText(String.format("%.5f", coord.Latitude));
-         	tbDLon.setText(String.format("%.5f", coord.Longitude));
+         	tbDLat.setText(String.format("%.5f", coord.Latitude).replace(",","."));
+         	tbDLon.setText(String.format("%.5f", coord.Longitude).replace(",","."));
          	break;
 		 case 1:
      		// show Degree - Minute
@@ -366,14 +366,14 @@ public class EditCoordinate extends Activity {
          	double deg = (int)Math.abs(coord.Latitude);
          	double frac = Math.abs(coord.Latitude) - deg;
          	double min = frac * 60;
-         	tbMLatDeg.setText(String.format("%.0f", deg));
-         	tbMLatMin.setText(String.format("%.3f", min));
+         	tbMLatDeg.setText(String.format("%.0f", deg).replace(",","."));
+         	tbMLatMin.setText(String.format("%.3f", min).replace(",","."));
 
          	deg = (int)Math.abs(coord.Longitude);
          	frac = Math.abs(coord.Longitude) - deg;
          	min = frac * 60;
-         	tbMLonDeg.setText(String.format("%.0f", deg));
-         	tbMLonMin.setText(String.format("%.3f", min));
+         	tbMLonDeg.setText(String.format("%.0f", deg).replace(",","."));
+         	tbMLonMin.setText(String.format("%.3f", min).replace(",","."));
          	
          	break;
 		 case 2:
@@ -395,9 +395,9 @@ public class EditCoordinate extends Activity {
             double sec = frac * 60;
 
          	if (coord.Latitude > 0) bSLat.setText("N");	else bSLat.setText("S");
-            tbSLatDeg.setText(String.format("%.0f", deg));
-            tbSLatMin.setText(String.valueOf(imin));
-            tbSLatSec.setText(String.format("%.2f", sec));
+            tbSLatDeg.setText(String.format("%.0f", deg).replace(",","."));
+            tbSLatMin.setText(String.valueOf(imin).replace(",","."));
+            tbSLatSec.setText(String.format("%.2f", sec).replace(",","."));
 
             deg = Math.abs((int)coord.Longitude);
             frac = Math.abs(coord.Longitude) - deg;
@@ -407,9 +407,9 @@ public class EditCoordinate extends Activity {
             sec = frac * 60;
 
          	if (coord.Longitude > 0) bSLon.setText("E"); else bSLon.setText("W");
-            tbSLonDeg.setText(String.format("%.0f", deg));
-            tbSLonMin.setText(String.valueOf(imin));
-            tbSLonSec.setText(String.format("%.2f", sec));
+            tbSLonDeg.setText(String.format("%.0f", deg).replace(",","."));
+            tbSLonMin.setText(String.valueOf(imin).replace(",","."));
+            tbSLonSec.setText(String.format("%.2f", sec).replace(",","."));
 
          	break;
 		 case 3:
@@ -432,8 +432,8 @@ public class EditCoordinate extends Activity {
             zone = convert.sUtmZone;
 //            tbUY.setText(String.Format(NumberFormatInfo.InvariantInfo, "{0:0}", Math.Floor(nording)));
 //            tbUX.setText(String.Format(NumberFormatInfo.InvariantInfo, "{0:0}", Math.Floor(easting)));
-            tbUY.setText(String.format("%.1f", nording));
-            tbUX.setText(String.format("%.1f", easting));
+            tbUY.setText(String.format("%.1f", nording).replace(",","."));
+            tbUX.setText(String.format("%.1f", easting).replace(",","."));
             tbUZone.setText(zone);
             if (coord.Latitude > 0)
                 bUY.setText("N");
@@ -473,6 +473,11 @@ public class EditCoordinate extends Activity {
              scoord += tbUZone.getText() + " " + tbUX.getText() + " " + tbUY.getText();
 			 break;		 
 		 }
+		 
+		 
+		 //replace , with .
+		 scoord=scoord.replace(",", ".");
+		 
 		 Coordinate newCoord = new Coordinate(scoord);
 		 if (newCoord.Valid)
 		 {

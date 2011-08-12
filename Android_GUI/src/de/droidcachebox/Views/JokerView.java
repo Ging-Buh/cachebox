@@ -9,13 +9,13 @@ import CB_Core.GlobalCore;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 
-import de.droidcachebox.Components.ActivityUtils;
 import de.droidcachebox.Components.ListenToPhoneState;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
 import de.droidcachebox.Geocaching.JokerEntry;
+import de.droidcachebox.Ui.ActivityUtils;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;

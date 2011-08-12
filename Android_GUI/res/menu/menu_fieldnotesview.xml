@@ -5,10 +5,5 @@
     <item android:id="@+id/fieldnotesview_notfound" android:title="Not Found!" android:icon="@drawable/log1"></item>
     <item android:id="@+id/fieldnotesview_maintenance" android:title="Needs Maintenance" android:icon="@drawable/log5"></item>
     <item android:id="@+id/fieldnotesview_addnote" android:title="Add Note" android:icon="@drawable/log2"></item>
-    <item android:id="@+id/fieldnotesview_manage" android:title="Manage Fieldnotes">
-        <menu>
-            <item android:title="Upload Fieldnotes" android:id="@+id/fieldnotesview_upload"></item>
-            <item android:title="Delete all Fieldnotes" android:id="@+id/fieldnotesview_deleteall"></item>
-        </menu>
-    </item>
+    <item android:id="@+id/fieldnotesview_manage" android:title="Manage Fieldnotes"></item>
 </menu>

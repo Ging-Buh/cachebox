@@ -26,12 +26,9 @@ import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.LogEntry;
-import CB_Core.Types.MoveableList;
 import CB_Core.Types.Waypoint;
 
 import de.droidcachebox.ExtAudioRecorder;
-import de.droidcachebox.Components.ActivityUtils;
-import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Custom_Controls.DebugInfoPanel;
 import de.droidcachebox.Custom_Controls.DescriptionViewControl;
@@ -55,6 +52,8 @@ import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Map.Descriptor.PointD;
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.AllContextMenuCallHandler;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.AboutView;
 import de.droidcachebox.Views.CacheListView;
@@ -110,35 +109,26 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Messenger;
 import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.SubMenu;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.location.GpsStatus;
@@ -153,14 +143,14 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    private static long GPSTimeStamp = 0;
 		public static MapView mapView = null;					// ID 0
 		private static CacheListView cacheListView = null;		// ID 1
-		private static WaypointView waypointView = null;		// ID 2
+		public static WaypointView waypointView = null;		// ID 2
 		private static LogView logView = null;					// ID 3
-		private static DescriptionView descriptionView = null;	// ID 4
+		public static DescriptionView descriptionView = null;	// ID 4
 		private static SpoilerView spoilerView = null;			// ID 5
 		private static NotesView notesView = null;				// ID 6
 		private static SolverView solverView = null;			// ID 7
 		private static CompassView compassView = null;			// ID 8
-		private static FieldNotesView fieldNotesView = null;	// ID 9
+		public static FieldNotesView fieldNotesView = null;	// ID 9
 		private static EmptyViewTemplate TestEmpty = null;		// ID 10
 		private static AboutView aboutView = null;				// ID 11
 		private static JokerView jokerView = null;				// ID 12
@@ -720,23 +710,23 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		      
 		      if (v == buttonDB)
 		      {
-		    	showBtnListsContextMenu();
+		    	  AllContextMenuCallHandler.showBtnListsContextMenu();
 		      }
 		  	  else if (v == buttonCache)
 		      {
-		   		  showBtnCacheContextMenu();
+		  		AllContextMenuCallHandler.showBtnCacheContextMenu();
 		      } 
 		  	  else if (v == buttonNav)
 		      {
-		    	showBtnNavContextMenu();
+		  		AllContextMenuCallHandler.showBtnNavContextMenu();
 		  	  }
 		      else if (v == buttonTools)
 		      {
-		    	showBtnToolsContextMenu();
+		    	  AllContextMenuCallHandler.showBtnToolsContextMenu();
 		      } 
 		      else if (v == buttonMisc)
 		      {   		
-		    	showBtnMiscContextMenu();
+		    	  AllContextMenuCallHandler.showBtnMiscContextMenu();
 		      }
 		    }
 
@@ -963,266 +953,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	 * show ContextMenus
 	 */
 
-	private void showBtnMiscContextMenu() 
-	{
-		icm = new IconContextMenu(this, R.menu.menu_misc);
-		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-		
-		Menu IconMenu=icm.getMenu();
-		
-	  	  
-	  	  icm.show();
-	}
-
-	private void showBtnToolsContextMenu() 
-	{
-		icm = new IconContextMenu(this, R.menu.menu_tools);
-  		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-    	
-  		Menu IconMenu=icm.getMenu();
-  		
-  		Global.TranslateMenuItem(IconMenu, R.id.miSettings, "settings");
-		Global.TranslateMenuItem(IconMenu, R.id.miAbout, "about");
-      	try
-    	{
-    		MenuItem mi = IconMenu.findItem(R.id.miVoiceRecorder);
-    		if (mi != null)
-    			if (!getVoiceRecIsStart())
-    				mi.setTitle("Voice Recorder");
-    			else
-    				mi.setTitle("Stop Voice Rec.");
-    	} catch (Exception exc)
-    	{ }
-
-    	  icm.show();
-	}
-	
-	public void showTrackContextMenu() 
-	{
-		icm = new IconContextMenu(this, R.menu.menu_track);
-  		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-    	
-  		Menu IconMenu=icm.getMenu();
-  		icm.show();
-	}
-
-	private void showBtnNavContextMenu() 
-	{
-		icm = new IconContextMenu(this, R.menu.menu_nav);
-		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-		
-		Menu IconMenu=icm.getMenu();
-		Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Map");
-		Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Compass");
-		icm.show();
-	}
-
-	private void showBtnCacheContextMenu() 
-	{
-		icm = new IconContextMenu(this, R.menu.menu_cache);
-		
-  		  icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-    	  
-    	  Menu IconMenu=icm.getMenu();
-    	  Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Solver");
-    	  Global.TranslateMenuItem(IconMenu, R.id.miNotes, "Notes");
-    	  Global.TranslateMenuItem(IconMenu, R.id.miDescription, "Description");
-    	  Global.TranslateMenuItem(IconMenu, R.id.miWaypoints, "Waypoints");
-    	  Global.TranslateMenuItem(IconMenu, R.id.miHint, "hint");
-    	  Global.TranslateMenuItem(IconMenu, R.id.miTelJoker, "joker");
-    	  Global.TranslateMenuItem(IconMenu, R.id.miLogView, "ShowLogs");
-    	  
-    	  boolean selectedCacheIsNull = (GlobalCore.SelectedCache() == null);
-    	  
-    	  // Menu Item Hint enabled / disabled
-    	  boolean enabled = false;
-    	  if (!selectedCacheIsNull && (!Database.Hint(GlobalCore.SelectedCache()).equals("")))
-    		  enabled = true;
-    	  MenuItem mi = IconMenu.findItem(R.id.miHint);
-    	  if (mi != null)
-    		  mi.setEnabled(enabled);
-    	  mi = IconMenu.findItem(R.id.miSpoilerView);
-    	  // Saarfuchs: hier musste noch abgetestet werden, dass auch ein Cache selektiert ist, sonst Absturz
-    	  if (mi != null && !selectedCacheIsNull ) 
-    	  {
-    		  mi.setEnabled( GlobalCore.SelectedCache().SpoilerExists() );
-    	  }
-    	  else {
-    		  mi.setEnabled( false );
-    	  }
-    	  // Menu Item Telefonjoker enabled / disabled abhänging von gcJoker MD5
-    	  enabled = false;
-    	  if (Global.JokerisOnline())
-    		  enabled = true;
-    	  mi = IconMenu.findItem(R.id.miTelJoker);
-    	  if (mi != null)
-    		  mi.setEnabled(enabled);
-
-    	  if(selectedCacheIsNull)
-    	  {
-    		  mi = IconMenu.findItem(R.id.miDescription);
-    		  mi.setEnabled(false);
-    		  
-    		  mi = IconMenu.findItem(R.id.miWaypoints);
-    		  mi.setEnabled(false);
-    		  
-    		  mi = IconMenu.findItem(R.id.miLogView);
-    		  mi.setEnabled(false);
-    		  
-    		  mi = IconMenu.findItem(R.id.miNotes);
-    		  mi.setEnabled(false);
-    		  
-    		  mi = IconMenu.findItem(R.id.miSolver);
-    		  mi.setEnabled(false);
-    	  }
-    	  
-    	  
-    	  
-    	  icm.show();
-	}
-
-	private void showBtnListsContextMenu() {
-		icm = new IconContextMenu(this, R.menu.menu_lists);
-		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-		Menu IconMenu=icm.getMenu();
-		
-		Global.TranslateMenuItem(IconMenu, R.id.miCacheList, "cacheList","  (" + String.valueOf(Database.Data.Query.size()) + ")" );
-		Global.TranslateMenuItem(IconMenu, R.id.miTrackList, "Tracks");
-		
-		
-  	  icm.show();
-	}
-	
-	public void showCachelistViewContextMenu()
-	{
-		icm = new IconContextMenu(this, R.menu.menu_cache_list);
-		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-		Menu IconMenu=icm.getMenu();
-		
-		String DBName = Config.GetString("DatabasePath");
-		int Pos = DBName.lastIndexOf("/");
-		DBName= DBName.substring(Pos+1);
-    	Pos=DBName.lastIndexOf(".");
-    	DBName=DBName.substring(0, Pos);
-    	
-    	Global.TranslateMenuItem(IconMenu, R.id.miManageDB, "manage" ,"  (" + DBName + ")");
-    	MenuItem miAutoResort = Global.TranslateMenuItem(IconMenu, R.id.miAutoResort, "AutoResort");
-		miAutoResort.setCheckable(true);
-		miAutoResort.setChecked(Global.autoResort);
-		Global.TranslateMenuItem(IconMenu, R.id.miResort, "ResortList");
-		Global.TranslateMenuItem(IconMenu, R.id.miFilterset, "filter");
-		
-		// Search Caches
-		MenuItem mi = IconMenu.findItem(R.id.searchcaches_online);
-		if (mi != null)
-			mi.setEnabled(Global.APIisOnline());
-			mi.setIcon(Global.Icons[36]);
-		
-		icm.show();
-	}
-	
-	
-	public void showMapViewContextMenu()
-	{
-		icm = new IconContextMenu(this, R.menu.menu_mapview);
-		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-		Menu menu=icm.getMenu();
-		
-
-		try
-		{
-			
-			
-			MenuItem mi = menu.findItem(R.id.miAlignCompass);
-			mi.setCheckable(mapView.alignToCompass);
-						
-			
-			
-			// Search Caches	 
-            mi = menu.findItem(R.id.searchcaches_online);	 
-            if (mi != null)	 
-                    mi.setEnabled(Global.APIisOnline());			
-
-			
-			
-		} catch (Exception exc)
-		{
-			Logger.Error("MapView.BeforeShowMenu()","",exc);
-			return;
-		}
-		
-		icm.show();
-	}
-	
-	public void showMapLayerMenu() 
-	{
-		icm = new IconContextMenu(this, R.menu.menu_layer);
-  		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-    	
-  		Menu IconMenu=icm.getMenu();
-  		
-  		IconMenu.clear();
-			for (Layer layer : MapView.Manager.Layers)
-			{
-				MenuItem mi22 = IconMenu.add(layer.Name);
-				mi22.setCheckable(true);
-				if (layer == mapView.CurrentLayer)
-				{
-					mi22.setChecked(true);
-				}
-			}
-		icm.show();
-	}
-	
-	public void showMapSmoothMenu() 
-	{
-		icm = new IconContextMenu(this, R.menu.menu_smooth);
-  		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-    	
-  		Menu IconMenu=icm.getMenu();
-  		
-				MenuItem mi2 = IconMenu.findItem(R.id.mapview_smooth_none);
-				if (mi2 != null)
-					mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.none);
-				mi2 = IconMenu.findItem(R.id.mapview_smooth_normal);
-				if (mi2 != null)
-					mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.normal);
-				mi2 = IconMenu.findItem(R.id.mapview_smooth_fine);
-				if (mi2 != null)
-					mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.fine);
-				mi2 = IconMenu.findItem(R.id.mapview_smooth_superfine);
-				if (mi2 != null)
-					mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.superfine);
-			
-			
-			
-		icm.show();
-	}
-    
-	public void showMapViewLayerMenu() 
-	{
-		icm = new IconContextMenu(this, R.menu.menu_map_view_layer);
-  		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-  		Menu IconMenu=icm.getMenu();
-
-			MenuItem miFinds = IconMenu.findItem(R.id.miMap_HideFinds);
-			MenuItem miRaiting = IconMenu.findItem(R.id.miMap_ShowRatings);
-			MenuItem miDT = IconMenu.findItem(R.id.miMap_ShowDT);
-			MenuItem miTitles = IconMenu.findItem(R.id.miMap_ShowTitles);
-			
-			miFinds.setChecked(mapView.hideMyFinds);
-			miRaiting.setChecked(mapView.showRating);
-			miDT.setChecked(mapView.showDT);
-			miTitles.setChecked(mapView.showTitles);
-					
-		icm.show();
-	}
-	
-	
-    
+	  
 	
   
-	IconContextItemSelectedListener OnIconContextItemSelectedListener = new IconContextItemSelectedListener() 
+	public IconContextItemSelectedListener OnIconContextItemSelectedListener = new IconContextItemSelectedListener() 
 	{
 		
 		@Override
@@ -1261,11 +995,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		    case R.id.searchcaches_online:searchOnline();break;
 		    case R.id.miTbList:showTbList();break;
 		    case R.id.miTakePhoto:takePhoto();break;
-		    case R.id.miTrackRec:showTrackContextMenu();break;
+		    case R.id.miTrackRec:AllContextMenuCallHandler.showTrackContextMenu();break;
 		    case R.id.miTrackStart:TrackRecorder.StartRecording();break;
 		    case R.id.miTrackStop:TrackRecorder.StopRecording();break;
 		    case R.id.miTrackPause:TrackRecorder.PauseRecording();break;
-		    default:
+		    case R.id.menu_tracklistview_generate:AllContextMenuCallHandler.showTrackListView_generateContextMenu();break;
+		    
+		    default: // wenn kein Eintrag gefunden wurde, versuch es im Akt View
 		    	if (aktView != null)
 		    		aktView.ItemSelected(item);
 				
