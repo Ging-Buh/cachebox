@@ -936,7 +936,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	Integer[] approach = new Integer[]{0,2,10,25,50,100,200,500,1000};
 	private void fillApproachSpinner()
 	{
-		
+		approachValues= new ArrayList<Integer>();
 		for ( Integer item : approach)
 		{
 			approachValues.add(item);

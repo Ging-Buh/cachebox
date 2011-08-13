@@ -46,6 +46,7 @@ public enum Actions
 	VoiceRecord,		//9
 	LiveSearch,			//10
 	Filter,				//11
+	ScreenLock,			//12
 	
 	empty,;
 
@@ -102,6 +103,7 @@ public enum Actions
         	case 9:return Actions.VoiceRecord;
         	case 10:return Actions.LiveSearch;
         	case 11:return Actions.Filter;
+        	case 12:return Actions.ScreenLock;
         }
         return Actions.empty;
     }
@@ -122,6 +124,7 @@ public enum Actions
             case 9:return Global.BtnIcons[11]; //VoiceRec
             case 10:return Global.BtnIcons[12]; //Live Search
             case 11:return Global.BtnIcons[13]; //Filter
+            case 12:return Global.BtnIcons[14]; //Filter
         }
 		return null;
 	}
@@ -142,6 +145,7 @@ public enum Actions
             case 9:return Global.Translations.Get("VoiceRec");
             case 10:return Global.Translations.Get("Search");
             case 11:return Global.Translations.Get("filter");
+            case 12:return Global.Translations.Get("screenlock");
         }
 		return "empty";
 	}

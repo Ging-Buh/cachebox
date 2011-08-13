@@ -826,22 +826,41 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			}
 	    } 
 	
+	
+	/**
+	 * Startet die Bildschirm Sperre	
+	 */
+	public void startScreenLock()
+	{
+		startScreenLock(false);	
+	}
 		
     
-   
-    public void startScreenLock()
+    /**
+     * Startet die Bildschirm Sperre.
+     * Mit der der Übergabe von force = true, werden
+     * abfragen ob im Akkubetrieb oder die Zeit Einstellungen
+     * ignoriert.
+     * @param force
+     */
+    public void startScreenLock(boolean force)
     {
-    	if (!runsWithAkku)
-    		return;
-		counter.cancel();
-		counterStopped = true;
-		// ScreenLock nur Starten, wenn der Config Wert größer 10 sec ist.
-		// Das verhindert das selber aussperren!
-		if(!(Config.GetInt("LockM")==0 && Config.GetInt("LockSec")<10))
-		{
-			final Intent mainIntent = new Intent().setClass( this, ScreenLock.class);
-			this.startActivityForResult(mainIntent, 12345);
-		}
+    	
+    	if(!force)
+    	{
+    		if (!runsWithAkku)
+        		return;
+    		counter.cancel();
+    		counterStopped = true;
+    		// ScreenLock nur Starten, wenn der Config Wert größer 10 sec ist.
+    		// Das verhindert das selber aussperren!
+    		if((Config.GetInt("LockM")==0 && Config.GetInt("LockSec")<10))
+    			return;
+    	}
+    	
+		
+		final Intent mainIntent = new Intent().setClass( this, ScreenLock.class);
+		this.startActivityForResult(mainIntent, 12345);
     }
     
     
@@ -965,7 +984,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			
 			switch (item.getItemId())
 	    	{
-			case R.id.miScreenLock:startScreenLock();break;
+			case R.id.miScreenLock:startScreenLock(true);break;
 	    	case R.id.miDayNight:switchDayNight();break;
 	    	case R.id.miSettings:showView(102);break;
 	    	case R.id.miVoiceRecorder:recVoice();break;
@@ -1036,6 +1055,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        case 9:recVoice();break;
 	        case 10:MessageBox.Show("SearchAPI muss noch in eine eigene Methode refactoriert werden, damit die Suche auch von hier aus ausgelöst werden kann!");break;
 	        case 11:showView(101);break;
+	        case 12:startScreenLock(true);break;
 	        
 	        }
 		}

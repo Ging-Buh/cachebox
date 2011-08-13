@@ -54,7 +54,7 @@ utf8
 	RecVideo = Enregistrer vidéo
 	ChkUpdate = Mises à jour
 	manage = Gestion des bases
-	
+	screenlock = Screenlock
 
 // AboutViewPanel
 	caches_found = Caches trouvées:

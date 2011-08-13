@@ -17,15 +17,17 @@
 			android:id="@+id/WaypointDescriptionView" android:layout_height="wrap_content"
 			android:layout_width="fill_parent" android:layout_marginLeft="2dip"
 			android:layout_marginRight="2dip" android:layout_marginTop="1dip" />
+			
+		<de.droidcachebox.Custom_Controls.CompassControl
+		android:id="@+id/Compass" android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:layout_alignParentBottom="true" />
+		
 
 	</LinearLayout>
 
 
 
-	<de.droidcachebox.Custom_Controls.CompassControl
-		android:id="@+id/Compass" android:layout_height="wrap_content"
-		android:layout_width="fill_parent" android:layout_alignParentBottom="true" />
-
+	
 
 	<RelativeLayout android:layout_alignParentBottom="true"
 		android:layout_width="fill_parent" android:id="@+id/layoutCompassToggle"

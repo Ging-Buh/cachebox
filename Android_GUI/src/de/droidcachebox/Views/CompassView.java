@@ -35,6 +35,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 
@@ -49,8 +50,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 	private MultiToggleButton AlignButton;
 	private WayPointInfoControl WP_info;
 	private Boolean align = false;
-	static public int windowW=0;
-    static public int windowH=0 ;
+	
     
 	public CompassView(Context context, LayoutInflater inflater) 
 	{
@@ -93,6 +93,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 		public void onClick(View v) 
 		{// bei click auf WP zeige WayPointView
 			((main) main.mainActivity).showView(2);
+			Toast.makeText(main.mainActivity, "Switch to Waypoint View", Toast.LENGTH_SHORT).show();
 		}
 	};
 	
@@ -101,23 +102,15 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
     {
     // we overriding onMeasure because this is where the application gets its right size.
     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    windowW = getMeasuredWidth();
-    windowH = getMeasuredHeight();
-   
-    DescriptionTextView.setHeight(Sizes.getCacheInfoHeight());
-    ToggleButtonLayout.getLayoutParams().height= windowW + 30;
-
-    // berechne höhe des Compass Controls anhand des Vorhandenen platzes
-    // höhe= breite
     
-    int compassHeight=0;
-    compassHeight=windowH-Sizes.getCacheInfoHeight()-150;
+    DescriptionTextView.setHeight(Sizes.getCacheInfoHeight());
+    ToggleButtonLayout.getLayoutParams().height= Sizes.getWindowWidth() + 30 - main.getQuickButtonHeight();
 
-    compassControl.setHeight(compassHeight);
-   
     }
 	
 	
+    
+    
 	
 
 	@Override
@@ -191,6 +184,8 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 	@Override
 	public void PositionChanged(Location location) 
 	{
+		if(aktCache==null)return;
+		
 		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
         {
             Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;

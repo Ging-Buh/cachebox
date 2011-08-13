@@ -54,6 +54,7 @@ English
 	RecVideo = Record Video
 	ChkUpdate = Check for Updates
 	manage = Manage
+	screenlock = Screenlock
 	
 
 // AboutViewPanel
@@ -295,8 +296,8 @@ English
 
 	//GPS
 	CompatibleWithGpsModDriver? = Compatible with GpsModDriver?
-	UseHtcCompass = Use Htc Compass
-	DescHtcLevel = Speed level for HTC or GPS compass. \n-1 = GPS is not used at all.
+	UseHtcCompass = Use Hardware Compass
+	DescHtcLevel = Speed level for Hardware or GPS compass. \n-1 = GPS is not used at all.
 	
 	//Data
 	AdjustFounds = Adjust number of finds ...

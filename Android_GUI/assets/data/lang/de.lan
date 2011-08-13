@@ -53,7 +53,8 @@ Deutsch
 	TakePhoto = Foto machen
 	RecVideo = Video aufnehmen
 	ChkUpdate = Suche nach Updates
-	manage = DB Auswahl 
+	manage = DB Auswahl
+	screenlock = Screenlock
 
 // AboutViewPanel
 	caches_found = Gefundene Caches:
@@ -297,8 +298,8 @@ Deutsch
 
 	//GPS
 	CompatibleWithGpsModDriver? = Kompatibel mit ModDriver?
-	UseHtcCompass = Verwende Htc Kompass
-	DescHtcLevel = Schwellwert für HTC oder GPS Kompass.\n-1 = GPS wird überhaupt nicht verwendet.
+	UseHtcCompass = Verwende Hardware Kompass
+	DescHtcLevel = Schwellwert für Hardware oder GPS Kompass.\n-1 = GPS wird überhaupt nicht verwendet.
 	
 	//Data
 	AdjustFounds = Anzahl der Funde anpassen . . .

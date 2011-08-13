@@ -193,32 +193,34 @@ public final class CompassControl extends View {
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 				
-		int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-		int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		
-		int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-		int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-		
-		int chosenWidth = chooseDimension(widthMode, widthSize);
-		int chosenHeight = chooseDimension(heightMode, heightSize);
-		
-		int chosenDimension = Math.min(chosenWidth, chosenHeight);
-		
-		setMeasuredDimension(chosenDimension, chosenDimension);
+		this.invalidate();
 	}
 	
-	private int chooseDimension(int mode, int size) {
-		if (mode == MeasureSpec.AT_MOST || mode == MeasureSpec.EXACTLY) {
-			return size;
-		} else { // (mode == MeasureSpec.UNSPECIFIED)
-			return getPreferredSize();
-		} 
-	}
+//	private int chooseDimension(int mode, int size) {
+//		if (mode == MeasureSpec.AT_MOST || mode == MeasureSpec.EXACTLY) {
+//			return size;
+//		} else { // (mode == MeasureSpec.UNSPECIFIED)
+//			return getPreferredSize();
+//		} 
+//	}
 	
-	// in case there is no size specified
-	private int getPreferredSize() {
-		return 300;
-	}
+//	// in case there is no size specified
+//	private int getPreferredSize() {
+//		return 300;
+//	}
+	
+	
+	
+
+	private float centerDrawingPointX;
+	private float centerDrawingPointY;
+	
+	
+	
+	
 
 	private void drawRim(Canvas canvas) 
 	{
@@ -337,7 +339,7 @@ public final class CompassControl extends View {
 		if (background == null) {
 			Log.w("CacheBox", "Background not created");
 		} else {
-			canvas.drawBitmap(background, 0, 0, backgroundPaint);
+			canvas.drawBitmap(background, centerDrawingPointX, centerDrawingPointY, backgroundPaint);
 		}
 	}
 	
@@ -345,8 +347,9 @@ public final class CompassControl extends View {
 	protected void onDraw(Canvas canvas) {
 		drawBackground(canvas);
 
-		float scale = (float) getHeight();		
+		float scale = (float) getMyDrawingHeight();		
 		canvas.save(Canvas.MATRIX_SAVE_FLAG);
+		canvas.translate(centerDrawingPointX, centerDrawingPointY);
 		canvas.scale(scale, scale);
 
 		drawScale(canvas);
@@ -375,13 +378,22 @@ public final class CompassControl extends View {
 			return;
 		}
 		
-		background = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+//		background = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+		background = Bitmap.createBitmap(getMyDrawingHeight(), getMyDrawingHeight(), Bitmap.Config.ARGB_8888);
 		Canvas backgroundCanvas = new Canvas(background);
-		float scale = (float) getHeight();		
+		float scale = (float) getMyDrawingHeight();// getHeight();		
 		backgroundCanvas.scale(scale, scale);
 		drawRim(backgroundCanvas);
 		drawFace(backgroundCanvas);
 				
+	}
+	
+	private int getMyDrawingHeight()
+	{
+		int ret = Math.min(getHeight(), getWidth());
+		centerDrawingPointY= (getHeight()-ret)/1.3f;
+		centerDrawingPointX= (getWidth()-ret)/2;
+		return ret;
 	}
 
 	
