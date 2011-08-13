@@ -413,20 +413,17 @@ public final class downSlider extends View implements SelectedCacheEvent
 				if(Pos<=QuickButtonMaxHeight)
 				{
 					QuickButtonHeight=Pos;
-					((main)main.mainActivity).setTopButtonHeight(Pos);
 				}
 				else
 				{
 					QuickButtonHeight=QuickButtonMaxHeight;
-					((main)main.mainActivity).setTopButtonHeight(QuickButtonMaxHeight);
 				}
 			}
 			else
 			{
 				QuickButtonHeight=0;
-				((main)main.mainActivity).setTopButtonHeight(0);
 			}
-			
+			((main)main.mainActivity).setQuickButtonHeight(QuickButtonHeight);
 			
 		}
 		else
@@ -530,7 +527,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 			Config.AcceptChanges();
 		}
 		
-		((main)main.mainActivity).setTopButtonHeight(QuickButtonHeight);
+		((main)main.mainActivity).setQuickButtonHeight(QuickButtonHeight);
 		
 		if(swipeUp || swipeDown)
 		{

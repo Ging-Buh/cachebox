@@ -8,10 +8,13 @@ import de.droidcachebox.R;
 import de.droidcachebox.Geocaching.FieldNoteEntry;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -59,7 +62,7 @@ public class EditFieldNote extends Activity {
         		extras.putSerializable("FieldNoteResult", fieldNote);
         		aktIntent.putExtras(extras);
         		setResult(RESULT_OK, aktIntent);
-        		finish();	            	
+        		nowFinish();	            	
         	}
         });
         // Abbrechen Button
@@ -69,7 +72,7 @@ public class EditFieldNote extends Activity {
         	public void onClick(View v) {
         		aktIntent.putExtra("SOMETHING", "EXTRAS");
         		setResult(RESULT_CANCELED, aktIntent);
-        		finish();	            	
+        		nowFinish();	            	
         	}
         });
 
@@ -88,5 +91,21 @@ public class EditFieldNote extends Activity {
         String sTime = iso8601Format.format(fieldNote.timestamp);
 		tvTime.setText("Time: " + sTime);
 		ivTyp.setImageResource(fieldNote.typeIconId);
+	}
+	
+	
+	/** 
+	 * vor dem Schließen der Activity muss erst das SoftKeypad
+	 * geschlossen werden, da es sonst zu Layout Unstimmigkeiten beim
+	 * zurückkehren gibt.
+	 */
+	private void nowFinish()
+	{
+		// first close KeyPad
+
+		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(etComment.getWindowToken(), 0);
+
+		finish();
 	}
 }

@@ -294,7 +294,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			
 			//initial UiSizes
 			Sizes.initial(false,this);
-			downSlider.isInitial=false;
+			
 	        
 	        int Time = ((Config.GetInt("LockM")*60)+Config.GetInt("LockSec"))*1000;
 	        counter = new ScreenLockTimer(Time, Time);
@@ -372,6 +372,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        
 	        this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));	 
 	        
+	        downSlider.isInitial=false;
+			int sollHeight=(Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow"))? Sizes.getQuickButtonListHeight():0;
+    		setQuickButtonHeight(sollHeight);
 	        
 	    }
 
@@ -745,7 +748,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        {
 	        	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 	        }
-	        downSlider.isInitial=false;
+	        
+	        int sollHeight=(Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow"))? Sizes.getQuickButtonListHeight():0;
+			((main) main.mainActivity).setQuickButtonHeight(sollHeight);
+			downSlider.isInitial=false;
 	        InfoDownSlider.invalidate();
 		}
 
@@ -1877,7 +1883,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 
 	int horizontalListViewHeigt; 
-	public void setTopButtonHeight(int value)
+	public void setQuickButtonHeight(int value)
 	{
 		 horizontalListViewHeigt = value;
 		 Thread t = new Thread() {

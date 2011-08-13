@@ -10,6 +10,8 @@ import CB_Core.GlobalCore;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
+import de.droidcachebox.Custom_Controls.downSlider;
 import de.droidcachebox.DAO.CacheDAO;
 import de.droidcachebox.DAO.CacheListDAO;
 import CB_Core.Events.SelectedCacheEvent;
@@ -21,6 +23,7 @@ import de.droidcachebox.Geocaching.FieldNoteList;
 
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.AllContextMenuCallHandler;
+import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.CacheListView.CustomAdapter;
 import de.droidcachebox.Views.Forms.EditFieldNote;
 import de.droidcachebox.Views.Forms.EditWaypoint;
@@ -370,7 +373,15 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 	@Override
 	public void ActivityResult(int requestCode, int resultCode, Intent data) {
 		if (data == null)
+		{
+			
+			int sollHeight=(Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow"))? Sizes.getQuickButtonListHeight():0;
+			((main) main.mainActivity).setQuickButtonHeight(sollHeight);
+			downSlider.isInitial=false;
+			((main) main.mainActivity).InfoDownSlider.invalidate();
 			return;
+		}
+			
 		Bundle bundle = data.getExtras();
 		if (bundle != null)
 		{																	   	
@@ -423,7 +434,13 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 				lvAdapter.notifyDataSetChanged();
 			}
 		}
+	
 		
+		
+		int sollHeight=(Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow"))? Sizes.getQuickButtonListHeight():0;
+		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
+		downSlider.isInitial=false;
+		((main) main.mainActivity).InfoDownSlider.invalidate();
 	}
 	
 	
