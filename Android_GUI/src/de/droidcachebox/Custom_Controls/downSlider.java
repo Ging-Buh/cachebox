@@ -617,7 +617,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 		
 		
 		mSats = String.valueOf(location.getExtras().getInt("satellites"));
-		mAccuracy = String.valueOf(location.getAccuracy());
+		mAccuracy = String.valueOf((int)location.getAccuracy());
 		mAlt = Global.Locator.getAltString();
 		mLatitude = Global.FormatLatitudeDM(location.getLatitude());
 		mLongitude = Global.FormatLongitudeDM(location.getLongitude());
@@ -625,7 +625,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 		String br = String.format("%n");
 		String Text= 
 			Global.Translations.Get("current")+ " " + mLatitude + " " + mLongitude + br +
-			Global.Translations.Get("alt") + " " + mAlt + "m" + br +
+			Global.Translations.Get("alt") + " " + mAlt  + br +
 			Global.Translations.Get("accuracy") + "  +/- " + mAccuracy + "m" + br +
 			Global.Translations.Get("sats") + " " + mSats ;
 			

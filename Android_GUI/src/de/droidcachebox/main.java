@@ -84,6 +84,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 import de.droidcachebox.Database;
 import CB_Core.Types.CacheList;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.content.BroadcastReceiver;
@@ -139,7 +140,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	 * private static member
 	 */
 	
-		private static Integer aktViewId = -1;
+		public static Integer aktViewId = -1;
 	    private static long GPSTimeStamp = 0;
 		public static MapView mapView = null;					// ID 0
 		private static CacheListView cacheListView = null;		// ID 1
@@ -302,7 +303,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 	        findViewsById();
 	        
-	        if (aktViewId == -1)Logger.General("------ Start Rev: " + Global.CurrentRevision + "-------");
+	       
+	        	
 	        
 	        // add Event Handler
 	        SelectedCacheEventList.Add(this);
@@ -328,7 +330,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        initalMicIcon(); 
 	        initialButtons();
 	        initialCaheInfoSlider();
-	        
+	       	        
 	        if(GlobalCore.SelectedCache()==null)
 	        {
 		        CacheList cacheList = Database.Data.Query;
@@ -352,6 +354,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        }
 	        else
 	        {
+	        	
+	        	// Start CB!
+	        	
+	        	Logger.General("------ Start Rev: " + Global.CurrentRevision + "-------");
+	        	
+	        	chkGpsIsOn();
+	        	
 	        	// Zeige About View als erstes!
 	        	showView(11);
 	        	
@@ -1140,6 +1149,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 	private void initialLocationManager() 
 	{
+		
+		if(locationManager!=null)
+		{
+			// ist schon initialisiert
+			return;
+		}
+		
 		// GPS
 		// Get the location manager
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -1943,5 +1959,63 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	}
 
 
+	/**
+	  * Überprüft ob das GPS eingeschaltet ist.
+	  * Wenn nicht, wird eine Meldung ausgegeben.
+	  */
+	 private void chkGpsIsOn() 
+	 {
+		 LocationManager locManager = (LocationManager) getSystemService(LOCATION_SERVICE); 
+		 if (!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+		 {  
+			 Thread t = new Thread() {
+				    public void run() {
+				        runOnUiThread(new Runnable() {
+				            @Override
+				            public void run() {
+				            	createGpsDisabledAlert();
+				            }
+				        });
+				    }
+				};
+
+				t.start();
+			 
+		 }  
+	 }
+	 
+	 
+	
+	 private void createGpsDisabledAlert()
+	 {  
+				 
+		 AlertDialog.Builder builder = new AlertDialog.Builder(this);  
+		 builder.setMessage(Global.Translations.Get("GPSon?"))  
+		 		.setTitle(Global.Translations.Get("GPSoff"))
+		      .setCancelable(false)  
+		      .setPositiveButton(Global.Translations.Get("yes"),  
+		           new DialogInterface.OnClickListener(){  
+		           public void onClick(DialogInterface dialog, int id){
+		        	   
+		        	  		        	   
+		        	   Intent gpsOptionsIntent = new Intent(  
+		                       android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS); 
+		        	 
+					startActivity(gpsOptionsIntent);
+		        	        
+		           }  
+		       });  
+		       builder.setNegativeButton(Global.Translations.Get("no"),  
+		            new DialogInterface.OnClickListener(){  
+		            public void onClick(DialogInterface dialog, int id){  
+		                 dialog.cancel();
+		                 
+		            }  
+		       });  
+		  AlertDialog alert = builder.create();  
+		  alert.show();  
+		  }  
+
+	
 
 }

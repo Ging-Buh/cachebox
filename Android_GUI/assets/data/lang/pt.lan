@@ -122,7 +122,9 @@ Portugues
 	ErrChkUpdate = Verificação de actualizações falhou...
 	
 	ErrSqlUpdate = A BD [%dbfile%] não tem a versão correcta. É possível que o ficheiro esteja corrupto. Tentar reparar?\nEsta operação pode demorar algum tempo (dependendo do tamanho da BD)!
-	
+		
+	GPSoff = GPS is deactivated.
+	GPSon? = Would like you to activate GPS now?
 	
 // Splash screan Messages
 	openDB = A abrir base de dados...

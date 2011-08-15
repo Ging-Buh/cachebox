@@ -121,6 +121,9 @@ utf8
 	
 	ErrSqlUpdate = La base [%dbfile%] n'est pas en version Sql3.0 et pourrait être corrompue. Essai de réparation?\nOpération potentiellement longue selon la taille de la base!
 
+	GPSoff = GPS is deactivated.
+	GPSon? = Would like you to activate GPS now?
+
 // Splash screan Messages
 	openDB = Ouverture base de données...
 	IniUI = Initialisation de l'interface...

@@ -19,7 +19,9 @@ package de.droidcachebox.Views.Forms;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
+import de.droidcachebox.splash;
 import de.droidcachebox.Ui.Sizes;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -370,7 +372,7 @@ public class MessageBox extends android.app.Dialog {
     	{
 	    	case DialogID.MSG_BOX_1 :
 	    		MessageBox.Builder customBuilder = new
-	    		MessageBox.Builder(main.mainActivity);
+	    		MessageBox.Builder(getActivity());
 				customBuilder	.setTitle("")
 								.setMessage(b.getString("msg"))
 								.setPositiveButton(Global.Translations.Get("ok"),listner);
@@ -379,7 +381,7 @@ public class MessageBox extends android.app.Dialog {
 	    
 	    	case DialogID.MSG_BOX_2 :
 	    		MessageBox.Builder customBuilder2 = new
-	    		MessageBox.Builder(main.mainActivity);
+	    		MessageBox.Builder(getActivity());
 				customBuilder2	.setTitle(b.getString("title"))
 								.setMessage(b.getString("msg"))
 								.setPositiveButton(Global.Translations.Get("ok"),listner);
@@ -390,7 +392,7 @@ public class MessageBox extends android.app.Dialog {
 	    		
 			setButtonCaptions(b);
 	    		MessageBox.Builder customBuilder3 = new
-	    		MessageBox.Builder(main.mainActivity);
+	    		MessageBox.Builder(getActivity());
 				customBuilder3	.setTitle(b.getString("title"))
 								.setMessage(b.getString("msg"))
 								.setPositiveButton(button1,listner)
@@ -405,7 +407,7 @@ public class MessageBox extends android.app.Dialog {
 				setButtonCaptions(b);
 				setIcon(b); 
 		    		MessageBox.Builder customBuilder4 = new
-		    		MessageBox.Builder(main.mainActivity);
+		    		MessageBox.Builder(getActivity());
 					customBuilder4	.setTitle(b.getString("title"))
 									.setMessage(b.getString("msg"))
 									.setPositiveButton(button1,listner)
@@ -418,6 +420,16 @@ public class MessageBox extends android.app.Dialog {
     	}
     	return dialog;
     }
+
+	/**
+	 * @return
+	 */
+	private static Activity getActivity() 
+	{
+		
+			return main.mainActivity;
+				
+	}
 
 
 

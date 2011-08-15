@@ -122,6 +122,9 @@ Deutsch
 
 	ErrSqlUpdate = Die Datenbank [%dbfile%] ist keine Sql3.0 Datenbank. Möglicherweise ist die Datenbank defekt. Soll die DB repariert werden?\nDies kann längere Zeit dauern (abhängig von der Größe der Datenbank)!
 	
+	GPSoff = GPS ist deaktiviert.
+	GPSon? = Möchten Sie GPS jetzt aktivieren?
+	
 
 // Splash screan Messages
 	openDB = Öffne Datenbank...

@@ -5,6 +5,7 @@ package de.droidcachebox.Custom_Controls.IconContextMenu;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
+import CB_Core.Log.Logger;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
@@ -94,8 +95,16 @@ public class IconContextMenu {
     	dialog.setTitle(titleId);
     }
     
-    public void show() {
-    	dialog.show();
+    public void show() 
+    {
+    	try
+    	{
+    		dialog.show();
+    	}
+    	catch(Exception e)
+    	{
+    		Logger.Error("IconContextMenu.show()", "dialog.show() Error", e);
+    	}
     	
     }
     

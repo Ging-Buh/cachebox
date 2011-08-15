@@ -309,7 +309,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	{
 		 if ((Global.Locator.getLocation() != null) && (Global.Locator.getLocation().hasAccuracy()))
 	        {
-	        	float radius = Global.Locator.getLocation().getAccuracy();
+	        	int radius = (int) Global.Locator.getLocation().getAccuracy();
 	        	Accuracy.setText("+/- " + String.valueOf(radius) + "m (" + Global.Locator.ProviderString()+")");
 	        }
 		 else

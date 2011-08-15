@@ -123,6 +123,8 @@ English
 	
 	ErrSqlUpdate = The database [%dbfile%] is not a Sql3.0 database. Maybe the database is corrupt. Try to repair?\nThis may last some time (dependend on the database size)!
 	
+	GPSoff = GPS is deactivated.
+	GPSon? = Would like you to activate GPS now?
 	
 // Splash screan Messages
 	openDB = Opening Database...
