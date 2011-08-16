@@ -49,6 +49,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 
 public final class downSlider extends View implements SelectedCacheEvent 
@@ -138,6 +139,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 	private Paint paint;
     public static boolean isInitial=false;
 	private boolean drag;
+	private boolean ButtonDrag;
 	private int lastDragYPos=0;
 	private boolean swipeUp=false;
 	private boolean swipeDown=false;
@@ -159,6 +161,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 			 int X = (int)event.getX();
 			 int Y = (int)event.getY();
 			  if(contains(X, Y)) drag=true;
+			  if(Y<QuickButtonHeight)ButtonDrag=true;
 			 
 			 
 			 switch (eventaction ) 
@@ -186,6 +189,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 			 		if (drag)
 			 			{
 			 				drag=false;
+			 				ButtonDrag=false;
 			 				ActionUp();
 			 			}
 			 	
@@ -226,9 +230,10 @@ public final class downSlider extends View implements SelectedCacheEvent
 	        }
 		
 		
-		if(!drag && !AnimationIsRunning)
+		if(!drag && !AnimationIsRunning && !ButtonDrag)
 		{
 			yPos=QuickButtonHeight=Config.GetBool("quickButtonShow")? main.getQuickButtonHeight():0;
+//			Toast.makeText(main.mainActivity, "!drag to" + String.valueOf(yPos), Toast.LENGTH_SHORT).show();
 		}
 		
 		int FSize = (int) (Sizes.getScaledFontSize_normal()*1.2);

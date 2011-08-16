@@ -59,7 +59,7 @@ public class AllContextMenuCallHandler
 	/**
 	 * Staticher Pointer zur main class
 	 */
-	private static main Main = (main) main.mainActivity;
+	public static main Main = (main) main.mainActivity;
 
 	public static void showBtnMiscContextMenu() 
 	{

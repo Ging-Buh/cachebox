@@ -58,21 +58,29 @@ public enum Actions
 	public static MoveableList<QuickButtonItem> getListFromConfig(String[] configList) 
 	{
 		MoveableList<QuickButtonItem> retVel = new MoveableList<QuickButtonItem>();
-		if(configList==null)
+		if(configList==null || configList.length==0)
 		{
 			return retVel;
 		}
-		for(String s:configList)
+		try
 		{
-			s=s.replace(",", ""); 
-			int EnumId = Integer.parseInt(s);
-			if(EnumId >-1)
+			for(String s:configList)
 			{
-				QuickButtonItem tmp =new QuickButtonItem(main.mainActivity, Actions.getActionEnumById(EnumId), Actions.getDrawable(EnumId), Actions.getName(EnumId));
-				
-				retVel.add(tmp);
+				s=s.replace(",", ""); 
+				int EnumId = Integer.parseInt(s);
+				if(EnumId >-1)
+				{
+					QuickButtonItem tmp =new QuickButtonItem(main.mainActivity, Actions.getActionEnumById(EnumId), Actions.getDrawable(EnumId), Actions.getName(EnumId));
+					
+					retVel.add(tmp);
+				}
 			}
 		}
+		catch(Exception e)// wenn ein Fehler auftritt, gib die bis dorthin gelesenen Items zurück
+		{
+			
+		}
+		
 		return retVel;
 	}
 	

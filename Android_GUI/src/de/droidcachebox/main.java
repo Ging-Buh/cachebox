@@ -236,8 +236,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		private ScreenLockTimer counter = null;
 		private boolean counterStopped = false;
 		
-		private IconContextMenu icm;
-		
+				
 	/*
 	 * Classes
 	 */
@@ -290,6 +289,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        
 	        inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	        mainActivity= this;
+	        AllContextMenuCallHandler.Main=this;
 			mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 			
