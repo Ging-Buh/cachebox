@@ -1,6 +1,7 @@
 package de.droidcachebox.Views;
 
 import java.io.File;
+import java.security.acl.LastOwnerException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -157,7 +158,7 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 	
 	private void UploadFieldnotes()
     {
-        String name = Config.GetString("DatabasePath");
+/*        String name = Config.GetString("DatabasePath");
         File file = new File(name);
         name = file.getName().replace(".db3", "").replace(" ", "");
         String dirFileName = Config.GetString("FieldNotesGarminPath");
@@ -182,7 +183,14 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
         			MessageBoxButtons.OK,
         			MessageBoxIcon.Information,null);
         }
-            
+*/
+		for (FieldNoteEntry fieldNote : lFieldNotes)
+		{
+	  		String accessToken = Config.GetString("GcAPI");
+	  		
+			if (CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(accessToken, fieldNote.gcCode, fieldNote.type, fieldNote.timestamp, fieldNote.comment) != 0)
+				MessageBox.Show("Error Upload:" + fieldNote.gcCode + "\n" + CB_Core.Api.GroundspeakAPI.LastAPIError);
+		}
 
     }
 	

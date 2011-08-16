@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TimeZone;
+
+import javax.swing.DebugGraphics;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -29,6 +32,98 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
 public class GroundspeakAPI {
+	public static String LastAPIError = "";
+	
+	public static String GetUTCDate(Date date)
+	{
+		long utc = date.getTime();
+		TimeZone tz = TimeZone.getDefault();
+		TimeZone tzp = TimeZone.getTimeZone("GMT-7");
+		int offset = tz.getOffset(utc);
+		utc += offset - tzp.getOffset(utc);
+		return "\\/Date(" + utc + ")\\/";
+	}
+	public static String ConvertNotes(String note)
+	{
+		return note.replace("\n", "\\n");
+	}
+	
+	/**
+	 * Upload FieldNotes
+	 */
+	public static int CreateFieldNoteAndPublish(String accessToken, String cacheCode, int wptLogTypeId, Date dateLogged, String note)
+	{
+		String result = "";
+		try
+		{
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httppost = new HttpPost("https://staging.api.groundspeak.com/Live/V1Beta/geocaching.svc/CreateFieldNoteAndPublish?format=json");
+			String requestString = "";
+			requestString = "{";
+			requestString += "\"AccessToken\":\"" + accessToken + "\",";
+			requestString += "\"CacheCode\":\"" + cacheCode + "\",";
+			requestString += "\"WptLogTypeId\":" + 2 + ",";
+			requestString += "\"UTCDateLogged\":\"" + GetUTCDate(dateLogged) + "\",";
+			requestString += "\"Note\":\"" + ConvertNotes(note) + "\",";
+			requestString += "\"PromoteToLog\":false,";
+			requestString += "\"FavoriteThisCache\":false";
+			requestString += "}";
+			
+			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));		    			 
+			httppost.setHeader("Accept", "application/json");
+			httppost.setHeader("Content-type", "application/json");
+			
+			// Execute HTTP Post Request
+			HttpResponse response = httpclient.execute(httppost);
+
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					response.getEntity().getContent()));
+			String line = "";
+			while ((line = rd.readLine()) != null) {
+				result += line + "\n";
+			}
+
+
+			// Parse JSON Result
+			try 
+			{
+				JSONTokener tokener = new JSONTokener(result);
+				JSONObject json = (JSONObject) tokener.nextValue();
+				JSONObject status = json.getJSONObject("Status");
+				if (status.getInt("StatusCode") == 0)
+				{
+					result = "";
+					LastAPIError = "";
+				} else
+				{
+					result = "StatusCode = " + status.getInt("StatusCode") + "\n";
+					result += status.getString("StatusMessage") + "\n";
+					result += status.getString("ExceptionDetails");
+					LastAPIError = result;
+					return -1;
+				}
+			
+			
+			
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				Logger.Error("UploadFieldNotesAPI", "JSON-Error", e);
+				LastAPIError = e.getMessage();
+				return -1;
+			}
+			
+		} catch (Exception ex)
+		{
+			System.out.println(ex.getMessage());
+			Logger.Error("UploadFieldNotesAPI", "Error", ex);
+			LastAPIError = ex.getMessage();
+			return -1;
+		}
+		
+		LastAPIError = "";
+		return 0;
+	}
 	
 	/**
 	 * Load Number of founds form geocaching.com
