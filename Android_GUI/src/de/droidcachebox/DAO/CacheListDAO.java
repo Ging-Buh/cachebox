@@ -45,7 +45,7 @@ public class CacheListDAO {
 
         try
         {
-        	reader = Database.Data.myDB.rawQuery("select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates from Caches " + ((where.length() > 0) ? "where " + where : where), null);
+        	reader = Database.Data.myDB.rawQuery("select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus from Caches " + ((where.length() > 0) ? "where " + where : where), null);
     	
         }
         catch(Exception e)

@@ -113,7 +113,14 @@ public class Cache implements Comparable<Cache>
     /**
 	 * Ist der Cache derzeit auffindbar?
      */
-    public boolean Available; 
+    public boolean Available;
+    /**
+     * ApiStatus
+     * 0: Cache wurde nicht per Api hinzugefügt
+     * 1: Cache wurde per GC Api hinzugefügt und ist noch nicht komplett geladen (IsLite = true)
+     * 2: Cache wurde per GC Api hinzugefügt und ist komplett geladen (IsLite = false)
+     */
+    public byte ApiStatus;
     /**
 	 * Ist der Cache einer der Favoriten
      */

@@ -1561,6 +1561,17 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	
 	private void addCache()
 	{
+  		String accessToken = Config.GetString("GcAPI");
+  		ArrayList<String> caches = new ArrayList<String>();
+  		caches.add("GC2XVHW");
+  		caches.add("GC1T2XP");
+  		caches.add("GC1090W");
+  		caches.clear();
+  		for (int i = 0; i < 100; i++)
+  		{
+  			caches.add("GC2XV" + i);
+  		}
+		CB_Core.Api.GroundspeakAPI.GetGeocacheStatus(accessToken, caches);
 		MessageBox.Show("Cache hinzufügen ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
 	}
 	

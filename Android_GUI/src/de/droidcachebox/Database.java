@@ -233,6 +233,9 @@ public class Database {
 					Database.Data.myDB.endTransaction();
 				}
 			}
+			if (lastDatabaseSchemeVersion < 1016) {
+				myDB.execSQL("ALTER TABLE [CACHES] ADD [ApiStatus] smallint NULL default 0;");
+			}
 			break;
 		case FieldNotes:
 			if (lastDatabaseSchemeVersion <= 0)

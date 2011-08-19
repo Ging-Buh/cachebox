@@ -34,7 +34,7 @@ public class Global{
     public static final int CurrentRevision = 379;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
-    public static final int LatestDatabaseChange = 1015;
+    public static final int LatestDatabaseChange = 1016;
     public static final int LatestDatabaseFieldNoteChange = 1001;
     
     

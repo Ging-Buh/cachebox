@@ -22,7 +22,7 @@ import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 
 public class CacheDAO {
-	protected static String sqlReadCache = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates from Caches ";
+	protected static String sqlReadCache = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus from Caches ";
 
 	
 	public Cache ReadFromCursor(Cursor reader)
@@ -84,6 +84,11 @@ public class CacheDAO {
         else
         	cache.CorrectedCoordinates = false;
 
+        if (reader.isNull(25))
+        	cache.ApiStatus = 0;
+        else
+        	cache.ApiStatus = (byte)reader.getInt(25);
+        
         cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
         cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
         
@@ -133,6 +138,7 @@ public class CacheDAO {
         args.put("AttributesNegative", cache.attributesNegative);
 //        args.put("ListingCheckSum", cache.);
         args.put("GPXFilename_Id", cache.GPXFilename_ID);
+        args.put("ApiStatus", cache.ApiStatus);
         
         try
         {
@@ -198,7 +204,7 @@ public class CacheDAO {
 //        args.put("ListingCheckSum", cache.);
         args.put("GPXFilename_Id", cache.GPXFilename_ID);
         args.put("Favorit", cache.Favorit() ? 1 : 0);
-        
+        args.put("ApiStatus", cache.ApiStatus);
         try
         {
         	long anzahl = Database.Data.myDB.update("Caches", args,  "Id=" + cache.Id, null);
