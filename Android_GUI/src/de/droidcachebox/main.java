@@ -72,6 +72,7 @@ import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
 import de.droidcachebox.Views.FilterSettings.PresetListView;
 import de.droidcachebox.Views.FilterSettings.PresetListViewItem;
+import de.droidcachebox.Views.Forms.GcApiLogin;
 import de.droidcachebox.Views.Forms.HintDialog;
 import de.droidcachebox.Views.Forms.ImportDialog;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
@@ -1561,7 +1562,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	
 	private void addCache()
 	{
-  		String accessToken = Config.GetString("GcAPI");
+/*  		String accessToken = Config.GetString("GcAPI");
   		ArrayList<String> caches = new ArrayList<String>();
   		caches.add("GC2XVHW");
   		caches.add("GC1T2XP");
@@ -1571,8 +1572,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
   		{
   			caches.add("GC2XV" + i);
   		}
-		CB_Core.Api.GroundspeakAPI.GetGeocacheStatus(accessToken, caches);
-		MessageBox.Show("Cache hinzufügen ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
+		CB_Core.Api.GroundspeakAPI.GetGeocacheStatus(accessToken, caches);*/
+		
+		Intent gcApiLogin = new Intent().setClass(mainActivity, GcApiLogin.class);
+		mainActivity.startActivityForResult(gcApiLogin, 987654321);
+		
+//		MessageBox.Show("Cache hinzufügen ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
 	}
 	
 	
