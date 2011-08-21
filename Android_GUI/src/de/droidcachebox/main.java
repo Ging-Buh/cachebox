@@ -1574,10 +1574,14 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
   		}
 		CB_Core.Api.GroundspeakAPI.GetGeocacheStatus(accessToken, caches);*/
 		
+		
+		
+		MessageBox.Show("Cache hinzufügen ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
+	}
+
+	public void GetApiAuth() {
 		Intent gcApiLogin = new Intent().setClass(mainActivity, GcApiLogin.class);
 		mainActivity.startActivityForResult(gcApiLogin, 987654321);
-		
-//		MessageBox.Show("Cache hinzufügen ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
 	}
 	
 	

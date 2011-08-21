@@ -142,6 +142,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private Spinner ActionListAll;
 	private boolean ActionListChanged=false;
 	private CheckBox chkPremiumMember;
+	private Button getApiKey;
 	
 	
 	private Button[] ButtonList = new Button[]{ToggleLogInView,ToggleGPSView,ToggleMapView,ToggleMiscView,ToggleQuickView,ToggleDebugView} ;
@@ -422,7 +423,15 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		 initWheel(ScreenLock_wheel_m,0,10);
 	     initWheel(ScreenLock_wheel_sec,0,59);
 	     
-	     
+	     getApiKey.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) 
+			{
+				((main) main.mainActivity).GetApiAuth();
+				
+			}
+		});
 	     
 	    fillActionsSpinner(); 
 	    ActionListView.setOnItemClickListener(new OnItemClickListener() 
@@ -674,6 +683,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		ActionListAdd = (Button) findViewById(R.id.settings_quick_add);
 		ActionListAll = (Spinner)this.findViewById(R.id.settings_spinner_Action);
 		chkPremiumMember = (CheckBox)this.findViewById(R.id.settings_login_premium);
+		getApiKey = (Button)this.findViewById(R.id.button_get_api_key);
 	}
 	
 	private void setLang()
