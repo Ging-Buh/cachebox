@@ -985,6 +985,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		ToggleMiscView.setHeight(Height);
 		ToggleDebugView.setHeight(Height);
 		ToggleQuickView.setHeight(Height);
+		getApiKey.setHeight(Height);
 	}
 
 	

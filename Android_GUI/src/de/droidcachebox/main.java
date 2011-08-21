@@ -503,8 +503,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			
 			if ( location.getProvider().equalsIgnoreCase(LocationManager.NETWORK_PROVIDER)) // Neue Position von Netzwerk
 			{
-				if ((java.lang.System.currentTimeMillis() - GPSTimeStamp) > 10000) //Wenn 10 Sekunden kein gültiges GPS Signal
+				if ((java.lang.System.currentTimeMillis() - GPSTimeStamp) > NetworkPositionTime) //Wenn 10 Sekunden kein gültiges GPS Signal
 				{
+					NetworkPositionTime=90000;
 					newLocationReceived (location);
 		    		Toast.makeText(mainActivity, "Network-Position", Toast.LENGTH_SHORT).show();
 				}
@@ -513,6 +514,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			
 			
 		}
+		
+		
+		/*
+		 * Wenn 10 Sekunden kein gültiges GPS Signal gefunden wird.
+		 * Aber nur beim Ersten mal. Danach warten wir lieber 90 sec
+		 */
+		private int NetworkPositionTime= 10000;
 
 		@Override public void onProviderDisabled(String provider) 
 		{
