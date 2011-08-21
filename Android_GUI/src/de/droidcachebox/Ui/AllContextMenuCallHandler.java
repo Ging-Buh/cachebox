@@ -415,11 +415,13 @@ public class AllContextMenuCallHandler
 			MenuItem miRaiting = IconMenu.findItem(R.id.miMap_ShowRatings);
 			MenuItem miDT = IconMenu.findItem(R.id.miMap_ShowDT);
 			MenuItem miTitles = IconMenu.findItem(R.id.miMap_ShowTitles);
+			MenuItem miLine = IconMenu.findItem(R.id.miMap_ShowDirektLine);
 			
 			miFinds.setChecked(Main.mapView.hideMyFinds);
 			miRaiting.setChecked(Main.mapView.showRating);
 			miDT.setChecked(Main.mapView.showDT);
 			miTitles.setChecked(Main.mapView.showTitles);
+			miLine.setChecked(Main.mapView.showDirektLine);
 					
 		icm.show();
 	}

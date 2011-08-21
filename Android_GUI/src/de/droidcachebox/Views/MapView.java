@@ -207,6 +207,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
          showTitles = Config.GetBool("MapShowTitles");
          hideMyFinds = Config.GetBool("MapHideMyFinds");
          showCompass = Config.GetBool("MapShowCompass");
+         showDirektLine = Config.GetBool("ShowDirektLine");
          nightMode = Config.GetBool("nightMode");
 		
 		// Skalierungsfaktoren bestimmen
@@ -591,6 +592,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
      * true, falls die D/T Werte der Caches angezeigt werden soll
      */
     public boolean showDT = true;
+    
+    /*
+     * true, falls eine direkte Line zum Cache angezeigt werden soll
+     */
+    public boolean showDirektLine = false;
 
     /**
     * true, falls die WP-Beschriftungen gezeigt werden sollen
@@ -2154,9 +2160,22 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    int smallStarHeightT = (int)((double)imgT.Height * );
 		    graphics.DrawImage(imgT, new Rectangle(x + halfIconWidth + 4, y + halfIconWidth - smallStarHeightT, smallStarHeight, smallStarHeightT), 0, 0, imgT.Width, imgT.Height, GraphicsUnit.Pixel, imageAttributes);
 */		
-		
-		  }
+		}
 		  
+		  
+		  if(showDirektLine && (wpi.Selected) && (wpi.Waypoint == GlobalCore.SelectedWaypoint()))
+	      {
+	    	  if(ArrowPaint==null)
+	          {
+	        	  ArrowPaint = new Paint(); 
+	          }
+	    	  
+	    	  ArrowPaint.setStyle(Style.FILL);
+	    	  ArrowPaint.setColor(Color.RED);
+	    	  ArrowPaint.setStrokeWidth(2);
+//	    	  canvas.drawLine(dirX, dirY, cacheArrowCenter.x, cacheArrowCenter.y, ArrowPaint);
+	    	  canvas.drawLine(myPointOnScreen.x, myPointOnScreen.y, (float)x, (float)y, ArrowPaint);
+	      }
 		  
 		  if ((wpi.Cache.Id == BubbleCacheId) && (wpi.Waypoint == BubbleWaypoint) && isBubbleShow)
 		  {
@@ -3256,13 +3275,18 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     Brush goldenrodBrush = new SolidBrush(Color.Goldenrod);
     Pen lightBluePen = new Pen(Color.LightBlue);
 */
+    
+    
+    
+    Point myPointOnScreen = new Point();
+    
     void renderPositionAndMarker()
     {
 
     	if (Global.Locator != null)
     	{
 	        // Position auf der Karte
-	        Point pt = ToScreen(Descriptor.LongitudeToTileX(Zoom, GlobalCore.LastValidPosition.Longitude), Descriptor.LatitudeToTileY(Zoom, GlobalCore.LastValidPosition.Latitude), Zoom);
+	        myPointOnScreen = ToScreen(Descriptor.LongitudeToTileX(Zoom, GlobalCore.LastValidPosition.Longitude), Descriptor.LatitudeToTileY(Zoom, GlobalCore.LastValidPosition.Latitude), Zoom);
 	
 /*	        debugString1 = String.valueOf(Global.Locator.getCompassHeading());
 	        if (Global.Locator.getLocation() != null)
@@ -3282,19 +3306,19 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        	MyColor = Color.BLUE;   // bei magnet. Kompass
 	        // first triangle
 	        long size = Math.round(1.8 * lineHeight);
-	        Path path = triaglePath(pt, size, dirX, dirY);
+	        Path path = triaglePath(myPointOnScreen, size, dirX, dirY);
 	        paint.setColor(MyColor);        // bei magnet. Kompass
 	        paint.setStyle(Style.FILL);
 	        canvas.drawPath(path, paint);
 	        // second triangle
 	        size = Math.round(1.4 * lineHeight);
-	        path = triaglePath(pt, size, dirX, dirY);
+	        path = triaglePath(myPointOnScreen, size, dirX, dirY);
 	        paint.setColor(Color.WHITE);    // bei magnet. Kompass
 	        paint.setStyle(Style.FILL);
 	        canvas.drawPath(path, paint);
 	        //third triangle, a little bit smaller
 	        size = lineHeight;
-	        path = triaglePath(pt, size, dirX, dirY);
+	        path = triaglePath(myPointOnScreen, size, dirX, dirY);
 	        paint.setColor(MyColor);        // bei magnet. Kompass
 	        paint.setStyle(Style.FILL);
 	        canvas.drawPath(path, paint);
@@ -3309,7 +3333,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	        	Paint circlePaint = new Paint();
 	        	circlePaint.setColor(Color.argb(55, 0, 0, 0));
 	        	circlePaint.setStrokeWidth(5);
-	        	canvas.drawCircle(pt.x, pt.y, (float) (pixelsPerMeter * radius), circlePaint);
+	        	canvas.drawCircle(myPointOnScreen.x, myPointOnScreen.y, (float) (pixelsPerMeter * radius), circlePaint);
 	        }
     	}
 /*	
@@ -4214,6 +4238,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     /*
     Font distanceFont = new Font(FontFamily.GenericSansSerif, 9, FontStyle.Regular);
 */
+   
+    static Paint ArrowPaint = null;
     public void RenderTargetArrow()
     {
       cacheArrowCenter.x = Integer.MIN_VALUE;
@@ -4223,6 +4249,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         return;
 
       Coordinate coord = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos : GlobalCore.SelectedCache().Pos;
+      
+        
       
 //      float distance = Datum.WGS84.Distance(center.Latitude, center.Longitude, lat, lon);
       float distance = center.Distance(coord);
@@ -4312,22 +4340,35 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       dir[2].x = (int)(pt.x + dirX * 1.5f * size + crossX * size * 0.5f);
       dir[2].y = (int)(pt.y + dirY * 1.5f * size + crossY * size * 0.5f);
 
-      if (Math.abs(dirx) > (width / 2) || Math.abs(diry) > (height / 2))
+      cacheArrowCenter.x = (int)(pt.x + dirX * 1.5f * size);
+      cacheArrowCenter.y = (int)(pt.y + dirY * 1.5f * size);
+      
+      boolean DrawArrow = (Math.abs(dirx) > (width / 2) || Math.abs(diry) > (height / 2));
+      
+      if(ArrowPaint==null)
+      {
+    	  ArrowPaint = new Paint(); 
+      }
+      
+      
+      
+      
+      if (DrawArrow)
       {
 /*        graphics.FillPolygon(redBrush, dir);
         graphics.DrawPolygon(blackPen, dir);*/
-    	  Paint paint = new Paint();
-    	  paint.setStyle(Style.FILL);
-    	  paint.setColor(Color.RED);
+    	  
+    	  ArrowPaint.setStyle(Style.FILL);
+    	  ArrowPaint.setColor(Color.RED);
     	  Path path = new Path();
     	  path.moveTo(dir[0].x, dir[0].y);
     	  path.lineTo(dir[1].x, dir[1].y);
     	  path.lineTo(dir[2].x, dir[2].y);
     	  path.lineTo(dir[0].x, dir[0].y);
-    	  canvas.drawPath(path, paint);
-    	  paint.setStyle(Style.STROKE);
-    	  paint.setColor(Color.BLACK);
-    	  canvas.drawPath(path, paint);    	  
+    	  canvas.drawPath(path, ArrowPaint);
+    	  ArrowPaint.setStyle(Style.STROKE);
+    	  ArrowPaint.setColor(Color.BLACK);
+    	  canvas.drawPath(path, ArrowPaint);    	  
       }
 
       float fontCenterX = pt.x + dirX * 2.2f * size;
@@ -4341,8 +4382,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       if (Math.abs(dirx) > (width / 2) || Math.abs(diry) > (height / 2))
         graphics.DrawString(text, distanceFont, blackBrush, fontCenterX - textSize.Width / 2, fontCenterY - textSize.Height / 2);
 */
-      cacheArrowCenter.x = (int)(pt.x + dirX * 1.5f * size);
-      cacheArrowCenter.y = (int)(pt.y + dirY * 1.5f * size);
+      
     }
 
     private double clipX2;
@@ -4802,6 +4842,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			case R.id.miMap_ShowTitles:
 				showTitles=!showTitles;
 				Config.Set("MapShowTitles", showTitles);
+				Config.AcceptChanges();
+				Render(true);
+		   		return true;
+		   		
+			case R.id.miMap_ShowDirektLine:
+				showDirektLine=!showDirektLine;
+				Config.Set("ShowDirektLine", showDirektLine);
 				Config.AcceptChanges();
 				Render(true);
 		   		return true;
