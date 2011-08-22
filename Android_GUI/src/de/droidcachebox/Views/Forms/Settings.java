@@ -49,6 +49,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -1103,7 +1104,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     }
 
    
- 
+    private static int TextViewWidth=0;
     
     private BaseAdapter QuickListBaseAdapter = new BaseAdapter() {
 
@@ -1132,6 +1133,9 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		{
 			return 0;
 		}
+		
+		
+		
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) 
@@ -1151,7 +1155,15 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 			int BackGroundColor = (position!=ActionListSelectedIndex)? Global.getColor(R.attr.ListBackground):Global.getColor(R.attr.ListBackground_select);
 			layout.setBackgroundColor(BackGroundColor);
 			
-		
+			
+			if(TextViewWidth<=0)
+			{
+				ImageView iv = (ImageView) retval.findViewById(R.id.image);
+			   	TextViewWidth=(parent.getWidth()- iv.getWidth()-20);
+			}
+			
+			TextView tv = (TextView) retval.findViewById(R.id.title);
+			tv.setWidth(TextViewWidth);
 			return retval;
 		}
 		
