@@ -31,7 +31,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 386;
+    public static final int CurrentRevision = 387;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1016;
@@ -631,8 +631,8 @@ public class Global{
     final private static int[] colorAttrs = new int[]
        {R.attr.ListBackground, R.attr.ListBackground_secend, 
     	R.attr.ListBackground_select,R.attr.myBackground,R.attr.ListSeparator,
-    	R.attr.TextColor,R.attr.EmptyBackground,
-    	R.attr.ToggleBtColor_off,R.attr.ToggleBtColor_on,R.attr.SlideDownColorFilter,
+    	R.attr.TextColor,R.attr.EmptyBackground,R.attr.DropDownBackground,
+    	R.attr.ToggleBtColor_off,R.attr.ToggleBtColor_on,R.attr.TitleBarBackColor,
     	R.attr.SlideDownBackColor,R.attr.LinkLabelColor,R.attr.TextColor_disable
        };
     

@@ -1725,6 +1725,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		  
 		  pd = ProgressDialog.show(this, "", 
 	                 "Search Online", true);
+		 
 		  thread.start();
 		
 		return ;

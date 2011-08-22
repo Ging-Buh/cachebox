@@ -25,6 +25,8 @@
 	    <color name="Day_SlideDownColorFilter">#99ff99</color>
 	    <color name="Day_SlideDownBackColor">#eecce1cc</color>
 	    <color name="Day_LinkLabelColor">#0000aa</color>
+	    <color name="Day_TitleBarBackColor">#CAD4B2</color>
+	    
 	    
 <!-- Night -->
 		<color name="Night_Background">#48573e</color>
@@ -48,4 +50,5 @@
 	    <color name="Night_SlideDownColorFilter">#99ff99</color>
 	    <color name="Night_SlideDownBackColor">#eecce1cc</color>
 	    <color name="Night_LinkLabelColor">#0000aa</color>
+	    <color name="Night_TitleBarBackColor">#000000</color>
 </resources>

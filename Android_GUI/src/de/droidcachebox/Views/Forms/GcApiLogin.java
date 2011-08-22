@@ -1,25 +1,44 @@
 package de.droidcachebox.Views.Forms;
 
+import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
 import CB_Core.Config;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewParent;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 
 public class GcApiLogin extends Activity {
-	private static final String TEAM_CACHEBOX_ASP_NET_URL = "http://aspspider.info/TeamCachebox/";
+//	private static final String TEAM_CACHEBOX_ASP_NET_URL = "http://aspspider.info/TeamCachebox/";
+//	private static final String TEAM_CACHEBOX_ASP_NET_URL = "http://geopt.sytes.net/Team-Cachebox/default.aspx"; 
+	private static final String TEAM_CACHEBOX_ASP_NET_URL = "http://aspspider.info/Longri/default.aspx"; 
 	private static GcApiLogin gcApiLogin;
-
-	
+	private static ProgressDialog pd;
+	private static boolean pdIsShow=false;
+		
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.gcapilogin);
 		gcApiLogin = this;
 
+		View titleView = getWindow().findViewById(android.R.id.title);
+		if (titleView != null) {
+		  ViewParent parent = titleView.getParent();
+		  if (parent != null && (parent instanceof View)) {
+		    View parentView = (View)parent;
+		    parentView.setBackgroundColor(Global.getColor(R.attr.TitleBarBackColor));
+		  }
+		}
+
+		
 		final WebView webView = (WebView) this.findViewById(R.id.gal_WebView);
 
 		webView.setWebViewClient(new WebViewClient() {
@@ -36,20 +55,41 @@ public class GcApiLogin extends Activity {
 					webView.addJavascriptInterface(new MyJavaScriptInterface(),
 							"HTMLOUT");
 					webView.loadUrl("javascript:window.HTMLOUT.showHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");
-				} else if (url.toLowerCase().contains(TEAM_CACHEBOX_ASP_NET_URL)) 
-				{
-					/*
-					 * Auf der Seite ist eine Java Script Funktion eingebaut, die nach dem Laden der 
-					 * Seite Automatich den AuthButton Clickt.
-					 * 
-					 * Damit wird sofort die GC Seite mit der Eingabe Maske Angezeigt.
-					 */
-					webView.loadUrl("javascript:clickButton()");
 				} else
 					super.onPageFinished(view, url);
 			}
 			
+			
 		});
+		
+		
+		webView.setWebChromeClient(new WebChromeClient() {
+            public void onProgressChanged(WebView view, int progress)   
+            {
+             //Make the bar disappear after URL is loaded, and changes string to Loading...
+            	gcApiLogin.setTitle("Loading...");
+            	gcApiLogin.setProgress(progress); //Make the bar disappear after URL is loaded
+
+            	if(!pdIsShow)
+            	{
+            		pd = ProgressDialog.show(gcApiLogin, "", 
+		                 "Loading....", true);
+            		pdIsShow=true;
+            	}
+            	
+            	
+             // Return the app name after finish loading
+                if(progress == 100)
+                {
+                	gcApiLogin.setTitle(R.string.app_name);
+                	pd.dismiss();
+                	pdIsShow=false;
+                }
+                	
+              }
+            });
+
+		
 		WebSettings settings = webView.getSettings();
 
 		settings.setPluginsEnabled(true);
@@ -77,7 +117,12 @@ public class GcApiLogin extends Activity {
 			// zwischen pos und pos2 sollte ein gültiges AccessToken sein!!!
 			String accessToken = html.substring(pos + search.length(), pos2);
 			Config.Set("GcAPI", accessToken);
-			MessageBox.Show("AccessToken erfolgreich erstellt!");
+			Config.AcceptChanges();
+//			MessageBox.Show("AccessToken erfolgreich erstellt! " +accessToken);
+			if(Settings.Me!=null)
+			{
+				Settings.Me.setGcApiKey(accessToken);
+			}
 			gcApiLogin.finish();
 		}
 	}

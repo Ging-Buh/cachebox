@@ -74,6 +74,9 @@ import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 public class Settings extends Activity implements ViewOptionsMenu,SelectedLangChangedEvent {
+	
+	public static Settings Me;
+	
 	private Context context;
 	private LinearLayout SettingsLayout;
 	private ScrollView SettingsScrollView;
@@ -162,7 +165,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
         
 		
 		context = this.getBaseContext();
-				
+		Me = this;		
 		SelectedLangChangedEventList.Add(this);
       
 		findViewsById();
@@ -704,7 +707,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	}
 	
 		
-	private void FillSettings()
+	public void FillSettings()
 	{
 		try
 		{
@@ -761,6 +764,15 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		{
 			Logger.Error("Settings.FillSettings()", "", e);
 		}
+		
+		
+	}
+	
+	
+	public void setGcApiKey(String key)
+	{
+		EditTextGC_API.setText(key);
+		EditTextGC_API.invalidate();
 	}
 	
 	private void SaveSettings()
@@ -835,7 +847,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	{
     		downSlider.ButtonShowStateChanged();
     	}
-		finish();
+    	MyFinish();
 	}	
 	
 	private void chkCompassLevelViewState()
@@ -991,13 +1003,19 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 
 	
 
+ 	private void MyFinish()
+ 	{
+ 		Me=null;
+ 		this.finish();
+ 	}
+ 	
 
 	@Override
 	public void OnShow() 
 	{
 		setButtonHeight();
 		FillSettings();
-		
+		Me=this;
 	}
 
 	@Override

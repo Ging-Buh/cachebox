@@ -1,20 +1,38 @@
 package de.droidcachebox.Views;
 
+import java.util.ArrayList;
+
+import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Events.CachListChangedEventList;
+import de.droidcachebox.DAO.CacheDAO;
+import de.droidcachebox.DAO.CategoryDAO;
+import de.droidcachebox.DAO.LogDAO;
+import de.droidcachebox.DAO.WaypointDAO;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Map.Descriptor;
+import de.droidcachebox.Map.Descriptor.PointD;
 
+import de.droidcachebox.Views.Forms.MessageBox;
+import de.droidcachebox.Views.Forms.MessageBoxButtons;
+import de.droidcachebox.Views.Forms.MessageBoxIcon;
 import de.droidcachebox.Views.Forms.NumerikInputBox;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Types.Cache;
+import CB_Core.Types.Category;
+import CB_Core.Types.Coordinate;
+import CB_Core.Types.GpxFilename;
+import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +46,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -66,7 +86,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	Bitmap logo = null;
 	
 	public static AboutView Me;
-	
+	private static ProgressDialog pd;
 	public AboutView(Context context, final LayoutInflater inflater) 
 	{
 		super(context);
@@ -89,14 +109,59 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		
 		
 		
-		
+        
+        
 		CachesFoundLabel.setOnClickListener(new OnClickListener() 
 		{
 			
 			@Override
 			public void onClick(View arg0) 
 			{
-				NumerikInputBox.Show(Global.Translations.Get("AdjustFinds"),Global.Translations.Get("TelMeFounds"),CB_Core.Config.GetInt("FoundOffset"), DialogListner);
+				MessageBox.Show(Global.Translations.Get("LoadFounds"), Global.Translations.Get("AdjustFinds"), MessageBoxButtons.YesNo,MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int button) 
+					{
+						// Behandle das ergebniss
+						switch (button)
+						{
+							case -1:
+								
+								Thread thread = new Thread()
+								  {
+								      @Override
+								      public void run() 
+								      {
+								    	  transFounds = GroundspeakAPI.GetCachesFound(Config.GetString("GcAPI"));
+								    	  onlineFoundsReadyHandler.sendMessage(onlineFoundsReadyHandler.obtainMessage(1));
+								      }
+
+								  };
+
+								  
+								  pd = ProgressDialog.show(main.mainActivity, "", 
+							                 "Search Online", true);
+								 
+								  thread.start();
+								
+								
+								
+								break;
+							case -2:
+								NumerikInputBox.Show(Global.Translations.Get("AdjustFinds"),Global.Translations.Get("TelMeFounds"),CB_Core.Config.GetInt("FoundOffset"), DialogListner);
+								break;
+							case -3:
+								
+								break;
+						}
+						
+						dialog.dismiss();
+					}
+					
+			    });
+
+				
+				
 			}
 		});
 		
@@ -156,10 +221,10 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 
 						break;
 					case -2: // cancel clicket
-						Toast.makeText(main.mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
+						
 						break;
 					case -3:
-						Toast.makeText(main.mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
+						
 						break;
 				}
 				
@@ -169,7 +234,32 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 			
 	    };
 	
-	
+	    
+	private int transFounds=-1;
+	private Handler onlineFoundsReadyHandler = new Handler() 
+	{
+		public void handleMessage(Message msg) 
+	    {
+			pd.dismiss();
+			
+			if(transFounds>-1)
+			{
+				String Text = Global.Translations.Get("FoundsSetTo");
+			Text = Text.replace("%s", String.valueOf(transFounds));
+			MessageBox.Show(Text, Global.Translations.Get("LoadFinds!"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
+			
+            Config.Set("FoundOffset", transFounds );
+            Config.AcceptChanges();
+            AboutView.Me.refreshText();
+			}
+			else
+			{
+				MessageBox.Show(Global.Translations.Get("LogInErrorLoadFinds"), "", MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
+			}
+			
+			
+	    }
+	};
 	
 	
 	private void findViewById()
