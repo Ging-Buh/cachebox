@@ -10,11 +10,11 @@
 
 		<LinearLayout android:layout_alignParentTop="true"
 			android:layout_width="match_parent" android:id="@+id/layoutTop"
-			android:layout_height="wrap_content" android:background="@drawable/hintergrund">
+			android:layout_height="wrap_content" >
 
 			<de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView
 				android:id="@+id/main_quick_button_list" android:layout_width="fill_parent"
-				android:layout_height="60dip" />
+				android:layout_height="0dip" />
 
 			<de.droidcachebox.Components.CacheNameView
 				android:id="@+id/main_cache_name_view" android:layout_width="fill_parent"
