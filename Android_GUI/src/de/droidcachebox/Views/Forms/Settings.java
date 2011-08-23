@@ -147,7 +147,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	private boolean ActionListChanged=false;
 	private CheckBox chkPremiumMember;
 	private Button getApiKey;
-	
+	private EditText EditDebugOverrideGcAuth;
 	
 	private Button[] ButtonList = new Button[]{ToggleLogInView,ToggleGPSView,ToggleMapView,ToggleMiscView,ToggleQuickView,ToggleDebugView} ;
 	private Button openToggleButton=null;
@@ -688,6 +688,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		ActionListAll = (Spinner)this.findViewById(R.id.settings_spinner_Action);
 		chkPremiumMember = (CheckBox)this.findViewById(R.id.settings_login_premium);
 		getApiKey = (Button)this.findViewById(R.id.button_get_api_key);
+		EditDebugOverrideGcAuth = (EditText)this.findViewById(R.id.settings_debugOverrideGCurl);
 	}
 	
 	private void setLang()
@@ -716,6 +717,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		EditTextGCVotePW.setText(SimpleCrypto.decrypt("DCB", Config.GetString("GcVotePassword")));
 		EditTextGCJoker.setText(Config.GetString("GcJoker"));
 		EditTextGC_API.setText(Config.GetString("GcAPI"));
+		EditDebugOverrideGcAuth.setText(Config.GetString("OverrideUrl"));
 		fillLangCombo();
 		checkBoxHTCCompass.setChecked(Config.GetBool("HtcCompass"));
 		EditCompassLevel.setText(String.valueOf(Config.GetInt("HtcLevel")));
@@ -808,6 +810,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
     	Config.Set("DebugShowMsg",chkDebugMsg.isChecked());
     	Config.Set("DebugShowMarker",chkDebugMarker.isChecked());
     	Config.Set("DebugShowLog",chkDebugLog.isChecked());
+    	Config.Set("OverrideUrl",EditDebugOverrideGcAuth.getEditableText().toString());
     	
     	Config.Set("SoundApproachDistance",(Integer) ApproachSound.getSelectedItem());
     	

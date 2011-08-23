@@ -6,6 +6,19 @@
   android:layout_width="match_parent"
   android:background="?attr/DropDownBackground">
    
+   
+   <TextView android:id="@+id/settings_textView5"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:text="override GC Auth url" >
+	</TextView>
+	<EditText android:layout_width="match_parent" android:text="EditText"
+		android:layout_height="wrap_content" android:id="@+id/settings_debugOverrideGCurl"
+		android:singleLine="true" 
+		>
+	</EditText>
+   
+   
+   
     <CheckBox 
 	    android:text="Show Debug Info Panel" 
 	    android:layout_width="match_parent" 
