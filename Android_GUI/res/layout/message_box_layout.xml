@@ -21,8 +21,16 @@
 		<ImageView android:layout_width="wrap_content" android:id="@+id/icon"
 			android:src="@drawable/icon" android:layout_height="wrap_content"></ImageView>
 
+		<ScrollView   
+       android:id="@+id/ScrollView01"  
+     android:layout_height="150px"   
+     android:layout_width="wrap_content">  
+
 		<TextView style="@style/DialogText" android:id="@+id/message"
 			android:padding="5dip" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+
+	</ScrollView>
+
 
 	</LinearLayout>
 

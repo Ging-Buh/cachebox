@@ -31,7 +31,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ImageView;
 
@@ -769,6 +771,21 @@ public class MessageBox extends android.app.Dialog {
             if (message != null) {
                 ((TextView) layout.findViewById(R.id.message)).setText(message);
                 ((TextView) layout.findViewById(R.id.message)).setTextSize((float) (Sizes.getScaledFontSize_small()));
+                
+                ((TextView) layout.findViewById(R.id.message)).measure(Sizes.getWindowWidth(), Sizes.getWindowHeight()-100);
+                int height = ((TextView) layout.findViewById(R.id.message)).getMeasuredHeight();
+                
+                if (height>Sizes.getWindowHeight() - (Sizes.getButtonHeight()*4))
+                {
+                	height=Sizes.getWindowHeight() - (Sizes.getButtonHeight()*4);
+                	 LayoutParams params = ((ScrollView) layout.findViewById(R.id.ScrollView01)).getLayoutParams();
+                     params.height=height;
+                    ((ScrollView) layout.findViewById(R.id.ScrollView01)).setLayoutParams(params);
+                }
+                  
+                
+               
+               
             } else if (contentView != null) {
                 // if no message set
                 // add the contentView to the dialog body

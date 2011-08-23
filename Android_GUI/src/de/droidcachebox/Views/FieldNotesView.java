@@ -15,6 +15,7 @@ import de.droidcachebox.main;
 import de.droidcachebox.Custom_Controls.downSlider;
 import de.droidcachebox.DAO.CacheDAO;
 import de.droidcachebox.DAO.CacheListDAO;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
@@ -46,6 +47,7 @@ import android.database.Cursor;
 import android.graphics.Path.FillType;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.OpenableColumns;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -158,42 +160,16 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 	
 	private void UploadFieldnotes()
     {
-/*        String name = Config.GetString("DatabasePath");
-        File file = new File(name);
-        name = file.getName().replace(".db3", "").replace(" ", "");
-        String dirFileName = Config.GetString("FieldNotesGarminPath");
-        file = new File(dirFileName);
-        String fileName = file.getName();
-        dirFileName = file.getParent();
-        String path = dirFileName +"/" + fileName;
 
-        if (FileIO.FileExists(path))
-        {
-            MessageBox.Show(Global.Translations.Get("uploadFieldNotes?"), 
+        MessageBox.Show(Global.Translations.Get("uploadFieldNotes?"), 
             		Global.Translations.Get("uploadFieldNotes"), 
             		MessageBoxButtons.YesNo, 
-            		MessageBoxIcon.Question, 
+            		MessageBoxIcon.GC_Live, 
             		UploadFieldnotesDialogListner);
-            
-        }
-        else
-        {
-        	MessageBox.Show(Global.Translations.Get("NoFindsLogged"), 
-        			Global.Translations.Get("thisNotWork"),
-        			MessageBoxButtons.OK,
-        			MessageBoxIcon.Information,null);
-        }
-*/
-		for (FieldNoteEntry fieldNote : lFieldNotes)
-		{
-	  		String accessToken = Config.GetString("GcAPI");
-	  		
-			if (CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(accessToken, fieldNote.gcCode, fieldNote.type, fieldNote.timestamp, fieldNote.comment) != 0)
-				MessageBox.Show("Error Upload:" + fieldNote.gcCode + "\n" + CB_Core.Api.GroundspeakAPI.LastAPIError);
-		}
-
+ 
     }
 	
+		
 	private final  DialogInterface.OnClickListener  UploadFieldnotesDialogListner = new  DialogInterface.OnClickListener() 
 	   { @Override public void onClick(DialogInterface dialog, int button) 
 			{
@@ -220,26 +196,27 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 		{
 			public void run() 
 			{
-				ProgresssChangedEventList.Call("Was tue ich hier eigentlich?","", 0);
+				ProgresssChangedEventList.Call("Upload","", 0);
 				
-				//Tue was zu tun ist
-				for(int i = 0; i < 100; i++)
-			    {
-						//Progress status Melden
-			        	ProgresssChangedEventList.Call("Thread Läuft" + String.valueOf(i), i);
-			        	
-			        	try 
-			        	{
-			        		if(ThreadCancel) // wenn im ProgressDialog Cancel gedrückt wurde.
-			        			break;
-			        		
-							Thread.sleep(50);
-						} 
-			        	catch (InterruptedException e) 
-						{
-							e.printStackTrace();
-						}
-			    }
+				
+				String accessToken = Config.GetString("GcAPI");
+				
+				int count=0;
+				int anzahl= lFieldNotes.size();
+				UploadMeldung="";
+				for (FieldNoteEntry fieldNote : lFieldNotes)
+		  		{
+					if(ThreadCancel) // wenn im ProgressDialog Cancel gedrückt wurde.
+	        			break;
+					//Progress status Melden
+		        	ProgresssChangedEventList.Call(fieldNote.CacheName, (100 * count)/anzahl);
+					
+		  	  		if (CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(accessToken, fieldNote.gcCode, fieldNote.type, fieldNote.timestamp, fieldNote.comment) != 0)
+		  	  		UploadMeldung += fieldNote.gcCode + "\n" + CB_Core.Api.GroundspeakAPI.LastAPIError + "\n";
+		  	  		count++;
+		  		}
+				
+				
 				if(!ThreadCancel)
 				{
 					ProgressDialog.Ready(); 				//Dem Progress Dialog melden, dass der Thread fertig ist!
@@ -260,17 +237,26 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 	    public void run() 
 	    {
 	    	ThreadCancel=true;
-	    	MessageBox.Show("Progress abgebrochen!");
+	    	MessageBox.Show("Upload canceld!");
 	    }
     };
+    
+    private String UploadMeldung="";
     
     final Handler ProgressHandler = new Handler();
 	final Runnable ProgressReady = new Runnable() 
     {
 	    public void run() 
 	    {
-	    	String Br = String.format("%n");
-	    	MessageBox.Show("Leider Funktioniert der Upload noch nicht."+Br+"Die Anzeige ist nur ein UI-Test!", "Schade", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+	    	if(!UploadMeldung.equals(""))
+	    	{
+	    		MessageBox.Show(UploadMeldung, Global.Translations.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+	    	}
+	    	else
+	    	{
+	    		MessageBox.Show("Upload ready", Global.Translations.Get("uploadFieldNotes"), MessageBoxIcon.GC_Live);
+	    	}
+	    	
 	    }
     };
     
