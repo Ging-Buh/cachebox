@@ -47,6 +47,7 @@ public enum Actions
 	LiveSearch,			//10
 	Filter,				//11
 	ScreenLock,			//12
+	AutoResort,			//13
 	
 	empty,;
 
@@ -112,6 +113,7 @@ public enum Actions
         	case 10:return Actions.LiveSearch;
         	case 11:return Actions.Filter;
         	case 12:return Actions.ScreenLock;
+        	case 13:return Actions.AutoResort;
         }
         return Actions.empty;
     }
@@ -132,7 +134,8 @@ public enum Actions
             case 9:return Global.BtnIcons[11]; //VoiceRec
             case 10:return Global.BtnIcons[12]; //Live Search
             case 11:return Global.BtnIcons[13]; //Filter
-            case 12:return Global.BtnIcons[14]; //Filter
+            case 12:return Global.BtnIcons[14]; //ScreenLock
+            case 13:return Global.autoResort? Global.BtnIcons[16] : Global.BtnIcons[15]; //AutoResort
         }
 		return null;
 	}
@@ -154,6 +157,7 @@ public enum Actions
             case 10:return Global.Translations.Get("Search");
             case 11:return Global.Translations.Get("filter");
             case 12:return Global.Translations.Get("screenlock");
+            case 13:return Global.Translations.Get("AutoResort");
         }
 		return "empty";
 	}

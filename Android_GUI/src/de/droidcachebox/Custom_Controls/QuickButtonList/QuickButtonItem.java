@@ -105,18 +105,36 @@ public class QuickButtonItem extends View
 	  @Override
 	    protected void onDraw(Canvas canvas) 
 	  {
-	        
+	       // Draw Button Mask 
 	       ActivityUtils.PutImageTargetHeight(canvas, Global.BtnIcons[1], 1, 1, height-2);
 	       
 	       //draw icon or name
-	       if(mButtonIcon!=null)
-	       {
-	    	   ActivityUtils.PutImageTargetHeight(canvas, mButtonIcon, 14, 12, height-24); 
+	       
+	       
+	       if(this.mAction.ordinal()== Actions.AutoResort.ordinal())
+	       {// Wenn die Action ID = AutoResort ist, muss erst der Zustand On/Off abgefragt werden
+	    	   if(Global.autoResort)
+	    	   {
+	    		   ActivityUtils.PutImageTargetHeight(canvas, Global.BtnIcons[15], 14, 12, height-24);
+	    	   }
+	    	   else
+	    	   {
+	    		   ActivityUtils.PutImageTargetHeight(canvas, Global.BtnIcons[16], 14, 12, height-24);
+	    	   }
 	       }
 	       else
 	       {
-	    	   
+	    	   if(mButtonIcon!=null)
+		       {
+		    	   ActivityUtils.PutImageTargetHeight(canvas, mButtonIcon, 14, 12, height-24); 
+		       }
+		       else
+		       {
+		    	   
+		       }
 	       }
+	       
+	       
 	  }
 
 	public int getActionId()

@@ -112,6 +112,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
+import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -237,6 +238,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		private ScreenLockTimer counter = null;
 		private boolean counterStopped = false;
 		
+		
+		private Vibrator vibrator;
 				
 	/*
 	 * Classes
@@ -311,7 +314,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        SelectedCacheEventList.Add(this);
 	        CachListChangedEventList.Add(this);
 	        
-	        
+	        vibrator=(Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
 
 	         
 	        mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
@@ -370,6 +374,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        	{
 	        		ActivityUtils.changeToTheme( mainActivity, ActivityUtils.THEME_NIGHT  );
 	        	}
+	        	// Initialisiere Icons neu.
+	        	 Global.InitIcons(this, Config.GetBool("nightMode"));
 	        }
 	        
 	        
@@ -1063,6 +1069,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) 
 		{
+    		
+    		// give feadback
+    		vibrator.vibrate(50);
+    		
 			QuickButtonItem clicedItem = Global.QuickButtonList.get(arg2);
 			
 			switch (clicedItem.getActionId())
@@ -1080,6 +1090,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        case 10:MessageBox.Show("SearchAPI muss noch in eine eigene Methode refactoriert werden, damit die Suche auch von hier aus ausgelöst werden kann!");break;
 	        case 11:showView(101);break;
 	        case 12:startScreenLock(true);break;
+	        case 13:switchAutoResort(); QuickButtonList.invalidate();break;
 	        
 	        }
 		}

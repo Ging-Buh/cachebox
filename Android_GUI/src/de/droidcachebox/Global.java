@@ -31,7 +31,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 391;
+    public static final int CurrentRevision = 392;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1016;
@@ -311,9 +311,7 @@ public class Global{
     public static void InitIcons(Context context, Boolean N)
     {
     	Resources res = context.getResources();
-    	if (NewMapIcons == null)
-    	{
-    		
+    	    		
 	    	 NewMapIcons = new ArrayList<ArrayList<Drawable>>();
 	    	 NewMapOverlay = new ArrayList<ArrayList<Drawable>>();
 	    	    
@@ -384,10 +382,9 @@ public class Global{
 	        NewMapOverlay.get(2).add(res.getDrawable(R.drawable.map_20x20_selected));
 	        NewMapOverlay.get(2).add(res.getDrawable(R.drawable.map_20x20_shaddowrect_deact));
 	        NewMapOverlay.get(2).add(res.getDrawable(R.drawable.map_20x20_selected_deact));
-    	}
+    	
     
-    	if (Icons == null)
-    	{
+    	
 	        Icons = new Drawable[] { 
 	        		res.getDrawable(N? R.drawable.night_tb : R.drawable.day_tb ),
 	        		res.getDrawable(R.drawable.addwaypoint),
@@ -432,19 +429,15 @@ public class Global{
 	        		res.getDrawable(N? R.drawable.night_slider_down : R.drawable.day_slider_down), // 40
 	        		res.getDrawable(N? R.drawable.night_slider_up_down : R.drawable.day_slider_up_down), // 41
 	        };
-    	}
+    	
         
-    	if (Arrows == null)
-    	{
+    	
 	        Arrows = new Drawable[] { 
 	        		res.getDrawable(R.drawable.arrow),
 	        		res.getDrawable(R.drawable.arrow_small),
 	        };        		
 
-    	}
-
-    	if (SmallStarIcons == null)
-    	{
+    	
 	        SmallStarIcons = new Drawable[] { 
 	        		res.getDrawable(R.drawable.smallstars_0),
 	        		res.getDrawable(R.drawable.smallstars_0_5),
@@ -457,10 +450,9 @@ public class Global{
 	        		res.getDrawable(R.drawable.smallstars_4),
 	        		res.getDrawable(R.drawable.smallstars_4_5),
 	        		res.getDrawable(R.drawable.smallstars_5) };
-    	}
+    	
 
-    	if (StarIcons == null)
-    	{
+    	
 	        StarIcons = new Drawable[] { 
 	        		res.getDrawable(R.drawable.stars0),
 	        		res.getDrawable(R.drawable.stars0_5),
@@ -473,10 +465,9 @@ public class Global{
 	        		res.getDrawable(R.drawable.stars4),
 	        		res.getDrawable(R.drawable.stars4_5),
 	        		res.getDrawable(R.drawable.stars5) };
-    	}
+    	
 
-    	if (SizeIcons == null)
-    	{
+    	
 	        SizeIcons = new Drawable[] 
 	                { 
 	        		res.getDrawable(R.drawable.other),
@@ -485,21 +476,19 @@ public class Global{
 	        		res.getDrawable(R.drawable.regular),
 	        		res.getDrawable(R.drawable.large)
 	        		};
-    	}
+    	
        
-    	if (BatteryIcons == null)
-    	{
+    	
 	        BatteryIcons = new Drawable[] { 
 	        		res.getDrawable(R.drawable.bat0),
 	        		res.getDrawable(R.drawable.bat1),
 	        		res.getDrawable(R.drawable.bat2),
 	        		res.getDrawable(R.drawable.bat3),
 	        };
-    	}
+    	
         		
 
-    	if (CacheIconsBig == null)
-    	{
+    	
 	        CacheIconsBig = new Drawable[] { 
 	        		res.getDrawable(R.drawable.big_0),
 	        		res.getDrawable(R.drawable.big_1),
@@ -522,11 +511,10 @@ public class Global{
 	        		res.getDrawable(R.drawable.big_18),
 	        		res.getDrawable(R.drawable.big_19),
 	        };
-    	}
+    	
         
 
-    	if (LogIcons == null)
-    	{
+    	
 	        LogIcons = new Drawable[] { 
 	        		res.getDrawable(R.drawable.log0),
 	        		res.getDrawable(R.drawable.log1),
@@ -544,19 +532,17 @@ public class Global{
 	        		res.getDrawable(R.drawable.log13),
 	
 	        };
-    	}
+    	
 
-    	if (ChkIcons == null)
-    	{
+    	
 	        ChkIcons = new Drawable[] 
 	                { 
 		        		res.getDrawable(N? R.drawable.night_btn_check_off : R.drawable.day_btn_check_off  ),
 		        		res.getDrawable(N? R.drawable.night_btn_check_on : R.drawable.day_btn_check_on  ),
 	        		};
-    	}
+    	
 
-    	if (BtnIcons == null)
-    	{
+    	
 	        BtnIcons = new Drawable[] 
 	                                { 
 	                	        		res.getDrawable(N? R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal ),
@@ -566,7 +552,7 @@ public class Global{
 	                	        		res.getDrawable(R.drawable.list_icon), //LogView braucht noch ein Icon
 	                	        		res.getDrawable(R.drawable.map),
 	                	        		res.getDrawable(R.drawable.compass),
-	                	        		res.getDrawable(R.drawable.cache_list_icon), //CacheListView braucht noch ein Icon
+	                	        		res.getDrawable(R.drawable.cache_list_icon), 
 	                	        		res.getDrawable(R.drawable.list_icon), //TrackListView braucht noch ein Icon
 	                	        		res.getDrawable(R.drawable.log10),
 	                	        		res.getDrawable(R.drawable.video_icon),
@@ -574,8 +560,10 @@ public class Global{
 	                	        		res.getDrawable(R.drawable.star), //Live search braucht noch ein Icon
 	                	        		res.getDrawable(R.drawable.filter),
 	                	        		res.getDrawable(R.drawable.lock_icon),
+	                	        		res.getDrawable(R.drawable.auto_sort_on_icon), //15
+	                	        		res.getDrawable(R.drawable.auto_sort_off_icon), //16
 	                        		};
-    	}
+    	
         
     }
 
