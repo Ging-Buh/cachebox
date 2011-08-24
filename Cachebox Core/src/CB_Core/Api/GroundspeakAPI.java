@@ -33,9 +33,14 @@ import CB_Core.Types.Waypoint;
 
 public class GroundspeakAPI {
 	public static String LastAPIError = "";
-	public static int CachesLeft;
-	public static int CurrentCacheCount;
-	public static int MaxCacheCount;
+	public static boolean CacheStatusValid = false;
+	public static int CachesLeft = -1;
+	public static int CurrentCacheCount = -1;
+	public static int MaxCacheCount = -1;
+	public static boolean CacheStatusLiteValid = false;
+	public static int CachesLeftLite = -1;
+	public static int CurrentCacheCountLite = -1;
+	public static int MaxCacheCountLite = -1;
 
 	// 0: Guest??? 1: Basic 2: Charter??? 3: Premium
 	private static int membershipType = -1;
@@ -355,10 +360,14 @@ public class GroundspeakAPI {
 		String result = "";
 
 		byte apiStatus = 0;
-		if (IsPremiumMember(accessToken))
+		boolean isLite = true;
+		if (IsPremiumMember(accessToken)) {
+			isLite = false;
 			apiStatus = 2;
-		else
+		} else {
+			isLite = true;
 			apiStatus = 1;
+		}
 
 		try {
 			HttpClient httpclient = new DefaultHttpClient();
@@ -367,10 +376,10 @@ public class GroundspeakAPI {
 			String requestString = "";
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
-			if (IsPremiumMember(accessToken))
-				requestString += "\"IsLite\":false,"; // full for Premium
-			else
+			if (isLite)
 				requestString += "\"IsLite\":true,"; // only lite
+			else
+				requestString += "\"IsLite\":false,"; // full for Premium
 			requestString += "\"StartIndex\":0,";
 			requestString += "\"MaxPerPage\":" + String.valueOf(number) + ",";
 			requestString += "\"PointRadius\":{";
@@ -555,10 +564,7 @@ public class GroundspeakAPI {
 						}
 
 					}
-					JSONObject cacheLimits = json.getJSONObject("CacheLimits");
-					CachesLeft = cacheLimits.getInt("CachesLeft");
-					CurrentCacheCount = cacheLimits.getInt("CurrentCacheCount");
-					MaxCacheCount = cacheLimits.getInt("MaxCacheCount");
+					checkCacheStatus(json, isLite);
 				} else {
 					result = "StatusCode = " + status.getInt("StatusCode")
 							+ "\n";
@@ -577,6 +583,125 @@ public class GroundspeakAPI {
 		}
 
 		return result;
+	}
+
+	// returns Status Code (0 -> OK)
+	public static int GetCacheLimits(String accessToken) {
+		String result = "";
+		LastAPIError = "";
+		// zum Abfragen der CacheLimits einfach nach einem Cache suchen, der
+		// nicht existiert.
+		// dadurch wird der Zähler nicht erhöht, die Limits aber zurückgegeben.
+		try {
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httppost = new HttpPost(
+					"https://api.groundspeak.com/LiveV5/Geocaching.svc/SearchForGeocaches?format=json");
+
+			JSONObject request = new JSONObject();
+			request.put("AccessToken", accessToken);
+			request.put("IsLight", false);
+			request.put("StartIndex", 0);
+			request.put("MaxPerPage", 1);
+			request.put("GeocacheLogCount", 0);
+			request.put("TrackableLogCount", 0);
+			JSONObject requestcc = new JSONObject();
+			JSONArray requesta = new JSONArray();
+			requesta.put("GCZZZZZ");
+			requestcc.put("CacheCodes", requesta);
+			request.put("CacheCode", requestcc);
+
+			String requestString = request.toString();
+
+			httppost.setEntity(new ByteArrayEntity(requestString
+					.getBytes("UTF8")));
+			httppost.setHeader("Accept", "application/json");
+			httppost.setHeader("Content-type", "application/json");
+
+			// Execute HTTP Post Request
+			HttpResponse response = httpclient.execute(httppost);
+
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					response.getEntity().getContent()));
+			String line = "";
+			while ((line = rd.readLine()) != null) {
+				result += line + "\n";
+			}
+
+			// Parse JSON Result
+			try {
+				JSONTokener tokener = new JSONTokener(result);
+				JSONObject json = (JSONObject) tokener.nextValue();
+				int status = checkStatus(json);
+				if (status == 0) {
+					status = checkCacheStatus(json, false);
+					return status;
+				} else {
+					// Fehler: Fehlernummer zurück, Fehlerbeschreibung ist in
+					// LastApiError
+					return status;
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println(e.getMessage());
+				LastAPIError = "API Error: " + e.getMessage();
+				return -2;
+			}
+
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+			LastAPIError = "API Error: " + ex.getMessage();
+			return -1;
+		}
+	}
+
+	// liest den Status aus dem gegebenen json Object aus.
+	private static int checkStatus(JSONObject json) {
+		LastAPIError = "";
+		try {
+			JSONObject status = json.getJSONObject("Status");
+			if (status.getInt("StatusCode") == 0) {
+				return 0;
+			} else {
+				LastAPIError = "StatusCode = " + status.getInt("StatusCode")
+						+ "\n";
+				LastAPIError += status.getString("StatusMessage") + "\n";
+				LastAPIError += status.getString("ExceptionDetails");
+				return status.getInt("StatusCode");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			LastAPIError = "API Error: " + e.getMessage();
+			return -3;
+		}
+	}
+
+	// liest den CacheStatus aus dem gegebenen json Object aus.
+	// darin ist gespeichert, wie viele Full Caches schon geladen wurden und wie
+	// viele noch frei sind
+	private static int checkCacheStatus(JSONObject json, boolean isLite) {
+		LastAPIError = "";
+		try {
+			JSONObject cacheLimits = json.getJSONObject("CacheLimits");
+			if (isLite) {
+				CachesLeftLite = cacheLimits.getInt("CachesLeft");
+				CurrentCacheCountLite = cacheLimits.getInt("CurrentCacheCount");
+				MaxCacheCountLite = cacheLimits.getInt("MaxCacheCount");
+				CacheStatusLiteValid = true;
+			} else {
+				CachesLeft = cacheLimits.getInt("CachesLeft");
+				CurrentCacheCount = cacheLimits.getInt("CurrentCacheCount");
+				MaxCacheCount = cacheLimits.getInt("MaxCacheCount");
+				CacheStatusValid = true;
+			}
+			return 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			LastAPIError = "API Error: " + e.getMessage();
+			return -4;
+		}
 	}
 
 	private static int getCacheSize(int containerTypeId) {

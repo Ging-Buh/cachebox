@@ -128,7 +128,7 @@ public class Config {
 					     }
 
 					     String key = line.substring(0, idx);
-					     String value = line.substring(idx + 1).replace("//","/" );
+					     String value = line.substring(idx + 1)/*.replace("//","/" )*/;
 					         keyLookup.put(key, value);
 					 }
 					
