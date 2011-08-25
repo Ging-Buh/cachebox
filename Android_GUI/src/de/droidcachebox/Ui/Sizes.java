@@ -49,6 +49,7 @@ public class Sizes
     private static Rect CacheListDrawRec;
     private static int scaledFontSize_big;
     private static int ScaledFontSize_small;
+    private static int StrengthHeightMultipler;
 	
 	public static void initial(boolean land , Activity context)
 	{
@@ -78,6 +79,7 @@ public class Sizes
 		
 		CacheListItemSize = new Size(windowWidth, (int) (scaledFontSize_normal * 5));
 		CacheListDrawRec = CacheListItemSize.getBounds(5, 2,-5,-2);
+		StrengthHeightMultipler=windowHeight/400;
 	}
 	
 	public static int getWindowHeight()
@@ -175,7 +177,10 @@ public class Sizes
 		return iconSize + CornerSize ;
 	}
 	
-	
+	public static int getStrengthHeight()
+	{
+		return StrengthHeightMultipler;
+	}
 	
 	
 	

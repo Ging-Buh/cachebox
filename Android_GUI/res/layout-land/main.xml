@@ -78,5 +78,12 @@
 	<de.droidcachebox.Custom_Controls.downSlider
 		android:id="@+id/downSlider" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" />
-
+		
+	<include android:layout_height="wrap_content" android:id="@+id/main_strength_control"
+		layout="@layout/strength_control" android:layout_width="wrap_content"
+		android:layout_gravity="bottom|right" android:layout_marginRight="10dip"
+		android:layout_marginBottom="85dip" android:visibility="invisible"></include>
+		
+		<!-- das strength_control ist invisible, weil es im main plaziert ist aber nur im sleider gezeichnet wird.  -->
+		
 </RelativeLayout>

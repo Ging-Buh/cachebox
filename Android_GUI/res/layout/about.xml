@@ -16,6 +16,16 @@
 	<TextView android:text="GPS State" android:id="@+id/about_GPS"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:layout_gravity="bottom|left" android:layout_marginLeft="110dip" android:layout_marginBottom="85dip"></TextView>
+		
+	
+	<include 
+				 android:layout_height="wrap_content" 
+				 android:id="@+id/strength_control" 
+				 layout="@layout/strength_control" 
+				 android:layout_width="wrap_content" 
+				 android:layout_gravity="bottom|right" android:layout_marginRight="10dip" android:layout_marginBottom="85dip"
+				 ></include>	
+	
 	
 	<TextView android:text="Accuracy:" android:id="@+id/about_lblAccuracy"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"

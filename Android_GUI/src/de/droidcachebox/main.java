@@ -44,10 +44,14 @@ import de.droidcachebox.DAO.CategoryDAO;
 import de.droidcachebox.DAO.LogDAO;
 import de.droidcachebox.DAO.WaypointDAO;
 import de.droidcachebox.Enums.Actions;
+import de.droidcachebox.Events.GpsStateChangeEvent;
+import de.droidcachebox.Events.GpsStateChangeEventList;
 import de.droidcachebox.Events.PositionEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Locator.GPS;
+import de.droidcachebox.Locator.GPS.GpsStatusListener;
 import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Map.Layer;
@@ -136,7 +140,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.location.GpsStatus;
 
-public class main extends Activity implements SelectedCacheEvent,LocationListener,CB_Core.Events.CacheListChangedEvent, GpsStatus.NmeaListener, ILog 
+public class main extends Activity implements SelectedCacheEvent,LocationListener,CB_Core.Events.CacheListChangedEvent, GpsStatus.NmeaListener, ILog, GpsStateChangeEvent 
 {
 	/*
 	 * private static member
@@ -158,6 +162,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		private static AboutView aboutView = null;				// ID 11
 		private static JokerView jokerView = null;				// ID 12
 	    private static TrackListView tracklistView= null; 		// ID 13
+	    
+	    public static LinearLayout strengthLayout;
+	    
 	
 		// Media
 	    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
@@ -222,7 +229,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		// Powermanager
 	    protected PowerManager.WakeLock mWakeLock;
 	    // GPS
-		public LocationManager locationManager;
+		public static LocationManager locationManager;
 		// Compass
 	    private SensorManager mSensorManager;
 	    private Sensor mSensor;
@@ -313,6 +320,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        // add Event Handler
 	        SelectedCacheEventList.Add(this);
 	        CachListChangedEventList.Add(this);
+	        GpsStateChangeEventList.Add(this);
 	        
 	        vibrator=(Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -1118,6 +1126,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	
     	cacheNameView =(CacheNameView)this.findViewById(R.id.main_cache_name_view);
     	QuickButtonList = (HorizontalListView)this.findViewById(R.id.main_quick_button_list);
+    	strengthLayout = (LinearLayout)findViewById(R.id.main_strength_control);
     }
 	    
 	private void initialViews() 
@@ -1189,11 +1198,33 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		criteria.setPowerRequirement(Criteria.POWER_LOW);
 
 		Global.Locator = new Locator();
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, this);
+//		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
+//		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, this);
+		
+		/*
+		 * Longri: 
+		 * Ich habe die Zeiten und Distanzen der Location Updates angepasst.
+		 * 
+		 * Der Network Provider hat eine schlechte genauigkeit, darher reich es wenn er alle 10sec
+		 * einen wert liefert, wen der alte um 500m abweicht.
+		 * 
+		 * Beim GPS Provider habe ich die aktualiesierungs Zeit verkürzt, damit bei deaktiviertem Hardware
+		 * Kompass aber die Werte trotzdem noch in einem gesunden Verhältnis zwichen Performance und Stromverbrauch,
+		 * geliefert werden.
+		 * 
+		 * Andere apps haben hier 0.
+		 */
+		
+		
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, this);
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 500, this);
+		
 		locationManager.addNmeaListener(this);
-	}
+		locationManager.addGpsStatusListener(new GPS.GpsStatusListener(locationManager));
 
+	}
+	
+	
 	private void initialMapView() 
 	{
 		if (mapView == null)
@@ -2057,8 +2088,25 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		       });  
 		  AlertDialog alert = builder.create();  
 		  alert.show();  
-		  }  
+		  }
 
+	
+	 
+	 
+	 
+	 @Override
+		public void GpsStateChanged() 
+		{
+		 setSatStrength();		 
+		}
+		
+		
+		private static View[] balken = null;
+		
+		public static void setSatStrength()
+		{
+			de.droidcachebox.Locator.GPS.setSatStrength(strengthLayout, balken);
+		}		
 	
 
 }

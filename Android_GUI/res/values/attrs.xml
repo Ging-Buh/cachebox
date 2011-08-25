@@ -21,6 +21,7 @@
 		<attr name="LinkLabelColor" format="reference|color" />
 		<attr name="MsgBoxBack" format="reference|color" />
 		<attr name="TitleBarBackColor" format="reference|color" />
+		<attr name="DisableColor" format="reference|color" />
 	</declare-styleable>
 	
 	

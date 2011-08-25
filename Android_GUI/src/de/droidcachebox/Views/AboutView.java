@@ -12,14 +12,18 @@ import de.droidcachebox.DAO.CacheDAO;
 import de.droidcachebox.DAO.CategoryDAO;
 import de.droidcachebox.DAO.LogDAO;
 import de.droidcachebox.DAO.WaypointDAO;
+import de.droidcachebox.Events.GpsStateChangeEvent;
+import de.droidcachebox.Events.GpsStateChangeEventList;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Locator.GpsStrength;
 import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Map.Descriptor.PointD;
 
+import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;
@@ -57,12 +61,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent, PositionEvent {
+public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent, PositionEvent ,GpsStateChangeEvent{
 
 	Context context;
 	Cache aktCache;
@@ -85,6 +90,8 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	Bitmap bitmap = null;
 	Bitmap logo = null;
 	
+	public static LinearLayout strengthLayout;
+	
 	public static AboutView Me;
 	private static ProgressDialog pd;
 	public AboutView(Context context, final LayoutInflater inflater) 
@@ -106,7 +113,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		 // add Event Handler
         SelectedCacheEventList.Add(this);
         PositionEventList.Add(this);
-		
+		GpsStateChangeEventList.Add(this);
 		
 		
         
@@ -279,7 +286,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		lblCurrent=(TextView)findViewById(R.id.about_lblCurrent);
 		Current=(TextView)findViewById(R.id.about_Current);
 		
-		
+		strengthLayout = (LinearLayout)findViewById(R.id.strength_control);
 		
 		//set LinkLable Color
 		CachesFoundLabel.setTextColor(Global.getColor(R.attr.LinkLabelColor));
@@ -350,12 +357,15 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	public void OnShow() 
 	{
 		LoadImages();
+		
+		setSatStrength();
 	}
 
 	@Override
 	public void OnHide() 
 	{
 		ReleaseImages();
+		
 	}
 
 	@Override
@@ -397,7 +407,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	@Override
 	public void PositionChanged(Location location) 
 	{
-		 if ((Global.Locator.getLocation() != null) && (Global.Locator.getLocation().hasAccuracy()))
+		/* if ((Global.Locator.getLocation() != null) && (Global.Locator.getLocation().hasAccuracy()))
 	        {
 	        	int radius = (int) Global.Locator.getLocation().getAccuracy();
 	        	Accuracy.setText("+/- " + String.valueOf(radius) + "m (" + Global.Locator.ProviderString()+")");
@@ -416,24 +426,9 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
          {
              GPS.setText(Global.Translations.Get("not_detected"));
              return;
-         }
+         }*/
 
-		 
-		 //TODO add this if the Locator is correct implemented
-		 /*if (Global.Locator.IsGpsResponding())
-         {
-             if (Global.Locator.Position.Valid)
-             {
-                 //lblGps.setText("OK";
-                 lblGPS.setText(Global.Translations.Get("sats_nr") + " " + Global.Locator.NumSatellites + " " + Global.Translations.Get("Hdop") + " " + Global.Locator.HDOP.ToString("F1", CultureInfo.InvariantCulture) + " " + Global.Translations.Get("alt") + " " + Global.Locator.Position.Elevation.ToString("0"));
-                 labelCoordinatesCurrent.Text = Global.FormatLatitudeDM(Global.Locator.Position.Latitude) + " " + Global.FormatLongitudeDM(Global.Locator.Position.Longitude);
 
-             }
-             else
-                 lblGPS.setText(Global.Translations.Get("waiting_for_fix"));
-         }
-         else
-             lblGPS.setText(Global.Translations.Get("not_responding"));*/
 				 
 	}
 
@@ -467,6 +462,45 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 			logo.recycle();
 			logo = null;
 		}
+	}
+
+	@Override
+	public void GpsStateChanged() 
+	{
+		if ((Global.Locator.getLocation() != null) && (Global.Locator.getLocation().hasAccuracy()))
+        {
+        	int radius = (int) Global.Locator.getLocation().getAccuracy();
+        	Accuracy.setText("+/- " + String.valueOf(radius) + "m (" + Global.Locator.ProviderString()+")");
+        }
+	 else
+	 {
+		 Accuracy.setText("");
+	 }
+	 if (Global.Locator.getLocation() != null)
+	 {
+		 Current.setText(Global.FormatLatitudeDM(Global.Locator.getLocation().getLatitude()) + " " + Global.FormatLongitudeDM(Global.Locator.getLocation().getLongitude()));
+		 GPS.setText(de.droidcachebox.Locator.GPS.getSatAndFix() + "   " + Global.Translations.Get("alt") + " " + Global.Locator.getAltString());
+	 }
+	 
+	 if (Global.Locator == null)
+     {
+         GPS.setText(Global.Translations.Get("not_detected"));
+         return;
+     }
+		
+	 
+	 setSatStrength();
+	 
+	}
+	
+	
+	private static View[] balken = null;
+	
+	public static void setSatStrength()
+	{
+		
+		de.droidcachebox.Locator.GPS.setSatStrength(strengthLayout, balken);
+		
 	}
 	
 }

@@ -14,8 +14,7 @@
 
 			<ImageButton android:layout_height="match_parent"
 				android:layout_width="wrap_content" android:layout_weight="1"
-				android:id="@+id/buttonDB"
-				android:background="@drawable/db_button_image_selector"
+				android:id="@+id/buttonDB" android:background="@drawable/db_button_image_selector"
 				android:layout_marginTop="2dip">
 			</ImageButton>
 			<ImageButton android:layout_width="wrap_content"
@@ -44,18 +43,18 @@
 			android:layout_below="@+id/layoutTop" android:layout_width="match_parent"
 			android:id="@+id/layoutContent" android:alwaysDrawnWithCache="true">
 		</FrameLayout>
-		<LinearLayout android:layout_alignParentTop="true" android:orientation="vertical"
-			android:layout_width="match_parent" android:id="@+id/layoutTop"
-			android:layout_height="wrap_content" >
-			
-				<de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView
+		<LinearLayout android:layout_alignParentTop="true"
+			android:orientation="vertical" android:layout_width="match_parent"
+			android:id="@+id/layoutTop" android:layout_height="wrap_content">
+
+			<de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView
 				android:id="@+id/main_quick_button_list" android:layout_width="fill_parent"
 				android:layout_height="60dip" />
-		
-				<de.droidcachebox.Components.CacheNameView
+
+			<de.droidcachebox.Components.CacheNameView
 				android:id="@+id/main_cache_name_view" android:layout_width="fill_parent"
 				android:layout_height="32dip" />
-			
+
 		</LinearLayout>
 	</RelativeLayout>
 
@@ -76,5 +75,12 @@
 	<de.droidcachebox.Custom_Controls.downSlider
 		android:id="@+id/downSlider" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" />
+
+	<include android:layout_height="wrap_content" android:id="@+id/main_strength_control"
+		layout="@layout/strength_control" android:layout_width="wrap_content"
+		android:layout_gravity="bottom|right" android:layout_marginRight="10dip"
+		android:layout_marginBottom="85dip" android:visibility="invisible"></include>
+		
+		<!-- das strength_control ist invisible, weil es im main plaziert ist aber nur im sleider gezeichnet wird.  -->
 
 </RelativeLayout>

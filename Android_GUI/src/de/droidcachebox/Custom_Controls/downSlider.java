@@ -17,6 +17,8 @@
 package de.droidcachebox.Custom_Controls;
 
 
+import java.util.Iterator;
+
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
@@ -24,8 +26,12 @@ import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Components.CacheDraw.DrawStyle;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView;
+import de.droidcachebox.Events.GpsStateChangeEvent;
+import de.droidcachebox.Events.GpsStateChangeEventList;
+import de.droidcachebox.Locator.GPS;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
+import de.droidcachebox.Views.AboutView;
 import CB_Core.Config;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
@@ -33,11 +39,14 @@ import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.location.GpsSatellite;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Handler;
@@ -49,10 +58,11 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
 
-public final class downSlider extends View implements SelectedCacheEvent 
+public final class downSlider extends View implements SelectedCacheEvent, GpsStateChangeEvent 
 {
 
 	public downSlider(Context context) 
@@ -70,8 +80,11 @@ public final class downSlider extends View implements SelectedCacheEvent
 		this.setOnTouchListener(myTouchListner);
 				
 		Me=this;
+		GpsStateChangeEventList.Add(this);
+		
 	}
 
+	
 	public downSlider(Context context, AttributeSet attrs, int defStyle) 
 	{
 		super(context, attrs, defStyle);
@@ -96,6 +109,7 @@ public final class downSlider extends View implements SelectedCacheEvent
 	private int GPSInfoHeight=0;	
 	private int QuickButtonHeight;
 	private int QuickButtonMaxHeight;
+	
 	
 	private static downSlider Me;
 	
@@ -364,15 +378,32 @@ public final class downSlider extends View implements SelectedCacheEvent
 	{
 		if(GPSInfoHeight==0)
 				return false;
-		 
-		 
-		 int LineColor = Global.getColor(R.attr.ListSeparator);
+		
+		
+		int LineColor = Global.getColor(R.attr.ListSeparator);
 		 Rect DrawingRec = new Rect(5, 5, width-5, GPSInfoHeight-5);
 		 ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, Global.getColor(R.attr.ListBackground));
+		
+		
+		 main.setSatStrength();
+		 
+		
+		Bitmap b = Bitmap.createBitmap( main.strengthLayout.getMeasuredWidth(), main.strengthLayout.getMeasuredHeight(), Bitmap.Config.ARGB_8888);                
+	    Canvas c = new Canvas(b);
+	   // AboutView.strengthLayout.layout(0, 0, AboutView.strengthLayout.getMeasuredWidth(), AboutView.strengthLayout.getMeasuredHeight());
+	    main.strengthLayout.draw(c);
+
+	    
+	    int left= width-b.getWidth()-22;
+		int top = GPSInfoHeight-b.getHeight()-10;
+	    
+		canvas.drawBitmap(b, left, top, null);
+		 
+		 
   
   
-		 int left= 15;
-		 int top = LineSep *2;
+		 left= 15;
+		 top = LineSep *2;
 		
 		 int iconWidth = 0;
 		 // draw icon
@@ -445,10 +476,12 @@ public final class downSlider extends View implements SelectedCacheEvent
 			if(!isVisible)
 				startUpdateTimer();
 			isVisible=true;
+			
 		}
 		else
 		{
 			isVisible=false;
+			
 		}
 		
 		
@@ -620,8 +653,9 @@ public final class downSlider extends View implements SelectedCacheEvent
 		if(this.width==0)return;
 		
 		
+//		mSats = String.valueOf(location.getExtras().getInt("satellites"));
+		mSats = GPS.getSatAndFix();
 		
-		mSats = String.valueOf(location.getExtras().getInt("satellites"));
 		mAccuracy = String.valueOf((int)location.getAccuracy());
 		mAlt = Global.Locator.getAltString();
 		mLatitude = Global.FormatLatitudeDM(location.getLatitude());
@@ -653,7 +687,6 @@ public final class downSlider extends View implements SelectedCacheEvent
 		
 		this.invalidate();
 	}
-	
 	
 	
 	private boolean AnimationIsRunning=false;
@@ -771,33 +804,15 @@ public final class downSlider extends View implements SelectedCacheEvent
 		    return true;
 		  }
 		}
-	
-	/*
-	 * Wollte eigentlich mit dieser Funktion die Anzahl der Satellieten und deren Signalstärke
-	 * in einem BalkenDiagramm darstellen. Mangels Funktions Umfang meines HD2 muss ich das auf später
-	 * verschieben, bis ich ein richtiges Android Gerät habe.
-	 * 
-	 * Longri
-	 */
-	
-	/*
-	private int mNumSatellites;
-	private static String satellites[] = new String[20];
-	
-	private void getAllSatellites() 
-	{
-		final GpsStatus gps_status = ((main) main.mainActivity).locationManager.getGpsStatus(null);
-		
-			final Iterator<GpsSatellite> sats = gps_status.getSatellites().iterator();
-			this.mNumSatellites = 0;
-			while (sats.hasNext()) 
-			{
-				GpsSatellite temp = sats.next();
-				satellites[this.mNumSatellites]=Float.toString(temp.getSnr());
-				this.mNumSatellites++;
-			}
-	}*/
 
+	
+	
+	@Override
+	public void GpsStateChanged() 
+	{
+		this.invalidate();
+		
+	}
 	
 	
 }
