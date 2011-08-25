@@ -79,7 +79,7 @@ public class Sizes
 		
 		CacheListItemSize = new Size(windowWidth, (int) (scaledFontSize_normal * 5));
 		CacheListDrawRec = CacheListItemSize.getBounds(5, 2,-5,-2);
-		StrengthHeightMultipler=windowHeight/400;
+		StrengthHeightMultipler=windowHeight/600;
 	}
 	
 	public static int getWindowHeight()

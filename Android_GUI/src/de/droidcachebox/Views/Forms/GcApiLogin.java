@@ -12,11 +12,13 @@ import android.view.ViewParent;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
+import android.app.ProgressDialog;
+import android.graphics.Bitmap;
 
 public class GcApiLogin extends Activity {
 	private static GcApiLogin gcApiLogin;
-
+	private static ProgressDialog pd;
+	private static boolean pdIsShow=false;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -39,6 +41,15 @@ public class GcApiLogin extends Activity {
 			finish();
 		}		
 		
+		
+		if(!pdIsShow)
+    	{
+    		pd = ProgressDialog.show(gcApiLogin, "", 
+                 "Loading....", true);
+    		pdIsShow=true;
+    	}
+		
+		
 		View titleView = getWindow().findViewById(android.R.id.title);
 		if (titleView != null) {
 		  ViewParent parent = titleView.getParent();
@@ -51,14 +62,40 @@ public class GcApiLogin extends Activity {
 		final WebView webView = (WebView) this.findViewById(R.id.gal_WebView);
 
 		webView.setWebViewClient(new WebViewClient() {
+			
+			@Override
+			public void onPageStarted(WebView view, String url, Bitmap favicon)
+			{
+				gcApiLogin.setTitle("Loading...");
+            	
+            	if(!pdIsShow)
+            	{
+            		pd = ProgressDialog.show(gcApiLogin, "", 
+		                 "Loading....", true);
+            		pdIsShow=true;
+            	}
+            	
+            	super.onPageStarted( view,  url,  favicon);
+			}
+			
+			
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				
+				
+				
+				
 				view.loadUrl(url);
 				return true;
 			}
 
 			@Override
 			public void onPageFinished(WebView view, String url) {
+				
+				gcApiLogin.setTitle(R.string.app_name);
+            	if(pd!=null)pd.dismiss();
+            	pdIsShow=false;
+				
 				if (url.toLowerCase().contains("oauth_verifier=")
 						&& (url.toLowerCase().contains("oauth_token="))) {
 					webView.addJavascriptInterface(new MyJavaScriptInterface(),
