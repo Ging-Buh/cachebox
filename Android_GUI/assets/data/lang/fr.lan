@@ -123,6 +123,9 @@ utf8
 
 	GPSoff = GPS is deactivated.
 	GPSon? = Would like you to activate GPS now?
+	
+	welcome = Welcome to Cachebox!
+	wantApi = Do you want a GC API key now?
 
 // Splash screan Messages
 	openDB = Ouverture base de données...

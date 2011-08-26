@@ -125,6 +125,9 @@
 	GPSoff = GPS ist deaktiviert.
 	GPSon? = Möchten Sie GPS jetzt aktivieren?
 	
+	welcome = Willkommen zu Cachebox!
+	wantApi = Möchtest Du jetzt einen GC API key holen?
+	
 
 // Splash screan Messages
 	openDB = Öffne Datenbank...

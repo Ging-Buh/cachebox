@@ -116,6 +116,12 @@ public class splash extends Activity
 			 copyAssetFolder myCopie = new copyAssetFolder();
 			 myCopie.copyAll(getAssets(), Config.WorkPath);
 			 Config.Set("installRev", Global.CurrentRevision);
+			 Config.Set("newInstall", true);
+			 Config.AcceptChanges();
+		 }
+		 else
+		 {
+			 Config.Set("newInstall", false);
 			 Config.AcceptChanges();
 		 }
 		

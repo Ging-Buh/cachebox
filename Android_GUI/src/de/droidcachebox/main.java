@@ -372,7 +372,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        	
 	        	Logger.General("------ Start Rev: " + Global.CurrentRevision + "-------");
 	        	
-	        	chkGpsIsOn();
+	        	
 	        	
 	        	// Zeige About View als erstes!
 	        	showView(11);
@@ -399,6 +399,20 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        downSlider.isInitial=false;
 			int sollHeight=(Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow"))? Sizes.getQuickButtonListHeight():0;
     		setQuickButtonHeight(sollHeight);
+    		
+    		
+    		// ask for API key only if Rev-Number changed, like at new installation and API Key is Empty
+   		 	if(Config.GetBool("newInstall") && Config.GetString("GcAPI").equals(""))
+   		 	{
+   		 		askToGetApiKey();
+   		 	}
+   		 	else
+   		 	{
+   		 		chkGpsIsOn();
+   		 	}
+   		 		
+    		
+    		
 	        
 	    }
 
@@ -721,6 +735,14 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    		
 	    		return;
 	    	}
+	    	
+	    	// Intent Result get API key
+	    	if (requestCode == 987654321) 
+	    	{
+	    		// no, we check GPS
+				chkGpsIsOn();
+	    	}
+	    	
 	    	
 	    	aktView.ActivityResult(requestCode, resultCode, data);
 	    }
@@ -2046,8 +2068,34 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 				    public void run() {
 				        runOnUiThread(new Runnable() {
 				            @Override
-				            public void run() {
-				            	createGpsDisabledAlert();
+				            public void run() 
+				            {
+				            	MessageBox.Show(Global.Translations.Get("GPSon?"), Global.Translations.Get("GPSoff"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new  DialogInterface.OnClickListener() 
+				 			   { @Override
+				 				public void onClick(DialogInterface dialog, int button) 
+				 				{
+				 					// Behandle das ergebniss
+				 					switch (button)
+				 					{
+				 						case -1:
+				 							// yes open gps settings
+				 							Intent gpsOptionsIntent = new Intent(  
+				 				                       android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS); 
+				 				        	 
+				 							startActivity(gpsOptionsIntent);
+				 							break;
+				 						case -2:
+				 							// no, 
+				 							break;
+				 						case -3:
+				 							
+				 							break;
+				 					}
+				 					
+				 					dialog.dismiss();
+				 				}
+				 				
+				 		    });
 				            }
 				        });
 				    }
@@ -2058,40 +2106,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		 }  
 	 }
 	 
-	 
 	
-	 private void createGpsDisabledAlert()
-	 {  
-				 
-		 AlertDialog.Builder builder = new AlertDialog.Builder(this);  
-		 builder.setMessage(Global.Translations.Get("GPSon?"))  
-		 		.setTitle(Global.Translations.Get("GPSoff"))
-		      .setCancelable(false)  
-		      .setPositiveButton(Global.Translations.Get("yes"),  
-		           new DialogInterface.OnClickListener(){  
-		           public void onClick(DialogInterface dialog, int id){
-		        	   
-		        	  		        	   
-		        	   Intent gpsOptionsIntent = new Intent(  
-		                       android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS); 
-		        	 
-					startActivity(gpsOptionsIntent);
-		        	        
-		           }  
-		       });  
-		       builder.setNegativeButton(Global.Translations.Get("no"),  
-		            new DialogInterface.OnClickListener(){  
-		            public void onClick(DialogInterface dialog, int id){  
-		                 dialog.cancel();
-		                 
-		            }  
-		       });  
-		  AlertDialog alert = builder.create();  
-		  alert.show();  
-		  }
-
-	
-	 
 	 
 	 
 	 @Override
@@ -2108,5 +2123,33 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			de.droidcachebox.Locator.GPS.setSatStrength(strengthLayout, balken);
 		}		
 	
+		
+		private void askToGetApiKey()
+		{
+			MessageBox.Show(Global.Translations.Get("wantApi"), Global.Translations.Get("welcome"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new  DialogInterface.OnClickListener() 
+			   { @Override
+				public void onClick(DialogInterface dialog, int button) 
+				{
+					// Behandle das ergebniss
+					switch (button)
+					{
+						case -1:
+							// yes get Api key
+							GetApiAuth();
+							break;
+						case -2:
+							// no, we check GPS
+							chkGpsIsOn();
+							break;
+						case -3:
+							
+							break;
+					}
+					
+					dialog.dismiss();
+				}
+				
+		    });
+		}
 
 }
