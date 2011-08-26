@@ -150,7 +150,8 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu, Selected
 	@Override
 	public void OnHide() {
 		// Save changed Solver text
-		Database.SetSolver(aktCache,edSolver.getText().toString());		
+		if(aktCache!=null)
+			Database.SetSolver(aktCache,edSolver.getText().toString());		
 	}
 
 	@Override

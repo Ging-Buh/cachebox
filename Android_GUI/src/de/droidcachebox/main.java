@@ -1099,7 +1099,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        case 11:showView(101);break;
 	        case 12:startScreenLock(true);break;
 	        case 13:switchAutoResort(); QuickButtonList.invalidate();break;
-	        
+	        case 14:showView(7);break;
 	        }
 		}
 	};

@@ -292,6 +292,22 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		CachesFoundLabel.setTextColor(Global.getColor(R.attr.LinkLabelColor));
 		WP.setTextColor(Global.getColor(R.attr.LinkLabelColor));
 		
+		//set Text Color
+		CachesFoundLabel.setTextColor(Global.getColor(R.attr.TextColor));
+		descTextView.setTextColor(Global.getColor(R.attr.TextColor));
+		versionTextView.setTextColor(Global.getColor(R.attr.TextColor));
+		myTextView.setTextColor(Global.getColor(R.attr.TextColor));
+		lblGPS.setTextColor(Global.getColor(R.attr.TextColor));
+		GPS.setTextColor(Global.getColor(R.attr.TextColor));
+		lblAccuracy.setTextColor(Global.getColor(R.attr.TextColor));
+		Accuracy.setTextColor(Global.getColor(R.attr.TextColor));
+		lblWP.setTextColor(Global.getColor(R.attr.TextColor));
+		WP.setTextColor(Global.getColor(R.attr.TextColor));
+		lblCord.setTextColor(Global.getColor(R.attr.TextColor));
+		Cord.setTextColor(Global.getColor(R.attr.TextColor));
+		lblCurrent.setTextColor(Global.getColor(R.attr.TextColor));
+		Current.setTextColor(Global.getColor(R.attr.TextColor));
+		
 		//Set Progressbar from Splash unvisible and release the Obj.
 		myProgressBar=(ProgressBar)findViewById(R.id.splash_progressbar);
 		myProgressBar.setVisibility(View.GONE);
@@ -440,9 +456,32 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 
 	private void LoadImages()
 	{
+		//set LinkLable Color
+		CachesFoundLabel.setTextColor(Global.getColor(R.attr.LinkLabelColor));
+		WP.setTextColor(Global.getColor(R.attr.LinkLabelColor));
+		
+		//set Text Color
+		
+		descTextView.setTextColor(Global.getColor(R.attr.TextColor));
+		versionTextView.setTextColor(Global.getColor(R.attr.TextColor));
+		myTextView.setTextColor(Global.getColor(R.attr.TextColor));
+		lblGPS.setTextColor(Global.getColor(R.attr.TextColor));
+		GPS.setTextColor(Global.getColor(R.attr.TextColor));
+		lblAccuracy.setTextColor(Global.getColor(R.attr.TextColor));
+		Accuracy.setTextColor(Global.getColor(R.attr.TextColor));
+		lblWP.setTextColor(Global.getColor(R.attr.TextColor));
+		
+		lblCord.setTextColor(Global.getColor(R.attr.TextColor));
+		Cord.setTextColor(Global.getColor(R.attr.TextColor));
+		lblCurrent.setTextColor(Global.getColor(R.attr.TextColor));
+		Current.setTextColor(Global.getColor(R.attr.TextColor));
+		
+		
 		Resources res = getResources();
 		
-		bitmap = BitmapFactory.decodeResource(res, R.drawable.splash_back);
+		boolean N = Config.GetBool("nightMode");
+		
+		bitmap = BitmapFactory.decodeResource(res, N? R.drawable.night_splash_back : R.drawable.splash_back);
 		logo = BitmapFactory.decodeResource(res, R.drawable.cachebox_logo);
 		((ImageView) findViewById(R.id.splash_BackImage)).setImageBitmap(bitmap);
 		((ImageView) findViewById(R.id.splash_Logo)).setImageBitmap(logo);

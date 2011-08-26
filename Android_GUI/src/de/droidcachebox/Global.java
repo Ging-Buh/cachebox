@@ -31,7 +31,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 397;
+    public static final int CurrentRevision = 398;
     public static final String CurrentVersion = "0.0.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1016;
@@ -546,7 +546,7 @@ public class Global{
 	        BtnIcons = new Drawable[] 
 	                                { 
 	                	        		res.getDrawable(N? R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal ),
-	                	        		res.getDrawable(N? R.drawable.button : R.drawable.button ),
+	                	        		res.getDrawable(N? R.drawable.night_button : R.drawable.button ),
 	                	        		res.getDrawable(R.drawable.doc_icon),
 	                	        		res.getDrawable(R.drawable.big_16),
 	                	        		res.getDrawable(R.drawable.list_icon), //LogView braucht noch ein Icon
@@ -562,6 +562,7 @@ public class Global{
 	                	        		res.getDrawable(R.drawable.lock_icon),
 	                	        		res.getDrawable(R.drawable.auto_sort_on_icon), //15
 	                	        		res.getDrawable(R.drawable.auto_sort_off_icon), //16
+	                	        		res.getDrawable(R.drawable.solver_icon), //17
 	                        		};
     	
         
@@ -616,7 +617,7 @@ public class Global{
 
     
     static TypedArray themeStyles;
-    final private static int[] colorAttrs = new int[]
+    private static int[] colorAttrs = new int[]
        {R.attr.ListBackground, R.attr.ListBackground_secend, 
     	R.attr.ListBackground_select,R.attr.myBackground,R.attr.ListSeparator,
     	R.attr.TextColor,R.attr.EmptyBackground,R.attr.DropDownBackground,
@@ -626,6 +627,15 @@ public class Global{
     
     public static void initTheme(Context context)
     {
+    	
+    	 colorAttrs = new  int[]
+    	                                                {R.attr.ListBackground, R.attr.ListBackground_secend, 
+    	                                             	R.attr.ListBackground_select,R.attr.myBackground,R.attr.ListSeparator,
+    	                                             	R.attr.TextColor,R.attr.EmptyBackground,R.attr.DropDownBackground,
+    	                                             	R.attr.ToggleBtColor_off,R.attr.ToggleBtColor_on,R.attr.TitleBarBackColor,
+    	                                             	R.attr.SlideDownBackColor,R.attr.LinkLabelColor,R.attr.TextColor_disable
+    	                                                };
+    	
     	Theme t = context.getTheme();
     	Arrays.sort(colorAttrs);
     	themeStyles = t.obtainStyledAttributes(colorAttrs);

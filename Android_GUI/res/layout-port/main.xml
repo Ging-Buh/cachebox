@@ -10,32 +10,33 @@
 
 		<LinearLayout android:layout_alignParentBottom="true"
 			android:layout_height="65dip" android:layout_width="match_parent"
-			android:id="@+id/layoutButtons" android:background="@drawable/hintergrund">
+			android:id="@+id/layoutButtons" android:background="?attr/BtnBackGround">
 
 			<ImageButton android:layout_height="match_parent"
 				android:layout_width="wrap_content" android:layout_weight="1"
-				android:id="@+id/buttonDB" android:background="@drawable/db_button_image_selector"
-				android:layout_marginTop="2dip">
+				android:id="@+id/buttonDB"
+				android:background="?attr/DbBtnImageSelector"
+				android:layout_margin="2dip" android:layout_marginLeft="1dip">
 			</ImageButton>
 			<ImageButton android:layout_width="wrap_content"
 				android:layout_height="match_parent" android:layout_weight="1"
 				android:id="@+id/buttonCache" android:text="@string/Cache"
-				android:layout_marginTop="2dip" android:background="@drawable/cache_button_image_selector">
+				android:layout_margin="2dip" android:layout_marginLeft="1dip" android:background="?attr/CacheBtnImageSelector">
 			</ImageButton>
 			<ImageButton android:layout_width="wrap_content"
 				android:layout_height="match_parent" android:layout_weight="1"
 				android:id="@+id/buttonMap" android:text="@string/Map"
-				android:layout_marginTop="2dip" android:background="@drawable/nav_button_image_selector">
+				android:layout_margin="2dip" android:layout_marginLeft="1dip" android:background="?attr/NavBtnImageSelector">
 			</ImageButton>
 			<ImageButton android:layout_width="wrap_content"
 				android:layout_height="match_parent" android:layout_weight="1"
 				android:id="@+id/buttonInfo" android:text="@string/Info"
-				android:layout_marginTop="2dip" android:background="@drawable/find_button_image_selector">
+				android:layout_margin="2dip" android:layout_marginLeft="1dip" android:background="?attr/FindBtnImageSelector">
 			</ImageButton>
 			<ImageButton android:layout_width="wrap_content"
 				android:layout_height="match_parent" android:layout_weight="1"
 				android:id="@+id/buttonMisc" android:text="@string/Misc"
-				android:layout_marginTop="2dip" android:background="@drawable/misc_button_image_selector">
+				android:layout_margin="2dip" android:layout_marginLeft="1dip" android:background="?attr/MiscBtnImageSelector">
 			</ImageButton>
 		</LinearLayout>
 		<FrameLayout android:layout_alignParentLeft="true"
