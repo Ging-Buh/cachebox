@@ -15,13 +15,17 @@ import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Geocaching.DescriptionImageGrabber;
+import de.droidcachebox.Views.Forms.MessageBox;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu, SelectedCacheEvent {
 
@@ -109,6 +113,24 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
         attributeLookup.put(Attributes.FuelNearby, 58);
         attributeLookup.put(Attributes.FoodNearby, 59);
 		
+        
+        
+        this.setWebViewClient(new WebViewClient() {
+			
+        	
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url) 
+			{
+				if(url.contains("fake://fake.de/download")) 
+				{
+					MessageBox.Show("Start Download Vorgang in DescriptionViewControl.java Zeile 126!" );
+					return true;
+				}
+				view.loadUrl(url);
+				return true;
+			}
+        
+        });
 	}
 
 	public DescriptionViewControl(Context context, AttributeSet attrs, int defStyle) {
@@ -133,10 +155,20 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
         	NonLocalImages = new ArrayList<String>();
         	NonLocalImagesUrl = new ArrayList<String>();
         	String cachehtml =  Database.GetDescription(cache);
-        	String html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, !Config.GetBool("AllowInternetAccess"), NonLocalImages, NonLocalImagesUrl);
+        	String html="";
+        	if (cachehtml.equals(null)|| cachehtml.equals("") || cachehtml.equals("null"))// Keine Beschreibung vorhanden!
+        	{ //Load Standard HTML
+        		html= Global.Translations.Get("emptyHtml");
+        	}
+        	else
+        	{
+        		html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, !Config.GetBool("AllowInternetAccess"), NonLocalImages, NonLocalImagesUrl);
         	
-            if (!Config.GetBool("DescriptionNoAttributes"))
-                html = getAttributesHtml(Database.AttributesPositive(cache), Database.AttributesNegative(cache)) + html;
+        		if (!Config.GetBool("DescriptionNoAttributes"))
+        			html = getAttributesHtml(Database.AttributesPositive(cache), Database.AttributesNegative(cache)) + html;
+        	
+        	}
+        	
         	
         	
         	this.loadDataWithBaseURL("fake://fake.de", html, mimeType, encoding, null);
@@ -219,8 +251,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu, 
         return sb.toString();
     }
 
-    
-    
+       
 	@Override
 	public boolean ItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub

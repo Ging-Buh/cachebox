@@ -590,7 +590,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 					        }
 					    }
 					};
-					MessageBox.Show("Close DroidCB?","Question",MessageBoxButtons.YesNo,MessageBoxIcon.Question,dialogClickListener);
+					MessageBox.Show(Global.Translations.Get("QuitReally"), Global.Translations.Get("Quit?"), MessageBoxButtons.YesNo,MessageBoxIcon.Question,dialogClickListener);
 					
 				return true;
 	    	}

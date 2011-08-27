@@ -366,4 +366,4 @@ English
 	GC_title = Powered by Geocaching Live
 	GC_upgrade = Upgrade to Geocaching.com Premium Membership today for US$30 per year to download the full details for up to 6000 caches per day, view all cache types in your area, and access many more benefits. Visit Geocaching.com to upgrade.
 	GC_basic = As a basic member of geocaching.com you can download full details of 3 caches per 24 hour period.
-	
+	emptyHtml = </br>Unfortunately, no description available.</br></br></br><form action="download"><input type="submit" value=" Description download? "></form>
