@@ -183,7 +183,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	 */
 		public static Activity mainActivity;
 		public static Boolean isRestart=false;
-	
+		public static Boolean isFirstStart=true;
     
     /*
 	 * private member
@@ -373,14 +373,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        	Logger.General("------ Start Rev: " + Global.CurrentRevision + "-------");
 	        	
 	        	
-	        	
 	        	// Zeige About View als erstes!
 	        	showView(11);
 	        	
 	        	// chk if NightMode saved
 	        	if(Config.GetBool("nightMode"))
 	        	{
-	        		ActivityUtils.changeToTheme( mainActivity, ActivityUtils.THEME_NIGHT  );
+	        		ActivityUtils.changeToTheme( mainActivity, ActivityUtils.THEME_NIGHT,true  );
 	        	}
 	        	// Initialisiere Icons neu.
 	        	 Global.InitIcons(this, Config.GetBool("nightMode"));
@@ -401,15 +400,22 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     		setQuickButtonHeight(sollHeight);
     		
     		
-    		// ask for API key only if Rev-Number changed, like at new installation and API Key is Empty
-   		 	if(Config.GetBool("newInstall") && Config.GetString("GcAPI").equals(""))
-   		 	{
-   		 		askToGetApiKey();
-   		 	}
-   		 	else
-   		 	{
-   		 		chkGpsIsOn();
-   		 	}
+    		
+    		if(isFirstStart)
+    		{
+	    		// ask for API key only if Rev-Number changed, like at new installation and API Key is Empty
+	   		 	if(Config.GetBool("newInstall") && Config.GetString("GcAPI").equals(""))
+	   		 	{
+	   		 		askToGetApiKey();
+	   		 	}
+	   		 	else
+	   		 	{
+	   		 		chkGpsIsOn();
+	   		 	}
+	   		 	
+	   		 
+    		}
+    		
    		 		
     		
     		

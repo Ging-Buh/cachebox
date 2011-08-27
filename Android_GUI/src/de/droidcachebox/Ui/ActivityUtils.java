@@ -56,14 +56,20 @@ public class ActivityUtils
 	public final static int THEME_DAY = 1;
 	public final static int THEME_NIGHT = 2;
 
+	public static void changeToTheme(Activity activity, int theme)
+	{
+		changeToTheme( activity,  theme, false);
+	}
+	
 	/**
 	 * Set the theme of the Activity, and restart it by creating a new Activity
 	 * of the same type.
 	 */
-	public static void changeToTheme(Activity activity, int theme)
+	public static void changeToTheme(Activity activity, int theme, boolean firstStart)
 	{
 		sTheme = theme;
 		main.isRestart=true;
+		main.isFirstStart=firstStart;
 		activity.finish();
 
 		activity.startActivity(new Intent(activity, activity.getClass()));
