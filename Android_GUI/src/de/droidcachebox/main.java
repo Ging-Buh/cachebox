@@ -16,6 +16,7 @@ import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
@@ -461,88 +462,141 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 
 	    public void newLocationReceived (Location location)
 	    {
-			Global.Locator.setLocation(location);
-			PositionEventList.Call(location);
+			try {
+				Global.Locator.setLocation(location);
+			} catch (Exception e) {
+				Logger.Error("main.newLocationReceived()", "Global.Locator.setLocation(location)", e);
+				e.printStackTrace();
+			}
 			
-			InfoDownSlider.setNewLocation(location);
+			try {
+				PositionEventList.Call(location);
+			} catch (Exception e) {
+				Logger.Error("main.newLocationReceived()", "PositionEventList.Call(location)", e);
+				e.printStackTrace();
+			}
+			
+			try {
+				InfoDownSlider.setNewLocation(location);
+			} catch (Exception e) {
+				Logger.Error("main.newLocationReceived()", "InfoDownSlider.setNewLocation(location)", e);
+				e.printStackTrace();
+			}
 
-	        if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)
-	        {
-	            if (GlobalCore.SelectedCache() == null)
-	            {
-	            	CacheDAO cacheDAO = new CacheDAO();
-	            	Database.Data.Query.Resort();
-	            }
-	            initialResortAfterFirstFixCompleted = true;
-	        }
-	        if (!initialFixSoundCompleted && GlobalCore.LastValidPosition.Valid)
-	        {
-	        	Global.PlaySound("GPS_Fix.wav");
-	        	initialFixSoundCompleted = true;
-	        }
-	        
-	        if (GlobalCore.SelectedCache() != null)
-	        {
-		        float distance = GlobalCore.SelectedCache().Distance(false);
-	            if (GlobalCore.SelectedWaypoint() != null)
-	            {
-	            	distance = GlobalCore.SelectedWaypoint().Distance();
-	            }
-		        
-		        if (!approachSoundCompleted && (distance< Config.GetInt("SoundApproachDistance")))
-		        {
-		        	Global.PlaySound("Approach.wav");
-		        	approachSoundCompleted = true;
-		        }
-	        }
-	        
-
-			TrackRecorder.recordPosition();
-	        // schau die 50 nächsten Caches durch, wenn einer davon näher ist als der aktuell nächste -> umsortieren und raus
-	        // only when showing Map or cacheList
-			if (!GlobalCore.ResortAtWork)
-			{
-				if (Global.autoResort && ((aktView == mapView) || (aktView == cacheListView)))
+	        try {
+				if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)
 				{
-	                int z = 0;
-	                if (!(GlobalCore.NearestCache() == null))
-	                {
-	                    for (Cache cache : Database.Data.Query)
-	                    {
-	                        z++;
-	                        if (z >= 50)
-	                            return;
-	                        if (cache.Distance(true) < GlobalCore.NearestCache().Distance(true))
-	                        {
-	        	            	CacheDAO cacheDAO = new CacheDAO();
-	        	            	Database.Data.Query.Resort();
-	                            Global.PlaySound("AutoResort.wav");
-	                            return;
-	                        }
-	                    }
-	                }
+				    if (GlobalCore.SelectedCache() == null)
+				    {
+				    	CacheDAO cacheDAO = new CacheDAO();
+				    	Database.Data.Query.Resort();
+				    }
+				    initialResortAfterFirstFixCompleted = true;
 				}
+			} catch (Exception e) {
+				Logger.Error("main.newLocationReceived()", "if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)", e);
+				e.printStackTrace();
+			}
+	        
+	        try {
+				if (!initialFixSoundCompleted && GlobalCore.LastValidPosition.Valid)
+				{
+					Global.PlaySound("GPS_Fix.wav");
+					initialFixSoundCompleted = true;
+				}
+			} catch (Exception e) {
+				Logger.Error("main.newLocationReceived()", "Global.PlaySound(GPS_Fix.wav)", e);
+				e.printStackTrace();
+			}
+	        
+	        try {
+				if (GlobalCore.SelectedCache() != null)
+				{
+				    float distance = GlobalCore.SelectedCache().Distance(false);
+				    if (GlobalCore.SelectedWaypoint() != null)
+				    {
+				    	distance = GlobalCore.SelectedWaypoint().Distance();
+				    }
+				    
+				    if (!approachSoundCompleted && (distance< Config.GetInt("SoundApproachDistance")))
+				    {
+				    	Global.PlaySound("Approach.wav");
+				    	approachSoundCompleted = true;
+				    }
+				}
+			} catch (Exception e) {
+				Logger.Error("main.newLocationReceived()", "Global.PlaySound(Approach.wav)", e);
+				e.printStackTrace();
+			}
+	        
+
+			try {
+				TrackRecorder.recordPosition();
+			} catch (Exception e) {
+				Logger.Error("main.newLocationReceived()", "TrackRecorder.recordPosition()", e);
+				e.printStackTrace();
+			}
+			
+	        try {
+				// schau die 50 nächsten Caches durch, wenn einer davon näher ist als der aktuell nächste -> umsortieren und raus
+				// only when showing Map or cacheList
+				if (!GlobalCore.ResortAtWork)
+				{
+					if (Global.autoResort && ((aktView == mapView) || (aktView == cacheListView)))
+					{
+				        int z = 0;
+				        if (!(GlobalCore.NearestCache() == null))
+				        {
+				            for (Cache cache : Database.Data.Query)
+				            {
+				                z++;
+				                if (z >= 50)
+				                    return;
+				                if (cache.Distance(true) < GlobalCore.NearestCache().Distance(true))
+				                {
+					            	CacheDAO cacheDAO = new CacheDAO();
+					            	Database.Data.Query.Resort();
+				                    Global.PlaySound("AutoResort.wav");
+				                    return;
+				                }
+				            }
+				        }
+					}
+				}
+			} catch (Exception e) {
+				Logger.Error("main.newLocationReceived()", "Resort", e);
+				e.printStackTrace();
 			}
 	    	
 	    }
 	    
 		@Override public void onLocationChanged(Location location) {
 			
-			if ( location.getProvider().equalsIgnoreCase(LocationManager.GPS_PROVIDER)) // Neue Position von GPS-Empfänger
-			{
-				newLocationReceived (location);
-		        GPSTimeStamp = java.lang.System.currentTimeMillis();
-		        return;
+			try {
+				if ( location.getProvider().equalsIgnoreCase(LocationManager.GPS_PROVIDER)) // Neue Position von GPS-Empfänger
+				{
+					newLocationReceived (location);
+				    GPSTimeStamp = java.lang.System.currentTimeMillis();
+				    return;
+				}
+			} catch (Exception e) {
+				Logger.Error("main.onLocationChanged()", "GPS_PROVIDER", e);
+				e.printStackTrace();
 			}
 			
-			if ( location.getProvider().equalsIgnoreCase(LocationManager.NETWORK_PROVIDER)) // Neue Position von Netzwerk
-			{
-				if ((java.lang.System.currentTimeMillis() - GPSTimeStamp) > NetworkPositionTime) //Wenn 10 Sekunden kein gültiges GPS Signal
+			try {
+				if ( location.getProvider().equalsIgnoreCase(LocationManager.NETWORK_PROVIDER)) // Neue Position von Netzwerk
 				{
-					NetworkPositionTime=90000;
-					newLocationReceived (location);
-		    		Toast.makeText(mainActivity, "Network-Position", Toast.LENGTH_SHORT).show();
+					if ((java.lang.System.currentTimeMillis() - GPSTimeStamp) > NetworkPositionTime) //Wenn 10 Sekunden kein gültiges GPS Signal
+					{
+						NetworkPositionTime=90000;
+						newLocationReceived (location);
+						Toast.makeText(mainActivity, "Network-Position", Toast.LENGTH_SHORT).show();
+					}
 				}
+			} catch (Exception e) {
+				Logger.Error("main.onLocationChanged()", "NETWORK_PROVIDER", e);
+				e.printStackTrace();
 			}
 			
 			
@@ -958,9 +1012,14 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    {
 	        public void onSensorChanged(SensorEvent event) 
 	        {
-	        	mCompassValues = event.values;
-	        	Global.Locator.setCompassHeading(mCompassValues[0]); 
-	        	PositionEventList.Call(mCompassValues[0]);
+	        	try {
+					mCompassValues = event.values;
+					Global.Locator.setCompassHeading(mCompassValues[0]); 
+					PositionEventList.Call(mCompassValues[0]);
+				} catch (Exception e) {
+					Logger.Error("main.mListener.onSensorChanged()", "", e);
+					e.printStackTrace();
+				}
 	        }
 
 	        public void onAccuracyChanged(Sensor sensor, int accuracy) 
@@ -1207,61 +1266,71 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	private void initialLocationManager() 
 	{
 		
-		if(locationManager!=null)
-		{
-			// ist schon initialisiert
-			return;
-		}
-		
-		// GPS
-		// Get the location manager
-		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		// Define the criteria how to select the locatioin provider -> use
-		// default
-		Criteria criteria = new Criteria(); // noch nötig ???
-		criteria.setAccuracy(Criteria.ACCURACY_FINE);
-		criteria.setAltitudeRequired(false);
-		criteria.setBearingRequired(false);
-		criteria.setCostAllowed(true);
-		criteria.setPowerRequirement(Criteria.POWER_LOW);
+		try {
+			if(locationManager!=null)
+			{
+				// ist schon initialisiert
+				return;
+			}
+			
+			// GPS
+			// Get the location manager
+			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+			// Define the criteria how to select the locatioin provider -> use
+			// default
+			Criteria criteria = new Criteria(); // noch nötig ???
+			criteria.setAccuracy(Criteria.ACCURACY_FINE);
+			criteria.setAltitudeRequired(false);
+			criteria.setBearingRequired(false);
+			criteria.setCostAllowed(true);
+			criteria.setPowerRequirement(Criteria.POWER_LOW);
 
-		Global.Locator = new Locator();
+			Global.Locator = new Locator();
 //		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
 //		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, this);
-		
-		/*
-		 * Longri: 
-		 * Ich habe die Zeiten und Distanzen der Location Updates angepasst.
-		 * 
-		 * Der Network Provider hat eine schlechte genauigkeit, darher reich es wenn er alle 10sec
-		 * einen wert liefert, wen der alte um 500m abweicht.
-		 * 
-		 * Beim GPS Provider habe ich die aktualiesierungs Zeit verkürzt, damit bei deaktiviertem Hardware
-		 * Kompass aber die Werte trotzdem noch in einem gesunden Verhältnis zwichen Performance und Stromverbrauch,
-		 * geliefert werden.
-		 * 
-		 * Andere apps haben hier 0.
-		 */
-		
-		
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, this);
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 500, this);
-		
-		locationManager.addNmeaListener(this);
-		locationManager.addGpsStatusListener(new GPS.GpsStatusListener(locationManager));
+			
+			/*
+			 * Longri: 
+			 * Ich habe die Zeiten und Distanzen der Location Updates angepasst.
+			 * 
+			 * Der Network Provider hat eine schlechte genauigkeit, darher reich es wenn er alle 10sec
+			 * einen wert liefert, wen der alte um 500m abweicht.
+			 * 
+			 * Beim GPS Provider habe ich die aktualiesierungs Zeit verkürzt, damit bei deaktiviertem Hardware
+			 * Kompass aber die Werte trotzdem noch in einem gesunden Verhältnis zwichen Performance und Stromverbrauch,
+			 * geliefert werden.
+			 * 
+			 * Andere apps haben hier 0.
+			 */
+			
+			
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, this);
+			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 500, this);
+			
+			locationManager.addNmeaListener(this);
+			locationManager.addGpsStatusListener(new GPS.GpsStatusListener(locationManager));
+		} catch (Exception e) {
+			Logger.Error("main.initialLocationManager()", "", e);
+			e.printStackTrace();
+		}
 
 	}
 	
 	
 	private void initialMapView() 
 	{
-		if (mapView == null)
-		{
-	        mapView = new MapView(this, inflater);
-			mapView.Initialize();
-			mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.GetString("CurrentMapLayer"), Config.GetString("CurrentMapLayer"), "");
-			Global.TrackDistance = Config.GetInt("TrackDistance");
-			mapView.InitializeMap();
+		try {
+			if (mapView == null)
+			{
+			    mapView = new MapView(this, inflater);
+				mapView.Initialize();
+				mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.GetString("CurrentMapLayer"), Config.GetString("CurrentMapLayer"), "");
+				Global.TrackDistance = Config.GetInt("TrackDistance");
+				mapView.InitializeMap();
+			}
+		} catch (Exception e) {
+			Logger.Error("main.initialMapView()", "", e);
+			e.printStackTrace();
 		}		
 	}
 	
@@ -1660,7 +1729,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		MessageBox.Show("Cache hinzufügen ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
 	}
 
-	public void GetApiAuth() {
+	public void GetApiAuth() 
+	{
 		Intent gcApiLogin = new Intent().setClass(mainActivity, GcApiLogin.class);
 		mainActivity.startActivityForResult(gcApiLogin, 987654321);
 	}
@@ -1674,13 +1744,14 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	
 	public void searchOnline() 
 	{
-		if(!Config.GetBool("PremiumMember"))
+		premiumMember = (GroundspeakAPI.GetMembershipType(Config.GetString("GcAPI"))==3);
+		if(premiumMember)
 		{
-			MessageBox.Show(Global.Translations.Get("GC_basic"), Global.Translations.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,PremiumMemberResult );
+			searchOnlineNow();
 		}
 		else
 		{
-			searchOnlineNow();
+			MessageBox.Show(Global.Translations.Get("GC_basic"), Global.Translations.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,PremiumMemberResult );
 		}
 	}
 	
@@ -1804,7 +1875,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		return ;
 	}
 	
-	
+	private boolean premiumMember=false;
 	private Handler onlineSearchReadyHandler = new Handler() 
 	{
 		public void handleMessage(Message msg) 
@@ -1817,11 +1888,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    	  		MessageBox.Show(result);
 	    	  		
 	    	  		// zeige Werbung
-	    	  		if(!Config.GetBool("PremiumMember"))
+	    	  		if(!premiumMember)
 	    			{
 	    	  			MessageBox.Show(Global.Translations.Get("GC_upgrade"), Global.Translations.Get("GC_title"), MessageBoxButtons.OK, MessageBoxIcon.Powerd_by_GC_Live, null);
 	    			}
-	    	  		
+	    	  		cacheListView.notifyCacheListChange();
 	    	  	}
 		 	  }
 	    }
@@ -1891,22 +1962,27 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	@Override
 	public void onNmeaReceived(long timestamp, String nmea) 
 	{
-		if (nmea.substring(0, 6).equalsIgnoreCase("$GPGGA"))
-		{
-			String[] s = nmea.split(",");
-			try
+		try {
+			if (nmea.substring(0, 6).equalsIgnoreCase("$GPGGA"))
 			{
-				if (s[11].equals(""))
-					return;
-				double altCorrection = Double.valueOf(s[11]);
-				Logger.General("AltCorrection: " + String.valueOf(altCorrection));
-				Global.Locator.altCorrection = altCorrection;
-				// Höhenkorrektur ändert sich normalerweise nicht, einmal auslesen reicht...
-				locationManager.removeNmeaListener(this);
-			} catch (Exception exc)
-			{
-				// keine Höhenkorrektur vorhanden
+				String[] s = nmea.split(",");
+				try
+				{
+					if (s[11].equals(""))
+						return;
+					double altCorrection = Double.valueOf(s[11]);
+					Logger.General("AltCorrection: " + String.valueOf(altCorrection));
+					Global.Locator.altCorrection = altCorrection;
+					// Höhenkorrektur ändert sich normalerweise nicht, einmal auslesen reicht...
+					locationManager.removeNmeaListener(this);
+				} catch (Exception exc)
+				{
+					// keine Höhenkorrektur vorhanden
+				}
 			}
+		} catch (Exception e) {
+			Logger.Error("main.onNmeaReceived()", "", e);
+			e.printStackTrace();
 		}
 	}
 
@@ -1977,23 +2053,28 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		
 		public void onReceive(Context arg0, Intent intent) 
 		{
-			int plugged = intent.getIntExtra("plugged", -1);
-			
-			if (runsWithAkku != (plugged == 0))
-			{
-				// if loading status has changed 
-				runsWithAkku = plugged == 0;
-				if (!runsWithAkku)
+			try {
+				int plugged = intent.getIntExtra("plugged", -1);
+				
+				if (runsWithAkku != (plugged == 0))
 				{
-					// activate counter when device runs with accu
-					counter.cancel();
-					counterStopped = true;
-				} else
-				{
-					// deactivate counter when device is plugged in
-					counter.start();
-					counterStopped = false;
+					// if loading status has changed 
+					runsWithAkku = plugged == 0;
+					if (!runsWithAkku)
+					{
+						// activate counter when device runs with accu
+						counter.cancel();
+						counterStopped = true;
+					} else
+					{
+						// deactivate counter when device is plugged in
+						counter.start();
+						counterStopped = false;
+					}
 				}
+			} catch (Exception e) {
+				Logger.Error("main.mBatInfoReceiver.onReceive()", "", e);
+				e.printStackTrace();
 			}
 		}
 		
@@ -2067,49 +2148,54 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	  */
 	 private void chkGpsIsOn() 
 	 {
-		 LocationManager locManager = (LocationManager) getSystemService(LOCATION_SERVICE); 
-		 if (!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-		 {  
-			 Thread t = new Thread() {
-				    public void run() {
-				        runOnUiThread(new Runnable() {
-				            @Override
-				            public void run() 
-				            {
-				            	MessageBox.Show(Global.Translations.Get("GPSon?"), Global.Translations.Get("GPSoff"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new  DialogInterface.OnClickListener() 
-				 			   { @Override
-				 				public void onClick(DialogInterface dialog, int button) 
-				 				{
-				 					// Behandle das ergebniss
-				 					switch (button)
-				 					{
-				 						case -1:
-				 							// yes open gps settings
-				 							Intent gpsOptionsIntent = new Intent(  
-				 				                       android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS); 
-				 				        	 
-				 							startActivity(gpsOptionsIntent);
-				 							break;
-				 						case -2:
-				 							// no, 
-				 							break;
-				 						case -3:
-				 							
-				 							break;
-				 					}
-				 					
-				 					dialog.dismiss();
-				 				}
-				 				
-				 		    });
-				            }
-				        });
-				    }
-				};
+		 try {
+			LocationManager locManager = (LocationManager) getSystemService(LOCATION_SERVICE); 
+			 if (!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+			 {  
+				 Thread t = new Thread() {
+					    public void run() {
+					        runOnUiThread(new Runnable() {
+					            @Override
+					            public void run() 
+					            {
+					            	MessageBox.Show(Global.Translations.Get("GPSon?"), Global.Translations.Get("GPSoff"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new  DialogInterface.OnClickListener() 
+					 			   { @Override
+					 				public void onClick(DialogInterface dialog, int button) 
+					 				{
+					 					// Behandle das ergebniss
+					 					switch (button)
+					 					{
+					 						case -1:
+					 							// yes open gps settings
+					 							Intent gpsOptionsIntent = new Intent(  
+					 				                       android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS); 
+					 				        	 
+					 							startActivity(gpsOptionsIntent);
+					 							break;
+					 						case -2:
+					 							// no, 
+					 							break;
+					 						case -3:
+					 							
+					 							break;
+					 					}
+					 					
+					 					dialog.dismiss();
+					 				}
+					 				
+					 		    });
+					            }
+					        });
+					    }
+					};
 
-				t.start();
-			 
-		 }  
+					t.start();
+				 
+			 }
+		} catch (Exception e) {
+			Logger.Error("main.chkGpsIsOn()", "", e);
+			e.printStackTrace();
+		}  
 	 }
 	 
 	
@@ -2118,7 +2204,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	 @Override
 		public void GpsStateChanged() 
 		{
-		 setSatStrength();		 
+		 try {
+			setSatStrength();
+		} catch (Exception e) {
+			Logger.Error("main.GpsStateChanged()", "setSatStrength()", e);
+			e.printStackTrace();
+		}		 
 		}
 		
 		
@@ -2126,7 +2217,12 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		
 		public static void setSatStrength()
 		{
-			de.droidcachebox.Locator.GPS.setSatStrength(strengthLayout, balken);
+			try {
+				de.droidcachebox.Locator.GPS.setSatStrength(strengthLayout, balken);
+			} catch (Exception e) {
+				Logger.Error("main.setSatStrength()", "de.droidcachebox.Locator.GPS.setSatStrength()", e);
+				e.printStackTrace();
+			}
 		}		
 	
 		

@@ -238,5 +238,12 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	public void notifyCacheListChange()
+	{
+		lvAdapter.notifyDataSetChanged();
+	}
+
+
 }
 
