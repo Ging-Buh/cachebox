@@ -3,6 +3,7 @@ package de.droidcachebox.DAO;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 
 import android.content.ContentValues;
@@ -12,13 +13,16 @@ import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.Map.Descriptor;
 
+import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Api.SearchForGeocaches;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Coordinate;
+import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
 public class CacheDAO {
@@ -218,6 +222,55 @@ public class CacheDAO {
         }	
 	}
 
+	public Cache LoadApiDetails(Cache aktCache)
+	{
+		String accessToken = Config.GetString("GcAPI");
+		String result = "";
+		Cache newCache = null;
+		try {
+			SearchForGeocaches.SearchGC search = new SearchForGeocaches.SearchGC();
+			search.gcCode = aktCache.GcCode;
+
+			ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+			ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+			result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(
+					accessToken, search, apiCaches, apiLogs,
+					aktCache.GPXFilename_ID);
+			if (apiCaches.size() == 1) {
+				Database.Data.myDB.beginTransaction();
+				newCache = apiCaches.get(0);
+				Database.Data.Query.remove(aktCache);
+				Database.Data.Query.add(newCache);
+				newCache.MapX = 256.0 * Descriptor.LongitudeToTileX(
+						Cache.MapZoomLevel, newCache.Longitude());
+				newCache.MapY = 256.0 * Descriptor.LatitudeToTileY(
+						Cache.MapZoomLevel, newCache.Latitude());
+
+				UpdateDatabase(newCache);
+				for (LogEntry log : apiLogs) {
+					if (log.CacheId != newCache.Id)
+						continue;
+					// Write Log to database
+					LogDAO logDAO = new LogDAO();
+					logDAO.WriteToDatabase(log);
+				}
+				for (Waypoint waypoint : newCache.waypoints) {
+					WaypointDAO waypointDAO = new WaypointDAO();
+					waypointDAO.WriteToDatabase(waypoint);
+				}
+
+				Database.Data.myDB.setTransactionSuccessful();
+				Database.Data.myDB.endTransaction();
+
+				Database.Data.GPXFilenameUpdateCacheCount();
+			}
+		} catch (Exception ex) {
+			Logger.Error("DescriptionView", "Load CacheInfo by API", ex);
+			return null;
+		}
+		
+		return newCache;
+	}
 	
 	
 }

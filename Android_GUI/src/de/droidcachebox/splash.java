@@ -110,7 +110,7 @@ public class splash extends Activity
 		 Config.readConfigFile(/*getAssets()*/);
 		 
 		 // copy AssetFolder only if Rev-Number changed, like at new installation
-		 if(Config.GetInt("installRev")<Global.CurrentRevision)
+		 if(Config.GetInt("installRev")<Global.CurrentRevision+1)
 		 {
 //			 String[] exclude = new String[]{"webkit","sounds","images"};
 			 copyAssetFolder myCopie = new copyAssetFolder();

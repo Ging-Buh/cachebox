@@ -365,5 +365,7 @@ English
 
 	GC_title = Powered by Geocaching Live
 	GC_upgrade = Upgrade to Geocaching.com Premium Membership today for US$30 per year to download the full details for up to 6000 caches per day, view all cache types in your area, and access many more benefits. Visit Geocaching.com to upgrade.
-	GC_basic = As a basic member of geocaching.com you can download full details of 3 caches per 24 hour period.
-	emptyHtml = </br>Unfortunately, no description available.</br></br></br><form action="download"><input type="submit" value=" Description download? "></form>
+	GC_basic = With this online search only traditional caches without details were loaded. You as a basic member of geocaching.com can receive full details of 3 caches per day when you open the cache description. 
+ 
+	GC_NoDescription = This cache was downloaded with the API of Geocaching.com without details. Please click "Donwnload Description" to download the full cache details.
+	GC_DownloadDescription = Download Description 

@@ -1818,7 +1818,11 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		  		
 		  		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 		  		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-		  		result = CB_Core.Api.GroundspeakAPI.SearchForGeocachesJSON(accessToken, searchCoord, 50000, 10, apiCaches, apiLogs, gpxFilename.Id);
+		  		CB_Core.Api.SearchForGeocaches.SearchCoordinate searchC = new CB_Core.Api.SearchForGeocaches.SearchCoordinate();
+		  		searchC.pos = searchCoord;
+		  		searchC.distanceInMeters = 50000;
+		  		searchC.number = 30;
+		  		result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, gpxFilename.Id);
 		  		if (apiCaches.size() > 0)
 		  		{
 		  			Database.Data.myDB.beginTransaction();
@@ -1885,13 +1889,13 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    	  case 1:
 	    	  	{
 	    	  		pd.dismiss();
-	    	  		MessageBox.Show(result);
+//	    	  		MessageBox.Show(result);
 	    	  		
 	    	  		// zeige Werbung
-	    	  		if(!premiumMember)
+/*	    	  		if(!premiumMember)
 	    			{
 	    	  			MessageBox.Show(Global.Translations.Get("GC_upgrade"), Global.Translations.Get("GC_title"), MessageBoxButtons.OK, MessageBoxIcon.Powerd_by_GC_Live, null);
-	    			}
+	    			}*/
 	    	  		cacheListView.notifyCacheListChange();
 	    	  	}
 		 	  }

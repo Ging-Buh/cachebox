@@ -4,6 +4,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import CB_Core.Config;
 import CB_Core.Api.CB_Api;
+import CB_Core.Api.GroundspeakAPI;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -82,9 +83,6 @@ public class GcApiLogin extends Activity {
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				
-				
-				
-				
 				view.loadUrl(url);
 				return true;
 			}
@@ -98,8 +96,6 @@ public class GcApiLogin extends Activity {
 				
 				if (url.toLowerCase().contains("oauth_verifier=")
 						&& (url.toLowerCase().contains("oauth_token="))) {
-					webView.addJavascriptInterface(new MyJavaScriptInterface(),
-							"HTMLOUT");
 					webView.loadUrl("javascript:window.HTMLOUT.showHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");
 				} else
 					super.onPageFinished(view, url);
@@ -108,12 +104,14 @@ public class GcApiLogin extends Activity {
 		});
 		WebSettings settings = webView.getSettings();
 
-		settings.setPluginsEnabled(true);
+	//	settings.setPluginsEnabled(true);
 		settings.setJavaScriptEnabled(true);
-		settings.setJavaScriptCanOpenWindowsAutomatically(true);
+	//	settings.setJavaScriptCanOpenWindowsAutomatically(true);
 
 		// webView.setWebChromeClient(new WebChromeClient());
 		webView.getSettings().setJavaScriptEnabled(true);
+		webView.addJavascriptInterface(new MyJavaScriptInterface(),
+				"HTMLOUT");
 
 		webView.loadUrl(GC_AuthUrl);
 	}
@@ -131,10 +129,14 @@ public class GcApiLogin extends Activity {
 				return;
 			// zwischen pos und pos2 sollte ein gültiges AccessToken sein!!!
 			String accessToken = html.substring(pos + search.length(), pos2);
+			
+			GroundspeakAPI.GetMembershipType(accessToken);
+			
 			Config.Set("GcAPI", accessToken);
+			Config.Set("GcLogin", GroundspeakAPI.MemberName);
 			if(Settings.Me!=null)
 			{
-				Settings.Me.setGcApiKey(accessToken);
+				Settings.Me.setGcApiKey(accessToken, GroundspeakAPI.MemberName);
 			}
 			gcApiLogin.finish();
 		}

@@ -768,10 +768,13 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	}
 	
 	
-	public void setGcApiKey(String key)
+	public void setGcApiKey(String key, String UserName)
 	{
 		EditTextGC_API.setText(key);
 		EditTextGC_API.invalidate();
+		EditTextGCName.setText(UserName);
+		EditTextGCName.invalidate();
+		
 	}
 	
 	private void SaveSettings()
