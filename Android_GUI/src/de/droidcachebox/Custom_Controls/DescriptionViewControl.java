@@ -26,6 +26,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,6 +42,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 	private HashMap<Attributes, Integer> attributeLookup;
 	private ArrayList<String> NonLocalImages = new ArrayList<String>();
 	private ArrayList<String> NonLocalImagesUrl = new ArrayList<String>();
+	private static ProgressDialog pd;
 
 	public DescriptionViewControl(Context context) {
 		super(context);
@@ -123,45 +125,69 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				if (url.contains("fake://fake.de/download")) {
-					String accessToken = Config.GetString("GcAPI");
-					if (!CB_Core.Api.GroundspeakAPI.CacheStatusValid) {
-						int result = CB_Core.Api.GroundspeakAPI
-								.GetCacheLimits(accessToken);
-						if (result != 0)
-							return true;
-					}
-					if (CB_Core.Api.GroundspeakAPI.CachesLeft <= 0) {
-						String s = "Download limit is reached!\n";
-						s += "You have downloaded the full cache details of " + CB_Core.Api.GroundspeakAPI.MaxCacheCount + " caches in the last 24 hours.\n";
-						if (CB_Core.Api.GroundspeakAPI.MaxCacheCount < 10)
-							s += "If you want to download the full cache details of 6000 caches per day you can upgrade to Premium Member at \nwww.geocaching.com!";
-						
-						MessageBox.Show(s, Global.Translations.Get("GC_title"),
-								MessageBoxButtons.OKCancel,
-								MessageBoxIcon.Powerd_by_GC_Live, null);
 
-						return true;
-					}
-			
-		
-					if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember(accessToken))
-					{
-						String s = "Download Details of this cache?\n";
-						s += "Full Downloads left: "
-								+ CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
-						s += "Actual Downloads: "
-							+ CB_Core.Api.GroundspeakAPI.CurrentCacheCount
-							+ "\n";
-						s += "Max. Downloads in 24h: "
-							+ CB_Core.Api.GroundspeakAPI.MaxCacheCount;
-						MessageBox.Show(s, Global.Translations.Get("GC_title"),
-								MessageBoxButtons.OKCancel,
-								MessageBoxIcon.Powerd_by_GC_Live,
-								DownloadCacheDialogResult);
-					} else {
-						// call the download directly
-						DownloadCacheDialogResult.onClick(null, -1);
-					}
+					Thread thread = new Thread() {
+						public void run() {
+
+							String accessToken = Config.GetString("GcAPI");
+							if (!CB_Core.Api.GroundspeakAPI.CacheStatusValid) {
+								int result = CB_Core.Api.GroundspeakAPI
+										.GetCacheLimits(accessToken);
+								if (result != 0) {
+									onlineSearchReadyHandler
+											.sendMessage(onlineSearchReadyHandler
+													.obtainMessage(1));
+									return;
+								}
+							}
+							if (CB_Core.Api.GroundspeakAPI.CachesLeft <= 0) {
+								String s = "Download limit is reached!\n";
+								s += "You have downloaded the full cache details of "
+										+ CB_Core.Api.GroundspeakAPI.MaxCacheCount
+										+ " caches in the last 24 hours.\n";
+								if (CB_Core.Api.GroundspeakAPI.MaxCacheCount < 10)
+									s += "If you want to download the full cache details of 6000 caches per day you can upgrade to Premium Member at \nwww.geocaching.com!";
+
+								message = s;
+
+								onlineSearchReadyHandler
+										.sendMessage(onlineSearchReadyHandler
+												.obtainMessage(2));
+
+								return;
+							}
+
+							if (!CB_Core.Api.GroundspeakAPI
+									.IsPremiumMember(accessToken)) {
+								String s = "Download Details of this cache?\n";
+								s += "Full Downloads left: "
+										+ CB_Core.Api.GroundspeakAPI.CachesLeft
+										+ "\n";
+								s += "Actual Downloads: "
+										+ CB_Core.Api.GroundspeakAPI.CurrentCacheCount
+										+ "\n";
+								s += "Max. Downloads in 24h: "
+										+ CB_Core.Api.GroundspeakAPI.MaxCacheCount;
+								MessageBox.Show(s,
+										Global.Translations.Get("GC_title"),
+										MessageBoxButtons.OKCancel,
+										MessageBoxIcon.Powerd_by_GC_Live,
+										DownloadCacheDialogResult);
+							} else {
+								// call the download directly
+								DownloadCacheDialogResult.onClick(null, -1);
+							}
+
+							onlineSearchReadyHandler
+									.sendMessage(onlineSearchReadyHandler
+											.obtainMessage(1));
+							return;
+						}
+					};
+					pd = ProgressDialog.show(getContext(), "",
+							"Download Description", true);
+
+					thread.start();
 
 					return true;
 				}
@@ -171,6 +197,23 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 
 		});
 	}
+
+	private String message = "";
+	private Handler onlineSearchReadyHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case 1: {
+				pd.dismiss();
+			}
+			case 2: {
+				pd.dismiss();
+				MessageBox.Show(message, Global.Translations.Get("GC_title"),
+						MessageBoxButtons.OKCancel,
+						MessageBoxIcon.Powerd_by_GC_Live, null);
+			}
+			}
+		}
+	};
 
 	private DialogInterface.OnClickListener DownloadCacheDialogResult = new DialogInterface.OnClickListener() {
 		@Override
@@ -183,13 +226,14 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 					aktCache = newCache;
 					setCache(newCache);
 
-					// hier ist kein AccessToke mehr notwendig, da diese Info bereits im Cache sein muss!
-					if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember(""))
-					{
+					// hier ist kein AccessToke mehr notwendig, da diese Info
+					// bereits im Cache sein muss!
+					if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember("")) {
 						String s = "Download successful!\n";
-						s += "Downloads left for today: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
+						s += "Downloads left for today: "
+								+ CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
 						s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
-						
+
 						MessageBox.Show(s, Global.Translations.Get("GC_title"),
 								MessageBoxButtons.OKCancel,
 								MessageBoxIcon.Powerd_by_GC_Live, null);
@@ -226,7 +270,11 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 			if (cache.ApiStatus == 1)// GC.com API lite
 			{ // Load Standard HTML
 				String nodesc = Global.Translations.Get("GC_NoDescription");
-				html = "</br>" + nodesc + "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" " + Global.Translations.Get("GC_DownloadDescription") + " \"></form>";
+				html = "</br>"
+						+ nodesc
+						+ "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" "
+						+ Global.Translations.Get("GC_DownloadDescription")
+						+ " \"></form>";
 			} else {
 				html = DescriptionImageGrabber.ResolveImages(cache, cachehtml,
 						!Config.GetBool("AllowInternetAccess"), NonLocalImages,
@@ -380,7 +428,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 		if (isVisible)
 			setCache(aktCache); // Wenn die View nicht sichtbar, brauch auch das
 								// HTML nicht geladen werden!
-			// }
+		// }
 	}
 
 	@Override
