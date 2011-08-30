@@ -47,7 +47,6 @@ public class CB_Api
 	 */
 	public static String getGcAuthUrl()
 	{
-		
 		String result = "";
 
 		try {

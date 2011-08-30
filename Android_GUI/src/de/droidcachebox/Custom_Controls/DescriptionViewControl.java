@@ -168,20 +168,18 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 										+ "\n";
 								s += "Max. Downloads in 24h: "
 										+ CB_Core.Api.GroundspeakAPI.MaxCacheCount;
-								MessageBox.Show(s,
-										Global.Translations.Get("GC_title"),
-										MessageBoxButtons.OKCancel,
-										MessageBoxIcon.Powerd_by_GC_Live,
-										DownloadCacheDialogResult);
+								message = s;
+								onlineSearchReadyHandler
+										.sendMessage(onlineSearchReadyHandler
+												.obtainMessage(3));
+								return;
 							} else {
 								// call the download directly
-								DownloadCacheDialogResult.onClick(null, -1);
+								onlineSearchReadyHandler
+								.sendMessage(onlineSearchReadyHandler
+										.obtainMessage(4));
+								return;
 							}
-
-							onlineSearchReadyHandler
-									.sendMessage(onlineSearchReadyHandler
-											.obtainMessage(1));
-							return;
 						}
 					};
 					pd = ProgressDialog.show(getContext(), "",
@@ -204,12 +202,27 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 			switch (msg.what) {
 			case 1: {
 				pd.dismiss();
+				break;
 			}
 			case 2: {
 				pd.dismiss();
 				MessageBox.Show(message, Global.Translations.Get("GC_title"),
 						MessageBoxButtons.OKCancel,
 						MessageBoxIcon.Powerd_by_GC_Live, null);
+				break;
+			}
+			case 3: {
+				pd.dismiss();
+				MessageBox.Show(message, Global.Translations.Get("GC_title"),
+						MessageBoxButtons.OKCancel,
+						MessageBoxIcon.Powerd_by_GC_Live,
+						DownloadCacheDialogResult);
+				break;
+			}
+			case 4: {
+				pd.dismiss();
+				DownloadCacheDialogResult.onClick(null, -1);
+				break;
 			}
 			}
 		}

@@ -252,8 +252,6 @@ public class GroundspeakAPI {
 					int memberTypeId = memberType.getInt("MemberTypeId");
 					MemberName = user.getString("UserName");
 					// Zurücksetzen, falls ein anderer User gewählt wurde
-					CacheStatusValid = false;
-					CacheStatusLiteValid = false;
 					return memberTypeId;
 				} else {
 					result = "StatusCode = " + status.getInt("StatusCode")

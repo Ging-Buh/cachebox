@@ -124,6 +124,8 @@ public class GcApiLogin extends Activity {
 
 			Thread thread = new Thread() {
 				public void run() {
+					GroundspeakAPI.CacheStatusValid = false;
+					GroundspeakAPI.CacheStatusLiteValid = false;
 
 					GroundspeakAPI.GetMembershipType(accessToken);
 
