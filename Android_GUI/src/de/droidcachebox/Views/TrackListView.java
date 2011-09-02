@@ -733,7 +733,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	@Override
 	public void OnShow() 
 	{
-		
+		ActivityUtils.setListViewPropertys(this);
 		selectedItem=null;
 		lvAdapter.notifyDataSetInvalidated();
 		invalidate();

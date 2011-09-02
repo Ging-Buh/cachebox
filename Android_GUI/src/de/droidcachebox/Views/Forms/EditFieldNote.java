@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Geocaching.FieldNoteEntry;
+import de.droidcachebox.Ui.ActivityUtils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -34,6 +35,7 @@ public class EditFieldNote extends Activity {
 	
 	public void onCreate(Bundle savedInstanceState) 
 	{
+		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.edit_fieldnote);
         aktIntent = getIntent();

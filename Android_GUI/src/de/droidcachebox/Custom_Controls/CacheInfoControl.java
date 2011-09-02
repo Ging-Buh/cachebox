@@ -44,14 +44,7 @@ public final class CacheInfoControl extends View {
 	public CacheInfoControl(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		
-		TypedArray a = context.obtainStyledAttributes(attrs,
-		        R.styleable.CompassControlStyle);
-
 		
-		/*rimColorFilter =  a.getColor(R.styleable.CompassControlStyle_Compass_rimColorFilter, rimColorFilter);*/
-	
-		
-		a.recycle();
 	}
 
 	public CacheInfoControl(Context context, AttributeSet attrs, int defStyle) {
@@ -187,12 +180,14 @@ public final class CacheInfoControl extends View {
 	{
 		useOwnBackColor=true;
 		ownBackgroundColor = BackGroundColor;
-		aktCache = cache;
+		if(cache!=null)
+			aktCache = cache;
 	}
 	
 	
 	public void setCache(Cache cache)
 	{
+		useOwnBackColor=false;
 		aktCache = cache;
 	}
 	

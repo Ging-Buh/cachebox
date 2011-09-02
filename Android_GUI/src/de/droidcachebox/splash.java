@@ -138,7 +138,7 @@ public class splash extends Activity
 		setProgressState(20, Global.Translations.Get("IniUI"));
 		 	Sizes.initial(false, this);
 			Global.Paints.init(this);
-	        Global.InitIcons(this, false);
+	        Global.InitIcons(this);
 	        
         setProgressState(40, Global.Translations.Get("LoadMapPack"));
 	        File dir = new File(Config.GetString("MapPackFolder"));

@@ -14,6 +14,7 @@ import CB_Core.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.DAO.WaypointDAO;
@@ -231,6 +232,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 	
 	@Override
 	public void OnShow() {
+		ActivityUtils.setListViewPropertys(this);
 		// aktuellen Waypoint in der List anzeigen
 		int first = this.getFirstVisiblePosition();
 		int last = this.getLastVisiblePosition();
@@ -287,7 +289,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 		        Bundle b = new Bundle();
 		        b.putSerializable("Waypoint", aktWaypoint);
 		        mainIntent.putExtras(b);
-	    		parentActivity.startActivityForResult(mainIntent, 0);
+	    		main.mainActivity.startActivityForResult(mainIntent, 0);
 			}
 			break;
 			case R.id.menu_waypointview_new:
@@ -307,7 +309,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				Bundle b = new Bundle();
 				b.putSerializable("Waypoint", newWP);
 				mainIntent.putExtras(b);
-	    		parentActivity.startActivityForResult(mainIntent, 0);
+				main.mainActivity.startActivityForResult(mainIntent, 0);
 				break;
 			case R.id.menu_waypointview_project:
 				createNewWaypoint = true;
@@ -328,7 +330,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 		        b2.putSerializable("Title", Global.Translations.Get("Projection"));
 		        b2.putSerializable("Radius", false);
 		        coordIntent.putExtras(b2);
-		        parentActivity.startActivityForResult(coordIntent, 0);
+		        main.mainActivity.startActivityForResult(coordIntent, 0);
 				break;
 			case R.id.menu_waypointview_delete:
 				DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {

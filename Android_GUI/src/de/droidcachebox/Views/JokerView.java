@@ -199,6 +199,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 
 	@Override
 	public void OnShow() {
+		ActivityUtils.setListViewPropertys(this);
 	}
 
 	@Override

@@ -32,6 +32,7 @@ import android.content.Intent;
 import android.graphics.*;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -94,6 +95,18 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	private ActivityManager activityManager;
 	private long available_bytes;
 	
+	// paint with invert Matrix
+	private Paint invertPaint = new Paint();
+	
+	private final float[] mx = {
+			 -1.0f,  0.0f,  0.0f,  0.0f,  255.0f,
+			 0.0f,  -1.5f,  0.0f,  0.0f,  200.0f,
+			 0.0f,  0.0f,  -1.5f,  0.0f,  0.f,
+			 0.0f,  0.0f,  0.0f,  1.0f,  0.0f
+	};
+
+	private final ColorMatrix cm = new ColorMatrix(mx);
+	
 	private float rangeFactorTiles = 1.0f;
 	private float rangeFactorTrack = 1.0f;
 	
@@ -116,6 +129,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		lockPosition = 0;
 		useLockPosition = true;
 		myContext = context;
+		
+		invertPaint.setColorFilter(new ColorMatrixColorFilter(cm));
+
+		
 		
 		Global.SmoothScrolling = SmoothScrollingTyp.valueOf(Config.GetString("SmoothScrolling"));
 
@@ -1978,7 +1995,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 */      
     void renderCaches()
     {
-
+    		
+    	boolean N =Config.GetBool("nightMode");
+    	
     	int smallStarHeight = (int)((double)Global.SmallStarIcons[1].getMinimumHeight());
 
     	int bubbleX = 0;
@@ -2103,9 +2122,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    if (drawAsWaypoint)
 		    {  // Aktiver WP -> Titel oder GCCode
 		    	wpName = (wpi.Waypoint.Title == "") ? wpi.Waypoint.GcCode : wpi.Waypoint.Title;
-		    	fontSmall.setColor(Color.WHITE);
+		    	fontSmall.setColor(N? Color.BLACK : Color.WHITE);
 		    	canvasOverlay.drawText(wpName, x + halfIconWidth + 4, y, fontSmall);
-		    	fontSmall.setColor(Color.BLACK);
+		    	fontSmall.setColor(Global.getColor(R.attr.TextColor));
 		    	canvasOverlay.drawText(wpName, x + halfIconWidth + 5, y + 1, fontSmall);
 		    }
 		    else 
@@ -2114,9 +2133,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    	if (showRating)
 		    		yoffset += 10 ;
 		    	int fwidth = (int)(fontSmall.measureText(wpName) / 2);
-		    	fontSmall.setColor(Color.WHITE);
+		    	fontSmall.setColor(N? Color.BLACK : Color.WHITE);
 		    	canvasOverlay.drawText(wpName, x - fwidth, y + halfIconWidth + yoffset, fontSmall);
-		    	fontSmall.setColor(Color.BLACK);
+		    	fontSmall.setColor(Global.getColor(R.attr.TextColor));
 		    	canvasOverlay.drawText(wpName, (x - fwidth) + 1, y + halfIconWidth + yoffset + 1, fontSmall);
 		    }
 		  }
@@ -2129,7 +2148,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    int halfSmallStarWidth = (int)(((double)img.getMinimumWidth() / 2.0)* dpiScaleFactorX );
 		    int smallStarWidth = (int)((double)img.getMinimumWidth()* dpiScaleFactorX );
 		    img.setBounds(x - halfSmallStarWidth, y + halfUnderlayWidth + 2, x - halfSmallStarWidth + smallStarWidth, y + halfUnderlayWidth + 2 + smallStarHeight);
+		    
 		    img.draw(canvasOverlay);
+		    
 		    img.setBounds(bounds);
 		  }
 		
@@ -2206,9 +2227,15 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		}
     }
 
+    
     void drawImage(Canvas aCanvas, Bitmap image, int x, int y, int width, int height)
     {
-        aCanvas.drawBitmap(image, new Rect(0, 0, image.getWidth(), image.getHeight()), new Rect(x, y, x + width, y + height), null);
+    	drawImage( aCanvas,  image,  x,  y,  width,  height,null);
+    }
+    
+    void drawImage(Canvas aCanvas, Bitmap image, int x, int y, int width, int height,Paint p)
+    {
+        aCanvas.drawBitmap(image, new Rect(0, 0, image.getWidth(), image.getHeight()), new Rect(x, y, x + width, y + height), p);
 //        graphics.DrawImage(image, new Rectangle(x, y, width, height), 0, 0, image.Width, image.Height, GraphicsUnit.Pixel);
     }
     void drawImage(Canvas aCanvas, Drawable image, int x, int y, int width, int height)
@@ -2355,7 +2382,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     int lastWpCount = 0;
     PointD lastRenderedPosition = new PointD(Double.MAX_VALUE, Double.MAX_VALUE);
 
-    
+    /**
+     * If Night Mode
+     */
+    boolean N=false;
     boolean overrideRepaintInteligence;
     public void Render(boolean overrideRepaintInteligence1)
     {
@@ -2364,7 +2394,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 //    	debugString1 = loadedTiles.size() + " / " + trackTiles.size() + " / " + numLoadedTiles();
 //    	debugString2 = available_bytes * 1024 - Debug.getNativeHeapAllocatedSize() / 1024 + " kB";
-    	
+    	N=Config.GetBool("nightMode");
     	overrideRepaintInteligence =overrideRepaintInteligence1;
     	
     	try
@@ -2611,7 +2641,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       int leftString = left + buttonTrackPosition.getHeight() + 10;
 
       Paint paint = new Paint();
-      paint.setColor(myContext.getResources().getColor(R.color.Day_ColorCompassPanel));
+      paint.setColor(Global.getColor(R.attr.Map_ColorCompassPanel));
       paint.setStyle(Style.FILL);
       canvasOverlay.drawRect(left, top, right, bottom + debugHeight, paint);
 
@@ -2633,7 +2663,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
         paint = new Paint(font);
         paint.setTextAlign(Align.RIGHT);
-        paint.setColor(myContext.getResources().getColor(R.color.Day_ColorCompassText));
+        paint.setColor(Global.getColor(R.attr.Map_Compass_TextColor));
         canvasOverlay.drawText(textLatitude, right - 5, top + compassCenter - 10, paint);
         canvasOverlay.drawText(textLongitude, right - 5, bottom - 10, paint);
 
@@ -2998,7 +3028,15 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
       if (tile.State == Tile.TileState.Present || tile.State == Tile.TileState.LowResolution)
       {
-        drawImage(canvas, tile.Image, pt.x, pt.y, (int)(256.0f * multiTouchFaktor), (int)(256.0f * multiTouchFaktor));
+    	  if(N)
+    	  {
+    		  drawImage(canvas, tile.Image, pt.x, pt.y, (int)(256.0f * multiTouchFaktor), (int)(256.0f * multiTouchFaktor),invertPaint);
+    	  }
+    	  else
+    	  {
+    		  drawImage(canvas, tile.Image, pt.x, pt.y, (int)(256.0f * multiTouchFaktor), (int)(256.0f * multiTouchFaktor)); 
+    	  }
+        
  
         if (drawBestFit)
         {
@@ -3030,7 +3068,17 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		  // um ohne Verzerrungen oder Lücken zu zoomen und scrollen
     		  tile.Image = bit;
     		  tile.State = Tile.TileState.LowResolution;
-    	      drawImage(canvas, bit, pt.x, pt.y, (int)(256.0f * multiTouchFaktor), (int)(256.0f * multiTouchFaktor));
+    		  
+    		  if(Config.GetBool("nightMode"))
+        	  {
+    			  drawImage(canvas, bit, pt.x, pt.y, (int)(256.0f * multiTouchFaktor), (int)(256.0f * multiTouchFaktor),invertPaint);
+        	  }
+    		  else
+    		  {
+    			  drawImage(canvas, bit, pt.x, pt.y, (int)(256.0f * multiTouchFaktor), (int)(256.0f * multiTouchFaktor));
+    		  }
+    		  
+    	      
     	  } else
     		  canvas.drawRect(pt.x, pt.y, pt.x + (int)(256 * multiTouchFaktor), pt.y + (int)(256 * multiTouchFaktor), backBrush);
         //.FillRectangle(backBrush, pt.X, pt.Y, (int)(256 * ), (int)(256 * ));

@@ -25,6 +25,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -772,16 +773,17 @@ public class MessageBox extends android.app.Dialog {
                 ((TextView) layout.findViewById(R.id.message)).setText(message);
                 ((TextView) layout.findViewById(R.id.message)).setTextSize((float) (Sizes.getScaledFontSize_small()));
                 
-                ((TextView) layout.findViewById(R.id.message)).measure(Sizes.getWindowWidth(), Sizes.getWindowHeight()-100);
+                ((TextView) layout.findViewById(R.id.message)).measure(Sizes.getWindowWidth()-100, Sizes.getWindowHeight()-100);
                 int height = ((TextView) layout.findViewById(R.id.message)).getMeasuredHeight();
-                
+               
+                LayoutParams params = ((ScrollView) layout.findViewById(R.id.ScrollView01)).getLayoutParams();
                 if (height>Sizes.getWindowHeight() - (Sizes.getButtonHeight()*4))
                 {
                 	height=Sizes.getWindowHeight() - (Sizes.getButtonHeight()*4);
-                	 LayoutParams params = ((ScrollView) layout.findViewById(R.id.ScrollView01)).getLayoutParams();
-                     params.height=height;
+                	params.height=height;
                     ((ScrollView) layout.findViewById(R.id.ScrollView01)).setLayoutParams(params);
                 }
+               
                   
                 
                
@@ -808,10 +810,36 @@ public class MessageBox extends android.app.Dialog {
             	((ImageView) layout.findViewById(R.id.icon)).setVisibility(View.GONE);
             }
             
+            setBackgroundDrawables(layout);
+            
             dialog.setContentView(layout);
             return dialog;
         }
 
+        
+        
+        private void setBackgroundDrawables(View layout)
+        {
+        	Resources res = context.getResources();
+        	        	
+        	
+        	Drawable header = res.getDrawable(main.N? R.drawable.night_header : R.drawable.header);
+        	Drawable title = res.getDrawable(main.N? R.drawable.night_title : R.drawable.title);
+        	Drawable center = res.getDrawable(main.N? R.drawable.night_center : R.drawable.center);
+        	Drawable footer = res.getDrawable(main.N? R.drawable.night_footer : R.drawable.footer);
+        	
+        	((LinearLayout) layout.findViewById(R.id.header)).setBackgroundDrawable(header);
+        	((TextView) layout.findViewById(R.id.title)).setBackgroundDrawable(title);
+        	((LinearLayout) layout.findViewById(R.id.content)).setBackgroundDrawable(center);
+        	((LinearLayout) layout.findViewById(R.id.footer)).setBackgroundDrawable(footer);
+        	
+        	((TextView) layout.findViewById(R.id.title)).setTextColor(Global.getColor(R.attr.TextColor));
+        	((TextView) layout.findViewById(R.id.message)).setTextColor(Global.getColor(R.attr.TextColor));
+        	
+        	res= null;
+        }
+        
+        
 				 
     }
 

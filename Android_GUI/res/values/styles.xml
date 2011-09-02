@@ -129,5 +129,23 @@
 		<item name="android:windowNoTitle">true</item>
 		<item name="android:windowIsFloating">true</item>
 	</style>
+	
+	<style name="red_edittext" parent="@android:style/Widget.EditText">
+ 	<item name="android:focusable">true</item>
+ 	<item name="android:focusableInTouchMode">true</item>
+ 	<item name="android:clickable">true</item>
+ 	<item name="android:background">@drawable/red_edit_text</item>
+ 	<item name="android:textColor">@color/Night_Foreground</item>
+ 	<item name="android:gravity">center_vertical</item>
+ 	<item name="android:textColorHint">@color/Night_Foreground</item>
+ 	<item name="android:textColorHighlight">@color/transparent_red</item>
+ </style>
+ 
+ 
+ 
+ <style name="redAlertDialog" parent="@android:style/AlertDialog">
+        
+        <item name="android:windowBackground">@null</item> 
+    </style>
 
 </resources>

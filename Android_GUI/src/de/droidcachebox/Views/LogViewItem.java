@@ -24,7 +24,7 @@ public class LogViewItem extends View {
     private int mAscent;
     private int width;
     private int height;
-    private static TextPaint textPaint;
+    public static TextPaint textPaint;
     private StaticLayout layoutComment;
     private StaticLayout layoutFinder;
     
@@ -122,14 +122,23 @@ public class LogViewItem extends View {
     
     
     // static Member
-    private static Paint Linepaint;
-    private static Paint NamePaint;
+    public static Paint Linepaint;
+    public static Paint NamePaint;
     private static int headHeight;
     private static int headLinePos;
     @Override
     protected void onDraw(Canvas canvas) {
       
        //initial
+    	
+    	if(textPaint==null)
+        {
+        	textPaint = new TextPaint();
+        	textPaint.setTextSize(Sizes.getScaledFontSize_normal());
+        	textPaint.setColor(Global.getColor(R.attr.TextColor));
+        	textPaint.setAntiAlias(true);
+        }
+    	
        if (Linepaint==null)
        {
     	   Linepaint = new Paint();

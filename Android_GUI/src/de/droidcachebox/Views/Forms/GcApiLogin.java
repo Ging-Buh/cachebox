@@ -2,6 +2,7 @@ package de.droidcachebox.Views.Forms;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.Ui.ActivityUtils;
 import CB_Core.Config;
 import CB_Core.Api.CB_Api;
 import CB_Core.Api.GroundspeakAPI;
@@ -24,6 +25,7 @@ public class GcApiLogin extends Activity {
 	private static boolean pdIsShow = false;
 
 	public void onCreate(Bundle savedInstanceState) {
+		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.gcapilogin);
 		gcApiLogin = this;

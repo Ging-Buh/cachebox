@@ -153,7 +153,7 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 	@Override
 	public void OnShow() {
 		PositionEventList.Add(this);
-
+		ActivityUtils.setListViewPropertys(this);
 		// aktuellen Cache in der List anzeigen
 		if (GlobalCore.SelectedCache() != null)
 		{

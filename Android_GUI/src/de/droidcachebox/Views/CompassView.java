@@ -109,7 +109,20 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
     }
 	
 	
-    
+    public void reInit()
+    {
+    	compassControl.init();
+    	this.setBackgroundColor(Global.getColor(R.attr.myBackground));
+    	SelectedCacheChanged( aktCache,  aktWaypoint);
+    	int cacheInfoBackColor = Global.getColor(R.attr.ListBackground_select);
+    	if (aktWaypoint != null)
+        {
+			cacheInfoBackColor = Global.getColor(R.attr.ListBackground_secend);
+        }
+    	DescriptionTextView.setCache(aktCache, cacheInfoBackColor);
+    	DescriptionTextView.invalidate();
+    	WP_info.invalidate();
+    }
     
 	
 
@@ -154,6 +167,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 	@Override
 	public void OnShow() 
 	{
+		compassControl.N=Config.GetBool("nightMode");
 		PositionEventList.Add(this);
 	}
 

@@ -24,6 +24,8 @@ import de.droidcachebox.Ui.Sizes;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -149,7 +151,7 @@ private static DialogInterface.OnClickListener listner;
 	 */
 	    public static class Builder {
 	 
-	        private Context context;
+	        private static Context context;
 	        private String title;
 	        private String message;
 	        private String positiveButtonText;
@@ -375,7 +377,7 @@ private static DialogInterface.OnClickListener listner;
 	           
 	            editText =(EditText) layout.findViewById(R.id.editNumber);
 	            ActivityUtils.initialNumPadInt(main.mainActivity,layout,editText,String.valueOf(value),null,null);     
-	            
+	            setBackgroundDrawables(layout);
 	            dialog.setContentView(layout);
 	            return dialog;
 	        }
@@ -385,6 +387,27 @@ private static DialogInterface.OnClickListener listner;
 			
 	    public static EditText editText;
 	  
+	    
+	    private static void setBackgroundDrawables(View layout)
+        {
+        	Resources res = Builder.context.getResources();
+        	        	
+        	
+        	Drawable header = res.getDrawable(main.N? R.drawable.night_header : R.drawable.header);
+        	Drawable title = res.getDrawable(main.N? R.drawable.night_title : R.drawable.title);
+        	Drawable center = res.getDrawable(main.N? R.drawable.night_center : R.drawable.center);
+        	Drawable footer = res.getDrawable(main.N? R.drawable.night_footer : R.drawable.footer);
+        	
+        	((LinearLayout) layout.findViewById(R.id.header)).setBackgroundDrawable(header);
+        	((TextView) layout.findViewById(R.id.title)).setBackgroundDrawable(title);
+        	((LinearLayout) layout.findViewById(R.id.content)).setBackgroundDrawable(center);
+        	((LinearLayout) layout.findViewById(R.id.footer)).setBackgroundDrawable(footer);
+        	
+        	((TextView) layout.findViewById(R.id.title)).setTextColor(Global.getColor(R.attr.TextColor));
+        	((TextView) layout.findViewById(R.id.message)).setTextColor(Global.getColor(R.attr.TextColor));
+        	
+        	res= null;
+        }
 	    
 	    
 	    

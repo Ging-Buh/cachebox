@@ -4,6 +4,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Ui.ActivityUtils;
 import CB_Core.Events.ProgressChangedEvent;
 import CB_Core.Events.ProgresssChangedEventList;
 import android.app.Activity;
@@ -146,7 +147,7 @@ public class ProgressDialog extends Activity implements ProgressChangedEvent,Vie
 	
 
 	public void onCreate(Bundle savedInstanceState) {
-		
+		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.progress_dialog_layout);
 		

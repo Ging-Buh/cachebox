@@ -28,16 +28,15 @@
 		<attr name="FindBtnImageSelector" format="reference" />
 		<attr name="MiscBtnImageSelector" format="reference" />
 		<attr name="BtnBackGround" format="reference" />
-		
-	</declare-styleable>
-	
-	
-	<declare-styleable name="CompassControlStyle">
 		<attr name="Compass_rimColorFilter" format="reference|color" /><!-- (255, 0, 50, 0) -->
 		<attr name="Compass_faceColorFilter" format="reference|color" /><!-- (255, 30, 255, 30) -->
 		<attr name="Compass_TextColor" format="reference|color" /><!-- (255, 0, 0, 0) -->
 		<attr name="Compass_N_TextColor" format="reference|color" /><!-- (255, 200, 0, 0) -->
+		<attr name="Map_Compass_TextColor" format="reference|color" />
+		<attr name="Map_ColorCompassPanel" format="reference|color" />
 	</declare-styleable>
+	
+	
 	
 	<declare-styleable name="MultiToggleButtonStyle">
 		<attr name="MultiToggleButton_Background" format="reference" />

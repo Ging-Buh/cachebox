@@ -23,6 +23,7 @@ import CB_Core.TranslationEngine.SelectedLangChangedEvent;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.TranslationEngine.LangStrings.Langs;
 import CB_Core.Types.MoveableList;
+import android.R.color;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -163,6 +164,7 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		Bundle bundle = getIntent().getExtras();
         int PerformButtonClickID  = (Integer)bundle.getSerializable("Show");
         
+        this.getWindow().setBackgroundDrawableResource(Config.GetBool("nightMode")? color.darker_gray:color.background_dark);
 		
 		context = this.getBaseContext();
 		Me = this;		

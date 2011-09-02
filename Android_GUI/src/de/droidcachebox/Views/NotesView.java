@@ -2,12 +2,14 @@ package de.droidcachebox.Views;
 
 import de.droidcachebox.Database;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -30,10 +32,11 @@ public class NotesView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		mustLoadNotes = false;
 		SelectedCacheEventList.Add(this);
 
-		RelativeLayout notesLayout = (RelativeLayout)inflater.inflate(R.layout.notesview, null, false);
+		RelativeLayout notesLayout = (RelativeLayout)inflater.inflate(main.N? R.layout.night_notesview : R.layout.notesview, null, false);
 		this.addView(notesLayout);
         edNotes = (EditText) findViewById(R.id.notesText);
-        edNotes.setTextColor(Color.BLACK);
+        
+       
 }
 
 	@Override
@@ -70,11 +73,22 @@ public class NotesView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	@Override
 	public void OnHide() {
 		// Save changed Note text
-		Database.SetNote(aktCache,edNotes.getText().toString());		
+		try {
+			Database.SetNote(aktCache,edNotes.getText().toString());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 	}
 
 	@Override
 	public void OnFree() {
+		try {
+			Database.SetNote(aktCache,edNotes.getText().toString());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 		aktCache = null;
 	}
 	

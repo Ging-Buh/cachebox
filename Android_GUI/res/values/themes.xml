@@ -24,8 +24,8 @@
 		<item name="Compass_TextColor">@color/Day_Compass_TextColor</item>
 		<item name="Compass_N_TextColor">@color/Day_Compass_N_TextColor</item>
 		<item name="android:spinnerStyle">@style/day_Spinner</item> 
-		<item name="MultiToggleButton_Background">@drawable/day_btn_default_normal</item>
-		<item name="MultiToggleButton_Background_pressed">@drawable/day_btn_default_normal_pressed</item>
+		<item name="MultiToggleButton_Background">@drawable/night_btn_default_normal</item>
+		<item name="MultiToggleButton_Background_pressed">@drawable/night_btn_default_normal_pressed</item>
 		<item name="MultiToggleButton_Led">@drawable/day_btn_toggle_off</item>
 		<item name="ToggleBtColor_off">@color/Day_toggle_off</item>
 		<item name="ToggleBtColor_on">@color/Day_toggle_on</item>
@@ -41,6 +41,8 @@
 		<item name="FindBtnImageSelector">@drawable/find_button_image_selector</item>
 		<item name="MiscBtnImageSelector">@drawable/misc_button_image_selector</item>
 		<item name="BtnBackGround">@drawable/hintergrund</item> 
+		<item name="Map_Compass_TextColor">@color/Day_ColorCompassText</item>
+		<item name="Map_ColorCompassPanel">@color/Day_ColorCompassPanel</item>
 	</style>
     
     
@@ -84,6 +86,9 @@
 		<item name="FindBtnImageSelector">@drawable/night_find_button_image_selector</item>
 		<item name="MiscBtnImageSelector">@drawable/night_misc_button_image_selector</item> 
 		<item name="BtnBackGround">@drawable/night_hintergrund</item>   
+		<item name="Map_Compass_TextColor">@color/Night_ColorCompassText</item>
+		<item name="Map_ColorCompassPanel">@color/Night_ColorCompassPanel</item>
+		<item name="android:editTextStyle">@style/red_edittext</item>
     </style>
     
     

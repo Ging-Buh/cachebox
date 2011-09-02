@@ -126,11 +126,11 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu  {
 
 
  // static Member
-    private static Paint Linepaint;
-    private static Paint TextPaint;
+    public static Paint Linepaint;
+    public static Paint TextPaint;
     private static int headHeight;
     private static int headLinePos;
-    private static TextPaint cacheNamePaint;
+    public static TextPaint cacheNamePaint;
     private static int nameLayoutWidth = 0;
     @Override
     protected void onDraw(Canvas canvas) {

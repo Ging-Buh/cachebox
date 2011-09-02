@@ -340,7 +340,7 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
         b.putSerializable("FieldNote", newFieldNote);
         mainIntent.putExtras(b);
         
-		parentActivity.startActivityForResult(mainIntent, 0);
+        main.mainActivity.startActivityForResult(mainIntent, 0);
 		
 	}
 
@@ -348,7 +348,12 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
 
 	@Override
 	public void OnShow() {
-		// TODO Auto-generated method stub
+		//reinitial colors
+		ActivityUtils.setListViewPropertys(this);
+		FieldNoteViewItem.Linepaint=null;
+		FieldNoteViewItem.TextPaint=null;
+		FieldNoteViewItem.cacheNamePaint=null;
+		
 		if (lFieldNotes.size() == 0)
 			lFieldNotes.LoadFieldNotes("");
 	}
@@ -467,7 +472,7 @@ public class FieldNotesView extends ListView implements  ViewOptionsMenu {
         Bundle b = new Bundle();
         b.putSerializable("FieldNote", aktFieldNote);
         mainIntent.putExtras(b);
-		parentActivity.startActivityForResult(mainIntent, 0);		    	
+        main.mainActivity.startActivityForResult(mainIntent, 0);		    	
     }
     
     private void deleteFieldNote()

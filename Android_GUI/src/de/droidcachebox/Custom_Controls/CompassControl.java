@@ -3,6 +3,8 @@ package de.droidcachebox.Custom_Controls;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
+import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import android.content.Context;
@@ -37,16 +39,13 @@ public final class CompassControl extends View {
 	public CompassControl(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
-		TypedArray a = context.obtainStyledAttributes(attrs,
-		        R.styleable.CompassControlStyle);
-
+				
+		rimColorFilter =  Global.getColor(R.attr.Compass_rimColorFilter);
+		faceColorFilter =  Global.getColor(R.attr.Compass_faceColorFilter);
+		TextColor =  Global.getColor(R.attr.Compass_TextColor);
+		N_TextColor =  Global.getColor(R.attr.Compass_N_TextColor);
 		
-		rimColorFilter =  a.getColor(R.styleable.CompassControlStyle_Compass_rimColorFilter, rimColorFilter);
-		faceColorFilter =  a.getColor(R.styleable.CompassControlStyle_Compass_faceColorFilter, faceColorFilter);
-		TextColor =  a.getColor(R.styleable.CompassControlStyle_Compass_TextColor, TextColor);
-		N_TextColor =  a.getColor(R.styleable.CompassControlStyle_Compass_N_TextColor, N_TextColor);
 		
-		a.recycle();
 	}
 
 	public CompassControl(Context context, AttributeSet attrs, int defStyle) {
@@ -100,12 +99,22 @@ public final class CompassControl extends View {
 	private int TextColor = Color.argb(255, 0, 0, 0);
 	private int N_TextColor = Color.argb(255, 200, 0, 0);
 	
-	private String distance = "Entfernung";
+	private String distance = "distance";
 	
 	
-	private void init() {
+	public void init() 
+	{
+		
+		
+		rimColorFilter =  Global.getColor(R.attr.Compass_rimColorFilter);
+		faceColorFilter =  Global.getColor(R.attr.Compass_faceColorFilter);
+		TextColor =  Global.getColor(R.attr.Compass_TextColor);
+		N_TextColor =  Global.getColor(R.attr.Compass_N_TextColor);
+
 		
 		initDrawingTools();
+		regenerateBackground();
+		this.invalidate();
 	}
 
 	
@@ -116,7 +125,7 @@ public final class CompassControl extends View {
 		rimPaint = new Paint();
 		rimPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
 		rimPaint.setShader(new LinearGradient(0.40f, 0.0f, 0.60f, 1.0f, 
-										   Color.rgb(0xf0, 0xf5, 0xf0),
+			main.N?	Color.rgb(0x40, 0x45, 0x40):	Color.rgb(0xf0, 0xf5, 0xf0),
 										   Color.rgb(0x30, 0x31, 0x30),
 										   Shader.TileMode.CLAMP));		
 
@@ -132,7 +141,13 @@ public final class CompassControl extends View {
 			     rimRect.right - rimSize, rimRect.bottom - rimSize);		
 
 		faceTexture = BitmapFactory.decodeResource(getContext().getResources(), 
-				   R.drawable.plastic);
+				!Config.GetBool("nightMode")?   
+				R.drawable.plastic
+				:
+				R.drawable.night_plastic
+		);
+		
+		
 		BitmapShader paperShader = new BitmapShader(faceTexture, 
 												    Shader.TileMode.MIRROR, 
 												    Shader.TileMode.MIRROR);
@@ -169,7 +184,7 @@ public final class CompassControl extends View {
 					  faceRect.right - scalePosition, faceRect.bottom - scalePosition);
 
 		distancePaint = new Paint();
-		distancePaint.setColor(0xaf946109);
+		distancePaint.setColor(N? 0xafBA6109 : 0xaf946109);
 		distancePaint.setAntiAlias(true);
 		distancePaint.setTypeface(Typeface.DEFAULT_BOLD);
 		distancePaint.setTextAlign(Paint.Align.CENTER);
@@ -181,7 +196,7 @@ public final class CompassControl extends View {
 
 		arrowPaint = new Paint();
 		arrowPaint.setFilterBitmap(true);
-		arrow = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.arrow);
+		arrow = BitmapFactory.decodeResource(getContext().getResources(), main.N? R.drawable.night_arrow : R.drawable.arrow);
 		arrowMatrix = new Matrix();
 		arrowScale = (1.0f / arrow.getWidth()) * 0.3f;;
 		arrowMatrix.setScale(arrowScale, arrowScale);
@@ -315,6 +330,8 @@ public final class CompassControl extends View {
 		canvas.drawTextOnPath(distance, distancePath, 0.0f,0.0f, distancePaint);				
 	}
 	
+	public Boolean N =false;
+	
 	private void drawArrow(Canvas canvas) {
 		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
         {
@@ -323,7 +340,7 @@ public final class CompassControl extends View {
 			canvas.translate(0.5f - arrow.getWidth() * arrowScale / 2.0f, 
 							 0.5f - arrow.getHeight() * arrowScale / 2.0f);
 	
-			int color = 0xFF0000;
+			int color = N? 0x250000 :0xFF0000 ;
 	
 			LightingColorFilter logoFilter = new LightingColorFilter(0xff008800, color);
 			arrowPaint.setColorFilter(logoFilter);
@@ -336,7 +353,8 @@ public final class CompassControl extends View {
 	
 
 	private void drawBackground(Canvas canvas) {
-		if (background == null) {
+		if (background == null) 
+		{
 			Log.w("CacheBox", "Background not created");
 		} else {
 			canvas.drawBitmap(background, centerDrawingPointX, centerDrawingPointY, backgroundPaint);

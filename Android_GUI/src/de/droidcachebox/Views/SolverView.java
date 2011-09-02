@@ -2,6 +2,7 @@ package de.droidcachebox.Views;
 
 import de.droidcachebox.Database;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
@@ -40,10 +41,10 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu, Selected
 		mustLoadSolver = false;
 		SelectedCacheEventList.Add(this);
 
-		RelativeLayout solverLayout = (RelativeLayout)inflater.inflate(R.layout.solverview, null, false);
+		RelativeLayout solverLayout = (RelativeLayout)inflater.inflate(main.N? R.layout.night_solverview : R.layout.solverview, null, false);
 		this.addView(solverLayout);
         edSolver = (EditText) findViewById(R.id.solverText);
-        edSolver.setTextColor(Color.BLACK);
+        
         edResult = (EditText) findViewById(R.id.solverResult);
         bSolve = (Button) findViewById(R.id.solverButtonSolve);
         bSolve.setText("Solve");

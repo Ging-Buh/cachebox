@@ -5,6 +5,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Ui.ActivityUtils;
 import CB_Core.Events.ProgressChangedEvent;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.Import.Importer;
@@ -59,7 +60,7 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 	private final int MailImport = NOT_IMPLEMENTED;
 
 	public void onCreate(Bundle savedInstanceState) {
-		
+		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.import_dialog_layout);
 		

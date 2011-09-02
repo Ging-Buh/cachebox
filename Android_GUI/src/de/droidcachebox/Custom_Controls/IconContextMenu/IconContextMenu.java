@@ -41,7 +41,7 @@ public class IconContextMenu {
         
 		final IconContextMenuAdapter adapter = new IconContextMenuAdapter(context, menu);
 		
-		dialog = new AlertDialog.Builder(context)
+		dialog = new AlertDialog.Builder(new ContextThemeWrapper(context,R.style.redAlertDialog))
         .setAdapter(adapter, new DialogInterface.OnClickListener() {
 	        @Override
 	        public void onClick(DialogInterface dialog, int which) {
@@ -59,6 +59,7 @@ public class IconContextMenu {
         .create();
 		dialog.getListView().setHorizontalScrollBarEnabled(true);
 		dialog.getListView().setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
+		
 		dialog.getListView().setScrollbarFadingEnabled(false);
 		
     }

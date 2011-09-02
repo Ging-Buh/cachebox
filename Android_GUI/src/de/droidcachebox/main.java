@@ -130,6 +130,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.ViewParent;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -166,6 +167,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    
 	    public static LinearLayout strengthLayout;
 	    
+	    /**
+	     * Night Mode aktive
+	     */
+	    public static Boolean N=false;
 	
 		// Media
 	    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
@@ -185,6 +190,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		public static Activity mainActivity;
 		public static Boolean isRestart=false;
 		public static Boolean isFirstStart=true;
+		
+			
     
     /*
 	 * private member
@@ -210,7 +217,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		
 		private Mic_On_Flash Mic_Icon;
 		private static DebugInfoPanel debugInfoPanel;
-	
+		
 		// Views
 		private ViewOptionsMenu aktView = null;
 		private CacheNameView cacheNameView;
@@ -291,6 +298,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        
 	        Logger.Add(this);
 	        
+	        N = Config.GetBool("nightMode");
+	        
+	        
 	        try
 	        {
 	        setContentView(R.layout.main);
@@ -362,9 +372,6 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        {
 	        	// Zeige letzte gespeicherte View beim neustart der Activity
 	        	showView(aktViewId);
-	        	
-	        	// Initialisiere Icons neu.
-	        	 Global.InitIcons(this, Config.GetBool("nightMode"));
 	        }
 	        else
 	        {
@@ -378,15 +385,21 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	        	showView(11);
 	        	
 	        	// chk if NightMode saved
-	        	if(Config.GetBool("nightMode"))
+	        	if(N)
 	        	{
+	        		        		
 	        		ActivityUtils.changeToTheme( mainActivity, ActivityUtils.THEME_NIGHT,true  );
 	        	}
-	        	// Initialisiere Icons neu.
-	        	 Global.InitIcons(this, Config.GetBool("nightMode"));
+	        	
 	        }
 	        
+	       	        
+	        //Initialisiere Compass neu.
+	        compassView.reInit();
 	        
+	     // Initialisiere Icons neu.
+       	 Global.InitIcons(this);
+	     
 	        CacheListChangedEvent();
 	        
 	        
@@ -417,9 +430,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	   		 
     		}
     		
-   		 		
-    		
-    		
+   		 	
 	        
 	    }
 
@@ -1073,6 +1084,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	
     }
     
+	
+	
+	
     private void showView(ViewOptionsMenu view)
     {
     	if (aktView != null)
@@ -1089,6 +1103,8 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	aktView.OnShow();  
     	aktViewId=ViewList.indexOf(aktView);
     	InfoDownSlider.invalidate();
+    	
+    	
     }
     
     
@@ -1233,9 +1249,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			descriptionView = new DescriptionView(this, inflater);
 		if (spoilerView == null)
 			spoilerView = new SpoilerView(this, inflater);
-		if (notesView == null)
+//		if (notesView == null)
 			notesView = new NotesView(this, inflater);
-		if (solverView == null)
+//		if (solverView == null)
 			solverView = new SolverView(this, inflater);
 		if (TestEmpty == null)
 			TestEmpty = new EmptyViewTemplate(this, inflater);

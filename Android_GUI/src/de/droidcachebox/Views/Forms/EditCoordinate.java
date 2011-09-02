@@ -84,6 +84,7 @@ public class EditCoordinate extends Activity {
 	
 	public void onCreate(Bundle savedInstanceState) 
 	{
+		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.edit_coordinate);
 

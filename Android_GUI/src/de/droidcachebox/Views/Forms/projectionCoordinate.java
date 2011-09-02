@@ -37,6 +37,7 @@ public class projectionCoordinate extends Activity {
 	
 	public void onCreate(Bundle savedInstanceState) 
 	{
+		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.projection_coordinate);
 

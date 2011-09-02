@@ -14,7 +14,7 @@
 			android:layout_marginTop="1dip" />
 			
 		<de.droidcachebox.Custom_Controls.DescriptionViewControl
-			android:id="@+id/DescriptionViewControl" android:layout_height="wrap_content"
+			android:id="@+id/DescriptionViewControl" android:layout_height="match_parent"
 			android:layout_width="fill_parent" 
 			 />
 

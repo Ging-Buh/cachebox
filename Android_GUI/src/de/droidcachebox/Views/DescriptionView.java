@@ -104,17 +104,20 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	
 	public void reloadCacheInfo()
 	{
-		Cache reCache = aktCache; //Todo hole Info über API
-		CacheDAO dao = new CacheDAO();
-		dao.UpdateDatabase(reCache);
-		//Todo Update CachList
-		MessageBox.Show("TODO:API-Abfrage" + String.format("%n")+ "DescriptionView.java -> Line:136");
+		String html = "</br>"
+			
+			+ "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" "
+			+ Global.Translations.Get("GC_DownloadDescription")
+			+ " \"></form>";
+		
+		WebControl.loadDataWithBaseURL("fake://fake.de/download", html, "text/html", "utf-8", null);
 	}
 
 	@Override
 	public void OnShow() 
 	{
 		WebControl.OnShow();
+		
 	}
 
 	@Override

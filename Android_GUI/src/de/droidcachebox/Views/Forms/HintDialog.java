@@ -3,6 +3,7 @@ package de.droidcachebox.Views.Forms;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
+import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import android.app.Activity;
 import android.os.Bundle;
@@ -19,7 +20,8 @@ public class HintDialog extends Activity {
 	
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    	ActivityUtils.onActivityCreateSetTheme(this);
+    	super.onCreate(savedInstanceState);
         setContentView(R.layout.hint);
 
         Bundle bundle = getIntent().getExtras();

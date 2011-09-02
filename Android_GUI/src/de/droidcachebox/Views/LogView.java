@@ -151,7 +151,13 @@ public class LogView extends ListView implements SelectedCacheEvent, ViewOptions
 
 	@Override
 	public void OnShow() {
-		// TODO Auto-generated method stub
+		//reinitial colors
+		ActivityUtils.setListViewPropertys(this);
+		LogViewItem.Linepaint=null;
+		LogViewItem.NamePaint=null;
+		LogViewItem.textPaint=null;
+		
+		
 		if (mustLoad)
 		{
 			this.setAdapter(null);

@@ -3,7 +3,7 @@
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:minWidth="280dip" android:layout_height="wrap_content">
 
-	<LinearLayout android:orientation="vertical"
+	<LinearLayout android:orientation="vertical" android:id="@+id/header"
 		android:background="@drawable/header" android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
 
@@ -28,7 +28,7 @@
 
 	</LinearLayout>
 
-	<LinearLayout android:orientation="vertical"
+	<LinearLayout android:orientation="vertical" android:id="@+id/footer"
 		android:background="@drawable/footer" android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
 

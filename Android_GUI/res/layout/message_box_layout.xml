@@ -3,7 +3,7 @@
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:minWidth="280dip" android:layout_height="wrap_content" android:layout_marginLeft="20dip" android:layout_marginRight="20dip" android:layout_marginTop="20dip" android:layout_marginBottom="20dip">
 
-	<LinearLayout android:orientation="vertical"
+	<LinearLayout android:orientation="vertical" android:id="@+id/header"
 		android:background="@drawable/header" android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
 
@@ -19,12 +19,13 @@
 		android:layout_width="fill_parent" android:layout_height="wrap_content">
 		
 		<ImageView android:layout_width="wrap_content" android:id="@+id/icon"
-			android:src="@drawable/icon" android:layout_height="wrap_content"></ImageView>
+			android:src="@drawable/icon" android:layout_height="wrap_content" android:layout_marginLeft="10dip" android:layout_marginRight="5dip" android:layout_marginTop="15dip" android:layout_marginBottom="25dip"></ImageView>
 
 		<ScrollView   
        android:id="@+id/ScrollView01"  
-     android:layout_height="150px"   
-     android:layout_width="wrap_content">  
+     android:layout_height="wrap_content"   
+     android:layout_width="wrap_content"
+     android:minHeight="100dip">  
 
 		<TextView style="@style/DialogText" android:id="@+id/message"
 			android:padding="5dip" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
@@ -34,7 +35,7 @@
 
 	</LinearLayout>
 
-	<LinearLayout android:orientation="horizontal"
+	<LinearLayout android:orientation="horizontal" android:id="@+id/footer"
 		android:background="@drawable/footer" android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
 
