@@ -2,11 +2,14 @@ package de.droidcachebox.DAO;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 
 import de.droidcachebox.Database;
 
 import android.content.ContentValues;
+import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
+import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 
 public class LogDAO {
@@ -32,6 +35,20 @@ public class LogDAO {
         	Logger.Error("Write Log", "", exc);
         
         }	
+		
+	}
+
+	public void WriteImports(Iterator<LogEntry> logIterator, int logCount,
+			ImporterProgress ip) {
+		
+		ip.setJobMax("WriteLogsToDB", logCount);
+		while (logIterator.hasNext())
+		{
+			LogEntry log = logIterator.next();
+			ip.ProgressInkrement("WriteLogsToDB", String.valueOf(log.CacheId));
+			WriteToDatabase(log);
+			
+		}
 		
 	}
 

@@ -36,18 +36,20 @@ public class GPXFileImporter {
 		mImportHandler = importHandler;
 		KXmlParser parser = new KXmlParser();
 		Reader fr = new InputStreamReader( new FileInputStream(mGpxFileName), "UTF-8" );
-        parser.setInput(fr);  
+		parser.setInput(fr);  
 
         // hier wird über die Elemente der ersten Ebene iteriert - sollten nur wpt-Elemente sein
         int eventType = parser.getEventType();
+       
         boolean done = false;
+                
         while (eventType != XmlPullParser.END_DOCUMENT && !done){
             String tagName = parser.getName();
             switch (eventType){
                 case XmlPullParser.START_DOCUMENT:
                     break;
                 case XmlPullParser.START_TAG:
-                    if (tagName.equalsIgnoreCase( "gpx" ) ){
+                	if (tagName.equalsIgnoreCase( "gpx" ) ){
                     	// TODO GPX-Elemente noch bearbeiten?
                     } else if (tagName.equalsIgnoreCase( "wpt" ) ){
                     	Cache cache = parseWptElement( parser );

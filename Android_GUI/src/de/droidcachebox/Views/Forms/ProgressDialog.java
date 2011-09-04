@@ -237,7 +237,7 @@ public class ProgressDialog extends Activity implements ProgressChangedEvent,Vie
 			            {
 			            	progressBar.setProgress(value);
 			       		 	progressMessageTextView.setText(ProgressMessage);
-			       		 	if(ProgressMessage.equals(""))
+			       		 	if(!Msg.equals(""))
 			       		 		messageTextView.setText(Msg);
 			       		 		
 			            }

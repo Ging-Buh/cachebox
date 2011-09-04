@@ -15,7 +15,7 @@ import CB_Core.Types.CacheList;
 import CB_Core.Types.MysterySolution;
 
 public class CacheListDAO {
-    public void ReadCacheList(CacheList cacheList, String where)
+    public CacheList ReadCacheList(CacheList cacheList, String where)
     {
     	SortedMap<Long, ArrayList<Waypoint>> waypoints;
     	waypoints = new TreeMap<Long, ArrayList<Waypoint>>();
@@ -99,6 +99,6 @@ public class CacheListDAO {
         	Logger.Error("CacheListDAO.ReadCacheList()", "Sort ERROR", e);
         }
         
-    	
+    	return cacheList;
     }
 }

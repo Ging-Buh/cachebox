@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -18,6 +19,9 @@ import CB_Core.GlobalCore;
 import CB_Core.Api.SearchForGeocaches;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Events.ProgresssChangedEventList;
+import CB_Core.Import.Importer.Cache_Log_Return;
+import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
@@ -115,7 +119,12 @@ public class CacheDAO {
         args.put("Latitude", cache.Pos.Latitude);
         args.put("Longitude", cache.Pos.Longitude);
         args.put("Name", cache.Name);
-        args.put("Size", cache.Size.ordinal());
+        try {
+			args.put("Size", cache.Size.ordinal());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         args.put("Difficulty", (int)(cache.Difficulty * 2));
         args.put("Terrain", (int)(cache.Terrain * 2));
         args.put("Archived", cache.Archived ? 1 : 0);
@@ -174,20 +183,29 @@ public class CacheDAO {
 	{
 
 		ContentValues args = new ContentValues();
-        args.put("Id", cache.Id);
-        args.put("GcCode", cache.GcCode);
-        args.put("GcId", cache.GcId);
+		
+		
+//		 bei einem Update müssen nicht alle infos überschrieben werden
+		
+//        args.put("Id", cache.Id);
+//        args.put("GcCode", cache.GcCode);
+//        args.put("GcId", cache.GcId);
         args.put("Latitude", cache.Pos.Latitude);
         args.put("Longitude", cache.Pos.Longitude);
-        args.put("Name", cache.Name);
-        args.put("Size", cache.Size.ordinal());
+//        args.put("Name", cache.Name);
+        try {
+			args.put("Size", cache.Size.ordinal());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         args.put("Difficulty", (int)(cache.Difficulty * 2));
         args.put("Terrain", (int)(cache.Terrain * 2));
         args.put("Archived", cache.Archived ? 1 : 0);
         args.put("Available", cache.Available ? 1 : 0);
         args.put("Found", cache.Found);
         args.put("Type", cache.Type.ordinal());
-        args.put("PlacedBy", cache.PlacedBy);
+//        args.put("PlacedBy", cache.PlacedBy);
         args.put("Owner", cache.Owner);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String stimestamp = iso8601Format.format(cache.DateHidden);
@@ -272,5 +290,41 @@ public class CacheDAO {
 		return newCache;
 	}
 	
-	
+	public void WriteImports(Iterator<Cache> Caches,int CacheCount, ImporterProgress ip)
+	{
+		
+		//Indexing DB
+		CacheList IndexDB = new CacheList();
+		CacheListDAO cacheListDAO = new CacheListDAO();
+		IndexDB=cacheListDAO.ReadCacheList(IndexDB, "");
+        
+        ip.setJobMax("IndexingDB", IndexDB.size());
+        ArrayList<String> index = new ArrayList<String>();
+        for(Cache c : IndexDB)
+        {
+        	ip.ProgressInkrement("IndexingDB", "index- "+ c.GcCode);
+        	index.add(c.GcCode);
+        }
+        
+        		
+        ip.setJobMax("WriteCachesToDB", CacheCount);
+			while (Caches.hasNext())
+			{
+				Cache cache = Caches.next();
+				
+				if(index.contains(cache.GcCode))
+				{
+					ip.ProgressInkrement("WriteCachesToDB", "Update DB " + cache.GcCode);
+					UpdateDatabase(cache);
+				}
+				else
+				{
+					ip.ProgressInkrement("WriteCachesToDB", "Write to DB " + cache.GcCode);
+					WriteToDatabase(cache);
+				}
+		}
+		
+		
+		
+	}
 }

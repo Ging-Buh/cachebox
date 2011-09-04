@@ -27,4 +27,14 @@ public class ImportHandler implements IImportHandler {
 	public Iterator<LogEntry> getLogIterator() {
 		return logs.iterator();
 	}
+	
+	public int CacheCount()
+	{
+		return caches.size();
+	}
+	
+	public int LogCount()
+	{
+		return logs.size();
+	}
 }

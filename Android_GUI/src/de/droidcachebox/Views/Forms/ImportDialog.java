@@ -3,12 +3,15 @@ package de.droidcachebox.Views.Forms;
 import CB_Core.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.main;
+import de.droidcachebox.DAO.CacheDAO;
+import de.droidcachebox.DAO.LogDAO;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Ui.ActivityUtils;
-import CB_Core.Events.ProgressChangedEvent;
-import CB_Core.Events.ProgresssChangedEventList;
+import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEvent;
 import CB_Core.Import.Importer;
+import CB_Core.Import.Importer.Cache_Log_Return;
+import CB_Core.Import.ImporterProgress;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,7 +26,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 /**
@@ -233,6 +235,8 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
              public void run() 
              {
             	 Importer importer = new Importer();
+            	 ImporterProgress ip = new ImporterProgress();
+            	 
             	String directoryPath = Config.GetString("PocketQueryFolder");
                          try 
                          {
@@ -240,8 +244,20 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
                          Thread.sleep(1000);
                          if(checkBoxImportGpxFromMail.isChecked())importer.importMail();
                          Thread.sleep(1000);
-                         if(checkBoxImportGPX.isChecked())importer.importGpx(directoryPath);
-                         Thread.sleep(1000);
+                         
+                         //Importiere alle GPX Files im Import Folder, auch in ZIP verpackte
+                         if(checkBoxImportGPX.isChecked())
+                        {
+                        	Cache_Log_Return Returns = importer.importGpx(directoryPath,ip);
+                        	
+                        	// Schreibe Imports in DB
+                        	CacheDAO instanz = new CacheDAO();
+                        	instanz.WriteImports(Returns.cacheIterator,Returns.CacheCount,ip);
+                        	
+                        	LogDAO logDao = new LogDAO();
+                        	logDao.WriteImports(Returns.logIterator,Returns.LogCount,ip);
+                        }
+                         
                          if(checkBoxGcVote.isChecked())importer.importGcVote();
                          Thread.sleep(1000);
                          if(checkBoxPreloadImages.isChecked())importer.importImages();
@@ -302,7 +318,8 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
     {
         public void run() 
         {
-            MessageBox.Show("Import fertig!");
+            //MessageBox.Show("Import fertig!");
+            CachListChangedEventList.Call();
         }
     };
 
