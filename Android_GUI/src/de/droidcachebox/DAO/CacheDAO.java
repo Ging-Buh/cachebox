@@ -156,9 +156,9 @@ public class CacheDAO {
         try
         {
         	long anzahl = Database.Data.myDB.insert("Caches", null, args);
-            String s = anzahl + "";
-        	
-            args = new ContentValues();
+//            String s = anzahl + "";
+//        	
+//            args = new ContentValues();
         } catch (Exception exc)
         {
         	Logger.Error("Write Cache", "", exc);
@@ -230,9 +230,9 @@ public class CacheDAO {
         try
         {
         	long anzahl = Database.Data.myDB.update("Caches", args,  "Id=" + cache.Id, null);
-            String s = anzahl + "";
-        	
-            args = new ContentValues();
+//            String s = anzahl + "";
+//        	
+//            args = new ContentValues();
         } catch (Exception exc)
         {
         	Logger.Error("Ubdate Cache", "", exc);

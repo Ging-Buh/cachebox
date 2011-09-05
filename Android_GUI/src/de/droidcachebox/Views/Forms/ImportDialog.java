@@ -1,5 +1,9 @@
 package de.droidcachebox.Views.Forms;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+
 import CB_Core.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
@@ -12,6 +16,7 @@ import CB_Core.Events.CacheListChangedEvent;
 import CB_Core.Import.Importer;
 import CB_Core.Import.Importer.Cache_Log_Return;
 import CB_Core.Import.ImporterProgress;
+import CB_Core.Log.Logger;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -249,13 +254,35 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
                          if(checkBoxImportGPX.isChecked())
                         {
                         	Cache_Log_Return Returns = importer.importGpx(directoryPath,ip);
-                        	
+                        	CacheImports=Returns.CacheCount;
+                        	LogImports=Returns.LogCount;
                         	// Schreibe Imports in DB
-                        	CacheDAO instanz = new CacheDAO();
-                        	instanz.WriteImports(Returns.cacheIterator,Returns.CacheCount,ip);
+                        	CacheDAO cacheDAO = new CacheDAO();
+                        	cacheDAO.WriteImports(Returns.cacheIterator,Returns.CacheCount,ip);
                         	
                         	LogDAO logDao = new LogDAO();
                         	logDao.WriteImports(Returns.logIterator,Returns.LogCount,ip);
+                        	
+                        	
+                        	// del alten entpackten Ordener wenn vorhanden?
+                    		File directory = new File(directoryPath);
+                    		File[] filelist = directory.listFiles();
+                    		for(File tmp : filelist)
+                    		{
+                    			if (tmp.isDirectory() )
+                    			{
+                    				ArrayList<String> ordnerInhalt = Importer.recursiveDirectoryReader(tmp,new ArrayList<String>() );
+                    				for (String tmp2 : ordnerInhalt)
+                    				{
+                    					File forDel = new File(tmp2);
+                    					forDel.delete();
+                    				}
+                    				
+                    			}
+                    			tmp.delete();
+                    		}
+                        	
+                        	
                         }
                          
                          if(checkBoxGcVote.isChecked())importer.importGcVote();
@@ -286,8 +313,8 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 
 
          
-         
-         
+         ImportThread.setPriority(Thread.MAX_PRIORITY);
+         ImportStart = new Date();
          ProgressDialog.Show("Import",ImportThread, ProgressCanceld);
          
        finish();
@@ -297,8 +324,9 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 	
 	    
 
-
-	
+	private Date ImportStart;
+	private int LogImports;
+	private int CacheImports;
 	
 	
 	
@@ -318,7 +346,13 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
     {
         public void run() 
         {
-            //MessageBox.Show("Import fertig!");
+        	Date Importfin = new Date();
+        	long ImportZeit = Importfin.getTime()-ImportStart.getTime();
+        	
+        	String Msg="Import " + String.valueOf(CacheImports)+"C "+String.valueOf(LogImports)+"L in "+String.valueOf(ImportZeit);
+        	
+        	Logger.DEBUG(Msg);
+            MessageBox.Show("Import fertig! " + Msg);
             CachListChangedEventList.Call();
         }
     };

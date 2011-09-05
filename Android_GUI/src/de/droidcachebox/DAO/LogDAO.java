@@ -2,6 +2,8 @@ package de.droidcachebox.DAO;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import de.droidcachebox.Database;
@@ -10,6 +12,7 @@ import android.content.ContentValues;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheList;
 import CB_Core.Types.LogEntry;
 
 public class LogDAO {
@@ -38,15 +41,28 @@ public class LogDAO {
 		
 	}
 
+	
+	static HashMap<String, String> LogLookup = null;
+	
 	public void WriteImports(Iterator<LogEntry> logIterator, int logCount,
 			ImporterProgress ip) {
+		
+		
 		
 		ip.setJobMax("WriteLogsToDB", logCount);
 		while (logIterator.hasNext())
 		{
 			LogEntry log = logIterator.next();
 			ip.ProgressInkrement("WriteLogsToDB", String.valueOf(log.CacheId));
-			WriteToDatabase(log);
+			try {
+				WriteToDatabase(log);
+			} catch (Exception e) {
+				
+//				Statt hier den Fehler abzufangen, sollte die LogTabelle Indexiert werden 
+//				und nur die noch nicht vorhandenen Logs geschrieben werden.
+
+				e.printStackTrace();
+			}
 			
 		}
 		

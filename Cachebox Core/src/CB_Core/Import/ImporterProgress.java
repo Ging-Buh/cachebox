@@ -61,7 +61,8 @@ public class ImporterProgress
 		steps.add(new Step("IndexingDB",1));
 		steps.add(new Step("ImportGPX",3));
 		steps.add(new Step("WriteCachesToDB",6));
-		steps.add(new Step("WriteLogsToDB",42)); // die Anzahl der Logs, entspricht etwa der 7 fachen Menge der Caches
+		steps.add(new Step("WriteLogsToDB",21)); // die Anzahl der Logs, entspricht etwa der 7 fachen Menge der Caches
+													// bracht aber nur die halbe Zeit und wird damit 3.5 fach dem Wert von WriteCaches
 		steps.add(new Step("importGcVote",0));
 		
 		wightSumme= getWightSumm();

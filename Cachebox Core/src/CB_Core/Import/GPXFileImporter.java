@@ -53,6 +53,10 @@ public class GPXFileImporter {
                     	// TODO GPX-Elemente noch bearbeiten?
                     } else if (tagName.equalsIgnoreCase( "wpt" ) ){
                     	Cache cache = parseWptElement( parser );
+                    	
+                    	// TODO at Cache GPXFileCategorie and last Import Info
+                    	//cache.
+                    	
                     	mImportHandler.handleCache( cache );
                     }
                     break;
