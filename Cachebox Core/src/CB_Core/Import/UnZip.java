@@ -21,7 +21,7 @@ public class UnZip
 
 	static public void extractFolder(String zipFile) throws ZipException, IOException 
 	{
-	    System.out.println(zipFile);
+	    System.out.println("extract => " + zipFile);
 	    int BUFFER = 2048;
 	    File file = new File(zipFile);
 

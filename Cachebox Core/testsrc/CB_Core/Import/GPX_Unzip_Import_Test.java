@@ -26,7 +26,7 @@ public class GPX_Unzip_Import_Test extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
-	public void testUnzip_Import() throws Exception
+	public static void testUnzip_Import() throws Exception
 	{
 		
 		//starte Unzip Test

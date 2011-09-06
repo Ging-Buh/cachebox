@@ -10,12 +10,12 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import junit.framework.TestCase;
 
-public class GpxImportTest extends TestCase {
+public class GSAKGpxImportTest extends TestCase {
 	
 	public static void testGpxImport() throws Exception
 	{
 		ImportHandler importHandler = new ImportHandler();
-		GPXFileImporter importer = new GPXFileImporter( "./testdata/gpx/GC2T9RW.gpx" );
+		GPXFileImporter importer = new GPXFileImporter( "./testdata/gpx/GSAK_1_1.gpx" );
 		assertTrue( "Objekt muss konstruierbar sein", importer!=null );
 		importer.doImport( importHandler );
 		
