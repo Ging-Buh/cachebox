@@ -107,6 +107,10 @@ public class IconContextMenu {
     		Logger.Error("IconContextMenu.show()", "dialog.show() Error", e);
     	}
     	
+    	//nach dem Anzeigen des Icon Menüs müssen die Icons neu initialisiert werden,
+    	// da eventuell der Color filter verändert wurde!
+    	Global.InitIcons(main.mainActivity);
+    	
     }
     
     public void dismiss() {
