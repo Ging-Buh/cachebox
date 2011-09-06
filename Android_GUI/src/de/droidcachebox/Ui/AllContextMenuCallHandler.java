@@ -340,7 +340,8 @@ public class AllContextMenuCallHandler
 			
 			
 			MenuItem mi = menu.findItem(R.id.miAlignCompass);
-			mi.setCheckable(Main.mapView.alignToCompass);
+			mi.setCheckable(true);
+			mi.setChecked(Main.mapView.alignToCompass);
 						
 			
 			

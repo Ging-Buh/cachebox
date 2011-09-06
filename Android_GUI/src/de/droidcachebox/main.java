@@ -670,16 +670,21 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 		
 	    @Override public void CacheListChangedEvent() 
 		{
-			//Database.Data.Query.size();
-	    	//  Kurzfristig ausgeblendet, da der Vergleich wegen den neuen CategoryFilter nicht funktioniert. 
+			int ButtonBackGroundResource = 0;
+			
+	    	
+	    	
 			if ((Global.LastFilter == null) || (Global.LastFilter.ToString().equals("")) || (PresetListViewItem.chkPresetFilter(PresetListView.presets[0], Global.LastFilter.ToString())))
 	        {
-				this.buttonDB.getBackground().clearColorFilter();
+				ButtonBackGroundResource = N? R.drawable.night_db_button_image_selector : R.drawable.db_button_image_selector ;
 	        }
 	        else
 	        {
-	        	this.buttonDB.getBackground().setColorFilter(Color.argb(255, 250, 128, 114), Mode.MULTIPLY); //Color.Salmon;
+	        	ButtonBackGroundResource = N? R.drawable.night_db_button_image_selector_filter : R.drawable.db_button_image_selector_filter ;
 	        };
+	        
+	        
+	        this.buttonDB.setBackgroundResource(ButtonBackGroundResource);
 	                
 		}
 		
