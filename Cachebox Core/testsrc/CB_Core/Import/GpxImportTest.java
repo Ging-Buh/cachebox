@@ -1,5 +1,6 @@
 package CB_Core.Import;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Core.Enums.Attributes;
@@ -47,6 +48,74 @@ public class GpxImportTest extends TestCase {
 		assertTrue( "Attribut falsch", cache.isAttributePositiveSet( Attributes.Bicycles ) );
 		assertFalse( "Attribut falsch", cache.isAttributeNegativeSet( Attributes.Bicycles ) );
 		assertFalse( "Attribut falsch", cache.isAttributePositiveSet( Attributes.Boat ) );
+		// Attribute Tests
+		
+		ArrayList<Attributes> PositvieList = new ArrayList<Attributes>();
+		ArrayList<Attributes> NegativeList = new ArrayList<Attributes>();
+		
+		PositvieList.add(Attributes.Bicycles);
+		PositvieList.add(Attributes.Dogs);
+		PositvieList.add(Attributes.Anytime);
+		PositvieList.add(Attributes.Restrooms);
+		PositvieList.add(Attributes.Parking);
+		PositvieList.add(Attributes.FuelNearby);
+		PositvieList.add(Attributes.ShortHike);
+		PositvieList.add(Attributes.ClimbingGear);
+		PositvieList.add(Attributes.Ticks);
+		PositvieList.add(Attributes.Hunting);
+		
+		
+		
+		
+		
+		Iterator positiveInterator = PositvieList.iterator();
+		Iterator negativeInterator = NegativeList.iterator();
+		
+		while(positiveInterator.hasNext())
+		{
+			Attributes attr = (Attributes) positiveInterator.next();
+			assertTrue( attr.toString()+ " Attribut falsch", cache.isAttributePositiveSet( attr ) );
+		}
+		
+		while(negativeInterator.hasNext())
+		{
+			Attributes attr = (Attributes) negativeInterator.next();
+			assertTrue( attr.toString()+ " Attribut falsch", cache.isAttributeNegativeSet( attr ) );
+		}
+		
+		
+		// fülle eine Liste mit allen Attributen
+		ArrayList<Attributes> attributes= new ArrayList<Attributes>();
+		Attributes[] tmp = Attributes.values();
+		for ( Attributes item : tmp)
+		{
+			attributes.add(item);
+		}
+		
+		//Lösche die vergebenen Atribute aus der Kommplett Liste
+		positiveInterator = PositvieList.iterator();
+		negativeInterator = NegativeList.iterator();
+		
+		while(positiveInterator.hasNext())
+		{
+			attributes.remove(positiveInterator.next());
+		}
+		
+		while(negativeInterator.hasNext())
+		{
+			attributes.remove(negativeInterator.next());
+		}
+		
+		//Teste ob die Übrig gebliebenen Atributte auch nicht vergeben wurden.
+		Iterator RestInterator = attributes.iterator();
+		
+		while(RestInterator.hasNext())
+		{
+			Attributes attr = (Attributes) RestInterator.next();
+			assertFalse( attr.toString()+ " Attribut falsch", cache.isAttributePositiveSet( attr ) );
+			assertFalse( attr.toString()+ " Attribut falsch", cache.isAttributeNegativeSet( attr ) );
+		}
+		
 		
 		// TODO Beschreibungstexte überprüfen
 		// System.out.println( cache.shortDescription );

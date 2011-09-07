@@ -8,7 +8,7 @@ public class CacheTest extends TestCase {
 
 	
 	@Override
-	protected void setUp() throws Exception {
+	public void setUp() throws Exception {
 		// TODO Auto-generated method stub
 		super.setUp();
 		mCache = new Cache();

@@ -5,12 +5,17 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import CB_Core.Config;
+import CB_Core.FilterProperties;
+import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
 import de.droidcachebox.DAO.CacheDAO;
+import de.droidcachebox.DAO.CacheListDAO;
 import de.droidcachebox.DAO.LogDAO;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEvent;
 import CB_Core.Import.Importer;
@@ -18,11 +23,13 @@ import CB_Core.Import.Importer.Cache_Log_Return;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
 import android.app.Activity;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +37,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
@@ -46,6 +54,8 @@ import android.widget.TextView;
   
  */
 public class ImportDialog extends Activity implements ViewOptionsMenu {
+	public static ImportDialog Me;
+	
 	private Context context;
 	private CheckBox checkBoxImportMaps;
 	private CheckBox checkBoxPreloadImages;
@@ -70,7 +80,7 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.import_dialog_layout);
-		
+		Me=this;
 			
 		context = this.getBaseContext();
 				
@@ -317,7 +327,7 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
          ImportStart = new Date();
          ProgressDialog.Show("Import",ImportThread, ProgressCanceld);
          
-       finish();
+//       finish();
        
 	}
 	
@@ -352,12 +362,66 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
         	String Msg="Import " + String.valueOf(CacheImports)+"C "+String.valueOf(LogImports)+"L in "+String.valueOf(ImportZeit);
         	
         	Logger.DEBUG(Msg);
-            MessageBox.Show("Import fertig! " + Msg);
-            CachListChangedEventList.Call();
+            //MessageBox.Show("Import fertig! " + Msg);
+            ApplyFilter();
         }
     };
 
 
+    
+    private static android.app.ProgressDialog pd;
+	private static FilterProperties props;
+	public static void ApplyFilter()
+	    {
+		
+		
+			
+			props = Global.LastFilter;
+		  pd = android.app.ProgressDialog.show(ImportDialog.Me, "", 
+                 Global.Translations.Get("LoadCaches"), true);
+		
+		  Thread thread = new Thread()
+		  {
+		      @Override
+		      public void run() 
+		      {
+		    	  String sqlWhere =props.getSqlWhere();
+			      Logger.General("Main.ApplyFilter: " + sqlWhere);
+			      Database.Data.Query.clear();
+			      CacheListDAO cacheListDAO = new CacheListDAO();
+			      cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+			      messageHandler.sendMessage(messageHandler.obtainMessage(1));
+		      }
+
+		  };
+
+		  thread.start();
+
+	
+	    }
+	
+	// Instantiating the Handler associated with the main thread.
+	  private static Handler messageHandler = new Handler() {
+
+	      @Override
+	      public void handleMessage(Message msg) 
+	      {
+	    	  switch(msg.what) 
+	    	  {
+	    	  case 1:
+	    	  	{
+	    	  		CachListChangedEventList.Call();
+	    	  		pd.dismiss();
+	    	  		Toast.makeText(main.mainActivity, "Applay filter. Found " + String.valueOf(Database.Data.Query.size()) + " Caches!", Toast.LENGTH_LONG).show();
+	    	  		ImportDialog.Me.finish();	
+	    	  	}
+		 	     
+	    	  }
+	    	  
+	      }
+
+	  };
+	
 
 	
 	

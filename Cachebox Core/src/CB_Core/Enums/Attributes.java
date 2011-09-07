@@ -146,6 +146,8 @@ public enum Attributes
                 return CB_Core.Enums.Attributes.Horses;
             case 38:
                 return CB_Core.Enums.Attributes.Campfires;
+            case 39:
+                return CB_Core.Enums.Attributes.Thorns;
             case 40:
                 return CB_Core.Enums.Attributes.Stealth;
             case 41:

@@ -9,6 +9,7 @@ import java.util.Iterator;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
@@ -165,7 +166,8 @@ public class CacheDAO {
         
         }	
 	}
-
+	
+	
 	public void WriteToDatabase_Found(Cache cache)
     {
         ContentValues args = new ContentValues();

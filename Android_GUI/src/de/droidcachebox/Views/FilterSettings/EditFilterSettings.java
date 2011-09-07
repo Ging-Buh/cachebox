@@ -105,7 +105,7 @@ public class EditFilterSettings extends Activity {
             {
             	lvCat.SetCategory();
             	Global.LastFilter=tmpFilterProps;
-            	ApplyFilter(Global.LastFilter);
+            	ApplyFilter(EditFilterSettings.filterActivity,Global.LastFilter);
             	
             	
             	//Save selected filter
@@ -211,13 +211,13 @@ public class EditFilterSettings extends Activity {
 		
 	private static ProgressDialog pd;
 	private static FilterProperties props;
-	public static void ApplyFilter(FilterProperties Props)
+	public static void ApplyFilter(Activity activity,FilterProperties Props)
 	    {
 		
 		
 			
 			props = Props;
-		  pd = ProgressDialog.show(EditFilterSettings.filterActivity, "", 
+		  pd = ProgressDialog.show(activity, "", 
                  Global.Translations.Get("LoadCaches"), true);
 		
 		  Thread thread = new Thread()

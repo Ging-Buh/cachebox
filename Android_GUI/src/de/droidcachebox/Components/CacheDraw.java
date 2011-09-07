@@ -290,7 +290,7 @@ public class CacheDraw
 
           if (cache.Archived)
           {
-        	  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[24], left + VoteWidth, top - (int) (Sizes.getScaledFontSize_normal() / 2), Sizes.getIconSize()/2);
+        	  ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[24], left + VoteWidth + 2, top, Sizes.getIconSize()/2);
           }
 
           

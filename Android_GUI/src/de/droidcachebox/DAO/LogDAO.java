@@ -9,6 +9,7 @@ import java.util.Iterator;
 import de.droidcachebox.Database;
 
 import android.content.ContentValues;
+import android.database.sqlite.SQLiteStatement;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
@@ -40,7 +41,7 @@ public class LogDAO {
         }	
 		
 	}
-
+	
 	
 	static HashMap<String, String> LogLookup = null;
 	

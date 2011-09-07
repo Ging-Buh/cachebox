@@ -49,6 +49,7 @@ public class GPXFileImporter {
                 case XmlPullParser.START_DOCUMENT:
                     break;
                 case XmlPullParser.START_TAG:
+                	
                 	if (tagName.equalsIgnoreCase( "gpx" ) ){
                     	// TODO GPX-Elemente noch bearbeiten?
                     } else if (tagName.equalsIgnoreCase( "wpt" ) ){
@@ -91,10 +92,14 @@ public class GPXFileImporter {
 			        	cache.DateHidden = parseDate( parser.nextText() );
 			        } else if (tagName.equalsIgnoreCase( "url" ) ){
 			        	cache.Url = parser.nextText();
+			        } else if (tagName.equalsIgnoreCase( "link" ) ){
+				        cache.Url = "http"; // irgendwie komme ich nicht an die URL ran
 			        } else if (tagName.equalsIgnoreCase( "sym" ) ){
 			        	cache.Found = parser.nextText().equalsIgnoreCase( "Geocache Found" );
 			        } else if (tagName.equalsIgnoreCase( "groundspeak:cache" ) ){
 			        	parseWptCacheElement( parser, cache );
+			        } else if (tagName.equalsIgnoreCase( "extensions" ) ){
+			        	parseGSAKCacheElement( parser, cache );
 			        } else {
 			        	skipUntilEndTag(parser, tagName);
 			        }
@@ -111,6 +116,33 @@ public class GPXFileImporter {
 		return cache;
 	}
 
+	private void parseGSAKCacheElement( KXmlParser parser, Cache cache ) throws Exception {
+		// bei GSAk gehts eine Ebene tiefer weiter
+		
+		parser.nextTag();
+		boolean done = false;
+		int eventType = parser.next();
+		while (eventType != XmlPullParser.END_DOCUMENT && !done){
+            String tagName = parser.getName();
+			switch (eventType){
+			    case XmlPullParser.START_TAG:
+			        if (tagName.equalsIgnoreCase( "groundspeak:cache" ) ){
+			        	parseWptCacheElement( parser, cache );
+			        
+			        }
+			        break;
+			    case XmlPullParser.END_TAG:
+			        if (tagName.equalsIgnoreCase( "extensions" ) ){
+			        	done = true;
+			        }
+			        break;
+		    }
+			eventType = parser.next();
+		}
+		
+	}
+	
+	
 	private void parseWptCacheElement( KXmlParser parser, Cache cache ) throws Exception {
 		// Hier wird ein Groundspeak-Cache Element aufgebaut
 		
