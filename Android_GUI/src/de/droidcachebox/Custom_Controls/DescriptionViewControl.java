@@ -12,6 +12,8 @@ import CB_Core.Types.Waypoint;
 import CB_Core.Config;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.main;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.DAO.CacheDAO;
@@ -25,13 +27,23 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.DrawFilter;
+import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ZoomButton;
+import android.widget.ZoomControls;
 
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 		SelectedCacheEvent {
@@ -43,7 +55,9 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 	private ArrayList<String> NonLocalImages = new ArrayList<String>();
 	private ArrayList<String> NonLocalImagesUrl = new ArrayList<String>();
 	private static ProgressDialog pd;
-
+	
+	
+	
 	public DescriptionViewControl(Context context) {
 		super(context);
 
@@ -53,13 +67,19 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 		super(context, attrs);
 		mustLoadDescription = false;
 		SelectedCacheEventList.Add(this);
-
+		
+		this.setDrawingCacheEnabled(false);
+		this.setAlwaysDrawnWithCacheEnabled(false);
+		
 		// this.getSettings().setJavaScriptEnabled(true);
 		this.getSettings().setLightTouchEnabled(false);
 		this.getSettings().setLoadWithOverviewMode(true);
 		this.getSettings().setSupportZoom(true);
 		this.getSettings().setBuiltInZoomControls(true);
-
+		
+		
+       
+		
 		attributeLookup = new HashMap<Attributes, Integer>();
 		attributeLookup.put(Attributes.Default, 0);
 		attributeLookup.put(Attributes.Dogs, 1);
@@ -406,7 +426,20 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 			setCache(aktCache);
 			mustLoadDescription = false;
 		}
-
+		
+//		//set Zoom Button Style
+//		try {
+//			ViewGroup zoomControlViewGroup =  (ViewGroup) getZoomControls();
+//			ZoomControls zoomControls =	(ZoomControls) zoomControlViewGroup.getChildAt(0); 
+//			((ZoomButton) zoomControls.getChildAt(0)).setBackgroundResource(main.N? R.drawable.night_btn_zoom_down : R.drawable.day_btn_zoom_down);
+//			((ZoomButton) zoomControls.getChildAt(1)).setBackgroundResource(main.N? R.drawable.night_btn_zoom_up : R.drawable.day_btn_zoom_up);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		this.setWillNotDraw(false);
+		this.invalidate();
 	}
 
 	@Override
@@ -473,4 +506,15 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	
+	public static boolean isDrawn=false;
+	
+	@Override protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+		isDrawn=true;
+		invertViewControl.Me.invalidate();
+	}
+
+
 }

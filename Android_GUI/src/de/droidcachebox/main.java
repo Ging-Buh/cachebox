@@ -1108,7 +1108,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	aktView.OnShow();  
     	aktViewId=ViewList.indexOf(aktView);
     	InfoDownSlider.invalidate();
-    	
+    	((View)aktView).forceLayout();
     	
     }
     

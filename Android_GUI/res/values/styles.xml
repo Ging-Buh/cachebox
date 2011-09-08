@@ -99,6 +99,7 @@
 	</style>
 
 	<style name="day_ZoomControls">
+		<item name="android:background">@drawable/night_btn_toggle_bg</item>
 		<item name="android:gravity">bottom</item>
 		<item name="android:paddingLeft">15dip</item>
 		<item name="android:paddingRight">15dip</item>

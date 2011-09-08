@@ -51,6 +51,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.ZoomButton;
 import android.widget.ZoomControls;
 import CB_Core.Config;
 import de.droidcachebox.Database;
@@ -95,17 +96,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	private ActivityManager activityManager;
 	private long available_bytes;
 	
-	// paint with invert Matrix
-	private Paint invertPaint = new Paint();
 	
-	private final float[] mx = {
-			 -1.0f,  0.0f,  0.0f,  0.0f,  255.0f,
-			 0.0f,  -1.5f,  0.0f,  0.0f,  200.0f,
-			 0.0f,  0.0f,  -1.5f,  0.0f,  0.f,
-			 0.0f,  0.0f,  0.0f,  1.0f,  0.0f
-	};
-
-	private final ColorMatrix cm = new ColorMatrix(mx);
+	
+	
 	
 	private float rangeFactorTiles = 1.0f;
 	private float rangeFactorTrack = 1.0f;
@@ -130,10 +123,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		useLockPosition = true;
 		myContext = context;
 		
-		invertPaint.setColorFilter(new ColorMatrixColorFilter(cm));
-
-		
-		
+				
 		Global.SmoothScrolling = SmoothScrollingTyp.valueOf(Config.GetString("SmoothScrolling"));
 
 		activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
@@ -196,7 +186,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
         		zoomOut();
         	} 
         	
-        });		
+        });	
+        
+       
+        
+      
         
         ArrayList<android.view.View> buttons = new ArrayList<android.view.View>();
         this.addTouchables(buttons);
@@ -219,6 +213,15 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 	public void setNewSettings()
 	{
+		//set Zoom Button Style
+        try {
+			((ZoomButton) zoomControls.getChildAt(0)).setBackgroundResource(main.N? R.drawable.night_btn_zoom_down : R.drawable.day_btn_zoom_down);
+			((ZoomButton) zoomControls.getChildAt(1)).setBackgroundResource(main.N? R.drawable.night_btn_zoom_up : R.drawable.day_btn_zoom_up);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		 showRating = Config.GetBool("MapShowRating");
          showDT = Config.GetBool("MapShowDT");
          showTitles = Config.GetBool("MapShowTitles");
@@ -3030,7 +3033,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       {
     	  if(N)
     	  {
-    		  drawImage(canvas, tile.Image, pt.x, pt.y, (int)(256.0f * multiTouchFaktor), (int)(256.0f * multiTouchFaktor),invertPaint);
+    		  drawImage(canvas, tile.Image, pt.x, pt.y, (int)(256.0f * multiTouchFaktor), (int)(256.0f * multiTouchFaktor),Global.invertPaint);
     	  }
     	  else
     	  {
@@ -3071,7 +3074,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		  
     		  if(Config.GetBool("nightMode"))
         	  {
-    			  drawImage(canvas, bit, pt.x, pt.y, (int)(256.0f * multiTouchFaktor), (int)(256.0f * multiTouchFaktor),invertPaint);
+    			  drawImage(canvas, bit, pt.x, pt.y, (int)(256.0f * multiTouchFaktor), (int)(256.0f * multiTouchFaktor),Global.invertPaint);
         	  }
     		  else
     		  {

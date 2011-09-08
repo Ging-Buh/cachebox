@@ -4,5 +4,5 @@
            android:drawable="@drawable/db2" /> <!-- pressed -->
      <item android:state_focused="true"
            android:drawable="@drawable/db2" /> <!-- focused -->
-     <item android:drawable="@drawable/db1" /> <!-- default -->
+     <item android:drawable="@drawable/db_filter_active_yellow" /> <!-- default -->
  </selector>

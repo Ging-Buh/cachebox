@@ -17,11 +17,11 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_enabled="false" android:state_focused="true"
         android:state_window_focused="true"
-        android:drawable="@drawable/day_btn_zoom_up_disabled_focused" />
+        android:drawable="@drawable/day_btn_zoom_up_disabled" />
     <item android:state_enabled="false" android:drawable="@drawable/day_btn_zoom_up_disabled" />
     <item android:state_pressed="true" android:drawable="@drawable/day_btn_zoom_up_pressed" />
     <item android:state_focused="true" android:state_window_focused="true"
-        android:drawable="@drawable/day_btn_zoom_up_selected" />
+        android:drawable="@drawable/day_btn_zoom_up_normal" />
     <item android:drawable="@drawable/day_btn_zoom_up_normal" />
 </selector>
 

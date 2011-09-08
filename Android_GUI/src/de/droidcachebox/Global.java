@@ -15,6 +15,9 @@ import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
@@ -33,7 +36,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 412;
+    public static final int CurrentRevision = 414;
     public static final String CurrentVersion = "0.1.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1016;
@@ -67,7 +70,30 @@ public class Global{
     public static int aktuelleRouteCount = 0;
     
     public static long TrackDistance;
-         
+    
+    
+    
+    /**
+     * Nacht Color Matrix
+     */
+    public static final float[] mx = {
+			 -1.0f,  0.0f,  0.0f,  0.0f,  255.0f,
+			 0.0f,  -1.5f,  0.0f,  0.0f,  200.0f,
+			 0.0f,  0.0f,  -1.5f,  0.0f,  0.f,
+			 0.0f,  0.0f,  0.0f,  1.0f,  0.0f
+	};
+
+   /**
+    *  Nacht Color Matrix
+    */
+    public static final ColorMatrix cm = new ColorMatrix(mx);
+    
+ 
+    /**
+     * paint with invert Matrix
+     */
+	public static Paint invertPaint = new Paint();
+    
     //Sizes
     
     
@@ -247,7 +273,7 @@ public class Global{
     		Day.selectedBack=new Paint();
     		Day.selectedBack.setColor(res.getColor(R.color.Day_SelectedBackground));
     		
-    		
+    		invertPaint.setColorFilter(new ColorMatrixColorFilter(Global.cm));
     		
     	}
     		 

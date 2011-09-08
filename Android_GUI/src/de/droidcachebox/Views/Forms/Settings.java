@@ -221,6 +221,11 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 			);
 		
 		
+		
+		setStyleforSpinner();
+		
+		
+		
 		ToggleLogInView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) 
@@ -545,6 +550,21 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 	
 	
 	
+	private void setStyleforSpinner() 
+	{
+		int DrawAbleId = main.N? R.drawable.night_btn_dropdown : R.drawable.day_btn_dropdown;
+		LangCombo.setBackgroundResource(DrawAbleId);
+		OsmMinLevel.setBackgroundResource(DrawAbleId);
+		OsmMaxLevel.setBackgroundResource(DrawAbleId);
+		ZoomCross.setBackgroundResource(DrawAbleId);
+		SmoothScrolling.setBackgroundResource(DrawAbleId);
+		TrackDistance.setBackgroundResource(DrawAbleId);
+		ApproachSound.setBackgroundResource(DrawAbleId);
+	}
+
+
+
+
 	/**
 	 * Schliesst einen schon geöffneten Button, 
 	 * wenn er geöffnet ist.

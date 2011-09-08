@@ -390,7 +390,6 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		
 		Bitmap b = Bitmap.createBitmap( main.strengthLayout.getMeasuredWidth(), main.strengthLayout.getMeasuredHeight(), Bitmap.Config.ARGB_8888);                
 	    Canvas c = new Canvas(b);
-	   // AboutView.strengthLayout.layout(0, 0, AboutView.strengthLayout.getMeasuredWidth(), AboutView.strengthLayout.getMeasuredHeight());
 	    main.strengthLayout.draw(c);
 
 	    

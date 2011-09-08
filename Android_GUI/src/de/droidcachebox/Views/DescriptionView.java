@@ -37,8 +37,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.ZoomButton;
+import android.widget.ZoomControls;
 
 public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent {
 	Context context;
@@ -46,7 +49,9 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	
 	Button TestButton;
 	public CacheInfoControl cacheInfo;
-	DescriptionViewControl WebControl;
+	public static DescriptionViewControl WebControl;
+	public static LinearLayout webViewLayout;
+	
 	
 	public DescriptionView(Context context, LayoutInflater inflater) 
 	{
@@ -56,11 +61,12 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 
 		RelativeLayout descriptionLayout = (RelativeLayout)inflater.inflate(R.layout.description_view, null, false);
 		this.addView(descriptionLayout);
-		
+		webViewLayout = (LinearLayout)findViewById(R.id.WebViewLayout);
 		cacheInfo = (CacheInfoControl)findViewById(R.id.CompassDescriptionView);
 		cacheInfo.setStyle(DrawStyle.withOwner);
 		WebControl = (DescriptionViewControl)findViewById(R.id.DescriptionViewControl);
 		WebControl.setWillNotCacheDrawing(false);
+		
 	}
 	
 	 @Override
@@ -116,7 +122,15 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	@Override
 	public void OnShow() 
 	{
+		this.forceLayout();
+		
 		WebControl.OnShow();
+		webViewLayout.setWillNotDraw(false);
+		webViewLayout.invalidate();
+		WebControl.setWillNotDraw(false);
+		WebControl.invalidate();
+		
+		
 		
 	}
 

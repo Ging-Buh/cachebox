@@ -17,11 +17,11 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_enabled="false" android:state_focused="true"
         android:state_window_focused="true"
-        android:drawable="@drawable/night_btn_zoom_down_disabled_focused" />
+        android:drawable="@drawable/night_btn_zoom_down_disabled" />
     <item android:state_enabled="false" android:drawable="@drawable/night_btn_zoom_down_disabled" />
     <item android:state_pressed="true" android:drawable="@drawable/night_btn_zoom_down_pressed" />
     <item android:state_focused="true" android:state_window_focused="true"
-        android:drawable="@drawable/night_btn_zoom_down_selected" />
+        android:drawable="@drawable/night_btn_zoom_down_normal" />
     <item android:drawable="@drawable/night_btn_zoom_down_normal" />
 </selector>
 
