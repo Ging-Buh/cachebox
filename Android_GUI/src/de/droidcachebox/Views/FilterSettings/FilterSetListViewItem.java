@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import CB_Core.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.FilterSettings.FilterSetListView;
@@ -161,22 +162,19 @@ public class FilterSetListViewItem extends View {
     
     
     private static Drawable btnBack;
-    private static Drawable btnBack_pressed;
+//    private static Drawable btnBack_pressed;
     private static Drawable minusBtn;
     private static Drawable plusBtn;
     
     private void drawCollabseButtonItem(Canvas canvas)
     {
-    	if(btnBack==null || btnBack_pressed==null)
-    	{
-    		boolean n = Config.GetBool("nightMode");
-    		btnBack = mRes.getDrawable(n? R.drawable.day_btn_dropdown_normal : R.drawable.night_btn_dropdown_normal);
-    		btnBack_pressed = mRes.getDrawable(n? R.drawable.day_btn_dropdown_pressed : R.drawable.night_btn_dropdown_pressed);
+    		
+    		btnBack = mRes.getDrawable(main.N?  R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal);
+//    		btnBack_pressed = mRes.getDrawable(n? R.drawable.day_btn_dropdown_pressed : R.drawable.night_btn_dropdown_pressed);
     		
     		Rect bounds = new Rect(3, 7, width-3, height);
     		btnBack.setBounds(bounds);
-    		btnBack_pressed.setBounds(bounds);
-    	}
+//    		btnBack_pressed.setBounds(bounds);
     	
     	
     	btnBack.draw(canvas);

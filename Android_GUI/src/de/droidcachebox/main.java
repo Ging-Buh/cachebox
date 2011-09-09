@@ -31,6 +31,7 @@ import CB_Core.Types.Waypoint;
 
 import de.droidcachebox.ExtAudioRecorder;
 import de.droidcachebox.Components.CacheNameView;
+import de.droidcachebox.Components.search;
 import de.droidcachebox.Custom_Controls.DebugInfoPanel;
 import de.droidcachebox.Custom_Controls.DescriptionViewControl;
 import de.droidcachebox.Custom_Controls.Mic_On_Flash;
@@ -166,6 +167,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    private static TrackListView tracklistView= null; 		// ID 13
 	    
 	    public static LinearLayout strengthLayout;
+	    
+	    public LinearLayout searchLayout;
+	    private search Search;
 	    
 	    /**
 	     * Night Mode aktive
@@ -430,7 +434,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	   		 
     		}
     		
-   		 	
+    		Search = new search(this);	
 	        
 	    }
 
@@ -469,6 +473,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	    @Override public void SelectedCacheChanged(Cache cache, Waypoint waypoint) 
 		{
 	    	approachSoundCompleted = false;
+	    	cacheListView.setSelectedCacheVisible(0);
 		}
 
 	    public void newLocationReceived (Location location)
@@ -674,7 +679,10 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 			
 	    	
 	    	
-			if ((Global.LastFilter == null) || (Global.LastFilter.ToString().equals("")) || (PresetListViewItem.chkPresetFilter(PresetListView.presets[0], Global.LastFilter.ToString())))
+			if ((Global.LastFilter == null) 
+					|| (Global.LastFilter.ToString().equals("")) 
+					|| (PresetListViewItem.chkPresetFilter(PresetListView.presets[0], Global.LastFilter.ToString()))
+					&& !Global.LastFilter.isExtendsFilter())
 	        {
 				ButtonBackGroundResource = N? R.drawable.night_db_button_image_selector : R.drawable.db_button_image_selector ;
 	        }
@@ -1234,7 +1242,9 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
     	
     	cacheNameView =(CacheNameView)this.findViewById(R.id.main_cache_name_view);
     	QuickButtonList = (HorizontalListView)this.findViewById(R.id.main_quick_button_list);
-    	strengthLayout = (LinearLayout)findViewById(R.id.main_strength_control);
+    	strengthLayout = (LinearLayout)this.findViewById(R.id.main_strength_control);
+    	
+    	searchLayout = (LinearLayout)this.findViewById(R.id.searchDialog);
     }
 	    
 	private void initialViews() 
@@ -1725,7 +1735,7 @@ public class main extends Activity implements SelectedCacheEvent,LocationListene
 	
 	private void ListSearch()
 	{
-		MessageBox.Show("Die Suche ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
+		Search.Show();
 	}
 	
 	private void addCache()

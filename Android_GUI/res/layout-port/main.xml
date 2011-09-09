@@ -50,11 +50,15 @@
 
 			<de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView
 				android:id="@+id/main_quick_button_list" android:layout_width="fill_parent"
-				android:layout_height="60dip" />
+				android:layout_height="0dip" />
 
 			<de.droidcachebox.Components.CacheNameView
 				android:id="@+id/main_cache_name_view" android:layout_width="fill_parent"
 				android:layout_height="32dip" />
+				
+			<include android:layout_height="wrap_content" android:id="@+id/searchDialog"
+				layout="@layout/search_dialog_layout" android:layout_width="match_parent"
+				android:layout_weight="1" android:visibility="gone"></include>
 
 		</LinearLayout>
 	</RelativeLayout>

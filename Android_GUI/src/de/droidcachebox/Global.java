@@ -14,13 +14,16 @@ import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PaintDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.ConnectivityManager;
@@ -36,7 +39,7 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 
 public class Global{
-    public static final int CurrentRevision = 414;
+    public static final int CurrentRevision = 415;
     public static final String CurrentVersion = "0.1.";
     public static final String VersionPrefix = "alpha";
     public static final int LatestDatabaseChange = 1016;
@@ -93,6 +96,76 @@ public class Global{
      * paint with invert Matrix
      */
 	public static Paint invertPaint = new Paint();
+	
+	
+	/**
+	 * gibt die resultierende Farbe für Schwarz zurück,
+	 * wenn der Invert Filter angewandt wurde.
+	 * 
+	 * @return int (Color)
+	 */
+	public static int getInvertMatrixBlack()
+	{
+		if(mInvertBlack==-1)
+		{
+			Bitmap onelPixel = Bitmap.createBitmap( 1, 1, Bitmap.Config.ARGB_8888);
+			Canvas c = new Canvas(onelPixel);
+			c.drawColor(Color.BLACK);
+			
+			Bitmap onelPixel2 = Bitmap.createBitmap( 1, 1, Bitmap.Config.ARGB_8888);
+			Canvas c2 = new Canvas(onelPixel2);
+			c2.drawBitmap(onelPixel, 0, 0, invertPaint);
+			
+			mInvertBlack = onelPixel2.getPixel(0,0);
+
+		}
+		
+			return mInvertBlack;
+		
+		
+	}
+	
+	/**
+	 * enthält die resultierende Farbe für Schwarz,
+	 * wenn der Invert Filter angewandt wurde.
+	 */
+	private static int mInvertBlack=-1;
+	
+	
+	/**
+	 * gibt die resultierende Farbe für Schwarz zurück,
+	 * wenn der Invert Filter angewandt wurde.
+	 * 
+	 * @return int (Color)
+	 */
+	public static int getInvertMatrixWhite()
+	{
+		if(mInvertWhite==-1)
+		{
+			Bitmap onelPixel = Bitmap.createBitmap( 1, 1, Bitmap.Config.ARGB_8888);
+			Canvas c = new Canvas(onelPixel);
+			Paint p = new Paint();
+			p.setColor(Color.WHITE);
+			c.drawRect(new Rect(0,0,1,1), p);
+			
+			Bitmap onelPixel2 = Bitmap.createBitmap( 1, 1, Bitmap.Config.ARGB_8888);
+			Canvas c2 = new Canvas(onelPixel2);
+			c2.drawBitmap(onelPixel, 0, 0, invertPaint);
+			
+			mInvertWhite = onelPixel2.getPixel(0,0);
+
+		}
+		
+			return mInvertWhite;
+		
+		
+	}
+	
+	/**
+	 * enthält die resultierende Farbe für Schwarz,
+	 * wenn der Invert Filter angewandt wurde.
+	 */
+	private static int mInvertWhite=-1;
     
     //Sizes
     

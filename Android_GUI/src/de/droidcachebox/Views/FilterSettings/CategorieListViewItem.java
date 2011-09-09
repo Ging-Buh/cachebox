@@ -6,6 +6,7 @@ import CB_Core.Config;
 import CB_Core.Types.GpxFilename;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.FilterSettings.CategorieListView.CategorieEntry;
@@ -210,17 +211,13 @@ public class CategorieListViewItem extends View {
     
     private void drawCollabseButtonItem(Canvas canvas)
     {
-    	if(btnBack==null)
-    	{
-    		boolean n = Config.GetBool("nightMode");
-    		btnBack = mRes.getDrawable(n? R.drawable.day_btn_default_normal : R.drawable.night_btn_default_normal);
+    	   		
+    		btnBack = mRes.getDrawable(main.N?  R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal);
     		
     		
     		Rect bounds = new Rect(3, 7, width-3, height-7);
     		btnBack.setBounds(bounds);
-    		
-    	}
-    	
+    	    	
     	left+=70;
     	
     	btnBack.draw(canvas);

@@ -10,15 +10,21 @@
 
 		<LinearLayout android:layout_alignParentTop="true"
 			android:layout_width="match_parent" android:id="@+id/layoutTop"
-			android:layout_height="wrap_content" >
+			android:layout_height="wrap_content">
 
 			<de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView
 				android:id="@+id/main_quick_button_list" android:layout_width="fill_parent"
 				android:layout_height="0dip" />
-
+						
 			<de.droidcachebox.Components.CacheNameView
 				android:id="@+id/main_cache_name_view" android:layout_width="fill_parent"
 				android:layout_height="35dip" />
+				
+			<include android:layout_height="wrap_content" android:id="@+id/searchDialog"
+				layout="@layout/search_dialog_layout" android:layout_width="match_parent"
+				android:layout_weight="1" android:visibility="gone"></include>
+
+			
 
 		</LinearLayout>
 		<LinearLayout android:layout_alignParentRight="true"
@@ -28,29 +34,32 @@
 
 			<ImageButton android:layout_height="match_parent"
 				android:layout_width="wrap_content" android:layout_weight="1"
-				android:id="@+id/buttonDB"
-				android:background="?attr/DbBtnImageSelector"
+				android:id="@+id/buttonDB" android:background="?attr/DbBtnImageSelector"
 				android:layout_margin="2dip" android:layout_marginTop="1dip">
 			</ImageButton>
 			<ImageButton android:layout_width="wrap_content"
 				android:layout_height="match_parent" android:layout_weight="1"
 				android:id="@+id/buttonCache" android:text="@string/Cache"
-				android:layout_margin="2dip" android:layout_marginTop="1dip" android:background="?attr/CacheBtnImageSelector">
+				android:layout_margin="2dip" android:layout_marginTop="1dip"
+				android:background="?attr/CacheBtnImageSelector">
 			</ImageButton>
 			<ImageButton android:layout_width="wrap_content"
 				android:layout_height="match_parent" android:layout_weight="1"
 				android:id="@+id/buttonMap" android:text="@string/Map"
-				android:layout_margin="2dip" android:layout_marginTop="1dip" android:background="?attr/NavBtnImageSelector">
+				android:layout_margin="2dip" android:layout_marginTop="1dip"
+				android:background="?attr/NavBtnImageSelector">
 			</ImageButton>
 			<ImageButton android:layout_width="wrap_content"
 				android:layout_height="match_parent" android:layout_weight="1"
-				android:id="@+id/buttonInfo" android:text="@string/Info" 
-				android:layout_margin="2dip" android:layout_marginTop="1dip" android:background="?attr/FindBtnImageSelector">
+				android:id="@+id/buttonInfo" android:text="@string/Info"
+				android:layout_margin="2dip" android:layout_marginTop="1dip"
+				android:background="?attr/FindBtnImageSelector">
 			</ImageButton>
 			<ImageButton android:layout_width="wrap_content"
 				android:layout_height="match_parent" android:layout_weight="1"
 				android:id="@+id/buttonMisc" android:text="@string/Misc"
-				android:layout_margin="2dip" android:layout_marginTop="1dip" android:background="?attr/MiscBtnImageSelector">
+				android:layout_margin="2dip" android:layout_marginTop="1dip"
+				android:background="?attr/MiscBtnImageSelector">
 			</ImageButton>
 		</LinearLayout>
 		<FrameLayout android:layout_alignParentLeft="true"
@@ -78,12 +87,13 @@
 	<de.droidcachebox.Custom_Controls.downSlider
 		android:id="@+id/downSlider" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" />
-		
+
 	<include android:layout_height="wrap_content" android:id="@+id/main_strength_control"
 		layout="@layout/strength_control" android:layout_width="wrap_content"
 		android:layout_gravity="bottom|right" android:layout_marginRight="10dip"
 		android:layout_marginBottom="85dip" android:visibility="invisible"></include>
-		
-		<!-- das strength_control ist invisible, weil es im main plaziert ist aber nur im sleider gezeichnet wird.  -->
-		
+
+	<!-- das strength_control ist invisible, weil es im main plaziert ist aber 
+		nur im sleider gezeichnet wird. -->
+
 </RelativeLayout>

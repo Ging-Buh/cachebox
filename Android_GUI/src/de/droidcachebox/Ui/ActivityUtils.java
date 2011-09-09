@@ -525,5 +525,44 @@ public class ActivityUtils
 		}
 	};
  
-    
+    /**
+     * Da bei dem Verwendeten Themes die disabled TextColor nicht
+     * richtig übernommen wird, wird mit dieser Methode der Status überprüft
+     * und gegebenenfalls die Farbe angepasst.
+     * @param btn (Button)
+     */
+	public static void chkBtnState(Button btn)
+	{
+		if(btn.isEnabled())
+		{
+			btn.setTextColor(Global.getColor(R.attr.TextColor));
+		}
+		else
+		{
+			btn.setTextColor(Global.getColor(R.attr.TextColor_disable));
+		}
+	}
+	
+	
+	/**
+	 * Da bei dem Verwendeten Themes die disabled TextColor nicht
+     * richtig übernommen wird, wird mit dieser Methode der Status gesetzt
+     * und gegebenenfalls die Farbe angepasst.
+	 * @param btn (Button)
+	 * @param state (boolean)
+	 */
+	public static void setBtnState(Button btn, boolean state)
+	{
+		btn.setEnabled(state);
+		
+		if(state)
+		{
+			btn.setTextColor(Global.getColor(R.attr.TextColor));
+		}
+		else
+		{
+			btn.setTextColor(Global.getColor(R.attr.TextColor_disable));
+		}
+	}
+	
 }

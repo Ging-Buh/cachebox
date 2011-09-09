@@ -72,7 +72,8 @@ public class PresetListViewItem extends View {
     	{
 	    	if(chkPresetFilter(mPresetEntry.getPresetString(),EditFilterSettings.tmpFilterProps.ToString()))
 	    	{
-	    		PresetEquelsFilter = true;
+	    		if(!EditFilterSettings.tmpFilterProps.isExtendsFilter())
+	    			PresetEquelsFilter = true;
 	    	}
     	}
         //initial

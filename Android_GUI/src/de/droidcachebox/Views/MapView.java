@@ -2125,9 +2125,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    if (drawAsWaypoint)
 		    {  // Aktiver WP -> Titel oder GCCode
 		    	wpName = (wpi.Waypoint.Title == "") ? wpi.Waypoint.GcCode : wpi.Waypoint.Title;
-		    	fontSmall.setColor(N? Color.BLACK : Color.WHITE);
+		    	fontSmall.setColor(N? Color.BLACK : Color.WHITE);  //Shadow
 		    	canvasOverlay.drawText(wpName, x + halfIconWidth + 4, y, fontSmall);
-		    	fontSmall.setColor(Global.getColor(R.attr.TextColor));
+		    	fontSmall.setColor(N? Global.getInvertMatrixBlack() : Color.BLACK);
 		    	canvasOverlay.drawText(wpName, x + halfIconWidth + 5, y + 1, fontSmall);
 		    }
 		    else 
@@ -2136,9 +2136,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		    	if (showRating)
 		    		yoffset += 10 ;
 		    	int fwidth = (int)(fontSmall.measureText(wpName) / 2);
-		    	fontSmall.setColor(N? Color.BLACK : Color.WHITE);
+		    	fontSmall.setColor(N? Color.BLACK : Color.WHITE); //Shadow
 		    	canvasOverlay.drawText(wpName, x - fwidth, y + halfIconWidth + yoffset, fontSmall);
-		    	fontSmall.setColor(Global.getColor(R.attr.TextColor));
+		    	fontSmall.setColor(N? Global.getInvertMatrixBlack() : Color.BLACK);
 		    	canvasOverlay.drawText(wpName, (x - fwidth) + 1, y + halfIconWidth + yoffset + 1, fontSmall);
 		    }
 		  }
@@ -3573,10 +3573,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       int start = 0;
       Paint[] brushes = new Paint[2];
       brushes[0] = new Paint();
-      brushes[0].setColor(Color.BLACK);
+      brushes[0].setColor(main.N? Global.getInvertMatrixBlack() : Color.BLACK);
       brushes[0].setStyle(Style.FILL);
       brushes[1] = new Paint();
-      brushes[1].setColor(Color.WHITE);
+      brushes[1].setColor(main.N? Global.getInvertMatrixWhite() : Color.WHITE);
       brushes[1].setStyle(Style.FILL);
       
       for (int i = 1; i <= scaleUnits; i++)
@@ -3588,7 +3588,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       }
 
       Paint blackPen = new Paint();
-      blackPen.setColor(Color.BLACK);
+      blackPen.setColor(main.N? Global.getInvertMatrixBlack() : Color.BLACK);
       blackPen.setStyle(Style.STROKE);
       canvasOverlay.drawRect(new Rect(scaleLeft - 1, height - lineHeight / 2 - lineHeight / 4, scaleLeft + pos, height - lineHeight / 4), blackPen);
 
@@ -3919,7 +3919,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       float dist = 20;
 
       Paint paint = new Paint();
-      paint.setColor(Color.BLACK);
+      paint.setColor(main.N? Global.getInvertMatrixBlack() : Color.BLACK);
       canvasOverlay.drawLine(centerColumn, topRow, centerColumn, bottomRow, paint);
 
       float numSteps = maxZoom - minZoom;
@@ -3931,11 +3931,12 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	Paint font = new Paint();
     	font.setTextSize(18);
     	font.setFakeBoldText(true);
+    	font.setColor(main.N? Global.getInvertMatrixBlack() : Color.BLACK);
     	Paint white = new Paint();
-    	white.setColor(Color.WHITE);
+    	white.setColor(main.N? Global.getInvertMatrixWhite() : Color.WHITE);
     	white.setStyle(Style.FILL);
     	Paint black = new Paint();
-    	black.setColor(Color.BLACK);
+    	black.setColor(main.N? Global.getInvertMatrixBlack() : Color.BLACK);
     	black.setStyle(Style.STROKE);
 
         if (i == Zoom)
@@ -4423,7 +4424,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	  path.lineTo(dir[0].x, dir[0].y);
     	  canvas.drawPath(path, ArrowPaint);
     	  ArrowPaint.setStyle(Style.STROKE);
-    	  ArrowPaint.setColor(Color.BLACK);
+    	  ArrowPaint.setColor(main.N? Global.getInvertMatrixBlack() : Color.BLACK);
     	  canvas.drawPath(path, ArrowPaint);    	  
       }
 

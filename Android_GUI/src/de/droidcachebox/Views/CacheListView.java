@@ -157,27 +157,48 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 		// aktuellen Cache in der List anzeigen
 		if (GlobalCore.SelectedCache() != null)
 		{
-			int id = 0;
-			
-			int first = this.getFirstVisiblePosition();
 			int last =this.getLastVisiblePosition();
 			
 			if (last==-1 && Database.Data.Query.size()>0 )
 			{
 				lvAdapter.notifyDataSetChanged();
 			}
-			for (Cache ca : Database.Data.Query)
-			{
-				if (ca == GlobalCore.SelectedCache())
-				{
-					if(!(first<id && last>id))
-						this.setSelection(id - 2);
-					break;
-				}
-				id++;
-			}
+			
+			setSelectedCacheVisible();
+			
 		} else
 			this.setSelection(0);		
+	}
+	
+	
+	/**
+	 * setzt den Aktuell selectierten Cache an die 2. Pos in der Liste
+	 */
+	public void setSelectedCacheVisible()
+	{
+		setSelectedCacheVisible(2);
+	}
+	
+	/**
+	 * setzt den Aktuell selectierten Cache an pos
+	 * @param pos
+	 */
+	public void setSelectedCacheVisible(int pos)
+	{
+		int id = 0;
+		int first = this.getFirstVisiblePosition();
+		int last =this.getLastVisiblePosition();
+		
+		for (Cache ca : Database.Data.Query)
+		{
+			if (ca == GlobalCore.SelectedCache())
+			{
+				if(!(first<id && last>id))
+					this.setSelection(id - pos);
+				break;
+			}
+			id++;
+		}
 	}
 
 	@Override

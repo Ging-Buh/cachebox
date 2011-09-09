@@ -60,6 +60,30 @@ public class FilterProperties
     final String seperator = ",";
     final String GPXseperator = "^";
 
+    
+    /**
+     * True, wenn diese FiletrPropertys eine Filterung nach
+     * Name, Gc-Code oder Owner enthält!
+     * @return
+     */
+    public boolean isExtendsFilter()
+    {
+    	if(!filterName.equals(""))
+    		return true;
+    	
+    	if(!filterGcCode.equals(""))
+    		return true;
+    	
+    	if(!filterOwner.equals(""))
+    		return true;
+    	
+    	return false;
+    }
+    
+    /**
+     * Gibt den SQL Where String dieses Filters zurück
+     * @return
+     */
     public String ToString()
     {
         String result = 
