@@ -27,6 +27,7 @@ import android.R.color;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -160,6 +161,15 @@ public class Settings extends Activity implements ViewOptionsMenu,SelectedLangCh
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
+		
+		if(!Config.GetBool("AllowLandscape"))
+        {
+        	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+        else
+        {
+        	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+        }
 		
 		Bundle bundle = getIntent().getExtras();
         int PerformButtonClickID  = (Integer)bundle.getSerializable("Show");

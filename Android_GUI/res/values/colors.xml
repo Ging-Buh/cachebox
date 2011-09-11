@@ -10,7 +10,7 @@
 	    <color name="Day_ListSeperator">#4c5e21</color>	    
 	    <color name="Day_EmptyBackground">#CAD4B2</color>
 	    <color name="Day_Foreground">#000000</color>
-	    <color name="Day_Foreground_disable">#d6d6d6</color>
+	    <color name="Day_Foreground_disable">#769676</color>
 	    <color name="Day_SelectedBackground">#ffd240</color>
 	    <color name="Day_TitleBarColor">#8B9D5F</color>
 	    <color name="Day_TitleBarText">#000000</color>
