@@ -1,6 +1,5 @@
 package de.droidcachebox.Views.Forms;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import de.droidcachebox.Global;
@@ -10,25 +9,24 @@ import de.droidcachebox.Custom_Controls.MultiToggleButton;
 import de.droidcachebox.UTM.UTMConvert;
 import de.droidcachebox.Ui.ActivityUtils;
 import CB_Core.Types.Coordinate;
-import android.R.string;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
+import android.text.ClipboardManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.ToggleButton;
+import android.widget.Toast;
 
 public class EditCoordinate extends Activity {
 	
@@ -301,8 +299,41 @@ public class EditCoordinate extends Activity {
 	 }
 
 	
-	
-	private OnFocusChangeListener onFocusChange = new OnFocusChangeListener() 
+    /** hook into menu button for activity */
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_editcoordinate, menu);
+        return true;    
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+        case R.id.mec_paste:
+        	ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+        	if (clipboardManager.hasText())
+        	{
+        		String sCoord = clipboardManager.getText().toString();
+        		Coordinate coord = new Coordinate(sCoord);
+        		if (coord.Valid)
+        		{
+        			this.coord = coord;
+        			int oldPage = aktPage;
+        			aktPage = -1;
+        			showPage(oldPage);
+        		} else
+        		{
+        			Toast.makeText(getApplicationContext(), "No valid Coordinate in Clipboard!", Toast.LENGTH_SHORT).show();        		
+        		}
+        	}
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }	
+
+    private OnFocusChangeListener onFocusChange = new OnFocusChangeListener() 
 	{
 		@Override
 		public void onFocusChange(View arg0, boolean arg1) 

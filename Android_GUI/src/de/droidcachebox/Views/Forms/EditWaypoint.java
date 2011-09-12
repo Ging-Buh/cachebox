@@ -11,8 +11,13 @@ import de.droidcachebox.R;
 import de.droidcachebox.Ui.ActivityUtils;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.ClipboardManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -22,6 +27,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class EditWaypoint extends Activity {
 	private Intent aktIntent;
@@ -202,5 +208,39 @@ public class EditWaypoint extends Activity {
     private static final String[] mStrings = {
     	"Reference", "Stage of a Multicache", "Question to answer", "Trailhead", "Parking Area", "Final"
     };
+
+    /** hook into menu button for activity */
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_editwaypoint, menu);
+        return true;    
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+        case R.id.mew_paste:
+        	ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+        	if (clipboardManager.hasText())
+        	{
+        		String sCoord = clipboardManager.getText().toString();
+        		Coordinate coord = new Coordinate(sCoord);
+        		if (coord.Valid)
+        		{
+        			waypoint.Pos.Latitude = coord.Latitude;
+        			waypoint.Pos.Longitude = coord.Longitude;
+        			waypoint.Pos.Valid = true;
+        	        bCoord.setText(waypoint.Pos.FormatCoordinate());
+        		} else
+        		{
+        			Toast.makeText(getApplicationContext(), "No valid Coordinate in Clipboard!", Toast.LENGTH_SHORT).show();        		
+        		}
+        	}
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }	
 
 }
