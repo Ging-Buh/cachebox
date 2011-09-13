@@ -42,10 +42,14 @@ public static CacheTypes parseString(String string)
 	// Replace some opencaching.de / geotoad cache types
 	if (string.toLowerCase().equals("multicache"))
 		string = "Multi";
-	if (string.toLowerCase().equals("wherigo")) // note the missing "e"
-		string = "Whereigo";
+	if (string.toLowerCase().equals("whereigo")) // note the additional "e"
+		string = "Wherigo";
 	if (string.toLowerCase().equals("other"))
 		string = "Mystery";
+	if (string.toLowerCase().equals("earthcache"))
+		string = "Earth";
+	if (string.toLowerCase().equals("webcam"))
+		string = "Camera";
 	
 	// If no cache type is given, use "Unknown"
 	if (string.length() == 0)

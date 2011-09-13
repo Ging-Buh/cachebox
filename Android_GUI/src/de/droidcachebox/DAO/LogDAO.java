@@ -2,19 +2,15 @@ package de.droidcachebox.DAO;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import de.droidcachebox.Database;
-
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteStatement;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
-import CB_Core.Types.Cache;
-import CB_Core.Types.CacheList;
 import CB_Core.Types.LogEntry;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
+import de.droidcachebox.Database;
 
 public class LogDAO {
 	public void WriteToDatabase(LogEntry log)
@@ -30,15 +26,12 @@ public class LogDAO {
         args.put("CacheId", log.CacheId);
         try
         {
-        	long anzahl = Database.Data.myDB.insert("Logs", null, args);
-            String s = anzahl + "";
-        	
-            args = new ContentValues();
-        } catch (Exception exc)
+        	Database.Data.myDB.insertWithOnConflict("Logs", null, args, SQLiteDatabase.CONFLICT_REPLACE);
+        }
+        catch (Exception exc)
         {
         	Logger.Error("Write Log", "", exc);
-        
-        }	
+        }
 		
 	}
 	

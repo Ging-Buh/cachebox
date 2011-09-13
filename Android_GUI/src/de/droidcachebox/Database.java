@@ -177,7 +177,8 @@ public class Database {
 	
 					myDB.execSQL("ALTER TABLE [GpxFilenames] ADD [CategoryId] bigint NULL;");
 	
-					myDB.execSQL("ALTER TABLE [Caches] add [state] nvarchar(50) NULL, [country] nvarchar(50) NULL;");
+					myDB.execSQL("ALTER TABLE [Caches] add [state] nvarchar(50) NULL;");
+					myDB.execSQL("ALTER TABLE [Caches] add [country] nvarchar(50) NULL;");
 				} catch (Exception exc)
 				{
 					Logger.Error("AlterDatabase_0", "", exc);

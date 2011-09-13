@@ -195,7 +195,7 @@ public class Importer
          for(File recursiveDir : directories)
          {
         	 if(recursiveDir.isDirectory())
-        		 recursiveDirectoryReader(recursiveDir, files);
+        		 recursiveDirectoryReader(recursiveDir, files, Endung);
          }
         return files;     
      }
