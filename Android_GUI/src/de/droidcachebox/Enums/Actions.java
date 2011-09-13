@@ -49,6 +49,7 @@ public enum Actions
 	ScreenLock,			//12
 	AutoResort,			//13
 	Solver,				//14
+	Spoiler,			//15
 	
 	empty,;
 
@@ -116,6 +117,7 @@ public enum Actions
         	case 12:return Actions.ScreenLock;
         	case 13:return Actions.AutoResort;
         	case 14:return Actions.Solver;
+        	case 15:return Actions.Spoiler;
         }
         return Actions.empty;
     }
@@ -139,6 +141,7 @@ public enum Actions
             case 12:return Global.BtnIcons[14]; //ScreenLock
             case 13:return Global.autoResort? Global.BtnIcons[16] : Global.BtnIcons[15]; //AutoResort
             case 14:return Global.BtnIcons[17]; 
+            case 15:return Global.BtnIcons[18];
         }
 		return null;
 	}
@@ -162,6 +165,7 @@ public enum Actions
             case 12:return Global.Translations.Get("screenlock");
             case 13:return Global.Translations.Get("AutoResort");
             case 14:return Global.Translations.Get("Solver");
+            case 15:return Global.Translations.Get("spoiler");
         }
 		return "empty";
 	}

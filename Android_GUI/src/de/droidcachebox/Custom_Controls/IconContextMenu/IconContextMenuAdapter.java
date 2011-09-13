@@ -2,6 +2,7 @@ package de.droidcachebox.Custom_Controls.IconContextMenu;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.Ui.Sizes;
 import CB_Core.Config;
 import android.content.Context;
 import android.graphics.Color;
@@ -80,7 +81,8 @@ public class IconContextMenuAdapter extends BaseAdapter {
 		res.setClickable(!item.isEnabled());
 
 		res.setMinHeight(40);
-		res.setHeight(68);
+		
+		res.setHeight(Sizes.getIconContextMenuHeight());
 		return res;
 	}
 }

@@ -107,7 +107,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	private int LineSep;
 	private int WPInfoHeight=0;
 	private int GPSInfoHeight=0;	
-	private int QuickButtonHeight;
+	private static int QuickButtonHeight;
 	private int QuickButtonMaxHeight;
 	
 	
@@ -597,6 +597,14 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		
 		invalidate();
 	}
+	
+	
+	
+	public static int getAktQuickButtonHeight()
+	{
+		return Config.GetBool("quickButtonShow")? QuickButtonHeight:0;
+	}
+	
 
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) 

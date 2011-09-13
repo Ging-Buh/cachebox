@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.View.MeasureSpec;
@@ -120,6 +121,17 @@ public class QuickButtonItem extends View
 	    	   else
 	    	   {
 	    		   ActivityUtils.PutImageTargetHeight(canvas, Global.BtnIcons[16], 14, 12, height-24);
+	    	   }
+	       }
+	       else  if(this.mAction.ordinal()== Actions.Spoiler.ordinal())
+	       {// Wenn die Action ID = Spoiler ist, muss erst die existence von Spoilern abgefragt werden
+	    	   if(GlobalCore.SelectedCache()!=null && GlobalCore.SelectedCache().SpoilerExists())
+	    	   {
+	    		   ActivityUtils.PutImageTargetHeight(canvas, Global.BtnIcons[18], 14, 12, height-24);
+	    	   }
+	    	   else
+	    	   {
+	    		   ActivityUtils.PutImageTargetHeightColor(canvas, Global.BtnIcons[18], 14, 12, height-24,Global.getColor(R.attr.TextColor_disable),Mode.SRC_IN);
 	    	   }
 	       }
 	       else

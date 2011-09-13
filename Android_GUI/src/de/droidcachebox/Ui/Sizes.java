@@ -50,6 +50,7 @@ public class Sizes
     private static int scaledFontSize_big;
     private static int ScaledFontSize_small;
     private static int StrengthHeightMultipler;
+    private static int IconContextMenuHeight;
 	
 	public static void initial(boolean land , Activity context)
 	{
@@ -80,6 +81,7 @@ public class Sizes
 		CacheListItemSize = new Size(windowWidth, (int) (scaledFontSize_normal * 5));
 		CacheListDrawRec = CacheListItemSize.getBounds(5, 2,-5,-2);
 		StrengthHeightMultipler=windowHeight/600;
+		IconContextMenuHeight=(int) (windowHeight/11.1);
 	}
 	
 	public static int getWindowHeight()
@@ -182,7 +184,10 @@ public class Sizes
 		return StrengthHeightMultipler;
 	}
 	
-	
+	public static int getIconContextMenuHeight()
+	{
+		return IconContextMenuHeight;
+	}
 	
 	
 }

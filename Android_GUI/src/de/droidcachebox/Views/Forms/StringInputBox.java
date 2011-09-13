@@ -21,6 +21,7 @@ import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,16 +36,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.app.Activity;
 
 /**
- * Zeigt eine InputBox an, in welcher der Benutzer ein Int Wert eintragen kann.
- * Da nicht auf ein Result gewartet werden kann, muss ein
+ * Zeigt eine InputBox an, in welcher der Benutzer einen String Wert eintragen
+ * kann. Da nicht auf ein Result gewartet werden kann, muss ein
  * DialogInterface.OnClickListener() übergeben werden.
  * 
  * @author Longri
  */
-public class NumerikInputBox extends android.app.Dialog
+public class StringInputBox extends android.app.Dialog
 {
 
 	private static DialogInterface.OnClickListener listner;
@@ -91,7 +91,7 @@ public class NumerikInputBox extends android.app.Dialog
 	 * }
 	 * </pre>
 	 */
-	public static void Show(String title, String msg, int InitialValue,
+	public static void Show(String title, String msg, String InitialValue,
 			DialogInterface.OnClickListener Listener)
 	{
 
@@ -99,15 +99,14 @@ public class NumerikInputBox extends android.app.Dialog
 
 	}
 
-	public static void Show(String title, String msg, int InitialValue,
+	public static void Show(String title, String msg, String InitialValue,
 			DialogInterface.OnClickListener Listener, Activity activity)
 	{
-
 		listner = Listener;
 		Bundle b = new Bundle();
 		b.putString("msg", msg);
 		b.putString("title", title);
-		b.putInt("iniValue", InitialValue);
+		b.putString("iniValue", InitialValue);
 
 		if (listner == null) // setze standard Listner zum schliessen des
 								// Dialogs, falls kein Listner angegeben wurde
@@ -124,10 +123,11 @@ public class NumerikInputBox extends android.app.Dialog
 
 		Dialog dialog = null;
 
-		NumerikInputBox.Builder customBuilder = new NumerikInputBox.Builder(
+		StringInputBox.Builder customBuilder = new StringInputBox.Builder(
 				activity);
 		customBuilder.setTitle(b.getString("title"))
-				.setMessage(b.getString("msg")).setValue(b.getInt("iniValue"))
+				.setMessage(b.getString("msg"))
+				.setValue(b.getString("iniValue"))
 				.setPositiveButton(Global.Translations.Get("ok"), listner)
 				.setNegativeButton(Global.Translations.Get("cancel"), listner);
 		dialog = customBuilder.create();
@@ -135,12 +135,12 @@ public class NumerikInputBox extends android.app.Dialog
 		dialog.show();
 	}
 
-	public NumerikInputBox(Context context, int theme)
+	public StringInputBox(Context context, int theme)
 	{
 		super(context, theme);
 	}
 
-	public NumerikInputBox(Context context)
+	public StringInputBox(Context context)
 	{
 		super(context);
 	}
@@ -156,7 +156,7 @@ public class NumerikInputBox extends android.app.Dialog
 		private String message;
 		private String positiveButtonText;
 		private String negativeButtonText;
-		private int value;
+		private String value;
 
 		private View contentView;
 
@@ -174,7 +174,7 @@ public class NumerikInputBox extends android.app.Dialog
 		 * @param value
 		 * @return
 		 */
-		public Builder setValue(int value)
+		public Builder setValue(String value)
 		{
 			this.value = value;
 			return this;
@@ -306,14 +306,14 @@ public class NumerikInputBox extends android.app.Dialog
 		/**
 		 * Create the custom dialog
 		 */
-		public NumerikInputBox create()
+		public StringInputBox create()
 		{
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			// instantiate the dialog with the custom Theme
-			final NumerikInputBox dialog = new NumerikInputBox(context,
+			final StringInputBox dialog = new StringInputBox(context,
 					R.style.Dialog);
-			View layout = inflater.inflate(R.layout.numerik_inputbox_layout,
+			View layout = inflater.inflate(R.layout.string_inputbox_layout,
 					null);
 			dialog.addContentView(layout, new LayoutParams(
 					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
@@ -400,8 +400,7 @@ public class NumerikInputBox extends android.app.Dialog
 			}
 
 			editText = (EditText) layout.findViewById(R.id.editNumber);
-			ActivityUtils.initialNumPadInt(main.mainActivity, layout, editText,
-					String.valueOf(value), null, null);
+			editText.setText(value);
 			setBackgroundDrawables(layout);
 			dialog.setContentView(layout);
 			return dialog;
