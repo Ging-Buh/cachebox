@@ -13,13 +13,14 @@ import de.droidcachebox.main;
 import de.droidcachebox.DAO.CacheDAO;
 import de.droidcachebox.DAO.CacheListDAO;
 import de.droidcachebox.DAO.LogDAO;
+import de.droidcachebox.DAO.WaypointDAO;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEvent;
 import CB_Core.Import.Importer;
-import CB_Core.Import.Importer.Cache_Log_Return;
+import CB_Core.Import.Importer.Cache_Log_Waypoint_Return;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
 import android.app.Activity;
@@ -244,8 +245,8 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 						Database.Data.myDB.beginTransaction();
 						try {
 
-							Cache_Log_Return Returns = importer.importGpx(
-									directoryPath, ip);
+							Cache_Log_Waypoint_Return Returns = importer
+									.importGpx(directoryPath, ip);
 							CacheImports = Returns.CacheCount;
 							LogImports = Returns.LogCount;
 							// Schreibe Imports in DB
@@ -256,6 +257,10 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 							LogDAO logDao = new LogDAO();
 							logDao.WriteImports(Returns.logIterator,
 									Returns.LogCount, ip);
+
+							WaypointDAO waypointDao = new WaypointDAO();
+							waypointDao.WriteImports(Returns.waypointIterator,
+									Returns.WaypointCount, ip);
 
 							Database.Data.myDB.setTransactionSuccessful();
 						} catch (Exception exc) {

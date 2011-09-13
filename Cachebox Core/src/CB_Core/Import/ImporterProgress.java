@@ -63,6 +63,7 @@ public class ImporterProgress
 		steps.add(new Step("WriteCachesToDB",4));
 		steps.add(new Step("WriteLogsToDB",14)); // die Anzahl der Logs, entspricht etwa der 7 fachen Menge der Caches
 													// bracht aber nur die halbe Zeit und wird damit 3.5 fach dem Wert von WriteCaches
+		steps.add(new Step("WriteWaypointsToDB",4));
 		steps.add(new Step("importGcVote",0));
 		
 		wightSumme= getWightSumm();
