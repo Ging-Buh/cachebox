@@ -1371,6 +1371,9 @@ public class main extends Activity implements SelectedCacheEvent,
 				AllContextMenuCallHandler
 						.showTrackListView_generateContextMenu();
 				break;
+			case R.id.miNavigateTo:
+				NavigateTo();
+				break;
 
 			default: // wenn kein Eintrag gefunden wurde, versuch es im Akt View
 				if (aktView != null) aktView.ItemSelected(item);
@@ -1998,6 +2001,24 @@ public class main extends Activity implements SelectedCacheEvent,
 	private void ListSearch()
 	{
 		Search.Show();
+	}
+	
+	private void NavigateTo()
+	{
+		if (GlobalCore.SelectedCache() != null)
+		{
+			double lat = GlobalCore.SelectedCache().Latitude();
+			double lon = GlobalCore.SelectedCache().Longitude();
+			
+			if (GlobalCore.SelectedWaypoint() != null)
+			{
+				lat = GlobalCore.SelectedWaypoint().Latitude();
+				lon = GlobalCore.SelectedWaypoint().Longitude();
+			}
+			Intent implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q="  + lat + "," + lon ));
+	
+			startActivity(implicitIntent);
+		}
 	}
 
 	private void addCache()
