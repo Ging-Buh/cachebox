@@ -66,9 +66,12 @@ public class Sizes
 		
         float scale = res.getDisplayMetrics().density;
 		
-		Button =  new Size((int)(48 * scale + 0.5f),(int)(44 * scale + 0.5f));
+        //Button =  new Size(96,88);
+        //QuickButtonList = new Size(460,90);
+        
+		Button =  new Size((int)((320 * scale)/5),(int)(((320 * scale)/5) - 5.3333f * scale));
 		
-		QuickButtonList = new Size((int)(230 * scale + 0.5f),(int)(45 * scale + 0.5f));
+		QuickButtonList = new Size((int)(320 * scale - (13.3333f * scale)),(int)(((320 * scale)/5) - 4 * scale));
 		
 		scaledFontSize_normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
 		scaledFontSize_big = (int) (scaledFontSize_normal * 1.3);
