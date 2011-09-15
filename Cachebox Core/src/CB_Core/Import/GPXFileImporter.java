@@ -29,6 +29,8 @@ public class GPXFileImporter {
 			"yyyy-MM-dd'T'HH:mm:ss.S");
 	private static SimpleDateFormat datePattern2 = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ss'Z'");
+	private static SimpleDateFormat datePattern3 = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ss");
 
 	private String mGpxFileName;
 	private IImportHandler mImportHandler;
@@ -140,7 +142,7 @@ public class GPXFileImporter {
 				} else if (tagName.equalsIgnoreCase("groundspeak:cache")) {
 					parseWptCacheElement(parser, cache);
 				} else if (tagName.equalsIgnoreCase("extensions")) {
-					parseGSAKCacheElement(parser, cache);
+					parseExtensionsCacheElement(parser, cache);
 				} else {
 					skipUntilEndTag(parser, tagName);
 				}
@@ -196,25 +198,54 @@ public class GPXFileImporter {
 
 		return waypoint;
 	}
-
-	private void parseGSAKCacheElement(KXmlParser parser, Cache cache)
+	
+	private void parseExtensionsCacheElement(KXmlParser parser, Cache cache)
 			throws Exception {
-		// bei GSAk gehts eine Ebene tiefer weiter
 
-		parser.nextTag();
 		boolean done = false;
 		int eventType = parser.next();
 		while (eventType != XmlPullParser.END_DOCUMENT && !done) {
 			String tagName = parser.getName();
 			switch (eventType) {
 			case XmlPullParser.START_TAG:
-				if (tagName.equalsIgnoreCase("groundspeak:cache")) {
-					parseWptCacheElement(parser, cache);
-
+				{
+					if (tagName.equalsIgnoreCase("groundspeak:cache")) {
+						parseWptCacheElement(parser, cache);
+					} else if (tagName.equalsIgnoreCase("gsak:wptExtension")) {
+						parseGSAKCacheElement(parser, cache);
+					}
 				}
 				break;
 			case XmlPullParser.END_TAG:
 				if (tagName.equalsIgnoreCase("extensions")) {
+					done = true;
+				}
+				break;
+			}
+			eventType = parser.next();
+		}
+
+	}
+
+	private void parseGSAKCacheElement(KXmlParser parser, Cache cache)
+			throws Exception {
+		// bei GSAk gehts eine Ebene tiefer weiter
+
+		//parser.nextTag();
+		boolean done = false;
+		int eventType = parser.next();
+		while (eventType != XmlPullParser.END_DOCUMENT && !done) {
+			String tagName = parser.getName();
+			switch (eventType) {
+			case XmlPullParser.START_TAG:
+				{
+					if (tagName.equalsIgnoreCase("gsak:LatBeforeCorrect")) {
+						cache.CorrectedCoordinates = true;
+					}
+				}
+				break;
+			case XmlPullParser.END_TAG:
+				if (tagName.equalsIgnoreCase("gsak:wptExtension")) {
 					done = true;
 				}
 				break;
@@ -440,8 +471,15 @@ public class GPXFileImporter {
 			date = parseDateWithFormat(datePattern2, text);
 			if (date != null) {
 				return date;
-			} else {
-				throw new XmlPullParserException("Illegal date format");
+			} 
+			else {
+				date = parseDateWithFormat(datePattern3, text);
+				if (date != null) {
+					return date;
+				} 
+				else {
+					throw new XmlPullParserException("Illegal date format");
+				}
 			}
 		}
 	}

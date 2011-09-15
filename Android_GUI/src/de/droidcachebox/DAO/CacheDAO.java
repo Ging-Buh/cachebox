@@ -144,7 +144,8 @@ public class CacheDAO {
 		// args.put("ListingCheckSum", cache.);
 		args.put("GPXFilename_Id", cache.GPXFilename_ID);
 		args.put("ApiStatus", cache.ApiStatus);
-
+		args.put("CorrectedCoordinates", cache.CorrectedCoordinates ? 1 : 0);
+		
 		try {
 			long anzahl = Database.Data.myDB.insert("Caches", null, args);
 			// String s = anzahl + "";
@@ -177,7 +178,7 @@ public class CacheDAO {
 		// args.put("GcId", cache.GcId);
 		args.put("Latitude", cache.Pos.Latitude);
 		args.put("Longitude", cache.Pos.Longitude);
-		// args.put("Name", cache.Name);
+		args.put("Name", cache.Name);
 		try {
 			args.put("Size", cache.Size.ordinal());
 		} catch (Exception e) {
@@ -190,7 +191,7 @@ public class CacheDAO {
 		args.put("Available", cache.Available ? 1 : 0);
 		args.put("Found", cache.Found);
 		args.put("Type", cache.Type.ordinal());
-		// args.put("PlacedBy", cache.PlacedBy);
+		args.put("PlacedBy", cache.PlacedBy);
 		args.put("Owner", cache.Owner);
 		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String stimestamp = iso8601Format.format(cache.DateHidden);
@@ -213,6 +214,8 @@ public class CacheDAO {
 		args.put("GPXFilename_Id", cache.GPXFilename_ID);
 		args.put("Favorit", cache.Favorit() ? 1 : 0);
 		args.put("ApiStatus", cache.ApiStatus);
+		args.put("CorrectedCoordinates", cache.CorrectedCoordinates ? 1 : 0);
+		
 		try {
 			long anzahl = Database.Data.myDB.update("Caches", args, "Id="
 					+ cache.Id, null);
