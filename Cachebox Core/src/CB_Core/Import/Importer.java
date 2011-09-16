@@ -1,8 +1,14 @@
 package CB_Core.Import;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.zip.ZipException;
@@ -80,13 +86,53 @@ public class Importer {
 		// Importiere all GPX files
 		String[] FileList = GetFilesToLoad(directoryPath);
 		ImportHandler importHandler = new ImportHandler();
+		
+		Integer countwpt = 0;
+		
+		for (String File : FileList) {
+			Reader fr = null;
+			try
+			{
+				fr = new InputStreamReader(new FileInputStream(File),
+						"UTF-8");
+			}
+			catch (UnsupportedEncodingException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (FileNotFoundException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-		ip.setJobMax("ImportGPX", FileList.length);
+			BufferedReader br = new BufferedReader(fr);
+
+			String strLine;
+			
+			// Read File Line By Line to get the number of <wpt> elements
+			try
+			{
+				while ((strLine = br.readLine()) != null)
+				{
+					if(strLine.contains("<wpt"))
+						countwpt++;
+				}
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		ip.setJobMax("ImportGPX", FileList.length + countwpt);
 		for (String File : FileList) {
 			ip.ProgressInkrement("ImportGPX", "Import: " + File);
-			GPXFileImporter importer = new GPXFileImporter(File);
+			GPXFileImporter importer = new GPXFileImporter(File, ip);
 			try {
-				importer.doImport(importHandler);
+				importer.doImport(importHandler, countwpt);
 			} catch (Exception e) {
 				Logger.Error("Core.Importer.ImportGpx", "importer.doImport => "
 						+ File, e);

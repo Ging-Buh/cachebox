@@ -39,7 +39,7 @@ public class GPX_Unzip_Import_Test extends TestCase
 		{
 			GPXFileImporter importer = new GPXFileImporter(tmp);
 			assertTrue("Objekt muss konstruierbar sein", importer != null);
-			importer.doImport(importHandler);
+			importer.doImport(importHandler, 0);
 		}
 
 		Iterator<Cache> cacheIterator = importHandler.getCacheIterator();

@@ -19,27 +19,27 @@ public class ImporterProgress
 	 */
 	public class Step
 	{
-		public Step(String Name, float wight)
+		public Step(String Name, float weight)
 		{
-			this.wight=wight;
+			this.weight=weight;
 			this.Name=Name;
 			this.progress=0.0f;
 		}
 		
-		public float wight=0.0f;
+		public float weight=0.0f;
 		public float progress=0.0f;
 		public String Name;
-		public float stepwight;
+		public float stepweight;
 		
 		public void setMaxStep(int max)
 		{
 			if(max==0)
 			{
-				this.stepwight = 1f;
+				this.stepweight = 1f;
 			}
 			else
 			{
-				this.stepwight = 1f/(float)max;
+				this.stepweight = 1f/(float)max;
 			}
 			
 		}
@@ -48,7 +48,7 @@ public class ImporterProgress
 	
 	
 	private ArrayList<Step> steps;
-	private float wightSumme=0.0f;
+	private float weightSumme=0.0f;
 	
 	
 	//Initial Progress at Constructor
@@ -58,23 +58,22 @@ public class ImporterProgress
 		steps.add(new Step("importGC",0));
 		steps.add(new Step("importMail",0));
 		steps.add(new Step("ExtractZip",3));
-		steps.add(new Step("IndexingDB",1));
-		steps.add(new Step("ImportGPX",3));
+		steps.add(new Step("IndexingDB",2));
+		steps.add(new Step("ImportGPX",4));
 		steps.add(new Step("WriteCachesToDB",4));
-		steps.add(new Step("WriteLogsToDB",14)); // die Anzahl der Logs, entspricht etwa der 7 fachen Menge der Caches
-													// bracht aber nur die halbe Zeit und wird damit 3.5 fach dem Wert von WriteCaches
+		steps.add(new Step("WriteLogsToDB",4));
 		steps.add(new Step("WriteWaypointsToDB",4));
 		steps.add(new Step("importGcVote",0));
 		
-		wightSumme= getWightSumm();
+		weightSumme= getWeightSumm();
 	}
 	
-	private float getWightSumm() 
+	private float getWeightSumm() 
 	{
 		float sum=0.0f;
 		for (Step job : steps)
 		{
-			sum += job.wight;
+			sum += job.weight;
 		}
 		return sum;
 	}
@@ -87,7 +86,7 @@ public class ImporterProgress
 		{
 			if(job.Name.equals(Name))
 			{
-				job.progress +=job.stepwight;
+				job.progress +=job.stepweight;
 				Progress = getProgress();
 				
 				break;
@@ -115,7 +114,7 @@ public class ImporterProgress
 		
 		for (Step job : steps)
 		{
-			progress+= (job.wight/wightSumme)*job.progress;
+			progress+= (job.weight/weightSumme)*job.progress;
 		}
 			
 		return (int) (100*progress);

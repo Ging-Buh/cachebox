@@ -20,7 +20,7 @@ public class GSAKGpxImportTest extends TestCase
 		GPXFileImporter importer = new GPXFileImporter(
 				"./testdata/gpx/GSAK_1_1.gpx");
 		assertTrue("Objekt muss konstruierbar sein", importer != null);
-		importer.doImport(importHandler);
+		importer.doImport(importHandler, 0);
 
 		Iterator<Cache> cacheIterator = importHandler.getCacheIterator();
 		Cache cache = cacheIterator.next();

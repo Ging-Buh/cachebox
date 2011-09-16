@@ -18,7 +18,7 @@ public class GpxImportTest extends TestCase {
 		ImportHandler importHandler = new ImportHandler();
 		GPXFileImporter importer = new GPXFileImporter( "./testdata/gpx/GC2T9RW.gpx" );
 		assertTrue( "Objekt muss konstruierbar sein", importer!=null );
-		importer.doImport( importHandler );
+		importer.doImport( importHandler, 0 );
 		
 		Iterator<Cache> cacheIterator = importHandler.getCacheIterator();
 		Cache cache = cacheIterator.next();
