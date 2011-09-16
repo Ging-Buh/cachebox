@@ -2613,6 +2613,12 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     	} finally
     	{
     	}
+    	
+    	
+    	// nach dem vielem Rendern und Tile beantragen 
+    	// können wir jetzt auch mal aufräumen
+    	System.gc();
+    	
     }
     	
 /*
