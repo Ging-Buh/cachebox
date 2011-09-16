@@ -31,7 +31,8 @@ import CB_Core.Types.GpxFilename;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
-public class GroundspeakAPI {
+public class GroundspeakAPI
+{
 	public static String LastAPIError = "";
 	public static boolean CacheStatusValid = false;
 	public static int CachesLeft = -1;
@@ -41,18 +42,20 @@ public class GroundspeakAPI {
 	public static int CachesLeftLite = -1;
 	public static int CurrentCacheCountLite = -1;
 	public static int MaxCacheCountLite = -1;
-	public static String MemberName = "";	// this will be filled by GetMembershipType
+	public static String MemberName = ""; // this will be filled by
+											// GetMembershipType
 
 	// 0: Guest??? 1: Basic 2: Charter??? 3: Premium
 	private static int membershipType = -1;
 
-	public static boolean IsPremiumMember(String accessToken) {
-		if (membershipType < 0)
-			membershipType = GetMembershipType(accessToken);
+	public static boolean IsPremiumMember(String accessToken)
+	{
+		if (membershipType < 0) membershipType = GetMembershipType(accessToken);
 		return membershipType == 3;
 	}
 
-	public static String GetUTCDate(Date date) {
+	public static String GetUTCDate(Date date)
+	{
 		long utc = date.getTime();
 		TimeZone tz = TimeZone.getDefault();
 		TimeZone tzp = TimeZone.getTimeZone("GMT-8");
@@ -61,7 +64,8 @@ public class GroundspeakAPI {
 		return "\\/Date(" + utc + ")\\/";
 	}
 
-	public static String ConvertNotes(String note) {
+	public static String ConvertNotes(String note)
+	{
 		return note.replace("\n", "\\n");
 	}
 
@@ -69,9 +73,11 @@ public class GroundspeakAPI {
 	 * Upload FieldNotes
 	 */
 	public static int CreateFieldNoteAndPublish(String accessToken,
-			String cacheCode, int wptLogTypeId, Date dateLogged, String note) {
+			String cacheCode, int wptLogTypeId, Date dateLogged, String note)
+	{
 		String result = "";
-		try {
+		try
+		{
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httppost = new HttpPost(
 					"https://api.groundspeak.com/LiveV5/Geocaching.svc/CreateFieldNoteAndPublish?format=json");
@@ -79,7 +85,8 @@ public class GroundspeakAPI {
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
 			requestString += "\"CacheCode\":\"" + cacheCode + "\",";
-			requestString += "\"WptLogTypeId\":" + 2 + ",";
+			requestString += "\"WptLogTypeId\":" + String.valueOf(wptLogTypeId)
+					+ ",";
 			requestString += "\"UTCDateLogged\":\"" + GetUTCDate(dateLogged)
 					+ "\",";
 			requestString += "\"Note\":\"" + ConvertNotes(note) + "\",";
@@ -98,19 +105,24 @@ public class GroundspeakAPI {
 			BufferedReader rd = new BufferedReader(new InputStreamReader(
 					response.getEntity().getContent()));
 			String line = "";
-			while ((line = rd.readLine()) != null) {
+			while ((line = rd.readLine()) != null)
+			{
 				result += line + "\n";
 			}
 
 			// Parse JSON Result
-			try {
+			try
+			{
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
 				JSONObject status = json.getJSONObject("Status");
-				if (status.getInt("StatusCode") == 0) {
+				if (status.getInt("StatusCode") == 0)
+				{
 					result = "";
 					LastAPIError = "";
-				} else {
+				}
+				else
+				{
 					result = "StatusCode = " + status.getInt("StatusCode")
 							+ "\n";
 					result += status.getString("StatusMessage") + "\n";
@@ -119,7 +131,9 @@ public class GroundspeakAPI {
 					return -1;
 				}
 
-			} catch (JSONException e) {
+			}
+			catch (JSONException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				Logger.Error("UploadFieldNotesAPI", "JSON-Error", e);
@@ -127,7 +141,9 @@ public class GroundspeakAPI {
 				return -1;
 			}
 
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			System.out.println(ex.getMessage());
 			Logger.Error("UploadFieldNotesAPI", "Error", ex);
 			LastAPIError = ex.getMessage();
@@ -141,10 +157,12 @@ public class GroundspeakAPI {
 	/**
 	 * Load Number of founds form geocaching.com
 	 */
-	public static int GetCachesFound(String accessToken) {
+	public static int GetCachesFound(String accessToken)
+	{
 		String result = "";
 
-		try {
+		try
+		{
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httppost = new HttpPost(
 					"https://api.groundspeak.com/LiveV5/Geocaching.svc/GetYourUserProfile?format=json");
@@ -166,23 +184,28 @@ public class GroundspeakAPI {
 			BufferedReader rd = new BufferedReader(new InputStreamReader(
 					response.getEntity().getContent()));
 			String line = "";
-			while ((line = rd.readLine()) != null) {
+			while ((line = rd.readLine()) != null)
+			{
 				result += line + "\n";
 			}
 
-			try // Parse JSON Result
+			try
+			// Parse JSON Result
 			{
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
 				JSONObject status = json.getJSONObject("Status");
-				if (status.getInt("StatusCode") == 0) {
+				if (status.getInt("StatusCode") == 0)
+				{
 					result = "";
 					JSONObject profile = json.getJSONObject("Profile");
 					JSONObject user = (JSONObject) profile
 							.getJSONObject("User");
 					return user.getInt("FindCount");
 
-				} else {
+				}
+				else
+				{
 					result = "StatusCode = " + status.getInt("StatusCode")
 							+ "\n";
 					result += status.getString("StatusMessage") + "\n";
@@ -191,12 +214,16 @@ public class GroundspeakAPI {
 					return (-1);
 				}
 
-			} catch (JSONException e) {
+			}
+			catch (JSONException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			System.out.println(ex.getMessage());
 			return (-1);
 		}
@@ -208,10 +235,12 @@ public class GroundspeakAPI {
 	 * Loads the Membership type -1: Error 0: Guest??? 1: Basic 2: Charter??? 3:
 	 * Premium
 	 */
-	public static int GetMembershipType(String accessToken) {
+	public static int GetMembershipType(String accessToken)
+	{
 		String result = "";
 
-		try {
+		try
+		{
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httppost = new HttpPost(
 					"https://api.groundspeak.com/LiveV5/Geocaching.svc/GetYourUserProfile?format=json");
@@ -233,16 +262,19 @@ public class GroundspeakAPI {
 			BufferedReader rd = new BufferedReader(new InputStreamReader(
 					response.getEntity().getContent()));
 			String line = "";
-			while ((line = rd.readLine()) != null) {
+			while ((line = rd.readLine()) != null)
+			{
 				result += line + "\n";
 			}
 
-			try // Parse JSON Result
+			try
+			// Parse JSON Result
 			{
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
 				JSONObject status = json.getJSONObject("Status");
-				if (status.getInt("StatusCode") == 0) {
+				if (status.getInt("StatusCode") == 0)
+				{
 					result = "";
 					JSONObject profile = json.getJSONObject("Profile");
 					JSONObject user = (JSONObject) profile
@@ -253,7 +285,9 @@ public class GroundspeakAPI {
 					MemberName = user.getString("UserName");
 					// Zurücksetzen, falls ein anderer User gewählt wurde
 					return memberTypeId;
-				} else {
+				}
+				else
+				{
 					result = "StatusCode = " + status.getInt("StatusCode")
 							+ "\n";
 					result += status.getString("StatusMessage") + "\n";
@@ -262,12 +296,16 @@ public class GroundspeakAPI {
 					return (-1);
 				}
 
-			} catch (JSONException e) {
+			}
+			catch (JSONException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			System.out.println(ex.getMessage());
 			return (-1);
 		}
@@ -279,10 +317,12 @@ public class GroundspeakAPI {
 	 * Gets the Status for the given Caches
 	 */
 	public static int GetGeocacheStatus(String accessToken,
-			ArrayList<String> caches) {
+			ArrayList<String> caches)
+	{
 		String result = "";
 
-		try {
+		try
+		{
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httppost = new HttpPost(
 					"https://api.groundspeak.com/LiveV5/geocaching.svc/GetGeocacheStatus?format=json");
@@ -292,10 +332,10 @@ public class GroundspeakAPI {
 			requestString += "\"CacheCodes\":[";
 
 			int i = 0;
-			for (String cache : caches) {
+			for (String cache : caches)
+			{
 				requestString += "\"" + cache + "\"";
-				if (i < caches.size() - 1)
-					requestString += ",";
+				if (i < caches.size() - 1) requestString += ",";
 				i++;
 			}
 
@@ -313,26 +353,32 @@ public class GroundspeakAPI {
 			BufferedReader rd = new BufferedReader(new InputStreamReader(
 					response.getEntity().getContent()));
 			String line = "";
-			while ((line = rd.readLine()) != null) {
+			while ((line = rd.readLine()) != null)
+			{
 				result += line + "\n";
 			}
 
-			try // Parse JSON Result
+			try
+			// Parse JSON Result
 			{
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
 				JSONObject status = json.getJSONObject("Status");
-				if (status.getInt("StatusCode") == 0) {
+				if (status.getInt("StatusCode") == 0)
+				{
 					result = "";
 					JSONArray geocacheStatuses = json
 							.getJSONArray("GeocacheStatuses");
-					for (int ii = 0; ii < geocacheStatuses.length(); ii++) {
+					for (int ii = 0; ii < geocacheStatuses.length(); ii++)
+					{
 						JSONObject jCache = (JSONObject) geocacheStatuses
 								.get(ii);
 					}
 
 					return 0;
-				} else {
+				}
+				else
+				{
 					result = "StatusCode = " + status.getInt("StatusCode")
 							+ "\n";
 					result += status.getString("StatusMessage") + "\n";
@@ -341,12 +387,16 @@ public class GroundspeakAPI {
 					return (-1);
 				}
 
-			} catch (JSONException e) {
+			}
+			catch (JSONException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			System.out.println(ex.getMessage());
 			return (-1);
 		}
@@ -354,15 +404,16 @@ public class GroundspeakAPI {
 		return (-1);
 	}
 
-
 	// returns Status Code (0 -> OK)
-	public static int GetCacheLimits(String accessToken) {
+	public static int GetCacheLimits(String accessToken)
+	{
 		String result = "";
 		LastAPIError = "";
 		// zum Abfragen der CacheLimits einfach nach einem Cache suchen, der
 		// nicht existiert.
 		// dadurch wird der Zähler nicht erhöht, die Limits aber zurückgegeben.
-		try {
+		try
+		{
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httppost = new HttpPost(
 					"https://api.groundspeak.com/LiveV5/Geocaching.svc/SearchForGeocaches?format=json");
@@ -393,18 +444,24 @@ public class GroundspeakAPI {
 			BufferedReader rd = new BufferedReader(new InputStreamReader(
 					response.getEntity().getContent()));
 			String line = "";
-			while ((line = rd.readLine()) != null) {
+			while ((line = rd.readLine()) != null)
+			{
 				result += line + "\n";
 			}
 
 			// Parse JSON Result
-			try {
+			try
+			{
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
 				int status = checkCacheStatus(json, false);
-				// hier keine Überprüfung des Status, da dieser z.B. 118 (Überschreitung des Limits) sein kann, aber der CacheStatus aber trotzdem drin ist.
+				// hier keine Überprüfung des Status, da dieser z.B. 118
+				// (Überschreitung des Limits) sein kann, aber der CacheStatus
+				// aber trotzdem drin ist.
 				return status;
-			} catch (JSONException e) {
+			}
+			catch (JSONException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				System.out.println(e.getMessage());
@@ -412,7 +469,9 @@ public class GroundspeakAPI {
 				return -2;
 			}
 
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			System.out.println(ex.getMessage());
 			LastAPIError = "API Error: " + ex.getMessage();
 			return -1;
@@ -420,20 +479,27 @@ public class GroundspeakAPI {
 	}
 
 	// liest den Status aus dem gegebenen json Object aus.
-	static int checkStatus(JSONObject json) {
+	static int checkStatus(JSONObject json)
+	{
 		LastAPIError = "";
-		try {
+		try
+		{
 			JSONObject status = json.getJSONObject("Status");
-			if (status.getInt("StatusCode") == 0) {
+			if (status.getInt("StatusCode") == 0)
+			{
 				return 0;
-			} else {
+			}
+			else
+			{
 				LastAPIError = "StatusCode = " + status.getInt("StatusCode")
 						+ "\n";
 				LastAPIError += status.getString("StatusMessage") + "\n";
 				LastAPIError += status.getString("ExceptionDetails");
 				return status.getInt("StatusCode");
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 			LastAPIError = "API Error: " + e.getMessage();
@@ -444,23 +510,30 @@ public class GroundspeakAPI {
 	// liest den CacheStatus aus dem gegebenen json Object aus.
 	// darin ist gespeichert, wie viele Full Caches schon geladen wurden und wie
 	// viele noch frei sind
-	static int checkCacheStatus(JSONObject json, boolean isLite) {
+	static int checkCacheStatus(JSONObject json, boolean isLite)
+	{
 		LastAPIError = "";
-		try {
+		try
+		{
 			JSONObject cacheLimits = json.getJSONObject("CacheLimits");
-			if (isLite) {
+			if (isLite)
+			{
 				CachesLeftLite = cacheLimits.getInt("CachesLeft");
 				CurrentCacheCountLite = cacheLimits.getInt("CurrentCacheCount");
 				MaxCacheCountLite = cacheLimits.getInt("MaxCacheCount");
 				CacheStatusLiteValid = true;
-			} else {
+			}
+			else
+			{
 				CachesLeft = cacheLimits.getInt("CachesLeft");
 				CurrentCacheCount = cacheLimits.getInt("CurrentCacheCount");
 				MaxCacheCount = cacheLimits.getInt("MaxCacheCount");
 				CacheStatusValid = true;
 			}
 			return 0;
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 			LastAPIError = "API Error: " + e.getMessage();
@@ -468,8 +541,10 @@ public class GroundspeakAPI {
 		}
 	}
 
-	static int getCacheSize(int containerTypeId) {
-		switch (containerTypeId) {
+	static int getCacheSize(int containerTypeId)
+	{
+		switch (containerTypeId)
+		{
 		case 1:
 			return 0; // Unknown
 		case 2:
@@ -490,8 +565,10 @@ public class GroundspeakAPI {
 		}
 	}
 
-	static CacheTypes getCacheType(int apiTyp) {
-		switch (apiTyp) {
+	static CacheTypes getCacheType(int apiTyp)
+	{
+		switch (apiTyp)
+		{
 		case 2:
 			return CacheTypes.Traditional;
 		case 3:
@@ -536,8 +613,10 @@ public class GroundspeakAPI {
 		}
 	}
 
-	static LogTypes getLogType(int apiTyp) {
-		switch (apiTyp) {
+	static LogTypes getLogType(int apiTyp)
+	{
+		switch (apiTyp)
+		{
 		case 2:
 			return LogTypes.found;
 		case 3:
@@ -571,8 +650,10 @@ public class GroundspeakAPI {
 		}
 	}
 
-	static CB_Core.Enums.Attributes getAttributeEnum(int id) {
-		switch (id) {
+	static CB_Core.Enums.Attributes getAttributeEnum(int id)
+	{
+		switch (id)
+		{
 		case 1:
 			return CB_Core.Enums.Attributes.Dogs;
 		case 2:
