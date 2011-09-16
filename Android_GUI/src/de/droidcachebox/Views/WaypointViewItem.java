@@ -174,7 +174,7 @@ public class WaypointViewItem extends View {
         
         if (waypoint == null) // this Item is the Cache
         {
-             CacheDraw.DrawInfo(cache,canvas, DrawingRec, BackgroundColor, DrawStyle.withoutSeparator);    
+             CacheDraw.DrawInfo(cache,canvas, DrawingRec, BackgroundColor, DrawStyle.withoutSeparator,false);    
         }
         else
         {	

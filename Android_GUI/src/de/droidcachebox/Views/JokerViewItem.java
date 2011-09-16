@@ -164,7 +164,7 @@ public class JokerViewItem extends View {
         
         if (joker == null) // this Item is the Cache
         {
-             CacheDraw.DrawInfo(cache,canvas, DrawingRec, BackgroundColor, DrawStyle.withoutSeparator);    
+             CacheDraw.DrawInfo(cache,canvas, DrawingRec, BackgroundColor, DrawStyle.withoutSeparator,false);    
         }
         else
         {	

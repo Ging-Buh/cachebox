@@ -26,6 +26,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
+import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
@@ -47,6 +48,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.graphics.Shader;;
 
 public class ActivityUtils
 {
@@ -132,6 +134,7 @@ public class ActivityUtils
 		final RectF rectF = new RectF(rect);
 
 		drawPaint.setColor(FillColor);
+//		drawPaint.setShader(new LinearGradient(0, 0, 0, rec.height(), FillColor, Color.WHITE, Shader.TileMode.MIRROR)); nur ein versuch
 		drawPaint.setStyle(Style.FILL_AND_STROKE);
 		canvas.drawRoundRect(rectF, CornerSize - BorderSize, CornerSize
 				- BorderSize, drawPaint);

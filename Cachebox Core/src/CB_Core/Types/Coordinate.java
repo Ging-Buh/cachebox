@@ -200,7 +200,11 @@ public class Coordinate implements Serializable {
         this.Valid = false;
     }
 
-    public String FormatCoordinate()
+    /**
+     * Gibt einen Formatierten String dieser Koordinate wieder
+     * @return
+     */
+	public String FormatCoordinate()
     {
       if (Valid)
         return Formatter.FormatLatitudeDM(Latitude) + " / " + Formatter.FormatLongitudeDM(Longitude);

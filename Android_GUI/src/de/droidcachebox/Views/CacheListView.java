@@ -19,10 +19,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.location.Location;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
@@ -63,6 +65,34 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 		ActivityUtils.setListViewPropertys(this);
 		this.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_LOW);
 		this.setChildrenDrawingCacheEnabled(true);
+		
+		
+		this.setOnScrollListener(new OnScrollListener()
+		{
+			
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState)
+			{
+				 if(scrollState == 2)
+				 {
+					 CacheListViewItem.isFastScrolling=true;
+				 }
+				 else 
+				 {
+					 CacheListViewItem.isFastScrolling=false;
+				 }
+			}
+			
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount)
+			{
+								
+			}
+		});
+		  
+
+		
 		
 	}
 	

@@ -17,6 +17,13 @@ public class CacheListViewItem extends View {
     
     private boolean BackColorChanger = false;
 
+    
+    /**
+     * True wenn die Liste schnell gescrollt wird.
+     * Wird gesetzt vom CachelistView.OnScrollListener
+     */
+    public static boolean isFastScrolling=false;
+    
 	public CacheListViewItem(Context context, Cache cache, Boolean BackColorId) 
 	{
 		super(context);
@@ -52,7 +59,7 @@ public class CacheListViewItem extends View {
         	BackgroundColor = (GlobalSelected)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground_secend);
         }
         
-        CacheDraw.DrawInfo(cache,canvas, Sizes.getCacheListItemRec(), BackgroundColor, DrawStyle.all);
+        CacheDraw.DrawInfo(cache,canvas, Sizes.getCacheListItemRec(), BackgroundColor, DrawStyle.all , isFastScrolling);
         
         
     }
