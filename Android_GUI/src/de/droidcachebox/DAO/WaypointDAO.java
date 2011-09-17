@@ -12,11 +12,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import de.droidcachebox.Database;
 import de.droidcachebox.Global;
+import de.droidcachebox.Replication.Replication;
 
 public class WaypointDAO {
 	public void WriteToDatabase(Waypoint WP) {
 		int newCheckSum = createCheckSum(WP);
-		// Replication.WaypointChanged(CacheId, checkSum, newCheckSum, GcCode);
+		Replication.WaypointChanged(WP.CacheId, WP.checkSum, newCheckSum, WP.GcCode);
 		ContentValues args = new ContentValues();
 		args.put("gccode", WP.GcCode);
 		args.put("cacheid", WP.CacheId);
@@ -43,7 +44,7 @@ public class WaypointDAO {
 
 	public void UpdateDatabase(Waypoint WP) {
 		int newCheckSum = createCheckSum(WP);
-		// Replication.WaypointChanged(CacheId, checkSum, newCheckSum, GcCode);
+		Replication.WaypointChanged(WP.CacheId, WP.checkSum, newCheckSum, WP.GcCode);
 		if (newCheckSum != WP.checkSum) {
 			ContentValues args = new ContentValues();
 			args.put("gccode", WP.GcCode);

@@ -21,6 +21,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import de.droidcachebox.Database;
 import de.droidcachebox.Map.Descriptor;
+import de.droidcachebox.Replication.Replication;
 
 public class CacheDAO {
 	protected static String sqlReadCache = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus from Caches ";
@@ -162,6 +163,7 @@ public class CacheDAO {
 		args.put("found", cache.Found);
 		try {
 			Database.Data.myDB.update("Caches", args, "Id=" + cache.Id, null);
+			Replication.FoundChanged(cache.Id, cache.Found);
 		} catch (Exception exc) {
 			Logger.Error("Write Cache Found", "", exc);
 		}

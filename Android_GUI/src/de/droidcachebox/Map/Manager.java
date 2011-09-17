@@ -152,7 +152,7 @@ public class Manager {
 //			Bitmap bit = renderer.tileBitmap.copy(Config.RGB_565, true);
 			
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();  
-            renderer.tileBitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+            renderer.tileBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
 			Bitmap bitj = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.size());
 			try {
 				baos.close();

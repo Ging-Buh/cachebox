@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -14,6 +15,7 @@ import CB_Core.Types.CacheList;
 import de.droidcachebox.DAO.CategoryDAO;
 import de.droidcachebox.DAO.GpxFilenameDAO;
 import de.droidcachebox.Map.Descriptor;
+import de.droidcachebox.Replication.Replication;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheSizes;
@@ -103,7 +105,19 @@ public class Database {
             SetDatabaseSchemeVersion();
 		}
 		SetDatabaseSchemeVersion();
-		
+		if (databaseType == DatabaseType.CacheBox) 
+		{
+			// create or load DatabaseId for each Database
+			DatabaseId = ReadConfigLong("DatabaseId");
+			if (DatabaseId <= 0)
+			{
+				DatabaseId = new Date().getTime();
+				WriteConfigLong("DatabaseId", DatabaseId);
+			}
+            // Read MasterDatabaseId. If MasterDatabaseId > 0 -> This database is connected to the Replications Master of WinCB
+            // In this case changes of Waypoints, Solvertext, Notes must be noted in the Table Replication...
+            MasterDatabaseId = ReadConfigLong("MasterDatabaseId");
+		}
 		return true;
 	}
 
@@ -289,7 +303,6 @@ public class Database {
 	}
 
 	private void SetDatabaseSchemeVersion() {
-		// TODO Auto-generated method stub
 		ContentValues val = new ContentValues();
 		val.put("Value", latestDatabaseChange);
 		int anz = myDB.update("Config", val, "[Key]='DatabaseSchemeVersionWin'", null);
@@ -297,8 +310,7 @@ public class Database {
 			// Update not possible because Key does not exist
 			val.put("Key", "DatabaseSchemeVersionWin");
 			myDB.insert("Config", null, val);
-		}
-												           	
+		}												           	
 	}
 	
 	
@@ -308,7 +320,7 @@ public class Database {
 	 public static void DeleteFromDatabase(Waypoint WP)
 	    {
 	        int newCheckSum = 0;
-//	        Replication.WaypointDelete(CacheId, checkSum, newCheckSum, GcCode);
+	        Replication.WaypointDelete(WP.CacheId, WP.checkSum, newCheckSum, WP.GcCode);
 	        try
 	        {
 	        	Database.Data.myDB.delete("Waypoint", "GcCode='" + WP.GcCode+"'", null);
@@ -378,7 +390,7 @@ public class Database {
         {
             int newNoteCheckSum = (int)Global.sdbm(value);
             
-//        	Replication.NoteChanged(this.Id, noteCheckSum, newNoteCheckSum);
+            Replication.NoteChanged(cache.Id, cache.noteCheckSum, newNoteCheckSum);
           if (newNoteCheckSum != cache.noteCheckSum)
           {
               ContentValues args = new ContentValues();
@@ -408,7 +420,7 @@ public class Database {
         {
             int newSolverCheckSum = (int)Global.sdbm(value);
             
-//            Replication.SolverChanged(this.Id, solverCheckSum, newSolverCheckSum);
+            Replication.SolverChanged(cache.Id, cache.solverCheckSum, newSolverCheckSum);
             if (newSolverCheckSum != cache.solverCheckSum)
             {
                 ContentValues args = new ContentValues();
@@ -660,5 +672,64 @@ public class Database {
 //        	GlobalCore.Categories.ReadFromFilter(Global.LastFilter);
 //        	GlobalCore.Categories.DeleteEmptyCategories();
         }
-    	
+
+        public void WriteConfigString(String key, String value)
+        {
+    		ContentValues val = new ContentValues();
+    		val.put("Value", value);
+    		int anz = myDB.update("Config", val, "[Key]='" + key + "'", null);
+    		if (anz <= 0) {
+    			// Update not possible because Key does not exist
+    			val.put("Key", key);
+    			myDB.insert("Config", null, val);
+    		}												           	
+        }
+
+        public String ReadConfigString(String key)
+        {
+            String result = "";
+            Cursor c = null;
+            try
+            {
+            	c = myDB.rawQuery("select Value from Config where [Key]=?", new String[] { key });
+            } catch (Exception exc)
+            { 
+            	return "";
+            }
+            try
+            {
+                c.moveToFirst();
+                while(c.isAfterLast() == false)
+                {
+                    result = c.getString(0);
+                    c.moveToNext();
+                };
+            }
+            catch (Exception exc)
+            {
+                result = "";
+            }
+            c.close();
+
+            return result;
+        }
+
+        public void WriteConfigLong(String key, long value)
+        {
+            WriteConfigString(key, String.valueOf(value));
+        }
+
+        public long ReadConfigLong(String key)
+        {
+            String value = ReadConfigString(key);
+            try
+            {
+                return Long.valueOf(value);
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
 }
