@@ -4,6 +4,7 @@ package de.droidcachebox.Views;
 
 
 import CB_Core.Types.Coordinate;
+import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import de.droidcachebox.Global;
@@ -27,6 +28,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,6 +38,23 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+
+import java.io.File;
+
+import org.openintents.intents.FileManagerIntents;
+
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.provider.MediaStore.Images;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 
@@ -55,6 +74,8 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	TrackListViewItem selectedItem;
 	int[] ColorField = new int[] { Color.RED, Color.YELLOW, Color.BLACK, Color.GREEN, Color.GRAY };
 	final int projectionZoomLevel = 15;
+	final int REQUEST_CODE_PICK_FILE_OR_DIRECTORY=98765;
+	
 	
 	//Schrit-ablauf Member
 	/**
@@ -223,7 +244,25 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	 */
 	private void HandleLoad() 
 	{
-		MessageBox.Show("HandleLoad() on Line:248");	
+		String fileName = Config.GetString("TrackFolder");
+		
+		Intent intent = new Intent(FileManagerIntents.ACTION_PICK_FILE);
+		
+		// Construct URI from file name.
+		File file = new File(fileName);
+		intent.setData(Uri.fromFile(file));
+		
+		// Set fancy title and button (optional)
+		intent.putExtra(FileManagerIntents.EXTRA_TITLE, "Select file to open");
+		intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, "Open");
+		
+		try {
+			main.mainActivity.startActivityForResult(intent, REQUEST_CODE_PICK_FILE_OR_DIRECTORY);
+		} catch (ActivityNotFoundException e) {
+			// No compatible file manager was found.
+			Toast.makeText(main.mainActivity, "No compatible file manager found", 
+					Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	/**
@@ -406,6 +445,24 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 		
 	public void ActivityResult(int requestCode, int resultCode, Intent data)
 	{
+		
+		
+		switch (requestCode) {
+		case REQUEST_CODE_PICK_FILE_OR_DIRECTORY:
+			if (resultCode == android.app.Activity.RESULT_OK  && data != null) {
+				// obtain the filename
+				Uri fileUri = data.getData();
+				if (fileUri != null) {
+					String filePath = fileUri.getPath();
+					if (filePath != null) {
+						((main)main.mainActivity).mapView.LoadTrack(filePath);
+					}
+				}
+			}
+			break;
+		}
+		
+		
 		if (data == null)
 			return;
 		Bundle bundle = data.getExtras();

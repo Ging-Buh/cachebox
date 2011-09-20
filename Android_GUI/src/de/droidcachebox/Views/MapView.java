@@ -874,22 +874,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
     		  {
     			  for (String file : files)
     			  {
-    				  int[] ColorField = new int[8];
-    				  ColorField[0] = Color.RED;
-    				  ColorField[1] = Color.YELLOW;
-    				  ColorField[2] = Color.BLACK;
-    				  ColorField[3] = Color.LTGRAY;
-    				  ColorField[4] = Color.GREEN;
-    				  ColorField[5] = Color.BLUE;
-    				  ColorField[6] = Color.CYAN;
-    				  ColorField[7] = Color.GRAY;
-    				  int TrackColor;
-    				  TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
-    				  
-    				  Paint paint = new Paint();
-    				  paint.setColor(TrackColor);
-    				  paint.setStrokeWidth(4);
-    				  RouteOverlay.Routes.add(RouteOverlay.LoadRoute(trackPath + "/" + file, paint, Config.GetInt("TrackDistance")));
+    				  LoadTrack(trackPath, file);
     				  
     			  }
     		  }
@@ -902,6 +887,41 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
       }
 
     }
+
+
+    public void LoadTrack(String trackPath)
+    {
+    	LoadTrack(trackPath, "");
+    }
+    
+	public void LoadTrack(String trackPath, String file)
+	{
+		int[] ColorField = new int[8];
+		  ColorField[0] = Color.RED;
+		  ColorField[1] = Color.YELLOW;
+		  ColorField[2] = Color.BLACK;
+		  ColorField[3] = Color.LTGRAY;
+		  ColorField[4] = Color.GREEN;
+		  ColorField[5] = Color.BLUE;
+		  ColorField[6] = Color.CYAN;
+		  ColorField[7] = Color.GRAY;
+		  int TrackColor;
+		  TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
+		  
+		  Paint paint = new Paint();
+		  paint.setColor(TrackColor);
+		  paint.setStrokeWidth(4);
+		  String absolutPath="";
+		  if(file.equals(""))
+		  {
+			  absolutPath=trackPath;
+		  }
+		  else
+		  {
+			  absolutPath= trackPath + "/" + file;
+		  }
+		  RouteOverlay.Routes.add(RouteOverlay.LoadRoute(absolutPath, paint, Config.GetInt("TrackDistance")));
+	}
 /*
     void MapView_MouseWheel(object sender, MouseEventArgs e)
     {
