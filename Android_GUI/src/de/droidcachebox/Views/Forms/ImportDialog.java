@@ -89,7 +89,15 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 
 		findViewById();
 
+		checkImportPQfromGC.setText(Global.Translations.Get("PQfromGC"));
+		checkBoxImportGPX.setText(Global.Translations.Get("GPX"));
+		checkBoxImportGpxFromMail.setText(Global.Translations.Get("GpxFromMail"));
+		checkBoxGcVote.setText(Global.Translations.Get("GCVoteRatings"));
+		checkBoxPreloadImages.setText(Global.Translations.Get("PreloadImages"));
+		checkBoxImportMaps.setText(Global.Translations.Get("Maps"));
+		ImportButton.setText(Global.Translations.Get("import"));
 		CancelButton.setText(Global.Translations.Get("cancel"));
+		
 		CancelButton.setOnClickListener(new OnClickListener() {
 
 			@Override

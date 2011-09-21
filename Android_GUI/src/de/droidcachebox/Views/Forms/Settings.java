@@ -834,18 +834,41 @@ public class Settings extends Activity implements ViewOptionsMenu,
 	private void setLang()
 	{
 		LangCombo.setPrompt(Global.Translations.Get("SelectLanguage"));
-		SaveButton.setText(Global.Translations.Get("save"));
-		CancelButton.setText(Global.Translations.Get("cancel"));
+		
+		ToggleLogInView.setText(Global.Translations.Get("LoginSettings"));
 		LabelGcName.setText(Global.Translations.Get("LogIn"));
 		LabelGcPW.setText(Global.Translations.Get("GCPW"));
+		getApiKey.setText(Global.Translations.Get("getApiKey"));
 		LabelGcVoPw.setText(Global.Translations.Get("GCVotePW"));
 		LabelGcJoker.setText(Global.Translations.Get("GCJoker"));
+
 		checkBoxHTCCompass.setText(Global.Translations.Get("UseHtcCompass"));
 		DescCompassLevel.setText(Global.Translations.Get("DescHtcLevel"));
+		
+		ToggleMapView.setText(Global.Translations.Get("Map"));
+		DescMapLayer.setText(Global.Translations.Get("DescMapLayer"));
+		cbMoveMapCenterWithSpeed.setText(Global.Translations.Get("MoveMapCenterWithSpeed"));
+		DescSmothScroll.setText(Global.Translations.Get("SmoothScrolling"));
+		chkDPIaware.setText(Global.Translations.Get("DPIaware"));
+		DescTrackRec.setText(Global.Translations.Get("TrackRec"));
+		chkTrackStart.setText(Global.Translations.Get("StartTrackRecOnStart"));
+		DescTrackCount.setText(Global.Translations.Get("TrackEvery") + " [m]");
+		
+		ToggleMiscView.setText(Global.Translations.Get("Misc"));
 		chkAllowInetAccess.setText(Global.Translations.Get("AllowInternet"));
 		chkAllowLandscape.setText(Global.Translations.Get("AllowLandscape"));
 		DescScreenLock.setText("Screen lock [min/sec]" + String.format("%n")
 				+ "(<5sec = off)");
+		
+		ToggleQuickView.setText(Global.Translations.Get("QuickButton"));
+		chkQuickButtonShow.setText(Global.Translations.Get("ShowQuickButton"));
+		ActionListUp.setText(Global.Translations.Get("up"));
+		ActionListDown.setText(Global.Translations.Get("down"));
+		ActionListDel.setText(Global.Translations.Get("delete"));
+		ActionListAdd.setText(Global.Translations.Get("add"));
+		
+		SaveButton.setText(Global.Translations.Get("save"));
+		CancelButton.setText(Global.Translations.Get("cancel"));
 	}
 
 	public void FillSettings()
