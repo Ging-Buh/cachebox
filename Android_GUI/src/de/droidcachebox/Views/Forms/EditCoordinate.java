@@ -1,6 +1,7 @@
 package de.droidcachebox.Views.Forms;
 
 import java.util.ArrayList;
+import java.util.zip.Inflater;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;

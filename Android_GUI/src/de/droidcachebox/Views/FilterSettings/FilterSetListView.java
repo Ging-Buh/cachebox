@@ -357,27 +357,27 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 		Resources res = mContext.getResources();
 		
 		// add General
-		FilterSetListViewItem General = addFilterSetCollabseItem(null, "General", COLLABSE_BUTTON_ITEM);
-		NotAvailable = General.addChild(addFilterSetItem(  Global.Icons[25], "disabled", THREE_STATE_ITEM ));
-		Archived = General.addChild(addFilterSetItem(  Global.Icons[24], "archived", THREE_STATE_ITEM ));
-		Finds = General.addChild(addFilterSetItem(  Global.Icons[2], "my finds", THREE_STATE_ITEM ));
-		Own = General.addChild(addFilterSetItem(  Global.Icons[17], "my own caches", THREE_STATE_ITEM ));
-		ContainsTravelBugs = General.addChild(addFilterSetItem(  Global.Icons[10], "with trackables", THREE_STATE_ITEM ));
-		Favorites = General.addChild(addFilterSetItem(  Global.Icons[19], "favorites", THREE_STATE_ITEM ));            
-		HasUserData = General.addChild(addFilterSetItem(  Global.Icons[21], "has user data", THREE_STATE_ITEM ));
-		ListingChanged = General.addChild(addFilterSetItem(  Global.Icons[26], "listing changed", THREE_STATE_ITEM ));
-		WithManualWaypoint = General.addChild(addFilterSetItem(  Global.Icons[26], "manual waypoint", THREE_STATE_ITEM ));
+		FilterSetListViewItem General = addFilterSetCollabseItem(null, Global.Translations.Get("General"), COLLABSE_BUTTON_ITEM);
+		NotAvailable = General.addChild(addFilterSetItem(  Global.Icons[25], Global.Translations.Get("disabled"), THREE_STATE_ITEM ));
+		Archived = General.addChild(addFilterSetItem(  Global.Icons[24], Global.Translations.Get("archived"), THREE_STATE_ITEM ));
+		Finds = General.addChild(addFilterSetItem(  Global.Icons[2], Global.Translations.Get("myfinds"), THREE_STATE_ITEM ));
+		Own = General.addChild(addFilterSetItem(  Global.Icons[17], Global.Translations.Get("myowncaches"), THREE_STATE_ITEM ));
+		ContainsTravelBugs = General.addChild(addFilterSetItem(  Global.Icons[10], Global.Translations.Get("withtrackables"), THREE_STATE_ITEM ));
+		Favorites = General.addChild(addFilterSetItem(  Global.Icons[19], Global.Translations.Get("Favorites"), THREE_STATE_ITEM ));            
+		HasUserData = General.addChild(addFilterSetItem(  Global.Icons[21], Global.Translations.Get("hasuserdata"), THREE_STATE_ITEM ));
+		ListingChanged = General.addChild(addFilterSetItem(  Global.Icons[26], Global.Translations.Get("ListingChanged"), THREE_STATE_ITEM ));
+		WithManualWaypoint = General.addChild(addFilterSetItem(  Global.Icons[26], Global.Translations.Get("manualwaypoint"), THREE_STATE_ITEM ));
 		
 		// add D/T
 		FilterSetListViewItem DT = addFilterSetCollabseItem(null, "D / T", COLLABSE_BUTTON_ITEM);
-		minDifficulty = DT.addChild(addFilterSetItem( Global.StarIcons, "Min. Difficulty", NUMERICK_ITEM, 1, 5, 1, 0.5f));
-		maxDifficulty = DT.addChild(addFilterSetItem( Global.StarIcons, "Max. Difficulty", NUMERICK_ITEM, 1, 5, 5, 0.5f));
-		minTerrain = DT.addChild(addFilterSetItem( Global.StarIcons, "Min. Terrain", NUMERICK_ITEM, 1, 5, 1, 0.5f));
-		maxTerrain = DT.addChild(addFilterSetItem( Global.StarIcons, "Max. Terrain", NUMERICK_ITEM, 1, 5, 5, 0.5f));
-		minContainerSize = DT.addChild(addFilterSetItem( Global.SizeIcons, "Min. Container Size", NUMERICK_ITEM, 0, 4, 0, 1));
-		maxContainerSize = DT.addChild(addFilterSetItem( Global.SizeIcons, "Max. Container Size", NUMERICK_ITEM, 0, 4, 4, 1));
-		minRating = DT.addChild(addFilterSetItem( Global.StarIcons, "Min. Rating", NUMERICK_ITEM, 0, 5, 0, 0.5f));
-		maxRating = DT.addChild(addFilterSetItem( Global.StarIcons, "Max. Rating", NUMERICK_ITEM, 0, 5, 5, 0.5f));
+		minDifficulty = DT.addChild(addFilterSetItem( Global.StarIcons, Global.Translations.Get("minDifficulty"), NUMERICK_ITEM, 1, 5, 1, 0.5f));
+		maxDifficulty = DT.addChild(addFilterSetItem( Global.StarIcons, Global.Translations.Get("maxDifficulty"), NUMERICK_ITEM, 1, 5, 5, 0.5f));
+		minTerrain = DT.addChild(addFilterSetItem( Global.StarIcons, Global.Translations.Get("minTerrain"), NUMERICK_ITEM, 1, 5, 1, 0.5f));
+		maxTerrain = DT.addChild(addFilterSetItem( Global.StarIcons, Global.Translations.Get("maxTerrain"), NUMERICK_ITEM, 1, 5, 5, 0.5f));
+		minContainerSize = DT.addChild(addFilterSetItem( Global.SizeIcons, Global.Translations.Get("minContainerSize"), NUMERICK_ITEM, 0, 4, 0, 1));
+		maxContainerSize = DT.addChild(addFilterSetItem( Global.SizeIcons, Global.Translations.Get("maxContainerSize"), NUMERICK_ITEM, 0, 4, 4, 1));
+		minRating = DT.addChild(addFilterSetItem( Global.StarIcons, Global.Translations.Get("minRating"), NUMERICK_ITEM, 0, 5, 0, 0.5f));
+		maxRating = DT.addChild(addFilterSetItem( Global.StarIcons, Global.Translations.Get("maxRating"), NUMERICK_ITEM, 0, 5, 5, 0.5f));
 		
 		// add CacheTypes
 		Types = addFilterSetCollabseItem(null, "Cache Types", COLLABSE_BUTTON_ITEM);

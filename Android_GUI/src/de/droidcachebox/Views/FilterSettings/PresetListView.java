@@ -233,15 +233,15 @@ public class PresetListView extends ListView implements ViewOptionsMenu {
 	
 	private void fillPresetList()
 	{
-		addPresetItem(Global.Icons[18], "All caches" ,presets[0] );
-		addPresetItem(Global.Icons[2], "All caches to find",presets[1] );
-		addPresetItem(Global.CacheIconsBig[0], "Quick caches",presets[2] );
-		addPresetItem(Global.Icons[15], "Grab some travelbugs",presets[3] );
-		addPresetItem(Global.Icons[16], "Drop off travelbugs",presets[4] );
-		addPresetItem(Global.Icons[17], "Highlights",presets[5] );
-		addPresetItem(Global.Icons[19], "Favorites",presets[6] );
-		addPresetItem(Global.Icons[22], "Prepare to archive",presets[7] );
-		addPresetItem(Global.Icons[26], "Listing changed",presets[8] );
+		addPresetItem(Global.Icons[18], Global.Translations.Get("AllCaches"),presets[0] );
+		addPresetItem(Global.Icons[2], Global.Translations.Get("AllCachesToFind"),presets[1] );
+		addPresetItem(Global.CacheIconsBig[0], Global.Translations.Get("QuickCaches"),presets[2] );
+		addPresetItem(Global.Icons[15], Global.Translations.Get("GrabTB"),presets[3] );
+		addPresetItem(Global.Icons[16], Global.Translations.Get("DropTB"),presets[4] );
+		addPresetItem(Global.Icons[17], Global.Translations.Get("Highlights"),presets[5] );
+		addPresetItem(Global.Icons[19], Global.Translations.Get("Favorites"),presets[6] );
+		addPresetItem(Global.Icons[22], Global.Translations.Get("PrepareToArchive"),presets[7] );
+		addPresetItem(Global.Icons[26], Global.Translations.Get("ListingChanged"),presets[8] );
 
 	}
 	

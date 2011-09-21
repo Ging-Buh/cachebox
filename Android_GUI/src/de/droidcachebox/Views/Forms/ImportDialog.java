@@ -386,9 +386,9 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 				pd.dismiss();
 				Toast.makeText(
 						main.mainActivity,
-						"Apply filter. Found "
+						Global.Translations.Get("AppliedFilter1") + " "
 								+ String.valueOf(Database.Data.Query.size())
-								+ " Caches!", Toast.LENGTH_LONG).show();
+								+ " " + Global.Translations.Get("AppliedFilter2"), Toast.LENGTH_LONG).show();
 				ImportDialog.Me.finish();
 			}
 

@@ -560,8 +560,8 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 
 		String message = "Soll die FieldNote\n\n[" + aktFieldNote.typeString
 				+ "]\n\ndes Caches" + "\n\n[" + aktFieldNote.CacheName
-				+ "]\n\n gelöscht werden?";
-		if (aktFieldNote.type == 1) message += "\n\nDer Found Status des Caches wird dabei zurückgesetzt!";
+				+ "]\n\n gelšscht werden?";
+		if (aktFieldNote.type == 1) message += "\n\nDer Found Status des Caches wird dabei zurŸckgesetzt!";
 
 		MessageBox.Show(message, "Delete Fieldnote", MessageBoxButtons.YesNo,
 				dialogClickListener);
@@ -601,8 +601,8 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 
 			}
 		};
-		String message = "Sollen alle FieldNotes gelöscht werden?";
-		MessageBox.Show(message, "Delete Fieldnote", MessageBoxButtons.YesNo,
+		String message = Global.Translations.Get("DeleteAllFieldNotesQuestion");
+		MessageBox.Show(message, Global.Translations.Get("DeleteAllNotes"), MessageBoxButtons.YesNo,
 				MessageBoxIcon.Warning, dialogClickListener);
 
 	}

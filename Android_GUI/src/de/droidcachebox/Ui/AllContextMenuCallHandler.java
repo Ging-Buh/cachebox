@@ -65,8 +65,14 @@ public class AllContextMenuCallHandler
 	{
 		icm = new IconContextMenu(Main, R.menu.menu_misc);
 		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
+		Menu IconMenu = icm.getMenu();
+		
+		Global.TranslateMenuItem(IconMenu, R.id.miAbout, "about");
+		Global.TranslateMenuItem(IconMenu, R.id.miDayNight, "DayNight");
+		Global.TranslateMenuItem(IconMenu, R.id.miSettings, "settings");
+		Global.TranslateMenuItem(IconMenu, R.id.miScreenLock, "ScreenLock");
 		  
-	  	  icm.show();
+	  	icm.show();
 	}
 	
 	
@@ -75,44 +81,44 @@ public class AllContextMenuCallHandler
 		icm = new IconContextMenu(Main, R.menu.menu_waypointview);
 		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
 		
-		Menu menu = icm.getMenu();
+		Menu IconMenu = icm.getMenu();
 		
 		try
 		{
-			MenuItem mi = menu.findItem(R.id.menu_waypointview_edit);
+			MenuItem mi = IconMenu.findItem(R.id.menu_waypointview_edit);
 			if (mi != null)
 			{
 				mi.setTitle(Global.Translations.Get("edit"));
 //				mi.setVisible(Main.waypointView.aktWaypoint != null);
 				if(Main.waypointView.aktWaypoint == null)
 				{
-					menu.removeItem(mi.getItemId());
+					IconMenu.removeItem(mi.getItemId());
 				}
 			}
-			Global.TranslateMenuItem(menu, R.id.menu_waypointview_new, "addWaypoint");
-			mi = menu.findItem(R.id.menu_waypointview_delete);
+			Global.TranslateMenuItem(IconMenu, R.id.menu_waypointview_new, "addWaypoint");
+			mi = IconMenu.findItem(R.id.menu_waypointview_delete);
 			if (mi != null)
 			{
 				mi.setTitle(Global.Translations.Get("delete"));
 //				mi.setVisible((Main.waypointView.aktWaypoint != null) && (Main.waypointView.aktWaypoint.IsUserWaypoint));
 				if(!((Main.waypointView.aktWaypoint != null) && (Main.waypointView.aktWaypoint.IsUserWaypoint)))
 				{
-					menu.removeItem(mi.getItemId());
+					IconMenu.removeItem(mi.getItemId());
 				}
 			}
-			mi = menu.findItem(R.id.menu_waypointview_project);
+			mi = IconMenu.findItem(R.id.menu_waypointview_project);
 			if (mi != null)
 			{
 				mi.setTitle(Global.Translations.Get("Projection"));
 //				mi.setVisible((Main.waypointView.aktWaypoint != null || Main.waypointView.aktCache!=null));
 				if(!((Main.waypointView.aktWaypoint != null || Main.waypointView.aktCache!=null)))
 				{
-					menu.removeItem(mi.getItemId());
+					IconMenu.removeItem(mi.getItemId());
 				}
 			}
 		} catch (Exception e)
 		{
-			Logger.Error("WaypointView.BeforeShowMenu()", menu.toString(), e);
+			Logger.Error("WaypointView.BeforeShowMenu()", IconMenu.toString(), e);
 		}
 		
 		
@@ -127,8 +133,11 @@ public class AllContextMenuCallHandler
     	
   		Menu IconMenu=icm.getMenu();
   		
-  		Global.TranslateMenuItem(IconMenu, R.id.miSettings, "settings");
-		Global.TranslateMenuItem(IconMenu, R.id.miAbout, "about");
+  		Global.TranslateMenuItem(IconMenu, R.id.miTrackRec, "TrackRec");
+  		Global.TranslateMenuItem(IconMenu, R.id.miVoiceRecorder, "VoiceRec");
+  		Global.TranslateMenuItem(IconMenu, R.id.miTakePhoto, "TakePhoto");
+  		Global.TranslateMenuItem(IconMenu, R.id.miRecordVideo, "RecVideo");
+		
       	try
     	{
     		MenuItem mi = IconMenu.findItem(R.id.miVoiceRecorder);
@@ -147,6 +156,12 @@ public class AllContextMenuCallHandler
 	{
 		icm = new IconContextMenu(Main, R.menu.menu_track);
   		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
+		Menu IconMenu=icm.getMenu();
+		
+		Global.TranslateMenuItem(IconMenu, R.id.miTrackStart, "start");
+		Global.TranslateMenuItem(IconMenu, R.id.miTrackPause, "pause");
+		Global.TranslateMenuItem(IconMenu, R.id.miTrackStop, "stop");
+  		
     	icm.show();
 	}
 
@@ -156,8 +171,9 @@ public class AllContextMenuCallHandler
 		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
 		
 		Menu IconMenu=icm.getMenu();
-		Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Map");
-		Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Compass");
+		Global.TranslateMenuItem(IconMenu, R.id.miMapView, "Map");
+		Global.TranslateMenuItem(IconMenu, R.id.miCompassView, "Compass");
+		Global.TranslateMenuItem(IconMenu, R.id.miNavigateTo, "NavigateTo");
 		icm.show();
 	}
 
@@ -168,13 +184,15 @@ public class AllContextMenuCallHandler
   		  icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
     	  
     	  Menu IconMenu=icm.getMenu();
-    	  Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Solver");
-    	  Global.TranslateMenuItem(IconMenu, R.id.miNotes, "Notes");
     	  Global.TranslateMenuItem(IconMenu, R.id.miDescription, "Description");
     	  Global.TranslateMenuItem(IconMenu, R.id.miWaypoints, "Waypoints");
-    	  Global.TranslateMenuItem(IconMenu, R.id.miHint, "hint");
-    	  Global.TranslateMenuItem(IconMenu, R.id.miTelJoker, "joker");
     	  Global.TranslateMenuItem(IconMenu, R.id.miLogView, "ShowLogs");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miHint, "hint");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miSpoilerView, "spoiler");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miFieldNotes, "Fieldnotes");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miNotes, "Notes");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miSolver, "Solver");
+    	  Global.TranslateMenuItem(IconMenu, R.id.miTelJoker, "joker");
     	  
     	  boolean selectedCacheIsNull = (GlobalCore.SelectedCache() == null);
     	  
@@ -232,6 +250,7 @@ public class AllContextMenuCallHandler
 		
 		Global.TranslateMenuItem(IconMenu, R.id.miCacheList, "cacheList","  (" + String.valueOf(Database.Data.Query.size()) + ")" );
 		Global.TranslateMenuItem(IconMenu, R.id.miTrackList, "Tracks");
+		Global.TranslateMenuItem(IconMenu, R.id.miTbList, "TBList");
 		
 		
   	  icm.show();
@@ -255,6 +274,10 @@ public class AllContextMenuCallHandler
 		miAutoResort.setChecked(Global.autoResort);
 		Global.TranslateMenuItem(IconMenu, R.id.miResort, "ResortList");
 		Global.TranslateMenuItem(IconMenu, R.id.miFilterset, "filter");
+		Global.TranslateMenuItem(IconMenu, R.id.miSearch, "search");
+		Global.TranslateMenuItem(IconMenu, R.id.miAddCache, "ManuallyAddCache");
+		Global.TranslateMenuItem(IconMenu, R.id.miImport, "import");
+		Global.TranslateMenuItem(IconMenu, R.id.searchcaches_online, "FindCachesOnline");
 		
 		// Search Caches
 		MenuItem mi = IconMenu.findItem(R.id.searchcaches_online);
@@ -276,6 +299,8 @@ public class AllContextMenuCallHandler
 		MenuItem miFavorite = Global.TranslateMenuItem(IconMenu, R.id.mi_descview_favorite, "Favorite");
 		miFavorite.setCheckable(true);
 		miFavorite.setChecked(Main.descriptionView.aktCache.Favorit());
+		
+		Global.TranslateMenuItem(IconMenu, R.id.mi_descview_update, "ReloadCacheAPI");
 		
 		
 				
@@ -316,6 +341,11 @@ public class AllContextMenuCallHandler
 		icm = new IconContextMenu(Main, R.menu.menu_tracklistview);
 		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
 		  
+		Menu IconMenu=icm.getMenu();
+		Global.TranslateMenuItem(IconMenu, R.id.menu_tracklistview_generate, "generate");
+		Global.TranslateMenuItem(IconMenu, R.id.menu_tracklistview_load, "load");
+		Global.TranslateMenuItem(IconMenu, R.id.menu_tracklistview_delete, "delete");
+		
 	  	icm.show();
 	}
 	
@@ -324,7 +354,12 @@ public class AllContextMenuCallHandler
 		
 		icm = new IconContextMenu(Main, R.menu.menu_tracklistview_generate);
 		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
-		  
+		Menu IconMenu=icm.getMenu();
+		
+		Global.TranslateMenuItem(IconMenu, R.id.miTrackStart, "start");
+		Global.TranslateMenuItem(IconMenu, R.id.miTrackPause, "pause");
+		Global.TranslateMenuItem(IconMenu, R.id.miTrackStop, "stop");
+		
 	  	icm.show();
 	}
 	
@@ -332,21 +367,28 @@ public class AllContextMenuCallHandler
 	{
 		icm = new IconContextMenu(Main, R.menu.menu_mapview);
 		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
-		Menu menu=icm.getMenu();
+		Menu IconMenu=icm.getMenu();
 		
+		Global.TranslateMenuItem(IconMenu, R.id.layer, "Layer");
+		Global.TranslateMenuItem(IconMenu, R.id.miAlignCompass, "AlignToCompass");
+		Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth, "SmoothScrolling");
+		Global.TranslateMenuItem(IconMenu, R.id.mapview_go_settings, "settings");
+		Global.TranslateMenuItem(IconMenu, R.id.searchcaches_online, "FindCachesOnline");
+		Global.TranslateMenuItem(IconMenu, R.id.mimapview_view, "view");
+		Global.TranslateMenuItem(IconMenu, R.id.mi_Track, "TrackRec");
 
 		try
 		{
 			
 			
-			MenuItem mi = menu.findItem(R.id.miAlignCompass);
+			MenuItem mi = IconMenu.findItem(R.id.miAlignCompass);
 			mi.setCheckable(true);
 			mi.setChecked(Main.mapView.alignToCompass);
 						
 			
 			
 			// Search Caches	 
-            mi = menu.findItem(R.id.searchcaches_online);	 
+            mi = IconMenu.findItem(R.id.searchcaches_online);	 
             if (mi != null)	 
                     mi.setEnabled(Global.APIisOnline());			
 
@@ -388,6 +430,11 @@ public class AllContextMenuCallHandler
     	
   		Menu IconMenu=icm.getMenu();
   		
+  		Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth_none, "none");
+  		Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth_normal, "normal");
+  		Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth_fine, "fine");
+  		Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth_superfine, "superfine");
+  		
 				MenuItem mi2 = IconMenu.findItem(R.id.mapview_smooth_none);
 				if (mi2 != null)
 					mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.none);
@@ -411,18 +458,24 @@ public class AllContextMenuCallHandler
 		icm = new IconContextMenu(Main, R.menu.menu_map_view_layer);
   		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
   		Menu IconMenu=icm.getMenu();
+  		
+  		Global.TranslateMenuItem(IconMenu, R.id.miMap_HideFinds, "HideFinds");
+  		Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowRatings, "ShowRatings");
+  		Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowDT, "ShowDT");
+  		Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowTitles, "ShowTitle");
+  		Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowDirektLine, "ShowDirectLine");
 
-			MenuItem miFinds = IconMenu.findItem(R.id.miMap_HideFinds);
-			MenuItem miRaiting = IconMenu.findItem(R.id.miMap_ShowRatings);
-			MenuItem miDT = IconMenu.findItem(R.id.miMap_ShowDT);
-			MenuItem miTitles = IconMenu.findItem(R.id.miMap_ShowTitles);
-			MenuItem miLine = IconMenu.findItem(R.id.miMap_ShowDirektLine);
+  		MenuItem miFinds = IconMenu.findItem(R.id.miMap_HideFinds);
+		MenuItem miRaiting = IconMenu.findItem(R.id.miMap_ShowRatings);
+		MenuItem miDT = IconMenu.findItem(R.id.miMap_ShowDT);
+		MenuItem miTitles = IconMenu.findItem(R.id.miMap_ShowTitles);
+		MenuItem miLine = IconMenu.findItem(R.id.miMap_ShowDirektLine);
 			
-			miFinds.setChecked(Main.mapView.hideMyFinds);
-			miRaiting.setChecked(Main.mapView.showRating);
-			miDT.setChecked(Main.mapView.showDT);
-			miTitles.setChecked(Main.mapView.showTitles);
-			miLine.setChecked(Main.mapView.showDirektLine);
+		miFinds.setChecked(Main.mapView.hideMyFinds);
+		miRaiting.setChecked(Main.mapView.showRating);
+		miDT.setChecked(Main.mapView.showDT);
+		miTitles.setChecked(Main.mapView.showTitles);
+		miLine.setChecked(Main.mapView.showDirektLine);
 					
 		icm.show();
 	}
@@ -433,6 +486,12 @@ public class AllContextMenuCallHandler
 		icm = new IconContextMenu(Main, R.menu.menu_fieldnotesview);
   		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
   		Menu IconMenu=icm.getMenu();
+  		
+  		Global.TranslateMenuItem(IconMenu, R.id.fieldnotesview_found, "found");
+  		Global.TranslateMenuItem(IconMenu, R.id.fieldnotesview_notfound, "DNF");
+  		Global.TranslateMenuItem(IconMenu, R.id.fieldnotesview_maintenance, "maintenance");
+  		Global.TranslateMenuItem(IconMenu, R.id.fieldnotesview_addnote, "writenote");
+  		Global.TranslateMenuItem(IconMenu, R.id.fieldnotesview_manage, "ManageNotes");
 
 		MenuItem mi = IconMenu.findItem(R.id.c_fnv_edit);
 		if (mi !=null)
@@ -460,6 +519,10 @@ public class AllContextMenuCallHandler
 	{
 		icm = new IconContextMenu(Main, R.menu.menu_fieldnotesview_manage);
   		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
+  		Menu IconMenu=icm.getMenu();
+  		Global.TranslateMenuItem(IconMenu, R.id.fieldnotesview_upload, "uploadFieldNotes");
+  		Global.TranslateMenuItem(IconMenu, R.id.fieldnotesview_deleteall, "DeleteAllNotes");
+  		
   		icm.show();
 	}
 	
@@ -467,6 +530,10 @@ public class AllContextMenuCallHandler
 	{
 		icm = new IconContextMenu(Main, R.menu.cmenu_fieldnotesview);
   		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
+  		Menu IconMenu=icm.getMenu();
+  		Global.TranslateMenuItem(IconMenu, R.id.c_fnv_selectcache, "SelectCache");
+  		Global.TranslateMenuItem(IconMenu, R.id.c_fnv_edit, "edit");
+  		Global.TranslateMenuItem(IconMenu, R.id.c_fnv_delete, "delete");
   		icm.show();
 	}
 	

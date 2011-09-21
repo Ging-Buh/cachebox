@@ -20,7 +20,7 @@ English
 	hint = Hint
 	joker = Telephon-Joker
 	spoiler = Spoiler
-	about = About cachebox!
+	about = About Cachebox!
 	settings = Settings
 	tools = Tools
 	import = Import
@@ -34,7 +34,7 @@ English
 	ManageNotes = Manage Fieldnotes
 	DeleteAllNotes = Delete all Fieldnotes
 	DeleteAllFieldNotesQuestion = You are about to delete all your Fieldnotes. Are you sure you want to proceed?
-	cacheList = List
+	cacheList = Cache List
 	filter = Filter
 	search = Search
 	ResortList = Resort List
@@ -53,7 +53,7 @@ English
 	TakePhoto = Take Photo
 	RecVideo = Record Video
 	ChkUpdate = Check for Updates
-	manage = Manage
+	manage = Manage DB
 	screenlock = Screenlock
 	
 
@@ -89,8 +89,8 @@ English
 	ErrDbFNStartup = Error during Fieldnote database startup!
 	CanntCreateProxy = Cannot create Proxy!
 	
-	Quit? = Quit cachebox?
-	QuitReally = Do you really want to close cachebox?
+	Quit? = Quit Cachebox?
+	QuitReally = Do you really want to close Cachebox?
 	
 	uploadFieldNotes? = Upload Fieldnotes to geocaching.com? This might imply costs!
 	NoFindsLogged = You do not have any finds logged with Cachebox!
@@ -100,7 +100,7 @@ English
 	CanntOpenRecentNotes = Cannot open recent Fieldnotes in Browser
 	
 	ShowSpoiler = Show Spoiler
-	spoilSearch = Really spoil search?
+	spoilSearch = Really search spoiler?
 	
 	ErrStartExternViewer = While starting external viewer
 	
@@ -357,7 +357,7 @@ English
 	GCVotePW = GcVote Password
 	GCJoker = MD5-Hash at gcJoker.de
 	SelectLanguage = Select Language
-	save = save
+	save = Save
 	
 	
 	
@@ -370,3 +370,63 @@ English
 	GC_NoDescription = This cache was downloaded with the API of Geocaching.com without details. Please click "Donwnload Description" to download the full cache details.
 
 	GC_DownloadDescription = Download Description 
+	
+//new
+	AppliedFilter1 = Applied filter. Found
+	AppliedFilter2 = Caches!
+	ManuallyAddCache = Manually Add Cache
+	FindCachesOnline = Find Caches Online
+	TBList = TB List
+	ReloadCacheAPI = Reload Cache (API)
+	Fieldnotes = Fieldnotes
+	writenote = Write Note
+	generate = Generate
+	load = Load
+	NoTrackSelected = No track selected!
+	preset = Preset
+	setting = Setting
+	category = Category
+	AllCaches = All caches
+	AllCachesToFind = All active caches
+	QuickCaches = Quick caches
+	GrabTB = Grab some travelbugs
+	DropTB = Drop off travelbugs
+	Highlights = Highlights
+	Favorites = Favorites
+	PrepareToArchive = Prepare to archive
+	ListingChanged = Listing changed
+	General = General
+	disabled = Disabled
+	archived = Archived
+	myfinds = My finds
+	myowncaches = My own caches
+	withtrackables = With trackables
+	hasuserdata = has user data
+	manualwaypoint = manual waypoint
+	minDifficulty = Min. Difficulty
+	maxDifficulty = Max. Difficulty
+	minTerrain = Min. Terrain
+	maxTerrain = Max. Terrain
+	minContainerSize = Min. Container Size
+	maxContainerSize = Max. Container Size
+	minRating = Min. Rating
+	maxRating = Max. Rating
+	NoCacheFound = No Cache found
+	NavigateTo = Navigate to...
+	Layer = Map type
+	AlignToCompass = Align to compass
+	SmoothScrolling = Smooth scrolling
+	view = View
+	none = None
+	normal = Normal
+	fine = Fine
+	superfine = Superfine
+	HideFinds = Hide Finds
+	ShowRatings = Show Ratings
+	ShowDT = Show D/T
+	ShowTitle = Show Titles
+	ShowDirectLine = Show Direct Line
+	start = Start
+	DayNight = Day/Night
+	ScreenLock = ScreenLock
+	SelectCache = Select Cache

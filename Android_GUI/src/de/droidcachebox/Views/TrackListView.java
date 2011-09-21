@@ -302,13 +302,13 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 //		MessageBox.Show("Handle Track Delete");
 		if(selectedItem==null)
 		{
-			MessageBox.Show("Kein Track zum Löschen gewählt!");
+			MessageBox.Show(Global.Translations.Get("NoTrackSelected"));
 			return;
 		}
 		
 		if (selectedItem.getRoute().IsActualTrack)
 		{
-			MessageBox.Show("Aktueller Track darf nicht gelöscht werden!");
+			MessageBox.Show(Global.Translations.Get("IsActualTrack"));
 			return;
 		}
 		

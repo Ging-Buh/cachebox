@@ -50,12 +50,12 @@ public class EditFilterSettings extends Activity {
 		btSet = (MultiToggleButton) findViewById(R.id.edfi_set);
 		btCat = (MultiToggleButton) findViewById(R.id.edfi_cat);
 		// Translate 
-		/*btPre.setText(Global.Translations.Get("filterPreset"));
-		btSet.setText(Global.Translations.Get("filterSet"));
-		btCat.setText(Global.Translations.Get("category"));*/
-		btPre.setText("Preset");
+		btPre.setText(Global.Translations.Get("preset"));
+		btSet.setText(Global.Translations.Get("setting"));
+		btCat.setText(Global.Translations.Get("category"));
+		/*btPre.setText("Preset");
 		btSet.setText("Setting");
-		btCat.setText("Category");
+		btCat.setText("Category");*/
 		MultiToggleButton.initialOn_Off_ToggleStates(btPre);
 		MultiToggleButton.initialOn_Off_ToggleStates(btSet);
 		MultiToggleButton.initialOn_Off_ToggleStates(btCat);
@@ -252,7 +252,7 @@ public class EditFilterSettings extends Activity {
 	    	  	{
 	    	  		CachListChangedEventList.Call();
 	    	  		pd.dismiss();
-	    	  		Toast.makeText(main.mainActivity, "Applay filter. Found " + String.valueOf(Database.Data.Query.size()) + " Caches!", Toast.LENGTH_LONG).show();
+	    	  		Toast.makeText(main.mainActivity, Global.Translations.Get("AppliedFilter1") + " " + String.valueOf(Database.Data.Query.size()) + " " + Global.Translations.Get("AppliedFilter2"), Toast.LENGTH_LONG).show();
 	    	  		EditFilterSettings.filterActivity.finish();	
 	    	  	}
 		 	     

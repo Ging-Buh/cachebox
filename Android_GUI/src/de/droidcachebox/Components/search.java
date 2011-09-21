@@ -503,7 +503,7 @@ public class search {
 	         {
 	        	 ActivityUtils.setBtnState(mBtnNext, false);
 	        	 mSearchAktive=false;
-	             MessageBox.Show("No cache found", "Search", MessageBoxButtons.OK, MessageBoxIcon.Asterisk,null);
+	             MessageBox.Show(Global.Translations.Get("NoCacheFound"), Global.Translations.Get("search"), MessageBoxButtons.OK, MessageBoxIcon.Asterisk,null);
 	         }
 	         else
 	         {
@@ -606,7 +606,7 @@ public class search {
 	    	  	{
 	    	  		CachListChangedEventList.Call();
 	    	  		pd.dismiss();
-	    	  		Toast.makeText(main.mainActivity, "Applay filter. Found " + String.valueOf(Database.Data.Query.size()) + " Caches!", Toast.LENGTH_LONG).show();
+	    	  		Toast.makeText(main.mainActivity, Global.Translations.Get("AppliedFilter1") + " " + String.valueOf(Database.Data.Query.size()) + " " + Global.Translations.Get("AppliedFilter2"), Toast.LENGTH_LONG).show();
 	    	  			
 	    	  	}
 		 	     

@@ -15,12 +15,12 @@
 	Compass = Kompass
 	Radar = Radar
 	Tracks = Tracks
-	ShowLogs =Zeige Logs
+	ShowLogs = Zeige Logs
 	MyFieldNotes = Meine Fieldnotes
 	hint = Hint
 	joker = Telefon-Joker
 	spoiler = Spoiler
-	about = Über cachebox!
+	about = Über Cachebox!
 	settings = Einstellungen
 	tools = Tools
 	import = Import
@@ -34,11 +34,11 @@
 	ManageNotes = Fieldnotes verwalten
 	DeleteAllNotes = Lösche alle Fieldnotes
 	DeleteAllFieldNotesQuestion = Sollen wirklich alle Fieldnotes gelöscht werden?
-	cacheList = Liste
+	cacheList = Cache Liste
 	filter = Filter
 	search = Suchen
-	ResortList = Liste \n neu Sortieren
-	AutoResort = Automatisch \n Sortieren
+	ResortList = Liste neu sortieren
+	AutoResort = Automatisch sortieren
 	record = Aufnahme
 	pause = Pause
 	stop = Stop
@@ -59,7 +59,7 @@
 // AboutViewPanel
 	caches_found = Gefundene Caches:
 	gps = GPS:
-	not_active = nicht Aktiv
+	not_active = nicht aktiv
 	not_detected = nicht erkannt
 	sats_nr = Sats:
 	Hdop = Hdop:
@@ -88,8 +88,8 @@
 	ErrDbFNStartup = Fehler während des Fieldnote Datenbankanlaufs!
 	CanntCreateProxy = Cannot create Proxy!
 	
-	Quit? = cachebox beenden?
-	QuitReally = Wollen Sie cachebox wirklich schließen?
+	Quit? = Cachebox beenden?
+	QuitReally = Wollen Sie Cachebox wirklich schließen?
 	
 	uploadFieldNotes? = Fieldnotes zu geocaching.com hochladen? Dies könnte Kosten verursachen!
 	NoFindsLogged = Sie haben keine Funde mit Cachebox geloggt!
@@ -99,15 +99,15 @@
 	CanntOpenRecentNotes = Kann neue Fieldnotes nicht im Browser öffnen
 	
 	ShowSpoiler = Zeige Spoiler
-	spoilSearch = Spoiler wirklich Suchen?
+	spoilSearch = Spoiler wirklich suchen?
 	
 	ErrStartExternViewer = Beim starten des Externen Bildbetrachters
 	
 	downloadSpoiler = Download Spoiler
-	downloadSpoiler? = Spoiler wirklich herrunter Laden?
+	downloadSpoiler? = Spoiler wirklich herunter Laden?
 	NoSpoiler = Keine Spoiler vorhanden.
 	NoCacheSelect = Kein Cache angewählt.
-	NoAccessAllowed = Internet Verbindung nicht erlaubt! Schalten Sie die Verbindung in den Einstellungen ein, um Spoiler herrunter zu Laden.
+	NoAccessAllowed = Internet Verbindung nicht erlaubt! Schalten Sie die Verbindung in den Einstellungen ein, um Spoiler herunter zu Laden.
 	
 	ErrNoCam = Es gab einen Fehler! Es scheint so, als ob Ihr Gerät keine Kamera hat!
 	
@@ -126,7 +126,7 @@
 	GPSon? = Möchten Sie GPS jetzt aktivieren?
 	
 	welcome = Willkommen zu Cachebox!
-	wantApi = Möchtest Du jetzt einen GC API key holen?
+	wantApi = Möchtest Sie jetzt einen GC API key holen?
 	
 
 // Splash screan Messages
@@ -164,7 +164,7 @@
 		
 	// DatabaseChangedForm
 		DatabaseChangedForm.Text = Datenbank Strukture geändert
-		DatabaseChangedForm.Msg = Glückwünsch, sie haben ihre Cachebox aktualisiert! Die Datenbankstruktur hat sich geändert und muss aktualisiert werden. Dies wird den Import beträchtlich verlangsamen, es wird empfohlen eine neue Datenbank anzulegen. 
+		DatabaseChangedForm.Msg = Glückwünsch, Sie haben ihre Cachebox aktualisiert! Die Datenbankstruktur hat sich geändert und muss aktualisiert werden. Dies wird den Import beträchtlich verlangsamen, es wird empfohlen eine neue Datenbank anzulegen. 
 		deleteDB = lösche DB
 		convert = Konvertieren
 		
@@ -173,17 +173,17 @@
 		UseDefaultRep = Gemeinsames Repository?
 
 	// FormCreatePocketQuery
-		connecting = Connecting...
-		createPQ = Create Pocket Query
-		ErrCreatePQ =  Error while trying to create a pocket query!
-		ErrLogInCreatePq = Login Error while trying to create a pocket query! Wrong login information?
-		ServerTimeout = Server Timeout...
-		NetConnectProb = Network connecting problems!
-		NoGCpassword = You didn't specify your GC password!
+		connecting = Verbinde...
+		createPQ = PocketQuery erstellen
+		ErrCreatePQ =  Fehler beim Erstellen der PocketQuery!
+		ErrLogInCreatePq = Login Fehler beim Erstellen der PocketQuery! Falsche Login Informationen?
+		ServerTimeout = Zeitüberschreitung Verbindungsaufbau...
+		NetConnectProb = Problem mit der Netzwerkverbindung!
+		NoGCpassword = Sie haben Ihr GC Passwort nicht angegeben!
 		
 	// FormDownloadCacheImage
-		LowMemOperationCancel = Device is running low on memory! This operation will now cancel!
-		ImportImage = Importing Images
+		LowMemOperationCancel = Das Gerät hat nur wenig Speicher übrig! Diese Operation stoppt jetzt!
+		ImportImage = Importiere Bilder
 		
 	//WaypointViewPanel
 		Projection = Projizierung
@@ -195,11 +195,11 @@
 		DegMin = Deg, Min
 		DegMinSec = Deg, Min, Sec
 		utm = UTM
-		addWaypoint = Weg Punkt hinzufügen
+		addWaypoint = Wegpunkt hinzufügen
 		?replaceCoord = Wollen Sie die Koordinaten wirklich ersetzen?
 		!replaceCoord = Koordinaten ersetzen
-		!DelWP = Weg Punkt Löschen
-		?DelWP = Wollen Sie wirklich diesen Weg Punkt löschen?
+		!DelWP = Wegpunkt löschen
+		?DelWP = Wollen Sie wirklich diesen Wegpunkt löschen?
 		N = N
 		E = O
 		Zone = Zone 
@@ -282,7 +282,7 @@
 		SatHdop = Sats/Hdop:
 		BearSpeed = Richt./Geschw.:
 		distance = Entfernung:
-		Align = Aus-richten
+		Align = Ausrichten
 		AlignGps = Richtung \n GPS
 		AlignHtc = Richtung \n HTC
 		
@@ -291,8 +291,8 @@
 		Filter = Filter
 		Search = Suchen
 		Next = Nächster
-		Title = Title
-		GCCode =GC-Code
+		Title = Titel
+		GCCode = GC-Code
 		Owner = Owner
 		
 	//ProjectionForm
@@ -339,9 +339,9 @@
 	ResetListingChanged! = Reset listing changed
 	LoadFinds? = Lade Anzahl der Funde von geocaching.com? Das könnte Kosten verursachen!
 	LoadFinds! = Lade Anzahl der Funde
-	LogInErrorLoadFinds = Login Error while trying to get number of finds! Wrong information?
+	LogInErrorLoadFinds = Login Fehler beim Laden der Anzahl der gefundenen Caches! Falsche Login Informationen?
 	CannotResolveHost = Kann Host nicht erreichen!
-	ServerTimeout = Zeitüberschreitung Verbindungsaufbau ...
+	ServerTimeout = Zeitüberschreitung Verbindungsaufbau...
 	FoundsSetTo = Funde auf %s gesetzt!
 	
 	//FormAdjustFounds
@@ -372,3 +372,64 @@
 	GC_NoDescription = Dieser Cache wurde mit der Geocaching.com API ohne Details heruntergeladen. Bitte auf "Beschreibung herunterladen" klicken, um die Details herunterzuladen.
 
 	GC_DownloadDescription = Beschreibung herunterladen
+	
+//neu
+	AppliedFilter1 = Filter angewandt.
+	AppliedFilter2 = Caches gefunden!
+	ManuallyAddCache = Cache manuell hinzufügen
+	FindCachesOnline = Caches online suchen
+	TBList = TB Liste
+	ReloadCacheAPI = Cache neu laden (API)
+	Fieldnotes = Fieldnotes
+	writenote = Schreibe Notiz
+	generate = Erstellen
+	load = Laden
+	NoTrackSelected = Kein Track ausgewählt!
+	IsActualTrack = Aktueller Track kann nicht gelöscht werden!
+	preset = Vorgaben
+	setting = Einstellung
+	category = Kategorie
+	AllCaches = Alle Caches
+	AllCachesToFind = Alle aktiven Caches
+	QuickCaches = Schnelle Caches
+	GrabTB = Travelbugs entnehmen
+	DropTB = Travelbugs ablegen
+	Highlights = Highlights
+	Favorites = Favoriten
+	PrepareToArchive = Vorbereitet zum Archivieren
+	ListingChanged = Listing geändert
+	General = Generell
+	disabled = Deaktiviert
+	archived = Archiviert
+	myfinds = Meine Funde
+	myowncaches = Meine eigenen Caches
+	withtrackables = Mit Trackables
+	hasuserdata = Hat Userdaten
+	manualwaypoint = Manueller Wegpunkt
+	minDifficulty = Min. Schwierigkeit
+	maxDifficulty = Max. Schwierigkeit
+	minTerrain = Min. Gelände
+	maxTerrain = Max. Gelände
+	minContainerSize = Min. Behältergröße
+	maxContainerSize = Max. Behältergröße
+	minRating = Min. Bewertung
+	maxRating = Max. Bewertung
+	NoCacheFound = Kein Cache gefunden
+	NavigateTo = Navigiere zu...
+	Layer = Kartentyp
+	AlignToCompass = Nach Kompass ausrichten
+	SmoothScrolling = Flüssiges Verschieben
+	view = Anzeigen
+	none = Kein
+	normal = Normal
+	fine = Fein
+	superfine = Superfein
+	HideFinds = Funde ausblenden
+	ShowRatings = Ratings anzeigen
+	ShowDT = D/T anzeigen
+	ShowTitle = Titel anzeigen
+	ShowDirectLine = Direktverbindung anzeigen
+	start = Start
+	DayNight = Tag/Nacht
+	ScreenLock = Bildschirmsperre
+	SelectCache = Cache auswählen
