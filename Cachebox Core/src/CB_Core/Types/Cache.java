@@ -487,7 +487,6 @@ public class Cache implements Comparable<Cache>
 	 * 
 	 * @return Entfernung  zur übergebenen User Position als Float
 	 */
-
     public float Distance(boolean useFinal)
     {
     	Coordinate fromPos = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
