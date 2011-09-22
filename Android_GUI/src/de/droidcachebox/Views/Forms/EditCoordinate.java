@@ -488,18 +488,18 @@ public class EditCoordinate extends Activity {
 		 {
 		 case 0:
      		// show Degrees
-             scoord += bDLat.getText() + " " + tbDLat.getText() + "°";
-             scoord += " " + bDLon.getText() + " " + tbDLon.getText() + "°";
+             scoord += bDLat.getText() + " " + tbDLat.getText() + "\u00B0";
+             scoord += " " + bDLon.getText() + " " + tbDLon.getText() + "\u00B0";
          	break;
 		 case 1:
      		// show Degree - Minute
-             scoord += bMLat.getText() + " " + tbMLatDeg.getText() + "° " + tbMLatMin.getText() + "'";
-             scoord += " " + bMLon.getText() + " " + tbMLonDeg.getText() + "° " + tbMLonMin.getText() + "'";
+             scoord += bMLat.getText() + " " + tbMLatDeg.getText() + "\u00B0 " + tbMLatMin.getText() + "\u0027";
+             scoord += " " + bMLon.getText() + " " + tbMLonDeg.getText() + "\u00B0 " + tbMLonMin.getText() + "\u0027";
          	break;
 		 case 2:
      		// show Degree - Minute - Second
-             scoord += bSLat.getText() + " " + tbSLatDeg.getText() + "° " + tbSLatMin.getText() + "' " + tbSLatSec.getText() + "''";
-             scoord += " " + bSLon.getText() + " " + tbSLonDeg.getText() + "° " + tbSLonMin.getText() + "' " + tbSLonSec.getText() + "''";
+             scoord += bSLat.getText() + " " + tbSLatDeg.getText() + "\u00B0 " + tbSLatMin.getText() + "\u0027 " + tbSLatSec.getText() + "\\u0022";
+             scoord += " " + bSLon.getText() + " " + tbSLonDeg.getText() + "\u00B0 " + tbSLonMin.getText() + "\u0027 " + tbSLonSec.getText() + "\\u0022";
          	break;
 		 case 3:
      		// show UTM
