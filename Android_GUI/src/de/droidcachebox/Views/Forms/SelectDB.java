@@ -10,7 +10,6 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.DAO.CacheListDAO;
 import de.droidcachebox.Database.DatabaseType;
-import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Views.AboutView;
 import de.droidcachebox.Views.FilterSettings.PresetListView;
@@ -37,6 +36,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
 import CB_Core.Log.Logger;
+import CB_Core.Map.Descriptor;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 

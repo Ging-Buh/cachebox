@@ -9,14 +9,14 @@ import java.util.Date;
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
+import CB_Core.Map.Descriptor;
+import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Types.Coordinate;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.location.Location;
 
 
-import de.droidcachebox.Map.Descriptor;
-import de.droidcachebox.Map.Descriptor.PointD;
 import de.droidcachebox.Map.RouteOverlay;
 
 public class TrackRecorder {

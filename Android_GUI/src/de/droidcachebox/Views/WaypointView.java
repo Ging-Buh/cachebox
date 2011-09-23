@@ -23,6 +23,7 @@ import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.AllContextMenuCallHandler;
 import de.droidcachebox.Views.Forms.EditCoordinate;
 import de.droidcachebox.Views.Forms.EditWaypoint;
+import de.droidcachebox.Views.Forms.MeasureCoordinateActivity;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;
@@ -353,7 +354,26 @@ public class WaypointView extends ListView implements SelectedCacheEvent, ViewOp
 				};
 
 				MessageBox.Show(Global.Translations.Get("?DelWP") + "\n\n[" + aktWaypoint.Title + "]", Global.Translations.Get("!DelWP"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, dialogClickListener);
-							
+			
+			case R.id.menu_waypointview_gps:
+				createNewWaypoint = true;
+				String newGcCode3 = "";
+				try {
+					newGcCode3 = Database.CreateFreeGcCode(GlobalCore.SelectedCache().GcCode);
+				} catch (Exception e) {
+					// 	TODO Auto-generated catch block
+					return true;
+				}
+				Coordinate coord3 = GlobalCore.LastValidPosition;
+				if ((coord3 == null) || (!coord3.Valid))
+					coord3 = GlobalCore.SelectedCache().Pos;
+                Waypoint newWP3 = new Waypoint(newGcCode3, CacheTypes.ReferencePoint, "Measured", coord3.Latitude, coord3.Longitude, GlobalCore.SelectedCache().Id, "", "Measured");
+				Intent mainIntent3 = new Intent().setClass(getContext(), MeasureCoordinateActivity.class);
+				Bundle b3 = new Bundle();
+				b3.putSerializable("Waypoint", newWP3);
+				mainIntent3.putExtras(b3);
+				main.mainActivity.startActivityForResult(mainIntent3, 0);
+				break;				
 		}
 		return true;
 	}

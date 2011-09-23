@@ -3,6 +3,8 @@ package de.droidcachebox.Views;
 
 
 
+import CB_Core.Map.Descriptor;
+import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Types.Coordinate;
 import CB_Core.Config;
 import CB_Core.FileIO;
@@ -11,8 +13,6 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Map.Descriptor;
-import de.droidcachebox.Map.Descriptor.PointD;
 import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.Map.RouteOverlay.Route;
 import de.droidcachebox.Ui.ActivityUtils;

@@ -32,11 +32,6 @@ public class MeasuredCoord implements Comparable<MeasuredCoord>
 	private float Accuracy = 0.0f;
 
 	/**
-	 * Falls keine erneute Distanzberechnung nötig ist nehmen wir diese Distanz
-	 */
-	private float cachedDistance = -1;
-
-	/**
 	 * Die Referenz Coordinate, auf die sich der Vergleich bezieht. <br>
 	 * Je grösser der Abstand zur Referenz Coordinate desto höher der Index in
 	 * einer Liste.
@@ -113,8 +108,6 @@ public class MeasuredCoord implements Comparable<MeasuredCoord>
 
 	}
 
-	
-
 	/**
 	 * Gibt die Entfernung zur Referenz Position als Float zurück
 	 * 
@@ -125,9 +118,8 @@ public class MeasuredCoord implements Comparable<MeasuredCoord>
 		float[] dist = new float[4];
 		Coordinate.distanceBetween(this.Latitude, this.Longitude,
 				Referenz.Latitude, Referenz.Longitude, dist);
-		cachedDistance = dist[0];
-		return (float) cachedDistance;
+
+		return (float) dist[0];
 	}
 
-	
 }

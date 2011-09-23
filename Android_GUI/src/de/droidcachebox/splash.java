@@ -11,6 +11,7 @@ import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
+import CB_Core.Map.Descriptor;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Coordinate;
@@ -32,7 +33,6 @@ import de.droidcachebox.DAO.CacheListDAO;
 import de.droidcachebox.Database.DatabaseType;
 import de.droidcachebox.Components.copyAssetFolder;
 
-import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.MapView;

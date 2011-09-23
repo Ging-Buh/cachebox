@@ -5,4 +5,5 @@
     <item android:title="New" android:id="@+id/menu_waypointview_new"></item>
     <item android:title="Delete" android:id="@+id/menu_waypointview_delete"></item>
     <item android:id="@+id/menu_waypointview_project" android:title="Projection"></item>
+    <item android:title="from GPS" android:id="@+id/menu_waypointview_gps"></item>
 </menu>

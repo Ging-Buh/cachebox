@@ -58,22 +58,23 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 		return new Coordinate(sumLatitude / this.size(), sumLongitude
 				/ this.size());
 	}
-	
+
 	/**
-	 * Gibt die Durchschnittliche Koordinate dieser Liste zurück.
-	 * Wobei die Genauigkeit der gemessenen Koordinaten berücksichtigt wird!
+	 * Gibt die Durchschnittliche Koordinate dieser Liste zurück. Wobei die
+	 * Genauigkeit der gemessenen Koordinaten berücksichtigt wird!
 	 * 
 	 * @return Coordinate
 	 */
 	public Coordinate getAccuWeightedAverageCoord()
 	{
-		//TODO berechne Coord nach Genauigkeits Wichtung
-		return new Coordinate();
+		// TODO berechne Coord nach Genauigkeits Wichtung
+		return getMeasuredAverageCoord(); // Vorerst, bis die Wichtung vertig
+											// ist!
 	}
 
 	/**
 	 * Überschreibt die add Methode um bei einer Listen Größe > 3 <br>
-	 * die MeasuredCoord.Referenz auf den Durchschnitt der Liste setzt.
+	 * die MeasuredCoord.Referenz auf den Durchschnitt der Liste zu setzen.
 	 */
 	@Override
 	public boolean add(MeasuredCoord measuredCoord)
@@ -116,7 +117,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 			do
 			{
 				MeasuredCoord tmp = iterator.next();
-				if (tmp.Distance() > 30)
+				if (tmp.Distance() > 5)
 				{
 					this.remove(tmp);
 					ready = false;

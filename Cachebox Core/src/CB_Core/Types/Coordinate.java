@@ -17,6 +17,11 @@ public class Coordinate implements Serializable {
 	public double Longitude = 0;
 	public double Elevation = 0;
 	
+	/**
+	 * Die Genauigkeit dieser Coordinate!
+	 * Wird beim Messen benutzt
+	 */
+	public int Accuracy = -1;
 	
 	 // Cache the inputs and outputs of computeDistanceAndBearing
     // so calls to distanceTo() and bearingTo() can share work
@@ -42,6 +47,15 @@ public class Coordinate implements Serializable {
         this.Latitude = latitude;
         this.Longitude = longitude;
         this.Elevation = 0;
+        Valid = true;
+    }
+	
+	public Coordinate(double latitude, double longitude, int accuracy)
+    {
+        this.Latitude = latitude;
+        this.Longitude = longitude;
+        this.Elevation = 0;
+        Accuracy = accuracy;
         Valid = true;
     }
 

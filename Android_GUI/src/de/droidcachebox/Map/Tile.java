@@ -3,6 +3,7 @@ package de.droidcachebox.Map;
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 
+import CB_Core.Map.Descriptor;
 import android.graphics.Bitmap;
 
 public class Tile implements Destroyable {

@@ -8,8 +8,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 
-import de.droidcachebox.Map.Descriptor.PointD;
 
+import CB_Core.Map.Descriptor;
+import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Types.Coordinate;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

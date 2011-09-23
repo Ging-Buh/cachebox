@@ -26,6 +26,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.Views.MapView;
 
 import CB_Core.FileIO;
+import CB_Core.Map.Descriptor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;

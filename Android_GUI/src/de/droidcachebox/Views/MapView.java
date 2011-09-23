@@ -14,6 +14,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
+import CB_Core.Map.Descriptor;
+import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
@@ -73,8 +75,6 @@ import de.droidcachebox.Events.PositionEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Map.Descriptor;
-import de.droidcachebox.Map.Descriptor.PointD;
 import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Map.Manager;
 import de.droidcachebox.Map.RouteOverlay;
@@ -1795,7 +1795,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	          {
 	            WaypointRenderInfo wpi = new WaypointRenderInfo();
 	            wpi.MapX = 256 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, wp.Pos.Longitude);
-	            wpi.MapY = 256 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, wp.Pos.Latitude);
+						wpi.MapY = 256 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, wp.Pos.Latitude);
 	            wpi.Icon = Global.NewMapIcons.get(2).get((int)wp.Type.ordinal());
 	            wpi.UnderlayIcon = Global.NewMapOverlay.get(2).get(0);
 	            wpi.Cache = GlobalCore.SelectedCache();

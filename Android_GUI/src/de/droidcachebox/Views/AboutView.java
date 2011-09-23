@@ -20,8 +20,6 @@ import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Locator.GpsStrength;
-import de.droidcachebox.Map.Descriptor;
-import de.droidcachebox.Map.Descriptor.PointD;
 
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.Forms.MessageBox;
@@ -30,6 +28,8 @@ import de.droidcachebox.Views.Forms.MessageBoxIcon;
 import de.droidcachebox.Views.Forms.NumerikInputBox;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Map.Descriptor;
+import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;

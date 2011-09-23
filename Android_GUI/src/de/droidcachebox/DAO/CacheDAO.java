@@ -12,6 +12,7 @@ import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
+import CB_Core.Map.Descriptor;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Coordinate;
@@ -20,7 +21,6 @@ import CB_Core.Types.Waypoint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import de.droidcachebox.Database;
-import de.droidcachebox.Map.Descriptor;
 import de.droidcachebox.Replication.Replication;
 
 public class CacheDAO {

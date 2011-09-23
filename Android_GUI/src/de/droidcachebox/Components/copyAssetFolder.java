@@ -26,14 +26,22 @@ public class copyAssetFolder
 			e.printStackTrace();
 		}
 		
-		for (String tmp :FileList)
+		try
 		{
-			try {
-				copyFile(assets, tmp, targetPath + "/" + tmp);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			for (String tmp :FileList)
+			{
+				try {
+					copyFile(assets, tmp, targetPath + "/" + tmp);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	public void copyAll(AssetManager assets, String targetPath)

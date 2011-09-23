@@ -95,8 +95,7 @@ public class MeasuredCoordListTest extends TestCase
 			// neu gesetzt!
 			if (index > -1)
 			{
-				if (tmp.Distance() == mMeasuredCoordList.get(index)
-						.Distance())
+				if (tmp.Distance() == mMeasuredCoordList.get(index).Distance())
 				{
 					if (tmp.getAccuracy() != mMeasuredCoordList.get(index)
 							.getAccuracy())
@@ -110,8 +109,8 @@ public class MeasuredCoordListTest extends TestCase
 				else
 				{
 					assertTrue("mMeasuredCoordList ist falsch Sortiert",
-							tmp.Distance() > mMeasuredCoordList
-									.get(index).Distance());
+							tmp.Distance() > mMeasuredCoordList.get(index)
+									.Distance());
 				}
 
 			}
@@ -123,14 +122,14 @@ public class MeasuredCoordListTest extends TestCase
 
 		boolean test = true;
 		if (MeasuredCoord.Referenz.Latitude != 49.40959516666667) test = false;
-		else if(MeasuredCoord.Referenz.Longitude != 6.203408499999999) test = false;
-		assertTrue("mMeasuredCoordList hat beim Sortieren eine falsche Referenz erzeugt",test);
-		
-		
-		//eleminiere Ausreisser Werte mit einer Referenz Distanz > 50m
-		
-		
+		else if (MeasuredCoord.Referenz.Longitude != 6.203408499999999) test = false;
+		assertTrue(
+				"mMeasuredCoordList hat beim Sortieren eine falsche Referenz erzeugt",
+				test);
+
+		// eleminiere Ausreisser Werte mit einer Referenz Distanz > 50m
+
 		mMeasuredCoordList.clearDiscordantValue();
-		
+
 	}
 }
