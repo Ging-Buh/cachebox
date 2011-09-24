@@ -42,8 +42,16 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 	 */
 	public Coordinate getMeasuredAverageCoord()
 	{
-		Iterator<MeasuredCoord> iterator = this.iterator();
+		
 
+		if(this.size()==0)
+		{
+			return new Coordinate(0, 0);
+		}
+		
+		
+		Iterator<MeasuredCoord> iterator = this.iterator();
+		
 		double sumLatitude = 0;
 		double sumLongitude = 0;
 
@@ -68,7 +76,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 	public Coordinate getAccuWeightedAverageCoord()
 	{
 		// TODO berechne Coord nach Genauigkeits Wichtung
-		return getMeasuredAverageCoord(); // Vorerst, bis die Wichtung vertig
+		return getMeasuredAverageCoord(); // Vorerst, bis die Wichtung fertig
 											// ist!
 	}
 
@@ -99,6 +107,17 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 
 		Collections.sort(this);
 	}
+	
+	
+	
+	/**
+	 * Setzt die Statisch Referenz Koordinate von MeasuredCoord
+	 * auf die errechnete durchnitliche Koordinate
+	 */
+	public void setAverage()
+	{
+		MeasuredCoord.Referenz = this.getMeasuredAverageCoord();
+	}
 
 	/**
 	 * Löscht die Ausreißer Werte, welche eine Distanz von mehr als 30m zur
@@ -111,13 +130,13 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 		do
 		{
 			ready = true;
-			// Sortiere neu um Referenz festzulegen.
-			this.sort();
+			
+			this.setAverage();
 			Iterator<MeasuredCoord> iterator = this.iterator();
 			do
 			{
 				MeasuredCoord tmp = iterator.next();
-				if (tmp.Distance() > 5)
+				if (tmp.Distance() > 30)
 				{
 					this.remove(tmp);
 					ready = false;
@@ -127,6 +146,6 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 			while (iterator.hasNext());
 		}
 		while (!ready);
-		this.sort();
+		this.setAverage();
 	}
 }

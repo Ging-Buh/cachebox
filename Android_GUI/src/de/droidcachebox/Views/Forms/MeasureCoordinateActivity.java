@@ -16,54 +16,31 @@
 
 package de.droidcachebox.Views.Forms;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.zip.Inflater;
-
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Custom_Controls.CanvasDrawControl;
-import de.droidcachebox.Custom_Controls.MultiToggleButton;
-import de.droidcachebox.Locator.GPS;
-import de.droidcachebox.Locator.Locator;
-
-import de.droidcachebox.UTM.UTMConvert;
 import de.droidcachebox.Ui.ActivityUtils;
 import CB_Core.GlobalCore;
-import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.MeasuredCoord;
 import CB_Core.Types.MeasuredCoordList;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.text.ClipboardManager;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MeasureCoordinateActivity extends Activity implements
 		LocationListener
@@ -78,12 +55,7 @@ public class MeasureCoordinateActivity extends Activity implements
 
 	CanvasDrawControl panelPreview;
 
-	/**
-	 * Die MeasureCoordinate Activity hat ihren eigenen locationmanager, mit
-	 * einem Höheren Aktualisierungs Intewall
-	 */
-	public static LocationManager locationManager;
-
+	
 	public void onCreate(Bundle savedInstanceState)
 	{
 		ActivityUtils.onActivityCreateSetTheme(this);
@@ -142,8 +114,8 @@ public class MeasureCoordinateActivity extends Activity implements
 			}
 		});
 
-		initialLocationManager();
 		setSatStrength();
+		
 
 		// Translations
 		bOK.setText(Global.Translations.Get("ok"));
@@ -165,9 +137,6 @@ public class MeasureCoordinateActivity extends Activity implements
 		strengthLayout = (LinearLayout) findViewById(R.id.strength_control);
 		lblMeasureCount = (TextView) findViewById(R.id.textView2);
 		lblMeasureCoord = (TextView) findViewById(R.id.textView4);
-		// CachesFoundLabel=(TextView)findViewById(R.id.about_CachesFoundLabel);
-		// descTextView=(TextView)findViewById(R.id.splash_textViewDesc);
-		// versionTextView=(TextView)findViewById(R.id.splash_textViewVersion);
 
 	}
 
@@ -208,43 +177,25 @@ public class MeasureCoordinateActivity extends Activity implements
 
 	}
 
-	private Locator locator;
-
-	private void initialLocationManager()
+	@Override
+	protected void onResume()
 	{
+		MeasureCount = 0;
+		if (mMeasureList != null) mMeasureList.clear();
+		super.onResume();
+	}
 
-		try
-		{
-			if (locationManager != null)
-			{
-				// ist schon initialisiert
-				return;
-			}
+	@Override
+	protected void onStop()
+	{
+		super.onStop();
+	}
 
-			// GPS
-			// Get the location manager
-			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-			// Define the criteria how to select the locatioin provider -> use
-			// default
-			Criteria criteria = new Criteria(); // noch nötig ???
-			criteria.setAccuracy(Criteria.ACCURACY_FINE);
-			criteria.setAltitudeRequired(false);
-			criteria.setBearingRequired(false);
-			criteria.setCostAllowed(true);
-			criteria.setPowerRequirement(Criteria.POWER_HIGH);
-
-			locator = new Locator();
-
-			locationManager.requestLocationUpdates(
-					LocationManager.GPS_PROVIDER, 0, 0, this);
-
-		}
-		catch (Exception e)
-		{
-			Logger.Error("MesureCoordinate.initialLocationManager()", "", e);
-			e.printStackTrace();
-		}
-
+	@Override
+	public void onDestroy()
+	{
+		mMeasureList = null;
+		super.onDestroy();
 	}
 
 	/*
@@ -261,8 +212,7 @@ public class MeasureCoordinateActivity extends Activity implements
 		Coordinate coord = new Coordinate(location.getLatitude(),
 				location.getLongitude());
 
-		if (MeasureCount == 0) lblMeasureCoord
-				.setText(coord.FormatCoordinate());
+		if (MeasureCount == 0) lblMeasureCoord.setText(coord.toString());
 
 		MeasureCount++;
 		mMeasureList.add(new MeasuredCoord(location.getLatitude(), location
@@ -274,10 +224,13 @@ public class MeasureCoordinateActivity extends Activity implements
 		// nach jeder 10. Messung die Liste Aufräumen
 		if (mMeasureList.size() % 10 == 0)
 		{
-			mMeasureList.sort();
+			mMeasureList.setAverage();
 			mMeasureList.clearDiscordantValue();
-			lblMeasureCoord.setText(mMeasureList.getAccuWeightedAverageCoord()
-					.FormatCoordinate());
+			lblMeasureCoord.setText(Global.FormatLatitudeDM(mMeasureList
+					.getAccuWeightedAverageCoord().Latitude)
+					+ " "
+					+ Global.FormatLongitudeDM(mMeasureList
+							.getAccuWeightedAverageCoord().Longitude));
 		}
 
 		setSatStrength();
@@ -312,21 +265,21 @@ public class MeasureCoordinateActivity extends Activity implements
 		// {
 		if (mMeasureList.size() > 0)
 		{
-
-			// Erdradius / anzahl Kacheln = Meter pro Kachel
-			double metersPerTile = 6378137.0 / Math.pow(2, projectionZoom);
-
 			// Gemittelter Punkt der GPS-Messungen
 			double medianLat = MeasuredCoord.Referenz.Latitude;
 			double medianLon = MeasuredCoord.Referenz.Longitude;
 
+			MeasuredCoordList sortetdList = (MeasuredCoordList) mMeasureList
+					.clone();
+			sortetdList.sort();
+
 			double peakLat = Math.max(
-					Math.abs(mMeasureList.get(0).getLatitude() - medianLat),
-					Math.abs(mMeasureList.get(mMeasureList.size() - 1)
+					Math.abs(sortetdList.get(0).getLatitude() - medianLat),
+					Math.abs(sortetdList.get(sortetdList.size() - 1)
 							.getLatitude() - medianLat));
 			double peakLon = Math.max(
-					Math.abs(mMeasureList.get(0).getLongitude() - medianLon),
-					Math.abs(mMeasureList.get(mMeasureList.size() - 1)
+					Math.abs(sortetdList.get(0).getLongitude() - medianLon),
+					Math.abs(sortetdList.get(sortetdList.size() - 1)
 							.getLongitude() - medianLon));
 
 			// Umrechnung in XY
