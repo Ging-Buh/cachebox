@@ -321,7 +321,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	/**
 	 * Öffnet den Edit-Coord Dialog
 	 * 
-	 * @param NextStep Schritt zur behandlung des ActivityResults
+	 * @param NextStep Schritt zur Behandlung des ActivityResults
 	 */
 	private void showEditCoord(int NextStep)
 	{
@@ -442,10 +442,18 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
         coordIntent.putExtras(b);
         parentActivity.startActivityForResult(coordIntent, 0);
 	}
-		
+
+	/**
+	 * Intentbehandlung vom OI FileDialog
+	 * Läd einen Track
+	 * @param requestCode
+	 * @param resultCode
+	 * @param data
+	 * @return 
+	 */
+
 	public void ActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		
 		
 		switch (requestCode) {
 		case REQUEST_CODE_PICK_FILE_OR_DIRECTORY:
@@ -460,85 +468,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 				}
 			}
 			break;
-		}
-		
-		
-		if (data == null)
-			return;
-		Bundle bundle = data.getExtras();
-		if (bundle != null)
-		{
-			Coordinate coord = (Coordinate)bundle.getSerializable("CoordResult");
-			if (coord != null)
-			{
-				if (nextStep==P2P_GET_FIRST_POINT)
-				{
-					Lon1= coord.Longitude;
-					Lat1= coord.Latitude;
-					showEditCoord(P2P_GET_SECEND_POINT);
-					
-				}else if (nextStep==P2P_GET_SECEND_POINT)
-				{
-					Lon2= coord.Longitude;
-					Lat2= coord.Latitude;
-					
-					int TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
-					Paint paint = new Paint();
-					paint.setColor(TrackColor);
-					paint.setStrokeWidth(3);
-					RouteOverlay.Routes.add(GenP2PRoute(Lat1, Lon1, Lat2, Lon2, paint));
-					lvAdapter.notifyDataSetChanged();
-					resetStep();
-				}else if (nextStep==PROJECT_GET_FIRST_POINT)
-				{
-					Lon1= coord.Longitude;
-					Lat1= coord.Latitude;
-					showProjectCoord(PROJECT_GET_PROJECT_VALUES);
-					
-				}else if (nextStep==PROJECT_GET_PROJECT_VALUES)
-				{
-					Lon2= coord.Longitude;
-					Lat2= coord.Latitude;
-					
-					Coordinate FromCoord = new Coordinate(Lat1,Lon1);
-					
-					double distance = coord.Distance(FromCoord);
-					double bearing = coord.bearingTo(FromCoord) + 180; //vieleicht noch um 180° drehen?
-					
-					int TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
-					Paint paint = new Paint();
-					paint.setColor(TrackColor);
-					paint.setStrokeWidth(3);
-					RouteOverlay.Routes.add(GenProjectRoute(Lat1, Lon1, distance, bearing, paint));
-					lvAdapter.notifyDataSetChanged();
-					resetStep();
-				
-				}else if (nextStep==CIRCLE_GET_FIRST_POINT)
-				{
-					Lon1= coord.Longitude;
-					Lat1= coord.Latitude;
-					showCircle(CIRCLE_GET_PROJECT_VALUE);
-					
-				}else if (nextStep==CIRCLE_GET_PROJECT_VALUE)
-				{
-					Lon2= coord.Longitude;
-					Lat2= coord.Latitude;
-					
-					Coordinate FromCoord = new Coordinate(Lat1,Lon1);
-					
-					double distance = coord.Distance(FromCoord);
-					
-					int TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
-					Paint paint = new Paint();
-					paint.setColor(TrackColor);
-					paint.setStrokeWidth(3);
-					RouteOverlay.Routes.add(GenCircleRoute(Lat1, Lon1, distance, paint));
-					lvAdapter.notifyDataSetChanged();
-					resetStep();
-				}
-				
-			}
-		}
+		}	
 	}
 
 	
