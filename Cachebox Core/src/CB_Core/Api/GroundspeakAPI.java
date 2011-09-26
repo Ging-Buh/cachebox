@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.TimeZone;
 
 import javax.swing.DebugGraphics;
@@ -376,10 +377,21 @@ public class GroundspeakAPI
 						JSONObject jCache = (JSONObject) geocacheStatuses
 								.get(ii);
 						
-						caches.get(ii).Archived=jCache.getBoolean("Archived");
-						caches.get(ii).Available=jCache.getBoolean("Available");
-						caches.get(ii).NumTravelbugs=jCache.getInt("TrackableCount");
-												
+						Iterator<Cache> iterator = caches.iterator();
+						
+						do
+						{
+							Cache tmp = iterator.next();
+							
+							if(jCache.getString("CacheCode").equals(tmp.GcCode))
+							{
+								tmp.Archived=jCache.getBoolean("Archived");
+								tmp.Available=jCache.getBoolean("Available");
+								tmp.NumTravelbugs=jCache.getInt("TrackableCount");
+							}
+						}while(iterator.hasNext());
+						
+						
 												
 					}
 
