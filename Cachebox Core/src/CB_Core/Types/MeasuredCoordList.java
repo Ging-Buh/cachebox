@@ -120,7 +120,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 	}
 
 	/**
-	 * Löscht die Ausreißer Werte, welche eine Distanz von mehr als 30m zur
+	 * Löscht die Ausreißer Werte, welche eine Distanz von mehr als 3m zur
 	 * Referenz Koordinate haben.
 	 */
 	public void clearDiscordantValue()
@@ -136,7 +136,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 			do
 			{
 				MeasuredCoord tmp = iterator.next();
-				if (tmp.Distance() > 30)
+				if (tmp.Distance() > 3)
 				{
 					this.remove(tmp);
 					ready = false;

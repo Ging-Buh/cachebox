@@ -16,30 +16,43 @@
 
 package de.droidcachebox.Views.Forms;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Custom_Controls.CanvasDrawControl;
 import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.Sizes;
 import CB_Core.GlobalCore;
+import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.MeasuredCoord;
 import CB_Core.Types.MeasuredCoordList;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
+import android.graphics.Path;
+import android.graphics.drawable.GradientDrawable;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class MeasureCoordinateActivity extends Activity implements
@@ -55,7 +68,12 @@ public class MeasureCoordinateActivity extends Activity implements
 
 	CanvasDrawControl panelPreview;
 
-	
+	/**
+	 * Die MeasureCoordinate Activity hat ihren eigenen locationmanager, mit
+	 * einem Höheren Aktualisierungs Intewall
+	 */
+	public static LocationManager locationManager;
+
 	public void onCreate(Bundle savedInstanceState)
 	{
 		ActivityUtils.onActivityCreateSetTheme(this);
@@ -63,6 +81,8 @@ public class MeasureCoordinateActivity extends Activity implements
 		setContentView(R.layout.measure_coordinate);
 
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+		initialLocationManager();
 
 		// übergebene Koordinate auslesen
 		Bundle bundle = getIntent().getExtras();
@@ -115,12 +135,60 @@ public class MeasureCoordinateActivity extends Activity implements
 		});
 
 		setSatStrength();
-		
 
 		// Translations
 		bOK.setText(Global.Translations.Get("ok"));
 		bCancel.setText(Global.Translations.Get("cancel"));
+
+		timer.schedule(task, 1200);
+
+		// set Height of TopLayout
+
+		LayoutParams params = ((RelativeLayout) findViewById(R.id.meco_titlelayout))
+				.getLayoutParams();
+		params.height = Sizes.getScaledFontSize_normal() * 5;
+		((RelativeLayout) findViewById(R.id.meco_titlelayout))
+				.setLayoutParams(params);
 	}
+
+	final Timer timer = new Timer();
+
+	// Refresh Timer Task
+	final TimerTask task = new TimerTask()
+	{
+		@Override
+		public void run()
+		{
+			try
+			{
+				Thread t = new Thread()
+				{
+					public void run()
+					{
+						runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								if (!inRepaint) repaintPreview();
+							}
+						});
+					}
+				};
+
+				t.start();
+
+			}
+			catch (Exception e)
+			{
+				// wenn die Activity noch nicht vollständig
+				// initialisiert ist, kann es hier zu
+				// einer Null Pointer Exeption kommen!
+				e.printStackTrace();
+			}
+
+		}
+	};
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -146,6 +214,41 @@ public class MeasureCoordinateActivity extends Activity implements
 	{
 
 		de.droidcachebox.Locator.GPS.setSatStrength(strengthLayout, balken);
+
+	}
+
+	private void initialLocationManager()
+	{
+
+		try
+		{
+			if (locationManager != null)
+			{
+				// ist schon initialisiert
+				return;
+			}
+
+			// GPS
+			// Get the location manager
+			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+			// Define the criteria how to select the locatioin provider -> use
+			// default
+			Criteria criteria = new Criteria(); // noch nötig ???
+			criteria.setAccuracy(Criteria.ACCURACY_FINE);
+			criteria.setAltitudeRequired(false);
+			criteria.setBearingRequired(false);
+			criteria.setCostAllowed(true);
+			criteria.setPowerRequirement(Criteria.POWER_HIGH);
+
+			locationManager.requestLocationUpdates(
+					LocationManager.GPS_PROVIDER, 0, 0, this);
+
+		}
+		catch (Exception e)
+		{
+			Logger.Error("MesureCoordinate.initialLocationManager()", "", e);
+			e.printStackTrace();
+		}
 
 	}
 
@@ -182,6 +285,8 @@ public class MeasureCoordinateActivity extends Activity implements
 	{
 		MeasureCount = 0;
 		if (mMeasureList != null) mMeasureList.clear();
+		initialLocationManager();
+
 		super.onResume();
 	}
 
@@ -194,6 +299,7 @@ public class MeasureCoordinateActivity extends Activity implements
 	@Override
 	public void onDestroy()
 	{
+		locationManager.removeUpdates(this);
 		mMeasureList = null;
 		super.onDestroy();
 	}
@@ -203,11 +309,14 @@ public class MeasureCoordinateActivity extends Activity implements
 	 */
 
 	final int projectionZoom = 20;
-
+	// Erdradius / anzahl Kacheln = Meter pro Kachel
+	final double metersPerTile = 6378137.0 / Math.pow(2, projectionZoom);
 	Canvas graphics;
 
 	void Locator_LocationDataReceived(Location location)
 	{
+
+		if (mMeasureList == null) return;
 
 		Coordinate coord = new Coordinate(location.getLatitude(),
 				location.getLongitude());
@@ -228,41 +337,52 @@ public class MeasureCoordinateActivity extends Activity implements
 			mMeasureList.clearDiscordantValue();
 			lblMeasureCoord.setText(Global.FormatLatitudeDM(mMeasureList
 					.getAccuWeightedAverageCoord().Latitude)
-					+ " "
+					+ String.format("%n")
 					+ Global.FormatLongitudeDM(mMeasureList
 							.getAccuWeightedAverageCoord().Longitude));
 		}
 
-		setSatStrength();
 		repaintPreview();
 	}
 
 	// Brush controlBrush;
 	Paint redPen = new Paint(Color.RED);
 	Paint blackPen = new Paint(Color.BLACK);
+	Paint blueBrush = new Paint(Color.BLUE);
 
-	// Brush blueBrush = new SolidBrush(Color.Blue);
+	private boolean inRepaint = false;
 
 	void repaintPreview()
 	{
+		inRepaint = true;
+		if (redPen == null)
+		{
+			redPen = new Paint();
+			
+
+			blackPen = new Paint();
+			blackPen.setColor(Color.BLACK);
+			blackPen.setAntiAlias(true);
+			blackPen.setStyle(Style.STROKE);
+			blackPen.setStrokeWidth(2);
+
+			blueBrush = new Paint();
+			
+		}
+
+		setSatStrength();
 
 		Canvas graphics = panelPreview.getCanvas();
-		graphics.drawColor(Color.CYAN);
+		graphics.drawColor(Color.LTGRAY);
+		
 
-		// graphics.Clip = new Region(new Rectangle(panelPreview.Left,
-		// panelPreview.Top, panelPreview.Width, panelPreview.Height));
-
-		// panelPreview.Visible = false;
-		// labelNumMeasurements.Text = projectedTrack.Count.ToString();
-
-		// graphics.FillRectangle(controlBrush, panelPreview.Left,
-		// panelPreview.Top, panelPreview.Width, panelPreview.Height);
 
 		int centerX = panelPreview.getWidth() / 2;
 		int centerY = panelPreview.getHeight() / 2;
 
-		// lock (projectedTrack)
-		// {
+		int minPix = Math
+				.min(panelPreview.getWidth(), panelPreview.getHeight());
+
 		if (mMeasureList.size() > 0)
 		{
 			// Gemittelter Punkt der GPS-Messungen
@@ -297,16 +417,8 @@ public class MeasureCoordinateActivity extends Activity implements
 			double peakY = Math.abs(extremeY - medianY);
 
 			double maxPeak = Math.max(peakX, peakY);
-			int minPix = Math.min(panelPreview.getWidth(),
-					panelPreview.getHeight());
 
 			double factor = (maxPeak > 0) ? (double) minPix / maxPeak : 1;
-
-			// In Ausgabe-Variablen umkopieren
-			// MedianPosition.Latitude = medianLat;
-			// MedianPosition.Longitude = medianLon;
-
-			// lblCoordinates.Text = MedianPosition.FormatCoordinate();
 
 			int x = centerX;
 			int y = centerY;
@@ -332,12 +444,29 @@ public class MeasureCoordinateActivity extends Activity implements
 				x = (int) (centerX + (thisDrawEntry.X - medianX) * factor);
 				y = (int) (centerY - (thisDrawEntry.Y - medianY) * factor);
 
+				
+				redPen.setColor(Color.RED);
+				redPen.setAntiAlias(true);
+				redPen.setStrokeWidth(2);
+				
 				graphics.drawLine(lastX, lastY, x, y, redPen);
 			}
 
-			// graphics.FillEllipse(blueBrush, x - 2, y - 2, 4, 4);
+			blueBrush.setColor(Color.BLUE);
+			blueBrush.setAntiAlias(true);
+			blueBrush.setStrokeWidth(2);
+			graphics.drawCircle(x, y, 4, blueBrush);
 		}
-		// }
+
+		//
+		int m2 = (int) ((2 * minPix) / metersPerTile);
+		int m4 = m2 * 2;
+
+		blackPen.setStrokeWidth(1.5f);
+		blackPen.setStyle(Paint.Style.STROKE);
+		blackPen.setAntiAlias(true);
+		graphics.drawCircle(centerX, centerY, m2, blackPen);
+		graphics.drawCircle(centerX, centerY, m4, blackPen);
 
 		graphics.drawLine(centerX, 0, centerX, panelPreview.getHeight(),
 				blackPen);
@@ -345,6 +474,7 @@ public class MeasureCoordinateActivity extends Activity implements
 				blackPen);
 
 		panelPreview.invalidate();
+		inRepaint = false;
 	}
 
 }

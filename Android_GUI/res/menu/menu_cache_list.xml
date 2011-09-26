@@ -12,4 +12,5 @@
 		android:icon="@drawable/manage_db"></item>
 	<item android:checked="false" android:id="@+id/miAutoResort"
 		android:title="AutoResort" android:checkable="true" android:icon="@drawable/sort_icon"></item>
+	<item android:title="Check State (API- Filter selection)" android:id="@+id/miChkState"></item>
 </menu>

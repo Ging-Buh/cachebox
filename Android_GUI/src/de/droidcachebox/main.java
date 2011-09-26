@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
@@ -489,7 +490,7 @@ public class main extends Activity implements SelectedCacheEvent,
 		approachSoundCompleted = false;
 		cacheListView.setSelectedCacheVisible(0);
 		QuickButtonList.invalidate();
-		
+
 	}
 
 	public void newLocationReceived(Location location)
@@ -1349,6 +1350,9 @@ public class main extends Activity implements SelectedCacheEvent,
 			case R.id.searchcaches_online:
 				searchOnline();
 				break;
+			case R.id.miChkState:
+				chkCachesStateFilterSelection();
+				break;
 			case R.id.miTbList:
 				showTbList();
 				break;
@@ -2002,21 +2006,22 @@ public class main extends Activity implements SelectedCacheEvent,
 	{
 		Search.Show();
 	}
-	
+
 	private void NavigateTo()
 	{
 		if (GlobalCore.SelectedCache() != null)
 		{
 			double lat = GlobalCore.SelectedCache().Latitude();
 			double lon = GlobalCore.SelectedCache().Longitude();
-			
+
 			if (GlobalCore.SelectedWaypoint() != null)
 			{
 				lat = GlobalCore.SelectedWaypoint().Latitude();
 				lon = GlobalCore.SelectedWaypoint().Longitude();
 			}
-			Intent implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q="  + lat + "," + lon ));
-	
+			Intent implicitIntent = new Intent(Intent.ACTION_VIEW,
+					Uri.parse("google.navigation:q=" + lat + "," + lon));
+
 			startActivity(implicitIntent);
 		}
 	}
@@ -2195,6 +2200,114 @@ public class main extends Activity implements SelectedCacheEvent,
 		return;
 	}
 
+	private void chkCachesStateFilterSelection()
+	{
+
+		Thread thread = new Thread()
+		{
+			@Override
+			public void run()
+			{
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				ArrayList<Cache> chkList = new ArrayList<Cache>();
+				Iterator<Cache> cIterator = Database.Data.Query.iterator();
+
+				do
+				{
+					chkList.add(cIterator.next());
+				}
+				while (cIterator.hasNext());
+
+				
+				// in 100èrter Blöcke Teilen
+				
+				
+				
+				int start=0;
+				int stop=100;
+				ArrayList<Cache> addedReturnList = new ArrayList<Cache>();
+				
+				
+				int result;
+				ArrayList<Cache> chkList100;
+				do
+				{
+					Iterator<Cache> Iterator2 =chkList.iterator();
+					chkList100=new ArrayList<Cache>();
+					
+					int index=0;
+					do
+					{
+						if(index>=start && index<=stop)
+						{
+							chkList100.add(Iterator2.next());
+						}
+						else
+						{
+							Iterator2.next();
+						}
+						index++;
+					}while(Iterator2.hasNext());
+					
+					
+					result = GroundspeakAPI.GetGeocacheStatus(
+							Config.GetString("GcAPI"), chkList100);
+					addedReturnList.addAll(chkList100);
+					start+=101;
+					stop+=101;
+				}
+				while (chkList100.size()==101);
+				
+				
+				
+				
+				
+				
+				if (result == 0)
+				{
+					Database.Data.myDB.beginTransaction();
+					
+					Iterator<Cache> iterator = addedReturnList.iterator();
+					CacheDAO dao = new CacheDAO();
+					do
+					{
+						Cache writeTmp = iterator.next();
+						dao.UpdateDatabaseCacheState(writeTmp);
+					}
+					while (iterator.hasNext());
+
+					Database.Data.myDB.setTransactionSuccessful();
+					Database.Data.myDB.endTransaction();
+
+				}
+				else
+				{
+					onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler
+							.obtainMessage(2));
+					
+				}
+
+				onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler
+						.obtainMessage(1));
+			}
+
+		};
+
+		pd = ProgressDialog.show(this, "", "Search Online", true);
+
+		thread.start();
+
+	}
+
 	private boolean premiumMember = false;
 	private Handler onlineSearchReadyHandler = new Handler()
 	{
@@ -2215,7 +2328,16 @@ public class main extends Activity implements SelectedCacheEvent,
 				 * MessageBoxIcon.Powerd_by_GC_Live, null); }
 				 */
 				cacheListView.notifyCacheListChange();
+				break;
 			}
+			
+			case 2:
+				{
+					pd.dismiss();
+					MessageBox.Show("at Status Check", "Error", MessageBoxIcon.Error);
+					break;
+				}
+			
 			}
 		}
 	};

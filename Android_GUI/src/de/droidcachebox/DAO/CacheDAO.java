@@ -230,6 +230,35 @@ public class CacheDAO {
 		}
 	}
 
+	
+	/**
+	 * hier wird nur die Status Abfrage zurück geschrieben. 
+	 * @param cache
+	 */
+	public void UpdateDatabaseCacheState(Cache cache) {
+
+		ContentValues args = new ContentValues();
+
+		args.put("Archived", cache.Archived ? 1 : 0);
+		args.put("Available", cache.Available ? 1 : 0);
+		args.put("NumTravelbugs", cache.NumTravelbugs);
+		
+		
+		try {
+			long anzahl = Database.Data.myDB.update("Caches", args, "Id="
+					+ cache.Id, null);
+			// String s = anzahl + "";
+			//
+			// args = new ContentValues();
+		} catch (Exception exc) {
+			Logger.Error("Ubdate Cache", "", exc);
+
+		}
+		
+	}
+
+	
+	
 	public Cache LoadApiDetails(Cache aktCache) {
 		String accessToken = Config.GetString("GcAPI");
 		String result = "";

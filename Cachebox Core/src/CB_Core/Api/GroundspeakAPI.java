@@ -317,10 +317,12 @@ public class GroundspeakAPI
 	 * Gets the Status for the given Caches
 	 */
 	public static int GetGeocacheStatus(String accessToken,
-			ArrayList<String> caches)
+			ArrayList<Cache> caches)
 	{
 		String result = "";
 
+		
+				
 		try
 		{
 			HttpClient httpclient = new DefaultHttpClient();
@@ -332,9 +334,9 @@ public class GroundspeakAPI
 			requestString += "\"CacheCodes\":[";
 
 			int i = 0;
-			for (String cache : caches)
+			for (Cache cache : caches)
 			{
-				requestString += "\"" + cache + "\"";
+				requestString += "\"" + cache.GcCode + "\"";
 				if (i < caches.size() - 1) requestString += ",";
 				i++;
 			}
@@ -373,6 +375,12 @@ public class GroundspeakAPI
 					{
 						JSONObject jCache = (JSONObject) geocacheStatuses
 								.get(ii);
+						
+						caches.get(ii).Archived=jCache.getBoolean("Archived");
+						caches.get(ii).Available=jCache.getBoolean("Available");
+						caches.get(ii).NumTravelbugs=jCache.getInt("TrackableCount");
+												
+												
 					}
 
 					return 0;
