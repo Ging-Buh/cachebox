@@ -23,11 +23,14 @@ import android.database.Cursor;
 import de.droidcachebox.Database;
 import de.droidcachebox.Replication.Replication;
 
-public class CacheDAO {
+public class CacheDAO
+{
 	protected static String sqlReadCache = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus from Caches ";
 
-	public Cache ReadFromCursor(Cursor reader) {
-		try {
+	public Cache ReadFromCursor(Cursor reader)
+	{
+		try
+		{
 			Cache cache = new Cache();
 			cache.Id = reader.getLong(0);
 			cache.GcCode = reader.getString(1).trim();
@@ -46,46 +49,44 @@ public class CacheDAO {
 			String sDate = reader.getString(14);
 			DateFormat iso8601Format = new SimpleDateFormat(
 					"yyyy-MM-dd HH:mm:ss");
-			try {
+			try
+			{
 				cache.DateHidden = iso8601Format.parse(sDate);
-			} catch (ParseException e) {
+			}
+			catch (ParseException e)
+			{
 			}
 
 			cache.Url = reader.getString(15).trim();
 			cache.NumTravelbugs = reader.getInt(16);
 			cache.GcId = reader.getString(17).trim();
 			cache.Rating = ((float) reader.getShort(18)) / 100.0f;
-			if (reader.getInt(19) > 0)
-				cache.setFavorit(true);
+			if (reader.getInt(19) > 0) cache.setFavorit(true);
 			else
 				cache.setFavorit(false);
-			if (reader.getString(20) != null)
-				cache.TourName = reader.getString(20).trim();
+			if (reader.getString(20) != null) cache.TourName = reader
+					.getString(20).trim();
 			else
 				cache.TourName = "";
 
-			if (reader.getString(21) != "")
-				cache.GPXFilename_ID = reader.getLong(21);
+			if (reader.getString(21) != "") cache.GPXFilename_ID = reader
+					.getLong(21);
 			else
 				cache.GPXFilename_ID = -1;
 
-			if (reader.getInt(22) > 0)
-				cache.hasUserData = true;
+			if (reader.getInt(22) > 0) cache.hasUserData = true;
 			else
 				cache.hasUserData = false;
 
-			if (reader.getInt(23) > 0)
-				cache.listingChanged = true;
+			if (reader.getInt(23) > 0) cache.listingChanged = true;
 			else
 				cache.listingChanged = false;
 
-			if (reader.getInt(24) > 0)
-				cache.CorrectedCoordinates = true;
+			if (reader.getInt(24) > 0) cache.CorrectedCoordinates = true;
 			else
 				cache.CorrectedCoordinates = false;
 
-			if (reader.isNull(25))
-				cache.ApiStatus = 0;
+			if (reader.isNull(25)) cache.ApiStatus = 0;
 			else
 				cache.ApiStatus = (byte) reader.getInt(25);
 
@@ -95,13 +96,16 @@ public class CacheDAO {
 					cache.Latitude());
 
 			return cache;
-		} catch (Exception exc) {
+		}
+		catch (Exception exc)
+		{
 			Logger.Error("Read Cache", "", exc);
 			return null;
 		}
 	}
 
-	public void WriteToDatabase(Cache cache) {
+	public void WriteToDatabase(Cache cache)
+	{
 		// int newCheckSum = createCheckSum(WP);
 		// Replication.WaypointChanged(CacheId, checkSum, newCheckSum, GcCode);
 		ContentValues args = new ContentValues();
@@ -111,9 +115,12 @@ public class CacheDAO {
 		args.put("Latitude", cache.Pos.Latitude);
 		args.put("Longitude", cache.Pos.Longitude);
 		args.put("Name", cache.Name);
-		try {
+		try
+		{
 			args.put("Size", cache.Size.ordinal());
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -129,8 +136,8 @@ public class CacheDAO {
 		String stimestamp = iso8601Format.format(cache.DateHidden);
 		args.put("DateHidden", stimestamp);
 		args.put("Hint", cache.hint);
-		if ((cache.longDescription != null) && (cache.longDescription != ""))
-			args.put("Description", cache.longDescription);
+		if ((cache.longDescription != null) && (cache.longDescription != "")) args
+				.put("Description", cache.longDescription);
 		cache.longDescription = ""; // clear longDescription because this will
 									// be loaded from database when used
 		args.put("Url", cache.Url);
@@ -146,30 +153,36 @@ public class CacheDAO {
 		args.put("GPXFilename_Id", cache.GPXFilename_ID);
 		args.put("ApiStatus", cache.ApiStatus);
 		args.put("CorrectedCoordinates", cache.CorrectedCoordinates ? 1 : 0);
-		
-		try {
-			long anzahl = Database.Data.myDB.insert("Caches", null, args);
-			// String s = anzahl + "";
-			//
-			// args = new ContentValues();
-		} catch (Exception exc) {
+
+		try
+		{
+			Database.Data.myDB.insert("Caches", null, args);
+
+		}
+		catch (Exception exc)
+		{
 			Logger.Error("Write Cache", "", exc);
 
 		}
 	}
 
-	public void WriteToDatabase_Found(Cache cache) {
+	public void WriteToDatabase_Found(Cache cache)
+	{
 		ContentValues args = new ContentValues();
 		args.put("found", cache.Found);
-		try {
+		try
+		{
 			Database.Data.myDB.update("Caches", args, "Id=" + cache.Id, null);
 			Replication.FoundChanged(cache.Id, cache.Found);
-		} catch (Exception exc) {
+		}
+		catch (Exception exc)
+		{
 			Logger.Error("Write Cache Found", "", exc);
 		}
 	}
 
-	public void UpdateDatabase(Cache cache) {
+	public void UpdateDatabase(Cache cache)
+	{
 
 		ContentValues args = new ContentValues();
 
@@ -181,9 +194,12 @@ public class CacheDAO {
 		args.put("Latitude", cache.Pos.Latitude);
 		args.put("Longitude", cache.Pos.Longitude);
 		args.put("Name", cache.Name);
-		try {
+		try
+		{
 			args.put("Size", cache.Size.ordinal());
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -199,8 +215,8 @@ public class CacheDAO {
 		String stimestamp = iso8601Format.format(cache.DateHidden);
 		args.put("DateHidden", stimestamp);
 		args.put("Hint", cache.hint);
-		if ((cache.longDescription != null) && (cache.longDescription != ""))
-			args.put("Description", cache.longDescription);
+		if ((cache.longDescription != null) && (cache.longDescription != "")) args
+				.put("Description", cache.longDescription);
 		cache.longDescription = ""; // clear longDescription because this will
 									// be loaded from database when used
 		args.put("Url", cache.Url);
@@ -217,62 +233,124 @@ public class CacheDAO {
 		args.put("Favorit", cache.Favorit() ? 1 : 0);
 		args.put("ApiStatus", cache.ApiStatus);
 		args.put("CorrectedCoordinates", cache.CorrectedCoordinates ? 1 : 0);
-		
-		try {
-			long anzahl = Database.Data.myDB.update("Caches", args, "Id="
-					+ cache.Id, null);
-			// String s = anzahl + "";
-			//
-			// args = new ContentValues();
-		} catch (Exception exc) {
+
+		try
+		{
+			Database.Data.myDB.update("Caches", args, "Id=" + cache.Id, null);
+		}
+		catch (Exception exc)
+		{
 			Logger.Error("Ubdate Cache", "", exc);
 
 		}
 	}
 
-	
+	public Cache getFromDbByCacheId(long CacheID)
+	{
+		String where = "Id = " + String.valueOf(CacheID);
+		Cursor reader = Database.Data.myDB
+				.rawQuery(
+						"select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus from Caches "
+								+ ((where.length() > 0) ? "where " + where
+										: where), null);
+
+		try
+		{
+			if (reader != null && reader.getCount() > 0)
+			{
+				reader.moveToFirst();
+				Cache ret = ReadFromCursor(reader);
+
+				reader.close();
+				return ret;
+			}
+			else
+			{
+				if(reader!=null) reader.close();
+				return null;
+			}
+		}
+		catch (Exception e)
+		{
+			if(reader!=null) reader.close();
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
 	/**
-	 * hier wird nur die Status Abfrage zurück geschrieben. 
+	 * hier wird nur die Status Abfrage zurück geschrieben und gegebenen Falls
+	 * die Replication Informationen geschrieben.
+	 * 
 	 * @param cache
 	 */
-	public void UpdateDatabaseCacheState(Cache cache) {
+	public void UpdateDatabaseCacheState(Cache cache)
+	{
 
-		ContentValues args = new ContentValues();
+		// chk of changes
+		boolean changed = false;
+		Cache fromDB = getFromDbByCacheId(cache.Id);
 
-		args.put("Archived", cache.Archived ? 1 : 0);
-		args.put("Available", cache.Available ? 1 : 0);
-		args.put("NumTravelbugs", cache.NumTravelbugs);
-		
-		
-		try {
-			long anzahl = Database.Data.myDB.update("Caches", args, "Id="
-					+ cache.Id, null);
-			// String s = anzahl + "";
-			//
-			// args = new ContentValues();
-		} catch (Exception exc) {
-			Logger.Error("Ubdate Cache", "", exc);
+		if (fromDB == null) return; // nichts zum Updaten gefunden
 
+		if (fromDB.Archived != cache.Archived)
+		{
+			changed = true;
+			Replication.ArchivedChanged(cache.Id, cache.Archived);
 		}
-		
+		if (fromDB.Available != cache.Available)
+		{
+			changed = true;
+			Replication.AvailableChanged(cache.Id, cache.Available);
+		}
+
+		if (fromDB.NumTravelbugs != cache.NumTravelbugs)
+		{
+			changed = true;
+			Replication.NumTravelbugsChanged(cache.Id, cache.NumTravelbugs);
+		}
+
+		if (changed) // Wir brauchen die DB nur Updaten, wenn sich auch etwas
+						// geändert hat.
+		{
+
+			ContentValues args = new ContentValues();
+
+			args.put("Archived", cache.Archived ? 1 : 0);
+			args.put("Available", cache.Available ? 1 : 0);
+			args.put("NumTravelbugs", cache.NumTravelbugs);
+
+			try
+			{
+				Database.Data.myDB.update("Caches", args, "Id=" + cache.Id,
+						null);
+			}
+			catch (Exception exc)
+			{
+				Logger.Error("Ubdate Cache", "", exc);
+
+			}
+		}
+
 	}
 
-	
-	
-	public Cache LoadApiDetails(Cache aktCache) {
+	public Cache LoadApiDetails(Cache aktCache)
+	{
 		String accessToken = Config.GetString("GcAPI");
-		String result = "";
+
 		Cache newCache = null;
-		try {
+		try
+		{
 			SearchForGeocaches.SearchGC search = new SearchForGeocaches.SearchGC();
 			search.gcCode = aktCache.GcCode;
 
 			ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 			ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-			result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(
-					accessToken, search, apiCaches, apiLogs,
-					aktCache.GPXFilename_ID);
-			if (apiCaches.size() == 1) {
+			CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken,
+					search, apiCaches, apiLogs, aktCache.GPXFilename_ID);
+			if (apiCaches.size() == 1)
+			{
 				Database.Data.myDB.beginTransaction();
 				newCache = apiCaches.get(0);
 				Database.Data.Query.remove(aktCache);
@@ -283,14 +361,15 @@ public class CacheDAO {
 						Cache.MapZoomLevel, newCache.Latitude());
 
 				UpdateDatabase(newCache);
-				for (LogEntry log : apiLogs) {
-					if (log.CacheId != newCache.Id)
-						continue;
+				for (LogEntry log : apiLogs)
+				{
+					if (log.CacheId != newCache.Id) continue;
 					// Write Log to database
 					LogDAO logDAO = new LogDAO();
 					logDAO.WriteToDatabase(log);
 				}
-				for (Waypoint waypoint : newCache.waypoints) {
+				for (Waypoint waypoint : newCache.waypoints)
+				{
 					WaypointDAO waypointDAO = new WaypointDAO();
 					waypointDAO.WriteToDatabase(waypoint);
 				}
@@ -300,7 +379,9 @@ public class CacheDAO {
 
 				Database.Data.GPXFilenameUpdateCacheCount();
 			}
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			Logger.Error("DescriptionView", "Load CacheInfo by API", ex);
 			return null;
 		}
@@ -309,7 +390,8 @@ public class CacheDAO {
 	}
 
 	public void WriteImports(Iterator<Cache> Caches, int CacheCount,
-			ImporterProgress ip) {
+			ImporterProgress ip)
+	{
 
 		// Indexing DB
 		CacheList IndexDB = new CacheList();
@@ -318,20 +400,25 @@ public class CacheDAO {
 
 		ip.setJobMax("IndexingDB", IndexDB.size());
 		ArrayList<String> index = new ArrayList<String>();
-		for (Cache c : IndexDB) {
+		for (Cache c : IndexDB)
+		{
 			ip.ProgressInkrement("IndexingDB", "index- " + c.GcCode);
 			index.add(c.GcCode);
 		}
 
 		ip.setJobMax("WriteCachesToDB", CacheCount);
-		while (Caches.hasNext()) {
+		while (Caches.hasNext())
+		{
 			Cache cache = Caches.next();
 
-			if (index.contains(cache.GcCode)) {
+			if (index.contains(cache.GcCode))
+			{
 				ip.ProgressInkrement("WriteCachesToDB", "Update DB "
 						+ cache.GcCode);
 				UpdateDatabase(cache);
-			} else {
+			}
+			else
+			{
 				ip.ProgressInkrement("WriteCachesToDB", "Write to DB "
 						+ cache.GcCode);
 				WriteToDatabase(cache);
