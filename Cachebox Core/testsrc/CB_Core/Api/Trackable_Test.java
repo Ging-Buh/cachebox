@@ -9,6 +9,8 @@ import CB_Core.Map.Descriptor;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.MeasuredCoordList;
+import CB_Core.Types.TbList;
+import CB_Core.Types.Trackable;
 
 import junit.framework.TestCase;
 
@@ -18,7 +20,7 @@ import junit.framework.TestCase;
  * 
  * @author Longri
  */
-public class isPremium_GetFound_Test extends TestCase
+public class Trackable_Test extends TestCase
 {
 
 	
@@ -49,18 +51,26 @@ public class isPremium_GetFound_Test extends TestCase
 		assertFalse("Kein Access Key gefunden, liegt die Config an der richtigen stelle?", key.equals(""));
 	}
 
-	public void testIsPremiumMember()
+	public void testGetUserTbList()
 	{
-		assertTrue("Muss Premium Member sein", GroundspeakAPI.IsPremiumMember(Config.GetString("GcAPI")));
+		TbList list=new TbList();
+		
+		GroundspeakAPI.getMyTbList(Config.GetString("GcAPI"), list);
+		
+		// CB Developer sollten einen "coin of honour" im besitz haben.
+		boolean Assert=false;
+		
+		Iterator<Trackable> iterator = list.iterator();
+		do
+		{
+			String Name =iterator.next().getName();
+			if(Name.contains("Cachebox")&& Name.contains("honour"))Assert=true;
+		}while(iterator.hasNext());
+		
+		
+		assertTrue("Fehler TB List Abfrage", Assert);
 	}
 	
-	public void testGetCachesFound()
-	{
-		
-		int Anzahl = GroundspeakAPI.GetCachesFound(Config.GetString("GcAPI"));
-		
-		//Bei mir
-		assertTrue("Muss Anzahl meiner Funde sein (" + Anzahl + ")", Anzahl == 146);
-	}
+	
 
 }

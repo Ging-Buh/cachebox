@@ -1,17 +1,19 @@
 package CB_Core.Api;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.TimeZone;
 
-import javax.swing.DebugGraphics;
-
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
@@ -19,21 +21,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import CB_Core.GlobalCore;
-import CB_Core.Enums.Attributes;
-import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Category;
-import CB_Core.Types.Coordinate;
-import CB_Core.Types.GpxFilename;
-import CB_Core.Types.LogEntry;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.TbList;
+import CB_Core.Types.Trackable;
 
 public class GroundspeakAPI
 {
+	public static final String GS_LIVE_URL = "https://api.groundspeak.com/LiveV5/geocaching.svc/";
+
 	public static String LastAPIError = "";
 	public static boolean CacheStatusValid = false;
 	public static int CachesLeft = -1;
@@ -46,7 +44,9 @@ public class GroundspeakAPI
 	public static String MemberName = ""; // this will be filled by
 											// GetMembershipType
 
-	// 0: Guest??? 1: Basic 2: Charter??? 3: Premium
+	/**
+	 * 0: Guest??? 1: Basic 2: Charter??? 3: Premium
+	 */
 	private static int membershipType = -1;
 
 	public static boolean IsPremiumMember(String accessToken)
@@ -72,44 +72,34 @@ public class GroundspeakAPI
 
 	/**
 	 * Upload FieldNotes
+	 * 
+	 * @param accessToken
+	 * @param cacheCode
+	 * @param wptLogTypeId
+	 * @param dateLogged
+	 * @param note
+	 * @return
 	 */
-	public static int CreateFieldNoteAndPublish(String accessToken,
-			String cacheCode, int wptLogTypeId, Date dateLogged, String note)
+	public static int CreateFieldNoteAndPublish(String accessToken, String cacheCode, int wptLogTypeId, Date dateLogged, String note)
 	{
-		String result = "";
 		try
 		{
-			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost(
-					"https://api.groundspeak.com/LiveV5/Geocaching.svc/CreateFieldNoteAndPublish?format=json");
+			HttpPost httppost = new HttpPost(GS_LIVE_URL + "CreateFieldNoteAndPublish?format=json");
 			String requestString = "";
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
 			requestString += "\"CacheCode\":\"" + cacheCode + "\",";
-			requestString += "\"WptLogTypeId\":" + String.valueOf(wptLogTypeId)
-					+ ",";
-			requestString += "\"UTCDateLogged\":\"" + GetUTCDate(dateLogged)
-					+ "\",";
+			requestString += "\"WptLogTypeId\":" + String.valueOf(wptLogTypeId) + ",";
+			requestString += "\"UTCDateLogged\":\"" + GetUTCDate(dateLogged) + "\",";
 			requestString += "\"Note\":\"" + ConvertNotes(note) + "\",";
 			requestString += "\"PromoteToLog\":false,";
 			requestString += "\"FavoriteThisCache\":false";
 			requestString += "}";
 
-			httppost.setEntity(new ByteArrayEntity(requestString
-					.getBytes("UTF8")));
-			httppost.setHeader("Accept", "application/json");
-			httppost.setHeader("Content-type", "application/json");
+			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 			// Execute HTTP Post Request
-			HttpResponse response = httpclient.execute(httppost);
-
-			BufferedReader rd = new BufferedReader(new InputStreamReader(
-					response.getEntity().getContent()));
-			String line = "";
-			while ((line = rd.readLine()) != null)
-			{
-				result += line + "\n";
-			}
+			String result = Execute(httppost);
 
 			// Parse JSON Result
 			try
@@ -124,8 +114,7 @@ public class GroundspeakAPI
 				}
 				else
 				{
-					result = "StatusCode = " + status.getInt("StatusCode")
-							+ "\n";
+					result = "StatusCode = " + status.getInt("StatusCode") + "\n";
 					result += status.getString("StatusMessage") + "\n";
 					result += status.getString("ExceptionDetails");
 					LastAPIError = result;
@@ -157,16 +146,15 @@ public class GroundspeakAPI
 
 	/**
 	 * Load Number of founds form geocaching.com
+	 * 
+	 * @param accessToken
+	 * @return
 	 */
 	public static int GetCachesFound(String accessToken)
 	{
-		String result = "";
-
 		try
 		{
-			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost(
-					"https://api.groundspeak.com/LiveV5/Geocaching.svc/GetYourUserProfile?format=json");
+			HttpPost httppost = new HttpPost(GS_LIVE_URL + "GetYourUserProfile?format=json");
 			String requestString = "";
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
@@ -174,21 +162,10 @@ public class GroundspeakAPI
 			requestString += "}";
 			requestString += "}";
 
-			httppost.setEntity(new ByteArrayEntity(requestString
-					.getBytes("UTF8")));
-			httppost.setHeader("Accept", "application/json");
-			httppost.setHeader("Content-type", "application/json");
+			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 			// Execute HTTP Post Request
-			HttpResponse response = httpclient.execute(httppost);
-
-			BufferedReader rd = new BufferedReader(new InputStreamReader(
-					response.getEntity().getContent()));
-			String line = "";
-			while ((line = rd.readLine()) != null)
-			{
-				result += line + "\n";
-			}
+			String result = Execute(httppost);
 
 			try
 			// Parse JSON Result
@@ -200,15 +177,13 @@ public class GroundspeakAPI
 				{
 					result = "";
 					JSONObject profile = json.getJSONObject("Profile");
-					JSONObject user = (JSONObject) profile
-							.getJSONObject("User");
+					JSONObject user = (JSONObject) profile.getJSONObject("User");
 					return user.getInt("FindCount");
 
 				}
 				else
 				{
-					result = "StatusCode = " + status.getInt("StatusCode")
-							+ "\n";
+					result = "StatusCode = " + status.getInt("StatusCode") + "\n";
 					result += status.getString("StatusMessage") + "\n";
 					result += status.getString("ExceptionDetails");
 
@@ -235,16 +210,15 @@ public class GroundspeakAPI
 	/**
 	 * Loads the Membership type -1: Error 0: Guest??? 1: Basic 2: Charter??? 3:
 	 * Premium
+	 * 
+	 * @param accessToken
+	 * @return
 	 */
 	public static int GetMembershipType(String accessToken)
 	{
-		String result = "";
-
 		try
 		{
-			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost(
-					"https://api.groundspeak.com/LiveV5/Geocaching.svc/GetYourUserProfile?format=json");
+			HttpPost httppost = new HttpPost(GS_LIVE_URL + "GetYourUserProfile?format=json");
 			String requestString = "";
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
@@ -252,21 +226,10 @@ public class GroundspeakAPI
 			requestString += "}";
 			requestString += "}";
 
-			httppost.setEntity(new ByteArrayEntity(requestString
-					.getBytes("UTF8")));
-			httppost.setHeader("Accept", "application/json");
-			httppost.setHeader("Content-type", "application/json");
+			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 			// Execute HTTP Post Request
-			HttpResponse response = httpclient.execute(httppost);
-
-			BufferedReader rd = new BufferedReader(new InputStreamReader(
-					response.getEntity().getContent()));
-			String line = "";
-			while ((line = rd.readLine()) != null)
-			{
-				result += line + "\n";
-			}
+			String result = Execute(httppost);
 
 			try
 			// Parse JSON Result
@@ -278,10 +241,8 @@ public class GroundspeakAPI
 				{
 					result = "";
 					JSONObject profile = json.getJSONObject("Profile");
-					JSONObject user = (JSONObject) profile
-							.getJSONObject("User");
-					JSONObject memberType = (JSONObject) user
-							.getJSONObject("MemberType");
+					JSONObject user = (JSONObject) profile.getJSONObject("User");
+					JSONObject memberType = (JSONObject) user.getJSONObject("MemberType");
 					int memberTypeId = memberType.getInt("MemberTypeId");
 					MemberName = user.getString("UserName");
 					// Zurücksetzen, falls ein anderer User gewählt wurde
@@ -289,8 +250,7 @@ public class GroundspeakAPI
 				}
 				else
 				{
-					result = "StatusCode = " + status.getInt("StatusCode")
-							+ "\n";
+					result = "StatusCode = " + status.getInt("StatusCode") + "\n";
 					result += status.getString("StatusMessage") + "\n";
 					result += status.getString("ExceptionDetails");
 
@@ -316,19 +276,17 @@ public class GroundspeakAPI
 
 	/**
 	 * Gets the Status for the given Caches
+	 * 
+	 * @param accessToken
+	 * @param caches
+	 * @return
 	 */
-	public static int GetGeocacheStatus(String accessToken,
-			ArrayList<Cache> caches)
+	public static int GetGeocacheStatus(String accessToken, ArrayList<Cache> caches)
 	{
-		String result = "";
 
-		
-				
 		try
 		{
-			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost(
-					"https://api.groundspeak.com/LiveV5/geocaching.svc/GetGeocacheStatus?format=json");
+			HttpPost httppost = new HttpPost(GS_LIVE_URL + "GetGeocacheStatus?format=json");
 			String requestString = "";
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
@@ -345,21 +303,9 @@ public class GroundspeakAPI
 			requestString += "]";
 			requestString += "}";
 
-			httppost.setEntity(new ByteArrayEntity(requestString
-					.getBytes("UTF8")));
-			httppost.setHeader("Accept", "application/json");
-			httppost.setHeader("Content-type", "application/json");
+			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
-			// Execute HTTP Post Request
-			HttpResponse response = httpclient.execute(httppost);
-
-			BufferedReader rd = new BufferedReader(new InputStreamReader(
-					response.getEntity().getContent()));
-			String line = "";
-			while ((line = rd.readLine()) != null)
-			{
-				result += line + "\n";
-			}
+			String result = Execute(httppost);
 
 			try
 			// Parse JSON Result
@@ -370,37 +316,33 @@ public class GroundspeakAPI
 				if (status.getInt("StatusCode") == 0)
 				{
 					result = "";
-					JSONArray geocacheStatuses = json
-							.getJSONArray("GeocacheStatuses");
+					JSONArray geocacheStatuses = json.getJSONArray("GeocacheStatuses");
 					for (int ii = 0; ii < geocacheStatuses.length(); ii++)
 					{
-						JSONObject jCache = (JSONObject) geocacheStatuses
-								.get(ii);
-						
+						JSONObject jCache = (JSONObject) geocacheStatuses.get(ii);
+
 						Iterator<Cache> iterator = caches.iterator();
-						
+
 						do
 						{
 							Cache tmp = iterator.next();
-							
-							if(jCache.getString("CacheCode").equals(tmp.GcCode))
+
+							if (jCache.getString("CacheCode").equals(tmp.GcCode))
 							{
-								tmp.Archived=jCache.getBoolean("Archived");
-								tmp.Available=jCache.getBoolean("Available");
-								tmp.NumTravelbugs=jCache.getInt("TrackableCount");
+								tmp.Archived = jCache.getBoolean("Archived");
+								tmp.Available = jCache.getBoolean("Available");
+								tmp.NumTravelbugs = jCache.getInt("TrackableCount");
 							}
-						}while(iterator.hasNext());
-						
-						
-												
+						}
+						while (iterator.hasNext());
+
 					}
 
 					return 0;
 				}
 				else
 				{
-					result = "StatusCode = " + status.getInt("StatusCode")
-							+ "\n";
+					result = "StatusCode = " + status.getInt("StatusCode") + "\n";
 					result += status.getString("StatusMessage") + "\n";
 					result += status.getString("ExceptionDetails");
 
@@ -424,19 +366,22 @@ public class GroundspeakAPI
 		return (-1);
 	}
 
-	// returns Status Code (0 -> OK)
+	/**
+	 * returns Status Code (0 -> OK)
+	 * 
+	 * @param accessToken
+	 * @return
+	 */
 	public static int GetCacheLimits(String accessToken)
 	{
-		String result = "";
+
 		LastAPIError = "";
 		// zum Abfragen der CacheLimits einfach nach einem Cache suchen, der
 		// nicht existiert.
 		// dadurch wird der Zähler nicht erhöht, die Limits aber zurückgegeben.
 		try
 		{
-			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost(
-					"https://api.groundspeak.com/LiveV5/Geocaching.svc/SearchForGeocaches?format=json");
+			HttpPost httppost = new HttpPost(GS_LIVE_URL + "SearchForGeocaches?format=json");
 
 			JSONObject request = new JSONObject();
 			request.put("AccessToken", accessToken);
@@ -453,21 +398,10 @@ public class GroundspeakAPI
 
 			String requestString = request.toString();
 
-			httppost.setEntity(new ByteArrayEntity(requestString
-					.getBytes("UTF8")));
-			httppost.setHeader("Accept", "application/json");
-			httppost.setHeader("Content-type", "application/json");
+			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 			// Execute HTTP Post Request
-			HttpResponse response = httpclient.execute(httppost);
-
-			BufferedReader rd = new BufferedReader(new InputStreamReader(
-					response.getEntity().getContent()));
-			String line = "";
-			while ((line = rd.readLine()) != null)
-			{
-				result += line + "\n";
-			}
+			String result = Execute(httppost);
 
 			// Parse JSON Result
 			try
@@ -511,8 +445,7 @@ public class GroundspeakAPI
 			}
 			else
 			{
-				LastAPIError = "StatusCode = " + status.getInt("StatusCode")
-						+ "\n";
+				LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
 				LastAPIError += status.getString("StatusMessage") + "\n";
 				LastAPIError += status.getString("ExceptionDetails");
 				return status.getInt("StatusCode");
@@ -789,6 +722,99 @@ public class GroundspeakAPI
 		}
 
 		return CB_Core.Enums.Attributes.Default;
+	}
+
+	/**
+	 * Ruft die Liste der TB´s zurück, die im Besitz des Users sind
+	 * 
+	 * @param String
+	 *            accessToken
+	 * @param TbList
+	 *            list
+	 * @return
+	 */
+	public static int getMyTbList(String accessToken, TbList list)
+	{
+		try
+		{
+			HttpGet httppost = new HttpGet(GS_LIVE_URL + "GetUsersTrackables?AccessToken=" + accessToken
+					+ "&StartIndex=0&MaxPerPage=30&TrackableLogCount=2&format=json");
+
+			String result = Execute(httppost);
+
+			try
+			// Parse JSON Result
+			{
+				JSONTokener tokener = new JSONTokener(result);
+				JSONObject json = (JSONObject) tokener.nextValue();
+				JSONObject status = json.getJSONObject("Status");
+				if (status.getInt("StatusCode") == 0)
+				{
+					LastAPIError = "";
+					JSONArray jTrackables = json.getJSONArray("Trackables");
+
+					for (int ii = 0; ii < jTrackables.length(); ii++)
+					{
+						JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
+						list.add(new Trackable(jTrackable));
+					}
+					return 0;
+				}
+				else
+				{
+					LastAPIError = "";
+					LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
+					LastAPIError += status.getString("StatusMessage") + "\n";
+					LastAPIError += status.getString("ExceptionDetails");
+
+					return (-1);
+				}
+
+			}
+			catch (JSONException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		catch (Exception ex)
+		{
+			System.out.println(ex.getMessage());
+			return (-1);
+		}
+
+		return (-1);
+	}
+
+	/**
+	 * Fürt ein Http Request aus und gibt die Antwort als String zurück. Da ein
+	 * HttpRequestBase übergeben wird kann ein HttpGet oder HttpPost zum
+	 * Ausführen übergeben werden.
+	 * 
+	 * @param httprequest
+	 *            HttpGet oder HttpPost
+	 * @return Die Antwort als String.
+	 * @throws IOException
+	 * @throws ClientProtocolException
+	 */
+	private static String Execute(HttpRequestBase httprequest) throws IOException, ClientProtocolException
+	{
+		httprequest.setHeader("Accept", "application/json");
+		httprequest.setHeader("Content-type", "application/json");
+
+		// Execute HTTP Post Request
+		String result = "";
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpResponse response = httpclient.execute(httprequest);
+
+		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+		String line = "";
+		while ((line = rd.readLine()) != null)
+		{
+			result += line + "\n";
+		}
+		return result;
 	}
 
 }

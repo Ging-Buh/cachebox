@@ -31,6 +31,9 @@ public class chkCacheState extends TestCase
 	private void LoadConfig()
 	{
 		Config.Initialize("./testdata/", "./testdata/cachebox.config");
+		String key=Config.GetString("GcAPI");
+		assertFalse("Kein Access Key gefunden, liegt die Config an der richtigen stelle?", key.equals(""));
+		
 	}
 	
 	
@@ -49,6 +52,9 @@ public class chkCacheState extends TestCase
 		
 		testCaches.add(c1);
 		testCaches.add(c2);
+		
+		
+		
 		
 		int test = GroundspeakAPI.GetGeocacheStatus(Config.GetString("GcAPI"), testCaches);
 		
