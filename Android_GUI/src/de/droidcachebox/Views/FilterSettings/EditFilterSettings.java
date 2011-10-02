@@ -2,13 +2,13 @@ package de.droidcachebox.Views.FilterSettings;
 
 import CB_Core.Log.Logger;
 import CB_Core.Config;
-import de.droidcachebox.Database;
+import CB_Core.DB.Database;
 import CB_Core.FilterProperties;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
-import de.droidcachebox.DAO.CacheListDAO;
+import CB_Core.DAO.CacheListDAO;
 import de.droidcachebox.Ui.ActivityUtils;
 import CB_Core.Events.CachListChangedEventList;
 import android.app.Activity;

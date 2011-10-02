@@ -9,7 +9,8 @@ import java.util.Date;
 
 import android.database.Cursor;
 import CB_Core.Config;
-import de.droidcachebox.Database;
+import CB_Core.DB.CoreCursor;
+import CB_Core.DB.Database;
 
 public class FieldNoteList extends ArrayList<FieldNoteEntry> {
 
@@ -37,10 +38,10 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
 			sql += " order by FoundNumber DESC, Timestamp DESC";
 		else
 			sql += " order by " + order;
-		Cursor reader = null;
+		CoreCursor reader = null;
 		try
 		{
-			reader = Database.FieldNotes.myDB.rawQuery(sql, null);
+			reader = Database.FieldNotes.rawQuery(sql, null);
 		} catch (Exception exc)
 		{
 			String s = exc.getMessage();

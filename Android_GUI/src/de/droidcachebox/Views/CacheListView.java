@@ -1,10 +1,8 @@
 package de.droidcachebox.Views;
 
 import CB_Core.GlobalCore;
-import de.droidcachebox.Database;
+import CB_Core.DB.Database;
 import de.droidcachebox.Global;
-import de.droidcachebox.main;
-
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
@@ -17,9 +15,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.location.Location;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;

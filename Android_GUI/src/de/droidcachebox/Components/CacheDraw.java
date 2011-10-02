@@ -5,13 +5,11 @@ import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import de.droidcachebox.Database;
+import CB_Core.DB.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
-import de.droidcachebox.Components.CacheDraw.DrawStyle;
 import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.Ui.Size;
 import de.droidcachebox.Ui.Sizes;
 
 import android.graphics.Bitmap;
@@ -22,12 +20,9 @@ import android.graphics.Rect;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
-import android.text.TextUtils;
-
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
-import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.LogEntry;

@@ -6,9 +6,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import de.droidcachebox.Database;
+import CB_Core.DB.Database;
+import CB_Core.DB.Database.Parameters;
 import de.droidcachebox.R;
 
+import CB_Core.DB.CoreCursor;
 import android.content.ContentValues;
 import android.database.Cursor;
 
@@ -40,7 +42,7 @@ public class FieldNoteEntry implements Serializable
 		fillType();
 	}
 
-	public FieldNoteEntry(Cursor reader)
+	public FieldNoteEntry(CoreCursor reader)
 	{
 		CacheId = reader.getLong(0);
 		Id = reader.getLong(8);
@@ -143,7 +145,7 @@ public class FieldNoteEntry implements Serializable
 
 	public void WriteToDatabase()
 	{
-		ContentValues args = new ContentValues();
+		Parameters args = new Parameters();
 		args.put("cacheid", CacheId);
 		args.put("gccode", gcCode);
 		args.put("name", CacheName);
@@ -158,14 +160,14 @@ public class FieldNoteEntry implements Serializable
 
 		try
 		{
-			Database.FieldNotes.myDB.insert("Fieldnotes", null, args);
+			Database.FieldNotes.insert("Fieldnotes", args);
 		}
 		catch (Exception exc)
 		{
 			return;
 		}
 		// search FieldNote Id
-		Cursor reader = Database.FieldNotes.myDB
+		CoreCursor reader = Database.FieldNotes
 				.rawQuery(
 						"select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url from FieldNotes where GcCode='"
 								+ gcCode + "' and type=" + type, null);
@@ -182,7 +184,7 @@ public class FieldNoteEntry implements Serializable
 	public void UpdateDatabase()
 	{
 		if (timestamp == null) timestamp = new Date();
-		ContentValues args = new ContentValues();
+		Parameters args = new Parameters();
 		args.put("cacheid", CacheId);
 		args.put("gccode", gcCode);
 		args.put("name", CacheName);
@@ -197,7 +199,7 @@ public class FieldNoteEntry implements Serializable
 
 		try
 		{
-			int count = Database.FieldNotes.myDB.update("FieldNotes", args,
+			long count = Database.FieldNotes.update("FieldNotes", args,
 					"id=" + Id, null);
 			if (count > 0) return;
 		}
@@ -211,7 +213,7 @@ public class FieldNoteEntry implements Serializable
 	{
 		try
 		{
-			Database.FieldNotes.myDB.delete("FieldNotes", "id=" + Id, null);
+			Database.FieldNotes.delete("FieldNotes", "id=" + Id, null);
 		}
 		catch (Exception exc)
 		{

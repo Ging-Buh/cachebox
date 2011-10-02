@@ -1,15 +1,15 @@
-package de.droidcachebox.DAO;
+package CB_Core.DAO;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import CB_Core.DB.CoreCursor;
 import CB_Core.Types.GpxFilename;
-import android.database.Cursor;
 
 public class GpxFilenameDAO {
-    public GpxFilename ReadFromCursor(Cursor reader)
+    public GpxFilename ReadFromCursor(CoreCursor reader)
     {
         long id;
         String gpxFileName;

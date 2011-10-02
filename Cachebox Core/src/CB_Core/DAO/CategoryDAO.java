@@ -1,4 +1,4 @@
-package de.droidcachebox.DAO;
+package CB_Core.DAO;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -7,9 +7,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 
-import de.droidcachebox.Database;
-import android.content.ContentValues;
-import android.database.Cursor;
+import CB_Core.DB.CoreCursor;
+import CB_Core.DB.Database;
+import CB_Core.DB.Database.Parameters;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
@@ -17,7 +17,7 @@ import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
 
 public class CategoryDAO {
-	public Category ReadFromCursor(Cursor reader)
+	public Category ReadFromCursor(CoreCursor reader)
 	{
 		Category result = new Category();
 		
@@ -26,7 +26,7 @@ public class CategoryDAO {
         result.pinned = reader.getInt(2) != 0;
 
         // alle GpxFilenames einlesen
-        Cursor reader2 = Database.Data.myDB.rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=" + result.Id, null);
+        CoreCursor reader2 = Database.Data.rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=" + result.Id, null);
     	reader2.moveToFirst();
         while(reader2.isAfterLast() == false)
         {
@@ -47,11 +47,11 @@ public class CategoryDAO {
 		// neue Category in DB anlegen
 		Category result = new Category();
 		
-		ContentValues args = new ContentValues();
+		Parameters args = new Parameters();
 		args.put("GPXFilename", filename);
 		try
 		{
-			Database.Data.myDB.insert("Category", null, args);
+			Database.Data.insert("Category", args);
 		} catch (Exception exc)
 		{
 			Logger.Error("CreateNewCategory", filename, exc);			
@@ -59,7 +59,7 @@ public class CategoryDAO {
         
 		long Category_ID = 0;
 
-        Cursor reader = Database.Data.myDB.rawQuery("Select max(ID) from Category", null);
+        CoreCursor reader = Database.Data.rawQuery("Select max(ID) from Category", null);
     	reader.moveToFirst();
         if (reader.isAfterLast() == false)
         {
@@ -77,7 +77,7 @@ public class CategoryDAO {
     {
 		filename = new File(filename).getName();
 
-		ContentValues args = new ContentValues();
+		Parameters args = new Parameters();
 		args.put("GPXFilename", filename);
 		args.put("CategoryId", category.Id);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -85,7 +85,7 @@ public class CategoryDAO {
         args.put("Imported", stimestamp);
 		try
 		{
-			Database.Data.myDB.insert("GpxFilenames", null, args);
+			Database.Data.insert("GpxFilenames", args);
 		} catch (Exception exc)
 		{
 			Logger.Error("CreateNewGpxFilename", filename, exc);			
@@ -93,7 +93,7 @@ public class CategoryDAO {
 
         long GPXFilename_ID = 0;
 
-        Cursor reader = Database.Data.myDB.rawQuery("Select max(ID) from GpxFilenames", null);
+        CoreCursor reader = Database.Data.rawQuery("Select max(ID) from GpxFilenames", null);
     	reader.moveToFirst();
         if (reader.isAfterLast() == false)
         {
@@ -110,11 +110,11 @@ public class CategoryDAO {
     		return;
     	category.pinned = pinned;
     	
-    	ContentValues args = new ContentValues();
+    	Parameters args = new Parameters();
     	args.put("pinned", pinned);
 		 try
 		 {
-			 Database.Data.myDB.update("Category", args, "Id=" + String.valueOf(category.Id), null);
+			 Database.Data.update("Category", args, "Id=" + String.valueOf(category.Id), null);
 		 } catch (Exception exc)
 		 {
 			 Logger.Error("SetPinned", "CategoryDAO", exc);			 
@@ -126,7 +126,7 @@ public class CategoryDAO {
     public void LoadCategoriesFromDatabase(Categories categories)
     {
     	// alle Categories einlesen
-    	Cursor reader = Database.Data.myDB.rawQuery("select ID, GPXFilename, Pinned from Category", null);
+    	CoreCursor reader = Database.Data.rawQuery("select ID, GPXFilename, Pinned from Category", null);
     	reader.moveToFirst();
     	
         while(reader.isAfterLast() == false)

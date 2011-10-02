@@ -4,12 +4,12 @@ import java.io.File;
 import CB_Core.Config;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
-import de.droidcachebox.Database;
+import CB_Core.DB.Database;
 import de.droidcachebox.FileList;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.DAO.CacheListDAO;
-import de.droidcachebox.Database.DatabaseType;
+import CB_Core.DAO.CacheListDAO;
+import CB_Core.DB.Database.DatabaseType;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Views.AboutView;
 import de.droidcachebox.Views.FilterSettings.PresetListView;
@@ -49,6 +49,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import de.droidcachebox.Components.copyAssetFolder;
+import de.droidcachebox.DB.AndroidDB;
 
 import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Ui.Sizes;
@@ -247,7 +248,7 @@ public class SelectDB extends Activity
 				String sqlWhere = Global.LastFilter.getSqlWhere();
 
 				// initialize Database
-				Database.Data = new Database(DatabaseType.CacheBox, Me);
+				Database.Data = new AndroidDB(DatabaseType.CacheBox, Me);
 				Config.Set("DatabasePath", Config.WorkPath + "/" + text
 						+ ".db3");
 				Config.AcceptChanges();
@@ -260,7 +261,7 @@ public class SelectDB extends Activity
 				CacheListDAO cacheListDAO = new CacheListDAO();
 				cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
 
-				Database.FieldNotes = new Database(DatabaseType.FieldNotes, Me);
+				Database.FieldNotes = new AndroidDB(DatabaseType.FieldNotes, Me);
 				if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
 				Database.FieldNotes.StartUp(Config.WorkPath
 						+ "/User/FieldNotes.db3");

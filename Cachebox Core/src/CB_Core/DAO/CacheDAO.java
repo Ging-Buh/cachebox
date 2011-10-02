@@ -1,4 +1,4 @@
-package de.droidcachebox.DAO;
+package CB_Core.DAO;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -8,26 +8,26 @@ import java.util.Iterator;
 
 import CB_Core.Config;
 import CB_Core.Api.SearchForGeocaches;
+import CB_Core.DB.CoreCursor;
+import CB_Core.DB.Database;
+import CB_Core.DB.Database.Parameters;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
+import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
-import android.content.ContentValues;
-import android.database.Cursor;
-import de.droidcachebox.Database;
-import de.droidcachebox.Replication.Replication;
 
 public class CacheDAO
 {
 	protected static String sqlReadCache = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus from Caches ";
 
-	public Cache ReadFromCursor(Cursor reader)
+	public Cache ReadFromCursor(CoreCursor reader)
 	{
 		try
 		{
@@ -108,7 +108,7 @@ public class CacheDAO
 	{
 		// int newCheckSum = createCheckSum(WP);
 		// Replication.WaypointChanged(CacheId, checkSum, newCheckSum, GcCode);
-		ContentValues args = new ContentValues();
+		Parameters args = new Parameters();
 		args.put("Id", cache.Id);
 		args.put("GcCode", cache.GcCode);
 		args.put("GcId", cache.GcId);
@@ -156,7 +156,7 @@ public class CacheDAO
 
 		try
 		{
-			Database.Data.myDB.insert("Caches", null, args);
+			Database.Data.insert("Caches", args);
 
 		}
 		catch (Exception exc)
@@ -168,11 +168,11 @@ public class CacheDAO
 
 	public void WriteToDatabase_Found(Cache cache)
 	{
-		ContentValues args = new ContentValues();
+		Parameters args = new Parameters();
 		args.put("found", cache.Found);
 		try
 		{
-			Database.Data.myDB.update("Caches", args, "Id=" + cache.Id, null);
+			Database.Data.update("Caches", args, "Id=" + cache.Id, null);
 			Replication.FoundChanged(cache.Id, cache.Found);
 		}
 		catch (Exception exc)
@@ -184,7 +184,7 @@ public class CacheDAO
 	public void UpdateDatabase(Cache cache)
 	{
 
-		ContentValues args = new ContentValues();
+		Parameters args = new Parameters();
 
 		// bei einem Update müssen nicht alle infos überschrieben werden
 
@@ -236,7 +236,7 @@ public class CacheDAO
 
 		try
 		{
-			Database.Data.myDB.update("Caches", args, "Id=" + cache.Id, null);
+			Database.Data.update("Caches", args, "Id=" + cache.Id, null);
 		}
 		catch (Exception exc)
 		{
@@ -248,8 +248,7 @@ public class CacheDAO
 	public Cache getFromDbByCacheId(long CacheID)
 	{
 		String where = "Id = " + String.valueOf(CacheID);
-		Cursor reader = Database.Data.myDB
-				.rawQuery(
+		CoreCursor reader = Database.Data.rawQuery(
 						"select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus from Caches "
 								+ ((where.length() > 0) ? "where " + where
 										: where), null);
@@ -315,7 +314,7 @@ public class CacheDAO
 						// geändert hat.
 		{
 
-			ContentValues args = new ContentValues();
+			Parameters args = new Parameters();
 
 			args.put("Archived", cache.Archived ? 1 : 0);
 			args.put("Available", cache.Available ? 1 : 0);
@@ -323,7 +322,7 @@ public class CacheDAO
 
 			try
 			{
-				Database.Data.myDB.update("Caches", args, "Id=" + cache.Id,
+				Database.Data.update("Caches", args, "Id=" + cache.Id,
 						null);
 			}
 			catch (Exception exc)
@@ -351,7 +350,7 @@ public class CacheDAO
 					search, apiCaches, apiLogs, aktCache.GPXFilename_ID);
 			if (apiCaches.size() == 1)
 			{
-				Database.Data.myDB.beginTransaction();
+				Database.Data.beginTransaction();
 				newCache = apiCaches.get(0);
 				Database.Data.Query.remove(aktCache);
 				Database.Data.Query.add(newCache);
@@ -374,8 +373,8 @@ public class CacheDAO
 					waypointDAO.WriteToDatabase(waypoint);
 				}
 
-				Database.Data.myDB.setTransactionSuccessful();
-				Database.Data.myDB.endTransaction();
+				Database.Data.setTransactionSuccessful();
+				Database.Data.endTransaction();
 
 				Database.Data.GPXFilenameUpdateCacheCount();
 			}

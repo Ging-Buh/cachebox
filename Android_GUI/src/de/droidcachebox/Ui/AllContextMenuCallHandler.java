@@ -18,17 +18,17 @@ package de.droidcachebox.Ui;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.DAO.CacheDAO;
+import CB_Core.DB.Database;
 import CB_Core.Log.Logger;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
-import de.droidcachebox.DAO.CacheDAO;
 import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Views.MapView;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
-import de.droidcachebox.Database;
 import android.view.Menu;
 import android.view.MenuItem;
 

@@ -43,11 +43,12 @@ import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
 import de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView;
 import de.droidcachebox.Custom_Controls.QuickButtonList.QuickButtonItem;
-import de.droidcachebox.DAO.CacheDAO;
-import de.droidcachebox.DAO.CacheListDAO;
-import de.droidcachebox.DAO.CategoryDAO;
-import de.droidcachebox.DAO.LogDAO;
-import de.droidcachebox.DAO.WaypointDAO;
+import de.droidcachebox.DB.AndroidDB;
+import CB_Core.DAO.CacheDAO;
+import CB_Core.DAO.CacheListDAO;
+import CB_Core.DAO.CategoryDAO;
+import CB_Core.DAO.LogDAO;
+import CB_Core.DAO.WaypointDAO;
 import de.droidcachebox.Enums.Actions;
 import de.droidcachebox.Events.GpsStateChangeEvent;
 import de.droidcachebox.Events.GpsStateChangeEventList;
@@ -89,7 +90,7 @@ import de.droidcachebox.Views.Forms.SelectDB;
 import de.droidcachebox.Views.Forms.Settings;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
-import de.droidcachebox.Database;
+import CB_Core.DB.Database;
 import CB_Core.Types.CacheList;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -788,7 +789,7 @@ public class main extends Activity implements SelectedCacheEvent,
 				// Toast.makeText(getApplicationContext(),
 				// "DB wechsel momentan nur mit Neustart...",
 				// Toast.LENGTH_LONG).show();
-				Database db = new Database(Database.DatabaseType.CacheBox,
+				Database db = new AndroidDB(Database.DatabaseType.CacheBox,
 						mainActivity);
 				if (!db.StartUp(Config.GetString("DatabasePath"))) return;
 				Database.Data = null;
@@ -2148,7 +2149,7 @@ public class main extends Activity implements SelectedCacheEvent,
 						gpxFilename.Id);
 				if (apiCaches.size() > 0)
 				{
-					Database.Data.myDB.beginTransaction();
+					Database.Data.beginTransaction();
 					for (Cache cache : apiCaches)
 					{
 						cache.MapX = 256.0 * Descriptor.LongitudeToTileX(
@@ -2174,8 +2175,8 @@ public class main extends Activity implements SelectedCacheEvent,
 							}
 						}
 					}
-					Database.Data.myDB.setTransactionSuccessful();
-					Database.Data.myDB.endTransaction();
+					Database.Data.setTransactionSuccessful();
+					Database.Data.endTransaction();
 
 					Database.Data.GPXFilenameUpdateCacheCount();
 
@@ -2274,7 +2275,7 @@ public class main extends Activity implements SelectedCacheEvent,
 				
 				if (result == 0)
 				{
-					Database.Data.myDB.beginTransaction();
+					Database.Data.beginTransaction();
 					
 					Iterator<Cache> iterator = addedReturnList.iterator();
 					CacheDAO dao = new CacheDAO();
@@ -2285,8 +2286,8 @@ public class main extends Activity implements SelectedCacheEvent,
 					}
 					while (iterator.hasNext());
 
-					Database.Data.myDB.setTransactionSuccessful();
-					Database.Data.myDB.endTransaction();
+					Database.Data.setTransactionSuccessful();
+					Database.Data.endTransaction();
 
 				}
 				else

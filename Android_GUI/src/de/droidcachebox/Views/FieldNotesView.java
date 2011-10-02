@@ -8,13 +8,13 @@ import java.util.Date;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
-import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Custom_Controls.downSlider;
-import de.droidcachebox.DAO.CacheDAO;
-import de.droidcachebox.DAO.CacheListDAO;
+import CB_Core.DAO.CacheDAO;
+import CB_Core.DAO.CacheListDAO;
+import CB_Core.DB.Database;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.ViewOptionsMenu;
@@ -535,7 +535,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 						if (cache.Found)
 						{
 							cache.Found = false;
-							Database.WriteToDatabase(cache);
+						//	Database.WriteToDatabase(cache);
 							Config.Set("FoundOffset",
 									Config.GetInt("FoundOffset") - 1);
 							Config.AcceptChanges();

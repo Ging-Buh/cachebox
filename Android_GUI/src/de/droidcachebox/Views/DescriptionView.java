@@ -12,7 +12,7 @@ import de.droidcachebox.Custom_Controls.CacheInfoControl;
 import de.droidcachebox.Custom_Controls.DescriptionViewControl;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
-import de.droidcachebox.DAO.CacheDAO;
+import CB_Core.DAO.CacheDAO;
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;

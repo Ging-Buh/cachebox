@@ -6,19 +6,17 @@ import java.util.Date;
 
 import CB_Core.Config;
 import CB_Core.FilterProperties;
-import de.droidcachebox.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
-import de.droidcachebox.DAO.CacheDAO;
-import de.droidcachebox.DAO.CacheListDAO;
-import de.droidcachebox.DAO.LogDAO;
-import de.droidcachebox.DAO.WaypointDAO;
+import CB_Core.DAO.CacheDAO;
+import CB_Core.DAO.CacheListDAO;
+import CB_Core.DAO.LogDAO;
+import CB_Core.DAO.WaypointDAO;
+import CB_Core.DB.Database;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.Events.CacheListChangedEvent;
 import CB_Core.Import.Importer;
 import CB_Core.Import.Importer.Cache_Log_Waypoint_Return;
 import CB_Core.Import.ImporterProgress;
@@ -250,7 +248,7 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 					// Importiere alle GPX Files im Import Folder, auch in ZIP
 					// verpackte
 					if (checkBoxImportGPX.isChecked()) {
-						Database.Data.myDB.beginTransaction();
+						Database.Data.beginTransaction();
 						try {
 
 							Cache_Log_Waypoint_Return Returns = importer
@@ -270,11 +268,11 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 							waypointDao.WriteImports(Returns.waypointIterator,
 									Returns.WaypointCount, ip);
 
-							Database.Data.myDB.setTransactionSuccessful();
+							Database.Data.setTransactionSuccessful();
 						} catch (Exception exc) {
 							exc.printStackTrace();
 						}
-						Database.Data.myDB.endTransaction();
+						Database.Data.endTransaction();
 
 						// del alten entpackten Ordener wenn vorhanden?
 						File directory = new File(directoryPath);

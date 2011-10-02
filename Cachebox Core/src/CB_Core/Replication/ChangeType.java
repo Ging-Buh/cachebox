@@ -1,4 +1,4 @@
-package de.droidcachebox.Replication;
+package CB_Core.Replication;
 
 public enum ChangeType
 {

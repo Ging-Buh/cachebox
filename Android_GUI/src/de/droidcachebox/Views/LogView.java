@@ -2,10 +2,7 @@ package de.droidcachebox.Views;
 
 import java.util.ArrayList;
 
-import CB_Core.Config;
-import de.droidcachebox.Database;
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
+import CB_Core.DB.Database;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
@@ -15,8 +12,6 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;

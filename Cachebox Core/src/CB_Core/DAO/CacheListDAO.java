@@ -1,16 +1,16 @@
-package de.droidcachebox.DAO;
+package CB_Core.DAO;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import CB_Core.DB.CoreCursor;
+import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
-import android.database.Cursor;
-import de.droidcachebox.Database;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.MysterySolution;
 
@@ -24,7 +24,7 @@ public class CacheListDAO {
         ArrayList<Waypoint> wpList = new ArrayList<Waypoint>();
         long aktCacheID = -1;
 
-        Cursor reader = Database.Data.myDB.rawQuery("select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title from Waypoint order by CacheId", null);
+        CoreCursor reader = Database.Data.rawQuery("select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title from Waypoint order by CacheId", null);
     	reader.moveToFirst();
         while(reader.isAfterLast() == false)
         {
@@ -45,7 +45,7 @@ public class CacheListDAO {
 
         try
         {
-        	reader = Database.Data.myDB.rawQuery("select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus from Caches " + ((where.length() > 0) ? "where " + where : where), null);
+        	reader = Database.Data.rawQuery("select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus from Caches " + ((where.length() > 0) ? "where " + where : where), null);
     	
         }
         catch(Exception e)

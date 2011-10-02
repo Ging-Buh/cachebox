@@ -1,20 +1,19 @@
-package de.droidcachebox.DAO;
+package CB_Core.DAO;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import CB_Core.DB.Database;
+import CB_Core.DB.Database.Parameters;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
 import CB_Core.Types.LogEntry;
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
-import de.droidcachebox.Database;
 
 public class LogDAO {
 	public void WriteToDatabase(LogEntry log) {
-		ContentValues args = new ContentValues();
+		Parameters args = new Parameters();
 		args.put("Id", log.Id);
 		args.put("Finder", log.Finder);
 		args.put("Type", log.Type.ordinal());
@@ -24,8 +23,7 @@ public class LogDAO {
 		args.put("Timestamp", stimestamp);
 		args.put("CacheId", log.CacheId);
 		try {
-			Database.Data.myDB.insertWithOnConflict("Logs", null, args,
-					SQLiteDatabase.CONFLICT_REPLACE);
+			Database.Data.insertWithConflictReplace("Logs", args);
 		} catch (Exception exc) {
 			Logger.Error("Write Log", "", exc);
 		}

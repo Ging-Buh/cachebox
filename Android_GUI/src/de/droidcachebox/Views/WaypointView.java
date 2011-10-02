@@ -8,13 +8,13 @@ import CB_Core.Types.Waypoint;
 import CB_Core.Enums.CacheTypes;
 
 import CB_Core.Config;
-import de.droidcachebox.Database;
+import CB_Core.DB.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
-import de.droidcachebox.DAO.WaypointDAO;
+import CB_Core.DAO.WaypointDAO;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.AllContextMenuCallHandler;

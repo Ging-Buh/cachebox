@@ -1,16 +1,6 @@
 package de.droidcachebox.Geocaching;
 
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import de.droidcachebox.Database;
-import de.droidcachebox.R;
-
-import android.content.ContentValues;
-import android.database.Cursor;
 
 public class JokerEntry implements Serializable {
 	/**

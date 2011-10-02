@@ -1,24 +1,23 @@
-package de.droidcachebox.DAO;
+package CB_Core.DAO;
 
 import java.util.Iterator;
 
+import CB_Core.GlobalCore;
+import CB_Core.DB.CoreCursor;
+import CB_Core.DB.Database;
+import CB_Core.DB.Database.Parameters;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Import.ImporterProgress;
+import CB_Core.Replication.Replication;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import de.droidcachebox.Database;
-import de.droidcachebox.Global;
-import de.droidcachebox.Replication.Replication;
 
 public class WaypointDAO {
 	public void WriteToDatabase(Waypoint WP) {
 		int newCheckSum = createCheckSum(WP);
 		Replication.WaypointChanged(WP.CacheId, WP.checkSum, newCheckSum, WP.GcCode);
-		ContentValues args = new ContentValues();
+		Parameters args = new Parameters();
 		args.put("gccode", WP.GcCode);
 		args.put("cacheid", WP.CacheId);
 		args.put("latitude", WP.Latitude());
@@ -31,11 +30,11 @@ public class WaypointDAO {
 		args.put("title", WP.Title);
 
 		try {
-			Database.Data.myDB.insert("Waypoint", null, args);
+			Database.Data.insert("Waypoint", args);
 
-			args = new ContentValues();
+			args = new Parameters();
 			args.put("hasUserData", true);
-			Database.Data.myDB.update("Caches", args, "Id=" + WP.CacheId, null);
+			Database.Data.update("Caches", args, "Id=" + WP.CacheId, null);
 		} catch (Exception exc) {
 			return;
 
@@ -46,7 +45,7 @@ public class WaypointDAO {
 		int newCheckSum = createCheckSum(WP);
 		Replication.WaypointChanged(WP.CacheId, WP.checkSum, newCheckSum, WP.GcCode);
 		if (newCheckSum != WP.checkSum) {
-			ContentValues args = new ContentValues();
+			Parameters args = new Parameters();
 			args.put("gccode", WP.GcCode);
 			args.put("cacheid", WP.CacheId);
 			args.put("latitude", WP.Latitude());
@@ -58,7 +57,7 @@ public class WaypointDAO {
 			args.put("clue", WP.Clue);
 			args.put("title", WP.Title);
 			try {
-				Database.Data.myDB.update("Waypoint", args, "CacheId="
+				Database.Data.update("Waypoint", args, "CacheId="
 						+ WP.CacheId + " and GcCode=\"" + WP.GcCode + "\"",
 						null);
 			} catch (Exception exc) {
@@ -66,10 +65,10 @@ public class WaypointDAO {
 
 			}
 
-			args = new ContentValues();
+			args = new Parameters();
 			args.put("hasUserData", true);
 			try {
-				Database.Data.myDB.update("Caches", args, "Id=" + WP.CacheId,
+				Database.Data.update("Caches", args, "Id=" + WP.CacheId,
 						null);
 			} catch (Exception exc) {
 				return;
@@ -79,7 +78,7 @@ public class WaypointDAO {
 		}
 	}
 
-	public Waypoint getWaypoint(Cursor reader) {
+	public Waypoint getWaypoint(CoreCursor reader) {
 		Waypoint WP = new Waypoint();
 		WP.GcCode = reader.getString(0);
 		WP.CacheId = reader.getLong(1);
@@ -102,13 +101,13 @@ public class WaypointDAO {
 	private int createCheckSum(Waypoint WP) {
 		// for Replication
 		String sCheckSum = WP.GcCode;
-		sCheckSum += Global.FormatLatitudeDM(WP.Latitude());
-		sCheckSum += Global.FormatLongitudeDM(WP.Longitude());
+		sCheckSum += GlobalCore.FormatLatitudeDM(WP.Latitude());
+		sCheckSum += GlobalCore.FormatLongitudeDM(WP.Longitude());
 		sCheckSum += WP.Description;
 		sCheckSum += WP.Type.ordinal();
 		sCheckSum += WP.Clue;
 		sCheckSum += WP.Title;
-		return (int) Global.sdbm(sCheckSum);
+		return (int) GlobalCore.sdbm(sCheckSum);
 	}
 
 	public void WriteImports(Iterator<Waypoint> waypointIterator,
@@ -130,7 +129,7 @@ public class WaypointDAO {
 	}
 
 	public void WriteImportToDatabase(Waypoint WP) {
-		ContentValues args = new ContentValues();
+		Parameters args = new Parameters();
 		args.put("gccode", WP.GcCode);
 		args.put("cacheid", WP.CacheId);
 		args.put("latitude", WP.Latitude());
@@ -143,12 +142,11 @@ public class WaypointDAO {
 		args.put("title", WP.Title);
 
 		try {
-			Database.Data.myDB.insertWithOnConflict("Waypoint", null, args,
-					SQLiteDatabase.CONFLICT_REPLACE);
-
-			args = new ContentValues();
+			Database.Data.insertWithConflictReplace("Waypoint", args);
+			
+			args = new Parameters();
 			args.put("hasUserData", true);
-			Database.Data.myDB.update("Caches", args, "Id=" + WP.CacheId, null);
+			Database.Data.update("Caches", args, "Id=" + WP.CacheId, null);
 		} catch (Exception exc) {
 			return;
 

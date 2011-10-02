@@ -1,10 +1,8 @@
-package de.droidcachebox.Replication;
+package CB_Core.Replication;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-
-import de.droidcachebox.Database;
-import de.droidcachebox.Replication.ChangeType;
+import CB_Core.DB.CoreCursor;
+import CB_Core.DB.Database;
+import CB_Core.DB.Database.Parameters;
 
 public class Replication
 {
@@ -18,23 +16,19 @@ public class Replication
 			else
 				changeType = ChangeType.NotFound;
 
-			Database.Data.myDB.delete(
-					"Replication",
-					"CacheId=" + String.valueOf(CacheId)
-							+ " and ChangeType=6 or CacheId="
-							+ String.valueOf(CacheId) + " and ChangeType=7",
+			Database.Data.delete("Replication",
+					"CacheId=" + String.valueOf(CacheId) + " and ChangeType=6 or CacheId=" + String.valueOf(CacheId) + " and ChangeType=7",
 					null);
 
-			ContentValues val = new ContentValues();
+			Parameters val = new Parameters();
 			val.put("CacheId", CacheId);
 			val.put("ChangeType", changeType.ordinal());
-			Database.Data.myDB.insert("Replication", null, val);
+			Database.Data.insert("Replication", val);
 		}
 
 	}
 
-	public static void SolverChanged(long CacheId, int oldSolverCheckSum,
-			int newSolverCheckSum)
+	public static void SolverChanged(long CacheId, int oldSolverCheckSum, int newSolverCheckSum)
 	{
 		if (Database.Data.MasterDatabaseId > 0)
 		{
@@ -53,14 +47,9 @@ public class Replication
 					// a new entry and store the original CheckSum of the Solver
 					// Text
 					int dbCheckSum = -1;
-					Cursor c = Database.Data.myDB
-							.rawQuery(
-									"select SolverCheckSum from Replication where CacheId=? and ChangeType=?",
-									new String[]
-										{
-												String.valueOf(CacheId),
-												String.valueOf(ChangeType.SolverText
-														.ordinal()) });
+					CoreCursor c = Database.Data.rawQuery("select SolverCheckSum from Replication where CacheId=? and ChangeType=?",
+							new String[]
+								{ String.valueOf(CacheId), String.valueOf(ChangeType.SolverText.ordinal()) });
 					c.moveToFirst();
 					while (c.isAfterLast() == false)
 					{
@@ -72,11 +61,11 @@ public class Replication
 					{
 						// a Change for the Solvertext for this Cache must be
 						// added to the Replication Table
-						ContentValues val = new ContentValues();
+						Parameters val = new Parameters();
 						val.put("CacheId", CacheId);
 						val.put("ChangeType", ChangeType.SolverText.ordinal());
 						val.put("SolverCheckSum", oldSolverCheckSum);
-						Database.Data.myDB.insert("Replication", null, val);
+						Database.Data.insert("Replication", val);
 					}
 					else
 					{
@@ -86,14 +75,8 @@ public class Replication
 							// the dbCheckSum is the same than the newCheckSum
 							// -> Solver text is the same than the original
 							// -> delete this entry!
-							Database.Data.myDB
-									.delete("Replication",
-											"CacheId=? and ChangeType=?",
-											new String[]
-												{
-														String.valueOf(CacheId),
-														String.valueOf(ChangeType.SolverText
-																.ordinal()) });
+							Database.Data.delete("Replication", "CacheId=? and ChangeType=?", new String[]
+								{ String.valueOf(CacheId), String.valueOf(ChangeType.SolverText.ordinal()) });
 						}
 					}
 				}
@@ -101,8 +84,7 @@ public class Replication
 		}
 	}
 
-	public static void NoteChanged(long CacheId, int oldNoteCheckSum,
-			int newNoteCheckSum)
+	public static void NoteChanged(long CacheId, int oldNoteCheckSum, int newNoteCheckSum)
 	{
 		if (Database.Data.MasterDatabaseId > 0)
 		{
@@ -121,14 +103,9 @@ public class Replication
 					// new entry and store the original CheckSum of the Note
 					// Text
 					int dbCheckSum = -1;
-					Cursor c = Database.Data.myDB
-							.rawQuery(
-									"select NotesCheckSum from Replication where CacheId=? and ChangeType=?",
-									new String[]
-										{
-												String.valueOf(CacheId),
-												String.valueOf(ChangeType.NotesText
-														.ordinal()) });
+					CoreCursor c = Database.Data.rawQuery("select NotesCheckSum from Replication where CacheId=? and ChangeType=?",
+							new String[]
+								{ String.valueOf(CacheId), String.valueOf(ChangeType.NotesText.ordinal()) });
 					c.moveToFirst();
 					while (c.isAfterLast() == false)
 					{
@@ -140,11 +117,11 @@ public class Replication
 					{
 						// a Change for the Notestext for this Cache must be
 						// added to the Replication Table
-						ContentValues val = new ContentValues();
+						Parameters val = new Parameters();
 						val.put("CacheId", CacheId);
 						val.put("ChangeType", ChangeType.NotesText.ordinal());
 						val.put("SolverCheckSum", oldNoteCheckSum);
-						Database.Data.myDB.insert("Replication", null, val);
+						Database.Data.insert("Replication", val);
 					}
 					else
 					{
@@ -154,14 +131,8 @@ public class Replication
 							// the dbCheckSum is the same than the newCheckSum
 							// -> Notes text is the same than the original
 							// -> delete this entry!
-							Database.Data.myDB
-									.delete("Replication",
-											"CacheId=? and ChangeType=?",
-											new String[]
-												{
-														String.valueOf(CacheId),
-														String.valueOf(ChangeType.NotesText
-																.ordinal()) });
+							Database.Data.delete("Replication", "CacheId=? and ChangeType=?", new String[]
+								{ String.valueOf(CacheId), String.valueOf(ChangeType.NotesText.ordinal()) });
 						}
 					}
 				}
@@ -169,29 +140,22 @@ public class Replication
 		}
 	}
 
-	public static void WaypointChanged(long CacheId, int oldCheckSum,
-			int newCheckSum, String WpGcCode)
+	public static void WaypointChanged(long CacheId, int oldCheckSum, int newCheckSum, String WpGcCode)
 	{
-		Changed(CacheId, oldCheckSum, newCheckSum, "WpCoordCheckSum",
-				ChangeType.WaypointChanged, WpGcCode);
+		Changed(CacheId, oldCheckSum, newCheckSum, "WpCoordCheckSum", ChangeType.WaypointChanged, WpGcCode);
 	}
 
-	public static void WaypointNew(long CacheId, int oldCheckSum,
-			int newCheckSum, String WpGcCode)
+	public static void WaypointNew(long CacheId, int oldCheckSum, int newCheckSum, String WpGcCode)
 	{
-		Changed(CacheId, oldCheckSum, newCheckSum, "WpCoordCheckSum",
-				ChangeType.NewWaypoint, WpGcCode);
+		Changed(CacheId, oldCheckSum, newCheckSum, "WpCoordCheckSum", ChangeType.NewWaypoint, WpGcCode);
 	}
 
-	public static void WaypointDelete(long CacheId, int oldCheckSum,
-			int newCheckSum, String WpGcCode)
+	public static void WaypointDelete(long CacheId, int oldCheckSum, int newCheckSum, String WpGcCode)
 	{
-		Changed(CacheId, oldCheckSum, newCheckSum, "WpCoordCheckSum",
-				ChangeType.DeleteWaypoint, WpGcCode);
+		Changed(CacheId, oldCheckSum, newCheckSum, "WpCoordCheckSum", ChangeType.DeleteWaypoint, WpGcCode);
 	}
 
-	private static void Changed(long CacheId, int oldCheckSum, int newCheckSum,
-			String checkSumType, ChangeType changeType, String WpGcCode)
+	private static void Changed(long CacheId, int oldCheckSum, int newCheckSum, String checkSumType, ChangeType changeType, String WpGcCode)
 	{
 		if (Database.Data.MasterDatabaseId > 0)
 		{
@@ -207,16 +171,9 @@ public class Replication
 				// When no entry for this Cache exists -> create a new entry and
 				// store the original CheckSum of the item
 				int dbCheckSum = -1;
-				Cursor c = Database.Data.myDB
-						.rawQuery(
-								"select "
-										+ checkSumType
-										+ " from Replication where CacheId=? and ChangeType=? and WpGcCode=?",
-								new String[]
-									{
-											String.valueOf(CacheId),
-											String.valueOf(changeType.ordinal()),
-											WpGcCode });
+				CoreCursor c = Database.Data.rawQuery("select " + checkSumType
+						+ " from Replication where CacheId=? and ChangeType=? and WpGcCode=?", new String[]
+					{ String.valueOf(CacheId), String.valueOf(changeType.ordinal()), WpGcCode });
 				c.moveToFirst();
 				while (c.isAfterLast() == false)
 				{
@@ -228,13 +185,12 @@ public class Replication
 				{
 					// a Change for the WP for this Cache must be added to the
 					// Replication Table
-					ContentValues val = new ContentValues();
+					Parameters val = new Parameters();
 					val.put("CacheId", CacheId);
 					val.put("ChangeType", changeType.ordinal());
 					val.put("WpCoordCheckSum", oldCheckSum);
 					val.put("WpGcCode", WpGcCode);
-					long anz = Database.Data.myDB.insert("Replication", null,
-							val);
+					long anz = Database.Data.insert("Replication", val);
 				}
 				else
 				{
@@ -244,12 +200,8 @@ public class Replication
 						// the dbCheckSum is the same than the newCheckSum ->
 						// value is the same than the original
 						// -> delete this entry!
-						Database.Data.myDB.delete(
-								"Replication",
-								"CacheId=? and ChangeType=?",
-								new String[]
-									{ String.valueOf(CacheId),
-											String.valueOf(changeType) });
+						Database.Data.delete("Replication", "CacheId=? and ChangeType=?", new String[]
+							{ String.valueOf(CacheId), String.valueOf(changeType) });
 					}
 				}
 			}
@@ -265,17 +217,14 @@ public class Replication
 			else
 				changeType = ChangeType.NotAvailable;
 
-			Database.Data.myDB.delete(
-					"Replication",
-					"CacheId=" + String.valueOf(CacheId)
-							+ " and ChangeType=10 or CacheId="
-							+ String.valueOf(CacheId) + " and ChangeType=11",
-					null);
+			Database.Data.delete("Replication",
+					"CacheId=" + String.valueOf(CacheId) + " and ChangeType=10 or CacheId=" + String.valueOf(CacheId)
+							+ " and ChangeType=11", null);
 
-			ContentValues val = new ContentValues();
+			Parameters val = new Parameters();
 			val.put("CacheId", CacheId);
 			val.put("ChangeType", changeType.ordinal());
-			Database.Data.myDB.insert("Replication", null, val);
+			Database.Data.insert("Replication", val);
 		}
 
 	}
@@ -289,43 +238,34 @@ public class Replication
 			else
 				changeType = ChangeType.NotArchived;
 
-			Database.Data.myDB.delete(
-					"Replication",
-					"CacheId=" + String.valueOf(CacheId)
-							+ " and ChangeType=8 or CacheId="
-							+ String.valueOf(CacheId) + " and ChangeType=9",
+			Database.Data.delete("Replication",
+					"CacheId=" + String.valueOf(CacheId) + " and ChangeType=8 or CacheId=" + String.valueOf(CacheId) + " and ChangeType=9",
 					null);
 
-			ContentValues val = new ContentValues();
+			Parameters val = new Parameters();
 			val.put("CacheId", CacheId);
 			val.put("ChangeType", changeType.ordinal());
-			Database.Data.myDB.insert("Replication", null, val);
+			Database.Data.insert("Replication", val);
 		}
 
 	}
-
 
 	public static void NumTravelbugsChanged(long CacheId, int numTravelbugs)
 	{
 		if (Database.Data.MasterDatabaseId > 0)
 		{
 			ChangeType changeType;
-			
-			
-			Database.Data.myDB.delete(
-					"Replication",
-					"CacheId=" + String.valueOf(CacheId)
-							+ " and ChangeType=12",
-					null);
-			
-				changeType = ChangeType.NumTravelbugs;
-			ContentValues val = new ContentValues();
+
+			Database.Data.delete("Replication", "CacheId=" + String.valueOf(CacheId) + " and ChangeType=12", null);
+
+			changeType = ChangeType.NumTravelbugs;
+			Parameters val = new Parameters();
 			val.put("CacheId", CacheId);
 			val.put("ChangeType", changeType.ordinal());
 			val.put("SolverCheckSum", numTravelbugs);
-			Database.Data.myDB.insert("Replication", null, val);
+			Database.Data.insert("Replication", val);
 		}
-		
+
 	}
 
 }
