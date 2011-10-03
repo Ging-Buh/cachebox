@@ -228,6 +228,14 @@ public class Database
 			{
 				execSQL("ALTER TABLE [CACHES] ADD [ApiStatus] smallint NULL default 0;");
 			}
+			if (lastDatabaseSchemeVersion < 1017)
+			{
+				execSQL("CREATE TABLE [Trackable] ([Id] bigint NOT NULL primary key, [Archived] bit NULL, [GcCode] nvarchar (12) NULL, [CacheId] bigint NULL, [CurrentGoal] ntext, [CurrentOwnerName] nchar (255) NULL, [DateCreated] datetime NULL, [Description] ntext, [IconUrl] nchar (255) NULL, [ImageUrl] nchar (255) NULL, [name] nchar (255) NULL, [OwnerName] nchar (255), [Url] nchar (255) NULL);");
+				execSQL("CREATE INDEX [cacheid_idx] ON [Trackable] ([CacheId] ASC);");
+				execSQL("CREATE TABLE [TbLogs] ([Id] bigint NOT NULL primary key, [TrackableId] bigint not NULL, [CacheID] bigint NULL, [GcCode] nvarchar (12) NULL, [LogIsEncoded] bit NULL DEFAULT 0, [LogText] ntext, [LogTypeId] bigint NULL, [LoggedByName] nchar (255) NULL, [Visited] datetime NULL);");
+				execSQL("CREATE INDEX [trackableid_idx] ON [TbLogs] ([TrackableId] ASC);");
+				execSQL("CREATE INDEX [trackablecacheid_idx] ON [TBLOGS] ([CacheId] ASC);");
+			}
 			break;
 		case FieldNotes:
 			if (lastDatabaseSchemeVersion <= 0)
