@@ -5,8 +5,7 @@ import de.droidcachebox.R;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Components.CacheDraw.DrawStyle;
 
-import de.droidcachebox.Geocaching.JokerEntry;
-import de.droidcachebox.Geocaching.JokerList;
+import CB_Core.Types.JokerEntry;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import CB_Core.Types.Cache;

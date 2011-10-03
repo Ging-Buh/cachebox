@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.FieldNoteEntry;
+import CB_Core.Types.FieldNoteEntry;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import android.content.Context;

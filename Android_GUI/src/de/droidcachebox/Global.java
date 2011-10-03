@@ -29,7 +29,7 @@ import android.net.NetworkInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import de.droidcachebox.Custom_Controls.QuickButtonList.QuickButtonItem;
-import de.droidcachebox.Geocaching.JokerList;
+import CB_Core.Types.JokerList;
 import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.Ui.Sizes;

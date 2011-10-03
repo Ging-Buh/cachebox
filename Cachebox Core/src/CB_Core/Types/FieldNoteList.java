@@ -1,4 +1,4 @@
-package de.droidcachebox.Geocaching;
+package CB_Core.Types;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import android.database.Cursor;
 import CB_Core.Config;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;

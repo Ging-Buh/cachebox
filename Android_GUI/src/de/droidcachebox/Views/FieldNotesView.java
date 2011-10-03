@@ -1,7 +1,5 @@
 package de.droidcachebox.Views;
 
-import java.io.File;
-import java.security.acl.LastOwnerException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,49 +13,36 @@ import de.droidcachebox.Custom_Controls.downSlider;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
-import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Events.SelectedCacheEvent;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
 import CB_Core.Types.CacheList;
-import de.droidcachebox.Geocaching.FieldNoteEntry;
-import de.droidcachebox.Geocaching.FieldNoteList;
+import CB_Core.Types.FieldNoteEntry;
+import CB_Core.Types.FieldNoteList;
 
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.AllContextMenuCallHandler;
 import de.droidcachebox.Ui.Sizes;
-import de.droidcachebox.Views.CacheListView.CustomAdapter;
 import de.droidcachebox.Views.Forms.EditFieldNote;
-import de.droidcachebox.Views.Forms.EditWaypoint;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.ProgressDialog;
-import CB_Core.FileIO;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Path.FillType;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.provider.OpenableColumns;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class FieldNotesView extends ListView implements ViewOptionsMenu
 {

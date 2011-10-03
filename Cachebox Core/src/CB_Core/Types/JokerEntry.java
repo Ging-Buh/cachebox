@@ -1,4 +1,4 @@
-package de.droidcachebox.Geocaching;
+package CB_Core.Types;
 
 import java.io.Serializable;
 

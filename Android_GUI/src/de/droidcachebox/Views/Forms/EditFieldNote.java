@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.Geocaching.FieldNoteEntry;
+import CB_Core.Types.FieldNoteEntry;
 import de.droidcachebox.Ui.ActivityUtils;
 
 import android.app.Activity;
@@ -13,7 +13,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -92,7 +91,8 @@ public class EditFieldNote extends Activity {
         iso8601Format = new SimpleDateFormat("HH:mm");
         String sTime = iso8601Format.format(fieldNote.timestamp);
 		tvTime.setText("Time: " + sTime);
-		ivTyp.setImageResource(fieldNote.typeIconId);
+//		ivTyp.setImageResource(fieldNote.typeIconId);
+		ivTyp.setImageDrawable(Global.LogIcons[fieldNote.typeIcon]);
 	}
 	
 	

@@ -14,7 +14,7 @@ import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
-import de.droidcachebox.Geocaching.JokerEntry;
+import CB_Core.Types.JokerEntry;
 import de.droidcachebox.Ui.ActivityUtils;
 
 import android.app.Activity;

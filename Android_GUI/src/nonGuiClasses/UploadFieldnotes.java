@@ -1,25 +1,9 @@
 package nonGuiClasses;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.List;
-
-import org.apache.http.HttpRequest;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import android.net.Uri;
-
 import CB_Core.Config;
-import de.droidcachebox.Geocaching.FieldNoteEntry;
 
 
 

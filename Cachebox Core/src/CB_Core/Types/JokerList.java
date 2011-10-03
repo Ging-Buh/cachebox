@@ -1,8 +1,9 @@
-package de.droidcachebox.Geocaching;
+package CB_Core.Types;
 
 import java.util.ArrayList;
 
-import android.util.Log;
+import CB_Core.Log.Logger;
+
 
 public class JokerList extends ArrayList<JokerEntry> {
 
@@ -24,7 +25,7 @@ public class JokerList extends ArrayList<JokerEntry> {
 	        this.add(je);
 	       } 
 	    catch (NumberFormatException nfe) {
-	    	Log.d("DroidCachebox",nfe.getMessage());		
+	    	Logger.Error("DroidCachebox", "AddJoker", nfe);		
 	       }
 	}
 	

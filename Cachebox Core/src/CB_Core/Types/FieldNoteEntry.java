@@ -1,4 +1,4 @@
-package de.droidcachebox.Geocaching;
+package CB_Core.Types;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -8,11 +8,7 @@ import java.util.Date;
 
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.Parameters;
-import de.droidcachebox.R;
-
 import CB_Core.DB.CoreCursor;
-import android.content.ContentValues;
-import android.database.Cursor;
 
 public class FieldNoteEntry implements Serializable
 {
@@ -33,7 +29,6 @@ public class FieldNoteEntry implements Serializable
 	public String CacheName;
 	public String CacheUrl;
 	public int typeIcon;
-	public int typeIconId;
 
 	public FieldNoteEntry(int type)
 	{
@@ -75,7 +70,6 @@ public class FieldNoteEntry implements Serializable
 		if (type == 1)
 		{
 			typeString = "#" + foundNumber + " - Found it!";
-			typeIconId = R.drawable.smilie_gross;
 			typeIcon = 0;
 			if (cacheType == 5 || cacheType == 6 || cacheType == 7) typeString = "Attended";
 			if (cacheType == 3) typeString = "Webcam Photo Taken";
@@ -84,21 +78,18 @@ public class FieldNoteEntry implements Serializable
 		if (type == 2)
 		{
 			typeString = "Did not find!";
-			typeIconId = R.drawable.log1;
 			typeIcon = 1;
 		}
 
 		if (type == 3)
 		{
 			typeString = "Needs Maintenance";
-			typeIconId = R.drawable.maintenance;
 			typeIcon = 5;
 		}
 
 		if (type == 4)
 		{
 			typeString = "Write Note";
-			typeIconId = R.drawable.log2;
 			typeIcon = 2;
 		}
 	}
