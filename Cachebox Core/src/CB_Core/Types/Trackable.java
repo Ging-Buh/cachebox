@@ -1,11 +1,14 @@
 package CB_Core.Types;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import CB_Core.Interfaces.DAO.ITrackableDAO;
+import CB_Core.DB.CoreCursor;
 import CB_Core.Log.Logger;
 
 public class Trackable implements Comparable<Trackable>
@@ -31,21 +34,32 @@ public class Trackable implements Comparable<Trackable>
 	 * 
 	 * @param dao
 	 */
-	public Trackable(ITrackableDAO dao)
+	public Trackable(CoreCursor reader)
 	{
-		Id = dao.Id;
-		Archived = dao.Archived;
-		GcCode = dao.GcCode;
-		CacheId = dao.CacheId;
-		CurrentGoal = dao.CurrentGoal;
-		CurrentOwnerName = dao.CurrentOwnerName;
-		DateCreated = dao.DateCreated;
-		Description = dao.Description;
-		IconUrl = dao.IconUrl;
-		ImageUrl = dao.ImageUrl;
-		Name = dao.Name;
-		OwnerName = dao.OwnerName;
-		Url = dao.Url;
+		Id = reader.getLong(0);
+		Archived = reader.getInt(1) != 0;
+		GcCode = reader.getString(2).trim();
+		CacheId = reader.getLong(3);
+		CurrentGoal = reader.getString(4).trim();
+		CurrentOwnerName = reader.getString(5).trim();
+		String sDate = reader.getString(6);
+		DateFormat iso8601Format = new SimpleDateFormat(
+				"yyyy-MM-dd HH:mm:ss");
+		try
+		{
+			DateCreated = iso8601Format.parse(sDate);
+		}
+		catch (ParseException e)
+		{
+		}
+		
+		Description = reader.getString(7).trim();
+		IconUrl = reader.getString(8).trim();
+		ImageUrl = reader.getString(9).trim();
+		Name = reader.getString(10).trim();
+		OwnerName = reader.getString(11).trim();
+		Url = reader.getString(12).trim();
+		
 	}
 
 	public Trackable(JSONObject JObj)

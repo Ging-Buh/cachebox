@@ -21,7 +21,7 @@ public class RouteOverlay {
 
 	public final static int projectionZoomLevel = 15;
 
-	public static class Route
+	public static class Trackable
 	{
 		public Paint paint;
 		public ArrayList<PointD> Points;
@@ -30,7 +30,7 @@ public class RouteOverlay {
 		public boolean ShowRoute = false;
 		public boolean IsActualTrack = false;
 		
-		public Route(Paint paint, String name)
+		public Trackable(Paint paint, String name)
 		{
 			this.paint = paint;
 			Points = new ArrayList<PointD>();
@@ -39,18 +39,18 @@ public class RouteOverlay {
 		
 	}
 
-	public static ArrayList<Route> Routes = new ArrayList<Route>();
+	public static ArrayList<Trackable> Routes = new ArrayList<Trackable>();
 
         // Read track from gpx file
         // attention it is possible that a gpx file contains more than 1 <trk> segments
         // in this case all segments was connectet to one track
-        public static Route LoadRoute(String file, Paint paint, double minDistanceMeters)
+        public static Trackable LoadRoute(String file, Paint paint, double minDistanceMeters)
         {
        	    BufferedReader reader;
            	try {
            		InputStreamReader isr = new InputStreamReader(new FileInputStream(file), "UTF8");
            		reader = new BufferedReader(isr);
-                Route route = new Route(paint, null);
+                Trackable route = new Trackable(paint, null);
                 route.FileName = file;
            		
                 String line = null;

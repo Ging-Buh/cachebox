@@ -2,12 +2,9 @@ package de.droidcachebox.Views;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.main;
-import de.droidcachebox.Custom_Controls.ColorDialog.AmbilWarnaDialog;
-import de.droidcachebox.Custom_Controls.ColorDialog.AmbilWarnaDialog.OnAmbilWarnaListener;
-import de.droidcachebox.Map.RouteOverlay.Trackable;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
+import CB_Core.Types.Trackable;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -23,8 +20,8 @@ import android.view.View;
  * @author Longri
  *
  */
-public class TrackListViewItem extends View {
-    private Trackable route;
+public class TrackableListViewItem extends View {
+    private Trackable trackable;
     private int width;
     private int height;
     private boolean BackColorChanger = false;
@@ -37,18 +34,17 @@ public class TrackListViewItem extends View {
     int left;
     int top ;
     int BackgroundColor;
-	private static Rect lColorBounds;
-    private static Rect lBounds;
+	
     private static Rect rBounds;
     private static Rect rChkBounds;
      
    
     
-	public TrackListViewItem(Context context, Trackable route,
+	public TrackableListViewItem(Context context, CB_Core.Types.Trackable trackable2,
 			Boolean BackColorId) 
 	{
 		super(context);
-		this.route = route;
+		this.trackable = trackable2;
 		BackColorChanger = BackColorId;
 	}
 
@@ -110,31 +106,13 @@ public class TrackListViewItem extends View {
         ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, BackgroundColor);
         
         drawRightChkBox(canvas);
-        if(this.route.ShowRoute)
-    	{
-    		Rect oldBounds =  Global.Icons[27].getBounds();
-    		Global.Icons[27].setBounds(rChkBounds);
-    		Global.Icons[27].draw(canvas);
-    		Global.Icons[27].setBounds(oldBounds);
-    	}
         
         
-        // Draw Color of Route
-        int RouteColor = route.paint.getColor();
-        if(lBounds == null || lColorBounds == null)
-    	{
-        	 lBounds = new Rect(7, 7, height-7, height-7);
-             int halfSize= lBounds.width()/6;
-     		int corrRecSize = (lBounds.width()-lBounds.height())/2;
-             lColorBounds = new Rect(lBounds.left + halfSize,lBounds.top + halfSize-corrRecSize, lBounds.right - halfSize, lBounds.bottom - halfSize +corrRecSize );
-             
-    	}
+        
+        
        
-        ActivityUtils.drawFillRoundRecWithBorder(canvas, lColorBounds, 3, 
-        		RouteColor, RouteColor, 
-        		Sizes.getCornerSize());
         
-        left +=lBounds.width();
+       
        
         
         // Draw Route Name
@@ -150,15 +128,15 @@ public class TrackListViewItem extends View {
         if(LayoutName==null)
         {   
         	String Name ="";
-        	if(route.Name==null || route.Name.equals(""))
+        	if(trackable.getName()==null || trackable.getName().equals(""))
         	{
         		Name= "no Name";
         	}
         	else
         	{
-        		Name = route.Name;
+        		Name = trackable.getName();
         	}
-        	int TextWidth = this.width- lBounds.left - (this.width-rBounds.left); 
+        	int TextWidth = this.width- (this.width-rBounds.left); 
         	LayoutName = new StaticLayout(Name, textPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 			
         }
@@ -182,37 +160,4 @@ public class TrackListViewItem extends View {
 	     		  Sizes.getCornerSize());
     }
 
-    public void switchCheked() 
-	{
-		this.route.ShowRoute = !this.route.ShowRoute;
-	}
-    public void changeColor() 
-	{
-		// initialColor is the initially-selected color to be shown in the rectangle on the left of the arrow.
-		// for example, 0xff000000 is black, 0xff0000ff is blue. Please be aware of the initial 0xff which is the alpha.
-		AmbilWarnaDialog dialog = new AmbilWarnaDialog(main.mainActivity, route.paint.getColor(), new OnAmbilWarnaListener() {
-		        @Override
-		        public void onOk(AmbilWarnaDialog dialog, int color) 
-		        {
-		                route.paint.setColor(color);
-		        }
-		                
-		        @Override
-		        public void onCancel(AmbilWarnaDialog dialog) 
-		        {
-		                // cancel was selected by the user
-		        }
-		});
-
-		dialog.show();
-		
-	}
-
-
-
-
-	public Trackable getRoute() 
-	{
-		return route;
-	}
 }

@@ -14,7 +14,7 @@ import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Map.RouteOverlay;
-import de.droidcachebox.Map.RouteOverlay.Route;
+import de.droidcachebox.Map.RouteOverlay.Trackable;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.AllContextMenuCallHandler;
 import de.droidcachebox.Views.Forms.EditCoordinate;
@@ -573,9 +573,9 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 	 * @param paint Das Paint, mit der die Route in die Karte gezeichnet wird.
 	 * @return Generierte Route
 	 */
-    public Route GenP2PRoute(double FromLat, double FromLon, double ToLat, double ToLon, Paint paint)
+    public Trackable GenP2PRoute(double FromLat, double FromLon, double ToLat, double ToLon, Paint paint)
     {
-        Route route = new Route(paint, null);
+        Trackable route = new Trackable(paint, null);
 
         route.Name = "Point 2 Point Route";
 
@@ -600,9 +600,9 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
      * @param paint Das Paint, mit der die Route in die Karte gezeichnet wird.
      * @return Generierte Route
      */
-    public Route GenCircleRoute(double FromLat, double FromLon, double Distance, Paint paint)
+    public Trackable GenCircleRoute(double FromLat, double FromLon, double Distance, Paint paint)
     {
-        Route route = new Route(paint, null);
+        Trackable route = new Trackable(paint, null);
 
         route.Name = "Circle Route";
 
@@ -637,9 +637,9 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
      * @param paint Das Paint, mit der die Route in die Karte gezeichnet wird.
      * @return Generierte Route
      */
-    public Route GenProjectRoute(double FromLat, double FromLon, double Distance, double Bearing, Paint paint)
+    public Trackable GenProjectRoute(double FromLat, double FromLon, double Distance, double Bearing, Paint paint)
     {
-        Route route = new Route(paint, null);
+        Trackable route = new Trackable(paint, null);
 
         route.Name = "Projected Route";
 
@@ -672,9 +672,9 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
      * @param minDistanceMeters
      * @return geladene Route
      */
-    public Route LoadRoute(String file, Paint pen, double minDistanceMeters)
+    public Trackable LoadRoute(String file, Paint pen, double minDistanceMeters)
     {
-    		Route route = new Route(pen, null);
+    		Trackable route = new Trackable(pen, null);
             route.FileName = FileIO.GetFileName(file);
 
         try

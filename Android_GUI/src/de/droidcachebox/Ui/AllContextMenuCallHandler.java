@@ -335,6 +335,19 @@ public class AllContextMenuCallHandler
 		
 	}
 	
+	public static void showTrackableListViewContextMenu()
+	{
+		
+		icm = new IconContextMenu(Main, R.menu.menu_trackablelistview);
+		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
+		  
+		Menu IconMenu=icm.getMenu();
+		
+		
+	  	icm.show();
+	}
+	
+	
 	public static void showTrackListViewContextMenu()
 	{
 		
@@ -348,6 +361,7 @@ public class AllContextMenuCallHandler
 		
 	  	icm.show();
 	}
+	
 	
 	public static void showTrackListView_generateContextMenu()
 	{

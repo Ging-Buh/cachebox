@@ -38,7 +38,7 @@ public class TrackRecorder {
         paint.setColor(Color.BLUE);
         paint.setStrokeWidth(4);
         
-        Global.AktuelleRoute = new RouteOverlay.Route(paint, "actual Track");
+        Global.AktuelleRoute = new RouteOverlay.Trackable(paint, "actual Track");
         Global.AktuelleRoute.ShowRoute = true;
         Global.AktuelleRoute.IsActualTrack = true;
         Global.aktuelleRouteCount = 0;

@@ -63,7 +63,7 @@ public class Global
 
 	// for MapView
 	public static SmoothScrollingTyp SmoothScrolling = SmoothScrollingTyp.normal;
-	public static RouteOverlay.Route AktuelleRoute = null;
+	public static RouteOverlay.Trackable AktuelleRoute = null;
 	public static int aktuelleRouteCount = 0;
 
 	public static long TrackDistance;

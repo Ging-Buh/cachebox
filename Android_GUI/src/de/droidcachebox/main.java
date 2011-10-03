@@ -75,6 +75,7 @@ import de.droidcachebox.Views.NotesView;
 import de.droidcachebox.Views.SolverView;
 import de.droidcachebox.Views.SpoilerView;
 import de.droidcachebox.Views.TrackListView;
+import de.droidcachebox.Views.TrackableListView;
 import de.droidcachebox.Views.WaypointView;
 import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
@@ -145,8 +146,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.location.GpsStatus;
 
-public class main extends Activity implements SelectedCacheEvent,
-		LocationListener, CB_Core.Events.CacheListChangedEvent,
+public class main extends Activity implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEvent,
 		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent
 {
 	/*
@@ -169,6 +169,7 @@ public class main extends Activity implements SelectedCacheEvent,
 	private static AboutView aboutView = null; // ID 11
 	private static JokerView jokerView = null; // ID 12
 	private static TrackListView tracklistView = null; // ID 13
+	private static TrackableListView trackablelistView = null; // ID 14
 
 	public static LinearLayout strengthLayout;
 
@@ -324,8 +325,7 @@ public class main extends Activity implements SelectedCacheEvent,
 			Logger.Error("main.onCreate()", "setContentView", exc);
 		}
 
-		inflater = (LayoutInflater) this
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mainActivity = this;
 		AllContextMenuCallHandler.Main = this;
 		mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -355,8 +355,7 @@ public class main extends Activity implements SelectedCacheEvent,
 		 * be always on until this Activity gets destroyed.
 		 */
 		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
-				"My Tag");
+		this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
 		this.mWakeLock.acquire();
 
 		initialLocationManager();
@@ -391,8 +390,7 @@ public class main extends Activity implements SelectedCacheEvent,
 
 			// Start CB!
 
-			Logger.General("------ Start Rev: " + Global.CurrentRevision
-					+ "-------");
+			Logger.General("------ Start Rev: " + Global.CurrentRevision + "-------");
 
 			// Zeige About View als erstes!
 			showView(11);
@@ -401,8 +399,7 @@ public class main extends Activity implements SelectedCacheEvent,
 			if (N)
 			{
 
-				ActivityUtils.changeToTheme(mainActivity,
-						ActivityUtils.THEME_NIGHT, true);
+				ActivityUtils.changeToTheme(mainActivity, ActivityUtils.THEME_NIGHT, true);
 			}
 
 		}
@@ -417,24 +414,20 @@ public class main extends Activity implements SelectedCacheEvent,
 
 		setDebugVisible();
 
-		if (Config.GetBool("TrackRecorderStartup")) TrackRecorder
-				.StartRecording();
+		if (Config.GetBool("TrackRecorderStartup")) TrackRecorder.StartRecording();
 
-		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(
-				Intent.ACTION_BATTERY_CHANGED));
+		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
 		downSlider.isInitial = false;
-		int sollHeight = (Config.GetBool("quickButtonShow") && Config
-				.GetBool("quickButtonLastShow")) ? Sizes
-				.getQuickButtonListHeight() : 0;
+		int sollHeight = (Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow")) ? Sizes.getQuickButtonListHeight()
+				: 0;
 		setQuickButtonHeight(sollHeight);
 
 		if (isFirstStart)
 		{
 			// ask for API key only if Rev-Number changed, like at new
 			// installation and API Key is Empty
-			if (Config.GetBool("newInstall")
-					&& Config.GetString("GcAPI").equals(""))
+			if (Config.GetBool("newInstall") && Config.GetString("GcAPI").equals(""))
 			{
 				askToGetApiKey();
 			}
@@ -502,8 +495,7 @@ public class main extends Activity implements SelectedCacheEvent,
 		}
 		catch (Exception e)
 		{
-			Logger.Error("main.newLocationReceived()",
-					"Global.Locator.setLocation(location)", e);
+			Logger.Error("main.newLocationReceived()", "Global.Locator.setLocation(location)", e);
 			e.printStackTrace();
 		}
 
@@ -513,8 +505,7 @@ public class main extends Activity implements SelectedCacheEvent,
 		}
 		catch (Exception e)
 		{
-			Logger.Error("main.newLocationReceived()",
-					"PositionEventList.Call(location)", e);
+			Logger.Error("main.newLocationReceived()", "PositionEventList.Call(location)", e);
 			e.printStackTrace();
 		}
 
@@ -524,15 +515,13 @@ public class main extends Activity implements SelectedCacheEvent,
 		}
 		catch (Exception e)
 		{
-			Logger.Error("main.newLocationReceived()",
-					"InfoDownSlider.setNewLocation(location)", e);
+			Logger.Error("main.newLocationReceived()", "InfoDownSlider.setNewLocation(location)", e);
 			e.printStackTrace();
 		}
 
 		try
 		{
-			if (!initialResortAfterFirstFixCompleted
-					&& GlobalCore.LastValidPosition.Valid)
+			if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)
 			{
 				if (GlobalCore.SelectedCache() == null)
 				{
@@ -544,10 +533,7 @@ public class main extends Activity implements SelectedCacheEvent,
 		}
 		catch (Exception e)
 		{
-			Logger.Error(
-					"main.newLocationReceived()",
-					"if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)",
-					e);
+			Logger.Error("main.newLocationReceived()", "if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)", e);
 			e.printStackTrace();
 		}
 
@@ -561,8 +547,7 @@ public class main extends Activity implements SelectedCacheEvent,
 		}
 		catch (Exception e)
 		{
-			Logger.Error("main.newLocationReceived()",
-					"Global.PlaySound(GPS_Fix.wav)", e);
+			Logger.Error("main.newLocationReceived()", "Global.PlaySound(GPS_Fix.wav)", e);
 			e.printStackTrace();
 		}
 
@@ -576,8 +561,7 @@ public class main extends Activity implements SelectedCacheEvent,
 					distance = GlobalCore.SelectedWaypoint().Distance();
 				}
 
-				if (!approachSoundCompleted
-						&& (distance < Config.GetInt("SoundApproachDistance")))
+				if (!approachSoundCompleted && (distance < Config.GetInt("SoundApproachDistance")))
 				{
 					Global.PlaySound("Approach.wav");
 					approachSoundCompleted = true;
@@ -586,8 +570,7 @@ public class main extends Activity implements SelectedCacheEvent,
 		}
 		catch (Exception e)
 		{
-			Logger.Error("main.newLocationReceived()",
-					"Global.PlaySound(Approach.wav)", e);
+			Logger.Error("main.newLocationReceived()", "Global.PlaySound(Approach.wav)", e);
 			e.printStackTrace();
 		}
 
@@ -597,8 +580,7 @@ public class main extends Activity implements SelectedCacheEvent,
 		}
 		catch (Exception e)
 		{
-			Logger.Error("main.newLocationReceived()",
-					"TrackRecorder.recordPosition()", e);
+			Logger.Error("main.newLocationReceived()", "TrackRecorder.recordPosition()", e);
 			e.printStackTrace();
 		}
 
@@ -609,8 +591,7 @@ public class main extends Activity implements SelectedCacheEvent,
 			// only when showing Map or cacheList
 			if (!GlobalCore.ResortAtWork)
 			{
-				if (Global.autoResort
-						&& ((aktView == mapView) || (aktView == cacheListView)))
+				if (Global.autoResort && ((aktView == mapView) || (aktView == cacheListView)))
 				{
 					int z = 0;
 					if (!(GlobalCore.NearestCache() == null))
@@ -619,8 +600,7 @@ public class main extends Activity implements SelectedCacheEvent,
 						{
 							z++;
 							if (z >= 50) return;
-							if (cache.Distance(true) < GlobalCore
-									.NearestCache().Distance(true))
+							if (cache.Distance(true) < GlobalCore.NearestCache().Distance(true))
 							{
 								CacheDAO cacheDAO = new CacheDAO();
 								Database.Data.Query.Resort();
@@ -646,9 +626,10 @@ public class main extends Activity implements SelectedCacheEvent,
 
 		try
 		{
-			if (location.getProvider().equalsIgnoreCase(
-					LocationManager.GPS_PROVIDER)) // Neue Position von
-													// GPS-Empfänger
+			if (location.getProvider().equalsIgnoreCase(LocationManager.GPS_PROVIDER)) // Neue
+																						// Position
+																						// von
+																						// GPS-Empfänger
 			{
 				newLocationReceived(location);
 				GPSTimeStamp = java.lang.System.currentTimeMillis();
@@ -663,9 +644,10 @@ public class main extends Activity implements SelectedCacheEvent,
 
 		try
 		{
-			if (location.getProvider().equalsIgnoreCase(
-					LocationManager.NETWORK_PROVIDER)) // Neue Position von
-														// Netzwerk
+			if (location.getProvider().equalsIgnoreCase(LocationManager.NETWORK_PROVIDER)) // Neue
+																							// Position
+																							// von
+																							// Netzwerk
 			{
 				if ((java.lang.System.currentTimeMillis() - GPSTimeStamp) > NetworkPositionTime) // Wenn
 																									// 10
@@ -677,8 +659,7 @@ public class main extends Activity implements SelectedCacheEvent,
 				{
 					NetworkPositionTime = 90000;
 					newLocationReceived(location);
-					Toast.makeText(mainActivity, "Network-Position",
-							Toast.LENGTH_SHORT).show();
+					Toast.makeText(mainActivity, "Network-Position", Toast.LENGTH_SHORT).show();
 				}
 			}
 		}
@@ -743,8 +724,7 @@ public class main extends Activity implements SelectedCacheEvent,
 					}
 				}
 			};
-			MessageBox.Show(Global.Translations.Get("QuitReally"),
-					Global.Translations.Get("Quit?"), MessageBoxButtons.YesNo,
+			MessageBox.Show(Global.Translations.Get("QuitReally"), Global.Translations.Get("Quit?"), MessageBoxButtons.YesNo,
 					MessageBoxIcon.Question, dialogClickListener);
 
 			return true;
@@ -757,20 +737,15 @@ public class main extends Activity implements SelectedCacheEvent,
 	{
 		int ButtonBackGroundResource = 0;
 
-		if ((Global.LastFilter == null)
-				|| (Global.LastFilter.ToString().equals(""))
-				|| (PresetListViewItem
-						.chkPresetFilter(PresetListView.presets[0],
-								Global.LastFilter.ToString()))
+		if ((Global.LastFilter == null) || (Global.LastFilter.ToString().equals(""))
+				|| (PresetListViewItem.chkPresetFilter(PresetListView.presets[0], Global.LastFilter.ToString()))
 				&& !Global.LastFilter.isExtendsFilter())
 		{
-			ButtonBackGroundResource = N ? R.drawable.night_db_button_image_selector
-					: R.drawable.db_button_image_selector;
+			ButtonBackGroundResource = N ? R.drawable.night_db_button_image_selector : R.drawable.db_button_image_selector;
 		}
 		else
 		{
-			ButtonBackGroundResource = N ? R.drawable.night_db_button_image_selector_filter
-					: R.drawable.db_button_image_selector_filter;
+			ButtonBackGroundResource = N ? R.drawable.night_db_button_image_selector_filter : R.drawable.db_button_image_selector_filter;
 		}
 		;
 
@@ -789,8 +764,7 @@ public class main extends Activity implements SelectedCacheEvent,
 				// Toast.makeText(getApplicationContext(),
 				// "DB wechsel momentan nur mit Neustart...",
 				// Toast.LENGTH_LONG).show();
-				Database db = new AndroidDB(Database.DatabaseType.CacheBox,
-						mainActivity);
+				Database db = new AndroidDB(Database.DatabaseType.CacheBox, mainActivity);
 				if (!db.StartUp(Config.GetString("DatabasePath"))) return;
 				Database.Data = null;
 				Database.Data = db;
@@ -810,9 +784,8 @@ public class main extends Activity implements SelectedCacheEvent,
 				 * commandUpdate.ExecuteNonQuery(); }
 				 */
 				GlobalCore.Categories = new Categories();
-				Global.LastFilter = (Config.GetString("Filter").length() == 0) ? new FilterProperties(
-						PresetListView.presets[0]) : new FilterProperties(
-						Config.GetString("Filter"));
+				Global.LastFilter = (Config.GetString("Filter").length() == 0) ? new FilterProperties(PresetListView.presets[0])
+						: new FilterProperties(Config.GetString("Filter"));
 				// filterSettings.LoadFilterProperties(Global.LastFilter);
 				Database.Data.GPXFilenameUpdateCacheCount();
 
@@ -848,14 +821,12 @@ public class main extends Activity implements SelectedCacheEvent,
 				GlobalCore.SelectedCache().ReloadSpoilerRessources();
 				String MediaFolder = Config.GetString("UserImageFolder");
 				String TrackFolder = Config.GetString("TrackFolder");
-				String relativPath = FileIO.getRelativePath(MediaFolder,
-						TrackFolder, "/");
+				String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
 				// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und
 				// die Koordinaten nach der Aufnahme verwendet werden.
 				mediaTimeString = Global.GetTrackDateTimeString();
-				TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath
-						+ "/" + basename + ".jpg",
-						GlobalCore.LastValidPosition, mediaTimeString);
+				TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", GlobalCore.LastValidPosition,
+						mediaTimeString);
 
 				return;
 			}
@@ -876,33 +847,26 @@ public class main extends Activity implements SelectedCacheEvent,
 
 				String[] projection =
 					{ MediaStore.Video.Media.DATA, MediaStore.Video.Media.SIZE };
-				Cursor cursor = managedQuery(cameraVideoURI, projection, null,
-						null, null);
-				int column_index_data = cursor
-						.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+				Cursor cursor = managedQuery(cameraVideoURI, projection, null, null, null);
+				int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
 				cursor.moveToFirst();
-				String recordedVideoFilePath = cursor
-						.getString(column_index_data);
+				String recordedVideoFilePath = cursor.getString(column_index_data);
 
 				String ext = FileIO.GetFileExtension(recordedVideoFilePath);
 				String MediaFolder = Config.GetString("UserImageFolder");
 
 				// Video in Media-Ordner verschieben
 				File source = new File(recordedVideoFilePath);
-				File destination = new File(MediaFolder + "/" + basename + "."
-						+ ext);
+				File destination = new File(MediaFolder + "/" + basename + "." + ext);
 				// Datei wird umbenannt/verschoben
 				if (!source.renameTo(destination))
 				{
-					Log.d("DroidCachebox", "Fehler beim Umbenennen der Datei: "
-							+ source.getName());
+					Log.d("DroidCachebox", "Fehler beim Umbenennen der Datei: " + source.getName());
 				}
 
 				String TrackFolder = Config.GetString("TrackFolder");
-				String relativPath = FileIO.getRelativePath(MediaFolder,
-						TrackFolder, "/");
-				TrackRecorder.AnnotateMedia(basename + "." + ext, relativPath
-						+ "/" + basename + "." + ext, mediaCoordinate,
+				String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
+				TrackRecorder.AnnotateMedia(basename + "." + ext, relativPath + "/" + basename + "." + ext, mediaCoordinate,
 						mediaTimeString);
 
 				return;
@@ -937,8 +901,7 @@ public class main extends Activity implements SelectedCacheEvent,
 	}
 
 	@Override
-	public void onCreateContextMenu(final ContextMenu menu, View v,
-			ContextMenuInfo menuInfo)
+	public void onCreateContextMenu(final ContextMenu menu, View v, ContextMenuInfo menuInfo)
 	{
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
@@ -981,10 +944,8 @@ public class main extends Activity implements SelectedCacheEvent,
 	{
 		super.onResume();
 		if (runsWithAkku) counter.start();
-		mSensorManager.registerListener(mListener, mSensor,
-				SensorManager.SENSOR_DELAY_GAME);
-		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(
-				Intent.ACTION_BATTERY_CHANGED));
+		mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
+		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 		if (!Config.GetBool("AllowLandscape"))
 		{
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -994,9 +955,8 @@ public class main extends Activity implements SelectedCacheEvent,
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 		}
 
-		int sollHeight = (Config.GetBool("quickButtonShow") && Config
-				.GetBool("quickButtonLastShow")) ? Sizes
-				.getQuickButtonListHeight() : 0;
+		int sollHeight = (Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow")) ? Sizes.getQuickButtonListHeight()
+				: 0;
 		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 		downSlider.isInitial = false;
 		InfoDownSlider.invalidate();
@@ -1174,17 +1134,12 @@ public class main extends Activity implements SelectedCacheEvent,
 	{
 		if (ID == -1) return;// keine Action
 
-		if (!(ID > ViewList.size()))
-		{
-			showView((ViewOptionsMenu) ViewList.get(ID));
-		}
-		else
+		if ((ID > ViewList.size()) || ID == 14)
 		{
 			switch (ID)
 			{
 			case 102: // Settings
-				final Intent mainIntent = new Intent().setClass(mainActivity,
-						Settings.class);
+				final Intent mainIntent = new Intent().setClass(mainActivity, Settings.class);
 				Bundle b = new Bundle();
 				b.putSerializable("Show", -1);
 				mainIntent.putExtras(b);
@@ -1192,18 +1147,25 @@ public class main extends Activity implements SelectedCacheEvent,
 				break;
 
 			case 101: // Filtersettings
-				final Intent mainIntent1 = new Intent().setClass(mainActivity,
-						EditFilterSettings.class);
+				final Intent mainIntent1 = new Intent().setClass(mainActivity, EditFilterSettings.class);
 				mainActivity.startActivity(mainIntent1);
 				break;
 
 			case 103: // Import
-				final Intent mainIntent2 = new Intent().setClass(mainActivity,
-						ImportDialog.class);
+				final Intent mainIntent2 = new Intent().setClass(mainActivity, ImportDialog.class);
 				mainActivity.startActivity(mainIntent2);
 				break;
 
+			case 14: // TrackableListView
+				trackablelistView = new TrackableListView(this, this);
+				showView(trackablelistView);
+				break;
+
 			}
+		}
+		else
+		{
+			showView((ViewOptionsMenu) ViewList.get(ID));
 
 		}
 
@@ -1238,7 +1200,19 @@ public class main extends Activity implements SelectedCacheEvent,
 
 	private void showView(ViewOptionsMenu view)
 	{
-		if (aktView != null) aktView.OnHide();
+		if (aktView != null)
+		{
+			aktView.OnHide();
+
+			if (aktView.equals(trackablelistView))
+			{
+				// Instanz löschenn
+				aktView=null;
+				trackablelistView.OnFree();
+				trackablelistView = null;
+			}
+		}
+
 		aktView = view;
 		frame.removeAllViews();
 		ViewParent parent = ((View) aktView).getParent();
@@ -1373,8 +1347,7 @@ public class main extends Activity implements SelectedCacheEvent,
 				TrackRecorder.PauseRecording();
 				break;
 			case R.id.menu_tracklistview_generate:
-				AllContextMenuCallHandler
-						.showTrackListView_generateContextMenu();
+				AllContextMenuCallHandler.showTrackListView_generateContextMenu();
 				break;
 			case R.id.miNavigateTo:
 				NavigateTo();
@@ -1390,8 +1363,7 @@ public class main extends Activity implements SelectedCacheEvent,
 
 	OnItemClickListener QuickButtonOnItemClickListner = new OnItemClickListener()
 	{
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-				long arg3)
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 		{
 
 			// give feadback
@@ -1449,8 +1421,7 @@ public class main extends Activity implements SelectedCacheEvent,
 				showView(7);
 				break;
 			case 15:
-				if (GlobalCore.SelectedCache() != null
-						&& GlobalCore.SelectedCache().SpoilerExists()) showView(5);
+				if (GlobalCore.SelectedCache() != null && GlobalCore.SelectedCache().SpoilerExists()) showView(5);
 				break;
 			}
 		}
@@ -1477,12 +1448,9 @@ public class main extends Activity implements SelectedCacheEvent,
 		buttonTools = (ImageButton) this.findViewById(R.id.buttonInfo);
 		buttonMisc = (ImageButton) this.findViewById(R.id.buttonMisc);
 
-		cacheNameView = (CacheNameView) this
-				.findViewById(R.id.main_cache_name_view);
-		QuickButtonList = (HorizontalListView) this
-				.findViewById(R.id.main_quick_button_list);
-		strengthLayout = (LinearLayout) this
-				.findViewById(R.id.main_strength_control);
+		cacheNameView = (CacheNameView) this.findViewById(R.id.main_cache_name_view);
+		QuickButtonList = (HorizontalListView) this.findViewById(R.id.main_quick_button_list);
+		strengthLayout = (LinearLayout) this.findViewById(R.id.main_strength_control);
 
 		searchLayout = (LinearLayout) this.findViewById(R.id.searchDialog);
 	}
@@ -1493,8 +1461,7 @@ public class main extends Activity implements SelectedCacheEvent,
 		if (cacheListView == null) cacheListView = new CacheListView(this);
 		if (waypointView == null) waypointView = new WaypointView(this, this);
 		if (logView == null) logView = new LogView(this);
-		if (fieldNotesView == null) fieldNotesView = new FieldNotesView(this,
-				this);
+		if (fieldNotesView == null) fieldNotesView = new FieldNotesView(this, this);
 		registerForContextMenu(fieldNotesView);
 		// if (descriptionView == null)
 		descriptionView = new DescriptionView(this, inflater);
@@ -1565,14 +1532,11 @@ public class main extends Activity implements SelectedCacheEvent,
 			 * apps haben hier 0.
 			 */
 
-			locationManager.requestLocationUpdates(
-					LocationManager.GPS_PROVIDER, 100, 1, this);
-			locationManager.requestLocationUpdates(
-					LocationManager.NETWORK_PROVIDER, 10000, 500, this);
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, this);
+			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 500, this);
 
 			locationManager.addNmeaListener(this);
-			locationManager.addGpsStatusListener(new GPS.GpsStatusListener(
-					locationManager));
+			locationManager.addGpsStatusListener(new GPS.GpsStatusListener(locationManager));
 		}
 		catch (Exception e)
 		{
@@ -1590,8 +1554,7 @@ public class main extends Activity implements SelectedCacheEvent,
 			{
 				mapView = new MapView(this, inflater);
 				mapView.Initialize();
-				mapView.CurrentLayer = MapView.Manager.GetLayerByName(
-						Config.GetString("CurrentMapLayer"),
+				mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.GetString("CurrentMapLayer"),
 						Config.GetString("CurrentMapLayer"), "");
 				Global.TrackDistance = Config.GetInt("TrackDistance");
 				mapView.InitializeMap();
@@ -1707,12 +1670,8 @@ public class main extends Activity implements SelectedCacheEvent,
 
 		if (GlobalCore.SelectedCache() != null)
 		{
-			String validName = FileIO.RemoveInvalidFatChars(GlobalCore
-					.SelectedCache().GcCode
-					+ "-"
-					+ GlobalCore.SelectedCache().Name);
-			mediaCacheName = validName.substring(0,
-					(validName.length() > 32) ? 32 : validName.length());
+			String validName = FileIO.RemoveInvalidFatChars(GlobalCore.SelectedCache().GcCode + "-" + GlobalCore.SelectedCache().Name);
+			mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 			// Title = Global.SelectedCache().Name;
 		}
 		else
@@ -1745,12 +1704,8 @@ public class main extends Activity implements SelectedCacheEvent,
 
 		if (GlobalCore.SelectedCache() != null)
 		{
-			String validName = FileIO.RemoveInvalidFatChars(GlobalCore
-					.SelectedCache().GcCode
-					+ "-"
-					+ GlobalCore.SelectedCache().Name);
-			mediaCacheName = validName.substring(0,
-					(validName.length() > 32) ? 32 : validName.length());
+			String validName = FileIO.RemoveInvalidFatChars(GlobalCore.SelectedCache().GcCode + "-" + GlobalCore.SelectedCache().Name);
+			mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 			// Title = Global.SelectedCache().Name;
 		}
 		else
@@ -1768,8 +1723,7 @@ public class main extends Activity implements SelectedCacheEvent,
 
 		ContentValues values = new ContentValues();
 		values.put(MediaStore.Video.Media.TITLE, "captureTemp.mp4");
-		cameraVideoURI = getContentResolver().insert(
-				MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+		cameraVideoURI = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
 
 		final Intent videointent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 		videointent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediafile));
@@ -1798,12 +1752,8 @@ public class main extends Activity implements SelectedCacheEvent,
 
 			if (GlobalCore.SelectedCache() != null)
 			{
-				String validName = FileIO.RemoveInvalidFatChars(GlobalCore
-						.SelectedCache().GcCode
-						+ "-"
-						+ GlobalCore.SelectedCache().Name);
-				mediaCacheName = validName.substring(0,
-						(validName.length() > 32) ? 32 : validName.length());
+				String validName = FileIO.RemoveInvalidFatChars(GlobalCore.SelectedCache().GcCode + "-" + GlobalCore.SelectedCache().Name);
+				mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 				// Title = Global.SelectedCache().Name;
 			}
 			else
@@ -1827,15 +1777,12 @@ public class main extends Activity implements SelectedCacheEvent,
 
 			String MediaFolder = Config.GetString("UserImageFolder");
 			String TrackFolder = Config.GetString("TrackFolder");
-			String relativPath = FileIO.getRelativePath(MediaFolder,
-					TrackFolder, "/");
+			String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
 			// Da eine Voice keine Momentaufnahme ist, muss die Zeit und die
 			// Koordinaten beim Start der Aufnahme verwendet werden.
-			TrackRecorder.AnnotateMedia(basename + ".wav", relativPath + "/"
-					+ basename + ".wav", GlobalCore.LastValidPosition,
+			TrackRecorder.AnnotateMedia(basename + ".wav", relativPath + "/" + basename + ".wav", GlobalCore.LastValidPosition,
 					Global.GetTrackDateTimeString());
-			Toast.makeText(mainActivity, "Start Voice Recorder",
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
 			setVoiceRecIsStart(true);
 			counter.cancel(); // Während der Aufnahme Screen-Lock-Counter
@@ -1859,8 +1806,7 @@ public class main extends Activity implements SelectedCacheEvent,
 		String hint = Database.Hint(GlobalCore.SelectedCache());
 		if (hint.equals("")) return;
 
-		final Intent hintIntent = new Intent().setClass(mainActivity,
-				HintDialog.class);
+		final Intent hintIntent = new Intent().setClass(mainActivity, HintDialog.class);
 		Bundle b = new Bundle();
 		b.putSerializable("Hint", hint);
 		hintIntent.putExtras(b);
@@ -1873,8 +1819,7 @@ public class main extends Activity implements SelectedCacheEvent,
 		{ // Wenn Telefonjoker-Liste leer neu laden
 			try
 			{
-				URL url = new URL("http://www.gcjoker.de/cachebox.php?md5="
-						+ Config.GetString("GcJoker") + "&wpt="
+				URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.GetString("GcJoker") + "&wpt="
 						+ GlobalCore.SelectedCache().GcCode);
 				URLConnection urlConnection = url.openConnection();
 				HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
@@ -1888,8 +1833,7 @@ public class main extends Activity implements SelectedCacheEvent,
 						String line;
 						try
 						{
-							BufferedReader reader = new BufferedReader(
-									new InputStreamReader(inputStream, "UTF-8"));
+							BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 							while ((line = reader.readLine()) != null)
 							{
 								String[] s = line.split(";", 7);
@@ -1912,15 +1856,12 @@ public class main extends Activity implements SelectedCacheEvent,
 									}
 									if (s[0].equals("0")) // Normaler Eintrag
 									{
-										Global.Jokers.AddJoker(s[1], s[2],
-												s[3], s[4], s[5], s[6]);
+										Global.Jokers.AddJoker(s[1], s[2], s[3], s[4], s[5], s[6]);
 									}
 								}
 								catch (Exception exc)
 								{
-									Logger.Error(
-											"main.initialBtnInfoContextMenu()",
-											"HTTP response Jokers", exc);
+									Logger.Error("main.initialBtnInfoContextMenu()", "HTTP response Jokers", exc);
 									return;
 								}
 							}
@@ -1943,21 +1884,18 @@ public class main extends Activity implements SelectedCacheEvent,
 			}
 			catch (MalformedURLException urlEx)
 			{
-				Logger.Error("main.initialBtnInfoContextMenu()",
-						"MalformedURLException HTTP response Jokers", urlEx);
+				Logger.Error("main.initialBtnInfoContextMenu()", "MalformedURLException HTTP response Jokers", urlEx);
 				Log.d("DroidCachebox", urlEx.getMessage());
 			}
 			catch (IOException ioEx)
 			{
-				Logger.Error("main.initialBtnInfoContextMenu()",
-						"IOException HTTP response Jokers", ioEx);
+				Logger.Error("main.initialBtnInfoContextMenu()", "IOException HTTP response Jokers", ioEx);
 				Log.d("DroidCachebox", ioEx.getMessage());
 				MessageBox.Show("Fehler bei Internetzugriff", null);
 			}
 			catch (Exception ex)
 			{
-				Logger.Error("main.initialBtnInfoContextMenu()",
-						"HTTP response Jokers", ex);
+				Logger.Error("main.initialBtnInfoContextMenu()", "HTTP response Jokers", ex);
 				Log.d("DroidCachebox", ex.getMessage());
 			}
 		}
@@ -1965,8 +1903,7 @@ public class main extends Activity implements SelectedCacheEvent,
 
 	private void showTbList()
 	{
-		MessageBox.Show("Die Trackable List ist noch nicht implementiert!",
-				"Sorry", MessageBoxIcon.Asterisk);
+		showView(14);
 	}
 
 	private void switchDayNight()
@@ -1975,11 +1912,8 @@ public class main extends Activity implements SelectedCacheEvent,
 		Config.changeDayNight();
 		DescriptionViewControl.mustLoadDescription = true;
 		downSlider.isInitial = false;
-		ActivityUtils.changeToTheme(mainActivity,
-				Config.GetBool("nightMode") ? ActivityUtils.THEME_NIGHT
-						: ActivityUtils.THEME_DAY);
-		Toast.makeText(mainActivity, "changeDayNight", Toast.LENGTH_SHORT)
-				.show();
+		ActivityUtils.changeToTheme(mainActivity, Config.GetBool("nightMode") ? ActivityUtils.THEME_NIGHT : ActivityUtils.THEME_DAY);
+		Toast.makeText(mainActivity, "changeDayNight", Toast.LENGTH_SHORT).show();
 
 	}
 
@@ -1998,8 +1932,7 @@ public class main extends Activity implements SelectedCacheEvent,
 	private void showManageDB()
 	{
 		SelectDB.autoStart = false;
-		Intent selectDBIntent = new Intent().setClass(mainActivity,
-				SelectDB.class);
+		Intent selectDBIntent = new Intent().setClass(mainActivity, SelectDB.class);
 		mainActivity.startActivityForResult(selectDBIntent, 546132);
 	}
 
@@ -2020,8 +1953,7 @@ public class main extends Activity implements SelectedCacheEvent,
 				lat = GlobalCore.SelectedWaypoint().Latitude();
 				lon = GlobalCore.SelectedWaypoint().Longitude();
 			}
-			Intent implicitIntent = new Intent(Intent.ACTION_VIEW,
-					Uri.parse("google.navigation:q=" + lat + "," + lon));
+			Intent implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + lat + "," + lon));
 
 			startActivity(implicitIntent);
 		}
@@ -2037,19 +1969,15 @@ public class main extends Activity implements SelectedCacheEvent,
 		 * CB_Core.Api.GroundspeakAPI.GetGeocacheStatus(accessToken, caches);
 		 */
 
-		int status = CB_Core.Api.GroundspeakAPI.GetCacheLimits(Config
-				.GetString("GcAPI"));
-		if (status != 0) MessageBox
-				.Show(CB_Core.Api.GroundspeakAPI.LastAPIError);
+		int status = CB_Core.Api.GroundspeakAPI.GetCacheLimits(Config.GetString("GcAPI"));
+		if (status != 0) MessageBox.Show(CB_Core.Api.GroundspeakAPI.LastAPIError);
 
-		MessageBox.Show("Cache hinzufügen ist noch nicht implementiert!",
-				"Sorry", MessageBoxIcon.Asterisk);
+		MessageBox.Show("Cache hinzufügen ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
 	}
 
 	public void GetApiAuth()
 	{
-		Intent gcApiLogin = new Intent().setClass(mainActivity,
-				GcApiLogin.class);
+		Intent gcApiLogin = new Intent().setClass(mainActivity, GcApiLogin.class);
 		mainActivity.startActivityForResult(gcApiLogin, 987654321);
 	}
 
@@ -2060,17 +1988,14 @@ public class main extends Activity implements SelectedCacheEvent,
 
 	public void searchOnline()
 	{
-		premiumMember = (GroundspeakAPI.GetMembershipType(Config
-				.GetString("GcAPI")) == 3);
+		premiumMember = (GroundspeakAPI.GetMembershipType(Config.GetString("GcAPI")) == 3);
 		if (premiumMember)
 		{
 			searchOnlineNow();
 		}
 		else
 		{
-			MessageBox.Show(Global.Translations.Get("GC_basic"),
-					Global.Translations.Get("GC_title"),
-					MessageBoxButtons.OKCancel,
+			MessageBox.Show(Global.Translations.Get("GC_basic"), Global.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
 					MessageBoxIcon.Powerd_by_GC_Live, PremiumMemberResult);
 		}
 	}
@@ -2111,11 +2036,8 @@ public class main extends Activity implements SelectedCacheEvent,
 					PointD point = new PointD(0, 0);
 					point.X = mapView.screenCenter.X;
 					point.Y = mapView.screenCenter.Y;
-					mapView.lastMouseCoordinate = new Coordinate(
-							Descriptor.TileYToLatitude(mapView.Zoom,
-									point.Y / (256.0)),
-							Descriptor.TileXToLongitude(mapView.Zoom,
-									point.X / (256.0)));
+					mapView.lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(mapView.Zoom, point.Y / (256.0)),
+							Descriptor.TileXToLongitude(mapView.Zoom, point.X / (256.0)));
 					searchCoord = mapView.lastMouseCoordinate;
 				}
 				else
@@ -2130,12 +2052,10 @@ public class main extends Activity implements SelectedCacheEvent,
 				// API-Import
 				// Category suchen, die dazu gehört
 				CategoryDAO categoryDAO = new CategoryDAO();
-				Category category = categoryDAO.GetCategory(
-						GlobalCore.Categories, "API-Import");
+				Category category = categoryDAO.GetCategory(GlobalCore.Categories, "API-Import");
 				if (category == null) return; // should not happen!!!
 
-				GpxFilename gpxFilename = categoryDAO.CreateNewGpxFilename(
-						category, "API-Import");
+				GpxFilename gpxFilename = categoryDAO.CreateNewGpxFilename(category, "API-Import");
 				if (gpxFilename == null) return;
 
 				ArrayList<Cache> apiCaches = new ArrayList<Cache>();
@@ -2144,18 +2064,14 @@ public class main extends Activity implements SelectedCacheEvent,
 				searchC.pos = searchCoord;
 				searchC.distanceInMeters = 50000;
 				searchC.number = 30;
-				result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(
-						accessToken, searchC, apiCaches, apiLogs,
-						gpxFilename.Id);
+				result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, gpxFilename.Id);
 				if (apiCaches.size() > 0)
 				{
 					Database.Data.beginTransaction();
 					for (Cache cache : apiCaches)
 					{
-						cache.MapX = 256.0 * Descriptor.LongitudeToTileX(
-								Cache.MapZoomLevel, cache.Longitude());
-						cache.MapY = 256.0 * Descriptor.LatitudeToTileY(
-								Cache.MapZoomLevel, cache.Latitude());
+						cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
+						cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
 						if (Database.Data.Query.GetCacheById(cache.Id) == null)
 						{
 							Database.Data.Query.add(cache);
@@ -2188,8 +2104,7 @@ public class main extends Activity implements SelectedCacheEvent,
 
 				}
 
-				onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler
-						.obtainMessage(1));
+				onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
 			}
 
 		};
@@ -2209,16 +2124,7 @@ public class main extends Activity implements SelectedCacheEvent,
 			@Override
 			public void run()
 			{
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
+
 				ArrayList<Cache> chkList = new ArrayList<Cache>();
 				Iterator<Cache> cIterator = Database.Data.Query.iterator();
 
@@ -2228,27 +2134,23 @@ public class main extends Activity implements SelectedCacheEvent,
 				}
 				while (cIterator.hasNext());
 
-				
 				// in 100èrter Blöcke Teilen
-				
-				
-				
-				int start=0;
-				int stop=100;
+
+				int start = 0;
+				int stop = 100;
 				ArrayList<Cache> addedReturnList = new ArrayList<Cache>();
-				
-				
+
 				int result;
 				ArrayList<Cache> chkList100;
 				do
 				{
-					Iterator<Cache> Iterator2 =chkList.iterator();
-					chkList100=new ArrayList<Cache>();
-					
-					int index=0;
+					Iterator<Cache> Iterator2 = chkList.iterator();
+					chkList100 = new ArrayList<Cache>();
+
+					int index = 0;
 					do
 					{
-						if(index>=start && index<=stop)
+						if (index >= start && index <= stop)
 						{
 							chkList100.add(Iterator2.next());
 						}
@@ -2257,26 +2159,20 @@ public class main extends Activity implements SelectedCacheEvent,
 							Iterator2.next();
 						}
 						index++;
-					}while(Iterator2.hasNext());
-					
-					
-					result = GroundspeakAPI.GetGeocacheStatus(
-							Config.GetString("GcAPI"), chkList100);
+					}
+					while (Iterator2.hasNext());
+
+					result = GroundspeakAPI.GetGeocacheStatus(Config.GetString("GcAPI"), chkList100);
 					addedReturnList.addAll(chkList100);
-					start+=101;
-					stop+=101;
+					start += 101;
+					stop += 101;
 				}
-				while (chkList100.size()==101);
-				
-				
-				
-				
-				
-				
+				while (chkList100.size() == 101);
+
 				if (result == 0)
 				{
 					Database.Data.beginTransaction();
-					
+
 					Iterator<Cache> iterator = addedReturnList.iterator();
 					CacheDAO dao = new CacheDAO();
 					do
@@ -2292,13 +2188,11 @@ public class main extends Activity implements SelectedCacheEvent,
 				}
 				else
 				{
-					onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler
-							.obtainMessage(2));
-					
+					onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(2));
+
 				}
 
-				onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler
-						.obtainMessage(1));
+				onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
 			}
 
 		};
@@ -2331,14 +2225,14 @@ public class main extends Activity implements SelectedCacheEvent,
 				cacheListView.notifyCacheListChange();
 				break;
 			}
-			
+
 			case 2:
-				{
-					pd.dismiss();
-					MessageBox.Show("at Status Check", "Error", MessageBoxIcon.Error);
-					break;
-				}
-			
+			{
+				pd.dismiss();
+				MessageBox.Show("at Status Check", "Error", MessageBoxIcon.Error);
+				break;
+			}
+
 			}
 		}
 	};
@@ -2400,8 +2294,7 @@ public class main extends Activity implements SelectedCacheEvent,
 				extAudioRecorder.stop();
 				extAudioRecorder.release();
 				extAudioRecorder = null;
-				Toast.makeText(mainActivity, "Stop Voice Recorder",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(mainActivity, "Stop Voice Recorder", Toast.LENGTH_SHORT).show();
 			}
 			if (runsWithAkku)
 			{
@@ -2424,8 +2317,7 @@ public class main extends Activity implements SelectedCacheEvent,
 				{
 					if (s[11].equals("")) return;
 					double altCorrection = Double.valueOf(s[11]);
-					Logger.General("AltCorrection: "
-							+ String.valueOf(altCorrection));
+					Logger.General("AltCorrection: " + String.valueOf(altCorrection));
 					Global.Locator.altCorrection = altCorrection;
 					// Höhenkorrektur ändert sich normalerweise nicht, einmal
 					// auslesen reicht...
@@ -2631,17 +2523,11 @@ public class main extends Activity implements SelectedCacheEvent,
 							@Override
 							public void run()
 							{
-								MessageBox.Show(
-										Global.Translations.Get("GPSon?"),
-										Global.Translations.Get("GPSoff"),
-										MessageBoxButtons.YesNo,
-										MessageBoxIcon.Question,
-										new DialogInterface.OnClickListener()
+								MessageBox.Show(Global.Translations.Get("GPSon?"), Global.Translations.Get("GPSoff"),
+										MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener()
 										{
 											@Override
-											public void onClick(
-													DialogInterface dialog,
-													int button)
+											public void onClick(DialogInterface dialog, int button)
 											{
 												// Behandle das ergebniss
 												switch (button)
@@ -2705,16 +2591,14 @@ public class main extends Activity implements SelectedCacheEvent,
 		}
 		catch (Exception e)
 		{
-			Logger.Error("main.setSatStrength()",
-					"de.droidcachebox.Locator.GPS.setSatStrength()", e);
+			Logger.Error("main.setSatStrength()", "de.droidcachebox.Locator.GPS.setSatStrength()", e);
 			e.printStackTrace();
 		}
 	}
 
 	private void askToGetApiKey()
 	{
-		MessageBox.Show(Global.Translations.Get("wantApi"),
-				Global.Translations.Get("welcome"), MessageBoxButtons.YesNo,
+		MessageBox.Show(Global.Translations.Get("wantApi"), Global.Translations.Get("welcome"), MessageBoxButtons.YesNo,
 				MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener()
 				{
 					@Override
