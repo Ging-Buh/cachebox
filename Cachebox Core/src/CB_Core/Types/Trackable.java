@@ -14,7 +14,7 @@ import CB_Core.Log.Logger;
 public class Trackable implements Comparable<Trackable>
 {
 
-	private long Id = -1;
+	private int Id = -1;
 	private boolean Archived;
 	private String GcCode = "";
 	private long CacheId;
@@ -36,7 +36,7 @@ public class Trackable implements Comparable<Trackable>
 	 */
 	public Trackable(CoreCursor reader)
 	{
-		Id = reader.getLong(0);
+		Id = reader.getInt(0);
 		Archived = reader.getInt(1) != 0;
 		GcCode = reader.getString(2).trim();
 		CacheId = reader.getLong(3);
