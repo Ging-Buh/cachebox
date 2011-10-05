@@ -1903,7 +1903,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 	private void showTbList()
 	{
-		showView(14);
+		MessageBox.Show("comming soon","sorry",MessageBoxIcon.Asterisk);
+//		showView(14);
 	}
 
 	private void switchDayNight()

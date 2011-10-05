@@ -37,9 +37,9 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 public class Global
 {
-	public static final int CurrentRevision = 446;
+	public static final int CurrentRevision = 453;
 	public static final String CurrentVersion = "0.2.";
-	public static final String VersionPrefix = "alpha";
+	public static final String VersionPrefix = "alpha 3";
 	public static final int LatestDatabaseChange = 1016;
 	public static final int LatestDatabaseFieldNoteChange = 1001;
 
