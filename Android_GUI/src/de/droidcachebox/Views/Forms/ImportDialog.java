@@ -237,6 +237,10 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 				ImporterProgress ip = new ImporterProgress();
 
 				String directoryPath = Config.GetString("PocketQueryFolder");
+				// chk exist import folder
+				File directory = new File(directoryPath);
+				
+				
 				try {
 					if (checkImportPQfromGC.isChecked())
 						importer.importGC();
@@ -247,7 +251,7 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 
 					// Importiere alle GPX Files im Import Folder, auch in ZIP
 					// verpackte
-					if (checkBoxImportGPX.isChecked()) {
+					if (checkBoxImportGPX.isChecked()&& directory.exists()) {
 						Database.Data.beginTransaction();
 						try {
 
@@ -275,7 +279,6 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 						Database.Data.endTransaction();
 
 						// del alten entpackten Ordener wenn vorhanden?
-						File directory = new File(directoryPath);
 						File[] filelist = directory.listFiles();
 						for (File tmp : filelist) {
 							if (tmp.isDirectory()) {

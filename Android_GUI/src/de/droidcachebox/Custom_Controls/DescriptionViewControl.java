@@ -10,6 +10,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
@@ -427,16 +428,16 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 			mustLoadDescription = false;
 		}
 		
-//		//set Zoom Button Style
-//		try {
-//			ViewGroup zoomControlViewGroup =  (ViewGroup) getZoomControls();
-//			ZoomControls zoomControls =	(ZoomControls) zoomControlViewGroup.getChildAt(0); 
-//			((ZoomButton) zoomControls.getChildAt(0)).setBackgroundResource(main.N? R.drawable.night_btn_zoom_down : R.drawable.day_btn_zoom_down);
-//			((ZoomButton) zoomControls.getChildAt(1)).setBackgroundResource(main.N? R.drawable.night_btn_zoom_up : R.drawable.day_btn_zoom_up);
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		// im Day Mode brauchen wir kein InvertView
+		// das sollte mehr Performance geben
+		if(main.N)
+		{
+			invertViewControl.Me.setVisibility(VISIBLE);
+		}
+		else
+		{
+			invertViewControl.Me.setVisibility(GONE);
+		}
 		
 		this.setWillNotDraw(false);
 		this.invalidate();

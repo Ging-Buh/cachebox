@@ -1207,7 +1207,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			if (aktView.equals(trackablelistView))
 			{
 				// Instanz löschenn
-				aktView=null;
+				aktView = null;
 				trackablelistView.OnFree();
 				trackablelistView = null;
 			}
@@ -1903,8 +1903,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 	private void showTbList()
 	{
-		MessageBox.Show("comming soon","sorry",MessageBoxIcon.Asterisk);
-//		showView(14);
+		MessageBox.Show("comming soon", "sorry", MessageBoxIcon.Asterisk);
+		// showView(14);
 	}
 
 	private void switchDayNight()
@@ -1955,8 +1955,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				lon = GlobalCore.SelectedWaypoint().Longitude();
 			}
 			Intent implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + lat + "," + lon));
-
-			startActivity(implicitIntent);
+			if (implicitIntent != null) startActivity(implicitIntent);
 		}
 	}
 
