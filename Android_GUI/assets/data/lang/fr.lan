@@ -433,7 +433,7 @@ utf8
 	GpxFromMail = GPX from mails
 	GCVoteRatings = GcVote cache ratings
 	PreloadImages = Description images
-	LoginSettings = Login - Settings
+	LoginSettings = Login and API - Settings
 	getApiKey = Get API key
 	DescMapLayer = Auto-download map layer
 	MoveMapCenterWithSpeed = Move map center with speed

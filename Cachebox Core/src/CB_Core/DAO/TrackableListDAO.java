@@ -26,11 +26,27 @@ public class TrackableListDAO
 		TrackableDAO tDAO = new TrackableDAO();
 
 		Iterator<Trackable> iterator = trackableList.iterator();
-		do
+
+		if (iterator != null && iterator.hasNext())
 		{
-			tDAO.WriteToDatabase(iterator.next());
+			do
+			{
+				Trackable tb = iterator.next();
+
+				Trackable tbDB = tDAO.getFromDbByGcCode(tb.getGcCode());
+
+				if (tbDB == null)
+				{
+					tDAO.WriteToDatabase(tb);
+				}
+				else
+				{
+					tDAO.UpdateDatabase(tb);
+				}
+
+			}
+			while (iterator.hasNext());
 		}
-		while (iterator.hasNext());
 
 	}
 

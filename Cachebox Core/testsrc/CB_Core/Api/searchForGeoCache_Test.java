@@ -5,10 +5,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
+import CB_Core.DAO.CategoryDAO;
 import CB_Core.Map.Descriptor;
+import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Types.Cache;
+import CB_Core.Types.Category;
+import CB_Core.Types.Coordinate;
+import CB_Core.Types.GpxFilename;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.MeasuredCoordList;
+import CB_Core.Types.TbList;
+import CB_Core.Types.Trackable;
 
 import junit.framework.TestCase;
 
@@ -18,7 +26,7 @@ import junit.framework.TestCase;
  * 
  * @author Longri
  */
-public class isPremium_GetFound_Test extends TestCase
+public class searchForGeoCache_Test extends TestCase
 {
 
 	@Override
@@ -48,18 +56,24 @@ public class isPremium_GetFound_Test extends TestCase
 		assertFalse("Kein Access Key gefunden, liegt die Config an der richtigen stelle?", key.equals(""));
 	}
 
-	public void testIsPremiumMember()
+	public void testSearchCache()
 	{
-		assertTrue("Muss Premium Member sein", GroundspeakAPI.IsPremiumMember(Config.GetString("GcAPI")));
-	}
+		String accessToken = Config.GetString("GcAPI");
 
-	public void testGetCachesFound()
-	{
+		Coordinate searchCoord = new Coordinate(52.581892, 13.398128); // Home
+																		// of
+																		// Katipa(like
+																		// Longri)
 
-		int Anzahl = GroundspeakAPI.GetCachesFound(Config.GetString("GcAPI"));
+		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+		CB_Core.Api.SearchForGeocaches.SearchCoordinate searchC = new CB_Core.Api.SearchForGeocaches.SearchCoordinate();
+		searchC.pos = searchCoord;
+		searchC.distanceInMeters = 50000;
+		searchC.number = 50;
+		String result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, 0);
 
-		// Bei mir
-		assertTrue("Muss Anzahl meiner Funde sein (" + Anzahl + ")", Anzahl == 146);
+		int i = 0;
 	}
 
 }

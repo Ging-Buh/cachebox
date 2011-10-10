@@ -36,29 +36,107 @@ public class Trackable implements Comparable<Trackable>
 	 */
 	public Trackable(CoreCursor reader)
 	{
-		Id = reader.getInt(0);
-		Archived = reader.getInt(1) != 0;
-		GcCode = reader.getString(2).trim();
-		CacheId = reader.getLong(3);
-		CurrentGoal = reader.getString(4).trim();
-		CurrentOwnerName = reader.getString(5).trim();
-		String sDate = reader.getString(6);
-		DateFormat iso8601Format = new SimpleDateFormat(
-				"yyyy-MM-dd HH:mm:ss");
 		try
 		{
-			DateCreated = iso8601Format.parse(sDate);
+			Id = reader.getInt(0);
+			Archived = reader.getInt(1) != 0;
+			GcCode = reader.getString(2).trim();
+			try
+			{
+				CacheId = reader.getLong(3);
+			}
+			catch (Exception e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			try
+			{
+				CurrentGoal = reader.getString(4).trim();
+			}
+			catch (Exception e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			try
+			{
+				CurrentOwnerName = reader.getString(5).trim();
+			}
+			catch (Exception e)
+			{
+				// TODO: handle exception
+			}
+			String sDate = reader.getString(6);
+			DateFormat iso8601Format = new SimpleDateFormat(
+					"yyyy-MM-dd HH:mm:ss");
+			try
+			{
+				DateCreated = iso8601Format.parse(sDate);
+			}
+			catch (ParseException e)
+			{
+			}
+			
+			try
+			{
+				Description = reader.getString(7).trim();
+			}
+			catch (Exception e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try
+			{
+				IconUrl = reader.getString(8).trim();
+			}
+			catch (Exception e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try
+			{
+				ImageUrl = reader.getString(9).trim();
+			}
+			catch (Exception e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try
+			{
+				Name = reader.getString(10).trim();
+			}
+			catch (Exception e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try
+			{
+				OwnerName = reader.getString(11).trim();
+			}
+			catch (Exception e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try
+			{
+				Url = reader.getString(12).trim();
+			}
+			catch (Exception e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		catch (ParseException e)
+		catch (Exception e)
 		{
+			
 		}
-		
-		Description = reader.getString(7).trim();
-		IconUrl = reader.getString(8).trim();
-		ImageUrl = reader.getString(9).trim();
-		Name = reader.getString(10).trim();
-		OwnerName = reader.getString(11).trim();
-		Url = reader.getString(12).trim();
 		
 	}
 

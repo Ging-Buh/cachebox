@@ -521,6 +521,7 @@ public class Global
 					getDrawable(R.drawable.chk_icon_disable, res), // 39
 					getDrawable(R.drawable.day_slider_down, R.drawable.night_slider_down, res), // 40
 					getDrawable(R.drawable.day_slider_up_down, R.drawable.night_slider_up_down, res), // 41
+					getDrawable(R.drawable.day_spinner, R.drawable.night_spinner, res), // 42
 			};
 
 		Arrows = new Drawable[]

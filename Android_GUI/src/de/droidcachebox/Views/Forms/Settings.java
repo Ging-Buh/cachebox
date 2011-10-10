@@ -75,8 +75,7 @@ import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
-public class Settings extends Activity implements ViewOptionsMenu,
-		SelectedLangChangedEvent
+public class Settings extends Activity implements ViewOptionsMenu, SelectedLangChangedEvent
 {
 
 	public static Settings Me;
@@ -153,9 +152,11 @@ public class Settings extends Activity implements ViewOptionsMenu,
 	private Button getApiKey;
 	private EditText EditDebugOverrideGcAuth;
 
+	private CheckBox chkSearchWithoutFounds;
+	private CheckBox chkSearchWithoutOwns;
+
 	private Button[] ButtonList = new Button[]
-		{ ToggleLogInView, ToggleGPSView, ToggleMapView, ToggleMiscView,
-				ToggleQuickView, ToggleDebugView };
+		{ ToggleLogInView, ToggleGPSView, ToggleMapView, ToggleMiscView, ToggleQuickView, ToggleDebugView };
 	private Button openToggleButton = null;
 
 	ArrayList<Actions> AllActionList;
@@ -179,9 +180,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 		Bundle bundle = getIntent().getExtras();
 		int PerformButtonClickID = (Integer) bundle.getSerializable("Show");
 
-		this.getWindow().setBackgroundDrawableResource(
-				Config.GetBool("nightMode") ? color.darker_gray
-						: color.background_dark);
+		this.getWindow().setBackgroundDrawableResource(Config.GetBool("nightMode") ? color.darker_gray : color.background_dark);
 
 		context = this.getBaseContext();
 		Me = this;
@@ -208,43 +207,40 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			}
 		});
 
-		LangCombo
-				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+		LangCombo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+		{
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
+			{
+				String selected = (String) LangCombo.getSelectedItem();
+				for (Langs tmp : Sprachen)
 				{
-
-					@Override
-					public void onItemSelected(AdapterView<?> arg0, View arg1,
-							int arg2, long arg3)
+					if (selected.equals(tmp.Name))
 					{
-						String selected = (String) LangCombo.getSelectedItem();
-						for (Langs tmp : Sprachen)
+						Config.Set("Sel_LanguagePath", tmp.Path);
+						try
 						{
-							if (selected.equals(tmp.Name))
-							{
-								Config.Set("Sel_LanguagePath", tmp.Path);
-								try
-								{
-									Global.Translations
-											.ReadTranslationsFile(tmp.Path);
-								}
-								catch (IOException e)
-								{
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								break;
-							}
-
+							Global.Translations.ReadTranslationsFile(tmp.Path);
 						}
+						catch (IOException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						break;
 					}
 
-					@Override
-					public void onNothingSelected(AdapterView<?> arg0)
-					{
+				}
+			}
 
-					}
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0)
+			{
 
-				});
+			}
+
+		});
 
 		setStyleforSpinner();
 
@@ -254,8 +250,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			public void onClick(View v)
 			{
 				closeOpenToggleButton(ToggleLogInView);
-				Animations.ToggleViewSlideUp_Down(LogInTableRow, context,
-						SettingsScrollView, ToggleLogInView);
+				Animations.ToggleViewSlideUp_Down(LogInTableRow, context, SettingsScrollView, ToggleLogInView);
 			}
 		});
 		ToggleGPSView.setOnClickListener(new OnClickListener()
@@ -264,8 +259,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			public void onClick(View v)
 			{
 				closeOpenToggleButton(ToggleGPSView);
-				Animations.ToggleViewSlideUp_Down(GPSTableRow, context,
-						SettingsScrollView, ToggleGPSView);
+				Animations.ToggleViewSlideUp_Down(GPSTableRow, context, SettingsScrollView, ToggleGPSView);
 			}
 		});
 		ToggleMapView.setOnClickListener(new OnClickListener()
@@ -274,8 +268,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			public void onClick(View v)
 			{
 				closeOpenToggleButton(ToggleMapView);
-				Animations.ToggleViewSlideUp_Down(MapTableRow, context,
-						SettingsScrollView, ToggleMapView);
+				Animations.ToggleViewSlideUp_Down(MapTableRow, context, SettingsScrollView, ToggleMapView);
 
 			}
 		});
@@ -285,8 +278,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			public void onClick(View v)
 			{
 				closeOpenToggleButton(ToggleMiscView);
-				Animations.ToggleViewSlideUp_Down(MiscTableRow, context,
-						SettingsScrollView, ToggleMiscView);
+				Animations.ToggleViewSlideUp_Down(MiscTableRow, context, SettingsScrollView, ToggleMiscView);
 			}
 		});
 		ToggleDebugView.setOnClickListener(new OnClickListener()
@@ -295,8 +287,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			public void onClick(View v)
 			{
 				closeOpenToggleButton(ToggleDebugView);
-				Animations.ToggleViewSlideUp_Down(DebugTableRow, context,
-						SettingsScrollView, ToggleDebugView);
+				Animations.ToggleViewSlideUp_Down(DebugTableRow, context, SettingsScrollView, ToggleDebugView);
 			}
 		});
 		ToggleQuickView.setOnClickListener(new OnClickListener()
@@ -305,9 +296,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			public void onClick(View v)
 			{
 				closeOpenToggleButton(ToggleQuickView);
-				Animations.ToggleViewSlideUp_Down(QuickTableRow, context,
-						SettingsScrollView, ToggleQuickView,
-						AnimationReadyCallBack);
+				Animations.ToggleViewSlideUp_Down(QuickTableRow, context, SettingsScrollView, ToggleQuickView, AnimationReadyCallBack);
 
 			}
 		});
@@ -343,8 +332,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			{
 				try
 				{
-					int newState = Integer.parseInt(EditCompassLevel.getText()
-							.toString());
+					int newState = Integer.parseInt(EditCompassLevel.getText().toString());
 					Config.Set("HtcLevel", newState);
 				}
 				catch (Exception e)
@@ -354,16 +342,14 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence arg0, int arg1,
-					int arg2, int arg3)
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3)
 			{
 				// TODO Auto-generated method stub
 
 			}
 
 			@Override
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-					int arg3)
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3)
 			{
 				// TODO Auto-generated method stub
 
@@ -373,16 +359,14 @@ public class Settings extends Activity implements ViewOptionsMenu,
 		{
 
 			@Override
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-					int arg3)
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3)
 			{
 				// TODO Auto-generated method stub
 
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence arg0, int arg1,
-					int arg2, int arg3)
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3)
 			{
 				// TODO Auto-generated method stub
 
@@ -399,16 +383,14 @@ public class Settings extends Activity implements ViewOptionsMenu,
 		{
 
 			@Override
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-					int arg3)
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3)
 			{
 				// TODO Auto-generated method stub
 
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence arg0, int arg1,
-					int arg2, int arg3)
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3)
 			{
 				// TODO Auto-generated method stub
 
@@ -419,8 +401,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			{
 				try
 				{
-					Config.Set("GcPass", SimpleCrypto.encrypt("DCB",
-							EditTextGCPW.getEditableText().toString()));
+					Config.Set("GcPass", SimpleCrypto.encrypt("DCB", EditTextGCPW.getEditableText().toString()));
 				}
 				catch (Exception e)
 				{
@@ -434,16 +415,14 @@ public class Settings extends Activity implements ViewOptionsMenu,
 		{
 
 			@Override
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-					int arg3)
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3)
 			{
 				// TODO Auto-generated method stub
 
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence arg0, int arg1,
-					int arg2, int arg3)
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3)
 			{
 				// TODO Auto-generated method stub
 
@@ -454,8 +433,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			{
 				try
 				{
-					Config.Set("GcVotePassword", SimpleCrypto.encrypt("DCB",
-							EditTextGCVotePW.getEditableText().toString()));
+					Config.Set("GcVotePassword", SimpleCrypto.encrypt("DCB", EditTextGCVotePW.getEditableText().toString()));
 				}
 				catch (Exception e)
 				{
@@ -468,16 +446,14 @@ public class Settings extends Activity implements ViewOptionsMenu,
 		{
 
 			@Override
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-					int arg3)
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3)
 			{
 				// TODO Auto-generated method stub
 
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence arg0, int arg1,
-					int arg2, int arg3)
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3)
 			{
 				// TODO Auto-generated method stub
 
@@ -523,8 +499,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 		{
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3)
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 			{
 
 				ActionListSelectedIndex = arg2;
@@ -537,11 +512,9 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			@Override
 			public void onClick(View arg0)
 			{
-				if (ActionListSelectedIndex < 0
-						|| ActionListSelectedIndex > Global.QuickButtonList
-								.size()) return; // wrong index
-				ActionListSelectedIndex = Global.QuickButtonList.MoveItem(
-						ActionListSelectedIndex, -1);
+				if (ActionListSelectedIndex < 0 || ActionListSelectedIndex > Global.QuickButtonList.size()) return; // wrong
+																													// index
+				ActionListSelectedIndex = Global.QuickButtonList.MoveItem(ActionListSelectedIndex, -1);
 				refreshActionListView(false);
 			}
 		});
@@ -551,11 +524,9 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			@Override
 			public void onClick(View arg0)
 			{
-				if (ActionListSelectedIndex < 0
-						|| ActionListSelectedIndex > Global.QuickButtonList
-								.size()) return; // wrong index
-				ActionListSelectedIndex = Global.QuickButtonList.MoveItem(
-						ActionListSelectedIndex, +1);
+				if (ActionListSelectedIndex < 0 || ActionListSelectedIndex > Global.QuickButtonList.size()) return; // wrong
+																													// index
+				ActionListSelectedIndex = Global.QuickButtonList.MoveItem(ActionListSelectedIndex, +1);
 				refreshActionListView(false);
 			}
 		});
@@ -565,8 +536,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			@Override
 			public void onClick(View arg0)
 			{
-				if (ActionListSelectedIndex > -1
-						&& Global.QuickButtonList.size() > ActionListSelectedIndex)
+				if (ActionListSelectedIndex > -1 && Global.QuickButtonList.size() > ActionListSelectedIndex)
 				{
 					Global.QuickButtonList.remove(ActionListSelectedIndex);
 					refreshActionListView(true);
@@ -590,12 +560,10 @@ public class Settings extends Activity implements ViewOptionsMenu,
 		{
 
 			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3)
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 			{
 
-				if (ActionListAll.getVisibility() == View.VISIBLE
-						&& ActionListButtonAddClicked)
+				if (ActionListAll.getVisibility() == View.VISIBLE && ActionListButtonAddClicked)
 				{
 					// neues Action Item ausgewählt.
 					if (Global.QuickButtonList == null)
@@ -603,8 +571,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 						Global.QuickButtonList = new MoveableList<QuickButtonItem>();
 						ActionListView.setAdapter(QuickListBaseAdapter);
 					}
-					Global.QuickButtonList.add(new QuickButtonItem(context,
-							AllActionList.get(arg2), Sizes.getButtonHeight()));
+					Global.QuickButtonList.add(new QuickButtonItem(context, AllActionList.get(arg2), Sizes.getButtonHeight()));
 					refreshActionListView(true);
 					ActionListButtonAddClicked = false;
 					ActionListAll.setVisibility(View.GONE);
@@ -637,8 +604,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 
 	private void setStyleforSpinner()
 	{
-		int DrawAbleId = main.N ? R.drawable.night_btn_dropdown
-				: R.drawable.day_btn_dropdown;
+		int DrawAbleId = main.N ? R.drawable.night_btn_dropdown : R.drawable.day_btn_dropdown;
 		LangCombo.setBackgroundResource(DrawAbleId);
 		OsmMinLevel.setBackgroundResource(DrawAbleId);
 		OsmMaxLevel.setBackgroundResource(DrawAbleId);
@@ -724,16 +690,13 @@ public class Settings extends Activity implements ViewOptionsMenu,
 
 	private void findViewsById()
 	{
-		SettingsLayout = (LinearLayout) this
-				.findViewById(R.id.settings_LinearLayout);
-		SettingsScrollView = (ScrollView) this
-				.findViewById(R.id.settings_scrollView);
+		SettingsLayout = (LinearLayout) this.findViewById(R.id.settings_LinearLayout);
+		SettingsScrollView = (ScrollView) this.findViewById(R.id.settings_scrollView);
 		LangCombo = (Spinner) this.findViewById(R.id.settings_LangCombo);
 		CancelButton = (Button) this.findViewById(R.id.settings_cancel);
 		SaveButton = (Button) this.findViewById(R.id.settings_save);
 		LangCombo = (Spinner) this.findViewById(R.id.settings_LangCombo);
-		LogInTableRow = (TableRow) this
-				.findViewById(R.id.settings_tableRowLogIn);
+		LogInTableRow = (TableRow) this.findViewById(R.id.settings_tableRowLogIn);
 		ToggleLogInView = (Button) this.findViewById(R.id.toggle_button_login);
 		LabelGcName = (TextView) this.findViewById(R.id.settings_textView1);
 		LabelGcPW = (TextView) this.findViewById(R.id.settings_textView2);
@@ -741,100 +704,68 @@ public class Settings extends Activity implements ViewOptionsMenu,
 		LabelGcJoker = (TextView) this.findViewById(R.id.settings_textView4);
 		EditTextGCName = (EditText) this.findViewById(R.id.settings_editText1);
 		EditTextGCPW = (EditText) this.findViewById(R.id.settings_editText2);
-		EditTextGCVotePW = (EditText) this
-				.findViewById(R.id.settings_editText3);
+		EditTextGCVotePW = (EditText) this.findViewById(R.id.settings_editText3);
 		EditTextGCJoker = (EditText) this.findViewById(R.id.settings_editText4);
 		EditTextGC_API = (EditText) this.findViewById(R.id.settings_editText5);
 		GPSTableRow = (TableRow) this.findViewById(R.id.settings_tableRowgps);
 		ToggleGPSView = (Button) this.findViewById(R.id.toggle_button_gps);
-		checkBoxHTCCompass = (CheckBox) this
-				.findViewById(R.id.settings_use_intern_compass);
-		cbMoveMapCenterWithSpeed = (CheckBox) this
-				.findViewById(R.id.settings_moveMapCenterWithSpeed);
-		EditCompassLevel = (EditText) this
-				.findViewById(R.id.settings_compass_level_edit);
-		DescCompassLevel = (TextView) this
-				.findViewById(R.id.settings_compass_info_text);
+		checkBoxHTCCompass = (CheckBox) this.findViewById(R.id.settings_use_intern_compass);
+		cbMoveMapCenterWithSpeed = (CheckBox) this.findViewById(R.id.settings_moveMapCenterWithSpeed);
+		EditCompassLevel = (EditText) this.findViewById(R.id.settings_compass_level_edit);
+		DescCompassLevel = (TextView) this.findViewById(R.id.settings_compass_info_text);
 		ToggleMapView = (Button) this.findViewById(R.id.toggle_button_map);
 		MapTableRow = (TableRow) this.findViewById(R.id.settings_tableRow_map);
 		ToggleMiscView = (Button) this.findViewById(R.id.toggle_button_misc);
-		MiscTableRow = (TableRow) this
-				.findViewById(R.id.settings_tableRow_misc);
+		MiscTableRow = (TableRow) this.findViewById(R.id.settings_tableRow_misc);
 		chkMapink = (CheckBox) this.findViewById(R.id.settings_Mapnik);
 		chkCycleMap = (CheckBox) this.findViewById(R.id.settings_Cycle_Map);
-		chkOsmarenerer = (CheckBox) this
-				.findViewById(R.id.settings_Osmarenderer);
-		OsmMinLevel = (Spinner) this
-				.findViewById(R.id.settings_spinner_OSM_min);
-		OsmMaxLevel = (Spinner) this
-				.findViewById(R.id.settings_spinner_OSM_max);
-		ZoomCross = (Spinner) this
-				.findViewById(R.id.settings_spinner_Zoom_Cross);
-		SmoothScrolling = (Spinner) this
-				.findViewById(R.id.settings_spinner_Smooth_Scrolling);
-		TrackDistance = (Spinner) this
-				.findViewById(R.id.settings_spinner_Track_Count);
-		chkTrackStart = (CheckBox) this
-				.findViewById(R.id.settings_chk_Start_track);
-		DescMapLayer = (TextView) this
-				.findViewById(R.id.settings_desc_map_layer);
-		DescOsmMinLevel = (TextView) this
-				.findViewById(R.id.settings_desc_OSM_min);
-		DescOsmMaxLevel = (TextView) this
-				.findViewById(R.id.settings_desc_OSM_max);
-		DescZoomCrossLevel = (TextView) this
-				.findViewById(R.id.settings_desc_ZoomCross);
-		DescSmothScroll = (TextView) this
-				.findViewById(R.id.settings_desc_Smooth_Scrolling);
-		DescTrackRec = (TextView) this
-				.findViewById(R.id.settings_desc_Track_Rec);
-		DescTrackCount = (TextView) this
-				.findViewById(R.id.settings_desc_Track_count);
+		chkOsmarenerer = (CheckBox) this.findViewById(R.id.settings_Osmarenderer);
+		OsmMinLevel = (Spinner) this.findViewById(R.id.settings_spinner_OSM_min);
+		OsmMaxLevel = (Spinner) this.findViewById(R.id.settings_spinner_OSM_max);
+		ZoomCross = (Spinner) this.findViewById(R.id.settings_spinner_Zoom_Cross);
+		SmoothScrolling = (Spinner) this.findViewById(R.id.settings_spinner_Smooth_Scrolling);
+		TrackDistance = (Spinner) this.findViewById(R.id.settings_spinner_Track_Count);
+		chkTrackStart = (CheckBox) this.findViewById(R.id.settings_chk_Start_track);
+		DescMapLayer = (TextView) this.findViewById(R.id.settings_desc_map_layer);
+		DescOsmMinLevel = (TextView) this.findViewById(R.id.settings_desc_OSM_min);
+		DescOsmMaxLevel = (TextView) this.findViewById(R.id.settings_desc_OSM_max);
+		DescZoomCrossLevel = (TextView) this.findViewById(R.id.settings_desc_ZoomCross);
+		DescSmothScroll = (TextView) this.findViewById(R.id.settings_desc_Smooth_Scrolling);
+		DescTrackRec = (TextView) this.findViewById(R.id.settings_desc_Track_Rec);
+		DescTrackCount = (TextView) this.findViewById(R.id.settings_desc_Track_count);
 		ToggleDebugView = (Button) this.findViewById(R.id.toggle_button_debug);
-		DebugTableRow = (TableRow) this
-				.findViewById(R.id.settings_tableRow_debug);
-		chkAllowInetAccess = (CheckBox) this
-				.findViewById(R.id.settings_allow_internet_access);
-		chkDebugShowPanel = (CheckBox) this
-				.findViewById(R.id.settings_debug_chkShow);
-		chkDebugMemory = (CheckBox) this
-				.findViewById(R.id.settings_debug_chkMemory);
+		DebugTableRow = (TableRow) this.findViewById(R.id.settings_tableRow_debug);
+		chkAllowInetAccess = (CheckBox) this.findViewById(R.id.settings_allow_internet_access);
+		chkDebugShowPanel = (CheckBox) this.findViewById(R.id.settings_debug_chkShow);
+		chkDebugMemory = (CheckBox) this.findViewById(R.id.settings_debug_chkMemory);
 		chkDebugMsg = (CheckBox) this.findViewById(R.id.settings_debug_chkMsg);
 		chkDebugLog = (CheckBox) this.findViewById(R.id.settings_debug_chkLog);
-		ApproachSound = (Spinner) this
-				.findViewById(R.id.settings_spinner_Approach_Sound);
-		chkDebugMarker = (CheckBox) this
-				.findViewById(R.id.settings_debug_chkMarker);
-		ScreenLock_wheel_m = (WheelView) this
-				.findViewById(R.id.settings_ScreenLock_m);
-		ScreenLock_wheel_sec = (WheelView) this
-				.findViewById(R.id.settings_ScreenLock_sec);
-		chkAllowLandscape = (CheckBox) this
-				.findViewById(R.id.settings_allow_LandScape);
-		DescScreenLock = (TextView) this
-				.findViewById(R.id.settings_desc_ScreenLock);
+		ApproachSound = (Spinner) this.findViewById(R.id.settings_spinner_Approach_Sound);
+		chkDebugMarker = (CheckBox) this.findViewById(R.id.settings_debug_chkMarker);
+		ScreenLock_wheel_m = (WheelView) this.findViewById(R.id.settings_ScreenLock_m);
+		ScreenLock_wheel_sec = (WheelView) this.findViewById(R.id.settings_ScreenLock_sec);
+		chkAllowLandscape = (CheckBox) this.findViewById(R.id.settings_allow_LandScape);
+		DescScreenLock = (TextView) this.findViewById(R.id.settings_desc_ScreenLock);
 		chkDPIaware = (CheckBox) this.findViewById(R.id.settings_DPIaware);
-		QuickTableRow = (TableRow) this
-				.findViewById(R.id.settings_tableRow_quick);
+		QuickTableRow = (TableRow) this.findViewById(R.id.settings_tableRow_quick);
 		ToggleQuickView = (Button) this.findViewById(R.id.toggle_button_quick);
-		chkQuickButtonShow = (CheckBox) this
-				.findViewById(R.id.settings_quick_button_show);
+		chkQuickButtonShow = (CheckBox) this.findViewById(R.id.settings_quick_button_show);
 		ActionListView = (ListView) findViewById(R.id.settings_quick_list);
 		ActionListUp = (Button) findViewById(R.id.settings_quick_up);
 		ActionListDown = (Button) findViewById(R.id.settings_quick_down);
 		ActionListDel = (Button) findViewById(R.id.settings_quick_del);
 		ActionListAdd = (Button) findViewById(R.id.settings_quick_add);
-		ActionListAll = (Spinner) this
-				.findViewById(R.id.settings_spinner_Action);
+		ActionListAll = (Spinner) this.findViewById(R.id.settings_spinner_Action);
 		getApiKey = (Button) this.findViewById(R.id.button_get_api_key);
-		EditDebugOverrideGcAuth = (EditText) this
-				.findViewById(R.id.settings_debugOverrideGCurl);
+		EditDebugOverrideGcAuth = (EditText) this.findViewById(R.id.settings_debugOverrideGCurl);
+		chkSearchWithoutFounds = (CheckBox) this.findViewById(R.id.settings_without_founds);
+		chkSearchWithoutOwns = (CheckBox) this.findViewById(R.id.settings_without_owns);
 	}
 
 	private void setLang()
 	{
 		LangCombo.setPrompt(Global.Translations.Get("SelectLanguage"));
-		
+
 		ToggleLogInView.setText(Global.Translations.Get("LoginSettings"));
 		LabelGcName.setText(Global.Translations.Get("LogIn"));
 		LabelGcPW.setText(Global.Translations.Get("GCPW"));
@@ -844,7 +775,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 
 		checkBoxHTCCompass.setText(Global.Translations.Get("UseHtcCompass"));
 		DescCompassLevel.setText(Global.Translations.Get("DescHtcLevel"));
-		
+
 		ToggleMapView.setText(Global.Translations.Get("Map"));
 		DescMapLayer.setText(Global.Translations.Get("DescMapLayer"));
 		cbMoveMapCenterWithSpeed.setText(Global.Translations.Get("MoveMapCenterWithSpeed"));
@@ -853,20 +784,19 @@ public class Settings extends Activity implements ViewOptionsMenu,
 		DescTrackRec.setText(Global.Translations.Get("TrackRec"));
 		chkTrackStart.setText(Global.Translations.Get("StartTrackRecOnStart"));
 		DescTrackCount.setText(Global.Translations.Get("TrackEvery") + " [m]");
-		
+
 		ToggleMiscView.setText(Global.Translations.Get("Misc"));
 		chkAllowInetAccess.setText(Global.Translations.Get("AllowInternet"));
 		chkAllowLandscape.setText(Global.Translations.Get("AllowLandscape"));
-		DescScreenLock.setText("Screen lock [min/sec]" + String.format("%n")
-				+ "(<5sec = off)");
-		
+		DescScreenLock.setText("Screen lock [min/sec]" + String.format("%n") + "(<5sec = off)");
+
 		ToggleQuickView.setText(Global.Translations.Get("QuickButton"));
 		chkQuickButtonShow.setText(Global.Translations.Get("ShowQuickButton"));
 		ActionListUp.setText(Global.Translations.Get("up"));
 		ActionListDown.setText(Global.Translations.Get("down"));
 		ActionListDel.setText(Global.Translations.Get("delete"));
 		ActionListAdd.setText(Global.Translations.Get("add"));
-		
+
 		SaveButton.setText(Global.Translations.Get("save"));
 		CancelButton.setText(Global.Translations.Get("cancel"));
 	}
@@ -876,10 +806,8 @@ public class Settings extends Activity implements ViewOptionsMenu,
 		try
 		{
 			EditTextGCName.setText(Config.GetString("GcLogin"));
-			EditTextGCPW.setText(SimpleCrypto.decrypt("DCB",
-					Config.GetString("GcPass")));
-			EditTextGCVotePW.setText(SimpleCrypto.decrypt("DCB",
-					Config.GetString("GcVotePassword")));
+			EditTextGCPW.setText(SimpleCrypto.decrypt("DCB", Config.GetString("GcPass")));
+			EditTextGCVotePW.setText(SimpleCrypto.decrypt("DCB", Config.GetString("GcVotePassword")));
 			EditTextGCJoker.setText(Config.GetString("GcJoker"));
 			EditTextGC_API.setText(Config.GetString("GcAPI"));
 			EditDebugOverrideGcAuth.setText(Config.GetString("OverrideUrl"));
@@ -895,20 +823,15 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			chkCycleMap.setChecked(Config.GetBool("ImportLayerOcm"));
 			chkOsmarenerer.setChecked(Config.GetBool("ImportLayerOsma"));
 			chkDPIaware.setChecked(Config.GetBool("OsmDpiAwareRendering"));
-			cbMoveMapCenterWithSpeed.setChecked(Config
-					.GetBool("MoveMapCenterWithSpeed"));
+			cbMoveMapCenterWithSpeed.setChecked(Config.GetBool("MoveMapCenterWithSpeed"));
 			OsmMinLevel.setSelection(Config.GetInt("OsmMinLevel"));
 			OsmMaxLevel.setSelection(Config.GetInt("OsmMaxLevel"));
-			ZoomCross.setSelection(Integer.parseInt(Config
-					.GetString("ZoomCross")) - 14);
-			SmoothScrolling.setSelection(smoth.indexOf(SmoothScrollingTyp
-					.valueOf(Config.GetString("SmoothScrolling"))));
+			ZoomCross.setSelection(Integer.parseInt(Config.GetString("ZoomCross")) - 14);
+			SmoothScrolling.setSelection(smoth.indexOf(SmoothScrollingTyp.valueOf(Config.GetString("SmoothScrolling"))));
 
-			TrackDistance.setSelection(distance.indexOf(Config
-					.GetInt("TrackDistance")));
+			TrackDistance.setSelection(distance.indexOf(Config.GetInt("TrackDistance")));
 
-			chkAllowInetAccess
-					.setChecked(Config.GetBool("AllowInternetAccess"));
+			chkAllowInetAccess.setChecked(Config.GetBool("AllowInternetAccess"));
 
 			chkDebugShowPanel.setChecked(Config.GetBool("DebugShowPanel"));
 			chkDebugMemory.setChecked(Config.GetBool("DebugMemory"));
@@ -917,8 +840,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			chkDebugLog.setChecked(Config.GetBool("DebugShowLog"));
 
 			fillApproachSpinner();
-			ApproachSound.setSelection(approachValues.indexOf(Config
-					.GetInt("SoundApproachDistance")));
+			ApproachSound.setSelection(approachValues.indexOf(Config.GetInt("SoundApproachDistance")));
 
 			ScreenLock_wheel_m.setCurrentItem(Config.GetInt("LockM"));
 			ScreenLock_wheel_sec.setCurrentItem(Config.GetInt("LockSec"));
@@ -928,6 +850,9 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			chkAllowLandscape.setChecked(Config.GetBool("AllowLandscape"));
 			fillQuickButton();
 
+			chkSearchWithoutFounds.setChecked(Config.GetBool("SearchWithoutFounds"));
+			chkSearchWithoutOwns.setChecked(Config.GetBool("SearchWithoutOwns"));
+			
 		}
 		catch (Exception e)
 		{
@@ -952,15 +877,12 @@ public class Settings extends Activity implements ViewOptionsMenu,
 		Config.Set("GcAPI", EditTextGC_API.getEditableText().toString());
 		try
 		{
-			Config.Set("GcPass", SimpleCrypto.encrypt("DCB", EditTextGCPW
-					.getEditableText().toString()));
-			Config.Set("GcVotePassword", SimpleCrypto.encrypt("DCB",
-					EditTextGCVotePW.getEditableText().toString()));
+			Config.Set("GcPass", SimpleCrypto.encrypt("DCB", EditTextGCPW.getEditableText().toString()));
+			Config.Set("GcVotePassword", SimpleCrypto.encrypt("DCB", EditTextGCVotePW.getEditableText().toString()));
 		}
 		catch (Exception e)
 		{
-			Logger.Error("Settings.SaveSettings()", "Save GcPass/ GcVotePass",
-					e);
+			Logger.Error("Settings.SaveSettings()", "Save GcPass/ GcVotePass", e);
 			e.printStackTrace();
 		}
 		Config.Set("TrackRecorderStartup", chkTrackStart.isChecked());
@@ -971,10 +893,8 @@ public class Settings extends Activity implements ViewOptionsMenu,
 		Config.Set("OsmMinLevel", (Integer) OsmMinLevel.getSelectedItem());
 		Config.Set("OsmMaxLevel", (Integer) OsmMaxLevel.getSelectedItem());
 		Config.Set("ZoomCross", (Integer) ZoomCross.getSelectedItem());
-		String SmoothScrollingString = ((SmoothScrollingTyp) SmoothScrolling
-				.getSelectedItem()).name();
-		Global.SmoothScrolling = SmoothScrollingTyp
-				.valueOf(SmoothScrollingString);
+		String SmoothScrollingString = ((SmoothScrollingTyp) SmoothScrolling.getSelectedItem()).name();
+		Global.SmoothScrolling = SmoothScrollingTyp.valueOf(SmoothScrollingString);
 		Config.Set("SmoothScrolling", SmoothScrollingString);
 		Config.Set("TrackDistance", (Integer) TrackDistance.getSelectedItem());
 
@@ -984,25 +904,21 @@ public class Settings extends Activity implements ViewOptionsMenu,
 		Config.Set("DebugShowMsg", chkDebugMsg.isChecked());
 		Config.Set("DebugShowMarker", chkDebugMarker.isChecked());
 		Config.Set("DebugShowLog", chkDebugLog.isChecked());
-		Config.Set("OverrideUrl", EditDebugOverrideGcAuth.getEditableText()
-				.toString());
+		Config.Set("OverrideUrl", EditDebugOverrideGcAuth.getEditableText().toString());
 
-		Config.Set("SoundApproachDistance",
-				(Integer) ApproachSound.getSelectedItem());
+		Config.Set("SoundApproachDistance", (Integer) ApproachSound.getSelectedItem());
 
 		int M = ScreenLock_wheel_m.getCurrentItem();
 		int Sec = ScreenLock_wheel_sec.getCurrentItem();
 		Config.Set("LockM", M);
 		Config.Set("LockSec", Sec);
-		((main) main.mainActivity)
-				.setScreenLockTimerNew(((M * 60) + Sec) * 1000);
+		((main) main.mainActivity).setScreenLockTimerNew(((M * 60) + Sec) * 1000);
 
 		((main) main.mainActivity).setDebugVisible();
 		((main) main.mainActivity).setDebugMsg("");
 		Config.Set("AllowLandscape", chkAllowLandscape.isChecked());
 
-		boolean QuickButtonShowChanged = (Config.GetBool("quickButtonShow") != chkQuickButtonShow
-				.isChecked());
+		boolean QuickButtonShowChanged = (Config.GetBool("quickButtonShow") != chkQuickButtonShow.isChecked());
 		Config.Set("quickButtonShow", chkQuickButtonShow.isChecked());
 		String ActionsString = "";
 		int counter = 0;
@@ -1028,7 +944,10 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			lastZoom = Config.GetInt("OsmMaxLevel");
 		}
 		Config.Set("lastZoomLevel", lastZoom);
-
+		Config.Set("SearchWithoutFounds", chkSearchWithoutFounds.isChecked());
+		Config.Set("SearchWithoutOwns", chkSearchWithoutOwns.isChecked());
+		
+		
 		Config.AcceptChanges();
 		main.mapView.setNewSettings();
 		main.mapView.InitializeMap();
@@ -1058,8 +977,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 
 	private void fillLangCombo()
 	{
-		Sprachen = Global.Translations.GetLangs(Config
-				.GetString("LanguagePath"));
+		Sprachen = Global.Translations.GetLangs(Config.GetString("LanguagePath"));
 		String[] items = new String[Sprachen.size()];
 		int index = 0;
 		int selection = -1;
@@ -1068,8 +986,7 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			if (Config.GetString("Sel_LanguagePath").equals(tmp.Path)) selection = index;
 			items[index++] = tmp.Name;
 		}
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, items);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		LangCombo.setAdapter(adapter);
 		LangCombo.setSelection(selection);
@@ -1089,20 +1006,14 @@ public class Settings extends Activity implements ViewOptionsMenu,
 
 		}
 
-		ArrayAdapter<Integer> minAdapter = new ArrayAdapter<Integer>(this,
-				android.R.layout.simple_spinner_item, Level);
-		minAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		ArrayAdapter<Integer> minAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, Level);
+		minAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-		ArrayAdapter<Integer> maxAdapter = new ArrayAdapter<Integer>(this,
-				android.R.layout.simple_spinner_item, Level);
-		maxAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		ArrayAdapter<Integer> maxAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, Level);
+		maxAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-		ArrayAdapter<Integer> crossAdapter = new ArrayAdapter<Integer>(this,
-				android.R.layout.simple_spinner_item, CrossLevel);
-		crossAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		ArrayAdapter<Integer> crossAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, CrossLevel);
+		crossAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 		OsmMinLevel.setAdapter(minAdapter);
 		OsmMaxLevel.setAdapter(maxAdapter);
@@ -1120,10 +1031,9 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			smoth.add(item);
 		}
 
-		ArrayAdapter<SmoothScrollingTyp> smothAdapter = new ArrayAdapter<SmoothScrollingTyp>(
-				this, android.R.layout.simple_spinner_item, smoth);
-		smothAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		ArrayAdapter<SmoothScrollingTyp> smothAdapter = new ArrayAdapter<SmoothScrollingTyp>(this, android.R.layout.simple_spinner_item,
+				smoth);
+		smothAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		SmoothScrolling.setAdapter(smothAdapter);
 	}
 
@@ -1136,10 +1046,8 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			AllActionList.add(item);
 		}
 
-		ArrayAdapter<Actions> ActionListAdapter = new ArrayAdapter<Actions>(
-				this, android.R.layout.simple_spinner_item, AllActionList);
-		ActionListAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		ArrayAdapter<Actions> ActionListAdapter = new ArrayAdapter<Actions>(this, android.R.layout.simple_spinner_item, AllActionList);
+		ActionListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		ActionListAll.setAdapter(ActionListAdapter);
 	}
 
@@ -1162,10 +1070,8 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			approachValues.add(item);
 		}
 
-		ArrayAdapter<Integer> approachAdapter = new ArrayAdapter<Integer>(this,
-				android.R.layout.simple_spinner_item, approachValues);
-		approachAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		ArrayAdapter<Integer> approachAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, approachValues);
+		approachAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		ApproachSound.setAdapter(approachAdapter);
 	}
 
@@ -1182,10 +1088,8 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			distance.add(item);
 		}
 
-		ArrayAdapter<Integer> TrackCountsAdapter = new ArrayAdapter<Integer>(
-				this, android.R.layout.simple_spinner_item, distance);
-		TrackCountsAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		ArrayAdapter<Integer> TrackCountsAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, distance);
+		TrackCountsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		TrackDistance.setAdapter(TrackCountsAdapter);
 	}
 
@@ -1379,17 +1283,13 @@ public class Settings extends Activity implements ViewOptionsMenu,
 			}
 
 			String Name = Global.QuickButtonList.get(position).getDesc();
-			View retval = LayoutInflater.from(parent.getContext()).inflate(
-					R.layout.quick_list_item, null);
+			View retval = LayoutInflater.from(parent.getContext()).inflate(R.layout.quick_list_item, null);
 			TextView title = (TextView) retval.findViewById(R.id.title);
 			ImageView image = (ImageView) retval.findViewById(R.id.image);
-			LinearLayout layout = (LinearLayout) retval
-					.findViewById(R.id.layout);
+			LinearLayout layout = (LinearLayout) retval.findViewById(R.id.layout);
 			title.setText(Name);
-			image.setImageDrawable(Global.QuickButtonList.get(position)
-					.getIcon());
-			int BackGroundColor = (position != ActionListSelectedIndex) ? Global
-					.getColor(R.attr.ListBackground) : Global
+			image.setImageDrawable(Global.QuickButtonList.get(position).getIcon());
+			int BackGroundColor = (position != ActionListSelectedIndex) ? Global.getColor(R.attr.ListBackground) : Global
 					.getColor(R.attr.ListBackground_select);
 			layout.setBackgroundColor(BackGroundColor);
 

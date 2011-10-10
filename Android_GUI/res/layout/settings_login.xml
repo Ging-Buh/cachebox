@@ -3,7 +3,7 @@
 	android:layout_height="match_parent" android:orientation="vertical"
 	android:layout_width="match_parent" android:background="?attr/DropDownBackground">
 
-	
+
 	<TextView android:id="@+id/settings_textView1"
 		android:layout_width="match_parent" android:layout_height="wrap_content"
 		android:text="GroundSpeak Name">
@@ -24,12 +24,21 @@
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:text="GroundSpeak API Key">
 	</TextView>
-	<Button android:id="@+id/button_get_api_key" android:layout_width="match_parent"
-		android:layout_height="wrap_content" android:text="get Api Key"></Button>
+	<Button android:id="@+id/button_get_api_key"
+		android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:text="get Api Key"></Button>
 	<EditText android:layout_width="match_parent" android:text="EditText"
 		android:layout_height="wrap_content" android:id="@+id/settings_editText5"
 		android:singleLine="true" android:inputType="text" android:password="false">
 	</EditText>
+	<CheckBox android:text="Online search without my founds"
+		android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:id="@+id/settings_without_founds">
+	</CheckBox>
+	<CheckBox android:text="Online search without my owns"
+	android:layout_width="match_parent" android:layout_height="wrap_content"
+	android:id="@+id/settings_without_owns">
+	</CheckBox>
 	<TextView android:id="@+id/settings_textView3"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:text="GCVote Passwort">

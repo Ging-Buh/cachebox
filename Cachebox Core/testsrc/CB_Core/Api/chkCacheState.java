@@ -31,36 +31,29 @@ public class chkCacheState extends TestCase
 	private void LoadConfig()
 	{
 		Config.Initialize("./testdata/", "./testdata/cachebox.config");
-		String key=Config.GetString("GcAPI");
+		String key = Config.GetString("GcAPI");
 		assertFalse("Kein Access Key gefunden, liegt die Config an der richtigen stelle?", key.equals(""));
-		
+
 	}
-	
-	
+
 	public void testCache()
 	{
-		
+
 		ArrayList<Cache> testCaches = new ArrayList<Cache>();
-		
-		
+
 		Cache c1 = new Cache();
-		c1.GcCode="GC2NFTY";
-		
+		c1.GcCode = "GC2NFTY";
+
 		Cache c2 = new Cache();
-		c2.GcCode="GC33V5M";
-		
-		
+		c2.GcCode = "GC33V5M";
+
 		testCaches.add(c1);
 		testCaches.add(c2);
-		
-		
-		
-		
+
 		int test = GroundspeakAPI.GetGeocacheStatus(Config.GetString("GcAPI"), testCaches);
-		
+
 		assertFalse("ProjC40 sollte not Available sein", testCaches.get(0).Available);
 		assertTrue("ProjC40 sollte Archived sein", testCaches.get(0).Archived);
 	}
-	
-	
+
 }

@@ -1,11 +1,6 @@
 package de.droidcachebox.Views.Forms;
 
-public enum MessageBoxButtons 
+public enum MessageBoxButtons
 {
-	AbortRetryIgnore,
-	OK,
-	OKCancel,
-	RetryCancel,
-	YesNo,
-	YesNoCancel
+	AbortRetryIgnore, OK, OKCancel, RetryCancel, YesNo, YesNoCancel, Cancel
 }

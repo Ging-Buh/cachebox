@@ -438,7 +438,7 @@
 	GpxFromMail = GPX aus Emails
 	GCVoteRatings = GcVote Cache Bewertungen
 	PreloadImages = Bilder in Beschreibung
-	LoginSettings = Login - Einstellungen
+	LoginSettings = Login und API - Einstellungen
 	getApiKey = API key erstellen
 	DescMapLayer = Auto-download Karten
 	MoveMapCenterWithSpeed = Bewege Zentrum mit Geschwindigkeit
