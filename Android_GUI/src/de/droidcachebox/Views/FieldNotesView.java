@@ -66,8 +66,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		this.setOnItemClickListener(new OnItemClickListener()
 		{
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3)
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 			{
 
 				aktFieldNote = lFieldNotes.get(arg2);
@@ -81,8 +80,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		{
 
 			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3)
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 			{
 				aktFieldNote = lFieldNotes.get(arg2);
 				aktFieldNoteIndex = arg2;
@@ -140,8 +138,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		{
 			FieldNoteEntry fne = fieldNoteList.get(position);
 			Boolean BackGroundChanger = ((position % 2) == 1);
-			FieldNoteViewItem v = new FieldNoteViewItem(context, fne,
-					BackGroundChanger);
+			FieldNoteViewItem v = new FieldNoteViewItem(context, fne, BackGroundChanger);
 
 			return v;
 		}
@@ -150,10 +147,8 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 	private void UploadFieldnotes()
 	{
 
-		MessageBox.Show(Global.Translations.Get("uploadFieldNotes?"),
-				Global.Translations.Get("uploadFieldNotes"),
-				MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live,
-				UploadFieldnotesDialogListner);
+		MessageBox.Show(Global.Translations.Get("uploadFieldNotes?"), Global.Translations.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
+				MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner);
 
 	}
 
@@ -196,16 +191,11 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 										// wurde.
 					break;
 					// Progress status Melden
-					ProgresssChangedEventList.Call(fieldNote.CacheName,
-							(100 * count) / anzahl);
+					ProgresssChangedEventList.Call(fieldNote.CacheName, (100 * count) / anzahl);
 
-					if (CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(
-							accessToken, fieldNote.gcCode,
-							fieldNote.getGcUploadId(), fieldNote.timestamp,
-							fieldNote.comment) != 0) UploadMeldung += fieldNote.gcCode
-							+ "\n"
-							+ CB_Core.Api.GroundspeakAPI.LastAPIError
-							+ "\n";
+					if (CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(accessToken, fieldNote.gcCode, fieldNote.getGcUploadId(),
+							fieldNote.timestamp, fieldNote.comment) != 0) UploadMeldung += fieldNote.gcCode + "\n"
+							+ CB_Core.Api.GroundspeakAPI.LastAPIError + "\n";
 					count++;
 				}
 
@@ -220,8 +210,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		};
 
 		// ProgressDialog Anzeigen und den Abarbeitungs Thread übergeben.
-		ProgressDialog.Show("Upload FieldNotes", UploadFieldNotesdThread,
-				ProgressCanceld);
+		ProgressDialog.Show("Upload FieldNotes", UploadFieldNotesdThread, ProgressCanceld);
 
 	}
 
@@ -244,15 +233,11 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		{
 			if (!UploadMeldung.equals(""))
 			{
-				MessageBox.Show(UploadMeldung,
-						Global.Translations.Get("Error"), MessageBoxButtons.OK,
-						MessageBoxIcon.Error, null);
+				MessageBox.Show(UploadMeldung, Global.Translations.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
 			}
 			else
 			{
-				MessageBox.Show("Upload ready",
-						Global.Translations.Get("uploadFieldNotes"),
-						MessageBoxIcon.GC_Live);
+				MessageBox.Show("Upload ready", Global.Translations.Get("uploadFieldNotes"), MessageBoxIcon.GC_Live);
 			}
 
 		}
@@ -264,9 +249,8 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 
 		if (cache == null)
 		{
-			MessageBox.Show(Global.Translations.Get("NoCacheSelect"),
-					Global.Translations.Get("thisNotWork"),
-					MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+			MessageBox.Show(Global.Translations.Get("NoCacheSelect"), Global.Translations.Get("thisNotWork"), MessageBoxButtons.OK,
+					MessageBoxIcon.Error, null);
 			return;
 		}
 
@@ -312,27 +296,23 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		case 1:
 			if (!cache.Found) newFieldNote.foundNumber++; //
 			newFieldNote.fillType();
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(
-					Config.GetString("FoundTemplate"), newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.GetString("FoundTemplate"), newFieldNote);
 			// wenn eine FieldNote Found erzeugt werden soll und der Cache noch
 			// nicht gefunden war -> foundNumber um 1 erhöhen
 			break;
 		case 2:
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(
-					Config.GetString("DNFTemplate"), newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.GetString("DNFTemplate"), newFieldNote);
 			break;
 		case 3:
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(
-					Config.GetString("NeedsMaintenanceTemplate"), newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.GetString("NeedsMaintenanceTemplate"),
+					newFieldNote);
 			break;
 		case 4:
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(
-					Config.GetString("AddNoteTemplate"), newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.GetString("AddNoteTemplate"), newFieldNote);
 			break;
 		}
 
-		Intent mainIntent = new Intent().setClass(getContext(),
-				EditFieldNote.class);
+		Intent mainIntent = new Intent().setClass(getContext(), EditFieldNote.class);
 		Bundle b = new Bundle();
 		b.putSerializable("FieldNote", newFieldNote);
 		mainIntent.putExtras(b);
@@ -372,8 +352,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		if (data == null)
 		{
 
-			int sollHeight = (Config.GetBool("quickButtonShow") && Config
-					.GetBool("quickButtonLastShow")) ? Sizes
+			int sollHeight = (Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow")) ? Sizes
 					.getQuickButtonListHeight() : 0;
 			((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 			downSlider.isInitial = false;
@@ -384,8 +363,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		Bundle bundle = data.getExtras();
 		if (bundle != null)
 		{
-			FieldNoteEntry fieldNote = (FieldNoteEntry) bundle
-					.getSerializable("FieldNoteResult");
+			FieldNoteEntry fieldNote = (FieldNoteEntry) bundle.getSerializable("FieldNoteResult");
 			if (fieldNote != null)
 			{
 				if ((aktFieldNote != null) && (aktFieldNoteIndex != -1))
@@ -411,8 +389,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 						{
 							GlobalCore.SelectedCache().Found = true;
 							CacheDAO cacheDAO = new CacheDAO();
-							cacheDAO.WriteToDatabase_Found(GlobalCore
-									.SelectedCache());
+							cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
 							Config.Set("FoundOffset", aktFieldNote.foundNumber);
 							Config.AcceptChanges();
 						}
@@ -424,15 +401,12 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 						{
 							GlobalCore.SelectedCache().Found = false;
 							CacheDAO cacheDAO = new CacheDAO();
-							cacheDAO.WriteToDatabase_Found(GlobalCore
-									.SelectedCache());
-							Config.Set("FoundOffset",
-									Config.GetInt("FoundOffset") - 1);
+							cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
+							Config.Set("FoundOffset", Config.GetInt("FoundOffset") - 1);
 							Config.AcceptChanges();
 						}
 						// und eine evtl. vorhandene FieldNote FoundIt löschen
-						lFieldNotes.DeleteFieldNoteByCacheId(
-								GlobalCore.SelectedCache().Id, 1);
+						lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.SelectedCache().Id, 1);
 					}
 
 					FieldNoteList.CreateVisitsTxt();
@@ -441,9 +415,8 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 			}
 		}
 
-		int sollHeight = (Config.GetBool("quickButtonShow") && Config
-				.GetBool("quickButtonLastShow")) ? Sizes
-				.getQuickButtonListHeight() : 0;
+		int sollHeight = (Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow")) ? Sizes.getQuickButtonListHeight()
+				: 0;
 		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 		downSlider.isInitial = false;
 		((main) main.mainActivity).InfoDownSlider.invalidate();
@@ -457,14 +430,11 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		String sdate = iso8601Format.format(fieldNote.timestamp);
 
 		template = template.replace("<br>", "\n");
-		template = template.replace("##finds##",
-				String.valueOf(fieldNote.foundNumber));
+		template = template.replace("##finds##", String.valueOf(fieldNote.foundNumber));
 		template = template.replace("##date##", sdate);
 		template = template.replace("##time##", stime);
-		template = template.replace("##owner##",
-				GlobalCore.SelectedCache().Owner);
-		template = template.replace("##gcusername##",
-				Config.GetString("GcLogin"));
+		template = template.replace("##owner##", GlobalCore.SelectedCache().Owner);
+		template = template.replace("##gcusername##", Config.GetString("GcLogin"));
 		// template = template.replace("##gcvote##",
 		// comboBoxVote.SelectedIndex.ToString());
 		return template;
@@ -472,8 +442,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 
 	private void editFieldNote()
 	{
-		Intent mainIntent = new Intent().setClass(getContext(),
-				EditFieldNote.class);
+		Intent mainIntent = new Intent().setClass(getContext(), EditFieldNote.class);
 		Bundle b = new Bundle();
 		b.putSerializable("FieldNote", aktFieldNote);
 		mainIntent.putExtras(b);
@@ -498,9 +467,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 
 		if (cache == null)
 		{
-			String message = "The Cache ["
-					+ aktFieldNote.CacheName
-					+ "] is not in the actual DB. \nThis FieldNote can not be deleted!";
+			String message = "The Cache [" + aktFieldNote.CacheName + "] is not in the actual DB. \nThis FieldNote can not be deleted!";
 			MessageBox.Show(message);
 			return;
 		}
@@ -520,14 +487,12 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 						if (cache.Found)
 						{
 							cache.Found = false;
-						//	Database.WriteToDatabase(cache);
-							Config.Set("FoundOffset",
-									Config.GetInt("FoundOffset") - 1);
+							// Database.WriteToDatabase(cache);
+							Config.Set("FoundOffset", Config.GetInt("FoundOffset") - 1);
 							Config.AcceptChanges();
 						}
 					}
-					lFieldNotes.DeleteFieldNote(aktFieldNote.Id,
-							aktFieldNote.type);
+					lFieldNotes.DeleteFieldNote(aktFieldNote.Id, aktFieldNote.type);
 
 					aktFieldNote = null;
 					aktFieldNoteIndex = -1;
@@ -543,13 +508,11 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 			}
 		};
 
-		String message = "Soll die FieldNote\n\n[" + aktFieldNote.typeString
-				+ "]\n\ndes Caches" + "\n\n[" + aktFieldNote.CacheName
+		String message = "Soll die FieldNote\n\n[" + aktFieldNote.typeString + "]\n\ndes Caches" + "\n\n[" + aktFieldNote.CacheName
 				+ "]\n\n gelšscht werden?";
 		if (aktFieldNote.type == 1) message += "\n\nDer Found Status des Caches wird dabei zurŸckgesetzt!";
 
-		MessageBox.Show(message, "Delete Fieldnote", MessageBoxButtons.YesNo,
-				dialogClickListener);
+		MessageBox.Show(message, "Delete Fieldnote", MessageBoxButtons.YesNo, dialogClickListener);
 
 	}
 
@@ -587,8 +550,8 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 			}
 		};
 		String message = Global.Translations.Get("DeleteAllFieldNotesQuestion");
-		MessageBox.Show(message, Global.Translations.Get("DeleteAllNotes"), MessageBoxButtons.YesNo,
-				MessageBoxIcon.Warning, dialogClickListener);
+		MessageBox.Show(message, Global.Translations.Get("DeleteAllNotes"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+				dialogClickListener);
 
 	}
 
@@ -607,9 +570,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 
 		if (cache == null)
 		{
-			String message = "The Cache ["
-					+ aktFieldNote.CacheName
-					+ "] is not in the actual DB. \nThis FieldNote can not be selected!";
+			String message = "The Cache [" + aktFieldNote.CacheName + "] is not in the actual DB. \nThis FieldNote can not be selected!";
 			MessageBox.Show(message);
 			return;
 		}

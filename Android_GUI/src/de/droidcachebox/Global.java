@@ -37,9 +37,9 @@ import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 
 public class Global
 {
-	public static final int CurrentRevision = 453;
-	public static final String CurrentVersion = "0.2.";
-	public static final String VersionPrefix = "alpha 3";
+	public static final int CurrentRevision = 457;
+	public static final String CurrentVersion = "0.3.";
+	public static final String VersionPrefix = "beta";
 	public static final int LatestDatabaseChange = 1016;
 	public static final int LatestDatabaseFieldNoteChange = 1001;
 
@@ -493,14 +493,28 @@ public class Global
 		NewMapOverlay.get(2).add(getDrawable(R.drawable.map_20x20_selected_deact, res));
 
 		Icons = new Drawable[]
-			{ getDrawable(R.drawable.day_tb, R.drawable.night_tb, res), getDrawable(R.drawable.addwaypoint, res),
-					getDrawable(R.drawable.smilie_gross, res), getDrawable(R.drawable.download, res), getDrawable(R.drawable.log1, res),
-					getDrawable(R.drawable.maintenance, res), getDrawable(R.drawable.checkbox_checked, res),
-					getDrawable(R.drawable.checkbox_unchecked, res), getDrawable(R.drawable.sonne, res), getDrawable(R.drawable.mond, res),
-					getDrawable(R.drawable.travelbug, res), getDrawable(R.drawable.collapse, res), getDrawable(R.drawable.expand, res),
-					getDrawable(R.drawable.enabled, res), getDrawable(R.drawable.disabled, res), getDrawable(R.drawable.retrieve_tb, res),
-					getDrawable(R.drawable.drop_tb, res), getDrawable(R.drawable.star, res), getDrawable(R.drawable.earth, res),
-					getDrawable(R.drawable.favorit, res), getDrawable(R.drawable.file, res), getDrawable(R.drawable.userdata, res),
+			{ getDrawable(R.drawable.day_tb, R.drawable.night_tb, res),// 0
+					getDrawable(R.drawable.addwaypoint, res),// 1
+					getDrawable(R.drawable.smilie_gross, res),// 2
+					getDrawable(R.drawable.download, res),// 3
+					getDrawable(R.drawable.log1, res),// 4
+					getDrawable(R.drawable.maintenance, res),// 5
+					getDrawable(R.drawable.checkbox_checked, res),// 6
+					getDrawable(R.drawable.checkbox_unchecked, res),// 7
+					getDrawable(R.drawable.sonne, res),// 8
+					getDrawable(R.drawable.mond, res),// 9
+					getDrawable(R.drawable.travelbug, res),// 10
+					getDrawable(R.drawable.collapse, res),// 11
+					getDrawable(R.drawable.expand, res),// 12
+					getDrawable(R.drawable.enabled, res),// 13
+					getDrawable(R.drawable.disabled, res),// 14
+					getDrawable(R.drawable.retrieve_tb, res),// 15
+					getDrawable(R.drawable.drop_tb, res),// 16
+					getDrawable(R.drawable.star, res),// 17
+					getDrawable(R.drawable.earth, res),// 18
+					getDrawable(R.drawable.favorit, res),// 19
+					getDrawable(R.drawable.file, res),// 20
+					getDrawable(R.drawable.userdata, res),// 21
 					getDrawable(R.drawable.delete, res), // 22
 					getDrawable(R.drawable.archiv, res), // 23
 					getDrawable(R.drawable.not_available, res), // 24
@@ -526,7 +540,7 @@ public class Global
 
 		Arrows = new Drawable[]
 			{ getDrawable(R.drawable.arrow, R.drawable.night_arrow, res),
-					getDrawable(R.drawable.arrow_small, R.drawable.night_arrow_small, res), };
+					getDrawable(R.drawable.arrow_small, R.drawable.night_arrow_small, res), getDrawable(R.drawable.compass_arrow, res), };
 
 		SmallStarIcons = new Drawable[]
 			{ getDrawable(R.drawable.smallstars_0, R.drawable.night_smallstars_0, res),

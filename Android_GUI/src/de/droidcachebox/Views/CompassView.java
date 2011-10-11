@@ -13,7 +13,6 @@ import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
-import CB_Core.Log.Logger;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Ui.Sizes;
 import CB_Core.GlobalCore;
@@ -30,18 +29,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
-
-
-public class CompassView extends FrameLayout implements ViewOptionsMenu,PositionEvent, SelectedCacheEvent, SelectedLangChangedEvent {
-	private Context context;
+public class CompassView extends FrameLayout implements ViewOptionsMenu, PositionEvent, SelectedLangChangedEvent
+{
 	private Cache aktCache;
 	private Waypoint aktWaypoint;
 	private CompassControl compassControl;
@@ -50,247 +43,254 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu,Position
 	private MultiToggleButton AlignButton;
 	private WayPointInfoControl WP_info;
 	private Boolean align = false;
-	
-    
-	public CompassView(Context context, LayoutInflater inflater) 
+
+	public CompassView(Context context, LayoutInflater inflater)
 	{
 		super(context);
-		
-		SelectedCacheEventList.Add(this);
-		
-		RelativeLayout  CompassLayout = (RelativeLayout )inflater.inflate(R.layout.compassview, null, false);
+
+		RelativeLayout CompassLayout = (RelativeLayout) inflater.inflate(R.layout.compassview, null, false);
 		this.addView(CompassLayout);
-		
+
 		this.setBackgroundColor(Global.getColor(R.attr.myBackground));
-		
-		 compassControl = (CompassControl)findViewById(R.id.Compass);
-		 DescriptionTextView = (CacheInfoControl)findViewById(R.id.CompassDescriptionView);
-		 ToggleButtonLayout = (RelativeLayout)findViewById(R.id.layoutCompassToggle);
-		 WP_info = (WayPointInfoControl)findViewById(R.id.WaypointDescriptionView);
-		 AlignButton = (MultiToggleButton)findViewById(R.id.CompassAlignButton);
-		 AlignButton.setOnClickListener(new OnClickListener() {
-			
+
+		compassControl = (CompassControl) findViewById(R.id.Compass);
+		DescriptionTextView = (CacheInfoControl) findViewById(R.id.CompassDescriptionView);
+		ToggleButtonLayout = (RelativeLayout) findViewById(R.id.layoutCompassToggle);
+		WP_info = (WayPointInfoControl) findViewById(R.id.WaypointDescriptionView);
+		AlignButton = (MultiToggleButton) findViewById(R.id.CompassAlignButton);
+		AlignButton.setOnClickListener(new OnClickListener()
+		{
+
 			@Override
-			public void onClick(View arg0) 
+			public void onClick(View arg0)
 			{
 				AlignButton.onClick(arg0);
-				align = (AlignButton.getState() == 0)?  false : true;
-				
+				align = (AlignButton.getState() == 0) ? false : true;
+
 			}
 		});
-		 
-		 DescriptionTextView.setOnClickListener(onDescClick);
-		 WP_info.setOnClickListener(onDescClick);
-		 
-		SelectedLangChangedEventList.Add(this);
+
+		DescriptionTextView.setOnClickListener(onDescClick);
+		WP_info.setOnClickListener(onDescClick);
+
 		SelectedLangChangedEventCalled();
+
+		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+
 	}
-	
-	final View.OnClickListener onDescClick = new OnClickListener() 
+
+	final View.OnClickListener onDescClick = new OnClickListener()
 	{
-		
+
 		@Override
-		public void onClick(View v) 
+		public void onClick(View v)
 		{// bei click auf WP zeige WayPointView
 			((main) main.mainActivity).showView(2);
 			Toast.makeText(main.mainActivity, "Switch to Waypoint View", Toast.LENGTH_SHORT).show();
 		}
 	};
-	
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) 
-    {
-    // we overriding onMeasure because this is where the application gets its right size.
-    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    
-    DescriptionTextView.setHeight(Sizes.getCacheInfoHeight());
-    ToggleButtonLayout.getLayoutParams().height= Sizes.getWindowWidth() + 30 - main.getQuickButtonHeight();
-
-    }
-	
-	
-    public void reInit()
-    {
-    	compassControl.init();
-    	this.setBackgroundColor(Global.getColor(R.attr.myBackground));
-    	SelectedCacheChanged( aktCache,  aktWaypoint);
-    	int cacheInfoBackColor = Global.getColor(R.attr.ListBackground_select);
-    	if (aktWaypoint != null)
-        {
-			cacheInfoBackColor = Global.getColor(R.attr.ListBackground_secend);
-        }
-    	DescriptionTextView.setCache(aktCache, cacheInfoBackColor);
-    	DescriptionTextView.invalidate();
-    	WP_info.invalidate();
-    }
-    
-	
 
 	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+	{
+		// we overriding onMeasure because this is where the application gets
+		// its right size.
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+		DescriptionTextView.setHeight(Sizes.getCacheInfoHeight());
+		ToggleButtonLayout.getLayoutParams().height = Sizes.getWindowWidth() + 30 - main.getQuickButtonHeight();
+
+	}
+
+	public void reInit()
+	{
+		compassControl.init();
+		this.setBackgroundColor(Global.getColor(R.attr.myBackground));
+		SetSelectedCache(aktCache, aktWaypoint);
+		int cacheInfoBackColor = Global.getColor(R.attr.ListBackground_select);
+		if (aktWaypoint != null)
+		{
+			cacheInfoBackColor = Global.getColor(R.attr.ListBackground_secend);
+		}
+		DescriptionTextView.setCache(aktCache, cacheInfoBackColor);
+		DescriptionTextView.invalidate();
+		WP_info.invalidate();
+	}
+
+	public void SetSelectedCache(Cache cache, Waypoint waypoint)
+	{
 		if ((aktCache != cache) || (aktWaypoint != waypoint))
-		{			
+		{
 			aktCache = cache;
 			aktWaypoint = waypoint;
-			
+
 			int cacheInfoBackColor = Global.getColor(R.attr.ListBackground_select);
 			if (aktWaypoint != null)
-            {
-				cacheInfoBackColor = Global.getColor(R.attr.ListBackground_secend); // Cache ist nicht selectiert
+			{
+				cacheInfoBackColor = Global.getColor(R.attr.ListBackground_secend); // Cache
+																					// ist
+																					// nicht
+																					// selectiert
 				WP_info.setWaypoint(aktWaypoint);
 				DescriptionTextView.setVisibility(View.GONE);
 				WP_info.setVisibility(View.VISIBLE);
-            }
+			}
 			else
 			{
 				DescriptionTextView.setVisibility(View.VISIBLE);
 				WP_info.setVisibility(View.GONE);
 				WP_info.setWaypoint(null);
 			}
-			
+
 			DescriptionTextView.setCache(aktCache, cacheInfoBackColor);
 		}
 	}
 
 	@Override
-	public boolean ItemSelected(MenuItem item) {
+	public boolean ItemSelected(MenuItem item)
+	{
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public void BeforeShowMenu(Menu menu) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void OnShow() 
+	public void BeforeShowMenu(Menu menu)
 	{
-		compassControl.N=Config.GetBool("nightMode");
-		PositionEventList.Add(this);
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
-	public void OnHide() 
+	public void OnShow()
+	{
+		compassControl.N = Config.GetBool("nightMode");
+		PositionEventList.Add(this);
+		SelectedLangChangedEventList.Add(this);
+	}
+
+	@Override
+	public void OnHide()
 	{
 		PositionEventList.Remove(this);
-	
+		SelectedLangChangedEventList.Remove(this);
 	}
 
 	@Override
-	public void OnFree() {
-		
+	public void OnFree()
+	{
+		PositionEventList.Remove(this);
+		SelectedLangChangedEventList.Remove(this);
+		aktCache = null;
+		aktWaypoint = null;
+		compassControl.dispose();
+		compassControl = null;
+		DescriptionTextView = null;
+		ToggleButtonLayout = null;
+		AlignButton = null;
+		WP_info = null;
+
 	}
 
 	@Override
-	public int GetMenuId() {
+	public int GetMenuId()
+	{
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public void ActivityResult(int requestCode, int resultCode, Intent data) {
+	public void ActivityResult(int requestCode, int resultCode, Intent data)
+	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void PositionChanged(Location location) 
+	public void PositionChanged(Location location)
 	{
-		if(aktCache==null)return;
-		
+		if (aktCache == null) return;
+
 		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
-        {
-            Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
-            double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
-            if(!align)heading = 0; 
-            // FillArrow: Luftfahrt
-            // Bearing: Luftfahrt
-            // Heading: Im Uhrzeigersinn, Geocaching-Norm
+		{
+			Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
+			double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
+			if (!align) heading = 0;
+			// FillArrow: Luftfahrt
+			// Bearing: Luftfahrt
+			// Heading: Im Uhrzeigersinn, Geocaching-Norm
 
-            Coordinate dest = aktCache.Pos;
-            float distance = aktCache.Distance(false);
-            if (aktWaypoint != null)
-            {
-            	dest = aktWaypoint.Pos;
-            	distance = aktWaypoint.Distance();
-            }
-            double bearing = Coordinate.Bearing(position, dest);
-            double relativeBearing = bearing - heading;
-         //   double relativeBearingRad = relativeBearing * Math.PI / 180.0;
+			Coordinate dest = aktCache.Pos;
+			float distance = aktCache.Distance(false);
+			if (aktWaypoint != null)
+			{
+				dest = aktWaypoint.Pos;
+				distance = aktWaypoint.Distance();
+			}
+			double bearing = Coordinate.Bearing(position, dest);
+			double relativeBearing = bearing - heading;
+			// double relativeBearingRad = relativeBearing * Math.PI / 180.0;
 
-             		
-    		compassControl.setInfo(heading, relativeBearing, UnitFormatter.DistanceString(distance));
-    		
-        }
+			compassControl.setInfo(heading, relativeBearing, UnitFormatter.DistanceString(distance));
+
+		}
 	}
 
 	@Override
-	public void OrientationChanged(float Testheading) 
+	public void OrientationChanged(float Testheading)
 	{
-		if (aktCache==null)return;
-		
+		if (aktCache == null) return;
+
 		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
-        {
-            Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
-            double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
-            if(!align)heading = 0;
-            // FillArrow: Luftfahrt
-            // Bearing: Luftfahrt
-            // Heading: Im Uhrzeigersinn, Geocaching-Norm
+		{
+			Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
+			double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
+			if (!align) heading = 0;
+			// FillArrow: Luftfahrt
+			// Bearing: Luftfahrt
+			// Heading: Im Uhrzeigersinn, Geocaching-Norm
 
-            Coordinate dest = aktCache.Pos;
-            float distance = aktCache.Distance(false);
-            if (aktWaypoint != null)
-            {
-            	dest = aktWaypoint.Pos;
-            	distance = aktWaypoint.Distance();
-            }
-            double bearing = Coordinate.Bearing(position, dest);
-            double relativeBearing = bearing - heading;
-         //   double relativeBearingRad = relativeBearing * Math.PI / 180.0;
-            
-				
-		compassControl.setInfo(heading, relativeBearing, UnitFormatter.DistanceString(distance));
-		
-        }
+			Coordinate dest = aktCache.Pos;
+			float distance = aktCache.Distance(false);
+			if (aktWaypoint != null)
+			{
+				dest = aktWaypoint.Pos;
+				distance = aktWaypoint.Distance();
+			}
+			double bearing = Coordinate.Bearing(position, dest);
+			double relativeBearing = bearing - heading;
+			// double relativeBearingRad = relativeBearing * Math.PI / 180.0;
+
+			compassControl.setInfo(heading, relativeBearing, UnitFormatter.DistanceString(distance));
+
+		}
 	}
 
-
-
-
 	@Override
-	public void SelectedLangChangedEventCalled() {
-		 AlignButton.clearStates();
-		 AlignButton.addState(Global.Translations.Get("Align"), Color.GRAY);
-		 AlignButton.addState(Global.Translations.Get("Align"), Color.GREEN);
-		 AlignButton.setState(align? 1 : 0);
+	public void SelectedLangChangedEventCalled()
+	{
+		AlignButton.clearStates();
+		AlignButton.addState(Global.Translations.Get("Align"), Color.GRAY);
+		AlignButton.addState(Global.Translations.Get("Align"), Color.GREEN);
+		AlignButton.setState(align ? 1 : 0);
 	}
 
-
-
-
 	@Override
-	public int GetContextMenuId() {
+	public int GetContextMenuId()
+	{
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-
-
-
 	@Override
-	public void BeforeShowContextMenu(Menu menu) {
+	public void BeforeShowContextMenu(Menu menu)
+	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
-
-
-
 	@Override
-	public boolean ContextMenuItemSelected(MenuItem item) {
+	public boolean ContextMenuItemSelected(MenuItem item)
+	{
 		// TODO Auto-generated method stub
 		return false;
 	}

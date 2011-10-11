@@ -3,27 +3,26 @@ package de.droidcachebox.Events;
 import java.util.ArrayList;
 
 import CB_Core.Config;
-import de.droidcachebox.Global;
-
-
 import CB_Core.GlobalCore;
 import CB_Core.Types.Coordinate;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.SystemClock;
 
-public class PositionEventList {
+public class PositionEventList
+{
 	public static ArrayList<PositionEvent> list = new ArrayList<PositionEvent>();
+
 	public static void Add(PositionEvent event)
 	{
-		list.add(event);	
+		list.add(event);
 	}
-	
+
 	public static void Remove(PositionEvent event)
 	{
-		list.remove(event);	
+		list.remove(event);
 	}
-	
+
 	public static void Call(Location location)
 	{
 		if (location.getProvider().equalsIgnoreCase(LocationManager.GPS_PROVIDER))
@@ -35,7 +34,7 @@ public class PositionEventList {
 		{
 			GlobalCore.LastValidPosition.Valid = false;
 		}
-		GlobalCore.Marker.Valid=false;
+		GlobalCore.Marker.Valid = false;
 		for (PositionEvent event : list)
 		{
 			event.PositionChanged(location);
@@ -45,13 +44,12 @@ public class PositionEventList {
 	private static int anzCompassValues = 0;
 	private static float compassValue = 0;
 	private static long lastCompassTick = -99999;
-	
+
 	public static void Call(float heading)
 	{
-		
-		if (!Config.getHtcCompass())
-			return;		
-	
+
+		if (!Config.getHtcCompass()) return;
+
 		anzCompassValues++;
 		compassValue += heading;
 
@@ -71,11 +69,7 @@ public class PositionEventList {
 		anzCompassValues = 0;
 		compassValue = 0;
 		lastCompassTick = aktTick;
-		
-		
-		
-		
-		
+
 		for (PositionEvent event : list)
 		{
 			event.OrientationChanged(heading);

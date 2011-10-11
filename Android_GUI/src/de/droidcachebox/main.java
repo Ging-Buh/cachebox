@@ -39,7 +39,6 @@ import de.droidcachebox.Custom_Controls.DebugInfoPanel;
 import de.droidcachebox.Custom_Controls.DescriptionViewControl;
 import de.droidcachebox.Custom_Controls.Mic_On_Flash;
 import de.droidcachebox.Custom_Controls.downSlider;
-import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
 import de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView;
 import de.droidcachebox.Custom_Controls.QuickButtonList.QuickButtonItem;
@@ -57,16 +56,13 @@ import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Locator.GPS;
-import de.droidcachebox.Locator.GPS.GpsStatusListener;
 import de.droidcachebox.Locator.Locator;
-import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.AllContextMenuCallHandler;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.AboutView;
 import de.droidcachebox.Views.CacheListView;
 import de.droidcachebox.Views.CompassView;
-import de.droidcachebox.Views.EmptyViewTemplate;
 import de.droidcachebox.Views.FieldNotesView;
 import de.droidcachebox.Views.JokerView;
 import de.droidcachebox.Views.LogView;
@@ -91,12 +87,9 @@ import de.droidcachebox.Views.Forms.ScreenLock;
 import de.droidcachebox.Views.Forms.SelectDB;
 import de.droidcachebox.Views.Forms.Settings;
 import de.droidcachebox.Views.Forms.MessageBox;
-import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 import CB_Core.DB.Database;
 import CB_Core.Types.CacheList;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -105,8 +98,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.ContentValues;
-import android.graphics.Color;
-import android.graphics.PorterDuff.Mode;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -136,7 +127,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.ViewParent;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -165,13 +155,12 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private static SpoilerView spoilerView = null; // ID 5
 	private static NotesView notesView = null; // ID 6
 	private static SolverView solverView = null; // ID 7
-	private static CompassView compassView = null; // ID 8
-	public static FieldNotesView fieldNotesView = null; // ID 9
-	private static EmptyViewTemplate TestEmpty = null; // ID 10
+	private static CompassView compassView = null; // 
+	public static FieldNotesView fieldNotesView = null; //ID 9
 	private static AboutView aboutView = null; // ID 11
-	private static JokerView jokerView = null; //
-	private static TrackListView tracklistView = null; //
-	private static TrackableListView trackablelistView = null; //
+	private static JokerView jokerView = null; // ID 12
+	private static TrackListView tracklistView = null; // ID 13
+	private static TrackableListView trackablelistView = null; // ID 14
 
 	public static LinearLayout strengthLayout;
 
@@ -251,14 +240,6 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
 	private float[] mCompassValues;
-
-	// to store, which menu should be viewd
-	private enum nextMenuType
-	{
-		nmDB, nmCache, nmMap, nmInfo, nmMisc
-	}
-
-	private nextMenuType nextMenu = nextMenuType.nmDB;
 
 	public Boolean getVoiceRecIsStart()
 	{
@@ -400,14 +381,10 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			// chk if NightMode saved
 			if (N)
 			{
-
 				ActivityUtils.changeToTheme(mainActivity, ActivityUtils.THEME_NIGHT, true);
 			}
 
 		}
-
-		// Initialisiere Compass neu.
-		compassView.reInit();
 
 		// Initialisiere Icons neu.
 		Global.InitIcons(this);
@@ -539,7 +516,6 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			{
 				if (GlobalCore.SelectedCache() == null)
 				{
-					CacheDAO cacheDAO = new CacheDAO();
 					Database.Data.Query.Resort();
 				}
 				initialResortAfterFirstFixCompleted = true;
@@ -616,7 +592,6 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 							if (z >= 50) return;
 							if (cache.Distance(true) < GlobalCore.NearestCache().Distance(true))
 							{
-								CacheDAO cacheDAO = new CacheDAO();
 								Database.Data.Query.Resort();
 								Global.PlaySound("AutoResort.wav");
 								return;
@@ -1034,7 +1009,6 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 					}
 				}
 				ViewList.clear();
-				TestEmpty = null;
 				cacheListView = null;
 				mapView = null;
 				notesView = null;
@@ -1148,7 +1122,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	{
 		if (ID == -1) return;// keine Action
 
-		if ((ID > ViewList.size()) || ID == 11)
+		if (ID > ViewList.size())
 		{
 			switch (ID)
 			{
@@ -1188,6 +1162,25 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			case 11: // aboutView
 				aboutView = new AboutView(this, inflater);
 				showView(aboutView, 11);
+				break;
+
+			case 9: // fieldNotesView
+				fieldNotesView = new FieldNotesView(this, this);
+				showView(fieldNotesView, 9);
+				break;
+
+			case 8: // compassView
+				compassView = new CompassView(this, inflater);
+				compassView.reInit();
+				showView(compassView, 8);
+				break;
+			case 7: // solverView
+				solverView = new SolverView(this, inflater);
+				showView(solverView, 7);
+				break;
+			case 6: // notesView
+				notesView = new NotesView(this, inflater);
+				showView(notesView, 6);
 				break;
 			}
 		}
@@ -1259,6 +1252,34 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				aktView = null;
 				aboutView.OnFree();
 				aboutView = null;
+			}
+			else if (aktView.equals(fieldNotesView))
+			{
+				// Instanz löschenn
+				aktView = null;
+				fieldNotesView.OnFree();
+				fieldNotesView = null;
+			}
+			else if (aktView.equals(compassView))
+			{
+				// Instanz löschenn
+				aktView = null;
+				compassView.OnFree();
+				compassView = null;
+			}
+			else if (aktView.equals(solverView))
+			{
+				// Instanz löschenn
+				aktView = null;
+				solverView.OnFree();
+				solverView = null;
+			}
+			else if (aktView.equals(notesView))
+			{
+				// Instanz löschenn
+				aktView = null;
+				notesView.OnFree();
+				notesView = null;
 			}
 		}
 
@@ -1508,20 +1529,16 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 	private void initialViews()
 	{
-		if (compassView == null) compassView = new CompassView(this, inflater);
 		if (cacheListView == null) cacheListView = new CacheListView(this);
 		if (waypointView == null) waypointView = new WaypointView(this, this);
 		if (logView == null) logView = new LogView(this);
-		if (fieldNotesView == null) fieldNotesView = new FieldNotesView(this, this);
-		registerForContextMenu(fieldNotesView);
+		// if (fieldNotesView == null) fieldNotesView = new FieldNotesView(this,
+		// this);
+		// registerForContextMenu(fieldNotesView);
 		// if (descriptionView == null)
 		descriptionView = new DescriptionView(this, inflater);
 		if (spoilerView == null) spoilerView = new SpoilerView(this, inflater);
-		// if (notesView == null)
-		notesView = new NotesView(this, inflater);
-		// if (solverView == null)
-		solverView = new SolverView(this, inflater);
-		if (TestEmpty == null) TestEmpty = new EmptyViewTemplate(this, inflater);
+		
 
 		ViewList.add(mapView); // ID 0
 		ViewList.add(cacheListView); // ID 1
@@ -1529,11 +1546,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		ViewList.add(logView); // ID 3
 		ViewList.add(descriptionView); // ID 4
 		ViewList.add(spoilerView); // ID 5
-		ViewList.add(notesView); // ID 6
-		ViewList.add(solverView); // ID 7
-		ViewList.add(compassView); // ID 8
-		ViewList.add(fieldNotesView); // ID 9
-		ViewList.add(TestEmpty); // ID 10
+		
 
 	}
 
@@ -2026,10 +2039,6 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		mainActivity.startActivityForResult(gcApiLogin, 987654321);
 	}
 
-	private String result;
-
-	
-
 	public void searchOnline()
 	{
 		IsPremiumThread = new isPremiumThread();
@@ -2037,8 +2046,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		pd = PleaseWaitMessageBox.Show("Chk API State", "Groundspeak API", MessageBoxButtons.Cancel, MessageBoxIcon.GC_Live,
 				Cancel1ClickListner);
 	}
-	
-	
+
 	private isPremiumThread IsPremiumThread;
 
 	private final DialogInterface.OnClickListener Cancel1ClickListner = new DialogInterface.OnClickListener()
@@ -2057,20 +2065,20 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		@Override
 		protected Integer doInBackground(String... params)
 		{
-			int ret=GroundspeakAPI.GetMembershipType(Config.GetString("GcAPI"));
+			int ret = GroundspeakAPI.GetMembershipType(Config.GetString("GcAPI"));
 			isPremiumReadyHandler.sendMessage(isPremiumReadyHandler.obtainMessage(ret));
 			return null;
 		}
 
 	}
-	
+
 	private Handler isPremiumReadyHandler = new Handler()
 	{
 		public void handleMessage(Message msg)
 		{
 			pd.dismiss();
-			
-			if (msg.what==3)
+
+			if (msg.what == 3)
 			{
 				searchOnlineNow();
 			}
@@ -2104,7 +2112,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private DialogInterface pd;
 	private loaderThread LoaderThread;
 	private chkStateThread ChkStateThread;
-	
+
 	private void searchOnlineNow()
 	{
 		LoaderThread = new loaderThread();
@@ -2166,7 +2174,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			searchC.pos = searchCoord;
 			searchC.distanceInMeters = 50000;
 			searchC.number = 50;
-			result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, gpxFilename.Id);
+			CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, gpxFilename.Id);
 			if (apiCaches.size() > 0)
 			{
 				Database.Data.beginTransaction();
@@ -2220,12 +2228,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		pd = PleaseWaitMessageBox.Show("Chk State", "Groundspeak API", MessageBoxButtons.Cancel, MessageBoxIcon.GC_Live,
 				ChkStateThreadCancelClickListner);
 
-		
-
 	}
 
-	
-	
 	private class chkStateThread extends AsyncTask<String, Integer, Integer>
 	{
 
@@ -2303,6 +2307,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		}
 
 	}
+
 	private final DialogInterface.OnClickListener ChkStateThreadCancelClickListner = new DialogInterface.OnClickListener()
 	{
 		@Override
@@ -2313,8 +2318,6 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		}
 	};
 
-	
-	private boolean premiumMember = false;
 	private Handler onlineSearchReadyHandler = new Handler()
 	{
 		public void handleMessage(Message msg)
