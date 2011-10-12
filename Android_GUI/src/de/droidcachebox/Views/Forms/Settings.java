@@ -58,6 +58,7 @@ import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import CB_Core.SimpleCrypto;
@@ -401,7 +402,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 			{
 				try
 				{
-					Config.Set("GcPass", SimpleCrypto.encrypt("DCB", EditTextGCPW.getEditableText().toString()));
+					Config.Set("GcPass", SimpleCrypto.encrypt(GlobalCore.DECRYPT_KEY, EditTextGCPW.getEditableText().toString()));
 				}
 				catch (Exception e)
 				{
@@ -433,7 +434,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 			{
 				try
 				{
-					Config.Set("GcVotePassword", SimpleCrypto.encrypt("DCB", EditTextGCVotePW.getEditableText().toString()));
+					Config.Set("GcVotePassword", SimpleCrypto.encrypt(GlobalCore.DECRYPT_KEY, EditTextGCVotePW.getEditableText().toString()));
 				}
 				catch (Exception e)
 				{
@@ -809,7 +810,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 			EditTextGCPW.setText(SimpleCrypto.decrypt("DCB", Config.GetString("GcPass")));
 			EditTextGCVotePW.setText(SimpleCrypto.decrypt("DCB", Config.GetString("GcVotePassword")));
 			EditTextGCJoker.setText(Config.GetString("GcJoker"));
-			EditTextGC_API.setText(Config.GetString("GcAPI"));
+			EditTextGC_API.setText("");// keine Anzeige des Key´s
 			EditDebugOverrideGcAuth.setText(Config.GetString("OverrideUrl"));
 			fillLangCombo();
 			checkBoxHTCCompass.setChecked(Config.GetBool("HtcCompass"));
@@ -852,7 +853,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 
 			chkSearchWithoutFounds.setChecked(Config.GetBool("SearchWithoutFounds"));
 			chkSearchWithoutOwns.setChecked(Config.GetBool("SearchWithoutOwns"));
-			
+
 		}
 		catch (Exception e)
 		{
@@ -863,22 +864,44 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 
 	public void setGcApiKey(String key, String UserName)
 	{
-		EditTextGC_API.setText(key);
-		EditTextGC_API.invalidate();
+		String encrypt = "";
+		try
+		{
+			encrypt = SimpleCrypto.encrypt(GlobalCore.DECRYPT_KEY, key);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		Config.Set("GcAPI", encrypt);
 		EditTextGCName.setText(UserName);
 		EditTextGCName.invalidate();
-
+		Config.AcceptChanges();
 	}
 
 	private void SaveSettings()
 	{
 		Config.Set("GcLogin", EditTextGCName.getEditableText().toString());
 		Config.Set("GcJoker", EditTextGCJoker.getEditableText().toString());
-		Config.Set("GcAPI", EditTextGC_API.getEditableText().toString());
+		if (!EditTextGC_API.getEditableText().toString().equals(""))
+		{
+
+			String encrypt = "";
+			try
+			{
+				encrypt = SimpleCrypto.encrypt(GlobalCore.DECRYPT_KEY, EditTextGC_API.getEditableText().toString());
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			Config.Set("GcAPI", encrypt);
+		}
+
 		try
 		{
-			Config.Set("GcPass", SimpleCrypto.encrypt("DCB", EditTextGCPW.getEditableText().toString()));
-			Config.Set("GcVotePassword", SimpleCrypto.encrypt("DCB", EditTextGCVotePW.getEditableText().toString()));
+			Config.Set("GcPass", SimpleCrypto.encrypt(GlobalCore.DECRYPT_KEY, EditTextGCPW.getEditableText().toString()));
+			Config.Set("GcVotePassword", SimpleCrypto.encrypt(GlobalCore.DECRYPT_KEY, EditTextGCVotePW.getEditableText().toString()));
 		}
 		catch (Exception e)
 		{
@@ -946,8 +969,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 		Config.Set("lastZoomLevel", lastZoom);
 		Config.Set("SearchWithoutFounds", chkSearchWithoutFounds.isChecked());
 		Config.Set("SearchWithoutOwns", chkSearchWithoutOwns.isChecked());
-		
-		
+
 		Config.AcceptChanges();
 		main.mapView.setNewSettings();
 		main.mapView.InitializeMap();

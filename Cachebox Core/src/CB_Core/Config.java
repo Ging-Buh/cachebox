@@ -306,7 +306,7 @@ public class Config
 	{
 		try
 		{
-			return SimpleCrypto.decrypt("DCB", Config.GetString(key));
+			return SimpleCrypto.decrypt(GlobalCore.DECRYPT_KEY, Config.GetString(key));
 		}
 		catch (Exception e)
 		{

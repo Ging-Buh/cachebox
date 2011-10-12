@@ -7,20 +7,15 @@ import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Waypoint;
-
 import de.droidcachebox.R;
 import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Components.TouchImageView;
-import CB_Core.Events.SelectedCacheEvent;
-import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
@@ -37,8 +32,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class SpoilerView extends FrameLayout implements ViewOptionsMenu,
-		SelectedCacheEvent, AdapterView.OnItemSelectedListener
+public class SpoilerView extends FrameLayout implements ViewOptionsMenu, AdapterView.OnItemSelectedListener
 {
 
 	RelativeLayout spoilerLayout;
@@ -57,19 +51,14 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu,
 		lBitmaps = new ArrayList<Bitmap>();
 
 		aktCache = null;
-
-		SelectedCacheEventList.Add(this);
-
-		RelativeLayout spoilerLayout = (RelativeLayout) inflater.inflate(
-				R.layout.spoilerview, null, false);
+		RelativeLayout spoilerLayout = (RelativeLayout) inflater.inflate(R.layout.spoilerview, null, false);
 		this.addView(spoilerLayout);
 
 		g = (Gallery) findViewById(R.id.spoilerGallery);
 		g.setSpacing(0);
 		spoilerFilename = (TextView) findViewById(R.id.spoilerFilename);
 		spoilerImage = new TouchImageView(context);
-		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.MATCH_PARENT,
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
 				RelativeLayout.LayoutParams.MATCH_PARENT);
 		params.addRule(RelativeLayout.BELOW, R.id.spoilerFilename);
 		params.addRule(RelativeLayout.ALIGN_BOTTOM);
@@ -85,35 +74,29 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu,
 	@Override
 	public boolean ItemSelected(MenuItem item)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void BeforeShowMenu(Menu menu)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	Bitmap bmp;
 	String nextBitmap = "";
 
 	@Override
-	public void onItemSelected(AdapterView parent, View v, int position, long id)
+	public void onItemSelected(AdapterView<?> parent, View v, int position, long id)
 	{
 		// mSwitcher.setImageResource(mImageIds[position]);
 		if (aktCache == null) return;
-		String filename = GlobalCore.SelectedCache().SpoilerRessources()
-				.get(position);
+		String filename = GlobalCore.SelectedCache().SpoilerRessources().get(position);
 		filename = filename.substring(0, filename.lastIndexOf("."));
 		filename = FileIO.GetFileNameWithoutExtension(filename);
-		if (filename.indexOf(aktCache.GcCode) == 0) filename = filename
-				.substring(aktCache.GcCode.length());
+		if (filename.indexOf(aktCache.GcCode) == 0) filename = filename.substring(aktCache.GcCode.length());
 		if (filename.indexOf(" - ") == 0) filename = filename.substring(3);
 		spoilerFilename.setText(filename);
-		String file = GlobalCore.SelectedCache().SpoilerRessources()
-				.get(position);
+		String file = GlobalCore.SelectedCache().SpoilerRessources().get(position);
 
 		// das Laden sollte noch in einen Thread ausgelagert werden
 		nextBitmap = file;
@@ -122,9 +105,6 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu,
 			processor = new loadProcessor();
 			processor.execute(file);
 		}
-		// bmp = BitmapFactory.decodeFile(file);
-		// spoilerImage.setImage(bmp, spoilerImage.getWidth(),
-		// spoilerImage.getHeight());
 	}
 
 	public class ImageAdapter extends BaseAdapter
@@ -137,8 +117,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu,
 		public int getCount()
 		{
 			if (aktCache == null) return 0;
-			if (aktCache.SpoilerExists()) return aktCache.SpoilerRessources()
-					.size();
+			if (aktCache.SpoilerExists()) return aktCache.SpoilerRessources().size();
 			else
 				return 0;
 			// return mThumbIds.length;
@@ -158,16 +137,15 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu,
 		{
 			ImageView i = new ImageView(mContext);
 
-			String file = GlobalCore.SelectedCache().SpoilerRessources()
-					.get(position);
+			// String file =
+			// GlobalCore.SelectedCache().SpoilerRessources().get(position);
 			Bitmap bit = null;
 			bit = lBitmaps.get(position);
 			if (bit == null) return null;
 			i.setImageBitmap(bit);
 			// i.setImageResource(mThumbIds[position]);
 			i.setAdjustViewBounds(true);
-			i.setLayoutParams(new Gallery.LayoutParams(
-					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+			i.setLayoutParams(new Gallery.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			// i.setBackgroundResource(R.drawable.picture_frame);
 			return i;
 		}
@@ -191,22 +169,13 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu,
 		// resize the bit map
 		matrix.postScale(scaleWidth, scaleHeight);
 		// recreate the new Bitmap
-		Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height,
-				matrix, false);
+		Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
 		return resizedBitmap;
-	}
-
-	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnShow()
 	{
-		// TODO Auto-generated method stub
 		Logger.DEBUG("sv1");
 		aktCache = GlobalCore.SelectedCache();
 		lBitmaps.clear();
@@ -238,54 +207,43 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu,
 	@Override
 	public void OnHide()
 	{
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void OnFree()
 	{
-
 	}
 
 	@Override
 	public int GetMenuId()
 	{
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void ActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public int GetContextMenuId()
 	{
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void BeforeShowContextMenu(Menu menu)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public boolean ContextMenuItemSelected(MenuItem item)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -312,8 +270,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu,
 
 		protected void onPostExecute(Integer result)
 		{
-			if (bmp != null) spoilerImage.setImage(bmp,
-					spoilerImage.getWidth(), spoilerImage.getHeight());
+			if (bmp != null) spoilerImage.setImage(bmp, spoilerImage.getWidth(), spoilerImage.getHeight());
 			processor = null;
 			System.gc();
 

@@ -50,6 +50,7 @@ public class Global
 	public static final boolean Debug = true;
 	public static JokerList Jokers = new JokerList();
 
+		
 	/**
 	 * Liste der Buttons in der QuickButton Leiste
 	 */
@@ -770,7 +771,7 @@ public class Global
 	 */
 	public static boolean APIisOnline()
 	{
-		if (Config.GetString("GcAPI").length() == 0)
+		if (Config.GetStringEncrypted("GcAPI").length() == 0)
 		{
 			Logger.General("global.APIisOnline() -Invalid AccessToken");
 			return false;

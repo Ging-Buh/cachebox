@@ -155,8 +155,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private static SpoilerView spoilerView = null; // ID 5
 	private static NotesView notesView = null; // ID 6
 	private static SolverView solverView = null; // ID 7
-	private static CompassView compassView = null; // 
-	public static FieldNotesView fieldNotesView = null; //ID 9
+	private static CompassView compassView = null; //
+	public static FieldNotesView fieldNotesView = null; // ID 9
 	private static AboutView aboutView = null; // ID 11
 	private static JokerView jokerView = null; // ID 12
 	private static TrackListView tracklistView = null; // ID 13
@@ -418,7 +418,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		{
 			// ask for API key only if Rev-Number changed, like at new
 			// installation and API Key is Empty
-			if (Config.GetBool("newInstall") && Config.GetString("GcAPI").equals(""))
+			if (Config.GetBool("newInstall") && Config.GetStringEncrypted("GcAPI").equals(""))
 			{
 				askToGetApiKey();
 			}
@@ -1121,8 +1121,14 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	public void showView(Integer ID)
 	{
 		if (ID == -1) return;// keine Action
+		
+		if(!(aktView==null) && ID == aktViewId)
+		{
+			aktView.OnShow();
+			return;
+		}
 
-		if (ID > ViewList.size())
+		if (ID >= ViewList.size())
 		{
 			switch (ID)
 			{
@@ -1181,6 +1187,22 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			case 6: // notesView
 				notesView = new NotesView(this, inflater);
 				showView(notesView, 6);
+				break;
+			case 5: // spoilerView
+				spoilerView = new SpoilerView(this, inflater);
+				showView(spoilerView, 5);
+				break;
+			case 4: // descriptionView
+				descriptionView = new DescriptionView(this, inflater);
+				showView(descriptionView, 4);
+				break;
+			case 3: // descriptionView
+				logView = new LogView(this);
+				showView(logView, 3);
+				break;
+			case 2: // waypointView
+				waypointView = new WaypointView(this, this);
+				showView(waypointView, 2);
 				break;
 			}
 		}
@@ -1280,6 +1302,34 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				aktView = null;
 				notesView.OnFree();
 				notesView = null;
+			}
+			else if (aktView.equals(spoilerView))
+			{
+				// Instanz löschenn
+				aktView = null;
+				spoilerView.OnFree();
+				spoilerView = null;
+			}
+			else if (aktView.equals(descriptionView))
+			{
+				// Instanz löschenn
+				aktView = null;
+				descriptionView.OnFree();
+				descriptionView = null;
+			}
+			else if (aktView.equals(logView))
+			{
+				// Instanz löschenn
+				aktView = null;
+				logView.OnFree();
+				logView = null;
+			}
+			else if (aktView.equals(waypointView))
+			{
+				// Instanz löschenn
+				aktView = null;
+				waypointView.OnFree();
+				waypointView = null;
 			}
 		}
 
@@ -1505,8 +1555,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 	private void findViewsById()
 	{
-		// frameCacheName =
-		// (LinearLayout)this.findViewById(R.id.frameCacheName);
+		
 		TopLayout = (LinearLayout) this.findViewById(R.id.layoutTop);
 		frame = (FrameLayout) this.findViewById(R.id.layoutContent);
 		InfoDownSlider = (downSlider) this.findViewById(R.id.downSlider);
@@ -1530,24 +1579,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private void initialViews()
 	{
 		if (cacheListView == null) cacheListView = new CacheListView(this);
-		if (waypointView == null) waypointView = new WaypointView(this, this);
-		if (logView == null) logView = new LogView(this);
-		// if (fieldNotesView == null) fieldNotesView = new FieldNotesView(this,
-		// this);
-		// registerForContextMenu(fieldNotesView);
-		// if (descriptionView == null)
-		descriptionView = new DescriptionView(this, inflater);
-		if (spoilerView == null) spoilerView = new SpoilerView(this, inflater);
-		
-
 		ViewList.add(mapView); // ID 0
 		ViewList.add(cacheListView); // ID 1
-		ViewList.add(waypointView); // ID 2
-		ViewList.add(logView); // ID 3
-		ViewList.add(descriptionView); // ID 4
-		ViewList.add(spoilerView); // ID 5
-		
-
 	}
 
 	private void initialLocationManager()
@@ -2027,7 +2060,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		 * CB_Core.Api.GroundspeakAPI.GetGeocacheStatus(accessToken, caches);
 		 */
 
-		int status = CB_Core.Api.GroundspeakAPI.GetCacheLimits(Config.GetString("GcAPI"));
+		int status = CB_Core.Api.GroundspeakAPI.GetCacheLimits(Config.GetStringEncrypted("GcAPI"));
 		if (status != 0) MessageBox.Show(CB_Core.Api.GroundspeakAPI.LastAPIError);
 
 		MessageBox.Show("Cache hinzufügen ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
@@ -2065,7 +2098,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		@Override
 		protected Integer doInBackground(String... params)
 		{
-			int ret = GroundspeakAPI.GetMembershipType(Config.GetString("GcAPI"));
+			int ret = GroundspeakAPI.GetMembershipType(Config.GetStringEncrypted("GcAPI"));
 			isPremiumReadyHandler.sendMessage(isPremiumReadyHandler.obtainMessage(ret));
 			return null;
 		}
@@ -2137,7 +2170,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		@Override
 		protected Integer doInBackground(String... params)
 		{
-			String accessToken = Config.GetString("GcAPI");
+			String accessToken = Config.GetStringEncrypted("GcAPI");
 
 			Coordinate searchCoord = null;
 
@@ -2273,7 +2306,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				}
 				while (Iterator2.hasNext());
 
-				result = GroundspeakAPI.GetGeocacheStatus(Config.GetString("GcAPI"), chkList100);
+				result = GroundspeakAPI.GetGeocacheStatus(Config.GetStringEncrypted("GcAPI"), chkList100);
 				addedReturnList.addAll(chkList100);
 				start += 101;
 				stop += 101;

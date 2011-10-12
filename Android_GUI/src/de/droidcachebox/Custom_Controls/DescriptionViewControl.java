@@ -3,7 +3,6 @@ package de.droidcachebox.Custom_Controls;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import CB_Core.Api.CB_Api;
 import CB_Core.Enums.Attributes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
@@ -12,10 +11,7 @@ import CB_Core.Types.Waypoint;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import de.droidcachebox.Global;
-import de.droidcachebox.R;
 import de.droidcachebox.main;
-import CB_Core.Events.SelectedCacheEvent;
-import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import de.droidcachebox.Events.ViewOptionsMenu;
@@ -27,60 +23,45 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.DrawFilter;
-import android.graphics.Paint;
-import android.graphics.PaintFlagsDrawFilter;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ZoomButton;
-import android.widget.ZoomControls;
 
-public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
-		SelectedCacheEvent {
+public class DescriptionViewControl extends WebView implements ViewOptionsMenu
+{
 
 	public static boolean mustLoadDescription;
 	private Cache aktCache;
-	private Boolean isVisible = false;
 	private HashMap<Attributes, Integer> attributeLookup;
 	private ArrayList<String> NonLocalImages = new ArrayList<String>();
 	private ArrayList<String> NonLocalImagesUrl = new ArrayList<String>();
 	private static ProgressDialog pd;
-	
-	
-	
-	public DescriptionViewControl(Context context) {
+
+	public DescriptionViewControl(Context context)
+	{
 		super(context);
 
 	}
 
-	public DescriptionViewControl(Context context, AttributeSet attrs) {
+	public DescriptionViewControl(Context context, AttributeSet attrs)
+	{
 		super(context, attrs);
 		mustLoadDescription = false;
-		SelectedCacheEventList.Add(this);
-		
+
 		this.setDrawingCacheEnabled(false);
 		this.setAlwaysDrawnWithCacheEnabled(false);
-		
+
 		// this.getSettings().setJavaScriptEnabled(true);
 		this.getSettings().setLightTouchEnabled(false);
 		this.getSettings().setLoadWithOverviewMode(true);
 		this.getSettings().setSupportZoom(true);
 		this.getSettings().setBuiltInZoomControls(true);
-		
-		
-       
-		
+
 		attributeLookup = new HashMap<Attributes, Integer>();
 		attributeLookup.put(Attributes.Default, 0);
 		attributeLookup.put(Attributes.Dogs, 1);
@@ -141,70 +122,63 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 		attributeLookup.put(Attributes.FuelNearby, 58);
 		attributeLookup.put(Attributes.FoodNearby, 59);
 
-		this.setWebViewClient(new WebViewClient() {
+		this.setWebViewClient(new WebViewClient()
+		{
 
 			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				if (url.contains("fake://fake.de/download")) {
+			public boolean shouldOverrideUrlLoading(WebView view, String url)
+			{
+				if (url.contains("fake://fake.de/download"))
+				{
 
-					Thread thread = new Thread() {
-						public void run() {
+					Thread thread = new Thread()
+					{
+						public void run()
+						{
 
-							String accessToken = Config.GetString("GcAPI");
-							if (!CB_Core.Api.GroundspeakAPI.CacheStatusValid) {
-								int result = CB_Core.Api.GroundspeakAPI
-										.GetCacheLimits(accessToken);
-								if (result != 0) {
-									onlineSearchReadyHandler
-											.sendMessage(onlineSearchReadyHandler
-													.obtainMessage(1));
+							String accessToken = Config.GetStringEncrypted("GcAPI");
+							if (!CB_Core.Api.GroundspeakAPI.CacheStatusValid)
+							{
+								int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(accessToken);
+								if (result != 0)
+								{
+									onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
 									return;
 								}
 							}
-							if (CB_Core.Api.GroundspeakAPI.CachesLeft <= 0) {
+							if (CB_Core.Api.GroundspeakAPI.CachesLeft <= 0)
+							{
 								String s = "Download limit is reached!\n";
-								s += "You have downloaded the full cache details of "
-										+ CB_Core.Api.GroundspeakAPI.MaxCacheCount
+								s += "You have downloaded the full cache details of " + CB_Core.Api.GroundspeakAPI.MaxCacheCount
 										+ " caches in the last 24 hours.\n";
-								if (CB_Core.Api.GroundspeakAPI.MaxCacheCount < 10)
-									s += "If you want to download the full cache details of 6000 caches per day you can upgrade to Premium Member at \nwww.geocaching.com!";
+								if (CB_Core.Api.GroundspeakAPI.MaxCacheCount < 10) s += "If you want to download the full cache details of 6000 caches per day you can upgrade to Premium Member at \nwww.geocaching.com!";
 
 								message = s;
 
-								onlineSearchReadyHandler
-										.sendMessage(onlineSearchReadyHandler
-												.obtainMessage(2));
+								onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(2));
 
 								return;
 							}
 
-							if (!CB_Core.Api.GroundspeakAPI
-									.IsPremiumMember(accessToken)) {
+							if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember(accessToken))
+							{
 								String s = "Download Details of this cache?\n";
-								s += "Full Downloads left: "
-										+ CB_Core.Api.GroundspeakAPI.CachesLeft
-										+ "\n";
-								s += "Actual Downloads: "
-										+ CB_Core.Api.GroundspeakAPI.CurrentCacheCount
-										+ "\n";
-								s += "Max. Downloads in 24h: "
-										+ CB_Core.Api.GroundspeakAPI.MaxCacheCount;
+								s += "Full Downloads left: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
+								s += "Actual Downloads: " + CB_Core.Api.GroundspeakAPI.CurrentCacheCount + "\n";
+								s += "Max. Downloads in 24h: " + CB_Core.Api.GroundspeakAPI.MaxCacheCount;
 								message = s;
-								onlineSearchReadyHandler
-										.sendMessage(onlineSearchReadyHandler
-												.obtainMessage(3));
+								onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(3));
 								return;
-							} else {
+							}
+							else
+							{
 								// call the download directly
-								onlineSearchReadyHandler
-								.sendMessage(onlineSearchReadyHandler
-										.obtainMessage(4));
+								onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(4));
 								return;
 							}
 						}
 					};
-					pd = ProgressDialog.show(getContext(), "",
-							"Download Description", true);
+					pd = ProgressDialog.show(getContext(), "", "Download Description", true);
 
 					thread.start();
 
@@ -215,32 +189,37 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 			}
 
 		});
+
 	}
 
 	private String message = "";
-	private Handler onlineSearchReadyHandler = new Handler() {
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case 1: {
+	private Handler onlineSearchReadyHandler = new Handler()
+	{
+		public void handleMessage(Message msg)
+		{
+			switch (msg.what)
+			{
+			case 1:
+			{
 				pd.dismiss();
 				break;
 			}
-			case 2: {
+			case 2:
+			{
 				pd.dismiss();
-				MessageBox.Show(message, Global.Translations.Get("GC_title"),
-						MessageBoxButtons.OKCancel,
-						MessageBoxIcon.Powerd_by_GC_Live, null);
+				MessageBox.Show(message, Global.Translations.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
+						null);
 				break;
 			}
-			case 3: {
+			case 3:
+			{
 				pd.dismiss();
-				MessageBox.Show(message, Global.Translations.Get("GC_title"),
-						MessageBoxButtons.OKCancel,
-						MessageBoxIcon.Powerd_by_GC_Live,
+				MessageBox.Show(message, Global.Translations.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
 						DownloadCacheDialogResult);
 				break;
 			}
-			case 4: {
+			case 4:
+			{
 				pd.dismiss();
 				DownloadCacheDialogResult.onClick(null, -1);
 				break;
@@ -249,54 +228,59 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 		}
 	};
 
-	private DialogInterface.OnClickListener DownloadCacheDialogResult = new DialogInterface.OnClickListener() {
+	private DialogInterface.OnClickListener DownloadCacheDialogResult = new DialogInterface.OnClickListener()
+	{
 		@Override
-		public void onClick(DialogInterface dialog, int button) {
-			switch (button) {
+		public void onClick(DialogInterface dialog, int button)
+		{
+			switch (button)
+			{
 			case -1:
 				CacheDAO dao = new CacheDAO();
 				Cache newCache = dao.LoadApiDetails(aktCache);
-				if (newCache != null) {
+				if (newCache != null)
+				{
 					aktCache = newCache;
 					setCache(newCache);
 
 					// hier ist kein AccessToke mehr notwendig, da diese Info
 					// bereits im Cache sein muss!
-					if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember("")) {
+					if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember(""))
+					{
 						String s = "Download successful!\n";
-						s += "Downloads left for today: "
-								+ CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
+						s += "Downloads left for today: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
 						s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
 
-						MessageBox.Show(s, Global.Translations.Get("GC_title"),
-								MessageBoxButtons.OKCancel,
+						MessageBox.Show(s, Global.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
 								MessageBoxIcon.Powerd_by_GC_Live, null);
 					}
 				}
 				break;
 			}
-			if (dialog != null)
-				dialog.dismiss();
+			if (dialog != null) dialog.dismiss();
 		}
 	};
 
-	public DescriptionViewControl(Context context, AttributeSet attrs,
-			int defStyle) {
+	public DescriptionViewControl(Context context, AttributeSet attrs, int defStyle)
+	{
 		super(context, attrs, defStyle);
 
 	}
 
-	public DescriptionViewControl(Context context, String text) {
+	public DescriptionViewControl(Context context, String text)
+	{
 		super(context);
 
 	}
 
 	private int downloadTryCounter = 0;
 
-	public void setCache(Cache cache) {
+	public void setCache(Cache cache)
+	{
 		final String mimeType = "text/html";
 		final String encoding = "utf-8";
-		if (cache != null) {
+		if (cache != null)
+		{
 			NonLocalImages = new ArrayList<String>();
 			NonLocalImagesUrl = new ArrayList<String>();
 			String cachehtml = Database.GetDescription(cache);
@@ -304,58 +288,60 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 			if (cache.ApiStatus == 1)// GC.com API lite
 			{ // Load Standard HTML
 				String nodesc = Global.Translations.Get("GC_NoDescription");
-				html = "</br>"
-						+ nodesc
-						+ "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" "
-						+ Global.Translations.Get("GC_DownloadDescription")
-						+ " \"></form>";
-			} else {
-				html = DescriptionImageGrabber.ResolveImages(cache, cachehtml,
-						!Config.GetBool("AllowInternetAccess"), NonLocalImages,
+				html = "</br>" + nodesc + "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" "
+						+ Global.Translations.Get("GC_DownloadDescription") + " \"></form>";
+			}
+			else
+			{
+				html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, !Config.GetBool("AllowInternetAccess"), NonLocalImages,
 						NonLocalImagesUrl);
 
-				if (!Config.GetBool("DescriptionNoAttributes"))
-					html = getAttributesHtml(
-							Database.AttributesPositive(cache),
-							Database.AttributesNegative(cache))
-							+ html;
+				if (!Config.GetBool("DescriptionNoAttributes")) html = getAttributesHtml(Database.AttributesPositive(cache),
+						Database.AttributesNegative(cache))
+						+ html;
 
 			}
 
-			this.loadDataWithBaseURL("fake://fake.de", html, mimeType,
-					encoding, null);
+			this.loadDataWithBaseURL("fake://fake.de", html, mimeType, encoding, null);
 		}
 		this.getSettings().setLightTouchEnabled(true);
 
 		// Falls nicht geladene Bilder vorliegen und eine Internetverbindung
 		// erlaubt ist, diese laden und Bilder erneut auflösen
-		if (Config.GetBool("AllowInternetAccess")
-				&& NonLocalImagesUrl.size() > 0) {
-			downloadThread = new Thread() {
-				public void run() {
+		if (Config.GetBool("AllowInternetAccess") && NonLocalImagesUrl.size() > 0)
+		{
+			downloadThread = new Thread()
+			{
+				public void run()
+				{
 
-					if (downloadTryCounter > 0) {
-						try {
+					if (downloadTryCounter > 0)
+					{
+						try
+						{
 							Thread.sleep(100);
-						} catch (InterruptedException e) {
-							Logger.Error("DescriptionViewControl.setCache()",
-									"Thread.sleep fehler", e);
+						}
+						catch (InterruptedException e)
+						{
+							Logger.Error("DescriptionViewControl.setCache()", "Thread.sleep fehler", e);
 							e.printStackTrace();
 						}
 					}
 
-					while (NonLocalImagesUrl != null
-							&& NonLocalImagesUrl.size() > 0) {
+					while (NonLocalImagesUrl != null && NonLocalImagesUrl.size() > 0)
+					{
 						String local, url;
 						local = NonLocalImages.get(0);
 						url = NonLocalImagesUrl.get(0);
 						NonLocalImagesUrl.remove(0);
 						NonLocalImages.remove(0);
-						try {
+						try
+						{
 							DescriptionImageGrabber.Download(url, local);
-						} catch (Exception e) {
-							Logger.Error("DescriptionViewControl.setCache()",
-									"downloadThread run()", e);
+						}
+						catch (Exception e)
+						{
+							Logger.Error("DescriptionViewControl.setCache()", "downloadThread run()", e);
 						}
 					}
 					downloadReadyHandler.post(downloadComplete);
@@ -370,67 +356,75 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 	final Handler downloadReadyHandler = new Handler();
 	Thread downloadThread;
 
-	final Runnable downloadComplete = new Runnable() {
-		public void run() {
+	final Runnable downloadComplete = new Runnable()
+	{
+		public void run()
+		{
 			Global.setDebugMsg("Reload " + String.valueOf(downloadTryCounter++));
 			if (downloadTryCounter < 10) // nur 10 Download versuche zu lassen
-				setCache(aktCache);
+			setCache(aktCache);
 		}
 	};
 
-	private String getAttributesHtml(long attributesPositive,
-			long attributesNegative) {
+	private String getAttributesHtml(long attributesPositive, long attributesNegative)
+	{
 		StringBuilder sb = new StringBuilder();
 
-		for (Attributes attribute : attributeLookup.keySet()) {
+		for (Attributes attribute : attributeLookup.keySet())
+		{
 			long att = Attributes.GetAttributeIndex(attribute);
-			long and = att & attributesPositive;
-			if ((att & attributesPositive) > 0)
-				sb.append("<img style=\"border: 1px white solid;\" src=\"file://"
-						+ Config.WorkPath
-						+ "/data/Attributes/att_"
-						+ attributeLookup.get(attribute).toString()
-						+ "_1.gif\">");
+			// long and = att & attributesPositive;
+			if ((att & attributesPositive) > 0) sb.append("<img style=\"border: 1px white solid;\" src=\"file://" + Config.WorkPath
+					+ "/data/Attributes/att_" + attributeLookup.get(attribute).toString() + "_1.gif\">");
 		}
 		for (Attributes attribute : attributeLookup.keySet())
-			if (((long) attribute.ordinal() & attributesNegative) > 0)
-				sb.append("<img style=\"border: 1px white solid;\" src=\"file://"
-						+ Config.WorkPath
-						+ "/data/Attributes/att_"
-						+ attributeLookup.get(attribute).toString()
-						+ "_0.gif\">");
+			if (((long) attribute.ordinal() & attributesNegative) > 0) sb.append("<img style=\"border: 1px white solid;\" src=\"file://"
+					+ Config.WorkPath + "/data/Attributes/att_" + attributeLookup.get(attribute).toString() + "_0.gif\">");
 
-		if (sb.length() > 0)
-			sb.append("<br>");
+		if (sb.length() > 0) sb.append("<br>");
 		return sb.toString();
 	}
 
 	@Override
-	public boolean ItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
+	public boolean ItemSelected(MenuItem item)
+	{
 		return false;
 	}
 
 	@Override
-	public void BeforeShowMenu(Menu menu) {
-		// TODO Auto-generated method stub
-
+	public void BeforeShowMenu(Menu menu)
+	{
 	}
 
 	@Override
-	public void OnShow() {
-		if (downloadTryCounter > 9)
-			mustLoadDescription = true; // Versuchs nochmal mit dem Download
+	public void OnShow()
+	{
+
+		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+		this.getParent().requestLayout();
+
+		//
+		//
+		// android.view.ViewGroup.LayoutParams params = this.getLayoutParams();
+		//
+		// params.height = 416;
+		// params.width = 480;
+		//
+		// this.setLayoutParams(params);
+
+		if (downloadTryCounter > 9) mustLoadDescription = true; // Versuchs
+																// nochmal mit
+																// dem Download
 		downloadTryCounter = 0;
-		isVisible = true;
-		if (mustLoadDescription) {
+		if (mustLoadDescription)
+		{
 			setCache(aktCache);
 			mustLoadDescription = false;
 		}
-		
+
 		// im Day Mode brauchen wir kein InvertView
 		// das sollte mehr Performance geben
-		if(main.N)
+		if (main.N)
 		{
 			invertViewControl.Me.setVisibility(VISIBLE);
 		}
@@ -438,84 +432,83 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu,
 		{
 			invertViewControl.Me.setVisibility(GONE);
 		}
-		
+
 		this.setWillNotDraw(false);
 		this.invalidate();
 	}
 
 	@Override
-	public void OnHide() {
-		try {
+	public void OnHide()
+	{
+		try
+		{
 			// this.clearCache(true);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			Logger.Error("DescriptionViewControl.OnHide()", "clearCache", e);
 			e.printStackTrace();
 		}
-		isVisible = false;
 	}
 
 	@Override
-	public void OnFree() {
-		try {
+	public void OnFree()
+	{
+		try
+		{
 			// this.clearCache(true);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			Logger.Error("DescriptionViewControl.OnFree()", "clearCache", e);
 			e.printStackTrace();
 		}
 		this.destroy();
 	}
 
-	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
-		// TODO Auto-generated method stub
-		// if (cache != aktCache)
-		// {
+	public void SetSelectedCache(Cache cache, Waypoint waypoint)
+	{
 		aktCache = cache;
 		mustLoadDescription = true;
-		if (isVisible)
-			setCache(aktCache); // Wenn die View nicht sichtbar, brauch auch das
-								// HTML nicht geladen werden!
-		// }
+		setCache(aktCache);
 	}
 
 	@Override
-	public int GetMenuId() {
-		// TODO Auto-generated method stub
+	public int GetMenuId()
+	{
 		return 0;
 	}
 
 	@Override
-	public void ActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
-
+	public void ActivityResult(int requestCode, int resultCode, Intent data)
+	{
 	}
 
 	@Override
-	public int GetContextMenuId() {
-		// TODO Auto-generated method stub
+	public int GetContextMenuId()
+	{
 		return 0;
 	}
 
 	@Override
-	public void BeforeShowContextMenu(Menu menu) {
-		// TODO Auto-generated method stub
-
+	public void BeforeShowContextMenu(Menu menu)
+	{
 	}
 
 	@Override
-	public boolean ContextMenuItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
+	public boolean ContextMenuItemSelected(MenuItem item)
+	{
 		return false;
 	}
 
-	
-	public static boolean isDrawn=false;
-	
-	@Override protected void onDraw(Canvas canvas) {
+	public static boolean isDrawn = false;
+
+	@Override
+	protected void onDraw(Canvas canvas)
+	{
 		super.onDraw(canvas);
-		isDrawn=true;
+		isDrawn = true;
 		invertViewControl.Me.invalidate();
 	}
-
 
 }

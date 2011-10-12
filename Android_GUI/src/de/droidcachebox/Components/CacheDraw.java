@@ -279,7 +279,7 @@ public class CacheDraw
 
 		if (drawStyle != DrawStyle.withoutBearing && drawStyle != DrawStyle.withOwnerAndName && !withoutBearing)
 		{
-			if (BearingRec == null) BearingRec = new Rect(rec.right - rightBorder, rec.top, rec.right, (int) (SDTImageTop * 0.9));
+			if (BearingRec == null) BearingRec = new Rect(rec.right - rightBorder, rec.top, rec.right, (int) (SDTImageTop * 0.99));
 			DrawBearing(cache, canvas, BearingRec);
 		}
 

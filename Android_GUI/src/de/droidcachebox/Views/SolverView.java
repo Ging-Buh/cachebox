@@ -1,34 +1,33 @@
 package de.droidcachebox.Views;
 
+import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
-import CB_Core.Events.SelectedCacheEvent;
-import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
 import de.droidcachebox.Solver.Solver;
 import de.droidcachebox.Solver.SolverZeile;
+import de.droidcachebox.Views.Forms.MessageBox;
+import de.droidcachebox.Views.Forms.MessageBoxButtons;
+import de.droidcachebox.Views.Forms.MessageBoxIcon;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-public class SolverView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent{
+public class SolverView extends FrameLayout implements ViewOptionsMenu
+{
 	Context context;
 	EditText edSolver;
 	EditText edResult;
@@ -36,89 +35,94 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu, Selected
 	boolean mustLoadSolver;
 	Button bSolve;
 
-	public SolverView(Context context, LayoutInflater inflater) {
+	public SolverView(Context context, LayoutInflater inflater)
+	{
 		super(context);
 		mustLoadSolver = false;
-		SelectedCacheEventList.Add(this);
-
-		RelativeLayout solverLayout = (RelativeLayout)inflater.inflate(main.N? R.layout.night_solverview : R.layout.solverview, null, false);
+		RelativeLayout solverLayout = (RelativeLayout) inflater.inflate(main.N ? R.layout.night_solverview : R.layout.solverview, null,
+				false);
 		this.addView(solverLayout);
-        edSolver = (EditText) findViewById(R.id.solverText);
-        
-        edResult = (EditText) findViewById(R.id.solverResult);
-        bSolve = (Button) findViewById(R.id.solverButtonSolve);
-        bSolve.setText("Solve");
-        bSolve.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            	solve();
-            }
-        });
-        
+		edSolver = (EditText) findViewById(R.id.solverText);
+		edResult = (EditText) findViewById(R.id.solverResult);
+		bSolve = (Button) findViewById(R.id.solverButtonSolve);
+		bSolve.setText("Solve");
+		bSolve.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				solve();
+			}
+		});
+		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
 	}
 
-	protected void solve() {
+	protected void solve()
+	{
 		Solver solver = new Solver(edSolver.getText().toString());
 		if (!solver.Solve())
 		{
 			Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
 		}
-	    edResult.setText("");
-	    String result = "";
-	    for (SolverZeile zeile : solver)
-	    {
-	    	result += zeile.Solution + "\n";
-	    }
-		
-	    edResult.setText(result);
+		edResult.setText("");
+		String result = "";
+		for (SolverZeile zeile : solver)
+		{
+			result += zeile.Solution + "\n";
+		}
 
-	    if ((Solver.MissingVariables != null) && (Solver.MissingVariables.size() > 0))
-	    { 
-	    	// es sind nicht alle Variablen zugewiesen
-	    	// Abfrage, ob die Deklarationen eingefügt werden sollen
-	        String message = "";
-	        for (String s : Solver.MissingVariables.keySet())
-	        {
-	        	if (message != "")
-	        		message += ", ";
-	        	message += s;
-	        }
+		edResult.setText(result);
 
-	        //	        if (MessageBox.Show("Insert declarations for the missing variables:" + Environment.NewLine + message, "Missing variables", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            AlertDialog dialog = new AlertDialog.Builder(getContext())
-//            	.setIcon(R.drawable.alert_dialog_icon)
-            	.setTitle("Missing Variables")
-            	.setMessage("Insert declarations for the missing variables:\n" + message)
-            	.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            		public void onClick(DialogInterface dialog, int whichButton) {
-            			/* User clicked OK so do some stuff */
-                    	String missing = "";
-                    	for (String s : Solver.MissingVariables.keySet())
-                    	{
-                    		missing += s + "=\n";
-                    		edResult.setText("\n" + edSolver.getText().toString());
-                    	}
-                    	edSolver.setText(missing + edSolver.getText().toString());
-            		}
-            	})
-            	.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            		public void onClick(DialogInterface dialog, int whichButton) {
-            			
-            			/* User clicked Cancel so do some stuff */
-            		}
-            	})
-            	.create();
-	        dialog.show();
-	        
-	        
-	        
-	        
-	    }
+		if ((Solver.MissingVariables != null) && (Solver.MissingVariables.size() > 0))
+		{
+			// es sind nicht alle Variablen zugewiesen
+			// Abfrage, ob die Deklarationen eingefügt werden sollen
+			String message = "";
+			for (String s : Solver.MissingVariables.keySet())
+			{
+				if (message != "") message += ", ";
+				message += s;
+			}
+
+			MessageBox.Show("Insert declarations for the missing variables:\n" + message, "Missing Variables", MessageBoxButtons.YesNo,
+					MessageBoxIcon.Asterisk, DialogListner);
+		}
 
 	}
 
-	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
+	private final DialogInterface.OnClickListener DialogListner = new DialogInterface.OnClickListener()
+	{
+		@Override
+		public void onClick(DialogInterface dialog, int button)
+		{
+			// Behandle das ergebniss
+			switch (button)
+			{
+			case -1:
+				/* User clicked OK so do some stuff */
+				String missing = "";
+				for (String s : Solver.MissingVariables.keySet())
+				{
+					missing += s + "=\n";
+					edResult.setText("\n" + edSolver.getText().toString());
+				}
+				edSolver.setText(missing + edSolver.getText().toString());
+				break;
+			case -2:
+
+				break;
+			case -3:
+
+				break;
+			}
+
+			dialog.dismiss();
+		}
+
+	};
+
+	public void SetSelectedCache(Cache cache, Waypoint waypoint)
+	{
 		if (aktCache != cache)
 		{
 			mustLoadSolver = true;
@@ -127,20 +131,20 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu, Selected
 	}
 
 	@Override
-	public boolean ItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
+	public boolean ItemSelected(MenuItem item)
+	{
 		return false;
 	}
 
 	@Override
-	public void BeforeShowMenu(Menu menu) {
-		// TODO Auto-generated method stub
-		
+	public void BeforeShowMenu(Menu menu)
+	{
+
 	}
 
 	@Override
-	public void OnShow() {
-		// TODO Auto-generated method stub
+	public void OnShow()
+	{
 		if (mustLoadSolver)
 		{
 			edSolver.setText(Database.GetSolver(aktCache));
@@ -149,44 +153,45 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu, Selected
 	}
 
 	@Override
-	public void OnHide() {
+	public void OnHide()
+	{
 		// Save changed Solver text
-		if(aktCache!=null)
-			Database.SetSolver(aktCache,edSolver.getText().toString());		
+		if (aktCache != null) Database.SetSolver(aktCache, edSolver.getText().toString());
 	}
 
 	@Override
-	public void OnFree() {
-		
+	public void OnFree()
+	{
+
 	}
-	
+
 	@Override
-	public int GetMenuId() {
-		// TODO Auto-generated method stub
+	public int GetMenuId()
+	{
 		return 0;
 	}
 
 	@Override
-	public void ActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
-		
+	public void ActivityResult(int requestCode, int resultCode, Intent data)
+	{
+
 	}
 
 	@Override
-	public int GetContextMenuId() {
-		// TODO Auto-generated method stub
+	public int GetContextMenuId()
+	{
 		return 0;
 	}
 
 	@Override
-	public void BeforeShowContextMenu(Menu menu) {
-		// TODO Auto-generated method stub
-		
+	public void BeforeShowContextMenu(Menu menu)
+	{
+
 	}
 
 	@Override
-	public boolean ContextMenuItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
+	public boolean ContextMenuItemSelected(MenuItem item)
+	{
 		return false;
 	}
 

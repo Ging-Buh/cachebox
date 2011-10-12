@@ -302,7 +302,7 @@ public class TrackableListView extends ListView implements ViewOptionsMenu
 		protected Integer doInBackground(String... params)
 		{
 			TbList searchList = new TbList();
-			int result = CB_Core.Api.GroundspeakAPI.getMyTbList(Config.GetString("GcAPI"), searchList);
+			int result = CB_Core.Api.GroundspeakAPI.getMyTbList(Config.GetStringEncrypted("GcAPI"), searchList);
 
 			searchList.writeToDB();
 

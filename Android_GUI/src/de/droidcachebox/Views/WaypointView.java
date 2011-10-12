@@ -1,24 +1,19 @@
 package de.droidcachebox.Views;
 
 import CB_Core.GlobalCore;
-import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 import CB_Core.Enums.CacheTypes;
 
-import CB_Core.Config;
 import CB_Core.DB.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
-import CB_Core.Events.SelectedCacheEvent;
-import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.DAO.WaypointDAO;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.AllContextMenuCallHandler;
-import de.droidcachebox.Views.Forms.EditCoordinate;
 import de.droidcachebox.Views.Forms.EditWaypoint;
 import de.droidcachebox.Views.Forms.MeasureCoordinateActivity;
 import de.droidcachebox.Views.Forms.MessageBox;
@@ -38,8 +33,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
-public class WaypointView extends ListView implements SelectedCacheEvent,
-		ViewOptionsMenu
+public class WaypointView extends ListView implements ViewOptionsMenu
 {
 
 	CustomAdapter lvAdapter;
@@ -55,29 +49,25 @@ public class WaypointView extends ListView implements SelectedCacheEvent,
 	{
 		super(context);
 		this.parentActivity = parentActivity;
-		SelectedCacheEventList.Add(this);
 		this.setAdapter(null);
 		lvAdapter = new CustomAdapter(getContext(), GlobalCore.SelectedCache());
 		this.setAdapter(lvAdapter);
 		this.setOnItemClickListener(new OnItemClickListener()
 		{
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3)
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 			{
 				aktWaypoint = null;
-				if (arg2 > 0) aktWaypoint = GlobalCore.SelectedCache().waypoints
-						.get(arg2 - 1);
+				if (arg2 > 0) aktWaypoint = GlobalCore.SelectedCache().waypoints.get(arg2 - 1);
 				aktCache = GlobalCore.SelectedCache();
 				// shutdown AutoResort when selecting a cache or waypoint by
 				// hand
 				Global.autoResort = false;
-				GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(),
-						aktWaypoint);
+				GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), aktWaypoint);
 			}
 		});
 		ActivityUtils.setListViewPropertys(this);
-
+		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
 	}
 
 	static public int windowW = 0;
@@ -99,8 +89,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent,
 		Bundle bundle = data.getExtras();
 		if (bundle != null)
 		{
-			Waypoint waypoint = (Waypoint) bundle
-					.getSerializable("WaypointResult");
+			Waypoint waypoint = (Waypoint) bundle.getSerializable("WaypointResult");
 			if (waypoint != null)
 			{
 				if (createNewWaypoint)
@@ -108,8 +97,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent,
 					GlobalCore.SelectedCache().waypoints.add(waypoint);
 					this.setAdapter(lvAdapter);
 					aktWaypoint = waypoint;
-					GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(),
-							waypoint);
+					GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), waypoint);
 					WaypointDAO waypointDAO = new WaypointDAO();
 					waypointDAO.WriteToDatabase(waypoint);
 
@@ -127,8 +115,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent,
 				}
 			}
 
-			Coordinate coord = (Coordinate) bundle
-					.getSerializable("CoordResult");
+			Coordinate coord = (Coordinate) bundle.getSerializable("CoordResult");
 			if (coord != null)
 			{
 				if (createNewWaypoint)
@@ -136,23 +123,19 @@ public class WaypointView extends ListView implements SelectedCacheEvent,
 					String newGcCode = "";
 					try
 					{
-						newGcCode = Database.CreateFreeGcCode(GlobalCore
-								.SelectedCache().GcCode);
+						newGcCode = Database.CreateFreeGcCode(GlobalCore.SelectedCache().GcCode);
 					}
 					catch (Exception e)
 					{
 
 						return;
 					}
-					Waypoint newWP = new Waypoint(newGcCode,
-							CacheTypes.ReferencePoint, "Entered Manually",
-							coord.Latitude, coord.Longitude,
-							GlobalCore.SelectedCache().Id, "", "projiziert");
+					Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", coord.Latitude,
+							coord.Longitude, GlobalCore.SelectedCache().Id, "", "projiziert");
 					GlobalCore.SelectedCache().waypoints.add(newWP);
 					this.setAdapter(lvAdapter);
 					aktWaypoint = newWP;
-					GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(),
-							newWP);
+					GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), newWP);
 					WaypointDAO waypointDAO = new WaypointDAO();
 					waypointDAO.WriteToDatabase(newWP);
 
@@ -220,15 +203,13 @@ public class WaypointView extends ListView implements SelectedCacheEvent,
 				Boolean BackGroundChanger = ((position % 2) == 1);
 				if (position == 0)
 				{
-					WaypointViewItem v = new WaypointViewItem(context, cache,
-							null, BackGroundChanger);
+					WaypointViewItem v = new WaypointViewItem(context, cache, null, BackGroundChanger);
 					return v;
 				}
 				else
 				{
 					Waypoint waypoint = cache.waypoints.get(position - 1);
-					WaypointViewItem v = new WaypointViewItem(context, cache,
-							waypoint, BackGroundChanger);
+					WaypointViewItem v = new WaypointViewItem(context, cache, waypoint, BackGroundChanger);
 					return v;
 				}
 			}
@@ -242,8 +223,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent,
 
 	}
 
-	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	public void SetSelectedCache(Cache cache, Waypoint waypoint)
 	{
 		if (aktCache != cache)
 		{
@@ -291,14 +271,11 @@ public class WaypointView extends ListView implements SelectedCacheEvent,
 	@Override
 	public void OnHide()
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void OnFree()
 	{
-
 	}
 
 	@Override
@@ -333,8 +310,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent,
 			if (aktWaypoint != null)
 			{
 				createNewWaypoint = false;
-				Intent mainIntent = new Intent().setClass(getContext(),
-						EditWaypoint.class);
+				Intent mainIntent = new Intent().setClass(getContext(), EditWaypoint.class);
 				Bundle b = new Bundle();
 				b.putSerializable("Waypoint", aktWaypoint);
 				mainIntent.putExtras(b);
@@ -346,22 +322,17 @@ public class WaypointView extends ListView implements SelectedCacheEvent,
 			String newGcCode = "";
 			try
 			{
-				newGcCode = Database.CreateFreeGcCode(GlobalCore
-						.SelectedCache().GcCode);
+				newGcCode = Database.CreateFreeGcCode(GlobalCore.SelectedCache().GcCode);
 			}
 			catch (Exception e)
 			{
-				// TODO Auto-generated catch block
 				return true;
 			}
 			Coordinate coord = GlobalCore.LastValidPosition;
-			if ((coord == null) || (!coord.Valid)) coord = GlobalCore
-					.SelectedCache().Pos;
-			Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint,
-					"Entered Manually", coord.Latitude, coord.Longitude,
+			if ((coord == null) || (!coord.Valid)) coord = GlobalCore.SelectedCache().Pos;
+			Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", coord.Latitude, coord.Longitude,
 					GlobalCore.SelectedCache().Id, "", "manual");
-			Intent mainIntent = new Intent().setClass(getContext(),
-					EditWaypoint.class);
+			Intent mainIntent = new Intent().setClass(getContext(), EditWaypoint.class);
 			Bundle b = new Bundle();
 			b.putSerializable("Waypoint", newWP);
 			mainIntent.putExtras(b);
@@ -380,8 +351,7 @@ public class WaypointView extends ListView implements SelectedCacheEvent,
 				coord2 = aktCache.Pos;
 			}
 
-			Intent coordIntent = new Intent().setClass(getContext(),
-					projectionCoordinate.class);
+			Intent coordIntent = new Intent().setClass(getContext(), projectionCoordinate.class);
 			Bundle b2 = new Bundle();
 			b2.putSerializable("Coord", coord2);
 			b2.putSerializable("Title", Global.Translations.Get("Projection"));
@@ -400,10 +370,8 @@ public class WaypointView extends ListView implements SelectedCacheEvent,
 					case DialogInterface.BUTTON_POSITIVE:
 						// Yes button clicked
 						Database.DeleteFromDatabase(aktWaypoint);
-						GlobalCore.SelectedCache().waypoints
-								.remove(aktWaypoint);
-						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(),
-								null);
+						GlobalCore.SelectedCache().waypoints.remove(aktWaypoint);
+						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), null);
 						lvAdapter.notifyDataSetChanged();
 						break;
 					case DialogInterface.BUTTON_NEGATIVE:
@@ -414,33 +382,25 @@ public class WaypointView extends ListView implements SelectedCacheEvent,
 				}
 			};
 
-			MessageBox.Show(Global.Translations.Get("?DelWP") + "\n\n["
-					+ aktWaypoint.Title + "]",
-					Global.Translations.Get("!DelWP"), MessageBoxButtons.YesNo,
-					MessageBoxIcon.Question, dialogClickListener);
+			MessageBox.Show(Global.Translations.Get("?DelWP") + "\n\n[" + aktWaypoint.Title + "]", Global.Translations.Get("!DelWP"),
+					MessageBoxButtons.YesNo, MessageBoxIcon.Question, dialogClickListener);
 			break;
 		case R.id.menu_waypointview_gps:
 			createNewWaypoint = true;
 			String newGcCode3 = "";
 			try
 			{
-				newGcCode3 = Database.CreateFreeGcCode(GlobalCore
-						.SelectedCache().GcCode);
+				newGcCode3 = Database.CreateFreeGcCode(GlobalCore.SelectedCache().GcCode);
 			}
 			catch (Exception e)
 			{
-				// TODO Auto-generated catch block
 				return true;
 			}
 			Coordinate coord3 = GlobalCore.LastValidPosition;
-			if ((coord3 == null) || (!coord3.Valid)) coord3 = GlobalCore
-					.SelectedCache().Pos;
-			Waypoint newWP3 = new Waypoint(newGcCode3,
-					CacheTypes.ReferencePoint, "Measured", coord3.Latitude,
-					coord3.Longitude, GlobalCore.SelectedCache().Id, "",
-					"Measured");
-			Intent mainIntent3 = new Intent().setClass(getContext(),
-					MeasureCoordinateActivity.class);
+			if ((coord3 == null) || (!coord3.Valid)) coord3 = GlobalCore.SelectedCache().Pos;
+			Waypoint newWP3 = new Waypoint(newGcCode3, CacheTypes.ReferencePoint, "Measured", coord3.Latitude, coord3.Longitude,
+					GlobalCore.SelectedCache().Id, "", "Measured");
+			Intent mainIntent3 = new Intent().setClass(getContext(), MeasureCoordinateActivity.class);
 			Bundle b3 = new Bundle();
 			b3.putSerializable("Waypoint", newWP3);
 			mainIntent3.putExtras(b3);
