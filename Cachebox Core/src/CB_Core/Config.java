@@ -8,6 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 
+import CB_Core.Converter.Base64;
+
 import CB_Core.Log.Logger;
 
 public class Config
@@ -304,15 +306,46 @@ public class Config
 
 	public static String GetStringEncrypted(String key)
 	{
-		try
+		String s;
+		boolean convert = false;
+		if (ExistsKey(key + "Enc"))
 		{
-			return SimpleCrypto.decrypt(GlobalCore.DECRYPT_KEY, Config.GetString(key));
+			s = GetString(key + "Enc");
+			if (s != "")
+			{
+				// encrypted Key is found -> remove the old non encrypted
+				if (ExistsKey(key))
+				{
+					keyLookup.remove(key);
+					AcceptChanges();
+				}
+				s = decrypt(s);
+			}
 		}
-		catch (Exception e)
+		else
 		{
-			e.printStackTrace();
-			return "";
+			// no encrypted Key is found -> search for non encrypted
+			s = GetString(key);
+			if (s != "")
+			{
+				// remove the old non encrypted and insert a new encrypted
+				keyLookup.remove(key);
+				convert = true;
+			}
 		}
+
+		if (convert)
+		{
+			SetEncrypted(key, s);
+			AcceptChanges();
+		}
+		return s;
+	}
+
+	public static boolean ExistsKey(String key)
+	{
+		checkInitialization();
+		return keyLookup.containsKey(key);
 	}
 
 	/*
@@ -339,4 +372,123 @@ public class Config
 		return mHtcCompass;
 	}
 
+	static int[] Key =
+		{ 128, 56, 20, 78, 33, 225 };
+
+	public static void RC4(int[] bytes, int[] key)
+	{
+		int[] s = new int[256];
+		int[] k = new int[256];
+		int temp;
+		int i, j;
+
+		for (i = 0; i < 256; i++)
+		{
+			s[i] = (int) i;
+			k[i] = (int) key[i % key.length];
+		}
+
+		j = 0;
+		for (i = 0; i < 256; i++)
+		{
+			j = (j + s[i] + k[i]) % 256;
+			temp = s[i];
+			s[i] = s[j];
+			s[j] = temp;
+		}
+
+		i = j = 0;
+		for (int x = 0; x < bytes.length; x++)
+		{
+			i = (i + 1) % 256;
+			j = (j + s[i]) % 256;
+			temp = s[i];
+			s[i] = s[j];
+			s[j] = temp;
+			int t = (s[i] + s[j]) % 256;
+			bytes[x] = (int) (bytes[x] ^ s[t]);
+		}
+	}
+
+	public static void SetEncrypted(String key, String value)
+	{
+		String encrypted = encrypt(value);
+		if (ExistsKey(key)) keyLookup.remove(key); // remove non decrypted key
+													// if exists
+		Set(key + "Enc", encrypted);
+	}
+
+	public static String encrypt(String value)
+	{
+		int[] b = byte2intArray(value.getBytes());
+		RC4(b, Key);
+		String encrypted = Base64.encodeBytes(int2byteArray(b));
+		return encrypted;
+	}
+
+	public static String decrypt(String value)
+	{
+		int[] b = null;
+		try
+		{
+			b = byte2intArray(Base64.decode(value));
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		RC4(b, Key);
+		String decrypted="";
+		
+			char[] c = new char[b.length];
+			for (int x = 0; x < b.length; x++)
+			{
+				c[x]= (char) b[x];
+			}
+			
+			
+			decrypted = String.copyValueOf(c);
+		
+		
+		return decrypted;
+
+	}
+
+	private static int[] byte2intArray(byte[] b)
+	{
+		int[] i = new int[b.length];
+
+		for (int x = 0; x < b.length; x++)
+		{
+			int t = b[x];
+			if (t < 0)
+			{
+				t += 256;
+			}
+			i[x] = t;
+		}
+
+		return i;
+	}
+
+	private static byte[] int2byteArray(int[] i)
+	{
+		byte[] b = new byte[i.length];
+
+		for (int x = 0; x < i.length; x++)
+		{
+
+			int t = i[x];
+			if (t > 128)
+			{
+				t -= 256;
+			}
+
+			b[x] = (byte) t;
+		}
+
+		return b;
+	}
 }

@@ -38,7 +38,7 @@ import org.json.JSONTokener;
 public class CB_Api 
 {
 	
-	private static final String CB_API_URL_GET_URLS = "http://team-cachebox.de/CB_API/index.php?get=url"; 
+	private static final String CB_API_URL_GET_URLS = "http://team-cachebox.de/CB_API/index.php?get=url_ACB"; 
 	
 
 	/**
@@ -70,7 +70,7 @@ public class CB_Api
 			{
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
-				return json.getString("GcAuth");
+				return json.getString("GcAuth_ACB");
 				
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

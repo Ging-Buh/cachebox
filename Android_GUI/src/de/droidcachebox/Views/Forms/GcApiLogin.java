@@ -19,12 +19,14 @@ import android.webkit.WebViewClient;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 
-public class GcApiLogin extends Activity {
+public class GcApiLogin extends Activity
+{
 	private static GcApiLogin gcApiLogin;
 	private static ProgressDialog pd;
 	private static boolean pdIsShow = false;
 
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState)
+	{
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.gcapilogin);
@@ -32,42 +34,50 @@ public class GcApiLogin extends Activity {
 
 		String GC_AuthUrl;
 
-		if (Config.GetString("OverrideUrl").equals("")) {
+		if (Config.GetString("OverrideUrl").equals(""))
+		{
 			GC_AuthUrl = CB_Api.getGcAuthUrl();
-		} else {
+		}
+		else
+		{
 			GC_AuthUrl = Config.GetString("OverrideUrl");
 		}
 
-		if (GC_AuthUrl.equals("")) {
+		if (GC_AuthUrl.equals(""))
+		{
 			finish();
 		}
 
-		if (!pdIsShow) {
+		if (!pdIsShow)
+		{
 			pd = ProgressDialog.show(gcApiLogin, "", "Loading....", true);
 			pdIsShow = true;
 		}
 
 		View titleView = getWindow().findViewById(android.R.id.title);
-		if (titleView != null) {
+		if (titleView != null)
+		{
 			ViewParent parent = titleView.getParent();
-			if (parent != null && (parent instanceof View)) {
+			if (parent != null && (parent instanceof View))
+			{
 				View parentView = (View) parent;
-				parentView.setBackgroundColor(Global
-						.getColor(R.attr.TitleBarBackColor));
+				parentView.setBackgroundColor(Global.getColor(R.attr.TitleBarBackColor));
 			}
 		}
 
 		final WebView webView = (WebView) this.findViewById(R.id.gal_WebView);
 
-		webView.setWebViewClient(new WebViewClient() {
+		webView.setWebViewClient(new WebViewClient()
+		{
 
 			@Override
-			public void onPageStarted(WebView view, String url, Bitmap favicon) {
+			public void onPageStarted(WebView view, String url, Bitmap favicon)
+			{
 				gcApiLogin.setTitle("Loading...");
 
-				if (!pdIsShow) {
-					pd = ProgressDialog.show(gcApiLogin, "", "Loading....",
-							true);
+				if (!pdIsShow)
+				{
+					pd = ProgressDialog.show(gcApiLogin, "", "Loading....", true);
 					pdIsShow = true;
 				}
 
@@ -75,24 +85,26 @@ public class GcApiLogin extends Activity {
 			}
 
 			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+			public boolean shouldOverrideUrlLoading(WebView view, String url)
+			{
 
 				view.loadUrl(url);
 				return true;
 			}
 
 			@Override
-			public void onPageFinished(WebView view, String url) {
+			public void onPageFinished(WebView view, String url)
+			{
 
 				gcApiLogin.setTitle(R.string.app_name);
-				if (pd != null)
-					pd.dismiss();
+				if (pd != null) pd.dismiss();
 				pdIsShow = false;
 
-				if (url.toLowerCase().contains("oauth_verifier=")
-						&& (url.toLowerCase().contains("oauth_token="))) {
+				if (url.toLowerCase().contains("oauth_verifier=") && (url.toLowerCase().contains("oauth_token=")))
+				{
 					webView.loadUrl("javascript:window.HTMLOUT.showHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");
-				} else
+				}
+				else
 					super.onPageFinished(view, url);
 			}
 
@@ -110,32 +122,33 @@ public class GcApiLogin extends Activity {
 		webView.loadUrl(GC_AuthUrl);
 	}
 
-	class MyJavaScriptInterface {
+	class MyJavaScriptInterface
+	{
 
-		public void showHTML(String html) {
+		public void showHTML(String html)
+		{
 
 			String search = "Access token: ";
 			int pos = html.indexOf(search);
-			if (pos < 0)
-				return;
+			if (pos < 0) return;
 			int pos2 = html.indexOf("</span>", pos);
-			if (pos2 < pos)
-				return;
+			if (pos2 < pos) return;
 			// zwischen pos und pos2 sollte ein gültiges AccessToken sein!!!
 			final String accessToken = html.substring(pos + search.length(), pos2);
 
-			Thread thread = new Thread() {
-				public void run() {
+			Thread thread = new Thread()
+			{
+				public void run()
+				{
 					GroundspeakAPI.CacheStatusValid = false;
 					GroundspeakAPI.CacheStatusLiteValid = false;
 
-					GroundspeakAPI.GetMembershipType(accessToken);
+					GroundspeakAPI.GetMembershipType(Config.decrypt(accessToken));
 
-					Config.Set("GcAPI", accessToken);
-					Config.Set("GcLogin", GroundspeakAPI.MemberName);
-					if (Settings.Me != null) {
-						Settings.Me.setGcApiKey(accessToken,
-								GroundspeakAPI.MemberName);
+					
+					if (Settings.Me != null)
+					{
+						Settings.Me.setGcApiKey(accessToken, GroundspeakAPI.MemberName);
 					}
 					onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
 				}
@@ -145,10 +158,14 @@ public class GcApiLogin extends Activity {
 		}
 	}
 
-	private Handler onlineSearchReadyHandler = new Handler() {
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case 1: {
+	private Handler onlineSearchReadyHandler = new Handler()
+	{
+		public void handleMessage(Message msg)
+		{
+			switch (msg.what)
+			{
+			case 1:
+			{
 				pd.dismiss();
 				gcApiLogin.finish();
 			}

@@ -61,7 +61,6 @@ import CB_Core.Config;
 import CB_Core.GlobalCore;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import CB_Core.SimpleCrypto;
 import de.droidcachebox.main;
 import de.droidcachebox.Components.Animations;
 import de.droidcachebox.Custom_Controls.downSlider;
@@ -94,10 +93,8 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 	private TextView LabelGcVoPw;
 	private TextView LabelGcJoker;
 	private EditText EditTextGCName;
-	private EditText EditTextGCPW;
 	private EditText EditTextGCVotePW;
 	private EditText EditTextGCJoker;
-	private EditText EditTextGC_API;
 	private Button ToggleGPSView;
 	private TableRow GPSTableRow;
 	private CheckBox checkBoxHTCCompass;
@@ -380,38 +377,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 
 			}
 		});
-		EditTextGCPW.addTextChangedListener(new TextWatcher()
-		{
 
-			@Override
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3)
-			{
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3)
-			{
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void afterTextChanged(Editable arg0)
-			{
-				try
-				{
-					Config.Set("GcPass", SimpleCrypto.encrypt(GlobalCore.DECRYPT_KEY, EditTextGCPW.getEditableText().toString()));
-				}
-				catch (Exception e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			}
-		});
 		EditTextGCVotePW.addTextChangedListener(new TextWatcher()
 		{
 
@@ -434,7 +400,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 			{
 				try
 				{
-					Config.Set("GcVotePassword", SimpleCrypto.encrypt(GlobalCore.DECRYPT_KEY, EditTextGCVotePW.getEditableText().toString()));
+					Config.SetEncrypted("GcVotePassword", EditTextGCVotePW.getEditableText().toString());
 				}
 				catch (Exception e)
 				{
@@ -704,10 +670,8 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 		LabelGcVoPw = (TextView) this.findViewById(R.id.settings_textView3);
 		LabelGcJoker = (TextView) this.findViewById(R.id.settings_textView4);
 		EditTextGCName = (EditText) this.findViewById(R.id.settings_editText1);
-		EditTextGCPW = (EditText) this.findViewById(R.id.settings_editText2);
 		EditTextGCVotePW = (EditText) this.findViewById(R.id.settings_editText3);
 		EditTextGCJoker = (EditText) this.findViewById(R.id.settings_editText4);
-		EditTextGC_API = (EditText) this.findViewById(R.id.settings_editText5);
 		GPSTableRow = (TableRow) this.findViewById(R.id.settings_tableRowgps);
 		ToggleGPSView = (Button) this.findViewById(R.id.toggle_button_gps);
 		checkBoxHTCCompass = (CheckBox) this.findViewById(R.id.settings_use_intern_compass);
@@ -807,10 +771,8 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 		try
 		{
 			EditTextGCName.setText(Config.GetString("GcLogin"));
-			EditTextGCPW.setText(SimpleCrypto.decrypt("DCB", Config.GetString("GcPass")));
-			EditTextGCVotePW.setText(SimpleCrypto.decrypt("DCB", Config.GetString("GcVotePassword")));
+			EditTextGCVotePW.setText(Config.GetStringEncrypted("GcVotePassword"));
 			EditTextGCJoker.setText(Config.GetString("GcJoker"));
-			EditTextGC_API.setText("");// keine Anzeige des Key´s
 			EditDebugOverrideGcAuth.setText(Config.GetString("OverrideUrl"));
 			fillLangCombo();
 			checkBoxHTCCompass.setChecked(Config.GetBool("HtcCompass"));
@@ -864,16 +826,9 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 
 	public void setGcApiKey(String key, String UserName)
 	{
-		String encrypt = "";
-		try
-		{
-			encrypt = SimpleCrypto.encrypt(GlobalCore.DECRYPT_KEY, key);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		Config.Set("GcAPI", encrypt);
+		// we are take the Key encrypted from own server
+		// so we save it with "Enc"
+		Config.Set("GcAPIEnc", key);
 		EditTextGCName.setText(UserName);
 		EditTextGCName.invalidate();
 		Config.AcceptChanges();
@@ -883,31 +838,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 	{
 		Config.Set("GcLogin", EditTextGCName.getEditableText().toString());
 		Config.Set("GcJoker", EditTextGCJoker.getEditableText().toString());
-		if (!EditTextGC_API.getEditableText().toString().equals(""))
-		{
-
-			String encrypt = "";
-			try
-			{
-				encrypt = SimpleCrypto.encrypt(GlobalCore.DECRYPT_KEY, EditTextGC_API.getEditableText().toString());
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-			Config.Set("GcAPI", encrypt);
-		}
-
-		try
-		{
-			Config.Set("GcPass", SimpleCrypto.encrypt(GlobalCore.DECRYPT_KEY, EditTextGCPW.getEditableText().toString()));
-			Config.Set("GcVotePassword", SimpleCrypto.encrypt(GlobalCore.DECRYPT_KEY, EditTextGCVotePW.getEditableText().toString()));
-		}
-		catch (Exception e)
-		{
-			Logger.Error("Settings.SaveSettings()", "Save GcPass/ GcVotePass", e);
-			e.printStackTrace();
-		}
+		Config.SetEncrypted("GcVotePassword", EditTextGCVotePW.getEditableText().toString());
 		Config.Set("TrackRecorderStartup", chkTrackStart.isChecked());
 		Config.Set("ImportLayerOsm", chkMapink.isChecked());
 		Config.Set("ImportLayerOcm", chkCycleMap.isChecked());
@@ -920,7 +851,6 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 		Global.SmoothScrolling = SmoothScrollingTyp.valueOf(SmoothScrollingString);
 		Config.Set("SmoothScrolling", SmoothScrollingString);
 		Config.Set("TrackDistance", (Integer) TrackDistance.getSelectedItem());
-
 		Config.Set("AllowInternetAccess", chkAllowInetAccess.isChecked());
 		Config.Set("DebugShowPanel", chkDebugShowPanel.isChecked());
 		Config.Set("DebugMemory", chkDebugMemory.isChecked());

@@ -17,8 +17,6 @@ public class GlobalCore
 	public static final int LatestDatabaseChange = 1017;
 	public static final int LatestDatabaseFieldNoteChange = 1001;
 
-	public static final String DECRYPT_KEY = "ACB";
-
 	private static Cache selectedCache = null;
 
 	public static void SelectedCache(Cache cache)
