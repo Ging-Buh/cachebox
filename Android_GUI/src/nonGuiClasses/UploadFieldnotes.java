@@ -9,14 +9,6 @@ import CB_Core.Config;
 
 public class UploadFieldnotes 
 {
-	
-	
-	private String mUser   = Config.GetString("GcLogin");
-	private String mGcPass = Config.GetStringEncrypted("GcPass");
-	
-
-	
-	
     public String ExecutePostRequest(
             URI url,
             HashMap<String, String> postData,

@@ -491,4 +491,16 @@ public class Config
 
 		return b;
 	}
+
+	// Read the encrypted AccessToken from the config and check wheter it is correct for Andorid CB
+    public static String GetAccessToken()
+    {
+        String act = GetStringEncrypted("GcAPI");
+        // Prüfen, ob das AccessToken für ACB ist!!!
+        if (!(act.startsWith("A")))
+            return "";
+        String result = act.substring(1,act.length());
+        return result;
+    }
+
 }

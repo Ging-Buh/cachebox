@@ -52,13 +52,13 @@ public class searchForGeoCache_Test extends TestCase
 	private void LoadConfig()
 	{
 		Config.Initialize("./testdata/", "./testdata/cachebox.config");
-		String key = Config.GetStringEncrypted("GcAPI");
+		String key = Config.GetAccessToken();
 		assertFalse("Kein Access Key gefunden, liegt die Config an der richtigen stelle?", key.equals(""));
 	}
 
 	public void testSearchCache()
 	{
-		String accessToken = Config.GetStringEncrypted("GcAPI");
+		String accessToken = Config.GetAccessToken();
 
 		Coordinate searchCoord = new Coordinate(52.581892, 13.398128); // Home
 																		// of

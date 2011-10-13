@@ -136,7 +136,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 						public void run()
 						{
 
-							String accessToken = Config.GetStringEncrypted("GcAPI");
+							String accessToken = Config.GetAccessToken();
 							if (!CB_Core.Api.GroundspeakAPI.CacheStatusValid)
 							{
 								int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(accessToken);

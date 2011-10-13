@@ -44,19 +44,19 @@ public class isPremium_GetFound_Test extends TestCase
 	private void LoadConfig()
 	{
 		Config.Initialize("./testdata/", "./testdata/cachebox.config");
-		String key = Config.GetStringEncrypted("GcAPI");
+		String key = Config.GetAccessToken();
 		assertFalse("Kein Access Key gefunden, liegt die Config an der richtigen stelle?", key.equals(""));
 	}
 
 	public void testIsPremiumMember()
 	{
-		assertTrue("Muss Premium Member sein", GroundspeakAPI.IsPremiumMember(Config.GetStringEncrypted("GcAPI")));
+		assertTrue("Muss Premium Member sein", GroundspeakAPI.IsPremiumMember(Config.GetAccessToken()));
 	}
 
 	public void testGetCachesFound()
 	{
 
-		int Anzahl = GroundspeakAPI.GetCachesFound(Config.GetStringEncrypted("GcAPI"));
+		int Anzahl = GroundspeakAPI.GetCachesFound(Config.GetAccessToken());
 
 		// Bei mir
 		assertTrue("Muss Anzahl meiner Funde sein (" + Anzahl + ")", Anzahl == 146);

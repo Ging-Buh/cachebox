@@ -336,7 +336,7 @@ public class CacheDAO
 
 	public Cache LoadApiDetails(Cache aktCache)
 	{
-		String accessToken = Config.GetStringEncrypted("GcAPI");
+		String accessToken = Config.GetAccessToken();
 
 		Cache newCache = null;
 		try

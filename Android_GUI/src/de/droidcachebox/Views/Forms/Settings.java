@@ -824,14 +824,18 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 
 	}
 
-	public void setGcApiKey(String key, String UserName)
+	public void setGcApiKey(String key)
 	{
 		// we are take the Key encrypted from own server
 		// so we save it with "Enc"
 		Config.Set("GcAPIEnc", key);
+		Config.AcceptChanges();
+	}
+
+	public void setUserName(String UserName)
+	{
 		EditTextGCName.setText(UserName);
 		EditTextGCName.invalidate();
-		Config.AcceptChanges();
 	}
 
 	private void SaveSettings()

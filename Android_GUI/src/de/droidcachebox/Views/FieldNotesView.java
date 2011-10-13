@@ -180,7 +180,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 			{
 				ProgresssChangedEventList.Call("Upload", "", 0);
 
-				String accessToken = Config.GetStringEncrypted("GcAPI");
+				String accessToken = Config.GetAccessToken();
 
 				int count = 0;
 				int anzahl = lFieldNotes.size();

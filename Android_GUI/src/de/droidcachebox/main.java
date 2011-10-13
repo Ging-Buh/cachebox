@@ -418,7 +418,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		{
 			// ask for API key only if Rev-Number changed, like at new
 			// installation and API Key is Empty
-			if (Config.GetBool("newInstall") && Config.GetStringEncrypted("GcAPI").equals(""))
+			if (Config.GetBool("newInstall") && Config.GetAccessToken().equals(""))
 			{
 				askToGetApiKey();
 			}
@@ -2045,6 +2045,14 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				lat = GlobalCore.SelectedWaypoint().Latitude();
 				lon = GlobalCore.SelectedWaypoint().Longitude();
 			}
+
+/*			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + lat + "," + lon));
+			if (intent != null) {
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+				this.startActivity(intent);
+				
+			}*/
+			
 			Intent implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + lat + "," + lon));
 			if (implicitIntent != null) startActivity(implicitIntent);
 		}
@@ -2060,7 +2068,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		 * CB_Core.Api.GroundspeakAPI.GetGeocacheStatus(accessToken, caches);
 		 */
 
-		int status = CB_Core.Api.GroundspeakAPI.GetCacheLimits(Config.GetStringEncrypted("GcAPI"));
+		int status = CB_Core.Api.GroundspeakAPI.GetCacheLimits(Config.GetAccessToken());
 		if (status != 0) MessageBox.Show(CB_Core.Api.GroundspeakAPI.LastAPIError);
 
 		MessageBox.Show("Cache hinzufügen ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
@@ -2098,7 +2106,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		@Override
 		protected Integer doInBackground(String... params)
 		{
-			int ret = GroundspeakAPI.GetMembershipType(Config.GetStringEncrypted("GcAPI"));
+			int ret = GroundspeakAPI.GetMembershipType(Config.GetAccessToken());
 			isPremiumReadyHandler.sendMessage(isPremiumReadyHandler.obtainMessage(ret));
 			return null;
 		}
@@ -2170,7 +2178,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		@Override
 		protected Integer doInBackground(String... params)
 		{
-			String accessToken = Config.GetStringEncrypted("GcAPI");
+			String accessToken = Config.GetAccessToken();
 
 			Coordinate searchCoord = null;
 
@@ -2306,7 +2314,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				}
 				while (Iterator2.hasNext());
 
-				result = GroundspeakAPI.GetGeocacheStatus(Config.GetStringEncrypted("GcAPI"), chkList100);
+				result = GroundspeakAPI.GetGeocacheStatus(Config.GetAccessToken(), chkList100);
 				addedReturnList.addAll(chkList100);
 				start += 101;
 				stop += 101;

@@ -113,7 +113,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 								      @Override
 								      public void run() 
 								      {
-								    	  transFounds = GroundspeakAPI.GetCachesFound(Config.GetStringEncrypted("GcAPI"));
+								    	  transFounds = GroundspeakAPI.GetCachesFound(Config.GetAccessToken());
 								    	  onlineFoundsReadyHandler.sendMessage(onlineFoundsReadyHandler.obtainMessage(1));
 								      }
 

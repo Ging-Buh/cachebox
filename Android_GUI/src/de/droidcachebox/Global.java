@@ -771,7 +771,7 @@ public class Global
 	 */
 	public static boolean APIisOnline()
 	{
-		if (Config.GetStringEncrypted("GcAPI").length() == 0)
+		if (Config.GetAccessToken().length() == 0)
 		{
 			Logger.General("global.APIisOnline() -Invalid AccessToken");
 			return false;

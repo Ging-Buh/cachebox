@@ -47,7 +47,7 @@ public class Trackable_Test extends TestCase
 	private void LoadConfig()
 	{
 		Config.Initialize("./testdata/", "./testdata/cachebox.config");
-		String key=Config.GetStringEncrypted("GcAPI");
+		String key=Config.GetAccessToken();
 		assertFalse("Kein Access Key gefunden, liegt die Config an der richtigen stelle?", key.equals(""));
 	}
 
@@ -55,7 +55,7 @@ public class Trackable_Test extends TestCase
 	{
 		TbList list=new TbList();
 		
-		GroundspeakAPI.getMyTbList(Config.GetStringEncrypted("GcAPI"), list);
+		GroundspeakAPI.getMyTbList(Config.GetAccessToken(), list);
 		
 		// CB Developer sollten einen "coin of honour" im besitz haben.
 		boolean Assert=false;

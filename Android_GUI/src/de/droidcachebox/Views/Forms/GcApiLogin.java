@@ -143,13 +143,19 @@ public class GcApiLogin extends Activity
 					GroundspeakAPI.CacheStatusValid = false;
 					GroundspeakAPI.CacheStatusLiteValid = false;
 
-					GroundspeakAPI.GetMembershipType(Config.decrypt(accessToken));
+					//store the encrypted AccessToken in the Config file
+					Settings.Me.setGcApiKey(accessToken);
+					
+					String act = Config.GetAccessToken();
+					if (act.length() > 0) {
+						int status = GroundspeakAPI.GetMembershipType(act);
+						if ((Settings.Me != null) && (status >= 0))
+						{
+							Settings.Me.setUserName(GroundspeakAPI.MemberName);
+						}
+					}
 
 					
-					if (Settings.Me != null)
-					{
-						Settings.Me.setGcApiKey(accessToken, GroundspeakAPI.MemberName);
-					}
 					onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
 				}
 			};
