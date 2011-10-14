@@ -149,8 +149,8 @@ public class SearchForGeocaches
 
 						Cache cache = new Cache();
 						cache.Archived = jCache.getBoolean("Archived");
-						cache.attributesPositive = 0;
-						cache.attributesNegative = 0;
+						cache.setAttributesPositive(0);
+						cache.setAttributesNegative(0);
 						JSONArray jAttributes = jCache.getJSONArray("Attributes");
 						for (int j = 0; j < jAttributes.length(); j++)
 						{

@@ -29,7 +29,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.os.Handler.Callback;
 import android.text.Editable;
@@ -38,7 +37,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -51,14 +49,12 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
 import CB_Core.Config;
-import CB_Core.GlobalCore;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
@@ -816,6 +812,17 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 			chkSearchWithoutFounds.setChecked(Config.GetBool("SearchWithoutFounds"));
 			chkSearchWithoutOwns.setChecked(Config.GetBool("SearchWithoutOwns"));
 
+			if (!Config.GetAccessToken().equals(""))
+			{
+				((ImageView) findViewById(R.id.settings_API_Chk_Img)).setImageDrawable(Global.Icons[27]);
+			}
+			else
+			{
+				((ImageView) findViewById(R.id.settings_API_Chk_Img)).setImageDrawable(Global.Icons[39]);
+			}
+			
+			((ImageView) findViewById(R.id.settings_API_Chk_Img)).invalidate();
+			
 		}
 		catch (Exception e)
 		{
@@ -836,6 +843,12 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 	{
 		EditTextGCName.setText(UserName);
 		EditTextGCName.invalidate();
+		
+		if (!Config.GetAccessToken().equals(""))
+		{
+			((ImageView) findViewById(R.id.settings_API_Chk_Img)).setImageDrawable(Global.Icons[27]);
+		}
+		
 	}
 
 	private void SaveSettings()

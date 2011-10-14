@@ -55,6 +55,7 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 	private static FilterSetListViewItem maxRating;
 	private static FilterSetListViewItem Types;
 	private static FilterSetListViewItem Attr ;
+	private static FilterSetListViewItem AttrNegative ;
     
 	private ArrayList<FilterSetEntry> lFilterSets;
 	private ArrayList<FilterSetListViewItem>lFilterSetListViewItems;
@@ -395,70 +396,109 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 		
 		//add Attributes
 		Attr = addFilterSetCollabseItem(null, "Attributes", COLLABSE_BUTTON_ITEM);
-		Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_1_1), "Dogs", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_32_1), "Bicycles", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_33_1), "Motorcycles", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_34_1), "Quads", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_35_1), "Off-road vehicles", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_36_1), "Snowmobiles", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_37_1), "Horses", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_38_1), "Campfires", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_46_1), "Truck Driver/RV", THREE_STATE_ITEM ));
+		Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_1_1), Global.Translations.Get("att_1_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_32_1), Global.Translations.Get("att_32_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_33_1), Global.Translations.Get("att_33_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_34_1), Global.Translations.Get("att_34_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_35_1), Global.Translations.Get("att_35_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_36_1), Global.Translations.Get("att_36_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_37_1), Global.Translations.Get("att_37_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_38_1), Global.Translations.Get("att_38_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_46_1), Global.Translations.Get("att_46_1"), THREE_STATE_ITEM ));
 
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_2_1), "Access or parking fee", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_3_1), "Climbing gear", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_4_1), "Boat", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_5_1), "Scuba gear", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_44_1), "Flashlight required", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_48_1), "UV Light Required", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_49_1), "Snowshoes", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_50_1), "Cross Country Skis", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_51_1), "Special Tool Required", THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_2_1), Global.Translations.Get("att_2_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_3_1), Global.Translations.Get("att_3_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_4_1), Global.Translations.Get("att_4_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_5_1), Global.Translations.Get("att_5_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_44_1), Global.Translations.Get("att_44_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_48_1), Global.Translations.Get("att_48_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_49_1), Global.Translations.Get("att_49_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_50_1), Global.Translations.Get("att_50_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_51_1), Global.Translations.Get("att_51_1"), THREE_STATE_ITEM ));
 
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_6_1), "Recommended for kids", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_7_1), "Takes less than an hour", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_8_1), "Scenic view", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_9_1), "Significant hike", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_10_1), "Difficult climbing", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_11_1), "May require wading", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_12_1), "May require swimming", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_13_1), "Available at all times", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_14_1), "Recommended at night", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_15_1), "Available during winter", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_40_1), "Stealth required", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_42_1), "Needs maintenance", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_43_1), "Watch for livestock", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_47_1), "Field Puzzle", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_52_1), "Night Cache", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_53_1), "Park and Grab", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_54_1), "Abandoned Structure", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_55_1), "Short hike (less than 1km)", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_56_1), "Medium hike (1km-10km)", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_57_1), "Long Hike (+10km)", THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_6_1), Global.Translations.Get("att_6_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_7_1), Global.Translations.Get("att_7_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_8_1), Global.Translations.Get("att_8_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_9_1), Global.Translations.Get("att_9_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_10_1), Global.Translations.Get("att_10_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_11_1), Global.Translations.Get("att_11_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_12_1), Global.Translations.Get("att_12_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_13_1), Global.Translations.Get("att_13_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_14_1), Global.Translations.Get("att_14_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_15_1), Global.Translations.Get("att_15_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_40_1), Global.Translations.Get("att_40_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_42_1), Global.Translations.Get("att_42_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_43_1), Global.Translations.Get("att_43_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_47_1), Global.Translations.Get("att_47_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_52_1), Global.Translations.Get("att_52_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_53_1), Global.Translations.Get("att_53_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_54_1), Global.Translations.Get("att_54_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_55_1), Global.Translations.Get("att_55_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_56_1), Global.Translations.Get("att_56_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_57_1), Global.Translations.Get("att_57_1"), THREE_STATE_ITEM ));
 
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_17_1), "Poison plants", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_18_1), "Dangerous Animals", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_19_1), "Ticks", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_20_1), "Abandoned mines", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_21_1), "Cliff / falling rocks", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_22_1), "Hunting", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_23_1), "Dangerous Area", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_39_1), "Thorns", THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_17_1), Global.Translations.Get("att_17_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_18_1), Global.Translations.Get("att_18_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_19_1), Global.Translations.Get("att_19_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_20_1), Global.Translations.Get("att_20_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_21_1), Global.Translations.Get("att_21_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_22_1), Global.Translations.Get("att_22_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_23_1), Global.Translations.Get("att_23_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_39_1), Global.Translations.Get("att_39_1"), THREE_STATE_ITEM ));
 
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_24_1), "Wheelchair accessible", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_25_1), "Parking available", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_26_1), "Public transportation", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_27_1), "Drinking water nearby", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_28_1), "Public restrooms nearby", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_29_1), "Telephone nearby", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_30_1), "Picnic tables nearby", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_31_1), "Camping available", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_41_1), "Stroller accessible", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_58_1), "Fuel Nearby", THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_59_1), "Food Nearby", THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_24_1), Global.Translations.Get("att_24_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_25_1), Global.Translations.Get("att_25_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_26_1), Global.Translations.Get("att_26_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_27_1), Global.Translations.Get("att_27_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_28_1), Global.Translations.Get("att_28_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_29_1), Global.Translations.Get("att_29_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_30_1), Global.Translations.Get("att_30_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_31_1), Global.Translations.Get("att_31_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_41_1), Global.Translations.Get("att_41_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_58_1), Global.Translations.Get("att_58_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_59_1), Global.Translations.Get("att_59_1"), THREE_STATE_ITEM ));
 		
 		
+       /* AttrNegative = addFilterSetCollabseItem(null, "Negativ Attributes", COLLABSE_BUTTON_ITEM);
+        
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_1_0), Global.Translations.Get("att_1_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_6_0), Global.Translations.Get("att_6_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_7_0), Global.Translations.Get("att_7_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_8_0), Global.Translations.Get("att_8_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_9_0), Global.Translations.Get("att_9_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_10_0), Global.Translations.Get("att_10_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_13_0), Global.Translations.Get("att_13_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_14_0), Global.Translations.Get("att_14_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_15_0), Global.Translations.Get("att_15_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_17_0), Global.Translations.Get("att_17_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_24_0), Global.Translations.Get("att_24_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_25_0), Global.Translations.Get("att_25_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_27_0), Global.Translations.Get("att_27_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_28_0), Global.Translations.Get("att_28_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_29_0), Global.Translations.Get("att_29_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_30_0), Global.Translations.Get("att_30_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_31_0), Global.Translations.Get("att_31_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_32_0), Global.Translations.Get("att_32_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_33_0), Global.Translations.Get("att_33_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_34_0), Global.Translations.Get("att_34_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_35_0), Global.Translations.Get("att_35_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_36_0), Global.Translations.Get("att_36_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_37_0), Global.Translations.Get("att_37_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_38_0), Global.Translations.Get("att_38_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_40_0), Global.Translations.Get("att_40_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_41_0), Global.Translations.Get("att_41_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_46_0), Global.Translations.Get("att_46_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_47_0), Global.Translations.Get("att_47_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_52_0), Global.Translations.Get("att_52_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_53_0), Global.Translations.Get("att_53_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_54_0), Global.Translations.Get("att_54_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_55_0), Global.Translations.Get("att_55_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_56_0), Global.Translations.Get("att_56_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_57_0), Global.Translations.Get("att_57_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_58_0), Global.Translations.Get("att_58_0"), THREE_STATE_ITEM ));
+        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_59_0), Global.Translations.Get("att_59_0"), THREE_STATE_ITEM ));
 
+*/
 	}
 	
 	private FilterSetListViewItem addFilterSetItem(Drawable[] Icons,

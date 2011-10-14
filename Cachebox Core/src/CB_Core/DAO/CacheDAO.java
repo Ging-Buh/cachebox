@@ -47,8 +47,7 @@ public class CacheDAO
 			cache.Owner = reader.getString(13).trim();
 
 			String sDate = reader.getString(14);
-			DateFormat iso8601Format = new SimpleDateFormat(
-					"yyyy-MM-dd HH:mm:ss");
+			DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			try
 			{
 				cache.DateHidden = iso8601Format.parse(sDate);
@@ -64,13 +63,11 @@ public class CacheDAO
 			if (reader.getInt(19) > 0) cache.setFavorit(true);
 			else
 				cache.setFavorit(false);
-			if (reader.getString(20) != null) cache.TourName = reader
-					.getString(20).trim();
+			if (reader.getString(20) != null) cache.TourName = reader.getString(20).trim();
 			else
 				cache.TourName = "";
 
-			if (reader.getString(21) != "") cache.GPXFilename_ID = reader
-					.getLong(21);
+			if (reader.getString(21) != "") cache.GPXFilename_ID = reader.getLong(21);
 			else
 				cache.GPXFilename_ID = -1;
 
@@ -90,10 +87,8 @@ public class CacheDAO
 			else
 				cache.ApiStatus = (byte) reader.getInt(25);
 
-			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(
-					Cache.MapZoomLevel, cache.Longitude());
-			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel,
-					cache.Latitude());
+			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
+			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
 
 			return cache;
 		}
@@ -121,7 +116,6 @@ public class CacheDAO
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		args.put("Difficulty", (int) (cache.Difficulty * 2));
@@ -136,8 +130,7 @@ public class CacheDAO
 		String stimestamp = iso8601Format.format(cache.DateHidden);
 		args.put("DateHidden", stimestamp);
 		args.put("Hint", cache.hint);
-		if ((cache.longDescription != null) && (cache.longDescription != "")) args
-				.put("Description", cache.longDescription);
+		if ((cache.longDescription != null) && (cache.longDescription != "")) args.put("Description", cache.longDescription);
 		cache.longDescription = ""; // clear longDescription because this will
 									// be loaded from database when used
 		args.put("Url", cache.Url);
@@ -147,8 +140,8 @@ public class CacheDAO
 		// args.put("VotePending", cache.);
 		// args.put("Notes", );
 		// args.put("Solver", cache.);
-		args.put("AttributesPositive", cache.attributesPositive);
-		args.put("AttributesNegative", cache.attributesNegative);
+		args.put("AttributesPositive", cache.getAttributesPositive());
+		args.put("AttributesNegative", cache.getAttributesNegative());
 		// args.put("ListingCheckSum", cache.);
 		args.put("GPXFilename_Id", cache.GPXFilename_ID);
 		args.put("ApiStatus", cache.ApiStatus);
@@ -200,7 +193,6 @@ public class CacheDAO
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		args.put("Difficulty", (int) (cache.Difficulty * 2));
@@ -215,8 +207,7 @@ public class CacheDAO
 		String stimestamp = iso8601Format.format(cache.DateHidden);
 		args.put("DateHidden", stimestamp);
 		args.put("Hint", cache.hint);
-		if ((cache.longDescription != null) && (cache.longDescription != "")) args
-				.put("Description", cache.longDescription);
+		if ((cache.longDescription != null) && (cache.longDescription != "")) args.put("Description", cache.longDescription);
 		cache.longDescription = ""; // clear longDescription because this will
 									// be loaded from database when used
 		args.put("Url", cache.Url);
@@ -226,8 +217,8 @@ public class CacheDAO
 		// args.put("VotePending", cache.);
 		// args.put("Notes", );
 		// args.put("Solver", cache.);
-		args.put("AttributesPositive", cache.attributesPositive);
-		args.put("AttributesNegative", cache.attributesNegative);
+		args.put("AttributesPositive", cache.getAttributesPositive());
+		args.put("AttributesNegative", cache.getAttributesNegative());
 		// args.put("ListingCheckSum", cache.);
 		args.put("GPXFilename_Id", cache.GPXFilename_ID);
 		args.put("Favorit", cache.Favorit() ? 1 : 0);
@@ -248,10 +239,10 @@ public class CacheDAO
 	public Cache getFromDbByCacheId(long CacheID)
 	{
 		String where = "Id = " + String.valueOf(CacheID);
-		CoreCursor reader = Database.Data.rawQuery(
+		CoreCursor reader = Database.Data
+				.rawQuery(
 						"select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus from Caches "
-								+ ((where.length() > 0) ? "where " + where
-										: where), null);
+								+ ((where.length() > 0) ? "where " + where : where), null);
 
 		try
 		{
@@ -265,13 +256,13 @@ public class CacheDAO
 			}
 			else
 			{
-				if(reader!=null) reader.close();
+				if (reader != null) reader.close();
 				return null;
 			}
 		}
 		catch (Exception e)
 		{
-			if(reader!=null) reader.close();
+			if (reader != null) reader.close();
 			e.printStackTrace();
 			return null;
 		}
@@ -322,8 +313,7 @@ public class CacheDAO
 
 			try
 			{
-				Database.Data.update("Caches", args, "Id=" + cache.Id,
-						null);
+				Database.Data.update("Caches", args, "Id=" + cache.Id, null);
 			}
 			catch (Exception exc)
 			{
@@ -346,18 +336,15 @@ public class CacheDAO
 
 			ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 			ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-			CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken,
-					search, apiCaches, apiLogs, aktCache.GPXFilename_ID);
+			CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, search, apiCaches, apiLogs, aktCache.GPXFilename_ID);
 			if (apiCaches.size() == 1)
 			{
 				Database.Data.beginTransaction();
 				newCache = apiCaches.get(0);
 				Database.Data.Query.remove(aktCache);
 				Database.Data.Query.add(newCache);
-				newCache.MapX = 256.0 * Descriptor.LongitudeToTileX(
-						Cache.MapZoomLevel, newCache.Longitude());
-				newCache.MapY = 256.0 * Descriptor.LatitudeToTileY(
-						Cache.MapZoomLevel, newCache.Latitude());
+				newCache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, newCache.Longitude());
+				newCache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, newCache.Latitude());
 
 				UpdateDatabase(newCache);
 				for (LogEntry log : apiLogs)
@@ -388,8 +375,7 @@ public class CacheDAO
 		return newCache;
 	}
 
-	public void WriteImports(Iterator<Cache> Caches, int CacheCount,
-			ImporterProgress ip)
+	public void WriteImports(Iterator<Cache> Caches, int CacheCount, ImporterProgress ip)
 	{
 
 		// Indexing DB
@@ -412,14 +398,12 @@ public class CacheDAO
 
 			if (index.contains(cache.GcCode))
 			{
-				ip.ProgressInkrement("WriteCachesToDB", "Update DB "
-						+ cache.GcCode);
+				ip.ProgressInkrement("WriteCachesToDB", "Update DB " + cache.GcCode);
 				UpdateDatabase(cache);
 			}
 			else
 			{
-				ip.ProgressInkrement("WriteCachesToDB", "Write to DB "
-						+ cache.GcCode);
+				ip.ProgressInkrement("WriteCachesToDB", "Write to DB " + cache.GcCode);
 				WriteToDatabase(cache);
 			}
 		}

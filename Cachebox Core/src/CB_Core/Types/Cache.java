@@ -8,13 +8,13 @@ import java.util.Date;
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
+import CB_Core.DB.CoreCursor;
+import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 
-
-
-public class Cache implements Comparable<Cache> 
+public class Cache implements Comparable<Cache>
 {
 	/*
 	 * Private Member
@@ -27,516 +27,583 @@ public class Cache implements Comparable<Cache>
 		byte[] byteDummy = new byte[8];
 		for (int i = 0; i < 8; i++)
 		{
-			if (i < GcCode.length())
-				byteDummy[i] = (byte)dummy[i];
+			if (i < GcCode.length()) byteDummy[i] = (byte) dummy[i];
 			else
 				byteDummy[i] = 0;
 		}
-		for (int i = 7; i >= 0; i--) 
+		for (int i = 7; i >= 0; i--)
 		{
 			result *= 256;
 			result += byteDummy[i];
 		}
 		return result;
 	}
-	
-	
-	
+
 	/*
 	 * Public Member
 	 */
-	
 
 	/**
 	 * Koordinaten des Caches auf der Karte gelten in diesem Zoom
 	 */
-    public static final int MapZoomLevel = 18;
-    /**
+	public static final int MapZoomLevel = 18;
+	/**
 	 * Koordinaten des Caches auf der Karte
-     */
-    public double MapX;
-    /**
+	 */
+	public double MapX;
+	/**
 	 * Koordinaten des Caches auf der Karte
-     */
-    public double MapY;
-    /**
+	 */
+	public double MapY;
+	/**
 	 * Id des Caches bei geocaching.com. Wird zumm Loggen benötigt und von
-     * geotoad nicht exportiert
-     */
-    // TODO Warum ist das ein String?
-    public String GcId= "";
-    /**
+	 * geotoad nicht exportiert
+	 */
+	// TODO Warum ist das ein String?
+	public String GcId = "";
+	/**
 	 * Id des Caches in der Datenbank von geocaching.com
-     */
-    public long Id;
-    /**
+	 */
+	public long Id;
+	/**
 	 * Waypoint Code des Caches
-     */
-    public String GcCode= "";
-    /**
+	 */
+	public String GcCode = "";
+	/**
 	 * Name des Caches
-     */
-    public String Name= "";
-    
-    /**
-     * Die Coordinate, an der der Cache liegt.
-     */
-    public Coordinate Pos = new Coordinate(); 
-    /**
+	 */
+	public String Name = "";
+
+	/**
+	 * Die Coordinate, an der der Cache liegt.
+	 */
+	public Coordinate Pos = new Coordinate();
+
+	/**
 	 * Breitengrad
-     */
-    public double Latitude() { return Pos.Latitude; }
-    /**
+	 */
+	public double Latitude()
+	{
+		return Pos.Latitude;
+	}
+
+	/**
 	 * Längengrad
-     */
-    public double Longitude() { return Pos.Longitude; }
-    /**
+	 */
+	public double Longitude()
+	{
+		return Pos.Longitude;
+	}
+
+	/**
 	 * Durchschnittliche Bewertung des Caches von GcVote
-     */
-    public float Rating;
-    /**
-	 * Größe des Caches. Bei Wikipediaeinträgen enthält dieses Feld den Radius in m
-     */
-    public CacheSizes Size;
-    /**
+	 */
+	public float Rating;
+	/**
+	 * Größe des Caches. Bei Wikipediaeinträgen enthält dieses Feld den Radius
+	 * in m
+	 */
+	public CacheSizes Size;
+	/**
 	 * Schwierigkeit des Caches
-     */
-    public float Difficulty;
-    /**
+	 */
+	public float Difficulty;
+	/**
 	 * Geländebewertung
-     */
-    public float Terrain;
-    /**
+	 */
+	public float Terrain;
+	/**
 	 * Wurde der Cache archiviert?
-     */
-    public boolean Archived;
-    /**
+	 */
+	public boolean Archived;
+	/**
 	 * Ist der Cache derzeit auffindbar?
-     */
-    public boolean Available;
-    /**
-     * ApiStatus
-     * 0: Cache wurde nicht per Api hinzugefügt
-     * 1: Cache wurde per GC Api hinzugefügt und ist noch nicht komplett geladen (IsLite = true)
-     * 2: Cache wurde per GC Api hinzugefügt und ist komplett geladen (IsLite = false)
-     */
-    public byte ApiStatus;
-    /**
+	 */
+	public boolean Available;
+	/**
+	 * ApiStatus 0: Cache wurde nicht per Api hinzugefügt 1: Cache wurde per GC
+	 * Api hinzugefügt und ist noch nicht komplett geladen (IsLite = true) 2:
+	 * Cache wurde per GC Api hinzugefügt und ist komplett geladen (IsLite =
+	 * false)
+	 */
+	public byte ApiStatus;
+
+	/**
 	 * Ist der Cache einer der Favoriten
-     */
-    public boolean Favorit(){return favorite;}
-    private boolean favorite;
-    public void setFavorit(boolean value)
-    {
-    	favorite=value;
-    	
-    }
-    /**
-     * for Replication
-     */
-    public  int noteCheckSum = 0;
-    
-    /**
-     * for Replication
-     */
-	public  int solverCheckSum = 0;    
-    
+	 */
+	public boolean Favorit()
+	{
+		return favorite;
+	}
+
+	private boolean favorite;
+
+	public void setFavorit(boolean value)
+	{
+		favorite = value;
+
+	}
+
+	/**
+	 * for Replication
+	 */
+	public int noteCheckSum = 0;
+
+	/**
+	 * for Replication
+	 */
+	public int solverCheckSum = 0;
+
 	/**
 	 * hat der Cache Clues oder Notizen erfasst
 	 */
-    public boolean hasUserData;
+	public boolean hasUserData;
 
-    /**
-     * hat der Cache korrigierte Koordinaten
-     */
-    public boolean CorrectedCoordinates;
-    
-    /**
-     * Wurde der Cache bereits gefunden?
-     */
-    public boolean Found;
+	/**
+	 * hat der Cache korrigierte Koordinaten
+	 */
+	public boolean CorrectedCoordinates;
 
-    /**
-     * Name der Tour, wenn die GPX-Datei aus GCTour importiert wurde
-     */
-    public String TourName= "";
+	/**
+	 * Wurde der Cache bereits gefunden?
+	 */
+	public boolean Found;
 
-    
-    /**
-     * Name der GPX-Datei aus der importiert wurde
-     */
-    public long GPXFilename_ID=0;
+	/**
+	 * Name der Tour, wenn die GPX-Datei aus GCTour importiert wurde
+	 */
+	public String TourName = "";
 
-    /**
-    * Art des Caches
-    */
-    public CacheTypes Type = CacheTypes.Cache.Undefined;
+	/**
+	 * Name der GPX-Datei aus der importiert wurde
+	 */
+	public long GPXFilename_ID = 0;
 
-    /**
-    * Erschaffer des Caches
-    */
-    public String PlacedBy= "";
+	/**
+	 * Art des Caches
+	 */
+	public CacheTypes Type = CacheTypes.Undefined;
 
-    /**
-    * Verantwortlicher
-    */
-    public String Owner= "";
+	/**
+	 * Erschaffer des Caches
+	 */
+	public String PlacedBy = "";
 
-    /**
-    * Datum, an dem der Cache versteckt wurde
-    */
-    public Date DateHidden;
+	/**
+	 * Verantwortlicher
+	 */
+	public String Owner = "";
 
-    /**
-    * URL des Caches
-    */
-    public String Url= "";
-   
-    /**
-     * Das Listing hat sich geändert!
-     */
-    public boolean listingChanged=false;
-    
-    /**
-     * Positive Attribute des Caches
-     */
-    public long attributesPositive = 0;
-    
-    /**
-     * Negative Attribute des Caches
-     */
-    public long attributesNegative = 0;
-    
-    /**
-     * Anzahl der Travelbugs und Coins, die sich in diesem Cache befinden
-     */
-    public int NumTravelbugs=0;
+	/**
+	 * Datum, an dem der Cache versteckt wurde
+	 */
+	public Date DateHidden;
 
-    
-    /**
-     * Falls keine erneute Distanzberechnung nötig ist nehmen wir diese Distanz
-     */
-    public float cachedDistance = 0;
-    
-    /**
-     * Hinweis für diesen Cache
-     */
-    public String hint = "";
-   
-    /**
-     * Liste der zusätzlichen Wegpunkte des Caches
-     */
-    public ArrayList<Waypoint> waypoints = null;
+	/**
+	 * URL des Caches
+	 */
+	public String Url = "";
 
-    /**
-     * Liste der Spoiler Resorcen
-     */
-    public ArrayList<String> spoilerRessources = null;
+	/**
+	 * Das Listing hat sich geändert!
+	 */
+	public boolean listingChanged = false;
+
+	/**
+	 * Positive Attribute des Caches
+	 */
+	private long attributesPositive = 0;
+
+	/**
+	 * Negative Attribute des Caches
+	 */
+	private long attributesNegative = 0;
+
+	/**
+	 * Anzahl der Travelbugs und Coins, die sich in diesem Cache befinden
+	 */
+	public int NumTravelbugs = 0;
+
+	/**
+	 * Falls keine erneute Distanzberechnung nötig ist nehmen wir diese Distanz
+	 */
+	public float cachedDistance = 0;
+
+	/**
+	 * Hinweis für diesen Cache
+	 */
+	public String hint = "";
+
+	/**
+	 * Liste der zusätzlichen Wegpunkte des Caches
+	 */
+	public ArrayList<Waypoint> waypoints = null;
+
+	/**
+	 * Liste der Spoiler Resorcen
+	 */
+	public ArrayList<String> spoilerRessources = null;
+
+	/**
+	 * Kurz Beschreibung des Caches
+	 */
+	public String shortDescription;
+
+	/**
+	 * Ausführliche Beschreibung des Caches Nur für Import Zwecke. Ist
+	 * normalerweise leer, da die Description bei aus Speicherplatz Gründen bei
+	 * Bedarf aus der DB geladen wird
+	 */
+	public String longDescription;
+
+	/**
+	 * Bin ich der Owner? </br>-1 noch nicht getestet </br>1 ja </br>0 nein
+	 */
+	private int myCache = -1;
+
+	private static String gcLogin = null;
+
 	
-    /**
-     * Kurz Beschreibung des Caches
-     */
-    public String shortDescription;
-	
-    /**
-     * Ausführliche Beschreibung des Caches
-     * Nur für Import Zwecke. Ist normalerweise leer, da die Description bei aus Speicherplatz Gründen bei Bedarf aus der DB geladen wird
-     */
-    public String longDescription;
-    
-    
-    /**
-     * Bin ich der Owner?
-     * </br>-1 noch nicht getestet
-     * </br>1 ja
-     * </br>0 nein
-     */
-    private int myCache=-1;
-    
-    private static String gcLogin = null;
-    
-    public boolean ImTheOwner()
-    {
-    	if(myCache==0)return false;
-    	if(myCache==1)return true;
-    	
-    	if(gcLogin == null)
-    	{
-    		gcLogin = Config.GetString("GcLogin").toLowerCase();
-    	}
-    	
-    	boolean ret = this.Owner.toLowerCase().equals(gcLogin);
-    	myCache = ret? 1:0;
-    	return ret;
-    }
+	public boolean ImTheOwner()
+	{
+		if (myCache == 0) return false;
+		if (myCache == 1) return true;
 
-    /*
-     * Constructors
-     */
-    
-    /**
-     * Constructor 
-     */
-    public Cache() 
-    {
-    	 waypoints= new ArrayList<Waypoint>();
+		if (gcLogin == null)
+		{
+			gcLogin = Config.GetString("GcLogin").toLowerCase();
+		}
+
+		boolean ret = this.Owner.toLowerCase().equals(gcLogin);
+		myCache = ret ? 1 : 0;
+		return ret;
 	}
-    
-    
-    /*
-     * Getter/Setter 
-     */
 
-    
-    /**
-     * wenn ein Wegpunkt "Final" existiert, ist das mystery-Rätsel gelöst.
-     */
-    public boolean MysterySolved()
-    {
-        if (this.CorrectedCoordinates)
-          return true;
+	/*
+	 * Constructors
+	 */
 
-        if (this.Type != CacheTypes.Mystery)
-          return false;
+	/**
+	 * Constructor
+	 */
+	public Cache()
+	{
+		waypoints = new ArrayList<Waypoint>();
+	}
 
-        boolean x;
-        x = false;
+	/*
+	 * Getter/Setter
+	 */
 
-        ArrayList<Waypoint> wps = waypoints;
-        for (Waypoint wp : wps)
-        {
-          if (wp.Type == CacheTypes.Final)
-          {
-            x = true;
-          }
-        };
-        return x;
-    }
-    
-    /**
-     * true, if a this mystery cache has a final waypoint
-     */
-    public boolean HasFinalWaypoint() 
-    { 
-    	return GetFinalWaypoint() != null; 
-    }
+	/**
+	 * wenn ein Wegpunkt "Final" existiert, ist das mystery-Rätsel gelöst.
+	 */
+	public boolean MysterySolved()
+	{
+		if (this.CorrectedCoordinates) return true;
 
-    /**
-     * search the final waypoint for a mystery cache
-     */
-    public Waypoint GetFinalWaypoint()
-    {
-        if (this.Type != CacheTypes.Mystery)
-            return null;
+		if (this.Type != CacheTypes.Mystery) return false;
 
-        for (Waypoint wp : waypoints)
-        {
-            if (wp.Type == CacheTypes.Final)
-            {
-                return wp;
-            }
-        };
+		boolean x;
+		x = false;
 
-        return null;
-    }
+		ArrayList<Waypoint> wps = waypoints;
+		for (Waypoint wp : wps)
+		{
+			if (wp.Type == CacheTypes.Final)
+			{
+				x = true;
+			}
+		}
+		;
+		return x;
+	}
 
-    /**
-     *  
-     * @return Entfernung  zur aktUserPos als Float
-     */
-    public float CachedDistance()
-    {
-        if (cachedDistance != 0)
-            return cachedDistance;
-        else
-            return Distance(true);
-    }
+	/**
+	 * true, if a this mystery cache has a final waypoint
+	 */
+	public boolean HasFinalWaypoint()
+	{
+		return GetFinalWaypoint() != null;
+	}
 
-    /**
-     * Returns a List of Spoiler Ressources
-     * @return ArrayList of String
-     */
-   public ArrayList<String> SpoilerRessources()
-    {
-        if (spoilerRessources == null)
-        {
-           ReloadSpoilerRessources();
-        }
+	/**
+	 * search the final waypoint for a mystery cache
+	 */
+	public Waypoint GetFinalWaypoint()
+	{
+		if (this.Type != CacheTypes.Mystery) return null;
 
-        return spoilerRessources;
-    }
-	
-   /**
-    * Set a List of Spoiler Ressources
-    * @param value ArrayList of String
-    */
-    public void setSpoilerRessources(ArrayList<String> value)
-    {
-        spoilerRessources = value;
-    }
+		for (Waypoint wp : waypoints)
+		{
+			if (wp.Type == CacheTypes.Final)
+			{
+				return wp;
+			}
+		}
+		;
 
-  
-    /**
-     * Returns true has the Cache Spoilers else returns false
-     * @return Boolean
-     */
-    public boolean SpoilerExists()
-    {
-    	if(SpoilerRessources()==null)return false;
-        return SpoilerRessources().size() > 0;
-    }
-    
-    public void ReloadSpoilerRessources()
-    {
-    	spoilerRessources = new ArrayList<String>();
+		return null;
+	}
 
-    	String path = Config.GetString("SpoilerFolder");
-    	String directory = path + "/" + GcCode.substring(0, 4);
+	/**
+	 * @return Entfernung zur aktUserPos als Float
+	 */
+	public float CachedDistance()
+	{
+		if (cachedDistance != 0) return cachedDistance;
+		else
+			return Distance(true);
+	}
 
-    	if (!FileIO.DirectoryExists(directory))
-    		return;
+	/**
+	 * Returns a List of Spoiler Ressources
+	 * 
+	 * @return ArrayList of String
+	 */
+	public ArrayList<String> SpoilerRessources()
+	{
+		if (spoilerRessources == null)
+		{
+			ReloadSpoilerRessources();
+		}
 
-	        
-    	File dir = new File(directory);
-    	FilenameFilter filter = new FilenameFilter() {			
-    		@Override
-    		public boolean accept(File dir, String filename) {
-					
-    			filename = filename.toLowerCase();
-    			if (filename.indexOf(GcCode.toLowerCase()) == 0)
-    			{
-    				if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png") || filename.endsWith(".gif"))
-    					return true;
-    			}
-    			return false;
-    		}
-    	};
-    	String[] files = dir.list(filter);
+		return spoilerRessources;
+	}
 
-    	for (String image : files)
-    	{
-    		spoilerRessources.add(directory + "/" + image);
-    	}
+	/**
+	 * Set a List of Spoiler Ressources
+	 * 
+	 * @param value
+	 *            ArrayList of String
+	 */
+	public void setSpoilerRessources(ArrayList<String> value)
+	{
+		spoilerRessources = value;
+	}
 
-    	// Add own taken photo
-    	directory = Config.GetString("UserImageFolder");
+	/**
+	 * Returns true has the Cache Spoilers else returns false
+	 * 
+	 * @return Boolean
+	 */
+	public boolean SpoilerExists()
+	{
+		if (SpoilerRessources() == null) return false;
+		return SpoilerRessources().size() > 0;
+	}
 
-    	if (!FileIO.DirectoryExists(directory))
-    		return;
+	public void ReloadSpoilerRessources()
+	{
+		spoilerRessources = new ArrayList<String>();
 
-    	dir = new File(directory);
-    	filter = new FilenameFilter() {			
-    		@Override
-    		public boolean accept(File dir, String filename) {
-					
-    			filename = filename.toLowerCase();
-    			if (filename.indexOf(GcCode.toLowerCase()) >= 0)
-    				return true;
-    			return false;
-    		}
-    	};
-    	files = dir.list(filter);
-    	if (!(files == null))
-    	{
-    		if (files.length>0)
-    		{
-    			for (String file : files)
-    			{
-    				String ext = FileIO.GetFileExtension(file);
-    				if (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg") || ext.equalsIgnoreCase("bmp") || ext.equalsIgnoreCase("png") || ext.equalsIgnoreCase("gif"))
-    				{
-    					spoilerRessources.add(directory + "/" + file);
-    				}
-    			}
-    		}
-    	}
-    }
-    
-    
-    /**
-     * Returns the MapIconId of this Cache
-     * @return interger
-     */
-    public int GetMapIconId()
-    {
-    	if (this.ImTheOwner())
-    		return 20;
-    	if (this.Found)
-    		return 19;
-    	if ((Type == CacheTypes.Mystery) && this.MysterySolved())
-    		return 21;
-    	
-    	return Type.ordinal();
-    }
-    
-    
-    
-    /**
+		String path = Config.GetString("SpoilerFolder");
+		String directory = path + "/" + GcCode.substring(0, 4);
+
+		if (!FileIO.DirectoryExists(directory)) return;
+
+		File dir = new File(directory);
+		FilenameFilter filter = new FilenameFilter()
+		{
+			@Override
+			public boolean accept(File dir, String filename)
+			{
+
+				filename = filename.toLowerCase();
+				if (filename.indexOf(GcCode.toLowerCase()) == 0)
+				{
+					if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png")
+							|| filename.endsWith(".gif")) return true;
+				}
+				return false;
+			}
+		};
+		String[] files = dir.list(filter);
+
+		for (String image : files)
+		{
+			spoilerRessources.add(directory + "/" + image);
+		}
+
+		// Add own taken photo
+		directory = Config.GetString("UserImageFolder");
+
+		if (!FileIO.DirectoryExists(directory)) return;
+
+		dir = new File(directory);
+		filter = new FilenameFilter()
+		{
+			@Override
+			public boolean accept(File dir, String filename)
+			{
+
+				filename = filename.toLowerCase();
+				if (filename.indexOf(GcCode.toLowerCase()) >= 0) return true;
+				return false;
+			}
+		};
+		files = dir.list(filter);
+		if (!(files == null))
+		{
+			if (files.length > 0)
+			{
+				for (String file : files)
+				{
+					String ext = FileIO.GetFileExtension(file);
+					if (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg") || ext.equalsIgnoreCase("bmp")
+							|| ext.equalsIgnoreCase("png") || ext.equalsIgnoreCase("gif"))
+					{
+						spoilerRessources.add(directory + "/" + file);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Returns the MapIconId of this Cache
+	 * 
+	 * @return interger
+	 */
+	public int GetMapIconId()
+	{
+		if (this.ImTheOwner()) return 20;
+		if (this.Found) return 19;
+		if ((Type == CacheTypes.Mystery) && this.MysterySolved()) return 21;
+
+		return Type.ordinal();
+	}
+
+	/**
 	 * Converts the type string into an element of the CacheType enumeration.
+	 * 
 	 * @param type
 	 */
 	public void parseCacheTypeString(String type)
 	{
-    	this.Type = CacheTypes.parseString(type);		
+		this.Type = CacheTypes.parseString(type);
 	}
-	
+
 	/**
+	 * Gibt die Entfernung zur übergebenen User Position als Float zurück und
+	 * Speichert die Aktueller User Position für alle Caches ab.
 	 * 
-	 * Gibt die Entfernung  zur übergebenen User Position als Float zurück 
-	 * und Speichert die Aktueller User Position für alle Caches ab.
-	 * 
-	 * @return Entfernung  zur übergebenen User Position als Float
+	 * @return Entfernung zur übergebenen User Position als Float
 	 */
-    public float Distance(boolean useFinal)
-    {
-    	Coordinate fromPos = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
-    	Waypoint waypoint = null;
-    	if (useFinal)
-    		waypoint = this.GetFinalWaypoint();
-    	// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die Diszanzberechnung vom Final aus gemacht werden
-    	// If a mystery has a final waypoint, the distance will be calculated to the final not the the cache coordinates
-    	Coordinate toPos = Pos;
-    	if (waypoint != null)
-    		toPos = new Coordinate(waypoint.Pos.Latitude, waypoint.Pos.Longitude);
-    	float[] dist = new float[4];
-    	Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude, toPos.Latitude, toPos.Longitude, dist);
-    	cachedDistance = dist[0];
-    	return (float)cachedDistance;
-    }
-	
-    public void addAttributePositive( Attributes attribute )
-    {
+	public float Distance(boolean useFinal)
+	{
+		Coordinate fromPos = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
+		Waypoint waypoint = null;
+		if (useFinal) waypoint = this.GetFinalWaypoint();
+		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
+		// Diszanzberechnung vom Final aus gemacht werden
+		// If a mystery has a final waypoint, the distance will be calculated to
+		// the final not the the cache coordinates
+		Coordinate toPos = Pos;
+		if (waypoint != null) toPos = new Coordinate(waypoint.Pos.Latitude, waypoint.Pos.Longitude);
+		float[] dist = new float[4];
+		Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude, toPos.Latitude, toPos.Longitude, dist);
+		cachedDistance = dist[0];
+		return (float) cachedDistance;
+	}
+
+	public void addAttributePositive(Attributes attribute)
+	{
 		attributesPositive |= Attributes.GetAttributeIndex(attribute);
-    }
-    
-    public boolean isAttributePositiveSet( Attributes attribute )
-    {
-    	return (attributesPositive & Attributes.GetAttributeIndex(attribute)) > 0;
-    }
-	
-    public void addAttributeNegative( Attributes attribute )
-    {
-		attributesNegative |= Attributes.GetAttributeIndex(attribute);								
-    }
-    
-    public boolean isAttributeNegativeSet( Attributes attribute )
-    {
-    	return (attributesNegative & Attributes.GetAttributeIndex(attribute)) > 0;
-    }
-	
+	}
+
+	public boolean isAttributePositiveSet(Attributes attribute)
+	{
+		return (attributesPositive & Attributes.GetAttributeIndex(attribute)) > 0;
+	}
+
+	public void addAttributeNegative(Attributes attribute)
+	{
+		attributesNegative |= Attributes.GetAttributeIndex(attribute);
+	}
+
+	public boolean isAttributeNegativeSet(Attributes attribute)
+	{
+		return (attributesNegative & Attributes.GetAttributeIndex(attribute)) > 0;
+	}
+
 	/*
 	 * Overrides
 	 */
-	
-	
-	 @Override
-	 public int compareTo(Cache c2) 
-	 {
-	   	float dist1 = this.CachedDistance();
-	   	float dist2 = c2.CachedDistance();
-	    return (dist1 < dist2 ? -1 : (dist1 == dist2 ? 0 : 1));
-	 }
-    
 
-    
+	@Override
+	public int compareTo(Cache c2)
+	{
+		float dist1 = this.CachedDistance();
+		float dist2 = c2.CachedDistance();
+		return (dist1 < dist2 ? -1 : (dist1 == dist2 ? 0 : 1));
+	}
+
+	public void setAttributesPositive(int i)
+	{
+		attributesPositive = i;
+	}
+
+	public void setAttributesNegative(int i)
+	{
+		attributesNegative = i;
+	}
+
+	public long getAttributesNegative()
+	{
+		if (this.attributesNegative == 0)
+		{
+			CoreCursor c = Database.Data.rawQuery("select AttributesNegative from Caches where Id=?", new String[]
+				{ String.valueOf(this.Id) });
+			c.moveToFirst();
+			while (c.isAfterLast() == false)
+			{
+				if (!c.isNull(0)) this.attributesNegative = c.getLong(0);
+				else
+					this.attributesNegative = 0;
+				break;
+			}
+			;
+			c.close();
+		}
+		return this.attributesNegative;
+	}
+
+	public long getAttributesPositive()
+	{
+		if (this.attributesPositive == 0)
+		{
+			CoreCursor c = Database.Data.rawQuery("select AttributesPositive from Caches where Id=?", new String[]
+				{ String.valueOf(this.Id) });
+			c.moveToFirst();
+			while (c.isAfterLast() == false)
+			{
+				if (!c.isNull(0)) this.attributesPositive = c.getLong(0);
+				else
+					this.attributesPositive = 0;
+				break;
+			}
+			;
+			c.close();
+		}
+		return this.attributesPositive;
+	}
+	
+	
+	private ArrayList<Attributes> AttributeList=null;
+	
+	public ArrayList<Attributes> getAttributes()
+	{
+		if(AttributeList==null)
+		{
+			AttributeList= Attributes.getAttributes(this.getAttributesPositive(),
+					this.getAttributesNegative());
+		}
+		
+		
+		
+		return AttributeList;
+	}
+
+	
 }

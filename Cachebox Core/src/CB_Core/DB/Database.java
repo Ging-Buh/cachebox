@@ -520,43 +520,7 @@ public class Database
         return (float)dist[0];
     }
 
-    public static long AttributesPositive(Cache cache)
-    {
-    	if (cache.attributesPositive == 0)
-    	{
-            CoreCursor c = Database.Data.rawQuery("select AttributesPositive from Caches where Id=?", new String[] { String.valueOf(cache.Id) });
-            c.moveToFirst();
-            while(c.isAfterLast() == false)
-            {
-            	if (!c.isNull(0))
-            		cache.attributesPositive = c.getLong(0);
-            	else
-            		cache.attributesPositive = 0;
-                break;
-            };
-            c.close();
-    	}
-    	return cache.attributesPositive;
-    }
-    
-    public static long AttributesNegative(Cache cache)
-    {
-    	if (cache.attributesNegative == 0)
-    	{
-            CoreCursor c = Database.Data.rawQuery("select AttributesNegative from Caches where Id=?", new String[] { String.valueOf(cache.Id) });
-            c.moveToFirst();
-            while(c.isAfterLast() == false)
-            {
-            	if (!c.isNull(0))
-            		cache.attributesNegative = c.getLong(0);
-            	else
-            		cache.attributesNegative = 0;
-                break;
-            };
-            c.close();
-    	}
-    	return cache.attributesNegative;
-    }
+   
 	
     public void GPXFilenameUpdateCacheCount()
     {

@@ -1,7 +1,6 @@
 package de.droidcachebox.Views.FilterSettings;
 
 import java.util.ArrayList;
-import CB_Core.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
@@ -34,8 +33,7 @@ public class FilterSetListViewItem extends View
 
 	private static TextPaint textPaint;
 
-	public FilterSetListViewItem(Context context, FilterSetEntry fne,
-			Boolean BackColorId)
+	public FilterSetListViewItem(Context context, FilterSetEntry fne, Boolean BackColorId)
 	{
 		super(context);
 		mContext = context;
@@ -68,8 +66,7 @@ public class FilterSetListViewItem extends View
 	{
 		if (mChildList != null && mChildList.size() > 0)
 		{
-			int newState = (mChildList.get(0).getVisibility() == View.VISIBLE) ? View.GONE
-					: View.VISIBLE;
+			int newState = (mChildList.get(0).getVisibility() == View.VISIBLE) ? View.GONE : View.VISIBLE;
 
 			for (FilterSetListViewItem tmp : mChildList)
 			{
@@ -114,11 +111,8 @@ public class FilterSetListViewItem extends View
 		TextPaint.setTextSize((float) (Sizes.getScaledFontSize_big()));
 		TextPaint.setColor(Global.getColor(R.attr.TextColor));
 
-		int innerWidth = width - (Sizes.getCornerSize() * 2)
-				- Sizes.getIconSize();
-		layoutEntryName = new StaticLayout(mFilterSetEntry.getName(),
-				textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f,
-				false);
+		int innerWidth = width - (Sizes.getCornerSize() * 4) - (Sizes.getIconSize() * 2);
+		layoutEntryName = new StaticLayout(mFilterSetEntry.getName(), textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 
 		textPaint.setColor(Global.getColor(R.attr.TextColor));
 
@@ -127,23 +121,17 @@ public class FilterSetListViewItem extends View
 
 		if (BackColorChanger)
 		{
-			BackgroundColor = (selected) ? Global
-					.getColor(R.attr.ListBackground_select) : Global
-					.getColor(R.attr.ListBackground);
+			BackgroundColor = (selected) ? Global.getColor(R.attr.ListBackground_select) : Global.getColor(R.attr.ListBackground);
 		}
 		else
 		{
-			BackgroundColor = (selected) ? Global
-					.getColor(R.attr.ListBackground_select) : Global
-					.getColor(R.attr.ListBackground_secend);
+			BackgroundColor = (selected) ? Global.getColor(R.attr.ListBackground_select) : Global.getColor(R.attr.ListBackground_secend);
 		}
 
 		if (this.mFilterSetEntry.getItemType() != FilterSetListView.COLLABSE_BUTTON_ITEM)
 		{
-			ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(5, 5,
-					width - 5, height - 5), 2, Global
-					.getColor(R.attr.ListSeparator), BackgroundColor, Sizes
-					.getCornerSize());
+			ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(5, 5, width - 5, height - 5), 2,
+					Global.getColor(R.attr.ListSeparator), BackgroundColor, Sizes.getCornerSize());
 		}
 
 		switch (this.mFilterSetEntry.getItemType())
@@ -162,13 +150,18 @@ public class FilterSetListViewItem extends View
 			break;
 		}
 		// draw Name
-		left += ActivityUtils.drawStaticLayout(canvas, layoutEntryName, left+10,
-				top+10);
+		if (this.mFilterSetEntry.getItemType() == FilterSetListView.THREE_STATE_ITEM)
+		{
+			left += ActivityUtils.drawStaticLayout(canvas, layoutEntryName, left - 20, top);
+		}
+		else
+		{
+			left += ActivityUtils.drawStaticLayout(canvas, layoutEntryName, left + 10, top + 10);
+		}
 
 		if (this.mFilterSetEntry.getItemType() == FilterSetListView.NUMERICK_ITEM)
 		{
-			canvas.drawText(String.valueOf(this.mFilterSetEntry.getNumState()),
-					(float) (width / 1.5), (float) (height / 1.8), TextPaint);
+			canvas.drawText(String.valueOf(this.mFilterSetEntry.getNumState()), (float) (width / 1.5), (float) (height / 1.8), TextPaint);
 		}
 
 	}
@@ -181,12 +174,11 @@ public class FilterSetListViewItem extends View
 	private void drawCollabseButtonItem(Canvas canvas)
 	{
 
-		btnBack = mRes.getDrawable(main.N ? R.drawable.night_btn_default_normal
-				: R.drawable.day_btn_default_normal);
-		
+		btnBack = mRes.getDrawable(main.N ? R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal);
+
 		Rect bounds = new Rect(3, 7, width - 3, height);
 		btnBack.setBounds(bounds);
-		
+
 		btnBack.draw(canvas);
 
 	}
@@ -235,11 +227,8 @@ public class FilterSetListViewItem extends View
 	private void drawNumerickItem(Canvas canvas)
 	{
 
-		plusBtn = mRes.getDrawable(main.N ? R.drawable.night_btn_default_normal
-				: R.drawable.day_btn_default_normal);
-		minusBtn = mRes
-				.getDrawable(main.N ? R.drawable.night_btn_default_normal
-						: R.drawable.day_btn_default_normal);
+		plusBtn = mRes.getDrawable(main.N ? R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal);
+		minusBtn = mRes.getDrawable(main.N ? R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal);
 
 		lBounds = new Rect(7, 7, height, height - 7);
 		minusBtn.setBounds(lBounds);
@@ -253,10 +242,8 @@ public class FilterSetListViewItem extends View
 		mTextPaint.setAntiAlias(true);
 		mTextPaint.setFakeBoldText(true);
 
-		layoutMinus = new StaticLayout("-", mTextPaint, height - 7,
-				Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
-		layoutPlus = new StaticLayout("+", mTextPaint, height - 7,
-				Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
+		layoutMinus = new StaticLayout("-", mTextPaint, height - 7, Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
+		layoutPlus = new StaticLayout("+", mTextPaint, height - 7, Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
 
 		// draw [-] Button
 		minusBtn.draw(canvas);
@@ -266,16 +253,13 @@ public class FilterSetListViewItem extends View
 
 		// draw +/- on Button
 		ActivityUtils.drawStaticLayout(canvas, layoutMinus, 4, top - 3);
-		ActivityUtils.drawStaticLayout(canvas, layoutPlus, width - 5 - height,
-				top);
+		ActivityUtils.drawStaticLayout(canvas, layoutPlus, width - 5 - height, top);
 
 		left += minusBtn.getBounds().width() + minusBtn.getBounds().left;
 
 		if (mFilterSetEntry.getIcon() != null)
 		{
-			ActivityUtils.PutImageTargetHeight(canvas,
-					mFilterSetEntry.getIcon(), left, top,
-					Sizes.getIconSize() / 2);
+			ActivityUtils.PutImageTargetHeight(canvas, mFilterSetEntry.getIcon(), left, top, Sizes.getIconSize() / 2);
 			top += Sizes.getIconSize() / 1.5;
 		}
 
@@ -283,10 +267,8 @@ public class FilterSetListViewItem extends View
 
 	private void drawIcon(Canvas canvas)
 	{
-		if (mFilterSetEntry.getIcon() != null) left += ActivityUtils
-				.PutImageTargetHeight(canvas, mFilterSetEntry.getIcon(), left,
-						top, Sizes.getIconSize())
-				+ Sizes.getIconSize() / 2;
+		if (mFilterSetEntry.getIcon() != null) left += ActivityUtils.PutImageTargetHeight(canvas, mFilterSetEntry.getIcon(), left, top,
+				Sizes.getIconSize()) + Sizes.getIconSize() / 2;
 
 	}
 
@@ -300,12 +282,10 @@ public class FilterSetListViewItem extends View
 																				// bounds
 			int halfSize = rBounds.width() / 4;
 			int corrRecSize = (rBounds.width() - rBounds.height()) / 2;
-			rChkBounds = new Rect(rBounds.left + halfSize, rBounds.top
-					+ halfSize - corrRecSize, rBounds.right - halfSize,
-					rBounds.bottom - halfSize + corrRecSize);
+			rChkBounds = new Rect(rBounds.left + halfSize, rBounds.top + halfSize - corrRecSize, rBounds.right - halfSize, rBounds.bottom
+					- halfSize + corrRecSize);
 		}
-		ActivityUtils.drawFillRoundRecWithBorder(canvas, rChkBounds, 3,
-				Global.getColor(R.attr.ListSeparator), BackgroundColor,
+		ActivityUtils.drawFillRoundRecWithBorder(canvas, rChkBounds, 3, Global.getColor(R.attr.ListSeparator), BackgroundColor,
 				Sizes.getCornerSize());
 	}
 

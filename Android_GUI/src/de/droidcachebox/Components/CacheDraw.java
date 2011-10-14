@@ -211,7 +211,7 @@ public class CacheDraw
 			// backPaint.setColor(Color.RED); //DEBUG
 
 			canvas.drawRect(new Rect(left + VoteWidth + Sizes.getIconSize() + 5, SDTImageTop, nameLayoutWidthRightBorder + left + VoteWidth
-					+ Sizes.getIconSize() + 5, top + LayoutHeight + VislinesHeight - 4), backPaint);
+					+ Sizes.getIconSize() + 5, top + LayoutHeight + VislinesHeight - 6), backPaint);
 		}
 
 		// Draw owner and Last Found
@@ -263,14 +263,14 @@ public class CacheDraw
 		SDTleft += Sizes.getSpaceWidth();
 		SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int) (cache.Terrain * 2)], SDTleft, SDTImageTop,
 				Sizes.getScaledFontSize_normal());
-		SDTleft += Sizes.getTabWidth();
+		SDTleft += Sizes.getSpaceWidth();
 
 		// Draw TB
 		int numTb = cache.NumTravelbugs;
 		if (numTb > 0)
 		{
 			SDTleft += ActivityUtils.PutImageScale(canvas, Global.Icons[0], -90, SDTleft, SDTImageTop - 1,
-					(double) Sizes.getScaledFontSize_normal() / 30);
+					(double) Sizes.getScaledFontSize_normal() / 22);
 			// SDTleft += space;
 			if (numTb > 1) canvas.drawText("x" + String.valueOf(numTb), SDTleft, SDTLineTop, DTPaint);
 		}
