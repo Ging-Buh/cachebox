@@ -263,7 +263,6 @@ public class Cache implements Comparable<Cache>
 
 	private static String gcLogin = null;
 
-	
 	public boolean ImTheOwner()
 	{
 		if (myCache == 0) return false;
@@ -312,7 +311,7 @@ public class Cache implements Comparable<Cache>
 		{
 			if (wp.Type == CacheTypes.Final)
 			{
-				x = true;
+				if (!(wp.Latitude() == 0 && wp.Longitude() == 0)) x = true;
 			}
 		}
 		;
@@ -588,22 +587,17 @@ public class Cache implements Comparable<Cache>
 		}
 		return this.attributesPositive;
 	}
-	
-	
-	private ArrayList<Attributes> AttributeList=null;
-	
+
+	private ArrayList<Attributes> AttributeList = null;
+
 	public ArrayList<Attributes> getAttributes()
 	{
-		if(AttributeList==null)
+		if (AttributeList == null)
 		{
-			AttributeList= Attributes.getAttributes(this.getAttributesPositive(),
-					this.getAttributesNegative());
+			AttributeList = Attributes.getAttributes(this.getAttributesPositive(), this.getAttributesNegative());
 		}
-		
-		
-		
+
 		return AttributeList;
 	}
 
-	
 }

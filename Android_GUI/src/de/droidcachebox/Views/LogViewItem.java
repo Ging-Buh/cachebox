@@ -9,6 +9,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -123,6 +124,7 @@ public class LogViewItem extends View {
     
     // static Member
     public static Paint Linepaint;
+    public static Paint KopfPaint;
     public static Paint NamePaint;
     private static int headHeight;
     private static int headLinePos;
@@ -144,6 +146,9 @@ public class LogViewItem extends View {
     	   Linepaint = new Paint();
            Linepaint.setAntiAlias(true);
            Linepaint.setColor(Global.getColor(R.attr.ListSeparator));
+           KopfPaint = new Paint();
+           KopfPaint.setAntiAlias(true);
+           KopfPaint.setColor(Global.getColor(R.attr.EmptyBackground));
        }
        if (NamePaint==null)
        {
@@ -166,10 +171,13 @@ public class LogViewItem extends View {
        
       
        // Kopfzeile
-       final Rect KopfRect = new Rect(5, 5, width-5, headHeight);;
+       
+      
+       
+       final Rect KopfRect = new Rect(6, 6, width-6, headHeight);;
        final RectF KopfRectF = new RectF(KopfRect);
-       canvas.drawRoundRect( KopfRectF,Sizes.getCornerSize(),Sizes.getCornerSize(), Linepaint);
-       canvas.drawRect(new Rect(5, headHeight-Sizes.getCornerSize(), width-5, headHeight), Linepaint);
+       canvas.drawRoundRect( KopfRectF,Sizes.getCornerSize(),Sizes.getCornerSize(), KopfPaint);
+       canvas.drawRect(new Rect(6, headHeight-Sizes.getCornerSize(), width-6, headHeight), KopfPaint);
        
        int space = (logEntry.TypeIcon >= 0) ? ActivityUtils.PutImageTargetHeight(canvas, Global.LogIcons[logEntry.TypeIcon],Sizes.getHalfCornerSize(), 8, headHeight-10) + 4 : 0;
 
@@ -183,8 +191,8 @@ public class LogViewItem extends View {
        canvas.drawText(dateString, width - DateLength-10, headLinePos, NamePaint);
       
        
-       canvas.drawLine(5, headHeight - 2, width-5, headHeight - 2,Linepaint); 
-       canvas.drawLine(5, headHeight - 3, width-5, headHeight - 3,Linepaint);
+//       canvas.drawLine(5, headHeight - 2, width-5, headHeight - 2,Linepaint); 
+//       canvas.drawLine(5, headHeight - 3, width-5, headHeight - 3,Linepaint);
        
        
        // Körper

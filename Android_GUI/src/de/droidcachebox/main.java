@@ -221,16 +221,16 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private CacheNameView cacheNameView;
 
 	private ArrayList<View> ViewList = new ArrayList<View>();
-	private int lastBtnDBView = 1;
-	private int lastBtnCacheView = 4;
-	private int lastBtnNavView = 0;
-	private int lastBtnToolsView = -1;
-	private int lastBtnMiscView = 11;
-	ArrayList<Integer> btnDBActionIds;
-	ArrayList<Integer> btnCacheActionIds;
-	ArrayList<Integer> btnNavActionIds;
-	ArrayList<Integer> btnToolsActionIds;
-	ArrayList<Integer> btnMiscActionIds;
+	// private int lastBtnDBView = 1;
+	// private int lastBtnCacheView = 4;
+	// private int lastBtnNavView = 0;
+	// private int lastBtnToolsView = -1;
+	// private int lastBtnMiscView = 11;
+	// ArrayList<Integer> btnDBActionIds;
+	// ArrayList<Integer> btnCacheActionIds;
+	// ArrayList<Integer> btnNavActionIds;
+	// ArrayList<Integer> btnToolsActionIds;
+	// ArrayList<Integer> btnMiscActionIds;
 
 	// Powermanager
 	protected PowerManager.WakeLock mWakeLock;
@@ -1071,27 +1071,27 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		{
 			if (v == buttonDB)
 			{
-				showView(lastBtnDBView);
+				showView(1);
 			}
 
 			else if (v == buttonCache)
 			{
-				showView(lastBtnCacheView);
+				showView(4);
 			}
 
 			else if (v == buttonNav)
 			{
-				showView(lastBtnNavView);
+				showView(0);
 			}
 
 			else if (v == buttonTools)
 			{
-				showView(lastBtnToolsView);
+				// showView();
 			}
 
 			else if (v == buttonMisc)
 			{
-				showView(lastBtnMiscView);
+				showView(11);
 			}
 		}
 	};
@@ -1121,8 +1121,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	public void showView(Integer ID)
 	{
 		if (ID == -1) return;// keine Action
-		
-		if(!(aktView==null) && ID == aktViewId)
+
+		if (!(aktView == null) && ID == aktViewId)
 		{
 			aktView.OnShow();
 			return;
@@ -1210,33 +1210,6 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		{
 			showView((ViewOptionsMenu) ViewList.get(ID), ID);
 
-		}
-
-		// zuordnung zur letzten aktion
-		if (btnDBActionIds.contains(ID))
-		{
-			lastBtnDBView = ID;
-			return;
-		}
-		if (btnCacheActionIds.contains(ID))
-		{
-			lastBtnCacheView = ID;
-			return;
-		}
-		if (btnNavActionIds.contains(ID))
-		{
-			lastBtnNavView = ID;
-			return;
-		}
-		if (btnToolsActionIds.contains(ID))
-		{
-			lastBtnToolsView = ID;
-			return;
-		}
-		if (btnMiscActionIds.contains(ID))
-		{
-			lastBtnMiscView = ID;
-			return;
 		}
 
 	}
@@ -1555,7 +1528,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 	private void findViewsById()
 	{
-		
+
 		TopLayout = (LinearLayout) this.findViewById(R.id.layoutTop);
 		frame = (FrameLayout) this.findViewById(R.id.layoutContent);
 		InfoDownSlider = (downSlider) this.findViewById(R.id.downSlider);
@@ -1689,41 +1662,6 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 		registerForContextMenu(buttonMisc);
 		this.buttonMisc.setOnClickListener(ButtonOnClick);
-
-		/*
-		 * action ID übersicht Views: mapView // ID 0 cacheListView // ID 1
-		 * waypointView // ID 2 logView // ID 3 descriptionView // ID 4
-		 * spoilerView // ID 5 notesView // ID 6 solverView // ID 7 compassView
-		 * // ID 8 fieldNotesView // ID 9 TestEmpty // ID 10 jokerView // ID 12
-		 * Activitys: filterSettings // ID 101 Settings // ID 102
-		 */
-
-		btnDBActionIds = new ArrayList<Integer>();
-		btnDBActionIds.add(1); // cacheListView
-		// btnDBActionIds.add(101); //filterSettings
-
-		btnCacheActionIds = new ArrayList<Integer>();
-		btnCacheActionIds.add(4); // descriptionView
-		btnCacheActionIds.add(2); // waypointView
-		btnCacheActionIds.add(6); // notesView
-		btnCacheActionIds.add(7); // solverView
-
-		btnNavActionIds = new ArrayList<Integer>();
-		btnNavActionIds.add(0); // mapView
-		btnNavActionIds.add(8); // compassView
-
-		btnToolsActionIds = new ArrayList<Integer>();
-		// der button hat keine Eindeutige Funktion mehr
-		// nur noch ein ContextMenu über LongPress
-
-		/*
-		 * btnToolsActionIds.add(3); //logView btnToolsActionIds.add(5);
-		 * //SpoilerView btnToolsActionIds.add(9); //fieldNotesView
-		 * btnToolsActionIds.add(12); //jokerView
-		 */
-		btnMiscActionIds = new ArrayList<Integer>();
-		// btnMiscActionIds.add(102); //Settings
-		btnMiscActionIds.add(11); // About
 
 	}
 
@@ -2046,13 +1984,13 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				lon = GlobalCore.SelectedWaypoint().Longitude();
 			}
 
-/*			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + lat + "," + lon));
-			if (intent != null) {
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-				this.startActivity(intent);
-				
-			}*/
-			
+			/*
+			 * Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" +
+			 * lat + "," + lon)); if (intent != null) {
+			 * intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+			 * this.startActivity(intent); }
+			 */
+
 			Intent implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + lat + "," + lon));
 			if (implicitIntent != null) startActivity(implicitIntent);
 		}

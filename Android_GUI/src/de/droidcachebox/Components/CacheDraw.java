@@ -136,7 +136,7 @@ public class CacheDraw
 
 			VoteWidth = Sizes.getScaledFontSize_normal() / 2;
 
-			rightBorder = (int) (height * 0.7);
+			rightBorder = (int) (width * 0.15);
 			nameLayoutWidthRightBorder = width - VoteWidth - Sizes.getIconSize() - rightBorder - (Sizes.getScaledFontSize_normal() / 2);
 			nameLayoutWidth = width - VoteWidth - Sizes.getIconSize() - (Sizes.getScaledFontSize_normal() / 2);
 			DTPaint = new Paint();

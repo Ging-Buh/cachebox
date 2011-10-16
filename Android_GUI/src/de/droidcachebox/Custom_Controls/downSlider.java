@@ -32,6 +32,7 @@ import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.AboutView;
 import CB_Core.Config;
+import CB_Core.Enums.Attributes;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 
@@ -60,8 +61,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
-public final class downSlider extends View implements SelectedCacheEvent,
-		GpsStateChangeEvent
+public final class downSlider extends View implements SelectedCacheEvent, GpsStateChangeEvent
 {
 
 	public downSlider(Context context)
@@ -74,8 +74,7 @@ public final class downSlider extends View implements SelectedCacheEvent,
 		super(context, attrs);
 		SelectedCacheEventList.Add(this);
 
-		mGestureDetector = new GestureDetector(context,
-				new LearnGestureListener());
+		mGestureDetector = new GestureDetector(context, new LearnGestureListener());
 
 		this.setOnTouchListener(myTouchListner);
 
@@ -107,6 +106,10 @@ public final class downSlider extends View implements SelectedCacheEvent,
 	private int GPSInfoHeight = 0;
 	private static int QuickButtonHeight;
 	private int QuickButtonMaxHeight;
+	private int attHeight = -1;
+	int attCompleadHeight = 0;
+	int topCalc=-1;
+	int attLineHeight=-1;
 
 	private static downSlider Me;
 
@@ -185,8 +188,7 @@ public final class downSlider extends View implements SelectedCacheEvent,
 				if (drag)
 				{
 					int value = Y - 25;// y - 25 minus halbe Button Höhe
-					int buttom = (int) (height - (Sizes
-							.getScaledFontSize_normal() * 2.2));
+					int buttom = (int) (height - (Sizes.getScaledFontSize_normal() * 2.2));
 					if (value > buttom) value = buttom - 1;
 
 					setPos(value);
@@ -225,8 +227,7 @@ public final class downSlider extends View implements SelectedCacheEvent,
 		 */
 		if (!isInitial)
 		{
-			if (Config.GetBool("quickButtonShow")
-					&& Config.GetBool("quickButtonLastShow"))
+			if (Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow"))
 			{
 				setPos(QuickButtonMaxHeight);
 			}
@@ -239,15 +240,12 @@ public final class downSlider extends View implements SelectedCacheEvent,
 
 		if (!drag && !AnimationIsRunning && !ButtonDrag)
 		{
-			yPos = QuickButtonHeight = Config.GetBool("quickButtonShow") ? main
-					.getQuickButtonHeight() : 0;
+			yPos = QuickButtonHeight = Config.GetBool("quickButtonShow") ? main.getQuickButtonHeight() : 0;
 			// Toast.makeText(main.mainActivity, "!drag to" +
 			// String.valueOf(yPos), Toast.LENGTH_SHORT).show();
 		}
 
 		int FSize = (int) (Sizes.getScaledFontSize_normal() * 1.2);
-
-		if (CacheInfoHeight == 0) CacheInfoHeight = (int) (FSize * 8.3);
 
 		if (paint == null)
 		{
@@ -259,8 +257,7 @@ public final class downSlider extends View implements SelectedCacheEvent,
 
 		final Drawable Slide = Global.BtnIcons[0];
 
-		mBtnRec.set(-10, yPos - 2, width + 10,
-				(int) (yPos + 2 + Sizes.getScaledFontSize_normal() * 2.2));
+		mBtnRec.set(-10, yPos - 2, width + 10, (int) (yPos + 2 + Sizes.getScaledFontSize_normal() * 2.2));
 		Slide.setBounds(mBtnRec);
 		Slide.draw(canvas);
 
@@ -277,11 +274,9 @@ public final class downSlider extends View implements SelectedCacheEvent,
 		if (mCache == null) return;
 
 		// Draw Slide Icons
-		final Drawable SlideIcon = (QuickButtonHeight > 0) ? Global.Icons[41]
-				: Global.Icons[40];
+		final Drawable SlideIcon = (QuickButtonHeight > 0) ? Global.Icons[41] : Global.Icons[40];
 		Rect SlideIconRec = new Rect(mBtnRec);
-		SlideIconRec.set(SlideIconRec.left + 10, SlideIconRec.top,
-				SlideIconRec.height(), SlideIconRec.bottom);
+		SlideIconRec.set(SlideIconRec.left + 10, SlideIconRec.top, SlideIconRec.height(), SlideIconRec.bottom);
 		SlideIcon.setBounds(SlideIconRec);
 		SlideIcon.draw(canvas);
 
@@ -290,8 +285,7 @@ public final class downSlider extends View implements SelectedCacheEvent,
 		SlideIcon.draw(canvas);
 
 		// draw Cache Name
-		canvas.drawText(mCache.Name, 20 + SlideIconRec.width(), yPos
-				+ (FSize + (FSize / 3)), paint);
+		canvas.drawText(mCache.Name, 20 + SlideIconRec.width(), yPos + (FSize + (FSize / 3)), paint);
 
 		// Draw only is visible
 		if (Config.GetBool("quickButtonShow"))
@@ -324,18 +318,60 @@ public final class downSlider extends View implements SelectedCacheEvent,
 		// canvas.clipRect(mBackRec);
 
 		// draw Cache Info
+
+		Iterator<Attributes> iterator = mCache.getAttributes().iterator();
+		int lines = 0;
+		if (iterator != null && iterator.hasNext())
+		{
+			if (attHeight == -1) attHeight = (int) (Sizes.getIconSize() * 0.75);
+
+			lines = 1 + (mCache.getAttributes().size() / 8);
+			attCompleadHeight = (int) (lines * attHeight * 1.3);
+
+		}
+		
+		if (attLineHeight==-1)attLineHeight = attHeight + (Sizes.getScaledFontSize_normal() / 3);
+		
+		if (CacheInfoHeight == 0)
+		{
+			CacheInfoHeight = (int) (FSize * 8.3) + attCompleadHeight;
+			topCalc=(int) (CacheInfoHeight - (attLineHeight * lines) - attLineHeight + Sizes.getScaledFontSize_normal());
+		}
+
 		versatz += CacheInfoHeight;
 		canvas.translate(5, -versatz);
-		CacheDraw.DrawInfo(
-				mCache,
-				canvas,
-				width - 10,
-				CacheInfoHeight,
-				WPisDraw ? Global.getColor(R.attr.ListBackground) : Global
-						.getColor(R.attr.ListBackground_select),
+		CacheDraw.DrawInfo(mCache, canvas, width - 10, CacheInfoHeight,
+				WPisDraw ? Global.getColor(R.attr.ListBackground) : Global.getColor(R.attr.ListBackground_select),
 				DrawStyle.withOwnerAndName);
+
+		// draw Attributes
+
+		int left = 8;
+		
+		int top = topCalc;
+		if (iterator != null && iterator.hasNext())
+		{
+			int i = 0;
+			do
+			{
+				Attributes att = iterator.next();
+				String uri = "drawable/" + att.getImageName();
+
+				int imageResource = getResources().getIdentifier(uri, null, main.mainActivity.getPackageName());
+				Drawable image = getResources().getDrawable(imageResource);
+
+				left += ActivityUtils.PutImageTargetHeight(canvas, image, left, top, attHeight) + 3;
+				i++;
+				if (i % 8 == 0 && i > 7)
+				{
+					left = 8;
+					top += attLineHeight;
+				}
+			}
+			while (iterator.hasNext());
+
+		}
 		canvas.translate(0, +versatz);
-		// canvas.clipRect(mBackRec);
 	}
 
 	private Boolean drawWPInfo(Canvas canvas)
@@ -344,27 +380,22 @@ public final class downSlider extends View implements SelectedCacheEvent,
 
 		int LineColor = Global.getColor(R.attr.ListSeparator);
 		Rect DrawingRec = new Rect(5, 5, width - 5, WPInfoHeight - 5);
-		ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2,
-				LineColor, Global.getColor(R.attr.ListBackground_select));
+		ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, Global.getColor(R.attr.ListBackground_select));
 
 		int left = 15;
 		int top = LineSep * 2;
 
 		int iconWidth = 0;
 		// draw icon
-		if (((int) mWaypoint.Type.ordinal()) < Global.CacheIconsBig.length) iconWidth = ActivityUtils
-				.PutImageTargetHeight(canvas,
-						Global.CacheIconsBig[(int) mWaypoint.Type.ordinal()],
-						Sizes.getHalfCornerSize(), Sizes.getCornerSize(),
-						imgSize);
+		if (((int) mWaypoint.Type.ordinal()) < Global.CacheIconsBig.length) iconWidth = ActivityUtils.PutImageTargetHeight(canvas,
+				Global.CacheIconsBig[(int) mWaypoint.Type.ordinal()], Sizes.getHalfCornerSize(), Sizes.getCornerSize(), imgSize);
 
 		// draw Text info
 		left += iconWidth;
 		top += ActivityUtils.drawStaticLayout(canvas, WPLayoutName, left, top);
 		top += ActivityUtils.drawStaticLayout(canvas, WPLayoutDesc, left, top);
 		top += ActivityUtils.drawStaticLayout(canvas, WPLayoutCord, left, top);
-		if (mWaypoint.Clue != null) ActivityUtils.drawStaticLayout(canvas,
-				WPLayoutClue, left, top);
+		if (mWaypoint.Clue != null) ActivityUtils.drawStaticLayout(canvas, WPLayoutClue, left, top);
 
 		return true;
 	}
@@ -375,13 +406,11 @@ public final class downSlider extends View implements SelectedCacheEvent,
 
 		int LineColor = Global.getColor(R.attr.ListSeparator);
 		Rect DrawingRec = new Rect(5, 5, width - 5, GPSInfoHeight - 5);
-		ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2,
-				LineColor, Global.getColor(R.attr.ListBackground));
+		ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, Global.getColor(R.attr.ListBackground));
 
 		main.setSatStrength();
 
-		Bitmap b = Bitmap.createBitmap(main.strengthLayout.getMeasuredWidth(),
-				main.strengthLayout.getMeasuredHeight(),
+		Bitmap b = Bitmap.createBitmap(main.strengthLayout.getMeasuredWidth(), main.strengthLayout.getMeasuredHeight(),
 				Bitmap.Config.ARGB_8888);
 		Canvas c = new Canvas(b);
 		main.strengthLayout.draw(c);
@@ -396,9 +425,7 @@ public final class downSlider extends View implements SelectedCacheEvent,
 
 		int iconWidth = 0;
 		// draw icon
-		iconWidth = ActivityUtils.PutImageTargetHeight(canvas,
-				Global.Icons[30], Sizes.getHalfCornerSize(),
-				Sizes.getCornerSize(), imgSize);
+		iconWidth = ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[30], Sizes.getHalfCornerSize(), Sizes.getCornerSize(), imgSize);
 
 		// draw Text info
 		left += iconWidth;
@@ -459,8 +486,7 @@ public final class downSlider extends View implements SelectedCacheEvent,
 		}
 
 		// chk if info Visible then update info
-		int InfoBeginnAt = Config.GetBool("quickButtonShow") ? QuickButtonMaxHeight
-				: 0;
+		int InfoBeginnAt = Config.GetBool("quickButtonShow") ? QuickButtonMaxHeight : 0;
 		if (yPos > InfoBeginnAt)
 		{
 			if (!isVisible) startUpdateTimer();
@@ -566,8 +592,7 @@ public final class downSlider extends View implements SelectedCacheEvent,
 			}
 			else
 			{
-				startAnimationTo((int) (height - (Sizes
-						.getScaledFontSize_normal() * 2.2)));
+				startAnimationTo((int) (height - (Sizes.getScaledFontSize_normal() * 2.2)));
 			}
 			swipeUp = swipeDown = false;
 
@@ -576,8 +601,7 @@ public final class downSlider extends View implements SelectedCacheEvent,
 		{
 			if (yPos > height * 0.7)
 			{
-				startAnimationTo((int) (height - (Sizes
-						.getScaledFontSize_normal() * 2.2)));
+				startAnimationTo((int) (height - (Sizes.getScaledFontSize_normal() * 2.2)));
 			}
 			else
 			{
@@ -600,6 +624,11 @@ public final class downSlider extends View implements SelectedCacheEvent,
 		mCache = cache;
 		mWaypoint = waypoint;
 
+		attCompleadHeight = 0;
+		CacheInfoHeight = 0;
+		WPInfoHeight = 0;
+		topCalc=0;
+		
 		int TextWidth = this.width - this.imgSize;
 
 		Rect bounds = new Rect();
@@ -614,24 +643,16 @@ public final class downSlider extends View implements SelectedCacheEvent,
 			if (waypoint.Clue != null) Clue = waypoint.Clue;
 			WPLayoutTextPaint.setAntiAlias(true);
 			WPLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
-			WPLayoutCord = new StaticLayout(Global.FormatLatitudeDM(waypoint
-					.Latitude())
-					+ " / "
-					+ Global.FormatLongitudeDM(waypoint.Longitude()),
-					WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f,
-					0.0f, false);
-			WPLayoutDesc = new StaticLayout(waypoint.Description,
-					WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f,
-					0.0f, false);
-			WPLayoutClue = new StaticLayout(Clue, WPLayoutTextPaint, TextWidth,
-					Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+			WPLayoutCord = new StaticLayout(Global.FormatLatitudeDM(waypoint.Latitude()) + " / "
+					+ Global.FormatLongitudeDM(waypoint.Longitude()), WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f,
+					false);
+			WPLayoutDesc = new StaticLayout(waypoint.Description, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+			WPLayoutClue = new StaticLayout(Clue, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 			WPLayoutTextPaintBold = new TextPaint(WPLayoutTextPaint);
 			WPLayoutTextPaintBold.setFakeBoldText(true);
-			WPLayoutName = new StaticLayout(waypoint.GcCode + ": "
-					+ waypoint.Title, WPLayoutTextPaintBold, TextWidth,
+			WPLayoutName = new StaticLayout(waypoint.GcCode + ": " + waypoint.Title, WPLayoutTextPaintBold, TextWidth,
 					Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-			WPInfoHeight = (LineSep * 5) + WPLayoutCord.getHeight()
-					+ WPLayoutDesc.getHeight() + WPLayoutClue.getHeight()
+			WPInfoHeight = (LineSep * 5) + WPLayoutCord.getHeight() + WPLayoutDesc.getHeight() + WPLayoutClue.getHeight()
 					+ WPLayoutName.getHeight();
 		}
 
@@ -664,10 +685,8 @@ public final class downSlider extends View implements SelectedCacheEvent,
 		mLongitude = Global.FormatLongitudeDM(location.getLongitude());
 
 		String br = String.format("%n");
-		String Text = Global.Translations.Get("current") + " " + mLatitude
-				+ " " + mLongitude + br + Global.Translations.Get("alt") + " "
-				+ mAlt + br + Global.Translations.Get("accuracy") + "  +/- "
-				+ mAccuracy + "m" + br + Global.Translations.Get("sats") + " "
+		String Text = Global.Translations.Get("current") + " " + mLatitude + " " + mLongitude + br + Global.Translations.Get("alt") + " "
+				+ mAlt + br + Global.Translations.Get("accuracy") + "  +/- " + mAccuracy + "m" + br + Global.Translations.Get("sats") + " "
 				+ mSats;
 
 		if (GPSLayoutTextPaint == null)
@@ -679,17 +698,15 @@ public final class downSlider extends View implements SelectedCacheEvent,
 		}
 
 		int TextWidth = this.width - this.imgSize;
-		GPSLayout = new StaticLayout(Text, GPSLayoutTextPaint, TextWidth,
-				Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-		GPSInfoHeight = (mLatitude.equals("")) ? 0 : (LineSep * 4)
-				+ GPSLayout.getHeight();
+		GPSLayout = new StaticLayout(Text, GPSLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		GPSInfoHeight = (mLatitude.equals("")) ? 0 : (LineSep * 4) + GPSLayout.getHeight();
 
 		this.invalidate();
 	}
 
 	private boolean AnimationIsRunning = false;
-	private final int AnimationTime = 100;
-	private final double AnimationMulti = 2;
+	private final int AnimationTime = 50;
+	private final double AnimationMulti = 1.4;
 	private int AnimationDirection = -1;
 	private int AnimationTarget = 0;
 
@@ -788,8 +805,7 @@ public final class downSlider extends View implements SelectedCacheEvent,
 		}
 
 		@Override
-		public boolean onScroll(MotionEvent e1, MotionEvent e2,
-				float distanceX, float distanceY)
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
 		{
 			Log.d("onScroll", e1.toString());
 			return true;
@@ -803,8 +819,7 @@ public final class downSlider extends View implements SelectedCacheEvent,
 		}
 
 		@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-				float velocityY)
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
 		{
 			if (velocityY > 500)
 			{
