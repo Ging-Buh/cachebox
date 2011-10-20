@@ -1,6 +1,7 @@
 package CB_Core;
 
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.TranslationEngine.LangStrings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
@@ -16,6 +17,8 @@ public class GlobalCore
 	public static boolean ResortAtWork = false;
 	public static final int LatestDatabaseChange = 1017;
 	public static final int LatestDatabaseFieldNoteChange = 1001;
+
+	public static LangStrings Translations = new LangStrings();
 
 	private static Cache selectedCache = null;
 

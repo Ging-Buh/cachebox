@@ -36,6 +36,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.app.Activity;
+import CB_Core.GlobalCore;
 
 /**
  * Zeigt eine InputBox an, in welcher der Benutzer ein Int Wert eintragen kann.
@@ -61,7 +62,7 @@ public class NumerikInputBox extends android.app.Dialog
 	 * 
 	 *            <pre>
 	 * {@code
-	 *       	NumerickInputBox.Show(Global.Translations.Get("AdjustFinds"),Global.Translations.Get("TelMeFounds"),Config.GetInt("FoundOffset"), DialogListner);
+	 *       	NumerickInputBox.Show(GlobalCore.Translations.Get("AdjustFinds"),GlobalCore.Translations.Get("TelMeFounds"),Config.GetInt("FoundOffset"), DialogListner);
 	 *      	
 	 *      	protected static final  DialogInterface.OnClickListener  DialogListner = new  DialogInterface.OnClickListener() 
 	 * 	   { 
@@ -128,8 +129,8 @@ public class NumerikInputBox extends android.app.Dialog
 				activity);
 		customBuilder.setTitle(b.getString("title"))
 				.setMessage(b.getString("msg")).setValue(b.getInt("iniValue"))
-				.setPositiveButton(Global.Translations.Get("ok"), listner)
-				.setNegativeButton(Global.Translations.Get("cancel"), listner);
+				.setPositiveButton(GlobalCore.Translations.Get("ok"), listner)
+				.setNegativeButton(GlobalCore.Translations.Get("cancel"), listner);
 		dialog = customBuilder.create();
 
 		dialog.show();

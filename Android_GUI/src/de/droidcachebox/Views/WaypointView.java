@@ -354,7 +354,7 @@ public class WaypointView extends ListView implements ViewOptionsMenu
 			Intent coordIntent = new Intent().setClass(getContext(), projectionCoordinate.class);
 			Bundle b2 = new Bundle();
 			b2.putSerializable("Coord", coord2);
-			b2.putSerializable("Title", Global.Translations.Get("Projection"));
+			b2.putSerializable("Title", GlobalCore.Translations.Get("Projection"));
 			b2.putSerializable("Radius", false);
 			coordIntent.putExtras(b2);
 			main.mainActivity.startActivityForResult(coordIntent, 0);
@@ -382,7 +382,7 @@ public class WaypointView extends ListView implements ViewOptionsMenu
 				}
 			};
 
-			MessageBox.Show(Global.Translations.Get("?DelWP") + "\n\n[" + aktWaypoint.Title + "]", Global.Translations.Get("!DelWP"),
+			MessageBox.Show(GlobalCore.Translations.Get("?DelWP") + "\n\n[" + aktWaypoint.Title + "]", GlobalCore.Translations.Get("!DelWP"),
 					MessageBoxButtons.YesNo, MessageBoxIcon.Question, dialogClickListener);
 			break;
 		case R.id.menu_waypointview_gps:

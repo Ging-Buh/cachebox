@@ -82,7 +82,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu
 	{
 		String html = "</br>"
 
-		+ "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" " + Global.Translations.Get("GC_DownloadDescription")
+		+ "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" " + GlobalCore.Translations.Get("GC_DownloadDescription")
 				+ " \"></form>";
 
 		WebControl.loadDataWithBaseURL("fake://fake.de/download", html, "text/html", "utf-8", null);

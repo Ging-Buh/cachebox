@@ -19,6 +19,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import CB_Core.GlobalCore;
 
 /**
  * <h1>ProgressDialog</h1>
@@ -157,7 +158,7 @@ public class ProgressDialog extends Activity implements ProgressChangedEvent,Vie
 	
 		((TextView) this.findViewById(R.id.title)).setText(titleText);
 		CancelButton =(Button) this.findViewById(R.id.cancelButton);
-		CancelButton.setText(Global.Translations.Get("cancel"));
+		CancelButton.setText(GlobalCore.Translations.Get("cancel"));
 		CancelButton.setOnClickListener(new OnClickListener() 
 		{
 			

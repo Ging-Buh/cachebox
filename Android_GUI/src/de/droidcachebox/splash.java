@@ -125,7 +125,7 @@ public class splash extends Activity
 
 		try
 		{
-			Global.Translations.ReadTranslationsFile(Config.GetString("Sel_LanguagePath"));
+			GlobalCore.Translations.ReadTranslationsFile(Config.GetString("Sel_LanguagePath"));
 		}
 		catch (IOException e)
 		{
@@ -133,12 +133,12 @@ public class splash extends Activity
 			e.printStackTrace();
 		}
 
-		setProgressState(20, Global.Translations.Get("IniUI"));
+		setProgressState(20, GlobalCore.Translations.Get("IniUI"));
 		Sizes.initial(false, this);
 		Global.Paints.init(this);
 		Global.InitIcons(this);
 
-		setProgressState(40, Global.Translations.Get("LoadMapPack"));
+		setProgressState(40, GlobalCore.Translations.Get("LoadMapPack"));
 		File dir = new File(Config.GetString("MapPackFolder"));
 		String[] files = dir.list();
 		if (!(files == null))
@@ -158,7 +158,7 @@ public class splash extends Activity
 				}
 			}
 		}
-		setProgressState(60, Global.Translations.Get("LoadCaches"));
+		setProgressState(60, GlobalCore.Translations.Get("LoadCaches"));
 		if (Database.Data != null) Database.Data = null;
 
 		double lat = Config.GetDouble("MapInitLatitude");
@@ -196,7 +196,7 @@ public class splash extends Activity
 
 	private void Initial2()
 	{
-		setProgressState(62, Global.Translations.Get("LoadCaches") + FileIO.GetFileName(Config.GetString("DatabasePath")));
+		setProgressState(62, GlobalCore.Translations.Get("LoadCaches") + FileIO.GetFileName(Config.GetString("DatabasePath")));
 		String FilterString = Config.GetString("Filter");
 		Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(PresetListView.presets[0]) : new FilterProperties(
 				FilterString);

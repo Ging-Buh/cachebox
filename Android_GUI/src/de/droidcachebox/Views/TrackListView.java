@@ -302,13 +302,13 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 //		MessageBox.Show("Handle Track Delete");
 		if(selectedItem==null)
 		{
-			MessageBox.Show(Global.Translations.Get("NoTrackSelected"));
+			MessageBox.Show(GlobalCore.Translations.Get("NoTrackSelected"));
 			return;
 		}
 		
 		if (selectedItem.getRoute().IsActualTrack)
 		{
-			MessageBox.Show(Global.Translations.Get("IsActualTrack"));
+			MessageBox.Show(GlobalCore.Translations.Get("IsActualTrack"));
 			return;
 		}
 		
@@ -396,7 +396,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu {
 		Intent coordIntent = new Intent().setClass(getContext(), projectionCoordinate.class);
         Bundle b = new Bundle();
         b.putSerializable("Coord", coord);
-        b.putSerializable("Title", Global.Translations.Get("Projection"));
+        b.putSerializable("Title", GlobalCore.Translations.Get("Projection"));
         b.putSerializable("Radius", false);
         coordIntent.putExtras(b);
         parentActivity.startActivityForResult(coordIntent, 0);

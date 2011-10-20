@@ -55,6 +55,7 @@ import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.MapView;
 import de.droidcachebox.Views.Forms.SelectDB;
+import CB_Core.GlobalCore;
 
 public class SelectDB extends Activity
 {
@@ -113,8 +114,8 @@ public class SelectDB extends Activity
 			public void onClick(View v)
 			{
 				stopTimer();
-				StringInputBox.Show(Global.Translations.Get("NewDB"),
-						Global.Translations.Get("InsNewDBName"), "NewDB",
+				StringInputBox.Show(GlobalCore.Translations.Get("NewDB"),
+						GlobalCore.Translations.Get("InsNewDBName"), "NewDB",
 						DialogListnerNewDB, Me);
 			}
 		});
@@ -180,10 +181,10 @@ public class SelectDB extends Activity
 			}
 		});
 		// Translations
-		bNew.setText(Global.Translations.Get("NewDB"));
-		bSelect.setText(Global.Translations.Get("confirm"));
-		bCancel.setText(Global.Translations.Get("cancel"));
-		bAutostart.setText(Global.Translations.Get("StartWithoutSelection"));
+		bNew.setText(GlobalCore.Translations.Get("NewDB"));
+		bSelect.setText(GlobalCore.Translations.Get("confirm"));
+		bCancel.setText(GlobalCore.Translations.Get("cancel"));
+		bAutostart.setText(GlobalCore.Translations.Get("StartWithoutSelection"));
 
 		lvFiles.setBackgroundColor(Config.GetBool("nightMode") ? R.color.Night_EmptyBackground
 				: R.color.Day_EmptyBackground);
@@ -204,7 +205,7 @@ public class SelectDB extends Activity
 				{
 					autoStartCounter--;
 					bAutostart.setText(autoStartCounter + "\n"
-							+ Global.Translations.Get("confirm"));
+							+ GlobalCore.Translations.Get("confirm"));
 					mHandler.postDelayed(mUpdateUITimerTask, 1000);
 				}
 			}
@@ -216,7 +217,7 @@ public class SelectDB extends Activity
 		{
 			autoStartCounter = autoStartTime;
 			bAutostart.setText(autoStartCounter + "\n"
-					+ Global.Translations.Get("confirm"));
+					+ GlobalCore.Translations.Get("confirm"));
 			setAutoStartText();
 			if ((autoStart && autoStartTime > 0) && (AktFile != null))
 			{
@@ -309,18 +310,18 @@ public class SelectDB extends Activity
 
 	private void setAutoStartText()
 	{
-		if (autoStartTime < 0) bAutostart.setText(Global.Translations
+		if (autoStartTime < 0) bAutostart.setText(GlobalCore.Translations
 				.Get("AutoStart")
 				+ "\n"
-				+ Global.Translations.Get("StartWithoutSelection"));
-		else if (autoStartTime == 0) bAutostart.setText(Global.Translations
+				+ GlobalCore.Translations.Get("StartWithoutSelection"));
+		else if (autoStartTime == 0) bAutostart.setText(GlobalCore.Translations
 				.Get("AutoStart")
 				+ "\n"
-				+ Global.Translations.Get("AutoStartDisabled"));
+				+ GlobalCore.Translations.Get("AutoStartDisabled"));
 		else
-			bAutostart.setText(Global.Translations.Get("AutoStart")
+			bAutostart.setText(GlobalCore.Translations.Get("AutoStart")
 					+ "\n"
-					+ Global.Translations.Get("AutoStartTime").replace("%s",
+					+ GlobalCore.Translations.Get("AutoStartTime").replace("%s",
 							String.valueOf(autoStartTime)));
 	}
 
@@ -374,7 +375,7 @@ public class SelectDB extends Activity
 	private void stopTimer()
 	{
 		mHandler.removeCallbacks(mUpdateUITimerTask);
-		bAutostart.setText(Global.Translations.Get("confirm"));
+		bAutostart.setText(GlobalCore.Translations.Get("confirm"));
 	}
 
 	@Override
@@ -384,14 +385,14 @@ public class SelectDB extends Activity
 		{
 		case 123:
 			final CharSequence[] cs = new String[6];
-			cs[0] = Global.Translations.Get("StartWithoutSelection");
-			cs[1] = Global.Translations.Get("AutoStartDisabled");
-			cs[2] = Global.Translations.Get("AutoStartTime").replace("%s", "5");
-			cs[3] = Global.Translations.Get("AutoStartTime")
+			cs[0] = GlobalCore.Translations.Get("StartWithoutSelection");
+			cs[1] = GlobalCore.Translations.Get("AutoStartDisabled");
+			cs[2] = GlobalCore.Translations.Get("AutoStartTime").replace("%s", "5");
+			cs[3] = GlobalCore.Translations.Get("AutoStartTime")
 					.replace("%s", "10");
-			cs[4] = Global.Translations.Get("AutoStartTime")
+			cs[4] = GlobalCore.Translations.Get("AutoStartTime")
 					.replace("%s", "25");
-			cs[5] = Global.Translations.Get("AutoStartTime")
+			cs[5] = GlobalCore.Translations.Get("AutoStartTime")
 					.replace("%s", "60");
 
 			return new AlertDialog.Builder(this).setTitle("Titel")

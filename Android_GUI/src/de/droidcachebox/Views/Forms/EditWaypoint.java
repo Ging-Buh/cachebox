@@ -178,13 +178,13 @@ public class EditWaypoint extends Activity {
         etDescription.setText(waypoint.Description);
         etClue.setText(waypoint.Clue);
         // Translations
-        bOK.setText(Global.Translations.Get("ok"));
-		bCancel.setText(Global.Translations.Get("cancel"));
+        bOK.setText(GlobalCore.Translations.Get("ok"));
+		bCancel.setText(GlobalCore.Translations.Get("cancel"));
 		tvCacheName.setText(GlobalCore.SelectedCache().Name);
-		tvTyp.setText(Global.Translations.Get("type"));
-		tvTitle.setText(Global.Translations.Get("Title"));
-		tvDescription.setText(Global.Translations.Get("Description"));
-		tvClue.setText(Global.Translations.Get("Clue"));
+		tvTyp.setText(GlobalCore.Translations.Get("type"));
+		tvTitle.setText(GlobalCore.Translations.Get("Title"));
+		tvDescription.setText(GlobalCore.Translations.Get("Description"));
+		tvClue.setText(GlobalCore.Translations.Get("Clue"));
 	}
 
 	@Override

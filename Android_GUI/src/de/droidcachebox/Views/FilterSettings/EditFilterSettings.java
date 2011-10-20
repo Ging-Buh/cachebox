@@ -4,6 +4,8 @@ import CB_Core.Log.Logger;
 import CB_Core.Config;
 import CB_Core.DB.Database;
 import CB_Core.FilterProperties;
+import CB_Core.GlobalCore;
+
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
@@ -50,9 +52,9 @@ public class EditFilterSettings extends Activity {
 		btSet = (MultiToggleButton) findViewById(R.id.edfi_set);
 		btCat = (MultiToggleButton) findViewById(R.id.edfi_cat);
 		// Translate 
-		btPre.setText(Global.Translations.Get("preset"));
-		btSet.setText(Global.Translations.Get("setting"));
-		btCat.setText(Global.Translations.Get("category"));
+		btPre.setText(GlobalCore.Translations.Get("preset"));
+		btSet.setText(GlobalCore.Translations.Get("setting"));
+		btCat.setText(GlobalCore.Translations.Get("category"));
 		/*btPre.setText("Preset");
 		btSet.setText("Setting");
 		btCat.setText("Category");*/
@@ -123,8 +125,8 @@ public class EditFilterSettings extends Activity {
           });
 		
 		 // Translations
-        bOK.setText(Global.Translations.Get("ok"));
-        bCancel.setText(Global.Translations.Get("cancel"));
+        bOK.setText(GlobalCore.Translations.Get("ok"));
+        bCancel.setText(GlobalCore.Translations.Get("cancel"));
 	}
 	
 	
@@ -218,7 +220,7 @@ public class EditFilterSettings extends Activity {
 			
 			props = Props;
 		  pd = ProgressDialog.show(activity, "", 
-                 Global.Translations.Get("LoadCaches"), true);
+                 GlobalCore.Translations.Get("LoadCaches"), true);
 		
 		  Thread thread = new Thread()
 		  {
@@ -252,7 +254,7 @@ public class EditFilterSettings extends Activity {
 	    	  	{
 	    	  		CachListChangedEventList.Call();
 	    	  		pd.dismiss();
-	    	  		Toast.makeText(main.mainActivity, Global.Translations.Get("AppliedFilter1") + " " + String.valueOf(Database.Data.Query.size()) + " " + Global.Translations.Get("AppliedFilter2"), Toast.LENGTH_LONG).show();
+	    	  		Toast.makeText(main.mainActivity, GlobalCore.Translations.Get("AppliedFilter1") + " " + String.valueOf(Database.Data.Query.size()) + " " + GlobalCore.Translations.Get("AppliedFilter2"), Toast.LENGTH_LONG).show();
 	    	  		EditFilterSettings.filterActivity.finish();	
 	    	  	}
 		 	     

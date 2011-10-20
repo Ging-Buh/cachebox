@@ -269,8 +269,8 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu, Positio
 	public void SelectedLangChangedEventCalled()
 	{
 		AlignButton.clearStates();
-		AlignButton.addState(Global.Translations.Get("Align"), Color.GRAY);
-		AlignButton.addState(Global.Translations.Get("Align"), Color.GREEN);
+		AlignButton.addState(GlobalCore.Translations.Get("Align"), Color.GRAY);
+		AlignButton.addState(GlobalCore.Translations.Get("Align"), Color.GREEN);
 		AlignButton.setState(align ? 1 : 0);
 	}
 

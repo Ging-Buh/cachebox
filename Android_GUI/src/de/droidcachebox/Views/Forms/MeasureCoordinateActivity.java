@@ -137,8 +137,8 @@ public class MeasureCoordinateActivity extends Activity implements
 		setSatStrength();
 
 		// Translations
-		bOK.setText(Global.Translations.Get("ok"));
-		bCancel.setText(Global.Translations.Get("cancel"));
+		bOK.setText(GlobalCore.Translations.Get("ok"));
+		bCancel.setText(GlobalCore.Translations.Get("cancel"));
 
 		timer.schedule(task, 1200);
 

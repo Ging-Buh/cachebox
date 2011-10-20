@@ -147,7 +147,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 	private void UploadFieldnotes()
 	{
 
-		MessageBox.Show(Global.Translations.Get("uploadFieldNotes?"), Global.Translations.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
+		MessageBox.Show(GlobalCore.Translations.Get("uploadFieldNotes?"), GlobalCore.Translations.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
 				MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner);
 
 	}
@@ -233,11 +233,11 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		{
 			if (!UploadMeldung.equals(""))
 			{
-				MessageBox.Show(UploadMeldung, Global.Translations.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+				MessageBox.Show(UploadMeldung, GlobalCore.Translations.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
 			}
 			else
 			{
-				MessageBox.Show("Upload ready", Global.Translations.Get("uploadFieldNotes"), MessageBoxIcon.GC_Live);
+				MessageBox.Show("Upload ready", GlobalCore.Translations.Get("uploadFieldNotes"), MessageBoxIcon.GC_Live);
 			}
 
 		}
@@ -249,7 +249,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 
 		if (cache == null)
 		{
-			MessageBox.Show(Global.Translations.Get("NoCacheSelect"), Global.Translations.Get("thisNotWork"), MessageBoxButtons.OK,
+			MessageBox.Show(GlobalCore.Translations.Get("NoCacheSelect"), GlobalCore.Translations.Get("thisNotWork"), MessageBoxButtons.OK,
 					MessageBoxIcon.Error, null);
 			return;
 		}
@@ -549,8 +549,8 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 
 			}
 		};
-		String message = Global.Translations.Get("DeleteAllFieldNotesQuestion");
-		MessageBox.Show(message, Global.Translations.Get("DeleteAllNotes"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+		String message = GlobalCore.Translations.Get("DeleteAllFieldNotesQuestion");
+		MessageBox.Show(message, GlobalCore.Translations.Get("DeleteAllNotes"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
 				dialogClickListener);
 
 	}

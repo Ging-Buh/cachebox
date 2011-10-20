@@ -98,7 +98,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 			@Override
 			public void onClick(View arg0) 
 			{
-				MessageBox.Show(Global.Translations.Get("LoadFounds"), Global.Translations.Get("AdjustFinds"), MessageBoxButtons.YesNo,MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener() {
+				MessageBox.Show(GlobalCore.Translations.Get("LoadFounds"), GlobalCore.Translations.Get("AdjustFinds"), MessageBoxButtons.YesNo,MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int button) 
@@ -129,7 +129,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 								
 								break;
 							case -2:
-								NumerikInputBox.Show(Global.Translations.Get("AdjustFinds"),Global.Translations.Get("TelMeFounds"),CB_Core.Config.GetInt("FoundOffset"), DialogListner);
+								NumerikInputBox.Show(GlobalCore.Translations.Get("AdjustFinds"),GlobalCore.Translations.Get("TelMeFounds"),CB_Core.Config.GetInt("FoundOffset"), DialogListner);
 								break;
 							case -3:
 								
@@ -161,7 +161,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 
 		            if (!Config.GetBool("AllowInternetAccess"))
 		            {
-		            	Toast.makeText(main.mainActivity, Global.Translations.Get("allowInetConn"), Toast.LENGTH_SHORT).show();
+		            	Toast.makeText(main.mainActivity, GlobalCore.Translations.Get("allowInetConn"), Toast.LENGTH_SHORT).show();
 		                return;
 		            }
 		            
@@ -172,7 +172,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		            }
 		            catch (Exception exc)
 		            {
-		            	Toast.makeText(main.mainActivity, Global.Translations.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.SelectedCache().Url.trim() + ")", Toast.LENGTH_SHORT).show();
+		            	Toast.makeText(main.mainActivity, GlobalCore.Translations.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.SelectedCache().Url.trim() + ")", Toast.LENGTH_SHORT).show();
                     }
 				
 			}
@@ -225,9 +225,9 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 			
 			if(transFounds>-1)
 			{
-				String Text = Global.Translations.Get("FoundsSetTo");
+				String Text = GlobalCore.Translations.Get("FoundsSetTo");
 			Text = Text.replace("%s", String.valueOf(transFounds));
-			MessageBox.Show(Text, Global.Translations.Get("LoadFinds!"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
+			MessageBox.Show(Text, GlobalCore.Translations.Get("LoadFinds!"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
 			
             Config.Set("FoundOffset", transFounds );
             Config.AcceptChanges();
@@ -235,7 +235,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 			}
 			else
 			{
-				MessageBox.Show(Global.Translations.Get("LogInErrorLoadFinds"), "", MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
+				MessageBox.Show(GlobalCore.Translations.Get("LogInErrorLoadFinds"), "", MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
 			}
 			
 			
@@ -293,15 +293,15 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		versionTextView.setText(Global.getVersionString());
 		descTextView.setText(Global.splashMsg);
 		
-		lblGPS.setText(Global.Translations.Get("gps"));
+		lblGPS.setText(GlobalCore.Translations.Get("gps"));
         
-         lblWP.setText(Global.Translations.Get("waypoint"));
-         lblCord.setText(Global.Translations.Get("coordinate"));
-         lblCurrent.setText(Global.Translations.Get("current"));
-         lblAccuracy.setText(Global.Translations.Get("accuracy"));
+         lblWP.setText(GlobalCore.Translations.Get("waypoint"));
+         lblCord.setText(GlobalCore.Translations.Get("coordinate"));
+         lblCurrent.setText(GlobalCore.Translations.Get("current"));
+         lblAccuracy.setText(GlobalCore.Translations.Get("accuracy"));
          
          
-         GPS.setText(Global.Translations.Get("not_active"));
+         GPS.setText(GlobalCore.Translations.Get("not_active"));
 		
 		
 		
@@ -310,7 +310,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	
 	public void refreshText()
 	{
-		CachesFoundLabel.setText(Global.Translations.Get("caches_found") + " " + String.valueOf(Config.GetInt("FoundOffset")));
+		CachesFoundLabel.setText(GlobalCore.Translations.Get("caches_found") + " " + String.valueOf(Config.GetInt("FoundOffset")));
 		if (GlobalCore.SelectedCache() != null)
             if (GlobalCore.SelectedWaypoint() != null)
             {
@@ -409,12 +409,12 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		 if (Global.Locator.getLocation() != null)
 		 {
 			 Current.setText(Global.FormatLatitudeDM(Global.Locator.getLocation().getLatitude()) + " " + Global.FormatLongitudeDM(Global.Locator.getLocation().getLongitude()));
-			 GPS.setText(Global.Translations.Get("alt") + " " + Global.Locator.getAltString());
+			 GPS.setText(GlobalCore.Translations.Get("alt") + " " + Global.Locator.getAltString());
 		 }
 		 
 		 if (Global.Locator == null)
          {
-             GPS.setText(Global.Translations.Get("not_detected"));
+             GPS.setText(GlobalCore.Translations.Get("not_detected"));
              return;
          }*/
 
@@ -492,12 +492,12 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	 if (Global.Locator.getLocation() != null)
 	 {
 		 Current.setText(Global.FormatLatitudeDM(Global.Locator.getLocation().getLatitude()) + " " + Global.FormatLongitudeDM(Global.Locator.getLocation().getLongitude()));
-		 GPS.setText(de.droidcachebox.Locator.GPS.getSatAndFix() + "   " + Global.Translations.Get("alt") + " " + Global.Locator.getAltString());
+		 GPS.setText(de.droidcachebox.Locator.GPS.getSatAndFix() + "   " + GlobalCore.Translations.Get("alt") + " " + Global.Locator.getAltString());
 	 }
 	 
 	 if (Global.Locator == null)
      {
-         GPS.setText(Global.Translations.Get("not_detected"));
+         GPS.setText(GlobalCore.Translations.Get("not_detected"));
          return;
      }
 		

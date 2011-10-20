@@ -137,6 +137,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.location.GpsStatus;
+import CB_Core.GlobalCore;
 
 public class main extends Activity implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEvent,
 		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent
@@ -713,7 +714,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 					}
 				}
 			};
-			MessageBox.Show(Global.Translations.Get("QuitReally"), Global.Translations.Get("Quit?"), MessageBoxButtons.YesNo,
+			MessageBox.Show(GlobalCore.Translations.Get("QuitReally"), GlobalCore.Translations.Get("Quit?"), MessageBoxButtons.YesNo,
 					MessageBoxIcon.Question, dialogClickListener);
 
 			return true;
@@ -2063,7 +2064,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			}
 			else
 			{
-				MessageBox.Show(Global.Translations.Get("GC_basic"), Global.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
+				MessageBox.Show(GlobalCore.Translations.Get("GC_basic"), GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
 						MessageBoxIcon.Powerd_by_GC_Live, PremiumMemberResult);
 			}
 		}
@@ -2612,7 +2613,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 							@Override
 							public void run()
 							{
-								MessageBox.Show(Global.Translations.Get("GPSon?"), Global.Translations.Get("GPSoff"),
+								MessageBox.Show(GlobalCore.Translations.Get("GPSon?"), GlobalCore.Translations.Get("GPSoff"),
 										MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener()
 										{
 											@Override
@@ -2687,7 +2688,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 	private void askToGetApiKey()
 	{
-		MessageBox.Show(Global.Translations.Get("wantApi"), Global.Translations.Get("welcome"), MessageBoxButtons.YesNo,
+		MessageBox.Show(GlobalCore.Translations.Get("wantApi"), GlobalCore.Translations.Get("welcome"), MessageBoxButtons.YesNo,
 				MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener()
 				{
 					@Override

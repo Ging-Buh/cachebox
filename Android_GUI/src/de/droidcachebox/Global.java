@@ -34,6 +34,7 @@ import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
+import CB_Core.GlobalCore;
 
 public class Global
 {
@@ -152,8 +153,6 @@ public class Global
 	private static int mInvertWhite = -1;
 
 	// Sizes
-
-	public static LangStrings Translations = new LangStrings();
 
 	// ausgelagert in den Core
 	// public static Coordinate Marker = new Coordinate();
@@ -742,7 +741,7 @@ public class Global
 		{
 			if (mi != null)
 			{
-				String trans = Global.Translations.Get(StringId) + zusatz;
+				String trans = GlobalCore.Translations.Get(StringId) + zusatz;
 				mi.setTitle(trans);
 			}
 		}

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import CB_Core.GlobalCore;
 
 public class HintDialog extends Activity {
 	Button bClose;
@@ -50,9 +51,9 @@ public class HintDialog extends Activity {
           });
         
         // Translations
-        bClose.setText(Global.Translations.Get("close"));
-        bDecode.setText(Global.Translations.Get("decode"));
-        this.setTitle(Global.Translations.Get("hint"));
+        bClose.setText(GlobalCore.Translations.Get("close"));
+        bDecode.setText(GlobalCore.Translations.Get("decode"));
+        this.setTitle(GlobalCore.Translations.Get("hint"));
         
         
         

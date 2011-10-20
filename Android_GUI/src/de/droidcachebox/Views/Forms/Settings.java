@@ -70,6 +70,7 @@ import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
+import CB_Core.GlobalCore;
 
 public class Settings extends Activity implements ViewOptionsMenu, SelectedLangChangedEvent
 {
@@ -215,7 +216,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 						Config.Set("Sel_LanguagePath", tmp.Path);
 						try
 						{
-							Global.Translations.ReadTranslationsFile(tmp.Path);
+							GlobalCore.Translations.ReadTranslationsFile(tmp.Path);
 						}
 						catch (IOException e)
 						{
@@ -725,41 +726,41 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 
 	private void setLang()
 	{
-		LangCombo.setPrompt(Global.Translations.Get("SelectLanguage"));
+		LangCombo.setPrompt(GlobalCore.Translations.Get("SelectLanguage"));
 
-		ToggleLogInView.setText(Global.Translations.Get("LoginSettings"));
-		LabelGcName.setText(Global.Translations.Get("LogIn"));
-		LabelGcPW.setText(Global.Translations.Get("GCPW"));
-		getApiKey.setText(Global.Translations.Get("getApiKey"));
-		LabelGcVoPw.setText(Global.Translations.Get("GCVotePW"));
-		LabelGcJoker.setText(Global.Translations.Get("GCJoker"));
+		ToggleLogInView.setText(GlobalCore.Translations.Get("LoginSettings"));
+		LabelGcName.setText(GlobalCore.Translations.Get("LogIn"));
+		LabelGcPW.setText(GlobalCore.Translations.Get("GCPW"));
+		getApiKey.setText(GlobalCore.Translations.Get("getApiKey"));
+		LabelGcVoPw.setText(GlobalCore.Translations.Get("GCVotePW"));
+		LabelGcJoker.setText(GlobalCore.Translations.Get("GCJoker"));
 
-		checkBoxHTCCompass.setText(Global.Translations.Get("UseHtcCompass"));
-		DescCompassLevel.setText(Global.Translations.Get("DescHtcLevel"));
+		checkBoxHTCCompass.setText(GlobalCore.Translations.Get("UseHtcCompass"));
+		DescCompassLevel.setText(GlobalCore.Translations.Get("DescHtcLevel"));
 
-		ToggleMapView.setText(Global.Translations.Get("Map"));
-		DescMapLayer.setText(Global.Translations.Get("DescMapLayer"));
-		cbMoveMapCenterWithSpeed.setText(Global.Translations.Get("MoveMapCenterWithSpeed"));
-		DescSmothScroll.setText(Global.Translations.Get("SmoothScrolling"));
-		chkDPIaware.setText(Global.Translations.Get("DPIaware"));
-		DescTrackRec.setText(Global.Translations.Get("TrackRec"));
-		chkTrackStart.setText(Global.Translations.Get("StartTrackRecOnStart"));
-		DescTrackCount.setText(Global.Translations.Get("TrackEvery") + " [m]");
+		ToggleMapView.setText(GlobalCore.Translations.Get("Map"));
+		DescMapLayer.setText(GlobalCore.Translations.Get("DescMapLayer"));
+		cbMoveMapCenterWithSpeed.setText(GlobalCore.Translations.Get("MoveMapCenterWithSpeed"));
+		DescSmothScroll.setText(GlobalCore.Translations.Get("SmoothScrolling"));
+		chkDPIaware.setText(GlobalCore.Translations.Get("DPIaware"));
+		DescTrackRec.setText(GlobalCore.Translations.Get("TrackRec"));
+		chkTrackStart.setText(GlobalCore.Translations.Get("StartTrackRecOnStart"));
+		DescTrackCount.setText(GlobalCore.Translations.Get("TrackEvery") + " [m]");
 
-		ToggleMiscView.setText(Global.Translations.Get("Misc"));
-		chkAllowInetAccess.setText(Global.Translations.Get("AllowInternet"));
-		chkAllowLandscape.setText(Global.Translations.Get("AllowLandscape"));
+		ToggleMiscView.setText(GlobalCore.Translations.Get("Misc"));
+		chkAllowInetAccess.setText(GlobalCore.Translations.Get("AllowInternet"));
+		chkAllowLandscape.setText(GlobalCore.Translations.Get("AllowLandscape"));
 		DescScreenLock.setText("Screen lock [min/sec]" + String.format("%n") + "(<5sec = off)");
 
-		ToggleQuickView.setText(Global.Translations.Get("QuickButton"));
-		chkQuickButtonShow.setText(Global.Translations.Get("ShowQuickButton"));
-		ActionListUp.setText(Global.Translations.Get("up"));
-		ActionListDown.setText(Global.Translations.Get("down"));
-		ActionListDel.setText(Global.Translations.Get("delete"));
-		ActionListAdd.setText(Global.Translations.Get("add"));
+		ToggleQuickView.setText(GlobalCore.Translations.Get("QuickButton"));
+		chkQuickButtonShow.setText(GlobalCore.Translations.Get("ShowQuickButton"));
+		ActionListUp.setText(GlobalCore.Translations.Get("up"));
+		ActionListDown.setText(GlobalCore.Translations.Get("down"));
+		ActionListDel.setText(GlobalCore.Translations.Get("delete"));
+		ActionListAdd.setText(GlobalCore.Translations.Get("add"));
 
-		SaveButton.setText(Global.Translations.Get("save"));
-		CancelButton.setText(Global.Translations.Get("cancel"));
+		SaveButton.setText(GlobalCore.Translations.Get("save"));
+		CancelButton.setText(GlobalCore.Translations.Get("cancel"));
 	}
 
 	public void FillSettings()
@@ -946,7 +947,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 
 	private void fillLangCombo()
 	{
-		Sprachen = Global.Translations.GetLangs(Config.GetString("LanguagePath"));
+		Sprachen = GlobalCore.Translations.GetLangs(Config.GetString("LanguagePath"));
 		String[] items = new String[Sprachen.size()];
 		int index = 0;
 		int selection = -1;

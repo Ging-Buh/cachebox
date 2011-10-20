@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import CB_Core.GlobalCore;
 
 public class PresetListView extends ListView implements ViewOptionsMenu {
 
@@ -233,15 +234,15 @@ public class PresetListView extends ListView implements ViewOptionsMenu {
 	
 	private void fillPresetList()
 	{
-		addPresetItem(Global.Icons[18], Global.Translations.Get("AllCaches"),presets[0] );
-		addPresetItem(Global.Icons[2], Global.Translations.Get("AllCachesToFind"),presets[1] );
-		addPresetItem(Global.CacheIconsBig[0], Global.Translations.Get("QuickCaches"),presets[2] );
-		addPresetItem(Global.Icons[15], Global.Translations.Get("GrabTB"),presets[3] );
-		addPresetItem(Global.Icons[16], Global.Translations.Get("DropTB"),presets[4] );
-		addPresetItem(Global.Icons[17], Global.Translations.Get("Highlights"),presets[5] );
-		addPresetItem(Global.Icons[19], Global.Translations.Get("Favorites"),presets[6] );
-		addPresetItem(Global.Icons[22], Global.Translations.Get("PrepareToArchive"),presets[7] );
-		addPresetItem(Global.Icons[26], Global.Translations.Get("ListingChanged"),presets[8] );
+		addPresetItem(Global.Icons[18], GlobalCore.Translations.Get("AllCaches"),presets[0] );
+		addPresetItem(Global.Icons[2], GlobalCore.Translations.Get("AllCachesToFind"),presets[1] );
+		addPresetItem(Global.CacheIconsBig[0], GlobalCore.Translations.Get("QuickCaches"),presets[2] );
+		addPresetItem(Global.Icons[15], GlobalCore.Translations.Get("GrabTB"),presets[3] );
+		addPresetItem(Global.Icons[16], GlobalCore.Translations.Get("DropTB"),presets[4] );
+		addPresetItem(Global.Icons[17], GlobalCore.Translations.Get("Highlights"),presets[5] );
+		addPresetItem(Global.Icons[19], GlobalCore.Translations.Get("Favorites"),presets[6] );
+		addPresetItem(Global.Icons[22], GlobalCore.Translations.Get("PrepareToArchive"),presets[7] );
+		addPresetItem(Global.Icons[26], GlobalCore.Translations.Get("ListingChanged"),presets[8] );
 
 	}
 	

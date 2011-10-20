@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+import CB_Core.GlobalCore;
 
 public class EditCoordinate extends Activity {
 	
@@ -295,8 +296,8 @@ public class EditCoordinate extends Activity {
         showPage(1);
         
         // Translations
-        bOK.setText(Global.Translations.Get("ok"));
-        bCancel.setText(Global.Translations.Get("cancel"));
+        bOK.setText(GlobalCore.Translations.Get("ok"));
+        bCancel.setText(GlobalCore.Translations.Get("cancel"));
 	 }
 
 	

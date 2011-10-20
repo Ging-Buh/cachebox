@@ -41,6 +41,7 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ImageView;
+import CB_Core.GlobalCore;
 
 /**
  * Zeigt ein Meldungsfeld an, das Text, Schaltflächen und Symbole mit Informationen und Anweisungen für den Benutzer enthalten kann. 
@@ -383,7 +384,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
 	    		PleaseWaitMessageBox.Builder(getActivity());
 				customBuilder	.setTitle("")
 								.setMessage(b.getString("msg"))
-								.setPositiveButton(Global.Translations.Get("ok"),listner);
+								.setPositiveButton(GlobalCore.Translations.Get("ok"),listner);
 	            dialog = customBuilder.create();
 	    		break;
 	    
@@ -392,7 +393,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
 	    		PleaseWaitMessageBox.Builder(getActivity());
 				customBuilder2	.setTitle(b.getString("title"))
 								.setMessage(b.getString("msg"))
-								.setPositiveButton(Global.Translations.Get("ok"),listner);
+								.setPositiveButton(GlobalCore.Translations.Get("ok"),listner);
 	            dialog = customBuilder2.create();
 	    		break;
 	    		
@@ -448,43 +449,43 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
 		int button = b.getInt("buttons");
 		if(button == 0)
 		{
-			button1=Global.Translations.Get("abort");
-			button2=Global.Translations.Get("retry");
-			button3=Global.Translations.Get("ignore");
+			button1=GlobalCore.Translations.Get("abort");
+			button2=GlobalCore.Translations.Get("retry");
+			button3=GlobalCore.Translations.Get("ignore");
 		}
 		else if(button == 1)
 		{
-			button1=Global.Translations.Get("ok");
+			button1=GlobalCore.Translations.Get("ok");
 			button2="";
 			button3="";
 		}
 		else if(button == 2)
 		{
-			button1=Global.Translations.Get("ok");
+			button1=GlobalCore.Translations.Get("ok");
 			button2="";
-			button3=Global.Translations.Get("cancel");
+			button3=GlobalCore.Translations.Get("cancel");
 		}
 		else if(button == 3)
 		{
-			button1=Global.Translations.Get("retry");
+			button1=GlobalCore.Translations.Get("retry");
 			button2="";
-			button3=Global.Translations.Get("cancel");
+			button3=GlobalCore.Translations.Get("cancel");
 		}
 		else if(button == 4)
 		{
-			button1=Global.Translations.Get("yes");
+			button1=GlobalCore.Translations.Get("yes");
 			button2="";
-			button3=Global.Translations.Get("no");
+			button3=GlobalCore.Translations.Get("no");
 		}
 		else if(button == 5)
 		{
-			button1=Global.Translations.Get("yes");
-			button2=Global.Translations.Get("no");
-			button3=Global.Translations.Get("cancel");
+			button1=GlobalCore.Translations.Get("yes");
+			button2=GlobalCore.Translations.Get("no");
+			button3=GlobalCore.Translations.Get("cancel");
 		}
 		else if(button == 6)
 		{
-			button3=Global.Translations.Get("cancel");
+			button3=GlobalCore.Translations.Get("cancel");
 		}
 	}
 	

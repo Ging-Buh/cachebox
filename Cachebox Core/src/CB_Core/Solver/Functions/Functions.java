@@ -6,7 +6,7 @@ import CB_Core.Solver.EntityList;
 import CB_Core.Solver.TempEntity;
 
 public class Functions extends ArrayList<Function> {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 132452456262L;
 
     String Name;
     public Functions(String name)

@@ -39,6 +39,7 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
+import CB_Core.GlobalCore;
 
 /**
  * <h1>ProgressDialog</h1>
@@ -87,14 +88,14 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 
 		findViewById();
 
-		checkImportPQfromGC.setText(Global.Translations.Get("PQfromGC"));
-		checkBoxImportGPX.setText(Global.Translations.Get("GPX"));
-		checkBoxImportGpxFromMail.setText(Global.Translations.Get("GpxFromMail"));
-		checkBoxGcVote.setText(Global.Translations.Get("GCVoteRatings"));
-		checkBoxPreloadImages.setText(Global.Translations.Get("PreloadImages"));
-		checkBoxImportMaps.setText(Global.Translations.Get("Maps"));
-		ImportButton.setText(Global.Translations.Get("import"));
-		CancelButton.setText(Global.Translations.Get("cancel"));
+		checkImportPQfromGC.setText(GlobalCore.Translations.Get("PQfromGC"));
+		checkBoxImportGPX.setText(GlobalCore.Translations.Get("GPX"));
+		checkBoxImportGpxFromMail.setText(GlobalCore.Translations.Get("GpxFromMail"));
+		checkBoxGcVote.setText(GlobalCore.Translations.Get("GCVoteRatings"));
+		checkBoxPreloadImages.setText(GlobalCore.Translations.Get("PreloadImages"));
+		checkBoxImportMaps.setText(GlobalCore.Translations.Get("Maps"));
+		ImportButton.setText(GlobalCore.Translations.Get("import"));
+		CancelButton.setText(GlobalCore.Translations.Get("cancel"));
 		
 		CancelButton.setOnClickListener(new OnClickListener() {
 
@@ -365,7 +366,7 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 
 		props = Global.LastFilter;
 		pd = android.app.ProgressDialog.show(ImportDialog.Me, "",
-				Global.Translations.Get("LoadCaches"), true);
+				GlobalCore.Translations.Get("LoadCaches"), true);
 
 		Thread thread = new Thread() {
 			@Override
@@ -395,9 +396,9 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 				pd.dismiss();
 				Toast.makeText(
 						main.mainActivity,
-						Global.Translations.Get("AppliedFilter1") + " "
+						GlobalCore.Translations.Get("AppliedFilter1") + " "
 								+ String.valueOf(Database.Data.Query.size())
-								+ " " + Global.Translations.Get("AppliedFilter2"), Toast.LENGTH_LONG).show();
+								+ " " + GlobalCore.Translations.Get("AppliedFilter2"), Toast.LENGTH_LONG).show();
 				ImportDialog.Me.finish();
 			}
 

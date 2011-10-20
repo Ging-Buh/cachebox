@@ -330,7 +330,7 @@ public class search
 				{
 					mTglBtnOnline.setState(0);
 					mBtnFilter.setCompoundDrawables(null, null, null, null);
-					mBtnFilter.setText(Global.Translations.Get("Filter"));
+					mBtnFilter.setText(GlobalCore.Translations.Get("Filter"));
 				}
 				else
 				{
@@ -407,19 +407,19 @@ public class search
 	 */
 	private void setLang()
 	{
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnTitle, Global.Translations.Get("Title"), Global.Translations.Get("Title"));
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnGc, Global.Translations.Get("GCCode"), Global.Translations.Get("GCCode"));
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnOwner, Global.Translations.Get("Owner"), Global.Translations.Get("Owner"));
+		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnTitle, GlobalCore.Translations.Get("Title"), GlobalCore.Translations.Get("Title"));
+		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnGc, GlobalCore.Translations.Get("GCCode"), GlobalCore.Translations.Get("GCCode"));
+		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnOwner, GlobalCore.Translations.Get("Owner"), GlobalCore.Translations.Get("Owner"));
 		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnOnline, "Online", "Online");
 
 		// der State muss erstmal gesetzt werden, damit die Anzeige
 		// Aktuallisiert wird
 		mTglBtnOnline.setState(0);
 
-		mBtnFilter.setText(Global.Translations.Get("Filter"));
-		mBtnSearch.setText(Global.Translations.Get("Search"));
-		mBtnNext.setText(Global.Translations.Get("Next"));
-		mBtnCancel.setText(Global.Translations.Get("abort"));
+		mBtnFilter.setText(GlobalCore.Translations.Get("Filter"));
+		mBtnSearch.setText(GlobalCore.Translations.Get("Search"));
+		mBtnNext.setText(GlobalCore.Translations.Get("Next"));
+		mBtnCancel.setText(GlobalCore.Translations.Get("abort"));
 
 	}
 
@@ -581,7 +581,7 @@ public class search
 			{
 				ActivityUtils.setBtnState(mBtnNext, false);
 				mSearchAktive = false;
-				MessageBox.Show(Global.Translations.Get("NoCacheFound"), Global.Translations.Get("search"), MessageBoxButtons.OK,
+				MessageBox.Show(GlobalCore.Translations.Get("NoCacheFound"), GlobalCore.Translations.Get("search"), MessageBoxButtons.OK,
 						MessageBoxIcon.Asterisk, null);
 			}
 			else
@@ -647,8 +647,8 @@ public class search
 
 		props = filter;
 		// pd = android.app.ProgressDialog.show(mPtrMain, "",
-		// Global.Translations.Get("LoadCaches"), true);
-		pd = PleaseWaitMessageBox.Show(Global.Translations.Get("LoadCaches"), "Groundspeak API", MessageBoxButtons.NOTHING, null);
+		// GlobalCore.Translations.Get("LoadCaches"), true);
+		pd = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("LoadCaches"), "Groundspeak API", MessageBoxButtons.NOTHING, null);
 
 		Thread thread = new Thread()
 		{
@@ -684,8 +684,8 @@ public class search
 				pd.dismiss();
 				Toast.makeText(
 						main.mainActivity,
-						Global.Translations.Get("AppliedFilter1") + " " + String.valueOf(Database.Data.Query.size()) + " "
-								+ Global.Translations.Get("AppliedFilter2"), Toast.LENGTH_LONG).show();
+						GlobalCore.Translations.Get("AppliedFilter1") + " " + String.valueOf(Database.Data.Query.size()) + " "
+								+ GlobalCore.Translations.Get("AppliedFilter2"), Toast.LENGTH_LONG).show();
 
 				if (reSearch)
 				{
@@ -770,7 +770,7 @@ public class search
 			}
 			else
 			{
-				MessageBox.Show(Global.Translations.Get("GC_basic"), Global.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
+				MessageBox.Show(GlobalCore.Translations.Get("GC_basic"), GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
 						MessageBoxIcon.Powerd_by_GC_Live, PremiumMemberResult);
 			}
 		}

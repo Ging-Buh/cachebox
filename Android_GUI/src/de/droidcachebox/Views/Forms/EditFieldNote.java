@@ -7,6 +7,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import CB_Core.Types.FieldNoteEntry;
 import de.droidcachebox.Ui.ActivityUtils;
+import CB_Core.GlobalCore;
 
 import android.app.Activity;
 import android.content.Context;
@@ -81,8 +82,8 @@ public class EditFieldNote extends Activity {
         // Default values
         etComment.setText(fieldNote.comment);
         // Translations
-        bOK.setText(Global.Translations.Get("ok"));
-		bCancel.setText(Global.Translations.Get("cancel"));
+        bOK.setText(GlobalCore.Translations.Get("ok"));
+		bCancel.setText(GlobalCore.Translations.Get("cancel"));
 		tvCacheName.setText(fieldNote.CacheName);
 		tvFounds.setText("Founds: #" + fieldNote.foundNumber);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd");

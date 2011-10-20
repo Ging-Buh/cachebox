@@ -26,7 +26,7 @@ import de.droidcachebox.Ui.Sizes;
 
 import CB_Core.Enums.Attributes;
 import CB_Core.Types.MoveableList;
-
+import CB_Core.GlobalCore;
 /**
  * Enthält die Actions Möglichkeiten für die Quick Buttons
  * @author Longri
@@ -150,22 +150,22 @@ public enum Actions
 	{
 		switch (id)
         {
-            case 0:return Global.Translations.Get("Description");
-            case 1:return Global.Translations.Get("Waypoints");
-            case 2:return Global.Translations.Get("ShowLogs");
-            case 3:return Global.Translations.Get("Map");
-            case 4:return Global.Translations.Get("Compass");
-            case 5:return Global.Translations.Get("cacheList");
-            case 6:return Global.Translations.Get("Tracks");
-            case 7:return Global.Translations.Get("TakePhoto");
-            case 8:return Global.Translations.Get("RecVideo");
-            case 9:return Global.Translations.Get("VoiceRec");
-            case 10:return Global.Translations.Get("Search");
-            case 11:return Global.Translations.Get("filter");
-            case 12:return Global.Translations.Get("screenlock");
-            case 13:return Global.Translations.Get("AutoResort");
-            case 14:return Global.Translations.Get("Solver");
-            case 15:return Global.Translations.Get("spoiler");
+            case 0:return GlobalCore.Translations.Get("Description");
+            case 1:return GlobalCore.Translations.Get("Waypoints");
+            case 2:return GlobalCore.Translations.Get("ShowLogs");
+            case 3:return GlobalCore.Translations.Get("Map");
+            case 4:return GlobalCore.Translations.Get("Compass");
+            case 5:return GlobalCore.Translations.Get("cacheList");
+            case 6:return GlobalCore.Translations.Get("Tracks");
+            case 7:return GlobalCore.Translations.Get("TakePhoto");
+            case 8:return GlobalCore.Translations.Get("RecVideo");
+            case 9:return GlobalCore.Translations.Get("VoiceRec");
+            case 10:return GlobalCore.Translations.Get("Search");
+            case 11:return GlobalCore.Translations.Get("filter");
+            case 12:return GlobalCore.Translations.Get("screenlock");
+            case 13:return GlobalCore.Translations.Get("AutoResort");
+            case 14:return GlobalCore.Translations.Get("Solver");
+            case 15:return GlobalCore.Translations.Get("spoiler");
         }
 		return "empty";
 	}

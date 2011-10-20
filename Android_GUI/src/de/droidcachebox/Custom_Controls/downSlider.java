@@ -60,6 +60,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
+import CB_Core.GlobalCore;
 
 public final class downSlider extends View implements SelectedCacheEvent, GpsStateChangeEvent
 {
@@ -685,8 +686,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		mLongitude = Global.FormatLongitudeDM(location.getLongitude());
 
 		String br = String.format("%n");
-		String Text = Global.Translations.Get("current") + " " + mLatitude + " " + mLongitude + br + Global.Translations.Get("alt") + " "
-				+ mAlt + br + Global.Translations.Get("accuracy") + "  +/- " + mAccuracy + "m" + br + Global.Translations.Get("sats") + " "
+		String Text = GlobalCore.Translations.Get("current") + " " + mLatitude + " " + mLongitude + br + GlobalCore.Translations.Get("alt") + " "
+				+ mAlt + br + GlobalCore.Translations.Get("accuracy") + "  +/- " + mAccuracy + "m" + br + GlobalCore.Translations.Get("sats") + " "
 				+ mSats;
 
 		if (GPSLayoutTextPaint == null)

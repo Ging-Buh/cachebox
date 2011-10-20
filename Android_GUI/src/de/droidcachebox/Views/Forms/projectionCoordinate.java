@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import CB_Core.GlobalCore;
 
 public class projectionCoordinate extends Activity {
 	private Intent aktIntent;
@@ -132,10 +133,10 @@ public class projectionCoordinate extends Activity {
         valueBearing.setOnFocusChangeListener(onFocusChange);
         
         // Translations
-        bOK.setText(Global.Translations.Get("ok"));
-        bCancel.setText(Global.Translations.Get("cancel"));
-        descBearing.setText(Global.Translations.Get("Bearing"));
-        descDistance.setText(radius? "Radius" : Global.Translations.Get("Distance"));
+        bOK.setText(GlobalCore.Translations.Get("ok"));
+        bCancel.setText(GlobalCore.Translations.Get("cancel"));
+        descBearing.setText(GlobalCore.Translations.Get("Bearing"));
+        descDistance.setText(radius? "Radius" : GlobalCore.Translations.Get("Distance"));
         
        //Disable OK/CANCEL from NumPadLayout
         ((Button)this.findViewById(R.id.positiveButton)).setVisibility(View.INVISIBLE);

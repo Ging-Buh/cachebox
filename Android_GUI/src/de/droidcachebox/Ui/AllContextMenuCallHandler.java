@@ -88,7 +88,7 @@ public class AllContextMenuCallHandler
 			MenuItem mi = IconMenu.findItem(R.id.menu_waypointview_edit);
 			if (mi != null)
 			{
-				mi.setTitle(Global.Translations.Get("edit"));
+				mi.setTitle(GlobalCore.Translations.Get("edit"));
 //				mi.setVisible(Main.waypointView.aktWaypoint != null);
 				if(Main.waypointView.aktWaypoint == null)
 				{
@@ -99,7 +99,7 @@ public class AllContextMenuCallHandler
 			mi = IconMenu.findItem(R.id.menu_waypointview_delete);
 			if (mi != null)
 			{
-				mi.setTitle(Global.Translations.Get("delete"));
+				mi.setTitle(GlobalCore.Translations.Get("delete"));
 //				mi.setVisible((Main.waypointView.aktWaypoint != null) && (Main.waypointView.aktWaypoint.IsUserWaypoint));
 				if(!((Main.waypointView.aktWaypoint != null) && (Main.waypointView.aktWaypoint.IsUserWaypoint)))
 				{
@@ -109,7 +109,7 @@ public class AllContextMenuCallHandler
 			mi = IconMenu.findItem(R.id.menu_waypointview_project);
 			if (mi != null)
 			{
-				mi.setTitle(Global.Translations.Get("Projection"));
+				mi.setTitle(GlobalCore.Translations.Get("Projection"));
 //				mi.setVisible((Main.waypointView.aktWaypoint != null || Main.waypointView.aktCache!=null));
 				if(!((Main.waypointView.aktWaypoint != null || Main.waypointView.aktCache!=null)))
 				{

@@ -1,5 +1,7 @@
 package CB_Core.Solver.Functions;
 
+import CB_Core.GlobalCore;
+
 public class FunctionAlphaPos extends Function {
 
     public FunctionAlphaPos()
@@ -10,22 +12,22 @@ public class FunctionAlphaPos extends Function {
 
 	@Override
 	public String getName() {
-//		return Global.Translations.Get("solverFuncAlphaPos");
-		return "AlphaPos";
+		return GlobalCore.Translations.Get("solverFuncAlphaPos");
+//		return "AlphaPos";
 	}
 
 	@Override
 	public String getDescription() {
-//		return Global.Translations.Get("solverDescAlphaPos");
-		return "Position des ersten Zeichens im Alphabet";
+		return GlobalCore.Translations.Get("solverDescAlphaPos");
+//		return "Position des ersten Zeichens im Alphabet";
 	}
 
 	@Override
 	public String Calculate(String[] parameter) {
 		if (parameter.length != 1)
       	{
-//			return Global.Translations.Get("solverErrParamCount").Replace("%s", "1");
-			return "Diese Funktion benötigt %s Parameter".replace("%s", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount").replace("%s", "1");
+//			return "Diese Funktion benötigt %s Parameter".replace("%s", "1");
       	}
 		String wert = parameter[0].trim().toLowerCase();
 		if (wert == "")
