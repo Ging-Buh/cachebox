@@ -148,7 +148,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	public static Integer aktViewId = -1;
 	private static long GPSTimeStamp = 0;
 	public static MapView mapView = null; // ID 0
-	private static CacheListView cacheListView = null; // ID 1
+	public static CacheListView cacheListView = null; // ID 1
 	public static WaypointView waypointView = null; // ID 2
 	private static LogView logView = null; // ID 3
 	public static DescriptionView descriptionView = null; // ID 4
@@ -1932,8 +1932,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 	private void showTbList()
 	{
-		// MessageBox.Show("comming soon", "sorry", MessageBoxIcon.Asterisk);
-		showView(14);
+		MessageBox.Show("comming soon", "sorry", MessageBoxIcon.Asterisk);
+		// showView(14);
 	}
 
 	private void switchDayNight()
@@ -2150,6 +2150,10 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 			ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 			CB_Core.Api.SearchForGeocaches.SearchCoordinate searchC = new CB_Core.Api.SearchForGeocaches.SearchCoordinate();
+
+			searchC.withoutFinds = Config.GetBool("SearchWithoutFounds");
+			searchC.withoutOwn = Config.GetBool("SearchWithoutOwns");
+
 			searchC.pos = searchCoord;
 			searchC.distanceInMeters = 50000;
 			searchC.number = 50;

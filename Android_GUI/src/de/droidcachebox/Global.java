@@ -207,7 +207,9 @@ public class Global
 	 * <img src="doc-files/day_slider_down.png" width=32 height=32> <br>
 	 * Index 41 =<img src="doc-files/night_slider_up_down.png" width=32
 	 * height=32> <img src="doc-files/day_slider_up_down.png" width=32
-	 * height=32>
+	 * height=32> <br>
+	 * Index 42 =<img src="doc-files/night_spinner.png" width=32 height=32><br>
+	 * Index 43 =<img src="doc-files/target-icon.png" width=32 height=32>
 	 */
 	public static Drawable[] Icons = null;
 	public static Drawable[] SmallStarIcons = null;
@@ -537,6 +539,7 @@ public class Global
 					getDrawable(R.drawable.day_slider_down, R.drawable.night_slider_down, res), // 40
 					getDrawable(R.drawable.day_slider_up_down, R.drawable.night_slider_up_down, res), // 41
 					getDrawable(R.drawable.day_spinner, R.drawable.night_spinner, res), // 42
+					getDrawable(R.drawable.target_icon, res), // 43
 			};
 
 		Arrows = new Drawable[]

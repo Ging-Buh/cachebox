@@ -30,6 +30,8 @@ public class SearchForGeocaches
 	public static class Search
 	{
 		public int number;
+		public boolean withoutFinds = false;
+		public boolean withoutOwn = false;
 	}
 
 	public static class SearchCoordinate extends Search
@@ -41,6 +43,16 @@ public class SearchForGeocaches
 	public static class SearchGC extends Search
 	{
 		public String gcCode;
+	}
+	
+	public static class SearchGCName extends SearchCoordinate
+	{
+		public String gcName;
+	}
+	
+	public static class SearchGCOwner extends SearchCoordinate
+	{
+		public String OwnerName;
 	}
 
 	public static String SearchForGeocachesJSON(String accessToken, Search search, ArrayList<Cache> cacheList, ArrayList<LogEntry> logList,
@@ -67,7 +79,93 @@ public class SearchForGeocaches
 			HttpPost httppost = new HttpPost("https://api.groundspeak.com/LiveV5/Geocaching.svc/SearchForGeocaches?format=json");
 
 			String requestString = "";
-			if (search instanceof SearchCoordinate)
+			
+			
+			
+			
+			
+			if (search instanceof SearchGC)
+			{
+				isLite = false;
+				SearchGC searchGC = (SearchGC) search;
+
+				JSONObject request = new JSONObject();
+				request.put("AccessToken", accessToken);
+				request.put("IsLight", false);
+				request.put("StartIndex", 0);
+				request.put("MaxPerPage", 1);
+				request.put("GeocacheLogCount", 10);
+				request.put("TrackableLogCount", 10);
+				JSONObject requestcc = new JSONObject();
+				JSONArray requesta = new JSONArray();
+				requesta.put(searchGC.gcCode);
+				requestcc.put("CacheCodes", requesta);
+				request.put("CacheCode", requestcc);
+				// ein einzelner Cache wird voll geladen
+				apiStatus = 2;
+
+				requestString = request.toString();
+			}
+			else if (search instanceof SearchGCName)
+			{
+				SearchGCName searchC = (SearchGCName) search;
+				requestString = "{";
+				requestString += "\"AccessToken\":\"" + accessToken + "\",";
+				if (isLite) requestString += "\"IsLite\":true,"; // only lite
+				else
+					requestString += "\"IsLite\":false,"; // full for Premium
+				requestString += "\"StartIndex\":0,";
+				requestString += "\"MaxPerPage\":" + String.valueOf(searchC.number) + ",";
+				
+				requestString += "\"GeocacheName\":{";
+				requestString += "\"GeocacheName\":\"" + searchC.gcName + "\"},";
+				
+				requestString += "\"PointRadius\":{";
+				requestString += "\"DistanceInMeters\":" + "5000000" + ",";
+				requestString += "\"Point\":{";
+				requestString += "\"Latitude\":" + String.valueOf(searchC.pos.Latitude) + ",";
+				requestString += "\"Longitude\":" + String.valueOf(searchC.pos.Longitude);
+				requestString += "}";
+				requestString += "},";
+		
+
+				requestString += "}";
+				
+			}
+			else if (search instanceof SearchGCOwner)
+			{
+				SearchGCOwner searchC = (SearchGCOwner) search;
+				requestString = "{";
+				requestString += "\"AccessToken\":\"" + accessToken + "\",";
+				
+				requestString += "\"HiddenByUsers\":{";
+				requestString += "\"UserNames\":[\"" + searchC.OwnerName + "\"]},";
+				
+				
+				if (isLite) requestString += "\"IsLite\":true,"; // only lite
+				else
+					requestString += "\"IsLite\":false,"; // full for Premium
+				requestString += "\"StartIndex\":0,";
+				requestString += "\"MaxPerPage\":" + String.valueOf(searchC.number) + ",";
+				requestString += "\"GeocacheLogCount\":3,";
+				requestString += "\"TrackableLogCount\":2,";
+				
+				
+				requestString += "\"PointRadius\":{";
+				requestString += "\"DistanceInMeters\":" + "5000000" + ",";
+				requestString += "\"Point\":{";
+				requestString += "\"Latitude\":" + String.valueOf(searchC.pos.Latitude) + ",";
+				requestString += "\"Longitude\":" + String.valueOf(searchC.pos.Longitude);
+				requestString += "}";
+				requestString += "},";
+//				
+				
+		
+
+				requestString += "}";
+				
+			}
+			else if (search instanceof SearchCoordinate)
 			{
 				SearchCoordinate searchC = (SearchCoordinate) search;
 				requestString = "{";
@@ -90,28 +188,7 @@ public class SearchForGeocaches
 				requestString += "}";
 				requestString += "}";
 			}
-			else if (search instanceof SearchGC)
-			{
-				isLite = false;
-				SearchGC searchGC = (SearchGC) search;
 
-				JSONObject request = new JSONObject();
-				request.put("AccessToken", accessToken);
-				request.put("IsLight", false);
-				request.put("StartIndex", 0);
-				request.put("MaxPerPage", 1);
-				request.put("GeocacheLogCount", 10);
-				request.put("TrackableLogCount", 10);
-				JSONObject requestcc = new JSONObject();
-				JSONArray requesta = new JSONArray();
-				requesta.put(searchGC.gcCode);
-				requestcc.put("CacheCodes", requesta);
-				request.put("CacheCode", requestcc);
-				// ein einzelner Cache wird voll geladen
-				apiStatus = 2;
-
-				requestString = request.toString();
-			}
 
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 			httppost.setHeader("Accept", "application/json");
@@ -119,7 +196,7 @@ public class SearchForGeocaches
 
 			// Execute HTTP Post Request
 			HttpResponse response = httpclient.execute(httppost);
-
+			
 			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 			String line = "";
 			while ((line = rd.readLine()) != null)
@@ -212,7 +289,7 @@ public class SearchForGeocaches
 						}
 						catch (Exception e)
 						{
-							CacheERROR = true;
+							
 						}
 						cache.Rating = 0;
 						// cache.Rating =
@@ -230,8 +307,8 @@ public class SearchForGeocaches
 
 						// Chk if Own or Found
 						Boolean exclude = false;
-						if (Config.GetBool("SearchWithoutFounds") && cache.Found) exclude = true;
-						if (Config.GetBool("SearchWithoutOwns") && cache.Owner.equalsIgnoreCase(Config.GetString("GcLogin"))) exclude = true;
+						if (search.withoutFinds && cache.Found) exclude = true;
+						if (search.withoutOwn && cache.Owner.equalsIgnoreCase(Config.GetString("GcLogin"))) exclude = true;
 
 						if (!CacheERROR && !exclude)
 						{

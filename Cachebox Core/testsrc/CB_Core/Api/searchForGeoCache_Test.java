@@ -73,7 +73,95 @@ public class searchForGeoCache_Test extends TestCase
 		searchC.number = 50;
 		String result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, 0);
 
-		int i = 0;
+		assertFalse("Keine Caches gefunden", apiCaches.size() < 1);
+
+	}
+
+	public void testSearchGcCode()
+	{
+		String accessToken = Config.GetAccessToken();
+
+		CB_Core.Api.SearchForGeocaches.SearchGC searchC = new CB_Core.Api.SearchForGeocaches.SearchGC();
+		searchC.gcCode = "GC30NZN";
+		searchC.number = 1;
+
+		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+
+		String result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, 0);
+
+		boolean Assert = false;
+		if (apiCaches != null && apiCaches.size() == 1 && apiCaches.get(0).GcCode.equalsIgnoreCase("GC30NZN"))
+		{
+			Assert = true;
+		}
+
+		assertTrue("Nicht den Richtigen Cache gefunden", Assert);
+
+	}
+
+	public void testSearchName()
+	{
+		String accessToken = Config.GetAccessToken();
+
+		Coordinate searchCoord = new Coordinate(52.581892, 13.398128); // Home
+																		// of
+																		// Katipa(like
+																		// Longri)
+
+		CB_Core.Api.SearchForGeocaches.SearchGCName searchC = new CB_Core.Api.SearchForGeocaches.SearchGCName();
+		searchC.gcName = "c40";
+		searchC.number = 30;
+		searchC.pos = searchCoord;
+
+		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+
+		String result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, 0);
+
+		boolean Assert = false;
+		if (apiCaches != null && apiCaches.size() == 1 && apiCaches.get(0).GcCode.equalsIgnoreCase("GC2NFTY"))
+		{
+			Assert = true;
+		}
+
+		assertTrue("Nicht den Richtigen Cache gefunden", Assert);
+	}
+
+	public void testSearchByOwner()
+	{
+		String accessToken = Config.GetAccessToken();
+		Coordinate searchCoord = new Coordinate(52.581892, 13.398128); // Home
+		// of
+		// Katipa(like
+		// Longri)
+
+		CB_Core.Api.SearchForGeocaches.SearchGCOwner searchC = new CB_Core.Api.SearchForGeocaches.SearchGCOwner();
+//		searchC.OwnerName = "bros";
+		searchC.OwnerName = "nimaci2001";
+		searchC.number = 30;
+		searchC.pos = searchCoord;
+
+		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+
+		String result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, 0);
+
+		boolean Assert = false;
+		if (apiCaches != null && apiCaches.size() > 0)
+		{
+
+			Iterator<Cache> iterator = apiCaches.iterator();
+
+			do
+			{
+				if (iterator.next().GcCode.equalsIgnoreCase("GC2JT2F")) Assert = true;
+			}
+			while (iterator.hasNext());
+
+		}
+
+		assertTrue("Nicht den Richtigen Cache gefunden", Assert);
 	}
 
 }

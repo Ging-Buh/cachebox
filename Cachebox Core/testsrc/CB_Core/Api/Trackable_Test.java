@@ -61,11 +61,16 @@ public class Trackable_Test extends TestCase
 		boolean Assert=false;
 		
 		Iterator<Trackable> iterator = list.iterator();
-		do
+		if(iterator!=null && iterator.hasNext())
 		{
-			String Name =iterator.next().getName();
-			if(Name.contains("Cachebox")&& Name.contains("honour"))Assert=true;
-		}while(iterator.hasNext());
+			do
+			{
+				String Name = iterator.next().getName();
+				if (Name.contains("Cachebox") && Name.contains("honour")) Assert = true;
+			}
+			while (iterator.hasNext());
+		}
+		
 		
 		
 		assertTrue("Fehler TB List Abfrage", Assert);

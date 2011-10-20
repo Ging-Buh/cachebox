@@ -829,7 +829,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog {
             
             PB.setIndeterminate(true);
             PB.setIndeterminateDrawable(Global.Icons[42]);
-            RotateAnimation anim = new RotateAnimation(0f, 360f, Global.Icons[42].getIntrinsicWidth()/2, Global.Icons[42].getIntrinsicHeight()/2);
+            RotateAnimation anim = new RotateAnimation(0f, 360f, Global.Icons[42].getIntrinsicWidth(), Global.Icons[42].getIntrinsicHeight());
             anim.setInterpolator(new LinearInterpolator());
             anim.setRepeatCount(Animation.INFINITE);
             anim.setDuration(700);
