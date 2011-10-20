@@ -7,7 +7,7 @@ import java.util.TreeMap;
 import CB_Core.Solver.Functions.FunctionCategories;
 
 public class Solver extends ArrayList<SolverZeile> {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 132452345624562L;
 
 	// Liste mit den Operatoren, werden in dieser Reihenfolge abgearbeitet (. vor -)...
     static SortedMap<Integer, ArrayList<String>> operatoren = new TreeMap<Integer, ArrayList<String>>();

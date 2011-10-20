@@ -12,11 +12,11 @@ public class FunctionCategories extends TreeMap<String, Functions> {
 	public FunctionCategories()
     {
       Functions functions = new Functions("solverGroupText");
-/*      functions.Add(new FunctionAlphaSum());*/
+      functions.add(new FunctionAlphaSum());
       functions.add(new FunctionAlphaPos());
-/*      functions.Add(new FunctionHandyCode());
-      functions.Add(new FunctionHandySum());
-      functions.Add(new FunctionLength());
+      functions.add(new FunctionHandyCode());
+      functions.add(new FunctionHandySum());
+/*      functions.Add(new FunctionLength());
       functions.Add(new FunctionReverse());
       functions.Add(new FunctionRot13());*/
       this.put(functions.Name, functions);
