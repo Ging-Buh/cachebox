@@ -1,4 +1,4 @@
-package de.droidcachebox.Solver.Functions;
+package CB_Core.Solver.Functions;
 
 public class FunctionAlphaPos extends Function {
 

@@ -1,10 +1,10 @@
-package de.droidcachebox.Solver.Functions;
+package CB_Core.Solver.Functions;
 
 import java.util.ArrayList;
 
-import de.droidcachebox.Solver.EntityList;
-import de.droidcachebox.Solver.FunctionEntity;
-import de.droidcachebox.Solver.TempEntity;
+import CB_Core.Solver.EntityList;
+import CB_Core.Solver.FunctionEntity;
+import CB_Core.Solver.TempEntity;
 
 public abstract class Function {
 

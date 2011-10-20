@@ -1,4 +1,4 @@
-package de.droidcachebox.Solver;
+package CB_Core.Solver;
 
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;

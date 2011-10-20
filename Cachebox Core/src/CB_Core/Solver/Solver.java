@@ -1,12 +1,10 @@
-package de.droidcachebox.Solver;
+package CB_Core.Solver;
 
 import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import android.os.Environment;
-
-import de.droidcachebox.Solver.Functions.FunctionCategories;
+import CB_Core.Solver.Functions.FunctionCategories;
 
 public class Solver extends ArrayList<SolverZeile> {
 	private static final long serialVersionUID = 1L;

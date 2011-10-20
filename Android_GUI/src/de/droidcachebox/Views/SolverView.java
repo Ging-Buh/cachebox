@@ -6,8 +6,8 @@ import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
-import de.droidcachebox.Solver.Solver;
-import de.droidcachebox.Solver.SolverZeile;
+import CB_Core.Solver.Solver;
+import CB_Core.Solver.SolverZeile;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;

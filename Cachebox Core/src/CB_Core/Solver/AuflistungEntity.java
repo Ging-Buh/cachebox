@@ -1,14 +1,14 @@
-package de.droidcachebox.Solver;
+package CB_Core.Solver;
 
 import java.util.ArrayList;
 
-public class ParameterEntity extends Entity {
+public class AuflistungEntity extends Entity {
     ArrayList<Entity> Liste = new ArrayList<Entity>();
-    public ParameterEntity(int id)
+    public AuflistungEntity(int id)
     {
     	super(id);
     }
-    
+
     @Override
     public void ReplaceTemp(Entity source, Entity dest)
     {
@@ -41,27 +41,14 @@ public class ParameterEntity extends Entity {
       return result;
     }
 
-    public String[] GetParameter()
-    {
-      String[] result = new String[Liste.size()];
-      for (int i = 0; i < Liste.size(); i++)
-      {
-        Entity entity = Liste.get(i);
-
-        result[i] = entity.Berechne();
-      }
-      return result;
-    }
-
     @Override
     public String ToString()
     {
-      String result = "P" + Id + ":(";
+      String result = "A" + Id + ":(";
       for (Entity entity : Liste)
-        result += entity.ToString() + ";";
+        result += entity.ToString() + ",";
       result = result.substring(0, result.length() - 1);
       result += ")";
       return result;
     }
-
 }

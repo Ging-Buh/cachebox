@@ -1,4 +1,4 @@
-package de.droidcachebox.Solver;
+package CB_Core.Solver;
 
 import java.util.SortedMap;
 import java.util.TreeMap;

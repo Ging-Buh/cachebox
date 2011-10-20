@@ -1,8 +1,8 @@
-package de.droidcachebox.Solver;
+package CB_Core.Solver;
 
 import java.util.ArrayList;
 
-import de.droidcachebox.Solver.Functions.Function;
+import CB_Core.Solver.Functions.Function;
 
 public class FunctionEntity extends Entity {
 

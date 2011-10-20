@@ -1,9 +1,9 @@
-package de.droidcachebox.Solver.Functions;
+package CB_Core.Solver.Functions;
 
 import java.util.ArrayList;
 
-import de.droidcachebox.Solver.EntityList;
-import de.droidcachebox.Solver.TempEntity;
+import CB_Core.Solver.EntityList;
+import CB_Core.Solver.TempEntity;
 
 public class Functions extends ArrayList<Function> {
 	private static final long serialVersionUID = 1L;
