@@ -12,6 +12,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
@@ -35,6 +37,7 @@ import CB_Core.Types.Waypoint;
 import de.droidcachebox.ExtAudioRecorder;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Components.search;
+import de.droidcachebox.Components.search.searchMode;
 import de.droidcachebox.Custom_Controls.DebugInfoPanel;
 import de.droidcachebox.Custom_Controls.DescriptionViewControl;
 import de.droidcachebox.Custom_Controls.Mic_On_Flash;
@@ -88,6 +91,7 @@ import de.droidcachebox.Views.Forms.SelectDB;
 import de.droidcachebox.Views.Forms.Settings;
 import de.droidcachebox.Views.Forms.MessageBox;
 import CB_Core.DB.Database;
+import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Types.CacheList;
 import android.app.Activity;
 import android.database.Cursor;
@@ -213,6 +217,10 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	// private LinearLayout frameCacheName;
 	public downSlider InfoDownSlider;
 	public HorizontalListView QuickButtonList;
+
+	private String GcCode = null;
+	private String name = null;
+	private String guid = null;
 
 	private Mic_On_Flash Mic_Icon;
 	private static DebugInfoPanel debugInfoPanel;
@@ -351,6 +359,27 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 		if (GlobalCore.SelectedCache() == null)
 		{
+
+			if (Database.Data == null)
+			{
+				String FilterString = Config.GetString("Filter");
+				Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(PresetListView.presets[0]) : new FilterProperties(
+						FilterString);
+				String sqlWhere = Global.LastFilter.getSqlWhere();
+
+				// initialize Database
+				Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
+				String database = Config.GetString("DatabasePath");
+				Database.Data.StartUp(database);
+
+				GlobalCore.Categories = new Categories();
+				Database.Data.GPXFilenameUpdateCacheCount();
+
+				CacheListDAO cacheListDAO = new CacheListDAO();
+				cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+
+			}
+
 			CacheList cacheList = Database.Data.Query;
 			if (cacheList.size() > 0)
 			{
@@ -364,10 +393,13 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			GlobalCore.SelectedCache(GlobalCore.SelectedCache());
 		}
 
+		Search = new search(this);
+
 		if (aktViewId != -1)
 		{
 			// Zeige letzte gespeicherte View beim neustart der Activity
 			showView(aktViewId);
+
 		}
 		else
 		{
@@ -430,8 +462,71 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 		}
 
-		Search = new search(this);
+		final Bundle extras = getIntent().getExtras();
+		if (extras != null)
+		{
+			GcCode = extras.getString("GcCode");
+			name = extras.getString("name");
+			guid = extras.getString("guid");
 
+			// MessageBox.Show("GcCode=" + GcCode + String.format("%n") +
+			// "name =" + name + String.format("%n") + "guid =" + guid);
+
+			startTimer();
+		}
+
+	}
+
+	boolean flag = false;
+
+	private void startTimer()
+	{
+		Timer timer = new Timer();
+		TimerTask task = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				startSearch();
+			}
+		};
+		timer.schedule(task, 500);
+	}
+	
+	private void startSearch()
+	{
+		if (GcCode != null)
+		{
+			Thread t = new Thread()
+			{
+				public void run()
+				{
+					runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							if (flag)
+							{
+								flag = false;
+								Search.Show();
+								Search.addSearch(GcCode, searchMode.GcCode);
+							}
+							else
+							{
+								flag = true;
+								showView(1);
+								startTimer();
+							}
+
+						}
+					});
+				}
+			};
+
+			t.start();
+
+		}
 	}
 
 	/** hook into menu button for activity */
@@ -1418,9 +1513,9 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			case R.id.miAddCache:
 				addCache();
 				break;
-			case R.id.searchcaches_online:
-				searchOnline();
-				break;
+//			case R.id.searchcaches_online:
+//				searchOnline();
+//				break;
 			case R.id.miChkState:
 				chkCachesStateFilterSelection();
 				break;
@@ -1967,7 +2062,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		mainActivity.startActivityForResult(selectDBIntent, 546132);
 	}
 
-	private void ListSearch()
+	public void ListSearch()
 	{
 		Search.Show();
 	}
@@ -2064,8 +2159,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			}
 			else
 			{
-				MessageBox.Show(GlobalCore.Translations.Get("GC_basic"), GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
-						MessageBoxIcon.Powerd_by_GC_Live, PremiumMemberResult);
+				MessageBox.Show(GlobalCore.Translations.Get("GC_basic"), GlobalCore.Translations.Get("GC_title"),
+						MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, PremiumMemberResult);
 			}
 		}
 	};

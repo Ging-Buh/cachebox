@@ -7,7 +7,7 @@
 	<item android:id="@+id/mapview_smooth" android:title="Smooth Scrolling"> 
 	</item>
 	<item android:id="@+id/mapview_go_settings" android:title="Settings" android:visible="false"></item>
-	<item android:title="Search Caches Online" android:id="@+id/searchcaches_online"></item>
+	<item android:icon="@drawable/lupe" android:id="@+id/miSearch" android:title="Search Caches "></item>
 	<item android:id="@+id/mimapview_view" android:title="View">
 	</item>
 	<item android:title="Track Recorder" android:id="@+id/mi_Track"></item>

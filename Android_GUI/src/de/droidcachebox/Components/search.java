@@ -308,14 +308,14 @@ public class search
 				closeSoftKeyPad();
 				if (mTglBtnOnline.getState() == 1)
 				{
-					((main)main.mainActivity).searchOnline();
+					((main) main.mainActivity).searchOnline();
 					Hide();
 				}
 				else
 				{
 					setFilter();
 				}
-				
+
 			}
 		});
 
@@ -329,20 +329,31 @@ public class search
 				if (mTglBtnOnline.getState() == 1)
 				{
 					mTglBtnOnline.setState(0);
-					mBtnFilter.setCompoundDrawables(null, null, null, null);
-					mBtnFilter.setText(GlobalCore.Translations.Get("Filter"));
 				}
 				else
 				{
 					mTglBtnOnline.setState(1);
-					mBtnFilter.setCompoundDrawablesWithIntrinsicBounds(Global.Icons[43], null, null, null);
 
-					mBtnFilter.setText("");
 				}
+				setFilterBtnState();
 				textBox_TextChanged();
 			}
 		});
 
+	}
+
+	private void setFilterBtnState()
+	{
+		if (mTglBtnOnline.getState() == 0)
+		{
+			mBtnFilter.setCompoundDrawables(null, null, null, null);
+			mBtnFilter.setText(GlobalCore.Translations.Get("Filter"));
+		}
+		else
+		{
+			mBtnFilter.setCompoundDrawablesWithIntrinsicBounds(Global.Icons[43], null, null, null);
+			mBtnFilter.setText("");
+		}
 	}
 
 	/**
@@ -350,11 +361,16 @@ public class search
 	 */
 	public void Show()
 	{
+		Show("", 0);
+	}
+
+	public void Show(String search, int Mode)
+	{
 
 		setBackGroundDrawable();
 
 		// set Visibility to VISIBLE nur in CacheListView und MapView
-		mPtrMain.searchLayout.setVisibility(View.VISIBLE);
+		((main) main.mainActivity).searchLayout.setVisibility(View.VISIBLE);
 		mIsVisible = true;
 		setLang();
 
@@ -367,9 +383,10 @@ public class search
 		Config.AcceptChanges();
 
 		// initalisier mit Title Suche
-		switchSearcheMode(0);
+		switchSearcheMode(Mode);
 
-		mEingabe.setText("");
+		mEingabe.setText(search);
+		setFilterBtnState();
 	}
 
 	/**
@@ -407,9 +424,12 @@ public class search
 	 */
 	private void setLang()
 	{
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnTitle, GlobalCore.Translations.Get("Title"), GlobalCore.Translations.Get("Title"));
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnGc, GlobalCore.Translations.Get("GCCode"), GlobalCore.Translations.Get("GCCode"));
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnOwner, GlobalCore.Translations.Get("Owner"), GlobalCore.Translations.Get("Owner"));
+		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnTitle, GlobalCore.Translations.Get("Title"),
+				GlobalCore.Translations.Get("Title"));
+		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnGc, GlobalCore.Translations.Get("GCCode"),
+				GlobalCore.Translations.Get("GCCode"));
+		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnOwner, GlobalCore.Translations.Get("Owner"),
+				GlobalCore.Translations.Get("Owner"));
 		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnOnline, "Online", "Online");
 
 		// der State muss erstmal gesetzt werden, damit die Anzeige
@@ -594,6 +614,9 @@ public class search
 				Global.autoResort = false;
 
 				ActivityUtils.setBtnState(mBtnNext, true);
+
+				((main) main.mainActivity).mapView.showBubleSelected();
+
 			}
 		}
 		else
@@ -634,7 +657,6 @@ public class search
 		ApplyFilter();
 	}
 
-	// private android.app.ProgressDialog pd;
 	private FilterProperties props;
 
 	public void ApplyFilter()
@@ -770,8 +792,8 @@ public class search
 			}
 			else
 			{
-				MessageBox.Show(GlobalCore.Translations.Get("GC_basic"), GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
-						MessageBoxIcon.Powerd_by_GC_Live, PremiumMemberResult);
+				MessageBox.Show(GlobalCore.Translations.Get("GC_basic"), GlobalCore.Translations.Get("GC_title"),
+						MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, PremiumMemberResult);
 			}
 		}
 	};
@@ -1008,5 +1030,21 @@ public class search
 			}
 		}
 	};
+
+	public enum searchMode
+	{
+		Titel, GcCode, Owner
+	}
+
+	public void addSearch(String searchPattern, searchMode Mode)
+	{
+
+		Logger.DEBUG("addSearch " + searchPattern);
+
+		Show(searchPattern, Mode.ordinal());
+
+		// Suche auslösen
+		mBtnSearch.performClick();
+	}
 
 }

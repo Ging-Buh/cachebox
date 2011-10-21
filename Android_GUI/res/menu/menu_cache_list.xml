@@ -6,8 +6,7 @@
 		android:title="Filter"></item>
 	<item android:title="search" android:id="@+id/miSearch" android:icon="@drawable/lupe"></item>
 	<item android:title="add Cache manuell" android:id="@+id/miAddCache" android:icon="@drawable/add_cache_icon"></item>
-	 <item android:title="Import" android:id="@+id/miImport" android:icon="@drawable/download"></item>   
-	<item android:title="Search Caches Online" android:id="@+id/searchcaches_online"></item>
+	 <item android:title="Import" android:id="@+id/miImport" android:icon="@drawable/download"></item>
 	<item android:title="Manage" android:id="@+id/miManageDB"
 		android:icon="@drawable/manage_db"></item>
 	<item android:checked="false" android:id="@+id/miAutoResort"

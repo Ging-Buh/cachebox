@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -39,6 +40,8 @@ import de.droidcachebox.Views.MapView;
 import de.droidcachebox.Views.FilterSettings.PresetListView;
 import de.droidcachebox.Views.Forms.SelectDB;
 
+
+
 public class splash extends Activity
 {
 	public static Activity mainActivity;
@@ -51,12 +54,75 @@ public class splash extends Activity
 	Bitmap bitmap;
 	Bitmap logo;
 	Bitmap gc_power_logo;
+	
+	String GcCode = null;
+	String guid = null;
+	String name =null;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.splash);
+
+		// get parameters
+		final Bundle extras = getIntent().getExtras();
+		final Uri uri = getIntent().getData();
+		
+
+		// try to get data from extras
+		if (extras != null)
+		{
+			GcCode = extras.getString("geocode");
+			name = extras.getString("name");
+			guid = extras.getString("guid");
+		}
+
+		// try to get data from URI
+		if (GcCode == null && guid == null && uri != null)
+		{
+			String uriHost = uri.getHost().toLowerCase();
+			String uriPath = uri.getPath().toLowerCase();
+			String uriQuery = uri.getQuery();
+
+			
+			if (uriHost.contains("geocaching.com") == true)
+			{
+				GcCode = uri.getQueryParameter("wp");
+				guid = uri.getQueryParameter("guid");
+
+				if (GcCode != null && GcCode.length() > 0)
+				{
+					GcCode = GcCode.toUpperCase();
+					guid = null;
+				}
+				else if (guid != null && guid.length() > 0)
+				{
+					GcCode = null;
+					guid = guid.toLowerCase();
+				}
+				else
+				{
+//					warning.showToast(res.getString(R.string.err_detail_open));
+					finish();
+					return;
+				}
+			}
+			else if (uriHost.contains("coord.info") == true)
+			{
+				if (uriPath != null && uriPath.startsWith("/gc") == true)
+				{
+					GcCode = uriPath.substring(1).toUpperCase();
+				}
+				else
+				{
+//					warning.showToast(res.getString(R.string.err_detail_open));
+					finish();
+					return;
+				}
+			}
+		}
+
 		myProgressBar = (ProgressBar) findViewById(R.id.splash_progressbar);
 		myTextView = (TextView) findViewById(R.id.splash_TextView);
 		myTextView.setTextColor(Color.BLACK);
@@ -224,6 +290,19 @@ public class splash extends Activity
 		// Initial Ready Show main
 		finish();
 		Intent mainIntent = new Intent().setClass(splash.this, main.class);
+		
+		
+		if(GcCode!=null)
+		{
+			Bundle b = new Bundle();
+			b.putSerializable("GcCode", GcCode);
+			b.putSerializable("name", name);
+			b.putSerializable("guid", guid);
+			mainIntent.putExtras(b);
+		}
+		
+		
+		
 		startActivity(mainIntent);
 	}
 
