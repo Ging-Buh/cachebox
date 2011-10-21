@@ -113,4 +113,25 @@ public class GlobalCore
 		return FormatDM(longitude, "E", "W");
 	}
 
+	public static String Rot13(String message)
+	{
+		String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		String lookup = "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM";
+
+		String result = "";
+
+		for (int i = 0; i < message.length(); i++)
+		{
+			String curChar = message.substring(i, i + 1);
+			int idx = alphabet.indexOf(curChar);
+
+			if (idx < 0) result += curChar;
+			else
+				result += lookup.substring(idx, idx + 1);
+		}
+
+		return result;
+
+	}
+
 }

@@ -16,14 +16,14 @@ public class FunctionCategories extends TreeMap<String, Functions> {
       functions.add(new FunctionAlphaPos());
       functions.add(new FunctionHandyCode());
       functions.add(new FunctionHandySum());
-/*      functions.Add(new FunctionLength());
-      functions.Add(new FunctionReverse());
-      functions.Add(new FunctionRot13());*/
+      functions.add(new FunctionLength());
+      functions.add(new FunctionReverse());
+      functions.add(new FunctionRot13());
       this.put(functions.Name, functions);
       functions = new Functions("solverGroupNumbers");
-/*      functions.Add(new FunctionQuersumme());
-      functions.Add(new FunctionIQuersumme());
-      functions.Add(new FunctionQuerprodukt());
+      functions.add(new FunctionQuersumme());
+      functions.add(new FunctionIQuersumme());
+/*      functions.Add(new FunctionQuerprodukt());
       functions.Add(new FunctionIQuerprodukt());
       functions.Add(new FunctionRom2Dec());
       functions.Add(new FunctionPrimenumber());
