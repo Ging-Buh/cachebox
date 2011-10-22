@@ -201,7 +201,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -2430,6 +2429,19 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 					try
 					{
+						ArrayList<KachelOrder> kOrder = new ArrayList<KachelOrder>();
+						for (int x = xFrom; x <= xTo; x++)
+						{
+							for (int y = yFrom; y <= yTo; y++)
+							{
+								if (x < 0 || y < 0 || x >= Descriptor.TilesPerLine[Zoom] || y >= Descriptor.TilesPerColumn[Zoom]) continue;
+								Descriptor desc = new Descriptor(x, y, Zoom);
+								
+								int dist = (int)Math.sqrt(Math.pow(screenCenter.X - (desc.X + 128), 2) + Math.pow(screenCenter.Y - (desc.Y + 128), 2));
+								kOrder.add(new KachelOrder(x, y, dist));
+							}
+						}
+						
 						// Kacheln beantragen
 						for (int x = xFrom; x <= xTo; x++)
 						{
@@ -2563,6 +2575,23 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 	}
 
+	private class KachelOrder implements Comparable<KachelOrder> {
+		int x;
+		int y;
+		int dist;
+		private KachelOrder(int x, int y, int dist) {
+			this.x = x;
+			this.y = y;
+			this.dist = dist;
+		}
+		
+		@Override
+		public int compareTo(KachelOrder arg0)
+		{
+			return (dist < arg0.dist ? -1 : (dist == arg0.dist ? 0 : 1));			
+		}
+		
+	}
 	/*
 	 * Brush orangeBrush = new SolidBrush(Color.Orange);
 	 */

@@ -23,11 +23,11 @@ public class FunctionCategories extends TreeMap<String, Functions> {
       functions = new Functions("solverGroupNumbers");
       functions.add(new FunctionQuersumme());
       functions.add(new FunctionIQuersumme());
-/*      functions.Add(new FunctionQuerprodukt());
-      functions.Add(new FunctionIQuerprodukt());
-      functions.Add(new FunctionRom2Dec());
-      functions.Add(new FunctionPrimenumber());
-      functions.Add(new FunctionPrimeIndex());
+      functions.add(new FunctionQuerprodukt());
+      functions.add(new FunctionIQuerprodukt());
+      functions.add(new FunctionRom2Dec());
+      functions.add(new FunctionPrimenumber());
+/*      functions.Add(new FunctionPrimeIndex());
       functions.Add(new FunctionInt());
       functions.Add(new FunctionRound());
       functions.Add(new FunctionPi());*/

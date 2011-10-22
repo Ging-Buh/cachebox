@@ -31,4 +31,16 @@ public class FunctionRot13 extends Function
 	      return GlobalCore.Rot13(parameter[0]);
 	}
 
+	@Override
+	public int getAnzParam()
+	{
+		return 1;
+	}
+
+	@Override
+	public boolean needsTextArgument()
+	{
+		return true;
+	}
+
 }

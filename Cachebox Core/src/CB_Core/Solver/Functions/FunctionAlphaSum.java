@@ -38,4 +38,17 @@ public class FunctionAlphaSum extends Function
 		}
 		return String.valueOf(result);
 	}
+
+	@Override
+	public int getAnzParam()
+	{
+		return 1;
+	}
+	
+	@Override
+	public boolean needsTextArgument()
+	{
+		return true;
+	}
+
 }

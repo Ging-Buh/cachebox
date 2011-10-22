@@ -2,38 +2,35 @@ package CB_Core.Solver.Functions;
 
 import CB_Core.GlobalCore;
 
-// ************************************************************************
-// ********************** Iterierte (einstellige) Quersumme (Iterated CrossTotal) **************************
-// ************************************************************************
-public class FunctionIQuersumme extends Function
+public class FunctionIQuerprodukt extends Function
 {
-	public FunctionIQuersumme()
+	public FunctionIQuerprodukt()
 	{
-		Names.add("ICrosstotal");
-		Names.add("IQuersumme");
-		Names.add("ICT");
-		Names.add("IQS");
+		Names.add("ICrossproduct");
+		Names.add("IQuerprodukt");
+		Names.add("ICP");
+		Names.add("IQP");
 	}
 
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncICrosstotal");
+		return GlobalCore.Translations.Get("solverFuncICrossproduct");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescICrosstotal");
+		return GlobalCore.Translations.Get("solverDescICrossproduct");
 	}
 
-	private String Qs(String wert)
+	private String Qp(String wert)
 	{
-		int result = 0;
+		int result = 1;
 		for (char c : wert.toCharArray())
 		{
 			int i = (int) c - 48;
-			if ((i >= 0) && (i <= 9)) result += i;
+			if ((i >= 0) && (i <= 9)) result *= i;
 		}
 		return String.valueOf(result);
 	}
@@ -48,7 +45,7 @@ public class FunctionIQuersumme extends Function
 		String wert = parameter[0].trim();
 		while (wert.length() > 1)
 		{
-			wert = Qs(wert);
+			wert = Qp(wert);
 		}
 		return wert;
 	}

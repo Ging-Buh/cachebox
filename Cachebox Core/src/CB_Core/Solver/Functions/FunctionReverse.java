@@ -34,4 +34,16 @@ public class FunctionReverse extends Function
 	      return result;
 	}
 
+	@Override
+	public int getAnzParam()
+	{
+		return 1;
+	}
+
+	@Override
+	public boolean needsTextArgument()
+	{
+		return true;
+	}
+
 }

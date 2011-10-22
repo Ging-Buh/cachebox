@@ -36,4 +36,16 @@ public class FunctionAlphaPos extends Function {
 		int result = (int)c - (int)('a') + 1;
 		return String.valueOf(result);
 	}
+
+	@Override
+	public int getAnzParam()
+	{
+		return 1;
+	}
+
+	@Override
+	public boolean needsTextArgument()
+	{
+		return true;
+	}
 }

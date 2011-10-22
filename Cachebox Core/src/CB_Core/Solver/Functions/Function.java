@@ -14,13 +14,11 @@ public abstract class Function implements Serializable {
     public ArrayList<String> Names = new ArrayList<String>();
     public String Description() { return getDescription(); }
 
-    public Function()
-    {
-    }
-
     public abstract String getName();
     public abstract String getDescription();
     public abstract String Calculate(String[] parameter);
+    public abstract int getAnzParam();
+    public abstract boolean needsTextArgument();
 
     private boolean checkIsFunction(String function, TempEntity tEntity, EntityList entities)
     {

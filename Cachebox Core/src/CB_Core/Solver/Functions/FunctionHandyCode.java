@@ -54,4 +54,16 @@ public class FunctionHandyCode extends Function
 		return "0";
 	}
 
+	@Override
+	public int getAnzParam()
+	{
+		return 1;
+	}
+
+	@Override
+	public boolean needsTextArgument()
+	{
+		return true;
+	}
+
 }

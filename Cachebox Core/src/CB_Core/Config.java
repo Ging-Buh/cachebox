@@ -296,6 +296,7 @@ public class Config
 		}
 		catch (IOException e)
 		{
+			Logger.Error("WriteConfig", "Error when writing cachebox.config!", e);
 			e.printStackTrace();
 		}
 

@@ -224,7 +224,23 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			Function function = (Function) bundle.getSerializable("FunctionResult");
 			if (function != null)
 			{
-				edSolver.setText(function.getName());
+				CharSequence selection = edSolver.getText().subSequence(edSolver.getSelectionStart(), edSolver.getSelectionEnd());
+				String newFunction = function.getName();
+				String zeichen = "";
+				if (function.needsTextArgument()) {
+					zeichen = "\"";
+					if ((selection.length() > 0) && (selection.charAt(0) == '"')) {
+						// Anführungszeichen bereits vorhanden
+						zeichen = "";
+					}
+				}
+				newFunction += "(" + zeichen + selection + zeichen + ")";
+				int newSelectionStart = edSolver.getSelectionStart() + newFunction.length() + 1 + zeichen.length();
+				
+				int start = edSolver.getSelectionStart();
+				int end = edSolver.getSelectionEnd();
+				edSolver.getText().replace(Math.min(start, end), Math.max(start, end),
+				        newFunction, 0, newFunction.length());
 			}
 		}
 	}
