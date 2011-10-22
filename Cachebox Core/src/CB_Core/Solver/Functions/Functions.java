@@ -33,4 +33,9 @@ public class Functions extends ArrayList<Function> {
       return false;
     }
 	
+    
+    public String getName()
+    {
+    	return Name;
+    }
 }

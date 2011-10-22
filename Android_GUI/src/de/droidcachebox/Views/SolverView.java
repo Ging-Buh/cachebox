@@ -2,20 +2,26 @@ package de.droidcachebox.Views;
 
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
+import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverZeile;
+import CB_Core.Solver.Functions.Function;
+import de.droidcachebox.Views.Forms.EditCoordinate;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;
+import de.droidcachebox.Views.Forms.selectSolverFunction;
 import CB_Core.Types.Cache;
+import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +29,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -34,18 +41,22 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	Cache aktCache;
 	boolean mustLoadSolver;
 	Button bSolve;
+	Button bFunct;
+	Button bSelect;
+	Button bKeyb;
 
 	public SolverView(Context context, LayoutInflater inflater)
 	{
 		super(context);
 		mustLoadSolver = false;
-		RelativeLayout solverLayout = (RelativeLayout) inflater.inflate(main.N ? R.layout.night_solverview : R.layout.solverview, null,
-				false);
+		LinearLayout solverLayout = (LinearLayout) inflater.inflate(main.N ? R.layout.night_solverview : R.layout.solverview, null, false);
+
 		this.addView(solverLayout);
-		edSolver = (EditText) findViewById(R.id.solverText);
-		edResult = (EditText) findViewById(R.id.solverResult);
-		bSolve = (Button) findViewById(R.id.solverButtonSolve);
-		bSolve.setText("Solve");
+
+		findViewById();
+		setLang();
+		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+
 		bSolve.setOnClickListener(new OnClickListener()
 		{
 			@Override
@@ -54,7 +65,39 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 				solve();
 			}
 		});
-		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+
+		bFunct.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View arg0)
+			{
+				// Funktion Auswahl Dialog öffnen
+				Intent intent = new Intent().setClass(bFunct.getContext(), selectSolverFunction.class);
+
+				main.mainActivity.startActivityForResult(intent, Global.RESULT_SELECT_SOLVER_FUNCTION);
+
+			}
+		});
+	}
+
+	private void findViewById()
+	{
+		edSolver = (EditText) findViewById(R.id.solverText);
+		edResult = (EditText) findViewById(R.id.solverResult);
+		bSolve = (Button) findViewById(R.id.solverButtonSolve);
+		bFunct = (Button) findViewById(R.id.solverButtonFunktion);
+		bSelect = (Button) findViewById(R.id.solverButtonSelect);
+		bKeyb = (Button) findViewById(R.id.solverButtonKeyb);
+
+	}
+
+	private void setLang()
+	{
+
+		bSolve.setText(GlobalCore.Translations.Get("Solve"));
+		bFunct.setText(GlobalCore.Translations.Get("Funct."));
+		bSelect.setText(GlobalCore.Translations.Get("Select."));
+		bKeyb.setText(GlobalCore.Translations.Get("Keyb."));
 	}
 
 	protected void solve()
@@ -174,7 +217,16 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	@Override
 	public void ActivityResult(int requestCode, int resultCode, Intent data)
 	{
-
+		if (data == null) return;
+		Bundle bundle = data.getExtras();
+		if (bundle != null)
+		{
+			Function function = (Function) bundle.getSerializable("FunctionResult");
+			if (function != null)
+			{
+				edSolver.setText(function.getName());
+			}
+		}
 	}
 
 	@Override

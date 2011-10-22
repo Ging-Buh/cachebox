@@ -51,6 +51,14 @@ public class Global
 	public static final boolean Debug = true;
 	public static JokerList Jokers = new JokerList();
 
+	
+	/**
+	 * Activity Result ID´s
+	 */
+	public static final int RESULT_SELECT_SOLVER_FUNCTION = 29021972;
+	
+	
+	
 		
 	/**
 	 * Liste der Buttons in der QuickButton Leiste
@@ -384,7 +392,7 @@ public class Global
 		return sDate;
 	}
 
-	private static Drawable getDrawable(int ResId, Resources res)
+	public static Drawable getDrawable(int ResId, Resources res)
 	{
 		return getDrawable(ResId, -1, res);
 	}

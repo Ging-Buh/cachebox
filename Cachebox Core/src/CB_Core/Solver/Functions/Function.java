@@ -1,14 +1,16 @@
 package CB_Core.Solver.Functions;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import CB_Core.Solver.EntityList;
 import CB_Core.Solver.FunctionEntity;
 import CB_Core.Solver.TempEntity;
 
-public abstract class Function {
+public abstract class Function implements Serializable {
 
-    public String Name() { return getName(); }
+    private static final long serialVersionUID = 3322289615650829139L;
+	public String Name() { return getName(); }
     public ArrayList<String> Names = new ArrayList<String>();
     public String Description() { return getDescription(); }
 

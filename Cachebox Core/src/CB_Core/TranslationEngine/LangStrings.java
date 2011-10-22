@@ -176,7 +176,7 @@ public class LangStrings
 
 		if (retString == "")
 		{
-			retString = "No translation found";
+			retString = "$ID: "+StringId;// "No translation found";
 		}
 
 		return retString;

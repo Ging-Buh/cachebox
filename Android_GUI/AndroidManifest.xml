@@ -65,6 +65,7 @@
 		<activity android:name=".Views.Forms.projectionCoordinate"></activity>
 		<activity android:name=".Views.Forms.GcApiLogin"></activity>
 		<activity android:name=".Views.Forms.MeasureCoordinateActivity"></activity>
+		<activity android:name=".Views.Forms.selectSolverFunction"></activity>
 
 	</application>
 </manifest>

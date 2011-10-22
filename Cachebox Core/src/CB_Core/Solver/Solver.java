@@ -11,7 +11,7 @@ public class Solver extends ArrayList<SolverZeile> {
 
 	// Liste mit den Operatoren, werden in dieser Reihenfolge abgearbeitet (. vor -)...
     static SortedMap<Integer, ArrayList<String>> operatoren = new TreeMap<Integer, ArrayList<String>>();
-    static FunctionCategories functions = new FunctionCategories();   
+    public static FunctionCategories functions = new FunctionCategories();   
     // hier werden die Loesungen aller Variablen gespeichert
     static TreeMap<String, String> Variablen = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
     static public SortedMap<String, Integer> MissingVariables = null;
