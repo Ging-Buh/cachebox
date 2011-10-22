@@ -1,12 +1,13 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.GlobalCore;
+import CB_Core.Solver.Functions.Function.LacalNames;
 
 public class FunctionRom2Dec extends Function
 {
 	public FunctionRom2Dec()
 	{
-		Names.add("Rom2Dec");
+		Names.add(new LacalNames("Rom2Dec", "en"));
 	}
 
 	@Override

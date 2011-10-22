@@ -1,15 +1,16 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.GlobalCore;
+import CB_Core.Solver.Functions.Function.LacalNames;
 
 public class FunctionHandyCode extends Function
 {
 	public FunctionHandyCode()
 	{
-		Names.add("PhoneCode");
-		Names.add("HandyCode");
-		Names.add("PC");
-		Names.add("HC");
+		Names.add(new LacalNames("PhoneCode", "en"));
+		Names.add(new LacalNames("HandyCode", "de"));
+		Names.add(new LacalNames("PC", "en"));
+		Names.add(new LacalNames("HC", "de"));
 	}
 
 	@Override

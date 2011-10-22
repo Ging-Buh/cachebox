@@ -80,6 +80,12 @@ public class LangStrings
 		}
 		if (FilePath.endsWith("lang")) FilePath = FilePath.replace(".lang", ".lan");
 		_StringList = ReadFile(FilePath);
+		
+		
+		String tmp = FilePath;
+		int pos2 = tmp.lastIndexOf("/") + 1;
+		tmp = FilePath.substring(pos2);
+		LangID = tmp.replace(".lan", "");
 
 		SelectedLangChangedEventList.Call();
 	}
@@ -217,4 +223,10 @@ public class LangStrings
 		return Temp;
 	}
 
+	private String LangID="";
+	
+	public String getLangId()
+	{
+		return LangID;
+	}
 }

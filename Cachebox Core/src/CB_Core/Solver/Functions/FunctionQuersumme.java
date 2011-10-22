@@ -1,15 +1,16 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.GlobalCore;
+import CB_Core.Solver.Functions.Function.LacalNames;
 
 public class FunctionQuersumme extends Function
 {
 	public FunctionQuersumme()
 	{
-		Names.add("Crosstotal");
-		Names.add("Quersumme");
-		Names.add("CT");
-		Names.add("QS");
+		Names.add(new LacalNames("Crosstotal", "en"));
+		Names.add(new LacalNames("Quersumme", "de"));
+		Names.add(new LacalNames("CT", "en"));
+		Names.add(new LacalNames("QS", "de"));
 	}
 
 	@Override

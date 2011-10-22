@@ -1,14 +1,16 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.GlobalCore;
+import CB_Core.Solver.Functions.Function.LacalNames;
 
 public class FunctionLength extends Function
 {
 	public FunctionLength()
 	{
-		Names.add("Length");
-		Names.add("Länge");
-		Names.add("Len");
+		Names.add(new LacalNames("Length", "en"));
+		Names.add(new LacalNames("Länge", "de"));
+		Names.add(new LacalNames("Len", "en"));
+		Names.add(new LacalNames("Len", "de"));
 	}
 
 	@Override

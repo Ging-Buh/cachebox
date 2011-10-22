@@ -1,6 +1,7 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.GlobalCore;
+import CB_Core.Solver.Functions.Function.LacalNames;
 
 // ************************************************************************
 // ********************** Iterierte (einstellige) Quersumme (Iterated CrossTotal) **************************
@@ -9,10 +10,10 @@ public class FunctionIQuersumme extends Function
 {
 	public FunctionIQuersumme()
 	{
-		Names.add("ICrosstotal");
-		Names.add("IQuersumme");
-		Names.add("ICT");
-		Names.add("IQS");
+		Names.add(new LacalNames("ICrosstotal", "en"));
+		Names.add(new LacalNames("IQuersumme", "de"));
+		Names.add(new LacalNames("ICT", "en"));
+		Names.add(new LacalNames("IQS", "de"));
 	}
 
 	@Override

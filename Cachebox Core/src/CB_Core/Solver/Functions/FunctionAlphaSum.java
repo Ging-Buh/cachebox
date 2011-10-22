@@ -1,13 +1,14 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.GlobalCore;
+import CB_Core.Solver.Functions.Function.LacalNames;
 
 public class FunctionAlphaSum extends Function
 {
 	public FunctionAlphaSum()
 	{
-		Names.add("AlphaSum");
-		Names.add("AS");
+		Names.add(new LacalNames("AlphaSum", "en"));
+		Names.add(new LacalNames("AS", "en"));
 	}
 
 	@Override

@@ -1,15 +1,16 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.GlobalCore;
+import CB_Core.Solver.Functions.Function.LacalNames;
 
 public class FunctionIQuerprodukt extends Function
 {
 	public FunctionIQuerprodukt()
 	{
-		Names.add("ICrossproduct");
-		Names.add("IQuerprodukt");
-		Names.add("ICP");
-		Names.add("IQP");
+		Names.add(new LacalNames("ICrossproduct", "en"));
+		Names.add(new LacalNames("IQuerprodukt", "de"));
+		Names.add(new LacalNames("ICP", "en"));
+		Names.add(new LacalNames("IQP", "de"));
 	}
 
 	@Override

@@ -1,13 +1,14 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.GlobalCore;
+import CB_Core.Solver.Functions.Function.LacalNames;
 
 public class FunctionPrimenumber extends Function
 {
 	public FunctionPrimenumber()
 	{
-		Names.add("Primenumber");
-		Names.add("Primzahl");
+		Names.add(new LacalNames("Primenumber", "en"));
+		Names.add(new LacalNames("Primzahl", "de"));
 	}
 
 	@Override
