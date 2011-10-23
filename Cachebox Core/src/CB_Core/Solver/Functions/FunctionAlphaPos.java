@@ -34,7 +34,7 @@ public class FunctionAlphaPos extends Function
 			// return "Diese Funktion benötigt %s Parameter".replace("%s", "1");
 		}
 		String wert = parameter[0].trim().toLowerCase();
-		if (wert == "") return "0";
+		if (wert.length() == 0) return "0";
 		char c = wert.charAt(0);
 		int result = (int) c - (int) ('a') + 1;
 		return String.valueOf(result);

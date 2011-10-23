@@ -1,5 +1,8 @@
 package de.droidcachebox.Views;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import de.droidcachebox.Global;
@@ -26,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -102,6 +106,8 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 
 	protected void solve()
 	{
+		// Hide Keyboard when Calculating
+		showVirturalKeyboard(false);
 		Solver solver = new Solver(edSolver.getText().toString());
 		if (!solver.Solve())
 		{
@@ -226,6 +232,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			{
 				CharSequence selection = edSolver.getText().subSequence(edSolver.getSelectionStart(), edSolver.getSelectionEnd());
 				String newFunction = function.getShortcut();
+				int newFunctionLength = newFunction.length();
 				String zeichen = "";
 				if (function.needsTextArgument()) {
 					zeichen = "\"";
@@ -235,16 +242,35 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 					}
 				}
 				newFunction += "(" + zeichen + selection + zeichen + ")";
-				int newSelectionStart = edSolver.getSelectionStart() + newFunction.length() + 1 + zeichen.length();
+				int newSelectionStart = edSolver.getSelectionStart() + newFunctionLength + 1 + zeichen.length() + selection.length();
 				
 				int start = edSolver.getSelectionStart();
 				int end = edSolver.getSelectionEnd();
 				edSolver.getText().replace(Math.min(start, end), Math.max(start, end),
 				        newFunction, 0, newFunction.length());
+				edSolver.setSelection(newSelectionStart);
+				showVirturalKeyboard(true);
 			}
 		}
 	}
+	
+	private void showVirturalKeyboard(final boolean show){
+	    Timer timer = new Timer();
+	    timer.schedule(new TimerTask() {
+	         @Override
+	         public void run() {
+	              InputMethodManager m = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
+	              if(m != null){
+	            	  if (show)
+	            		  m.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
+	            	  else
+	            		  m.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+	              } 
+	         }
+
+	    }, 100);         
+	}
 	@Override
 	public int GetContextMenuId()
 	{

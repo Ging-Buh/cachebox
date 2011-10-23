@@ -33,7 +33,7 @@ public class FunctionHandyCode extends Function
 			return GlobalCore.Translations.Get("solverErrParamCount").replace("%s", "1");
 		}
 		String wert = parameter[0].trim().toLowerCase();
-		if (wert == "") return "0";
+		if (wert.length() == 0) return "0";
 		char c = wert.charAt(0);
 		int i = (int) c - (int) ('a') + 1;
 		i -= 3;
