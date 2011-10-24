@@ -47,7 +47,12 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	Button bSolve;
 	Button bFunct;
 	Button bSelect;
-	Button bKeyb;
+
+	Button bLeft;
+	Button bMiddle;
+	Button bRight;
+	
+	LinearLayout ButtonsLayout;
 
 	public SolverView(Context context, LayoutInflater inflater)
 	{
@@ -82,6 +87,43 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 
 			}
 		});
+
+		bLeft.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				LinearLayout.LayoutParams PO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
+				LinearLayout.LayoutParams MO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, .20f);
+				edSolver.setLayoutParams(PO);
+				edResult.setLayoutParams(MO);
+			}
+		});
+
+		bMiddle.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				LinearLayout.LayoutParams PO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
+				LinearLayout.LayoutParams MO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
+				edSolver.setLayoutParams(PO);
+				edResult.setLayoutParams(MO);
+			}
+		});
+
+		bRight.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				LinearLayout.LayoutParams PO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, .20f);
+				LinearLayout.LayoutParams MO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
+				edSolver.setLayoutParams(PO);
+				edResult.setLayoutParams(MO);
+			}
+		});
+
 	}
 
 	private void findViewById()
@@ -91,8 +133,12 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 		bSolve = (Button) findViewById(R.id.solverButtonSolve);
 		bFunct = (Button) findViewById(R.id.solverButtonFunktion);
 		bSelect = (Button) findViewById(R.id.solverButtonSelect);
-		bKeyb = (Button) findViewById(R.id.solverButtonKeyb);
 
+		bLeft = (Button) findViewById(R.id.solverButtonViewLeft);
+		bMiddle = (Button) findViewById(R.id.solverButtonViewMidle);
+		bRight = (Button) findViewById(R.id.solverButtonViewRight);
+		
+		ButtonsLayout = (LinearLayout) findViewById(R.id.solverViewButtons); 
 	}
 
 	private void setLang()
@@ -101,7 +147,10 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 		bSolve.setText(GlobalCore.Translations.Get("Solve"));
 		bFunct.setText(GlobalCore.Translations.Get("Funct."));
 		bSelect.setText(GlobalCore.Translations.Get("Select."));
-		bKeyb.setText(GlobalCore.Translations.Get("Keyb."));
+
+		bLeft.setText(GlobalCore.Translations.Get("LeftWindow"));
+		bMiddle.setText(GlobalCore.Translations.Get("BothWindow"));
+		bRight.setText(GlobalCore.Translations.Get("RightWindow"));
 	}
 
 	protected void solve()
@@ -231,47 +280,52 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			if (function != null)
 			{
 				CharSequence selection = edSolver.getText().subSequence(edSolver.getSelectionStart(), edSolver.getSelectionEnd());
-//				String newFunction = function.getShortcut();
+				// String newFunction = function.getShortcut();
 				String newFunction = function.getLongLocalName();
 				int newFunctionLength = newFunction.length();
 				String zeichen = "";
-				if (function.needsTextArgument()) {
+				if (function.needsTextArgument())
+				{
 					zeichen = "\"";
-					if ((selection.length() > 0) && (selection.charAt(0) == '"')) {
+					if ((selection.length() > 0) && (selection.charAt(0) == '"'))
+					{
 						// Anführungszeichen bereits vorhanden
 						zeichen = "";
 					}
 				}
 				newFunction += "(" + zeichen + selection + zeichen + ")";
 				int newSelectionStart = edSolver.getSelectionStart() + newFunctionLength + 1 + zeichen.length() + selection.length();
-				
+
 				int start = edSolver.getSelectionStart();
 				int end = edSolver.getSelectionEnd();
-				edSolver.getText().replace(Math.min(start, end), Math.max(start, end),
-				        newFunction, 0, newFunction.length());
+				edSolver.getText().replace(Math.min(start, end), Math.max(start, end), newFunction, 0, newFunction.length());
 				edSolver.setSelection(newSelectionStart);
 				showVirturalKeyboard(true);
 			}
 		}
 	}
-	
-	private void showVirturalKeyboard(final boolean show){
-	    Timer timer = new Timer();
-	    timer.schedule(new TimerTask() {
-	         @Override
-	         public void run() {
-	              InputMethodManager m = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-	              if(m != null){
-	            	  if (show)
-	            		  m.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
-	            	  else
-	            		  m.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
-	              } 
-	         }
+	private void showVirturalKeyboard(final boolean show)
+	{
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				InputMethodManager m = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-	    }, 100);         
+				if (m != null)
+				{
+					if (show) m.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
+					else
+						m.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+				}
+			}
+
+		}, 100);
 	}
+
 	@Override
 	public int GetContextMenuId()
 	{
@@ -288,6 +342,26 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	public boolean ContextMenuItemSelected(MenuItem item)
 	{
 		return false;
+	}
+
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+	{
+
+		final int proposedheight = MeasureSpec.getSize(heightMeasureSpec);
+		final int actualHeight = getHeight();
+
+		if (actualHeight > proposedheight)
+		{
+			// Keyboard is shown set Buttons Gone
+			ButtonsLayout.setVisibility(GONE);
+		}
+		else
+		{
+			// Keyboard is hidden set Buttons Visible
+			ButtonsLayout.setVisibility(VISIBLE);
+		}
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}
 
 }
