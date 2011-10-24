@@ -231,7 +231,8 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			if (function != null)
 			{
 				CharSequence selection = edSolver.getText().subSequence(edSolver.getSelectionStart(), edSolver.getSelectionEnd());
-				String newFunction = function.getShortcut();
+//				String newFunction = function.getShortcut();
+				String newFunction = function.getLongLocalName();
 				int newFunctionLength = newFunction.length();
 				String zeichen = "";
 				if (function.needsTextArgument()) {

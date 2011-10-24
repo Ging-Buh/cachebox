@@ -59,9 +59,6 @@ public abstract class Function implements Serializable
 		String retEN="abcdefghijklmnopqrstuvwxyz";
 		String local=GlobalCore.Translations.getLangId();
 		Iterator<LacalNames> iterator = Names.iterator();
-		
-		
-		
 		do
 		{
 			LacalNames tmp = iterator.next();
@@ -84,7 +81,35 @@ public abstract class Function implements Serializable
 		return ret;	
 	}
 	
-	private boolean checkIsFunction(String function, TempEntity tEntity, EntityList entities)
+	public String getLongLocalName()
+	{
+		String ret="";
+		String retEN="";
+		String local=GlobalCore.Translations.getLangId();
+		Iterator<LacalNames> iterator = Names.iterator();
+		do
+		{
+			LacalNames tmp = iterator.next();
+			if(tmp.Local.equalsIgnoreCase(local))
+			{
+				if(tmp.Name.length()>ret.length())ret=tmp.Name;
+			}
+			else if(tmp.Local.equalsIgnoreCase("en"))
+			{
+				if(tmp.Name.length()>retEN.length())retEN=tmp.Name;
+			}
+			
+		}while(iterator.hasNext());
+		
+		if(ret.equalsIgnoreCase(""))
+		{
+			return retEN;
+		}
+		
+		return ret;	
+	}
+	
+ 	private boolean checkIsFunction(String function, TempEntity tEntity, EntityList entities)
 	{
 		try
 		{
