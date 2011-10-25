@@ -55,12 +55,12 @@ public class GpxImportTest extends TestCase {
 		
 		PositvieList.add(Attributes.Bicycles);
 		PositvieList.add(Attributes.Dogs);
-		PositvieList.add(Attributes.Anytime);
-		PositvieList.add(Attributes.Restrooms);
-		PositvieList.add(Attributes.Parking);
-		PositvieList.add(Attributes.FuelNearby);
-		PositvieList.add(Attributes.ShortHike);
-		PositvieList.add(Attributes.ClimbingGear);
+		PositvieList.add(Attributes.Available_at_all_times);
+		PositvieList.add(Attributes.Public_restrooms_nearby);
+		PositvieList.add(Attributes.Parking_available);
+		PositvieList.add(Attributes.Fuel_Nearby);
+		PositvieList.add(Attributes.Short_hike);
+		PositvieList.add(Attributes.Climbing_gear);
 		PositvieList.add(Attributes.Ticks);
 		PositvieList.add(Attributes.Hunting);
 		
@@ -105,6 +105,12 @@ public class GpxImportTest extends TestCase {
 		{
 			attributes.remove(negativeInterator.next());
 		}
+		
+		
+		attributes.remove(Attributes.getAttributeEnumByGcComId(64));
+		attributes.remove(Attributes.getAttributeEnumByGcComId(65));
+		attributes.remove(Attributes.getAttributeEnumByGcComId(66));
+		
 		
 		//Teste ob die Übrig gebliebenen Atributte auch nicht vergeben wurden.
 		Iterator RestInterator = attributes.iterator();

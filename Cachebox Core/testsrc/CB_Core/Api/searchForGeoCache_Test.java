@@ -138,8 +138,8 @@ public class searchForGeoCache_Test extends TestCase
 		// Longri)
 
 		CB_Core.Api.SearchForGeocaches.SearchGCOwner searchC = new CB_Core.Api.SearchForGeocaches.SearchGCOwner();
-//		searchC.OwnerName = "bros";
-		searchC.OwnerName = "nimaci2001";
+		searchC.OwnerName = "bros";
+//		searchC.OwnerName = "nimaci2001";
 		searchC.number = 30;
 		searchC.pos = searchCoord;
 

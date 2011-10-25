@@ -299,75 +299,12 @@ public class FilterProperties
             
             // Attributes test = Attributes.Offroad;
 
-            HashMap<Integer, Attributes> attributeLookup;
-            attributeLookup = new HashMap<Integer, Attributes>();
-            attributeLookup.put(0, Attributes.Dogs);
-            attributeLookup.put(1, Attributes.Bicycles);
-            attributeLookup.put(2, Attributes.Motorcycles);
-            attributeLookup.put(3, Attributes.Quads);
-            attributeLookup.put(4, Attributes.Offroad);
-            attributeLookup.put(5, Attributes.Snowmobiles);
-            attributeLookup.put(6, Attributes.Horses);
-            attributeLookup.put(7, Attributes.Campfires);
-            attributeLookup.put(8, Attributes.TruckDriver);
-
-            attributeLookup.put(9, Attributes.Fee);
-            attributeLookup.put(10, Attributes.ClimbingGear);
-            attributeLookup.put(11, Attributes.Boat);
-            attributeLookup.put(12, Attributes.Scuba);
-            attributeLookup.put(13, Attributes.Flashlight);
-            attributeLookup.put(14, Attributes.UVLight);
-            attributeLookup.put(15, Attributes.Snowshoes);
-            attributeLookup.put(16, Attributes.CrossCountrySkiis);
-            attributeLookup.put(17, Attributes.SpecialTool);
-
-            attributeLookup.put(18, Attributes.Kids);
-            attributeLookup.put(19, Attributes.TakesLess);
-            attributeLookup.put(20, Attributes.ScenicView);
-            attributeLookup.put(21, Attributes.SignificantHike);
-            attributeLookup.put(22, Attributes.Climbing);
-            attributeLookup.put(23, Attributes.Wading);
-            attributeLookup.put(24, Attributes.Swimming);
-            attributeLookup.put(25, Attributes.Anytime);
-            attributeLookup.put(26, Attributes.Night);
-            attributeLookup.put(27, Attributes.Winter);
-            attributeLookup.put(28, Attributes.Stealth);
-            attributeLookup.put(29, Attributes.NeedsMaintenance);
-            attributeLookup.put(30, Attributes.Livestock);
-            attributeLookup.put(31, Attributes.FieldPuzzle);
-            attributeLookup.put(32, Attributes.NightCache);
-            attributeLookup.put(33, Attributes.ParkAndGrab);
-            attributeLookup.put(34, Attributes.AbandonedStructure);
-            attributeLookup.put(35, Attributes.ShortHike);
-            attributeLookup.put(36, Attributes.MediumHike);
-            attributeLookup.put(37, Attributes.LongHike);
-
-            attributeLookup.put(38, Attributes.PoisonPlants);
-            attributeLookup.put(39, Attributes.Snakes);
-            attributeLookup.put(40, Attributes.Ticks);
-            attributeLookup.put(41, Attributes.AbandonedMines);
-            attributeLookup.put(42, Attributes.Cliff);
-            attributeLookup.put(43, Attributes.Hunting);
-            attributeLookup.put(44, Attributes.Dangerous);
-            attributeLookup.put(45, Attributes.Thorns);
-
-            attributeLookup.put(46, Attributes.WheelchairAccessible);
-            attributeLookup.put(47, Attributes.Parking);
-            attributeLookup.put(48, Attributes.PublicTransportation);
-            attributeLookup.put(49, Attributes.Drinking);
-            attributeLookup.put(50, Attributes.Restrooms);
-            attributeLookup.put(51, Attributes.Telephone);
-            attributeLookup.put(52, Attributes.Picnic);
-            attributeLookup.put(53, Attributes.Camping);
-            attributeLookup.put(54, Attributes.Stroller);
-            attributeLookup.put(55, Attributes.FuelNearby);
-            attributeLookup.put(56, Attributes.FoodNearby);
-
+           
             for (int i = 0; i < attributesFilter.length; i++)
             {
                 if (attributesFilter[i] != 0)
                 {
-                	long value = Attributes.GetAttributeIndex(attributeLookup.get(i));
+                	long value = Attributes.GetAttributeIndex(Attributes.getAttributeEnumByGcComId(i));
                 	
                     if (attributesFilter[i] == 1)
                         andParts.add("AttributesPositive & " + value + " > 0");
