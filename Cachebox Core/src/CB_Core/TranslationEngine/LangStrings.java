@@ -3,6 +3,8 @@ package CB_Core.TranslationEngine;
 import java.io.*;
 import java.util.ArrayList;
 
+import CB_Core.Config;
+
 public class LangStrings
 {
 	// / <summary>
@@ -80,8 +82,7 @@ public class LangStrings
 		}
 		if (FilePath.endsWith("lang")) FilePath = FilePath.replace(".lang", ".lan");
 		_StringList = ReadFile(FilePath);
-		
-		
+
 		String tmp = FilePath;
 		int pos2 = tmp.lastIndexOf("/") + 1;
 		tmp = FilePath.substring(pos2);
@@ -158,6 +159,23 @@ public class LangStrings
 
 	public String Get(String StringId, Boolean withoutRef)
 	{
+
+		// chk initial
+		if (_StringList == null || _RefTranslation == null)
+		{
+			try
+			{
+				ReadTranslationsFile(Config.GetString("Sel_LanguagePath"));
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		
+		if (_StringList == null || _RefTranslation == null) return "Translation  not initial";
+		
 		String retString = "";
 		for (_Translations tmp : _StringList)
 		{
@@ -182,7 +200,7 @@ public class LangStrings
 
 		if (retString == "")
 		{
-			retString = "$ID: "+StringId;// "No translation found";
+			retString = "$ID: " + StringId;// "No translation found";
 		}
 
 		return retString;
@@ -223,8 +241,8 @@ public class LangStrings
 		return Temp;
 	}
 
-	private String LangID="";
-	
+	private String LangID = "";
+
 	public String getLangId()
 	{
 		return LangID;

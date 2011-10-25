@@ -195,7 +195,7 @@ public class splash extends Activity
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 

@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public enum Attributes
 {
-	Default, Dogs, Fee, ClimbingGear, Boat, Scuba, Kids, TakesLess, ScenicView, SignificantHike, Climbing, Wading, Swimming, Anytime, Night, Winter, PoisonPlants, Snakes, Ticks, AbandonedMines, Cliff, Hunting, Dangerous, WheelchairAccessible, Parking, PublicTransportation, Drinking, Restrooms, Telephone, Picnic, Camping, Bicycles, Motorcycles, Quads, Offroad, Snowmobiles, Horses, Campfires, Thorns, Stealth, Stroller, NeedsMaintenance, Livestock, Flashlight, TruckDriver, FieldPuzzle, UVLight, Snowshoes, CrossCountrySkiis, SpecialTool, NightCache, ParkAndGrab, AbandonedStructure, ShortHike, MediumHike, LongHike, FuelNearby, FoodNearby;
+	Default, Dogs, Fee, ClimbingGear, Boat, Scuba, Kids, TakesLess, ScenicView, SignificantHike, Climbing, Wading, Swimming, Anytime, Night, Winter, PoisonPlants, Snakes, Ticks, AbandonedMines, Cliff, Hunting, Dangerous, WheelchairAccessible, Parking, PublicTransportation, Drinking, Restrooms, Telephone, Picnic, Camping, Bicycles, Motorcycles, Quads, Offroad, Snowmobiles, Horses, Campfires, Thorns, Stealth, Stroller, NeedsMaintenance, Livestock, Flashlight, TruckDriver, FieldPuzzle, UVLight, Snowshoes, CrossCountrySkiis, SpecialTool, NightCache, ParkAndGrab, AbandonedStructure, ShortHike, MediumHike, LongHike, FuelNearby, FoodNearby, WirelessBeacon, ForTourists;
 
 	public static long GetAttributeIndex(Attributes attrib)
 	{
@@ -135,6 +135,10 @@ public enum Attributes
 			return CB_Core.Enums.Attributes.FuelNearby;
 		case 59:
 			return CB_Core.Enums.Attributes.FoodNearby;
+		case 60:
+			return CB_Core.Enums.Attributes.WirelessBeacon;
+		case 63:
+			return CB_Core.Enums.Attributes.ForTourists;
 		}
 
 			
@@ -204,6 +208,8 @@ public enum Attributes
 		attributeLookup.put(Attributes.LongHike, 57);
 		attributeLookup.put(Attributes.FuelNearby, 58);
 		attributeLookup.put(Attributes.FoodNearby, 59);
+		attributeLookup.put(Attributes.WirelessBeacon, 60);
+		attributeLookup.put(Attributes.ForTourists, 63);
 	}
 
 	public static ArrayList<Attributes> getAttributes(long attributesPositive, long attributesNegative)

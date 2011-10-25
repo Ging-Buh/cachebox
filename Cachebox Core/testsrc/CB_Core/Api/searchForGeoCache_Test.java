@@ -83,6 +83,7 @@ public class searchForGeoCache_Test extends TestCase
 
 		CB_Core.Api.SearchForGeocaches.SearchGC searchC = new CB_Core.Api.SearchForGeocaches.SearchGC();
 		searchC.gcCode = "GC30NZN";
+		
 		searchC.number = 1;
 
 		ArrayList<Cache> apiCaches = new ArrayList<Cache>();

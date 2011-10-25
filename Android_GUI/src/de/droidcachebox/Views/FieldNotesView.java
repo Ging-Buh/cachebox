@@ -576,6 +576,13 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		}
 
 		cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
+		
+		if(cache==null)
+		{
+			 Database.Data.Query.add(tmpCache);
+			 cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
+		}
+		
 		Waypoint finalWp = null;
 		if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
 		if (cache != null) GlobalCore.SelectedWaypoint(cache, finalWp);

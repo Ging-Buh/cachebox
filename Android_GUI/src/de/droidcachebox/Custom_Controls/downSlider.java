@@ -39,6 +39,7 @@ import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
+import android.content.res.Resources.NotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -359,15 +360,28 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				String uri = "drawable/" + att.getImageName();
 
 				int imageResource = getResources().getIdentifier(uri, null, main.mainActivity.getPackageName());
-				Drawable image = getResources().getDrawable(imageResource);
-
-				left += ActivityUtils.PutImageTargetHeight(canvas, image, left, top, attHeight) + 3;
-				i++;
-				if (i % 8 == 0 && i > 7)
+				Drawable image = null;
+				try
 				{
-					left = 8;
-					top += attLineHeight;
+					image = getResources().getDrawable(imageResource);
 				}
+				catch (NotFoundException e)
+				{
+					image= Global.Icons[34];
+				}
+
+				if(image!=null)
+				{
+					left += ActivityUtils.PutImageTargetHeight(canvas, image, left, top, attHeight) + 3;
+					i++;
+					if (i % 8 == 0 && i > 7)
+					{
+						left = 8;
+						top += attLineHeight;
+					}
+				}
+				
+				
 			}
 			while (iterator.hasNext());
 
