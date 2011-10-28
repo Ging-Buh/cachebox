@@ -304,7 +304,9 @@ public class FilterProperties
             {
                 if (attributesFilter[i] != 0)
                 {
-                	long value = Attributes.GetAttributeIndex(Attributes.getAttributeEnumByGcComId(i));
+                	long value = ((long) 1) << (Attributes.getAttributeEnumByGcComId(i)).ordinal()+1;
+                	
+                	
                 	
                     if (attributesFilter[i] == 1)
                         andParts.add("AttributesPositive & " + value + " > 0");
