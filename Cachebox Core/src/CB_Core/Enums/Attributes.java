@@ -9,7 +9,7 @@ public enum Attributes
 
 	public static long GetAttributeIndex(Attributes attrib)
 	{
-		return ((long) 1) << (attrib.ordinal());
+		return ((long) 1) << (attrib.ordinal()+1);
 	}
 
 	private boolean negative = false;

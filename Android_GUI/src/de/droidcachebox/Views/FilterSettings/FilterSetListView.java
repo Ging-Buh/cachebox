@@ -398,26 +398,11 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
 		//add Attributes
 		Attr = addFilterSetCollabseItem(null, "Attributes", COLLABSE_BUTTON_ITEM);
 		Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_1_1), GlobalCore.Translations.Get("att_1_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_32_1), GlobalCore.Translations.Get("att_32_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_33_1), GlobalCore.Translations.Get("att_33_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_34_1), GlobalCore.Translations.Get("att_34_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_35_1), GlobalCore.Translations.Get("att_35_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_36_1), GlobalCore.Translations.Get("att_36_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_37_1), GlobalCore.Translations.Get("att_37_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_38_1), GlobalCore.Translations.Get("att_38_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_46_1), GlobalCore.Translations.Get("att_46_1"), THREE_STATE_ITEM ));
-
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_2_1), GlobalCore.Translations.Get("att_2_1"), THREE_STATE_ITEM ));
+		Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_2_1), GlobalCore.Translations.Get("att_2_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_3_1), GlobalCore.Translations.Get("att_3_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_4_1), GlobalCore.Translations.Get("att_4_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_5_1), GlobalCore.Translations.Get("att_5_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_44_1), GlobalCore.Translations.Get("att_44_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_48_1), GlobalCore.Translations.Get("att_48_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_49_1), GlobalCore.Translations.Get("att_49_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_50_1), GlobalCore.Translations.Get("att_50_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_51_1), GlobalCore.Translations.Get("att_51_1"), THREE_STATE_ITEM ));
-
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_6_1), GlobalCore.Translations.Get("att_6_1"), THREE_STATE_ITEM ));
+		Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_6_1), GlobalCore.Translations.Get("att_6_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_7_1), GlobalCore.Translations.Get("att_7_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_8_1), GlobalCore.Translations.Get("att_8_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_9_1), GlobalCore.Translations.Get("att_9_1"), THREE_STATE_ITEM ));
@@ -427,17 +412,7 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_13_1), GlobalCore.Translations.Get("att_13_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_14_1), GlobalCore.Translations.Get("att_14_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_15_1), GlobalCore.Translations.Get("att_15_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_40_1), GlobalCore.Translations.Get("att_40_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_42_1), GlobalCore.Translations.Get("att_42_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_43_1), GlobalCore.Translations.Get("att_43_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_47_1), GlobalCore.Translations.Get("att_47_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_52_1), GlobalCore.Translations.Get("att_52_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_53_1), GlobalCore.Translations.Get("att_53_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_54_1), GlobalCore.Translations.Get("att_54_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_55_1), GlobalCore.Translations.Get("att_55_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_56_1), GlobalCore.Translations.Get("att_56_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_57_1), GlobalCore.Translations.Get("att_57_1"), THREE_STATE_ITEM ));
-
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_16_1), GlobalCore.Translations.Get("att_16_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_17_1), GlobalCore.Translations.Get("att_17_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_18_1), GlobalCore.Translations.Get("att_18_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_19_1), GlobalCore.Translations.Get("att_19_1"), THREE_STATE_ITEM ));
@@ -445,9 +420,7 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_21_1), GlobalCore.Translations.Get("att_21_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_22_1), GlobalCore.Translations.Get("att_22_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_23_1), GlobalCore.Translations.Get("att_23_1"), THREE_STATE_ITEM ));
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_39_1), GlobalCore.Translations.Get("att_39_1"), THREE_STATE_ITEM ));
-
-        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_24_1), GlobalCore.Translations.Get("att_24_1"), THREE_STATE_ITEM ));
+		Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_24_1), GlobalCore.Translations.Get("att_24_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_25_1), GlobalCore.Translations.Get("att_25_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_26_1), GlobalCore.Translations.Get("att_26_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_27_1), GlobalCore.Translations.Get("att_27_1"), THREE_STATE_ITEM ));
@@ -455,51 +428,37 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_29_1), GlobalCore.Translations.Get("att_29_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_30_1), GlobalCore.Translations.Get("att_30_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_31_1), GlobalCore.Translations.Get("att_31_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_32_1), GlobalCore.Translations.Get("att_32_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_33_1), GlobalCore.Translations.Get("att_33_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_34_1), GlobalCore.Translations.Get("att_34_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_35_1), GlobalCore.Translations.Get("att_35_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_36_1), GlobalCore.Translations.Get("att_36_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_37_1), GlobalCore.Translations.Get("att_37_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_38_1), GlobalCore.Translations.Get("att_38_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_39_1), GlobalCore.Translations.Get("att_39_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_40_1), GlobalCore.Translations.Get("att_40_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_41_1), GlobalCore.Translations.Get("att_41_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_42_1), GlobalCore.Translations.Get("att_42_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_43_1), GlobalCore.Translations.Get("att_43_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_44_1), GlobalCore.Translations.Get("att_44_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_45_1), GlobalCore.Translations.Get("att_45_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_46_1), GlobalCore.Translations.Get("att_46_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_47_1), GlobalCore.Translations.Get("att_47_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_48_1), GlobalCore.Translations.Get("att_48_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_49_1), GlobalCore.Translations.Get("att_49_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_50_1), GlobalCore.Translations.Get("att_50_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_51_1), GlobalCore.Translations.Get("att_51_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_52_1), GlobalCore.Translations.Get("att_52_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_53_1), GlobalCore.Translations.Get("att_53_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_54_1), GlobalCore.Translations.Get("att_54_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_55_1), GlobalCore.Translations.Get("att_55_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_56_1), GlobalCore.Translations.Get("att_56_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_57_1), GlobalCore.Translations.Get("att_57_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_58_1), GlobalCore.Translations.Get("att_58_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_59_1), GlobalCore.Translations.Get("att_59_1"), THREE_STATE_ITEM ));
 		
 		
-       /* AttrNegative = addFilterSetCollabseItem(null, "Negativ Attributes", COLLABSE_BUTTON_ITEM);
-        
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_1_0), GlobalCore.Translations.Get("att_1_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_6_0), GlobalCore.Translations.Get("att_6_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_7_0), GlobalCore.Translations.Get("att_7_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_8_0), GlobalCore.Translations.Get("att_8_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_9_0), GlobalCore.Translations.Get("att_9_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_10_0), GlobalCore.Translations.Get("att_10_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_13_0), GlobalCore.Translations.Get("att_13_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_14_0), GlobalCore.Translations.Get("att_14_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_15_0), GlobalCore.Translations.Get("att_15_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_17_0), GlobalCore.Translations.Get("att_17_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_24_0), GlobalCore.Translations.Get("att_24_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_25_0), GlobalCore.Translations.Get("att_25_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_27_0), GlobalCore.Translations.Get("att_27_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_28_0), GlobalCore.Translations.Get("att_28_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_29_0), GlobalCore.Translations.Get("att_29_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_30_0), GlobalCore.Translations.Get("att_30_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_31_0), GlobalCore.Translations.Get("att_31_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_32_0), GlobalCore.Translations.Get("att_32_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_33_0), GlobalCore.Translations.Get("att_33_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_34_0), GlobalCore.Translations.Get("att_34_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_35_0), GlobalCore.Translations.Get("att_35_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_36_0), GlobalCore.Translations.Get("att_36_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_37_0), GlobalCore.Translations.Get("att_37_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_38_0), GlobalCore.Translations.Get("att_38_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_40_0), GlobalCore.Translations.Get("att_40_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_41_0), GlobalCore.Translations.Get("att_41_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_46_0), GlobalCore.Translations.Get("att_46_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_47_0), GlobalCore.Translations.Get("att_47_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_52_0), GlobalCore.Translations.Get("att_52_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_53_0), GlobalCore.Translations.Get("att_53_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_54_0), GlobalCore.Translations.Get("att_54_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_55_0), GlobalCore.Translations.Get("att_55_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_56_0), GlobalCore.Translations.Get("att_56_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_57_0), GlobalCore.Translations.Get("att_57_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_58_0), GlobalCore.Translations.Get("att_58_0"), THREE_STATE_ITEM ));
-        AttrNegative.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_59_0), GlobalCore.Translations.Get("att_59_0"), THREE_STATE_ITEM ));
 
-*/
 	}
 	
 	private FilterSetListViewItem addFilterSetItem(Drawable[] Icons,
