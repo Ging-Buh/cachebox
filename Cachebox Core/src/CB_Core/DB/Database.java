@@ -249,7 +249,7 @@ public class Database
 	            // Die Nummerierung der Attribute stimmte nicht mit der von Groundspeak überein. Bei 16 und 45 wurde jeweils eine Nummber übersprungen
 				CoreCursor reader = rawQuery("select Id, AttributesPositive, AttributesNegative from Caches", new String[] {} );
 				reader.moveToFirst();
-	    //        beginTransaction();
+	            beginTransaction();
 				while (reader.isAfterLast() == false)
 	            {
 	                long id = reader.getLong(0);
@@ -266,7 +266,8 @@ public class Database
 	                long anz = update("Caches", val, whereClause, null);	                
 	                reader.moveToNext();
 	            }
-	    //        setTransactionSuccessful();
+	            setTransactionSuccessful();
+	            endTransaction();
 	        }
 			break;
 		case FieldNotes:
