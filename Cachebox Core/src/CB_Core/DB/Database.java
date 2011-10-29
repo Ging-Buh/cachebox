@@ -236,6 +236,38 @@ public class Database
 				execSQL("CREATE INDEX [trackableid_idx] ON [TbLogs] ([TrackableId] ASC);");
 				execSQL("CREATE INDEX [trackablecacheid_idx] ON [TBLOGS] ([CacheId] ASC);");
 			}
+			if (lastDatabaseSchemeVersion < 1018)
+			{
+				execSQL("ALTER TABLE [SdfExport] ADD [MapPacks] nvarchar(512) NULL;");
+			}
+	        if (lastDatabaseSchemeVersion < 1019)
+	        {
+	            // neue Felder für die erweiterten Attribute einfügen
+	            execSQL("ALTER TABLE [CACHES] ADD [AttributesPositiveHigh] bigint NULL default 0");
+	            execSQL("ALTER TABLE [CACHES] ADD [AttributesNegativeHigh] bigint NULL default 0");
+
+	            // Die Nummerierung der Attribute stimmte nicht mit der von Groundspeak überein. Bei 16 und 45 wurde jeweils eine Nummber übersprungen
+				CoreCursor reader = rawQuery("select Id, AttributesPositive, AttributesNegative from Caches", new String[] {} );
+				reader.moveToFirst();
+	    //        beginTransaction();
+				while (reader.isAfterLast() == false)
+	            {
+	                long id = reader.getLong(0);
+	                long attributesPositive = (long)reader.getLong(1);
+	                long attributesNegative = (long)reader.getLong(2);
+
+	                attributesPositive = convertAttribute(attributesPositive);
+	                attributesNegative = convertAttribute(attributesNegative);
+
+	        		Parameters val = new Parameters();
+	        		val.put("AttributesPositive", attributesPositive);
+	        		val.put("AttributesNegative", attributesNegative);
+	        		String whereClause = "[Id]=" + id;
+	                long anz = update("Caches", val, whereClause, null);	                
+	                reader.moveToNext();
+	            }
+	    //        setTransactionSuccessful();
+	        }
 			break;
 		case FieldNotes:
 			if (lastDatabaseSchemeVersion <= 0)
@@ -257,6 +289,38 @@ public class Database
 			}
 			break;
 		}
+	}
+
+	private long convertAttribute(long att)
+	{
+	       // Die Nummerierung der Attribute stimmte nicht mit der von Groundspeak überein. Bei 16 und 45 wurde jeweils eine Nummber übersprungen
+        long result = 0;
+        // Maske für die untersten 15 bit
+        long mask = 0;
+        for (int i = 0; i < 16; i++)
+            mask += (long)1 << i;
+        // unterste 15 bit ohne Verschiebung kopieren
+        result = att & mask;
+        // Maske für die Bits 16-45 
+        mask = 0;
+        for (int i = 16; i < 45; i++)
+            mask += (long)1 << i;
+        long tmp = att & mask;
+        // Bits 16-44 um eins verschieben
+        tmp = tmp << 1;
+        // und zum Result kopieren
+        result += tmp;
+        // Maske für die Bits 45-45 
+        mask = 0;
+        for (int i = 45; i < 63; i++)
+            mask += (long)1 << i;
+        tmp = att & mask;
+        // Bits 45-63 um 2 verschieben
+        tmp = tmp << 2;
+        // und zum Result kopieren
+        result += tmp;
+            
+        return result;
 	}
 
 	private int GetDatabaseSchemeVersion()

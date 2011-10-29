@@ -146,7 +146,7 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 			checkBoxImportGpxFromMail.setChecked(false);
 		}
 
-		if (Config.GetStringEncrypted("GcPass").length() > 0) {
+		if (Config.GetStringEncrypted("GcAPI").length() > 0) {
 			checkImportPQfromGC.setChecked(Config
 					.GetBool("ImportPQsFromGeocachingCom"));
 			checkImportPQfromGC.setEnabled(true);
