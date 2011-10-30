@@ -456,8 +456,15 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu {
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_57_1), GlobalCore.Translations.Get("att_57_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_58_1), GlobalCore.Translations.Get("att_58_1"), THREE_STATE_ITEM ));
         Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_59_1), GlobalCore.Translations.Get("att_59_1"), THREE_STATE_ITEM ));
-		
-		
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_60_1), GlobalCore.Translations.Get("att_60_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_61_1), GlobalCore.Translations.Get("att_61_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_62_1), GlobalCore.Translations.Get("att_62_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_63_1), GlobalCore.Translations.Get("att_63_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_64_1), GlobalCore.Translations.Get("att_64_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_65_1), GlobalCore.Translations.Get("att_65_1"), THREE_STATE_ITEM ));
+        Attr.addChild(addFilterSetItem(res.getDrawable(R.drawable.att_66_1), GlobalCore.Translations.Get("att_66_1"), THREE_STATE_ITEM ));
+        
+        
 
 	}
 	

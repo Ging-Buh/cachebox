@@ -212,12 +212,12 @@ public class Cache implements Comparable<Cache>
 	/**
 	 * Positive Attribute des Caches
 	 */
-	private long attributesPositive = 0;
+	private DLong attributesPositive = null;
 
 	/**
 	 * Negative Attribute des Caches
 	 */
-	private long attributesNegative = 0;
+	private DLong attributesNegative = null;
 
 	/**
 	 * Anzahl der Travelbugs und Coins, die sich in diesem Cache befinden
@@ -506,26 +506,38 @@ public class Cache implements Comparable<Cache>
 		return (float) cachedDistance;
 	}
 
-	public void addAttributePositive(Attributes attribute)
-	{
-		attributesPositive |= Attributes.GetAttributeIndex(attribute);
-	}
+	
 
 	public boolean isAttributePositiveSet(Attributes attribute)
 	{
-		return (attributesPositive & Attributes.GetAttributeIndex(attribute)) > 0;
+		return attributesPositive.BitAndBiggerNull(Attributes.GetAttributeDlong(attribute));
+//		return (attributesPositive & Attributes.GetAttributeDlong(attribute)) > 0;
 	}
 
-	public void addAttributeNegative(Attributes attribute)
-	{
-		attributesNegative |= Attributes.GetAttributeIndex(attribute);
-	}
+	
 
 	public boolean isAttributeNegativeSet(Attributes attribute)
 	{
-		return (attributesNegative & Attributes.GetAttributeIndex(attribute)) > 0;
+		return attributesNegative.BitAndBiggerNull(Attributes.GetAttributeDlong(attribute));
+//		return (attributesNegative & Attributes.GetAttributeDlong(attribute)) > 0;
 	}
 
+	 public void addAttributeNegative(Attributes attribute)
+	    {
+	        if (attributesNegative == null)
+	            attributesNegative = new DLong(0, 0);
+	        attributesNegative.BitOr( Attributes.GetAttributeDlong(attribute));
+	    }
+
+
+	    public void addAttributePositive(Attributes attribute)
+	    {
+	        if (attributesPositive == null)
+	            attributesPositive = new DLong(0, 0);
+	        attributesPositive.BitOr(Attributes.GetAttributeDlong(attribute));
+	    }
+	
+	
 	/*
 	 * Overrides
 	 */
@@ -538,28 +550,28 @@ public class Cache implements Comparable<Cache>
 		return (dist1 < dist2 ? -1 : (dist1 == dist2 ? 0 : 1));
 	}
 
-	public void setAttributesPositive(int i)
+	public void setAttributesPositive(DLong i)
 	{
 		attributesPositive = i;
 	}
 
-	public void setAttributesNegative(int i)
+	public void setAttributesNegative(DLong i)
 	{
 		attributesNegative = i;
 	}
 
-	public long getAttributesNegative()
+	public DLong getAttributesNegative()
 	{
-		if (this.attributesNegative == 0)
+		if (this.attributesNegative == null)
 		{
-			CoreCursor c = Database.Data.rawQuery("select AttributesNegative from Caches where Id=?", new String[]
+			CoreCursor c = Database.Data.rawQuery("select AttributesNegative,AttributesNegativeHigh from Caches where Id=?", new String[]
 				{ String.valueOf(this.Id) });
 			c.moveToFirst();
 			while (c.isAfterLast() == false)
 			{
-				if (!c.isNull(0)) this.attributesNegative = c.getLong(0);
+				if (!c.isNull(0)) this.attributesNegative = new DLong(c.getLong(1), c.getLong(0));
 				else
-					this.attributesNegative = 0;
+					this.attributesNegative = new DLong(0, 0);
 				break;
 			}
 			;
@@ -568,18 +580,18 @@ public class Cache implements Comparable<Cache>
 		return this.attributesNegative;
 	}
 
-	public long getAttributesPositive()
+	public DLong getAttributesPositive()
 	{
-		if (this.attributesPositive == 0)
+		if (this.attributesPositive == null)
 		{
-			CoreCursor c = Database.Data.rawQuery("select AttributesPositive from Caches where Id=?", new String[]
+			CoreCursor c = Database.Data.rawQuery("select AttributesPositive,AttributesPositiveHigh from Caches where Id=?", new String[]
 				{ String.valueOf(this.Id) });
 			c.moveToFirst();
 			while (c.isAfterLast() == false)
 			{
-				if (!c.isNull(0)) this.attributesPositive = c.getLong(0);
+				if (!c.isNull(0)) this.attributesPositive = new DLong(c.getLong(1), c.getLong(0));
 				else
-					this.attributesPositive = 0;
+					this.attributesPositive = new DLong(0, 0);
 				break;
 			}
 			;

@@ -22,6 +22,7 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
+import CB_Core.Types.DLong;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
@@ -226,8 +227,8 @@ public class SearchForGeocaches
 
 						Cache cache = new Cache();
 						cache.Archived = jCache.getBoolean("Archived");
-						cache.setAttributesPositive(0);
-						cache.setAttributesNegative(0);
+						cache.setAttributesPositive(new DLong(0, 0));
+						cache.setAttributesNegative(new DLong(0, 0));
 						JSONArray jAttributes = jCache.getJSONArray("Attributes");
 						for (int j = 0; j < jAttributes.length(); j++)
 						{

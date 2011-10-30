@@ -3,13 +3,22 @@ package CB_Core.Enums;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import CB_Core.Types.DLong;
+
 public enum Attributes
 {
-	Default, Dogs, Access_or_parking_fee, Climbing_gear, Boat, Scuba_gear, Recommended_for_kids, Takes_less_than_an_hour, Scenic_view, Significant_Hike, Difficult_climbing, May_require_wading, May_require_swimming, Available_at_all_times, Recommended_at_night, Available_during_winter, Cactus, Poison_plants, Dangerous_Animals, Ticks, Abandoned_mines, Cliff_falling_rocks, Hunting, Dangerous_area, Wheelchair_accessible, Parking_available, Public_transportation, Drinking_water_nearby, Public_restrooms_nearby, Telephone_nearby, Picnic_tables_nearby, Camping_available, Bicycles, Motorcycles, Quads, Off_road_vehicles, Snowmobiles, Horses, Campfires, Thorns, Stealth_required, Stroller_accessible, Needs_maintenance, Watch_for_livestock, Flashlight_required, Lost_And_Found_Tour, Truck_Driver, Field_Puzzle, UV_Light_Required, Snowshoes, Cross_Country_Skis, Special_Tool_Required, Night_Cache, Park_and_Grab, Abandoned_Structure, Short_hike, Medium_hike, Long_Hike, Fuel_Nearby, Food_Nearby, Wireless_Beacon, Partnership_Cache, Seasonal_Access, Tourist_Friendly,;// Tree_Climbing, Front_Yard, Teamwork_Required;
+	Default, Dogs, Access_or_parking_fee, Climbing_gear, Boat, Scuba_gear, Recommended_for_kids, Takes_less_than_an_hour, Scenic_view, Significant_Hike, Difficult_climbing, May_require_wading, May_require_swimming, Available_at_all_times, Recommended_at_night, Available_during_winter, Cactus, Poison_plants, Dangerous_Animals, Ticks, Abandoned_mines, Cliff_falling_rocks, Hunting, Dangerous_area, Wheelchair_accessible, Parking_available, Public_transportation, Drinking_water_nearby, Public_restrooms_nearby, Telephone_nearby, Picnic_tables_nearby, Camping_available, Bicycles, Motorcycles, Quads, Off_road_vehicles, Snowmobiles, Horses, Campfires, Thorns, Stealth_required, Stroller_accessible, Needs_maintenance, Watch_for_livestock, Flashlight_required, Lost_And_Found_Tour, Truck_Driver, Field_Puzzle, UV_Light_Required, Snowshoes, Cross_Country_Skis, Special_Tool_Required, Night_Cache, Park_and_Grab, Abandoned_Structure, Short_hike, Medium_hike, Long_Hike, Fuel_Nearby, Food_Nearby, Wireless_Beacon, Partnership_Cache, Seasonal_Access, Tourist_Friendly, Tree_Climbing, Front_Yard, Teamwork_Required;
 
-	public static long GetAttributeIndex(Attributes attrib)
+	public static DLong GetAttributeDlong(Attributes attrib)
 	{
-		return ((long) 1) << (attrib.ordinal());
+
+		if (attributeLookup == null)
+            ini();
+
+           
+		 int Id = attributeLookup.get(attrib);
+
+           return DLong.shift(Id);
 	}
 
 	private boolean negative = false;
@@ -224,27 +233,27 @@ public enum Attributes
 		attributeLookup.put(Attributes.Partnership_Cache, 61);
 		attributeLookup.put(Attributes.Seasonal_Access, 62);
 		attributeLookup.put(Attributes.Tourist_Friendly, 63);
-		/*attributeLookup.put(Attributes.Tree_Climbing, 64);
+		attributeLookup.put(Attributes.Tree_Climbing, 64);
 		attributeLookup.put(Attributes.Front_Yard, 65);
-		attributeLookup.put(Attributes.Teamwork_Required, 66);*/
+		attributeLookup.put(Attributes.Teamwork_Required, 66);
 	}
 
-	public static ArrayList<Attributes> getAttributes(long attributesPositive, long attributesNegative)
+	public static ArrayList<Attributes> getAttributes(DLong attributesPositive, DLong attributesNegative)
 	{
 		ArrayList<Attributes> ret = new ArrayList<Attributes>();
 		if (attributeLookup == null) ini();
 		for (Attributes attribute : attributeLookup.keySet())
 		{
-			long att = Attributes.GetAttributeIndex(attribute);
-			if ((att & attributesPositive) > 0)
+			DLong att = Attributes.GetAttributeDlong(attribute);
+			if ((att.BitAndBiggerNull(attributesPositive)))
 			{
 				ret.add(attribute);
 			}
 		}
 		for (Attributes attribute : attributeLookup.keySet())
 		{
-			long att = Attributes.GetAttributeIndex(attribute);
-			if ((att & attributesNegative) > 0)
+			DLong att = Attributes.GetAttributeDlong(attribute);
+			if ((att.BitAndBiggerNull(attributesNegative)))
 			{
 				attribute.negative = true;
 				ret.add(attribute);
