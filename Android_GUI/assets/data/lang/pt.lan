@@ -475,6 +475,7 @@
 	att_14_1 = at night recommended 
 	att_15_0 = to find with closed snowy cover 
 	att_15_1 = to find with closed snowy cover
+	att_16_1 = kaktus
 	att_17_0 = toxic plants
 	att_17_1 = toxic plants
 	att_18_1 = dangerous animals 
@@ -545,7 +546,18 @@
 	att_59_0 = no restaurant / snack nearby
 	att_59_1 = restaurant / snack nearby
 	att_60_1 = a radio transmitter is seated (e.g., a Chirp)
-	att_63_1 = Friendly to tourist
+	att_61_0 = not a Partnership Cache
+	att_61_1 = Partnership Cache
+	att_62_0 = not seasonal access
+	att_62_1 = seasonal access
+	att_63_0 = not Tourist friendly
+	att_63_1 = Tourist friendly
+	att_64_0 = no Tree Climbing
+	att_64_1 = Tree Climbing
+	att_65_0 = no Front Yard (Private Residence)
+	att_65_1 = Front Yard (Private Residence)
+	att_66_0 = no Teamwork Required
+	att_66_1 = Teamwork Required
 	
 
 

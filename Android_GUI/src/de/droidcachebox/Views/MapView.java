@@ -66,6 +66,7 @@ import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.Map.Tile;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.AllContextMenuCallHandler;
+import de.droidcachebox.Views.Forms.ScreenLock;
 
 public class MapView extends RelativeLayout implements SelectedCacheEvent, PositionEvent, ViewOptionsMenu,
 		CB_Core.Events.CacheListChangedEvent
@@ -2323,6 +2324,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	public void Render(boolean overrideRepaintInteligence1)
 	{
 		if (canvas == null) return;
+		if (ScreenLock.SliderMoves) return;
 
 		// debugString1 = loadedTiles.size() + " / " + trackTiles.size() + " / "
 		// + numLoadedTiles();
@@ -2436,12 +2438,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 							{
 								if (x < 0 || y < 0 || x >= Descriptor.TilesPerLine[Zoom] || y >= Descriptor.TilesPerColumn[Zoom]) continue;
 								Descriptor desc = new Descriptor(x, y, Zoom);
-								
-								int dist = (int)Math.sqrt(Math.pow(screenCenter.X - (desc.X + 128), 2) + Math.pow(screenCenter.Y - (desc.Y + 128), 2));
+
+								int dist = (int) Math.sqrt(Math.pow(screenCenter.X - (desc.X + 128), 2)
+										+ Math.pow(screenCenter.Y - (desc.Y + 128), 2));
 								kOrder.add(new KachelOrder(x, y, dist));
 							}
 						}
-						
+
 						// Kacheln beantragen
 						for (int x = xFrom; x <= xTo; x++)
 						{
@@ -2575,23 +2578,27 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 	}
 
-	private class KachelOrder implements Comparable<KachelOrder> {
+	private class KachelOrder implements Comparable<KachelOrder>
+	{
 		int x;
 		int y;
 		int dist;
-		private KachelOrder(int x, int y, int dist) {
+
+		private KachelOrder(int x, int y, int dist)
+		{
 			this.x = x;
 			this.y = y;
 			this.dist = dist;
 		}
-		
+
 		@Override
 		public int compareTo(KachelOrder arg0)
 		{
-			return (dist < arg0.dist ? -1 : (dist == arg0.dist ? 0 : 1));			
+			return (dist < arg0.dist ? -1 : (dist == arg0.dist ? 0 : 1));
 		}
-		
+
 	}
+
 	/*
 	 * Brush orangeBrush = new SolidBrush(Color.Orange);
 	 */

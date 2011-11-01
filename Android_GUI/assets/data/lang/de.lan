@@ -476,6 +476,7 @@
 	att_14_1 = in der Nacht empfohlen 
 	att_15_0 = bei geschlossener Schneedecke zu finden 
 	att_15_1 = bei geschlossener Schneedecke zu finden
+	att_16_1 = kaktus
 	att_17_0 = giftige Pflanzen
 	att_17_1 = giftige Pflanzen (in Deutschland auch oft für z.B. Brennnesseln genutzt)
 	att_18_1 = gefährliche Tiere 
@@ -546,4 +547,15 @@
 	att_59_0 = keine Gaststätte / Imbiss in der Nähe
 	att_59_1 = Gaststätte / Imbiss in der Nähe
 	att_60_1 = ein Funk-Sender wird eingesetzt (z.B. ein Chirp)
+	att_61_0 = kein Sponsored Cache
+	att_61_1 = Sponsored Cache (für Caches, die von anderen Unternehmen gefördert sind)
+	att_62_0 = nicht nur saisonal verfügbar
+	att_62_1 = nur saisonal verfügbar
+	att_63_0 = nicht Touristenfreundlich
 	att_63_1 = Touristenfreundlich
+	att_64_0 = keine Baumkletterei
+	att_64_1 = Baumkletterei
+	att_65_0 = kein Vorgarten-Cache / Cache auf Privatgrundstück
+	att_65_1 = Vorgarten-Cache / Cache auf Privatgrundstück
+	att_66_0 = keine Zusammenarbeit erforderlich
+	att_66_1 = Zusammenarbeit erforderlich

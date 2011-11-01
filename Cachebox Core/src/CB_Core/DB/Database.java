@@ -238,7 +238,14 @@ public class Database
 			}
 			if (lastDatabaseSchemeVersion < 1018)
 			{
-				execSQL("ALTER TABLE [SdfExport] ADD [MapPacks] nvarchar(512) NULL;");
+				try
+				{
+					execSQL("ALTER TABLE [SdfExport] ADD [MapPacks] nvarchar(512) NULL;");
+				}
+				catch (Exception exc)
+								{}
+				
+				
 			}
 	        if (lastDatabaseSchemeVersion < 1019)
 	        {
