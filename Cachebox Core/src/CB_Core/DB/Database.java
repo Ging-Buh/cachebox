@@ -243,39 +243,48 @@ public class Database
 					execSQL("ALTER TABLE [SdfExport] ADD [MapPacks] nvarchar(512) NULL;");
 				}
 				catch (Exception exc)
-								{}
-				
-				
+				{
+				}
+
 			}
-	        if (lastDatabaseSchemeVersion < 1019)
-	        {
-	            // neue Felder für die erweiterten Attribute einfügen
-	            execSQL("ALTER TABLE [CACHES] ADD [AttributesPositiveHigh] bigint NULL default 0");
-	            execSQL("ALTER TABLE [CACHES] ADD [AttributesNegativeHigh] bigint NULL default 0");
+			if (lastDatabaseSchemeVersion < 1019)
+			{
+				try
+				{
+					// neue Felder für die erweiterten Attribute einfügen
+					execSQL("ALTER TABLE [CACHES] ADD [AttributesPositiveHigh] bigint NULL default 0");
+					execSQL("ALTER TABLE [CACHES] ADD [AttributesNegativeHigh] bigint NULL default 0");
 
-	            // Die Nummerierung der Attribute stimmte nicht mit der von Groundspeak überein. Bei 16 und 45 wurde jeweils eine Nummber übersprungen
-				CoreCursor reader = rawQuery("select Id, AttributesPositive, AttributesNegative from Caches", new String[] {} );
-				reader.moveToFirst();
-	            beginTransaction();
-				while (reader.isAfterLast() == false)
-	            {
-	                long id = reader.getLong(0);
-	                long attributesPositive = (long)reader.getLong(1);
-	                long attributesNegative = (long)reader.getLong(2);
+					// Die Nummerierung der Attribute stimmte nicht mit der von
+					// Groundspeak überein. Bei 16 und 45 wurde jeweils eine
+					// Nummber übersprungen
+					CoreCursor reader = rawQuery("select Id, AttributesPositive, AttributesNegative from Caches", new String[] {});
+					reader.moveToFirst();
+					beginTransaction();
+					while (reader.isAfterLast() == false)
+					{
+						long id = reader.getLong(0);
+						long attributesPositive = (long) reader.getLong(1);
+						long attributesNegative = (long) reader.getLong(2);
 
-	                attributesPositive = convertAttribute(attributesPositive);
-	                attributesNegative = convertAttribute(attributesNegative);
+						attributesPositive = convertAttribute(attributesPositive);
+						attributesNegative = convertAttribute(attributesNegative);
 
-	        		Parameters val = new Parameters();
-	        		val.put("AttributesPositive", attributesPositive);
-	        		val.put("AttributesNegative", attributesNegative);
-	        		String whereClause = "[Id]=" + id;
-	                long anz = update("Caches", val, whereClause, null);	                
-	                reader.moveToNext();
-	            }
-	            setTransactionSuccessful();
-	            endTransaction();
-	        }
+						Parameters val = new Parameters();
+						val.put("AttributesPositive", attributesPositive);
+						val.put("AttributesNegative", attributesNegative);
+						String whereClause = "[Id]=" + id;
+						long anz = update("Caches", val, whereClause, null);
+						reader.moveToNext();
+					}
+					setTransactionSuccessful();
+					endTransaction();
+				}
+				catch (Exception exc)
+				{
+				}
+
+			}
 			break;
 		case FieldNotes:
 			if (lastDatabaseSchemeVersion <= 0)
@@ -301,34 +310,35 @@ public class Database
 
 	private long convertAttribute(long att)
 	{
-	       // Die Nummerierung der Attribute stimmte nicht mit der von Groundspeak überein. Bei 16 und 45 wurde jeweils eine Nummber übersprungen
-        long result = 0;
-        // Maske für die untersten 15 bit
-        long mask = 0;
-        for (int i = 0; i < 16; i++)
-            mask += (long)1 << i;
-        // unterste 15 bit ohne Verschiebung kopieren
-        result = att & mask;
-        // Maske für die Bits 16-45 
-        mask = 0;
-        for (int i = 16; i < 45; i++)
-            mask += (long)1 << i;
-        long tmp = att & mask;
-        // Bits 16-44 um eins verschieben
-        tmp = tmp << 1;
-        // und zum Result kopieren
-        result += tmp;
-        // Maske für die Bits 45-45 
-        mask = 0;
-        for (int i = 45; i < 63; i++)
-            mask += (long)1 << i;
-        tmp = att & mask;
-        // Bits 45-63 um 2 verschieben
-        tmp = tmp << 2;
-        // und zum Result kopieren
-        result += tmp;
-            
-        return result;
+		// Die Nummerierung der Attribute stimmte nicht mit der von Groundspeak
+		// überein. Bei 16 und 45 wurde jeweils eine Nummber übersprungen
+		long result = 0;
+		// Maske für die untersten 15 bit
+		long mask = 0;
+		for (int i = 0; i < 16; i++)
+			mask += (long) 1 << i;
+		// unterste 15 bit ohne Verschiebung kopieren
+		result = att & mask;
+		// Maske für die Bits 16-45
+		mask = 0;
+		for (int i = 16; i < 45; i++)
+			mask += (long) 1 << i;
+		long tmp = att & mask;
+		// Bits 16-44 um eins verschieben
+		tmp = tmp << 1;
+		// und zum Result kopieren
+		result += tmp;
+		// Maske für die Bits 45-45
+		mask = 0;
+		for (int i = 45; i < 63; i++)
+			mask += (long) 1 << i;
+		tmp = att & mask;
+		// Bits 45-63 um 2 verschieben
+		tmp = tmp << 2;
+		// und zum Result kopieren
+		result += tmp;
+
+		return result;
 	}
 
 	private int GetDatabaseSchemeVersion()
@@ -431,205 +441,218 @@ public class Database
 		throw new Exception("Alle GcCodes sind bereits vergeben! Dies sollte eigentlich nie vorkommen!");
 	}
 
-    // Methodes für Cache
-    
-    public static String GetNote(Cache cache)
-    {
-    	String resultString = "";
-        CoreCursor c = Database.Data.rawQuery("select Notes from Caches where Id=?", new String[] { String.valueOf(cache.Id) });
-        c.moveToFirst();
-        while(c.isAfterLast() == false)
-        {
-            resultString = c.getString(0);
-            break;
-        };
-        cache.noteCheckSum = (int)GlobalCore.sdbm(resultString);
-        return resultString;
-    }
-    
-    public static void SetNote(Cache cache, String value)
-    {
-        int newNoteCheckSum = (int)GlobalCore.sdbm(value);
-        
-        Replication.NoteChanged(cache.Id, cache.noteCheckSum, newNoteCheckSum);
-      if (newNoteCheckSum != cache.noteCheckSum)
-      {
-          Parameters args = new Parameters();
-          args.put("Notes", value);
-          args.put("HasUserData", true);
-          
-          Database.Data.update("Caches", args, "id=" + cache.Id, null);
-          cache.noteCheckSum = newNoteCheckSum;
-      }
-    }
+	// Methodes für Cache
 
-    
-    public static String GetSolver(Cache cache)
-    {
-    	String resultString = "";
-        CoreCursor c = Database.Data.rawQuery("select Solver from Caches where Id=?", new String[] { String.valueOf(cache.Id) });
-        c.moveToFirst();
-        while(c.isAfterLast() == false)
-        {
-            resultString = c.getString(0);
-            break;
-        };
-        cache.noteCheckSum = (int)GlobalCore.sdbm(resultString);
-        return resultString;
-    }
-    public static void SetSolver(Cache cache, String value)
-    {
-        int newSolverCheckSum = (int)GlobalCore.sdbm(value);
-        
-        Replication.SolverChanged(cache.Id, cache.solverCheckSum, newSolverCheckSum);
-        if (newSolverCheckSum != cache.solverCheckSum)
-        {
-        	Parameters args = new Parameters();
-            args.put("Solver", value);
-            args.put("HasUserData", true);
-            
-            Database.Data.update("Caches", args, "id=" + cache.Id, null);
-            cache.solverCheckSum = newSolverCheckSum;
-        }
-    }
+	public static String GetNote(Cache cache)
+	{
+		String resultString = "";
+		CoreCursor c = Database.Data.rawQuery("select Notes from Caches where Id=?", new String[]
+			{ String.valueOf(cache.Id) });
+		c.moveToFirst();
+		while (c.isAfterLast() == false)
+		{
+			resultString = c.getString(0);
+			break;
+		}
+		;
+		cache.noteCheckSum = (int) GlobalCore.sdbm(resultString);
+		return resultString;
+	}
 
-    public static ArrayList<LogEntry> Logs(Cache cache)
-    {
-        ArrayList<LogEntry> result = new ArrayList<LogEntry>();
+	public static void SetNote(Cache cache, String value)
+	{
+		int newNoteCheckSum = (int) GlobalCore.sdbm(value);
 
-        CoreCursor reader = Database.Data.rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@cacheid order by Timestamp desc", new String[] { Long.toString(cache.Id) });
+		Replication.NoteChanged(cache.Id, cache.noteCheckSum, newNoteCheckSum);
+		if (newNoteCheckSum != cache.noteCheckSum)
+		{
+			Parameters args = new Parameters();
+			args.put("Notes", value);
+			args.put("HasUserData", true);
 
-    	reader.moveToFirst();
-        while(reader.isAfterLast() == false)
-        {
-        	LogEntry logent = getLogEntry(cache,reader, true); 
-            result.add(logent);
-            reader.moveToNext();
-        }
-        reader.close();
-        
-        return result;
-    }
-    
-    private static LogEntry getLogEntry(Cache cache, CoreCursor reader, boolean filterBbCode)
-    {
-    	LogEntry retLogEntry = new LogEntry();
-    	
-    	retLogEntry.CacheId = reader.getLong(0);
-    	      
-    	      String sDate = reader.getString(1);
-    	      DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    	      try {
-    	    	  retLogEntry.Timestamp = iso8601Format.parse(sDate);
-    	      } catch (ParseException e) {
-    	      }
-    	      retLogEntry.Finder = reader.getString(2);
-    	      retLogEntry.TypeIcon = reader.getInt(3);
-    	      retLogEntry.Comment = reader.getString(4);
-    	      retLogEntry.Id = reader.getLong(5);
+			Database.Data.update("Caches", args, "id=" + cache.Id, null);
+			cache.noteCheckSum = newNoteCheckSum;
+		}
+	}
 
-    	      if (filterBbCode)
-    	      {
-    	        int lIndex;
+	public static String GetSolver(Cache cache)
+	{
+		String resultString = "";
+		CoreCursor c = Database.Data.rawQuery("select Solver from Caches where Id=?", new String[]
+			{ String.valueOf(cache.Id) });
+		c.moveToFirst();
+		while (c.isAfterLast() == false)
+		{
+			resultString = c.getString(0);
+			break;
+		}
+		;
+		cache.noteCheckSum = (int) GlobalCore.sdbm(resultString);
+		return resultString;
+	}
 
-    	        while ((lIndex = retLogEntry.Comment.indexOf('[')) >= 0)
-    	        {
-    	          int rIndex = retLogEntry.Comment.indexOf(']', lIndex);
+	public static void SetSolver(Cache cache, String value)
+	{
+		int newSolverCheckSum = (int) GlobalCore.sdbm(value);
 
-    	          if (rIndex == -1)
-    	            break;
+		Replication.SolverChanged(cache.Id, cache.solverCheckSum, newSolverCheckSum);
+		if (newSolverCheckSum != cache.solverCheckSum)
+		{
+			Parameters args = new Parameters();
+			args.put("Solver", value);
+			args.put("HasUserData", true);
 
-    	          retLogEntry.Comment = retLogEntry.Comment.substring(0, lIndex) + retLogEntry.Comment.substring(rIndex + 1);
-    	        }
-  	      }
-    	      
-    	 return retLogEntry;
-    }
+			Database.Data.update("Caches", args, "id=" + cache.Id, null);
+			cache.solverCheckSum = newSolverCheckSum;
+		}
+	}
 
-    public static String GetDescription(Cache cache)
-    {
-    	String description = "";
-        CoreCursor reader = Database.Data.rawQuery("select Description from Caches where Id=?", new String[] { Long.toString(cache.Id) } );
-    	reader.moveToFirst();
-        while(reader.isAfterLast() == false)
-        {
-        	if (reader.getString(0) != null)
-        		description = reader.getString(0);
-            reader.moveToNext();
-        }
-        reader.close();
+	public static ArrayList<LogEntry> Logs(Cache cache)
+	{
+		ArrayList<LogEntry> result = new ArrayList<LogEntry>();
 
-        return description;
-    }
+		CoreCursor reader = Database.Data.rawQuery(
+				"select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@cacheid order by Timestamp desc",
+				new String[]
+					{ Long.toString(cache.Id) });
 
-    public static String Hint(Cache cache)
-    {
-    	if (cache.hint.equals(""))
-    	{
-            CoreCursor reader = Database.Data.rawQuery("select Hint from Caches where Id=?", new String[] { Long.toString(cache.Id) } );
-        	reader.moveToFirst();
-            while(reader.isAfterLast() == false)
-            {
-            	cache.hint = reader.getString(0);
-                reader.moveToNext();
-            }
-            reader.close();
-    	}
-    	return cache.hint;
-    }
-    
-    public float Distance(Cache cache, Coordinate fromPos)
-    {
-       // Coordinate fromPos = (Global.Marker.Valid) ? Global.Marker : Global.LastValidPosition;
-    	Waypoint waypoint = cache.GetFinalWaypoint();
-        // Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die Diszanzberechnung vom Final aus gemacht werden
-        // If a mystery has a final waypoint, the distance will be calculated to the final not the the cache coordinates
-    	Coordinate toPos = cache.Pos;
-        if (waypoint != null)
-        	toPos = new Coordinate(waypoint.Pos.Latitude, waypoint.Pos.Longitude);
-        float[] dist = new float[4];
-        Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude, toPos.Latitude, toPos.Longitude, dist);
-        return (float)dist[0];
-    }
+		reader.moveToFirst();
+		while (reader.isAfterLast() == false)
+		{
+			LogEntry logent = getLogEntry(cache, reader, true);
+			result.add(logent);
+			reader.moveToNext();
+		}
+		reader.close();
 
-   
-	
-    public void GPXFilenameUpdateCacheCount()
-    {
-    	// welche GPXFilenamen sind in der DB erfasst
-    	beginTransaction();
-    	try
-    	{
-        	CoreCursor reader = rawQuery("select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
-        	reader.moveToFirst();
-        	
-            while(reader.isAfterLast() == false)
-            {
-            	long GPXFilename_ID = reader.getLong(0);
-            	long CacheCount = reader.getLong(1);
+		return result;
+	}
 
-        		Parameters val = new Parameters();
-        		val.put("CacheCount", CacheCount);
-        		long anz = update("GPXFilenames", val, "ID = " + GPXFilename_ID, null);
+	private static LogEntry getLogEntry(Cache cache, CoreCursor reader, boolean filterBbCode)
+	{
+		LogEntry retLogEntry = new LogEntry();
 
-                reader.moveToNext();
-            }
+		retLogEntry.CacheId = reader.getLong(0);
 
-            delete("GPXFilenames", "Cachecount is NULL or CacheCount = 0", null);
-            delete("GPXFilenames", "ID not in (Select GPXFilename_ID From Caches)", null);
-            reader.close();
-    		setTransactionSuccessful();
-    	} finally
-    	{
-    		endTransaction();
-    	}
+		String sDate = reader.getString(1);
+		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try
+		{
+			retLogEntry.Timestamp = iso8601Format.parse(sDate);
+		}
+		catch (ParseException e)
+		{
+		}
+		retLogEntry.Finder = reader.getString(2);
+		retLogEntry.TypeIcon = reader.getInt(3);
+		retLogEntry.Comment = reader.getString(4);
+		retLogEntry.Id = reader.getLong(5);
 
-        CategoryDAO categoryDAO = new CategoryDAO();
-        GlobalCore.Categories = new Categories();
-        categoryDAO.LoadCategoriesFromDatabase(GlobalCore.Categories);
-//    	GlobalCore.Categories.ReadFromFilter(Global.LastFilter);
-//    	GlobalCore.Categories.DeleteEmptyCategories();
-    }
+		if (filterBbCode)
+		{
+			int lIndex;
+
+			while ((lIndex = retLogEntry.Comment.indexOf('[')) >= 0)
+			{
+				int rIndex = retLogEntry.Comment.indexOf(']', lIndex);
+
+				if (rIndex == -1) break;
+
+				retLogEntry.Comment = retLogEntry.Comment.substring(0, lIndex) + retLogEntry.Comment.substring(rIndex + 1);
+			}
+		}
+
+		return retLogEntry;
+	}
+
+	public static String GetDescription(Cache cache)
+	{
+		String description = "";
+		CoreCursor reader = Database.Data.rawQuery("select Description from Caches where Id=?", new String[]
+			{ Long.toString(cache.Id) });
+		reader.moveToFirst();
+		while (reader.isAfterLast() == false)
+		{
+			if (reader.getString(0) != null) description = reader.getString(0);
+			reader.moveToNext();
+		}
+		reader.close();
+
+		return description;
+	}
+
+	public static String Hint(Cache cache)
+	{
+		if (cache.hint.equals(""))
+		{
+			CoreCursor reader = Database.Data.rawQuery("select Hint from Caches where Id=?", new String[]
+				{ Long.toString(cache.Id) });
+			reader.moveToFirst();
+			while (reader.isAfterLast() == false)
+			{
+				cache.hint = reader.getString(0);
+				reader.moveToNext();
+			}
+			reader.close();
+		}
+		return cache.hint;
+	}
+
+	public float Distance(Cache cache, Coordinate fromPos)
+	{
+		// Coordinate fromPos = (Global.Marker.Valid) ? Global.Marker :
+		// Global.LastValidPosition;
+		Waypoint waypoint = cache.GetFinalWaypoint();
+		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
+		// Diszanzberechnung vom Final aus gemacht werden
+		// If a mystery has a final waypoint, the distance will be calculated to
+		// the final not the the cache coordinates
+		Coordinate toPos = cache.Pos;
+		if (waypoint != null) toPos = new Coordinate(waypoint.Pos.Latitude, waypoint.Pos.Longitude);
+		float[] dist = new float[4];
+		Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude, toPos.Latitude, toPos.Longitude, dist);
+		return (float) dist[0];
+	}
+
+	public void GPXFilenameUpdateCacheCount()
+	{
+		// welche GPXFilenamen sind in der DB erfasst
+		beginTransaction();
+		try
+		{
+			CoreCursor reader = rawQuery(
+					"select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID",
+					null);
+			reader.moveToFirst();
+
+			while (reader.isAfterLast() == false)
+			{
+				long GPXFilename_ID = reader.getLong(0);
+				long CacheCount = reader.getLong(1);
+
+				Parameters val = new Parameters();
+				val.put("CacheCount", CacheCount);
+				long anz = update("GPXFilenames", val, "ID = " + GPXFilename_ID, null);
+
+				reader.moveToNext();
+			}
+
+			delete("GPXFilenames", "Cachecount is NULL or CacheCount = 0", null);
+			delete("GPXFilenames", "ID not in (Select GPXFilename_ID From Caches)", null);
+			reader.close();
+			setTransactionSuccessful();
+		}
+		finally
+		{
+			endTransaction();
+		}
+
+		CategoryDAO categoryDAO = new CategoryDAO();
+		GlobalCore.Categories = new Categories();
+		categoryDAO.LoadCategoriesFromDatabase(GlobalCore.Categories);
+		// GlobalCore.Categories.ReadFromFilter(Global.LastFilter);
+		// GlobalCore.Categories.DeleteEmptyCategories();
+	}
 
 	public void WriteConfigString(String key, String value)
 	{
