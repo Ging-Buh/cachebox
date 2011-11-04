@@ -241,7 +241,6 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 				// chk exist import folder
 				File directory = new File(directoryPath);
 				
-				
 				try {
 					if (checkImportPQfromGC.isChecked())
 						importer.importGC();

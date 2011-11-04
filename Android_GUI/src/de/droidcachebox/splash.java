@@ -173,6 +173,53 @@ public class splash extends Activity
 
 		Config.readConfigFile(/* getAssets() */);
 
+		String PocketQueryFolder = Config.GetString("PocketQueryFolder");
+		File directoryPocketQueryFolder = new File(PocketQueryFolder);
+		if (!directoryPocketQueryFolder.exists()) {
+			directoryPocketQueryFolder.mkdir();
+		}
+		String TileCacheFolder = Config.GetString("TileCacheFolder");
+		File directoryTileCacheFolder = new File(TileCacheFolder);
+		if (!directoryTileCacheFolder.exists()) {
+			directoryTileCacheFolder.mkdir();
+		}
+		String User = workPath + "/User";
+		File directoryUser = new File(User);
+		if (!directoryUser.exists()) {
+			directoryUser.mkdir();
+		}
+		String TrackFolder = Config.GetString("TrackFolder");
+		File directoryTrackFolder = new File(TrackFolder);
+		if (!directoryTrackFolder.exists()) {
+			directoryTrackFolder.mkdir();
+		}
+		String UserImageFolder = Config.GetString("UserImageFolder");
+		File directoryUserImageFolder = new File(UserImageFolder);
+		if (!directoryUserImageFolder.exists()) {
+			directoryUserImageFolder.mkdir();
+		}
+		
+		String repository = workPath + "/repository";
+		File directoryrepository = new File(repository);
+		if (!directoryrepository.exists()) {
+			directoryrepository.mkdir();
+		}
+		String DescriptionImageFolder = Config.GetString("DescriptionImageFolder");
+		File directoryDescriptionImageFolder = new File(DescriptionImageFolder);
+		if (!directoryDescriptionImageFolder.exists()) {
+			directoryDescriptionImageFolder.mkdir();
+		}
+		String MapPackFolder = Config.GetString("MapPackFolder");
+		File directoryMapPackFolder = new File(MapPackFolder);
+		if (!directoryMapPackFolder.exists()) {
+			directoryMapPackFolder.mkdir();
+		}
+		String SpoilerFolder = Config.GetString("SpoilerFolder");
+		File directorySpoilerFolder = new File(SpoilerFolder);
+		if (!directorySpoilerFolder.exists()) {
+			directorySpoilerFolder.mkdir();
+		}
+		
 		// copy AssetFolder only if Rev-Number changed, like at new installation
 		if (Config.GetInt("installRev") < Global.CurrentRevision)
 		{
