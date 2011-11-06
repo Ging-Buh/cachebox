@@ -605,7 +605,7 @@ public class GroundspeakAPI
 
 	
 	/**
-	 * Ruft die Liste der TB´s zurück, die im Besitz des Users sind
+	 * Ruft die Liste der TB´s ab, die im Besitz des Users sind
 	 * 
 	 * @param String
 	 *            accessToken
