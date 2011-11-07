@@ -51,8 +51,7 @@
 		<activity android:name=".Views.Forms.EditCoordinate"></activity>
 		<activity android:name=".Views.Forms.EditWaypoint"></activity>
 		<activity android:name=".Views.Forms.Settings"></activity>
-		<activity android:name=".Views.Forms.HintDialog"
-			android:theme="@style/ThemeHintDialog"></activity>
+		<activity android:name=".Views.Forms.HintDialog" android:theme="@style/Theme.Transparent.Dim"></activity>
 		<activity android:name=".Views.Forms.ScreenLock"
 			android:theme="@style/Theme.Transparent"></activity>
 		<activity android:name=".Views.Forms.EditFieldNote"></activity>
@@ -60,12 +59,13 @@
 		<activity android:name=".Views.Forms.SelectDB"></activity>
 		<activity android:name=".Views.Forms.ProgressDialog"
 			android:theme="@style/ThemeHintDialog"></activity>
-		<activity android:name=".Views.Forms.ImportDialog"
-			android:theme="@style/ThemeHintDialog"></activity>
+		<activity android:name=".Views.Forms.ImportDialog" android:theme="@style/ThemeHintDialog"></activity>
 		<activity android:name=".Views.Forms.projectionCoordinate"></activity>
 		<activity android:name=".Views.Forms.GcApiLogin"></activity>
 		<activity android:name=".Views.Forms.MeasureCoordinateActivity"></activity>
 		<activity android:name=".Views.Forms.selectSolverFunction"></activity>
+		<activity android:name=".Views.Forms.ApiPQDialog" android:theme="@style/ThemeHintDialog"></activity>
+		<activity android:name=".Views.Forms.ApiSearchPosDialog" android:theme="@style/Theme.Transparent.Dim"></activity>
 
 	</application>
 </manifest>

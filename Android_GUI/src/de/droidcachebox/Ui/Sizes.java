@@ -115,6 +115,11 @@ public class Sizes
 	{
 		return Button.width;
 	}
+	
+	public static int getButtonWidthWide()
+	{
+		return (int) (Button.width*1.8);
+	}
 
 	public static int getQuickButtonListHeight()
 	{

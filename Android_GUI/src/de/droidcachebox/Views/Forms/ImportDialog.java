@@ -9,6 +9,8 @@ import CB_Core.FilterProperties;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
+import CB_Core.Api.PocketQuery;
+import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.LogDAO;
@@ -16,6 +18,7 @@ import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.Sizes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Import.Importer;
 import CB_Core.Import.Importer.Cache_Log_Waypoint_Return;
@@ -42,18 +45,13 @@ import android.widget.TextView;
 import CB_Core.GlobalCore;
 
 /**
- * <h1>ProgressDialog</h1>
+ * <h1>ProgressDialog</h1> <img src="doc-files/ImportScreen.png" width=146
+ * height=117> </br>
  * 
- * <img src="doc-files/ImportScreen.png" width=146 height=117>
- * 
- * </br>
- * 
- * @author Longri
- * 
- * 
- *         </br></br>
+ * @author Longri </br></br>
  */
-public class ImportDialog extends Activity implements ViewOptionsMenu {
+public class ImportDialog extends Activity implements ViewOptionsMenu
+{
 	public static ImportDialog Me;
 
 	private Context context;
@@ -76,8 +74,9 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 	private final int PQImport = NOT_IMPLEMENTED;
 	private final int MailImport = NOT_IMPLEMENTED;
 
-	public void onCreate(Bundle savedInstanceState) {
-		ActivityUtils.onActivityCreateSetTheme(this);
+	public void onCreate(Bundle savedInstanceState)
+	{
+//		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.import_dialog_layout);
 		Me = this;
@@ -96,11 +95,13 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 		checkBoxImportMaps.setText(GlobalCore.Translations.Get("Maps"));
 		ImportButton.setText(GlobalCore.Translations.Get("import"));
 		CancelButton.setText(GlobalCore.Translations.Get("cancel"));
-		
-		CancelButton.setOnClickListener(new OnClickListener() {
+
+		CancelButton.setOnClickListener(new OnClickListener()
+		{
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v)
+			{
 				;
 				finish();
 			}
@@ -112,7 +113,8 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 
 	}
 
-	private void findViewById() {
+	private void findViewById()
+	{
 		CancelButton = (Button) this.findViewById(R.id.cancelButton);
 		ImportButton = (Button) this.findViewById(R.id.importButton);
 
@@ -120,93 +122,110 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 		checkBoxPreloadImages = (CheckBox) this.findViewById(R.id.import_Image);
 		checkBoxImportGPX = (CheckBox) this.findViewById(R.id.import_GPX);
 		checkBoxGcVote = (CheckBox) this.findViewById(R.id.import_GcVote);
-		checkBoxImportGpxFromMail = (CheckBox) this
-				.findViewById(R.id.import_checkMails);
+		checkBoxImportGpxFromMail = (CheckBox) this.findViewById(R.id.import_checkMails);
 		checkImportPQfromGC = (CheckBox) this.findViewById(R.id.import_PQ);
 	}
 
-	private void initialForm() {
+	private void initialForm()
+	{
 		checkBoxImportMaps.setChecked(Config.GetBool("CacheMapData"));
 		checkBoxPreloadImages.setChecked(Config.GetBool("CacheImageData"));
 		checkBoxImportGPX.setChecked(Config.GetBool("ImportGpx"));
-		checkBoxImportGPX
-				.setOnCheckedChangeListener(checkBoxImportGPX_CheckStateChanged);
-		checkImportPQfromGC
-				.setOnCheckedChangeListener(checkImportPQfromGC_CheckStateChanged);
+		checkBoxImportGPX.setOnCheckedChangeListener(checkBoxImportGPX_CheckStateChanged);
+		checkImportPQfromGC.setOnCheckedChangeListener(checkImportPQfromGC_CheckStateChanged);
 		checkBoxGcVote.setChecked(Config.GetBool("ImportRatings"));
 
-		if (Config.GetString("PopHost").length() > 0
-				&& Config.GetStringEncrypted("PopLogin").length() > 0
-				&& Config.GetStringEncrypted("PopPassword").length() > 0) {
-			checkBoxImportGpxFromMail.setChecked(Config
-					.GetBool("ImportGpxFromMail"));
+		if (Config.GetString("PopHost").length() > 0 && Config.GetStringEncrypted("PopLogin").length() > 0
+				&& Config.GetStringEncrypted("PopPassword").length() > 0)
+		{
+			checkBoxImportGpxFromMail.setChecked(Config.GetBool("ImportGpxFromMail"));
 			checkBoxImportGpxFromMail.setEnabled(true);
-		} else {
+		}
+		else
+		{
 			checkBoxImportGpxFromMail.setEnabled(false);
 			checkBoxImportGpxFromMail.setChecked(false);
 		}
 
-		if (Config.GetStringEncrypted("GcAPI").length() > 0) {
-			checkImportPQfromGC.setChecked(Config
-					.GetBool("ImportPQsFromGeocachingCom"));
+		if (Config.GetStringEncrypted("GcAPI").length() > 0)
+		{
+			checkImportPQfromGC.setChecked(Config.GetBool("ImportPQsFromGeocachingCom"));
 			checkImportPQfromGC.setEnabled(true);
-		} else {
+		}
+		else
+		{
 			checkImportPQfromGC.setChecked(false);
 			checkImportPQfromGC.setEnabled(false);
 		}
 
-		if (checkImportPQfromGC.isChecked() == true) {
+		if (checkImportPQfromGC.isChecked() == true)
+		{
 			checkBoxImportGPX.setChecked(true);
 			checkBoxImportGPX.setEnabled(false);
 		}
+
+		ImportButton.setWidth(Sizes.getButtonWidthWide());
+		CancelButton.setWidth(Sizes.getButtonWidthWide());
+		ImportButton.setHeight(Sizes.getButtonHeight());
+		CancelButton.setHeight(Sizes.getButtonHeight());
 	}
 
-	private OnCheckedChangeListener checkBoxImportGPX_CheckStateChanged = new OnCheckedChangeListener() {
+	private OnCheckedChangeListener checkBoxImportGPX_CheckStateChanged = new OnCheckedChangeListener()
+	{
 		@Override
-		public void onCheckedChanged(CompoundButton buttonView,
-				boolean isChecked) {
+		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+		{
 			checkBoxImportGpxFromMail.setEnabled(checkBoxImportGPX.isChecked());
 		}
 	};
 
-	private OnCheckedChangeListener checkImportPQfromGC_CheckStateChanged = new OnCheckedChangeListener() {
+	private OnCheckedChangeListener checkImportPQfromGC_CheckStateChanged = new OnCheckedChangeListener()
+	{
 		@Override
-		public void onCheckedChanged(CompoundButton buttonView,
-				boolean isChecked) {
-			if (checkImportPQfromGC.isChecked()) {
+		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+		{
+			if (checkImportPQfromGC.isChecked())
+			{
 				checkBoxImportGPX.setChecked(true);
 				checkBoxImportGPX.setEnabled(false);
-			} else {
+			}
+			else
+			{
 				checkBoxImportGPX.setEnabled(true);
 			}
 		}
 	};
 
-	private OnClickListener ImportClick = new OnClickListener() {
+	private OnClickListener ImportClick = new OnClickListener()
+	{
 		@Override
-		public void onClick(View v) {
-			if (!Config.GetBool("CacheImageData")
-					&& checkBoxPreloadImages.isChecked()) {
+		public void onClick(View v)
+		{
+			if (!Config.GetBool("CacheImageData") && checkBoxPreloadImages.isChecked())
+			{
 				// only show warn message, if the user changed the state from
 				// disable to enable.
 				MessageBox
 						.Show("Download of additional/spoiler images is done on personal responsibility. Read the GEOCACHING.COM SITE TERMS OF USE AGREEMENT (5). Really download?",
-								"Import additional images",
-								MessageBoxButtons.YesNo,
-								MessageBoxIcon.Exclamation, DialogListner);
+								"Import additional images", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, DialogListner);
 				finish();
-			} else {
+			}
+			else
+			{
 				ImportNow();
 			}
 
 		}
 	};
 
-	private final DialogInterface.OnClickListener DialogListner = new DialogInterface.OnClickListener() {
+	private final DialogInterface.OnClickListener DialogListner = new DialogInterface.OnClickListener()
+	{
 		@Override
-		public void onClick(DialogInterface dialog, int button) {
+		public void onClick(DialogInterface dialog, int button)
+		{
 			// Behandle das ergebniss
-			switch (button) {
+			switch (button)
+			{
 			case -1:
 				Config.Set("GCAdditionalImageDownload", true);
 				break;
@@ -222,70 +241,98 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 
 	};
 
-	private void ImportNow() {
+	private void ImportNow()
+	{
 		Config.Set("CacheMapData", checkBoxImportMaps.isChecked());
 		Config.Set("CacheImageData", checkBoxPreloadImages.isChecked());
 		Config.Set("ImportGpx", checkBoxImportGPX.isChecked());
 		Config.Set("ImportGpxFromMail", checkBoxImportGpxFromMail.isChecked());
-		Config.Set("ImportPQsFromGeocachingCom",
-				checkImportPQfromGC.isChecked());
+		Config.Set("ImportPQsFromGeocachingCom", checkImportPQfromGC.isChecked());
 		Config.Set("ImportRatings", checkBoxGcVote.isChecked());
 		Config.AcceptChanges();
+		String directoryPath = Config.GetString("PocketQueryFolder");
+		// chk exist import folder
+		File directory = new File(directoryPath);
 
-		Thread ImportThread = new Thread() {
-			public void run() {
+		if (checkImportPQfromGC.isChecked())
+		{
+			// Show PQList and wait for Result
+			ArrayList<PQ> pqList = new ArrayList<PQ>();
+			PocketQuery.GetPocketQueryList(Config.GetAccessToken(), pqList);
+			Intent PqListIntent = new Intent().setClass(main.mainActivity, ApiPQDialog.class);
+			Bundle b = new Bundle();
+			b.putSerializable("PqList", pqList);
+			PqListIntent.putExtras(b);
+			main.mainActivity.startActivityForResult(PqListIntent, 0);
+
+		}
+		else
+		{
+			ImportThread(directoryPath, directory);
+		}
+
+	}
+
+	@Override
+	public void ActivityResult(int requestCode, int resultCode, Intent data)
+	{
+
+		// importer.importGC();
+	}
+
+	public void ImportThread(final String directoryPath, final File directory)
+	{
+		Thread ImportThread = new Thread()
+		{
+			public void run()
+			{
 				Importer importer = new Importer();
 				ImporterProgress ip = new ImporterProgress();
 
-				String directoryPath = Config.GetString("PocketQueryFolder");
-				// chk exist import folder
-				File directory = new File(directoryPath);
-				
-				try {
-					if (checkImportPQfromGC.isChecked())
-						importer.importGC();
-					Thread.sleep(1000);
-					if (checkBoxImportGpxFromMail.isChecked())
-						importer.importMail();
+				try
+				{
+
+					if (checkBoxImportGpxFromMail.isChecked()) importer.importMail();
 					Thread.sleep(1000);
 
 					// Importiere alle GPX Files im Import Folder, auch in ZIP
 					// verpackte
-					if (checkBoxImportGPX.isChecked()&& directory.exists()) {
+					if (checkBoxImportGPX.isChecked() && directory.exists())
+					{
 						Database.Data.beginTransaction();
-						try {
+						try
+						{
 
-							Cache_Log_Waypoint_Return Returns = importer
-									.importGpx(directoryPath, ip);
+							Cache_Log_Waypoint_Return Returns = importer.importGpx(directoryPath, ip);
 							CacheImports = Returns.CacheCount;
 							LogImports = Returns.LogCount;
 							// Schreibe Imports in DB
 							CacheDAO cacheDAO = new CacheDAO();
-							cacheDAO.WriteImports(Returns.cacheIterator,
-									Returns.CacheCount, ip);
+							cacheDAO.WriteImports(Returns.cacheIterator, Returns.CacheCount, ip);
 
 							LogDAO logDao = new LogDAO();
-							logDao.WriteImports(Returns.logIterator,
-									Returns.LogCount, ip);
+							logDao.WriteImports(Returns.logIterator, Returns.LogCount, ip);
 
 							WaypointDAO waypointDao = new WaypointDAO();
-							waypointDao.WriteImports(Returns.waypointIterator,
-									Returns.WaypointCount, ip);
+							waypointDao.WriteImports(Returns.waypointIterator, Returns.WaypointCount, ip);
 
 							Database.Data.setTransactionSuccessful();
-						} catch (Exception exc) {
+						}
+						catch (Exception exc)
+						{
 							exc.printStackTrace();
 						}
 						Database.Data.endTransaction();
 
 						// del alten entpackten Ordener wenn vorhanden?
 						File[] filelist = directory.listFiles();
-						for (File tmp : filelist) {
-							if (tmp.isDirectory()) {
-								ArrayList<String> ordnerInhalt = Importer
-										.recursiveDirectoryReader(tmp,
-												new ArrayList<String>());
-								for (String tmp2 : ordnerInhalt) {
+						for (File tmp : filelist)
+						{
+							if (tmp.isDirectory())
+							{
+								ArrayList<String> ordnerInhalt = Importer.recursiveDirectoryReader(tmp, new ArrayList<String>());
+								for (String tmp2 : ordnerInhalt)
+								{
 									File forDel = new File(tmp2);
 									forDel.delete();
 								}
@@ -296,24 +343,24 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 
 					}
 
-					if (checkBoxGcVote.isChecked())
-						importer.importGcVote();
+					if (checkBoxGcVote.isChecked()) importer.importGcVote();
 					Thread.sleep(1000);
-					if (checkBoxPreloadImages.isChecked())
-						importer.importImages();
+					if (checkBoxPreloadImages.isChecked()) importer.importImages();
 					Thread.sleep(1000);
-					if (checkBoxImportMaps.isChecked())
-						importer.importMaps();
+					if (checkBoxImportMaps.isChecked()) importer.importMaps();
 
 					if (importCancel) // wenn im ProgressDialog Cancel gedrückt
 										// wurde.
 
-						Thread.sleep(1000);
-				} catch (InterruptedException e) {
+					Thread.sleep(1000);
+				}
+				catch (InterruptedException e)
+				{
 					e.printStackTrace();
 				}
 
-				if (!importCancel) {
+				if (!importCancel)
+				{
 					ProgressDialog.Ready(); // Dem Progress Dialog melden, dass
 											// der Thread fertig ist!
 					ProgressHandler.post(ProgressReady); // auf das Ende des
@@ -325,9 +372,6 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 		ImportThread.setPriority(Thread.MAX_PRIORITY);
 		ImportStart = new Date();
 		ProgressDialog.Show("Import", ImportThread, ProgressCanceld);
-
-		// finish();
-
 	}
 
 	private Date ImportStart;
@@ -335,21 +379,24 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 	private int CacheImports;
 
 	private Boolean importCancel = false;
-	final Runnable ProgressCanceld = new Runnable() {
-		public void run() {
+	final Runnable ProgressCanceld = new Runnable()
+	{
+		public void run()
+		{
 			importCancel = true;
 
 		}
 	};
 
 	final Handler ProgressHandler = new Handler();
-	final Runnable ProgressReady = new Runnable() {
-		public void run() {
+	final Runnable ProgressReady = new Runnable()
+	{
+		public void run()
+		{
 			Date Importfin = new Date();
 			long ImportZeit = Importfin.getTime() - ImportStart.getTime();
 
-			String Msg = "Import " + String.valueOf(CacheImports) + "C "
-					+ String.valueOf(LogImports) + "L in "
+			String Msg = "Import " + String.valueOf(CacheImports) + "C " + String.valueOf(LogImports) + "L in "
 					+ String.valueOf(ImportZeit);
 
 			Logger.DEBUG(Msg);
@@ -361,15 +408,17 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 	private static android.app.ProgressDialog pd;
 	private static FilterProperties props;
 
-	public static void ApplyFilter() {
+	public static void ApplyFilter()
+	{
 
 		props = Global.LastFilter;
-		pd = android.app.ProgressDialog.show(ImportDialog.Me, "",
-				GlobalCore.Translations.Get("LoadCaches"), true);
+		pd = android.app.ProgressDialog.show(ImportDialog.Me, "", GlobalCore.Translations.Get("LoadCaches"), true);
 
-		Thread thread = new Thread() {
+		Thread thread = new Thread()
+		{
 			@Override
-			public void run() {
+			public void run()
+			{
 				String sqlWhere = props.getSqlWhere();
 				Logger.General("Main.ApplyFilter: " + sqlWhere);
 				Database.Data.Query.clear();
@@ -385,19 +434,22 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 	}
 
 	// Instantiating the Handler associated with the main thread.
-	private static Handler messageHandler = new Handler() {
+	private static Handler messageHandler = new Handler()
+	{
 
 		@Override
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case 1: {
+		public void handleMessage(Message msg)
+		{
+			switch (msg.what)
+			{
+			case 1:
+			{
 				CachListChangedEventList.Call();
 				pd.dismiss();
 				Toast.makeText(
 						main.mainActivity,
-						GlobalCore.Translations.Get("AppliedFilter1") + " "
-								+ String.valueOf(Database.Data.Query.size())
-								+ " " + GlobalCore.Translations.Get("AppliedFilter2"), Toast.LENGTH_LONG).show();
+						GlobalCore.Translations.Get("AppliedFilter1") + " " + String.valueOf(Database.Data.Query.size()) + " "
+								+ GlobalCore.Translations.Get("AppliedFilter2"), Toast.LENGTH_LONG).show();
 				ImportDialog.Me.finish();
 			}
 
@@ -408,55 +460,59 @@ public class ImportDialog extends Activity implements ViewOptionsMenu {
 	};
 
 	@Override
-	public void OnShow() {
+	public void OnShow()
+	{
 
 	}
 
 	@Override
-	public void OnHide() {
+	public void OnHide()
+	{
 
 	}
 
 	@Override
-	public void OnFree() {
+	public void OnFree()
+	{
 
 	}
 
 	@Override
-	public int GetMenuId() {
+	public int GetMenuId()
+	{
 
 		return 0;
 	}
 
 	@Override
-	public void ActivityResult(int requestCode, int resultCode, Intent data) {
-
-	}
-
-	@Override
-	public boolean ItemSelected(MenuItem item) {
+	public boolean ItemSelected(MenuItem item)
+	{
 
 		return false;
 	}
 
 	@Override
-	public void BeforeShowMenu(Menu menu) {
+	public void BeforeShowMenu(Menu menu)
+	{
 
 	}
 
 	@Override
-	public int GetContextMenuId() {
+	public int GetContextMenuId()
+	{
 
 		return 0;
 	}
 
 	@Override
-	public void BeforeShowContextMenu(Menu menu) {
+	public void BeforeShowContextMenu(Menu menu)
+	{
 
 	}
 
 	@Override
-	public boolean ContextMenuItemSelected(MenuItem item) {
+	public boolean ContextMenuItemSelected(MenuItem item)
+	{
 
 		return false;
 	}

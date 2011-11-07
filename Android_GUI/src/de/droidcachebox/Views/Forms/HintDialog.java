@@ -21,7 +21,7 @@ public class HintDialog extends Activity {
 	
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
-    	ActivityUtils.onActivityCreateSetTheme(this);
+//    	ActivityUtils.onActivityCreateSetTheme(this);
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.hint);
 

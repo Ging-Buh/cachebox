@@ -1,39 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:minWidth="280dip" android:layout_margin="10dip" android:layout_height="fill_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
 
 	<LinearLayout android:orientation="vertical"
-		android:background="@drawable/header" android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
+	android:layout_width="wrap_content" android:layout_centerInParent="true"
+	android:minWidth="280dip" android:layout_margin="10dip"
+	android:layout_height="wrap_content">
 
-		<TextView style="@style/DialogText.Title" android:id="@+id/title"
-			android:paddingRight="8dip" android:paddingLeft="8dip"
-			android:background="@drawable/title" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:text="Hint"/>
+		<LinearLayout android:orientation="vertical"
+			android:background="@drawable/header" android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
 
-	</LinearLayout>
+			<TextView style="@style/DialogText.Title" android:id="@+id/title"
+				android:paddingRight="8dip" android:paddingLeft="8dip"
+				android:background="@drawable/title" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="Hint" />
 
-	<LinearLayout android:id="@+id/content"
-		android:orientation="vertical" android:background="@drawable/center"
-		android:layout_width="fill_parent" android:layout_height="wrap_content">
+		</LinearLayout>
+
+		<LinearLayout android:id="@+id/content"
+			android:orientation="vertical" android:background="@drawable/center"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
 			<EditText android:text="EditText" android:layout_width="match_parent"
 				android:layout_height="wrap_content" android:id="@+id/hintdialog_text"
 				android:editable="false"></EditText>
-		
 
-	</LinearLayout>
 
-	<LinearLayout android:orientation="horizontal"
-		android:background="@drawable/footer" android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
+		</LinearLayout>
+
+		<LinearLayout android:orientation="horizontal"
+			android:background="@drawable/footer" android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
 			<Button android:text="Decode" android:layout_height="55dip"
 				android:id="@+id/hintdialog_button_decode" android:layout_width="match_parent"
 				android:layout_weight="1"></Button>
 			<Button android:text="Close" android:layout_height="55dip"
 				android:id="@+id/hintdialog_button_close" android:layout_width="match_parent"
 				android:layout_weight="1"></Button>
-		
-	</LinearLayout>
 
-</LinearLayout>
+		</LinearLayout>
+
+	</LinearLayout>
+</RelativeLayout>

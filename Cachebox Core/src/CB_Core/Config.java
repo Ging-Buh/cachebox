@@ -238,6 +238,11 @@ public class Config
 		validateSetting("PremiumMember", "false");
 		validateSetting("SearchWithoutFounds", "true");
 		validateSetting("SearchWithoutOwns", "true");
+		
+		//api search settings
+		validateSetting("SearchWithoutFounds", "true");
+		validateSetting("SearchWithoutOwns", "true");
+		validateSetting("SearchOnlyAvible", "true");
 
 		// validateSetting("OtherRepositoriesFolder", Global.AppPath +
 		// "\\Repositories");

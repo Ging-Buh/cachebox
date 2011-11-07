@@ -33,12 +33,16 @@ public class SearchForGeocaches
 		public int number;
 		public boolean withoutFinds = false;
 		public boolean withoutOwn = false;
+		boolean excludeHides = false;
+		boolean excludeFounds = false;
+		boolean available = true;
 	}
 
 	public static class SearchCoordinate extends Search
 	{
 		public Coordinate pos;
 		public float distanceInMeters;
+		public int distance;
 	}
 
 	public static class SearchGC extends Search
@@ -188,6 +192,49 @@ public class SearchForGeocaches
 				requestString += "\"Available\":true";
 				requestString += "}";
 				requestString += "}";
+				
+				
+
+	           
+				requestString = "{";
+				requestString += "\"AccessToken\":\"" + accessToken + "\",";
+				if (isLite) requestString += "\"IsLite\":true,"; // only lite
+				else
+					requestString += "\"IsLite\":false,"; // full for Premium
+				requestString += "\"StartIndex\":0,";
+				requestString += "\"MaxPerPage\":" + String.valueOf(searchC.number) + ",";
+				requestString += "\"PointRadius\":{";
+				requestString += "\"DistanceInMeters\":" + String.valueOf((int)searchC.distanceInMeters) + ",";
+				requestString += "\"Point\":{";
+				requestString += "\"Latitude\":" + String.valueOf(searchC.pos.Latitude) + ",";
+				requestString += "\"Longitude\":" + String.valueOf(searchC.pos.Longitude);
+				requestString += "}";
+				requestString += "},";
+
+	            if (searchC.excludeHides)
+	            {
+	            	requestString += "\"NotHiddenByUsers\":{";
+	            	requestString += "\"UserNames\":[\"" + Config.GetString("GcLogin") + "\"]";
+	            	requestString += "},";
+	            }
+
+	            if (searchC.excludeFounds)
+	            {
+	            	requestString += "\"NotFoundByUsers\":{";
+	            	requestString += "\"UserNames\":[\"" + Config.GetString("GcLogin") + "\"]";
+	            	requestString += "},";
+	            }
+
+	            requestString += "\"GeocacheExclusions\":{";
+	            requestString += "\"Archived\":false,";
+	            
+	            if (searchC.available)
+	            	requestString += "\"Available\":true";
+
+	            requestString += "}";
+	            requestString += "}";
+
+
 			}
 
 

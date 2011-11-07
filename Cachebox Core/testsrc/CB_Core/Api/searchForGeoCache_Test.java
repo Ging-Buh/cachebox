@@ -69,7 +69,7 @@ public class searchForGeoCache_Test extends TestCase
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 		CB_Core.Api.SearchForGeocaches.SearchCoordinate searchC = new CB_Core.Api.SearchForGeocaches.SearchCoordinate();
 		searchC.pos = searchCoord;
-		searchC.distanceInMeters = 50000;
+		searchC.distanceInMeters = 500000;
 		searchC.number = 50;
 		String result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, 0);
 

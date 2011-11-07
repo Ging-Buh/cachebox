@@ -3,6 +3,7 @@ package CB_Core.Api;
 import java.util.ArrayList;
 
 import CB_Core.Config;
+import CB_Core.Api.PocketQuery.PQ;
 import junit.framework.TestCase;
 
 public class PocketQueryTest extends TestCase
@@ -36,7 +37,7 @@ public class PocketQueryTest extends TestCase
 	
 	public void testGetPQ_List()
 	{
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<PQ> list = new ArrayList<PQ>();
 		
 		PocketQuery.GetPocketQueryList(Config.GetAccessToken(), list);
 		
