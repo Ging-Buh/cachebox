@@ -122,5 +122,30 @@ public class Waypoint implements Serializable {
 		}
 		// Log.d(TAG, "Waypoint type: " + this.mWaypointType.toString());
 	}
+	
+	public void clear()
+	{
+		CacheId = -1;
+
+		GcCode = "";
+
+		Pos = new Coordinate();
+
+		Title = "";
+
+		Description = "";
+
+		Type = null;
+
+		IsUserWaypoint = false;
+
+		IsSyncExcluded = false;
+
+		Clue = "";
+
+		checkSum = 0;
+
+		time = null;
+	}
 
 }

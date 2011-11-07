@@ -1,19 +1,15 @@
 package CB_Core.Import;
 
-import java.io.BufferedReader;
+import java.util.List;
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.kxml2.io.KXmlParser;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
@@ -23,25 +19,37 @@ import CB_Core.Types.Coordinate;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
+import com.thebuzzmedia.sjxp.XMLParser;
+import com.thebuzzmedia.sjxp.XMLParserException;
+import com.thebuzzmedia.sjxp.rule.DefaultRule;
+import com.thebuzzmedia.sjxp.rule.IRule;
+import com.thebuzzmedia.sjxp.rule.IRule.Type;
+
 public class GPXFileImporter
 {
 
-	private static SimpleDateFormat datePattern1 = new SimpleDateFormat(
-			"yyyy-MM-dd'T'HH:mm:ss.S");
-	private static SimpleDateFormat datePattern2 = new SimpleDateFormat(
-			"yyyy-MM-dd'T'HH:mm:ss'Z'");
-	private static SimpleDateFormat datePattern3 = new SimpleDateFormat(
-			"yyyy-MM-dd'T'HH:mm:ss");
+	private static SimpleDateFormat datePattern1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
+	private static SimpleDateFormat datePattern2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+	private static SimpleDateFormat datePattern3 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
 	private String mGpxFileName;
+	private String mDisplayFilename;
 	private IImportHandler mImportHandler;
 	private ImporterProgress mip;
+	private Integer currentwpt = 0;
+	private Integer countwpt = 0;
+	
+	Cache cache = new Cache();
+	Waypoint waypoint = new Waypoint();
+	private LogEntry log = new LogEntry();
+	
 
 	public GPXFileImporter(String gpxFileName)
 	{
 		super();
 		mGpxFileName = gpxFileName;
 		mip = null;
+		mDisplayFilename = new File(gpxFileName).getName();
 	}
 
 	public GPXFileImporter(String gpxFileName, ImporterProgress ip)
@@ -49,582 +57,888 @@ public class GPXFileImporter
 		super();
 		mGpxFileName = gpxFileName;
 		mip = ip;
+		mDisplayFilename = new File(gpxFileName).getName();
 	}
 
-	public void doImport(IImportHandler importHandler, Integer countwpt ) throws Exception
+	public void doImport(IImportHandler importHandler, Integer countwpt) throws Exception
 	{
+		// http://www.thebuzzmedia.com/software/simple-java-xml-parser-sjxp/
+
+		currentwpt = 0;
+		this.countwpt = countwpt;
+
 		mImportHandler = importHandler;
-		KXmlParser parser = new KXmlParser();
-		Reader fr = new InputStreamReader(new FileInputStream(mGpxFileName),
-				"UTF-8");
 
-		BufferedReader br = new BufferedReader(fr);
+		Map<String, String> values = new HashMap<String, String>();
 
-		String strLine;
-		String section = "";
-		Integer currentwpt = 0;
-	
-		while ((strLine = br.readLine()) != null)
-		{
-			if (strLine.contains("</wpt>"))
-			{
-				section = section + strLine;
+		System.setProperty("sjxp.namespaces", "false");
 
-				parser.setInput(new StringReader(section));
+		List<IRule<Map<String, String>>> ruleList = new ArrayList<IRule<Map<String, String>>>();
+		
+		ruleList = createWPTRules(ruleList);
+		ruleList = createGroundspeakRules(ruleList);
+		ruleList = createGSAKRules(ruleList);
 
-				// hier wird über die Elemente der ersten Ebene iteriert -
-				// sollten nur wpt-Elemente sein
-				int eventType = parser.getEventType();
+		@SuppressWarnings("unchecked")
+		XMLParser<Map<String, String>> parserCache = new XMLParser<Map<String, String>>(ruleList.toArray(new IRule[0]));
 
-				boolean done = false;
-
-				while (eventType != XmlPullParser.END_DOCUMENT && !done)
-				{
-					String tagName = parser.getName();
-					switch (eventType)
-					{
-					case XmlPullParser.START_DOCUMENT:
-						break;
-					case XmlPullParser.START_TAG:
-
-						if (tagName.equalsIgnoreCase("gpx"))
-						{
-							// TODO GPX-Elemente noch bearbeiten?
-						}
-						else if (tagName.equalsIgnoreCase("wpt"))
-						{
-
-							// TODO check if this is a real Cache or Additional
-							// Waypoint
-
-							if (section.contains("<type>Geocache|"))
-							{
-								Cache cache = parseWptCacheElement(parser);
-
-								// TODO at Cache GPXFileCategorie and last
-								// Import Info
-
-								currentwpt++;
-								
-								if (mip != null) mip.ProgressInkrement(
-										"ImportGPX", "Cache: " + currentwpt + "/" + countwpt + " - " + cache.GcCode);
-
-								mImportHandler.handleCache(cache);
-							}
-							else if (section.contains("<type>Waypoint|"))
-							{
-								Waypoint waypoint = parseWptAdditionalWaypointElement(parser);
-
-								currentwpt++;
-								
-								if (mip != null) mip.ProgressInkrement(
-										"ImportGPX", "Waypoint: " + currentwpt + "/" + countwpt + " - " + waypoint.GcCode);
-
-								mImportHandler.handleWaypoint(waypoint);
-							}
-							else
-							{
-								// Should not happen
-							}
-
-						}
-						break;
-					case XmlPullParser.END_TAG:
-						if (tagName.equalsIgnoreCase("gpx"))
-						{
-							done = true;
-						}
-						break;
-					}
-					eventType = parser.next();
-				}
-
-				section = "";
-			}
-			else
-			{
-				section = section + strLine;
-			}
-		}
-
-		// parser.setInput(fr);
+		parserCache.parse(new FileInputStream(mGpxFileName), values);
 
 		mImportHandler = null;
 	}
 
-	private Cache parseWptCacheElement(KXmlParser parser) throws Exception
+	private List<IRule<Map<String, String>>> createWPTRules(List<IRule<Map<String, String>>> ruleList) throws Exception
 	{
-		// Hier wird ein wpt-Element aufgebaut
 
-		Cache cache = new Cache();
-		parseWptAttributes(parser, cache);
+		// Basic wpt Rules
 
-		boolean done = false;
-		int eventType = parser.next();
-		while (eventType != XmlPullParser.END_DOCUMENT && !done)
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG, "/gpx/wpt")
 		{
-			String tagName = parser.getName();
-			switch (eventType)
+			@Override
+			public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values)
 			{
-			case XmlPullParser.START_TAG:
-				if (tagName.equalsIgnoreCase("name"))
+
+				if (isStartTag)
 				{
-					cache.GcCode = parser.nextText();
-					cache.Id = Cache.GenerateCacheId(cache.GcCode);
-				}
-				else if (tagName.equalsIgnoreCase("time"))
-				{
-					cache.DateHidden = parseDate(parser.nextText());
-				}
-				else if (tagName.equalsIgnoreCase("url"))
-				{
-					cache.Url = parser.nextText();
-				}
-				else if (tagName.equalsIgnoreCase("link"))
-				{
-					cache.Url = "http"; // irgendwie komme ich nicht an die URL
-										// ran
-				}
-				else if (tagName.equalsIgnoreCase("sym"))
-				{
-					cache.Found = parser.nextText().equalsIgnoreCase(
-							"Geocache Found");
-				}
-				else if (tagName.equalsIgnoreCase("groundspeak:cache"))
-				{
-					parseWptCacheElement(parser, cache);
-				}
-				else if (tagName.equalsIgnoreCase("extensions"))
-				{
-					parseExtensionsCacheElement(parser, cache);
+					values.clear();
 				}
 				else
 				{
-					skipUntilEndTag(parser, tagName);
-				}
-				break;
-			case XmlPullParser.END_TAG:
-				if (tagName.equalsIgnoreCase("wpt"))
-				{
-					done = true;
-				}
-				break;
-			}
-			eventType = parser.next();
-		}
-
-		return cache;
-	}
-
-	private Waypoint parseWptAdditionalWaypointElement(KXmlParser parser)
-			throws Exception
-	{
-
-		Waypoint waypoint = new Waypoint();
-
-		parseWptAdditionalWaypointsAttributes(parser, waypoint);
-
-		boolean done = false;
-		int eventType = parser.next();
-		while (eventType != XmlPullParser.END_DOCUMENT && !done)
-		{
-			String tagName = parser.getName();
-			switch (eventType)
-			{
-			case XmlPullParser.START_TAG:
-				if (tagName.equalsIgnoreCase("name"))
-				{
-					waypoint.GcCode = parser.nextText();
-					waypoint.Title = waypoint.GcCode;
-					// TODO Hack to get parent Cache
-					waypoint.CacheId = Cache.GenerateCacheId("GC"
-							+ waypoint.GcCode.substring(2,
-									waypoint.GcCode.length()));
-				}
-				else if (tagName.equalsIgnoreCase("desc"))
-				{
-					waypoint.Description = parser.nextText();
-				}
-				else if (tagName.equalsIgnoreCase("type"))
-				{
-					waypoint.parseTypeString(parser.nextText());
-				}
-				else if (tagName.equalsIgnoreCase("cmt"))
-				{
-					waypoint.Clue = parser.nextText();
-				}
-				break;
-			case XmlPullParser.END_TAG:
-				if (tagName.equalsIgnoreCase("wpt"))
-				{
-					done = true;
-				}
-				break;
-			}
-			eventType = parser.next();
-		}
-
-		return waypoint;
-	}
-
-	private void parseExtensionsCacheElement(KXmlParser parser, Cache cache)
-			throws Exception
-	{
-
-		boolean done = false;
-		int eventType = parser.next();
-		while (eventType != XmlPullParser.END_DOCUMENT && !done)
-		{
-			String tagName = parser.getName();
-			switch (eventType)
-			{
-			case XmlPullParser.START_TAG:
-			{
-				if (tagName.equalsIgnoreCase("groundspeak:cache"))
-				{
-					parseWptCacheElement(parser, cache);
-				}
-				else if (tagName.equalsIgnoreCase("gsak:wptExtension"))
-				{
-					parseGSAKCacheElement(parser, cache);
-				}
-			}
-				break;
-			case XmlPullParser.END_TAG:
-				if (tagName.equalsIgnoreCase("extensions"))
-				{
-					done = true;
-				}
-				break;
-			}
-			eventType = parser.next();
-		}
-
-	}
-
-	private void parseGSAKCacheElement(KXmlParser parser, Cache cache)
-			throws Exception
-	{
-		// bei GSAk gehts eine Ebene tiefer weiter
-
-		// parser.nextTag();
-		boolean done = false;
-		int eventType = parser.next();
-		while (eventType != XmlPullParser.END_DOCUMENT && !done)
-		{
-			String tagName = parser.getName();
-			switch (eventType)
-			{
-			case XmlPullParser.START_TAG:
-			{
-				if (tagName.equalsIgnoreCase("gsak:LatBeforeCorrect"))
-				{
-					cache.CorrectedCoordinates = true;
-				}
-			}
-				break;
-			case XmlPullParser.END_TAG:
-				if (tagName.equalsIgnoreCase("gsak:wptExtension"))
-				{
-					done = true;
-				}
-				break;
-			}
-			eventType = parser.next();
-		}
-
-	}
-
-	private void parseWptCacheElement(KXmlParser parser, Cache cache)
-			throws Exception
-	{
-		// Hier wird ein Groundspeak-Cache Element aufgebaut
-
-		parseWptCacheAttributes(parser, cache);
-
-		boolean done = false;
-		int eventType = parser.next();
-		while (eventType != XmlPullParser.END_DOCUMENT && !done)
-		{
-			String tagName = parser.getName();
-			switch (eventType)
-			{
-			case XmlPullParser.START_TAG:
-				if (tagName.equalsIgnoreCase("groundspeak:name"))
-				{
-					cache.Name = parser.nextText();
-				}
-				else if (tagName.equalsIgnoreCase("groundspeak:placed_by"))
-				{
-					cache.PlacedBy = parser.nextText();
-				}
-				else if (tagName.equalsIgnoreCase("groundspeak:owner"))
-				{
-					cache.Owner = parser.nextText();
-				}
-				else if (tagName.equalsIgnoreCase("groundspeak:type"))
-				{
-					cache.Type = CacheTypes.parseString(parser.nextText());
-				}
-				else if (tagName.equalsIgnoreCase("groundspeak:container"))
-				{
-					cache.Size = CacheSizes.parseString(parser.nextText());
-				}
-				else if (tagName.equalsIgnoreCase("groundspeak:difficulty"))
-				{
-					cache.Difficulty = Float.parseFloat(parser.nextText());
-				}
-				else if (tagName.equalsIgnoreCase("groundspeak:terrain"))
-				{
-					cache.Terrain = Float.parseFloat(parser.nextText());
-				}
-				else if (tagName.equalsIgnoreCase("groundspeak:attributes"))
-				{
-					parseWptCacheAttributesElement(parser, cache);
-				}
-				else if (tagName
-						.equalsIgnoreCase("groundspeak:short_description"))
-				{
-					// TODO im nicht HTML-Fall die Zeilenumbrüche ersetzen
-					cache.shortDescription = parser.nextText();
-				}
-				else if (tagName
-						.equalsIgnoreCase("groundspeak:long_description"))
-				{
-					// TODO im nicht HTML-Fall die Zeilenumbrüche ersetzen
-					cache.longDescription = parser.nextText();
-				}
-				else if (tagName.equalsIgnoreCase("groundspeak:encoded_hints"))
-				{
-					cache.hint = parser.nextText();
-				}
-				else if (tagName.equalsIgnoreCase("groundspeak:logs"))
-				{
-					parseWptCacheLogsElement(parser, cache);
-				}
-				else
-				{
-					skipUntilEndTag(parser, tagName);
-				}
-				break;
-			case XmlPullParser.END_TAG:
-				if (tagName.equalsIgnoreCase("groundspeak:cache"))
-				{
-					done = true;
-				}
-				break;
-			}
-			eventType = parser.next();
-		}
-	}
-
-	private void parseWptCacheAttributesElement(KXmlParser parser, Cache cache)
-			throws Exception
-	{
-		boolean done = false;
-		int eventType = parser.next();
-		while (eventType != XmlPullParser.END_DOCUMENT && !done)
-		{
-			String tagName = parser.getName();
-			switch (eventType)
-			{
-			case XmlPullParser.START_TAG:
-				if (tagName.equalsIgnoreCase("groundspeak:attribute"))
-				{
-					int attrGcComId = -1;
-					int attrGcComVal = -1;
-					if (parser.getAttributeCount() == 2)
+					if (values.get("wpt_type").startsWith("Geocache|"))
 					{
-						if (parser.getAttributeName(0).equalsIgnoreCase("id"))
+						try
 						{
-							attrGcComId = Integer.parseInt(parser
-									.getAttributeValue(0));
+							createCache(values);
 						}
-						if (parser.getAttributeName(1).equalsIgnoreCase("inc"))
+						catch (Exception e)
 						{
-							attrGcComVal = Integer.parseInt(parser
-									.getAttributeValue(1));
+							throw new XMLParserException(e.getMessage());
 						}
 					}
-					if (attrGcComId > 0 && attrGcComVal != -1)
+					else if (values.get("wpt_type").startsWith("Waypoint|"))
 					{
-						if (attrGcComVal > 0)
+						try
 						{
-							cache.addAttributePositive(Attributes
-									.getAttributeEnumByGcComId(attrGcComId));
+							createWaypoint(values);
 						}
-						else
+						catch (Exception e)
 						{
-							cache.addAttributeNegative(Attributes
-									.getAttributeEnumByGcComId(attrGcComId));
+							throw new XMLParserException(e.getMessage());
 						}
+
 					}
 				}
-				else
-				{
-					skipUntilEndTag(parser, tagName);
-				}
-				break;
-			case XmlPullParser.END_TAG:
-				if (tagName.equalsIgnoreCase("groundspeak:attributes"))
-				{
-					done = true;
-				}
-				break;
+
 			}
-			eventType = parser.next();
-		}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE, "/gpx/wpt", "lat", "lon")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("wpt_attribute_" + this.getAttributeNames()[index], value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/type")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("wpt_type", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/name")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("wpt_name", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/desc")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("wpt_desc", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/cmt")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("wpt_cmt", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/time")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("wpt_time", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/url")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("wpt_url", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/link")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("wpt_link", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/sym")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("wpt_sym", text);
+			}
+		});
+
+		return ruleList;
 	}
 
-	private void parseWptCacheLogsElement(KXmlParser parser, Cache cache)
-			throws Exception
+	private List<IRule<Map<String, String>>> createGroundspeakRules(List<IRule<Map<String, String>>> ruleList) throws Exception
 	{
-		boolean done = false;
-		int eventType = parser.next();
-		while (eventType != XmlPullParser.END_DOCUMENT && !done)
+
+		// groundspeak:cache Rules for GPX from GC.com
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE, "/gpx/wpt/groundspeak:cache", "id", "available", "archived")
 		{
-			String tagName = parser.getName();
-			switch (eventType)
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
 			{
-			case XmlPullParser.START_TAG:
-				if (tagName.equalsIgnoreCase("groundspeak:log"))
+
+				values.put("cache_attribute_" + this.getAttributeNames()[index], value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:name")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_name", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:placed_by")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_placed_by", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:owner")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_owner", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:type")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_type", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:container")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_container", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:difficulty")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_difficulty", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:terrain")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_terrain", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG,
+				"/gpx/wpt/groundspeak:cache/groundspeak:attributes/groundspeak:attribute")
+		{
+			@Override
+			public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values)
+			{
+
+				if (isStartTag)
 				{
-					LogEntry log = parseWptCacheLogsLogElement(parser, cache);
-					if (log != null)
+					if (values.containsKey("cache_attributes_count")) values.put("cache_attributes_count",
+							String.valueOf((Integer.parseInt(values.get("cache_attributes_count")) + 1)));
+					else
+						values.put("cache_attributes_count", "1");
+				}
+
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE,
+				"/gpx/wpt/groundspeak:cache/groundspeak:attributes/groundspeak:attribute", "id", "inc")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("cache_attribute_" + values.get("cache_attributes_count") + "_" +  this.getAttributeNames()[index], value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:short_description")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_short_description", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE, "/gpx/wpt/groundspeak:cache/groundspeak:short_description",
+				"html")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("cache_short_description_html", value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:long_description")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_long_description", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE, "/gpx/wpt/groundspeak:cache/groundspeak:long_description", "html")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("cache_long_description_html", value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:encoded_hints")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_encoded_hints", text);
+			}
+		});
+
+		// Log Rules
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG, "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log")
+		{
+			@Override
+			public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values)
+			{
+
+				if (isStartTag)
+				{
+					if (values.containsKey("cache_logs_count")) values.put("cache_logs_count",
+							String.valueOf((Integer.parseInt(values.get("cache_logs_count")) + 1)));
+					else
+						values.put("cache_logs_count", "1");
+				}
+
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE, "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log",
+				"id")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("cache_log_" + values.get("cache_logs_count") + "_" + this.getAttributeNames()[index], value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:date")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_date", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:finder")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_finder", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:type")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_type", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:text")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_text", text);
+			}
+		});
+
+		return ruleList;
+	}
+	
+	private List<IRule<Map<String, String>>> createGSAKRules(List<IRule<Map<String, String>>> ruleList) throws Exception
+	{
+
+		// GSAK Rules
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG, "/gpx/wpt/extensions/gsak:wptExtension/gsak:LatBeforeCorrect")
+		{
+			@Override
+			public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values)
+			{
+
+				if (isStartTag)
+				{
+					values.put("cache_gsak_corrected_coordinates", "True");
+				}
+
+			}
+		});
+
+		// Cache Rules for GPX from GSAK
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE, "/gpx/wpt/extensions/groundspeak:cache", "id", "available", "archived")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("cache_attribute_" + this.getAttributeNames()[index], value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:name")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_name", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:placed_by")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_placed_by", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:owner")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_owner", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:type")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_type", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:container")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_container", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:difficulty")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_difficulty", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:terrain")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_terrain", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:attributes/groundspeak:attribute")
+		{
+			@Override
+			public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values)
+			{
+
+				if (isStartTag)
+				{
+					if (values.containsKey("cache_attributes_count")) values.put("cache_attributes_count",
+							String.valueOf((Integer.parseInt(values.get("cache_attributes_count")) + 1)));
+					else
+						values.put("cache_attributes_count", "1");
+				}
+
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:attributes/groundspeak:attribute", "id", "inc")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("cache_attribute_" + values.get("cache_attributes_count") + "_" + this.getAttributeNames()[index], value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:short_description")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_short_description", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:short_description",
+				"html")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("cache_short_description_html", value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:long_description")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_long_description", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:long_description", "html")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("cache_long_description_html", value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:encoded_hints")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_encoded_hints", text);
+			}
+		});
+
+		// Log Rules
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:logs/groundspeak:log")
+		{
+			@Override
+			public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values)
+			{
+
+				if (isStartTag)
+				{
+					if (values.containsKey("cache_logs_count")) values.put("cache_logs_count",
+							String.valueOf((Integer.parseInt(values.get("cache_logs_count")) + 1)));
+					else
+						values.put("cache_logs_count", "1");
+				}
+
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:logs/groundspeak:log",
+				"id")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("cache_log_" + values.get("cache_logs_count") + "_" + this.getAttributeNames()[index], value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:date")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_date", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:finder")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_finder", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:type")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_type", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:text")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_text", text);
+			}
+		});
+
+		return ruleList;
+	}
+		
+	private void createCache(Map<String, String> values) throws Exception
+	{
+
+		if (values.containsKey("wpt_attribute_lat") && values.containsKey("wpt_attribute_lon"))
+		{
+			cache.Pos = new Coordinate(new Double(values.get("wpt_attribute_lat")).doubleValue(), new Double(
+					values.get("wpt_attribute_lon")).doubleValue());
+		}
+
+		if (values.containsKey("wpt_name"))
+		{
+			cache.GcCode = values.get("wpt_name");
+			cache.Id = Cache.GenerateCacheId(cache.GcCode);
+		}
+
+		if (values.containsKey("wpt_time"))
+		{
+			cache.DateHidden = parseDate(values.get("wpt_time"));
+		}
+
+		if (values.containsKey("wpt_url"))
+		{
+			cache.Url = values.get("wpt_url");
+		}
+
+		if (values.containsKey("wpt_sym"))
+		{
+			cache.Found = values.get("wpt_sym").equalsIgnoreCase("Geocache Found");
+		}
+
+		if (values.containsKey("cache_attribute_id"))
+		{
+
+			cache.GcId = values.get("cache_attribute_id");
+		}
+		
+		if (values.containsKey("cache_attribute_available"))
+		{
+			if (values.get("cache_attribute_available").equalsIgnoreCase("True"))
+			{
+				cache.Available = true;
+			}
+			else
+			{
+				cache.Available = false;
+			}
+		}
+
+		if (values.containsKey("cache_attribute_archived"))
+		{
+			if (values.get("cache_attribute_archived").equalsIgnoreCase("True"))
+			{
+				cache.Archived = true;
+			}
+			else
+			{
+				cache.Archived = false;
+			}
+		}
+
+		if (values.containsKey("cache_name"))
+		{
+			cache.Name = values.get("cache_name");
+		}
+
+		if (values.containsKey("cache_placed_by"))
+		{
+			cache.PlacedBy = values.get("cache_placed_by");
+		}
+
+		if (values.containsKey("cache_owner"))
+		{
+			cache.Owner = values.get("cache_owner");
+		}
+
+		if (values.containsKey("cache_type"))
+		{
+			cache.Type = CacheTypes.parseString(values.get("cache_type"));
+		}
+		
+		if (values.containsKey("cache_container"))
+		{
+			cache.Size = CacheSizes.parseString(values.get("cache_container"));
+		}
+
+		if (values.containsKey("cache_difficulty"))
+		{
+			cache.Difficulty = Float.parseFloat(values.get("cache_difficulty"));
+		}
+
+		if (values.containsKey("cache_terrain"))
+		{
+			cache.Terrain = Float.parseFloat(values.get("cache_terrain"));
+		}
+
+		if (values.containsKey("cache_attributes_count"))
+		{
+			int count = Integer.parseInt(values.get("cache_attributes_count"));
+
+			for (int i = 1; i <= count; i++)
+			{
+				int attrGcComId = -1;
+				int attrGcComVal = -1;
+
+				attrGcComId = Integer.parseInt(values.get("cache_attribute_" + String.valueOf(i) + "_id"));
+				attrGcComVal = Integer.parseInt(values.get("cache_attribute_" + String.valueOf(i) + "_inc"));
+
+				if (attrGcComId > 0 && attrGcComVal != -1)
+				{
+					if (attrGcComVal > 0)
 					{
-						mImportHandler.handleLog(log);
+						cache.addAttributePositive(Attributes.getAttributeEnumByGcComId(attrGcComId));
+					}
+					else
+					{
+						cache.addAttributeNegative(Attributes.getAttributeEnumByGcComId(attrGcComId));
 					}
 				}
-				else
-				{
-					skipUntilEndTag(parser, tagName);
-				}
-				break;
-			case XmlPullParser.END_TAG:
-				if (tagName.equalsIgnoreCase("groundspeak:logs"))
-				{
-					done = true;
-				}
-				break;
 			}
-			eventType = parser.next();
-		}
-	}
 
-	private LogEntry parseWptCacheLogsLogElement(KXmlParser parser, Cache cache)
-			throws Exception
-	{
-		LogEntry log = new LogEntry();
-		log.CacheId = cache.Id;
-		String attrValue = getAttributeValueFromParser(parser, "id");
-		if (attrValue != null)
-		{
-			log.Id = Long.parseLong(attrValue);
 		}
-		boolean done = false;
-		int eventType = parser.next();
-		while (eventType != XmlPullParser.END_DOCUMENT && !done)
+
+		if (values.containsKey("cache_short_description"))
 		{
-			String tagName = parser.getName();
-			switch (eventType)
+			cache.shortDescription = values.get("cache_short_description").trim();
+		
+			if (values.containsKey("cache_short_description_html") && values.get("cache_short_description_html").equalsIgnoreCase("False"))
 			{
-			case XmlPullParser.START_TAG:
-				if (tagName.equalsIgnoreCase("groundspeak:date"))
+				cache.shortDescription = cache.shortDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
+			}
+		}
+
+		if (values.containsKey("cache_long_description"))
+		{
+			cache.longDescription = values.get("cache_long_description").trim();
+			
+			if (values.containsKey("cache_long_description_html") && values.get("cache_long_description_html").equalsIgnoreCase("False"))
+			{
+				cache.longDescription = cache.longDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
+			}
+		}
+
+		if (values.containsKey("cache_encoded_hints"))
+		{
+			cache.hint = values.get("cache_encoded_hints");
+		}
+
+		if (values.containsKey("cache_logs_count"))
+		{
+			int count = Integer.parseInt(values.get("cache_logs_count"));
+
+			for (int i = 1; i <= count; i++)
+			{
+				log.CacheId = cache.Id;
+				String attrValue = values.get("cache_log_" + String.valueOf(i) + "_id");
+				if (attrValue != null)
 				{
-					log.Timestamp = parseDate(parser.nextText());
+					log.Id = Long.parseLong(attrValue);
 				}
-				else if (tagName.equalsIgnoreCase("groundspeak:finder"))
+
+				if (values.containsKey("cache_log_" + String.valueOf(i) + "_date"))
 				{
-					log.Finder = parser.nextText();
+					log.Timestamp = parseDate(values.get("cache_log_" + String.valueOf(i) + "_date"));
 				}
-				else if (tagName.equalsIgnoreCase("groundspeak:text"))
+
+				if (values.containsKey("cache_log_" + String.valueOf(i) + "_finder"))
 				{
-					log.Comment = parser.nextText();
+					log.Finder = values.get("cache_log_" + String.valueOf(i) + "_finder");
 				}
-				else if (tagName.equalsIgnoreCase("groundspeak:type"))
+
+				if (values.containsKey("cache_log_" + String.valueOf(i) + "_text"))
 				{
-					log.Type = LogTypes.parseString(parser.nextText());
+					log.Comment = values.get("cache_log_" + String.valueOf(i) + "_text");
 				}
-				else
+
+				if (values.containsKey("cache_log_" + String.valueOf(i) + "_type"))
 				{
-					skipUntilEndTag(parser, tagName);
+					log.Type = LogTypes.parseString(values.get("cache_log_" + String.valueOf(i) + "_type"));
 				}
-				break;
-			case XmlPullParser.END_TAG:
-				if (tagName.equalsIgnoreCase("groundspeak:log"))
+
+				if (log != null)
 				{
 					mImportHandler.handleLog(log);
-					done = true;
 				}
-				break;
+				
+				log.clear();
 			}
-			eventType = parser.next();
+
 		}
 
-		return log;
+		if (values.containsKey("cache_gsak_corrected_coordinates"))
+		{
+			if (values.get("cache_gsak_corrected_coordinates").equalsIgnoreCase("True"))
+			{
+				cache.CorrectedCoordinates = true;
+			}
+		}
+		
+		currentwpt++;
+
+		if (mip != null) mip.ProgressInkrement("ImportGPX", mDisplayFilename + "\nCache: " + currentwpt + "/" + countwpt + "\n" + cache.GcCode + " - " + cache.Name);
+
+		mImportHandler.handleCache(cache);
+		
+		cache.clear();
+
 	}
 
-	private String getAttributeValueFromParser(KXmlParser parser,
-			String attrName)
+	private void createWaypoint(Map<String, String> values) throws Exception
 	{
-		String attrValue = null;
-		for (int i = 0; i < parser.getAttributeCount(); ++i)
+		if (values.containsKey("wpt_attribute_lat") && values.containsKey("wpt_attribute_lon"))
 		{
-			if (parser.getAttributeName(i).equalsIgnoreCase(attrName))
-			{
-				attrValue = parser.getAttributeValue(i);
-			}
+			waypoint.Pos = new Coordinate(new Double(values.get("wpt_attribute_lat")).doubleValue(), new Double(
+					values.get("wpt_attribute_lon")).doubleValue());
 		}
-		return attrValue;
-	}
+		else
+		{
+			waypoint.Pos = new Coordinate();
+		}
 
-	private void skipUntilEndTag(KXmlParser parser, String tagName)
-			throws Exception
-	{
-		while (true)
+		if (values.containsKey("wpt_name"))
 		{
-			if (parser.next() == XmlPullParser.END_TAG)
-			{
-				if (parser.getName().equalsIgnoreCase(tagName))
-				{
-					break;
-				}
-			}
+			waypoint.GcCode = values.get("wpt_name");
+			waypoint.Title = waypoint.GcCode;
+			// TODO Hack to get parent Cache
+			waypoint.CacheId = Cache.GenerateCacheId("GC" + waypoint.GcCode.substring(2, waypoint.GcCode.length()));
 		}
-	}
 
-	private void parseWptCacheAttributes(KXmlParser parser, Cache cache)
-	{
-		int attributeCount = parser.getAttributeCount();
-		for (int i = 0; i < attributeCount; ++i)
+		if (values.containsKey("wpt_desc"))
 		{
-			if (parser.getAttributeName(i).equalsIgnoreCase("id"))
-			{
-				cache.GcId = parser.getAttributeValue(i);
-			}
-			else if (parser.getAttributeName(i).equalsIgnoreCase("available"))
-			{
-				if (parser.getAttributeValue(i).equalsIgnoreCase("True"))
-				{
-					cache.Available = true;
-				}
-				else
-				{
-					cache.Available = false;
-				}
-			}
-			else if (parser.getAttributeName(i).equalsIgnoreCase("archived"))
-			{
-				if (parser.getAttributeValue(i).equalsIgnoreCase("True"))
-				{
-					cache.Archived = true;
-				}
-				else
-				{
-					cache.Archived = false;
-				}
-			}
+			waypoint.Description = values.get("wpt_desc");
 		}
+
+		if (values.containsKey("wpt_type"))
+		{
+			waypoint.parseTypeString(values.get("wpt_type"));
+		}
+
+		if (values.containsKey("wpt_cmt"))
+		{
+			waypoint.Clue = values.get("wpt_cmt");
+		}
+
+		currentwpt++;
+		if (mip != null) mip.ProgressInkrement("ImportGPX", mDisplayFilename + "\nWaypoint: " + currentwpt + "/" + countwpt + "\n" + waypoint.GcCode + " - " + waypoint.Description);
+
+		mImportHandler.handleWaypoint(waypoint);
+		
+		waypoint.clear();
+
 	}
 
 	private static Date parseDate(String text) throws Exception
@@ -650,14 +964,13 @@ public class GPXFileImporter
 				}
 				else
 				{
-					throw new XmlPullParserException("Illegal date format");
+					throw new XMLParserException("Illegal date format");
 				}
 			}
 		}
 	}
 
-	private static Date parseDateWithFormat(SimpleDateFormat df, String text)
-			throws Exception
+	private static Date parseDateWithFormat(SimpleDateFormat df, String text) throws Exception
 	{
 		// TODO hier müsste mal über die Zeitzone nachgedacht werden -
 		// irgendwas ist an den Daten, die von GC.com kommen, komisch
@@ -670,55 +983,6 @@ public class GPXFileImporter
 		{
 		}
 		return date;
-	}
-
-	private void parseWptAttributes(KXmlParser parser, Cache cache)
-	{
-		Double lat = null;
-		Double lon = null;
-		int attributeCount = parser.getAttributeCount();
-		for (int i = 0; i < attributeCount; ++i)
-		{
-			if (parser.getAttributeName(i).equalsIgnoreCase("lat"))
-			{
-				lat = new Double(parser.getAttributeValue(i));
-			}
-			else if (parser.getAttributeName(i).equalsIgnoreCase("lon"))
-			{
-				lon = new Double(parser.getAttributeValue(i));
-			}
-		}
-		if (lat != null && lon != null)
-		{
-			cache.Pos = new Coordinate(lat.doubleValue(), lon.doubleValue());
-		}
-	}
-
-	private void parseWptAdditionalWaypointsAttributes(KXmlParser parser,
-			Waypoint waypoint)
-	{
-		Double lat = null;
-		Double lon = null;
-		int attributeCount = parser.getAttributeCount();
-		for (int i = 0; i < attributeCount; ++i)
-		{
-			if (parser.getAttributeName(i).equalsIgnoreCase("lat"))
-			{
-				lat = new Double(parser.getAttributeValue(i));
-			}
-			else if (parser.getAttributeName(i).equalsIgnoreCase("lon"))
-			{
-				lon = new Double(parser.getAttributeValue(i));
-			}
-		}
-		if (lat != null && lon != null)
-		{
-			waypoint.Pos = new Coordinate(lat.doubleValue(), lon.doubleValue());
-		}
-		else
-		{
-			waypoint.Pos = new Coordinate();
-		}
 	}
 
 }

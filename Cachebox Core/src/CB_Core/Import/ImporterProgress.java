@@ -57,12 +57,13 @@ public class ImporterProgress
 		steps = new ArrayList<Step>();
 		steps.add(new Step("importGC",0));
 		steps.add(new Step("importMail",0));
-		steps.add(new Step("ExtractZip",3));
-		steps.add(new Step("IndexingDB",2));
-		steps.add(new Step("ImportGPX",4));
-		steps.add(new Step("WriteCachesToDB",4));
-		steps.add(new Step("WriteLogsToDB",4));
-		steps.add(new Step("WriteWaypointsToDB",4));
+		steps.add(new Step("ExtractZip",1));
+		steps.add(new Step("IndexingDB",0));
+		steps.add(new Step("AnalyseGPX",1));
+		steps.add(new Step("ImportGPX",8));
+		steps.add(new Step("WriteCachesToDB",0));
+		steps.add(new Step("WriteLogsToDB",0));
+		steps.add(new Step("WriteWaypointsToDB",0));
 		steps.add(new Step("importGcVote",0));
 		
 		weightSumme= getWeightSumm();

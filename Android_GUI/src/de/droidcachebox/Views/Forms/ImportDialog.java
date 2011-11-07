@@ -21,7 +21,6 @@ import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Import.Importer;
-import CB_Core.Import.Importer.Cache_Log_Waypoint_Return;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
 import android.app.Activity;
@@ -32,6 +31,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -297,24 +297,17 @@ public class ImportDialog extends Activity implements ViewOptionsMenu
 
 					// Importiere alle GPX Files im Import Folder, auch in ZIP
 					// verpackte
-					if (checkBoxImportGPX.isChecked() && directory.exists())
-					{
+					if (checkBoxImportGPX.isChecked() && directory.exists()) {
+						
+						System.gc();
+						
+						long startTime = System.currentTimeMillis();
+						
 						Database.Data.beginTransaction();
 						try
 						{
-
-							Cache_Log_Waypoint_Return Returns = importer.importGpx(directoryPath, ip);
-							CacheImports = Returns.CacheCount;
-							LogImports = Returns.LogCount;
-							// Schreibe Imports in DB
-							CacheDAO cacheDAO = new CacheDAO();
-							cacheDAO.WriteImports(Returns.cacheIterator, Returns.CacheCount, ip);
-
-							LogDAO logDao = new LogDAO();
-							logDao.WriteImports(Returns.logIterator, Returns.LogCount, ip);
-
-							WaypointDAO waypointDao = new WaypointDAO();
-							waypointDao.WriteImports(Returns.waypointIterator, Returns.WaypointCount, ip);
+							
+							importer.importGpx(directoryPath, ip);
 
 							Database.Data.setTransactionSuccessful();
 						}
@@ -324,6 +317,10 @@ public class ImportDialog extends Activity implements ViewOptionsMenu
 						}
 						Database.Data.endTransaction();
 
+						Log.i("Import", "GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
+						
+						System.gc();
+						
 						// del alten entpackten Ordener wenn vorhanden?
 						File[] filelist = directory.listFiles();
 						for (File tmp : filelist)
@@ -377,6 +374,7 @@ public class ImportDialog extends Activity implements ViewOptionsMenu
 	private Date ImportStart;
 	private int LogImports;
 	private int CacheImports;
+	private int WaypointImports;
 
 	private Boolean importCancel = false;
 	final Runnable ProgressCanceld = new Runnable()

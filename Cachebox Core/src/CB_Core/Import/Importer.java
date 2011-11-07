@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.zip.ZipException;
 
@@ -30,33 +31,6 @@ public class Importer
 	}
 
 	/**
-	 * Structur von zwei Iterator-Listen für Cache und Logs als Rückgabe beim
-	 * Import
-	 * 
-	 * @author Longri
-	 */
-	public class Cache_Log_Waypoint_Return
-	{
-		public Cache_Log_Waypoint_Return(Iterator<Cache> cacheIterator, int CacheCount, Iterator<LogEntry> logIterator, int LogCount,
-				Iterator<Waypoint> waypointIterator, int WaypointCount)
-		{
-			this.cacheIterator = cacheIterator;
-			this.logIterator = logIterator;
-			this.waypointIterator = waypointIterator;
-			this.CacheCount = CacheCount;
-			this.LogCount = LogCount;
-			this.WaypointCount = WaypointCount;
-		}
-
-		public Iterator<Cache> cacheIterator;
-		public Iterator<LogEntry> logIterator;
-		public Iterator<Waypoint> waypointIterator;
-		public int CacheCount;
-		public int LogCount;
-		public int WaypointCount;
-	}
-
-	/**
 	 * Importiert die GPX files, die sich in diesem Verzeichniss befinden. Auch
 	 * wenn sie sich in einem Zip-File befinden.
 	 * 
@@ -64,8 +38,8 @@ public class Importer
 	 * @param ip
 	 * @return Cache_Log_Return mit dem Inhalt aller Importierten GPX Files
 	 */
-	public Cache_Log_Waypoint_Return importGpx(String directoryPath, ImporterProgress ip)
-	{
+	public void importGpx(String directoryPath,
+			ImporterProgress ip) {
 		// Extract all Zip Files!
 		ArrayList<String> ordnerInhalt_Zip = Importer.recursiveDirectoryReader(new File(directoryPath), new ArrayList<String>(), "zip");
 
@@ -91,57 +65,51 @@ public class Importer
 			}
 		}
 
-		// Importiere all GPX files
+		// Import all GPX files
 		String[] FileList = GetFilesToLoad(directoryPath);
+		
+		ip.setJobMax("AnalyseGPX", FileList.length);
+		
 		ImportHandler importHandler = new ImportHandler();
 
 		Integer countwpt = 0;
+		HashMap<String, Integer> wptCount = new HashMap<String, Integer>();
+		
+		for (String File : FileList) {
+			ip.ProgressInkrement("AnalyseGPX", new File(File).getName());
 
-		for (String File : FileList)
-		{
-			Reader fr = null;
-			try
-			{
-				fr = new InputStreamReader(new FileInputStream(File), "UTF-8");
-			}
-			catch (UnsupportedEncodingException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch (FileNotFoundException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			BufferedReader br = new BufferedReader(fr);
-
+			BufferedReader br;
 			String strLine;
-
-			// Read File Line By Line to get the number of <wpt> elements
-			try
-			{
+			try {
+				br = new BufferedReader(new InputStreamReader(new FileInputStream(File)));
 				while ((strLine = br.readLine()) != null)
 				{
 					if (strLine.contains("<wpt")) countwpt++;
 				}
-			}
-			catch (IOException e)
-			{
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			wptCount.put(File, countwpt);
+			countwpt = 0;
 		}
 
+		for (Integer count : wptCount.values()) {
+			countwpt += count;
+		}
+		
 		ip.setJobMax("ImportGPX", FileList.length + countwpt);
 		for (String File : FileList)
 		{
-			ip.ProgressInkrement("ImportGPX", "Import: " + File);
+			ip.ProgressInkrement("ImportGPX", "Import: " + new File(File).getName());
 			GPXFileImporter importer = new GPXFileImporter(File, ip);
 			try
 			{
-				importer.doImport(importHandler, countwpt);
+				importer.doImport(importHandler, wptCount.get(File));
 			}
 			catch (Exception e)
 			{
@@ -151,8 +119,10 @@ public class Importer
 		}
 
 		// Return Caches, Logs und Waypoints
-		return new Cache_Log_Waypoint_Return(importHandler.getCacheIterator(), importHandler.CacheCount(), importHandler.getLogIterator(),
-				importHandler.LogCount(), importHandler.getWaypointIterator(), importHandler.WaypointCount());
+//		return new Cache_Log_Waypoint_Return(importHandler.getCacheIterator(),
+//				importHandler.CacheCount(), importHandler.getLogIterator(),
+//				importHandler.LogCount(), importHandler.getWaypointIterator(),
+//				importHandler.WaypointCount());
 	}
 
 	public void importGcVote()

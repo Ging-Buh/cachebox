@@ -40,5 +40,14 @@ public class LogEntry
     * Id des Logs
     */
     public long Id = -1;
+    
+    public void clear(){
+    	 Finder = "";
+    	 Type = null;
+    	 TypeIcon = -1;
+    	 Comment = "";
+    	 Timestamp = new Date(0);
+    	 CacheId = -1;
+    }
 
 }

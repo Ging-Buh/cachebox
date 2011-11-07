@@ -25,8 +25,11 @@ import CB_Core.Types.Waypoint;
 
 public class CacheDAO
 {
-	protected static String sqlReadCache = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus from Caches ";
+	protected static final String sqlgetFromDbByCacheId = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus from Caches where id = ?";
+	protected static final String sqlgetFromDbByGcCode = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus from Caches where GCCode = ?";
 
+	protected static final String sqlExistsCache = "select 1 from Caches where Id = ?";
+	
 	public Cache ReadFromCursor(CoreCursor reader)
 	{
 		try
@@ -130,7 +133,24 @@ public class CacheDAO
 		String stimestamp = iso8601Format.format(cache.DateHidden);
 		args.put("DateHidden", stimestamp);
 		args.put("Hint", cache.hint);
-		if ((cache.longDescription != null) && (cache.longDescription != "")) args.put("Description", cache.longDescription);
+		
+		if ((cache.shortDescription != null) && (cache.shortDescription.length() > 0))
+		{
+			args.put("Description", cache.shortDescription + "<br /><hr /><br />");
+		}
+		
+		if ((cache.longDescription != null) && (cache.longDescription.length() > 0))
+		{
+			if (args.containsKey("Description"))
+			{
+				args.put("Description", args.get("Description") + cache.longDescription);
+			}
+			else
+			{
+				args.put("Description", cache.longDescription);
+			}
+		}
+		
 		cache.longDescription = ""; // clear longDescription because this will
 									// be loaded from database when used
 		args.put("Url", cache.Url);
@@ -140,8 +160,10 @@ public class CacheDAO
 		// args.put("VotePending", cache.);
 		// args.put("Notes", );
 		// args.put("Solver", cache.);
-		args.put("AttributesPositive", cache.getAttributesPositive());
-		args.put("AttributesNegative", cache.getAttributesNegative());
+		args.put("AttributesPositive", cache.getAttributesPositive().getLow());
+		args.put("AttributesPositiveHigh", cache.getAttributesPositive().getHigh());
+		args.put("AttributesNegative", cache.getAttributesNegative().getLow());
+		args.put("AttributesNegativeHigh", cache.getAttributesNegative().getHigh());
 		// args.put("ListingCheckSum", cache.);
 		args.put("GPXFilename_Id", cache.GPXFilename_ID);
 		args.put("ApiStatus", cache.ApiStatus);
@@ -149,7 +171,7 @@ public class CacheDAO
 
 		try
 		{
-			Database.Data.insert("Caches", args);
+			long ret = Database.Data.insert("Caches", args);
 
 		}
 		catch (Exception exc)
@@ -165,7 +187,7 @@ public class CacheDAO
 		args.put("found", cache.Found);
 		try
 		{
-			Database.Data.update("Caches", args, "Id=" + cache.Id, null);
+			Database.Data.update("Caches", args, "Id = ?" , new String[] { String.valueOf(cache.Id) } );
 			Replication.FoundChanged(cache.Id, cache.Found);
 		}
 		catch (Exception exc)
@@ -207,7 +229,24 @@ public class CacheDAO
 		String stimestamp = iso8601Format.format(cache.DateHidden);
 		args.put("DateHidden", stimestamp);
 		args.put("Hint", cache.hint);
-		if ((cache.longDescription != null) && (cache.longDescription != "")) args.put("Description", cache.longDescription);
+
+		if ((cache.shortDescription != null) && (cache.shortDescription.length() > 0))
+		{
+			args.put("Description", cache.shortDescription + "<br /><hr /><br />");
+		}
+		
+		if ((cache.longDescription != null) && (cache.longDescription.length() > 0))
+		{
+			if (args.containsKey("Description"))
+			{
+				args.put("Description", args.get("Description") + cache.longDescription);
+			}
+			else
+			{
+				args.put("Description", cache.longDescription);
+			}
+		}
+		
 		cache.longDescription = ""; // clear longDescription because this will
 									// be loaded from database when used
 		args.put("Url", cache.Url);
@@ -217,8 +256,10 @@ public class CacheDAO
 		// args.put("VotePending", cache.);
 		// args.put("Notes", );
 		// args.put("Solver", cache.);
-		args.put("AttributesPositive", cache.getAttributesPositive());
-		args.put("AttributesNegative", cache.getAttributesNegative());
+		args.put("AttributesPositive", cache.getAttributesPositive().getLow());
+		args.put("AttributesPositiveHigh", cache.getAttributesPositive().getHigh());
+		args.put("AttributesNegative", cache.getAttributesNegative().getLow());
+		args.put("AttributesNegativeHigh", cache.getAttributesNegative().getHigh());
 		// args.put("ListingCheckSum", cache.);
 		args.put("GPXFilename_Id", cache.GPXFilename_ID);
 		args.put("Favorit", cache.Favorit() ? 1 : 0);
@@ -227,22 +268,18 @@ public class CacheDAO
 
 		try
 		{
-			Database.Data.update("Caches", args, "Id=" + cache.Id, null);
+			long ret = Database.Data.update("Caches", args, "Id = ?", new String[] { String.valueOf(cache.Id) } );
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Ubdate Cache", "", exc);
+			Logger.Error("Update Cache", "", exc);
 
 		}
 	}
 
 	public Cache getFromDbByCacheId(long CacheID)
 	{
-		String where = "Id = " + String.valueOf(CacheID);
-		CoreCursor reader = Database.Data
-				.rawQuery(
-						"select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus from Caches "
-								+ ((where.length() > 0) ? "where " + where : where), null);
+		CoreCursor reader = Database.Data.rawQuery(sqlgetFromDbByCacheId, new String[] { String.valueOf(CacheID) });
 
 		try
 		{
@@ -267,6 +304,48 @@ public class CacheDAO
 			return null;
 		}
 
+	}
+	
+	public Cache getFromDbByGcCode(String GcCode)
+	{
+		CoreCursor reader = Database.Data.rawQuery(sqlgetFromDbByGcCode, new String[] { GcCode });
+
+		try
+		{
+			if (reader != null && reader.getCount() > 0)
+			{
+				reader.moveToFirst();
+				Cache ret = ReadFromCursor(reader);
+
+				reader.close();
+				return ret;
+			}
+			else
+			{
+				if (reader != null) reader.close();
+				return null;
+			}
+		}
+		catch (Exception e)
+		{
+			if (reader != null) reader.close();
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+	
+	public Boolean cacheExists(long CacheID)
+	{
+
+		CoreCursor reader = Database.Data.rawQuery(sqlExistsCache,  new String[] {String.valueOf(CacheID) } );
+		
+		boolean exists = (reader.getCount() > 0);
+		
+		reader.close();
+		
+		return exists;
+	
 	}
 
 	/**
@@ -313,7 +392,7 @@ public class CacheDAO
 
 			try
 			{
-				Database.Data.update("Caches", args, "Id=" + cache.Id, null);
+				Database.Data.update("Caches", args, "Id = ?" ,  new String[] {String.valueOf(cache.Id) });
 			}
 			catch (Exception exc)
 			{

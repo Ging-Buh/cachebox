@@ -11,7 +11,6 @@ import android.database.sqlite.SQLiteDatabase;
 import CB_Core.FileIO;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database.DatabaseType;
 
 public class AndroidDB extends Database
 {

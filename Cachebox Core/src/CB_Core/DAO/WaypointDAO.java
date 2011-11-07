@@ -34,7 +34,7 @@ public class WaypointDAO {
 
 			args = new Parameters();
 			args.put("hasUserData", true);
-			Database.Data.update("Caches", args, "Id=" + WP.CacheId, null);
+			Database.Data.update("Caches", args, "Id = ?" , new String[] { String.valueOf(WP.CacheId) } );
 		} catch (Exception exc) {
 			return;
 
@@ -68,8 +68,7 @@ public class WaypointDAO {
 			args = new Parameters();
 			args.put("hasUserData", true);
 			try {
-				Database.Data.update("Caches", args, "Id=" + WP.CacheId,
-						null);
+				Database.Data.update("Caches", args, "Id = ?" , new String[] { String.valueOf(WP.CacheId) } );
 			} catch (Exception exc) {
 				return;
 			}
@@ -146,7 +145,7 @@ public class WaypointDAO {
 			
 			args = new Parameters();
 			args.put("hasUserData", true);
-			Database.Data.update("Caches", args, "Id=" + WP.CacheId, null);
+			Database.Data.update("Caches", args, "Id = ?" , new String[] { String.valueOf(WP.CacheId) } );
 		} catch (Exception exc) {
 			return;
 

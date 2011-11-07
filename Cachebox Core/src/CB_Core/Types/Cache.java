@@ -212,12 +212,12 @@ public class Cache implements Comparable<Cache>
 	/**
 	 * Positive Attribute des Caches
 	 */
-	private DLong attributesPositive = null;
+	private DLong attributesPositive = new DLong(0, 0);
 
 	/**
 	 * Negative Attribute des Caches
 	 */
-	private DLong attributesNegative = null;
+	private DLong attributesNegative = new DLong(0, 0);
 
 	/**
 	 * Anzahl der Travelbugs und Coins, die sich in diesem Cache befinden
@@ -610,6 +610,48 @@ public class Cache implements Comparable<Cache>
 		}
 
 		return AttributeList;
+	}
+	
+	public void clear(){
+		MapX = 0;
+		MapY = 0;
+		GcId = "";
+		Id = -1;
+		GcCode = "";
+		Name = "";
+		Pos = new Coordinate();
+		Rating = 0;
+		Size = null;
+		Difficulty = 0;
+		Terrain = 0;
+		Archived = false;
+		Available = false;
+		ApiStatus = 0;
+		favorite = false;
+		noteCheckSum = 0;
+		solverCheckSum = 0;
+		hasUserData = false;
+		CorrectedCoordinates = false;
+		Found = false;
+		TourName = "";
+		GPXFilename_ID = 0;
+		Type = CacheTypes.Undefined;
+		PlacedBy = "";
+		Owner = "";
+		DateHidden = null;
+		Url = "";
+		listingChanged = false;
+		attributesPositive = new DLong(0, 0);
+		attributesNegative = new DLong(0, 0);
+		NumTravelbugs = 0;
+		cachedDistance = 0;
+		hint = "";
+		waypoints = new ArrayList<Waypoint>();
+		spoilerRessources = null;
+		shortDescription = "";
+		longDescription = "";
+		myCache = -1;
+		gcLogin = null;
 	}
 
 }

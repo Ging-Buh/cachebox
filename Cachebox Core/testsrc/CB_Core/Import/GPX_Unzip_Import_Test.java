@@ -42,29 +42,20 @@ public class GPX_Unzip_Import_Test extends TestCase
 			importer.doImport(importHandler, 0);
 		}
 
-		Iterator<Cache> cacheIterator = importHandler.getCacheIterator();
-		Iterator<LogEntry> logIterator = importHandler.getLogIterator();
-
 		// aufgrund der Fülle von Caches und Logs bei diesem Import
 		// wird nur auf die Anzahl getestet!
 
-		int CacheCount = 0;
-		while (cacheIterator.hasNext())
-		{
-			CacheCount++;
-			cacheIterator.next();
-		}
+		int CacheCount = importHandler.cacheCount;
 		assertTrue("Anzahl der Importierten Caches stimmt nicht",
 				CacheCount == 500);
 
-		int LogCount = 0;
-		while (logIterator.hasNext())
-		{
-			LogCount++;
-			logIterator.next();
-		}
+		int LogCount = importHandler.logCount;
 		assertTrue("Anzahl der Importierten Logs stimmt nicht",
 				LogCount == 5068);
+		
+		int WaypointCount = importHandler.waypointCount;
+		assertTrue("Anzahl der Importierten Waypoints stimmt nicht",
+				LogCount == 183);
 
 	}
 }
