@@ -1,56 +1,31 @@
 package CB_Core.DB;
 
-public class CoreCursor
+public abstract class CoreCursor
 {
 	public CoreCursor()
 	{
 	}
 
-	public boolean moveToFirst()
-	{
-		return false;
-	}
+	public abstract boolean moveToFirst();
 
-	public boolean isAfterLast()
-	{
-		return true;
-	}
+	public abstract boolean isAfterLast();
 
-	public boolean moveToNext()
-	{
-		return false;
-	}
+	public abstract boolean moveToNext();
 
-	public void close()
-	{
-	}
+	public abstract void close();
 	
-	public String getString(int columnIndex) {
-		return "";
-	}
+	public abstract String getString(int columnIndex);
 	
-	public long getLong(int columnIndex) {
-		return 0;
-	}
+	public abstract long getLong(int columnIndex);
 
-	public int getInt(int columnIndex) {
-		return 0;
-	}
+	public abstract int getInt(int columnIndex);
 	
-	public boolean isNull(int columnIndex) {
-		return true;
-	}
+	public abstract boolean isNull(int columnIndex);
 
-	public double getDouble(int columnIndex) {
-		return 0;
-	}
+	public abstract double getDouble(int columnIndex);
 
-	public short getShort(int columnIndex) {
-		return 0;
-	}
+	public abstract short getShort(int columnIndex);
 
-	public int getCount()  {
-		return 0;
-	}
+	public abstract int getCount();
 	
 }

@@ -53,7 +53,6 @@ public class AndroidDB extends Database
     		activity.openOrCreateDatabase(databasePath, Context.MODE_WORLD_WRITEABLE, null);
     	} catch (Exception exc)
     	{
-    		String s = exc.getMessage();
     	}
 	}
 
@@ -141,5 +140,12 @@ public class AndroidDB extends Database
 	{
 		ContentValues values = getContentValues(val);
 		return myDB.insertWithOnConflict(tablename, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+	}
+
+	@Override
+	public void Close()
+	{
+		myDB.close();
+		
 	}
 }

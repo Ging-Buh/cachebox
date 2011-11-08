@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CategoryDAO;
-import CB_Core.DB.Database.Parameters;
 import CB_Core.Log.Logger;
 import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
@@ -21,7 +20,7 @@ import CB_Core.Types.Coordinate;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
-public class Database
+public abstract class Database
 {
 	protected String databasePath;
 	public static Database Data;
@@ -54,13 +53,9 @@ public class Database
 		}
 	}
 
-	public void Initialize()
-	{
-	};
+	public abstract void Initialize();;
 
-	public void Reset()
-	{
-	};
+	public abstract void Reset();;
 
 	public boolean StartUp(String databasePath)
 	{
@@ -274,7 +269,7 @@ public class Database
 						val.put("AttributesPositive", attributesPositive);
 						val.put("AttributesNegative", attributesNegative);
 						String whereClause = "[Id]=" + id;
-						long anz = update("Caches", val, whereClause, null);
+						update("Caches", val, whereClause, null);
 						reader.moveToNext();
 					}
 					setTransactionSuccessful();
@@ -301,7 +296,7 @@ public class Database
 				}
 				catch (Exception exc)
 				{
-					String ex = exc.getMessage();
+					exc.getMessage();
 				}
 			}
 			break;
@@ -368,8 +363,11 @@ public class Database
 		{
 			result = -1;
 		}
-		c.close();
-
+		if (c != null)
+		{
+			c.close();
+		}
+		
 		return result;
 	}
 
@@ -632,7 +630,7 @@ public class Database
 
 				Parameters val = new Parameters();
 				val.put("CacheCount", CacheCount);
-				long anz = update("GPXFilenames", val, "ID = " + GPXFilename_ID, null);
+				update("GPXFilenames", val, "ID = " + GPXFilename_ID, null);
 
 				reader.moveToNext();
 			}
@@ -728,48 +726,23 @@ public class Database
 	}
 
 	// DB Funktionen
-	public CoreCursor rawQuery(String sql, String[] args)
-	{
-		return null;
-	}
+	public abstract CoreCursor rawQuery(String sql, String[] args);
 
-	public void execSQL(String sql)
-	{
+	public abstract void execSQL(String sql);
 
-	}
+	public abstract long update(String tablename, Parameters val, String whereClause, String[] whereArgs);
 
-	public long update(String tablename, Parameters val, String whereClause, String[] whereArgs)
-	{
-		return 0;
-	}
+	public abstract long insert(String tablename, Parameters val);
 
-	public long insert(String tablename, Parameters val)
-	{
-		return 0;
-	}
+	public abstract long delete(String tablename, String whereClause, String[] whereArgs);
 
-	public long delete(String tablename, String whereClause, String[] whereArgs)
-	{
-		return 0;
-	}
+	public abstract void beginTransaction();
 
-	public void beginTransaction()
-	{
+	public abstract void setTransactionSuccessful();
 
-	}
+	public abstract void endTransaction();
 
-	public void setTransactionSuccessful()
-	{
-
-	}
-
-	public void endTransaction()
-	{
-
-	}
-
-	public long insertWithConflictReplace(String string, Parameters args)
-	{
-		return 0;
-	}
+	public abstract long insertWithConflictReplace(String tablename, Parameters val);
+	
+	public abstract void Close();
 }
