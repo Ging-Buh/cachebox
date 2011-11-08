@@ -382,6 +382,15 @@ public abstract class Database
 			val.put("Key", "DatabaseSchemeVersionWin");
 			insert("Config", val);
 		}
+		// for Compatibility with WinCB
+		val.put("Value", latestDatabaseChange);
+		anz = update("Config", val, "[Key]='DatabaseSchemeVersion'", null);
+		if (anz <= 0)
+		{
+			// Update not possible because Key does not exist
+			val.put("Key", "DatabaseSchemeVersion");
+			insert("Config", val);
+		}
 	}
 
 	// Methoden für Waypoint
