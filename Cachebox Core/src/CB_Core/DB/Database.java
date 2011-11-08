@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CategoryDAO;
+import CB_Core.Enums.LogTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
@@ -551,7 +552,8 @@ public abstract class Database
 		{
 		}
 		retLogEntry.Finder = reader.getString(2);
-		retLogEntry.TypeIcon = reader.getInt(3);
+		retLogEntry.Type =  LogTypes.values()[reader.getInt(3)];
+		retLogEntry.TypeIcon =  reader.getInt(3);
 		retLogEntry.Comment = reader.getString(4);
 		retLogEntry.Id = reader.getLong(5);
 

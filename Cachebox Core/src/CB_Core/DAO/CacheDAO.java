@@ -20,13 +20,14 @@ import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Coordinate;
+import CB_Core.Types.DLong;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
 public class CacheDAO
 {
-	protected static final String sqlgetFromDbByCacheId = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus from Caches where id = ?";
-	protected static final String sqlgetFromDbByGcCode = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus from Caches where GCCode = ?";
+	protected static final String sqlgetFromDbByCacheId = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint from Caches where id = ?";
+	protected static final String sqlgetFromDbByGcCode = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint from Caches where GCCode = ?";
 
 	protected static final String sqlExistsCache = "select 1 from Caches where Id = ?";
 	
@@ -92,6 +93,13 @@ public class CacheDAO
 
 			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
 			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
+			
+			cache.setAttributesPositive(new DLong(reader.getLong(27), reader.getLong(26)));
+			cache.setAttributesNegative(new DLong(reader.getLong(29), reader.getLong(28)));
+			
+			if (reader.getString(30) != null) cache.hint = reader.getString(30).trim();
+			else
+				cache.hint = "";
 
 			return cache;
 		}

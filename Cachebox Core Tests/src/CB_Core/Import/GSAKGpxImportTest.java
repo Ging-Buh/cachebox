@@ -152,18 +152,19 @@ public class GSAKGpxImportTest extends TestCase
 
 		assertEquals("Hint falsch", "", cache.hint);
 
-		//TODO Log Test neu schreiben
-//		Iterator<LogEntry> logIterator = importHandler.getLogIterator();
-//		LogEntry log = logIterator.next();
-//
-//		assertEquals("CacheId ist falsch", log.CacheId, 24564478518575943L);
-//		assertEquals("Id ist falsch", log.Id, 140640156);
-//		assertEquals("Timestamp falsch", "Sat Jan 08 20:00:00 CET 2011", log.Timestamp.toString());
-//		assertEquals("Finder falsch", "Katipa", log.Finder);
-//		assertTrue("LogTyp falsch", log.Type == LogTypes.found);
-//
-//		assertEquals("Log Entry falsch",
-//				"Jaja. Lange gesucht an den typischen Stellen, um dann letztendlich ganz woanders fündig zu werden...", log.Comment);
+		ArrayList<LogEntry> logs = new ArrayList<LogEntry>();
+		logs = Database.Logs(cache);
+		
+		LogEntry log = logs.get(0);
+
+		assertEquals("CacheId ist falsch", log.CacheId, 24564478518575943L);
+		assertEquals("Id ist falsch", log.Id, 140640156);
+		assertEquals("Timestamp falsch", "Sat Jan 08 20:00:00 CET 2011", log.Timestamp.toString());
+		assertEquals("Finder falsch", "Katipa", log.Finder);
+		assertTrue("LogTyp falsch", log.Type == LogTypes.found);
+
+		assertEquals("Log Entry falsch",
+				"Jaja. Lange gesucht an den typischen Stellen, um dann letztendlich ganz woanders fündig zu werden...", log.Comment);
 
 		Database.Data.Close();
 	}

@@ -163,15 +163,16 @@ public class GpxImportTest extends TestCase {
 		assertEquals( "Hint falsch", "wenn du ihn nicht findest, findet er dich!!", cache.hint );
 		
 		
-		//TODO Log Test neu schreiben
-//		Iterator<LogEntry> logIterator = importHandler.getLogIterator();
-//		LogEntry log = logIterator.next();
-//		
-//		assertEquals( "CacheId ist falsch", log.CacheId, 24578729153020743L );
-//		assertEquals( "Id ist falsch", log.Id, 170855167 );
-//		assertEquals( "Timestamp falsch", "Mon Jul 04 19:00:00 CEST 2011", log.Timestamp.toString() );
-//		assertEquals( "Finder falsch", "SaarFuchs", log.Finder );
-//		assertTrue( "LogTyp falsch", log.Type == LogTypes.found );
+		ArrayList<LogEntry> logs = new ArrayList<LogEntry>();
+		logs = Database.Logs(cache);
+		
+		LogEntry log = logs.get(0);
+		
+		assertEquals( "CacheId ist falsch", log.CacheId, 24578729153020743L );
+		assertEquals( "Id ist falsch", log.Id, 170855167 );
+		assertEquals( "Timestamp falsch", "Mon Jul 04 19:00:00 CEST 2011", log.Timestamp.toString() );
+		assertEquals( "Finder falsch", "SaarFuchs", log.Finder );
+		assertTrue( "LogTyp falsch", log.Type == LogTypes.found );
 
 		// TODO Beschreibungstexte überprüfen
 		// System.out.println( log.Comment );
