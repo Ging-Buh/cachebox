@@ -3,6 +3,7 @@
 	<name>Cachebox Core Tests</name>
 	<comment></comment>
 	<projects>
+		<project>Cachebox Core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
