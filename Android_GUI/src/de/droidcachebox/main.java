@@ -1069,6 +1069,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		{
 			if (isFinishing())
 			{
+				Database.Data.Close();
+				Database.FieldNotes.Close();
 				Config.Set("MapInitLatitude", mapView.center.Latitude);
 				Config.Set("MapInitLongitude", mapView.center.Longitude);
 				Config.AcceptChanges();
