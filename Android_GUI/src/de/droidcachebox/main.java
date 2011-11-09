@@ -492,7 +492,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		};
 		timer.schedule(task, 500);
 	}
-	
+
 	private void startSearch()
 	{
 		if (GcCode != null)
@@ -982,6 +982,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			chkGpsIsOn();
 		}
 
+		
 		aktView.ActivityResult(requestCode, resultCode, data);
 	}
 
@@ -1515,9 +1516,9 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			case R.id.miAddCache:
 				addCache();
 				break;
-//			case R.id.searchcaches_online:
-//				searchOnline();
-//				break;
+			// case R.id.searchcaches_online:
+			// searchOnline();
+			// break;
 			case R.id.miChkState:
 				chkCachesStateFilterSelection();
 				break;

@@ -280,12 +280,12 @@ public class GenAttributes extends TestCase
 
 			if (tmp.hasYes)
 			{
-				Download(tmp.UrlYesIcon, lacalYes);
+				FileIO.Download(tmp.UrlYesIcon, lacalYes);
 			}
 
 			if (tmp.hasNo)
 			{
-				Download(tmp.UrlNoIcon, lacalNo);
+				FileIO.Download(tmp.UrlNoIcon, lacalNo);
 			}
 		}
 		while (iterator.hasNext());
@@ -326,41 +326,7 @@ public class GenAttributes extends TestCase
 
 	}
 
-	public static Boolean Download(String uri, String local)
-	{
-		try
-		{
-			String localDir = local.substring(0, local.lastIndexOf("/"));
-
-			if (!FileIO.DirectoryExists(localDir)) return false;
-
-			URL aURL = new URL(uri.replace("&amp;", "&"));
-
-			File file = new File(local);
-
-			URLConnection con = aURL.openConnection();
-
-			InputStream is = con.getInputStream();
-			BufferedInputStream bis = new BufferedInputStream(is);
-
-			ByteArrayBuffer baf = new ByteArrayBuffer(50);
-			int current = 0;
-			while ((current = bis.read()) != -1)
-			{
-				baf.append((byte) current);
-			}
-
-			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(baf.toByteArray());
-			fos.close();
-
-			return true;
-		}
-		catch (Exception e)
-		{
-			return false;
-		}
-	}
+	
 
 	class GsAttributes
 	{

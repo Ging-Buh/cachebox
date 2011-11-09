@@ -1,7 +1,14 @@
 package CB_Core;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.regex.Pattern;
+
+import org.apache.http.util.ByteArrayBuffer;
 
 public class FileIO 
 {
@@ -134,4 +141,41 @@ public class FileIO
     }
     
 
+    public static Boolean Download(String uri, String local)
+	{
+		try
+		{
+			String localDir = local.substring(0, local.lastIndexOf("/"));
+
+			if (!FileIO.DirectoryExists(localDir)) return false;
+
+			URL aURL = new URL(uri.replace("&amp;", "&"));
+
+			File file = new File(local);
+
+			URLConnection con = aURL.openConnection();
+
+			InputStream is = con.getInputStream();
+			BufferedInputStream bis = new BufferedInputStream(is);
+
+			ByteArrayBuffer baf = new ByteArrayBuffer(50);
+			int current = 0;
+			while ((current = bis.read()) != -1)
+			{
+				baf.append((byte) current);
+			}
+
+			FileOutputStream fos = new FileOutputStream(file);
+			fos.write(baf.toByteArray());
+			fos.close();
+
+			return true;
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+	}
+    
+    
 }

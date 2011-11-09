@@ -1,10 +1,14 @@
 package CB_Core.Api;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import CB_Core.Config;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Trackable;
@@ -27,7 +31,7 @@ public class PocketQuery
 	 * 
 	 * @author Longri
 	 */
-	public static class PQ implements Serializable 
+	public static class PQ implements Serializable
 	{
 		/**
 		 * 
@@ -38,6 +42,7 @@ public class PocketQuery
 		public int PQCount;
 		public Date DateLastGenerated;
 		public double SizeMB;
+		public boolean downloadAvible = false;
 	}
 
 	/**
@@ -93,7 +98,7 @@ public class PocketQuery
 							}
 							pq.PQCount = jPQ.getInt("PQCount");
 							int Byte = jPQ.getInt("FileSizeInBytes");
-							pq.SizeMB =Byte /1048576.0;
+							pq.SizeMB = Byte / 1048576.0;
 							list.add(pq);
 						}
 					}
@@ -129,4 +134,135 @@ public class PocketQuery
 
 		return 0;
 	}
+
+	public static int GetPocketQueryUri(String accessToken, String GUID, String Uri)
+	{
+		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryUrls?AccessToken=" + accessToken + "&PocketQueryGuid="
+				+ GUID + "&format=json");
+		if (GUID == null || GUID.equals("")) new NullArgumentException("GUID");
+		try
+		{
+			String result = GroundspeakAPI.Execute(httpGet);
+
+			try
+			// Parse JSON Result
+			{
+				JSONTokener tokener = new JSONTokener(result);
+				JSONObject json = (JSONObject) tokener.nextValue();
+				JSONObject status = json.getJSONObject("Status");
+				if (status.getInt("StatusCode") == 0)
+				{
+					GroundspeakAPI.LastAPIError = "";
+					JSONObject jPQ = json.getJSONObject("PocketQueryUrls");
+
+					Uri = jPQ.getString("Uri");
+
+					return 0;
+				}
+				else
+				{
+					GroundspeakAPI.LastAPIError = "";
+					GroundspeakAPI.LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
+					GroundspeakAPI.LastAPIError += status.getString("StatusMessage") + "\n";
+					GroundspeakAPI.LastAPIError += status.getString("ExceptionDetails");
+
+					return (-1);
+				}
+
+			}
+			catch (JSONException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		catch (ClientProtocolException e)
+		{
+			System.out.println(e.getMessage());
+			return (-1);
+		}
+		catch (IOException e)
+		{
+			System.out.println(e.getMessage());
+			return (-1);
+		}
+
+		return 0;
+
+	}
+	
+	public static int DownloadSinglePocketQuery(PQ pocketQuery)
+    {
+		return DownloadSinglePocketQuery(pocketQuery, Config.GetString("PocketQueryFolder")+ "\\");
+    }
+	
+	public static int DownloadSinglePocketQuery(PQ pocketQuery, String savePath)
+    {
+        String accessToken = Config.GetAccessToken(); //""
+        HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryZippedFile?format=json&AccessToken=" + accessToken + "&PocketQueryGuid=" + pocketQuery.GUID);
+
+        
+        try
+		{
+			String result = GroundspeakAPI.Execute(httpGet);
+
+		try
+		// Parse JSON Result
+		{
+			JSONTokener tokener = new JSONTokener(result);
+			JSONObject json = (JSONObject) tokener.nextValue();
+			JSONObject status = json.getJSONObject("Status");
+			if (status.getInt("StatusCode") == 0)
+			{
+				GroundspeakAPI.LastAPIError = "";
+				String test = json.getString("ZippedFile");
+		        byte[] resultByte = CB_Core.Converter.Base64.decode(test);
+		        SimpleDateFormat postFormater = new SimpleDateFormat("yyyyMMddHHmmss");
+				String dateString = postFormater.format(pocketQuery.DateLastGenerated);
+		        String local = savePath + pocketQuery.Name + "_" + dateString + ".zip";
+
+		        FileOutputStream fs;
+		            fs = new FileOutputStream(local);
+		        
+		        fs.write(resultByte);
+		        fs.close();
+				
+
+				return 0;
+			}
+			else
+			{
+				GroundspeakAPI.LastAPIError = "";
+				GroundspeakAPI.LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
+				GroundspeakAPI.LastAPIError += status.getString("StatusMessage") + "\n";
+				GroundspeakAPI.LastAPIError += status.getString("ExceptionDetails");
+
+				return (-1);
+			}
+
+		}
+		catch (JSONException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	catch (ClientProtocolException e)
+	{
+		System.out.println(e.getMessage());
+		return (-1);
+	}
+	catch (IOException e)
+	{
+		System.out.println(e.getMessage());
+		return (-1);
+	}
+
+	return 0;
+        
+      
+    }
+	
+	
+	
 }

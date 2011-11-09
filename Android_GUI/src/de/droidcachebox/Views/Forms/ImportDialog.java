@@ -3,12 +3,15 @@ package de.droidcachebox.Views.Forms;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 import CB_Core.Config;
+import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DAO.CacheListDAO;
@@ -19,11 +22,13 @@ import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
+import CB_Core.Types.Coordinate;
 import android.app.Activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -46,7 +51,7 @@ import CB_Core.GlobalCore;
  * 
  * @author Longri </br></br>
  */
-public class ImportDialog extends Activity implements ViewOptionsMenu
+public class ImportDialog extends Activity
 {
 	public static ImportDialog Me;
 
@@ -72,7 +77,7 @@ public class ImportDialog extends Activity implements ViewOptionsMenu
 
 	public void onCreate(Bundle savedInstanceState)
 	{
-//		ActivityUtils.onActivityCreateSetTheme(this);
+		// ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.import_dialog_layout);
 		Me = this;
@@ -237,6 +242,8 @@ public class ImportDialog extends Activity implements ViewOptionsMenu
 
 	};
 
+	private DialogInterface WaitDialog;
+
 	private void ImportNow()
 	{
 		Config.Set("CacheMapData", checkBoxImportMaps.isChecked());
@@ -246,20 +253,32 @@ public class ImportDialog extends Activity implements ViewOptionsMenu
 		Config.Set("ImportPQsFromGeocachingCom", checkImportPQfromGC.isChecked());
 		Config.Set("ImportRatings", checkBoxGcVote.isChecked());
 		Config.AcceptChanges();
-		String directoryPath = Config.GetString("PocketQueryFolder");
+		directoryPath = Config.GetString("PocketQueryFolder");
 		// chk exist import folder
-		File directory = new File(directoryPath);
+		directory = new File(directoryPath);
 
 		if (checkImportPQfromGC.isChecked())
 		{
-			// Show PQList and wait for Result
-			ArrayList<PQ> pqList = new ArrayList<PQ>();
-			PocketQuery.GetPocketQueryList(Config.GetAccessToken(), pqList);
-			Intent PqListIntent = new Intent().setClass(main.mainActivity, ApiPQDialog.class);
-			Bundle b = new Bundle();
-			b.putSerializable("PqList", pqList);
-			PqListIntent.putExtras(b);
-			main.mainActivity.startActivityForResult(PqListIntent, 0);
+			// WaitDialog = PleaseWaitMessageBox.Show("Read PQ List",
+			// "Groundspeak API", MessageBoxButtons.NOTHING,
+			// MessageBoxIcon.Powerd_by_GC_Live, null,this);
+
+			WaitDialog = android.app.ProgressDialog.show(this, "Groundspeak API", "Read PQ List", true, false);
+
+			Thread thread = new Thread()
+			{
+				@Override
+				public void run()
+				{
+					pqList = new ArrayList<PQ>();
+					int ret = PocketQuery.GetPocketQueryList(Config.GetAccessToken(), pqList);
+
+					getPqListReadyHandler.sendMessage(getPqListReadyHandler.obtainMessage(ret));
+				}
+
+			};
+
+			thread.start();
 
 		}
 		else
@@ -269,12 +288,62 @@ public class ImportDialog extends Activity implements ViewOptionsMenu
 
 	}
 
-	@Override
-	public void ActivityResult(int requestCode, int resultCode, Intent data)
+	private ArrayList<PQ> pqList;
+	private File directory;
+	private String directoryPath;
+	private Handler getPqListReadyHandler = new Handler()
 	{
+		public void handleMessage(Message msg)
+		{
+			WaitDialog.dismiss();
 
-		// importer.importGC();
+			if (msg.what == 0)
+			{
+
+				Intent PqListIntent = new Intent().setClass(ImportDialog.Me, ApiPQDialog.class);
+				Bundle b = new Bundle();
+				b.putSerializable("PqList", pqList);
+				PqListIntent.putExtras(b);
+				WaitDialog.dismiss();
+				ImportDialog.Me.startActivityForResult(PqListIntent, Global.RESULT_SELECT_PQ_LIST);
+			}
+			else if (msg.what == -1)
+			{
+				WaitDialog.dismiss();
+				MessageBox.Show("at online search", "Error", MessageBoxIcon.Error);
+
+			}
+
+		}
+	};
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		// get result PqList
+		if (data == null) return;
+		Bundle bundle = data.getExtras();
+		if (bundle != null)
+		{
+			Iterator<PQ> iterator = ((ArrayList<PQ>) bundle.getSerializable("PqList")).iterator();
+			downloadPQList = new ArrayList<PQ>();
+			do
+			{
+				PQ pq = iterator.next();
+				if (pq.downloadAvible)
+				{
+					downloadPQList.add(pq);
+
+				}
+			}
+			while (iterator.hasNext());
+
+		}
+
+		ImportThread(directoryPath, directory);
 	}
+
+	private ArrayList<PQ> downloadPQList = null;
 
 	public void ImportThread(final String directoryPath, final File directory)
 	{
@@ -288,21 +357,42 @@ public class ImportDialog extends Activity implements ViewOptionsMenu
 				try
 				{
 
+					if (downloadPQList != null)
+					{
+						Iterator<PQ> iterator = downloadPQList.iterator();
+
+						ip.setJobMax("importGC", downloadPQList.size());
+
+						do
+						{
+							PQ pq = iterator.next();
+
+							if (pq.downloadAvible)
+							{
+								ip.ProgressInkrement("importGC","Download: "+ pq.Name);
+								PocketQuery.DownloadSinglePocketQuery(pq);
+							}
+
+						}
+						while (iterator.hasNext());
+					}
+
 					if (checkBoxImportGpxFromMail.isChecked()) importer.importMail();
 					Thread.sleep(1000);
 
 					// Importiere alle GPX Files im Import Folder, auch in ZIP
 					// verpackte
-					if (checkBoxImportGPX.isChecked() && directory.exists()) {
-						
+					if (checkBoxImportGPX.isChecked() && directory.exists())
+					{
+
 						System.gc();
-						
+
 						long startTime = System.currentTimeMillis();
-						
+
 						Database.Data.beginTransaction();
 						try
 						{
-							
+
 							importer.importGpx(directoryPath, ip);
 
 							Database.Data.setTransactionSuccessful();
@@ -314,9 +404,9 @@ public class ImportDialog extends Activity implements ViewOptionsMenu
 						Database.Data.endTransaction();
 
 						Log.i("Import", "GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
-						
+
 						System.gc();
-						
+
 						// del alten entpackten Ordener wenn vorhanden?
 						File[] filelist = directory.listFiles();
 						for (File tmp : filelist)
@@ -452,63 +542,5 @@ public class ImportDialog extends Activity implements ViewOptionsMenu
 		}
 
 	};
-
-	@Override
-	public void OnShow()
-	{
-
-	}
-
-	@Override
-	public void OnHide()
-	{
-
-	}
-
-	@Override
-	public void OnFree()
-	{
-
-	}
-
-	@Override
-	public int GetMenuId()
-	{
-
-		return 0;
-	}
-
-	@Override
-	public boolean ItemSelected(MenuItem item)
-	{
-
-		return false;
-	}
-
-	@Override
-	public void BeforeShowMenu(Menu menu)
-	{
-
-	}
-
-	@Override
-	public int GetContextMenuId()
-	{
-
-		return 0;
-	}
-
-	@Override
-	public void BeforeShowContextMenu(Menu menu)
-	{
-
-	}
-
-	@Override
-	public boolean ContextMenuItemSelected(MenuItem item)
-	{
-
-		return false;
-	}
 
 }

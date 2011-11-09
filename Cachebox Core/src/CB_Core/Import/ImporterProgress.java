@@ -55,7 +55,7 @@ public class ImporterProgress
 	public ImporterProgress()
 	{
 		steps = new ArrayList<Step>();
-		steps.add(new Step("importGC",0));
+		steps.add(new Step("importGC",1));
 		steps.add(new Step("importMail",0));
 		steps.add(new Step("ExtractZip",1));
 		steps.add(new Step("IndexingDB",0));

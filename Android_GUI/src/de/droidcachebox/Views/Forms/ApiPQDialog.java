@@ -3,6 +3,7 @@ package de.droidcachebox.Views.Forms;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
@@ -26,6 +27,8 @@ import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -39,7 +42,8 @@ import CB_Core.Types.JokerEntry;
 public class ApiPQDialog extends Activity implements ViewOptionsMenu
 {
 	public static ApiPQDialog Me;
-
+	private Intent aktIntent;
+	
 	private Context context;
 	private ListView listView;
 	private Button CancelButton;
@@ -59,15 +63,16 @@ public class ApiPQDialog extends Activity implements ViewOptionsMenu
 
 	public void onCreate(Bundle savedInstanceState)
 	{
-//		ActivityUtils.onActivityCreateSetTheme(this);
+		// ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.pq_list_view_layout);
 		Me = this;
 
+		 aktIntent = getIntent();
+		
 		context = this.getBaseContext();
 		findViewById();
-		
-		
+
 		// übergebene PQ List auslesen und an ListView übergeben
 		Bundle bundle = getIntent().getExtras();
 		if (bundle != null) PqList = (ArrayList<PQ>) bundle.getSerializable("PqList");
@@ -79,8 +84,6 @@ public class ApiPQDialog extends Activity implements ViewOptionsMenu
 
 		((TextView) this.findViewById(R.id.title)).setText("Import");
 
-		
-
 		OKButton.setText(GlobalCore.Translations.Get("ok"));
 		CancelButton.setText(GlobalCore.Translations.Get("cancel"));
 
@@ -90,8 +93,23 @@ public class ApiPQDialog extends Activity implements ViewOptionsMenu
 			@Override
 			public void onClick(View v)
 			{
-				;
 				finish();
+			}
+		});
+
+		OKButton.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View v)
+			{
+            	aktIntent.putExtra("SOMETHING", "EXTRAS");
+            	Bundle extras = new Bundle();
+    	        extras.putSerializable("PqList", PqList);
+            	aktIntent.putExtras(extras);
+            	setResult(RESULT_OK, aktIntent);
+				finish();
+
 			}
 		});
 
@@ -217,7 +235,7 @@ public class ApiPQDialog extends Activity implements ViewOptionsMenu
 			if (list != null)
 			{
 				View row = convertView;
-				PQ pq = list.get(position);
+				final PQ pq = list.get(position);
 				if (row == null)
 				{
 					LayoutInflater inflater = getLayoutInflater();
@@ -228,16 +246,31 @@ public class ApiPQDialog extends Activity implements ViewOptionsMenu
 				label.setText(pq.Name);
 				label.setTextSize(Sizes.getScaledFontSize_normal());
 				label.setTextColor(Global.getColor(R.attr.TextColor));
-				
+
 				TextView label2 = (TextView) row.findViewById(R.id.textView2);
-				SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy"); 
-			    String dateString = postFormater.format(pq.DateLastGenerated); 
-			    DecimalFormat df = new DecimalFormat("###.##");
-			    String FileSize = df.format(pq.SizeMB)+" MB";
-			    String Count = "   Count="+String.valueOf(pq.PQCount);
-				label2.setText(dateString+"  "+FileSize+Count);
-				label2.setTextSize((float) (Sizes.getScaledFontSize_small()*0.8));
+				SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
+				String dateString = postFormater.format(pq.DateLastGenerated);
+				DecimalFormat df = new DecimalFormat("###.##");
+				String FileSize = df.format(pq.SizeMB) + " MB";
+				String Count = "   Count=" + String.valueOf(pq.PQCount);
+				label2.setText(dateString + "  " + FileSize + Count);
+				label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.8));
 				label2.setTextColor(Global.getColor(R.attr.TextColor));
+				
+				
+				CheckBox chk = (CheckBox) row.findViewById(R.id.checkBox1);
+				
+				chk.setOnCheckedChangeListener(new OnCheckedChangeListener()
+				{
+					
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+					{
+						pq.downloadAvible=isChecked;
+						
+					}
+				});
+				
 				return row;
 			}
 			else
