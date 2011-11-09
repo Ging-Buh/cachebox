@@ -48,7 +48,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.graphics.Shader;;
+import android.graphics.Shader;
+
+;
 
 public class ActivityUtils
 {
@@ -67,8 +69,7 @@ public class ActivityUtils
 	 * Set the theme of the Activity, and restart it by creating a new Activity
 	 * of the same type.
 	 */
-	public static void changeToTheme(Activity activity, int theme,
-			boolean firstStart)
+	public static void changeToTheme(Activity activity, int theme, boolean firstStart)
 	{
 		sTheme = theme;
 		main.isRestart = true;
@@ -99,8 +100,7 @@ public class ActivityUtils
 
 	}
 
-	public static int drawStaticLayout(Canvas canvas, StaticLayout layout,
-			int x, int y)
+	public static int drawStaticLayout(Canvas canvas, StaticLayout layout, int x, int y)
 	{
 		canvas.translate(x, y);
 		layout.draw(canvas);
@@ -108,15 +108,12 @@ public class ActivityUtils
 		return layout.getHeight();
 	}
 
-	public static void drawFillRoundRecWithBorder(Canvas canvas, Rect rec,
-			int BorderSize, int BorderColor, int FillColor)
+	public static void drawFillRoundRecWithBorder(Canvas canvas, Rect rec, int BorderSize, int BorderColor, int FillColor)
 	{
-		drawFillRoundRecWithBorder(canvas, rec, BorderSize, BorderColor,
-				FillColor, Sizes.getCornerSize());
+		drawFillRoundRecWithBorder(canvas, rec, BorderSize, BorderColor, FillColor, Sizes.getCornerSize());
 	}
 
-	public static void drawFillRoundRecWithBorder(Canvas canvas, Rect rec,
-			int BorderSize, int BorderColor, int FillColor, int CornerSize)
+	public static void drawFillRoundRecWithBorder(Canvas canvas, Rect rec, int BorderSize, int BorderColor, int FillColor, int CornerSize)
 	{
 		Paint drawPaint = new Paint();
 		drawPaint.setAntiAlias(true);
@@ -129,15 +126,14 @@ public class ActivityUtils
 		drawPaint.setColor(BorderColor);
 		canvas.drawRoundRect(OuterRectF, CornerSize, CornerSize, drawPaint);
 
-		final Rect rect = new Rect(rec.left + BorderSize, rec.top + BorderSize,
-				rec.right - BorderSize, rec.bottom - BorderSize);
+		final Rect rect = new Rect(rec.left + BorderSize, rec.top + BorderSize, rec.right - BorderSize, rec.bottom - BorderSize);
 		final RectF rectF = new RectF(rect);
 
 		drawPaint.setColor(FillColor);
-//		drawPaint.setShader(new LinearGradient(0, 0, 0, rec.height(), FillColor, Color.WHITE, Shader.TileMode.MIRROR)); nur ein versuch
+		// drawPaint.setShader(new LinearGradient(0, 0, 0, rec.height(),
+		// FillColor, Color.WHITE, Shader.TileMode.MIRROR)); nur ein versuch
 		drawPaint.setStyle(Style.FILL_AND_STROKE);
-		canvas.drawRoundRect(rectF, CornerSize - BorderSize, CornerSize
-				- BorderSize, drawPaint);
+		canvas.drawRoundRect(rectF, CornerSize - BorderSize, CornerSize - BorderSize, drawPaint);
 
 	}
 
@@ -150,8 +146,7 @@ public class ActivityUtils
 	// / <param name="x"></param>
 	// / <param name="y"></param>
 	// / <param name="height"></param>
-	public static int PutImageTargetHeight(Canvas canvas, Drawable image,
-			int x, int y, int height)
+	public static int PutImageTargetHeight(Canvas canvas, Drawable image, int x, int y, int height)
 	{
 		// float scale = (float)height / (float)image.getBounds().height();
 		// int width = (int)Math.round(image.getBounds().width() * scale);
@@ -167,15 +162,12 @@ public class ActivityUtils
 		return width;
 	}
 
-	public static int PutImageTargetHeightColor(Canvas canvas, Drawable image,
-			int x, int y, int height, int color)
+	public static int PutImageTargetHeightColor(Canvas canvas, Drawable image, int x, int y, int height, int color)
 	{
-		return PutImageTargetHeightColor(canvas, image, x, y, height, color,
-				Mode.MULTIPLY);
+		return PutImageTargetHeightColor(canvas, image, x, y, height, color, Mode.MULTIPLY);
 	}
 
-	public static int PutImageTargetHeightColor(Canvas canvas, Drawable image,
-			int x, int y, int height, int color, Mode porterDuff)
+	public static int PutImageTargetHeightColor(Canvas canvas, Drawable image, int x, int y, int height, int color, Mode porterDuff)
 	{
 
 		float scale = (float) height / (float) image.getIntrinsicHeight();
@@ -199,13 +191,11 @@ public class ActivityUtils
 	// / <param name="x"></param>
 	// / <param name="y"></param>
 	// / <param name="height"></param>
-	public static int PutImageTargetHeight(Canvas canvas, Drawable image,
-			double Angle, int x, int y, int newHeight)
+	public static int PutImageTargetHeight(Canvas canvas, Drawable image, double Angle, int x, int y, int newHeight)
 	{
 
 		float scale = (float) newHeight / (float) image.getIntrinsicHeight();
-		float newWidth = (int) Math.round((float) image.getIntrinsicWidth()
-				* scale);
+		float newWidth = (int) Math.round((float) image.getIntrinsicWidth() * scale);
 
 		Bitmap bmp = ((BitmapDrawable) image).getBitmap();
 		int width = bmp.getWidth();
@@ -220,30 +210,25 @@ public class ActivityUtils
 		// rotate the Bitmap
 		matrix.postRotate((float) Angle);
 		// recreate the new Bitmap
-		Bitmap resizedBitmap = Bitmap.createBitmap(bmp, 0, 0, width, height,
-				matrix, true);
+		Bitmap resizedBitmap = Bitmap.createBitmap(bmp, 0, 0, width, height, matrix, true);
 		// make a Drawable from Bitmap to allow to set the BitMap
 		// to the ImageView, ImageButton or what ever
 		BitmapDrawable bmd = new BitmapDrawable(resizedBitmap);
 
-		bmd.setBounds(x, y, x + bmd.getIntrinsicWidth(),
-				y + bmd.getIntrinsicHeight());
+		bmd.setBounds(x, y, x + bmd.getIntrinsicWidth(), y + bmd.getIntrinsicHeight());
 		bmd.draw(canvas);
 
 		return bmd.getIntrinsicWidth();
 
 	}
 
-	public static int PutImageScale(Canvas canvas, Drawable image,
-			double Angle, int x, int y, double scale)
+	public static int PutImageScale(Canvas canvas, Drawable image, double Angle, int x, int y, double scale)
 	{
 
 		if (scale == 0.0) return 0;
 
-		float newWidth = (int) Math.round((float) image.getIntrinsicWidth()
-				* scale);
-		float newHeight = (int) Math.round((float) image.getIntrinsicHeight()
-				* scale);
+		float newWidth = (int) Math.round((float) image.getIntrinsicWidth() * scale);
+		float newHeight = (int) Math.round((float) image.getIntrinsicHeight() * scale);
 
 		Bitmap bmp = ((BitmapDrawable) image).getBitmap();
 		int width = bmp.getWidth();
@@ -258,14 +243,12 @@ public class ActivityUtils
 		// rotate the Bitmap
 		matrix.postRotate((float) Angle);
 		// recreate the new Bitmap
-		Bitmap resizedBitmap = Bitmap.createBitmap(bmp, 0, 0, width, height,
-				matrix, true);
+		Bitmap resizedBitmap = Bitmap.createBitmap(bmp, 0, 0, width, height, matrix, true);
 		// make a Drawable from Bitmap to allow to set the BitMap
 		// to the ImageView, ImageButton or what ever
 		BitmapDrawable bmd = new BitmapDrawable(resizedBitmap);
 
-		bmd.setBounds(x, y, x + bmd.getIntrinsicWidth(),
-				y + bmd.getIntrinsicHeight());
+		bmd.setBounds(x, y, x + bmd.getIntrinsicWidth(), y + bmd.getIntrinsicHeight());
 		bmd.draw(canvas);
 
 		return bmd.getIntrinsicWidth();
@@ -287,8 +270,7 @@ public class ActivityUtils
 		}
 
 		int totalHeight = 0;
-		int desiredWidth = MeasureSpec.makeMeasureSpec(listView.getWidth(),
-				MeasureSpec.AT_MOST);
+		int desiredWidth = MeasureSpec.makeMeasureSpec(listView.getWidth(), MeasureSpec.AT_MOST);
 		for (int i = 0; i < listAdapter.getCount(); i++)
 		{
 			View listItem = listAdapter.getView(i, null, listView);
@@ -297,8 +279,7 @@ public class ActivityUtils
 		}
 
 		ViewGroup.LayoutParams params = listView.getLayoutParams();
-		params.height = totalHeight
-				+ (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+		params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
 		listView.setLayoutParams(params);
 		listView.requestLayout();
 	}
@@ -337,42 +318,28 @@ public class ActivityUtils
 	 * @param initialValue
 	 *            der Wert, der in das EditText Feld eingetragen wird
 	 */
-	public static void initialNumPadInt(Activity activity, View numPadLayout,
-			EditText TextBox, String string, OnClickListener OkListner,
+	public static void initialNumPadInt(Activity activity, View numPadLayout, EditText TextBox, String string, OnClickListener OkListner,
 			OnClickListener cancelListner)
 	{
 		// disable soft keyboard
-		activity.getWindow().setSoftInputMode(
-				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		TextBox.setInputType(0);
 
 		// NumButton Handler
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num0),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num1),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num2),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num3),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num4),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num5),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num6),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num7),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num8),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num9),
-				numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num0), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num1), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num2), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num3), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num4), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num5), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num6), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num7), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num8), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num9), numButtonClickListner);
 		setNumPadButton_Gone((Button) numPadLayout.findViewById(R.id.numPoint));
-		setNumPadButton_Weight(
-				(Button) numPadLayout.findViewById(R.id.negativeButton), 2.0f);
+		setNumPadButton_Weight((Button) numPadLayout.findViewById(R.id.negativeButton), 2.0f);
 
-		((Button) numPadLayout.findViewById(R.id.del))
-				.setOnClickListener(delButtonClickListner);
+		((Button) numPadLayout.findViewById(R.id.del)).setOnClickListener(delButtonClickListner);
 
 		// set the value
 		editText = TextBox;
@@ -401,67 +368,48 @@ public class ActivityUtils
 	 * @param string
 	 *            der Wert, der in das EditText Feld eingetragen wird als String
 	 */
-	public static void initialNumPadDbl(Activity activity, View numPadLayout,
-			EditText TextBox, String string, OnClickListener OkListner,
+	public static void initialNumPadDbl(Activity activity, View numPadLayout, EditText TextBox, String string, OnClickListener OkListner,
 			OnClickListener cancelListner)
 	{
 		// disable soft keyboard
-		activity.getWindow().setSoftInputMode(
-				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		TextBox.setInputType(0);
 
 		// NumButton Handler
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num0),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num1),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num2),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num3),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num4),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num5),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num6),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num7),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num8),
-				numButtonClickListner);
-		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num9),
-				numButtonClickListner);
-		setNumPadButton_Visible(
-				(Button) numPadLayout.findViewById(R.id.numPoint),
-				numButtonClickListner, 1.0f);
-		setNumPadButton_Weight(
-				(Button) numPadLayout.findViewById(R.id.negativeButton), 1.0f);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num0), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num1), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num2), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num3), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num4), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num5), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num6), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num7), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num8), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.num9), numButtonClickListner);
+		setNumPadButton_Visible((Button) numPadLayout.findViewById(R.id.numPoint), numButtonClickListner, 1.0f);
+		setNumPadButton_Weight((Button) numPadLayout.findViewById(R.id.negativeButton), 1.0f);
 
-		((Button) numPadLayout.findViewById(R.id.del))
-				.setOnClickListener(delButtonClickListner);
+		((Button) numPadLayout.findViewById(R.id.del)).setOnClickListener(delButtonClickListner);
 
 		// set the value
 		editText = TextBox;
 		editText.setText(string);
-		editText.setTextSize((float) (Sizes.getScaledFontSize_small()));
+		// editText.setTextSize((float) (Sizes.getScaledFontSize_small()));
 		initialCurserKeys(numPadLayout, TextBox);
 	}
 
-	private static void setNumPadButton_Visible(Button button,
-			OnClickListener clickListner)
+	private static void setNumPadButton_Visible(Button button, OnClickListener clickListner)
 	{
 		setNumPadButton_Visible(button, clickListner, -1);
 	}
 
-	private static void setNumPadButton_Visible(Button button,
-			OnClickListener clickListner, float weight)
+	private static void setNumPadButton_Visible(Button button, OnClickListener clickListner, float weight)
 	{
 		button.setVisibility(View.VISIBLE);
 		if (clickListner != null) button.setOnClickListener(clickListner);
 		if (weight > -1)
 		{
-			LinearLayout.LayoutParams lp = (android.widget.LinearLayout.LayoutParams) button
-					.getLayoutParams();
+			LinearLayout.LayoutParams lp = (android.widget.LinearLayout.LayoutParams) button.getLayoutParams();
 			lp.weight = weight;
 			button.setLayoutParams(lp);
 		}
@@ -472,8 +420,7 @@ public class ActivityUtils
 
 		if (weight > -1)
 		{
-			LinearLayout.LayoutParams lp = (android.widget.LinearLayout.LayoutParams) button
-					.getLayoutParams();
+			LinearLayout.LayoutParams lp = (android.widget.LinearLayout.LayoutParams) button.getLayoutParams();
 			lp.weight = weight;
 			button.setLayoutParams(lp);
 		}
@@ -497,6 +444,9 @@ public class ActivityUtils
 			@Override
 			public void onClick(View arg0)
 			{
+				// give feedback
+				main.vibrator.vibrate(50);
+
 				int cursor = editText.getSelectionStart() - 1;
 				if (cursor >= 0) editText.setSelection(cursor, cursor);
 			}
@@ -508,9 +458,11 @@ public class ActivityUtils
 			@Override
 			public void onClick(View arg0)
 			{
+				// give feedback
+				main.vibrator.vibrate(50);
+
 				int cursor = editText.getSelectionStart() + 1;
-				if (cursor <= editText.getText().toString().length()) editText
-						.setSelection(cursor, cursor);
+				if (cursor <= editText.getText().toString().length()) editText.setSelection(cursor, cursor);
 			}
 		});
 	}
@@ -531,12 +483,21 @@ public class ActivityUtils
 		@Override
 		public void onClick(View v)
 		{
+			// give feedback
+			main.vibrator.vibrate(50);
+
 			int cursor = editText.getSelectionStart();
-			int selLength = editText.getSelectionEnd()
-					- editText.getSelectionStart();
+			int selLength = editText.getSelectionEnd() - editText.getSelectionStart();
 			String text = editText.getText().toString();
-			text = text.substring(0, cursor) + ((Button) v).getText()
-					+ text.substring(cursor + selLength);
+			int pos = cursor + selLength + 1;
+			if (pos > text.length())
+			{
+				text = text + ((Button) v).getText();
+			}
+			else
+			{
+				text = text.substring(0, cursor) + ((Button) v).getText() + text.substring(pos);
+			}
 			editText.setText(text);
 			editText.setSelection(cursor + 1, cursor + 1);
 		}
@@ -552,14 +513,15 @@ public class ActivityUtils
 		@Override
 		public void onClick(View v)
 		{
+			// give feedback
+			main.vibrator.vibrate(50);
+
 			int cursor = editText.getSelectionStart();
-			int selLength = editText.getSelectionEnd()
-					- editText.getSelectionStart();
+			int selLength = editText.getSelectionEnd() - editText.getSelectionStart();
 			String text = editText.getText().toString();
 			if (editText.getSelectionStart() > 0 && selLength == 0)
 			{
-				editText.setText(text.substring(0, cursor - 1)
-						+ text.substring(cursor));
+				editText.setText(text.substring(0, cursor - 1) + text.substring(cursor));
 				editText.setSelection(cursor - 1, cursor - 1);
 
 				return;
@@ -567,8 +529,7 @@ public class ActivityUtils
 
 			if (selLength > 0)
 			{
-				editText.setText(text.substring(0, cursor)
-						+ text.substring(cursor + selLength));
+				editText.setText(text.substring(0, cursor) + text.substring(cursor + selLength));
 				editText.setSelection(cursor, cursor);
 
 				return;

@@ -38,8 +38,8 @@ import CB_Core.GlobalCore;
 
 public class Global
 {
-	public static final int CurrentRevision = 486;
-	public static final String CurrentVersion = "0.3.";
+	public static final int CurrentRevision = 502;
+	public static final String CurrentVersion = "0.4.";
 	public static final String VersionPrefix = "beta";
 	public static final int LatestDatabaseChange = 1016;
 	public static final int LatestDatabaseFieldNoteChange = 1001;

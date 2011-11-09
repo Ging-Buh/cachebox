@@ -259,7 +259,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private ScreenLockTimer counter = null;
 	private boolean counterStopped = false;
 
-	private Vibrator vibrator;
+	public static Vibrator vibrator;
 
 	/*
 	 * Classes
@@ -1559,7 +1559,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 		{
 
-			// give feadback
+			// give feedback
 			vibrator.vibrate(50);
 
 			QuickButtonItem clicedItem = Global.QuickButtonList.get(arg2);
