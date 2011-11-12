@@ -368,7 +368,7 @@ public abstract class Database
 		{
 			c.close();
 		}
-		
+
 		return result;
 	}
 
@@ -528,7 +528,7 @@ public abstract class Database
 		while (reader.isAfterLast() == false)
 		{
 			LogEntry logent = getLogEntry(cache, reader, true);
-			result.add(logent);
+			if (logent != null) result.add(logent);
 			reader.moveToNext();
 		}
 		reader.close();
@@ -538,6 +538,9 @@ public abstract class Database
 
 	private static LogEntry getLogEntry(Cache cache, CoreCursor reader, boolean filterBbCode)
 	{
+		int intLogType = reader.getInt(3);
+		if (intLogType < 0 || intLogType > 13) return null;
+
 		LogEntry retLogEntry = new LogEntry();
 
 		retLogEntry.CacheId = reader.getLong(0);
@@ -552,8 +555,8 @@ public abstract class Database
 		{
 		}
 		retLogEntry.Finder = reader.getString(2);
-		retLogEntry.Type =  LogTypes.values()[reader.getInt(3)];
-		retLogEntry.TypeIcon =  reader.getInt(3);
+		retLogEntry.Type = LogTypes.values()[reader.getInt(3)];
+		retLogEntry.TypeIcon = reader.getInt(3);
 		retLogEntry.Comment = reader.getString(4);
 		retLogEntry.Id = reader.getLong(5);
 
@@ -754,6 +757,6 @@ public abstract class Database
 	public abstract void endTransaction();
 
 	public abstract long insertWithConflictReplace(String tablename, Parameters val);
-	
+
 	public abstract void Close();
 }
