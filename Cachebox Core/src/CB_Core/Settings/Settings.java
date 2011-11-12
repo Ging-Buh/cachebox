@@ -14,13 +14,18 @@ public class Settings extends SettingsList
 	public SettingInt HtcLevel;
 	// Settings Map
 	public SettingBool MapHideMyFinds;
+	// Invisible
+	public SettingLongString Filter;
 
 	public Settings() {
 		// Settings Compass
-		addSetting(HtcCompass = new SettingBool("HtcCompass", SettingCategory.Gps, SettingModus.Normal, true));
-		addSetting(HtcLevel = new SettingInt("HtcLevel", SettingCategory.Gps, SettingModus.Normal, 5));
+		addSetting(HtcCompass = new SettingBool("HtcCompass", SettingCategory.Gps, SettingModus.Normal, true, true));
+		addSetting(HtcLevel = new SettingInt("HtcLevel", SettingCategory.Gps, SettingModus.Normal, 5, true));
 		// Settings Map
-		addSetting(MapHideMyFinds = new SettingBool("MapHideMyFinds", SettingCategory.Map, SettingModus.Normal, false));
+		addSetting(MapHideMyFinds = new SettingBool("MapHideMyFinds", SettingCategory.Map, SettingModus.Normal, false, true));
+		// Invisible
+		addSetting(Filter = new SettingLongString("Filter", SettingCategory.Internal, SettingModus.Invisible, "", false));
 	}
 
+	
 }

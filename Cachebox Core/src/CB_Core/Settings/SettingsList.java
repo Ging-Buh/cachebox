@@ -1,13 +1,16 @@
 package CB_Core.Settings;
 
 import java.util.HashMap;
+import java.util.Iterator;
+
+import CB_Core.DB.Database;
 
 public class SettingsList extends HashMap<String, SettingBase>
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8281683955382397406L;
+	private static final long serialVersionUID = -969846843815877942L;
 
 	public boolean getBool(String key)
 	{
@@ -37,5 +40,29 @@ public class SettingsList extends HashMap<String, SettingBase>
 
 	public void addSetting(SettingBase setting) {
 		this.put(setting.getName(), setting);
+	}
+	
+	public void WriteToDB() {
+		// Write into DB
+		SettingsDAO dao = new SettingsDAO();
+		for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext(); ) {
+			SettingBase setting = it.next();
+			if (setting.getGlobal())
+				dao.WriteToDatabase(Database.Settings, setting);
+			else
+				dao.WriteToDatabase(Database.Data, setting);			
+		}
+	}
+	
+	public void ReadFromDB() {
+		// Read from DB
+		SettingsDAO dao = new SettingsDAO();
+		for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext(); ) {
+			SettingBase setting = it.next();
+			if (setting.getGlobal())
+				dao.ReadFromDatabase(Database.Settings, setting);
+			else
+				dao.ReadFromDatabase(Database.Data, setting);			
+		}
 	}
 }

@@ -1,7 +1,7 @@
 package CB_Core.Settings;
 
 public enum SettingCategory {
-	Login("Login"), Map("Map"), Gps("Gps");
+	Login("Login"), Map("Map"), Gps("Gps"), Internal("Internal");
 
 	private String langString;
 	

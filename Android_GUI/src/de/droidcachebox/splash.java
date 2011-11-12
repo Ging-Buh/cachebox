@@ -11,6 +11,7 @@ import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
+import CB_Core.Settings.SettingsDAO;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Coordinate;
 
@@ -329,6 +330,10 @@ public class splash extends Activity
 		Database.FieldNotes = new AndroidDB(DatabaseType.FieldNotes, this);
 		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
 		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
+
+		Database.Settings = new AndroidDB(DatabaseType.Settings, this);
+		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
+		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
 
 		Descriptor.Init();
 

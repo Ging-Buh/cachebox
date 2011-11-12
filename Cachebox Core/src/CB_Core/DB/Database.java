@@ -26,10 +26,11 @@ public abstract class Database
 	protected String databasePath;
 	public static Database Data;
 	public static Database FieldNotes;
+	public static Database Settings;
 
 	public enum DatabaseType
 	{
-		CacheBox, FieldNotes
+		CacheBox, FieldNotes, Settings
 	}
 
 	protected DatabaseType databaseType;
@@ -51,6 +52,8 @@ public abstract class Database
 		case FieldNotes:
 			latestDatabaseChange = GlobalCore.LatestDatabaseFieldNoteChange;
 			break;
+		case Settings:
+			latestDatabaseChange = GlobalCore.LatestDatabaseSettingsChange;
 		}
 	}
 
@@ -281,6 +284,10 @@ public abstract class Database
 				}
 
 			}
+			if (lastDatabaseSchemeVersion < 1020) {
+				// for long Settings
+				execSQL("ALTER TABLE [Config] ADD [LongString] ntext NULL;");					
+			}
 			break;
 		case FieldNotes:
 			if (lastDatabaseSchemeVersion <= 0)
@@ -297,6 +304,27 @@ public abstract class Database
 				}
 				catch (Exception exc)
 				{
+					exc.getMessage();
+				}
+			}
+			break;
+		case Settings:
+			if (lastDatabaseSchemeVersion <= 0)
+			{
+				// First Initialization of the Database
+				try {
+					execSQL("CREATE TABLE [Config] ([Key] nvarchar (30) NOT NULL, [Value] nvarchar (255) NULL);");
+					execSQL("CREATE INDEX [Key_idx] ON [Config] ([Key] ASC);");					
+				} catch (Exception exc) {
+					exc.getMessage();
+				}
+			}
+			if (lastDatabaseSchemeVersion <= 1002)
+			{
+				// Long Text Field for long Strings
+				try {
+					execSQL("ALTER TABLE [Config] ADD [LongString] ntext NULL;");					
+				} catch (Exception exc) {
 					exc.getMessage();
 				}
 			}
@@ -679,13 +707,60 @@ public abstract class Database
 		}
 	}
 
-	public String ReadConfigString(String key)
+	public void WriteConfigLongString(String key, String value)
+	{
+		Parameters val = new Parameters();
+		val.put("LongString", value);
+		long anz = update("Config", val, "[Key]='" + key + "'", null);
+		if (anz <= 0)
+		{
+			// Update not possible because Key does not exist
+			val.put("Key", key);
+			insert("Config", val);
+		}
+	}
+
+	public String ReadConfigString(String key) throws Exception
 	{
 		String result = "";
 		CoreCursor c = null;
 		try
 		{
 			c = rawQuery("select Value from Config where [Key]=?", new String[]
+				{ key });
+		}
+		catch (Exception exc)
+		{
+			throw new Exception("not in DB");
+		}
+		try
+		{
+			c.moveToFirst();
+			while (c.isAfterLast() == false)
+			{
+				result = c.getString(0);
+				c.moveToNext();
+			}
+			;
+		}
+		catch (Exception exc)
+		{
+			throw new Exception("not in DB");
+		}
+		finally {
+			c.close();
+		}
+
+		return result;
+	}
+
+	public String ReadConfigLongString(String key)
+	{
+		String result = "";
+		CoreCursor c = null;
+		try
+		{
+			c = rawQuery("select LongString from Config where [Key]=?", new String[]
 				{ key });
 		}
 		catch (Exception exc)
@@ -718,9 +793,9 @@ public abstract class Database
 
 	public long ReadConfigLong(String key)
 	{
-		String value = ReadConfigString(key);
 		try
 		{
+			String value = ReadConfigString(key);
 			return Long.valueOf(value);
 		}
 		catch (Exception ex)
