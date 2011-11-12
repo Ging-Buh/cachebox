@@ -629,7 +629,8 @@ public class Global
 					getDrawable(R.drawable.auto_sort_on_icon, res), // 15
 					getDrawable(R.drawable.auto_sort_off_icon, res), // 16
 					getDrawable(R.drawable.solver_icon, res), // 17
-					getDrawable(R.drawable.images_icon, res), // 18
+					getDrawable(R.drawable.images_icon, res), // 18 
+					getDrawable(R.drawable.hint_icon, res), // 19
 			};
 
 	}

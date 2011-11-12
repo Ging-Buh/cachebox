@@ -31,6 +31,7 @@ import de.droidcachebox.Locator.GPS;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.AboutView;
+import de.droidcachebox.Views.Forms.ScreenLock;
 import CB_Core.Config;
 import CB_Core.Enums.Attributes;
 import CB_Core.Events.SelectedCacheEvent;
@@ -223,7 +224,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	@Override
 	protected void onDraw(Canvas canvas)
 	{
-
+		if (ScreenLock.SliderMoves) return;
+		
 		/**
 		 * Beim ersten Zeichnen, wird der Letzte Zustand abgefragt!
 		 */

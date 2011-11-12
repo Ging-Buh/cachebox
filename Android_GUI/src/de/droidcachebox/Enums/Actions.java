@@ -50,6 +50,7 @@ public enum Actions
 	AutoResort,			//13
 	Solver,				//14
 	Spoiler,			//15
+	Hint,				//16
 	
 	empty,;
 
@@ -118,6 +119,7 @@ public enum Actions
         	case 13:return Actions.AutoResort;
         	case 14:return Actions.Solver;
         	case 15:return Actions.Spoiler;
+        	case 16:return Actions.Hint;
         }
         return Actions.empty;
     }
@@ -142,6 +144,7 @@ public enum Actions
             case 13:return Global.autoResort? Global.BtnIcons[16] : Global.BtnIcons[15]; //AutoResort
             case 14:return Global.BtnIcons[17]; 
             case 15:return Global.BtnIcons[18];
+            case 16:return Global.BtnIcons[19]; //Hint
         }
 		return null;
 	}
@@ -166,6 +169,7 @@ public enum Actions
             case 13:return GlobalCore.Translations.Get("AutoResort");
             case 14:return GlobalCore.Translations.Get("Solver");
             case 15:return GlobalCore.Translations.Get("spoiler");
+            case 16:return GlobalCore.Translations.Get("hint");
         }
 		return "empty";
 	}

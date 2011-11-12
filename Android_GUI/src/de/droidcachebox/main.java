@@ -1617,6 +1617,9 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			case 15:
 				if (GlobalCore.SelectedCache() != null && GlobalCore.SelectedCache().SpoilerExists()) showView(5);
 				break;
+			case 16:
+				if (GlobalCore.SelectedCache() != null && !(GlobalCore.SelectedCache().hint.equals(""))) showHint();
+				break;
 			}
 		}
 	};

@@ -55,8 +55,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class MeasureCoordinateActivity extends Activity implements
-		LocationListener
+public class MeasureCoordinateActivity extends Activity implements LocationListener
 {
 	private Intent aktIntent;
 	public static LinearLayout strengthLayout;
@@ -111,8 +110,7 @@ public class MeasureCoordinateActivity extends Activity implements
 
 				aktIntent.putExtra("SOMETHING", "EXTRAS");
 				Bundle extras = new Bundle();
-				extras.putSerializable("CoordResult",
-						mMeasureList.getAccuWeightedAverageCoord());
+				extras.putSerializable("CoordResult", mMeasureList.getAccuWeightedAverageCoord());
 				aktIntent.putExtras(extras);
 				setResult(RESULT_OK, aktIntent);
 				finish();
@@ -144,11 +142,9 @@ public class MeasureCoordinateActivity extends Activity implements
 
 		// set Height of TopLayout
 
-		LayoutParams params = ((RelativeLayout) findViewById(R.id.meco_titlelayout))
-				.getLayoutParams();
+		LayoutParams params = ((RelativeLayout) findViewById(R.id.meco_titlelayout)).getLayoutParams();
 		params.height = Sizes.getScaledFontSize_normal() * 5;
-		((RelativeLayout) findViewById(R.id.meco_titlelayout))
-				.setLayoutParams(params);
+		((RelativeLayout) findViewById(R.id.meco_titlelayout)).setLayoutParams(params);
 	}
 
 	final Timer timer = new Timer();
@@ -240,8 +236,7 @@ public class MeasureCoordinateActivity extends Activity implements
 			criteria.setCostAllowed(true);
 			criteria.setPowerRequirement(Criteria.POWER_HIGH);
 
-			locationManager.requestLocationUpdates(
-					LocationManager.GPS_PROVIDER, 0, 0, this);
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
 		}
 		catch (Exception e)
@@ -284,7 +279,14 @@ public class MeasureCoordinateActivity extends Activity implements
 	protected void onResume()
 	{
 		MeasureCount = 0;
-		if (mMeasureList != null) mMeasureList.clear();
+		if (mMeasureList != null)
+		{
+			mMeasureList.clear();
+		}
+		else
+		{
+			mMeasureList = new MeasuredCoordList();
+		}
 		initialLocationManager();
 
 		super.onResume();
@@ -308,7 +310,7 @@ public class MeasureCoordinateActivity extends Activity implements
 	 * ######### Portierung c# ####################
 	 */
 
-	final int projectionZoom = 20;
+	final int projectionZoom = 18;
 	// Erdradius / anzahl Kacheln = Meter pro Kachel
 	final double metersPerTile = 6378137.0 / Math.pow(2, projectionZoom);
 	Canvas graphics;
@@ -318,28 +320,22 @@ public class MeasureCoordinateActivity extends Activity implements
 
 		if (mMeasureList == null) return;
 
-		Coordinate coord = new Coordinate(location.getLatitude(),
-				location.getLongitude());
+		Coordinate coord = new Coordinate(location.getLatitude(), location.getLongitude());
 
 		if (MeasureCount == 0) lblMeasureCoord.setText(coord.toString());
 
 		MeasureCount++;
-		mMeasureList.add(new MeasuredCoord(location.getLatitude(), location
-				.getLongitude(), location.getAccuracy()));
+		mMeasureList.add(new MeasuredCoord(location.getLatitude(), location.getLongitude(), location.getAccuracy()));
 
-		lblMeasureCount.setText(String.valueOf(MeasureCount) + "/"
-				+ String.valueOf(mMeasureList.size()));
+		lblMeasureCount.setText(String.valueOf(MeasureCount) + "/" + String.valueOf(mMeasureList.size()));
 
 		// nach jeder 10. Messung die Liste Aufräumen
 		if (mMeasureList.size() % 10 == 0)
 		{
 			mMeasureList.setAverage();
 			mMeasureList.clearDiscordantValue();
-			lblMeasureCoord.setText(Global.FormatLatitudeDM(mMeasureList
-					.getAccuWeightedAverageCoord().Latitude)
-					+ String.format("%n")
-					+ Global.FormatLongitudeDM(mMeasureList
-							.getAccuWeightedAverageCoord().Longitude));
+			lblMeasureCoord.setText(Global.FormatLatitudeDM(mMeasureList.getAccuWeightedAverageCoord().Latitude) + String.format("%n")
+					+ Global.FormatLongitudeDM(mMeasureList.getAccuWeightedAverageCoord().Longitude));
 		}
 
 		repaintPreview();
@@ -358,7 +354,6 @@ public class MeasureCoordinateActivity extends Activity implements
 		if (redPen == null)
 		{
 			redPen = new Paint();
-			
 
 			blackPen = new Paint();
 			blackPen.setColor(Color.BLACK);
@@ -367,21 +362,18 @@ public class MeasureCoordinateActivity extends Activity implements
 			blackPen.setStrokeWidth(2);
 
 			blueBrush = new Paint();
-			
+
 		}
 
 		setSatStrength();
 
 		Canvas graphics = panelPreview.getCanvas();
 		graphics.drawColor(Color.LTGRAY);
-		
-
 
 		int centerX = panelPreview.getWidth() / 2;
 		int centerY = panelPreview.getHeight() / 2;
 
-		int minPix = Math
-				.min(panelPreview.getWidth(), panelPreview.getHeight());
+		int minPix = Math.min(panelPreview.getWidth(), panelPreview.getHeight());
 
 		if (mMeasureList.size() > 0)
 		{
@@ -389,29 +381,20 @@ public class MeasureCoordinateActivity extends Activity implements
 			double medianLat = MeasuredCoord.Referenz.Latitude;
 			double medianLon = MeasuredCoord.Referenz.Longitude;
 
-			MeasuredCoordList sortetdList = (MeasuredCoordList) mMeasureList
-					.clone();
+			MeasuredCoordList sortetdList = (MeasuredCoordList) mMeasureList.clone();
 			sortetdList.sort();
 
-			double peakLat = Math.max(
-					Math.abs(sortetdList.get(0).getLatitude() - medianLat),
-					Math.abs(sortetdList.get(sortetdList.size() - 1)
-							.getLatitude() - medianLat));
-			double peakLon = Math.max(
-					Math.abs(sortetdList.get(0).getLongitude() - medianLon),
-					Math.abs(sortetdList.get(sortetdList.size() - 1)
-							.getLongitude() - medianLon));
+			double peakLat = Math.max(Math.abs(sortetdList.get(0).getLatitude() - medianLat),
+					Math.abs(sortetdList.get(sortetdList.size() - 1).getLatitude() - medianLat));
+			double peakLon = Math.max(Math.abs(sortetdList.get(0).getLongitude() - medianLon),
+					Math.abs(sortetdList.get(sortetdList.size() - 1).getLongitude() - medianLon));
 
 			// Umrechnung in XY
-			double medianX = Descriptor.LongitudeToTileX(projectionZoom,
-					medianLon);
-			double medianY = Descriptor.LatitudeToTileY(projectionZoom,
-					medianLat);
+			double medianX = Descriptor.LongitudeToTileX(projectionZoom, medianLon);
+			double medianY = Descriptor.LatitudeToTileY(projectionZoom, medianLat);
 
-			double extremeX = Descriptor.LongitudeToTileX(projectionZoom,
-					peakLon + medianLon);
-			double extremeY = Descriptor.LatitudeToTileY(projectionZoom,
-					peakLat + medianLat);
+			double extremeX = Descriptor.LongitudeToTileX(projectionZoom, peakLon + medianLon);
+			double extremeY = Descriptor.LatitudeToTileY(projectionZoom, peakLat + medianLat);
 
 			double peakX = Math.abs(extremeX - medianX);
 			double peakY = Math.abs(extremeY - medianY);
@@ -428,27 +411,22 @@ public class MeasureCoordinateActivity extends Activity implements
 			for (int i = 1; i < mMeasureList.size(); i++)
 			{
 
-				PointD lastDrawEntry = Descriptor.projectCoordinate(
-						mMeasureList.get(i - 1).getLatitude(), mMeasureList
-								.get(i - 1).getLongitude(), projectionZoom);
+				PointD lastDrawEntry = Descriptor.projectCoordinate(mMeasureList.get(i - 1).getLatitude(), mMeasureList.get(i - 1)
+						.getLongitude(), projectionZoom);
 
-				int lastX = (int) (centerX + (lastDrawEntry.X - medianX)
-						* factor);
-				int lastY = (int) (centerY - (lastDrawEntry.Y - medianY)
-						* factor);
+				int lastX = (int) (centerX + (lastDrawEntry.X - medianX) * factor);
+				int lastY = (int) (centerY - (lastDrawEntry.Y - medianY) * factor);
 
-				PointD thisDrawEntry = Descriptor.projectCoordinate(
-						mMeasureList.get(i).getLatitude(), mMeasureList.get(i)
-								.getLongitude(), projectionZoom);
+				PointD thisDrawEntry = Descriptor.projectCoordinate(mMeasureList.get(i).getLatitude(), mMeasureList.get(i).getLongitude(),
+						projectionZoom);
 
 				x = (int) (centerX + (thisDrawEntry.X - medianX) * factor);
 				y = (int) (centerY - (thisDrawEntry.Y - medianY) * factor);
 
-				
 				redPen.setColor(Color.RED);
 				redPen.setAntiAlias(true);
 				redPen.setStrokeWidth(2);
-				
+
 				graphics.drawLine(lastX, lastY, x, y, redPen);
 			}
 
@@ -459,7 +437,7 @@ public class MeasureCoordinateActivity extends Activity implements
 		}
 
 		//
-		int m2 = (int) ((2 * minPix) / metersPerTile);
+		int m2 = (int) ((4 * minPix) / metersPerTile);
 		int m4 = m2 * 2;
 
 		blackPen.setStrokeWidth(1.5f);
@@ -468,10 +446,8 @@ public class MeasureCoordinateActivity extends Activity implements
 		graphics.drawCircle(centerX, centerY, m2, blackPen);
 		graphics.drawCircle(centerX, centerY, m4, blackPen);
 
-		graphics.drawLine(centerX, 0, centerX, panelPreview.getHeight(),
-				blackPen);
-		graphics.drawLine(0, centerY, panelPreview.getWidth(), centerY,
-				blackPen);
+		graphics.drawLine(centerX, 0, centerX, panelPreview.getHeight(), blackPen);
+		graphics.drawLine(0, centerY, panelPreview.getWidth(), centerY, blackPen);
 
 		panelPreview.invalidate();
 		inRepaint = false;
