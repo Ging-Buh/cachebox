@@ -57,6 +57,7 @@ public class Global
 	 */
 	public static final int RESULT_SELECT_SOLVER_FUNCTION = 29021972;
 	public static final int RESULT_SELECT_PQ_LIST = 771971;
+	public static final int RESULT_ADVANCED_SETTINGS = 12112011;
 	
 	
 	

@@ -70,6 +70,7 @@ import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
+import de.droidcachebox.Views.AdvancedSettingsForms.SettingsListView;
 import CB_Core.GlobalCore;
 
 public class Settings extends Activity implements ViewOptionsMenu, SelectedLangChangedEvent
@@ -143,6 +144,9 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 	private Button ActionListAdd;
 	private Spinner ActionListAll;
 	private boolean ActionListChanged = false;
+	private Button btnAdvancedSettings;
+	
+	
 
 	private Button getApiKey;
 	private EditText EditDebugOverrideGcAuth;
@@ -554,6 +558,22 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 			}
 		});
 
+		btnAdvancedSettings.setOnClickListener(new OnClickListener()
+		{
+			
+			@Override
+			public void onClick(View arg0)
+			{
+				Intent intent = new Intent().setClass(Settings.Me, SettingsListView.class);
+//				Bundle b = new Bundle();
+//				b.putSerializable("PqList", pqList);
+//				PqListIntent.putExtras(b);
+				
+				Settings.Me.startActivityForResult(intent, Global.RESULT_ADVANCED_SETTINGS);
+				
+			}
+		});
+		
 		FillSettings();
 		setLang();
 
@@ -722,6 +742,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 		EditDebugOverrideGcAuth = (EditText) this.findViewById(R.id.settings_debugOverrideGCurl);
 		chkSearchWithoutFounds = (CheckBox) this.findViewById(R.id.settings_without_founds);
 		chkSearchWithoutOwns = (CheckBox) this.findViewById(R.id.settings_without_owns);
+		btnAdvancedSettings = (Button)this.findViewById(R.id.btn_advanced_settings);
 	}
 
 	private void setLang()
@@ -1075,6 +1096,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 		ToggleDebugView.setHeight(Height);
 		ToggleQuickView.setHeight(Height);
 		getApiKey.setHeight(Height);
+		btnAdvancedSettings.setHeight(Height);
 	}
 
 	private void MyFinish()

@@ -66,6 +66,7 @@
 		<activity android:name=".Views.Forms.selectSolverFunction"></activity>
 		<activity android:name=".Views.Forms.ApiPQDialog" android:theme="@style/ThemeHintDialog"></activity>
 		<activity android:name=".Views.Forms.ApiSearchPosDialog" android:theme="@style/Theme.Transparent.Dim"></activity>
+		<activity android:name=".Views.AdvancedSettingsForms.SettingsListView" android:theme="@style/Theme.Transparent.Dim"></activity>
 
 	</application>
 </manifest>
