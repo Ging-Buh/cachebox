@@ -3,6 +3,8 @@ package de.droidcachebox.Views;
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -2439,73 +2441,73 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 								if (x < 0 || y < 0 || x >= Descriptor.TilesPerLine[Zoom] || y >= Descriptor.TilesPerColumn[Zoom]) continue;
 								Descriptor desc = new Descriptor(x, y, Zoom);
 
-								int dist = (int) Math.sqrt(Math.pow(screenCenter.X - (desc.X + 128), 2)
-										+ Math.pow(screenCenter.Y - (desc.Y + 128), 2));
+								int dist = (int) Math.sqrt(Math.pow(screenCenter.X - (desc.X * 256 + 128), 2)
+										+ Math.pow(screenCenter.Y - (desc.Y * 256 + 128), 2));
 								kOrder.add(new KachelOrder(x, y, dist));
 							}
 						}
-
+						Collections.sort(kOrder);
 						// Kacheln beantragen
-						for (int x = xFrom; x <= xTo; x++)
+						for (KachelOrder ko : kOrder)
 						{
-							for (int y = yFrom; y <= yTo; y++)
+							int x = ko.x;
+							int y = ko.y;
+
+							if (x < 0 || y < 0 || x >= Descriptor.TilesPerLine[Zoom] || y >= Descriptor.TilesPerColumn[Zoom]) continue;
+
+							Descriptor desc = new Descriptor(x, y, Zoom);
+
+							Tile tile;
+							Tile trackTile;
+
+							loadedTilesLock.lock();
+							try
 							{
-								if (x < 0 || y < 0 || x >= Descriptor.TilesPerLine[Zoom] || y >= Descriptor.TilesPerColumn[Zoom]) continue;
-
-								Descriptor desc = new Descriptor(x, y, Zoom);
-
-								Tile tile;
-								Tile trackTile;
-
-								loadedTilesLock.lock();
-								try
+								if (!loadedTiles.containsKey(desc.GetHashCode()))
 								{
-									if (!loadedTiles.containsKey(desc.GetHashCode()))
+									preemptTile();
+
+									loadedTiles.put(desc.GetHashCode(), new Tile(desc, null, Tile.TileState.Disposed));
+
+									queueTile(desc);
+								}
+								tile = loadedTiles.get(desc.GetHashCode());
+							}
+							finally
+							{
+								loadedTilesLock.unlock();
+							}
+							trackTilesLock.lock();
+							try
+							{
+								if ((RouteOverlay.Routes.size() > 0) && (x >= xFromTrack) && (x <= xToTrack) && (y >= yFromTrack)
+										&& (y <= yToTrack))
+								{
+									if (!trackTiles.containsKey(desc.GetHashCode()))
 									{
-										preemptTile();
+										preemptTrackTile();
 
-										loadedTiles.put(desc.GetHashCode(), new Tile(desc, null, Tile.TileState.Disposed));
+										trackTiles.put(desc.GetHashCode(), new Tile(desc, null, Tile.TileState.Disposed));
 
-										queueTile(desc);
+										queueTrackTile(desc);
 									}
-									tile = loadedTiles.get(desc.GetHashCode());
+									trackTile = trackTiles.get(desc.GetHashCode());
 								}
-								finally
-								{
-									loadedTilesLock.unlock();
-								}
-								trackTilesLock.lock();
-								try
-								{
-									if ((RouteOverlay.Routes.size() > 0) && (x >= xFromTrack) && (x <= xToTrack) && (y >= yFromTrack)
-											&& (y <= yToTrack))
-									{
-										if (!trackTiles.containsKey(desc.GetHashCode()))
-										{
-											preemptTrackTile();
+								else
+									trackTile = null;
+							}
+							finally
+							{
+								trackTilesLock.unlock();
+							}
 
-											trackTiles.put(desc.GetHashCode(), new Tile(desc, null, Tile.TileState.Disposed));
-
-											queueTrackTile(desc);
-										}
-										trackTile = trackTiles.get(desc.GetHashCode());
-									}
-									else
-										trackTile = null;
-								}
-								finally
-								{
-									trackTilesLock.unlock();
-								}
-
-								if ((tile != null) && (tileVisible(tile.Descriptor)))
-								{
-									renderTile(tile, true);
-								}
-								if ((trackTile != null) && (tileVisible(trackTile.Descriptor)))
-								{
-									renderTile(trackTile, false);
-								}
+							if ((tile != null) && (tileVisible(tile.Descriptor)))
+							{
+								renderTile(tile, true);
+							}
+							if ((trackTile != null) && (tileVisible(trackTile.Descriptor)))
+							{
+								renderTile(trackTile, false);
 							}
 						}
 					}
