@@ -4,6 +4,7 @@ public class SettingDouble extends SettingBase
 {
 	protected double value;
 	protected double defaultValue;
+	protected double lastValue;
 
 	public SettingDouble(String name, SettingCategory category, SettingModus modus, double defaultValue, boolean global)
 	{
@@ -55,9 +56,15 @@ public class SettingDouble extends SettingBase
 	}
 
 	@Override
-	public void saveToDefault()
+	public void saveToLastValue()
 	{
-		defaultValue = value;
+		lastValue = value;
 	}
 
+	@Override
+	public void loadFromLastValue()
+	{
+		value = lastValue;
+	}
+	
 }

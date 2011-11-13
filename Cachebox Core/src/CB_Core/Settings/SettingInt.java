@@ -4,6 +4,7 @@ public class SettingInt extends SettingBase
 {
 	protected int value;
 	protected int defaultValue;
+	protected int lastValue;
 
 	public SettingInt(String name, SettingCategory category, SettingModus modus, int defaultValue, boolean global)
 	{
@@ -55,9 +56,16 @@ public class SettingInt extends SettingBase
 	}
 
 	@Override
-	public void saveToDefault()
+	public void saveToLastValue()
 	{
-		defaultValue = value;
+		lastValue = value;
 	}
+
+	@Override
+	public void loadFromLastValue()
+	{
+		value = lastValue;
+	}
+	
 
 }

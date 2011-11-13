@@ -4,6 +4,7 @@ public class SettingBool extends SettingBase
 {
 	protected boolean value;
 	protected boolean defaultValue;
+	protected boolean lastValue;
 
 	public SettingBool(String name, SettingCategory category, SettingModus modus, boolean defaultValue, boolean global)
 	{
@@ -55,8 +56,15 @@ public class SettingBool extends SettingBase
 	}
 	
 	@Override
-	public void saveToDefault()
+	public void saveToLastValue()
 	{
-		defaultValue = value;
+		lastValue = value;
 	}
+
+	@Override
+	public void loadFromLastValue()
+	{
+		value = lastValue;
+	}
+	
 }

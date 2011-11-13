@@ -52,8 +52,13 @@ public class SettingBase
 
 	}
 	
-	public void saveToDefault()
+	public void saveToLastValue()
 	{
 		
 	}
+	
+	public void loadFromLastValue()
+	{
+
+	}	
 }

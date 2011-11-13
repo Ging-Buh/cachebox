@@ -91,17 +91,17 @@ public class SettingsList extends HashMap<String, SettingBase>
 		}
 	}
 	
-	public void LoadFromDefault() {
+	public void LoadFromLastValue() {
 		for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext(); ) {
 			SettingBase setting = it.next();
-			setting.loadDefault();
+			setting.loadFromLastValue();
 		}		
 	}
 	
-	public void SaveToDefault() {
+	public void SaveToLastValue() {
 		for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext(); ) {
 			SettingBase setting = it.next();
-			setting.saveToDefault();
+			setting.saveToLastValue();
 		}		
 	}
 }
