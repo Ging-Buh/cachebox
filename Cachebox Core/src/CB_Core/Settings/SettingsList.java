@@ -90,4 +90,18 @@ public class SettingsList extends HashMap<String, SettingBase>
 				dao.ReadFromDatabase(Database.Data, setting);			
 		}
 	}
+	
+	public void LoadFromDefault() {
+		for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext(); ) {
+			SettingBase setting = it.next();
+			setting.loadDefault();
+		}		
+	}
+	
+	public void SaveToDefault() {
+		for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext(); ) {
+			SettingBase setting = it.next();
+			setting.saveToDefault();
+		}		
+	}
 }

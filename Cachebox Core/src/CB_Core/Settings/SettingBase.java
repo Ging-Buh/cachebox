@@ -51,4 +51,9 @@ public class SettingBase
 	{
 
 	}
+	
+	public void saveToDefault()
+	{
+		
+	}
 }

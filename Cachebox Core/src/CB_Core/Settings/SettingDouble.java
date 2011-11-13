@@ -54,4 +54,10 @@ public class SettingDouble extends SettingBase
 		value = defaultValue;
 	}
 
+	@Override
+	public void saveToDefault()
+	{
+		defaultValue = value;
+	}
+
 }
