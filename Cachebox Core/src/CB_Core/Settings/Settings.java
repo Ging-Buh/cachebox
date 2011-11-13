@@ -7,8 +7,6 @@ public class Settings extends SettingsList
 	 */
 	private static final long serialVersionUID = 7330937438116889415L;
 
-	public static Settings settings = new Settings();
-	
 	// Settings Compass
 	public SettingBool HtcCompass;
 	public SettingInt HtcLevel;

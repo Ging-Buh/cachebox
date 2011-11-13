@@ -11,9 +11,11 @@ import java.util.HashMap;
 import CB_Core.Converter.Base64;
 
 import CB_Core.Log.Logger;
+import CB_Core.Settings.Settings;
 
 public class Config
 {
+	public static Settings settings = new Settings();
 
 	public static String WorkPath = "";
 	public static String ConfigName = "";
