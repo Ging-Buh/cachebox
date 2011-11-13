@@ -1,28 +1,28 @@
 package CB_Core.Settings;
 
-public class SettingBool extends SettingBase
+public class SettingDouble extends SettingBase
 {
-	protected boolean value;
-	protected boolean defaultValue;
+	protected double value;
+	protected double defaultValue;
 
-	public SettingBool(String name, SettingCategory category, SettingModus modus, boolean defaultValue, boolean global)
+	public SettingDouble(String name, SettingCategory category, SettingModus modus, double defaultValue, boolean global)
 	{
 		super(name, category, modus, global);
 		this.defaultValue = defaultValue;
 		this.value = defaultValue;
 	}
 
-	public boolean getValue()
+	public double getValue()
 	{
 		return value;
 	}
 
-	public boolean getDefaultValue()
+	public double getDefaultValue()
 	{
 		return defaultValue;
 	}
 
-	public void setValue(boolean value)
+	public void setValue(double value)
 	{
 		this.value = value;
 	}
@@ -38,7 +38,7 @@ public class SettingBool extends SettingBase
 	{
 		try
 		{
-			value = Boolean.valueOf(dbString);
+			value = Double.valueOf(dbString);
 			return true;
 		}
 		catch (Exception ex)
@@ -53,4 +53,5 @@ public class SettingBool extends SettingBase
 	{
 		value = defaultValue;
 	}
+
 }

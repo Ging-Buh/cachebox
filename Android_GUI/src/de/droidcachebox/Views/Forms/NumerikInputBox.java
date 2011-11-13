@@ -99,6 +99,14 @@ public class NumerikInputBox extends android.app.Dialog
 		Show(title, msg, InitialValue, Listener, main.mainActivity);
 
 	}
+	
+	public static void Show(String title, String msg, double InitialValue,
+			DialogInterface.OnClickListener Listener)
+	{
+
+		Show(title, msg, InitialValue, Listener, main.mainActivity);
+
+	}
 
 	public static void Show(String title, String msg, int InitialValue,
 			DialogInterface.OnClickListener Listener, Activity activity)
@@ -135,6 +143,43 @@ public class NumerikInputBox extends android.app.Dialog
 
 		dialog.show();
 	}
+	
+	
+	public static void Show(String title, String msg, double InitialValue,
+			DialogInterface.OnClickListener Listener, Activity activity)
+	{
+
+		listner = Listener;
+		Bundle b = new Bundle();
+		b.putString("msg", msg);
+		b.putString("title", title);
+		b.putDouble("iniValue", InitialValue);
+
+		if (listner == null) // setze standard Listner zum schliessen des
+								// Dialogs, falls kein Listner angegeben wurde
+		{
+			listner = new DialogInterface.OnClickListener()
+			{
+				@Override
+				public void onClick(DialogInterface dialog, int which)
+				{
+					dialog.dismiss();
+				}
+			};
+		}
+
+		Dialog dialog = null;
+
+		NumerikInputBox.Builder customBuilder = new NumerikInputBox.Builder(
+				activity);
+		customBuilder.setTitle(b.getString("title"))
+				.setMessage(b.getString("msg")).setValue(b.getDouble("iniValue"))
+				.setPositiveButton(GlobalCore.Translations.Get("ok"), listner)
+				.setNegativeButton(GlobalCore.Translations.Get("cancel"), listner);
+		dialog = customBuilder.create();
+
+		dialog.show();
+	}
 
 	public NumerikInputBox(Context context, int theme)
 	{
@@ -158,6 +203,8 @@ public class NumerikInputBox extends android.app.Dialog
 		private String positiveButtonText;
 		private String negativeButtonText;
 		private int value;
+		private double dblvalue;
+		private boolean isDuobleInput=false;
 
 		private View contentView;
 
@@ -178,6 +225,19 @@ public class NumerikInputBox extends android.app.Dialog
 		public Builder setValue(int value)
 		{
 			this.value = value;
+			return this;
+		}
+		
+		/**
+		 * Set the value
+		 * 
+		 * @param value
+		 * @return
+		 */
+		public Builder setValue(double value)
+		{
+			this.dblvalue = value;
+			this.isDuobleInput=true;
 			return this;
 		}
 
@@ -401,8 +461,17 @@ public class NumerikInputBox extends android.app.Dialog
 			}
 
 			editText = (EditText) layout.findViewById(R.id.editNumber);
-			ActivityUtils.initialNumPadInt(main.mainActivity, layout, editText,
-					String.valueOf(value), null, null);
+			if(isDuobleInput)
+			{
+				ActivityUtils.initialNumPadDbl(main.mainActivity, layout, editText,
+						String.valueOf(dblvalue), null, null);
+			}
+			else
+			{
+				ActivityUtils.initialNumPadInt(main.mainActivity, layout, editText,
+						String.valueOf(value), null, null);
+			}
+			
 			setBackgroundDrawables(layout);
 			dialog.setContentView(layout);
 			return dialog;

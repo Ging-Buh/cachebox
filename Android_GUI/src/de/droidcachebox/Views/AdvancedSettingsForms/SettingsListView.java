@@ -1,13 +1,19 @@
 package de.droidcachebox.Views.AdvancedSettingsForms;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.Forms.NumerikInputBox;
+import de.droidcachebox.Views.Forms.Settings;
+import de.droidcachebox.Views.Forms.StringInputBox;
 import CB_Core.GlobalCore;
 import CB_Core.Settings.SettingBase;
 import CB_Core.Settings.SettingBool;
 import CB_Core.Settings.SettingCategory;
+import CB_Core.Settings.SettingDouble;
 import CB_Core.Settings.SettingInt;
 import CB_Core.Settings.SettingModus;
 import CB_Core.Settings.SettingsList;
@@ -93,17 +99,21 @@ public class SettingsListView extends Activity
 	public void loadSettingsFromDB()
 	{
 		// Tmp gefüllt für Layout Tests
+
 		settingsList = new SettingsList();
 
-		settingsList.put("Test1", new SettingString("Test1", SettingCategory.Gps, SettingModus.Normal, "default 1",false));
-		settingsList.put("Test2", new SettingString("Test2", SettingCategory.Gps, SettingModus.Normal, "default 2",false));
-		settingsList.put("Test3", new SettingString("Test3", SettingCategory.Gps, SettingModus.Normal, "default 3",false));
+		settingsList.put("Test1", new SettingString("Test1", SettingCategory.Gps, SettingModus.Normal, "default 1", false));
+		settingsList.put("Test2", new SettingString("Test2", SettingCategory.Gps, SettingModus.Normal, "default 2", false));
+		settingsList.put("Test3", new SettingString("Test3", SettingCategory.Gps, SettingModus.Normal, "default 3", false));
 
-		settingsList.put("Test4", new SettingBool("Test4", SettingCategory.Gps, SettingModus.Normal, true,false));
-		settingsList.put("Test5", new SettingBool("Test5", SettingCategory.Gps, SettingModus.Normal, false,false));
+		settingsList.put("Test4", new SettingBool("Test4", SettingCategory.Gps, SettingModus.Normal, true, false));
+		settingsList.put("Test5", new SettingBool("Test5", SettingCategory.Gps, SettingModus.Normal, false, false));
 
-		settingsList.put("Test6", new SettingInt("Test6", SettingCategory.Gps, SettingModus.Normal, 10,false));
-		settingsList.put("Test7", new SettingInt("Test7", SettingCategory.Gps, SettingModus.Normal, 200,false));
+		settingsList.put("Test6", new SettingInt("Test6", SettingCategory.Gps, SettingModus.Normal, 10, false));
+		settingsList.put("Test7", new SettingInt("Test7", SettingCategory.Gps, SettingModus.Normal, 200, false));
+
+		settingsList.put("Test8", new SettingDouble("Test8", SettingCategory.Gps, SettingModus.Normal, 10.56, false));
+		settingsList.put("Test9", new SettingDouble("Test9", SettingCategory.Gps, SettingModus.Normal, 200.1123, false));
 	}
 
 	public void findViewById()
@@ -151,23 +161,34 @@ public class SettingsListView extends Activity
 		{
 			if (mList != null && mList.values().size() > 0)
 			{
-				View row = convertView;
-				final SettingBase SB = (SettingBase) mList.values().toArray()[position];
+				try
+				{
+					View row = convertView;
+					final SettingBase SB = (SettingBase) mList.values().toArray()[position];
 
-				if (SB instanceof SettingString)
-				{
-					return getStringView((SettingString) SB, convertView, parent);
-				}
-				else if (SB instanceof SettingBool)
-				{
-					return getBoolView((SettingBool) SB, convertView, parent);
-				}
-				else if (SB instanceof SettingInt)
-				{
-					return getIntView((SettingInt) SB, convertView, parent);
-				}
+					if (SB instanceof SettingString)
+					{
+						return getStringView((SettingString) SB, convertView, parent);
+					}
+					else if (SB instanceof SettingBool)
+					{
+						return getBoolView((SettingBool) SB, convertView, parent);
+					}
+					else if (SB instanceof SettingInt)
+					{
+						return getIntView((SettingInt) SB, convertView, parent);
+					}
+					else if (SB instanceof SettingDouble)
+					{
+						return getDblView((SettingDouble) SB, convertView, parent);
+					}
 
-				return row;
+					return row;
+				}
+				catch (Exception e)
+				{
+					return convertView;
+				}
 			}
 			else
 				return null;
@@ -175,15 +196,16 @@ public class SettingsListView extends Activity
 
 	}
 
+	/***
+	 * Enthält den Key des zu Editierenden Wertes der SettingsList
+	 */
+	public static String EditKey;
+
 	private View getBoolView(final SettingBool SB, View convertView, ViewGroup parent)
 	{
-		View row = convertView;
 
-		if (row == null)
-		{
-			LayoutInflater inflater = getLayoutInflater();
-			row = inflater.inflate(R.layout.advanced_settings_list_view_item_bool, parent, false);
-		}
+		LayoutInflater inflater = getLayoutInflater();
+		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_bool, parent, false);
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(SB.getName());
@@ -192,7 +214,7 @@ public class SettingsListView extends Activity
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
-		label2.setText(SB.toString());
+		label2.setText("default: " + String.valueOf(SB.getDefaultValue()));
 		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.8));
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
@@ -216,13 +238,8 @@ public class SettingsListView extends Activity
 
 	private View getStringView(final SettingString SB, View convertView, ViewGroup parent)
 	{
-		View row = convertView;
-
-		if (row == null)
-		{
-			LayoutInflater inflater = getLayoutInflater();
-			row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
-		}
+		LayoutInflater inflater = getLayoutInflater();
+		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(SB.getName());
@@ -235,21 +252,54 @@ public class SettingsListView extends Activity
 		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.8));
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
+		Button btnEdit = (Button) row.findViewById(R.id.btn_Set);
+
+		btnEdit.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View arg0)
+			{
+				SettingsListView.EditKey = SB.getName();
+				// Show NumPad Int Edit
+				StringInputBox.Show(SB.getName(), "default: " + SB.getDefaultValue(), SB.getValue(), new DialogInterface.OnClickListener()
+				{
+
+					@Override
+					public void onClick(DialogInterface dialog, int button)
+					{
+						String text = StringInputBox.editText.getText().toString();
+						switch (button)
+						{
+						case -1: // ok Clicket
+
+							SettingString value = (SettingString) SettingsListView.Me.settingsList.get(SettingsListView.EditKey);
+							if (value != null) value.setValue(text);
+							SettingsListView.Me.ListInvalidate();
+							break;
+						case -2: // cancel clicket
+
+							break;
+						case -3:
+
+							break;
+						}
+
+						dialog.dismiss();
+
+					}
+				}, SettingsListView.Me);
+			}
+		});
+
 		return row;
 
 	}
 
-	public static String setIntValueOf;
-
 	private View getIntView(final SettingInt SB, View convertView, ViewGroup parent)
 	{
-		View row = convertView;
-
-		if (row == null)
-		{
-			LayoutInflater inflater = getLayoutInflater();
-			row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
-		}
+		LayoutInflater inflater = getLayoutInflater();
+		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(SB.getName());
@@ -270,41 +320,136 @@ public class SettingsListView extends Activity
 			@Override
 			public void onClick(View arg0)
 			{
-				SettingsListView.setIntValueOf = SB.getName();
+				SettingsListView.EditKey = SB.getName();
 				// Show NumPad Int Edit
-				NumerikInputBox.Show("title", "msg", SB.getValue(), new DialogInterface.OnClickListener()
-				{
-
-					@Override
-					public void onClick(DialogInterface dialog, int button)
-					{
-						String text = NumerikInputBox.editText.getText().toString();
-						switch (button)
+				NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()), SB.getValue(),
+						new DialogInterface.OnClickListener()
 						{
-						case -1: // ok Clicket
-							int newValue = Integer.parseInt(text);
 
-							SettingInt value = (SettingInt) SettingsListView.Me.settingsList.get(SettingsListView.setIntValueOf);
-							if (value != null) value.setValue(newValue);
-							SettingsListView.Me.listView.invalidate();
-							break;
-						case -2: // cancel clicket
+							@Override
+							public void onClick(DialogInterface dialog, int button)
+							{
+								String text = NumerikInputBox.editText.getText().toString();
+								switch (button)
+								{
+								case -1: // ok Clicket
+									int newValue = Integer.parseInt(text);
 
-							break;
-						case -3:
+									SettingInt value = (SettingInt) SettingsListView.Me.settingsList.get(SettingsListView.EditKey);
+									if (value != null) value.setValue(newValue);
+									SettingsListView.Me.ListInvalidate();
+									break;
+								case -2: // cancel clicket
 
-							break;
-						}
+									break;
+								case -3:
 
-						dialog.dismiss();
+									break;
+								}
 
-					}
-				}, SettingsListView.Me);
+								dialog.dismiss();
+
+							}
+						}, SettingsListView.Me);
 			}
 		});
 
 		return row;
 
+	}
+
+	private View getDblView(final SettingDouble SB, View convertView, ViewGroup parent)
+	{
+		LayoutInflater inflater = getLayoutInflater();
+		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
+
+		TextView label = (TextView) row.findViewById(R.id.textView1);
+		label.setText(SB.getName());
+		label.setTextSize(Sizes.getScaledFontSize_normal());
+		label.setTextColor(Global.getColor(R.attr.TextColor));
+
+		TextView label2 = (TextView) row.findViewById(R.id.textView2);
+
+		label2.setText(String.valueOf(SB.getValue()));
+		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.8));
+		label2.setTextColor(Global.getColor(R.attr.TextColor));
+
+		Button btnEdit = (Button) row.findViewById(R.id.btn_Set);
+
+		btnEdit.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View arg0)
+			{
+				SettingsListView.EditKey = SB.getName();
+				// Show NumPad Int Edit
+				NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()), SB.getValue(),
+						new DialogInterface.OnClickListener()
+						{
+
+							@Override
+							public void onClick(DialogInterface dialog, int button)
+							{
+								String text = NumerikInputBox.editText.getText().toString();
+								switch (button)
+								{
+								case -1: // ok Clicket
+									double newValue = Double.parseDouble(text);
+
+									SettingDouble value = (SettingDouble) SettingsListView.Me.settingsList.get(SettingsListView.EditKey);
+									if (value != null) value.setValue(newValue);
+									SettingsListView.Me.ListInvalidate();
+									break;
+								case -2: // cancel clicket
+
+									break;
+								case -3:
+
+									break;
+								}
+
+								dialog.dismiss();
+
+							}
+						}, SettingsListView.Me);
+			}
+		});
+
+		return row;
+
+	}
+
+	public void ListInvalidate()
+	{
+		TimerTask task = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				Thread t = new Thread()
+				{
+					public void run()
+					{
+						SettingsListView.Me.runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								lvAdapter = new CustomAdapter(SettingsListView.Me, settingsList);
+								listView.setAdapter(lvAdapter);
+							}
+						});
+					}
+				};
+
+				t.start();
+
+			}
+		};
+
+		Timer timer = new Timer();
+		timer.schedule(task, 500);
 	}
 
 }
