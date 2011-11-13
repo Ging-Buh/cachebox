@@ -5,6 +5,7 @@ import java.util.TimerTask;
 
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.Forms.NumerikInputBox;
 import de.droidcachebox.Views.Forms.Settings;
@@ -40,7 +41,7 @@ public class SettingsListView extends Activity
 	private static SettingsListView Me;
 
 	private Context context;
-//	private SettingsList settingsList;
+	// private SettingsList settingsList;
 	private CustomAdapter lvAdapter;
 	private ListView listView;
 
@@ -57,7 +58,7 @@ public class SettingsListView extends Activity
 		Me = this;
 		findViewById();
 
-//		loadSettingsFromDB();
+		// loadSettingsFromDB();
 
 		OKButton.setText(GlobalCore.Translations.Get("ok"));
 		CancelButton.setText(GlobalCore.Translations.Get("cancel"));
@@ -93,30 +94,32 @@ public class SettingsListView extends Activity
 			}
 		});
 
+		ActivityUtils.setListViewPropertys(listView);
+
 		lvAdapter = new CustomAdapter(this, Config.settings);
 		listView.setAdapter(lvAdapter);
 	}
-/*
-	public void loadSettingsFromDB()
-	{
-		// Tmp gefüllt für Layout Tests
 
-		settingsList = new SettingsList();
-
-		settingsList.put("Test1", new SettingString("Test1", SettingCategory.Gps, SettingModus.Normal, "default 1", false));
-		settingsList.put("Test2", new SettingString("Test2", SettingCategory.Gps, SettingModus.Normal, "default 2", false));
-		settingsList.put("Test3", new SettingString("Test3", SettingCategory.Gps, SettingModus.Normal, "default 3", false));
-
-		settingsList.put("Test4", new SettingBool("Test4", SettingCategory.Gps, SettingModus.Normal, true, false));
-		settingsList.put("Test5", new SettingBool("Test5", SettingCategory.Gps, SettingModus.Normal, false, false));
-
-		settingsList.put("Test6", new SettingInt("Test6", SettingCategory.Gps, SettingModus.Normal, 10, false));
-		settingsList.put("Test7", new SettingInt("Test7", SettingCategory.Gps, SettingModus.Normal, 200, false));
-
-		settingsList.put("Test8", new SettingDouble("Test8", SettingCategory.Gps, SettingModus.Normal, 10.56, false));
-		settingsList.put("Test9", new SettingDouble("Test9", SettingCategory.Gps, SettingModus.Normal, 200.1123, false));
-	}
-*/
+	/*
+	 * public void loadSettingsFromDB() { // Tmp gefüllt für Layout Tests
+	 * settingsList = new SettingsList(); settingsList.put("Test1", new
+	 * SettingString("Test1", SettingCategory.Gps, SettingModus.Normal,
+	 * "default 1", false)); settingsList.put("Test2", new
+	 * SettingString("Test2", SettingCategory.Gps, SettingModus.Normal,
+	 * "default 2", false)); settingsList.put("Test3", new
+	 * SettingString("Test3", SettingCategory.Gps, SettingModus.Normal,
+	 * "default 3", false)); settingsList.put("Test4", new SettingBool("Test4",
+	 * SettingCategory.Gps, SettingModus.Normal, true, false));
+	 * settingsList.put("Test5", new SettingBool("Test5", SettingCategory.Gps,
+	 * SettingModus.Normal, false, false)); settingsList.put("Test6", new
+	 * SettingInt("Test6", SettingCategory.Gps, SettingModus.Normal, 10,
+	 * false)); settingsList.put("Test7", new SettingInt("Test7",
+	 * SettingCategory.Gps, SettingModus.Normal, 200, false));
+	 * settingsList.put("Test8", new SettingDouble("Test8", SettingCategory.Gps,
+	 * SettingModus.Normal, 10.56, false)); settingsList.put("Test9", new
+	 * SettingDouble("Test9", SettingCategory.Gps, SettingModus.Normal,
+	 * 200.1123, false)); }
+	 */
 	public void findViewById()
 	{
 		CancelButton = (Button) this.findViewById(R.id.cancelButton);
@@ -162,6 +165,7 @@ public class SettingsListView extends Activity
 		{
 			if (mList != null && mList.values().size() > 0)
 			{
+				Boolean BackGroundChanger = ((position % 2) == 1);
 				try
 				{
 					View row = convertView;
@@ -253,9 +257,7 @@ public class SettingsListView extends Activity
 		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.8));
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
-		Button btnEdit = (Button) row.findViewById(R.id.btn_Set);
-
-		btnEdit.setOnClickListener(new OnClickListener()
+		row.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
@@ -274,7 +276,8 @@ public class SettingsListView extends Activity
 						{
 						case -1: // ok Clicket
 
-//							SettingString value = (SettingString) SettingsListView.Me.settingsList.get(SettingsListView.EditKey);
+							// SettingString value = (SettingString)
+							// SettingsListView.Me.settingsList.get(SettingsListView.EditKey);
 							SettingString value = (SettingString) Config.settings.get(SettingsListView.EditKey);
 							if (value != null) value.setValue(text);
 							SettingsListView.Me.ListInvalidate();
@@ -314,9 +317,7 @@ public class SettingsListView extends Activity
 		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.8));
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
-		Button btnEdit = (Button) row.findViewById(R.id.btn_Set);
-
-		btnEdit.setOnClickListener(new OnClickListener()
+		row.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
@@ -335,12 +336,18 @@ public class SettingsListView extends Activity
 								switch (button)
 								{
 								case -1: // ok Clicket
-									int newValue = Integer.parseInt(text);
 
-//									SettingInt value = (SettingInt) SettingsListView.Me.settingsList.get(SettingsListView.EditKey);
-									SettingInt value = (SettingInt) Config.settings.get(SettingsListView.EditKey);
-									if (value != null) value.setValue(newValue);
-									SettingsListView.Me.ListInvalidate();
+									try
+									{
+										int newValue = Integer.parseInt(text);
+										SettingInt value = (SettingInt) Config.settings.get(SettingsListView.EditKey);
+										if (value != null) value.setValue(newValue);
+										SettingsListView.Me.ListInvalidate();
+									}
+									catch (NumberFormatException e)
+									{
+										// falsche Eingabe
+									}
 									break;
 								case -2: // cancel clicket
 
@@ -377,9 +384,7 @@ public class SettingsListView extends Activity
 		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.8));
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
-		Button btnEdit = (Button) row.findViewById(R.id.btn_Set);
-
-		btnEdit.setOnClickListener(new OnClickListener()
+		row.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
@@ -398,12 +403,17 @@ public class SettingsListView extends Activity
 								switch (button)
 								{
 								case -1: // ok Clicket
-									double newValue = Double.parseDouble(text);
-
-//									SettingDouble value = (SettingDouble) SettingsListView.Me.settingsList.get(SettingsListView.EditKey);
-									SettingDouble value = (SettingDouble) Config.settings.get(SettingsListView.EditKey);
-									if (value != null) value.setValue(newValue);
-									SettingsListView.Me.ListInvalidate();
+									try
+									{
+										double newValue = Double.parseDouble(text);
+										SettingDouble value = (SettingDouble) Config.settings.get(SettingsListView.EditKey);
+										if (value != null) value.setValue(newValue);
+										SettingsListView.Me.ListInvalidate();
+									}
+									catch (NumberFormatException e)
+									{
+										// falsche Eingabe
+									}
 									break;
 								case -2: // cancel clicket
 
@@ -440,7 +450,9 @@ public class SettingsListView extends Activity
 							@Override
 							public void run()
 							{
-//								lvAdapter = new CustomAdapter(SettingsListView.Me, settingsList);
+								// lvAdapter = new
+								// CustomAdapter(SettingsListView.Me,
+								// settingsList);
 								lvAdapter = new CustomAdapter(SettingsListView.Me, Config.settings);
 								listView.setAdapter(lvAdapter);
 							}

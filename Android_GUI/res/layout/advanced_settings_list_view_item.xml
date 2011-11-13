@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent" android:background="@drawable/unlock_slider_background">
 	<TableLayout android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:stretchColumns="0">
 		<TableRow>
@@ -16,8 +16,7 @@
 					android:id="@+id/textView2" android:layout_width="wrap_content"></TextView>
 
 			</LinearLayout>
-			<Button android:id="@+id/btn_Set" android:text="edit"
-				android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+			
 		</TableRow>
 	</TableLayout>
 </LinearLayout>

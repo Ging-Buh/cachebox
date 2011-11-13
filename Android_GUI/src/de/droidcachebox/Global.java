@@ -632,6 +632,7 @@ public class Global
 					getDrawable(R.drawable.solver_icon, res), // 17
 					getDrawable(R.drawable.images_icon, res), // 18 
 					getDrawable(R.drawable.hint_icon, res), // 19
+					
 			};
 
 	}
