@@ -38,6 +38,31 @@ public class SettingsList extends HashMap<String, SettingBase>
 
 	}
 
+	public int getInt(String key)
+	{
+		if (this.containsKey(key))
+		{
+			SettingBase setting = this.get(key);
+			if (setting instanceof SettingInt) {
+				return ((SettingInt) setting).getValue();
+			}
+		}
+		return 0;
+	}
+
+	public double getDouble(String key)
+	{
+		if (this.containsKey(key))
+		{
+			SettingBase setting = this.get(key);
+			if (setting instanceof SettingDouble) {
+				return ((SettingDouble) setting).getValue();
+			}
+		}
+		return 0;
+	}
+
+	
 	public void addSetting(SettingBase setting) {
 		this.put(setting.getName(), setting);
 	}
