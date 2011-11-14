@@ -201,6 +201,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 			@Override
 			public void onClick(View v)
 			{
+				Config.settings.ReadFromDB();
 				Config.readConfigFile();
 				SaveSettings();
 			}
@@ -875,6 +876,10 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 
 	private void SaveSettings()
 	{
+		
+		Config.settings.WriteToDB();
+		
+		
 		Config.Set("GcLogin", EditTextGCName.getEditableText().toString());
 		Config.Set("GcJoker", EditTextGCJoker.getEditableText().toString());
 		Config.SetEncrypted("GcVotePassword", EditTextGCVotePW.getEditableText().toString());

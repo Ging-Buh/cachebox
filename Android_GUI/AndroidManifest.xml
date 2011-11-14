@@ -59,13 +59,13 @@
 		<activity android:name=".Views.Forms.SelectDB"></activity>
 		<activity android:name=".Views.Forms.ProgressDialog"
 			android:theme="@style/ThemeHintDialog"></activity>
-		<activity android:name=".Views.Forms.ImportDialog" android:theme="@style/ThemeHintDialog"></activity>
+		<activity android:name=".Views.Forms.ImportDialog" android:theme="@style/Theme_day"></activity>
 		<activity android:name=".Views.Forms.projectionCoordinate"></activity>
 		<activity android:name=".Views.Forms.GcApiLogin"></activity>
 		<activity android:name=".Views.Forms.MeasureCoordinateActivity"></activity>
 		<activity android:name=".Views.Forms.selectSolverFunction"></activity>
-		<activity android:name=".Views.Forms.ApiPQDialog" android:theme="@style/ThemeHintDialog"></activity>
-		<activity android:name=".Views.Forms.ApiSearchPosDialog" android:theme="@style/Theme.Transparent.Dim"></activity>
+		<activity android:name=".Views.Forms.ApiPQDialog" android:theme="@style/Theme_day"></activity>
+		<activity android:name=".Views.Forms.ApiSearchPosDialog" android:theme="@style/Theme_day"></activity>
 		<activity android:name=".Views.AdvancedSettingsForms.SettingsListView" android:theme="@style/Theme_day"></activity>
 
 	</application>

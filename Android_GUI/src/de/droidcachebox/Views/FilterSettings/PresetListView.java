@@ -24,35 +24,6 @@ import CB_Core.GlobalCore;
 
 public class PresetListView extends ListView implements ViewOptionsMenu {
 
-	public static final String[] presets = new String[] {
-            // All Caches
-            "0,0,0,0,0,0,0,0,0,1.0,5.0,1.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,", 
-
-            // All Caches to find
-            "-1,-1,-1,-1,0,0,0,0,0,1.0,5.0,1.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,", 
-
-            // Quick Cache
-            "-1,-1,-1,-1,0,0,0,0,0,1.0,2.5,1.0,2.5,0.0,4.0,0.0,5.0,true,false,false,true,true,false,false,false,false,false,false,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,",
-
-            // Fetch some Travelbugs
-            "-1,-1,0,0,1,0,0,0,0,1.0,3.0,1.0,3.0,0.0,4.0,0.0,5.0,true,false,false,false,false,false,false,false,false,false,false,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,",
-
-            // Drop off Travelbugs
-            "-1,-1,0,0,0,0,0,0,0,1.0,3.0,1.0,3.0,2.0,4.0,0.0,5.0,true,false,false,false,false,false,false,false,false,false,false,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,",
-
-            // Highlights
-            "-1,-1,0,0,0,0,0,0,0,1.0,5.0,1.0,5.0,0.0,4.0,3.5,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,",
-
-            // Favoriten
-            "0,0,0,0,0,1,0,0,0,1.0,5.0,1.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,", 
-
-            // prepare to archive
-            "0,0,-1,-1,0,-1,-1,-1,0,1.0,5.0,1.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,",
-            
-            // Listing Changed
-            "0,0,0,0,0,0,0,1,0,1.0,5.0,1.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"
-
-    };
 	
 	public static PresetEntry aktPreset;
 	
@@ -98,7 +69,7 @@ public class PresetListView extends ListView implements ViewOptionsMenu {
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				
-				EditFilterSettings.tmpFilterProps = new FilterProperties(presets[arg2]);
+				EditFilterSettings.tmpFilterProps = new FilterProperties(FilterProperties.presets[arg2]);
 				
         		invalidate();
 				return;
@@ -234,15 +205,15 @@ public class PresetListView extends ListView implements ViewOptionsMenu {
 	
 	private void fillPresetList()
 	{
-		addPresetItem(Global.Icons[18], GlobalCore.Translations.Get("AllCaches"),presets[0] );
-		addPresetItem(Global.Icons[2], GlobalCore.Translations.Get("AllCachesToFind"),presets[1] );
-		addPresetItem(Global.CacheIconsBig[0], GlobalCore.Translations.Get("QuickCaches"),presets[2] );
-		addPresetItem(Global.Icons[15], GlobalCore.Translations.Get("GrabTB"),presets[3] );
-		addPresetItem(Global.Icons[16], GlobalCore.Translations.Get("DropTB"),presets[4] );
-		addPresetItem(Global.Icons[17], GlobalCore.Translations.Get("Highlights"),presets[5] );
-		addPresetItem(Global.Icons[19], GlobalCore.Translations.Get("Favorites"),presets[6] );
-		addPresetItem(Global.Icons[22], GlobalCore.Translations.Get("PrepareToArchive"),presets[7] );
-		addPresetItem(Global.Icons[26], GlobalCore.Translations.Get("ListingChanged"),presets[8] );
+		addPresetItem(Global.Icons[18], GlobalCore.Translations.Get("AllCaches"),FilterProperties.presets[0] );
+		addPresetItem(Global.Icons[2], GlobalCore.Translations.Get("AllCachesToFind"),FilterProperties.presets[1] );
+		addPresetItem(Global.CacheIconsBig[0], GlobalCore.Translations.Get("QuickCaches"),FilterProperties.presets[2] );
+		addPresetItem(Global.Icons[15], GlobalCore.Translations.Get("GrabTB"),FilterProperties.presets[3] );
+		addPresetItem(Global.Icons[16], GlobalCore.Translations.Get("DropTB"),FilterProperties.presets[4] );
+		addPresetItem(Global.Icons[17], GlobalCore.Translations.Get("Highlights"),FilterProperties.presets[5] );
+		addPresetItem(Global.Icons[19], GlobalCore.Translations.Get("Favorites"),FilterProperties.presets[6] );
+		addPresetItem(Global.Icons[22], GlobalCore.Translations.Get("PrepareToArchive"),FilterProperties.presets[7] );
+		addPresetItem(Global.Icons[26], GlobalCore.Translations.Get("ListingChanged"),FilterProperties.presets[8] );
 
 	}
 	

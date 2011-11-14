@@ -244,7 +244,7 @@ public class SelectDB extends Activity
 
 				String FilterString = Config.GetString("Filter");
 				Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(
-						PresetListView.presets[0]) : new FilterProperties(
+						FilterProperties.presets[0]) : new FilterProperties(
 						FilterString);
 				String sqlWhere = Global.LastFilter.getSqlWhere();
 

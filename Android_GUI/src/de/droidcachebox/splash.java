@@ -174,6 +174,9 @@ public class splash extends Activity
 
 		Config.readConfigFile(/* getAssets() */);
 
+		Config.settings.ReadFromDB();
+		
+		
 		String PocketQueryFolder = Config.GetString("PocketQueryFolder");
 		File directoryPocketQueryFolder = new File(PocketQueryFolder);
 		if (!directoryPocketQueryFolder.exists()) {
@@ -312,7 +315,7 @@ public class splash extends Activity
 	{
 		setProgressState(62, GlobalCore.Translations.Get("LoadCaches") + FileIO.GetFileName(Config.GetString("DatabasePath")));
 		String FilterString = Config.GetString("Filter");
-		Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(PresetListView.presets[0]) : new FilterProperties(
+		Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0]) : new FilterProperties(
 				FilterString);
 		String sqlWhere = Global.LastFilter.getSqlWhere();
 

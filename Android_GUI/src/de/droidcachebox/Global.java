@@ -38,7 +38,7 @@ import CB_Core.GlobalCore;
 
 public class Global
 {
-	public static final int CurrentRevision = 502;
+	public static final int CurrentRevision = 516;
 	public static final String CurrentVersion = "0.4.";
 	public static final String VersionPrefix = "beta";
 	public static final int LatestDatabaseChange = 1016;
@@ -51,17 +51,16 @@ public class Global
 	public static final boolean Debug = true;
 	public static JokerList Jokers = new JokerList();
 
-	
 	/**
 	 * Activity Result ID´s
 	 */
 	public static final int RESULT_SELECT_SOLVER_FUNCTION = 29021972;
 	public static final int RESULT_SELECT_PQ_LIST = 771971;
 	public static final int RESULT_ADVANCED_SETTINGS = 12112011;
-	
-	
-	
-		
+	public static final int REQUEST_CODE_PICK_FILE_OR_DIRECTORY = 98765;
+	public static final int REQUEST_CODE_PICK_FILE = 14112011;
+	public static final int REQUEST_CODE_PICK_DIRECTORY = 14112010;
+
 	/**
 	 * Liste der Buttons in der QuickButton Leiste
 	 */
@@ -630,9 +629,9 @@ public class Global
 					getDrawable(R.drawable.auto_sort_on_icon, res), // 15
 					getDrawable(R.drawable.auto_sort_off_icon, res), // 16
 					getDrawable(R.drawable.solver_icon, res), // 17
-					getDrawable(R.drawable.images_icon, res), // 18 
+					getDrawable(R.drawable.images_icon, res), // 18
 					getDrawable(R.drawable.hint_icon, res), // 19
-					
+
 			};
 
 	}

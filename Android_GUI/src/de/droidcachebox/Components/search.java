@@ -1009,7 +1009,7 @@ public class search
 				// Lokale Suche ausführen!
 				// Und dabei den Filter zurück setzen.
 				reSearch = true;
-				ApplyFilter(new FilterProperties(PresetListView.presets[0]));
+				ApplyFilter(new FilterProperties(FilterProperties.presets[0]));
 
 				break;
 			}
@@ -1041,6 +1041,10 @@ public class search
 		Logger.DEBUG("addSearch " + searchPattern);
 
 		Show(searchPattern, Mode.ordinal());
+
+		// auf Online schalten
+		mTglBtnOnline.setState(1);
+		setFilterBtnState();
 
 		// Suche auslösen
 		mBtnSearch.performClick();

@@ -30,6 +30,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -402,8 +403,17 @@ public class StringInputBox extends android.app.Dialog
 
 			editText = (EditText) layout.findViewById(R.id.editNumber);
 			editText.setText(value);
+			
+			int cursor = value.length();
+			if (cursor >= 0) editText.setSelection(0, cursor);
+			
 			setBackgroundDrawables(layout);
 			dialog.setContentView(layout);
+			
+			// enable soft keyboard
+			dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+			editText.setInputType(0);
+			
 			return dialog;
 		}
 

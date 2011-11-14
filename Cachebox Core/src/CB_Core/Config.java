@@ -15,7 +15,7 @@ import CB_Core.Settings.Settings;
 
 public class Config
 {
-	public static Settings settings = new Settings();
+	public static Settings settings;
 
 	public static String WorkPath = "";
 	public static String ConfigName = "";
@@ -24,6 +24,7 @@ public class Config
 	{
 		WorkPath = workPath;
 		ConfigName = configName;
+		settings = new Settings();
 	}
 
 	public static String GetString(String key)
@@ -157,11 +158,9 @@ public class Config
 		validateSetting("SpoilerFolder", WorkPath + "/repository/spoilers");
 		validateSetting("UserImageFolder", WorkPath + "/User/Media");
 		validateSetting("TrackFolder", WorkPath + "/User/Tracks");
-		// validateSetting("FieldNotesHtmlPath", Global.AppPath +
-		// "\\User\\fieldnotes.html");
+		
 		validateSetting("FieldNotesGarminPath", WorkPath + "/User/geocache_visits.txt");
-		// validateSetting("GPXExportPath", Global.AppPath +
-		// "\\User\\cachebox_export.gpx");
+		
 		validateSetting("SaveFieldNotesHtml", "true");
 
 		validateSetting("Proxy", "");
@@ -207,7 +206,7 @@ public class Config
 		validateSetting("MapMaxCachesDisplay_config", "10000");
 		validateSetting("SoundApproachDistance", "50");
 		validateSetting("mapMaxCachesDisplayLarge_config", "75");
-		// validateSetting("Filter", PresetListView.presets[0].toString());
+//		validateSetting("Filter", PresetListView.presets[0].toString());
 		validateSetting("ZoomCross", "16");
 		// validateSetting("TomTomExportFolder", Global.AppPath + "\\user");
 		validateSetting("GCAutoSyncCachesFound", "true");

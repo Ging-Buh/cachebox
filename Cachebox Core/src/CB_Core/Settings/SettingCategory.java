@@ -1,11 +1,16 @@
 package CB_Core.Settings;
 
-public enum SettingCategory {
+/***
+ * Login("Login"), Map("Map"), Gps("Gps"), Internal("Internal")
+ */
+public enum SettingCategory
+{
 	Login("Login"), Map("Map"), Gps("Gps"), Internal("Internal");
 
 	private String langString;
-	
-	SettingCategory(String langString) {
+
+	SettingCategory(String langString)
+	{
 		this.setLangString(langString);
 	}
 
@@ -19,5 +24,3 @@ public enum SettingCategory {
 		this.langString = langString;
 	}
 }
-
-

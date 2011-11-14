@@ -1,10 +1,14 @@
 package de.droidcachebox.Views.AdvancedSettingsForms;
 
+import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.openintents.intents.FileManagerIntents;
+
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.Forms.NumerikInputBox;
@@ -16,24 +20,31 @@ import CB_Core.Settings.SettingBase;
 import CB_Core.Settings.SettingBool;
 import CB_Core.Settings.SettingCategory;
 import CB_Core.Settings.SettingDouble;
+import CB_Core.Settings.SettingFile;
+import CB_Core.Settings.SettingFolder;
 import CB_Core.Settings.SettingInt;
 import CB_Core.Settings.SettingModus;
 import CB_Core.Settings.SettingsList;
 import CB_Core.Settings.SettingString;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class SettingsListView extends Activity
@@ -74,6 +85,7 @@ public class SettingsListView extends Activity
 			@Override
 			public void onClick(View v)
 			{
+				Config.settings.LoadFromLastValue();
 				finish();
 			}
 		});
@@ -84,11 +96,7 @@ public class SettingsListView extends Activity
 			@Override
 			public void onClick(View v)
 			{
-				// aktIntent.putExtra("SOMETHING", "EXTRAS");
-				// Bundle extras = new Bundle();
-				// extras.putSerializable("PqList", PqList);
-				// aktIntent.putExtras(extras);
-				// setResult(RESULT_OK, aktIntent);
+				Config.settings.SaveToLastValue();
 				finish();
 
 			}
@@ -96,30 +104,17 @@ public class SettingsListView extends Activity
 
 		ActivityUtils.setListViewPropertys(listView);
 
+		Config.settings.SaveToLastValue();
+
+		// SetListViewHeight Window-ButtonsLayout-margin
+		LayoutParams para = listView.getLayoutParams();
+		para.height = Sizes.getWindowHeight() - (Sizes.getButtonHeight() * 2) - (Sizes.getScaledFontSize_big() * 3);
+		listView.setLayoutParams(para);
+
 		lvAdapter = new CustomAdapter(this, Config.settings);
 		listView.setAdapter(lvAdapter);
 	}
 
-	/*
-	 * public void loadSettingsFromDB() { // Tmp gefüllt für Layout Tests
-	 * settingsList = new SettingsList(); settingsList.put("Test1", new
-	 * SettingString("Test1", SettingCategory.Gps, SettingModus.Normal,
-	 * "default 1", false)); settingsList.put("Test2", new
-	 * SettingString("Test2", SettingCategory.Gps, SettingModus.Normal,
-	 * "default 2", false)); settingsList.put("Test3", new
-	 * SettingString("Test3", SettingCategory.Gps, SettingModus.Normal,
-	 * "default 3", false)); settingsList.put("Test4", new SettingBool("Test4",
-	 * SettingCategory.Gps, SettingModus.Normal, true, false));
-	 * settingsList.put("Test5", new SettingBool("Test5", SettingCategory.Gps,
-	 * SettingModus.Normal, false, false)); settingsList.put("Test6", new
-	 * SettingInt("Test6", SettingCategory.Gps, SettingModus.Normal, 10,
-	 * false)); settingsList.put("Test7", new SettingInt("Test7",
-	 * SettingCategory.Gps, SettingModus.Normal, 200, false));
-	 * settingsList.put("Test8", new SettingDouble("Test8", SettingCategory.Gps,
-	 * SettingModus.Normal, 10.56, false)); settingsList.put("Test9", new
-	 * SettingDouble("Test9", SettingCategory.Gps, SettingModus.Normal,
-	 * 200.1123, false)); }
-	 */
 	public void findViewById()
 	{
 		CancelButton = (Button) this.findViewById(R.id.cancelButton);
@@ -171,11 +166,7 @@ public class SettingsListView extends Activity
 					View row = convertView;
 					final SettingBase SB = (SettingBase) mList.values().toArray()[position];
 
-					if (SB instanceof SettingString)
-					{
-						return getStringView((SettingString) SB, convertView, parent);
-					}
-					else if (SB instanceof SettingBool)
+					if (SB instanceof SettingBool)
 					{
 						return getBoolView((SettingBool) SB, convertView, parent);
 					}
@@ -186,6 +177,18 @@ public class SettingsListView extends Activity
 					else if (SB instanceof SettingDouble)
 					{
 						return getDblView((SettingDouble) SB, convertView, parent);
+					}
+					else if (SB instanceof SettingFolder)
+					{
+						return getFolderView((SettingFolder) SB, convertView, parent);
+					}
+					else if (SB instanceof SettingFile)
+					{
+						return getFileView((SettingFile) SB, convertView, parent);
+					}
+					else if (SB instanceof SettingString)
+					{
+						return getStringView((SettingString) SB, convertView, parent);
 					}
 
 					return row;
@@ -214,13 +217,13 @@ public class SettingsListView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(SB.getName());
-		label.setTextSize(Sizes.getScaledFontSize_normal());
+		label.setTextSize(Sizes.getScaledFontSize_small());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText("default: " + String.valueOf(SB.getDefaultValue()));
-		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.8));
+		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.7));
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		CheckBox chk = (CheckBox) row.findViewById(R.id.checkBox1);
@@ -248,13 +251,13 @@ public class SettingsListView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(SB.getName());
-		label.setTextSize(Sizes.getScaledFontSize_normal());
+		label.setTextSize(Sizes.getScaledFontSize_small());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(SB.getValue());
-		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.8));
+		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.7));
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -275,9 +278,6 @@ public class SettingsListView extends Activity
 						switch (button)
 						{
 						case -1: // ok Clicket
-
-							// SettingString value = (SettingString)
-							// SettingsListView.Me.settingsList.get(SettingsListView.EditKey);
 							SettingString value = (SettingString) Config.settings.get(SettingsListView.EditKey);
 							if (value != null) value.setValue(text);
 							SettingsListView.Me.ListInvalidate();
@@ -308,13 +308,13 @@ public class SettingsListView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(SB.getName());
-		label.setTextSize(Sizes.getScaledFontSize_normal());
+		label.setTextSize(Sizes.getScaledFontSize_small());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(String.valueOf(SB.getValue()));
-		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.8));
+		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.7));
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -375,13 +375,13 @@ public class SettingsListView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(SB.getName());
-		label.setTextSize(Sizes.getScaledFontSize_normal());
+		label.setTextSize(Sizes.getScaledFontSize_small());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(String.valueOf(SB.getValue()));
-		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.8));
+		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.7));
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -432,6 +432,149 @@ public class SettingsListView extends Activity
 
 		return row;
 
+	}
+
+	private View getFolderView(final SettingFolder SB, View convertView, ViewGroup parent)
+	{
+		LayoutInflater inflater = getLayoutInflater();
+		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
+
+		TextView label = (TextView) row.findViewById(R.id.textView1);
+		label.setText(SB.getName());
+		label.setTextSize(Sizes.getScaledFontSize_small());
+		label.setTextColor(Global.getColor(R.attr.TextColor));
+
+		TextView label2 = (TextView) row.findViewById(R.id.textView2);
+
+		label2.setText(SB.getValue());
+		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.7));
+		label2.setTextColor(Global.getColor(R.attr.TextColor));
+
+		row.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View arg0)
+			{
+				SettingsListView.EditKey = SB.getName();
+
+				Intent intent = new Intent(FileManagerIntents.ACTION_PICK_DIRECTORY);
+
+				// Construct URI from file name.
+				File file = new File(SB.getValue());
+				intent.setData(Uri.fromFile(file));
+
+				// Set fancy title and button (optional)
+				intent.putExtra(FileManagerIntents.EXTRA_TITLE, "Select Folder");
+				intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, "Select");
+				
+				try
+				{
+					SettingsListView.Me.startActivityForResult(intent, Global.REQUEST_CODE_PICK_DIRECTORY);
+				}
+				catch (ActivityNotFoundException e)
+				{
+					// No compatible file manager was found.
+					Toast.makeText(main.mainActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
+
+		return row;
+
+	}
+
+	private View getFileView(final SettingFile SB, View convertView, ViewGroup parent)
+	{
+		LayoutInflater inflater = getLayoutInflater();
+		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
+
+		TextView label = (TextView) row.findViewById(R.id.textView1);
+		label.setText(SB.getName());
+		label.setTextSize(Sizes.getScaledFontSize_small());
+		label.setTextColor(Global.getColor(R.attr.TextColor));
+
+		TextView label2 = (TextView) row.findViewById(R.id.textView2);
+
+		label2.setText(SB.getValue());
+		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.7));
+		label2.setTextColor(Global.getColor(R.attr.TextColor));
+
+		row.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View arg0)
+			{
+				SettingsListView.EditKey = SB.getName();
+
+				Intent intent = new Intent(FileManagerIntents.ACTION_PICK_FILE);
+
+				// Construct URI from file name.
+				File file = new File(SB.getValue());
+				intent.setData(Uri.fromFile(file));
+
+				// Set fancy title and button (optional)
+				intent.putExtra(FileManagerIntents.EXTRA_TITLE, "Select file to open");
+				intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, "Select");
+				
+				try
+				{
+					SettingsListView.Me.startActivityForResult(intent, Global.REQUEST_CODE_PICK_FILE);
+				}
+				catch (ActivityNotFoundException e)
+				{
+					// No compatible file manager was found.
+					Toast.makeText(main.mainActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
+
+		return row;
+
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		switch (requestCode)
+		{
+		case Global.REQUEST_CODE_PICK_FILE:
+			if (resultCode == android.app.Activity.RESULT_OK && data != null)
+			{
+				// obtain the filename
+				Uri fileUri = data.getData();
+				if (fileUri != null)
+				{
+					String filePath = fileUri.getPath();
+					if (filePath != null)
+					{
+						SettingFile value = (SettingFile) Config.settings.get(SettingsListView.EditKey);
+						if (value != null) value.setValue(filePath);
+						SettingsListView.Me.ListInvalidate();
+					}
+				}
+			}
+			break;
+			
+		case Global.REQUEST_CODE_PICK_DIRECTORY:
+			if (resultCode == android.app.Activity.RESULT_OK && data != null)
+			{
+				// obtain the filename
+				Uri fileUri = data.getData();
+				if (fileUri != null)
+				{
+					String filePath = fileUri.getPath();
+					if (filePath != null)
+					{
+						SettingFolder value = (SettingFolder) Config.settings.get(SettingsListView.EditKey);
+						if (value != null) value.setValue(filePath);
+						SettingsListView.Me.ListInvalidate();
+					}
+				}
+			}
+			break;
+		}
 	}
 
 	public void ListInvalidate()

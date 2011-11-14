@@ -363,7 +363,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			if (Database.Data == null)
 			{
 				String FilterString = Config.GetString("Filter");
-				Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(PresetListView.presets[0]) : new FilterProperties(
+				Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0]) : new FilterProperties(
 						FilterString);
 				String sqlWhere = Global.LastFilter.getSqlWhere();
 
@@ -823,7 +823,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		int ButtonBackGroundResource = 0;
 
 		if ((Global.LastFilter == null) || (Global.LastFilter.ToString().equals(""))
-				|| (PresetListViewItem.chkPresetFilter(PresetListView.presets[0], Global.LastFilter.ToString()))
+				|| (PresetListViewItem.chkPresetFilter(FilterProperties.presets[0], Global.LastFilter.ToString()))
 				&& !Global.LastFilter.isExtendsFilter())
 		{
 			ButtonBackGroundResource = N ? R.drawable.night_db_button_image_selector : R.drawable.db_button_image_selector;
@@ -869,7 +869,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				 * commandUpdate.ExecuteNonQuery(); }
 				 */
 				GlobalCore.Categories = new Categories();
-				Global.LastFilter = (Config.GetString("Filter").length() == 0) ? new FilterProperties(PresetListView.presets[0])
+				Global.LastFilter = (Config.GetString("Filter").length() == 0) ? new FilterProperties(FilterProperties.presets[0])
 						: new FilterProperties(Config.GetString("Filter"));
 				// filterSettings.LoadFilterProperties(Global.LastFilter);
 				Database.Data.GPXFilenameUpdateCacheCount();
