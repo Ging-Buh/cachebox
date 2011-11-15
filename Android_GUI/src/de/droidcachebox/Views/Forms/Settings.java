@@ -18,6 +18,7 @@ package de.droidcachebox.Views.Forms;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import CB_Core.Enums.SmoothScrollingTyp;
 import CB_Core.Log.Logger;
 import CB_Core.TranslationEngine.SelectedLangChangedEvent;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
@@ -69,7 +70,6 @@ import de.droidcachebox.Enums.Actions;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
-import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 import de.droidcachebox.Views.AdvancedSettingsForms.SettingsListView;
 import CB_Core.GlobalCore;
 
@@ -892,7 +892,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 		Config.Set("OsmMaxLevel", (Integer) OsmMaxLevel.getSelectedItem());
 		Config.Set("ZoomCross", (Integer) ZoomCross.getSelectedItem());
 		String SmoothScrollingString = ((SmoothScrollingTyp) SmoothScrolling.getSelectedItem()).name();
-		Global.SmoothScrolling = SmoothScrollingTyp.valueOf(SmoothScrollingString);
+		GlobalCore.SmoothScrolling = SmoothScrollingTyp.valueOf(SmoothScrollingString);
 		Config.Set("SmoothScrolling", SmoothScrollingString);
 		Config.Set("TrackDistance", (Integer) TrackDistance.getSelectedItem());
 		Config.Set("AllowInternetAccess", chkAllowInetAccess.isChecked());
@@ -1058,6 +1058,9 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 	Integer[] approach = new Integer[]
 		{ 0, 2, 10, 25, 50, 100, 200, 500, 1000 };
 
+	
+	
+	
 	private void fillApproachSpinner()
 	{
 		approachValues = new ArrayList<Integer>();

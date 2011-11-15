@@ -1,5 +1,7 @@
 package CB_Core;
 
+
+import CB_Core.Enums.SmoothScrollingTyp;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.TranslationEngine.LangStrings;
 import CB_Core.Types.Cache;
@@ -23,6 +25,9 @@ public class GlobalCore
 
 	private static Cache selectedCache = null;
 
+	public static SmoothScrollingTyp SmoothScrolling = SmoothScrollingTyp.normal;
+	
+	
 	public static void SelectedCache(Cache cache)
 	{
 		selectedCache = cache;

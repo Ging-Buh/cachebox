@@ -1,5 +1,12 @@
+Version : 0.4.xxxx
+    •	Download von PQ über die API
+    •	GPX Import komplett überarbeitet
+    •	Core von TestCode befreit 
+    •	Settings Überarbeitet 
 
-Version : 0.2.484
+
+
+Version : 0.3.484
     •	Erstellen des Api Key´s geändert
     •	API suche nach Name,GC-Code und Owner
     •	mehrere neue Solver Funktionen

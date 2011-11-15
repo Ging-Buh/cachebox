@@ -20,6 +20,7 @@ import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
+import CB_Core.Enums.SmoothScrollingTyp;
 import CB_Core.Log.Logger;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
@@ -28,7 +29,6 @@ import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
 import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Views.MapView;
-import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -425,13 +425,13 @@ public class AllContextMenuCallHandler
 		Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth_superfine, "superfine");
 
 		MenuItem mi2 = IconMenu.findItem(R.id.mapview_smooth_none);
-		if (mi2 != null) mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.none);
+		if (mi2 != null) mi2.setChecked(GlobalCore.SmoothScrolling == SmoothScrollingTyp.none);
 		mi2 = IconMenu.findItem(R.id.mapview_smooth_normal);
-		if (mi2 != null) mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.normal);
+		if (mi2 != null) mi2.setChecked(GlobalCore.SmoothScrolling == SmoothScrollingTyp.normal);
 		mi2 = IconMenu.findItem(R.id.mapview_smooth_fine);
-		if (mi2 != null) mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.fine);
+		if (mi2 != null) mi2.setChecked(GlobalCore.SmoothScrolling == SmoothScrollingTyp.fine);
 		mi2 = IconMenu.findItem(R.id.mapview_smooth_superfine);
-		if (mi2 != null) mi2.setChecked(Global.SmoothScrolling == SmoothScrollingTyp.superfine);
+		if (mi2 != null) mi2.setChecked(GlobalCore.SmoothScrolling == SmoothScrollingTyp.superfine);
 
 		icm.show();
 	}

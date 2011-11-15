@@ -16,10 +16,12 @@ import de.droidcachebox.Views.Forms.Settings;
 import de.droidcachebox.Views.Forms.StringInputBox;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Enums.SmoothScrollingTyp;
 import CB_Core.Settings.SettingBase;
 import CB_Core.Settings.SettingBool;
 import CB_Core.Settings.SettingCategory;
 import CB_Core.Settings.SettingDouble;
+import CB_Core.Settings.SettingEnum;
 import CB_Core.Settings.SettingFile;
 import CB_Core.Settings.SettingFolder;
 import CB_Core.Settings.SettingInt;
@@ -38,11 +40,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -186,6 +192,10 @@ public class SettingsListView extends Activity
 					{
 						return getFileView((SettingFile) SB, convertView, parent);
 					}
+					else if (SB instanceof SettingEnum)
+					{
+						return getEnumView((SettingEnum) SB, convertView, parent);
+					}
 					else if (SB instanceof SettingString)
 					{
 						return getStringView((SettingString) SB, convertView, parent);
@@ -207,7 +217,7 @@ public class SettingsListView extends Activity
 	/***
 	 * Enthält den Key des zu Editierenden Wertes der SettingsList
 	 */
-	public static String EditKey;
+	public static String EditKey = "";
 
 	private View getBoolView(final SettingBool SB, View convertView, ViewGroup parent)
 	{
@@ -297,6 +307,45 @@ public class SettingsListView extends Activity
 			}
 		});
 
+		return row;
+
+	}
+
+	private View getEnumView(final SettingEnum SB, View convertView, ViewGroup parent)
+	{
+		LayoutInflater inflater = getLayoutInflater();
+		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_enum, parent, false);
+
+		TextView label = (TextView) row.findViewById(R.id.textView1);
+		label.setText(SB.getName());
+		label.setTextSize(Sizes.getScaledFontSize_small());
+		label.setTextColor(Global.getColor(R.attr.TextColor));
+
+		final Spinner spinner = (Spinner) row.findViewById(R.id.spinner1);
+
+		if (spinner.getAdapter() == null)
+		{
+			ArrayAdapter<String> enumAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, SB.getValues());
+			enumAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			spinner.setAdapter(enumAdapter);
+			spinner.setSelection(SB.getValues().indexOf(SB.getValue()));
+
+			spinner.setOnItemSelectedListener(new OnItemSelectedListener()
+			{
+
+				@Override
+				public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
+				{
+					if (SB != null) SB.setValue(SB.getValues().get(arg2));
+				}
+
+				@Override
+				public void onNothingSelected(AdapterView<?> arg0)
+				{
+					// do nothing
+				}
+			});
+		}
 		return row;
 
 	}
@@ -467,7 +516,7 @@ public class SettingsListView extends Activity
 				// Set fancy title and button (optional)
 				intent.putExtra(FileManagerIntents.EXTRA_TITLE, "Select Folder");
 				intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, "Select");
-				
+
 				try
 				{
 					SettingsListView.Me.startActivityForResult(intent, Global.REQUEST_CODE_PICK_DIRECTORY);
@@ -517,7 +566,7 @@ public class SettingsListView extends Activity
 				// Set fancy title and button (optional)
 				intent.putExtra(FileManagerIntents.EXTRA_TITLE, "Select file to open");
 				intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, "Select");
-				
+
 				try
 				{
 					SettingsListView.Me.startActivityForResult(intent, Global.REQUEST_CODE_PICK_FILE);
@@ -556,7 +605,7 @@ public class SettingsListView extends Activity
 				}
 			}
 			break;
-			
+
 		case Global.REQUEST_CODE_PICK_DIRECTORY:
 			if (resultCode == android.app.Activity.RESULT_OK && data != null)
 			{

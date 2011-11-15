@@ -2,6 +2,8 @@ package CB_Core.Settings;
 
 import CB_Core.Config;
 import CB_Core.FilterProperties;
+import CB_Core.GlobalCore;
+import CB_Core.Enums.SmoothScrollingTyp;
 
 public class Settings extends SettingsList
 {
@@ -105,8 +107,12 @@ public class Settings extends SettingsList
 	public SettingString NeedsMaintenanceTemplate;
 	public SettingString AddNoteTemplate;
 	public SettingString SpoilersDescriptionTags;
-	public SettingString SmoothScrolling;
 	public SettingString quickButtonList;
+	
+	
+	//Enums
+	public SettingEnum SmoothScrolling;
+	
 	
 	public Settings()
 	{
@@ -208,10 +214,10 @@ public class Settings extends SettingsList
 		addSetting(NeedsMaintenanceTemplate = new SettingString("NeedsMaintenanceTemplate", SettingCategory.Internal, SettingModus.Invisible, "Logged it with DroidCachebox!", false));
 		addSetting(AddNoteTemplate = new SettingString("AddNoteTemplate", SettingCategory.Internal, SettingModus.Invisible, "Logged it with DroidCachebox!", false));
 		addSetting(SpoilersDescriptionTags = new SettingString("SpoilersDescriptionTags", SettingCategory.Internal, SettingModus.Invisible, "", false));
-		addSetting(SmoothScrolling = new SettingString("SmoothScrolling", SettingCategory.Internal, SettingModus.Invisible, "none", false));
 		addSetting(quickButtonList = new SettingString("quickButtonList", SettingCategory.Internal, SettingModus.Invisible, "5,0,1,3,2", false));
 				
-		
+		//Enums
+		addSetting(SmoothScrolling = new SettingEnum("SmoothScrolling", SettingCategory.Internal, SettingModus.Invisible, SmoothScrollingTyp.none, false, GlobalCore.SmoothScrolling));
 
 //		validateSetting("DopMin", "0.2");
 //		validateSetting("DopWidth", "1");

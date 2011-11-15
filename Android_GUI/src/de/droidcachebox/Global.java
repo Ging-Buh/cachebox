@@ -7,7 +7,6 @@ import java.util.Date;
 import CB_Core.Config;
 import CB_Core.FilterProperties;
 import CB_Core.Log.Logger;
-import CB_Core.TranslationEngine.LangStrings;
 import CB_Core.Types.MoveableList;
 import android.content.Context;
 import android.content.res.Resources;
@@ -33,12 +32,11 @@ import CB_Core.Types.JokerList;
 import de.droidcachebox.Locator.Locator;
 import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.Ui.Sizes;
-import de.droidcachebox.Views.MapView.SmoothScrollingTyp;
 import CB_Core.GlobalCore;
 
 public class Global
 {
-	public static final int CurrentRevision = 516;
+	public static final int CurrentRevision = 517;
 	public static final String CurrentVersion = "0.4.";
 	public static final String VersionPrefix = "beta";
 	public static final int LatestDatabaseChange = 1016;
@@ -73,7 +71,7 @@ public class Global
 																						// Bmp
 
 	// for MapView
-	public static SmoothScrollingTyp SmoothScrolling = SmoothScrollingTyp.normal;
+
 	public static RouteOverlay.Trackable AktuelleRoute = null;
 	public static int aktuelleRouteCount = 0;
 

@@ -21,8 +21,8 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Enums.SmoothScrollingTyp;
 import CB_Core.Events.CachListChangedEventList;
-
 import CB_Core.Types.MysterySolution;
 
 import android.app.ActivityManager;
@@ -109,7 +109,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		useLockPosition = true;
 		myContext = context;
 
-		Global.SmoothScrolling = SmoothScrollingTyp.valueOf(Config.GetString("SmoothScrolling"));
+		GlobalCore.SmoothScrolling = SmoothScrollingTyp.valueOf(Config.GetString("SmoothScrolling"));
 
 		activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
 		available_bytes = activityManager.getMemoryClass();
@@ -474,7 +474,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 					double dy = 0;
 					double dt = 0;
 					int count = Math.min(5, lastMouseMoveTickCount);
-					if (Global.SmoothScrolling != SmoothScrollingTyp.none)
+					if (GlobalCore.SmoothScrolling != SmoothScrollingTyp.none)
 					{
 						int newPosFaktor = 5 * 50 / smoothScrolling.AnimationWait();
 						for (int i = 0; i < count; i++)
@@ -4577,7 +4577,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 	private void setSmotthScrolling(SmoothScrollingTyp typ)
 	{
-		Global.SmoothScrolling = typ;
+		GlobalCore.SmoothScrolling = typ;
 		Config.Set("SmoothScrolling", typ.toString());
 	}
 
@@ -5223,11 +5223,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	// 4 -> Benutzerdefiniert
 	public SmoothScrolling smoothScrolling = new SmoothScrolling();
 
-	public enum SmoothScrollingTyp
-	{
-		none, normal, fine, superfine, userdefined
-	}
-
+	
 	private class SmoothScrolling
 	{
 		private int[] animationSteps = new int[5]; // Schritte
@@ -5255,12 +5251,12 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		public int AnimationSteps()
 		{
-			return animationSteps[Global.SmoothScrolling.ordinal()];
+			return animationSteps[GlobalCore.SmoothScrolling.ordinal()];
 		}
 
 		public int AnimationWait()
 		{
-			return animationWait[Global.SmoothScrolling.ordinal()];
+			return animationWait[GlobalCore.SmoothScrolling.ordinal()];
 		}
 	}
 
