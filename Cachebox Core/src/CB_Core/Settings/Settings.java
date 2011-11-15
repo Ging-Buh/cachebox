@@ -206,15 +206,15 @@ public class Settings extends SettingsList
 		
 		
 		//String
-		addSetting(CurrentMapLayer = new SettingString("CurrentMapLayer", SettingCategory.Internal, SettingModus.Invisible, "Mapnik", false));
-		addSetting(AutoUpdate = new SettingString("AutoUpdate", SettingCategory.Internal, SettingModus.Invisible, "http://www.getcachebox.net/latest-stable", false));
-		addSetting(NavigationProvider = new SettingString("NavigationProvider", SettingCategory.Internal, SettingModus.Invisible, "http://129.206.229.146/openrouteservice/php/OpenLSRS_DetermineRoute.php", false));
-		addSetting(FoundTemplate = new SettingString("FoundTemplate", SettingCategory.Internal, SettingModus.Invisible, "<br>###finds##, ##time##, Found it with DroidCachebox!", false));
-		addSetting(DNFTemplate = new SettingString("DNFTemplate", SettingCategory.Internal, SettingModus.Invisible, "<br>##time##. Logged it with DroidCachebox!", false));
-		addSetting(NeedsMaintenanceTemplate = new SettingString("NeedsMaintenanceTemplate", SettingCategory.Internal, SettingModus.Invisible, "Logged it with DroidCachebox!", false));
-		addSetting(AddNoteTemplate = new SettingString("AddNoteTemplate", SettingCategory.Internal, SettingModus.Invisible, "Logged it with DroidCachebox!", false));
-		addSetting(SpoilersDescriptionTags = new SettingString("SpoilersDescriptionTags", SettingCategory.Internal, SettingModus.Invisible, "", false));
-		addSetting(quickButtonList = new SettingString("quickButtonList", SettingCategory.Internal, SettingModus.Invisible, "5,0,1,3,2", false));
+		addSetting(CurrentMapLayer = new SettingString("CurrentMapLayer", SettingCategory.Internal, SettingModus.Invisible, "Mapnik", true));
+		addSetting(AutoUpdate = new SettingString("AutoUpdate", SettingCategory.Internal, SettingModus.Invisible, "http://www.getcachebox.net/latest-stable", true));
+		addSetting(NavigationProvider = new SettingString("NavigationProvider", SettingCategory.Internal, SettingModus.Invisible, "http://129.206.229.146/openrouteservice/php/OpenLSRS_DetermineRoute.php", true));
+		addSetting(FoundTemplate = new SettingLongString("FoundTemplate", SettingCategory.Internal, SettingModus.Invisible, "<br>###finds##, ##time##, Found it with DroidCachebox!", true));
+		addSetting(DNFTemplate = new SettingLongString("DNFTemplate", SettingCategory.Internal, SettingModus.Invisible, "<br>##time##. Logged it with DroidCachebox!", true));
+		addSetting(NeedsMaintenanceTemplate = new SettingLongString("NeedsMaintenanceTemplate", SettingCategory.Internal, SettingModus.Invisible, "Logged it with DroidCachebox!", true));
+		addSetting(AddNoteTemplate = new SettingLongString("AddNoteTemplate", SettingCategory.Internal, SettingModus.Invisible, "Logged it with DroidCachebox!", true));
+		addSetting(SpoilersDescriptionTags = new SettingString("SpoilersDescriptionTags", SettingCategory.Internal, SettingModus.Invisible, "", true));
+		addSetting(quickButtonList = new SettingString("quickButtonList", SettingCategory.Internal, SettingModus.Invisible, "5,0,1,3,2", true));
 				
 		//Enums
 		addSetting(SmoothScrolling = new SettingEnum("SmoothScrolling", SettingCategory.Internal, SettingModus.Invisible, SmoothScrollingTyp.none, false, GlobalCore.SmoothScrolling));
