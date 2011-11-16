@@ -99,7 +99,6 @@ public class Config
 	{
 		initialized = false;
 		checkInitialization();
-		settings.ReadFromDB();
 	}
 
 	static void checkInitialization()

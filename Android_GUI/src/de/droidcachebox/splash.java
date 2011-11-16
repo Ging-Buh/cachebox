@@ -179,6 +179,7 @@ public class splash extends Activity
 
 		Config.readConfigFile(/* getAssets() */);
 
+	
 		Config.settings.ReadFromDB();
 
 		String PocketQueryFolder = Config.settings.PocketQueryFolder.getValue();

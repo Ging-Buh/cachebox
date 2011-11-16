@@ -119,8 +119,8 @@ public class Settings extends SettingsList
 	
 	
 	//Decrypt
-	public SettingDecryptString GcAPI;
-	public SettingDecryptString GcVotePassword;
+	public SettingEncryptedString GcAPI;
+	public SettingEncryptedString GcVotePassword;
 
 	// Enums
 	public SettingEnum SmoothScrolling;
@@ -287,12 +287,12 @@ public class Settings extends SettingsList
 		
 		
 		// Decrypt String
-		addSetting(GcAPI = new SettingDecryptString("GcAPI", SettingCategory.Internal, SettingModus.Invisible, "", true));
-		addSetting(GcVotePassword = new SettingDecryptString("GcVotePassword", SettingCategory.Internal, SettingModus.Invisible, "", true));
+		addSetting(GcAPI = new SettingEncryptedString("GcAPI", SettingCategory.Internal, SettingModus.Invisible, "", true));
+		addSetting(GcVotePassword = new SettingEncryptedString("GcVotePassword", SettingCategory.Internal, SettingModus.Invisible, "", true));
 
 		// Enums
 		addSetting(SmoothScrolling = new SettingEnum("SmoothScrolling", SettingCategory.Internal, SettingModus.Invisible,
-				SmoothScrollingTyp.none, false, GlobalCore.SmoothScrolling));
+				SmoothScrollingTyp.normal, false, GlobalCore.SmoothScrolling));
 
 		// IntArray
 		addSetting(TrackDistance = new SettingIntArray("TrackDistance", SettingCategory.Internal, SettingModus.Normal, 3, true,
@@ -308,7 +308,7 @@ public class Settings extends SettingsList
 		// validateSetting("DopMin", "0.2");
 		// validateSetting("DopWidth", "1");
 
-		ReadFromDB();
+//		ReadFromDB();
 	}
 
 }

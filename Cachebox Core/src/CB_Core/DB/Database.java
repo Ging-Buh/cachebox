@@ -724,6 +724,7 @@ public abstract class Database
 	{
 		String result = "";
 		CoreCursor c = null;
+		boolean found = false;
 		try
 		{
 			c = rawQuery("select Value from Config where [Key]=?", new String[]
@@ -739,9 +740,9 @@ public abstract class Database
 			while (c.isAfterLast() == false)
 			{
 				result = c.getString(0);
+				found = true;
 				c.moveToNext();
 			}
-			;
 		}
 		catch (Exception exc)
 		{
@@ -751,13 +752,17 @@ public abstract class Database
 			c.close();
 		}
 
+		if (!found)
+			throw new Exception("not in DB");
+
 		return result;
 	}
 
-	public String ReadConfigLongString(String key)
+	public String ReadConfigLongString(String key) throws Exception
 	{
 		String result = "";
 		CoreCursor c = null;
+		boolean found = false;
 		try
 		{
 			c = rawQuery("select LongString from Config where [Key]=?", new String[]
@@ -765,7 +770,7 @@ public abstract class Database
 		}
 		catch (Exception exc)
 		{
-			return "";
+			throw new Exception("not in DB");
 		}
 		try
 		{
@@ -773,15 +778,18 @@ public abstract class Database
 			while (c.isAfterLast() == false)
 			{
 				result = c.getString(0);
+				found = true;
 				c.moveToNext();
 			}
-			;
 		}
 		catch (Exception exc)
 		{
-			result = "";
+			throw new Exception("not in DB");
 		}
 		c.close();
+
+		if (!found)
+			throw new Exception("not in DB");
 
 		return result;
 	}

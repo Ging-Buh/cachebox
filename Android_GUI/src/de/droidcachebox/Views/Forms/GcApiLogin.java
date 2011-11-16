@@ -145,8 +145,8 @@ public class GcApiLogin extends Activity
 
 					// store the encrypted AccessToken in the Config file
 					// wir bekommen den Key schon verschlüsselt, deshalb muss er
-					// entschlüsselt gespeichert werden.
-					Config.settings.GcAPI.setValue(Config.encrypt(accessToken));
+					// nicht noch einmal verschlüsselt werden!
+					Config.settings.GcAPI.setEncryptedValue(accessToken);
 					Config.AcceptChanges();
 
 					String act = Config.GetAccessToken();

@@ -854,8 +854,8 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 	public void setGcApiKey(String key)
 	{
 		// we are take the Key encrypted from own server
-		// so we save it with "Enc"
-		Config.settings.GcAPI.setValue(Config.encrypt(key));
+		// so we do not need to encrypt it again!
+		Config.settings.GcAPI.setEncryptedValue(key);
 		Config.AcceptChanges();
 	}
 
@@ -898,7 +898,8 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 		Config.settings.DebugShowLog.setValue(chkDebugLog.isChecked());
 		Config.settings.OverrideUrl.setValue(EditDebugOverrideGcAuth.getEditableText().toString());
 
-		Config.settings.SoundApproachDistance.setValue((Integer) ApproachSound.getSelectedItem());
+		if (ApproachSound.getSelectedItem() != null) Config.settings.SoundApproachDistance.setValue((Integer) ApproachSound
+				.getSelectedItem());
 
 		int M = ScreenLock_wheel_m.getCurrentItem();
 		int Sec = ScreenLock_wheel_sec.getCurrentItem();
@@ -940,9 +941,12 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 		Config.settings.SearchWithoutOwns.setValue(chkSearchWithoutOwns.isChecked());
 
 		Config.AcceptChanges();
-		main.mapView.setNewSettings();
-		main.mapView.InitializeMap();
-		main.mapView.Render(true);
+		if (main.mapView != null)
+		{
+			main.mapView.setNewSettings();
+			main.mapView.InitializeMap();
+			main.mapView.Render(true);
+		}
 		if (QuickButtonShowChanged)
 		{
 			downSlider.ButtonShowStateChanged();

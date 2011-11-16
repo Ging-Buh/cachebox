@@ -114,7 +114,8 @@ public class SettingsList extends HashMap<String, SettingBase>
 		for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext();)
 		{
 			SettingBase setting = it.next();
-			if (setting.getGlobal()) dao.ReadFromDatabase(Database.Settings, setting);
+			if (setting.getGlobal()) 
+				dao.ReadFromDatabase(Database.Settings, setting);
 			else
 				dao.ReadFromDatabase(Database.Data, setting);
 		}
