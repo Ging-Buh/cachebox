@@ -7,120 +7,134 @@ import CB_Core.Config;
 import de.droidcachebox.Global;
 import de.droidcachebox.UnitFormatter;
 
+public class Locator
+{
+	private Location location = null;
 
-public class Locator {
-    private Location location = null;
-    public void setLocation(Location value)
-    {
-    	synchronized (this)
-    	{
-    		location = value;
-    		Position = new Coordinate(value.getLatitude(), value.getLongitude(), ((int) value.getAccuracy()));
-    	}
-    }
-    public Location getLocation()
-    {
-    	synchronized (this)
-    	{
-    		return location;
-    	}
-    }
-    /// <summary>
-    /// Aktuelle Position des Empfängers
-    /// </summary>
-    public Coordinate Position = new Coordinate();
+	public void setLocation(Location value)
+	{
+		synchronized (this)
+		{
+			location = value;
+			Position = new Coordinate(value.getLatitude(), value.getLongitude(), ((int) value.getAccuracy()));
+		}
+	}
 
-    /// <summary>
-    /// Aktueller Winkel des mag. Kompass
-    /// </summary>
-    private float CompassHeading = -1;
-    public void setCompassHeading(float value)
-    {
-    	synchronized (this)
-    	{
-    		CompassHeading = value;
-    	}
-    }
-    public float getCompassHeading()
-    {
-    	synchronized (this)
-    	{
-    		return CompassHeading;
-    	}
-    }
-    
-    public float SpeedOverGround()
-    {
-    	if ((location != null) && (location.hasSpeed()))
-    	{
-    		return location.getSpeed() * 3600 / 1000;    			
-    	} else
-    		return 0;
-    }
-    public String SpeedString()
-    {
-    	if ((location != null) && (location.hasSpeed()))
-    		return UnitFormatter.SpeedString(Global.Locator.SpeedOverGround());
-    	else
-    		return "-----";
-    }
-    
-    public Locator()
-    {
-    	this.location = null;
-    }
-    
-    public boolean UseCompass()
-    {
-    	synchronized (this)
-    	{
-    		if (!Config.GetBool("HtcCompass"))
-    			return false;
-    		if (CompassHeading < 0) 
-    			return false;	// kein Kompass Wert -> Komapass nicht verwenden!
-    		if ((location != null) && location.hasBearing() && (SpeedOverGround() > Config.GetInt("HtcLevel")))
-    			return false;	// Geschwindigkeit > 5 km/h -> GPs Kompass verwenden
+	public Location getLocation()
+	{
+		synchronized (this)
+		{
+			return location;
+		}
+	}
 
-    		return true;    				
-    	}    
-    }
+	// / <summary>
+	// / Aktuelle Position des Empfängers
+	// / </summary>
+	public Coordinate Position = new Coordinate();
 
-    public boolean LastUsedCompass = false;  // hier wird gespeichert, ob der zuletzt ausgegebene Winkel vom Kompass kam...
-    public float getHeading()
-    {
-    	synchronized (this)
-    	{
+	// / <summary>
+	// / Aktueller Winkel des mag. Kompass
+	// / </summary>
+	private float CompassHeading = -1;
+
+	public void setCompassHeading(float value)
+	{
+		synchronized (this)
+		{
+			CompassHeading = value;
+		}
+	}
+
+	public float getCompassHeading()
+	{
+		synchronized (this)
+		{
+			return CompassHeading;
+		}
+	}
+
+	public float SpeedOverGround()
+	{
+		if ((location != null) && (location.hasSpeed()))
+		{
+			return location.getSpeed() * 3600 / 1000;
+		}
+		else
+			return 0;
+	}
+
+	public String SpeedString()
+	{
+		if ((location != null) && (location.hasSpeed())) return UnitFormatter.SpeedString(Global.Locator.SpeedOverGround());
+		else
+			return "-----";
+	}
+
+	public Locator()
+	{
+		this.location = null;
+	}
+
+	public boolean UseCompass()
+	{
+		synchronized (this)
+		{
+			if (!Config.settings.HtcCompass.getValue()) return false;
+			if (CompassHeading < 0) return false; // kein Kompass Wert ->
+													// Komapass nicht verwenden!
+			if ((location != null) && location.hasBearing() && (SpeedOverGround() > Config.settings.HtcLevel.getValue())) return false; // Geschwindigkeit
+																																		// >
+																																		// 5
+																																		// km/h
+																																		// ->
+																																		// GPs
+																																		// Kompass
+																																		// verwenden
+
+			return true;
+		}
+	}
+
+	public boolean LastUsedCompass = false; // hier wird gespeichert, ob der
+											// zuletzt ausgegebene Winkel vom
+											// Kompass kam...
+
+	public float getHeading()
+	{
+		synchronized (this)
+		{
 			LastUsedCompass = false;
-    		if (UseCompass())
-    		{
-    			LastUsedCompass = true;
-    			return CompassHeading;	// Compass Heading ausgeben, wenn Geschwindigkeit klein ist
-    		} else if ((location != null) && (location.hasBearing()))
-	    	{
-	    		// GPS Heading ausgeben, wenn Geschwindigkeit größer ist	    		
-	    		return location.getBearing();
-	    	}
-    	}
-    	return 0;
-    }
-    
-    public double altCorrection = 0;
-    
-	public double getAlt() 
+			if (UseCompass())
+			{
+				LastUsedCompass = true;
+				return CompassHeading; // Compass Heading ausgeben, wenn
+										// Geschwindigkeit klein ist
+			}
+			else if ((location != null) && (location.hasBearing()))
+			{
+				// GPS Heading ausgeben, wenn Geschwindigkeit größer ist
+				return location.getBearing();
+			}
+		}
+		return 0;
+	}
+
+	public double altCorrection = 0;
+
+	public double getAlt()
 	{
 		return location.getAltitude() - altCorrection;
 	}
-	
+
 	public String getAltString()
 	{
 		String result = String.format("%.0f", getAlt()) + " m";
-		if (altCorrection > 0)			
-			result += " (+" + String.format("%.0f", altCorrection) + " m)";
-		else if (altCorrection < 0)			
-			result += " (" + String.format("%.0f", altCorrection) + " m)";
+		if (altCorrection > 0) result += " (+" + String.format("%.0f", altCorrection) + " m)";
+		else if (altCorrection < 0) result += " (" + String.format("%.0f", altCorrection) + " m)";
 		return result;
 	}
-	
+
 	public boolean isGPSprovided()
 	{
 		return (location.getProvider().equalsIgnoreCase(LocationManager.GPS_PROVIDER));
@@ -135,6 +149,6 @@ public class Locator {
 		else
 		{
 			return "Cell";
-		}	
+		}
 	}
 }

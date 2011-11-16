@@ -109,7 +109,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		useLockPosition = true;
 		myContext = context;
 
-		GlobalCore.SmoothScrolling = SmoothScrollingTyp.valueOf(Config.GetString("SmoothScrolling"));
+		GlobalCore.SmoothScrolling = SmoothScrollingTyp.valueOf(Config.settings.SmoothScrolling.getValue());
 
 		activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
 		available_bytes = activityManager.getMemoryClass();
@@ -207,16 +207,16 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			e.printStackTrace();
 		}
 
-		showRating = Config.GetBool("MapShowRating");
-		showDT = Config.GetBool("MapShowDT");
-		showTitles = Config.GetBool("MapShowTitles");
-		hideMyFinds = Config.GetBool("MapHideMyFinds");
-		showCompass = Config.GetBool("MapShowCompass");
-		showDirektLine = Config.GetBool("ShowDirektLine");
-		nightMode = Config.GetBool("nightMode");
+		showRating = Config.settings.MapShowRating.getValue();
+		showDT = Config.settings.MapShowDT.getValue();
+		showTitles = Config.settings.MapShowTitles.getValue();
+		hideMyFinds = Config.settings.MapHideMyFinds.getValue();
+		showCompass = Config.settings.MapShowCompass.getValue();
+		showDirektLine = Config.settings.ShowDirektLine.getValue();
+		nightMode = Config.settings.nightMode.getValue();
 
 		// Skalierungsfaktoren bestimmen
-		if (Config.GetBool("OsmDpiAwareRendering"))
+		if (Config.settings.OsmDpiAwareRendering.getValue())
 		{
 			dpiScaleFactorX = dpiScaleFactorY = getContext().getResources().getDisplayMetrics().density;
 		}
@@ -533,7 +533,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 	public void SetCurrentLayer(Layer newLayer)
 	{
-		Config.Set("CurrentMapLayer", newLayer.Name);
+		Config.settings.CurrentMapLayer.setValue(newLayer.Name);
 		Config.AcceptChanges();
 
 		CurrentLayer = newLayer;
@@ -757,13 +757,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		backBrush.setColor(Color.argb(255, 201, 233, 203));
 		/*
 		 * MouseWheel += new MouseEventHandler(MapView_MouseWheel);
-		 * mapMaxCachesLabel = Config.GetInt("MapMaxCachesLabel"); showRating =
-		 * Config.GetBool("MapShowRating"); showDT =
-		 * Config.GetBool("MapShowDT"); showTitles =
-		 * Config.GetBool("MapShowTitles"); hideMyFinds =
-		 * Config.GetBool("MapHideMyFinds"); showCompass =
-		 * Config.GetBool("MapShowCompass"); nightMode =
-		 * Config.GetBool("nightMode"); Global.TargetChanged += new
+		 * mapMaxCachesLabel = Config.settings.MapMaxCachesLabel"); showRating =
+		 * Config.settings.MapShowRating"); showDT =
+		 * Config.settings.MapShowDT"); showTitles =
+		 * Config.settings.MapShowTitles"); hideMyFinds =
+		 * Config.settings.MapHideMyFinds"); showCompass =
+		 * Config.settings.MapShowCompass"); nightMode =
+		 * Config.settings.nightMode"); Global.TargetChanged += new
 		 * Global.TargetChangedHandler(OnTargetChanged); lineHeight =
 		 * (int)this.CreateGraphics().MeasureString("M", Font).Height;
 		 * smallLineHeight = (int)this.CreateGraphics().MeasureString("M",
@@ -801,16 +801,16 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		 * colorKey.SetColorKey(Global.Icons[19].GetPixel(0, 0),
 		 * Global.Icons[19].GetPixel(0, 0));
 		 */
-		String currentLayerName = Config.GetString("CurrentMapLayer");
+		String currentLayerName = Config.settings.CurrentMapLayer.getValue();
 		CurrentLayer = Manager.GetLayerByName((currentLayerName == "") ? "Mapnik" : currentLayerName, currentLayerName, "");
 
 		// layerMenu = new ClickContext(this);
 		/*
 		 * OnTileLoaded += new TileLoadedHandler(MapView_OnTileLoaded); if
-		 * (Config.GetString("RouteOverlay").Length > 0 &&
-		 * File.Exists(Config.GetString("RouteOverlay")))
-		 * Routes.Add(LoadRoute(Config.GetString("RouteOverlay"), new
-		 * Pen(Color.Purple, 4), Config.GetInt("TrackDistance"))); else
+		 * (Config.settings.RouteOverlay").Length > 0 &&
+		 * File.Exists(Config.settings.RouteOverlay")))
+		 * Routes.Add(LoadRoute(Config.settings.RouteOverlay"), new
+		 * Pen(Color.Purple, 4), Config.settings.TrackDistance"))); else
 		 */
 
 		RouteOverlay.Routes.clear();
@@ -823,13 +823,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		 */
 		// Load Routes for Autoload
 		/*
-		 * File dir = new File(Config.GetString("MapPackFolder")); String[]
-		 * files = dir.list(); if (!(files == null)) { if (files.length>0) { for
+		 * File dir = new File(Config.settings.MapPackFolder")); String[] files
+		 * = dir.list(); if (!(files == null)) { if (files.length>0) { for
 		 * (String file : files) {
-		 * MapView.Manager.LoadMapPack(Config.GetString("MapPackFolder") + "/" +
+		 * MapView.Manager.LoadMapPack(Config.settings.MapPackFolder") + "/" +
 		 * file); } } }
 		 */
-		String trackPath = Config.GetString("TrackFolder") + "/Autoload";
+		String trackPath = Config.settings.TrackFolder.getValue() + "/Autoload";
 		if (FileIO.DirectoryExists(trackPath))
 		{
 			File dir = new File(trackPath);
@@ -885,7 +885,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		{
 			absolutPath = trackPath + "/" + file;
 		}
-		RouteOverlay.Routes.add(RouteOverlay.LoadRoute(absolutPath, paint, Config.GetInt("TrackDistance")));
+		RouteOverlay.Routes.add(RouteOverlay.LoadRoute(absolutPath, paint, Config.settings.TrackDistance.getValue()));
 	}
 
 	/*
@@ -945,7 +945,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	 */
 	public void OnShow()
 	{
-		// gcLogin = Config.GetString("GcLogin").toLowerCase();
+		// gcLogin = Config.settings.GcLogin").toLowerCase();
 		isVisible = true;
 		animationThread = new AnimationThread();
 		if (!animationThread.isAlive()) animationThread.start();
@@ -954,17 +954,18 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 	public void InitializeMap()
 	{
-		Zoom = Config.GetInt("lastZoomLevel");
-		// gcLogin = Config.GetString("GcLogin").toLowerCase();
+		Zoom = Config.settings.lastZoomLevel.getValue();
+		// gcLogin = Config.settings.GcLogin").toLowerCase();
 		mapMaxCachesDisplay = 50;
 		mapMaxCachesDisplayLarge = 100;
 		zoomCross = 15;
 		/*
-		 * gcLogin = Config.GetString("GcLogin"); mapMaxCachesDisplay =
-		 * Config.GetInt("MapMaxCachesDisplay_config"); mapMaxCachesDisplayLarge
-		 * = Config.GetInt("mapMaxCachesDisplayLarge_config");
+		 * gcLogin = Config.settings.GcLogin"); mapMaxCachesDisplay =
+		 * Config.settings.MapMaxCachesDisplay_config");
+		 * mapMaxCachesDisplayLarge =
+		 * Config.settings.mapMaxCachesDisplayLarge_config");
 		 */
-		zoomCross = Config.GetInt("ZoomCross");
+		zoomCross = Config.settings.ZoomCross.getValue();
 
 		// hideFindsButton.ButtonImage = (hideMyFinds) ? Global.Icons[6] :
 		// Global.Icons[7];
@@ -972,8 +973,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		// Bestimmung der ersten Position auf der Karte
 		if (!positionInitialized)
 		{
-			double lat = Config.GetDouble("MapInitLatitude");
-			double lon = Config.GetDouble("MapInitLongitude");
+			double lat = Config.settings.MapInitLatitude.getValue();
+			double lon = Config.settings.MapInitLongitude.getValue();
 
 			// Initialisierungskoordinaten bekannt und können übernommen werden
 			if (lat != -1000 && lon != -1000)
@@ -1031,11 +1032,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		renderZoomScaleActive = false;
 
-		minZoom = Config.GetInt("OsmMinLevel");
-		maxZoom = Config.GetInt("OsmMaxLevel");
+		minZoom = Config.settings.OsmMinLevel.getValue();
+		maxZoom = Config.settings.OsmMaxLevel.getValue();
 
 		// Skalierungsfaktoren bestimmen
-		if (Config.GetBool("OsmDpiAwareRendering"))
+		if (Config.settings.OsmDpiAwareRendering.getValue())
 		{
 
 			dpiScaleFactorX = dpiScaleFactorY = getContext().getResources().getDisplayMetrics().density;
@@ -1105,7 +1106,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		if (bitmap == null)
 		{
-			if (Config.GetBool("AllowInternetAccess"))
+			if (Config.settings.AllowInternetAccess.getValue())
 			{
 				wishlistLock.lock();
 				try
@@ -1139,7 +1140,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		if (bitmap == null) return;
 
 		/*
-		 * if (Config.GetBool("OsmDpiAwareRendering") && ( != 1 || != 1))
+		 * if (Config.settings.OsmDpiAwareRendering") && ( != 1 || != 1))
 		 * scaleUpBitmap(bitmap);
 		 */
 
@@ -1458,7 +1459,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 							 * desc);
 							 */
 							/*
-							 * if (Config.GetBool("OsmDpiAwareRendering") && (
+							 * if (Config.settings.OsmDpiAwareRendering") && (
 							 * != 1 || != 1)) scaleUpBitmap(ref bitmap);
 							 */
 
@@ -1492,8 +1493,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 						 * MessageBoxDefaultButton.Button1); #if DEBUG
 						 * Global.AddLog(
 						 * "MapView.loaderThreadEntryPoint: device is low on memory"
-						 * ); #endif Config.Set("AllowInternetAccess", false);
-						 * Config.AcceptChanges(); break; }
+						 * ); #endif Config.settings.AllowInternetAccess",
+						 * false); Config.AcceptChanges(); break; }
 						 */
 					}
 					catch (Exception exc)
@@ -1554,7 +1555,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	 * MapView.Manager.LoadLocalBitmap(CurrentLayer, desc); if (bitmap == null)
 	 * { // Laden der Kachel fehlgeschlagen! Tile wieder aus loadedTiles //
 	 * entfernen loadedTiles.Remove(desc); continue; } if (OnTileLoaded != null)
-	 * OnTileLoaded(bitmap, desc); if (Config.GetBool("OsmDpiAwareRendering") &&
+	 * OnTileLoaded(bitmap, desc); if (Config.settings.OsmDpiAwareRendering") &&
 	 * ( != 1 || != 1)) scaleUpBitmap(ref bitmap); addLoadedTile(desc, bitmap,
 	 * Tile.TileState.Present); // Kachel erfolgreich geladen. Wenn die Kachel
 	 * sichtbar ist // kann man die Karte ja gut mal neu rendern! tilesFinished
@@ -1562,16 +1563,16 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	 * Kachel nicht geladen, noch ein Versuch! //lock (loadedTiles) // if
 	 * (loadedTiles.ContainsKey(desc)) // loadedTiles.Remove(desc); continue; }
 	 * bool LowMemory =
-	 * Global.GetAvailableDiscSpace(Config.GetString("TileCacheFolder")) <
+	 * Global.GetAvailableDiscSpace(Config.settings.TileCacheFolder")) <
 	 * ((long)1024 * 1024); if (LowMemory) { MessageBox.Show(
 	 * "Device is running low on memory! Internet access will shut down now. Please free some memory e.g. by deleting unused tiles!"
 	 * , "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation,
 	 * MessageBoxDefaultButton.Button1); #if DEBUG
 	 * Global.AddLog("MapView.loaderThreadEntryPoint: device is low on memory");
-	 * #endif Config.Set("AllowInternetAccess", false); Config.AcceptChanges();
-	 * break; } } catch (Exception exc) { // Fehler aufgetreten! Kachel nochmal
-	 * laden! if (desc != null) lock (loadedTiles) if
-	 * (loadedTiles.ContainsKey(desc)) loadedTiles.Remove(desc); #if DEBUG
+	 * #endif Config.settings.AllowInternetAccess", false);
+	 * Config.AcceptChanges(); break; } } catch (Exception exc) { // Fehler
+	 * aufgetreten! Kachel nochmal laden! if (desc != null) lock (loadedTiles)
+	 * if (loadedTiles.ContainsKey(desc)) loadedTiles.Remove(desc); #if DEBUG
 	 * Global.AddLog("MapView.loaderThreadEntryPoint: exception caught: " +
 	 * exc.ToString()); #endif } } lock (wishlist) loaderThread = null; } catch
 	 * (ThreadAbortException) { } finally { loaderThread = null; Render(true); }
@@ -1922,7 +1923,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	void renderCaches()
 	{
 
-		boolean N = Config.GetBool("nightMode");
+		boolean N = Config.settings.nightMode.getValue();
 
 		int smallStarHeight = (int) ((double) Global.SmallStarIcons[1].getMinimumHeight());
 
@@ -2332,7 +2333,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		// + numLoadedTiles();
 		// debugString2 = available_bytes * 1024 -
 		// Debug.getNativeHeapAllocatedSize() / 1024 + " kB";
-		N = Config.GetBool("nightMode");
+		N = Config.settings.nightMode.getValue();
 		overrideRepaintInteligence = overrideRepaintInteligence1;
 
 		try
@@ -3010,7 +3011,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			if (drawBestFit)
 			{
 				// Draw Kachel marker
-				if (Config.GetBool("DebugShowMarker"))
+				if (Config.settings.DebugShowMarker.getValue())
 				{
 					Paint paintt = new Paint(backBrush);
 					paintt.setColor(Color.GREEN);
@@ -3038,7 +3039,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				tile.Image = bit;
 				tile.State = Tile.TileState.LowResolution;
 
-				if (Config.GetBool("nightMode"))
+				if (Config.settings.nightMode.getValue())
 				{
 					drawImage(canvas, bit, pt.x, pt.y, (int) (256.0f * multiTouchFaktor), (int) (256.0f * multiTouchFaktor),
 							Global.invertPaint);
@@ -3923,22 +3924,22 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	 * tsiRemoveCenter.Enabled = true; // Render(true); } private void
 	 * hideFinds(ClickButton sender) { hideMyFinds = !hideMyFinds;
 	 * hideFindsButton.ButtonImage = (hideMyFinds) ? Global.Icons[6] :
-	 * Global.Icons[7]; Config.Set("MapHideMyFinds", hideMyFinds);
+	 * Global.Icons[7]; Config.settings.MapHideMyFinds", hideMyFinds);
 	 * Config.AcceptChanges(); updateCacheList(); Render(false); } void
 	 * showRatingChanged(ClickButton sender) { showRating = !showRating;
 	 * showRatingButton.ButtonImage = (showRating) ? Global.Icons[6] :
-	 * Global.Icons[7]; Config.Set("MapShowRating", showRating);
+	 * Global.Icons[7]; Config.settings.MapShowRating", showRating);
 	 * Config.AcceptChanges(); Render(false); } void showDTChanged(ClickButton
 	 * sender) { showDT = !showDT; showDTButton.ButtonImage = (showDT) ?
-	 * Global.Icons[6] : Global.Icons[7]; Config.Set("MapShowDT", showDT);
+	 * Global.Icons[6] : Global.Icons[7]; Config.settings.MapShowDT", showDT);
 	 * Config.AcceptChanges(); Render(false); } void
 	 * showCompassChanged(ClickButton sender) { showCompass = !showCompass;
 	 * showCompassButton.ButtonImage = (showCompass) ? Global.Icons[6] :
-	 * Global.Icons[7]; Config.Set("MapShowCompass", showCompass);
+	 * Global.Icons[7]; Config.settings.MapShowCompass", showCompass);
 	 * Config.AcceptChanges(); Render(false); } void
 	 * showTitlesChanged(ClickButton sender) { showTitles = !showTitles;
 	 * showTitlesButton.ButtonImage = (showTitles) ? Global.Icons[6] :
-	 * Global.Icons[7]; Config.Set("MapShowTitles", showTitles);
+	 * Global.Icons[7]; Config.settings.MapShowTitles", showTitles);
 	 * Config.AcceptChanges(); Render(false); } void showMarkerMenu(ClickButton
 	 * sender) { markerMenu.Show(this, button3.Left + button3.Width,
 	 * button3.Top, 0); } void showRouteMenu(ClickButton sender) {
@@ -3952,7 +3953,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	 * MessageBox.Show(
 	 * "Routes are generated between your current position and the selected waypoint. Please wait for a GPS fix or set the marker!"
 	 * , "Route generation failed!"); return; } if
-	 * (!Config.GetBool("AllowRouteInternet")) { MessageBox.Show(
+	 * (!Config.settings.AllowRouteInternet")) { MessageBox.Show(
 	 * "Querying the Routing Service requires an internet connection! Please enable Route Calculation to continue!"
 	 * , "Route Calculation disabled!", MessageBoxButtons.OK,
 	 * MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1); return; }
@@ -3960,8 +3961,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	 * Cachebox.Views.Forms.NavigationForm(); if (navigationForm.ShowDialog() ==
 	 * DialogResult.OK) { Cursor.Current = Cursors.WaitCursor; HttpWebRequest
 	 * webRequest = null; HttpWebResponse webResponse = null; try { webRequest =
-	 * (
-	 * HttpWebRequest)WebRequest.Create(Config.GetString("NavigationProvider"));
+	 * ( HttpWebRequest)WebRequest.Create(Config.settings.NavigationProvider"));
 	 * webRequest.UserAgent = "cachebox rev " +
 	 * Global.CurrentRevision.ToString() + ((Global.RevisionSuffix.Length > 0) ?
 	 * "(" + Global.RevisionSuffix + ")" : ""); webRequest.Timeout = 17000;
@@ -4026,13 +4026,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	 * layerMenu.Show(this, button3.Left + button3.Width, button3.Top, 0); }
 	 * private void enableNightmodeChanged(ClickButton sender) { nightMode =
 	 * !nightMode; nightmodeButton.ButtonImage = (nightMode) ? Global.Icons[6] :
-	 * Global.Icons[7]; Config.Set("nightMode", nightMode);
+	 * Global.Icons[7]; Config.settings.nightMode", nightMode);
 	 * Config.AcceptChanges(); lock (loadedTiles) { loadedTiles.Clear();
 	 * Render(true); } //this.Render(false); } public void
 	 * layerClick(ClickButton sender) { CurrentLayer = (Layer)sender.Tag;
 	 * foreach (ClickButton layerButton in layerButtons) layerButton.ButtonImage
 	 * = (CurrentLayer == (Layer)layerButton.Tag) ? Global.Icons[6] :
-	 * Global.Icons[7]; Config.Set("CurrentMapLayer", CurrentLayer.Name);
+	 * Global.Icons[7]; Config.settings.CurrentMapLayer", CurrentLayer.Name);
 	 * Config.AcceptChanges(); lock (loadedTiles) { ClearCachedTiles();
 	 * Render(true); } }
 	 */
@@ -4438,11 +4438,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			}
 		}
 
-		if (Config.GetBool("MoveMapCenterWithSpeed") && alignToCompass && (lockPosition >= 1))
+		if (Config.settings.MoveMapCenterWithSpeed.getValue() && alignToCompass && (lockPosition >= 1))
 		{
 			if (location.hasSpeed())
 			{
-				double maxSpeed = Config.GetInt("MoveMapCenterMaxSpeed");
+				double maxSpeed = Config.settings.MoveMapCenterMaxSpeed.getValue();
 				int diff = (int) ((double) (height) / 3 * location.getSpeed() / maxSpeed);
 				if (diff > height / 3) diff = height / 3;
 
@@ -4534,35 +4534,35 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			return true;
 		case R.id.miMap_HideFinds:
 			hideMyFinds = !hideMyFinds;
-			Config.Set("MapHideMyFinds", hideMyFinds);
+			Config.settings.MapHideMyFinds.setValue(hideMyFinds);
 			Config.AcceptChanges();
 			Render(true);
 			return true;
 
 		case R.id.miMap_ShowDT:
 			showDT = !showDT;
-			Config.Set("MapShowDT", showDT);
+			Config.settings.MapShowDT.setValue(showDT);
 			Config.AcceptChanges();
 			Render(true);
 			return true;
 
 		case R.id.miMap_ShowRatings:
 			showRating = !showRating;
-			Config.Set("MapShowRating", showRating);
+			Config.settings.MapShowRating.setValue(showRating);
 			Config.AcceptChanges();
 			Render(true);
 			return true;
 
 		case R.id.miMap_ShowTitles:
 			showTitles = !showTitles;
-			Config.Set("MapShowTitles", showTitles);
+			Config.settings.MapShowTitles.setValue(showTitles);
 			Config.AcceptChanges();
 			Render(true);
 			return true;
 
 		case R.id.miMap_ShowDirektLine:
 			showDirektLine = !showDirektLine;
-			Config.Set("ShowDirektLine", showDirektLine);
+			Config.settings.ShowDirektLine.setValue(showDirektLine);
 			Config.AcceptChanges();
 			Render(true);
 			return true;
@@ -4578,7 +4578,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	private void setSmotthScrolling(SmoothScrollingTyp typ)
 	{
 		GlobalCore.SmoothScrolling = typ;
-		Config.Set("SmoothScrolling", typ.toString());
+		Config.settings.SmoothScrolling.setValue(typ.toString());
 	}
 
 	@Override
@@ -4679,9 +4679,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		}
 
 		// save zoom level
-		if (Config.GetInt("lastZoomLevel") != Zoom)
+		if (Config.settings.lastZoomLevel.getValue() != Zoom)
 		{
-			Config.Set("lastZoomLevel", Zoom);
+			Config.settings.lastZoomLevel.setValue(Zoom);
 			Config.AcceptChanges();
 		}
 	}
@@ -5223,7 +5223,6 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	// 4 -> Benutzerdefiniert
 	public SmoothScrolling smoothScrolling = new SmoothScrolling();
 
-	
 	private class SmoothScrolling
 	{
 		private int[] animationSteps = new int[5]; // Schritte

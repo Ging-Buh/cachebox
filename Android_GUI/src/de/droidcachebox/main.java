@@ -295,7 +295,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		if (!Config.GetBool("AllowLandscape"))
+		if (!Config.settings.AllowLandscape.getValue())
 		{
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
@@ -306,7 +306,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 		Logger.Add(this);
 
-		N = Config.GetBool("nightMode");
+		N = Config.settings.nightMode.getValue();
 
 		try
 		{
@@ -325,7 +325,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		// initial UiSizes
 		Sizes.initial(false, this);
 
-		int Time = ((Config.GetInt("LockM") * 60) + Config.GetInt("LockSec")) * 1000;
+		int Time = ((Config.settings.LockM.getValue() * 60) + Config.settings.LockSec.getValue()) * 1000;
 		counter = new ScreenLockTimer(Time, Time);
 		counter.start();
 
@@ -362,14 +362,14 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 			if (Database.Data == null)
 			{
-				String FilterString = Config.GetString("Filter");
-				Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0]) : new FilterProperties(
-						FilterString);
+				String FilterString = Config.settings.Filter.getValue();
+				Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0])
+						: new FilterProperties(FilterString);
 				String sqlWhere = Global.LastFilter.getSqlWhere();
 
 				// initialize Database
 				Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
-				String database = Config.GetString("DatabasePath");
+				String database = Config.settings.DatabasePath.getValue();
 				Database.Data.StartUp(database);
 
 				GlobalCore.Categories = new Categories();
@@ -426,7 +426,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 		setDebugVisible();
 
-		if (Config.GetBool("TrackRecorderStartup")) TrackRecorder.StartRecording();
+		if (Config.settings.TrackRecorderStartup.getValue()) TrackRecorder.StartRecording();
 
 		try
 		{
@@ -443,15 +443,15 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		}
 
 		downSlider.isInitial = false;
-		int sollHeight = (Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow")) ? Sizes.getQuickButtonListHeight()
-				: 0;
+		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? Sizes
+				.getQuickButtonListHeight() : 0;
 		setQuickButtonHeight(sollHeight);
 
 		if (isFirstStart)
 		{
 			// ask for API key only if Rev-Number changed, like at new
 			// installation and API Key is Empty
-			if (Config.GetBool("newInstall") && Config.GetAccessToken().equals(""))
+			if (Config.settings.newInstall.getValue() && Config.GetAccessToken().equals(""))
 			{
 				askToGetApiKey();
 			}
@@ -647,7 +647,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 					distance = GlobalCore.SelectedWaypoint().Distance();
 				}
 
-				if (!approachSoundCompleted && (distance < Config.GetInt("SoundApproachDistance")))
+				if (!approachSoundCompleted && (distance < Config.settings.SoundApproachDistance.getValue()))
 				{
 					Global.PlaySound("Approach.wav");
 					approachSoundCompleted = true;
@@ -850,7 +850,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				// "DB wechsel momentan nur mit Neustart...",
 				// Toast.LENGTH_LONG).show();
 				Database db = new AndroidDB(Database.DatabaseType.CacheBox, mainActivity);
-				if (!db.StartUp(Config.GetString("DatabasePath"))) return;
+				if (!db.StartUp(Config.settings.DatabasePath.getValue())) return;
 				Database.Data = null;
 				Database.Data = db;
 				/*
@@ -869,8 +869,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				 * commandUpdate.ExecuteNonQuery(); }
 				 */
 				GlobalCore.Categories = new Categories();
-				Global.LastFilter = (Config.GetString("Filter").length() == 0) ? new FilterProperties(FilterProperties.presets[0])
-						: new FilterProperties(Config.GetString("Filter"));
+				Global.LastFilter = (Config.settings.Filter.getValue().length() == 0) ? new FilterProperties(FilterProperties.presets[0])
+						: new FilterProperties(Config.settings.Filter.getValue());
 				// filterSettings.LoadFilterProperties(Global.LastFilter);
 				Database.Data.GPXFilenameUpdateCacheCount();
 
@@ -904,8 +904,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			{
 				Log.d("DroidCachebox", "Picture taken!!!");
 				GlobalCore.SelectedCache().ReloadSpoilerRessources();
-				String MediaFolder = Config.GetString("UserImageFolder");
-				String TrackFolder = Config.GetString("TrackFolder");
+				String MediaFolder = Config.settings.UserImageFolder.getValue();
+				String TrackFolder = Config.settings.TrackFolder.getValue();
 				String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
 				// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und
 				// die Koordinaten nach der Aufnahme verwendet werden.
@@ -938,7 +938,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				String recordedVideoFilePath = cursor.getString(column_index_data);
 
 				String ext = FileIO.GetFileExtension(recordedVideoFilePath);
-				String MediaFolder = Config.GetString("UserImageFolder");
+				String MediaFolder = Config.settings.UserImageFolder.getValue();
 
 				// Video in Media-Ordner verschieben
 				File source = new File(recordedVideoFilePath);
@@ -949,7 +949,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 					Log.d("DroidCachebox", "Fehler beim Umbenennen der Datei: " + source.getName());
 				}
 
-				String TrackFolder = Config.GetString("TrackFolder");
+				String TrackFolder = Config.settings.TrackFolder.getValue();
 				String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
 				TrackRecorder.AnnotateMedia(basename + "." + ext, relativPath + "/" + basename + "." + ext, mediaCoordinate,
 						mediaTimeString);
@@ -982,7 +982,6 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			chkGpsIsOn();
 		}
 
-		
 		aktView.ActivityResult(requestCode, resultCode, data);
 	}
 
@@ -1032,7 +1031,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		if (runsWithAkku) counter.start();
 		mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
 		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-		if (!Config.GetBool("AllowLandscape"))
+		if (!Config.settings.AllowLandscape.getValue())
 		{
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
@@ -1041,8 +1040,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 		}
 
-		int sollHeight = (Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow")) ? Sizes.getQuickButtonListHeight()
-				: 0;
+		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? Sizes
+				.getQuickButtonListHeight() : 0;
 		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 		downSlider.isInitial = false;
 		InfoDownSlider.invalidate();
@@ -1070,11 +1069,13 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		{
 			if (isFinishing())
 			{
+
+				Config.settings.MapInitLatitude.setValue(mapView.center.Latitude);
+				Config.settings.MapInitLongitude.setValue(mapView.center.Longitude);
+				Config.AcceptChanges();
+
 				Database.Data.Close();
 				Database.FieldNotes.Close();
-				Config.Set("MapInitLatitude", mapView.center.Latitude);
-				Config.Set("MapInitLongitude", mapView.center.Longitude);
-				Config.AcceptChanges();
 
 				this.mWakeLock.release();
 				counter.cancel();
@@ -1152,7 +1153,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			counterStopped = true;
 			// ScreenLock nur Starten, wenn der Config Wert größer 10 sec ist.
 			// Das verhindert das selber aussperren!
-			if ((Config.GetInt("LockM") == 0 && Config.GetInt("LockSec") < 10)) return;
+			if ((Config.settings.LockM.getValue() == 0 && Config.settings.LockSec.getValue() < 10)) return;
 		}
 
 		final Intent mainIntent = new Intent().setClass(this, ScreenLock.class);
@@ -1720,9 +1721,9 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			{
 				mapView = new MapView(this, inflater);
 				mapView.Initialize();
-				mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.GetString("CurrentMapLayer"),
-						Config.GetString("CurrentMapLayer"), "");
-				Global.TrackDistance = Config.GetInt("TrackDistance");
+				mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.settings.CurrentMapLayer.getValue(),
+						Config.settings.CurrentMapLayer.getValue(), "");
+				Global.TrackDistance = Config.settings.TrackDistance.getValue();
 				mapView.InitializeMap();
 			}
 		}
@@ -1777,7 +1778,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		QuickButtonList.setHeight(Sizes.getQuickButtonListHeight());
 		QuickButtonList.setAdapter(QuickButtonsAdapter);
 		QuickButtonList.setOnItemClickListener(QuickButtonOnItemClickListner);
-		String ConfigActionList = Config.GetString("quickButtonList");
+		String ConfigActionList = Config.settings.quickButtonList.getValue();
 		String[] ConfigList = ConfigActionList.split(",");
 		Global.QuickButtonList = Actions.getListFromConfig(ConfigList);
 
@@ -1790,7 +1791,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		Log.d("DroidCachebox", "Starting camera on the phone...");
 
 		// define the file-name to save photo taken by Camera activity
-		String directory = Config.GetString("UserImageFolder");
+		String directory = Config.settings.UserImageFolder.getValue();
 		if (!FileIO.DirectoryExists(directory))
 		{
 			Log.d("DroidCachebox", "Media-Folder does not exist...");
@@ -1824,7 +1825,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		Log.d("DroidCachebox", "Starting video on the phone...");
 
 		// define the file-name to save video taken by Camera activity
-		String directory = Config.GetString("UserImageFolder");
+		String directory = Config.settings.UserImageFolder.getValue();
 		if (!FileIO.DirectoryExists(directory))
 		{
 			Log.d("DroidCachebox", "Media-Folder does not exist...");
@@ -1872,7 +1873,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			Log.d("DroidCachebox", "Starting voice recorder on the phone...");
 
 			// define the file-name to save voice taken by activity
-			String directory = Config.GetString("UserImageFolder");
+			String directory = Config.settings.UserImageFolder.getValue();
 			if (!FileIO.DirectoryExists(directory))
 			{
 				Log.d("DroidCachebox", "Media-Folder does not exist...");
@@ -1906,8 +1907,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			extAudioRecorder.prepare();
 			extAudioRecorder.start();
 
-			String MediaFolder = Config.GetString("UserImageFolder");
-			String TrackFolder = Config.GetString("TrackFolder");
+			String MediaFolder = Config.settings.UserImageFolder.getValue();
+			String TrackFolder = Config.settings.TrackFolder.getValue();
 			String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
 			// Da eine Voice keine Momentaufnahme ist, muss die Zeit und die
 			// Koordinaten beim Start der Aufnahme verwendet werden.
@@ -1950,7 +1951,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		{ // Wenn Telefonjoker-Liste leer neu laden
 			try
 			{
-				URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.GetString("GcJoker") + "&wpt="
+				URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.settings.GcJoker.getValue() + "&wpt="
 						+ GlobalCore.SelectedCache().GcCode);
 				URLConnection urlConnection = url.openConnection();
 				HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
@@ -2044,7 +2045,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		Config.changeDayNight();
 		DescriptionViewControl.mustLoadDescription = true;
 		downSlider.isInitial = false;
-		ActivityUtils.changeToTheme(mainActivity, Config.GetBool("nightMode") ? ActivityUtils.THEME_NIGHT : ActivityUtils.THEME_DAY);
+		ActivityUtils.changeToTheme(mainActivity, Config.settings.nightMode.getValue() ? ActivityUtils.THEME_NIGHT
+				: ActivityUtils.THEME_DAY);
 		Toast.makeText(mainActivity, "changeDayNight", Toast.LENGTH_SHORT).show();
 
 	}
@@ -2053,7 +2055,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	{
 		Global.autoResort = !(Global.autoResort);
 
-		Config.Set("AutoResort", Global.autoResort);
+		Config.settings.AutoResort.setValue(Global.autoResort);
 
 		if (Global.autoResort)
 		{
@@ -2101,7 +2103,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private void addCache()
 	{
 		/*
-		 * String accessToken = Config.GetString("GcAPI"); ArrayList<String>
+		 * String accessToken = Config.settings.GcAPI"); ArrayList<String>
 		 * caches = new ArrayList<String>(); caches.add("GC2XVHW");
 		 * caches.add("GC1T2XP"); caches.add("GC1090W"); caches.clear(); for
 		 * (int i = 0; i < 100; i++) { caches.add("GC2XV" + i); }
@@ -2253,8 +2255,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 			CB_Core.Api.SearchForGeocaches.SearchCoordinate searchC = new CB_Core.Api.SearchForGeocaches.SearchCoordinate();
 
-			searchC.withoutFinds = Config.GetBool("SearchWithoutFounds");
-			searchC.withoutOwn = Config.GetBool("SearchWithoutOwns");
+			searchC.withoutFinds = Config.settings.SearchWithoutFounds.getValue();
+			searchC.withoutOwn = Config.settings.SearchWithoutOwns.getValue();
 
 			searchC.pos = searchCoord;
 			searchC.distanceInMeters = 50000;
@@ -2434,7 +2436,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 	public void setDebugVisible()
 	{
-		if (Config.GetBool("DebugShowPanel"))
+		if (Config.settings.DebugShowPanel.getValue())
 		{
 			debugInfoPanel.setVisibility(View.VISIBLE);
 			debugInfoPanel.onShow();

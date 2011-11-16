@@ -85,8 +85,8 @@ public class SelectDB extends Activity
 
 		Me = this;
 
-		DBPath = FileIO.GetDirectoryName(Config.GetString("DatabasePath"));
-		String DBFile = FileIO.GetFileName(Config.GetString("DatabasePath"));
+		DBPath = FileIO.GetDirectoryName(Config.settings.DatabasePath.getValue());
+		String DBFile = FileIO.GetFileName(Config.settings.DatabasePath.getValue());
 		// Toast.makeText(getApplicationContext(), DBPath,
 		// Toast.LENGTH_LONG).show();
 
@@ -186,7 +186,7 @@ public class SelectDB extends Activity
 		bCancel.setText(GlobalCore.Translations.Get("cancel"));
 		bAutostart.setText(GlobalCore.Translations.Get("StartWithoutSelection"));
 
-		lvFiles.setBackgroundColor(Config.GetBool("nightMode") ? R.color.Night_EmptyBackground
+		lvFiles.setBackgroundColor(Config.settings.nightMode.getValue() ? R.color.Night_EmptyBackground
 				: R.color.Day_EmptyBackground);
 		lvFiles.setCacheColorHint(R.color.Day_TitleBarColor);
 		lvFiles.setDividerHeight(5);
@@ -212,7 +212,7 @@ public class SelectDB extends Activity
 		};
 		mHandler = new Handler();
 
-		autoStartTime = Config.GetInt("MultiDBAutoStartTime");
+		autoStartTime = Config.settings.MultiDBAutoStartTime.getValue();
 		if (autoStartTime > 0)
 		{
 			autoStartCounter = autoStartTime;
@@ -242,7 +242,7 @@ public class SelectDB extends Activity
 
 				dialog.dismiss();
 
-				String FilterString = Config.GetString("Filter");
+				String FilterString = Config.settings.Filter.getValue();
 				Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(
 						FilterProperties.presets[0]) : new FilterProperties(
 						FilterString);
@@ -250,10 +250,10 @@ public class SelectDB extends Activity
 
 				// initialize Database
 				Database.Data = new AndroidDB(DatabaseType.CacheBox, Me);
-				Config.Set("DatabasePath", Config.WorkPath + "/" + text
+				Config.settings.DatabasePath.setValue( Config.WorkPath + "/" + text
 						+ ".db3");
 				Config.AcceptChanges();
-				String database = Config.GetString("DatabasePath");
+				String database = Config.settings.DatabasePath.getValue();
 				Database.Data.StartUp(database);
 
 				GlobalCore.Categories = new Categories();
@@ -288,8 +288,8 @@ public class SelectDB extends Activity
 
 	protected void selectDB()
 	{
-		Config.Set("MultiDBAutoStartTime", autoStartTime);
-		Config.Set("MultiDBAsk", autoStartTime >= 0);
+		Config.settings.MultiDBAutoStartTime.setValue( autoStartTime);
+		Config.settings.MultiDBAsk.setValue( autoStartTime >= 0);
 
 		String name = AktFile.getName();
 		// Toast.makeText(getApplicationContext(), name,
@@ -299,7 +299,7 @@ public class SelectDB extends Activity
 		// Toast.makeText(getApplicationContext(), path,
 		// Toast.LENGTH_SHORT).show();
 
-		Config.Set("DatabasePath", path);
+		Config.settings.DatabasePath.setValue( path);
 		Config.AcceptChanges();
 
 		aktIntent.putExtra("SOMETHING", "EXTRAS");

@@ -36,7 +36,7 @@ import CB_Core.GlobalCore;
 
 public class Global
 {
-	public static final int CurrentRevision = 517;
+	public static final int CurrentRevision = 519;
 	public static final String CurrentVersion = "0.4.";
 	public static final String VersionPrefix = "beta";
 	public static final int LatestDatabaseChange = 1016;
@@ -709,7 +709,7 @@ public class Global
 
 	public static void PlaySound(String soundFile)
 	{
-		if (!Config.GetBool("PlaySounds")) return;
+		if (!Config.settings.PlaySounds.getValue()) return;
 		MediaPlayer mp = new MediaPlayer();
 		mp.setOnPreparedListener(new OnPreparedListener()
 		{
@@ -800,7 +800,7 @@ public class Global
 	 */
 	public static boolean JokerisOnline()
 	{
-		if (Config.GetString("GcJoker").length() == 0)
+		if (Config.settings.GcJoker.getValue().length() == 0)
 		{
 			Logger.General("global.APIisOnline() -Invalid Joker");
 			return false;

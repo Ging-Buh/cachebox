@@ -190,79 +190,75 @@ public class PocketQuery
 		return 0;
 
 	}
-	
-	public static int DownloadSinglePocketQuery(PQ pocketQuery)
-    {
-		return DownloadSinglePocketQuery(pocketQuery, Config.GetString("PocketQueryFolder")+ "\\");
-    }
-	
-	public static int DownloadSinglePocketQuery(PQ pocketQuery, String savePath)
-    {
-        String accessToken = Config.GetAccessToken(); //""
-        HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryZippedFile?format=json&AccessToken=" + accessToken + "&PocketQueryGuid=" + pocketQuery.GUID);
 
-        
-        try
+	public static int DownloadSinglePocketQuery(PQ pocketQuery)
+	{
+		return DownloadSinglePocketQuery(pocketQuery, Config.settings.PocketQueryFolder.getValue() + "\\");
+	}
+
+	public static int DownloadSinglePocketQuery(PQ pocketQuery, String savePath)
+	{
+		String accessToken = Config.GetAccessToken(); // ""
+		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryZippedFile?format=json&AccessToken=" + accessToken
+				+ "&PocketQueryGuid=" + pocketQuery.GUID);
+
+		try
 		{
 			String result = GroundspeakAPI.Execute(httpGet);
 
-		try
-		// Parse JSON Result
-		{
-			JSONTokener tokener = new JSONTokener(result);
-			JSONObject json = (JSONObject) tokener.nextValue();
-			JSONObject status = json.getJSONObject("Status");
-			if (status.getInt("StatusCode") == 0)
+			try
+			// Parse JSON Result
 			{
-				GroundspeakAPI.LastAPIError = "";
-				String test = json.getString("ZippedFile");
-		        byte[] resultByte = CB_Core.Converter.Base64.decode(test);
-		        SimpleDateFormat postFormater = new SimpleDateFormat("yyyyMMddHHmmss");
-				String dateString = postFormater.format(pocketQuery.DateLastGenerated);
-		        String local = savePath + pocketQuery.Name + "_" + dateString + ".zip";
+				JSONTokener tokener = new JSONTokener(result);
+				JSONObject json = (JSONObject) tokener.nextValue();
+				JSONObject status = json.getJSONObject("Status");
+				if (status.getInt("StatusCode") == 0)
+				{
+					GroundspeakAPI.LastAPIError = "";
+					String test = json.getString("ZippedFile");
+					byte[] resultByte = CB_Core.Converter.Base64.decode(test);
+					SimpleDateFormat postFormater = new SimpleDateFormat("yyyyMMddHHmmss");
+					String dateString = postFormater.format(pocketQuery.DateLastGenerated);
+					String local = savePath + pocketQuery.Name + "_" + dateString + ".zip";
 
-		        FileOutputStream fs;
-		            fs = new FileOutputStream(local);
-		        
-		        fs.write(resultByte);
-		        fs.close();
-				
+					FileOutputStream fs;
+					fs = new FileOutputStream(local);
 
-				return 0;
+					fs.write(resultByte);
+					fs.close();
+
+					return 0;
+				}
+				else
+				{
+					GroundspeakAPI.LastAPIError = "";
+					GroundspeakAPI.LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
+					GroundspeakAPI.LastAPIError += status.getString("StatusMessage") + "\n";
+					GroundspeakAPI.LastAPIError += status.getString("ExceptionDetails");
+
+					return (-1);
+				}
+
 			}
-			else
+			catch (JSONException e)
 			{
-				GroundspeakAPI.LastAPIError = "";
-				GroundspeakAPI.LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
-				GroundspeakAPI.LastAPIError += status.getString("StatusMessage") + "\n";
-				GroundspeakAPI.LastAPIError += status.getString("ExceptionDetails");
-
-				return (-1);
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-
 		}
-		catch (JSONException e)
+		catch (ClientProtocolException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.getMessage());
+			return (-1);
 		}
-	}
-	catch (ClientProtocolException e)
-	{
-		System.out.println(e.getMessage());
-		return (-1);
-	}
-	catch (IOException e)
-	{
-		System.out.println(e.getMessage());
-		return (-1);
+		catch (IOException e)
+		{
+			System.out.println(e.getMessage());
+			return (-1);
+		}
+
+		return 0;
+
 	}
 
-	return 0;
-        
-      
-    }
-	
-	
-	
 }

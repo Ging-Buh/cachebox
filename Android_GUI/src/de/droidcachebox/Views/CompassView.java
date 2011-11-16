@@ -163,7 +163,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu, Positio
 	@Override
 	public void OnShow()
 	{
-		compassControl.N = Config.GetBool("nightMode");
+		compassControl.N = Config.settings.nightMode.getValue();
 		PositionEventList.Add(this);
 		SelectedLangChangedEventList.Add(this);
 	}

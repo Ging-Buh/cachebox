@@ -25,6 +25,7 @@ import CB_Core.Settings.SettingEnum;
 import CB_Core.Settings.SettingFile;
 import CB_Core.Settings.SettingFolder;
 import CB_Core.Settings.SettingInt;
+import CB_Core.Settings.SettingIntArray;
 import CB_Core.Settings.SettingModus;
 import CB_Core.Settings.SettingsList;
 import CB_Core.Settings.SettingString;
@@ -175,6 +176,10 @@ public class SettingsListView extends Activity
 					if (SB instanceof SettingBool)
 					{
 						return getBoolView((SettingBool) SB, convertView, parent);
+					}
+					else if (SB instanceof SettingIntArray)
+					{
+						return getIntArrayView((SettingIntArray) SB, convertView, parent);
 					}
 					else if (SB instanceof SettingInt)
 					{
@@ -337,6 +342,45 @@ public class SettingsListView extends Activity
 				public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 				{
 					if (SB != null) SB.setValue(SB.getValues().get(arg2));
+				}
+
+				@Override
+				public void onNothingSelected(AdapterView<?> arg0)
+				{
+					// do nothing
+				}
+			});
+		}
+		return row;
+
+	}
+
+	private View getIntArrayView(final SettingIntArray SB, View convertView, ViewGroup parent)
+	{
+		LayoutInflater inflater = getLayoutInflater();
+		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_enum, parent, false);
+
+		TextView label = (TextView) row.findViewById(R.id.textView1);
+		label.setText(SB.getName());
+		label.setTextSize(Sizes.getScaledFontSize_small());
+		label.setTextColor(Global.getColor(R.attr.TextColor));
+
+		final Spinner spinner = (Spinner) row.findViewById(R.id.spinner1);
+
+		if (spinner.getAdapter() == null)
+		{
+			ArrayAdapter<Integer> enumAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, SB.getValues());
+			enumAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			spinner.setAdapter(enumAdapter);
+			spinner.setSelection(SB.getIndex());
+
+			spinner.setOnItemSelectedListener(new OnItemSelectedListener()
+			{
+
+				@Override
+				public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
+				{
+					if (SB != null) SB.setValue(SB.getValueFromIndex(arg2));
 				}
 
 				@Override

@@ -270,7 +270,7 @@ public class Cache implements Comparable<Cache>
 
 		if (gcLogin == null)
 		{
-			gcLogin = Config.GetString("GcLogin").toLowerCase();
+			gcLogin = Config.settings.GcLogin.getValue().toLowerCase();
 		}
 
 		boolean ret = this.Owner.toLowerCase().equals(gcLogin);
@@ -396,7 +396,7 @@ public class Cache implements Comparable<Cache>
 	{
 		spoilerRessources = new ArrayList<String>();
 
-		String path = Config.GetString("SpoilerFolder");
+		String path = Config.settings.SpoilerFolder.getValue();
 		String directory = path + "/" + GcCode.substring(0, 4);
 
 		if (!FileIO.DirectoryExists(directory)) return;
@@ -425,7 +425,7 @@ public class Cache implements Comparable<Cache>
 		}
 
 		// Add own taken photo
-		directory = Config.GetString("UserImageFolder");
+		directory = Config.settings.UserImageFolder.getValue();
 
 		if (!FileIO.DirectoryExists(directory)) return;
 
@@ -506,38 +506,32 @@ public class Cache implements Comparable<Cache>
 		return (float) cachedDistance;
 	}
 
-	
-
 	public boolean isAttributePositiveSet(Attributes attribute)
 	{
 		return attributesPositive.BitAndBiggerNull(Attributes.GetAttributeDlong(attribute));
-//		return (attributesPositive & Attributes.GetAttributeDlong(attribute)) > 0;
+		// return (attributesPositive & Attributes.GetAttributeDlong(attribute))
+		// > 0;
 	}
-
-	
 
 	public boolean isAttributeNegativeSet(Attributes attribute)
 	{
 		return attributesNegative.BitAndBiggerNull(Attributes.GetAttributeDlong(attribute));
-//		return (attributesNegative & Attributes.GetAttributeDlong(attribute)) > 0;
+		// return (attributesNegative & Attributes.GetAttributeDlong(attribute))
+		// > 0;
 	}
 
-	 public void addAttributeNegative(Attributes attribute)
-	    {
-	        if (attributesNegative == null)
-	            attributesNegative = new DLong(0, 0);
-	        attributesNegative.BitOr( Attributes.GetAttributeDlong(attribute));
-	    }
+	public void addAttributeNegative(Attributes attribute)
+	{
+		if (attributesNegative == null) attributesNegative = new DLong(0, 0);
+		attributesNegative.BitOr(Attributes.GetAttributeDlong(attribute));
+	}
 
+	public void addAttributePositive(Attributes attribute)
+	{
+		if (attributesPositive == null) attributesPositive = new DLong(0, 0);
+		attributesPositive.BitOr(Attributes.GetAttributeDlong(attribute));
+	}
 
-	    public void addAttributePositive(Attributes attribute)
-	    {
-	        if (attributesPositive == null)
-	            attributesPositive = new DLong(0, 0);
-	        attributesPositive.BitOr(Attributes.GetAttributeDlong(attribute));
-	    }
-	
-	
 	/*
 	 * Overrides
 	 */
@@ -611,8 +605,9 @@ public class Cache implements Comparable<Cache>
 
 		return AttributeList;
 	}
-	
-	public void clear(){
+
+	public void clear()
+	{
 		MapX = 0;
 		MapY = 0;
 		GcId = "";

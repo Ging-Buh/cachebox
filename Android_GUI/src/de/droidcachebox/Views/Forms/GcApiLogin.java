@@ -34,13 +34,13 @@ public class GcApiLogin extends Activity
 
 		String GC_AuthUrl;
 
-		if (Config.GetString("OverrideUrl").equals(""))
+		if (Config.settings.OverrideUrl.getValue().equals(""))
 		{
 			GC_AuthUrl = CB_Api.getGcAuthUrl();
 		}
 		else
 		{
-			GC_AuthUrl = Config.GetString("OverrideUrl");
+			GC_AuthUrl = Config.settings.OverrideUrl.getValue();
 		}
 
 		if (GC_AuthUrl.equals(""))
@@ -144,7 +144,9 @@ public class GcApiLogin extends Activity
 					GroundspeakAPI.CacheStatusLiteValid = false;
 
 					// store the encrypted AccessToken in the Config file
-					Config.Set("GcAPIEnc", accessToken);
+					// wir bekommen den Key schon verschlüsselt, deshalb muss er
+					// entschlüsselt gespeichert werden.
+					Config.settings.GcAPI.setValue(Config.encrypt(accessToken));
 					Config.AcceptChanges();
 
 					String act = Config.GetAccessToken();
@@ -159,7 +161,7 @@ public class GcApiLogin extends Activity
 							}
 							else
 							{
-								Config.Set("GcLogin", GroundspeakAPI.MemberName);
+								Config.settings.GcLogin.setValue(GroundspeakAPI.MemberName);
 								Config.AcceptChanges();
 							}
 						}

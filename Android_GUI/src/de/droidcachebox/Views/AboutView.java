@@ -41,11 +41,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent, PositionEvent ,GpsStateChangeEvent{
+public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent, PositionEvent, GpsStateChangeEvent
+{
 
 	Context context;
 	Cache aktCache;
-	
+
 	ProgressBar myProgressBar;
 	TextView myTextView;
 	TextView versionTextView;
@@ -63,210 +64,196 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	TextView Current;
 	Bitmap bitmap = null;
 	Bitmap logo = null;
-	
+
 	public static LinearLayout strengthLayout;
-	
+
 	public static AboutView Me;
 	private static ProgressDialog pd;
-	public AboutView(Context context, final LayoutInflater inflater) 
+
+	public AboutView(Context context, final LayoutInflater inflater)
 	{
 		super(context);
-		
-		Me=this;
-		
+
+		Me = this;
+
 		SelectedCacheEventList.Add(this);
 
-		FrameLayout notesLayout = (FrameLayout)inflater.inflate(R.layout.about, null, false);
+		FrameLayout notesLayout = (FrameLayout) inflater.inflate(R.layout.about, null, false);
 		this.addView(notesLayout);
-		
+
 		findViewById();
 		setText();
-		
-		
-		
-		 // add Event Handler
-        SelectedCacheEventList.Add(this);
-        PositionEventList.Add(this);
+
+		// add Event Handler
+		SelectedCacheEventList.Add(this);
+		PositionEventList.Add(this);
 		GpsStateChangeEventList.Add(this);
-		
-		
-        
-        
-		CachesFoundLabel.setOnClickListener(new OnClickListener() 
+
+		CachesFoundLabel.setOnClickListener(new OnClickListener()
 		{
-			
+
 			@Override
-			public void onClick(View arg0) 
+			public void onClick(View arg0)
 			{
-				MessageBox.Show(GlobalCore.Translations.Get("LoadFounds"), GlobalCore.Translations.Get("AdjustFinds"), MessageBoxButtons.YesNo,MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int button) 
-					{
-						// Behandle das ergebniss
-						switch (button)
+				MessageBox.Show(GlobalCore.Translations.Get("LoadFounds"), GlobalCore.Translations.Get("AdjustFinds"),
+						MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener()
 						{
-							case -1:
-								
-								Thread thread = new Thread()
-								  {
-								      @Override
-								      public void run() 
-								      {
-								    	  transFounds = GroundspeakAPI.GetCachesFound(Config.GetAccessToken());
-								    	  onlineFoundsReadyHandler.sendMessage(onlineFoundsReadyHandler.obtainMessage(1));
-								      }
 
-								  };
+							@Override
+							public void onClick(DialogInterface dialog, int button)
+							{
+								// Behandle das ergebniss
+								switch (button)
+								{
+								case -1:
 
-								  
-								  pd = ProgressDialog.show(main.mainActivity, "", 
-							                 "Search Online", true);
-								 
-								  thread.start();
-								
-								
-								
-								break;
-							case -2:
-								NumerikInputBox.Show(GlobalCore.Translations.Get("AdjustFinds"),GlobalCore.Translations.Get("TelMeFounds"),CB_Core.Config.GetInt("FoundOffset"), DialogListner);
-								break;
-							case -3:
-								
-								break;
-						}
-						
-						dialog.dismiss();
-					}
-					
-			    });
+									Thread thread = new Thread()
+									{
+										@Override
+										public void run()
+										{
+											transFounds = GroundspeakAPI.GetCachesFound(Config.GetAccessToken());
+											onlineFoundsReadyHandler.sendMessage(onlineFoundsReadyHandler.obtainMessage(1));
+										}
 
-				
-				
+									};
+
+									pd = ProgressDialog.show(main.mainActivity, "", "Search Online", true);
+
+									thread.start();
+
+									break;
+								case -2:
+									NumerikInputBox.Show(GlobalCore.Translations.Get("AdjustFinds"),
+											GlobalCore.Translations.Get("TelMeFounds"), CB_Core.Config.settings.FoundOffset.getValue(),
+											DialogListner);
+									break;
+								case -3:
+
+									break;
+								}
+
+								dialog.dismiss();
+							}
+
+						});
+
 			}
 		});
-		
-		
-		 
-		 
-		
-		WP.setOnClickListener(new OnClickListener() 
+
+		WP.setOnClickListener(new OnClickListener()
 		{
-			
+
 			@Override
-			public void onClick(View arg0) 
+			public void onClick(View arg0)
 			{
-				 if (GlobalCore.SelectedCache()== null)
-		                return;
+				if (GlobalCore.SelectedCache() == null) return;
 
-		            if (!Config.GetBool("AllowInternetAccess"))
-		            {
-		            	Toast.makeText(main.mainActivity, GlobalCore.Translations.Get("allowInetConn"), Toast.LENGTH_SHORT).show();
-		                return;
-		            }
-		            
-		            try
-		            {
-		            	Intent browserIntent = new Intent("android.intent.action.VIEW", Uri.parse(GlobalCore.SelectedCache().Url.trim()));
-		            	main.mainActivity.startActivity(browserIntent);
-		            }
-		            catch (Exception exc)
-		            {
-		            	Toast.makeText(main.mainActivity, GlobalCore.Translations.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.SelectedCache().Url.trim() + ")", Toast.LENGTH_SHORT).show();
-                    }
-				
-			}
-			
-			
-			
-			
-		});
-		
-	}
-	
-	
-	protected static final  DialogInterface.OnClickListener  DialogListner = new  DialogInterface.OnClickListener() 
-	   { 
-		
-		@Override public void onClick(DialogInterface dialog, int button) 
-			{
-				String text =NumerikInputBox.editText.getText().toString();
-				// Behandle das ergebniss
-				switch (button)
+				if (!Config.settings.AllowInternetAccess.getValue())
 				{
-					case -1: // ok Clicket
-						int newFounds = Integer.parseInt(text);
-
-		                Config.Set("FoundOffset", newFounds );
-		                Config.AcceptChanges();
-
-						break;
-					case -2: // cancel clicket
-						
-						break;
-					case -3:
-						
-						break;
+					Toast.makeText(main.mainActivity, GlobalCore.Translations.Get("allowInetConn"), Toast.LENGTH_SHORT).show();
+					return;
 				}
-				
-				dialog.dismiss();
-				AboutView.Me.refreshText();
+
+				try
+				{
+					Intent browserIntent = new Intent("android.intent.action.VIEW", Uri.parse(GlobalCore.SelectedCache().Url.trim()));
+					main.mainActivity.startActivity(browserIntent);
+				}
+				catch (Exception exc)
+				{
+					Toast.makeText(
+							main.mainActivity,
+							GlobalCore.Translations.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.SelectedCache().Url.trim() + ")",
+							Toast.LENGTH_SHORT).show();
+				}
+
 			}
-			
-	    };
-	
-	    
-	private int transFounds=-1;
-	private Handler onlineFoundsReadyHandler = new Handler() 
+
+		});
+
+	}
+
+	protected static final DialogInterface.OnClickListener DialogListner = new DialogInterface.OnClickListener()
 	{
-		public void handleMessage(Message msg) 
-	    {
+
+		@Override
+		public void onClick(DialogInterface dialog, int button)
+		{
+			String text = NumerikInputBox.editText.getText().toString();
+			// Behandle das ergebniss
+			switch (button)
+			{
+			case -1: // ok Clicket
+				int newFounds = Integer.parseInt(text);
+
+				Config.settings.FoundOffset.setValue(newFounds);
+				Config.AcceptChanges();
+
+				break;
+			case -2: // cancel clicket
+
+				break;
+			case -3:
+
+				break;
+			}
+
+			dialog.dismiss();
+			AboutView.Me.refreshText();
+		}
+
+	};
+
+	private int transFounds = -1;
+	private Handler onlineFoundsReadyHandler = new Handler()
+	{
+		public void handleMessage(Message msg)
+		{
 			pd.dismiss();
-			
-			if(transFounds>-1)
+
+			if (transFounds > -1)
 			{
 				String Text = GlobalCore.Translations.Get("FoundsSetTo");
-			Text = Text.replace("%s", String.valueOf(transFounds));
-			MessageBox.Show(Text, GlobalCore.Translations.Get("LoadFinds!"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
-			
-            Config.Set("FoundOffset", transFounds );
-            Config.AcceptChanges();
-            AboutView.Me.refreshText();
+				Text = Text.replace("%s", String.valueOf(transFounds));
+				MessageBox.Show(Text, GlobalCore.Translations.Get("LoadFinds!"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
+
+				Config.settings.FoundOffset.setValue(transFounds);
+				Config.AcceptChanges();
+				AboutView.Me.refreshText();
 			}
 			else
 			{
 				MessageBox.Show(GlobalCore.Translations.Get("LogInErrorLoadFinds"), "", MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
 			}
-			
-			
-	    }
+
+		}
 	};
-	
-	
+
 	private void findViewById()
 	{
-		CachesFoundLabel=(TextView)findViewById(R.id.about_CachesFoundLabel);
-		descTextView=(TextView)findViewById(R.id.splash_textViewDesc);
-		versionTextView=(TextView)findViewById(R.id.splash_textViewVersion);
-		myTextView= (TextView)findViewById(R.id.splash_TextView);
-		lblGPS=(TextView)findViewById(R.id.about_lblGPS);
-		GPS=(TextView)findViewById(R.id.about_GPS);
-		lblAccuracy=(TextView)findViewById(R.id.about_lblAccuracy);
-		Accuracy=(TextView)findViewById(R.id.about_Accuracy);
-		lblWP=(TextView)findViewById(R.id.about_lblWP);
-		WP=(TextView)findViewById(R.id.about_WP);
-		lblCord=(TextView)findViewById(R.id.about_lblCord);
-		Cord=(TextView)findViewById(R.id.about_Cord);
-		lblCurrent=(TextView)findViewById(R.id.about_lblCurrent);
-		Current=(TextView)findViewById(R.id.about_Current);
-		
-		strengthLayout = (LinearLayout)findViewById(R.id.strength_control);
-		
-		//set LinkLable Color
+		CachesFoundLabel = (TextView) findViewById(R.id.about_CachesFoundLabel);
+		descTextView = (TextView) findViewById(R.id.splash_textViewDesc);
+		versionTextView = (TextView) findViewById(R.id.splash_textViewVersion);
+		myTextView = (TextView) findViewById(R.id.splash_TextView);
+		lblGPS = (TextView) findViewById(R.id.about_lblGPS);
+		GPS = (TextView) findViewById(R.id.about_GPS);
+		lblAccuracy = (TextView) findViewById(R.id.about_lblAccuracy);
+		Accuracy = (TextView) findViewById(R.id.about_Accuracy);
+		lblWP = (TextView) findViewById(R.id.about_lblWP);
+		WP = (TextView) findViewById(R.id.about_WP);
+		lblCord = (TextView) findViewById(R.id.about_lblCord);
+		Cord = (TextView) findViewById(R.id.about_Cord);
+		lblCurrent = (TextView) findViewById(R.id.about_lblCurrent);
+		Current = (TextView) findViewById(R.id.about_Current);
+
+		strengthLayout = (LinearLayout) findViewById(R.id.strength_control);
+
+		// set LinkLable Color
 		CachesFoundLabel.setTextColor(Global.getColor(R.attr.LinkLabelColor));
 		WP.setTextColor(Global.getColor(R.attr.LinkLabelColor));
-		
-		//set Text Color
+
+		// set Text Color
 		CachesFoundLabel.setTextColor(Global.getColor(R.attr.TextColor));
 		descTextView.setTextColor(Global.getColor(R.attr.TextColor));
 		versionTextView.setTextColor(Global.getColor(R.attr.TextColor));
@@ -281,161 +268,152 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		Cord.setTextColor(Global.getColor(R.attr.TextColor));
 		lblCurrent.setTextColor(Global.getColor(R.attr.TextColor));
 		Current.setTextColor(Global.getColor(R.attr.TextColor));
-		
-		//Set Progressbar from Splash unvisible and release the Obj.
-		myProgressBar=(ProgressBar)findViewById(R.id.splash_progressbar);
+
+		// Set Progressbar from Splash unvisible and release the Obj.
+		myProgressBar = (ProgressBar) findViewById(R.id.splash_progressbar);
 		myProgressBar.setVisibility(View.GONE);
-		myProgressBar=null;
+		myProgressBar = null;
 	}
-	
+
 	private void setText()
 	{
 		versionTextView.setText(Global.getVersionString());
 		descTextView.setText(Global.splashMsg);
-		
+
 		lblGPS.setText(GlobalCore.Translations.Get("gps"));
-        
-         lblWP.setText(GlobalCore.Translations.Get("waypoint"));
-         lblCord.setText(GlobalCore.Translations.Get("coordinate"));
-         lblCurrent.setText(GlobalCore.Translations.Get("current"));
-         lblAccuracy.setText(GlobalCore.Translations.Get("accuracy"));
-         
-         
-         GPS.setText(GlobalCore.Translations.Get("not_active"));
-		
-		
-		
+
+		lblWP.setText(GlobalCore.Translations.Get("waypoint"));
+		lblCord.setText(GlobalCore.Translations.Get("coordinate"));
+		lblCurrent.setText(GlobalCore.Translations.Get("current"));
+		lblAccuracy.setText(GlobalCore.Translations.Get("accuracy"));
+
+		GPS.setText(GlobalCore.Translations.Get("not_active"));
+
 		refreshText();
 	}
-	
+
 	public void refreshText()
 	{
-		CachesFoundLabel.setText(GlobalCore.Translations.Get("caches_found") + " " + String.valueOf(Config.GetInt("FoundOffset")));
-		if (GlobalCore.SelectedCache() != null)
-            if (GlobalCore.SelectedWaypoint() != null)
-            {
-            	WP.setText(GlobalCore.SelectedWaypoint().GcCode);
-            	Cord.setText(Global.FormatLatitudeDM(GlobalCore.SelectedWaypoint().Latitude()) + " " + Global.FormatLongitudeDM(GlobalCore.SelectedWaypoint().Longitude()));
-            }
-            else
-            {
-            	WP.setText(GlobalCore.SelectedCache().GcCode);
-            	Cord.setText(Global.FormatLatitudeDM(GlobalCore.SelectedCache().Latitude()) + " " + Global.FormatLongitudeDM(GlobalCore.SelectedCache().Longitude()));
-            }
-		
+		CachesFoundLabel
+				.setText(GlobalCore.Translations.Get("caches_found") + " " + String.valueOf(Config.settings.FoundOffset.getValue()));
+		if (GlobalCore.SelectedCache() != null) if (GlobalCore.SelectedWaypoint() != null)
+		{
+			WP.setText(GlobalCore.SelectedWaypoint().GcCode);
+			Cord.setText(Global.FormatLatitudeDM(GlobalCore.SelectedWaypoint().Latitude()) + " "
+					+ Global.FormatLongitudeDM(GlobalCore.SelectedWaypoint().Longitude()));
+		}
+		else
+		{
+			WP.setText(GlobalCore.SelectedCache().GcCode);
+			Cord.setText(Global.FormatLatitudeDM(GlobalCore.SelectedCache().Latitude()) + " "
+					+ Global.FormatLongitudeDM(GlobalCore.SelectedCache().Longitude()));
+		}
+
 		this.invalidate();
 	}
 
 	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) 
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 		refreshText();
 	}
 
 	@Override
-	public boolean ItemSelected(MenuItem item) 
+	public boolean ItemSelected(MenuItem item)
 	{
 		return false;
 	}
 
 	@Override
-	public void BeforeShowMenu(Menu menu) 
+	public void BeforeShowMenu(Menu menu)
 	{
 	}
 
 	@Override
-	public void OnShow() 
+	public void OnShow()
 	{
 		LoadImages();
-		
+
 		setSatStrength();
 	}
 
 	@Override
-	public void OnHide() 
+	public void OnHide()
 	{
 		ReleaseImages();
-		
+
 	}
 
 	@Override
-	public void OnFree() 
+	public void OnFree()
 	{
-		
+
 	}
 
 	@Override
-	public int GetMenuId() 
-	{
-		return 0;
-	}
-
-	@Override
-	public void ActivityResult(int requestCode, int resultCode, Intent data) 
-	{
-	}
-
-	@Override
-	public int GetContextMenuId() 
+	public int GetMenuId()
 	{
 		return 0;
 	}
 
 	@Override
-	public void BeforeShowContextMenu(Menu menu) 
+	public void ActivityResult(int requestCode, int resultCode, Intent data)
 	{
 	}
 
 	@Override
-	public boolean ContextMenuItemSelected(MenuItem item) 
+	public int GetContextMenuId()
+	{
+		return 0;
+	}
+
+	@Override
+	public void BeforeShowContextMenu(Menu menu)
+	{
+	}
+
+	@Override
+	public boolean ContextMenuItemSelected(MenuItem item)
 	{
 		return false;
 	}
 
-
-
 	@Override
-	public void PositionChanged(Location location) 
+	public void PositionChanged(Location location)
 	{
-		/* if ((Global.Locator.getLocation() != null) && (Global.Locator.getLocation().hasAccuracy()))
-	        {
-	        	int radius = (int) Global.Locator.getLocation().getAccuracy();
-	        	Accuracy.setText("+/- " + String.valueOf(radius) + "m (" + Global.Locator.ProviderString()+")");
-	        }
-		 else
-		 {
-			 Accuracy.setText("");
-		 }
-		 if (Global.Locator.getLocation() != null)
-		 {
-			 Current.setText(Global.FormatLatitudeDM(Global.Locator.getLocation().getLatitude()) + " " + Global.FormatLongitudeDM(Global.Locator.getLocation().getLongitude()));
-			 GPS.setText(GlobalCore.Translations.Get("alt") + " " + Global.Locator.getAltString());
-		 }
-		 
-		 if (Global.Locator == null)
-         {
-             GPS.setText(GlobalCore.Translations.Get("not_detected"));
-             return;
-         }*/
+		/*
+		 * if ((Global.Locator.getLocation() != null) &&
+		 * (Global.Locator.getLocation().hasAccuracy())) { int radius = (int)
+		 * Global.Locator.getLocation().getAccuracy(); Accuracy.setText("+/- " +
+		 * String.valueOf(radius) + "m (" +
+		 * Global.Locator.ProviderString()+")"); } else { Accuracy.setText("");
+		 * } if (Global.Locator.getLocation() != null) {
+		 * Current.setText(Global.FormatLatitudeDM
+		 * (Global.Locator.getLocation().getLatitude()) + " " +
+		 * Global.FormatLongitudeDM
+		 * (Global.Locator.getLocation().getLongitude()));
+		 * GPS.setText(GlobalCore.Translations.Get("alt") + " " +
+		 * Global.Locator.getAltString()); } if (Global.Locator == null) {
+		 * GPS.setText(GlobalCore.Translations.Get("not_detected")); return; }
+		 */
 
-
-				 
 	}
 
 	@Override
-	public void OrientationChanged(float heading) {
+	public void OrientationChanged(float heading)
+	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void LoadImages()
 	{
-		//set LinkLable Color
+		// set LinkLable Color
 		CachesFoundLabel.setTextColor(Global.getColor(R.attr.LinkLabelColor));
 		WP.setTextColor(Global.getColor(R.attr.LinkLabelColor));
-		
-		//set Text Color
-		
+
+		// set Text Color
+
 		descTextView.setTextColor(Global.getColor(R.attr.TextColor));
 		versionTextView.setTextColor(Global.getColor(R.attr.TextColor));
 		myTextView.setTextColor(Global.getColor(R.attr.TextColor));
@@ -444,23 +422,23 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		lblAccuracy.setTextColor(Global.getColor(R.attr.TextColor));
 		Accuracy.setTextColor(Global.getColor(R.attr.TextColor));
 		lblWP.setTextColor(Global.getColor(R.attr.TextColor));
-		
+
 		lblCord.setTextColor(Global.getColor(R.attr.TextColor));
 		Cord.setTextColor(Global.getColor(R.attr.TextColor));
 		lblCurrent.setTextColor(Global.getColor(R.attr.TextColor));
 		Current.setTextColor(Global.getColor(R.attr.TextColor));
-		
-		
+
 		Resources res = getResources();
-		
-		boolean N = Config.GetBool("nightMode");
-		
-		bitmap = BitmapFactory.decodeResource(res, N? R.drawable.night_splash_back : R.drawable.splash_back);
+
+		boolean N = Config.settings.nightMode.getValue();
+
+		bitmap = BitmapFactory.decodeResource(res, N ? R.drawable.night_splash_back : R.drawable.splash_back);
 		logo = BitmapFactory.decodeResource(res, R.drawable.cachebox_logo);
 		((ImageView) findViewById(R.id.splash_BackImage)).setImageBitmap(bitmap);
 		((ImageView) findViewById(R.id.splash_Logo)).setImageBitmap(logo);
-		
+
 	}
+
 	private void ReleaseImages()
 	{
 		((ImageView) findViewById(R.id.splash_BackImage)).setImageResource(0);
@@ -478,42 +456,42 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	}
 
 	@Override
-	public void GpsStateChanged() 
+	public void GpsStateChanged()
 	{
 		if ((Global.Locator.getLocation() != null) && (Global.Locator.getLocation().hasAccuracy()))
-        {
-        	int radius = (int) Global.Locator.getLocation().getAccuracy();
-        	Accuracy.setText("+/- " + String.valueOf(radius) + "m (" + Global.Locator.ProviderString()+")");
-        }
-	 else
-	 {
-		 Accuracy.setText("");
-	 }
-	 if (Global.Locator.getLocation() != null)
-	 {
-		 Current.setText(Global.FormatLatitudeDM(Global.Locator.getLocation().getLatitude()) + " " + Global.FormatLongitudeDM(Global.Locator.getLocation().getLongitude()));
-		 GPS.setText(de.droidcachebox.Locator.GPS.getSatAndFix() + "   " + GlobalCore.Translations.Get("alt") + " " + Global.Locator.getAltString());
-	 }
-	 
-	 if (Global.Locator == null)
-     {
-         GPS.setText(GlobalCore.Translations.Get("not_detected"));
-         return;
-     }
-		
-	 
-	 setSatStrength();
-	 
+		{
+			int radius = (int) Global.Locator.getLocation().getAccuracy();
+			Accuracy.setText("+/- " + String.valueOf(radius) + "m (" + Global.Locator.ProviderString() + ")");
+		}
+		else
+		{
+			Accuracy.setText("");
+		}
+		if (Global.Locator.getLocation() != null)
+		{
+			Current.setText(Global.FormatLatitudeDM(Global.Locator.getLocation().getLatitude()) + " "
+					+ Global.FormatLongitudeDM(Global.Locator.getLocation().getLongitude()));
+			GPS.setText(de.droidcachebox.Locator.GPS.getSatAndFix() + "   " + GlobalCore.Translations.Get("alt") + " "
+					+ Global.Locator.getAltString());
+		}
+
+		if (Global.Locator == null)
+		{
+			GPS.setText(GlobalCore.Translations.Get("not_detected"));
+			return;
+		}
+
+		setSatStrength();
+
 	}
-	
-	
+
 	private static View[] balken = null;
-	
+
 	public static void setSatStrength()
 	{
-		
+
 		de.droidcachebox.Locator.GPS.setSatStrength(strengthLayout, balken);
-		
+
 	}
-	
+
 }

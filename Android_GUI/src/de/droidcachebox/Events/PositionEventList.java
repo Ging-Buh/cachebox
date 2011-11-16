@@ -48,7 +48,7 @@ public class PositionEventList
 	public static void Call(float heading)
 	{
 
-		if (!Config.getHtcCompass()) return;
+		if (!Config.settings.HtcCompass.getValue()) return;
 
 		anzCompassValues++;
 		compassValue += heading;

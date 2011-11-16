@@ -149,7 +149,7 @@ public final class CompassControl extends View
 		faceRect = new RectF();
 		faceRect.set(rimRect.left + rimSize, rimRect.top + rimSize, rimRect.right - rimSize, rimRect.bottom - rimSize);
 
-		faceTexture = BitmapFactory.decodeResource(getContext().getResources(), !Config.GetBool("nightMode") ? R.drawable.plastic
+		faceTexture = BitmapFactory.decodeResource(getContext().getResources(), !Config.settings.nightMode.getValue() ? R.drawable.plastic
 				: R.drawable.night_plastic);
 
 		BitmapShader paperShader = new BitmapShader(faceTexture, Shader.TileMode.MIRROR, Shader.TileMode.MIRROR);

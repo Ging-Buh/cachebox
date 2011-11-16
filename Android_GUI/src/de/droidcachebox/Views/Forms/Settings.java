@@ -145,8 +145,6 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 	private Spinner ActionListAll;
 	private boolean ActionListChanged = false;
 	private Button btnAdvancedSettings;
-	
-	
 
 	private Button getApiKey;
 	private EditText EditDebugOverrideGcAuth;
@@ -167,7 +165,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
 
-		if (!Config.GetBool("AllowLandscape"))
+		if (!Config.settings.AllowLandscape.getValue())
 		{
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
@@ -179,7 +177,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 		Bundle bundle = getIntent().getExtras();
 		int PerformButtonClickID = (Integer) bundle.getSerializable("Show");
 
-		this.getWindow().setBackgroundDrawableResource(Config.GetBool("nightMode") ? color.darker_gray : color.background_dark);
+		this.getWindow().setBackgroundDrawableResource(Config.settings.nightMode.getValue() ? color.darker_gray : color.background_dark);
 
 		context = this.getBaseContext();
 		Me = this;
@@ -218,7 +216,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 				{
 					if (selected.equals(tmp.Name))
 					{
-						Config.Set("Sel_LanguagePath", tmp.Path);
+						Config.settings.Sel_LanguagePath.setValue(tmp.Path);
 						try
 						{
 							GlobalCore.Translations.ReadTranslationsFile(tmp.Path);
@@ -307,8 +305,8 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 			@Override
 			public void onClick(View arg0)
 			{
-				Boolean newState = !Config.GetBool("HtcCompass");
-				Config.Set("HtcCompass", newState);
+				Boolean newState = !Config.settings.HtcCompass.getValue();
+				Config.settings.HtcCompass.setValue(newState);
 				chkCompassLevelViewState();
 			}
 		});
@@ -319,8 +317,8 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 			@Override
 			public void onClick(View arg0)
 			{
-				Boolean newState = !Config.GetBool("MoveMapCenterWithSpeed");
-				Config.Set("MoveMapCenterWithSpeed", newState);
+				Boolean newState = !Config.settings.MoveMapCenterWithSpeed.getValue();
+				Config.settings.MoveMapCenterWithSpeed.setValue(newState);
 			}
 		});
 
@@ -333,7 +331,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 				try
 				{
 					int newState = Integer.parseInt(EditCompassLevel.getText().toString());
-					Config.Set("HtcLevel", newState);
+					Config.settings.HtcLevel.setValue(newState);
 				}
 				catch (Exception e)
 				{
@@ -375,7 +373,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 			@Override
 			public void afterTextChanged(Editable arg0)
 			{
-				Config.Set("GcLogin", EditTextGCName.getText().toString());
+				Config.settings.GcLogin.setValue(EditTextGCName.getText().toString());
 
 			}
 		});
@@ -402,7 +400,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 			{
 				try
 				{
-					Config.SetEncrypted("GcVotePassword", EditTextGCVotePW.getEditableText().toString());
+					Config.settings.GcVotePassword.setValue(EditTextGCVotePW.getEditableText().toString());
 				}
 				catch (Exception e)
 				{
@@ -431,7 +429,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 			@Override
 			public void afterTextChanged(Editable arg0)
 			{
-				Config.Set("GcJoker", EditTextGCJoker.getText().toString());
+				Config.settings.GcJoker.setValue(EditTextGCJoker.getText().toString());
 
 			}
 		});
@@ -442,8 +440,8 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 			@Override
 			public void onClick(View v)
 			{
-				Boolean newState = !Config.GetBool("DebugShowPanel");
-				Config.Set("DebugShowPanel", newState);
+				Boolean newState = !Config.settings.DebugShowPanel.getValue();
+				Config.settings.DebugShowPanel.setValue(newState);
 				((main) main.mainActivity).setDebugVisible();
 
 			}
@@ -561,20 +559,20 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 
 		btnAdvancedSettings.setOnClickListener(new OnClickListener()
 		{
-			
+
 			@Override
 			public void onClick(View arg0)
 			{
 				Intent intent = new Intent().setClass(Settings.Me, SettingsListView.class);
-//				Bundle b = new Bundle();
-//				b.putSerializable("PqList", pqList);
-//				PqListIntent.putExtras(b);
-				
+				// Bundle b = new Bundle();
+				// b.putSerializable("PqList", pqList);
+				// PqListIntent.putExtras(b);
+
 				Settings.Me.startActivityForResult(intent, Global.RESULT_ADVANCED_SETTINGS);
-				
+
 			}
 		});
-		
+
 		FillSettings();
 		setLang();
 
@@ -743,7 +741,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 		EditDebugOverrideGcAuth = (EditText) this.findViewById(R.id.settings_debugOverrideGCurl);
 		chkSearchWithoutFounds = (CheckBox) this.findViewById(R.id.settings_without_founds);
 		chkSearchWithoutOwns = (CheckBox) this.findViewById(R.id.settings_without_owns);
-		btnAdvancedSettings = (Button)this.findViewById(R.id.btn_advanced_settings);
+		btnAdvancedSettings = (Button) this.findViewById(R.id.btn_advanced_settings);
 	}
 
 	private void setLang()
@@ -789,51 +787,50 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 	{
 		try
 		{
-			EditTextGCName.setText(Config.GetString("GcLogin"));
-			EditTextGCVotePW.setText(Config.GetStringEncrypted("GcVotePassword"));
-			EditTextGCJoker.setText(Config.GetString("GcJoker"));
-			EditDebugOverrideGcAuth.setText(Config.GetString("OverrideUrl"));
+			EditTextGCName.setText(Config.settings.GcLogin.getValue());
+			EditTextGCVotePW.setText(Config.settings.GcVotePassword.getValue());
+			EditTextGCJoker.setText(Config.settings.GcJoker.getValue());
+			EditDebugOverrideGcAuth.setText(Config.settings.OverrideUrl.getValue());
 			fillLangCombo();
-			checkBoxHTCCompass.setChecked(Config.GetBool("HtcCompass"));
-			EditCompassLevel.setText(String.valueOf(Config.GetInt("HtcLevel")));
+			checkBoxHTCCompass.setChecked(Config.settings.HtcCompass.getValue());
+			EditCompassLevel.setText(String.valueOf(Config.settings.HtcLevel.getValue()));
 			chkCompassLevelViewState();
 			fillLevelSpinner();
 			fillSmothSpinner();
 			fillTrackDistanceSpinner();
-			chkTrackStart.setChecked(Config.GetBool("TrackRecorderStartup"));
-			chkMapink.setChecked(Config.GetBool("ImportLayerOsm"));
-			chkCycleMap.setChecked(Config.GetBool("ImportLayerOcm"));
-			chkOsmarenerer.setChecked(Config.GetBool("ImportLayerOsma"));
-			chkDPIaware.setChecked(Config.GetBool("OsmDpiAwareRendering"));
-			cbMoveMapCenterWithSpeed.setChecked(Config.GetBool("MoveMapCenterWithSpeed"));
-			OsmMinLevel.setSelection(Config.GetInt("OsmMinLevel"));
-			OsmMaxLevel.setSelection(Config.GetInt("OsmMaxLevel"));
-			ZoomCross.setSelection(Integer.parseInt(Config.GetString("ZoomCross")) - 14);
-			SmoothScrolling.setSelection(smoth.indexOf(SmoothScrollingTyp.valueOf(Config.GetString("SmoothScrolling"))));
+			chkTrackStart.setChecked(Config.settings.TrackRecorderStartup.getValue());
+			chkMapink.setChecked(Config.settings.ImportLayerOsm.getValue());
 
-			TrackDistance.setSelection(distance.indexOf(Config.GetInt("TrackDistance")));
+			chkDPIaware.setChecked(Config.settings.OsmDpiAwareRendering.getValue());
+			cbMoveMapCenterWithSpeed.setChecked(Config.settings.MoveMapCenterWithSpeed.getValue());
+			OsmMinLevel.setSelection(Config.settings.OsmMinLevel.getValue());
+			OsmMaxLevel.setSelection(Config.settings.OsmMaxLevel.getValue());
+			ZoomCross.setSelection(Config.settings.ZoomCross.getValue() - 14);
+			SmoothScrolling.setSelection(smoth.indexOf(SmoothScrollingTyp.valueOf(Config.settings.SmoothScrolling.getValue())));
 
-			chkAllowInetAccess.setChecked(Config.GetBool("AllowInternetAccess"));
+			TrackDistance.setSelection(distance.indexOf(Config.settings.TrackDistance.getValue()));
 
-			chkDebugShowPanel.setChecked(Config.GetBool("DebugShowPanel"));
-			chkDebugMemory.setChecked(Config.GetBool("DebugMemory"));
-			chkDebugMsg.setChecked(Config.GetBool("DebugShowMsg"));
-			chkDebugMarker.setChecked(Config.GetBool("DebugShowMarker"));
-			chkDebugLog.setChecked(Config.GetBool("DebugShowLog"));
+			chkAllowInetAccess.setChecked(Config.settings.AllowInternetAccess.getValue());
+
+			chkDebugShowPanel.setChecked(Config.settings.DebugShowPanel.getValue());
+			chkDebugMemory.setChecked(Config.settings.DebugMemory.getValue());
+			chkDebugMsg.setChecked(Config.settings.DebugShowMsg.getValue());
+			chkDebugMarker.setChecked(Config.settings.DebugShowMarker.getValue());
+			chkDebugLog.setChecked(Config.settings.DebugShowLog.getValue());
 
 			fillApproachSpinner();
-			ApproachSound.setSelection(approachValues.indexOf(Config.GetInt("SoundApproachDistance")));
+			ApproachSound.setSelection(approachValues.indexOf(Config.settings.SoundApproachDistance.getValue()));
 
-			ScreenLock_wheel_m.setCurrentItem(Config.GetInt("LockM"));
-			ScreenLock_wheel_sec.setCurrentItem(Config.GetInt("LockSec"));
+			ScreenLock_wheel_m.setCurrentItem(Config.settings.LockM.getValue());
+			ScreenLock_wheel_sec.setCurrentItem(Config.settings.LockSec.getValue());
 
 			if (Global.Debug) ToggleDebugView.setVisibility(View.VISIBLE);
 
-			chkAllowLandscape.setChecked(Config.GetBool("AllowLandscape"));
+			chkAllowLandscape.setChecked(Config.settings.AllowLandscape.getValue());
 			fillQuickButton();
 
-			chkSearchWithoutFounds.setChecked(Config.GetBool("SearchWithoutFounds"));
-			chkSearchWithoutOwns.setChecked(Config.GetBool("SearchWithoutOwns"));
+			chkSearchWithoutFounds.setChecked(Config.settings.SearchWithoutFounds.getValue());
+			chkSearchWithoutOwns.setChecked(Config.settings.SearchWithoutOwns.getValue());
 
 			if (!Config.GetAccessToken().equals(""))
 			{
@@ -843,9 +840,9 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 			{
 				((ImageView) findViewById(R.id.settings_API_Chk_Img)).setImageDrawable(Global.Icons[39]);
 			}
-			
+
 			((ImageView) findViewById(R.id.settings_API_Chk_Img)).invalidate();
-			
+
 		}
 		catch (Exception e)
 		{
@@ -858,7 +855,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 	{
 		// we are take the Key encrypted from own server
 		// so we save it with "Enc"
-		Config.Set("GcAPIEnc", key);
+		Config.settings.GcAPI.setValue(Config.encrypt(key));
 		Config.AcceptChanges();
 	}
 
@@ -866,57 +863,55 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 	{
 		EditTextGCName.setText(UserName);
 		EditTextGCName.invalidate();
-		
+
 		if (!Config.GetAccessToken().equals(""))
 		{
 			((ImageView) findViewById(R.id.settings_API_Chk_Img)).setImageDrawable(Global.Icons[27]);
 		}
-		
+
 	}
 
 	private void SaveSettings()
 	{
-		
+
 		Config.settings.WriteToDB();
-		
-		
-		Config.Set("GcLogin", EditTextGCName.getEditableText().toString());
-		Config.Set("GcJoker", EditTextGCJoker.getEditableText().toString());
-		Config.SetEncrypted("GcVotePassword", EditTextGCVotePW.getEditableText().toString());
-		Config.Set("TrackRecorderStartup", chkTrackStart.isChecked());
-		Config.Set("ImportLayerOsm", chkMapink.isChecked());
-		Config.Set("ImportLayerOcm", chkCycleMap.isChecked());
-		Config.Set("ImportLayerOsma", chkOsmarenerer.isChecked());
-		Config.Set("OsmDpiAwareRendering", chkDPIaware.isChecked());
-		Config.Set("OsmMinLevel", (Integer) OsmMinLevel.getSelectedItem());
-		Config.Set("OsmMaxLevel", (Integer) OsmMaxLevel.getSelectedItem());
-		Config.Set("ZoomCross", (Integer) ZoomCross.getSelectedItem());
+
+		Config.settings.GcLogin.setValue(EditTextGCName.getEditableText().toString());
+		Config.settings.GcJoker.setValue(EditTextGCJoker.getEditableText().toString());
+		Config.settings.GcVotePassword.setValue(EditTextGCVotePW.getEditableText().toString());
+		Config.settings.TrackRecorderStartup.setValue(chkTrackStart.isChecked());
+		Config.settings.ImportLayerOsm.setValue(chkMapink.isChecked());
+
+		Config.settings.OsmDpiAwareRendering.setValue(chkDPIaware.isChecked());
+		Config.settings.OsmMinLevel.setValue((Integer) OsmMinLevel.getSelectedItem());
+		Config.settings.OsmMaxLevel.setValue((Integer) OsmMaxLevel.getSelectedItem());
+		Config.settings.ZoomCross.setValue((Integer) ZoomCross.getSelectedItem());
 		String SmoothScrollingString = ((SmoothScrollingTyp) SmoothScrolling.getSelectedItem()).name();
 		GlobalCore.SmoothScrolling = SmoothScrollingTyp.valueOf(SmoothScrollingString);
-		Config.Set("SmoothScrolling", SmoothScrollingString);
-		Config.Set("TrackDistance", (Integer) TrackDistance.getSelectedItem());
-		Config.Set("AllowInternetAccess", chkAllowInetAccess.isChecked());
-		Config.Set("DebugShowPanel", chkDebugShowPanel.isChecked());
-		Config.Set("DebugMemory", chkDebugMemory.isChecked());
-		Config.Set("DebugShowMsg", chkDebugMsg.isChecked());
-		Config.Set("DebugShowMarker", chkDebugMarker.isChecked());
-		Config.Set("DebugShowLog", chkDebugLog.isChecked());
-		Config.Set("OverrideUrl", EditDebugOverrideGcAuth.getEditableText().toString());
+		Config.settings.SmoothScrolling.setValue(SmoothScrollingString);
+		Config.settings.TrackDistance.setValue((Integer) TrackDistance.getSelectedItem());
+		Config.settings.AllowInternetAccess.setValue(chkAllowInetAccess.isChecked());
+		Config.settings.DebugShowPanel.setValue(chkDebugShowPanel.isChecked());
+		Config.settings.DebugMemory.setValue(chkDebugMemory.isChecked());
+		Config.settings.DebugShowMsg.setValue(chkDebugMsg.isChecked());
+		Config.settings.DebugShowMarker.setValue(chkDebugMarker.isChecked());
+		Config.settings.DebugShowLog.setValue(chkDebugLog.isChecked());
+		Config.settings.OverrideUrl.setValue(EditDebugOverrideGcAuth.getEditableText().toString());
 
-		Config.Set("SoundApproachDistance", (Integer) ApproachSound.getSelectedItem());
+		Config.settings.SoundApproachDistance.setValue((Integer) ApproachSound.getSelectedItem());
 
 		int M = ScreenLock_wheel_m.getCurrentItem();
 		int Sec = ScreenLock_wheel_sec.getCurrentItem();
-		Config.Set("LockM", M);
-		Config.Set("LockSec", Sec);
+		Config.settings.LockM.setValue(M);
+		Config.settings.LockSec.setValue(Sec);
 		((main) main.mainActivity).setScreenLockTimerNew(((M * 60) + Sec) * 1000);
 
 		((main) main.mainActivity).setDebugVisible();
 		((main) main.mainActivity).setDebugMsg("");
-		Config.Set("AllowLandscape", chkAllowLandscape.isChecked());
+		Config.settings.AllowLandscape.setValue(chkAllowLandscape.isChecked());
 
-		boolean QuickButtonShowChanged = (Config.GetBool("quickButtonShow") != chkQuickButtonShow.isChecked());
-		Config.Set("quickButtonShow", chkQuickButtonShow.isChecked());
+		boolean QuickButtonShowChanged = (Config.settings.quickButtonShow.getValue() != chkQuickButtonShow.isChecked());
+		Config.settings.quickButtonShow.setValue(chkQuickButtonShow.isChecked());
 		String ActionsString = "";
 		int counter = 0;
 		for (QuickButtonItem tmp : Global.QuickButtonList)
@@ -928,21 +923,21 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 			}
 			counter++;
 		}
-		Config.Set("quickButtonList", ActionsString);
+		Config.settings.quickButtonList.setValue(ActionsString);
 
 		// reinital map
-		int lastZoom = Config.GetInt("lastZoomLevel");
-		if (lastZoom < Config.GetInt("OsmMinLevel"))
+		int lastZoom = Config.settings.lastZoomLevel.getValue();
+		if (lastZoom < Config.settings.OsmMinLevel.getValue())
 		{
-			lastZoom = Config.GetInt("OsmMinLevel");
+			lastZoom = Config.settings.OsmMinLevel.getValue();
 		}
-		if (lastZoom > Config.GetInt("OsmMaxLevel"))
+		if (lastZoom > Config.settings.OsmMaxLevel.getValue())
 		{
-			lastZoom = Config.GetInt("OsmMaxLevel");
+			lastZoom = Config.settings.OsmMaxLevel.getValue();
 		}
-		Config.Set("lastZoomLevel", lastZoom);
-		Config.Set("SearchWithoutFounds", chkSearchWithoutFounds.isChecked());
-		Config.Set("SearchWithoutOwns", chkSearchWithoutOwns.isChecked());
+		Config.settings.lastZoomLevel.setValue(lastZoom);
+		Config.settings.SearchWithoutFounds.setValue(chkSearchWithoutFounds.isChecked());
+		Config.settings.SearchWithoutOwns.setValue(chkSearchWithoutOwns.isChecked());
 
 		Config.AcceptChanges();
 		main.mapView.setNewSettings();
@@ -957,7 +952,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 
 	private void chkCompassLevelViewState()
 	{
-		if (Config.GetBool("HtcCompass"))
+		if (Config.settings.HtcCompass.getValue())
 		{
 			DescCompassLevel.setEnabled(true);
 			EditCompassLevel.setEnabled(true);
@@ -973,13 +968,13 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 
 	private void fillLangCombo()
 	{
-		Sprachen = GlobalCore.Translations.GetLangs(Config.GetString("LanguagePath"));
+		Sprachen = GlobalCore.Translations.GetLangs(Config.settings.LanguagePath.getValue());
 		String[] items = new String[Sprachen.size()];
 		int index = 0;
 		int selection = -1;
 		for (Langs tmp : Sprachen)
 		{
-			if (Config.GetString("Sel_LanguagePath").equals(tmp.Path)) selection = index;
+			if (Config.settings.Sel_LanguagePath.getValue().equals(tmp.Path)) selection = index;
 			items[index++] = tmp.Name;
 		}
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
@@ -991,24 +986,15 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 
 	private void fillLevelSpinner()
 	{
-		Integer Level[] = new Integer[21];
-		Integer CrossLevel[] = new Integer[8];
 
-		for (int i = 0; i < 22; i++)
-		{
-			if (i < 21) Level[i] = i;
-
-			if (i > 13) CrossLevel[i - 14] = i;
-
-		}
-
-		ArrayAdapter<Integer> minAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, Level);
+		ArrayAdapter<Integer> minAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, Config.settings.Level);
 		minAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-		ArrayAdapter<Integer> maxAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, Level);
+		ArrayAdapter<Integer> maxAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, Config.settings.Level);
 		maxAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-		ArrayAdapter<Integer> crossAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, CrossLevel);
+		ArrayAdapter<Integer> crossAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item,
+				Config.settings.CrossLevel);
 		crossAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 		OsmMinLevel.setAdapter(minAdapter);
@@ -1049,22 +1035,17 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 
 	private void fillQuickButton()
 	{
-		chkQuickButtonShow.setChecked(Config.GetBool("quickButtonShow"));
+		chkQuickButtonShow.setChecked(Config.settings.quickButtonShow.getValue());
 		ActionListView.setAdapter(QuickListBaseAdapter);
 		ActionListChanged = false;
 	}
 
 	ArrayList<Integer> approachValues = new ArrayList<Integer>();
-	Integer[] approach = new Integer[]
-		{ 0, 2, 10, 25, 50, 100, 200, 500, 1000 };
 
-	
-	
-	
 	private void fillApproachSpinner()
 	{
 		approachValues = new ArrayList<Integer>();
-		for (Integer item : approach)
+		for (Integer item : Config.settings.approach)
 		{
 			approachValues.add(item);
 		}
@@ -1074,15 +1055,13 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 		ApproachSound.setAdapter(approachAdapter);
 	}
 
-	Integer[] TrackDistanceArray = new Integer[]
-		{ 1, 3, 5, 10, 20 };
 	ArrayList<Integer> distance = new ArrayList<Integer>();
 
 	private void fillTrackDistanceSpinner()
 	{
 		distance = new ArrayList<Integer>();
 
-		for (Integer item : TrackDistanceArray)
+		for (Integer item : Config.settings.TrackDistanceArray)
 		{
 			distance.add(item);
 		}

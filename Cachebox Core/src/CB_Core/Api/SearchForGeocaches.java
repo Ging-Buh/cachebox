@@ -49,12 +49,12 @@ public class SearchForGeocaches
 	{
 		public String gcCode;
 	}
-	
+
 	public static class SearchGCName extends SearchCoordinate
 	{
 		public String gcName;
 	}
-	
+
 	public static class SearchGCOwner extends SearchCoordinate
 	{
 		public String OwnerName;
@@ -84,11 +84,7 @@ public class SearchForGeocaches
 			HttpPost httppost = new HttpPost("https://api.groundspeak.com/LiveV5/Geocaching.svc/SearchForGeocaches?format=json");
 
 			String requestString = "";
-			
-			
-			
-			
-			
+
 			if (search instanceof SearchGC)
 			{
 				isLite = false;
@@ -121,10 +117,10 @@ public class SearchForGeocaches
 					requestString += "\"IsLite\":false,"; // full for Premium
 				requestString += "\"StartIndex\":0,";
 				requestString += "\"MaxPerPage\":" + String.valueOf(searchC.number) + ",";
-				
+
 				requestString += "\"GeocacheName\":{";
 				requestString += "\"GeocacheName\":\"" + searchC.gcName + "\"},";
-				
+
 				requestString += "\"PointRadius\":{";
 				requestString += "\"DistanceInMeters\":" + "5000000" + ",";
 				requestString += "\"Point\":{";
@@ -132,21 +128,19 @@ public class SearchForGeocaches
 				requestString += "\"Longitude\":" + String.valueOf(searchC.pos.Longitude);
 				requestString += "}";
 				requestString += "},";
-		
 
 				requestString += "}";
-				
+
 			}
 			else if (search instanceof SearchGCOwner)
 			{
 				SearchGCOwner searchC = (SearchGCOwner) search;
 				requestString = "{";
 				requestString += "\"AccessToken\":\"" + accessToken + "\",";
-				
+
 				requestString += "\"HiddenByUsers\":{";
 				requestString += "\"UserNames\":[\"" + searchC.OwnerName + "\"]},";
-				
-				
+
 				if (isLite) requestString += "\"IsLite\":true,"; // only lite
 				else
 					requestString += "\"IsLite\":false,"; // full for Premium
@@ -154,8 +148,7 @@ public class SearchForGeocaches
 				requestString += "\"MaxPerPage\":" + String.valueOf(searchC.number) + ",";
 				requestString += "\"GeocacheLogCount\":3,";
 				requestString += "\"TrackableLogCount\":2,";
-				
-				
+
 				requestString += "\"PointRadius\":{";
 				requestString += "\"DistanceInMeters\":" + "5000000" + ",";
 				requestString += "\"Point\":{";
@@ -163,12 +156,10 @@ public class SearchForGeocaches
 				requestString += "\"Longitude\":" + String.valueOf(searchC.pos.Longitude);
 				requestString += "}";
 				requestString += "},";
-//				
-				
-		
+				//
 
 				requestString += "}";
-				
+
 			}
 			else if (search instanceof SearchCoordinate)
 			{
@@ -192,10 +183,7 @@ public class SearchForGeocaches
 				requestString += "\"Available\":true";
 				requestString += "}";
 				requestString += "}";
-				
-				
 
-	           
 				requestString = "{";
 				requestString += "\"AccessToken\":\"" + accessToken + "\",";
 				if (isLite) requestString += "\"IsLite\":true,"; // only lite
@@ -204,39 +192,36 @@ public class SearchForGeocaches
 				requestString += "\"StartIndex\":0,";
 				requestString += "\"MaxPerPage\":" + String.valueOf(searchC.number) + ",";
 				requestString += "\"PointRadius\":{";
-				requestString += "\"DistanceInMeters\":" + String.valueOf((int)searchC.distanceInMeters) + ",";
+				requestString += "\"DistanceInMeters\":" + String.valueOf((int) searchC.distanceInMeters) + ",";
 				requestString += "\"Point\":{";
 				requestString += "\"Latitude\":" + String.valueOf(searchC.pos.Latitude) + ",";
 				requestString += "\"Longitude\":" + String.valueOf(searchC.pos.Longitude);
 				requestString += "}";
 				requestString += "},";
 
-	            if (searchC.excludeHides)
-	            {
-	            	requestString += "\"NotHiddenByUsers\":{";
-	            	requestString += "\"UserNames\":[\"" + Config.GetString("GcLogin") + "\"]";
-	            	requestString += "},";
-	            }
+				if (searchC.excludeHides)
+				{
+					requestString += "\"NotHiddenByUsers\":{";
+					requestString += "\"UserNames\":[\"" + Config.settings.GcLogin.getValue() + "\"]";
+					requestString += "},";
+				}
 
-	            if (searchC.excludeFounds)
-	            {
-	            	requestString += "\"NotFoundByUsers\":{";
-	            	requestString += "\"UserNames\":[\"" + Config.GetString("GcLogin") + "\"]";
-	            	requestString += "},";
-	            }
+				if (searchC.excludeFounds)
+				{
+					requestString += "\"NotFoundByUsers\":{";
+					requestString += "\"UserNames\":[\"" + Config.settings.GcLogin.getValue() + "\"]";
+					requestString += "},";
+				}
 
-	            requestString += "\"GeocacheExclusions\":{";
-	            requestString += "\"Archived\":false,";
-	            
-	            if (searchC.available)
-	            	requestString += "\"Available\":true";
+				requestString += "\"GeocacheExclusions\":{";
+				requestString += "\"Archived\":false,";
 
-	            requestString += "}";
-	            requestString += "}";
+				if (searchC.available) requestString += "\"Available\":true";
 
+				requestString += "}";
+				requestString += "}";
 
 			}
-
 
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 			httppost.setHeader("Accept", "application/json");
@@ -244,7 +229,7 @@ public class SearchForGeocaches
 
 			// Execute HTTP Post Request
 			HttpResponse response = httpclient.execute(httppost);
-			
+
 			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 			String line = "";
 			while ((line = rd.readLine()) != null)
@@ -337,7 +322,7 @@ public class SearchForGeocaches
 						}
 						catch (Exception e)
 						{
-							
+
 						}
 						cache.Rating = 0;
 						// cache.Rating =
@@ -356,7 +341,7 @@ public class SearchForGeocaches
 						// Chk if Own or Found
 						Boolean exclude = false;
 						if (search.withoutFinds && cache.Found) exclude = true;
-						if (search.withoutOwn && cache.Owner.equalsIgnoreCase(Config.GetString("GcLogin"))) exclude = true;
+						if (search.withoutOwn && cache.Owner.equalsIgnoreCase(Config.settings.GcLogin.getValue())) exclude = true;
 
 						if (!CacheERROR && !exclude)
 						{

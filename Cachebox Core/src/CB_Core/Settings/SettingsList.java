@@ -75,24 +75,36 @@ public class SettingsList extends HashMap<String, SettingBase>
 		// Write into DB
 		SettingsDAO dao = new SettingsDAO();
 		Database.Settings.beginTransaction();
-		Database.Data.beginTransaction();
+		if (Database.Data != null) Database.Data.beginTransaction();
+
 		try
 		{
 			for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext();)
 			{
 				SettingBase setting = it.next();
-				if (setting.getGlobal()) dao.WriteToDatabase(Database.Settings, setting);
+				if (setting.getGlobal())
+				{
+					dao.WriteToDatabase(Database.Settings, setting);
+				}
+
 				else
-					dao.WriteToDatabase(Database.Data, setting);
+				{
+					if (Database.Data != null) dao.WriteToDatabase(Database.Data, setting);
+				}
+
 			}
 			Database.Settings.setTransactionSuccessful();
 			Database.Settings.endTransaction();
 		}
 		finally
 		{
-			Database.Data.setTransactionSuccessful();
-			Database.Data.endTransaction();
+			if (Database.Data != null)
+			{
+				Database.Data.setTransactionSuccessful();
+				Database.Data.endTransaction();
+			}
 		}
+
 	}
 
 	public void ReadFromDB()

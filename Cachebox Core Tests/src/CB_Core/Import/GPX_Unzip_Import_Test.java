@@ -32,42 +32,42 @@ public class GPX_Unzip_Import_Test extends TestCase
 
 		// starte Unzip Test
 		UnzipTest.testUnzip();
-		
+
 		// Read Config
 		String workPath = "./testdata";
 		Config.Initialize(workPath, workPath + "/cachebox.config");
 
 		Config.readConfigFile(/* getAssets() */);
-		
+
 		// initialize Database
 		Database.Data = new TestDB(DatabaseType.CacheBox);
-		String database = Config.GetString("DatabasePath");
+		String database = Config.settings.DatabasePath.getValue();
 		Database.Data.StartUp(database);
 
 		// Importiere all GPX files
 		ImportHandler importHandler = new ImportHandler();
-		
+
 		Database.Data.beginTransaction();
-		
+
 		try
 		{
-			
-		
+
 			File Dir = new File("./testdata/gpx/GS_PQ");
-			ArrayList<String> ordnerInhalt = Importer.recursiveDirectoryReader(Dir,
-					new ArrayList<String>());
+			ArrayList<String> ordnerInhalt = Importer.recursiveDirectoryReader(
+					Dir, new ArrayList<String>());
 			for (String tmp : ordnerInhalt)
 			{
 				GPXFileImporter importer = new GPXFileImporter(tmp);
 				assertTrue("Objekt muss konstruierbar sein", importer != null);
 				importer.doImport(importHandler, 0);
 			}
-			
+
 			Database.Data.setTransactionSuccessful();
 		}
 		finally
-		{}
-		
+		{
+		}
+
 		Database.Data.endTransaction();
 
 		// aufgrund der Fülle von Caches und Logs bei diesem Import
@@ -80,7 +80,7 @@ public class GPX_Unzip_Import_Test extends TestCase
 		int LogCount = importHandler.logCount;
 		assertTrue("Anzahl der Importierten Logs stimmt nicht",
 				LogCount == 2534);
-		
+
 		int WaypointCount = importHandler.waypointCount;
 		assertTrue("Anzahl der Importierten Waypoints stimmt nicht",
 				WaypointCount == 183);

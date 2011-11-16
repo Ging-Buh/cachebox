@@ -129,28 +129,29 @@ public class ImportDialog extends Activity
 
 	private void initialForm()
 	{
-		checkBoxImportMaps.setChecked(Config.GetBool("CacheMapData"));
-		checkBoxPreloadImages.setChecked(Config.GetBool("CacheImageData"));
-		checkBoxImportGPX.setChecked(Config.GetBool("ImportGpx"));
+		checkBoxImportMaps.setChecked(Config.settings.CacheMapData.getValue());
+		checkBoxPreloadImages.setChecked(Config.settings.CacheImageData.getValue());
+		checkBoxImportGPX.setChecked(Config.settings.ImportGpx.getValue());
 		checkBoxImportGPX.setOnCheckedChangeListener(checkBoxImportGPX_CheckStateChanged);
 		checkImportPQfromGC.setOnCheckedChangeListener(checkImportPQfromGC_CheckStateChanged);
-		checkBoxGcVote.setChecked(Config.GetBool("ImportRatings"));
+		checkBoxGcVote.setChecked(Config.settings.ImportRatings.getValue());
 
-		if (Config.GetString("PopHost").length() > 0 && Config.GetStringEncrypted("PopLogin").length() > 0
-				&& Config.GetStringEncrypted("PopPassword").length() > 0)
-		{
-			checkBoxImportGpxFromMail.setChecked(Config.GetBool("ImportGpxFromMail"));
-			checkBoxImportGpxFromMail.setEnabled(true);
-		}
-		else
-		{
-			checkBoxImportGpxFromMail.setEnabled(false);
-			checkBoxImportGpxFromMail.setChecked(false);
-		}
+		// if (Config.settings.PopHost.getValue().length() > 0 &&
+		// Config.GetStringEncrypted("PopLogin").length() > 0
+		// && Config.GetStringEncrypted("PopPassword").length() > 0)
+		// {
+		// checkBoxImportGpxFromMail.setChecked(Config.settings.ImportGpxFromMail.getValue());
+		// checkBoxImportGpxFromMail.setEnabled(true);
+		// }
+		// else
+		// {
+		// checkBoxImportGpxFromMail.setEnabled(false);
+		// checkBoxImportGpxFromMail.setChecked(false);
+		// }
 
-		if (Config.GetStringEncrypted("GcAPI").length() > 0)
+		if (Config.settings.GcAPI.getValue().length() > 0)
 		{
-			checkImportPQfromGC.setChecked(Config.GetBool("ImportPQsFromGeocachingCom"));
+			checkImportPQfromGC.setChecked(Config.settings.ImportPQsFromGeocachingCom.getValue());
 			checkImportPQfromGC.setEnabled(true);
 		}
 		else
@@ -202,7 +203,7 @@ public class ImportDialog extends Activity
 		@Override
 		public void onClick(View v)
 		{
-			if (!Config.GetBool("CacheImageData") && checkBoxPreloadImages.isChecked())
+			if (!Config.settings.CacheImageData.getValue() && checkBoxPreloadImages.isChecked())
 			{
 				// only show warn message, if the user changed the state from
 				// disable to enable.
@@ -228,10 +229,10 @@ public class ImportDialog extends Activity
 			switch (button)
 			{
 			case -1:
-				Config.Set("GCAdditionalImageDownload", true);
+				Config.settings.GCAdditionalImageDownload.setValue(true);
 				break;
 			case -2:
-				Config.Set("GCAdditionalImageDownload", false);
+				Config.settings.GCAdditionalImageDownload.setValue(false);
 				break;
 
 			}
@@ -246,14 +247,14 @@ public class ImportDialog extends Activity
 
 	private void ImportNow()
 	{
-		Config.Set("CacheMapData", checkBoxImportMaps.isChecked());
-		Config.Set("CacheImageData", checkBoxPreloadImages.isChecked());
-		Config.Set("ImportGpx", checkBoxImportGPX.isChecked());
-		Config.Set("ImportGpxFromMail", checkBoxImportGpxFromMail.isChecked());
-		Config.Set("ImportPQsFromGeocachingCom", checkImportPQfromGC.isChecked());
-		Config.Set("ImportRatings", checkBoxGcVote.isChecked());
+		Config.settings.CacheMapData.setValue(checkBoxImportMaps.isChecked());
+		Config.settings.CacheImageData.setValue(checkBoxPreloadImages.isChecked());
+		Config.settings.ImportGpx.setValue(checkBoxImportGPX.isChecked());
+		Config.settings.ImportGpxFromMail.setValue(checkBoxImportGpxFromMail.isChecked());
+		Config.settings.ImportPQsFromGeocachingCom.setValue(checkImportPQfromGC.isChecked());
+		Config.settings.ImportRatings.setValue(checkBoxGcVote.isChecked());
 		Config.AcceptChanges();
-		directoryPath = Config.GetString("PocketQueryFolder");
+		directoryPath = Config.settings.PocketQueryFolder.getValue();
 		// chk exist import folder
 		directory = new File(directoryPath);
 
@@ -369,7 +370,7 @@ public class ImportDialog extends Activity
 
 							if (pq.downloadAvible)
 							{
-								ip.ProgressInkrement("importGC","Download: "+ pq.Name);
+								ip.ProgressInkrement("importGC", "Download: " + pq.Name);
 								PocketQuery.DownloadSinglePocketQuery(pq);
 							}
 

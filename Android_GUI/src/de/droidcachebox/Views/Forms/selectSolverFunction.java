@@ -71,7 +71,7 @@ public class selectSolverFunction extends Activity
 		context = this;
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		aktIntent = getIntent();
-		this.getWindow().setBackgroundDrawableResource(Config.GetBool("nightMode") ? color.darker_gray : color.background_dark);
+		this.getWindow().setBackgroundDrawableResource(Config.settings.nightMode.getValue() ? color.darker_gray : color.background_dark);
 
 		findViewsById();
 		setLang();

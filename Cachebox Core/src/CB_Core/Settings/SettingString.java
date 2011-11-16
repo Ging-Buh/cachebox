@@ -17,7 +17,7 @@ public class SettingString extends SettingBase
 	{
 		return value;
 	}
-	
+
 	public String getDefaultValue()
 	{
 		return defaultValue;
@@ -54,7 +54,7 @@ public class SettingString extends SettingBase
 	{
 		value = defaultValue;
 	}
-	
+
 	@Override
 	public void saveToLastValue()
 	{
@@ -66,6 +66,5 @@ public class SettingString extends SettingBase
 	{
 		value = lastValue;
 	}
-	
-	
+
 }

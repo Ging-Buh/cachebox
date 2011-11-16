@@ -252,7 +252,7 @@ public class AllContextMenuCallHandler
 		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
 		Menu IconMenu = icm.getMenu();
 
-		String DBName = Config.GetString("DatabasePath");
+		String DBName = Config.settings.DatabasePath.getValue();
 		int Pos = DBName.lastIndexOf("/");
 		DBName = DBName.substring(Pos + 1);
 		Pos = DBName.lastIndexOf(".");

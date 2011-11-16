@@ -41,8 +41,6 @@ import de.droidcachebox.Views.MapView;
 import de.droidcachebox.Views.FilterSettings.PresetListView;
 import de.droidcachebox.Views.Forms.SelectDB;
 
-
-
 public class splash extends Activity
 {
 	public static Activity mainActivity;
@@ -55,10 +53,10 @@ public class splash extends Activity
 	Bitmap bitmap;
 	Bitmap logo;
 	Bitmap gc_power_logo;
-	
+
 	String GcCode = null;
 	String guid = null;
-	String name =null;
+	String name = null;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -69,7 +67,6 @@ public class splash extends Activity
 		// get parameters
 		final Bundle extras = getIntent().getExtras();
 		final Uri uri = getIntent().getData();
-		
 
 		// try to get data from extras
 		if (extras != null)
@@ -86,7 +83,6 @@ public class splash extends Activity
 			String uriPath = uri.getPath().toLowerCase();
 			String uriQuery = uri.getQuery();
 
-			
 			if (uriHost.contains("geocaching.com") == true)
 			{
 				GcCode = uri.getQueryParameter("wp");
@@ -104,7 +100,7 @@ public class splash extends Activity
 				}
 				else
 				{
-//					warning.showToast(res.getString(R.string.err_detail_open));
+					// warning.showToast(res.getString(R.string.err_detail_open));
 					finish();
 					return;
 				}
@@ -117,7 +113,7 @@ public class splash extends Activity
 				}
 				else
 				{
-//					warning.showToast(res.getString(R.string.err_detail_open));
+					// warning.showToast(res.getString(R.string.err_detail_open));
 					finish();
 					return;
 				}
@@ -172,81 +168,98 @@ public class splash extends Activity
 		String workPath = Environment.getExternalStorageDirectory() + "/cachebox";
 		Config.Initialize(workPath, workPath + "/cachebox.config");
 
+		// hier muss die Config Db initialisiert werden
+		Database.Settings = new AndroidDB(DatabaseType.Settings, this);
+		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
+		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
+
+		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
+		String database = Config.settings.DatabasePath.getValue();
+		Database.Data.StartUp(database);
+
 		Config.readConfigFile(/* getAssets() */);
 
 		Config.settings.ReadFromDB();
-		
-		
-		String PocketQueryFolder = Config.GetString("PocketQueryFolder");
+
+		String PocketQueryFolder = Config.settings.PocketQueryFolder.getValue();
 		File directoryPocketQueryFolder = new File(PocketQueryFolder);
-		if (!directoryPocketQueryFolder.exists()) {
+		if (!directoryPocketQueryFolder.exists())
+		{
 			directoryPocketQueryFolder.mkdir();
 		}
-		String TileCacheFolder = Config.GetString("TileCacheFolder");
+		String TileCacheFolder = Config.settings.TileCacheFolder.getValue();
 		File directoryTileCacheFolder = new File(TileCacheFolder);
-		if (!directoryTileCacheFolder.exists()) {
+		if (!directoryTileCacheFolder.exists())
+		{
 			directoryTileCacheFolder.mkdir();
 		}
 		String User = workPath + "/User";
 		File directoryUser = new File(User);
-		if (!directoryUser.exists()) {
+		if (!directoryUser.exists())
+		{
 			directoryUser.mkdir();
 		}
-		String TrackFolder = Config.GetString("TrackFolder");
+		String TrackFolder = Config.settings.TrackFolder.getValue();
 		File directoryTrackFolder = new File(TrackFolder);
-		if (!directoryTrackFolder.exists()) {
+		if (!directoryTrackFolder.exists())
+		{
 			directoryTrackFolder.mkdir();
 		}
-		String UserImageFolder = Config.GetString("UserImageFolder");
+		String UserImageFolder = Config.settings.UserImageFolder.getValue();
 		File directoryUserImageFolder = new File(UserImageFolder);
-		if (!directoryUserImageFolder.exists()) {
+		if (!directoryUserImageFolder.exists())
+		{
 			directoryUserImageFolder.mkdir();
 		}
-		
+
 		String repository = workPath + "/repository";
 		File directoryrepository = new File(repository);
-		if (!directoryrepository.exists()) {
+		if (!directoryrepository.exists())
+		{
 			directoryrepository.mkdir();
 		}
-		String DescriptionImageFolder = Config.GetString("DescriptionImageFolder");
+		String DescriptionImageFolder = Config.settings.DescriptionImageFolder.getValue();
 		File directoryDescriptionImageFolder = new File(DescriptionImageFolder);
-		if (!directoryDescriptionImageFolder.exists()) {
+		if (!directoryDescriptionImageFolder.exists())
+		{
 			directoryDescriptionImageFolder.mkdir();
 		}
-		String MapPackFolder = Config.GetString("MapPackFolder");
+		String MapPackFolder = Config.settings.MapPackFolder.getValue();
 		File directoryMapPackFolder = new File(MapPackFolder);
-		if (!directoryMapPackFolder.exists()) {
+		if (!directoryMapPackFolder.exists())
+		{
 			directoryMapPackFolder.mkdir();
 		}
-		String SpoilerFolder = Config.GetString("SpoilerFolder");
+		String SpoilerFolder = Config.settings.SpoilerFolder.getValue();
 		File directorySpoilerFolder = new File(SpoilerFolder);
-		if (!directorySpoilerFolder.exists()) {
+		if (!directorySpoilerFolder.exists())
+		{
 			directorySpoilerFolder.mkdir();
 		}
-		
+
 		// copy AssetFolder only if Rev-Number changed, like at new installation
-		if (Config.GetInt("installRev") < Global.CurrentRevision)
+		if (Config.settings.installRev.getValue() < Global.CurrentRevision)
 		{
 			// String[] exclude = new String[]{"webkit","sounds","images"};
 			copyAssetFolder myCopie = new copyAssetFolder();
 			myCopie.copyAll(getAssets(), Config.WorkPath);
-			Config.Set("installRev", Global.CurrentRevision);
-			Config.Set("newInstall", true);
+			Config.settings.installRev.setValue(Global.CurrentRevision);
+			Config.settings.newInstall.setValue(true);
 			Config.AcceptChanges();
 		}
 		else
 		{
-			Config.Set("newInstall", false);
+			Config.settings.newInstall.setValue(false);
 			Config.AcceptChanges();
 		}
 
 		try
 		{
-			GlobalCore.Translations.ReadTranslationsFile(Config.GetString("Sel_LanguagePath"));
+			GlobalCore.Translations.ReadTranslationsFile(Config.settings.Sel_LanguagePath.getValue());
 		}
 		catch (IOException e)
 		{
-			
+
 			e.printStackTrace();
 		}
 
@@ -256,7 +269,7 @@ public class splash extends Activity
 		Global.InitIcons(this);
 
 		setProgressState(40, GlobalCore.Translations.Get("LoadMapPack"));
-		File dir = new File(Config.GetString("MapPackFolder"));
+		File dir = new File(Config.settings.MapPackFolder.getValue());
 		String[] files = dir.list();
 		if (!(files == null))
 		{
@@ -264,8 +277,8 @@ public class splash extends Activity
 			{
 				for (String file : files)
 				{
-					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack")) MapView.Manager.LoadMapPack(Config
-							.GetString("MapPackFolder") + "/" + file);
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack")) MapView.Manager.LoadMapPack(Config.settings.MapPackFolder
+							.getValue() + "/" + file);
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("map"))
 					{
 						Layer layer = new Layer(file, file, "");
@@ -278,8 +291,8 @@ public class splash extends Activity
 		setProgressState(60, GlobalCore.Translations.Get("LoadCaches"));
 		if (Database.Data != null) Database.Data = null;
 
-		double lat = Config.GetDouble("MapInitLatitude");
-		double lon = Config.GetDouble("MapInitLongitude");
+		double lat = Config.settings.MapInitLatitude.getValue();
+		double lon = Config.settings.MapInitLongitude.getValue();
 		if ((lat != -1000) && (lon != -1000))
 		{
 			GlobalCore.LastValidPosition = new Coordinate(lat, lon);
@@ -295,7 +308,7 @@ public class splash extends Activity
 		{
 			Logger.Error("slpash.Initial()", "search number of DB3 files", ex);
 		}
-		if ((fileList.size() > 1) && Config.GetBool("MultiDBAsk"))
+		if ((fileList.size() > 1) && Config.settings.MultiDBAsk.getValue())
 		{
 			// show Database Selection
 			Intent selectDBIntent = new Intent().setClass(mainActivity, SelectDB.class);
@@ -313,15 +326,15 @@ public class splash extends Activity
 
 	private void Initial2()
 	{
-		setProgressState(62, GlobalCore.Translations.Get("LoadCaches") + FileIO.GetFileName(Config.GetString("DatabasePath")));
-		String FilterString = Config.GetString("Filter");
+		setProgressState(62, GlobalCore.Translations.Get("LoadCaches") + FileIO.GetFileName(Config.settings.DatabasePath.getValue()));
+		String FilterString = Config.settings.Filter.getValue();
 		Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0]) : new FilterProperties(
 				FilterString);
 		String sqlWhere = Global.LastFilter.getSqlWhere();
 
 		// initialize Database
 		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
-		String database = Config.GetString("DatabasePath");
+		String database = Config.settings.DatabasePath.getValue();
 		Database.Data.StartUp(database);
 
 		GlobalCore.Categories = new Categories();
@@ -334,10 +347,6 @@ public class splash extends Activity
 		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
 		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 
-		Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
-		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
-
 		Descriptor.Init();
 
 		Config.AcceptChanges();
@@ -345,9 +354,8 @@ public class splash extends Activity
 		// Initial Ready Show main
 		finish();
 		Intent mainIntent = new Intent().setClass(splash.this, main.class);
-		
-		
-		if(GcCode!=null)
+
+		if (GcCode != null)
 		{
 			Bundle b = new Bundle();
 			b.putSerializable("GcCode", GcCode);
@@ -355,9 +363,7 @@ public class splash extends Activity
 			b.putSerializable("guid", guid);
 			mainIntent.putExtras(b);
 		}
-		
-		
-		
+
 		startActivity(mainIntent);
 	}
 

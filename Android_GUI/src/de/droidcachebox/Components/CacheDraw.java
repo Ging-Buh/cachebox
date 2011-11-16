@@ -381,7 +381,7 @@ public class CacheDraw
 	{
 		cache.spoilerRessources = new ArrayList<String>();
 
-		String path = Config.GetString("SpoilerFolder");
+		String path = Config.settings.SpoilerFolder.getValue();
 		String directory = path + "/" + cache.GcCode.substring(0, 4);
 
 		if (!FileIO.DirectoryExists(directory)) return;
@@ -410,7 +410,7 @@ public class CacheDraw
 		}
 
 		// Add own taken photo
-		directory = Config.GetString("UserImageFolder");
+		directory = Config.settings.UserImageFolder.getValue();
 
 		if (!FileIO.DirectoryExists(directory)) return;
 

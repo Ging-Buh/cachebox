@@ -15,6 +15,7 @@ import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
+import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.FieldNoteList;
@@ -28,7 +29,7 @@ import de.droidcachebox.Views.Forms.MessageBoxIcon;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.ProgressDialog;
 import CB_Core.Events.ProgresssChangedEventList;
-import CB_Core.Types.Cache;
+
 import CB_Core.Types.Waypoint;
 import android.app.Activity;
 import android.content.Context;
@@ -147,8 +148,8 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 	private void UploadFieldnotes()
 	{
 
-		MessageBox.Show(GlobalCore.Translations.Get("uploadFieldNotes?"), GlobalCore.Translations.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
-				MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner);
+		MessageBox.Show(GlobalCore.Translations.Get("uploadFieldNotes?"), GlobalCore.Translations.Get("uploadFieldNotes"),
+				MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner);
 
 	}
 
@@ -280,7 +281,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 			newFieldNote = new FieldNoteEntry(type);
 			newFieldNote.CacheName = cache.Name;
 			newFieldNote.gcCode = cache.GcCode;
-			newFieldNote.foundNumber = Config.GetInt("FoundOffset");
+			newFieldNote.foundNumber = Config.settings.FoundOffset.getValue();
 			newFieldNote.timestamp = new Date();
 			newFieldNote.CacheId = cache.Id;
 			newFieldNote.comment = "";
@@ -296,19 +297,22 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		case 1:
 			if (!cache.Found) newFieldNote.foundNumber++; //
 			newFieldNote.fillType();
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.GetString("FoundTemplate"), newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.settings.FoundTemplate.getValue(),
+					newFieldNote);
 			// wenn eine FieldNote Found erzeugt werden soll und der Cache noch
 			// nicht gefunden war -> foundNumber um 1 erhöhen
 			break;
 		case 2:
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.GetString("DNFTemplate"), newFieldNote);
-			break;
-		case 3:
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.GetString("NeedsMaintenanceTemplate"),
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.settings.DNFTemplate.getValue(),
 					newFieldNote);
 			break;
+		case 3:
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(
+					Config.settings.NeedsMaintenanceTemplate.getValue(), newFieldNote);
+			break;
 		case 4:
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.GetString("AddNoteTemplate"), newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.settings.AddNoteTemplate.getValue(),
+					newFieldNote);
 			break;
 		}
 
@@ -352,7 +356,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		if (data == null)
 		{
 
-			int sollHeight = (Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow")) ? Sizes
+			int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? Sizes
 					.getQuickButtonListHeight() : 0;
 			((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 			downSlider.isInitial = false;
@@ -390,7 +394,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 							GlobalCore.SelectedCache().Found = true;
 							CacheDAO cacheDAO = new CacheDAO();
 							cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
-							Config.Set("FoundOffset", aktFieldNote.foundNumber);
+							Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
 							Config.AcceptChanges();
 						}
 					}
@@ -402,7 +406,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 							GlobalCore.SelectedCache().Found = false;
 							CacheDAO cacheDAO = new CacheDAO();
 							cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
-							Config.Set("FoundOffset", Config.GetInt("FoundOffset") - 1);
+							Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
 							Config.AcceptChanges();
 						}
 						// und eine evtl. vorhandene FieldNote FoundIt löschen
@@ -415,8 +419,8 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 			}
 		}
 
-		int sollHeight = (Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow")) ? Sizes.getQuickButtonListHeight()
-				: 0;
+		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? Sizes
+				.getQuickButtonListHeight() : 0;
 		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 		downSlider.isInitial = false;
 		((main) main.mainActivity).InfoDownSlider.invalidate();
@@ -434,7 +438,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		template = template.replace("##date##", sdate);
 		template = template.replace("##time##", stime);
 		template = template.replace("##owner##", GlobalCore.SelectedCache().Owner);
-		template = template.replace("##gcusername##", Config.GetString("GcLogin"));
+		template = template.replace("##gcusername##", Config.settings.GcLogin.getValue());
 		// template = template.replace("##gcvote##",
 		// comboBoxVote.SelectedIndex.ToString());
 		return template;
@@ -488,7 +492,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 						{
 							cache.Found = false;
 							// Database.WriteToDatabase(cache);
-							Config.Set("FoundOffset", Config.GetInt("FoundOffset") - 1);
+							Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
 							Config.AcceptChanges();
 						}
 					}
@@ -576,13 +580,13 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		}
 
 		cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
-		
-		if(cache==null)
+
+		if (cache == null)
 		{
-			 Database.Data.Query.add(tmpCache);
-			 cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
+			Database.Data.Query.add(tmpCache);
+			cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
 		}
-		
+
 		Waypoint finalWp = null;
 		if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
 		if (cache != null) GlobalCore.SelectedWaypoint(cache, finalWp);

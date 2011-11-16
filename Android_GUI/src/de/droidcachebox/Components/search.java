@@ -377,9 +377,9 @@ public class search
 		// wenn QuickButtonList ausgeklappt, dann schliesse sie und öffene sie
 		// erst wieder mit dem
 		// Schliessen dieses Dialogs
-		mQuickButtonListWasShow = Config.GetBool("quickButtonLastShow") && Config.GetBool("quickButtonShow");
+		mQuickButtonListWasShow = Config.settings.quickButtonLastShow.getValue() && Config.settings.quickButtonShow.getValue();
 		mPtrMain.setQuickButtonHeight(0);
-		Config.Set("quickButtonShow", false);
+		Config.settings.quickButtonShow.setValue(false);
 		Config.AcceptChanges();
 
 		// initalisier mit Title Suche
@@ -403,7 +403,7 @@ public class search
 		// Dialog ausgeblendet wurden
 		if (mQuickButtonListWasShow)
 		{
-			Config.Set("quickButtonShow", true);
+			Config.settings.quickButtonShow.setValue(true);
 			Config.AcceptChanges();
 			mPtrMain.setQuickButtonHeight(Sizes.getQuickButtonListHeight());
 		}

@@ -62,7 +62,7 @@ public class NumerikInputBox extends android.app.Dialog
 	 * 
 	 *            <pre>
 	 * {@code
-	 *       	NumerickInputBox.Show(GlobalCore.Translations.Get("AdjustFinds"),GlobalCore.Translations.Get("TelMeFounds"),Config.GetInt("FoundOffset"), DialogListner);
+	 *       	NumerickInputBox.Show(GlobalCore.Translations.Get("AdjustFinds"),GlobalCore.Translations.Get("TelMeFounds"),Config.settings.FoundOffset"), DialogListner);
 	 *      	
 	 *      	protected static final  DialogInterface.OnClickListener  DialogListner = new  DialogInterface.OnClickListener() 
 	 * 	   { 

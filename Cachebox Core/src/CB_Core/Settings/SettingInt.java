@@ -66,6 +66,5 @@ public class SettingInt extends SettingBase
 	{
 		value = lastValue;
 	}
-	
 
 }

@@ -26,31 +26,33 @@ public class GSAKGpxImportTest extends TestCase
 		Config.Initialize(workPath, workPath + "/cachebox.config");
 
 		Config.readConfigFile(/* getAssets() */);
-		
+
 		// initialize Database
 		Database.Data = new TestDB(DatabaseType.CacheBox);
-		String database = Config.GetString("DatabasePath");
+		String database = Config.settings.DatabasePath.getValue();
 		Database.Data.StartUp(database);
-		
+
 		ImportHandler importHandler = new ImportHandler();
-		
+
 		Database.Data.beginTransaction();
-		
+
 		try
 		{
-			GPXFileImporter importer = new GPXFileImporter("./testdata/gpx/GSAK_1_1.gpx");
+			GPXFileImporter importer = new GPXFileImporter(
+					"./testdata/gpx/GSAK_1_1.gpx");
 			assertTrue("Objekt muss konstruierbar sein", importer != null);
 			importer.doImport(importHandler, 0);
-			
+
 			Database.Data.setTransactionSuccessful();
 		}
 		finally
-		{}
-		
+		{
+		}
+
 		Database.Data.endTransaction();
 
 		CacheDAO cacheDAO = new CacheDAO();
-		
+
 		Cache cache = cacheDAO.getFromDbByGcCode("GC1XCEW");
 
 		assertTrue("Cache muss zurückgegeben werden", cache != null);
@@ -60,15 +62,17 @@ public class GSAKGpxImportTest extends TestCase
 		assertTrue("Pos ist ungültig", cache.Pos.Valid);
 
 		assertEquals("GcCode falsch", "GC1XCEW", cache.GcCode);
-		assertEquals("DateHidden falsch", "Mon Aug 17 08:00:00 CEST 2009", cache.DateHidden.toString());
+		assertEquals("DateHidden falsch", "Mon Aug 17 08:00:00 CEST 2009",
+				cache.DateHidden.toString());
 		assertEquals("url falsch", "", cache.Url);// URL wird noch nicht
-														// ausgelesen
+													// ausgelesen
 		assertTrue("Found ist falsch", cache.Found);
 
 		assertEquals("Id ist falsch", cache.GcId, "1358542");
 		assertFalse("ist available ist falsch", cache.Available);
 		assertTrue("ist archived ist falsch", cache.Archived);
-		assertEquals("Name falsch", "Schlossblick # 2/ View at the castle  #2", cache.Name);
+		assertEquals("Name falsch", "Schlossblick # 2/ View at the castle  #2",
+				cache.Name);
 		assertEquals("Placed by falsch", "Risou", cache.PlacedBy);
 		assertEquals("Owner falsch", "Risou", cache.Owner);
 		assertTrue("Typ ist falsch", cache.Type == CacheTypes.Mystery);
@@ -95,14 +99,17 @@ public class GSAKGpxImportTest extends TestCase
 
 		while (positiveInterator.hasNext())
 		{
-			assertTrue("Attribut falsch", cache.isAttributePositiveSet((Attributes) positiveInterator.next()));
+			assertTrue("Attribut falsch",
+					cache.isAttributePositiveSet((Attributes) positiveInterator
+							.next()));
 		}
 
 		while (negativeInterator.hasNext())
 		{
 			Attributes tmp = negativeInterator.next();
 
-			assertTrue(tmp.name()+" negative Attribut falsch", cache.isAttributeNegativeSet((tmp)));
+			assertTrue(tmp.name() + " negative Attribut falsch",
+					cache.isAttributeNegativeSet((tmp)));
 		}
 
 		// fülle eine Liste mit allen Attributen
@@ -127,22 +134,20 @@ public class GSAKGpxImportTest extends TestCase
 			attributes.remove(negativeInterator.next());
 		}
 
-		
-		
-
 		attributes.remove(Attributes.getAttributeEnumByGcComId(64));
 		attributes.remove(Attributes.getAttributeEnumByGcComId(65));
 		attributes.remove(Attributes.getAttributeEnumByGcComId(66));
-		
-		
+
 		// Teste ob die Übrig gebliebenen Atributte auch nicht vergeben wurden.
 		Iterator RestInterator = attributes.iterator();
 
 		while (RestInterator.hasNext())
 		{
 			Attributes attr = (Attributes) RestInterator.next();
-			assertFalse(attr.name()+"Attribut falsch", cache.isAttributePositiveSet(attr));
-			assertFalse(attr.name()+"Attribut falsch", cache.isAttributeNegativeSet(attr));
+			assertFalse(attr.name() + "Attribut falsch",
+					cache.isAttributePositiveSet(attr));
+			assertFalse(attr.name() + "Attribut falsch",
+					cache.isAttributeNegativeSet(attr));
 		}
 		//
 
@@ -154,17 +159,20 @@ public class GSAKGpxImportTest extends TestCase
 
 		ArrayList<LogEntry> logs = new ArrayList<LogEntry>();
 		logs = Database.Logs(cache);
-		
+
 		LogEntry log = logs.get(0);
 
 		assertEquals("CacheId ist falsch", log.CacheId, 24564478518575943L);
 		assertEquals("Id ist falsch", log.Id, 140640156);
-		assertEquals("Timestamp falsch", "Sat Jan 08 20:00:00 CET 2011", log.Timestamp.toString());
+		assertEquals("Timestamp falsch", "Sat Jan 08 20:00:00 CET 2011",
+				log.Timestamp.toString());
 		assertEquals("Finder falsch", "Katipa", log.Finder);
 		assertTrue("LogTyp falsch", log.Type == LogTypes.found);
 
-		assertEquals("Log Entry falsch",
-				"Jaja. Lange gesucht an den typischen Stellen, um dann letztendlich ganz woanders fündig zu werden...", log.Comment);
+		assertEquals(
+				"Log Entry falsch",
+				"Jaja. Lange gesucht an den typischen Stellen, um dann letztendlich ganz woanders fündig zu werden...",
+				log.Comment);
 
 		Database.Data.Close();
 	}

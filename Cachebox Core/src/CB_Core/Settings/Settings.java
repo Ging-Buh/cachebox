@@ -7,22 +7,19 @@ import CB_Core.Enums.SmoothScrollingTyp;
 
 public class Settings extends SettingsList
 {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 7330937438116889415L;
 
 	// Settings Compass
 	public SettingBool HtcCompass;
 	public SettingInt HtcLevel;
-	
+
 	// Settings Map
 	public SettingBool MapHideMyFinds;
-	
-	
+
 	// Invisible
 	public SettingLongString Filter;
-	
+
 	// Folder
 	public SettingFolder UserImageFolder;
 	public SettingFolder LanguagePath;
@@ -32,12 +29,12 @@ public class Settings extends SettingsList
 	public SettingFolder MapPackFolder;
 	public SettingFolder SpoilerFolder;
 	public SettingFolder TrackFolder;
-	
+
 	// Files
 	public SettingFile Sel_LanguagePath;
 	public SettingFile DatabasePath;
 	public SettingFile FieldNotesGarminPath;
-	
+
 	// Bool
 	public SettingBool SaveFieldNotesHtml;
 	public SettingBool OsmDpiAwareRendering;
@@ -72,33 +69,39 @@ public class Settings extends SettingsList
 	public SettingBool DebugShowPanel;
 	public SettingBool DebugMemory;
 	public SettingBool DebugShowMsg;
-	
-	//int
+	public SettingBool nightMode;
+	public SettingBool DebugShowLog;
+	public SettingBool DescriptionNoAttributes;
+	public SettingBool quickButtonLastShow;
+	public SettingBool newInstall;
+	public SettingBool ImperialUnits;
+	public SettingBool ShowDirektLine;
+	public SettingBool DebugShowMarker;
+	public SettingBool ImportRatings;
+	public SettingBool ImportGpxFromMail;
+	public SettingBool ImportPQsFromGeocachingCom;
+
+	// int
 	public SettingInt LogMaxMonthAge;
 	public SettingInt LogMinCount;
-	public SettingInt TrackDistance;
-	public SettingInt OsmMinLevel;
-	public SettingInt OsmMaxImportLevel;
-	public SettingInt OsmMaxLevel;
+	public SettingInt installRev;
 	public SettingInt OsmCoverage;
 	public SettingInt FoundOffset;
 	public SettingInt MapMaxCachesLabel;
 	public SettingInt MapMaxCachesDisplay_config;
-	public SettingInt SoundApproachDistance;
 	public SettingInt mapMaxCachesDisplayLarge_config;
-	public SettingInt ZoomCross;
 	public SettingInt GCRequestDelay;
 	public SettingInt MultiDBAutoStartTime;
 	public SettingInt LockM;
 	public SettingInt LockSec;
 	public SettingInt MoveMapCenterMaxSpeed;
 	public SettingInt lastZoomLevel;
-	
-	//double
+
+	// double
 	public SettingDouble MapInitLatitude;
 	public SettingDouble MapInitLongitude;
-	
-	//String
+
+	// String
 	public SettingString CurrentMapLayer;
 	public SettingString AutoUpdate;
 	public SettingString NavigationProvider;
@@ -108,41 +111,82 @@ public class Settings extends SettingsList
 	public SettingString AddNoteTemplate;
 	public SettingString SpoilersDescriptionTags;
 	public SettingString quickButtonList;
+	public SettingString GcLogin;
+	public SettingString GcJoker;
+	public SettingString OverrideUrl;
+	public SettingString PopHost;
 	
 	
-	//Enums
+	
+	//Decrypt
+	public SettingDecryptString GcAPI;
+	public SettingDecryptString GcVotePassword;
+
+	// Enums
 	public SettingEnum SmoothScrolling;
-	
-	
+
+	// ArrayInt
+	public SettingIntArray ZoomCross;
+	public SettingIntArray SoundApproachDistance;
+	public SettingIntArray TrackDistance;
+	public SettingIntArray OsmMinLevel;
+	public SettingIntArray OsmMaxImportLevel;
+	public SettingIntArray OsmMaxLevel;
+
+	public Integer Level[] = new Integer[21];
+	public Integer CrossLevel[] = new Integer[8];
+	public Integer[] approach = new Integer[]
+		{ 0, 2, 10, 25, 50, 100, 200, 500, 1000 };
+	public Integer[] TrackDistanceArray = new Integer[]
+		{ 1, 3, 5, 10, 20 };
+
 	public Settings()
 	{
-		
-		String WorkPath=Config.WorkPath;
-		
-		
+
+		for (int i = 0; i < 22; i++)
+		{
+			if (i < 21) Level[i] = i;
+
+			if (i > 13) CrossLevel[i - 14] = i;
+
+		}
+
+		String WorkPath = Config.WorkPath;
+
 		addSetting(HtcLevel = new SettingInt("HtcLevel", SettingCategory.Gps, SettingModus.Normal, 5, true));
 		// Settings Map
-		
-		// Invisible
-		addSetting(Filter = new SettingLongString("Filter", SettingCategory.Internal, SettingModus.Invisible, FilterProperties.presets[0].toString(), false));
-		
-		// Folder
-		addSetting(UserImageFolder = new SettingFolder("UserImageFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath + "/User/Media", true));
-		addSetting(LanguagePath = new SettingFolder("LanguagePath", SettingCategory.Internal, SettingModus.Normal, WorkPath + "/data/lang", true));
-		addSetting(TileCacheFolder = new SettingFolder("TileCacheFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath + "/cache", true));
-		addSetting(PocketQueryFolder = new SettingFolder("PocketQueryFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath + "/PocketQuery", true));
-		addSetting(DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath + "/repository/images", true));
-		addSetting(MapPackFolder = new SettingFolder("MapPackFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath + "/repository/maps", true));
-		addSetting(SpoilerFolder = new SettingFolder("SpoilerFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath + "/repository/spoilers", true));
-		addSetting(TrackFolder = new SettingFolder("TrackFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath + "/User/Tracks", true));
 
+		// Invisible
+		addSetting(Filter = new SettingLongString("Filter", SettingCategory.Internal, SettingModus.Invisible,
+				FilterProperties.presets[0].toString(), false));
+
+		// Folder
+		addSetting(UserImageFolder = new SettingFolder("UserImageFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath
+				+ "/User/Media", true));
+		addSetting(LanguagePath = new SettingFolder("LanguagePath", SettingCategory.Internal, SettingModus.Normal, WorkPath + "/data/lang",
+				true));
+		addSetting(TileCacheFolder = new SettingFolder("TileCacheFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath
+				+ "/cache", true));
+		addSetting(PocketQueryFolder = new SettingFolder("PocketQueryFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath
+				+ "/PocketQuery", true));
+		addSetting(DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", SettingCategory.Internal, SettingModus.Normal,
+				WorkPath + "/repository/images", true));
+		addSetting(MapPackFolder = new SettingFolder("MapPackFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath
+				+ "/repository/maps", true));
+		addSetting(SpoilerFolder = new SettingFolder("SpoilerFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath
+				+ "/repository/spoilers", true));
+		addSetting(TrackFolder = new SettingFolder("TrackFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath + "/User/Tracks",
+				true));
 
 		// Files
-		addSetting(Sel_LanguagePath = new SettingFile("Sel_LanguagePath", SettingCategory.Internal, SettingModus.Normal, WorkPath + "/data/lang/en.lan", true,"lan"));
-		addSetting(DatabasePath = new SettingFile("DatabasePath", SettingCategory.Internal, SettingModus.Normal, WorkPath + "/cachebox.db3", true,"db3"));
-		addSetting(FieldNotesGarminPath = new SettingFile("FieldNotesGarminPath", SettingCategory.Internal, SettingModus.Normal, WorkPath + "/User/geocache_visits.txt", true));
-		
-		//Bool
+		addSetting(Sel_LanguagePath = new SettingFile("Sel_LanguagePath", SettingCategory.Internal, SettingModus.Normal, WorkPath
+				+ "/data/lang/en.lan", true, "lan"));
+		addSetting(DatabasePath = new SettingFile("DatabasePath", SettingCategory.Internal, SettingModus.Normal,
+				WorkPath + "/cachebox.db3", true, "db3"));
+		addSetting(FieldNotesGarminPath = new SettingFile("FieldNotesGarminPath", SettingCategory.Internal, SettingModus.Normal, WorkPath
+				+ "/User/geocache_visits.txt", true));
+
+		// Bool
 		addSetting(SaveFieldNotesHtml = new SettingBool("SaveFieldNotesHtml", SettingCategory.Gps, SettingModus.Normal, true, true));
 		addSetting(OsmDpiAwareRendering = new SettingBool("OsmDpiAwareRendering", SettingCategory.Gps, SettingModus.Normal, true, true));
 		addSetting(AllowInternetAccess = new SettingBool("AllowInternetAccess", SettingCategory.Gps, SettingModus.Normal, true, true));
@@ -163,7 +207,8 @@ public class Settings extends SettingsList
 		addSetting(MapShowCompass = new SettingBool("MapShowCompass", SettingCategory.Gps, SettingModus.Normal, true, true));
 		addSetting(ResortRepaint = new SettingBool("ResortRepaint", SettingCategory.Gps, SettingModus.Normal, false, true));
 		addSetting(GCAutoSyncCachesFound = new SettingBool("GCAutoSyncCachesFound", SettingCategory.Gps, SettingModus.Normal, true, true));
-		addSetting(GCAdditionalImageDownload = new SettingBool("GCAdditionalImageDownload", SettingCategory.Gps, SettingModus.Normal, false, true));
+		addSetting(GCAdditionalImageDownload = new SettingBool("GCAdditionalImageDownload", SettingCategory.Gps, SettingModus.Normal,
+				false, true));
 		addSetting(AutoResort = new SettingBool("AutoResort", SettingCategory.Gps, SettingModus.Normal, false, true));
 		addSetting(FieldnotesUploadAll = new SettingBool("FieldnotesUploadAll", SettingCategory.Gps, SettingModus.Normal, false, true));
 		addSetting(HtcCompass = new SettingBool("HtcCompass", SettingCategory.Gps, SettingModus.Normal, false, true));
@@ -178,21 +223,33 @@ public class Settings extends SettingsList
 		addSetting(DebugShowPanel = new SettingBool("DebugShowPanel", SettingCategory.Gps, SettingModus.Normal, false, true));
 		addSetting(DebugMemory = new SettingBool("DebugMemory", SettingCategory.Gps, SettingModus.Normal, false, true));
 		addSetting(DebugShowMsg = new SettingBool("DebugShowMsg", SettingCategory.Gps, SettingModus.Normal, false, true));
-		
-		//int
+		addSetting(nightMode = new SettingBool("nightMode", SettingCategory.Internal, SettingModus.Normal, false, true));
+		addSetting(DebugShowLog = new SettingBool("DebugShowLog", SettingCategory.Internal, SettingModus.Normal, false, true));
+		addSetting(DescriptionNoAttributes = new SettingBool("DescriptionNoAttributes", SettingCategory.Internal, SettingModus.Normal,
+				false, true));
+		addSetting(quickButtonLastShow = new SettingBool("quickButtonLastShow", SettingCategory.Internal, SettingModus.Normal, false, true));
+		addSetting(newInstall = new SettingBool("newInstall", SettingCategory.Internal, SettingModus.Normal, false, true));
+		addSetting(ImperialUnits = new SettingBool("ImperialUnits", SettingCategory.Internal, SettingModus.Normal, false, true));
+		addSetting(ShowDirektLine = new SettingBool("ShowDirektLine", SettingCategory.Internal, SettingModus.Normal, false, true));
+		addSetting(DebugShowMarker = new SettingBool("DebugShowMarker", SettingCategory.Internal, SettingModus.Normal, false, true));
+		addSetting(ImportRatings = new SettingBool("ImportRatings", SettingCategory.Internal, SettingModus.Normal, false, true));
+		addSetting(ImportGpx = new SettingBool("ImportGpx", SettingCategory.Internal, SettingModus.Normal, false, true));
+		addSetting(ImportPQsFromGeocachingCom = new SettingBool("ImportPQsFromGeocachingCom", SettingCategory.Internal,
+				SettingModus.Normal, false, true));
+
+		// int
 		addSetting(LogMaxMonthAge = new SettingInt("LogMaxMonthAge", SettingCategory.Internal, SettingModus.Normal, 99999, true));
 		addSetting(LogMinCount = new SettingInt("LogMinCount", SettingCategory.Internal, SettingModus.Normal, 99999, true));
-		addSetting(TrackDistance = new SettingInt("TrackDistance", SettingCategory.Internal, SettingModus.Normal, 3, true));
-		addSetting(OsmMinLevel = new SettingInt("OsmMinLevel", SettingCategory.Internal, SettingModus.Normal, 8, true));
-		addSetting(OsmMaxImportLevel = new SettingInt("OsmMaxImportLevel", SettingCategory.Internal, SettingModus.Normal, 16, true));
-		addSetting(OsmMaxLevel = new SettingInt("OsmMaxLevel", SettingCategory.Internal, SettingModus.Normal, 17, true));
+		addSetting(installRev = new SettingInt("installRev", SettingCategory.Internal, SettingModus.Normal, 0, true));
 		addSetting(OsmCoverage = new SettingInt("OsmCoverage", SettingCategory.Internal, SettingModus.Normal, 1000, true));
 		addSetting(FoundOffset = new SettingInt("FoundOffset", SettingCategory.Internal, SettingModus.Normal, 0, true));
 		addSetting(MapMaxCachesLabel = new SettingInt("MapMaxCachesLabel", SettingCategory.Internal, SettingModus.Normal, 12, true));
-		addSetting(MapMaxCachesDisplay_config = new SettingInt("MapMaxCachesDisplay_config", SettingCategory.Internal, SettingModus.Normal, 10000, true));
-		addSetting(SoundApproachDistance = new SettingInt("SoundApproachDistance", SettingCategory.Internal, SettingModus.Normal, 50, true));
-		addSetting(mapMaxCachesDisplayLarge_config = new SettingInt("mapMaxCachesDisplayLarge_config", SettingCategory.Internal, SettingModus.Normal, 75, true));
-		addSetting(ZoomCross = new SettingInt("ZoomCross", SettingCategory.Internal, SettingModus.Normal, 16, true));
+		addSetting(MapMaxCachesDisplay_config = new SettingInt("MapMaxCachesDisplay_config", SettingCategory.Internal, SettingModus.Normal,
+				10000, true));
+
+		addSetting(mapMaxCachesDisplayLarge_config = new SettingInt("mapMaxCachesDisplayLarge_config", SettingCategory.Internal,
+				SettingModus.Normal, 75, true));
+
 		addSetting(GCRequestDelay = new SettingInt("GCRequestDelay", SettingCategory.Internal, SettingModus.Normal, 10, true));
 		addSetting(MultiDBAutoStartTime = new SettingInt("MultiDBAutoStartTime", SettingCategory.Internal, SettingModus.Normal, 0, true));
 		addSetting(LockM = new SettingInt("LockM", SettingCategory.Internal, SettingModus.Normal, 1, true));
@@ -200,31 +257,58 @@ public class Settings extends SettingsList
 		addSetting(MoveMapCenterMaxSpeed = new SettingInt("MoveMapCenterMaxSpeed", SettingCategory.Internal, SettingModus.Normal, 20, true));
 		addSetting(lastZoomLevel = new SettingInt("lastZoomLevel", SettingCategory.Internal, SettingModus.Normal, 14, true));
 
-		//double
+		// double
 		addSetting(MapInitLatitude = new SettingDouble("LogMinCount", SettingCategory.Gps, SettingModus.Normal, -1000, true));
 		addSetting(MapInitLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Gps, SettingModus.Normal, -1000, true));
-		
-		
-		//String
-		addSetting(CurrentMapLayer = new SettingString("CurrentMapLayer", SettingCategory.Internal, SettingModus.Invisible, "Mapnik", true));
-		addSetting(AutoUpdate = new SettingString("AutoUpdate", SettingCategory.Internal, SettingModus.Invisible, "http://www.getcachebox.net/latest-stable", true));
-		addSetting(NavigationProvider = new SettingString("NavigationProvider", SettingCategory.Internal, SettingModus.Invisible, "http://129.206.229.146/openrouteservice/php/OpenLSRS_DetermineRoute.php", true));
-		addSetting(FoundTemplate = new SettingLongString("FoundTemplate", SettingCategory.Internal, SettingModus.Invisible, "<br>###finds##, ##time##, Found it with DroidCachebox!", true));
-		addSetting(DNFTemplate = new SettingLongString("DNFTemplate", SettingCategory.Internal, SettingModus.Invisible, "<br>##time##. Logged it with DroidCachebox!", true));
-		addSetting(NeedsMaintenanceTemplate = new SettingLongString("NeedsMaintenanceTemplate", SettingCategory.Internal, SettingModus.Invisible, "Logged it with DroidCachebox!", true));
-		addSetting(AddNoteTemplate = new SettingLongString("AddNoteTemplate", SettingCategory.Internal, SettingModus.Invisible, "Logged it with DroidCachebox!", true));
-		addSetting(SpoilersDescriptionTags = new SettingString("SpoilersDescriptionTags", SettingCategory.Internal, SettingModus.Invisible, "", true));
-		addSetting(quickButtonList = new SettingString("quickButtonList", SettingCategory.Internal, SettingModus.Invisible, "5,0,1,3,2", true));
-				
-		//Enums
-		addSetting(SmoothScrolling = new SettingEnum("SmoothScrolling", SettingCategory.Internal, SettingModus.Invisible, SmoothScrollingTyp.none, false, GlobalCore.SmoothScrolling));
 
-//		validateSetting("DopMin", "0.2");
-//		validateSetting("DopWidth", "1");
+		// String
+		addSetting(CurrentMapLayer = new SettingString("CurrentMapLayer", SettingCategory.Internal, SettingModus.Invisible, "Mapnik", true));
+		addSetting(AutoUpdate = new SettingString("AutoUpdate", SettingCategory.Internal, SettingModus.Invisible,
+				"http://www.getcachebox.net/latest-stable", true));
+		addSetting(NavigationProvider = new SettingString("NavigationProvider", SettingCategory.Internal, SettingModus.Invisible,
+				"http://129.206.229.146/openrouteservice/php/OpenLSRS_DetermineRoute.php", true));
+		addSetting(FoundTemplate = new SettingLongString("FoundTemplate", SettingCategory.Internal, SettingModus.Invisible,
+				"<br>###finds##, ##time##, Found it with DroidCachebox!", true));
+		addSetting(DNFTemplate = new SettingLongString("DNFTemplate", SettingCategory.Internal, SettingModus.Invisible,
+				"<br>##time##. Logged it with DroidCachebox!", true));
+		addSetting(NeedsMaintenanceTemplate = new SettingLongString("NeedsMaintenanceTemplate", SettingCategory.Internal,
+				SettingModus.Invisible, "Logged it with DroidCachebox!", true));
+		addSetting(AddNoteTemplate = new SettingLongString("AddNoteTemplate", SettingCategory.Internal, SettingModus.Invisible,
+				"Logged it with DroidCachebox!", true));
+		addSetting(SpoilersDescriptionTags = new SettingString("SpoilersDescriptionTags", SettingCategory.Internal, SettingModus.Invisible,
+				"", true));
+		addSetting(quickButtonList = new SettingString("quickButtonList", SettingCategory.Internal, SettingModus.Invisible, "5,0,1,3,2",
+				true));
+		addSetting(GcLogin = new SettingString("GcLogin", SettingCategory.Internal, SettingModus.Invisible, "", true));
+		addSetting(GcJoker = new SettingString("GcJoker", SettingCategory.Internal, SettingModus.Invisible, "", true));
+		addSetting(OverrideUrl = new SettingString("OverrideUrl", SettingCategory.Internal, SettingModus.Invisible, "", true));
+		addSetting(PopHost = new SettingString("PopHost", SettingCategory.Internal, SettingModus.Invisible, "", true));
 		
 		
 		
-	ReadFromDB();
+		// Decrypt String
+		addSetting(GcAPI = new SettingDecryptString("GcAPI", SettingCategory.Internal, SettingModus.Invisible, "", true));
+		addSetting(GcVotePassword = new SettingDecryptString("GcVotePassword", SettingCategory.Internal, SettingModus.Invisible, "", true));
+
+		// Enums
+		addSetting(SmoothScrolling = new SettingEnum("SmoothScrolling", SettingCategory.Internal, SettingModus.Invisible,
+				SmoothScrollingTyp.none, false, GlobalCore.SmoothScrolling));
+
+		// IntArray
+		addSetting(TrackDistance = new SettingIntArray("TrackDistance", SettingCategory.Internal, SettingModus.Normal, 3, true,
+				TrackDistanceArray));
+		addSetting(OsmMinLevel = new SettingIntArray("OsmMinLevel", SettingCategory.Internal, SettingModus.Normal, 8, true, Level));
+		addSetting(OsmMaxImportLevel = new SettingIntArray("OsmMaxImportLevel", SettingCategory.Internal, SettingModus.Normal, 16, true,
+				Level));
+		addSetting(OsmMaxLevel = new SettingIntArray("OsmMaxLevel", SettingCategory.Internal, SettingModus.Normal, 17, true, Level));
+		addSetting(SoundApproachDistance = new SettingIntArray("SoundApproachDistance", SettingCategory.Internal, SettingModus.Normal, 50,
+				true, approach));
+		addSetting(ZoomCross = new SettingIntArray("ZoomCross", SettingCategory.Internal, SettingModus.Normal, 16, true, CrossLevel));
+
+		// validateSetting("DopMin", "0.2");
+		// validateSetting("DopWidth", "1");
+
+		ReadFromDB();
 	}
 
 }

@@ -111,8 +111,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	private int QuickButtonMaxHeight;
 	private int attHeight = -1;
 	int attCompleadHeight = 0;
-	int topCalc=-1;
-	int attLineHeight=-1;
+	int topCalc = -1;
+	int attLineHeight = -1;
 
 	private static downSlider Me;
 
@@ -225,13 +225,13 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	protected void onDraw(Canvas canvas)
 	{
 		if (ScreenLock.SliderMoves) return;
-		
+
 		/**
 		 * Beim ersten Zeichnen, wird der Letzte Zustand abgefragt!
 		 */
 		if (!isInitial)
 		{
-			if (Config.GetBool("quickButtonShow") && Config.GetBool("quickButtonLastShow"))
+			if (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue())
 			{
 				setPos(QuickButtonMaxHeight);
 			}
@@ -244,7 +244,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		if (!drag && !AnimationIsRunning && !ButtonDrag)
 		{
-			yPos = QuickButtonHeight = Config.GetBool("quickButtonShow") ? main.getQuickButtonHeight() : 0;
+			yPos = QuickButtonHeight = Config.settings.quickButtonShow.getValue() ? main.getQuickButtonHeight() : 0;
 			// Toast.makeText(main.mainActivity, "!drag to" +
 			// String.valueOf(yPos), Toast.LENGTH_SHORT).show();
 		}
@@ -292,7 +292,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		canvas.drawText(mCache.Name, 20 + SlideIconRec.width(), yPos + (FSize + (FSize / 3)), paint);
 
 		// Draw only is visible
-		if (Config.GetBool("quickButtonShow"))
+		if (Config.settings.quickButtonShow.getValue())
 		{
 			if (yPos <= QuickButtonMaxHeight) return;
 		}
@@ -301,7 +301,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			if (yPos <= 1) return;
 		}
 
-		if (Config.GetBool("quickButtonShow"))
+		if (Config.settings.quickButtonShow.getValue())
 		{
 			canvas.clipRect(mBackRec);
 		}
@@ -333,13 +333,13 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			attCompleadHeight = (int) (lines * attHeight * 1.3);
 
 		}
-		
-		if (attLineHeight==-1)attLineHeight = attHeight + (Sizes.getScaledFontSize_normal() / 3);
-		
+
+		if (attLineHeight == -1) attLineHeight = attHeight + (Sizes.getScaledFontSize_normal() / 3);
+
 		if (CacheInfoHeight == 0)
 		{
 			CacheInfoHeight = (int) (FSize * 8.3) + attCompleadHeight;
-			topCalc=(int) (CacheInfoHeight - (attLineHeight * lines) - attLineHeight + Sizes.getScaledFontSize_normal());
+			topCalc = (int) (CacheInfoHeight - (attLineHeight * lines) - attLineHeight + Sizes.getScaledFontSize_normal());
 		}
 
 		versatz += CacheInfoHeight;
@@ -351,7 +351,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		// draw Attributes
 
 		int left = 8;
-		
+
 		int top = topCalc;
 		if (iterator != null && iterator.hasNext())
 		{
@@ -369,10 +369,10 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				}
 				catch (NotFoundException e)
 				{
-					image= Global.Icons[34];
+					image = Global.Icons[34];
 				}
 
-				if(image!=null)
+				if (image != null)
 				{
 					left += ActivityUtils.PutImageTargetHeight(canvas, image, left, top, attHeight) + 3;
 					i++;
@@ -382,8 +382,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 						top += attLineHeight;
 					}
 				}
-				
-				
+
 			}
 			while (iterator.hasNext());
 
@@ -461,7 +460,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	{
 		if (downSlider.Me != null)
 		{
-			if (Config.GetBool("quickButtonShow"))
+			if (Config.settings.quickButtonShow.getValue())
 			{
 				downSlider.Me.setPos(downSlider.Me.QuickButtonMaxHeight);
 			}
@@ -478,7 +477,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		if (Pos >= 0)
 		{
 			yPos = Pos;
-			if (Config.GetBool("quickButtonShow"))
+			if (Config.settings.quickButtonShow.getValue())
 			{
 				if (Pos <= QuickButtonMaxHeight)
 				{
@@ -503,7 +502,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		}
 
 		// chk if info Visible then update info
-		int InfoBeginnAt = Config.GetBool("quickButtonShow") ? QuickButtonMaxHeight : 0;
+		int InfoBeginnAt = Config.settings.quickButtonShow.getValue() ? QuickButtonMaxHeight : 0;
 		if (yPos > InfoBeginnAt)
 		{
 			if (!isVisible) startUpdateTimer();
@@ -583,19 +582,19 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 	public void ActionUp() // Slider zurück scrolllen lassen
 	{
-		boolean QuickButtonShow = Config.GetBool("quickButtonShow");
+		boolean QuickButtonShow = Config.settings.quickButtonShow.getValue();
 
 		// check if QuickButtonList snap in
 		if (yPos >= (QuickButtonMaxHeight * 0.5) && QuickButtonShow)
 		{
 			QuickButtonHeight = QuickButtonMaxHeight;
-			Config.Set("quickButtonLastShow", true);
+			Config.settings.quickButtonLastShow.setValue(true);
 			Config.AcceptChanges();
 		}
 		else
 		{
 			QuickButtonHeight = 0;
-			Config.Set("quickButtonLastShow", false);
+			Config.settings.quickButtonLastShow.setValue(false);
 			Config.AcceptChanges();
 		}
 
@@ -632,7 +631,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 	public static int getAktQuickButtonHeight()
 	{
-		return Config.GetBool("quickButtonShow") ? QuickButtonHeight : 0;
+		return Config.settings.quickButtonShow.getValue() ? QuickButtonHeight : 0;
 	}
 
 	@Override
@@ -644,8 +643,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		attCompleadHeight = 0;
 		CacheInfoHeight = 0;
 		WPInfoHeight = 0;
-		topCalc=0;
-		
+		topCalc = 0;
+
 		int TextWidth = this.width - this.imgSize;
 
 		Rect bounds = new Rect();
@@ -702,9 +701,9 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		mLongitude = Global.FormatLongitudeDM(location.getLongitude());
 
 		String br = String.format("%n");
-		String Text = GlobalCore.Translations.Get("current") + " " + mLatitude + " " + mLongitude + br + GlobalCore.Translations.Get("alt") + " "
-				+ mAlt + br + GlobalCore.Translations.Get("accuracy") + "  +/- " + mAccuracy + "m" + br + GlobalCore.Translations.Get("sats") + " "
-				+ mSats;
+		String Text = GlobalCore.Translations.Get("current") + " " + mLatitude + " " + mLongitude + br + GlobalCore.Translations.Get("alt")
+				+ " " + mAlt + br + GlobalCore.Translations.Get("accuracy") + "  +/- " + mAccuracy + "m" + br
+				+ GlobalCore.Translations.Get("sats") + " " + mSats;
 
 		if (GPSLayoutTextPaint == null)
 		{

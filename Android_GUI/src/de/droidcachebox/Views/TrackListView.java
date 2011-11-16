@@ -223,7 +223,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 	 */
 	private void HandleLoad()
 	{
-		String fileName = Config.GetString("TrackFolder");
+		String fileName = Config.settings.TrackFolder.getValue();
 
 		Intent intent = new Intent(FileManagerIntents.ACTION_PICK_FILE);
 

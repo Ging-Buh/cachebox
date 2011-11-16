@@ -158,15 +158,15 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			case 2:
 			{
 				pd.dismiss();
-				MessageBox.Show(message, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
-						null);
+				MessageBox.Show(message, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
+						MessageBoxIcon.Powerd_by_GC_Live, null);
 				break;
 			}
 			case 3:
 			{
 				pd.dismiss();
-				MessageBox.Show(message, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
-						DownloadCacheDialogResult);
+				MessageBox.Show(message, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
+						MessageBoxIcon.Powerd_by_GC_Live, DownloadCacheDialogResult);
 				break;
 			}
 			case 4:
@@ -244,10 +244,10 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			}
 			else
 			{
-				html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, !Config.GetBool("AllowInternetAccess"), NonLocalImages,
-						NonLocalImagesUrl);
+				html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, !Config.settings.AllowInternetAccess.getValue(),
+						NonLocalImages, NonLocalImagesUrl);
 
-				if (!Config.GetBool("DescriptionNoAttributes")) html = getAttributesHtml(cache) + html;
+				if (!Config.settings.DescriptionNoAttributes.getValue()) html = getAttributesHtml(cache) + html;
 
 			}
 
@@ -264,7 +264,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 		// Falls nicht geladene Bilder vorliegen und eine Internetverbindung
 		// erlaubt ist, diese laden und Bilder erneut auflösen
-		if (Config.GetBool("AllowInternetAccess") && NonLocalImagesUrl.size() > 0)
+		if (Config.settings.AllowInternetAccess.getValue() && NonLocalImagesUrl.size() > 0)
 		{
 			downloadThread = new Thread()
 			{

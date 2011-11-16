@@ -165,7 +165,7 @@ public class LangStrings
 		{
 			try
 			{
-				ReadTranslationsFile(Config.GetString("Sel_LanguagePath"));
+				ReadTranslationsFile(Config.settings.Sel_LanguagePath.getValue());
 			}
 			catch (IOException e)
 			{
@@ -173,9 +173,8 @@ public class LangStrings
 			}
 		}
 
-		
 		if (_StringList == null || _RefTranslation == null) return "Translation  not initial";
-		
+
 		String retString = "";
 		for (_Translations tmp : _StringList)
 		{
