@@ -2,23 +2,21 @@ package CB_Core.Settings;
 
 import java.util.ArrayList;
 
-public class SettingEnum extends SettingString
+public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 {
 
 	private ArrayList<String> values;
 
-	@SuppressWarnings({ "unused", "rawtypes" })
-	private Enum myDefaultEnum;
-	@SuppressWarnings("rawtypes")
-	private Enum myEnum;
+	private EnumTyp myDefaultEnum;
+	private EnumTyp myEnum;
 	
 	
 	@SuppressWarnings("rawtypes")
-	public SettingEnum(String name, SettingCategory category, SettingModus modus, Enum defaultValue, boolean global, Enum enu)
+	public SettingEnum(String name, SettingCategory category, SettingModus modus, EnumTyp defaultValue, boolean global, EnumTyp enu)
 	{
 		super(name, category, modus, defaultValue.name(), global);
-		myEnum=enu;
-		myDefaultEnum=defaultValue;
+		myEnum = enu;
+		myDefaultEnum = defaultValue;
 		
 		values= new ArrayList<String>();
 		
@@ -46,23 +44,23 @@ public class SettingEnum extends SettingString
 	public void setValue(String value)
 	{
 		this.value = value;
-		myEnum = Enum.valueOf(myEnum.getDeclaringClass(), value);
+		
+		myEnum = (EnumTyp) EnumTyp.valueOf(myEnum.getDeclaringClass(), value);
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Enum getEnumValue()
+	@SuppressWarnings({ "unchecked" })
+	public EnumTyp getEnumValue()
 	{
-		return Enum.valueOf(myEnum.getDeclaringClass(), value);
+		return (EnumTyp) Enum.valueOf(myEnum.getDeclaringClass(), value);
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Enum getEnumDefaultValue()
+	@SuppressWarnings({ "unchecked" })
+	public EnumTyp getEnumDefaultValue()
 	{
-		return Enum.valueOf(myEnum.getDeclaringClass(), defaultValue);
+		return (EnumTyp) Enum.valueOf(myEnum.getDeclaringClass(), defaultValue);
 	}
 
-	@SuppressWarnings("rawtypes")
-	public void setEnumValue(Enum value)
+	public void setEnumValue(EnumTyp value)
 	{
 		this.value = value.name();
 		myEnum = value;

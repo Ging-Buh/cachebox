@@ -123,7 +123,7 @@ public class Settings extends SettingsList
 	public SettingEncryptedString GcVotePassword;
 
 	// Enums
-	public SettingEnum SmoothScrolling;
+	public SettingEnum<SmoothScrollingTyp> SmoothScrolling;
 
 	// ArrayInt
 	public SettingIntArray ZoomCross;
@@ -291,8 +291,8 @@ public class Settings extends SettingsList
 		addSetting(GcVotePassword = new SettingEncryptedString("GcVotePassword", SettingCategory.Internal, SettingModus.Invisible, "", true));
 
 		// Enums
-		addSetting(SmoothScrolling = new SettingEnum("SmoothScrolling", SettingCategory.Internal, SettingModus.Invisible,
-				SmoothScrollingTyp.normal, false, GlobalCore.SmoothScrolling));
+		addSetting(SmoothScrolling = new SettingEnum<SmoothScrollingTyp>("SmoothScrolling", SettingCategory.Internal, SettingModus.Invisible,
+				SmoothScrollingTyp.normal, true, GlobalCore.SmoothScrolling));
 
 		// IntArray
 		addSetting(TrackDistance = new SettingIntArray("TrackDistance", SettingCategory.Internal, SettingModus.Normal, 3, true,

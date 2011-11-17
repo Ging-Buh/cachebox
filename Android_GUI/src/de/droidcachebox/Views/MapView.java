@@ -110,7 +110,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		myContext = context;
 
 		try {
-		GlobalCore.SmoothScrolling = SmoothScrollingTyp.valueOf(Config.settings.SmoothScrolling.getValue());
+//			GlobalCore.SmoothScrolling = SmoothScrollingTyp.valueOf(Config.settings.SmoothScrolling.getValue());
+			GlobalCore.SmoothScrolling = Config.settings.SmoothScrolling.getEnumValue();
 		} catch (Exception ex) {
 			GlobalCore.SmoothScrolling = SmoothScrollingTyp.normal;
 		}

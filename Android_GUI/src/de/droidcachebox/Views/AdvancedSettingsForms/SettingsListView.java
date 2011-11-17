@@ -341,7 +341,7 @@ public class SettingsListView extends Activity
 				@Override
 				public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 				{
-					if (SB != null) SB.setValue(SB.getValues().get(arg2));
+					if (SB != null) SB.setValue((String) SB.getValues().get(arg2));
 				}
 
 				@Override

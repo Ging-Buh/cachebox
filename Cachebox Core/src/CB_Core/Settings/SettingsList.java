@@ -93,16 +93,15 @@ public class SettingsList extends HashMap<String, SettingBase>
 				}
 
 			}
+			if (Database.Data != null)
+				Database.Data.setTransactionSuccessful();
 			Database.Settings.setTransactionSuccessful();
-			Database.Settings.endTransaction();
 		}
 		finally
 		{
+			Database.Settings.endTransaction();
 			if (Database.Data != null)
-			{
-				Database.Data.setTransactionSuccessful();
 				Database.Data.endTransaction();
-			}
 		}
 
 	}

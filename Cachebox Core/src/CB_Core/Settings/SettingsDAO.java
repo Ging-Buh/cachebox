@@ -6,10 +6,11 @@ public class SettingsDAO
 {
 	public void WriteToDatabase(Database database, SettingBase setting)
 	{
+		String dbString = setting.toDBString();
 		if (setting instanceof SettingLongString) 
-			database.WriteConfigLongString(setting.name, setting.toDBString());
+			database.WriteConfigLongString(setting.name, dbString);
 		else
-			database.WriteConfigString(setting.name, setting.toDBString());
+			database.WriteConfigString(setting.name, dbString);
 	}
 
 	public void ReadFromDatabase(Database database, SettingBase setting)
