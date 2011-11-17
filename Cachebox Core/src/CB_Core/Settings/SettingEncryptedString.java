@@ -16,7 +16,7 @@ public class SettingEncryptedString extends SettingLongString
 	{
 		return Config.decrypt(this.value);
 	}
-	
+
 	// Liefert die verschlüsselte Einstellung zurück
 	public String getEncryptedValue()
 	{
@@ -29,22 +29,29 @@ public class SettingEncryptedString extends SettingLongString
 		return Config.decrypt(this.defaultValue);
 	}
 
-	// liefert den verschlüsselten Standadwert 
+	// liefert den verschlüsselten Standadwert
 	public String getEncryptedDefaultValue()
 	{
 		return this.defaultValue;
 	}
 
-	// hiermit kann die Einstellung im Klartext übergeben werden und wird sofort verschlüsselt
+	// hiermit kann die Einstellung im Klartext übergeben werden und wird sofort
+	// verschlüsselt
 	public void setValue(String value)
 	{
-		this.value = Config.encrypt(value);
+		String encrypted = "";
+		if (value.length() > 0) encrypted = Config.encrypt(value);
+		if (this.value.equals(encrypted)) return;
+		this.value = encrypted;
+		setDirty();
 	}
-	
+
 	// hier kann die schon verschlüsselte Einstellung übergeben werden.
-	public void setEncryptedValue(String value) 
+	public void setEncryptedValue(String value)
 	{
+		if (this.value.equals(value)) return;
 		this.value = value;
+		setDirty();
 	}
 
 }

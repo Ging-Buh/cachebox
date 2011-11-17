@@ -23,6 +23,7 @@ public class SettingsDAO
 			else
 				dbString = database.ReadConfigString(setting.name);
 			setting.fromDBString(dbString);
+			setting.clearDirty();
 		}
 		catch (Exception ex)
 		{

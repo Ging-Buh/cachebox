@@ -25,7 +25,9 @@ public class SettingBool extends SettingBase
 
 	public void setValue(boolean value)
 	{
+		if (this.value == value) return;
 		this.value = value;
+		setDirty();
 	}
 
 	@Override
@@ -54,7 +56,7 @@ public class SettingBool extends SettingBase
 	{
 		value = defaultValue;
 	}
-	
+
 	@Override
 	public void saveToLastValue()
 	{
@@ -66,5 +68,5 @@ public class SettingBool extends SettingBase
 	{
 		value = lastValue;
 	}
-	
+
 }

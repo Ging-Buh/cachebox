@@ -8,6 +8,7 @@ public class SettingBase
 	protected boolean global; // true, if this setting should be stored in
 								// global setting databsae, otherwise in local
 								// database file
+	protected boolean dirty;	// saves whethter this setting is changed and needs to be saved
 
 	public SettingBase(String name, SettingCategory category, SettingModus modus, boolean global)
 	{
@@ -15,8 +16,21 @@ public class SettingBase
 		this.category = category;
 		this.modus = modus;
 		this.global = global;
+		dirty = false;
 	}
 
+	public boolean isDirty() {
+		return dirty;
+	}
+	
+	public void setDirty() {
+		dirty = true;
+	}
+	
+	public void clearDirty() {
+		dirty = false;
+	}
+	
 	public String getName()
 	{
 		return name;

@@ -25,7 +25,9 @@ public class SettingDouble extends SettingBase
 
 	public void setValue(double value)
 	{
+		if (this.value == value) return;
 		this.value = value;
+		setDirty();
 	}
 
 	@Override
@@ -66,5 +68,5 @@ public class SettingDouble extends SettingBase
 	{
 		value = lastValue;
 	}
-	
+
 }

@@ -25,7 +25,9 @@ public class SettingInt extends SettingBase
 
 	public void setValue(int value)
 	{
+		if (this.value == value) return;
 		this.value = value;
+		setDirty();
 	}
 
 	@Override

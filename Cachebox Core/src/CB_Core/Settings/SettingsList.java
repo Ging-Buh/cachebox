@@ -82,6 +82,9 @@ public class SettingsList extends HashMap<String, SettingBase>
 			for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext();)
 			{
 				SettingBase setting = it.next();
+				if (!setting.isDirty()) 
+					continue;		// is not changed -> do not need to be stored
+
 				if (setting.getGlobal())
 				{
 					dao.WriteToDatabase(Database.Settings, setting);
@@ -91,6 +94,8 @@ public class SettingsList extends HashMap<String, SettingBase>
 				{
 					if (Database.Data != null) dao.WriteToDatabase(Database.Data, setting);
 				}
+				// remember that this setting now is stored
+				setting.clearDirty();
 
 			}
 			if (Database.Data != null)

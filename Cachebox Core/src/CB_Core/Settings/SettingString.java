@@ -25,7 +25,9 @@ public class SettingString extends SettingBase
 
 	public void setValue(String value)
 	{
+		if (this.value.equals(value)) return;
 		this.value = value;
+		setDirty();
 	}
 
 	@Override
