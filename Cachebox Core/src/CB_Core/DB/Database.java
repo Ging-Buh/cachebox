@@ -28,6 +28,18 @@ public abstract class Database
 	public static Database FieldNotes;
 	public static Database Settings;
 
+	protected boolean newDB=false;
+	
+	/***
+	 * Wenn die DB neu erstellt wurde ist der Return Wert
+	 * bei der ersten Abfrage True
+	 * @return
+	 */
+	public boolean isDbNew()
+	{
+		return newDB;
+	}
+	
 	public enum DatabaseType
 	{
 		CacheBox, FieldNotes, Settings

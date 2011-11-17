@@ -788,7 +788,7 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 		try
 		{
 			EditTextGCName.setText(Config.settings.GcLogin.getValue());
-			EditTextGCVotePW.setText(Config.settings.GcVotePassword.getValue());
+			EditTextGCVotePW.setText(Config.settings.GcVotePassword.getEncryptedValue());
 			EditTextGCJoker.setText(Config.settings.GcJoker.getValue());
 			EditDebugOverrideGcAuth.setText(Config.settings.OverrideUrl.getValue());
 			fillLangCombo();
@@ -859,15 +859,33 @@ public class Settings extends Activity implements ViewOptionsMenu, SelectedLangC
 		Config.AcceptChanges();
 	}
 
-	public void setUserName(String UserName)
+	public void setUserName(final String UserName)
 	{
-		EditTextGCName.setText(UserName);
-		EditTextGCName.invalidate();
-
-		if (!Config.GetAccessToken().equals(""))
+		
+		Thread t = new Thread()
 		{
-			((ImageView) findViewById(R.id.settings_API_Chk_Img)).setImageDrawable(Global.Icons[27]);
-		}
+			public void run()
+			{
+				runOnUiThread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						EditTextGCName.setText(UserName);
+						EditTextGCName.invalidate();
+
+						if (!Config.GetAccessToken().equals(""))
+						{
+							((ImageView) findViewById(R.id.settings_API_Chk_Img)).setImageDrawable(Global.Icons[27]);
+						}
+					}
+				});
+			}
+		};
+
+		t.start();
+		
+		
 
 	}
 

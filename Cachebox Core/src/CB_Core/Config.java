@@ -1,15 +1,18 @@
 package CB_Core;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
 import CB_Core.Converter.Base64;
 
-import CB_Core.Settings.Settings;
+import CB_Core.Log.Logger;
+import CB_Core.Settings.SettingsClass;
 
 public class Config
 {
-	public static Settings settings;
+	public static SettingsClass settings;
 
 	public static String WorkPath = "";
 	public static String ConfigName = "";
@@ -18,70 +21,70 @@ public class Config
 	{
 		WorkPath = workPath;
 		ConfigName = configName;
-		settings = new Settings();
+		settings = new SettingsClass();
 	}
 
-	// public static String GetString(String key)
-	// {
-	// checkInitialization();
-	//
-	// String value = keyLookup.get(key);
-	// if (value == null) return "";
-	// else
-	// return value;
-	// }
-	//
-	// public static double GetDouble(String key)
-	// {
-	// checkInitialization();
-	//
-	// String value = keyLookup.get(key);
-	// if (value == null) return 0;
-	// else
-	// return Double.parseDouble(value);
-	// }
-	//
-	// public static float GetFloat(String key)
-	// {
-	// checkInitialization();
-	//
-	// String value = keyLookup.get(key);
-	// if (value == null) return 0;
-	// else
-	// return Float.parseFloat(value);
-	// }
-	//
-	// public static Boolean GetBool(String key)
-	// {
-	// checkInitialization();
-	//
-	// String value = keyLookup.get(key);
-	// if (value == null) return false;
-	// else
-	// return Boolean.parseBoolean(value);
-	// }
-	//
-	// public static int GetInt(String key)
-	// {
-	// checkInitialization();
-	//
-	// String value = keyLookup.get(key);
-	// if (value == null)
-	// {
-	// return -1;
-	// }
-	// else
-	// {
-	// try
-	// {
-	// return Integer.parseInt(value);
-	// }
-	// catch (Exception e)
-	// {
-	// }
-	// return -1;
-	// }
-	// }
+	 public static String GetString(String key)
+	 {
+	 checkInitialization();
+	
+	 String value = keyLookup.get(key);
+	 if (value == null) return "";
+	 else
+	 return value;
+	 }
+	
+	 public static double GetDouble(String key)
+	 {
+	 checkInitialization();
+	
+	 String value = keyLookup.get(key);
+	 if (value == null) return 0;
+	 else
+	 return Double.parseDouble(value);
+	 }
+	
+	 public static float GetFloat(String key)
+	 {
+	 checkInitialization();
+	
+	 String value = keyLookup.get(key);
+	 if (value == null) return 0;
+	 else
+	 return Float.parseFloat(value);
+	 }
+	
+	 public static Boolean GetBool(String key)
+	 {
+	 checkInitialization();
+	
+	 String value = keyLookup.get(key);
+	 if (value == null) return false;
+	 else
+	 return Boolean.parseBoolean(value);
+	 }
+	
+	 public static int GetInt(String key)
+	 {
+	 checkInitialization();
+	
+	 String value = keyLookup.get(key);
+	 if (value == null)
+	 {
+	 return -1;
+	 }
+	 else
+	 {
+	 try
+	 {
+	 return Integer.parseInt(value);
+	 }
+	 catch (Exception e)
+	 {
+	 }
+	 return -1;
+	 }
+	 }
 
 	public static void changeDayNight()
 	{
@@ -107,39 +110,39 @@ public class Config
 
 		initialized = true;
 
-		return;
-		// keyLookup = new HashMap<String, String>();
-		//
-		// BufferedReader Filereader;
-		//
-		// try
-		// {
-		// Filereader = new BufferedReader(new FileReader(ConfigName));
-		// String line;
-		//
-		// while ((line = Filereader.readLine()) != null)
-		// {
-		// int idx = line.indexOf('=');
-		// if (idx < 0)
-		// {
-		// continue;
-		// }
-		//
-		// String key = line.substring(0, idx);
-		// String value = line.substring(idx + 1)/* .replace("//","/" ) */;
-		// keyLookup.put(key, value);
-		// }
-		//
-		// Filereader.close();
-		// }
-		// catch (IOException e)
-		// {
-		// Logger.Error("ReadConfig", "Error when accessing cachebox.config!",
-		// e);
-		// e.printStackTrace();
-		// }
-		//
-		// validateDefaultConfigFile();
+		
+		 keyLookup = new HashMap<String, String>();
+		
+		 BufferedReader Filereader;
+		
+		 try
+		 {
+		 Filereader = new BufferedReader(new FileReader(ConfigName));
+		 String line;
+		
+		 while ((line = Filereader.readLine()) != null)
+		 {
+		 int idx = line.indexOf('=');
+		 if (idx < 0)
+		 {
+		 continue;
+		 }
+		
+		 String key = line.substring(0, idx);
+		 String value = line.substring(idx + 1)/* .replace("//","/" ) */;
+		 keyLookup.put(key, value);
+		 }
+		
+		 Filereader.close();
+		 }
+		 catch (IOException e)
+		 {
+		 Logger.Error("ReadConfig", "Error when accessing cachebox.config!",
+		 e);
+		 e.printStackTrace();
+		 }
+		
+		 validateDefaultConfigFile();
 	}
 
 	public static void validateDefaultConfigFile()
@@ -253,12 +256,12 @@ public class Config
 		if (Lookupvalue == null) keyLookup.put(key, value);
 	}
 
-	// public static void Set(String key, String value)
-	// {
-	// checkInitialization();
-	// keyLookup.put(key, value);
-	// }
-	//
+	 public static void Set(String key, String value)
+	 {
+	 checkInitialization();
+	 keyLookup.put(key, value);
+	 }
+	
 	// public static void Set(String key, double value)
 	// {
 	// Set(key, String.valueOf(value));
@@ -274,10 +277,10 @@ public class Config
 	// Set(key, String.valueOf(value));
 	// }
 	//
-	// public static void Set(String key, int value)
-	// {
-	// Set(key, String.valueOf(value));
-	// }
+//	 public static void Set(String key, int value)
+//	 {
+//	 Set(key, String.valueOf(value));
+//	 }
 
 	public static void AcceptChanges()
 	{
@@ -305,43 +308,43 @@ public class Config
 
 	}
 
-	// public static String GetStringEncrypted(String key)
-	// {
-	// String s;
-	// boolean convert = false;
-	// if (ExistsKey(key + "Enc"))
-	// {
-	// s = GetString(key + "Enc");
-	// if (s != "")
-	// {
-	// // encrypted Key is found -> remove the old non encrypted
-	// if (ExistsKey(key))
-	// {
-	// keyLookup.remove(key);
-	// AcceptChanges();
-	// }
-	// s = decrypt(s);
-	// }
-	// }
-	// else
-	// {
-	// // no encrypted Key is found -> search for non encrypted
-	// s = GetString(key);
-	// if (s != "")
-	// {
-	// // remove the old non encrypted and insert a new encrypted
-	// keyLookup.remove(key);
-	// convert = true;
-	// }
-	// }
-	//
-	// if (convert)
-	// {
-	// SetEncrypted(key, s);
-	// AcceptChanges();
-	// }
-	// return s;
-	// }
+	 public static String GetStringEncrypted(String key)
+	 {
+	 String s;
+	 boolean convert = false;
+	 if (ExistsKey(key + "Enc"))
+	 {
+	 s = GetString(key + "Enc");
+	 if (s != "")
+	 {
+	 // encrypted Key is found -> remove the old non encrypted
+	 if (ExistsKey(key))
+	 {
+	 keyLookup.remove(key);
+	 AcceptChanges();
+	 }
+	 s = decrypt(s);
+	 }
+	 }
+	 else
+	 {
+	 // no encrypted Key is found -> search for non encrypted
+	 s = GetString(key);
+	 if (s != "")
+	 {
+	 // remove the old non encrypted and insert a new encrypted
+	 keyLookup.remove(key);
+	 convert = true;
+	 }
+	 }
+	
+	 if (convert)
+	 {
+	 SetEncrypted(key, s);
+	 AcceptChanges();
+	 }
+	 return s;
+	 }
 
 	public static boolean ExistsKey(String key)
 	{
@@ -393,13 +396,13 @@ public class Config
 		}
 	}
 
-	// public static void SetEncrypted(String key, String value)
-	// {
-	// String encrypted = encrypt(value);
-	// if (ExistsKey(key)) keyLookup.remove(key); // remove non decrypted key
-	// // if exists
-	// Set(key + "Enc", encrypted);
-	// }
+	 public static void SetEncrypted(String key, String value)
+	 {
+	 String encrypted = encrypt(value);
+	 if (ExistsKey(key)) keyLookup.remove(key); // remove non decrypted key
+	 // if exists
+	 Set(key + "Enc", encrypted);
+	 }
 
 	public static String encrypt(String value)
 	{

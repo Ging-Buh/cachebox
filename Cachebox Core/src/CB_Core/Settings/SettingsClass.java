@@ -5,7 +5,7 @@ import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Enums.SmoothScrollingTyp;
 
-public class Settings extends SettingsList
+public class SettingsClass extends SettingsList
 {
 
 	private static final long serialVersionUID = 7330937438116889415L;
@@ -140,7 +140,7 @@ public class Settings extends SettingsList
 	public Integer[] TrackDistanceArray = new Integer[]
 		{ 1, 3, 5, 10, 20 };
 
-	public Settings()
+	public SettingsClass()
 	{
 
 		for (int i = 0; i < 22; i++)

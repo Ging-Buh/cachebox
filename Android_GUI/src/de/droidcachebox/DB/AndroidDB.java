@@ -51,6 +51,7 @@ public class AndroidDB extends Database
     	try
     	{
     		activity.openOrCreateDatabase(databasePath, Context.MODE_WORLD_WRITEABLE, null);
+    		newDB=true;
     	} catch (Exception exc)
     	{
     	}

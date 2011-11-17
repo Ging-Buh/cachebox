@@ -2,6 +2,7 @@ package de.droidcachebox;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -11,6 +12,16 @@ import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
+import CB_Core.Settings.SettingBase;
+import CB_Core.Settings.SettingBool;
+import CB_Core.Settings.SettingDouble;
+import CB_Core.Settings.SettingEncryptedString;
+import CB_Core.Settings.SettingEnum;
+import CB_Core.Settings.SettingFile;
+import CB_Core.Settings.SettingFolder;
+import CB_Core.Settings.SettingInt;
+import CB_Core.Settings.SettingIntArray;
+import CB_Core.Settings.SettingString;
 import CB_Core.Settings.SettingsDAO;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Coordinate;
@@ -177,10 +188,74 @@ public class splash extends Activity
 		String database = Config.settings.DatabasePath.getValue();
 		Database.Data.StartUp(database);
 
-		Config.readConfigFile(/* getAssets() */);
+		// wenn die Settings DB neu Erstellt wurde, müssen die Default werte
+		// geschrieben werden.
+		if (Database.Settings.isDbNew())
+		{
+			Config.settings.LoadAllDefaultValues();
+			Config.settings.WriteToDB();
+		}
+		else
+		{
+			Config.settings.ReadFromDB();
+		}
 
-	
-		Config.settings.ReadFromDB();
+		// wenn eine cachebox.config existiert, werden die Werte in die DB
+		// übertragen
+		if (FileIO.FileExists(workPath + "/cachebox.config"))
+		{
+			Config.readConfigFile(/* getAssets() */);
+
+			for (Iterator<SettingBase> it = Config.settings.values().iterator(); it.hasNext();)
+			{
+				SettingBase setting = it.next();
+
+				if (setting instanceof SettingBool)
+				{
+					((SettingBool) setting).setValue(Config.GetBool(setting.getName()));
+				}
+				else if (setting instanceof SettingIntArray)
+				{
+					((SettingIntArray) setting).setValue(Config.GetInt(setting.getName()));
+				}
+				else if (setting instanceof SettingInt)
+				{
+					((SettingInt) setting).setValue(Config.GetInt(setting.getName()));
+				}
+				else if (setting instanceof SettingDouble)
+				{
+					((SettingDouble) setting).setValue(Config.GetDouble(setting.getName()));
+				}
+				else if (setting instanceof SettingFolder)
+				{
+					((SettingFolder) setting).setValue(Config.GetString(setting.getName()));
+				}
+				else if (setting instanceof SettingFile)
+				{
+					((SettingFile) setting).setValue(Config.GetString(setting.getName()));
+				}
+				else if (setting instanceof SettingEnum)
+				{
+					((SettingEnum) setting).setValue(Config.GetString(setting.getName()));
+				}
+				else if (setting instanceof SettingEncryptedString)
+				{
+					((SettingEncryptedString) setting).setEncryptedValue(Config.GetString(setting.getName() + "Enc"));
+				}
+				else if (setting instanceof SettingString)
+				{
+					((SettingString) setting).setValue(Config.GetString(setting.getName()));
+				}
+
+			}
+			// Schreibe settings in die DB
+			Config.AcceptChanges();
+
+			// cachebox.config umbenennen.
+			File f = new File(workPath + "/cachebox.config");
+			f.renameTo(new File(workPath + "/ALT_cachebox.config"));
+
+		}
 
 		String PocketQueryFolder = Config.settings.PocketQueryFolder.getValue();
 		File directoryPocketQueryFolder = new File(PocketQueryFolder);

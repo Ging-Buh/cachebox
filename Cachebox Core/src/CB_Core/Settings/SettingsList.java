@@ -137,4 +137,13 @@ public class SettingsList extends HashMap<String, SettingBase>
 			setting.saveToLastValue();
 		}
 	}
+	
+	public void LoadAllDefaultValues()
+	{
+		for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext();)
+		{
+			SettingBase setting = it.next();
+			setting.loadDefault();
+		}
+	}
 }
