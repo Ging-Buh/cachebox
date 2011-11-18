@@ -47,6 +47,9 @@ public class GPXFileImporter
 	private Category category = new Category();
 	private GpxFilename gpxFilename = null;
 
+	private String gpxName = "";
+	private String gpxAuthor = "";
+
 	public GPXFileImporter(String gpxFileName)
 	{
 		super();
@@ -84,6 +87,7 @@ public class GPXFileImporter
 
 		List<IRule<Map<String, String>>> ruleList = new ArrayList<IRule<Map<String, String>>>();
 
+		ruleList = createGPXRules(ruleList);
 		ruleList = createWPTRules(ruleList);
 		ruleList = createGroundspeakRules(ruleList);
 		ruleList = createGSAKRules(ruleList);
@@ -94,6 +98,32 @@ public class GPXFileImporter
 		parserCache.parse(new FileInputStream(mGpxFileName), values);
 
 		mImportHandler = null;
+	}
+
+	private List<IRule<Map<String, String>>> createGPXRules(List<IRule<Map<String, String>>> ruleList) throws Exception
+	{
+
+		// Basic GPX Rules
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/name")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				gpxName = text;
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/author")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				gpxAuthor = text;
+			}
+		});
+
+		return ruleList;
 	}
 
 	private List<IRule<Map<String, String>>> createWPTRules(List<IRule<Map<String, String>>> ruleList) throws Exception
@@ -741,6 +771,11 @@ public class GPXFileImporter
 
 	private void createCache(Map<String, String> values) throws Exception
 	{
+
+		if (gpxAuthor.toLowerCase().contains("gctour"))
+		{
+			cache.TourName = gpxName;
+		}
 
 		if (values.containsKey("wpt_attribute_lat") && values.containsKey("wpt_attribute_lon"))
 		{

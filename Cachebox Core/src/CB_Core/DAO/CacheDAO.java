@@ -181,6 +181,7 @@ public class CacheDAO
 		args.put("GPXFilename_Id", cache.GPXFilename_ID);
 		args.put("ApiStatus", cache.ApiStatus);
 		args.put("CorrectedCoordinates", cache.CorrectedCoordinates ? 1 : 0);
+		args.put("TourName", cache.TourName);
 
 		try
 		{
@@ -281,6 +282,7 @@ public class CacheDAO
 		args.put("Favorit", cache.Favorit() ? 1 : 0);
 		args.put("ApiStatus", cache.ApiStatus);
 		args.put("CorrectedCoordinates", cache.CorrectedCoordinates ? 1 : 0);
+		args.put("TourName", cache.TourName);
 
 		try
 		{
