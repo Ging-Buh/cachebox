@@ -1,20 +1,14 @@
 package de.droidcachebox.Views.Forms;
 
 import java.io.File;
+
 import CB_Core.Config;
+import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
-import CB_Core.DB.Database;
-import de.droidcachebox.FileList;
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
 import CB_Core.DAO.CacheListDAO;
+import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
-import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.Views.AboutView;
-import de.droidcachebox.Views.FilterSettings.PresetListView;
-
-import CB_Core.FileIO;
 import CB_Core.Types.Categories;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,36 +20,19 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
-
-import CB_Core.Log.Logger;
-import CB_Core.Map.Descriptor;
-import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
-
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.Environment;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import de.droidcachebox.Components.copyAssetFolder;
+import de.droidcachebox.FileList;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
 import de.droidcachebox.DB.AndroidDB;
-
-import de.droidcachebox.Map.Layer;
-import de.droidcachebox.Ui.Sizes;
-import de.droidcachebox.Views.MapView;
-import de.droidcachebox.Views.Forms.SelectDB;
-import CB_Core.GlobalCore;
+import de.droidcachebox.Ui.ActivityUtils;
 
 public class SelectDB extends Activity
 {
@@ -114,8 +91,7 @@ public class SelectDB extends Activity
 			public void onClick(View v)
 			{
 				stopTimer();
-				StringInputBox.Show(GlobalCore.Translations.Get("NewDB"),
-						GlobalCore.Translations.Get("InsNewDBName"), "NewDB",
+				StringInputBox.Show(GlobalCore.Translations.Get("NewDB"), GlobalCore.Translations.Get("InsNewDBName"), "NewDB",
 						DialogListnerNewDB, Me);
 			}
 		});
@@ -129,9 +105,7 @@ public class SelectDB extends Activity
 				stopTimer();
 				if (AktFile == null)
 				{
-					Toast.makeText(getApplicationContext(),
-							"Please select Database!", Toast.LENGTH_SHORT)
-							.show();
+					Toast.makeText(getApplicationContext(), "Please select Database!", Toast.LENGTH_SHORT).show();
 					return;
 				}
 				selectDB();
@@ -167,8 +141,7 @@ public class SelectDB extends Activity
 		lvFiles.setOnItemClickListener(new OnItemClickListener()
 		{
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3)
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 			{
 
 				stopTimer();
@@ -186,8 +159,7 @@ public class SelectDB extends Activity
 		bCancel.setText(GlobalCore.Translations.Get("cancel"));
 		bAutostart.setText(GlobalCore.Translations.Get("StartWithoutSelection"));
 
-		lvFiles.setBackgroundColor(Config.settings.nightMode.getValue() ? R.color.Night_EmptyBackground
-				: R.color.Day_EmptyBackground);
+		lvFiles.setBackgroundColor(Config.settings.nightMode.getValue() ? R.color.Night_EmptyBackground : R.color.Day_EmptyBackground);
 		lvFiles.setCacheColorHint(R.color.Day_TitleBarColor);
 		lvFiles.setDividerHeight(5);
 		lvFiles.setDivider(lvFiles.getBackground());
@@ -204,8 +176,7 @@ public class SelectDB extends Activity
 				else
 				{
 					autoStartCounter--;
-					bAutostart.setText(autoStartCounter + "\n"
-							+ GlobalCore.Translations.Get("confirm"));
+					bAutostart.setText(autoStartCounter + "\n" + GlobalCore.Translations.Get("confirm"));
 					mHandler.postDelayed(mUpdateUITimerTask, 1000);
 				}
 			}
@@ -216,8 +187,7 @@ public class SelectDB extends Activity
 		if (autoStartTime > 0)
 		{
 			autoStartCounter = autoStartTime;
-			bAutostart.setText(autoStartCounter + "\n"
-					+ GlobalCore.Translations.Get("confirm"));
+			bAutostart.setText(autoStartCounter + "\n" + GlobalCore.Translations.Get("confirm"));
 			setAutoStartText();
 			if ((autoStart && autoStartTime > 0) && (AktFile != null))
 			{
@@ -243,18 +213,16 @@ public class SelectDB extends Activity
 				dialog.dismiss();
 
 				String FilterString = Config.settings.Filter.getValue();
-				Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(
-						FilterProperties.presets[0]) : new FilterProperties(
-						FilterString);
+				Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0])
+						: new FilterProperties(FilterString);
 				String sqlWhere = Global.LastFilter.getSqlWhere();
 
 				// initialize Database
 				Database.Data = new AndroidDB(DatabaseType.CacheBox, Me);
-				Config.settings.DatabasePath.setValue( Config.WorkPath + "/" + text
-						+ ".db3");
-				Config.AcceptChanges();
+				Config.settings.DatabasePath.setValue(Config.WorkPath + "/" + text + ".db3");
 				String database = Config.settings.DatabasePath.getValue();
 				Database.Data.StartUp(database);
+				Config.AcceptChanges();
 
 				GlobalCore.Categories = new Categories();
 				Database.Data.GPXFilenameUpdateCacheCount();
@@ -264,8 +232,7 @@ public class SelectDB extends Activity
 
 				Database.FieldNotes = new AndroidDB(DatabaseType.FieldNotes, Me);
 				if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
-				Database.FieldNotes.StartUp(Config.WorkPath
-						+ "/User/FieldNotes.db3");
+				Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 
 				Config.AcceptChanges();
 				AktFile = new File(database);
@@ -288,8 +255,8 @@ public class SelectDB extends Activity
 
 	protected void selectDB()
 	{
-		Config.settings.MultiDBAutoStartTime.setValue( autoStartTime);
-		Config.settings.MultiDBAsk.setValue( autoStartTime >= 0);
+		Config.settings.MultiDBAutoStartTime.setValue(autoStartTime);
+		Config.settings.MultiDBAsk.setValue(autoStartTime >= 0);
 
 		String name = AktFile.getName();
 		// Toast.makeText(getApplicationContext(), name,
@@ -299,7 +266,7 @@ public class SelectDB extends Activity
 		// Toast.makeText(getApplicationContext(), path,
 		// Toast.LENGTH_SHORT).show();
 
-		Config.settings.DatabasePath.setValue( path);
+		Config.settings.DatabasePath.setValue(path);
 		Config.AcceptChanges();
 
 		aktIntent.putExtra("SOMETHING", "EXTRAS");
@@ -310,19 +277,13 @@ public class SelectDB extends Activity
 
 	private void setAutoStartText()
 	{
-		if (autoStartTime < 0) bAutostart.setText(GlobalCore.Translations
-				.Get("AutoStart")
-				+ "\n"
+		if (autoStartTime < 0) bAutostart.setText(GlobalCore.Translations.Get("AutoStart") + "\n"
 				+ GlobalCore.Translations.Get("StartWithoutSelection"));
-		else if (autoStartTime == 0) bAutostart.setText(GlobalCore.Translations
-				.Get("AutoStart")
-				+ "\n"
+		else if (autoStartTime == 0) bAutostart.setText(GlobalCore.Translations.Get("AutoStart") + "\n"
 				+ GlobalCore.Translations.Get("AutoStartDisabled"));
 		else
-			bAutostart.setText(GlobalCore.Translations.Get("AutoStart")
-					+ "\n"
-					+ GlobalCore.Translations.Get("AutoStartTime").replace("%s",
-							String.valueOf(autoStartTime)));
+			bAutostart.setText(GlobalCore.Translations.Get("AutoStart") + "\n"
+					+ GlobalCore.Translations.Get("AutoStartTime").replace("%s", String.valueOf(autoStartTime)));
 	}
 
 	public class CustomAdapter extends BaseAdapter
@@ -361,8 +322,7 @@ public class SelectDB extends Activity
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
 			Boolean BackGroundChanger = ((position % 2) == 1);
-			SelectDBItem v = new SelectDBItem(context, files.get(position),
-					BackGroundChanger);
+			SelectDBItem v = new SelectDBItem(context, files.get(position), BackGroundChanger);
 			return v;
 		}
 
@@ -388,50 +348,46 @@ public class SelectDB extends Activity
 			cs[0] = GlobalCore.Translations.Get("StartWithoutSelection");
 			cs[1] = GlobalCore.Translations.Get("AutoStartDisabled");
 			cs[2] = GlobalCore.Translations.Get("AutoStartTime").replace("%s", "5");
-			cs[3] = GlobalCore.Translations.Get("AutoStartTime")
-					.replace("%s", "10");
-			cs[4] = GlobalCore.Translations.Get("AutoStartTime")
-					.replace("%s", "25");
-			cs[5] = GlobalCore.Translations.Get("AutoStartTime")
-					.replace("%s", "60");
+			cs[3] = GlobalCore.Translations.Get("AutoStartTime").replace("%s", "10");
+			cs[4] = GlobalCore.Translations.Get("AutoStartTime").replace("%s", "25");
+			cs[5] = GlobalCore.Translations.Get("AutoStartTime").replace("%s", "60");
 
-			return new AlertDialog.Builder(this).setTitle("Titel")
-					.setItems(cs, new DialogInterface.OnClickListener()
+			return new AlertDialog.Builder(this).setTitle("Titel").setItems(cs, new DialogInterface.OnClickListener()
+			{
+				public void onClick(DialogInterface dialog, int which)
+				{
+
+					switch (which)
 					{
-						public void onClick(DialogInterface dialog, int which)
-						{
+					case 0:
+						autoStartTime = -1;
+						setAutoStartText();
+						break;
+					case 1:
+						autoStartTime = 0;
+						setAutoStartText();
+						break;
+					case 2:
+						autoStartTime = 5;
+						setAutoStartText();
+						break;
+					case 3:
+						autoStartTime = 10;
+						setAutoStartText();
+						break;
+					case 4:
+						autoStartTime = 25;
+						setAutoStartText();
+						break;
+					case 5:
+						autoStartTime = 60;
+						setAutoStartText();
+						break;
 
-							switch (which)
-							{
-							case 0:
-								autoStartTime = -1;
-								setAutoStartText();
-								break;
-							case 1:
-								autoStartTime = 0;
-								setAutoStartText();
-								break;
-							case 2:
-								autoStartTime = 5;
-								setAutoStartText();
-								break;
-							case 3:
-								autoStartTime = 10;
-								setAutoStartText();
-								break;
-							case 4:
-								autoStartTime = 25;
-								setAutoStartText();
-								break;
-							case 5:
-								autoStartTime = 60;
-								setAutoStartText();
-								break;
+					}
 
-							}
-
-						}
-					}).create();
+				}
+			}).create();
 		}
 		return null;
 	}

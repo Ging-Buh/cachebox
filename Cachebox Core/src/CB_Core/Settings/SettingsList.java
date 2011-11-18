@@ -75,15 +75,25 @@ public class SettingsList extends HashMap<String, SettingBase>
 		// Write into DB
 		SettingsDAO dao = new SettingsDAO();
 		Database.Settings.beginTransaction();
-		if (Database.Data != null) Database.Data.beginTransaction();
+		Database Data = Database.Data;
+
+		try
+		{
+			if (Data != null) Data.beginTransaction();
+		}
+		catch (Exception ex)
+		{
+			// do not change Data now!
+			Data = null;
+		}
 
 		try
 		{
 			for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext();)
 			{
 				SettingBase setting = it.next();
-				if (!setting.isDirty()) 
-					continue;		// is not changed -> do not need to be stored
+				if (!setting.isDirty()) continue; // is not changed -> do not
+													// need to be stored
 
 				if (setting.getGlobal())
 				{
@@ -92,21 +102,19 @@ public class SettingsList extends HashMap<String, SettingBase>
 
 				else
 				{
-					if (Database.Data != null) dao.WriteToDatabase(Database.Data, setting);
+					if (Data != null) dao.WriteToDatabase(Data, setting);
 				}
 				// remember that this setting now is stored
 				setting.clearDirty();
 
 			}
-			if (Database.Data != null)
-				Database.Data.setTransactionSuccessful();
+			if (Data != null) Data.setTransactionSuccessful();
 			Database.Settings.setTransactionSuccessful();
 		}
 		finally
 		{
 			Database.Settings.endTransaction();
-			if (Database.Data != null)
-				Database.Data.endTransaction();
+			if (Data != null) Data.endTransaction();
 		}
 
 	}
@@ -118,8 +126,7 @@ public class SettingsList extends HashMap<String, SettingBase>
 		for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext();)
 		{
 			SettingBase setting = it.next();
-			if (setting.getGlobal()) 
-				dao.ReadFromDatabase(Database.Settings, setting);
+			if (setting.getGlobal()) dao.ReadFromDatabase(Database.Settings, setting);
 			else
 				dao.ReadFromDatabase(Database.Data, setting);
 		}
@@ -142,7 +149,7 @@ public class SettingsList extends HashMap<String, SettingBase>
 			setting.saveToLastValue();
 		}
 	}
-	
+
 	public void LoadAllDefaultValues()
 	{
 		for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext();)
