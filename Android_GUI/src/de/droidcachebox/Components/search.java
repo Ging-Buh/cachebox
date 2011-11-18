@@ -22,6 +22,13 @@ import java.util.Iterator;
 import CB_Core.Config;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
+import CB_Core.Api.GroundspeakAPI;
+import CB_Core.DAO.CacheDAO;
+import CB_Core.DAO.CacheListDAO;
+import CB_Core.DAO.CategoryDAO;
+import CB_Core.DAO.LogDAO;
+import CB_Core.DAO.WaypointDAO;
+import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
@@ -50,23 +57,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-import CB_Core.Api.GroundspeakAPI;
-import CB_Core.DB.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
-import CB_Core.DAO.CacheDAO;
-import CB_Core.DAO.CacheListDAO;
-import CB_Core.DAO.CategoryDAO;
-import CB_Core.DAO.LogDAO;
-import CB_Core.DAO.WaypointDAO;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
-import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
-import de.droidcachebox.Views.FilterSettings.FilterSetListView;
-import de.droidcachebox.Views.FilterSettings.FilterSetListViewItem;
-import de.droidcachebox.Views.FilterSettings.PresetListView;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;
@@ -351,6 +347,7 @@ public class search
 		}
 		else
 		{
+
 			mBtnFilter.setCompoundDrawablesWithIntrinsicBounds(Global.Icons[43], null, null, null);
 			mBtnFilter.setText("");
 		}

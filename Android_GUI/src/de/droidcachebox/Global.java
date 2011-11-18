@@ -37,15 +37,14 @@ import de.droidcachebox.Ui.Sizes;
 
 public class Global
 {
-	public static final int CurrentRevision = 523;
+	public static final int CurrentRevision = 527;
 	public static final String CurrentVersion = "0.4.";
 	public static final String VersionPrefix = "beta";
 	public static final int LatestDatabaseChange = 1016;
 	public static final int LatestDatabaseFieldNoteChange = 1001;
 
 	public static final String br = String.format("%n");
-	public static final String splashMsg = "Team Cachebox (2011)" + br
-			+ "www.team-cachebox.de" + br + "Cache Icons Copyright 2009," + br
+	public static final String splashMsg = "Team Cachebox (2011)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009," + br
 			+ "Groundspeak Inc. Used with permission";
 
 	public static final boolean Debug = true;
@@ -68,10 +67,9 @@ public class Global
 
 	public static FilterProperties LastFilter = null;
 	public static boolean autoResort;
-	public static Bitmap EmptyBmp = Bitmap.createBitmap(1, 1,
-			Bitmap.Config.RGB_565); // kleinst
-									// mögliches
-									// Bmp
+	public static Bitmap EmptyBmp = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // kleinst
+																						// mögliches
+																						// Bmp
 
 	// for MapView
 
@@ -84,8 +82,7 @@ public class Global
 	 * Nacht Color Matrix
 	 */
 	public static final float[] mx =
-		{ -1.0f, 0.0f, 0.0f, 0.0f, 255.0f, 0.0f, -1.5f, 0.0f, 0.0f, 200.0f,
-				0.0f, 0.0f, -1.5f, 0.0f, 0.f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f };
+		{ -1.0f, 0.0f, 0.0f, 0.0f, 255.0f, 0.0f, -1.5f, 0.0f, 0.0f, 200.0f, 0.0f, 0.0f, -1.5f, 0.0f, 0.f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f };
 
 	/**
 	 * Nacht Color Matrix
@@ -107,13 +104,11 @@ public class Global
 	{
 		if (mInvertBlack == -1)
 		{
-			Bitmap onelPixel = Bitmap.createBitmap(1, 1,
-					Bitmap.Config.ARGB_8888);
+			Bitmap onelPixel = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
 			Canvas c = new Canvas(onelPixel);
 			c.drawColor(Color.BLACK);
 
-			Bitmap onelPixel2 = Bitmap.createBitmap(1, 1,
-					Bitmap.Config.ARGB_8888);
+			Bitmap onelPixel2 = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
 			Canvas c2 = new Canvas(onelPixel2);
 			c2.drawBitmap(onelPixel, 0, 0, invertPaint);
 
@@ -141,15 +136,13 @@ public class Global
 	{
 		if (mInvertWhite == -1)
 		{
-			Bitmap onelPixel = Bitmap.createBitmap(1, 1,
-					Bitmap.Config.ARGB_8888);
+			Bitmap onelPixel = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
 			Canvas c = new Canvas(onelPixel);
 			Paint p = new Paint();
 			p.setColor(Color.WHITE);
 			c.drawRect(new Rect(0, 0, 1, 1), p);
 
-			Bitmap onelPixel2 = Bitmap.createBitmap(1, 1,
-					Bitmap.Config.ARGB_8888);
+			Bitmap onelPixel2 = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
 			Canvas c2 = new Canvas(onelPixel2);
 			c2.drawBitmap(onelPixel, 0, 0, invertPaint);
 
@@ -223,7 +216,7 @@ public class Global
 	 * height=32> <img src="doc-files/day_slider_up_down.png" width=32
 	 * height=32> <br>
 	 * Index 42 =<img src="doc-files/night_spinner.png" width=32 height=32><br>
-	 * Index 43 =<img src="doc-files/target-icon.png" width=32 height=32>
+	 * Index 43 =<img src="doc-files/target_day.png" width=32 height=32>
 	 */
 	public static Drawable[] Icons = null;
 	public static Drawable[] SmallStarIcons = null;
@@ -330,21 +323,17 @@ public class Global
 			Night.ListBackground_second = new Paint();
 
 			Night.ListBackground = new Paint();
-			Night.ListBackground.setColor(res
-					.getColor(R.color.Night_ListBackground));
+			Night.ListBackground.setColor(res.getColor(R.color.Night_ListBackground));
 
 			Night.selectedBack = new Paint();
-			Night.selectedBack.setColor(res
-					.getColor(R.color.Night_SelectedBackground));
+			Night.selectedBack.setColor(res.getColor(R.color.Night_SelectedBackground));
 
 			Day.ListBackground = new Paint();
-			Day.ListBackground.setColor(res
-					.getColor(R.color.Day_ListBackground));
+			Day.ListBackground.setColor(res.getColor(R.color.Day_ListBackground));
 			Day.ListBackground_second = new Paint();
 
 			Day.selectedBack = new Paint();
-			Day.selectedBack.setColor(res
-					.getColor(R.color.Day_SelectedBackground));
+			Day.selectedBack.setColor(res.getColor(R.color.Day_SelectedBackground));
 
 			invertPaint.setColorFilter(new ColorMatrixColorFilter(Global.cm));
 
@@ -420,8 +409,7 @@ public class Global
 			// ein wenig abzudunkeln
 			if (main.N)
 			{
-				ret.setColorFilter(Color.argb(255, 100, 100, 100),
-						Mode.MULTIPLY);
+				ret.setColorFilter(Color.argb(255, 100, 100, 100), Mode.MULTIPLY);
 			}
 
 		}
@@ -497,38 +485,25 @@ public class Global
 
 		// Overlays for Icons
 		NewMapOverlay.add(new ArrayList<Drawable>()); // 8x8
-		NewMapOverlay.get(0).add(
-				getDrawable(R.drawable.map_8x8_shaddowrect, res));
-		NewMapOverlay.get(0).add(
-				getDrawable(R.drawable.map_8x8_shaddowround, res));
-		NewMapOverlay.get(0).add(
-				getDrawable(R.drawable.map_8x8_shaddowstar, res));
-		NewMapOverlay.get(0)
-				.add(getDrawable(R.drawable.map_8x8_strikeout, res));
+		NewMapOverlay.get(0).add(getDrawable(R.drawable.map_8x8_shaddowrect, res));
+		NewMapOverlay.get(0).add(getDrawable(R.drawable.map_8x8_shaddowround, res));
+		NewMapOverlay.get(0).add(getDrawable(R.drawable.map_8x8_shaddowstar, res));
+		NewMapOverlay.get(0).add(getDrawable(R.drawable.map_8x8_strikeout, res));
 
 		NewMapOverlay.add(new ArrayList<Drawable>()); // 13x13
-		NewMapOverlay.get(1).add(
-				getDrawable(R.drawable.map_13x13_shaddowrect, res));
-		NewMapOverlay.get(1).add(
-				getDrawable(R.drawable.map_13x13_shaddowround, res));
-		NewMapOverlay.get(1).add(
-				getDrawable(R.drawable.map_13x13_shaddowstar, res));
-		NewMapOverlay.get(1).add(
-				getDrawable(R.drawable.map_13x13_strikeout, res));
+		NewMapOverlay.get(1).add(getDrawable(R.drawable.map_13x13_shaddowrect, res));
+		NewMapOverlay.get(1).add(getDrawable(R.drawable.map_13x13_shaddowround, res));
+		NewMapOverlay.get(1).add(getDrawable(R.drawable.map_13x13_shaddowstar, res));
+		NewMapOverlay.get(1).add(getDrawable(R.drawable.map_13x13_strikeout, res));
 
 		NewMapOverlay.add(new ArrayList<Drawable>()); // 20x20
-		NewMapOverlay.get(2).add(
-				getDrawable(R.drawable.map_20x20_shaddowrect, res));
-		NewMapOverlay.get(2).add(
-				getDrawable(R.drawable.map_20x20_selected, res));
-		NewMapOverlay.get(2).add(
-				getDrawable(R.drawable.map_20x20_shaddowrect_deact, res));
-		NewMapOverlay.get(2).add(
-				getDrawable(R.drawable.map_20x20_selected_deact, res));
+		NewMapOverlay.get(2).add(getDrawable(R.drawable.map_20x20_shaddowrect, res));
+		NewMapOverlay.get(2).add(getDrawable(R.drawable.map_20x20_selected, res));
+		NewMapOverlay.get(2).add(getDrawable(R.drawable.map_20x20_shaddowrect_deact, res));
+		NewMapOverlay.get(2).add(getDrawable(R.drawable.map_20x20_selected_deact, res));
 
 		Icons = new Drawable[]
-			{
-					getDrawable(R.drawable.day_tb, R.drawable.night_tb, res),// 0
+			{ getDrawable(R.drawable.day_tb, R.drawable.night_tb, res),// 0
 					getDrawable(R.drawable.addwaypoint, res),// 1
 					getDrawable(R.drawable.smilie_gross, res),// 2
 					getDrawable(R.drawable.download, res),// 3
@@ -564,71 +539,42 @@ public class Global
 					getDrawable(R.drawable.warning_icon, res), // 33
 					getDrawable(R.drawable.help_icon, res), // 34
 					getDrawable(R.drawable.power_gc_live, res), // 35
-					getDrawable(R.drawable.day_gc_live_icon,
-							R.drawable.night_gc_live_icon, res), // 36
+					getDrawable(R.drawable.day_gc_live_icon, R.drawable.night_gc_live_icon, res), // 36
 					getDrawable(R.drawable.pin_icon, res), // 37
 					getDrawable(R.drawable.pin_icon_disable, res), // 38
 					getDrawable(R.drawable.chk_icon_disable, res), // 39
-					getDrawable(R.drawable.day_slider_down,
-							R.drawable.night_slider_down, res), // 40
-					getDrawable(R.drawable.day_slider_up_down,
-							R.drawable.night_slider_up_down, res), // 41
-					getDrawable(R.drawable.day_spinner,
-							R.drawable.night_spinner, res), // 42
-					getDrawable(R.drawable.target_icon, res), // 43
+					getDrawable(R.drawable.day_slider_down, R.drawable.night_slider_down, res), // 40
+					getDrawable(R.drawable.day_slider_up_down, R.drawable.night_slider_up_down, res), // 41
+					getDrawable(R.drawable.day_spinner, R.drawable.night_spinner, res), // 42
+					getDrawable(R.drawable.target_day, R.drawable.target_night, res), // 43
 			};
 
 		Arrows = new Drawable[]
-			{
-					getDrawable(R.drawable.arrow, R.drawable.night_arrow, res),
-					getDrawable(R.drawable.arrow_small,
-							R.drawable.night_arrow_small, res),
-					getDrawable(R.drawable.compass_arrow, res), };
+			{ getDrawable(R.drawable.arrow, R.drawable.night_arrow, res),
+					getDrawable(R.drawable.arrow_small, R.drawable.night_arrow_small, res), getDrawable(R.drawable.compass_arrow, res), };
 
 		SmallStarIcons = new Drawable[]
-			{
-					getDrawable(R.drawable.smallstars_0,
-							R.drawable.night_smallstars_0, res),
-					getDrawable(R.drawable.smallstars_0_5,
-							R.drawable.night_smallstars_0_5, res),
-					getDrawable(R.drawable.smallstars_1,
-							R.drawable.night_smallstars_1, res),
-					getDrawable(R.drawable.smallstars_1_5,
-							R.drawable.night_smallstars_1_5, res),
-					getDrawable(R.drawable.smallstars_2,
-							R.drawable.night_smallstars_2, res),
-					getDrawable(R.drawable.smallstars_2_5,
-							R.drawable.night_smallstars_2_5, res),
-					getDrawable(R.drawable.smallstars_3,
-							R.drawable.night_smallstars_3, res),
-					getDrawable(R.drawable.smallstars_3_5,
-							R.drawable.night_smallstars_3_5, res),
-					getDrawable(R.drawable.smallstars_4,
-							R.drawable.night_smallstars_4, res),
-					getDrawable(R.drawable.smallstars_4_5,
-							R.drawable.night_smallstars_4_5, res),
-					getDrawable(R.drawable.smallstars_5,
-							R.drawable.night_smallstars_5, res) };
+			{ getDrawable(R.drawable.smallstars_0, R.drawable.night_smallstars_0, res),
+					getDrawable(R.drawable.smallstars_0_5, R.drawable.night_smallstars_0_5, res),
+					getDrawable(R.drawable.smallstars_1, R.drawable.night_smallstars_1, res),
+					getDrawable(R.drawable.smallstars_1_5, R.drawable.night_smallstars_1_5, res),
+					getDrawable(R.drawable.smallstars_2, R.drawable.night_smallstars_2, res),
+					getDrawable(R.drawable.smallstars_2_5, R.drawable.night_smallstars_2_5, res),
+					getDrawable(R.drawable.smallstars_3, R.drawable.night_smallstars_3, res),
+					getDrawable(R.drawable.smallstars_3_5, R.drawable.night_smallstars_3_5, res),
+					getDrawable(R.drawable.smallstars_4, R.drawable.night_smallstars_4, res),
+					getDrawable(R.drawable.smallstars_4_5, R.drawable.night_smallstars_4_5, res),
+					getDrawable(R.drawable.smallstars_5, R.drawable.night_smallstars_5, res) };
 
 		StarIcons = new Drawable[]
-			{ getDrawable(R.drawable.stars0, res),
-					getDrawable(R.drawable.stars0_5, res),
-					getDrawable(R.drawable.stars1, res),
-					getDrawable(R.drawable.stars1_5, res),
-					getDrawable(R.drawable.stars2, res),
-					getDrawable(R.drawable.stars2_5, res),
-					getDrawable(R.drawable.stars3, res),
-					getDrawable(R.drawable.stars3_5, res),
-					getDrawable(R.drawable.stars4, res),
-					getDrawable(R.drawable.stars4_5, res),
-					getDrawable(R.drawable.stars5, res) };
+			{ getDrawable(R.drawable.stars0, res), getDrawable(R.drawable.stars0_5, res), getDrawable(R.drawable.stars1, res),
+					getDrawable(R.drawable.stars1_5, res), getDrawable(R.drawable.stars2, res), getDrawable(R.drawable.stars2_5, res),
+					getDrawable(R.drawable.stars3, res), getDrawable(R.drawable.stars3_5, res), getDrawable(R.drawable.stars4, res),
+					getDrawable(R.drawable.stars4_5, res), getDrawable(R.drawable.stars5, res) };
 
 		SizeIcons = new Drawable[]
-			{ getDrawable(R.drawable.other, res),
-					getDrawable(R.drawable.micro, res),
-					getDrawable(R.drawable.small, res),
-					getDrawable(R.drawable.regular, res),
-					getDrawable(R.drawable.large, res) };
+			{ getDrawable(R.drawable.other, res), getDrawable(R.drawable.micro, res), getDrawable(R.drawable.small, res),
+					getDrawable(R.drawable.regular, res), getDrawable(R.drawable.large, res) };
 
 		// BatteryIcons = new Drawable[] {
 		// getDrawable(R.drawable.bat0),
@@ -638,56 +584,30 @@ public class Global
 		// };
 
 		CacheIconsBig = new Drawable[]
-			{ getDrawable(R.drawable.big_0, res),
-					getDrawable(R.drawable.big_1, res),
-					getDrawable(R.drawable.big_2, res),
-					getDrawable(R.drawable.big_3, res),
-					getDrawable(R.drawable.big_4, res),
-					getDrawable(R.drawable.big_5, res),
-					getDrawable(R.drawable.big_6, res),
-					getDrawable(R.drawable.big_7, res),
-					getDrawable(R.drawable.big_8, res),
-					getDrawable(R.drawable.big_9, res),
-					getDrawable(R.drawable.big_10, res),
-					getDrawable(R.drawable.big_11, res),
-					getDrawable(R.drawable.big_12, res),
-					getDrawable(R.drawable.big_13, res),
-					getDrawable(R.drawable.big_14, res),
-					getDrawable(R.drawable.big_15, res),
-					getDrawable(R.drawable.big_16, res),
-					getDrawable(R.drawable.big_17, res),
-					getDrawable(R.drawable.big_18, res),
-					getDrawable(R.drawable.big_19, res), };
+			{ getDrawable(R.drawable.big_0, res), getDrawable(R.drawable.big_1, res), getDrawable(R.drawable.big_2, res),
+					getDrawable(R.drawable.big_3, res), getDrawable(R.drawable.big_4, res), getDrawable(R.drawable.big_5, res),
+					getDrawable(R.drawable.big_6, res), getDrawable(R.drawable.big_7, res), getDrawable(R.drawable.big_8, res),
+					getDrawable(R.drawable.big_9, res), getDrawable(R.drawable.big_10, res), getDrawable(R.drawable.big_11, res),
+					getDrawable(R.drawable.big_12, res), getDrawable(R.drawable.big_13, res), getDrawable(R.drawable.big_14, res),
+					getDrawable(R.drawable.big_15, res), getDrawable(R.drawable.big_16, res), getDrawable(R.drawable.big_17, res),
+					getDrawable(R.drawable.big_18, res), getDrawable(R.drawable.big_19, res), };
 
 		LogIcons = new Drawable[]
-			{ getDrawable(R.drawable.log0, res),
-					getDrawable(R.drawable.log1, res),
-					getDrawable(R.drawable.log2, res),
-					getDrawable(R.drawable.log3, res),
-					getDrawable(R.drawable.log4, res),
-					getDrawable(R.drawable.log5, res),
-					getDrawable(R.drawable.log6, res),
-					getDrawable(R.drawable.log7, res),
-					getDrawable(R.drawable.log8, res),
-					getDrawable(R.drawable.log9, res),
-					getDrawable(R.drawable.log10, res),
-					getDrawable(R.drawable.log11, res),
-					getDrawable(R.drawable.log12, res),
-					getDrawable(R.drawable.log13, res),
+			{ getDrawable(R.drawable.log0, res), getDrawable(R.drawable.log1, res), getDrawable(R.drawable.log2, res),
+					getDrawable(R.drawable.log3, res), getDrawable(R.drawable.log4, res), getDrawable(R.drawable.log5, res),
+					getDrawable(R.drawable.log6, res), getDrawable(R.drawable.log7, res), getDrawable(R.drawable.log8, res),
+					getDrawable(R.drawable.log9, res), getDrawable(R.drawable.log10, res), getDrawable(R.drawable.log11, res),
+					getDrawable(R.drawable.log12, res), getDrawable(R.drawable.log13, res),
 
 			};
 
 		ChkIcons = new Drawable[]
-			{
-					getDrawable(R.drawable.day_btn_check_off,
-							R.drawable.night_btn_check_off, res),
-					getDrawable(R.drawable.day_btn_check_on,
-							R.drawable.night_btn_check_on, res), };
+			{ getDrawable(R.drawable.day_btn_check_off, R.drawable.night_btn_check_off, res),
+					getDrawable(R.drawable.day_btn_check_on, R.drawable.night_btn_check_on, res), };
 
 		BtnIcons = new Drawable[]
 			{
-					getDrawable(R.drawable.day_btn_default_normal,
-							R.drawable.night_btn_default_normal, res),
+					getDrawable(R.drawable.day_btn_default_normal, R.drawable.night_btn_default_normal, res),
 					getDrawable(R.drawable.button, R.drawable.night_button, res),
 					getDrawable(R.drawable.doc_icon, res),
 					getDrawable(R.drawable.big_16, res),
@@ -704,8 +624,7 @@ public class Global
 					getDrawable(R.drawable.voice_rec_icon, res),
 					getDrawable(R.drawable.star, res), // Live search braucht
 														// noch ein Icon
-					getDrawable(R.drawable.filter, res),
-					getDrawable(R.drawable.lock_icon, res),
+					getDrawable(R.drawable.filter, res), getDrawable(R.drawable.lock_icon, res),
 					getDrawable(R.drawable.auto_sort_on_icon, res), // 15
 					getDrawable(R.drawable.auto_sort_off_icon, res), // 16
 					getDrawable(R.drawable.solver_icon, res), // 17
@@ -716,15 +635,13 @@ public class Global
 
 	}
 
-	static String FormatDM(double coord, String positiveDirection,
-			String negativeDirection)
+	static String FormatDM(double coord, String positiveDirection, String negativeDirection)
 	{
 		int deg = (int) coord;
 		double frac = coord - deg;
 		double min = frac * 60;
 
-		String result = Math.abs(deg) + "\u00B0 "
-				+ String.format("%.3f", Math.abs(min));
+		String result = Math.abs(deg) + "\u00B0 " + String.format("%.3f", Math.abs(min));
 
 		if (coord < 0) result += negativeDirection;
 		else
@@ -765,32 +682,21 @@ public class Global
 
 	static TypedArray themeStyles;
 	private static int[] colorAttrs = new int[]
-		{ R.attr.ListBackground, R.attr.ListBackground_secend,
-				R.attr.ListBackground_select, R.attr.myBackground,
-				R.attr.ListSeparator, R.attr.TextColor,
-				R.attr.TextColor_disable, R.attr.EmptyBackground,
-				R.attr.DropDownBackground, R.attr.ToggleBtColor_off,
-				R.attr.ToggleBtColor_on, R.attr.TitleBarBackColor,
-				R.attr.SlideDownBackColor, R.attr.LinkLabelColor,
-				R.attr.Compass_rimColorFilter, R.attr.Compass_faceColorFilter,
-				R.attr.Compass_TextColor, R.attr.Compass_N_TextColor,
+		{ R.attr.ListBackground, R.attr.ListBackground_secend, R.attr.ListBackground_select, R.attr.myBackground, R.attr.ListSeparator,
+				R.attr.TextColor, R.attr.TextColor_disable, R.attr.EmptyBackground, R.attr.DropDownBackground, R.attr.ToggleBtColor_off,
+				R.attr.ToggleBtColor_on, R.attr.TitleBarBackColor, R.attr.SlideDownBackColor, R.attr.LinkLabelColor,
+				R.attr.Compass_rimColorFilter, R.attr.Compass_faceColorFilter, R.attr.Compass_TextColor, R.attr.Compass_N_TextColor,
 				R.attr.Map_Compass_TextColor, R.attr.Map_ColorCompassPanel };
 
 	public static void initTheme(Context context)
 	{
 
 		colorAttrs = new int[]
-			{ R.attr.ListBackground, R.attr.ListBackground_secend,
-					R.attr.ListBackground_select, R.attr.myBackground,
-					R.attr.ListSeparator, R.attr.TextColor,
-					R.attr.TextColor_disable, R.attr.EmptyBackground,
-					R.attr.DropDownBackground, R.attr.ToggleBtColor_off,
-					R.attr.ToggleBtColor_on, R.attr.TitleBarBackColor,
-					R.attr.SlideDownBackColor, R.attr.LinkLabelColor,
-					R.attr.Compass_rimColorFilter,
-					R.attr.Compass_faceColorFilter, R.attr.Compass_TextColor,
-					R.attr.Compass_N_TextColor, R.attr.Map_Compass_TextColor,
-					R.attr.Map_ColorCompassPanel };
+			{ R.attr.ListBackground, R.attr.ListBackground_secend, R.attr.ListBackground_select, R.attr.myBackground, R.attr.ListSeparator,
+					R.attr.TextColor, R.attr.TextColor_disable, R.attr.EmptyBackground, R.attr.DropDownBackground,
+					R.attr.ToggleBtColor_off, R.attr.ToggleBtColor_on, R.attr.TitleBarBackColor, R.attr.SlideDownBackColor,
+					R.attr.LinkLabelColor, R.attr.Compass_rimColorFilter, R.attr.Compass_faceColorFilter, R.attr.Compass_TextColor,
+					R.attr.Compass_N_TextColor, R.attr.Map_Compass_TextColor, R.attr.Map_ColorCompassPanel };
 
 		Theme t = context.getTheme();
 		Arrays.sort(colorAttrs);
@@ -799,8 +705,7 @@ public class Global
 
 	public static int getColor(int attrResid)
 	{
-		return (int) themeStyles.getColor(
-				Arrays.binarySearch(colorAttrs, attrResid), 0);
+		return (int) themeStyles.getColor(Arrays.binarySearch(colorAttrs, attrResid), 0);
 	}
 
 	public static void PlaySound(String soundFile)
@@ -822,16 +727,14 @@ public class Global
 		}
 		catch (Exception e)
 		{
-			Logger.Error("Global.PlaySound()", Config.WorkPath + "/data/sound/"
-					+ soundFile, e);
+			Logger.Error("Global.PlaySound()", Config.WorkPath + "/data/sound/" + soundFile, e);
 			e.printStackTrace();
 		}
 	}
 
 	public static String getVersionString()
 	{
-		final String ret = "Version: " + CurrentVersion
-				+ String.valueOf(CurrentRevision) + "  "
+		final String ret = "Version: " + CurrentVersion + String.valueOf(CurrentRevision) + "  "
 				+ (VersionPrefix.equals("") ? "" : "(" + VersionPrefix + ")");
 		return ret;
 	}
@@ -841,8 +744,7 @@ public class Global
 		return TranslateMenuItem(menu, id, StringId, "");
 	}
 
-	public static MenuItem TranslateMenuItem(Menu menu, int id,
-			String StringId, String zusatz)
+	public static MenuItem TranslateMenuItem(Menu menu, int id, String StringId, String zusatz)
 	{
 		MenuItem mi = menu.findItem(id);
 		try
@@ -866,8 +768,7 @@ public class Global
 	 */
 	public static boolean isOnline()
 	{
-		ConnectivityManager cm = (ConnectivityManager) main.mainActivity
-				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager cm = (ConnectivityManager) main.mainActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo netInfo = cm.getActiveNetworkInfo();
 		if (netInfo != null && netInfo.isConnectedOrConnecting())
 		{

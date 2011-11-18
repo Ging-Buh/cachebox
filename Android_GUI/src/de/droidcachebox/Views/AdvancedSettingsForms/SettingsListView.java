@@ -1,22 +1,15 @@
 package de.droidcachebox.Views.AdvancedSettingsForms;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.openintents.intents.FileManagerIntents;
 
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.main;
-import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.Ui.Sizes;
-import de.droidcachebox.Views.Forms.NumerikInputBox;
-import de.droidcachebox.Views.Forms.Settings;
-import de.droidcachebox.Views.Forms.StringInputBox;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
-import CB_Core.Enums.SmoothScrollingTyp;
 import CB_Core.Settings.SettingBase;
 import CB_Core.Settings.SettingBool;
 import CB_Core.Settings.SettingCategory;
@@ -27,7 +20,6 @@ import CB_Core.Settings.SettingFolder;
 import CB_Core.Settings.SettingInt;
 import CB_Core.Settings.SettingIntArray;
 import CB_Core.Settings.SettingModus;
-import CB_Core.Settings.SettingsList;
 import CB_Core.Settings.SettingString;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -38,8 +30,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -48,11 +40,18 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.CompoundButton.OnCheckedChangeListener;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.main;
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.Sizes;
+import de.droidcachebox.Views.Forms.NumerikInputBox;
+import de.droidcachebox.Views.Forms.StringInputBox;
 
 public class SettingsListView extends Activity
 {
@@ -118,7 +117,63 @@ public class SettingsListView extends Activity
 		para.height = Sizes.getWindowHeight() - (Sizes.getButtonHeight() * 2) - (Sizes.getScaledFontSize_big() * 3);
 		listView.setLayoutParams(para);
 
-		lvAdapter = new CustomAdapter(this, Config.settings);
+		// Categorie List zusammen stellen
+
+		SettingCategory[] tmp = SettingCategory.values();
+		for (SettingCategory item : tmp)
+		{
+			if (item != SettingCategory.Button)
+			{
+				item.Toggle(true); // bei der Initialisierung sind alle
+									// Categorien geschlossen.
+				Categorys.add(item);
+			}
+
+		}
+
+		resortList();
+	}
+
+	private ArrayList<SettingCategory> Categorys = new ArrayList<SettingCategory>();
+	private ArrayList<SettingBase> sortedSettigsList;
+
+	public void resortList()
+	{
+		// SortedList löschen oder Initalisieren
+		if (sortedSettigsList == null)
+		{
+			sortedSettigsList = new ArrayList<SettingBase>();
+		}
+		else
+		{
+			sortedSettigsList.clear();
+		}
+
+		// sortedList befüllen
+		for (SettingCategory item : Categorys)
+		{
+			// add the Button
+			sortedSettigsList.add(new SettingsListCategoryButton(item.name(), SettingCategory.Button, SettingModus.Normal, true));
+
+			// alle Items dieser Category hinzufügen, wenn diese aufgeklappt ist
+			if (!item.IsCollapse())
+			{
+				for (Iterator<SettingBase> it = Config.settings.values().iterator(); it.hasNext();)
+				{
+					SettingBase settingItem = it.next();
+					if (settingItem.getCategory().name().equals(item.name()))
+					{
+						// item nur zur Liste Hinzufügen, wenn der SettingModus
+						// dies auch zu lässt.
+						// if (settingItem.getModus() == SettingModus.Normal)
+						sortedSettigsList.add(settingItem);
+					}
+				}
+			}
+
+		}
+
+		lvAdapter = new CustomAdapter(this, sortedSettigsList);
 		listView.setAdapter(lvAdapter);
 	}
 
@@ -133,9 +188,9 @@ public class SettingsListView extends Activity
 	{
 
 		private Context context;
-		private SettingsList mList;
+		private ArrayList<SettingBase> mList;
 
-		public CustomAdapter(Context context, SettingsList list)
+		public CustomAdapter(Context context, ArrayList<SettingBase> list)
 		{
 			this.context = context;
 			this.mList = list;
@@ -143,7 +198,7 @@ public class SettingsListView extends Activity
 
 		public int getCount()
 		{
-			if (mList != null) return mList.values().size();
+			if (mList != null) return mList.size();
 			else
 				return 0;
 		}
@@ -152,7 +207,7 @@ public class SettingsListView extends Activity
 		{
 			if (mList != null)
 			{
-				return mList.values().toArray()[position];
+				return mList.toArray()[position];
 			}
 			else
 				return null;
@@ -165,13 +220,13 @@ public class SettingsListView extends Activity
 
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
-			if (mList != null && mList.values().size() > 0)
+			if (mList != null && mList.size() > 0)
 			{
 				Boolean BackGroundChanger = ((position % 2) == 1);
 				try
 				{
 					View row = convertView;
-					final SettingBase SB = (SettingBase) mList.values().toArray()[position];
+					final SettingBase SB = (SettingBase) mList.toArray()[position];
 
 					if (SB instanceof SettingBool)
 					{
@@ -204,6 +259,10 @@ public class SettingsListView extends Activity
 					else if (SB instanceof SettingString)
 					{
 						return getStringView((SettingString) SB, convertView, parent);
+					}
+					else if (SB instanceof SettingsListCategoryButton)
+					{
+						return getButtonView((SettingsListCategoryButton) SB, convertView, parent);
 					}
 
 					return row;
@@ -627,6 +686,37 @@ public class SettingsListView extends Activity
 
 	}
 
+	private View getButtonView(final SettingsListCategoryButton SB, View convertView, ViewGroup parent)
+	{
+		LayoutInflater inflater = getLayoutInflater();
+		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_button, parent, false);
+
+		Button button = (Button) row.findViewById(R.id.Button);
+		button.setText(SB.getName());
+		button.setTextSize(Sizes.getScaledFontSize_normal());
+		button.setTextColor(Global.getColor(R.attr.TextColor));
+
+		button.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				// Category umschalten Ein/Aus blenden
+				for (SettingCategory item : Categorys)
+				{
+					if (item.name().equals(SB.getName()))
+					{
+						item.Toggle();
+						ListInvalidate();
+					}
+				}
+
+			}
+		});
+
+		return row;
+	}
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
@@ -686,11 +776,7 @@ public class SettingsListView extends Activity
 							@Override
 							public void run()
 							{
-								// lvAdapter = new
-								// CustomAdapter(SettingsListView.Me,
-								// settingsList);
-								lvAdapter = new CustomAdapter(SettingsListView.Me, Config.settings);
-								listView.setAdapter(lvAdapter);
+								SettingsListView.Me.resortList();
 							}
 						});
 					}
