@@ -304,6 +304,24 @@ public class GPXFileImporter
 			}
 		});
 
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:country")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_country", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:state")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_state", text);
+			}
+		});
+
 		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG,
 				"/gpx/wpt/groundspeak:cache/groundspeak:attributes/groundspeak:attribute")
 		{
@@ -546,6 +564,24 @@ public class GPXFileImporter
 			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
 			{
 				values.put("cache_terrain", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:country")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_country", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:state")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_state", text);
 			}
 		});
 
@@ -796,6 +832,16 @@ public class GPXFileImporter
 		if (values.containsKey("cache_terrain"))
 		{
 			cache.Terrain = Float.parseFloat(values.get("cache_terrain"));
+		}
+
+		if (values.containsKey("cache_country"))
+		{
+			cache.Country = values.get("cache_country");
+		}
+
+		if (values.containsKey("cache_state"))
+		{
+			cache.State = values.get("cache_state");
 		}
 
 		if (values.containsKey("cache_attributes_count"))

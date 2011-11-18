@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 
 import CB_Core.Config;
@@ -30,7 +31,7 @@ public class CacheDAO
 	protected static final String sqlgetFromDbByGcCode = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint from Caches where GCCode = ?";
 
 	protected static final String sqlExistsCache = "select 1 from Caches where Id = ?";
-	
+
 	public Cache ReadFromCursor(CoreCursor reader)
 	{
 		try
@@ -93,10 +94,10 @@ public class CacheDAO
 
 			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
 			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
-			
+
 			cache.setAttributesPositive(new DLong(reader.getLong(27), reader.getLong(26)));
 			cache.setAttributesNegative(new DLong(reader.getLong(29), reader.getLong(28)));
-			
+
 			if (reader.getString(30) != null) cache.hint = reader.getString(30).trim();
 			else
 				cache.hint = "";
@@ -137,16 +138,20 @@ public class CacheDAO
 		args.put("Type", cache.Type.ordinal());
 		args.put("PlacedBy", cache.PlacedBy);
 		args.put("Owner", cache.Owner);
+		args.put("Country", cache.Country);
+		args.put("State", cache.State);
 		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String stimestamp = iso8601Format.format(cache.DateHidden);
 		args.put("DateHidden", stimestamp);
+		String firstimported = iso8601Format.format(new Date());
+		args.put("FirstImported", firstimported);
 		args.put("Hint", cache.hint);
-		
+
 		if ((cache.shortDescription != null) && (cache.shortDescription.length() > 0))
 		{
 			args.put("Description", cache.shortDescription + "<br /><hr /><br />");
 		}
-		
+
 		if ((cache.longDescription != null) && (cache.longDescription.length() > 0))
 		{
 			if (args.containsKey("Description"))
@@ -158,7 +163,7 @@ public class CacheDAO
 				args.put("Description", cache.longDescription);
 			}
 		}
-		
+
 		cache.longDescription = ""; // clear longDescription because this will
 									// be loaded from database when used
 		args.put("Url", cache.Url);
@@ -195,7 +200,8 @@ public class CacheDAO
 		args.put("found", cache.Found);
 		try
 		{
-			Database.Data.update("Caches", args, "Id = ?" , new String[] { String.valueOf(cache.Id) } );
+			Database.Data.update("Caches", args, "Id = ?", new String[]
+				{ String.valueOf(cache.Id) });
 			Replication.FoundChanged(cache.Id, cache.Found);
 		}
 		catch (Exception exc)
@@ -233,6 +239,8 @@ public class CacheDAO
 		args.put("Type", cache.Type.ordinal());
 		args.put("PlacedBy", cache.PlacedBy);
 		args.put("Owner", cache.Owner);
+		args.put("Country", cache.Country);
+		args.put("State", cache.State);
 		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String stimestamp = iso8601Format.format(cache.DateHidden);
 		args.put("DateHidden", stimestamp);
@@ -242,7 +250,7 @@ public class CacheDAO
 		{
 			args.put("Description", cache.shortDescription + "<br /><hr /><br />");
 		}
-		
+
 		if ((cache.longDescription != null) && (cache.longDescription.length() > 0))
 		{
 			if (args.containsKey("Description"))
@@ -254,7 +262,7 @@ public class CacheDAO
 				args.put("Description", cache.longDescription);
 			}
 		}
-		
+
 		cache.longDescription = ""; // clear longDescription because this will
 									// be loaded from database when used
 		args.put("Url", cache.Url);
@@ -276,7 +284,8 @@ public class CacheDAO
 
 		try
 		{
-			long ret = Database.Data.update("Caches", args, "Id = ?", new String[] { String.valueOf(cache.Id) } );
+			long ret = Database.Data.update("Caches", args, "Id = ?", new String[]
+				{ String.valueOf(cache.Id) });
 		}
 		catch (Exception exc)
 		{
@@ -287,7 +296,8 @@ public class CacheDAO
 
 	public Cache getFromDbByCacheId(long CacheID)
 	{
-		CoreCursor reader = Database.Data.rawQuery(sqlgetFromDbByCacheId, new String[] { String.valueOf(CacheID) });
+		CoreCursor reader = Database.Data.rawQuery(sqlgetFromDbByCacheId, new String[]
+			{ String.valueOf(CacheID) });
 
 		try
 		{
@@ -313,10 +323,11 @@ public class CacheDAO
 		}
 
 	}
-	
+
 	public Cache getFromDbByGcCode(String GcCode)
 	{
-		CoreCursor reader = Database.Data.rawQuery(sqlgetFromDbByGcCode, new String[] { GcCode });
+		CoreCursor reader = Database.Data.rawQuery(sqlgetFromDbByGcCode, new String[]
+			{ GcCode });
 
 		try
 		{
@@ -342,18 +353,19 @@ public class CacheDAO
 		}
 
 	}
-	
+
 	public Boolean cacheExists(long CacheID)
 	{
 
-		CoreCursor reader = Database.Data.rawQuery(sqlExistsCache,  new String[] {String.valueOf(CacheID) } );
-		
+		CoreCursor reader = Database.Data.rawQuery(sqlExistsCache, new String[]
+			{ String.valueOf(CacheID) });
+
 		boolean exists = (reader.getCount() > 0);
-		
+
 		reader.close();
-		
+
 		return exists;
-	
+
 	}
 
 	/**
@@ -400,7 +412,8 @@ public class CacheDAO
 
 			try
 			{
-				Database.Data.update("Caches", args, "Id = ?" ,  new String[] {String.valueOf(cache.Id) });
+				Database.Data.update("Caches", args, "Id = ?", new String[]
+					{ String.valueOf(cache.Id) });
 			}
 			catch (Exception exc)
 			{

@@ -205,6 +205,16 @@ public class Cache implements Comparable<Cache>
 	public String Url = "";
 
 	/**
+	 * Country des Caches
+	 */
+	public String Country = "";
+
+	/**
+	 * State des Caches
+	 */
+	public String State = "";
+
+	/**
 	 * Das Listing hat sich geändert!
 	 */
 	public boolean listingChanged = false;
