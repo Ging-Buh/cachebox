@@ -55,7 +55,7 @@ import de.droidcachebox.Views.Forms.StringInputBox;
 
 public class SettingsListView extends Activity
 {
-	private static SettingsListView Me;
+	public static SettingsListView Me;
 
 	private Context context;
 	// private SettingsList settingsList;
@@ -155,6 +155,13 @@ public class SettingsListView extends Activity
 			// add the Button
 			sortedSettigsList.add(new SettingsListCategoryButton(item.name(), SettingCategory.Button, SettingModus.Normal, true));
 
+			// wenn die Category = LogIn, dann füge als erstes den
+			// GetApiKeyButton hinzu
+			if (!item.IsCollapse() && item == SettingCategory.Login)
+			{
+				sortedSettigsList.add(new SettingsListGetApiButton(item.name(), SettingCategory.Button, SettingModus.Normal, true));
+			}
+
 			// alle Items dieser Category hinzufügen, wenn diese aufgeklappt ist
 			if (!item.IsCollapse())
 			{
@@ -182,6 +189,12 @@ public class SettingsListView extends Activity
 		CancelButton = (Button) this.findViewById(R.id.cancelButton);
 		OKButton = (Button) this.findViewById(R.id.OkButton);
 		listView = (ListView) this.findViewById(R.id.settings_ListView);
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		Me = null;
 	}
 
 	public class CustomAdapter extends BaseAdapter
@@ -263,6 +276,10 @@ public class SettingsListView extends Activity
 					else if (SB instanceof SettingsListCategoryButton)
 					{
 						return getButtonView((SettingsListCategoryButton) SB, convertView, parent);
+					}
+					else if (SB instanceof SettingsListGetApiButton)
+					{
+						return getApiKeyButtonView((SettingsListGetApiButton) SB, convertView, parent);
 					}
 
 					return row;
@@ -689,7 +706,7 @@ public class SettingsListView extends Activity
 	private View getButtonView(final SettingsListCategoryButton SB, View convertView, ViewGroup parent)
 	{
 		LayoutInflater inflater = getLayoutInflater();
-		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_button, parent, false);
+		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_category_button, parent, false);
 
 		Button button = (Button) row.findViewById(R.id.Button);
 		button.setText(SB.getName());
@@ -711,6 +728,37 @@ public class SettingsListView extends Activity
 					}
 				}
 
+			}
+		});
+
+		return row;
+	}
+
+	private View getApiKeyButtonView(final SettingsListGetApiButton SB, View convertView, ViewGroup parent)
+	{
+		LayoutInflater inflater = getLayoutInflater();
+		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_button, parent, false);
+
+		Button button = (Button) row.findViewById(R.id.Button);
+		button.setText(GlobalCore.Translations.Get("getApiKey"));
+		button.setTextSize(Sizes.getScaledFontSize_normal());
+		button.setTextColor(Global.getColor(R.attr.TextColor));
+
+		if (Config.settings.GcAPI.getValue().equals(""))
+		{
+			button.setCompoundDrawablesWithIntrinsicBounds(null, null, Global.Icons[39], null);
+		}
+		else
+		{
+			button.setCompoundDrawablesWithIntrinsicBounds(null, null, Global.Icons[27], null);
+		}
+
+		button.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				((main) main.mainActivity).GetApiAuth();
 			}
 		});
 

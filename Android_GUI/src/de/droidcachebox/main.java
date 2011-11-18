@@ -126,6 +126,7 @@ import de.droidcachebox.Views.SpoilerView;
 import de.droidcachebox.Views.TrackListView;
 import de.droidcachebox.Views.TrackableListView;
 import de.droidcachebox.Views.WaypointView;
+import de.droidcachebox.Views.AdvancedSettingsForms.SettingsListView;
 import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
 import de.droidcachebox.Views.FilterSettings.PresetListViewItem;
 import de.droidcachebox.Views.Forms.GcApiLogin;
@@ -976,6 +977,10 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		{
 			// no, we check GPS
 			chkGpsIsOn();
+			if (SettingsListView.Me != null)
+			{
+				SettingsListView.Me.ListInvalidate();
+			}
 		}
 
 		aktView.ActivityResult(requestCode, resultCode, data);
@@ -1068,10 +1073,6 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 				Config.settings.MapInitLatitude.setValue(mapView.center.Latitude);
 				Config.settings.MapInitLongitude.setValue(mapView.center.Longitude);
-				Config.AcceptChanges();
-
-				Database.Data.Close();
-				Database.FieldNotes.Close();
 
 				this.mWakeLock.release();
 				counter.cancel();
@@ -1114,6 +1115,12 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				debugInfoPanel.OnFree();
 				debugInfoPanel = null;
 				InfoDownSlider = null;
+
+				Config.AcceptChanges();
+
+				Database.Data.Close();
+				Database.FieldNotes.Close();
+
 				Database.Settings.Close();
 				super.onDestroy();
 				System.exit(0);
