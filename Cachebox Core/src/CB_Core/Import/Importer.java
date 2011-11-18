@@ -7,20 +7,14 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.zip.ZipException;
 
 import CB_Core.FileIO;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.Log.Logger;
-import CB_Core.Types.Cache;
-import CB_Core.Types.LogEntry;
-import CB_Core.Types.Waypoint;
 
 public class Importer
 {
@@ -38,8 +32,8 @@ public class Importer
 	 * @param ip
 	 * @return Cache_Log_Return mit dem Inhalt aller Importierten GPX Files
 	 */
-	public void importGpx(String directoryPath,
-			ImporterProgress ip) {
+	public void importGpx(String directoryPath, ImporterProgress ip)
+	{
 		// Extract all Zip Files!
 		ArrayList<String> ordnerInhalt_Zip = Importer.recursiveDirectoryReader(new File(directoryPath), new ArrayList<String>(), "zip");
 
@@ -67,41 +61,48 @@ public class Importer
 
 		// Import all GPX files
 		String[] FileList = GetFilesToLoad(directoryPath);
-		
+
 		ip.setJobMax("AnalyseGPX", FileList.length);
-		
+
 		ImportHandler importHandler = new ImportHandler();
 
 		Integer countwpt = 0;
 		HashMap<String, Integer> wptCount = new HashMap<String, Integer>();
-		
-		for (String File : FileList) {
+
+		for (String File : FileList)
+		{
 			ip.ProgressInkrement("AnalyseGPX", new File(File).getName());
 
 			BufferedReader br;
 			String strLine;
-			try {
+			try
+			{
 				br = new BufferedReader(new InputStreamReader(new FileInputStream(File)));
 				while ((strLine = br.readLine()) != null)
 				{
 					if (strLine.contains("<wpt")) countwpt++;
 				}
-			} catch (FileNotFoundException e1) {
+			}
+			catch (FileNotFoundException e1)
+			{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			} catch (IOException e) {
+			}
+			catch (IOException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			wptCount.put(File, countwpt);
 			countwpt = 0;
 		}
 
-		for (Integer count : wptCount.values()) {
+		for (Integer count : wptCount.values())
+		{
 			countwpt += count;
 		}
-		
+
 		ip.setJobMax("ImportGPX", FileList.length + countwpt);
 		for (String File : FileList)
 		{
@@ -118,11 +119,8 @@ public class Importer
 			}
 		}
 
-		// Return Caches, Logs und Waypoints
-//		return new Cache_Log_Waypoint_Return(importHandler.getCacheIterator(),
-//				importHandler.CacheCount(), importHandler.getLogIterator(),
-//				importHandler.LogCount(), importHandler.getWaypointIterator(),
-//				importHandler.WaypointCount());
+		importHandler.GPXFilenameUpdateCacheCount();
+
 	}
 
 	public void importGcVote()

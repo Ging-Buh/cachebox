@@ -10,6 +10,9 @@ import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
+import CB_Core.DAO.CacheListDAO;
+import CB_Core.DB.Database;
+import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Settings.SettingBase;
@@ -22,10 +25,8 @@ import CB_Core.Settings.SettingFolder;
 import CB_Core.Settings.SettingInt;
 import CB_Core.Settings.SettingIntArray;
 import CB_Core.Settings.SettingString;
-import CB_Core.Settings.SettingsDAO;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Coordinate;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -40,16 +41,11 @@ import android.os.Handler;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import CB_Core.DAO.CacheListDAO;
-import CB_Core.DB.Database;
-import CB_Core.DB.Database.DatabaseType;
 import de.droidcachebox.Components.copyAssetFolder;
 import de.droidcachebox.DB.AndroidDB;
-
 import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.MapView;
-import de.droidcachebox.Views.FilterSettings.PresetListView;
 import de.droidcachebox.Views.Forms.SelectDB;
 
 public class splash extends Activity
