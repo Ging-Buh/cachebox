@@ -115,10 +115,8 @@ public class SettingsClass extends SettingsList
 	public SettingString GcJoker;
 	public SettingString OverrideUrl;
 	public SettingString PopHost;
-	
-	
-	
-	//Decrypt
+
+	// Decrypt
 	public SettingEncryptedString GcAPI;
 	public SettingEncryptedString GcVotePassword;
 
@@ -234,6 +232,7 @@ public class SettingsClass extends SettingsList
 		addSetting(DebugShowMarker = new SettingBool("DebugShowMarker", SettingCategory.Internal, SettingModus.Normal, false, true));
 		addSetting(ImportRatings = new SettingBool("ImportRatings", SettingCategory.Internal, SettingModus.Normal, false, true));
 		addSetting(ImportGpx = new SettingBool("ImportGpx", SettingCategory.Internal, SettingModus.Normal, false, true));
+		addSetting(ImportGpxFromMail = new SettingBool("ImportGpxFromMail", SettingCategory.Internal, SettingModus.Normal, false, true));
 		addSetting(ImportPQsFromGeocachingCom = new SettingBool("ImportPQsFromGeocachingCom", SettingCategory.Internal,
 				SettingModus.Normal, false, true));
 
@@ -283,16 +282,14 @@ public class SettingsClass extends SettingsList
 		addSetting(GcJoker = new SettingString("GcJoker", SettingCategory.Internal, SettingModus.Invisible, "", true));
 		addSetting(OverrideUrl = new SettingString("OverrideUrl", SettingCategory.Internal, SettingModus.Invisible, "", true));
 		addSetting(PopHost = new SettingString("PopHost", SettingCategory.Internal, SettingModus.Invisible, "", true));
-		
-		
-		
+
 		// Decrypt String
 		addSetting(GcAPI = new SettingEncryptedString("GcAPI", SettingCategory.Internal, SettingModus.Invisible, "", true));
 		addSetting(GcVotePassword = new SettingEncryptedString("GcVotePassword", SettingCategory.Internal, SettingModus.Invisible, "", true));
 
 		// Enums
-		addSetting(SmoothScrolling = new SettingEnum<SmoothScrollingTyp>("SmoothScrolling", SettingCategory.Internal, SettingModus.Invisible,
-				SmoothScrollingTyp.normal, true, GlobalCore.SmoothScrolling));
+		addSetting(SmoothScrolling = new SettingEnum<SmoothScrollingTyp>("SmoothScrolling", SettingCategory.Internal,
+				SettingModus.Invisible, SmoothScrollingTyp.normal, true, GlobalCore.SmoothScrolling));
 
 		// IntArray
 		addSetting(TrackDistance = new SettingIntArray("TrackDistance", SettingCategory.Internal, SettingModus.Normal, 3, true,
@@ -308,7 +305,7 @@ public class SettingsClass extends SettingsList
 		// validateSetting("DopMin", "0.2");
 		// validateSetting("DopWidth", "1");
 
-//		ReadFromDB();
+		// ReadFromDB();
 	}
 
 }
