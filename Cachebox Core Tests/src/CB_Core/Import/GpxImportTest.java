@@ -1,36 +1,29 @@
 package CB_Core.Import;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import CB_Core.Config;
+import junit.framework.TestCase;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
-import CB_Core.DB.TestDB;
 import CB_Core.DB.Database.DatabaseType;
+import CB_Core.DB.TestDB;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
-import junit.framework.TestCase;
 
 public class GpxImportTest extends TestCase
 {
 
 	public static void testGpxImport() throws Exception
 	{
-		// Read Config
-		String workPath = "./testdata";
-		Config.Initialize(workPath, workPath + "/cachebox.config");
-
-		Config.readConfigFile(/* getAssets() */);
 
 		// initialize Database
 		Database.Data = new TestDB(DatabaseType.CacheBox);
-		String database = Config.settings.DatabasePath.getValue();
+		String database = "./testdata/test.db3";
 		Database.Data.StartUp(database);
 
 		ImportHandler importHandler = new ImportHandler();
@@ -39,8 +32,7 @@ public class GpxImportTest extends TestCase
 
 		try
 		{
-			GPXFileImporter importer = new GPXFileImporter(
-					"./testdata/gpx/GC2T9RW.gpx");
+			GPXFileImporter importer = new GPXFileImporter("./testdata/gpx/GC2T9RW.gpx");
 			assertTrue("Objekt muss konstruierbar sein", importer != null);
 			importer.doImport(importHandler, 0);
 
@@ -63,12 +55,8 @@ public class GpxImportTest extends TestCase
 		assertTrue("Pos ist ungültig", cache.Pos.Valid);
 
 		assertEquals("GcCode falsch", "GC2T9RW", cache.GcCode);
-		assertEquals("DateHidden falsch", "Sat Apr 16 07:00:00 CEST 2011",
-				cache.DateHidden.toString());
-		assertEquals(
-				"url falsch",
-				"http://www.geocaching.com/seek/cache_details.aspx?guid=f26f18bd-9aaa-4499-944b-3e8cb62e41a7",
-				cache.Url);
+		assertEquals("DateHidden falsch", "Sat Apr 16 07:00:00 CEST 2011", cache.DateHidden.toString());
+		assertEquals("url falsch", "http://www.geocaching.com/seek/cache_details.aspx?guid=f26f18bd-9aaa-4499-944b-3e8cb62e41a7", cache.Url);
 		assertTrue("Found ist falsch", cache.Found);
 
 		assertEquals("Id ist falsch", cache.GcId, "2190117");
@@ -82,12 +70,9 @@ public class GpxImportTest extends TestCase
 		assertTrue("Difficulty ist falsch", cache.Difficulty == 2);
 		assertTrue("Terrain ist falsch", cache.Terrain == 5);
 
-		assertTrue("Attribut falsch",
-				cache.isAttributePositiveSet(Attributes.Bicycles));
-		assertFalse("Attribut falsch",
-				cache.isAttributeNegativeSet(Attributes.Bicycles));
-		assertFalse("Attribut falsch",
-				cache.isAttributePositiveSet(Attributes.Boat));
+		assertTrue("Attribut falsch", cache.isAttributePositiveSet(Attributes.Bicycles));
+		assertFalse("Attribut falsch", cache.isAttributeNegativeSet(Attributes.Bicycles));
+		assertFalse("Attribut falsch", cache.isAttributePositiveSet(Attributes.Boat));
 		// Attribute Tests
 
 		ArrayList<Attributes> PositvieList = new ArrayList<Attributes>();
@@ -110,15 +95,13 @@ public class GpxImportTest extends TestCase
 		while (positiveInterator.hasNext())
 		{
 			Attributes attr = (Attributes) positiveInterator.next();
-			assertTrue(attr.toString() + " Attribut falsch",
-					cache.isAttributePositiveSet(attr));
+			assertTrue(attr.toString() + " Attribut falsch", cache.isAttributePositiveSet(attr));
 		}
 
 		while (negativeInterator.hasNext())
 		{
 			Attributes attr = (Attributes) negativeInterator.next();
-			assertTrue(attr.toString() + " Attribut falsch",
-					cache.isAttributeNegativeSet(attr));
+			assertTrue(attr.toString() + " Attribut falsch", cache.isAttributeNegativeSet(attr));
 		}
 
 		// fülle eine Liste mit allen Attributen
@@ -153,18 +136,15 @@ public class GpxImportTest extends TestCase
 		while (RestInterator.hasNext())
 		{
 			Attributes attr = (Attributes) RestInterator.next();
-			assertFalse(attr.toString() + " Attribut falsch",
-					cache.isAttributePositiveSet(attr));
-			assertFalse(attr.toString() + " Attribut falsch",
-					cache.isAttributeNegativeSet(attr));
+			assertFalse(attr.toString() + " Attribut falsch", cache.isAttributePositiveSet(attr));
+			assertFalse(attr.toString() + " Attribut falsch", cache.isAttributeNegativeSet(attr));
 		}
 
 		// TODO Beschreibungstexte überprüfen
 		// System.out.println( cache.shortDescription );
 		// System.out.println( cache.longDescription );
 
-		assertEquals("Hint falsch",
-				"wenn du ihn nicht findest, findet er dich!!", cache.hint);
+		assertEquals("Hint falsch", "wenn du ihn nicht findest, findet er dich!!", cache.hint);
 
 		ArrayList<LogEntry> logs = new ArrayList<LogEntry>();
 		logs = Database.Logs(cache);
@@ -173,8 +153,7 @@ public class GpxImportTest extends TestCase
 
 		assertEquals("CacheId ist falsch", log.CacheId, 24578729153020743L);
 		assertEquals("Id ist falsch", log.Id, 170855167);
-		assertEquals("Timestamp falsch", "Mon Jul 04 19:00:00 CEST 2011",
-				log.Timestamp.toString());
+		assertEquals("Timestamp falsch", "Mon Jul 04 19:00:00 CEST 2011", log.Timestamp.toString());
 		assertEquals("Finder falsch", "SaarFuchs", log.Finder);
 		assertTrue("LogTyp falsch", log.Type == LogTypes.found);
 

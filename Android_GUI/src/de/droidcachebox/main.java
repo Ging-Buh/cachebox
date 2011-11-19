@@ -1980,7 +1980,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 															// Fehlerursache ist
 															// in S[1]
 									{
-										MessageBox.Show(s[1], null);
+										MessageBox.Show(s[1]);
 										break;
 									}
 									if (s[0].equals("1")) // 1 entspricht
@@ -1988,7 +1988,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 															// ist in S[1]
 									{ // es können aber noch gültige Einträge
 										// folgen
-										MessageBox.Show(s[1], null);
+										MessageBox.Show(s[1]);
 									}
 									if (s[0].equals("0")) // Normaler Eintrag
 									{
@@ -2003,7 +2003,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 							}
 							if (Global.Jokers.isEmpty())
 							{
-								MessageBox.Show("Keine Joker bekannt", null);
+								MessageBox.Show("Keine Joker bekannt");
 							}
 							else
 							{
@@ -2027,7 +2027,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			{
 				Logger.Error("main.initialBtnInfoContextMenu()", "IOException HTTP response Jokers", ioEx);
 				Log.d("DroidCachebox", ioEx.getMessage());
-				MessageBox.Show("Fehler bei Internetzugriff", null);
+				MessageBox.Show("Fehler bei Internetzugriff");
 			}
 			catch (Exception ex)
 			{

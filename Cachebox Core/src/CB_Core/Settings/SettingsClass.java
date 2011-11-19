@@ -78,7 +78,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool ShowDirektLine;
 	public SettingBool DebugShowMarker;
 	public SettingBool ImportRatings;
-	public SettingBool ImportGpxFromMail;
+
 	public SettingBool ImportPQsFromGeocachingCom;
 
 	// int
@@ -159,21 +159,21 @@ public class SettingsClass extends SettingsList
 				FilterProperties.presets[0].toString(), false));
 
 		// Folder
-		addSetting(UserImageFolder = new SettingFolder("UserImageFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath
+		addSetting(UserImageFolder = new SettingFolder("UserImageFolder", SettingCategory.Folder, SettingModus.Normal, WorkPath
 				+ "/User/Media", true));
-		addSetting(LanguagePath = new SettingFolder("LanguagePath", SettingCategory.Internal, SettingModus.Normal, WorkPath + "/data/lang",
+		addSetting(LanguagePath = new SettingFolder("LanguagePath", SettingCategory.Folder, SettingModus.Normal, WorkPath + "/data/lang",
 				true));
-		addSetting(TileCacheFolder = new SettingFolder("TileCacheFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath
-				+ "/cache", true));
-		addSetting(PocketQueryFolder = new SettingFolder("PocketQueryFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath
+		addSetting(TileCacheFolder = new SettingFolder("TileCacheFolder", SettingCategory.Folder, SettingModus.Normal, WorkPath + "/cache",
+				true));
+		addSetting(PocketQueryFolder = new SettingFolder("PocketQueryFolder", SettingCategory.Folder, SettingModus.Normal, WorkPath
 				+ "/PocketQuery", true));
-		addSetting(DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", SettingCategory.Internal, SettingModus.Normal,
+		addSetting(DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", SettingCategory.Folder, SettingModus.Normal,
 				WorkPath + "/repository/images", true));
-		addSetting(MapPackFolder = new SettingFolder("MapPackFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath
+		addSetting(MapPackFolder = new SettingFolder("MapPackFolder", SettingCategory.Folder, SettingModus.Normal, WorkPath
 				+ "/repository/maps", true));
-		addSetting(SpoilerFolder = new SettingFolder("SpoilerFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath
+		addSetting(SpoilerFolder = new SettingFolder("SpoilerFolder", SettingCategory.Folder, SettingModus.Normal, WorkPath
 				+ "/repository/spoilers", true));
-		addSetting(TrackFolder = new SettingFolder("TrackFolder", SettingCategory.Internal, SettingModus.Normal, WorkPath + "/User/Tracks",
+		addSetting(TrackFolder = new SettingFolder("TrackFolder", SettingCategory.Folder, SettingModus.Normal, WorkPath + "/User/Tracks",
 				true));
 
 		// Files
@@ -232,7 +232,7 @@ public class SettingsClass extends SettingsList
 		addSetting(DebugShowMarker = new SettingBool("DebugShowMarker", SettingCategory.Internal, SettingModus.Normal, false, true));
 		addSetting(ImportRatings = new SettingBool("ImportRatings", SettingCategory.Internal, SettingModus.Normal, false, true));
 		addSetting(ImportGpx = new SettingBool("ImportGpx", SettingCategory.Internal, SettingModus.Normal, false, true));
-		addSetting(ImportGpxFromMail = new SettingBool("ImportGpxFromMail", SettingCategory.Internal, SettingModus.Normal, false, true));
+
 		addSetting(ImportPQsFromGeocachingCom = new SettingBool("ImportPQsFromGeocachingCom", SettingCategory.Internal,
 				SettingModus.Normal, false, true));
 

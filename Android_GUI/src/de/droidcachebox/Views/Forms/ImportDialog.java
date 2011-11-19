@@ -6,44 +6,36 @@ import java.util.Date;
 import java.util.Iterator;
 
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.FilterProperties;
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.main;
-import CB_Core.Api.GroundspeakAPI;
+import CB_Core.GlobalCore;
 import CB_Core.Api.PocketQuery;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
-import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Ui.Sizes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
-import CB_Core.Types.Coordinate;
 import android.app.Activity;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
-import CB_Core.GlobalCore;
+import android.widget.Toast;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.main;
+import de.droidcachebox.Ui.Sizes;
 
 /**
  * <h1>ProgressDialog</h1> <img src="doc-files/ImportScreen.png" width=146
@@ -60,7 +52,7 @@ public class ImportDialog extends Activity
 	private CheckBox checkBoxPreloadImages;
 	private CheckBox checkBoxImportGPX;
 	private CheckBox checkBoxGcVote;
-	private CheckBox checkBoxImportGpxFromMail;
+
 	private CheckBox checkImportPQfromGC;
 	private Button CancelButton;
 	private Button ImportButton;
@@ -73,7 +65,6 @@ public class ImportDialog extends Activity
 	private final int ImageImport = NOT_IMPLEMENTED;
 	private final int GcVoteImport = NOT_IMPLEMENTED;
 	private final int PQImport = NOT_IMPLEMENTED;
-	private final int MailImport = NOT_IMPLEMENTED;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -90,7 +81,7 @@ public class ImportDialog extends Activity
 
 		checkImportPQfromGC.setText(GlobalCore.Translations.Get("PQfromGC"));
 		checkBoxImportGPX.setText(GlobalCore.Translations.Get("GPX"));
-		checkBoxImportGpxFromMail.setText(GlobalCore.Translations.Get("GpxFromMail"));
+
 		checkBoxGcVote.setText(GlobalCore.Translations.Get("GCVoteRatings"));
 		checkBoxPreloadImages.setText(GlobalCore.Translations.Get("PreloadImages"));
 		checkBoxImportMaps.setText(GlobalCore.Translations.Get("Maps"));
@@ -123,7 +114,6 @@ public class ImportDialog extends Activity
 		checkBoxPreloadImages = (CheckBox) this.findViewById(R.id.import_Image);
 		checkBoxImportGPX = (CheckBox) this.findViewById(R.id.import_GPX);
 		checkBoxGcVote = (CheckBox) this.findViewById(R.id.import_GcVote);
-		checkBoxImportGpxFromMail = (CheckBox) this.findViewById(R.id.import_checkMails);
 		checkImportPQfromGC = (CheckBox) this.findViewById(R.id.import_PQ);
 	}
 
@@ -177,7 +167,7 @@ public class ImportDialog extends Activity
 		@Override
 		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 		{
-			checkBoxImportGpxFromMail.setEnabled(checkBoxImportGPX.isChecked());
+
 		}
 	};
 
@@ -250,7 +240,7 @@ public class ImportDialog extends Activity
 		Config.settings.CacheMapData.setValue(checkBoxImportMaps.isChecked());
 		Config.settings.CacheImageData.setValue(checkBoxPreloadImages.isChecked());
 		Config.settings.ImportGpx.setValue(checkBoxImportGPX.isChecked());
-		Config.settings.ImportGpxFromMail.setValue(checkBoxImportGpxFromMail.isChecked());
+
 		Config.settings.ImportPQsFromGeocachingCom.setValue(checkImportPQfromGC.isChecked());
 		Config.settings.ImportRatings.setValue(checkBoxGcVote.isChecked());
 		Config.AcceptChanges();
@@ -377,9 +367,6 @@ public class ImportDialog extends Activity
 						}
 						while (iterator.hasNext());
 					}
-
-					if (checkBoxImportGpxFromMail.isChecked()) importer.importMail();
-					Thread.sleep(1000);
 
 					// Importiere alle GPX Files im Import Folder, auch in ZIP
 					// verpackte

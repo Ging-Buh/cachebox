@@ -1,6 +1,7 @@
 package de.droidcachebox.Views.AdvancedSettingsForms;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Timer;
@@ -21,6 +22,7 @@ import CB_Core.Settings.SettingInt;
 import CB_Core.Settings.SettingIntArray;
 import CB_Core.Settings.SettingModus;
 import CB_Core.Settings.SettingString;
+import CB_Core.TranslationEngine.LangStrings.Langs;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -31,6 +33,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
@@ -50,6 +53,7 @@ import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
+import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.NumerikInputBox;
 import de.droidcachebox.Views.Forms.StringInputBox;
 
@@ -84,6 +88,8 @@ public class SettingsListView extends Activity
 		CancelButton.setWidth(Sizes.getButtonWidthWide());
 		OKButton.setHeight(Sizes.getButtonHeight());
 		CancelButton.setHeight(Sizes.getButtonHeight());
+
+		Config.settings.SaveToLastValue();
 
 		CancelButton.setOnClickListener(new OnClickListener()
 		{
@@ -150,30 +156,41 @@ public class SettingsListView extends Activity
 		}
 
 		// sortedList befüllen
+
+		sortedSettigsList.add(new SettingsListButtonLangSpinner("Lang", SettingCategory.Button, SettingModus.Normal, true));
+
 		for (SettingCategory item : Categorys)
 		{
-			// add the Button
-			sortedSettigsList.add(new SettingsListCategoryButton(item.name(), SettingCategory.Button, SettingModus.Normal, true));
-
-			// wenn die Category = LogIn, dann füge als erstes den
-			// GetApiKeyButton hinzu
-			if (!item.IsCollapse() && item == SettingCategory.Login)
+			// Internal ausblenden
+			if (item != SettingCategory.Internal)
 			{
-				sortedSettigsList.add(new SettingsListGetApiButton(item.name(), SettingCategory.Button, SettingModus.Normal, true));
-			}
 
-			// alle Items dieser Category hinzufügen, wenn diese aufgeklappt ist
-			if (!item.IsCollapse())
-			{
-				for (Iterator<SettingBase> it = Config.settings.values().iterator(); it.hasNext();)
+				// add the Button
+				sortedSettigsList.add(new SettingsListCategoryButton(item.name(), SettingCategory.Button, SettingModus.Normal, true));
+
+				// wenn die Category = LogIn, dann füge als erstes den
+				// GetApiKeyButton hinzu
+				if (!item.IsCollapse() && item == SettingCategory.Login)
 				{
-					SettingBase settingItem = it.next();
-					if (settingItem.getCategory().name().equals(item.name()))
+					sortedSettigsList.add(new SettingsListGetApiButton(item.name(), SettingCategory.Button, SettingModus.Normal, true));
+				}
+
+				// alle Items dieser Category hinzufügen, wenn diese aufgeklappt
+				// ist
+				if (!item.IsCollapse())
+				{
+					for (Iterator<SettingBase> it = Config.settings.values().iterator(); it.hasNext();)
 					{
-						// item nur zur Liste Hinzufügen, wenn der SettingModus
-						// dies auch zu lässt.
-						// if (settingItem.getModus() == SettingModus.Normal)
-						sortedSettigsList.add(settingItem);
+						SettingBase settingItem = it.next();
+						if (settingItem.getCategory().name().equals(item.name()))
+						{
+							// item nur zur Liste Hinzufügen, wenn der
+							// SettingModus
+							// dies auch zu lässt.
+							// if (settingItem.getModus() ==
+							// SettingModus.Normal)
+							sortedSettigsList.add(settingItem);
+						}
 					}
 				}
 			}
@@ -195,6 +212,7 @@ public class SettingsListView extends Activity
 	public void onDestroy()
 	{
 		Me = null;
+		super.onDestroy();
 	}
 
 	public class CustomAdapter extends BaseAdapter
@@ -281,6 +299,10 @@ public class SettingsListView extends Activity
 					{
 						return getApiKeyButtonView((SettingsListGetApiButton) SB, convertView, parent);
 					}
+					else if (SB instanceof SettingsListButtonLangSpinner)
+					{
+						return getLangSpinnerView((SettingsListButtonLangSpinner) SB, convertView, parent);
+					}
 
 					return row;
 				}
@@ -307,7 +329,7 @@ public class SettingsListView extends Activity
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_bool, parent, false);
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
-		label.setText(SB.getName());
+		label.setText(GlobalCore.Translations.Get(SB.getName()));
 		label.setTextSize(Sizes.getScaledFontSize_small());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
@@ -331,6 +353,20 @@ public class SettingsListView extends Activity
 			}
 		});
 
+		row.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(View arg0)
+			{
+				// zeige Beschreibung der Einstellung
+
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+
+				return false;
+			}
+		});
+
 		return row;
 
 	}
@@ -341,7 +377,7 @@ public class SettingsListView extends Activity
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
-		label.setText(SB.getName());
+		label.setText(GlobalCore.Translations.Get(SB.getName()));
 		label.setTextSize(Sizes.getScaledFontSize_small());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
@@ -388,6 +424,20 @@ public class SettingsListView extends Activity
 			}
 		});
 
+		row.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(View arg0)
+			{
+				// zeige Beschreibung der Einstellung
+
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+
+				return false;
+			}
+		});
+
 		return row;
 
 	}
@@ -398,7 +448,7 @@ public class SettingsListView extends Activity
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_enum, parent, false);
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
-		label.setText(SB.getName());
+		label.setText(GlobalCore.Translations.Get(SB.getName()));
 		label.setTextSize(Sizes.getScaledFontSize_small());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
@@ -427,6 +477,21 @@ public class SettingsListView extends Activity
 				}
 			});
 		}
+
+		row.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(View arg0)
+			{
+				// zeige Beschreibung der Einstellung
+
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+
+				return false;
+			}
+		});
+
 		return row;
 
 	}
@@ -437,7 +502,7 @@ public class SettingsListView extends Activity
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_enum, parent, false);
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
-		label.setText(SB.getName());
+		label.setText(GlobalCore.Translations.Get(SB.getName()));
 		label.setTextSize(Sizes.getScaledFontSize_small());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
@@ -466,6 +531,21 @@ public class SettingsListView extends Activity
 				}
 			});
 		}
+
+		row.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(View arg0)
+			{
+				// zeige Beschreibung der Einstellung
+
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+
+				return false;
+			}
+		});
+
 		return row;
 
 	}
@@ -476,7 +556,7 @@ public class SettingsListView extends Activity
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
-		label.setText(SB.getName());
+		label.setText(GlobalCore.Translations.Get(SB.getName()));
 		label.setTextSize(Sizes.getScaledFontSize_small());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
@@ -533,6 +613,20 @@ public class SettingsListView extends Activity
 			}
 		});
 
+		row.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(View arg0)
+			{
+				// zeige Beschreibung der Einstellung
+
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+
+				return false;
+			}
+		});
+
 		return row;
 
 	}
@@ -543,7 +637,7 @@ public class SettingsListView extends Activity
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
-		label.setText(SB.getName());
+		label.setText(GlobalCore.Translations.Get(SB.getName()));
 		label.setTextSize(Sizes.getScaledFontSize_small());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
@@ -599,6 +693,20 @@ public class SettingsListView extends Activity
 			}
 		});
 
+		row.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(View arg0)
+			{
+				// zeige Beschreibung der Einstellung
+
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+
+				return false;
+			}
+		});
+
 		return row;
 
 	}
@@ -609,7 +717,7 @@ public class SettingsListView extends Activity
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
-		label.setText(SB.getName());
+		label.setText(GlobalCore.Translations.Get(SB.getName()));
 		label.setTextSize(Sizes.getScaledFontSize_small());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
@@ -649,6 +757,20 @@ public class SettingsListView extends Activity
 			}
 		});
 
+		row.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(View arg0)
+			{
+				// zeige Beschreibung der Einstellung
+
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+
+				return false;
+			}
+		});
+
 		return row;
 
 	}
@@ -659,7 +781,8 @@ public class SettingsListView extends Activity
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
-		label.setText(SB.getName());
+		// label.setText(SB.getName());
+		label.setText(GlobalCore.Translations.Get(SB.getName()));
 		label.setTextSize(Sizes.getScaledFontSize_small());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
@@ -699,6 +822,20 @@ public class SettingsListView extends Activity
 			}
 		});
 
+		row.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(View arg0)
+			{
+				// zeige Beschreibung der Einstellung
+
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+
+				return false;
+			}
+		});
+
 		return row;
 
 	}
@@ -728,6 +865,20 @@ public class SettingsListView extends Activity
 					}
 				}
 
+			}
+		});
+
+		row.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(View arg0)
+			{
+				// zeige Beschreibung der Einstellung
+
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+
+				return false;
 			}
 		});
 
@@ -762,6 +913,68 @@ public class SettingsListView extends Activity
 			}
 		});
 
+		return row;
+	}
+
+	ArrayList<Langs> Sprachen;
+
+	private View getLangSpinnerView(final SettingsListButtonLangSpinner SB, View convertView, ViewGroup parent)
+	{
+		LayoutInflater inflater = getLayoutInflater();
+		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_lang_spinner, parent, false);
+
+		final Spinner spinner = (Spinner) row.findViewById(R.id.Spinner);
+		spinner.setPrompt(GlobalCore.Translations.Get("SelectLanguage"));
+		if (spinner.getAdapter() == null)
+		{
+			Sprachen = GlobalCore.Translations.GetLangs(Config.settings.LanguagePath.getValue());
+			String[] items = new String[Sprachen.size()];
+			int index = 0;
+			int selection = -1;
+			for (Langs tmp : Sprachen)
+			{
+				if (Config.settings.Sel_LanguagePath.getValue().equals(tmp.Path)) selection = index;
+				items[index++] = tmp.Name;
+			}
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			spinner.setAdapter(adapter);
+			spinner.setSelection(selection);
+
+			spinner.setOnItemSelectedListener(new OnItemSelectedListener()
+			{
+
+				@Override
+				public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
+				{
+					String selected = (String) spinner.getSelectedItem();
+					for (Langs tmp : Sprachen)
+					{
+						if (selected.equals(tmp.Name))
+						{
+							Config.settings.Sel_LanguagePath.setValue(tmp.Path);
+							try
+							{
+								GlobalCore.Translations.ReadTranslationsFile(tmp.Path);
+							}
+							catch (IOException e)
+							{
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							break;
+						}
+
+					}
+				}
+
+				@Override
+				public void onNothingSelected(AdapterView<?> arg0)
+				{
+					// do nothing
+				}
+			});
+		}
 		return row;
 	}
 
