@@ -11,9 +11,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.zip.ZipException;
 
+import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.Api.PocketQuery.PQ;
+import CB_Core.DAO.GCVoteDAO;
+import CB_Core.DB.Database;
+import CB_Core.DB.Database.Parameters;
 import CB_Core.Events.ProgresssChangedEventList;
+import CB_Core.GCVote.GCVote;
+import CB_Core.GCVote.GCVoteCacheInfo;
+import CB_Core.GCVote.RatingData;
 import CB_Core.Log.Logger;
 
 public class Importer
@@ -123,9 +130,85 @@ public class Importer
 
 	}
 
-	public void importGcVote()
+	public void importGcVote(String whereClause, ImporterProgress ip)
 	{
-		ProgresssChangedEventList.Call("import GcVote", "", 0);
+
+		GCVoteDAO gcVoteDAO = new GCVoteDAO();
+
+		Integer count = gcVoteDAO.getCacheCountToGetVotesFor(whereClause);
+
+		ip.setJobMax("importGcVote", count);
+
+		int packageSize = 100;
+		int offset = 0;
+		int failCount = 0;
+		int i = 0;
+
+		while (offset < count)
+		{
+			ArrayList<GCVoteCacheInfo> workpackage = gcVoteDAO.getGCVotePackage(whereClause, packageSize, i);
+			ArrayList<String> requests = new ArrayList<String>();
+			HashMap<String, Boolean> resetVote = new HashMap<String, Boolean>();
+			HashMap<String, Long> idLookup = new HashMap<String, Long>();
+
+			for (GCVoteCacheInfo info : workpackage)
+			{
+				if (!info.GcCode.toLowerCase().startsWith("gc"))
+				{
+					ip.ProgressInkrement("importGcVote", "Not a GC.com Cache");
+					continue;
+				}
+
+				requests.add(info.GcCode);
+				resetVote.put(info.GcCode, !info.VotePending);
+				idLookup.put(info.GcCode, info.Id);
+			}
+
+			ArrayList<RatingData> ratingData = GCVote.GetRating(Config.settings.GcLogin.getValue(),
+					Config.settings.GcVotePassword.getValue(), requests);
+
+			if (ratingData == null)
+			{
+				failCount += packageSize;
+				ip.ProgressInkrement("importGcVote", "Query " + String.valueOf(i + 1) + " failed...");
+			}
+			else
+			{
+				for (RatingData data : ratingData)
+				{
+					if (idLookup.containsKey(data.Waypoint))
+					{
+						if (resetVote.containsKey(data.Waypoint))
+						{
+							Parameters parm = new Parameters();
+							parm.put("Rating", Math.round(data.Rating * 100));
+							parm.put("Vote", Math.round(data.Vote * 100));
+							parm.put("VotePending", false);
+
+							Database.Data.update("Caches", parm, "Id=?", new String[]
+								{ String.valueOf(idLookup.get(data.Waypoint)) });
+						}
+						else
+						{
+							Parameters parm = new Parameters();
+							parm.put("Rating", data.Rating * 100);
+
+							Database.Data.update("Caches", parm, "Id=?", new String[]
+								{ String.valueOf(idLookup.get(data.Waypoint)) });
+						}
+					}
+
+					i++;
+
+					ip.ProgressInkrement("importGcVote",
+							"Writing Ratings (" + String.valueOf(i + failCount) + " / " + String.valueOf(count) + ")");
+				}
+
+			}
+
+			offset += packageSize;
+
+		}
 
 	}
 

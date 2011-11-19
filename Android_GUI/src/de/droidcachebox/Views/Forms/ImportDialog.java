@@ -414,8 +414,22 @@ public class ImportDialog extends Activity
 
 					}
 
-					if (checkBoxGcVote.isChecked()) importer.importGcVote();
-					Thread.sleep(1000);
+					if (checkBoxGcVote.isChecked())
+					{
+						Database.Data.beginTransaction();
+						try
+						{
+							importer.importGcVote(Global.LastFilter.getSqlWhere(), ip);
+
+							Database.Data.setTransactionSuccessful();
+						}
+						catch (Exception exc)
+						{
+							exc.printStackTrace();
+						}
+						Database.Data.endTransaction();
+					}
+
 					if (checkBoxPreloadImages.isChecked()) importer.importImages();
 					Thread.sleep(1000);
 					if (checkBoxImportMaps.isChecked()) importer.importMaps();
@@ -448,7 +462,6 @@ public class ImportDialog extends Activity
 	private Date ImportStart;
 	private int LogImports;
 	private int CacheImports;
-	private int WaypointImports;
 
 	private Boolean importCancel = false;
 	final Runnable ProgressCanceld = new Runnable()

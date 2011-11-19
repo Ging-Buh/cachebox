@@ -66,6 +66,7 @@ public class CategoryDAO
 		{
 			Category_ID = reader.getLong(0);
 		}
+		reader.close();
 		result.Id = Category_ID;
 		result.GpxFilename = filename;
 		result.Checked = true;
@@ -101,6 +102,7 @@ public class CategoryDAO
 		{
 			GPXFilename_ID = reader.getLong(0);
 		}
+		reader.close();
 		GpxFilename result = new GpxFilename(GPXFilename_ID, filename, category.Id);
 		category.add(result);
 		return result;
@@ -139,6 +141,7 @@ public class CategoryDAO
 			categories.add(category);
 			reader.moveToNext();
 		}
+		reader.close();
 		Collections.sort(categories);
 	}
 

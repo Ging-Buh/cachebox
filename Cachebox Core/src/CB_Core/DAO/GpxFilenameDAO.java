@@ -42,6 +42,8 @@ public class GpxFilenameDAO
 		else
 			result.CacheCount = reader.getInt(3);
 
+		reader.close();
+
 		return result;
 	}
 
@@ -65,6 +67,8 @@ public class GpxFilenameDAO
 				{ String.valueOf(GPXFilename_ID) });
 			reader.moveToNext();
 		}
+
+		reader.close();
 
 		Database.Data.delete("GPXFilenames", "Cachecount is NULL or CacheCount = 0", null);
 		Database.Data.delete("GPXFilenames", "ID not in (Select GPXFilename_ID From Caches)", null);
