@@ -15,8 +15,6 @@ import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DAO.GCVoteDAO;
-import CB_Core.DB.Database;
-import CB_Core.DB.Database.Parameters;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GCVote.GCVote;
 import CB_Core.GCVote.GCVoteCacheInfo;
@@ -135,6 +133,26 @@ public class Importer
 
 		GCVoteDAO gcVoteDAO = new GCVoteDAO();
 
+		ArrayList<GCVoteCacheInfo> pendingVotes = gcVoteDAO.getPendingGCVotes();
+
+		ip.setJobMax("sendGcVote", pendingVotes.size());
+		int i = 0;
+
+		for (GCVoteCacheInfo info : pendingVotes)
+		{
+			i++;
+
+			ip.ProgressInkrement("sendGcVote", "Sending Votes (" + String.valueOf(i) + " / " + String.valueOf(pendingVotes.size()) + ")");
+
+			Boolean ret = GCVote.SendVotes(Config.settings.GcLogin.getValue(), Config.settings.GcVotePassword.getValue(), info.Vote,
+					info.URL, info.GcCode);
+
+			if (ret)
+			{
+				gcVoteDAO.updatePendingVote(info.Id);
+			}
+		}
+
 		Integer count = gcVoteDAO.getCacheCountToGetVotesFor(whereClause);
 
 		ip.setJobMax("importGcVote", count);
@@ -142,7 +160,7 @@ public class Importer
 		int packageSize = 100;
 		int offset = 0;
 		int failCount = 0;
-		int i = 0;
+		i = 0;
 
 		while (offset < count)
 		{
@@ -180,21 +198,11 @@ public class Importer
 					{
 						if (resetVote.containsKey(data.Waypoint))
 						{
-							Parameters parm = new Parameters();
-							parm.put("Rating", Math.round(data.Rating * 100));
-							parm.put("Vote", Math.round(data.Vote * 100));
-							parm.put("VotePending", false);
-
-							Database.Data.update("Caches", parm, "Id=?", new String[]
-								{ String.valueOf(idLookup.get(data.Waypoint)) });
+							gcVoteDAO.updateRatingAndVote(idLookup.get(data.Waypoint), data.Rating, data.Vote);
 						}
 						else
 						{
-							Parameters parm = new Parameters();
-							parm.put("Rating", data.Rating * 100);
-
-							Database.Data.update("Caches", parm, "Id=?", new String[]
-								{ String.valueOf(idLookup.get(data.Waypoint)) });
+							gcVoteDAO.updateRating(idLookup.get(data.Waypoint), data.Rating);
 						}
 					}
 

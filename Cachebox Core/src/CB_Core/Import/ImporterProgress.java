@@ -62,6 +62,7 @@ public class ImporterProgress
 		steps.add(new Step("WriteLogsToDB", 0));
 		steps.add(new Step("WriteWaypointsToDB", 0));
 		steps.add(new Step("importGcVote", 1));
+		steps.add(new Step("sendGcVote", 1));
 
 		weightSumme = getWeightSumm();
 	}

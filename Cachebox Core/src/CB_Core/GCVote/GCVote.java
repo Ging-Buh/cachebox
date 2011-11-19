@@ -110,4 +110,30 @@ public class GCVote
 		return result;
 	}
 
+	public static Boolean SendVotes(String User, String password, int vote, String url, String waypoint)
+	{
+		String guid = url.substring(url.indexOf("guid=") + 5).trim();
+
+		String data = "userName=" + User + "&password=" + password + "&voteUser=" + String.valueOf(vote / 100) + "&cacheId=" + guid
+				+ "&waypoint=" + waypoint;
+
+		try
+		{
+			HttpPost httppost = new HttpPost("http://gcvote.de/getVotes.php");
+
+			httppost.setEntity(new ByteArrayEntity(data.getBytes("UTF8")));
+
+			// Execute HTTP Post Request
+			String responseString = Execute(httppost);
+
+			return responseString == "OK";
+
+		}
+		catch (Exception ex)
+		{
+			return false;
+		}
+
+	}
+
 }
