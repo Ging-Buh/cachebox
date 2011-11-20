@@ -3,18 +3,10 @@ package de.droidcachebox.Views.Forms;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.main;
-import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.Ui.Sizes;
-import de.droidcachebox.Views.JokerViewItem;
-import de.droidcachebox.Views.CacheListView.CustomAdapter;
+import CB_Core.GlobalCore;
+import CB_Core.Api.PocketQuery.PQ;
 import android.app.Activity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,28 +14,26 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import CB_Core.GlobalCore;
-import CB_Core.Api.PocketQuery.PQ;
-import CB_Core.DB.Database;
-import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
-import CB_Core.Types.JokerEntry;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.main;
+import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Ui.Sizes;
 
 public class ApiPQDialog extends Activity implements ViewOptionsMenu
 {
 	public static ApiPQDialog Me;
 	private Intent aktIntent;
-	
+
 	private Context context;
 	private ListView listView;
 	private Button CancelButton;
@@ -68,8 +58,8 @@ public class ApiPQDialog extends Activity implements ViewOptionsMenu
 		setContentView(R.layout.pq_list_view_layout);
 		Me = this;
 
-		 aktIntent = getIntent();
-		
+		aktIntent = getIntent();
+
 		context = this.getBaseContext();
 		findViewById();
 
@@ -103,11 +93,11 @@ public class ApiPQDialog extends Activity implements ViewOptionsMenu
 			@Override
 			public void onClick(View v)
 			{
-            	aktIntent.putExtra("SOMETHING", "EXTRAS");
-            	Bundle extras = new Bundle();
-    	        extras.putSerializable("PqList", PqList);
-            	aktIntent.putExtras(extras);
-            	setResult(RESULT_OK, aktIntent);
+				aktIntent.putExtra("SOMETHING", "EXTRAS");
+				Bundle extras = new Bundle();
+				extras.putSerializable("PqList", PqList);
+				aktIntent.putExtras(extras);
+				setResult(RESULT_OK, aktIntent);
 				finish();
 
 			}
@@ -254,23 +244,22 @@ public class ApiPQDialog extends Activity implements ViewOptionsMenu
 				String FileSize = df.format(pq.SizeMB) + " MB";
 				String Count = "   Count=" + String.valueOf(pq.PQCount);
 				label2.setText(dateString + "  " + FileSize + Count);
-				label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.8));
+				label2.setTextSize((float) Sizes.getScaledFontSize_supersmall());
 				label2.setTextColor(Global.getColor(R.attr.TextColor));
-				
-				
+
 				CheckBox chk = (CheckBox) row.findViewById(R.id.checkBox1);
-				
+
 				chk.setOnCheckedChangeListener(new OnCheckedChangeListener()
 				{
-					
+
 					@Override
 					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 					{
-						pq.downloadAvible=isChecked;
-						
+						pq.downloadAvible = isChecked;
+
 					}
 				});
-				
+
 				return row;
 			}
 			else

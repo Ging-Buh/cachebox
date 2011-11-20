@@ -16,12 +16,12 @@
 
 package de.droidcachebox.Ui;
 
+import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.view.Display;
 import android.view.WindowManager;
 import de.droidcachebox.R;
-import android.app.Activity;
 
 /**
  * Enthält die Größen einzelner Controls
@@ -46,6 +46,7 @@ public class Sizes
 	private static Rect CacheListDrawRec;
 	private static int scaledFontSize_big;
 	private static int ScaledFontSize_small;
+	private static int ScaledFontSize_supersmall;
 	private static int StrengthHeightMultipler;
 	private static int IconContextMenuHeight;
 
@@ -79,9 +80,20 @@ public class Sizes
 
 		QuickButtonList = new Size((int) (320 * scale - (13.3333f * scale)), (int) (((320 * scale) / 5) - 4 * scale));
 
-		scaledFontSize_normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
-		scaledFontSize_big = (int) (scaledFontSize_normal * 1.3);
-		ScaledFontSize_small = (int) (scaledFontSize_normal * 0.8);
+		if (windowWidth == 240 || windowHeight == 240)
+		{
+			scaledFontSize_normal = 12;
+			scaledFontSize_big = 14;
+			ScaledFontSize_small = 11;
+			ScaledFontSize_supersmall = 10;
+		}
+		else
+		{
+			scaledFontSize_normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
+			scaledFontSize_big = (int) (scaledFontSize_normal * 1.3);
+			ScaledFontSize_small = (int) (scaledFontSize_normal * 0.8);
+			ScaledFontSize_supersmall = (int) (ScaledFontSize_small * 0.7);
+		}
 		CornerSize = scaledFontSize_normal / 2;
 		CacheInfoHeight = (int) (scaledFontSize_normal * 4.9);
 		infoSliderHeight = (int) (scaledFontSize_normal * 2.2);
@@ -115,10 +127,10 @@ public class Sizes
 	{
 		return Button.width;
 	}
-	
+
 	public static int getButtonWidthWide()
 	{
-		return (int) (Button.width*1.8);
+		return (int) (Button.width * 1.8);
 	}
 
 	public static int getQuickButtonListHeight()
@@ -154,6 +166,11 @@ public class Sizes
 	public static int getScaledFontSize_small()
 	{
 		return ScaledFontSize_small;
+	}
+
+	public static int getScaledFontSize_supersmall()
+	{
+		return ScaledFontSize_supersmall;
 	}
 
 	public static int getInfoSliderHeight()

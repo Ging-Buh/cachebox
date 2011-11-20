@@ -336,7 +336,7 @@ public class SettingsListView extends Activity
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText("default: " + String.valueOf(SB.getDefaultValue()));
-		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.7));
+		label2.setTextSize((float) Sizes.getScaledFontSize_supersmall());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		CheckBox chk = (CheckBox) row.findViewById(R.id.checkBox1);
@@ -384,7 +384,7 @@ public class SettingsListView extends Activity
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(SB.getValue());
-		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.7));
+		label2.setTextSize((float) Sizes.getScaledFontSize_supersmall());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -563,7 +563,7 @@ public class SettingsListView extends Activity
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(String.valueOf(SB.getValue()));
-		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.7));
+		label2.setTextSize((float) Sizes.getScaledFontSize_supersmall());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -644,7 +644,7 @@ public class SettingsListView extends Activity
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(String.valueOf(SB.getValue()));
-		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.7));
+		label2.setTextSize((float) Sizes.getScaledFontSize_supersmall());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -724,7 +724,7 @@ public class SettingsListView extends Activity
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(SB.getValue());
-		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.7));
+		label2.setTextSize((float) Sizes.getScaledFontSize_supersmall());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -789,7 +789,7 @@ public class SettingsListView extends Activity
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(SB.getValue());
-		label2.setTextSize((float) (Sizes.getScaledFontSize_small() * 0.7));
+		label2.setTextSize((float) Sizes.getScaledFontSize_supersmall());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
