@@ -76,6 +76,8 @@ public class SettingsClass extends SettingsList
 	public SettingBool newInstall;
 	public SettingBool ImperialUnits;
 	public SettingBool ShowDirektLine;
+	public SettingBool PositionMarkerTransparent;
+	public SettingBool PositionAtVertex;
 	public SettingBool DebugShowMarker;
 	public SettingBool ImportRatings;
 
@@ -287,6 +289,8 @@ public class SettingsClass extends SettingsList
 		addSetting(OsmMinLevel = new SettingIntArray("OsmMinLevel", cat, NORMAL, 8, true, Level));
 		addSetting(OsmMaxImportLevel = new SettingIntArray("OsmMaxImportLevel", cat, NORMAL, 16, true, Level));
 		addSetting(ShowDirektLine = new SettingBool("ShowDirektLine", cat, NORMAL, false, true));
+		addSetting(PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", cat, NORMAL, false, true));
+		addSetting(PositionAtVertex = new SettingBool("PositionAtVertex", cat, NORMAL, false, true));
 		addSetting(MapInitLatitude = new SettingDouble("LogMinCount", SettingCategory.Gps, NORMAL, -1000, true));
 		addSetting(MapInitLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Gps, NORMAL, -1000, true));
 		addSetting(FoundOffset = new SettingInt("FoundOffset", cat, NORMAL, 0, true));
