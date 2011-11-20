@@ -3,7 +3,6 @@ package de.droidcachebox.Views;
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -12,25 +11,35 @@ import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
+import CB_Core.DB.Database;
+import CB_Core.Enums.CacheTypes;
+import CB_Core.Enums.SmoothScrollingTyp;
+import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
-import CB_Core.Types.Waypoint;
-import CB_Core.Enums.CacheTypes;
-import CB_Core.Enums.SmoothScrollingTyp;
-import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.MysterySolution;
-
+import CB_Core.Types.Waypoint;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -49,8 +58,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.ZoomButton;
 import android.widget.ZoomControls;
-import CB_Core.Config;
-import CB_Core.DB.Database;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
@@ -59,8 +66,6 @@ import de.droidcachebox.Components.CacheDraw;
 import de.droidcachebox.Custom_Controls.MultiToggleButton;
 import de.droidcachebox.Events.PositionEvent;
 import de.droidcachebox.Events.PositionEventList;
-import CB_Core.Events.SelectedCacheEvent;
-import CB_Core.Events.SelectedCacheEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Map.Manager;
@@ -109,10 +114,14 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		useLockPosition = true;
 		myContext = context;
 
-		try {
-//			GlobalCore.SmoothScrolling = SmoothScrollingTyp.valueOf(Config.settings.SmoothScrolling.getValue());
+		try
+		{
+			// GlobalCore.SmoothScrolling =
+			// SmoothScrollingTyp.valueOf(Config.settings.SmoothScrolling.getValue());
 			GlobalCore.SmoothScrolling = Config.settings.SmoothScrolling.getEnumValue();
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			GlobalCore.SmoothScrolling = SmoothScrollingTyp.normal;
 		}
 
@@ -3335,20 +3344,30 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			long size = Math.round(1.8 * lineHeight);
 			Path path = triaglePath(myPointOnScreen, size, dirX, dirY);
 			paint.setColor(MyColor); // bei magnet. Kompass
-			paint.setStyle(Style.FILL);
-			canvas.drawPath(path, paint);
-			// second triangle
-			size = Math.round(1.4 * lineHeight);
-			path = triaglePath(myPointOnScreen, size, dirX, dirY);
-			paint.setColor(Color.WHITE); // bei magnet. Kompass
-			paint.setStyle(Style.FILL);
-			canvas.drawPath(path, paint);
-			// third triangle, a little bit smaller
-			size = lineHeight;
-			path = triaglePath(myPointOnScreen, size, dirX, dirY);
-			paint.setColor(MyColor); // bei magnet. Kompass
-			paint.setStyle(Style.FILL);
-			canvas.drawPath(path, paint);
+			if (Config.settings.PositionAtVertex.getValue() || Config.settings.PositionMarkerTransparent.getValue())
+			{
+				paint.setStyle(Style.STROKE);
+				paint.setStrokeWidth(3);
+				canvas.drawPath(path, paint);
+				if (!Config.settings.PositionAtVertex.getValue()) canvas.drawCircle(myPointOnScreen.x, myPointOnScreen.y, 5, paint);
+			}
+			else
+			{
+				paint.setStyle(Style.FILL);
+				canvas.drawPath(path, paint);
+				// second triangle
+				size = Math.round(1.4 * lineHeight);
+				path = triaglePath(myPointOnScreen, size, dirX, dirY);
+				paint.setColor(Color.WHITE); // bei magnet. Kompass
+				paint.setStyle(Style.FILL);
+				canvas.drawPath(path, paint);
+				// third triangle, a little bit smaller
+				size = lineHeight;
+				path = triaglePath(myPointOnScreen, size, dirX, dirY);
+				paint.setColor(MyColor); // bei magnet. Kompass
+				paint.setStyle(Style.FILL);
+				canvas.drawPath(path, paint);
+			}
 
 			if ((Global.Locator.getLocation() != null) && (Global.Locator.getLocation().hasAccuracy()))
 			{
@@ -3375,24 +3394,40 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	{
 		Point[] dir = new Point[3];
 		dir[0] = new Point();
-		dir[0].x = (int) (pt.x + dirX * size * 0.75f);
-		dir[0].y = (int) (pt.y + dirY * size * 0.75f);
-
-		// x/y -> -y/x
 		dir[1] = new Point();
-		dir[1].x = (int) (pt.x - dirY * size / 3.0f - dirX * size * 0.25f);
-		dir[1].y = (int) (pt.y + dirX * size / 3.0f - dirY * size * 0.25f);
-
 		dir[2] = new Point();
-		dir[2].x = (int) (pt.x + dirY * size / 3.0f - dirX * size * 0.25f);
-		dir[2].y = (int) (pt.y - dirX * size / 3.0f - dirY * size * 0.25f);
-
-		float[] verts = new float[6];
-		for (int i = 0; i < 3; i++)
+		float dx = dirX * size;
+		float dy = dirY * size;
+		if (Config.settings.PositionAtVertex.getValue())
 		{
-			verts[i * 2] = dir[i].x;
-			verts[i * 2 + 1] = dir[i].y;
+			dir[0].x = (int) (pt.x);
+			dir[0].y = (int) (pt.y);
+
+			dir[1].x = (int) (pt.x - dy / 4.0f - dx);
+			dir[1].y = (int) (pt.y + dx / 4.0f - dy);
+
+			dir[2].x = (int) (pt.x + dy / 4.0f - dx);
+			dir[2].y = (int) (pt.y - dx / 4.0f - dy);
 		}
+		else
+		{
+			dir[0].x = (int) (pt.x + dx * 0.75f);
+			dir[0].y = (int) (pt.y + dy * 0.75f);
+
+			// x/y -> -y/x
+			dir[1].x = (int) (pt.x - dy / 3.0f - dx * 0.25f);
+			dir[1].y = (int) (pt.y + dx / 3.0f - dy * 0.25f);
+
+			dir[2].x = (int) (pt.x + dy / 3.0f - dx * 0.25f);
+			dir[2].y = (int) (pt.y - dx / 3.0f - dy * 0.25f);
+		}
+
+		// float[] verts = new float[6];
+		// for (int i = 0; i < 3; i++)
+		// {
+		// verts[i * 2] = dir[i].x;
+		// verts[i * 2 + 1] = dir[i].y;
+		// }
 
 		Path path = new Path();
 		path.moveTo(dir[0].x, dir[0].y);
