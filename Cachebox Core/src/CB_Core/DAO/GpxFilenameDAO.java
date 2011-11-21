@@ -42,8 +42,6 @@ public class GpxFilenameDAO
 		else
 			result.CacheCount = reader.getInt(3);
 
-		reader.close();
-
 		return result;
 	}
 

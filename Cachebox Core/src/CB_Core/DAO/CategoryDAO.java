@@ -25,8 +25,9 @@ public class CategoryDAO
 		result.pinned = reader.getInt(2) != 0;
 
 		// alle GpxFilenames einlesen
-		CoreCursor reader2 = Database.Data.rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId="
-				+ result.Id, null);
+		CoreCursor reader2 = Database.Data.rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=?",
+				new String[]
+					{ String.valueOf(result.Id) });
 		reader2.moveToFirst();
 		while (reader2.isAfterLast() == false)
 		{
