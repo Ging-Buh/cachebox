@@ -489,7 +489,7 @@ public class CacheDAO
 		ArrayList<String> index = new ArrayList<String>();
 		for (Cache c : IndexDB)
 		{
-			ip.ProgressInkrement("IndexingDB", "index- " + c.GcCode);
+			ip.ProgressInkrement("IndexingDB", "index- " + c.GcCode, false);
 			index.add(c.GcCode);
 		}
 
@@ -500,12 +500,12 @@ public class CacheDAO
 
 			if (index.contains(cache.GcCode))
 			{
-				ip.ProgressInkrement("WriteCachesToDB", "Update DB " + cache.GcCode);
+				ip.ProgressInkrement("WriteCachesToDB", "Update DB " + cache.GcCode, false);
 				UpdateDatabase(cache);
 			}
 			else
 			{
-				ip.ProgressInkrement("WriteCachesToDB", "Write to DB " + cache.GcCode);
+				ip.ProgressInkrement("WriteCachesToDB", "Write to DB " + cache.GcCode, false);
 				WriteToDatabase(cache);
 			}
 		}

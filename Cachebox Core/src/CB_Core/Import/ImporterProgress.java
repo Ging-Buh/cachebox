@@ -52,22 +52,16 @@ public class ImporterProgress
 	public ImporterProgress()
 	{
 		steps = new ArrayList<Step>();
-		steps.add(new Step("importGC", 1));
-		steps.add(new Step("importMail", 0));
-		steps.add(new Step("ExtractZip", 1));
-		steps.add(new Step("IndexingDB", 0));
-		steps.add(new Step("AnalyseGPX", 1));
-		steps.add(new Step("ImportGPX", 8));
-		steps.add(new Step("WriteCachesToDB", 0));
-		steps.add(new Step("WriteLogsToDB", 0));
-		steps.add(new Step("WriteWaypointsToDB", 0));
-		steps.add(new Step("importGcVote", 1));
-		steps.add(new Step("sendGcVote", 1));
 
-		weightSumme = getWeightSumm();
 	}
 
-	private float getWeightSumm()
+	public void addStep(Step step)
+	{
+		steps.add(step);
+		weightSumme = getWeightSum();
+	}
+
+	private float getWeightSum()
 	{
 		float sum = 0.0f;
 		for (Step job : steps)
@@ -77,7 +71,7 @@ public class ImporterProgress
 		return sum;
 	}
 
-	public void ProgressInkrement(String Name, String Msg)
+	public void ProgressInkrement(String Name, String Msg, Boolean Done)
 	{
 		// get Job
 		int Progress = 0;
@@ -85,7 +79,14 @@ public class ImporterProgress
 		{
 			if (job.Name.equals(Name))
 			{
-				job.progress += job.stepweight;
+				if (Done)
+				{
+					job.progress = 1f;
+				}
+				else
+				{
+					job.progress += job.stepweight;
+				}
 				Progress = getProgress();
 
 				break;

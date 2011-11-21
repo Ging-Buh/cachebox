@@ -348,6 +348,22 @@ public class ImportDialog extends Activity
 				try
 				{
 
+					if (checkImportPQfromGC.isChecked())
+					{
+						ip.addStep(ip.new Step("importGC", 4));
+					}
+					if (checkBoxImportGPX.isChecked())
+					{
+						ip.addStep(ip.new Step("ExtractZip", 1));
+						ip.addStep(ip.new Step("AnalyseGPX", 1));
+						ip.addStep(ip.new Step("ImportGPX", 4));
+					}
+					if (checkBoxGcVote.isChecked())
+					{
+						ip.addStep(ip.new Step("sendGcVote", 1));
+						ip.addStep(ip.new Step("importGcVote", 4));
+					}
+
 					if (downloadPQList != null)
 					{
 						Iterator<PQ> iterator = downloadPQList.iterator();
@@ -360,12 +376,17 @@ public class ImportDialog extends Activity
 
 							if (pq.downloadAvible)
 							{
-								ip.ProgressInkrement("importGC", "Download: " + pq.Name);
+								ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
 								PocketQuery.DownloadSinglePocketQuery(pq);
 							}
 
 						}
 						while (iterator.hasNext());
+
+						if (downloadPQList.size() == 0)
+						{
+							ip.ProgressInkrement("importGC", "", true);
+						}
 					}
 
 					// Importiere alle GPX Files im Import Folder, auch in ZIP

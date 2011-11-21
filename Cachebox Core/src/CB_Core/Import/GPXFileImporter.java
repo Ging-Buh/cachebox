@@ -987,7 +987,7 @@ public class GPXFileImporter
 		currentwpt++;
 
 		if (mip != null) mip.ProgressInkrement("ImportGPX", mDisplayFilename + "\nCache: " + currentwpt + "/" + countwpt + "\n"
-				+ cache.GcCode + " - " + cache.Name);
+				+ cache.GcCode + " - " + cache.Name, false);
 
 		mImportHandler.handleCache(cache);
 
@@ -1032,7 +1032,7 @@ public class GPXFileImporter
 
 		currentwpt++;
 		if (mip != null) mip.ProgressInkrement("ImportGPX", mDisplayFilename + "\nWaypoint: " + currentwpt + "/" + countwpt + "\n"
-				+ waypoint.GcCode + " - " + waypoint.Description);
+				+ waypoint.GcCode + " - " + waypoint.Description, false);
 
 		mImportHandler.handleWaypoint(waypoint);
 

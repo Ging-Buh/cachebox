@@ -11,8 +11,10 @@ import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
 import CB_Core.Types.LogEntry;
 
-public class LogDAO {
-	public void WriteToDatabase(LogEntry log) {
+public class LogDAO
+{
+	public void WriteToDatabase(LogEntry log)
+	{
 		Parameters args = new Parameters();
 		args.put("Id", log.Id);
 		args.put("Finder", log.Finder);
@@ -22,9 +24,12 @@ public class LogDAO {
 		String stimestamp = iso8601Format.format(log.Timestamp);
 		args.put("Timestamp", stimestamp);
 		args.put("CacheId", log.CacheId);
-		try {
+		try
+		{
 			Database.Data.insertWithConflictReplace("Logs", args);
-		} catch (Exception exc) {
+		}
+		catch (Exception exc)
+		{
 			Logger.Error("Write Log", "", exc);
 		}
 
@@ -32,16 +37,20 @@ public class LogDAO {
 
 	static HashMap<String, String> LogLookup = null;
 
-	public void WriteImports(Iterator<LogEntry> logIterator, int logCount,
-			ImporterProgress ip) {
+	public void WriteImports(Iterator<LogEntry> logIterator, int logCount, ImporterProgress ip)
+	{
 
 		ip.setJobMax("WriteLogsToDB", logCount);
-		while (logIterator.hasNext()) {
+		while (logIterator.hasNext())
+		{
 			LogEntry log = logIterator.next();
-			ip.ProgressInkrement("WriteLogsToDB", String.valueOf(log.CacheId));
-			try {
+			ip.ProgressInkrement("WriteLogsToDB", String.valueOf(log.CacheId), false);
+			try
+			{
 				WriteToDatabase(log);
-			} catch (Exception e) {
+			}
+			catch (Exception e)
+			{
 
 				// Statt hier den Fehler abzufangen, sollte die LogTabelle
 				// Indexiert werden

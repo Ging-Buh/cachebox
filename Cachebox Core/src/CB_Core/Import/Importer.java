@@ -46,7 +46,7 @@ public class Importer
 
 		for (String tmpZip : ordnerInhalt_Zip)
 		{
-			ip.ProgressInkrement("ExtractZip", "");
+			ip.ProgressInkrement("ExtractZip", "", false);
 			// Extract ZIP
 			try
 			{
@@ -64,6 +64,11 @@ public class Importer
 			}
 		}
 
+		if (ordnerInhalt_Zip.size() == 0)
+		{
+			ip.ProgressInkrement("ExtractZip", "", true);
+		}
+
 		// Import all GPX files
 		String[] FileList = GetFilesToLoad(directoryPath);
 
@@ -76,7 +81,7 @@ public class Importer
 
 		for (String File : FileList)
 		{
-			ip.ProgressInkrement("AnalyseGPX", new File(File).getName());
+			ip.ProgressInkrement("AnalyseGPX", new File(File).getName(), false);
 
 			BufferedReader br;
 			String strLine;
@@ -103,6 +108,11 @@ public class Importer
 			countwpt = 0;
 		}
 
+		if (FileList.length == 0)
+		{
+			ip.ProgressInkrement("AnalyseGPX", "", true);
+		}
+
 		for (Integer count : wptCount.values())
 		{
 			countwpt += count;
@@ -111,7 +121,7 @@ public class Importer
 		ip.setJobMax("ImportGPX", FileList.length + countwpt);
 		for (String File : FileList)
 		{
-			ip.ProgressInkrement("ImportGPX", "Import: " + new File(File).getName());
+			ip.ProgressInkrement("ImportGPX", "Import: " + new File(File).getName(), false);
 			GPXFileImporter importer = new GPXFileImporter(File, ip);
 			try
 			{
@@ -122,6 +132,11 @@ public class Importer
 				Logger.Error("Core.Importer.ImportGpx", "importer.doImport => " + File, e);
 				e.printStackTrace();
 			}
+		}
+
+		if (FileList.length == 0)
+		{
+			ip.ProgressInkrement("ImportGPX", "", true);
 		}
 
 		importHandler.GPXFilenameUpdateCacheCount();
@@ -142,7 +157,8 @@ public class Importer
 		{
 			i++;
 
-			ip.ProgressInkrement("sendGcVote", "Sending Votes (" + String.valueOf(i) + " / " + String.valueOf(pendingVotes.size()) + ")");
+			ip.ProgressInkrement("sendGcVote", "Sending Votes (" + String.valueOf(i) + " / " + String.valueOf(pendingVotes.size()) + ")",
+					false);
 
 			Boolean ret = GCVote.SendVotes(Config.settings.GcLogin.getValue(), Config.settings.GcVotePassword.getValue(), info.Vote,
 					info.URL, info.GcCode);
@@ -151,6 +167,11 @@ public class Importer
 			{
 				gcVoteDAO.updatePendingVote(info.Id);
 			}
+		}
+
+		if (pendingVotes.size() == 0)
+		{
+			ip.ProgressInkrement("sendGcVote", "No Votes to send.", true);
 		}
 
 		Integer count = gcVoteDAO.getCacheCountToGetVotesFor(whereClause);
@@ -173,7 +194,7 @@ public class Importer
 			{
 				if (!info.GcCode.toLowerCase().startsWith("gc"))
 				{
-					ip.ProgressInkrement("importGcVote", "Not a GC.com Cache");
+					ip.ProgressInkrement("importGcVote", "Not a GC.com Cache", false);
 					continue;
 				}
 
@@ -188,7 +209,7 @@ public class Importer
 			if (ratingData == null)
 			{
 				failCount += packageSize;
-				ip.ProgressInkrement("importGcVote", "Query " + String.valueOf(i + 1) + " failed...");
+				ip.ProgressInkrement("importGcVote", "Query failed...", false);
 			}
 			else
 			{
@@ -209,13 +230,18 @@ public class Importer
 					i++;
 
 					ip.ProgressInkrement("importGcVote",
-							"Writing Ratings (" + String.valueOf(i + failCount) + " / " + String.valueOf(count) + ")");
+							"Writing Ratings (" + String.valueOf(i + failCount) + " / " + String.valueOf(count) + ")", false);
 				}
 
 			}
 
 			offset += packageSize;
 
+		}
+
+		if (count == 0)
+		{
+			ip.ProgressInkrement("importGcVote", "", true);
 		}
 
 	}
