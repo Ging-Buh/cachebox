@@ -28,18 +28,19 @@ public abstract class Database
 	public static Database FieldNotes;
 	public static Database Settings;
 
-	protected boolean newDB=false;
-	
+	protected boolean newDB = false;
+
 	/***
-	 * Wenn die DB neu erstellt wurde ist der Return Wert
-	 * bei der ersten Abfrage True
+	 * Wenn die DB neu erstellt wurde ist der Return Wert bei der ersten Abfrage
+	 * True
+	 * 
 	 * @return
 	 */
 	public boolean isDbNew()
 	{
 		return newDB;
 	}
-	
+
 	public enum DatabaseType
 	{
 		CacheBox, FieldNotes, Settings
@@ -296,9 +297,18 @@ public abstract class Database
 				}
 
 			}
-			if (lastDatabaseSchemeVersion < 1020) {
+			if (lastDatabaseSchemeVersion < 1020)
+			{
 				// for long Settings
-				execSQL("ALTER TABLE [Config] ADD [LongString] ntext NULL;");					
+				try
+				{
+					execSQL("ALTER TABLE [Config] ADD [LongString] ntext NULL;");
+				}
+				catch (Exception ex)
+				{
+
+				}
+
 			}
 			break;
 		case FieldNotes:
@@ -324,19 +334,25 @@ public abstract class Database
 			if (lastDatabaseSchemeVersion <= 0)
 			{
 				// First Initialization of the Database
-				try {
+				try
+				{
 					execSQL("CREATE TABLE [Config] ([Key] nvarchar (30) NOT NULL, [Value] nvarchar (255) NULL);");
-					execSQL("CREATE INDEX [Key_idx] ON [Config] ([Key] ASC);");					
-				} catch (Exception exc) {
+					execSQL("CREATE INDEX [Key_idx] ON [Config] ([Key] ASC);");
+				}
+				catch (Exception exc)
+				{
 					exc.getMessage();
 				}
 			}
 			if (lastDatabaseSchemeVersion <= 1002)
 			{
 				// Long Text Field for long Strings
-				try {
-					execSQL("ALTER TABLE [Config] ADD [LongString] ntext NULL;");					
-				} catch (Exception exc) {
+				try
+				{
+					execSQL("ALTER TABLE [Config] ADD [LongString] ntext NULL;");
+				}
+				catch (Exception exc)
+				{
 					exc.getMessage();
 				}
 			}
@@ -760,12 +776,12 @@ public abstract class Database
 		{
 			throw new Exception("not in DB");
 		}
-		finally {
+		finally
+		{
 			c.close();
 		}
 
-		if (!found)
-			throw new Exception("not in DB");
+		if (!found) throw new Exception("not in DB");
 
 		return result;
 	}
@@ -800,8 +816,7 @@ public abstract class Database
 		}
 		c.close();
 
-		if (!found)
-			throw new Exception("not in DB");
+		if (!found) throw new Exception("not in DB");
 
 		return result;
 	}
