@@ -29,7 +29,7 @@ public class FunctionHandySum extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount").replace("%s", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount", "1");
 		}
 		int result = 0;
 		String wert = parameter[0].toLowerCase();

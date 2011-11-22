@@ -666,7 +666,8 @@ public class search
 		props = filter;
 		// pd = android.app.ProgressDialog.show(mPtrMain, "",
 		// GlobalCore.Translations.Get("LoadCaches"), true);
-		pd = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("LoadCaches"), "Groundspeak API", MessageBoxButtons.NOTHING, null);
+		pd = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("LoadCaches"), GlobalCore.Translations.Get("Filter"),
+				MessageBoxButtons.NOTHING, null);
 
 		Thread thread = new Thread()
 		{
@@ -722,10 +723,18 @@ public class search
 
 	public void searchOnline()
 	{
-		IsPremiumThread = new isPremiumThread();
-		IsPremiumThread.execute("");
-		pd = PleaseWaitMessageBox.Show("Chk API State", "Groundspeak API", MessageBoxButtons.Cancel, MessageBoxIcon.Powerd_by_GC_Live,
-				Cancel1ClickListner);
+		if ("".equals(Config.GetAccessToken()))
+		{
+			MessageBox.Show(GlobalCore.Translations.Get("apiKeyNeeded"), GlobalCore.Translations.Get("Clue"), MessageBoxButtons.OK,
+					MessageBoxIcon.Exclamation, null);
+		}
+		else
+		{
+			IsPremiumThread = new isPremiumThread();
+			IsPremiumThread.execute("");
+			pd = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("chkApiState"), "Groundspeak API", MessageBoxButtons.Cancel,
+					MessageBoxIcon.Powerd_by_GC_Live, Cancel1ClickListner);
+		}
 	}
 
 	private isPremiumThread IsPremiumThread;
@@ -783,7 +792,7 @@ public class search
 			else if (msg.what == -1)
 			{
 				pd.dismiss();
-				MessageBox.Show("at online search", "Error", MessageBoxIcon.Error);
+				MessageBox.Show(GlobalCore.Translations.Get("errorAPI"), GlobalCore.Translations.Get("Error"), MessageBoxIcon.Error);
 
 			}
 			else
@@ -820,8 +829,8 @@ public class search
 	{
 		LoaderThread = new loaderThread();
 		LoaderThread.execute("");
-		pd = PleaseWaitMessageBox.Show("Search Online", "Groundspeak API", MessageBoxButtons.Cancel, MessageBoxIcon.Powerd_by_GC_Live,
-				CancelClickListner);
+		pd = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("searchingOnline"), "Groundspeak API", MessageBoxButtons.Cancel,
+				MessageBoxIcon.Powerd_by_GC_Live, CancelClickListner);
 	}
 
 	private final DialogInterface.OnClickListener CancelClickListner = new DialogInterface.OnClickListener()
@@ -1014,7 +1023,7 @@ public class search
 			case 2:
 			{
 				pd.dismiss();
-				MessageBox.Show("at online search", "Error", MessageBoxIcon.Error);
+				MessageBox.Show(GlobalCore.Translations.Get("errorAPI"), GlobalCore.Translations.Get("Error"), MessageBoxIcon.Error);
 				break;
 			}
 			case 10:

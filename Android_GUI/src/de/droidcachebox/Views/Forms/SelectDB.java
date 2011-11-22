@@ -283,7 +283,7 @@ public class SelectDB extends Activity
 				+ GlobalCore.Translations.Get("AutoStartDisabled"));
 		else
 			bAutostart.setText(GlobalCore.Translations.Get("AutoStart") + "\n"
-					+ GlobalCore.Translations.Get("AutoStartTime").replace("%s", String.valueOf(autoStartTime)));
+					+ GlobalCore.Translations.Get("AutoStartTime", String.valueOf(autoStartTime)));
 	}
 
 	public class CustomAdapter extends BaseAdapter
@@ -347,10 +347,10 @@ public class SelectDB extends Activity
 			final CharSequence[] cs = new String[6];
 			cs[0] = GlobalCore.Translations.Get("StartWithoutSelection");
 			cs[1] = GlobalCore.Translations.Get("AutoStartDisabled");
-			cs[2] = GlobalCore.Translations.Get("AutoStartTime").replace("%s", "5");
-			cs[3] = GlobalCore.Translations.Get("AutoStartTime").replace("%s", "10");
-			cs[4] = GlobalCore.Translations.Get("AutoStartTime").replace("%s", "25");
-			cs[5] = GlobalCore.Translations.Get("AutoStartTime").replace("%s", "60");
+			cs[2] = GlobalCore.Translations.Get("AutoStartTime", "5");
+			cs[3] = GlobalCore.Translations.Get("AutoStartTime", "10");
+			cs[4] = GlobalCore.Translations.Get("AutoStartTime", "25");
+			cs[5] = GlobalCore.Translations.Get("AutoStartTime", "60");
 
 			return new AlertDialog.Builder(this).setTitle("Titel").setItems(cs, new DialogInterface.OnClickListener()
 			{

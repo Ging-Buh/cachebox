@@ -154,7 +154,7 @@ utf8
 		NewDB = Nouvelle base
 		SelDB = Choisir la base 
 		AutoStart = Démarrage automatique
-		AutoStartTime = Après %s secondes
+		AutoStartTime = Après {1} secondes
 		AutoStartDisabled = Arrêté
 		StartWithoutSelection = Pas de démarrage automatique
 		
@@ -337,7 +337,7 @@ utf8
 	LogInErrorLoadFinds = Erreur de connexion au site GC.com! Vérifier les informations.
 	CannotResolveHost = Serveur non connu!
 	ServerTimeout = Serveur inaccessible...
-	FoundsSetTo = Nombre de caches trouvées: %s
+	FoundsSetTo = Nombre de caches trouvées: {1}
 	
 	//FormAdjustFounds
 	AdjustFinds = Adjustement du nombre de caches trouvées
@@ -445,8 +445,25 @@ utf8
 	up = Up
 	down = Down
 	add = Add
-	
-	
+	deleteFieldnote = Fieldnote löschen
+	confirmFieldnoteDeletion = Soll die Fieldnote\n\n[{1}]\n\ndes Caches\n\n[{2}]\n\ngelöscht werden?
+	confirmFieldnoteDeletionRst = \n\nDer Found Status des Caches wird dabei zurückgesetzt!
+	solverErrParamCount = This function needs {1} parameters
+	apiKeyNeeded = No API-Key found.\nSee login settings.
+	chkApiState = Checking API state
+	searchingOnline = Running online search
+	uploadCanceled = Upload canceled
+	uploadFinished = Upload finished
+	missingVars = Missing variables
+	insertVars = Add the following missing variables?
+	loadingTrackables = Getting trackables
+	cacheOtherDb = The Cache [{1}] is not in the current DB.
+	fieldNoteNoDelete = This FieldNote can not be deleted!
+	fieldNoteNoSelect = This FieldNote can not be selected!
+	noJokers = No jokers present
+	internetError = Error accessing internet
+	errorAPI = Error during API access
+	chkState = Checking state
 
 // Attributes
 	att_1_0 = dogs does not permit

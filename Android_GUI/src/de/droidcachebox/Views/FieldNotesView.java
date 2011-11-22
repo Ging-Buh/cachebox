@@ -6,30 +6,14 @@ import java.util.Date;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.main;
-import de.droidcachebox.Custom_Controls.downSlider;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
-import de.droidcachebox.Events.ViewOptionsMenu;
-
+import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.FieldNoteList;
-
-import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.Ui.AllContextMenuCallHandler;
-import de.droidcachebox.Ui.Sizes;
-import de.droidcachebox.Views.Forms.EditFieldNote;
-import de.droidcachebox.Views.Forms.MessageBoxButtons;
-import de.droidcachebox.Views.Forms.MessageBoxIcon;
-import de.droidcachebox.Views.Forms.MessageBox;
-import de.droidcachebox.Views.Forms.ProgressDialog;
-import CB_Core.Events.ProgresssChangedEventList;
-
 import CB_Core.Types.Waypoint;
 import android.app.Activity;
 import android.content.Context;
@@ -44,6 +28,18 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import de.droidcachebox.R;
+import de.droidcachebox.main;
+import de.droidcachebox.Custom_Controls.downSlider;
+import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.AllContextMenuCallHandler;
+import de.droidcachebox.Ui.Sizes;
+import de.droidcachebox.Views.Forms.EditFieldNote;
+import de.droidcachebox.Views.Forms.MessageBox;
+import de.droidcachebox.Views.Forms.MessageBoxButtons;
+import de.droidcachebox.Views.Forms.MessageBoxIcon;
+import de.droidcachebox.Views.Forms.ProgressDialog;
 
 public class FieldNotesView extends ListView implements ViewOptionsMenu
 {
@@ -221,7 +217,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		public void run()
 		{
 			ThreadCancel = true;
-			MessageBox.Show("Upload canceld!");
+			MessageBox.Show(GlobalCore.Translations.Get("uploadCanceled"));
 		}
 	};
 
@@ -238,7 +234,8 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 			}
 			else
 			{
-				MessageBox.Show("Upload ready", GlobalCore.Translations.Get("uploadFieldNotes"), MessageBoxIcon.GC_Live);
+				MessageBox.Show(GlobalCore.Translations.Get("uploadFinished"), GlobalCore.Translations.Get("uploadFieldNotes"),
+						MessageBoxIcon.GC_Live);
 			}
 
 		}
@@ -471,7 +468,8 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 
 		if (cache == null)
 		{
-			String message = "The Cache [" + aktFieldNote.CacheName + "] is not in the actual DB. \nThis FieldNote can not be deleted!";
+			String message = GlobalCore.Translations.Get("cacheOtherDb", aktFieldNote.CacheName);
+			message += "\n" + GlobalCore.Translations.Get("fieldNoteNoDelete");
 			MessageBox.Show(message);
 			return;
 		}
@@ -512,11 +510,11 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 			}
 		};
 
-		String message = "Soll die FieldNote\n\n[" + aktFieldNote.typeString + "]\n\ndes Caches" + "\n\n[" + aktFieldNote.CacheName
-				+ "]\n\n gelöscht werden?";
-		if (aktFieldNote.type == 1) message += "\n\nDer Found Status des Caches wird dabei zurückgesetzt!";
+		String message = GlobalCore.Translations.Get("confirmFieldnoteDeletion", aktFieldNote.typeString, aktFieldNote.CacheName);
+		if (aktFieldNote.type == 1) message += GlobalCore.Translations.Get("confirmFieldnoteDeletionRst");
 
-		MessageBox.Show(message, "Delete Fieldnote", MessageBoxButtons.YesNo, dialogClickListener);
+		MessageBox.Show(message, GlobalCore.Translations.Get("deleteFieldnote"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+				dialogClickListener);
 
 	}
 
@@ -574,7 +572,8 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 
 		if (cache == null)
 		{
-			String message = "The Cache [" + aktFieldNote.CacheName + "] is not in the actual DB. \nThis FieldNote can not be selected!";
+			String message = GlobalCore.Translations.Get("cacheOtherDb", aktFieldNote.CacheName);
+			message += "\n" + GlobalCore.Translations.Get("fieldNoteNoSelect");
 			MessageBox.Show(message);
 			return;
 		}

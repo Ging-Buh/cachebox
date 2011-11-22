@@ -30,7 +30,7 @@ public class FunctionAlphaPos extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount").replace("%s", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount", "1");
 			// return "Diese Funktion benötigt %s Parameter".replace("%s", "1");
 		}
 		String wert = parameter[0].trim().toLowerCase();

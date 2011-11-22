@@ -214,8 +214,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 
 			if (transFounds > -1)
 			{
-				String Text = GlobalCore.Translations.Get("FoundsSetTo");
-				Text = Text.replace("%s", String.valueOf(transFounds));
+				String Text = GlobalCore.Translations.Get("FoundsSetTo", String.valueOf(transFounds));
 				MessageBox.Show(Text, GlobalCore.Translations.Get("LoadFinds!"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
 
 				Config.settings.FoundOffset.setValue(transFounds);

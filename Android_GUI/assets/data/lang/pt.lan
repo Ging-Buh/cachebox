@@ -156,7 +156,7 @@
 		NewDB = Nova BD
 		SelDB = Seleccionar BD 
 		AutoStart = Arranque automático
-		AutoStartTime = Depois de %s segundos
+		AutoStartTime = Depois de {1} segundos
 		AutoStartDisabled = Desactivado
 		StartWithoutSelection = Sem escolher
 		
@@ -339,7 +339,7 @@
 	LogInErrorLoadFinds = Erro na autenticação ao tentar obter o número de finds! Dados errados?
 	CannotResolveHost = Não consegue encontrar o servidor!
 	ServerTimeout = Tempo de ligação excedido...
-	FoundsSetTo = Número de finds definido: %s
+	FoundsSetTo = Número de finds definido: {1}
 	
 	//FormAdjustFounds
 	AdjustFinds = Ajustar finds
@@ -447,8 +447,25 @@
 	up = Up
 	down = Down
 	add = Add
-	
-	
+	deleteFieldnote = Fieldnote löschen
+	confirmFieldnoteDeletion = Soll die Fieldnote\n\n[{1}]\n\ndes Caches\n\n[{2}]\n\ngelöscht werden?
+	confirmFieldnoteDeletionRst = \n\nDer Found Status des Caches wird dabei zurückgesetzt!
+	solverErrParamCount = This function needs {1} parameters	
+	apiKeyNeeded = No API-Key found.\nSee login settings.
+	chkApiState = Checking API state
+	searchingOnline = Running online search
+	uploadCanceled = Upload canceled
+	uploadFinished = Upload finished
+	missingVars = Missing variables
+	insertVars = Add the following missing variables?
+	loadingTrackables = Getting trackables
+	cacheOtherDb = The Cache [{1}] is not in the current DB.
+	fieldNoteNoDelete = This FieldNote can not be deleted!
+	fieldNoteNoSelect = This FieldNote can not be selected!
+	noJokers = No jokers present
+	internetError = Error accessing internet
+	errorAPI = Error during API access
+	chkState = Checking state
 
 // Attributes
 	att_1_0 = dogs does not permit

@@ -163,7 +163,12 @@ public class LangStrings
 		return Get(StringId, false);
 	}
 
-	public String Get(String StringId, Boolean withoutRef)
+	public String Get(String StringId, String... params)
+	{
+		return Get(StringId, false, params);
+	}
+
+	public String Get(String StringId, Boolean withoutRef, String... params)
 	{
 
 		// chk initial
@@ -207,7 +212,22 @@ public class LangStrings
 		{
 			retString = "$ID: " + StringId;// "No translation found";
 		}
+		
+		if (params != null) {
+			retString = replaceParams(retString, params);
+		}
 
+		return retString;
+	}
+
+	private String replaceParams(String retString, String... params)
+	{
+		int i = 1;
+		for (String param : params)
+		{
+			retString = retString.replace("{" + i + "}", param);
+			i++;
+		}
 		return retString;
 	}
 

@@ -156,7 +156,7 @@ English
 		NewDB = New DB
 		SelDB = Select Database 
 		AutoStart = Automatic start
-		AutoStartTime = After %s seconds
+		AutoStartTime = After {1} seconds
 		AutoStartDisabled = Disabled
 		StartWithoutSelection = automatic start disabled
 		
@@ -339,7 +339,7 @@ English
 	LogInErrorLoadFinds = Login Error while trying to get number of finds! Wrong information?
 	CannotResolveHost = Cannot resolve Host!
 	ServerTimeout = Server Timeout...
-	FoundsSetTo = Founds set to: %s
+	FoundsSetTo = Founds set to: {1}
 	
 	//FormAdjustFounds
 	AdjustFinds = Adjust finds
@@ -447,7 +447,25 @@ English
 	up = Up
 	down = Down
 	add = Add
-	
+	deleteFieldnote = Delete Fieldnote
+	confirmFieldnoteDeletion = Really delete Fieldnote\n\n[{1}]\n\nof cache\n\n[{2}]?
+	confirmFieldnoteDeletionRst = \n\nThe "found it"-flag will be resetted!
+	solverErrParamCount = This function needs {1} parameters
+	apiKeyNeeded = No API-Key found.\nSee login settings.
+	chkApiState = Checking API state
+	searchingOnline = Running online search
+	uploadCanceled = Upload canceled
+	uploadFinished = Upload finished
+	missingVars = Missing variables
+	insertVars = Add the following missing variables?
+	loadingTrackables = Getting trackables
+	cacheOtherDb = The Cache [{1}] is not in the current DB.
+	fieldNoteNoDelete = This FieldNote can not be deleted!
+	fieldNoteNoSelect = This FieldNote can not be selected!
+	noJokers = No jokers present
+	internetError = Error accessing internet
+	errorAPI = Error during API access
+	chkState = Checking state
 
 // Attributes
 	att_1_0 = dogs does not permit

@@ -301,7 +301,7 @@ public class ImportDialog extends Activity
 			else if (msg.what == -1)
 			{
 				WaitDialog.dismiss();
-				MessageBox.Show("at online search", "Error", MessageBoxIcon.Error);
+				MessageBox.Show(GlobalCore.Translations.Get("errorAPI"), GlobalCore.Translations.Get("Error"), MessageBoxIcon.Error);
 
 			}
 

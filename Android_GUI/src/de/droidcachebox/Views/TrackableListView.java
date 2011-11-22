@@ -256,8 +256,8 @@ public class TrackableListView extends ListView implements ViewOptionsMenu
 	{
 		LoaderThread = new loaderThread();
 		LoaderThread.execute("");
-		pd = PleaseWaitMessageBox.Show("Get Trackables", "Groundspeak API", MessageBoxButtons.Cancel, MessageBoxIcon.GC_Live,
-				CancelClickListner);
+		pd = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("loadingTrackables"), "Groundspeak API", MessageBoxButtons.Cancel,
+				MessageBoxIcon.GC_Live, CancelClickListner);
 	}
 
 	private Handler onlineSearchReadyHandler = new Handler()
@@ -277,7 +277,7 @@ public class TrackableListView extends ListView implements ViewOptionsMenu
 			case 2:
 			{
 				pd.dismiss();
-				MessageBox.Show("at Get Trackables", "Error", MessageBoxIcon.Error);
+				MessageBox.Show(GlobalCore.Translations.Get("errorAPI"), GlobalCore.Translations.Get("Error"), MessageBoxIcon.Error);
 				break;
 			}
 

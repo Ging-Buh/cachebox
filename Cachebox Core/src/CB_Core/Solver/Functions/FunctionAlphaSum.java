@@ -1,7 +1,6 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.GlobalCore;
-import CB_Core.Solver.Functions.Function.LacalNames;
 
 public class FunctionAlphaSum extends Function
 {
@@ -28,7 +27,7 @@ public class FunctionAlphaSum extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount").replace("%s", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount", "1");
 		}
 		int result = 0;
 		if (parameter[0].length() == 0) return "0";
@@ -45,7 +44,7 @@ public class FunctionAlphaSum extends Function
 	{
 		return 1;
 	}
-	
+
 	@Override
 	public boolean needsTextArgument()
 	{

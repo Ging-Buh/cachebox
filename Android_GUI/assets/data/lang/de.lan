@@ -126,8 +126,7 @@
 	GPSon? = Möchten Sie GPS jetzt aktivieren?
 	
 	welcome = Willkommen zu Cachebox!
-	wantApi = Möchtest Sie jetzt einen GC API key holen?
-	
+	wantApi = Möchten Sie jetzt einen GC API key holen?
 
 // Splash screan Messages
 	openDB = Öffne Datenbank...
@@ -157,7 +156,7 @@
 		NewDB = Neue DB
 		SelDB = Wähle Datenbank
 		AutoStart = Automatischer Start
-		AutoStartTime = Nach %s Sekunden
+		AutoStartTime = Nach {1} Sekunden
 		AutoStartDisabled = Deaktiviert
 		StartWithoutSelection = Automatischer Start deaktiviert
 		
@@ -230,7 +229,6 @@
 		solverGroupText = Text
 		solverGroupNumbers = Zahlen
 		solverGroupCoordinates = Koordinaten
-		solverErrParamCount = Diese Funktion benötigt %s Parameter
 
 	//Solver Functions
 		solverFuncAlphaSum = AlphaSum
@@ -342,7 +340,7 @@
 	LogInErrorLoadFinds = Login Fehler beim Laden der Anzahl der gefundenen Caches! Falsche Login Informationen?
 	CannotResolveHost = Kann Host nicht erreichen!
 	ServerTimeout = Zeitüberschreitung Verbindungsaufbau...
-	FoundsSetTo = Funde auf %s gesetzt!
+	FoundsSetTo = Funde auf {1} gesetzt!
 	
 	//FormAdjustFounds
 	AdjustFinds = Funde anpassen
@@ -450,6 +448,25 @@
 	up = Auf
 	down = Ab
 	add = Hinzufügen
+	deleteFieldnote = Fieldnote löschen
+	confirmFieldnoteDeletion = Soll die Fieldnote\n\n[{1}]\n\ndes Caches\n\n[{2}]\n\ngelöscht werden?
+	confirmFieldnoteDeletionRst = \n\nDer Found Status des Caches wird dabei zurückgesetzt!
+	solverErrParamCount = Diese Funktion benötigt {1} Parameter
+	apiKeyNeeded = Kein API-Key gefunden.\nSiehe Login-Einstellungen.
+	chkApiState = Prüfe API Status
+	searchingOnline = Online-Suche läuft
+	uploadCanceled = Upload abgebrochen
+	uploadFinished = Upload abgeschlossen
+	missingVars = Fehlende Variablen
+	insertVars = Folgende fehlende Variablen hinzufügen?
+	loadingTrackables = Trackables werden geladen
+	cacheOtherDb = Der Cache [{1}] ist nicht in der aktuellen DB.
+	fieldNoteNoDelete = Diese FieldNote kann nicht gelöscht werden!
+	fieldNoteNoSelect = Diese FieldNote kann nicht gewählt werden!
+	noJokers = Keine Joker bekannt
+	internetError = Fehler bei Internetzugriff
+	errorAPI = Fehler während dem API-Zugriff
+	chkState = Prüfe Status
 	
 // Attributes
 	att_1_0 = Hunde nicht erlaubt

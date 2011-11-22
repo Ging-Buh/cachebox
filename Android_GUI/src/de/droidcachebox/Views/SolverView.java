@@ -182,8 +182,8 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 				message += s;
 			}
 
-			MessageBox.Show("Insert declarations for the missing variables:\n" + message, "Missing Variables", MessageBoxButtons.YesNo,
-					MessageBoxIcon.Asterisk, DialogListner);
+			MessageBox.Show(GlobalCore.Translations.Get("insertVars") + "\n" + message, GlobalCore.Translations.Get("missingVars"),
+					MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk, DialogListner);
 		}
 
 	}

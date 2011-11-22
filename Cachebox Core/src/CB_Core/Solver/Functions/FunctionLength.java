@@ -1,7 +1,6 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.GlobalCore;
-import CB_Core.Solver.Functions.Function.LacalNames;
 
 public class FunctionLength extends Function
 {
@@ -30,7 +29,7 @@ public class FunctionLength extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount").replace("%s", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount", "1");
 		}
 		return String.valueOf(parameter[0].length());
 	}

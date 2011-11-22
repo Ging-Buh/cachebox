@@ -2003,7 +2003,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 							}
 							if (Global.Jokers.isEmpty())
 							{
-								MessageBox.Show("Keine Joker bekannt");
+								MessageBox.Show(GlobalCore.Translations.Get("noJokers"));
 							}
 							else
 							{
@@ -2027,7 +2027,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			{
 				Logger.Error("main.initialBtnInfoContextMenu()", "IOException HTTP response Jokers", ioEx);
 				Log.d("DroidCachebox", ioEx.getMessage());
-				MessageBox.Show("Fehler bei Internetzugriff");
+				MessageBox.Show(GlobalCore.Translations.Get("internetError"));
 			}
 			catch (Exception ex)
 			{
@@ -2128,10 +2128,18 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 	public void searchOnline()
 	{
-		IsPremiumThread = new isPremiumThread();
-		IsPremiumThread.execute("");
-		pd = PleaseWaitMessageBox.Show("Chk API State", "Groundspeak API", MessageBoxButtons.Cancel, MessageBoxIcon.GC_Live,
-				Cancel1ClickListner);
+		if ("".equals(Config.GetAccessToken()))
+		{
+			MessageBox.Show(GlobalCore.Translations.Get("apiKeyNeeded"), GlobalCore.Translations.Get("Clue"), MessageBoxButtons.OK,
+					MessageBoxIcon.Exclamation, null);
+		}
+		else
+		{
+			IsPremiumThread = new isPremiumThread();
+			IsPremiumThread.execute("");
+			pd = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("chkApiState"), "Groundspeak API", MessageBoxButtons.Cancel,
+					MessageBoxIcon.GC_Live, Cancel1ClickListner);
+		}
 	}
 
 	private isPremiumThread IsPremiumThread;
@@ -2204,8 +2212,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	{
 		LoaderThread = new loaderThread();
 		LoaderThread.execute("");
-		pd = PleaseWaitMessageBox.Show("Search Online", "Groundspeak API", MessageBoxButtons.Cancel, MessageBoxIcon.GC_Live,
-				CancelClickListner);
+		pd = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("searchingOnline"), "Groundspeak API", MessageBoxButtons.Cancel,
+				MessageBoxIcon.GC_Live, CancelClickListner);
 	}
 
 	private final DialogInterface.OnClickListener CancelClickListner = new DialogInterface.OnClickListener()
@@ -2316,8 +2324,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 		ChkStateThread = new chkStateThread();
 		ChkStateThread.execute("");
-		pd = PleaseWaitMessageBox.Show("Chk State", "Groundspeak API", MessageBoxButtons.Cancel, MessageBoxIcon.GC_Live,
-				ChkStateThreadCancelClickListner);
+		pd = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("chkState"), "Groundspeak API", MessageBoxButtons.Cancel,
+				MessageBoxIcon.GC_Live, ChkStateThreadCancelClickListner);
 
 	}
 
@@ -2426,7 +2434,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			case 2:
 			{
 				pd.dismiss();
-				MessageBox.Show("at Status Check", "Error", MessageBoxIcon.Error);
+				MessageBox.Show(GlobalCore.Translations.Get("errorAPI"), GlobalCore.Translations.Get("Error"), MessageBoxIcon.Error);
 				break;
 			}
 

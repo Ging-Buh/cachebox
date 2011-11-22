@@ -1,7 +1,6 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.GlobalCore;
-import CB_Core.Solver.Functions.Function.LacalNames;
 
 // ************************************************************************
 // ********************** Iterierte (einstellige) Quersumme (Iterated CrossTotal) **************************
@@ -44,7 +43,7 @@ public class FunctionIQuersumme extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount").replace("%s", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount", "1");
 		}
 		String wert = parameter[0].trim();
 		while (wert.length() > 1)
