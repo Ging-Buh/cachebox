@@ -80,8 +80,9 @@ public class SettingsClass extends SettingsList
 	public SettingBool PositionAtVertex;
 	public SettingBool DebugShowMarker;
 	public SettingBool ImportRatings;
-
 	public SettingBool ImportPQsFromGeocachingCom;
+	public SettingBool SettingsShowExpert;
+	public SettingBool SettingsShowAll;
 
 	// int
 	public SettingInt LogMaxMonthAge;
@@ -157,49 +158,31 @@ public class SettingsClass extends SettingsList
 
 		SettingCategory cat = SettingCategory.Internal;
 
+		addSetting(ShowKeypad = new SettingBool("ShowKeypad", cat, NORMAL, true, true));
+		addSetting(PlaySounds = new SettingBool("PlaySounds", cat, NORMAL, true, true));
+
 		addSetting(ImportGpx = new SettingBool("ImportGpx", cat, NORMAL, true, true));
 		addSetting(CacheMapData = new SettingBool("CacheMapData", cat, NORMAL, false, true));
 		addSetting(CacheImageData = new SettingBool("CacheImageData", cat, NORMAL, false, true));
 		addSetting(SuppressPowerSaving = new SettingBool("SuppressPowerSaving", cat, NORMAL, true, true));
-		addSetting(PlaySounds = new SettingBool("PlaySounds", cat, NORMAL, true, true));
+
 		addSetting(PopSkipOutdatedGpx = new SettingBool("PopSkipOutdatedGpx", cat, NORMAL, true, true));
-		addSetting(MapHideMyFinds = new SettingBool("MapHideMyFinds", cat, NORMAL, false, true));
-		addSetting(MapShowRating = new SettingBool("MapShowRating", cat, NORMAL, true, true));
-		addSetting(MapShowDT = new SettingBool("MapShowDT", cat, NORMAL, true, true));
-		addSetting(MapShowTitles = new SettingBool("MapShowTitles", cat, NORMAL, true, true));
-		addSetting(ShowKeypad = new SettingBool("ShowKeypad", cat, NORMAL, true, true));
+
 		addSetting(ImportLayerOsm = new SettingBool("ImportLayerOsm", cat, NORMAL, true, true));
-		addSetting(TrackRecorderStartup = new SettingBool("TrackRecorderStartup", cat, NORMAL, false, true));
-		addSetting(MapShowCompass = new SettingBool("MapShowCompass", cat, NORMAL, true, true));
+
 		addSetting(ResortRepaint = new SettingBool("ResortRepaint", cat, NORMAL, false, true));
 		addSetting(GCAutoSyncCachesFound = new SettingBool("GCAutoSyncCachesFound", cat, NORMAL, true, true));
-		addSetting(GCAdditionalImageDownload = new SettingBool("GCAdditionalImageDownload", cat, NORMAL, false, true));
+
 		addSetting(AutoResort = new SettingBool("AutoResort", cat, NORMAL, false, true));
-		addSetting(FieldnotesUploadAll = new SettingBool("FieldnotesUploadAll", cat, NORMAL, false, true));
-		addSetting(HtcCompass = new SettingBool("HtcCompass", cat, NORMAL, false, true));
+
 		addSetting(MultiDBAsk = new SettingBool("MultiDBAsk", cat, NORMAL, true, true));
 		addSetting(AllowLandscape = new SettingBool("AllowLandscape", cat, NORMAL, false, true));
 		addSetting(MoveMapCenterWithSpeed = new SettingBool("MoveMapCenterWithSpeed", cat, NORMAL, false, true));
 		addSetting(PremiumMember = new SettingBool("PremiumMember", cat, NORMAL, false, true));
-		addSetting(SearchWithoutFounds = new SettingBool("SearchWithoutFounds", cat, NORMAL, true, true));
-		addSetting(SearchWithoutOwns = new SettingBool("SearchWithoutOwns", cat, NORMAL, true, true));
-		addSetting(SearchOnlyAvible = new SettingBool("SearchOnlyAvible", cat, NORMAL, true, true));
-		addSetting(quickButtonShow = new SettingBool("quickButtonShow", cat, NORMAL, true, true));
-		addSetting(DebugShowPanel = new SettingBool("DebugShowPanel", cat, NORMAL, false, true));
-		addSetting(DebugMemory = new SettingBool("DebugMemory", cat, NORMAL, false, true));
-		addSetting(DebugShowMsg = new SettingBool("DebugShowMsg", cat, NORMAL, false, true));
 
-		addSetting(DebugShowLog = new SettingBool("DebugShowLog", cat, NORMAL, false, true));
-		addSetting(DescriptionNoAttributes = new SettingBool("DescriptionNoAttributes", cat, NORMAL, false, true));
 		addSetting(quickButtonLastShow = new SettingBool("quickButtonLastShow", cat, NORMAL, false, true));
 		addSetting(newInstall = new SettingBool("newInstall", cat, NORMAL, false, true));
 		addSetting(ImperialUnits = new SettingBool("ImperialUnits", cat, NORMAL, false, true));
-
-		addSetting(DebugShowMarker = new SettingBool("DebugShowMarker", cat, NORMAL, false, true));
-		addSetting(ImportRatings = new SettingBool("ImportRatings", cat, NORMAL, false, true));
-		addSetting(ImportGpx = new SettingBool("ImportGpx", cat, NORMAL, false, true));
-
-		addSetting(ImportPQsFromGeocachingCom = new SettingBool("ImportPQsFromGeocachingCom", cat, NORMAL, false, true));
 
 		// int
 		addSetting(LogMaxMonthAge = new SettingInt("LogMaxMonthAge", cat, NORMAL, 99999, true));
@@ -225,9 +208,6 @@ public class SettingsClass extends SettingsList
 		// Enums
 
 		// IntArray
-		addSetting(TrackDistance = new SettingIntArray("TrackDistance", cat, NORMAL, 3, true, TrackDistanceArray));
-
-		addSetting(SoundApproachDistance = new SettingIntArray("SoundApproachDistance", cat, NORMAL, 50, true, approach));
 
 		addInternalSattings();
 		addMapSettings();
@@ -236,13 +216,16 @@ public class SettingsClass extends SettingsList
 		addGpsSettings();
 		addMiscSettings();
 		addTemplateSettings();
+		addInternalSettings();
+		addAPISettings();
+		addDebugSettings();
 	}
 
 	private void addInternalSattings()
 	{
 		SettingCategory cat = SettingCategory.Internal;
 
-		addSetting(nightMode = new SettingBool("nightMode", cat, NORMAL, false, true));
+		addSetting(nightMode = new SettingBool("nightMode", cat, INVISIBLE, false, true));
 	}
 
 	private void addMiscSettings()
@@ -253,18 +236,23 @@ public class SettingsClass extends SettingsList
 		addSetting(SaveFieldNotesHtml = new SettingBool("SaveFieldNotesHtml", cat, NORMAL, true, true));
 		addSetting(AllowInternetAccess = new SettingBool("AllowInternetAccess", cat, NORMAL, true, true));
 		addSetting(AllowRouteInternet = new SettingBool("AllowRouteInternet", cat, NORMAL, true, true));
+		addSetting(FoundOffset = new SettingInt("FoundOffset", cat, NORMAL, 0, true));
+		addSetting(TrackDistance = new SettingIntArray("TrackDistance", cat, NORMAL, 3, true, TrackDistanceArray));
+		addSetting(SoundApproachDistance = new SettingIntArray("SoundApproachDistance", cat, NORMAL, 50, true, approach));
+		addSetting(TrackRecorderStartup = new SettingBool("TrackRecorderStartup", cat, NORMAL, false, true));
+		addSetting(DescriptionNoAttributes = new SettingBool("DescriptionNoAttributes", cat, NORMAL, false, true));
 	}
 
 	private void addTemplateSettings()
 	{
 		SettingCategory cat = SettingCategory.Templates;
 
-		addSetting(FoundTemplate = new SettingLongString("FoundTemplate", cat, INVISIBLE,
+		addSetting(FoundTemplate = new SettingLongString("FoundTemplate", cat, NORMAL,
 				"<br>###finds##, ##time##, Found it with DroidCachebox!", true));
-		addSetting(DNFTemplate = new SettingLongString("DNFTemplate", cat, INVISIBLE, "<br>##time##. Logged it with DroidCachebox!", true));
-		addSetting(NeedsMaintenanceTemplate = new SettingLongString("NeedsMaintenanceTemplate", cat, INVISIBLE,
+		addSetting(DNFTemplate = new SettingLongString("DNFTemplate", cat, NORMAL, "<br>##time##. Logged it with DroidCachebox!", true));
+		addSetting(NeedsMaintenanceTemplate = new SettingLongString("NeedsMaintenanceTemplate", cat, NORMAL,
 				"Logged it with DroidCachebox!", true));
-		addSetting(AddNoteTemplate = new SettingLongString("AddNoteTemplate", cat, INVISIBLE, "Logged it with DroidCachebox!", true));
+		addSetting(AddNoteTemplate = new SettingLongString("AddNoteTemplate", cat, NORMAL, "Logged it with DroidCachebox!", true));
 	}
 
 	private void addGpsSettings()
@@ -272,7 +260,7 @@ public class SettingsClass extends SettingsList
 		SettingCategory cat = SettingCategory.Gps;
 
 		addSetting(HtcLevel = new SettingInt("HtcLevel", cat, NORMAL, 5, true));
-
+		addSetting(HtcCompass = new SettingBool("HtcCompass", cat, NORMAL, false, true));
 	}
 
 	private void addMapSettings()
@@ -291,18 +279,23 @@ public class SettingsClass extends SettingsList
 		addSetting(ShowDirektLine = new SettingBool("ShowDirektLine", cat, NORMAL, false, true));
 		addSetting(PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", cat, NORMAL, false, true));
 		addSetting(PositionAtVertex = new SettingBool("PositionAtVertex", cat, NORMAL, false, true));
-		addSetting(MapInitLatitude = new SettingDouble("LogMinCount", SettingCategory.Gps, NORMAL, -1000, true));
-		addSetting(MapInitLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Gps, NORMAL, -1000, true));
-		addSetting(FoundOffset = new SettingInt("FoundOffset", cat, NORMAL, 0, true));
+		addSetting(MapInitLatitude = new SettingDouble("LogMinCount", SettingCategory.Gps, EXPERT, -1000, true));
+		addSetting(MapInitLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Gps, EXPERT, -1000, true));
+		addSetting(MapShowCompass = new SettingBool("MapShowCompass", cat, NORMAL, true, true));
 		addSetting(MapMaxCachesLabel = new SettingInt("MapMaxCachesLabel", cat, NORMAL, 12, true));
 		addSetting(MapMaxCachesDisplay_config = new SettingInt("MapMaxCachesDisplay_config", cat, NORMAL, 10000, true));
 
 		addSetting(mapMaxCachesDisplayLarge_config = new SettingInt("mapMaxCachesDisplayLarge_config", cat, NORMAL, 75, true));
-		addSetting(OsmDpiAwareRendering = new SettingBool("OsmDpiAwareRendering", cat, NORMAL, true, true));
+		addSetting(OsmDpiAwareRendering = new SettingBool("OsmDpiAwareRendering", cat, NORMAL, false, true));
 		addSetting(MoveMapCenterMaxSpeed = new SettingInt("MoveMapCenterMaxSpeed", cat, NORMAL, 20, true));
 		addSetting(lastZoomLevel = new SettingInt("lastZoomLevel", cat, INVISIBLE, 14, true));
 
 		addSetting(CurrentMapLayer = new SettingString("CurrentMapLayer", cat, EXPERT, "Mapnik", true));
+
+		addSetting(MapHideMyFinds = new SettingBool("MapHideMyFinds", cat, NORMAL, false, true));
+		addSetting(MapShowRating = new SettingBool("MapShowRating", cat, NORMAL, true, true));
+		addSetting(MapShowDT = new SettingBool("MapShowDT", cat, NORMAL, true, true));
+		addSetting(MapShowTitles = new SettingBool("MapShowTitles", cat, NORMAL, true, true));
 
 	}
 
@@ -336,4 +329,40 @@ public class SettingsClass extends SettingsList
 		addSetting(FieldNotesGarminPath = new SettingFile("FieldNotesGarminPath", cat, NORMAL, Work + "/User/geocache_visits.txt", true));
 
 	}
+
+	private void addInternalSettings()
+	{
+		SettingCategory cat = SettingCategory.Internal;
+
+		addSetting(SettingsShowExpert = new SettingBool("SettingsShowExpert", cat, INVISIBLE, false, true));
+		addSetting(SettingsShowAll = new SettingBool("SettingsShowAll", cat, INVISIBLE, false, true));
+	}
+
+	private void addAPISettings()
+	{
+		SettingCategory cat = SettingCategory.API;
+
+		addSetting(ImportRatings = new SettingBool("ImportRatings", cat, NORMAL, false, true));
+		addSetting(ImportGpx = new SettingBool("ImportGpx", cat, NORMAL, false, true));
+		addSetting(GCAdditionalImageDownload = new SettingBool("GCAdditionalImageDownload", cat, NORMAL, false, true));
+		addSetting(ImportPQsFromGeocachingCom = new SettingBool("ImportPQsFromGeocachingCom", cat, NORMAL, false, true));
+		addSetting(FieldnotesUploadAll = new SettingBool("FieldnotesUploadAll", cat, NORMAL, false, true));
+		addSetting(SearchWithoutFounds = new SettingBool("SearchWithoutFounds", cat, NORMAL, true, true));
+		addSetting(SearchWithoutOwns = new SettingBool("SearchWithoutOwns", cat, NORMAL, true, true));
+		addSetting(SearchOnlyAvible = new SettingBool("SearchOnlyAvible", cat, NORMAL, true, true));
+	}
+
+	private void addDebugSettings()
+	{
+		SettingCategory cat = SettingCategory.Debug;
+
+		addSetting(quickButtonShow = new SettingBool("quickButtonShow", cat, NORMAL, true, true));
+		addSetting(DebugShowPanel = new SettingBool("DebugShowPanel", cat, NORMAL, false, true));
+		addSetting(DebugMemory = new SettingBool("DebugMemory", cat, NORMAL, false, true));
+		addSetting(DebugShowMsg = new SettingBool("DebugShowMsg", cat, NORMAL, false, true));
+		addSetting(DebugShowMarker = new SettingBool("DebugShowMarker", cat, NORMAL, false, true));
+		addSetting(DebugShowLog = new SettingBool("DebugShowLog", cat, NORMAL, false, true));
+
+	}
+
 }

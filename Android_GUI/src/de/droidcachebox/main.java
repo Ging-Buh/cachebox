@@ -138,7 +138,6 @@ import de.droidcachebox.Views.Forms.MessageBoxIcon;
 import de.droidcachebox.Views.Forms.PleaseWaitMessageBox;
 import de.droidcachebox.Views.Forms.ScreenLock;
 import de.droidcachebox.Views.Forms.SelectDB;
-import de.droidcachebox.Views.Forms.Settings;
 
 public class main extends Activity implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEvent,
 		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent
@@ -1237,7 +1236,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			switch (ID)
 			{
 			case 102: // Settings
-				final Intent mainIntent = new Intent().setClass(mainActivity, Settings.class);
+				final Intent mainIntent = new Intent().setClass(mainActivity, SettingsListView.class);
 				Bundle b = new Bundle();
 				b.putSerializable("Show", -1);
 				mainIntent.putExtras(b);

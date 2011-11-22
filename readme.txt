@@ -3,6 +3,9 @@ Version : 0.4.xxxx
     •	GPX Import komplett überarbeitet
     •	Core von TestCode befreit 
     •	Settings Überarbeitet 
+    •	Download GC-Vote
+    •	Kategorien für GPX Import
+    •	mehr Texte für die Übersetzungen
 
 
 

@@ -22,6 +22,8 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.SmoothScrollingTyp;
 import CB_Core.Log.Logger;
+import android.view.Menu;
+import android.view.MenuItem;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
@@ -29,8 +31,6 @@ import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
 import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Views.MapView;
-import android.view.Menu;
-import android.view.MenuItem;
 
 /**
  * Diese Klasse enthält alle Statischen Methoden, um ein bestimmtes ContextMenu
@@ -48,7 +48,7 @@ public class AllContextMenuCallHandler
 	 * Statische Instanz des IconContextMenus. Da immer nur ein Menu dargestellt
 	 * wird, reicht hier eine Statische Instanz.
 	 */
-	private static IconContextMenu icm;
+	public static IconContextMenu icm;
 
 	/**
 	 * Staticher Pointer zur main class

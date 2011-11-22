@@ -30,7 +30,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -51,7 +55,10 @@ import android.widget.Toast;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
+import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
+import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
 import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.AllContextMenuCallHandler;
 import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.NumerikInputBox;
@@ -161,13 +168,16 @@ public class SettingsListView extends Activity
 
 		for (SettingCategory item : Categorys)
 		{
-			// Internal ausblenden
-			if (item != SettingCategory.Internal)
+			// Internal ausblenden?
+			if (Config.settings.SettingsShowAll.getValue() || item != SettingCategory.Internal)
 			{
 
 				// add the Button
-				sortedSettigsList.add(new SettingsListCategoryButton(item.name(), SettingCategory.Button, SettingModus.Normal, true));
+				SettingsListCategoryButton tmp = new SettingsListCategoryButton(item.name(), SettingCategory.Button, SettingModus.Normal,
+						true);
 
+				sortedSettigsList.add(tmp);
+				int count = 0;
 				// wenn die Category = LogIn, dann füge als erstes den
 				// GetApiKeyButton hinzu
 				if (!item.IsCollapse() && item == SettingCategory.Login)
@@ -176,7 +186,7 @@ public class SettingsListView extends Activity
 				}
 
 				// alle Items dieser Category hinzufügen, wenn diese aufgeklappt
-				// ist
+				// ist und nicht auf Invisible steht
 				if (!item.IsCollapse())
 				{
 					for (Iterator<SettingBase> it = Config.settings.values().iterator(); it.hasNext();)
@@ -187,9 +197,13 @@ public class SettingsListView extends Activity
 							// item nur zur Liste Hinzufügen, wenn der
 							// SettingModus
 							// dies auch zu lässt.
-							// if (settingItem.getModus() ==
-							// SettingModus.Normal)
-							sortedSettigsList.add(settingItem);
+							if ((settingItem.getModus() == SettingModus.Normal)
+									|| (settingItem.getModus() == SettingModus.Expert && Config.settings.SettingsShowExpert.getValue())
+									|| Config.settings.SettingsShowAll.getValue())
+							{
+								sortedSettigsList.add(settingItem);
+								count++;
+							}
 						}
 					}
 				}
@@ -321,6 +335,74 @@ public class SettingsListView extends Activity
 	 * Enthält den Key des zu Editierenden Wertes der SettingsList
 	 */
 	public static String EditKey = "";
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu)
+	{
+		menu.clear();
+
+		AllContextMenuCallHandler.icm = new IconContextMenu(this, R.menu.menu_settings_view_mode);
+		AllContextMenuCallHandler.icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
+		Menu IconMenu = AllContextMenuCallHandler.icm.getMenu();
+
+		MenuItem miExpert = IconMenu.findItem(R.id.miSettings_show_Expert);
+		MenuItem miAll = IconMenu.findItem(R.id.miSettings_show_All);
+
+		miExpert.setChecked(Config.settings.SettingsShowExpert.getValue());
+		miAll.setChecked(Config.settings.SettingsShowAll.getValue());
+
+		AllContextMenuCallHandler.icm.show();
+
+		return super.onPrepareOptionsMenu(IconMenu);
+	}
+
+	@Override
+	public void onCreateContextMenu(final ContextMenu menu, View v, ContextMenuInfo menuInfo)
+	{
+
+		AllContextMenuCallHandler.icm = new IconContextMenu(this, R.menu.menu_settings_view_mode);
+		AllContextMenuCallHandler.icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
+		Menu IconMenu = AllContextMenuCallHandler.icm.getMenu();
+
+		MenuItem miExpert = IconMenu.findItem(R.id.miMap_HideFinds);
+		MenuItem miAll = IconMenu.findItem(R.id.miMap_ShowRatings);
+
+		miExpert.setChecked(Config.settings.SettingsShowExpert.getValue());
+		miAll.setChecked(Config.settings.SettingsShowAll.getValue());
+
+		AllContextMenuCallHandler.icm.show();
+
+	}
+
+	public IconContextItemSelectedListener OnIconContextItemSelectedListener = new IconContextItemSelectedListener()
+	{
+
+		@Override
+		public void onIconContextItemSelected(MenuItem item, Object info)
+		{
+			switch (item.getItemId())
+			{
+
+			case R.id.miSettings_show_Expert:
+				Config.settings.SettingsShowExpert.setValue(!Config.settings.SettingsShowExpert.getValue());
+				resortList();
+				return;
+
+			case R.id.miSettings_show_All:
+				Config.settings.SettingsShowAll.setValue(!Config.settings.SettingsShowAll.getValue());
+				resortList();
+				return;
+
+			}
+
+		}
+	};
 
 	private View getBoolView(final SettingBool SB, View convertView, ViewGroup parent)
 	{
@@ -846,9 +928,12 @@ public class SettingsListView extends Activity
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_category_button, parent, false);
 
 		Button button = (Button) row.findViewById(R.id.Button);
-		button.setText(SB.getName());
+		button.setText(GlobalCore.Translations.Get(SB.getName()));
 		button.setTextSize(Sizes.getScaledFontSize_normal());
 		button.setTextColor(Global.getColor(R.attr.TextColor));
+
+		int Height = (int) (Sizes.getScaledFontSize_normal() * 4);
+		button.setMinimumHeight(Height);
 
 		button.setOnClickListener(new OnClickListener()
 		{
@@ -895,6 +980,9 @@ public class SettingsListView extends Activity
 		button.setTextSize(Sizes.getScaledFontSize_normal());
 		button.setTextColor(Global.getColor(R.attr.TextColor));
 
+		int Height = (int) (Sizes.getScaledFontSize_normal() * 4);
+		button.setMinimumHeight(Height);
+
 		if (Config.settings.GcAPI.getValue().equals(""))
 		{
 			button.setCompoundDrawablesWithIntrinsicBounds(null, null, Global.Icons[39], null);
@@ -924,6 +1012,10 @@ public class SettingsListView extends Activity
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_lang_spinner, parent, false);
 
 		final Spinner spinner = (Spinner) row.findViewById(R.id.Spinner);
+
+		int Height = (int) (Sizes.getScaledFontSize_normal() * 4);
+		spinner.setMinimumHeight(Height);
+
 		spinner.setPrompt(GlobalCore.Translations.Get("SelectLanguage"));
 		if (spinner.getAdapter() == null)
 		{
