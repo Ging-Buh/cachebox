@@ -603,7 +603,6 @@ public class GroundspeakAPI
 		}
 	}
 
-	
 	/**
 	 * Ruft die Liste der TB´s ab, die im Besitz des Users sind
 	 * 
@@ -637,6 +636,69 @@ public class GroundspeakAPI
 					{
 						JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
 						list.add(new Trackable(jTrackable));
+					}
+					return 0;
+				}
+				else
+				{
+					LastAPIError = "";
+					LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
+					LastAPIError += status.getString("StatusMessage") + "\n";
+					LastAPIError += status.getString("ExceptionDetails");
+
+					return (-1);
+				}
+
+			}
+			catch (JSONException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		catch (Exception ex)
+		{
+			System.out.println(ex.getMessage());
+			return (-1);
+		}
+
+		return (-1);
+	}
+
+	/**
+	 * Ruft die Liste der Bilder ab, die in einem Cache sind
+	 * 
+	 * @param String
+	 *            accessToken
+	 * @param TbList
+	 *            list
+	 * @return
+	 */
+	public static int getImagesForGeocache(String accessToken, String cacheCode, ArrayList<String> images)
+	{
+		try
+		{
+			HttpGet httppost = new HttpGet(GS_LIVE_URL + "GetImagesForGeocache?AccessToken=" + accessToken + "&CacheCode=" + cacheCode
+					+ "&format=json");
+
+			String result = Execute(httppost);
+
+			try
+			// Parse JSON Result
+			{
+				JSONTokener tokener = new JSONTokener(result);
+				JSONObject json = (JSONObject) tokener.nextValue();
+				JSONObject status = json.getJSONObject("Status");
+				if (status.getInt("StatusCode") == 0)
+				{
+					LastAPIError = "";
+					JSONArray jImages = json.getJSONArray("Images");
+
+					for (int ii = 0; ii < jImages.length(); ii++)
+					{
+						JSONObject jImage = (JSONObject) jImages.get(ii);
+						images.add(jImage.getString("Url"));
 					}
 					return 0;
 				}
