@@ -19,11 +19,6 @@ package de.droidcachebox.Views.Forms;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.Custom_Controls.CanvasDrawControl;
-import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.Ui.Sizes;
 import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
@@ -39,8 +34,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.graphics.Path;
-import android.graphics.drawable.GradientDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -54,6 +47,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.Custom_Controls.CanvasDrawControl;
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.Sizes;
 
 public class MeasureCoordinateActivity extends Activity implements LocationListener
 {
@@ -143,7 +141,7 @@ public class MeasureCoordinateActivity extends Activity implements LocationListe
 		// set Height of TopLayout
 
 		LayoutParams params = ((RelativeLayout) findViewById(R.id.meco_titlelayout)).getLayoutParams();
-		params.height = Sizes.getScaledFontSize_normal() * 5;
+		params.height = Sizes.getScaledRefSize_normal() * 5;
 		((RelativeLayout) findViewById(R.id.meco_titlelayout)).setLayoutParams(params);
 	}
 

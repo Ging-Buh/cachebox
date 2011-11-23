@@ -1,15 +1,11 @@
 package de.droidcachebox.Views;
 
 import java.text.SimpleDateFormat;
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.Ui.Sizes;
+
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -17,6 +13,10 @@ import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.view.View;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.Sizes;
 
 public class LogViewItem extends View
 {

@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.view.Display;
 import android.view.WindowManager;
+import de.droidcachebox.R;
 
 /**
  * Enthält die Größen einzelner Controls
@@ -32,6 +33,7 @@ public class Sizes
 	private static Size Button;
 	private static Size QuickButtonList;
 	private static int CacheInfoHeight;
+	private static int scaledRefSize_normal;
 	private static int scaledFontSize_normal;
 	private static int CornerSize;
 	private static int infoSliderHeight;
@@ -76,14 +78,16 @@ public class Sizes
 		// Button = new Size(96,88);
 		// QuickButtonList = new Size(460,90);
 
-		Button = new Size((int) ((320 * scale) / 6), (int) (((320 * scale) / 6) - 5.3333f * scale));
+		Button = new Size((int) ((320 * scale) / 5), (int) (((320 * scale) / 5) - 5.3333f * scale));
 
-		QuickButtonList = new Size((int) (320 * scale - (13.3333f * scale)), (int) (((320 * scale) / 6) - 4 * scale));
+		QuickButtonList = new Size((int) (320 * scale - (13.3333f * scale)), (int) (((320 * scale) / 5) - 4 * scale));
 
-		scaledFontSize_normal = (int) (windowHeight / (26.7 * scale)); // res.getDimensionPixelSize(R.dimen.TextSize_normal);
-		scaledFontSize_big = (int) (scaledFontSize_normal * 1.3);
-		ScaledFontSize_small = (int) (scaledFontSize_normal * 0.8);
-		ScaledFontSize_supersmall = (int) (ScaledFontSize_small * 0.7);
+		int i = (int) (res.getDimensionPixelSize(R.dimen.TextSize_normal) * 2.65);
+		scaledRefSize_normal = (int) ((windowHeight / (res.getDimensionPixelSize(R.dimen.RefSize))) * scale);
+		scaledFontSize_normal = (int) ((windowHeight / (res.getDimensionPixelSize(R.dimen.TextSize_normal))) * scale);
+		scaledFontSize_big = (int) (scaledFontSize_normal * 1.1);
+		ScaledFontSize_small = (int) (scaledFontSize_normal * 0.9);
+		ScaledFontSize_supersmall = (int) (ScaledFontSize_small * 0.8);
 
 		CornerSize = scaledFontSize_normal / 2;
 		CacheInfoHeight = (int) (scaledFontSize_normal * 4.9);
@@ -147,6 +151,11 @@ public class Sizes
 	public static int getScaledFontSize_normal()
 	{
 		return scaledFontSize_normal;
+	}
+
+	public static int getScaledRefSize_normal()
+	{
+		return scaledRefSize_normal;
 	}
 
 	public static int getScaledFontSize_big()

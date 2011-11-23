@@ -1,11 +1,6 @@
 package de.droidcachebox.Custom_Controls;
 
 import CB_Core.Config;
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.Ui.Sizes;
-
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -13,14 +8,17 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.CountDownTimer;
 import android.os.Debug;
+import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
-import android.text.Layout.Alignment;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout.LayoutParams;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.Sizes;
 
 /**
  * Das Debug Panel ist ein Panel, das auf der main Activity verschiebbar ist und

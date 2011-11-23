@@ -940,7 +940,7 @@ public class SettingsListView extends Activity
 		button.setTextSize(Sizes.getScaledFontSize_normal());
 		button.setTextColor(Global.getColor(R.attr.TextColor));
 
-		int Height = (int) (Sizes.getScaledFontSize_normal() * 4);
+		int Height = (int) (Sizes.getScaledRefSize_normal() * 4);
 		button.setMinimumHeight(Height);
 
 		button.setOnClickListener(new OnClickListener()
@@ -1015,7 +1015,7 @@ public class SettingsListView extends Activity
 		button.setTextSize(Sizes.getScaledFontSize_normal());
 		button.setTextColor(Global.getColor(R.attr.TextColor));
 
-		int Height = (int) (Sizes.getScaledFontSize_normal() * 4);
+		int Height = (int) (Sizes.getScaledRefSize_normal() * 4);
 		button.setMinimumHeight(Height);
 
 		if (Config.settings.GcAPI.getValue().equals(""))
@@ -1048,7 +1048,7 @@ public class SettingsListView extends Activity
 
 		final Spinner spinner = (Spinner) row.findViewById(R.id.Spinner);
 
-		int Height = (int) (Sizes.getScaledFontSize_normal() * 4);
+		int Height = (int) (Sizes.getScaledRefSize_normal() * 4);
 		spinner.setMinimumHeight(Height);
 
 		spinner.setPrompt(GlobalCore.Translations.Get("SelectLanguage"));

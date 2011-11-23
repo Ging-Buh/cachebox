@@ -5,13 +5,14 @@ import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import CB_Core.Config;
+import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.UnitFormatter;
-import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.Ui.Sizes;
-
+import CB_Core.Types.Cache;
+import CB_Core.Types.Coordinate;
+import CB_Core.Types.LogEntry;
+import CB_Core.Types.Waypoint;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -20,14 +21,11 @@ import android.graphics.Rect;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
-import CB_Core.Config;
-import CB_Core.FileIO;
-import CB_Core.GlobalCore;
-import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
-import CB_Core.Types.LogEntry;
-
-import CB_Core.Types.Waypoint;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.UnitFormatter;
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.Sizes;
 
 public class CacheDraw
 {

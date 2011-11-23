@@ -1,23 +1,23 @@
 package de.droidcachebox.Views.FilterSettings;
 
 import java.util.ArrayList;
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.main;
-import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.Ui.Sizes;
-import de.droidcachebox.Views.FilterSettings.FilterSetListView;
-import de.droidcachebox.Views.FilterSettings.FilterSetListView.FilterSetEntry;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
-import android.text.Layout.Alignment;
 import android.view.View;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.main;
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.Sizes;
+import de.droidcachebox.Views.FilterSettings.FilterSetListView.FilterSetEntry;
 
 public class FilterSetListViewItem extends View
 {

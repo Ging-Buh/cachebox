@@ -18,25 +18,11 @@ package de.droidcachebox.Custom_Controls;
 
 import java.util.Iterator;
 
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.main;
-import de.droidcachebox.Components.CacheDraw;
-import de.droidcachebox.Components.CacheDraw.DrawStyle;
-import de.droidcachebox.Components.CacheNameView;
-import de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView;
-import de.droidcachebox.Events.GpsStateChangeEvent;
-import de.droidcachebox.Events.GpsStateChangeEventList;
-import de.droidcachebox.Locator.GPS;
-import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.Ui.Sizes;
-import de.droidcachebox.Views.AboutView;
-import de.droidcachebox.Views.Forms.ScreenLock;
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import CB_Core.Enums.Attributes;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
-
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
@@ -44,11 +30,8 @@ import android.content.res.Resources.NotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.location.GpsSatellite;
-import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Handler;
@@ -60,9 +43,17 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.Toast;
-import CB_Core.GlobalCore;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.main;
+import de.droidcachebox.Components.CacheDraw;
+import de.droidcachebox.Components.CacheDraw.DrawStyle;
+import de.droidcachebox.Events.GpsStateChangeEvent;
+import de.droidcachebox.Events.GpsStateChangeEventList;
+import de.droidcachebox.Locator.GPS;
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.Sizes;
+import de.droidcachebox.Views.Forms.ScreenLock;
 
 public final class downSlider extends View implements SelectedCacheEvent, GpsStateChangeEvent
 {
@@ -191,7 +182,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				if (drag)
 				{
 					int value = Y - 25;// y - 25 minus halbe Button Höhe
-					int buttom = (int) (height - (Sizes.getScaledFontSize_normal() * 2.2));
+					int buttom = (int) (height - (Sizes.getScaledRefSize_normal() * 2.2));
 					if (value > buttom) value = buttom - 1;
 
 					setPos(value);
@@ -261,7 +252,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		final Drawable Slide = Global.BtnIcons[0];
 
-		mBtnRec.set(-10, yPos - 2, width + 10, (int) (yPos + 2 + Sizes.getScaledFontSize_normal() * 2.2));
+		mBtnRec.set(-10, yPos - 2, width + 10, (int) (yPos + 2 + Sizes.getScaledRefSize_normal() * 2.2));
 		Slide.setBounds(mBtnRec);
 		Slide.draw(canvas);
 

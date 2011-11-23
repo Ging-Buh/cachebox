@@ -16,11 +16,7 @@
 
 package de.droidcachebox.Views.Forms;
 
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.main;
-import de.droidcachebox.splash;
-import de.droidcachebox.Ui.Sizes;
+import CB_Core.GlobalCore;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -35,13 +31,15 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.ImageView;
-import CB_Core.GlobalCore;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.main;
+import de.droidcachebox.Ui.Sizes;
 
 /**
  * Zeigt ein Meldungsfeld an, das Text, Schaltflächen und Symbole mit

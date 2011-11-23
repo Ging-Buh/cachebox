@@ -16,11 +16,7 @@
 
 package de.droidcachebox.Views.Forms;
 
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.main;
-import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.Ui.Sizes;
+import CB_Core.GlobalCore;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -30,14 +26,16 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.ViewGroup.LayoutParams;
-import android.view.inputmethod.InputMethodManager;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import CB_Core.GlobalCore;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.main;
+import de.droidcachebox.Ui.Sizes;
 
 /**
  * Zeigt eine InputBox an, in welcher der Benutzer einen String Wert eintragen
@@ -93,16 +91,14 @@ public class StringInputBox extends android.app.Dialog
 	 * }
 	 * </pre>
 	 */
-	public static void Show(String title, String msg, String InitialValue,
-			DialogInterface.OnClickListener Listener)
+	public static void Show(String title, String msg, String InitialValue, DialogInterface.OnClickListener Listener)
 	{
 
 		Show(title, msg, InitialValue, Listener, main.mainActivity);
 
 	}
 
-	public static void Show(String title, String msg, String InitialValue,
-			DialogInterface.OnClickListener Listener, Activity activity)
+	public static void Show(String title, String msg, String InitialValue, DialogInterface.OnClickListener Listener, Activity activity)
 	{
 		listner = Listener;
 		Bundle b = new Bundle();
@@ -125,11 +121,8 @@ public class StringInputBox extends android.app.Dialog
 
 		Dialog dialog = null;
 
-		StringInputBox.Builder customBuilder = new StringInputBox.Builder(
-				activity);
-		customBuilder.setTitle(b.getString("title"))
-				.setMessage(b.getString("msg"))
-				.setValue(b.getString("iniValue"))
+		StringInputBox.Builder customBuilder = new StringInputBox.Builder(activity);
+		customBuilder.setTitle(b.getString("title")).setMessage(b.getString("msg")).setValue(b.getString("iniValue"))
 				.setPositiveButton(GlobalCore.Translations.Get("ok"), listner)
 				.setNegativeButton(GlobalCore.Translations.Get("cancel"), listner);
 		dialog = customBuilder.create();
@@ -162,8 +155,7 @@ public class StringInputBox extends android.app.Dialog
 
 		private View contentView;
 
-		private DialogInterface.OnClickListener positiveButtonClickListener,
-				negativeButtonClickListener;
+		private DialogInterface.OnClickListener positiveButtonClickListener, negativeButtonClickListener;
 
 		public Builder(Context context)
 		{
@@ -250,11 +242,9 @@ public class StringInputBox extends android.app.Dialog
 		 * @param listener
 		 * @return
 		 */
-		public Builder setPositiveButton(int positiveButtonText,
-				DialogInterface.OnClickListener listener)
+		public Builder setPositiveButton(int positiveButtonText, DialogInterface.OnClickListener listener)
 		{
-			this.positiveButtonText = (String) context
-					.getText(positiveButtonText);
+			this.positiveButtonText = (String) context.getText(positiveButtonText);
 			this.positiveButtonClickListener = listener;
 			return this;
 		}
@@ -266,8 +256,7 @@ public class StringInputBox extends android.app.Dialog
 		 * @param listener
 		 * @return
 		 */
-		public Builder setPositiveButton(String positiveButtonText,
-				DialogInterface.OnClickListener listener)
+		public Builder setPositiveButton(String positiveButtonText, DialogInterface.OnClickListener listener)
 		{
 			this.positiveButtonText = positiveButtonText;
 			this.positiveButtonClickListener = listener;
@@ -281,11 +270,9 @@ public class StringInputBox extends android.app.Dialog
 		 * @param listener
 		 * @return
 		 */
-		public Builder setNegativeButton(int negativeButtonText,
-				DialogInterface.OnClickListener listener)
+		public Builder setNegativeButton(int negativeButtonText, DialogInterface.OnClickListener listener)
 		{
-			this.negativeButtonText = (String) context
-					.getText(negativeButtonText);
+			this.negativeButtonText = (String) context.getText(negativeButtonText);
 			this.negativeButtonClickListener = listener;
 			return this;
 		}
@@ -297,8 +284,7 @@ public class StringInputBox extends android.app.Dialog
 		 * @param listener
 		 * @return
 		 */
-		public Builder setNegativeButton(String negativeButtonText,
-				DialogInterface.OnClickListener listener)
+		public Builder setNegativeButton(String negativeButtonText, DialogInterface.OnClickListener listener)
 		{
 			this.negativeButtonText = negativeButtonText;
 			this.negativeButtonClickListener = listener;
@@ -310,110 +296,92 @@ public class StringInputBox extends android.app.Dialog
 		 */
 		public StringInputBox create()
 		{
-			LayoutInflater inflater = (LayoutInflater) context
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			// instantiate the dialog with the custom Theme
-			final StringInputBox dialog = new StringInputBox(context,
-					R.style.Dialog);
-			View layout = inflater.inflate(R.layout.string_inputbox_layout,
-					null);
-			dialog.addContentView(layout, new LayoutParams(
-					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+			final StringInputBox dialog = new StringInputBox(context, R.style.Dialog);
+			View layout = inflater.inflate(R.layout.string_inputbox_layout, null);
+			dialog.addContentView(layout, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 			// set the dialog title
 			if (title != null && !title.equals(""))
 			{
 				((TextView) layout.findViewById(R.id.title)).setText(title);
-				((TextView) layout.findViewById(R.id.title))
-						.setTextSize((float) (Sizes.getScaledFontSize_normal()));
+				((TextView) layout.findViewById(R.id.title)).setTextSize((float) (Sizes.getScaledFontSize_normal()));
 			}
 			else
 			{
-				((TextView) layout.findViewById(R.id.title))
-						.setVisibility(View.GONE);
+				((TextView) layout.findViewById(R.id.title)).setVisibility(View.GONE);
 			}
 
 			// set the confirm button
 			if (positiveButtonText != null && !positiveButtonText.equals(""))
 			{
-				((Button) layout.findViewById(R.id.positiveButton))
-						.setText(positiveButtonText);
+				((Button) layout.findViewById(R.id.positiveButton)).setText(positiveButtonText);
 				if (positiveButtonClickListener != null)
 				{
-					((Button) layout.findViewById(R.id.positiveButton))
-							.setOnClickListener(new View.OnClickListener()
-							{
-								public void onClick(View v)
-								{
-									positiveButtonClickListener.onClick(dialog,
-											DialogInterface.BUTTON_POSITIVE);
-								}
-							});
+					((Button) layout.findViewById(R.id.positiveButton)).setOnClickListener(new View.OnClickListener()
+					{
+						public void onClick(View v)
+						{
+							positiveButtonClickListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
+						}
+					});
 				}
 			}
 			else
 			{
 				// if no confirm button just set the visibility to GONE
-				layout.findViewById(R.id.positiveButton).setVisibility(
-						View.GONE);
+				layout.findViewById(R.id.positiveButton).setVisibility(View.GONE);
 			}
 
 			// set the cancel button
 			if (negativeButtonText != null && !negativeButtonText.equals(""))
 			{
-				((Button) layout.findViewById(R.id.negativeButton))
-						.setText(negativeButtonText);
+				((Button) layout.findViewById(R.id.negativeButton)).setText(negativeButtonText);
 				if (negativeButtonClickListener != null)
 				{
-					((Button) layout.findViewById(R.id.negativeButton))
-							.setOnClickListener(new View.OnClickListener()
-							{
-								public void onClick(View v)
-								{
-									negativeButtonClickListener.onClick(dialog,
-											DialogInterface.BUTTON_NEGATIVE);
-								}
-							});
+					((Button) layout.findViewById(R.id.negativeButton)).setOnClickListener(new View.OnClickListener()
+					{
+						public void onClick(View v)
+						{
+							negativeButtonClickListener.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
+						}
+					});
 				}
 			}
 			else
 			{
 				// if no confirm button just set the visibility to GONE
-				layout.findViewById(R.id.negativeButton).setVisibility(
-						View.GONE);
+				layout.findViewById(R.id.negativeButton).setVisibility(View.GONE);
 			}
 
 			// set the content message
 			if (message != null)
 			{
 				((TextView) layout.findViewById(R.id.message)).setText(message);
-				((TextView) layout.findViewById(R.id.message))
-						.setTextSize((float) (Sizes.getScaledFontSize_small()));
+				((TextView) layout.findViewById(R.id.message)).setTextSize((float) (Sizes.getScaledFontSize_small()));
 			}
 			else if (contentView != null)
 			{
 				// if no message set
 				// add the contentView to the dialog body
-				((LinearLayout) layout.findViewById(R.id.content))
-						.removeAllViews();
-				((LinearLayout) layout.findViewById(R.id.content)).addView(
-						contentView, new LayoutParams(
-								LayoutParams.WRAP_CONTENT,
-								LayoutParams.WRAP_CONTENT));
+				((LinearLayout) layout.findViewById(R.id.content)).removeAllViews();
+				((LinearLayout) layout.findViewById(R.id.content)).addView(contentView, new LayoutParams(LayoutParams.WRAP_CONTENT,
+						LayoutParams.WRAP_CONTENT));
 			}
 
 			editText = (EditText) layout.findViewById(R.id.editNumber);
 			editText.setText(value);
-			
+
 			int cursor = value.length();
 			if (cursor >= 0) editText.setSelection(0, cursor);
-			
+
 			setBackgroundDrawables(layout);
 			dialog.setContentView(layout);
-			
+
 			// enable soft keyboard
 			dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 			editText.setInputType(0);
-			
+
 			return dialog;
 		}
 
@@ -425,28 +393,18 @@ public class StringInputBox extends android.app.Dialog
 	{
 		Resources res = Builder.context.getResources();
 
-		Drawable header = res.getDrawable(main.N ? R.drawable.night_header
-				: R.drawable.header);
-		Drawable title = res.getDrawable(main.N ? R.drawable.night_title
-				: R.drawable.title);
-		Drawable center = res.getDrawable(main.N ? R.drawable.night_center
-				: R.drawable.center);
-		Drawable footer = res.getDrawable(main.N ? R.drawable.night_footer
-				: R.drawable.footer);
+		Drawable header = res.getDrawable(main.N ? R.drawable.night_header : R.drawable.header);
+		Drawable title = res.getDrawable(main.N ? R.drawable.night_title : R.drawable.title);
+		Drawable center = res.getDrawable(main.N ? R.drawable.night_center : R.drawable.center);
+		Drawable footer = res.getDrawable(main.N ? R.drawable.night_footer : R.drawable.footer);
 
-		((LinearLayout) layout.findViewById(R.id.header))
-				.setBackgroundDrawable(header);
-		((TextView) layout.findViewById(R.id.title))
-				.setBackgroundDrawable(title);
-		((LinearLayout) layout.findViewById(R.id.content))
-				.setBackgroundDrawable(center);
-		((LinearLayout) layout.findViewById(R.id.footer))
-				.setBackgroundDrawable(footer);
+		((LinearLayout) layout.findViewById(R.id.header)).setBackgroundDrawable(header);
+		((TextView) layout.findViewById(R.id.title)).setBackgroundDrawable(title);
+		((LinearLayout) layout.findViewById(R.id.content)).setBackgroundDrawable(center);
+		((LinearLayout) layout.findViewById(R.id.footer)).setBackgroundDrawable(footer);
 
-		((TextView) layout.findViewById(R.id.title)).setTextColor(Global
-				.getColor(R.attr.TextColor));
-		((TextView) layout.findViewById(R.id.message)).setTextColor(Global
-				.getColor(R.attr.TextColor));
+		((TextView) layout.findViewById(R.id.title)).setTextColor(Global.getColor(R.attr.TextColor));
+		((TextView) layout.findViewById(R.id.message)).setTextColor(Global.getColor(R.attr.TextColor));
 
 		res = null;
 	}
