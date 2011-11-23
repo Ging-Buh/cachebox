@@ -37,7 +37,7 @@ import de.droidcachebox.Ui.Sizes;
 
 public class Global
 {
-	public static final int CurrentRevision = 545;
+	public static final int CurrentRevision = 548;
 	public static final String CurrentVersion = "0.4.";
 	public static final String VersionPrefix = "beta";
 	public static final int LatestDatabaseChange = 1016;
@@ -59,6 +59,7 @@ public class Global
 	public static final int REQUEST_CODE_PICK_FILE_OR_DIRECTORY = 98765;
 	public static final int REQUEST_CODE_PICK_FILE = 14112011;
 	public static final int REQUEST_CODE_PICK_DIRECTORY = 14112010;
+	public static final int REQUEST_CODE_EDIT_QUICK_LIST = 23112011;
 
 	/**
 	 * Liste der Buttons in der QuickButton Leiste

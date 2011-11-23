@@ -21,7 +21,6 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.view.Display;
 import android.view.WindowManager;
-import de.droidcachebox.R;
 
 /**
  * Enthält die Größen einzelner Controls
@@ -49,6 +48,7 @@ public class Sizes
 	private static int ScaledFontSize_supersmall;
 	private static int StrengthHeightMultipler;
 	private static int IconContextMenuHeight;
+	private static float scale;
 
 	public static void initial(boolean land, Activity context)
 	{
@@ -71,29 +71,20 @@ public class Sizes
 			windowHeight = temp;
 		}
 
-		float scale = res.getDisplayMetrics().density;
+		scale = res.getDisplayMetrics().density;
 
 		// Button = new Size(96,88);
 		// QuickButtonList = new Size(460,90);
 
-		Button = new Size((int) ((320 * scale) / 5), (int) (((320 * scale) / 5) - 5.3333f * scale));
+		Button = new Size((int) ((320 * scale) / 6), (int) (((320 * scale) / 6) - 5.3333f * scale));
 
-		QuickButtonList = new Size((int) (320 * scale - (13.3333f * scale)), (int) (((320 * scale) / 5) - 4 * scale));
+		QuickButtonList = new Size((int) (320 * scale - (13.3333f * scale)), (int) (((320 * scale) / 6) - 4 * scale));
 
-		if (windowWidth == 240 || windowHeight == 240)
-		{
-			scaledFontSize_normal = 12;
-			scaledFontSize_big = 14;
-			ScaledFontSize_small = 11;
-			ScaledFontSize_supersmall = 10;
-		}
-		else
-		{
-			scaledFontSize_normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
-			scaledFontSize_big = (int) (scaledFontSize_normal * 1.3);
-			ScaledFontSize_small = (int) (scaledFontSize_normal * 0.8);
-			ScaledFontSize_supersmall = (int) (ScaledFontSize_small * 0.7);
-		}
+		scaledFontSize_normal = (int) (windowHeight / (26.7 * scale)); // res.getDimensionPixelSize(R.dimen.TextSize_normal);
+		scaledFontSize_big = (int) (scaledFontSize_normal * 1.3);
+		ScaledFontSize_small = (int) (scaledFontSize_normal * 0.8);
+		ScaledFontSize_supersmall = (int) (ScaledFontSize_small * 0.7);
+
 		CornerSize = scaledFontSize_normal / 2;
 		CacheInfoHeight = (int) (scaledFontSize_normal * 4.9);
 		infoSliderHeight = (int) (scaledFontSize_normal * 2.2);
@@ -221,6 +212,11 @@ public class Sizes
 	public static int getIconContextMenuHeight()
 	{
 		return IconContextMenuHeight;
+	}
+
+	public static float getScale()
+	{
+		return scale;
 	}
 
 }

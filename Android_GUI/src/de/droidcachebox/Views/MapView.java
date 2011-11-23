@@ -4564,7 +4564,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			return true;
 
 		case R.id.mapview_go_settings:
-			final Intent mainIntent = new Intent().setClass(main.mainActivity, de.droidcachebox.Views.Forms.Settings.class);
+			final Intent mainIntent = new Intent().setClass(main.mainActivity,
+					de.droidcachebox.Views.AdvancedSettingsForms.SettingsListView.class);
 			Bundle b = new Bundle();
 			b.putSerializable("Show", 3); // Show Settings und setze ein
 											// PerformClick auf den MapSettings

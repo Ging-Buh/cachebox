@@ -1,23 +1,22 @@
 package de.droidcachebox.Views.Forms;
 
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.Ui.ActivityUtils;
 import CB_Core.Config;
 import CB_Core.Api.CB_Api;
 import CB_Core.Api.GroundspeakAPI;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.app.ProgressDialog;
-import android.graphics.Bitmap;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.Ui.ActivityUtils;
 
 public class GcApiLogin extends Activity
 {
@@ -155,15 +154,10 @@ public class GcApiLogin extends Activity
 						int status = GroundspeakAPI.GetMembershipType(act);
 						if (status >= 0)
 						{
-							if (Settings.Me != null)
-							{
-								Settings.Me.setUserName(GroundspeakAPI.MemberName);
-							}
-							else
-							{
-								Config.settings.GcLogin.setValue(GroundspeakAPI.MemberName);
-								Config.AcceptChanges();
-							}
+
+							Config.settings.GcLogin.setValue(GroundspeakAPI.MemberName);
+							Config.AcceptChanges();
+
 						}
 
 					}

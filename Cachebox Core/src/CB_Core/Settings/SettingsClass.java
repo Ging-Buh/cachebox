@@ -279,7 +279,7 @@ public class SettingsClass extends SettingsList
 		addSetting(ShowDirektLine = new SettingBool("ShowDirektLine", cat, NORMAL, false, true));
 		addSetting(PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", cat, NORMAL, false, true));
 		addSetting(PositionAtVertex = new SettingBool("PositionAtVertex", cat, NORMAL, false, true));
-		addSetting(MapInitLatitude = new SettingDouble("LogMinCount", SettingCategory.Gps, EXPERT, -1000, true));
+		addSetting(MapInitLatitude = new SettingDouble("MapInitLatitude", SettingCategory.Gps, EXPERT, -1000, true));
 		addSetting(MapInitLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Gps, EXPERT, -1000, true));
 		addSetting(MapShowCompass = new SettingBool("MapShowCompass", cat, NORMAL, true, true));
 		addSetting(MapMaxCachesLabel = new SettingInt("MapMaxCachesLabel", cat, NORMAL, 12, true));

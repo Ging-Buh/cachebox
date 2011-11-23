@@ -166,6 +166,8 @@ public class SettingsListView extends Activity
 
 		sortedSettigsList.add(new SettingsListButtonLangSpinner("Lang", SettingCategory.Button, SettingModus.Normal, true));
 
+		sortedSettigsList.add(new SettingsListCategoryButton("QuickList", SettingCategory.Button, SettingModus.Normal, true));
+
 		for (SettingCategory item : Categorys)
 		{
 			// Internal ausblenden?
@@ -183,6 +185,12 @@ public class SettingsListView extends Activity
 				if (!item.IsCollapse() && item == SettingCategory.Login)
 				{
 					sortedSettigsList.add(new SettingsListGetApiButton(item.name(), SettingCategory.Button, SettingModus.Normal, true));
+				}
+
+				if (!item.IsCollapse() && item == SettingCategory.Debug)
+				{
+					sortedSettigsList.add(new SettingsListCategoryButton("DebugDisplayInfo", SettingCategory.Button, SettingModus.Normal,
+							true));
 				}
 
 				// alle Items dieser Category hinzufügen, wenn diese aufgeklappt
@@ -940,6 +948,33 @@ public class SettingsListView extends Activity
 			@Override
 			public void onClick(View v)
 			{
+
+				// wenn QuickList Button, dann öffne Activity
+				if (SB.getName().equals("QuickList"))
+				{
+					SettingsListView.EditKey = SB.getName();
+
+					Intent intent = new Intent().setClass(SettingsListView.Me, SettingsListEditQuickButton.class);
+
+					SettingsListView.Me.startActivityForResult(intent, Global.REQUEST_CODE_EDIT_QUICK_LIST);
+
+					return;
+				}
+
+				if (SB.getName().equals("DebugDisplayInfo"))
+				{
+					String info = "";
+
+					info += "Height= " + String.valueOf(Sizes.getWindowHeight()) + Global.br;
+					info += "Width= " + String.valueOf(Sizes.getWindowWidth()) + Global.br;
+					info += "Scale= " + String.valueOf(Sizes.getScale()) + Global.br;
+					info += "FontSize= " + String.valueOf(Sizes.getScaledFontSize_normal()) + Global.br;
+
+					MessageBox.Show(info, SettingsListView.Me);
+
+					return;
+				}
+
 				// Category umschalten Ein/Aus blenden
 				for (SettingCategory item : Categorys)
 				{
