@@ -6,18 +6,23 @@
 		android:layout_height="wrap_content" android:stretchColumns="0">
 		<TableRow>
 			<LinearLayout android:orientation="vertical"
-				android:layout_width="wrap_content" android:layout_height="wrap_content">
-				<TextView android:layout_width="wrap_content" android:id="@+id/textView1"
-					android:layout_height="wrap_content" 
-					android:text="TextView" android:layout_gravity="left"
-					android:layout_marginLeft="5dip"></TextView>
+				android:layout_height="wrap_content" android:layout_width="match_parent">
+
+				<TextView
+				    android:id="@+id/textView1"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:layout_marginLeft="5dip"
+				    android:text="TextView with a very very very long text that should wrap and leave the checkbox visible"/>
 
 				<TextView android:text="TextView" android:layout_height="wrap_content"
-					android:id="@+id/textView2" android:layout_width="wrap_content"></TextView>
+					android:id="@+id/textView2" android:layout_width="wrap_content" android:layout_marginLeft="5dip"></TextView>
 
 			</LinearLayout>
+
 			<CheckBox android:text="" android:id="@+id/checkBox1"
-				android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
+				android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="right"></CheckBox>
+
 		</TableRow>
 	</TableLayout>
 </LinearLayout>
