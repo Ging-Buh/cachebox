@@ -129,6 +129,7 @@ import de.droidcachebox.Views.WaypointView;
 import de.droidcachebox.Views.AdvancedSettingsForms.SettingsListView;
 import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
 import de.droidcachebox.Views.FilterSettings.PresetListViewItem;
+import de.droidcachebox.Views.Forms.ApiSearchPosDialog;
 import de.droidcachebox.Views.Forms.GcApiLogin;
 import de.droidcachebox.Views.Forms.HintDialog;
 import de.droidcachebox.Views.Forms.ImportDialog;
@@ -1785,7 +1786,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		String[] ConfigList = ConfigActionList.split(",");
 		Global.QuickButtonList = Actions.getListFromConfig(ConfigList);
 
-		cacheNameView.setHeight(Sizes.getInfoSliderHeight());
+		cacheNameView.setHeight((int) (Sizes.getScaledRefSize_normal() * 2));
 
 	}
 
@@ -2175,6 +2176,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			if (msg.what == 3)
 			{
 				searchOnlineNow();
+				// showTargetApiDialog();
 			}
 			else
 			{
@@ -2193,7 +2195,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			switch (button)
 			{
 			case -1:
-				searchOnlineNow();
+				showTargetApiDialog();
 				break;
 
 			}
@@ -2206,6 +2208,12 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private DialogInterface pd;
 	private loaderThread LoaderThread;
 	private chkStateThread ChkStateThread;
+
+	private void showTargetApiDialog()
+	{
+		final Intent mainIntent = new Intent().setClass(this, ApiSearchPosDialog.class);
+		this.startActivityForResult(mainIntent, Global.REQUEST_CODE_API_TARGET_DIALOG);
+	}
 
 	private void searchOnlineNow()
 	{

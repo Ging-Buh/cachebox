@@ -60,6 +60,7 @@ public class Global
 	public static final int REQUEST_CODE_PICK_FILE = 14112011;
 	public static final int REQUEST_CODE_PICK_DIRECTORY = 14112010;
 	public static final int REQUEST_CODE_EDIT_QUICK_LIST = 23112011;
+	public static final int REQUEST_CODE_API_TARGET_DIALOG = 24112011;
 
 	/**
 	 * Liste der Buttons in der QuickButton Leiste
@@ -503,6 +504,96 @@ public class Global
 		NewMapOverlay.get(2).add(getDrawable(R.drawable.map_20x20_shaddowrect_deact, res));
 		NewMapOverlay.get(2).add(getDrawable(R.drawable.map_20x20_selected_deact, res));
 
+		Arrows = new Drawable[]
+			{ getDrawable(R.drawable.arrow, R.drawable.night_arrow, res),
+					getDrawable(R.drawable.arrow_small, R.drawable.night_arrow_small, res), getDrawable(R.drawable.compass_arrow, res), };
+
+		SmallStarIcons = new Drawable[]
+			{ getDrawable(R.drawable.smallstars_0, R.drawable.night_smallstars_0, res),
+					getDrawable(R.drawable.smallstars_0_5, R.drawable.night_smallstars_0_5, res),
+					getDrawable(R.drawable.smallstars_1, R.drawable.night_smallstars_1, res),
+					getDrawable(R.drawable.smallstars_1_5, R.drawable.night_smallstars_1_5, res),
+					getDrawable(R.drawable.smallstars_2, R.drawable.night_smallstars_2, res),
+					getDrawable(R.drawable.smallstars_2_5, R.drawable.night_smallstars_2_5, res),
+					getDrawable(R.drawable.smallstars_3, R.drawable.night_smallstars_3, res),
+					getDrawable(R.drawable.smallstars_3_5, R.drawable.night_smallstars_3_5, res),
+					getDrawable(R.drawable.smallstars_4, R.drawable.night_smallstars_4, res),
+					getDrawable(R.drawable.smallstars_4_5, R.drawable.night_smallstars_4_5, res),
+					getDrawable(R.drawable.smallstars_5, R.drawable.night_smallstars_5, res) };
+
+		StarIcons = new Drawable[]
+			{ getDrawable(R.drawable.stars0, res), getDrawable(R.drawable.stars0_5, res), getDrawable(R.drawable.stars1, res),
+					getDrawable(R.drawable.stars1_5, res), getDrawable(R.drawable.stars2, res), getDrawable(R.drawable.stars2_5, res),
+					getDrawable(R.drawable.stars3, res), getDrawable(R.drawable.stars3_5, res), getDrawable(R.drawable.stars4, res),
+					getDrawable(R.drawable.stars4_5, res), getDrawable(R.drawable.stars5, res) };
+
+		SizeIcons = new Drawable[]
+			{ getDrawable(R.drawable.other, res), getDrawable(R.drawable.micro, res), getDrawable(R.drawable.small, res),
+					getDrawable(R.drawable.regular, res), getDrawable(R.drawable.large, res) };
+
+		CacheIconsBig = new Drawable[]
+			{ getDrawable(R.drawable.big_0, res), getDrawable(R.drawable.big_1, res), getDrawable(R.drawable.big_2, res),
+					getDrawable(R.drawable.big_3, res), getDrawable(R.drawable.big_4, res), getDrawable(R.drawable.big_5, res),
+					getDrawable(R.drawable.big_6, res), getDrawable(R.drawable.big_7, res), getDrawable(R.drawable.big_8, res),
+					getDrawable(R.drawable.big_9, res), getDrawable(R.drawable.big_10, res), getDrawable(R.drawable.big_11, res),
+					getDrawable(R.drawable.big_12, res), getDrawable(R.drawable.big_13, res), getDrawable(R.drawable.big_14, res),
+					getDrawable(R.drawable.big_15, res), getDrawable(R.drawable.big_16, res), getDrawable(R.drawable.big_17, res),
+					getDrawable(R.drawable.big_18, res), getDrawable(R.drawable.big_19, res), };
+
+		ChkIcons = new Drawable[]
+			{ getDrawable(R.drawable.day_btn_check_off, R.drawable.night_btn_check_off, res),
+					getDrawable(R.drawable.day_btn_check_on, R.drawable.night_btn_check_on, res), };
+
+		BtnIcons = new Drawable[]
+			{
+					getDrawable(R.drawable.day_btn_default_normal, R.drawable.night_btn_default_normal, res),
+					getDrawable(R.drawable.button, R.drawable.night_button, res),
+					getDrawable(R.drawable.doc_icon, res),
+					getDrawable(R.drawable.big_16, res),
+					getDrawable(R.drawable.list_icon, res), // LogView braucht
+															// noch ein Icon
+					getDrawable(R.drawable.map, res),
+					getDrawable(R.drawable.compass, res),
+					getDrawable(R.drawable.cache_list_icon, res),
+					getDrawable(R.drawable.list_icon, res), // TrackListView
+															// braucht noch ein
+															// Icon
+					getDrawable(R.drawable.log10, res),
+					getDrawable(R.drawable.video_icon, res),
+					getDrawable(R.drawable.voice_rec_icon, res),
+					getDrawable(R.drawable.star, res), // Live search braucht
+														// noch ein Icon
+					getDrawable(R.drawable.filter, res), getDrawable(R.drawable.lock_icon, res),
+					getDrawable(R.drawable.auto_sort_on_icon, res), // 15
+					getDrawable(R.drawable.auto_sort_off_icon, res), // 16
+					getDrawable(R.drawable.solver_icon, res), // 17
+					getDrawable(R.drawable.images_icon, res), // 18
+					getDrawable(R.drawable.hint_icon, res), // 19
+
+			};
+
+		if (Config.settings.isChris.getValue())
+		{
+			iniChrisIcons(res);
+		}
+		else
+		{
+			iniNormalIcons(res);
+		}
+
+	}
+
+	private static void iniNormalIcons(Resources res)
+	{
+		LogIcons = new Drawable[]
+			{ getDrawable(R.drawable.log0, res), getDrawable(R.drawable.log1, res), getDrawable(R.drawable.log2, res),
+					getDrawable(R.drawable.log3, res), getDrawable(R.drawable.log4, res), getDrawable(R.drawable.log5, res),
+					getDrawable(R.drawable.log6, res), getDrawable(R.drawable.log7, res), getDrawable(R.drawable.log8, res),
+					getDrawable(R.drawable.log9, res), getDrawable(R.drawable.log10, res), getDrawable(R.drawable.log11, res),
+					getDrawable(R.drawable.log12, res), getDrawable(R.drawable.log13, res),
+
+			};
+
 		Icons = new Drawable[]
 			{ getDrawable(R.drawable.day_tb, R.drawable.night_tb, res),// 0
 					getDrawable(R.drawable.addwaypoint, res),// 1
@@ -550,49 +641,10 @@ public class Global
 					getDrawable(R.drawable.target_day, R.drawable.target_night, res), // 43
 			};
 
-		Arrows = new Drawable[]
-			{ getDrawable(R.drawable.arrow, R.drawable.night_arrow, res),
-					getDrawable(R.drawable.arrow_small, R.drawable.night_arrow_small, res), getDrawable(R.drawable.compass_arrow, res), };
+	}
 
-		SmallStarIcons = new Drawable[]
-			{ getDrawable(R.drawable.smallstars_0, R.drawable.night_smallstars_0, res),
-					getDrawable(R.drawable.smallstars_0_5, R.drawable.night_smallstars_0_5, res),
-					getDrawable(R.drawable.smallstars_1, R.drawable.night_smallstars_1, res),
-					getDrawable(R.drawable.smallstars_1_5, R.drawable.night_smallstars_1_5, res),
-					getDrawable(R.drawable.smallstars_2, R.drawable.night_smallstars_2, res),
-					getDrawable(R.drawable.smallstars_2_5, R.drawable.night_smallstars_2_5, res),
-					getDrawable(R.drawable.smallstars_3, R.drawable.night_smallstars_3, res),
-					getDrawable(R.drawable.smallstars_3_5, R.drawable.night_smallstars_3_5, res),
-					getDrawable(R.drawable.smallstars_4, R.drawable.night_smallstars_4, res),
-					getDrawable(R.drawable.smallstars_4_5, R.drawable.night_smallstars_4_5, res),
-					getDrawable(R.drawable.smallstars_5, R.drawable.night_smallstars_5, res) };
-
-		StarIcons = new Drawable[]
-			{ getDrawable(R.drawable.stars0, res), getDrawable(R.drawable.stars0_5, res), getDrawable(R.drawable.stars1, res),
-					getDrawable(R.drawable.stars1_5, res), getDrawable(R.drawable.stars2, res), getDrawable(R.drawable.stars2_5, res),
-					getDrawable(R.drawable.stars3, res), getDrawable(R.drawable.stars3_5, res), getDrawable(R.drawable.stars4, res),
-					getDrawable(R.drawable.stars4_5, res), getDrawable(R.drawable.stars5, res) };
-
-		SizeIcons = new Drawable[]
-			{ getDrawable(R.drawable.other, res), getDrawable(R.drawable.micro, res), getDrawable(R.drawable.small, res),
-					getDrawable(R.drawable.regular, res), getDrawable(R.drawable.large, res) };
-
-		// BatteryIcons = new Drawable[] {
-		// getDrawable(R.drawable.bat0),
-		// getDrawable(R.drawable.bat1),
-		// getDrawable(R.drawable.bat2),
-		// getDrawable(R.drawable.bat3),
-		// };
-
-		CacheIconsBig = new Drawable[]
-			{ getDrawable(R.drawable.big_0, res), getDrawable(R.drawable.big_1, res), getDrawable(R.drawable.big_2, res),
-					getDrawable(R.drawable.big_3, res), getDrawable(R.drawable.big_4, res), getDrawable(R.drawable.big_5, res),
-					getDrawable(R.drawable.big_6, res), getDrawable(R.drawable.big_7, res), getDrawable(R.drawable.big_8, res),
-					getDrawable(R.drawable.big_9, res), getDrawable(R.drawable.big_10, res), getDrawable(R.drawable.big_11, res),
-					getDrawable(R.drawable.big_12, res), getDrawable(R.drawable.big_13, res), getDrawable(R.drawable.big_14, res),
-					getDrawable(R.drawable.big_15, res), getDrawable(R.drawable.big_16, res), getDrawable(R.drawable.big_17, res),
-					getDrawable(R.drawable.big_18, res), getDrawable(R.drawable.big_19, res), };
-
+	private static void iniChrisIcons(Resources res)
+	{
 		LogIcons = new Drawable[]
 			{ getDrawable(R.drawable.log0, res), getDrawable(R.drawable.log1, res), getDrawable(R.drawable.log2, res),
 					getDrawable(R.drawable.log3, res), getDrawable(R.drawable.log4, res), getDrawable(R.drawable.log5, res),
@@ -602,36 +654,51 @@ public class Global
 
 			};
 
-		ChkIcons = new Drawable[]
-			{ getDrawable(R.drawable.day_btn_check_off, R.drawable.night_btn_check_off, res),
-					getDrawable(R.drawable.day_btn_check_on, R.drawable.night_btn_check_on, res), };
-
-		BtnIcons = new Drawable[]
-			{
-					getDrawable(R.drawable.day_btn_default_normal, R.drawable.night_btn_default_normal, res),
-					getDrawable(R.drawable.button, R.drawable.night_button, res),
-					getDrawable(R.drawable.doc_icon, res),
-					getDrawable(R.drawable.big_16, res),
-					getDrawable(R.drawable.list_icon, res), // LogView braucht
-															// noch ein Icon
-					getDrawable(R.drawable.map, res),
-					getDrawable(R.drawable.compass, res),
-					getDrawable(R.drawable.cache_list_icon, res),
-					getDrawable(R.drawable.list_icon, res), // TrackListView
-															// braucht noch ein
-															// Icon
-					getDrawable(R.drawable.log10, res),
-					getDrawable(R.drawable.video_icon, res),
-					getDrawable(R.drawable.voice_rec_icon, res),
-					getDrawable(R.drawable.star, res), // Live search braucht
-														// noch ein Icon
-					getDrawable(R.drawable.filter, res), getDrawable(R.drawable.lock_icon, res),
-					getDrawable(R.drawable.auto_sort_on_icon, res), // 15
-					getDrawable(R.drawable.auto_sort_off_icon, res), // 16
-					getDrawable(R.drawable.solver_icon, res), // 17
-					getDrawable(R.drawable.images_icon, res), // 18
-					getDrawable(R.drawable.hint_icon, res), // 19
-
+		Icons = new Drawable[]
+			{ getDrawable(R.drawable.day_tb, R.drawable.night_tb, res),// 0
+					getDrawable(R.drawable.addwaypoint, res),// 1
+					getDrawable(R.drawable.smilie_gross, res),// 2
+					getDrawable(R.drawable.download, res),// 3
+					getDrawable(R.drawable.log1, res),// 4
+					getDrawable(R.drawable.maintenance, res),// 5
+					getDrawable(R.drawable.checkbox_checked, res),// 6
+					getDrawable(R.drawable.checkbox_unchecked, res),// 7
+					getDrawable(R.drawable.sonne, res),// 8
+					getDrawable(R.drawable.mond, res),// 9
+					getDrawable(R.drawable.travelbug, res),// 10
+					getDrawable(R.drawable.collapse, res),// 11
+					getDrawable(R.drawable.expand, res),// 12
+					getDrawable(R.drawable.enabled, res),// 13
+					getDrawable(R.drawable.disabled, res),// 14
+					getDrawable(R.drawable.retrieve_tb, res),// 15
+					getDrawable(R.drawable.drop_tb, res),// 16
+					getDrawable(R.drawable.star, res),// 17
+					getDrawable(R.drawable.earth, res),// 18
+					getDrawable(R.drawable.favorit, res),// 19
+					getDrawable(R.drawable.file, res),// 20
+					getDrawable(R.drawable.userdata, res),// 21
+					getDrawable(R.drawable.delete, res), // 22
+					getDrawable(R.drawable.archiv, res), // 23
+					getDrawable(R.drawable.not_available, res), // 24
+					getDrawable(R.drawable.checkbox_crossed, res), // 25
+					getDrawable(R.drawable.map22, res), // 26
+					getDrawable(R.drawable.chk_icon, res), // 27
+					getDrawable(R.drawable.delete_icon, res), // 28
+					getDrawable(R.drawable.voice_rec_icon, res), // 29
+					getDrawable(R.drawable.satellite, res), // 30
+					getDrawable(R.drawable.close_icon, res), // 31
+					getDrawable(R.drawable.info_icon, res), // 32
+					getDrawable(R.drawable.warning_icon, res), // 33
+					getDrawable(R.drawable.help_icon, res), // 34
+					getDrawable(R.drawable.power_gc_live, res), // 35
+					getDrawable(R.drawable.day_gc_live_icon, R.drawable.night_gc_live_icon, res), // 36
+					getDrawable(R.drawable.pin_icon, res), // 37
+					getDrawable(R.drawable.pin_icon_disable, res), // 38
+					getDrawable(R.drawable.chk_icon_disable, res), // 39
+					getDrawable(R.drawable.day_slider_down, R.drawable.night_slider_down, res), // 40
+					getDrawable(R.drawable.day_slider_up_down, R.drawable.night_slider_up_down, res), // 41
+					getDrawable(R.drawable.day_spinner, R.drawable.night_spinner, res), // 42
+					getDrawable(R.drawable.target_day, R.drawable.target_night, res), // 43
 			};
 
 	}

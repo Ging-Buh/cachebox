@@ -50,6 +50,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool MapShowDT;
 	public SettingBool MapShowTitles;
 	public SettingBool ShowKeypad;
+	public SettingBool isChris;
 	public SettingBool ImportLayerOsm;
 	public SettingBool TrackRecorderStartup;
 	public SettingBool MapShowCompass;
@@ -163,7 +164,8 @@ public class SettingsClass extends SettingsList
 
 		addSetting(ImportGpx = new SettingBool("ImportGpx", cat, NORMAL, true, true));
 		addSetting(CacheMapData = new SettingBool("CacheMapData", cat, NORMAL, false, true));
-		addSetting(CacheImageData = new SettingBool("CacheImageData", cat, NORMAL, false, true));
+		addSetting(CacheImageData = new SettingBool("CacheImageData", cat, INVISIBLE, false, true));
+		addSetting(isChris = new SettingBool("isChris", cat, NORMAL, false, true));
 		addSetting(SuppressPowerSaving = new SettingBool("SuppressPowerSaving", cat, NORMAL, true, true));
 
 		addSetting(PopSkipOutdatedGpx = new SettingBool("PopSkipOutdatedGpx", cat, NORMAL, true, true));

@@ -54,7 +54,7 @@
 
 			<de.droidcachebox.Components.CacheNameView
 				android:id="@+id/main_cache_name_view" android:layout_width="fill_parent"
-				android:layout_height="32dip" />
+				android:layout_height="26dip" />
 				
 			<include android:layout_height="wrap_content" android:id="@+id/searchDialog"
 				layout="@layout/search_dialog_layout" android:layout_width="match_parent"

@@ -30,7 +30,7 @@
 			<CheckBox android:layout_width="match_parent"
 				android:textColor="?attr/TextColor" android:layout_height="wrap_content"
 				android:id="@+id/api_only_avible" android:text="Only Avible"
-				android:layout_weight="1" android:enabled="false">
+				android:layout_weight="1">
 			</CheckBox>
 
 		</LinearLayout>
@@ -38,22 +38,22 @@
 		<CheckBox android:layout_width="match_parent"
 			android:textColor="?attr/TextColor" android:layout_height="wrap_content"
 			android:id="@+id/api_exclud_hides" android:text="Exclude Hides"
-			android:layout_weight="1" android:enabled="false">
+			android:layout_weight="1">
 		</CheckBox>
 		<TextView android:text="Current Marker Position" android:id="@+id/api_lbl_marker_pos"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-		<EditText android:layout_width="match_parent" android:id="@+id/api_marker_pos"
+		<Button android:layout_width="match_parent" android:id="@+id/api_marker_pos"
 			android:layout_height="wrap_content">
 			<requestFocus></requestFocus>
-		</EditText>
+		</Button>
 		<TextView android:text="Radius" android:id="@+id/api_lbl_radius"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 		<LinearLayout android:orientation="horizontal"
 			android:layout_width="fill_parent" android:layout_height="wrap_content">
 
-			<EditText android:layout_width="match_parent" android:id="@+id/editText2"
+			<EditText android:layout_width="match_parent" android:id="@+id/api_radius"
 				android:layout_height="wrap_content" android:layout_weight="1"></EditText>
-			<TextView android:text="km" android:id="@+id/api_radius"
+			<TextView android:text="km" android:id="@+id/api_radius_value"
 				android:layout_weight="1" android:layout_width="match_parent"
 				android:layout_height="wrap_content"></TextView>
 

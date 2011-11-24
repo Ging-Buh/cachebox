@@ -1,12 +1,14 @@
 package de.droidcachebox.Views.Forms;
 
-import de.droidcachebox.R;
-import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Ui.ActivityUtils;
+import CB_Core.Config;
+import CB_Core.GlobalCore;
+import CB_Core.Map.Descriptor;
+import CB_Core.Map.Descriptor.PointD;
+import CB_Core.Types.Coordinate;
 import android.app.Activity;
-
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +18,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import CB_Core.GlobalCore;
+import de.droidcachebox.R;
+import de.droidcachebox.main;
+import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.Sizes;
 
 public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 {
@@ -28,12 +34,14 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 	private CheckBox checkBoxExcludeHides;
 	private TextView lblMarkerPos;
 	private TextView lblRadius;
-	private EditText CurentMarkerPos;
+	private Button CurentMarkerPos;
 	private EditText Radius;
 	private Button CancelButton;
 	private Button OKButton;
 	private Button btnPlus;
 	private Button btnMinus;
+
+	private Coordinate actSearchPos;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -41,7 +49,7 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.api_search_pos_dialog_layout);
 		Me = this;
-
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		context = this.getBaseContext();
 
 		((TextView) this.findViewById(R.id.title)).setText("Import");
@@ -62,8 +70,73 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 			}
 		});
 
+		OKButton.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View arg0)
+			{
+				Config.settings.SearchWithoutFounds.setValue(checkBoxExcludeFounds.isChecked());
+				Config.settings.SearchOnlyAvible.setValue(checkBoxOnlyAvible.isChecked());
+				Config.settings.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
+
+			}
+		});
+
+		btnPlus.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View arg0)
+			{
+				incrementRadius(1);
+			}
+		});
+
+		btnMinus.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View arg0)
+			{
+				incrementRadius(-1);
+			}
+		});
+
+		if (main.mapView.isShown())
+		{
+			PointD point = new PointD(0, 0);
+			point.X = main.mapView.screenCenter.X;
+			point.Y = main.mapView.screenCenter.Y;
+			main.mapView.lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(main.mapView.Zoom, point.Y / (256.0)),
+					Descriptor.TileXToLongitude(main.mapView.Zoom, point.X / (256.0)));
+			actSearchPos = main.mapView.lastMouseCoordinate;
+		}
+		else
+		{
+			actSearchPos = GlobalCore.LastValidPosition;
+		}
+
 		initialForm();
 
+	}
+
+	private void incrementRadius(int value)
+	{
+		try
+		{
+			int ist = Integer.parseInt(Radius.getText().toString());
+			ist += value;
+
+			if (ist > 100) ist = 100;
+			if (ist < 1) ist = 1;
+
+			Radius.setText(String.valueOf(ist));
+		}
+		catch (NumberFormatException e)
+		{
+
+		}
 	}
 
 	private void findViewById()
@@ -75,15 +148,57 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 		checkBoxExcludeHides = (CheckBox) this.findViewById(R.id.api_exclud_hides);
 		lblMarkerPos = (TextView) this.findViewById(R.id.api_lbl_marker_pos);
 		lblRadius = (TextView) this.findViewById(R.id.api_lbl_radius);
-		CurentMarkerPos = (EditText) this.findViewById(R.id.api_marker_pos);
+		CurentMarkerPos = (Button) this.findViewById(R.id.api_marker_pos);
 		Radius = (EditText) this.findViewById(R.id.api_radius);
 		btnPlus = (Button) this.findViewById(R.id.api_radius_plus);
 		btnMinus = (Button) this.findViewById(R.id.api_radius_minus);
+		CurentMarkerPos.setFocusable(true);
+		CurentMarkerPos.setFocusableInTouchMode(true);
+		CurentMarkerPos.requestFocus();
+
+		if (actSearchPos != null) CurentMarkerPos.setText(actSearchPos.FormatCoordinate());
+		CurentMarkerPos.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				// Koordinaten Dialog öffnen
+				Intent coordIntent = new Intent().setClass(CurentMarkerPos.getContext(), EditCoordinate.class);
+				Bundle b = new Bundle();
+				b.putSerializable("Coord", actSearchPos);
+				coordIntent.putExtras(b);
+				startActivityForResult(coordIntent, 0);
+			}
+		});
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		if (data == null) return;
+		Bundle bundle = data.getExtras();
+		if (bundle != null)
+		{
+			Coordinate coord = (Coordinate) bundle.getSerializable("CoordResult");
+			if (coord != null)
+			{
+				actSearchPos.Latitude = coord.Latitude;
+				actSearchPos.Longitude = coord.Longitude;
+				CurentMarkerPos.setText(actSearchPos.FormatCoordinate());
+			}
+		}
 	}
 
 	private void initialForm()
 	{
-
+		OKButton.setWidth(Sizes.getButtonWidthWide());
+		CancelButton.setWidth(Sizes.getButtonWidthWide());
+		OKButton.setHeight(Sizes.getQuickButtonHeight());
+		CancelButton.setHeight(Sizes.getQuickButtonHeight());
+		checkBoxExcludeFounds.setChecked(Config.settings.SearchWithoutFounds.getValue());
+		checkBoxOnlyAvible.setChecked(Config.settings.SearchOnlyAvible.getValue());
+		checkBoxExcludeHides.setChecked(Config.settings.SearchWithoutOwns.getValue());
+		Radius.setText("5");
 	}
 
 	@Override
