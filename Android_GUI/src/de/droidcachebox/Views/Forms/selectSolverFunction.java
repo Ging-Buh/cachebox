@@ -137,8 +137,8 @@ public class selectSolverFunction extends Activity
 			{
 				Functions cat = iteratorCat.next();
 				Button btn = new Button(this);
-				btn.setWidth(Sizes.getButtonWidth());
-				btn.setHeight(Sizes.getButtonHeight());
+				btn.setWidth(Sizes.getQuickButtonWidth());
+				btn.setHeight(Sizes.getQuickButtonHeight());
 				btn.setText(GlobalCore.Translations.Get(cat.getName()));
 				content.addView(btn);
 
@@ -154,7 +154,7 @@ public class selectSolverFunction extends Activity
 						final Function fct = iteratorFunctions.next();
 						final Button btnFct = new Button(this);
 
-						btnFct.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (Sizes.getButtonHeight() * 0.8)));
+						btnFct.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (Sizes.getQuickButtonHeight() * 0.8)));
 
 						btnFct.setText(fct.getName());
 						btnFct.setFocusable(true);
@@ -184,7 +184,7 @@ public class selectSolverFunction extends Activity
 						});
 
 						lay.addView(btnFct);
-						layoutHeight += Sizes.getButtonHeight();
+						layoutHeight += Sizes.getQuickButtonHeight();
 
 						functBtnList.add(btnFct);
 					}

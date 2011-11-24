@@ -711,7 +711,7 @@ public class MessageBox extends android.app.Dialog
 			if (title != null && !title.equals(""))
 			{
 				((TextView) layout.findViewById(R.id.title)).setText(title);
-				((TextView) layout.findViewById(R.id.title)).setTextSize((float) (Sizes.getScaledFontSize_normal()));
+				((TextView) layout.findViewById(R.id.title)).setTextSize((float) (Sizes.getScaledFontSize_btn()));
 			}
 			else
 			{
@@ -782,15 +782,15 @@ public class MessageBox extends android.app.Dialog
 			if (message != null)
 			{
 				((TextView) layout.findViewById(R.id.message)).setText(message);
-				((TextView) layout.findViewById(R.id.message)).setTextSize((float) (Sizes.getScaledFontSize_small()));
+				((TextView) layout.findViewById(R.id.message)).setTextSize((float) (Sizes.getScaledFontSize()));
 
 				((TextView) layout.findViewById(R.id.message)).measure(Sizes.getWindowWidth() - 100, Sizes.getWindowHeight() - 100);
 				int height = ((TextView) layout.findViewById(R.id.message)).getMeasuredHeight();
 
 				LayoutParams params = ((ScrollView) layout.findViewById(R.id.ScrollView01)).getLayoutParams();
-				if (height > Sizes.getWindowHeight() - (Sizes.getButtonHeight() * 4))
+				if (height > Sizes.getWindowHeight() - (Sizes.getQuickButtonHeight() * 4))
 				{
-					height = Sizes.getWindowHeight() - (Sizes.getButtonHeight() * 4);
+					height = Sizes.getWindowHeight() - (Sizes.getQuickButtonHeight() * 4);
 					params.height = height;
 					((ScrollView) layout.findViewById(R.id.ScrollView01)).setLayoutParams(params);
 				}

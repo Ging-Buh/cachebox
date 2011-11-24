@@ -318,7 +318,7 @@ public class Global
 			// calc sizes
 
 			mesurePaint = new Paint();
-			mesurePaint.setTextSize(Sizes.getScaledFontSize_normal());
+			mesurePaint.setTextSize(Sizes.getScaledFontSize());
 
 			ListBackground = new Paint();
 			Night.ListBackground_second = new Paint();

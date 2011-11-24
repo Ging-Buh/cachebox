@@ -93,8 +93,8 @@ public class SettingsListView extends Activity
 
 		OKButton.setWidth(Sizes.getButtonWidthWide());
 		CancelButton.setWidth(Sizes.getButtonWidthWide());
-		OKButton.setHeight(Sizes.getButtonHeight());
-		CancelButton.setHeight(Sizes.getButtonHeight());
+		OKButton.setHeight(Sizes.getQuickButtonHeight());
+		CancelButton.setHeight(Sizes.getQuickButtonHeight());
 
 		Config.settings.SaveToLastValue();
 
@@ -127,7 +127,7 @@ public class SettingsListView extends Activity
 
 		// SetListViewHeight Window-ButtonsLayout-margin
 		LayoutParams para = listView.getLayoutParams();
-		para.height = Sizes.getWindowHeight() - (Sizes.getButtonHeight() * 2) - (Sizes.getScaledFontSize_big() * 3);
+		para.height = Sizes.getWindowHeight() - (Sizes.getQuickButtonHeight() * 2) - (Sizes.getScaledFontSize_big() * 3);
 		listView.setLayoutParams(para);
 
 		// Categorie List zusammen stellen
@@ -420,13 +420,13 @@ public class SettingsListView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_small());
+		label.setTextSize(Sizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText("default: " + String.valueOf(SB.getDefaultValue()));
-		label2.setTextSize((float) Sizes.getScaledFontSize_supersmall());
+		label2.setTextSize((float) Sizes.getScaledFontSize());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		CheckBox chk = (CheckBox) row.findViewById(R.id.checkBox1);
@@ -468,13 +468,13 @@ public class SettingsListView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_small());
+		label.setTextSize(Sizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(SB.getValue());
-		label2.setTextSize((float) Sizes.getScaledFontSize_supersmall());
+		label2.setTextSize((float) Sizes.getScaledFontSize());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -539,7 +539,7 @@ public class SettingsListView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_small());
+		label.setTextSize(Sizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		final Spinner spinner = (Spinner) row.findViewById(R.id.spinner1);
@@ -593,7 +593,7 @@ public class SettingsListView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_small());
+		label.setTextSize(Sizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		final Spinner spinner = (Spinner) row.findViewById(R.id.spinner1);
@@ -647,13 +647,13 @@ public class SettingsListView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_small());
+		label.setTextSize(Sizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(String.valueOf(SB.getValue()));
-		label2.setTextSize((float) Sizes.getScaledFontSize_supersmall());
+		label2.setTextSize((float) Sizes.getScaledFontSize());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -728,13 +728,13 @@ public class SettingsListView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_small());
+		label.setTextSize(Sizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(String.valueOf(SB.getValue()));
-		label2.setTextSize((float) Sizes.getScaledFontSize_supersmall());
+		label2.setTextSize((float) Sizes.getScaledFontSize());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -808,13 +808,13 @@ public class SettingsListView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_small());
+		label.setTextSize(Sizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(SB.getValue());
-		label2.setTextSize((float) Sizes.getScaledFontSize_supersmall());
+		label2.setTextSize((float) Sizes.getScaledFontSize());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -873,13 +873,13 @@ public class SettingsListView extends Activity
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		// label.setText(SB.getName());
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_small());
+		label.setTextSize(Sizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(SB.getValue());
-		label2.setTextSize((float) Sizes.getScaledFontSize_supersmall());
+		label2.setTextSize((float) Sizes.getScaledFontSize());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -937,7 +937,7 @@ public class SettingsListView extends Activity
 
 		Button button = (Button) row.findViewById(R.id.Button);
 		button.setText(GlobalCore.Translations.Get(SB.getName()));
-		button.setTextSize(Sizes.getScaledFontSize_normal());
+		button.setTextSize(Sizes.getScaledFontSize_btn());
 		button.setTextColor(Global.getColor(R.attr.TextColor));
 
 		int Height = (int) (Sizes.getScaledRefSize_normal() * 4);
@@ -965,10 +965,11 @@ public class SettingsListView extends Activity
 				{
 					String info = "";
 
+					info += "Density= " + SettingsListView.Me.getString(R.string.density) + Global.br + Global.br;
 					info += "Height= " + String.valueOf(Sizes.getWindowHeight()) + Global.br;
 					info += "Width= " + String.valueOf(Sizes.getWindowWidth()) + Global.br;
 					info += "Scale= " + String.valueOf(Sizes.getScale()) + Global.br;
-					info += "FontSize= " + String.valueOf(Sizes.getScaledFontSize_normal()) + Global.br;
+					info += "FontSize= " + String.valueOf(Sizes.getScaledFontSize()) + Global.br;
 
 					MessageBox.Show(info, SettingsListView.Me);
 
@@ -1012,7 +1013,7 @@ public class SettingsListView extends Activity
 
 		Button button = (Button) row.findViewById(R.id.Button);
 		button.setText(GlobalCore.Translations.Get("getApiKey"));
-		button.setTextSize(Sizes.getScaledFontSize_normal());
+		button.setTextSize(Sizes.getScaledFontSize_btn());
 		button.setTextColor(Global.getColor(R.attr.TextColor));
 
 		int Height = (int) (Sizes.getScaledRefSize_normal() * 4);

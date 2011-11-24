@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-	<dimen name="TextSize_normal">40dip</dimen>
-	<dimen name="RefSize">37dip</dimen>
-	<dimen name="ambilwarna_hsvHeight">240dp</dimen>
-	<dimen name="ambilwarna_hsvWidth">240dp</dimen>
-	<dimen name="ambilwarna_hueWidth">30dp</dimen>
-	<dimen name="ambilwarna_spacer">8dp</dimen>
-</resources>

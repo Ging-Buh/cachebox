@@ -41,7 +41,7 @@ public class LogViewItem extends View
 		if (textPaint == null)
 		{
 			textPaint = new TextPaint();
-			textPaint.setTextSize(Sizes.getScaledFontSize_normal());
+			textPaint.setTextSize(Sizes.getScaledFontSize());
 			textPaint.setColor(Global.getColor(R.attr.TextColor));
 			textPaint.setAntiAlias(true);
 		}
@@ -150,7 +150,7 @@ public class LogViewItem extends View
 		if (textPaint == null)
 		{
 			textPaint = new TextPaint();
-			textPaint.setTextSize(Sizes.getScaledFontSize_normal());
+			textPaint.setTextSize(Sizes.getScaledFontSize());
 			textPaint.setColor(Global.getColor(R.attr.TextColor));
 			textPaint.setAntiAlias(true);
 		}
@@ -169,28 +169,32 @@ public class LogViewItem extends View
 			NamePaint = new Paint();
 			NamePaint.setFakeBoldText(true);
 			NamePaint.setAntiAlias(true);
-			NamePaint.setTextSize(Sizes.getScaledFontSize_normal());
+			NamePaint.setTextSize(Sizes.getScaledFontSize());
 			NamePaint.setColor(Global.getColor(R.attr.TextColor));
 		}
+
+		int m = Sizes.getMargin();
+
 		if (headHeight < 1 || headLinePos < 1)
 		{
-			headHeight = (int) (layoutFinder.getHeight() * 1.5) + Sizes.getCornerSize();
-			headLinePos = (headHeight / 2) + (layoutFinder.getHeight() / 2) - 5;
+			headHeight = (int) ((int) (layoutFinder.getHeight() * 1.5) + (Sizes.getCornerSize() * 1.7));
+			headLinePos = (headHeight / 2) + (layoutFinder.getHeight() / 2) - m;
 		}
 
-		ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(5, 5, width - 5, height - 5), 2, Global.getColor(R.attr.ListSeparator),
+		ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(m, m, width - m, height - m), 2, Global.getColor(R.attr.ListSeparator),
 				(BackColorChanger) ? Global.getColor(R.attr.ListBackground_secend) : Global.getColor(R.attr.ListBackground),
 				Sizes.getCornerSize());
 
 		// Kopfzeile
 
-		final Rect KopfRect = new Rect(6, 6, width - 6, headHeight);
+		final Rect KopfRect = new Rect(m + 1, m + 1, width - m - 1, headHeight);
 		final RectF KopfRectF = new RectF(KopfRect);
 		canvas.drawRoundRect(KopfRectF, Sizes.getCornerSize(), Sizes.getCornerSize(), KopfPaint);
-		canvas.drawRect(new Rect(6, headHeight - Sizes.getCornerSize(), width - 6, headHeight), KopfPaint);
+		canvas.drawRect(new Rect(m + 1, headHeight - Sizes.getCornerSize(), width - m - 1, headHeight), KopfPaint);
 
 		int space = (logEntry.TypeIcon >= 0) ? ActivityUtils.PutImageTargetHeight(canvas, Global.LogIcons[logEntry.TypeIcon],
-				Sizes.getHalfCornerSize(), 8, headHeight - 10) + 4 : 0;
+				Sizes.getHalfCornerSize(), 8, headHeight - (Sizes.getCornerSize() * 2))
+				+ m : 0;
 
 		canvas.drawText(logEntry.Finder, space + Sizes.getHalfCornerSize(), headLinePos, NamePaint);
 
@@ -198,7 +202,7 @@ public class LogViewItem extends View
 		SimpleDateFormat postFormater = new SimpleDateFormat("dd/MM/yyyy");
 		String dateString = postFormater.format(logEntry.Timestamp);
 		int DateLength = (int) NamePaint.measureText(dateString);
-		canvas.drawText(dateString, width - DateLength - 10, headLinePos, NamePaint);
+		canvas.drawText(dateString, width - DateLength - (m * 3), headLinePos, NamePaint);
 
 		// canvas.drawLine(5, headHeight - 2, width-5, headHeight -
 		// 2,Linepaint);

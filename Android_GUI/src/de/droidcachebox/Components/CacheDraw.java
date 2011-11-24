@@ -125,26 +125,26 @@ public class CacheDraw
 		final int top = rec.top + Sizes.getHalfCornerSize();
 		final int width = rec.width() - Sizes.getHalfCornerSize();
 		final int height = rec.height() - Sizes.getHalfCornerSize();
-		final int SDTImageTop = (int) (height - (Sizes.getScaledFontSize_normal() / 1.5)) + rec.top - 10;
-		final int SDTLineTop = SDTImageTop + Sizes.getScaledFontSize_normal();
+		final int SDTImageTop = (int) (height - (Sizes.getScaledFontSize() / 1.5)) + rec.top - 10;
+		final int SDTLineTop = SDTImageTop + Sizes.getScaledFontSize();
 
 		// Mesure
 		if (VoteWidth == 0) // Grössen noch nicht berechnet
 		{
 
-			VoteWidth = Sizes.getScaledFontSize_normal() / 2;
+			VoteWidth = Sizes.getScaledIconSize() / 2;
 
 			rightBorder = (int) (width * 0.15);
-			nameLayoutWidthRightBorder = width - VoteWidth - Sizes.getIconSize() - rightBorder - (Sizes.getScaledFontSize_normal() / 2);
-			nameLayoutWidth = width - VoteWidth - Sizes.getIconSize() - (Sizes.getScaledFontSize_normal() / 2);
+			nameLayoutWidthRightBorder = width - VoteWidth - Sizes.getIconSize() - rightBorder - (Sizes.getScaledFontSize() / 2);
+			nameLayoutWidth = width - VoteWidth - Sizes.getIconSize() - (Sizes.getScaledFontSize() / 2);
 			DTPaint = new Paint();
-			DTPaint.setTextSize(Sizes.getScaledFontSize_normal());
+			DTPaint.setTextSize(Sizes.getScaledFontSize());
 			DTPaint.setAntiAlias(true);
 		}
 		if (namePaint == null)
 		{
 			namePaint = new TextPaint();
-			namePaint.setTextSize(Sizes.getScaledFontSize_normal());
+			namePaint.setTextSize(Sizes.getScaledFontSize());
 		}
 
 		// reset namePaint attr
@@ -159,18 +159,18 @@ public class CacheDraw
 
 		// Draw Vote
 		if (cache.Rating > 0) ActivityUtils.PutImageScale(canvas, Global.StarIcons[(int) (cache.Rating * 2)], -90, left, top,
-				(double) Sizes.getScaledFontSize_normal() / 60);
+				(double) Sizes.getScaledIconSize() / 160);
 
 		// Draw Icon
 		if (cache.MysterySolved())
 		{
-			ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[19], left + VoteWidth,
-					top - (int) (Sizes.getScaledFontSize_normal() / 2), Sizes.getIconSize());
+			ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[19], left + VoteWidth, top
+					- (int) (Sizes.getScaledFontSize() / 2), Sizes.getIconSize());
 		}
 		else
 		{
 			ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.Type.ordinal()], left + VoteWidth,
-					top - (int) (Sizes.getScaledFontSize_normal() / 2), Sizes.getIconSize());
+					top - (int) (Sizes.getScaledFontSize() / 2), Sizes.getIconSize());
 		}
 
 		// Draw Cache Name
@@ -250,17 +250,17 @@ public class CacheDraw
 		canvas.drawText("S", SDTleft, SDTLineTop, DTPaint);
 		SDTleft += Sizes.getSpaceWidth();
 		SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.SizeIcons[(int) (cache.Size.ordinal())], SDTleft, SDTImageTop,
-				Sizes.getScaledFontSize_normal());
+				Sizes.getScaledFontSize());
 		SDTleft += Sizes.getTabWidth();
 		canvas.drawText("D", SDTleft, SDTLineTop, DTPaint);
 		SDTleft += Sizes.getSpaceWidth();
 		SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int) (cache.Difficulty * 2)], SDTleft, SDTImageTop,
-				Sizes.getScaledFontSize_normal());
+				Sizes.getScaledFontSize());
 		SDTleft += Sizes.getTabWidth();
 		canvas.drawText("T", SDTleft, SDTLineTop, DTPaint);
 		SDTleft += Sizes.getSpaceWidth();
 		SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int) (cache.Terrain * 2)], SDTleft, SDTImageTop,
-				Sizes.getScaledFontSize_normal());
+				Sizes.getScaledFontSize());
 		SDTleft += Sizes.getSpaceWidth();
 
 		// Draw TB
@@ -268,7 +268,7 @@ public class CacheDraw
 		if (numTb > 0)
 		{
 			SDTleft += ActivityUtils.PutImageScale(canvas, Global.Icons[0], -90, SDTleft, SDTImageTop - 1,
-					(double) Sizes.getScaledFontSize_normal() / 22);
+					(double) Sizes.getScaledFontSize() / 22);
 			// SDTleft += space;
 			if (numTb > 1) canvas.drawText("x" + String.valueOf(numTb), SDTleft, SDTLineTop, DTPaint);
 		}
@@ -285,7 +285,7 @@ public class CacheDraw
 		{
 
 			ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[2], left + VoteWidth + Sizes.getIconSize() / 2,
-					top - (int) (Sizes.getScaledFontSize_normal() / 2) + Sizes.getIconSize() / 2, Sizes.getIconSize() / 2);// Smile
+					top - (int) (Sizes.getScaledFontSize() / 2) + Sizes.getIconSize() / 2, Sizes.getIconSize() / 2);// Smile
 		}
 
 		if (cache.Favorit())
@@ -305,7 +305,7 @@ public class CacheDraw
 		if (cache.ImTheOwner())
 		{
 			ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[17], left + VoteWidth + Sizes.getIconSize() / 2,
-					top - (int) (Sizes.getScaledFontSize_normal() / 2) + Sizes.getIconSize() / 2, Sizes.getIconSize() / 2);
+					top - (int) (Sizes.getScaledFontSize() / 2) + Sizes.getIconSize() / 2, Sizes.getIconSize() / 2);
 		}
 
 	}
@@ -351,7 +351,7 @@ public class CacheDraw
 	private static void DrawBearing(Cache cache, Canvas canvas, Rect drawingRec, String Distance, double Bearing)
 	{
 
-		double scale = (double) Sizes.getScaledFontSize_normal() / 30;
+		double scale = (double) Sizes.getScaledFontSize() / 32;
 
 		ActivityUtils.PutImageScale(canvas, Global.Arrows[1], Bearing, drawingRec.left, drawingRec.top, scale);
 		canvas.drawText(Distance, drawingRec.left, drawingRec.bottom, DTPaint);

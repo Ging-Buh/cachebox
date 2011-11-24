@@ -143,7 +143,7 @@ public class TrackListViewItem extends View
 			textPaint = new TextPaint();
 			textPaint.setAntiAlias(true);
 			textPaint.setFakeBoldText(true);
-			textPaint.setTextSize((float) (Sizes.getScaledFontSize_normal() * 1.3));
+			textPaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
 			textPaint.setColor(Global.getColor(R.attr.TextColor));
 		}
 

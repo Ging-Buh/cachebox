@@ -45,7 +45,7 @@ public class SelectDBItem extends View
 
 		Rect bounds = new Rect();
 		LayoutTextPaint = new TextPaint();
-		LayoutTextPaint.setTextSize(Sizes.getScaledFontSize_normal());
+		LayoutTextPaint.setTextSize(Sizes.getScaledFontSize());
 		LayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LayoutTextPaint.setAntiAlias(true);
 		LayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));

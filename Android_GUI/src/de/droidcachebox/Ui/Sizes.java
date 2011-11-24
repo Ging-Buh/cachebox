@@ -30,10 +30,12 @@ import de.droidcachebox.R;
  */
 public class Sizes
 {
+	private static Size QuickButton;
 	private static Size Button;
 	private static Size QuickButtonList;
 	private static int CacheInfoHeight;
 	private static int scaledRefSize_normal;
+	private static int scaledIconSize;
 	private static int scaledFontSize_normal;
 	private static int CornerSize;
 	private static int infoSliderHeight;
@@ -46,11 +48,13 @@ public class Sizes
 	private static Size CacheListItemSize;
 	private static Rect CacheListDrawRec;
 	private static int scaledFontSize_big;
+	private static int scaledFontSize_btn;
 	private static int ScaledFontSize_small;
 	private static int ScaledFontSize_supersmall;
 	private static int StrengthHeightMultipler;
 	private static int IconContextMenuHeight;
 	private static float scale;
+	private static int margin;
 
 	public static void initial(boolean land, Activity context)
 	{
@@ -78,29 +82,41 @@ public class Sizes
 		// Button = new Size(96,88);
 		// QuickButtonList = new Size(460,90);
 
-		Button = new Size((int) ((320 * scale) / 5), (int) (((320 * scale) / 5) - 5.3333f * scale));
+		QuickButton = new Size((int) ((320 * scale) / 5), (int) (((320 * scale) / 5) - 5.3333f * scale));
+
+		Button = new Size(res.getDimensionPixelSize(R.dimen.BtnSize),
+				(int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * scale)));
 
 		QuickButtonList = new Size((int) (320 * scale - (13.3333f * scale)), (int) (((320 * scale) / 5) - 4 * scale));
 
-		int i = (int) (res.getDimensionPixelSize(R.dimen.TextSize_normal) * 2.65);
 		scaledRefSize_normal = (int) ((windowHeight / (res.getDimensionPixelSize(R.dimen.RefSize))) * scale);
 		scaledFontSize_normal = (int) ((windowHeight / (res.getDimensionPixelSize(R.dimen.TextSize_normal))) * scale);
 		scaledFontSize_big = (int) (scaledFontSize_normal * 1.1);
 		ScaledFontSize_small = (int) (scaledFontSize_normal * 0.9);
 		ScaledFontSize_supersmall = (int) (ScaledFontSize_small * 0.8);
+		scaledFontSize_btn = (int) ((windowHeight / (res.getDimensionPixelSize(R.dimen.BtnTextSize))) * scale);
 
-		CornerSize = scaledFontSize_normal / 2;
-		CacheInfoHeight = (int) (scaledFontSize_normal * 4.9);
-		infoSliderHeight = (int) (scaledFontSize_normal * 2.2);
-		iconSize = (int) (scaledFontSize_normal * 3.5);
+		scaledIconSize = (int) ((windowHeight / (res.getDimensionPixelSize(R.dimen.IconSize))) * scale);
+
+		margin = res.getDimensionPixelSize(R.dimen.Margin);
+
+		CornerSize = scaledRefSize_normal / 2;
+		CacheInfoHeight = (int) (scaledRefSize_normal * 6.5);
+		infoSliderHeight = (int) (scaledRefSize_normal * 2.4);
+		iconSize = (int) (int) ((windowHeight / (res.getDimensionPixelSize(R.dimen.IconSize))) * scale);
 		spaceWidth = (int) (scaledFontSize_normal * 0.7);
 		tabWidth = (int) (scaledFontSize_normal * 0.6);
 		halfCornerSize = (int) CornerSize / 2;
 
-		CacheListItemSize = new Size(windowWidth, (int) (scaledFontSize_normal * 5));
+		CacheListItemSize = new Size(windowWidth, (int) (scaledRefSize_normal * 8.6));
 		CacheListDrawRec = CacheListItemSize.getBounds(5, 2, -5, -2);
 		StrengthHeightMultipler = windowHeight / 600;
 		IconContextMenuHeight = (int) (windowHeight / 11.1);
+	}
+
+	public static int getMargin()
+	{
+		return margin;
 	}
 
 	public static int getWindowHeight()
@@ -128,6 +144,16 @@ public class Sizes
 		return (int) (Button.width * 1.8);
 	}
 
+	public static int getQuickButtonHeight()
+	{
+		return QuickButton.height;
+	}
+
+	public static int getQuickButtonWidth()
+	{
+		return QuickButton.width;
+	}
+
 	public static int getQuickButtonListHeight()
 	{
 		return QuickButtonList.height;
@@ -148,9 +174,19 @@ public class Sizes
 		return CornerSize;
 	}
 
-	public static int getScaledFontSize_normal()
+	public static int getScaledFontSize()
 	{
 		return scaledFontSize_normal;
+	}
+
+	public static int getScaledIconSize()
+	{
+		return scaledIconSize;
+	}
+
+	public static int getScaledFontSize_btn()
+	{
+		return scaledFontSize_btn;
 	}
 
 	public static int getScaledRefSize_normal()

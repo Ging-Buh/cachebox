@@ -58,7 +58,7 @@ public class WaypointViewItem extends View
 
 		Rect bounds = new Rect();
 		LayoutTextPaint = new TextPaint();
-		LayoutTextPaint.setTextSize(Sizes.getScaledFontSize_normal());
+		LayoutTextPaint.setTextSize(Sizes.getScaledFontSize());
 		LayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LineSep = bounds.height() / 3;
 
@@ -166,6 +166,7 @@ public class WaypointViewItem extends View
 	@Override
 	protected void onDraw(Canvas canvas)
 	{
+		int m = Sizes.getMargin();
 
 		Boolean isSelected = false;
 		if (GlobalCore.SelectedWaypoint() == waypoint
@@ -186,7 +187,7 @@ public class WaypointViewItem extends View
 		}
 
 		int LineColor = Global.getColor(R.attr.ListSeparator);
-		Rect DrawingRec = new Rect(5, 5, width - 5, height - 5);
+		Rect DrawingRec = new Rect(m, m, width - m, height - m);
 		ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, BackgroundColor);
 
 		if (waypoint == null) // this Item is the Cache
@@ -196,7 +197,7 @@ public class WaypointViewItem extends View
 		else
 		{
 
-			int left = 15;
+			int left = m * 3;
 			int top = LineSep * 2;
 
 			int iconWidth = 0;

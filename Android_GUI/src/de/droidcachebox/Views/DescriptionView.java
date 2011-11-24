@@ -1,14 +1,6 @@
 package de.droidcachebox.Views;
 
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.Components.CacheDraw.DrawStyle;
-import de.droidcachebox.Custom_Controls.CacheInfoControl;
-import de.droidcachebox.Custom_Controls.DescriptionViewControl;
 import CB_Core.GlobalCore;
-import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Ui.AllContextMenuCallHandler;
-import de.droidcachebox.Ui.Sizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
@@ -20,6 +12,14 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import de.droidcachebox.R;
+import de.droidcachebox.main;
+import de.droidcachebox.Components.CacheDraw.DrawStyle;
+import de.droidcachebox.Custom_Controls.CacheInfoControl;
+import de.droidcachebox.Custom_Controls.DescriptionViewControl;
+import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Ui.AllContextMenuCallHandler;
+import de.droidcachebox.Ui.Sizes;
 
 public class DescriptionView extends FrameLayout implements ViewOptionsMenu
 {
@@ -43,6 +43,12 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu
 		WebControl = (DescriptionViewControl) findViewById(R.id.DescriptionViewControl);
 
 		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+
+		if (main.mainActivity.getString(R.string.density).equals("ldpi"))
+		{
+			cacheInfo.setVisibility(GONE);
+		}
+
 		OnShow();
 	}
 
@@ -82,8 +88,8 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu
 	{
 		String html = "</br>"
 
-		+ "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" " + GlobalCore.Translations.Get("GC_DownloadDescription")
-				+ " \"></form>";
+		+ "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" "
+				+ GlobalCore.Translations.Get("GC_DownloadDescription") + " \"></form>";
 
 		WebControl.loadDataWithBaseURL("fake://fake.de/download", html, "text/html", "utf-8", null);
 	}

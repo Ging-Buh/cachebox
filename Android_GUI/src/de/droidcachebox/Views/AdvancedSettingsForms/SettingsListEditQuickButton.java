@@ -74,8 +74,8 @@ public class SettingsListEditQuickButton extends Activity
 
 		OKButton.setWidth(Sizes.getButtonWidthWide());
 		CancelButton.setWidth(Sizes.getButtonWidthWide());
-		OKButton.setHeight(Sizes.getButtonHeight());
-		CancelButton.setHeight(Sizes.getButtonHeight());
+		OKButton.setHeight(Sizes.getQuickButtonHeight());
+		CancelButton.setHeight(Sizes.getQuickButtonHeight());
 
 		Config.settings.SaveToLastValue();
 
@@ -197,7 +197,7 @@ public class SettingsListEditQuickButton extends Activity
 						Global.QuickButtonList = new MoveableList<QuickButtonItem>();
 						ActionListView.setAdapter(QuickListBaseAdapter);
 					}
-					Global.QuickButtonList.add(new QuickButtonItem(context, AllActionList.get(arg2), Sizes.getButtonHeight()));
+					Global.QuickButtonList.add(new QuickButtonItem(context, AllActionList.get(arg2), Sizes.getQuickButtonHeight()));
 					if (ActionListButtonAddClicked) resortList();
 					ActionListButtonAddClicked = false;
 					ActionListAll.setVisibility(View.GONE);
@@ -257,7 +257,7 @@ public class SettingsListEditQuickButton extends Activity
 
 		if (ActionListSelectedIndex > -1)
 		{
-			ActionListView.setSelectionFromTop(ActionListSelectedIndex, Sizes.getButtonHeight());
+			ActionListView.setSelectionFromTop(ActionListSelectedIndex, Sizes.getQuickButtonHeight());
 		}
 
 	}

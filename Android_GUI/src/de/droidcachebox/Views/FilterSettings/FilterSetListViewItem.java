@@ -44,7 +44,7 @@ public class FilterSetListViewItem extends View
 		if (textPaint == null)
 		{
 			textPaint = new TextPaint();
-			textPaint.setTextSize(Sizes.getScaledFontSize_normal());
+			textPaint.setTextSize(Sizes.getScaledFontSize());
 			textPaint.setColor(Global.getColor(R.attr.TextColor));
 			textPaint.setAntiAlias(true);
 		}
@@ -237,7 +237,7 @@ public class FilterSetListViewItem extends View
 		plusBtn.setBounds(rBounds);
 
 		mTextPaint = new TextPaint();
-		mTextPaint.setTextSize(Sizes.getScaledFontSize_normal() * 3);
+		mTextPaint.setTextSize(Sizes.getScaledFontSize() * 3);
 		mTextPaint.setColor(Global.getColor(R.attr.TextColor));
 		mTextPaint.setAntiAlias(true);
 		mTextPaint.setFakeBoldText(true);

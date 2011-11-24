@@ -240,7 +240,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			// String.valueOf(yPos), Toast.LENGTH_SHORT).show();
 		}
 
-		int FSize = (int) (Sizes.getScaledFontSize_normal() * 1.2);
+		int FSize = (int) (Sizes.getScaledFontSize_big());
 
 		if (paint == null)
 		{
@@ -252,7 +252,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		final Drawable Slide = Global.BtnIcons[0];
 
-		mBtnRec.set(-10, yPos - 2, width + 10, (int) (yPos + 2 + Sizes.getScaledRefSize_normal() * 2.2));
+		mBtnRec.set(-10, yPos - 2, width + 10, (int) (yPos + 2 + Sizes.getScaledRefSize_normal() * 3.3));
 		Slide.setBounds(mBtnRec);
 		Slide.draw(canvas);
 
@@ -325,12 +325,12 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		}
 
-		if (attLineHeight == -1) attLineHeight = attHeight + (Sizes.getScaledFontSize_normal() / 3);
+		if (attLineHeight == -1) attLineHeight = attHeight + (Sizes.getScaledFontSize() / 3);
 
 		if (CacheInfoHeight == 0)
 		{
-			CacheInfoHeight = (int) (FSize * 8.3) + attCompleadHeight;
-			topCalc = (int) (CacheInfoHeight - (attLineHeight * lines) - attLineHeight + Sizes.getScaledFontSize_normal());
+			CacheInfoHeight = (int) (FSize * 9) + attCompleadHeight;
+			topCalc = (int) (CacheInfoHeight - (attLineHeight * lines) - attLineHeight + Sizes.getScaledFontSize());
 		}
 
 		versatz += CacheInfoHeight;
@@ -599,7 +599,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			}
 			else
 			{
-				startAnimationTo((int) (height - (Sizes.getScaledFontSize_normal() * 2.2)));
+				startAnimationTo((int) (height - (Sizes.getScaledFontSize() * 2.2)));
 			}
 			swipeUp = swipeDown = false;
 
@@ -608,7 +608,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		{
 			if (yPos > height * 0.7)
 			{
-				startAnimationTo((int) (height - (Sizes.getScaledFontSize_normal() * 2.2)));
+				startAnimationTo((int) (height - (Sizes.getScaledFontSize() * 2.2)));
 			}
 			else
 			{
@@ -640,7 +640,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		Rect bounds = new Rect();
 		WPLayoutTextPaint = new TextPaint();
-		WPLayoutTextPaint.setTextSize(Sizes.getScaledFontSize_normal());
+		WPLayoutTextPaint.setTextSize(Sizes.getScaledFontSize());
 		WPLayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LineSep = bounds.height() / 3;
 
@@ -699,7 +699,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		if (GPSLayoutTextPaint == null)
 		{
 			GPSLayoutTextPaint = new TextPaint();
-			GPSLayoutTextPaint.setTextSize(Sizes.getScaledFontSize_normal());
+			GPSLayoutTextPaint.setTextSize(Sizes.getScaledFontSize());
 			GPSLayoutTextPaint.setAntiAlias(true);
 			GPSLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
 		}

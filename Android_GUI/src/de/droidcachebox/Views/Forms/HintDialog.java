@@ -32,7 +32,7 @@ public class HintDialog extends Activity {
         bDecode = (Button) findViewById(R.id.hintdialog_button_decode);
         etHint = (EditText) findViewById(R.id.hintdialog_text);
     
-        etHint.setMaxHeight(Sizes.getWindowHeight() - (Sizes.getButtonHeight()*4));
+        etHint.setMaxHeight(Sizes.getWindowHeight() - (Sizes.getQuickButtonHeight()*4));
         
         
         etHint.setText(hint);

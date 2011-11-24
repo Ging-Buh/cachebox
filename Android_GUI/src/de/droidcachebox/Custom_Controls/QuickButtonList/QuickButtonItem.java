@@ -96,8 +96,8 @@ public class QuickButtonItem extends View
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) 
 	{
-		width = Sizes.getButtonWidth(); 
-		height = Sizes.getButtonHeight();
+		width = Sizes.getQuickButtonWidth(); 
+		height = Sizes.getQuickButtonHeight();
         setMeasuredDimension(this.width, this.height);
 	}
 

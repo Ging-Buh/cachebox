@@ -43,7 +43,7 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 		if (textPaint == null)
 		{
 			textPaint = new TextPaint();
-			textPaint.setTextSize(Sizes.getScaledFontSize_normal());
+			textPaint.setTextSize(Sizes.getScaledFontSize());
 			textPaint.setColor(Global.getColor(R.attr.TextColor));
 			textPaint.setAntiAlias(true);
 		}
@@ -158,7 +158,7 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 			TextPaint = new Paint();
 			TextPaint.setAntiAlias(true);
 			TextPaint.setFakeBoldText(true);
-			TextPaint.setTextSize(Sizes.getScaledFontSize_normal());
+			TextPaint.setTextSize(Sizes.getScaledFontSize());
 			TextPaint.setColor(Global.getColor(R.attr.TextColor));
 		}
 		if (cacheNamePaint == null)
@@ -166,7 +166,7 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 			cacheNamePaint = new TextPaint();
 			cacheNamePaint.setAntiAlias(true);
 			cacheNamePaint.setFakeBoldText(true);
-			cacheNamePaint.setTextSize(Sizes.getScaledFontSize_normal());
+			cacheNamePaint.setTextSize(Sizes.getScaledFontSize());
 			cacheNamePaint.setColor(Global.getColor(R.attr.TextColor));
 
 		}
@@ -222,8 +222,8 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 		// 1st Line Icon and Name
 
 		// Draw Icon
-		ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[fieldnote.cacheType], left,
-				top - (int) (Sizes.getScaledFontSize_normal() / 2), Sizes.getIconSize());
+		ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[fieldnote.cacheType], left, top
+				- (int) (Sizes.getScaledFontSize() / 2), Sizes.getIconSize());
 
 		// Draw Cache Name
 		StaticLayout layoutCacheName = new StaticLayout(fieldnote.CacheName, cacheNamePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f,

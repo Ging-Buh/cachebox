@@ -134,7 +134,7 @@ public final class DebugInfoPanel extends View
 		this.height = measure(heightMeasureSpec);
 		Rect bounds = new Rect();
 		LayoutTextPaint = new TextPaint();
-		LayoutTextPaint.setTextSize(Sizes.getScaledFontSize_normal());
+		LayoutTextPaint.setTextSize(Sizes.getScaledFontSize());
 		LayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LayoutTextPaint.setColor(Color.WHITE);
 		LineSep = bounds.height() / 3;

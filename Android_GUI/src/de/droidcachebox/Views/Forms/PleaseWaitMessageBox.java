@@ -723,7 +723,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog
 			if (title != null && !title.equals(""))
 			{
 				((TextView) layout.findViewById(R.id.title)).setText(title);
-				((TextView) layout.findViewById(R.id.title)).setTextSize((float) (Sizes.getScaledFontSize_normal()));
+				((TextView) layout.findViewById(R.id.title)).setTextSize((float) (Sizes.getScaledFontSize_btn()));
 			}
 			else
 			{
@@ -800,9 +800,9 @@ public class PleaseWaitMessageBox extends android.app.Dialog
 				int height = ((TextView) layout.findViewById(R.id.message)).getMeasuredHeight();
 
 				LayoutParams params = ((ScrollView) layout.findViewById(R.id.ScrollView01)).getLayoutParams();
-				if (height > Sizes.getWindowHeight() - (Sizes.getButtonHeight() * 4))
+				if (height > Sizes.getWindowHeight() - (Sizes.getQuickButtonHeight() * 4))
 				{
-					height = Sizes.getWindowHeight() - (Sizes.getButtonHeight() * 4);
+					height = Sizes.getWindowHeight() - (Sizes.getQuickButtonHeight() * 4);
 					params.height = height;
 					((ScrollView) layout.findViewById(R.id.ScrollView01)).setLayoutParams(params);
 				}

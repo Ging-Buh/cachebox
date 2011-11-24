@@ -73,6 +73,7 @@ import de.droidcachebox.Map.RouteOverlay;
 import de.droidcachebox.Map.Tile;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.AllContextMenuCallHandler;
+import de.droidcachebox.Ui.Sizes;
 import de.droidcachebox.Views.Forms.ScreenLock;
 
 public class MapView extends RelativeLayout implements SelectedCacheEvent, PositionEvent, ViewOptionsMenu,
@@ -192,10 +193,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		ArrayList<android.view.View> buttons = new ArrayList<android.view.View>();
 		this.addTouchables(buttons);
 
-		font.setTextSize(18 * dpiScaleFactorX);
+		font.setTextSize(Sizes.getScaledFontSize_big() * dpiScaleFactorX);
 		font.setFakeBoldText(true);
 		font.setAntiAlias(true);
-		fontSmall.setTextSize(14 * dpiScaleFactorX);
+		fontSmall.setTextSize(Sizes.getScaledFontSize() * dpiScaleFactorX);
 		fontSmall.setFakeBoldText(true);
 		fontSmall.setAntiAlias(true);
 		PositionEventList.Add(this);
@@ -239,10 +240,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			dpiScaleFactorX = dpiScaleFactorY = 1;
 		}
 
-		font.setTextSize(18 * dpiScaleFactorX);
+		font.setTextSize(Sizes.getScaledFontSize_big() * dpiScaleFactorX);
 		font.setFakeBoldText(true);
 		font.setAntiAlias(true);
-		fontSmall.setTextSize(14 * dpiScaleFactorX);
+		fontSmall.setTextSize(Sizes.getScaledFontSize() * dpiScaleFactorX);
 		fontSmall.setFakeBoldText(true);
 		fontSmall.setAntiAlias(true);
 		ClearCachedTiles();
@@ -3906,7 +3907,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			dist = (bottomRow - topRow) / numSteps;
 
 			Paint font = new Paint();
-			font.setTextSize(18);
+			font.setTextSize(Sizes.getScaledFontSize_big());
 			font.setFakeBoldText(true);
 			font.setColor(main.N ? Global.getInvertMatrixBlack() : Color.BLACK);
 			Paint white = new Paint();

@@ -158,8 +158,8 @@ public class ImportDialog extends Activity
 
 		ImportButton.setWidth(Sizes.getButtonWidthWide());
 		CancelButton.setWidth(Sizes.getButtonWidthWide());
-		ImportButton.setHeight(Sizes.getButtonHeight());
-		CancelButton.setHeight(Sizes.getButtonHeight());
+		ImportButton.setHeight(Sizes.getQuickButtonHeight());
+		CancelButton.setHeight(Sizes.getQuickButtonHeight());
 	}
 
 	private OnCheckedChangeListener checkBoxImportGPX_CheckStateChanged = new OnCheckedChangeListener()

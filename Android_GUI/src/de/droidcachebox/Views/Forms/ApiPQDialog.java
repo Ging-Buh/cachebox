@@ -118,8 +118,8 @@ public class ApiPQDialog extends Activity implements ViewOptionsMenu
 	{
 		OKButton.setWidth(Sizes.getButtonWidthWide());
 		CancelButton.setWidth(Sizes.getButtonWidthWide());
-		OKButton.setHeight(Sizes.getButtonHeight());
-		CancelButton.setHeight(Sizes.getButtonHeight());
+		OKButton.setHeight(Sizes.getQuickButtonHeight());
+		CancelButton.setHeight(Sizes.getQuickButtonHeight());
 	}
 
 	@Override
@@ -234,7 +234,7 @@ public class ApiPQDialog extends Activity implements ViewOptionsMenu
 
 				TextView label = (TextView) row.findViewById(R.id.textView1);
 				label.setText(pq.Name);
-				label.setTextSize(Sizes.getScaledFontSize_normal());
+				label.setTextSize(Sizes.getScaledFontSize());
 				label.setTextColor(Global.getColor(R.attr.TextColor));
 
 				TextView label2 = (TextView) row.findViewById(R.id.textView2);

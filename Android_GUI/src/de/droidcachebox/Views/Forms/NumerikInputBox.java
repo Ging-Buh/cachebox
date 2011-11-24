@@ -361,7 +361,7 @@ public class NumerikInputBox extends android.app.Dialog
 			if (title != null && !title.equals(""))
 			{
 				((TextView) layout.findViewById(R.id.title)).setText(title);
-				((TextView) layout.findViewById(R.id.title)).setTextSize((float) (Sizes.getScaledFontSize_normal()));
+				((TextView) layout.findViewById(R.id.title)).setTextSize((float) (Sizes.getScaledFontSize()));
 			}
 			else
 			{
