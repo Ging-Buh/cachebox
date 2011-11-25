@@ -6,6 +6,8 @@ Version : 0.4.xxxx
     •	Download GC-Vote
     •	Kategorien für GPX Import
     •	mehr Texte für die Übersetzungen
+    •	Api-Suche über Position von GPS, Karte oder manueller Koordinaten Eingabe
+    
 
 
 
