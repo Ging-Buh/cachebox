@@ -178,7 +178,7 @@ public class SettingsListEditQuickButton extends Activity
 			public void onClick(View arg0)
 			{
 				ActionListAll.setSelection(AllActionList.size() - 1);
-				ActionListAll.setVisibility(View.VISIBLE);
+				ActionListAll.setVisibility(View.INVISIBLE);
 				ActionListAll.performClick();
 			}
 		});
@@ -200,7 +200,7 @@ public class SettingsListEditQuickButton extends Activity
 					Global.QuickButtonList.add(new QuickButtonItem(context, AllActionList.get(arg2), Sizes.getQuickButtonHeight()));
 					if (ActionListButtonAddClicked) resortList();
 					ActionListButtonAddClicked = false;
-					ActionListAll.setVisibility(View.GONE);
+					ActionListAll.setVisibility(View.INVISIBLE);
 				}
 				else
 				{
@@ -212,7 +212,7 @@ public class SettingsListEditQuickButton extends Activity
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0)
 			{
-				ActionListAll.setVisibility(View.GONE);
+				ActionListAll.setVisibility(View.INVISIBLE);
 			}
 		});
 
