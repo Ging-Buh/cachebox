@@ -99,6 +99,7 @@ public class SettingsClass extends SettingsList
 	public SettingInt LockSec;
 	public SettingInt MoveMapCenterMaxSpeed;
 	public SettingInt lastZoomLevel;
+	public SettingInt lastSearchRadius;
 
 	// double
 	public SettingDouble MapInitLatitude;
@@ -352,6 +353,7 @@ public class SettingsClass extends SettingsList
 		addSetting(SearchWithoutFounds = new SettingBool("SearchWithoutFounds", cat, NORMAL, true, true));
 		addSetting(SearchWithoutOwns = new SettingBool("SearchWithoutOwns", cat, NORMAL, true, true));
 		addSetting(SearchOnlyAvible = new SettingBool("SearchOnlyAvible", cat, NORMAL, true, true));
+		addSetting(lastSearchRadius = new SettingInt("lastSearchRadius", cat, NORMAL, 5, true));
 	}
 
 	private void addDebugSettings()

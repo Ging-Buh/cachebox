@@ -25,6 +25,9 @@ public class PositionEventList
 
 	public static void Call(Location location)
 	{
+		GlobalCore.LastPosition = new Coordinate(location.getLatitude(), location.getLongitude());
+		GlobalCore.LastPosition.Valid = true; // Valid ob GPS oder Phone,
+												// hauptsache eine Coordinate
 		if (location.getProvider().equalsIgnoreCase(LocationManager.GPS_PROVIDER))
 		{
 			GlobalCore.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());

@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
+import de.droidcachebox.Custom_Controls.MultiToggleButton;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.Sizes;
@@ -28,6 +29,7 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 {
 	public static ApiSearchPosDialog Me;
 
+	private Intent aktIntent;
 	private Context context;
 	private CheckBox checkBoxExcludeFounds;
 	private CheckBox checkBoxOnlyAvible;
@@ -40,6 +42,9 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 	private Button OKButton;
 	private Button btnPlus;
 	private Button btnMinus;
+	private MultiToggleButton tglBtnGPS;
+	private MultiToggleButton tglBtnMap;
+	private int searcheState = 0; // 0=GPS, 1= Map, 2= Manuell
 
 	private Coordinate actSearchPos;
 
@@ -51,7 +56,7 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 		Me = this;
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		context = this.getBaseContext();
-
+		aktIntent = getIntent();
 		((TextView) this.findViewById(R.id.title)).setText("Import");
 
 		findViewById();
@@ -80,6 +85,28 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 				Config.settings.SearchOnlyAvible.setValue(checkBoxOnlyAvible.isChecked());
 				Config.settings.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
 
+				int radius = 0;
+				try
+				{
+					radius = Integer.parseInt(Radius.getText().toString());
+				}
+				catch (NumberFormatException e)
+				{
+					// Kein Integer
+					e.printStackTrace();
+				}
+
+				if (radius != 0) Config.settings.lastSearchRadius.setValue(radius);
+
+				Config.AcceptChanges();
+
+				aktIntent.putExtra("SOMETHING", "EXTRAS");
+				Bundle extras = new Bundle();
+				extras.putSerializable("CoordResult", actSearchPos);
+				aktIntent.putExtras(extras);
+				setResult(RESULT_OK, aktIntent);
+				finish();
+
 			}
 		});
 
@@ -103,6 +130,33 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 			}
 		});
 
+		tglBtnGPS.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View arg0)
+			{
+				actSearchPos = GlobalCore.LastPosition;
+				setToggleBtnState(0);
+			}
+		});
+
+		tglBtnMap.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View arg0)
+			{
+				PointD point = new PointD(0, 0);
+				point.X = main.mapView.screenCenter.X;
+				point.Y = main.mapView.screenCenter.Y;
+				main.mapView.lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(main.mapView.Zoom, point.Y / (256.0)),
+						Descriptor.TileXToLongitude(main.mapView.Zoom, point.X / (256.0)));
+				actSearchPos = main.mapView.lastMouseCoordinate;
+				setToggleBtnState(1);
+			}
+		});
+
 		if (main.mapView.isShown())
 		{
 			PointD point = new PointD(0, 0);
@@ -111,10 +165,12 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 			main.mapView.lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(main.mapView.Zoom, point.Y / (256.0)),
 					Descriptor.TileXToLongitude(main.mapView.Zoom, point.X / (256.0)));
 			actSearchPos = main.mapView.lastMouseCoordinate;
+			searcheState = 1;
 		}
 		else
 		{
-			actSearchPos = GlobalCore.LastValidPosition;
+			actSearchPos = GlobalCore.LastPosition;
+			searcheState = 0;
 		}
 
 		initialForm();
@@ -152,6 +208,13 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 		Radius = (EditText) this.findViewById(R.id.api_radius);
 		btnPlus = (Button) this.findViewById(R.id.api_radius_plus);
 		btnMinus = (Button) this.findViewById(R.id.api_radius_minus);
+
+		tglBtnGPS = (MultiToggleButton) this.findViewById(R.id.toggle_GPS);
+		tglBtnMap = (MultiToggleButton) this.findViewById(R.id.toggle_Map);
+
+		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnGPS, GlobalCore.Translations.Get("GPS"), GlobalCore.Translations.Get("GPS"));
+		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnMap, GlobalCore.Translations.Get("Map"), GlobalCore.Translations.Get("Map"));
+
 		CurentMarkerPos.setFocusable(true);
 		CurentMarkerPos.setFocusableInTouchMode(true);
 		CurentMarkerPos.requestFocus();
@@ -184,7 +247,7 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 			{
 				actSearchPos.Latitude = coord.Latitude;
 				actSearchPos.Longitude = coord.Longitude;
-				CurentMarkerPos.setText(actSearchPos.FormatCoordinate());
+				setToggleBtnState(2);
 			}
 		}
 	}
@@ -198,7 +261,35 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 		checkBoxExcludeFounds.setChecked(Config.settings.SearchWithoutFounds.getValue());
 		checkBoxOnlyAvible.setChecked(Config.settings.SearchOnlyAvible.getValue());
 		checkBoxExcludeHides.setChecked(Config.settings.SearchWithoutOwns.getValue());
-		Radius.setText("5");
+		Radius.setText(String.valueOf(Config.settings.lastSearchRadius.getValue()));
+		setToggleBtnState();
+	}
+
+	private void setToggleBtnState(int value)
+	{
+		searcheState = value;
+		setToggleBtnState();
+	}
+
+	private void setToggleBtnState()
+	{// 0=GPS, 1= Map, 2= Manuell
+		switch (searcheState)
+		{
+		case 0:
+			tglBtnGPS.setState(1);
+			tglBtnMap.setState(0);
+			break;
+		case 1:
+			tglBtnGPS.setState(0);
+			tglBtnMap.setState(1);
+			break;
+		case 2:
+			tglBtnGPS.setState(0);
+			tglBtnMap.setState(0);
+			break;
+
+		}
+		CurentMarkerPos.setText(actSearchPos.FormatCoordinate());
 	}
 
 	@Override

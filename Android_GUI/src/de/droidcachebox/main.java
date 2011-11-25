@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,7 +34,6 @@ import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
-import CB_Core.Map.Descriptor.PointD;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
@@ -175,8 +175,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	public static Boolean N = false;
 
 	// Media
-	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
-	private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 61216517;
+
 	private static Uri cameraVideoURI;
 	private static File mediafile = null;
 	private static String mediafilename = null;
@@ -337,6 +336,10 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+
+		Date now = new Date();
+		boolean c = (now.getMonth() == 12) ? true : false;
+		Config.settings.isChris.setValue(c);
 
 		// Ausschalten verhindern
 		/*
@@ -895,7 +898,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			return;
 		}
 		// Intent Result Take Photo
-		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE)
+		if (requestCode == Global.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE)
 		{
 			if (resultCode == RESULT_OK)
 			{
@@ -920,7 +923,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		}
 
 		// Intent Result Record Video
-		if (requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE)
+		if (requestCode == Global.CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE)
 		{
 			if (resultCode == RESULT_OK)
 			{
@@ -981,6 +984,22 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			{
 				SettingsListView.Me.ListInvalidate();
 			}
+		}
+
+		if (requestCode == Global.REQUEST_CODE_API_TARGET_DIALOG)
+		{
+			if (data == null) return;
+			Bundle bundle = data.getExtras();
+			if (bundle != null)
+			{
+				searchCoord = (Coordinate) bundle.getSerializable("CoordResult");
+				if (searchCoord != null)
+				{
+					searchOnlineNow();
+				}
+			}
+
+			return;
 		}
 
 		aktView.ActivityResult(requestCode, resultCode, data);
@@ -1821,7 +1840,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediafile));
 		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+		startActivityForResult(intent, Global.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 	}
 
 	private void recVideo()
@@ -1867,7 +1886,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		// videointent.putExtra(MediaStore.EXTRA_SIZE_LIMIT,
 		// MAXIMUM_VIDEO_SIZE);
 
-		startActivityForResult(videointent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+		startActivityForResult(videointent, Global.CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
 	}
 
 	private void recVoice()
@@ -2175,8 +2194,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 			if (msg.what == 3)
 			{
-				searchOnlineNow();
-				// showTargetApiDialog();
+				// searchOnlineNow();
+				showTargetApiDialog();
 			}
 			else
 			{
@@ -2233,31 +2252,21 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		}
 	};
 
+	private Coordinate searchCoord = null;
+
 	private class loaderThread extends AsyncTask<String, Integer, Integer>
 	{
 
 		@Override
 		protected Integer doInBackground(String... params)
 		{
+			if (searchCoord == null)
+			{
+				onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(2));
+				return null;
+			}
+
 			String accessToken = Config.GetAccessToken();
-
-			Coordinate searchCoord = null;
-
-			if (mapView.isShown())
-			{
-				PointD point = new PointD(0, 0);
-				point.X = mapView.screenCenter.X;
-				point.Y = mapView.screenCenter.Y;
-				mapView.lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(mapView.Zoom, point.Y / (256.0)),
-						Descriptor.TileXToLongitude(mapView.Zoom, point.X / (256.0)));
-				searchCoord = mapView.lastMouseCoordinate;
-			}
-			else
-			{
-				searchCoord = GlobalCore.LastValidPosition;
-			}
-
-			if (searchCoord == null) return null;
 
 			// alle per API importierten Caches landen in der Category und
 			// GpxFilename
@@ -2278,7 +2287,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			searchC.withoutOwn = Config.settings.SearchWithoutOwns.getValue();
 
 			searchC.pos = searchCoord;
-			searchC.distanceInMeters = 50000;
+			searchC.distanceInMeters = Config.settings.lastSearchRadius.getValue() * 1000;
 			searchC.number = 50;
 			CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, gpxFilename.Id);
 			if (apiCaches.size() > 0)

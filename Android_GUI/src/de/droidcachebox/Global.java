@@ -37,7 +37,7 @@ import de.droidcachebox.Ui.Sizes;
 
 public class Global
 {
-	public static final int CurrentRevision = 550;
+	public static final int CurrentRevision = 553;
 	public static final String CurrentVersion = "0.4.";
 	public static final String VersionPrefix = "beta";
 	public static final int LatestDatabaseChange = 1016;
@@ -61,6 +61,8 @@ public class Global
 	public static final int REQUEST_CODE_PICK_DIRECTORY = 14112010;
 	public static final int REQUEST_CODE_EDIT_QUICK_LIST = 23112011;
 	public static final int REQUEST_CODE_API_TARGET_DIALOG = 24112011;
+	public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
+	public static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 61216517;
 
 	/**
 	 * Liste der Buttons in der QuickButton Leiste

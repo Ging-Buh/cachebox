@@ -22,13 +22,13 @@
 			android:layout_width="fill_parent" android:layout_height="wrap_content">
 
 			<CheckBox android:layout_width="match_parent"
-				android:textColor="?attr/TextColor" android:layout_height="wrap_content"
+				android:layout_height="wrap_content"
 				android:id="@+id/api_exclude_founnds" android:text="Exclude Founds"
 				android:layout_weight="1">
 			</CheckBox>
 
 			<CheckBox android:layout_width="match_parent"
-				android:textColor="?attr/TextColor" android:layout_height="wrap_content"
+				android:layout_height="wrap_content"
 				android:id="@+id/api_only_avible" android:text="Only Avible"
 				android:layout_weight="1">
 			</CheckBox>
@@ -36,10 +36,29 @@
 		</LinearLayout>
 
 		<CheckBox android:layout_width="match_parent"
-			android:textColor="?attr/TextColor" android:layout_height="wrap_content"
+			android:layout_height="wrap_content"
 			android:id="@+id/api_exclud_hides" android:text="Exclude Hides"
 			android:layout_weight="1">
 		</CheckBox>
+		
+			<LinearLayout android:orientation="horizontal" 
+		 android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+
+
+		<de.droidcachebox.Custom_Controls.MultiToggleButton
+			android:layout_weight="1" android:layout_width="match_parent" android:layout_height="45dip"
+			android:text="GPS"  android:id="@+id/toggle_GPS" />
+		<de.droidcachebox.Custom_Controls.MultiToggleButton
+			android:layout_weight="1" android:layout_width="match_parent" android:layout_height="45dip"
+			android:text="Map" 
+			android:id="@+id/toggle_Map" />
+		
+
+
+
+	</LinearLayout>
+		
 		<TextView android:text="Current Marker Position" android:id="@+id/api_lbl_marker_pos"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 		<Button android:layout_width="match_parent" android:id="@+id/api_marker_pos"
@@ -60,10 +79,10 @@
 			<LinearLayout android:layout_width="match_parent"
 				android:layout_height="wrap_content" android:layout_weight="1"
 				android:orientation="vertical">
-				<Button android:id="@+id/api_radius_plus" android:textColor="?attr/TextColor"
+				<Button android:id="@+id/api_radius_plus" 
 					android:layout_width="55dip" android:layout_height="55dip"
 					android:text="+" />
-				<Button android:id="@+id/api_radius_minus" android:textColor="?attr/TextColor"
+				<Button android:id="@+id/api_radius_minus" 
 					android:layout_width="55dip" android:layout_height="55dip"
 					android:text="-" />
 
@@ -80,12 +99,12 @@
 		android:layout_height="wrap_content" android:gravity="right">
 		<LinearLayout android:orientation="horizontal"
 			android:layout_width="wrap_content" android:layout_height="wrap_content">
-			<Button android:id="@+id/OkButton" android:textColor="?attr/TextColor"
+			<Button android:id="@+id/OkButton" 
 				android:layout_marginTop="3dip" android:layout_width="wrap_content"
 				android:layout_height="55dip" android:layout_gravity="center_horizontal"
 				android:text="OK" />
 
-			<Button android:id="@+id/cancelButton" android:textColor="?attr/TextColor"
+			<Button android:id="@+id/cancelButton" 
 				android:layout_marginTop="3dip" android:layout_width="wrap_content"
 				android:layout_height="55dip" android:layout_gravity="center_horizontal"
 				android:text="Cancel" />

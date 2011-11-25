@@ -1,6 +1,5 @@
 package CB_Core;
 
-
 import CB_Core.Enums.SmoothScrollingTyp;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.TranslationEngine.LangStrings;
@@ -15,6 +14,7 @@ public class GlobalCore
 	// / Letzte bekannte Position
 	// / </summary>
 	public static Coordinate LastValidPosition = new Coordinate();
+	public static Coordinate LastPosition = new Coordinate();
 	public static Coordinate Marker = new Coordinate();
 	public static boolean ResortAtWork = false;
 	public static final int LatestDatabaseChange = 1020;
@@ -26,8 +26,7 @@ public class GlobalCore
 	private static Cache selectedCache = null;
 
 	public static SmoothScrollingTyp SmoothScrolling = SmoothScrollingTyp.normal;
-	
-	
+
 	public static void SelectedCache(Cache cache)
 	{
 		selectedCache = cache;
