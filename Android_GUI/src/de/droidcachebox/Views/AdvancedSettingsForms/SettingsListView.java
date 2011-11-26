@@ -76,6 +76,9 @@ public class SettingsListView extends Activity
 	private Button CancelButton;
 	private Button OKButton;
 
+	private SettingBase selectedItem;
+	private int selectedPositin = -1;
+
 	public void onCreate(Bundle savedInstanceState)
 	{
 		// ActivityUtils.onActivityCreateSetTheme(this);
@@ -219,8 +222,20 @@ public class SettingsListView extends Activity
 
 		}
 
+		int index = 0;
+		if (selectedItem != null)
+		{
+			for (Iterator<SettingBase> it = sortedSettigsList.iterator(); it.hasNext();)
+			{
+				SettingBase SB = it.next();
+				if (SB.getName().equals(selectedItem.getName())) selectedPositin = index;
+				index++;
+			}
+		}
 		lvAdapter = new CustomAdapter(this, sortedSettigsList);
 		listView.setAdapter(lvAdapter);
+
+		listView.setSelectionFromTop(selectedPositin, Sizes.getQuickButtonHeight());
 	}
 
 	public void findViewById()
@@ -484,6 +499,7 @@ public class SettingsListView extends Activity
 			public void onClick(View arg0)
 			{
 				SettingsListView.EditKey = SB.getName();
+				selectedItem = SB;
 				// Show NumPad Int Edit
 				StringInputBox.Show(SB.getName(), "default: " + SB.getDefaultValue(), SB.getValue(), new DialogInterface.OnClickListener()
 				{
@@ -558,6 +574,7 @@ public class SettingsListView extends Activity
 				public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 				{
 					if (SB != null) SB.setValue((String) SB.getValues().get(arg2));
+
 				}
 
 				@Override
@@ -982,6 +999,7 @@ public class SettingsListView extends Activity
 					if (item.name().equals(SB.getName()))
 					{
 						item.Toggle();
+						selectedItem = SB;
 						ListInvalidate();
 					}
 				}
