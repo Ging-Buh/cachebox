@@ -16,39 +16,32 @@
 
 package de.droidcachebox.Ui;
 
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.main;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.LightingColorFilter;
-import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.StaticLayout;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.graphics.Shader;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.main;
 
 ;
 
@@ -344,7 +337,7 @@ public class ActivityUtils
 		// set the value
 		editText = TextBox;
 		editText.setText(string);
-		editText.setTextSize((float) (Sizes.getScaledFontSize_small()));
+		// editText.setTextSize((float) (Sizes.getScaledFontSize_small()));
 
 		initialCurserKeys(numPadLayout, TextBox);
 
