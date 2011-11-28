@@ -1,17 +1,11 @@
 package CB_Core.Api;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import CB_Core.Config;
-import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Log.Logger;
-import CB_Core.Types.Trackable;
 
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.http.client.ClientProtocolException;
@@ -20,6 +14,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import CB_Core.Config;
+import CB_Core.Log.Logger;
 
 /***
  * @author Longri
@@ -193,7 +190,7 @@ public class PocketQuery
 
 	public static int DownloadSinglePocketQuery(PQ pocketQuery)
 	{
-		return DownloadSinglePocketQuery(pocketQuery, Config.settings.PocketQueryFolder.getValue() + "\\");
+		return DownloadSinglePocketQuery(pocketQuery, Config.settings.PocketQueryFolder.getValue() + System.getProperty("file.separator"));
 	}
 
 	public static int DownloadSinglePocketQuery(PQ pocketQuery, String savePath)
