@@ -309,7 +309,12 @@ public class SearchForGeocaches
 						cache.hint = jCache.getString("EncodedHints");
 						cache.Id = Cache.GenerateCacheId(cache.GcCode);
 						cache.listingChanged = false;
+
 						cache.longDescription = jCache.getString("LongDescription");
+						if (jCache.getBoolean("LongDescriptionIsHtml") == false)
+						{
+							cache.longDescription = cache.longDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
+						}
 						cache.Name = jCache.getString("Name");
 						cache.noteCheckSum = 0;
 						cache.NumTravelbugs = jCache.getInt("TrackableCount");
@@ -327,6 +332,10 @@ public class SearchForGeocaches
 						cache.Rating = 0;
 						// cache.Rating =
 						cache.shortDescription = jCache.getString("ShortDescription");
+						if (jCache.getBoolean("ShortDescriptionIsHtml") == false)
+						{
+							cache.shortDescription = cache.shortDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
+						}
 						JSONObject jContainer = jCache.getJSONObject("ContainerType");
 						int jSize = jContainer.getInt("ContainerTypeId");
 						cache.Size = CacheSizes.parseInt(GroundspeakAPI.getCacheSize(jSize));
