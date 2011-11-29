@@ -1,10 +1,7 @@
 package CB_Core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import CB_Core.Config;
-import CB_Core.Enums.Attributes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.DLong;
 
@@ -259,9 +256,8 @@ public class FilterProperties
 		if (ListingChanged == 1) andParts.add("ListingChanged=1");
 		if (ListingChanged == -1) andParts.add("(ListingChanged=0 or ListingChanged is null)");
 
-		if (WithManualWaypoint == 1) andParts.add(String.format(" ID in ({0})", "select CacheId FROM Waypoint WHERE UserWaypoint = 1"));
-		if (WithManualWaypoint == -1) andParts
-				.add(String.format(" NOT ID in ({0})", "select CacheId FROM Waypoint WHERE UserWaypoint = 1"));
+		if (WithManualWaypoint == 1) andParts.add(" ID in (select CacheId FROM Waypoint WHERE UserWaypoint = 1)");
+		if (WithManualWaypoint == -1) andParts.add(" NOT ID in (select CacheId FROM Waypoint WHERE UserWaypoint = 1)");
 
 		andParts.add("Difficulty >= " + String.valueOf(MinDifficulty * 2));
 		andParts.add("Difficulty <= " + String.valueOf(MaxDifficulty * 2));
