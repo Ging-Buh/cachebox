@@ -1,3 +1,19 @@
+/* 
+ * Copyright (C) 2011 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package de.droidcachebox.Views.AdvancedSettingsForms;
 
 import java.io.File;
@@ -22,12 +38,16 @@ import CB_Core.Settings.SettingInt;
 import CB_Core.Settings.SettingIntArray;
 import CB_Core.Settings.SettingModus;
 import CB_Core.Settings.SettingString;
+import CB_Core.Solver.Functions.Function;
 import CB_Core.TranslationEngine.LangStrings.Langs;
+import android.R.color;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -39,22 +59,22 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ListView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
+import de.droidcachebox.Components.Animations;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
 import de.droidcachebox.Ui.ActivityUtils;
@@ -64,44 +84,44 @@ import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.NumerikInputBox;
 import de.droidcachebox.Views.Forms.StringInputBox;
 
-public class SettingsListView extends Activity
+/**
+ * @author Longri
+ */
+public class SettingsScrollView extends Activity
 {
-	public static SettingsListView Me;
-
+	private Intent aktIntent;
+	private Button btnOk;
+	private Button btnCancel;
+	private LinearLayout content;
+	private Function selectedFunction;
 	private Context context;
-	// private SettingsList settingsList;
-	private CustomAdapter lvAdapter;
-	private ListView listView;
+	private ScrollView scrollView;
 
-	private Button CancelButton;
-	private Button OKButton;
+	public static SettingsScrollView Me;
 
 	private SettingBase selectedItem;
 	private int selectedPositin = -1;
 
+	private ArrayList<SettingCategory> Categorys = new ArrayList<SettingCategory>();
+
 	public void onCreate(Bundle savedInstanceState)
 	{
-		// ActivityUtils.onActivityCreateSetTheme(this);
+		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.advanced_settings_list);
-
-		context = this.getBaseContext();
+		setContentView(R.layout.setting_scroll_layout);
+		context = this;
 		Me = this;
-		findViewById();
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		aktIntent = getIntent();
+		this.getWindow().setBackgroundDrawableResource(Config.settings.nightMode.getValue() ? color.darker_gray : color.background_dark);
 
-		// loadSettingsFromDB();
+		findViewsById();
+		setLang();
 
-		OKButton.setText(GlobalCore.Translations.Get("ok"));
-		CancelButton.setText(GlobalCore.Translations.Get("cancel"));
-
-		OKButton.setWidth(Sizes.getButtonWidthWide());
-		CancelButton.setWidth(Sizes.getButtonWidthWide());
-		OKButton.setHeight(Sizes.getQuickButtonHeight());
-		CancelButton.setHeight(Sizes.getQuickButtonHeight());
+		fillContent();
 
 		Config.settings.SaveToLastValue();
-
-		CancelButton.setOnClickListener(new OnClickListener()
+		btnCancel.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
@@ -112,7 +132,7 @@ public class SettingsListView extends Activity
 			}
 		});
 
-		OKButton.setOnClickListener(new OnClickListener()
+		btnOk.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
@@ -124,14 +144,24 @@ public class SettingsListView extends Activity
 			}
 		});
 
-		ActivityUtils.setListViewPropertys(listView);
+	}
 
-		Config.settings.SaveToLastValue();
+	void findViewsById()
+	{
+		btnOk = (Button) findViewById(R.id.solver_function_ok);
+		btnCancel = (Button) findViewById(R.id.solver_function_cancel);
+		content = (LinearLayout) findViewById(R.id.settings_scrollView_content);
+		scrollView = (ScrollView) findViewById(R.id.settings_scrollView);
+	}
 
-		// SetListViewHeight Window-ButtonsLayout-margin
-		LayoutParams para = listView.getLayoutParams();
-		para.height = Sizes.getWindowHeight() - (Sizes.getQuickButtonHeight() * 2) - (Sizes.getScaledFontSize_big() * 3);
-		listView.setLayoutParams(para);
+	void setLang()
+	{
+		btnOk.setText(GlobalCore.Translations.Get("ok"));
+		btnCancel.setText(GlobalCore.Translations.Get("cancel"));
+	}
+
+	void fillContent()
+	{
 
 		// Categorie List zusammen stellen
 
@@ -147,211 +177,109 @@ public class SettingsListView extends Activity
 
 		}
 
-		resortList();
-	}
+		final ArrayList<Button> functBtnList = new ArrayList<Button>();
 
-	private ArrayList<SettingCategory> Categorys = new ArrayList<SettingCategory>();
-	private ArrayList<SettingBase> sortedSettigsList;
+		Resources res = this.getResources();
+		Iterator<SettingCategory> iteratorCat = Categorys.iterator();
 
-	public void resortList()
-	{
-		// SortedList löschen oder Initalisieren
-		if (sortedSettigsList == null)
+		if (iteratorCat != null && iteratorCat.hasNext())
 		{
-			sortedSettigsList = new ArrayList<SettingBase>();
-		}
-		else
-		{
-			sortedSettigsList.clear();
-		}
 
-		// sortedList befüllen
+			SettingsListButtonLangSpinner lang = new SettingsListButtonLangSpinner("Lang", SettingCategory.Button, SettingModus.Normal,
+					true);
+			View langView = getLangSpinnerView(lang, content);
+			langView.setMinimumWidth(Sizes.getQuickButtonWidth());
+			langView.setMinimumHeight(Sizes.getQuickButtonHeight());
+			content.addView(langView);
 
-		sortedSettigsList.add(new SettingsListButtonLangSpinner("Lang", SettingCategory.Button, SettingModus.Normal, true));
+			SettingsListCategoryButton quick = new SettingsListCategoryButton("QuickList", SettingCategory.Button, SettingModus.Normal,
+					true);
+			View quickView = getButtonView(quick, content);
+			content.addView(quickView);
 
-		sortedSettigsList.add(new SettingsListCategoryButton("QuickList", SettingCategory.Button, SettingModus.Normal, true));
-
-		for (SettingCategory item : Categorys)
-		{
-			// Internal ausblenden?
-			if (Config.settings.SettingsShowAll.getValue() || item != SettingCategory.Internal)
+			do
 			{
-
-				// add the Button
-				SettingsListCategoryButton tmp = new SettingsListCategoryButton(item.name(), SettingCategory.Button, SettingModus.Normal,
+				SettingCategory cat = iteratorCat.next();
+				SettingsListCategoryButton catBtn = new SettingsListCategoryButton(cat.name(), SettingCategory.Button, SettingModus.Normal,
 						true);
 
-				sortedSettigsList.add(tmp);
-				int count = 0;
-				// wenn die Category = LogIn, dann füge als erstes den
-				// GetApiKeyButton hinzu
-				if (!item.IsCollapse() && item == SettingCategory.Login)
+				final View btn = getView(catBtn, content);
+				content.addView(btn);
+
+				// add Cat einträge
+				final LinearLayout lay = new LinearLayout(this);
+
+				if (cat == SettingCategory.Login)
 				{
-					sortedSettigsList.add(new SettingsListGetApiButton(item.name(), SettingCategory.Button, SettingModus.Normal, true));
+					SettingsListGetApiButton lgIn = new SettingsListGetApiButton(cat.name(), SettingCategory.Button, SettingModus.Normal,
+							true);
+					final View btnLgIn = getView(lgIn, content);
+					lay.addView(btnLgIn);
 				}
 
-				if (!item.IsCollapse() && item == SettingCategory.Debug)
+				if (cat == SettingCategory.Debug)
 				{
-					sortedSettigsList.add(new SettingsListCategoryButton("DebugDisplayInfo", SettingCategory.Button, SettingModus.Normal,
-							true));
+					SettingsListCategoryButton disp = new SettingsListCategoryButton("DebugDisplayInfo", SettingCategory.Button,
+							SettingModus.Normal, true);
+					final View btnDisp = getView(disp, content);
+					lay.addView(btnDisp);
 				}
 
-				// alle Items dieser Category hinzufügen, wenn diese aufgeklappt
-				// ist und nicht auf Invisible steht
-				if (!item.IsCollapse())
+				// int layoutHeight = 0;
+				for (Iterator<SettingBase> it = Config.settings.values().iterator(); it.hasNext();)
 				{
-					for (Iterator<SettingBase> it = Config.settings.values().iterator(); it.hasNext();)
+					SettingBase settingItem = it.next();
+					if (settingItem.getCategory().name().equals(cat.name()))
 					{
-						SettingBase settingItem = it.next();
-						if (settingItem.getCategory().name().equals(item.name()))
+						// item nur zur Liste Hinzufügen, wenn der
+						// SettingModus
+						// dies auch zu lässt.
+						if ((settingItem.getModus() == SettingModus.Normal)
+								|| (settingItem.getModus() == SettingModus.Expert && Config.settings.SettingsShowExpert.getValue())
+								|| Config.settings.SettingsShowAll.getValue())
 						{
-							// item nur zur Liste Hinzufügen, wenn der
-							// SettingModus
-							// dies auch zu lässt.
-							if ((settingItem.getModus() == SettingModus.Normal)
-									|| (settingItem.getModus() == SettingModus.Expert && Config.settings.SettingsShowExpert.getValue())
-									|| Config.settings.SettingsShowAll.getValue())
-							{
-								sortedSettigsList.add(settingItem);
-								count++;
-							}
+
+							View view = getView(settingItem, lay);
+
+							lay.addView(view);
+							// layoutHeight += Sizes.getQuickButtonHeight();
 						}
 					}
 				}
-			}
 
-		}
+				lay.setOrientation(LinearLayout.VERTICAL);
 
-		int index = 0;
-		if (selectedItem != null)
-		{
-			for (Iterator<SettingBase> it = sortedSettigsList.iterator(); it.hasNext();)
-			{
-				SettingBase SB = it.next();
-				if (SB.getName().equals(selectedItem.getName())) selectedPositin = index;
-				index++;
-			}
-		}
-		lvAdapter = new CustomAdapter(this, sortedSettigsList);
-		listView.setAdapter(lvAdapter);
+				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
+						LinearLayout.LayoutParams.WRAP_CONTENT);
 
-		listView.setSelectionFromTop(selectedPositin, Sizes.getQuickButtonHeight());
-	}
+				// layoutParams.setMargins(20, 0, 20, 0);
 
-	public void findViewById()
-	{
-		CancelButton = (Button) this.findViewById(R.id.cancelButton);
-		OKButton = (Button) this.findViewById(R.id.OkButton);
-		listView = (ListView) this.findViewById(R.id.settings_ListView);
-	}
+				lay.setLayoutParams(layoutParams);
+				lay.setBackgroundDrawable(Global.getDrawable(R.drawable.day_settings_group, res));
+				lay.setVisibility(View.GONE);
+				content.addView(lay);
+				// }
 
-	@Override
-	public void onDestroy()
-	{
-		Me = null;
-		super.onDestroy();
-	}
-
-	public class CustomAdapter extends BaseAdapter
-	{
-
-		private Context context;
-		private ArrayList<SettingBase> mList;
-
-		public CustomAdapter(Context context, ArrayList<SettingBase> list)
-		{
-			this.context = context;
-			this.mList = list;
-		}
-
-		public int getCount()
-		{
-			if (mList != null) return mList.size();
-			else
-				return 0;
-		}
-
-		public Object getItem(int position)
-		{
-			if (mList != null)
-			{
-				return mList.toArray()[position];
-			}
-			else
-				return null;
-		}
-
-		public long getItemId(int position)
-		{
-			return position;
-		}
-
-		public View getView(int position, View convertView, ViewGroup parent)
-		{
-			if (mList != null && mList.size() > 0)
-			{
-				Boolean BackGroundChanger = ((position % 2) == 1);
-				try
+				btn.setOnClickListener(new OnClickListener()
 				{
-					View row = convertView;
-					final SettingBase SB = (SettingBase) mList.toArray()[position];
 
-					if (SB instanceof SettingBool)
+					@Override
+					public void onClick(View arg0)
 					{
-						return getBoolView((SettingBool) SB, convertView, parent);
+						Animations.ToggleViewSlideUp_Down((View) lay, context, scrollView, btn);
 					}
-					else if (SB instanceof SettingIntArray)
-					{
-						return getIntArrayView((SettingIntArray) SB, convertView, parent);
-					}
-					else if (SB instanceof SettingInt)
-					{
-						return getIntView((SettingInt) SB, convertView, parent);
-					}
-					else if (SB instanceof SettingDouble)
-					{
-						return getDblView((SettingDouble) SB, convertView, parent);
-					}
-					else if (SB instanceof SettingFolder)
-					{
-						return getFolderView((SettingFolder) SB, convertView, parent);
-					}
-					else if (SB instanceof SettingFile)
-					{
-						return getFileView((SettingFile) SB, convertView, parent);
-					}
-					else if (SB instanceof SettingEnum)
-					{
-						return getEnumView((SettingEnum) SB, convertView, parent);
-					}
-					else if (SB instanceof SettingString)
-					{
-						return getStringView((SettingString) SB, convertView, parent);
-					}
-					else if (SB instanceof SettingsListCategoryButton)
-					{
-						return getButtonView((SettingsListCategoryButton) SB, convertView, parent);
-					}
-					else if (SB instanceof SettingsListGetApiButton)
-					{
-						return getApiKeyButtonView((SettingsListGetApiButton) SB, convertView, parent);
-					}
-					else if (SB instanceof SettingsListButtonLangSpinner)
-					{
-						return getLangSpinnerView((SettingsListButtonLangSpinner) SB, convertView, parent);
-					}
+				});
 
-					return row;
-				}
-				catch (Exception e)
-				{
-					return convertView;
-				}
 			}
-			else
-				return null;
-		}
+			while (iteratorCat.hasNext());
 
+		}
+	}
+
+	void resortList()
+	{
+		content.removeAllViews();
+		fillContent();
 	}
 
 	/***
@@ -385,24 +313,6 @@ public class SettingsListView extends Activity
 		return super.onPrepareOptionsMenu(IconMenu);
 	}
 
-	@Override
-	public void onCreateContextMenu(final ContextMenu menu, View v, ContextMenuInfo menuInfo)
-	{
-
-		AllContextMenuCallHandler.icm = new IconContextMenu(this, R.menu.menu_settings_view_mode);
-		AllContextMenuCallHandler.icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-		Menu IconMenu = AllContextMenuCallHandler.icm.getMenu();
-
-		MenuItem miExpert = IconMenu.findItem(R.id.miMap_HideFinds);
-		MenuItem miAll = IconMenu.findItem(R.id.miMap_ShowRatings);
-
-		miExpert.setChecked(Config.settings.SettingsShowExpert.getValue());
-		miAll.setChecked(Config.settings.SettingsShowAll.getValue());
-
-		AllContextMenuCallHandler.icm.show();
-
-	}
-
 	public IconContextItemSelectedListener OnIconContextItemSelectedListener = new IconContextItemSelectedListener()
 	{
 
@@ -427,7 +337,7 @@ public class SettingsListView extends Activity
 		}
 	};
 
-	private View getBoolView(final SettingBool SB, View convertView, ViewGroup parent)
+	private View getBoolView(final SettingBool SB, ViewGroup parent)
 	{
 
 		LayoutInflater inflater = getLayoutInflater();
@@ -466,7 +376,7 @@ public class SettingsListView extends Activity
 			{
 				// zeige Beschreibung der Einstellung
 
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
 
 				return false;
 			}
@@ -476,7 +386,57 @@ public class SettingsListView extends Activity
 
 	}
 
-	private View getStringView(final SettingString SB, View convertView, ViewGroup parent)
+	private View getView(SettingBase SB, ViewGroup parent)
+	{
+		if (SB instanceof SettingBool)
+		{
+			return getBoolView((SettingBool) SB, parent);
+		}
+		else if (SB instanceof SettingIntArray)
+		{
+			return getIntArrayView((SettingIntArray) SB, parent);
+		}
+		else if (SB instanceof SettingInt)
+		{
+			return getIntView((SettingInt) SB, parent);
+		}
+		else if (SB instanceof SettingDouble)
+		{
+			return getDblView((SettingDouble) SB, parent);
+		}
+		else if (SB instanceof SettingFolder)
+		{
+			return getFolderView((SettingFolder) SB, parent);
+		}
+		else if (SB instanceof SettingFile)
+		{
+			return getFileView((SettingFile) SB, parent);
+		}
+		else if (SB instanceof SettingEnum)
+		{
+			return getEnumView((SettingEnum) SB, parent);
+		}
+		else if (SB instanceof SettingString)
+		{
+			return getStringView((SettingString) SB, parent);
+		}
+		else if (SB instanceof SettingsListCategoryButton)
+		{
+			return getButtonView((SettingsListCategoryButton) SB, parent);
+		}
+		else if (SB instanceof SettingsListGetApiButton)
+		{
+			return getApiKeyButtonView((SettingsListGetApiButton) SB, parent);
+		}
+		else if (SB instanceof SettingsListButtonLangSpinner)
+		{
+			return getLangSpinnerView((SettingsListButtonLangSpinner) SB, parent);
+		}
+
+		return null;
+	}
+
+	private View getStringView(final SettingString SB, ViewGroup parent)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
@@ -498,7 +458,7 @@ public class SettingsListView extends Activity
 			@Override
 			public void onClick(View arg0)
 			{
-				SettingsListView.EditKey = SB.getName();
+				SettingsScrollView.EditKey = SB.getName();
 				selectedItem = SB;
 				// Show NumPad Int Edit
 				StringInputBox.Show(SB.getName(), "default: " + SB.getDefaultValue(), SB.getValue(), new DialogInterface.OnClickListener()
@@ -511,9 +471,9 @@ public class SettingsListView extends Activity
 						switch (button)
 						{
 						case -1: // ok Clicket
-							SettingString value = (SettingString) Config.settings.get(SettingsListView.EditKey);
+							SettingString value = (SettingString) Config.settings.get(SettingsScrollView.EditKey);
 							if (value != null) value.setValue(text);
-							SettingsListView.Me.ListInvalidate();
+							SettingsScrollView.Me.ListInvalidate();
 							break;
 						case -2: // cancel clicket
 
@@ -526,7 +486,7 @@ public class SettingsListView extends Activity
 						dialog.dismiss();
 
 					}
-				}, SettingsListView.Me);
+				}, SettingsScrollView.Me);
 			}
 		});
 
@@ -538,7 +498,7 @@ public class SettingsListView extends Activity
 			{
 				// zeige Beschreibung der Einstellung
 
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
 
 				return false;
 			}
@@ -548,7 +508,7 @@ public class SettingsListView extends Activity
 
 	}
 
-	private View getEnumView(final SettingEnum SB, View convertView, ViewGroup parent)
+	private View getEnumView(final SettingEnum SB, ViewGroup parent)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_enum, parent, false);
@@ -600,7 +560,7 @@ public class SettingsListView extends Activity
 			{
 				// zeige Beschreibung der Einstellung
 
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
 
 				return false;
 			}
@@ -610,7 +570,7 @@ public class SettingsListView extends Activity
 
 	}
 
-	private View getIntArrayView(final SettingIntArray SB, View convertView, ViewGroup parent)
+	private View getIntArrayView(final SettingIntArray SB, ViewGroup parent)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_enum, parent, false);
@@ -662,7 +622,7 @@ public class SettingsListView extends Activity
 			{
 				// zeige Beschreibung der Einstellung
 
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
 
 				return false;
 			}
@@ -672,7 +632,7 @@ public class SettingsListView extends Activity
 
 	}
 
-	private View getIntView(final SettingInt SB, View convertView, ViewGroup parent)
+	private View getIntView(final SettingInt SB, ViewGroup parent)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
@@ -695,7 +655,7 @@ public class SettingsListView extends Activity
 			public void onClick(View arg0)
 			{
 				selectedItem = SB;
-				SettingsListView.EditKey = SB.getName();
+				SettingsScrollView.EditKey = SB.getName();
 				// Show NumPad Int Edit
 				NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()), SB.getValue(),
 						new DialogInterface.OnClickListener()
@@ -712,9 +672,9 @@ public class SettingsListView extends Activity
 									try
 									{
 										int newValue = Integer.parseInt(text);
-										SettingInt value = (SettingInt) Config.settings.get(SettingsListView.EditKey);
+										SettingInt value = (SettingInt) Config.settings.get(SettingsScrollView.EditKey);
 										if (value != null) value.setValue(newValue);
-										SettingsListView.Me.ListInvalidate();
+										SettingsScrollView.Me.ListInvalidate();
 									}
 									catch (NumberFormatException e)
 									{
@@ -732,7 +692,7 @@ public class SettingsListView extends Activity
 								dialog.dismiss();
 
 							}
-						}, SettingsListView.Me);
+						}, SettingsScrollView.Me);
 			}
 		});
 
@@ -744,7 +704,7 @@ public class SettingsListView extends Activity
 			{
 				// zeige Beschreibung der Einstellung
 
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
 
 				return false;
 			}
@@ -754,7 +714,7 @@ public class SettingsListView extends Activity
 
 	}
 
-	private View getDblView(final SettingDouble SB, View convertView, ViewGroup parent)
+	private View getDblView(final SettingDouble SB, ViewGroup parent)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
@@ -777,7 +737,7 @@ public class SettingsListView extends Activity
 			public void onClick(View arg0)
 			{
 				selectedItem = SB;
-				SettingsListView.EditKey = SB.getName();
+				SettingsScrollView.EditKey = SB.getName();
 				// Show NumPad Int Edit
 				NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()), SB.getValue(),
 						new DialogInterface.OnClickListener()
@@ -793,9 +753,9 @@ public class SettingsListView extends Activity
 									try
 									{
 										double newValue = Double.parseDouble(text);
-										SettingDouble value = (SettingDouble) Config.settings.get(SettingsListView.EditKey);
+										SettingDouble value = (SettingDouble) Config.settings.get(SettingsScrollView.EditKey);
 										if (value != null) value.setValue(newValue);
-										SettingsListView.Me.ListInvalidate();
+										SettingsScrollView.Me.ListInvalidate();
 									}
 									catch (NumberFormatException e)
 									{
@@ -813,7 +773,7 @@ public class SettingsListView extends Activity
 								dialog.dismiss();
 
 							}
-						}, SettingsListView.Me);
+						}, SettingsScrollView.Me);
 			}
 		});
 
@@ -825,7 +785,7 @@ public class SettingsListView extends Activity
 			{
 				// zeige Beschreibung der Einstellung
 
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
 
 				return false;
 			}
@@ -835,7 +795,7 @@ public class SettingsListView extends Activity
 
 	}
 
-	private View getFolderView(final SettingFolder SB, View convertView, ViewGroup parent)
+	private View getFolderView(final SettingFolder SB, ViewGroup parent)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
@@ -857,7 +817,7 @@ public class SettingsListView extends Activity
 			@Override
 			public void onClick(View arg0)
 			{
-				SettingsListView.EditKey = SB.getName();
+				SettingsScrollView.EditKey = SB.getName();
 
 				Intent intent = new Intent(FileManagerIntents.ACTION_PICK_DIRECTORY);
 
@@ -871,7 +831,7 @@ public class SettingsListView extends Activity
 				selectedItem = SB;
 				try
 				{
-					SettingsListView.Me.startActivityForResult(intent, Global.REQUEST_CODE_PICK_DIRECTORY);
+					SettingsScrollView.Me.startActivityForResult(intent, Global.REQUEST_CODE_PICK_DIRECTORY);
 				}
 				catch (ActivityNotFoundException e)
 				{
@@ -889,7 +849,7 @@ public class SettingsListView extends Activity
 			{
 				// zeige Beschreibung der Einstellung
 
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
 
 				return false;
 			}
@@ -899,7 +859,7 @@ public class SettingsListView extends Activity
 
 	}
 
-	private View getFileView(final SettingFile SB, View convertView, ViewGroup parent)
+	private View getFileView(final SettingFile SB, ViewGroup parent)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
@@ -922,7 +882,7 @@ public class SettingsListView extends Activity
 			@Override
 			public void onClick(View arg0)
 			{
-				SettingsListView.EditKey = SB.getName();
+				SettingsScrollView.EditKey = SB.getName();
 
 				Intent intent = new Intent(FileManagerIntents.ACTION_PICK_FILE);
 
@@ -936,7 +896,7 @@ public class SettingsListView extends Activity
 				selectedItem = SB;
 				try
 				{
-					SettingsListView.Me.startActivityForResult(intent, Global.REQUEST_CODE_PICK_FILE);
+					SettingsScrollView.Me.startActivityForResult(intent, Global.REQUEST_CODE_PICK_FILE);
 				}
 				catch (ActivityNotFoundException e)
 				{
@@ -954,7 +914,7 @@ public class SettingsListView extends Activity
 			{
 				// zeige Beschreibung der Einstellung
 
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
 
 				return false;
 			}
@@ -964,18 +924,17 @@ public class SettingsListView extends Activity
 
 	}
 
-	private View getButtonView(final SettingsListCategoryButton SB, View convertView, ViewGroup parent)
+	private View getButtonView(final SettingsListCategoryButton SB, ViewGroup parent)
 	{
 		LayoutInflater inflater = getLayoutInflater();
-		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_category_button, parent, false);
+		final View row = inflater.inflate(R.layout.advanced_settings_list_view_item_category_button, parent, false);
 
 		Button button = (Button) row.findViewById(R.id.Button);
 		button.setText(GlobalCore.Translations.Get(SB.getName()));
 		button.setTextSize(Sizes.getScaledFontSize_btn());
 		button.setTextColor(Global.getColor(R.attr.TextColor));
-
-		int Height = (int) (Sizes.getScaledRefSize_normal() * 4);
-		button.setMinimumHeight(Height);
+		int Height = (Sizes.getQuickButtonHeight());
+		button.setHeight(Height);
 
 		button.setOnClickListener(new OnClickListener()
 		{
@@ -986,11 +945,11 @@ public class SettingsListView extends Activity
 				// wenn QuickList Button, dann öffne Activity
 				if (SB.getName().equals("QuickList"))
 				{
-					SettingsListView.EditKey = SB.getName();
+					SettingsScrollView.EditKey = SB.getName();
 
-					Intent intent = new Intent().setClass(SettingsListView.Me, SettingsListEditQuickButton.class);
+					Intent intent = new Intent().setClass(SettingsScrollView.Me, SettingsListEditQuickButton.class);
 
-					SettingsListView.Me.startActivityForResult(intent, Global.REQUEST_CODE_EDIT_QUICK_LIST);
+					SettingsScrollView.Me.startActivityForResult(intent, Global.REQUEST_CODE_EDIT_QUICK_LIST);
 
 					return;
 				}
@@ -999,26 +958,22 @@ public class SettingsListView extends Activity
 				{
 					String info = "";
 
-					info += "Density= " + SettingsListView.Me.getString(R.string.density) + Global.br + Global.br;
+					info += "Density= " + SettingsScrollView.Me.getString(R.string.density) + Global.br + Global.br;
 					info += "Height= " + String.valueOf(Sizes.getWindowHeight()) + Global.br;
 					info += "Width= " + String.valueOf(Sizes.getWindowWidth()) + Global.br;
 					info += "Scale= " + String.valueOf(Sizes.getScale()) + Global.br;
 					info += "FontSize= " + String.valueOf(Sizes.getScaledFontSize()) + Global.br;
 
-					MessageBox.Show(info, SettingsListView.Me);
+					MessageBox.Show(info, SettingsScrollView.Me);
 
 					return;
 				}
 
-				// Category umschalten Ein/Aus blenden
-				for (SettingCategory item : Categorys)
+				if (SB instanceof SettingsListCategoryButton)
 				{
-					if (item.name().equals(SB.getName()))
-					{
-						item.Toggle();
-						selectedItem = SB;
-						ListInvalidate();
-					}
+					row.performClick();
+
+					return;
 				}
 
 			}
@@ -1032,7 +987,7 @@ public class SettingsListView extends Activity
 			{
 				// zeige Beschreibung der Einstellung
 
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsListView.Me);
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
 
 				return false;
 			}
@@ -1041,7 +996,7 @@ public class SettingsListView extends Activity
 		return row;
 	}
 
-	private View getApiKeyButtonView(final SettingsListGetApiButton SB, View convertView, ViewGroup parent)
+	private View getApiKeyButtonView(final SettingsListGetApiButton SB, ViewGroup parent)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_button, parent, false);
@@ -1077,7 +1032,7 @@ public class SettingsListView extends Activity
 
 	ArrayList<Langs> Sprachen;
 
-	private View getLangSpinnerView(final SettingsListButtonLangSpinner SB, View convertView, ViewGroup parent)
+	private View getLangSpinnerView(final SettingsListButtonLangSpinner SB, ViewGroup parent)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_lang_spinner, parent, false);
@@ -1156,9 +1111,9 @@ public class SettingsListView extends Activity
 					String filePath = fileUri.getPath();
 					if (filePath != null)
 					{
-						SettingFile value = (SettingFile) Config.settings.get(SettingsListView.EditKey);
+						SettingFile value = (SettingFile) Config.settings.get(SettingsScrollView.EditKey);
 						if (value != null) value.setValue(filePath);
-						SettingsListView.Me.ListInvalidate();
+						SettingsScrollView.Me.ListInvalidate();
 					}
 				}
 			}
@@ -1174,9 +1129,9 @@ public class SettingsListView extends Activity
 					String filePath = fileUri.getPath();
 					if (filePath != null)
 					{
-						SettingFolder value = (SettingFolder) Config.settings.get(SettingsListView.EditKey);
+						SettingFolder value = (SettingFolder) Config.settings.get(SettingsScrollView.EditKey);
 						if (value != null) value.setValue(filePath);
-						SettingsListView.Me.ListInvalidate();
+						SettingsScrollView.Me.ListInvalidate();
 					}
 				}
 			}
@@ -1195,12 +1150,12 @@ public class SettingsListView extends Activity
 				{
 					public void run()
 					{
-						SettingsListView.Me.runOnUiThread(new Runnable()
+						SettingsScrollView.Me.runOnUiThread(new Runnable()
 						{
 							@Override
 							public void run()
 							{
-								SettingsListView.Me.resortList();
+								SettingsScrollView.Me.resortList();
 							}
 						});
 					}
@@ -1213,6 +1168,23 @@ public class SettingsListView extends Activity
 
 		Timer timer = new Timer();
 		timer.schedule(task, 500);
+	}
+
+	public void onCreateContextMenu(final ContextMenu menu, View v, ContextMenuInfo menuInfo)
+	{
+
+		AllContextMenuCallHandler.icm = new IconContextMenu(this, R.menu.menu_settings_view_mode);
+		AllContextMenuCallHandler.icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
+		Menu IconMenu = AllContextMenuCallHandler.icm.getMenu();
+
+		MenuItem miExpert = IconMenu.findItem(R.id.miMap_HideFinds);
+		MenuItem miAll = IconMenu.findItem(R.id.miMap_ShowRatings);
+
+		miExpert.setChecked(Config.settings.SettingsShowExpert.getValue());
+		miAll.setChecked(Config.settings.SettingsShowAll.getValue());
+
+		AllContextMenuCallHandler.icm.show();
+
 	}
 
 }

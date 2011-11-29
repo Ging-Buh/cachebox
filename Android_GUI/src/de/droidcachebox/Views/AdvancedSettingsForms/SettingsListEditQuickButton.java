@@ -178,7 +178,7 @@ public class SettingsListEditQuickButton extends Activity
 			public void onClick(View arg0)
 			{
 				ActionListAll.setSelection(AllActionList.size() - 1);
-				ActionListAll.setVisibility(View.INVISIBLE);
+				ActionListAll.setVisibility(View.VISIBLE);
 				ActionListAll.performClick();
 			}
 		});

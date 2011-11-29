@@ -126,7 +126,7 @@ import de.droidcachebox.Views.SpoilerView;
 import de.droidcachebox.Views.TrackListView;
 import de.droidcachebox.Views.TrackableListView;
 import de.droidcachebox.Views.WaypointView;
-import de.droidcachebox.Views.AdvancedSettingsForms.SettingsListView;
+import de.droidcachebox.Views.AdvancedSettingsForms.SettingsScrollView;
 import de.droidcachebox.Views.FilterSettings.EditFilterSettings;
 import de.droidcachebox.Views.FilterSettings.PresetListViewItem;
 import de.droidcachebox.Views.Forms.ApiSearchPosDialog;
@@ -983,9 +983,9 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		{
 			// no, we check GPS
 			chkGpsIsOn();
-			if (SettingsListView.Me != null)
+			if (SettingsScrollView.Me != null)
 			{
-				SettingsListView.Me.ListInvalidate();
+				SettingsScrollView.Me.ListInvalidate();
 			}
 		}
 
@@ -1259,7 +1259,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			switch (ID)
 			{
 			case 102: // Settings
-				final Intent mainIntent = new Intent().setClass(mainActivity, SettingsListView.class);
+				final Intent mainIntent = new Intent().setClass(mainActivity, SettingsScrollView.class);
 				Bundle b = new Bundle();
 				b.putSerializable("Show", -1);
 				mainIntent.putExtras(b);
@@ -2849,6 +2849,11 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 					}
 
 				});
+	}
+
+	public static void Toast(String Msg)
+	{
+		Toast.makeText(mainActivity, Msg, Toast.LENGTH_SHORT).show();
 	}
 
 }
