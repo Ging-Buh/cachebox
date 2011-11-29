@@ -8,6 +8,7 @@
     <dimen name="BtnTextSize">30dip</dimen>
     <dimen name="IconSize">12dip</dimen>
     <dimen name="Margin">3dip</dimen>
+    <dimen name="SliderHeight">26dip</dimen>
     
 	<dimen name="ambilwarna_hsvHeight">240dp</dimen>
 	<dimen name="ambilwarna_hsvWidth">240dp</dimen>

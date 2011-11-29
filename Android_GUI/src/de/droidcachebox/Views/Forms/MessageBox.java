@@ -782,7 +782,7 @@ public class MessageBox extends android.app.Dialog
 			if (message != null)
 			{
 				((TextView) layout.findViewById(R.id.message)).setText(message);
-				((TextView) layout.findViewById(R.id.message)).setTextSize((float) (Sizes.getScaledFontSize()));
+				((TextView) layout.findViewById(R.id.message)).setTextSize((float) (Sizes.getScaledFontSize_btn()));
 
 				((TextView) layout.findViewById(R.id.message)).measure(Sizes.getWindowWidth() - 100, Sizes.getWindowHeight() - 100);
 				int height = ((TextView) layout.findViewById(R.id.message)).getMeasuredHeight();

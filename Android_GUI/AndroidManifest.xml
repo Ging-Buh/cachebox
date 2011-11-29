@@ -50,8 +50,7 @@
 		</activity>
 		<activity android:name=".Views.Forms.EditCoordinate"></activity>
 		<activity android:name=".Views.Forms.EditWaypoint"></activity>
-		<activity android:name=".Views.Forms.Settings"></activity>
-		<activity android:name=".Views.Forms.HintDialog" android:theme="@style/Theme.Transparent.Dim"></activity>
+		<activity android:name=".Views.Forms.HintDialog" android:theme="@style/Theme_day"></activity>
 		<activity android:name=".Views.Forms.ScreenLock"
 			android:theme="@style/Theme.Transparent"></activity>
 		<activity android:name=".Views.Forms.EditFieldNote"></activity>

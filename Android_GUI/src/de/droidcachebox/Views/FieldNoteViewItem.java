@@ -31,6 +31,7 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 	private StaticLayout layoutTypeText;
 	private StaticLayout layoutComment;
 	private static TextPaint textPaint;
+	private static TextPaint typePaint;
 	private static int drawTextHeight;
 
 	public FieldNoteViewItem(Context context, FieldNoteEntry fieldnote, Boolean BackColorId)
@@ -46,6 +47,14 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 			textPaint.setTextSize(Sizes.getScaledFontSize());
 			textPaint.setColor(Global.getColor(R.attr.TextColor));
 			textPaint.setAntiAlias(true);
+		}
+
+		if (typePaint == null)
+		{
+			typePaint = new TextPaint();
+			typePaint.setTextSize(Sizes.getScaledFontSize_big());
+			typePaint.setColor(Global.getColor(R.attr.TextColor));
+			typePaint.setAntiAlias(true);
 		}
 
 	}
@@ -126,7 +135,7 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 
 		width = specSize;
 		int innerWidth = width - (Sizes.getCornerSize() * 2);
-		layoutTypeText = new StaticLayout(fieldnote.typeString, textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		layoutTypeText = new StaticLayout(fieldnote.typeString, typePaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		layoutComment = new StaticLayout(fieldnote.comment, textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 
 		return result;
@@ -158,7 +167,7 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 			TextPaint = new Paint();
 			TextPaint.setAntiAlias(true);
 			TextPaint.setFakeBoldText(true);
-			TextPaint.setTextSize(Sizes.getScaledFontSize());
+			TextPaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
 			TextPaint.setColor(Global.getColor(R.attr.TextColor));
 		}
 		if (cacheNamePaint == null)
@@ -166,7 +175,7 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 			cacheNamePaint = new TextPaint();
 			cacheNamePaint.setAntiAlias(true);
 			cacheNamePaint.setFakeBoldText(true);
-			cacheNamePaint.setTextSize(Sizes.getScaledFontSize());
+			cacheNamePaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
 			cacheNamePaint.setColor(Global.getColor(R.attr.TextColor));
 
 		}

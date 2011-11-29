@@ -573,14 +573,21 @@ public class SettingsListView extends Activity
 				@Override
 				public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 				{
-					if (SB != null) SB.setValue((String) SB.getValues().get(arg2));
-
+					if (SB != null)
+					{
+						selectedItem = SB;
+						SB.setValue((String) SB.getValues().get(arg2));
+					}
 				}
 
 				@Override
 				public void onNothingSelected(AdapterView<?> arg0)
 				{
-					// do nothing
+					if (SB != null)
+					{
+						selectedItem = SB;
+
+					}
 				}
 			});
 		}
@@ -628,13 +635,21 @@ public class SettingsListView extends Activity
 				@Override
 				public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 				{
-					if (SB != null) SB.setValue(SB.getValueFromIndex(arg2));
+					if (SB != null)
+					{
+						selectedItem = SB;
+						SB.setValue(SB.getValueFromIndex(arg2));
+					}
 				}
 
 				@Override
 				public void onNothingSelected(AdapterView<?> arg0)
 				{
-					// do nothing
+					if (SB != null)
+					{
+						selectedItem = SB;
+
+					}
 				}
 			});
 		}
@@ -679,6 +694,7 @@ public class SettingsListView extends Activity
 			@Override
 			public void onClick(View arg0)
 			{
+				selectedItem = SB;
 				SettingsListView.EditKey = SB.getName();
 				// Show NumPad Int Edit
 				NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()), SB.getValue(),
@@ -760,6 +776,7 @@ public class SettingsListView extends Activity
 			@Override
 			public void onClick(View arg0)
 			{
+				selectedItem = SB;
 				SettingsListView.EditKey = SB.getName();
 				// Show NumPad Int Edit
 				NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()), SB.getValue(),
@@ -851,7 +868,7 @@ public class SettingsListView extends Activity
 				// Set fancy title and button (optional)
 				intent.putExtra(FileManagerIntents.EXTRA_TITLE, "Select Folder");
 				intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, "Select");
-
+				selectedItem = SB;
 				try
 				{
 					SettingsListView.Me.startActivityForResult(intent, Global.REQUEST_CODE_PICK_DIRECTORY);
@@ -916,7 +933,7 @@ public class SettingsListView extends Activity
 				// Set fancy title and button (optional)
 				intent.putExtra(FileManagerIntents.EXTRA_TITLE, "Select file to open");
 				intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, "Select");
-
+				selectedItem = SB;
 				try
 				{
 					SettingsListView.Me.startActivityForResult(intent, Global.REQUEST_CODE_PICK_FILE);

@@ -41,7 +41,7 @@ public class LogViewItem extends View
 		if (textPaint == null)
 		{
 			textPaint = new TextPaint();
-			textPaint.setTextSize(Sizes.getScaledFontSize());
+			textPaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
 			textPaint.setColor(Global.getColor(R.attr.TextColor));
 			textPaint.setAntiAlias(true);
 		}
@@ -150,7 +150,7 @@ public class LogViewItem extends View
 		if (textPaint == null)
 		{
 			textPaint = new TextPaint();
-			textPaint.setTextSize(Sizes.getScaledFontSize());
+			textPaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
 			textPaint.setColor(Global.getColor(R.attr.TextColor));
 			textPaint.setAntiAlias(true);
 		}
@@ -169,7 +169,7 @@ public class LogViewItem extends View
 			NamePaint = new Paint();
 			NamePaint.setFakeBoldText(true);
 			NamePaint.setAntiAlias(true);
-			NamePaint.setTextSize(Sizes.getScaledFontSize());
+			NamePaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
 			NamePaint.setColor(Global.getColor(R.attr.TextColor));
 		}
 

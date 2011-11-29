@@ -58,7 +58,7 @@ public class WaypointViewItem extends View
 
 		Rect bounds = new Rect();
 		LayoutTextPaint = new TextPaint();
-		LayoutTextPaint.setTextSize(Sizes.getScaledFontSize());
+		LayoutTextPaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
 		LayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LineSep = bounds.height() / 3;
 

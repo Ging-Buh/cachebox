@@ -570,7 +570,10 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	{
 		approachSoundCompleted = false;
 		cacheListView.setSelectedCacheVisible(0);
-		QuickButtonList.invalidate();
+		initialCaheInfoSlider();
+
+		// QuickButtonsAdapter.notifyDataSetInvalidated();
+		// QuickButtonList.invalidate();
 
 	}
 
@@ -1805,7 +1808,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		String[] ConfigList = ConfigActionList.split(",");
 		Global.QuickButtonList = Actions.getListFromConfig(ConfigList);
 
-		cacheNameView.setHeight((int) (Sizes.getScaledRefSize_normal() * 2));
+		// cacheNameView.setHeight((int) (Sizes.getScaledRefSize_normal() *
+		// 3.3));
 
 	}
 

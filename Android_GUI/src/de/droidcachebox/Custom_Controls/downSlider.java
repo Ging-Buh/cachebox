@@ -240,13 +240,13 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			// String.valueOf(yPos), Toast.LENGTH_SHORT).show();
 		}
 
-		int FSize = (int) (Sizes.getScaledFontSize_big());
+		float FSize = ((float) (Sizes.getScaledFontSize_big() * 1.3));
 
 		if (paint == null)
 		{
 			paint = new Paint();
 			paint.setColor(Global.getColor(R.attr.TextColor));
-			paint.setTextSize(FSize);
+			paint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
 			paint.setAntiAlias(true);
 		}
 
@@ -640,7 +640,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		Rect bounds = new Rect();
 		WPLayoutTextPaint = new TextPaint();
-		WPLayoutTextPaint.setTextSize(Sizes.getScaledFontSize());
+		WPLayoutTextPaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
 		WPLayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LineSep = bounds.height() / 3;
 
@@ -699,7 +699,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		if (GPSLayoutTextPaint == null)
 		{
 			GPSLayoutTextPaint = new TextPaint();
-			GPSLayoutTextPaint.setTextSize(Sizes.getScaledFontSize());
+			GPSLayoutTextPaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
 			GPSLayoutTextPaint.setAntiAlias(true);
 			GPSLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
 		}

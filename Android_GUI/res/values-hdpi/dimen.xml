@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="density">hdpi</string>
-	<dimen name="TextSize_normal">42dip</dimen>
+	<dimen name="TextSize_normal">52dip</dimen>
 	<dimen name="RefSize">64dip</dimen>
 	
-	<dimen name="BtnSize">53dip</dimen>
-    <dimen name="BtnTextSize">33dip</dimen>
-    <dimen name="IconSize">13dip</dimen>
+	<dimen name="BtnSize">55dip</dimen>
+    <dimen name="BtnTextSize">50dip</dimen>
+    <dimen name="IconSize">14dip</dimen>
     <dimen name="Margin">4dip</dimen>
+    <dimen name="SliderHeight">26dp</dimen>
     
 	<dimen name="ambilwarna_hsvHeight">240dp</dimen>
 	<dimen name="ambilwarna_hsvWidth">240dp</dimen>
