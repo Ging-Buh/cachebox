@@ -21,6 +21,7 @@ import android.graphics.Rect;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.UnitFormatter;
@@ -181,13 +182,16 @@ public class CacheDraw
 		{
 			namePaint.setColor(Color.RED);
 			namePaint.setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+			namePaint.setAntiAlias(true);
 			DTPaint.setAntiAlias(true);
 		}
 
 		SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
 		String dateString = postFormater.format(cache.DateHidden);
 
-		String drawName = (drawStyle == DrawStyle.withOwner) ? "by " + cache.Owner + ", " + dateString : cache.Name;
+		String CacheName = (String) TextUtils.ellipsize(cache.Name, namePaint, nameLayoutWidthRightBorder, TextUtils.TruncateAt.END);
+
+		String drawName = (drawStyle == DrawStyle.withOwner) ? "by " + cache.Owner + ", " + dateString : CacheName;
 
 		if (drawStyle == DrawStyle.all)
 		{
@@ -199,7 +203,15 @@ public class CacheDraw
 			drawName = drawName + String.format("%n") + cache.Pos.FormatCoordinate() + String.format("%n") + cache.GcCode;
 		}
 
-		layoutCacheName = new StaticLayout(drawName, namePaint, nameLayoutWidthRightBorder, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		if (drawStyle == DrawStyle.withOwnerAndName || drawStyle == DrawStyle.withOwner)
+		{
+			layoutCacheName = new StaticLayout(drawName, namePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		}
+		else
+		{
+			layoutCacheName = new StaticLayout(drawName, namePaint, nameLayoutWidthRightBorder, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		}
+
 		int LayoutHeight = ActivityUtils.drawStaticLayout(canvas, layoutCacheName, left + VoteWidth + Sizes.getIconSize() + 5, top);
 
 		// over draw 3. Cache name line
