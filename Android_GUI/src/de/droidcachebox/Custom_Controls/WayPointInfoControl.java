@@ -93,6 +93,8 @@ public final class WayPointInfoControl extends View
 				1.0f, 0.0f, false);
 		this.height = (LineSep * 5) + LayoutCord.getHeight() + LayoutDesc.getHeight() + LayoutClue.getHeight() + LayoutName.getHeight();
 
+		if (this.height > Sizes.getCacheInfoHeight()) this.height = Sizes.getCacheInfoHeight();
+
 		setMeasuredDimension(this.width, this.height);
 	}
 

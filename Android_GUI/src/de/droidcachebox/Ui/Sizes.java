@@ -101,7 +101,7 @@ public class Sizes
 		margin = res.getDimensionPixelSize(R.dimen.Margin);
 
 		CornerSize = scaledRefSize_normal / 2;
-		CacheInfoHeight = (int) (scaledRefSize_normal * 6.5);
+		CacheInfoHeight = (int) (scaledRefSize_normal * 8);
 		infoSliderHeight = (int) (scaledRefSize_normal * 2.4);
 		iconSize = (int) (int) ((windowHeight / (res.getDimensionPixelSize(R.dimen.IconSize))) * scale);
 		spaceWidth = (int) (scaledFontSize_normal * 0.7);
