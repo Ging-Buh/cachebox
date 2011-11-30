@@ -8,8 +8,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import CB_Core.Config;
+import CB_Core.Log.Logger;
 
 public class LangStrings
 {
@@ -52,6 +54,8 @@ public class LangStrings
 
 	public ArrayList<_Translations> _StringList = new ArrayList<_Translations>();
 	private ArrayList<_Translations> _RefTranslation;
+
+	public ArrayList<_Translations> _MissingStringList = new ArrayList<_Translations>();
 
 	// / <summary>
 	// / Gibt den Namen der angegebenen Sprach-Datei zurück.
@@ -211,9 +215,17 @@ public class LangStrings
 		if (retString == "")
 		{
 			retString = "$ID: " + StringId;// "No translation found";
+
+			_Translations notFound = new _Translations(StringId, "??");
+			if (!_MissingStringList.contains(notFound))
+			{
+				_MissingStringList.add(notFound);
+			}
+
 		}
-		
-		if (params != null) {
+
+		if (params != null)
+		{
 			retString = replaceParams(retString, params);
 		}
 
@@ -271,5 +283,15 @@ public class LangStrings
 	public String getLangId()
 	{
 		return LangID;
+	}
+
+	public void writeMisingStringsFile()
+	{
+		Logger.DEBUG("List of missing lang strings:");
+		for (Iterator<_Translations> it = _MissingStringList.iterator(); it.hasNext();)
+		{
+			Logger.DEBUG(it.next().IdString);
+		}
+
 	}
 }

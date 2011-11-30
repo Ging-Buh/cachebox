@@ -343,8 +343,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 		// Ausschalten verhindern
 		/*
-		 * This code together with the one in onDestroy() will make the screen
-		 * be always on until this Activity gets destroyed.
+		 * This code together with the one in onDestroy() will make the screen be always on until this Activity gets destroyed.
 		 */
 		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
@@ -760,8 +759,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	}
 
 	/*
-	 * Wenn 10 Sekunden kein gültiges GPS Signal gefunden wird. Aber nur beim
-	 * Ersten mal. Danach warten wir lieber 90 sec
+	 * Wenn 10 Sekunden kein gültiges GPS Signal gefunden wird. Aber nur beim Ersten mal. Danach warten wir lieber 90 sec
 	 */
 	private int NetworkPositionTime = 10000;
 
@@ -857,19 +855,12 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				Database.Data = null;
 				Database.Data = db;
 				/*
-				 * SqlCeCommand command = new
-				 * SqlCeCommand(" select GcCode from FieldNotes WHERE Type = 1 "
-				 * , Database.FieldNotes.Connection); SqlCeDataReader reader =
-				 * command.ExecuteReader(); if (reader == null) throw new
-				 * Exception
-				 * ("Startup: Cannot execute SQL statement Copy Founds to TB");
-				 * string GcCode = ""; while (reader.Read()) GcCode += "'" +
-				 * reader.GetString(0) + "', "; if (GcCode.Length > 0) { GcCode
-				 * = GcCode.Substring(0, GcCode.Length - 2); SqlCeCommand
-				 * commandUpdate = new
-				 * SqlCeCommand(" UPDATE Caches SET Found = 1 WHERE GcCode IN ("
-				 * + GcCode + ") ", Database.Data.Connection); int founds =
-				 * commandUpdate.ExecuteNonQuery(); }
+				 * SqlCeCommand command = new SqlCeCommand(" select GcCode from FieldNotes WHERE Type = 1 " ,
+				 * Database.FieldNotes.Connection); SqlCeDataReader reader = command.ExecuteReader(); if (reader == null) throw new
+				 * Exception ("Startup: Cannot execute SQL statement Copy Founds to TB"); string GcCode = ""; while (reader.Read()) GcCode
+				 * += "'" + reader.GetString(0) + "', "; if (GcCode.Length > 0) { GcCode = GcCode.Substring(0, GcCode.Length - 2);
+				 * SqlCeCommand commandUpdate = new SqlCeCommand(" UPDATE Caches SET Found = 1 WHERE GcCode IN (" + GcCode + ") ",
+				 * Database.Data.Connection); int founds = commandUpdate.ExecuteNonQuery(); }
 				 */
 				GlobalCore.Categories = new Categories();
 				Global.LastFilter = (Config.settings.Filter.getValue().length() == 0) ? new FilterProperties(FilterProperties.presets[0])
@@ -1093,6 +1084,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			if (isFinishing())
 			{
 
+				GlobalCore.Translations.writeMisingStringsFile();
+
 				Config.settings.MapInitLatitude.setValue(mapView.center.Latitude);
 				Config.settings.MapInitLongitude.setValue(mapView.center.Longitude);
 
@@ -1164,8 +1157,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	}
 
 	/**
-	 * Startet die Bildschirm Sperre. Mit der der Übergabe von force = true,
-	 * werden abfragen ob im Akkubetrieb oder die Zeit Einstellungen ignoriert.
+	 * Startet die Bildschirm Sperre. Mit der der Übergabe von force = true, werden abfragen ob im Akkubetrieb oder die Zeit Einstellungen
+	 * ignoriert.
 	 * 
 	 * @param force
 	 */
@@ -1715,14 +1708,10 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			// 1000, 10, this);
 
 			/*
-			 * Longri: Ich habe die Zeiten und Distanzen der Location Updates
-			 * angepasst. Der Network Provider hat eine schlechte genauigkeit,
-			 * darher reich es wenn er alle 10sec einen wert liefert, wen der
-			 * alte um 500m abweicht. Beim GPS Provider habe ich die
-			 * aktualiesierungs Zeit verkürzt, damit bei deaktiviertem Hardware
-			 * Kompass aber die Werte trotzdem noch in einem gesunden Verhältnis
-			 * zwichen Performance und Stromverbrauch, geliefert werden. Andere
-			 * apps haben hier 0.
+			 * Longri: Ich habe die Zeiten und Distanzen der Location Updates angepasst. Der Network Provider hat eine schlechte
+			 * genauigkeit, darher reich es wenn er alle 10sec einen wert liefert, wen der alte um 500m abweicht. Beim GPS Provider habe ich
+			 * die aktualiesierungs Zeit verkürzt, damit bei deaktiviertem Hardware Kompass aber die Werte trotzdem noch in einem gesunden
+			 * Verhältnis zwichen Performance und Stromverbrauch, geliefert werden. Andere apps haben hier 0.
 			 */
 
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, this);
@@ -2116,10 +2105,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			}
 
 			/*
-			 * Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" +
-			 * lat + "," + lon)); if (intent != null) {
-			 * intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-			 * this.startActivity(intent); }
+			 * Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + lat + "," + lon)); if (intent != null) {
+			 * intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET); this.startActivity(intent); }
 			 */
 
 			Intent implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + lat + "," + lon));
@@ -2130,10 +2117,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private void addCache()
 	{
 		/*
-		 * String accessToken = Config.settings.GcAPI"); ArrayList<String>
-		 * caches = new ArrayList<String>(); caches.add("GC2XVHW");
-		 * caches.add("GC1T2XP"); caches.add("GC1090W"); caches.clear(); for
-		 * (int i = 0; i < 100; i++) { caches.add("GC2XV" + i); }
+		 * String accessToken = Config.settings.GcAPI"); ArrayList<String> caches = new ArrayList<String>(); caches.add("GC2XVHW");
+		 * caches.add("GC1T2XP"); caches.add("GC1090W"); caches.clear(); for (int i = 0; i < 100; i++) { caches.add("GC2XV" + i); }
 		 * CB_Core.Api.GroundspeakAPI.GetGeocacheStatus(accessToken, caches);
 		 */
 
@@ -2599,8 +2584,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	}
 
 	/**
-	 * Empfängt die gelogten Meldungen in kurz Form und schreibt sie ins Debung
-	 * Panel, wenn dieses sichtbar ist!
+	 * Empfängt die gelogten Meldungen in kurz Form und schreibt sie ins Debung Panel, wenn dieses sichtbar ist!
 	 */
 	@Override
 	public void receiveShortLog(String Msg)
@@ -2729,8 +2713,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	}
 
 	/**
-	 * Überprüft ob das GPS eingeschaltet ist. Wenn nicht, wird eine Meldung
-	 * ausgegeben.
+	 * Überprüft ob das GPS eingeschaltet ist. Wenn nicht, wird eine Meldung ausgegeben.
 	 */
 	private void chkGpsIsOn()
 	{
