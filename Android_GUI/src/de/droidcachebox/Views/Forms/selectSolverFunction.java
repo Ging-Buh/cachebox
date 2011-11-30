@@ -19,11 +19,6 @@ package de.droidcachebox.Views.Forms;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.Components.Animations;
-import de.droidcachebox.Ui.ActivityUtils;
-import de.droidcachebox.Ui.Sizes;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Solver.Solver;
@@ -45,10 +40,12 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TabHost;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.Components.Animations;
+import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.Ui.Sizes;
 
 /**
  * @author Longri
@@ -62,6 +59,7 @@ public class selectSolverFunction extends Activity
 	Function selectedFunction;
 	TextView desc;
 	Context context;
+	ScrollView scrollView;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -113,7 +111,7 @@ public class selectSolverFunction extends Activity
 		btnCancel = (Button) findViewById(R.id.solver_function_cancel);
 		content = (LinearLayout) findViewById(R.id.solver_function_scrollView);
 		desc = (TextView) findViewById(R.id.solver_function_desc);
-
+		scrollView = (ScrollView) findViewById(R.id.solver_scroll_view);
 		desc.setTextColor(Color.WHITE);
 	}
 
@@ -136,7 +134,7 @@ public class selectSolverFunction extends Activity
 			do
 			{
 				Functions cat = iteratorCat.next();
-				Button btn = new Button(this);
+				final Button btn = new Button(this);
 				btn.setWidth(Sizes.getQuickButtonWidth());
 				btn.setHeight(Sizes.getQuickButtonHeight());
 				btn.setText(GlobalCore.Translations.Get(cat.getName()));
@@ -209,7 +207,7 @@ public class selectSolverFunction extends Activity
 					@Override
 					public void onClick(View arg0)
 					{
-						Animations.ToggleViewSlideUp_Down((View) lay, context, null, null);
+						Animations.ToggleViewSlideUp_Down((View) lay, context, scrollView, btn);
 					}
 				});
 

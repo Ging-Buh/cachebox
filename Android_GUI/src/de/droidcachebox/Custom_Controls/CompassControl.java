@@ -16,9 +16,6 @@
 
 package de.droidcachebox.Custom_Controls;
 
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.main;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
@@ -37,10 +34,12 @@ import android.graphics.RadialGradient;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
-
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.main;
 
 public final class CompassControl extends View
 {
@@ -196,7 +195,32 @@ public final class CompassControl extends View
 
 		arrowPaint = new Paint();
 		arrowPaint.setFilterBitmap(true);
-		arrow = BitmapFactory.decodeResource(getContext().getResources(), main.N ? R.drawable.compass_arrow : R.drawable.compass_arrow);
+
+		int arroeResource = 0;
+		if (Config.settings.nightMode.getValue())
+		{
+			if (Config.settings.isChris.getValue())
+			{
+				arroeResource = R.drawable.chris_compass_arrow;
+			}
+			else
+			{
+				arroeResource = R.drawable.compass_arrow;
+			}
+		}
+		else
+		{
+			if (Config.settings.isChris.getValue())
+			{
+				arroeResource = R.drawable.chris_compass_arrow;
+			}
+			else
+			{
+				arroeResource = R.drawable.compass_arrow;
+			}
+		}
+
+		arrow = BitmapFactory.decodeResource(getContext().getResources(), arroeResource);
 		arrowMatrix = new Matrix();
 		arrowScale = (1.0f / arrow.getWidth()) * 0.4f;
 		;

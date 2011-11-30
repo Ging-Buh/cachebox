@@ -340,6 +340,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		Date now = new Date();
 		boolean c = (now.getMonth() == 12) ? true : false;
 		Config.settings.isChris.setValue(c);
+		// Config.settings.isChris.setValue(true);
+		Config.AcceptChanges();
 
 		// Ausschalten verhindern
 		/*
@@ -1618,8 +1620,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				recVoice();
 				break;
 			case 10:
-				MessageBox
-						.Show("SearchAPI muss noch in eine eigene Methode refactoriert werden, damit die Suche auch von hier aus ausgelöst werden kann!");
+				Search.Show();
 				break;
 			case 11:
 				showView(101);
@@ -1669,6 +1670,30 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		strengthLayout = (LinearLayout) this.findViewById(R.id.main_strength_control);
 
 		searchLayout = (LinearLayout) this.findViewById(R.id.searchDialog);
+
+		if (Config.settings.nightMode.getValue())
+		{
+			if (Config.settings.isChris.getValue())
+			{
+				buttonCache.setBackgroundResource(R.drawable.chris_night_cache_button_image_selector);
+			}
+			else
+			{
+				buttonCache.setBackgroundResource(R.drawable.night_cache_button_image_selector);
+			}
+		}
+		else
+		{
+			if (Config.settings.isChris.getValue())
+			{
+				buttonCache.setBackgroundResource(R.drawable.chris_cache_button_image_selector);
+			}
+			else
+			{
+				buttonCache.setBackgroundResource(R.drawable.cache_button_image_selector);
+			}
+		}
+
 	}
 
 	private void initialViews()

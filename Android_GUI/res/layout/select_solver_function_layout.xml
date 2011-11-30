@@ -3,7 +3,7 @@
 	android:id="@+id/solver_function_LinearLayout" android:gravity="bottom"
 	android:layout_height="match_parent" android:orientation="vertical"
 	android:layout_width="match_parent">
-	<ScrollView android:layout_height="wrap_content"
+	<ScrollView android:layout_height="wrap_content" android:id="@+id/solver_scroll_view"
 		android:layout_width="match_parent" android:layout_weight="1">
 
 		<LinearLayout android:id="@+id/solver_function_scrollView"

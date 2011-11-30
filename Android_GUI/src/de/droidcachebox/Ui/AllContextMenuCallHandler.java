@@ -33,11 +33,9 @@ import de.droidcachebox.Map.Layer;
 import de.droidcachebox.Views.MapView;
 
 /**
- * Diese Klasse enthält alle Statischen Methoden, um ein bestimmtes ContextMenu
- * aufzurufen. Als Grundlage, für ein Menü, dient das IconContextMenu. Das
- * IconContextMenu kann keine Unter Menüs aus einer Menu.xml verwalten. Daher
- * wird bei der Verwendung von Untermenüs ein jeweils neues Menü angezeigt, was
- * für den User keinen Unterschied macht.
+ * Diese Klasse enthält alle Statischen Methoden, um ein bestimmtes ContextMenu aufzurufen. Als Grundlage, für ein Menü, dient das
+ * IconContextMenu. Das IconContextMenu kann keine Unter Menüs aus einer Menu.xml verwalten. Daher wird bei der Verwendung von Untermenüs
+ * ein jeweils neues Menü angezeigt, was für den User keinen Unterschied macht.
  * 
  * @author Longri
  */
@@ -45,8 +43,7 @@ public class AllContextMenuCallHandler
 {
 
 	/**
-	 * Statische Instanz des IconContextMenus. Da immer nur ein Menu dargestellt
-	 * wird, reicht hier eine Statische Instanz.
+	 * Statische Instanz des IconContextMenus. Da immer nur ein Menu dargestellt wird, reicht hier eine Statische Instanz.
 	 */
 	public static IconContextMenu icm;
 
@@ -492,6 +489,20 @@ public class AllContextMenuCallHandler
 		{
 			mi.setEnabled((Main.fieldNotesView.aktFieldNote != null)
 					&& (Database.Data.Query.GetCacheByGcCode(Main.fieldNotesView.aktFieldNote.gcCode) != null));
+		}
+
+		mi = IconMenu.findItem(R.id.fieldnotesview_found);
+		if (mi != null)
+		{
+			if (Config.settings.isChris.getValue())
+			{
+				mi.setIcon(R.drawable.chris_log0);
+			}
+			else
+			{
+				mi.setIcon(R.drawable.log0);
+			}
+			;
 		}
 
 		icm.show();

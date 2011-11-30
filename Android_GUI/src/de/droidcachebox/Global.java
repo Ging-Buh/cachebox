@@ -37,7 +37,7 @@ import de.droidcachebox.Ui.Sizes;
 
 public class Global
 {
-	public static final int CurrentRevision = 558;
+	public static final int CurrentRevision = 572;
 	public static final String CurrentVersion = "0.4.";
 	public static final String VersionPrefix = "beta";
 	public static final int LatestDatabaseChange = 1016;
@@ -99,8 +99,7 @@ public class Global
 	public static Paint invertPaint = new Paint();
 
 	/**
-	 * gibt die resultierende Farbe für Schwarz zurück, wenn der Invert Filter
-	 * angewandt wurde.
+	 * gibt die resultierende Farbe für Schwarz zurück, wenn der Invert Filter angewandt wurde.
 	 * 
 	 * @return int (Color)
 	 */
@@ -125,14 +124,12 @@ public class Global
 	}
 
 	/**
-	 * enthält die resultierende Farbe für Schwarz, wenn der Invert Filter
-	 * angewandt wurde.
+	 * enthält die resultierende Farbe für Schwarz, wenn der Invert Filter angewandt wurde.
 	 */
 	private static int mInvertBlack = -1;
 
 	/**
-	 * gibt die resultierende Farbe für Schwarz zurück, wenn der Invert Filter
-	 * angewandt wurde.
+	 * gibt die resultierende Farbe für Schwarz zurück, wenn der Invert Filter angewandt wurde.
 	 * 
 	 * @return int (Color)
 	 */
@@ -159,8 +156,7 @@ public class Global
 	}
 
 	/**
-	 * enthält die resultierende Farbe für Schwarz, wenn der Invert Filter
-	 * angewandt wurde.
+	 * enthält die resultierende Farbe für Schwarz, wenn der Invert Filter angewandt wurde.
 	 */
 	private static int mInvertWhite = -1;
 
@@ -173,8 +169,7 @@ public class Global
 	/**
 	 * <b>Ein Array mit Icons als Drawable</b> <br>
 	 * <br>
-	 * Index 0 =<img src="doc-files/night_tb.png" width=32 height=32> <img
-	 * src="doc-files/day_tb.png" width=32 height=32> <br>
+	 * Index 0 =<img src="doc-files/night_tb.png" width=32 height=32> <img src="doc-files/day_tb.png" width=32 height=32> <br>
 	 * Index 1 =<img src="doc-files/addwaypoint.png" width=32 height=32> <br>
 	 * Index 2 =<img src="doc-files/smilie_gross.gif" width=32 height=32> <br>
 	 * Index 3 =<img src="doc-files/download.png" width=32 height=32> <br>
@@ -214,10 +209,8 @@ public class Global
 	 * Index 37 =<img src="doc-files/pin_icon.png" width=32 height=32> <br>
 	 * Index 38 =<img src="doc-files/pin_icon_disable.png" width=32 height=32> <br>
 	 * Index 39 =<img src="doc-files/chk_icon_disable.png" width=32 height=32> <br>
-	 * Index 40 =<img src="doc-files/night_slider_down.png" width=32 height=32>
-	 * <img src="doc-files/day_slider_down.png" width=32 height=32> <br>
-	 * Index 41 =<img src="doc-files/night_slider_up_down.png" width=32
-	 * height=32> <img src="doc-files/day_slider_up_down.png" width=32
+	 * Index 40 =<img src="doc-files/night_slider_down.png" width=32 height=32> <img src="doc-files/day_slider_down.png" width=32 height=32> <br>
+	 * Index 41 =<img src="doc-files/night_slider_up_down.png" width=32 height=32> <img src="doc-files/day_slider_up_down.png" width=32
 	 * height=32> <br>
 	 * Index 42 =<img src="doc-files/night_spinner.png" width=32 height=32><br>
 	 * Index 43 =<img src="doc-files/target_day.png" width=32 height=32>
@@ -506,10 +499,6 @@ public class Global
 		NewMapOverlay.get(2).add(getDrawable(R.drawable.map_20x20_shaddowrect_deact, res));
 		NewMapOverlay.get(2).add(getDrawable(R.drawable.map_20x20_selected_deact, res));
 
-		Arrows = new Drawable[]
-			{ getDrawable(R.drawable.arrow, R.drawable.night_arrow, res),
-					getDrawable(R.drawable.arrow_small, R.drawable.night_arrow_small, res), getDrawable(R.drawable.compass_arrow, res), };
-
 		SmallStarIcons = new Drawable[]
 			{ getDrawable(R.drawable.smallstars_0, R.drawable.night_smallstars_0, res),
 					getDrawable(R.drawable.smallstars_0_5, R.drawable.night_smallstars_0_5, res),
@@ -546,6 +535,20 @@ public class Global
 			{ getDrawable(R.drawable.day_btn_check_off, R.drawable.night_btn_check_off, res),
 					getDrawable(R.drawable.day_btn_check_on, R.drawable.night_btn_check_on, res), };
 
+		if (Config.settings.isChris.getValue())
+		{
+			iniChrisIcons(res);
+		}
+		else
+		{
+			iniNormalIcons(res);
+		}
+
+	}
+
+	private static void iniNormalIcons(Resources res)
+	{
+
 		BtnIcons = new Drawable[]
 			{
 					getDrawable(R.drawable.day_btn_default_normal, R.drawable.night_btn_default_normal, res),
@@ -560,13 +563,9 @@ public class Global
 					getDrawable(R.drawable.list_icon, res), // TrackListView
 															// braucht noch ein
 															// Icon
-					getDrawable(R.drawable.log10, res),
-					getDrawable(R.drawable.video_icon, res),
-					getDrawable(R.drawable.voice_rec_icon, res),
-					getDrawable(R.drawable.star, res), // Live search braucht
-														// noch ein Icon
-					getDrawable(R.drawable.filter, res), getDrawable(R.drawable.lock_icon, res),
-					getDrawable(R.drawable.auto_sort_on_icon, res), // 15
+					getDrawable(R.drawable.log10, res), getDrawable(R.drawable.video_icon, res),
+					getDrawable(R.drawable.voice_rec_icon, res), getDrawable(R.drawable.lupe, res), getDrawable(R.drawable.filter, res),
+					getDrawable(R.drawable.lock_icon, res), getDrawable(R.drawable.auto_sort_on_icon, res), // 15
 					getDrawable(R.drawable.auto_sort_off_icon, res), // 16
 					getDrawable(R.drawable.solver_icon, res), // 17
 					getDrawable(R.drawable.images_icon, res), // 18
@@ -574,19 +573,10 @@ public class Global
 
 			};
 
-		if (Config.settings.isChris.getValue())
-		{
-			iniChrisIcons(res);
-		}
-		else
-		{
-			iniNormalIcons(res);
-		}
+		Arrows = new Drawable[]
+			{ getDrawable(R.drawable.arrow, R.drawable.night_arrow, res),
+					getDrawable(R.drawable.arrow_small, R.drawable.night_arrow_small, res), getDrawable(R.drawable.compass_arrow, res), };
 
-	}
-
-	private static void iniNormalIcons(Resources res)
-	{
 		LogIcons = new Drawable[]
 			{ getDrawable(R.drawable.log0, res), getDrawable(R.drawable.log1, res), getDrawable(R.drawable.log2, res),
 					getDrawable(R.drawable.log3, res), getDrawable(R.drawable.log4, res), getDrawable(R.drawable.log5, res),
@@ -647,8 +637,38 @@ public class Global
 
 	private static void iniChrisIcons(Resources res)
 	{
+
+		BtnIcons = new Drawable[]
+			{
+					getDrawable(R.drawable.day_btn_default_normal, R.drawable.night_btn_default_normal, res),
+					getDrawable(R.drawable.button, R.drawable.night_button, res),
+					getDrawable(R.drawable.doc_icon, res),
+					getDrawable(R.drawable.big_16, res),
+					getDrawable(R.drawable.list_icon, res), // LogView braucht
+															// noch ein Icon
+					getDrawable(R.drawable.map, res),
+					getDrawable(R.drawable.compass, res),
+					getDrawable(R.drawable.cache_list_icon, res),
+					getDrawable(R.drawable.list_icon, res), // TrackListView
+															// braucht noch ein
+															// Icon
+					getDrawable(R.drawable.log10, res), getDrawable(R.drawable.video_icon, res),
+					getDrawable(R.drawable.voice_rec_icon, res), getDrawable(R.drawable.lupe, res), getDrawable(R.drawable.filter, res),
+					getDrawable(R.drawable.lock_icon, res), getDrawable(R.drawable.auto_sort_on_icon, res), // 15
+					getDrawable(R.drawable.auto_sort_off_icon, res), // 16
+					getDrawable(R.drawable.solver_icon, res), // 17
+					getDrawable(R.drawable.images_icon, res), // 18
+					getDrawable(R.drawable.chris_hint_icon, res), // 19
+
+			};
+
+		Arrows = new Drawable[]
+			{ getDrawable(R.drawable.chris_arrow, R.drawable.chris_night_arrow, res),
+					getDrawable(R.drawable.chris_arrow_small, R.drawable.chris_night_arrow_small, res),
+					getDrawable(R.drawable.chris_compass_arrow, res), };
+
 		LogIcons = new Drawable[]
-			{ getDrawable(R.drawable.log0, res), getDrawable(R.drawable.log1, res), getDrawable(R.drawable.log2, res),
+			{ getDrawable(R.drawable.chris_log0, res), getDrawable(R.drawable.log1, res), getDrawable(R.drawable.log2, res),
 					getDrawable(R.drawable.log3, res), getDrawable(R.drawable.log4, res), getDrawable(R.drawable.log5, res),
 					getDrawable(R.drawable.log6, res), getDrawable(R.drawable.log7, res), getDrawable(R.drawable.log8, res),
 					getDrawable(R.drawable.log9, res), getDrawable(R.drawable.log10, res), getDrawable(R.drawable.log11, res),
@@ -659,7 +679,7 @@ public class Global
 		Icons = new Drawable[]
 			{ getDrawable(R.drawable.day_tb, R.drawable.night_tb, res),// 0
 					getDrawable(R.drawable.addwaypoint, res),// 1
-					getDrawable(R.drawable.smilie_gross, res),// 2
+					getDrawable(R.drawable.chris_smilie_gross, res),// 2
 					getDrawable(R.drawable.download, res),// 3
 					getDrawable(R.drawable.log1, res),// 4
 					getDrawable(R.drawable.maintenance, res),// 5
@@ -699,7 +719,7 @@ public class Global
 					getDrawable(R.drawable.chk_icon_disable, res), // 39
 					getDrawable(R.drawable.day_slider_down, R.drawable.night_slider_down, res), // 40
 					getDrawable(R.drawable.day_slider_up_down, R.drawable.night_slider_up_down, res), // 41
-					getDrawable(R.drawable.day_spinner, R.drawable.night_spinner, res), // 42
+					getDrawable(R.drawable.chris_day_spinner, R.drawable.chris_night_spinner, res), // 42
 					getDrawable(R.drawable.target_day, R.drawable.target_night, res), // 43
 			};
 
@@ -833,8 +853,7 @@ public class Global
 	}
 
 	/**
-	 * isOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet
-	 * zuzugreifen
+	 * isOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen
 	 */
 	public static boolean isOnline()
 	{
@@ -848,8 +867,7 @@ public class Global
 	}
 
 	/**
-	 * APIisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet
-	 * zuzugreifen und ein API Access Token vorhanden ist.
+	 * APIisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen und ein API Access Token vorhanden ist.
 	 */
 	public static boolean APIisOnline()
 	{
@@ -866,8 +884,7 @@ public class Global
 	}
 
 	/**
-	 * JokerisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet
-	 * zuzugreifen und ein Passwort für gcJoker.de vorhanden ist.
+	 * JokerisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen und ein Passwort für gcJoker.de vorhanden ist.
 	 */
 	public static boolean JokerisOnline()
 	{

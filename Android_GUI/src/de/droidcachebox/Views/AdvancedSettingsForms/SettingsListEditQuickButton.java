@@ -79,6 +79,11 @@ public class SettingsListEditQuickButton extends Activity
 
 		Config.settings.SaveToLastValue();
 
+		ActionListUp.setWidth(Sizes.getButtonWidth());
+		ActionListDown.setWidth(Sizes.getButtonWidth());
+		ActionListDel.setWidth(Sizes.getButtonWidth());
+		ActionListAdd.setWidth(Sizes.getButtonWidth());
+
 		CancelButton.setOnClickListener(new OnClickListener()
 		{
 
@@ -179,6 +184,7 @@ public class SettingsListEditQuickButton extends Activity
 			{
 				ActionListAll.setSelection(AllActionList.size() - 1);
 				ActionListAll.setVisibility(View.VISIBLE);
+				ActionListButtonAddClicked = false;
 				ActionListAll.performClick();
 			}
 		});
@@ -189,8 +195,10 @@ public class SettingsListEditQuickButton extends Activity
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 			{
 
-				if (ActionListAll.getVisibility() == View.VISIBLE && ActionListButtonAddClicked)
+				if ((ActionListAll.getVisibility() == View.VISIBLE) && ActionListButtonAddClicked)
 				{
+					ActionListButtonAddClicked = false;
+
 					// neues Action Item ausgewählt.
 					if (Global.QuickButtonList == null)
 					{
@@ -198,8 +206,8 @@ public class SettingsListEditQuickButton extends Activity
 						ActionListView.setAdapter(QuickListBaseAdapter);
 					}
 					Global.QuickButtonList.add(new QuickButtonItem(context, AllActionList.get(arg2), Sizes.getQuickButtonHeight()));
-					if (ActionListButtonAddClicked) resortList();
-					ActionListButtonAddClicked = false;
+					resortList();
+
 					ActionListAll.setVisibility(View.INVISIBLE);
 				}
 				else
@@ -228,7 +236,7 @@ public class SettingsListEditQuickButton extends Activity
 
 	public void resortList()
 	{
-
+		ActionListButtonAddClicked = false;
 		chkQuickButtonShow.setChecked(Config.settings.quickButtonShow.getValue());
 		ActionListView.setAdapter(QuickListBaseAdapter);
 		ActionListChanged = false;

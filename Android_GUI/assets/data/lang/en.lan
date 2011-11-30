@@ -576,5 +576,24 @@ English
 	att_66_0 = no Teamwork Required
 	att_66_1 = Teamwork Required
 	
+	
+//new settings
+
+	QuickList = Edit Quick Button list!
+	Login = Login Settings
+	GcVotePassword = Password for GC-Vote
+	GcLogin = Groundspeak User Name
+	GcJoker = MD5-Hash at gcJoker.de
+	GcAPI = Api Key
+	lastZoomLevel = Last used zoom level 
+	OsmMinLevel = minimum zoom level for Map import
+	OsmMaxLevel = minimum zoom level for Map import 
+	MapShowDT= Show D/T on Map view
+	Gps = GPS Settings
+	HtcCompass = Use Hardware Compass
+	HtcLevel = Speed level for Hardware or GPS compass. \n-1 = GPS is not used at all.
+
+
+
 
 
