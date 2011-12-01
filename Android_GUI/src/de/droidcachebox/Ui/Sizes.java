@@ -56,6 +56,10 @@ public class Sizes
 	private static float scale;
 	private static int margin;
 
+	private static int arrowScaleList;
+	private static int arrowScaleMap;
+	private static int TB_icon_Size;
+
 	public static void initial(boolean land, Activity context)
 	{
 		// TODO berechne die Werte anhand der Auflösung.
@@ -100,11 +104,11 @@ public class Sizes
 
 		margin = res.getDimensionPixelSize(R.dimen.Margin);
 
-		CornerSize = scaledRefSize_normal / 2;
+		CornerSize = scaledRefSize_normal;
 		CacheInfoHeight = (int) (scaledRefSize_normal * 8);
 		infoSliderHeight = (int) (scaledRefSize_normal * 2.4);
 		iconSize = (int) (int) ((windowHeight / (res.getDimensionPixelSize(R.dimen.IconSize))) * scale);
-		spaceWidth = (int) (scaledFontSize_normal * 0.7);
+		spaceWidth = (int) (scaledFontSize_normal * 0.9);
 		tabWidth = (int) (scaledFontSize_normal * 0.6);
 		halfCornerSize = (int) CornerSize / 2;
 
@@ -112,6 +116,25 @@ public class Sizes
 		CacheListDrawRec = CacheListItemSize.getBounds(5, 2, -5, -2);
 		StrengthHeightMultipler = windowHeight / 600;
 		IconContextMenuHeight = (int) (windowHeight / 11.1);
+
+		arrowScaleList = res.getDimensionPixelSize(R.dimen.ArrowSize_List);
+		arrowScaleMap = res.getDimensionPixelSize(R.dimen.ArrowSize_Map);
+		TB_icon_Size = res.getDimensionPixelSize(R.dimen.TB_icon_Size);
+	}
+
+	public static int getTbIconSize()
+	{
+		return TB_icon_Size;
+	}
+
+	public static int getArrowScaleList()
+	{
+		return arrowScaleList;
+	}
+
+	public static int getArrowScaleMap()
+	{
+		return arrowScaleMap;
 	}
 
 	public static int getMargin()

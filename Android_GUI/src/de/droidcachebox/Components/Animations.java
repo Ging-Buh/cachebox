@@ -10,13 +10,11 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ScrollView;
 import de.droidcachebox.R;
-import de.droidcachebox.main;
 
 public class Animations
 {
 	/*
-	 * Schaltet die Visibility eines View um und animiert dabei ein
-	 * Slidedown/Slideup
+	 * Schaltet die Visibility eines View um und animiert dabei ein Slidedown/Slideup
 	 */
 	public static void ToggleViewSlideUp_Down(final View v, Context context, final ScrollView scrollView, final View button)
 	{
@@ -79,9 +77,6 @@ public class Animations
 					{
 						scrollView.requestLayout();
 						scrollView.getChildVisibleRect(button, r, offset);
-
-						main.Toast(offset.y + " " + scrollView.getScrollY());
-
 						scrollView.scrollTo(0, offset.y + scrollView.getScrollY());
 					}
 

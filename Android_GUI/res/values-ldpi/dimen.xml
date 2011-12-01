@@ -3,6 +3,10 @@
 	<string name="density">ldpi</string>
     <dimen name="TextSize_normal">36dip</dimen>
     <dimen name="RefSize">44dip</dimen>
+   
+   <dimen name="ArrowSize_List">26dip</dimen>
+	<dimen name="ArrowSize_Map">18dip</dimen>
+	<dimen name="TB_icon_Size">20dip</dimen>
     
     <dimen name="BtnSize">53dip</dimen>
     <dimen name="BtnTextSize">27dip</dimen>

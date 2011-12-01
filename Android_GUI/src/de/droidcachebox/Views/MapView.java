@@ -537,8 +537,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/*
-	 * public delegate void TileLoadedHandler(Bitmap bitmap, Descriptor desc);
-	 * public event TileLoadedHandler OnTileLoaded = null;
+	 * public delegate void TileLoadedHandler(Bitmap bitmap, Descriptor desc); public event TileLoadedHandler OnTileLoaded = null;
 	 */
 
 	/**
@@ -571,8 +570,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	public static Manager Manager = new Manager();
 
 	/**
-	 * Wunschzettel. Diese Deskriptoren werden von loaderthread geladen und
-	 * instanziiert
+	 * Wunschzettel. Diese Deskriptoren werden von loaderthread geladen und instanziiert
 	 */
 	ArrayList<Descriptor> wishlist = new ArrayList<Descriptor>();
 	private Lock wishlistLock = new ReentrantLock();
@@ -623,8 +621,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	public boolean showTitles = true;
 
 	/**
-	 * true, falls bei Mysterys mit Lösung (Final Waypoint) der Cache
-	 * ausgeblendet werden soll, wenn der Cache nicht selected ist.
+	 * true, falls bei Mysterys mit Lösung (Final Waypoint) der Cache ausgeblendet werden soll, wenn der Cache nicht selected ist.
 	 */
 	boolean hideCacheWithFinal = true;
 
@@ -639,8 +636,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	public boolean alignToCompass = false;
 
 	/**
-	 * Spiegelung des Logins bei Gc, damit ich das nicht dauernd aus der Config
-	 * lesen muss.
+	 * Spiegelung des Logins bei Gc, damit ich das nicht dauernd aus der Config lesen muss.
 	 */
 	// String gcLogin = "";
 
@@ -656,13 +652,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	PointD centerOsmSpace = new PointD(0, 0);
 
 	/*
-	 * /// /// Wegpunkt des Markers. Wird bei go to als Ziel gesetzt //
-	 * //Waypoint markerWaypoint = new Waypoint("MARKER",
+	 * /// /// Wegpunkt des Markers. Wird bei go to als Ziel gesetzt // //Waypoint markerWaypoint = new Waypoint("MARKER",
 	 * CacheTypes.ReferencePoint, "Marker", 0, 0, 0);
 	 */
 	/**
-	 * Der Kartenmittelpunkt. Wird dieser Wert überschrieben wird die Liste
-	 * sichtbarer Caches entsprechend aktualisiert.
+	 * Der Kartenmittelpunkt. Wird dieser Wert überschrieben wird die Liste sichtbarer Caches entsprechend aktualisiert.
 	 */
 	public Coordinate getCenter()
 	{
@@ -748,13 +742,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 	double adjustmentCurrentToCacheZoom = 1;
 	/*
-	 * ClickContext mapMenu = null; ClickContext markerMenu = null; ClickContext
-	 * layerMenu = null; ClickContext routeMenu = null; ClickContext viewMenu =
-	 * null; ClickButton removeMarkerButton = null; ClickButton hideFindsButton
-	 * = null; ClickButton showRatingButton = null; ClickButton showDTButton =
-	 * null; ClickButton showTitlesButton = null; ClickButton showCompassButton
-	 * = null; ClickButton nightmodeButton = null; List<ClickButton>
-	 * layerButtons = new List<ClickButton>();
+	 * ClickContext mapMenu = null; ClickContext markerMenu = null; ClickContext layerMenu = null; ClickContext routeMenu = null;
+	 * ClickContext viewMenu = null; ClickButton removeMarkerButton = null; ClickButton hideFindsButton = null; ClickButton showRatingButton
+	 * = null; ClickButton showDTButton = null; ClickButton showTitlesButton = null; ClickButton showCompassButton = null; ClickButton
+	 * nightmodeButton = null; List<ClickButton> layerButtons = new List<ClickButton>();
 	 */
 	int mapMaxCachesLabel = 12;
 	int mapMaxCachesDisplay = 10000;
@@ -771,78 +762,48 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		backBrush = new Paint();
 		backBrush.setColor(Color.argb(255, 201, 233, 203));
 		/*
-		 * MouseWheel += new MouseEventHandler(MapView_MouseWheel);
-		 * mapMaxCachesLabel = Config.settings.MapMaxCachesLabel"); showRating =
-		 * Config.settings.MapShowRating"); showDT =
-		 * Config.settings.MapShowDT"); showTitles =
-		 * Config.settings.MapShowTitles"); hideMyFinds =
-		 * Config.settings.MapHideMyFinds"); showCompass =
-		 * Config.settings.MapShowCompass"); nightMode =
-		 * Config.settings.nightMode"); Global.TargetChanged += new
-		 * Global.TargetChangedHandler(OnTargetChanged); lineHeight =
-		 * (int)this.CreateGraphics().MeasureString("M", Font).Height;
-		 * smallLineHeight = (int)this.CreateGraphics().MeasureString("M",
-		 * fontSmall).Height; mapMenu = new ClickContext(this); mapMenu.Add(new
-		 * ClickButton("Layer", null, showLayerMenu, null, null), false);
-		 * mapMenu.Add(new ClickButton("Center Point", null, showMarkerMenu,
-		 * null, null), false); mapMenu.Add(new ClickButton("Route", null,
-		 * showRouteMenu, null, null), false); mapMenu.Add(new
-		 * ClickButton("View", null, showViewMenu, null, null), false); viewMenu
-		 * = new ClickContext(this); viewMenu.Add(hideFindsButton = new
-		 * ClickButton("Hide finds", (hideMyFinds) ? Global.Icons[6] :
-		 * Global.Icons[7], hideFinds, null, null), false);
-		 * viewMenu.Add(showRatingButton = new ClickButton("Show Rating",
-		 * (showRating) ? Global.Icons[6] : Global.Icons[7], showRatingChanged,
-		 * null, null), false); viewMenu.Add(showDTButton = new
-		 * ClickButton("Show D/T", (showDT) ? Global.Icons[6] : Global.Icons[7],
-		 * showDTChanged, null, null), false); viewMenu.Add(showTitlesButton =
-		 * new ClickButton("Show Titles", (showTitles) ? Global.Icons[6] :
-		 * Global.Icons[7], showTitlesChanged, null, null), false);
-		 * viewMenu.Add(showCompassButton = new ClickButton("Show Compass",
-		 * (showCompass) ? Global.Icons[6] : Global.Icons[7],
-		 * showCompassChanged, null, null), false); viewMenu.Add(nightmodeButton
-		 * = new ClickButton("Enable Nightmode", (nightMode) ? Global.Icons[6] :
-		 * Global.Icons[7], enableNightmodeChanged, null, null), false);
-		 * markerMenu = new ClickContext(this); markerMenu.Add(new
-		 * ClickButton("Set", null, setMarker, null, null), false);
-		 * markerMenu.Add(removeMarkerButton = new ClickButton("Remove", null,
-		 * removeMarker, null, null, false), false); routeMenu = new
-		 * ClickContext(this); routeMenu.Add(new ClickButton("Route to WP",
-		 * null, showNavigationDialog, null, null), false); routeMenu.Add(new
-		 * ClickButton("Reset Route", null, resetRoute, null, null), false);
-		 * imageAttributes = new ImageAttributes();
-		 * imageAttributes.SetColorKey(Global.SmallStarIcons[0].GetPixel(0, 0),
-		 * Global.SmallStarIcons[0].GetPixel(0, 0));
-		 * colorKey.SetColorKey(Global.Icons[19].GetPixel(0, 0),
-		 * Global.Icons[19].GetPixel(0, 0));
+		 * MouseWheel += new MouseEventHandler(MapView_MouseWheel); mapMaxCachesLabel = Config.settings.MapMaxCachesLabel"); showRating =
+		 * Config.settings.MapShowRating"); showDT = Config.settings.MapShowDT"); showTitles = Config.settings.MapShowTitles"); hideMyFinds
+		 * = Config.settings.MapHideMyFinds"); showCompass = Config.settings.MapShowCompass"); nightMode = Config.settings.nightMode");
+		 * Global.TargetChanged += new Global.TargetChangedHandler(OnTargetChanged); lineHeight =
+		 * (int)this.CreateGraphics().MeasureString("M", Font).Height; smallLineHeight = (int)this.CreateGraphics().MeasureString("M",
+		 * fontSmall).Height; mapMenu = new ClickContext(this); mapMenu.Add(new ClickButton("Layer", null, showLayerMenu, null, null),
+		 * false); mapMenu.Add(new ClickButton("Center Point", null, showMarkerMenu, null, null), false); mapMenu.Add(new
+		 * ClickButton("Route", null, showRouteMenu, null, null), false); mapMenu.Add(new ClickButton("View", null, showViewMenu, null,
+		 * null), false); viewMenu = new ClickContext(this); viewMenu.Add(hideFindsButton = new ClickButton("Hide finds", (hideMyFinds) ?
+		 * Global.Icons[6] : Global.Icons[7], hideFinds, null, null), false); viewMenu.Add(showRatingButton = new ClickButton("Show Rating",
+		 * (showRating) ? Global.Icons[6] : Global.Icons[7], showRatingChanged, null, null), false); viewMenu.Add(showDTButton = new
+		 * ClickButton("Show D/T", (showDT) ? Global.Icons[6] : Global.Icons[7], showDTChanged, null, null), false);
+		 * viewMenu.Add(showTitlesButton = new ClickButton("Show Titles", (showTitles) ? Global.Icons[6] : Global.Icons[7],
+		 * showTitlesChanged, null, null), false); viewMenu.Add(showCompassButton = new ClickButton("Show Compass", (showCompass) ?
+		 * Global.Icons[6] : Global.Icons[7], showCompassChanged, null, null), false); viewMenu.Add(nightmodeButton = new
+		 * ClickButton("Enable Nightmode", (nightMode) ? Global.Icons[6] : Global.Icons[7], enableNightmodeChanged, null, null), false);
+		 * markerMenu = new ClickContext(this); markerMenu.Add(new ClickButton("Set", null, setMarker, null, null), false);
+		 * markerMenu.Add(removeMarkerButton = new ClickButton("Remove", null, removeMarker, null, null, false), false); routeMenu = new
+		 * ClickContext(this); routeMenu.Add(new ClickButton("Route to WP", null, showNavigationDialog, null, null), false);
+		 * routeMenu.Add(new ClickButton("Reset Route", null, resetRoute, null, null), false); imageAttributes = new ImageAttributes();
+		 * imageAttributes.SetColorKey(Global.SmallStarIcons[0].GetPixel(0, 0), Global.SmallStarIcons[0].GetPixel(0, 0));
+		 * colorKey.SetColorKey(Global.Icons[19].GetPixel(0, 0), Global.Icons[19].GetPixel(0, 0));
 		 */
 		String currentLayerName = Config.settings.CurrentMapLayer.getValue();
 		CurrentLayer = Manager.GetLayerByName((currentLayerName == "") ? "Mapnik" : currentLayerName, currentLayerName, "");
 
 		// layerMenu = new ClickContext(this);
 		/*
-		 * OnTileLoaded += new TileLoadedHandler(MapView_OnTileLoaded); if
-		 * (Config.settings.RouteOverlay").Length > 0 &&
-		 * File.Exists(Config.settings.RouteOverlay")))
-		 * Routes.Add(LoadRoute(Config.settings.RouteOverlay"), new
-		 * Pen(Color.Purple, 4), Config.settings.TrackDistance"))); else
+		 * OnTileLoaded += new TileLoadedHandler(MapView_OnTileLoaded); if (Config.settings.RouteOverlay").Length > 0 &&
+		 * File.Exists(Config.settings.RouteOverlay"))) Routes.Add(LoadRoute(Config.settings.RouteOverlay"), new Pen(Color.Purple, 4),
+		 * Config.settings.TrackDistance"))); else
 		 */
 
 		RouteOverlay.Routes.clear();
 		/*
-		 * Paint paint = new Paint(); paint.setColor(Color.BLUE);
-		 * paint.setStrokeWidth(4); Global.AktuelleRoute = new
-		 * RouteOverlay.Route(paint, "actual Track");
-		 * Global.AktuelleRoute.ShowRoute = false;
-		 * RouteOverlay.Routes.add(Global.AktuelleRoute);
+		 * Paint paint = new Paint(); paint.setColor(Color.BLUE); paint.setStrokeWidth(4); Global.AktuelleRoute = new
+		 * RouteOverlay.Route(paint, "actual Track"); Global.AktuelleRoute.ShowRoute = false; RouteOverlay.Routes.add(Global.AktuelleRoute);
 		 */
 		// Load Routes for Autoload
 		/*
-		 * File dir = new File(Config.settings.MapPackFolder")); String[] files
-		 * = dir.list(); if (!(files == null)) { if (files.length>0) { for
-		 * (String file : files) {
-		 * MapView.Manager.LoadMapPack(Config.settings.MapPackFolder") + "/" +
-		 * file); } } }
+		 * File dir = new File(Config.settings.MapPackFolder")); String[] files = dir.list(); if (!(files == null)) { if (files.length>0) {
+		 * for (String file : files) { MapView.Manager.LoadMapPack(Config.settings.MapPackFolder") + "/" + file); } } }
 		 */
 		String trackPath = Config.settings.TrackFolder.getValue() + "/Autoload";
 		if (FileIO.DirectoryExists(trackPath))
@@ -904,21 +865,16 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/*
-	 * void MapView_MouseWheel(object sender, MouseEventArgs e) { if (e.Delta >
-	 * 0) zoomIn(); else zoomOut(); }
+	 * void MapView_MouseWheel(object sender, MouseEventArgs e) { if (e.Delta > 0) zoomIn(); else zoomOut(); }
 	 */
 	void OnTileLoaded(Bitmap bitmap, Descriptor desc)
 	{
 		// canvas = new Canvas(bitmap);
 		// RouteOverlay.RenderRoute(canvas, bitmap, desc, , );
 		/*
-		 * if (nightMode) { unsafe { Rectangle bounds = new Rectangle(0, 0,
-		 * bitmap.Size.Width, bitmap.Size.Height); BitmapData bitmapData =
-		 * bitmap.LockBits(bounds, ImageLockMode.ReadWrite,
-		 * PixelFormat.Format32bppRgb); byte* p =
-		 * (byte*)bitmapData.Scan0.ToPointer(); for (int i = 0; i <
-		 * bitmapData.Height * bitmapData.Stride; i++) { p[i] = (byte)(255 -
-		 * p[i]); }; bitmap.UnlockBits(bitmapData); }; };
+		 * if (nightMode) { unsafe { Rectangle bounds = new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height); BitmapData bitmapData =
+		 * bitmap.LockBits(bounds, ImageLockMode.ReadWrite, PixelFormat.Format32bppRgb); byte* p = (byte*)bitmapData.Scan0.ToPointer(); for
+		 * (int i = 0; i < bitmapData.Height * bitmapData.Stride; i++) { p[i] = (byte)(255 - p[i]); }; bitmap.UnlockBits(bitmapData); }; };
 		 */
 
 	}
@@ -930,9 +886,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		if (cache == null) return;
 		/*
-		 * if (InvokeRequired) { Invoke(new
-		 * targetChangedDelegate(OnTargetChanged), new object[] { cache,
-		 * waypoint }); return; }
+		 * if (InvokeRequired) { Invoke(new targetChangedDelegate(OnTargetChanged), new object[] { cache, waypoint }); return; }
 		 */
 		positionInitialized = true;
 
@@ -947,16 +901,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/*
-	 * delegate void targetChangedDelegate(Cache cache, Waypoint waypoint); void
-	 * OnTargetChanged(Cache cache, Waypoint waypoint) { if (Global.autoResort)
-	 * return; if (cache == null) return; if (InvokeRequired) { Invoke(new
-	 * targetChangedDelegate(OnTargetChanged), new object[] { cache, waypoint
-	 * }); return; } positionInitialized = true; // tabButtonTrackPosition.Down
-	 * = false; Coordinate target = (waypoint != null) ? new
-	 * Coordinate(waypoint.Latitude, waypoint.Longitude) : new
-	 * Coordinate(cache.Latitude, cache.Longitude); startAnimation(target); }
-	 * public new void Dispose() { if (loaderThread != null)
-	 * loaderThread.Abort(); base.Dispose(); }
+	 * delegate void targetChangedDelegate(Cache cache, Waypoint waypoint); void OnTargetChanged(Cache cache, Waypoint waypoint) { if
+	 * (Global.autoResort) return; if (cache == null) return; if (InvokeRequired) { Invoke(new targetChangedDelegate(OnTargetChanged), new
+	 * object[] { cache, waypoint }); return; } positionInitialized = true; // tabButtonTrackPosition.Down = false; Coordinate target =
+	 * (waypoint != null) ? new Coordinate(waypoint.Latitude, waypoint.Longitude) : new Coordinate(cache.Latitude, cache.Longitude);
+	 * startAnimation(target); } public new void Dispose() { if (loaderThread != null) loaderThread.Abort(); base.Dispose(); }
 	 */
 	public void OnShow()
 	{
@@ -975,10 +924,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		mapMaxCachesDisplayLarge = 100;
 		zoomCross = 15;
 		/*
-		 * gcLogin = Config.settings.GcLogin"); mapMaxCachesDisplay =
-		 * Config.settings.MapMaxCachesDisplay_config");
-		 * mapMaxCachesDisplayLarge =
-		 * Config.settings.mapMaxCachesDisplayLarge_config");
+		 * gcLogin = Config.settings.GcLogin"); mapMaxCachesDisplay = Config.settings.MapMaxCachesDisplay_config"); mapMaxCachesDisplayLarge
+		 * = Config.settings.mapMaxCachesDisplayLarge_config");
 		 */
 		zoomCross = Config.settings.ZoomCross.getValue();
 
@@ -1085,14 +1032,12 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/*
-	 * public void OnHide() { if (this.DesignMode) return;
-	 * zoomScaleTimer.Enabled = false; if (offScreenBmp != null) {
-	 * graphics.Dispose(); offScreenBmp.Dispose(); } offScreenBmp = null; }
+	 * public void OnHide() { if (this.DesignMode) return; zoomScaleTimer.Enabled = false; if (offScreenBmp != null) { graphics.Dispose();
+	 * offScreenBmp.Dispose(); } offScreenBmp = null; }
 	 */
 	/**
-	 * Läd eine Kachel und legt sie in loadedTiles ab. Implementiert den
-	 * WaitCallback-Delegaten <param name="state">Descriptor der zu ladenen
-	 * Kachel. Typlos, damit man es als WorkItem queuen kann!</param>
+	 * Läd eine Kachel und legt sie in loadedTiles ab. Implementiert den WaitCallback-Delegaten <param name="state">Descriptor der zu
+	 * ladenen Kachel. Typlos, damit man es als WorkItem queuen kann!</param>
 	 */
 	@SuppressWarnings("unchecked")
 	protected void LoadTile(Object state)
@@ -1104,45 +1049,37 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		Bitmap bitmap = Manager.LoadLocalBitmap(CurrentLayer, desc);
 		/*
-		 * Canvas canv = new Canvas(bitmap); RouteOverlay.RenderRoute(canv,
-		 * bitmap, desc, , );
+		 * Canvas canv = new Canvas(bitmap); RouteOverlay.RenderRoute(canv, bitmap, desc, , );
 		 */
 
 		/*
-		 * if (bitmap != null) { // error while painting bitmaps with indexed
-		 * format (png from Mapnik // -> create a copy of the bitmap if
-		 * ((bitmap.PixelFormat == PixelFormat.Format1bppIndexed) ||
-		 * (bitmap.PixelFormat == PixelFormat.Format4bppIndexed) ||
-		 * (bitmap.PixelFormat == PixelFormat.Format8bppIndexed) ||
-		 * (bitmap.PixelFormat == PixelFormat.Indexed)) bitmap = new
+		 * if (bitmap != null) { // error while painting bitmaps with indexed format (png from Mapnik // -> create a copy of the bitmap if
+		 * ((bitmap.PixelFormat == PixelFormat.Format1bppIndexed) || (bitmap.PixelFormat == PixelFormat.Format4bppIndexed) ||
+		 * (bitmap.PixelFormat == PixelFormat.Format8bppIndexed) || (bitmap.PixelFormat == PixelFormat.Indexed)) bitmap = new
 		 * Bitmap(bitmap); }
 		 */
 		Tile.TileState tileState = Tile.TileState.Disposed;
 
 		if (bitmap == null)
 		{
-			if (Config.settings.AllowInternetAccess.getValue())
+
+			wishlistLock.lock();
+			try
 			{
-				wishlistLock.lock();
-				try
+				wishlist.add(desc);
+				if (loaderThread == null)
 				{
-					wishlist.add(desc);
-					if (loaderThread == null)
-					{
-						loaderThread = new loaderThread();
-						loaderThread.execute(wishlist);
-						/*
-						 * loaderThread = new Thread(new
-						 * ThreadStart(loaderThreadEntryPoint));
-						 * loaderThread.Priority = ThreadPriority.BelowNormal;
-						 * loaderThread.Start();
-						 */
-					}
+					loaderThread = new loaderThread();
+					loaderThread.execute(wishlist);
+					/*
+					 * loaderThread = new Thread(new ThreadStart(loaderThreadEntryPoint)); loaderThread.Priority =
+					 * ThreadPriority.BelowNormal; loaderThread.Start();
+					 */
 				}
-				finally
-				{
-					wishlistLock.unlock();
-				}
+			}
+			finally
+			{
+				wishlistLock.unlock();
 			}
 
 			// Upscale coarser map tile
@@ -1155,8 +1092,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		if (bitmap == null) return;
 
 		/*
-		 * if (Config.settings.OsmDpiAwareRendering") && ( != 1 || != 1))
-		 * scaleUpBitmap(bitmap);
+		 * if (Config.settings.OsmDpiAwareRendering") && ( != 1 || != 1)) scaleUpBitmap(bitmap);
 		 */
 
 		addLoadedTile(desc, bitmap, tileState);
@@ -1172,9 +1108,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/**
-	 * Zeichnet eine Kachel mit den Tracks und legt sie in trackTiles ab. <param
-	 * name="state">Descriptor der zu ladenen Kachel. Typlos, damit man es als
-	 * WorkItem queuen kann!</param>
+	 * Zeichnet eine Kachel mit den Tracks und legt sie in trackTiles ab. <param name="state">Descriptor der zu ladenen Kachel. Typlos,
+	 * damit man es als WorkItem queuen kann!</param>
 	 */
 	protected void LoadTrackTile(Descriptor desc)
 	{
@@ -1470,12 +1405,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 								continue;
 							}
 							/*
-							 * if (OnTileLoaded != null) OnTileLoaded(bitmap,
-							 * desc);
+							 * if (OnTileLoaded != null) OnTileLoaded(bitmap, desc);
 							 */
 							/*
-							 * if (Config.settings.OsmDpiAwareRendering") && (
-							 * != 1 || != 1)) scaleUpBitmap(ref bitmap);
+							 * if (Config.settings.OsmDpiAwareRendering") && ( != 1 || != 1)) scaleUpBitmap(ref bitmap);
 							 */
 
 							addLoadedTile(desc, bitmap, Tile.TileState.Present);
@@ -1498,18 +1431,12 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 							continue;
 						}
 						/*
-						 * boolean LowMemory =
-						 * Global.GetAvailableDiscSpace(Config
-						 * .GetString("TileCacheFolder")) < ((long)1024 * 1024);
-						 * if (LowMemory) { MessageBox.Show(
+						 * boolean LowMemory = Global.GetAvailableDiscSpace(Config .GetString("TileCacheFolder")) < ((long)1024 * 1024); if
+						 * (LowMemory) { MessageBox.Show(
 						 * "Device is running low on memory! Internet access will shut down now. Please free some memory e.g. by deleting unused tiles!"
-						 * , "Warning!", MessageBoxButtons.OK,
-						 * MessageBoxIcon.Exclamation,
-						 * MessageBoxDefaultButton.Button1); #if DEBUG
-						 * Global.AddLog(
-						 * "MapView.loaderThreadEntryPoint: device is low on memory"
-						 * ); #endif Config.settings.AllowInternetAccess",
-						 * false); Config.AcceptChanges(); break; }
+						 * , "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1); #if DEBUG
+						 * Global.AddLog( "MapView.loaderThreadEntryPoint: device is low on memory" ); #endif
+						 * Config.settings.AllowInternetAccess", false); Config.AcceptChanges(); break; }
 						 */
 					}
 					catch (Exception exc)
@@ -1554,44 +1481,27 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/*
-	 * void loaderThreadEntryPoint() { try { Descriptor desc = null; while
-	 * (true) { lock (wishlist) { if (wishlist.Count == 0) break; // Den
-	 * raussuchen, der im Augenblick am meisten sichtbar ist int minDist =
-	 * int.MaxValue; // Alle beantragten Kacheln die nicht der // aktuellen
-	 * Zoomstufe entsprechen, rausschmeissen for (int i = 0; i < wishlist.Count;
-	 * i++) if (wishlist[i].Zoom != Zoom) { loadedTiles.Remove(wishlist[i]);
-	 * wishlist.RemoveAt(i); i = -1; } foreach (Descriptor candidate in
-	 * wishlist) { int dist = int.MaxValue; if (candidate.Zoom == Zoom) { Point
-	 * p1 = ToScreen(candidate.X, candidate.Y, candidate.Zoom); p1.X +=
-	 * (int)(128 * ); p1.Y += (int)(128 * ); dist = (p1.X - halfWidth) * (p1.X -
-	 * halfWidth) + (p1.Y - halfHeight) * (p1.Y - halfHeight); } if (dist <
-	 * minDist) { desc = candidate; minDist = dist; } } wishlist.Remove(desc); }
-	 * try { if (Manager.CacheTile(CurrentLayer, desc)) { Bitmap bitmap =
-	 * MapView.Manager.LoadLocalBitmap(CurrentLayer, desc); if (bitmap == null)
-	 * { // Laden der Kachel fehlgeschlagen! Tile wieder aus loadedTiles //
-	 * entfernen loadedTiles.Remove(desc); continue; } if (OnTileLoaded != null)
-	 * OnTileLoaded(bitmap, desc); if (Config.settings.OsmDpiAwareRendering") &&
-	 * ( != 1 || != 1)) scaleUpBitmap(ref bitmap); addLoadedTile(desc, bitmap,
-	 * Tile.TileState.Present); // Kachel erfolgreich geladen. Wenn die Kachel
-	 * sichtbar ist // kann man die Karte ja gut mal neu rendern! tilesFinished
-	 * = true; //if (tileVisible(loadedTiles[desc])) Render(true); } else { //
-	 * Kachel nicht geladen, noch ein Versuch! //lock (loadedTiles) // if
-	 * (loadedTiles.ContainsKey(desc)) // loadedTiles.Remove(desc); continue; }
-	 * bool LowMemory =
-	 * Global.GetAvailableDiscSpace(Config.settings.TileCacheFolder")) <
-	 * ((long)1024 * 1024); if (LowMemory) { MessageBox.Show(
-	 * "Device is running low on memory! Internet access will shut down now. Please free some memory e.g. by deleting unused tiles!"
-	 * , "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation,
-	 * MessageBoxDefaultButton.Button1); #if DEBUG
-	 * Global.AddLog("MapView.loaderThreadEntryPoint: device is low on memory");
-	 * #endif Config.settings.AllowInternetAccess", false);
-	 * Config.AcceptChanges(); break; } } catch (Exception exc) { // Fehler
-	 * aufgetreten! Kachel nochmal laden! if (desc != null) lock (loadedTiles)
-	 * if (loadedTiles.ContainsKey(desc)) loadedTiles.Remove(desc); #if DEBUG
-	 * Global.AddLog("MapView.loaderThreadEntryPoint: exception caught: " +
-	 * exc.ToString()); #endif } } lock (wishlist) loaderThread = null; } catch
-	 * (ThreadAbortException) { } finally { loaderThread = null; Render(true); }
-	 * }
+	 * void loaderThreadEntryPoint() { try { Descriptor desc = null; while (true) { lock (wishlist) { if (wishlist.Count == 0) break; // Den
+	 * raussuchen, der im Augenblick am meisten sichtbar ist int minDist = int.MaxValue; // Alle beantragten Kacheln die nicht der //
+	 * aktuellen Zoomstufe entsprechen, rausschmeissen for (int i = 0; i < wishlist.Count; i++) if (wishlist[i].Zoom != Zoom) {
+	 * loadedTiles.Remove(wishlist[i]); wishlist.RemoveAt(i); i = -1; } foreach (Descriptor candidate in wishlist) { int dist =
+	 * int.MaxValue; if (candidate.Zoom == Zoom) { Point p1 = ToScreen(candidate.X, candidate.Y, candidate.Zoom); p1.X += (int)(128 * );
+	 * p1.Y += (int)(128 * ); dist = (p1.X - halfWidth) * (p1.X - halfWidth) + (p1.Y - halfHeight) * (p1.Y - halfHeight); } if (dist <
+	 * minDist) { desc = candidate; minDist = dist; } } wishlist.Remove(desc); } try { if (Manager.CacheTile(CurrentLayer, desc)) { Bitmap
+	 * bitmap = MapView.Manager.LoadLocalBitmap(CurrentLayer, desc); if (bitmap == null) { // Laden der Kachel fehlgeschlagen! Tile wieder
+	 * aus loadedTiles // entfernen loadedTiles.Remove(desc); continue; } if (OnTileLoaded != null) OnTileLoaded(bitmap, desc); if
+	 * (Config.settings.OsmDpiAwareRendering") && ( != 1 || != 1)) scaleUpBitmap(ref bitmap); addLoadedTile(desc, bitmap,
+	 * Tile.TileState.Present); // Kachel erfolgreich geladen. Wenn die Kachel sichtbar ist // kann man die Karte ja gut mal neu rendern!
+	 * tilesFinished = true; //if (tileVisible(loadedTiles[desc])) Render(true); } else { // Kachel nicht geladen, noch ein Versuch! //lock
+	 * (loadedTiles) // if (loadedTiles.ContainsKey(desc)) // loadedTiles.Remove(desc); continue; } bool LowMemory =
+	 * Global.GetAvailableDiscSpace(Config.settings.TileCacheFolder")) < ((long)1024 * 1024); if (LowMemory) { MessageBox.Show(
+	 * "Device is running low on memory! Internet access will shut down now. Please free some memory e.g. by deleting unused tiles!" ,
+	 * "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1); #if DEBUG
+	 * Global.AddLog("MapView.loaderThreadEntryPoint: device is low on memory"); #endif Config.settings.AllowInternetAccess", false);
+	 * Config.AcceptChanges(); break; } } catch (Exception exc) { // Fehler aufgetreten! Kachel nochmal laden! if (desc != null) lock
+	 * (loadedTiles) if (loadedTiles.ContainsKey(desc)) loadedTiles.Remove(desc); #if DEBUG
+	 * Global.AddLog("MapView.loaderThreadEntryPoint: exception caught: " + exc.ToString()); #endif } } lock (wishlist) loaderThread = null;
+	 * } catch (ThreadAbortException) { } finally { loaderThread = null; Render(true); } }
 	 */
 	private Drawable getUnderlayIcon(Cache cache, Waypoint waypoint)
 	{
@@ -1629,8 +1539,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/**
-	 * Sucht aus dem aktuellen Query die Caches raus, die dargestellt werden
-	 * sollen und aktualisiert wpToRender entsprechend.
+	 * Sucht aus dem aktuellen Query die Caches raus, die dargestellt werden sollen und aktualisiert wpToRender entsprechend.
 	 */
 	public void updateCacheList()
 	{
@@ -1930,10 +1839,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/*
-	 * Pen boldRedPen = new Pen(Color.Red, 4); Pen boldOrangePen = new
-	 * Pen(Color.Orange, 4); Pen largeGreenPen = new Pen(Color.Green, 6);
-	 * ImageAttributes colorKey = new ImageAttributes(); ImageAttributes
-	 * imageAttributes = null;
+	 * Pen boldRedPen = new Pen(Color.Red, 4); Pen boldOrangePen = new Pen(Color.Orange, 4); Pen largeGreenPen = new Pen(Color.Green, 6);
+	 * ImageAttributes colorKey = new ImageAttributes(); ImageAttributes imageAttributes = null;
 	 */
 	void renderCaches()
 	{
@@ -2122,16 +2029,11 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				canvasOverlay.restore();
 				imgDx.setBounds(bounds);
 				/*
-				 * Bitmap imgTx =
-				 * Global.SmallStarIcons[(int)Math.Min(wpi.Cache.Terrain * 2, 5
-				 * * 2)]; Bitmap imgT = new Bitmap(imgTx.Height, imgTx.Width);
-				 * InternalRotateImage(270, imgTx, imgT); int
-				 * halfSmallStarHeightT = (int)(((double)imgT.Height / 2.0) * );
-				 * int smallStarHeightT = (int)((double)imgT.Height * );
-				 * graphics.DrawImage(imgT, new Rectangle(x + halfIconWidth + 4,
-				 * y + halfIconWidth - smallStarHeightT, smallStarHeight,
-				 * smallStarHeightT), 0, 0, imgT.Width, imgT.Height,
-				 * GraphicsUnit.Pixel, imageAttributes);
+				 * Bitmap imgTx = Global.SmallStarIcons[(int)Math.Min(wpi.Cache.Terrain * 2, 5 * 2)]; Bitmap imgT = new Bitmap(imgTx.Height,
+				 * imgTx.Width); InternalRotateImage(270, imgTx, imgT); int halfSmallStarHeightT = (int)(((double)imgT.Height / 2.0) * );
+				 * int smallStarHeightT = (int)((double)imgT.Height * ); graphics.DrawImage(imgT, new Rectangle(x + halfIconWidth + 4, y +
+				 * halfIconWidth - smallStarHeightT, smallStarHeight, smallStarHeightT), 0, 0, imgT.Width, imgT.Height, GraphicsUnit.Pixel,
+				 * imageAttributes);
 				 */
 			}
 
@@ -2193,9 +2095,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/**
-	 * Überprüft, ob die übergebene Kachel im Darstellungsbereich des Controls
-	 * liegt <param name="tile">Die zu prüfende Kachel</param> <returns>true,
-	 * wenn die Kachel sichtbar ist, sonst false</returns>
+	 * Überprüft, ob die übergebene Kachel im Darstellungsbereich des Controls liegt <param name="tile">Die zu prüfende Kachel</param>
+	 * <returns>true, wenn die Kachel sichtbar ist, sonst false</returns>
 	 */
 	boolean tileVisible(Descriptor tile)
 	{
@@ -2370,8 +2271,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 					// Aufruf ggf. im richtigen Thread starten
 					/*
-					 * if (InvokeRequired) { Invoke(new EmptyDelegate(Render),
-					 * overrideRepaintInteligence); return; }
+					 * if (InvokeRequired) { Invoke(new EmptyDelegate(Render), overrideRepaintInteligence); return; }
 					 */
 
 					// Wenn sich bei der Ansicht nichts getan hat braucht sie
@@ -2395,8 +2295,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 						lastPosition.Longitude = GlobalCore.LastValidPosition.Longitude;
 						lastHeading = 0;
 						/*
-						 * lastHeading = (Global.Locator != null) ?
-						 * Global.Locator.Heading : 0;
+						 * lastHeading = (Global.Locator != null) ? Global.Locator.Heading : 0;
 						 */
 						lastZoom = Zoom;
 						lastRenderedPosition.X = screenCenter.X;
@@ -2558,16 +2457,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 						{
 							can.drawBitmap(offScreenBmp, 0, 0, null);
 							/*
-							 * if (!debugString1.equals("") ||
-							 * !debugString2.equals("")) { Paint debugPaint =
-							 * new Paint(); debugPaint.setTextSize(20);
-							 * debugPaint.setColor(Color.WHITE);
-							 * debugPaint.setStyle(Style.FILL); can.drawRect(new
-							 * Rect(50, 70, 300, 130), debugPaint);
-							 * debugPaint.setColor(Color.BLACK);
-							 * can.drawText(debugString1, 50, 100, debugPaint);
-							 * can.drawText(debugString2, 50, 130, debugPaint);
-							 * }
+							 * if (!debugString1.equals("") || !debugString2.equals("")) { Paint debugPaint = new Paint();
+							 * debugPaint.setTextSize(20); debugPaint.setColor(Color.WHITE); debugPaint.setStyle(Style.FILL);
+							 * can.drawRect(new Rect(50, 70, 300, 130), debugPaint); debugPaint.setColor(Color.BLACK);
+							 * can.drawText(debugString1, 50, 100, debugPaint); can.drawText(debugString2, 50, 130, debugPaint); }
 							 */
 							holder.unlockCanvasAndPost(can);
 						}
@@ -2725,19 +2618,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/*
-	 * Global.BlendFunction blend = new Global.BlendFunction(100, 0); Bitmap
-	 * blackPixelImage = new Bitmap(1, 1); bool alphaBlendingAvailable = true;
-	 * Brush grayBrush = new SolidBrush(Color.DarkGray); private void
-	 * transparentRectangle(int x, int y, int width, int height, byte alpha) {
-	 * if (alphaBlendingAvailable) { try { blend.SourceConstantAlpha = alpha;
-	 * Graphics graphicsPixel = Graphics.FromImage(blackPixelImage); IntPtr
-	 * hdcPixel = graphicsPixel.GetHdc(); IntPtr hdcGraphics =
-	 * graphics.GetHdc(); try { Global.AlphaBlend(hdcGraphics, x, y, width,
-	 * height, hdcPixel, 0, 0, 1, 1, blend); } finally {
-	 * graphics.ReleaseHdc(hdcGraphics); graphicsPixel.ReleaseHdc(hdcPixel); }
-	 * graphicsPixel.Dispose(); return; } catch (Exception) {
-	 * alphaBlendingAvailable = false; } } graphics.FillRectangle(grayBrush, x,
-	 * y, width, height); }
+	 * Global.BlendFunction blend = new Global.BlendFunction(100, 0); Bitmap blackPixelImage = new Bitmap(1, 1); bool alphaBlendingAvailable
+	 * = true; Brush grayBrush = new SolidBrush(Color.DarkGray); private void transparentRectangle(int x, int y, int width, int height, byte
+	 * alpha) { if (alphaBlendingAvailable) { try { blend.SourceConstantAlpha = alpha; Graphics graphicsPixel =
+	 * Graphics.FromImage(blackPixelImage); IntPtr hdcPixel = graphicsPixel.GetHdc(); IntPtr hdcGraphics = graphics.GetHdc(); try {
+	 * Global.AlphaBlend(hdcGraphics, x, y, width, height, hdcPixel, 0, 0, 1, 1, blend); } finally { graphics.ReleaseHdc(hdcGraphics);
+	 * graphicsPixel.ReleaseHdc(hdcPixel); } graphicsPixel.Dispose(); return; } catch (Exception) { alphaBlendingAvailable = false; } }
+	 * graphics.FillRectangle(grayBrush, x, y, width, height); }
 	 */
 	LinkedList<Descriptor> queuedTiles = new LinkedList<Descriptor>();
 	private Lock queuedTilesLock = new ReentrantLock();
@@ -2959,19 +2846,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/*
-	 * void queueProcessorEntryPoint() { bool queueEmpty = false; try { do {
-	 * Descriptor desc = null; lock (queuedTiles) desc = queuedTiles.Dequeue();
-	 * if (desc.Zoom == this.Zoom) LoadTile(desc); else { // Da das Image fur
-	 * diesen Tile nicht geladen wurde, da der Zoom-Faktor des Tiles nicht
-	 * gleich // dem aktuellen ist muss dieser Tile wieder aus loadedTile
-	 * entfernt werden, da sonst bei // spterem Wechsel des Zoom-Faktors dieses
-	 * Tile nicht angezeigt wird. // Dies passiert bei schnellem Wechsel des
-	 * Zoom-Faktors, wenn noch nicht alle aktuellen Tiles geladen waren. if
-	 * (loadedTiles.ContainsKey(desc)) loadedTiles.Remove(desc); } lock
-	 * (queuedTiles) queueEmpty = queuedTiles.Count < 1; } while (!queueEmpty);
-	 * } catch (Exception exc) { string forDebug = exc.Message; } finally { //
-	 * damit im Falle einer Exception der Thread neu gestartet wird
-	 * queueProcessor = null; } }
+	 * void queueProcessorEntryPoint() { bool queueEmpty = false; try { do { Descriptor desc = null; lock (queuedTiles) desc =
+	 * queuedTiles.Dequeue(); if (desc.Zoom == this.Zoom) LoadTile(desc); else { // Da das Image fur diesen Tile nicht geladen wurde, da der
+	 * Zoom-Faktor des Tiles nicht gleich // dem aktuellen ist muss dieser Tile wieder aus loadedTile entfernt werden, da sonst bei //
+	 * spterem Wechsel des Zoom-Faktors dieses Tile nicht angezeigt wird. // Dies passiert bei schnellem Wechsel des Zoom-Faktors, wenn noch
+	 * nicht alle aktuellen Tiles geladen waren. if (loadedTiles.ContainsKey(desc)) loadedTiles.Remove(desc); } lock (queuedTiles)
+	 * queueEmpty = queuedTiles.Count < 1; } while (!queueEmpty); } catch (Exception exc) { string forDebug = exc.Message; } finally { //
+	 * damit im Falle einer Exception der Thread neu gestartet wird queueProcessor = null; } }
 	 */
 	Rect getTileRange(float rangeFactor)
 	{
@@ -3105,8 +2986,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/**
-	 * an dieser x-Koordinate beginnt die Skala. Muss beim Resize neu gesetzt
-	 * werden
+	 * an dieser x-Koordinate beginnt die Skala. Muss beim Resize neu gesetzt werden
 	 */
 	int scaleLeft;
 
@@ -3116,13 +2996,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	int scaleWidth;
 	Bitmap offScreenBmp = null;
 	/*
-	 * private void MapView_Resize(object sender, EventArgs e) { halfHeight =
-	 * Height / 2; halfWidth = Width / 2; width = Width; height = Height;
-	 * scaleLeft = 0;// button2.Left + button2.Width + lineHeight; scaleWidth =
-	 * width - scaleLeft - (int)this.CreateGraphics().MeasureString("100km ",
-	 * Font).Width + 1; zoomChanged(); if (offScreenBmp != null) {
-	 * graphics.Dispose(); offScreenBmp.Dispose(); } offScreenBmp = new
-	 * Bitmap(Math.Max(Width, 1), Math.Max(Height, 1)); graphics =
+	 * private void MapView_Resize(object sender, EventArgs e) { halfHeight = Height / 2; halfWidth = Width / 2; width = Width; height =
+	 * Height; scaleLeft = 0;// button2.Left + button2.Width + lineHeight; scaleWidth = width - scaleLeft -
+	 * (int)this.CreateGraphics().MeasureString("100km ", Font).Width + 1; zoomChanged(); if (offScreenBmp != null) { graphics.Dispose();
+	 * offScreenBmp.Dispose(); } offScreenBmp = new Bitmap(Math.Max(Width, 1), Math.Max(Height, 1)); graphics =
 	 * Graphics.FromImage(offScreenBmp); }
 	 */
 	boolean dragging = false;
@@ -3305,11 +3182,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/*
-	 * Brush redBrush = new SolidBrush(Color.Red); Pen blackPen = new
-	 * Pen(Color.Black); Pen bluePen = new Pen(Color.Magenta); Pen redPen = new
-	 * Pen(Color.Red, 2); Pen goldenrodPen = new Pen(Color.Goldenrod, 2); Brush
-	 * blueBrush = new SolidBrush(Color.Blue); Brush goldenrodBrush = new
-	 * SolidBrush(Color.Goldenrod); Pen lightBluePen = new Pen(Color.LightBlue);
+	 * Brush redBrush = new SolidBrush(Color.Red); Pen blackPen = new Pen(Color.Black); Pen bluePen = new Pen(Color.Magenta); Pen redPen =
+	 * new Pen(Color.Red, 2); Pen goldenrodPen = new Pen(Color.Goldenrod, 2); Brush blueBrush = new SolidBrush(Color.Blue); Brush
+	 * goldenrodBrush = new SolidBrush(Color.Goldenrod); Pen lightBluePen = new Pen(Color.LightBlue);
 	 */
 
 	Point myPointOnScreen = new Point();
@@ -3324,12 +3199,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 					Descriptor.LatitudeToTileY(Zoom, GlobalCore.LastValidPosition.Latitude), Zoom);
 
 			/*
-			 * debugString1 =
-			 * String.valueOf(Global.Locator.getCompassHeading()); if
-			 * (Global.Locator.getLocation() != null) debugString2 =
-			 * Global.Locator.getLocation().getBearing() + " - " +
-			 * Global.Locator.getLocation().getSpeed() * 3600 / 1000 + "kmh";
-			 * else debugString2 = "";
+			 * debugString1 = String.valueOf(Global.Locator.getCompassHeading()); if (Global.Locator.getLocation() != null) debugString2 =
+			 * Global.Locator.getLocation().getBearing() + " - " + Global.Locator.getLocation().getSpeed() * 3600 / 1000 + "kmh"; else
+			 * debugString2 = "";
 			 */
 
 			double courseRad = Global.Locator.getHeading() * Math.PI / 180.0;
@@ -3342,7 +3214,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			MyColor = Color.RED;
 			if (lastUsedCompass) MyColor = Color.BLUE; // bei magnet. Kompass
 			// first triangle
-			long size = Math.round(1.8 * lineHeight);
+			long size = Math.round(1.8 * Sizes.getArrowScaleMap());
 			Path path = triaglePath(myPointOnScreen, size, dirX, dirY);
 			paint.setColor(MyColor); // bei magnet. Kompass
 			if (Config.settings.PositionAtVertex.getValue() || Config.settings.PositionMarkerTransparent.getValue())
@@ -3381,13 +3253,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			}
 		}
 		/*
-		 * // Marker rendern if (Global.Marker.Valid) { Point pt =
-		 * ToScreen(Descriptor.LongitudeToTileX(Zoom, Global.Marker.Longitude),
-		 * Descriptor.LatitudeToTileY(Zoom, Global.Marker.Latitude), Zoom); int
-		 * width = lineHeight / 3; graphics.FillEllipse(redBrush, pt.X - width,
-		 * pt.Y - width, width + width, width + width);
-		 * graphics.DrawEllipse(blackPen, pt.X - width, pt.Y - width, width +
-		 * width, width + width); }
+		 * // Marker rendern if (Global.Marker.Valid) { Point pt = ToScreen(Descriptor.LongitudeToTileX(Zoom, Global.Marker.Longitude),
+		 * Descriptor.LatitudeToTileY(Zoom, Global.Marker.Latitude), Zoom); int width = lineHeight / 3; graphics.FillEllipse(redBrush, pt.X
+		 * - width, pt.Y - width, width + width, width + width); graphics.DrawEllipse(blackPen, pt.X - width, pt.Y - width, width + width,
+		 * width + width); }
 		 */
 	}
 
@@ -3566,15 +3435,13 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/*
-	 * Brush[] brushes = new Brush[] { new SolidBrush(Color.Black), new
-	 * SolidBrush(Color.White) };
+	 * Brush[] brushes = new Brush[] { new SolidBrush(Color.Black), new SolidBrush(Color.White) };
 	 */
 	Paint font = new Paint();
 	Paint fontSmall = new Paint();
 
 	/**
-	 * Zeichnet den Maßstab. pixelsPerKm muss durch zoomChanged initialisiert
-	 * sein! und graphics auch!
+	 * Zeichnet den Maßstab. pixelsPerKm muss durch zoomChanged initialisiert sein! und graphics auch!
 	 */
 	private void renderScale()
 	{
@@ -3811,12 +3678,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/*
-	 * private void button3_Click(object sender, EventArgs e) { if
-	 * (Global.Marker.Valid) { // tabButtonTrackPosition.Down = true;
-	 * startAnimation(new Coordinate(Global.Marker.Latitude,
-	 * Global.Marker.Longitude)); return; } if (Global.LastValidPosition != null
-	 * && Global.LastValidPosition.Valid) { // tabButtonTrackPosition.Down =
-	 * true; startAnimation(Global.LastValidPosition); return; } }
+	 * private void button3_Click(object sender, EventArgs e) { if (Global.Marker.Valid) { // tabButtonTrackPosition.Down = true;
+	 * startAnimation(new Coordinate(Global.Marker.Latitude, Global.Marker.Longitude)); return; } if (Global.LastValidPosition != null &&
+	 * Global.LastValidPosition.Valid) { // tabButtonTrackPosition.Down = true; startAnimation(Global.LastValidPosition); return; } }
 	 */
 	/**
 	 * Ausgangspunkt der Animation
@@ -3829,8 +3693,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	PointD animateTo = new PointD(0, 0);
 
 	/*
-	 * // Zeitpunkt des Startes der Animation long animationStart; /// /// Dauer
-	 * der Animation in ms /// const int animationDuration = 500;
+	 * // Zeitpunkt des Startes der Animation long animationStart; /// /// Dauer der Animation in ms /// const int animationDuration = 500;
 	 */
 	void startAnimation(Coordinate target)
 	{
@@ -3850,37 +3713,26 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		// animationStart = Environment.TickCount;
 		/*
-		 * animateFrom.X = screenCenter.X; animateFrom.Y = screenCenter.Y;
-		 * animateTo.X = * 256 * Descriptor.LongitudeToTileX(Zoom,
-		 * target.Longitude); animateTo.Y = * 256 *
-		 * Descriptor.LatitudeToTileY(Zoom, target.Latitude); screenCenter.X =
-		 * animateTo.X; screenCenter.Y = animateTo.Y; centerOsmSpace.X =
-		 * screenCenter.X / ; centerOsmSpace.Y = screenCenter.Y / ;
-		 * updateCacheList(); Render(false);
+		 * animateFrom.X = screenCenter.X; animateFrom.Y = screenCenter.Y; animateTo.X = * 256 * Descriptor.LongitudeToTileX(Zoom,
+		 * target.Longitude); animateTo.Y = * 256 * Descriptor.LatitudeToTileY(Zoom, target.Latitude); screenCenter.X = animateTo.X;
+		 * screenCenter.Y = animateTo.Y; centerOsmSpace.X = screenCenter.X / ; centerOsmSpace.Y = screenCenter.Y / ; updateCacheList();
+		 * Render(false);
 		 */
 		/*
-		 * double xDiff = animateFrom.X - animateTo.X; double yDiff =
-		 * animateFrom.Y - animateTo.Y; center = target; if (Math.Sqrt(xDiff *
-		 * xDiff + yDiff * yDiff) < 2 * 256 * ) animationTimer.Enabled = true;
-		 * else { // Zu weit! Wir gehen ohne Animation direkt zum Ziel!
-		 * screenCenter.X = animateTo.X; screenCenter.Y = animateTo.Y;
-		 * centerOsmSpace.X = screenCenter.X / ; centerOsmSpace.Y =
+		 * double xDiff = animateFrom.X - animateTo.X; double yDiff = animateFrom.Y - animateTo.Y; center = target; if (Math.Sqrt(xDiff *
+		 * xDiff + yDiff * yDiff) < 2 * 256 * ) animationTimer.Enabled = true; else { // Zu weit! Wir gehen ohne Animation direkt zum Ziel!
+		 * screenCenter.X = animateTo.X; screenCenter.Y = animateTo.Y; centerOsmSpace.X = screenCenter.X / ; centerOsmSpace.Y =
 		 * screenCenter.Y / ; updateCacheList(); Render(false); }
 		 */
 	}
 
 	/*
-	 * private void animationTimer_Tick(object sender, EventArgs e) { double
-	 * scale = Math.Min(1.0, ((double)Environment.TickCount -
-	 * (double)animationStart) / (double)animationDuration); double x =
-	 * animateFrom.X + (animateTo.X - animateFrom.X) * scale; double y =
-	 * animateFrom.Y + (animateTo.Y - animateFrom.Y) * scale; screenCenter.X =
-	 * Math.Round(x); screenCenter.Y = Math.Round(y); centerOsmSpace.X =
-	 * screenCenter.X / ; centerOsmSpace.Y = screenCenter.Y / ; if (scale ==
-	 * 1.0) { animationTimer.Enabled = false; updateCacheList(); }
-	 * Render(false); } Brush blackBrush = new SolidBrush(Color.Black); Brush
-	 * whiteBrush = new SolidBrush(Color.White); Brush RedBrush = new
-	 * SolidBrush(Color.Red);
+	 * private void animationTimer_Tick(object sender, EventArgs e) { double scale = Math.Min(1.0, ((double)Environment.TickCount -
+	 * (double)animationStart) / (double)animationDuration); double x = animateFrom.X + (animateTo.X - animateFrom.X) * scale; double y =
+	 * animateFrom.Y + (animateTo.Y - animateFrom.Y) * scale; screenCenter.X = Math.Round(x); screenCenter.Y = Math.Round(y);
+	 * centerOsmSpace.X = screenCenter.X / ; centerOsmSpace.Y = screenCenter.Y / ; if (scale == 1.0) { animationTimer.Enabled = false;
+	 * updateCacheList(); } Render(false); } Brush blackBrush = new SolidBrush(Color.Black); Brush whiteBrush = new SolidBrush(Color.White);
+	 * Brush RedBrush = new SolidBrush(Color.Red);
 	 */
 	boolean renderZoomScaleActive = false;
 
@@ -3939,143 +3791,77 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/*
-	 * private void zoomScaleTimer_Tick(object sender, EventArgs e) {
-	 * zoomScaleTimer.Enabled = false; renderZoomScaleActive = false;
-	 * Render(false); } void renderLoaderInfo() { int tilesToLoad; lock
-	 * (wishlist) tilesToLoad = wishlist.Count + 1; String info = (tilesToLoad
-	 * == 1) ? "1 Tile, " : tilesToLoad.ToString() + " Tiles, "; info +=
-	 * Global.GetLengthString(Global.TransferredBytes);
-	 * Global.PutImageTargetHeight(graphics, Global.Icons[3], scaleLeft, height
-	 * - lineHeight * 2, lineHeight); graphics.DrawString(info, font,
-	 * blackBrush, scaleLeft + lineHeight + lineHeight / 3, height - lineHeight
-	 * * 2); } private void button3_Click_1(object sender, EventArgs e) {
-	 * mapMenu.Show(this, button3.Left + button3.Width, button3.Top, 0); }
-	 * private void tsiRemoveCenter_Click(object sender, EventArgs e) { if
-	 * (MessageBox.Show("Really remove marker?", "Remove marker",
-	 * MessageBoxButtons.YesNo, MessageBoxIcon.Question,
-	 * MessageBoxDefaultButton.Button1) == DialogResult.Yes) {
-	 * Global.Marker.Valid = false; tsiRemoveCenter.Enabled = false;
-	 * Render(true); CacheListView.View.RefreshDistances();
-	 * CacheListView.View.Refresh(); WaypointView.View.Refresh(); } } private
-	 * void tsiSetCenter_Click(object sender, EventArgs e) { if
-	 * (lastMouseCoordinate != null) Global.SetMarker(lastMouseCoordinate); else
-	 * Global.SetMarker(Center); Global.LastValidPosition = Global.Marker;
-	 * //markerWaypoint.Latitude = Global.Marker.Latitude;
-	 * //markerWaypoint.Longitude = Global.Marker.Longitude;
-	 * tsiRemoveCenter.Enabled = true; // Render(true); } private void
-	 * hideFinds(ClickButton sender) { hideMyFinds = !hideMyFinds;
-	 * hideFindsButton.ButtonImage = (hideMyFinds) ? Global.Icons[6] :
-	 * Global.Icons[7]; Config.settings.MapHideMyFinds", hideMyFinds);
-	 * Config.AcceptChanges(); updateCacheList(); Render(false); } void
-	 * showRatingChanged(ClickButton sender) { showRating = !showRating;
-	 * showRatingButton.ButtonImage = (showRating) ? Global.Icons[6] :
-	 * Global.Icons[7]; Config.settings.MapShowRating", showRating);
-	 * Config.AcceptChanges(); Render(false); } void showDTChanged(ClickButton
-	 * sender) { showDT = !showDT; showDTButton.ButtonImage = (showDT) ?
-	 * Global.Icons[6] : Global.Icons[7]; Config.settings.MapShowDT", showDT);
-	 * Config.AcceptChanges(); Render(false); } void
-	 * showCompassChanged(ClickButton sender) { showCompass = !showCompass;
-	 * showCompassButton.ButtonImage = (showCompass) ? Global.Icons[6] :
-	 * Global.Icons[7]; Config.settings.MapShowCompass", showCompass);
-	 * Config.AcceptChanges(); Render(false); } void
-	 * showTitlesChanged(ClickButton sender) { showTitles = !showTitles;
-	 * showTitlesButton.ButtonImage = (showTitles) ? Global.Icons[6] :
-	 * Global.Icons[7]; Config.settings.MapShowTitles", showTitles);
-	 * Config.AcceptChanges(); Render(false); } void showMarkerMenu(ClickButton
-	 * sender) { markerMenu.Show(this, button3.Left + button3.Width,
-	 * button3.Top, 0); } void showRouteMenu(ClickButton sender) {
-	 * routeMenu.Show(this, button3.Left + button3.Width, button3.Top, 0); }
-	 * void showViewMenu(ClickButton sender) { viewMenu.Show(this, button3.Left
-	 * + button3.Width, button3.Top, 0); } void showNavigationDialog(ClickButton
-	 * sender) { if (Global.SelectedCache == null) {
-	 * MessageBox.Show("Please select a waypoint and try again!",
-	 * "Route generation failed!"); return; } if ((Global.Locator == null ||
-	 * !Global.Locator.LastValidPosition.Valid) && !Global.Marker.Valid) {
-	 * MessageBox.Show(
-	 * "Routes are generated between your current position and the selected waypoint. Please wait for a GPS fix or set the marker!"
-	 * , "Route generation failed!"); return; } if
-	 * (!Config.settings.AllowRouteInternet")) { MessageBox.Show(
-	 * "Querying the Routing Service requires an internet connection! Please enable Route Calculation to continue!"
-	 * , "Route Calculation disabled!", MessageBoxButtons.OK,
-	 * MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1); return; }
-	 * Cachebox.Views.Forms.NavigationForm navigationForm = new
-	 * Cachebox.Views.Forms.NavigationForm(); if (navigationForm.ShowDialog() ==
-	 * DialogResult.OK) { Cursor.Current = Cursors.WaitCursor; HttpWebRequest
-	 * webRequest = null; HttpWebResponse webResponse = null; try { webRequest =
-	 * ( HttpWebRequest)WebRequest.Create(Config.settings.NavigationProvider"));
-	 * webRequest.UserAgent = "cachebox rev " +
-	 * Global.CurrentRevision.ToString() + ((Global.RevisionSuffix.Length > 0) ?
-	 * "(" + Global.RevisionSuffix + ")" : ""); webRequest.Timeout = 17000;
-	 * webRequest.Method = "POST"; webRequest.ContentType =
-	 * "application/x-www-form-urlencoded"; webRequest.Proxy = Global.Proxy;
-	 * Coordinate start = (Global.Marker.Valid) ? new
-	 * Coordinate(Global.Marker.Latitude, Global.Marker.Longitude) :
-	 * Global.Locator.LastValidPosition; Coordinate end =
-	 * (Global.SelectedWaypoint != null) ? new
-	 * Coordinate(Global.SelectedWaypoint.Latitude,
-	 * Global.SelectedWaypoint.Longitude) : new
-	 * Coordinate(Global.SelectedCache.Latitude,
-	 * Global.SelectedCache.Longitude); bool motorways =
-	 * navigationForm.radioButtonCar.Checked; String pref = "Fastest"; if
-	 * (navigationForm.radioButtonPedestrian.Checked) pref = "Pedestrian"; if
-	 * (navigationForm.radioButtonBike.Checked) pref = "Bicycle"; String
-	 * parameters = "Start=" +
-	 * start.Longitude.ToString(NumberFormatInfo.InvariantInfo) + "," +
-	 * start.Latitude.ToString(NumberFormatInfo.InvariantInfo) + "&End=" +
-	 * end.Longitude.ToString(NumberFormatInfo.InvariantInfo) + "," +
-	 * end.Latitude.ToString(NumberFormatInfo.InvariantInfo) +
-	 * "&Via=&lang=de&distunit=KM&routepref=" + pref + "&avoidAreas=&useTMC=" +
-	 * (navigationForm.checkBoxTMC.Checked &&
-	 * navigationForm.radioButtonCar.Checked).ToString().ToLower() +
-	 * "&noMotorways=" + (!motorways).ToString().ToLower() + "&noTollways=" +
-	 * (!motorways).ToString().ToLower() + "&instructions=false&_=";
-	 * webRequest.ContentLength = parameters.Length; Stream requestStream =
-	 * webRequest.GetRequestStream(); StreamWriter stOut = new
-	 * StreamWriter(requestStream, System.Text.Encoding.ASCII);
-	 * stOut.Write(parameters); stOut.Close(); webResponse =
-	 * (HttpWebResponse)webRequest.GetResponse(); if (!webRequest.HaveResponse)
-	 * { MessageBox.Show("Cannot connect to navigation provider!",
-	 * "Routing failed!", MessageBoxButtons.OK, MessageBoxIcon.Question,
-	 * MessageBoxDefaultButton.Button1); return; } TextReader response = new
-	 * StreamReader(webResponse.GetResponseStream()); String line = ""; Route
-	 * route = new Route(new Pen(Color.Purple, 4), "RouteOverlay");
-	 * route.ShowRoute = true; int skip = 2; while ((line = response.ReadLine())
-	 * != null) { if (line.IndexOf("<xls:Error ") >= 0) { int errorIdx =
-	 * line.IndexOf("message=\""); int endIdx = line.IndexOf("\"", errorIdx +
-	 * 9); String errorMessage = line.Substring(errorIdx + 9, endIdx - errorIdx
-	 * - 9); MessageBox.Show(errorMessage, "An error occured!",
-	 * MessageBoxButtons.OK, MessageBoxIcon.Exclamation,
-	 * MessageBoxDefaultButton.Button1); return; } int idx; if ((idx =
-	 * line.IndexOf("<gml:pos>")) > 0) { int seperator = line.IndexOf(" ", idx +
-	 * 1); int endIdx = line.IndexOf("</gml:pos>", seperator + 1); String lonStr
-	 * = line.Substring(idx + 9, seperator - idx - 9); String latStr =
-	 * line.Substring(seperator + 1, endIdx - seperator - 1); double lat =
-	 * double.Parse(latStr, NumberFormatInfo.InvariantInfo); double lon =
-	 * double.Parse(lonStr, NumberFormatInfo.InvariantInfo); PointD
-	 * projectedPoint = new
-	 * PointD(Descriptor.LongitudeToTileX(projectionZoomLevel, lon),
-	 * Descriptor.LatitudeToTileY(projectionZoomLevel, lat)); if (skip <= 0)
-	 * route.Points.Add(projectedPoint); skip--; } } response.Close(); Routes[0]
-	 * = route; ClearTileCache(); Render(true); } catch (WebException exc) { #if
-	 * DEBUG Global.AddLog(exc.ToString()); #endif MessageBox.Show(
-	 * "The request to OpenRouteService timed out! Please try again later.",
-	 * "Timeout!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation,
-	 * MessageBoxDefaultButton.Button1); return; } catch (Exception exc) { #if
-	 * DEBUG Global.AddLog(exc.ToString()); #endif } finally { Cursor.Current =
-	 * Cursors.Default; if (webResponse != null) webResponse.Close();
-	 * navigationForm.Dispose(); } } } void showLayerMenu(ClickButton sender) {
-	 * layerMenu.Show(this, button3.Left + button3.Width, button3.Top, 0); }
-	 * private void enableNightmodeChanged(ClickButton sender) { nightMode =
-	 * !nightMode; nightmodeButton.ButtonImage = (nightMode) ? Global.Icons[6] :
-	 * Global.Icons[7]; Config.settings.nightMode", nightMode);
-	 * Config.AcceptChanges(); lock (loadedTiles) { loadedTiles.Clear();
-	 * Render(true); } //this.Render(false); } public void
-	 * layerClick(ClickButton sender) { CurrentLayer = (Layer)sender.Tag;
-	 * foreach (ClickButton layerButton in layerButtons) layerButton.ButtonImage
-	 * = (CurrentLayer == (Layer)layerButton.Tag) ? Global.Icons[6] :
-	 * Global.Icons[7]; Config.settings.CurrentMapLayer", CurrentLayer.Name);
-	 * Config.AcceptChanges(); lock (loadedTiles) { ClearCachedTiles();
-	 * Render(true); } }
+	 * private void zoomScaleTimer_Tick(object sender, EventArgs e) { zoomScaleTimer.Enabled = false; renderZoomScaleActive = false;
+	 * Render(false); } void renderLoaderInfo() { int tilesToLoad; lock (wishlist) tilesToLoad = wishlist.Count + 1; String info =
+	 * (tilesToLoad == 1) ? "1 Tile, " : tilesToLoad.ToString() + " Tiles, "; info += Global.GetLengthString(Global.TransferredBytes);
+	 * Global.PutImageTargetHeight(graphics, Global.Icons[3], scaleLeft, height - lineHeight * 2, lineHeight); graphics.DrawString(info,
+	 * font, blackBrush, scaleLeft + lineHeight + lineHeight / 3, height - lineHeight * 2); } private void button3_Click_1(object sender,
+	 * EventArgs e) { mapMenu.Show(this, button3.Left + button3.Width, button3.Top, 0); } private void tsiRemoveCenter_Click(object sender,
+	 * EventArgs e) { if (MessageBox.Show("Really remove marker?", "Remove marker", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+	 * MessageBoxDefaultButton.Button1) == DialogResult.Yes) { Global.Marker.Valid = false; tsiRemoveCenter.Enabled = false; Render(true);
+	 * CacheListView.View.RefreshDistances(); CacheListView.View.Refresh(); WaypointView.View.Refresh(); } } private void
+	 * tsiSetCenter_Click(object sender, EventArgs e) { if (lastMouseCoordinate != null) Global.SetMarker(lastMouseCoordinate); else
+	 * Global.SetMarker(Center); Global.LastValidPosition = Global.Marker; //markerWaypoint.Latitude = Global.Marker.Latitude;
+	 * //markerWaypoint.Longitude = Global.Marker.Longitude; tsiRemoveCenter.Enabled = true; // Render(true); } private void
+	 * hideFinds(ClickButton sender) { hideMyFinds = !hideMyFinds; hideFindsButton.ButtonImage = (hideMyFinds) ? Global.Icons[6] :
+	 * Global.Icons[7]; Config.settings.MapHideMyFinds", hideMyFinds); Config.AcceptChanges(); updateCacheList(); Render(false); } void
+	 * showRatingChanged(ClickButton sender) { showRating = !showRating; showRatingButton.ButtonImage = (showRating) ? Global.Icons[6] :
+	 * Global.Icons[7]; Config.settings.MapShowRating", showRating); Config.AcceptChanges(); Render(false); } void showDTChanged(ClickButton
+	 * sender) { showDT = !showDT; showDTButton.ButtonImage = (showDT) ? Global.Icons[6] : Global.Icons[7]; Config.settings.MapShowDT",
+	 * showDT); Config.AcceptChanges(); Render(false); } void showCompassChanged(ClickButton sender) { showCompass = !showCompass;
+	 * showCompassButton.ButtonImage = (showCompass) ? Global.Icons[6] : Global.Icons[7]; Config.settings.MapShowCompass", showCompass);
+	 * Config.AcceptChanges(); Render(false); } void showTitlesChanged(ClickButton sender) { showTitles = !showTitles;
+	 * showTitlesButton.ButtonImage = (showTitles) ? Global.Icons[6] : Global.Icons[7]; Config.settings.MapShowTitles", showTitles);
+	 * Config.AcceptChanges(); Render(false); } void showMarkerMenu(ClickButton sender) { markerMenu.Show(this, button3.Left +
+	 * button3.Width, button3.Top, 0); } void showRouteMenu(ClickButton sender) { routeMenu.Show(this, button3.Left + button3.Width,
+	 * button3.Top, 0); } void showViewMenu(ClickButton sender) { viewMenu.Show(this, button3.Left + button3.Width, button3.Top, 0); } void
+	 * showNavigationDialog(ClickButton sender) { if (Global.SelectedCache == null) {
+	 * MessageBox.Show("Please select a waypoint and try again!", "Route generation failed!"); return; } if ((Global.Locator == null ||
+	 * !Global.Locator.LastValidPosition.Valid) && !Global.Marker.Valid) { MessageBox.Show(
+	 * "Routes are generated between your current position and the selected waypoint. Please wait for a GPS fix or set the marker!" ,
+	 * "Route generation failed!"); return; } if (!Config.settings.AllowRouteInternet")) { MessageBox.Show(
+	 * "Querying the Routing Service requires an internet connection! Please enable Route Calculation to continue!" ,
+	 * "Route Calculation disabled!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1); return; }
+	 * Cachebox.Views.Forms.NavigationForm navigationForm = new Cachebox.Views.Forms.NavigationForm(); if (navigationForm.ShowDialog() ==
+	 * DialogResult.OK) { Cursor.Current = Cursors.WaitCursor; HttpWebRequest webRequest = null; HttpWebResponse webResponse = null; try {
+	 * webRequest = ( HttpWebRequest)WebRequest.Create(Config.settings.NavigationProvider")); webRequest.UserAgent = "cachebox rev " +
+	 * Global.CurrentRevision.ToString() + ((Global.RevisionSuffix.Length > 0) ? "(" + Global.RevisionSuffix + ")" : ""); webRequest.Timeout
+	 * = 17000; webRequest.Method = "POST"; webRequest.ContentType = "application/x-www-form-urlencoded"; webRequest.Proxy = Global.Proxy;
+	 * Coordinate start = (Global.Marker.Valid) ? new Coordinate(Global.Marker.Latitude, Global.Marker.Longitude) :
+	 * Global.Locator.LastValidPosition; Coordinate end = (Global.SelectedWaypoint != null) ? new
+	 * Coordinate(Global.SelectedWaypoint.Latitude, Global.SelectedWaypoint.Longitude) : new Coordinate(Global.SelectedCache.Latitude,
+	 * Global.SelectedCache.Longitude); bool motorways = navigationForm.radioButtonCar.Checked; String pref = "Fastest"; if
+	 * (navigationForm.radioButtonPedestrian.Checked) pref = "Pedestrian"; if (navigationForm.radioButtonBike.Checked) pref = "Bicycle";
+	 * String parameters = "Start=" + start.Longitude.ToString(NumberFormatInfo.InvariantInfo) + "," +
+	 * start.Latitude.ToString(NumberFormatInfo.InvariantInfo) + "&End=" + end.Longitude.ToString(NumberFormatInfo.InvariantInfo) + "," +
+	 * end.Latitude.ToString(NumberFormatInfo.InvariantInfo) + "&Via=&lang=de&distunit=KM&routepref=" + pref + "&avoidAreas=&useTMC=" +
+	 * (navigationForm.checkBoxTMC.Checked && navigationForm.radioButtonCar.Checked).ToString().ToLower() + "&noMotorways=" +
+	 * (!motorways).ToString().ToLower() + "&noTollways=" + (!motorways).ToString().ToLower() + "&instructions=false&_=";
+	 * webRequest.ContentLength = parameters.Length; Stream requestStream = webRequest.GetRequestStream(); StreamWriter stOut = new
+	 * StreamWriter(requestStream, System.Text.Encoding.ASCII); stOut.Write(parameters); stOut.Close(); webResponse =
+	 * (HttpWebResponse)webRequest.GetResponse(); if (!webRequest.HaveResponse) { MessageBox.Show("Cannot connect to navigation provider!",
+	 * "Routing failed!", MessageBoxButtons.OK, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1); return; } TextReader response =
+	 * new StreamReader(webResponse.GetResponseStream()); String line = ""; Route route = new Route(new Pen(Color.Purple, 4),
+	 * "RouteOverlay"); route.ShowRoute = true; int skip = 2; while ((line = response.ReadLine()) != null) { if (line.IndexOf("<xls:Error ")
+	 * >= 0) { int errorIdx = line.IndexOf("message=\""); int endIdx = line.IndexOf("\"", errorIdx + 9); String errorMessage =
+	 * line.Substring(errorIdx + 9, endIdx - errorIdx - 9); MessageBox.Show(errorMessage, "An error occured!", MessageBoxButtons.OK,
+	 * MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1); return; } int idx; if ((idx = line.IndexOf("<gml:pos>")) > 0) { int
+	 * seperator = line.IndexOf(" ", idx + 1); int endIdx = line.IndexOf("</gml:pos>", seperator + 1); String lonStr = line.Substring(idx +
+	 * 9, seperator - idx - 9); String latStr = line.Substring(seperator + 1, endIdx - seperator - 1); double lat = double.Parse(latStr,
+	 * NumberFormatInfo.InvariantInfo); double lon = double.Parse(lonStr, NumberFormatInfo.InvariantInfo); PointD projectedPoint = new
+	 * PointD(Descriptor.LongitudeToTileX(projectionZoomLevel, lon), Descriptor.LatitudeToTileY(projectionZoomLevel, lat)); if (skip <= 0)
+	 * route.Points.Add(projectedPoint); skip--; } } response.Close(); Routes[0] = route; ClearTileCache(); Render(true); } catch
+	 * (WebException exc) { #if DEBUG Global.AddLog(exc.ToString()); #endif MessageBox.Show(
+	 * "The request to OpenRouteService timed out! Please try again later.", "Timeout!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation,
+	 * MessageBoxDefaultButton.Button1); return; } catch (Exception exc) { #if DEBUG Global.AddLog(exc.ToString()); #endif } finally {
+	 * Cursor.Current = Cursors.Default; if (webResponse != null) webResponse.Close(); navigationForm.Dispose(); } } } void
+	 * showLayerMenu(ClickButton sender) { layerMenu.Show(this, button3.Left + button3.Width, button3.Top, 0); } private void
+	 * enableNightmodeChanged(ClickButton sender) { nightMode = !nightMode; nightmodeButton.ButtonImage = (nightMode) ? Global.Icons[6] :
+	 * Global.Icons[7]; Config.settings.nightMode", nightMode); Config.AcceptChanges(); lock (loadedTiles) { loadedTiles.Clear();
+	 * Render(true); } //this.Render(false); } public void layerClick(ClickButton sender) { CurrentLayer = (Layer)sender.Tag; foreach
+	 * (ClickButton layerButton in layerButtons) layerButton.ButtonImage = (CurrentLayer == (Layer)layerButton.Tag) ? Global.Icons[6] :
+	 * Global.Icons[7]; Config.settings.CurrentMapLayer", CurrentLayer.Name); Config.AcceptChanges(); lock (loadedTiles) {
+	 * ClearCachedTiles(); Render(true); } }
 	 */
 	public void ClearCachedTiles()
 	{
@@ -4111,8 +3897,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 	Point cacheArrowCenter = new Point(Integer.MIN_VALUE, Integer.MAX_VALUE);
 	/*
-	 * Font distanceFont = new Font(FontFamily.GenericSansSerif, 9,
-	 * FontStyle.Regular);
+	 * Font distanceFont = new Font(FontFamily.GenericSansSerif, 9, FontStyle.Regular);
 	 */
 
 	static Paint ArrowPaint = null;
@@ -4181,14 +3966,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			cx = -halfWidth;
 		}
 		/*
-		 * clipX2 = cx; clipY2 = cy; clipLineCircle(-halfWidth, -halfHeight,
-		 * buttonTrackPosition.getWidth() * 1.5, 0, 0);
-		 * clipLineCircle(halfWidth, -halfHeight,
-		 * buttonTrackPosition.getWidth()* 1.5, 0, 0);
-		 * clipLineCircle(-halfWidth, halfHeight,
-		 * buttonTrackPosition.getWidth()* 1.5, 0, 0); clipLineCircle(halfWidth,
-		 * halfHeight, buttonTrackPosition.getWidth()* 1.5, 0, 0); cx = clipX2;
-		 * cy = clipY2;
+		 * clipX2 = cx; clipY2 = cy; clipLineCircle(-halfWidth, -halfHeight, buttonTrackPosition.getWidth() * 1.5, 0, 0);
+		 * clipLineCircle(halfWidth, -halfHeight, buttonTrackPosition.getWidth()* 1.5, 0, 0); clipLineCircle(-halfWidth, halfHeight,
+		 * buttonTrackPosition.getWidth()* 1.5, 0, 0); clipLineCircle(halfWidth, halfHeight, buttonTrackPosition.getWidth()* 1.5, 0, 0); cx
+		 * = clipX2; cy = clipY2;
 		 */
 		// Position auf der Karte
 		Point pt = new Point((int) (cx + halfWidth), (int) (cy + halfHeight));
@@ -4228,8 +4009,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		if (DrawArrow)
 		{
 			/*
-			 * graphics.FillPolygon(redBrush, dir);
-			 * graphics.DrawPolygon(blackPen, dir);
+			 * graphics.FillPolygon(redBrush, dir); graphics.DrawPolygon(blackPen, dir);
 			 */
 
 			ArrowPaint.setStyle(Style.FILL);
@@ -4251,10 +4031,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		// Anzeige Pfeile zum Ziel auf Karte mit Waypoint abfrage
 		String text = UnitFormatter.DistanceString(distance);
 		/*
-		 * SizeF textSize = graphics.MeasureString(text, distanceFont); if
-		 * (Math.abs(dirx) > (width / 2) || Math.abs(diry) > (height / 2))
-		 * graphics.DrawString(text, distanceFont, blackBrush, fontCenterX -
-		 * textSize.Width / 2, fontCenterY - textSize.Height / 2);
+		 * SizeF textSize = graphics.MeasureString(text, distanceFont); if (Math.abs(dirx) > (width / 2) || Math.abs(diry) > (height / 2))
+		 * graphics.DrawString(text, distanceFont, blackBrush, fontCenterX - textSize.Width / 2, fontCenterY - textSize.Height / 2);
 		 */
 
 	}
@@ -4283,20 +4061,14 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/*
-	 * internal void UpdateLayerButtons() { float heightMultiplier = 2.5f; if
-	 * (Manager.Layers.Count > 7) heightMultiplier = 7f /
-	 * (float)(Manager.Layers.Count) * (float)2.5f; if (heightMultiplier < 1.2f)
-	 * heightMultiplier = 1.2f; foreach (Layer layer in Manager.Layers) {
-	 * ClickButton button = new ClickButton(layer.FriendlyName, (CurrentLayer ==
-	 * layer) ? Global.Icons[6] : Global.Icons[7], layerClick, null, null,
-	 * heightMultiplier); button.Tag = layer; layerButtons.Add(button);
-	 * layerMenu.Add(button, false); } } internal void ClearTileCache() { lock
-	 * (loadedTiles) { foreach (Descriptor desc in loadedTiles.Keys)
-	 * loadedTiles[desc].Dispose(); loadedTiles = new Dictionary<Descriptor,
-	 * Tile>(); } } internal void resetRoute(ClickButton sender) {
-	 * Routes[0].Points = new List<PointD>(); Routes[0].ShowRoute = false;
-	 * Routes[0].Name = "-empty- RouteOverlay"; ClearTileCache(); Render(false);
-	 * }
+	 * internal void UpdateLayerButtons() { float heightMultiplier = 2.5f; if (Manager.Layers.Count > 7) heightMultiplier = 7f /
+	 * (float)(Manager.Layers.Count) * (float)2.5f; if (heightMultiplier < 1.2f) heightMultiplier = 1.2f; foreach (Layer layer in
+	 * Manager.Layers) { ClickButton button = new ClickButton(layer.FriendlyName, (CurrentLayer == layer) ? Global.Icons[6] :
+	 * Global.Icons[7], layerClick, null, null, heightMultiplier); button.Tag = layer; layerButtons.Add(button); layerMenu.Add(button,
+	 * false); } } internal void ClearTileCache() { lock (loadedTiles) { foreach (Descriptor desc in loadedTiles.Keys)
+	 * loadedTiles[desc].Dispose(); loadedTiles = new Dictionary<Descriptor, Tile>(); } } internal void resetRoute(ClickButton sender) {
+	 * Routes[0].Points = new List<PointD>(); Routes[0].ShowRoute = false; Routes[0].Name = "-empty- RouteOverlay"; ClearTileCache();
+	 * Render(false); }
 	 */
 	int numLoadedTiles()
 	{
@@ -4333,82 +4105,46 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/*
-	 * private static void InternalRotateImage(int rotationAngle, Bitmap
-	 * originalBitmap, Bitmap rotatedBitmap) { // It should be faster to access
-	 * values stored on the stack // compared to calling a method (in this case
-	 * a property) to // retrieve a value. That's why we store the width and
-	 * height // of the bitmaps here so that when we're traversing the pixels //
-	 * we won't have to call more methods than necessary. int newWidth =
-	 * rotatedBitmap.Width; int newHeight = rotatedBitmap.Height; int
-	 * originalWidth = originalBitmap.Width; int originalHeight =
-	 * originalBitmap.Height; // We're going to use the new width and height
-	 * minus one a lot so lets // pre-calculate that once to save some more time
-	 * int newWidthMinusOne = newWidth - 1; int newHeightMinusOne = newHeight -
-	 * 1; // To grab the raw bitmap data into a BitmapData object we need to //
-	 * "lock" the data (bits that make up the image) into system memory. // We
-	 * lock the source image as ReadOnly and the destination image // as
-	 * WriteOnly and hope that the .NET Framework can perform some // sort of
-	 * optimization based on this. // Note that this piece of code relies on the
-	 * PixelFormat of the // images to be 32 bpp (bits per pixel). We're not
-	 * interested in // the order of the components (red, green, blue and alpha)
-	 * as // we're going to copy the entire 32 bits as they are. BitmapData
-	 * originalData = originalBitmap.LockBits( new Rectangle(0, 0,
-	 * originalWidth, originalHeight), ImageLockMode.ReadOnly,
-	 * PixelFormat.Format32bppRgb); BitmapData rotatedData =
-	 * rotatedBitmap.LockBits( new Rectangle(0, 0, rotatedBitmap.Width,
-	 * rotatedBitmap.Height), ImageLockMode.WriteOnly,
-	 * PixelFormat.Format32bppRgb); // We're not allowed to use pointers in
-	 * "safe" code so this // section has to be marked as "unsafe". Cool! unsafe
-	 * { // Grab int pointers to the source image data and the // destination
-	 * image data. We can think of this pointer // as a reference to the first
-	 * pixel on the first row of the // image. It's actually a pointer to the
-	 * piece of memory // holding the int pixel data and we're going to treat it
-	 * as // an array of one dimension later on to address the pixels. int*
-	 * originalPointer = (int*)originalData.Scan0.ToPointer(); int*
-	 * rotatedPointer = (int*)rotatedData.Scan0.ToPointer(); // There are nested
-	 * for-loops in all of these case statements // and one might argue that it
-	 * would have been neater and more // tidy to have the switch statement
-	 * inside the a single nested // set of for loops, doing it this way saves
-	 * us up to three int // to int comparisons per pixel. // switch
-	 * (rotationAngle) { case 90: for (int y = 0; y < originalHeight; ++y) { int
-	 * destinationX = newWidthMinusOne - y; for (int x = 0; x < originalWidth;
-	 * ++x) { int sourcePosition = (x + y * originalWidth); int destinationY =
-	 * x; int destinationPosition = (destinationX + destinationY * newWidth);
-	 * rotatedPointer[destinationPosition] = originalPointer[sourcePosition]; }
-	 * } break; case 180: for (int y = 0; y < originalHeight; ++y) { int
-	 * destinationY = (newHeightMinusOne - y) * newWidth; for (int x = 0; x <
-	 * originalWidth; ++x) { int sourcePosition = (x + y * originalWidth); int
-	 * destinationX = newWidthMinusOne - x; int destinationPosition =
-	 * (destinationX + destinationY); rotatedPointer[destinationPosition] =
-	 * originalPointer[sourcePosition]; } } break; case 270: for (int y = 0; y <
-	 * originalHeight; ++y) { int destinationX = y; for (int x = 0; x <
-	 * originalWidth; ++x) { int sourcePosition = (x + y * originalWidth); int
-	 * destinationY = newHeightMinusOne - x; int destinationPosition =
-	 * (destinationX + destinationY * newWidth);
-	 * rotatedPointer[destinationPosition] = originalPointer[sourcePosition]; }
-	 * } break; } // We have to remember to unlock the bits when we're done.
-	 * originalBitmap.UnlockBits(originalData);
-	 * rotatedBitmap.UnlockBits(rotatedData); } } private void
-	 * bZoomIn_Click(object sender, EventArgs e) { zoomIn(); } private void
-	 * bZoomOut_Click(object sender, EventArgs e) { zoomOut(); } private void
-	 * MapView_Load(object sender, EventArgs e) { foreach (Layer layer in
-	 * MapView.Manager.Layers) { ToolStripMenuItem tsmi = new
-	 * ToolStripMenuItem(layer.Name); tsiLayer.DropDownItems.Add(tsmi);
-	 * tsmi.Click += new EventHandler(tsi_Click); if ((MapView.View != null) &&
-	 * (MapView.View.CurrentLayer != null) && (MapView.View.CurrentLayer.Name ==
-	 * layer.Name)) tsmi.Checked = true; tsmi.Tag = layer; } } void
-	 * tsi_Click(object sender, EventArgs e) { ToolStripMenuItem tsmi = sender
-	 * as ToolStripMenuItem; if (tsmi != null) { Layer layer = tsmi.Tag as
-	 * Layer; if (layer != null) { MapView.View.SetCurrentLayer(layer); foreach
-	 * (ToolStripMenuItem tsmi2 in tsiLayer.DropDownItems) { if (tsmi2 != null)
-	 * tsmi2.Checked = false; } tsmi.Checked = true; } } } private void
-	 * contextMenuStrip1_Opening(object sender, CancelEventArgs e) { } private
-	 * void loactionToolStripMenuItem_Click(object sender, EventArgs e) { if
-	 * (lastMouseCoordinate != null) { Location location = new
-	 * Geocaching.Location("", lastMouseCoordinate.Latitude,
-	 * lastMouseCoordinate.Longitude); location.Edit(); } } private void
-	 * copyCoordinatesToolStripMenuItem_Click(object sender, EventArgs e) { if
-	 * (lastMouseCoordinate != null) {
+	 * private static void InternalRotateImage(int rotationAngle, Bitmap originalBitmap, Bitmap rotatedBitmap) { // It should be faster to
+	 * access values stored on the stack // compared to calling a method (in this case a property) to // retrieve a value. That's why we
+	 * store the width and height // of the bitmaps here so that when we're traversing the pixels // we won't have to call more methods than
+	 * necessary. int newWidth = rotatedBitmap.Width; int newHeight = rotatedBitmap.Height; int originalWidth = originalBitmap.Width; int
+	 * originalHeight = originalBitmap.Height; // We're going to use the new width and height minus one a lot so lets // pre-calculate that
+	 * once to save some more time int newWidthMinusOne = newWidth - 1; int newHeightMinusOne = newHeight - 1; // To grab the raw bitmap
+	 * data into a BitmapData object we need to // "lock" the data (bits that make up the image) into system memory. // We lock the source
+	 * image as ReadOnly and the destination image // as WriteOnly and hope that the .NET Framework can perform some // sort of optimization
+	 * based on this. // Note that this piece of code relies on the PixelFormat of the // images to be 32 bpp (bits per pixel). We're not
+	 * interested in // the order of the components (red, green, blue and alpha) as // we're going to copy the entire 32 bits as they are.
+	 * BitmapData originalData = originalBitmap.LockBits( new Rectangle(0, 0, originalWidth, originalHeight), ImageLockMode.ReadOnly,
+	 * PixelFormat.Format32bppRgb); BitmapData rotatedData = rotatedBitmap.LockBits( new Rectangle(0, 0, rotatedBitmap.Width,
+	 * rotatedBitmap.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppRgb); // We're not allowed to use pointers in "safe" code so
+	 * this // section has to be marked as "unsafe". Cool! unsafe { // Grab int pointers to the source image data and the // destination
+	 * image data. We can think of this pointer // as a reference to the first pixel on the first row of the // image. It's actually a
+	 * pointer to the piece of memory // holding the int pixel data and we're going to treat it as // an array of one dimension later on to
+	 * address the pixels. int* originalPointer = (int*)originalData.Scan0.ToPointer(); int* rotatedPointer =
+	 * (int*)rotatedData.Scan0.ToPointer(); // There are nested for-loops in all of these case statements // and one might argue that it
+	 * would have been neater and more // tidy to have the switch statement inside the a single nested // set of for loops, doing it this
+	 * way saves us up to three int // to int comparisons per pixel. // switch (rotationAngle) { case 90: for (int y = 0; y <
+	 * originalHeight; ++y) { int destinationX = newWidthMinusOne - y; for (int x = 0; x < originalWidth; ++x) { int sourcePosition = (x + y
+	 * * originalWidth); int destinationY = x; int destinationPosition = (destinationX + destinationY * newWidth);
+	 * rotatedPointer[destinationPosition] = originalPointer[sourcePosition]; } } break; case 180: for (int y = 0; y < originalHeight; ++y)
+	 * { int destinationY = (newHeightMinusOne - y) * newWidth; for (int x = 0; x < originalWidth; ++x) { int sourcePosition = (x + y *
+	 * originalWidth); int destinationX = newWidthMinusOne - x; int destinationPosition = (destinationX + destinationY);
+	 * rotatedPointer[destinationPosition] = originalPointer[sourcePosition]; } } break; case 270: for (int y = 0; y < originalHeight; ++y)
+	 * { int destinationX = y; for (int x = 0; x < originalWidth; ++x) { int sourcePosition = (x + y * originalWidth); int destinationY =
+	 * newHeightMinusOne - x; int destinationPosition = (destinationX + destinationY * newWidth); rotatedPointer[destinationPosition] =
+	 * originalPointer[sourcePosition]; } } break; } // We have to remember to unlock the bits when we're done.
+	 * originalBitmap.UnlockBits(originalData); rotatedBitmap.UnlockBits(rotatedData); } } private void bZoomIn_Click(object sender,
+	 * EventArgs e) { zoomIn(); } private void bZoomOut_Click(object sender, EventArgs e) { zoomOut(); } private void MapView_Load(object
+	 * sender, EventArgs e) { foreach (Layer layer in MapView.Manager.Layers) { ToolStripMenuItem tsmi = new ToolStripMenuItem(layer.Name);
+	 * tsiLayer.DropDownItems.Add(tsmi); tsmi.Click += new EventHandler(tsi_Click); if ((MapView.View != null) && (MapView.View.CurrentLayer
+	 * != null) && (MapView.View.CurrentLayer.Name == layer.Name)) tsmi.Checked = true; tsmi.Tag = layer; } } void tsi_Click(object sender,
+	 * EventArgs e) { ToolStripMenuItem tsmi = sender as ToolStripMenuItem; if (tsmi != null) { Layer layer = tsmi.Tag as Layer; if (layer
+	 * != null) { MapView.View.SetCurrentLayer(layer); foreach (ToolStripMenuItem tsmi2 in tsiLayer.DropDownItems) { if (tsmi2 != null)
+	 * tsmi2.Checked = false; } tsmi.Checked = true; } } } private void contextMenuStrip1_Opening(object sender, CancelEventArgs e) { }
+	 * private void loactionToolStripMenuItem_Click(object sender, EventArgs e) { if (lastMouseCoordinate != null) { Location location = new
+	 * Geocaching.Location("", lastMouseCoordinate.Latitude, lastMouseCoordinate.Longitude); location.Edit(); } } private void
+	 * copyCoordinatesToolStripMenuItem_Click(object sender, EventArgs e) { if (lastMouseCoordinate != null) {
 	 * Clipboard.SetText(lastMouseCoordinate.FormatCoordinate()); } }
 	 */
 
@@ -4517,14 +4253,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			SetCurrentLayer(MapView.Manager.GetLayerByName(item.getTitle().toString(), item.getTitle().toString(), ""));
 			return true;
 			/*
-			 * case R.id.hubertmedia:
-			 * SetCurrentLayer(MapView.Manager.GetLayerByName
-			 * ("Hubermedia Bavaria", "Hubermedia Bavaria", "")); return true;
-			 * case R.id.googleearth:
-			 * SetCurrentLayer(MapView.Manager.GetLayerByName("Google Earth",
-			 * "Google Earth", "")); return true; case R.id.mapnik:
-			 * SetCurrentLayer(MapView.Manager.GetLayerByName("Mapnik",
-			 * "Mapnik", "")); return true;
+			 * case R.id.hubertmedia: SetCurrentLayer(MapView.Manager.GetLayerByName ("Hubermedia Bavaria", "Hubermedia Bavaria", ""));
+			 * return true; case R.id.googleearth: SetCurrentLayer(MapView.Manager.GetLayerByName("Google Earth", "Google Earth", ""));
+			 * return true; case R.id.mapnik: SetCurrentLayer(MapView.Manager.GetLayerByName("Mapnik", "Mapnik", "")); return true;
 			 */
 
 		case R.id.mi_Track:
@@ -4636,20 +4367,16 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	}
 
 	/*
-	 * int anzCompassValues = 0; float compassValue = 0; long lastCompassTick =
-	 * -99999;
+	 * int anzCompassValues = 0; float compassValue = 0; long lastCompassTick = -99999;
 	 */
 	@Override
 	public void OrientationChanged(float heading)
 	{
 		if (!isVisible) return;
 		/*
-		 * anzCompassValues++; compassValue += heading; long aktTick =
-		 * SystemClock.uptimeMillis(); if (aktTick < lastCompassTick + 200) { //
-		 * do not update view now, only every 200 millisec return; } if
-		 * (anzCompassValues == 0) { lastCompassTick = aktTick; return; } //
-		 * Durchschnitts Richtung berechnen heading = compassValue /
-		 * anzCompassValues; anzCompassValues = 0; compassValue = 0;
+		 * anzCompassValues++; compassValue += heading; long aktTick = SystemClock.uptimeMillis(); if (aktTick < lastCompassTick + 200) { //
+		 * do not update view now, only every 200 millisec return; } if (anzCompassValues == 0) { lastCompassTick = aktTick; return; } //
+		 * Durchschnitts Richtung berechnen heading = compassValue / anzCompassValues; anzCompassValues = 0; compassValue = 0;
 		 */
 		if (alignToCompass) changeOrientation(heading);
 
@@ -5014,8 +4741,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 								// und sowieso mit UpdateCacheList mehr Caches
 								// geladen werden, wie angezeigt...
 								br.putBoolean("updateCacheList", /*
-																 * fertigHeading
-																 * &&
+																 * fertigHeading &&
 																 */fertigZoom && fertigPos && doUpdateCacheList);
 								ret.setData(br);
 								ret.what = 4;

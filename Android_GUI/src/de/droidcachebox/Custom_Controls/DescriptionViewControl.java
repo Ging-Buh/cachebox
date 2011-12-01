@@ -3,22 +3,14 @@ package de.droidcachebox.Custom_Controls;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import CB_Core.Config;
+import CB_Core.GlobalCore;
+import CB_Core.DAO.CacheDAO;
+import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
-
-import CB_Core.Config;
-import CB_Core.GlobalCore;
-import de.droidcachebox.Global;
-import de.droidcachebox.main;
-import CB_Core.DAO.CacheDAO;
-import CB_Core.DB.Database;
-import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.DescriptionImageGrabber;
-import de.droidcachebox.Views.Forms.MessageBox;
-import de.droidcachebox.Views.Forms.MessageBoxButtons;
-import de.droidcachebox.Views.Forms.MessageBoxIcon;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -31,6 +23,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import de.droidcachebox.Global;
+import de.droidcachebox.main;
+import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Geocaching.DescriptionImageGrabber;
+import de.droidcachebox.Views.Forms.MessageBox;
+import de.droidcachebox.Views.Forms.MessageBoxButtons;
+import de.droidcachebox.Views.Forms.MessageBoxIcon;
 
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 {
@@ -244,8 +243,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			}
 			else
 			{
-				html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, !Config.settings.AllowInternetAccess.getValue(),
-						NonLocalImages, NonLocalImagesUrl);
+				html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
 
 				if (!Config.settings.DescriptionNoAttributes.getValue()) html = getAttributesHtml(cache) + html;
 
@@ -264,7 +262,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 		// Falls nicht geladene Bilder vorliegen und eine Internetverbindung
 		// erlaubt ist, diese laden und Bilder erneut auflösen
-		if (Config.settings.AllowInternetAccess.getValue() && NonLocalImagesUrl.size() > 0)
+		if (NonLocalImagesUrl.size() > 0)
 		{
 			downloadThread = new Thread()
 			{

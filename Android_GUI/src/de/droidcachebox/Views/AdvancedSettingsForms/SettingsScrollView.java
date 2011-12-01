@@ -194,16 +194,18 @@ public class SettingsScrollView extends Activity
 
 			SettingsListCategoryButton quick = new SettingsListCategoryButton("QuickList", SettingCategory.Button, SettingModus.Normal,
 					true);
-			View quickView = getButtonView(quick, content);
+			View quickView = getButtonView(quick, content, false);
 			content.addView(quickView);
 
 			do
 			{
+				int position = 0;
+
 				SettingCategory cat = iteratorCat.next();
 				SettingsListCategoryButton catBtn = new SettingsListCategoryButton(cat.name(), SettingCategory.Button, SettingModus.Normal,
 						true);
 
-				final View btn = getView(catBtn, content);
+				final View btn = getView(catBtn, content, true);
 				content.addView(btn);
 
 				// add Cat einträge
@@ -213,7 +215,7 @@ public class SettingsScrollView extends Activity
 				{
 					SettingsListGetApiButton lgIn = new SettingsListGetApiButton(cat.name(), SettingCategory.Button, SettingModus.Normal,
 							true);
-					final View btnLgIn = getView(lgIn, content);
+					final View btnLgIn = getView(lgIn, content, true);
 					lay.addView(btnLgIn);
 				}
 
@@ -221,7 +223,7 @@ public class SettingsScrollView extends Activity
 				{
 					SettingsListCategoryButton disp = new SettingsListCategoryButton("DebugDisplayInfo", SettingCategory.Button,
 							SettingModus.Normal, true);
-					final View btnDisp = getView(disp, content);
+					final View btnDisp = getView(disp, content, true);
 					lay.addView(btnDisp);
 				}
 
@@ -234,12 +236,15 @@ public class SettingsScrollView extends Activity
 						// item nur zur Liste Hinzufügen, wenn der
 						// SettingModus
 						// dies auch zu lässt.
-						if ((settingItem.getModus() == SettingModus.Normal)
-								|| (settingItem.getModus() == SettingModus.Expert && Config.settings.SettingsShowExpert.getValue())
-								|| Config.settings.SettingsShowAll.getValue())
+						if (((settingItem.getModus() == SettingModus.Normal)
+								|| (settingItem.getModus() == SettingModus.Expert && Config.settings.SettingsShowExpert.getValue()) || Config.settings.SettingsShowAll
+								.getValue()) && (settingItem.getModus() != SettingModus.Never))
 						{
 
-							View view = getView(settingItem, lay);
+							Boolean BackGroundChanger = ((position % 2) == 1);
+							position++;
+
+							View view = getView(settingItem, lay, BackGroundChanger);
 
 							lay.addView(view);
 							// layoutHeight += Sizes.getQuickButtonHeight();
@@ -337,11 +342,21 @@ public class SettingsScrollView extends Activity
 		}
 	};
 
-	private View getBoolView(final SettingBool SB, ViewGroup parent)
+	private View getBoolView(final SettingBool SB, ViewGroup parent, boolean BackgroundChanger)
 	{
 
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_bool, parent, false);
+
+		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
+		if (BackgroundChanger)
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background);
+		}
+		else
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background2);
+		}
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
@@ -386,47 +401,47 @@ public class SettingsScrollView extends Activity
 
 	}
 
-	private View getView(SettingBase SB, ViewGroup parent)
+	private View getView(SettingBase SB, ViewGroup parent, boolean BackgroundChanger)
 	{
 		if (SB instanceof SettingBool)
 		{
-			return getBoolView((SettingBool) SB, parent);
+			return getBoolView((SettingBool) SB, parent, BackgroundChanger);
 		}
 		else if (SB instanceof SettingIntArray)
 		{
-			return getIntArrayView((SettingIntArray) SB, parent);
+			return getIntArrayView((SettingIntArray) SB, parent, BackgroundChanger);
 		}
 		else if (SB instanceof SettingInt)
 		{
-			return getIntView((SettingInt) SB, parent);
+			return getIntView((SettingInt) SB, parent, BackgroundChanger);
 		}
 		else if (SB instanceof SettingDouble)
 		{
-			return getDblView((SettingDouble) SB, parent);
+			return getDblView((SettingDouble) SB, parent, BackgroundChanger);
 		}
 		else if (SB instanceof SettingFolder)
 		{
-			return getFolderView((SettingFolder) SB, parent);
+			return getFolderView((SettingFolder) SB, parent, BackgroundChanger);
 		}
 		else if (SB instanceof SettingFile)
 		{
-			return getFileView((SettingFile) SB, parent);
+			return getFileView((SettingFile) SB, parent, BackgroundChanger);
 		}
 		else if (SB instanceof SettingEnum)
 		{
-			return getEnumView((SettingEnum) SB, parent);
+			return getEnumView((SettingEnum) SB, parent, BackgroundChanger);
 		}
 		else if (SB instanceof SettingString)
 		{
-			return getStringView((SettingString) SB, parent);
+			return getStringView((SettingString) SB, parent, BackgroundChanger);
 		}
 		else if (SB instanceof SettingsListCategoryButton)
 		{
-			return getButtonView((SettingsListCategoryButton) SB, parent);
+			return getButtonView((SettingsListCategoryButton) SB, parent, BackgroundChanger);
 		}
 		else if (SB instanceof SettingsListGetApiButton)
 		{
-			return getApiKeyButtonView((SettingsListGetApiButton) SB, parent);
+			return getApiKeyButtonView((SettingsListGetApiButton) SB, parent, BackgroundChanger);
 		}
 		else if (SB instanceof SettingsListButtonLangSpinner)
 		{
@@ -436,10 +451,20 @@ public class SettingsScrollView extends Activity
 		return null;
 	}
 
-	private View getStringView(final SettingString SB, ViewGroup parent)
+	private View getStringView(final SettingString SB, ViewGroup parent, boolean BackgroundChanger)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
+
+		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
+		if (BackgroundChanger)
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background);
+		}
+		else
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background2);
+		}
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
@@ -508,10 +533,20 @@ public class SettingsScrollView extends Activity
 
 	}
 
-	private View getEnumView(final SettingEnum SB, ViewGroup parent)
+	private View getEnumView(final SettingEnum SB, ViewGroup parent, boolean BackgroundChanger)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_enum, parent, false);
+
+		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
+		if (BackgroundChanger)
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background);
+		}
+		else
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background2);
+		}
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
@@ -570,10 +605,20 @@ public class SettingsScrollView extends Activity
 
 	}
 
-	private View getIntArrayView(final SettingIntArray SB, ViewGroup parent)
+	private View getIntArrayView(final SettingIntArray SB, ViewGroup parent, boolean BackgroundChanger)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_enum, parent, false);
+
+		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
+		if (BackgroundChanger)
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background);
+		}
+		else
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background2);
+		}
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
@@ -632,10 +677,20 @@ public class SettingsScrollView extends Activity
 
 	}
 
-	private View getIntView(final SettingInt SB, ViewGroup parent)
+	private View getIntView(final SettingInt SB, ViewGroup parent, boolean BackgroundChanger)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
+
+		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
+		if (BackgroundChanger)
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background);
+		}
+		else
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background2);
+		}
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
@@ -714,10 +769,20 @@ public class SettingsScrollView extends Activity
 
 	}
 
-	private View getDblView(final SettingDouble SB, ViewGroup parent)
+	private View getDblView(final SettingDouble SB, ViewGroup parent, boolean BackgroundChanger)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
+
+		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
+		if (BackgroundChanger)
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background);
+		}
+		else
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background2);
+		}
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
@@ -795,10 +860,20 @@ public class SettingsScrollView extends Activity
 
 	}
 
-	private View getFolderView(final SettingFolder SB, ViewGroup parent)
+	private View getFolderView(final SettingFolder SB, ViewGroup parent, boolean BackgroundChanger)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
+
+		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
+		if (BackgroundChanger)
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background);
+		}
+		else
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background2);
+		}
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
@@ -859,10 +934,20 @@ public class SettingsScrollView extends Activity
 
 	}
 
-	private View getFileView(final SettingFile SB, ViewGroup parent)
+	private View getFileView(final SettingFile SB, ViewGroup parent, boolean BackgroundChanger)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
+
+		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
+		if (BackgroundChanger)
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background);
+		}
+		else
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background2);
+		}
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		// label.setText(SB.getName());
@@ -924,7 +1009,7 @@ public class SettingsScrollView extends Activity
 
 	}
 
-	private View getButtonView(final SettingsListCategoryButton SB, ViewGroup parent)
+	private View getButtonView(final SettingsListCategoryButton SB, ViewGroup parent, boolean BackgroundChanger)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		final View row = inflater.inflate(R.layout.advanced_settings_list_view_item_category_button, parent, false);
@@ -996,10 +1081,20 @@ public class SettingsScrollView extends Activity
 		return row;
 	}
 
-	private View getApiKeyButtonView(final SettingsListGetApiButton SB, ViewGroup parent)
+	private View getApiKeyButtonView(final SettingsListGetApiButton SB, ViewGroup parent, boolean BackgroundChanger)
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_button, parent, false);
+
+		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
+		if (BackgroundChanger)
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background);
+		}
+		else
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background2);
+		}
 
 		Button button = (Button) row.findViewById(R.id.Button);
 		button.setText(GlobalCore.Translations.Get("getApiKey"));

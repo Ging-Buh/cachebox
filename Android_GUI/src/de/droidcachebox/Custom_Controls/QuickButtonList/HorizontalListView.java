@@ -30,21 +30,18 @@ package de.droidcachebox.Custom_Controls.QuickButtonList;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import de.droidcachebox.Custom_Controls.downSlider;
-
-import android.app.ActivityManager;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
-import android.view.View.MeasureSpec;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.Scroller;
+import de.droidcachebox.Custom_Controls.downSlider;
 
 public class HorizontalListView extends AdapterView<ListAdapter>
 {
@@ -65,6 +62,8 @@ public class HorizontalListView extends AdapterView<ListAdapter>
 	private boolean mDataChanged = false;
 	private int width;
 	private int height;
+
+	private int altPos = 0;
 
 	public HorizontalListView(Context context)
 	{
@@ -94,11 +93,11 @@ public class HorizontalListView extends AdapterView<ListAdapter>
 		mMaxX = Integer.MAX_VALUE;
 		mScroller = new Scroller(getContext());
 		mGesture = new GestureDetector(getContext(), mOnGesture);
+
 	}
 
 	@Override
-	public void setOnItemSelectedListener(
-			AdapterView.OnItemSelectedListener listener)
+	public void setOnItemSelectedListener(AdapterView.OnItemSelectedListener listener)
 	{
 		mOnItemSelected = listener;
 	}
@@ -156,6 +155,12 @@ public class HorizontalListView extends AdapterView<ListAdapter>
 		mAdapter = adapter;
 		mAdapter.registerDataSetObserver(mDataObserver);
 		reset();
+
+		// set alt pos?
+		if (altPos != 0)
+		{
+			mScroller.setFinalX(altPos);
+		}
 	}
 
 	private synchronized void reset()
@@ -176,19 +181,16 @@ public class HorizontalListView extends AdapterView<ListAdapter>
 		LayoutParams params = child.getLayoutParams();
 		if (params == null)
 		{
-			params = new LayoutParams(LayoutParams.FILL_PARENT,
-					LayoutParams.FILL_PARENT);
+			params = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 		}
 
 		addViewInLayout(child, viewPos, params, true);
-		child.measure(
-				MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),
+		child.measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),
 				MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.AT_MOST));
 	}
 
 	@Override
-	protected synchronized void onLayout(boolean changed, int left, int top,
-			int right, int bottom)
+	protected synchronized void onLayout(boolean changed, int left, int top, int right, int bottom)
 	{
 		super.onLayout(changed, left, top, right, bottom);
 
@@ -229,7 +231,7 @@ public class HorizontalListView extends AdapterView<ListAdapter>
 		fillList(dx);
 		positionItems(dx);
 
-		mCurrentX = mNextX;
+		altPos = mCurrentX = mNextX;
 
 		if (!mScroller.isFinished())
 		{
@@ -270,12 +272,10 @@ public class HorizontalListView extends AdapterView<ListAdapter>
 
 	private void fillListRight(int rightEdge, final int dx)
 	{
-		while (rightEdge + dx < getWidth()
-				&& mRightViewIndex < mAdapter.getCount())
+		while (rightEdge + dx < getWidth() && mRightViewIndex < mAdapter.getCount())
 		{
 
-			View child = mAdapter.getView(mRightViewIndex,
-					mRemovedViewQueue.poll(), this);
+			View child = mAdapter.getView(mRightViewIndex, mRemovedViewQueue.poll(), this);
 			addAndMeasureChild(child, -1);
 			rightEdge += child.getMeasuredWidth();
 
@@ -292,8 +292,7 @@ public class HorizontalListView extends AdapterView<ListAdapter>
 	{
 		while (leftEdge + dx > 0 && mLeftViewIndex >= 0)
 		{
-			View child = mAdapter.getView(mLeftViewIndex,
-					mRemovedViewQueue.poll(), this);
+			View child = mAdapter.getView(mLeftViewIndex, mRemovedViewQueue.poll(), this);
 			addAndMeasureChild(child, 0);
 			leftEdge -= child.getMeasuredWidth();
 			mLeftViewIndex--;
@@ -334,8 +333,7 @@ public class HorizontalListView extends AdapterView<ListAdapter>
 			{
 				View child = getChildAt(i);
 				int childWidth = child.getMeasuredWidth();
-				child.layout(left, 0, left + childWidth,
-						child.getMeasuredHeight());
+				child.layout(left, 0, left + childWidth, child.getMeasuredHeight());
 				left += childWidth;
 			}
 		}
@@ -354,8 +352,7 @@ public class HorizontalListView extends AdapterView<ListAdapter>
 		return handled;
 	}
 
-	protected boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-			float velocityY)
+	protected boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
 	{
 		synchronized (HorizontalListView.this)
 		{
@@ -382,16 +379,13 @@ public class HorizontalListView extends AdapterView<ListAdapter>
 		}
 
 		@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-				float velocityY)
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
 		{
-			return HorizontalListView.this
-					.onFling(e1, e2, velocityX, velocityY);
+			return HorizontalListView.this.onFling(e1, e2, velocityX, velocityY);
 		}
 
 		@Override
-		public boolean onScroll(MotionEvent e1, MotionEvent e2,
-				float distanceX, float distanceY)
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
 		{
 
 			synchronized (HorizontalListView.this)
@@ -419,14 +413,12 @@ public class HorizontalListView extends AdapterView<ListAdapter>
 				{
 					if (mOnItemClicked != null)
 					{
-						mOnItemClicked.onItemClick(HorizontalListView.this,
-								child, mLeftViewIndex + 1 + i,
+						mOnItemClicked.onItemClick(HorizontalListView.this, child, mLeftViewIndex + 1 + i,
 								mAdapter.getItemId(mLeftViewIndex + 1 + i));
 					}
 					if (mOnItemSelected != null)
 					{
-						mOnItemSelected.onItemSelected(HorizontalListView.this,
-								child, mLeftViewIndex + 1 + i,
+						mOnItemSelected.onItemSelected(HorizontalListView.this, child, mLeftViewIndex + 1 + i,
 								mAdapter.getItemId(mLeftViewIndex + 1 + i));
 					}
 					break;

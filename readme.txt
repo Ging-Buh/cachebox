@@ -7,8 +7,8 @@ Version : 0.4.xxxx
     •	Kategorien für GPX Import
     •	mehr Texte für die Übersetzungen
     •	Api-Suche über Position von GPS, Karte oder manueller Koordinaten Eingabe
-    
-
+    •	Option für den Wechsel der Ansicht, zu Kompass, bei Annäherung
+    •	Layout Anpassungen für unterschiedliche Display Auflösungen
 
 
 Version : 0.3.484

@@ -126,7 +126,7 @@ public class CacheDraw
 		final int top = rec.top + Sizes.getHalfCornerSize();
 		final int width = rec.width() - Sizes.getHalfCornerSize();
 		final int height = rec.height() - Sizes.getHalfCornerSize();
-		final int SDTImageTop = (int) (height - (Sizes.getScaledFontSize() / 1.5)) + rec.top - 10;
+		final int SDTImageTop = (int) (height - (Sizes.getScaledFontSize() / 0.9)) + rec.top;
 		final int SDTLineTop = SDTImageTop + Sizes.getScaledFontSize();
 
 		// Mesure
@@ -281,8 +281,9 @@ public class CacheDraw
 		int numTb = cache.NumTravelbugs;
 		if (numTb > 0)
 		{
-			SDTleft += ActivityUtils.PutImageScale(canvas, Global.Icons[0], -90, SDTleft, SDTImageTop - 1,
-					(double) Sizes.getScaledFontSize() / 22);
+			SDTleft += ActivityUtils.PutImageScale(canvas, Global.Icons[0], -90, SDTleft,
+					(int) (SDTImageTop - (Sizes.getScaledFontSize() / (Sizes.getTbIconSize() * 0.1))), (double) Sizes.getScaledFontSize()
+							/ Sizes.getTbIconSize());
 			// SDTleft += space;
 			if (numTb > 1) canvas.drawText("x" + String.valueOf(numTb), SDTleft, SDTLineTop, DTPaint);
 		}
@@ -291,7 +292,11 @@ public class CacheDraw
 
 		if (drawStyle != DrawStyle.withoutBearing && drawStyle != DrawStyle.withOwnerAndName && !withoutBearing)
 		{
-			if (BearingRec == null) BearingRec = new Rect(rec.right - rightBorder, rec.top, rec.right, (int) (SDTImageTop * 0.99));
+
+			int BearingHeight = (int) ((rec.right - rightBorder < SDTleft) ? rec.bottom - (Sizes.getScaledFontSize() * 2) : rec.bottom
+					- (Sizes.getScaledFontSize() * 0.8));
+
+			if (BearingRec == null) BearingRec = new Rect(rec.right - rightBorder, rec.top, rec.right, BearingHeight);
 			DrawBearing(cache, canvas, BearingRec);
 		}
 
@@ -365,7 +370,7 @@ public class CacheDraw
 	private static void DrawBearing(Cache cache, Canvas canvas, Rect drawingRec, String Distance, double Bearing)
 	{
 
-		double scale = (double) Sizes.getScaledFontSize() / 26;
+		double scale = (double) Sizes.getScaledFontSize() / Sizes.getArrowScaleList();
 
 		ActivityUtils.PutImageScale(canvas, Global.Arrows[1], Bearing, drawingRec.left, drawingRec.top, scale);
 		canvas.drawText(Distance, drawingRec.left, drawingRec.bottom, DTPaint);

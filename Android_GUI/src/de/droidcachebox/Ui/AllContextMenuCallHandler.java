@@ -191,7 +191,11 @@ public class AllContextMenuCallHandler
 		boolean enabled = false;
 		if (!selectedCacheIsNull && (!Database.Hint(GlobalCore.SelectedCache()).equals(""))) enabled = true;
 		MenuItem mi = IconMenu.findItem(R.id.miHint);
-		if (mi != null) mi.setEnabled(enabled);
+		if (mi != null)
+		{
+			mi.setEnabled(enabled);
+			mi.setIcon(Global.BtnIcons[19]);
+		}
 		mi = IconMenu.findItem(R.id.miSpoilerView);
 		// Saarfuchs: hier musste noch abgetestet werden, dass auch ein Cache
 		// selektiert ist, sonst Absturz

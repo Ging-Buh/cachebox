@@ -1,22 +1,10 @@
 package de.droidcachebox.Views;
 
-import de.droidcachebox.Global;
-import de.droidcachebox.R;
-import de.droidcachebox.main;
-import CB_Core.Api.GroundspeakAPI;
-import de.droidcachebox.Events.GpsStateChangeEvent;
-import de.droidcachebox.Events.GpsStateChangeEventList;
-import de.droidcachebox.Events.PositionEvent;
-import de.droidcachebox.Events.PositionEventList;
-import CB_Core.Events.SelectedCacheEvent;
-import CB_Core.Events.SelectedCacheEventList;
-import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Views.Forms.MessageBox;
-import de.droidcachebox.Views.Forms.MessageBoxButtons;
-import de.droidcachebox.Views.Forms.MessageBoxIcon;
-import de.droidcachebox.Views.Forms.NumerikInputBox;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.app.ProgressDialog;
@@ -40,6 +28,18 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.droidcachebox.Global;
+import de.droidcachebox.R;
+import de.droidcachebox.main;
+import de.droidcachebox.Events.GpsStateChangeEvent;
+import de.droidcachebox.Events.GpsStateChangeEventList;
+import de.droidcachebox.Events.PositionEvent;
+import de.droidcachebox.Events.PositionEventList;
+import de.droidcachebox.Events.ViewOptionsMenu;
+import de.droidcachebox.Views.Forms.MessageBox;
+import de.droidcachebox.Views.Forms.MessageBoxButtons;
+import de.droidcachebox.Views.Forms.MessageBoxIcon;
+import de.droidcachebox.Views.Forms.NumerikInputBox;
 
 public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent, PositionEvent, GpsStateChangeEvent
 {
@@ -148,12 +148,6 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 			public void onClick(View arg0)
 			{
 				if (GlobalCore.SelectedCache() == null) return;
-
-				if (!Config.settings.AllowInternetAccess.getValue())
-				{
-					Toast.makeText(main.mainActivity, GlobalCore.Translations.Get("allowInetConn"), Toast.LENGTH_SHORT).show();
-					return;
-				}
 
 				try
 				{
@@ -381,19 +375,13 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	public void PositionChanged(Location location)
 	{
 		/*
-		 * if ((Global.Locator.getLocation() != null) &&
-		 * (Global.Locator.getLocation().hasAccuracy())) { int radius = (int)
-		 * Global.Locator.getLocation().getAccuracy(); Accuracy.setText("+/- " +
-		 * String.valueOf(radius) + "m (" +
-		 * Global.Locator.ProviderString()+")"); } else { Accuracy.setText("");
-		 * } if (Global.Locator.getLocation() != null) {
-		 * Current.setText(Global.FormatLatitudeDM
-		 * (Global.Locator.getLocation().getLatitude()) + " " +
-		 * Global.FormatLongitudeDM
-		 * (Global.Locator.getLocation().getLongitude()));
-		 * GPS.setText(GlobalCore.Translations.Get("alt") + " " +
-		 * Global.Locator.getAltString()); } if (Global.Locator == null) {
-		 * GPS.setText(GlobalCore.Translations.Get("not_detected")); return; }
+		 * if ((Global.Locator.getLocation() != null) && (Global.Locator.getLocation().hasAccuracy())) { int radius = (int)
+		 * Global.Locator.getLocation().getAccuracy(); Accuracy.setText("+/- " + String.valueOf(radius) + "m (" +
+		 * Global.Locator.ProviderString()+")"); } else { Accuracy.setText(""); } if (Global.Locator.getLocation() != null) {
+		 * Current.setText(Global.FormatLatitudeDM (Global.Locator.getLocation().getLatitude()) + " " + Global.FormatLongitudeDM
+		 * (Global.Locator.getLocation().getLongitude())); GPS.setText(GlobalCore.Translations.Get("alt") + " " +
+		 * Global.Locator.getAltString()); } if (Global.Locator == null) { GPS.setText(GlobalCore.Translations.Get("not_detected")); return;
+		 * }
 		 */
 
 	}

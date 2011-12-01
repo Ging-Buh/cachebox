@@ -338,7 +338,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
 		Date now = new Date();
-		boolean c = (now.getMonth() == 12) ? true : false;
+		boolean c = (now.getMonth() == 11 && !Config.settings.dontShowChris.getValue()) ? true : false;
 		Config.settings.isChris.setValue(c);
 		// Config.settings.isChris.setValue(true);
 		Config.AcceptChanges();
@@ -422,6 +422,30 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 		// Initialisiere Icons neu.
 		Global.InitIcons(this);
+
+		if (Config.settings.nightMode.getValue())
+		{
+			if (Config.settings.isChris.getValue())
+			{
+				buttonCache.setBackgroundResource(R.drawable.chris_night_cache_button_image_selector);
+			}
+			else
+			{
+				buttonCache.setBackgroundResource(R.drawable.night_cache_button_image_selector);
+			}
+		}
+		else
+		{
+			if (Config.settings.isChris.getValue())
+			{
+				buttonCache.setBackgroundResource(R.drawable.chris_cache_button_image_selector);
+			}
+			else
+			{
+				buttonCache.setBackgroundResource(R.drawable.cache_button_image_selector);
+			}
+		}
+		buttonCache.invalidate();
 
 		CacheListChangedEvent();
 
@@ -655,6 +679,12 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				{
 					Global.PlaySound("Approach.wav");
 					approachSoundCompleted = true;
+
+					// switch to Compass if the option seted
+					if (Config.settings.switchViewApproach.getValue())
+					{
+						showView(8);
+					}
 				}
 			}
 		}
@@ -1693,7 +1723,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				buttonCache.setBackgroundResource(R.drawable.cache_button_image_selector);
 			}
 		}
-
+		buttonCache.invalidate();
 	}
 
 	private void initialViews()

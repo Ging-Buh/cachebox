@@ -84,7 +84,7 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 			}
 			if (headHeight < 1 || headLinePos < 1)
 			{
-				headHeight = (int) (layoutTypeText.getHeight() * 1.5) + Sizes.getCornerSize();
+				headHeight = (int) (layoutTypeText.getHeight() * 2) + Sizes.getCornerSize();
 				headLinePos = (headHeight / 2) + (layoutTypeText.getHeight() / 2) - 5;
 			}
 
@@ -143,6 +143,7 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 
 	// static Member
 	public static Paint Linepaint;
+	public static Paint KopfPaint;
 	public static Paint TextPaint;
 	private static int headHeight;
 	private static int headLinePos;
@@ -161,6 +162,9 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 			Linepaint = new Paint();
 			Linepaint.setAntiAlias(true);
 			Linepaint.setColor(Global.getColor(R.attr.ListSeparator));
+			KopfPaint = new Paint();
+			KopfPaint.setAntiAlias(true);
+			KopfPaint.setColor(Global.getColor(R.attr.EmptyBackground));
 		}
 		if (TextPaint == null)
 		{
@@ -208,12 +212,12 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 		final Rect KopfRect = new Rect(5, 5, width - 5, headHeight);
 		;
 		final RectF KopfRectF = new RectF(KopfRect);
-		canvas.drawRoundRect(KopfRectF, Sizes.getCornerSize(), Sizes.getCornerSize(), Linepaint);
-		canvas.drawRect(new Rect(5, headHeight - Sizes.getCornerSize(), width - 5, headHeight), Linepaint);
+		canvas.drawRoundRect(KopfRectF, Sizes.getCornerSize(), Sizes.getCornerSize(), KopfPaint);
+		canvas.drawRect(new Rect(5, headHeight - Sizes.getCornerSize(), width - 5, headHeight), KopfPaint);
 
 		// Icon
 		int space = (fieldnote.typeIcon >= 0) ? ActivityUtils.PutImageTargetHeight(canvas, Global.LogIcons[fieldnote.typeIcon],
-				Sizes.getHalfCornerSize(), 8, headHeight - 10) + 4 : 0;
+				Sizes.getHalfCornerSize(), 8, headHeight - Sizes.getCornerSize()) + 4 : 0;
 
 		// typeString
 		canvas.drawText(fieldnote.typeString, space + Sizes.getHalfCornerSize(), headLinePos, TextPaint);
@@ -258,14 +262,10 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 		ActivityUtils.drawStaticLayout(canvas, layoutComment, left, top);
 
 		/*
-		 * canvas.drawText(fieldnote.CacheName, 70, 20, new Paint());
-		 * canvas.drawText(fieldnote.comment, 70, 35, new Paint());
-		 * canvas.drawText(fieldnote.gcCode, 70, 50, new Paint());
-		 * canvas.drawText("#" + fieldnote.foundNumber, 70, 65, new Paint());
-		 * canvas.drawText(fieldnote.timestamp.toLocaleString(), 200, 70, new
-		 * Paint()); canvas.drawText("Id:" + fieldnote.Id, 250, 35, new
-		 * Paint()); canvas.drawText("CacheId:" + fieldnote.CacheId, 250, 50,
-		 * new Paint());
+		 * canvas.drawText(fieldnote.CacheName, 70, 20, new Paint()); canvas.drawText(fieldnote.comment, 70, 35, new Paint());
+		 * canvas.drawText(fieldnote.gcCode, 70, 50, new Paint()); canvas.drawText("#" + fieldnote.foundNumber, 70, 65, new Paint());
+		 * canvas.drawText(fieldnote.timestamp.toLocaleString(), 200, 70, new Paint()); canvas.drawText("Id:" + fieldnote.Id, 250, 35, new
+		 * Paint()); canvas.drawText("CacheId:" + fieldnote.CacheId, 250, 50, new Paint());
 		 */
 
 	}

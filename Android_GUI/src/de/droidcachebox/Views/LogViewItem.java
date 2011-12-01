@@ -129,7 +129,7 @@ public class LogViewItem extends View
 			}
 		}
 
-		result += Sizes.getCornerSize() * 2;
+		result += Sizes.getCornerSize() * 3;
 		height = result;
 		return result;
 	}
@@ -193,7 +193,7 @@ public class LogViewItem extends View
 		canvas.drawRect(new Rect(m + 1, headHeight - Sizes.getCornerSize(), width - m - 1, headHeight), KopfPaint);
 
 		int space = (logEntry.TypeIcon >= 0) ? ActivityUtils.PutImageTargetHeight(canvas, Global.LogIcons[logEntry.TypeIcon],
-				Sizes.getHalfCornerSize(), 8, headHeight - (Sizes.getCornerSize() * 2))
+				Sizes.getHalfCornerSize(), 8, headHeight - Sizes.getCornerSize())
 				+ m : 0;
 
 		canvas.drawText(logEntry.Finder, space + Sizes.getHalfCornerSize(), headLinePos, NamePaint);

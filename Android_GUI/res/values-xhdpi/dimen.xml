@@ -4,6 +4,10 @@
 	<dimen name="TextSize_normal">39dip</dimen>
 	<dimen name="RefSize">62dip</dimen>
 	
+	<dimen name="ArrowSize_List">13dip</dimen>
+	<dimen name="ArrowSize_Map">18dip</dimen>
+	<dimen name="TB_icon_Size">4dip</dimen>
+	
 	<dimen name="BtnSize">53dip</dimen>
     <dimen name="BtnTextSize">30dip</dimen>
     <dimen name="IconSize">12dip</dimen>

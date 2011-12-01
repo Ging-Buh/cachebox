@@ -37,7 +37,7 @@ import de.droidcachebox.Ui.Sizes;
 
 public class Global
 {
-	public static final int CurrentRevision = 572;
+	public static final int CurrentRevision = 574;
 	public static final String CurrentVersion = "0.4.";
 	public static final String VersionPrefix = "beta";
 	public static final int LatestDatabaseChange = 1016;
@@ -557,15 +557,11 @@ public class Global
 					getDrawable(R.drawable.big_16, res),
 					getDrawable(R.drawable.list_icon, res), // LogView braucht
 															// noch ein Icon
-					getDrawable(R.drawable.map, res),
-					getDrawable(R.drawable.compass, res),
-					getDrawable(R.drawable.cache_list_icon, res),
-					getDrawable(R.drawable.list_icon, res), // TrackListView
-															// braucht noch ein
-															// Icon
-					getDrawable(R.drawable.log10, res), getDrawable(R.drawable.video_icon, res),
-					getDrawable(R.drawable.voice_rec_icon, res), getDrawable(R.drawable.lupe, res), getDrawable(R.drawable.filter, res),
-					getDrawable(R.drawable.lock_icon, res), getDrawable(R.drawable.auto_sort_on_icon, res), // 15
+					getDrawable(R.drawable.map, res), getDrawable(R.drawable.compass, res), getDrawable(R.drawable.cache_list_icon, res),
+					getDrawable(R.drawable.track_list_icon, res), getDrawable(R.drawable.log10, res),
+					getDrawable(R.drawable.video_icon, res), getDrawable(R.drawable.voice_rec_icon, res),
+					getDrawable(R.drawable.lupe, res), getDrawable(R.drawable.filter, res), getDrawable(R.drawable.lock_icon, res),
+					getDrawable(R.drawable.auto_sort_on_icon, res), // 15
 					getDrawable(R.drawable.auto_sort_off_icon, res), // 16
 					getDrawable(R.drawable.solver_icon, res), // 17
 					getDrawable(R.drawable.images_icon, res), // 18
@@ -646,15 +642,11 @@ public class Global
 					getDrawable(R.drawable.big_16, res),
 					getDrawable(R.drawable.list_icon, res), // LogView braucht
 															// noch ein Icon
-					getDrawable(R.drawable.map, res),
-					getDrawable(R.drawable.compass, res),
-					getDrawable(R.drawable.cache_list_icon, res),
-					getDrawable(R.drawable.list_icon, res), // TrackListView
-															// braucht noch ein
-															// Icon
-					getDrawable(R.drawable.log10, res), getDrawable(R.drawable.video_icon, res),
-					getDrawable(R.drawable.voice_rec_icon, res), getDrawable(R.drawable.lupe, res), getDrawable(R.drawable.filter, res),
-					getDrawable(R.drawable.lock_icon, res), getDrawable(R.drawable.auto_sort_on_icon, res), // 15
+					getDrawable(R.drawable.map, res), getDrawable(R.drawable.compass, res), getDrawable(R.drawable.cache_list_icon, res),
+					getDrawable(R.drawable.track_list_icon, res), getDrawable(R.drawable.log10, res),
+					getDrawable(R.drawable.video_icon, res), getDrawable(R.drawable.voice_rec_icon, res),
+					getDrawable(R.drawable.lupe, res), getDrawable(R.drawable.filter, res), getDrawable(R.drawable.lock_icon, res),
+					getDrawable(R.drawable.auto_sort_on_icon, res), // 15
 					getDrawable(R.drawable.auto_sort_off_icon, res), // 16
 					getDrawable(R.drawable.solver_icon, res), // 17
 					getDrawable(R.drawable.images_icon, res), // 18

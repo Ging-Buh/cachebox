@@ -38,14 +38,14 @@ public class SettingsClass extends SettingsList
 	// Bool
 	public SettingBool SaveFieldNotesHtml;
 	public SettingBool OsmDpiAwareRendering;
-	public SettingBool AllowInternetAccess;
-	public SettingBool AllowRouteInternet;
+	// public SettingBool AllowInternetAccess;
+	// public SettingBool AllowRouteInternet;
 	public SettingBool ImportGpx;
 	public SettingBool CacheMapData;
 	public SettingBool CacheImageData;
 	public SettingBool SuppressPowerSaving;
 	public SettingBool PlaySounds;
-	public SettingBool PopSkipOutdatedGpx;
+	// public SettingBool PopSkipOutdatedGpx;
 	public SettingBool MapShowRating;
 	public SettingBool MapShowDT;
 	public SettingBool MapShowTitles;
@@ -54,7 +54,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool ImportLayerOsm;
 	public SettingBool TrackRecorderStartup;
 	public SettingBool MapShowCompass;
-	public SettingBool ResortRepaint;
+	// public SettingBool ResortRepaint;
 	public SettingBool GCAutoSyncCachesFound;
 	public SettingBool GCAdditionalImageDownload;
 	public SettingBool AutoResort;
@@ -62,7 +62,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool MultiDBAsk;
 	public SettingBool AllowLandscape;
 	public SettingBool MoveMapCenterWithSpeed;
-	public SettingBool PremiumMember;
+	// public SettingBool PremiumMember;
 	public SettingBool SearchWithoutFounds;
 	public SettingBool SearchWithoutOwns;
 	public SettingBool SearchOnlyAvible;
@@ -84,12 +84,13 @@ public class SettingsClass extends SettingsList
 	public SettingBool ImportPQsFromGeocachingCom;
 	public SettingBool SettingsShowExpert;
 	public SettingBool SettingsShowAll;
-
+	public SettingBool switchViewApproach;
+	public SettingBool dontShowChris;
 	// int
 	public SettingInt LogMaxMonthAge;
 	public SettingInt LogMinCount;
 	public SettingInt installRev;
-	public SettingInt OsmCoverage;
+	// public SettingInt OsmCoverage;
 	public SettingInt FoundOffset;
 	public SettingInt MapMaxCachesLabel;
 	public SettingInt MapMaxCachesDisplay_config;
@@ -118,7 +119,7 @@ public class SettingsClass extends SettingsList
 	public SettingString GcLogin;
 	public SettingString GcJoker;
 	public SettingString OverrideUrl;
-	public SettingString PopHost;
+	// public SettingString PopHost;
 
 	// Decrypt
 	public SettingEncryptedString GcAPI;
@@ -146,6 +147,7 @@ public class SettingsClass extends SettingsList
 	private final SettingModus INVISIBLE = SettingModus.Invisible;
 	private final SettingModus NORMAL = SettingModus.Normal;
 	private final SettingModus EXPERT = SettingModus.Expert;
+	private final SettingModus NEVER = SettingModus.Never;
 
 	public SettingsClass()
 	{
@@ -162,18 +164,18 @@ public class SettingsClass extends SettingsList
 
 		addSetting(ShowKeypad = new SettingBool("ShowKeypad", cat, NORMAL, true, true));
 		addSetting(PlaySounds = new SettingBool("PlaySounds", cat, NORMAL, true, true));
-
+		addSetting(quickButtonShow = new SettingBool("quickButtonShow", cat, NEVER, true, true));
 		addSetting(ImportGpx = new SettingBool("ImportGpx", cat, NORMAL, true, true));
 		addSetting(CacheMapData = new SettingBool("CacheMapData", cat, NORMAL, false, true));
 		addSetting(CacheImageData = new SettingBool("CacheImageData", cat, INVISIBLE, false, true));
-		addSetting(isChris = new SettingBool("isChris", cat, NORMAL, false, true));
+		addSetting(isChris = new SettingBool("isChris", cat, NEVER, false, true));
 		addSetting(SuppressPowerSaving = new SettingBool("SuppressPowerSaving", cat, NORMAL, true, true));
 
-		addSetting(PopSkipOutdatedGpx = new SettingBool("PopSkipOutdatedGpx", cat, NORMAL, true, true));
+		// addSetting(PopSkipOutdatedGpx = new SettingBool("PopSkipOutdatedGpx", cat, NORMAL, true, true));
 
 		addSetting(ImportLayerOsm = new SettingBool("ImportLayerOsm", cat, NORMAL, true, true));
 
-		addSetting(ResortRepaint = new SettingBool("ResortRepaint", cat, NORMAL, false, true));
+		// addSetting(ResortRepaint = new SettingBool("ResortRepaint", cat, NORMAL, false, true));
 		addSetting(GCAutoSyncCachesFound = new SettingBool("GCAutoSyncCachesFound", cat, NORMAL, true, true));
 
 		addSetting(AutoResort = new SettingBool("AutoResort", cat, NORMAL, false, true));
@@ -181,19 +183,19 @@ public class SettingsClass extends SettingsList
 		addSetting(MultiDBAsk = new SettingBool("MultiDBAsk", cat, NORMAL, true, true));
 		addSetting(AllowLandscape = new SettingBool("AllowLandscape", cat, NORMAL, false, true));
 		addSetting(MoveMapCenterWithSpeed = new SettingBool("MoveMapCenterWithSpeed", cat, NORMAL, false, true));
-		addSetting(PremiumMember = new SettingBool("PremiumMember", cat, NORMAL, false, true));
+		// addSetting(PremiumMember = new SettingBool("PremiumMember", cat, NORMAL, false, true));
 
-		addSetting(quickButtonLastShow = new SettingBool("quickButtonLastShow", cat, NORMAL, false, true));
-		addSetting(newInstall = new SettingBool("newInstall", cat, NORMAL, false, true));
+		addSetting(quickButtonLastShow = new SettingBool("quickButtonLastShow", cat, NEVER, false, true));
+		addSetting(newInstall = new SettingBool("newInstall", cat, NEVER, false, true));
 		addSetting(ImperialUnits = new SettingBool("ImperialUnits", cat, NORMAL, false, true));
 
 		// int
 		addSetting(LogMaxMonthAge = new SettingInt("LogMaxMonthAge", cat, NORMAL, 99999, true));
 		addSetting(LogMinCount = new SettingInt("LogMinCount", cat, NORMAL, 99999, true));
-		addSetting(installRev = new SettingInt("installRev", cat, NORMAL, 0, true));
-		addSetting(OsmCoverage = new SettingInt("OsmCoverage", cat, NORMAL, 1000, true));
+		addSetting(installRev = new SettingInt("installRev", cat, NEVER, 0, true));
+		// addSetting(OsmCoverage = new SettingInt("OsmCoverage", cat, NORMAL, 1000, true));
 
-		addSetting(MultiDBAutoStartTime = new SettingInt("MultiDBAutoStartTime", cat, NORMAL, 0, true));
+		addSetting(MultiDBAutoStartTime = new SettingInt("MultiDBAutoStartTime", cat, NEVER, 0, true));
 		addSetting(LockM = new SettingInt("LockM", cat, NORMAL, 1, true));
 		addSetting(LockSec = new SettingInt("LockSec", cat, NORMAL, 0, true));
 
@@ -201,10 +203,10 @@ public class SettingsClass extends SettingsList
 				"http://129.206.229.146/openrouteservice/php/OpenLSRS_DetermineRoute.php", true));
 
 		addSetting(SpoilersDescriptionTags = new SettingString("SpoilersDescriptionTags", cat, INVISIBLE, "", true));
-		addSetting(quickButtonList = new SettingString("quickButtonList", cat, INVISIBLE, "5,0,1,3,2", true));
+		addSetting(quickButtonList = new SettingString("quickButtonList", cat, NEVER, "5,0,1,3,2", true));
 
 		addSetting(OverrideUrl = new SettingString("OverrideUrl", cat, INVISIBLE, "", true));
-		addSetting(PopHost = new SettingString("PopHost", cat, INVISIBLE, "", true));
+		// addSetting(PopHost = new SettingString("PopHost", cat, INVISIBLE, "", true));
 
 		// Decrypt String
 
@@ -212,7 +214,6 @@ public class SettingsClass extends SettingsList
 
 		// IntArray
 
-		addInternalSattings();
 		addMapSettings();
 		addLogInSettings();
 		addFolderSettings();
@@ -224,26 +225,21 @@ public class SettingsClass extends SettingsList
 		addDebugSettings();
 	}
 
-	private void addInternalSattings()
-	{
-		SettingCategory cat = SettingCategory.Internal;
-
-		addSetting(nightMode = new SettingBool("nightMode", cat, INVISIBLE, false, true));
-	}
-
 	private void addMiscSettings()
 	{
 		SettingCategory cat = SettingCategory.Misc;
 
-		addSetting(Filter = new SettingLongString("Filter", cat, INVISIBLE, FilterProperties.presets[0].toString(), false));
+		addSetting(Filter = new SettingLongString("Filter", cat, NEVER, FilterProperties.presets[0].toString(), false));
 		addSetting(SaveFieldNotesHtml = new SettingBool("SaveFieldNotesHtml", cat, NORMAL, true, true));
-		addSetting(AllowInternetAccess = new SettingBool("AllowInternetAccess", cat, NORMAL, true, true));
-		addSetting(AllowRouteInternet = new SettingBool("AllowRouteInternet", cat, NORMAL, true, true));
+		// addSetting(AllowInternetAccess = new SettingBool("AllowInternetAccess", cat, NORMAL, true, true));
+		// addSetting(AllowRouteInternet = new SettingBool("AllowRouteInternet", cat, NORMAL, true, true));
 		addSetting(FoundOffset = new SettingInt("FoundOffset", cat, NORMAL, 0, true));
 		addSetting(TrackDistance = new SettingIntArray("TrackDistance", cat, NORMAL, 3, true, TrackDistanceArray));
 		addSetting(SoundApproachDistance = new SettingIntArray("SoundApproachDistance", cat, NORMAL, 50, true, approach));
 		addSetting(TrackRecorderStartup = new SettingBool("TrackRecorderStartup", cat, NORMAL, false, true));
 		addSetting(DescriptionNoAttributes = new SettingBool("DescriptionNoAttributes", cat, NORMAL, false, true));
+		addSetting(switchViewApproach = new SettingBool("switchViewApproach", cat, NORMAL, false, true));
+		addSetting(dontShowChris = new SettingBool("dontShowChris", cat, INVISIBLE, true, true));
 	}
 
 	private void addTemplateSettings()
@@ -306,7 +302,7 @@ public class SettingsClass extends SettingsList
 	{
 		SettingCategory cat = SettingCategory.Login;
 
-		addSetting(GcAPI = new SettingEncryptedString("GcAPI", cat, NORMAL, "", true));
+		addSetting(GcAPI = new SettingEncryptedString("GcAPI", cat, INVISIBLE, "", true));
 		addSetting(GcVotePassword = new SettingEncryptedString("GcVotePassword", cat, NORMAL, "", true));
 		addSetting(GcLogin = new SettingString("GcLogin", cat, NORMAL, "", true));
 		addSetting(GcJoker = new SettingString("GcJoker", cat, NORMAL, "", true));
@@ -337,8 +333,9 @@ public class SettingsClass extends SettingsList
 	{
 		SettingCategory cat = SettingCategory.Internal;
 
-		addSetting(SettingsShowExpert = new SettingBool("SettingsShowExpert", cat, INVISIBLE, false, true));
-		addSetting(SettingsShowAll = new SettingBool("SettingsShowAll", cat, INVISIBLE, false, true));
+		addSetting(SettingsShowExpert = new SettingBool("SettingsShowExpert", cat, NEVER, false, true));
+		addSetting(SettingsShowAll = new SettingBool("SettingsShowAll", cat, NEVER, false, true));
+		addSetting(nightMode = new SettingBool("nightMode", cat, NEVER, false, true));
 	}
 
 	private void addAPISettings()
@@ -360,12 +357,11 @@ public class SettingsClass extends SettingsList
 	{
 		SettingCategory cat = SettingCategory.Debug;
 
-		addSetting(quickButtonShow = new SettingBool("quickButtonShow", cat, NORMAL, true, true));
-		addSetting(DebugShowPanel = new SettingBool("DebugShowPanel", cat, NORMAL, false, true));
-		addSetting(DebugMemory = new SettingBool("DebugMemory", cat, NORMAL, false, true));
-		addSetting(DebugShowMsg = new SettingBool("DebugShowMsg", cat, NORMAL, false, true));
-		addSetting(DebugShowMarker = new SettingBool("DebugShowMarker", cat, NORMAL, false, true));
-		addSetting(DebugShowLog = new SettingBool("DebugShowLog", cat, NORMAL, false, true));
+		addSetting(DebugShowPanel = new SettingBool("DebugShowPanel", cat, EXPERT, false, true));
+		addSetting(DebugMemory = new SettingBool("DebugMemory", cat, EXPERT, false, true));
+		addSetting(DebugShowMsg = new SettingBool("DebugShowMsg", cat, EXPERT, false, true));
+		addSetting(DebugShowMarker = new SettingBool("DebugShowMarker", cat, EXPERT, false, true));
+		addSetting(DebugShowLog = new SettingBool("DebugShowLog", cat, EXPERT, false, true));
 
 	}
 

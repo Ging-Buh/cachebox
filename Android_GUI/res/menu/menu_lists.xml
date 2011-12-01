@@ -5,7 +5,7 @@
     
     
     
-    <item android:id="@+id/miTrackList" android:title="Track List" android:icon="@drawable/list_icon"></item>
+    <item android:id="@+id/miTrackList" android:title="Track List" android:icon="@drawable/track_list_icon"></item>
     <item android:id="@+id/miTbList" android:title="TB List" android:icon="@drawable/tb_list_icon"></item>
     
 </menu>
