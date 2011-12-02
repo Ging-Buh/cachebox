@@ -592,6 +592,46 @@ English
 	Gps = GPS Settings
 	HtcCompass = Use Hardware Compass
 	HtcLevel = Speed level for Hardware or GPS compass. \n-1 = GPS is not used at all.
+	LeftWindow = Show formula window
+	BothWindow = Show both windows
+	RightWindow = Show solve window
+	MapShowDT = Show D/T on map
+	MapHideMyFinds = Hinde my finds on map
+	MapShowTitles = Show Cache titles on map
+	ZoomCross = Show cross when zoom level >
+	MapShowCompass = Show Compass on map
+	MapShowRating = Show Rating on map
+	ShowDirektLine = Show direkt line to target
+	Internal = Internal
+	PlaySounds = Play Sounds
+	Folder = Folder
+	TrackFolder = Track Folder
+	UserImageFolder = User Image Folder
+	PocketQueryFolder = GPX Import Folder
+	MapPackFolder = Map pack Folder
+	DatabasePath = Path to current Database
+	SpoilerFolder = Spoiler Folder
+	DescriptionImageFolder = Description Image Folder
+	TrackDistance = Track ervery [m]
+	SoundApproachDistance = Approch Sound [m]
+	switchViewApproach = Switch view to Compass with approch
+	TrackRecorderStartup = Start Track Recorder on Startup
+	DescriptionNoAttributes = Does not show attributes in the description
+	Templates = Fieldnotes Tamplates
+	DNFTemplate = DNF Template
+	AddNoteTemplate = Add Note Tamplate
+	FoundTemplate = Found Template
+	NeedsMaintenanceTemplate = Needs Maintenance Template
+	API = API
+	ImportGpx = Import GPX 
+	SearchWithoutOwns = Search without Owns
+	SearchOnlyAvible = Search only Avible
+	ImportPQsFromGeocachingCom = Import PQs from geocaching.com
+	SearchWithoutFounds = Search without Founds 
+	ImportRatings = Import Ratings from GC-Vote
+	lastSearchRadius = Last search radius
+	Debug = Debug
+	DebugDisplayInfo = Show display info 
 
 
 

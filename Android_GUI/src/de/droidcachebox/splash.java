@@ -25,6 +25,7 @@ import CB_Core.Settings.SettingFolder;
 import CB_Core.Settings.SettingInt;
 import CB_Core.Settings.SettingIntArray;
 import CB_Core.Settings.SettingString;
+import CB_Core.Settings.SettingTime;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Coordinate;
 import android.app.Activity;
@@ -213,6 +214,10 @@ public class splash extends Activity
 				else if (setting instanceof SettingIntArray)
 				{
 					((SettingIntArray) setting).setValue(Config.GetInt(setting.getName()));
+				}
+				else if (setting instanceof SettingTime)
+				{
+					((SettingTime) setting).setValue(((Config.GetInt("LockM") * 60) + Config.GetInt("LockSec")) * 1000);
 				}
 				else if (setting instanceof SettingInt)
 				{

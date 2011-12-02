@@ -7,7 +7,7 @@ import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,6 +40,7 @@ import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;
 import de.droidcachebox.Views.Forms.NumerikInputBox;
+import de.droidcachebox.Views.Forms.PleaseWaitMessageBox;
 
 public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent, PositionEvent, GpsStateChangeEvent
 {
@@ -68,7 +69,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	public static LinearLayout strengthLayout;
 
 	public static AboutView Me;
-	private static ProgressDialog pd;
+	private static Dialog pd;
 
 	public AboutView(Context context, final LayoutInflater inflater)
 	{
@@ -118,7 +119,8 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 
 									};
 
-									pd = ProgressDialog.show(main.mainActivity, "", "Search Online", true);
+									pd = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("LoadFounds"), "GC-Live",
+											MessageBoxButtons.Cancel, MessageBoxIcon.GC_Live, null);
 
 									thread.start();
 

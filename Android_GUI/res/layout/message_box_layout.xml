@@ -21,6 +21,7 @@
 		android:layout_width="fill_parent" android:layout_height="wrap_content">
 		<ImageView android:layout_width="wrap_content" android:id="@+id/icon"
 			android:src="@drawable/icon" android:layout_height="wrap_content"
+			android:minHeight="@+dimen/MsgBoxIconMinHeight" android:minWidth="@+dimen/MsgBoxIconMinWidth"
 			android:layout_marginLeft="10dip" android:layout_marginRight="5dip"
 			android:layout_marginTop="15dip" android:layout_marginBottom="25dip"></ImageView>
 

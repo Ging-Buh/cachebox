@@ -42,13 +42,11 @@ import de.droidcachebox.main;
 import de.droidcachebox.Ui.Sizes;
 
 /**
- * Zeigt ein Meldungsfeld an, das Text, Schaltfl‰chen und Symbole mit
- * Informationen und Anweisungen f¸r den Benutzer enthalten kann. Entspricht in
- * etwa der C# .NET Klasse. Da nicht auf ein Result gewartet werden kann, muss
- * ein DialogInterface.OnClickListener() ¸bergeben werden.
+ * Zeigt ein Meldungsfeld an, das Text, Schaltfl‰chen und Symbole mit Informationen und Anweisungen f¸r den Benutzer enthalten kann.
+ * Entspricht in etwa der C# .NET Klasse. Da nicht auf ein Result gewartet werden kann, muss ein DialogInterface.OnClickListener() ¸bergeben
+ * werden.
  * 
- * @author Longri Basiert auf dem Sample Code von Antoine Vianey. Zu finden
- *         unter http://code.google.com/p/androgames-sample/
+ * @author Longri Basiert auf dem Sample Code von Antoine Vianey. Zu finden unter http://code.google.com/p/androgames-sample/
  */
 public class PleaseWaitMessageBox extends android.app.Dialog
 {
@@ -57,9 +55,8 @@ public class PleaseWaitMessageBox extends android.app.Dialog
 	private static Activity parent = null;
 
 	/**
-	 * Zeigt ein Meldungsfeld mit angegebenem Text an. Im Meldungsfeld wird
-	 * standardm‰ﬂig die Schaltfl‰che OK angezeigt. Das Meldungsfeld enth‰lt
-	 * keine Beschriftung im Titel und kein Icon.
+	 * Zeigt ein Meldungsfeld mit angegebenem Text an. Im Meldungsfeld wird standardm‰ﬂig die Schaltfl‰che OK angezeigt. Das Meldungsfeld
+	 * enth‰lt keine Beschriftung im Titel und kein Icon.
 	 * 
 	 * @param msg
 	 *            Die Message, welche ausgegeben werden soll.
@@ -82,9 +79,8 @@ public class PleaseWaitMessageBox extends android.app.Dialog
 	}
 
 	/**
-	 * Zeigt ein Meldungsfeld mit angegebenem Text an. Im Meldungsfeld wird
-	 * standardm‰ﬂig die Schaltfl‰che OK angezeigt. Das Meldungsfeld enth‰lt
-	 * keine Beschriftung im Titel und kein Icon.
+	 * Zeigt ein Meldungsfeld mit angegebenem Text an. Im Meldungsfeld wird standardm‰ﬂig die Schaltfl‰che OK angezeigt. Das Meldungsfeld
+	 * enth‰lt keine Beschriftung im Titel und kein Icon.
 	 * 
 	 * @param msg
 	 *            Die Message, welche ausgegeben werden soll.
@@ -140,9 +136,8 @@ public class PleaseWaitMessageBox extends android.app.Dialog
 	}
 
 	/**
-	 * Zeigt ein Meldungsfeld mit dem angegebenen Text und der angegebenen
-	 * Beschriftung an. Im Meldungsfeld wird standardm‰ﬂig die Schaltfl‰che OK
-	 * angezeigt. Das Meldungsfeld enth‰lt kein Icon.
+	 * Zeigt ein Meldungsfeld mit dem angegebenen Text und der angegebenen Beschriftung an. Im Meldungsfeld wird standardm‰ﬂig die
+	 * Schaltfl‰che OK angezeigt. Das Meldungsfeld enth‰lt kein Icon.
 	 * 
 	 * @param msg
 	 *            Der im Meldungsfeld anzuzeigende Text.
@@ -201,17 +196,15 @@ public class PleaseWaitMessageBox extends android.app.Dialog
 	}
 
 	/**
-	 * Zeigt ein Meldungsfeld mit dem angegebenen Text und der angegebenen
-	 * Beschriftung an. Im Meldungsfeld wird standardm‰ﬂig die Schaltfl‰che OK
-	 * angezeigt. Das Meldungsfeld enth‰lt kein Icon.
+	 * Zeigt ein Meldungsfeld mit dem angegebenen Text und der angegebenen Beschriftung an. Im Meldungsfeld wird standardm‰ﬂig die
+	 * Schaltfl‰che OK angezeigt. Das Meldungsfeld enth‰lt kein Icon.
 	 * 
 	 * @param msg
 	 *            Der im Meldungsfeld anzuzeigende Text.
 	 * @param title
 	 *            Der in der Titelleiste des Meldungsfelds anzuzeigende Text.
 	 * @param buttons
-	 *            Ein MessageBoxButtons-Wert, der angibt, welche Schaltfl‰chen
-	 *            im Meldungsfeld angezeigt werden sollen.
+	 *            Ein MessageBoxButtons-Wert, der angibt, welche Schaltfl‰chen im Meldungsfeld angezeigt werden sollen.
 	 * @param Listener
 	 *            Welcher die Events der Buttons behandelt
 	 * 
@@ -274,17 +267,15 @@ public class PleaseWaitMessageBox extends android.app.Dialog
 	}
 
 	/**
-	 * Zeigt ein Meldungsfeld mit dem angegebenen Text und der angegebenen
-	 * Beschriftung an. Im Meldungsfeld wird standardm‰ﬂig die Schaltfl‰che OK
-	 * angezeigt. Das Meldungsfeld enth‰lt kein Icon.
+	 * Zeigt ein Meldungsfeld mit dem angegebenen Text und der angegebenen Beschriftung an. Im Meldungsfeld wird standardm‰ﬂig die
+	 * Schaltfl‰che OK angezeigt. Das Meldungsfeld enth‰lt kein Icon.
 	 * 
 	 * @param msg
 	 *            Der im Meldungsfeld anzuzeigende Text.
 	 * @param title
 	 *            Der in der Titelleiste des Meldungsfelds anzuzeigende Text.
 	 * @param buttons
-	 *            Ein MessageBoxButtons-Wert, der angibt, welche Schaltfl‰chen
-	 *            im Meldungsfeld angezeigt werden sollen.
+	 *            Ein MessageBoxButtons-Wert, der angibt, welche Schaltfl‰chen im Meldungsfeld angezeigt werden sollen.
 	 * @param Listener
 	 *            Welcher die Events der Buttons behandelt
 	 * 
@@ -613,8 +604,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog
 		}
 
 		/**
-		 * Set a custom content view for the Dialog. If a message is set, the
-		 * contentView is not added to the Dialog...
+		 * Set a custom content view for the Dialog. If a message is set, the contentView is not added to the Dialog...
 		 * 
 		 * @param v
 		 * @return
@@ -840,7 +830,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog
 					Global.Icons[42].getIntrinsicHeight());
 			anim.setInterpolator(new LinearInterpolator());
 			anim.setRepeatCount(Animation.INFINITE);
-			anim.setDuration(700);
+			anim.setDuration(1500);
 
 			PB.setAnimation(anim);
 			return dialog;

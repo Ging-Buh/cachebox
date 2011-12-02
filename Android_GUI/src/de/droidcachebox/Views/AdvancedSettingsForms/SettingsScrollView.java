@@ -38,6 +38,7 @@ import CB_Core.Settings.SettingInt;
 import CB_Core.Settings.SettingIntArray;
 import CB_Core.Settings.SettingModus;
 import CB_Core.Settings.SettingString;
+import CB_Core.Settings.SettingTime;
 import CB_Core.Solver.Functions.Function;
 import CB_Core.TranslationEngine.LangStrings.Langs;
 import android.R.color;
@@ -77,6 +78,9 @@ import de.droidcachebox.main;
 import de.droidcachebox.Components.Animations;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
+import de.droidcachebox.Custom_Controls.wheel.OnWheelScrollListener;
+import de.droidcachebox.Custom_Controls.wheel.WheelView;
+import de.droidcachebox.Custom_Controls.wheel.adapters.NumericWheelAdapter;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.AllContextMenuCallHandler;
 import de.droidcachebox.Ui.Sizes;
@@ -410,6 +414,10 @@ public class SettingsScrollView extends Activity
 		else if (SB instanceof SettingIntArray)
 		{
 			return getIntArrayView((SettingIntArray) SB, parent, BackgroundChanger);
+		}
+		else if (SB instanceof SettingTime)
+		{
+			return getTimeView((SettingTime) SB, parent, BackgroundChanger);
 		}
 		else if (SB instanceof SettingInt)
 		{
@@ -1123,6 +1131,99 @@ public class SettingsScrollView extends Activity
 		});
 
 		return row;
+	}
+
+	private View getTimeView(final SettingTime SB, ViewGroup parent, boolean BackgroundChanger)
+	{
+		LayoutInflater inflater = getLayoutInflater();
+		View row = inflater.inflate(R.layout.advanced_settings_list_view_time, parent, false);
+
+		WheelView wheel_m = (WheelView) row.findViewById(R.id.settings_time_m);
+		WheelView wheel_sec = (WheelView) row.findViewById(R.id.settings_time_sec);
+
+		initWheel(wheel_m, 0, 10);
+		initWheel(wheel_sec, 0, 59);
+
+		wheel_m.setCurrentItem(SB.getMin());
+		wheel_sec.setCurrentItem(SB.getSec());
+
+		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
+		if (BackgroundChanger)
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background);
+		}
+		else
+		{
+			LL.setBackgroundResource(R.drawable.settings_list_background2);
+		}
+
+		TextView label = (TextView) row.findViewById(R.id.textView1);
+		label.setText(GlobalCore.Translations.Get(SB.getName()));
+		label.setTextSize(Sizes.getScaledFontSize_big());
+		label.setTextColor(Global.getColor(R.attr.TextColor));
+
+		wheel_m.addScrollingListener(new OnWheelScrollListener()
+		{
+
+			@Override
+			public void onScrollingStarted(WheelView wheel)
+			{
+
+			}
+
+			@Override
+			public void onScrollingFinished(WheelView wheel)
+			{
+				SB.setMin(wheel.getCurrentItem());
+			}
+		});
+
+		wheel_sec.addScrollingListener(new OnWheelScrollListener()
+		{
+
+			@Override
+			public void onScrollingStarted(WheelView wheel)
+			{
+
+			}
+
+			@Override
+			public void onScrollingFinished(WheelView wheel)
+			{
+				SB.setSec(wheel.getCurrentItem());
+			}
+		});
+
+		row.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(View arg0)
+			{
+				// zeige Beschreibung der Einstellung
+
+				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
+
+				return false;
+			}
+		});
+
+		return row;
+
+	}
+
+	/**
+	 * Initializes wheel
+	 * 
+	 * @param id
+	 *            the wheel widget Id
+	 */
+	private void initWheel(WheelView wheel, int min, int max)
+	{
+		wheel.setViewAdapter(new NumericWheelAdapter(this, min, max));
+		wheel.setVisibleItems(3);
+		wheel.setCyclic(true);
+		wheel.setEnabled(true);
 	}
 
 	ArrayList<Langs> Sprachen;

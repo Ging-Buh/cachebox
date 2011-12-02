@@ -36,7 +36,7 @@ public class SettingsClass extends SettingsList
 	public SettingFile FieldNotesGarminPath;
 
 	// Bool
-	public SettingBool SaveFieldNotesHtml;
+	// public SettingBool SaveFieldNotesHtml;
 	public SettingBool OsmDpiAwareRendering;
 	// public SettingBool AllowInternetAccess;
 	// public SettingBool AllowRouteInternet;
@@ -96,11 +96,11 @@ public class SettingsClass extends SettingsList
 	public SettingInt MapMaxCachesDisplay_config;
 	public SettingInt mapMaxCachesDisplayLarge_config;
 	public SettingInt MultiDBAutoStartTime;
-	public SettingInt LockM;
-	public SettingInt LockSec;
 	public SettingInt MoveMapCenterMaxSpeed;
 	public SettingInt lastZoomLevel;
 	public SettingInt lastSearchRadius;
+
+	public SettingTime ScreenLock;
 
 	// double
 	public SettingDouble MapInitLatitude;
@@ -166,21 +166,21 @@ public class SettingsClass extends SettingsList
 		addSetting(PlaySounds = new SettingBool("PlaySounds", cat, NORMAL, true, true));
 		addSetting(quickButtonShow = new SettingBool("quickButtonShow", cat, NEVER, true, true));
 		addSetting(ImportGpx = new SettingBool("ImportGpx", cat, NORMAL, true, true));
-		addSetting(CacheMapData = new SettingBool("CacheMapData", cat, NORMAL, false, true));
+		addSetting(CacheMapData = new SettingBool("CacheMapData", cat, INVISIBLE, false, true));
 		addSetting(CacheImageData = new SettingBool("CacheImageData", cat, INVISIBLE, false, true));
 		addSetting(isChris = new SettingBool("isChris", cat, NEVER, false, true));
 		addSetting(SuppressPowerSaving = new SettingBool("SuppressPowerSaving", cat, NORMAL, true, true));
 
 		// addSetting(PopSkipOutdatedGpx = new SettingBool("PopSkipOutdatedGpx", cat, NORMAL, true, true));
 
-		addSetting(ImportLayerOsm = new SettingBool("ImportLayerOsm", cat, NORMAL, true, true));
+		addSetting(ImportLayerOsm = new SettingBool("ImportLayerOsm", cat, INVISIBLE, true, true));
 
 		// addSetting(ResortRepaint = new SettingBool("ResortRepaint", cat, NORMAL, false, true));
-		addSetting(GCAutoSyncCachesFound = new SettingBool("GCAutoSyncCachesFound", cat, NORMAL, true, true));
+		addSetting(GCAutoSyncCachesFound = new SettingBool("GCAutoSyncCachesFound", cat, INVISIBLE, true, true));
 
 		addSetting(AutoResort = new SettingBool("AutoResort", cat, NORMAL, false, true));
 
-		addSetting(MultiDBAsk = new SettingBool("MultiDBAsk", cat, NORMAL, true, true));
+		addSetting(MultiDBAsk = new SettingBool("MultiDBAsk", cat, NEVER, true, true));
 		addSetting(AllowLandscape = new SettingBool("AllowLandscape", cat, NORMAL, false, true));
 		addSetting(MoveMapCenterWithSpeed = new SettingBool("MoveMapCenterWithSpeed", cat, NORMAL, false, true));
 		// addSetting(PremiumMember = new SettingBool("PremiumMember", cat, NORMAL, false, true));
@@ -190,14 +190,12 @@ public class SettingsClass extends SettingsList
 		addSetting(ImperialUnits = new SettingBool("ImperialUnits", cat, NORMAL, false, true));
 
 		// int
-		addSetting(LogMaxMonthAge = new SettingInt("LogMaxMonthAge", cat, NORMAL, 99999, true));
-		addSetting(LogMinCount = new SettingInt("LogMinCount", cat, NORMAL, 99999, true));
+		addSetting(LogMaxMonthAge = new SettingInt("LogMaxMonthAge", cat, INVISIBLE, 99999, true));
+		addSetting(LogMinCount = new SettingInt("LogMinCount", cat, INVISIBLE, 99999, true));
 		addSetting(installRev = new SettingInt("installRev", cat, NEVER, 0, true));
 		// addSetting(OsmCoverage = new SettingInt("OsmCoverage", cat, NORMAL, 1000, true));
 
 		addSetting(MultiDBAutoStartTime = new SettingInt("MultiDBAutoStartTime", cat, NEVER, 0, true));
-		addSetting(LockM = new SettingInt("LockM", cat, NORMAL, 1, true));
-		addSetting(LockSec = new SettingInt("LockSec", cat, NORMAL, 0, true));
 
 		addSetting(NavigationProvider = new SettingString("NavigationProvider", cat, INVISIBLE,
 				"http://129.206.229.146/openrouteservice/php/OpenLSRS_DetermineRoute.php", true));
@@ -230,7 +228,7 @@ public class SettingsClass extends SettingsList
 		SettingCategory cat = SettingCategory.Misc;
 
 		addSetting(Filter = new SettingLongString("Filter", cat, NEVER, FilterProperties.presets[0].toString(), false));
-		addSetting(SaveFieldNotesHtml = new SettingBool("SaveFieldNotesHtml", cat, NORMAL, true, true));
+		// addSetting(SaveFieldNotesHtml = new SettingBool("SaveFieldNotesHtml", cat, NORMAL, true, true));
 		// addSetting(AllowInternetAccess = new SettingBool("AllowInternetAccess", cat, NORMAL, true, true));
 		// addSetting(AllowRouteInternet = new SettingBool("AllowRouteInternet", cat, NORMAL, true, true));
 		addSetting(FoundOffset = new SettingInt("FoundOffset", cat, NORMAL, 0, true));
@@ -240,6 +238,8 @@ public class SettingsClass extends SettingsList
 		addSetting(DescriptionNoAttributes = new SettingBool("DescriptionNoAttributes", cat, NORMAL, false, true));
 		addSetting(switchViewApproach = new SettingBool("switchViewApproach", cat, NORMAL, false, true));
 		addSetting(dontShowChris = new SettingBool("dontShowChris", cat, INVISIBLE, true, true));
+
+		addSetting(ScreenLock = new SettingTime("ScreenLock", cat, NORMAL, 60000, true));
 	}
 
 	private void addTemplateSettings()
@@ -281,10 +281,10 @@ public class SettingsClass extends SettingsList
 		addSetting(MapInitLatitude = new SettingDouble("MapInitLatitude", SettingCategory.Gps, EXPERT, -1000, true));
 		addSetting(MapInitLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Gps, EXPERT, -1000, true));
 		addSetting(MapShowCompass = new SettingBool("MapShowCompass", cat, NORMAL, true, true));
-		addSetting(MapMaxCachesLabel = new SettingInt("MapMaxCachesLabel", cat, NORMAL, 12, true));
-		addSetting(MapMaxCachesDisplay_config = new SettingInt("MapMaxCachesDisplay_config", cat, NORMAL, 10000, true));
+		addSetting(MapMaxCachesLabel = new SettingInt("MapMaxCachesLabel", cat, INVISIBLE, 12, true));
+		addSetting(MapMaxCachesDisplay_config = new SettingInt("MapMaxCachesDisplay_config", cat, INVISIBLE, 10000, true));
 
-		addSetting(mapMaxCachesDisplayLarge_config = new SettingInt("mapMaxCachesDisplayLarge_config", cat, NORMAL, 75, true));
+		addSetting(mapMaxCachesDisplayLarge_config = new SettingInt("mapMaxCachesDisplayLarge_config", cat, INVISIBLE, 75, true));
 		addSetting(OsmDpiAwareRendering = new SettingBool("OsmDpiAwareRendering", cat, NORMAL, false, true));
 		addSetting(MoveMapCenterMaxSpeed = new SettingInt("MoveMapCenterMaxSpeed", cat, NORMAL, 20, true));
 		addSetting(lastZoomLevel = new SettingInt("lastZoomLevel", cat, INVISIBLE, 14, true));
@@ -344,7 +344,7 @@ public class SettingsClass extends SettingsList
 
 		addSetting(ImportRatings = new SettingBool("ImportRatings", cat, NORMAL, false, true));
 		addSetting(ImportGpx = new SettingBool("ImportGpx", cat, NORMAL, false, true));
-		addSetting(GCAdditionalImageDownload = new SettingBool("GCAdditionalImageDownload", cat, NORMAL, false, true));
+		addSetting(GCAdditionalImageDownload = new SettingBool("GCAdditionalImageDownload", cat, EXPERT, false, true));
 		addSetting(ImportPQsFromGeocachingCom = new SettingBool("ImportPQsFromGeocachingCom", cat, NORMAL, false, true));
 		addSetting(FieldnotesUploadAll = new SettingBool("FieldnotesUploadAll", cat, NORMAL, false, true));
 		addSetting(SearchWithoutFounds = new SettingBool("SearchWithoutFounds", cat, NORMAL, true, true));
