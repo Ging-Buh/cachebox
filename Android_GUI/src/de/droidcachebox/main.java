@@ -1491,6 +1491,9 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			case R.id.miScreenLock:
 				startScreenLock(true);
 				break;
+			case R.id.miClose:
+				onKeyDown(KeyEvent.KEYCODE_BACK, null);
+				break;
 			case R.id.miDayNight:
 				switchDayNight();
 				break;

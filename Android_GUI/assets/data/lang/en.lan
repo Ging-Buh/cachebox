@@ -24,7 +24,7 @@ English
 	settings = Settings
 	tools = Tools
 	import = Import
-	quit = Quit / Hide
+	quit = Quit 
 	found = Found!
 	DNF = Did not find!
 	maintenance = Needs Maintenance
