@@ -102,6 +102,7 @@ public class SettingsListEditQuickButton extends Activity
 			public void onClick(View v)
 			{
 				boolean QuickButtonShowChanged = (Config.settings.quickButtonShow.getValue() != chkQuickButtonShow.isChecked());
+
 				Config.settings.quickButtonShow.setValue(chkQuickButtonShow.isChecked());
 				String ActionsString = "";
 				int counter = 0;

@@ -1204,7 +1204,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			counterStopped = true;
 			// ScreenLock nur Starten, wenn der Config Wert größer 10 sec ist.
 			// Das verhindert das selber aussperren!
-			if ((Config.settings.ScreenLock.getDefaultValue() / 1000 < 10)) return;
+			if ((Config.settings.ScreenLock.getValue() / 1000 < 10)) return;
 		}
 
 		final Intent mainIntent = new Intent().setClass(this, ScreenLock.class);

@@ -76,6 +76,7 @@ import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Components.Animations;
+import de.droidcachebox.Custom_Controls.downSlider;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.droidcachebox.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
 import de.droidcachebox.Custom_Controls.wheel.OnWheelScrollListener;
@@ -142,7 +143,21 @@ public class SettingsScrollView extends Activity
 			@Override
 			public void onClick(View v)
 			{
+
+				boolean QuickButtonShowChanged = Config.settings.quickButtonShow.isDirty();
+
 				Config.settings.SaveToLastValue();
+				int Time = Config.settings.ScreenLock.getValue();
+
+				((main) main.mainActivity).setScreenLockTimerNew(Time);
+
+				if (QuickButtonShowChanged)
+				{
+					Config.settings.quickButtonLastShow.setValue(true);
+					downSlider.ButtonShowStateChanged();
+				}
+
+				Config.AcceptChanges();
 				finish();
 
 			}
