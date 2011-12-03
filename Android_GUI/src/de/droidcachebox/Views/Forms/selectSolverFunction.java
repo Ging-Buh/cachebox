@@ -107,12 +107,13 @@ public class selectSolverFunction extends Activity
 
 	void findViewsById()
 	{
+		((LinearLayout) findViewById(R.id.main_LinearLayout)).setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
 		btnOk = (Button) findViewById(R.id.solver_function_ok);
 		btnCancel = (Button) findViewById(R.id.solver_function_cancel);
 		content = (LinearLayout) findViewById(R.id.solver_function_scrollView);
 		desc = (TextView) findViewById(R.id.solver_function_desc);
 		scrollView = (ScrollView) findViewById(R.id.solver_scroll_view);
-		desc.setTextColor(Color.WHITE);
+		desc.setTextColor(Global.getColor(R.attr.TextColor));
 	}
 
 	void setLang()

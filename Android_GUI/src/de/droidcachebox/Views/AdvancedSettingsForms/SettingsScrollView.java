@@ -167,6 +167,7 @@ public class SettingsScrollView extends Activity
 
 	void findViewsById()
 	{
+		((LinearLayout) findViewById(R.id.main_LinearLayout)).setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
 		btnOk = (Button) findViewById(R.id.solver_function_ok);
 		btnCancel = (Button) findViewById(R.id.solver_function_cancel);
 		content = (LinearLayout) findViewById(R.id.settings_scrollView_content);
@@ -229,13 +230,14 @@ public class SettingsScrollView extends Activity
 
 				// add Cat einträge
 				final LinearLayout lay = new LinearLayout(this);
-
+				int entrieCount = 0;
 				if (cat == SettingCategory.Login)
 				{
 					SettingsListGetApiButton lgIn = new SettingsListGetApiButton(cat.name(), SettingCategory.Button, SettingModus.Normal,
 							true);
 					final View btnLgIn = getView(lgIn, content, true);
 					lay.addView(btnLgIn);
+					entrieCount++;
 				}
 
 				if (cat == SettingCategory.Debug)
@@ -244,6 +246,7 @@ public class SettingsScrollView extends Activity
 							SettingModus.Normal, true);
 					final View btnDisp = getView(disp, content, true);
 					lay.addView(btnDisp);
+					entrieCount++;
 				}
 
 				// int layoutHeight = 0;
@@ -266,34 +269,41 @@ public class SettingsScrollView extends Activity
 							View view = getView(settingItem, lay, BackGroundChanger);
 
 							lay.addView(view);
-							// layoutHeight += Sizes.getQuickButtonHeight();
+							entrieCount++;
 						}
 					}
 				}
 
-				lay.setOrientation(LinearLayout.VERTICAL);
-
-				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-						LinearLayout.LayoutParams.WRAP_CONTENT);
-
-				// layoutParams.setMargins(20, 0, 20, 0);
-
-				lay.setLayoutParams(layoutParams);
-				lay.setBackgroundDrawable(Global.getDrawable(R.drawable.day_settings_group, res));
-				lay.setVisibility(View.GONE);
-				content.addView(lay);
-				// }
-
-				btn.setOnClickListener(new OnClickListener()
+				if (entrieCount > 0)
 				{
 
-					@Override
-					public void onClick(View arg0)
-					{
-						Animations.ToggleViewSlideUp_Down((View) lay, context, scrollView, btn);
-					}
-				});
+					lay.setOrientation(LinearLayout.VERTICAL);
 
+					LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
+							LinearLayout.LayoutParams.WRAP_CONTENT);
+
+					// layoutParams.setMargins(20, 0, 20, 0);
+
+					lay.setLayoutParams(layoutParams);
+					lay.setBackgroundDrawable(Global.getDrawable(R.drawable.day_settings_group, res));
+					lay.setVisibility(View.GONE);
+					content.addView(lay);
+					// }
+
+					btn.setOnClickListener(new OnClickListener()
+					{
+
+						@Override
+						public void onClick(View arg0)
+						{
+							Animations.ToggleViewSlideUp_Down((View) lay, context, scrollView, btn);
+						}
+					});
+				}
+				else
+				{
+					content.removeView(btn);
+				}
 			}
 			while (iteratorCat.hasNext());
 

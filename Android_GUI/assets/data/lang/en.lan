@@ -586,15 +586,15 @@ English
 	GcJoker = MD5-Hash at gcJoker.de
 	GcAPI = Api Key
 	lastZoomLevel = Last used zoom level 
-	OsmMinLevel = minimum zoom level for Map import
-	OsmMaxLevel = minimum zoom level for Map import 
+	OsmMinLevel = minimum zoom level for Map 
+	OsmMaxLevel = maximum zoom level for Map  
 	MapShowDT= Show D/T on Map view
 	Gps = GPS Settings
 	HtcCompass = Use Hardware Compass
 	HtcLevel = Speed level for Hardware or GPS compass. \n-1 = GPS is not used at all.
-	LeftWindow = Show formula window
-	BothWindow = Show both windows
-	RightWindow = Show solve window
+	LeftWindow = formula window
+	BothWindow = both windows
+	RightWindow = solve window
 	MapShowDT = Show D/T on map
 	MapHideMyFinds = Hinde my finds on map
 	MapShowTitles = Show Cache titles on map
@@ -632,6 +632,15 @@ English
 	lastSearchRadius = Last search radius
 	Debug = Debug
 	DebugDisplayInfo = Show display info 
+	MoveMapCenterMaxSpeed = Speed for max center move
+	OsmDpiAwareRendering = DPI- aware rendering
+	PositionAtVertex = Draw position marker at vertex
+	PositionMarkerTransparent = Draw position marker with transparence 
+	ImperialUnits = Imperial units
+	TileCacheFolder = Cache folder for map tiles
+	LanguagePath = Path to langguage files
+	FoundOffset = number of finds
+	FieldnotesUploadAll = Upload All Fieldnotes (Ignore Date)
 
 
 

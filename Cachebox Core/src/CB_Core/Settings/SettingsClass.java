@@ -160,58 +160,6 @@ public class SettingsClass extends SettingsList
 
 		}
 
-		SettingCategory cat = SettingCategory.Internal;
-
-		addSetting(ShowKeypad = new SettingBool("ShowKeypad", cat, NORMAL, true, true));
-		addSetting(PlaySounds = new SettingBool("PlaySounds", cat, NORMAL, true, true));
-		addSetting(quickButtonShow = new SettingBool("quickButtonShow", cat, NEVER, true, true));
-		addSetting(ImportGpx = new SettingBool("ImportGpx", cat, NORMAL, true, true));
-		addSetting(CacheMapData = new SettingBool("CacheMapData", cat, INVISIBLE, false, true));
-		addSetting(CacheImageData = new SettingBool("CacheImageData", cat, INVISIBLE, false, true));
-		addSetting(isChris = new SettingBool("isChris", cat, NEVER, false, true));
-		addSetting(SuppressPowerSaving = new SettingBool("SuppressPowerSaving", cat, NORMAL, true, true));
-
-		// addSetting(PopSkipOutdatedGpx = new SettingBool("PopSkipOutdatedGpx", cat, NORMAL, true, true));
-
-		addSetting(ImportLayerOsm = new SettingBool("ImportLayerOsm", cat, INVISIBLE, true, true));
-
-		// addSetting(ResortRepaint = new SettingBool("ResortRepaint", cat, NORMAL, false, true));
-		addSetting(GCAutoSyncCachesFound = new SettingBool("GCAutoSyncCachesFound", cat, INVISIBLE, true, true));
-
-		addSetting(AutoResort = new SettingBool("AutoResort", cat, NORMAL, false, true));
-
-		addSetting(MultiDBAsk = new SettingBool("MultiDBAsk", cat, NEVER, true, true));
-		addSetting(AllowLandscape = new SettingBool("AllowLandscape", cat, NORMAL, false, true));
-		addSetting(MoveMapCenterWithSpeed = new SettingBool("MoveMapCenterWithSpeed", cat, NORMAL, false, true));
-		// addSetting(PremiumMember = new SettingBool("PremiumMember", cat, NORMAL, false, true));
-
-		addSetting(quickButtonLastShow = new SettingBool("quickButtonLastShow", cat, NEVER, false, true));
-		addSetting(newInstall = new SettingBool("newInstall", cat, NEVER, false, true));
-		addSetting(ImperialUnits = new SettingBool("ImperialUnits", cat, NORMAL, false, true));
-
-		// int
-		addSetting(LogMaxMonthAge = new SettingInt("LogMaxMonthAge", cat, INVISIBLE, 99999, true));
-		addSetting(LogMinCount = new SettingInt("LogMinCount", cat, INVISIBLE, 99999, true));
-		addSetting(installRev = new SettingInt("installRev", cat, NEVER, 0, true));
-		// addSetting(OsmCoverage = new SettingInt("OsmCoverage", cat, NORMAL, 1000, true));
-
-		addSetting(MultiDBAutoStartTime = new SettingInt("MultiDBAutoStartTime", cat, NEVER, 0, true));
-
-		addSetting(NavigationProvider = new SettingString("NavigationProvider", cat, INVISIBLE,
-				"http://129.206.229.146/openrouteservice/php/OpenLSRS_DetermineRoute.php", true));
-
-		addSetting(SpoilersDescriptionTags = new SettingString("SpoilersDescriptionTags", cat, INVISIBLE, "", true));
-		addSetting(quickButtonList = new SettingString("quickButtonList", cat, NEVER, "5,0,1,3,2", true));
-
-		addSetting(OverrideUrl = new SettingString("OverrideUrl", cat, INVISIBLE, "", true));
-		// addSetting(PopHost = new SettingString("PopHost", cat, INVISIBLE, "", true));
-
-		// Decrypt String
-
-		// Enums
-
-		// IntArray
-
 		addMapSettings();
 		addLogInSettings();
 		addFolderSettings();
@@ -238,7 +186,11 @@ public class SettingsClass extends SettingsList
 		addSetting(DescriptionNoAttributes = new SettingBool("DescriptionNoAttributes", cat, NORMAL, false, true));
 		addSetting(switchViewApproach = new SettingBool("switchViewApproach", cat, NORMAL, false, true));
 		addSetting(dontShowChris = new SettingBool("dontShowChris", cat, INVISIBLE, true, true));
-
+		addSetting(ShowKeypad = new SettingBool("ShowKeypad", cat, NORMAL, true, true));
+		addSetting(PlaySounds = new SettingBool("PlaySounds", cat, NORMAL, true, true));
+		addSetting(SuppressPowerSaving = new SettingBool("SuppressPowerSaving", cat, NORMAL, true, true));
+		addSetting(AllowLandscape = new SettingBool("AllowLandscape", cat, NORMAL, false, true));
+		addSetting(ImperialUnits = new SettingBool("ImperialUnits", cat, NORMAL, false, true));
 		addSetting(ScreenLock = new SettingTime("ScreenLock", cat, NORMAL, 60000, true));
 	}
 
@@ -272,9 +224,8 @@ public class SettingsClass extends SettingsList
 		addSetting(ZoomCross = new SettingIntArray("ZoomCross", cat, NORMAL, 16, true, CrossLevel));
 		addSetting(OsmMaxLevel = new SettingIntArray("OsmMaxLevel", cat, NORMAL, 17, true, Level));
 		addSetting(OsmMinLevel = new SettingIntArray("OsmMinLevel", cat, NORMAL, 8, true, Level));
-		addSetting(OsmMaxImportLevel = new SettingIntArray("OsmMaxImportLevel", cat, NORMAL, 16, true, Level));
-		addSetting(OsmMinLevel = new SettingIntArray("OsmMinLevel", cat, NORMAL, 8, true, Level));
-		addSetting(OsmMaxImportLevel = new SettingIntArray("OsmMaxImportLevel", cat, NORMAL, 16, true, Level));
+		addSetting(OsmMaxImportLevel = new SettingIntArray("OsmMaxImportLevel", cat, INVISIBLE, 16, true, Level));
+		addSetting(MoveMapCenterWithSpeed = new SettingBool("MoveMapCenterWithSpeed", cat, NORMAL, false, true));
 		addSetting(ShowDirektLine = new SettingBool("ShowDirektLine", cat, NORMAL, false, true));
 		addSetting(PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", cat, NORMAL, false, true));
 		addSetting(PositionAtVertex = new SettingBool("PositionAtVertex", cat, NORMAL, false, true));
@@ -325,7 +276,7 @@ public class SettingsClass extends SettingsList
 
 		addSetting(Sel_LanguagePath = new SettingFile("Sel_LanguagePath", cat, INVISIBLE, Work + "/data/lang/en.lan", true, "lan"));
 		addSetting(DatabasePath = new SettingFile("DatabasePath", cat, NORMAL, Work + "/cachebox.db3", true, "db3"));
-		addSetting(FieldNotesGarminPath = new SettingFile("FieldNotesGarminPath", cat, NORMAL, Work + "/User/geocache_visits.txt", true));
+		addSetting(FieldNotesGarminPath = new SettingFile("FieldNotesGarminPath", cat, INVISIBLE, Work + "/User/geocache_visits.txt", true));
 
 	}
 
@@ -336,6 +287,33 @@ public class SettingsClass extends SettingsList
 		addSetting(SettingsShowExpert = new SettingBool("SettingsShowExpert", cat, NEVER, false, true));
 		addSetting(SettingsShowAll = new SettingBool("SettingsShowAll", cat, NEVER, false, true));
 		addSetting(nightMode = new SettingBool("nightMode", cat, NEVER, false, true));
+		addSetting(quickButtonShow = new SettingBool("quickButtonShow", cat, NEVER, true, true));
+		addSetting(ImportGpx = new SettingBool("ImportGpx", cat, INVISIBLE, true, true));
+		addSetting(CacheMapData = new SettingBool("CacheMapData", cat, INVISIBLE, false, true));
+		addSetting(CacheImageData = new SettingBool("CacheImageData", cat, INVISIBLE, false, true));
+		addSetting(isChris = new SettingBool("isChris", cat, NEVER, false, true));
+		addSetting(AutoResort = new SettingBool("AutoResort", cat, INVISIBLE, false, true));
+
+		addSetting(ImportLayerOsm = new SettingBool("ImportLayerOsm", cat, INVISIBLE, true, true));
+		addSetting(GCAutoSyncCachesFound = new SettingBool("GCAutoSyncCachesFound", cat, INVISIBLE, true, true));
+
+		addSetting(MultiDBAsk = new SettingBool("MultiDBAsk", cat, NEVER, true, true));
+
+		addSetting(quickButtonLastShow = new SettingBool("quickButtonLastShow", cat, NEVER, false, true));
+		addSetting(newInstall = new SettingBool("newInstall", cat, NEVER, false, true));
+
+		// int
+		addSetting(LogMaxMonthAge = new SettingInt("LogMaxMonthAge", cat, INVISIBLE, 99999, true));
+		addSetting(LogMinCount = new SettingInt("LogMinCount", cat, INVISIBLE, 99999, true));
+		addSetting(installRev = new SettingInt("installRev", cat, NEVER, 0, true));
+
+		addSetting(MultiDBAutoStartTime = new SettingInt("MultiDBAutoStartTime", cat, NEVER, 0, true));
+
+		addSetting(NavigationProvider = new SettingString("NavigationProvider", cat, INVISIBLE,
+				"http://129.206.229.146/openrouteservice/php/OpenLSRS_DetermineRoute.php", true));
+
+		addSetting(SpoilersDescriptionTags = new SettingString("SpoilersDescriptionTags", cat, INVISIBLE, "", true));
+		addSetting(quickButtonList = new SettingString("quickButtonList", cat, NEVER, "5,0,1,3,2", true));
 	}
 
 	private void addAPISettings()
@@ -362,7 +340,7 @@ public class SettingsClass extends SettingsList
 		addSetting(DebugShowMsg = new SettingBool("DebugShowMsg", cat, EXPERT, false, true));
 		addSetting(DebugShowMarker = new SettingBool("DebugShowMarker", cat, EXPERT, false, true));
 		addSetting(DebugShowLog = new SettingBool("DebugShowLog", cat, EXPERT, false, true));
-
+		addSetting(OverrideUrl = new SettingString("OverrideUrl", cat, EXPERT, "", true));
 	}
 
 }
