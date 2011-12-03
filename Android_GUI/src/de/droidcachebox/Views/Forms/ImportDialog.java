@@ -38,8 +38,7 @@ import de.droidcachebox.main;
 import de.droidcachebox.Ui.Sizes;
 
 /**
- * <h1>ProgressDialog</h1> <img src="doc-files/ImportScreen.png" width=146
- * height=117> </br>
+ * <h1>ProgressDialog</h1> <img src="doc-files/ImportScreen.png" width=146 height=117> </br>
  * 
  * @author Longri </br></br>
  */
@@ -377,7 +376,15 @@ public class ImportDialog extends Activity
 							if (pq.downloadAvible)
 							{
 								ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
-								PocketQuery.DownloadSinglePocketQuery(pq);
+								try
+								{
+									PocketQuery.DownloadSinglePocketQuery(pq);
+								}
+								catch (OutOfMemoryError e)
+								{
+									Logger.Error("PQ-download", "OutOfMemoryError-" + pq.Name, e);
+									e.printStackTrace();
+								}
 							}
 
 						}
