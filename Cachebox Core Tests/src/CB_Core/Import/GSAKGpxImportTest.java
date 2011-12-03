@@ -1,20 +1,21 @@
 package CB_Core.Import;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import junit.framework.TestCase;
 import CB_Core.Config;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
-import CB_Core.DB.TestDB;
 import CB_Core.DB.Database.DatabaseType;
+import CB_Core.DB.TestDB;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
-import junit.framework.TestCase;
 
 public class GSAKGpxImportTest extends TestCase
 {
@@ -38,8 +39,7 @@ public class GSAKGpxImportTest extends TestCase
 
 		try
 		{
-			GPXFileImporter importer = new GPXFileImporter(
-					"./testdata/gpx/GSAK_1_1.gpx");
+			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/GSAK_1_1.gpx"));
 			assertTrue("Objekt muss konstruierbar sein", importer != null);
 			importer.doImport(importHandler, 0);
 
@@ -62,8 +62,7 @@ public class GSAKGpxImportTest extends TestCase
 		assertTrue("Pos ist ungültig", cache.Pos.Valid);
 
 		assertEquals("GcCode falsch", "GC1XCEW", cache.GcCode);
-		assertEquals("DateHidden falsch", "Mon Aug 17 08:00:00 CEST 2009",
-				cache.DateHidden.toString());
+		assertEquals("DateHidden falsch", "Mon Aug 17 08:00:00 CEST 2009", cache.DateHidden.toString());
 		assertEquals("url falsch", "", cache.Url);// URL wird noch nicht
 													// ausgelesen
 		assertTrue("Found ist falsch", cache.Found);
@@ -71,8 +70,7 @@ public class GSAKGpxImportTest extends TestCase
 		assertEquals("Id ist falsch", cache.GcId, "1358542");
 		assertFalse("ist available ist falsch", cache.Available);
 		assertTrue("ist archived ist falsch", cache.Archived);
-		assertEquals("Name falsch", "Schlossblick # 2/ View at the castle  #2",
-				cache.Name);
+		assertEquals("Name falsch", "Schlossblick # 2/ View at the castle  #2", cache.Name);
 		assertEquals("Placed by falsch", "Risou", cache.PlacedBy);
 		assertEquals("Owner falsch", "Risou", cache.Owner);
 		assertTrue("Typ ist falsch", cache.Type == CacheTypes.Mystery);
@@ -99,17 +97,14 @@ public class GSAKGpxImportTest extends TestCase
 
 		while (positiveInterator.hasNext())
 		{
-			assertTrue("Attribut falsch",
-					cache.isAttributePositiveSet((Attributes) positiveInterator
-							.next()));
+			assertTrue("Attribut falsch", cache.isAttributePositiveSet((Attributes) positiveInterator.next()));
 		}
 
 		while (negativeInterator.hasNext())
 		{
 			Attributes tmp = negativeInterator.next();
 
-			assertTrue(tmp.name() + " negative Attribut falsch",
-					cache.isAttributeNegativeSet((tmp)));
+			assertTrue(tmp.name() + " negative Attribut falsch", cache.isAttributeNegativeSet((tmp)));
 		}
 
 		// fülle eine Liste mit allen Attributen
@@ -144,10 +139,8 @@ public class GSAKGpxImportTest extends TestCase
 		while (RestInterator.hasNext())
 		{
 			Attributes attr = (Attributes) RestInterator.next();
-			assertFalse(attr.name() + "Attribut falsch",
-					cache.isAttributePositiveSet(attr));
-			assertFalse(attr.name() + "Attribut falsch",
-					cache.isAttributeNegativeSet(attr));
+			assertFalse(attr.name() + "Attribut falsch", cache.isAttributePositiveSet(attr));
+			assertFalse(attr.name() + "Attribut falsch", cache.isAttributeNegativeSet(attr));
 		}
 		//
 
@@ -164,17 +157,13 @@ public class GSAKGpxImportTest extends TestCase
 
 		assertEquals("CacheId ist falsch", log.CacheId, 24564478518575943L);
 		assertEquals("Id ist falsch", log.Id, 140640156);
-		assertEquals("Timestamp falsch", "Sat Jan 08 20:00:00 CET 2011",
-				log.Timestamp.toString());
+		assertEquals("Timestamp falsch", "Sat Jan 08 20:00:00 CET 2011", log.Timestamp.toString());
 		assertEquals("Finder falsch", "Katipa", log.Finder);
 		assertTrue("LogTyp falsch", log.Type == LogTypes.found);
 
-		assertEquals(
-				"Log Entry falsch",
-				"Jaja. Lange gesucht an den typischen Stellen, um dann letztendlich ganz woanders fündig zu werden...",
-				log.Comment);
+		assertEquals("Log Entry falsch",
+				"Jaja. Lange gesucht an den typischen Stellen, um dann letztendlich ganz woanders fündig zu werden...", log.Comment);
 
 		Database.Data.Close();
 	}
-
 }

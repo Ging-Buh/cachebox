@@ -8,6 +8,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.zip.ZipException;
 
@@ -30,8 +32,7 @@ public class Importer
 	}
 
 	/**
-	 * Importiert die GPX files, die sich in diesem Verzeichniss befinden. Auch
-	 * wenn sie sich in einem Zip-File befinden.
+	 * Importiert die GPX files, die sich in diesem Verzeichniss befinden. Auch wenn sie sich in einem Zip-File befinden.
 	 * 
 	 * @param directoryPath
 	 * @param ip
@@ -40,17 +41,17 @@ public class Importer
 	public void importGpx(String directoryPath, ImporterProgress ip)
 	{
 		// Extract all Zip Files!
-		ArrayList<String> ordnerInhalt_Zip = Importer.recursiveDirectoryReader(new File(directoryPath), new ArrayList<String>(), "zip");
+		ArrayList<File> ordnerInhalt_Zip = Importer.recursiveDirectoryReader(new File(directoryPath), new ArrayList<File>(), "zip");
 
 		ip.setJobMax("ExtractZip", ordnerInhalt_Zip.size());
 
-		for (String tmpZip : ordnerInhalt_Zip)
+		for (File tmpZip : ordnerInhalt_Zip)
 		{
 			ip.ProgressInkrement("ExtractZip", "", false);
 			// Extract ZIP
 			try
 			{
-				UnZip.extractFolder(tmpZip);
+				UnZip.extractFolder(tmpZip.getAbsolutePath());
 			}
 			catch (ZipException e)
 			{
@@ -70,7 +71,7 @@ public class Importer
 		}
 
 		// Import all GPX files
-		String[] FileList = GetFilesToLoad(directoryPath);
+		File[] FileList = GetFilesToLoad(directoryPath);
 
 		ip.setJobMax("AnalyseGPX", FileList.length);
 
@@ -79,9 +80,9 @@ public class Importer
 		Integer countwpt = 0;
 		HashMap<String, Integer> wptCount = new HashMap<String, Integer>();
 
-		for (String File : FileList)
+		for (File File : FileList)
 		{
-			ip.ProgressInkrement("AnalyseGPX", new File(File).getName(), false);
+			ip.ProgressInkrement("AnalyseGPX", File.getName(), false);
 
 			BufferedReader br;
 			String strLine;
@@ -104,7 +105,7 @@ public class Importer
 				e.printStackTrace();
 			}
 
-			wptCount.put(File, countwpt);
+			wptCount.put(File.getAbsolutePath(), countwpt);
 			countwpt = 0;
 		}
 
@@ -119,17 +120,17 @@ public class Importer
 		}
 
 		ip.setJobMax("ImportGPX", FileList.length + countwpt);
-		for (String File : FileList)
+		for (File File : FileList)
 		{
-			ip.ProgressInkrement("ImportGPX", "Import: " + new File(File).getName(), false);
+			ip.ProgressInkrement("ImportGPX", "Import: " + File.getName(), false);
 			GPXFileImporter importer = new GPXFileImporter(File, ip);
 			try
 			{
-				importer.doImport(importHandler, wptCount.get(File));
+				importer.doImport(importHandler, wptCount.get(File.getAbsolutePath()));
 			}
 			catch (Exception e)
 			{
-				Logger.Error("Core.Importer.ImportGpx", "importer.doImport => " + File, e);
+				Logger.Error("Core.Importer.ImportGpx", "importer.doImport => " + File.getAbsolutePath(), e);
 				e.printStackTrace();
 			}
 		}
@@ -264,50 +265,70 @@ public class Importer
 
 	}
 
-	private String[] GetFilesToLoad(String directoryPath)
+	private File[] GetFilesToLoad(String directoryPath)
 	{
 		// GPX sortieren
 
 		FileIO.DirectoryExists(directoryPath);
 
-		ArrayList<String> files = new ArrayList<String>();
+		ArrayList<File> files = new ArrayList<File>();
 		files = recursiveDirectoryReader(new File(directoryPath), files);
 
-		String[] filesSorted = new String[files.size()];
+		File[] fileArray = files.toArray(new File[files.size()]);
 
-		int idx = 0;
-		for (int wptsWanted = 0; wptsWanted < 2; wptsWanted++)
-			for (String file : files)
+		Arrays.sort(fileArray, new Comparator<File>()
+		{
+			public int compare(File f1, File f2)
 			{
-				Boolean isWaypointFile = file.toLowerCase().endsWith("-wpts.gpx");
-				if (isWaypointFile == (wptsWanted == 1)) filesSorted[idx++] = file;
-			}
 
-		return filesSorted;
+				if (f1.getName().equalsIgnoreCase(f2.getName().replace(".gpx", "") + "-wpts.gpx"))
+				{
+					return 1;
+				}
+				else if (f2.getName().equalsIgnoreCase(f1.getName().replace(".gpx", "") + "-wpts.gpx"))
+				{
+					return -1;
+				}
+				else if (f1.lastModified() > f2.lastModified())
+				{
+					return 1;
+				}
+
+				else if (f1.lastModified() < f2.lastModified())
+				{
+					return -1;
+				}
+
+				else
+				{
+					return f1.getAbsolutePath().compareToIgnoreCase(f2.getAbsolutePath()) * -1;
+				}
+			}
+		});
+
+		return fileArray;
 	}
 
 	/**
-	 * Gibt eine ArrayList<String> zurück, die alle Files mit der Endung gpx
-	 * enthält.
+	 * Gibt eine ArrayList<File> zurück, die alle Files mit der Endung gpx enthält.
 	 * 
 	 * @param directory
 	 * @param files
 	 * @return
 	 */
-	public static ArrayList<String> recursiveDirectoryReader(File directory, ArrayList<String> files)
+	public static ArrayList<File> recursiveDirectoryReader(File directory, ArrayList<File> files)
 	{
 		return recursiveDirectoryReader(directory, files, "gpx");
 	}
 
 	/**
-	 * Gibt eine ArrayList<String> zurück, die alle Files mit der angegebenen
-	 * Endung haben.
+	 * Gibt eine ArrayList<File> zurück, die alle Files mit der angegebenen Endung haben.
 	 * 
 	 * @param directory
 	 * @param files
 	 * @return
 	 */
-	public static ArrayList<String> recursiveDirectoryReader(File directory, ArrayList<String> files, final String Endung)
+	public static ArrayList<File> recursiveDirectoryReader(File directory, ArrayList<File> files, final String Endung)
 	{
 
 		File[] filelist = directory.listFiles(new FilenameFilter()
@@ -322,7 +343,7 @@ public class Importer
 		});
 
 		for (File localFile : filelist)
-			files.add(localFile.getAbsolutePath());
+			files.add(localFile);
 
 		File[] directories = directory.listFiles();
 		for (File recursiveDir : directories)

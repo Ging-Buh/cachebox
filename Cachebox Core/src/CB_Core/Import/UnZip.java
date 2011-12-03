@@ -10,69 +10,67 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-
 /**
- * 
  * @author Longri from => http://stackoverflow.com/questions/981578/how-to-unzip-files-recursively-in-java
- *
  */
-public class UnZip 
+public class UnZip
 {
 
-	static public void extractFolder(String zipFile) throws ZipException, IOException 
+	static public void extractFolder(String zipFile) throws ZipException, IOException
 	{
-	    System.out.println("extract => " + zipFile);
-	    int BUFFER = 2048;
-	    File file = new File(zipFile);
+		System.out.println("extract => " + zipFile);
+		int BUFFER = 2048;
+		File file = new File(zipFile);
 
-	    ZipFile zip = new ZipFile(file);
-	    String newPath = zipFile.substring(0, zipFile.length() - 4);
+		ZipFile zip = new ZipFile(file);
+		String newPath = zipFile.substring(0, zipFile.length() - 4);
 
-	    new File(newPath).mkdir();
-	    Enumeration zipFileEntries = zip.entries();
+		new File(newPath).mkdir();
+		Enumeration zipFileEntries = zip.entries();
 
-	    // Process each entry
-	    while (zipFileEntries.hasMoreElements())
-	    {
-	        // grab a zip file entry
-	        ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
-	        String currentEntry = entry.getName();
-	        File destFile = new File(newPath, currentEntry);
-	        //destFile = new File(newPath, destFile.getName());
-	        File destinationParent = destFile.getParentFile();
+		// Process each entry
+		while (zipFileEntries.hasMoreElements())
+		{
+			// grab a zip file entry
+			ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
+			String currentEntry = entry.getName();
+			File destFile = new File(newPath, currentEntry);
+			// destFile = new File(newPath, destFile.getName());
+			File destinationParent = destFile.getParentFile();
 
-	        // create the parent directory structure if needed
-	        destinationParent.mkdirs();
+			// create the parent directory structure if needed
+			destinationParent.mkdirs();
 
-	        if (!entry.isDirectory())
-	        {
-	            BufferedInputStream is = new BufferedInputStream(zip
-	            .getInputStream(entry));
-	            int currentByte;
-	            // establish buffer for writing file
-	            byte data[] = new byte[BUFFER];
+			destinationParent.setLastModified(entry.getTime()); // set original Datetime to be able to import ordered oldest first
 
-	            // write the current file to disk
-	            FileOutputStream fos = new FileOutputStream(destFile);
-	            BufferedOutputStream dest = new BufferedOutputStream(fos,
-	            BUFFER);
+			if (!entry.isDirectory())
+			{
+				BufferedInputStream is = new BufferedInputStream(zip.getInputStream(entry));
+				int currentByte;
+				// establish buffer for writing file
+				byte data[] = new byte[BUFFER];
 
-	            // read and write until last byte is encountered
-	            while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
-	                dest.write(data, 0, currentByte);
-	            }
-	            dest.flush();
-	            dest.close();
-	            is.close();
-	        }
+				// write the current file to disk
+				FileOutputStream fos = new FileOutputStream(destFile);
+				BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
 
-	        if (currentEntry.endsWith(".zip"))
-	        {
-	            // found a zip file, try to open
-	            extractFolder(destFile.getAbsolutePath());
-	        }
-	    }
+				// read and write until last byte is encountered
+				while ((currentByte = is.read(data, 0, BUFFER)) != -1)
+				{
+					dest.write(data, 0, currentByte);
+				}
+				dest.flush();
+				dest.close();
+				is.close();
+			}
+
+			destFile.setLastModified(entry.getTime()); // set original Datetime to be able to import ordered oldest first
+
+			if (currentEntry.endsWith(".zip"))
+			{
+				// found a zip file, try to open
+				extractFolder(destFile.getAbsolutePath());
+			}
+		}
 	}
-
-	
 }

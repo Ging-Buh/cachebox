@@ -34,7 +34,7 @@ public class GPXFileImporter
 	private static SimpleDateFormat datePattern2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	private static SimpleDateFormat datePattern3 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-	private String mGpxFileName;
+	private File mGpxFile;
 	private String mDisplayFilename;
 	private IImportHandler mImportHandler;
 	private ImporterProgress mip;
@@ -50,20 +50,20 @@ public class GPXFileImporter
 	private String gpxName = "";
 	private String gpxAuthor = "";
 
-	public GPXFileImporter(String gpxFileName)
+	public GPXFileImporter(File gpxFileName)
 	{
 		super();
-		mGpxFileName = gpxFileName;
+		mGpxFile = gpxFileName;
 		mip = null;
-		mDisplayFilename = new File(gpxFileName).getName();
+		mDisplayFilename = gpxFileName.getName();
 	}
 
-	public GPXFileImporter(String gpxFileName, ImporterProgress ip)
+	public GPXFileImporter(File file, ImporterProgress ip)
 	{
 		super();
-		mGpxFileName = gpxFileName;
+		mGpxFile = file;
 		mip = ip;
-		mDisplayFilename = new File(gpxFileName).getName();
+		mDisplayFilename = file.getName();
 	}
 
 	public void doImport(IImportHandler importHandler, Integer countwpt) throws Exception
@@ -75,10 +75,10 @@ public class GPXFileImporter
 
 		mImportHandler = importHandler;
 
-		category = mImportHandler.getCategory(mGpxFileName);
+		category = mImportHandler.getCategory(mGpxFile.getAbsolutePath());
 		if (category == null) return;
 
-		gpxFilename = mImportHandler.NewGpxFilename(category, mGpxFileName);
+		gpxFilename = mImportHandler.NewGpxFilename(category, mGpxFile.getAbsolutePath());
 		if (gpxFilename == null) return;
 
 		Map<String, String> values = new HashMap<String, String>();
@@ -95,7 +95,7 @@ public class GPXFileImporter
 		@SuppressWarnings("unchecked")
 		XMLParser<Map<String, String>> parserCache = new XMLParser<Map<String, String>>(ruleList.toArray(new IRule[0]));
 
-		parserCache.parse(new FileInputStream(mGpxFileName), values);
+		parserCache.parse(new FileInputStream(mGpxFile), values);
 
 		mImportHandler = null;
 	}

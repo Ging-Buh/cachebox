@@ -1,5 +1,6 @@
 package CB_Core.Import;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -32,7 +33,7 @@ public class GpxImportTest extends TestCase
 
 		try
 		{
-			GPXFileImporter importer = new GPXFileImporter("./testdata/gpx/GC2T9RW.gpx");
+			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/GC2T9RW.gpx"));
 			assertTrue("Objekt muss konstruierbar sein", importer != null);
 			importer.doImport(importHandler, 0);
 

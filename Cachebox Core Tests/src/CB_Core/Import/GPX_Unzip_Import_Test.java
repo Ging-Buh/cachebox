@@ -9,8 +9,7 @@ import CB_Core.DB.Database.DatabaseType;
 import CB_Core.DB.TestDB;
 
 /**
- * Enthält die Tests zum Entpacken von Zip Files und deren anschliesenden GPX
- * Import
+ * Enthält die Tests zum Entpacken von Zip Files und deren anschliesenden GPX Import
  * 
  * @author Longri
  */
@@ -42,8 +41,8 @@ public class GPX_Unzip_Import_Test extends TestCase
 		{
 
 			File Dir = new File("./testdata/gpx/GS_PQ");
-			ArrayList<String> ordnerInhalt = Importer.recursiveDirectoryReader(Dir, new ArrayList<String>());
-			for (String tmp : ordnerInhalt)
+			ArrayList<File> ordnerInhalt = Importer.recursiveDirectoryReader(Dir, new ArrayList<File>());
+			for (File tmp : ordnerInhalt)
 			{
 				GPXFileImporter importer = new GPXFileImporter(tmp);
 				assertTrue("Objekt muss konstruierbar sein", importer != null);

@@ -429,11 +429,10 @@ public class ImportDialog extends Activity
 						{
 							if (tmp.isDirectory())
 							{
-								ArrayList<String> ordnerInhalt = Importer.recursiveDirectoryReader(tmp, new ArrayList<String>());
-								for (String tmp2 : ordnerInhalt)
+								ArrayList<File> ordnerInhalt = Importer.recursiveDirectoryReader(tmp, new ArrayList<File>());
+								for (File tmp2 : ordnerInhalt)
 								{
-									File forDel = new File(tmp2);
-									forDel.delete();
+									tmp2.delete();
 								}
 
 							}
