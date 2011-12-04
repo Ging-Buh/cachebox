@@ -1,13 +1,13 @@
 Thanks for installing Cachebox.
 
-This version is one more beta version and can still contain errors.
+This version is still in beta stage and can contain errors.
 
-You can announce a error on http://www.team-cachebox.de.
+You can report an error at http://www.team-cachebox.de.
 
-Here you can also give a feature request.
+Here you can also leave a feature request.
 
-Or you visit us on the forum used by us http://www.geoclub.de/viewforum.php?f=114.
-Some developers and forums user also speak English, so that to you can be also helped in English.
+Or you visit us at our forum http://www.geoclub.de/viewforum.php?f=114.
+Some developers and forums user also speak English, so that you can get help in English.
 
 
 

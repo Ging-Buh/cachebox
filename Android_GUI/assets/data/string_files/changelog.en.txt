@@ -3,17 +3,17 @@
 Changes:
 
 Version: 0.4. xxxx
-	• Download of PQ about the API
-	• Import GPX completely reworks
-	• Frees Core from test code 
+	• Download of PQ through the GC-API
+	• Import of GPX files completely reworked
+	• removed unit tests from core 
 	• Settings revised 
 	• Download GC-Vote
-	• Categories for import GPX
+	• Categories for GPX import
 	• more texts for the translations
-	• Api search about position of GPS,
+	• Api search through position of GPS,
 	  map or manual co-ordinates input
-	• Option for the change of the view,
-	  to compass, with approach
+	• Option to change the view
+	  to the compass when appoaching the cache
 	• Layout adaptations for different 
 	  display resolutions
 
