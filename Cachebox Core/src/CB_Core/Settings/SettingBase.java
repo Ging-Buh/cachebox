@@ -1,14 +1,22 @@
 package CB_Core.Settings;
 
-public class SettingBase
+public class SettingBase implements Comparable<SettingBase>
 {
 	protected SettingCategory category;
 	protected String name;
 	protected SettingModus modus;
-	protected boolean global; // true, if this setting should be stored in
-								// global setting databsae, otherwise in local
-								// database file
-	protected boolean dirty;	// saves whethter this setting is changed and needs to be saved
+	/**
+	 * true, if this setting should be stored in global setting databsae, otherwise in local database file
+	 */
+	protected boolean global;
+
+	/**
+	 * saves whethter this setting is changed and needs to be saved
+	 */
+	protected boolean dirty;
+
+	private static int indexCount = 0;
+	private int index = -1;
 
 	public SettingBase(String name, SettingCategory category, SettingModus modus, boolean global)
 	{
@@ -17,20 +25,25 @@ public class SettingBase
 		this.modus = modus;
 		this.global = global;
 		dirty = false;
+
+		index = indexCount++;
 	}
 
-	public boolean isDirty() {
+	public boolean isDirty()
+	{
 		return dirty;
 	}
-	
-	public void setDirty() {
+
+	public void setDirty()
+	{
 		dirty = true;
 	}
-	
-	public void clearDirty() {
+
+	public void clearDirty()
+	{
 		dirty = false;
 	}
-	
+
 	public String getName()
 	{
 		return name;
@@ -65,14 +78,20 @@ public class SettingBase
 	{
 
 	}
-	
+
 	public void saveToLastValue()
 	{
-		
+
 	}
-	
+
 	public void loadFromLastValue()
 	{
 
-	}	
+	}
+
+	@Override
+	public int compareTo(SettingBase o)
+	{
+		return (this.index < o.index ? -1 : (this.index == o.index ? 0 : 1));
+	}
 }

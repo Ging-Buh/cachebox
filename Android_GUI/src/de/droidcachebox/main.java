@@ -485,6 +485,31 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				chkGpsIsOn();
 			}
 
+			if (Config.settings.newInstall.getValue())
+			{
+				String Welcome = "";
+				String LangId = getString(R.string.langId);
+				try
+				{
+					Welcome = GlobalCore.Translations.getTextFile("welcome", LangId);
+
+					if (Config.settings.isChris.getValue())
+					{
+						Welcome += GlobalCore.Translations.getTextFile("chris", LangId);
+					}
+
+					Welcome += GlobalCore.Translations.getTextFile("changelog", LangId);
+				}
+				catch (IOException e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				MessageBox.Show(Welcome, GlobalCore.Translations.Get("welcome"), MessageBoxIcon.None);
+
+			}
+
 		}
 
 		final Bundle extras = getIntent().getExtras();

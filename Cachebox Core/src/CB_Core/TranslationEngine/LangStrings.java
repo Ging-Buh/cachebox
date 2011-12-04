@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Core.Config;
+import CB_Core.FileIO;
 import CB_Core.Log.Logger;
 
 public class LangStrings
@@ -294,4 +295,50 @@ public class LangStrings
 		}
 
 	}
+
+	public String getTextFile(String Name) throws IOException
+	{
+		return getTextFile(Name, LangID);
+	}
+
+	/**
+	 * Return a String from File
+	 * 
+	 * @param Name
+	 *            File Name
+	 * @return String from File
+	 * @throws IOException
+	 */
+	public String getTextFile(String Name, String overrideLangId) throws IOException
+	{
+
+		String FilePath = Config.WorkPath + "/data/string_files/" + Name + "." + overrideLangId + ".txt";
+
+		if (!FileIO.FileExists(FilePath))
+		{
+			FilePath = Config.WorkPath + "/data/string_files/" + Name + ".en.txt";
+			if (!FileIO.FileExists(FilePath))
+			{
+				return "File not found => " + Name;
+			}
+		}
+
+		StringBuilder retSb = new StringBuilder();
+
+		BufferedReader reader;
+		reader = new BufferedReader(new FileReader(FilePath));
+
+		BufferedReader Filereader;
+
+		Filereader = new BufferedReader(new InputStreamReader(new FileInputStream(FilePath), "UTF8"));
+
+		String line;
+		while ((line = Filereader.readLine()) != null)
+		{
+			retSb.append(line + String.format("%n"));
+		}
+
+		return retSb.toString();
+	}
+
 }

@@ -19,6 +19,7 @@ package de.droidcachebox.Views.AdvancedSettingsForms;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -217,6 +218,15 @@ public class SettingsScrollView extends Activity
 			View quickView = getButtonView(quick, content, false);
 			content.addView(quickView);
 
+			ArrayList<SettingBase> SortedSettingList = new ArrayList<SettingBase>();// Config.settings.values().toArray();
+
+			for (Iterator<SettingBase> it = Config.settings.values().iterator(); it.hasNext();)
+			{
+				SortedSettingList.add(it.next());
+			}
+
+			Collections.sort(SortedSettingList);
+
 			do
 			{
 				int position = 0;
@@ -250,7 +260,7 @@ public class SettingsScrollView extends Activity
 				}
 
 				// int layoutHeight = 0;
-				for (Iterator<SettingBase> it = Config.settings.values().iterator(); it.hasNext();)
+				for (Iterator<SettingBase> it = SortedSettingList.iterator(); it.hasNext();)
 				{
 					SettingBase settingItem = it.next();
 					if (settingItem.getCategory().name().equals(cat.name()))

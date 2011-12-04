@@ -1,0 +1,56 @@
+
+
+Changes:
+
+Version: 0.4. xxxx
+	• Download of PQ about the API
+	• Import GPX completely reworks
+	• Frees Core from test code 
+	• Settings revised 
+	• Download GC-Vote
+	• Categories for import GPX
+	• more texts for the translations
+	• Api search about position of GPS,
+	  map or manual co-ordinates input
+	• Option for the change of the view,
+	  to compass, with approach
+	• Layout adaptations for different 
+	  display resolutions
+
+
+Version: 0.3.484
+	• Construction of the 
+	  Api Key's changed
+	• API looks for name, 
+	  GC code and Owner
+	• several new Solver functions
+	• Reworking of the attributes
+	• Attributes in the Slider inserted
+	• Treatment of a Misterys with 
+	  0 co-ordinates as unsolved
+	• Compass needle to Community 
+	  version changed
+	• Screenlock release reworks 
+	  in MapView
+	• Mistakes repaired ()
+
+
+Version: 0.2.453
+	• Activation of the Groundspeak APi
+	• check the Cache status about 
+	  the API (Filterselection)
+	• Fair GPS co-ordinates 
+	  (average for the time)
+	• more translations
+	• load track file with choice dialog
+	• pair of smaller mistakes repaired.
+
+
+Version: 0.1.433
+	• Binding of the Groundspeak API 
+	  (Unfortunately, not yet 
+	  from GS released!)
+	• Import GPX
+	• Search in local Cache list
+	• many colors for the night mode
+	• many mistakes repaired

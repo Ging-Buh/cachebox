@@ -1,8 +1,7 @@
 package CB_Core.Settings;
 
 /***
- * Login("Login"), Map("Map"), Gps("Gps"), Internal("Internal"),
- * Folder("Folder"), Button("Button"), Misc("Misc"), Templates("Templates"),
+ * Login("Login"), Map("Map"), Gps("Gps"), Internal("Internal"), Folder("Folder"), Button("Button"), Misc("Misc"), Templates("Templates"),
  * API("API"), Debug("Debug")
  */
 public enum SettingCategory
@@ -10,13 +9,13 @@ public enum SettingCategory
 	Login("Login"),
 	Map("Map"),
 	Gps("Gps"),
-	Internal("Internal"),
-	Folder("Folder"),
-	Button("Button"),
 	Misc("Misc"),
-	Templates("Templates"),
 	API("API"),
-	Debug("Debug");
+	Folder("Folder"),
+	Templates("Templates"),
+	Internal("Internal"),
+	Debug("Debug"),
+	Button("Button"), ;
 
 	private String langString;
 

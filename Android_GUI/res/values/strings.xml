@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="app_name">Cachebox</string>
-    <string name="DB">DB</string>
-    <string name="Cache">Cache</string>
-    <string name="Info">Info</string>
-    <string name="Misc">Misc</string>
-    <string name="Map">Map</string>
-    <string name="CacheList">Cache List</string>
-    <string name="Maps">Maps</string>
+	<string name="langId">en</string>
+	<string name="app_name">Cachebox</string>
+	<string name="DB">DB</string>
+	<string name="Cache">Cache</string>
+	<string name="Info">Info</string>
+	<string name="Misc">Misc</string>
+	<string name="Map">Map</string>
+	<string name="CacheList">Cache List</string>
+	<string name="Maps">Maps</string>
 </resources>
