@@ -4,12 +4,14 @@ import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CategoryDAO;
 import CB_Core.DAO.GpxFilenameDAO;
+import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
+import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
@@ -21,6 +23,7 @@ public class ImportHandler implements IImportHandler
 	WaypointDAO waypointDAO = new WaypointDAO();
 	CategoryDAO categoryDAO = new CategoryDAO();
 	GpxFilenameDAO gpxFilenameDAO = new GpxFilenameDAO();
+	ImageDAO imageDAO = new ImageDAO();
 
 	public Integer cacheCount = 0;
 	public Integer logCount = 0;
@@ -76,6 +79,12 @@ public class ImportHandler implements IImportHandler
 
 		categoryDAO.LoadCategoriesFromDatabase(GlobalCore.Categories);
 		categoryDAO.DeleteEmptyCategories(GlobalCore.Categories);
+	}
+
+	@Override
+	public void handleImage(ImageEntry image, Boolean ignoreExisting)
+	{
+		imageDAO.WriteToDatabase(image, ignoreExisting);
 	}
 
 }

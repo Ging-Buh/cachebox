@@ -138,6 +138,13 @@ public class AndroidDB extends Database
 	}
 
 	@Override
+	public long insertWithConflictIgnore(String tablename, Parameters val)
+	{
+		ContentValues values = getContentValues(val);
+		return myDB.insertWithOnConflict(tablename, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+	}
+
+	@Override
 	public void Close()
 	{
 		myDB.close();

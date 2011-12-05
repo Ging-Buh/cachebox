@@ -24,6 +24,7 @@ import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.CategoryDAO;
+import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
@@ -41,6 +42,7 @@ import CB_Core.Types.Categories;
 import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.GpxFilename;
+import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import android.app.Activity;
@@ -2352,6 +2354,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 			ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 			ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+			ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 			CB_Core.Api.SearchForGeocaches.SearchCoordinate searchC = new CB_Core.Api.SearchForGeocaches.SearchCoordinate();
 
 			searchC.withoutFinds = Config.settings.SearchWithoutFounds.getValue();
@@ -2360,10 +2363,16 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			searchC.pos = searchCoord;
 			searchC.distanceInMeters = Config.settings.lastSearchRadius.getValue() * 1000;
 			searchC.number = 50;
-			CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, gpxFilename.Id);
+			CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id);
 			if (apiCaches.size() > 0)
 			{
 				Database.Data.beginTransaction();
+
+				CacheDAO cacheDAO = new CacheDAO();
+				LogDAO logDAO = new LogDAO();
+				ImageDAO imageDAO = new ImageDAO();
+				WaypointDAO waypointDAO = new WaypointDAO();
+
 				for (Cache cache : apiCaches)
 				{
 					cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
@@ -2371,18 +2380,27 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 					if (Database.Data.Query.GetCacheById(cache.Id) == null)
 					{
 						Database.Data.Query.add(cache);
-						CacheDAO cacheDAO = new CacheDAO();
 						cacheDAO.WriteToDatabase(cache);
+
 						for (LogEntry log : apiLogs)
 						{
 							if (log.CacheId != cache.Id) continue;
 							// Write Log to database
-							LogDAO logDAO = new LogDAO();
+
 							logDAO.WriteToDatabase(log);
 						}
+
+						for (ImageEntry image : apiImages)
+						{
+							if (image.CacheId != cache.Id) continue;
+							// Write Image to database
+
+							imageDAO.WriteToDatabase(image, false);
+						}
+
 						for (Waypoint waypoint : cache.waypoints)
 						{
-							WaypointDAO waypointDAO = new WaypointDAO();
+
 							waypointDAO.WriteToDatabase(waypoint);
 						}
 					}

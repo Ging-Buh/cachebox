@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -17,6 +18,7 @@ import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DAO.GCVoteDAO;
+import CB_Core.DAO.ImageDAO;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GCVote.GCVote;
 import CB_Core.GCVote.GCVoteCacheInfo;
@@ -247,10 +249,62 @@ public class Importer
 
 	}
 
-	public void importImages()
+	public void importImages(String whereClause, int delay, ImporterProgress ip)
 	{
-		ProgresssChangedEventList.Call("import Images", "", 0);
+		ImageDAO imageDAO = new ImageDAO();
 
+		Integer count = imageDAO.getImageCount(whereClause);
+
+		ip.setJobMax("importImages", count);
+
+		if (count == 0)
+		{
+			ip.ProgressInkrement("importImages", "", true);
+			return;
+		}
+
+		ArrayList<String> gcCodes = imageDAO.getGcCodes(whereClause);
+
+		int i = 0;
+
+		for (String gccode : gcCodes)
+		{
+			Boolean downloadedImage = false;
+			ArrayList<String> imageURLs = imageDAO.getImageURLsForCache(gccode);
+
+			for (String url : imageURLs)
+			{
+				String localFile = DescriptionImageGrabber.BuildImageFilename(gccode, URI.create(url));
+
+				if (!FileIO.FileExists(localFile))
+				{
+					downloadedImage = true;
+					DescriptionImageGrabber.Download(url, localFile);
+				}
+
+				i++;
+
+				ip.ProgressInkrement("importImages",
+						"Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
+			}
+
+			try
+			{
+				if (downloadedImage)
+				{
+					ip.ProgressInkrement("importImages",
+							"Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")\nWaiting for "
+									+ String.valueOf(delay) + "s", false);
+
+					Thread.sleep(delay * 1000);
+				}
+			}
+			catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void importMaps()

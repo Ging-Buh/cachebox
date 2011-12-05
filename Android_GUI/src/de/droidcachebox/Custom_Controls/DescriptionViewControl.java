@@ -1,13 +1,14 @@
 package de.droidcachebox.Custom_Controls;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
+import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
@@ -26,7 +27,6 @@ import android.webkit.WebViewClient;
 import de.droidcachebox.Global;
 import de.droidcachebox.main;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Geocaching.DescriptionImageGrabber;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.MessageBoxButtons;
 import de.droidcachebox.Views.Forms.MessageBoxIcon;
@@ -36,8 +36,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 	public static boolean mustLoadDescription;
 	private Cache aktCache;
-	private ArrayList<String> NonLocalImages = new ArrayList<String>();
-	private ArrayList<String> NonLocalImagesUrl = new ArrayList<String>();
+	private LinkedList<String> NonLocalImages = new LinkedList<String>();
+	private LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
 	private static ProgressDialog pd;
 
 	public DescriptionViewControl(Context context)
@@ -225,14 +225,14 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 	private int downloadTryCounter = 0;
 
-	public void setCache(Cache cache)
+	public void setCache(final Cache cache)
 	{
 		final String mimeType = "text/html";
 		final String encoding = "utf-8";
 		if (cache != null)
 		{
-			NonLocalImages = new ArrayList<String>();
-			NonLocalImagesUrl = new ArrayList<String>();
+			NonLocalImages.clear();
+			NonLocalImagesUrl.clear();
 			String cachehtml = Database.GetDescription(cache);
 			String html = "";
 			if (cache.ApiStatus == 1)// GC.com API lite
@@ -285,10 +285,9 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 					while (NonLocalImagesUrl != null && NonLocalImagesUrl.size() > 0)
 					{
 						String local, url;
-						local = NonLocalImages.get(0);
-						url = NonLocalImagesUrl.get(0);
-						NonLocalImagesUrl.remove(0);
-						NonLocalImages.remove(0);
+						local = NonLocalImages.poll();
+						url = NonLocalImagesUrl.poll();
+
 						try
 						{
 							DescriptionImageGrabber.Download(url, local);

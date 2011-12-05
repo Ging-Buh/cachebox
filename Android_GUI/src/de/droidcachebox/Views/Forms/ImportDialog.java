@@ -363,6 +363,11 @@ public class ImportDialog extends Activity
 						ip.addStep(ip.new Step("importGcVote", 4));
 					}
 
+					if (checkBoxPreloadImages.isChecked())
+					{
+						ip.addStep(ip.new Step("importImages", 4));
+					}
+
 					if (downloadPQList != null)
 					{
 						Iterator<PQ> iterator = downloadPQList.iterator();
@@ -457,7 +462,11 @@ public class ImportDialog extends Activity
 						Database.Data.endTransaction();
 					}
 
-					if (checkBoxPreloadImages.isChecked()) importer.importImages();
+					if (checkBoxPreloadImages.isChecked())
+					{
+						importer.importImages(Global.LastFilter.getSqlWhere(), Config.settings.GCRequestDelay.getValue(), ip);
+					}
+
 					Thread.sleep(1000);
 					if (checkBoxImportMaps.isChecked()) importer.importMaps();
 

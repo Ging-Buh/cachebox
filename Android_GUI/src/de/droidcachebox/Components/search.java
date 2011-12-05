@@ -26,6 +26,7 @@ import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.CategoryDAO;
+import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
@@ -37,6 +38,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.GpxFilename;
+import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
@@ -87,14 +89,12 @@ public class search
 	private main mPtrMain = null;
 
 	/**
-	 * True, wenn eine Suche läuft und der Iterator mit Next weiter durchlaufen
-	 * werden kann.
+	 * True, wenn eine Suche läuft und der Iterator mit Next weiter durchlaufen werden kann.
 	 */
 	private boolean mSearchAktive = false;
 
 	/**
-	 * True, wenn die QuickButtonList beim öffnen dieses Dialogs aufgeklappt
-	 * war.
+	 * True, wenn die QuickButtonList beim öffnen dieses Dialogs aufgeklappt war.
 	 */
 	private boolean mQuickButtonListWasShow;
 
@@ -166,8 +166,7 @@ public class search
 	private int mSearchState = 0;
 
 	/**
-	 * Constructor mit Übergabe der main Class zur initalisierung des Dialogs
-	 * mit all seinen Buttons
+	 * Constructor mit Übergabe der main Class zur initalisierung des Dialogs mit all seinen Buttons
 	 * 
 	 * @param Main
 	 */
@@ -536,12 +535,10 @@ public class search
 	}
 
 	/**
-	 * Die aktive CahcheList wird durchsucht gefilterte Caches werden dabei
-	 * nicht berücksichtigt.
+	 * Die aktive CahcheList wird durchsucht gefilterte Caches werden dabei nicht berücksichtigt.
 	 * 
 	 * @param ignoreOnlineSearch
-	 *            (True, wenn Lokal gesucht werden soll, obwohl der
-	 *            MultiToggleButton "Online" aktiviert ist.
+	 *            (True, wenn Lokal gesucht werden soll, obwohl der MultiToggleButton "Online" aktiviert ist.
 	 */
 	private void searchNow(boolean ignoreOnlineSearch)
 	{
@@ -623,9 +620,8 @@ public class search
 	}
 
 	/**
-	 * Sucht mit den Vorgaben nach Caches über die API. Die Gefundenen Caches
-	 * werden in die DB eingetragen und im Anschluss wird der lokale Suchvorgang
-	 * gestartet.
+	 * Sucht mit den Vorgaben nach Caches über die API. Die Gefundenen Caches werden in die DB eingetragen und im Anschluss wird der lokale
+	 * Suchvorgang gestartet.
 	 */
 	private void searchAPI()
 	{
@@ -894,6 +890,7 @@ public class search
 
 			ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 			ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+			ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
 			CB_Core.Api.SearchForGeocaches.Search searchC = null;
 
@@ -944,7 +941,7 @@ public class search
 				return null;
 			}
 
-			CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, gpxFilename.Id);
+			CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id);
 
 			if (canceld)
 			{
@@ -954,6 +951,12 @@ public class search
 			if (apiCaches.size() > 0)
 			{
 				Database.Data.beginTransaction();
+
+				CacheDAO cacheDAO = new CacheDAO();
+				LogDAO logDAO = new LogDAO();
+				ImageDAO imageDAO = new ImageDAO();
+				WaypointDAO waypointDAO = new WaypointDAO();
+
 				for (Cache cache : apiCaches)
 				{
 					if (canceld)
@@ -966,18 +969,25 @@ public class search
 					if (Database.Data.Query.GetCacheById(cache.Id) == null)
 					{
 						Database.Data.Query.add(cache);
-						CacheDAO cacheDAO = new CacheDAO();
+
 						cacheDAO.WriteToDatabase(cache);
+
 						for (LogEntry log : apiLogs)
 						{
 							if (log.CacheId != cache.Id) continue;
 							// Write Log to database
-							LogDAO logDAO = new LogDAO();
 							logDAO.WriteToDatabase(log);
 						}
+
+						for (ImageEntry image : apiImages)
+						{
+							if (image.CacheId != cache.Id) continue;
+							// Write Image to database
+							imageDAO.WriteToDatabase(image, false);
+						}
+
 						for (Waypoint waypoint : cache.waypoints)
 						{
-							WaypointDAO waypointDAO = new WaypointDAO();
 							waypointDAO.WriteToDatabase(waypoint);
 						}
 					}

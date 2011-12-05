@@ -1,21 +1,21 @@
-package de.droidcachebox.Geocaching;
+package CB_Core.Import;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import org.apache.http.util.ByteArrayBuffer;
 
 import CB_Core.Config;
-import de.droidcachebox.Global;
-
 import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 import CB_Core.Types.Cache;
-import android.net.Uri;
 
 public class DescriptionImageGrabber
 {
@@ -66,7 +66,7 @@ public class DescriptionImageGrabber
 		return dummy;
 	}
 
-	public static String BuildImageFilename(String GcCode, Uri uri)
+	public static String BuildImageFilename(String GcCode, URI uri)
 	{
 		String imagePath = Config.settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4);
 
@@ -80,28 +80,26 @@ public class DescriptionImageGrabber
 
 		// return imagePath + "\\" + GcCode +
 		// Global.sdbm(uri.AbsolutePath).ToString() + extension;!!!!!!!!!!!!!
-		return imagePath + "/" + GcCode + Global.sdbm(uri.getPath()) + extension;
+		return imagePath + "/" + GcCode + GlobalCore.sdbm(uri.getPath()) + extension;
 	}
 
-	public static String ResolveImages(Cache Cache, String html, boolean suppressNonLocalMedia, ArrayList<String> NonLocalImages,
-			ArrayList<String> NonLocalImagesUrl)
+	public static String ResolveImages(Cache Cache, String html, boolean suppressNonLocalMedia, LinkedList<String> NonLocalImages,
+			LinkedList<String> NonLocalImagesUrl)
 	{
 		/*
-		 * NonLocalImages = new List<string>(); NonLocalImagesUrl = new
-		 * List<string>();
+		 * NonLocalImages = new List<string>(); NonLocalImagesUrl = new List<string>();
 		 */
 
-		Uri baseUri;
+		URI baseUri;
 		try
 		{
-			baseUri = Uri.parse(Cache.Url);
+			baseUri = URI.create(Cache.Url);
 		}
 		catch (Exception exc)
 		{
 			/*
-			 * #if DEBUG Global.AddLog(
-			 * "DescriptionImageGrabber.ResolveImages: failed to resolve '" +
-			 * Cache.Url + "': " + exc.ToString()); #endif
+			 * #if DEBUG Global.AddLog( "DescriptionImageGrabber.ResolveImages: failed to resolve '" + Cache.Url + "': " + exc.ToString());
+			 * #endif
 			 */
 			baseUri = null;
 		}
@@ -111,20 +109,19 @@ public class DescriptionImageGrabber
 			Cache.Url = "http://www.geocaching.com/seek/cache_details.aspx?wp=" + Cache.GcCode;
 			try
 			{
-				baseUri = Uri.parse(Cache.Url);
+				baseUri = URI.create(Cache.Url);
 			}
 			catch (Exception exc)
 			{
 				/*
-				 * #if DEBUG Global.AddLog(
-				 * "DescriptionImageGrabber.ResolveImages: failed to resolve '"
-				 * + Cache.Url + "': " + exc.ToString()); #endif
+				 * #if DEBUG Global.AddLog( "DescriptionImageGrabber.ResolveImages: failed to resolve '" + Cache.Url + "': " +
+				 * exc.ToString()); #endif
 				 */
 				return html;
 			}
 		}
 
-		String htmlNoSpaces = RemoveSpaces(html);
+		// String htmlNoSpaces = RemoveSpaces(html);
 
 		ArrayList<Segment> imgTags = Segmentize(html, "<img", ">");
 
@@ -139,13 +136,11 @@ public class DescriptionImageGrabber
 			if (srcIdx != -1 && srcStart != -1 && srcEnd != -1)
 			{
 				String src = img.text.substring(srcStart + 1, srcEnd/*
-																	 * -
-																	 * srcStart
-																	 * - 1
+																	 * - srcStart - 1
 																	 */);
 				try
 				{
-					Uri imgUri = Uri.parse(/* baseUri, */src); // NICHT
+					URI imgUri = URI.create(/* baseUri, */src); // NICHT
 																// ORGINAL!!!!!!!!!
 					String localFile = BuildImageFilename(Cache.GcCode, imgUri);
 
@@ -181,15 +176,14 @@ public class DescriptionImageGrabber
 							html = html.substring(0, img.start - 4 + delta) + html.substring(img.ende + 1 + delta);
 							delta -= 5 + img.ende - img.start;
 						}
+
 					}
 				}
 				catch (Exception exc)
 				{
 					/*
-					 * #if DEBUG Global.AddLog(
-					 * "DescriptionImageGrabber.ResolveImages: failed to resolve relative uri. Base '"
-					 * + baseUri + "', relative '" + src + "': " +
-					 * exc.ToString()); #endif
+					 * #if DEBUG Global.AddLog( "DescriptionImageGrabber.ResolveImages: failed to resolve relative uri. Base '" + baseUri +
+					 * "', relative '" + src + "': " + exc.ToString()); #endif
 					 */
 				}
 			}
@@ -232,6 +226,61 @@ public class DescriptionImageGrabber
 		{
 			return false;
 		}
+	}
+
+	public static LinkedList<String> GetAllImages(Cache Cache, String html)
+	{
+
+		LinkedList<String> images = new LinkedList<String>();
+
+		URI baseUri;
+		try
+		{
+			baseUri = URI.create(Cache.Url);
+		}
+		catch (Exception exc)
+		{
+			baseUri = null;
+		}
+
+		if (baseUri == null)
+		{
+			Cache.Url = "http://www.geocaching.com/seek/cache_details.aspx?wp=" + Cache.GcCode;
+			try
+			{
+				baseUri = URI.create(Cache.Url);
+			}
+			catch (Exception exc)
+			{
+				return images;
+			}
+		}
+
+		ArrayList<Segment> imgTags = Segmentize(html, "<img", ">");
+
+		for (Segment img : imgTags)
+		{
+			int srcIdx = img.text.toLowerCase().indexOf("src=");
+			int srcStart = img.text.indexOf('"', srcIdx + 4);
+			int srcEnd = img.text.indexOf('"', srcStart + 1);
+
+			if (srcIdx != -1 && srcStart != -1 && srcEnd != -1)
+			{
+				String src = img.text.substring(srcStart + 1, srcEnd);
+				try
+				{
+					URI imgUri = URI.create(src);
+
+					images.add(imgUri.toString());
+
+				}
+				catch (Exception exc)
+				{
+				}
+			}
+		}
+
+		return images;
 	}
 
 }

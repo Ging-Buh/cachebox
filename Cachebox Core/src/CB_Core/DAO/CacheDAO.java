@@ -22,6 +22,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.DLong;
+import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
@@ -371,8 +372,7 @@ public class CacheDAO
 	}
 
 	/**
-	 * hier wird nur die Status Abfrage zurück geschrieben und gegebenen Falls
-	 * die Replication Informationen geschrieben.
+	 * hier wird nur die Status Abfrage zurück geschrieben und gegebenen Falls die Replication Informationen geschrieben.
 	 * 
 	 * @param cache
 	 */
@@ -438,7 +438,9 @@ public class CacheDAO
 
 			ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 			ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-			CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, search, apiCaches, apiLogs, aktCache.GPXFilename_ID);
+			ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
+			CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, search, apiCaches, apiLogs, apiImages,
+					aktCache.GPXFilename_ID);
 			if (apiCaches.size() == 1)
 			{
 				Database.Data.beginTransaction();
@@ -449,17 +451,30 @@ public class CacheDAO
 				newCache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, newCache.Latitude());
 
 				UpdateDatabase(newCache);
+
+				LogDAO logDAO = new LogDAO();
 				for (LogEntry log : apiLogs)
 				{
 					if (log.CacheId != newCache.Id) continue;
 					// Write Log to database
-					LogDAO logDAO = new LogDAO();
+
 					logDAO.WriteToDatabase(log);
 				}
+
+				WaypointDAO waypointDAO = new WaypointDAO();
 				for (Waypoint waypoint : newCache.waypoints)
 				{
-					WaypointDAO waypointDAO = new WaypointDAO();
+
 					waypointDAO.WriteToDatabase(waypoint);
+				}
+
+				ImageDAO imageDAO = new ImageDAO();
+				for (ImageEntry image : apiImages)
+				{
+					if (image.CacheId != newCache.Id) continue;
+					// Write Image to database
+
+					imageDAO.WriteToDatabase(image, false);
 				}
 
 				Database.Data.setTransactionSuccessful();

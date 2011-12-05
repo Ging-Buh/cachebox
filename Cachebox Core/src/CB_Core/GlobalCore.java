@@ -17,7 +17,7 @@ public class GlobalCore
 	public static Coordinate LastPosition = new Coordinate();
 	public static Coordinate Marker = new Coordinate();
 	public static boolean ResortAtWork = false;
-	public static final int LatestDatabaseChange = 1020;
+	public static final int LatestDatabaseChange = 1021;
 	public static final int LatestDatabaseFieldNoteChange = 1001;
 	public static final int LatestDatabaseSettingsChange = 1002;
 

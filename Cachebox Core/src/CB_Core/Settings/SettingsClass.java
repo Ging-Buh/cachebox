@@ -99,6 +99,7 @@ public class SettingsClass extends SettingsList
 	public SettingInt MoveMapCenterMaxSpeed;
 	public SettingInt lastZoomLevel;
 	public SettingInt lastSearchRadius;
+	public SettingInt GCRequestDelay;
 
 	public SettingTime ScreenLock;
 
@@ -267,9 +268,11 @@ public class SettingsClass extends SettingsList
 		addSetting(LanguagePath = new SettingFolder("LanguagePath", cat, NORMAL, Work + "/data/lang", true));
 		addSetting(TileCacheFolder = new SettingFolder("TileCacheFolder", cat, NORMAL, Work + "/cache", true));
 		addSetting(PocketQueryFolder = new SettingFolder("PocketQueryFolder", cat, NORMAL, Work + "/PocketQuery", true));
+
 		addSetting(DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", cat, NORMAL, Work + "/repository/images", true));
 		addSetting(MapPackFolder = new SettingFolder("MapPackFolder", cat, NORMAL, Work + "/repository/maps", true));
 		addSetting(SpoilerFolder = new SettingFolder("SpoilerFolder", cat, NORMAL, Work + "/repository/spoilers", true));
+
 		addSetting(TrackFolder = new SettingFolder("TrackFolder", cat, NORMAL, Work + "/User/Tracks", true));
 
 		addSetting(Sel_LanguagePath = new SettingFile("Sel_LanguagePath", cat, INVISIBLE, Work + "/data/lang/en.lan", true, "lan"));
@@ -321,6 +324,7 @@ public class SettingsClass extends SettingsList
 		addSetting(ImportRatings = new SettingBool("ImportRatings", cat, NORMAL, false, true));
 		addSetting(ImportGpx = new SettingBool("ImportGpx", cat, NORMAL, false, true));
 		addSetting(GCAdditionalImageDownload = new SettingBool("GCAdditionalImageDownload", cat, EXPERT, false, true));
+		addSetting(GCRequestDelay = new SettingInt("GCRequestDelay", cat, EXPERT, 10, true));
 		addSetting(ImportPQsFromGeocachingCom = new SettingBool("ImportPQsFromGeocachingCom", cat, NORMAL, false, true));
 		addSetting(FieldnotesUploadAll = new SettingBool("FieldnotesUploadAll", cat, NORMAL, false, true));
 		addSetting(SearchWithoutFounds = new SettingBool("SearchWithoutFounds", cat, NORMAL, true, true));

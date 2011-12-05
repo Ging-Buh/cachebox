@@ -31,8 +31,7 @@ public abstract class Database
 	protected boolean newDB = false;
 
 	/***
-	 * Wenn die DB neu erstellt wurde ist der Return Wert bei der ersten Abfrage
-	 * True
+	 * Wenn die DB neu erstellt wurde ist der Return Wert bei der ersten Abfrage True
 	 * 
 	 * @return
 	 */
@@ -303,6 +302,23 @@ public abstract class Database
 				try
 				{
 					execSQL("ALTER TABLE [Config] ADD [LongString] ntext NULL;");
+				}
+				catch (Exception ex)
+				{
+
+				}
+
+			}
+			if (lastDatabaseSchemeVersion < 1021)
+			{
+				// Image Table
+				try
+				{
+					execSQL("CREATE TABLE [Images] ([Id] integer not null primary key autoincrement, [CacheId] bigint NULL, [GcCode] nvarchar (12) NULL, [Description] ntext, [Name] nvarchar (255) NULL, [ImageUrl] nvarchar (255) NULL, [IsCacheImage] bit NULL);");
+					execSQL("CREATE INDEX [images_cacheid_idx] ON [Images] ([CacheId] ASC);");
+					execSQL("CREATE INDEX [images_gccode_idx] ON [Images] ([GcCode] ASC);");
+					execSQL("CREATE INDEX [images_iscacheimage_idx] ON [Images] ([IsCacheImage] ASC);");
+					execSQL("CREATE UNIQUE INDEX [images_imageurl_idx] ON [Images] ([ImageUrl] ASC);");
 				}
 				catch (Exception ex)
 				{
@@ -867,6 +883,8 @@ public abstract class Database
 	public abstract void endTransaction();
 
 	public abstract long insertWithConflictReplace(String tablename, Parameters val);
+
+	public abstract long insertWithConflictIgnore(String tablename, Parameters val);
 
 	public abstract void Close();
 }

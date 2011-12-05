@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.GpxFilename;
+import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
@@ -49,6 +51,8 @@ public class GPXFileImporter
 
 	private String gpxName = "";
 	private String gpxAuthor = "";
+
+	private LinkedList<String> allImages = new LinkedList<String>();
 
 	public GPXFileImporter(File gpxFileName)
 	{
@@ -983,6 +987,26 @@ public class GPXFileImporter
 		}
 
 		cache.GPXFilename_ID = gpxFilename.Id;
+
+		allImages = DescriptionImageGrabber.GetAllImages(cache, cache.shortDescription + cache.longDescription);
+
+		while (allImages != null && allImages.size() > 0)
+		{
+			String url;
+			url = allImages.poll();
+
+			ImageEntry image = new ImageEntry();
+
+			image.CacheId = cache.Id;
+			image.GcCode = cache.GcCode;
+			image.Name = url.substring(url.lastIndexOf("/") + 1);
+			image.Description = "";
+			image.ImageUrl = url;
+			image.IsCacheImage = true;
+
+			mImportHandler.handleImage(image, true);
+
+		}
 
 		currentwpt++;
 

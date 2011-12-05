@@ -23,6 +23,7 @@ import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.DLong;
+import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
@@ -61,7 +62,7 @@ public class SearchForGeocaches
 	}
 
 	public static String SearchForGeocachesJSON(String accessToken, Search search, ArrayList<Cache> cacheList, ArrayList<LogEntry> logList,
-			long gpxFilenameId)
+			ArrayList<ImageEntry> imageList, long gpxFilenameId)
 	{
 		String result = "";
 
@@ -383,6 +384,26 @@ public class SearchForGeocaches
 								log.Type = GroundspeakAPI.getLogType(jLogType.getInt("WptLogTypeId"));
 								logList.add(log);
 							}
+
+							// insert Images
+							JSONArray images = jCache.getJSONArray("Images");
+							for (int j = 0; j < images.length(); j++)
+							{
+								JSONObject jImage = (JSONObject) images.get(j);
+
+								ImageEntry image = new ImageEntry();
+								image.CacheId = cache.Id;
+								image.GcCode = cache.GcCode;
+								image.Name = jImage.getString("Name");
+								image.Description = jImage.getString("Description");
+								image.ImageUrl = jImage.getString("Url").replace("img.geocaching.com/gc/cache", "img.geocaching.com/cache");
+								// remove "/gc" to match the url used in the description
+
+								image.IsCacheImage = true;
+
+								imageList.add(image);
+							}
+
 							// insert Waypoints
 							JSONArray waypoints = jCache.getJSONArray("AdditionalWaypoints");
 							for (int j = 0; j < waypoints.length(); j++)
