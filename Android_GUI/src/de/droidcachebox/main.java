@@ -360,7 +360,6 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 		if (GlobalCore.SelectedCache() == null)
 		{
-
 			if (Database.Data == null)
 			{
 				String FilterString = Config.settings.Filter.getValue();

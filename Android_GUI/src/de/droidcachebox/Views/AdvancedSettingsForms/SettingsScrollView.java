@@ -106,7 +106,7 @@ public class SettingsScrollView extends Activity
 	public static SettingsScrollView Me;
 
 	private SettingBase selectedItem;
-	private int selectedPositin = -1;
+	private int selectedPosition = -1;
 
 	private ArrayList<SettingCategory> Categorys = new ArrayList<SettingCategory>();
 
@@ -186,19 +186,21 @@ public class SettingsScrollView extends Activity
 
 		// Categorie List zusammen stellen
 
+		if (Categorys == null)
+		{
+			Categorys = new ArrayList<SettingCategory>();
+		}
+
+		Categorys.clear();
 		SettingCategory[] tmp = SettingCategory.values();
 		for (SettingCategory item : tmp)
 		{
 			if (item != SettingCategory.Button)
 			{
-				item.Toggle(true); // bei der Initialisierung sind alle
-									// Categorien geschlossen.
 				Categorys.add(item);
 			}
 
 		}
-
-		final ArrayList<Button> functBtnList = new ArrayList<Button>();
 
 		Resources res = this.getResources();
 		Iterator<SettingCategory> iteratorCat = Categorys.iterator();
@@ -259,6 +261,8 @@ public class SettingsScrollView extends Activity
 					entrieCount++;
 				}
 
+				Boolean expandLayout = false;
+
 				// int layoutHeight = 0;
 				for (Iterator<SettingBase> it = SortedSettingList.iterator(); it.hasNext();)
 				{
@@ -280,6 +284,11 @@ public class SettingsScrollView extends Activity
 
 							lay.addView(view);
 							entrieCount++;
+							if (settingItem.getName().equals(EditKey))
+							{
+								expandLayout = true;
+							}
+
 						}
 					}
 				}
@@ -296,7 +305,7 @@ public class SettingsScrollView extends Activity
 
 					lay.setLayoutParams(layoutParams);
 					lay.setBackgroundDrawable(Global.getDrawable(R.drawable.day_settings_group, res));
-					lay.setVisibility(View.GONE);
+					if (!expandLayout) lay.setVisibility(View.GONE);
 					content.addView(lay);
 					// }
 
@@ -324,6 +333,7 @@ public class SettingsScrollView extends Activity
 	{
 		content.removeAllViews();
 		fillContent();
+		scrollView.scrollTo(0, scrollView.getScrollY());
 	}
 
 	/***
