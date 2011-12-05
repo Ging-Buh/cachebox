@@ -97,6 +97,7 @@ public final class CompassControl extends View
 	// end drawing tools
 
 	private Bitmap background; // holds the cached static part
+	private Bitmap scaleCache; // holds the cached static part
 
 	// scale configuration
 	private static final int totalNicks = 180;
@@ -125,6 +126,7 @@ public final class CompassControl extends View
 
 		initDrawingTools();
 		regenerateBackground();
+		regenarateScale();
 		this.invalidate();
 	}
 
@@ -275,7 +277,7 @@ public final class CompassControl extends View
 		canvas.drawOval(scaleRect, scalePaint);
 
 		canvas.save(Canvas.MATRIX_SAVE_FLAG);
-		canvas.rotate(-centerDegree, 0.5f, 0.5f);
+		// canvas.rotate(-centerDegree, 0.5f, 0.5f);
 		for (int i = 0; i < totalNicks; ++i)
 		{
 			float y1 = scaleRect.top;
@@ -330,6 +332,39 @@ public final class CompassControl extends View
 		canvas.restore();
 	}
 
+	private void regenarateScale()
+	{
+		if (scaleCache != null)
+		{
+			scaleCache.recycle();
+		}
+
+		if (getWidth() == 0 || getHeight() == 0)
+		{
+			return;
+		}
+
+		scaleCache = Bitmap.createBitmap(getMyDrawingHeight(), getMyDrawingHeight(), Bitmap.Config.ARGB_8888);
+		Canvas scaleCacheCanvas = new Canvas(scaleCache);
+		float scale = (float) getMyDrawingHeight();// getHeight();
+		scaleCacheCanvas.scale(scale, scale);
+
+		drawScale(scaleCacheCanvas);
+
+	}
+
+	private void drawCachedScale(Canvas canvas)
+	{
+		if (scaleCache == null) regenarateScale();
+
+		canvas.save(Canvas.MATRIX_SAVE_FLAG);
+		canvas.rotate(-centerDegree, centerDrawingPointX + scaleCache.getWidth() / 2, centerDrawingPointY + scaleCache.getHeight() / 2);
+
+		canvas.drawBitmap(scaleCache, centerDrawingPointX, centerDrawingPointY, scalePaint);
+
+		canvas.restore();
+	}
+
 	private void drawDistance(Canvas canvas)
 	{
 
@@ -366,13 +401,13 @@ public final class CompassControl extends View
 	protected void onDraw(Canvas canvas)
 	{
 		drawBackground(canvas);
+		drawCachedScale(canvas);
 
 		float scale = (float) getMyDrawingHeight();
 		canvas.save(Canvas.MATRIX_SAVE_FLAG);
 		canvas.translate(centerDrawingPointX, centerDrawingPointY);
 		canvas.scale(scale, scale);
 
-		drawScale(canvas);
 		drawDistance(canvas);
 		drawArrow(canvas);
 
@@ -386,6 +421,7 @@ public final class CompassControl extends View
 		Logger.DEBUG("Compass Size Changed");
 
 		regenerateBackground();
+		regenarateScale();
 	}
 
 	private void regenerateBackground()

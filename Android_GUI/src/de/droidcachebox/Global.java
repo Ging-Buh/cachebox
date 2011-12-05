@@ -37,7 +37,7 @@ import de.droidcachebox.Ui.Sizes;
 
 public class Global
 {
-	public static final int CurrentRevision = 583;
+	public static final int CurrentRevision = 585;
 	public static final String CurrentVersion = "0.4.";
 	public static final String VersionPrefix = "beta";
 	public static final int LatestDatabaseChange = 1016;
