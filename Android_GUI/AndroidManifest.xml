@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="de.droidcachebox" android:installLocation="preferExternal"
-	android:versionCode="5" android:versionName="0.4.548 (beta)">
+	package="de.cachebox_test" android:installLocation="preferExternal"
+	android:versionCode="5" android:versionName="0.4.588 (test)">
 	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
@@ -16,8 +16,7 @@
 	<uses-permission android:name="android.permission.VIBRATE" />
 
 
-	<application android:label="@string/app_name" android:icon="@drawable/cb"
-		android:theme="@style/Theme_day" android:debuggable="true">
+	<application android:label="@string/app_name" android:theme="@style/Theme_day" android:debuggable="true" android:icon="@drawable/cb_test">
 		<activity android:name=".main" android:label="@string/app_name">
 			
 		</activity>

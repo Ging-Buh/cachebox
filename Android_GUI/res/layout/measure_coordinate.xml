@@ -22,10 +22,10 @@
 	 <FrameLayout android:layout_alignParentLeft="true"
 			android:layout_height="fill_parent" android:layout_above="@+id/meco_buttonlayout"
 			android:layout_below="@+id/meco_titlelayout" android:layout_width="match_parent">
-		<de.droidcachebox.Custom_Controls.CanvasDrawControl
+		<de.cachebox_test.Custom_Controls.CanvasDrawControl
 			android:layout_height="match_parent" android:id="@+id/meco_panel"
 			android:layout_width="match_parent">
-		</de.droidcachebox.Custom_Controls.CanvasDrawControl>
+		</de.cachebox_test.Custom_Controls.CanvasDrawControl>
 
 
 

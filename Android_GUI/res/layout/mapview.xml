@@ -4,7 +4,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
     <SurfaceView android:layout_alignParentLeft="true" android:id="@+id/mapview_surface" android:layout_width="match_parent" android:layout_height="match_parent"></SurfaceView>
-    <de.droidcachebox.Custom_Controls.MultiToggleButton
+    <de.cachebox_test.Custom_Controls.MultiToggleButton
     android:id="@+id/mapview_trackposition" 
     android:text="ToggleButton" 
     android:layout_alignParentRight="true" 

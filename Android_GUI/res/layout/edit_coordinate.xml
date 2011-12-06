@@ -20,18 +20,18 @@
 	<LinearLayout android:orientation="horizontal" android:id="@+id/edco_toplayout"
 		android:layout_width="match_parent" android:layout_below="@+id/edco_titlelayout"
 		android:layout_height="50dip">
-		<de.droidcachebox.Custom_Controls.MultiToggleButton
+		<de.cachebox_test.Custom_Controls.MultiToggleButton
 			android:layout_weight="1" android:layout_width="match_parent"
-			android:text="Dec" android:layout_height="match_parent" android:id="@+id/edco_dec"></de.droidcachebox.Custom_Controls.MultiToggleButton>
-		<de.droidcachebox.Custom_Controls.MultiToggleButton
+			android:text="Dec" android:layout_height="match_parent" android:id="@+id/edco_dec"></de.cachebox_test.Custom_Controls.MultiToggleButton>
+		<de.cachebox_test.Custom_Controls.MultiToggleButton
 			android:layout_weight="1" android:layout_width="match_parent"
-			android:text="Min" android:layout_height="match_parent" android:id="@+id/edco_min"></de.droidcachebox.Custom_Controls.MultiToggleButton>
-		<de.droidcachebox.Custom_Controls.MultiToggleButton
+			android:text="Min" android:layout_height="match_parent" android:id="@+id/edco_min"></de.cachebox_test.Custom_Controls.MultiToggleButton>
+		<de.cachebox_test.Custom_Controls.MultiToggleButton
 			android:layout_weight="1" android:layout_width="match_parent"
-			android:text="Sec" android:layout_height="match_parent" android:id="@+id/edco_sec"></de.droidcachebox.Custom_Controls.MultiToggleButton>
-		<de.droidcachebox.Custom_Controls.MultiToggleButton
+			android:text="Sec" android:layout_height="match_parent" android:id="@+id/edco_sec"></de.cachebox_test.Custom_Controls.MultiToggleButton>
+		<de.cachebox_test.Custom_Controls.MultiToggleButton
 			android:layout_weight="1" android:layout_width="match_parent"
-			android:text="UTM" android:layout_height="match_parent" android:id="@+id/edco_utm"></de.droidcachebox.Custom_Controls.MultiToggleButton>
+			android:text="UTM" android:layout_height="match_parent" android:id="@+id/edco_utm"></de.cachebox_test.Custom_Controls.MultiToggleButton>
 	</LinearLayout>
 	<ScrollView android:id="@+id/scrollView1"
 		android:layout_width="match_parent" android:layout_height="match_parent"

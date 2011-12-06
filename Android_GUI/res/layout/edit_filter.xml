@@ -17,9 +17,9 @@
     	android:layout_width="match_parent" 
     	android:layout_alignParentTop="true" 
     	android:paddingTop="5dip" android:layout_height="55dip">
-        	<de.droidcachebox.Custom_Controls.MultiToggleButton android:layout_weight="1" android:layout_width="match_parent" android:text="Presets" android:layout_height="match_parent" android:id="@+id/edfi_pre"/>
-        	<de.droidcachebox.Custom_Controls.MultiToggleButton android:layout_weight="1" android:layout_width="match_parent" android:text="Settings" android:layout_height="match_parent" android:id="@+id/edfi_set"/>
-        	<de.droidcachebox.Custom_Controls.MultiToggleButton android:layout_weight="1" android:layout_width="match_parent" android:text="Categories" android:layout_height="match_parent" android:id="@+id/edfi_cat"/>
+        	<de.cachebox_test.Custom_Controls.MultiToggleButton android:layout_weight="1" android:layout_width="match_parent" android:text="Presets" android:layout_height="match_parent" android:id="@+id/edfi_pre"/>
+        	<de.cachebox_test.Custom_Controls.MultiToggleButton android:layout_weight="1" android:layout_width="match_parent" android:text="Settings" android:layout_height="match_parent" android:id="@+id/edfi_set"/>
+        	<de.cachebox_test.Custom_Controls.MultiToggleButton android:layout_weight="1" android:layout_width="match_parent" android:text="Categories" android:layout_height="match_parent" android:id="@+id/edfi_cat"/>
         	
     </LinearLayout>
     <RelativeLayout 
