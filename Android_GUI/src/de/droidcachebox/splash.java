@@ -403,16 +403,18 @@ public class splash extends Activity
 
 	private void Initial2()
 	{
-		setProgressState(62, GlobalCore.Translations.Get("LoadCaches") + FileIO.GetFileName(Config.settings.DatabasePath.getValue()));
-		String FilterString = Config.settings.Filter.getValue();
-		Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0]) : new FilterProperties(
-				FilterString);
-		String sqlWhere = Global.LastFilter.getSqlWhere();
 
 		// initialize Database
 		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
 		String database = Config.settings.DatabasePath.getValue();
 		Database.Data.StartUp(database);
+
+		Config.settings.ReadFromDB();
+		setProgressState(62, GlobalCore.Translations.Get("LoadCaches") + FileIO.GetFileName(Config.settings.DatabasePath.getValue()));
+		String FilterString = Config.settings.Filter.getValue();
+		Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0]) : new FilterProperties(
+				FilterString);
+		String sqlWhere = Global.LastFilter.getSqlWhere();
 
 		GlobalCore.Categories = new Categories();
 		Database.Data.GPXFilenameUpdateCacheCount();

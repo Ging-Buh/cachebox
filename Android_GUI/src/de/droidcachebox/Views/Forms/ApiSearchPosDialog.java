@@ -212,8 +212,14 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 		tglBtnGPS = (MultiToggleButton) this.findViewById(R.id.toggle_GPS);
 		tglBtnMap = (MultiToggleButton) this.findViewById(R.id.toggle_Map);
 
-		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnGPS, GlobalCore.Translations.Get("GPS"), GlobalCore.Translations.Get("GPS"));
-		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnMap, GlobalCore.Translations.Get("Map"), GlobalCore.Translations.Get("Map"));
+		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnGPS, GlobalCore.Translations.Get("FromGps"),
+				GlobalCore.Translations.Get("FromGps"));
+		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnMap, GlobalCore.Translations.Get("FromMap"),
+				GlobalCore.Translations.Get("FromMap"));
+
+		checkBoxExcludeFounds.setText(GlobalCore.Translations.Get("SearchWithoutFounds"));
+		checkBoxOnlyAvible.setText(GlobalCore.Translations.Get("SearchOnlyAvible"));
+		checkBoxExcludeHides.setText(GlobalCore.Translations.Get("SearchWithoutOwns"));
 
 		CurentMarkerPos.setFocusable(true);
 		CurentMarkerPos.setFocusableInTouchMode(true);

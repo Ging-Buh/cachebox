@@ -99,7 +99,7 @@ public class SettingsClass extends SettingsList
 	public SettingInt MoveMapCenterMaxSpeed;
 	public SettingInt lastZoomLevel;
 	public SettingInt lastSearchRadius;
-	public SettingInt GCRequestDelay;
+	// public SettingInt GCRequestDelay;
 
 	public SettingTime ScreenLock;
 
@@ -291,7 +291,7 @@ public class SettingsClass extends SettingsList
 		addSetting(quickButtonShow = new SettingBool("quickButtonShow", cat, NEVER, true, true));
 		addSetting(ImportGpx = new SettingBool("ImportGpx", cat, INVISIBLE, true, true));
 		addSetting(CacheMapData = new SettingBool("CacheMapData", cat, INVISIBLE, false, true));
-		addSetting(CacheImageData = new SettingBool("CacheImageData", cat, INVISIBLE, false, true));
+		addSetting(CacheImageData = new SettingBool("CacheImageData", cat, INVISIBLE, true, true));
 		addSetting(isChris = new SettingBool("isChris", cat, NEVER, false, true));
 		addSetting(AutoResort = new SettingBool("AutoResort", cat, INVISIBLE, false, true));
 
@@ -324,7 +324,7 @@ public class SettingsClass extends SettingsList
 		addSetting(ImportRatings = new SettingBool("ImportRatings", cat, NORMAL, false, true));
 		addSetting(ImportGpx = new SettingBool("ImportGpx", cat, NORMAL, false, true));
 		addSetting(GCAdditionalImageDownload = new SettingBool("GCAdditionalImageDownload", cat, EXPERT, false, true));
-		addSetting(GCRequestDelay = new SettingInt("GCRequestDelay", cat, EXPERT, 10, true));
+		// addSetting(GCRequestDelay = new SettingInt("GCRequestDelay", cat, EXPERT, 0, true));
 		addSetting(ImportPQsFromGeocachingCom = new SettingBool("ImportPQsFromGeocachingCom", cat, NORMAL, false, true));
 		addSetting(FieldnotesUploadAll = new SettingBool("FieldnotesUploadAll", cat, NORMAL, false, true));
 		addSetting(SearchWithoutFounds = new SettingBool("SearchWithoutFounds", cat, NORMAL, true, true));

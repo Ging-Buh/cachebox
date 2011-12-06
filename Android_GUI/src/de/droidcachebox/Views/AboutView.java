@@ -421,7 +421,17 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 
 		boolean N = Config.settings.nightMode.getValue();
 
-		bitmap = BitmapFactory.decodeResource(res, N ? R.drawable.night_splash_back : R.drawable.splash_back);
+		int BackGroundResourceId = 0;
+		if (Config.settings.isChris.getValue())
+		{
+			BackGroundResourceId = N ? R.drawable.chris_night_splash_back : R.drawable.chris_splash_back;
+		}
+		else
+		{
+			BackGroundResourceId = N ? R.drawable.night_splash_back : R.drawable.splash_back;
+		}
+
+		bitmap = BitmapFactory.decodeResource(res, BackGroundResourceId);
 		logo = BitmapFactory.decodeResource(res, R.drawable.cachebox_logo);
 		((ImageView) findViewById(R.id.splash_BackImage)).setImageBitmap(bitmap);
 		((ImageView) findViewById(R.id.splash_Logo)).setImageBitmap(logo);

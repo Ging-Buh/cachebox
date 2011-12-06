@@ -192,44 +192,8 @@ public class ImportDialog extends Activity
 		@Override
 		public void onClick(View v)
 		{
-			if (!Config.settings.CacheImageData.getValue() && checkBoxPreloadImages.isChecked())
-			{
-				// only show warn message, if the user changed the state from
-				// disable to enable.
-				MessageBox
-						.Show("Download of additional/spoiler images is done on personal responsibility. Read the GEOCACHING.COM SITE TERMS OF USE AGREEMENT (5). Really download?",
-								"Import additional images", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, DialogListner);
-				finish();
-			}
-			else
-			{
-				ImportNow();
-			}
-
-		}
-	};
-
-	private final DialogInterface.OnClickListener DialogListner = new DialogInterface.OnClickListener()
-	{
-		@Override
-		public void onClick(DialogInterface dialog, int button)
-		{
-			// Behandle das ergebniss
-			switch (button)
-			{
-			case -1:
-				Config.settings.GCAdditionalImageDownload.setValue(true);
-				break;
-			case -2:
-				Config.settings.GCAdditionalImageDownload.setValue(false);
-				break;
-
-			}
-
-			dialog.dismiss();
 			ImportNow();
 		}
-
 	};
 
 	private DialogInterface WaitDialog;
@@ -249,11 +213,8 @@ public class ImportDialog extends Activity
 
 		if (checkImportPQfromGC.isChecked())
 		{
-			// WaitDialog = PleaseWaitMessageBox.Show("Read PQ List",
-			// "Groundspeak API", MessageBoxButtons.NOTHING,
-			// MessageBoxIcon.Powerd_by_GC_Live, null,this);
-
-			WaitDialog = android.app.ProgressDialog.show(this, "Groundspeak API", "Read PQ List", true, false);
+			WaitDialog = PleaseWaitMessageBox.Show("Read PQ List", "Groundspeak API", MessageBoxButtons.NOTHING,
+					MessageBoxIcon.Powerd_by_GC_Live, null, Me);
 
 			Thread thread = new Thread()
 			{
@@ -317,17 +278,20 @@ public class ImportDialog extends Activity
 		{
 			Iterator<PQ> iterator = ((ArrayList<PQ>) bundle.getSerializable("PqList")).iterator();
 			downloadPQList = new ArrayList<PQ>();
-			do
+
+			if (iterator != null && iterator.hasNext())
 			{
-				PQ pq = iterator.next();
-				if (pq.downloadAvible)
+				do
 				{
-					downloadPQList.add(pq);
+					PQ pq = iterator.next();
+					if (pq.downloadAvible)
+					{
+						downloadPQList.add(pq);
 
+					}
 				}
+				while (iterator.hasNext());
 			}
-			while (iterator.hasNext());
-
 		}
 
 		ImportThread(directoryPath, directory);
@@ -368,7 +332,7 @@ public class ImportDialog extends Activity
 						ip.addStep(ip.new Step("importImages", 4));
 					}
 
-					if (downloadPQList != null)
+					if (downloadPQList != null && downloadPQList.size() > 0)
 					{
 						Iterator<PQ> iterator = downloadPQList.iterator();
 
@@ -464,7 +428,7 @@ public class ImportDialog extends Activity
 
 					if (checkBoxPreloadImages.isChecked())
 					{
-						importer.importImages(Global.LastFilter.getSqlWhere(), Config.settings.GCRequestDelay.getValue(), ip);
+						importer.importImages(Global.LastFilter.getSqlWhere(), ip);
 					}
 
 					Thread.sleep(1000);

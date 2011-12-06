@@ -440,6 +440,10 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			if (Config.settings.isChris.getValue())
 			{
 				buttonCache.setBackgroundResource(R.drawable.chris_cache_button_image_selector);
+				buttonDB.setBackgroundResource(R.drawable.chris_db_button_image_selector);
+				buttonMisc.setBackgroundResource(R.drawable.chris_misc_button_image_selector);
+				buttonNav.setBackgroundResource(R.drawable.chris_nav_button_image_selector);
+				buttonTools.setBackgroundResource(R.drawable.chris_find_button_image_selector);
 			}
 			else
 			{
@@ -885,7 +889,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				|| (PresetListViewItem.chkPresetFilter(FilterProperties.presets[0], Global.LastFilter.ToString()))
 				&& !Global.LastFilter.isExtendsFilter())
 		{
-			ButtonBackGroundResource = N ? R.drawable.night_db_button_image_selector : R.drawable.db_button_image_selector;
+			ButtonBackGroundResource = N ? R.drawable.night_db_button_image_selector
+					: Config.settings.isChris.getValue() ? R.drawable.chris_db_button_image_selector : R.drawable.db_button_image_selector;
 		}
 		else
 		{
@@ -920,6 +925,9 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				 * SqlCeCommand commandUpdate = new SqlCeCommand(" UPDATE Caches SET Found = 1 WHERE GcCode IN (" + GcCode + ") ",
 				 * Database.Data.Connection); int founds = commandUpdate.ExecuteNonQuery(); }
 				 */
+
+				Config.settings.ReadFromDB();
+
 				GlobalCore.Categories = new Categories();
 				Global.LastFilter = (Config.settings.Filter.getValue().length() == 0) ? new FilterProperties(FilterProperties.presets[0])
 						: new FilterProperties(Config.settings.Filter.getValue());
@@ -1746,6 +1754,10 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			if (Config.settings.isChris.getValue())
 			{
 				buttonCache.setBackgroundResource(R.drawable.chris_cache_button_image_selector);
+				buttonDB.setBackgroundResource(R.drawable.chris_db_button_image_selector);
+				buttonMisc.setBackgroundResource(R.drawable.chris_misc_button_image_selector);
+				buttonNav.setBackgroundResource(R.drawable.chris_nav_button_image_selector);
+				buttonTools.setBackgroundResource(R.drawable.chris_find_button_image_selector);
 			}
 			else
 			{
@@ -2166,6 +2178,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private void showManageDB()
 	{
 		SelectDB.autoStart = false;
+		Config.settings.WriteToDB();
 		Intent selectDBIntent = new Intent().setClass(mainActivity, SelectDB.class);
 		mainActivity.startActivityForResult(selectDBIntent, 546132);
 	}

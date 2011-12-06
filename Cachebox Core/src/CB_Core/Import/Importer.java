@@ -249,7 +249,7 @@ public class Importer
 
 	}
 
-	public void importImages(String whereClause, int delay, ImporterProgress ip)
+	public void importImages(String whereClause, ImporterProgress ip) // wir brachen kein delay mehr
 	{
 		ImageDAO imageDAO = new ImageDAO();
 
@@ -288,22 +288,13 @@ public class Importer
 						"Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
 			}
 
-			try
+			if (downloadedImage)
 			{
-				if (downloadedImage)
-				{
-					ip.ProgressInkrement("importImages",
-							"Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")\nWaiting for "
-									+ String.valueOf(delay) + "s", false);
+				ip.ProgressInkrement("importImages",
+						"Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
 
-					Thread.sleep(delay * 1000);
-				}
 			}
-			catch (InterruptedException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
 		}
 	}
 

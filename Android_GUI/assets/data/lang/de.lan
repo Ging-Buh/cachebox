@@ -188,6 +188,7 @@
 		Projection = Projizierung
 		EnterMan = Manuell Eingeben
 		FromGps = vom GPS
+		FromMap = von Karte
 		details = Details
 		delete = Löschen
 		DecDeg = Decimal Degrees

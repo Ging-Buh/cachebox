@@ -269,6 +269,9 @@ public class SelectDB extends Activity
 		Config.settings.DatabasePath.setValue(path);
 		Config.AcceptChanges();
 
+		// reload settings for get filter form selected DB
+		Config.settings.ReadFromDB();
+
 		aktIntent.putExtra("SOMETHING", "EXTRAS");
 		setResult(RESULT_OK, aktIntent);
 		AktFile = null;

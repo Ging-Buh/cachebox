@@ -37,7 +37,7 @@ import de.droidcachebox.Ui.Sizes;
 
 public class Global
 {
-	public static final int CurrentRevision = 585;
+	public static final int CurrentRevision = 587;
 	public static final String CurrentVersion = "0.4.";
 	public static final String VersionPrefix = "beta";
 	public static final int LatestDatabaseChange = 1016;
@@ -522,15 +522,6 @@ public class Global
 			{ getDrawable(R.drawable.other, res), getDrawable(R.drawable.micro, res), getDrawable(R.drawable.small, res),
 					getDrawable(R.drawable.regular, res), getDrawable(R.drawable.large, res) };
 
-		CacheIconsBig = new Drawable[]
-			{ getDrawable(R.drawable.big_0, res), getDrawable(R.drawable.big_1, res), getDrawable(R.drawable.big_2, res),
-					getDrawable(R.drawable.big_3, res), getDrawable(R.drawable.big_4, res), getDrawable(R.drawable.big_5, res),
-					getDrawable(R.drawable.big_6, res), getDrawable(R.drawable.big_7, res), getDrawable(R.drawable.big_8, res),
-					getDrawable(R.drawable.big_9, res), getDrawable(R.drawable.big_10, res), getDrawable(R.drawable.big_11, res),
-					getDrawable(R.drawable.big_12, res), getDrawable(R.drawable.big_13, res), getDrawable(R.drawable.big_14, res),
-					getDrawable(R.drawable.big_15, res), getDrawable(R.drawable.big_16, res), getDrawable(R.drawable.big_17, res),
-					getDrawable(R.drawable.big_18, res), getDrawable(R.drawable.big_19, res), };
-
 		ChkIcons = new Drawable[]
 			{ getDrawable(R.drawable.day_btn_check_off, R.drawable.night_btn_check_off, res),
 					getDrawable(R.drawable.day_btn_check_on, R.drawable.night_btn_check_on, res), };
@@ -548,6 +539,14 @@ public class Global
 
 	private static void iniNormalIcons(Resources res)
 	{
+		CacheIconsBig = new Drawable[]
+			{ getDrawable(R.drawable.big_0, res), getDrawable(R.drawable.big_1, res), getDrawable(R.drawable.big_2, res),
+					getDrawable(R.drawable.big_3, res), getDrawable(R.drawable.big_4, res), getDrawable(R.drawable.big_5, res),
+					getDrawable(R.drawable.big_6, res), getDrawable(R.drawable.big_7, res), getDrawable(R.drawable.big_8, res),
+					getDrawable(R.drawable.big_9, res), getDrawable(R.drawable.big_10, res), getDrawable(R.drawable.big_11, res),
+					getDrawable(R.drawable.big_12, res), getDrawable(R.drawable.big_13, res), getDrawable(R.drawable.big_14, res),
+					getDrawable(R.drawable.big_15, res), getDrawable(R.drawable.big_16, res), getDrawable(R.drawable.big_17, res),
+					getDrawable(R.drawable.big_18, res), getDrawable(R.drawable.big_19, res), };
 
 		BtnIcons = new Drawable[]
 			{
@@ -633,11 +632,19 @@ public class Global
 
 	private static void iniChrisIcons(Resources res)
 	{
+		CacheIconsBig = new Drawable[]
+			{ getDrawable(R.drawable.chris_big_0, res), getDrawable(R.drawable.chris_big_1, res), getDrawable(R.drawable.chris_big_2, res),
+					getDrawable(R.drawable.big_3, res), getDrawable(R.drawable.big_4, res), getDrawable(R.drawable.big_5, res),
+					getDrawable(R.drawable.big_6, res), getDrawable(R.drawable.big_7, res), getDrawable(R.drawable.big_8, res),
+					getDrawable(R.drawable.big_9, res), getDrawable(R.drawable.big_10, res), getDrawable(R.drawable.big_11, res),
+					getDrawable(R.drawable.big_12, res), getDrawable(R.drawable.big_13, res), getDrawable(R.drawable.big_14, res),
+					getDrawable(R.drawable.big_15, res), getDrawable(R.drawable.big_16, res), getDrawable(R.drawable.big_17, res),
+					getDrawable(R.drawable.big_18, res), getDrawable(R.drawable.chris_big_19, res), };
 
 		BtnIcons = new Drawable[]
 			{
 					getDrawable(R.drawable.day_btn_default_normal, R.drawable.night_btn_default_normal, res),
-					getDrawable(R.drawable.button, R.drawable.night_button, res),
+					getDrawable(R.drawable.chris_button, R.drawable.night_button, res),
 					getDrawable(R.drawable.doc_icon, res),
 					getDrawable(R.drawable.big_16, res),
 					getDrawable(R.drawable.list_icon, res), // LogView braucht
@@ -660,7 +667,7 @@ public class Global
 					getDrawable(R.drawable.chris_compass_arrow, res), };
 
 		LogIcons = new Drawable[]
-			{ getDrawable(R.drawable.chris_log0, res), getDrawable(R.drawable.log1, res), getDrawable(R.drawable.log2, res),
+			{ getDrawable(R.drawable.chris_log0, res), getDrawable(R.drawable.chris_log1, res), getDrawable(R.drawable.log2, res),
 					getDrawable(R.drawable.log3, res), getDrawable(R.drawable.log4, res), getDrawable(R.drawable.log5, res),
 					getDrawable(R.drawable.log6, res), getDrawable(R.drawable.log7, res), getDrawable(R.drawable.log8, res),
 					getDrawable(R.drawable.log9, res), getDrawable(R.drawable.log10, res), getDrawable(R.drawable.log11, res),
@@ -673,7 +680,7 @@ public class Global
 					getDrawable(R.drawable.addwaypoint, res),// 1
 					getDrawable(R.drawable.chris_smilie_gross, res),// 2
 					getDrawable(R.drawable.download, res),// 3
-					getDrawable(R.drawable.log1, res),// 4
+					getDrawable(R.drawable.chris_log1, res),// 4
 					getDrawable(R.drawable.maintenance, res),// 5
 					getDrawable(R.drawable.checkbox_checked, res),// 6
 					getDrawable(R.drawable.checkbox_unchecked, res),// 7

@@ -187,6 +187,7 @@ English
 		Projection = Projection
 		EnterMan = Enter Manually
 		FromGps = From GPS
+		FromMap = From map
 		details = Details
 		delete = Delete
 		DecDeg = Decimal Degrees
@@ -614,18 +615,18 @@ English
 	DescriptionImageFolder = Description Image Folder
 	TrackDistance = Track ervery [m]
 	SoundApproachDistance = Approch Sound [m]
-	switchViewApproach = Switch view to Compass with approch
+	switchViewApproach = Switch view to Compass with approach
 	TrackRecorderStartup = Start Track Recorder on Startup
 	DescriptionNoAttributes = Does not show attributes in the description
-	Templates = Fieldnotes Tamplates
+	Templates = Fieldnotes Templates
 	DNFTemplate = DNF Template
-	AddNoteTemplate = Add Note Tamplate
+	AddNoteTemplate = Add Note Template
 	FoundTemplate = Found Template
 	NeedsMaintenanceTemplate = Needs Maintenance Template
 	API = API
 	ImportGpx = Import GPX 
 	SearchWithoutOwns = Search without Owns
-	SearchOnlyAvible = Search only Avible
+	SearchOnlyAvible = Search only available
 	ImportPQsFromGeocachingCom = Import PQs from geocaching.com
 	SearchWithoutFounds = Search without Founds 
 	ImportRatings = Import Ratings from GC-Vote
@@ -642,7 +643,7 @@ English
 	FoundOffset = number of finds
 	FieldnotesUploadAll = Upload All Fieldnotes (Ignore Date)
 
-	dontShowChris = Don´t show Christmas icons 
+	dontShowChris = Don't show Christmas icons 
 
 
 
