@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 import CB_Core.Config;
+import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Api.PocketQuery;
@@ -398,7 +399,7 @@ public class ImportDialog extends Activity
 						{
 							if (tmp.isDirectory())
 							{
-								ArrayList<File> ordnerInhalt = Importer.recursiveDirectoryReader(tmp, new ArrayList<File>());
+								ArrayList<File> ordnerInhalt = FileIO.recursiveDirectoryReader(tmp, new ArrayList<File>());
 								for (File tmp2 : ordnerInhalt)
 								{
 									tmp2.delete();

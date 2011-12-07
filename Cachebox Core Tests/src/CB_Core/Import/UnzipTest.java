@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
+import CB_Core.FileIO;
 
 /**
  * Enthält die Tests zum Entpacken von Zip Files
@@ -28,7 +29,7 @@ public class UnzipTest extends TestCase
 		{
 			if (tmp.isDirectory() && tmp.getPath().contains("GS_PQ"))
 			{
-				ArrayList<File> ordnerInhalt = Importer.recursiveDirectoryReader(tmp, new ArrayList<File>());
+				ArrayList<File> ordnerInhalt = FileIO.recursiveDirectoryReader(tmp, new ArrayList<File>());
 				for (File tmp2 : ordnerInhalt)
 				{
 					tmp2.delete();
@@ -41,7 +42,7 @@ public class UnzipTest extends TestCase
 		UnZip.extractFolder("./testdata/gpx/GS_PQ.zip");
 
 		// teste Entpackte Ordner Struktur
-		ArrayList<File> ordnerInhalt = Importer.recursiveDirectoryReader(new File("./testdata/gpx/GS_PQ/"), new ArrayList<File>());
+		ArrayList<File> ordnerInhalt = FileIO.recursiveDirectoryReader(new File("./testdata/gpx/GS_PQ/"), new ArrayList<File>());
 		int counter = 0;
 		for (File tmp2 : ordnerInhalt)
 		{

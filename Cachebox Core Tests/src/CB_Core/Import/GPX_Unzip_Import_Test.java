@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
+import CB_Core.FileIO;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.DB.TestDB;
@@ -41,7 +42,7 @@ public class GPX_Unzip_Import_Test extends TestCase
 		{
 
 			File Dir = new File("./testdata/gpx/GS_PQ");
-			ArrayList<File> ordnerInhalt = Importer.recursiveDirectoryReader(Dir, new ArrayList<File>());
+			ArrayList<File> ordnerInhalt = FileIO.recursiveDirectoryReader(Dir, new ArrayList<File>());
 			for (File tmp : ordnerInhalt)
 			{
 				GPXFileImporter importer = new GPXFileImporter(tmp);

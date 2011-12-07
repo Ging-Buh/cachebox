@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -43,7 +42,7 @@ public class Importer
 	public void importGpx(String directoryPath, ImporterProgress ip)
 	{
 		// Extract all Zip Files!
-		ArrayList<File> ordnerInhalt_Zip = Importer.recursiveDirectoryReader(new File(directoryPath), new ArrayList<File>(), "zip");
+		ArrayList<File> ordnerInhalt_Zip = FileIO.recursiveDirectoryReader(new File(directoryPath), new ArrayList<File>(), "zip", false);
 
 		ip.setJobMax("ExtractZip", ordnerInhalt_Zip.size());
 
@@ -317,7 +316,7 @@ public class Importer
 		FileIO.DirectoryExists(directoryPath);
 
 		ArrayList<File> files = new ArrayList<File>();
-		files = recursiveDirectoryReader(new File(directoryPath), files);
+		files = FileIO.recursiveDirectoryReader(new File(directoryPath), files);
 
 		File[] fileArray = files.toArray(new File[files.size()]);
 
@@ -352,50 +351,6 @@ public class Importer
 		});
 
 		return fileArray;
-	}
-
-	/**
-	 * Gibt eine ArrayList<File> zurück, die alle Files mit der Endung gpx enthält.
-	 * 
-	 * @param directory
-	 * @param files
-	 * @return
-	 */
-	public static ArrayList<File> recursiveDirectoryReader(File directory, ArrayList<File> files)
-	{
-		return recursiveDirectoryReader(directory, files, "gpx");
-	}
-
-	/**
-	 * Gibt eine ArrayList<File> zurück, die alle Files mit der angegebenen Endung haben.
-	 * 
-	 * @param directory
-	 * @param files
-	 * @return
-	 */
-	public static ArrayList<File> recursiveDirectoryReader(File directory, ArrayList<File> files, final String Endung)
-	{
-
-		File[] filelist = directory.listFiles(new FilenameFilter()
-		{
-
-			@Override
-			public boolean accept(File dir, String filename)
-			{
-
-				return filename.contains("." + Endung);
-			}
-		});
-
-		for (File localFile : filelist)
-			files.add(localFile);
-
-		File[] directories = directory.listFiles();
-		for (File recursiveDir : directories)
-		{
-			if (recursiveDir.isDirectory()) recursiveDirectoryReader(recursiveDir, files, Endung);
-		}
-		return files;
 	}
 
 }
