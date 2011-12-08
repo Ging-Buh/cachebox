@@ -54,7 +54,7 @@ English
 	RecVideo = Record Video
 	ChkUpdate = Check for Updates
 	manage = Manage DB
-	screenlock = Screenlock
+	screenlock = Screenlock (min/sec)
 	
 
 // AboutViewPanel
@@ -639,7 +639,7 @@ English
 	PositionMarkerTransparent = Draw position marker with transparence 
 	ImperialUnits = Imperial units
 	TileCacheFolder = Cache folder for map tiles
-	LanguagePath = Path to langguage files
+	LanguagePath = Path to language files
 	FoundOffset = number of finds
 	FieldnotesUploadAll = Upload All Fieldnotes (Ignore Date)
 

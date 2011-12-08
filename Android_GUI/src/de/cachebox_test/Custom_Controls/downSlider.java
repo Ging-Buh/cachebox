@@ -650,8 +650,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			if (waypoint.Clue != null) Clue = waypoint.Clue;
 			WPLayoutTextPaint.setAntiAlias(true);
 			WPLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
-			WPLayoutCord = new StaticLayout(Global.FormatLatitudeDM(waypoint.Latitude()) + " / "
-					+ Global.FormatLongitudeDM(waypoint.Longitude()), WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f,
+			WPLayoutCord = new StaticLayout(GlobalCore.FormatLatitudeDM(waypoint.Latitude()) + " / "
+					+ GlobalCore.FormatLongitudeDM(waypoint.Longitude()), WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f,
 					false);
 			WPLayoutDesc = new StaticLayout(waypoint.Description, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 			WPLayoutClue = new StaticLayout(Clue, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
@@ -688,8 +688,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		mAccuracy = String.valueOf((int) location.getAccuracy());
 		mAlt = Global.Locator.getAltString();
-		mLatitude = Global.FormatLatitudeDM(location.getLatitude());
-		mLongitude = Global.FormatLongitudeDM(location.getLongitude());
+		mLatitude = GlobalCore.FormatLatitudeDM(location.getLatitude());
+		mLongitude = GlobalCore.FormatLongitudeDM(location.getLongitude());
 
 		String br = String.format("%n");
 		String Text = GlobalCore.Translations.Get("current") + " " + mLatitude + " " + mLongitude + br + GlobalCore.Translations.Get("alt")

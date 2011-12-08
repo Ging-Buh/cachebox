@@ -2,7 +2,7 @@
 
 Changes:
 
-Version: 0.4. xxxx
+Version: 0.4.593
 	• Download of PQ through the GC-API
 	• Import of GPX files completely reworked
 	• removed unit tests from core 
@@ -16,7 +16,7 @@ Version: 0.4. xxxx
 	  to the compass when appoaching the cache
 	• Layout adaptations for different 
 	  display resolutions
-
+	• Import of description images 
 
 Version: 0.3.484
 	• Construction of the 

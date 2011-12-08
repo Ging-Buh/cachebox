@@ -683,7 +683,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 		try
 		{
-			if (!initialFixSoundCompleted && GlobalCore.LastValidPosition.Valid)
+			if (!initialFixSoundCompleted && GlobalCore.LastValidPosition.Valid
+					&& location.getProvider().equalsIgnoreCase(LocationManager.GPS_PROVIDER))
 			{
 				Global.PlaySound("GPS_Fix.wav");
 				initialFixSoundCompleted = true;
@@ -793,21 +794,20 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 		try
 		{
-			if (location.getProvider().equalsIgnoreCase(LocationManager.NETWORK_PROVIDER)) // Neue
-																							// Position
-																							// von
-																							// Netzwerk
+			// Neue Position vom Netzwerk
+			if (location.getProvider().equalsIgnoreCase(LocationManager.NETWORK_PROVIDER))
 			{
-				if ((java.lang.System.currentTimeMillis() - GPSTimeStamp) > NetworkPositionTime) // Wenn
-																									// 10
-																									// Sekunden
-																									// kein
-																									// gültiges
-																									// GPS
-																									// Signal
+				// Wenn 10 Sekunden kein GPS Signal
+				if ((java.lang.System.currentTimeMillis() - GPSTimeStamp) > NetworkPositionTime)
 				{
 					NetworkPositionTime = 90000;
 					newLocationReceived(location);
+					if (initialFixSoundCompleted)
+					{
+						Global.PlaySound("GPS_lose.wav");
+						initialFixSoundCompleted = false;
+					}
+
 					Toast.makeText(mainActivity, "Network-Position", Toast.LENGTH_SHORT).show();
 				}
 			}

@@ -60,12 +60,10 @@ public class Sizes
 	private static int arrowScaleMap;
 	private static int TB_icon_Size;
 
+	private static double calcBase;
+
 	public static void initial(boolean land, Activity context)
 	{
-		// TODO berechne die Werte anhand der Auflösung.
-		// jetzt eingesetzte Werte beziehen sich auf eine Auflösung von
-		// 460x800(HD2) Longri
-
 		Resources res = context.getResources();
 
 		WindowManager w = context.getWindowManager();
@@ -83,6 +81,8 @@ public class Sizes
 
 		scale = res.getDisplayMetrics().density;
 
+		calcBase = 533.333 * scale;
+
 		// Button = new Size(96,88);
 		// QuickButtonList = new Size(460,90);
 
@@ -93,29 +93,29 @@ public class Sizes
 
 		QuickButtonList = new Size((int) (320 * scale - (13.3333f * scale)), (int) (((320 * scale) / 5) - 4 * scale));
 
-		scaledRefSize_normal = (int) ((windowHeight / (res.getDimensionPixelSize(R.dimen.RefSize))) * scale);
-		scaledFontSize_normal = (int) ((windowHeight / (res.getDimensionPixelSize(R.dimen.TextSize_normal))) * scale);
+		scaledRefSize_normal = (int) ((calcBase / (res.getDimensionPixelSize(R.dimen.RefSize))) * scale);
+		scaledFontSize_normal = (int) ((calcBase / (res.getDimensionPixelSize(R.dimen.TextSize_normal))) * scale);
 		scaledFontSize_big = (int) (scaledFontSize_normal * 1.1);
 		ScaledFontSize_small = (int) (scaledFontSize_normal * 0.9);
 		ScaledFontSize_supersmall = (int) (ScaledFontSize_small * 0.8);
-		scaledFontSize_btn = (int) ((windowHeight / (res.getDimensionPixelSize(R.dimen.BtnTextSize))) * scale);
+		scaledFontSize_btn = (int) ((calcBase / (res.getDimensionPixelSize(R.dimen.BtnTextSize))) * scale);
 
-		scaledIconSize = (int) ((windowHeight / (res.getDimensionPixelSize(R.dimen.IconSize))) * scale);
+		scaledIconSize = (int) ((calcBase / (res.getDimensionPixelSize(R.dimen.IconSize))) * scale);
 
 		margin = res.getDimensionPixelSize(R.dimen.Margin);
 
 		CornerSize = scaledRefSize_normal;
 		CacheInfoHeight = (int) (scaledRefSize_normal * 8);
 		infoSliderHeight = (int) (scaledRefSize_normal * 2.4);
-		iconSize = (int) (int) ((windowHeight / (res.getDimensionPixelSize(R.dimen.IconSize))) * scale);
+		iconSize = (int) (int) ((calcBase / (res.getDimensionPixelSize(R.dimen.IconSize))) * scale);
 		spaceWidth = (int) (scaledFontSize_normal * 0.9);
 		tabWidth = (int) (scaledFontSize_normal * 0.6);
 		halfCornerSize = (int) CornerSize / 2;
 
 		CacheListItemSize = new Size(windowWidth, (int) (scaledRefSize_normal * 8.6));
 		CacheListDrawRec = CacheListItemSize.getBounds(5, 2, -5, -2);
-		StrengthHeightMultipler = windowHeight / 600;
-		IconContextMenuHeight = (int) (windowHeight / 11.1);
+		StrengthHeightMultipler = (int) (calcBase / 600);
+		IconContextMenuHeight = (int) (calcBase / 11.1);
 
 		arrowScaleList = res.getDimensionPixelSize(R.dimen.ArrowSize_List);
 		arrowScaleMap = res.getDimensionPixelSize(R.dimen.ArrowSize_Map);

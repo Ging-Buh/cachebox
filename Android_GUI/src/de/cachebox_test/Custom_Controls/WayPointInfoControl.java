@@ -1,5 +1,6 @@
 package de.cachebox_test.Custom_Controls;
 
+import CB_Core.GlobalCore;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
@@ -82,9 +83,8 @@ public final class WayPointInfoControl extends View
 		if (waypoint.Clue != null) Clue = waypoint.Clue;
 		LayoutTextPaint.setAntiAlias(true);
 		LayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
-		LayoutCord = new StaticLayout(
-				Global.FormatLatitudeDM(waypoint.Latitude()) + " / " + Global.FormatLongitudeDM(waypoint.Longitude()), LayoutTextPaint,
-				TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		LayoutCord = new StaticLayout(GlobalCore.FormatLatitudeDM(waypoint.Latitude()) + " / "
+				+ GlobalCore.FormatLongitudeDM(waypoint.Longitude()), LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		LayoutDesc = new StaticLayout(waypoint.Description, LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		LayoutClue = new StaticLayout(Clue, LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		LayoutTextPaintBold = new TextPaint(LayoutTextPaint);

@@ -37,7 +37,7 @@ import de.cachebox_test.Ui.Sizes;
 
 public class Global
 {
-	public static final int CurrentRevision = 588;
+	public static final int CurrentRevision = 593;
 	public static final String CurrentVersion = "0.4.";
 	public static final String VersionPrefix = "test";
 	public static final int LatestDatabaseChange = 1016;
@@ -722,51 +722,6 @@ public class Global
 					getDrawable(R.drawable.target_day, R.drawable.target_night, res), // 43
 			};
 
-	}
-
-	static String FormatDM(double coord, String positiveDirection, String negativeDirection)
-	{
-		int deg = (int) coord;
-		double frac = coord - deg;
-		double min = frac * 60;
-
-		String result = Math.abs(deg) + "\u00B0 " + String.format("%.3f", Math.abs(min));
-
-		if (coord < 0) result += negativeDirection;
-		else
-			result += positiveDirection;
-
-		return result;
-	}
-
-	public static String FormatLatitudeDM(double latitude)
-	{
-		return FormatDM(latitude, "N", "S");
-	}
-
-	public static String FormatLongitudeDM(double longitude)
-	{
-		return FormatDM(longitude, "E", "W");
-	}
-
-	public static String Rot13(String message)
-	{
-		String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		String lookup = "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM";
-
-		String result = "";
-
-		for (int i = 0; i < message.length(); i++)
-		{
-			String curChar = message.substring(i, i + 1);
-			int idx = alphabet.indexOf(curChar);
-
-			if (idx < 0) result += curChar;
-			else
-				result += lookup.substring(idx, idx + 1);
-		}
-
-		return result;
 	}
 
 	static TypedArray themeStyles;

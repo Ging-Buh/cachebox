@@ -20,9 +20,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+import CB_Core.GlobalCore;
+
 /**
- * Eine ArrayList<MeasuredCoord> welche die gemessenen Koordinaten aufnimmt,
- * sortiert, Ausreißer eliminiert und über die Methode
+ * Eine ArrayList<MeasuredCoord> welche die gemessenen Koordinaten aufnimmt, sortiert, Ausreißer eliminiert und über die Methode
  * "getMeasuredAverageCoord()" eine Durchschnitts Koordinate zurück gibt.
  * 
  * @author Longri
@@ -42,16 +43,19 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 	 */
 	public Coordinate getMeasuredAverageCoord()
 	{
-		
 
-		if(this.size()==0)
+		Coordinate ret;
+
+		if (this.size() == 0)
 		{
-			return new Coordinate(0, 0);
+			ret = new Coordinate(0, 0);
+			ret.Valid = false;
+
+			return ret;
 		}
-		
-		
+
 		Iterator<MeasuredCoord> iterator = this.iterator();
-		
+
 		double sumLatitude = 0;
 		double sumLongitude = 0;
 
@@ -63,13 +67,14 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 		}
 		while (iterator.hasNext());
 
-		return new Coordinate(sumLatitude / this.size(), sumLongitude
-				/ this.size());
+		ret = new Coordinate(sumLatitude / this.size(), sumLongitude / this.size());
+		ret.Valid = true;
+
+		return ret;
 	}
 
 	/**
-	 * Gibt die Durchschnittliche Koordinate dieser Liste zurück. Wobei die
-	 * Genauigkeit der gemessenen Koordinaten berücksichtigt wird!
+	 * Gibt die Durchschnittliche Koordinate dieser Liste zurück. Wobei die Genauigkeit der gemessenen Koordinaten berücksichtigt wird!
 	 * 
 	 * @return Coordinate
 	 */
@@ -98,8 +103,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 	}
 
 	/**
-	 * Sortiert die Koordinaten nach Entfernung zu MeasuredCoord.Referenz welche
-	 * im ersten Schritt auf den Durchschnitt gesetzt wird.
+	 * Sortiert die Koordinaten nach Entfernung zu MeasuredCoord.Referenz welche im ersten Schritt auf den Durchschnitt gesetzt wird.
 	 */
 	public void sort()
 	{
@@ -107,12 +111,9 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 
 		Collections.sort(this);
 	}
-	
-	
-	
+
 	/**
-	 * Setzt die Statisch Referenz Koordinate von MeasuredCoord
-	 * auf die errechnete durchnitliche Koordinate
+	 * Setzt die Statisch Referenz Koordinate von MeasuredCoord auf die errechnete durchnitliche Koordinate
 	 */
 	public void setAverage()
 	{
@@ -120,8 +121,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 	}
 
 	/**
-	 * Löscht die Ausreißer Werte, welche eine Distanz von mehr als 3m zur
-	 * Referenz Koordinate haben.
+	 * Löscht die Ausreißer Werte, welche eine Distanz von mehr als 3m zur Referenz Koordinate haben.
 	 */
 	public void clearDiscordantValue()
 	{
@@ -130,7 +130,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 		do
 		{
 			ready = true;
-			
+
 			this.setAverage();
 			Iterator<MeasuredCoord> iterator = this.iterator();
 			do
@@ -147,5 +147,17 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 		}
 		while (!ready);
 		this.setAverage();
+	}
+
+	public String toString()
+	{
+		String ret = "";
+		if (this.getAccuWeightedAverageCoord().Valid)
+		{
+			ret = GlobalCore.FormatLatitudeDM(this.getAccuWeightedAverageCoord().Latitude) + " / "
+					+ GlobalCore.FormatLongitudeDM(this.getAccuWeightedAverageCoord().Longitude);
+		}
+
+		return ret;
 	}
 }

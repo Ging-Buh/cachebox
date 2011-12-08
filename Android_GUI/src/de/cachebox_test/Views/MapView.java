@@ -2554,8 +2554,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		// Koordinaten
 		if (position.Valid)
 		{
-			String textLatitude = Global.FormatLatitudeDM(position.Latitude);
-			String textLongitude = Global.FormatLongitudeDM(position.Longitude);
+			String textLatitude = GlobalCore.FormatLatitudeDM(position.Latitude);
+			String textLongitude = GlobalCore.FormatLongitudeDM(position.Longitude);
 
 			paint = new Paint(font);
 			paint.setTextAlign(Align.RIGHT);

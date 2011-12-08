@@ -47,8 +47,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import de.cachebox_test.Global;
 import de.cachebox_test.R;
+import de.cachebox_test.main;
 import de.cachebox_test.Custom_Controls.CanvasDrawControl;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.Sizes;
@@ -66,8 +66,7 @@ public class MeasureCoordinateActivity extends Activity implements LocationListe
 	CanvasDrawControl panelPreview;
 
 	/**
-	 * Die MeasureCoordinate Activity hat ihren eigenen locationmanager, mit
-	 * einem Höheren Aktualisierungs Intewall
+	 * Die MeasureCoordinate Activity hat ihren eigenen locationmanager, mit einem Höheren Aktualisierungs Intewall
 	 */
 	public static LocationManager locationManager;
 
@@ -78,8 +77,6 @@ public class MeasureCoordinateActivity extends Activity implements LocationListe
 		setContentView(R.layout.measure_coordinate);
 
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-		initialLocationManager();
 
 		// übergebene Koordinate auslesen
 		Bundle bundle = getIntent().getExtras();
@@ -218,8 +215,8 @@ public class MeasureCoordinateActivity extends Activity implements LocationListe
 		{
 			if (locationManager != null)
 			{
-				// ist schon initialisiert
-				return;
+				locationManager.removeUpdates(this);
+				locationManager = null;
 			}
 
 			// GPS
@@ -316,11 +313,15 @@ public class MeasureCoordinateActivity extends Activity implements LocationListe
 	void Locator_LocationDataReceived(Location location)
 	{
 
-		if (mMeasureList == null) return;
+		if (mMeasureList == null)
+		{
+			main.Toast("MeasureList = null");
+			return;
+		}
 
 		Coordinate coord = new Coordinate(location.getLatitude(), location.getLongitude());
 
-		if (MeasureCount == 0) lblMeasureCoord.setText(coord.toString());
+		if (MeasureCount == 0) lblMeasureCoord.setText("");
 
 		MeasureCount++;
 		mMeasureList.add(new MeasuredCoord(location.getLatitude(), location.getLongitude(), location.getAccuracy()));
@@ -332,8 +333,7 @@ public class MeasureCoordinateActivity extends Activity implements LocationListe
 		{
 			mMeasureList.setAverage();
 			mMeasureList.clearDiscordantValue();
-			lblMeasureCoord.setText(Global.FormatLatitudeDM(mMeasureList.getAccuWeightedAverageCoord().Latitude) + String.format("%n")
-					+ Global.FormatLongitudeDM(mMeasureList.getAccuWeightedAverageCoord().Longitude));
+			lblMeasureCoord.setText(mMeasureList.toString());
 		}
 
 		repaintPreview();

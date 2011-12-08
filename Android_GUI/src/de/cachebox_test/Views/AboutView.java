@@ -294,14 +294,14 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		if (GlobalCore.SelectedCache() != null) if (GlobalCore.SelectedWaypoint() != null)
 		{
 			WP.setText(GlobalCore.SelectedWaypoint().GcCode);
-			Cord.setText(Global.FormatLatitudeDM(GlobalCore.SelectedWaypoint().Latitude()) + " "
-					+ Global.FormatLongitudeDM(GlobalCore.SelectedWaypoint().Longitude()));
+			Cord.setText(GlobalCore.FormatLatitudeDM(GlobalCore.SelectedWaypoint().Latitude()) + " "
+					+ GlobalCore.FormatLongitudeDM(GlobalCore.SelectedWaypoint().Longitude()));
 		}
 		else
 		{
 			WP.setText(GlobalCore.SelectedCache().GcCode);
-			Cord.setText(Global.FormatLatitudeDM(GlobalCore.SelectedCache().Latitude()) + " "
-					+ Global.FormatLongitudeDM(GlobalCore.SelectedCache().Longitude()));
+			Cord.setText(GlobalCore.FormatLatitudeDM(GlobalCore.SelectedCache().Latitude()) + " "
+					+ GlobalCore.FormatLongitudeDM(GlobalCore.SelectedCache().Longitude()));
 		}
 
 		this.invalidate();
@@ -468,8 +468,8 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		}
 		if (Global.Locator.getLocation() != null)
 		{
-			Current.setText(Global.FormatLatitudeDM(Global.Locator.getLocation().getLatitude()) + " "
-					+ Global.FormatLongitudeDM(Global.Locator.getLocation().getLongitude()));
+			Current.setText(GlobalCore.FormatLatitudeDM(Global.Locator.getLocation().getLatitude()) + " "
+					+ GlobalCore.FormatLongitudeDM(Global.Locator.getLocation().getLongitude()));
 			GPS.setText(de.cachebox_test.Locator.GPS.getSatAndFix() + "   " + GlobalCore.Translations.Get("alt") + " "
 					+ Global.Locator.getAltString());
 		}

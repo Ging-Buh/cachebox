@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="density">mdpi</string>
-	<dimen name="TextSize_normal">39dip</dimen>
-	<dimen name="RefSize">62dip</dimen>
+	<dimen name="TextSize_normal">44dip</dimen>
+	<dimen name="RefSize">54dip</dimen>
 
 	<dimen name="ArrowSize_List">20dip</dimen>
 	<dimen name="ArrowSize_Map">18dip</dimen>
-	<dimen name="TB_icon_Size">8dip</dimen>
+	<dimen name="TB_icon_Size">12dip</dimen>
 
 	<dimen name="BtnSize">53dip</dimen>
 	<dimen name="BtnTextSize">30dip</dimen>
