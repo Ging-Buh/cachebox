@@ -212,7 +212,14 @@ public class AllContextMenuCallHandler
 		enabled = false;
 		if (Global.JokerisOnline()) enabled = true;
 		mi = IconMenu.findItem(R.id.miTelJoker);
-		if (mi != null) mi.setEnabled(enabled);
+		if (mi != null)
+		{
+			mi.setEnabled(enabled);
+			if (!Config.settings.hasCallPermission.getValue())
+			{
+				IconMenu.removeItem(R.id.miTelJoker);
+			}
+		}
 
 		if (selectedCacheIsNull)
 		{

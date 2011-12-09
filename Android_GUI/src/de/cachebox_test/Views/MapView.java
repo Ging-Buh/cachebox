@@ -5001,7 +5001,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		public SmoothScrolling()
 		{
 			animationSteps[0] = 1;
-			animationWait[0] = 0;
+			animationWait[0] = 1;
 
 			animationSteps[1] = 5;
 			animationWait[1] = 100;
@@ -5013,7 +5013,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			animationWait[3] = 25;
 
 			animationSteps[4] = 1;
-			animationWait[4] = 0;
+			animationWait[4] = 1;
 		}
 
 		public int AnimationSteps()

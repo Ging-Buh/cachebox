@@ -78,7 +78,7 @@ English
 	Warning = Warning!
 	thisNotWork = This does not work!
 
-	Open_getcachebox_Link = Open www.getcachebox.net in browser
+	Open_getcachebox_Link = Open www.team-cachebox.de in browser
 	allowInetConn = Internet connection disabled! You you want to open this link anyway?
 	
 	Open_Cache_Link = Open cache in browser
@@ -290,7 +290,7 @@ English
 		Search = Search
 		Next = Next
 		Title = Title
-		GCCode =GC-Code
+		GCCode = GC-Code
 		Owner = Owner
 		
 	//ProjectionForm
@@ -368,7 +368,7 @@ English
 
 	GC_basic = With this online search only traditional caches without details were loaded. You as a basic member of geocaching.com can receive full details of 3 caches per day when you open the cache description. 
  
-	GC_NoDescription = This cache was downloaded with the API of Geocaching.com without details. Please click "Donwnload Description" to download the full cache details.
+	GC_NoDescription = This cache was downloaded with the API of Geocaching.com without details. Please click "Download Description" to download the full cache details.
 
 	GC_DownloadDescription = Download Description 
 	
@@ -581,67 +581,75 @@ English
 //new settings
 
 	QuickList = Edit Quick Button list!
-	Login = Login Settings
+
+	Login = Login settings
+	
 	GcVotePassword = Password for GC-Vote
-	GcLogin = Groundspeak User Name
+	
+	GcLogin = Groundspeak user name
+	
 	GcJoker = MD5-Hash at gcJoker.de
-	GcAPI = Api Key
+	
+	GcAPI = Api key
+	
 	lastZoomLevel = Last used zoom level 
-	OsmMinLevel = minimum zoom level for Map 
-	OsmMaxLevel = maximum zoom level for Map  
-	MapShowDT= Show D/T on Map view
-	Gps = GPS Settings
-	HtcCompass = Use Hardware Compass
-	HtcLevel = Speed level for Hardware or GPS compass. \n-1 = GPS is not used at all.
+	
+	OsmMinLevel = minimum zoom level for map 
+	
+	OsmMaxLevel = maximum zoom level for map  
+	MapShowDT= Show D/T on map view
+	Gps = GPS settings
+	
+	HtcCompass = Use hardware compass
+	HtcLevel = Speed level for hardware or GPS compass. \n-1 = GPS is not used at all.
 	LeftWindow = formula window
 	BothWindow = both windows
 	RightWindow = solve window
-	MapShowDT = Show D/T on map
-	MapHideMyFinds = Hinde my finds on map
-	MapShowTitles = Show Cache titles on map
+	MapHideMyFinds = Hide my finds on map
+	MapShowTitles = Show cache titles on map
 	ZoomCross = Show cross when zoom level >
-	MapShowCompass = Show Compass on map
-	MapShowRating = Show Rating on map
+	MapShowCompass = Show compass on map
+	MapShowRating = Show rating on map
 	ShowDirektLine = Show direkt line to target
 	Internal = Internal
-	PlaySounds = Play Sounds
+	PlaySounds = Play sounds
 	Folder = Folder
 	TrackFolder = Track Folder
 	UserImageFolder = User Image Folder
 	PocketQueryFolder = GPX Import Folder
 	MapPackFolder = Map pack Folder
-	DatabasePath = Path to current Database
+	DatabasePath = Path to current database
 	SpoilerFolder = Spoiler Folder
 	DescriptionImageFolder = Description Image Folder
-	TrackDistance = Track ervery [m]
-	SoundApproachDistance = Approch Sound [m]
-	switchViewApproach = Switch view to Compass with approach
-	TrackRecorderStartup = Start Track Recorder on Startup
+	TrackDistance = Track every [m]
+	SoundApproachDistance = Approach sound [m]
+	switchViewApproach = Switch view to compass with approach
+	TrackRecorderStartup = Start track recorder on startup
 	DescriptionNoAttributes = Does not show attributes in the description
-	Templates = Fieldnotes Templates
-	DNFTemplate = DNF Template
-	AddNoteTemplate = Add Note Template
-	FoundTemplate = Found Template
-	NeedsMaintenanceTemplate = Needs Maintenance Template
+	Templates = Fieldnotes templates
+	DNFTemplate = DNF template
+	AddNoteTemplate = Add note template
+	FoundTemplate = Found template
+	NeedsMaintenanceTemplate = Needs Maintenance template
 	API = API
 	ImportGpx = Import GPX 
-	SearchWithoutOwns = Search without Owns
+	SearchWithoutOwns = Search without owns
 	SearchOnlyAvible = Search only available
 	ImportPQsFromGeocachingCom = Import PQs from geocaching.com
-	SearchWithoutFounds = Search without Founds 
+	SearchWithoutFounds = Search without founds 
 	ImportRatings = Import Ratings from GC-Vote
 	lastSearchRadius = Last search radius
-	Debug = Debug
+	Debug = debug
 	DebugDisplayInfo = Show display info 
 	MoveMapCenterMaxSpeed = Speed for max center move
-	OsmDpiAwareRendering = DPI- aware rendering
+	OsmDpiAwareRendering = DPI-aware rendering
 	PositionAtVertex = Draw position marker at vertex
 	PositionMarkerTransparent = Draw position marker with transparence 
 	ImperialUnits = Imperial units
 	TileCacheFolder = Cache folder for map tiles
 	LanguagePath = Path to language files
 	FoundOffset = number of finds
-	FieldnotesUploadAll = Upload All Fieldnotes (Ignore Date)
+	FieldnotesUploadAll = Upload All Fieldnotes (ignore date)
 
 	dontShowChris = Don't show Christmas icons 
 

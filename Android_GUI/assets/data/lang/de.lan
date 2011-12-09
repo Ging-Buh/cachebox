@@ -54,7 +54,7 @@
 	RecVideo = Video aufnehmen
 	ChkUpdate = Suche nach Updates
 	manage = DB Auswahl
-	screenlock = Screenlock
+	screenlock = Bildschirm sperren
 
 // AboutViewPanel
 	caches_found = Gefundene Caches:
@@ -77,16 +77,16 @@
 	Warning = Warnung!
 	thisNotWork = Das funktioniert nicht!
 
-	Open_getcachebox_Link = Öffne www.getcachebox.net im Browser
+	Open_getcachebox_Link = Öffne team-cachebox.de im Browser
 	allowInetConn = Ausgeschaltene Internetverbindung! Wollen Sie diesen Verweis trotzdem öffnen?
 	
 	Open_Cache_Link = Öffne Cache im Browser
-	Cann_not_open_cache_browser = Kann Cache nicht im Browser öffnen!
+	Cann_not_open_cache_browser = Kann Cache im Browser nicht öffnen!
 
 	CanntProcessUpdateFiles = Kann aktualisierte Dateien nicht bearbeiten!
 	ErrDbStartup = Fehler während des Datenbankanlaufs!
 	ErrDbFNStartup = Fehler während des Fieldnote Datenbankanlaufs!
-	CanntCreateProxy = Cannot create Proxy!
+	CanntCreateProxy = Kann keinen Proxy erstellen!
 	
 	Quit? = Cachebox beenden?
 	QuitReally = Wollen Sie Cachebox wirklich schließen?
@@ -96,14 +96,14 @@
 	
 	CreatePQ? = Möchten Sie ein Pocket Query auf geocaching.com erstellen? Dies könnte Kosten verursachen!
 	
-	CanntOpenRecentNotes = Kann neue Fieldnotes nicht im Browser öffnen
+	CanntOpenRecentNotes = Kann neue Fieldnotes nicht im Browser öffnen!
 	
 	ShowSpoiler = Zeige Spoiler
 	spoilSearch = Spoiler wirklich suchen?
 	
 	ErrStartExternViewer = Beim starten des Externen Bildbetrachters
 	
-	downloadSpoiler = Download Spoiler
+	downloadSpoiler = Spoiler laden.
 	downloadSpoiler? = Spoiler wirklich herunter Laden?
 	NoSpoiler = Keine Spoiler vorhanden.
 	NoCacheSelect = Kein Cache angewählt.
@@ -111,14 +111,14 @@
 	
 	ErrNoCam = Es gab einen Fehler! Es scheint so, als ob Ihr Gerät keine Kamera hat!
 	
-	AppUpdate = Update Application
+	AppUpdate = auf neue Programmversion prüfen?
 	AccessUpdate? = Erlaube eine Internet Verbindung, um jetzt nach Updates zu suchen?
 	
-	ErrLanchUpdater = Start Fehler des Updaters!
+	ErrLanchUpdater = Startfehler des Updaters!
 	
 	upToDate = Die Installierte Version ist auf dem neusten Stand!
 	
-	ErrChkUpdate = Checking for updates failed...
+	ErrChkUpdate = Überprüfung auf neue Version ist fehlgeschlagen...
 
 	ErrSqlUpdate = Die Datenbank [%dbfile%] ist keine Sql3.0 Datenbank. Möglicherweise ist die Datenbank defekt. Soll die DB repariert werden?\nDies kann längere Zeit dauern (abhängig von der Größe der Datenbank)!
 	
@@ -162,7 +162,7 @@
 		
 		
 	// DatabaseChangedForm
-		DatabaseChangedForm.Text = Datenbank Strukture geändert
+		DatabaseChangedForm.Text = Datenbankstruktur geändert
 		DatabaseChangedForm.Msg = Glückwünsch, Sie haben ihre Cachebox aktualisiert! Die Datenbankstruktur hat sich geändert und muss aktualisiert werden. Dies wird den Import beträchtlich verlangsamen, es wird empfohlen eine neue Datenbank anzulegen. 
 		deleteDB = lösche DB
 		convert = Konvertieren
@@ -176,7 +176,7 @@
 		createPQ = PocketQuery erstellen
 		ErrCreatePQ =  Fehler beim Erstellen der PocketQuery!
 		ErrLogInCreatePq = Login Fehler beim Erstellen der PocketQuery! Falsche Login Informationen?
-		ServerTimeout = Zeitüberschreitung Verbindungsaufbau...
+		ServerTimeout = Zeitüberschreitung beim Verbindungsaufbau...
 		NetConnectProb = Problem mit der Netzwerkverbindung!
 		NoGCpassword = Sie haben Ihr GC Passwort nicht angegeben!
 		
@@ -203,7 +203,7 @@
 		N = N
 		E = O
 		Zone = Zone 
-		FromClipboard = von Zwischenablage
+		FromClipboard = aus Zwischenablage
 		PasteCoord = Koordinaten einfügen
 		CopyCoord = Koordinaten kopieren
 		CopyGcCode = GcCode kopieren
@@ -217,11 +217,11 @@
 		Keyb. = Keyb.
 		PasteClip = Einfügen
 		AsCenter = Als Zentrum setzen
-		AddWaypoint = Waypoint hinzufügen
+		AddWaypoint = Wegpunkt hinzufügen
 		Clipboard = Zwischenablage
 		
 	//GetSolverFunction
-		getSolverFunction = Solver Funtion einfügen
+		getSolverFunction = Funktion einfügen
 		groups = Gruppen
 		functions = Funktionen
 		otherNames = Andere Namen
@@ -265,14 +265,14 @@
 		solverFuncBearing = Peilung
 		solverDescBearing = Liefert den Winkel der Peilung von coord1 nach coord2 \nPeilung(coord1; coord2)
 		solverFuncDistance = Abstand
-		solverDescDistance = Liefert den Abstand zwischen den beiden Punkten (coord1 und coord2) in Meter \nAbstand(coord1; coord2)
+		solverDescDistance = Liefert den Abstand zwischen den beiden Punkten (koord1 und koord2) in Meter \nAbstand(coord1; coord2)
 		solverFuncInt = Ganzzahl
 		solverDescInt = Liefert die Ganzzahl vor dem Komma \nGanzzahl(-5,7) = 5
 		solverFuncRound = Runden
 		solverDescRound = Rundet die Zahl auf x Stellen \nRunden(1,8672; 2) = 1.87
 		solverFuncPi = Pi
 		solverDescPi = Liefert die Zahl Pi \nPi() = 3,14159265358979
-		solverFuncReverse = Reverse
+		solverFuncReverse = Umkehren
 		solverDescReverse = Kehrt die Zeichenkette um \nReverse("ABC") = CBA
 		solverFuncRot13 = Rot13
 		solverDescRot13 = Liefert die Rot13 Entschlüsselung \nRot13("ABC") = NOP
@@ -312,12 +312,12 @@
 	DeleteLogs = Lösche Logs
 	ButKeepLeast = aber behalte mindestens
 	ResetFavorites = Favoriten zurücksetzen (Demarkieren)
-	ResetListingChanged = listing changed zurücksetzen ...
+	ResetListingChanged = listings geändertged zurücksetzen ...
 	DeleteFieldNotes = Lösche alle Fieldnotes ...
 	RemoveCaches = Lösche Caches ...
-	ArchiveFilterSelection? = Sie haben vor, alle Caches, aus Ihren Filtereinstellungen als 'archiviert' zu Kenzeichnen. Sind Sie sicher, dass Sie das wollen?
+	ArchiveFilterSelection? = Sie haben vor, alle Caches, aus Ihren Filtereinstellungen als 'archiviert' zu Kennzeichnen. Sind Sie sicher, dass Sie das wollen?
 	ArchiveFilterSelection! = Archiviere Caches
-	DelCaches? = Sie haben vor, alle Caches, aus Ihren Filtereinstellungen zu löschen. Sind Sie sicher, dass Sie das wollen?
+	DelCaches? = Sie haben vor, alle Caches, die im Filter markiert sind, zu löschen. Sind Sie sicher, dass Sie das wollen?
 	DelCaches! = Lösche Caches
 	ArchiveFilterSelection = Archiviere gefilterte Caches
 	DeleteFilterSelection = Lösche gefilterte Caches
@@ -333,7 +333,7 @@
 	DelFieldNotes? = Sie haben vor, alle Ihre Fieldnotes zu löschen. Sind Sie sicher, dass Sie das wollen?
 	DelFieldNotes! = Lösche Fieldnotes
 	ResetFavorites? = Sie haben vor, alle 'favorit-markers' zurück zu setzen. Sind Sie sicher, dass Sie das wollen? 
-	ResetFavorites! = Reset favorites
+	ResetFavorites! = Favoriten zurücksetzen
 	ResetListingChanged? = Sie haben vor, alle 'listing changed' Markierungen zurück zu setzen. Sind Sie sicher, dass Sie das wollen?
 	ResetListingChanged! = Reset listing changed
 	LoadFinds? = Lade Anzahl der Funde von geocaching.com? Das könnte Kosten verursachen!
@@ -439,16 +439,16 @@
 	PreloadImages = Bilder in Beschreibung
 	LoginSettings = Login und API - Einstellungen
 	getApiKey = API key erstellen
-	DescMapLayer = Auto-download Karten
+	DescMapLayer = Karten automatisch laden
 	MoveMapCenterWithSpeed = Bewege Zentrum mit Geschwindigkeit
 	DPIaware = Darstellung an DPI anpassen
-	StartTrackRecOnStart = Starte Track Rekorder beim Start
+	StartTrackRecOnStart = Wegaufzeichnung automatisch starten
 	TrackEvery = Speichere alle
 	QuickButton = Quick Button
-	ShowQuickButton = Zeige Quick Button Feld
+	ShowQuickButton = Zeige Quick Button Leiste
 	up = Auf
 	down = Ab
-	add = Hinzufügen
+	add = +
 	deleteFieldnote = Fieldnote löschen
 	confirmFieldnoteDeletion = Soll die Fieldnote\n\n[{1}]\n\ndes Caches\n\n[{2}]\n\ngelöscht werden?
 	confirmFieldnoteDeletionRst = \n\nDer Found Status des Caches wird dabei zurückgesetzt!
@@ -492,7 +492,7 @@
 	att_13_1 = Cache ist rund um die Uhr erreichbar
 	att_14_0 = in der Nacht nicht empfohlen
 	att_14_1 = in der Nacht empfohlen 
-	att_15_0 = bei geschlossener Schneedecke zu finden 
+	att_15_0 = bei geschlossener Schneedecke nicht zu finden 
 	att_15_1 = bei geschlossener Schneedecke zu finden
 	att_16_1 = kaktus
 	att_17_0 = giftige Pflanzen
@@ -577,3 +577,77 @@
 	att_65_1 = Vorgarten-Cache / Cache auf Privatgrundstück
 	att_66_0 = keine Zusammenarbeit erforderlich
 	att_66_1 = Zusammenarbeit erforderlich
+
+
+//new settings
+
+	QuickList = Quickbuttons anpassen
+
+	Login = Login Einstellungen
+	
+	GcVotePassword = Passwort für GC-Vote
+	
+	GcLogin = Groundspeak Benutzername
+	
+	GcJoker = MD5-Hash bei gcJoker.de
+	
+	GcAPI = API key	
+	lastZoomLevel = Zuletzt benutztes Zoomlevel 
+	
+	OsmMinLevel = Kleinstes Zoomlevel der Karte
+	
+	OsmMaxLevel = Größtes Zoomlevel der Karte  
+	MapShowDT = Zeige D/T auf der Karte
+	Gps = GPS Einstellungen	
+	HtcCompass = Hardware Kompass verwenden
+	HtcLevel = Geschwindigkeit bei der zwischen GPS und Hardwarekompass umgeschalten wird. \n-1 = GPS wird niemals verwendet.
+	LeftWindow = Eingabefenster
+	BothWindow = beide Fenster
+	RightWindow = Ergebnisfenster
+	MapHideMyFinds = Eigene Funde auf Karte nicht anzeigen
+	MapShowTitles = Zeige Cache Namen auf Karte
+	ZoomCross = Zeige ein Kreuz wenn zoom level >
+	MapShowCompass = Zeige Kompass auf Karte
+	MapShowRating = Zeige Bewertung auf Karte
+	ShowDirektLine = Zeichne direkte Verbindungslinie zum Cache
+	Internal = Intern
+	PlaySounds = Ton bei Annäherung
+	Folder = Ordner
+	TrackFolder = Ordner für Tracks
+	UserImageFolder = Ordner für eigene Bilder
+	PocketQueryFolder = Ordner für den GPX Import 
+	MapPackFolder = Ordner für Kartenpakete
+	DatabasePath = Pfad zur aktuellen Datenbank
+	SpoilerFolder = Ordner für Spoilerbilder
+	DescriptionImageFolder = Ordner für Hinweisbilder
+	TrackDistance = Wegaufzeichnung alle [m]
+	SoundApproachDistance = Annährungssignal [m]
+	switchViewApproach = Bei Annäherung auf Kompass umschalten
+	TrackRecorderStartup = Wegaufzeichnung automatisch starten
+	DescriptionNoAttributes = Attribute in der Beschreibung nicht anzeigen
+	Templates = Vorlage für Fieldnotes
+	DNFTemplate = Vorlage für DNF
+	AddNoteTemplate = Vorlage für Notizen
+	FoundTemplate = Vorlage für Gefunden
+	NeedsMaintenanceTemplate = Vorlage für Wartung notwendig
+	API = GC Onlineabfrage
+	ImportGpx = GPX importieren
+	SearchWithoutOwns = Ohne eigene Caches suchen
+	SearchOnlyAvible = Nur verfügbare suchen
+	ImportPQsFromGeocachingCom = PQs von geocaching.com importieren
+	SearchWithoutFounds = Ohne gefundene Caches suchen 
+	ImportRatings = Wertungen von GC-Vote importieren
+	lastSearchRadius = Letzter Suchradius
+	Debug = debug
+	DebugDisplayInfo = Zeige Bildschirm Informationen 
+	MoveMapCenterMaxSpeed = Speed for max center move
+	OsmDpiAwareRendering = An Auflösung angepasste Textdarstellung
+	PositionAtVertex = Positionspfeil als Vektorpfeil darstellen
+	PositionMarkerTransparent = Positionspfeil transparent darstellen 
+	ImperialUnits = Imperiale Einheiten
+	TileCacheFolder = Ordner zum Zwischenspeichern der Karte
+	LanguagePath = Pfad zu den Sprachdateien
+	FoundOffset = Anzahl der Funde
+	FieldnotesUploadAll = Alle Fieldnotes hochladen (Datum ignorieren)
+
+	dontShowChris = Verwende Standardicons statt Weihnachtsicons  

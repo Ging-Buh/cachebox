@@ -31,6 +31,7 @@ import CB_Core.Types.Coordinate;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -373,6 +374,13 @@ public class splash extends Activity
 		if ((lat != -1000) && (lon != -1000))
 		{
 			GlobalCore.LastValidPosition = new Coordinate(lat, lon);
+		}
+
+		// chek permission
+		if (this.getPackageManager().checkPermission("android.permission.CALL_PHONE", "de.cachebox_test") == PackageManager.PERMISSION_GRANTED)
+		{
+			Config.settings.hasCallPermission.setValue(true);
+			Config.AcceptChanges();
 		}
 
 		// search number of DB3 files

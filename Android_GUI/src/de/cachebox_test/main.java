@@ -340,9 +340,9 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
 		Date now = new Date();
-		boolean c = (now.getMonth() == 11 && !Config.settings.dontShowChris.getValue()) ? true : false;
+		boolean c = (now.getMonth() == 11 && !Config.settings.dontShowChris.getValue());
 		Config.settings.isChris.setValue(c);
-		// Config.settings.isChris.setValue(true);
+
 		Config.AcceptChanges();
 
 		// Ausschalten verhindern
@@ -429,10 +429,18 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			if (Config.settings.isChris.getValue())
 			{
 				buttonCache.setBackgroundResource(R.drawable.chris_night_cache_button_image_selector);
+				buttonDB.setBackgroundResource(R.drawable.night_db_button_image_selector);
+				buttonMisc.setBackgroundResource(R.drawable.night_misc_button_image_selector);
+				buttonNav.setBackgroundResource(R.drawable.night_nav_button_image_selector);
+				buttonTools.setBackgroundResource(R.drawable.night_find_button_image_selector);
 			}
 			else
 			{
 				buttonCache.setBackgroundResource(R.drawable.night_cache_button_image_selector);
+				buttonDB.setBackgroundResource(R.drawable.night_db_button_image_selector);
+				buttonMisc.setBackgroundResource(R.drawable.night_misc_button_image_selector);
+				buttonNav.setBackgroundResource(R.drawable.night_nav_button_image_selector);
+				buttonTools.setBackgroundResource(R.drawable.night_find_button_image_selector);
 			}
 		}
 		else
@@ -448,6 +456,10 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			else
 			{
 				buttonCache.setBackgroundResource(R.drawable.cache_button_image_selector);
+				buttonDB.setBackgroundResource(R.drawable.db_button_image_selector);
+				buttonMisc.setBackgroundResource(R.drawable.misc_button_image_selector);
+				buttonNav.setBackgroundResource(R.drawable.nav_button_image_selector);
+				buttonTools.setBackgroundResource(R.drawable.find_button_image_selector);
 			}
 		}
 		buttonCache.invalidate();
@@ -1346,8 +1358,11 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				break;
 
 			case 12: // jokerView
-				jokerView = new JokerView(this, this);
-				showView(jokerView, 12);
+				if (Config.settings.hasCallPermission.getValue())
+				{
+					jokerView = new JokerView(this, this);
+					showView(jokerView, 12);
+				}
 				break;
 
 			case 11: // aboutView
@@ -2059,6 +2074,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 	private void showJoker()
 	{
+		if (!Config.settings.hasCallPermission.getValue()) return;
+
 		if (Global.Jokers.isEmpty())
 		{ // Wenn Telefonjoker-Liste leer neu laden
 			try

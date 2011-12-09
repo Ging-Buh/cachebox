@@ -277,18 +277,37 @@ public class SettingsScrollView extends Activity
 								.getValue()) && (settingItem.getModus() != SettingModus.Never))
 						{
 
-							Boolean BackGroundChanger = ((position % 2) == 1);
-							position++;
-
-							View view = getView(settingItem, lay, BackGroundChanger);
-
-							lay.addView(view);
-							entrieCount++;
-							if (settingItem.getName().equals(EditKey))
+							if (settingItem.getName().equals("GcJoker"))
 							{
-								expandLayout = true;
-							}
+								if (Config.settings.hasCallPermission.getValue())
+								{
+									Boolean BackGroundChanger = ((position % 2) == 1);
+									position++;
 
+									View view = getView(settingItem, lay, BackGroundChanger);
+
+									lay.addView(view);
+									entrieCount++;
+									if (settingItem.getName().equals(EditKey))
+									{
+										expandLayout = true;
+									}
+								}
+							}
+							else
+							{
+								Boolean BackGroundChanger = ((position % 2) == 1);
+								position++;
+
+								View view = getView(settingItem, lay, BackGroundChanger);
+
+								lay.addView(view);
+								entrieCount++;
+								if (settingItem.getName().equals(EditKey))
+								{
+									expandLayout = true;
+								}
+							}
 						}
 					}
 				}

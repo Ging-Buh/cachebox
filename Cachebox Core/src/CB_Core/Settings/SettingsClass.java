@@ -86,6 +86,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool SettingsShowAll;
 	public SettingBool switchViewApproach;
 	public SettingBool dontShowChris;
+	public SettingBool hasCallPermission;
 	// int
 	public SettingInt LogMaxMonthAge;
 	public SettingInt LogMinCount;
@@ -315,6 +316,8 @@ public class SettingsClass extends SettingsList
 
 		addSetting(SpoilersDescriptionTags = new SettingString("SpoilersDescriptionTags", cat, INVISIBLE, "", true));
 		addSetting(quickButtonList = new SettingString("quickButtonList", cat, NEVER, "5,0,1,3,2", true));
+
+		addSetting(hasCallPermission = new SettingBool("hasCallPermission", cat, NEVER, false, true));
 	}
 
 	private void addAPISettings()
