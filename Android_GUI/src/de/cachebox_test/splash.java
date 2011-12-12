@@ -175,6 +175,7 @@ public class splash extends Activity
 
 		// Read Config
 		String workPath = Environment.getExternalStorageDirectory() + "/cachebox";
+
 		Config.Initialize(workPath, workPath + "/cachebox.config");
 
 		// hier muss die Config Db initialisiert werden
@@ -196,6 +197,21 @@ public class splash extends Activity
 		else
 		{
 			Config.settings.ReadFromDB();
+		}
+
+		// prevent mediascanner to parse all the images in the cachebox folder
+		File nomedia = new File(workPath, ".nomedia");
+		if (!nomedia.exists())
+		{
+			try
+			{
+				nomedia.createNewFile();
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		// wenn eine cachebox.config existiert, werden die Werte in die DB
