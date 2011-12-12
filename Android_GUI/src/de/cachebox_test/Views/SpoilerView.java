@@ -7,11 +7,6 @@ import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
-import de.cachebox_test.R;
-import de.cachebox_test.Components.CacheDraw;
-import de.cachebox_test.Components.TouchImageView;
-import de.cachebox_test.Events.ViewOptionsMenu;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -31,6 +26,9 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import de.cachebox_test.R;
+import de.cachebox_test.Components.TouchImageView;
+import de.cachebox_test.Events.ViewOptionsMenu;
 
 public class SpoilerView extends FrameLayout implements ViewOptionsMenu, AdapterView.OnItemSelectedListener
 {
@@ -173,35 +171,51 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		return resizedBitmap;
 	}
 
+	// decodes image and scales it to reduce memory consumption
+	private Bitmap decodeFile(String f)
+	{
+		// Decode image size
+		BitmapFactory.Options o = new BitmapFactory.Options();
+		o.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(f, o);
+
+		// The new size we want to scale to
+		final int REQUIRED_SIZE = 100;
+
+		// Find the correct scale value. It should be the power of 2.
+		int width_tmp = o.outWidth, height_tmp = o.outHeight;
+		int scale = 1;
+		while (true)
+		{
+			if (width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE) break;
+			width_tmp /= 2;
+			height_tmp /= 2;
+			scale *= 2;
+		}
+
+		// Decode with inSampleSize
+		BitmapFactory.Options o2 = new BitmapFactory.Options();
+		o2.inSampleSize = scale;
+		return BitmapFactory.decodeFile(f, o2);
+	}
+
 	@Override
 	public void OnShow()
 	{
-		Logger.DEBUG("sv1");
 		aktCache = GlobalCore.SelectedCache();
 		lBitmaps.clear();
-		CacheDraw.ReloadSpoilerRessources(aktCache);
-		Logger.DEBUG("sv2");
 		for (String filename : aktCache.SpoilerRessources())
 		{
 			try
 			{
-				Logger.DEBUG("sv3");
-				Bitmap bmp = BitmapFactory.decodeFile(filename);
-				Logger.DEBUG("sv4");
-
-				lBitmaps.add(getResizedBitmap(bmp, 200, 100));
-				Logger.DEBUG("sv5");
-				bmp.recycle();
-				Logger.DEBUG("sv6");
+				lBitmaps.add(decodeFile(filename));
 			}
 			catch (Exception exc)
 			{
 				Logger.Error("SpoilerView.onShow()", "AddBitmap", exc);
 			}
 		}
-		Logger.DEBUG("sv7");
 		g.setAdapter(new ImageAdapter(context));
-		Logger.DEBUG("sv8");
 	}
 
 	@Override
