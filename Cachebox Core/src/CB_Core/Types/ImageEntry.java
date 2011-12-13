@@ -1,6 +1,9 @@
 package CB_Core.Types;
 
+import java.net.URI;
+
 import CB_Core.DB.CoreCursor;
+import CB_Core.Import.DescriptionImageGrabber;
 
 public class ImageEntry
 {
@@ -19,6 +22,11 @@ public class ImageEntry
 	 * ImageUrl des Bildes
 	 */
 	public String ImageUrl = "";
+
+	/**
+	 * lokaler Pfad des Bildes
+	 */
+	public String LocalPath = "";
 
 	/**
 	 * Id des Caches
@@ -47,6 +55,8 @@ public class ImageEntry
 		Description = reader.getString(3);
 		ImageUrl = reader.getString(4);
 		IsCacheImage = reader.getInt(5) == 1 ? true : false;
+
+		LocalPath = DescriptionImageGrabber.BuildImageFilename(GcCode, URI.create(ImageUrl));
 	}
 
 	public void clear()
@@ -57,6 +67,7 @@ public class ImageEntry
 		CacheId = -1;
 		GcCode = "";
 		IsCacheImage = false;
+		LocalPath = "";
 	}
 
 }

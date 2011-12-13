@@ -1,24 +1,23 @@
 package de.cachebox_test.Views;
 
-import java.io.File;
 import java.util.ArrayList;
 
-import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
+import CB_Core.Types.ImageEntry;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
@@ -26,8 +25,8 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import de.cachebox_test.Global;
 import de.cachebox_test.R;
-import de.cachebox_test.Components.TouchImageView;
 import de.cachebox_test.Events.ViewOptionsMenu;
 
 public class SpoilerView extends FrameLayout implements ViewOptionsMenu, AdapterView.OnItemSelectedListener
@@ -38,9 +37,8 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 	Gallery g;
 	Cache aktCache;
 	TextView spoilerFilename;
-	TouchImageView spoilerImage;
+	WebView spoilerImage;
 	ArrayList<Bitmap> lBitmaps;
-	loadProcessor processor;
 
 	public SpoilerView(Context context, LayoutInflater inflater)
 	{
@@ -49,13 +47,18 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		lBitmaps = new ArrayList<Bitmap>();
 
 		aktCache = null;
-		RelativeLayout spoilerLayout = (RelativeLayout) inflater.inflate(R.layout.spoilerview, null, false);
+		spoilerLayout = (RelativeLayout) inflater.inflate(R.layout.spoilerview, null, false);
 		this.addView(spoilerLayout);
 
 		g = (Gallery) findViewById(R.id.spoilerGallery);
 		g.setSpacing(0);
 		spoilerFilename = (TextView) findViewById(R.id.spoilerFilename);
-		spoilerImage = new TouchImageView(context);
+		spoilerImage = new WebView(context);
+		spoilerImage.getSettings().setBuiltInZoomControls(true);
+		spoilerImage.getSettings().setUseWideViewPort(true);
+		spoilerImage.getSettings().setLoadWithOverviewMode(true);
+		spoilerImage.setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
+
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
 				RelativeLayout.LayoutParams.MATCH_PARENT);
 		params.addRule(RelativeLayout.BELOW, R.id.spoilerFilename);
@@ -86,23 +89,16 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View v, int position, long id)
 	{
-		// mSwitcher.setImageResource(mImageIds[position]);
 		if (aktCache == null) return;
-		String filename = GlobalCore.SelectedCache().SpoilerRessources().get(position);
-		filename = filename.substring(0, filename.lastIndexOf("."));
-		filename = FileIO.GetFileNameWithoutExtension(filename);
-		if (filename.indexOf(aktCache.GcCode) == 0) filename = filename.substring(aktCache.GcCode.length());
-		if (filename.indexOf(" - ") == 0) filename = filename.substring(3);
-		spoilerFilename.setText(filename);
-		String file = GlobalCore.SelectedCache().SpoilerRessources().get(position);
+		String filename = GlobalCore.SelectedCache().SpoilerRessources().get(position).Name;
 
-		// das Laden sollte noch in einen Thread ausgelagert werden
-		nextBitmap = file;
-		if (processor == null)
-		{
-			processor = new loadProcessor();
-			processor.execute(file);
-		}
+		spoilerFilename.setText(filename);
+		String file = GlobalCore.SelectedCache().SpoilerRessources().get(position).LocalPath;
+
+		String html = "<html><body><div style=\"width: 100%;\"><img style=\"display: block; margin-left: auto; margin-right: auto;\" src=\"file://"
+				+ file + "\"></img></div></body></html>";
+		spoilerImage.loadDataWithBaseURL("fake://not/needed", html, "text/html", "utf-8", "");
+
 	}
 
 	public class ImageAdapter extends BaseAdapter
@@ -204,11 +200,11 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 	{
 		aktCache = GlobalCore.SelectedCache();
 		lBitmaps.clear();
-		for (String filename : aktCache.SpoilerRessources())
+		for (ImageEntry image : aktCache.SpoilerRessources())
 		{
 			try
 			{
-				lBitmaps.add(decodeFile(filename));
+				lBitmaps.add(decodeFile(image.LocalPath));
 			}
 			catch (Exception exc)
 			{
@@ -259,42 +255,6 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 	public boolean ContextMenuItemSelected(MenuItem item)
 	{
 		return false;
-	}
-
-	private class loadProcessor extends AsyncTask<String, Integer, Integer>
-	{
-		Bitmap bmp = null;
-
-		@Override
-		protected Integer doInBackground(String... params)
-		{
-			if (!(params == null || params[0].equals("")))
-			{
-				File testingFile = new File(params[0]);
-				if (testingFile.exists())
-				{
-					System.gc();
-					bmp = BitmapFactory.decodeFile(params[0]);
-					if (params[0].equalsIgnoreCase(nextBitmap)) nextBitmap = "";
-				}
-			}
-
-			return null;
-		}
-
-		protected void onPostExecute(Integer result)
-		{
-			if (bmp != null) spoilerImage.setImage(bmp, spoilerImage.getWidth(), spoilerImage.getHeight());
-			processor = null;
-			System.gc();
-
-			if (!(nextBitmap.equals("")))
-			{
-				processor = new loadProcessor();
-				processor.execute(nextBitmap);
-			}
-		}
-
 	}
 
 }

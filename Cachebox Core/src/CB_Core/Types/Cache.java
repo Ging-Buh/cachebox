@@ -8,6 +8,7 @@ import java.util.Date;
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
+import CB_Core.DAO.ImageDAO;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
@@ -56,8 +57,7 @@ public class Cache implements Comparable<Cache>
 	 */
 	public double MapY;
 	/**
-	 * Id des Caches bei geocaching.com. Wird zumm Loggen benötigt und von
-	 * geotoad nicht exportiert
+	 * Id des Caches bei geocaching.com. Wird zumm Loggen benötigt und von geotoad nicht exportiert
 	 */
 	// TODO Warum ist das ein String?
 	public String GcId = "";
@@ -100,8 +100,7 @@ public class Cache implements Comparable<Cache>
 	 */
 	public float Rating;
 	/**
-	 * Größe des Caches. Bei Wikipediaeinträgen enthält dieses Feld den Radius
-	 * in m
+	 * Größe des Caches. Bei Wikipediaeinträgen enthält dieses Feld den Radius in m
 	 */
 	public CacheSizes Size;
 	/**
@@ -121,10 +120,8 @@ public class Cache implements Comparable<Cache>
 	 */
 	public boolean Available;
 	/**
-	 * ApiStatus 0: Cache wurde nicht per Api hinzugefügt 1: Cache wurde per GC
-	 * Api hinzugefügt und ist noch nicht komplett geladen (IsLite = true) 2:
-	 * Cache wurde per GC Api hinzugefügt und ist komplett geladen (IsLite =
-	 * false)
+	 * ApiStatus 0: Cache wurde nicht per Api hinzugefügt 1: Cache wurde per GC Api hinzugefügt und ist noch nicht komplett geladen (IsLite
+	 * = true) 2: Cache wurde per GC Api hinzugefügt und ist komplett geladen (IsLite = false)
 	 */
 	public byte ApiStatus;
 
@@ -252,7 +249,7 @@ public class Cache implements Comparable<Cache>
 	/**
 	 * Liste der Spoiler Resorcen
 	 */
-	public ArrayList<String> spoilerRessources = null;
+	public ArrayList<ImageEntry> spoilerRessources = null;
 
 	/**
 	 * Kurz Beschreibung des Caches
@@ -260,9 +257,8 @@ public class Cache implements Comparable<Cache>
 	public String shortDescription;
 
 	/**
-	 * Ausführliche Beschreibung des Caches Nur für Import Zwecke. Ist
-	 * normalerweise leer, da die Description bei aus Speicherplatz Gründen bei
-	 * Bedarf aus der DB geladen wird
+	 * Ausführliche Beschreibung des Caches Nur für Import Zwecke. Ist normalerweise leer, da die Description bei aus Speicherplatz Gründen
+	 * bei Bedarf aus der DB geladen wird
 	 */
 	public String longDescription;
 
@@ -370,7 +366,7 @@ public class Cache implements Comparable<Cache>
 	 * 
 	 * @return ArrayList of String
 	 */
-	public ArrayList<String> SpoilerRessources()
+	public ArrayList<ImageEntry> SpoilerRessources()
 	{
 		if (spoilerRessources == null)
 		{
@@ -386,7 +382,7 @@ public class Cache implements Comparable<Cache>
 	 * @param value
 	 *            ArrayList of String
 	 */
-	public void setSpoilerRessources(ArrayList<String> value)
+	public void setSpoilerRessources(ArrayList<ImageEntry> value)
 	{
 		spoilerRessources = value;
 	}
@@ -404,7 +400,7 @@ public class Cache implements Comparable<Cache>
 
 	public void ReloadSpoilerRessources()
 	{
-		spoilerRessources = new ArrayList<String>();
+		spoilerRessources = new ArrayList<ImageEntry>();
 
 		String path = Config.settings.SpoilerFolder.getValue();
 		String directory = path + "/" + GcCode.substring(0, 4);
@@ -431,7 +427,10 @@ public class Cache implements Comparable<Cache>
 
 		for (String image : files)
 		{
-			spoilerRessources.add(directory + "/" + image);
+			ImageEntry imageEntry = new ImageEntry();
+			imageEntry.LocalPath = directory + "/" + image;
+			imageEntry.Name = image;
+			spoilerRessources.add(imageEntry);
 		}
 
 		// Add own taken photo
@@ -462,11 +461,27 @@ public class Cache implements Comparable<Cache>
 					if (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg") || ext.equalsIgnoreCase("bmp")
 							|| ext.equalsIgnoreCase("png") || ext.equalsIgnoreCase("gif"))
 					{
-						spoilerRessources.add(directory + "/" + file);
+						ImageEntry imageEntry = new ImageEntry();
+						imageEntry.LocalPath = directory + "/" + file;
+						imageEntry.Name = file;
+						spoilerRessources.add(imageEntry);
 					}
 				}
 			}
 		}
+
+		ImageDAO imageDAO = new ImageDAO();
+
+		ArrayList<ImageEntry> descImages = imageDAO.getDescriptionImagesForCache(GcCode);
+
+		for (ImageEntry image : descImages)
+		{
+			if (FileIO.FileExists(image.LocalPath))
+			{
+				spoilerRessources.add(image);
+			}
+		}
+
 	}
 
 	/**
@@ -494,8 +509,7 @@ public class Cache implements Comparable<Cache>
 	}
 
 	/**
-	 * Gibt die Entfernung zur übergebenen User Position als Float zurück und
-	 * Speichert die Aktueller User Position für alle Caches ab.
+	 * Gibt die Entfernung zur übergebenen User Position als Float zurück und Speichert die Aktueller User Position für alle Caches ab.
 	 * 
 	 * @return Entfernung zur übergebenen User Position als Float
 	 */

@@ -55,6 +55,26 @@ public class ImageDAO
 		return images;
 	}
 
+	public ArrayList<ImageEntry> getDescriptionImagesForCache(String GcCode)
+	{
+		ArrayList<ImageEntry> images = new ArrayList<ImageEntry>();
+
+		CoreCursor reader = Database.Data.rawQuery(
+				"select CacheId, GcCode, Name, Description, ImageUrl, IsCacheImage from Images where GcCode=? and IsCacheImage=1",
+				new String[]
+					{ GcCode });
+		reader.moveToFirst();
+		while (reader.isAfterLast() == false)
+		{
+			ImageEntry image = new ImageEntry(reader);
+			images.add(image);
+			reader.moveToNext();
+		}
+		reader.close();
+
+		return images;
+	}
+
 	public ArrayList<String> getImageURLsForCache(String GcCode)
 	{
 		ArrayList<String> images = new ArrayList<String>();
