@@ -37,7 +37,7 @@ import de.cachebox_test.Ui.Sizes;
 
 public class Global
 {
-	public static final int CurrentRevision = 593;
+	public static final int CurrentRevision = 602;
 	public static final String CurrentVersion = "0.4.";
 	public static final String VersionPrefix = "test";
 	public static final int LatestDatabaseChange = 1016;
