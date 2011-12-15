@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme_day" parent="android:Theme">
-    	<item name="android:windowBackground">@color/Day_Background</item>
-    	<item name="EmptyBackground">@color/Day_EmptyBackground</item>
-    	<item name="myBackground">@color/Day_Background</item>
-    	<item name="TextColor">@color/Day_Foreground</item>
-    	<item name="TextColor_disable">@color/Day_Foreground_disable</item>
-    	<item name="ListBackground">@color/Day_ListBackground</item>
-	    <item name="ListBackground_secend">@color/Day_ListBackground_secend</item>
-	    <item name="ListBackground_select">@color/Day_SelectedBackground</item>
-	    <item name="ListSeparator">@color/Day_ListSeperator</item>
-        <item name="android:windowTitleSize">20dip</item>
-        <item name="android:textSize">15sp</item>
-	    <item name="android:textColor">@color/Day_Foreground</item>
-	    <item name="android:textStyle">bold</item>
-        <item name="android:buttonStyle">@style/Day_Button</item>
-        <item name="android:buttonStyleToggle">@style/Day_Toggle_Button</item>
-	    <item name="android:checkboxStyle">@style/Day_chkBox</item>
-	    <item name="DropDownBackground">@drawable/popup_bottom_bright</item> 
-		<item name="ZoomStyle">@style/day_ZoomControls</item> 
+	<style name="Theme_day" parent="android:Theme">
+		<item name="android:windowBackground">@color/Day_Background</item>
+		<item name="EmptyBackground">@color/Day_EmptyBackground</item>
+		<item name="myBackground">@color/Day_Background</item>
+		<item name="TextColor">@color/Day_Foreground</item>
+		<item name="TextColor_disable">@color/Day_Foreground_disable</item>
+		<item name="ListBackground">@color/Day_ListBackground</item>
+		<item name="ListBackground_secend">@color/Day_ListBackground_secend</item>
+		<item name="ListBackground_select">@color/Day_SelectedBackground</item>
+		<item name="ListSeparator">@color/Day_ListSeperator</item>
+		<item name="android:windowTitleSize">20dip</item>
+		<item name="android:textSize">15sp</item>
+		<item name="android:textColor">@color/Day_Foreground</item>
+		<item name="android:textStyle">bold</item>
+		<item name="android:buttonStyle">@style/Day_Button</item>
+		<item name="android:buttonStyleToggle">@style/Day_Toggle_Button</item>
+		<item name="android:checkboxStyle">@style/Day_chkBox</item>
+		<item name="DropDownBackground">@drawable/popup_bottom_bright</item>
+		<item name="ZoomStyle">@style/day_ZoomControls</item>
 		<item name="Compass_rimColorFilter">@color/Day_Compass_rimColorFilter</item>
 		<item name="Compass_faceColorFilter">@color/Day_Compass_faceColorFilter</item>
 		<item name="Compass_TextColor">@color/Day_Compass_TextColor</item>
 		<item name="Compass_N_TextColor">@color/Day_Compass_N_TextColor</item>
-		<item name="android:spinnerStyle">@style/day_Spinner</item> 
+		<item name="android:spinnerStyle">@style/day_Spinner</item>
 		<item name="MultiToggleButton_Background">@drawable/night_btn_default_normal</item>
 		<item name="MultiToggleButton_Background_pressed">@drawable/night_btn_default_normal_pressed</item>
 		<item name="MultiToggleButton_Led">@drawable/day_btn_toggle_off</item>
@@ -40,31 +40,31 @@
 		<item name="NavBtnImageSelector">@drawable/nav_button_image_selector</item>
 		<item name="FindBtnImageSelector">@drawable/find_button_image_selector</item>
 		<item name="MiscBtnImageSelector">@drawable/misc_button_image_selector</item>
-		<item name="BtnBackGround">@drawable/hintergrund</item> 
+		<item name="BtnBackGround">@drawable/hintergrund</item>
 		<item name="Map_Compass_TextColor">@color/Day_ColorCompassText</item>
 		<item name="Map_ColorCompassPanel">@color/Day_ColorCompassPanel</item>
 	</style>
-    
-    
-    <style name="Theme_night" parent="android:Theme">
-        <item name="android:windowBackground">@color/Night_EmptyBackground</item>
-        <item name="EmptyBackground">@color/Night_EmptyBackground</item>
-        <item name="myBackground">@color/Night_Background</item>
-        <item name="TextColor">@color/Night_Foreground</item>
-        <item name="TextColor_disable">@color/Night_Foreground_disable</item>
-        <item name="ListBackground">@color/Night_ListBackground</item>
-	    <item name="ListBackground_secend">@color/Night_ListBackground_secend</item>
-	    <item name="ListBackground_select">@color/Night_SelectedBackground</item>
-	    <item name="ListSeparator">@color/Night_ListSeperator</item>
-        <item name="android:windowTitleSize">20dip</item>
-        <item name="android:textSize">15sp</item>
-	    <item name="android:textColor">@color/Night_Foreground</item>
- 		<item name="android:textStyle">bold</item>
-	    <item name="android:buttonStyle">@style/Night_Button</item>
-	    <item name="android:buttonStyleToggle">@style/Night_Toggle_Button</item>
-	    <item name="android:checkboxStyle">@style/Night_chkBox</item>
+
+
+	<style name="Theme_night" parent="android:Theme">
+		<item name="android:windowBackground">@color/Night_EmptyBackground</item>
+		<item name="EmptyBackground">@color/Night_EmptyBackground</item>
+		<item name="myBackground">@color/Night_Background</item>
+		<item name="TextColor">@color/Night_Foreground</item>
+		<item name="TextColor_disable">@color/Night_Foreground_disable</item>
+		<item name="ListBackground">@color/Night_ListBackground</item>
+		<item name="ListBackground_secend">@color/Night_ListBackground_secend</item>
+		<item name="ListBackground_select">@color/Night_SelectedBackground</item>
+		<item name="ListSeparator">@color/Night_ListSeperator</item>
+		<item name="android:windowTitleSize">20dip</item>
+		<item name="android:textSize">15sp</item>
+		<item name="android:textColor">@color/Night_Foreground</item>
+		<item name="android:textStyle">bold</item>
+		<item name="android:buttonStyle">@style/Night_Button</item>
+		<item name="android:buttonStyleToggle">@style/Night_Toggle_Button</item>
+		<item name="android:checkboxStyle">@style/Night_chkBox</item>
 		<item name="DropDownBackground">@drawable/popup_bottom_dark</item>
-	    <item name="Compass_rimColorFilter">@color/Night_Compass_rimColorFilter</item>
+		<item name="Compass_rimColorFilter">@color/Night_Compass_rimColorFilter</item>
 		<item name="Compass_faceColorFilter">@color/Night_Compass_faceColorFilter</item>
 		<item name="Compass_TextColor">@color/Night_Compass_TextColor</item>
 		<item name="Compass_N_TextColor">@color/Night_Compass_N_TextColor</item>
@@ -78,20 +78,34 @@
 		<item name="SlideDownColorFilter">@color/Day_SlideDownColorFilter</item>
 		<item name="SlideDownBackColor">@color/Night_SlideDownBackColor</item>
 		<item name="LinkLabelColor">@color/Night_LinkLabelColor</item>
-		<item name="MsgBoxBack">@drawable/day_settings_group</item> 
+		<item name="MsgBoxBack">@drawable/day_settings_group</item>
 		<item name="TitleBarBackColor">@color/Night_TitleBarBackColor</item>
-		<item name="CacheBtnImageSelector">@drawable/night_cache_button_image_selector</item> 
+		<item name="CacheBtnImageSelector">@drawable/night_cache_button_image_selector</item>
 		<item name="DbBtnImageSelector">@drawable/night_db_button_image_selector</item>
 		<item name="NavBtnImageSelector">@drawable/night_nav_button_image_selector</item>
 		<item name="FindBtnImageSelector">@drawable/night_find_button_image_selector</item>
-		<item name="MiscBtnImageSelector">@drawable/night_misc_button_image_selector</item> 
-		<item name="BtnBackGround">@drawable/night_hintergrund</item>   
+		<item name="MiscBtnImageSelector">@drawable/night_misc_button_image_selector</item>
+		<item name="BtnBackGround">@drawable/night_hintergrund</item>
 		<item name="Map_Compass_TextColor">@color/Night_ColorCompassText</item>
 		<item name="Map_ColorCompassPanel">@color/Night_ColorCompassPanel</item>
 		<item name="android:editTextStyle">@style/red_edittext</item>
-    </style>
-    
-    
+	</style>
 
+
+	<style name="Theme_day_transparent" parent="Theme_day">
+		<item name="android:windowIsTranslucent">true</item>
+		<item name="android:windowBackground">@android:color/transparent</item>
+		<item name="android:windowContentOverlay">@null</item>
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:backgroundDimEnabled">true</item>
+	</style>
+	
+	<style name="Theme_night_transparent" parent="Theme_night">
+		<item name="android:windowIsTranslucent">true</item>
+		<item name="android:windowBackground">@android:color/transparent</item>
+		<item name="android:windowContentOverlay">@null</item>
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:backgroundDimEnabled">true</item>
+	</style>
 
 </resources>

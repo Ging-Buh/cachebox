@@ -46,7 +46,6 @@ import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -133,6 +132,7 @@ import de.cachebox_test.Views.AdvancedSettingsForms.SettingsScrollView;
 import de.cachebox_test.Views.FilterSettings.EditFilterSettings;
 import de.cachebox_test.Views.FilterSettings.PresetListViewItem;
 import de.cachebox_test.Views.Forms.ApiSearchPosDialog;
+import de.cachebox_test.Views.Forms.DeleteDialog;
 import de.cachebox_test.Views.Forms.GcApiLogin;
 import de.cachebox_test.Views.Forms.HintDialog;
 import de.cachebox_test.Views.Forms.ImportDialog;
@@ -1065,6 +1065,49 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				{
 					searchOnlineNow();
 				}
+			}
+
+			return;
+		}
+
+		// Intent Result Delete Caches
+		if (requestCode == Global.REQUEST_CODE_DELETE_DIALOG)
+		{
+			if (data == null) return;
+			Bundle bundle = data.getExtras();
+			int selection = bundle.getInt("DelResult");// enthält Rückgabe Wert
+
+			switch (selection)
+			{
+			case 0: // Archived gewählt
+			{
+				CacheListDAO dao = new CacheListDAO();
+				long nun = dao.DelArchiv();
+				FilterProperties props = Global.LastFilter;
+				String sqlWhere = props.getSqlWhere();
+				Logger.General("Main.ApplyFilter: " + sqlWhere);
+				Database.Data.Query.clear();
+				dao.ReadCacheList(Database.Data.Query, sqlWhere);
+				Toast.makeText(mainActivity, "Anzahl " + String.valueOf(nun), 1);
+				return;
+			}
+			case 1:// Found gewählt
+			{
+				CacheListDAO dao = new CacheListDAO();
+				long nun = dao.DelFound();
+				FilterProperties props = Global.LastFilter;
+				String sqlWhere = props.getSqlWhere();
+				Logger.General("Main.ApplyFilter: " + sqlWhere);
+				Database.Data.Query.clear();
+				dao.ReadCacheList(Database.Data.Query, sqlWhere);
+				Toast.makeText(mainActivity, "Anzahl " + String.valueOf(nun), 1);
+				return;
+			}
+			case 2:// Filter gewählt
+			{
+				// noch nicht umgesetzt!
+				return;
+			}
 			}
 
 			return;
@@ -2059,42 +2102,9 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	}
 
 	private void DeleteFilterSelection()
-
 	{
-		final AlertDialog dialog = new AlertDialog.Builder(this).create();
-		dialog.setTitle("Gefundene und archivierte Caches filtern und löschen?");
-		dialog.setMessage("Die Datenbank wird nach archivierten oder gefundenen Caches gefiltert und das Suchergebnis wird automatisch ohne weitere Bestätigung gelöscht! Wirklich löschen?");
-		dialog.setButton(-1, "Archived", new DialogInterface.OnClickListener()
-		{
-			public void onClick(DialogInterface i, int b)
-			{
-				CacheListDAO dao = new CacheListDAO();
-				long nun = dao.DelArchiv();
-				FilterProperties props = Global.LastFilter;
-				String sqlWhere = props.getSqlWhere();
-				Logger.General("Main.ApplyFilter: " + sqlWhere);
-				Database.Data.Query.clear();
-				dao.ReadCacheList(Database.Data.Query, sqlWhere);
-				Toast.makeText(mainActivity, "Anzahl " + String.valueOf(nun), 1);
-
-			}
-		});
-
-		dialog.setButton(-2, "Found", new DialogInterface.OnClickListener()
-		{
-			public void onClick(DialogInterface i, int b)
-			{
-				CacheListDAO dao = new CacheListDAO();
-				long nun = dao.DelFound();
-				FilterProperties props = Global.LastFilter;
-				String sqlWhere = props.getSqlWhere();
-				Logger.General("Main.ApplyFilter: " + sqlWhere);
-				Database.Data.Query.clear();
-				dao.ReadCacheList(Database.Data.Query, sqlWhere);
-				Toast.makeText(mainActivity, "Anzahl " + String.valueOf(nun), 1);
-			}
-		});
-		dialog.show();
+		final Intent delIntent = new Intent().setClass(mainActivity, DeleteDialog.class);
+		mainActivity.startActivityForResult(delIntent, Global.REQUEST_CODE_DELETE_DIALOG);
 	}
 
 	private void showHint()

@@ -8,6 +8,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import de.cachebox_test.R;
+import de.cachebox_test.main;
 import de.cachebox_test.Ui.Sizes;
 
 public class HintDialog extends Activity
@@ -22,6 +23,11 @@ public class HintDialog extends Activity
 		// ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.hint);
+
+		if (main.N)
+		{
+			this.setTheme(R.style.Theme_night_transparent);
+		}
 
 		Bundle bundle = getIntent().getExtras();
 		String hint = GlobalCore.Rot13((String) bundle.getSerializable("Hint"));

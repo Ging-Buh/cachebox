@@ -654,7 +654,10 @@
 	
 	
 	
-	Archived = Archivierte
-	Found = Funde
+	DelArchived = Lösche Archivierte
+	DelFound = Lösche Funde
+	DelActFilter = Lösche aktuelle Filter Auswahl
 	DeleteCaches = Lösche Caches
+	MsgDelCaches = Die Datenbank wird nach archivierten oder gefundenen Caches gefiltert und das Suchergebnis wird automatisch ohne weitere Bestätigung gelöscht!\n\nWirklich löschen?
+	
 	

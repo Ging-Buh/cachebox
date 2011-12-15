@@ -654,6 +654,8 @@ English
 	dontShowChris = Don't show Christmas icons 
 
 
-	Archived = Archived
-	Found = Founds
+	DelArchived = Delete archived
+	DelFound = Delete founds
+	DelActFilter = Delete filter selection
 	DeleteCaches = Delete Caches
+	MsgDelCaches = The data base is filtered to archived or found Caches and the searching result is automatically extinguished without farther confirmation!\n\nReally delete Caches?

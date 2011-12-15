@@ -52,6 +52,8 @@ public class ActivityUtils
 	public final static int THEME_DEFAULT = 0;
 	public final static int THEME_DAY = 1;
 	public final static int THEME_NIGHT = 2;
+	public final static int THEME_DAY_TRANSPARENT = 3;
+	public final static int THEME_NIGHT_TRANSPARENT = 4;
 
 	public static void changeToTheme(Activity activity, int theme)
 	{
@@ -59,8 +61,7 @@ public class ActivityUtils
 	}
 
 	/**
-	 * Set the theme of the Activity, and restart it by creating a new Activity
-	 * of the same type.
+	 * Set the theme of the Activity, and restart it by creating a new Activity of the same type.
 	 */
 	public static void changeToTheme(Activity activity, int theme, boolean firstStart)
 	{
@@ -85,6 +86,12 @@ public class ActivityUtils
 			break;
 		case THEME_NIGHT:
 			activity.setTheme(R.style.Theme_night);
+			break;
+		case THEME_DAY_TRANSPARENT:
+			activity.setTheme(R.style.Theme_day_transparent);
+			break;
+		case THEME_NIGHT_TRANSPARENT:
+			activity.setTheme(R.style.Theme_night_transparent);
 			break;
 
 		}
@@ -294,13 +301,10 @@ public class ActivityUtils
 	}
 
 	/**
-	 * Initialisiert das NumPad welches mit </br> </br> <include
-	 * android:layout_height="wrap_content" </br>
-	 * layout="@layout/numerik_keypad_layout"
-	 * android:layout_width="match_parent" </br>
-	 * android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
-	 * </br> android:layout_weight="1"></include> </br> </br> in ein layout
-	 * eingebunden wurde mit den einstellungen für eine Integer eingabe.
+	 * Initialisiert das NumPad welches mit </br> </br> <include android:layout_height="wrap_content" </br>
+	 * layout="@layout/numerik_keypad_layout" android:layout_width="match_parent" </br> android:layout_marginLeft="10dip"
+	 * android:layout_marginRight="10dip" </br> android:layout_weight="1"></include> </br> </br> in ein layout eingebunden wurde mit den
+	 * einstellungen für eine Integer eingabe.
 	 * 
 	 * @param activity
 	 *            Aktivity die das NumPad enthält
@@ -344,13 +348,10 @@ public class ActivityUtils
 	}
 
 	/**
-	 * Initialisiert das NumPad welches mit </br> </br> <include
-	 * android:layout_height="wrap_content" </br>
-	 * layout="@layout/numerik_keypad_layout"
-	 * android:layout_width="match_parent" </br>
-	 * android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
-	 * </br> android:layout_weight="1"></include> </br> </br> in ein layout
-	 * eingebunden wurde mit den einstellungen für eine Double eingabe.
+	 * Initialisiert das NumPad welches mit </br> </br> <include android:layout_height="wrap_content" </br>
+	 * layout="@layout/numerik_keypad_layout" android:layout_width="match_parent" </br> android:layout_marginLeft="10dip"
+	 * android:layout_marginRight="10dip" </br> android:layout_weight="1"></include> </br> </br> in ein layout eingebunden wurde mit den
+	 * einstellungen für eine Double eingabe.
 	 * 
 	 * @param activity
 	 *            Aktivity die das NumPad enthält
@@ -461,15 +462,13 @@ public class ActivityUtils
 	}
 
 	/**
-	 * Das Text element, welches über InitialNumPadInt oder InitialNumPadDbl
-	 * angesprochen wird.
+	 * Das Text element, welches über InitialNumPadInt oder InitialNumPadDbl angesprochen wird.
 	 */
 	public static EditText editText;
 
 	/**
-	 * Ein buttonClickListner der den String des Buttons in editText einträgt.
-	 * editText wird beim Aufruf von InitialNumPadInt oder InitialNumPadDbl zu
-	 * gewiesen und ist eine Rferenz auf das zu bearbeitende TextFeld
+	 * Ein buttonClickListner der den String des Buttons in editText einträgt. editText wird beim Aufruf von InitialNumPadInt oder
+	 * InitialNumPadDbl zu gewiesen und ist eine Rferenz auf das zu bearbeitende TextFeld
 	 */
 	private static View.OnClickListener numButtonClickListner = new View.OnClickListener()
 	{
@@ -497,9 +496,8 @@ public class ActivityUtils
 	};
 
 	/**
-	 * Ein buttonClickListner der den letzten String von editText löscht.
-	 * editText wird beim Aufruf von InitialNumPadInt oder InitialNumPadDbl zu
-	 * gewiesen und ist eine Rferenz auf das zu bearbeitende TextFeld
+	 * Ein buttonClickListner der den letzten String von editText löscht. editText wird beim Aufruf von InitialNumPadInt oder
+	 * InitialNumPadDbl zu gewiesen und ist eine Rferenz auf das zu bearbeitende TextFeld
 	 */
 	private static View.OnClickListener delButtonClickListner = new View.OnClickListener()
 	{
@@ -532,8 +530,7 @@ public class ActivityUtils
 	};
 
 	/**
-	 * Da bei dem Verwendeten Themes die disabled TextColor nicht richtig
-	 * übernommen wird, wird mit dieser Methode der Status überprüft und
+	 * Da bei dem Verwendeten Themes die disabled TextColor nicht richtig übernommen wird, wird mit dieser Methode der Status überprüft und
 	 * gegebenenfalls die Farbe angepasst.
 	 * 
 	 * @param btn
@@ -552,8 +549,7 @@ public class ActivityUtils
 	}
 
 	/**
-	 * Da bei dem Verwendeten Themes die disabled TextColor nicht richtig
-	 * übernommen wird, wird mit dieser Methode der Status gesetzt und
+	 * Da bei dem Verwendeten Themes die disabled TextColor nicht richtig übernommen wird, wird mit dieser Methode der Status gesetzt und
 	 * gegebenenfalls die Farbe angepasst.
 	 * 
 	 * @param btn

@@ -37,9 +37,9 @@ import de.cachebox_test.Ui.Sizes;
 
 public class Global
 {
-	public static final int CurrentRevision = 602;
-	public static final String CurrentVersion = "0.4.";
-	public static final String VersionPrefix = "test";
+	public static final int CurrentRevision = 603;
+	public static final String CurrentVersion = "0.5.";
+	public static final String VersionPrefix = "Test";
 	public static final int LatestDatabaseChange = 1016;
 	public static final int LatestDatabaseFieldNoteChange = 1001;
 
@@ -63,6 +63,7 @@ public class Global
 	public static final int REQUEST_CODE_API_TARGET_DIALOG = 24112011;
 	public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
 	public static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 61216517;
+	public static final int REQUEST_CODE_DELETE_DIALOG = 15122011;
 
 	/**
 	 * Liste der Buttons in der QuickButton Leiste
