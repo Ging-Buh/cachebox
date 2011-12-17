@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -19,6 +20,7 @@ import CB_Core.Config;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
@@ -402,6 +404,36 @@ public class SearchForGeocaches
 								image.IsCacheImage = true;
 
 								imageList.add(image);
+							}
+
+							// insert images from Cache description
+							LinkedList<String> allImages = DescriptionImageGrabber.GetAllImages(cache, cache.shortDescription
+									+ cache.longDescription);
+
+							while (allImages != null && allImages.size() > 0)
+							{
+								String url;
+								url = allImages.poll();
+
+								for (ImageEntry im : imageList)
+								{
+									if (im.ImageUrl.equalsIgnoreCase(url))
+									{
+										continue;
+									}
+
+									ImageEntry image = new ImageEntry();
+
+									image.CacheId = cache.Id;
+									image.GcCode = cache.GcCode;
+									image.Name = url.substring(url.lastIndexOf("/") + 1);
+									image.Description = "";
+									image.ImageUrl = url;
+									image.IsCacheImage = true;
+
+									imageList.add(image);
+								}
+
 							}
 
 							// insert Waypoints
