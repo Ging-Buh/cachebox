@@ -468,6 +468,13 @@
 	internetError = Fehler bei Internetzugriff
 	errorAPI = Fehler während dem API-Zugriff
 	chkState = Prüfe Status
+	wyptDefTitle = Manuell
+	wyptTypeRef = Referenz
+	wyptTypeStage = Station eines Multicache
+	wyptTypeQuestion = Zu beantwortende Frage
+	wyptTypeTrail = Ausgangspunkt
+	wyptTypeParking = Parkplatz
+	wyptTypeFinal = Final
 	
 // Attributes
 	att_1_0 = Hunde nicht erlaubt

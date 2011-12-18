@@ -1,25 +1,12 @@
 package de.cachebox_test.Views;
 
 import CB_Core.GlobalCore;
+import CB_Core.DAO.WaypointDAO;
+import CB_Core.DB.Database;
+import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
-import CB_Core.Enums.CacheTypes;
-
-import CB_Core.DB.Database;
-import de.cachebox_test.Global;
-import de.cachebox_test.R;
-import de.cachebox_test.main;
-import CB_Core.DAO.WaypointDAO;
-import de.cachebox_test.Events.ViewOptionsMenu;
-import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.AllContextMenuCallHandler;
-import de.cachebox_test.Views.Forms.EditWaypoint;
-import de.cachebox_test.Views.Forms.MeasureCoordinateActivity;
-import de.cachebox_test.Views.Forms.MessageBox;
-import de.cachebox_test.Views.Forms.MessageBoxButtons;
-import de.cachebox_test.Views.Forms.MessageBoxIcon;
-import de.cachebox_test.Views.Forms.projectionCoordinate;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -32,6 +19,18 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import de.cachebox_test.Global;
+import de.cachebox_test.R;
+import de.cachebox_test.main;
+import de.cachebox_test.Events.ViewOptionsMenu;
+import de.cachebox_test.Ui.ActivityUtils;
+import de.cachebox_test.Ui.AllContextMenuCallHandler;
+import de.cachebox_test.Views.Forms.EditWaypoint;
+import de.cachebox_test.Views.Forms.MeasureCoordinateActivity;
+import de.cachebox_test.Views.Forms.MessageBox;
+import de.cachebox_test.Views.Forms.MessageBoxButtons;
+import de.cachebox_test.Views.Forms.MessageBoxIcon;
+import de.cachebox_test.Views.Forms.projectionCoordinate;
 
 public class WaypointView extends ListView implements ViewOptionsMenu
 {
@@ -330,8 +329,8 @@ public class WaypointView extends ListView implements ViewOptionsMenu
 			}
 			Coordinate coord = GlobalCore.LastValidPosition;
 			if ((coord == null) || (!coord.Valid)) coord = GlobalCore.SelectedCache().Pos;
-			Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", coord.Latitude, coord.Longitude,
-					GlobalCore.SelectedCache().Id, "", "manual");
+			Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.Latitude, coord.Longitude,
+					GlobalCore.SelectedCache().Id, "", GlobalCore.Translations.Get("wyptDefTitle"));
 			Intent mainIntent = new Intent().setClass(getContext(), EditWaypoint.class);
 			Bundle b = new Bundle();
 			b.putSerializable("Waypoint", newWP);

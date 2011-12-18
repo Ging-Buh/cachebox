@@ -464,6 +464,13 @@ utf8
 	internetError = Error accessing internet
 	errorAPI = Error during API access
 	chkState = Checking state
+	wyptDefTitle = manual
+	wyptTypeRef = Reference
+	wyptTypeStage =Stage of a Multicache
+	wyptTypeQuestion = Question to answer
+	wyptTypeTrail = Trailhead
+	wyptTypeParking = Parking Area
+	wyptTypeFinal = Final
 
 // Attributes
 	att_1_0 = dogs does not permit

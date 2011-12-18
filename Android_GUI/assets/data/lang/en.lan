@@ -194,7 +194,7 @@ English
 		DegMin = Deg, Min
 		DegMinSec = Deg, Min, Sec
 		utm = UTM
-		addWaypoint = add Waypoint
+		addWaypoint = Add Waypoint
 		?replaceCoord = Do you really want to replace coordinates?
 		!replaceCoord = Replace Coordinates
 		!DelWP = Delete Waypoint
@@ -467,7 +467,14 @@ English
 	internetError = Error accessing internet
 	errorAPI = Error during API access
 	chkState = Checking state
-
+	wyptDefTitle = manual
+	wyptTypeRef = Reference
+	wyptTypeStage =Stage of a Multicache
+	wyptTypeQuestion = Question to answer
+	wyptTypeTrail = Trailhead
+	wyptTypeParking = Parking Area
+	wyptTypeFinal = Final
+	
 // Attributes
 	att_1_0 = dogs does not permit
 	att_1_1 = dogs permits
