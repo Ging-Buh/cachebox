@@ -2702,7 +2702,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	{
 		try
 		{
-			if (nmea.substring(0, 6).equalsIgnoreCase("$GPGGA"))
+			if (nmea.length() >= 6 && nmea.substring(0, 6).equalsIgnoreCase("$GPGGA"))
 			{
 				String[] s = nmea.split(",");
 				try
