@@ -1103,9 +1103,13 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				Toast.makeText(mainActivity, "Anzahl " + String.valueOf(nun), 1);
 				return;
 			}
-			case 2:// Filter gewählt
+			case 2:// Filter gewählt noch nicht fertig!
 			{
-				// noch nicht umgesetzt!
+				CacheListDAO dao = new CacheListDAO();
+				long nun = dao.DelFilter(Global.LastFilter.getSqlWhere());
+				Global.LastFilter = new FilterProperties(FilterProperties.presets[0]);
+				EditFilterSettings.ApplyFilter(mainActivity, Global.LastFilter);
+				Toast.makeText(mainActivity, "Anzahl " + String.valueOf(nun), 1);
 				return;
 			}
 			}

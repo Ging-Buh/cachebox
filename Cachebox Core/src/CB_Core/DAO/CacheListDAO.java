@@ -2,6 +2,7 @@ package CB_Core.DAO;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -113,7 +114,9 @@ public class CacheListDAO
 	{
 		try
 		{
-			return Database.Data.delete("Caches", "Archived=1", null);
+			long ret = Database.Data.delete("Caches", "Archived=1", null);
+			delCacheImages(getDelGcCodeList("Archived=1"));
+			return ret;
 		}
 		catch (Exception e)
 		{
@@ -126,7 +129,9 @@ public class CacheListDAO
 	{
 		try
 		{
-			return Database.Data.delete("Caches", "Found=1", null);
+			long ret = Database.Data.delete("Caches", "Found=1", null);
+			delCacheImages(getDelGcCodeList("Found=1"));
+			return ret;
 		}
 		catch (Exception e)
 		{
@@ -134,4 +139,47 @@ public class CacheListDAO
 			return -1;
 		}
 	}
+
+	public long DelFilter(String Where)
+	{
+		try
+		{
+			long ret = Database.Data.delete("Caches", Where, null);
+			delCacheImages(getDelGcCodeList(Where));
+			return ret;
+		}
+		catch (Exception e)
+		{
+			Logger.Error("CacheListDAO.DelFilter()", "Filter ERROR", e);
+			return -1;
+		}
+	}
+
+	private ArrayList<String> getDelGcCodeList(String where)
+	{
+		CacheList list = new CacheList();
+		ReadCacheList(list, where);
+		ArrayList<String> StrList = new ArrayList<String>();
+
+		for (Iterator<Cache> iterator = list.iterator(); iterator.hasNext();)
+		{
+			StrList.add(iterator.next().GcCode);
+		}
+		return StrList;
+	}
+
+	/**
+	 * Löscht alle Spoiler und Description Images der übergebenen Liste mit GC-Codes
+	 * 
+	 * @param list
+	 */
+	private void delCacheImages(ArrayList<String> list)
+	{
+		for (Iterator<String> iterator = list.iterator(); iterator.hasNext();)
+		{
+			String gc = iterator.next();
+			// hier müssen jetzt alle Images mit dem GC-Code anfangen gelöscht werden
+		}
+	}
+
 }

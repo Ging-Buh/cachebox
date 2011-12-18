@@ -1,19 +1,14 @@
 package de.cachebox_test.Views.FilterSettings;
 
-import CB_Core.Log.Logger;
 import CB_Core.Config;
-import CB_Core.DB.Database;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
-
-import de.cachebox_test.Global;
-import de.cachebox_test.R;
-import de.cachebox_test.main;
-import de.cachebox_test.Custom_Controls.MultiToggleButton;
 import CB_Core.DAO.CacheListDAO;
-import de.cachebox_test.Ui.ActivityUtils;
+import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Log.Logger;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,7 +18,11 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
-import android.app.ProgressDialog;
+import de.cachebox_test.Global;
+import de.cachebox_test.R;
+import de.cachebox_test.main;
+import de.cachebox_test.Custom_Controls.MultiToggleButton;
+import de.cachebox_test.Ui.ActivityUtils;
 
 public class EditFilterSettings extends Activity
 {
@@ -57,8 +56,7 @@ public class EditFilterSettings extends Activity
 		btSet.setText(GlobalCore.Translations.Get("setting"));
 		btCat.setText(GlobalCore.Translations.Get("category"));
 		/*
-		 * btPre.setText("Preset"); btSet.setText("Setting");
-		 * btCat.setText("Category");
+		 * btPre.setText("Preset"); btSet.setText("Setting"); btCat.setText("Category");
 		 */
 		MultiToggleButton.initialOn_Off_ToggleStates(btPre);
 		MultiToggleButton.initialOn_Off_ToggleStates(btSet);
@@ -262,7 +260,10 @@ public class EditFilterSettings extends Activity
 						main.mainActivity,
 						GlobalCore.Translations.Get("AppliedFilter1") + " " + String.valueOf(Database.Data.Query.size()) + " "
 								+ GlobalCore.Translations.Get("AppliedFilter2"), Toast.LENGTH_LONG).show();
-				EditFilterSettings.filterActivity.finish();
+				if (EditFilterSettings.filterActivity != null)
+				{
+					EditFilterSettings.filterActivity.finish();
+				}
 			}
 
 			}
