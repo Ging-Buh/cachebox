@@ -371,6 +371,7 @@ public class WaypointView extends ListView implements ViewOptionsMenu
 						Database.DeleteFromDatabase(aktWaypoint);
 						GlobalCore.SelectedCache().waypoints.remove(aktWaypoint);
 						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), null);
+						aktWaypoint = null;
 						lvAdapter.notifyDataSetChanged();
 						break;
 					case DialogInterface.BUTTON_NEGATIVE:
