@@ -815,7 +815,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 							// a
 							// different cache but only a different waypoint
 							// Wegpunktliste ausrichten
-							GlobalCore.SelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
+							ThreadSaveSetSelectedWP(minWpi.Cache, minWpi.Waypoint);
 							// FormMain.WaypointListPanel.AlignSelected();
 							// updateCacheList();
 							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), zoom, true);

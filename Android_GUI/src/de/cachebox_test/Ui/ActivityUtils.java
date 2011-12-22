@@ -73,7 +73,7 @@ public class ActivityUtils
 		main.isFirstStart = firstStart;
 		activity.finish();
 
-		activity.startActivity(new Intent(activity, main.class));
+		activity.startActivity(new Intent(activity, activity.getClass()));
 	}
 
 	/** Set the theme of the activity, according to the configuration. */

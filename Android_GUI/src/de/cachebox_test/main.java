@@ -94,6 +94,10 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.backends.android.AndroidGraphics;
+import com.badlogic.gdx.backends.android.AndroidInput;
+import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 
 import de.cachebox_test.Components.CacheNameView;
 import de.cachebox_test.Components.search;
@@ -322,6 +326,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			Logger.Error("main.onCreate()", "setContentView", exc);
 		}
+
+		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		config.useGL20 = true;
+		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
+				: config.resolutionStrategy);
+		input = new AndroidInput(this, graphics.getView(), config);
 
 		mapViewGlListener = new MapViewGlListener();
 
@@ -1170,17 +1180,33 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	@Override
+	protected void onPause()
+	{
+		if (input == null || graphics == null)
+		{
+			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+			config.useGL20 = true;
+			graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
+					: config.resolutionStrategy);
+			input = new AndroidInput(this, graphics.getView(), config);
+		}
+
+		super.onPause();
+	}
+
+	@Override
 	protected void onResume()
 	{
-		try
+		if (input == null)
 		{
-			super.onResume();
+			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+			config.useGL20 = true;
+			graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
+					: config.resolutionStrategy);
+			input = new AndroidInput(this, graphics.getView(), config);
 		}
-		catch (Exception e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		super.onResume();
+
 		if (runsWithAkku) counter.start();
 		mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
 		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -2275,7 +2301,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void switchDayNight()
 	{
-		frame.removeAllViews();
+		// frame.removeAllViews();
 		Config.changeDayNight();
 		DescriptionViewControl.mustLoadDescription = true;
 		downSlider.isInitial = false;
