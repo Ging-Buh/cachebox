@@ -1,0 +1,36 @@
+Index: src/com/badlogic/gdx/backends/android/AndroidApplication.java
+===================================================================
+--- src/com/badlogic/gdx/backends/android/AndroidApplication.java	(Revision 2978)
++++ src/com/badlogic/gdx/backends/android/AndroidApplication.java	(Arbeitskopie)
+@@ -185,15 +185,18 @@
+ 	@Override
+ 	protected void onPause () {
+ 		if (wakeLock != null) wakeLock.release();
+-		graphics.pause();
++		if(graphics!=null)graphics.pause();
+ 
++		if(input != null){
++			
+ 		input.unregisterSensorListeners();
+ 		// erase pointer ids. this sucks donkeyballs...
+ 		int[] realId = input.realId;
+ 		for (int i = 0; i < realId.length; i++)
+ 			realId[i] = -1;
+-
+-		if (isFinishing()) {
++		}
++		
++		if (isFinishing() && graphics!=null) {
+ 			graphics.clearManagedCaches();
+ 			graphics.destroy();
+ 		}
+@@ -215,7 +218,8 @@
+ 		Gdx.files = this.getFiles();
+ 		Gdx.graphics = this.getGraphics();
+ 
+-		((AndroidInput)getInput()).registerSensorListeners();
++		if(input != null)((AndroidInput)getInput()).registerSensorListeners();
++		
+ 		if (audio != null) audio.resume();
+ 
+ 		if (graphics != null && graphics.view != null) {

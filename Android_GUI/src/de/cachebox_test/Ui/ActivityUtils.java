@@ -39,6 +39,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+
+import com.badlogic.gdx.backends.android.AndroidApplication;
+
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
@@ -54,6 +57,51 @@ public class ActivityUtils
 	public final static int THEME_NIGHT = 2;
 	public final static int THEME_DAY_TRANSPARENT = 3;
 	public final static int THEME_NIGHT_TRANSPARENT = 4;
+
+	public static void changeToTheme(AndroidApplication activity, int theme)
+	{
+		changeToTheme(activity, theme, false);
+	}
+
+	/**
+	 * Set the theme of the Activity, and restart it by creating a new Activity of the same type.
+	 */
+	public static void changeToTheme(AndroidApplication activity, int theme, boolean firstStart)
+	{
+		sTheme = theme;
+		main.isRestart = true;
+		main.isFirstStart = firstStart;
+		activity.finish();
+
+		activity.startActivity(new Intent(activity, main.class));
+	}
+
+	/** Set the theme of the activity, according to the configuration. */
+	public static void onActivityCreateSetTheme(AndroidApplication activity)
+	{
+		switch (sTheme)
+		{
+		default:
+		case THEME_DEFAULT:
+			break;
+		case THEME_DAY:
+			activity.setTheme(R.style.Theme_day);
+			break;
+		case THEME_NIGHT:
+			activity.setTheme(R.style.Theme_night);
+			break;
+		case THEME_DAY_TRANSPARENT:
+			activity.setTheme(R.style.Theme_day_transparent);
+			break;
+		case THEME_NIGHT_TRANSPARENT:
+			activity.setTheme(R.style.Theme_night_transparent);
+			break;
+
+		}
+
+		Global.initTheme(activity);
+
+	}
 
 	public static void changeToTheme(Activity activity, int theme)
 	{

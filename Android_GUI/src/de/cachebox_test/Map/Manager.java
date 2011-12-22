@@ -1,20 +1,17 @@
 package de.cachebox_test.Map;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.mapsforge.android.maps.CanvasRenderer;
 import org.mapsforge.android.maps.MapDatabase;
@@ -22,16 +19,16 @@ import org.mapsforge.android.maps.MapGeneratorJob;
 import org.mapsforge.android.maps.MapViewMode;
 import org.mapsforge.android.maps.Tile;
 
-import de.cachebox_test.Global;
-import de.cachebox_test.Views.MapView;
-
 import CB_Core.FileIO;
 import CB_Core.Map.Descriptor;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.Config;
-import android.graphics.Color;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import de.cachebox_test.Global;
+import de.cachebox_test.main;
+import de.cachebox_test.Views.MapView;
 
 public class Manager
 {
@@ -105,9 +102,71 @@ public class Manager
 		return newLayer;
 	}
 
+	public byte[] LoadLocalPixmap(String layer, Descriptor desc)
+	{
+		return LoadLocalPixmap(GetLayerByName(layer, layer, ""), desc);
+	}
+
 	public Bitmap LoadLocalBitmap(String layer, Descriptor desc)
 	{
 		return LoadLocalBitmap(GetLayerByName(layer, layer, ""), desc);
+	}
+
+	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc)
+	{
+		if (layer.isMapsForge)
+		{
+			if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name)))
+			{
+				mapDatabase = new MapDatabase();
+				mapDatabase.openFile(CB_Core.Config.settings.MapPackFolder.getValue() + "/" + layer.Name);
+				renderer = new CanvasRenderer();
+				renderer.setDatabase(mapDatabase);
+				tileBitmap = Bitmap.createBitmap(256, 256, Config.RGB_565);
+				renderer.setupMapGenerator(tileBitmap);
+				mapsForgeFile = layer.Name;
+			}
+			Tile tile = new Tile(desc.X, desc.Y, (byte) desc.Zoom);
+
+			/**
+			 * Original value = 1.333f now 1.333 * dpiScaleFactorX from MapView
+			 */
+			float DPIawareFaktor = (float) (MapView.dpiScaleFactorX * 1.333);
+
+			MapGeneratorJob job = new MapGeneratorJob(tile, MapViewMode.CANVAS_RENDERER, "xxx", DPIawareFaktor, false, false, false);
+
+			// renderer.setupMapGenerator(tileBitmap);
+			renderer.prepareMapGeneration();
+			renderer.executeJob(job);
+			// Bitmap bit = renderer.tileBitmap.copy(Config.RGB_565, true);
+
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			if (main.N)
+			{
+				Bitmap b = Bitmap.createBitmap(256, 256, Config.RGB_565);
+				Canvas c = new Canvas(b);
+				c.drawBitmap(renderer.tileBitmap, 0, 0, main.N ? Global.invertPaint : new Paint());
+				b.compress(Bitmap.CompressFormat.PNG, 50, baos);
+			}
+			else
+			{
+				renderer.tileBitmap.compress(Bitmap.CompressFormat.PNG, 50, baos);
+			}
+
+			byte[] result = baos.toByteArray();
+
+			try
+			{
+				baos.close();
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return result;
+		}
+		return null;
 	}
 
 	// / <summary>

@@ -64,7 +64,7 @@ public class CacheDraw
 
 	// Die Cached Bmp wird nur zur Darstellung als Bubble in der
 	// MapView benötigt.
-	private static Bitmap CachedBitmap;
+	public static Bitmap CachedBitmap;
 	private static long CachedBitmapId = -1;
 	private static Paint CachedBitmapPaitnt;
 
@@ -73,6 +73,20 @@ public class CacheDraw
 		CachedBitmap.recycle();
 		CachedBitmap = null;
 		CachedBitmapId = -1;
+	}
+
+	public static void DrawInfo(Cache cache, int Width, int Height, DrawStyle drawStyle)
+	{
+		if (CachedBitmap == null || !(CachedBitmapId == cache.Id))
+		{
+			CachedBitmap = Bitmap.createBitmap(Width, Height, Bitmap.Config.ARGB_8888);
+			Rect newRec = new Rect(0, 0, Width, Height);
+			Canvas scaledCanvas = new Canvas(CachedBitmap);
+			scaledCanvas.drawColor(Color.TRANSPARENT);
+			DrawInfo(cache, scaledCanvas, newRec, Color.TRANSPARENT, Color.TRANSPARENT, drawStyle, false);
+			CachedBitmapId = cache.Id;
+		}
+
 	}
 
 	public static void DrawInfo(Cache cache, Canvas canvas, Rect rec, int BackgroundColor, DrawStyle drawStyle, float scale)

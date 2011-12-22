@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/mi_mvgl_AlignCompass" android:checkable="true" android:title="Align to Compass" android:checked="false"></item>
+    <item android:id="@+id/mi_mvgl_centergps" android:title="Center GPS" android:checked="true" android:checkable="true"></item>
+
+    
+
+</menu>

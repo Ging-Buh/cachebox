@@ -4,4 +4,5 @@
     <item android:id="@+id/miMapView" android:title="Map" android:icon="@drawable/map"></item>
     <item android:id="@+id/miCompassView" android:title="Compass" android:icon="@drawable/compass"></item>
     <item android:id="@+id/miNavigateTo" android:title="Navigate to..." android:icon="@drawable/navigate"></item>
+    <item android:title="NewMap" android:id="@+id/miMapViewGl"></item>
 </menu>

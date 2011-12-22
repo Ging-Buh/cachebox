@@ -45,7 +45,6 @@ import CB_Core.Types.GpxFilename;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -93,6 +92,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.badlogic.gdx.backends.android.AndroidApplication;
+
 import de.cachebox_test.Components.CacheNameView;
 import de.cachebox_test.Components.search;
 import de.cachebox_test.Components.search.searchMode;
@@ -111,6 +113,7 @@ import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Locator.GPS;
 import de.cachebox_test.Locator.Locator;
+import de.cachebox_test.Map.MapViewGlListener;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
 import de.cachebox_test.Ui.Sizes;
@@ -122,6 +125,7 @@ import de.cachebox_test.Views.FieldNotesView;
 import de.cachebox_test.Views.JokerView;
 import de.cachebox_test.Views.LogView;
 import de.cachebox_test.Views.MapView;
+import de.cachebox_test.Views.MapViewGL;
 import de.cachebox_test.Views.NotesView;
 import de.cachebox_test.Views.SolverView;
 import de.cachebox_test.Views.SpoilerView;
@@ -143,7 +147,7 @@ import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 import de.cachebox_test.Views.Forms.ScreenLock;
 import de.cachebox_test.Views.Forms.SelectDB;
 
-public class main extends Activity implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEvent,
+public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEvent,
 		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent
 {
 	/*
@@ -154,7 +158,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private static long GPSTimeStamp = 0;
 	public static MapView mapView = null; // ID 0
 	public static CacheListView cacheListView = null; // ID 1
-	public static WaypointView waypointView = null; // ID 2
+	private static MapViewGL mapViewGl = null; // ID 2
 	private static LogView logView = null; // ID 3
 	public static DescriptionView descriptionView = null; // ID 4
 	private static SpoilerView spoilerView = null; // ID 5
@@ -166,7 +170,10 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	private static JokerView jokerView = null; // ID 12
 	private static TrackListView tracklistView = null; // ID 13
 	private static TrackableListView trackablelistView = null; // ID 14
+	public static WaypointView waypointView = null; // ID 15
 
+	private View viewGl = null;
+	private MapViewGlListener mapViewGlListener = null;
 	public static LinearLayout strengthLayout;
 
 	public LinearLayout searchLayout;
@@ -191,7 +198,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	/*
 	 * public static member
 	 */
-	public static Activity mainActivity;
+	public static AndroidApplication mainActivity;
 	public static Boolean isRestart = false;
 	public static Boolean isFirstStart = true;
 
@@ -316,6 +323,8 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			Logger.Error("main.onCreate()", "setContentView", exc);
 		}
 
+		mapViewGlListener = new MapViewGlListener();
+
 		inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mainActivity = this;
 		AllContextMenuCallHandler.Main = this;
@@ -356,6 +365,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 
 		initialLocationManager();
 		initialMapView();
+		initialMapViewGl();
 		initialViews();
 		initalMicIcon();
 		initialButtons();
@@ -1162,7 +1172,15 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 	@Override
 	protected void onResume()
 	{
-		super.onResume();
+		try
+		{
+			super.onResume();
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (runsWithAkku) counter.start();
 		mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
 		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -1244,6 +1262,7 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				ViewList.clear();
 				cacheListView = null;
 				mapView = null;
+				mapViewGl = null;
 				notesView = null;
 				jokerView = null;
 				descriptionView = null;
@@ -1443,9 +1462,14 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 				logView = new LogView(this);
 				showView(logView, 3);
 				break;
-			case 2: // waypointView
+			case 15: // waypointView
 				waypointView = new WaypointView(this, this);
-				showView(waypointView, 2);
+				showView(waypointView, 15);
+				break;
+			case 2:
+				mapViewGl = null;
+				initialMapViewGl();
+				showView(mapViewGl, 2);
 				break;
 			}
 		}
@@ -1630,11 +1654,14 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 			case R.id.miMapView:
 				showView(0);
 				break;
+			case R.id.miMapViewGl:
+				showView(2);
+				break;
 			case R.id.miDescription:
 				showView(4);
 				break;
 			case R.id.miWaypoints:
-				showView(2);
+				showView(15);
 				break;
 			case R.id.miNotes:
 				showView(6);
@@ -1902,6 +1929,32 @@ public class main extends Activity implements SelectedCacheEvent, LocationListen
 		catch (Exception e)
 		{
 			Logger.Error("main.initialMapView()", "", e);
+			e.printStackTrace();
+		}
+	}
+
+	private void initialMapViewGl()
+	{
+		try
+		{
+			if (mapViewGl == null)
+			{
+				viewGl = initializeForView(mapViewGlListener, true);
+				mapViewGl = new MapViewGL(this, inflater, viewGl, mapViewGlListener);
+
+				mapViewGl.Initialize();
+				// mapViewGl.CurrentLayer =
+				// MapView.Manager.GetLayerByName(Config.settings.CurrentMapLayer.getValue(),
+				// Config.settings.CurrentMapLayer.getValue(), "");
+				// Global.TrackDistance =
+				// Config.settings.TrackDistance.getValue();
+				mapViewGl.InitializeMap();
+
+			}
+		}
+		catch (Exception e)
+		{
+			Logger.Error("main.initialMapViewGl()", "", e);
 			e.printStackTrace();
 		}
 	}
