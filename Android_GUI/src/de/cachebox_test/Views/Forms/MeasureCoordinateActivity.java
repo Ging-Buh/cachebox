@@ -42,16 +42,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Custom_Controls.CanvasDrawControl;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.Sizes;
 
 public class MeasureCoordinateActivity extends Activity implements LocationListener
 {
@@ -61,6 +58,8 @@ public class MeasureCoordinateActivity extends Activity implements LocationListe
 	private MeasuredCoordList mMeasureList = new MeasuredCoordList();
 	private TextView lblMeasureCount;
 	private TextView lblMeasureCoord;
+	private TextView lblDescMeasureCount;
+	private TextView lblDescMeasureCoord;
 	private int MeasureCount = 0;
 
 	CanvasDrawControl panelPreview;
@@ -132,14 +131,11 @@ public class MeasureCoordinateActivity extends Activity implements LocationListe
 		// Translations
 		bOK.setText(GlobalCore.Translations.Get("ok"));
 		bCancel.setText(GlobalCore.Translations.Get("cancel"));
+		lblDescMeasureCoord.setText(GlobalCore.Translations.Get("MeasureCoord"));
+		lblDescMeasureCount.setText(GlobalCore.Translations.Get("MeasureCount"));
 
 		timer.schedule(task, 1200);
 
-		// set Height of TopLayout
-
-		LayoutParams params = ((RelativeLayout) findViewById(R.id.meco_titlelayout)).getLayoutParams();
-		params.height = Sizes.getScaledRefSize_normal() * 5;
-		((RelativeLayout) findViewById(R.id.meco_titlelayout)).setLayoutParams(params);
 	}
 
 	final Timer timer = new Timer();
@@ -196,6 +192,12 @@ public class MeasureCoordinateActivity extends Activity implements LocationListe
 		strengthLayout = (LinearLayout) findViewById(R.id.strength_control);
 		lblMeasureCount = (TextView) findViewById(R.id.textView2);
 		lblMeasureCoord = (TextView) findViewById(R.id.textView4);
+		lblDescMeasureCount = (TextView) findViewById(R.id.textView1);
+		lblDescMeasureCoord = (TextView) findViewById(R.id.textView3);
+
+		// LayoutParams params = panelPreview.getLayoutParams();
+		// params.height = Sizes.getWindowWidth();
+		// panelPreview.setLayoutParams(params);
 
 	}
 

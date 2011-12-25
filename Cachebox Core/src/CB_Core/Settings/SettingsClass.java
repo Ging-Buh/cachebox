@@ -49,7 +49,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool MapShowRating;
 	public SettingBool MapShowDT;
 	public SettingBool MapShowTitles;
-	public SettingBool ShowKeypad;
+	// public SettingBool ShowKeypad;
 	public SettingBool isChris;
 	public SettingBool ImportLayerOsm;
 	public SettingBool TrackRecorderStartup;
@@ -188,7 +188,7 @@ public class SettingsClass extends SettingsList
 		addSetting(DescriptionNoAttributes = new SettingBool("DescriptionNoAttributes", cat, NORMAL, false, true));
 		addSetting(switchViewApproach = new SettingBool("switchViewApproach", cat, NORMAL, false, true));
 		addSetting(dontShowChris = new SettingBool("dontShowChris", cat, NORMAL, false, true));
-		addSetting(ShowKeypad = new SettingBool("ShowKeypad", cat, NORMAL, true, true));
+		// addSetting(ShowKeypad = new SettingBool("ShowKeypad", cat, NORMAL, true, true));
 		addSetting(PlaySounds = new SettingBool("PlaySounds", cat, NORMAL, true, true));
 		addSetting(SuppressPowerSaving = new SettingBool("SuppressPowerSaving", cat, NORMAL, true, true));
 		addSetting(AllowLandscape = new SettingBool("AllowLandscape", cat, NORMAL, false, true));
@@ -330,10 +330,10 @@ public class SettingsClass extends SettingsList
 		// addSetting(GCRequestDelay = new SettingInt("GCRequestDelay", cat, EXPERT, 0, true));
 		addSetting(ImportPQsFromGeocachingCom = new SettingBool("ImportPQsFromGeocachingCom", cat, NORMAL, false, true));
 		addSetting(FieldnotesUploadAll = new SettingBool("FieldnotesUploadAll", cat, NORMAL, false, true));
-		addSetting(SearchWithoutFounds = new SettingBool("SearchWithoutFounds", cat, NORMAL, true, true));
-		addSetting(SearchWithoutOwns = new SettingBool("SearchWithoutOwns", cat, NORMAL, true, true));
-		addSetting(SearchOnlyAvible = new SettingBool("SearchOnlyAvible", cat, NORMAL, true, true));
-		addSetting(lastSearchRadius = new SettingInt("lastSearchRadius", cat, NORMAL, 5, true));
+		addSetting(SearchWithoutFounds = new SettingBool("SearchWithoutFounds", cat, INVISIBLE, true, true));
+		addSetting(SearchWithoutOwns = new SettingBool("SearchWithoutOwns", cat, INVISIBLE, true, true));
+		addSetting(SearchOnlyAvible = new SettingBool("SearchOnlyAvible", cat, INVISIBLE, true, true));
+		addSetting(lastSearchRadius = new SettingInt("lastSearchRadius", cat, INVISIBLE, 5, true));
 	}
 
 	private void addDebugSettings()

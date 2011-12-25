@@ -54,9 +54,8 @@ English
 	RecVideo = Record Video
 	ChkUpdate = Check for Updates
 	manage = Manage DB
-	screenlock = Screenlock (min/sec)
+	screenlock = Screenlock 
 	
-
 // AboutViewPanel
 	caches_found = Caches Found:
 	gps = GPS:
@@ -194,7 +193,7 @@ English
 		DegMin = Deg, Min
 		DegMinSec = Deg, Min, Sec
 		utm = UTM
-		addWaypoint = Add Waypoint
+		addWaypoint = add Waypoint
 		?replaceCoord = Do you really want to replace coordinates?
 		!replaceCoord = Replace Coordinates
 		!DelWP = Delete Waypoint
@@ -209,6 +208,14 @@ English
 		type = Type
 		Clue = Clue
 
+	//Waypoint Type select
+		Reference = reference
+		StageofMulti = Stage of a multicache
+		Question2Answer = question to answer
+		Trailhead = trailhead
+		Parking = parking
+		Final = final
+		
 	//SolverViewPanel
 		Solve = Solve
 		Funct. = Funct.
@@ -282,10 +289,10 @@ English
 		distance = Distance:
 		Align = Align
 		AlignGps = Align \n GPS
-		AlignHtc = Align \n HTC
+		AlignHtc = Align \n compass
 			
 	//Searchform
-		SearchCache = Search Caches
+		SearchCache = Search caches
 		Filter = Filter
 		Search = Search
 		Next = Next
@@ -303,8 +310,10 @@ English
 	//GPS
 	CompatibleWithGpsModDriver? = Compatible with GpsModDriver?
 	UseHtcCompass = Use Hardware Compass
+	Desc_HtcCompass = If Compass available it is used for bearing. Otherwise Bearing is appropriated by last GPS-Positions.
 	DescHtcLevel = Speed level for Hardware or GPS compass. \n-1 = GPS is not used at all.
-	
+	Desc_HtcLevel = For driving GPS Bearing is suggested. For walking bearing by compass is more detailed.
+
 	//Data
 	AdjustFounds = Adjust number of finds ...
 	LoadFounds = Load number of finds from gc.com
@@ -350,8 +359,11 @@ English
 	units = Units:	
 	AllowInternet = Allow Internet Access
 	AllowLandscape = Allow Landscape view
+	Desc_AllowLandscape = Display is rotated if device is rotated. (Could cause design problems)
 	ShowKeypad = Show Keypad
+	Desc_ShowKeypad = allows keypad displayed in fieldnotes, notes, waypoints,...
 	SuppressPowerSaving = Suppress Power Saving
+	Desc_SuppressPowerSaving = prevents the power saving mode of device
 	UploadAllFieldnotes = Upload All Fieldnotes? (Ignore Date)
 	LogIn = Login at geocaching.com
 	GCPW = Password at geocaching.com
@@ -359,8 +371,7 @@ English
 	GCJoker = MD5-Hash at gcJoker.de
 	SelectLanguage = Select Language
 	save = Save
-	
-	
+		
 	
 //GC-Live
 
@@ -384,6 +395,7 @@ English
 	generate = Generate
 	load = Load
 	NoTrackSelected = No track selected!
+	IsActualTrack = Current track cannot be deleted
 	preset = Preset
 	setting = Setting
 	category = Category
@@ -417,6 +429,7 @@ English
 	Layer = Map type
 	AlignToCompass = Align to compass
 	SmoothScrolling = Smooth scrolling
+	Desc_SmoothScrolling = The map is displayed more smoothly during scrolling 
 	view = View
 	none = None
 	normal = Normal
@@ -427,9 +440,11 @@ English
 	ShowDT = Show D/T
 	ShowTitle = Show Titles
 	ShowDirectLine = Show Direct Line
+	Desc_ShowDirectLine = Draws a line between own and cache position. Helpful if cache outside of displayed map
 	start = Start
 	DayNight = Day/Night
-	ScreenLock = ScreenLock
+	ScreenLock = ScreenLock [min/sec] 
+	Desc_ScreenLock = Screenlock
 	SelectCache = Select Cache
 	Maps = Maps
 	PQfromGC = Pocket Query from geocaching.com
@@ -440,6 +455,9 @@ English
 	getApiKey = Get API key
 	DescMapLayer = Auto-download map layer
 	MoveMapCenterWithSpeed = Move map center with speed
+	Desc_MoveMapCenterWithSpeed = own position is displayed lower in mapview, so you have a better view on the map. Useful for driving. (Only available if map is alligned to compass)
+	MoveMapCenterMaxSpeed = Switches to driving mode at x km/h
+	Desc_MoveMapCenterMaxSpeed = speed of changing the own position displayed in the mapview 
 	DPIaware = DPI-aware rendering
 	StartTrackRecOnStart = Start Track Recorder on startup
 	TrackEvery = Track every
@@ -467,14 +485,7 @@ English
 	internetError = Error accessing internet
 	errorAPI = Error during API access
 	chkState = Checking state
-	wyptDefTitle = manual
-	wyptTypeRef = Reference
-	wyptTypeStage =Stage of a Multicache
-	wyptTypeQuestion = Question to answer
-	wyptTypeTrail = Trailhead
-	wyptTypeParking = Parking Area
-	wyptTypeFinal = Final
-	
+
 // Attributes
 	att_1_0 = dogs does not permit
 	att_1_1 = dogs permits
@@ -588,81 +599,118 @@ English
 //new settings
 
 	QuickList = Edit Quick Button list!
-
 	Login = Login settings
-	
 	GcVotePassword = Password for GC-Vote
-	
+	Desc_GcVotePassword = For Greasemonkey script for displaying displaying votings. Account necessary (gcvote.com)
 	GcLogin = Groundspeak user name
-	
+	Desc_GcLogin = your username at www.geocaching.com
 	GcJoker = MD5-Hash at gcJoker.de
-	
+	Desc_GcJoker = telefonjoker of gcJoker.de. Instructions for building the hash can be found in the wiki of team-cachebox.de
 	GcAPI = Api key
-	
 	lastZoomLevel = Last used zoom level 
-	
 	OsmMinLevel = minimum zoom level for map 
-	
+	Desc_OsmMinLevel = maximum overview of the map
 	OsmMaxLevel = maximum zoom level for map  
-	MapShowDT= Show D/T on map view
+	Desc_OsmMaxLevel = maximum detail on the map
+	MapShowDT = Show D/T on map view
+	Desc_MapShowDT = The difficulties of a cache are displayed next to the icon in mapview
 	Gps = GPS settings
-	
 	HtcCompass = Use hardware compass
 	HtcLevel = Speed level for hardware or GPS compass. \n-1 = GPS is not used at all.
 	LeftWindow = formula window
 	BothWindow = both windows
 	RightWindow = solve window
 	MapHideMyFinds = Hide my finds on map
+	Desc_MapHideMyFinds = found caches are not visible in mapview
 	MapShowTitles = Show cache titles on map
+	Desc_MapShowTitles = Cachename is displayed above the cache icon in mapview
 	ZoomCross = Show cross when zoom level >
+	Desc_ZoomCross = displays a cross instead of icon when reducing the zoom level for a clearer view
 	MapShowCompass = Show compass on map
+	Desc_MapShowCompass = displays a info bar for bearing, speed and position
 	MapShowRating = Show rating on map
+	Desc_MapShowRating = display the votings of GCVote in mapview (account necessary)
 	ShowDirektLine = Show direkt line to target
+	Desc_ShowDirektLine = Draws a line between own and cache position. Helpful if cache outside of displayed map
 	Internal = Internal
 	PlaySounds = Play sounds
+	Desc_PlaySounds = gives an accoustic signal when approaching the cache
 	Folder = Folder
 	TrackFolder = Track Folder
+	Desc_TrackFolder = recorded tracks are stored in here
 	UserImageFolder = User Image Folder
+	Desc_UserImageFolder = taken pictures are stored in here
 	PocketQueryFolder = GPX Import Folder
+	Desc_PocketQueryFolder = downloaded pocketqueries (as zip) or gpx files have to be placed here for importing
 	MapPackFolder = Map pack Folder
+	Desc_MapPackFolder = place downloaded offline maps in here. don´t forget to switch the maptype
 	DatabasePath = Path to current database
+	Desc_DatabasePath = SQL-databases are stored in here
 	SpoilerFolder = Spoiler Folder
+	Desc_SpoilerFolder = spoilers are stored in here
 	DescriptionImageFolder = Description Image Folder
+	Desc_DescriptionImageFolder = images displayed in cache descriptions are stored in here
+	TileCacheFolder = Cache folder for map tiles
+	Desc_TileCacheFolder = downloaded map tiles are stored in here
+	LanguagePath = Path to language files
+	Desc_LanguagePath = language files are stored in here
 	TrackDistance = Track every [m]
+	Desc_TrackDistance = During track recording your position is saved every x meters.
 	SoundApproachDistance = Approach sound [m]
+	Desc_SoundApproachDistance = when approaching the cache location an accoustic signal is given
 	switchViewApproach = Switch view to compass with approach
+	Desc_switchViewApproach = when approaching the cache location map view is changed to compass view
 	TrackRecorderStartup = Start track recorder on startup
+	Desc_TrackRecorderStartup = Trackrecording automatically starts at every start of cachebox
 	DescriptionNoAttributes = Does not show attributes in the description
+	Desc_DescriptionNoAttributes = Don´t know what is not displayed here
 	Templates = Fieldnotes templates
 	DNFTemplate = DNF template
+	Desc_DNFTemplate = the template for "Did not find!" can be changed here
 	AddNoteTemplate = Add note template
+	Desc_AddNoteTemplate = the template for "Write note" can be changed here
 	FoundTemplate = Found template
+	Desc_FoundTemplate = the template for "Found!" can be changed here
 	NeedsMaintenanceTemplate = Needs Maintenance template
+	Desc_NeedsMaintenanceTemplate = the template for "Needs Maintenance" can be changed here
 	API = API
 	ImportGpx = Import GPX 
+	Desc_ImportGpx = for importing downloaded pocketqueries from the geocaching.com hp. files have to be stored in pq folder.
 	SearchWithoutOwns = Search without owns
+	Desc_SearchWithoutOwns = Search without owns
 	SearchOnlyAvible = Search only available
+	Desc_SearchOnlyAvible = Online search for available caches (disabled caches are not displayed)
 	ImportPQsFromGeocachingCom = Import PQs from geocaching.com
+	Desc_ImportPQsFromGeocachingCom = download and import your pocketqueries from geocaching.com. account necessary
 	SearchWithoutFounds = Search without founds 
+	Desc_SearchWithoutFounds = Online search without caches you found already
 	ImportRatings = Import Ratings from GC-Vote
+	Desc_ImportRatings = import ratings from gcvote.com into database. account necessary
 	lastSearchRadius = Last search radius
+	Desc_lastSearchRadius = saves last used search radius
 	Debug = debug
 	DebugDisplayInfo = Show display info 
-	MoveMapCenterMaxSpeed = Speed for max center move
 	OsmDpiAwareRendering = DPI-aware rendering
+	Desc_OsmDpiAwareRendering = the size of text and icons is adapted to definition. use this if you have problems displaying the map view.
 	PositionAtVertex = Draw position marker at vertex
+	Desc_PositionAtVertex = own position is displayed at vertex of marker (not in middle) for more detailed view
 	PositionMarkerTransparent = Draw position marker with transparence 
+	Desc_PositionMarkerTransparent = the position marker is displayed transparent
 	ImperialUnits = Imperial units
-	TileCacheFolder = Cache folder for map tiles
-	LanguagePath = Path to language files
+	Desc_ImperialUnits = distance and speed are displayed in yard and mph. restart necessary
 	FoundOffset = number of finds
+	Desc_FoundOffset = here you can customize your founds. The number is used in the found template
 	FieldnotesUploadAll = Upload All Fieldnotes (ignore date)
-
+	Desc_FieldnotesUploadAll = all fieldnotes are uploaded to geocaching.com
 	dontShowChris = Don't show Christmas icons 
-
-
+	Desc_dontShowChris = Christmas icons are only available in december. If you want to change to usual view, check here and restart.
 	DelArchived = Delete archived
 	DelFound = Delete founds
 	DelActFilter = Delete filter selection
 	DeleteCaches = Delete Caches
 	MsgDelCaches = The data base is filtered to archived or found Caches and the searching result is automatically extinguished without farther confirmation!\n\nReally delete Caches?
+	
+	
+	MeasureCount = Measurments
+	MeasureCoord = Coords
+	

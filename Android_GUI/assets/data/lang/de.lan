@@ -54,7 +54,7 @@
 	RecVideo = Video aufnehmen
 	ChkUpdate = Suche nach Updates
 	manage = DB Auswahl
-	screenlock = Bildschirm sperren
+	screenlock = Bildschirmsperre 
 
 // AboutViewPanel
 	caches_found = Gefundene Caches:
@@ -65,7 +65,7 @@
 	Hdop = Hdop:
 	alt = Höhe:
 	waiting_for_fix = Auf Signal warten
-	not_responding = not responding
+	not_responding = reagiert nicht
 	waypoint = Wegpunkt:
 	coordinate = Koordinate:
 	current = Aktuell:
@@ -77,8 +77,8 @@
 	Warning = Warnung!
 	thisNotWork = Das funktioniert nicht!
 
-	Open_getcachebox_Link = Öffne team-cachebox.de im Browser
-	allowInetConn = Ausgeschaltene Internetverbindung! Wollen Sie diesen Verweis trotzdem öffnen?
+	Open_getcachebox_Link = Öffne www.team-cachebox.de im Browser
+	allowInetConn = Keine Internetverbindung! Wollen Sie diesen Verweis trotzdem öffnen?
 	
 	Open_Cache_Link = Öffne Cache im Browser
 	Cann_not_open_cache_browser = Kann Cache im Browser nicht öffnen!
@@ -101,12 +101,12 @@
 	ShowSpoiler = Zeige Spoiler
 	spoilSearch = Spoiler wirklich suchen?
 	
-	ErrStartExternViewer = Beim starten des Externen Bildbetrachters
+	ErrStartExternViewer = Beim Starten des Externen Bildbetrachters
 	
 	downloadSpoiler = Spoiler laden.
 	downloadSpoiler? = Spoiler wirklich herunter Laden?
 	NoSpoiler = Keine Spoiler vorhanden.
-	NoCacheSelect = Kein Cache angewählt.
+	NoCacheSelect = Kein Cache gewählt.
 	NoAccessAllowed = Internet Verbindung nicht erlaubt! Schalten Sie die Verbindung in den Einstellungen ein, um Spoiler herunter zu Laden.
 	
 	ErrNoCam = Es gab einen Fehler! Es scheint so, als ob Ihr Gerät keine Kamera hat!
@@ -151,7 +151,6 @@
 		retry = Wiederholen
 		ignore = Ignorieren
 		
-
 	// FormSelectDB
 		NewDB = Neue DB
 		SelDB = Wähle Datenbank
@@ -159,11 +158,10 @@
 		AutoStartTime = Nach {1} Sekunden
 		AutoStartDisabled = Deaktiviert
 		StartWithoutSelection = Automatischer Start deaktiviert
-		
-		
+	
 	// DatabaseChangedForm
 		DatabaseChangedForm.Text = Datenbankstruktur geändert
-		DatabaseChangedForm.Msg = Glückwünsch, Sie haben ihre Cachebox aktualisiert! Die Datenbankstruktur hat sich geändert und muss aktualisiert werden. Dies wird den Import beträchtlich verlangsamen, es wird empfohlen eine neue Datenbank anzulegen. 
+		DatabaseChangedForm.Msg = Glückwünsch, Sie haben Cachebox aktualisiert! Die Datenbankstruktur hat sich geändert und muss aktualisiert werden. Dies wird den Import beträchtlich verlangsamen, es wird empfohlen eine neue Datenbank anzulegen. 
 		deleteDB = lösche DB
 		convert = Konvertieren
 		
@@ -185,10 +183,10 @@
 		ImportImage = Importiere Bilder
 		
 	//WaypointViewPanel
-		Projection = Projizierung
-		EnterMan = Manuell Eingeben
-		FromGps = vom GPS
-		FromMap = von Karte
+		Projection = Projektion
+		EnterMan = von Hand eingeben
+		FromGps = vom GPS übernehmen
+		FromMap = von Karte übernehmen
 		details = Details
 		delete = Löschen
 		DecDeg = Decimal Degrees
@@ -209,6 +207,14 @@
 		CopyGcCode = GcCode kopieren
 		type = Typ
 		Clue = Hinweis
+		
+	//Waypoint Type select
+		Reference = Referenz
+		StageofMulti = Stage eines Multis
+		Question2Answer = offene Aufgabe
+		Trailhead = Trailhead
+		Parking = Parkplatz
+		Final = Final
 		
 	//SolverViewPanel
 		Solve = Berech.
@@ -283,7 +289,7 @@
 		distance = Entfernung:
 		Align = Ausrichten
 		AlignGps = Richtung \n GPS
-		AlignHtc = Richtung \n HTC
+		AlignHtc = Richtung \n Kompass
 		
 	//Searchform
 		SearchCache = Suche Caches
@@ -304,7 +310,9 @@
 	//GPS
 	CompatibleWithGpsModDriver? = Kompatibel mit ModDriver?
 	UseHtcCompass = Verwende Hardware Kompass
-	DescHtcLevel = Schwellwert für Hardware oder GPS Kompass.\n-1 = GPS wird überhaupt nicht verwendet.
+	Desc_HtcCompass = Falls ein Kompass vorhanden ist, wird die Karte nach diesem ausgerichtet. Sonst wird die Himmelsrichtung aus den GPS-Positionen bestimmt.
+	DescHtcLevel = Umschalten zw. GPS und Kompass ab x km/h.\n-1 = GPS wird überhaupt nicht verwendet.
+	Desc_HtcLevel = Für Autofahrten ist die GPS - Richtung sinnvoll. Beim Laufen ist Ausrichtung nach dem Kompass genauer.
 	
 	//Data
 	AdjustFounds = Anzahl der Funde anpassen . . .
@@ -312,10 +320,10 @@
 	DeleteLogs = Lösche Logs
 	ButKeepLeast = aber behalte mindestens
 	ResetFavorites = Favoriten zurücksetzen (Demarkieren)
-	ResetListingChanged = listings geändertged zurücksetzen ...
+	ResetListingChanged = listings geändert zurücksetzen ...
 	DeleteFieldNotes = Lösche alle Fieldnotes ...
 	RemoveCaches = Lösche Caches ...
-	ArchiveFilterSelection? = Sie haben vor, alle Caches, aus Ihren Filtereinstellungen als 'archiviert' zu Kennzeichnen. Sind Sie sicher, dass Sie das wollen?
+	ArchiveFilterSelection? = Sie haben vor, alle Caches, aus Ihren Filtereinstellungen als 'archiviert' zu kennzeichnen. Sind Sie sicher, dass Sie das wollen?
 	ArchiveFilterSelection! = Archiviere Caches
 	DelCaches? = Sie haben vor, alle Caches, die im Filter markiert sind, zu löschen. Sind Sie sicher, dass Sie das wollen?
 	DelCaches! = Lösche Caches
@@ -332,10 +340,10 @@
 	comboBoxLogLifeItem_6 = nach 6 Monaten
 	DelFieldNotes? = Sie haben vor, alle Ihre Fieldnotes zu löschen. Sind Sie sicher, dass Sie das wollen?
 	DelFieldNotes! = Lösche Fieldnotes
-	ResetFavorites? = Sie haben vor, alle 'favorit-markers' zurück zu setzen. Sind Sie sicher, dass Sie das wollen? 
+	ResetFavorites? = Sie haben vor, alle 'favorit-markers' zurückzusetzen. Sind Sie sicher, dass Sie das wollen? 
 	ResetFavorites! = Favoriten zurücksetzen
-	ResetListingChanged? = Sie haben vor, alle 'listing changed' Markierungen zurück zu setzen. Sind Sie sicher, dass Sie das wollen?
-	ResetListingChanged! = Reset listing changed
+	ResetListingChanged? = Sie haben vor, alle  Markierungen zurückzusetzen. Sind Sie sicher, dass Sie das wollen?
+	ResetListingChanged! = 'Listing geändert' zurückgesetzt.
 	LoadFinds? = Lade Anzahl der Funde von geocaching.com? Das könnte Kosten verursachen!
 	LoadFinds! = Lade Anzahl der Funde
 	LogInErrorLoadFinds = Login Fehler beim Laden der Anzahl der gefundenen Caches! Falsche Login Informationen?
@@ -345,14 +353,17 @@
 	
 	//FormAdjustFounds
 	AdjustFinds = Funde anpassen
-	TelMeFounds = Sage mir, wie viele Caches Du bis jetzt gefunden hast:
+	TelMeFounds = Wie viele Caches hast Du bis jetzt gefunden:
 	
 	//MiscSettings
 	units = Einheit:	
 	AllowInternet = Erlaube Internet Verb.
 	AllowLandscape = Erlaube Landscape Ansicht
+	Desc_AllowLandscape = Drehen der Anzeige beim Drehen des Geräts. Kann (noch) zu Darstellungsfehlern führen.
 	ShowKeypad = Zeige Tastatur
+	Desc_ShowKeypad = Blendet die Tastatur zum Eingeben von Fieldnotes, Notizen, Wegpunkten ... ein
 	SuppressPowerSaving = Unterdrücke Power Save
+	Desc_SuppressPowerSaving = Verhindert, dass das Gerät in der Stromsparmodus geht.
 	UploadAllFieldnotes = Alle Fieldnotes senden(Ignoriere Datum)
 	LogIn = Login Name bei geocaching.com
 	GCPW = Passwort bei geocaching.com
@@ -403,7 +414,7 @@
 	myfinds = Meine Funde
 	myowncaches = Meine eigenen Caches
 	withtrackables = Mit Trackables
-	hasuserdata = Hat Userdaten
+	hasuserdata = mit eigenen Daten (WP/Notiz/..)
 	manualwaypoint = Manueller Wegpunkt
 	minDifficulty = Min. Schwierigkeit
 	maxDifficulty = Max. Schwierigkeit
@@ -418,6 +429,7 @@
 	Layer = Kartentyp
 	AlignToCompass = Nach Kompass ausrichten
 	SmoothScrolling = Flüssiges Verschieben
+	Desc_SmoothScrolling = Die Karte wird beim Verschieben schneller aufgebaut.
 	view = Anzeigen
 	none = Kein
 	normal = Normal
@@ -427,10 +439,12 @@
 	ShowRatings = Ratings anzeigen
 	ShowDT = D/T anzeigen
 	ShowTitle = Titel anzeigen
-	ShowDirectLine = Direktverbindung anzeigen
+	ShowDirectLine = Zeige direkte Verbindungslinie zum Cache anzeigen
+	Desc_ShowDirectLine = Zeichnet eine Linie von der eigenen Position zum Cache. (Nützlich falls dieser auf der Karte nicht zu sehen ist).
 	start = Start
 	DayNight = Tag/Nacht
-	ScreenLock = Bildschirmsperre
+	ScreenLock = Bildschirmsperre [min/sec] 
+	Desc_ScreenLock = Bildschirmsperre
 	SelectCache = Cache auswählen
 	Maps = Karten
 	PQfromGC = Pocket Query von geocaching.com
@@ -440,8 +454,11 @@
 	LoginSettings = Login und API - Einstellungen
 	getApiKey = API key erstellen
 	DescMapLayer = Karten automatisch laden
-	MoveMapCenterWithSpeed = Bewege Zentrum mit Geschwindigkeit
-	DPIaware = Darstellung an DPI anpassen
+	MoveMapCenterWithSpeed = Fahrzeugmodus
+	Desc_MoveMapCenterWithSpeed = Der Positionspfeil wird im unteren Drittel der Karte dargestellt, damit mehr sicht auf die Karte ist. Nützlich beim Autofahren. (Nur verfügbar, wenn Karte nach Kompass ausgerichtet ist.)
+	MoveMapCenterMaxSpeed = Fahrzeugmodus ab x km/h
+	Desc_MoveMapCenterMaxSpeed = Der Positionspfeil wird ab dieser Geschwindigkeit nicht mittig, sondern im unteren Drittel der Karte angezeigt.
+	DPIaware = Textgröße in Karte an Auflösung anpassen
 	StartTrackRecOnStart = Wegaufzeichnung automatisch starten
 	TrackEvery = Speichere alle
 	QuickButton = Quick Button
@@ -468,13 +485,7 @@
 	internetError = Fehler bei Internetzugriff
 	errorAPI = Fehler während dem API-Zugriff
 	chkState = Prüfe Status
-	wyptDefTitle = Manuell
-	wyptTypeRef = Referenz
-	wyptTypeStage = Station eines Multicache
-	wyptTypeQuestion = Zu beantwortende Frage
-	wyptTypeTrail = Ausgangspunkt
-	wyptTypeParking = Parkplatz
-	wyptTypeFinal = Final
+	
 	
 // Attributes
 	att_1_0 = Hunde nicht erlaubt
@@ -501,7 +512,7 @@
 	att_14_1 = in der Nacht empfohlen 
 	att_15_0 = bei geschlossener Schneedecke nicht zu finden 
 	att_15_1 = bei geschlossener Schneedecke zu finden
-	att_16_1 = kaktus
+	att_16_1 = Kaktus
 	att_17_0 = giftige Pflanzen
 	att_17_1 = giftige Pflanzen (in Deutschland auch oft für z.B. Brennnesseln genutzt)
 	att_18_1 = gefährliche Tiere 
@@ -589,76 +600,111 @@
 //new settings
 
 	QuickList = Quickbuttons anpassen
-
 	Login = Login Einstellungen
-	
 	GcVotePassword = Passwort für GC-Vote
-	
+	Desc_GcVotePassword = Für die Greasemonkey Erweiterung zur Cachebewertung in Geocaching.com. Account bei gcvote.com notwendig
 	GcLogin = Groundspeak Benutzername
-	
+	Desc_GcLogin = dein Benutzername bei www.geocaching.com
 	GcJoker = MD5-Hash bei gcJoker.de
-	
+	Desc_GcJoker = Notwendig für den Telefonjoker von gcJoker.de. Die Anleitung zum Hash erstellen gibts im wiki von team-cachebox.de
 	GcAPI = API key	
 	lastZoomLevel = Zuletzt benutztes Zoomlevel 
-	
 	OsmMinLevel = Kleinstes Zoomlevel der Karte
-	
+	Desc_OsmMinLevel = größte Übersicht auf der Karte
 	OsmMaxLevel = Größtes Zoomlevel der Karte  
+	Desc_OsmMaxLevel = größte Detailstufe der Karte
 	MapShowDT = Zeige D/T auf der Karte
+	Desc_MapShowDT = Zeigt neben den Icons der Caches die jeweilige Schwierigkeit für Rätsel und Gelände an.
 	Gps = GPS Einstellungen	
 	HtcCompass = Hardware Kompass verwenden
-	HtcLevel = Geschwindigkeit bei der zwischen GPS und Hardwarekompass umgeschalten wird. \n-1 = GPS wird niemals verwendet.
-	LeftWindow = Eingabefenster
-	BothWindow = beide Fenster
-	RightWindow = Ergebnisfenster
+	HtcLevel = Umschalten zw. GPS und Kompass ab x km/h. \n-1 = GPS wird niemals verwendet.
+	LeftWindow = Eingabe
+	BothWindow = Beide
+	RightWindow = Ergebnis
 	MapHideMyFinds = Eigene Funde auf Karte nicht anzeigen
+	Desc_MapHideMyFinds = Die schon gefundenen Caches werden auf der Karte ausgeblendet.
 	MapShowTitles = Zeige Cache Namen auf Karte
-	ZoomCross = Zeige ein Kreuz wenn zoom level >
-	MapShowCompass = Zeige Kompass auf Karte
+	Desc_MapShowTitles = Stellt auf der Karte über dem Cacheicon den Namen des Caches dar.
+	ZoomCross = Zeige ein Kreuz wenn Zoomlevel >
+	Desc_ZoomCross = Für bessere Übersicht wird das CacheIcon bei kleinem Zoomlevel durch ein Kreuz ersetzt.
+	MapShowCompass = Zeige Infoleiste auf Karte
+	Desc_MapShowCompass = Blendet die Infoleiste mit Richtung, Geschwindigkeit und Position ein.
 	MapShowRating = Zeige Bewertung auf Karte
+	Desc_MapShowRating = Stellt die Bewertung von GCVote auf der Karte dar. (Zugang notwendig)
 	ShowDirektLine = Zeichne direkte Verbindungslinie zum Cache
+	Desc_ShowDirektLine = Zeichnet eine Linie von der eigenen Position zum Cache. (Nützlich falls dieser auf der Karte nicht zu sehen ist).
 	Internal = Intern
 	PlaySounds = Ton bei Annäherung
+	Desc_PlaySounds = Gibt ein akustisches Signal, wenn man sich dem Cache nähert.
 	Folder = Ordner
 	TrackFolder = Ordner für Tracks
+	Desc_TrackFolder = Hier werden die aufgezeichneten Tracks abgelegt.
 	UserImageFolder = Ordner für eigene Bilder
-	PocketQueryFolder = Ordner für den GPX Import 
+	Desc_UserImageFolder = Hier werden die eigenen Bilder abgelegt.
+	PocketQueryFolder = Ordner für den GPX Import
+	Desc_PocketQueryFolder = Hier müssen die Pocketqueries (als zip) oder gpx Dateien für den Import abgelegt werden.
 	MapPackFolder = Ordner für Kartenpakete
+	Desc_MapPackFolder = Damit Offlinekarten (zB von Mapsforge) von zwei Programmen genutzt werden können, kann man hier den Pfad angeben. Bei Kartenansicht das Umschalten des Kartentyps nicht vergessen.	
 	DatabasePath = Pfad zur aktuellen Datenbank
+	Desc_DatabasePath = Hier werden die SQL-Datenbanken mit den Cachedetails abgelegt.
 	SpoilerFolder = Ordner für Spoilerbilder
+	Desc_SpoilerFolder = Hier werden die Spoilerbilder abgelegt.
 	DescriptionImageFolder = Ordner für Hinweisbilder
+	Desc_DescriptionImageFolder = Hier werden Bilder von der Cachebeschreibung abgelegt. 
+	TileCacheFolder = Ordner zum Zwischenspeichern der Karte
+	Desc_TileCacheFolder = Hier werden heruntergeladene Kartenkacheln gespeichert.
+	LanguagePath = Pfad zu den Sprachdateien
+	Desc_LanguagePath = Hier befinden sich die Sprachdateien.
 	TrackDistance = Wegaufzeichnung alle [m]
+	Desc_TrackDistance = Bei der Weg / Trackaufzeichnung wird alle x m die Position gespeichert.
 	SoundApproachDistance = Annährungssignal [m]
+	Desc_SoundApproachDistance = Nähert man sich dem Ziel auf x Meter, wird ein akustisches Signal gegeben.
 	switchViewApproach = Bei Annäherung auf Kompass umschalten
+	Desc_switchViewApproach = Nähert man sich dem Ziel auf x Meter, wird automatisch von Karte auf Kompass umgeschalten
 	TrackRecorderStartup = Wegaufzeichnung automatisch starten
+	Desc_TrackRecorderStartup = Die Wegaufzeichnung (Trackrecording) wird automatisch beim Start von Cachebox gestartet.
 	DescriptionNoAttributes = Attribute in der Beschreibung nicht anzeigen
+	Desc_DescriptionNoAttributes = Weiß ich grad auch nicht, was da eigentlich nicht angezeigt wird.
 	Templates = Vorlage für Fieldnotes
-	DNFTemplate = Vorlage für DNF
-	AddNoteTemplate = Vorlage für Notizen
-	FoundTemplate = Vorlage für Gefunden
-	NeedsMaintenanceTemplate = Vorlage für Wartung notwendig
+	DNFTemplate = Vorlage für "DNF"
+	Desc_DNFTemplate = Hier kann man die Textvorlage für "Nicht gefunden!" anpassen. 
+	AddNoteTemplate = Vorlage für "Notizen"
+	Desc_AddNoteTemplate = Hier kann man die Textvorlage für "Schreibe Notiz" anpassen. 
+	FoundTemplate = Vorlage für "Gefunden!"
+	Desc_FoundTemplate = Hier kann man die Textvorlage für "Gefunden!" anpassen. 
+	NeedsMaintenanceTemplate = Vorlage für "Wartung notwendig"
+	Desc_NeedsMaintenanceTemplate = Hier kann man die Textvorlage für "Bedarf Wartung" anpassen. 
 	API = GC Onlineabfrage
 	ImportGpx = GPX importieren
+	Desc_ImportGpx = Importiert heruntergeladene Pocketqueries von Geocaching.com. Die zip-Dateien müssen im PQ Ordner liegen.
 	SearchWithoutOwns = Ohne eigene Caches suchen
+	Desc_SearchWithoutOwns = Suche ohne die eigenen Caches ausführen
 	SearchOnlyAvible = Nur verfügbare suchen
+	Desc_SearchOnlyAvible = Onlinesuche nach verfügbaren Caches (die Caches mit Status "disabled" werden ausgeschlossen) 
 	ImportPQsFromGeocachingCom = PQs von geocaching.com importieren
-	SearchWithoutFounds = Ohne gefundene Caches suchen 
+	Desc_ImportPQsFromGeocachingCom = Eigene Pocketqueries direkt von geocaching.com herunterladen. Dafür wird der API-key benötigt. 
+	SearchWithoutFounds = Ohne gefundene Caches suchen
+	Desc_SearchWithoutFounds = Onlinesuche ohne die schon gefundenen Caches
 	ImportRatings = Wertungen von GC-Vote importieren
+	Desc_ImportRatings = Importiert die Wertungen von GCVote.com in die Cachedatenbank. Zugangscode notwendig.
 	lastSearchRadius = Letzter Suchradius
+	Desc_lastSearchRadius = Speichert den letzten Suchradius
 	Debug = debug
 	DebugDisplayInfo = Zeige Bildschirm Informationen 
-	MoveMapCenterMaxSpeed = Speed for max center move
 	OsmDpiAwareRendering = An Auflösung angepasste Textdarstellung
-	PositionAtVertex = Positionspfeil als Vektorpfeil darstellen
+	Desc_OsmDpiAwareRendering = Die Schrift und Icongröße werden an die Auflösung des Displays angepasst. Bei Darstellungsproblemen bei der Kartenansicht ändern.
+	PositionAtVertex = eigene Position an Pfeilspitze darstellen
+	Desc_PositionAtVertex = Die eigene Position zur besseren Sichtbarkeit nicht im Pfeilmittelpunkt sonder an der Pfeilspitze dargestellt
 	PositionMarkerTransparent = Positionspfeil transparent darstellen 
+	Desc_PositionMarkerTransparent = Der Positionspfeil wird als Liniendreieck dargestellt.
 	ImperialUnits = Imperiale Einheiten
-	TileCacheFolder = Ordner zum Zwischenspeichern der Karte
-	LanguagePath = Pfad zu den Sprachdateien
+	Desc_ImperialUnits = Die Entfernungen und Geschwindigkeiten werden in yard und mph dargestellt. Neustart erforderlich.
 	FoundOffset = Anzahl der Funde
+	Desc_FoundOffset = Hier kann man die Anzahl der Funde anpassen. Die Anzahl wird in der Fieldnotevorlage verwendet.
 	FieldnotesUploadAll = Alle Fieldnotes hochladen (Datum ignorieren)
-
-	dontShowChris = Verwende Standardicons statt Weihnachtsicons  
-	
+	Desc_FieldnotesUploadAll = Lädt alle Fieldnotes unabhängig vom Datum zu geocaching.com.
+	dontShowChris = Verwende Standardicons statt Weihnachtsicons
+	Desc_dontShowChris = Die Weihnachtsicons sind nur im Dezember verfügbar. Für die gewohnte Ansicht hier umschalten. Neustart erforderlich.	
 	
 	
 	DelArchived = Lösche Archivierte
@@ -668,3 +714,5 @@
 	MsgDelCaches = Die Datenbank wird nach archivierten oder gefundenen Caches gefiltert und das Suchergebnis wird automatisch ohne weitere Bestätigung gelöscht!\n\nWirklich löschen?
 	
 	
+	MeasureCount = Messungen
+	MeasureCoord = Koordinaten

@@ -110,6 +110,12 @@ public class AllContextMenuCallHandler
 					IconMenu.removeItem(mi.getItemId());
 				}
 			}
+			mi = IconMenu.findItem(R.id.menu_waypointview_gps);
+			if (mi != null)
+			{
+				mi.setTitle(GlobalCore.Translations.Get("FromGps"));
+
+			}
 		}
 		catch (Exception e)
 		{
