@@ -72,7 +72,6 @@ public class MapViewGL extends RelativeLayout implements ViewOptionsMenu
 	public void OnHide()
 	{
 		mapViewGlListener.onStop();
-
 	}
 
 	@Override

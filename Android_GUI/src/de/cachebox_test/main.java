@@ -1597,6 +1597,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				waypointView.OnFree();
 				waypointView = null;
 			}
+			else if (aktView.equals(mapViewGl))
+			{
+				this.onPause();
+			}
 		}
 
 		System.gc();
@@ -1966,6 +1970,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (mapViewGl == null)
 			{
 				viewGl = initializeForView(mapViewGlListener, true);
+
 				mapViewGl = new MapViewGL(this, inflater, viewGl, mapViewGlListener);
 
 				mapViewGl.Initialize();
