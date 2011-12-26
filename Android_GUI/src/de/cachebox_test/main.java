@@ -327,12 +327,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Logger.Error("main.onCreate()", "setContentView", exc);
 		}
 
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useGL20 = true;
-		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
-				: config.resolutionStrategy);
-		input = new AndroidInput(this, graphics.getView(), config);
-
 		mapViewGlListener = new MapViewGlListener();
 
 		inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -546,6 +540,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				MessageBox.Show(Welcome, GlobalCore.Translations.Get("welcome"), MessageBoxIcon.None);
 
+			}
+
+			if (input == null)
+			{
+				AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+				config.useGL20 = true;
+				graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
+						: config.resolutionStrategy);
+				input = new AndroidInput(this, graphics.getView(), config);
 			}
 
 		}
@@ -1182,7 +1185,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onPause()
 	{
-		if (input == null || graphics == null)
+		if (input == null)
 		{
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 			config.useGL20 = true;
@@ -1191,7 +1194,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			input = new AndroidInput(this, graphics.getView(), config);
 		}
 
+		if (graphics != null)
+		{
+			if (aktViewId != 2)
+			{
+				graphics.isShown = false;
+			}
+		}
 		super.onPause();
+		graphics.isShown = true;
 	}
 
 	@Override
@@ -1205,7 +1216,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					: config.resolutionStrategy);
 			input = new AndroidInput(this, graphics.getView(), config);
 		}
+		if (graphics != null)
+		{
+			if (aktViewId != 2)
+			{
+				graphics.isShown = false;
+			}
+		}
 		super.onResume();
+		graphics.isShown = true;
 
 		if (runsWithAkku) counter.start();
 		mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_GAME);

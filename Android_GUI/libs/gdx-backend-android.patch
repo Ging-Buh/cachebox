@@ -1,7 +1,7 @@
 Index: src/com/badlogic/gdx/backends/android/AndroidApplication.java
 ===================================================================
---- src/com/badlogic/gdx/backends/android/AndroidApplication.java	(Revision 2978)
-+++ src/com/badlogic/gdx/backends/android/AndroidApplication.java	(Arbeitskopie)
+--- src/com/badlogic/gdx/backends/android/AndroidApplication.java	(revision 2978)
++++ src/com/badlogic/gdx/backends/android/AndroidApplication.java	(working copy)
 @@ -185,15 +185,18 @@
  	@Override
  	protected void onPause () {
@@ -24,7 +24,18 @@ Index: src/com/badlogic/gdx/backends/android/AndroidApplication.java
  			graphics.clearManagedCaches();
  			graphics.destroy();
  		}
-@@ -215,7 +218,8 @@
+@@ -208,6 +211,10 @@
+ 
+ 	@Override
+ 	protected void onResume () {
++		if(!graphics.isShown){
++			super.onResume();
++			return;
++		}
+ 		if (wakeLock != null) wakeLock.acquire();
+ 		Gdx.app = this;
+ 		Gdx.input = this.getInput();
+@@ -215,7 +222,8 @@
  		Gdx.files = this.getFiles();
  		Gdx.graphics = this.getGraphics();
  
@@ -34,3 +45,23 @@ Index: src/com/badlogic/gdx/backends/android/AndroidApplication.java
  		if (audio != null) audio.resume();
  
  		if (graphics != null && graphics.view != null) {
+Index: src/com/badlogic/gdx/backends/android/AndroidGraphics.java
+===================================================================
+--- src/com/badlogic/gdx/backends/android/AndroidGraphics.java	(revision 2978)
++++ src/com/badlogic/gdx/backends/android/AndroidGraphics.java	(working copy)
+@@ -361,11 +361,15 @@
+ 		}
+ 	}
+ 
++	public boolean isShown = true;
++	
+ 	void destroy () {
+ 		synchronized (synch) {
+ 			running = false;
+ 			destroy = true;
+ 
++			if(!isShown)return;
++			
+ 			while (destroy) {
+ 				try {
+ 					synch.wait();
