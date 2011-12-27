@@ -1,6 +1,5 @@
 package de.cachebox_test.Views.Forms;
 
-import de.cachebox_test.R;
 import android.app.Activity;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -10,11 +9,13 @@ import android.view.KeyEvent;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import de.cachebox_test.R;
 
 public class ScreenLock extends Activity
 {
-	public static boolean SliderMoves= false;
-	
+	public static boolean SliderMoves = false;
+	public static boolean isShown = false;
+
 	public void onCreate(Bundle savedInstanceState)
 	{
 
@@ -30,8 +31,8 @@ public class ScreenLock extends Activity
 			@Override
 			public void onStopTrackingTouch(SeekBar arg0)
 			{
-				SliderMoves=false;
-				if (arg0.getProgress() > 80 || arg0.getProgress() < 20) 
+				SliderMoves = false;
+				if (arg0.getProgress() > 80 || arg0.getProgress() < 20)
 				{
 					finish();
 				}
@@ -58,7 +59,7 @@ public class ScreenLock extends Activity
 			@Override
 			public void onStartTrackingTouch(SeekBar arg0)
 			{
-				SliderMoves=true;
+				SliderMoves = true;
 				if (counter != null) counter.cancel();
 				lastValue = arg0.getProgress();
 			}
@@ -80,6 +81,13 @@ public class ScreenLock extends Activity
 			}
 		});
 
+	}
+
+	@Override
+	public void onPause()
+	{
+		isShown = false;
+		super.onPause();
 	}
 
 	static SeekBar Slider;

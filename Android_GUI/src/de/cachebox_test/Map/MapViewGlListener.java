@@ -44,6 +44,7 @@ import de.cachebox_test.Events.PositionEvent;
 import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Map.MapCacheList.WaypointRenderInfo;
 import de.cachebox_test.Views.MapView;
+import de.cachebox_test.Views.Forms.ScreenLock;
 
 public class MapViewGlListener implements ApplicationListener, PositionEvent
 {
@@ -684,6 +685,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		// TODO wenn der ScreenLock angezeigt wird, kommt es auch zu einem
 		// onStop.
 		// Es darf dann aber nicht gestoppt werden.
+		// Die main als AndroidAplication stoppt hier in onPause() das rendern.
+		// Abhilfe schaft hier nur das Ändern des gdx Codes!
+		if (ScreenLock.isShown) return;
 
 		started.set(false);
 		for (TileGL tile : loadedTiles.values())
