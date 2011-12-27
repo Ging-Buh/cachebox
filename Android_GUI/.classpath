@@ -6,7 +6,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/mapsforge.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Cachebox Core"/>
 	<classpathentry kind="lib" path="/Cachebox Core/lib/sjxp-2.2.jar" sourcepath="C:/Users/dirkr/workspace/sjxp-2.2-sources.jar"/>
-	<classpathentry kind="lib" path="libs/gdx.jar"/>
 	<classpathentry kind="lib" path="libs/gdx-backend-android.jar"/>
+	<classpathentry kind="lib" path="libs/gdx.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
