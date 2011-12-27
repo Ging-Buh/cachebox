@@ -1797,7 +1797,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				showView(4);
 				break;
 			case 1:
-				showView(2);
+				showView(15);
 				break;
 			case 2:
 				showView(3);

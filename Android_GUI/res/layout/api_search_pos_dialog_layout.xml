@@ -47,10 +47,10 @@
 
 
 		<de.cachebox_test.Custom_Controls.MultiToggleButton
-			android:layout_weight="1" android:layout_width="match_parent" android:layout_height="45dip"
+			android:layout_weight="1" android:layout_width="match_parent" android:layout_height="65dip"
 			android:text="GPS"  android:id="@+id/toggle_GPS" />
 		<de.cachebox_test.Custom_Controls.MultiToggleButton
-			android:layout_weight="1" android:layout_width="match_parent" android:layout_height="45dip"
+			android:layout_weight="1" android:layout_width="match_parent" android:layout_height="65dip"
 			android:text="Map" 
 			android:id="@+id/toggle_Map" />
 		

@@ -61,7 +61,7 @@ public class AllContextMenuCallHandler
 		Global.TranslateMenuItem(IconMenu, R.id.miAbout, "about");
 		Global.TranslateMenuItem(IconMenu, R.id.miDayNight, "DayNight");
 		Global.TranslateMenuItem(IconMenu, R.id.miSettings, "settings");
-		Global.TranslateMenuItem(IconMenu, R.id.miScreenLock, "ScreenLock");
+		Global.TranslateMenuItem(IconMenu, R.id.miScreenLock, "screenlock");
 		Global.TranslateMenuItem(IconMenu, R.id.miDeleteCaches, "DeleteCaches");
 		Global.TranslateMenuItem(IconMenu, R.id.miClose, "quit");
 

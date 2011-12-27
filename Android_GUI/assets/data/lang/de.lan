@@ -207,6 +207,7 @@
 		CopyGcCode = GcCode kopieren
 		type = Typ
 		Clue = Hinweis
+		wyptDefTitle = manual
 		
 	//Waypoint Type select
 		Reference = Referenz

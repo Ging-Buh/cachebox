@@ -211,8 +211,8 @@ public class EditWaypoint extends Activity
 	{
 		final LangStrings ls = GlobalCore.Translations;
 		return new String[]
-			{ ls.Get("wyptTypeRef"), ls.Get("wyptTypeStage"), ls.Get("wyptTypeQuestion"), ls.Get("wyptTypeTrail"),
-					ls.Get("wyptTypeParking"), ls.Get("wyptTypeFinal") };
+			{ ls.Get("Reference"), ls.Get("StageofMulti"), ls.Get("Question2Answer"), ls.Get("Trailhead"), ls.Get("Parking"),
+					ls.Get("Final") };
 	}
 
 	/** hook into menu button for activity */
