@@ -1,10 +1,24 @@
 Index: src/com/badlogic/gdx/backends/android/AndroidApplication.java
 ===================================================================
---- src/com/badlogic/gdx/backends/android/AndroidApplication.java	(revision 2978)
-+++ src/com/badlogic/gdx/backends/android/AndroidApplication.java	(working copy)
-@@ -185,15 +185,18 @@
+--- src/com/badlogic/gdx/backends/android/AndroidApplication.java	(Revision 3053)
++++ src/com/badlogic/gdx/backends/android/AndroidApplication.java	(Arbeitskopie)
+@@ -182,18 +182,32 @@
+ 		return graphics.getView();
+ 	}
+ 
++	
++	public boolean dontStop=false;
++	
  	@Override
  	protected void onPause () {
++		
++		if(dontStop)
++		{
++			super.onPause();
++			dontStop=false;
++			return;
++		}
++		
  		if (wakeLock != null) wakeLock.release();
 -		graphics.pause();
 +		if(graphics!=null)graphics.pause();
@@ -24,7 +38,7 @@ Index: src/com/badlogic/gdx/backends/android/AndroidApplication.java
  			graphics.clearManagedCaches();
  			graphics.destroy();
  		}
-@@ -208,6 +211,10 @@
+@@ -208,6 +222,10 @@
  
  	@Override
  	protected void onResume () {
@@ -35,7 +49,7 @@ Index: src/com/badlogic/gdx/backends/android/AndroidApplication.java
  		if (wakeLock != null) wakeLock.acquire();
  		Gdx.app = this;
  		Gdx.input = this.getInput();
-@@ -215,7 +222,8 @@
+@@ -215,7 +233,8 @@
  		Gdx.files = this.getFiles();
  		Gdx.graphics = this.getGraphics();
  
@@ -47,8 +61,8 @@ Index: src/com/badlogic/gdx/backends/android/AndroidApplication.java
  		if (graphics != null && graphics.view != null) {
 Index: src/com/badlogic/gdx/backends/android/AndroidGraphics.java
 ===================================================================
---- src/com/badlogic/gdx/backends/android/AndroidGraphics.java	(revision 2978)
-+++ src/com/badlogic/gdx/backends/android/AndroidGraphics.java	(working copy)
+--- src/com/badlogic/gdx/backends/android/AndroidGraphics.java	(Revision 3053)
++++ src/com/badlogic/gdx/backends/android/AndroidGraphics.java	(Arbeitskopie)
 @@ -361,11 +361,15 @@
  		}
  	}

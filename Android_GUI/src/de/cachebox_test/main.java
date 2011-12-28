@@ -1360,6 +1360,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if ((Config.settings.ScreenLock.getValue() / 1000 < 10)) return;
 		}
 
+		dontStop = true;
 		ScreenLock.isShown = true;
 
 		final Intent mainIntent = new Intent().setClass(this, ScreenLock.class);

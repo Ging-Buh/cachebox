@@ -686,7 +686,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		// onStop.
 		// Es darf dann aber nicht gestoppt werden.
 		// Die main als AndroidAplication stoppt hier in onPause() das rendern.
-		// Abhilfe schaft hier nur das Ändern des gdx Codes!
+		// Abhilfe schafft hier nur das Ändern des gdx Codes!
 		if (ScreenLock.isShown) return;
 
 		started.set(false);
