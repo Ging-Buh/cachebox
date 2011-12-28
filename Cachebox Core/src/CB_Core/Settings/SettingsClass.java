@@ -54,6 +54,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool ImportLayerOsm;
 	public SettingBool TrackRecorderStartup;
 	public SettingBool MapShowCompass;
+	public SettingBool CompassNorthOriented;
 	// public SettingBool ResortRepaint;
 	public SettingBool GCAutoSyncCachesFound;
 	public SettingBool GCAdditionalImageDownload;
@@ -235,6 +236,7 @@ public class SettingsClass extends SettingsList
 		addSetting(PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", cat, NORMAL, false, true));
 		addSetting(PositionAtVertex = new SettingBool("PositionAtVertex", cat, NORMAL, false, true));
 		addSetting(MapShowCompass = new SettingBool("MapShowCompass", cat, NORMAL, true, true));
+		addSetting(CompassNorthOriented = new SettingBool("CompassNorthOriented", cat, NORMAL, true, true));
 		addSetting(OsmDpiAwareRendering = new SettingBool("OsmDpiAwareRendering", cat, NORMAL, false, true));
 
 		addSetting(MapInitLatitude = new SettingDouble("MapInitLatitude", SettingCategory.Gps, EXPERT, -1000, true));
