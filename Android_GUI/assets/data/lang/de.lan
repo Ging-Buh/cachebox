@@ -706,7 +706,8 @@
 	Desc_FieldnotesUploadAll = Lädt alle Fieldnotes unabhängig vom Datum zu geocaching.com.
 	dontShowChris = Verwende Standardicons statt Weihnachtsicons
 	Desc_dontShowChris = Die Weihnachtsicons sind nur im Dezember verfügbar. Für die gewohnte Ansicht hier umschalten. Neustart erforderlich.	
-	
+	CompassNorthOriented = Starte Kompass mit Norden oben
+	Desc_CompassNorthOriented = Starte Kompass mit Norden oben, ansonsten ist die Laufrichtung oben.
 	
 	DelArchived = Lösche Archivierte
 	DelFound = Lösche Funde

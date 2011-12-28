@@ -1,20 +1,6 @@
 package de.cachebox_test.Views;
 
 import CB_Core.Config;
-import de.cachebox_test.Global;
-import de.cachebox_test.R;
-import de.cachebox_test.UnitFormatter;
-import de.cachebox_test.main;
-import de.cachebox_test.Custom_Controls.CacheInfoControl;
-import de.cachebox_test.Custom_Controls.CompassControl;
-import de.cachebox_test.Custom_Controls.MultiToggleButton;
-import de.cachebox_test.Custom_Controls.WayPointInfoControl;
-import de.cachebox_test.Events.PositionEvent;
-import de.cachebox_test.Events.PositionEventList;
-import CB_Core.Events.SelectedCacheEvent;
-import CB_Core.Events.SelectedCacheEventList;
-import de.cachebox_test.Events.ViewOptionsMenu;
-import de.cachebox_test.Ui.Sizes;
 import CB_Core.GlobalCore;
 import CB_Core.TranslationEngine.SelectedLangChangedEvent;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
@@ -32,6 +18,18 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import de.cachebox_test.Global;
+import de.cachebox_test.R;
+import de.cachebox_test.UnitFormatter;
+import de.cachebox_test.main;
+import de.cachebox_test.Custom_Controls.CacheInfoControl;
+import de.cachebox_test.Custom_Controls.CompassControl;
+import de.cachebox_test.Custom_Controls.MultiToggleButton;
+import de.cachebox_test.Custom_Controls.WayPointInfoControl;
+import de.cachebox_test.Events.PositionEvent;
+import de.cachebox_test.Events.PositionEventList;
+import de.cachebox_test.Events.ViewOptionsMenu;
+import de.cachebox_test.Ui.Sizes;
 
 public class CompassView extends FrameLayout implements ViewOptionsMenu, PositionEvent, SelectedLangChangedEvent
 {
@@ -58,6 +56,8 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu, Positio
 		ToggleButtonLayout = (RelativeLayout) findViewById(R.id.layoutCompassToggle);
 		WP_info = (WayPointInfoControl) findViewById(R.id.WaypointDescriptionView);
 		AlignButton = (MultiToggleButton) findViewById(R.id.CompassAlignButton);
+		align = !Config.settings.CompassNorthOriented.getValue();
+		if (!align) AlignButton.setState(AlignButton.getState() + 1);
 		AlignButton.setOnClickListener(new OnClickListener()
 		{
 

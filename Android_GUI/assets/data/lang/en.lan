@@ -644,7 +644,7 @@ English
 	PocketQueryFolder = GPX Import Folder
 	Desc_PocketQueryFolder = downloaded pocketqueries (as zip) or gpx files have to be placed here for importing
 	MapPackFolder = Map pack Folder
-	Desc_MapPackFolder = place downloaded offline maps in here. don´t forget to switch the maptype
+	Desc_MapPackFolder = place downloaded offline maps in here. donï¿½t forget to switch the maptype
 	DatabasePath = Path to current database
 	Desc_DatabasePath = SQL-databases are stored in here
 	SpoilerFolder = Spoiler Folder
@@ -664,7 +664,7 @@ English
 	TrackRecorderStartup = Start track recorder on startup
 	Desc_TrackRecorderStartup = Trackrecording automatically starts at every start of cachebox
 	DescriptionNoAttributes = Does not show attributes in the description
-	Desc_DescriptionNoAttributes = Don´t know what is not displayed here
+	Desc_DescriptionNoAttributes = Donï¿½t know what is not displayed here
 	Templates = Fieldnotes templates
 	DNFTemplate = DNF template
 	Desc_DNFTemplate = the template for "Did not find!" can be changed here
@@ -710,7 +710,8 @@ English
 	DelActFilter = Delete filter selection
 	DeleteCaches = Delete Caches
 	MsgDelCaches = The data base is filtered to archived or found Caches and the searching result is automatically extinguished without farther confirmation!\n\nReally delete Caches?
-	
+	CompassNorthOriented = Compass start north is top 
+	Desc_CompassNorthOriented = Compass start north is top, else running direction is top.	
 	
 	MeasureCount = Measurments
 	MeasureCoord = Coords
