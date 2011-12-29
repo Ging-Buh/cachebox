@@ -415,13 +415,17 @@ public class SearchForGeocaches
 								String url;
 								url = allImages.poll();
 
+								boolean found = false;
 								for (ImageEntry im : imageList)
 								{
 									if (im.ImageUrl.equalsIgnoreCase(url))
 									{
-										continue;
+										found = true;
+										break;
 									}
-
+								}
+								if (!found)
+								{
 									ImageEntry image = new ImageEntry();
 
 									image.CacheId = cache.Id;
