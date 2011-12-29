@@ -2234,8 +2234,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		if (!Config.settings.hasCallPermission.getValue()) return;
 
+		// Debug add Joker
+		// Global.Jokers.AddJoker("Andre", "Höpfner", "Katipa", "12", "030 ++++++", "24/7");
+		// Global.Jokers.AddJoker("Andre", "Höpfner", "Katipa", "12", "030 ++++++", "24/7");
+
 		if (Global.Jokers.isEmpty())
 		{ // Wenn Telefonjoker-Liste leer neu laden
+
 			try
 			{
 				URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.settings.GcJoker.getValue() + "&wpt="
@@ -2259,16 +2264,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 								try
 								{
 									if (s[0].equals("2")) // 2 entspricht
-															// Fehler,
-															// Fehlerursache ist
-															// in S[1]
+									// Fehler,
+									// Fehlerursache ist
+									// in S[1]
 									{
 										MessageBox.Show(s[1]);
 										break;
 									}
 									if (s[0].equals("1")) // 1 entspricht
-															// Warnung, Ursache
-															// ist in S[1]
+									// Warnung, Ursache
+									// ist in S[1]
 									{ // es können aber noch gültige Einträge
 										// folgen
 										MessageBox.Show(s[1]);
@@ -2322,8 +2327,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void showTbList()
 	{
-		MessageBox.Show("comming soon", "sorry", MessageBoxIcon.Asterisk);
-		// showView(14);
+		// MessageBox.Show("comming soon", "sorry", MessageBoxIcon.Asterisk);
+		showView(14);
 	}
 
 	private void switchDayNight()

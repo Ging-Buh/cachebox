@@ -2,7 +2,10 @@ package de.cachebox_test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -29,10 +32,18 @@ import CB_Core.Settings.SettingTime;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Coordinate;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
+import android.content.pm.ServiceInfo;
 import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -40,9 +51,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.Components.copyAssetFolder;
 import de.cachebox_test.DB.AndroidDB;
 import de.cachebox_test.Map.Layer;
@@ -392,12 +407,10 @@ public class splash extends Activity
 			GlobalCore.LastValidPosition = new Coordinate(lat, lon);
 		}
 
-		// chek permission
-		if (this.getPackageManager().checkPermission("android.permission.CALL_PHONE", "de.cachebox_test") == PackageManager.PERMISSION_GRANTED)
-		{
-			Config.settings.hasCallPermission.setValue(true);
-			Config.AcceptChanges();
-		}
+		// Initial PlugIn
+		setProgressState(60, GlobalCore.Translations.Get("IniPlugIn"));
+		fillPluginList();
+		bindPluginServices();
 
 		// search number of DB3 files
 		FileList fileList = null;
@@ -451,6 +464,17 @@ public class splash extends Activity
 		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 
 		Descriptor.Init();
+
+		// chek Joker PlugIn
+
+		if (Global.iPlugin != null && Global.iPlugin[0] != null)
+		{
+			Config.settings.hasCallPermission.setValue(true);
+		}
+		else
+		{
+			Config.settings.hasCallPermission.setValue(false);
+		}
 
 		Config.AcceptChanges();
 
@@ -548,4 +572,108 @@ public class splash extends Activity
 			logo = null;
 		}
 	}
+
+	// PlugIn Methodes
+	private static final String LOG_TAG = "CB_PlugIn";
+	private static final String ACTION_PICK_PLUGIN = "de.cachebox.action.PICK_PLUGIN";
+	private static final String KEY_PKG = "pkg";
+	private static final String KEY_SERVICENAME = "servicename";
+	private ArrayList<HashMap<String, String>> services;
+	private LayoutInflater inflater;
+	private Handler uiHandler;
+	private PluginServiceConnection pluginServiceConnection[] = new PluginServiceConnection[4];
+
+	private void fillPluginList()
+	{
+		services = new ArrayList<HashMap<String, String>>();
+		PackageManager packageManager = getPackageManager();
+		Intent baseIntent = new Intent(ACTION_PICK_PLUGIN);
+		baseIntent.setFlags(Intent.FLAG_DEBUG_LOG_RESOLUTION);
+		List<ResolveInfo> list = packageManager.queryIntentServices(baseIntent, PackageManager.GET_RESOLVED_FILTER);
+		Log.d(LOG_TAG, "fillPluginList: " + list);
+		int i;
+		for (i = 0; i < list.size(); ++i)
+		{
+			ResolveInfo info = list.get(i);
+			ServiceInfo sinfo = info.serviceInfo;
+			Log.d(LOG_TAG, "fillPluginList: i: " + i + "; sinfo: " + sinfo);
+			if (sinfo != null)
+			{
+				HashMap<String, String> item = new HashMap<String, String>();
+				item.put(KEY_PKG, sinfo.packageName);
+				item.put(KEY_SERVICENAME, sinfo.name);
+				services.add(item);
+				if (i <= 4)
+				{
+					inflateToView(i, packageManager, sinfo.packageName);
+
+				}
+			}
+		}
+
+	}
+
+	private void inflateToView(int rowCtr, PackageManager packageManager, String packageName)
+	{
+		try
+		{
+			ApplicationInfo info = packageManager.getApplicationInfo(packageName, 0);
+			Resources res = packageManager.getResourcesForApplication(info);
+
+			XmlResourceParser xres = res.getLayout(0x7f030000);
+			// int parentId = selectRow(rowCtr);
+			// ViewGroup parentView = (ViewGroup) findViewById(parentId);
+			// parentView.removeAllViews();
+			// View view = inflater.inflate(xres, parentView);
+			// adjustSubViewIds(parentView, idxToIdOffset(rowCtr));
+		}
+		catch (NameNotFoundException ex)
+		{
+			Log.e(LOG_TAG, "NameNotFoundException", ex);
+		}
+	}
+
+	private void bindPluginServices()
+	{
+
+		for (int i = 0; i < services.size(); ++i)
+		{
+			pluginServiceConnection[i] = new PluginServiceConnection();
+			Intent intent = new Intent();
+			HashMap<String, String> data = services.get(i);
+			intent.setClassName(data.get(KEY_PKG), data.get(KEY_SERVICENAME));
+			Log.d(LOG_TAG, "bindPluginServices: " + intent);
+			bindService(intent, pluginServiceConnection[i], Context.BIND_AUTO_CREATE);
+
+		}
+
+	}
+
+	class PluginServiceConnection implements ServiceConnection
+	{
+		public void onServiceConnected(ComponentName className, IBinder boundService)
+		{
+			int idx = getServiceConnectionIndex();
+			Log.d(LOG_TAG, "onServiceConnected: ComponentName: " + className + "; idx: " + idx);
+			if (idx >= 0)
+			{
+				Global.iPlugin[idx] = IPlugIn.Stub.asInterface((IBinder) boundService);
+			}
+		}
+
+		public void onServiceDisconnected(ComponentName className)
+		{
+			int idx = getServiceConnectionIndex();
+			Log.d(LOG_TAG, "onServiceDisconnected: ComponentName: " + className + "; idx: " + idx);
+			if (idx >= 0) Global.iPlugin[idx] = null;
+		}
+
+		private int getServiceConnectionIndex()
+		{
+			for (int i = 0; i < pluginServiceConnection.length; ++i)
+				if (this == pluginServiceConnection[i]) return i;
+			return -1;
+		}
+	};
+
 }

@@ -30,6 +30,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.Menu;
 import android.view.MenuItem;
+import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.Custom_Controls.QuickButtonList.QuickButtonItem;
 import de.cachebox_test.Locator.Locator;
 import de.cachebox_test.Map.RouteOverlay;
@@ -72,9 +73,12 @@ public class Global
 
 	public static FilterProperties LastFilter = null;
 	public static boolean autoResort;
-	public static Bitmap EmptyBmp = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // kleinst
-																						// mögliches
-																						// Bmp
+	public static Bitmap EmptyBmp = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565);
+
+	/**
+	 * List of installed PlugIns Max count of PlugIn = 10!
+	 */
+	public static IPlugIn iPlugin[] = new IPlugIn[10];
 
 	// for MapView
 
