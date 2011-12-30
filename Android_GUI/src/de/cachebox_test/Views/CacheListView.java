@@ -38,6 +38,7 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 
 		CachListChangedEventList.Add(this);
 		this.setAdapter(null);
+		this.setFastScrollEnabled(true);
 		try
 		{
 			lvAdapter = new CustomAdapter(getContext(), Database.Data.Query);
