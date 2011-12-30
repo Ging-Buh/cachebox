@@ -489,7 +489,8 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 						if (cache.Found)
 						{
 							cache.Found = false;
-							// Database.WriteToDatabase(cache);
+							CacheDAO cacheDAO = new CacheDAO();
+							cacheDAO.WriteToDatabase_Found(cache);
 							Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
 							Config.AcceptChanges();
 						}
