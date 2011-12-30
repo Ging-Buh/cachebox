@@ -19,6 +19,7 @@ public class SpriteCache
 	public static ArrayList<Sprite> MapArrows = null;
 	public static ArrayList<Sprite> MapStars = null;
 	public static ArrayList<Sprite> Bubble = null;
+	public static Sprite InfoBack = null;
 
 	/**
 	 * Load the Sprites from recorce
@@ -99,6 +100,8 @@ public class SpriteCache
 		Bubble.add(atlas.createSprite("Bubble"));
 		Bubble.add(atlas.createSprite("Bubble_selected"));
 		Bubble.add(atlas.createSprite("BubbleOverlay"));
+
+		InfoBack = atlas.createSprite("InfoPanelBack");
 
 	}
 

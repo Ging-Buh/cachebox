@@ -38,6 +38,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
 import de.cachebox_test.Global;
+import de.cachebox_test.UnitFormatter;
 import de.cachebox_test.main;
 import de.cachebox_test.Components.CacheDraw;
 import de.cachebox_test.Events.PositionEvent;
@@ -312,6 +313,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		renderPositionMarker();
 		Bubble.render(xSizeUnder, ySizeUnder);
 
+		renderInfoPanel();
+
 		str = "fps: " + Gdx.graphics.getFramesPerSecond();
 		font.draw(batch, str, 100, 100);
 		str = String.valueOf(zoom) + " - camera.zoom: " + Math.round(camera.zoom * 100) / 100;
@@ -327,6 +330,63 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		font.draw(batch, str, 100, 20);
 
 		batch.end();
+
+	}
+
+	public static final Vector2 infoPos = new Vector2(10, 420);
+	public static final float infoWidth = 360;
+	public static final float infoHeight = 100;
+
+	public static final float compassWidth = infoHeight - 20;
+	public static final float compassHeight = infoHeight - 20;
+
+	private void renderInfoPanel()
+	{
+		// draw background
+		Sprite sprite = SpriteCache.InfoBack;
+		sprite.setPosition(infoPos.x, infoPos.y);
+		sprite.setSize(infoWidth, infoHeight);
+		sprite.draw(MapViewGlListener.batch);
+
+		// Position ist entweder GPS-Position oder die des Markers, wenn
+		// dieser gesetzt wurde.
+		Coordinate position = null;
+		if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
+		else if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;
+		else
+			position = new Coordinate();
+
+		// Gps empfang ?
+		if (GlobalCore.SelectedCache() != null && position.Valid)
+		{
+			// Distanz einzeichnen
+			float distance = 0;
+
+			if (GlobalCore.SelectedWaypoint() == null) distance = position.Distance(GlobalCore.SelectedCache().Pos);
+			else
+				distance = position.Distance(GlobalCore.SelectedWaypoint().Pos);
+
+			String text = UnitFormatter.DistanceString(distance);
+			// canvas.drawText(text, leftString, bottom - 10, paint);
+
+			// Kompassnadel zeichnen
+			if (Global.Locator != null)
+			{
+				Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos
+						: GlobalCore.SelectedCache().Pos;
+				double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
+				double relativeBearing = bearing - Global.Locator.getHeading();
+				// double relativeBearingRad = relativeBearing * Math.PI / 180.0;
+
+				// draw compass
+				Sprite compass = SpriteCache.MapArrows.get(0);
+				compass.setPosition(infoPos.x + 15, infoPos.y + 30);
+				compass.setSize(compassWidth, compassHeight);
+				compass.setRotation((float) relativeBearing);
+				compass.draw(MapViewGlListener.batch);
+
+			}
+		}
 
 	}
 
