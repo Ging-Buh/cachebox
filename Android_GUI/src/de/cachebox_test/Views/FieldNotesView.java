@@ -457,12 +457,12 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		// final Cache cache =
 		// Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
 
+		Cache tmpCache = null;
 		// suche den Cache aus der DB.
 		// Nicht aus der aktuellen Query, da dieser herausgefiltert sein könnte
 		CacheList lCaches = new CacheList();
 		CacheListDAO cacheListDAO = new CacheListDAO();
 		cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId);
-		Cache tmpCache = null;
 		if (lCaches.size() > 0) tmpCache = lCaches.get(0);
 		final Cache cache = tmpCache;
 
@@ -493,6 +493,14 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 							cacheDAO.WriteToDatabase_Found(cache);
 							Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
 							Config.AcceptChanges();
+							// jetzt noch diesen Cache in der aktuellen CacheListe suchen und auch da den Found-Status zurücksetzen
+							// damit das Smiley Symbol aus der Map und der CacheList verschwindet
+							Cache tc = Database.Data.Query.GetCacheById(cache.Id);
+							if (tc != null)
+							{
+								tc.Found = false;
+							}
+
 						}
 					}
 					lFieldNotes.DeleteFieldNote(aktFieldNote.Id, aktFieldNote.type);
