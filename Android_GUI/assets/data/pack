@@ -11,14 +11,14 @@ repeat: none
   index: -1
 small5no
   rotate: false
-  xy: 33, 795
+  xy: 467, 675
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 stars5small
   rotate: false
-  xy: 148, 811
+  xy: 99, 756
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
@@ -32,7 +32,7 @@ Bubble
   index: -1
 stars1small
   rotate: false
-  xy: 308, 795
+  xy: 244, 740
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
@@ -46,21 +46,21 @@ stars1small
   index: -1
 shaddowrect
   rotate: false
-  xy: 306, 730
+  xy: 241, 675
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 stars3_5small
   rotate: false
-  xy: 455, 795
+  xy: 391, 740
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 stars0small
   rotate: false
-  xy: 210, 795
+  xy: 146, 740
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
@@ -74,14 +74,14 @@ stars0small
   index: -1
 arrow_GPS
   rotate: false
-  xy: 66, 730
+  xy: 1, 675
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 arrow_Compass_Trans
   rotate: false
-  xy: 1, 730
+  xy: 433, 587
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -102,14 +102,14 @@ arrow_Compass_Trans
   index: -1
 cross
   rotate: false
-  xy: 196, 730
+  xy: 131, 675
   size: 60, 60
   orig: 60, 60
   offset: 0, 0
   index: -1
 small5solved
   rotate: false
-  xy: 49, 795
+  xy: 483, 675
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -123,7 +123,7 @@ small5solved
   index: -1
 small3yes
   rotate: false
-  xy: 484, 730
+  xy: 419, 675
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -131,27 +131,27 @@ small3yes
 InfoPanelBack
   rotate: false
   xy: 1, 587
-  size: 437, 142
-  orig: 437, 142
+  size: 366, 87
+  orig: 366, 87
   offset: 0, 0
   index: -1
 small1yes
   rotate: false
-  xy: 420, 730
+  xy: 355, 675
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 stars4small
   rotate: false
-  xy: 99, 811
+  xy: 50, 756
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 small4no
   rotate: false
-  xy: 1, 795
+  xy: 435, 675
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -165,7 +165,7 @@ small4no
   index: -1
 small7yes
   rotate: false
-  xy: 145, 795
+  xy: 81, 740
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -179,21 +179,21 @@ small7yes
   index: -1
 small3no
   rotate: false
-  xy: 468, 730
+  xy: 403, 675
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small5yes
   rotate: false
-  xy: 81, 795
+  xy: 17, 740
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 stars2_5small
   rotate: false
-  xy: 357, 795
+  xy: 293, 740
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
@@ -235,7 +235,7 @@ stars2_5small
   index: -1
 small7no
   rotate: false
-  xy: 129, 795
+  xy: 65, 740
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -249,7 +249,7 @@ Bubble_selected
   index: -1
 stars3small
   rotate: false
-  xy: 1, 811
+  xy: 440, 740
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
@@ -270,14 +270,14 @@ stars3small
   index: -1
 stars1_5small
   rotate: false
-  xy: 259, 795
+  xy: 195, 740
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 deact
   rotate: false
-  xy: 257, 730
+  xy: 192, 675
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -298,14 +298,14 @@ deact
   index: -1
 shaddowrect_selected
   rotate: false
-  xy: 355, 730
+  xy: 290, 675
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 small5solved_no
   rotate: false
-  xy: 65, 795
+  xy: 1, 740
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -319,28 +319,28 @@ small5solved_no
   index: -1
 small2no
   rotate: false
-  xy: 436, 730
+  xy: 371, 675
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 stars2small
   rotate: false
-  xy: 406, 795
+  xy: 342, 740
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 arrow_Compass
   rotate: false
-  xy: 439, 587
+  xy: 368, 587
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 small4yes
   rotate: false
-  xy: 17, 795
+  xy: 451, 675
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -361,7 +361,7 @@ BubbleOverlay
   index: -1
 small1no
   rotate: false
-  xy: 404, 730
+  xy: 339, 675
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -382,21 +382,21 @@ small1no
   index: -1
 small2yes
   rotate: false
-  xy: 452, 730
+  xy: 387, 675
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 stars4_5small
   rotate: false
-  xy: 50, 811
+  xy: 1, 756
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 arrow_GPS_Trans
   rotate: false
-  xy: 131, 730
+  xy: 66, 675
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -410,21 +410,21 @@ arrow_GPS_Trans
   index: -1
 small6no
   rotate: false
-  xy: 97, 795
+  xy: 33, 740
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small6yes
   rotate: false
-  xy: 113, 795
+  xy: 49, 740
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 stars0_5small
   rotate: false
-  xy: 161, 795
+  xy: 97, 740
   size: 48, 10
   orig: 48, 10
   offset: 0, 0

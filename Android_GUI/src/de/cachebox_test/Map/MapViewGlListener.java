@@ -136,7 +136,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		// setCenter(new Coordinate(48.0, 12.0));
 		textMatrix = new Matrix4().setToOrtho2D(0, 0, width, height);
 		font = new BitmapFont();
-		font.setColor(0.7f, 0.4f, 0.0f, 1.0f);
+		font.setColor(0.0f, 0.2f, 0.0f, 1.0f);
+		font.setScale(1.2f);
 
 		circle = new Gdx2DPixmap(16, 16, Gdx2DPixmap.GDX2D_FORMAT_RGB565);
 		circle.clear(Color.TRANSPARENT);
@@ -333,9 +334,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 	}
 
-	public static final Vector2 infoPos = new Vector2(10, 420);
-	public static final float infoWidth = 360;
-	public static final float infoHeight = 100;
+	public static final Vector2 infoPos = new Vector2(10, 435);
+	public static final float infoWidth = 366;
+	public static final float infoHeight = 87;
 
 	public static final float compassWidth = infoHeight - 20;
 	public static final float compassHeight = infoHeight - 20;
@@ -367,6 +368,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 				distance = position.Distance(GlobalCore.SelectedWaypoint().Pos);
 
 			String text = UnitFormatter.DistanceString(distance);
+			font.draw(batch, text, infoPos.x + 90, infoPos.y + 40);
 			// canvas.drawText(text, leftString, bottom - 10, paint);
 
 			// Kompassnadel zeichnen
@@ -380,10 +382,27 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 				// draw compass
 				Sprite compass = SpriteCache.MapArrows.get(0);
-				compass.setPosition(infoPos.x + 15, infoPos.y + 30);
+				compass.setRotation((float) -relativeBearing);
 				compass.setSize(compassWidth, compassHeight);
-				compass.setRotation((float) relativeBearing);
+				compass.setPosition(infoPos.x + 15, infoPos.y + 16);
+
 				compass.draw(MapViewGlListener.batch);
+
+			}
+
+			// Koordinaten
+			if (position.Valid)
+			{
+				String textLatitude = GlobalCore.FormatLatitudeDM(position.Latitude);
+				String textLongitude = GlobalCore.FormatLongitudeDM(position.Longitude);
+
+				font.draw(batch, textLatitude, infoPos.x + 250, infoPos.y + 70);
+				font.draw(batch, textLongitude, infoPos.x + 250, infoPos.y + 40);
+
+				if (Global.Locator != null)
+				{
+					font.draw(batch, Global.Locator.SpeedString(), infoPos.x + 90, infoPos.y + 70);
+				}
 
 			}
 		}
