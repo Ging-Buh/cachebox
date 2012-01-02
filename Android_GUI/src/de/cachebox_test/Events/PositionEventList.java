@@ -8,6 +8,7 @@ import CB_Core.Types.Coordinate;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.SystemClock;
+import de.cachebox_test.Energy;
 
 public class PositionEventList
 {
@@ -50,6 +51,10 @@ public class PositionEventList
 
 	public static void Call(float heading)
 	{
+		/**
+		 * if display is switched off, so we need no heading changes
+		 */
+		if (Energy.dontRender) return;
 
 		if (!Config.settings.HtcCompass.getValue()) return;
 
@@ -73,10 +78,13 @@ public class PositionEventList
 		compassValue = 0;
 		lastCompassTick = aktTick;
 
+		int callCounter = 0;
 		for (PositionEvent event : list)
 		{
 			event.OrientationChanged(heading);
+			callCounter++;
 		}
+
 	}
 
 }

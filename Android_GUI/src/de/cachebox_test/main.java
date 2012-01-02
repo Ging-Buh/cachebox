@@ -314,6 +314,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 		}
 
+		// initialize receiver for screen switched on/off
+		IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+		filter.addAction(Intent.ACTION_SCREEN_OFF);
+		BroadcastReceiver mReceiver = new ScreenReceiver();
+		registerReceiver(mReceiver, filter);
+
 		Logger.Add(this);
 
 		N = Config.settings.nightMode.getValue();
@@ -1185,6 +1191,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onPause()
 	{
+
+		// when the screen is about to turn off
+		if (ScreenReceiver.wasScreenOn)
+		{
+			// this is the case when onPause() is called by the system due to a screen state change
+			Energy.setDontRender();
+		}
+
 		if (input == null)
 		{
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
@@ -1208,6 +1222,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onResume()
 	{
+		// only when screen turns on
+		if (!ScreenReceiver.wasScreenOn)
+		{
+			// this is when onResume() is called due to a screen state change
+			Energy.resetDontRender();
+		}
+
 		if (input == null)
 		{
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
@@ -1331,6 +1352,34 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				super.onDestroy();
 			}
 		}
+	}
+
+	/**
+	 * Handling Screen OFF and Screen ON Intents
+	 * 
+	 * @author -jwei http://thinkandroid.wordpress.com/2010/01/24/handling-screen-off-and-screen-on-intents/
+	 */
+	public static class ScreenReceiver extends BroadcastReceiver
+	{
+
+		// thanks Jason
+		public static boolean wasScreenOn = true;
+
+		@Override
+		public void onReceive(Context context, Intent intent)
+		{
+			if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF))
+			{
+				// do whatever you need to do here
+				wasScreenOn = false;
+			}
+			else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON))
+			{
+				// and do whatever you need to do here
+				wasScreenOn = true;
+			}
+		}
+
 	}
 
 	/**
