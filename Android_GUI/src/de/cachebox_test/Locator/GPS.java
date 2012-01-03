@@ -91,10 +91,10 @@ public class GPS
 					//satellite signal strength
 					
 					if (sat.usedInFix()) {
-						Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr() + " FIX");
+						//Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr() + " FIX");
 						SatList.add(new GpsStrength(true, sat.getSnr()));
 					} else {
-						Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr());
+						//Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr());
 						SatList.add(new GpsStrength(false, sat.getSnr()));
 					}
 					 

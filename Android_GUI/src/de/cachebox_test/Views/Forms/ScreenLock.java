@@ -126,7 +126,7 @@ public class ScreenLock extends Activity
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
-		Log.d("SolHunter", "Key event code " + keyCode);
+		//Log.d("SolHunter", "Key event code " + keyCode);
 		if (keyCode == KeyEvent.KEYCODE_BACK)
 		{
 			return true;

@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.microedition.khronos.opengles.GL10;
 import javax.security.auth.DestroyFailedException;
 
 import CB_Core.Config;
@@ -25,6 +24,7 @@ import android.os.AsyncTask;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -41,6 +41,7 @@ import de.cachebox_test.Global;
 import de.cachebox_test.UnitFormatter;
 import de.cachebox_test.main;
 import de.cachebox_test.Components.CacheDraw;
+import de.cachebox_test.Custom_Controls.MultiToggleButton;
 import de.cachebox_test.Events.PositionEvent;
 import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Map.MapCacheList.WaypointRenderInfo;
@@ -62,6 +63,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	private MapCacheList mapCacheList;
 	private Point lastMovement = new Point(0, 0);
 	private int zoomCross = 16;
+	private MultiToggleButton buttonTrackPosition;
 
 	// Settings values
 	private boolean showRating;
@@ -127,7 +129,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		drawingWidth = width;
 		drawingHeight = height;
 		batch = new SpriteBatch();
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera = new OrthographicCamera(width, height);
+
 		controller = new CameraController();
 		gestureDetector = new GestureDetector(20, 0.5f, 2, 0.15f, controller);
 		Gdx.input.setInputProcessor(gestureDetector);
@@ -148,13 +151,25 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		camera.zoom = getMapTilePosFactor(zoom);
 		camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
 		startTime = System.currentTimeMillis();
+
+		// initial Toggle Button
+		buttonTrackPosition = new MultiToggleButton();
+		buttonTrackPosition.clearStates();
+		buttonTrackPosition.addState("Free", Color.GRAY);
+		buttonTrackPosition.addState("GPS", Color.GREEN);
+		buttonTrackPosition.addState("Lock", Color.RED);
+		buttonTrackPosition.addState("Car", Color.YELLOW);
+		buttonTrackPosition.setState(0);
+
 	}
 
 	@Override
 	public void resize(int width, int height)
 	{
-		// TODO Auto-generated method stub
-
+		// Log.d("MAPVIEW", "resize" + width + "/" + height);
+		textMatrix.setToOrtho2D(0, 0, width, height);
+		togglePos = new Vector2(380, height - 97);
+		infoPos = new Vector2(10, height - 100);
 	}
 
 	protected SortedMap<Long, TileGL> tilesToDraw = new TreeMap<Long, TileGL>();
@@ -162,6 +177,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	@Override
 	public void render()
 	{
+
 		long endTime = System.currentTimeMillis();
 		long dt = endTime - startTime;
 		if (dt < 33)
@@ -188,6 +204,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		loadTiles();
 
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		camera.update();
+
 		controller.update();
 
 		if (alignToCompass)
@@ -316,25 +334,43 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 		renderInfoPanel();
 
-		str = "fps: " + Gdx.graphics.getFramesPerSecond();
-		font.draw(batch, str, 100, 100);
-		str = String.valueOf(zoom) + " - camera.zoom: " + Math.round(camera.zoom * 100) / 100;
-		font.draw(batch, str, 100, 80);
-		str = "loaded Tiles: " + loadedTiles.size() + " - queuedTiles: " + queuedTiles.size();
-		font.draw(batch, str, 100, 60);
-		if (mapCacheList != null)
-		{
-			str = "AnzCachelistCalc: " + mapCacheList.anz + " - Caches: " + mapCacheList.list.size();
-			font.draw(batch, str, 100, 40);
-		}
-		str = "lastMove: " + lastMovement.x + " - " + lastMovement.y;
-		font.draw(batch, str, 100, 20);
+		buttonTrackPosition.Render(batch, togglePos, toggleWidth, toggleHeight);
+
+		renderDebugInfo();
 
 		batch.end();
 
 	}
 
-	public static final Vector2 infoPos = new Vector2(10, 435);
+	private void renderDebugInfo()
+	{
+		str = "fps: " + Gdx.graphics.getFramesPerSecond();
+		font.draw(batch, str, 20, 100);
+		str = String.valueOf(zoom) + " - camera.zoom: " + Math.round(camera.zoom * 100) / 100;
+		font.draw(batch, str, 20, 80);
+		str = "loaded Tiles: " + loadedTiles.size() + " - queuedTiles: " + queuedTiles.size();
+		font.draw(batch, str, 20, 60);
+		if (mapCacheList != null)
+		{
+			str = "AnzCachelistCalc: " + mapCacheList.anz + " - Caches: " + mapCacheList.list.size();
+			font.draw(batch, str, 20, 40);
+		}
+		str = "lastMove: " + lastMovement.x + " - " + lastMovement.y;
+		font.draw(batch, str, 20, 20);
+
+		str = "W/H: " + width + "/" + height;
+		font.draw(batch, str, 200, 100);
+
+		str = "dW/dH: " + drawingWidth + "/" + drawingHeight;
+		font.draw(batch, str, 200, 80);
+
+	}
+
+	public static Vector2 togglePos = new Vector2(380, 438);
+	public static final float toggleWidth = 87;
+	public static final float toggleHeight = 87;
+
+	public static Vector2 infoPos = new Vector2(10, 435);
 	public static final float infoWidth = 366;
 	public static final float infoHeight = 87;
 
@@ -815,6 +851,13 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			WaypointRenderInfo minWpi = null;
 			Vector2 clickedAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());
 
+			// check ToggleBtn clicked
+			if (buttonTrackPosition.hitTest(clickedAt))
+			{
+				main.vibrator.vibrate(50);
+				return true;
+			}
+
 			synchronized (mapCacheList.list)
 			{
 				// Bubble gedrückt?
@@ -1175,8 +1218,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		return result;
 	}
 
-	// liefert die World-Koordinate in Pixel relativ zur Map in der höchsten
-	// Auflösung
+	/**
+	 * liefert die World-Koordinate in Pixel relativ zur Map in der höchsten Auflösung
+	 */
 	private Vector2 screenToWorld(Vector2 point)
 	{
 		Vector2 result = new Vector2(0, 0);

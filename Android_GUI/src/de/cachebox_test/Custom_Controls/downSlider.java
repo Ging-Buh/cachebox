@@ -444,7 +444,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh)
 	{
-		Log.d("Cachebox", "Size changed to " + w + "x" + h);
+		//Log.d("Cachebox", "Size changed to " + w + "x" + h);
 	}
 
 	public static void ButtonShowStateChanged()
@@ -795,33 +795,33 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		@Override
 		public boolean onSingleTapUp(MotionEvent ev)
 		{
-			Log.d("onSingleTapUp", ev.toString());
+			//Log.d("onSingleTapUp", ev.toString());
 			return true;
 		}
 
 		@Override
 		public void onShowPress(MotionEvent ev)
 		{
-			Log.d("onShowPress", ev.toString());
+			//Log.d("onShowPress", ev.toString());
 		}
 
 		@Override
 		public void onLongPress(MotionEvent ev)
 		{
-			Log.d("onLongPress", ev.toString());
+			//Log.d("onLongPress", ev.toString());
 		}
 
 		@Override
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
 		{
-			Log.d("onScroll", e1.toString());
+			//Log.d("onScroll", e1.toString());
 			return true;
 		}
 
 		@Override
 		public boolean onDown(MotionEvent ev)
 		{
-			Log.d("onDownd", ev.toString());
+			//Log.d("onDownd", ev.toString());
 			return true;
 		}
 

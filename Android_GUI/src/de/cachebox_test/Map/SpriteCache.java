@@ -20,6 +20,7 @@ public class SpriteCache
 	public static ArrayList<Sprite> MapStars = null;
 	public static ArrayList<Sprite> Bubble = null;
 	public static Sprite InfoBack = null;
+	public static ArrayList<Sprite> ToggleBtn = null;
 
 	/**
 	 * Load the Sprites from recorce
@@ -102,6 +103,14 @@ public class SpriteCache
 		Bubble.add(atlas.createSprite("BubbleOverlay"));
 
 		InfoBack = atlas.createSprite("InfoPanelBack");
+
+		ToggleBtn = new ArrayList<Sprite>();
+		ToggleBtn.add(atlas.createSprite("day_btn_normal"));
+		ToggleBtn.add(atlas.createSprite("day_btn_pressed"));
+		ToggleBtn.add(atlas.createSprite("toggle_led_gr"));
+		ToggleBtn.add(atlas.createSprite("toggle_led_gn"));
+		ToggleBtn.add(atlas.createSprite("toggle_led_rt"));
+		ToggleBtn.add(atlas.createSprite("toggle_led_gb"));
 
 	}
 

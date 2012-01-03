@@ -111,7 +111,7 @@ public final class CanvasDrawControl extends View
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh)
 	{
-		Log.d("Cachebox", "Size changed to " + w + "x" + h);
+		//Log.d("Cachebox", "Size changed to " + w + "x" + h);
 	}
 
 	public void setHeight(int MyHeight)

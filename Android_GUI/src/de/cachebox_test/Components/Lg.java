@@ -14,10 +14,10 @@ public class Lg {
                 Log.v(LOG_TAG, message, throwable);
         }
         public static void debug(final String message) {
-                Log.d(LOG_TAG, message);
+                //Log.d(LOG_TAG, message);
         }
         public static void debug(final String message, final Throwable throwable) {
-                Log.d(LOG_TAG, message, throwable);
+                //Log.d(LOG_TAG, message, throwable);
         }
         public static void info(final String message) {
                 Log.i(LOG_TAG, message);

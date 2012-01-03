@@ -590,13 +590,13 @@ public class splash extends Activity
 		Intent baseIntent = new Intent(ACTION_PICK_PLUGIN);
 		baseIntent.setFlags(Intent.FLAG_DEBUG_LOG_RESOLUTION);
 		List<ResolveInfo> list = packageManager.queryIntentServices(baseIntent, PackageManager.GET_RESOLVED_FILTER);
-		Log.d(LOG_TAG, "fillPluginList: " + list);
+		//Log.d(LOG_TAG, "fillPluginList: " + list);
 		int i;
 		for (i = 0; i < list.size(); ++i)
 		{
 			ResolveInfo info = list.get(i);
 			ServiceInfo sinfo = info.serviceInfo;
-			Log.d(LOG_TAG, "fillPluginList: i: " + i + "; sinfo: " + sinfo);
+			//Log.d(LOG_TAG, "fillPluginList: i: " + i + "; sinfo: " + sinfo);
 			if (sinfo != null)
 			{
 				HashMap<String, String> item = new HashMap<String, String>();
@@ -642,7 +642,7 @@ public class splash extends Activity
 			Intent intent = new Intent();
 			HashMap<String, String> data = services.get(i);
 			intent.setClassName(data.get(KEY_PKG), data.get(KEY_SERVICENAME));
-			Log.d(LOG_TAG, "bindPluginServices: " + intent);
+			//Log.d(LOG_TAG, "bindPluginServices: " + intent);
 			bindService(intent, pluginServiceConnection[i], Context.BIND_AUTO_CREATE);
 
 		}
@@ -654,7 +654,7 @@ public class splash extends Activity
 		public void onServiceConnected(ComponentName className, IBinder boundService)
 		{
 			int idx = getServiceConnectionIndex();
-			Log.d(LOG_TAG, "onServiceConnected: ComponentName: " + className + "; idx: " + idx);
+			//Log.d(LOG_TAG, "onServiceConnected: ComponentName: " + className + "; idx: " + idx);
 			if (idx >= 0)
 			{
 				Global.iPlugin[idx] = IPlugIn.Stub.asInterface((IBinder) boundService);
@@ -664,7 +664,7 @@ public class splash extends Activity
 		public void onServiceDisconnected(ComponentName className)
 		{
 			int idx = getServiceConnectionIndex();
-			Log.d(LOG_TAG, "onServiceDisconnected: ComponentName: " + className + "; idx: " + idx);
+			//Log.d(LOG_TAG, "onServiceDisconnected: ComponentName: " + className + "; idx: " + idx);
 			if (idx >= 0) Global.iPlugin[idx] = null;
 		}
 
