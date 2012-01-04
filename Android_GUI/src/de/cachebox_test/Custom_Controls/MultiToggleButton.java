@@ -227,8 +227,11 @@ public class MultiToggleButton extends Button implements OnClickListener
 	{
 		if (hitRec != null)
 		{
-			onClick();
-			return hitRec.contains(pos.x, pos.y);
+			if (hitRec.contains(pos.x, pos.y))
+			{
+				onClick();
+				return true;
+			}
 		}
 		return false;
 	}

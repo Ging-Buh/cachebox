@@ -204,7 +204,6 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		loadTiles();
 
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		camera.update();
 
 		controller.update();
 

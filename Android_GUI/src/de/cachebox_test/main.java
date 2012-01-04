@@ -885,7 +885,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
-		//Log.d("SolHunter", "Key event code " + keyCode);
+		// Log.d("SolHunter", "Key event code " + keyCode);
 		if (keyCode == KeyEvent.KEYCODE_BACK)
 		{
 			DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
@@ -999,7 +999,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (resultCode == RESULT_OK)
 			{
-				//Log.d("DroidCachebox", "Picture taken!!!");
+				// Log.d("DroidCachebox", "Picture taken!!!");
 				GlobalCore.SelectedCache().ReloadSpoilerRessources();
 				String MediaFolder = Config.settings.UserImageFolder.getValue();
 				String TrackFolder = Config.settings.TrackFolder.getValue();
@@ -1014,7 +1014,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 			else
 			{
-				//Log.d("DroidCachebox", "Picture NOT taken!!!");
+				// Log.d("DroidCachebox", "Picture NOT taken!!!");
 				return;
 			}
 		}
@@ -1024,7 +1024,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (resultCode == RESULT_OK)
 			{
-				//Log.d("DroidCachebox", "Video taken!!!");
+				// Log.d("DroidCachebox", "Video taken!!!");
 				// Global.selectedCache.ReloadSpoilerRessources();
 
 				String[] projection =
@@ -1043,7 +1043,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				// Datei wird umbenannt/verschoben
 				if (!source.renameTo(destination))
 				{
-					//Log.d("DroidCachebox", "Fehler beim Umbenennen der Datei: " + source.getName());
+					// Log.d("DroidCachebox", "Fehler beim Umbenennen der Datei: " + source.getName());
 				}
 
 				String TrackFolder = Config.settings.TrackFolder.getValue();
@@ -1055,7 +1055,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 			else
 			{
-				//Log.d("DroidCachebox", "Video NOT taken!!!");
+				// Log.d("DroidCachebox", "Video NOT taken!!!");
 				return;
 			}
 		}
@@ -2116,13 +2116,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void takePhoto()
 	{
-		//Log.d("DroidCachebox", "Starting camera on the phone...");
+		// Log.d("DroidCachebox", "Starting camera on the phone...");
 
 		// define the file-name to save photo taken by Camera activity
 		String directory = Config.settings.UserImageFolder.getValue();
 		if (!FileIO.DirectoryExists(directory))
 		{
-			//Log.d("DroidCachebox", "Media-Folder does not exist...");
+			// Log.d("DroidCachebox", "Media-Folder does not exist...");
 			return;
 		}
 
@@ -2150,13 +2150,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void recVideo()
 	{
-		//Log.d("DroidCachebox", "Starting video on the phone...");
+		// Log.d("DroidCachebox", "Starting video on the phone...");
 
 		// define the file-name to save video taken by Camera activity
 		String directory = Config.settings.UserImageFolder.getValue();
 		if (!FileIO.DirectoryExists(directory))
 		{
-			//Log.d("DroidCachebox", "Media-Folder does not exist...");
+			// Log.d("DroidCachebox", "Media-Folder does not exist...");
 			return;
 		}
 
@@ -2198,13 +2198,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		if (!getVoiceRecIsStart()) // Voice Recorder starten
 		{
-			//Log.d("DroidCachebox", "Starting voice recorder on the phone...");
+			// Log.d("DroidCachebox", "Starting voice recorder on the phone...");
 
 			// define the file-name to save voice taken by activity
 			String directory = Config.settings.UserImageFolder.getValue();
 			if (!FileIO.DirectoryExists(directory))
 			{
-				//Log.d("DroidCachebox", "Media-Folder does not exist...");
+				// Log.d("DroidCachebox", "Media-Folder does not exist...");
 				return;
 			}
 
@@ -2253,7 +2253,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 		else
 		{ // Voice Recorder stoppen
-			//Log.d("DroidCachebox", "Stoping voice recorder on the phone...");
+			// Log.d("DroidCachebox", "Stoping voice recorder on the phone...");
 			// Stop recording
 			setVoiceRecIsStart(false);
 			return;
@@ -2358,18 +2358,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			catch (MalformedURLException urlEx)
 			{
 				Logger.Error("main.initialBtnInfoContextMenu()", "MalformedURLException HTTP response Jokers", urlEx);
-				//Log.d("DroidCachebox", urlEx.getMessage());
+				// Log.d("DroidCachebox", urlEx.getMessage());
 			}
 			catch (IOException ioEx)
 			{
 				Logger.Error("main.initialBtnInfoContextMenu()", "IOException HTTP response Jokers", ioEx);
-				//Log.d("DroidCachebox", ioEx.getMessage());
+				// Log.d("DroidCachebox", ioEx.getMessage());
 				MessageBox.Show(GlobalCore.Translations.Get("internetError"));
 			}
 			catch (Exception ex)
 			{
 				Logger.Error("main.initialBtnInfoContextMenu()", "HTTP response Jokers", ex);
-				//Log.d("DroidCachebox", ex.getMessage());
+				// Log.d("DroidCachebox", ex.getMessage());
 			}
 		}
 	}
@@ -2923,7 +2923,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				e.printStackTrace();
 			}
 
-			//Log.d("CACHEBOX", Msg);
+			Log.d("CACHEBOX", Msg);
 		}
 	}
 
