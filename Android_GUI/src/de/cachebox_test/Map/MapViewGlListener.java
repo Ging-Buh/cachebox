@@ -56,22 +56,22 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	private Lock queuedTilesLock = new ReentrantLock();
 	private queueProcessor queueProcessor = null;
 	private AtomicBoolean started = new AtomicBoolean(false);
-	private boolean alignToCompass = false;
-	private boolean centerGps = false;
+	public boolean alignToCompass = false;
+	// private boolean centerGps = false;
 	private float mapHeading = 0;
 	private float arrowHeading = 0;
 	private MapCacheList mapCacheList;
 	private Point lastMovement = new Point(0, 0);
 	private int zoomCross = 16;
-	private MultiToggleButton buttonTrackPosition;
+	private MultiToggleButton btnTrackPos;
 
 	// Settings values
-	private boolean showRating;
-	private boolean showDT;
-	private boolean showTitles;
-	private boolean hideMyFinds;
+	public boolean showRating;
+	public boolean showDT;
+	public boolean showTitles;
+	public boolean hideMyFinds;
 	private boolean showCompass;
-	private boolean showDirektLine;
+	public boolean showDirektLine;
 	private boolean nightMode;
 
 	// maxzoom wird 1:1 dargestellt
@@ -138,9 +138,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		// setScreenCenter(new Descriptor((int) posx, (int) posy, 14));
 		// setCenter(new Coordinate(48.0, 12.0));
 		textMatrix = new Matrix4().setToOrtho2D(0, 0, width, height);
-		font = new BitmapFont();
+		font = new BitmapFont(Gdx.files.internal("data/ArialBold18.fnt"), Gdx.files.internal("data/ArialBold18.png"), false);
 		font.setColor(0.0f, 0.2f, 0.0f, 1.0f);
-		font.setScale(1.2f);
+		font.setScale(1.0f);
 
 		circle = new Gdx2DPixmap(16, 16, Gdx2DPixmap.GDX2D_FORMAT_RGB565);
 		circle.clear(Color.TRANSPARENT);
@@ -153,13 +153,13 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		startTime = System.currentTimeMillis();
 
 		// initial Toggle Button
-		buttonTrackPosition = new MultiToggleButton();
-		buttonTrackPosition.clearStates();
-		buttonTrackPosition.addState("Free", Color.GRAY);
-		buttonTrackPosition.addState("GPS", Color.GREEN);
-		buttonTrackPosition.addState("Lock", Color.RED);
-		buttonTrackPosition.addState("Car", Color.YELLOW);
-		buttonTrackPosition.setState(0);
+		btnTrackPos = new MultiToggleButton();
+		btnTrackPos.clearStates();
+		btnTrackPos.addState("Free", Color.GRAY);
+		btnTrackPos.addState("GPS", Color.GREEN);
+		btnTrackPos.addState("Lock", Color.RED);
+		btnTrackPos.addState("Car", Color.YELLOW);
+		btnTrackPos.setState(0);
 
 	}
 
@@ -333,7 +333,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 		renderInfoPanel();
 
-		buttonTrackPosition.Render(batch, togglePos, toggleWidth, toggleHeight);
+		btnTrackPos.Render(batch, togglePos, toggleWidth, toggleHeight);
 
 		renderDebugInfo();
 
@@ -403,7 +403,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 				distance = position.Distance(GlobalCore.SelectedWaypoint().Pos);
 
 			String text = UnitFormatter.DistanceString(distance);
-			font.draw(batch, text, infoPos.x + 90, infoPos.y + 40);
+			font.draw(batch, text, infoPos.x + 100, infoPos.y + 40);
 			// canvas.drawText(text, leftString, bottom - 10, paint);
 
 			// Kompassnadel zeichnen
@@ -431,12 +431,12 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 				String textLatitude = GlobalCore.FormatLatitudeDM(position.Latitude);
 				String textLongitude = GlobalCore.FormatLongitudeDM(position.Longitude);
 
-				font.draw(batch, textLatitude, infoPos.x + 250, infoPos.y + 70);
-				font.draw(batch, textLongitude, infoPos.x + 250, infoPos.y + 40);
+				font.draw(batch, textLatitude, infoPos.x + 220, infoPos.y + 70);
+				font.draw(batch, textLongitude, infoPos.x + 220, infoPos.y + 40);
 
 				if (Global.Locator != null)
 				{
-					font.draw(batch, Global.Locator.SpeedString(), infoPos.x + 90, infoPos.y + 70);
+					font.draw(batch, Global.Locator.SpeedString(), infoPos.x + 100, infoPos.y + 70);
 				}
 
 			}
@@ -828,6 +828,14 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	Gdx2DPixmap circle;
 	Texture tcircle;
 
+	private void stateChanged()
+	{
+		if (btnTrackPos.getState() > 0)
+		{
+			setCenter(new Coordinate(GlobalCore.LastValidPosition.Latitude, GlobalCore.LastValidPosition.Longitude));
+		}
+	}
+
 	class CameraController implements GestureListener
 	{
 		float velX, velY;
@@ -851,9 +859,10 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			Vector2 clickedAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());
 
 			// check ToggleBtn clicked
-			if (buttonTrackPosition.hitTest(clickedAt))
+			if (btnTrackPos.hitTest(clickedAt))
 			{
 				main.vibrator.vibrate(50);
+				stateChanged();
 				return true;
 			}
 
@@ -1028,6 +1037,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		@Override
 		public boolean fling(float velocityX, float velocityY)
 		{
+			if (btnTrackPos.getState() > 1) return false;
+
 			flinging = true;
 
 			Vector2 richtung = new Vector2(velocityX, velocityY);
@@ -1041,12 +1052,15 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		@Override
 		public boolean pan(int x, int y, int deltaX, int deltaY)
 		{
+			if (btnTrackPos.getState() > 1) return false;
+
 			// Drehung der Karte berücksichtigen
 			Vector2 richtung = new Vector2(deltaX, deltaY);
 			richtung.rotate(mapHeading);
 			camera.position.add(-richtung.x * camera.zoom, richtung.y * camera.zoom, 0);
 			screenCenterW.x = camera.position.x;
 			screenCenterW.y = camera.position.y;
+			btnTrackPos.setState(0);
 			return false;
 		}
 
@@ -1262,7 +1276,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		GlobalCore.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());
 		GlobalCore.LastValidPosition.Elevation = location.getAltitude();
 
-		if (centerGps) setCenter(new Coordinate(location.getLatitude(), location.getLongitude()));
+		if (btnTrackPos.getState() > 0) setCenter(new Coordinate(location.getLatitude(), location.getLongitude()));
 
 	}
 
@@ -1318,16 +1332,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 	public boolean GetCenterGps()
 	{
-		return centerGps;
-	}
-
-	public void SetCenterGps(boolean value)
-	{
-		centerGps = value;
-		if (centerGps)
-		{
-			if (centerGps) setCenter(new Coordinate(GlobalCore.LastValidPosition.Latitude, GlobalCore.LastValidPosition.Longitude));
-		}
+		return (btnTrackPos.getState() > 0);
 	}
 
 	public boolean GetAlignToCompass()

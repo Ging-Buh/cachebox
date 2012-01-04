@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -242,9 +243,9 @@ public class MultiToggleButton extends Button implements OnClickListener
 	{
 		if (font == null)
 		{
-			font = new BitmapFont();
+			font = new BitmapFont(Gdx.files.internal("data/ArialBold22.fnt"), Gdx.files.internal("data/ArialBold22.png"), false);
 			font.setColor(0.0f, 0.0f, 0.0f, 1.0f);
-			font.setScale(1.4f);
+			font.setScale(1.0f);
 		}
 
 		// set hitRec

@@ -408,6 +408,64 @@ public class AllContextMenuCallHandler
 		icm.show();
 	}
 
+	public static void showMapViewGLContextMenu()
+	{
+		icm = new IconContextMenu(Main, R.menu.menu_mapviewgl);
+		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
+		Menu IconMenu = icm.getMenu();
+
+		Global.TranslateMenuItem(IconMenu, R.id.layer, "Layer");
+		Global.TranslateMenuItem(IconMenu, R.id.miAlignCompass, "AlignToCompass");
+		Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth, "SmoothScrolling");
+		Global.TranslateMenuItem(IconMenu, R.id.mapview_go_settings, "settings");
+		Global.TranslateMenuItem(IconMenu, R.id.miSearch, "search");
+		Global.TranslateMenuItem(IconMenu, R.id.mimapview_view, "view");
+		Global.TranslateMenuItem(IconMenu, R.id.mi_Track, "TrackRec");
+
+		try
+		{
+
+			MenuItem mi = IconMenu.findItem(R.id.miAlignCompass);
+			mi.setCheckable(true);
+			mi.setChecked(Main.mapViewGl.mapViewGlListener.alignToCompass);
+
+		}
+		catch (Exception exc)
+		{
+			Logger.Error("MapViewGL.BeforeShowMenu()", "", exc);
+			return;
+		}
+
+		icm.show();
+	}
+
+	public static void showMapViewGLLayerMenu()
+	{
+		icm = new IconContextMenu(Main, R.menu.menu_map_view_layer);
+		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
+		Menu IconMenu = icm.getMenu();
+
+		Global.TranslateMenuItem(IconMenu, R.id.miMap_HideFinds, "HideFinds");
+		Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowRatings, "ShowRatings");
+		Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowDT, "ShowDT");
+		Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowTitles, "ShowTitle");
+		Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowDirektLine, "ShowDirectLine");
+
+		MenuItem miFinds = IconMenu.findItem(R.id.miMap_HideFinds);
+		MenuItem miRaiting = IconMenu.findItem(R.id.miMap_ShowRatings);
+		MenuItem miDT = IconMenu.findItem(R.id.miMap_ShowDT);
+		MenuItem miTitles = IconMenu.findItem(R.id.miMap_ShowTitles);
+		MenuItem miLine = IconMenu.findItem(R.id.miMap_ShowDirektLine);
+
+		miFinds.setChecked(Main.mapViewGl.mapViewGlListener.hideMyFinds);
+		miRaiting.setChecked(Main.mapViewGl.mapViewGlListener.showRating);
+		miDT.setChecked(Main.mapViewGl.mapViewGlListener.showDT);
+		miTitles.setChecked(Main.mapViewGl.mapViewGlListener.showTitles);
+		miLine.setChecked(Main.mapViewGl.mapViewGlListener.showDirektLine);
+
+		icm.show();
+	}
+
 	public static void showMapLayerMenu()
 	{
 		icm = new IconContextMenu(Main, R.menu.menu_layer);

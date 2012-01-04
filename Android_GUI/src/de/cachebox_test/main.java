@@ -162,7 +162,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static long GPSTimeStamp = 0;
 	public static MapView mapView = null; // ID 0
 	public static CacheListView cacheListView = null; // ID 1
-	private static MapViewGL mapViewGl = null; // ID 2
+	public static MapViewGL mapViewGl = null; // ID 2
 	private static LogView logView = null; // ID 3
 	public static DescriptionView descriptionView = null; // ID 4
 	private static SpoilerView spoilerView = null; // ID 5
@@ -728,13 +728,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (!initialFixSoundCompleted && GlobalCore.LastValidPosition.Valid
 					&& location.getProvider().equalsIgnoreCase(LocationManager.GPS_PROVIDER))
 			{
-				Global.PlaySound("GPS_Fix.wav");
+				Global.PlaySound("GPS_Fix.ogg");
 				initialFixSoundCompleted = true;
 			}
 		}
 		catch (Exception e)
 		{
-			Logger.Error("main.newLocationReceived()", "Global.PlaySound(GPS_Fix.wav)", e);
+			Logger.Error("main.newLocationReceived()", "Global.PlaySound(GPS_Fix.ogg)", e);
 			e.printStackTrace();
 		}
 
@@ -750,7 +750,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				if (!approachSoundCompleted && (distance < Config.settings.SoundApproachDistance.getValue()))
 				{
-					Global.PlaySound("Approach.wav");
+					Global.PlaySound("Approach.ogg");
 					approachSoundCompleted = true;
 
 					// switch to Compass if the option seted
@@ -763,7 +763,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 		catch (Exception e)
 		{
-			Logger.Error("main.newLocationReceived()", "Global.PlaySound(Approach.wav)", e);
+			Logger.Error("main.newLocationReceived()", "Global.PlaySound(Approach.ogg)", e);
 			e.printStackTrace();
 		}
 
@@ -796,7 +796,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							if (cache.Distance(true) < GlobalCore.NearestCache().Distance(true))
 							{
 								Database.Data.Query.Resort();
-								Global.PlaySound("AutoResort.wav");
+								Global.PlaySound("AutoResort.ogg");
 								return;
 							}
 						}
@@ -846,7 +846,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					newLocationReceived(location);
 					if (initialFixSoundCompleted)
 					{
-						Global.PlaySound("GPS_lose.wav");
+						Global.PlaySound("GPS_lose.ogg");
 						initialFixSoundCompleted = false;
 					}
 

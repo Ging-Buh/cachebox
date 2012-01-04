@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/mi_mvgl_AlignCompass" android:checkable="true" android:title="Align to Compass" android:checked="false"></item>
-    <item android:id="@+id/mi_mvgl_centergps" android:title="Center GPS" android:checked="true" android:checkable="true"></item>
-
-    
-
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/layer" android:title="Layer">
+    </item>
+    <item android:id="@+id/miAlignCompass" android:title="Align to Compass" android:checked="false" android:checkable="true"></item>
+	<item android:id="@+id/mapview_smooth" android:title="Smooth Scrolling"> 
+	</item>
+	<item android:id="@+id/mapview_go_settings" android:title="Settings" android:visible="false"></item>
+	<item android:icon="@drawable/lupe" android:id="@+id/miSearch" android:title="Search Caches "></item>
+	<item android:id="@+id/mimapview_view" android:title="View">
+	</item>
+	<item android:title="Track Recorder" android:id="@+id/mi_Track"></item>
 </menu>
