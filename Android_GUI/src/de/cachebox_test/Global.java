@@ -38,15 +38,15 @@ import de.cachebox_test.Ui.Sizes;
 
 public class Global
 {
-	public static final int CurrentRevision = 638;
+	public static final int CurrentRevision = 639;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 	public static final int LatestDatabaseChange = 1016;
 	public static final int LatestDatabaseFieldNoteChange = 1001;
 
 	public static final String br = String.format("%n");
-	public static final String splashMsg = "Team Cachebox (2011)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009," + br
-			+ "Groundspeak Inc. Used with permission";
+	public static final String splashMsg = "Team Cachebox (2011-2012)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009,"
+			+ br + "Groundspeak Inc. Used with permission";
 
 	public static final boolean Debug = true;
 	public static JokerList Jokers = new JokerList();
@@ -65,6 +65,7 @@ public class Global
 	public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
 	public static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 61216517;
 	public static final int REQUEST_CODE_DELETE_DIALOG = 15122011;
+	public static final int REQUEST_CODE_PARKING_DIALOG = 40120112;
 
 	/**
 	 * Liste der Buttons in der QuickButton Leiste
@@ -247,7 +248,8 @@ public class Global
 	 * Index 16 =<img src="doc-files/big_16.png" width=32 height=32> <br>
 	 * Index 17 =<img src="doc-files/big_17.png" width=32 height=32> <br>
 	 * Index 18 =<img src="doc-files/big_18.png" width=32 height=32> <br>
-	 * Index 19 =<img src="doc-files/big_19.gif" width=32 height=32>
+	 * Index 19 =<img src="doc-files/big_19.gif" width=32 height=32> <br>
+	 * Index 20 =<img src="doc-files/my_parking.png" width=32 height=32> <br>
 	 */
 	public static Drawable[] CacheIconsBig = null;
 	public static Drawable[] BatteryIcons = null;
@@ -551,7 +553,7 @@ public class Global
 					getDrawable(R.drawable.big_9, res), getDrawable(R.drawable.big_10, res), getDrawable(R.drawable.big_11, res),
 					getDrawable(R.drawable.big_12, res), getDrawable(R.drawable.big_13, res), getDrawable(R.drawable.big_14, res),
 					getDrawable(R.drawable.big_15, res), getDrawable(R.drawable.big_16, res), getDrawable(R.drawable.big_17, res),
-					getDrawable(R.drawable.big_18, res), getDrawable(R.drawable.big_19, res), };
+					getDrawable(R.drawable.big_18, res), getDrawable(R.drawable.big_19, res), getDrawable(R.drawable.my_parking, res), };
 
 		BtnIcons = new Drawable[]
 			{
@@ -644,7 +646,8 @@ public class Global
 					getDrawable(R.drawable.big_9, res), getDrawable(R.drawable.big_10, res), getDrawable(R.drawable.big_11, res),
 					getDrawable(R.drawable.big_12, res), getDrawable(R.drawable.big_13, res), getDrawable(R.drawable.big_14, res),
 					getDrawable(R.drawable.big_15, res), getDrawable(R.drawable.big_16, res), getDrawable(R.drawable.big_17, res),
-					getDrawable(R.drawable.big_18, res), getDrawable(R.drawable.chris_big_19, res), };
+					getDrawable(R.drawable.big_18, res), getDrawable(R.drawable.chris_big_19, res),
+					getDrawable(R.drawable.my_parking, res), };
 
 		BtnIcons = new Drawable[]
 			{

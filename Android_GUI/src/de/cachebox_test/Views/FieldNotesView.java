@@ -252,6 +252,24 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 			return;
 		}
 
+		// chk car found?
+		if (cache.GcCode.equalsIgnoreCase("CBPark"))
+		{
+
+			if (type == 1)
+			{
+				MessageBox.Show(GlobalCore.Translations.Get("My_Parking_Area_Found"), GlobalCore.Translations.Get("thisNotWork"),
+						MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+			}
+			else if (type == 2)
+			{
+				MessageBox.Show(GlobalCore.Translations.Get("My_Parking_Area_DNF"), GlobalCore.Translations.Get("thisNotWork"),
+						MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+			}
+
+			return;
+		}
+
 		FieldNoteEntry newFieldNote = null;
 		if ((type == 1) || (type == 2))
 		{

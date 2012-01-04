@@ -46,6 +46,7 @@ public enum Actions
 	Solver, // 14
 	Spoiler, // 15
 	Hint, // 16
+	Parking, // 17
 
 	empty, ;
 
@@ -136,6 +137,8 @@ public enum Actions
 			return Actions.Spoiler;
 		case 16:
 			return Actions.Hint;
+		case 17:
+			return Actions.Parking;
 		}
 		return Actions.empty;
 	}
@@ -178,6 +181,8 @@ public enum Actions
 			return Global.BtnIcons[18];
 		case 16:
 			return Global.BtnIcons[19]; // Hint
+		case 17:
+			return Global.CacheIconsBig[20]; // Parking
 		}
 		return null;
 	}
@@ -220,6 +225,8 @@ public enum Actions
 			return GlobalCore.Translations.Get("spoiler");
 		case 16:
 			return GlobalCore.Translations.Get("hint");
+		case 17:
+			return GlobalCore.Translations.Get("MyParking");
 		}
 		return "empty";
 	}

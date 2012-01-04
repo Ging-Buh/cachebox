@@ -717,3 +717,12 @@ English
 	MeasureCoord = Coords
 	
 	IniPlugIn = Initializing PlugIn's
+	
+	MyParking = my parking bay
+	My_Parking_Area_Title = Administering your current parking bay!
+	My_Parking_Area_Text = Placing, Extinguishing or chooses your parking bay!
+	My_Parking_Area_select = Select parking bay
+	My_Parking_Area_Add = Set parking bay to GPS
+	My_Parking_Area_Del = Delete parking bay!
+	My_Parking_Area_Found = Congratulations, you have found your car!
+	My_Parking_Area_DNF = Too bad, then you must probably walk!

@@ -720,3 +720,12 @@
 	MeasureCoord = Koordinaten
 	
 	IniPlugIn = Initialisiere PlugIn´s
+	
+	MyParking = Mein Parkplatz
+	My_Parking_Area_Title = Verwalte deinen jetzigen Parkplatz!
+	My_Parking_Area_Text = Setze, Lösche oder wähle deinen Parkplatz!
+	My_Parking_Area_select = Wähle [P] als WayPoint!
+	My_Parking_Area_Add = Setze [P] auf GPS!
+	My_Parking_Area_Del = Lösche aktuellen [P]!
+	My_Parking_Area_Found = Herzlichen Glückwunsch, Du hast dein Auto gefunden!
+	My_Parking_Area_DNF = Schade, dann musst Du wohl laufen!

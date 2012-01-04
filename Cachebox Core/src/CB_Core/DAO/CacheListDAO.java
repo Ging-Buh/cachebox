@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import CB_Core.Config;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
@@ -105,6 +106,15 @@ public class CacheListDAO
 		catch (Exception e)
 		{
 			Logger.Error("CacheListDAO.ReadCacheList()", "Sort ERROR", e);
+		}
+
+		// add Parking Cache
+		if (Config.settings.ParkingLatitude.getValue() != 0)
+		{
+			Cache cache = new Cache(Config.settings.ParkingLatitude.getValue(), Config.settings.ParkingLongitude.getValue(),
+					"My Parking area", CacheTypes.MyParking, "CBPark");
+
+			cacheList.add(0, cache);
 		}
 
 		return cacheList;

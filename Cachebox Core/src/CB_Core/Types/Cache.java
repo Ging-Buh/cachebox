@@ -296,6 +296,25 @@ public class Cache implements Comparable<Cache>
 		waypoints = new ArrayList<Waypoint>();
 	}
 
+	/**
+	 * Constructor
+	 */
+	public Cache(double Latitude, double Longitude, String Name, CacheTypes type, String GcCode)
+	{
+		this.Pos.Latitude = Latitude;
+		this.Pos.Longitude = Longitude;
+		this.Name = Name;
+		this.Type = type;
+		this.DateHidden = new Date();
+		this.GcCode = GcCode;
+		this.NumTravelbugs = 0;
+		this.Difficulty = 0;
+		this.Terrain = 0;
+		this.Size = CacheSizes.other;
+		this.Available = true;
+		waypoints = new ArrayList<Waypoint>();
+	}
+
 	/*
 	 * Getter/Setter
 	 */

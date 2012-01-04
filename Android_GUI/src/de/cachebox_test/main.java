@@ -147,6 +147,7 @@ import de.cachebox_test.Views.Forms.ImportDialog;
 import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.MessageBoxButtons;
 import de.cachebox_test.Views.Forms.MessageBoxIcon;
+import de.cachebox_test.Views.Forms.ParkingDialog;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 import de.cachebox_test.Views.Forms.ScreenLock;
 import de.cachebox_test.Views.Forms.SelectDB;
@@ -1723,6 +1724,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case R.id.miVoiceRecorder:
 				recVoice();
 				break;
+			case R.id.miParking:
+				showParkingDialog();
+				break;
 			case R.id.miRecordVideo:
 				recVideo();
 				break;
@@ -1896,6 +1900,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				break;
 			case 16:
 				if (GlobalCore.SelectedCache() != null && !(GlobalCore.SelectedCache().hint.equals(""))) showHint();
+				break;
+			case 17:
+				showParkingDialog();
 				break;
 			}
 		}
@@ -2112,6 +2119,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// cacheNameView.setHeight((int) (Sizes.getScaledRefSize_normal() *
 		// 3.3));
 
+	}
+
+	private void showParkingDialog()
+	{
+		final Intent parkingIntent = new Intent().setClass(mainActivity, ParkingDialog.class);
+		mainActivity.startActivityForResult(parkingIntent, Global.REQUEST_CODE_PARKING_DIALOG);
 	}
 
 	private void takePhoto()
