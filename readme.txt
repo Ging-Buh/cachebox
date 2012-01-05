@@ -1,6 +1,11 @@
 
 Versions Änderungen:						Changes:
 
+Version : 0.5.xx							Version : 0.5.xx
+	• Lösche Caches aus DB					• Delete Caches from DB
+	• Komplette neu Erstellung der Karten 			• Complete rework of map view with 
+	   Ansicht mit mehr Performance.				   more performance.
+
 Version : 0.4.593							Version: 0.4.593
 	• Download von PQ über die API				• Download of PQ through the GC-API
 	• GPX Import komplett überarbeitet				• Import of GPX files completely reworked

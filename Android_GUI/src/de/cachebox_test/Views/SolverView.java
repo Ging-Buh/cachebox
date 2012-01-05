@@ -5,21 +5,10 @@ import java.util.TimerTask;
 
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
-import de.cachebox_test.Global;
-import de.cachebox_test.R;
-import de.cachebox_test.main;
-import de.cachebox_test.Events.ViewOptionsMenu;
-
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverZeile;
 import CB_Core.Solver.Functions.Function;
-import de.cachebox_test.Views.Forms.EditCoordinate;
-import de.cachebox_test.Views.Forms.MessageBox;
-import de.cachebox_test.Views.Forms.MessageBoxButtons;
-import de.cachebox_test.Views.Forms.MessageBoxIcon;
-import de.cachebox_test.Views.Forms.selectSolverFunction;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,8 +23,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
+import de.cachebox_test.Global;
+import de.cachebox_test.R;
+import de.cachebox_test.main;
+import de.cachebox_test.Events.ViewOptionsMenu;
+import de.cachebox_test.Views.Forms.MessageBox;
+import de.cachebox_test.Views.Forms.MessageBoxButtons;
+import de.cachebox_test.Views.Forms.MessageBoxIcon;
+import de.cachebox_test.Views.Forms.selectSolverFunction;
 
 public class SolverView extends FrameLayout implements ViewOptionsMenu
 {
@@ -51,7 +47,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	Button bLeft;
 	Button bMiddle;
 	Button bRight;
-	
+
 	LinearLayout ButtonsLayout;
 
 	public SolverView(Context context, LayoutInflater inflater)
@@ -93,8 +89,8 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			@Override
 			public void onClick(View v)
 			{
-				LinearLayout.LayoutParams PO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
-				LinearLayout.LayoutParams MO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, .20f);
+				LinearLayout.LayoutParams PO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, .20f);
+				LinearLayout.LayoutParams MO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
 				edSolver.setLayoutParams(PO);
 				edResult.setLayoutParams(MO);
 			}
@@ -117,8 +113,8 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			@Override
 			public void onClick(View v)
 			{
-				LinearLayout.LayoutParams PO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, .20f);
-				LinearLayout.LayoutParams MO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
+				LinearLayout.LayoutParams PO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
+				LinearLayout.LayoutParams MO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, .20f);
 				edSolver.setLayoutParams(PO);
 				edResult.setLayoutParams(MO);
 			}
@@ -137,8 +133,8 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 		bLeft = (Button) findViewById(R.id.solverButtonViewLeft);
 		bMiddle = (Button) findViewById(R.id.solverButtonViewMidle);
 		bRight = (Button) findViewById(R.id.solverButtonViewRight);
-		
-		ButtonsLayout = (LinearLayout) findViewById(R.id.solverViewButtons); 
+
+		ButtonsLayout = (LinearLayout) findViewById(R.id.solverViewButtons);
 	}
 
 	private void setLang()

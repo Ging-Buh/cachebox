@@ -47,6 +47,7 @@ public enum Actions
 	Spoiler, // 15
 	Hint, // 16
 	Parking, // 17
+	Day_Night, // 18
 
 	empty, ;
 
@@ -139,6 +140,8 @@ public enum Actions
 			return Actions.Hint;
 		case 17:
 			return Actions.Parking;
+		case 18:
+			return Actions.Day_Night;
 		}
 		return Actions.empty;
 	}
@@ -183,6 +186,8 @@ public enum Actions
 			return Global.BtnIcons[19]; // Hint
 		case 17:
 			return Global.CacheIconsBig[20]; // Parking
+		case 18:
+			return main.N ? Global.Icons[8] : Global.Icons[9]; // NightMode
 		}
 		return null;
 	}
@@ -227,6 +232,8 @@ public enum Actions
 			return GlobalCore.Translations.Get("hint");
 		case 17:
 			return GlobalCore.Translations.Get("MyParking");
+		case 18:
+			return GlobalCore.Translations.Get("DayNight");
 		}
 		return "empty";
 	}

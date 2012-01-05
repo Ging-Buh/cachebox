@@ -138,9 +138,15 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		// setScreenCenter(new Descriptor((int) posx, (int) posy, 14));
 		// setCenter(new Coordinate(48.0, 12.0));
 		textMatrix = new Matrix4().setToOrtho2D(0, 0, width, height);
+
 		font = new BitmapFont(Gdx.files.internal("data/ArialBold18.fnt"), Gdx.files.internal("data/ArialBold18.png"), false);
 		font.setColor(0.0f, 0.2f, 0.0f, 1.0f);
 		font.setScale(1.0f);
+
+		fontName = new BitmapFont(Gdx.files.internal("data/ArialBold16outline.fnt"), Gdx.files.internal("data/ArialBold16outline.png"),
+				false);
+		fontName.setColor(1.0f, 0.2f, 0.0f, 1.0f);
+		fontName.setScale(1.0f);
 
 		circle = new Gdx2DPixmap(16, 16, Gdx2DPixmap.GDX2D_FORMAT_RGB565);
 		circle.clear(Color.TRANSPARENT);
@@ -539,8 +545,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 					// Beschriftung
 					if (showTitles && (zoom >= 15) && (!drawAsWaypoint))
 					{
-						float halfWidth = font.getBounds(wpi.Cache.Name).width / 2;
-						font.draw(batch, wpi.Cache.Name, screen.x - halfWidth, screen.y - ySizeUnder / 2 - NameYMovement);
+						float halfWidth = fontName.getBounds(wpi.Cache.Name).width / 2;
+						fontName.draw(batch, wpi.Cache.Name, screen.x - halfWidth, screen.y - ySizeUnder / 2 - NameYMovement);
 					}
 
 					// Show D/T-Rating
@@ -821,6 +827,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	public static SpriteBatch batch;
 	Matrix4 textMatrix;
 	BitmapFont font;
+	BitmapFont fontName;
 	CharSequence str = "Hello World!";
 	OrthographicCamera camera;
 	CameraController controller;

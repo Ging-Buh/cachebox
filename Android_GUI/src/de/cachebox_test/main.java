@@ -1904,6 +1904,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case 17:
 				showParkingDialog();
 				break;
+			case 18:
+				switchDayNight();
+				break;
 			}
 		}
 	};
