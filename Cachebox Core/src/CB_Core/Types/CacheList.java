@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import CB_Core.GlobalCore;
-import CB_Core.Types.Cache;
-import CB_Core.Types.Waypoint;
 
-public class CacheList extends ArrayList<Cache>
+public class CacheList extends MoveableList<Cache>
 {
 
 	/**
@@ -61,6 +59,13 @@ public class CacheList extends ArrayList<Cache>
 		}
 
 		CB_Core.Events.CachListChangedEventList.Call();
+
+		// vorhandenen Parkplatz Cache nach oben schieben
+		Cache park = this.GetCacheByGcCode("CBPark");
+		if (park != null)
+		{
+			this.MoveItemFirst(this.indexOf(park));
+		}
 
 		// Cursor.Current = Cursors.Default;
 		GlobalCore.ResortAtWork = false;

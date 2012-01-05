@@ -52,6 +52,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -2451,8 +2452,32 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			 * intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET); this.startActivity(intent); }
 			 */
 
+			String INTENT_EXTRA_KEY_LATITUDE = "latitude";
+			String INTENT_EXTRA_KEY_LONGITUDE = "longitude";
+			// Long/Latarefloatvaluesin decimaldegreeformat(+-DDD.DDDDD).
+
+			PackageManager currentPM = getPackageManager();
+
+			Intent intent = currentPM.getLaunchIntentForPackage("com.navigon.navigator");
+
+			if (intent == null)
+			{
+				intent = new Intent("android.intent.action.navigon.START_PUBLIC");
+			}
+
 			Intent implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + lat + "," + lon));
-			if (implicitIntent != null) startActivity(implicitIntent);
+
+			if (intent != null)
+			{
+				intent.putExtra(INTENT_EXTRA_KEY_LATITUDE, (float) lat);
+				intent.putExtra(INTENT_EXTRA_KEY_LONGITUDE, (float) lon);
+				startActivity(intent);
+			}
+			else if (implicitIntent != null)
+			{
+				startActivity(implicitIntent);
+			}
+
 		}
 	}
 
