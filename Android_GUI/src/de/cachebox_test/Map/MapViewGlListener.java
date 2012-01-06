@@ -79,6 +79,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	int maxzoom = 20;
 	int zoom = 13;
 	int maxNumTiles = 100;
+	float iconFactor = 1.5f;
 
 	long posx = 8745;
 	long posy = 5685;
@@ -134,6 +135,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		controller = new CameraController();
 		gestureDetector = new GestureDetector(20, 0.5f, 2, 0.15f, controller);
 		Gdx.input.setInputProcessor(gestureDetector);
+
+		iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
 
 		// setScreenCenter(new Descriptor((int) posx, (int) posy, 14));
 		// setCenter(new Coordinate(48.0, 12.0));
@@ -305,7 +308,6 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		batch.begin();
 
 		// calculate icon size
-		float iconFactor = 1.5f;
 
 		int iconSize = 0; // 8x8
 		if ((zoom >= 13) && (zoom <= 14)) iconSize = 1; // 13x13
@@ -1079,7 +1081,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			System.out.println(camera.zoom);
 			zoom = maxzoom;
 			float tmpZoom = camera.zoom;
-			while (tmpZoom > 1.3333)
+			float faktor = 1.5f;
+			faktor = faktor - iconFactor + 1;
+			while (tmpZoom > faktor)
 			{
 				tmpZoom /= 2;
 				zoom--;
@@ -1187,7 +1191,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		showCompass = Config.settings.MapShowCompass.getValue();
 		showDirektLine = Config.settings.ShowDirektLine.getValue();
 		nightMode = Config.settings.nightMode.getValue();
-
+		iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
 	}
 
 	private void setScreenCenter(Vector2 newCenter)

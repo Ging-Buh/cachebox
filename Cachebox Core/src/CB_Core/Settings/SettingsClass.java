@@ -110,6 +110,7 @@ public class SettingsClass extends SettingsList
 	public SettingDouble MapInitLongitude;
 	public SettingDouble ParkingLatitude;
 	public SettingDouble ParkingLongitude;
+	public SettingDouble MapViewDPIFaktor;
 
 	// String
 	public SettingString CurrentMapLayer;
@@ -199,6 +200,7 @@ public class SettingsClass extends SettingsList
 		addSetting(ScreenLock = new SettingTime("ScreenLock", cat, NORMAL, 60000, true));
 		addSetting(ParkingLatitude = new SettingDouble("MapInitLatitude", SettingCategory.Gps, EXPERT, 0, true));
 		addSetting(ParkingLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Gps, EXPERT, 0, true));
+		addSetting(MapViewDPIFaktor = new SettingDouble("MapViewDPIFaktor", SettingCategory.Map, EXPERT, GlobalCore.displayDensity, true));
 	}
 
 	private void addTemplateSettings()
