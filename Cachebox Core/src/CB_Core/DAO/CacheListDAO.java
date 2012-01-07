@@ -1,5 +1,7 @@
 package CB_Core.DAO;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -7,6 +9,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import CB_Core.Config;
+import CB_Core.FileIO;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
@@ -124,8 +127,8 @@ public class CacheListDAO
 	{
 		try
 		{
-			long ret = Database.Data.delete("Caches", "Archived=1", null);
 			delCacheImages(getDelGcCodeList("Archived=1"));
+			long ret = Database.Data.delete("Caches", "Archived=1", null);
 			return ret;
 		}
 		catch (Exception e)
@@ -139,8 +142,8 @@ public class CacheListDAO
 	{
 		try
 		{
-			long ret = Database.Data.delete("Caches", "Found=1", null);
 			delCacheImages(getDelGcCodeList("Found=1"));
+			long ret = Database.Data.delete("Caches", "Found=1", null);
 			return ret;
 		}
 		catch (Exception e)
@@ -154,8 +157,8 @@ public class CacheListDAO
 	{
 		try
 		{
-			long ret = Database.Data.delete("Caches", Where, null);
 			delCacheImages(getDelGcCodeList(Where));
+			long ret = Database.Data.delete("Caches", Where, null);
 			return ret;
 		}
 		catch (Exception e)
@@ -183,12 +186,43 @@ public class CacheListDAO
 	 * 
 	 * @param list
 	 */
+
 	private void delCacheImages(ArrayList<String> list)
+	{
+		String spoilerpath = Config.settings.SpoilerFolder.getValue();
+		String imagespath = Config.settings.DescriptionImageFolder.getValue();
+		delCacheImagesByPath(spoilerpath, list);
+		delCacheImagesByPath(imagespath, list);
+	}
+
+	private void delCacheImagesByPath(String path, ArrayList<String> list)
 	{
 		for (Iterator<String> iterator = list.iterator(); iterator.hasNext();)
 		{
-			String gc = iterator.next();
-			// hier müssen jetzt alle Images mit dem GC-Code anfangen gelöscht werden
+			final String GcCode = iterator.next();
+			String directory = path + "/" + GcCode.substring(0, 4);
+			if (!FileIO.DirectoryExists(directory)) continue;
+			File dir = new File(directory);
+			FilenameFilter filter = new FilenameFilter()
+			{
+				@Override
+				public boolean accept(File dir, String filename)
+				{
+
+					filename = filename.toLowerCase();
+					return (filename.indexOf(GcCode.toLowerCase()) == 0);
+				}
+			};
+			String[] files = dir.list(filter);
+			for (int i = 0; i < files.length; i++)
+			{
+				String filename = dir + "/" + files[i];
+				File file = new File(filename);
+				if (file.exists())
+				{
+					file.delete();
+				}
+			}
 		}
 	}
 

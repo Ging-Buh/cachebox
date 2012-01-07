@@ -2,9 +2,13 @@
 Versions Änderungen:						Changes:
 
 Version : 0.5.xx							Version : 0.5.xx
-	• Lösche Caches aus DB					• Delete Caches from DB
+	• Lösche Caches aus DB mit den 				• Delete Caches from DB with the 
+	   dazugehörigen Bildern.					   matching images.
 	• Komplette neu Erstellung der Karten 			• Complete rework of map view with 
 	   Ansicht mit mehr Performance.				   more performance.
+	• Telefon Berechtigung Entfernt und 			• Removed call permission and provided 
+	   GC-Joker als PlugIn mit Berechtigung 		   GC joker as a PlugIn with permission to the 
+	   zur Einzel Installation Erstellt.				   singles installation.
 
 Version : 0.4.593							Version: 0.4.593
 	• Download von PQ über die API				• Download of PQ through the GC-API

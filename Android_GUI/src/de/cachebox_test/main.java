@@ -1107,44 +1107,45 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (data == null) return;
 			Bundle bundle = data.getExtras();
 			int selection = bundle.getInt("DelResult");// enthält Rückgabe Wert
-
+			long nun = 0;
 			switch (selection)
 			{
 			case 0: // Archived gewählt
 			{
 				CacheListDAO dao = new CacheListDAO();
-				long nun = dao.DelArchiv();
+				nun = dao.DelArchiv();
 				FilterProperties props = Global.LastFilter;
 				String sqlWhere = props.getSqlWhere();
 				Logger.General("Main.ApplyFilter: " + sqlWhere);
 				Database.Data.Query.clear();
 				dao.ReadCacheList(Database.Data.Query, sqlWhere);
-				Toast.makeText(mainActivity, "Anzahl " + String.valueOf(nun), 1);
+
 				return;
 			}
 			case 1:// Found gewählt
 			{
 				CacheListDAO dao = new CacheListDAO();
-				long nun = dao.DelFound();
+				nun = dao.DelFound();
 				FilterProperties props = Global.LastFilter;
 				String sqlWhere = props.getSqlWhere();
 				Logger.General("Main.ApplyFilter: " + sqlWhere);
 				Database.Data.Query.clear();
 				dao.ReadCacheList(Database.Data.Query, sqlWhere);
-				Toast.makeText(mainActivity, "Anzahl " + String.valueOf(nun), 1);
+
 				return;
 			}
 			case 2:// Filter gewählt noch nicht fertig!
 			{
 				CacheListDAO dao = new CacheListDAO();
-				long nun = dao.DelFilter(Global.LastFilter.getSqlWhere());
+				nun = dao.DelFilter(Global.LastFilter.getSqlWhere());
 				Global.LastFilter = new FilterProperties(FilterProperties.presets[0]);
 				EditFilterSettings.ApplyFilter(mainActivity, Global.LastFilter);
-				Toast.makeText(mainActivity, "Anzahl " + String.valueOf(nun), 1);
+
 				return;
 			}
 			}
-
+			String msg = "Es wurden " + String.valueOf(nun) + " Caches mit Bildern gelöscht";
+			Toast(msg);
 			return;
 		}
 
