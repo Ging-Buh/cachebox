@@ -1294,8 +1294,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				GlobalCore.Translations.writeMisingStringsFile();
 
-				Config.settings.MapInitLatitude.setValue(mapView.center.Latitude);
-				Config.settings.MapInitLongitude.setValue(mapView.center.Longitude);
+				Config.settings.MapInitLatitude.setValue(mapViewGlListener.center.Latitude);
+				Config.settings.MapInitLongitude.setValue(mapViewGlListener.center.Longitude);
+				Config.settings.WriteToDB();
 
 				this.mWakeLock.release();
 				counter.cancel();

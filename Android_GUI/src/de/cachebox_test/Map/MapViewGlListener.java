@@ -351,6 +351,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 	private void renderDebugInfo()
 	{
+		str = GlobalCore.FormatLatitudeDM(center.Latitude) + " - " + GlobalCore.FormatLongitudeDM(center.Longitude);
+		font.draw(batch, str, 20, 120);
+
 		str = "fps: " + Gdx.graphics.getFramesPerSecond();
 		font.draw(batch, str, 20, 100);
 		str = String.valueOf(zoom) + " - camera.zoom: " + Math.round(camera.zoom * 100) / 100;
@@ -1069,8 +1072,17 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			camera.position.add(-richtung.x * camera.zoom, richtung.y * camera.zoom, 0);
 			screenCenterW.x = camera.position.x;
 			screenCenterW.y = camera.position.y;
+			calcCenter();
 			btnTrackPos.setState(0);
 			return false;
+		}
+
+		private void calcCenter()
+		{
+			// berechnet anhand des ScreenCenterW die Center-Coordinaten
+			PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, maxzoom, maxzoom);
+
+			center = new Coordinate(Descriptor.TileYToLatitude(maxzoom, -point.Y), Descriptor.TileXToLongitude(maxzoom, point.X));
 		}
 
 		@Override
@@ -1103,6 +1115,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 				if (Math.abs(velY) < 0.01f) velY = 0;
 				screenCenterW.x = camera.position.x;
 				screenCenterW.y = camera.position.y;
+				calcCenter();
 			}
 		}
 	}

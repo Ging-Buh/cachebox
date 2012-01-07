@@ -61,14 +61,10 @@ public class Descriptor implements Comparable<Descriptor>
 		{
 			TilesPerLine[i] = (int) (2 * Math.pow(2, i));
 			TilesPerColumn[i] = (int) Math.pow(2, i);
-			tileOffset[i + 1] = tileOffset[i]
-					+ (int) (TilesPerLine[i] * TilesPerColumn[i]);
+			tileOffset[i + 1] = tileOffset[i] + (int) (TilesPerLine[i] * TilesPerColumn[i]);
 		}
 	}
 
-	
-	
-	
 	/**
 	 * X-Koordinate der Kachel
 	 */
@@ -87,9 +83,12 @@ public class Descriptor implements Comparable<Descriptor>
 	/**
 	 * Erzeugt einen neuen Deskriptor mit den übergebenen Parametern
 	 * 
-	 * @param x X-Koordinate der Kachel
-	 * @param y Y-Koordinate der Kachel
-	 * @param zoom Zoom-Stufe
+	 * @param x
+	 *            X-Koordinate der Kachel
+	 * @param y
+	 *            Y-Koordinate der Kachel
+	 * @param zoom
+	 *            Zoom-Stufe
 	 */
 	public Descriptor(int x, int y, int zoom)
 	{
@@ -122,25 +121,26 @@ public class Descriptor implements Comparable<Descriptor>
 		return new Descriptor(X * pow, Y * pow, newZoomLevel);
 	}
 
-	
 	/**
 	 * Projeziert die übergebene Koordinate in den Tile Space
-	 * @param latitude Breitengrad
-	 * @param longitude Längengrad
-	 * @param projectionZoom zoom
+	 * 
+	 * @param latitude
+	 *            Breitengrad
+	 * @param longitude
+	 *            Längengrad
+	 * @param projectionZoom
+	 *            zoom
 	 * @return PointD
 	 */
 	public static PointD projectCoordinate(double latitude, double longitude, int projectionZoom)
 	{
 		PointD result = new PointD(LongitudeToTileX(projectionZoom, longitude), LatitudeToTileY(projectionZoom, latitude));
-		
+
 		return result;
 	}
-	
-	
+
 	/**
-	 * Berechnet aus dem übergebenen Längengrad die X-Koordinate im
-	 * OSM-Koordinatensystem der gewünschten Zoom-Stufe
+	 * Berechnet aus dem übergebenen Längengrad die X-Koordinate im OSM-Koordinatensystem der gewünschten Zoom-Stufe
 	 * 
 	 * @param zoom
 	 *            Zoom-Stufe, in der die Koordinaten ausgedrückt werden sollen
@@ -154,8 +154,7 @@ public class Descriptor implements Comparable<Descriptor>
 	}
 
 	/**
-	 * Berechnet aus dem übergebenen Breitengrad die Y-Koordinate im
-	 * OSM-Koordinatensystem der gewünschten Zoom-Stufe
+	 * Berechnet aus dem übergebenen Breitengrad die Y-Koordinate im OSM-Koordinatensystem der gewünschten Zoom-Stufe
 	 * 
 	 * @param zoom
 	 *            Zoom-Stufe, in der die Koordinaten ausgedrückt werden sollen
@@ -167,14 +166,11 @@ public class Descriptor implements Comparable<Descriptor>
 	{
 		double latRad = latitude * Math.PI / 180.0;
 
-		return (1 - Math.log(Math.tan(latRad) + (1.0 / Math.cos(latRad)))
-				/ Math.PI)
-				/ 2 * Math.pow(2, zoom);
+		return (1 - Math.log(Math.tan(latRad) + (1.0 / Math.cos(latRad))) / Math.PI) / 2 * Math.pow(2, zoom);
 	}
 
 	/**
-	 * Berechnet aus der übergebenen OSM-X-Koordinate den entsprechenden
-	 * Längengrad
+	 * Berechnet aus der übergebenen OSM-X-Koordinate den entsprechenden Längengrad
 	 */
 	public static double TileXToLongitude(int zoom, double x)
 	{
@@ -183,15 +179,12 @@ public class Descriptor implements Comparable<Descriptor>
 	}
 
 	/**
-	 * Berechnet aus der übergebenen OSM-Y-Koordinate den entsprechenden
-	 * Breitengrad
+	 * Berechnet aus der übergebenen OSM-Y-Koordinate den entsprechenden Breitengrad
 	 */
 	public static double TileYToLatitude(int zoom, double y)
 	{
-		double xNom = Math.exp(2 * Math.PI)
-				- Math.exp(4 * Math.PI * Math.pow(2, -zoom) * y);
-		double xDen = Math.exp(2 * Math.PI)
-				+ Math.exp(4 * Math.PI * Math.pow(2, -zoom) * y);
+		double xNom = Math.exp(2 * Math.PI) - Math.exp(4 * Math.PI * Math.pow(2, -zoom) * y);
+		double xDen = Math.exp(2 * Math.PI) + Math.exp(4 * Math.PI * Math.pow(2, -zoom) * y);
 
 		double yNom = 2 * Math.exp(-Math.PI * (-1 + Math.pow(2, 1 - zoom) * y));
 		double yDen = Math.exp(-2 * Math.PI * (-1 + Math.pow(2, 1 - zoom) * y)) + 1;
@@ -200,8 +193,7 @@ public class Descriptor implements Comparable<Descriptor>
 	}
 
 	/**
-	 * Berechnet die Pixel-Koordinaten auf dem Bildschirm. Es wird auf die
-	 * Kachelecke oben links noch ein Offset addiert. Will man also die
+	 * Berechnet die Pixel-Koordinaten auf dem Bildschirm. Es wird auf die Kachelecke oben links noch ein Offset addiert. Will man also die
 	 * Koordinaten der Ecke unten links haben, übergibt man xOffset=0,yOffset=1
 	 * 
 	 * @param xOffset
@@ -212,14 +204,19 @@ public class Descriptor implements Comparable<Descriptor>
 	public PointD ToWorld(int xOffset, int yOffset, int desiredZoom)
 	{
 		double adjust = Math.pow(2, (desiredZoom - Zoom));
-		return new PointD((X + xOffset) * adjust * 256, (Y + yOffset) * adjust
-				* 256);
+		return new PointD((X + xOffset) * adjust * 256, (Y + yOffset) * adjust * 256);
 	}
 
 	public static PointD ToWorld(double X, double Y, int zoom, int desiredZoom)
 	{
 		double adjust = Math.pow(2, (desiredZoom - zoom));
 		return new PointD(X * adjust * 256, Y * adjust * 256);
+	}
+
+	public static PointD FromWorld(double X, double Y, int zoom, int desiredZoom)
+	{
+		double adjust = Math.pow(2, (desiredZoom - zoom));
+		return new PointD(X / (adjust * 256), Y / (adjust * 256));
 	}
 
 	public long GetHashCode()

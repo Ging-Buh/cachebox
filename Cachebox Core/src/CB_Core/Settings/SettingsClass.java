@@ -198,8 +198,8 @@ public class SettingsClass extends SettingsList
 		addSetting(AllowLandscape = new SettingBool("AllowLandscape", cat, NORMAL, false, true));
 		addSetting(ImperialUnits = new SettingBool("ImperialUnits", cat, NORMAL, false, true));
 		addSetting(ScreenLock = new SettingTime("ScreenLock", cat, NORMAL, 60000, true));
-		addSetting(ParkingLatitude = new SettingDouble("MapInitLatitude", SettingCategory.Gps, EXPERT, 0, true));
-		addSetting(ParkingLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Gps, EXPERT, 0, true));
+		addSetting(ParkingLatitude = new SettingDouble("ParkingLatitude", SettingCategory.Gps, EXPERT, 0, true));
+		addSetting(ParkingLongitude = new SettingDouble("ParkingLongitude", SettingCategory.Gps, EXPERT, 0, true));
 		addSetting(MapViewDPIFaktor = new SettingDouble("MapViewDPIFaktor", SettingCategory.Map, EXPERT, GlobalCore.displayDensity, true));
 	}
 
@@ -245,8 +245,8 @@ public class SettingsClass extends SettingsList
 		addSetting(CompassNorthOriented = new SettingBool("CompassNorthOriented", cat, NORMAL, true, true));
 		addSetting(OsmDpiAwareRendering = new SettingBool("OsmDpiAwareRendering", cat, NORMAL, false, true));
 
-		addSetting(MapInitLatitude = new SettingDouble("MapInitLatitude", SettingCategory.Gps, EXPERT, 0, true));
-		addSetting(MapInitLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Gps, EXPERT, 0, true));
+		addSetting(MapInitLatitude = new SettingDouble("MapInitLatitude", SettingCategory.Gps, EXPERT, -1000, true));
+		addSetting(MapInitLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Gps, EXPERT, -1000, true));
 		addSetting(CurrentMapLayer = new SettingString("CurrentMapLayer", cat, EXPERT, "Mapnik", true));
 
 		addSetting(MapMaxCachesDisplay_config = new SettingInt("MapMaxCachesDisplay_config", cat, INVISIBLE, 10000, true));
