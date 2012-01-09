@@ -407,8 +407,7 @@ public class SearchForGeocaches
 							}
 
 							// insert images from Cache description
-							LinkedList<String> allImages = DescriptionImageGrabber.GetAllImages(cache, cache.shortDescription
-									+ cache.longDescription);
+							LinkedList<String> allImages = DescriptionImageGrabber.GetAllImages(cache);
 
 							while (allImages != null && allImages.size() > 0)
 							{

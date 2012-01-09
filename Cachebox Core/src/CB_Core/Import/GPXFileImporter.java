@@ -988,7 +988,7 @@ public class GPXFileImporter
 
 		cache.GPXFilename_ID = gpxFilename.Id;
 
-		allImages = DescriptionImageGrabber.GetAllImages(cache, cache.shortDescription + cache.longDescription);
+		allImages = DescriptionImageGrabber.GetAllImages(cache);
 
 		while (allImages != null && allImages.size() > 0)
 		{

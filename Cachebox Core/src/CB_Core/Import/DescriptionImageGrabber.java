@@ -45,6 +45,13 @@ public class DescriptionImageGrabber
 
 			if (rightIndex == -1) break;
 
+			// Test, ob es sich um ein eingebettetes Bild handelt
+			if (text.substring(leftIndex, leftIndex + 100).toLowerCase().contains("data:image/"))
+			{
+				idx = rightIndex;
+				continue;
+			}
+
 			// Abschnitt gefunden
 			Segment curSegment = new Segment();
 			curSegment.start = leftIndex;
@@ -228,7 +235,7 @@ public class DescriptionImageGrabber
 		}
 	}
 
-	public static LinkedList<String> GetAllImages(Cache Cache, String html)
+	public static LinkedList<String> GetAllImages(Cache Cache)
 	{
 
 		LinkedList<String> images = new LinkedList<String>();
@@ -256,7 +263,9 @@ public class DescriptionImageGrabber
 			}
 		}
 
-		ArrayList<Segment> imgTags = Segmentize(html, "<img", ">");
+		ArrayList<Segment> imgTags = Segmentize(Cache.shortDescription, "<img", ">");
+
+		imgTags.addAll(Segmentize(Cache.longDescription, "<img", ">"));
 
 		for (Segment img : imgTags)
 		{
