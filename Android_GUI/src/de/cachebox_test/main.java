@@ -1200,13 +1200,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	protected void onPause()
 	{
 
-		// when the screen is about to turn off
-		if (ScreenReceiver.wasScreenOn)
-		{
-			// this is the case when onPause() is called by the system due to a screen state change
-			Energy.setDontRender();
-		}
-
 		if (input == null)
 		{
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
@@ -1230,12 +1223,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onResume()
 	{
-		// only when screen turns on
-		if (!ScreenReceiver.wasScreenOn)
-		{
-			// this is when onResume() is called due to a screen state change
-			Energy.resetDontRender();
-		}
 
 		if (input == null)
 		{
@@ -1380,11 +1367,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF))
 			{
 				// do whatever you need to do here
+				Energy.setDontRender();
 				wasScreenOn = false;
 			}
 			else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON))
 			{
 				// and do whatever you need to do here
+				Energy.resetDontRender();
 				wasScreenOn = true;
 			}
 		}
