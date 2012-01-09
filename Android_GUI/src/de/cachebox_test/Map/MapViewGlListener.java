@@ -28,7 +28,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -45,6 +44,8 @@ import de.cachebox_test.Custom_Controls.MultiToggleButton;
 import de.cachebox_test.Events.PositionEvent;
 import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Map.MapCacheList.WaypointRenderInfo;
+import de.cachebox_test.Ui.Sizes;
+import de.cachebox_test.Ui.Math.SizeF;
 import de.cachebox_test.Views.MapView;
 import de.cachebox_test.Views.Forms.ScreenLock;
 
@@ -105,14 +106,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		super();
 		if (queueProcessor == null)
 		{
-			try
-			{
-				queueProcessor = new queueProcessor();
-			}
-			catch (Exception ex)
-			{
-				String s = ex.getMessage();
-			}
+			queueProcessor = new queueProcessor();
 			queueProcessor.execute(0);
 		}
 
@@ -142,15 +136,6 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		// setCenter(new Coordinate(48.0, 12.0));
 		textMatrix = new Matrix4().setToOrtho2D(0, 0, width, height);
 
-		font = new BitmapFont(Gdx.files.internal("data/ArialBold18.fnt"), Gdx.files.internal("data/ArialBold18.png"), false);
-		font.setColor(0.0f, 0.2f, 0.0f, 1.0f);
-		font.setScale(1.0f);
-
-		fontName = new BitmapFont(Gdx.files.internal("data/ArialBold16outline.fnt"), Gdx.files.internal("data/ArialBold16outline.png"),
-				false);
-		fontName.setColor(1.0f, 0.2f, 0.0f, 1.0f);
-		fontName.setScale(1.0f);
-
 		circle = new Gdx2DPixmap(16, 16, Gdx2DPixmap.GDX2D_FORMAT_RGB565);
 		circle.clear(Color.TRANSPARENT);
 		// circle.fillRect(0, 0, 16, 16, Color.YELLOW);
@@ -170,6 +155,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		btnTrackPos.addState("Car", Color.YELLOW);
 		btnTrackPos.setState(0);
 
+		Sizes.GL.initial();
+
 	}
 
 	@Override
@@ -177,8 +164,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	{
 		// Log.d("MAPVIEW", "resize" + width + "/" + height);
 		textMatrix.setToOrtho2D(0, 0, width, height);
-		togglePos = new Vector2(380, height - 97);
-		infoPos = new Vector2(10, height - 100);
+		((main) main.mainActivity).iniInput();// Größe des Input bereichs muss neu Berechnet werden
+		Sizes.GL.initial(width, height);
 	}
 
 	protected SortedMap<Long, TileGL> tilesToDraw = new TreeMap<Long, TileGL>();
@@ -313,35 +300,13 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		if ((zoom >= 13) && (zoom <= 14)) iconSize = 1; // 13x13
 		else if (zoom > 14) iconSize = 2; // default Images
 
-		float xPos = (float) screenCenterW.x;
-		float yPos = (float) screenCenterW.y;
-		float xSizeUnder = 32 * iconFactor;
-		float ySizeUnder = 32 * iconFactor;
-		float xSize = 21 * iconFactor;
-		float ySize = 21 * iconFactor;
-		switch (iconSize)
-		{
-		case 0:
-			xSizeUnder = 13 * iconFactor;
-			ySizeUnder = 13 * iconFactor;
-			xSize = 13 * iconFactor;
-			ySize = 13 * iconFactor;
-			break;
-		case 1:
-			xSizeUnder = 20 * iconFactor;
-			ySizeUnder = 20 * iconFactor;
-			xSize = 14 * iconFactor;
-			ySize = 14 * iconFactor;
-			break;
-		}
-
-		renderWPs(xSizeUnder, ySizeUnder, xSize, ySize);
+		renderWPs(Sizes.GL.WPSizes[iconSize], Sizes.GL.UnderlaySizes[iconSize]);
 		renderPositionMarker();
-		Bubble.render(xSizeUnder, ySizeUnder);
+		Bubble.render(Sizes.GL.WPSizes[iconSize]);
 
 		renderInfoPanel();
 
-		btnTrackPos.Render(batch, togglePos, toggleWidth, toggleHeight);
+		btnTrackPos.Render(batch, Sizes.GL.Toggle, Sizes.GL.fontAB22);
 
 		renderDebugInfo();
 
@@ -352,47 +317,36 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	private void renderDebugInfo()
 	{
 		str = GlobalCore.FormatLatitudeDM(center.Latitude) + " - " + GlobalCore.FormatLongitudeDM(center.Longitude);
-		font.draw(batch, str, 20, 120);
+		Sizes.GL.fontAB18.draw(batch, str, 20, 120);
 
 		str = "fps: " + Gdx.graphics.getFramesPerSecond();
-		font.draw(batch, str, 20, 100);
+		Sizes.GL.fontAB18.draw(batch, str, 20, 100);
 		str = String.valueOf(zoom) + " - camera.zoom: " + Math.round(camera.zoom * 100) / 100;
-		font.draw(batch, str, 20, 80);
+		Sizes.GL.fontAB18.draw(batch, str, 20, 80);
 		str = "loaded Tiles: " + loadedTiles.size() + " - queuedTiles: " + queuedTiles.size();
-		font.draw(batch, str, 20, 60);
+		Sizes.GL.fontAB18.draw(batch, str, 20, 60);
 		if (mapCacheList != null)
 		{
 			str = "AnzCachelistCalc: " + mapCacheList.anz + " - Caches: " + mapCacheList.list.size();
-			font.draw(batch, str, 20, 40);
+			Sizes.GL.fontAB18.draw(batch, str, 20, 40);
 		}
 		str = "lastMove: " + lastMovement.x + " - " + lastMovement.y;
-		font.draw(batch, str, 20, 20);
+		Sizes.GL.fontAB18.draw(batch, str, 20, 20);
 
 		str = "W/H: " + width + "/" + height;
-		font.draw(batch, str, 200, 100);
+		Sizes.GL.fontAB18.draw(batch, str, 200, 100);
 
 		str = "dW/dH: " + drawingWidth + "/" + drawingHeight;
-		font.draw(batch, str, 200, 80);
+		Sizes.GL.fontAB18.draw(batch, str, 200, 80);
 
 	}
-
-	public static Vector2 togglePos = new Vector2(380, 438);
-	public static final float toggleWidth = 87;
-	public static final float toggleHeight = 87;
-
-	public static Vector2 infoPos = new Vector2(10, 435);
-	public static final float infoWidth = 366;
-	public static final float infoHeight = 87;
-
-	public static final float compassWidth = infoHeight - 20;
-	public static final float compassHeight = infoHeight - 20;
 
 	private void renderInfoPanel()
 	{
 		// draw background
 		Sprite sprite = SpriteCache.InfoBack;
-		sprite.setPosition(infoPos.x, infoPos.y);
-		sprite.setSize(infoWidth, infoHeight);
+		sprite.setPosition(Sizes.GL.Info.getX(), Sizes.GL.Info.getY());
+		sprite.setSize(Sizes.GL.Info.getWidth(), Sizes.GL.Info.getHeight());
 		sprite.draw(MapViewGlListener.batch);
 
 		// Position ist entweder GPS-Position oder die des Markers, wenn
@@ -414,7 +368,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 				distance = position.Distance(GlobalCore.SelectedWaypoint().Pos);
 
 			String text = UnitFormatter.DistanceString(distance);
-			font.draw(batch, text, infoPos.x + 100, infoPos.y + 40);
+			Sizes.GL.fontAB18.draw(batch, text, Sizes.GL.InfoLine1.x, Sizes.GL.InfoLine1.y);
 			// canvas.drawText(text, leftString, bottom - 10, paint);
 
 			// Kompassnadel zeichnen
@@ -429,9 +383,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 				// draw compass
 				Sprite compass = SpriteCache.MapArrows.get(0);
 				compass.setRotation((float) -relativeBearing);
-				compass.setSize(compassWidth, compassHeight);
-				compass.setPosition(infoPos.x + 15, infoPos.y + 16);
-
+				compass.setBounds(Sizes.GL.Compass.getX(), Sizes.GL.Compass.getY(), Sizes.GL.Compass.getWidth(),
+						Sizes.GL.Compass.getHeight());
+				compass.setOrigin(Sizes.GL.halfCompass, Sizes.GL.halfCompass);
 				compass.draw(MapViewGlListener.batch);
 
 			}
@@ -442,12 +396,12 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 				String textLatitude = GlobalCore.FormatLatitudeDM(position.Latitude);
 				String textLongitude = GlobalCore.FormatLongitudeDM(position.Longitude);
 
-				font.draw(batch, textLatitude, infoPos.x + 220, infoPos.y + 70);
-				font.draw(batch, textLongitude, infoPos.x + 220, infoPos.y + 40);
+				Sizes.GL.fontAB18.draw(batch, textLatitude, Sizes.GL.InfoLine2.x, Sizes.GL.InfoLine1.y);
+				Sizes.GL.fontAB18.draw(batch, textLongitude, Sizes.GL.InfoLine2.x, Sizes.GL.InfoLine2.y);
 
 				if (Global.Locator != null)
 				{
-					font.draw(batch, Global.Locator.SpeedString(), infoPos.x + 100, infoPos.y + 70);
+					Sizes.GL.fontAB18.draw(batch, Global.Locator.SpeedString(), Sizes.GL.InfoLine1.x, Sizes.GL.InfoLine2.y);
 				}
 
 			}
@@ -481,16 +435,16 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			}
 
 			Sprite arrow = SpriteCache.MapArrows.get(arrowId);
-
-			arrow.setPosition(screen.x - 24, screen.y - 24);
 			arrow.setRotation(-arrowHeading);
+			arrow.setBounds(screen.x - Sizes.GL.halfPosMarkerSize, screen.y - Sizes.GL.halfPosMarkerSize, Sizes.GL.PosMarkerSize,
+					Sizes.GL.PosMarkerSize);
+			arrow.setOrigin(Sizes.GL.halfPosMarkerSize, Sizes.GL.halfPosMarkerSize);
 			arrow.draw(batch);
 		}
 	}
 
-	private void renderWPs(float xSizeUnder, float ySizeUnder, float xSize, float ySize)
+	private void renderWPs(SizeF WpUnderlay, SizeF WpSize)
 	{
-		WaypointRenderInfo newSelectedCache = null;
 		if (mapCacheList.list != null)
 		{
 			synchronized (mapCacheList.list)
@@ -505,32 +459,30 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 					{
 						// Draw Cross and move screen vector
 						Sprite cross = SpriteCache.MapOverlay.get(3);
-						cross.setPosition((float) screen.x - xSizeUnder / 2, (float) screen.y - ySizeUnder / 2);
-						cross.setSize(xSizeUnder, ySizeUnder);
+						cross.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight, WpUnderlay.width,
+								WpUnderlay.height);
 						cross.draw(batch);
 
-						screen.add(-xSizeUnder, ySizeUnder);
-						NameYMovement = ySizeUnder;
+						screen.add(-WpUnderlay.width, WpUnderlay.height);
+						NameYMovement = WpUnderlay.height;
 					}
 
 					if (wpi.UnderlayIcon != null)
 					{
-						wpi.UnderlayIcon.setPosition((float) screen.x - xSizeUnder / 2, (float) screen.y - ySizeUnder / 2);
-						wpi.UnderlayIcon.setSize(xSizeUnder, ySizeUnder);
+						wpi.UnderlayIcon.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight, WpUnderlay.width,
+								WpUnderlay.height);
 						wpi.UnderlayIcon.draw(batch);
 					}
 					if (wpi.Icon != null)
 					{
-						wpi.Icon.setPosition((float) screen.x - xSize / 2, (float) screen.y - ySize / 2);
-						wpi.Icon.setSize(xSize, ySize);
+						wpi.Icon.setBounds(screen.x - WpSize.halfWidth, screen.y - WpSize.halfHeight, WpSize.width, WpSize.height);
 						wpi.Icon.draw(batch);
 					}
 
 					if (wpi.OverlayIcon != null)
 					{
-						wpi.OverlayIcon.setPosition((float) screen.x - xSizeUnder / 2, (float) screen.y - ySizeUnder / 2);
-
-						wpi.OverlayIcon.setSize(xSizeUnder, ySizeUnder);
+						wpi.OverlayIcon.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight, WpUnderlay.width,
+								WpUnderlay.height);
 						wpi.OverlayIcon.draw(batch);
 					}
 
@@ -540,32 +492,36 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 					if (showRating && (!drawAsWaypoint) && (wpi.Cache.Rating > 0) && (zoom >= 15))
 					{
 						Sprite rating = SpriteCache.MapStars.get((int) Math.min(wpi.Cache.Rating * 2, 5 * 2));
-						rating.setPosition((float) screen.x - xSizeUnder / 2, (float) screen.y - ySizeUnder / 2 - 8);
-						rating.setSize(xSizeUnder, (float) (ySizeUnder / 4.8));
+						rating.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight - WpUnderlay.Height4_8,
+								WpUnderlay.width, WpUnderlay.Height4_8);
+						rating.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 						rating.setRotation(0);
 						rating.draw(batch);
-						NameYMovement += 10;
+						NameYMovement += WpUnderlay.Height4_8;
 					}
 
 					// Beschriftung
 					if (showTitles && (zoom >= 15) && (!drawAsWaypoint))
 					{
-						float halfWidth = fontName.getBounds(wpi.Cache.Name).width / 2;
-						fontName.draw(batch, wpi.Cache.Name, screen.x - halfWidth, screen.y - ySizeUnder / 2 - NameYMovement);
+						float halfWidth = Sizes.GL.fontAB16out.getBounds(wpi.Cache.Name).width / 2;
+						Sizes.GL.fontAB16out.draw(batch, wpi.Cache.Name, screen.x - halfWidth, screen.y - WpUnderlay.halfHeight
+								- NameYMovement);
 					}
 
 					// Show D/T-Rating
 					if (showDT && (!drawAsWaypoint) && (zoom >= 15))
 					{
 						Sprite difficulty = SpriteCache.MapStars.get((int) Math.min(wpi.Cache.Difficulty * 2, 5 * 2));
-						difficulty.setPosition((float) screen.x - xSizeUnder - 5, (float) screen.y);
-						difficulty.setSize(xSizeUnder, (float) (ySizeUnder / 4.8));
+						difficulty.setBounds(screen.x - WpUnderlay.width - Sizes.GL.infoShadowHeight,
+								screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width, WpUnderlay.Height4_8);
+						difficulty.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 						difficulty.setRotation(90);
 						difficulty.draw(batch);
 
 						Sprite terrain = SpriteCache.MapStars.get((int) Math.min(wpi.Cache.Terrain * 2, 5 * 2));
-						terrain.setPosition((float) screen.x + 5, (float) screen.y);
-						terrain.setSize(xSizeUnder, (float) (ySizeUnder / 4.8));
+						terrain.setBounds(screen.x + Sizes.GL.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width,
+								WpUnderlay.Height4_8);
+						terrain.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 						terrain.setRotation(90);
 						terrain.draw(batch);
 
@@ -831,8 +787,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 	public static SpriteBatch batch;
 	Matrix4 textMatrix;
-	BitmapFont font;
-	BitmapFont fontName;
+
 	CharSequence str = "Hello World!";
 	OrthographicCamera camera;
 	CameraController controller;
@@ -864,8 +819,6 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		@Override
 		public boolean tap(int x, int y, int count)
 		{
-			int xSizeUnder = 30;
-			int ySizeUnder = 30;
 			double minDist = Double.MAX_VALUE;
 			WaypointRenderInfo minWpi = null;
 			Vector2 clickedAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());

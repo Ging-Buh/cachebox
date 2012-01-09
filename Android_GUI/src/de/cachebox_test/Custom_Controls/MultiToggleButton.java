@@ -8,14 +8,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -26,6 +24,7 @@ import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Map.SpriteCache;
+import de.cachebox_test.Ui.Math.ChangedRectF;
 
 public class MultiToggleButton extends Button implements OnClickListener
 {
@@ -177,6 +176,8 @@ public class MultiToggleButton extends Button implements OnClickListener
 		if (StateId > State.size() - 1) StateId = 0;
 		aktState = State.get(StateId);
 		this.setText(aktState.Text);
+		led = null;
+		System.gc();
 		this.invalidate();
 	}
 
@@ -222,7 +223,7 @@ public class MultiToggleButton extends Button implements OnClickListener
 
 	}
 
-	private RectF hitRec = null;
+	private ChangedRectF hitRec = null;
 
 	public boolean hitTest(Vector2 pos)
 	{
@@ -239,37 +240,29 @@ public class MultiToggleButton extends Button implements OnClickListener
 
 	BitmapFont font;
 
-	public void Render(SpriteBatch batch, Vector2 togglepos, float togglewidth, float toggleheight)
-	{
-		if (font == null)
-		{
-			font = new BitmapFont(Gdx.files.internal("data/ArialBold22.fnt"), Gdx.files.internal("data/ArialBold22.png"), false);
-			font.setColor(0.0f, 0.0f, 0.0f, 1.0f);
-			font.setScale(1.0f);
-		}
+	private Sprite led;
+	private Sprite btn;
 
-		// set hitRec
-		if (hitRec == null)
-		{
-			hitRec = new RectF(togglepos.x, togglepos.y, togglepos.x + togglewidth, togglepos.y + toggleheight);
-		}
+	public void Render(SpriteBatch batch, ChangedRectF rect, BitmapFont font)
+	{
+
+		hitRec = rect;
 
 		// draw button
-		Sprite btn = SpriteCache.ToggleBtn.get(0);
-		btn.setSize(togglewidth, toggleheight);
-		btn.setPosition(togglepos.x, togglepos.y);
+		btn = SpriteCache.ToggleBtn.get(0);
+		btn.setBounds(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
 		btn.draw(batch);
 
 		// draw led
-		Sprite led = SpriteCache.ToggleBtn.get(this.StateId + 2);
-		led.setSize(togglewidth, toggleheight);
-		led.setPosition(togglepos.x, togglepos.y);
+		led = SpriteCache.ToggleBtn.get(this.StateId + 2);
+		led.setBounds(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
 		led.draw(batch);
 
 		// draw btn text
 		TextBounds bounds = font.getBounds(this.getText());
 		float halfWidth = bounds.width / 2;
-		font.draw(batch, this.getText(), togglepos.x + (togglewidth / 2) - halfWidth, togglepos.y + (toggleheight / 2) + bounds.height);
+		font.draw(batch, this.getText(), rect.getX() + (rect.getWidth() / 2) - halfWidth, rect.getY() + (rect.getHeight() / 2)
+				+ bounds.height);
 
 	}
 

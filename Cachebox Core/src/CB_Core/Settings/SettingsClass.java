@@ -111,6 +111,7 @@ public class SettingsClass extends SettingsList
 	public SettingDouble ParkingLatitude;
 	public SettingDouble ParkingLongitude;
 	public SettingDouble MapViewDPIFaktor;
+	public SettingDouble MapViewFontFaktor;
 
 	// String
 	public SettingString CurrentMapLayer;
@@ -201,6 +202,8 @@ public class SettingsClass extends SettingsList
 		addSetting(ParkingLatitude = new SettingDouble("ParkingLatitude", SettingCategory.Gps, EXPERT, 0, true));
 		addSetting(ParkingLongitude = new SettingDouble("ParkingLongitude", SettingCategory.Gps, EXPERT, 0, true));
 		addSetting(MapViewDPIFaktor = new SettingDouble("MapViewDPIFaktor", SettingCategory.Map, EXPERT, GlobalCore.displayDensity, true));
+		addSetting(MapViewFontFaktor = new SettingDouble("MapViewFontFaktor", SettingCategory.Map, EXPERT, 1.0, true));
+
 	}
 
 	private void addTemplateSettings()

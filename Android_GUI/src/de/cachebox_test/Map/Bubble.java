@@ -3,6 +3,7 @@ package de.cachebox_test.Map;
 import java.io.ByteArrayOutputStream;
 
 import CB_Core.GlobalCore;
+import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.graphics.Bitmap;
@@ -14,6 +15,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
 import de.cachebox_test.Components.CacheDraw;
+import de.cachebox_test.Ui.Sizes;
+import de.cachebox_test.Ui.Math.SizeF;
 
 /**
  * Enthält Variablen und Logik für die Anzeige der Cache Info Bubble in der Map.
@@ -76,39 +79,32 @@ public class Bubble
 		CachedContentSprite = null;
 	}
 
-	public static void render(float xSizeUnder, float ySizeUnder)
+	public static void render(SizeF WpUnderlay)
 	{
 
 		if (!isShow) return;
 
-		float BubbleWidth = 430;
-		float BubbleHeight = 140;
-		DrawRec = new RectF(Pos.x - (BubbleWidth / 2) + (xSizeUnder / 2), Pos.y,
-				Pos.x - (BubbleWidth / 2) + (xSizeUnder / 2) + BubbleWidth, Pos.y + BubbleHeight);
+		DrawRec = new RectF(Pos.x - Sizes.GL.halfBubble + WpUnderlay.halfWidth, Pos.y, Pos.x - Sizes.GL.halfBubble + WpUnderlay.halfWidth
+				+ Sizes.GL.Bubble.width, Pos.y + Sizes.GL.Bubble.height);
 
 		Sprite sprite = (cache == GlobalCore.SelectedCache()) ? SpriteCache.Bubble.get(1) : SpriteCache.Bubble.get(0);
-		sprite.setPosition(Pos.x - (BubbleWidth / 2) + (xSizeUnder / 2), Pos.y);
-		sprite.setSize(BubbleWidth, BubbleHeight + 40);
+		sprite.setPosition(Pos.x - Sizes.GL.halfBubble + WpUnderlay.halfWidth, Pos.y);
+		sprite.setSize(Sizes.GL.Bubble.width, Sizes.GL.Bubble.height);
 		sprite.draw(MapViewGlListener.batch);
 
 		try
 		{
-			Sprite contentSprite = GetBubbleContentSprite(BubbleWidth, BubbleHeight);
+			Sprite contentSprite = GetBubbleContentSprite(430, 140);
 
-			contentSprite.setPosition(Pos.x - (BubbleWidth / 2) + (xSizeUnder / 2) + 10, Pos.y + 40);
-			contentSprite.setSize(BubbleWidth, BubbleHeight);
+			contentSprite.setPosition(Pos.x - Sizes.GL.halfBubble + WpUnderlay.halfWidth + Sizes.GL.bubbleCorrect.width, Pos.y
+					+ Sizes.GL.bubbleCorrect.height);
+			contentSprite.setSize(Sizes.GL.Bubble.width, Sizes.GL.Bubble.height - Sizes.GL.bubbleCorrect.height);
 			contentSprite.draw(MapViewGlListener.batch);
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.Error("Bubble.render", "contentSprite", e);
 		}
-
-		Sprite overlay = SpriteCache.Bubble.get(2);
-		overlay.setPosition(Pos.x - (BubbleWidth / 2) + (xSizeUnder / 2), Pos.y);
-		overlay.setSize(BubbleWidth, BubbleHeight + 40);
-		overlay.draw(MapViewGlListener.batch);
 
 	}
 

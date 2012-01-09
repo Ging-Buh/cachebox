@@ -78,7 +78,7 @@ public class Descriptor implements Comparable<Descriptor>
 	/**
 	 * Zoom-Stufe der Kachel
 	 */
-	public int Zoom;
+	public int Zoom; // TODO muss noch auf max begrenzt Werden
 
 	/**
 	 * Erzeugt einen neuen Deskriptor mit den übergebenen Parametern

@@ -576,6 +576,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	}
 
+	public void iniInput()
+	{
+		// TODO set Stage as InputProzessor?
+	}
+
 	boolean flag = false;
 
 	private void startTimer()
