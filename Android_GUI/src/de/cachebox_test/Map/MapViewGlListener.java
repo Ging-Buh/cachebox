@@ -1,5 +1,6 @@
 package de.cachebox_test.Map;
 
+import java.nio.ByteBuffer;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,13 +25,15 @@ import android.os.AsyncTask;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Matrix4;
@@ -99,6 +102,15 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	private boolean positionInitialized = false;
 	String CurrentLayer = "germany-0.2.4.map";
 
+	public static SpriteBatch batch;
+	Matrix4 textMatrix;
+
+	CharSequence str = "Hello World!";
+	OrthographicCamera camera;
+	CameraController controller;
+	GestureDetector gestureDetector;
+	Gdx2DPixmap circle;
+	Texture tcircle;
 	long startTime;
 
 	public MapViewGlListener()
@@ -170,25 +182,136 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 	protected SortedMap<Long, TileGL> tilesToDraw = new TreeMap<Long, TileGL>();
 
+	private int forceCounter = 0;
+	private int count = 0;
+	private boolean forceRender = true;
+
+	/**
+	 * Setzt ein Flag, sodass der nächste Render Durchgang auf jeden Fall abgearbeitet wird.
+	 */
+	private void forceRender()
+	{
+		forceRender = true;
+		forceCounter = 0;
+		count = 0;
+	}
+
+	/**
+	 * Wertet ein eventuell gesetztes forceRender aus.
+	 * 
+	 * @return TRUE wenn gerendert werden soll FALSE wenn der Render Vorgang abgebrochen werden kann und stattdessen die Buffer Texture
+	 *         gezeichnet werden soll.
+	 */
+	private boolean renderForced()
+	{
+		count++;
+		if (forceRender)
+		{
+			forceCounter++;
+			// immer mindestens 10 render Durchgänge durchführen,
+			// wenn ein Force gesetzt wurde.
+			if (forceCounter < 10)
+			{
+				return true;
+			}
+			else
+			{
+				forceCounter = 0;
+				forceRender = false;
+				return false;
+			}
+		}
+
+		// alle 50 calls zweimal rendern
+		if (count > 1 && count < 100)
+		{
+			return false;
+		}
+
+		if (count > 2) count = 0;
+		return true;
+	}
+
+	TextureRegion screenCapture;
+	Pixmap screenCapturePixmap;
+
+	int createOrUpdateScreenCapture()
+	{
+		int GL_internalFormat;
+
+		// final int potW = MathUtils.nextPowerOfTwo(Gdx.graphics.getWidth());
+		// final int potH = MathUtils.nextPowerOfTwo(Gdx.graphics.getHeight());
+
+		final int potW = Gdx.graphics.getWidth();
+		final int potH = Gdx.graphics.getHeight();
+
+		if (screenCapturePixmap == null)
+		{
+			Logger.DEBUG("Creating Screen Capture Pixmap: " + potW + "x" + potH);
+
+			screenCapturePixmap = new Pixmap(potW, potH, Format.RGBA8888); // Format.RGBA8888
+		}
+		ByteBuffer pixels = screenCapturePixmap.getPixels();
+		Gdx.gl.glReadPixels(0, 0, potW, potH, //
+				screenCapturePixmap.getGLFormat(), screenCapturePixmap.getGLType(), pixels);
+
+		GL_internalFormat = screenCapturePixmap.getGLInternalFormat();
+
+		if (screenCapture == null)
+		{
+			// Logger.DEBUG("Creating Screen Capture Texture: " + Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
+
+			Texture tex = new Texture(screenCapturePixmap);
+			tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
+			screenCapture = new TextureRegion(tex, 0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), -Gdx.graphics.getHeight());
+		}
+		else
+		{
+			// Logger.DEBUG("Drawing Screen Capture Pixmap into Texture: " + screenCapturePixmap.getWidth() + "x"
+			// + screenCapturePixmap.getHeight());
+
+			screenCapture.getTexture().draw(screenCapturePixmap, 0, 0);
+		}
+
+		return GL_internalFormat;
+	}
+
+	void bindTexture(Texture texture)
+	{
+		GL20 gl = Gdx.graphics.getGL20();
+		gl.glEnable(GL20.GL_BLEND);
+		gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glEnable(GL20.GL_TEXTURE_2D);
+		texture.bind();
+
+		// Logger.DEBUG("updateScreenCapture HACK: " + width + "x" + height);
+		gl.glFlush();
+		gl.glFinish();
+		createOrUpdateScreenCapture();
+	}
+
+	void destroyScreenCapture()
+	{
+
+		if (screenCapture != null)
+		{
+			screenCapture.getTexture().dispose();
+		}
+		screenCapture = null;
+
+		if (screenCapturePixmap != null)
+		{
+			screenCapturePixmap.dispose();
+		}
+		screenCapturePixmap = null;
+	}
+
 	@Override
 	public void render()
 	{
 
-		long endTime = System.currentTimeMillis();
-		long dt = endTime - startTime;
-		if (dt < 33)
-		{
-			try
-			{
-				if (20 - dt > 0) Thread.sleep(20 - dt);
-			}
-			catch (InterruptedException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		startTime = System.currentTimeMillis();
+		reduceFPS();
 
 		if (SpriteCache.MapIcons == null)
 		{
@@ -199,8 +322,25 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 		loadTiles();
 
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		if (!renderForced())
+		{
+			if (screenCapture != null)
+			{
+				float width = screenCapture.getTexture().getWidth();
+				float height = screenCapture.getTexture().getHeight();
+				batch.begin();
+				batch.draw(screenCapture, 0, 0, width, height);
+				batch.end();
 
+				return;
+			}
+		}
+		else
+		{
+			destroyScreenCapture();
+		}
+
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		controller.update();
 
 		if (alignToCompass)
@@ -218,6 +358,66 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		}
 
 		camera.update();
+
+		renderMapTiles();
+		renderOverlay();
+		renderUI();
+
+		Gdx.gl.glFlush();
+		Gdx.gl.glFinish();
+
+		createOrUpdateScreenCapture();
+		bindTexture(screenCapture.getTexture());
+
+	}
+
+	private void reduceFPS()
+	{
+		long endTime = System.currentTimeMillis();
+		long dt = endTime - startTime;
+		if (dt < 33)
+		{
+			try
+			{
+				if (20 - dt > 0) Thread.sleep(20 - dt);
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		startTime = System.currentTimeMillis();
+	}
+
+	private void renderOverlay()
+	{
+		batch.setProjectionMatrix(textMatrix);
+		batch.begin();
+
+		// calculate icon size
+		int iconSize = 0; // 8x8
+		if ((zoom >= 13) && (zoom <= 14)) iconSize = 1; // 13x13
+		else if (zoom > 14) iconSize = 2; // default Images
+
+		renderWPs(Sizes.GL.WPSizes[iconSize], Sizes.GL.UnderlaySizes[iconSize]);
+		renderPositionMarker();
+		Bubble.render(Sizes.GL.WPSizes[iconSize]);
+
+		batch.end();
+	}
+
+	private void renderUI()
+	{
+		batch.setProjectionMatrix(textMatrix);
+		batch.begin();
+		renderInfoPanel();
+		btnTrackPos.Render(batch, Sizes.GL.Toggle, Sizes.GL.fontAB22);
+		renderDebugInfo();
+		batch.end();
+	}
+
+	private void renderMapTiles()
+	{
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 
@@ -290,28 +490,6 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		tilesToDraw.clear();
 
 		batch.end();
-
-		batch.setProjectionMatrix(textMatrix);
-		batch.begin();
-
-		// calculate icon size
-
-		int iconSize = 0; // 8x8
-		if ((zoom >= 13) && (zoom <= 14)) iconSize = 1; // 13x13
-		else if (zoom > 14) iconSize = 2; // default Images
-
-		renderWPs(Sizes.GL.WPSizes[iconSize], Sizes.GL.UnderlaySizes[iconSize]);
-		renderPositionMarker();
-		Bubble.render(Sizes.GL.WPSizes[iconSize]);
-
-		renderInfoPanel();
-
-		btnTrackPos.Render(batch, Sizes.GL.Toggle, Sizes.GL.fontAB22);
-
-		renderDebugInfo();
-
-		batch.end();
-
 	}
 
 	private void renderDebugInfo()
@@ -785,16 +963,6 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		loadedTiles.clear();
 	}
 
-	public static SpriteBatch batch;
-	Matrix4 textMatrix;
-
-	CharSequence str = "Hello World!";
-	OrthographicCamera camera;
-	CameraController controller;
-	GestureDetector gestureDetector;
-	Gdx2DPixmap circle;
-	Texture tcircle;
-
 	private void stateChanged()
 	{
 		if (btnTrackPos.getState() > 0)
@@ -828,6 +996,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			{
 				main.vibrator.vibrate(50);
 				stateChanged();
+				forceRender();
 				return true;
 			}
 
@@ -849,7 +1018,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 					// Shutdown Autoresort
 					Global.autoResort = false;
-					// Render(true);
+					forceRender();
 					// do nothing else with this click
 					return false;
 				}
@@ -857,7 +1026,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 				{
 					// Click outside Bubble -> hide Bubble
 					Bubble.isShow = false;
-					// Render(true);
+					forceRender();
 				}
 
 				for (WaypointRenderInfo wpi : mapCacheList.list)
@@ -943,7 +1112,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), zoom, true);
 						}
 					}
-
+					forceRender();
 				}
 			}
 			return false;
@@ -1254,7 +1423,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		GlobalCore.LastValidPosition.Elevation = location.getAltitude();
 
 		if (btnTrackPos.getState() > 0) setCenter(new Coordinate(location.getLatitude(), location.getLongitude()));
-
+		forceRender();
 	}
 
 	@Override
@@ -1287,6 +1456,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 			double gammaH = alpha - beta;
 			drawingHeight = (int) (Math.cos(gammaH) * diagonal * 2);
+			forceRender();
 		}
 		else
 		{
@@ -1295,6 +1465,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			drawingWidth = width;
 			drawingHeight = height;
 		}
+
 	}
 
 	public void SetAlignToCompass(boolean value)
