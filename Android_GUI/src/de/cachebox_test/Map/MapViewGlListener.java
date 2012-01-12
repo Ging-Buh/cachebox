@@ -1,6 +1,5 @@
 package de.cachebox_test.Map;
 
-import java.nio.ByteBuffer;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,12 +27,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Matrix4;
@@ -232,80 +229,80 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		return true;
 	}
 
-	TextureRegion screenCapture;
-	Pixmap screenCapturePixmap;
+	// TextureRegion screenCapture;
+	// Pixmap screenCapturePixmap;
 
-	int createOrUpdateScreenCapture()
-	{
-		int GL_internalFormat;
-
-		// final int potW = MathUtils.nextPowerOfTwo(Gdx.graphics.getWidth());
-		// final int potH = MathUtils.nextPowerOfTwo(Gdx.graphics.getHeight());
-
-		final int potW = Gdx.graphics.getWidth();
-		final int potH = Gdx.graphics.getHeight();
-
-		if (screenCapturePixmap == null)
-		{
-			Logger.DEBUG("Creating Screen Capture Pixmap: " + potW + "x" + potH);
-
-			screenCapturePixmap = new Pixmap(potW, potH, Format.RGBA8888); // Format.RGBA8888
-		}
-		ByteBuffer pixels = screenCapturePixmap.getPixels();
-		Gdx.gl.glReadPixels(0, 0, potW, potH, //
-				screenCapturePixmap.getGLFormat(), screenCapturePixmap.getGLType(), pixels);
-
-		GL_internalFormat = screenCapturePixmap.getGLInternalFormat();
-
-		if (screenCapture == null)
-		{
-			// Logger.DEBUG("Creating Screen Capture Texture: " + Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
-
-			Texture tex = new Texture(screenCapturePixmap);
-			tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-
-			screenCapture = new TextureRegion(tex, 0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), -Gdx.graphics.getHeight());
-		}
-		else
-		{
-			// Logger.DEBUG("Drawing Screen Capture Pixmap into Texture: " + screenCapturePixmap.getWidth() + "x"
-			// + screenCapturePixmap.getHeight());
-
-			screenCapture.getTexture().draw(screenCapturePixmap, 0, 0);
-		}
-
-		return GL_internalFormat;
-	}
-
-	void bindTexture(Texture texture)
-	{
-		GL20 gl = Gdx.graphics.getGL20();
-		gl.glEnable(GL20.GL_BLEND);
-		gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		gl.glEnable(GL20.GL_TEXTURE_2D);
-		texture.bind();
-
-		// Logger.DEBUG("updateScreenCapture HACK: " + width + "x" + height);
-		gl.glFlush();
-		gl.glFinish();
-		createOrUpdateScreenCapture();
-	}
-
-	void destroyScreenCapture()
-	{
-
-		if (screenCapture != null)
-		{
-			screenCapture.getTexture().dispose();
-		}
-		screenCapture = null;
-
-		if (screenCapturePixmap != null)
-		{
-			screenCapturePixmap.dispose();
-		}
-		screenCapturePixmap = null;
-	}
+	// int createOrUpdateScreenCapture()
+	// {
+	// int GL_internalFormat;
+	//
+	// // final int potW = MathUtils.nextPowerOfTwo(Gdx.graphics.getWidth());
+	// // final int potH = MathUtils.nextPowerOfTwo(Gdx.graphics.getHeight());
+	//
+	// final int potW = Gdx.graphics.getWidth();
+	// final int potH = Gdx.graphics.getHeight();
+	//
+	// if (screenCapturePixmap == null)
+	// {
+	// Logger.DEBUG("Creating Screen Capture Pixmap: " + potW + "x" + potH);
+	//
+	// screenCapturePixmap = new Pixmap(potW, potH, Format.RGBA8888); // Format.RGBA8888
+	// }
+	// ByteBuffer pixels = screenCapturePixmap.getPixels();
+	// Gdx.gl.glReadPixels(0, 0, potW, potH, //
+	// screenCapturePixmap.getGLFormat(), screenCapturePixmap.getGLType(), pixels);
+	//
+	// GL_internalFormat = screenCapturePixmap.getGLInternalFormat();
+	//
+	// if (screenCapture == null)
+	// {
+	// // Logger.DEBUG("Creating Screen Capture Texture: " + Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
+	//
+	// Texture tex = new Texture(screenCapturePixmap);
+	// tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+	//
+	// screenCapture = new TextureRegion(tex, 0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), -Gdx.graphics.getHeight());
+	// }
+	// else
+	// {
+	// // Logger.DEBUG("Drawing Screen Capture Pixmap into Texture: " + screenCapturePixmap.getWidth() + "x"
+	// // + screenCapturePixmap.getHeight());
+	//
+	// screenCapture.getTexture().draw(screenCapturePixmap, 0, 0);
+	// }
+	//
+	// return GL_internalFormat;
+	// }
+	//
+	// void bindTexture(Texture texture)
+	// {
+	// GL20 gl = Gdx.graphics.getGL20();
+	// gl.glEnable(GL20.GL_BLEND);
+	// gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+	// gl.glEnable(GL20.GL_TEXTURE_2D);
+	// texture.bind();
+	//
+	// // Logger.DEBUG("updateScreenCapture HACK: " + width + "x" + height);
+	// gl.glFlush();
+	// gl.glFinish();
+	// createOrUpdateScreenCapture();
+	// }
+	//
+	// void destroyScreenCapture()
+	// {
+	//
+	// if (screenCapture != null)
+	// {
+	// screenCapture.getTexture().dispose();
+	// }
+	// screenCapture = null;
+	//
+	// if (screenCapturePixmap != null)
+	// {
+	// screenCapturePixmap.dispose();
+	// }
+	// screenCapturePixmap = null;
+	// }
 
 	@Override
 	public void render()
@@ -322,23 +319,23 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 		loadTiles();
 
-		if (!renderForced())
-		{
-			if (screenCapture != null)
-			{
-				float width = screenCapture.getTexture().getWidth();
-				float height = screenCapture.getTexture().getHeight();
-				batch.begin();
-				batch.draw(screenCapture, 0, 0, width, height);
-				batch.end();
-
-				return;
-			}
-		}
-		else
-		{
-			destroyScreenCapture();
-		}
+		// if (!renderForced())
+		// {
+		// if (screenCapture != null)
+		// {
+		// float width = screenCapture.getTexture().getWidth();
+		// float height = screenCapture.getTexture().getHeight();
+		// batch.begin();
+		// batch.draw(screenCapture, 0, 0, width, height);
+		// batch.end();
+		//
+		// return;
+		// }
+		// }
+		// else
+		// {
+		// destroyScreenCapture();
+		// }
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		controller.update();
@@ -365,9 +362,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 		Gdx.gl.glFlush();
 		Gdx.gl.glFinish();
-
-		createOrUpdateScreenCapture();
-		bindTexture(screenCapture.getTexture());
+		//
+		// createOrUpdateScreenCapture();
+		// bindTexture(screenCapture.getTexture());
 
 	}
 
