@@ -1124,7 +1124,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				Logger.General("Main.ApplyFilter: " + sqlWhere);
 				Database.Data.Query.clear();
 				dao.ReadCacheList(Database.Data.Query, sqlWhere);
-
+				String msg = GlobalCore.Translations.Get("DeletedCaches", String.valueOf(nun));
+				Toast(msg);
 				return;
 			}
 			case 1:// Found gewählt
@@ -1136,21 +1137,21 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				Logger.General("Main.ApplyFilter: " + sqlWhere);
 				Database.Data.Query.clear();
 				dao.ReadCacheList(Database.Data.Query, sqlWhere);
-
+				String msg = GlobalCore.Translations.Get("DeletedCaches", String.valueOf(nun));
+				Toast(msg);
 				return;
 			}
-			case 2:// Filter gewählt noch nicht fertig!
+			case 2:// Filter gewählt
 			{
 				CacheListDAO dao = new CacheListDAO();
 				nun = dao.DelFilter(Global.LastFilter.getSqlWhere());
 				Global.LastFilter = new FilterProperties(FilterProperties.presets[0]);
 				EditFilterSettings.ApplyFilter(mainActivity, Global.LastFilter);
-
+				String msg = GlobalCore.Translations.Get("DeletedCaches", String.valueOf(nun));
+				Toast(msg);
 				return;
 			}
 			}
-			String msg = "Es wurden " + String.valueOf(nun) + " Caches mit Bildern gelöscht";
-			Toast(msg);
 			return;
 		}
 

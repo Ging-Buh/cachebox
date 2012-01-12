@@ -729,3 +729,5 @@
 	My_Parking_Area_Del = Lösche aktuellen [P]!
 	My_Parking_Area_Found = Herzlichen Glückwunsch, Du hast dein Auto gefunden!
 	My_Parking_Area_DNF = Schade, dann musst Du wohl laufen!
+	
+	DeletedCaches = Es wurden {1} Caches mit Bildern gelöscht.

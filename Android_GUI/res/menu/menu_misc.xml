@@ -8,8 +8,6 @@
 		android:icon="@drawable/settings"></item>
 	<item android:title="ScreenLock" android:id="@+id/miScreenLock"
 		android:icon="@drawable/lock_icon"></item>
-	<item android:title="DeleteCaches" android:id="@+id/miDeleteCaches"
-		android:icon="@drawable/delete_icon"></item>
 	<item android:title="Close" android:id="@+id/miClose"
 		android:icon="@drawable/close_icon"></item>
 

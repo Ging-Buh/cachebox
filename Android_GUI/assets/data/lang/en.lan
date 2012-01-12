@@ -726,3 +726,5 @@ English
 	My_Parking_Area_Del = Delete parking bay!
 	My_Parking_Area_Found = Congratulations, you have found your car!
 	My_Parking_Area_DNF = Too bad, then you must probably walk!
+
+	DeletedCaches = It were deleted {1} Caches with pictures.

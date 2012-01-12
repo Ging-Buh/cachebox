@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-  xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/miTrackRec" android:title="Track Recorder"></item>
-    <item android:title="Voice Recorder" android:id="@+id/miVoiceRecorder" android:icon="@drawable/voice_rec_icon"></item> 
-    <item android:title="Take Photo" android:id="@+id/miTakePhoto" android:icon="@drawable/log10"></item>  
-    <item android:title="Record Video" android:id="@+id/miRecordVideo" android:icon="@drawable/video_icon"></item>
-    <item android:id="@+id/miParking" android:title="Parking" android:icon="@drawable/my_parking"></item>
-    
-   
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/miTrackRec" android:title="Track Recorder"></item>
+	<item android:title="Voice Recorder" android:id="@+id/miVoiceRecorder"
+		android:icon="@drawable/voice_rec_icon"></item>
+	<item android:title="Take Photo" android:id="@+id/miTakePhoto"
+		android:icon="@drawable/log10"></item>
+	<item android:title="Record Video" android:id="@+id/miRecordVideo"
+		android:icon="@drawable/video_icon"></item>
+	<item android:title="DeleteCaches" android:id="@+id/miDeleteCaches"
+		android:icon="@drawable/delete_icon"></item>
+	<item android:id="@+id/miParking" android:title="Parking"
+		android:icon="@drawable/my_parking"></item>
+
+
 </menu>

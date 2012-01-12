@@ -62,7 +62,6 @@ public class AllContextMenuCallHandler
 		Global.TranslateMenuItem(IconMenu, R.id.miDayNight, "DayNight");
 		Global.TranslateMenuItem(IconMenu, R.id.miSettings, "settings");
 		Global.TranslateMenuItem(IconMenu, R.id.miScreenLock, "screenlock");
-		Global.TranslateMenuItem(IconMenu, R.id.miDeleteCaches, "DeleteCaches");
 		Global.TranslateMenuItem(IconMenu, R.id.miClose, "quit");
 
 		icm.show();
@@ -136,6 +135,7 @@ public class AllContextMenuCallHandler
 		Global.TranslateMenuItem(IconMenu, R.id.miVoiceRecorder, "VoiceRec");
 		Global.TranslateMenuItem(IconMenu, R.id.miTakePhoto, "TakePhoto");
 		Global.TranslateMenuItem(IconMenu, R.id.miRecordVideo, "RecVideo");
+		Global.TranslateMenuItem(IconMenu, R.id.miDeleteCaches, "DeleteCaches");
 
 		try
 		{
