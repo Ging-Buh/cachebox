@@ -38,13 +38,13 @@ import de.cachebox_test.Ui.Sizes;
 
 public class Global
 {
-	public static final int CurrentRevision = 649;
+	public static final int CurrentRevision = 650;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 	public static final int LatestDatabaseChange = 1016;
 	public static final int LatestDatabaseFieldNoteChange = 1001;
 
-	public static final String br = String.format("%n");
+	public static final String br = System.getProperty("line.separator");
 	public static final String splashMsg = "Team Cachebox (2011-2012)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009,"
 			+ br + "Groundspeak Inc. Used with permission";
 

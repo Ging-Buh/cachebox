@@ -45,8 +45,15 @@ public class DescriptionImageGrabber
 
 			if (rightIndex == -1) break;
 
+			int forward = leftIndex + 50;
+
+			if (forward > text.length())
+			{
+				forward = text.length();
+			}
+
 			// Test, ob es sich um ein eingebettetes Bild handelt
-			if (text.substring(leftIndex, leftIndex + 100).toLowerCase().contains("data:image/"))
+			if (text.substring(leftIndex, forward).toLowerCase().contains("data:image/"))
 			{
 				idx = rightIndex;
 				continue;

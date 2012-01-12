@@ -28,6 +28,8 @@ public class GlobalCore
 
 	public static SmoothScrollingTyp SmoothScrolling = SmoothScrollingTyp.normal;
 
+	public static final String br = System.getProperty("line.separator");
+
 	public static void SelectedCache(Cache cache)
 	{
 		selectedCache = cache;

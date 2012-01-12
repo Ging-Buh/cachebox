@@ -11,10 +11,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import CB_Core.GlobalCore;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
+import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
@@ -42,6 +44,7 @@ public class GPXFileImporter
 	private ImporterProgress mip;
 	private Integer currentwpt = 0;
 	private Integer countwpt = 0;
+	private Integer errors = 0;
 
 	private Cache cache = new Cache();
 	private Waypoint waypoint = new Waypoint();
@@ -155,7 +158,8 @@ public class GPXFileImporter
 						}
 						catch (Exception e)
 						{
-							throw new XMLParserException(e.getMessage());
+							errors++;
+							Logger.Error("GPXFileImporter", "CreateCache", e);
 						}
 					}
 					else if (values.get("wpt_type").startsWith("Waypoint|"))
@@ -166,7 +170,8 @@ public class GPXFileImporter
 						}
 						catch (Exception e)
 						{
-							throw new XMLParserException(e.getMessage());
+							errors++;
+							Logger.Error("GPXFileImporter", "CreateWaypoint", e);
 						}
 
 					}
@@ -1010,8 +1015,23 @@ public class GPXFileImporter
 
 		currentwpt++;
 
-		if (mip != null) mip.ProgressInkrement("ImportGPX", mDisplayFilename + "\nCache: " + currentwpt + "/" + countwpt + "\n"
-				+ cache.GcCode + " - " + cache.Name, false);
+		StringBuilder info = new StringBuilder();
+
+		info.append(mDisplayFilename);
+		info.append(GlobalCore.br);
+		info.append("Cache: ");
+		info.append(currentwpt);
+		info.append("/");
+		info.append(countwpt);
+
+		if (errors > 0)
+		{
+			info.append(GlobalCore.br);
+			info.append("Errors: ");
+			info.append(errors);
+		}
+
+		if (mip != null) mip.ProgressInkrement("ImportGPX", info.toString(), false);
 
 		mImportHandler.handleCache(cache);
 
