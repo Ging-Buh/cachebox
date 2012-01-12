@@ -45,6 +45,13 @@ public class DescriptionImageGrabber
 
 			if (rightIndex == -1) break;
 
+			// ignoriere URLs, die zu lang sind
+			if (text.length() > 1024)
+			{
+				idx = rightIndex;
+				continue;
+			}
+
 			int forward = leftIndex + 50;
 
 			if (forward > text.length())
