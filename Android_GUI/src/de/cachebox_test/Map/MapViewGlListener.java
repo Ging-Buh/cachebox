@@ -1025,6 +1025,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			if (zoomBtn.hitTest(clickedAt))
 			{
 				main.vibrator.vibrate(50);
+				camera.zoom = getMapTilePosFactor(zoomBtn.getZoom());
 				forceRender();
 				return true;
 			}
