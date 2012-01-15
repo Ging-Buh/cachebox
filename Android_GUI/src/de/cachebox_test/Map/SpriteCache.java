@@ -1,3 +1,19 @@
+/* 
+ * Copyright (C) 2011-2012 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package de.cachebox_test.Map;
 
 import java.util.ArrayList;
@@ -21,6 +37,7 @@ public class SpriteCache
 	public static ArrayList<Sprite> Bubble = null;
 	public static Sprite InfoBack = null;
 	public static ArrayList<Sprite> ToggleBtn = null;
+	public static ArrayList<Sprite> ZoomBtn = null;
 
 	/**
 	 * Load the Sprites from recorce
@@ -112,6 +129,14 @@ public class SpriteCache
 		ToggleBtn.add(atlas.createSprite("toggle_led_rt"));
 		ToggleBtn.add(atlas.createSprite("toggle_led_gb"));
 
+		ZoomBtn = new ArrayList<Sprite>();
+		ZoomBtn.add(atlas.createSprite("day_btn_zoom_down_normal"));
+		ZoomBtn.add(atlas.createSprite("day_btn_zoom_down_pressed"));
+		ZoomBtn.add(atlas.createSprite("day_btn_zoom_down_disabled"));
+		ZoomBtn.add(atlas.createSprite("day_btn_zoom_up_normal"));
+		ZoomBtn.add(atlas.createSprite("day_btn_zoom_up_pressed"));
+		ZoomBtn.add(atlas.createSprite("day_btn_zoom_up_disabled"));
+
 	}
 
 	/**
@@ -125,6 +150,8 @@ public class SpriteCache
 		MapArrows = null;
 		MapStars = null;
 		Bubble = null;
+		ToggleBtn = null;
+		ZoomBtn = null;
 	}
 
 }

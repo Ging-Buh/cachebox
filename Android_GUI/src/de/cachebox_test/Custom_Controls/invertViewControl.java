@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2011 team-cachebox.de
+ * Copyright (C) 2011-2012 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
  * you may not use this file except in compliance with the License.
@@ -19,41 +19,21 @@ package de.cachebox_test.Custom_Controls;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_Core.Config;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.LinearLayout;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
-import de.cachebox_test.UnitFormatter;
 import de.cachebox_test.main;
-
-import de.cachebox_test.Components.CacheDraw;
-import de.cachebox_test.Components.CacheDraw.DrawStyle;
-import de.cachebox_test.Views.CacheListView;
 import de.cachebox_test.Views.DescriptionView;
-import CB_Core.Types.Cache;
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.LightingColorFilter;
-import android.graphics.LinearGradient;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.RadialGradient;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Shader;
-import android.graphics.Typeface;
 
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
-import android.view.View.MeasureSpec;
-import android.widget.LinearLayout;
-
+/**
+ * @author Longri
+ */
 public final class invertViewControl extends View
 {
 
@@ -89,8 +69,7 @@ public final class invertViewControl extends View
 		canvas.drawColor(Global.getColor(R.attr.EmptyBackground));
 
 		WebViewLayout = DescriptionView.webViewLayout;
-		b = Bitmap.createBitmap(this.getWidth(), this.getHeight(),
-				Bitmap.Config.ARGB_8888);
+		b = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
 
 		Canvas c = new Canvas(b);
 

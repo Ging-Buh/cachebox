@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2011-2012 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.cachebox_test.Custom_Controls;
 
 import java.util.ArrayList;
@@ -26,6 +41,9 @@ import de.cachebox_test.main;
 import de.cachebox_test.Map.SpriteCache;
 import de.cachebox_test.Ui.Math.ChangedRectF;
 
+/**
+ * @author Longri
+ */
 public class MultiToggleButton extends Button implements OnClickListener
 {
 
@@ -224,6 +242,7 @@ public class MultiToggleButton extends Button implements OnClickListener
 	}
 
 	private ChangedRectF hitRec = null;
+	private boolean onTouch = false;
 
 	public boolean hitTest(Vector2 pos)
 	{
@@ -232,6 +251,24 @@ public class MultiToggleButton extends Button implements OnClickListener
 			if (hitRec.contains(pos.x, pos.y))
 			{
 				onClick();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void TouchRelease()
+	{
+		onTouch = false;
+	}
+
+	public boolean touchDownTest(Vector2 pos)
+	{
+		if (hitRec != null)
+		{
+			if (hitRec.contains(pos.x, pos.y))
+			{
+				onTouch = true;
 				return true;
 			}
 		}
@@ -249,7 +286,7 @@ public class MultiToggleButton extends Button implements OnClickListener
 		hitRec = rect;
 
 		// draw button
-		btn = SpriteCache.ToggleBtn.get(0);
+		btn = SpriteCache.ToggleBtn.get(onTouch ? 1 : 0);
 		btn.setBounds(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
 		btn.draw(batch);
 

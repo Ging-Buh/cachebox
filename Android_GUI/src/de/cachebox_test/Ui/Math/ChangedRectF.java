@@ -23,7 +23,7 @@ import com.badlogic.gdx.math.Vector2;
 import de.cachebox_test.Ui.SizeChangedEvent;
 
 /**
- * Eine Structur für RectF mit besonderen Methoden Speziel für die Handhabung in der Verwendung der Berechneten Grössen un Positionen
+ * Eine Structur für RectF mit besonderen Methoden Speziel für die Handhabung in der Verwendung der Berechneten Grössen und Positionen
  * einzelner UI Elemente in Cachebox
  * 
  * @author Longri
@@ -146,6 +146,11 @@ public class ChangedRectF
 		return this.Pos;
 	}
 
+	/**
+	 * Gibt die Position der rechten oberen Ecke zurück
+	 * 
+	 * @return Vector2
+	 */
 	public Vector2 getCrossPos()
 	{
 		return this.crossPos;
@@ -192,6 +197,11 @@ public class ChangedRectF
 		if (this.Pos.x != rec.Pos.x || this.Pos.y != rec.Pos.y) return false;
 		if (this.width != rec.width || this.height != this.height) return false;
 		return true;
+	}
+
+	public ChangedRectF copy()
+	{
+		return new ChangedRectF(this.Pos.x, this.Pos.y, width, height);
 	}
 
 }

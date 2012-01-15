@@ -40,6 +40,7 @@ import de.cachebox_test.Global;
 import de.cachebox_test.UnitFormatter;
 import de.cachebox_test.main;
 import de.cachebox_test.Components.CacheDraw;
+import de.cachebox_test.Custom_Controls.GL_ZoomBtn;
 import de.cachebox_test.Custom_Controls.MultiToggleButton;
 import de.cachebox_test.Events.PositionEvent;
 import de.cachebox_test.Events.PositionEventList;
@@ -65,6 +66,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	private Point lastMovement = new Point(0, 0);
 	private int zoomCross = 16;
 	private MultiToggleButton btnTrackPos;
+	private GL_ZoomBtn zoomBtn;
 
 	// Settings values
 	public boolean showRating;
@@ -75,10 +77,16 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	public boolean showDirektLine;
 	private boolean nightMode;
 
+	// #################################################################
+	//
+	// Min, Max und Act Zoom Werte sind jetzt im "zoomBtn" gespeichert!
+	//
 	// maxzoom wird 1:1 dargestellt
-	int minzoom = 6;
-	int maxzoom = 20;
-	int zoom = 13;
+	// int minzoom = 6;
+	// int maxzoom = 20;
+	// int zoom = 13;
+	// #################################################################
+
 	int maxNumTiles = 100;
 	float iconFactor = 1.5f;
 
@@ -119,7 +127,10 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			queueProcessor.execute(0);
 		}
 
-		mapCacheList = new MapCacheList(maxzoom);
+		// initial Zoom Buttons
+		zoomBtn = new GL_ZoomBtn(6, 20, 13);
+
+		mapCacheList = new MapCacheList(zoomBtn.getMaxZoom());
 
 	}
 
@@ -151,7 +162,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		circle.drawCircle(8, 8, 8, Color.BLACK);
 
 		tcircle = new Texture(new Pixmap(circle));
-		camera.zoom = getMapTilePosFactor(zoom);
+		camera.zoom = getMapTilePosFactor(zoomBtn.getZoom());
 		camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
 		startTime = System.currentTimeMillis();
 
@@ -171,7 +182,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	@Override
 	public void resize(int width, int height)
 	{
-		// Log.d("MAPVIEW", "resize" + width + "/" + height);
+		// //Log.d("MAPVIEW", "resize" + width + "/" + height);
 		textMatrix.setToOrtho2D(0, 0, width, height);
 		((main) main.mainActivity).iniInput();// Größe des Input bereichs muss neu Berechnet werden
 		Sizes.GL.initial(width, height);
@@ -393,8 +404,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 		// calculate icon size
 		int iconSize = 0; // 8x8
-		if ((zoom >= 13) && (zoom <= 14)) iconSize = 1; // 13x13
-		else if (zoom > 14) iconSize = 2; // default Images
+		if ((zoomBtn.getZoom() >= 13) && (zoomBtn.getZoom() <= 14)) iconSize = 1; // 13x13
+		else if (zoomBtn.getZoom() > 14) iconSize = 2; // default Images
 
 		renderWPs(Sizes.GL.WPSizes[iconSize], Sizes.GL.UnderlaySizes[iconSize]);
 		renderPositionMarker();
@@ -408,7 +419,11 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		batch.setProjectionMatrix(textMatrix);
 		batch.begin();
 		renderInfoPanel();
+
 		btnTrackPos.Render(batch, Sizes.GL.Toggle, Sizes.GL.fontAB22);
+
+		zoomBtn.Render(batch, Sizes.GL.ZoomBtn);
+
 		renderDebugInfo();
 		batch.end();
 	}
@@ -432,7 +447,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		}
 		// for (int tmpzoom = zoom; tmpzoom <= zoom; tmpzoom++)
 		{
-			int tmpzoom = zoom;
+			int tmpzoom = zoomBtn.getZoom();
 			Descriptor lo = screenToDescriptor(new Vector2(width / 2 - drawingWidth / 2, height / 2 - drawingHeight / 2), tmpzoom);
 			Descriptor ru = screenToDescriptor(new Vector2(width / 2 + drawingWidth / 2, height / 2 + drawingHeight / 2), tmpzoom);
 			for (int i = lo.X; i <= ru.X; i++)
@@ -452,21 +467,21 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 					{
 						// das Alter der benutzten Tiles auf 0 setzen wenn dies
 						// für den richtigen aktuellen Zoom ist
-						if (tmpzoom == zoom) tile.Age = 0;
+						if (tmpzoom == zoomBtn.getZoom()) tile.Age = 0;
 
 						if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.put(tile.Descriptor.GetHashCode(), tile);
 					}
-					else if (tmpzoom == zoom)
+					else if (tmpzoom == zoomBtn.getZoom())
 					{
 						// für den aktuellen Zoom ist kein Tile vorhanden ->
 						// kleinere Zoomfaktoren durchsuchen
-						if (!renderBiggerTiles(batch, i, j, zoom))
+						if (!renderBiggerTiles(batch, i, j, zoomBtn.getZoom()))
 						// größere Zoomfaktoren noch durchsuchen, ob davon Tiles
 						// vorhanden sind...
 						// dafür müssen aber pro fehlendem Tile mehrere kleine
 						// Tiles gezeichnet werden (4 oder 16 oder 64...)
 						// dieser Aufruf kann auch rekursiv sein...
-						renderSmallerTiles(batch, i, j, zoom);
+						renderSmallerTiles(batch, i, j, zoomBtn.getZoom());
 					}
 				}
 			}
@@ -496,23 +511,20 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 		str = "fps: " + Gdx.graphics.getFramesPerSecond();
 		Sizes.GL.fontAB18.draw(batch, str, 20, 100);
-		str = String.valueOf(zoom) + " - camera.zoom: " + Math.round(camera.zoom * 100) / 100;
+
+		str = String.valueOf(zoomBtn.getZoom()) + " - camzoom: " + Math.round(camera.zoom * 100) / 100;
 		Sizes.GL.fontAB18.draw(batch, str, 20, 80);
-		str = "loaded Tiles: " + loadedTiles.size() + " - queuedTiles: " + queuedTiles.size();
+
+		str = "lTiles: " + loadedTiles.size() + " - qTiles: " + queuedTiles.size();
 		Sizes.GL.fontAB18.draw(batch, str, 20, 60);
+
 		if (mapCacheList != null)
 		{
-			str = "AnzCachelistCalc: " + mapCacheList.anz + " - Caches: " + mapCacheList.list.size();
+			str = "listCalc: " + mapCacheList.anz + " - C: " + mapCacheList.list.size();
 			Sizes.GL.fontAB18.draw(batch, str, 20, 40);
 		}
 		str = "lastMove: " + lastMovement.x + " - " + lastMovement.y;
 		Sizes.GL.fontAB18.draw(batch, str, 20, 20);
-
-		str = "W/H: " + width + "/" + height;
-		Sizes.GL.fontAB18.draw(batch, str, 200, 100);
-
-		str = "dW/dH: " + drawingWidth + "/" + drawingHeight;
-		Sizes.GL.fontAB18.draw(batch, str, 200, 80);
 
 	}
 
@@ -588,8 +600,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	{
 		if (Global.Locator != null)
 		{
-			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(maxzoom, GlobalCore.LastValidPosition.Longitude),
-					Descriptor.LatitudeToTileY(maxzoom, GlobalCore.LastValidPosition.Latitude), maxzoom, maxzoom);
+			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(zoomBtn.getMaxZoom(), GlobalCore.LastValidPosition.Longitude),
+					Descriptor.LatitudeToTileY(zoomBtn.getMaxZoom(), GlobalCore.LastValidPosition.Latitude), zoomBtn.getMaxZoom(),
+					zoomBtn.getMaxZoom());
 
 			Vector2 vPoint = new Vector2((float) point.X, -(float) point.Y);
 
@@ -626,11 +639,11 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			{
 				for (WaypointRenderInfo wpi : mapCacheList.list)
 				{
-					Vector2 screen = worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
+					Vector2 screen = worldToScreen(new Vector2(wpi.MapX, wpi.MapY));
 
 					float NameYMovement = 0;
 
-					if ((zoom >= zoomCross) && (wpi.Selected) && (wpi.Waypoint == GlobalCore.SelectedWaypoint()))
+					if ((zoomBtn.getZoom() >= zoomCross) && (wpi.Selected) && (wpi.Waypoint == GlobalCore.SelectedWaypoint()))
 					{
 						// Draw Cross and move screen vector
 						Sprite cross = SpriteCache.MapOverlay.get(3);
@@ -664,7 +677,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 					boolean drawAsWaypoint = wpi.Waypoint != null;
 
 					// Rating des Caches darstellen
-					if (showRating && (!drawAsWaypoint) && (wpi.Cache.Rating > 0) && (zoom >= 15))
+					if (showRating && (!drawAsWaypoint) && (wpi.Cache.Rating > 0) && (zoomBtn.getZoom() >= 15))
 					{
 						Sprite rating = SpriteCache.MapStars.get((int) Math.min(wpi.Cache.Rating * 2, 5 * 2));
 						rating.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight - WpUnderlay.Height4_8,
@@ -676,7 +689,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 					}
 
 					// Beschriftung
-					if (showTitles && (zoom >= 15) && (!drawAsWaypoint))
+					if (showTitles && (zoomBtn.getZoom() >= 15) && (!drawAsWaypoint))
 					{
 						float halfWidth = Sizes.GL.fontAB16out.getBounds(wpi.Cache.Name).width / 2;
 						Sizes.GL.fontAB16out.draw(batch, wpi.Cache.Name, screen.x - halfWidth, screen.y - WpUnderlay.halfHeight
@@ -684,7 +697,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 					}
 
 					// Show D/T-Rating
-					if (showDT && (!drawAsWaypoint) && (zoom >= 15))
+					if (showDT && (!drawAsWaypoint) && (zoomBtn.getZoom() >= 15))
 					{
 						Sprite difficulty = SpriteCache.MapStars.get((int) Math.min(wpi.Cache.Difficulty * 2, 5 * 2));
 						difficulty.setBounds(screen.x - WpUnderlay.width - Sizes.GL.infoShadowHeight,
@@ -739,7 +752,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.put(tile.Descriptor.GetHashCode(), tile);
 			return true;
 		}
-		else if ((zoomzoom >= zoom - 3) && (zoomzoom >= minzoom))
+		else if ((zoomzoom >= zoomBtn.getZoom() - 3) && (zoomzoom >= zoomBtn.getMinZoom()))
 		{
 			// für den aktuellen Zoom ist kein Tile vorhanden -> größere
 			// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden
@@ -783,7 +796,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 					// eigentlich nicht das richtige Tile ist!!!
 					// tile.Age = 0;
 				}
-				else if ((zoomzoom <= zoom + 0) && (zoomzoom <= maxzoom))
+				else if ((zoomzoom <= zoomBtn.getZoom() + 0) && (zoomzoom <= zoomBtn.getMaxZoom()))
 				{
 					// für den aktuellen Zoom ist kein Tile vorhanden -> größere
 					// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden
@@ -807,11 +820,11 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		int extensionLeft = width / 2;
 		int extensionRight = width / 2;
 		Descriptor lo = screenToDescriptor(new Vector2(width / 2 - drawingWidth / 2 - extensionLeft, height / 2 - drawingHeight / 2
-				- extensionTop), zoom);
+				- extensionTop), zoomBtn.getZoom());
 		Descriptor ru = screenToDescriptor(new Vector2(width / 2 + drawingWidth / 2 + extensionRight, height / 2 + drawingHeight / 2
-				+ extensionBottom), zoom);
+				+ extensionBottom), zoomBtn.getZoom());
 
-		mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), zoom, false);
+		mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), zoomBtn.getZoom(), false);
 
 		loadedTilesLock.lock();
 		queuedTilesLock.lock();
@@ -826,7 +839,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			{
 				for (int j = lo.Y; j <= ru.Y; j++)
 				{
-					Descriptor desc = new Descriptor(i, j, zoom);
+					Descriptor desc = new Descriptor(i, j, zoomBtn.getZoom());
 
 					if (loadedTiles.containsKey(desc.GetHashCode()))
 					{
@@ -976,14 +989,25 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 		public boolean touchDown(int x, int y, int pointer)
 		{
+			// Log.d("CACHEBOX", "touchDown pointer" + pointer);
+
 			flinging = false;
 			initialScale = camera.zoom;
+
+			Vector2 touchdAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());
+
+			if (btnTrackPos.touchDownTest(touchdAt)) return false;
+			if (zoomBtn.touchDownTest(touchdAt)) return false;
+
 			return false;
 		}
 
 		@Override
 		public boolean tap(int x, int y, int count)
 		{
+			TouchUp();
+			// Log.d("CACHEBOX", "Tab count" + count);
+
 			double minDist = Double.MAX_VALUE;
 			WaypointRenderInfo minWpi = null;
 			Vector2 clickedAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());
@@ -993,6 +1017,14 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			{
 				main.vibrator.vibrate(50);
 				stateChanged();
+				forceRender();
+				return true;
+			}
+
+			// check Zoom Button clicked
+			if (zoomBtn.hitTest(clickedAt))
+			{
+				main.vibrator.vibrate(50);
 				forceRender();
 				return true;
 			}
@@ -1011,7 +1043,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 					Bubble.CacheId = -1;
 					Bubble.cache = null;
 					Bubble.waypoint = null;
-					mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), zoom, true);
+					mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), zoomBtn.getZoom(),
+							true);
 
 					// Shutdown Autoresort
 					Global.autoResort = false;
@@ -1070,7 +1103,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 							Bubble.cache = minWpi.Cache;
 							Bubble.waypoint = minWpi.Waypoint;
 							Bubble.disposeSprite();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), zoom, true);
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)),
+									zoomBtn.getZoom(), true);
 
 						}
 						else
@@ -1083,7 +1117,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 							ThreadSaveSetSelectedWP(minWpi.Cache, minWpi.Waypoint);
 							// FormMain.WaypointListPanel.AlignSelected();
 							// updateCacheList();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), zoom, true);
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)),
+									zoomBtn.getZoom(), true);
 						}
 
 					}
@@ -1095,7 +1130,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 							Bubble.CacheId = minWpi.Cache.Id;
 							Bubble.cache = minWpi.Cache;
 							Bubble.disposeSprite();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), zoom, true);
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)),
+									zoomBtn.getZoom(), true);
 						}
 						else
 						{
@@ -1106,7 +1142,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 							// Cacheliste ausrichten
 							ThreadSaveSetSelectedWP(minWpi.Cache);
 							// updateCacheList();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), zoom, true);
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)),
+									zoomBtn.getZoom(), true);
 						}
 					}
 					forceRender();
@@ -1161,6 +1198,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		@Override
 		public boolean longPress(int x, int y)
 		{
+			TouchUp();
 			Gdx.app.log("GestureDetectorTest", "long press at " + x + ", " + y);
 			return false;
 		}
@@ -1168,6 +1206,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		@Override
 		public boolean fling(float velocityX, float velocityY)
 		{
+			TouchUp();
+			// Log.d("CACHEBOX", "velocity " + velocityX);
+
 			if (btnTrackPos.getState() > 1) return false;
 
 			flinging = true;
@@ -1183,6 +1224,11 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		@Override
 		public boolean pan(int x, int y, int deltaX, int deltaY)
 		{
+			TouchUp();
+			// Ohne verschiebung brauch auch keine neue Pos berechnet werden!
+			if (deltaX < 5 && deltaY < 5) return false;
+			// Log.d("CACHEBOX", "pan " + deltaX);
+
 			if (btnTrackPos.getState() > 1) return false;
 
 			// Drehung der Karte berücksichtigen
@@ -1199,18 +1245,20 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		private void calcCenter()
 		{
 			// berechnet anhand des ScreenCenterW die Center-Coordinaten
-			PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, maxzoom, maxzoom);
+			PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, zoomBtn.getMaxZoom(), zoomBtn.getMaxZoom());
 
-			center = new Coordinate(Descriptor.TileYToLatitude(maxzoom, -point.Y), Descriptor.TileXToLongitude(maxzoom, point.X));
+			center = new Coordinate(Descriptor.TileYToLatitude(zoomBtn.getMaxZoom(), -point.Y), Descriptor.TileXToLongitude(
+					zoomBtn.getMaxZoom(), point.X));
 		}
 
 		@Override
 		public boolean zoom(float originalDistance, float currentDistance)
 		{
+			// Log.d("CACHEBOX", "pan " + originalDistance);
 			float ratio = originalDistance / currentDistance;
 			camera.zoom = initialScale * ratio;
 			System.out.println(camera.zoom);
-			zoom = maxzoom;
+			int zoom = zoomBtn.getMaxZoom();
 			float tmpZoom = camera.zoom;
 			float faktor = 1.5f;
 			faktor = faktor - iconFactor + 1;
@@ -1219,7 +1267,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 				tmpZoom /= 2;
 				zoom--;
 			}
-
+			zoomBtn.setZoom(zoom);
 			return false;
 		}
 
@@ -1237,6 +1285,13 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 				calcCenter();
 			}
 		}
+
+		public void TouchUp()
+		{
+			btnTrackPos.TouchRelease();
+			zoomBtn.TouchRelease();
+		}
+
 	}
 
 	public void Initialize()
@@ -1249,7 +1304,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	public void InitializeMap()
 	{
 		zoomCross = Config.settings.ZoomCross.getValue();
-		zoom = Config.settings.lastZoomLevel.getValue();
+		zoomBtn.setZoom(Config.settings.lastZoomLevel.getValue());
 		// Bestimmung der ersten Position auf der Karte
 		if (!positionInitialized)
 		{
@@ -1347,8 +1402,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 			center = value;
 
-			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(maxzoom, center.Longitude),
-					Descriptor.LatitudeToTileY(maxzoom, center.Latitude), maxzoom, maxzoom);
+			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(zoomBtn.getMaxZoom(), center.Longitude),
+					Descriptor.LatitudeToTileY(zoomBtn.getMaxZoom(), center.Latitude), zoomBtn.getMaxZoom(), zoomBtn.getMaxZoom());
 
 			setScreenCenter(new Vector2((float) point.X, (float) point.Y));
 		}
@@ -1357,7 +1412,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	private long getMapTileSizeFactor(int zoom)
 	{
 		long result = 1;
-		for (int z = minzoom; z < zoom; z++)
+		for (int z = zoomBtn.getMaxZoom(); z < zoom; z++)
 		{
 			result *= 2;
 		}
@@ -1367,7 +1422,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	private long getMapTilePosFactor(int zoom)
 	{
 		long result = 1;
-		for (int z = zoom; z < maxzoom; z++)
+		for (int z = zoom; z < zoomBtn.getMaxZoom(); z++)
 		{
 			result *= 2;
 		}
@@ -1400,7 +1455,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	{
 		// World-Koordinaten in Pixel
 		Vector2 world = screenToWorld(point);
-		for (int i = maxzoom; i > zoom; i--)
+		for (int i = zoomBtn.getMaxZoom(); i > zoom; i--)
 		{
 			world.x /= 2;
 			world.y /= 2;
@@ -1555,7 +1610,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 											- screenCenterW.x, 2)
 											+ Math.pow((double) tmpDesc.Y * posFactor * 256 + 128 * posFactor + screenCenterW.y, 2));
 
-									if (Math.abs(zoom - nearestZoom) > Math.abs(zoom - tmpDesc.Zoom))
+									if (Math.abs(zoomBtn.getZoom() - nearestZoom) > Math.abs(zoomBtn.getZoom() - tmpDesc.Zoom))
 									{
 										// der Zoomfaktor des bisher besten
 										// Tiles ist weiter entfernt vom
@@ -1568,7 +1623,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 									if (dist < nearestDist)
 									{
-										if (Math.abs(zoom - nearestZoom) < Math.abs(zoom - tmpDesc.Zoom))
+										if (Math.abs(zoomBtn.getZoom() - nearestZoom) < Math.abs(zoomBtn.getZoom() - tmpDesc.Zoom))
 										{
 											// zuerst die Tiles, die dem
 											// aktuellen Zoom Faktor am nächsten

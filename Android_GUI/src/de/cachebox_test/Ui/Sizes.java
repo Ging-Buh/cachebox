@@ -349,6 +349,7 @@ public class Sizes
 
 			if (Info == null) Info = new ChangedRectF();
 			if (Toggle == null) Toggle = new ChangedRectF();
+			if (ZoomBtn == null) ZoomBtn = new ChangedRectF();
 			if (Compass == null) Compass = new ChangedRectF();
 			if (InfoLine1 == null) InfoLine1 = new Vector2();
 			if (InfoLine2 == null) InfoLine2 = new Vector2();
@@ -416,6 +417,11 @@ public class Sizes
 		public static ChangedRectF Toggle;
 
 		/**
+		 * Das Rechteck in dem die Zoom Buttons dargestellt wird.
+		 */
+		public static ChangedRectF ZoomBtn;
+
+		/**
 		 * Die Größe des Compass Icons. Welche Abhängig von der Höhe des Info Panels ist.
 		 */
 		public static ChangedRectF Compass;
@@ -480,6 +486,8 @@ public class Sizes
 			Toggle.setPos(new Vector2((float) (SurfaceSize.getWidth() - margin - Toggle.getWidth()), (float) (SurfaceSize.getHeight()
 					- margin - Toggle.getHeight())));
 
+			ZoomBtn.setPos(new Vector2((float) (SurfaceSize.getWidth() - margin - ZoomBtn.getWidth()), margin));
+
 			InfoLine1.x = Compass.getCrossPos().x + margin;
 			TextBounds bounds = fontAB18.getBounds("52° 34,806N ");
 			InfoLine2.x = Info.getX() + Info.getWidth() - bounds.width - margin;
@@ -505,6 +513,7 @@ public class Sizes
 			Compass.setSize((float) (44.6666667 * DPI), (float) (44.6666667 * DPI));
 			halfCompass = Compass.getHeight() / 2;
 			Toggle.setSize(58 * DPI, 58 * DPI);
+			ZoomBtn.setSize((float) (158 * DPI), 48 * DPI);
 			PosMarkerSize = (float) (46.666667 * DPI);
 			halfPosMarkerSize = PosMarkerSize / 2;
 			UnderlaySizes = new SizeF[]
