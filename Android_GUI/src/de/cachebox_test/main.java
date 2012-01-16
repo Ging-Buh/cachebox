@@ -271,7 +271,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private ScreenLockTimer counter = null;
 	private boolean counterStopped = false;
 
-	private static Vibrator vibrator;
+	public static Vibrator vibrator;
 
 	/*
 	 * Classes
