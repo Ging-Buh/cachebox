@@ -186,13 +186,15 @@ public abstract class Database
 			if (lastDatabaseSchemeVersion < 1015)
 			{
 				// GpxFilenames mit Kategorien verknüpfen
-				// alte Category Tabelle löschen
-				delete("Category", "", null);
-				HashMap<Long, String> gpxFilenames = new HashMap<Long, String>();
-				HashMap<String, Long> categories = new HashMap<String, Long>();
-				beginTransaction();
+
 				try
 				{
+					beginTransaction();
+					// alte Category Tabelle löschen
+					delete("Category", "", null);
+					HashMap<Long, String> gpxFilenames = new HashMap<Long, String>();
+					HashMap<String, Long> categories = new HashMap<String, Long>();
+
 					CoreCursor reader = rawQuery("select ID, GPXFilename from GPXFilenames", null);
 					reader.moveToFirst();
 					while (reader.isAfterLast() == false)
@@ -229,6 +231,9 @@ public abstract class Database
 						}
 					}
 					Database.Data.setTransactionSuccessful();
+				}
+				catch (Exception exc)
+				{
 				}
 				finally
 				{
@@ -290,6 +295,7 @@ public abstract class Database
 					}
 					setTransactionSuccessful();
 					endTransaction();
+					reader.close();
 				}
 				catch (Exception exc)
 				{

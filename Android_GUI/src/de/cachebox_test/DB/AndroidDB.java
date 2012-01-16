@@ -28,15 +28,20 @@ public class AndroidDB extends Database
 	{
 		if (myDB == null)
 		{
-			if (!FileIO.FileExists(databasePath)) Reset();
-
-			try
+			if (!FileIO.FileExists(databasePath))
 			{
-				myDB = SQLiteDatabase.openDatabase(databasePath, null, SQLiteDatabase.OPEN_READWRITE);
+				Reset();
 			}
-			catch (Exception exc)
+			else
 			{
-				return;
+				try
+				{
+					myDB = SQLiteDatabase.openDatabase(databasePath, null, SQLiteDatabase.OPEN_READWRITE);
+				}
+				catch (Exception exc)
+				{
+					return;
+				}
 			}
 		}
 	}
@@ -50,7 +55,7 @@ public class AndroidDB extends Database
 
 		try
 		{
-			activity.openOrCreateDatabase(databasePath, Context.MODE_WORLD_WRITEABLE, null);
+			myDB = activity.openOrCreateDatabase(databasePath, Context.MODE_WORLD_WRITEABLE, null);
 			newDB = true;
 		}
 		catch (Exception exc)
