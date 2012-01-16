@@ -88,6 +88,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool switchViewApproach;
 	public SettingBool dontShowChris;
 	public SettingBool hasCallPermission;
+	public SettingBool vibrateFeedback;
 	// int
 	public SettingInt LogMaxMonthAge;
 	public SettingInt LogMinCount;
@@ -203,7 +204,7 @@ public class SettingsClass extends SettingsList
 		addSetting(ParkingLongitude = new SettingDouble("ParkingLongitude", SettingCategory.Gps, EXPERT, 0, true));
 		addSetting(MapViewDPIFaktor = new SettingDouble("MapViewDPIFaktor", SettingCategory.Map, EXPERT, GlobalCore.displayDensity, true));
 		addSetting(MapViewFontFaktor = new SettingDouble("MapViewFontFaktor", SettingCategory.Map, EXPERT, 1.0, true));
-
+		addSetting(vibrateFeedback = new SettingBool("vibrateFeedback", cat, NORMAL, true, true));
 	}
 
 	private void addTemplateSettings()

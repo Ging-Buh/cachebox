@@ -487,7 +487,7 @@ public class ActivityUtils
 			public void onClick(View arg0)
 			{
 				// give feedback
-				main.vibrator.vibrate(50);
+				main.vibrate();
 
 				int cursor = editText.getSelectionStart() - 1;
 				if (cursor >= 0) editText.setSelection(cursor, cursor);
@@ -501,7 +501,7 @@ public class ActivityUtils
 			public void onClick(View arg0)
 			{
 				// give feedback
-				main.vibrator.vibrate(50);
+				main.vibrate();
 
 				int cursor = editText.getSelectionStart() + 1;
 				if (cursor <= editText.getText().toString().length()) editText.setSelection(cursor, cursor);
@@ -524,7 +524,7 @@ public class ActivityUtils
 		public void onClick(View v)
 		{
 			// give feedback
-			main.vibrator.vibrate(50);
+			main.vibrate();
 
 			int cursor = editText.getSelectionStart();
 			int selLength = editText.getSelectionEnd() - editText.getSelectionStart();
@@ -553,7 +553,7 @@ public class ActivityUtils
 		public void onClick(View v)
 		{
 			// give feedback
-			main.vibrator.vibrate(50);
+			main.vibrate();
 
 			int cursor = editText.getSelectionStart();
 			int selLength = editText.getSelectionEnd() - editText.getSelectionStart();

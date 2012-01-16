@@ -68,7 +68,7 @@ public class MultiToggleButton extends Button implements OnClickListener
 		res = context.getResources();
 		setOnClickListener(this);
 		State.add(new States("off", Color.GRAY));
-		setState(0);
+		setState(0, true);
 	}
 
 	public MultiToggleButton(Context context, AttributeSet attrs, int defStyle)
@@ -151,17 +151,24 @@ public class MultiToggleButton extends Button implements OnClickListener
 		final Drawable finalLed = mLedDrawable;
 		if (finalLed != null)
 		{
-			Rect mRect = new Rect();
-			ledHeight = finalLed.getIntrinsicHeight();
-			ledWidth = finalLed.getIntrinsicWidth();
-			left = (width / 2) - (ledWidth / 2);
-			top = height - ledHeight;
-			PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(aktState.Color, android.graphics.PorterDuff.Mode.MULTIPLY);
-			mRect.set(left, top, ledWidth + left, ledHeight + top);
-			finalLed.setBounds(mRect);
+			try
+			{
+				Rect mRect = new Rect();
+				ledHeight = finalLed.getIntrinsicHeight();
+				ledWidth = finalLed.getIntrinsicWidth();
+				left = (width / 2) - (ledWidth / 2);
+				top = height - ledHeight;
+				PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(aktState.Color, android.graphics.PorterDuff.Mode.MULTIPLY);
+				mRect.set(left, top, ledWidth + left, ledHeight + top);
+				finalLed.setBounds(mRect);
 
-			finalLed.setColorFilter(colorFilter);
-			finalLed.draw(canvas);
+				finalLed.setColorFilter(colorFilter);
+				finalLed.draw(canvas);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		Rect tRec = new Rect();
@@ -190,6 +197,13 @@ public class MultiToggleButton extends Button implements OnClickListener
 
 	public void setState(int ID)
 	{
+		setState(ID, false);
+	}
+
+	public void setState(int ID, boolean force)
+	{
+		if (StateId == ID && !force) return;
+
 		StateId = ID;
 		if (StateId > State.size() - 1) StateId = 0;
 		aktState = State.get(StateId);
@@ -211,7 +225,7 @@ public class MultiToggleButton extends Button implements OnClickListener
 	public void onClick(View arg0)
 	{
 		StateId++;
-		setState(StateId);
+		setState(StateId, true);
 	}
 
 	public void onClick()

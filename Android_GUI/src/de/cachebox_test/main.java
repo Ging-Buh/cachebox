@@ -271,7 +271,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private ScreenLockTimer counter = null;
 	private boolean counterStopped = false;
 
-	public static Vibrator vibrator;
+	private static Vibrator vibrator;
 
 	/*
 	 * Classes
@@ -335,12 +335,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Logger.Error("main.onCreate()", "setContentView", exc);
 		}
 
-		mapViewGlListener = new MapViewGlListener();
-
 		inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mainActivity = this;
 		AllContextMenuCallHandler.Main = this;
 		mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+		mapViewGlListener = new MapViewGlListener();
 
 		// initial UiSizes
 		Sizes.initial(false, this);
@@ -1835,13 +1835,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	};
 
+	public static void vibrate()
+	{
+		if (Config.settings.vibrateFeedback.getValue()) vibrator.vibrate(20);
+	}
+
 	OnItemClickListener QuickButtonOnItemClickListner = new OnItemClickListener()
 	{
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 		{
 
 			// give feedback
-			vibrator.vibrate(50);
+			vibrate();
 
 			QuickButtonItem clicedItem = Global.QuickButtonList.get(arg2);
 

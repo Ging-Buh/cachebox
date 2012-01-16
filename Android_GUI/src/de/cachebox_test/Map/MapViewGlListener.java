@@ -21,6 +21,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -130,6 +131,15 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		// initial Zoom Buttons
 		zoomBtn = new GL_ZoomBtn(6, 20, 13);
 
+		// initial Toggle Button
+		btnTrackPos = new MultiToggleButton();
+		btnTrackPos.clearStates();
+		btnTrackPos.addState("Free", Color.GRAY);
+		btnTrackPos.addState("GPS", Color.GREEN);
+		btnTrackPos.addState("Lock", Color.RED);
+		btnTrackPos.addState("Car", Color.YELLOW);
+		btnTrackPos.setState(0, true);
+
 		mapCacheList = new MapCacheList(zoomBtn.getMaxZoom());
 
 	}
@@ -173,7 +183,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		btnTrackPos.addState("GPS", Color.GREEN);
 		btnTrackPos.addState("Lock", Color.RED);
 		btnTrackPos.addState("Car", Color.YELLOW);
-		btnTrackPos.setState(0);
+		btnTrackPos.setState(0, true);
 
 		Sizes.GL.initial();
 
@@ -989,7 +999,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 		public boolean touchDown(int x, int y, int pointer)
 		{
-			// Log.d("CACHEBOX", "touchDown pointer" + pointer);
+			Log.d("CACHEBOX", "touchDown pointer" + pointer);
 
 			flinging = false;
 			initialScale = camera.zoom;
@@ -1006,7 +1016,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		public boolean tap(int x, int y, int count)
 		{
 			TouchUp();
-			// Log.d("CACHEBOX", "Tab count" + count);
+			Log.d("CACHEBOX", "Tab count" + count);
 
 			double minDist = Double.MAX_VALUE;
 			WaypointRenderInfo minWpi = null;
@@ -1015,7 +1025,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			// check ToggleBtn clicked
 			if (btnTrackPos.hitTest(clickedAt))
 			{
-				main.vibrator.vibrate(50);
+				main.vibrate();
 				stateChanged();
 				forceRender();
 				return true;
@@ -1024,7 +1034,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			// check Zoom Button clicked
 			if (zoomBtn.hitTest(clickedAt))
 			{
-				main.vibrator.vibrate(50);
+				main.vibrate();
 				camera.zoom = getMapTilePosFactor(zoomBtn.getZoom());
 				forceRender();
 				return true;
@@ -1208,7 +1218,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		public boolean fling(float velocityX, float velocityY)
 		{
 			TouchUp();
-			// Log.d("CACHEBOX", "velocity " + velocityX);
+			Log.d("CACHEBOX", "velocity " + velocityX);
 
 			if (btnTrackPos.getState() > 1) return false;
 
@@ -1227,8 +1237,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		{
 			TouchUp();
 			// Ohne verschiebung brauch auch keine neue Pos berechnet werden!
-			if (deltaX < 5 && deltaY < 5) return false;
-			// Log.d("CACHEBOX", "pan " + deltaX);
+			if (deltaX == 0 && deltaY == 0) return false;
+			Log.d("CACHEBOX", "pan " + deltaX);
 
 			if (btnTrackPos.getState() > 1) return false;
 
@@ -1255,7 +1265,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		@Override
 		public boolean zoom(float originalDistance, float currentDistance)
 		{
-			// Log.d("CACHEBOX", "pan " + originalDistance);
+			Log.d("CACHEBOX", "zoom " + originalDistance);
 			float ratio = originalDistance / currentDistance;
 			camera.zoom = initialScale * ratio;
 			System.out.println(camera.zoom);
