@@ -108,12 +108,13 @@ public abstract class Database
 		switch (databaseType)
 		{
 		case CacheBox:
-			if (lastDatabaseSchemeVersion <= 0)
+
+			beginTransaction();
+			try
 			{
-				// First Initialization of the Database
-				try
+				if (lastDatabaseSchemeVersion <= 0)
 				{
-					// Saarfuchs: SQL-Befehle aus create_SQLite.sql eingefügt
+					// First Initialization of the Database
 					execSQL("CREATE TABLE [Caches] ([Id] bigint NOT NULL primary key,[GcCode] nvarchar (12) NULL,[GcId] nvarchar (255) NULL,[Latitude] float NULL,[Longitude] float NULL,[Name] nchar (255) NULL,[Size] int NULL,[Difficulty] smallint NULL,[Terrain] smallint NULL,[Archived] bit NULL,[Available] bit NULL,[Found] bit NULL,[Type] smallint NULL,[PlacedBy] nvarchar (255) NULL,[Owner] nvarchar (255) NULL,[DateHidden] datetime NULL,[Hint] ntext NULL,[Description] ntext NULL,[Url] nchar (255) NULL,[NumTravelbugs] smallint NULL,[Rating] smallint NULL,[Vote] smallint NULL,[VotePending] bit NULL,[Notes] ntext NULL,[Solver] ntext NULL,[Favorit] bit NULL,[AttributesPositive] bigint NULL,[AttributesNegative] bigint NULL,[TourName] nchar (255) NULL,[GPXFilename_Id] bigint NULL,[HasUserData] bit NULL,[ListingCheckSum] int NULL DEFAULT 0,[ListingChanged] bit NULL,[ImagesUpdated] bit NULL,[DescriptionImagesUpdated] bit NULL,[CorrectedCoordinates] bit NULL);");
 					execSQL("CREATE INDEX [archived_idx] ON [Caches] ([Archived] ASC);");
 					execSQL("CREATE INDEX [AttributesNegative_idx] ON [Caches] ([AttributesNegative] ASC);");
@@ -151,16 +152,9 @@ public abstract class Database
 					execSQL("CREATE TABLE [Replication] ([Id] integer not null primary key autoincrement, [ChangeType] int NOT NULL, [CacheId] bigint NOT NULL, [WpGcCode] nvarchar (12) NULL, [SolverCheckSum] int NULL, [NotesCheckSum] int NULL, [WpCoordCheckSum] int NULL);");
 					execSQL("CREATE INDEX [Replication_idx] ON [Replication] ([Id] ASC);");
 					execSQL("CREATE INDEX [ReplicationCache_idx] ON [Replication] ([CacheId] ASC);");
+				}
 
-				}
-				catch (Exception exc)
-				{
-					Logger.Error("AlterDatabase_0", "", exc);
-				}
-			}
-			if (lastDatabaseSchemeVersion < 1003)
-			{
-				try
+				if (lastDatabaseSchemeVersion < 1003)
 				{
 					execSQL("CREATE TABLE [Locations] ([Id] integer not null primary key autoincrement, [Name] nvarchar (255) NULL, [Latitude] float NULL, [Longitude] float NULL);");
 					execSQL("CREATE INDEX [Locatioins_idx] ON [Locations] ([Id] ASC);");
@@ -178,18 +172,10 @@ public abstract class Database
 					execSQL("ALTER TABLE [Caches] add [state] nvarchar(50) NULL;");
 					execSQL("ALTER TABLE [Caches] add [country] nvarchar(50) NULL;");
 				}
-				catch (Exception exc)
+				if (lastDatabaseSchemeVersion < 1015)
 				{
-					Logger.Error("AlterDatabase_0", "", exc);
-				}
-			}
-			if (lastDatabaseSchemeVersion < 1015)
-			{
-				// GpxFilenames mit Kategorien verknüpfen
+					// GpxFilenames mit Kategorien verknüpfen
 
-				try
-				{
-					beginTransaction();
 					// alte Category Tabelle löschen
 					delete("Category", "", null);
 					HashMap<Long, String> gpxFilenames = new HashMap<Long, String>();
@@ -230,42 +216,26 @@ public abstract class Database
 							}
 						}
 					}
-					Database.Data.setTransactionSuccessful();
+
 				}
-				catch (Exception exc)
+				if (lastDatabaseSchemeVersion < 1016)
 				{
+					execSQL("ALTER TABLE [CACHES] ADD [ApiStatus] smallint NULL default 0;");
 				}
-				finally
+				if (lastDatabaseSchemeVersion < 1017)
 				{
-					Database.Data.endTransaction();
+					execSQL("CREATE TABLE [Trackable] ([Id] integer not null primary key autoincrement, [Archived] bit NULL, [GcCode] nvarchar (12) NULL, [CacheId] bigint NULL, [CurrentGoal] ntext, [CurrentOwnerName] nvarchar (255) NULL, [DateCreated] datetime NULL, [Description] ntext, [IconUrl] nvarchar (255) NULL, [ImageUrl] nvarchar (255) NULL, [name] nvarchar (255) NULL, [OwnerName] nvarchar (255), [Url] nvarchar (255) NULL);");
+					execSQL("CREATE INDEX [cacheid_idx] ON [Trackable] ([CacheId] ASC);");
+					execSQL("CREATE TABLE [TbLogs] ([Id] integer not null primary key autoincrement, [TrackableId] integer not NULL, [CacheID] bigint NULL, [GcCode] nvarchar (12) NULL, [LogIsEncoded] bit NULL DEFAULT 0, [LogText] ntext, [LogTypeId] bigint NULL, [LoggedByName] nvarchar (255) NULL, [Visited] datetime NULL);");
+					execSQL("CREATE INDEX [trackableid_idx] ON [TbLogs] ([TrackableId] ASC);");
+					execSQL("CREATE INDEX [trackablecacheid_idx] ON [TBLOGS] ([CacheId] ASC);");
 				}
-			}
-			if (lastDatabaseSchemeVersion < 1016)
-			{
-				execSQL("ALTER TABLE [CACHES] ADD [ApiStatus] smallint NULL default 0;");
-			}
-			if (lastDatabaseSchemeVersion < 1017)
-			{
-				execSQL("CREATE TABLE [Trackable] ([Id] integer not null primary key autoincrement, [Archived] bit NULL, [GcCode] nvarchar (12) NULL, [CacheId] bigint NULL, [CurrentGoal] ntext, [CurrentOwnerName] nvarchar (255) NULL, [DateCreated] datetime NULL, [Description] ntext, [IconUrl] nvarchar (255) NULL, [ImageUrl] nvarchar (255) NULL, [name] nvarchar (255) NULL, [OwnerName] nvarchar (255), [Url] nvarchar (255) NULL);");
-				execSQL("CREATE INDEX [cacheid_idx] ON [Trackable] ([CacheId] ASC);");
-				execSQL("CREATE TABLE [TbLogs] ([Id] integer not null primary key autoincrement, [TrackableId] integer not NULL, [CacheID] bigint NULL, [GcCode] nvarchar (12) NULL, [LogIsEncoded] bit NULL DEFAULT 0, [LogText] ntext, [LogTypeId] bigint NULL, [LoggedByName] nvarchar (255) NULL, [Visited] datetime NULL);");
-				execSQL("CREATE INDEX [trackableid_idx] ON [TbLogs] ([TrackableId] ASC);");
-				execSQL("CREATE INDEX [trackablecacheid_idx] ON [TBLOGS] ([CacheId] ASC);");
-			}
-			if (lastDatabaseSchemeVersion < 1018)
-			{
-				try
+				if (lastDatabaseSchemeVersion < 1018)
 				{
 					execSQL("ALTER TABLE [SdfExport] ADD [MapPacks] nvarchar(512) NULL;");
-				}
-				catch (Exception exc)
-				{
-				}
 
-			}
-			if (lastDatabaseSchemeVersion < 1019)
-			{
-				try
+				}
+				if (lastDatabaseSchemeVersion < 1019)
 				{
 					// neue Felder für die erweiterten Attribute einfügen
 					execSQL("ALTER TABLE [CACHES] ADD [AttributesPositiveHigh] bigint NULL default 0");
@@ -276,7 +246,6 @@ public abstract class Database
 					// Nummber übersprungen
 					CoreCursor reader = rawQuery("select Id, AttributesPositive, AttributesNegative from Caches", new String[] {});
 					reader.moveToFirst();
-					beginTransaction();
 					while (reader.isAfterLast() == false)
 					{
 						long id = reader.getLong(0);
@@ -293,52 +262,45 @@ public abstract class Database
 						update("Caches", val, whereClause, null);
 						reader.moveToNext();
 					}
-					setTransactionSuccessful();
-					endTransaction();
 					reader.close();
-				}
-				catch (Exception exc)
-				{
-				}
 
-			}
-			if (lastDatabaseSchemeVersion < 1020)
-			{
-				// for long Settings
-				try
+				}
+				if (lastDatabaseSchemeVersion < 1020)
 				{
+					// for long Settings
 					execSQL("ALTER TABLE [Config] ADD [LongString] ntext NULL;");
-				}
-				catch (Exception ex)
-				{
 
 				}
-
-			}
-			if (lastDatabaseSchemeVersion < 1021)
-			{
-				// Image Table
-				try
+				if (lastDatabaseSchemeVersion < 1021)
 				{
+					// Image Table
 					execSQL("CREATE TABLE [Images] ([Id] integer not null primary key autoincrement, [CacheId] bigint NULL, [GcCode] nvarchar (12) NULL, [Description] ntext, [Name] nvarchar (255) NULL, [ImageUrl] nvarchar (255) NULL, [IsCacheImage] bit NULL);");
 					execSQL("CREATE INDEX [images_cacheid_idx] ON [Images] ([CacheId] ASC);");
 					execSQL("CREATE INDEX [images_gccode_idx] ON [Images] ([GcCode] ASC);");
 					execSQL("CREATE INDEX [images_iscacheimage_idx] ON [Images] ([IsCacheImage] ASC);");
 					execSQL("CREATE UNIQUE INDEX [images_imageurl_idx] ON [Images] ([ImageUrl] ASC);");
 				}
-				catch (Exception ex)
-				{
 
-				}
-
+				setTransactionSuccessful();
 			}
+			catch (Exception exc)
+			{
+				Logger.Error("AlterDatabase", "", exc);
+			}
+			finally
+			{
+				endTransaction();
+			}
+
 			break;
 		case FieldNotes:
-			if (lastDatabaseSchemeVersion <= 0)
+			beginTransaction();
+			try
 			{
-				// First Initialization of the Database
-				try
+
+				if (lastDatabaseSchemeVersion <= 0)
 				{
+					// First Initialization of the Database
 					// FieldNotes Table
 					execSQL("CREATE TABLE [FieldNotes] ([Id] integer not null primary key autoincrement, [CacheId] bigint NULL, [GcCode] nvarchar (12) NULL, [GcId] nvarchar (255) NULL, [Name] nchar (255) NULL, [CacheType] smallint NULL, [Url] nchar (255) NULL, [Timestamp] datetime NULL, [Type] smallint NULL, [FoundNumber] int NULL, [Comment] ntext NULL);");
 
@@ -346,37 +308,41 @@ public abstract class Database
 					execSQL("CREATE TABLE [Config] ([Key] nvarchar (30) NOT NULL, [Value] nvarchar (255) NULL);");
 					execSQL("CREATE INDEX [Key_idx] ON [Config] ([Key] ASC);");
 				}
-				catch (Exception exc)
-				{
-					exc.getMessage();
-				}
+				setTransactionSuccessful();
+			}
+			catch (Exception exc)
+			{
+				Logger.Error("AlterDatabase", "", exc);
+			}
+			finally
+			{
+				endTransaction();
 			}
 			break;
 		case Settings:
-			if (lastDatabaseSchemeVersion <= 0)
+			beginTransaction();
+			try
 			{
-				// First Initialization of the Database
-				try
+				if (lastDatabaseSchemeVersion <= 0)
 				{
+					// First Initialization of the Database
 					execSQL("CREATE TABLE [Config] ([Key] nvarchar (30) NOT NULL, [Value] nvarchar (255) NULL);");
 					execSQL("CREATE INDEX [Key_idx] ON [Config] ([Key] ASC);");
 				}
-				catch (Exception exc)
+				if (lastDatabaseSchemeVersion <= 1002)
 				{
-					exc.getMessage();
-				}
-			}
-			if (lastDatabaseSchemeVersion <= 1002)
-			{
-				// Long Text Field for long Strings
-				try
-				{
+					// Long Text Field for long Strings
 					execSQL("ALTER TABLE [Config] ADD [LongString] ntext NULL;");
 				}
-				catch (Exception exc)
-				{
-					exc.getMessage();
-				}
+				setTransactionSuccessful();
+			}
+			catch (Exception exc)
+			{
+				Logger.Error("AlterDatabase", "", exc);
+			}
+			finally
+			{
+				endTransaction();
 			}
 			break;
 		}
