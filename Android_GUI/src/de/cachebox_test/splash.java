@@ -157,7 +157,7 @@ public class splash extends Activity
 
 		LoadImages();
 
-		TimerTask task = new TimerTask()
+		Thread thread = new Thread()
 		{
 			@Override
 			public void run()
@@ -166,8 +166,7 @@ public class splash extends Activity
 			}
 		};
 
-		Timer timer = new Timer();
-		timer.schedule(task, 1000);
+		thread.start();
 
 	}
 
