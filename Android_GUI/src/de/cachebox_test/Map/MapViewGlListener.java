@@ -21,7 +21,6 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -999,7 +998,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 		public boolean touchDown(int x, int y, int pointer)
 		{
-			Log.d("CACHEBOX", "touchDown pointer" + pointer);
+			// Log.d("CACHEBOX", "touchDown pointer" + pointer);
 
 			flinging = false;
 			initialScale = camera.zoom;
@@ -1016,7 +1015,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		public boolean tap(int x, int y, int count)
 		{
 			TouchUp();
-			Log.d("CACHEBOX", "Tab count" + count);
+			// Log.d("CACHEBOX", "Tab count" + count);
 
 			double minDist = Double.MAX_VALUE;
 			WaypointRenderInfo minWpi = null;
@@ -1218,7 +1217,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		public boolean fling(float velocityX, float velocityY)
 		{
 			TouchUp();
-			Log.d("CACHEBOX", "velocity " + velocityX);
+			// Log.d("CACHEBOX", "velocity " + velocityX);
 
 			if (btnTrackPos.getState() > 1) return false;
 
@@ -1238,7 +1237,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			TouchUp();
 			// Ohne verschiebung brauch auch keine neue Pos berechnet werden!
 			if (deltaX == 0 && deltaY == 0) return false;
-			Log.d("CACHEBOX", "pan " + deltaX);
+			// Log.d("CACHEBOX", "pan " + deltaX);
 
 			if (btnTrackPos.getState() > 1) return false;
 
@@ -1265,7 +1264,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		@Override
 		public boolean zoom(float originalDistance, float currentDistance)
 		{
-			Log.d("CACHEBOX", "zoom " + originalDistance);
+			// Log.d("CACHEBOX", "zoom " + originalDistance);
 			float ratio = originalDistance / currentDistance;
 			camera.zoom = initialScale * ratio;
 			System.out.println(camera.zoom);

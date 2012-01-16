@@ -15,6 +15,8 @@
  */
 package de.cachebox_test.Custom_Controls;
 
+import java.util.Date;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -37,6 +39,13 @@ public class GL_ZoomBtn
 	private ChangedRectF HitRecDown;
 	private ChangedRectF BtnDrawRec;
 	private ChangedRectF ScaleDrawRec;
+	private boolean isVisible = true;
+	private Date timeLastAction = new Date();
+	private final int timeToFadeOut = 7000; // 7Sec
+	private final int fadeStep = 50; // 100 mSec
+	private boolean fadeOut = false;
+	private boolean fadeIn = false;
+	private float FadeValue = 1.0f;
 
 	private boolean onTouchUp = false;
 	private boolean onTouchDown = false;
@@ -70,7 +79,7 @@ public class GL_ZoomBtn
 			{
 				if (HitRecUp.contains(pos.x, pos.y))
 				{
-					ZoomAdd(1);
+					if (FadeValue > 0.4f) ZoomAdd(1);
 					return true;
 				}
 			}
@@ -82,7 +91,7 @@ public class GL_ZoomBtn
 			{
 				if (HitRecDown.contains(pos.x, pos.y))
 				{
-					ZoomAdd(-1);
+					if (FadeValue > 0.4f) ZoomAdd(-1);
 					return true;
 				}
 			}
@@ -97,6 +106,7 @@ public class GL_ZoomBtn
 			if (HitRecUp.contains(pos.x, pos.y))
 			{
 				onTouchUp = true;
+				resetFadeOut();
 				return true;
 			}
 		}
@@ -105,6 +115,7 @@ public class GL_ZoomBtn
 			if (HitRecDown.contains(pos.x, pos.y))
 			{
 				onTouchDown = true;
+				resetFadeOut();
 				return true;
 			}
 		}
@@ -120,6 +131,10 @@ public class GL_ZoomBtn
 		HitRecDown.setWidth(rect.getWidth() / 2);
 		HitRecUp.setPos(new Vector2(rect.getX() + HitRecDown.getWidth(), rect.getY()));
 
+		if (!isVisible) return;
+		// Log.d("CACHEBOX", "in=" + fadeIn + " out=" + fadeOut + " Fade=" + FadeValue);
+		checkFade();
+
 		// draw down button
 		Sprite btnDown;
 		if (zoom == minzoom)
@@ -131,7 +146,7 @@ public class GL_ZoomBtn
 			btnDown = SpriteCache.ZoomBtn.get(onTouchDown ? 1 : 0);
 		}
 		btnDown.setBounds(HitRecDown.getX(), HitRecDown.getY(), HitRecDown.getWidth(), HitRecDown.getHeight());
-		btnDown.draw(batch);
+		btnDown.draw(batch, FadeValue);
 
 		// draw up button
 		Sprite btnUp;
@@ -144,7 +159,7 @@ public class GL_ZoomBtn
 			btnUp = SpriteCache.ZoomBtn.get(onTouchUp ? 4 : 3);
 		}
 		btnUp.setBounds(HitRecUp.getX(), HitRecUp.getY(), HitRecUp.getWidth(), HitRecUp.getHeight());
-		btnUp.draw(batch);
+		btnUp.draw(batch, FadeValue);
 	}
 
 	public void TouchRelease()
@@ -160,7 +175,7 @@ public class GL_ZoomBtn
 		if (zoom > maxzoom) zoom = maxzoom;
 		if (zoom < minzoom) zoom = minzoom;
 
-		// Log.d("CACHEBOX", "ZoomAdd" + zoom);
+		// //Log.d("CACHEBOX", "ZoomAdd" + zoom);
 	}
 
 	public void setZoom(int value)
@@ -217,6 +232,79 @@ public class GL_ZoomBtn
 	public int getMinZoom()
 	{
 		return minzoom;
+	}
+
+	/**
+	 * Irgend eine Taste gedrückt, also FadeOut zurück setzen
+	 */
+	private void resetFadeOut()
+	{
+		// Log.d("CACHEBOX", "Reset Fade Out");
+		if (fadeIn && !fadeOut)
+		{
+			fadeIn = false;
+			FadeValue = 1.0f;
+		}
+		else if (!isVisible)
+		{
+			// Log.d("CACHEBOX", "Start Fade In");
+			isVisible = true;
+			fadeIn = true;
+			FadeValue = 0f;
+		}
+		if (fadeOut)
+		{
+			fadeOut = false;
+			FadeValue = 1.0f;
+		}
+
+		timeLastAction = new Date();
+	}
+
+	private void checkFade()
+	{
+		if (!fadeOut && !fadeIn && isVisible)
+		{
+			Date now = new Date();
+			if (now.getTime() - timeLastAction.getTime() > timeToFadeOut)
+			{
+				// Log.d("CACHEBOX", "Start Fade Out");
+				// Zeit abgelaufen start Fade Out
+				fadeOut = true;
+				timeLastAction = new Date();
+			}
+		}
+		else if (fadeOut)
+		{
+			Date now = new Date();
+			if (now.getTime() - timeLastAction.getTime() > fadeStep)
+			{
+				FadeValue -= 0.05f;
+				if (FadeValue <= 0f)
+				{
+					// Log.d("CACHEBOX", "Ende Fade Out");
+					FadeValue = 0f;
+					fadeOut = false;
+					isVisible = false;
+				}
+				timeLastAction = new Date();
+			}
+		}
+		else if (fadeIn)
+		{
+			Date now = new Date();
+			if (now.getTime() - timeLastAction.getTime() > fadeStep)
+			{
+				FadeValue += 0.1f;
+				if (FadeValue >= 1f)
+				{
+					// Log.d("CACHEBOX", "Ende Fade In");
+					FadeValue = 1f;
+					fadeIn = false;
+				}
+				timeLastAction = new Date();
+			}
+		}
 	}
 
 }

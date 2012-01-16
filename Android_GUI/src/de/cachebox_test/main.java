@@ -2460,24 +2460,58 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			PackageManager currentPM = getPackageManager();
 
-			Intent intent = currentPM.getLaunchIntentForPackage("com.navigon.navigator");
+			Intent intent = null;
+			try
+			{
+				intent = currentPM.getLaunchIntentForPackage("com.navigon.navigator");
+			}
+			catch (Exception e)
+			{
+				// Kein Navigon ohne public intent Instaliert
+				e.printStackTrace();
+			}
 
 			if (intent == null)
 			{
-				intent = new Intent("android.intent.action.navigon.START_PUBLIC");
+				try
+				{
+					intent = new Intent("android.intent.action.navigon.START_PUBLIC");
+				}
+				catch (Exception e)
+				{
+					// Kein Navigon mit public intent Instaliert
+					e.printStackTrace();
+				}
 			}
 
-			Intent implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + lat + "," + lon));
-
-			if (intent != null)
+			Intent implicitIntent = null;
+			try
 			{
-				intent.putExtra(INTENT_EXTRA_KEY_LATITUDE, (float) lat);
-				intent.putExtra(INTENT_EXTRA_KEY_LONGITUDE, (float) lon);
-				startActivity(intent);
+				implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + lat + "," + lon));
 			}
-			else if (implicitIntent != null)
+			catch (Exception e)
 			{
-				startActivity(implicitIntent);
+				// Kein Google Navigator mit public intent Instaliert
+				e.printStackTrace();
+			}
+
+			try
+			{
+				if (intent != null)
+				{
+					intent.putExtra(INTENT_EXTRA_KEY_LATITUDE, (float) lat);
+					intent.putExtra(INTENT_EXTRA_KEY_LONGITUDE, (float) lon);
+					startActivity(intent);
+				}
+				else if (implicitIntent != null)
+				{
+					startActivity(implicitIntent);
+				}
+			}
+			catch (Exception e)
+			{
+				// Start Extern Navigation Fehler
+				Logger.Error("main.NavigateTo()", "Start Extern Navigation Fehler", e);
 			}
 
 		}

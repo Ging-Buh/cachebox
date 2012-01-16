@@ -66,6 +66,6 @@
 		<activity android:name=".Views.AdvancedSettingsForms.SettingsScrollView"></activity>
 		<activity android:theme="@style/Theme_day" android:name=".Views.AdvancedSettingsForms.SettingsListEditQuickButton"></activity>
 		<activity android:name=".Views.Forms.DeleteDialog" android:theme="@style/Theme_day_transparent"></activity><activity android:theme="@style/Theme_day_transparent" android:name=".Views.Forms.ParkingDialog"></activity>
-
+ 
 	</application>
 </manifest>
