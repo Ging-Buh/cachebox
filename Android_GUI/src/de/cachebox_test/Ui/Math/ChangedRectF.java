@@ -204,4 +204,18 @@ public class ChangedRectF
 		return new ChangedRectF(this.Pos.x, this.Pos.y, width, height);
 	}
 
+	public void setY(float i)
+	{
+		if (this.Pos.y == i) return;
+		this.Pos.y = i;
+		calcCrossCorner();
+	}
+
+	public void setX(float i)
+	{
+		if (this.Pos.x == i) return;
+		this.Pos.x = i;
+		calcCrossCorner();
+	}
+
 }

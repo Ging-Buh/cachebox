@@ -271,7 +271,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private ScreenLockTimer counter = null;
 	private boolean counterStopped = false;
 
-	public static Vibrator vibrator;
+	/**
+	 * For Use the Vibrator, Call vibrate(); So the User can switch of this in Settings
+	 */
+	private static Vibrator vibrator;
 
 	/*
 	 * Classes
@@ -2502,13 +2505,22 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			try
 			{
+				boolean NAVIGON_is_Start = true;
 				if (intent != null)
 				{
-					intent.putExtra(INTENT_EXTRA_KEY_LATITUDE, (float) lat);
-					intent.putExtra(INTENT_EXTRA_KEY_LONGITUDE, (float) lon);
-					startActivity(intent);
+					try
+					{
+						intent.putExtra(INTENT_EXTRA_KEY_LATITUDE, (float) lat);
+						intent.putExtra(INTENT_EXTRA_KEY_LONGITUDE, (float) lon);
+						startActivity(intent);
+					}
+					catch (Exception e)
+					{
+						NAVIGON_is_Start = false;
+					}
 				}
-				else if (implicitIntent != null)
+
+				if (implicitIntent != null && !NAVIGON_is_Start)
 				{
 					startActivity(implicitIntent);
 				}

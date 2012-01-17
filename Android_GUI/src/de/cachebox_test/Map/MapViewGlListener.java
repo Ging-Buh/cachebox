@@ -21,6 +21,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -41,6 +42,7 @@ import de.cachebox_test.UnitFormatter;
 import de.cachebox_test.main;
 import de.cachebox_test.Components.CacheDraw;
 import de.cachebox_test.Custom_Controls.GL_ZoomBtn;
+import de.cachebox_test.Custom_Controls.GL_ZoomScale;
 import de.cachebox_test.Custom_Controls.MultiToggleButton;
 import de.cachebox_test.Events.PositionEvent;
 import de.cachebox_test.Events.PositionEventList;
@@ -67,6 +69,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	private int zoomCross = 16;
 	private MultiToggleButton btnTrackPos;
 	private GL_ZoomBtn zoomBtn;
+	private GL_ZoomScale zoomScale;
 
 	// Settings values
 	public boolean showRating;
@@ -134,6 +137,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		// initial Zoom Buttons
 		zoomBtn = new GL_ZoomBtn(6, 20, 13);
 
+		// initial Zoom Scale
+		zoomScale = new GL_ZoomScale(6, 20, 13);
+
 		mapCacheList = new MapCacheList(zoomBtn.getMaxZoom());
 
 	}
@@ -180,7 +186,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		btnTrackPos.addState("GPS", Color.GREEN);
 		btnTrackPos.addState("Lock", Color.RED);
 		btnTrackPos.addState("Car", Color.YELLOW);
-		btnTrackPos.setState(0);
+		btnTrackPos.setState(0, true);
 
 		Sizes.GL.initial();
 
@@ -331,13 +337,32 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		if (camera.zoom != endCameraZoom)
 		{
 			// Zoom Animation
+			boolean positive = false;
+			float newValue;
 			if (camera.zoom < endCameraZoom)
 			{
-				camera.zoom = camera.zoom + diffCameraZoom;
+				positive = true;
+				newValue = camera.zoom + diffCameraZoom;
+				if (newValue > endCameraZoom)// endCameraZoom erreicht?
+				{
+					camera.zoom = endCameraZoom;
+				}
+				else
+				{
+					camera.zoom = newValue;
+				}
 			}
 			if (camera.zoom > endCameraZoom)
 			{
-				camera.zoom = camera.zoom - diffCameraZoom;
+				newValue = camera.zoom - diffCameraZoom;
+				if (newValue < endCameraZoom)// endCameraZoom erreicht?
+				{
+					camera.zoom = endCameraZoom;
+				}
+				else
+				{
+					camera.zoom = newValue;
+				}
 			}
 			int zoom = zoomBtn.getMaxZoom();
 			float tmpZoom = camera.zoom;
@@ -349,6 +374,16 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 				zoom--;
 			}
 			aktZoom = zoom;
+			Log.d("CACHEBOX", "aktZoom=" + aktZoom + " |tmpZoom=" + tmpZoom * 2);
+			if (!positive)
+			{
+				zoomScale.setDiffCameraZoom(aktZoom + (tmpZoom * 2));
+			}
+			else
+			{
+				zoomScale.setDiffCameraZoom(aktZoom - (2 - (tmpZoom * 2)));
+			}
+
 		}
 
 		if (SpriteCache.MapIcons == null)
@@ -379,6 +414,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		// }
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 		controller.update();
 
 		if (alignToCompass)
@@ -453,8 +489,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		btnTrackPos.Render(batch, Sizes.GL.Toggle, Sizes.GL.fontAB22);
 
 		zoomBtn.Render(batch, Sizes.GL.ZoomBtn);
+		zoomScale.Render(batch, Sizes.GL.ZoomScale);
 
-		renderDebugInfo();
+		// renderDebugInfo();
 		batch.end();
 	}
 
@@ -1045,7 +1082,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			// check ToggleBtn clicked
 			if (btnTrackPos.hitTest(clickedAt))
 			{
-				main.vibrator.vibrate(50);
+				main.vibrate();
 				stateChanged();
 				forceRender();
 				return true;
@@ -1054,14 +1091,17 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			// check Zoom Button clicked
 			if (zoomBtn.hitTest(clickedAt))
 			{
-				main.vibrator.vibrate(50);
+				main.vibrate();
 				// start Zoom für die Animation des camera.zoom
 				startCameraZoom = camera.zoom;
 				// dieser Zoom Faktor soll angestrebt werden
 				endCameraZoom = getMapTilePosFactor(zoomBtn.getZoom());
 				// Zoom Geschwindigkeit
-				diffCameraZoom = Math.abs(endCameraZoom - startCameraZoom) / 50;
+				diffCameraZoom = Math.abs(endCameraZoom - startCameraZoom) / 20;
 				// camera.zoom = getMapTilePosFactor(aktZoom);
+				zoomScale.setZoom(zoomBtn.getZoom());
+				zoomScale.resetFadeOut();
+
 				forceRender();
 				return true;
 			}
@@ -1258,7 +1298,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		{
 			TouchUp();
 			// Ohne verschiebung brauch auch keine neue Pos berechnet werden!
-			if (deltaX < 5 && deltaY < 5) return false;
+			if (deltaX == 0 && deltaY == 0) return false;
 			// Log.d("CACHEBOX", "pan " + deltaX);
 
 			if (btnTrackPos.getState() > 1) return false;
@@ -1301,6 +1341,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 				zoom--;
 			}
 			zoomBtn.setZoom(zoom);
+			zoomScale.resetFadeOut();
+
 			return false;
 		}
 
