@@ -304,8 +304,10 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			downloadThread.start();
 		}
 
-		cache.ReloadSpoilerRessources();
-
+		if (cache != null)
+		{
+			cache.ReloadSpoilerRessources();
+		}
 	}
 
 	final Handler downloadReadyHandler = new Handler();
