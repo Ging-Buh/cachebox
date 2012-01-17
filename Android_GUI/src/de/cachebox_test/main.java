@@ -307,7 +307,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		if (!Config.settings.AllowLandscape.getValue())
+
+		if (Config.settings == null)
+		{
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		}
+		else if (!Config.settings.AllowLandscape.getValue())
 		{
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
