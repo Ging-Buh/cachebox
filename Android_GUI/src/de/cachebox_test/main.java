@@ -799,7 +799,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// only when showing Map or cacheList
 			if (!GlobalCore.ResortAtWork)
 			{
-				if (Global.autoResort && ((aktView == mapView) || (aktView == cacheListView)))
+				if (Global.autoResort && ((aktView == mapView) || (aktView == cacheListView || aktView == mapViewGl)))
 				{
 					int z = 0;
 					if (!(GlobalCore.NearestCache() == null))
@@ -1376,13 +1376,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF))
 			{
 				// do whatever you need to do here
-				Energy.setDontRender();
+				Energy.setDisplayOff();
 				wasScreenOn = false;
 			}
 			else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON))
 			{
 				// and do whatever you need to do here
-				Energy.resetDontRender();
+				Energy.setDisplayOn();
 				wasScreenOn = true;
 			}
 		}

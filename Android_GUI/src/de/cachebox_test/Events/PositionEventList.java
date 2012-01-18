@@ -54,7 +54,7 @@ public class PositionEventList
 		/**
 		 * if display is switched off, so we need no heading changes
 		 */
-		if (Energy.dontRender) return;
+		if (Energy.DisplayOff()) return;
 
 		if (!Config.settings.HtcCompass.getValue()) return;
 

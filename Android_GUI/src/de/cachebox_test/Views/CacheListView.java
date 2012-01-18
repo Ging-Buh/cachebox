@@ -48,7 +48,28 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 		{
 			e.printStackTrace();
 		}
-		// this.setLongClickable(true);
+		this.setLongClickable(true);
+
+		this.setOnItemLongClickListener(new OnItemLongClickListener()
+		{
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
+			{
+				Cache cache = Database.Data.Query.get(arg2);
+
+				Waypoint finalWp = null;
+				if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
+				// shutdown AutoResort when selecting a cache by hand
+				Global.autoResort = false;
+				GlobalCore.SelectedWaypoint(cache, finalWp);
+
+				invalidate();
+				AllContextMenuCallHandler.showBtnCacheContextMenu();
+				return true;
+			}
+		});
+
 		this.setOnItemClickListener(new OnItemClickListener()
 		{
 			@Override

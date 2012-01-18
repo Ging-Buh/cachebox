@@ -173,6 +173,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 		tcircle = new Texture(new Pixmap(circle));
 		aktZoom = zoomBtn.getZoom();
+		zoomScale.setZoom(aktZoom);
 		camera.zoom = getMapTilePosFactor(aktZoom);
 		endCameraZoom = camera.zoom;
 		diffCameraZoom = 0;
@@ -253,81 +254,6 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		return true;
 	}
 
-	// TextureRegion screenCapture;
-	// Pixmap screenCapturePixmap;
-
-	// int createOrUpdateScreenCapture()
-	// {
-	// int GL_internalFormat;
-	//
-	// // final int potW = MathUtils.nextPowerOfTwo(Gdx.graphics.getWidth());
-	// // final int potH = MathUtils.nextPowerOfTwo(Gdx.graphics.getHeight());
-	//
-	// final int potW = Gdx.graphics.getWidth();
-	// final int potH = Gdx.graphics.getHeight();
-	//
-	// if (screenCapturePixmap == null)
-	// {
-	// Logger.DEBUG("Creating Screen Capture Pixmap: " + potW + "x" + potH);
-	//
-	// screenCapturePixmap = new Pixmap(potW, potH, Format.RGBA8888); // Format.RGBA8888
-	// }
-	// ByteBuffer pixels = screenCapturePixmap.getPixels();
-	// Gdx.gl.glReadPixels(0, 0, potW, potH, //
-	// screenCapturePixmap.getGLFormat(), screenCapturePixmap.getGLType(), pixels);
-	//
-	// GL_internalFormat = screenCapturePixmap.getGLInternalFormat();
-	//
-	// if (screenCapture == null)
-	// {
-	// // Logger.DEBUG("Creating Screen Capture Texture: " + Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
-	//
-	// Texture tex = new Texture(screenCapturePixmap);
-	// tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-	//
-	// screenCapture = new TextureRegion(tex, 0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), -Gdx.graphics.getHeight());
-	// }
-	// else
-	// {
-	// // Logger.DEBUG("Drawing Screen Capture Pixmap into Texture: " + screenCapturePixmap.getWidth() + "x"
-	// // + screenCapturePixmap.getHeight());
-	//
-	// screenCapture.getTexture().draw(screenCapturePixmap, 0, 0);
-	// }
-	//
-	// return GL_internalFormat;
-	// }
-	//
-	// void bindTexture(Texture texture)
-	// {
-	// GL20 gl = Gdx.graphics.getGL20();
-	// gl.glEnable(GL20.GL_BLEND);
-	// gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-	// gl.glEnable(GL20.GL_TEXTURE_2D);
-	// texture.bind();
-	//
-	// // Logger.DEBUG("updateScreenCapture HACK: " + width + "x" + height);
-	// gl.glFlush();
-	// gl.glFinish();
-	// createOrUpdateScreenCapture();
-	// }
-	//
-	// void destroyScreenCapture()
-	// {
-	//
-	// if (screenCapture != null)
-	// {
-	// screenCapture.getTexture().dispose();
-	// }
-	// screenCapture = null;
-	//
-	// if (screenCapturePixmap != null)
-	// {
-	// screenCapturePixmap.dispose();
-	// }
-	// screenCapturePixmap = null;
-	// }
-
 	@Override
 	public void render()
 	{
@@ -337,11 +263,11 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		if (camera.zoom != endCameraZoom)
 		{
 			// Zoom Animation
-			boolean positive = false;
+			boolean positive = true;
 			float newValue;
 			if (camera.zoom < endCameraZoom)
 			{
-				positive = true;
+				positive = false;
 				newValue = camera.zoom + diffCameraZoom;
 				if (newValue > endCameraZoom)// endCameraZoom erreicht?
 				{
@@ -374,15 +300,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 				zoom--;
 			}
 			aktZoom = zoom;
-			Log.d("CACHEBOX", "aktZoom=" + aktZoom + " |tmpZoom=" + tmpZoom * 2);
-			if (!positive)
-			{
-				zoomScale.setDiffCameraZoom(aktZoom + (tmpZoom * 2));
-			}
-			else
-			{
-				zoomScale.setDiffCameraZoom(aktZoom - (2 - (tmpZoom * 2)));
-			}
+
+			zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), positive);
 
 		}
 
@@ -1326,7 +1245,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		@Override
 		public boolean zoom(float originalDistance, float currentDistance)
 		{
-			// Log.d("CACHEBOX", "pan " + originalDistance);
+
+			boolean positive = true;
+			Log.d("CACHEBOX", "pan " + originalDistance + "  |  " + currentDistance);
 			float ratio = originalDistance / currentDistance;
 			camera.zoom = initialScale * ratio;
 			endCameraZoom = camera.zoom;
@@ -1342,6 +1263,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			}
 			zoomBtn.setZoom(zoom);
 			zoomScale.resetFadeOut();
+			zoomScale.setZoom(zoom);
+			zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), positive);
 
 			return false;
 		}
@@ -1454,6 +1377,14 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		showDirektLine = Config.settings.ShowDirektLine.getValue();
 		nightMode = Config.settings.nightMode.getValue();
 		iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
+		aktZoom = Config.settings.lastZoomLevel.getValue();
+		zoomBtn.setMaxZoom(Config.settings.OsmMaxLevel.getValue());
+		zoomBtn.setMinZoom(Config.settings.OsmMinLevel.getValue());
+		zoomBtn.setZoom(aktZoom);
+
+		zoomScale.setMaxZoom(Config.settings.OsmMaxLevel.getValue());
+		zoomScale.setMinZoom(Config.settings.OsmMinLevel.getValue());
+		zoomScale.setZoom(aktZoom);
 	}
 
 	private void setScreenCenter(Vector2 newCenter)

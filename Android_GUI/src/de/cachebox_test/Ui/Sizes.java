@@ -493,7 +493,7 @@ public class Sizes
 					- margin - Toggle.getHeight())));
 
 			ZoomBtn.setPos(new Vector2((float) (SurfaceSize.getWidth() - margin - ZoomBtn.getWidth()), margin));
-			ZoomScale.setPos(new Vector2(margin, (float) (SurfaceSize.getHeight() - margin - margin - Toggle.getHeight() - ZoomScale
+			ZoomScale.setPos(new Vector2(margin, (float) (SurfaceSize.getHeight() - (margin * 4) - Toggle.getHeight() - ZoomScale
 					.getHeight())));
 			InfoLine1.x = Compass.getCrossPos().x + margin;
 			TextBounds bounds = fontAB18.getBounds("52° 34,806N ");
@@ -521,7 +521,7 @@ public class Sizes
 			halfCompass = Compass.getHeight() / 2;
 			Toggle.setSize(58 * DPI, 58 * DPI);
 			ZoomBtn.setSize((float) (158 * DPI), 48 * DPI);
-			ZoomScale.setSize((float) (58 * DPI), 300 * DPI);
+			ZoomScale.setSize((float) (58 * DPI), 280 * DPI);
 			PosMarkerSize = (float) (46.666667 * DPI);
 			halfPosMarkerSize = PosMarkerSize / 2;
 			UnderlaySizes = new SizeF[]

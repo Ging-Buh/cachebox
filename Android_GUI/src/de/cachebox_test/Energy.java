@@ -17,6 +17,7 @@
 package de.cachebox_test;
 
 import CB_Core.Log.Logger;
+import android.util.Log;
 
 /**
  * Contains the static queries of the state of CacheBox, for the decision whether a job being processed has to do. Thus delivers
@@ -27,27 +28,86 @@ import CB_Core.Log.Logger;
 public class Energy
 {
 
+	// ##########################
+	// Dont Render
+	// ##########################
+
 	/**
 	 * Explain of no Render jobs!
 	 */
-	public static boolean dontRender = false;
+	private static boolean displayOff = false;
 
 	/**
-	 * Set dontRender to 'True'
+	 * Explain of no Render jobs!
 	 */
-	public static void setDontRender()
+	public static boolean DisplayOff()
 	{
-		dontRender = true;
+		return displayOff;
+	}
+
+	/**
+	 * Set DisplayOff to 'True'
+	 */
+	public static void setDisplayOff()
+	{
+		displayOff = true;
 		Logger.DEBUG("ENERGY.set dontRender");
 	}
 
 	/**
-	 * Set dontRender to 'False'
+	 * Set DisplayOff to 'False'
 	 */
-	public static void resetDontRender()
+	public static void setDisplayOn()
 	{
-		dontRender = false;
+		displayOff = false;
 		Logger.DEBUG("ENERGY.reset dontRender");
 	}
 
+	// ##############################
+	// Slider is Shown
+	// ##############################
+
+	private static boolean sliderIsShown = false;
+
+	public static boolean SliderIsShown()
+	{
+		if (displayOff) return true;
+		return sliderIsShown;
+	}
+
+	public static void setSliderIsShown()
+	{
+		sliderIsShown = true;
+		Log.d("CACHEBOX", "SliderIsShown = True");
+	}
+
+	public static void resetSliderIsShown()
+	{
+		sliderIsShown = false;
+		Log.d("CACHEBOX", "SliderIsShown = False");
+	}
+
+	// ##############################
+	// About is Shown
+	// ##############################
+
+	private static boolean aboutIsShown = false;
+
+	public static boolean AboutIsShown()
+	{
+		if (displayOff) return true;
+		return aboutIsShown;
+	}
+
+	public static void setAboutIsShown()
+	{
+		aboutIsShown = true;
+		Log.d("CACHEBOX", "AboutIsShown = True");
+	}
+
+	public static void resetAboutIsShown()
+	{
+		aboutIsShown = false;
+		Log.d("CACHEBOX", "AboutIsShown = False");
+	}
 }

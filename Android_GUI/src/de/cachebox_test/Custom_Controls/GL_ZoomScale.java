@@ -24,7 +24,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.util.Log;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -33,6 +32,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.cachebox_test.Global;
 import de.cachebox_test.main;
+import de.cachebox_test.Map.SpriteCache;
 import de.cachebox_test.Ui.Sizes;
 import de.cachebox_test.Ui.Math.ChangedRectF;
 
@@ -98,39 +98,61 @@ public class GL_ZoomScale
 		scale.draw(batch, FadeValue);
 
 		// Draw Value Background
-		// if (ValueRec != null)
-		// {
-		// Sprite valueBack;
-		// valueBack = SpriteCache.MapOverlay.get(0);
-		// valueBack.setBounds(ValueRec.getX(), ValueRec.getY(), ValueRec.getWidth(), ValueRec.getWidth());
-		// valueBack.draw(batch, FadeValue);
-		// }
+		if (ValueRec != null)
+		{
+			Sprite valueBack;
+			valueBack = SpriteCache.MapOverlay.get(0);
+			valueBack.setBounds(ValueRec.getX(), ValueRec.getY(), ValueRec.getWidth(), ValueRec.getHeight());
+			valueBack.draw(batch, FadeValue);
+		}
 
-		// Sprite value;
-		// value = drawSprite(rect);
-		// value.setBounds(ScaleDrawRec.getX(), ScaleDrawRec.getY(), ScaleDrawRec.getWidth(), ScaleDrawRec.getHeight());
-		// value.draw(batch, FadeValue);
-
+		com.badlogic.gdx.graphics.Color c = Sizes.GL.fontAB22.getColor();
+		Sizes.GL.fontAB22.setColor(1f, 1f, 1f, FadeValue);
+		Sizes.GL.fontAB22.draw(batch, String.valueOf(zoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
+				ValueRec.getY() + ValueRec.getHeight() / 1.5f);
+		Sizes.GL.fontAB22.setColor(c.r, c.g, c.b, c.a);
 	}
 
-	public void setDiffCameraZoom(float value)
+	public void setDiffCameraZoom(float value, boolean positive)
 	{
 
-		if (value > 0)
+		if (value >= 1 || value <= -1)
 		{
-			diffCameraZoom = value - zoom;
+			diffCameraZoom = 0;// - zoom;
 		}
 		else
 		{
-			diffCameraZoom = value + zoom;
+			if (positive)
+			{
+				diffCameraZoom = value;
+			}
+			else
+			{
+				diffCameraZoom = 1 + value;
+			}
+			// + zoom;
 		}
-		Log.d("CACHEBOX", "Value=" + value + " |ZoomDiff=" + diffCameraZoom + "  |Zoom=" + zoom);
+		// Log.d("CACHEBOX", "Value=" + value + " |ZoomDiff=" + diffCameraZoom + "  |Zoom=" + zoom);
 
 	}
 
 	public void setZoom(int value)
 	{
 		zoom = value;
+	}
+
+	public void setMaxZoom(int value)
+	{
+		maxzoom = value;
+		ValueRec = null;
+		CachedScaleSprite = null;
+	}
+
+	public void setMinZoom(int value)
+	{
+		minzoom = value;
+		ValueRec = null;
+		CachedScaleSprite = null;
 	}
 
 	/**
@@ -141,25 +163,22 @@ public class GL_ZoomScale
 	private Sprite drawSprite(ChangedRectF rect)
 	{
 
-		int y = (int) ((1 - ((float) (zoom - minzoom)) / numSteps) * (bottomRow - topRow)) + topRow;
-		y += dist * (1 + diffCameraZoom) * 1.5;
+		int y = (int) ((1 - ((float) ((zoom + diffCameraZoom) - minzoom)) / numSteps) * (bottomRow - topRow)) + topRow;
 
 		if (ValueRec == null)
 		{
-
 			topRow = (int) rect.getHeight() - 1;
 			bottomRow = 1;
 			centerColumn = (int) (rect.getWidth() / 2);
 			halfWidth = (int) (rect.getWidth() / 4);
 			lineHeight = 10;
 			numSteps = maxzoom - minzoom;
-			grundY = rect.getY() - halfWidth - rect.getWidth();
-			float ValueRecHeight = centerColumn;// y - rect.getHeight() / 2 + rect.getHeight();
+			grundY = rect.getY() - halfWidth;
 
 			dist = (bottomRow - topRow) / numSteps;
 
 			ValueRec = new ChangedRectF(rect.getX() + Sizes.GL.infoShadowHeight + centerColumn - rect.getWidth() / 2 - lineHeight / 2,
-					grundY + y, rect.getWidth(), ValueRecHeight);
+					grundY + y, rect.getWidth(), rect.getWidth() / 2);
 		}
 		else
 		{

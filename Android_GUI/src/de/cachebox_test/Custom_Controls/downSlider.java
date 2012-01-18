@@ -39,10 +39,10 @@ import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import de.cachebox_test.Energy;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
@@ -285,12 +285,22 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		// Draw only is visible
 		if (Config.settings.quickButtonShow.getValue())
 		{
-			if (yPos <= QuickButtonMaxHeight) return;
+			if (yPos <= QuickButtonMaxHeight)
+			{
+				if (Energy.SliderIsShown()) Energy.resetSliderIsShown();
+				return;
+			}
 		}
 		else
 		{
-			if (yPos <= 1) return;
+			if (yPos <= 1)
+			{
+				if (Energy.SliderIsShown()) Energy.resetSliderIsShown();
+				return;
+			}
 		}
+
+		if (!Energy.SliderIsShown()) Energy.setSliderIsShown();
 
 		if (Config.settings.quickButtonShow.getValue())
 		{
@@ -444,7 +454,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh)
 	{
-		//Log.d("Cachebox", "Size changed to " + w + "x" + h);
+		// Log.d("Cachebox", "Size changed to " + w + "x" + h);
 	}
 
 	public static void ButtonShowStateChanged()
@@ -795,33 +805,33 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		@Override
 		public boolean onSingleTapUp(MotionEvent ev)
 		{
-			//Log.d("onSingleTapUp", ev.toString());
+			// Log.d("onSingleTapUp", ev.toString());
 			return true;
 		}
 
 		@Override
 		public void onShowPress(MotionEvent ev)
 		{
-			//Log.d("onShowPress", ev.toString());
+			// Log.d("onShowPress", ev.toString());
 		}
 
 		@Override
 		public void onLongPress(MotionEvent ev)
 		{
-			//Log.d("onLongPress", ev.toString());
+			// Log.d("onLongPress", ev.toString());
 		}
 
 		@Override
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
 		{
-			//Log.d("onScroll", e1.toString());
+			// Log.d("onScroll", e1.toString());
 			return true;
 		}
 
 		@Override
 		public boolean onDown(MotionEvent ev)
 		{
-			//Log.d("onDownd", ev.toString());
+			// Log.d("onDownd", ev.toString());
 			return true;
 		}
 

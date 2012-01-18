@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.cachebox_test.Energy;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
@@ -328,13 +329,14 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	public void OnShow()
 	{
 		LoadImages();
-
+		if (!Energy.AboutIsShown()) Energy.setAboutIsShown();
 		setSatStrength();
 	}
 
 	@Override
 	public void OnHide()
 	{
+		if (Energy.AboutIsShown()) Energy.resetAboutIsShown();
 		ReleaseImages();
 
 	}
