@@ -38,7 +38,7 @@
 	filter = Filter
 	search = Suchen
 	ResortList = Liste neu sortieren
-	AutoResort = Automatisch sortieren
+	AutoResort = Automatisch auswählen
 	record = Aufnahme
 	pause = Pause
 	stop = Stop

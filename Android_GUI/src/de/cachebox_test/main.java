@@ -799,7 +799,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// only when showing Map or cacheList
 			if (!GlobalCore.ResortAtWork)
 			{
-				if (Global.autoResort && ((aktView == mapView) || (aktView == cacheListView || aktView == mapViewGl)))
+				if (Global.autoResort
+						&& ((aktView == mapView) || (aktView == cacheListView || aktView == mapViewGl || aktView == compassView)))
 				{
 					int z = 0;
 					if (!(GlobalCore.NearestCache() == null))
