@@ -94,6 +94,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	// int zoom = 13;
 	// #################################################################
 
+	final int maxMapZoom = 20;
+
 	int maxNumTiles = 100;
 	float iconFactor = 1.5f;
 
@@ -140,7 +142,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		// initial Zoom Scale
 		zoomScale = new GL_ZoomScale(6, 20, 13);
 
-		mapCacheList = new MapCacheList(zoomBtn.getMaxZoom());
+		mapCacheList = new MapCacheList(maxMapZoom);
 
 	}
 
@@ -290,7 +292,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 					camera.zoom = newValue;
 				}
 			}
-			int zoom = zoomBtn.getMaxZoom();
+			int zoom = maxMapZoom;
 			float tmpZoom = camera.zoom;
 			float faktor = 1.5f;
 			faktor = faktor - iconFactor + 1;
@@ -410,7 +412,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		zoomBtn.Render(batch, Sizes.GL.ZoomBtn);
 		zoomScale.Render(batch, Sizes.GL.ZoomScale);
 
-		// renderDebugInfo();
+		renderDebugInfo();
 		batch.end();
 	}
 
@@ -586,9 +588,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	{
 		if (Global.Locator != null)
 		{
-			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(zoomBtn.getMaxZoom(), GlobalCore.LastValidPosition.Longitude),
-					Descriptor.LatitudeToTileY(zoomBtn.getMaxZoom(), GlobalCore.LastValidPosition.Latitude), zoomBtn.getMaxZoom(),
-					zoomBtn.getMaxZoom());
+			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(maxMapZoom, GlobalCore.LastValidPosition.Longitude),
+					Descriptor.LatitudeToTileY(maxMapZoom, GlobalCore.LastValidPosition.Latitude), maxMapZoom, maxMapZoom);
 
 			Vector2 vPoint = new Vector2((float) point.X, -(float) point.Y);
 
@@ -782,7 +783,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 					// eigentlich nicht das richtige Tile ist!!!
 					// tile.Age = 0;
 				}
-				else if ((zoomzoom <= aktZoom + 0) && (zoomzoom <= zoomBtn.getMaxZoom()))
+				else if ((zoomzoom <= aktZoom + 0) && (zoomzoom <= maxMapZoom))
 				{
 					// für den aktuellen Zoom ist kein Tile vorhanden -> größere
 					// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden
@@ -1236,10 +1237,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		private void calcCenter()
 		{
 			// berechnet anhand des ScreenCenterW die Center-Coordinaten
-			PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, zoomBtn.getMaxZoom(), zoomBtn.getMaxZoom());
+			PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, maxMapZoom, maxMapZoom);
 
-			center = new Coordinate(Descriptor.TileYToLatitude(zoomBtn.getMaxZoom(), -point.Y), Descriptor.TileXToLongitude(
-					zoomBtn.getMaxZoom(), point.X));
+			center = new Coordinate(Descriptor.TileYToLatitude(maxMapZoom, -point.Y), Descriptor.TileXToLongitude(maxMapZoom, point.X));
 		}
 
 		@Override
@@ -1252,7 +1252,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			camera.zoom = initialScale * ratio;
 			endCameraZoom = camera.zoom;
 			System.out.println(camera.zoom);
-			int zoom = zoomBtn.getMaxZoom();
+			int zoom = maxMapZoom;
 			float tmpZoom = camera.zoom;
 			float faktor = 1.5f;
 			faktor = faktor - iconFactor + 1;
@@ -1408,8 +1408,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 			center = value;
 
-			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(zoomBtn.getMaxZoom(), center.Longitude),
-					Descriptor.LatitudeToTileY(zoomBtn.getMaxZoom(), center.Latitude), zoomBtn.getMaxZoom(), zoomBtn.getMaxZoom());
+			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(maxMapZoom, center.Longitude),
+					Descriptor.LatitudeToTileY(maxMapZoom, center.Latitude), maxMapZoom, maxMapZoom);
 
 			setScreenCenter(new Vector2((float) point.X, (float) point.Y));
 		}
@@ -1418,7 +1418,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	private long getMapTileSizeFactor(int zoom)
 	{
 		long result = 1;
-		for (int z = zoomBtn.getMaxZoom(); z < zoom; z++)
+		for (int z = maxMapZoom; z < zoom; z++)
 		{
 			result *= 2;
 		}
@@ -1428,7 +1428,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	private long getMapTilePosFactor(int zoom)
 	{
 		long result = 1;
-		for (int z = zoom; z < zoomBtn.getMaxZoom(); z++)
+		for (int z = zoom; z < maxMapZoom; z++)
 		{
 			result *= 2;
 		}
@@ -1461,7 +1461,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	{
 		// World-Koordinaten in Pixel
 		Vector2 world = screenToWorld(point);
-		for (int i = zoomBtn.getMaxZoom(); i > zoom; i--)
+		for (int i = maxMapZoom; i > zoom; i--)
 		{
 			world.x /= 2;
 			world.y /= 2;
