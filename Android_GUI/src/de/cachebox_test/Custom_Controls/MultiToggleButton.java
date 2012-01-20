@@ -244,7 +244,7 @@ public class MultiToggleButton extends Button implements OnClickListener
 		bt.clearStates();
 		bt.addState(ButtonTxt, Global.getColor(R.attr.ToggleBtColor_off));
 		bt.addState(ButtonTxt, Global.getColor(R.attr.ToggleBtColor_on));
-
+		bt.setState(0, true);
 	}
 
 	public static void initialOn_Off_ToggleStates(MultiToggleButton bt, String txtOn, String txtOff)
@@ -252,7 +252,7 @@ public class MultiToggleButton extends Button implements OnClickListener
 		bt.clearStates();
 		bt.addState(txtOff, Global.getColor(R.attr.ToggleBtColor_off));
 		bt.addState(txtOn, Global.getColor(R.attr.ToggleBtColor_on));
-
+		bt.setState(0, true);
 	}
 
 	private ChangedRectF hitRec = null;
