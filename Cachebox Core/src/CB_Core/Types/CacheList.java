@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import CB_Core.GlobalCore;
+import CB_Core.Enums.CacheTypes;
 
 public class CacheList extends MoveableList<Cache>
 {
@@ -47,7 +48,35 @@ public class CacheList extends MoveableList<Cache>
 		// Nächsten Cache auswählen
 		if (this.size() > 0)
 		{
-			Cache nextCache = this.get(0);
+			Cache nextCache = this.get(0); // or null ...
+			for (int i = 0; i < this.size(); i++)
+			{
+				nextCache = this.get(i);
+				if (!nextCache.Archived)
+				{
+					if (nextCache.Available)
+					{
+						if (!nextCache.Found) // eigentlich wenn has_fieldnote(found,DNF,Maint,SBA, aber note vielleicht nicht) , aber found
+												// kann nicht rückgängig gemacht werden.
+						{
+							if (!nextCache.ImTheOwner())
+							{
+								if (nextCache.Type != CacheTypes.Mystery)
+								{
+									break;
+								}
+								else
+								{
+									if (nextCache.MysterySolved())
+									{
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 			// Wenn der nachste Cache ein Mystery mit Final Waypoint ist
 			// -> gleich den Final Waypoint auswahlen!!!
 			// When the next Cache is a mystery with final waypoint
