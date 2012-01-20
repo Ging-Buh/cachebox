@@ -1250,7 +1250,18 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			Log.d("CACHEBOX", "pan " + originalDistance + "  |  " + currentDistance);
 			float ratio = originalDistance / currentDistance;
 			camera.zoom = initialScale * ratio;
+
+			if (camera.zoom < getMapTilePosFactor(zoomBtn.getMaxZoom()))
+			{
+				camera.zoom = getMapTilePosFactor(zoomBtn.getMaxZoom());
+			}
+			if (camera.zoom > getMapTilePosFactor(zoomBtn.getMinZoom()))
+			{
+				camera.zoom = getMapTilePosFactor(zoomBtn.getMinZoom());
+			}
+
 			endCameraZoom = camera.zoom;
+
 			System.out.println(camera.zoom);
 			int zoom = maxMapZoom;
 			float tmpZoom = camera.zoom;
@@ -1265,7 +1276,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			zoomScale.resetFadeOut();
 			zoomScale.setZoom(zoom);
 			zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), positive);
-
+			aktZoom = zoom;
 			return false;
 		}
 
