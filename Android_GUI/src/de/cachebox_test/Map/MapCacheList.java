@@ -37,8 +37,7 @@ public class MapCacheList
 	// public ArrayList<ArrayList<Sprite>> NewMapOverlay = null;
 
 	/**
-	 * true, falls bei Mysterys mit Lösung (Final Waypoint) der Cache
-	 * ausgeblendet werden soll, wenn der Cache nicht selected ist.
+	 * true, falls bei Mysterys mit Lösung (Final Waypoint) der Cache ausgeblendet werden soll, wenn der Cache nicht selected ist.
 	 */
 	boolean hideCacheWithFinal = true;
 
@@ -403,8 +402,15 @@ public class MapCacheList
 		if ((zoom == lastzoom) && (!doNotCheck))
 		{
 			// Prüfen, ob überhaupt eine neue Liste berechnet werden muß
-			if ((point1.x == lastPoint1.x) && (point2.x == lastPoint2.x) && (point1.y == lastPoint1.y) && (point2.y == lastPoint2.y)) return;
+			if ((point1.x >= lastPoint1.x) && (point2.x <= lastPoint2.x) && (point1.y >= lastPoint1.y) && (point2.y <= lastPoint2.y)) return;
 		}
+
+		// Bereich erweitern, damit von vorne herein gleiche mehr Caches geladen werden und diese Liste nicht so oft berechnet werden muss
+		Vector2 size = new Vector2(point2.x - point1.x, point2.y - point1.y);
+		point1.x -= size.x;
+		point2.x += size.x;
+		point1.y -= size.y;
+		point2.y += size.y;
 
 		this.lastzoom = zoom;
 		lastPoint1 = point1;
