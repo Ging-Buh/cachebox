@@ -47,10 +47,10 @@
 
 
 		<de.cachebox_test.Custom_Controls.MultiToggleButton
-			android:layout_weight="1" android:layout_width="match_parent" android:layout_height="65dip"
+			android:layout_weight="1" android:layout_width="match_parent" android:layout_height="60dip"
 			android:text="GPS"  android:id="@+id/toggle_GPS" />
 		<de.cachebox_test.Custom_Controls.MultiToggleButton
-			android:layout_weight="1" android:layout_width="match_parent" android:layout_height="65dip"
+			android:layout_weight="1" android:layout_width="match_parent" android:layout_height="60dip"
 			android:text="Map" 
 			android:id="@+id/toggle_Map" />
 		
@@ -70,21 +70,21 @@
 		<LinearLayout android:orientation="horizontal"
 			android:layout_width="fill_parent" android:layout_height="wrap_content">
 
-			<EditText android:layout_width="match_parent" android:id="@+id/api_radius"
-				android:layout_height="wrap_content" android:layout_weight="1"></EditText>
+			<EditText android:layout_width="60dip" android:id="@+id/api_radius"
+				android:layout_height="wrap_content" ></EditText>
 			<TextView android:text="km" android:id="@+id/api_radius_value"
-				android:layout_weight="1" android:layout_width="match_parent"
+				 android:layout_width="60dip"
 				android:layout_height="wrap_content"></TextView>
 
 			<LinearLayout android:layout_width="match_parent"
-				android:layout_height="wrap_content" android:layout_weight="1"
-				android:orientation="vertical">
+				android:layout_height="wrap_content" 
+				android:orientation="horizontal" android:layout_marginRight="10dip">
 				<Button android:id="@+id/api_radius_plus" 
 					android:layout_width="55dip" android:layout_height="55dip"
 					android:text="+" />
 				<Button android:id="@+id/api_radius_minus" 
 					android:layout_width="55dip" android:layout_height="55dip"
-					android:text="-" />
+					android:text="-" android:layout_marginLeft="10dip" />
 
 			</LinearLayout>
 
