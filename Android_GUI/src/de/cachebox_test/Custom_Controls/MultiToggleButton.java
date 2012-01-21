@@ -27,6 +27,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.Button;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -44,9 +45,13 @@ import de.cachebox_test.Ui.Math.ChangedRectF;
 /**
  * @author Longri
  */
-public class MultiToggleButton extends Button implements OnClickListener
+public class MultiToggleButton extends Button implements OnClickListener, OnLongClickListener
 {
 
+	/*
+	 * wenn True wird der letzte State nur über ein LongClick angewählt
+	 */
+	private boolean lastStateWithLongClick = false;
 	private Resources res;
 
 	public MultiToggleButton()
@@ -224,7 +229,22 @@ public class MultiToggleButton extends Button implements OnClickListener
 	@Override
 	public void onClick(View arg0)
 	{
-		StateId++;
+		if (lastStateWithLongClick)
+		{
+			if (StateId == State.size() - 2)
+			{
+				StateId = 0;
+			}
+			else
+			{
+				StateId++;
+			}
+		}
+		else
+		{
+			StateId++;
+		}
+
 		setState(StateId, true);
 	}
 
@@ -314,6 +334,46 @@ public class MultiToggleButton extends Button implements OnClickListener
 		float halfWidth = bounds.width / 2;
 		font.draw(batch, this.getText(), rect.getX() + (rect.getWidth() / 2) - halfWidth, rect.getY() + (rect.getHeight() / 2)
 				+ bounds.height);
+
+	}
+
+	public void setLastStateWithLongClick(boolean value)
+	{
+		lastStateWithLongClick = value;
+		setState(0, true);
+	}
+
+	@Override
+	public boolean onLongClick(View v)
+	{
+		if (lastStateWithLongClick)
+		{
+			setState(State.size() - 1, true);
+		}
+		else
+		{
+			onClick(v);
+		}
+		return true;
+	}
+
+	public boolean onLongClick()
+	{
+		onLongClick(null);
+		return true;
+	}
+
+	public boolean longHitTest(Vector2 clickedAt)
+	{
+		if (hitRec != null)
+		{
+			if (hitRec.contains(clickedAt.x, clickedAt.y))
+			{
+				onLongClick();
+				return true;
+			}
+		}
+		return false;
 
 	}
 

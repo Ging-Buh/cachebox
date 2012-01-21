@@ -189,6 +189,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		btnTrackPos.addState("GPS", Color.GREEN);
 		btnTrackPos.addState("Lock", Color.RED);
 		btnTrackPos.addState("Car", Color.YELLOW);
+		btnTrackPos.setLastStateWithLongClick(true);
 		btnTrackPos.setState(0, true);
 
 		Sizes.GL.initial();
@@ -1191,7 +1192,15 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		public boolean longPress(int x, int y)
 		{
 			TouchUp();
-			Gdx.app.log("GestureDetectorTest", "long press at " + x + ", " + y);
+			Vector2 clickedAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());
+			if (btnTrackPos.longHitTest(clickedAt))
+			{
+				main.vibrate();
+				stateChanged();
+				forceRender();
+				return true;
+			}
+
 			return false;
 		}
 
