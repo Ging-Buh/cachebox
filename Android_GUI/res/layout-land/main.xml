@@ -8,29 +8,31 @@
 		android:layout_width="fill_parent">
 
 
-		<LinearLayout android:layout_alignParentTop="true"
-			android:layout_width="match_parent" android:id="@+id/layoutTop"
-			android:layout_height="wrap_content">
+		<LinearLayout android:id="@+id/layoutTop"
+			android:layout_alignParentTop="true" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_toLeftOf="@+id/layoutButtons">
 
 			<de.cachebox_test.Custom_Controls.QuickButtonList.HorizontalListView
-				android:id="@+id/main_quick_button_list" android:layout_width="fill_parent"
-				android:layout_height="0dip" />
-						
+				android:id="@+id/main_quick_button_list" android:layout_toLeftOf="@+id/layoutButtons"
+				android:layout_width="match_parent" android:layout_height="0dip" />
+
 			<de.cachebox_test.Components.CacheNameView
-				android:id="@+id/main_cache_name_view" android:layout_width="fill_parent"
-				android:layout_height="35dip" />
-				
-			<include android:layout_height="wrap_content" android:id="@+id/searchDialog"
+				android:id="@+id/main_cache_name_view" android:layout_toLeftOf="@+id/layoutButtons"
+				android:layout_width="match_parent" android:layout_height="35dip" />
+
+			<include android:layout_height="wrap_content"
+				android:layout_toLeftOf="@+id/layoutButtons" android:id="@+id/searchDialog"
 				layout="@layout/search_dialog_layout" android:layout_width="match_parent"
 				android:layout_weight="1" android:visibility="gone"></include>
 
-			
+
+
 
 		</LinearLayout>
-		<LinearLayout android:layout_alignParentRight="true"
-			android:orientation="vertical" android:layout_below="@+id/layoutTop"
-			android:layout_width="65dip" android:layout_height="match_parent"
-			android:id="@+id/layoutButtons" android:background="?attr/BtnBackGround">
+		<LinearLayout android:id="@+id/layoutButtons"
+			android:layout_alignParentRight="true" android:orientation="vertical"
+			android:layout_toLeftOf="@+id/layoutButtons" android:layout_width="65dip"
+			android:layout_height="match_parent" android:background="?attr/BtnBackGround">
 
 			<ImageButton android:layout_height="match_parent"
 				android:layout_width="wrap_content" android:layout_weight="1"
@@ -62,12 +64,18 @@
 				android:background="?attr/MiscBtnImageSelector">
 			</ImageButton>
 		</LinearLayout>
-		<FrameLayout android:layout_alignParentLeft="true"
+		<FrameLayout android:id="@+id/layoutContent"
+			android:layout_alignParentLeft="true"
 			android:layout_alignParentBottom="true" android:layout_height="fill_parent"
 			android:layout_toLeftOf="@+id/layoutButtons" android:layout_below="@+id/layoutTop"
-			android:layout_width="match_parent" android:id="@+id/layoutContent"
-			android:alwaysDrawnWithCache="true">
+			android:layout_width="match_parent" android:alwaysDrawnWithCache="true">
 		</FrameLayout>
+
+		<de.cachebox_test.Custom_Controls.downSlider
+			android:id="@+id/downSlider" android:layout_alignParentTop="true"
+			android:layout_width="match_parent" android:layout_height="fill_parent"
+			android:layout_toLeftOf="@+id/layoutButtons" />
+
 	</RelativeLayout>
 
 
@@ -84,9 +92,9 @@
 		android:layout_width="300dip" android:layout_marginRight="2dip"
 		android:layout_marginTop="40dip" />
 
-	<de.cachebox_test.Custom_Controls.downSlider
-		android:id="@+id/downSlider" android:layout_width="fill_parent"
-		android:layout_height="fill_parent" />
+
+
+
 
 	<include android:layout_height="wrap_content" android:id="@+id/main_strength_control"
 		layout="@layout/strength_control" android:layout_width="wrap_content"

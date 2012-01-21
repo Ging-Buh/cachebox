@@ -39,6 +39,7 @@ import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -110,6 +111,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
 	{
+		Log.d("CACHEBOX", "with/Height" + width + "/" + height);
+
 		this.width = measure(widthMeasureSpec);
 		this.height = measure(heightMeasureSpec);
 
