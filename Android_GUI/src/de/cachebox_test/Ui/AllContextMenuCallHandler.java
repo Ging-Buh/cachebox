@@ -499,7 +499,6 @@ public class AllContextMenuCallHandler
 			MenuItem mi22 = IconMenu.add(layer.Name);
 			mi22.setCheckable(true);
 			if (layer == Main.mapViewGl.GetCurrentLayer())
-			;
 			{
 				mi22.setChecked(true);
 			}
