@@ -486,6 +486,27 @@ public class AllContextMenuCallHandler
 		icm.show();
 	}
 
+	public static void showMapGLLayerMenu()
+	{
+		icm = new IconContextMenu(Main, R.menu.menu_layer);
+		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
+
+		Menu IconMenu = icm.getMenu();
+
+		IconMenu.clear();
+		for (Layer layer : MapView.Manager.Layers)
+		{
+			MenuItem mi22 = IconMenu.add(layer.Name);
+			mi22.setCheckable(true);
+			if (layer == Main.mapViewGl.GetCurrentLayer())
+			;
+			{
+				mi22.setChecked(true);
+			}
+		}
+		icm.show();
+	}
+
 	public static void showMapSmoothMenu()
 	{
 		icm = new IconContextMenu(Main, R.menu.menu_smooth);

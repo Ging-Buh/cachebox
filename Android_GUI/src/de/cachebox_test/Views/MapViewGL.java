@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
+import de.cachebox_test.Map.Layer;
 import de.cachebox_test.Map.MapViewGlListener;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
 
@@ -44,7 +45,8 @@ public class MapViewGL extends RelativeLayout implements ViewOptionsMenu
 		switch (item.getItemId())
 		{
 		case 0:
-			// SetCurrentLayer(MapView.Manager.GetLayerByName(item.getTitle().toString(), item.getTitle().toString(), ""));
+			this.mapViewGlListener.SetCurrentLayer(MapView.Manager.GetLayerByName(item.getTitle().toString(), item.getTitle().toString(),
+					""));
 			return true;
 
 		case R.id.mi_Track:
@@ -56,7 +58,7 @@ public class MapViewGL extends RelativeLayout implements ViewOptionsMenu
 			return true;
 
 		case R.id.layer:
-			AllContextMenuCallHandler.showMapLayerMenu();
+			AllContextMenuCallHandler.showMapGLLayerMenu();
 			return true;
 
 		case R.id.mimapview_view:
@@ -191,4 +193,8 @@ public class MapViewGL extends RelativeLayout implements ViewOptionsMenu
 
 	}
 
+	public Layer GetCurrentLayer()
+	{
+		return mapViewGlListener.CurrentLayer;
+	}
 }

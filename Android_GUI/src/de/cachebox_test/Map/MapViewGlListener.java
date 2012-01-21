@@ -114,7 +114,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 	public Coordinate center = new Coordinate(48.0, 12.0);
 	private boolean positionInitialized = false;
-	String CurrentLayer = "germany-0.2.4.map";
+	// String CurrentLayer = "germany-0.2.4.map";
+	public Layer CurrentLayer = null;
 
 	public static SpriteBatch batch;
 	Matrix4 textMatrix;
@@ -150,6 +151,11 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	public void create()
 	{
 		PositionEventList.Add(this);
+
+		String currentLayerName = Config.settings.CurrentMapLayer.getValue();
+		CurrentLayer = MapView.Manager.GetLayerByName((currentLayerName == "") ? "Mapnik" : currentLayerName, currentLayerName, "");
+
+		// CurrentLayer = MapView.Manager.GetLayerByName("Hubermedia Bavaria", "Hubermedia Bavaria", "");
 
 		width = Gdx.graphics.getWidth();
 		height = Gdx.graphics.getHeight();
@@ -203,6 +209,35 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		textMatrix.setToOrtho2D(0, 0, width, height);
 		((main) main.mainActivity).iniInput();// Größe des Input bereichs muss neu Berechnet werden
 		Sizes.GL.initial(width, height);
+	}
+
+	public void SetCurrentLayer(Layer newLayer)
+	{
+		Config.settings.CurrentMapLayer.setValue(newLayer.Name);
+		Config.AcceptChanges();
+
+		CurrentLayer = newLayer;
+
+		loadedTilesLock.lock();
+		try
+		{
+			for (TileGL tile : loadedTiles.values())
+			{
+				try
+				{
+					tile.destroy();
+				}
+				catch (DestroyFailedException e)
+				{
+					e.printStackTrace();
+				}
+			}
+			loadedTiles.clear();
+		}
+		finally
+		{
+			loadedTilesLock.unlock();
+		}
 	}
 
 	protected SortedMap<Long, TileGL> tilesToDraw = new TreeMap<Long, TileGL>();
@@ -1711,8 +1746,11 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 		byte[] bytes = MapView.Manager.LoadLocalPixmap(CurrentLayer, desc);
 		// Texture texture = new Texture(new Pixmap(bytes, 0, bytes.length));
-		tileState = TileGL.TileState.Present;
-		addLoadedTile(desc, bytes, tileState);
+		if (bytes != null)
+		{
+			tileState = TileGL.TileState.Present;
+			addLoadedTile(desc, bytes, tileState);
+		}
 	}
 
 	private void addLoadedTile(Descriptor desc, byte[] bytes, TileGL.TileState state)

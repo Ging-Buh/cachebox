@@ -57,12 +57,10 @@ public class Manager
 	}
 
 	/*
-	 * /// <summary> /// *berprüft, ob die übergebene Kachel bei OSM überhaupt
-	 * existiert /// </summary> /// <param name="desc">Deskriptor der zu
-	 * prüfenden Kachel</param> /// <returns>true, falls die Kachel existiert,
-	 * sonst false</returns> public static bool ExistsTile(Descriptor desc) {
-	 * int range = (int)Math.Pow(2, desc.Zoom); return desc.X < range && desc.Y
-	 * < range && desc.X >= 0 && desc.Y >= 0; }
+	 * /// <summary> /// *berprüft, ob die übergebene Kachel bei OSM überhaupt existiert /// </summary> /// <param name="desc">Deskriptor
+	 * der zu prüfenden Kachel</param> /// <returns>true, falls die Kachel existiert, sonst false</returns> public static bool
+	 * ExistsTile(Descriptor desc) { int range = (int)Math.Pow(2, desc.Zoom); return desc.X < range && desc.Y < range && desc.X >= 0 &&
+	 * desc.Y >= 0; }
 	 */
 	// / <summary>
 	// / Läd ein Map Pack und fügt es dem Manager hinzu
@@ -166,6 +164,54 @@ public class Manager
 			}
 			return result;
 		}
+
+		try
+		{
+			// Schauen, ob Tile im Cache liegt
+			String cachedTileFilename = layer.GetLocalFilename(desc);
+
+			long cachedTileAge = 0;
+
+			if (FileIO.FileExists(cachedTileFilename))
+			{
+				File info = new File(cachedTileFilename);
+				cachedTileAge = info.lastModified();
+			}
+
+			// Kachel im Pack suchen
+			for (int i = 0; i < mapPacks.size(); i++)
+			{
+				Pack mapPack = mapPacks.get(i);
+				if ((mapPack.Layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge))
+				{
+					BoundingBox bbox = mapPacks.get(i).Contains(desc);
+
+					if (bbox != null)
+					{
+						return mapPacks.get(i).LoadFromBoundingBoxByteArray(bbox, desc);
+						// Bitmap result = mapPacks.get(i).LoadFromBoundingBox(bbox, desc);
+						// ByteArrayOutputStream stream = new ByteArrayOutputStream();
+						// result.compress(Bitmap.CompressFormat.PNG, 100, stream);
+						// return stream.toByteArray();
+					}
+				}
+			}
+			// Kein Map Pack am Start!
+			// Falls Kachel im Cache liegt, diese von dort laden!
+			if (cachedTileAge != 0)
+			{
+				Bitmap result = BitmapFactory.decodeFile(cachedTileFilename);
+				ByteArrayOutputStream stream = new ByteArrayOutputStream();
+				result.compress(Bitmap.CompressFormat.PNG, 100, stream);
+				return stream.toByteArray();
+			}
+		}
+		catch (Exception exc)
+		{
+			/*
+			 * #if DEBUG Global.AddLog("Manager.LoadLocalBitmap: " + exc.ToString()); #endif
+			 */
+		}
 		return null;
 	}
 
@@ -257,8 +303,7 @@ public class Manager
 		catch (Exception exc)
 		{
 			/*
-			 * #if DEBUG Global.AddLog("Manager.LoadLocalBitmap: " +
-			 * exc.ToString()); #endif
+			 * #if DEBUG Global.AddLog("Manager.LoadLocalBitmap: " + exc.ToString()); #endif
 			 */
 		}
 		return null;
@@ -330,17 +375,11 @@ public class Manager
 				return false;
 			}
 			/*
-			 * webRequest = (HttpWebRequest)WebRequest.Create(url);
-			 * webRequest.Timeout = 15000; webRequest.Proxy = Global.Proxy;
-			 * webResponse = webRequest.GetResponse(); if
-			 * (!webRequest.HaveResponse) return false; responseStream =
-			 * webResponse.GetResponseStream(); byte[] result =
-			 * Global.ReadFully(responseStream, 64000); // Verzeichnis anlegen
-			 * lock (this) if (!Directory.Exists(path))
-			 * Directory.CreateDirectory(path); // Datei schreiben lock (this) {
-			 * stream = new FileStream(filename, FileMode.CreateNew);
-			 * stream.Write(result, 0, result.Length); } NumTilesLoaded++;
-			 * Global.TransferredBytes += result.Length;
+			 * webRequest = (HttpWebRequest)WebRequest.Create(url); webRequest.Timeout = 15000; webRequest.Proxy = Global.Proxy; webResponse
+			 * = webRequest.GetResponse(); if (!webRequest.HaveResponse) return false; responseStream = webResponse.GetResponseStream();
+			 * byte[] result = Global.ReadFully(responseStream, 64000); // Verzeichnis anlegen lock (this) if (!Directory.Exists(path))
+			 * Directory.CreateDirectory(path); // Datei schreiben lock (this) { stream = new FileStream(filename, FileMode.CreateNew);
+			 * stream.Write(result, 0, result.Length); } NumTilesLoaded++; Global.TransferredBytes += result.Length;
 			 */
 		}
 		catch (Exception ex)
@@ -348,11 +387,9 @@ public class Manager
 			return false;
 		}
 		/*
-		 * finally { if (stream != null) { stream.Close(); stream = null; } if
-		 * (responseStream != null) { responseStream.Close(); responseStream =
-		 * null; } if (webResponse != null) { webResponse.Close(); webResponse =
-		 * null; } if (webRequest != null) { webRequest.Abort(); webRequest =
-		 * null; } GC.Collect(); }
+		 * finally { if (stream != null) { stream.Close(); stream = null; } if (responseStream != null) { responseStream.Close();
+		 * responseStream = null; } if (webResponse != null) { webResponse.Close(); webResponse = null; } if (webRequest != null) {
+		 * webRequest.Abort(); webRequest = null; } GC.Collect(); }
 		 */
 		return true;
 	}
