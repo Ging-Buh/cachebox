@@ -9,6 +9,7 @@ Version : 0.5.xx							Version : 0.5.xx
 	• Telefon Berechtigung Entfernt und 			• Removed call permission and provided 
 	   GC-Joker als PlugIn mit Berechtigung 		   GC joker as a PlugIn with permission to the 
 	   zur Einzel Installation Erstellt.				   singles installation.
+	• Landscape Layout überarbeitet				• Rework layout for landscape
 
 Version : 0.4.593							Version: 0.4.593
 	• Download von PQ über die API				• Download of PQ through the GC-API

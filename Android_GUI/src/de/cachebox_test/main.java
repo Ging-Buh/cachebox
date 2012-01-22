@@ -1464,7 +1464,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			else if (v == buttonNav)
 			{
-				showView(0);
+				ShowMapViewGL();
 			}
 
 			else if (v == buttonTools)
@@ -1591,9 +1591,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				showView(waypointView, 15);
 				break;
 			case 2:
-				mapViewGl = null;
-				initialMapViewGl();
-				showView(mapViewGl, 2);
+				ShowMapViewGL();
 				break;
 			}
 		}
@@ -1603,6 +1601,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		}
 
+	}
+
+	private void ShowMapViewGL()
+	{
+		mapViewGl = null;
+		initialMapViewGl();
+		showView(mapViewGl, 2);
 	}
 
 	private void showView(ViewOptionsMenu view, int Id)

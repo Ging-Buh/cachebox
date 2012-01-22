@@ -170,7 +170,7 @@ public class AllContextMenuCallHandler
 		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
 
 		Menu IconMenu = icm.getMenu();
-		Global.TranslateMenuItem(IconMenu, R.id.miMapView, "Map");
+		Global.TranslateMenuItem(IconMenu, R.id.miMapViewGl, "Map");
 		Global.TranslateMenuItem(IconMenu, R.id.miCompassView, "Compass");
 		Global.TranslateMenuItem(IconMenu, R.id.miNavigateTo, "NavigateTo");
 		icm.show();

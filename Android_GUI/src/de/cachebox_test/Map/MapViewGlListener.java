@@ -306,6 +306,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			if (camera.zoom < endCameraZoom)
 			{
 				positive = false;
+				// TODO diffCameraZoom in Abhängigkeit der vergangenen Zeit nicht des Render Durchgangs
+				// wie bei GL_ZoomScale.java Line 279
 				newValue = camera.zoom + diffCameraZoom;
 				if (newValue > endCameraZoom)// endCameraZoom erreicht?
 				{
@@ -406,11 +408,11 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	{
 		long endTime = System.currentTimeMillis();
 		long dt = endTime - startTime;
-		if (dt < 33)
+		if (dt < 60)
 		{
 			try
 			{
-				if (20 - dt > 0) Thread.sleep(20 - dt);
+				if (60 - dt > 0) Thread.sleep(60 - dt);
 			}
 			catch (InterruptedException e)
 			{
@@ -441,7 +443,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	{
 		batch.setProjectionMatrix(textMatrix);
 		batch.begin();
-		renderInfoPanel();
+		if (showCompass) renderInfoPanel();
 
 		btnTrackPos.Render(batch, Sizes.GL.Toggle, Sizes.GL.fontAB22);
 
