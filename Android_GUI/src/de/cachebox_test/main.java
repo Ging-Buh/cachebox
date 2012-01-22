@@ -29,6 +29,7 @@ import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
+import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
@@ -805,16 +806,34 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					int z = 0;
 					if (!(GlobalCore.NearestCache() == null))
 					{
-						for (Cache cache : Database.Data.Query)
+						boolean resort = false;
+						if (GlobalCore.NearestCache().Found)
 						{
-							z++;
-							if (z >= 50) return;
-							if (cache.Distance(true) < GlobalCore.NearestCache().Distance(true))
+							resort = true;
+						}
+						else
+						{
+							for (Cache cache : Database.Data.Query)
 							{
-								Database.Data.Query.Resort();
-								Global.PlaySound("AutoResort.ogg");
-								return;
+								z++;
+								if (z >= 50) return;
+								if (cache.Archived) continue;
+								if (!cache.Available) continue;
+								if (cache.Found) continue;
+								if (cache.ImTheOwner()) continue;
+								if (cache.Type == CacheTypes.Mystery) if (!cache.MysterySolved()) continue;
+								if (cache.Distance(true) < GlobalCore.NearestCache().Distance(true))
+								{
+									resort = true;
+									break;
+								}
 							}
+						}
+						if (resort)
+						{
+							Database.Data.Query.Resort();
+							Global.PlaySound("AutoResort.ogg");
+							return;
 						}
 					}
 				}
