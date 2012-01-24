@@ -218,4 +218,34 @@ public class ChangedRectF
 		calcCrossCorner();
 	}
 
+	/**
+	 * Setzt Height und Width auf die nächst größere Potenz von 2
+	 */
+	public void setPO2()
+	{
+		int PO2width = getNextHighestPO2((int) this.width);
+		int PO2height = getNextHighestPO2((int) this.height);
+
+		setSize(PO2width, PO2height);
+	}
+
+	/**
+	 * Calculates the next highest power of two for a given integer.
+	 * 
+	 * @param n
+	 *            the number
+	 * @return a power of two equal to or higher than n
+	 */
+	public static int getNextHighestPO2(int n)
+	{
+		n -= 1;
+		n = n | (n >> 1);
+		n = n | (n >> 2);
+		n = n | (n >> 4);
+		n = n | (n >> 8);
+		n = n | (n >> 16);
+		n = n | (n >> 32);
+		return n + 1;
+	}
+
 }

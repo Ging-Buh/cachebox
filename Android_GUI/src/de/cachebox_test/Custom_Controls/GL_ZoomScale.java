@@ -84,6 +84,9 @@ public class GL_ZoomScale
 
 	public void Render(SpriteBatch batch, ChangedRectF rect)
 	{
+
+		if (rect.getWidth() < 1 || rect.getHeight() < 1) return;
+
 		// rect auf Teilen in zwei gleich große
 		ScaleDrawRec = rect.copy();
 
@@ -186,6 +189,9 @@ public class GL_ZoomScale
 		}
 
 		if (CachedScaleSprite != null) return CachedScaleSprite;
+
+		// set Height and Width to next PO2 nede for OpenGL 1.1
+		rect.setPO2();
 
 		Bitmap drawSurface = Bitmap.createBitmap((int) rect.getWidth(), (int) rect.getHeight(), Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(drawSurface);

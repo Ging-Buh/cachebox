@@ -94,7 +94,7 @@ public class Bubble
 
 		try
 		{
-			Sprite contentSprite = GetBubbleContentSprite(430, 140);
+			Sprite contentSprite = GetBubbleContentSprite(512, 128);
 
 			contentSprite.setPosition(Pos.x - Sizes.GL.halfBubble + WpUnderlay.halfWidth + Sizes.GL.bubbleCorrect.width, Pos.y
 					+ Sizes.GL.bubbleCorrect.height);

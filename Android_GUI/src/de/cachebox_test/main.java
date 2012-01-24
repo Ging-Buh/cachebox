@@ -2086,7 +2086,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (mapViewGl == null)
 			{
-				viewGl = initializeForView(mapViewGlListener, true);
+				viewGl = initializeForView(mapViewGlListener, false);
 
 				mapViewGl = new MapViewGL(this, inflater, viewGl, mapViewGlListener);
 
