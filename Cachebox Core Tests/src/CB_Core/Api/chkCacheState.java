@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 import CB_Core.Config;
+import CB_Core.InitTestDBs;
 import CB_Core.Types.Cache;
 
 public class chkCacheState extends TestCase
@@ -23,14 +24,13 @@ public class chkCacheState extends TestCase
 	}
 
 	/**
-	 * lädt die Config Datei aus dem Ordner "trunk\Cachebox Core\testdata" Hie
-	 * muss eine gültige cachebox.config Datei liegen. Diese Datei ist auf der
-	 * Ignore list von SVN, so das diese Persönliche config nicht veröffentlicht
-	 * werden kann. (zum Schutz des Persönlichen API Keys)
+	 * lädt die Config Datei aus dem Ordner "trunk\Cachebox Core\testdata" Hie muss eine gültige cachebox.config Datei liegen. Diese Datei
+	 * ist auf der Ignore list von SVN, so das diese Persönliche config nicht veröffentlicht werden kann. (zum Schutz des Persönlichen API
+	 * Keys)
 	 */
 	private void LoadConfig()
 	{
-		Config.Initialize("./testdata/", "./testdata/cachebox.config");
+		InitTestDBs.InitalConfig();
 		String key = Config.GetAccessToken();
 		assertFalse("Kein Access Key gefunden, liegt die Config an der richtigen stelle?", key.equals(""));
 

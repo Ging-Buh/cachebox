@@ -5,9 +5,8 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 import CB_Core.FileIO;
+import CB_Core.InitTestDBs;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database.DatabaseType;
-import CB_Core.DB.TestDB;
 
 /**
  * Enthält die Tests zum Entpacken von Zip Files und deren anschliesenden GPX Import
@@ -29,9 +28,8 @@ public class GPX_Unzip_Import_Test extends TestCase
 		UnzipTest.testUnzip();
 
 		// initialize Database
-		Database.Data = new TestDB(DatabaseType.CacheBox);
-		String database = "./testdata/testDb.db3";
-		Database.Data.StartUp(database);
+		String database = "./testdata/test.db3";
+		InitTestDBs.InitTestDB(database);
 
 		// Importiere all GPX files
 		ImportHandler importHandler = new ImportHandler();

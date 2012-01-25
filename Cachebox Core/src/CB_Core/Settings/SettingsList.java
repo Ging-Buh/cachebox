@@ -12,6 +12,13 @@ public class SettingsList extends HashMap<String, SettingBase>
 	 */
 	private static final long serialVersionUID = -969846843815877942L;
 
+	private boolean isLoaded = false;
+
+	public boolean isLoaded()
+	{
+		return isLoaded;
+	}
+
 	public boolean getBool(String key)
 	{
 		if (this.containsKey(key))
@@ -130,6 +137,7 @@ public class SettingsList extends HashMap<String, SettingBase>
 			else
 				dao.ReadFromDatabase(Database.Data, setting);
 		}
+		isLoaded = true;
 	}
 
 	public void LoadFromLastValue()

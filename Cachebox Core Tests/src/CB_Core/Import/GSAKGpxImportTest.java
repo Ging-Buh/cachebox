@@ -5,11 +5,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
-import CB_Core.Config;
+import CB_Core.InitTestDBs;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database.DatabaseType;
-import CB_Core.DB.TestDB;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
@@ -22,16 +20,10 @@ public class GSAKGpxImportTest extends TestCase
 
 	public static void testGpxImport() throws Exception
 	{
-		// Read Config
-		String workPath = "./testdata";
-		Config.Initialize(workPath, workPath + "/cachebox.config");
-
-		Config.readConfigFile(/* getAssets() */);
 
 		// initialize Database
-		Database.Data = new TestDB(DatabaseType.CacheBox);
-		String database = Config.settings.DatabasePath.getValue();
-		Database.Data.StartUp(database);
+		String database = "./testdata/test.db3";
+		InitTestDBs.InitTestDB(database);
 
 		ImportHandler importHandler = new ImportHandler();
 

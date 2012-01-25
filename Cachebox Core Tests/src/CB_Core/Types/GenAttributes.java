@@ -1,38 +1,27 @@
 package CB_Core.Types;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 
+import junit.framework.TestCase;
+
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.util.ByteArrayBuffer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import junit.framework.TestCase;
-
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.InitTestDBs;
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Enums.Attributes;
 
 /**
- * Der Test ist kein Wirklicher Test. Hier werden die GS Attribute Herrunter
- * geladen und es wird die "Attributes.java" daraus generiert. Damit die
- * Attribute immer Aktuell gehalten werden können.
+ * Der Test ist kein Wirklicher Test. Hier werden die GS Attribute Herrunter geladen und es wird die "Attributes.java" daraus generiert.
+ * Damit die Attribute immer Aktuell gehalten werden können.
  * 
  * @author Longri
  */
@@ -46,7 +35,7 @@ public class GenAttributes extends TestCase
 	{
 		if (NotRun) return;
 
-		Config.Initialize("./testdata/", "./testdata/cachebox.config");
+		InitTestDBs.InitalConfig();
 		String accessToken = Config.GetAccessToken();
 		assertFalse("Kein Access Key gefunden, liegt die Config an der richtigen stelle?", accessToken.equals(""));
 
@@ -306,7 +295,7 @@ public class GenAttributes extends TestCase
 			if (tmp.hasNo)
 			{
 				String descNo = tmp.Description;
-				if (descNo.length() > 0)Lang += "att_" + String.valueOf(tmp.ID) + "_0 = NO " + descNo + BR;
+				if (descNo.length() > 0) Lang += "att_" + String.valueOf(tmp.ID) + "_0 = NO " + descNo + BR;
 			}
 		}
 		while (iterator.hasNext());
@@ -325,8 +314,6 @@ public class GenAttributes extends TestCase
 		enwriter.close();
 
 	}
-
-	
 
 	class GsAttributes
 	{

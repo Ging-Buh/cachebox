@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 import CB_Core.Config;
+import CB_Core.InitTestDBs;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.ImageEntry;
@@ -39,7 +40,7 @@ public class searchForGeoCache_Test extends TestCase
 	 */
 	private void LoadConfig()
 	{
-		Config.Initialize("./testdata/", "./testdata/cachebox.config");
+		InitTestDBs.InitalConfig();
 		String key = Config.GetAccessToken();
 		assertFalse("Kein Access Key gefunden, liegt die Config an der richtigen stelle?", key.equals(""));
 	}
@@ -68,7 +69,7 @@ public class searchForGeoCache_Test extends TestCase
 
 	public void testSearchGcCode()
 	{
-		String accessToken = "2kHjcgZixcpOgK5ltMiwLDSEjb4="; // Config.GetAccessToken();
+		String accessToken = Config.GetAccessToken();
 
 		CB_Core.Api.SearchForGeocaches.SearchGC searchC = new CB_Core.Api.SearchForGeocaches.SearchGC();
 		searchC.gcCode = "GC2TZPJ";

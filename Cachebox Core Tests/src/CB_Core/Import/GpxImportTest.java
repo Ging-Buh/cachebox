@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
+import CB_Core.InitTestDBs;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database.DatabaseType;
-import CB_Core.DB.TestDB;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
@@ -23,9 +22,8 @@ public class GpxImportTest extends TestCase
 	{
 
 		// initialize Database
-		Database.Data = new TestDB(DatabaseType.CacheBox);
 		String database = "./testdata/test.db3";
-		Database.Data.StartUp(database);
+		InitTestDBs.InitTestDB(database);
 
 		ImportHandler importHandler = new ImportHandler();
 
