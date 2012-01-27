@@ -19,10 +19,12 @@ import de.cachebox_test.Ui.AllContextMenuCallHandler;
 public class MapViewGL extends RelativeLayout implements ViewOptionsMenu
 {
 	public MapViewGlListener mapViewGlListener;
+	public static View ViewGl;
 
 	public MapViewGL(Context context, LayoutInflater inflater, View glView, MapViewGlListener mapViewGlListener)
 	{
 		super(context);
+		ViewGl = glView;
 		this.mapViewGlListener = mapViewGlListener;
 		try
 		{

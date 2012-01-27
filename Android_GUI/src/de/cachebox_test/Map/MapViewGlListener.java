@@ -1,6 +1,8 @@
 package de.cachebox_test.Map;
 
 import java.util.SortedMap;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
@@ -20,6 +22,7 @@ import CB_Core.Types.Waypoint;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
+import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -50,6 +53,7 @@ import de.cachebox_test.Map.MapCacheList.WaypointRenderInfo;
 import de.cachebox_test.Ui.Sizes;
 import de.cachebox_test.Ui.Math.SizeF;
 import de.cachebox_test.Views.MapView;
+import de.cachebox_test.Views.MapViewGL;
 import de.cachebox_test.Views.Forms.ScreenLock;
 
 public class MapViewGlListener implements ApplicationListener, PositionEvent
@@ -127,6 +131,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	Gdx2DPixmap circle;
 	Texture tcircle;
 	long startTime;
+	Timer myTimer;
 
 	public MapViewGlListener()
 	{
@@ -200,6 +205,39 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 		Sizes.GL.initial();
 
+	}
+
+	private void startTimer(long delay)
+	{
+		stopTimer();
+
+		myTimer = new Timer();
+		myTimer.schedule(new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				TimerMethod();
+			}
+
+			private void TimerMethod()
+			{
+				((GLSurfaceView) MapViewGL.ViewGl).requestRender();
+
+			}
+
+		}, 0, delay);
+		((GLSurfaceView) MapViewGL.ViewGl).setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+	}
+
+	private void stopTimer()
+	{
+		if (myTimer != null)
+		{
+			myTimer.cancel();
+			myTimer = null;
+		}
+		((GLSurfaceView) MapViewGL.ViewGl).setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 	}
 
 	@Override
@@ -401,18 +439,17 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		//
 		// createOrUpdateScreenCapture();
 		// bindTexture(screenCapture.getTexture());
-
 	}
 
 	private void reduceFPS()
 	{
 		long endTime = System.currentTimeMillis();
 		long dt = endTime - startTime;
-		if (dt < 60)
+		if (dt < 33)
 		{
 			try
 			{
-				if (60 - dt > 0) Thread.sleep(60 - dt);
+				if (20 - dt > 0) Thread.sleep(20 - dt);
 			}
 			catch (InterruptedException e)
 			{
@@ -971,10 +1008,12 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	public void onStart()
 	{
 		started.set(true);
+		startTimer(40);
 	}
 
 	public void onStop()
 	{
+		stopTimer();
 
 		// TODO wenn der ScreenLock angezeigt wird, kommt es auch zu einem
 		// onStop.

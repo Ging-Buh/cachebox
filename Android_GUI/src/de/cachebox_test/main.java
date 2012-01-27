@@ -66,6 +66,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -2087,6 +2088,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (mapViewGl == null)
 			{
 				viewGl = initializeForView(mapViewGlListener, false);
+				((GLSurfaceView) viewGl).setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
 				mapViewGl = new MapViewGL(this, inflater, viewGl, mapViewGlListener);
 
