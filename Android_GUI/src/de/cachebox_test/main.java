@@ -124,6 +124,7 @@ import de.cachebox_test.Map.MapViewGlListener;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
 import de.cachebox_test.Ui.Sizes;
+import de.cachebox_test.Ui.Math.Size;
 import de.cachebox_test.Views.AboutView;
 import de.cachebox_test.Views.CacheListView;
 import de.cachebox_test.Views.CompassView;
@@ -350,10 +351,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		AllContextMenuCallHandler.Main = this;
 		mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-		mapViewGlListener = new MapViewGlListener();
-
 		// initial UiSizes
 		Sizes.initial(false, this);
+		Size initSize = new Size(Config.settings.MapIniWidth.getValue(), Config.settings.MapIniHeight.getValue());
+
+		mapViewGlListener = new MapViewGlListener(initSize.width, initSize.height);
 
 		int Time = Config.settings.ScreenLock.getValue();
 		counter = new ScreenLockTimer(Time, Time);

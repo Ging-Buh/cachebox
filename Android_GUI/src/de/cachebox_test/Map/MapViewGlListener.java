@@ -30,9 +30,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
@@ -58,6 +55,8 @@ import de.cachebox_test.Views.Forms.ScreenLock;
 
 public class MapViewGlListener implements ApplicationListener, PositionEvent
 {
+	private final String Tag = "MAP_VIEW_GL";
+
 	protected SortedMap<Long, TileGL> loadedTiles = new TreeMap<Long, TileGL>();
 	final Lock loadedTilesLock = new ReentrantLock();
 	protected SortedMap<Long, Descriptor> queuedTiles = new TreeMap<Long, Descriptor>();
@@ -128,14 +127,19 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	OrthographicCamera camera;
 	CameraController controller;
 	GestureDetector gestureDetector;
-	Gdx2DPixmap circle;
-	Texture tcircle;
+
+	// Gdx2DPixmap circle;
+	// Texture tcircle;
+
 	long startTime;
 	Timer myTimer;
 
-	public MapViewGlListener()
+	public MapViewGlListener(int initalWidth, int initialHeight)
 	{
 		super();
+
+		Log.d(Tag, "Constructor");
+
 		if (queueProcessor == null)
 		{
 			queueProcessor = new queueProcessor();
@@ -150,28 +154,17 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 		mapCacheList = new MapCacheList(maxMapZoom);
 
-	}
-
-	@Override
-	public void create()
-	{
-		PositionEventList.Add(this);
+		// from create
 
 		String currentLayerName = Config.settings.CurrentMapLayer.getValue();
 		CurrentLayer = MapView.Manager.GetLayerByName((currentLayerName == "") ? "Mapnik" : currentLayerName, currentLayerName, "");
 
 		// CurrentLayer = MapView.Manager.GetLayerByName("Hubermedia Bavaria", "Hubermedia Bavaria", "");
 
-		width = Gdx.graphics.getWidth();
-		height = Gdx.graphics.getHeight();
+		width = initalWidth;// Gdx.graphics.getWidth();
+		height = initialHeight; // Gdx.graphics.getHeight();
 		drawingWidth = width;
 		drawingHeight = height;
-		batch = new SpriteBatch();
-		camera = new OrthographicCamera(width, height);
-
-		controller = new CameraController();
-		gestureDetector = new GestureDetector(20, 0.5f, 2, 0.15f, controller);
-		Gdx.input.setInputProcessor(gestureDetector);
 
 		iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
 
@@ -179,19 +172,12 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		// setCenter(new Coordinate(48.0, 12.0));
 		textMatrix = new Matrix4().setToOrtho2D(0, 0, width, height);
 
-		circle = new Gdx2DPixmap(16, 16, Gdx2DPixmap.GDX2D_FORMAT_RGB565);
-		circle.clear(Color.TRANSPARENT);
-		// circle.fillRect(0, 0, 16, 16, Color.YELLOW);
-		circle.drawCircle(8, 8, 8, Color.BLACK);
-
-		tcircle = new Texture(new Pixmap(circle));
-		aktZoom = zoomBtn.getZoom();
-		zoomScale.setZoom(aktZoom);
-		camera.zoom = getMapTilePosFactor(aktZoom);
-		endCameraZoom = camera.zoom;
-		diffCameraZoom = 0;
-		camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
-		startTime = System.currentTimeMillis();
+		// circle = new Gdx2DPixmap(16, 16, Gdx2DPixmap.GDX2D_FORMAT_RGB565);
+		// circle.clear(Color.TRANSPARENT);
+		// // circle.fillRect(0, 0, 16, 16, Color.YELLOW);
+		// circle.drawCircle(8, 8, 8, Color.BLACK);
+		//
+		// tcircle = new Texture(new Pixmap(circle));
 
 		// initial Toggle Button
 		btnTrackPos = new MultiToggleButton();
@@ -203,8 +189,22 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		btnTrackPos.setLastStateWithLongClick(true);
 		btnTrackPos.setState(0, true);
 
-		Sizes.GL.initial();
+	}
 
+	@Override
+	public void create()
+	{
+
+		Log.d(Tag, "create()");
+
+		PositionEventList.Add(this);
+
+		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		if (batch == null) batch = new SpriteBatch();
+		if (Gdx.input.getInputProcessor() != gestureDetector) Gdx.input.setInputProcessor(gestureDetector);
+
+		startTime = System.currentTimeMillis();
 	}
 
 	private void startTimer(long delay)
@@ -243,14 +243,47 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	@Override
 	public void resize(int width, int height)
 	{
-		// //Log.d("MAPVIEW", "resize" + width + "/" + height);
+		// wenn sich die Größe nicht geändert hat, brauchen wir nicht zu machen!
+		if (width == this.width && height == this.height)
+		{
+			// Ausser wenn Camera == null!
+			if (camera != null) return;
+		}
+
+		Log.d(Tag, "resize(width,height) " + width + "/" + height);
+
+		this.width = width;// Gdx.graphics.getWidth();
+		this.height = height; // Gdx.graphics.getHeight();
+		this.drawingWidth = width;
+		this.drawingHeight = height;
+
+		camera = new OrthographicCamera(width, height);
+
+		controller = new CameraController();
+		gestureDetector = new GestureDetector(20, 0.5f, 1, 0.15f, controller);
+
+		aktZoom = zoomBtn.getZoom();
+		zoomScale.setZoom(aktZoom);
+		camera.zoom = getMapTilePosFactor(aktZoom);
+		endCameraZoom = camera.zoom;
+		diffCameraZoom = 0;
+		camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
+
 		textMatrix.setToOrtho2D(0, 0, width, height);
 		((main) main.mainActivity).iniInput();// Größe des Input bereichs muss neu Berechnet werden
 		Sizes.GL.initial(width, height);
+
+		// setze Size als IniSize
+		Config.settings.MapIniWidth.setValue(width);
+		Config.settings.MapIniHeight.setValue(height);
+		Config.AcceptChanges();
 	}
 
 	public void SetCurrentLayer(Layer newLayer)
 	{
+
+		Log.d(Tag, "SetCurrentLayer = " + newLayer.Name);
+
 		Config.settings.CurrentMapLayer.setValue(newLayer.Name);
 		Config.AcceptChanges();
 
@@ -989,30 +1022,35 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	@Override
 	public void pause()
 	{
+		Log.d(Tag, "pause()");
 		onStop();
 	}
 
 	@Override
 	public void resume()
 	{
+		Log.d(Tag, "resume()");
 		onStart();
 	}
 
 	@Override
 	public void dispose()
 	{
+		Log.d(Tag, "dispose()");
 		SpriteCache.destroyCache();
 
 	}
 
 	public void onStart()
 	{
+		Log.d(Tag, "onStart()");
 		started.set(true);
 		startTimer(40);
 	}
 
 	public void onStop()
 	{
+		Log.d(Tag, "onStop()");
 		stopTimer();
 
 		// TODO wenn der ScreenLock angezeigt wird, kommt es auch zu einem
@@ -1035,6 +1073,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 			}
 		}
 		loadedTiles.clear();
+		PositionEventList.Remove(this);
+
+		saveToSettings();
 	}
 
 	private void stateChanged()
@@ -1390,6 +1431,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 	public void Initialize()
 	{
+		Log.d(Tag, "Initialize()");
 		// minzoom = Config.settings.OsmMinLevel.getValue();
 		// maxzoom = Config.settings.OsmMaxLevel.getValue();
 
@@ -1397,6 +1439,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 	public void InitializeMap()
 	{
+		Log.d(Tag, "InitializeMap()");
 		zoomCross = Config.settings.ZoomCross.getValue();
 		zoomBtn.setZoom(Config.settings.lastZoomLevel.getValue());
 		// Bestimmung der ersten Position auf der Karte
@@ -1465,6 +1508,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 	public void setNewSettings()
 	{
+		Log.d(Tag, "setNewSettings()");
 		showRating = Config.settings.MapShowRating.getValue();
 		showDT = Config.settings.MapShowDT.getValue();
 		showTitles = Config.settings.MapShowTitles.getValue();
@@ -1481,6 +1525,12 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		zoomScale.setMaxZoom(Config.settings.OsmMaxLevel.getValue());
 		zoomScale.setMinZoom(Config.settings.OsmMinLevel.getValue());
 		zoomScale.setZoom(aktZoom);
+	}
+
+	public void saveToSettings()
+	{
+		Config.settings.lastZoomLevel.setValue(aktZoom);
+
 	}
 
 	private void setScreenCenter(Vector2 newCenter)
@@ -1583,13 +1633,16 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	@Override
 	public void OrientationChanged(float heading)
 	{
-		// liefert die Richtung (abhängig von der Geschwindigkeit von
-		// Kompass oder GPS
-		if (!Global.Locator.UseCompass())
-		{
-			// GPS-Richtung soll verwendet werden!
-			heading = Global.Locator.getHeading();
-		}
+		// // liefert die Richtung (abhängig von der Geschwindigkeit von
+		// // Kompass oder GPS
+		// if (!Global.Locator.UseCompass())
+		// {
+		// // GPS-Richtung soll verwendet werden!
+		// heading = Global.Locator.getHeading();
+		// }
+
+		// getHeading() entscheidet schon ob das Heading von GPS oder Hardware kommt!
+		heading = Global.Locator.getHeading();
 
 		if (alignToCompass)
 		{

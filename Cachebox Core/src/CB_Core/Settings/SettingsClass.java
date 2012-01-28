@@ -93,6 +93,9 @@ public class SettingsClass extends SettingsList
 	public SettingInt LogMaxMonthAge;
 	public SettingInt LogMinCount;
 	public SettingInt installRev;
+	public SettingInt MapIniWidth;
+	public SettingInt MapIniHeight;
+
 	// public SettingInt OsmCoverage;
 	public SettingInt FoundOffset;
 	public SettingInt MapMaxCachesLabel;
@@ -258,6 +261,9 @@ public class SettingsClass extends SettingsList
 		addSetting(mapMaxCachesDisplayLarge_config = new SettingInt("mapMaxCachesDisplayLarge_config", cat, INVISIBLE, 75, true));
 		addSetting(MapMaxCachesLabel = new SettingInt("MapMaxCachesLabel", cat, INVISIBLE, 12, true));
 		addSetting(OsmMaxImportLevel = new SettingIntArray("OsmMaxImportLevel", cat, INVISIBLE, 16, true, Level));
+
+		addSetting(MapIniWidth = new SettingInt("MapIniWidth", cat, INVISIBLE, 480, true));
+		addSetting(MapIniHeight = new SettingInt("MapIniHeight", cat, INVISIBLE, 535, true));
 
 	}
 

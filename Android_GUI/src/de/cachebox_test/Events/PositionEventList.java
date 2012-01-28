@@ -26,6 +26,12 @@ public class PositionEventList
 
 	public static void Call(Location location)
 	{
+		if (!Config.settings.HtcCompass.getValue())
+		{
+			// GPS richtung senden
+			Call(location.getBearing(), true);
+		}
+
 		GlobalCore.LastPosition = new Coordinate(location.getLatitude(), location.getLongitude());
 		GlobalCore.LastPosition.Valid = true; // Valid ob GPS oder Phone,
 												// hauptsache eine Coordinate
@@ -51,12 +57,17 @@ public class PositionEventList
 
 	public static void Call(float heading)
 	{
+		Call(heading, false);
+	}
+
+	public static void Call(float heading, boolean force)
+	{
 		/**
 		 * if display is switched off, so we need no heading changes
 		 */
 		if (Energy.DisplayOff()) return;
 
-		if (!Config.settings.HtcCompass.getValue()) return;
+		if (!Config.settings.HtcCompass.getValue() && !force) return;
 
 		anzCompassValues++;
 		compassValue += heading;

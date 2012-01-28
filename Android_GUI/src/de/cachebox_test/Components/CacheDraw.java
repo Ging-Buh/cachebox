@@ -70,9 +70,13 @@ public class CacheDraw
 
 	public static void ReleaseCacheBMP()
 	{
-		CachedBitmap.recycle();
-		CachedBitmap = null;
-		CachedBitmapId = -1;
+		if (CachedBitmap != null)
+		{
+			CachedBitmap.recycle();
+			CachedBitmap = null;
+			CachedBitmapId = -1;
+		}
+
 	}
 
 	public static void DrawInfo(Cache cache, int Width, int Height, DrawStyle drawStyle)

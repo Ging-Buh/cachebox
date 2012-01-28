@@ -1,9 +1,9 @@
 package de.cachebox_test.Locator;
 
+import CB_Core.Config;
 import CB_Core.Types.Coordinate;
 import android.location.Location;
 import android.location.LocationManager;
-import CB_Core.Config;
 import de.cachebox_test.Global;
 import de.cachebox_test.UnitFormatter;
 
@@ -81,24 +81,19 @@ public class Locator
 		synchronized (this)
 		{
 			if (!Config.settings.HtcCompass.getValue()) return false;
-			if (CompassHeading < 0) return false; // kein Kompass Wert ->
-													// Komapass nicht verwenden!
-			if ((location != null) && location.hasBearing() && (SpeedOverGround() > Config.settings.HtcLevel.getValue())) return false; // Geschwindigkeit
-																																		// >
-																																		// 5
-																																		// km/h
-																																		// ->
-																																		// GPs
-																																		// Kompass
-																																		// verwenden
+			if (CompassHeading < 0) return false; // kein Kompass Wert -> Komapass nicht verwenden!
+
+			// Geschwindigkeit > 5 km/h -> GPs Kompass verwenden
+			if ((location != null) && location.hasBearing() && (SpeedOverGround() > Config.settings.HtcLevel.getValue())) return false;
 
 			return true;
 		}
 	}
 
-	public boolean LastUsedCompass = false; // hier wird gespeichert, ob der
-											// zuletzt ausgegebene Winkel vom
-											// Kompass kam...
+	/**
+	 * hier wird gespeichert, ob der zuletzt ausgegebene Winkel vom Kompass kam...
+	 */
+	public boolean LastUsedCompass = false;
 
 	public float getHeading()
 	{

@@ -72,7 +72,7 @@ public class Sizes
 
 	private static double calcBase;
 
-	public static void initial(boolean land, Activity context)
+	public static Size initial(boolean land, Activity context)
 	{
 		Resources res = context.getResources();
 
@@ -130,6 +130,9 @@ public class Sizes
 		arrowScaleList = res.getDimensionPixelSize(R.dimen.ArrowSize_List);
 		arrowScaleMap = res.getDimensionPixelSize(R.dimen.ArrowSize_Map);
 		TB_icon_Size = res.getDimensionPixelSize(R.dimen.TB_icon_Size);
+
+		return new Size(windowWidth, windowHeight);
+
 	}
 
 	public static int getTbIconSize()
