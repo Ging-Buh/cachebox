@@ -7,6 +7,7 @@ import java.util.TimerTask;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.MoveableList;
 import android.app.Activity;
 import android.content.Context;
@@ -33,7 +34,6 @@ import de.cachebox_test.main;
 import de.cachebox_test.Custom_Controls.downSlider;
 import de.cachebox_test.Custom_Controls.QuickButtonList.QuickButtonItem;
 import de.cachebox_test.Enums.Actions;
-import de.cachebox_test.Ui.Sizes;
 
 public class SettingsListEditQuickButton extends Activity
 {
@@ -72,17 +72,17 @@ public class SettingsListEditQuickButton extends Activity
 		OKButton.setText(GlobalCore.Translations.Get("ok"));
 		CancelButton.setText(GlobalCore.Translations.Get("cancel"));
 
-		OKButton.setWidth(Sizes.getButtonWidthWide());
-		CancelButton.setWidth(Sizes.getButtonWidthWide());
-		OKButton.setHeight(Sizes.getQuickButtonHeight());
-		CancelButton.setHeight(Sizes.getQuickButtonHeight());
+		OKButton.setWidth(UiSizes.getButtonWidthWide());
+		CancelButton.setWidth(UiSizes.getButtonWidthWide());
+		OKButton.setHeight(UiSizes.getQuickButtonHeight());
+		CancelButton.setHeight(UiSizes.getQuickButtonHeight());
 
 		Config.settings.SaveToLastValue();
 
-		ActionListUp.setWidth(Sizes.getButtonWidth());
-		ActionListDown.setWidth(Sizes.getButtonWidth());
-		ActionListDel.setWidth(Sizes.getButtonWidth());
-		ActionListAdd.setWidth(Sizes.getButtonWidth());
+		ActionListUp.setWidth(UiSizes.getButtonWidth());
+		ActionListDown.setWidth(UiSizes.getButtonWidth());
+		ActionListDel.setWidth(UiSizes.getButtonWidth());
+		ActionListAdd.setWidth(UiSizes.getButtonWidth());
 
 		CancelButton.setOnClickListener(new OnClickListener()
 		{
@@ -206,7 +206,7 @@ public class SettingsListEditQuickButton extends Activity
 						Global.QuickButtonList = new MoveableList<QuickButtonItem>();
 						ActionListView.setAdapter(QuickListBaseAdapter);
 					}
-					Global.QuickButtonList.add(new QuickButtonItem(context, AllActionList.get(arg2), Sizes.getQuickButtonHeight()));
+					Global.QuickButtonList.add(new QuickButtonItem(context, AllActionList.get(arg2), UiSizes.getQuickButtonHeight()));
 					resortList();
 
 					ActionListAll.setVisibility(View.INVISIBLE);
@@ -266,7 +266,7 @@ public class SettingsListEditQuickButton extends Activity
 
 		if (ActionListSelectedIndex > -1)
 		{
-			ActionListView.setSelectionFromTop(ActionListSelectedIndex, Sizes.getQuickButtonHeight());
+			ActionListView.setSelectionFromTop(ActionListSelectedIndex, UiSizes.getQuickButtonHeight());
 		}
 
 	}

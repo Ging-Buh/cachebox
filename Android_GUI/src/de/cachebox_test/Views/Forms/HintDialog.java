@@ -1,6 +1,7 @@
 package de.cachebox_test.Views.Forms;
 
 import CB_Core.GlobalCore;
+import CB_Core.Math.UiSizes;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
-import de.cachebox_test.Ui.Sizes;
 
 public class HintDialog extends Activity
 {
@@ -36,7 +36,7 @@ public class HintDialog extends Activity
 		bDecode = (Button) findViewById(R.id.hintdialog_button_decode);
 		etHint = (EditText) findViewById(R.id.hintdialog_text);
 
-		etHint.setMaxHeight(Sizes.getWindowHeight() - (Sizes.getQuickButtonHeight() * 4));
+		etHint.setMaxHeight(UiSizes.getWindowHeight() - (UiSizes.getQuickButtonHeight() * 4));
 
 		etHint.setText(hint);
 		bClose.setOnClickListener(new OnClickListener()

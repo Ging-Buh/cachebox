@@ -28,6 +28,7 @@ import org.openintents.intents.FileManagerIntents;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Math.UiSizes;
 import CB_Core.Settings.SettingBase;
 import CB_Core.Settings.SettingBool;
 import CB_Core.Settings.SettingCategory;
@@ -85,7 +86,6 @@ import de.cachebox_test.Custom_Controls.wheel.WheelView;
 import de.cachebox_test.Custom_Controls.wheel.adapters.NumericWheelAdapter;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
-import de.cachebox_test.Ui.Sizes;
 import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.NumerikInputBox;
 import de.cachebox_test.Views.Forms.StringInputBox;
@@ -211,8 +211,8 @@ public class SettingsScrollView extends Activity
 			SettingsListButtonLangSpinner lang = new SettingsListButtonLangSpinner("Lang", SettingCategory.Button, SettingModus.Normal,
 					true);
 			View langView = getLangSpinnerView(lang, content);
-			langView.setMinimumWidth(Sizes.getQuickButtonWidth());
-			langView.setMinimumHeight(Sizes.getQuickButtonHeight());
+			langView.setMinimumWidth(UiSizes.getQuickButtonWidth());
+			langView.setMinimumHeight(UiSizes.getQuickButtonHeight());
 			content.addView(langView);
 
 			SettingsListCategoryButton quick = new SettingsListCategoryButton("QuickList", SettingCategory.Button, SettingModus.Normal,
@@ -428,13 +428,13 @@ public class SettingsScrollView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_big());
+		label.setTextSize(UiSizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText("default: " + String.valueOf(SB.getDefaultValue()));
-		label2.setTextSize((float) Sizes.getScaledFontSize());
+		label2.setTextSize((float) UiSizes.getScaledFontSize());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		CheckBox chk = (CheckBox) row.findViewById(R.id.checkBox1);
@@ -540,13 +540,13 @@ public class SettingsScrollView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_big());
+		label.setTextSize(UiSizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(SB.getValue());
-		label2.setTextSize((float) Sizes.getScaledFontSize());
+		label2.setTextSize((float) UiSizes.getScaledFontSize());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -622,7 +622,7 @@ public class SettingsScrollView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_big());
+		label.setTextSize(UiSizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		final Spinner spinner = (Spinner) row.findViewById(R.id.spinner1);
@@ -694,7 +694,7 @@ public class SettingsScrollView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_big());
+		label.setTextSize(UiSizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		final Spinner spinner = (Spinner) row.findViewById(R.id.spinner1);
@@ -766,13 +766,13 @@ public class SettingsScrollView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_big());
+		label.setTextSize(UiSizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(String.valueOf(SB.getValue()));
-		label2.setTextSize((float) Sizes.getScaledFontSize());
+		label2.setTextSize((float) UiSizes.getScaledFontSize());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -858,13 +858,13 @@ public class SettingsScrollView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_big());
+		label.setTextSize(UiSizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(String.valueOf(SB.getValue()));
-		label2.setTextSize((float) Sizes.getScaledFontSize());
+		label2.setTextSize((float) UiSizes.getScaledFontSize());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -949,13 +949,13 @@ public class SettingsScrollView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_big());
+		label.setTextSize(UiSizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(SB.getValue());
-		label2.setTextSize((float) Sizes.getScaledFontSize());
+		label2.setTextSize((float) UiSizes.getScaledFontSize());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -1024,13 +1024,13 @@ public class SettingsScrollView extends Activity
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		// label.setText(SB.getName());
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_big());
+		label.setTextSize(UiSizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		TextView label2 = (TextView) row.findViewById(R.id.textView2);
 
 		label2.setText(SB.getValue());
-		label2.setTextSize((float) Sizes.getScaledFontSize());
+		label2.setTextSize((float) UiSizes.getScaledFontSize());
 		label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 		row.setOnClickListener(new OnClickListener()
@@ -1088,9 +1088,9 @@ public class SettingsScrollView extends Activity
 
 		Button button = (Button) row.findViewById(R.id.Button);
 		button.setText(GlobalCore.Translations.Get(SB.getName()));
-		button.setTextSize(Sizes.getScaledFontSize_btn());
+		button.setTextSize(UiSizes.getScaledFontSize_btn());
 		button.setTextColor(Global.getColor(R.attr.TextColor));
-		int Height = (Sizes.getQuickButtonHeight());
+		int Height = (UiSizes.getQuickButtonHeight());
 		button.setHeight(Height);
 
 		button.setOnClickListener(new OnClickListener()
@@ -1116,10 +1116,10 @@ public class SettingsScrollView extends Activity
 					String info = "";
 
 					info += "Density= " + SettingsScrollView.Me.getString(R.string.density) + Global.br + Global.br;
-					info += "Height= " + String.valueOf(Sizes.getWindowHeight()) + Global.br;
-					info += "Width= " + String.valueOf(Sizes.getWindowWidth()) + Global.br;
-					info += "Scale= " + String.valueOf(Sizes.getScale()) + Global.br;
-					info += "FontSize= " + String.valueOf(Sizes.getScaledFontSize()) + Global.br;
+					info += "Height= " + String.valueOf(UiSizes.getWindowHeight()) + Global.br;
+					info += "Width= " + String.valueOf(UiSizes.getWindowWidth()) + Global.br;
+					info += "Scale= " + String.valueOf(UiSizes.getScale()) + Global.br;
+					info += "FontSize= " + String.valueOf(UiSizes.getScaledFontSize()) + Global.br;
 
 					MessageBox.Show(info, SettingsScrollView.Me);
 
@@ -1170,10 +1170,10 @@ public class SettingsScrollView extends Activity
 
 		Button button = (Button) row.findViewById(R.id.Button);
 		button.setText(GlobalCore.Translations.Get("getApiKey"));
-		button.setTextSize(Sizes.getScaledFontSize_btn());
+		button.setTextSize(UiSizes.getScaledFontSize_btn());
 		button.setTextColor(Global.getColor(R.attr.TextColor));
 
-		int Height = (int) (Sizes.getScaledRefSize_normal() * 4);
+		int Height = (int) (UiSizes.getScaledRefSize_normal() * 4);
 		button.setMinimumHeight(Height);
 
 		if (Config.settings.GcAPI.getValue().equals(""))
@@ -1223,7 +1223,7 @@ public class SettingsScrollView extends Activity
 
 		TextView label = (TextView) row.findViewById(R.id.textView1);
 		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(Sizes.getScaledFontSize_big());
+		label.setTextSize(UiSizes.getScaledFontSize_big());
 		label.setTextColor(Global.getColor(R.attr.TextColor));
 
 		wheel_m.addScrollingListener(new OnWheelScrollListener()
@@ -1299,7 +1299,7 @@ public class SettingsScrollView extends Activity
 
 		final Spinner spinner = (Spinner) row.findViewById(R.id.Spinner);
 
-		int Height = (int) (Sizes.getScaledRefSize_normal() * 4);
+		int Height = (int) (UiSizes.getScaledRefSize_normal() * 4);
 		spinner.setMinimumHeight(Height);
 
 		spinner.setPrompt(GlobalCore.Translations.Get("SelectLanguage"));

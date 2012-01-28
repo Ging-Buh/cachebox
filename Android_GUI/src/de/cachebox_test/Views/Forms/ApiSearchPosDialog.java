@@ -4,6 +4,7 @@ import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
 import android.app.Activity;
 import android.content.Context;
@@ -23,7 +24,6 @@ import de.cachebox_test.main;
 import de.cachebox_test.Custom_Controls.MultiToggleButton;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.Sizes;
 
 public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 {
@@ -260,10 +260,10 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 
 	private void initialForm()
 	{
-		OKButton.setWidth(Sizes.getButtonWidthWide());
-		CancelButton.setWidth(Sizes.getButtonWidthWide());
-		OKButton.setHeight(Sizes.getQuickButtonHeight());
-		CancelButton.setHeight(Sizes.getQuickButtonHeight());
+		OKButton.setWidth(UiSizes.getButtonWidthWide());
+		CancelButton.setWidth(UiSizes.getButtonWidthWide());
+		OKButton.setHeight(UiSizes.getQuickButtonHeight());
+		CancelButton.setHeight(UiSizes.getQuickButtonHeight());
 		checkBoxExcludeFounds.setChecked(Config.settings.SearchWithoutFounds.getValue());
 		checkBoxOnlyAvible.setChecked(Config.settings.SearchOnlyAvible.getValue());
 		checkBoxExcludeHides.setChecked(Config.settings.SearchWithoutOwns.getValue());

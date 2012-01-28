@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.cachebox_test.Ui;
+package CB_Core.Math;
 
 public interface SizeChangedEvent
 {

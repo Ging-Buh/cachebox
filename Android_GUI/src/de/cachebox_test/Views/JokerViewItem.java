@@ -1,5 +1,7 @@
 package de.cachebox_test.Views;
 
+import CB_Core.Math.CB_Rect;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.JokerEntry;
 import android.content.Context;
@@ -14,7 +16,6 @@ import de.cachebox_test.R;
 import de.cachebox_test.Components.CacheDraw;
 import de.cachebox_test.Components.CacheDraw.DrawStyle;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.Sizes;
 
 public class JokerViewItem extends View
 {
@@ -54,7 +55,7 @@ public class JokerViewItem extends View
 
 		Rect bounds = new Rect();
 		LayoutTextPaint = new TextPaint();
-		LayoutTextPaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
+		LayoutTextPaint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
 		LayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LineSep = bounds.height() / 3;
 
@@ -178,7 +179,7 @@ public class JokerViewItem extends View
 		}
 
 		int LineColor = Global.getColor(R.attr.ListSeparator);
-		Rect DrawingRec = new Rect(5, 5, width - 5, height - 5);
+		CB_Rect DrawingRec = new CB_Rect(5, 5, width - 5, height - 5);
 		ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, BackgroundColor);
 
 		if (joker == null) // this Item is the Cache

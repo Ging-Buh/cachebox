@@ -1,9 +1,10 @@
 package de.cachebox_test.Views.FilterSettings;
 
+import CB_Core.Math.CB_Rect;
+import CB_Core.Math.UiSizes;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -11,7 +12,6 @@ import android.view.View;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.Sizes;
 import de.cachebox_test.Views.FilterSettings.PresetListView.PresetEntry;
 
 public class PresetListViewItem extends View
@@ -36,7 +36,7 @@ public class PresetListViewItem extends View
 		if (textPaint == null)
 		{
 			textPaint = new TextPaint();
-			textPaint.setTextSize(Sizes.getScaledFontSize());
+			textPaint.setTextSize(UiSizes.getScaledFontSize());
 			textPaint.setColor(Global.getColor(R.attr.TextColor));
 			textPaint.setAntiAlias(true);
 		}
@@ -49,7 +49,7 @@ public class PresetListViewItem extends View
 
 		width = PresetListView.windowW;
 
-		height = Sizes.getIconSize() + (Sizes.getCornerSize() * 2);
+		height = UiSizes.getIconSize() + (UiSizes.getCornerSize() * 2);
 		setMeasuredDimension(width, height);
 
 	}
@@ -71,21 +71,21 @@ public class PresetListViewItem extends View
 			}
 		}
 		// initial
-		int left = Sizes.getCornerSize();
-		int top = Sizes.getCornerSize();
+		int left = UiSizes.getCornerSize();
+		int top = UiSizes.getCornerSize();
 
 		if (TextPaint == null)
 		{
 			TextPaint = new Paint();
 			TextPaint.setAntiAlias(true);
 			TextPaint.setFakeBoldText(true);
-			TextPaint.setTextSize((float) (Sizes.getScaledFontSize_big()));
+			TextPaint.setTextSize((float) (UiSizes.getScaledFontSize_big()));
 			TextPaint.setColor(Global.getColor(R.attr.TextColor));
 		}
 
 		if (layoutEntryName == null)
 		{
-			int innerWidth = width - (Sizes.getCornerSize() * 2) - Sizes.getIconSize();
+			int innerWidth = width - (UiSizes.getCornerSize() * 2) - UiSizes.getIconSize();
 			layoutEntryName = new StaticLayout(mPresetEntry.getName(), textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		}
 
@@ -102,20 +102,19 @@ public class PresetListViewItem extends View
 					.getColor(R.attr.ListBackground_secend);
 		}
 
-		ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(5, 5, width - 5, height - 5), 2, Global.getColor(R.attr.ListSeparator),
-				BackgroundColor, Sizes.getCornerSize());
+		ActivityUtils.drawFillRoundRecWithBorder(canvas, new CB_Rect(5, 5, width - 5, height - 5), 2,
+				Global.getColor(R.attr.ListSeparator), BackgroundColor, UiSizes.getCornerSize());
 
 		// draw Icon
-		left += ActivityUtils.PutImageTargetHeight(canvas, mPresetEntry.getIcone(), left, top, Sizes.getIconSize())
-				+ Sizes.getHalfCornerSize();
+		left += ActivityUtils.PutImageTargetHeight(canvas, mPresetEntry.getIcone(), left, top, UiSizes.getIconSize())
+				+ UiSizes.getHalfCornerSize();
 
 		ActivityUtils.drawStaticLayout(canvas, layoutEntryName, left, top);
 
 	}
 
 	/**
-	 * Vergleicht einen PresetString mit einem FilterString, wobei die Category
-	 * einstellungen im FilterString ignoriert werden.
+	 * Vergleicht einen PresetString mit einem FilterString, wobei die Category einstellungen im FilterString ignoriert werden.
 	 * 
 	 * @param presetString
 	 *            Der Preset String, mit dem der Filter verglichen wird.

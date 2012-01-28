@@ -16,6 +16,8 @@
 
 package de.cachebox_test.Ui;
 
+import CB_Core.Math.CB_Rect;
+import CB_Core.Math.UiSizes;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -156,25 +158,31 @@ public class ActivityUtils
 		return layout.getHeight();
 	}
 
-	public static void drawFillRoundRecWithBorder(Canvas canvas, Rect rec, int BorderSize, int BorderColor, int FillColor)
+	public static void drawFillRoundRecWithBorder(Canvas canvas, CB_Rect rec, int BorderSize, int BorderColor, int FillColor)
 	{
-		drawFillRoundRecWithBorder(canvas, rec, BorderSize, BorderColor, FillColor, Sizes.getCornerSize());
+		drawFillRoundRecWithBorder(canvas, rec, BorderSize, BorderColor, FillColor, UiSizes.getCornerSize());
 	}
 
-	public static void drawFillRoundRecWithBorder(Canvas canvas, Rect rec, int BorderSize, int BorderColor, int FillColor, int CornerSize)
+	public static void drawFillRoundRecWithBorder(Canvas canvas, CB_Rect rec, int BorderSize, int BorderColor, int FillColor,
+			int CornerSize)
 	{
 		Paint drawPaint = new Paint();
 		drawPaint.setAntiAlias(true);
 		drawPaint.setStyle(Style.STROKE);
 		drawPaint.setStrokeWidth(BorderSize);
 
-		final Rect outerRect = rec;
+		final Rect outerRect = new Rect(rec.getPos().x, rec.getPos().y, rec.getWidth(), rec.getHeight());
 		final RectF OuterRectF = new RectF(outerRect);
 
 		drawPaint.setColor(BorderColor);
 		canvas.drawRoundRect(OuterRectF, CornerSize, CornerSize, drawPaint);
 
-		final Rect rect = new Rect(rec.left + BorderSize, rec.top + BorderSize, rec.right - BorderSize, rec.bottom - BorderSize);
+		// final Rect rect = new Rect(rec.getLeft() + BorderSize, rec.getBottom() + BorderSize, rec.getRight() - BorderSize, rec.getTop()
+		// - BorderSize);
+
+		final Rect rect = new Rect(rec.getPos().x + BorderSize, rec.getPos().y + BorderSize, rec.getWidth() - BorderSize, rec.getHeight()
+				- BorderSize);
+
 		final RectF rectF = new RectF(rect);
 
 		drawPaint.setColor(FillColor);
@@ -332,10 +340,10 @@ public class ActivityUtils
 		listView.requestLayout();
 	}
 
-	public static void drawIconBounds(Canvas canvas, Drawable icon, Rect bounds)
+	public static void drawIconBounds(Canvas canvas, Drawable icon, CB_Rect bounds)
 	{
 		Rect oldBounds = icon.getBounds();
-		icon.setBounds(bounds);
+		icon.setBounds(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
 		icon.draw(canvas);
 		icon.setBounds(oldBounds);
 	}
@@ -344,7 +352,7 @@ public class ActivityUtils
 	{
 		list.setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
 		list.setCacheColorHint(0);
-		list.setDividerHeight(Sizes.getHalfCornerSize() * 2);
+		list.setDividerHeight(UiSizes.getHalfCornerSize() * 2);
 		list.setDivider(list.getBackground());
 	}
 

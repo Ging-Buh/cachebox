@@ -17,6 +17,7 @@ import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
+import CB_Core.Math.UiSizes;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,7 +37,6 @@ import android.widget.Toast;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
-import de.cachebox_test.Ui.Sizes;
 
 /**
  * <h1>ProgressDialog</h1> <img src="doc-files/ImportScreen.png" width=146 height=117> </br>
@@ -156,10 +156,10 @@ public class ImportDialog extends Activity
 			checkBoxImportGPX.setEnabled(false);
 		}
 
-		ImportButton.setWidth(Sizes.getButtonWidthWide());
-		CancelButton.setWidth(Sizes.getButtonWidthWide());
-		ImportButton.setHeight(Sizes.getQuickButtonHeight());
-		CancelButton.setHeight(Sizes.getQuickButtonHeight());
+		ImportButton.setWidth(UiSizes.getButtonWidthWide());
+		CancelButton.setWidth(UiSizes.getButtonWidthWide());
+		ImportButton.setHeight(UiSizes.getQuickButtonHeight());
+		CancelButton.setHeight(UiSizes.getQuickButtonHeight());
 	}
 
 	private OnCheckedChangeListener checkBoxImportGPX_CheckStateChanged = new OnCheckedChangeListener()

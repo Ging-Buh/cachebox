@@ -19,6 +19,8 @@ package de.cachebox_test.Custom_Controls;
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
+import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UiSizes;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -33,8 +35,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import de.cachebox_test.Global;
 import de.cachebox_test.main;
 import de.cachebox_test.Map.SpriteCache;
-import de.cachebox_test.Ui.Sizes;
-import de.cachebox_test.Ui.Math.ChangedRectF;
 
 /**
  * Enthält die Logik und Render Methoden für die Zoom Scala
@@ -47,7 +47,7 @@ public class GL_ZoomScale
 	private int minzoom = 6;
 	private int maxzoom = 20;
 	private int zoom = 13;
-	private ChangedRectF ScaleDrawRec;
+	private CB_RectF ScaleDrawRec;
 	private boolean isVisible = true;
 	private Date timeLastAction = new Date();
 	private final int timeToFadeOut = 5000; // 5Sec
@@ -57,7 +57,7 @@ public class GL_ZoomScale
 	private float FadeValue = 1.0f;
 	private Sprite CachedScaleSprite = null;
 	private float diffCameraZoom = 0f;
-	private ChangedRectF ValueRec;
+	private CB_RectF ValueRec;
 
 	private int topRow;
 	private int bottomRow = 1;
@@ -82,7 +82,7 @@ public class GL_ZoomScale
 		this.zoom = zoom;
 	}
 
-	public void Render(SpriteBatch batch, ChangedRectF rect)
+	public void Render(SpriteBatch batch, CB_RectF rect)
 	{
 
 		if (rect.getWidth() < 1 || rect.getHeight() < 1) return;
@@ -109,11 +109,11 @@ public class GL_ZoomScale
 			valueBack.draw(batch, FadeValue);
 		}
 
-		com.badlogic.gdx.graphics.Color c = Sizes.GL.fontAB22.getColor();
-		Sizes.GL.fontAB22.setColor(1f, 1f, 1f, FadeValue);
-		Sizes.GL.fontAB22.draw(batch, String.valueOf(zoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
+		com.badlogic.gdx.graphics.Color c = UiSizes.GL.fontAB22.getColor();
+		UiSizes.GL.fontAB22.setColor(1f, 1f, 1f, FadeValue);
+		UiSizes.GL.fontAB22.draw(batch, String.valueOf(zoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
 				ValueRec.getY() + ValueRec.getHeight() / 1.5f);
-		Sizes.GL.fontAB22.setColor(c.r, c.g, c.b, c.a);
+		UiSizes.GL.fontAB22.setColor(c.r, c.g, c.b, c.a);
 	}
 
 	public void setDiffCameraZoom(float value, boolean positive)
@@ -158,13 +158,21 @@ public class GL_ZoomScale
 		CachedScaleSprite = null;
 	}
 
+	private CB_RectF storedRec;
+
 	/**
 	 * Zeichnet die Scala in eine Bitmap, damit diese als Sprite benutzt werden kann!
 	 * 
 	 * @param rect
 	 */
-	private Sprite drawSprite(ChangedRectF rect)
+	private Sprite drawSprite(CB_RectF rect)
 	{
+
+		if (storedRec == null || !(storedRec.equals(rect)))
+		{
+			storedRec = rect.copy();
+			ValueRec = null;
+		}
 
 		int y = (int) ((1 - ((float) ((zoom + diffCameraZoom) - minzoom)) / numSteps) * (bottomRow - topRow)) + topRow;
 
@@ -180,8 +188,8 @@ public class GL_ZoomScale
 
 			dist = (bottomRow - topRow) / numSteps;
 
-			ValueRec = new ChangedRectF(rect.getX() + Sizes.GL.infoShadowHeight + centerColumn - rect.getWidth() / 2 - lineHeight / 2,
-					grundY + y, rect.getWidth(), rect.getWidth() / 2);
+			ValueRec = new CB_RectF(rect.getX() + UiSizes.GL.infoShadowHeight + centerColumn - rect.getWidth() / 2 - lineHeight / 2, grundY
+					+ y, rect.getWidth(), rect.getWidth() / 2);
 		}
 		else
 		{
@@ -190,37 +198,34 @@ public class GL_ZoomScale
 
 		if (CachedScaleSprite != null) return CachedScaleSprite;
 
-		// set Height and Width to next PO2 nede for OpenGL 1.1
-		rect.setPO2();
+		// set Height and Width to next PO2 need for OpenGL 1.1 bad only for BMP creation.
+		CB_RectF BMP_Rec = rect.copy();
+		BMP_Rec.setPO2();
 
-		Bitmap drawSurface = Bitmap.createBitmap((int) rect.getWidth(), (int) rect.getHeight(), Bitmap.Config.ARGB_8888);
+		Bitmap drawSurface = Bitmap.createBitmap((int) BMP_Rec.getWidth(), (int) BMP_Rec.getHeight(), Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(drawSurface);
 
 		Paint paint = new Paint();
 		paint.setColor(main.N ? Global.getInvertMatrixBlack() : Color.BLACK);
 		canvas.drawLine(centerColumn, topRow, centerColumn, bottomRow, paint);
 
+		// Paint font = new Paint();
+		// font.setTextSize(UiSizes.getScaledFontSize_big());
+		// font.setFakeBoldText(true);
+		// font.setColor(main.N ? Global.getInvertMatrixBlack() : Color.BLACK);
+		// Paint white = new Paint();
+		// white.setColor(main.N ? Global.getInvertMatrixWhite() : Color.WHITE);
+		// white.setStyle(Style.FILL);
+		Paint black = new Paint();
+		black.setColor(main.N ? Global.getInvertMatrixBlack() : Color.BLACK);
+		black.setStyle(Style.STROKE);
+		black.setStrokeWidth(2f);
+
 		for (int i = minzoom; i <= maxzoom; i++)
 		{
 			y = (int) ((1 - ((float) (i - minzoom)) / numSteps) * (bottomRow - topRow)) + topRow;
-
-			Paint font = new Paint();
-			font.setTextSize(Sizes.getScaledFontSize_big());
-			font.setFakeBoldText(true);
-			font.setColor(main.N ? Global.getInvertMatrixBlack() : Color.BLACK);
-			Paint white = new Paint();
-			white.setColor(main.N ? Global.getInvertMatrixWhite() : Color.WHITE);
-			white.setStyle(Style.FILL);
-			Paint black = new Paint();
-			black.setColor(main.N ? Global.getInvertMatrixBlack() : Color.BLACK);
-			black.setStyle(Style.STROKE);
-
-			//
-			// }
-			// else
-			// {
 			canvas.drawLine(centerColumn - halfWidth, y, centerColumn + halfWidth, y, black);
-			// }
+
 		}
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -234,7 +239,7 @@ public class GL_ZoomScale
 
 		Texture tex = new Texture(pixmap, Pixmap.Format.RGBA8888, false);
 
-		CachedScaleSprite = new Sprite(tex);
+		CachedScaleSprite = new Sprite(tex, (int) rect.getWidth(), (int) rect.getHeight());
 		return CachedScaleSprite;
 
 	}

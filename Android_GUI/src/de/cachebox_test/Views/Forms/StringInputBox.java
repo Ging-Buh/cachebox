@@ -17,6 +17,7 @@
 package de.cachebox_test.Views.Forms;
 
 import CB_Core.GlobalCore;
+import CB_Core.Math.UiSizes;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -35,7 +36,6 @@ import android.widget.TextView;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
-import de.cachebox_test.Ui.Sizes;
 
 /**
  * Zeigt eine InputBox an, in welcher der Benutzer einen String Wert eintragen
@@ -305,7 +305,7 @@ public class StringInputBox extends android.app.Dialog
 			if (title != null && !title.equals(""))
 			{
 				((TextView) layout.findViewById(R.id.title)).setText(title);
-				((TextView) layout.findViewById(R.id.title)).setTextSize((float) (Sizes.getScaledFontSize_btn()));
+				((TextView) layout.findViewById(R.id.title)).setTextSize((float) (UiSizes.getScaledFontSize_btn()));
 			}
 			else
 			{
@@ -358,7 +358,7 @@ public class StringInputBox extends android.app.Dialog
 			if (message != null)
 			{
 				((TextView) layout.findViewById(R.id.message)).setText(message);
-				((TextView) layout.findViewById(R.id.message)).setTextSize((float) (Sizes.getScaledFontSize_small()));
+				((TextView) layout.findViewById(R.id.message)).setTextSize((float) (UiSizes.getScaledFontSize_small()));
 			}
 			else if (contentView != null)
 			{

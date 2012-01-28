@@ -15,9 +15,7 @@
  *
  */
 
-package de.cachebox_test.Ui.Math;
-
-import android.graphics.Rect;
+package CB_Core.Math;
 
 /**
  * Die Size Structur enthält die Member width und height
@@ -41,18 +39,23 @@ public class Size
 		this.height = height;
 	}
 
-	public Rect getBounds()
+	public CB_Rect getBounds()
 	{
 		return getBounds(0, 0);
 	}
 
-	public Rect getBounds(int x, int y)
+	public CB_Rect getBounds(int x, int y)
 	{
-		return new Rect(x, y, width + x, height + y);
+		return new CB_Rect(x, y, width + x, height + y);
 	}
 
-	public Rect getBounds(int x, int y, int k, int l)
+	public CB_Rect getBounds(int x, int y, int k, int l)
 	{
-		return new Rect(x, y, width + x + k, height + y + l);
+		return new CB_Rect(x, y, width + x + k, height + y + l);
+	}
+
+	public Size Copy()
+	{
+		return new Size(this.width, this.height);
 	}
 }

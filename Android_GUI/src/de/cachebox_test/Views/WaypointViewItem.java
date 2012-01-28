@@ -1,6 +1,8 @@
 package de.cachebox_test.Views;
 
 import CB_Core.GlobalCore;
+import CB_Core.Math.CB_Rect;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
@@ -16,7 +18,6 @@ import de.cachebox_test.R;
 import de.cachebox_test.Components.CacheDraw;
 import de.cachebox_test.Components.CacheDraw.DrawStyle;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.Sizes;
 
 public class WaypointViewItem extends View
 {
@@ -58,7 +59,7 @@ public class WaypointViewItem extends View
 
 		Rect bounds = new Rect();
 		LayoutTextPaint = new TextPaint();
-		LayoutTextPaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
+		LayoutTextPaint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
 		LayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LineSep = bounds.height() / 3;
 
@@ -167,7 +168,7 @@ public class WaypointViewItem extends View
 	@Override
 	protected void onDraw(Canvas canvas)
 	{
-		int m = Sizes.getMargin();
+		int m = UiSizes.getMargin();
 
 		Boolean isSelected = false;
 		if (GlobalCore.SelectedWaypoint() == waypoint
@@ -188,7 +189,7 @@ public class WaypointViewItem extends View
 		}
 
 		int LineColor = Global.getColor(R.attr.ListSeparator);
-		Rect DrawingRec = new Rect(m, m, width - m, height - m);
+		CB_Rect DrawingRec = new CB_Rect(m, m, width - m, height - m);
 		ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, BackgroundColor);
 
 		if (waypoint == null) // this Item is the Cache
@@ -204,7 +205,7 @@ public class WaypointViewItem extends View
 			int iconWidth = 0;
 			// draw icon
 			if (((int) waypoint.Type.ordinal()) < Global.CacheIconsBig.length) iconWidth = ActivityUtils.PutImageTargetHeight(canvas,
-					Global.CacheIconsBig[(int) waypoint.Type.ordinal()], Sizes.getHalfCornerSize(), Sizes.getCornerSize(), imgSize);
+					Global.CacheIconsBig[(int) waypoint.Type.ordinal()], UiSizes.getHalfCornerSize(), UiSizes.getCornerSize(), imgSize);
 
 			// draw Text info
 			left += iconWidth;

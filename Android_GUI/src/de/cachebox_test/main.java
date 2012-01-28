@@ -36,6 +36,9 @@ import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
+import CB_Core.Math.Size;
+import CB_Core.Math.UiSizes;
+import CB_Core.Math.devicesSizes;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
@@ -54,6 +57,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -78,6 +82,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -88,6 +93,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -123,8 +129,6 @@ import de.cachebox_test.Locator.Locator;
 import de.cachebox_test.Map.MapViewGlListener;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
-import de.cachebox_test.Ui.Sizes;
-import de.cachebox_test.Ui.Math.Size;
 import de.cachebox_test.Views.AboutView;
 import de.cachebox_test.Views.CacheListView;
 import de.cachebox_test.Views.CompassView;
@@ -352,7 +356,29 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		// initial UiSizes
-		Sizes.initial(false, this);
+		// UiSize Structur für die Berechnung der Größen zusammen stellen!
+		Resources res = this.getResources();
+
+		WindowManager w = this.getWindowManager();
+		Display d = w.getDefaultDisplay();
+
+		devicesSizes ui = new devicesSizes();
+
+		ui.Window = new Size(d.getWidth(), d.getHeight());
+		ui.Density = res.getDisplayMetrics().density;
+		ui.ButtonSize = new Size(res.getDimensionPixelSize(R.dimen.BtnSize),
+				(int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * ui.Density)));
+		ui.RefSize = res.getDimensionPixelSize(R.dimen.RefSize);
+		ui.TextSize_Normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
+		ui.ButtonTextSize = res.getDimensionPixelSize(R.dimen.BtnTextSize);
+		ui.IconSize = res.getDimensionPixelSize(R.dimen.IconSize);
+		ui.Margin = res.getDimensionPixelSize(R.dimen.Margin);
+		ui.ArrowSizeList = res.getDimensionPixelSize(R.dimen.ArrowSize_List);
+		ui.ArrowSizeMap = res.getDimensionPixelSize(R.dimen.ArrowSize_Map);
+		ui.TB_IconSize = res.getDimensionPixelSize(R.dimen.TB_icon_Size);
+		ui.isLandscape = false;
+
+		UiSizes.initial(ui);
 		Size initSize = new Size(Config.settings.MapIniWidth.getValue(), Config.settings.MapIniHeight.getValue());
 
 		mapViewGlListener = new MapViewGlListener(initSize.width, initSize.height);
@@ -520,7 +546,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 		downSlider.isInitial = false;
-		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? Sizes
+		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes
 				.getQuickButtonListHeight() : 0;
 		setQuickButtonHeight(sollHeight);
 
@@ -586,11 +612,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			startTimer();
 		}
 
-	}
-
-	public void iniInput()
-	{
-		// TODO set Stage as InputProzessor?
 	}
 
 	boolean flag = false;
@@ -1286,7 +1307,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 		}
 
-		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? Sizes
+		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes
 				.getQuickButtonListHeight() : 0;
 		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 		downSlider.isInitial = false;
@@ -2152,7 +2173,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private void initialCaheInfoSlider()
 	{
 
-		QuickButtonList.setHeight(Sizes.getQuickButtonListHeight());
+		QuickButtonList.setHeight(UiSizes.getQuickButtonListHeight());
 		QuickButtonList.setAdapter(QuickButtonsAdapter);
 		QuickButtonList.setOnItemClickListener(QuickButtonOnItemClickListner);
 		String ConfigActionList = Config.settings.quickButtonList.getValue();

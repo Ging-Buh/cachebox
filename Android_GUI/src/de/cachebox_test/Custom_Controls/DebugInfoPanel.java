@@ -1,6 +1,8 @@
 package de.cachebox_test.Custom_Controls;
 
 import CB_Core.Config;
+import CB_Core.Math.CB_Rect;
+import CB_Core.Math.UiSizes;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -18,11 +20,9 @@ import android.widget.RelativeLayout.LayoutParams;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.Sizes;
 
 /**
- * Das Debug Panel ist ein Panel, das auf der main Activity verschiebbar ist und
- * Debug Meldungen je nach Settings anzeigt!
+ * Das Debug Panel ist ein Panel, das auf der main Activity verschiebbar ist und Debug Meldungen je nach Settings anzeigt!
  * 
  * @author Longri
  */
@@ -134,11 +134,11 @@ public final class DebugInfoPanel extends View
 		this.height = measure(heightMeasureSpec);
 		Rect bounds = new Rect();
 		LayoutTextPaint = new TextPaint();
-		LayoutTextPaint.setTextSize(Sizes.getScaledFontSize());
+		LayoutTextPaint.setTextSize(UiSizes.getScaledFontSize());
 		LayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LayoutTextPaint.setColor(Color.WHITE);
 		LineSep = bounds.height() / 3;
-		ContentWidth = width - (Sizes.getCornerSize() * 2);
+		ContentWidth = width - (UiSizes.getCornerSize() * 2);
 
 		LayoutMemInfo = new StaticLayout("1. Zeile " + String.format("%n") + "2.Zeile" + String.format("%n") + "3.Zeile", LayoutTextPaint,
 				ContentWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
@@ -190,10 +190,10 @@ public final class DebugInfoPanel extends View
 	{
 		int LineColor = Color.argb(200, 200, 255, 200);
 
-		Rect DrawingRec = new Rect(0, 0, width, height);
+		CB_Rect DrawingRec = new CB_Rect(0, 0, width, height);
 		ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, Global.getColor(R.attr.SlideDownBackColor));
 
-		left = top = Sizes.getCornerSize();
+		left = top = UiSizes.getCornerSize();
 
 		if (Config.settings.DebugMemory.getValue()) drawMemInfo(canvas);
 

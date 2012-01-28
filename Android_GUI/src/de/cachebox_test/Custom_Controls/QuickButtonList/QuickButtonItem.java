@@ -17,6 +17,7 @@
 package de.cachebox_test.Custom_Controls.QuickButtonList;
 
 import CB_Core.GlobalCore;
+import CB_Core.Math.UiSizes;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
@@ -26,7 +27,6 @@ import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.Enums.Actions;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.Sizes;
 
 /**
  * Stellt ein Item der Quick Button List dar
@@ -105,8 +105,8 @@ public class QuickButtonItem extends View
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
 	{
-		width = Sizes.getQuickButtonWidth();
-		height = Sizes.getQuickButtonHeight();
+		width = UiSizes.getQuickButtonWidth();
+		height = UiSizes.getQuickButtonHeight();
 		setMeasuredDimension(this.width, this.height);
 	}
 

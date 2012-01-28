@@ -16,6 +16,8 @@ import CB_Core.DB.Database;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
+import CB_Core.Math.SizeF;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
@@ -47,8 +49,6 @@ import de.cachebox_test.Custom_Controls.MultiToggleButton;
 import de.cachebox_test.Events.PositionEvent;
 import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Map.MapCacheList.WaypointRenderInfo;
-import de.cachebox_test.Ui.Sizes;
-import de.cachebox_test.Ui.Math.SizeF;
 import de.cachebox_test.Views.MapView;
 import de.cachebox_test.Views.MapViewGL;
 import de.cachebox_test.Views.Forms.ScreenLock;
@@ -270,8 +270,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
 
 		textMatrix.setToOrtho2D(0, 0, width, height);
-		((main) main.mainActivity).iniInput();// Größe des Input bereichs muss neu Berechnet werden
-		Sizes.GL.initial(width, height);
+
+		UiSizes.GL.initial(width, height);
 
 		// setze Size als IniSize
 		Config.settings.MapIniWidth.setValue(width);
@@ -502,9 +502,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		if ((aktZoom >= 13) && (aktZoom <= 14)) iconSize = 1; // 13x13
 		else if (aktZoom > 14) iconSize = 2; // default Images
 
-		renderWPs(Sizes.GL.WPSizes[iconSize], Sizes.GL.UnderlaySizes[iconSize]);
+		renderWPs(UiSizes.GL.WPSizes[iconSize], UiSizes.GL.UnderlaySizes[iconSize]);
 		renderPositionMarker();
-		Bubble.render(Sizes.GL.WPSizes[iconSize]);
+		Bubble.render(UiSizes.GL.WPSizes[iconSize]);
 
 		batch.end();
 	}
@@ -515,10 +515,10 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		batch.begin();
 		if (showCompass) renderInfoPanel();
 
-		btnTrackPos.Render(batch, Sizes.GL.Toggle, Sizes.GL.fontAB22);
+		btnTrackPos.Render(batch, UiSizes.GL.Toggle, UiSizes.GL.fontAB22);
 
-		zoomBtn.Render(batch, Sizes.GL.ZoomBtn);
-		zoomScale.Render(batch, Sizes.GL.ZoomScale);
+		zoomBtn.Render(batch, UiSizes.GL.ZoomBtn);
+		zoomScale.Render(batch, UiSizes.GL.ZoomScale);
 
 		renderDebugInfo();
 		batch.end();
@@ -603,24 +603,24 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	private void renderDebugInfo()
 	{
 		str = GlobalCore.FormatLatitudeDM(center.Latitude) + " - " + GlobalCore.FormatLongitudeDM(center.Longitude);
-		Sizes.GL.fontAB18.draw(batch, str, 20, 120);
+		UiSizes.GL.fontAB18.draw(batch, str, 20, 120);
 
 		str = "fps: " + Gdx.graphics.getFramesPerSecond();
-		Sizes.GL.fontAB18.draw(batch, str, 20, 100);
+		UiSizes.GL.fontAB18.draw(batch, str, 20, 100);
 
 		str = String.valueOf(aktZoom) + " - camzoom: " + Math.round(camera.zoom * 100) / 100;
-		Sizes.GL.fontAB18.draw(batch, str, 20, 80);
+		UiSizes.GL.fontAB18.draw(batch, str, 20, 80);
 
 		str = "lTiles: " + loadedTiles.size() + " - qTiles: " + queuedTiles.size();
-		Sizes.GL.fontAB18.draw(batch, str, 20, 60);
+		UiSizes.GL.fontAB18.draw(batch, str, 20, 60);
 
 		if (mapCacheList != null)
 		{
 			str = "listCalc: " + mapCacheList.anz + " - C: " + mapCacheList.list.size();
-			Sizes.GL.fontAB18.draw(batch, str, 20, 40);
+			UiSizes.GL.fontAB18.draw(batch, str, 20, 40);
 		}
 		str = "lastMove: " + lastMovement.x + " - " + lastMovement.y;
-		Sizes.GL.fontAB18.draw(batch, str, 20, 20);
+		UiSizes.GL.fontAB18.draw(batch, str, 20, 20);
 
 	}
 
@@ -628,8 +628,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 	{
 		// draw background
 		Sprite sprite = SpriteCache.InfoBack;
-		sprite.setPosition(Sizes.GL.Info.getX(), Sizes.GL.Info.getY());
-		sprite.setSize(Sizes.GL.Info.getWidth(), Sizes.GL.Info.getHeight());
+		sprite.setPosition(UiSizes.GL.Info.getX(), UiSizes.GL.Info.getY());
+		sprite.setSize(UiSizes.GL.Info.getWidth(), UiSizes.GL.Info.getHeight());
 		sprite.draw(MapViewGlListener.batch);
 
 		// Position ist entweder GPS-Position oder die des Markers, wenn
@@ -651,7 +651,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 				distance = position.Distance(GlobalCore.SelectedWaypoint().Pos);
 
 			String text = UnitFormatter.DistanceString(distance);
-			Sizes.GL.fontAB18.draw(batch, text, Sizes.GL.InfoLine1.x, Sizes.GL.InfoLine1.y);
+			UiSizes.GL.fontAB18.draw(batch, text, UiSizes.GL.InfoLine1.x, UiSizes.GL.InfoLine1.y);
 			// canvas.drawText(text, leftString, bottom - 10, paint);
 
 			// Kompassnadel zeichnen
@@ -666,9 +666,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 				// draw compass
 				Sprite compass = SpriteCache.MapArrows.get(0);
 				compass.setRotation((float) -relativeBearing);
-				compass.setBounds(Sizes.GL.Compass.getX(), Sizes.GL.Compass.getY(), Sizes.GL.Compass.getWidth(),
-						Sizes.GL.Compass.getHeight());
-				compass.setOrigin(Sizes.GL.halfCompass, Sizes.GL.halfCompass);
+				compass.setBounds(UiSizes.GL.Compass.getX(), UiSizes.GL.Compass.getY(), UiSizes.GL.Compass.getWidth(),
+						UiSizes.GL.Compass.getHeight());
+				compass.setOrigin(UiSizes.GL.halfCompass, UiSizes.GL.halfCompass);
 				compass.draw(MapViewGlListener.batch);
 
 			}
@@ -679,12 +679,12 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 				String textLatitude = GlobalCore.FormatLatitudeDM(position.Latitude);
 				String textLongitude = GlobalCore.FormatLongitudeDM(position.Longitude);
 
-				Sizes.GL.fontAB18.draw(batch, textLatitude, Sizes.GL.InfoLine2.x, Sizes.GL.InfoLine1.y);
-				Sizes.GL.fontAB18.draw(batch, textLongitude, Sizes.GL.InfoLine2.x, Sizes.GL.InfoLine2.y);
+				UiSizes.GL.fontAB18.draw(batch, textLatitude, UiSizes.GL.InfoLine2.x, UiSizes.GL.InfoLine1.y);
+				UiSizes.GL.fontAB18.draw(batch, textLongitude, UiSizes.GL.InfoLine2.x, UiSizes.GL.InfoLine2.y);
 
 				if (Global.Locator != null)
 				{
-					Sizes.GL.fontAB18.draw(batch, Global.Locator.SpeedString(), Sizes.GL.InfoLine1.x, Sizes.GL.InfoLine2.y);
+					UiSizes.GL.fontAB18.draw(batch, Global.Locator.SpeedString(), UiSizes.GL.InfoLine1.x, UiSizes.GL.InfoLine2.y);
 				}
 
 			}
@@ -719,9 +719,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 
 			Sprite arrow = SpriteCache.MapArrows.get(arrowId);
 			arrow.setRotation(-arrowHeading);
-			arrow.setBounds(screen.x - Sizes.GL.halfPosMarkerSize, screen.y - Sizes.GL.halfPosMarkerSize, Sizes.GL.PosMarkerSize,
-					Sizes.GL.PosMarkerSize);
-			arrow.setOrigin(Sizes.GL.halfPosMarkerSize, Sizes.GL.halfPosMarkerSize);
+			arrow.setBounds(screen.x - UiSizes.GL.halfPosMarkerSize, screen.y - UiSizes.GL.halfPosMarkerSize, UiSizes.GL.PosMarkerSize,
+					UiSizes.GL.PosMarkerSize);
+			arrow.setOrigin(UiSizes.GL.halfPosMarkerSize, UiSizes.GL.halfPosMarkerSize);
 			arrow.draw(batch);
 		}
 	}
@@ -786,8 +786,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 					// Beschriftung
 					if (showTitles && (aktZoom >= 15) && (!drawAsWaypoint))
 					{
-						float halfWidth = Sizes.GL.fontAB16out.getBounds(wpi.Cache.Name).width / 2;
-						Sizes.GL.fontAB16out.draw(batch, wpi.Cache.Name, screen.x - halfWidth, screen.y - WpUnderlay.halfHeight
+						float halfWidth = UiSizes.GL.fontAB16out.getBounds(wpi.Cache.Name).width / 2;
+						UiSizes.GL.fontAB16out.draw(batch, wpi.Cache.Name, screen.x - halfWidth, screen.y - WpUnderlay.halfHeight
 								- NameYMovement);
 					}
 
@@ -795,14 +795,14 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 					if (showDT && (!drawAsWaypoint) && (aktZoom >= 15))
 					{
 						Sprite difficulty = SpriteCache.MapStars.get((int) Math.min(wpi.Cache.Difficulty * 2, 5 * 2));
-						difficulty.setBounds(screen.x - WpUnderlay.width - Sizes.GL.infoShadowHeight,
-								screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width, WpUnderlay.Height4_8);
+						difficulty.setBounds(screen.x - WpUnderlay.width - UiSizes.GL.infoShadowHeight, screen.y
+								- (WpUnderlay.Height4_8 / 2), WpUnderlay.width, WpUnderlay.Height4_8);
 						difficulty.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 						difficulty.setRotation(90);
 						difficulty.draw(batch);
 
 						Sprite terrain = SpriteCache.MapStars.get((int) Math.min(wpi.Cache.Terrain * 2, 5 * 2));
-						terrain.setBounds(screen.x + Sizes.GL.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width,
+						terrain.setBounds(screen.x + UiSizes.GL.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width,
 								WpUnderlay.Height4_8);
 						terrain.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 						terrain.setRotation(90);

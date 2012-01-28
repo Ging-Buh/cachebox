@@ -18,6 +18,9 @@ import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
+import CB_Core.Math.Size;
+import CB_Core.Math.UiSizes;
+import CB_Core.Math.devicesSizes;
 import CB_Core.Settings.SettingBase;
 import CB_Core.Settings.SettingBool;
 import CB_Core.Settings.SettingDouble;
@@ -52,7 +55,9 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -60,7 +65,6 @@ import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.Components.copyAssetFolder;
 import de.cachebox_test.DB.AndroidDB;
 import de.cachebox_test.Map.Layer;
-import de.cachebox_test.Ui.Sizes;
 import de.cachebox_test.Views.MapView;
 import de.cachebox_test.Views.Forms.SelectDB;
 
@@ -373,7 +377,30 @@ public class splash extends Activity
 		}
 
 		setProgressState(20, GlobalCore.Translations.Get("IniUI"));
-		Sizes.initial(false, this);
+
+		// UiSize Structur für die Berechnung der Größen zusammen stellen!
+		Resources res = this.getResources();
+
+		WindowManager w = this.getWindowManager();
+		Display d = w.getDefaultDisplay();
+
+		devicesSizes ui = new devicesSizes();
+
+		ui.Window = new Size(d.getWidth(), d.getHeight());
+		ui.Density = res.getDisplayMetrics().density;
+		ui.ButtonSize = new Size(res.getDimensionPixelSize(R.dimen.BtnSize),
+				(int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * ui.Density)));
+		ui.RefSize = res.getDimensionPixelSize(R.dimen.RefSize);
+		ui.TextSize_Normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
+		ui.ButtonTextSize = res.getDimensionPixelSize(R.dimen.BtnTextSize);
+		ui.IconSize = res.getDimensionPixelSize(R.dimen.IconSize);
+		ui.Margin = res.getDimensionPixelSize(R.dimen.Margin);
+		ui.ArrowSizeList = res.getDimensionPixelSize(R.dimen.ArrowSize_List);
+		ui.ArrowSizeMap = res.getDimensionPixelSize(R.dimen.ArrowSize_Map);
+		ui.TB_IconSize = res.getDimensionPixelSize(R.dimen.TB_icon_Size);
+		ui.isLandscape = false;
+
+		UiSizes.initial(ui);
 		Global.Paints.init(this);
 		Global.InitIcons(this);
 

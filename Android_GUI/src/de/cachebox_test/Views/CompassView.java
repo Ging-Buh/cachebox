@@ -2,6 +2,7 @@ package de.cachebox_test.Views;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.SelectedLangChangedEvent;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.Types.Cache;
@@ -29,7 +30,6 @@ import de.cachebox_test.Custom_Controls.WayPointInfoControl;
 import de.cachebox_test.Events.PositionEvent;
 import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Events.ViewOptionsMenu;
-import de.cachebox_test.Ui.Sizes;
 
 public class CompassView extends FrameLayout implements ViewOptionsMenu, PositionEvent, SelectedLangChangedEvent
 {
@@ -97,8 +97,8 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu, Positio
 		// its right size.
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-		DescriptionTextView.setHeight(Sizes.getCacheInfoHeight());
-		ToggleButtonLayout.getLayoutParams().height = Sizes.getWindowWidth() + 30 - main.getQuickButtonHeight();
+		DescriptionTextView.setHeight(UiSizes.getCacheInfoHeight());
+		ToggleButtonLayout.getLayoutParams().height = UiSizes.getWindowWidth() + 30 - main.getQuickButtonHeight();
 
 	}
 

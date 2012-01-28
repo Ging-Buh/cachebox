@@ -25,7 +25,7 @@ import java.util.Iterator;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.Events.GpsStateChangeEventList;
-import de.cachebox_test.Ui.Sizes;
+import CB_Core.Math.UiSizes;
 import android.graphics.Color;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
@@ -139,7 +139,7 @@ public class GPS
 				// balken höhe festlegen
 				params=balken[count].getLayoutParams();
 				params.width=5;
-				params.height=(int) (Sizes.getStrengthHeight()*tmp.getStrength());
+				params.height=(int) (UiSizes.getStrengthHeight()*tmp.getStrength());
 				balken[count].setLayoutParams(params);
 				
 				// balken farbe festlegen

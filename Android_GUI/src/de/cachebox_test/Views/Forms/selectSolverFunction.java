@@ -21,6 +21,7 @@ import java.util.Iterator;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Math.UiSizes;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.Functions.Function;
 import CB_Core.Solver.Functions.Functions;
@@ -45,7 +46,6 @@ import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.Components.Animations;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.Sizes;
 
 /**
  * @author Longri
@@ -136,8 +136,8 @@ public class selectSolverFunction extends Activity
 			{
 				Functions cat = iteratorCat.next();
 				final Button btn = new Button(this);
-				btn.setWidth(Sizes.getQuickButtonWidth());
-				btn.setHeight(Sizes.getQuickButtonHeight());
+				btn.setWidth(UiSizes.getQuickButtonWidth());
+				btn.setHeight(UiSizes.getQuickButtonHeight());
 				btn.setText(GlobalCore.Translations.Get(cat.getName()));
 				content.addView(btn);
 
@@ -153,7 +153,7 @@ public class selectSolverFunction extends Activity
 						final Function fct = iteratorFunctions.next();
 						final Button btnFct = new Button(this);
 
-						btnFct.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (Sizes.getQuickButtonHeight() * 0.8)));
+						btnFct.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) (UiSizes.getQuickButtonHeight() * 0.8)));
 
 						btnFct.setText(fct.getName());
 						btnFct.setFocusable(true);
@@ -183,7 +183,7 @@ public class selectSolverFunction extends Activity
 						});
 
 						lay.addView(btnFct);
-						layoutHeight += Sizes.getQuickButtonHeight();
+						layoutHeight += UiSizes.getQuickButtonHeight();
 
 						functBtnList.add(btnFct);
 					}

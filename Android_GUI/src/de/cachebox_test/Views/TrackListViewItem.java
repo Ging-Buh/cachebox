@@ -1,5 +1,7 @@
 package de.cachebox_test.Views;
 
+import CB_Core.Math.CB_Rect;
+import CB_Core.Math.UiSizes;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -14,7 +16,6 @@ import de.cachebox_test.Custom_Controls.ColorDialog.AmbilWarnaDialog;
 import de.cachebox_test.Custom_Controls.ColorDialog.AmbilWarnaDialog.OnAmbilWarnaListener;
 import de.cachebox_test.Map.RouteOverlay.Trackable;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.Sizes;
 
 /**
  * Item der TrackListView zur Darstellung der RouteOverlay.Routes <br>
@@ -39,10 +40,10 @@ public class TrackListViewItem extends View
 	int left;
 	int top;
 	int BackgroundColor;
-	private static Rect lColorBounds;
-	private static Rect lBounds;
-	private static Rect rBounds;
-	private static Rect rChkBounds;
+	private static CB_Rect lColorBounds;
+	private static CB_Rect lBounds;
+	private static CB_Rect rBounds;
+	private static CB_Rect rChkBounds;
 
 	public TrackListViewItem(Context context, Trackable route, Boolean BackColorId)
 	{
@@ -56,7 +57,7 @@ public class TrackListViewItem extends View
 
 		measureWidth(widthMeasureSpec);
 
-		height = Sizes.getIconSize() + (Sizes.getCornerSize() * 2);
+		height = UiSizes.getIconSize() + (UiSizes.getCornerSize() * 2);
 
 		setMeasuredDimension(this.width, this.height);
 
@@ -94,8 +95,8 @@ public class TrackListViewItem extends View
 	{
 
 		// initial
-		left = Sizes.getCornerSize();
-		top = Sizes.getCornerSize();
+		left = UiSizes.getCornerSize();
+		top = UiSizes.getCornerSize();
 		canvas.drawColor(Global.getColor(R.attr.myBackground));
 
 		if (BackColorChanger)
@@ -109,14 +110,14 @@ public class TrackListViewItem extends View
 		}
 
 		int LineColor = Global.getColor(R.attr.ListSeparator);
-		Rect DrawingRec = new Rect(5, 5, width - 5, height - 5);
+		CB_Rect DrawingRec = new CB_Rect(5, 5, width - 5, height - 5);
 		ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, BackgroundColor);
 
 		drawRightChkBox(canvas);
 		if (this.route.ShowRoute)
 		{
 			Rect oldBounds = Global.Icons[27].getBounds();
-			Global.Icons[27].setBounds(rChkBounds);
+			Global.Icons[27].setBounds(rChkBounds.getLeft(), rChkBounds.getBottom(), rChkBounds.getRight(), rChkBounds.getTop());
 			Global.Icons[27].draw(canvas);
 			Global.Icons[27].setBounds(oldBounds);
 		}
@@ -125,17 +126,17 @@ public class TrackListViewItem extends View
 		int RouteColor = route.paint.getColor();
 		if (lBounds == null || lColorBounds == null)
 		{
-			lBounds = new Rect(7, 7, height - 7, height - 7);
-			int halfSize = lBounds.width() / 6;
-			int corrRecSize = (lBounds.width() - lBounds.height()) / 2;
-			lColorBounds = new Rect(lBounds.left + halfSize, lBounds.top + halfSize - corrRecSize, lBounds.right - halfSize, lBounds.bottom
-					- halfSize + corrRecSize);
+			lBounds = new CB_Rect(7, 7, height - 7, height - 7);
+			int halfSize = lBounds.getWidth() / 6;
+			int corrRecSize = (lBounds.getWidth() - lBounds.getHeight()) / 2;
+			lColorBounds = new CB_Rect(lBounds.getLeft() + halfSize, lBounds.getBottom() + halfSize - corrRecSize, lBounds.getRight()
+					- halfSize, lBounds.getTop() - halfSize + corrRecSize);
 
 		}
 
-		ActivityUtils.drawFillRoundRecWithBorder(canvas, lColorBounds, 3, RouteColor, RouteColor, Sizes.getCornerSize());
+		ActivityUtils.drawFillRoundRecWithBorder(canvas, lColorBounds, 3, RouteColor, RouteColor, UiSizes.getCornerSize());
 
-		left += lBounds.width();
+		left += lBounds.getWidth();
 
 		// Draw Route Name
 		if (textPaint == null)
@@ -143,7 +144,7 @@ public class TrackListViewItem extends View
 			textPaint = new TextPaint();
 			textPaint.setAntiAlias(true);
 			textPaint.setFakeBoldText(true);
-			textPaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
+			textPaint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
 			textPaint.setColor(Global.getColor(R.attr.TextColor));
 		}
 
@@ -158,7 +159,7 @@ public class TrackListViewItem extends View
 			{
 				Name = route.Name;
 			}
-			int TextWidth = this.width - lBounds.left - (this.width - rBounds.left);
+			int TextWidth = this.width - lBounds.getLeft() - (this.width - rBounds.getLeft());
 			LayoutName = new StaticLayout(Name, textPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 
 		}
@@ -172,17 +173,17 @@ public class TrackListViewItem extends View
 	{
 		if (rBounds == null || rChkBounds == null)
 		{
-			rBounds = new Rect(width - height - 7, 7, width - 7, height - 7);// =
-																				// right
-																				// Button
-																				// bounds
-			int halfSize = rBounds.width() / 4;
-			int corrRecSize = (rBounds.width() - rBounds.height()) / 2;
-			rChkBounds = new Rect(rBounds.left + halfSize, rBounds.top + halfSize - corrRecSize, rBounds.right - halfSize, rBounds.bottom
-					- halfSize + corrRecSize);
+			rBounds = new CB_Rect(width - height - 7, 7, width - 7, height - 7);// =
+			// right
+			// Button
+			// bounds
+			int halfSize = rBounds.getWidth() / 4;
+			int corrRecSize = (rBounds.getWidth() - rBounds.getHeight()) / 2;
+			rChkBounds = new CB_Rect(rBounds.getLeft() + halfSize, rBounds.getBottom() + halfSize - corrRecSize, rBounds.getRight()
+					- halfSize, rBounds.getTop() - halfSize + corrRecSize);
 		}
 		ActivityUtils.drawFillRoundRecWithBorder(canvas, rChkBounds, 3, Global.getColor(R.attr.ListSeparator), BackgroundColor,
-				Sizes.getCornerSize());
+				UiSizes.getCornerSize());
 	}
 
 	public void switchCheked()

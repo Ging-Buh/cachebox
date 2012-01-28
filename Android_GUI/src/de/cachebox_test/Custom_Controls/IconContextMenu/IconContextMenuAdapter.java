@@ -2,8 +2,8 @@ package de.cachebox_test.Custom_Controls.IconContextMenu;
 
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
-import de.cachebox_test.Ui.Sizes;
 import CB_Core.Config;
+import CB_Core.Math.UiSizes;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.*;
@@ -82,7 +82,7 @@ public class IconContextMenuAdapter extends BaseAdapter {
 
 		res.setMinHeight(40);
 		
-		res.setHeight(Sizes.getIconContextMenuHeight());
+		res.setHeight(UiSizes.getIconContextMenuHeight());
 		return res;
 	}
 }

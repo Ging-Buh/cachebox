@@ -17,6 +17,7 @@ package de.cachebox_test.Custom_Controls;
 
 import java.util.ArrayList;
 
+import CB_Core.Math.CB_RectF;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -40,7 +41,6 @@ import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Map.SpriteCache;
-import de.cachebox_test.Ui.Math.ChangedRectF;
 
 /**
  * @author Longri
@@ -275,7 +275,7 @@ public class MultiToggleButton extends Button implements OnClickListener, OnLong
 		bt.setState(0, true);
 	}
 
-	private ChangedRectF hitRec = null;
+	private CB_RectF hitRec = null;
 	private boolean onTouch = false;
 
 	public boolean hitTest(Vector2 pos)
@@ -314,7 +314,7 @@ public class MultiToggleButton extends Button implements OnClickListener, OnLong
 	private Sprite led;
 	private Sprite btn;
 
-	public void Render(SpriteBatch batch, ChangedRectF rect, BitmapFont font)
+	public void Render(SpriteBatch batch, CB_RectF rect, BitmapFont font)
 	{
 
 		hitRec = rect;

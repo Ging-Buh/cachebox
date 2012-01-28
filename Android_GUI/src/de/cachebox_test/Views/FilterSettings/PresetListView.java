@@ -6,7 +6,6 @@ import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.Sizes;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import CB_Core.GlobalCore;
+import CB_Core.Math.UiSizes;
 
 public class PresetListView extends ListView implements ViewOptionsMenu {
 

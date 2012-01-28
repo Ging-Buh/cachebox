@@ -1,6 +1,7 @@
 package de.cachebox_test.Views.Forms;
 
 import CB_Core.GlobalCore;
+import CB_Core.Math.UiSizes;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +11,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
-import de.cachebox_test.Ui.Sizes;
 
 public class DeleteDialog extends Activity
 {
@@ -45,7 +45,7 @@ public class DeleteDialog extends Activity
 
 		bCancel.setSingleLine(false);
 
-		tvMsg.setMaxHeight(Sizes.getWindowHeight() - (Sizes.getQuickButtonHeight() * 4));
+		tvMsg.setMaxHeight(UiSizes.getWindowHeight() - (UiSizes.getQuickButtonHeight() * 4));
 
 		bCancel.setOnClickListener(new OnClickListener()
 		{

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
 import CB_Core.Api.PocketQuery.PQ;
+import CB_Core.Math.UiSizes;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -27,7 +28,6 @@ import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
-import de.cachebox_test.Ui.Sizes;
 
 public class ApiPQDialog extends Activity implements ViewOptionsMenu
 {
@@ -116,10 +116,10 @@ public class ApiPQDialog extends Activity implements ViewOptionsMenu
 
 	private void initialForm()
 	{
-		OKButton.setWidth(Sizes.getButtonWidthWide());
-		CancelButton.setWidth(Sizes.getButtonWidthWide());
-		OKButton.setHeight(Sizes.getQuickButtonHeight());
-		CancelButton.setHeight(Sizes.getQuickButtonHeight());
+		OKButton.setWidth(UiSizes.getButtonWidthWide());
+		CancelButton.setWidth(UiSizes.getButtonWidthWide());
+		OKButton.setHeight(UiSizes.getQuickButtonHeight());
+		CancelButton.setHeight(UiSizes.getQuickButtonHeight());
 	}
 
 	@Override
@@ -234,7 +234,7 @@ public class ApiPQDialog extends Activity implements ViewOptionsMenu
 
 				TextView label = (TextView) row.findViewById(R.id.textView1);
 				label.setText(pq.Name);
-				label.setTextSize(Sizes.getScaledFontSize());
+				label.setTextSize(UiSizes.getScaledFontSize());
 				label.setTextColor(Global.getColor(R.attr.TextColor));
 
 				TextView label2 = (TextView) row.findViewById(R.id.textView2);
@@ -244,7 +244,7 @@ public class ApiPQDialog extends Activity implements ViewOptionsMenu
 				String FileSize = df.format(pq.SizeMB) + " MB";
 				String Count = "   Count=" + String.valueOf(pq.PQCount);
 				label2.setText(dateString + "  " + FileSize + Count);
-				label2.setTextSize((float) Sizes.getScaledFontSize_supersmall());
+				label2.setTextSize((float) UiSizes.getScaledFontSize_supersmall());
 				label2.setTextColor(Global.getColor(R.attr.TextColor));
 
 				CheckBox chk = (CheckBox) row.findViewById(R.id.checkBox1);

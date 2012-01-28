@@ -16,6 +16,8 @@
 package de.cachebox_test.Custom_Controls;
 
 import CB_Core.GlobalCore;
+import CB_Core.Math.CB_Rect;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
@@ -29,7 +31,6 @@ import android.view.View;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.Sizes;
 import de.cachebox_test.Views.WaypointView;
 
 public final class WayPointInfoControl extends View
@@ -89,7 +90,7 @@ public final class WayPointInfoControl extends View
 
 		Rect bounds = new Rect();
 		LayoutTextPaint = new TextPaint();
-		LayoutTextPaint.setTextSize(Sizes.getScaledFontSize());
+		LayoutTextPaint.setTextSize(UiSizes.getScaledFontSize());
 		LayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LineSep = bounds.height() / 3;
 
@@ -107,7 +108,7 @@ public final class WayPointInfoControl extends View
 				1.0f, 0.0f, false);
 		this.height = (LineSep * 5) + LayoutCord.getHeight() + LayoutDesc.getHeight() + LayoutClue.getHeight() + LayoutName.getHeight();
 
-		if (this.height > Sizes.getCacheInfoHeight()) this.height = Sizes.getCacheInfoHeight();
+		if (this.height > UiSizes.getCacheInfoHeight()) this.height = UiSizes.getCacheInfoHeight();
 
 		setMeasuredDimension(this.width, this.height);
 	}
@@ -139,7 +140,7 @@ public final class WayPointInfoControl extends View
 		if (waypoint == null) return;
 
 		int LineColor = Global.getColor(R.attr.ListSeparator);
-		Rect DrawingRec = new Rect(5, 5, width - 5, height - 5);
+		CB_Rect DrawingRec = new CB_Rect(5, 5, width - 5, height - 5);
 		ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, Global.getColor(R.attr.ListBackground_select));
 
 		int left = 15;
@@ -148,7 +149,7 @@ public final class WayPointInfoControl extends View
 		int iconWidth = 0;
 		// draw icon
 		if (((int) waypoint.Type.ordinal()) < Global.CacheIconsBig.length) iconWidth = ActivityUtils.PutImageTargetHeight(canvas,
-				Global.CacheIconsBig[(int) waypoint.Type.ordinal()], Sizes.getHalfCornerSize(), Sizes.getCornerSize(), imgSize);
+				Global.CacheIconsBig[(int) waypoint.Type.ordinal()], UiSizes.getHalfCornerSize(), UiSizes.getCornerSize(), imgSize);
 
 		// draw Text info
 		left += iconWidth;

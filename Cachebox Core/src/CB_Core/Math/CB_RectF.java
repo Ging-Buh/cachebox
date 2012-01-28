@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package de.cachebox_test.Ui.Math;
+package CB_Core.Math;
 
 import java.util.ArrayList;
 
 import com.badlogic.gdx.math.Vector2;
-
-import de.cachebox_test.Ui.SizeChangedEvent;
 
 /**
  * Eine Structur für RectF mit besonderen Methoden Speziel für die Handhabung in der Verwendung der Berechneten Grössen und Positionen
@@ -28,7 +26,7 @@ import de.cachebox_test.Ui.SizeChangedEvent;
  * 
  * @author Longri
  */
-public class ChangedRectF
+public class CB_RectF
 {
 	// Member
 
@@ -50,7 +48,7 @@ public class ChangedRectF
 	/**
 	 * Constructor der alle Member mit 0 initialisiert!
 	 */
-	public ChangedRectF()
+	public CB_RectF()
 	{
 		this.Pos.x = 0F;
 		this.Pos.y = 0F;
@@ -66,7 +64,7 @@ public class ChangedRectF
 	 * @param Width
 	 * @param Height
 	 */
-	public ChangedRectF(float X, float Y, float Width, float Height)
+	public CB_RectF(float X, float Y, float Width, float Height)
 	{
 		this.Pos.x = X;
 		this.Pos.y = Y;
@@ -118,6 +116,17 @@ public class ChangedRectF
 		if (this.Pos.x == Pos.x && this.Pos.y == Pos.y) return;
 		this.Pos.x = Pos.x;
 		this.Pos.y = Pos.y;
+		calcCrossCorner();
+	}
+
+	public void offset(float offX, float offY)
+	{
+		float newX = this.Pos.x + offX;
+		float newY = this.Pos.y + offY;
+
+		if (this.Pos.x == newX && this.Pos.y == newY) return;
+		this.Pos.x = newX;
+		this.Pos.y = newY;
 		calcCrossCorner();
 	}
 
@@ -192,16 +201,16 @@ public class ChangedRectF
 
 	}
 
-	public boolean equals(ChangedRectF rec)
+	public boolean equals(CB_RectF rec)
 	{
 		if (this.Pos.x != rec.Pos.x || this.Pos.y != rec.Pos.y) return false;
 		if (this.width != rec.width || this.height != this.height) return false;
 		return true;
 	}
 
-	public ChangedRectF copy()
+	public CB_RectF copy()
 	{
-		return new ChangedRectF(this.Pos.x, this.Pos.y, width, height);
+		return new CB_RectF(this.Pos.x, this.Pos.y, width, height);
 	}
 
 	public void setY(float i)
@@ -246,6 +255,26 @@ public class ChangedRectF
 		n = n | (n >> 16);
 		n = n | (n >> 32);
 		return n + 1;
+	}
+
+	public float getLeft()
+	{
+		return this.Pos.x;
+	}
+
+	public float getTop()
+	{
+		return this.crossPos.y;
+	}
+
+	public float getBottom()
+	{
+		return this.Pos.y;
+	}
+
+	public float getRight()
+	{
+		return this.crossPos.x;
 	}
 
 }

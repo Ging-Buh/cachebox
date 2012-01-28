@@ -2,6 +2,8 @@ package de.cachebox_test.Views;
 
 import java.text.SimpleDateFormat;
 
+import CB_Core.Math.CB_Rect;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.FieldNoteEntry;
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +21,6 @@ import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.Sizes;
 
 public class FieldNoteViewItem extends View implements ViewOptionsMenu
 {
@@ -44,7 +45,7 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 		if (textPaint == null)
 		{
 			textPaint = new TextPaint();
-			textPaint.setTextSize(Sizes.getScaledFontSize());
+			textPaint.setTextSize(UiSizes.getScaledFontSize());
 			textPaint.setColor(Global.getColor(R.attr.TextColor));
 			textPaint.setAntiAlias(true);
 		}
@@ -52,7 +53,7 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 		if (typePaint == null)
 		{
 			typePaint = new TextPaint();
-			typePaint.setTextSize(Sizes.getScaledFontSize_big());
+			typePaint.setTextSize(UiSizes.getScaledFontSize_big());
 			typePaint.setColor(Global.getColor(R.attr.TextColor));
 			typePaint.setAntiAlias(true);
 		}
@@ -84,7 +85,7 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 			}
 			if (headHeight < 1 || headLinePos < 1)
 			{
-				headHeight = (int) (layoutTypeText.getHeight() * 2) + Sizes.getCornerSize();
+				headHeight = (int) (layoutTypeText.getHeight() * 2) + UiSizes.getCornerSize();
 				headLinePos = (headHeight / 2) + (layoutTypeText.getHeight() / 2) - 5;
 			}
 
@@ -93,9 +94,9 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 			drawTextHeight = bounds.height();
 
 			height += headHeight // höhe der Kopf Zeile
-					+ Sizes.getIconSize() // höhe cacheIcon
+					+ UiSizes.getIconSize() // höhe cacheIcon
 					+ drawTextHeight // höhe GC-Code draw
-					+ Sizes.getCornerSize() * 2 // ???
+					+ UiSizes.getCornerSize() * 2 // ???
 					+ layoutComment.getHeight(); // höhe des comment Textes
 		}
 
@@ -134,7 +135,7 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 		}
 
 		width = specSize;
-		int innerWidth = width - (Sizes.getCornerSize() * 2);
+		int innerWidth = width - (UiSizes.getCornerSize() * 2);
 		layoutTypeText = new StaticLayout(fieldnote.typeString, typePaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		layoutComment = new StaticLayout(fieldnote.comment, textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 
@@ -171,7 +172,7 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 			TextPaint = new Paint();
 			TextPaint.setAntiAlias(true);
 			TextPaint.setFakeBoldText(true);
-			TextPaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
+			TextPaint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
 			TextPaint.setColor(Global.getColor(R.attr.TextColor));
 		}
 		if (cacheNamePaint == null)
@@ -179,13 +180,13 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 			cacheNamePaint = new TextPaint();
 			cacheNamePaint.setAntiAlias(true);
 			cacheNamePaint.setFakeBoldText(true);
-			cacheNamePaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
+			cacheNamePaint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
 			cacheNamePaint.setColor(Global.getColor(R.attr.TextColor));
 
 		}
 		if (nameLayoutWidth == 0)
 		{
-			nameLayoutWidth = width - Sizes.getIconSize() - rightBorder;
+			nameLayoutWidth = width - UiSizes.getIconSize() - rightBorder;
 		}
 
 		textPaint.setColor(Global.getColor(R.attr.TextColor));
@@ -205,22 +206,22 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 			BackgroundColor = (selected) ? Global.getColor(R.attr.ListBackground_select) : Global.getColor(R.attr.ListBackground_secend);
 		}
 
-		ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(5, 5, width - 5, height - 5), 2, Global.getColor(R.attr.ListSeparator),
-				BackgroundColor, Sizes.getCornerSize());
+		ActivityUtils.drawFillRoundRecWithBorder(canvas, new CB_Rect(5, 5, width - 5, height - 5), 2,
+				Global.getColor(R.attr.ListSeparator), BackgroundColor, UiSizes.getCornerSize());
 
 		// Kopfzeile
 		final Rect KopfRect = new Rect(5, 5, width - 5, headHeight);
 		;
 		final RectF KopfRectF = new RectF(KopfRect);
-		canvas.drawRoundRect(KopfRectF, Sizes.getCornerSize(), Sizes.getCornerSize(), KopfPaint);
-		canvas.drawRect(new Rect(5, headHeight - Sizes.getCornerSize(), width - 5, headHeight), KopfPaint);
+		canvas.drawRoundRect(KopfRectF, UiSizes.getCornerSize(), UiSizes.getCornerSize(), KopfPaint);
+		canvas.drawRect(new Rect(5, headHeight - UiSizes.getCornerSize(), width - 5, headHeight), KopfPaint);
 
 		// Icon
 		int space = (fieldnote.typeIcon >= 0) ? ActivityUtils.PutImageTargetHeight(canvas, Global.LogIcons[fieldnote.typeIcon],
-				Sizes.getHalfCornerSize(), 8, headHeight - Sizes.getCornerSize()) + 4 : 0;
+				UiSizes.getHalfCornerSize(), 8, headHeight - UiSizes.getCornerSize()) + 4 : 0;
 
 		// typeString
-		canvas.drawText(fieldnote.typeString, space + Sizes.getHalfCornerSize(), headLinePos, TextPaint);
+		canvas.drawText(fieldnote.typeString, space + UiSizes.getHalfCornerSize(), headLinePos, TextPaint);
 
 		// Time/Date
 		TextPaint.setFakeBoldText(false);
@@ -230,18 +231,18 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 		canvas.drawText(dateString, width - DateLength - 10, headLinePos, TextPaint);
 
 		// Info Körper
-		int left = Sizes.getCornerSize();
+		int left = UiSizes.getCornerSize();
 		int top = headHeight;
 		// 1st Line Icon and Name
 
 		// Draw Icon
 		ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[fieldnote.cacheType], left, top
-				- (int) (Sizes.getScaledFontSize() / 2), Sizes.getIconSize());
+				- (int) (UiSizes.getScaledFontSize() / 2), UiSizes.getIconSize());
 
 		// Draw Cache Name
 		StaticLayout layoutCacheName = new StaticLayout(fieldnote.CacheName, cacheNamePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f,
 				0.0f, false);
-		int LayoutHeight = ActivityUtils.drawStaticLayout(canvas, layoutCacheName, left + Sizes.getIconSize() + 5, top);
+		int LayoutHeight = ActivityUtils.drawStaticLayout(canvas, layoutCacheName, left + UiSizes.getIconSize() + 5, top);
 
 		// over draw 3st Cache name line
 		if (layoutCacheName.getLineCount() > 2)
@@ -249,13 +250,13 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 			Paint backPaint = new Paint();
 			backPaint.setColor(BackgroundColor); // Color.RED
 			int VislinesHeight = LayoutHeight * 2 / layoutCacheName.getLineCount();
-			canvas.drawRect(new Rect(left + Sizes.getIconSize() + 5, top + VislinesHeight,
-					nameLayoutWidth + left + Sizes.getIconSize() + 5, top + LayoutHeight + VislinesHeight - 4), backPaint);
+			canvas.drawRect(new Rect(left + UiSizes.getIconSize() + 5, top + VislinesHeight,
+					nameLayoutWidth + left + UiSizes.getIconSize() + 5, top + LayoutHeight + VislinesHeight - 4), backPaint);
 		}
 
 		// 2st Line Infos
 		// GC-Code
-		top += Sizes.getIconSize();
+		top += UiSizes.getIconSize();
 		canvas.drawText(fieldnote.gcCode, left, top, cacheNamePaint);
 		top += drawTextHeight;
 		// comment

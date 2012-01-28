@@ -34,6 +34,7 @@ import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
@@ -64,7 +65,6 @@ import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Custom_Controls.MultiToggleButton;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.Sizes;
 import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.MessageBoxButtons;
 import de.cachebox_test.Views.Forms.MessageBoxIcon;
@@ -401,7 +401,7 @@ public class search
 		{
 			Config.settings.quickButtonShow.setValue(true);
 			Config.AcceptChanges();
-			mPtrMain.setQuickButtonHeight(Sizes.getQuickButtonListHeight());
+			mPtrMain.setQuickButtonHeight(UiSizes.getQuickButtonListHeight());
 		}
 	}
 

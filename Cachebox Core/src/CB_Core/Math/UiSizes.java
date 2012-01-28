@@ -14,31 +14,23 @@
  * limitations under the License.
  */
 
-package de.cachebox_test.Ui;
+package CB_Core.Math;
 
 import CB_Core.Config;
-import android.app.Activity;
-import android.content.res.Resources;
-import android.graphics.Rect;
-import android.view.Display;
-import android.view.WindowManager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.math.Vector2;
 
-import de.cachebox_test.R;
-import de.cachebox_test.Ui.Math.ChangedRectF;
-import de.cachebox_test.Ui.Math.Size;
-import de.cachebox_test.Ui.Math.SizeF;
+//import de.cachebox_test.R;
 
 /**
  * Enthält die Größen einzelner Controls
  * 
  * @author Longri
  */
-public class Sizes
+public class UiSizes
 {
 	private static Size QuickButton;
 	private static Size Button;
@@ -56,7 +48,8 @@ public class Sizes
 	private static int windowWidth;
 	private static int windowHeight;
 	private static Size CacheListItemSize;
-	private static Rect CacheListDrawRec;
+	// private static Rect CacheListDrawRec;
+	private static CB_Rect CacheListDrawRec;
 	private static int scaledFontSize_big;
 	private static int scaledFontSize_btn;
 	private static int ScaledFontSize_small;
@@ -72,14 +65,14 @@ public class Sizes
 
 	private static double calcBase;
 
-	public static Size initial(boolean land, Activity context)
+	public static Size initial(devicesSizes ini)
 	{
-		Resources res = context.getResources();
+		// Resources res = context.getResources();
 
-		WindowManager w = context.getWindowManager();
-		Display d = w.getDefaultDisplay();
-		windowWidth = d.getWidth();
-		windowHeight = d.getHeight();
+		// WindowManager w = context.getWindowManager();
+		// Display d = w.getDefaultDisplay();
+		windowWidth = ini.Window.width;// d.getWidth();
+		windowHeight = ini.Window.height;// d.getHeight();
 
 		// if width>height switch the values (landscape start bug)
 		if (windowWidth > windowHeight)
@@ -89,7 +82,7 @@ public class Sizes
 			windowHeight = temp;
 		}
 
-		scale = res.getDisplayMetrics().density;
+		scale = ini.Density;// res.getDisplayMetrics().density;
 
 		calcBase = 533.333 * scale;
 
@@ -98,26 +91,28 @@ public class Sizes
 
 		QuickButton = new Size((int) ((320 * scale) / 5), (int) (((320 * scale) / 5) - 5.3333f * scale));
 
-		Button = new Size(res.getDimensionPixelSize(R.dimen.BtnSize),
-				(int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * scale)));
+		// Button = new Size(res.getDimensionPixelSize(R.dimen.BtnSize),
+		// (int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * scale)));
+
+		Button = ini.ButtonSize.Copy();
 
 		QuickButtonList = new Size((int) (320 * scale - (13.3333f * scale)), (int) (((320 * scale) / 5) - 4 * scale));
 
-		scaledRefSize_normal = (int) ((calcBase / (res.getDimensionPixelSize(R.dimen.RefSize))) * scale);
-		scaledFontSize_normal = (int) ((calcBase / (res.getDimensionPixelSize(R.dimen.TextSize_normal))) * scale);
+		scaledRefSize_normal = (int) ((calcBase / (ini.RefSize)) * scale);
+		scaledFontSize_normal = (int) ((calcBase / (ini.TextSize_Normal)) * scale);
 		scaledFontSize_big = (int) (scaledFontSize_normal * 1.1);
 		ScaledFontSize_small = (int) (scaledFontSize_normal * 0.9);
 		ScaledFontSize_supersmall = (int) (ScaledFontSize_small * 0.8);
-		scaledFontSize_btn = (int) ((calcBase / (res.getDimensionPixelSize(R.dimen.BtnTextSize))) * scale);
+		scaledFontSize_btn = (int) ((calcBase / ini.ButtonTextSize) * scale);
 
-		scaledIconSize = (int) ((calcBase / (res.getDimensionPixelSize(R.dimen.IconSize))) * scale);
+		scaledIconSize = (int) ((calcBase / ini.IconSize) * scale);
 
-		margin = res.getDimensionPixelSize(R.dimen.Margin);
+		margin = ini.Margin;
 
 		CornerSize = scaledRefSize_normal;
 		CacheInfoHeight = (int) (scaledRefSize_normal * 8);
 		infoSliderHeight = (int) (scaledRefSize_normal * 2.4);
-		iconSize = (int) (int) ((calcBase / (res.getDimensionPixelSize(R.dimen.IconSize))) * scale);
+		iconSize = (int) (int) ((calcBase / ini.IconSize) * scale);
 		spaceWidth = (int) (scaledFontSize_normal * 0.9);
 		tabWidth = (int) (scaledFontSize_normal * 0.6);
 		halfCornerSize = (int) CornerSize / 2;
@@ -127,9 +122,9 @@ public class Sizes
 		StrengthHeightMultipler = (int) (calcBase / 600);
 		IconContextMenuHeight = (int) (calcBase / 11.1);
 
-		arrowScaleList = res.getDimensionPixelSize(R.dimen.ArrowSize_List);
-		arrowScaleMap = res.getDimensionPixelSize(R.dimen.ArrowSize_Map);
-		TB_icon_Size = res.getDimensionPixelSize(R.dimen.TB_icon_Size);
+		arrowScaleList = ini.ArrowSizeList;
+		arrowScaleMap = ini.ArrowSizeMap;
+		TB_icon_Size = ini.TB_IconSize;
 
 		return new Size(windowWidth, windowHeight);
 
@@ -275,7 +270,7 @@ public class Sizes
 		return CacheListItemSize;
 	}
 
-	public static Rect getCacheListItemRec()
+	public static CB_Rect getCacheListItemRec()
 	{
 		return CacheListDrawRec;
 	}
@@ -336,7 +331,7 @@ public class Sizes
 
 			if (SurfaceSize == null)
 			{
-				SurfaceSize = new ChangedRectF(0, 0, width, height);
+				SurfaceSize = new CB_RectF(0, 0, width, height);
 				GL tmp = new GL();
 				SurfaceSize.Add(tmp);
 
@@ -350,11 +345,11 @@ public class Sizes
 				}
 			}
 
-			if (Info == null) Info = new ChangedRectF();
-			if (Toggle == null) Toggle = new ChangedRectF();
-			if (ZoomBtn == null) ZoomBtn = new ChangedRectF();
-			if (ZoomScale == null) ZoomScale = new ChangedRectF();
-			if (Compass == null) Compass = new ChangedRectF();
+			if (Info == null) Info = new CB_RectF();
+			if (Toggle == null) Toggle = new CB_RectF();
+			if (ZoomBtn == null) ZoomBtn = new CB_RectF();
+			if (ZoomScale == null) ZoomScale = new CB_RectF();
+			if (Compass == null) Compass = new CB_RectF();
 			if (InfoLine1 == null) InfoLine1 = new Vector2();
 			if (InfoLine2 == null) InfoLine2 = new Vector2();
 			if (Bubble == null) Bubble = new SizeF();
@@ -413,27 +408,27 @@ public class Sizes
 		/**
 		 * Das Rechteck in dem das Info Panel dargestellt wird.
 		 */
-		public static ChangedRectF Info;
+		public static CB_RectF Info;
 
 		/**
 		 * Das Rechteck in dem der ToggleButton dargestellt wird.
 		 */
-		public static ChangedRectF Toggle;
+		public static CB_RectF Toggle;
 
 		/**
 		 * Das Rechteck in dem die Zoom Buttons dargestellt wird.
 		 */
-		public static ChangedRectF ZoomBtn;
+		public static CB_RectF ZoomBtn;
 
 		/**
 		 * Das Rechteck in dem die Zoom Scala dargestellt wird.
 		 */
-		public static ChangedRectF ZoomScale;
+		public static CB_RectF ZoomScale;
 
 		/**
 		 * Die Größe des Compass Icons. Welche Abhängig von der Höhe des Info Panels ist.
 		 */
-		public static ChangedRectF Compass;
+		public static CB_RectF Compass;
 
 		/**
 		 * Halbe Compass grösse welche den Mittelpunkt darstellt.
@@ -443,7 +438,7 @@ public class Sizes
 		/**
 		 * Die Größe des zur Verfügung stehenden Bereiches von Gdx.graphics
 		 */
-		public static ChangedRectF SurfaceSize;
+		public static CB_RectF SurfaceSize;
 
 		/**
 		 * Größe des position Markers
@@ -524,7 +519,7 @@ public class Sizes
 			halfCompass = Compass.getHeight() / 2;
 			Toggle.setSize(58 * DPI, 58 * DPI);
 			ZoomBtn.setSize((float) (158 * DPI), 48 * DPI);
-			ZoomScale.setSize((float) (58 * DPI), 280 * DPI);
+			ZoomScale.setSize((float) (58 * DPI), 170 * DPI); // 280
 			PosMarkerSize = (float) (46.666667 * DPI);
 			halfPosMarkerSize = PosMarkerSize / 2;
 			UnderlaySizes = new SizeF[]

@@ -15,7 +15,7 @@
  *
  */
 
-package de.cachebox_test.Ui.Math;
+package CB_Core.Math;
 
 /**
  * Die Size Structur enthält die Member width und height
@@ -74,19 +74,19 @@ public class SizeF
 		return true;
 	}
 
-	public ChangedRectF getBounds()
+	public CB_RectF getBounds()
 	{
 		return getBounds(0, 0);
 	}
 
-	public ChangedRectF getBounds(int x, int y)
+	public CB_RectF getBounds(int x, int y)
 	{
-		return new ChangedRectF(x, y, width + x, height + y);
+		return new CB_RectF(x, y, width + x, height + y);
 	}
 
-	public ChangedRectF getBounds(int x, int y, int k, int l)
+	public CB_RectF getBounds(int x, int y, int k, int l)
 	{
-		return new ChangedRectF(x, y, width + x + k, height + y + l);
+		return new CB_RectF(x, y, width + x + k, height + y + l);
 	}
 
 }

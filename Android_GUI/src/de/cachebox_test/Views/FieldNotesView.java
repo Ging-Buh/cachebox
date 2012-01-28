@@ -10,6 +10,7 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.ProgresssChangedEventList;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.FieldNoteEntry;
@@ -34,7 +35,6 @@ import de.cachebox_test.Custom_Controls.downSlider;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
-import de.cachebox_test.Ui.Sizes;
 import de.cachebox_test.Views.Forms.EditFieldNote;
 import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.MessageBoxButtons;
@@ -371,7 +371,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 		if (data == null)
 		{
 
-			int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? Sizes
+			int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes
 					.getQuickButtonListHeight() : 0;
 			((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 			downSlider.isInitial = false;
@@ -434,7 +434,7 @@ public class FieldNotesView extends ListView implements ViewOptionsMenu
 			}
 		}
 
-		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? Sizes
+		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes
 				.getQuickButtonListHeight() : 0;
 		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 		downSlider.isInitial = false;

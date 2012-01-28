@@ -2,6 +2,7 @@ package de.cachebox_test.Views.Forms;
 
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import android.app.Activity;
 import android.content.Intent;
@@ -13,7 +14,6 @@ import android.widget.TextView;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
-import de.cachebox_test.Ui.Sizes;
 import de.cachebox_test.Views.FilterSettings.EditFilterSettings;
 
 public class ParkingDialog extends Activity
@@ -47,7 +47,7 @@ public class ParkingDialog extends Activity
 		bAdd.setSingleLine(false);
 		bDel.setSingleLine(false);
 
-		tvMsg.setMaxHeight(Sizes.getWindowHeight() - (Sizes.getQuickButtonHeight() * 4));
+		tvMsg.setMaxHeight(UiSizes.getWindowHeight() - (UiSizes.getQuickButtonHeight() * 4));
 
 		// Translations
 		TextView title = (TextView) findViewById(R.id.title);

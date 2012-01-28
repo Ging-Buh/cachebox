@@ -2,6 +2,8 @@ package de.cachebox_test.Views;
 
 import java.text.SimpleDateFormat;
 
+import CB_Core.Math.CB_Rect;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import android.content.Context;
@@ -16,7 +18,6 @@ import android.view.View;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.Sizes;
 
 public class LogViewItem extends View
 {
@@ -41,7 +42,7 @@ public class LogViewItem extends View
 		if (textPaint == null)
 		{
 			textPaint = new TextPaint();
-			textPaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
+			textPaint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
 			textPaint.setColor(Global.getColor(R.attr.TextColor));
 			textPaint.setAntiAlias(true);
 		}
@@ -87,7 +88,7 @@ public class LogViewItem extends View
 		}
 		width = specSize;
 
-		int innerWidth = width - (Sizes.getCornerSize() * 2);
+		int innerWidth = width - (UiSizes.getCornerSize() * 2);
 
 		layoutComment = new StaticLayout(logEntry.Comment, textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		layoutFinder = new StaticLayout(logEntry.Finder, textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
@@ -129,7 +130,7 @@ public class LogViewItem extends View
 			}
 		}
 
-		result += Sizes.getCornerSize() * 3;
+		result += UiSizes.getCornerSize() * 3;
 		height = result;
 		return result;
 	}
@@ -150,7 +151,7 @@ public class LogViewItem extends View
 		if (textPaint == null)
 		{
 			textPaint = new TextPaint();
-			textPaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
+			textPaint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
 			textPaint.setColor(Global.getColor(R.attr.TextColor));
 			textPaint.setAntiAlias(true);
 		}
@@ -169,34 +170,35 @@ public class LogViewItem extends View
 			NamePaint = new Paint();
 			NamePaint.setFakeBoldText(true);
 			NamePaint.setAntiAlias(true);
-			NamePaint.setTextSize((float) (Sizes.getScaledFontSize() * 1.3));
+			NamePaint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
 			NamePaint.setColor(Global.getColor(R.attr.TextColor));
 		}
 
-		int m = Sizes.getMargin();
+		int m = UiSizes.getMargin();
 
 		if (headHeight < 1 || headLinePos < 1)
 		{
-			headHeight = (int) ((int) (layoutFinder.getHeight() * 1.5) + (Sizes.getCornerSize() * 1.7));
+			headHeight = (int) ((int) (layoutFinder.getHeight() * 1.5) + (UiSizes.getCornerSize() * 1.7));
 			headLinePos = (headHeight / 2) + (layoutFinder.getHeight() / 2) - m;
 		}
 
-		ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(m, m, width - m, height - m), 2, Global.getColor(R.attr.ListSeparator),
+		ActivityUtils.drawFillRoundRecWithBorder(canvas, new CB_Rect(m, m, width - m, height - m), 2,
+				Global.getColor(R.attr.ListSeparator),
 				(BackColorChanger) ? Global.getColor(R.attr.ListBackground_secend) : Global.getColor(R.attr.ListBackground),
-				Sizes.getCornerSize());
+				UiSizes.getCornerSize());
 
 		// Kopfzeile
 
 		final Rect KopfRect = new Rect(m + 1, m + 1, width - m - 1, headHeight);
 		final RectF KopfRectF = new RectF(KopfRect);
-		canvas.drawRoundRect(KopfRectF, Sizes.getCornerSize(), Sizes.getCornerSize(), KopfPaint);
-		canvas.drawRect(new Rect(m + 1, headHeight - Sizes.getCornerSize(), width - m - 1, headHeight), KopfPaint);
+		canvas.drawRoundRect(KopfRectF, UiSizes.getCornerSize(), UiSizes.getCornerSize(), KopfPaint);
+		canvas.drawRect(new Rect(m + 1, headHeight - UiSizes.getCornerSize(), width - m - 1, headHeight), KopfPaint);
 
 		int space = (logEntry.TypeIcon >= 0) ? ActivityUtils.PutImageTargetHeight(canvas, Global.LogIcons[logEntry.TypeIcon],
-				Sizes.getHalfCornerSize(), 8, headHeight - Sizes.getCornerSize())
+				UiSizes.getHalfCornerSize(), 8, headHeight - UiSizes.getCornerSize())
 				+ m : 0;
 
-		canvas.drawText(logEntry.Finder, space + Sizes.getHalfCornerSize(), headLinePos, NamePaint);
+		canvas.drawText(logEntry.Finder, space + UiSizes.getHalfCornerSize(), headLinePos, NamePaint);
 
 		NamePaint.setFakeBoldText(false);
 		SimpleDateFormat postFormater = new SimpleDateFormat("dd/MM/yyyy");
@@ -210,7 +212,7 @@ public class LogViewItem extends View
 		// 3,Linepaint);
 
 		// Körper
-		ActivityUtils.drawStaticLayout(canvas, layoutComment, Sizes.getCornerSize(), headHeight + Sizes.getCornerSize());
+		ActivityUtils.drawStaticLayout(canvas, layoutComment, UiSizes.getCornerSize(), headHeight + UiSizes.getCornerSize());
 
 	}
 

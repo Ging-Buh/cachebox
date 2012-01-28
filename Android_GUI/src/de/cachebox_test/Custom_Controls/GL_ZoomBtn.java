@@ -17,12 +17,13 @@ package de.cachebox_test.Custom_Controls;
 
 import java.util.Date;
 
+import CB_Core.Math.CB_RectF;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import de.cachebox_test.Map.SpriteCache;
-import de.cachebox_test.Ui.Math.ChangedRectF;
 
 /**
  * Enthält die Logik und Render Methoden für Zoom Buttons
@@ -35,10 +36,10 @@ public class GL_ZoomBtn
 	private int minzoom = 6;
 	private int maxzoom = 20;
 	private int zoom = 13;
-	private ChangedRectF HitRecUp;
-	private ChangedRectF HitRecDown;
-	private ChangedRectF BtnDrawRec;
-	private ChangedRectF ScaleDrawRec;
+	private CB_RectF HitRecUp;
+	private CB_RectF HitRecDown;
+	private CB_RectF BtnDrawRec;
+	private CB_RectF ScaleDrawRec;
 	private boolean isVisible = true;
 	private Date timeLastAction = new Date();
 	private final int timeToFadeOut = 7000; // 7Sec
@@ -122,7 +123,7 @@ public class GL_ZoomBtn
 		return false;
 	}
 
-	public void Render(SpriteBatch batch, ChangedRectF rect)
+	public void Render(SpriteBatch batch, CB_RectF rect)
 	{
 		// rect auf Teilen in zwei gleich große
 		HitRecUp = rect.copy();

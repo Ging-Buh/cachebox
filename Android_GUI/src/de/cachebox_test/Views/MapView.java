@@ -23,6 +23,8 @@ import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
+import CB_Core.Math.CB_Rect;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.MysterySolution;
@@ -73,7 +75,6 @@ import de.cachebox_test.Map.RouteOverlay;
 import de.cachebox_test.Map.Tile;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
-import de.cachebox_test.Ui.Sizes;
 import de.cachebox_test.Views.Forms.ScreenLock;
 
 public class MapView extends RelativeLayout implements SelectedCacheEvent, PositionEvent, ViewOptionsMenu,
@@ -193,10 +194,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		ArrayList<android.view.View> buttons = new ArrayList<android.view.View>();
 		this.addTouchables(buttons);
 
-		font.setTextSize(Sizes.getScaledFontSize_big() * dpiScaleFactorX);
+		font.setTextSize(UiSizes.getScaledFontSize_big() * dpiScaleFactorX);
 		font.setFakeBoldText(true);
 		font.setAntiAlias(true);
-		fontSmall.setTextSize(Sizes.getScaledFontSize() * dpiScaleFactorX);
+		fontSmall.setTextSize(UiSizes.getScaledFontSize() * dpiScaleFactorX);
 		fontSmall.setFakeBoldText(true);
 		fontSmall.setAntiAlias(true);
 		PositionEventList.Add(this);
@@ -240,10 +241,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			dpiScaleFactorX = dpiScaleFactorY = 1;
 		}
 
-		font.setTextSize(Sizes.getScaledFontSize_big() * dpiScaleFactorX);
+		font.setTextSize(UiSizes.getScaledFontSize_big() * dpiScaleFactorX);
 		font.setFakeBoldText(true);
 		font.setAntiAlias(true);
-		fontSmall.setTextSize(Sizes.getScaledFontSize() * dpiScaleFactorX);
+		fontSmall.setTextSize(UiSizes.getScaledFontSize() * dpiScaleFactorX);
 		fontSmall.setFakeBoldText(true);
 		fontSmall.setAntiAlias(true);
 		ClearCachedTiles();
@@ -2066,7 +2067,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			float scale = 0.7f;
 			int BubbleWidth = 430;
 			int BubbleHeight = 140;
-			BubbleDrawRec = new Rect(bubbleX, bubbleY, bubbleX + BubbleWidth, bubbleY + BubbleHeight);
+			BubbleDrawRec = new CB_Rect(bubbleX, bubbleY, bubbleX + BubbleWidth, bubbleY + BubbleHeight);
 			BubbleDrawRec.offset(-((int) ((BubbleWidth / 2) * scale)), -((int) ((8 + halfUnderlayWidth + BubbleHeight) * scale)));
 			Boolean GlobalSelected = BubbleCache == GlobalCore.SelectedCache();
 			int BackgroundColor = GlobalSelected ? Global.getColor(R.attr.ListBackground_select) : Global.getColor(R.attr.ListBackground);
@@ -3214,7 +3215,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			MyColor = Color.RED;
 			if (lastUsedCompass) MyColor = Color.BLUE; // bei magnet. Kompass
 			// first triangle
-			long size = Math.round(1.8 * Sizes.getArrowScaleMap());
+			long size = Math.round(1.8 * UiSizes.getArrowScaleMap());
 			Path path = triaglePath(myPointOnScreen, size, dirX, dirY);
 			paint.setColor(MyColor); // bei magnet. Kompass
 			if (Config.settings.PositionAtVertex.getValue() || Config.settings.PositionMarkerTransparent.getValue())
@@ -3528,7 +3529,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	/**
 	 * Rectangle to Draw Bubble or detect click inside
 	 */
-	private Rect BubbleDrawRec;
+	private CB_Rect BubbleDrawRec;
 
 	public void showBubleSelected()
 	{
@@ -3759,7 +3760,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			dist = (bottomRow - topRow) / numSteps;
 
 			Paint font = new Paint();
-			font.setTextSize(Sizes.getScaledFontSize_big());
+			font.setTextSize(UiSizes.getScaledFontSize_big());
 			font.setFakeBoldText(true);
 			font.setColor(main.N ? Global.getInvertMatrixBlack() : Color.BLACK);
 			Paint white = new Paint();

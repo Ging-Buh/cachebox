@@ -1,6 +1,7 @@
 package de.cachebox_test.Views;
 
 import CB_Core.GlobalCore;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
@@ -19,7 +20,6 @@ import de.cachebox_test.Custom_Controls.CacheInfoControl;
 import de.cachebox_test.Custom_Controls.DescriptionViewControl;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
-import de.cachebox_test.Ui.Sizes;
 
 public class DescriptionView extends FrameLayout implements ViewOptionsMenu
 {
@@ -59,7 +59,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu
 		// its right size.
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-		cacheInfo.setHeight(Sizes.getCacheInfoHeight());
+		cacheInfo.setHeight(UiSizes.getCacheInfoHeight());
 
 	}
 

@@ -3,6 +3,8 @@ package de.cachebox_test.Views.FilterSettings;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import CB_Core.Math.CB_Rect;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.GpxFilename;
 import android.content.Context;
 import android.content.res.Resources;
@@ -18,7 +20,6 @@ import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.Sizes;
 import de.cachebox_test.Views.FilterSettings.CategorieListView.CategorieEntry;
 
 public class CategorieListViewItem extends View
@@ -48,7 +49,7 @@ public class CategorieListViewItem extends View
 		if (textPaint == null)
 		{
 			textPaint = new TextPaint();
-			textPaint.setTextSize(Sizes.getScaledFontSize());
+			textPaint.setTextSize(UiSizes.getScaledFontSize());
 			textPaint.setColor(Global.getColor(R.attr.TextColor));
 			textPaint.setAntiAlias(true);
 		}
@@ -86,7 +87,7 @@ public class CategorieListViewItem extends View
 
 		width = PresetListView.windowW;
 
-		height = Sizes.getIconSize() + Sizes.getCornerSize() * 4;
+		height = UiSizes.getIconSize() + UiSizes.getCornerSize() * 4;
 
 		setMeasuredDimension(width, height);
 
@@ -102,9 +103,9 @@ public class CategorieListViewItem extends View
 	int top;
 	int BackgroundColor;
 
-	private static Rect lPinBounds;
-	private static Rect rBounds;
-	private static Rect rChkBounds;
+	private static CB_Rect lPinBounds;
+	private static CB_Rect rBounds;
+	private static CB_Rect rChkBounds;
 	private static int halfSize = 0;
 
 	@Override
@@ -112,28 +113,28 @@ public class CategorieListViewItem extends View
 	{
 
 		// initial
-		left = Sizes.getCornerSize();
-		top = Sizes.getCornerSize();
+		left = UiSizes.getCornerSize();
+		top = UiSizes.getCornerSize();
 
 		if (rBounds == null || rChkBounds == null || lPinBounds == null)
 		{
-			rBounds = new Rect(width - height - 7, 7, width - 7, height - 7);// =
-																				// right
-																				// Button
-																				// bounds
-			halfSize = rBounds.width() / 4;
-			int corrRecSize = (rBounds.width() - rBounds.height()) / 2;
-			rChkBounds = new Rect(rBounds.left + halfSize, rBounds.top + halfSize - corrRecSize, rBounds.right - halfSize, rBounds.bottom
-					- halfSize + corrRecSize);
-			rChkBounds.offset(0, halfSize - Sizes.getCornerSize());
-			lPinBounds = new Rect(rChkBounds);
-			lPinBounds.offset(-(width - (halfSize * 2) - rChkBounds.width()), 0);
+			rBounds = new CB_Rect(width - height - 7, 7, width - 7, height - 7);// =
+			// right
+			// Button
+			// bounds
+			halfSize = rBounds.getWidth() / 4;
+			int corrRecSize = (rBounds.getWidth() - rBounds.getHeight()) / 2;
+			rChkBounds = new CB_Rect(rBounds.getLeft() + halfSize, rBounds.getBottom() + halfSize - corrRecSize, rBounds.getRight()
+					- halfSize, rBounds.getTop() - halfSize + corrRecSize);
+			rChkBounds.offset(0, halfSize - UiSizes.getCornerSize());
+			lPinBounds = new CB_Rect(rChkBounds);
+			lPinBounds.offset(-(width - (halfSize * 2) - rChkBounds.getWidth()), 0);
 		}
 
 		if (layoutEntryName == null)
 		{
-			int innerWidth = (width - (Sizes.getIconAddCorner() + rChkBounds.width())) + halfSize;
-			int innerWidthName = innerWidth - rBounds.width();
+			int innerWidth = (width - (UiSizes.getIconAddCorner() + rChkBounds.getWidth())) + halfSize;
+			int innerWidthName = innerWidth - rBounds.getWidth();
 			GpxFilename file = categorieEntry.getFile();
 
 			String Name = "";
@@ -151,7 +152,7 @@ public class CategorieListViewItem extends View
 				Name = categorieEntry.getCatName();
 				Date = postFormater.format(categorieEntry.getCat().LastImported());
 				Count = String.valueOf(categorieEntry.getCat().CacheCount());
-				Collaps = Sizes.getCornerSize();
+				Collaps = UiSizes.getCornerSize();
 			}
 			innerWidth += Collaps;
 			innerWidthName += Collaps;
@@ -178,8 +179,8 @@ public class CategorieListViewItem extends View
 
 		if (this.categorieEntry.getItemType() != FilterSetListView.COLLABSE_BUTTON_ITEM)
 		{
-			ActivityUtils.drawFillRoundRecWithBorder(canvas, new Rect(5, 5, width - 5, height - 5), 2,
-					Global.getColor(R.attr.ListSeparator), BackgroundColor, Sizes.getCornerSize());
+			ActivityUtils.drawFillRoundRecWithBorder(canvas, new CB_Rect(5, 5, width - 5, height - 5), 2,
+					Global.getColor(R.attr.ListSeparator), BackgroundColor, UiSizes.getCornerSize());
 		}
 
 		switch (this.categorieEntry.getItemType())
@@ -221,7 +222,7 @@ public class CategorieListViewItem extends View
 
 		btnBack.draw(canvas);
 		ActivityUtils.drawFillRoundRecWithBorder(canvas, rChkBounds, 3, Global.getColor(R.attr.ListSeparator), Color.TRANSPARENT,
-				Sizes.getCornerSize());
+				UiSizes.getCornerSize());
 
 		int ChkState = this.categorieEntry.getCat().getChek();
 
@@ -272,8 +273,8 @@ public class CategorieListViewItem extends View
 	private void drawIcon(Canvas canvas)
 	{
 		if (categorieEntry.getIcon() != null) ActivityUtils.PutImageTargetHeight(canvas, categorieEntry.getIcon(), left, top,
-				Sizes.getIconSize());
-		left += Sizes.getIconAddCorner();
+				UiSizes.getIconSize());
+		left += UiSizes.getIconAddCorner();
 
 	}
 
@@ -281,7 +282,7 @@ public class CategorieListViewItem extends View
 	{
 
 		ActivityUtils.drawFillRoundRecWithBorder(canvas, rChkBounds, 3, Global.getColor(R.attr.ListSeparator), BackgroundColor,
-				Sizes.getCornerSize());
+				UiSizes.getCornerSize());
 	}
 
 	public void plusClick()

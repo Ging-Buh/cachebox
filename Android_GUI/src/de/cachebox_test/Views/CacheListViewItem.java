@@ -5,8 +5,8 @@ import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.Components.CacheDraw;
 import de.cachebox_test.Components.CacheDraw.DrawStyle;
-import de.cachebox_test.Ui.Sizes;
 
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -35,7 +35,7 @@ public class CacheListViewItem extends View {
 	@Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) 
 	{
-        setMeasuredDimension(Sizes.getCacheListItemSize().width, Sizes.getCacheListItemSize().height);
+        setMeasuredDimension(UiSizes.getCacheListItemSize().width, UiSizes.getCacheListItemSize().height);
 	}
     
   static double fakeBearing =0;
@@ -59,7 +59,7 @@ public class CacheListViewItem extends View {
         	BackgroundColor = (GlobalSelected)? Global.getColor(R.attr.ListBackground_select): Global.getColor(R.attr.ListBackground_secend);
         }
         
-        CacheDraw.DrawInfo(cache,canvas, Sizes.getCacheListItemRec(), BackgroundColor, DrawStyle.all , isFastScrolling);
+        CacheDraw.DrawInfo(cache,canvas, UiSizes.getCacheListItemRec(), BackgroundColor, DrawStyle.all , isFastScrolling);
         
         
     }
