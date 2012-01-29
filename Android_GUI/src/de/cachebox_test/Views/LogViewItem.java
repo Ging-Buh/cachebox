@@ -194,9 +194,8 @@ public class LogViewItem extends View
 		canvas.drawRoundRect(KopfRectF, UiSizes.getCornerSize(), UiSizes.getCornerSize(), KopfPaint);
 		canvas.drawRect(new Rect(m + 1, headHeight - UiSizes.getCornerSize(), width - m - 1, headHeight), KopfPaint);
 
-		int space = (logEntry.TypeIcon >= 0) ? ActivityUtils.PutImageTargetHeight(canvas, Global.LogIcons[logEntry.TypeIcon],
-				UiSizes.getHalfCornerSize(), 8, headHeight - UiSizes.getCornerSize())
-				+ m : 0;
+		int space = (logEntry.Type.getIconID() >= 0) ? ActivityUtils.PutImageTargetHeight(canvas,
+				Global.LogIcons[logEntry.Type.getIconID()], UiSizes.getHalfCornerSize(), 8, headHeight - UiSizes.getCornerSize()) + m : 0;
 
 		canvas.drawText(logEntry.Finder, space + UiSizes.getHalfCornerSize(), headLinePos, NamePaint);
 

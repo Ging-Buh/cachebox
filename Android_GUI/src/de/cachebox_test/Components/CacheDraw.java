@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
+import CB_Core.Enums.LogTypes;
 import CB_Core.Math.CB_Rect;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
@@ -121,8 +122,7 @@ public class CacheDraw
 
 	}
 
-	public static void DrawInfo(Cache cache, Canvas canvas, CB_Rect rec, int BackgroundColor, DrawStyle drawStyle,
-			Boolean withoutBearing)
+	public static void DrawInfo(Cache cache, Canvas canvas, CB_Rect rec, int BackgroundColor, DrawStyle drawStyle, Boolean withoutBearing)
 	{
 		DrawInfo(cache, canvas, rec, BackgroundColor, -1, drawStyle, withoutBearing);
 	}
@@ -237,8 +237,8 @@ public class CacheDraw
 			backPaint.setColor(BackgroundColor);
 			// backPaint.setColor(Color.RED); //DEBUG
 
-			canvas.drawRect(new Rect(left + VoteWidth + UiSizes.getIconSize() + 5, SDTImageTop, nameLayoutWidthRightBorder + left + VoteWidth
-					+ UiSizes.getIconSize() + 5, top + LayoutHeight + VislinesHeight - 7), backPaint);
+			canvas.drawRect(new Rect(left + VoteWidth + UiSizes.getIconSize() + 5, SDTImageTop, nameLayoutWidthRightBorder + left
+					+ VoteWidth + UiSizes.getIconSize() + 5, top + LayoutHeight + VislinesHeight - 7), backPaint);
 		}
 
 		// Draw owner and Last Found
@@ -269,8 +269,8 @@ public class CacheDraw
 			// layoutCacheOwner= new StaticLayout(DrawText, 0, 30, namePaint,
 			// nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false,
 			// TextUtils.TruncateAt.START, nameLayoutWidth);
-			ActivityUtils
-					.drawStaticLayout(canvas, layoutCacheOwner, left + VoteWidth + UiSizes.getIconSize() + 5, top + (VislinesHeight / 2));
+			ActivityUtils.drawStaticLayout(canvas, layoutCacheOwner, left + VoteWidth + UiSizes.getIconSize() + 5, top
+					+ (VislinesHeight / 2));
 		}
 
 		// Draw S/D/T
@@ -297,8 +297,8 @@ public class CacheDraw
 		if (numTb > 0)
 		{
 			SDTleft += ActivityUtils.PutImageScale(canvas, Global.Icons[0], -90, SDTleft,
-					(int) (SDTImageTop - (UiSizes.getScaledFontSize() / (UiSizes.getTbIconSize() * 0.1))), (double) UiSizes.getScaledFontSize()
-							/ UiSizes.getTbIconSize());
+					(int) (SDTImageTop - (UiSizes.getScaledFontSize() / (UiSizes.getTbIconSize() * 0.1))),
+					(double) UiSizes.getScaledFontSize() / UiSizes.getTbIconSize());
 			// SDTleft += space;
 			if (numTb > 1) canvas.drawText("x" + String.valueOf(numTb), SDTleft, SDTLineTop, DTPaint);
 		}
@@ -311,8 +311,7 @@ public class CacheDraw
 			int BearingHeight = (int) ((rec.getRight() - rightBorder < SDTleft) ? rec.getTop() - (UiSizes.getScaledFontSize() * 2) : rec
 					.getTop() - (UiSizes.getScaledFontSize() * 0.8));
 
-			if (BearingRec == null) BearingRec = new CB_Rect(rec.getRight() - rightBorder, rec.getBottom(), rec.getRight(),
-					BearingHeight);
+			if (BearingRec == null) BearingRec = new CB_Rect(rec.getRight() - rightBorder, rec.getBottom(), rec.getRight(), BearingHeight);
 			DrawBearing(cache, canvas, BearingRec);
 		}
 
@@ -400,7 +399,7 @@ public class CacheDraw
 		logs = Database.Logs(cache);// cache.Logs();
 		for (LogEntry l : logs)
 		{
-			if (l.TypeIcon == 0)// Found Icon
+			if (l.Type == LogTypes.found)
 			{
 				SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
 				FoundDate = postFormater.format(l.Timestamp);

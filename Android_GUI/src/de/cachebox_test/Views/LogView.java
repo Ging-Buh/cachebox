@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
-import de.cachebox_test.Events.ViewOptionsMenu;
-import de.cachebox_test.Ui.ActivityUtils;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
@@ -18,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import de.cachebox_test.Events.ViewOptionsMenu;
+import de.cachebox_test.Ui.ActivityUtils;
 
 public class LogView extends ListView implements ViewOptionsMenu
 {
@@ -43,8 +43,7 @@ public class LogView extends ListView implements ViewOptionsMenu
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 			{
 				/*
-				 * Waypoint aktWaypoint = null; if (arg2 > 0) aktWaypoint =
-				 * Global.SelectedCache().waypoints.get(arg2 - 1);
+				 * Waypoint aktWaypoint = null; if (arg2 > 0) aktWaypoint = Global.SelectedCache().waypoints.get(arg2 - 1);
 				 * Global.SelectedWaypoint(Global.SelectedCache(), aktWaypoint);
 				 */
 				return true;
@@ -55,16 +54,13 @@ public class LogView extends ListView implements ViewOptionsMenu
 	}
 
 	public class CustomAdapter extends BaseAdapter /*
-													 * implements
-													 * OnClickListener
+													 * implements OnClickListener
 													 */
 	{
 
 		/*
-		 * private class OnItemClickListener implements OnClickListener{ private
-		 * int mPosition; OnItemClickListener(int position){ mPosition =
-		 * position; } public void onClick(View arg0) { Log.v("ddd",
-		 * "onItemClick at position" + mPosition); } }
+		 * private class OnItemClickListener implements OnClickListener{ private int mPosition; OnItemClickListener(int position){ mPosition
+		 * = position; } public void onClick(View arg0) { Log.v("ddd", "onItemClick at position" + mPosition); } }
 		 */
 
 		private Context context;
@@ -83,7 +79,8 @@ public class LogView extends ListView implements ViewOptionsMenu
 			logs = new ArrayList<LogEntry>();
 			for (LogEntry l : cleanLogs)
 			{
-				if (l.TypeIcon != -1) logs.add(l);
+				// if (l.TypeIcon != -1)
+				logs.add(l);
 			}
 
 		}

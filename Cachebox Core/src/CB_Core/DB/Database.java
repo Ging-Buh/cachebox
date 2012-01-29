@@ -600,7 +600,7 @@ public abstract class Database
 		}
 		retLogEntry.Finder = reader.getString(2);
 		retLogEntry.Type = LogTypes.values()[reader.getInt(3)];
-		retLogEntry.TypeIcon = reader.getInt(3);
+		// retLogEntry.TypeIcon = reader.getInt(3);
 		retLogEntry.Comment = reader.getString(4);
 		retLogEntry.Id = reader.getLong(5);
 

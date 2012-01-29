@@ -20,6 +20,7 @@ import CB_Core.Config;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Enums.LogTypes;
 import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
@@ -383,7 +384,7 @@ public class SearchForGeocaches
 								{
 									Logger.Error("API", "SearchForGeocaches_ParseLogDate", exc);
 								}
-								log.Type = GroundspeakAPI.getLogType(jLogType.getInt("WptLogTypeId"));
+								log.Type = LogTypes.GC2CB_LogType(jLogType.getInt("WptLogTypeId"));
 								logList.add(log);
 							}
 

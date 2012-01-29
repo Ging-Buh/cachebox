@@ -38,7 +38,7 @@ import de.cachebox_test.Map.RouteOverlay;
 
 public class Global
 {
-	public static final int CurrentRevision = 686;
+	public static final int CurrentRevision = 687;
 	public static final String CurrentVersion = "0.5";
 	public static final String VersionPrefix = "Test";
 	public static final int LatestDatabaseChange = 1016;
@@ -270,7 +270,15 @@ public class Global
 	 * Index 10 =<img src="doc-files/log10.png" width=32 height=32> <br>
 	 * Index 11 =<img src="doc-files/log11.jpg" width=32 height=32> <br>
 	 * Index 12 =<img src="doc-files/log12.jpg" width=32 height=32> <br>
-	 * Index 13 =<img src="doc-files/log13.png" width=32 height=32>
+	 * Index 13 =<img src="doc-files/log13.png" width=32 height=32> <br>
+	 * Index 14 =<img src="doc-files/log14.png" width=32 height=32> <br>
+	 * Index 15 =<img src="doc-files/log15.gif" width=32 height=32> <br>
+	 * Index 16 =<img src="doc-files/log16.gif" width=32 height=32> <br>
+	 * Index 17 =<img src="doc-files/log17.gif" width=32 height=32> <br>
+	 * Index 18 =<img src="doc-files/log18.gif" width=32 height=32> <br>
+	 * Index 19 =<img src="doc-files/log19.gif" width=32 height=32> <br>
+	 * Index 20 =<img src="doc-files/log20.gif" width=32 height=32> <br>
+	 * Index 21 =<img src="doc-files/log21.gif" width=32 height=32> <br>
 	 */
 	public static Drawable[] LogIcons = null;
 	public static Drawable[] Arrows = null;
@@ -584,7 +592,10 @@ public class Global
 					getDrawable(R.drawable.log3, res), getDrawable(R.drawable.log4, res), getDrawable(R.drawable.log5, res),
 					getDrawable(R.drawable.log6, res), getDrawable(R.drawable.log7, res), getDrawable(R.drawable.log8, res),
 					getDrawable(R.drawable.log9, res), getDrawable(R.drawable.log10, res), getDrawable(R.drawable.log11, res),
-					getDrawable(R.drawable.log12, res), getDrawable(R.drawable.log13, res),
+					getDrawable(R.drawable.log12, res), getDrawable(R.drawable.log13, res), getDrawable(R.drawable.log14, res),
+					getDrawable(R.drawable.log15, res), getDrawable(R.drawable.log16, res), getDrawable(R.drawable.log17, res),
+					getDrawable(R.drawable.log18, res), getDrawable(R.drawable.log19, res), getDrawable(R.drawable.log20, res),
+					getDrawable(R.drawable.log21, res),
 
 			};
 

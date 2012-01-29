@@ -17,10 +17,10 @@ public class LogEntry
 	 */
 	public LogTypes Type;
 
-	/**
-	 * Index des zu verwendenden Bildchens
-	 */
-	public int TypeIcon = -1;
+	// /**
+	// * Index des zu verwendenden Bildchens
+	// */
+	// public int TypeIcon = -1;
 
 	/**
 	 * Geschriebener Text
@@ -46,7 +46,7 @@ public class LogEntry
 	{
 		Finder = "";
 		Type = null;
-		TypeIcon = -1;
+		// TypeIcon = -1;
 		Comment = "";
 		Timestamp = new Date(0);
 		CacheId = -1;

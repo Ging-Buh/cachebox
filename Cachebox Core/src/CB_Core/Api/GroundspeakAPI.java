@@ -22,7 +22,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Enums.LogTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.TbList;
@@ -564,43 +563,6 @@ public class GroundspeakAPI
 		default:
 			return CacheTypes.Cache;
 
-		}
-	}
-
-	static LogTypes getLogType(int apiTyp)
-	{
-		switch (apiTyp)
-		{
-		case 2:
-			return LogTypes.found;
-		case 3:
-			return LogTypes.didnt_find;
-		case 4:
-			return LogTypes.note;
-		case 5:
-			return LogTypes.archived;
-		case 7:
-			return LogTypes.needs_archived;
-		case 9:
-			return LogTypes.will_attend;
-		case 10:
-			return LogTypes.attended;
-		case 11:
-			return LogTypes.webcam_photo_taken;
-		case 12:
-			return LogTypes.enabled;
-		case 24:
-			return LogTypes.published;
-		case 45:
-			return LogTypes.needs_maintenance;
-		case 46:
-			return LogTypes.owner_maintenance;
-		case 18:
-			return LogTypes.reviewer_note;
-		case 22:
-			return LogTypes.temporarily_disabled;
-		default:
-			return LogTypes.note;
 		}
 	}
 
