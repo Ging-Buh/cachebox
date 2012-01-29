@@ -208,8 +208,7 @@ public class GroundspeakAPI
 	}
 
 	/**
-	 * Loads the Membership type -1: Error 0: Guest??? 1: Basic 2: Charter??? 3:
-	 * Premium
+	 * Loads the Membership type -1: Error 0: Guest??? 1: Basic 2: Charter??? 3: Premium
 	 * 
 	 * @param accessToken
 	 * @return
@@ -546,6 +545,8 @@ public class GroundspeakAPI
 			return CacheTypes.Earth;
 		case 453:
 			return CacheTypes.MegaEvent;
+		case 452:
+			return CacheTypes.ReferencePoint;
 		case 1304:
 			return CacheTypes.Cache; // GPS Adventures Exhibit
 		case 1858:
@@ -730,9 +731,8 @@ public class GroundspeakAPI
 	}
 
 	/**
-	 * Fürt ein Http Request aus und gibt die Antwort als String zurück. Da ein
-	 * HttpRequestBase übergeben wird kann ein HttpGet oder HttpPost zum
-	 * Ausführen übergeben werden.
+	 * Fürt ein Http Request aus und gibt die Antwort als String zurück. Da ein HttpRequestBase übergeben wird kann ein HttpGet oder
+	 * HttpPost zum Ausführen übergeben werden.
 	 * 
 	 * @param httprequest
 	 *            HttpGet oder HttpPost
