@@ -13,6 +13,8 @@ import javax.security.auth.DestroyFailedException;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
+import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
@@ -53,7 +55,7 @@ import de.cachebox_test.Views.MapView;
 import de.cachebox_test.Views.MapViewGL;
 import de.cachebox_test.Views.Forms.ScreenLock;
 
-public class MapViewGlListener implements ApplicationListener, PositionEvent
+public class MapViewGlListener implements ApplicationListener, PositionEvent, SelectedCacheEvent
 {
 	private final String Tag = "MAP_VIEW_GL";
 
@@ -189,6 +191,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		btnTrackPos.setLastStateWithLongClick(true);
 		btnTrackPos.setState(0, true);
 
+		SelectedCacheEventList.Add(this);
 	}
 
 	@Override
@@ -1896,6 +1899,25 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent
 		{
 			return (dist < arg0.dist ? -1 : (dist == arg0.dist ? 0 : 1));
 		}
+	}
+
+	@Override
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	{
+		if (Global.autoResort) return;
+
+		if (cache == null) return;
+		/*
+		 * if (InvokeRequired) { Invoke(new targetChangedDelegate(OnTargetChanged), new object[] { cache, waypoint }); return; }
+		 */
+		positionInitialized = true;
+
+		btnTrackPos.setState(0, true);
+		Coordinate target = (waypoint != null) ? new Coordinate(waypoint.Latitude(), waypoint.Longitude()) : new Coordinate(
+				cache.Latitude(), cache.Longitude());
+
+		setCenter(target);
+
 	}
 
 }
