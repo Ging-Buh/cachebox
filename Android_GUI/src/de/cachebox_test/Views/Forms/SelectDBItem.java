@@ -60,7 +60,7 @@ public class SelectDBItem extends View
 		LayoutSize = new StaticLayout("x", LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		LayoutDate = new StaticLayout("y", LayoutTextPaint, TextWidth, Alignment.ALIGN_OPPOSITE, 1.0f, 0.0f, false);
 
-		this.height = (LineSep * 5) + LayoutName.getHeight() + LayoutSize.getHeight();
+		this.height = (LineSep * 6) + LayoutName.getHeight() + LayoutSize.getHeight();
 
 		setMeasuredDimension(this.width, this.height);
 	}
@@ -142,7 +142,7 @@ public class SelectDBItem extends View
 		}
 
 		int LineColor = Global.getColor(R.attr.ListSeparator);
-		CB_Rect DrawingRec = new CB_Rect(5, 5, width - 5, height - 5);
+		CB_Rect DrawingRec = new CB_Rect(5, 5, width - 10, height - 10);
 		ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, BackgroundColor);
 
 		int left = 15;

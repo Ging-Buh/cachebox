@@ -71,6 +71,14 @@ public class CB_Rect
 		calcCrossCorner();
 	}
 
+	public CB_Rect(intPos leftTop, intPos rightBotom)
+	{
+		this.Pos = leftTop;
+		this.width = rightBotom.x - leftTop.x;
+		this.height = rightBotom.y - leftTop.y;
+		calcCrossCorner();
+	}
+
 	public CB_Rect(CB_Rect rChkBounds)
 	{
 		this.Pos.x = rChkBounds.getX();
@@ -126,15 +134,16 @@ public class CB_Rect
 		calcCrossCorner();
 	}
 
-	public void offset(int offX, int offY)
+	public CB_Rect offset(int offX, int offY)
 	{
 		int newX = this.Pos.x + offX;
 		int newY = this.Pos.y + offY;
 
-		if (this.Pos.x == newX && this.Pos.y == newY) return;
+		if (this.Pos.x == newX && this.Pos.y == newY) return this.copy();
 		this.Pos.x = newX;
 		this.Pos.y = newY;
 		calcCrossCorner();
+		return this.copy();
 	}
 
 	public int getX()
@@ -283,4 +292,20 @@ public class CB_Rect
 	{
 		return this.crossPos.x;
 	}
+
+	public CB_Rect ScaleCenter(double ScaleFactor)
+	{
+		return ScaleCenter(this, ScaleFactor);
+	}
+
+	public static CB_Rect ScaleCenter(CB_Rect rectangle, double ScaleFactor)
+	{
+		int newWidth = (int) (rectangle.getWidth() * ScaleFactor);
+		int newHeight = (int) (rectangle.getHeight() * ScaleFactor);
+		int newX = rectangle.Pos.x + ((rectangle.getWidth() - newWidth) / 2);
+		int newY = rectangle.Pos.y + ((rectangle.getHeight() - newHeight) / 2);
+		return new CB_Rect(newX, newY, newWidth, newHeight);
+
+	}
+
 }

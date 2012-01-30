@@ -236,8 +236,8 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 		// 1st Line Icon and Name
 
 		// Draw Icon
-		ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[fieldnote.cacheType], left, top
-				- (int) (UiSizes.getScaledFontSize() / 2), UiSizes.getIconSize());
+		ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[fieldnote.cacheType], left,
+				top - (int) (UiSizes.getScaledFontSize() / 2), UiSizes.getIconSize());
 
 		// Draw Cache Name
 		StaticLayout layoutCacheName = new StaticLayout(fieldnote.CacheName, cacheNamePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f,
@@ -250,8 +250,8 @@ public class FieldNoteViewItem extends View implements ViewOptionsMenu
 			Paint backPaint = new Paint();
 			backPaint.setColor(BackgroundColor); // Color.RED
 			int VislinesHeight = LayoutHeight * 2 / layoutCacheName.getLineCount();
-			canvas.drawRect(new Rect(left + UiSizes.getIconSize() + 5, top + VislinesHeight,
-					nameLayoutWidth + left + UiSizes.getIconSize() + 5, top + LayoutHeight + VislinesHeight - 4), backPaint);
+			canvas.drawRect(new Rect(left + UiSizes.getIconSize() + 5, top + VislinesHeight, nameLayoutWidth + left + UiSizes.getIconSize()
+					+ 5, top + LayoutHeight + VislinesHeight - 4), backPaint);
 		}
 
 		// 2st Line Infos

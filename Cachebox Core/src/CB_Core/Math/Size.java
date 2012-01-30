@@ -51,7 +51,7 @@ public class Size
 
 	public CB_Rect getBounds(int x, int y, int k, int l)
 	{
-		return new CB_Rect(x, y, width + x + k, height + y + l);
+		return new CB_Rect(x, y, width + k - x, height + l - y);
 	}
 
 	public Size Copy()

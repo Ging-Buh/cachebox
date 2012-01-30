@@ -131,7 +131,7 @@ public class FilterSetListViewItem extends View
 
 		if (this.mFilterSetEntry.getItemType() != FilterSetListView.COLLABSE_BUTTON_ITEM)
 		{
-			ActivityUtils.drawFillRoundRecWithBorder(canvas, new CB_Rect(5, 5, width - 5, height - 5), 2,
+			ActivityUtils.drawFillRoundRecWithBorder(canvas, new CB_Rect(5, 5, width - 10, height - 10), 2,
 					Global.getColor(R.attr.ListSeparator), BackgroundColor, UiSizes.getCornerSize());
 		}
 
@@ -190,10 +190,11 @@ public class FilterSetListViewItem extends View
 		drawRightChkBox(canvas);
 		if (this.mFilterSetEntry.getState() == 1)
 		{
-			Rect oldBounds = Global.Icons[27].getBounds();
-			Global.Icons[27].setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
-			Global.Icons[27].draw(canvas);
-			Global.Icons[27].setBounds(oldBounds);
+			ActivityUtils.drawIconBounds(canvas, Global.Icons[27], rChkBounds.ScaleCenter(0.8));
+		}
+		else
+		{
+			ActivityUtils.drawIconBounds(canvas, Global.Icons[39], rChkBounds.ScaleCenter(0.8));
 		}
 
 	}
@@ -204,17 +205,11 @@ public class FilterSetListViewItem extends View
 		drawRightChkBox(canvas);
 		if (this.mFilterSetEntry.getState() == 1)
 		{
-			Rect oldBounds = Global.Icons[27].getBounds();
-			Global.Icons[27].setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
-			Global.Icons[27].draw(canvas);
-			Global.Icons[27].setBounds(oldBounds);
+			ActivityUtils.drawIconBounds(canvas, Global.Icons[27], rChkBounds.ScaleCenter(0.8));
 		}
 		else if (this.mFilterSetEntry.getState() == -1)
 		{
-			Rect oldBounds = Global.Icons[28].getBounds();
-			Global.Icons[28].setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
-			Global.Icons[28].draw(canvas);
-			Global.Icons[28].setBounds(oldBounds);
+			ActivityUtils.drawIconBounds(canvas, Global.Icons[28], rChkBounds.ScaleCenter(0.9));
 		}
 	}
 
@@ -231,10 +226,10 @@ public class FilterSetListViewItem extends View
 		plusBtn = mRes.getDrawable(main.N ? R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal);
 		minusBtn = mRes.getDrawable(main.N ? R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal);
 
-		lBounds = new CB_Rect(7, 7, height, height - 7);
+		lBounds = new CB_Rect(7, 7, height - 7, height - 7);
 		minusBtn.setBounds(lBounds.getX(), lBounds.getY(), lBounds.getWidth(), lBounds.getHeight());
 
-		rBounds = new CB_Rect(width - height - 7, 7, width - 7, height - 7);
+		rBounds = new CB_Rect(width - height - 7, 7, height - 7, height - 7);
 		plusBtn.setBounds(rBounds.getX(), rBounds.getY(), rBounds.getWidth(), rBounds.getHeight());
 
 		mTextPaint = new TextPaint();
@@ -277,14 +272,9 @@ public class FilterSetListViewItem extends View
 	{
 		if (rBounds == null || rChkBounds == null)
 		{
-			rBounds = new CB_Rect(width - height - 7, 7, width - 7, height - 7);// =
-			// right
-			// Button
-			// bounds
-			int halfSize = rBounds.getWidth() / 4;
-			int corrRecSize = (rBounds.getWidth() - rBounds.getHeight()) / 2;
-			rChkBounds = new CB_Rect(rBounds.getLeft() + halfSize, rBounds.getBottom() + halfSize - corrRecSize, rBounds.getRight()
-					- halfSize, rBounds.getTop() - halfSize + corrRecSize);
+			rBounds = new CB_Rect(width - height - 10, 5, height - 10, height - 10);// = right Button bounds
+
+			rChkBounds = rBounds.ScaleCenter(0.8);
 		}
 		ActivityUtils.drawFillRoundRecWithBorder(canvas, rChkBounds, 3, Global.getColor(R.attr.ListSeparator), BackgroundColor,
 				UiSizes.getCornerSize());

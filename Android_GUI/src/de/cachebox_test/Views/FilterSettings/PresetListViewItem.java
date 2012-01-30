@@ -102,7 +102,7 @@ public class PresetListViewItem extends View
 					.getColor(R.attr.ListBackground_secend);
 		}
 
-		ActivityUtils.drawFillRoundRecWithBorder(canvas, new CB_Rect(5, 5, width - 5, height - 5), 2,
+		ActivityUtils.drawFillRoundRecWithBorder(canvas, new CB_Rect(5, 5, width - 10, height - 10), 2,
 				Global.getColor(R.attr.ListSeparator), BackgroundColor, UiSizes.getCornerSize());
 
 		// draw Icon

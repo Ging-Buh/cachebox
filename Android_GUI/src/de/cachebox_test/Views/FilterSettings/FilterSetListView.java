@@ -259,12 +259,15 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu
 
 	}
 
+	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
 	{
+
 		// we overriding onMeasure because this is where the application gets its right size.
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		windowW = getMeasuredWidth();
 		windowH = getMeasuredHeight();
+
 	}
 
 	public class CustomAdapter extends BaseAdapter
@@ -561,6 +564,8 @@ public class FilterSetListView extends ListView implements ViewOptionsMenu
 	private void collabseButton_Clicked(FilterSetListViewItem item)
 	{
 		item.toggleChildeViewState();
+		this.lvAdapter.notifyDataSetChanged();
+		this.layoutChildren();
 		this.invalidate();
 	}
 

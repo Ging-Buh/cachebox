@@ -118,15 +118,13 @@ public class CategorieListViewItem extends View
 
 		if (rBounds == null || rChkBounds == null || lPinBounds == null)
 		{
-			rBounds = new CB_Rect(width - height - 7, 7, width - 7, height - 7);// =
+			rBounds = new CB_Rect(width - height - 10, 5, height - 10, height - 10);// =
 			// right
 			// Button
 			// bounds
 			halfSize = rBounds.getWidth() / 4;
-			int corrRecSize = (rBounds.getWidth() - rBounds.getHeight()) / 2;
-			rChkBounds = new CB_Rect(rBounds.getLeft() + halfSize, rBounds.getBottom() + halfSize - corrRecSize, rBounds.getRight()
-					- halfSize, rBounds.getTop() - halfSize + corrRecSize);
-			rChkBounds.offset(0, halfSize - UiSizes.getCornerSize());
+
+			rChkBounds = rBounds.ScaleCenter(0.8);
 			lPinBounds = new CB_Rect(rChkBounds);
 			lPinBounds.offset(-(width - (halfSize * 2) - rChkBounds.getWidth()), 0);
 		}
@@ -159,8 +157,11 @@ public class CategorieListViewItem extends View
 			Count += " Caches";
 
 			layoutEntryName = new StaticLayout(Name, textPaint, innerWidthName, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-			layoutEntryDate = new StaticLayout(Date, textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-			layoutEntryCount = new StaticLayout(Count, textPaint, innerWidth, Alignment.ALIGN_OPPOSITE, 1.0f, 0.0f, false);
+			// layoutEntryDate = new StaticLayout(Date, textPaint, innerWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+			// layoutEntryCount = new StaticLayout(Count, textPaint, innerWidth, Alignment.ALIGN_OPPOSITE, 1.0f, 0.0f, false);
+
+			layoutEntryDate = new StaticLayout(Date, textPaint, innerWidthName, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+			layoutEntryCount = new StaticLayout(Count, textPaint, innerWidthName, Alignment.ALIGN_OPPOSITE, 1.0f, 0.0f, false);
 		}
 
 		textPaint.setColor(Global.getColor(R.attr.TextColor));
@@ -179,7 +180,7 @@ public class CategorieListViewItem extends View
 
 		if (this.categorieEntry.getItemType() != FilterSetListView.COLLABSE_BUTTON_ITEM)
 		{
-			ActivityUtils.drawFillRoundRecWithBorder(canvas, new CB_Rect(5, 5, width - 5, height - 5), 2,
+			ActivityUtils.drawFillRoundRecWithBorder(canvas, new CB_Rect(5, 5, width - 10, height - 10), 2,
 					Global.getColor(R.attr.ListSeparator), BackgroundColor, UiSizes.getCornerSize());
 		}
 
@@ -226,8 +227,8 @@ public class CategorieListViewItem extends View
 
 		int ChkState = this.categorieEntry.getCat().getChek();
 
-		if (ChkState == 1) ActivityUtils.drawIconBounds(canvas, Global.Icons[27], rChkBounds);
-		if (ChkState == -1) ActivityUtils.drawIconBounds(canvas, Global.Icons[39], rChkBounds);
+		if (ChkState == 1) ActivityUtils.drawIconBounds(canvas, Global.Icons[27], rChkBounds.ScaleCenter(0.8));
+		if (ChkState == -1) ActivityUtils.drawIconBounds(canvas, Global.Icons[39], rChkBounds.ScaleCenter(0.8));
 
 		drawPin(canvas);
 	}
@@ -236,11 +237,11 @@ public class CategorieListViewItem extends View
 	{
 		if (this.getCategorieEntry().getCat().pinned)
 		{
-			ActivityUtils.drawIconBounds(canvas, Global.Icons[37], lPinBounds);
+			ActivityUtils.drawIconBounds(canvas, Global.Icons[37], lPinBounds.ScaleCenter(0.7).offset(-10, 0));
 		}
 		else
 		{
-			ActivityUtils.drawIconBounds(canvas, Global.Icons[38], lPinBounds);
+			ActivityUtils.drawIconBounds(canvas, Global.Icons[38], lPinBounds.ScaleCenter(0.7).offset(-10, 0));
 		}
 
 	}
@@ -251,7 +252,7 @@ public class CategorieListViewItem extends View
 		drawRightChkBox(canvas);
 		if (this.categorieEntry.getState() == 1)
 		{
-			ActivityUtils.drawIconBounds(canvas, Global.Icons[27], rChkBounds);
+			ActivityUtils.drawIconBounds(canvas, Global.Icons[27], rChkBounds.ScaleCenter(0.8));
 		}
 
 	}
@@ -262,11 +263,11 @@ public class CategorieListViewItem extends View
 		drawRightChkBox(canvas);
 		if (this.categorieEntry.getState() == 1)
 		{
-			ActivityUtils.drawIconBounds(canvas, Global.Icons[27], rChkBounds);
+			ActivityUtils.drawIconBounds(canvas, Global.Icons[27], rChkBounds.ScaleCenter(0.8));
 		}
 		else if (this.categorieEntry.getState() == -1)
 		{
-			ActivityUtils.drawIconBounds(canvas, Global.Icons[28], rChkBounds);
+			ActivityUtils.drawIconBounds(canvas, Global.Icons[28], rChkBounds.ScaleCenter(0.9));
 		}
 	}
 

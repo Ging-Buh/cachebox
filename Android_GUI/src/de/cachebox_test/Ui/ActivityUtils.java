@@ -163,15 +163,14 @@ public class ActivityUtils
 		drawFillRoundRecWithBorder(canvas, rec, BorderSize, BorderColor, FillColor, UiSizes.getCornerSize());
 	}
 
-	public static void drawFillRoundRecWithBorder(Canvas canvas, CB_Rect rec, int BorderSize, int BorderColor, int FillColor,
-			int CornerSize)
+	public static void drawFillRoundRecWithBorder(Canvas canvas, CB_Rect rec, int BorderSize, int BorderColor, int FillColor, int CornerSize)
 	{
 		Paint drawPaint = new Paint();
 		drawPaint.setAntiAlias(true);
 		drawPaint.setStyle(Style.STROKE);
 		drawPaint.setStrokeWidth(BorderSize);
 
-		final Rect outerRect = new Rect(rec.getPos().x, rec.getPos().y, rec.getWidth(), rec.getHeight());
+		final Rect outerRect = new Rect(rec.getPos().x, rec.getPos().y, rec.getCrossPos().x, rec.getCrossPos().y);
 		final RectF OuterRectF = new RectF(outerRect);
 
 		drawPaint.setColor(BorderColor);
@@ -180,8 +179,8 @@ public class ActivityUtils
 		// final Rect rect = new Rect(rec.getLeft() + BorderSize, rec.getBottom() + BorderSize, rec.getRight() - BorderSize, rec.getTop()
 		// - BorderSize);
 
-		final Rect rect = new Rect(rec.getPos().x + BorderSize, rec.getPos().y + BorderSize, rec.getWidth() - BorderSize, rec.getHeight()
-				- BorderSize);
+		final Rect rect = new Rect(rec.getPos().x + BorderSize, rec.getPos().y + BorderSize, rec.getCrossPos().x - BorderSize * 2,
+				rec.getCrossPos().y - BorderSize * 2);
 
 		final RectF rectF = new RectF(rect);
 
@@ -343,7 +342,7 @@ public class ActivityUtils
 	public static void drawIconBounds(Canvas canvas, Drawable icon, CB_Rect bounds)
 	{
 		Rect oldBounds = icon.getBounds();
-		icon.setBounds(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
+		icon.setBounds(bounds.getX(), bounds.getY(), bounds.getCrossPos().x, bounds.getCrossPos().y);
 		icon.draw(canvas);
 		icon.setBounds(oldBounds);
 	}
