@@ -43,6 +43,7 @@ public class TileGL implements Destroyable
 	{
 		if (texture != null) return;
 		texture = new Texture(new Pixmap(bytes, 0, bytes.length));
+		bytes = null;
 	}
 
 	public String ToString()
@@ -54,6 +55,7 @@ public class TileGL implements Destroyable
 	public void destroy() throws DestroyFailedException
 	{
 		if (texture != null) texture.dispose();
+		bytes = null;
 	}
 
 	@Override
