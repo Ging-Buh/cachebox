@@ -80,7 +80,8 @@ public class GL_ZoomBtn
 			{
 				if (HitRecUp.contains(pos.x, pos.y))
 				{
-					if (FadeValue > 0.4f) ZoomAdd(1);
+					/* if (FadeValue > 0.4f) */ZoomAdd(1);
+					resetFadeOut();
 					return true;
 				}
 			}
@@ -92,7 +93,8 @@ public class GL_ZoomBtn
 			{
 				if (HitRecDown.contains(pos.x, pos.y))
 				{
-					if (FadeValue > 0.4f) ZoomAdd(-1);
+					/* if (FadeValue > 0.4f) */ZoomAdd(-1);
+					resetFadeOut();
 					return true;
 				}
 			}
