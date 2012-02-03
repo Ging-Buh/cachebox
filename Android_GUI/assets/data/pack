@@ -4,448 +4,455 @@ filter: Linear,Linear
 repeat: none
 6
   rotate: false
-  xy: 430, 34
+  xy: 463, 66
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 day_btn_zoom_up_pressed
   rotate: false
-  xy: 241, 182
+  xy: 1, 279
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 Bubble_selected
   rotate: false
-  xy: 1, 750
+  xy: 1, 798
   size: 438, 173
   orig: 438, 173
   offset: 0, 0
   index: -1
 stars0_5small
   rotate: false
-  xy: 442, 68
+  xy: 1, 149
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 small5solved_no
   rotate: false
-  xy: 225, 1
+  xy: 241, 1
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small6no
   rotate: false
-  xy: 161, 1
+  xy: 209, 1
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 stars3_5small
   rotate: false
-  xy: 463, 34
+  xy: 197, 100
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 14
   rotate: false
-  xy: 364, 34
+  xy: 364, 66
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 day_btn_pressed
   rotate: false
-  xy: 416, 231
+  xy: 1, 365
   size: 82, 85
   orig: 82, 85
   offset: 0, 0
   index: -1
 stars5small
   rotate: false
-  xy: 148, 68
+  xy: 148, 100
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 small7no
   rotate: false
-  xy: 177, 1
+  xy: 193, 1
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 day_btn_normal
   rotate: false
-  xy: 333, 231
+  xy: 413, 279
   size: 82, 85
   orig: 82, 85
   offset: 0, 0
   index: -1
 3
   rotate: false
-  xy: 34, 34
+  xy: 34, 66
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 toggle_led_gb
   rotate: false
-  xy: 167, 231
+  xy: 81, 279
   size: 82, 85
   orig: 82, 85
   offset: 0, 0
   index: -1
 18
   rotate: false
-  xy: 133, 34
+  xy: 133, 66
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 day_btn_zoom_down_disabled
   rotate: false
-  xy: 81, 182
+  xy: 306, 214
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 small3yes
   rotate: false
-  xy: 1, 1
+  xy: 17, 1
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small5solved
   rotate: false
-  xy: 241, 1
+  xy: 145, 1
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small7yes
   rotate: false
-  xy: 81, 1
+  xy: 177, 1
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small1no
   rotate: false
-  xy: 113, 1
+  xy: 81, 1
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 stars1small
   rotate: false
-  xy: 99, 117
+  xy: 99, 149
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 InfoPanelBack
   rotate: false
-  xy: 1, 317
+  xy: 84, 365
   size: 366, 87
   orig: 366, 87
   offset: 0, 0
   index: -1
 7
   rotate: false
-  xy: 397, 34
+  xy: 430, 66
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 19
   rotate: false
-  xy: 401, 1
+  xy: 390, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 11
   rotate: false
-  xy: 265, 34
+  xy: 265, 66
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 stars3small
   rotate: false
-  xy: 1, 68
+  xy: 1, 100
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 day_btn_zoom_down_pressed
   rotate: false
-  xy: 321, 182
+  xy: 226, 214
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 0
   rotate: false
-  xy: 368, 1
+  xy: 357, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+target_arrow
+  rotate: false
+  xy: 273, 1
+  size: 21, 64
+  orig: 21, 64
+  offset: 0, 0
+  index: -1
 stars0small
   rotate: false
-  xy: 246, 68
+  xy: 442, 100
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 arrow_Compass_Trans
   rotate: false
-  xy: 274, 117
+  xy: 1, 214
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 15
   rotate: false
-  xy: 298, 34
+  xy: 298, 66
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 20
   rotate: false
-  xy: 1, 34
+  xy: 1, 66
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 4
   rotate: false
-  xy: 67, 34
+  xy: 67, 66
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 stars2_5small
   rotate: false
-  xy: 344, 68
+  xy: 148, 149
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 small2no
   rotate: false
-  xy: 65, 1
+  xy: 97, 1
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small2yes
   rotate: false
-  xy: 49, 1
+  xy: 65, 1
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 toggle_led_gn
   rotate: false
-  xy: 1, 231
+  xy: 164, 279
   size: 82, 85
   orig: 82, 85
   offset: 0, 0
   index: -1
 small6yes
   rotate: false
-  xy: 193, 1
+  xy: 161, 1
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 toggle_led_rt
   rotate: false
-  xy: 250, 231
+  xy: 330, 279
   size: 82, 85
   orig: 82, 85
   offset: 0, 0
   index: -1
 day_btn_zoom_up_disabled
   rotate: false
-  xy: 1, 182
+  xy: 386, 214
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 small3no
   rotate: false
-  xy: 17, 1
+  xy: 49, 1
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 cross
   rotate: false
-  xy: 148, 117
+  xy: 197, 149
   size: 60, 60
   orig: 60, 60
   offset: 0, 0
   index: -1
 8
   rotate: false
-  xy: 335, 1
+  xy: 397, 66
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 12
   rotate: false
-  xy: 273, 1
+  xy: 295, 1
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 toggle_led_gr
   rotate: false
-  xy: 84, 231
+  xy: 247, 279
   size: 82, 85
   orig: 82, 85
   offset: 0, 0
   index: -1
 shaddowrect_selected
   rotate: false
-  xy: 50, 117
+  xy: 344, 100
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 1
   rotate: false
-  xy: 166, 34
+  xy: 166, 66
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 16
   rotate: false
-  xy: 331, 34
+  xy: 331, 66
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 21
   rotate: false
-  xy: 100, 34
+  xy: 100, 66
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 deact
   rotate: false
-  xy: 393, 68
+  xy: 393, 100
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 stars1_5small
   rotate: false
-  xy: 1, 117
+  xy: 246, 100
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 5
   rotate: false
-  xy: 467, 1
+  xy: 456, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 small1yes
   rotate: false
-  xy: 97, 1
+  xy: 113, 1
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 stars2small
   rotate: false
-  xy: 197, 68
+  xy: 50, 149
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 arrow_GPS
   rotate: false
-  xy: 339, 117
+  xy: 388, 149
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 small5yes
   rotate: false
-  xy: 209, 1
+  xy: 225, 1
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 Bubble
   rotate: false
-  xy: 1, 576
+  xy: 1, 624
   size: 438, 173
   orig: 438, 173
   offset: 0, 0
   index: -1
 BubbleOverlay
   rotate: false
-  xy: 1, 405
+  xy: 1, 453
   size: 430, 170
   orig: 430, 170
   offset: 0, 0
   index: -1
 arrow_GPS_Trans
   rotate: false
-  xy: 404, 117
+  xy: 323, 149
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 small4no
   rotate: false
-  xy: 129, 1
+  xy: 1, 1
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 stars4small
   rotate: false
-  xy: 99, 68
+  xy: 99, 100
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 10
   rotate: false
-  xy: 199, 34
+  xy: 199, 66
   size: 32, 33
   orig: 32, 33
   offset: 0, 0
   index: -1
 9
   rotate: false
-  xy: 302, 1
+  xy: 324, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 small5no
   rotate: false
-  xy: 145, 1
+  xy: 33, 1
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -459,56 +466,56 @@ small5no
   index: -1
 day_btn_zoom_up_normal
   rotate: false
-  xy: 401, 182
+  xy: 66, 214
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 shaddowrect
   rotate: false
-  xy: 295, 68
+  xy: 295, 100
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 stars4_5small
   rotate: false
-  xy: 50, 68
+  xy: 50, 100
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 2
   rotate: false
-  xy: 434, 1
+  xy: 423, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 arrow_Compass
   rotate: false
-  xy: 209, 117
+  xy: 258, 149
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 17
   rotate: false
-  xy: 232, 34
+  xy: 232, 66
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 day_btn_zoom_down_normal
   rotate: false
-  xy: 161, 182
+  xy: 146, 214
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 small4yes
   rotate: false
-  xy: 33, 1
+  xy: 129, 1
   size: 15, 15
   orig: 15, 15
   offset: 0, 0

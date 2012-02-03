@@ -20,6 +20,7 @@ import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
+import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
@@ -560,6 +561,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 		renderWPs(UiSizes.GL.WPSizes[iconSize], UiSizes.GL.UnderlaySizes[iconSize]);
 		renderPositionMarker();
+		RenderTargetArrow();
 		Bubble.render(UiSizes.GL.WPSizes[iconSize]);
 
 		batch.end();
@@ -780,6 +782,124 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 			arrow.setOrigin(UiSizes.GL.halfPosMarkerSize, UiSizes.GL.halfPosMarkerSize);
 			arrow.draw(batch);
 		}
+	}
+
+	private void RenderTargetArrow()
+	{
+
+		if (GlobalCore.SelectedCache() == null) return;
+
+		Coordinate coord = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos : GlobalCore.SelectedCache().Pos;
+
+		float x = (float) (256.0 * Descriptor.LongitudeToTileX(maxMapZoom, coord.Longitude));
+		float y = (float) (-256.0 * Descriptor.LatitudeToTileY(maxMapZoom, coord.Latitude));
+
+		float halfHeight = height / 2;
+		float halfWidth = width / 2;
+
+		// create ScreenRec
+
+		CB_RectF screenRec = new CB_RectF(0, 0, width, height);
+		screenRec.ScaleCenter(0.9f);
+
+		Vector2 ScreenCenter = new Vector2(halfWidth, halfHeight);
+
+		Vector2 screen = worldToScreen(new Vector2(x, y));
+		Vector2 target = new Vector2(screen.x, screen.y);
+
+		Vector2 newTarget = null;
+
+		// Zuerst abfragen, ob der Target Arrow an ein Control stößt.
+		if (showCompass)
+		{
+			newTarget = UiSizes.GL.Info.getIntersection(ScreenCenter, target, 1);
+		}
+
+		if (newTarget == null)
+		{
+			newTarget = UiSizes.GL.Toggle.getIntersection(ScreenCenter, target, 1);
+		}
+
+		if (newTarget == null && zoomBtn.isShown())
+		{
+			newTarget = UiSizes.GL.ZoomBtn.getIntersection(ScreenCenter, target, 4);
+		}
+
+		if (newTarget == null && zoomScale.isShown())
+		{
+			newTarget = UiSizes.GL.ZoomScale.getIntersection(ScreenCenter, target, 3);
+		}
+
+		if (newTarget == null)
+		{
+			newTarget = screenRec.getIntersection(ScreenCenter, target);
+		}
+
+		if (newTarget != null)
+		{
+
+			// Rotation berechnen
+
+			float direction = get_angle(ScreenCenter.x, ScreenCenter.y, newTarget.x, newTarget.y);
+
+			// direction -= 180;
+			//
+			// direction = 360 - direction;
+
+			direction = 180 - direction;
+
+			// draw sprite
+			Sprite arrow = SpriteCache.MapArrows.get(4);
+			arrow.setRotation(direction);
+
+			arrow.setBounds(newTarget.x - UiSizes.GL.TargetArrow.halfWidth, newTarget.y - UiSizes.GL.TargetArrow.height,
+					UiSizes.GL.TargetArrow.width, UiSizes.GL.TargetArrow.height);
+
+			arrow.setOrigin(UiSizes.GL.TargetArrow.halfWidth, UiSizes.GL.TargetArrow.height);
+			arrow.draw(batch);
+		}
+
+	}
+
+	float get_angle(float x1, float y1, float x2, float y2)
+	{
+		float opp;
+		float adj;
+		float ang1;
+
+		// calculate vector differences
+		opp = y1 - y2;
+		adj = x1 - x2;
+
+		if (x1 == x2 && y1 == y2) return (-1);
+
+		// trig function to calculate angle
+		if (adj == 0) // to catch vertical co-ord to prevent division by 0
+		{
+			if (opp >= 0)
+			{
+				return (0);
+			}
+			else
+			{
+				return (180);
+			}
+		}
+		else
+		{
+			ang1 = (float) ((Math.atan(opp / adj)) * 180 / Math.PI);
+			// the angle calculated will range from +90 degrees to -90 degrees
+			// so the angle needs to be adjusted if point x1 is less or greater then x2
+			if (x1 >= x2)
+			{
+				ang1 = 90 - ang1;
+			}
+			else
+			{
+				ang1 = 270 - ang1;
+			}
+		}
+		return (ang1);
 	}
 
 	private void renderWPs(SizeF WpUnderlay, SizeF WpSize)

@@ -476,6 +476,11 @@ public class UiSizes
 		public static SizeF bubbleCorrect;
 
 		/**
+		 * Größe des Target Arrows
+		 */
+		public static SizeF TargetArrow;
+
+		/**
 		 * Berechnet die Positionen der UI-Elemente
 		 */
 		private static void calcPos()
@@ -522,6 +527,9 @@ public class UiSizes
 			ZoomScale.setSize((float) (58 * DPI), 170 * DPI); // 280
 			PosMarkerSize = (float) (46.666667 * DPI);
 			halfPosMarkerSize = PosMarkerSize / 2;
+
+			TargetArrow = new SizeF((float) (14 * DPI), (float) (42.666667 * DPI));
+
 			UnderlaySizes = new SizeF[]
 				{ new SizeF(13 * DPI, 13 * DPI), new SizeF(14 * DPI, 14 * DPI), new SizeF(21 * DPI, 21 * DPI) };
 			WPSizes = new SizeF[]

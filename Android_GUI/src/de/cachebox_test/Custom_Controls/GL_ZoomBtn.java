@@ -310,4 +310,9 @@ public class GL_ZoomBtn
 		}
 	}
 
+	public boolean isShown()
+	{
+		return isVisible;
+	}
+
 }

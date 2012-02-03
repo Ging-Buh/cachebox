@@ -317,4 +317,9 @@ public class GL_ZoomScale
 		}
 	}
 
+	public boolean isShown()
+	{
+		return isVisible;
+	}
+
 }

@@ -100,6 +100,7 @@ public class SpriteCache
 		MapArrows.add(atlas.createSprite("arrow_Compass_Trans"));
 		MapArrows.add(atlas.createSprite("arrow_GPS"));
 		MapArrows.add(atlas.createSprite("arrow_GPS_Trans"));
+		MapArrows.add(atlas.createSprite("target_arrow"));
 
 		MapStars = new ArrayList<Sprite>();
 		MapStars.add(atlas.createSprite("stars0small"));

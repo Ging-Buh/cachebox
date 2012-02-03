@@ -17,6 +17,9 @@
 package CB_Core.Math;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import CB_Core.Types.MoveableList;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -174,10 +177,15 @@ public class CB_RectF
 		this.crossPos.y = this.Pos.y + this.height;
 	}
 
+	private boolean contains(Vector2 ret)
+	{
+		return contains(ret.x, ret.y);
+	}
+
 	public boolean contains(float x, float y)
 	{
 		return width > 0 && height > 0 // check for empty first
-				&& x >= this.Pos.x && x < this.crossPos.x && y >= this.Pos.y && y < this.crossPos.y;
+				&& x >= this.Pos.x && x <= this.crossPos.x && y >= this.Pos.y && y <= this.crossPos.y;
 	}
 
 	private ArrayList<SizeChangedEvent> list = new ArrayList<SizeChangedEvent>();
@@ -276,5 +284,103 @@ public class CB_RectF
 	{
 		return this.crossPos.x;
 	}
+
+	public CB_RectF ScaleCenter(float ScaleFactor)
+	{
+		return ScaleCenter(this, ScaleFactor);
+	}
+
+	public static CB_RectF ScaleCenter(CB_RectF rectangle, float ScaleFactor)
+	{
+		float newWidth = (int) (rectangle.getWidth() * ScaleFactor);
+		float newHeight = (int) (rectangle.getHeight() * ScaleFactor);
+		float newX = rectangle.Pos.x + ((rectangle.getWidth() - newWidth) / 2);
+		float newY = rectangle.Pos.y + ((rectangle.getHeight() - newHeight) / 2);
+		return new CB_RectF(newX, newY, newWidth, newHeight);
+
+	}
+
+	/**
+	 * Gibt den ersten Schnittpunkt des Rechtecks zwichen den Punkten P1 und P2 zurück! <img src="doc-files/rec-intersection.png" width=537
+	 * height=307>
+	 * 
+	 * @param P1
+	 *            = start Punkt der Linie
+	 * @param P2
+	 *            = End Punkt der Line
+	 * @return Punkt (b) da dieser als erster Schnittpunkt gefunden wird.
+	 */
+	public Vector2 getIntersection(Vector2 P1, Vector2 P2)
+	{
+		return getIntersection(P1, P2, 1);
+	}
+
+	/**
+	 * Gibt den ersten Schnittpunkt des Rechtecks zwichen den Punkten P1 und P2 zurück! </br> Wobei die als int übergebene Nummer der Gerade
+	 * des Rechtecks als erstes überprüft wird. </br> <img src="doc-files/rec-intersection.png" width=537 height=307>
+	 * 
+	 * @param P1
+	 *            = start Punkt der Linie
+	 * @param P2
+	 *            = End Punkt der Line
+	 * @param first
+	 * @return Punkt (b) wenn first=1 </br> Punkt (a) wenn first=2,3 oder 4 </br>
+	 */
+	public Vector2 getIntersection(Vector2 P1, Vector2 P2, int first)
+	{
+
+		// Array mit Geraden Nummern füllen
+		if (Geraden.size() < 4)
+		{
+			Geraden.add(1);
+			Geraden.add(2);
+			Geraden.add(3);
+			Geraden.add(4);
+		}
+
+		Geraden.MoveItemFirst(Geraden.indexOf(first));
+
+		Vector2 ret = new Vector2();
+
+		for (Iterator<Integer> i = Geraden.iterator(); i.hasNext();)
+		{
+			switch (i.next())
+			{
+			case 1:
+
+				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, Pos, new Vector2(crossPos.x, Pos.y), ret))
+				{
+					if (contains(ret)) return ret; // 1 unten
+				}
+				break;
+
+			case 2:
+				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, Pos, new Vector2(Pos.x, crossPos.y), ret))
+				{
+					if (contains(ret)) return ret; // 2 links
+				}
+				break;
+
+			case 3:
+				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, crossPos, new Vector2(crossPos.x, Pos.y), ret))
+				{
+					if (contains(ret)) return ret; // 3 rechts
+				}
+
+				break;
+
+			case 4:
+				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, crossPos, new Vector2(Pos.x, crossPos.y), ret))
+				{
+					if (contains(ret)) return ret; // 4 oben
+				}
+				break;
+			}
+		}
+
+		return null;
+	}
+
+	private static MoveableList<Integer> Geraden = new MoveableList<Integer>();
 
 }
