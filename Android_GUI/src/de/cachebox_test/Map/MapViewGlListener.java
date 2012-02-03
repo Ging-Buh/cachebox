@@ -95,7 +95,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	private float diffCameraZoom;
 
 	// für kinetischen Zoom und Pan
-	private KineticZoom kinetic = null;
+	private KineticZoom kineticZoom = null;
+	private KineticPan kineticPan = null;
 	// #################################################################
 	//
 	// Min, Max und Act Zoom Werte sind jetzt im "zoomBtn" gespeichert!
@@ -389,9 +390,10 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	public void render()
 	{
 		// reduceFPS();
-		if (kinetic != null)
+		boolean reduceFps = ((kineticZoom != null) || ((kineticPan != null) && (kineticPan.started)));
+		if (kineticZoom != null)
 		{
-			camera.zoom = kinetic.getAktZoom();
+			camera.zoom = kineticZoom.getAktZoom();
 			debugString = "Kinetic: " + camera.zoom;
 
 			int zoom = maxMapZoom;
@@ -407,11 +409,36 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 			zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), true);
 
-			if (kinetic.getFertig())
+			if (kineticZoom.getFertig())
 			{
 				startTimer(200);
-				kinetic = null;
+				kineticZoom = null;
 			}
+			else
+				reduceFps = false;
+		}
+
+		if ((kineticPan != null) && (kineticPan.started))
+		{
+			long faktor = getMapTilePosFactor(aktZoom);
+			Point pan = kineticPan.getAktPan();
+			debugString = pan.x + " - " + pan.y;
+			camera.position.add(pan.x * faktor, pan.y * faktor, 0);
+			screenCenterW.x = camera.position.x;
+			screenCenterW.y = camera.position.y;
+			calcCenter();
+
+			if (kineticPan.getFertig())
+			{
+				kineticPan = null;
+			}
+			else
+				reduceFps = false;
+		}
+
+		if (reduceFps)
+		{
+			startTimer(200);
 		}
 
 		if (!useNewInput)
@@ -2126,6 +2153,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		if (inputState == InputState.Idle)
 		{
 			// auf Button Clicks nur reagieren, wenn aktuell noch kein Finger gedrückt ist!!!
+			if (kineticPan != null)
+			// bei FingerKlick (wenn Idle) sofort das kinetische Scrollen stoppen
+			kineticPan = null;
 
 			// check ToggleBtn clicked
 			if (btnTrackPos.hitTest(clickedAt))
@@ -2146,7 +2176,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 				// debugString = "State: " + inputState;
 				// aktZoom = zoomBtn.getZoom();
 				// camera.zoom = getMapTilePosFactor(aktZoom);
-				kinetic = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), SystemClock.uptimeMillis(),
+				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), SystemClock.uptimeMillis(),
 						SystemClock.uptimeMillis() + 1000);
 				startTimer(30);
 
@@ -2301,11 +2331,15 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 			debugString += faktor;
 			Point lastPoint = (Point) fingerDown.values().toArray()[0];
 			debugString += " - " + (lastPoint.x - x) * faktor + " - " + (y - lastPoint.y) * faktor;
+
 			camera.position.add((lastPoint.x - x) * faktor, (y - lastPoint.y) * faktor, 0);
 			debugString = camera.position.x + " - " + camera.position.y;
 			screenCenterW.x = camera.position.x;
 			screenCenterW.y = camera.position.y;
 			calcCenter();
+			if (kineticPan == null) kineticPan = new KineticPan();
+			kineticPan.setLast(System.currentTimeMillis(), x, y);
+
 			lastPoint.x = x;
 			lastPoint.y = y;
 		}
@@ -2379,7 +2413,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 			// wieder langsam rendern
 			((GLSurfaceView) MapViewGL.ViewGl).requestRender();
 
-			if (kinetic == null) startTimer(200);
+			if ((kineticZoom == null) && (kineticPan == null)) startTimer(200);
+			if (kineticPan != null) kineticPan.start();
 		}
 
 		// debugString = "State: " + inputState;
@@ -2450,6 +2485,78 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 		setCenter(target);
 
+	}
+
+	protected class KineticPan
+	{
+		private boolean started;
+		private boolean fertig;
+
+		private long lastTs;
+		private int x;
+		private int y;
+		private long diffTs;
+		private int diffX;
+		private int diffY;
+		private long startTs;
+		private long endTs;
+
+		public KineticPan()
+		{
+			fertig = false;
+			started = false;
+			diffTs = 0;
+			diffX = 0;
+			diffY = 0;
+		}
+
+		public void setLast(long aktTs, int aktX, int aktY)
+		{
+			if (this.lastTs > 0)
+			{
+				diffTs = aktTs - this.lastTs;
+				diffX = x - aktX;
+				diffY = aktY - y;
+			}
+			this.lastTs = aktTs;
+			this.x = aktX;
+			this.y = aktY;
+		}
+
+		public boolean getFertig()
+		{
+			return fertig;
+		}
+
+		public boolean getStarted()
+		{
+			return started;
+		}
+
+		public void start()
+		{
+			startTs = System.currentTimeMillis();
+			endTs = startTs + 2000;
+			started = true;
+		}
+
+		public Point getAktPan()
+		{
+			Point result = new Point();
+
+			long aktTs = System.currentTimeMillis();
+			float faktor = (float) (aktTs - startTs) / (float) (endTs - startTs);
+			faktor = com.badlogic.gdx.math.Interpolation.exp5Out.apply(faktor);
+			if (faktor >= 1)
+			{
+				fertig = true;
+				faktor = 1;
+			}
+
+			result.x = (int) (diffX * (1 - faktor));
+			result.y = (int) (diffY * (1 - faktor));
+			return result;
+		}
 	}
 
 	protected class KineticZoom
