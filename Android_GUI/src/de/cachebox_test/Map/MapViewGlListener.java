@@ -108,6 +108,8 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	// #################################################################
 
 	final int maxMapZoom = 22;
+	int frameRateIdle = 200;
+	int frameRateAction = 30;
 
 	int maxNumTiles = 100;
 	float iconFactor = 1.5f;
@@ -412,7 +414,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 			if (kineticZoom.getFertig())
 			{
-				startTimer(200);
+				startTimer(frameRateIdle);
 				kineticZoom = null;
 			}
 			else
@@ -439,7 +441,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 		if (reduceFps)
 		{
-			startTimer(200);
+			startTimer(frameRateIdle);
 		}
 
 		if (!useNewInput)
@@ -1249,7 +1251,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	{
 		Log.d(Tag, "onStart()");
 		started.set(true);
-		startTimer(200);
+		startTimer(frameRateIdle);
 	}
 
 	public void onStop()
@@ -1334,7 +1336,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 			if (zoomBtn.hitTest(clickedAt))
 			{
 				// schnell Rendern
-				startTimer(30);
+				startTimer(frameRateAction);
 				main.vibrate();
 				// start Zoom für die Animation des camera.zoom
 				startCameraZoom = camera.zoom;
@@ -2114,7 +2116,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	// speicher, welche Finger-Pointer aktuell gedrückt sind
 	private HashMap<Integer, Point> fingerDown = new LinkedHashMap<Integer, Point>();
 
-	private String debugString = "";
+	private static String debugString = "";
 
 	@Override
 	public boolean keyDown(int arg0)
@@ -2147,7 +2149,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button)
 	{
-		debugString = "touchDown " + inputState.toString();
+		// debugString = "touchDown " + inputState.toString();
 		if (inputState == InputState.Idle)
 		{
 			fingerDown.clear();
@@ -2166,7 +2168,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	@Override
 	public boolean touchDragged(int x, int y, int pointer)
 	{
-		debugString = "touchDragged " + inputState.toString();
+		// debugString = "touchDragged " + inputState.toString();
 		if (inputState == InputState.IdleDown)
 		{
 			// es wurde 1x gedrückt -> testen, ob ein gewisser Minimum Bereich verschoben wurde
@@ -2176,7 +2178,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 				if ((Math.abs(p.x - x) > 10) || (Math.abs(p.y - y) > 10))
 				{
 					inputState = InputState.Pan;
-					startTimer(30);
+					startTimer(frameRateAction);
 					((GLSurfaceView) MapViewGL.ViewGl).requestRender();
 				}
 				return false;
@@ -2190,7 +2192,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 		if ((inputState == InputState.Pan) && (fingerDown.size() == 1))
 		{
-			startTimer(30);
+			startTimer(frameRateAction);
 			// debugString = "";
 			long faktor = getMapTilePosFactor(aktZoom);
 			debugString += faktor;
@@ -2198,7 +2200,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 			debugString += " - " + (lastPoint.x - x) * faktor + " - " + (y - lastPoint.y) * faktor;
 
 			camera.position.add((lastPoint.x - x) * faktor, (y - lastPoint.y) * faktor, 0);
-			debugString = camera.position.x + " - " + camera.position.y;
+			// debugString = camera.position.x + " - " + camera.position.y;
 			screenCenterW.x = camera.position.x;
 			screenCenterW.y = camera.position.y;
 			calcCenter();
@@ -2270,7 +2272,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	@Override
 	public boolean touchUp(int x, int y, int pointer, int button)
 	{
-		debugString = "touchUp " + inputState.toString();
+		// debugString = "touchUp " + inputState.toString();
 		if (inputState == InputState.IdleDown)
 		{
 			// es wurde gedrückt, aber nich verschoben
@@ -2308,7 +2310,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 				// camera.zoom = getMapTilePosFactor(aktZoom);
 				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), SystemClock.uptimeMillis(),
 						SystemClock.uptimeMillis() + 1000);
-				startTimer(30);
+				startTimer(frameRateAction);
 
 				return false;
 			}
@@ -2427,7 +2429,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 			// wieder langsam rendern
 			((GLSurfaceView) MapViewGL.ViewGl).requestRender();
 
-			if ((kineticZoom == null) && (kineticPan == null)) startTimer(200);
+			if ((kineticZoom == null) && (kineticPan == null)) startTimer(frameRateIdle);
 			if (kineticPan != null) kineticPan.start();
 		}
 
@@ -2505,11 +2507,10 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	{
 		private boolean started;
 		private boolean fertig;
-
-		private long lastTs;
-		private int x;
-		private int y;
-		private long diffTs;
+		// benutze den Abstand der letzten 5 Positionsänderungen
+		final int anzPoints = 3;
+		private int[] x = new int[anzPoints];
+		private int[] y = new int[anzPoints];
 		private int diffX;
 		private int diffY;
 		private long startTs;
@@ -2519,22 +2520,27 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		{
 			fertig = false;
 			started = false;
-			diffTs = 0;
 			diffX = 0;
 			diffY = 0;
+			for (int i = 0; i < anzPoints; i++)
+			{
+				x[i] = 0;
+				y[i] = 0;
+			}
 		}
 
 		public void setLast(long aktTs, int aktX, int aktY)
 		{
-			if (this.lastTs > 0)
+			for (int i = anzPoints - 2; i >= 0; i--)
 			{
-				diffTs = aktTs - this.lastTs;
-				diffX = x - aktX;
-				diffY = aktY - y;
+				x[i + 1] = x[i];
+				y[i + 1] = y[i];
 			}
-			this.lastTs = aktTs;
-			this.x = aktX;
-			this.y = aktY;
+			x[0] = aktX;
+			y[0] = aktY;
+
+			diffX = x[anzPoints - 1] - aktX;
+			diffY = aktY - y[anzPoints - 1];
 		}
 
 		public boolean getFertig()
@@ -2550,7 +2556,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		public void start()
 		{
 			startTs = System.currentTimeMillis();
-			endTs = startTs + 2000;
+			int abstand = (int) Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
+
+			endTs = startTs + 2000 + abstand * 50 / anzPoints;
 			started = true;
 		}
 
@@ -2560,15 +2568,15 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 			long aktTs = System.currentTimeMillis();
 			float faktor = (float) (aktTs - startTs) / (float) (endTs - startTs);
-			faktor = com.badlogic.gdx.math.Interpolation.exp5Out.apply(faktor);
+			faktor = com.badlogic.gdx.math.Interpolation.exp10Out.apply(faktor);
 			if (faktor >= 1)
 			{
 				fertig = true;
 				faktor = 1;
 			}
 
-			result.x = (int) (diffX * (1 - faktor));
-			result.y = (int) (diffY * (1 - faktor));
+			result.x = (int) (diffX / anzPoints * (1 - faktor));
+			result.y = (int) (diffY / anzPoints * (1 - faktor));
 			return result;
 		}
 	}
