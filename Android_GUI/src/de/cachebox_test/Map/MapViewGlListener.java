@@ -231,6 +231,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 	private void startTimer(long delay)
 	{
+		if (timerValue == delay) return;
 		stopTimer();
 
 		timerValue = delay;
@@ -2189,6 +2190,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 		if ((inputState == InputState.Pan) && (fingerDown.size() == 1))
 		{
+			startTimer(30);
 			// debugString = "";
 			long faktor = getMapTilePosFactor(aktZoom);
 			debugString += faktor;
