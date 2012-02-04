@@ -394,7 +394,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		if (kineticZoom != null)
 		{
 			camera.zoom = kineticZoom.getAktZoom();
-			debugString = "Kinetic: " + camera.zoom;
+			// debugString = "Kinetic: " + camera.zoom;
 
 			int zoom = maxMapZoom;
 			float tmpZoom = camera.zoom;
@@ -422,7 +422,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		{
 			long faktor = getMapTilePosFactor(aktZoom);
 			Point pan = kineticPan.getAktPan();
-			debugString = pan.x + " - " + pan.y;
+			// debugString = pan.x + " - " + pan.y;
 			camera.position.add(pan.x * faktor, pan.y * faktor, 0);
 			screenCenterW.x = camera.position.x;
 			screenCenterW.y = camera.position.y;
@@ -2106,7 +2106,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	// InputProcessor
 	public enum InputState
 	{
-		Idle, Button, Pan, Zoom, PanAutomatic, ZoomAutomatic
+		Idle, IdleDown, Button, Pan, Zoom, PanAutomatic, ZoomAutomatic
 	}
 
 	private InputState inputState = InputState.Idle;
@@ -2146,178 +2146,41 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button)
 	{
-		double minDist = Double.MAX_VALUE;
-		WaypointRenderInfo minWpi = null;
-		Vector2 clickedAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());
-
+		debugString = "touchDown " + inputState.toString();
 		if (inputState == InputState.Idle)
 		{
-			// auf Button Clicks nur reagieren, wenn aktuell noch kein Finger gedrückt ist!!!
-			if (kineticPan != null)
-			// bei FingerKlick (wenn Idle) sofort das kinetische Scrollen stoppen
-			kineticPan = null;
-
-			// check ToggleBtn clicked
-			if (btnTrackPos.hitTest(clickedAt))
-			{
-				main.vibrate();
-				stateChanged();
-				inputState = InputState.Button;
-				// debugString = "State: " + inputState;
-				return false;
-			}
-
-			// check Zoom Button clicked
-			if (zoomBtn.hitTest(clickedAt))
-			{
-				zoomScale.setZoom(zoomBtn.getZoom());
-				zoomScale.resetFadeOut();
-				inputState = InputState.Button;
-				// debugString = "State: " + inputState;
-				// aktZoom = zoomBtn.getZoom();
-				// camera.zoom = getMapTilePosFactor(aktZoom);
-				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), SystemClock.uptimeMillis(),
-						SystemClock.uptimeMillis() + 1000);
-				startTimer(30);
-
-				return false;
-			}
-
-			synchronized (mapCacheList.list)
-			{
-				// Bubble gedrückt?
-				if ((Bubble.cache != null) && Bubble.isShow && Bubble.DrawRec != null && Bubble.DrawRec.contains(clickedAt.x, clickedAt.y))
-				{
-					// Click inside Bubble -> hide Bubble and select Cache
-					// GlobalCore.SelectedWaypoint(Bubble.cache,
-					// Bubble.waypoint);
-					ThreadSaveSetSelectedWP(Bubble.cache, Bubble.waypoint);
-					CacheDraw.ReleaseCacheBMP();
-					Bubble.isShow = false;
-					Bubble.CacheId = -1;
-					Bubble.cache = null;
-					Bubble.waypoint = null;
-					mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
-
-					// Shutdown Autoresort
-					Global.autoResort = false;
-					inputState = InputState.Button;
-					// debugString = "State: " + inputState;
-					// do nothing else with this click
-					return false;
-				}
-				else if (Bubble.isShow)
-				{
-					// Click outside Bubble -> hide Bubble
-					Bubble.isShow = false;
-				}
-
-				for (WaypointRenderInfo wpi : mapCacheList.list)
-				{
-					Vector2 screen = worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
-					if (clickedAt != null)
-					{
-						double aktDist = Math.sqrt(Math.pow(screen.x - clickedAt.x, 2) + Math.pow(screen.y - clickedAt.y, 2));
-						if (aktDist < minDist)
-						{
-							minDist = aktDist;
-							minWpi = wpi;
-						}
-					}
-				}
-				// if (minDist < 40)
-				// {
-				//
-				// final Cache updateCache = minWpi.Cache;
-				// final Waypoint updateWaypoint = minWpi.Waypoint;
-				//
-				// ThreadSaveSetSelectedWP(updateCache, updateWaypoint);
-				//
-				// // CacheListe auf jeden Fall neu berechnen
-				// // könnte aber noch verbessert werden, indem nur der letzte
-				// // selected und der neue selected geändert werden!
-				// mapCacheList.update(screenToWorld(new Vector2(0, 0)),
-				// screenToWorld(new Vector2(width, height)), zoom, true);
-				//
-				// }
-
-				if (minWpi == null || minWpi.Cache == null) return false;
-
-				if (minDist < 40)
-				{
-
-					if (minWpi.Waypoint != null)
-					{
-						if (GlobalCore.SelectedCache() != minWpi.Cache)
-						{
-							// Show Bubble
-							Bubble.isShow = true;
-							Bubble.CacheId = minWpi.Cache.Id;
-							Bubble.cache = minWpi.Cache;
-							Bubble.waypoint = minWpi.Waypoint;
-							Bubble.disposeSprite();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
-
-						}
-						else
-						{
-							// do not show Bubble because there will not be
-							// selected
-							// a
-							// different cache but only a different waypoint
-							// Wegpunktliste ausrichten
-							ThreadSaveSetSelectedWP(minWpi.Cache, minWpi.Waypoint);
-							// FormMain.WaypointListPanel.AlignSelected();
-							// updateCacheList();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
-						}
-
-					}
-					else
-					{
-						if (GlobalCore.SelectedCache() != minWpi.Cache)
-						{
-							Bubble.isShow = true;
-							Bubble.CacheId = minWpi.Cache.Id;
-							Bubble.cache = minWpi.Cache;
-							Bubble.disposeSprite();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
-						}
-						else
-						{
-							Bubble.isShow = true;
-							Bubble.CacheId = minWpi.Cache.Id;
-							Bubble.cache = minWpi.Cache;
-							Bubble.disposeSprite();
-							// Cacheliste ausrichten
-							ThreadSaveSetSelectedWP(minWpi.Cache);
-							// updateCacheList();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
-						}
-					}
-					inputState = InputState.Button;
-					// debugString = "State: " + inputState;
-					// return false;
-				}
-			}
+			fingerDown.clear();
+			inputState = InputState.IdleDown;
+			fingerDown.put(pointer, new Point(x, y));
+		}
+		else
+		{
+			fingerDown.put(pointer, new Point(x, y));
+			if (fingerDown.size() == 2) inputState = InputState.Zoom;
 		}
 
-		// wenn kein Button gedrückt wurde -> weiter machen mit Zoom - Pan
-		fingerDown.put(pointer, new Point(x, y));
-		if (fingerDown.size() == 1) inputState = InputState.Pan;
-		else if (fingerDown.size() == 2) inputState = InputState.Zoom;
-
-		((GLSurfaceView) MapViewGL.ViewGl).requestRender();
-
-		startTimer(30);
-
-		// debugString = "State: " + inputState;
 		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int x, int y, int pointer)
 	{
+		debugString = "touchDragged " + inputState.toString();
+		if (inputState == InputState.IdleDown)
+		{
+			// es wurde 1x gedrückt -> testen, ob ein gewisser Minimum Bereich verschoben wurde
+			Point p = fingerDown.get(pointer);
+			if (p != null)
+			{
+				if ((Math.abs(p.x - x) > 10) || (Math.abs(p.y - y) > 10))
+				{
+					inputState = InputState.Pan;
+					startTimer(30);
+					((GLSurfaceView) MapViewGL.ViewGl).requestRender();
+				}
+				return false;
+			}
+		}
 		if (inputState == InputState.Button)
 		{
 			// wenn ein Button gedrückt war -> beim Verschieben nichts machen!!!
@@ -2326,7 +2189,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 		if ((inputState == InputState.Pan) && (fingerDown.size() == 1))
 		{
-			debugString = "";
+			// debugString = "";
 			long faktor = getMapTilePosFactor(aktZoom);
 			debugString += faktor;
 			Point lastPoint = (Point) fingerDown.values().toArray()[0];
@@ -2405,6 +2268,155 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	@Override
 	public boolean touchUp(int x, int y, int pointer, int button)
 	{
+		debugString = "touchUp " + inputState.toString();
+		if (inputState == InputState.IdleDown)
+		{
+			// es wurde gedrückt, aber nich verschoben
+			fingerDown.remove(pointer);
+			inputState = InputState.Idle;
+			// -> Buttons testen
+
+			double minDist = Double.MAX_VALUE;
+			WaypointRenderInfo minWpi = null;
+			Vector2 clickedAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());
+
+			// auf Button Clicks nur reagieren, wenn aktuell noch kein Finger gedrückt ist!!!
+			if (kineticPan != null)
+			// bei FingerKlick (wenn Idle) sofort das kinetische Scrollen stoppen
+			kineticPan = null;
+
+			// check ToggleBtn clicked
+			if (btnTrackPos.hitTest(clickedAt))
+			{
+				main.vibrate();
+				stateChanged();
+				inputState = InputState.Idle;
+				// debugString = "State: " + inputState;
+				return false;
+			}
+
+			// check Zoom Button clicked
+			if (zoomBtn.hitTest(clickedAt))
+			{
+				zoomScale.setZoom(zoomBtn.getZoom());
+				zoomScale.resetFadeOut();
+				inputState = InputState.Idle;
+				// debugString = "State: " + inputState;
+				// aktZoom = zoomBtn.getZoom();
+				// camera.zoom = getMapTilePosFactor(aktZoom);
+				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), SystemClock.uptimeMillis(),
+						SystemClock.uptimeMillis() + 1000);
+				startTimer(30);
+
+				return false;
+			}
+
+			synchronized (mapCacheList.list)
+			{
+				// Bubble gedrückt?
+				if ((Bubble.cache != null) && Bubble.isShow && Bubble.DrawRec != null && Bubble.DrawRec.contains(clickedAt.x, clickedAt.y))
+				{
+					// Click inside Bubble -> hide Bubble and select Cache
+					// GlobalCore.SelectedWaypoint(Bubble.cache,
+					// Bubble.waypoint);
+					ThreadSaveSetSelectedWP(Bubble.cache, Bubble.waypoint);
+					CacheDraw.ReleaseCacheBMP();
+					Bubble.isShow = false;
+					Bubble.CacheId = -1;
+					Bubble.cache = null;
+					Bubble.waypoint = null;
+					mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+
+					// Shutdown Autoresort
+					Global.autoResort = false;
+					inputState = InputState.Idle;
+					// debugString = "State: " + inputState;
+					// do nothing else with this click
+					return false;
+				}
+				else if (Bubble.isShow)
+				{
+					// Click outside Bubble -> hide Bubble
+					Bubble.isShow = false;
+				}
+
+				for (WaypointRenderInfo wpi : mapCacheList.list)
+				{
+					Vector2 screen = worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
+					if (clickedAt != null)
+					{
+						double aktDist = Math.sqrt(Math.pow(screen.x - clickedAt.x, 2) + Math.pow(screen.y - clickedAt.y, 2));
+						if (aktDist < minDist)
+						{
+							minDist = aktDist;
+							minWpi = wpi;
+						}
+					}
+				}
+
+				if (minWpi == null || minWpi.Cache == null) return false;
+
+				if (minDist < 40)
+				{
+
+					if (minWpi.Waypoint != null)
+					{
+						if (GlobalCore.SelectedCache() != minWpi.Cache)
+						{
+							// Show Bubble
+							Bubble.isShow = true;
+							Bubble.CacheId = minWpi.Cache.Id;
+							Bubble.cache = minWpi.Cache;
+							Bubble.waypoint = minWpi.Waypoint;
+							Bubble.disposeSprite();
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+
+						}
+						else
+						{
+							// do not show Bubble because there will not be
+							// selected
+							// a
+							// different cache but only a different waypoint
+							// Wegpunktliste ausrichten
+							ThreadSaveSetSelectedWP(minWpi.Cache, minWpi.Waypoint);
+							// FormMain.WaypointListPanel.AlignSelected();
+							// updateCacheList();
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+						}
+
+					}
+					else
+					{
+						if (GlobalCore.SelectedCache() != minWpi.Cache)
+						{
+							Bubble.isShow = true;
+							Bubble.CacheId = minWpi.Cache.Id;
+							Bubble.cache = minWpi.Cache;
+							Bubble.disposeSprite();
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+						}
+						else
+						{
+							Bubble.isShow = true;
+							Bubble.CacheId = minWpi.Cache.Id;
+							Bubble.cache = minWpi.Cache;
+							Bubble.disposeSprite();
+							// Cacheliste ausrichten
+							ThreadSaveSetSelectedWP(minWpi.Cache);
+							// updateCacheList();
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+						}
+					}
+					inputState = InputState.Idle;
+					// debugString = "State: " + inputState;
+					// return false;
+				}
+			}
+			inputState = InputState.Idle;
+			return false;
+		}
+
 		fingerDown.remove(pointer);
 		if (fingerDown.size() == 1) inputState = InputState.Pan;
 		else if (fingerDown.size() == 0)
