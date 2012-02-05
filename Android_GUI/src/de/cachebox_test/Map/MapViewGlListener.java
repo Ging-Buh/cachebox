@@ -2195,9 +2195,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 			startTimer(frameRateAction);
 			// debugString = "";
 			long faktor = getMapTilePosFactor(aktZoom);
-			debugString += faktor;
+			// debugString += faktor;
 			Point lastPoint = (Point) fingerDown.values().toArray()[0];
-			debugString += " - " + (lastPoint.x - x) * faktor + " - " + (y - lastPoint.y) * faktor;
+			// debugString += " - " + (lastPoint.x - x) * faktor + " - " + (y - lastPoint.y) * faktor;
 
 			camera.position.add((lastPoint.x - x) * faktor, (y - lastPoint.y) * faktor, 0);
 			// debugString = camera.position.x + " - " + camera.position.y;
@@ -2539,8 +2539,15 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 			x[0] = aktX;
 			y[0] = aktY;
 
+			for (int i = 1; i < anzPoints; i++)
+			{
+				if (x[i] == 0) x[i] = x[i - 1];
+				if (y[i] == 0) y[i] = y[i - 1];
+			}
 			diffX = x[anzPoints - 1] - aktX;
 			diffY = aktY - y[anzPoints - 1];
+
+			debugString = x[2] + " - " + x[1] + " - " + x[0];
 		}
 
 		public boolean getFertig()
