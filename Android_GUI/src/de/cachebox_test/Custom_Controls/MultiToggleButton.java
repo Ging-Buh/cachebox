@@ -17,6 +17,7 @@ package de.cachebox_test.Custom_Controls;
 
 import java.util.ArrayList;
 
+import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
 import android.content.Context;
 import android.content.res.Resources;
@@ -40,7 +41,6 @@ import com.badlogic.gdx.math.Vector2;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
-import de.cachebox_test.Map.SpriteCache;
 
 /**
  * @author Longri

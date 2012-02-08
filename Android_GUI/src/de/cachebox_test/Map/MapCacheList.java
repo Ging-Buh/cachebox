@@ -7,6 +7,7 @@ import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Types.Cache;

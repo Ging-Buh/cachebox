@@ -43,8 +43,8 @@ public class CB_RectF
 	 */
 	private Vector2 crossPos = new Vector2(0, 0);
 
-	private float width;
-	private float height;
+	protected float width;
+	protected float height;
 
 	// Constructors
 
@@ -202,11 +202,17 @@ public class CB_RectF
 
 	public void CallSizeChanged()
 	{
+		resize(this.width, this.height);
+
 		for (SizeChangedEvent event : list)
 		{
 			event.sizeChanged();
 		}
 
+	}
+
+	public void resize(float width, float height)
+	{
 	}
 
 	public boolean equals(CB_RectF rec)

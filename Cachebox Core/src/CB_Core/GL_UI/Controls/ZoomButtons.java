@@ -1,22 +1,8 @@
-/* 
- * Copyright (C) 2011-2012 team-cachebox.de
- *
- * Licensed under the : GNU General Public License (GPL);
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.gnu.org/licenses/gpl.html
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package de.cachebox_test.Custom_Controls;
+package CB_Core.GL_UI.Controls;
 
 import java.util.Date;
 
+import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
 
@@ -24,13 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-
-/**
- * Enthält die Logik und Render Methoden für Zoom Buttons
- * 
- * @author Longri
- */
-public class GL_ZoomBtn
+public class ZoomButtons extends GL_View_Base
 {
 
 	private int minzoom = 6;
@@ -39,8 +19,7 @@ public class GL_ZoomBtn
 	private CB_RectF HitRecUp;
 	private CB_RectF HitRecDown;
 	private CB_RectF BtnDrawRec;
-	private CB_RectF ScaleDrawRec;
-	private boolean isVisible = true;
+
 	private Date timeLastAction = new Date();
 	private final int timeToFadeOut = 7000; // 7Sec
 	private final int fadeStep = 50; // 100 mSec
@@ -48,13 +27,10 @@ public class GL_ZoomBtn
 	private boolean fadeIn = false;
 	private float FadeValue = 1.0f;
 
-	private boolean onTouchUp = false;
-	private boolean onTouchDown = false;
-
 	/**
 	 * Standard Constructor. </br> minzoom = 6 </br> maxzoom = 20 </br> zoom = 13; </br>
 	 */
-	public GL_ZoomBtn()
+	public ZoomButtons()
 	{
 	}
 
@@ -65,13 +41,14 @@ public class GL_ZoomBtn
 	 * @param maxzoom
 	 * @param zoom
 	 */
-	public GL_ZoomBtn(int minzoom, int maxzoom, int zoom)
+	public ZoomButtons(int minzoom, int maxzoom, int zoom)
 	{
 		this.minzoom = minzoom;
 		this.maxzoom = maxzoom;
 		this.zoom = zoom;
 	}
 
+	@Override
 	public boolean hitTest(Vector2 pos)
 	{
 		if (zoom != maxzoom)
@@ -102,6 +79,7 @@ public class GL_ZoomBtn
 		return false;
 	}
 
+	@Override
 	public boolean touchDownTest(Vector2 pos)
 	{
 		if (HitRecUp != null)
@@ -125,16 +103,11 @@ public class GL_ZoomBtn
 		return false;
 	}
 
-	public void Render(SpriteBatch batch, CB_RectF rect)
+	@Override
+	public void render(SpriteBatch batch)
 	{
-		// rect auf Teilen in zwei gleich große
-		HitRecUp = rect.copy();
-		HitRecDown = rect.copy();
-		HitRecUp.setWidth(rect.getWidth() / 2);
-		HitRecDown.setWidth(rect.getWidth() / 2);
-		HitRecUp.setPos(new Vector2(rect.getX() + HitRecDown.getWidth(), rect.getY()));
 
-		if (!isVisible) return;
+		if (!this.isVisible()) return;
 		// Log.d("CACHEBOX", "in=" + fadeIn + " out=" + fadeOut + " Fade=" + FadeValue);
 		checkFade();
 
@@ -163,12 +136,6 @@ public class GL_ZoomBtn
 		}
 		btnUp.setBounds(HitRecUp.getX(), HitRecUp.getY(), HitRecUp.getWidth(), HitRecUp.getHeight());
 		btnUp.draw(batch, FadeValue);
-	}
-
-	public void TouchRelease()
-	{
-		onTouchUp = false;
-		onTouchDown = false;
 	}
 
 	public void ZoomAdd(int value)
@@ -248,10 +215,10 @@ public class GL_ZoomBtn
 			fadeIn = false;
 			FadeValue = 1.0f;
 		}
-		else if (!isVisible)
+		else if (!this.isVisible())
 		{
 			// Log.d("CACHEBOX", "Start Fade In");
-			isVisible = true;
+			this.setVisibility(VISIBLE);
 			fadeIn = true;
 			FadeValue = 0f;
 		}
@@ -266,7 +233,7 @@ public class GL_ZoomBtn
 
 	private void checkFade()
 	{
-		if (!fadeOut && !fadeIn && isVisible)
+		if (!fadeOut && !fadeIn && this.isVisible())
 		{
 			Date now = new Date();
 			if (now.getTime() - timeLastAction.getTime() > timeToFadeOut)
@@ -288,7 +255,7 @@ public class GL_ZoomBtn
 					// Log.d("CACHEBOX", "Ende Fade Out");
 					FadeValue = 0f;
 					fadeOut = false;
-					isVisible = false;
+					this.setVisibility(INVISIBLE);
 				}
 				timeLastAction = new Date();
 			}
@@ -310,9 +277,37 @@ public class GL_ZoomBtn
 		}
 	}
 
-	public boolean isShown()
+	@Override
+	public void onRezised(CB_RectF rec)
 	{
-		return isVisible;
+		// rect auf Teilen in zwei gleich große
+		HitRecUp = rec.copy();
+		HitRecDown = rec.copy();
+		HitRecUp.setWidth(rec.getWidth() / 2);
+		HitRecDown.setWidth(rec.getWidth() / 2);
+		HitRecUp.setPos(new Vector2(rec.getX() + HitRecDown.getWidth(), rec.getY()));
+
+	}
+
+	@Override
+	protected void onClicked(Vector2 pos)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean onTouchDown(Vector2 pos)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void onTouchRelease()
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }

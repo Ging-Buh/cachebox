@@ -19,6 +19,7 @@ package de.cachebox_test.Custom_Controls;
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
+import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import android.graphics.Bitmap;
@@ -34,7 +35,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.cachebox_test.Global;
 import de.cachebox_test.main;
-import de.cachebox_test.Map.SpriteCache;
 
 /**
  * Enthält die Logik und Render Methoden für die Zoom Scala

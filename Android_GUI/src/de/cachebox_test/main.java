@@ -126,6 +126,7 @@ import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Locator.GPS;
 import de.cachebox_test.Locator.Locator;
+import de.cachebox_test.Map.MapViewForGl;
 import de.cachebox_test.Map.MapViewGlListener;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
@@ -186,7 +187,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public static WaypointView waypointView = null; // ID 15
 
 	private View viewGl = null;
+
 	private MapViewGlListener mapViewGlListener = null;
+	// private GL_Listner mapViewGlListener = null;
+
 	public static LinearLayout strengthLayout;
 
 	public LinearLayout searchLayout;
@@ -382,6 +386,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		Size initSize = new Size(Config.settings.MapIniWidth.getValue(), Config.settings.MapIniHeight.getValue());
 
 		mapViewGlListener = new MapViewGlListener(initSize.width, initSize.height);
+		// mapViewGlListener = new GL_Listner(initSize.width, initSize.height);
 
 		int Time = Config.settings.ScreenLock.getValue();
 		counter = new ScreenLockTimer(Time, Time);
@@ -1339,8 +1344,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				GlobalCore.Translations.writeMisingStringsFile();
 
-				Config.settings.MapInitLatitude.setValue(mapViewGlListener.center.Latitude);
-				Config.settings.MapInitLongitude.setValue(mapViewGlListener.center.Longitude);
+				// Config.settings.MapInitLatitude.setValue(mapViewGlListener.center.Latitude);
+				// Config.settings.MapInitLongitude.setValue(mapViewGlListener.center.Longitude);
+				Config.settings.MapInitLatitude.setValue(MapViewForGl.center.Latitude);
+				Config.settings.MapInitLongitude.setValue(MapViewForGl.center.Longitude);
+
 				Config.settings.WriteToDB();
 
 				this.mWakeLock.release();

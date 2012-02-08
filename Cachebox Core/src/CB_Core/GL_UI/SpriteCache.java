@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.cachebox_test.Map;
+package CB_Core.GL_UI;
 
 import java.util.ArrayList;
 

@@ -3,10 +3,7 @@ package de.cachebox_test.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.SortedMap;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -17,6 +14,7 @@ import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
@@ -35,15 +33,9 @@ import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
@@ -59,9 +51,8 @@ import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Map.MapCacheList.WaypointRenderInfo;
 import de.cachebox_test.Views.MapView;
 import de.cachebox_test.Views.MapViewGL;
-import de.cachebox_test.Views.Forms.ScreenLock;
 
-public class MapViewGlListener implements ApplicationListener, PositionEvent, SelectedCacheEvent, InputProcessor
+public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, PositionEvent
 {
 	private final String Tag = "MAP_VIEW_GL";
 
@@ -70,7 +61,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	protected SortedMap<Long, Descriptor> queuedTiles = new TreeMap<Long, Descriptor>();
 	private Lock queuedTilesLock = new ReentrantLock();
 	private queueProcessor queueProcessor = null;
-	private AtomicBoolean started = new AtomicBoolean(false);
+
 	public boolean alignToCompass = false;
 	// private boolean centerGps = false;
 	private float mapHeading = 0;
@@ -98,6 +89,11 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	// für kinetischen Zoom und Pan
 	private KineticZoom kineticZoom = null;
 	private KineticPan kineticPan = null;
+
+	float velX, velY;
+	boolean flinging = false;
+	float initialScale = 1;
+
 	// #################################################################
 	//
 	// Min, Max und Act Zoom Werte sind jetzt im "zoomBtn" gespeichert!
@@ -120,36 +116,22 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 	// screencenter in World Coordinates (Pixels in Zoom Level maxzoom
 	Vector2 screenCenterW = new Vector2(0, 0);
-	int width;
-	int height;
-	int drawingWidth;
-	int drawingHeight;
+	float width;
+	float height;
+	float drawingWidth;
+	float drawingHeight;
 
 	long pos20y = 363904;
 	long size20 = 256;
 
-	public Coordinate center = new Coordinate(48.0, 12.0);
+	public static Coordinate center = new Coordinate(48.0, 12.0);
 	private boolean positionInitialized = false;
 	// String CurrentLayer = "germany-0.2.4.map";
 	public Layer CurrentLayer = null;
 
-	public static SpriteBatch batch;
 	Matrix4 textMatrix;
 
-	CharSequence str = "Hello World!";
-	OrthographicCamera camera;
-	CameraController controller;
-	GestureDetector gestureDetector;
-
-	// Gdx2DPixmap circle;
-	// Texture tcircle;
-
-	long startTime;
-	Timer myTimer;
-
-	boolean useNewInput = true;
-
-	public MapViewGlListener(int initalWidth, int initialHeight)
+	public MapViewForGl(int initalWidth, int initialHeight)
 	{
 		super();
 
@@ -183,16 +165,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 		iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
 
-		// setScreenCenter(new Descriptor((int) posx, (int) posy, 14));
-		// setCenter(new Coordinate(48.0, 12.0));
 		textMatrix = new Matrix4().setToOrtho2D(0, 0, width, height);
-
-		// circle = new Gdx2DPixmap(16, 16, Gdx2DPixmap.GDX2D_FORMAT_RGB565);
-		// circle.clear(Color.TRANSPARENT);
-		// // circle.fillRect(0, 0, 16, 16, Color.YELLOW);
-		// circle.drawCircle(8, 8, 8, Color.BLACK);
-		//
-		// tcircle = new Texture(new Pixmap(circle));
 
 		// initial Toggle Button
 		btnTrackPos = new MultiToggleButton();
@@ -205,104 +178,41 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		btnTrackPos.setState(0, true);
 
 		SelectedCacheEventList.Add(this);
-	}
-
-	@Override
-	public void create()
-	{
-
-		Log.d(Tag, "create()");
-
 		PositionEventList.Add(this);
 
-		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-		if (batch == null) batch = new SpriteBatch();
-		if (useNewInput)
-		{
-			if (Gdx.input.getInputProcessor() != this) Gdx.input.setInputProcessor(this);
-		}
-		else
-		{
-			if (Gdx.input.getInputProcessor() != gestureDetector) Gdx.input.setInputProcessor(gestureDetector);
-		}
-
-		startTime = System.currentTimeMillis();
-	}
-
-	private long timerValue;
-
-	private void startTimer(long delay)
-	{
-		if (timerValue == delay) return;
-		stopTimer();
-
-		timerValue = delay;
-		myTimer = new Timer();
-		myTimer.schedule(new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				TimerMethod();
-			}
-
-			private void TimerMethod()
-			{
-				((GLSurfaceView) MapViewGL.ViewGl).requestRender();
-
-			}
-
-		}, 0, delay);
-		((GLSurfaceView) MapViewGL.ViewGl).setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-	}
-
-	private void stopTimer()
-	{
-		if (myTimer != null)
-		{
-			myTimer.cancel();
-			myTimer = null;
-		}
-		((GLSurfaceView) MapViewGL.ViewGl).setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 	}
 
 	@Override
-	public void resize(int width, int height)
+	public void onRezised(CB_RectF rec)
 	{
 		// wenn sich die Größe nicht geändert hat, brauchen wir nicht zu machen!
-		if (width == this.width && height == this.height)
+		if (rec.getWidth() == this.width && rec.getHeight() == this.height)
 		{
 			// Ausser wenn Camera == null!
-			if (camera != null) return;
+			if (GL_Listner.camera != null) return;
 		}
 
 		Log.d(Tag, "resize(width,height) " + width + "/" + height);
 
-		this.width = width;// Gdx.graphics.getWidth();
-		this.height = height; // Gdx.graphics.getHeight();
-		this.drawingWidth = width;
-		this.drawingHeight = height;
-
-		camera = new OrthographicCamera(width, height);
-
-		controller = new CameraController();
-		gestureDetector = new GestureDetector(20, 0.5f, 1, 0.15f, controller);
+		this.width = rec.getWidth();
+		this.height = rec.getHeight();
+		this.drawingWidth = this.width;
+		this.drawingHeight = this.height;
 
 		aktZoom = zoomBtn.getZoom();
 		zoomScale.setZoom(aktZoom);
-		camera.zoom = getMapTilePosFactor(aktZoom);
-		endCameraZoom = camera.zoom;
+		GL_Listner.camera.zoom = getMapTilePosFactor(aktZoom);
+		endCameraZoom = GL_Listner.camera.zoom;
 		diffCameraZoom = 0;
-		camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
+		GL_Listner.camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
 
 		textMatrix.setToOrtho2D(0, 0, width, height);
 
 		UiSizes.GL.initial(width, height);
 
 		// setze Size als IniSize
-		Config.settings.MapIniWidth.setValue(width);
-		Config.settings.MapIniHeight.setValue(height);
+		Config.settings.MapIniWidth.setValue((int) width);
+		Config.settings.MapIniHeight.setValue((int) height);
 		Config.AcceptChanges();
 	}
 
@@ -354,54 +264,20 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		count = 0;
 	}
 
-	/**
-	 * Wertet ein eventuell gesetztes forceRender aus.
-	 * 
-	 * @return TRUE wenn gerendert werden soll FALSE wenn der Render Vorgang abgebrochen werden kann und stattdessen die Buffer Texture
-	 *         gezeichnet werden soll.
-	 */
-	private boolean renderForced()
-	{
-		count++;
-		if (forceRender)
-		{
-			forceCounter++;
-			// immer mindestens 10 render Durchgänge durchführen,
-			// wenn ein Force gesetzt wurde.
-			if (forceCounter < 10)
-			{
-				return true;
-			}
-			else
-			{
-				forceCounter = 0;
-				forceRender = false;
-				return false;
-			}
-		}
-
-		// alle 50 calls zweimal rendern
-		if (count > 1 && count < 100)
-		{
-			return false;
-		}
-
-		if (count > 2) count = 0;
-		return true;
-	}
-
 	@Override
-	public void render()
+	public void render(SpriteBatch batch)
 	{
+		update();
+
 		// reduceFPS();
 		boolean reduceFps = ((kineticZoom != null) || ((kineticPan != null) && (kineticPan.started)));
 		if (kineticZoom != null)
 		{
-			camera.zoom = kineticZoom.getAktZoom();
+			GL_Listner.camera.zoom = kineticZoom.getAktZoom();
 			// debugString = "Kinetic: " + camera.zoom;
 
 			int zoom = maxMapZoom;
-			float tmpZoom = camera.zoom;
+			float tmpZoom = GL_Listner.camera.zoom;
 			float faktor = 1.5f;
 			faktor = faktor - iconFactor + 1;
 			while (tmpZoom > faktor)
@@ -415,7 +291,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 			if (kineticZoom.getFertig())
 			{
-				startTimer(frameRateIdle);
+				// startTimer(frameRateIdle);
 				kineticZoom = null;
 			}
 			else
@@ -427,9 +303,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 			long faktor = getMapTilePosFactor(aktZoom);
 			Point pan = kineticPan.getAktPan();
 			// debugString = pan.x + " - " + pan.y;
-			camera.position.add(pan.x * faktor, pan.y * faktor, 0);
-			screenCenterW.x = camera.position.x;
-			screenCenterW.y = camera.position.y;
+			GL_Listner.camera.position.add(pan.x * faktor, pan.y * faktor, 0);
+			screenCenterW.x = GL_Listner.camera.position.x;
+			screenCenterW.y = GL_Listner.camera.position.y;
 			calcCenter();
 
 			if (kineticPan.getFertig())
@@ -442,45 +318,45 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 		if (reduceFps)
 		{
-			startTimer(frameRateIdle);
+			GL_Listner.startTimer(frameRateIdle);
 		}
 
-		if (!useNewInput)
+		if (!GL_Listner.useNewInput)
 		{
-			if (camera.zoom != endCameraZoom)
+			if (GL_Listner.camera.zoom != endCameraZoom)
 			{
 				// Zoom Animation
 				boolean positive = true;
 				float newValue;
-				if (camera.zoom < endCameraZoom)
+				if (GL_Listner.camera.zoom < endCameraZoom)
 				{
 					positive = false;
 					// TODO diffCameraZoom in Abhängigkeit der vergangenen Zeit nicht des Render Durchgangs
 					// wie bei GL_ZoomScale.java Line 279
-					newValue = camera.zoom + diffCameraZoom;
+					newValue = GL_Listner.camera.zoom + diffCameraZoom;
 					if (newValue > endCameraZoom)// endCameraZoom erreicht?
 					{
-						camera.zoom = endCameraZoom;
+						GL_Listner.camera.zoom = endCameraZoom;
 					}
 					else
 					{
-						camera.zoom = newValue;
+						GL_Listner.camera.zoom = newValue;
 					}
 				}
-				if (camera.zoom > endCameraZoom)
+				if (GL_Listner.camera.zoom > endCameraZoom)
 				{
-					newValue = camera.zoom - diffCameraZoom;
+					newValue = GL_Listner.camera.zoom - diffCameraZoom;
 					if (newValue < endCameraZoom)// endCameraZoom erreicht?
 					{
-						camera.zoom = endCameraZoom;
+						GL_Listner.camera.zoom = endCameraZoom;
 					}
 					else
 					{
-						camera.zoom = newValue;
+						GL_Listner.camera.zoom = newValue;
 					}
 				}
 				int zoom = maxMapZoom;
-				float tmpZoom = camera.zoom;
+				float tmpZoom = GL_Listner.camera.zoom;
 				float faktor = 1.5f;
 				faktor = faktor - iconFactor + 1;
 				while (tmpZoom > faktor)
@@ -495,10 +371,10 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 			}
 			else
 			{
-				if (timerValue != 50)
+				if (GL_Listner.timerValue != 50)
 				{
 					// der Zoom ist fertig -> langsamer rendern
-					startTimer(50);
+					GL_Listner.startTimer(50);
 				}
 			}
 		}
@@ -507,8 +383,6 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		{
 			SpriteCache.LoadSprites();
 		}
-
-		if (!started.get()) return;
 
 		loadTiles();
 
@@ -530,57 +404,32 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		// destroyScreenCapture();
 		// }
 
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
-		controller.update();
-
 		if (alignToCompass)
 		{
-			camera.up.x = 0;
-			camera.up.y = 1;
-			camera.up.z = 0;
-			camera.rotate(-mapHeading, 0, 0, 1);
+			GL_Listner.camera.up.x = 0;
+			GL_Listner.camera.up.y = 1;
+			GL_Listner.camera.up.z = 0;
+			GL_Listner.camera.rotate(-mapHeading, 0, 0, 1);
 		}
 		else
 		{
-			camera.up.x = 0;
-			camera.up.y = 1;
-			camera.up.z = 0;
+			GL_Listner.camera.up.x = 0;
+			GL_Listner.camera.up.y = 1;
+			GL_Listner.camera.up.z = 0;
 		}
 
-		camera.update();
+		GL_Listner.camera.update();
 
-		renderMapTiles();
-		renderOverlay();
-		renderUI();
+		renderMapTiles(batch);
+		renderOverlay(batch);
+		renderUI(batch);
 
-		Gdx.gl.glFlush();
-		Gdx.gl.glFinish();
 		//
 		// createOrUpdateScreenCapture();
 		// bindTexture(screenCapture.getTexture());
 	}
 
-	private void reduceFPS()
-	{
-		if (useNewInput) return;
-		long endTime = System.currentTimeMillis();
-		long dt = endTime - startTime;
-		if (dt < 33)
-		{
-			try
-			{
-				if (20 - dt > 0) Thread.sleep(20 - dt);
-			}
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-		}
-		startTime = System.currentTimeMillis();
-	}
-
-	private void renderOverlay()
+	private void renderOverlay(SpriteBatch batch)
 	{
 		batch.setProjectionMatrix(textMatrix);
 		batch.begin();
@@ -590,32 +439,32 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		if ((aktZoom >= 13) && (aktZoom <= 14)) iconSize = 1; // 13x13
 		else if (aktZoom > 14) iconSize = 2; // default Images
 
-		renderWPs(UiSizes.GL.WPSizes[iconSize], UiSizes.GL.UnderlaySizes[iconSize]);
-		renderPositionMarker();
-		RenderTargetArrow();
+		renderWPs(batch, UiSizes.GL.WPSizes[iconSize], UiSizes.GL.UnderlaySizes[iconSize]);
+		renderPositionMarker(batch);
+		RenderTargetArrow(batch);
 		Bubble.render(UiSizes.GL.WPSizes[iconSize]);
 
 		batch.end();
 	}
 
-	private void renderUI()
+	private void renderUI(SpriteBatch batch)
 	{
 		batch.setProjectionMatrix(textMatrix);
 		batch.begin();
-		if (showCompass) renderInfoPanel();
+		if (showCompass) renderInfoPanel(batch);
 
 		btnTrackPos.Render(batch, UiSizes.GL.Toggle, UiSizes.GL.fontAB22);
 
 		zoomBtn.Render(batch, UiSizes.GL.ZoomBtn);
 		zoomScale.Render(batch, UiSizes.GL.ZoomScale);
 
-		renderDebugInfo();
+		renderDebugInfo(batch);
 		batch.end();
 	}
 
-	private void renderMapTiles()
+	private void renderMapTiles(SpriteBatch batch)
 	{
-		batch.setProjectionMatrix(camera.combined);
+		batch.setProjectionMatrix(GL_Listner.camera.combined);
 		batch.begin();
 
 		try
@@ -686,18 +535,19 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		}
 		tilesToDraw.clear();
 
-		batch.end();
 	}
 
-	private void renderDebugInfo()
+	String str;
+
+	private void renderDebugInfo(SpriteBatch batch)
 	{
 		str = debugString;
 		UiSizes.GL.fontAB18.draw(batch, str, 20, 120);
 
-		str = "timer: " + timerValue + " - fps: " + Gdx.graphics.getFramesPerSecond();
+		str = "timer: " + GL_Listner.timerValue + " - fps: " + Gdx.graphics.getFramesPerSecond();
 		UiSizes.GL.fontAB18.draw(batch, str, 20, 100);
 
-		str = String.valueOf(aktZoom) + " - camzoom: " + Math.round(camera.zoom * 100) / 100;
+		str = String.valueOf(aktZoom) + " - camzoom: " + Math.round(GL_Listner.camera.zoom * 100) / 100;
 		UiSizes.GL.fontAB18.draw(batch, str, 20, 80);
 
 		str = "lTiles: " + loadedTiles.size() + " - qTiles: " + queuedTiles.size();
@@ -713,13 +563,13 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 	}
 
-	private void renderInfoPanel()
+	private void renderInfoPanel(SpriteBatch batch)
 	{
 		// draw background
 		Sprite sprite = SpriteCache.InfoBack;
 		sprite.setPosition(UiSizes.GL.Info.getX(), UiSizes.GL.Info.getY());
 		sprite.setSize(UiSizes.GL.Info.getWidth(), UiSizes.GL.Info.getHeight());
-		sprite.draw(MapViewGlListener.batch);
+		sprite.draw(batch);
 
 		// Position ist entweder GPS-Position oder die des Markers, wenn
 		// dieser gesetzt wurde.
@@ -758,7 +608,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 				compass.setBounds(UiSizes.GL.Compass.getX(), UiSizes.GL.Compass.getY(), UiSizes.GL.Compass.getWidth(),
 						UiSizes.GL.Compass.getHeight());
 				compass.setOrigin(UiSizes.GL.halfCompass, UiSizes.GL.halfCompass);
-				compass.draw(MapViewGlListener.batch);
+				compass.draw(batch);
 
 			}
 
@@ -781,7 +631,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 	}
 
-	private void renderPositionMarker()
+	private void renderPositionMarker(SpriteBatch batch)
 	{
 		if (Global.Locator != null)
 		{
@@ -815,7 +665,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		}
 	}
 
-	private void RenderTargetArrow()
+	private void RenderTargetArrow(SpriteBatch batch)
 	{
 
 		if (GlobalCore.SelectedCache() == null) return;
@@ -933,7 +783,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		return (ang1);
 	}
 
-	private void renderWPs(SizeF WpUnderlay, SizeF WpSize)
+	private void renderWPs(SpriteBatch batch, SizeF WpUnderlay, SizeF WpSize)
 	{
 		if (mapCacheList.list != null)
 		{
@@ -1028,7 +878,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 	}
 
-	private boolean renderBiggerTiles(SpriteBatch batch2, int i, int j, int zoom2)
+	private boolean renderBiggerTiles(SpriteBatch batch, int i, int j, int zoom2)
 	{
 		// für den aktuellen Zoom ist kein Tile vorhanden -> kleinere
 		// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...
@@ -1067,7 +917,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		return false;
 	}
 
-	private void renderSmallerTiles(SpriteBatch batch2, int i, int j, int zoom2)
+	private void renderSmallerTiles(SpriteBatch batch, int i, int j, int zoom2)
 	{
 		// für den aktuellen Zoom ist kein Tile vorhanden -> größere
 		// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...
@@ -1117,10 +967,10 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		deleteUnusedTiles();
 		// alle notwendigen Tiles zum Laden einstellen in die Queue
 		// (queuedTiles)
-		int extensionTop = width / 2;
-		int extensionBottom = width / 2;
-		int extensionLeft = width / 2;
-		int extensionRight = width / 2;
+		int extensionTop = (int) (width / 2);
+		int extensionBottom = (int) (width / 2);
+		int extensionLeft = (int) (width / 2);
+		int extensionRight = (int) (width / 2);
 		Descriptor lo = screenToDescriptor(new Vector2(width / 2 - drawingWidth / 2 - extensionLeft, height / 2 - drawingHeight / 2
 				- extensionTop), aktZoom);
 		Descriptor ru = screenToDescriptor(new Vector2(width / 2 + drawingWidth / 2 + extensionRight, height / 2 + drawingHeight / 2
@@ -1226,417 +1076,12 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		// return cnt;
 	}
 
-	@Override
-	public void pause()
-	{
-		Log.d(Tag, "pause()");
-		onStop();
-	}
-
-	@Override
-	public void resume()
-	{
-		Log.d(Tag, "resume()");
-		onStart();
-	}
-
-	@Override
-	public void dispose()
-	{
-		Log.d(Tag, "dispose()");
-		SpriteCache.destroyCache();
-
-	}
-
-	public void onStart()
-	{
-		Log.d(Tag, "onStart()");
-		started.set(true);
-		startTimer(frameRateIdle);
-	}
-
-	public void onStop()
-	{
-		Log.d(Tag, "onStop()");
-		stopTimer();
-
-		// TODO wenn der ScreenLock angezeigt wird, kommt es auch zu einem
-		// onStop.
-		// Es darf dann aber nicht gestoppt werden.
-		// Die main als AndroidAplication stoppt hier in onPause() das rendern.
-		// Abhilfe schafft hier nur das Ändern des gdx Codes!
-		if (ScreenLock.isShown) return;
-
-		started.set(false);
-		for (TileGL tile : loadedTiles.values())
-		{
-			try
-			{
-				tile.destroy();
-			}
-			catch (DestroyFailedException e)
-			{
-				e.printStackTrace();
-			}
-		}
-		loadedTiles.clear();
-		PositionEventList.Remove(this);
-
-		saveToSettings();
-	}
-
 	private void stateChanged()
 	{
 		if (btnTrackPos.getState() > 0)
 		{
 			setCenter(new Coordinate(GlobalCore.LastValidPosition.Latitude, GlobalCore.LastValidPosition.Longitude));
 		}
-	}
-
-	class CameraController implements GestureListener
-	{
-		float velX, velY;
-		boolean flinging = false;
-		float initialScale = 1;
-
-		@Override
-		public boolean touchDown(int x, int y, int pointer)
-		{
-			// Log.d("CACHEBOX", "touchDown pointer" + pointer);
-
-			flinging = false;
-			initialScale = camera.zoom;
-
-			Vector2 touchdAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());
-
-			if (btnTrackPos.touchDownTest(touchdAt)) return false;
-			if (zoomBtn.touchDownTest(touchdAt)) return false;
-
-			return false;
-		}
-
-		@Override
-		public boolean tap(int x, int y, int count)
-		{
-			TouchUp();
-			// Log.d("CACHEBOX", "Tab count" + count);
-
-			double minDist = Double.MAX_VALUE;
-			WaypointRenderInfo minWpi = null;
-			Vector2 clickedAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());
-
-			// check ToggleBtn clicked
-			if (btnTrackPos.hitTest(clickedAt))
-			{
-				main.vibrate();
-				stateChanged();
-				forceRender();
-				return true;
-			}
-
-			// check Zoom Button clicked
-			if (zoomBtn.hitTest(clickedAt))
-			{
-				// schnell Rendern
-				startTimer(frameRateAction);
-				main.vibrate();
-				// start Zoom für die Animation des camera.zoom
-				startCameraZoom = camera.zoom;
-				// dieser Zoom Faktor soll angestrebt werden
-				endCameraZoom = getMapTilePosFactor(zoomBtn.getZoom());
-				// Zoom Geschwindigkeit
-				diffCameraZoom = Math.abs(endCameraZoom - startCameraZoom) / 20;
-				// camera.zoom = getMapTilePosFactor(aktZoom);
-				zoomScale.setZoom(zoomBtn.getZoom());
-				zoomScale.resetFadeOut();
-
-				forceRender();
-				return true;
-			}
-
-			synchronized (mapCacheList.list)
-			{
-				// Bubble gedrückt?
-				if ((Bubble.cache != null) && Bubble.isShow && Bubble.DrawRec != null && Bubble.DrawRec.contains(clickedAt.x, clickedAt.y))
-				{
-					// Click inside Bubble -> hide Bubble and select Cache
-					// GlobalCore.SelectedWaypoint(Bubble.cache,
-					// Bubble.waypoint);
-					ThreadSaveSetSelectedWP(Bubble.cache, Bubble.waypoint);
-					CacheDraw.ReleaseCacheBMP();
-					Bubble.isShow = false;
-					Bubble.CacheId = -1;
-					Bubble.cache = null;
-					Bubble.waypoint = null;
-					mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
-
-					// Shutdown Autoresort
-					Global.autoResort = false;
-					forceRender();
-					// do nothing else with this click
-					return false;
-				}
-				else if (Bubble.isShow)
-				{
-					// Click outside Bubble -> hide Bubble
-					Bubble.isShow = false;
-					forceRender();
-				}
-
-				for (WaypointRenderInfo wpi : mapCacheList.list)
-				{
-					Vector2 screen = worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
-					if (clickedAt != null)
-					{
-						double aktDist = Math.sqrt(Math.pow(screen.x - clickedAt.x, 2) + Math.pow(screen.y - clickedAt.y, 2));
-						if (aktDist < minDist)
-						{
-							minDist = aktDist;
-							minWpi = wpi;
-						}
-					}
-				}
-				// if (minDist < 40)
-				// {
-				//
-				// final Cache updateCache = minWpi.Cache;
-				// final Waypoint updateWaypoint = minWpi.Waypoint;
-				//
-				// ThreadSaveSetSelectedWP(updateCache, updateWaypoint);
-				//
-				// // CacheListe auf jeden Fall neu berechnen
-				// // könnte aber noch verbessert werden, indem nur der letzte
-				// // selected und der neue selected geändert werden!
-				// mapCacheList.update(screenToWorld(new Vector2(0, 0)),
-				// screenToWorld(new Vector2(width, height)), zoom, true);
-				//
-				// }
-
-				if (minWpi == null || minWpi.Cache == null) return false;
-
-				if (minDist < 40)
-				{
-
-					if (minWpi.Waypoint != null)
-					{
-						if (GlobalCore.SelectedCache() != minWpi.Cache)
-						{
-							// Show Bubble
-							Bubble.isShow = true;
-							Bubble.CacheId = minWpi.Cache.Id;
-							Bubble.cache = minWpi.Cache;
-							Bubble.waypoint = minWpi.Waypoint;
-							Bubble.disposeSprite();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
-
-						}
-						else
-						{
-							// do not show Bubble because there will not be
-							// selected
-							// a
-							// different cache but only a different waypoint
-							// Wegpunktliste ausrichten
-							ThreadSaveSetSelectedWP(minWpi.Cache, minWpi.Waypoint);
-							// FormMain.WaypointListPanel.AlignSelected();
-							// updateCacheList();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
-						}
-
-					}
-					else
-					{
-						if (GlobalCore.SelectedCache() != minWpi.Cache)
-						{
-							Bubble.isShow = true;
-							Bubble.CacheId = minWpi.Cache.Id;
-							Bubble.cache = minWpi.Cache;
-							Bubble.disposeSprite();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
-						}
-						else
-						{
-							Bubble.isShow = true;
-							Bubble.CacheId = minWpi.Cache.Id;
-							Bubble.cache = minWpi.Cache;
-							Bubble.disposeSprite();
-							// Cacheliste ausrichten
-							ThreadSaveSetSelectedWP(minWpi.Cache);
-							// updateCacheList();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
-						}
-					}
-					forceRender();
-				}
-			}
-			return false;
-		}
-
-		/**
-		 * Wählt Cache Thread sicher an.
-		 * 
-		 * @param cache
-		 */
-		private void ThreadSaveSetSelectedWP(final Cache cache)
-		{
-			ThreadSaveSetSelectedWP(cache, null);
-		}
-
-		/**
-		 * Wählt Cache und Waypoint Thread sicher an.
-		 * 
-		 * @param cache
-		 * @param waypoint
-		 */
-		private void ThreadSaveSetSelectedWP(final Cache cache, final Waypoint waypoint)
-		{
-			Thread t = new Thread()
-			{
-				public void run()
-				{
-					main.mainActivity.runOnUiThread(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							if (waypoint == null)
-							{
-								GlobalCore.SelectedCache(cache);
-							}
-							else
-							{
-								GlobalCore.SelectedWaypoint(cache, waypoint);
-							}
-						}
-					});
-				}
-			};
-
-			t.start();
-		}
-
-		@Override
-		public boolean longPress(int x, int y)
-		{
-			TouchUp();
-			Vector2 clickedAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());
-			if (btnTrackPos.longHitTest(clickedAt))
-			{
-				main.vibrate();
-				stateChanged();
-				forceRender();
-				return true;
-			}
-
-			return false;
-		}
-
-		@Override
-		public boolean fling(float velocityX, float velocityY)
-		{
-			TouchUp();
-			// Log.d("CACHEBOX", "velocity " + velocityX);
-
-			if (btnTrackPos.getState() > 1) return false;
-
-			flinging = true;
-
-			Vector2 richtung = new Vector2(velocityX, velocityY);
-			richtung.rotate(mapHeading);
-
-			velX = camera.zoom * richtung.x * 0.5f;
-			velY = camera.zoom * richtung.y * 0.5f;
-			return false;
-		}
-
-		@Override
-		public boolean pan(int x, int y, int deltaX, int deltaY)
-		{
-			TouchUp();
-			// Ohne verschiebung brauch auch keine neue Pos berechnet werden!
-			if (deltaX == 0 && deltaY == 0) return false;
-			// Log.d("CACHEBOX", "pan " + deltaX);
-
-			if (btnTrackPos.getState() > 1) return false;
-
-			// Drehung der Karte berücksichtigen
-			Vector2 richtung = new Vector2(deltaX, deltaY);
-			richtung.rotate(mapHeading);
-			camera.position.add(-richtung.x * camera.zoom, richtung.y * camera.zoom, 0);
-			screenCenterW.x = camera.position.x;
-			screenCenterW.y = camera.position.y;
-			calcCenter();
-			btnTrackPos.setState(0);
-			return false;
-		}
-
-		private void calcCenter()
-		{
-			// berechnet anhand des ScreenCenterW die Center-Coordinaten
-			PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, maxMapZoom, maxMapZoom);
-
-			center = new Coordinate(Descriptor.TileYToLatitude(maxMapZoom, -point.Y), Descriptor.TileXToLongitude(maxMapZoom, point.X));
-		}
-
-		@Override
-		public boolean zoom(float originalDistance, float currentDistance)
-		{
-
-			boolean positive = true;
-			Log.d("CACHEBOX", "pan " + originalDistance + "  |  " + currentDistance);
-			float ratio = originalDistance / currentDistance;
-			camera.zoom = initialScale * ratio;
-
-			if (camera.zoom < getMapTilePosFactor(zoomBtn.getMaxZoom()))
-			{
-				camera.zoom = getMapTilePosFactor(zoomBtn.getMaxZoom());
-			}
-			if (camera.zoom > getMapTilePosFactor(zoomBtn.getMinZoom()))
-			{
-				camera.zoom = getMapTilePosFactor(zoomBtn.getMinZoom());
-			}
-
-			endCameraZoom = camera.zoom;
-
-			System.out.println(camera.zoom);
-			int zoom = maxMapZoom;
-			float tmpZoom = camera.zoom;
-			float faktor = 1.5f;
-			faktor = faktor - iconFactor + 1;
-			while (tmpZoom > faktor)
-			{
-				tmpZoom /= 2;
-				zoom--;
-			}
-			zoomBtn.setZoom(zoom);
-			zoomScale.resetFadeOut();
-			zoomScale.setZoom(zoom);
-			zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), positive);
-			aktZoom = zoom;
-			return false;
-		}
-
-		public void update()
-		{
-			if (flinging)
-			{
-				velX *= 0.98f;
-				velY *= 0.98f;
-				camera.position.add(-velX * Gdx.graphics.getDeltaTime(), velY * Gdx.graphics.getDeltaTime(), 0);
-				if (Math.abs(velX) < 0.01f) velX = 0;
-				if (Math.abs(velY) < 0.01f) velY = 0;
-				screenCenterW.x = camera.position.x;
-				screenCenterW.y = camera.position.y;
-				calcCenter();
-			}
-		}
-
-		public void TouchUp()
-		{
-			btnTrackPos.TouchRelease();
-			zoomBtn.TouchRelease();
-		}
-
 	}
 
 	public void Initialize()
@@ -1747,7 +1192,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	{
 		screenCenterW.x = newCenter.x;
 		screenCenterW.y = -newCenter.y;
-		if (camera != null) camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
+		if (GL_Listner.camera != null) GL_Listner.camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
 	}
 
 	public void setCenter(Coordinate value)
@@ -1797,16 +1242,16 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	private Vector2 screenToWorld(Vector2 point)
 	{
 		Vector2 result = new Vector2(0, 0);
-		result.x = screenCenterW.x + (point.x - width / 2) * camera.zoom;
-		result.y = -screenCenterW.y + (point.y - height / 2) * camera.zoom;
+		result.x = screenCenterW.x + (point.x - width / 2) * GL_Listner.camera.zoom;
+		result.y = -screenCenterW.y + (point.y - height / 2) * GL_Listner.camera.zoom;
 		return result;
 	}
 
 	private Vector2 worldToScreen(Vector2 point)
 	{
 		Vector2 result = new Vector2(0, 0);
-		result.x = (point.x - screenCenterW.x) / camera.zoom + width / 2;
-		result.y = -(-point.y + screenCenterW.y) / camera.zoom + height / 2;
+		result.x = (point.x - screenCenterW.x) / GL_Listner.camera.zoom + width / 2;
+		result.y = -(-point.y + screenCenterW.y) / GL_Listner.camera.zoom + height / 2;
 		result.add(-width / 2, -height / 2);
 		result.rotate(mapHeading);
 		result.add(width / 2, height / 2);
@@ -2120,334 +1565,6 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 	private static String debugString = "";
 
-	@Override
-	public boolean keyDown(int arg0)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped(char arg0)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean keyUp(int arg0)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int arg0)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean touchDown(int x, int y, int pointer, int button)
-	{
-		// debugString = "touchDown " + inputState.toString();
-		if (inputState == InputState.Idle)
-		{
-			fingerDown.clear();
-			inputState = InputState.IdleDown;
-			fingerDown.put(pointer, new Point(x, y));
-		}
-		else
-		{
-			fingerDown.put(pointer, new Point(x, y));
-			if (fingerDown.size() == 2) inputState = InputState.Zoom;
-		}
-
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int x, int y, int pointer)
-	{
-		// debugString = "touchDragged " + inputState.toString();
-		if (inputState == InputState.IdleDown)
-		{
-			// es wurde 1x gedrückt -> testen, ob ein gewisser Minimum Bereich verschoben wurde
-			Point p = fingerDown.get(pointer);
-			if (p != null)
-			{
-				if ((Math.abs(p.x - x) > 10) || (Math.abs(p.y - y) > 10))
-				{
-					inputState = InputState.Pan;
-					startTimer(frameRateAction);
-					((GLSurfaceView) MapViewGL.ViewGl).requestRender();
-				}
-				return false;
-			}
-		}
-		if (inputState == InputState.Button)
-		{
-			// wenn ein Button gedrückt war -> beim Verschieben nichts machen!!!
-			return false;
-		}
-
-		if ((inputState == InputState.Pan) && (fingerDown.size() == 1))
-		{
-			startTimer(frameRateAction);
-			// debugString = "";
-			long faktor = getMapTilePosFactor(aktZoom);
-			// debugString += faktor;
-			Point lastPoint = (Point) fingerDown.values().toArray()[0];
-			// debugString += " - " + (lastPoint.x - x) * faktor + " - " + (y - lastPoint.y) * faktor;
-
-			camera.position.add((lastPoint.x - x) * faktor, (y - lastPoint.y) * faktor, 0);
-			// debugString = camera.position.x + " - " + camera.position.y;
-			screenCenterW.x = camera.position.x;
-			screenCenterW.y = camera.position.y;
-			calcCenter();
-			if (kineticPan == null) kineticPan = new KineticPan();
-			kineticPan.setLast(System.currentTimeMillis(), x, y);
-
-			lastPoint.x = x;
-			lastPoint.y = y;
-		}
-		else if ((inputState == InputState.Zoom) && (fingerDown.size() == 2))
-		{
-			Point p1 = (Point) fingerDown.values().toArray()[0];
-			Point p2 = (Point) fingerDown.values().toArray()[1];
-			float originalDistance = (float) Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-
-			if (fingerDown.containsKey(pointer))
-			{
-				// neue Werte setzen
-				fingerDown.get(pointer).x = x;
-				fingerDown.get(pointer).y = y;
-				p1 = (Point) fingerDown.values().toArray()[0];
-				p2 = (Point) fingerDown.values().toArray()[1];
-			}
-			float currentDistance = (float) Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-			float ratio = originalDistance / currentDistance;
-			camera.zoom = camera.zoom * ratio;
-
-			if (camera.zoom < getMapTilePosFactor(zoomBtn.getMaxZoom()))
-			{
-				camera.zoom = getMapTilePosFactor(zoomBtn.getMaxZoom());
-			}
-			if (camera.zoom > getMapTilePosFactor(zoomBtn.getMinZoom()))
-			{
-				camera.zoom = getMapTilePosFactor(zoomBtn.getMinZoom());
-			}
-
-			endCameraZoom = camera.zoom;
-
-			System.out.println(camera.zoom);
-			int zoom = maxMapZoom;
-			float tmpZoom = camera.zoom;
-			float faktor = 1.5f;
-			faktor = faktor - iconFactor + 1;
-			while (tmpZoom > faktor)
-			{
-				tmpZoom /= 2;
-				zoom--;
-			}
-			zoomBtn.setZoom(zoom);
-			zoomScale.resetFadeOut();
-			zoomScale.setZoom(zoom);
-			zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), true);
-			aktZoom = zoom;
-
-			// debugString = currentDistance + " - " + originalDistance;
-			return false;
-		}
-
-		// debugString = "State: " + inputState;
-		return false;
-	}
-
-	@Override
-	public boolean touchMoved(int x, int y)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int x, int y, int pointer, int button)
-	{
-		// debugString = "touchUp " + inputState.toString();
-		if (inputState == InputState.IdleDown)
-		{
-			// es wurde gedrückt, aber nich verschoben
-			fingerDown.remove(pointer);
-			inputState = InputState.Idle;
-			// -> Buttons testen
-
-			double minDist = Double.MAX_VALUE;
-			WaypointRenderInfo minWpi = null;
-			Vector2 clickedAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());
-
-			// auf Button Clicks nur reagieren, wenn aktuell noch kein Finger gedrückt ist!!!
-			if (kineticPan != null)
-			// bei FingerKlick (wenn Idle) sofort das kinetische Scrollen stoppen
-			kineticPan = null;
-
-			// check ToggleBtn clicked
-			if (btnTrackPos.hitTest(clickedAt))
-			{
-				main.vibrate();
-				stateChanged();
-				inputState = InputState.Idle;
-				// debugString = "State: " + inputState;
-				return false;
-			}
-
-			// check Zoom Button clicked
-			if (zoomBtn.hitTest(clickedAt))
-			{
-				zoomScale.setZoom(zoomBtn.getZoom());
-				zoomScale.resetFadeOut();
-				inputState = InputState.Idle;
-				// debugString = "State: " + inputState;
-				// aktZoom = zoomBtn.getZoom();
-				// camera.zoom = getMapTilePosFactor(aktZoom);
-				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), SystemClock.uptimeMillis(),
-						SystemClock.uptimeMillis() + 1000);
-				startTimer(frameRateAction);
-
-				return false;
-			}
-
-			synchronized (mapCacheList.list)
-			{
-				// Bubble gedrückt?
-				if ((Bubble.cache != null) && Bubble.isShow && Bubble.DrawRec != null && Bubble.DrawRec.contains(clickedAt.x, clickedAt.y))
-				{
-					// Click inside Bubble -> hide Bubble and select Cache
-					// GlobalCore.SelectedWaypoint(Bubble.cache,
-					// Bubble.waypoint);
-					ThreadSaveSetSelectedWP(Bubble.cache, Bubble.waypoint);
-					CacheDraw.ReleaseCacheBMP();
-					Bubble.isShow = false;
-					Bubble.CacheId = -1;
-					Bubble.cache = null;
-					Bubble.waypoint = null;
-					mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
-
-					// Shutdown Autoresort
-					Global.autoResort = false;
-					inputState = InputState.Idle;
-					// debugString = "State: " + inputState;
-					// do nothing else with this click
-					return false;
-				}
-				else if (Bubble.isShow)
-				{
-					// Click outside Bubble -> hide Bubble
-					Bubble.isShow = false;
-				}
-
-				for (WaypointRenderInfo wpi : mapCacheList.list)
-				{
-					Vector2 screen = worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
-					if (clickedAt != null)
-					{
-						double aktDist = Math.sqrt(Math.pow(screen.x - clickedAt.x, 2) + Math.pow(screen.y - clickedAt.y, 2));
-						if (aktDist < minDist)
-						{
-							minDist = aktDist;
-							minWpi = wpi;
-						}
-					}
-				}
-
-				if (minWpi == null || minWpi.Cache == null) return false;
-
-				if (minDist < 40)
-				{
-
-					if (minWpi.Waypoint != null)
-					{
-						if (GlobalCore.SelectedCache() != minWpi.Cache)
-						{
-							// Show Bubble
-							Bubble.isShow = true;
-							Bubble.CacheId = minWpi.Cache.Id;
-							Bubble.cache = minWpi.Cache;
-							Bubble.waypoint = minWpi.Waypoint;
-							Bubble.disposeSprite();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
-
-						}
-						else
-						{
-							// do not show Bubble because there will not be
-							// selected
-							// a
-							// different cache but only a different waypoint
-							// Wegpunktliste ausrichten
-							ThreadSaveSetSelectedWP(minWpi.Cache, minWpi.Waypoint);
-							// FormMain.WaypointListPanel.AlignSelected();
-							// updateCacheList();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
-						}
-
-					}
-					else
-					{
-						if (GlobalCore.SelectedCache() != minWpi.Cache)
-						{
-							Bubble.isShow = true;
-							Bubble.CacheId = minWpi.Cache.Id;
-							Bubble.cache = minWpi.Cache;
-							Bubble.disposeSprite();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
-						}
-						else
-						{
-							Bubble.isShow = true;
-							Bubble.CacheId = minWpi.Cache.Id;
-							Bubble.cache = minWpi.Cache;
-							Bubble.disposeSprite();
-							// Cacheliste ausrichten
-							ThreadSaveSetSelectedWP(minWpi.Cache);
-							// updateCacheList();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
-						}
-					}
-					inputState = InputState.Idle;
-					// debugString = "State: " + inputState;
-					// return false;
-				}
-			}
-			inputState = InputState.Idle;
-			return false;
-		}
-
-		fingerDown.remove(pointer);
-		if (fingerDown.size() == 1) inputState = InputState.Pan;
-		else if (fingerDown.size() == 0)
-		{
-			inputState = InputState.Idle;
-			// wieder langsam rendern
-			((GLSurfaceView) MapViewGL.ViewGl).requestRender();
-
-			if ((kineticZoom == null) && (kineticPan == null)) startTimer(frameRateIdle);
-			if (kineticPan != null) kineticPan.start();
-		}
-
-		// debugString = "State: " + inputState;
-
-		return false;
-	}
-
-	private void calcCenter()
-	{
-		// berechnet anhand des ScreenCenterW die Center-Coordinaten
-		PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, maxMapZoom, maxMapZoom);
-
-		center = new Coordinate(Descriptor.TileYToLatitude(maxMapZoom, -point.Y), Descriptor.TileXToLongitude(maxMapZoom, point.X));
-	}
-
 	private void ThreadSaveSetSelectedWP(final Cache cache)
 	{
 		ThreadSaveSetSelectedWP(cache, null);
@@ -2624,6 +1741,618 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		{
 			return fertig;
 		}
+	}
+
+	// ###############################################################################################################
+	//
+	// Extends GL_View_Base Methoden
+	//
+	// ###############################################################################################################
+
+	@Override
+	protected void onClicked(Vector2 pos)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean onTouchDown(Vector2 pos)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void onTouchRelease()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean pan(int x, int y, int deltaX, int deltaY)
+	{
+		// Ohne verschiebung brauch auch keine neue Pos berechnet werden!
+		if (deltaX == 0 && deltaY == 0) return false;
+		// Log.d("CACHEBOX", "pan " + deltaX);
+
+		if (btnTrackPos.getState() > 1) return false;
+
+		// Drehung der Karte berücksichtigen
+		Vector2 richtung = new Vector2(deltaX, deltaY);
+		richtung.rotate(mapHeading);
+		GL_Listner.camera.position.add(-richtung.x * GL_Listner.camera.zoom, richtung.y * GL_Listner.camera.zoom, 0);
+		screenCenterW.x = GL_Listner.camera.position.x;
+		screenCenterW.y = GL_Listner.camera.position.y;
+		calcCenter();
+		btnTrackPos.setState(0);
+		return false;
+	}
+
+	@Override
+	public boolean zoom(float originalDistance, float currentDistance)
+	{
+
+		boolean positive = true;
+		Log.d("CACHEBOX", "pan " + originalDistance + "  |  " + currentDistance);
+		float ratio = originalDistance / currentDistance;
+		GL_Listner.camera.zoom = initialScale * ratio;
+
+		if (GL_Listner.camera.zoom < getMapTilePosFactor(zoomBtn.getMaxZoom()))
+		{
+			GL_Listner.camera.zoom = getMapTilePosFactor(zoomBtn.getMaxZoom());
+		}
+		if (GL_Listner.camera.zoom > getMapTilePosFactor(zoomBtn.getMinZoom()))
+		{
+			GL_Listner.camera.zoom = getMapTilePosFactor(zoomBtn.getMinZoom());
+		}
+
+		endCameraZoom = GL_Listner.camera.zoom;
+
+		System.out.println(GL_Listner.camera.zoom);
+		int zoom = maxMapZoom;
+		float tmpZoom = GL_Listner.camera.zoom;
+		float faktor = 1.5f;
+		faktor = faktor - iconFactor + 1;
+		while (tmpZoom > faktor)
+		{
+			tmpZoom /= 2;
+			zoom--;
+		}
+		zoomBtn.setZoom(zoom);
+		zoomScale.resetFadeOut();
+		zoomScale.setZoom(zoom);
+		zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), positive);
+		aktZoom = zoom;
+		return false;
+	}
+
+	private void calcCenter()
+	{
+		// berechnet anhand des ScreenCenterW die Center-Coordinaten
+		PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, maxMapZoom, maxMapZoom);
+
+		center = new Coordinate(Descriptor.TileYToLatitude(maxMapZoom, -point.Y), Descriptor.TileXToLongitude(maxMapZoom, point.X));
+	}
+
+	public void TouchUp()
+	{
+		btnTrackPos.TouchRelease();
+		zoomBtn.TouchRelease();
+	}
+
+	@Override
+	public boolean fling(float velocityX, float velocityY)
+	{
+		if (btnTrackPos.getState() > 1) return false;
+
+		flinging = true;
+
+		Vector2 richtung = new Vector2(velocityX, velocityY);
+		richtung.rotate(mapHeading);
+
+		velX = GL_Listner.camera.zoom * richtung.x * 0.5f;
+		velY = GL_Listner.camera.zoom * richtung.y * 0.5f;
+		return false;
+	}
+
+	@Override
+	public boolean longPress(int x, int y)
+	{
+
+		TouchUp();
+		Vector2 clickedAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());
+		if (btnTrackPos.longHitTest(clickedAt))
+		{
+			main.vibrate();
+			stateChanged();
+			forceRender();
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean tap(int x, int y, int count)
+	{
+
+		double minDist = Double.MAX_VALUE;
+		WaypointRenderInfo minWpi = null;
+		Vector2 clickedAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());
+
+		// check ToggleBtn clicked
+		if (btnTrackPos.hitTest(clickedAt))
+		{
+			main.vibrate();
+			stateChanged();
+			forceRender();
+			return true;
+		}
+
+		// check Zoom Button clicked
+		if (zoomBtn.hitTest(clickedAt))
+		{
+			// schnell Rendern
+
+			main.vibrate();
+			// start Zoom für die Animation des camera.zoom
+			startCameraZoom = GL_Listner.camera.zoom;
+			// dieser Zoom Faktor soll angestrebt werden
+			endCameraZoom = getMapTilePosFactor(zoomBtn.getZoom());
+			// Zoom Geschwindigkeit
+			diffCameraZoom = Math.abs(endCameraZoom - startCameraZoom) / 20;
+			// camera.zoom = getMapTilePosFactor(aktZoom);
+			zoomScale.setZoom(zoomBtn.getZoom());
+			zoomScale.resetFadeOut();
+
+			forceRender();
+			return true;
+		}
+
+		synchronized (mapCacheList.list)
+		{
+			// Bubble gedrückt?
+			if ((Bubble.cache != null) && Bubble.isShow && Bubble.DrawRec != null && Bubble.DrawRec.contains(clickedAt.x, clickedAt.y))
+			{
+				// Click inside Bubble -> hide Bubble and select Cache
+				// GlobalCore.SelectedWaypoint(Bubble.cache,
+				// Bubble.waypoint);
+				ThreadSaveSetSelectedWP(Bubble.cache, Bubble.waypoint);
+				CacheDraw.ReleaseCacheBMP();
+				Bubble.isShow = false;
+				Bubble.CacheId = -1;
+				Bubble.cache = null;
+				Bubble.waypoint = null;
+				mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+
+				// Shutdown Autoresort
+				Global.autoResort = false;
+				forceRender();
+				// do nothing else with this click
+				return false;
+			}
+			else if (Bubble.isShow)
+			{
+				// Click outside Bubble -> hide Bubble
+				Bubble.isShow = false;
+				forceRender();
+			}
+
+			for (WaypointRenderInfo wpi : mapCacheList.list)
+			{
+				Vector2 screen = worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
+				if (clickedAt != null)
+				{
+					double aktDist = Math.sqrt(Math.pow(screen.x - clickedAt.x, 2) + Math.pow(screen.y - clickedAt.y, 2));
+					if (aktDist < minDist)
+					{
+						minDist = aktDist;
+						minWpi = wpi;
+					}
+				}
+			}
+
+			if (minWpi == null || minWpi.Cache == null) return false;
+
+			if (minDist < 40)
+			{
+
+				if (minWpi.Waypoint != null)
+				{
+					if (GlobalCore.SelectedCache() != minWpi.Cache)
+					{
+						// Show Bubble
+						Bubble.isShow = true;
+						Bubble.CacheId = minWpi.Cache.Id;
+						Bubble.cache = minWpi.Cache;
+						Bubble.waypoint = minWpi.Waypoint;
+						Bubble.disposeSprite();
+						mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+
+					}
+					else
+					{
+						// do not show Bubble because there will not be
+						// selected
+						// a
+						// different cache but only a different waypoint
+						// Wegpunktliste ausrichten
+						ThreadSaveSetSelectedWP(minWpi.Cache, minWpi.Waypoint);
+						// FormMain.WaypointListPanel.AlignSelected();
+						// updateCacheList();
+						mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+					}
+
+				}
+				else
+				{
+					if (GlobalCore.SelectedCache() != minWpi.Cache)
+					{
+						Bubble.isShow = true;
+						Bubble.CacheId = minWpi.Cache.Id;
+						Bubble.cache = minWpi.Cache;
+						Bubble.disposeSprite();
+						mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+					}
+					else
+					{
+						Bubble.isShow = true;
+						Bubble.CacheId = minWpi.Cache.Id;
+						Bubble.cache = minWpi.Cache;
+						Bubble.disposeSprite();
+						// Cacheliste ausrichten
+						ThreadSaveSetSelectedWP(minWpi.Cache);
+						// updateCacheList();
+						mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+					}
+				}
+				forceRender();
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int x, int y, int pointer)
+	{
+		flinging = false;
+		initialScale = GL_Listner.camera.zoom;
+
+		Vector2 touchdAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());
+
+		if (btnTrackPos.touchDownTest(touchdAt)) return false;
+		if (zoomBtn.touchDownTest(touchdAt)) return false;
+
+		return false;
+	}
+
+	@Override
+	public void onStop()
+	{
+		for (TileGL tile : loadedTiles.values())
+		{
+			try
+			{
+				tile.destroy();
+			}
+			catch (DestroyFailedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		loadedTiles.clear();
+		PositionEventList.Remove(this);
+
+		saveToSettings();
+	}
+
+	public void update()
+	{
+		if (flinging)
+		{
+			velX *= 0.98f;
+			velY *= 0.98f;
+			GL_Listner.camera.position.add(-velX * Gdx.graphics.getDeltaTime(), velY * Gdx.graphics.getDeltaTime(), 0);
+			if (Math.abs(velX) < 0.01f) velX = 0;
+			if (Math.abs(velY) < 0.01f) velY = 0;
+			screenCenterW.x = GL_Listner.camera.position.x;
+			screenCenterW.y = GL_Listner.camera.position.y;
+			calcCenter();
+		}
+	}
+
+	@Override
+	public boolean touchDown(int x, int y, int pointer, int button)
+	{
+		// debugString = "touchDown " + inputState.toString();
+		if (inputState == InputState.Idle)
+		{
+			fingerDown.clear();
+			inputState = InputState.IdleDown;
+			fingerDown.put(pointer, new Point(x, y));
+		}
+		else
+		{
+			fingerDown.put(pointer, new Point(x, y));
+			if (fingerDown.size() == 2) inputState = InputState.Zoom;
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int x, int y, int pointer)
+	{
+		// debugString = "touchDragged " + inputState.toString();
+		if (inputState == InputState.IdleDown)
+		{
+			// es wurde 1x gedrückt -> testen, ob ein gewisser Minimum Bereich verschoben wurde
+			Point p = fingerDown.get(pointer);
+			if (p != null)
+			{
+				if ((Math.abs(p.x - x) > 10) || (Math.abs(p.y - y) > 10))
+				{
+					inputState = InputState.Pan;
+					GL_Listner.startTimer(frameRateAction);
+					((GLSurfaceView) MapViewGL.ViewGl).requestRender();
+				}
+				return false;
+			}
+		}
+		if (inputState == InputState.Button)
+		{
+			// wenn ein Button gedrückt war -> beim Verschieben nichts machen!!!
+			return false;
+		}
+
+		if ((inputState == InputState.Pan) && (fingerDown.size() == 1))
+		{
+			GL_Listner.startTimer(frameRateAction);
+			// debugString = "";
+			long faktor = getMapTilePosFactor(aktZoom);
+			// debugString += faktor;
+			Point lastPoint = (Point) fingerDown.values().toArray()[0];
+			// debugString += " - " + (lastPoint.x - x) * faktor + " - " + (y - lastPoint.y) * faktor;
+
+			GL_Listner.camera.position.add((lastPoint.x - x) * faktor, (y - lastPoint.y) * faktor, 0);
+			// debugString = camera.position.x + " - " + camera.position.y;
+			screenCenterW.x = GL_Listner.camera.position.x;
+			screenCenterW.y = GL_Listner.camera.position.y;
+			calcCenter();
+			if (kineticPan == null) kineticPan = new KineticPan();
+			kineticPan.setLast(System.currentTimeMillis(), x, y);
+
+			lastPoint.x = x;
+			lastPoint.y = y;
+		}
+		else if ((inputState == InputState.Zoom) && (fingerDown.size() == 2))
+		{
+			Point p1 = (Point) fingerDown.values().toArray()[0];
+			Point p2 = (Point) fingerDown.values().toArray()[1];
+			float originalDistance = (float) Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+
+			if (fingerDown.containsKey(pointer))
+			{
+				// neue Werte setzen
+				fingerDown.get(pointer).x = x;
+				fingerDown.get(pointer).y = y;
+				p1 = (Point) fingerDown.values().toArray()[0];
+				p2 = (Point) fingerDown.values().toArray()[1];
+			}
+			float currentDistance = (float) Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+			float ratio = originalDistance / currentDistance;
+			GL_Listner.camera.zoom = GL_Listner.camera.zoom * ratio;
+
+			if (GL_Listner.camera.zoom < getMapTilePosFactor(zoomBtn.getMaxZoom()))
+			{
+				GL_Listner.camera.zoom = getMapTilePosFactor(zoomBtn.getMaxZoom());
+			}
+			if (GL_Listner.camera.zoom > getMapTilePosFactor(zoomBtn.getMinZoom()))
+			{
+				GL_Listner.camera.zoom = getMapTilePosFactor(zoomBtn.getMinZoom());
+			}
+
+			endCameraZoom = GL_Listner.camera.zoom;
+
+			System.out.println(GL_Listner.camera.zoom);
+			int zoom = maxMapZoom;
+			float tmpZoom = GL_Listner.camera.zoom;
+			float faktor = 1.5f;
+			faktor = faktor - iconFactor + 1;
+			while (tmpZoom > faktor)
+			{
+				tmpZoom /= 2;
+				zoom--;
+			}
+			zoomBtn.setZoom(zoom);
+			zoomScale.resetFadeOut();
+			zoomScale.setZoom(zoom);
+			zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), true);
+			aktZoom = zoom;
+
+			// debugString = currentDistance + " - " + originalDistance;
+			return false;
+		}
+
+		// debugString = "State: " + inputState;
+		return false;
+	}
+
+	@Override
+	public boolean touchMoved(int x, int y)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int x, int y, int pointer, int button)
+	{
+		// debugString = "touchUp " + inputState.toString();
+		if (inputState == InputState.IdleDown)
+		{
+			// es wurde gedrückt, aber nich verschoben
+			fingerDown.remove(pointer);
+			inputState = InputState.Idle;
+			// -> Buttons testen
+
+			double minDist = Double.MAX_VALUE;
+			WaypointRenderInfo minWpi = null;
+			Vector2 clickedAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());
+
+			// auf Button Clicks nur reagieren, wenn aktuell noch kein Finger gedrückt ist!!!
+			if (kineticPan != null)
+			// bei FingerKlick (wenn Idle) sofort das kinetische Scrollen stoppen
+			kineticPan = null;
+
+			// check ToggleBtn clicked
+			if (btnTrackPos.hitTest(clickedAt))
+			{
+				main.vibrate();
+				stateChanged();
+				inputState = InputState.Idle;
+				// debugString = "State: " + inputState;
+				return false;
+			}
+
+			// check Zoom Button clicked
+			if (zoomBtn.hitTest(clickedAt))
+			{
+				zoomScale.setZoom(zoomBtn.getZoom());
+				zoomScale.resetFadeOut();
+				inputState = InputState.Idle;
+				// debugString = "State: " + inputState;
+				// aktZoom = zoomBtn.getZoom();
+				// camera.zoom = getMapTilePosFactor(aktZoom);
+				kineticZoom = new KineticZoom(GL_Listner.camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), SystemClock.uptimeMillis(),
+						SystemClock.uptimeMillis() + 1000);
+				GL_Listner.startTimer(frameRateAction);
+
+				return false;
+			}
+
+			synchronized (mapCacheList.list)
+			{
+				// Bubble gedrückt?
+				if ((Bubble.cache != null) && Bubble.isShow && Bubble.DrawRec != null && Bubble.DrawRec.contains(clickedAt.x, clickedAt.y))
+				{
+					// Click inside Bubble -> hide Bubble and select Cache
+					// GlobalCore.SelectedWaypoint(Bubble.cache,
+					// Bubble.waypoint);
+					ThreadSaveSetSelectedWP(Bubble.cache, Bubble.waypoint);
+					CacheDraw.ReleaseCacheBMP();
+					Bubble.isShow = false;
+					Bubble.CacheId = -1;
+					Bubble.cache = null;
+					Bubble.waypoint = null;
+					mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+
+					// Shutdown Autoresort
+					Global.autoResort = false;
+					inputState = InputState.Idle;
+					// debugString = "State: " + inputState;
+					// do nothing else with this click
+					return false;
+				}
+				else if (Bubble.isShow)
+				{
+					// Click outside Bubble -> hide Bubble
+					Bubble.isShow = false;
+				}
+
+				for (WaypointRenderInfo wpi : mapCacheList.list)
+				{
+					Vector2 screen = worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
+					if (clickedAt != null)
+					{
+						double aktDist = Math.sqrt(Math.pow(screen.x - clickedAt.x, 2) + Math.pow(screen.y - clickedAt.y, 2));
+						if (aktDist < minDist)
+						{
+							minDist = aktDist;
+							minWpi = wpi;
+						}
+					}
+				}
+
+				if (minWpi == null || minWpi.Cache == null) return false;
+
+				if (minDist < 40)
+				{
+
+					if (minWpi.Waypoint != null)
+					{
+						if (GlobalCore.SelectedCache() != minWpi.Cache)
+						{
+							// Show Bubble
+							Bubble.isShow = true;
+							Bubble.CacheId = minWpi.Cache.Id;
+							Bubble.cache = minWpi.Cache;
+							Bubble.waypoint = minWpi.Waypoint;
+							Bubble.disposeSprite();
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+
+						}
+						else
+						{
+							// do not show Bubble because there will not be
+							// selected
+							// a
+							// different cache but only a different waypoint
+							// Wegpunktliste ausrichten
+							ThreadSaveSetSelectedWP(minWpi.Cache, minWpi.Waypoint);
+							// FormMain.WaypointListPanel.AlignSelected();
+							// updateCacheList();
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+						}
+
+					}
+					else
+					{
+						if (GlobalCore.SelectedCache() != minWpi.Cache)
+						{
+							Bubble.isShow = true;
+							Bubble.CacheId = minWpi.Cache.Id;
+							Bubble.cache = minWpi.Cache;
+							Bubble.disposeSprite();
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+						}
+						else
+						{
+							Bubble.isShow = true;
+							Bubble.CacheId = minWpi.Cache.Id;
+							Bubble.cache = minWpi.Cache;
+							Bubble.disposeSprite();
+							// Cacheliste ausrichten
+							ThreadSaveSetSelectedWP(minWpi.Cache);
+							// updateCacheList();
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+						}
+					}
+					inputState = InputState.Idle;
+					// debugString = "State: " + inputState;
+					// return false;
+				}
+			}
+			inputState = InputState.Idle;
+			return false;
+		}
+
+		fingerDown.remove(pointer);
+		if (fingerDown.size() == 1) inputState = InputState.Pan;
+		else if (fingerDown.size() == 0)
+		{
+			inputState = InputState.Idle;
+			// wieder langsam rendern
+			((GLSurfaceView) MapViewGL.ViewGl).requestRender();
+
+			if ((kineticZoom == null) && (kineticPan == null)) GL_Listner.startTimer(frameRateIdle);
+			if (kineticPan != null) kineticPan.start();
+		}
+
+		// debugString = "State: " + inputState;
+
+		return false;
 	}
 
 }
