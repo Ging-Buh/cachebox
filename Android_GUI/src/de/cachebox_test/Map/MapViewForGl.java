@@ -16,6 +16,7 @@ import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
@@ -189,7 +190,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		if (rec.getWidth() == this.width && rec.getHeight() == this.height)
 		{
 			// Ausser wenn Camera == null!
-			if (GL_Listner.camera != null) return;
+			if (GL_Listener.camera != null) return;
 		}
 
 		Log.d(Tag, "resize(width,height) " + width + "/" + height);
@@ -201,10 +202,10 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 
 		aktZoom = zoomBtn.getZoom();
 		zoomScale.setZoom(aktZoom);
-		GL_Listner.camera.zoom = getMapTilePosFactor(aktZoom);
-		endCameraZoom = GL_Listner.camera.zoom;
+		GL_Listener.camera.zoom = getMapTilePosFactor(aktZoom);
+		endCameraZoom = GL_Listener.camera.zoom;
 		diffCameraZoom = 0;
-		GL_Listner.camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
+		GL_Listener.camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
 
 		textMatrix.setToOrtho2D(0, 0, width, height);
 
@@ -273,11 +274,11 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		boolean reduceFps = ((kineticZoom != null) || ((kineticPan != null) && (kineticPan.started)));
 		if (kineticZoom != null)
 		{
-			GL_Listner.camera.zoom = kineticZoom.getAktZoom();
+			GL_Listener.camera.zoom = kineticZoom.getAktZoom();
 			// debugString = "Kinetic: " + camera.zoom;
 
 			int zoom = maxMapZoom;
-			float tmpZoom = GL_Listner.camera.zoom;
+			float tmpZoom = GL_Listener.camera.zoom;
 			float faktor = 1.5f;
 			faktor = faktor - iconFactor + 1;
 			while (tmpZoom > faktor)
@@ -303,9 +304,9 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 			long faktor = getMapTilePosFactor(aktZoom);
 			Point pan = kineticPan.getAktPan();
 			// debugString = pan.x + " - " + pan.y;
-			GL_Listner.camera.position.add(pan.x * faktor, pan.y * faktor, 0);
-			screenCenterW.x = GL_Listner.camera.position.x;
-			screenCenterW.y = GL_Listner.camera.position.y;
+			GL_Listener.camera.position.add(pan.x * faktor, pan.y * faktor, 0);
+			screenCenterW.x = GL_Listener.camera.position.x;
+			screenCenterW.y = GL_Listener.camera.position.y;
 			calcCenter();
 
 			if (kineticPan.getFertig())
@@ -318,65 +319,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 
 		if (reduceFps)
 		{
-			GL_Listner.startTimer(frameRateIdle);
-		}
-
-		if (!GL_Listner.useNewInput)
-		{
-			if (GL_Listner.camera.zoom != endCameraZoom)
-			{
-				// Zoom Animation
-				boolean positive = true;
-				float newValue;
-				if (GL_Listner.camera.zoom < endCameraZoom)
-				{
-					positive = false;
-					// TODO diffCameraZoom in Abhängigkeit der vergangenen Zeit nicht des Render Durchgangs
-					// wie bei GL_ZoomScale.java Line 279
-					newValue = GL_Listner.camera.zoom + diffCameraZoom;
-					if (newValue > endCameraZoom)// endCameraZoom erreicht?
-					{
-						GL_Listner.camera.zoom = endCameraZoom;
-					}
-					else
-					{
-						GL_Listner.camera.zoom = newValue;
-					}
-				}
-				if (GL_Listner.camera.zoom > endCameraZoom)
-				{
-					newValue = GL_Listner.camera.zoom - diffCameraZoom;
-					if (newValue < endCameraZoom)// endCameraZoom erreicht?
-					{
-						GL_Listner.camera.zoom = endCameraZoom;
-					}
-					else
-					{
-						GL_Listner.camera.zoom = newValue;
-					}
-				}
-				int zoom = maxMapZoom;
-				float tmpZoom = GL_Listner.camera.zoom;
-				float faktor = 1.5f;
-				faktor = faktor - iconFactor + 1;
-				while (tmpZoom > faktor)
-				{
-					tmpZoom /= 2;
-					zoom--;
-				}
-				aktZoom = zoom;
-
-				zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), positive);
-
-			}
-			else
-			{
-				if (GL_Listner.timerValue != 50)
-				{
-					// der Zoom ist fertig -> langsamer rendern
-					GL_Listner.startTimer(50);
-				}
-			}
+			GL_Listener.startTimer(frameRateIdle);
 		}
 
 		if (SpriteCache.MapIcons == null)
@@ -406,19 +349,19 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 
 		if (alignToCompass)
 		{
-			GL_Listner.camera.up.x = 0;
-			GL_Listner.camera.up.y = 1;
-			GL_Listner.camera.up.z = 0;
-			GL_Listner.camera.rotate(-mapHeading, 0, 0, 1);
+			GL_Listener.camera.up.x = 0;
+			GL_Listener.camera.up.y = 1;
+			GL_Listener.camera.up.z = 0;
+			GL_Listener.camera.rotate(-mapHeading, 0, 0, 1);
 		}
 		else
 		{
-			GL_Listner.camera.up.x = 0;
-			GL_Listner.camera.up.y = 1;
-			GL_Listner.camera.up.z = 0;
+			GL_Listener.camera.up.x = 0;
+			GL_Listener.camera.up.y = 1;
+			GL_Listener.camera.up.z = 0;
 		}
 
-		GL_Listner.camera.update();
+		GL_Listener.camera.update();
 
 		renderMapTiles(batch);
 		renderOverlay(batch);
@@ -464,7 +407,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 
 	private void renderMapTiles(SpriteBatch batch)
 	{
-		batch.setProjectionMatrix(GL_Listner.camera.combined);
+		batch.setProjectionMatrix(GL_Listener.camera.combined);
 		batch.begin();
 
 		try
@@ -544,10 +487,10 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		str = debugString;
 		UiSizes.GL.fontAB18.draw(batch, str, 20, 120);
 
-		str = "timer: " + GL_Listner.timerValue + " - fps: " + Gdx.graphics.getFramesPerSecond();
+		str = "timer: " + GL_Listener.timerValue + " - fps: " + Gdx.graphics.getFramesPerSecond();
 		UiSizes.GL.fontAB18.draw(batch, str, 20, 100);
 
-		str = String.valueOf(aktZoom) + " - camzoom: " + Math.round(GL_Listner.camera.zoom * 100) / 100;
+		str = String.valueOf(aktZoom) + " - camzoom: " + Math.round(GL_Listener.camera.zoom * 100) / 100;
 		UiSizes.GL.fontAB18.draw(batch, str, 20, 80);
 
 		str = "lTiles: " + loadedTiles.size() + " - qTiles: " + queuedTiles.size();
@@ -1192,7 +1135,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 	{
 		screenCenterW.x = newCenter.x;
 		screenCenterW.y = -newCenter.y;
-		if (GL_Listner.camera != null) GL_Listner.camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
+		if (GL_Listener.camera != null) GL_Listener.camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
 	}
 
 	public void setCenter(Coordinate value)
@@ -1242,16 +1185,16 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 	private Vector2 screenToWorld(Vector2 point)
 	{
 		Vector2 result = new Vector2(0, 0);
-		result.x = screenCenterW.x + (point.x - width / 2) * GL_Listner.camera.zoom;
-		result.y = -screenCenterW.y + (point.y - height / 2) * GL_Listner.camera.zoom;
+		result.x = screenCenterW.x + (point.x - width / 2) * GL_Listener.camera.zoom;
+		result.y = -screenCenterW.y + (point.y - height / 2) * GL_Listener.camera.zoom;
 		return result;
 	}
 
 	private Vector2 worldToScreen(Vector2 point)
 	{
 		Vector2 result = new Vector2(0, 0);
-		result.x = (point.x - screenCenterW.x) / GL_Listner.camera.zoom + width / 2;
-		result.y = -(-point.y + screenCenterW.y) / GL_Listner.camera.zoom + height / 2;
+		result.x = (point.x - screenCenterW.x) / GL_Listener.camera.zoom + width / 2;
+		result.y = -(-point.y + screenCenterW.y) / GL_Listener.camera.zoom + height / 2;
 		result.add(-width / 2, -height / 2);
 		result.rotate(mapHeading);
 		result.add(width / 2, height / 2);
@@ -1782,9 +1725,9 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		// Drehung der Karte berücksichtigen
 		Vector2 richtung = new Vector2(deltaX, deltaY);
 		richtung.rotate(mapHeading);
-		GL_Listner.camera.position.add(-richtung.x * GL_Listner.camera.zoom, richtung.y * GL_Listner.camera.zoom, 0);
-		screenCenterW.x = GL_Listner.camera.position.x;
-		screenCenterW.y = GL_Listner.camera.position.y;
+		GL_Listener.camera.position.add(-richtung.x * GL_Listener.camera.zoom, richtung.y * GL_Listener.camera.zoom, 0);
+		screenCenterW.x = GL_Listener.camera.position.x;
+		screenCenterW.y = GL_Listener.camera.position.y;
 		calcCenter();
 		btnTrackPos.setState(0);
 		return false;
@@ -1797,22 +1740,22 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		boolean positive = true;
 		Log.d("CACHEBOX", "pan " + originalDistance + "  |  " + currentDistance);
 		float ratio = originalDistance / currentDistance;
-		GL_Listner.camera.zoom = initialScale * ratio;
+		GL_Listener.camera.zoom = initialScale * ratio;
 
-		if (GL_Listner.camera.zoom < getMapTilePosFactor(zoomBtn.getMaxZoom()))
+		if (GL_Listener.camera.zoom < getMapTilePosFactor(zoomBtn.getMaxZoom()))
 		{
-			GL_Listner.camera.zoom = getMapTilePosFactor(zoomBtn.getMaxZoom());
+			GL_Listener.camera.zoom = getMapTilePosFactor(zoomBtn.getMaxZoom());
 		}
-		if (GL_Listner.camera.zoom > getMapTilePosFactor(zoomBtn.getMinZoom()))
+		if (GL_Listener.camera.zoom > getMapTilePosFactor(zoomBtn.getMinZoom()))
 		{
-			GL_Listner.camera.zoom = getMapTilePosFactor(zoomBtn.getMinZoom());
+			GL_Listener.camera.zoom = getMapTilePosFactor(zoomBtn.getMinZoom());
 		}
 
-		endCameraZoom = GL_Listner.camera.zoom;
+		endCameraZoom = GL_Listener.camera.zoom;
 
-		System.out.println(GL_Listner.camera.zoom);
+		System.out.println(GL_Listener.camera.zoom);
 		int zoom = maxMapZoom;
-		float tmpZoom = GL_Listner.camera.zoom;
+		float tmpZoom = GL_Listener.camera.zoom;
 		float faktor = 1.5f;
 		faktor = faktor - iconFactor + 1;
 		while (tmpZoom > faktor)
@@ -1852,8 +1795,8 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		Vector2 richtung = new Vector2(velocityX, velocityY);
 		richtung.rotate(mapHeading);
 
-		velX = GL_Listner.camera.zoom * richtung.x * 0.5f;
-		velY = GL_Listner.camera.zoom * richtung.y * 0.5f;
+		velX = GL_Listener.camera.zoom * richtung.x * 0.5f;
+		velY = GL_Listener.camera.zoom * richtung.y * 0.5f;
 		return false;
 	}
 
@@ -1898,7 +1841,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 
 			main.vibrate();
 			// start Zoom für die Animation des camera.zoom
-			startCameraZoom = GL_Listner.camera.zoom;
+			startCameraZoom = GL_Listener.camera.zoom;
 			// dieser Zoom Faktor soll angestrebt werden
 			endCameraZoom = getMapTilePosFactor(zoomBtn.getZoom());
 			// Zoom Geschwindigkeit
@@ -2018,7 +1961,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 	public boolean touchDown(int x, int y, int pointer)
 	{
 		flinging = false;
-		initialScale = GL_Listner.camera.zoom;
+		initialScale = GL_Listener.camera.zoom;
 
 		Vector2 touchdAt = new Vector2(Gdx.input.getX(), height - Gdx.input.getY());
 
@@ -2054,11 +1997,11 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		{
 			velX *= 0.98f;
 			velY *= 0.98f;
-			GL_Listner.camera.position.add(-velX * Gdx.graphics.getDeltaTime(), velY * Gdx.graphics.getDeltaTime(), 0);
+			GL_Listener.camera.position.add(-velX * Gdx.graphics.getDeltaTime(), velY * Gdx.graphics.getDeltaTime(), 0);
 			if (Math.abs(velX) < 0.01f) velX = 0;
 			if (Math.abs(velY) < 0.01f) velY = 0;
-			screenCenterW.x = GL_Listner.camera.position.x;
-			screenCenterW.y = GL_Listner.camera.position.y;
+			screenCenterW.x = GL_Listener.camera.position.x;
+			screenCenterW.y = GL_Listener.camera.position.y;
 			calcCenter();
 		}
 	}
@@ -2095,7 +2038,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 				if ((Math.abs(p.x - x) > 10) || (Math.abs(p.y - y) > 10))
 				{
 					inputState = InputState.Pan;
-					GL_Listner.startTimer(frameRateAction);
+					GL_Listener.startTimer(frameRateAction);
 					((GLSurfaceView) MapViewGL.ViewGl).requestRender();
 				}
 				return false;
@@ -2109,17 +2052,17 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 
 		if ((inputState == InputState.Pan) && (fingerDown.size() == 1))
 		{
-			GL_Listner.startTimer(frameRateAction);
+			GL_Listener.startTimer(frameRateAction);
 			// debugString = "";
 			long faktor = getMapTilePosFactor(aktZoom);
 			// debugString += faktor;
 			Point lastPoint = (Point) fingerDown.values().toArray()[0];
 			// debugString += " - " + (lastPoint.x - x) * faktor + " - " + (y - lastPoint.y) * faktor;
 
-			GL_Listner.camera.position.add((lastPoint.x - x) * faktor, (y - lastPoint.y) * faktor, 0);
+			GL_Listener.camera.position.add((lastPoint.x - x) * faktor, (y - lastPoint.y) * faktor, 0);
 			// debugString = camera.position.x + " - " + camera.position.y;
-			screenCenterW.x = GL_Listner.camera.position.x;
-			screenCenterW.y = GL_Listner.camera.position.y;
+			screenCenterW.x = GL_Listener.camera.position.x;
+			screenCenterW.y = GL_Listener.camera.position.y;
 			calcCenter();
 			if (kineticPan == null) kineticPan = new KineticPan();
 			kineticPan.setLast(System.currentTimeMillis(), x, y);
@@ -2143,22 +2086,22 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 			}
 			float currentDistance = (float) Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 			float ratio = originalDistance / currentDistance;
-			GL_Listner.camera.zoom = GL_Listner.camera.zoom * ratio;
+			GL_Listener.camera.zoom = GL_Listener.camera.zoom * ratio;
 
-			if (GL_Listner.camera.zoom < getMapTilePosFactor(zoomBtn.getMaxZoom()))
+			if (GL_Listener.camera.zoom < getMapTilePosFactor(zoomBtn.getMaxZoom()))
 			{
-				GL_Listner.camera.zoom = getMapTilePosFactor(zoomBtn.getMaxZoom());
+				GL_Listener.camera.zoom = getMapTilePosFactor(zoomBtn.getMaxZoom());
 			}
-			if (GL_Listner.camera.zoom > getMapTilePosFactor(zoomBtn.getMinZoom()))
+			if (GL_Listener.camera.zoom > getMapTilePosFactor(zoomBtn.getMinZoom()))
 			{
-				GL_Listner.camera.zoom = getMapTilePosFactor(zoomBtn.getMinZoom());
+				GL_Listener.camera.zoom = getMapTilePosFactor(zoomBtn.getMinZoom());
 			}
 
-			endCameraZoom = GL_Listner.camera.zoom;
+			endCameraZoom = GL_Listener.camera.zoom;
 
-			System.out.println(GL_Listner.camera.zoom);
+			System.out.println(GL_Listener.camera.zoom);
 			int zoom = maxMapZoom;
-			float tmpZoom = GL_Listner.camera.zoom;
+			float tmpZoom = GL_Listener.camera.zoom;
 			float faktor = 1.5f;
 			faktor = faktor - iconFactor + 1;
 			while (tmpZoom > faktor)
@@ -2225,9 +2168,9 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 				// debugString = "State: " + inputState;
 				// aktZoom = zoomBtn.getZoom();
 				// camera.zoom = getMapTilePosFactor(aktZoom);
-				kineticZoom = new KineticZoom(GL_Listner.camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), SystemClock.uptimeMillis(),
+				kineticZoom = new KineticZoom(GL_Listener.camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), SystemClock.uptimeMillis(),
 						SystemClock.uptimeMillis() + 1000);
-				GL_Listner.startTimer(frameRateAction);
+				GL_Listener.startTimer(frameRateAction);
 
 				return false;
 			}
@@ -2346,7 +2289,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 			// wieder langsam rendern
 			((GLSurfaceView) MapViewGL.ViewGl).requestRender();
 
-			if ((kineticZoom == null) && (kineticPan == null)) GL_Listner.startTimer(frameRateIdle);
+			if ((kineticZoom == null) && (kineticPan == null)) GL_Listener.startTimer(frameRateIdle);
 			if (kineticPan != null) kineticPan.start();
 		}
 

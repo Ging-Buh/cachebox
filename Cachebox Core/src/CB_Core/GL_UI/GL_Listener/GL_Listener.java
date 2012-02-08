@@ -1,17 +1,13 @@
-package de.cachebox_test.Map;
+package CB_Core.GL_UI.GL_Listener;
 
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.Types.Cache;
 import CB_Core.Types.MoveableList;
-import CB_Core.Types.Waypoint;
-import android.opengl.GLSurfaceView;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -20,13 +16,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
 
-import de.cachebox_test.main;
-import de.cachebox_test.Views.MapViewGL;
-import de.cachebox_test.Views.Forms.ScreenLock;
-
-public class GL_Listner implements ApplicationListener, InputProcessor
+public class GL_Listener implements ApplicationListener, InputProcessor
 {
 
 	// # private Member
@@ -43,21 +34,19 @@ public class GL_Listner implements ApplicationListener, InputProcessor
 
 	// # public static member
 	public static SpriteBatch batch;
-	public static CameraController controller;
 	public static OrthographicCamera camera;
 
 	// # View´s
-	private MapViewForGl mapView;
+	// private MapViewForGl mapView;
 
 	/**
 	 * Constructor
 	 */
-	public GL_Listner(int initalWidth, int initialHeight)
+	public GL_Listener(int initalWidth, int initialHeight)
 	{
-		mapView = new MapViewForGl(initalWidth, initialHeight);
-		mChilds.add(mapView);
+		// mapView = new MapViewForGl(initalWidth, initialHeight);
+		// mChilds.add(mapView);
 
-		create();
 	}
 
 	@Override
@@ -66,14 +55,8 @@ public class GL_Listner implements ApplicationListener, InputProcessor
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		if (batch == null) batch = new SpriteBatch();
-		if (useNewInput)
-		{
-			if (Gdx.input.getInputProcessor() != this) Gdx.input.setInputProcessor(this);
-		}
-		else
-		{
-			if (Gdx.input.getInputProcessor() != gestureDetector) Gdx.input.setInputProcessor(gestureDetector);
-		}
+
+		// if (Gdx.input.getInputProcessor() != this) Gdx.input.setInputProcessor(this);
 
 		startTime = System.currentTimeMillis();
 	}
@@ -100,7 +83,7 @@ public class GL_Listner implements ApplicationListener, InputProcessor
 
 	}
 
-	public static void onStart()
+	public void onStart()
 	{
 
 		started.set(true);
@@ -112,7 +95,7 @@ public class GL_Listner implements ApplicationListener, InputProcessor
 
 		stopTimer();
 
-		if (ScreenLock.isShown) return;
+		// if (ScreenLock.isShown) return;
 
 		// alle Childs abfragen
 		for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
@@ -240,187 +223,9 @@ public class GL_Listner implements ApplicationListener, InputProcessor
 	{
 		camera = new OrthographicCamera(width, height);
 
-		controller = new CameraController();
-		gestureDetector = new GestureDetector(20, 0.5f, 1, 0.15f, controller);
 	}
 
-	class CameraController implements GestureListener
-	{
-
-		@Override
-		public boolean touchDown(int x, int y, int pointer)
-		{
-			boolean behandelt = false;
-
-			// alle Childs abfragen
-			for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-			{
-				GL_View_Base view = iterator.next();
-				if (view.touchDown(x, y, pointer))
-				{
-					// schon behandelt
-					behandelt = true;
-					break;
-				}
-			}
-
-			return behandelt;
-
-		}
-
-		@Override
-		public boolean tap(int x, int y, int count)
-		{
-			boolean behandelt = false;
-
-			// alle Childs abfragen
-			for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-			{
-				GL_View_Base view = iterator.next();
-				if (view.tap(x, y, count))
-				{
-					// schon behandelt
-					behandelt = true;
-					break;
-				}
-			}
-
-			return behandelt;
-
-		}
-
-		/**
-		 * Wählt Cache Thread sicher an.
-		 * 
-		 * @param cache
-		 */
-		private void ThreadSaveSetSelectedWP(final Cache cache)
-		{
-			ThreadSaveSetSelectedWP(cache, null);
-		}
-
-		/**
-		 * Wählt Cache und Waypoint Thread sicher an.
-		 * 
-		 * @param cache
-		 * @param waypoint
-		 */
-		private void ThreadSaveSetSelectedWP(final Cache cache, final Waypoint waypoint)
-		{
-			Thread t = new Thread()
-			{
-				public void run()
-				{
-					main.mainActivity.runOnUiThread(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							if (waypoint == null)
-							{
-								GlobalCore.SelectedCache(cache);
-							}
-							else
-							{
-								GlobalCore.SelectedWaypoint(cache, waypoint);
-							}
-						}
-					});
-				}
-			};
-
-			t.start();
-		}
-
-		@Override
-		public boolean longPress(int x, int y)
-		{
-
-			boolean behandelt = false;
-
-			// alle Childs abfragen
-			for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-			{
-				GL_View_Base view = iterator.next();
-				if (view.longPress(x, y))
-				{
-					// schon behandelt
-					behandelt = true;
-					break;
-				}
-			}
-
-			return behandelt;
-
-		}
-
-		@Override
-		public boolean fling(float velocityX, float velocityY)
-		{
-			boolean behandelt = false;
-
-			// alle Childs abfragen
-			for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-			{
-				GL_View_Base view = iterator.next();
-				if (view.fling(velocityX, velocityY))
-				{
-					// schon behandelt
-					behandelt = true;
-					break;
-				}
-			}
-
-			return behandelt;
-
-		}
-
-		@Override
-		public boolean pan(int x, int y, int deltaX, int deltaY)
-		{
-
-			boolean behandelt = false;
-
-			// alle Childs abfragen
-			for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-			{
-				GL_View_Base view = iterator.next();
-				if (view.pan(x, y, deltaX, deltaY))
-				{
-					// schon behandelt
-					behandelt = true;
-					break;
-				}
-			}
-
-			return behandelt;
-
-		}
-
-		@Override
-		public boolean zoom(float originalDistance, float currentDistance)
-		{
-			boolean behandelt = false;
-
-			// alle Childs abfragen
-			for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-			{
-				GL_View_Base view = iterator.next();
-				if (view.zoom(originalDistance, currentDistance))
-				{
-					// schon behandelt
-					behandelt = true;
-					break;
-				}
-			}
-
-			return behandelt;
-
-		}
-
-	}
-
-	static void startTimer(long delay)
+	public static void startTimer(long delay)
 	{
 		if (timerValue == delay) return;
 		stopTimer();
@@ -437,12 +242,12 @@ public class GL_Listner implements ApplicationListener, InputProcessor
 
 			private void TimerMethod()
 			{
-				((GLSurfaceView) MapViewGL.ViewGl).requestRender();
+				// ((GLSurfaceView) MapViewGL.ViewGl).requestRender();
 
 			}
 
 		}, 0, delay);
-		((GLSurfaceView) MapViewGL.ViewGl).setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+		// ((GLSurfaceView) MapViewGL.ViewGl).setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 	}
 
 	public static long timerValue;
@@ -456,7 +261,7 @@ public class GL_Listner implements ApplicationListener, InputProcessor
 			myTimer.cancel();
 			myTimer = null;
 		}
-		((GLSurfaceView) MapViewGL.ViewGl).setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+		// ((GLSurfaceView) MapViewGL.ViewGl).setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 	}
 
 	@Override
@@ -498,6 +303,18 @@ public class GL_Listner implements ApplicationListener, InputProcessor
 			}
 		}
 		startTime = System.currentTimeMillis();
+	}
+
+	public void Initialize()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	public void InitializeMap()
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }

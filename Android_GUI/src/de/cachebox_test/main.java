@@ -33,6 +33,7 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
@@ -144,6 +145,7 @@ import de.cachebox_test.Views.SolverView;
 import de.cachebox_test.Views.SpoilerView;
 import de.cachebox_test.Views.TrackListView;
 import de.cachebox_test.Views.TrackableListView;
+import de.cachebox_test.Views.ViewGL;
 import de.cachebox_test.Views.WaypointView;
 import de.cachebox_test.Views.AdvancedSettingsForms.SettingsScrollView;
 import de.cachebox_test.Views.FilterSettings.EditFilterSettings;
@@ -185,10 +187,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static TrackListView tracklistView = null; // ID 13
 	private static TrackableListView trackablelistView = null; // ID 14
 	public static WaypointView waypointView = null; // ID 15
+	public static ViewGL viewGL = null; // ID 16;
 
 	private View viewGl = null;
 
 	private MapViewGlListener mapViewGlListener = null;
+	private GL_Listener glListener = null;
 	// private GL_Listner mapViewGlListener = null;
 
 	public static LinearLayout strengthLayout;
@@ -386,6 +390,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		Size initSize = new Size(Config.settings.MapIniWidth.getValue(), Config.settings.MapIniHeight.getValue());
 
 		mapViewGlListener = new MapViewGlListener(initSize.width, initSize.height);
+		glListener = new GL_Listener(initSize.width, initSize.height);
 		// mapViewGlListener = new GL_Listner(initSize.width, initSize.height);
 
 		int Time = Config.settings.ScreenLock.getValue();
@@ -421,6 +426,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		initialLocationManager();
 		initialMapView();
 		initialMapViewGl();
+		initialViewGL();
 		initialViews();
 		initalMicIcon();
 		initialButtons();
@@ -1386,6 +1392,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				cacheListView = null;
 				mapView = null;
 				mapViewGl = null;
+				viewGL = null;
 				notesView = null;
 				jokerView = null;
 				descriptionView = null;
@@ -1625,6 +1632,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case 2:
 				ShowMapViewGL();
 				break;
+			case 16:
+				ShowViewGL();
+				break;
 			}
 		}
 		else
@@ -1640,6 +1650,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		mapViewGl = null;
 		initialMapViewGl();
 		showView(mapViewGl, 2);
+	}
+
+	private void ShowViewGL()
+	{
+		viewGL = null;
+		initialViewGL();
+		showView(viewGL, 16);
 	}
 
 	private void showView(ViewOptionsMenu view, int Id)
@@ -1736,6 +1753,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				this.onPause();
 			}
+			else if (aktView.equals(viewGL))
+			{
+				this.onPause();
+			}
 		}
 
 		System.gc();
@@ -1824,6 +1845,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				break;
 			case R.id.miMapViewGl:
 				showView(2);
+				break;
+			case R.id.miViewGL:
+				showView(16);
 				break;
 			case R.id.miDescription:
 				showView(4);
@@ -2136,6 +2160,35 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		catch (Exception e)
 		{
 			Logger.Error("main.initialMapViewGl()", "", e);
+			e.printStackTrace();
+		}
+	}
+
+	private void initialViewGL()
+	{
+		try
+		{
+			if (viewGL == null)
+			{
+				viewGl = initializeForView(glListener, false);
+				// ((GLSurfaceView) viewGl).setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+
+				// mapViewGl = new MapViewGL(this, inflater, viewGl, mapViewGlListener);
+				viewGL = new ViewGL(this, inflater, viewGl, glListener);
+
+				viewGL.Initialize();
+				// mapViewGl.CurrentLayer =
+				// MapView.Manager.GetLayerByName(Config.settings.CurrentMapLayer.getValue(),
+				// Config.settings.CurrentMapLayer.getValue(), "");
+				// Global.TrackDistance =
+				// Config.settings.TrackDistance.getValue();
+				viewGL.InitializeMap();
+
+			}
+		}
+		catch (Exception e)
+		{
+			Logger.Error("main.initialViewGL()", "", e);
 			e.printStackTrace();
 		}
 	}

@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
-import de.cachebox_test.Map.GL_Listner;
 import de.cachebox_test.Map.Layer;
 import de.cachebox_test.Map.MapViewGlListener;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
@@ -147,7 +146,7 @@ public class MapViewGL extends RelativeLayout implements ViewOptionsMenu
 	public void OnShow()
 	{
 		mapViewGlListener.onStart();
-		GL_Listner.onStart();
+		// GL_Listener.onStart();
 	}
 
 	@Override
