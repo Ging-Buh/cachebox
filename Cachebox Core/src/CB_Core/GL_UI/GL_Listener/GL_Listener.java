@@ -1,12 +1,12 @@
 package CB_Core.GL_UI.GL_Listener;
 
-import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Controls.MainView;
 import CB_Core.Types.MoveableList;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -26,6 +26,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	 * Enthält alle GL_Views
 	 */
 	private MoveableList<GL_View_Base> mChilds = new MoveableList<GL_View_Base>();
+	MainView child;
 	private static AtomicBoolean started = new AtomicBoolean(false);
 	private GestureDetector gestureDetector;
 	private static int frameRateIdle = 200;
@@ -44,7 +45,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	 */
 	public GL_Listener(int initalWidth, int initialHeight)
 	{
-
+		child = new MainView(0, 0, initalWidth, initialHeight);
 	}
 
 	@Override
@@ -96,12 +97,13 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 		// if (ScreenLock.isShown) return;
 
 		// alle Childs abfragen
-		for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-		{
-			GL_View_Base view = iterator.next();
-			view.onStop();
-
-		}
+		// for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
+		// {
+		// GL_View_Base view = iterator.next();
+		// view.onStop();
+		//
+		// }
+		child.onStop();
 	}
 
 	// # ImputProzessor Implamantations
@@ -139,17 +141,18 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	{
 		boolean behandelt = false;
 
+		behandelt = child.touchDown(x, y, pointer, button);
 		// alle Childs abfragen
-		for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-		{
-			GL_View_Base view = iterator.next();
-			if (view.touchDown(x, y, pointer, button))
-			{
-				// schon behandelt
-				behandelt = true;
-				break;
-			}
-		}
+		// for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
+		// {
+		// GL_View_Base view = iterator.next();
+		// if (view.touchDown(x, y, pointer, button))
+		// {
+		// // schon behandelt
+		// behandelt = true;
+		// break;
+		// }
+		// }
 
 		return behandelt;
 	}
@@ -159,17 +162,18 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	{
 		boolean behandelt = false;
 
+		behandelt = child.touchDragged(x, y, pointer);
 		// alle Childs abfragen
-		for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-		{
-			GL_View_Base view = iterator.next();
-			if (view.touchDragged(x, y, pointer))
-			{
-				// schon behandelt
-				behandelt = true;
-				break;
-			}
-		}
+		// for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
+		// {
+		// GL_View_Base view = iterator.next();
+		// if (view.touchDragged(x, y, pointer))
+		// {
+		// // schon behandelt
+		// behandelt = true;
+		// break;
+		// }
+		// }
 
 		return behandelt;
 
@@ -180,17 +184,18 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	{
 		boolean behandelt = false;
 
+		behandelt = child.touchMoved(x, y);
 		// alle Childs abfragen
-		for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-		{
-			GL_View_Base view = iterator.next();
-			if (view.touchMoved(x, y))
-			{
-				// schon behandelt
-				behandelt = true;
-				break;
-			}
-		}
+		// for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
+		// {
+		// GL_View_Base view = iterator.next();
+		// if (view.touchMoved(x, y))
+		// {
+		// // schon behandelt
+		// behandelt = true;
+		// break;
+		// }
+		// }
 
 		return behandelt;
 	}
@@ -200,17 +205,18 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	{
 		boolean behandelt = false;
 
+		behandelt = child.touchUp(x, y, pointer, button);
 		// alle Childs abfragen
-		for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-		{
-			GL_View_Base view = iterator.next();
-			if (view.touchUp(x, y, pointer, button))
-			{
-				// schon behandelt
-				behandelt = true;
-				break;
-			}
-		}
+		// for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
+		// {
+		// GL_View_Base view = iterator.next();
+		// if (view.touchUp(x, y, pointer, button))
+		// {
+		// // schon behandelt
+		// behandelt = true;
+		// break;
+		// }
+		// }
 
 		return behandelt;
 
@@ -271,14 +277,17 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 
-		for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-		{
-			batch.begin();
-			GL_View_Base view = iterator.next();
-			if (view.getVisibility() == GL_View_Base.VISIBLE) view.renderChilds(batch);
-
-			batch.end();
-		}
+		// for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
+		// {
+		// batch.begin();
+		// GL_View_Base view = iterator.next();
+		// if (view.getVisibility() == GL_View_Base.VISIBLE) view.renderChilds(batch);
+		//
+		// batch.end();
+		// }
+		batch.begin();
+		child.renderChilds(batch);
+		batch.end();
 
 		Gdx.gl.glFlush();
 		Gdx.gl.glFinish();

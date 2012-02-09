@@ -90,8 +90,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.Window;
@@ -2175,6 +2177,21 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				viewGl = initializeForView(glListener, false);
 				// ((GLSurfaceView) viewGl).setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
+				viewGl.setOnTouchListener(new OnTouchListener()
+				{
+
+					@Override
+					public boolean onTouch(View v, MotionEvent event)
+					{
+						float ex = event.getX();
+						float ey = event.getY();
+						// Weitergabe der Toucheingabe an den Gl_Listener
+						// ToDo: noch nicht fertig!!!!!!!!!!!!!
+						glListener.touchDown((int) ex, (int) ey, 0, 0);
+						return false;
+					}
+				});
+
 				// mapViewGl = new MapViewGL(this, inflater, viewGl, mapViewGlListener);
 				viewGL = new ViewGL(this, inflater, viewGl, glListener);
 
@@ -2194,9 +2211,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			e.printStackTrace();
 		}
 
-		// Initial TestView
-		testView = new TestView(0, 0, 400, 500);
-		glListener.add(testView);
+		// // Initial TestView
+		// testView = new TestView(0, 0, 400, 500);
+		// glListener.add(testView);
 	}
 
 	private void initalMicIcon()

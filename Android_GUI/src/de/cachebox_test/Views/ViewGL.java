@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 import de.cachebox_test.R;
@@ -118,6 +119,17 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu
 
 	}
 
+	@Override
+	public boolean onTouchEvent(MotionEvent event)
+	{
+		float ex = event.getX();
+		float ey = event.getY();
+		// Weitergabe der Toucheingabe an den Gl_Listener
+		// ToDo: noch nicht fertig!!!!!!!!!!!!!
+		glListener.touchDown((int) ex, (int) ey, 0, 0);
+
+		return true;
+	}
 	// public Layer GetCurrentLayer()
 	// {
 	// return glListener.CurrentLayer;

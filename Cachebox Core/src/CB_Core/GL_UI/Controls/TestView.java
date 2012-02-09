@@ -17,6 +17,9 @@ import com.badlogic.gdx.math.Vector2;
 public class TestView extends GL_View_Base
 {
 
+	int arrowX = 200;
+	int arrowY = 300;
+
 	// # Constructors
 	/**
 	 * Constructor für ein neues TestView mit Angabe der linken unteren Ecke und der Höhe und Breite
@@ -53,7 +56,7 @@ public class TestView extends GL_View_Base
 
 		Sprite arrow = SpriteCache.MapArrows.get(0);
 		arrow.setRotation(0);
-		arrow.setBounds(200 - UiSizes.GL.halfPosMarkerSize, 300 - UiSizes.GL.halfPosMarkerSize, UiSizes.GL.PosMarkerSize,
+		arrow.setBounds(arrowX - UiSizes.GL.halfPosMarkerSize, arrowY - UiSizes.GL.halfPosMarkerSize, UiSizes.GL.PosMarkerSize,
 				UiSizes.GL.PosMarkerSize);
 		arrow.setOrigin(UiSizes.GL.halfPosMarkerSize, UiSizes.GL.halfPosMarkerSize);
 		arrow.draw(batch);
@@ -86,6 +89,15 @@ public class TestView extends GL_View_Base
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public boolean onTouchDown(int x, int y, int pointer, int button)
+	{
+		// Pfeil auf Touch-Positon setzen zum Test
+		arrowX = x;
+		arrowY = y;
+		return true;
 	}
 
 }

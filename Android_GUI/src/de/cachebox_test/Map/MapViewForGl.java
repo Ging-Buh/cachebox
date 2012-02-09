@@ -2298,4 +2298,11 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		return false;
 	}
 
+	@Override
+	public boolean onTouchDown(int x, int y, int pointer, int button)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
