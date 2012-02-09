@@ -27,26 +27,42 @@ public class ZoomButtons extends GL_View_Base
 	private boolean fadeIn = false;
 	private float FadeValue = 1.0f;
 
+	// # Constructors
 	/**
-	 * Standard Constructor. </br> minzoom = 6 </br> maxzoom = 20 </br> zoom = 13; </br>
+	 * Constructor für ein neues TestView mit Angabe der linken unteren Ecke und der Höhe und Breite
+	 * 
+	 * @param X
+	 * @param Y
+	 * @param Width
+	 * @param Height
 	 */
-	public ZoomButtons()
+	public ZoomButtons(float X, float Y, float Width, float Height)
 	{
+		super(X, Y, Width, Height);
+		onRezised(this);
 	}
 
-	/**
-	 * Constructor, für die Übergabe von max,min und act Zoom Level
-	 * 
-	 * @param minzoom
-	 * @param maxzoom
-	 * @param zoom
-	 */
-	public ZoomButtons(int minzoom, int maxzoom, int zoom)
-	{
-		this.minzoom = minzoom;
-		this.maxzoom = maxzoom;
-		this.zoom = zoom;
-	}
+	//
+	// /**
+	// * Standard Constructor. </br> minzoom = 6 </br> maxzoom = 20 </br> zoom = 13; </br>
+	// */
+	// public ZoomButtons()
+	// {
+	// }
+	//
+	// /**
+	// * Constructor, für die Übergabe von max,min und act Zoom Level
+	// *
+	// * @param minzoom
+	// * @param maxzoom
+	// * @param zoom
+	// */
+	// public ZoomButtons(int minzoom, int maxzoom, int zoom)
+	// {
+	// this.minzoom = minzoom;
+	// this.maxzoom = maxzoom;
+	// this.zoom = zoom;
+	// }
 
 	@Override
 	public boolean hitTest(Vector2 pos)

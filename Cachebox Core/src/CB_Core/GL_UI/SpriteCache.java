@@ -38,6 +38,7 @@ public class SpriteCache
 	public static Sprite InfoBack = null;
 	public static ArrayList<Sprite> ToggleBtn = null;
 	public static ArrayList<Sprite> ZoomBtn = null;
+	public static Sprite ZoomValueBack = null;
 
 	/**
 	 * Load the Sprites from recorce
@@ -138,6 +139,8 @@ public class SpriteCache
 		ZoomBtn.add(atlas.createSprite("day_btn_zoom_up_pressed"));
 		ZoomBtn.add(atlas.createSprite("day_btn_zoom_up_disabled"));
 
+		ZoomValueBack = atlas.createSprite("zoom_back");
+
 	}
 
 	/**
@@ -153,6 +156,7 @@ public class SpriteCache
 		Bubble = null;
 		ToggleBtn = null;
 		ZoomBtn = null;
+		ZoomValueBack = null;
 	}
 
 }

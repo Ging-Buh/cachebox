@@ -44,8 +44,6 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	 */
 	public GL_Listener(int initalWidth, int initialHeight)
 	{
-		// mapView = new MapViewForGl(initalWidth, initialHeight);
-		// mChilds.add(mapView);
 
 	}
 
@@ -275,11 +273,12 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 
 		for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
 		{
+			batch.begin();
 			GL_View_Base view = iterator.next();
 			if (view.getVisibility() == GL_View_Base.VISIBLE) view.renderChilds(batch);
-		}
 
-		batch.end();
+			batch.end();
+		}
 
 		Gdx.gl.glFlush();
 		Gdx.gl.glFinish();
@@ -314,6 +313,12 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	public void InitializeMap()
 	{
 		// TODO Auto-generated method stub
+
+	}
+
+	public void add(GL_View_Base view)
+	{
+		mChilds.add(view);
 
 	}
 

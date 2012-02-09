@@ -33,6 +33,7 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.GL_UI.Controls.TestView;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
@@ -190,6 +191,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public static ViewGL viewGL = null; // ID 16;
 
 	private View viewGl = null;
+	private TestView testView;
 
 	private MapViewGlListener mapViewGlListener = null;
 	private GL_Listener glListener = null;
@@ -2191,6 +2193,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Logger.Error("main.initialViewGL()", "", e);
 			e.printStackTrace();
 		}
+
+		// Initial TestView
+		testView = new TestView(0, 0, 400, 500);
+		glListener.add(testView);
 	}
 
 	private void initalMicIcon()

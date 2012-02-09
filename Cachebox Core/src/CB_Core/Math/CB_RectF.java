@@ -36,7 +36,7 @@ public class CB_RectF
 	/**
 	 * Linke untere Ecke des Rechtecks
 	 */
-	private Vector2 Pos = new Vector2(0, 0);
+	protected Vector2 Pos = new Vector2(0, 0);
 
 	/**
 	 * rechte obere Ecke des Rechtecks

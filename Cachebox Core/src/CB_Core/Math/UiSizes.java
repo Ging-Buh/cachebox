@@ -500,7 +500,7 @@ public class UiSizes
 					.getHeight())));
 			InfoLine1.x = Compass.getCrossPos().x + margin;
 			TextBounds bounds = fontAB18.getBounds("52° 34,806N ");
-			InfoLine2.x = Info.getX() + Info.getWidth() - bounds.width - margin;
+			InfoLine2.x = Info.getX() + Info.getWidth() - bounds.width - (margin * 2);
 
 			Float T1 = Info.getHeight() / 4;
 

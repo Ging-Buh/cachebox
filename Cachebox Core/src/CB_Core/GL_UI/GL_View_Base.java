@@ -27,13 +27,28 @@ public abstract class GL_View_Base extends CB_RectF
 	/**
 	 * Enthält alle GL_Views innerhalb dieser Gl_View
 	 */
-	private MoveableList<GL_View_Base> childs;
+	private MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
 
 	protected boolean onTouchUp = false;
 	protected boolean onTouchDown = false;
 	protected Vector2 lastTouchPos;
 
 	private int mViewState = VISIBLE;
+
+	// # Constructors
+	/**
+	 * Constructor für ein neues GL_View_Base mit Angabe der linken unteren Ecke und der Höhe und Breite
+	 * 
+	 * @param X
+	 * @param Y
+	 * @param Width
+	 * @param Height
+	 */
+	public GL_View_Base(float X, float Y, float Width, float Height)
+	{
+		super(X, Y, Width, Height);
+
+	}
 
 	// # Method
 

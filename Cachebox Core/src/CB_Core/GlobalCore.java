@@ -102,7 +102,9 @@ public class GlobalCore
 		double frac = coord - deg;
 		double min = frac * 60;
 
-		String result = Math.abs(deg) + "\u00B0 " + String.format("%.3f", Math.abs(min));
+		String result = Math.abs(deg) + "\u00B0  " + String.format("%.3f", Math.abs(min));
+
+		result += " ";
 
 		if (coord < 0) result += negativeDirection;
 		else

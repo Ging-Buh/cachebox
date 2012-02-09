@@ -104,7 +104,7 @@ public class GL_ZoomScale
 		if (ValueRec != null)
 		{
 			Sprite valueBack;
-			valueBack = SpriteCache.MapOverlay.get(0);
+			valueBack = SpriteCache.ZoomValueBack;
 			valueBack.setBounds(ValueRec.getX(), ValueRec.getY(), ValueRec.getWidth(), ValueRec.getHeight());
 			valueBack.draw(batch, FadeValue);
 		}

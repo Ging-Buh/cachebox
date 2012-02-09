@@ -740,7 +740,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 				distance = position.Distance(GlobalCore.SelectedWaypoint().Pos);
 
 			String text = UnitFormatter.DistanceString(distance);
-			UiSizes.GL.fontAB18.draw(batch, text, UiSizes.GL.InfoLine1.x, UiSizes.GL.InfoLine1.y);
+			UiSizes.GL.fontAB22.draw(batch, text, UiSizes.GL.InfoLine1.x, UiSizes.GL.InfoLine1.y);
 			// canvas.drawText(text, leftString, bottom - 10, paint);
 
 			// Kompassnadel zeichnen

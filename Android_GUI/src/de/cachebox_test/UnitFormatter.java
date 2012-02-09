@@ -1,7 +1,5 @@
 package de.cachebox_test;
 
-import java.text.NumberFormat;
-
 import CB_Core.Config;
 
 public class UnitFormatter
@@ -29,11 +27,11 @@ public class UnitFormatter
 	public static String DistanceStringMetric(float distance)
 	{
 
-		if (distance <= 500) return String.format("%.0f", distance) + "m";
+		if (distance <= 500) return String.format("%.0f", distance) + " m";
 
-		if (distance < 10000) return String.format("%.2f", distance / 1000) + "km";
+		if (distance < 10000) return String.format("%.2f", distance / 1000) + " km";
 
-		return String.format("%.0f", distance / 1000) + "km";
+		return String.format("%.0f", distance / 1000) + " km";
 	}
 
 	// / <summary>

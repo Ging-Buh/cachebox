@@ -16,6 +16,12 @@ public class Sample_Control extends GL_View_Base
 
 	// must overrides
 
+	public Sample_Control(float X, float Y, float Width, float Height)
+	{
+		super(X, Y, Width, Height);
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public void render(SpriteBatch batch)
 	{
