@@ -609,7 +609,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		zoomBtn.Render(batch, UiSizes.GL.ZoomBtn);
 		zoomScale.Render(batch, UiSizes.GL.ZoomScale);
 
-		renderDebugInfo();
+		// renderDebugInfo();
 		batch.end();
 	}
 
@@ -674,15 +674,18 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		for (TileGL tile : tilesToDraw.values())
 		{
 			tile.createTexture();
-			// Faktor, mit der dieses MapTile vergrößert gezeichnet
-			// werden muß
-			long posFactor = getMapTilePosFactor(tile.Descriptor.Zoom);
+			if (tile.texture != null)
+			{
+				// Faktor, mit der dieses MapTile vergrößert gezeichnet
+				// werden muß
+				long posFactor = getMapTilePosFactor(tile.Descriptor.Zoom);
 
-			float xPos = tile.Descriptor.X * posFactor * 256;
-			float yPos = -(tile.Descriptor.Y + 1) * posFactor * 256;
-			float xSize = tile.texture.getWidth() * posFactor;
-			float ySize = tile.texture.getHeight() * posFactor;
-			batch.draw(tile.texture, xPos, yPos, xSize, ySize);
+				float xPos = tile.Descriptor.X * posFactor * 256;
+				float yPos = -(tile.Descriptor.Y + 1) * posFactor * 256;
+				float xSize = tile.texture.getWidth() * posFactor;
+				float ySize = tile.texture.getHeight() * posFactor;
+				batch.draw(tile.texture, xPos, yPos, xSize, ySize);
+			}
 		}
 		tilesToDraw.clear();
 

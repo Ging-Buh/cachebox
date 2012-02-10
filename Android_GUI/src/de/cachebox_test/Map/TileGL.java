@@ -42,7 +42,13 @@ public class TileGL implements Destroyable
 	public void createTexture()
 	{
 		if (texture != null) return;
-		texture = new Texture(new Pixmap(bytes, 0, bytes.length));
+		try
+		{
+			texture = new Texture(new Pixmap(bytes, 0, bytes.length));
+		}
+		catch (Exception ex)
+		{
+		}
 		bytes = null;
 	}
 
