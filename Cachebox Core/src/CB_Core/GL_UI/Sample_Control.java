@@ -66,12 +66,6 @@ public class Sample_Control extends GL_View_Base
 	}
 
 	@Override
-	public boolean touchMoved(int x, int y)
-	{
-		return false;
-	}
-
-	@Override
 	public boolean touchDragged(int x, int y, int pointer)
 	{
 		return false;
@@ -115,6 +109,34 @@ public class Sample_Control extends GL_View_Base
 
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onClick(int x, int y, int pointer, int button)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onLongClick(int x, int y, int pointer, int button)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onTouchDragged(int x, int y, int pointer)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
 		// TODO Auto-generated method stub
 		return false;

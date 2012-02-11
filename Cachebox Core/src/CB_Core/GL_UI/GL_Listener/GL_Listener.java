@@ -136,90 +136,77 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 		return false;
 	}
 
-	@Override
-	public boolean touchDown(int x, int y, int pointer, int button)
+	public boolean onClick(int x, int y, int pointer, int button)
+	{
+		boolean behandelt = false;
+
+		behandelt = child.click(x, y, pointer, button);
+
+		return behandelt;
+	}
+
+	public boolean onLongClick(int x, int y, int pointer, int button)
+	{
+		boolean behandelt = false;
+
+		behandelt = child.longClick(x, y, pointer, button);
+
+		return behandelt;
+	}
+
+	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
 		boolean behandelt = false;
 
 		behandelt = child.touchDown(x, y, pointer, button);
-		// alle Childs abfragen
-		// for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-		// {
-		// GL_View_Base view = iterator.next();
-		// if (view.touchDown(x, y, pointer, button))
-		// {
-		// // schon behandelt
-		// behandelt = true;
-		// break;
-		// }
-		// }
 
 		return behandelt;
+	}
+
+	public boolean onTouchDragged(int x, int y, int pointer)
+	{
+		boolean behandelt = false;
+
+		behandelt = child.touchDragged(x, y, pointer);
+
+		return behandelt;
+	}
+
+	public boolean onTouchUp(int x, int y, int pointer, int button)
+	{
+		boolean behandelt = false;
+
+		behandelt = child.touchUp(x, y, pointer, button);
+
+		return behandelt;
+	}
+
+	@Override
+	public boolean touchDown(int x, int y, int pointer, int button)
+	{
+		// Events vom Listener nicht behandeln, wir haben unsere eigenes Eventhandling
+		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int x, int y, int pointer)
 	{
-		boolean behandelt = false;
-
-		behandelt = child.touchDragged(x, y, pointer);
-		// alle Childs abfragen
-		// for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-		// {
-		// GL_View_Base view = iterator.next();
-		// if (view.touchDragged(x, y, pointer))
-		// {
-		// // schon behandelt
-		// behandelt = true;
-		// break;
-		// }
-		// }
-
-		return behandelt;
-
+		// Events vom Listener nicht behandeln, wir haben unsere eigenes Eventhandling
+		return false;
 	}
 
 	@Override
 	public boolean touchMoved(int x, int y)
 	{
-		boolean behandelt = false;
-
-		behandelt = child.touchMoved(x, y);
-		// alle Childs abfragen
-		// for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-		// {
-		// GL_View_Base view = iterator.next();
-		// if (view.touchMoved(x, y))
-		// {
-		// // schon behandelt
-		// behandelt = true;
-		// break;
-		// }
-		// }
-
-		return behandelt;
+		// Events vom Listener nicht behandeln, wir haben unsere eigenes Eventhandling
+		return false;
 	}
 
 	@Override
 	public boolean touchUp(int x, int y, int pointer, int button)
 	{
-		boolean behandelt = false;
-
-		behandelt = child.touchUp(x, y, pointer, button);
-		// alle Childs abfragen
-		// for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-		// {
-		// GL_View_Base view = iterator.next();
-		// if (view.touchUp(x, y, pointer, button))
-		// {
-		// // schon behandelt
-		// behandelt = true;
-		// break;
-		// }
-		// }
-
-		return behandelt;
-
+		// Events vom Listener nicht behandeln, wir haben unsere eigenes Eventhandling
+		return false;
 	}
 
 	@Override

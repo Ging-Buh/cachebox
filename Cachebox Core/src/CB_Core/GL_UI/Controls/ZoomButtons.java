@@ -333,4 +333,32 @@ public class ZoomButtons extends GL_View_Base
 		return false;
 	}
 
+	@Override
+	public boolean onClick(int x, int y, int pointer, int button)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onLongClick(int x, int y, int pointer, int button)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onTouchDragged(int x, int y, int pointer)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onTouchUp(int x, int y, int pointer, int button)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

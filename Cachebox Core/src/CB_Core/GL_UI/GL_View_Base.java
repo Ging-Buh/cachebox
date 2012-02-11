@@ -317,6 +317,22 @@ public abstract class GL_View_Base extends CB_RectF
 
 	}
 
+	public boolean click(int x, int y, int pointer, int button)
+	{
+		// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
+		// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
+		boolean behandelt = false;
+		return false;
+	}
+
+	public boolean longClick(int x, int y, int pointer, int button)
+	{
+		// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
+		// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
+		boolean behandelt = false;
+		return false;
+	}
+
 	public boolean touchDown(int x, int y, int pointer, int button)
 	{
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
@@ -344,10 +360,10 @@ public abstract class GL_View_Base extends CB_RectF
 		return behandelt;
 	}
 
-	public abstract boolean onTouchDown(int x, int y, int pointer, int button);
-
 	public boolean touchDragged(int x, int y, int pointer)
 	{
+		// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
+		// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
 		boolean behandelt = false;
 		// alle Childs abfragen
 		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
@@ -364,26 +380,10 @@ public abstract class GL_View_Base extends CB_RectF
 		return behandelt;
 	}
 
-	public boolean touchMoved(int x, int y)
-	{
-		boolean behandelt = false;
-		// alle Childs abfragen
-		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-		{
-			GL_View_Base view = iterator.next();
-			if (view.touchMoved(x, y))
-			{
-				behandelt = true;
-				break;
-			}
-
-		}
-
-		return behandelt;
-	}
-
 	public boolean touchUp(int x, int y, int pointer, int button)
 	{
+		// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
+		// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
 		boolean behandelt = false;
 		// alle Childs abfragen
 		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
@@ -399,5 +399,16 @@ public abstract class GL_View_Base extends CB_RectF
 
 		return behandelt;
 	}
+
+	// die untergeordneten Klassen müssen diese Event-Handler überschreiben!!!
+	public abstract boolean onClick(int x, int y, int pointer, int button);
+
+	public abstract boolean onLongClick(int x, int y, int pointer, int button);
+
+	public abstract boolean onTouchDown(int x, int y, int pointer, int button);
+
+	public abstract boolean onTouchDragged(int x, int y, int pointer);
+
+	public abstract boolean onTouchUp(int x, int y, int pointer, int button);
 
 }
