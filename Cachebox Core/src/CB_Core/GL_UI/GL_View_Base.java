@@ -2,9 +2,13 @@ package CB_Core.GL_UI;
 
 import java.util.Iterator;
 
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Types.MoveableList;
 
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
@@ -21,6 +25,8 @@ public abstract class GL_View_Base extends CB_RectF
 	 * This view is invisible. Use with {@link #setVisibility}.
 	 */
 	public static final int INVISIBLE = 0x00000002;
+
+	public static boolean debug = false;
 
 	// # private Member
 
@@ -102,16 +108,56 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	public void renderChilds(final SpriteBatch batch)
 	{
+
+		batch.begin();
+
+		// TODO setze hier die Matrix auf Pos.x/Pos.y
+
 		this.render(batch);
+
+		batch.end();
 
 		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 		{
+			// alle renderChilds() der in dieser GL_View_Base
+			// enthaltenen Childs auf rufen.
 			GL_View_Base view = iterator.next();
-			if (view.getVisibility() == VISIBLE) view.render(batch);
+
+			// hier nicht view.render(batch) aufrufen, da sonnst die in der
+			// view enthaldenen Childs nicht aufgerufen werden.
+			if (view.getVisibility() == VISIBLE) view.renderChilds(batch);
 		}
+
+		// Draw Debug REC
+		if (debug)
+		{
+
+			if (debugRec == null)
+			{
+				int w = getNextHighestPO2((int) width);
+				int h = getNextHighestPO2((int) height);
+				Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+				p.setColor(1f, 0f, 0f, 1f);
+				p.drawRectangle(1, 1, (int) width - 1, (int) height - 1);
+
+				Texture tex = new Texture(p, Pixmap.Format.RGBA8888, false);
+
+				debugRec = new Sprite(tex, (int) width, (int) height);
+				Logger.LogCat("Create Debug Rec " + width + "/" + height);
+			}
+
+			batch.begin();
+
+			debugRec.draw(batch);
+
+			batch.end();
+		}
+
 	}
 
-	public abstract void render(SpriteBatch batch);
+	private Sprite debugRec = null;
+
+	protected abstract void render(SpriteBatch batch);
 
 	@Override
 	public void resize(float width, float height)
@@ -411,4 +457,5 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public abstract boolean onTouchUp(int x, int y, int pointer, int button);
 
+	public abstract void dispose();
 }

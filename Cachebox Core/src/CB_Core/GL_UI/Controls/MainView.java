@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Controls;
 
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,9 +12,22 @@ public class MainView extends GL_View_Base
 	public MainView(float X, float Y, float Width, float Height)
 	{
 		super(X, Y, Width, Height);
+
+		Logger.LogCat("Construct MainView " + X + "/" + Y + "/" + "/" + Width + "/" + Height);
+
 		// Initial TestView
-		TestView testView = new TestView(0, 0, 400, 500);
+		TestView testView = new TestView(300, 200, 100, 100);
 		this.addChild(testView);
+
+		// Initial TestView
+		ZoomButtons btnZoom = new ZoomButtons(20, 20, 200, 75);
+		this.addChild(btnZoom);
+
+		// initial Image
+		Image image = new Image(200, 400, 64, 64);
+		image.setImage("data/cb_test");
+
+		this.addChild(image);
 	}
 
 	@Override
@@ -84,5 +98,12 @@ public class MainView extends GL_View_Base
 	{
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void dispose()
+	{
+		// TODO Auto-generated method stub
+
 	}
 }

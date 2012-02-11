@@ -2327,4 +2327,11 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		return false;
 	}
 
+	@Override
+	public void dispose()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

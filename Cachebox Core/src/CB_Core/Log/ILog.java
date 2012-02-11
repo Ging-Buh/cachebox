@@ -5,9 +5,11 @@ package CB_Core.Log;
  * 
  * @author Longri
  */
-public interface ILog 
+public interface ILog
 {
 	public void receiveLog(String Msg);
-	
+
 	public void receiveShortLog(String Msg);
+
+	public void receiveLogCat(String Msg);
 }

@@ -141,4 +141,11 @@ public class Sample_Control extends GL_View_Base
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public void dispose()
+	{
+		// TODO Auto-generated method stub
+
+	}
 }

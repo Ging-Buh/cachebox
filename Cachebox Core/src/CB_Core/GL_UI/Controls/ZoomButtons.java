@@ -361,4 +361,11 @@ public class ZoomButtons extends GL_View_Base
 		return false;
 	}
 
+	@Override
+	public void dispose()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

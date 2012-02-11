@@ -171,4 +171,14 @@ public class Logger
 		Error(name, msg, ex);
 	}
 
+	public static void LogCat(String Msg)
+	{
+		for (ILog event : list)
+		{
+			event.receiveLogCat(Msg);
+
+		}
+
+	}
+
 }

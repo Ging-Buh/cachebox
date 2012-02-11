@@ -46,6 +46,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	public GL_Listener(int initalWidth, int initialHeight)
 	{
 		child = new MainView(0, 0, initalWidth, initialHeight);
+		GL_View_Base.debug = true;
 	}
 
 	@Override
@@ -264,17 +265,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 
-		// for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-		// {
-		// batch.begin();
-		// GL_View_Base view = iterator.next();
-		// if (view.getVisibility() == GL_View_Base.VISIBLE) view.renderChilds(batch);
-		//
-		// batch.end();
-		// }
-		batch.begin();
 		child.renderChilds(batch);
-		batch.end();
 
 		Gdx.gl.glFlush();
 		Gdx.gl.glFinish();

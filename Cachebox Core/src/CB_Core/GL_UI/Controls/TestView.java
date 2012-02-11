@@ -33,18 +33,11 @@ public class TestView extends GL_View_Base
 	{
 		super(X, Y, Width, Height);
 
-		// Add ZoomButtons zu dieser View
-		// um zu testen, ob Child Views auch gerendert werden.
-		btnZoom = new ZoomButtons(20, 20, 200, 75);
-		this.addChild(btnZoom);
 	}
-
-	private ZoomButtons btnZoom;
 
 	@Override
 	public void render(SpriteBatch batch)
 	{
-
 		if (SpriteCache.MapArrows == null)
 		{
 
@@ -56,9 +49,8 @@ public class TestView extends GL_View_Base
 
 		Sprite arrow = SpriteCache.MapArrows.get(0);
 		arrow.setRotation(0);
-		arrow.setBounds(arrowX - UiSizes.GL.halfPosMarkerSize, arrowY - UiSizes.GL.halfPosMarkerSize, UiSizes.GL.PosMarkerSize,
-				UiSizes.GL.PosMarkerSize);
-		arrow.setOrigin(UiSizes.GL.halfPosMarkerSize, UiSizes.GL.halfPosMarkerSize);
+		arrow.setBounds(0, 0, width, height);
+		arrow.setOrigin(centerPos.x, centerPos.y);
 		arrow.draw(batch);
 
 	}
@@ -126,6 +118,13 @@ public class TestView extends GL_View_Base
 	{
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void dispose()
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }

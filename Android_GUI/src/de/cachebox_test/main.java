@@ -394,7 +394,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		Size initSize = new Size(Config.settings.MapIniWidth.getValue(), Config.settings.MapIniHeight.getValue());
 
 		mapViewGlListener = new MapViewGlListener(initSize.width, initSize.height);
-		glListener = new GL_Listener(initSize.width, initSize.height);
+
+		// Initial in Full Screen
+		glListener = new GL_Listener(UiSizes.getWindowWidth(), UiSizes.getWindowHeight());
+
 		// mapViewGlListener = new GL_Listner(initSize.width, initSize.height);
 
 		int Time = Config.settings.ScreenLock.getValue();
@@ -3179,6 +3182,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		t.start();
 
+	}
+
+	/**
+	 * Empfängt die gelogten Meldungen in kurz Form und schreibt sie ins Debung Panel, wenn dieses sichtbar ist!
+	 */
+	@Override
+	public void receiveLogCat(String Msg)
+	{
+		Log.d("CACHEBOX", Msg);
 	}
 
 	private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver()

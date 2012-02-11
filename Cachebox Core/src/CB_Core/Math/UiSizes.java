@@ -75,12 +75,12 @@ public class UiSizes
 		windowHeight = ini.Window.height;// d.getHeight();
 
 		// if width>height switch the values (landscape start bug)
-		if (windowWidth > windowHeight)
-		{
-			int temp = windowWidth;
-			windowWidth = windowHeight;
-			windowHeight = temp;
-		}
+		// if (windowWidth > windowHeight)
+		// {
+		// int temp = windowWidth;
+		// windowWidth = windowHeight;
+		// windowHeight = temp;
+		// }
 
 		scale = ini.Density;// res.getDisplayMetrics().density;
 

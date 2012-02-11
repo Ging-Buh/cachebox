@@ -41,7 +41,12 @@ public class CB_RectF
 	/**
 	 * rechte obere Ecke des Rechtecks
 	 */
-	private Vector2 crossPos = new Vector2(0, 0);
+	protected Vector2 crossPos = new Vector2(0, 0);
+
+	/**
+	 * die Center Position des Rechtecks
+	 */
+	protected Vector2 centerPos = new Vector2(0, 0);
 
 	protected float width;
 	protected float height;
@@ -175,6 +180,8 @@ public class CB_RectF
 	{
 		this.crossPos.x = this.Pos.x + this.width;
 		this.crossPos.y = this.Pos.y + this.height;
+		this.centerPos.x = this.Pos.x + (this.width / 2);
+		this.centerPos.y = this.Pos.y + (this.height / 2);
 	}
 
 	private boolean contains(Vector2 ret)
