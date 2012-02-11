@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class GL_View_Base extends CB_RectF
@@ -106,7 +107,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 * 
 	 * @param batch
 	 */
-	public void renderChilds(final SpriteBatch batch)
+	public void renderChilds(final SpriteBatch batch, Matrix4 prjMatrix)
 	{
 
 		batch.begin();
@@ -125,7 +126,14 @@ public abstract class GL_View_Base extends CB_RectF
 
 			// hier nicht view.render(batch) aufrufen, da sonnst die in der
 			// view enthaldenen Childs nicht aufgerufen werden.
-			if (view.getVisibility() == VISIBLE) view.renderChilds(batch);
+			if (view.getVisibility() == VISIBLE)
+			{
+				Matrix4 tmpMatrix = prjMatrix.cpy();
+				tmpMatrix.translate(view.Pos.x, view.Pos.y, 0);
+				batch.setProjectionMatrix(tmpMatrix);
+				view.renderChilds(batch, tmpMatrix);
+				batch.setProjectionMatrix(prjMatrix);
+			}
 		}
 
 		// Draw Debug REC
