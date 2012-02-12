@@ -16,7 +16,7 @@ public class MainView extends GL_View_Base
 		Logger.LogCat("Construct MainView " + X + "/" + Y + "/" + "/" + Width + "/" + Height);
 
 		// Initial TestView
-		TestView testView = new TestView(300, 200, 100, 100);
+		TestView testView = new TestView(100, 200, 200, 200);
 		this.addChild(testView);
 
 		// Initial TestView
@@ -24,8 +24,8 @@ public class MainView extends GL_View_Base
 		this.addChild(btnZoom);
 
 		// initial Image
-		Image image = new Image(200, 400, 64, 64);
-		image.setImage("data/cb_test");
+		Image image = new Image(200, 400, 128, 128);
+		image.setImage("data/cb_test.png");
 
 		this.addChild(image);
 	}

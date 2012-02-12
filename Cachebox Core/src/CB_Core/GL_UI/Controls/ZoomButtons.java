@@ -21,7 +21,7 @@ public class ZoomButtons extends GL_View_Base
 	private CB_RectF BtnDrawRec;
 
 	private Date timeLastAction = new Date();
-	private final int timeToFadeOut = 7000; // 7Sec
+	private final int timeToFadeOut = 23000; // 7Sec
 	private final int fadeStep = 50; // 100 mSec
 	private boolean fadeOut = false;
 	private boolean fadeIn = false;
@@ -40,6 +40,7 @@ public class ZoomButtons extends GL_View_Base
 	{
 		super(X, Y, Width, Height);
 		onRezised(this);
+		resetFadeOut();
 	}
 
 	//

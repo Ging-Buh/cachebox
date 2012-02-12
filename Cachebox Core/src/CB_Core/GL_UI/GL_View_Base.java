@@ -6,6 +6,8 @@ import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Types.MoveableList;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -110,13 +112,14 @@ public abstract class GL_View_Base extends CB_RectF
 	public void renderChilds(final SpriteBatch batch, Matrix4 prjMatrix)
 	{
 
+		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
+		Gdx.gl.glScissor((int) Pos.x, (int) Pos.y, (int) width, (int) height);
+
 		batch.begin();
-
-		// TODO setze hier die Matrix auf Pos.x/Pos.y
-
 		this.render(batch);
-
 		batch.end();
+
+		Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 
 		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 		{

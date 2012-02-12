@@ -38,6 +38,7 @@ public class TestView extends GL_View_Base
 	@Override
 	public void render(SpriteBatch batch)
 	{
+
 		if (SpriteCache.MapArrows == null)
 		{
 
@@ -49,7 +50,7 @@ public class TestView extends GL_View_Base
 
 		Sprite arrow = SpriteCache.MapArrows.get(0);
 		arrow.setRotation(0);
-		arrow.setBounds(0, 0, width, height);
+		arrow.setBounds(-(width / 2), 0, width, height);
 		arrow.setOrigin(centerPos.x, centerPos.y);
 		arrow.draw(batch);
 
