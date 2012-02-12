@@ -2194,7 +2194,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				viewGl.setOnTouchListener(new OnTouchListener()
 				{
-
 					@Override
 					public boolean onTouch(View v, MotionEvent event)
 					{
@@ -2242,7 +2241,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 																				// dürfte nicht passieren!!!
 							first = touchDownPos.get(id);
 							akt = new Point((int) event.getX(p), (int) event.getY(p));
-							if (distance(akt, first) > 15)
+							if (distance(akt, first) < 15)
 							{
 								// Finger wurde losgelassen ohne viel Bewegung -> onClick erzeugen
 								glListener.onClick(akt.x, akt.y, id, 0);
@@ -2251,7 +2250,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							glListener.onTouchUp((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
 							break;
 						}
-						return false;
+						return true;
 					}
 				});
 

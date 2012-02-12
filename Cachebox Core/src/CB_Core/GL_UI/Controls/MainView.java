@@ -49,7 +49,6 @@ public class MainView extends GL_View_Base
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
-		image.setPos(new Vector2(x - image.getWidth() / 2, y - image.getHeight() / 2));
 		// hier erstmal nichts machen
 		return true;
 	}
@@ -57,7 +56,7 @@ public class MainView extends GL_View_Base
 	@Override
 	public boolean onClick(int x, int y, int pointer, int button)
 	{
-		// TODO Auto-generated method stub
+		image.setPos(new Vector2(x - image.getWidth() / 2, y - image.getHeight() / 2));
 		return true;
 	}
 
