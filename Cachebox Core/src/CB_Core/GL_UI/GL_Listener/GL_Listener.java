@@ -143,7 +143,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	{
 		boolean behandelt = false;
 
-		behandelt = child.click(x, y, pointer, button);
+		behandelt = child.click(x, (int) child.getHeight() - y, pointer, button);
 
 		return behandelt;
 	}
@@ -152,7 +152,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	{
 		boolean behandelt = false;
 
-		behandelt = child.longClick(x, y, pointer, button);
+		behandelt = child.longClick(x, (int) child.getHeight() - y, pointer, button);
 
 		return behandelt;
 	}
@@ -161,7 +161,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	{
 		boolean behandelt = false;
 
-		behandelt = child.touchDown(x, y, pointer, button);
+		behandelt = child.touchDown(x, (int) child.getHeight() - y, pointer, button);
 
 		return behandelt;
 	}
@@ -170,7 +170,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	{
 		boolean behandelt = false;
 
-		behandelt = child.touchDragged(x, y, pointer);
+		behandelt = child.touchDragged(x, (int) child.getHeight() - y, pointer);
 
 		return behandelt;
 	}
@@ -179,7 +179,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	{
 		boolean behandelt = false;
 
-		behandelt = child.touchUp(x, y, pointer, button);
+		behandelt = child.touchUp(x, (int) child.getHeight() - y, pointer, button);
 
 		return behandelt;
 	}
@@ -215,6 +215,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	@Override
 	public void resize(int width, int height)
 	{
+		child.setSize(width, height);
 		camera = new OrthographicCamera(width, height);
 		prjMatrix = new Matrix4().setToOrtho2D(0, 0, width, height);
 	}

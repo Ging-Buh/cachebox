@@ -13,8 +13,10 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.SortedMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.TreeMap;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
@@ -61,6 +63,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -2171,6 +2174,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 	}
 
+	// Zwischenspeicher für die touchDown Positionen der einzelnen Finger
+	private SortedMap<Integer, Point> touchDownPos = new TreeMap<Integer, Point>();
+
+	// Abstand zweier Punkte
+	private int distance(Point p1, Point p2)
+	{
+		return (int) Math.round(Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)));
+	}
+
 	private void initialViewGL()
 	{
 		try
@@ -2186,11 +2198,59 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					@Override
 					public boolean onTouch(View v, MotionEvent event)
 					{
-						float ex = event.getX();
-						float ey = event.getY();
 						// Weitergabe der Toucheingabe an den Gl_Listener
 						// ToDo: noch nicht fertig!!!!!!!!!!!!!
-						glListener.touchDown((int) ex, (int) ey, 0, 0);
+						int p = event.getActionIndex();
+						switch (event.getActionMasked())
+						{
+						case MotionEvent.ACTION_POINTER_DOWN:
+						case MotionEvent.ACTION_DOWN:
+							glListener.onTouchDown((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
+							// down Position merken
+							touchDownPos.put(event.getPointerId(p), new Point((int) event.getX(p), (int) event.getY(p)));
+							break;
+						case MotionEvent.ACTION_MOVE:
+							int id = event.getPointerId(p);
+							if (!touchDownPos.containsKey(id)) return false; // für diesen Pointer ist kein touchDownPos gespeichert ->
+																				// dürfte nicht passieren!!!
+							Point first = touchDownPos.get(id);
+							Point akt = new Point((int) event.getX(p), (int) event.getY(p));
+							if (distance(akt, first) > 15)
+							{
+								// onTouchMove Events erst generieren wenn die Bewegung mehr als 15 Pixel weit ist
+								final int historySize = event.getHistorySize();
+								final int pointerCount = event.getPointerCount();
+								for (int h = 0; h < historySize; h++)
+								{
+									for (int p1 = 0; p1 < pointerCount; p1++)
+									{
+										glListener.onTouchDragged((int) event.getHistoricalX(p1, h), (int) event.getHistoricalY(p1, h),
+												event.getPointerId(p1));
+									}
+								}
+								for (int p1 = 0; p1 < event.getPointerCount(); p1++)
+								{
+
+									glListener.onTouchDragged((int) event.getX(p1), (int) event.getY(p1), event.getPointerId(p1));
+								}
+							}
+							break;
+						case MotionEvent.ACTION_POINTER_UP:
+						case MotionEvent.ACTION_UP:
+							id = event.getPointerId(p);
+							if (!touchDownPos.containsKey(id)) return false; // für diesen Pointer ist kein touchDownPos gespeichert ->
+																				// dürfte nicht passieren!!!
+							first = touchDownPos.get(id);
+							akt = new Point((int) event.getX(p), (int) event.getY(p));
+							if (distance(akt, first) > 15)
+							{
+								// Finger wurde losgelassen ohne viel Bewegung -> onClick erzeugen
+								glListener.onClick(akt.x, akt.y, id, 0);
+							}
+							// onTouchUp immer auslösen
+							glListener.onTouchUp((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
+							break;
+						}
 						return false;
 					}
 				});

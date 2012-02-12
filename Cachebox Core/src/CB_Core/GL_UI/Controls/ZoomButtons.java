@@ -330,14 +330,13 @@ public class ZoomButtons extends GL_View_Base
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		hitTest(new Vector2(x, y));
+		return true;
 	}
 
 	@Override
 	public boolean onClick(int x, int y, int pointer, int button)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 

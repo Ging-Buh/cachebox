@@ -9,6 +9,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class MainView extends GL_View_Base
 {
+	private Image image;
+
 	public MainView(float X, float Y, float Width, float Height)
 	{
 		super(X, Y, Width, Height);
@@ -24,7 +26,7 @@ public class MainView extends GL_View_Base
 		this.addChild(btnZoom);
 
 		// initial Image
-		Image image = new Image(200, 400, 128, 128);
+		image = new Image(200, 400, 128, 128);
 		image.setImage("data/cb_test.png");
 
 		this.addChild(image);
@@ -68,6 +70,7 @@ public class MainView extends GL_View_Base
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
+		image.setPos(new Vector2(x - image.getWidth() / 2, y - image.getHeight() / 2));
 		// hier erstmal nichts machen
 		return true;
 	}
@@ -76,7 +79,7 @@ public class MainView extends GL_View_Base
 	public boolean onClick(int x, int y, int pointer, int button)
 	{
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
