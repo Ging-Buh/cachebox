@@ -247,6 +247,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private ImageButton buttonTools;
 	private ImageButton buttonMisc;
 	private FrameLayout frame;
+	private FrameLayout tabFrame;
 	private LinearLayout TopLayout;
 	// private LinearLayout frameCacheName;
 	public downSlider InfoDownSlider;
@@ -495,6 +496,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// Zeige About View als erstes!
 			showView(11);
 
+			// und Map wenn Tablet
+			if (GlobalCore.isTab)
+			{
+				showView(2);
+			}
+
 			// chk if NightMode saved
 			if (N)
 			{
@@ -567,8 +574,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 		downSlider.isInitial = false;
-		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes
-				.getQuickButtonListHeight() : 0;
+		int sollHeight = 0;
+		if (GlobalCore.isTab)
+		{
+			sollHeight = UiSizes.getQuickButtonListHeight();
+		}
+		else
+		{
+			sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes
+					.getQuickButtonListHeight() : 0;
+		}
 		setQuickButtonHeight(sollHeight);
 
 		if (isFirstStart)
@@ -1671,6 +1686,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void showView(ViewOptionsMenu view, int Id)
 	{
+
+		if (GlobalCore.isTab)
+		{
+			if (Id == 2 || Id == 16 || Id == 4)
+			{ // MapViewGL || ViewGL || DescriptionView
+				showTabletView(view, Id);
+				return;
+			}
+		}
+
 		if (aktView != null)
 		{
 			aktView.OnHide();
@@ -1785,6 +1810,44 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		InfoDownSlider.invalidate();
 		((View) aktView).forceLayout();
 
+	}
+
+	ViewOptionsMenu tabView;
+	int aktTabViewId = -1;
+
+	private void showTabletView(ViewOptionsMenu view, int Id)
+	{
+
+		if (tabView != null)
+		{
+			tabView.OnHide();
+
+			if (aktView.equals(mapViewGl))
+			{
+				this.onPause();
+			}
+			else if (aktView.equals(viewGL))
+			{
+				this.onPause();
+			}
+
+		}
+
+		System.gc();
+
+		tabView = view;
+		tabFrame.removeAllViews();
+		ViewParent parent = ((View) tabView).getParent();
+		if (parent != null)
+		{
+			// aktView ist noch gebunden, also lösen
+			((FrameLayout) parent).removeAllViews();
+		}
+		tabFrame.addView((View) tabView);
+		tabView.OnShow();
+		aktTabViewId = Id;
+		InfoDownSlider.invalidate();
+		((View) tabView).forceLayout();
 	}
 
 	/*
@@ -2022,6 +2085,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		TopLayout = (LinearLayout) this.findViewById(R.id.layoutTop);
 		frame = (FrameLayout) this.findViewById(R.id.layoutContent);
+		tabFrame = (FrameLayout) this.findViewById(R.id.TabletlayoutContent);
 		InfoDownSlider = (downSlider) this.findViewById(R.id.downSlider);
 
 		debugInfoPanel = (DebugInfoPanel) this.findViewById(R.id.debugInfo);
@@ -3293,6 +3357,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public void setQuickButtonHeight(int value)
 	{
+
+		if (GlobalCore.isTab)
+		{ // im Tab Layout wird die QuickButton list nicht verkleinert!
+			value = UiSizes.getQuickButtonListHeight();
+		}
+
 		horizontalListViewHeigt = value;
 		Thread t = new Thread()
 		{

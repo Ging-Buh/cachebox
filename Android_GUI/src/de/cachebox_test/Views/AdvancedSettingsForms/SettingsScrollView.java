@@ -117,7 +117,7 @@ public class SettingsScrollView extends Activity
 		setContentView(R.layout.setting_scroll_layout);
 		context = this;
 		Me = this;
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		if (!GlobalCore.isTab) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		aktIntent = getIntent();
 		this.getWindow().setBackgroundDrawableResource(Config.settings.nightMode.getValue() ? color.darker_gray : color.background_dark);
 
@@ -274,7 +274,7 @@ public class SettingsScrollView extends Activity
 						// dies auch zu lässt.
 						if (((settingItem.getModus() == SettingModus.Normal)
 								|| (settingItem.getModus() == SettingModus.Expert && Config.settings.SettingsShowExpert.getValue()) || Config.settings.SettingsShowAll
-								.getValue()) && (settingItem.getModus() != SettingModus.Never))
+									.getValue()) && (settingItem.getModus() != SettingModus.Never))
 						{
 
 							if (settingItem.getName().equals("GcJoker"))

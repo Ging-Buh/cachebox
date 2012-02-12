@@ -17,6 +17,7 @@
 package CB_Core.Math;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -89,14 +90,27 @@ public class UiSizes
 		// Button = new Size(96,88);
 		// QuickButtonList = new Size(460,90);
 
-		QuickButton = new Size((int) ((320 * scale) / 5), (int) (((320 * scale) / 5) - 5.3333f * scale));
+		int QuickButtonRef;
+		int RefWidth;
+		if (GlobalCore.isTab)
+		{
+			QuickButtonRef = 350;
+			RefWidth = 340;
+		}
+		else
+		{
+			QuickButtonRef = 320;
+			RefWidth = windowWidth;
+		}
+
+		QuickButton = new Size((int) ((QuickButtonRef * scale) / 5), (int) (((QuickButtonRef * scale) / 5) - 5.3333f * scale));
 
 		// Button = new Size(res.getDimensionPixelSize(R.dimen.BtnSize),
 		// (int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * scale)));
 
 		Button = ini.ButtonSize.Copy();
 
-		QuickButtonList = new Size((int) (320 * scale - (13.3333f * scale)), (int) (((320 * scale) / 5) - 4 * scale));
+		QuickButtonList = new Size((int) (QuickButtonRef * scale - (13.3333f * scale)), (int) (((QuickButtonRef * scale) / 5) - 4 * scale));
 
 		scaledRefSize_normal = (int) ((calcBase / (ini.RefSize)) * scale);
 		scaledFontSize_normal = (int) ((calcBase / (ini.TextSize_Normal)) * scale);
@@ -117,7 +131,7 @@ public class UiSizes
 		tabWidth = (int) (scaledFontSize_normal * 0.6);
 		halfCornerSize = (int) CornerSize / 2;
 
-		CacheListItemSize = new Size(windowWidth, (int) (scaledRefSize_normal * 8.6));
+		CacheListItemSize = new Size(RefWidth, (int) (scaledRefSize_normal * 8.6));
 		CacheListDrawRec = CacheListItemSize.getBounds(5, 2, -5, -2);
 		StrengthHeightMultipler = (int) (calcBase / 600);
 		IconContextMenuHeight = (int) (calcBase / 11.1);

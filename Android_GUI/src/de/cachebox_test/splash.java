@@ -93,6 +93,18 @@ public class splash extends Activity
 
 		GlobalCore.displayDensity = this.getResources().getDisplayMetrics().density;
 
+		// chek if tablet
+		TextView testView = (TextView) findViewById(R.id.splash_textViewTab);
+		if (testView != null)
+		{
+			/*
+			 * R.id.splash_textViewTab ist nur im splash Layout von layout-sw400dp zu finden. Ist (TestView != null) dann handelt es sich um
+			 * ein Tablet!
+			 */
+
+			GlobalCore.isTab = true;
+		}
+
 		// get parameters
 		final Bundle extras = getIntent().getExtras();
 		final Uri uri = getIntent().getData();

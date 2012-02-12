@@ -22,6 +22,11 @@ public class GlobalCore
 	public static final int LatestDatabaseSettingsChange = 1002;
 	public static double displayDensity = 1;
 
+	/**
+	 * Wird im Splash gesetzt und ist True, wenn es sich um ein Tablet handelt!
+	 */
+	public static boolean isTab = false;
+
 	public static LangStrings Translations = new LangStrings();
 
 	private static Cache selectedCache = null;

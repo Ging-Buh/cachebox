@@ -30,6 +30,8 @@ package de.cachebox_test.Custom_Controls.QuickButtonList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import CB_Core.GlobalCore;
+import CB_Core.Math.UiSizes;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Rect;
@@ -434,7 +436,7 @@ public class HorizontalListView extends AdapterView<ListAdapter>
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
 	{
 		this.width = measure(widthMeasureSpec);
-		this.height = downSlider.getAktQuickButtonHeight();
+		this.height = GlobalCore.isTab ? UiSizes.getQuickButtonListHeight() : downSlider.getAktQuickButtonHeight();
 		setMeasuredDimension(this.width, this.height);
 	}
 
