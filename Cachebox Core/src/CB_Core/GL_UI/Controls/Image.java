@@ -8,7 +8,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Ein Control, welches ein Bild aus einem Pfad Darstellt.
@@ -44,27 +43,6 @@ public class Image extends GL_View_Base
 
 	@Override
 	public void onRezised(CB_RectF rec)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void onClicked(Vector2 pos)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean onTouchDown(Vector2 pos)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void onTouchRelease()
 	{
 		// TODO Auto-generated method stub
 

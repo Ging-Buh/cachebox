@@ -47,27 +47,6 @@ public class MainView extends GL_View_Base
 	}
 
 	@Override
-	protected void onClicked(Vector2 pos)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean onTouchDown(Vector2 pos)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void onTouchRelease()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
 		image.setPos(new Vector2(x - image.getWidth() / 2, y - image.getHeight() / 2));

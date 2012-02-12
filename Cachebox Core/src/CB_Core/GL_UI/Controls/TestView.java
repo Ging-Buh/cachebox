@@ -7,7 +7,6 @@ import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Eine Test GLView , die nur ein Image anzeigen soll. Im Einfachsten Fall soll der Richtungspfeil in der Mitte des Schirms plaziert werden.
@@ -60,27 +59,6 @@ public class TestView extends GL_View_Base
 	public void onRezised(CB_RectF rec)
 	{
 		UiSizes.GL.initial(width, height);
-
-	}
-
-	@Override
-	protected void onClicked(Vector2 pos)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean onTouchDown(Vector2 pos)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void onTouchRelease()
-	{
-		// TODO Auto-generated method stub
 
 	}
 

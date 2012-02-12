@@ -1692,29 +1692,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 	//
 	// ###############################################################################################################
 
-	@Override
-	protected void onClicked(Vector2 pos)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean onTouchDown(Vector2 pos)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void onTouchRelease()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean pan(int x, int y, int deltaX, int deltaY)
+	public boolean panxxx(int x, int y, int deltaX, int deltaY)
 	{
 		// Ohne verschiebung brauch auch keine neue Pos berechnet werden!
 		if (deltaX == 0 && deltaY == 0) return false;
@@ -1733,8 +1711,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		return false;
 	}
 
-	@Override
-	public boolean zoom(float originalDistance, float currentDistance)
+	public boolean zoomxxx(float originalDistance, float currentDistance)
 	{
 
 		boolean positive = true;
@@ -1785,8 +1762,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		zoomBtn.TouchRelease();
 	}
 
-	@Override
-	public boolean fling(float velocityX, float velocityY)
+	public boolean flingxxx(float velocityX, float velocityY)
 	{
 		if (btnTrackPos.getState() > 1) return false;
 
@@ -1800,8 +1776,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		return false;
 	}
 
-	@Override
-	public boolean longPress(int x, int y)
+	public boolean longPressxxx(int x, int y)
 	{
 
 		TouchUp();
@@ -1817,8 +1792,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		return false;
 	}
 
-	@Override
-	public boolean tap(int x, int y, int count)
+	public boolean tapxxx(int x, int y, int count)
 	{
 
 		double minDist = Double.MAX_VALUE;
@@ -1957,8 +1931,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		return false;
 	}
 
-	@Override
-	public boolean touchDown(int x, int y, int pointer)
+	public boolean touchDownxx(int x, int y, int pointer)
 	{
 		flinging = false;
 		initialScale = GL_Listener.camera.zoom;
@@ -2006,8 +1979,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		}
 	}
 
-	@Override
-	public boolean touchDown(int x, int y, int pointer, int button)
+	public boolean touchDownxxx(int x, int y, int pointer, int button)
 	{
 		// debugString = "touchDown " + inputState.toString();
 		if (inputState == InputState.Idle)
@@ -2025,8 +1997,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		return false;
 	}
 
-	@Override
-	public boolean touchDragged(int x, int y, int pointer)
+	public boolean touchDraggedxxx(int x, int y, int pointer)
 	{
 		// debugString = "touchDragged " + inputState.toString();
 		if (inputState == InputState.IdleDown)
@@ -2123,8 +2094,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		return false;
 	}
 
-	@Override
-	public boolean touchUp(int x, int y, int pointer, int button)
+	public boolean touchUpxxx(int x, int y, int pointer, int button)
 	{
 		// debugString = "touchUp " + inputState.toString();
 		if (inputState == InputState.IdleDown)

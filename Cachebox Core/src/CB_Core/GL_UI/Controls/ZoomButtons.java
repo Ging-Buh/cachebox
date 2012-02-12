@@ -65,7 +65,6 @@ public class ZoomButtons extends GL_View_Base
 	// this.zoom = zoom;
 	// }
 
-	@Override
 	public boolean hitTest(Vector2 pos)
 	{
 		if (zoom != maxzoom)
@@ -96,7 +95,6 @@ public class ZoomButtons extends GL_View_Base
 		return false;
 	}
 
-	@Override
 	public boolean touchDownTest(Vector2 pos)
 	{
 		if (HitRecUp != null)
@@ -303,27 +301,6 @@ public class ZoomButtons extends GL_View_Base
 		HitRecUp.setWidth(rec.getWidth() / 2);
 		HitRecDown.setWidth(rec.getWidth() / 2);
 		HitRecUp.setPos(new Vector2(rec.getX() + HitRecDown.getWidth(), rec.getY()));
-
-	}
-
-	@Override
-	protected void onClicked(Vector2 pos)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean onTouchDown(Vector2 pos)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void onTouchRelease()
-	{
-		// TODO Auto-generated method stub
 
 	}
 

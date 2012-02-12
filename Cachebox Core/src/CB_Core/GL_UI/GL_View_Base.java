@@ -178,203 +178,12 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public abstract void onRezised(CB_RectF rec);
 
-	// # abstracte Methoden zur Übergabe von Eingaben
-	protected boolean hitTest(Vector2 pos)
-	{
-		if (this.contains(pos.x, pos.y))
-		{
-			// alle Childs abfragen
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-			{
-				GL_View_Base view = iterator.next();
-				view.hitTest(pos);
-			}
-
-			onClicked(pos);
-			return true;
-		}
-		return false;
-	}
-
-	protected abstract void onClicked(Vector2 pos);
-
-	protected boolean touchDownTest(Vector2 pos)
-	{
-		if (this.contains(pos.x, pos.y))
-		{
-
-			lastTouchPos = pos;
-
-			// alle Childs abfragen
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-			{
-				GL_View_Base view = iterator.next();
-				view.touchDownTest(pos);
-			}
-
-			onTouchDown(pos);
-			return true;
-		}
-		return false;
-	}
-
-	public abstract boolean onTouchDown(Vector2 pos);
-
-	protected void TouchRelease()
-	{
-		// die Abfrage schleife brauch nur laufen, wenn
-		// der letzte onTouchDown auch dieses View betraf.
-		if (this.contains(lastTouchPos.x, lastTouchPos.y))
-		{
-			// alle Childs abfragen
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-			{
-				GL_View_Base view = iterator.next();
-				view.TouchRelease();
-			}
-
-			onTouchUp = false;
-			onTouchDown = false;
-
-			onTouchRelease();
-		}
-	}
-
-	public abstract void onTouchRelease();
-
-	public boolean pan(int x, int y, int deltaX, int deltaY)
-	{
-
-		boolean behandelt = false;
-
-		// alle Childs abfragen
-		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-		{
-			GL_View_Base view = iterator.next();
-			if (view.pan(x, y, deltaX, deltaY))
-			{
-				// schon behandelt
-				behandelt = true;
-				break;
-			}
-		}
-
-		onTouchUp = false;
-		onTouchDown = false;
-		return behandelt;
-	}
-
-	public boolean zoom(float originalDistance, float currentDistance)
-	{
-		boolean behandelt = false;
-
-		// alle Childs abfragen
-		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-		{
-			GL_View_Base view = iterator.next();
-			if (view.zoom(originalDistance, currentDistance))
-			{
-				// schon behandelt
-				behandelt = true;
-				break;
-			}
-		}
-
-		onTouchUp = false;
-		onTouchDown = false;
-		return behandelt;
-	}
-
-	public boolean fling(float velocityX, float velocityY)
-	{
-		boolean behandelt = false;
-
-		// alle Childs abfragen
-		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-		{
-			GL_View_Base view = iterator.next();
-			if (view.fling(velocityX, velocityY))
-			{
-				// schon behandelt
-				behandelt = true;
-				break;
-			}
-		}
-
-		onTouchUp = false;
-		onTouchDown = false;
-		return behandelt;
-	}
-
-	public boolean longPress(int x, int y)
-	{
-		boolean behandelt = false;
-
-		// alle Childs abfragen
-		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-		{
-			GL_View_Base view = iterator.next();
-			if (view.longPress(x, y))
-			{
-				// schon behandelt
-				behandelt = true;
-				break;
-			}
-		}
-
-		onTouchUp = false;
-		onTouchDown = false;
-		return behandelt;
-	}
-
-	public boolean tap(int x, int y, int count)
-	{
-		boolean behandelt = false;
-
-		// alle Childs abfragen
-		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-		{
-			GL_View_Base view = iterator.next();
-			if (view.tap(x, y, count))
-			{
-				// schon behandelt
-				behandelt = true;
-				break;
-			}
-		}
-
-		onTouchUp = false;
-		onTouchDown = false;
-		return behandelt;
-	}
-
-	public boolean touchDown(int x, int y, int pointer)
-	{
-		boolean behandelt = false;
-
-		// alle Childs abfragen
-		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-		{
-			GL_View_Base view = iterator.next();
-			if (view.touchDown(x, y, pointer))
-			{
-				// schon behandelt
-				behandelt = true;
-				break;
-			}
-		}
-
-		onTouchUp = false;
-		onTouchDown = false;
-		return behandelt;
-	}
-
 	public void onStop()
 	{
 
 	}
 
-	public boolean click(int x, int y, int pointer, int button)
+	public final boolean click(int x, int y, int pointer, int button)
 	{
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
 		// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
@@ -401,7 +210,7 @@ public abstract class GL_View_Base extends CB_RectF
 		return false;
 	}
 
-	public boolean longClick(int x, int y, int pointer, int button)
+	public final boolean longClick(int x, int y, int pointer, int button)
 	{
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
 		// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
@@ -409,7 +218,7 @@ public abstract class GL_View_Base extends CB_RectF
 		return false;
 	}
 
-	public boolean touchDown(int x, int y, int pointer, int button)
+	public final boolean touchDown(int x, int y, int pointer, int button)
 	{
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
 		// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
@@ -436,7 +245,7 @@ public abstract class GL_View_Base extends CB_RectF
 		return behandelt;
 	}
 
-	public boolean touchDragged(int x, int y, int pointer)
+	public final boolean touchDragged(int x, int y, int pointer)
 	{
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
 		// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
@@ -456,7 +265,7 @@ public abstract class GL_View_Base extends CB_RectF
 		return behandelt;
 	}
 
-	public boolean touchUp(int x, int y, int pointer, int button)
+	public final boolean touchUp(int x, int y, int pointer, int button)
 	{
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
 		// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
