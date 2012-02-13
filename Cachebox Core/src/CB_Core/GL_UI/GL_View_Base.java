@@ -38,6 +38,9 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	private MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
 
+	private OnClickListener mOnClickListener;
+	private boolean isClickable = false;
+
 	protected boolean onTouchUp = false;
 	protected boolean onTouchDown = false;
 	protected Vector2 lastTouchPos;
@@ -194,6 +197,8 @@ public abstract class GL_View_Base extends CB_RectF
 			// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
 			GL_View_Base view = iterator.next();
 
+			if (!view.isClickable()) continue;
+
 			if (view.contains(x, y))
 			{
 				// touch innerhalb des Views
@@ -205,9 +210,13 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			// kein Klick in einem untergeordnetem View
 			// -> hier behandeln
-			behandelt = onClick(x, y, pointer, button);
+			if (mOnClickListener != null)
+			{
+				behandelt = mOnClickListener.onClick(this, x, y, pointer, button);
+			}
+
 		}
-		return false;
+		return behandelt;
 	}
 
 	public final boolean longClick(int x, int y, int pointer, int button)
@@ -286,7 +295,7 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	// die untergeordneten Klassen müssen diese Event-Handler überschreiben!!!
-	public abstract boolean onClick(int x, int y, int pointer, int button);
+	// public abstract boolean onClick(int x, int y, int pointer, int button);
 
 	public abstract boolean onLongClick(int x, int y, int pointer, int button);
 
@@ -297,4 +306,51 @@ public abstract class GL_View_Base extends CB_RectF
 	public abstract boolean onTouchUp(int x, int y, int pointer, int button);
 
 	public abstract void dispose();
+
+	/**
+	 * Interface definition for a callback to be invoked when a view is clicked.
+	 */
+	public interface OnClickListener
+	{
+		/**
+		 * Called when a view has been clicked.
+		 * 
+		 * @param v
+		 *            The view that was clicked.
+		 */
+		boolean onClick(GL_View_Base v, int x, int y, int pointer, int button);
+	}
+
+	/**
+	 * Register a callback to be invoked when this view is clicked. If this view is not clickable, it becomes clickable.
+	 * 
+	 * @param l
+	 *            The callback that will run
+	 * @see #setClickable(boolean)
+	 */
+	public void setOnClickListener(OnClickListener l)
+	{
+		if (!isClickable)
+		{
+			isClickable = true;
+		}
+		mOnClickListener = l;
+	}
+
+	public boolean isClickable()
+	{
+		return isClickable;
+	}
+
+	/**
+	 * Setzt dieses View Clicable mit der übergabe von True. </br> Wenn Dieses View nicht Clickable ist, werde auch keine Click-Abfragen an
+	 * die Childs weitergegeben.
+	 * 
+	 * @param value
+	 */
+	public void setClickable(boolean value)
+	{
+		isClickable = value;
+	}
+
 }

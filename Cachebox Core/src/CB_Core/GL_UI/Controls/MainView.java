@@ -11,9 +11,13 @@ public class MainView extends GL_View_Base
 {
 	private Image image;
 
+	private MainView Me;
+
 	public MainView(float X, float Y, float Width, float Height)
 	{
 		super(X, Y, Width, Height);
+
+		Me = this;
 
 		Logger.LogCat("Construct MainView " + X + "/" + Y + "/" + "/" + Width + "/" + Height);
 
@@ -28,8 +32,33 @@ public class MainView extends GL_View_Base
 		// initial Image
 		image = new Image(200, 400, 128, 128);
 		image.setImage("data/cb_test.png");
-
 		this.addChild(image);
+
+		Button btn = new Button(300, 100, 200, 64);
+		this.addChild(btn);
+
+		btn.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				image.setPos(new Vector2(Me.crossPos.x - image.getWidth(), Me.crossPos.y - image.getHeight()));
+				return true;
+			}
+		});
+
+		this.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				image.setPos(new Vector2(x - image.getWidth() / 2, y - image.getHeight() / 2));
+				return false;
+			}
+		});
+
 	}
 
 	@Override
@@ -50,13 +79,6 @@ public class MainView extends GL_View_Base
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
 		// hier erstmal nichts machen
-		return true;
-	}
-
-	@Override
-	public boolean onClick(int x, int y, int pointer, int button)
-	{
-		image.setPos(new Vector2(x - image.getWidth() / 2, y - image.getHeight() / 2));
 		return true;
 	}
 

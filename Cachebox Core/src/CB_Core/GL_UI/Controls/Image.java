@@ -49,13 +49,6 @@ public class Image extends GL_View_Base
 	}
 
 	@Override
-	public boolean onClick(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public boolean onLongClick(int x, int y, int pointer, int button)
 	{
 		// TODO Auto-generated method stub

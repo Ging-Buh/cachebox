@@ -48,7 +48,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	public GL_Listener(int initalWidth, int initialHeight)
 	{
 		child = new MainView(0, 0, initalWidth, initialHeight);
-		GL_View_Base.debug = true;
+		// GL_View_Base.debug = true;
 	}
 
 	@Override
@@ -143,7 +143,10 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	{
 		boolean behandelt = false;
 
-		behandelt = child.click(x, (int) child.getHeight() - y, pointer, button);
+		if (child.isClickable())
+		{
+			behandelt = child.click(x, (int) child.getHeight() - y, pointer, button);
+		}
 
 		return behandelt;
 	}
