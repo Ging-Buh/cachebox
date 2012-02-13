@@ -40,6 +40,9 @@ public class SpriteCache
 	public static ArrayList<Sprite> ZoomBtn = null;
 	public static Sprite ZoomValueBack = null;
 
+	// UI Atlas
+	public static TextureAtlas uiAtlas;
+
 	/**
 	 * Load the Sprites from recorce
 	 */
@@ -140,6 +143,8 @@ public class SpriteCache
 		ZoomBtn.add(atlas.createSprite("day_btn_zoom_up_disabled"));
 
 		ZoomValueBack = atlas.createSprite("zoom_back");
+
+		uiAtlas = new TextureAtlas(Gdx.files.internal("9patch/UI_PackerSheet"));
 
 	}
 

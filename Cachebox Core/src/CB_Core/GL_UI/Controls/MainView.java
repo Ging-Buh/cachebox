@@ -55,10 +55,25 @@ public class MainView extends GL_View_Base
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				image.setPos(new Vector2(x - image.getWidth() / 2, y - image.getHeight() / 2));
-				return false;
+				return true;
 			}
 		});
 
+		Button btn2 = new Button(300, 200, 64, 64);
+		this.addChild(btn2);
+		btn2.disable();
+
+		// Dieser Listner sollte nicht ausgeführt werden, da der Button Disabled ist!
+		btn2.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				image.setPos(new Vector2(Me.Pos.x, Me.crossPos.y - image.getHeight()));
+				return true;
+			}
+		});
 	}
 
 	@Override

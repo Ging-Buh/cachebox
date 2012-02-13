@@ -186,7 +186,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	}
 
-	public final boolean click(int x, int y, int pointer, int button)
+	public boolean click(int x, int y, int pointer, int button)
 	{
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
 		// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
@@ -244,6 +244,9 @@ public abstract class GL_View_Base extends CB_RectF
 				// -> Klick an das View weitergeben
 				behandelt = view.touchDown(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
 			}
+
+			if (behandelt) break;
+
 		}
 		if (!behandelt)
 		{
@@ -283,14 +286,23 @@ public abstract class GL_View_Base extends CB_RectF
 		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 		{
 			GL_View_Base view = iterator.next();
-			if (view.touchUp(x, y, pointer, button))
+			if (view.contains(x, y))
 			{
-				behandelt = true;
-				break;
+				// touch innerhalb des Views
+				// -> Klick an das View weitergeben
+				behandelt = view.touchUp(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
 			}
+
+			if (behandelt) break;
 
 		}
 
+		if (!behandelt)
+		{
+			// kein Klick in einem untergeordnetem View
+			// -> hier behandeln
+			behandelt = onTouchUp(x, y, pointer, button);
+		}
 		return behandelt;
 	}
 
