@@ -560,17 +560,18 @@ public class UiSizes
 		private static void LoadCalcFonts()
 		{
 			fontAB18 = new BitmapFont(Gdx.files.internal("data/ArialBold18.fnt"), Gdx.files.internal("data/ArialBold18.png"), false);
-			fontAB18.setColor(0.0f, 0.2f, 0.0f, 1.0f);
+			// fontAB18.setColor(0.0f, 0.2f, 0.0f, 1.0f);
 			fontAB18.setScale(FontFaktor);
 
 			fontAB16out = new BitmapFont(Gdx.files.internal("data/ArialBold16outline.fnt"),
 					Gdx.files.internal("data/ArialBold16outline.png"), false);
-			fontAB16out.setColor(1.0f, 0.2f, 0.0f, 1.0f);
+			// fontAB16out.setColor(1.0f, 0.2f, 0.0f, 1.0f);
 			fontAB16out.setScale(FontFaktor);
 
 			fontAB22 = new BitmapFont(Gdx.files.internal("data/ArialBold22.fnt"), Gdx.files.internal("data/ArialBold22.png"), false);
-			fontAB22.setColor(0.0f, 0.0f, 0.0f, 1.0f);
+			// fontAB22.setColor(0.0f, 0.0f, 0.0f, 1.0f);
 			fontAB22.setScale(FontFaktor);
+
 		}
 
 		@Override

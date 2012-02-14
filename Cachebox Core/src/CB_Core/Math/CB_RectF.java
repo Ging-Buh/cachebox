@@ -81,6 +81,15 @@ public class CB_RectF
 		calcCrossCorner();
 	}
 
+	public CB_RectF(CB_RectF rec)
+	{
+		this.Pos.x = rec.Pos.x;
+		this.Pos.y = rec.Pos.y;
+		this.width = rec.width;
+		this.height = rec.height;
+		calcCrossCorner();
+	}
+
 	public void setWidth(float Width)
 	{
 		if (this.width == Width) return;

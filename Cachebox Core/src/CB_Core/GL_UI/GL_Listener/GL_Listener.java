@@ -47,7 +47,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	 */
 	public GL_Listener(int initalWidth, int initialHeight)
 	{
-		child = new MainView(0, 0, initalWidth, initialHeight);
+
 		// GL_View_Base.debug = true;
 	}
 
@@ -58,7 +58,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 
 		if (batch == null) batch = new SpriteBatch();
 
-		// if (Gdx.input.getInputProcessor() != this) Gdx.input.setInputProcessor(this);
+		child = new MainView(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		startTime = System.currentTimeMillis();
 	}
@@ -218,7 +218,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	@Override
 	public void resize(int width, int height)
 	{
-		child.setSize(width, height);
+		if (child != null) child.setSize(width, height);
 		camera = new OrthographicCamera(width, height);
 		prjMatrix = new Matrix4().setToOrtho2D(0, 0, width, height);
 	}

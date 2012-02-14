@@ -16,6 +16,13 @@ day_btn_default_normal
   orig: 33, 52
   offset: 0, 0
   index: -1
+shaddowrect
+  rotate: false
+  xy: 107, 2
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
 day_btn_default_normal_disabled
   rotate: false
   xy: 37, 2

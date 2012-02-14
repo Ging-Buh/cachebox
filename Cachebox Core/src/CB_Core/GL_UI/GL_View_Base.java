@@ -10,6 +10,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -32,6 +33,12 @@ public abstract class GL_View_Base extends CB_RectF
 	public static boolean debug = false;
 
 	// # private Member
+
+	private boolean hasBackground = false;
+	private Sprite Background;
+
+	private boolean hasNinePatchBackground = false;
+	private NinePatch nineBackground;
 
 	/**
 	 * Enthält alle GL_Views innerhalb dieser Gl_View
@@ -63,6 +70,11 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	// # Method
+
+	public GL_View_Base(CB_RectF rec)
+	{
+		super(rec);
+	}
 
 	public void setVisibility(int visibility)
 	{
@@ -105,6 +117,8 @@ public abstract class GL_View_Base extends CB_RectF
 		this.childs.remove(childs);
 	}
 
+	protected static Vector2 actParentPos = new Vector2();
+
 	/**
 	 * Die renderChilds() Methode wird vom GL_Listner bei jedem Render-Vorgang aufgerufen. </br> Hier wird dann zuerst die render() Methode
 	 * dieser View aufgerufen. </br> Danach werden alle Childs iteriert und dessen renderChilds() Methode aufgerufen, wenn die View sichtbar
@@ -114,15 +128,32 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	public void renderChilds(final SpriteBatch batch, Matrix4 prjMatrix)
 	{
+		// first Draw Background?
+		if (hasBackground || hasNinePatchBackground)
+		{
+			batch.begin();
+			if (hasNinePatchBackground)
+			{
+				nineBackground.draw(batch, 0, 0, width, height);
+			}
+			else
+			{
+				batch.draw(Background, 0, 0, width, height);
+			}
+
+			batch.end();
+		}
 
 		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
-		Gdx.gl.glScissor((int) Pos.x, (int) Pos.y, (int) width, (int) height);
+		Gdx.gl.glScissor((int) (actParentPos.x + Pos.x), (int) (actParentPos.y + Pos.y), (int) width, (int) height);
 
 		batch.begin();
 		this.render(batch);
 		batch.end();
 
 		Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
+
+		actParentPos = this.Pos.cpy();
 
 		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 		{
@@ -141,6 +172,9 @@ public abstract class GL_View_Base extends CB_RectF
 				batch.setProjectionMatrix(prjMatrix);
 			}
 		}
+
+		actParentPos.x = 0;
+		actParentPos.y = 0;
 
 		// Draw Debug REC
 		if (debug)
@@ -363,6 +397,20 @@ public abstract class GL_View_Base extends CB_RectF
 	public void setClickable(boolean value)
 	{
 		isClickable = value;
+	}
+
+	public void setBackground(Sprite background)
+	{
+		hasBackground = background != null;
+
+		Background = background;
+	}
+
+	public void setBackground(NinePatch background)
+	{
+		hasNinePatchBackground = background != null;
+
+		nineBackground = background;
 	}
 
 }
