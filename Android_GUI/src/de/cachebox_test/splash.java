@@ -88,22 +88,19 @@ public class splash extends Activity
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		setContentView(R.layout.splash);
 
 		GlobalCore.displayDensity = this.getResources().getDisplayMetrics().density;
+		int h = this.getResources().getDisplayMetrics().heightPixels;
+		int w = this.getResources().getDisplayMetrics().widthPixels;
+
+		int sw = h > w ? w : h;
+		sw /= GlobalCore.displayDensity;
 
 		// chek if tablet
-		TextView testView = (TextView) findViewById(R.id.splash_textViewTab);
-		if (testView != null)
-		{
-			/*
-			 * R.id.splash_textViewTab ist nur im splash Layout von layout-sw400dp zu finden. Ist (TestView != null) dann handelt es sich um
-			 * ein Tablet!
-			 */
 
-			GlobalCore.isTab = true;
-		}
+		GlobalCore.isTab = sw > 400 ? true : false;
+
+		setContentView(GlobalCore.isTab ? R.layout.tab_splash : R.layout.splash);
 
 		// get parameters
 		final Bundle extras = getIntent().getExtras();

@@ -359,7 +359,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		try
 		{
-			setContentView(R.layout.main);
+			setContentView(GlobalCore.isTab ? R.layout.tab_main : R.layout.main);
 		}
 		catch (Exception exc)
 		{
