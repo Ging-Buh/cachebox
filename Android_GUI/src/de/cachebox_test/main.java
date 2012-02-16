@@ -35,7 +35,8 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
-import CB_Core.GL_UI.Controls.TestView;
+import CB_Core.GL_UI.Controls.ArrowView;
+import CB_Core.GL_UI.Controls.MainView;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
@@ -193,10 +194,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static TrackListView tracklistView = null; // ID 13
 	private static TrackableListView trackablelistView = null; // ID 14
 	public static WaypointView waypointView = null; // ID 15
+
+	/**
+	 * viewGl kann mehrere ID beinhalten, vieGL ist nur die Basis für alle Views auf Basis von GL_View_Base </br> TestView = 16 </br>
+	 * CreditsView = 17 </br> MapView = 18 </br>
+	 */
 	public static ViewGL viewGL = null; // ID 16;
 
 	private View viewGl = null;
-	private TestView testView;
+	private ArrowView testView;
 
 	private MapViewGlListener mapViewGlListener = null;
 	private GL_Listener glListener = null;
@@ -1658,7 +1664,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				ShowMapViewGL();
 				break;
 			case 16:
-				ShowViewGL();
+				ShowViewGL(ID);
+				break;
+			case 17:
+				ShowViewGL(ID);
+				break;
+			case 18:
+				ShowViewGL(ID);
 				break;
 			}
 		}
@@ -1677,15 +1689,21 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		showView(mapViewGl, 2);
 	}
 
-	private void ShowViewGL()
+	private void ShowViewGL(int ID)
 	{
 		viewGL = null;
 		initialViewGL();
-		showView(viewGL, 16);
+		showView(viewGL, ID);
 	}
 
 	private void showView(ViewOptionsMenu view, int Id)
 	{
+
+		// eventuell GL_View umschalten
+		if (Id == 16 || Id == 17 || Id == 18)
+		{
+			MainView.setGLViewID(Id);
+		}
 
 		if (GlobalCore.isTab)
 		{
@@ -1888,7 +1906,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				recVideo();
 				break;
 			case R.id.miAbout:
-				showView(11);
+				showView(17); // Show CreditsView
 				break;
 			// case R.id.miTestEmpty:showView(10);break;
 			case R.id.miImport:
@@ -1921,6 +1939,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				break;
 			case R.id.miViewGL:
 				showView(16);
+				break;
+			case R.id.miViewMap3:
+				showView(18);
 				break;
 			case R.id.miDescription:
 				showView(4);

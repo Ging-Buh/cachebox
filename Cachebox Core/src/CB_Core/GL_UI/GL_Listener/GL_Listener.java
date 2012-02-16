@@ -56,9 +56,13 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	{
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		if (batch == null) batch = new SpriteBatch();
+		if (batch == null)
+		{
+			batch = new SpriteBatch();
 
-		child = new MainView(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			child = new MainView(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			child.setClickable(true);
+		}
 
 		startTime = System.currentTimeMillis();
 	}

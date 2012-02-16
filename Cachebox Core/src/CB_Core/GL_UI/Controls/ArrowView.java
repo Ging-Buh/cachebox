@@ -29,7 +29,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * 
  * @author Longri
  */
-public class TestView extends GL_View_Base
+public class ArrowView extends GL_View_Base
 {
 
 	int arrowX = 200;
@@ -44,7 +44,7 @@ public class TestView extends GL_View_Base
 	 * @param Width
 	 * @param Height
 	 */
-	public TestView(float X, float Y, float Width, float Height)
+	public ArrowView(float X, float Y, float Width, float Height)
 	{
 		super(X, Y, Width, Height);
 

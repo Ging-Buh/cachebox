@@ -40,6 +40,8 @@ public abstract class GL_View_Base extends CB_RectF
 	private boolean hasNinePatchBackground = false;
 	private NinePatch nineBackground;
 
+	protected GL_View_Base Me;
+
 	/**
 	 * Enthält alle GL_Views innerhalb dieser Gl_View
 	 */
@@ -66,7 +68,7 @@ public abstract class GL_View_Base extends CB_RectF
 	public GL_View_Base(float X, float Y, float Width, float Height)
 	{
 		super(X, Y, Width, Height);
-
+		Me = this;
 	}
 
 	// # Method
@@ -74,6 +76,7 @@ public abstract class GL_View_Base extends CB_RectF
 	public GL_View_Base(CB_RectF rec)
 	{
 		super(rec);
+		Me = this;
 	}
 
 	public void setVisibility(int visibility)
