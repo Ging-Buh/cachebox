@@ -56,7 +56,15 @@ public abstract class GL_View_Base extends CB_RectF
 
 	private int mViewState = VISIBLE;
 
+	private GL_View_Base parent;
+
 	// # Constructors
+
+	public GL_View_Base()
+	{
+
+	}
+
 	/**
 	 * Constructor für ein neues GL_View_Base mit Angabe der linken unteren Ecke und der Höhe und Breite
 	 * 
@@ -71,7 +79,12 @@ public abstract class GL_View_Base extends CB_RectF
 		Me = this;
 	}
 
-	// # Method
+	public GL_View_Base(float X, float Y, float Width, float Height, GL_View_Base Parent)
+	{
+		super(X, Y, Width, Height);
+		Me = this;
+		parent = Parent;
+	}
 
 	public GL_View_Base(CB_RectF rec)
 	{
@@ -79,6 +92,14 @@ public abstract class GL_View_Base extends CB_RectF
 		Me = this;
 	}
 
+	public GL_View_Base(CB_RectF rec, GL_View_Base Parent)
+	{
+		super(rec);
+		Me = this;
+		parent = Parent;
+	}
+
+	// # Method
 	public void setVisibility(int visibility)
 	{
 		mViewState = visibility;
@@ -120,8 +141,6 @@ public abstract class GL_View_Base extends CB_RectF
 		this.childs.remove(childs);
 	}
 
-	protected static Vector2 actParentPos = new Vector2();
-
 	/**
 	 * Die renderChilds() Methode wird vom GL_Listner bei jedem Render-Vorgang aufgerufen. </br> Hier wird dann zuerst die render() Methode
 	 * dieser View aufgerufen. </br> Danach werden alle Childs iteriert und dessen renderChilds() Methode aufgerufen, wenn die View sichtbar
@@ -147,16 +166,23 @@ public abstract class GL_View_Base extends CB_RectF
 			batch.end();
 		}
 
+		float ScissorX = 0;
+		float ScissorY = 0;
+
+		if (parent != null)
+		{
+			ScissorX = parent.getPos().x;
+			ScissorY = parent.getPos().y;
+		}
+
 		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
-		Gdx.gl.glScissor((int) (actParentPos.x + Pos.x), (int) (actParentPos.y + Pos.y), (int) width, (int) height);
+		Gdx.gl.glScissor((int) (ScissorX + Pos.x), (int) (ScissorY + Pos.y), (int) width, (int) height);
 
 		batch.begin();
 		this.render(batch);
 		batch.end();
 
 		Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
-
-		actParentPos = this.Pos.cpy();
 
 		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 		{
@@ -175,9 +201,6 @@ public abstract class GL_View_Base extends CB_RectF
 				batch.setProjectionMatrix(prjMatrix);
 			}
 		}
-
-		actParentPos.x = 0;
-		actParentPos.y = 0;
 
 		// Draw Debug REC
 		if (debug)

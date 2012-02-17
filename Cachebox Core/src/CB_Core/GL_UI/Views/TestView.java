@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Views;
 
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.ArrowView;
@@ -8,7 +9,6 @@ import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ZoomButtons;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -40,7 +40,7 @@ public class TestView extends GL_View_Base
 		image.setImage("data/cb_test.png");
 		this.addChild(image);
 
-		Button btn = new Button(300, 100, 200, 64);
+		Button btn = new Button(300, 100, 200, 64, this);
 		this.addChild(btn);
 		btn.setText("Button");
 		btn.setOnClickListener(new OnClickListener()
@@ -65,7 +65,7 @@ public class TestView extends GL_View_Base
 			}
 		});
 
-		Button btn2 = new Button(300, 200, 64, 64);
+		Button btn2 = new Button(300, 200, 64, 64, this);
 		this.addChild(btn2);
 		btn2.disable();
 		btn2.setText("DISABLED");
@@ -84,7 +84,7 @@ public class TestView extends GL_View_Base
 
 		// Label Tests
 		Label lbl = new Label(10, 500, 100, 30);
-		lbl.setFont(UiSizes.GL.fontAB22);
+		lbl.setFont(Fonts.get22());
 		lbl.setText("Single Line Text");
 		lbl.setHAlignment(HAlignment.CENTER);
 		this.addChild(lbl);
@@ -95,7 +95,7 @@ public class TestView extends GL_View_Base
 		s += "Zeile 2" + br;
 
 		Label lbl2 = new Label(10, 400, 250, 70);
-		lbl2.setFont(UiSizes.GL.fontAB18);
+		lbl2.setFont(Fonts.get18());
 		lbl2.setMultiLineText(s);
 		this.addChild(lbl2);
 
@@ -103,7 +103,7 @@ public class TestView extends GL_View_Base
 		s += "Es wird aber auch ein Line Breake innerhalb des Textes erkannt und zusätzlich umgebrochen." + br;
 
 		Label lbl3 = new Label(10, 100, 270, 200);
-		lbl3.setFont(UiSizes.GL.fontAB18);
+		lbl3.setFont(Fonts.get18());
 		lbl3.setWrappedText(s);
 
 		NinePatch back = new NinePatch(SpriteCache.uiAtlas.findRegion("shaddowrect"), 8, 8, 8, 8);

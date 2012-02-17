@@ -7,7 +7,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.MainView;
-import CB_Core.Types.MoveableList;
+import CB_Core.Log.Logger;
+import CB_Core.Math.GL_UISizes;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -15,7 +16,6 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Matrix4;
 
 public class GL_Listener implements ApplicationListener, InputProcessor
@@ -23,47 +23,39 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 
 	// # private Member
 
-	/**
-	 * Enthält alle GL_Views
-	 */
-	private MoveableList<GL_View_Base> mChilds = new MoveableList<GL_View_Base>();
 	MainView child;
 	private static AtomicBoolean started = new AtomicBoolean(false);
-	private GestureDetector gestureDetector;
-	private static int frameRateIdle = 200;
-	private int frameRateAction = 30;
 	static boolean useNewInput = true;
+
+	public static final int FRAME_RATE_IDLE = 200;
+	public static final int FRAME_RATE_ACTION = 30;
 
 	// # public static member
 	public static SpriteBatch batch;
 	public static OrthographicCamera camera;
 	private Matrix4 prjMatrix;
 
-	// # View´s
-	// private MapViewForGl mapView;
+	private int width = 0;
+	private int height = 0;
 
 	/**
 	 * Constructor
 	 */
 	public GL_Listener(int initalWidth, int initialHeight)
 	{
-
-		// GL_View_Base.debug = true;
+		width = initalWidth;
+		height = initialHeight;
+		GL_View_Base.debug = true;
 	}
 
 	@Override
 	public void create()
 	{
-		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Logger.LogCat("GL_Listner => Create");
 
-		if (batch == null)
-		{
-			batch = new SpriteBatch();
+		GL_UISizes.initial(width, height);
 
-			child = new MainView(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-			child.setClickable(true);
-		}
-
+		Initialize();
 		startTime = System.currentTimeMillis();
 	}
 
@@ -91,25 +83,15 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 
 	public void onStart()
 	{
-
+		Logger.LogCat("GL_Listner => onStart");
 		started.set(true);
-		startTimer(frameRateIdle);
+		startTimer(FRAME_RATE_IDLE);
 	}
 
 	public void onStop()
 	{
-
+		Logger.LogCat("GL_Listner => onStop");
 		stopTimer();
-
-		// if (ScreenLock.isShown) return;
-
-		// alle Childs abfragen
-		// for (Iterator<GL_View_Base> iterator = mChilds.iterator(); iterator.hasNext();)
-		// {
-		// GL_View_Base view = iterator.next();
-		// view.onStop();
-		//
-		// }
 		child.onStop();
 	}
 
@@ -220,8 +202,11 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	}
 
 	@Override
-	public void resize(int width, int height)
+	public void resize(int Width, int Height)
 	{
+		width = Width;
+		height = Height;
+
 		if (child != null) child.setSize(width, height);
 		camera = new OrthographicCamera(width, height);
 		prjMatrix = new Matrix4().setToOrtho2D(0, 0, width, height);
@@ -305,19 +290,18 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 
 	public void Initialize()
 	{
-		// TODO Auto-generated method stub
+		Logger.LogCat("GL_Listner => Initialize");
 
-	}
+		if (batch == null)
+		{
+			batch = new SpriteBatch();
+		}
 
-	public void InitializeMap()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	public void add(GL_View_Base view)
-	{
-		mChilds.add(view);
+		if (child == null)
+		{
+			child = new MainView(0, 0, width, height);
+			child.setClickable(true);
+		}
 
 	}
 

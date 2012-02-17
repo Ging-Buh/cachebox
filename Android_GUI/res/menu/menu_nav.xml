@@ -2,9 +2,9 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
     
-    <item android:title="NewMap" android:id="@+id/miMapViewGl" android:icon="@drawable/map"></item><item android:id="@+id/miCompassView" android:title="Compass" android:icon="@drawable/compass"></item>
+    <item android:id="@+id/miCompassView" android:title="Compass" android:icon="@drawable/compass"></item>
     <item android:id="@+id/miNavigateTo" android:title="Navigate to..." android:icon="@drawable/navigate"></item>
-    <item android:id="@+id/miMapView" android:title="altMap"></item>
+    <item android:id="@+id/miMapView" android:title="altMap" android:icon="@drawable/map"></item>
     <item android:id="@+id/miViewGL" android:title="ViewGL" ></item>
     <item android:id="@+id/miViewMap3" android:title="Map3" android:icon="@drawable/map"></item>
 </menu>

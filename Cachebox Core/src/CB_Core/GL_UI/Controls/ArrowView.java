@@ -19,7 +19,6 @@ package CB_Core.GL_UI.Controls;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -54,15 +53,6 @@ public class ArrowView extends GL_View_Base
 	public void render(SpriteBatch batch)
 	{
 
-		if (SpriteCache.MapArrows == null)
-		{
-
-			SpriteCache.LoadSprites();
-
-			// initial Sizes
-			UiSizes.GL.initial();
-		}
-
 		Sprite arrow = SpriteCache.MapArrows.get(0);
 		arrow.setRotation(0);
 		arrow.setBounds(-(width / 2), 0, width, height);
@@ -74,7 +64,6 @@ public class ArrowView extends GL_View_Base
 	@Override
 	public void onRezised(CB_RectF rec)
 	{
-		UiSizes.GL.initial(width, height);
 
 	}
 

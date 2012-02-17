@@ -1,24 +1,22 @@
-package CB_Core.GL_UI.Views;
+package CB_Core.GL_UI.Controls;
 
-import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
-import CB_Core.GL_UI.Controls.Label;
 import CB_Core.Math.CB_RectF;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class MapView extends GL_View_Base
+public class ScrollView extends GL_View_Base
 {
 
-	public MapView(CB_RectF rec)
+	public ScrollView(CB_RectF rec)
 	{
 		super(rec);
-		Label test = new Label(100, 100, 300, 50);
-		test.setFont(Fonts.get18());
-		test.setText("Map View Version 3");
-		test.setHAlignment(HAlignment.CENTER);
-		this.addChild(test);
+		// TODO Auto-generated constructor stub
+	}
+
+	public ScrollView(CB_RectF cb_RectF, GL_View_Base Parent)
+	{
+		super(cb_RectF, Parent);
 	}
 
 	@Override

@@ -16,6 +16,7 @@
 
 package CB_Core.GL_UI.Controls;
 
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.Math.CB_RectF;
 
@@ -58,6 +59,12 @@ public class Label extends GL_View_Base
 	public Label(CB_RectF rec)
 	{
 		super(rec);
+		calcInnerRec();
+	}
+
+	public Label(CB_RectF rec, GL_View_Base Parent)
+	{
+		super(rec, Parent);
 		calcInnerRec();
 	}
 
@@ -151,7 +158,8 @@ public class Label extends GL_View_Base
 
 	private void chkCache()
 	{
-		if (cache == null) throw new ExceptionInInitializerError("Label has no Font. You must set a Font");
+		// Initial mit Arial 18
+		if (cache == null) setFont(Fonts.get18());
 	}
 
 	// code from Libgdx Label

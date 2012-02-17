@@ -170,7 +170,7 @@ public class AllContextMenuCallHandler
 		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
 
 		Menu IconMenu = icm.getMenu();
-		Global.TranslateMenuItem(IconMenu, R.id.miMapViewGl, "Map");
+		// Global.TranslateMenuItem(IconMenu, R.id.miMapViewGl, "Map");
 		Global.TranslateMenuItem(IconMenu, R.id.miCompassView, "Compass");
 		Global.TranslateMenuItem(IconMenu, R.id.miNavigateTo, "NavigateTo");
 		icm.show();
@@ -427,7 +427,7 @@ public class AllContextMenuCallHandler
 
 			MenuItem mi = IconMenu.findItem(R.id.miAlignCompass);
 			mi.setCheckable(true);
-			mi.setChecked(Main.mapViewGl.mapViewGlListener.alignToCompass);
+			// mi.setChecked(Main.mapViewGl.mapViewGlListener.alignToCompass);
 
 		}
 		catch (Exception exc)
@@ -457,11 +457,11 @@ public class AllContextMenuCallHandler
 		MenuItem miTitles = IconMenu.findItem(R.id.miMap_ShowTitles);
 		MenuItem miLine = IconMenu.findItem(R.id.miMap_ShowDirektLine);
 
-		miFinds.setChecked(Main.mapViewGl.mapViewGlListener.hideMyFinds);
-		miRaiting.setChecked(Main.mapViewGl.mapViewGlListener.showRating);
-		miDT.setChecked(Main.mapViewGl.mapViewGlListener.showDT);
-		miTitles.setChecked(Main.mapViewGl.mapViewGlListener.showTitles);
-		miLine.setChecked(Main.mapViewGl.mapViewGlListener.showDirektLine);
+		// miFinds.setChecked(Main.mapViewGl.mapViewGlListener.hideMyFinds);
+		// miRaiting.setChecked(Main.mapViewGl.mapViewGlListener.showRating);
+		// miDT.setChecked(Main.mapViewGl.mapViewGlListener.showDT);
+		// miTitles.setChecked(Main.mapViewGl.mapViewGlListener.showTitles);
+		// miLine.setChecked(Main.mapViewGl.mapViewGlListener.showDirektLine);
 
 		icm.show();
 	}
@@ -498,10 +498,10 @@ public class AllContextMenuCallHandler
 		{
 			MenuItem mi22 = IconMenu.add(layer.Name);
 			mi22.setCheckable(true);
-			if (layer == Main.mapViewGl.GetCurrentLayer())
-			{
-				mi22.setChecked(true);
-			}
+			// if (layer == Main.mapViewGl.GetCurrentLayer())
+			// {
+			// mi22.setChecked(true);
+			// }
 		}
 		icm.show();
 	}

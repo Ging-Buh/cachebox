@@ -35,7 +35,6 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
-import CB_Core.GL_UI.Controls.ArrowView;
 import CB_Core.GL_UI.Controls.MainView;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Log.ILog;
@@ -76,7 +75,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -108,6 +106,7 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -135,7 +134,6 @@ import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Locator.GPS;
 import de.cachebox_test.Locator.Locator;
 import de.cachebox_test.Map.MapViewForGl;
-import de.cachebox_test.Map.MapViewGlListener;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
 import de.cachebox_test.Views.AboutView;
@@ -146,7 +144,6 @@ import de.cachebox_test.Views.FieldNotesView;
 import de.cachebox_test.Views.JokerView;
 import de.cachebox_test.Views.LogView;
 import de.cachebox_test.Views.MapView;
-import de.cachebox_test.Views.MapViewGL;
 import de.cachebox_test.Views.NotesView;
 import de.cachebox_test.Views.SolverView;
 import de.cachebox_test.Views.SpoilerView;
@@ -181,7 +178,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static long GPSTimeStamp = 0;
 	public static MapView mapView = null; // ID 0
 	public static CacheListView cacheListView = null; // ID 1
-	public static MapViewGL mapViewGl = null; // ID 2
+
 	private static LogView logView = null; // ID 3
 	public static DescriptionView descriptionView = null; // ID 4
 	private static SpoilerView spoilerView = null; // ID 5
@@ -201,12 +198,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	 */
 	public static ViewGL viewGL = null; // ID 16;
 
-	private View viewGl = null;
-	private ArrowView testView;
+	/**
+	 * gdxView ist die Android.View für gdx
+	 */
+	private View gdxView = null;
 
-	private MapViewGlListener mapViewGlListener = null;
 	private GL_Listener glListener = null;
-	// private GL_Listner mapViewGlListener = null;
 
 	public static LinearLayout strengthLayout;
 
@@ -254,8 +251,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private ImageButton buttonMisc;
 	private FrameLayout frame;
 	private FrameLayout tabFrame;
+	private FrameLayout GlFrame;
+
 	private LinearLayout TopLayout;
-	// private LinearLayout frameCacheName;
 	public downSlider InfoDownSlider;
 	public HorizontalListView QuickButtonList;
 
@@ -401,14 +399,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		ui.isLandscape = false;
 
 		UiSizes.initial(ui);
-		Size initSize = new Size(Config.settings.MapIniWidth.getValue(), Config.settings.MapIniHeight.getValue());
 
-		mapViewGlListener = new MapViewGlListener(initSize.width, initSize.height);
-
-		// Initial in Full Screen
+		// Initial GL_Listner in Full Screen with font color black
 		glListener = new GL_Listener(UiSizes.getWindowWidth(), UiSizes.getWindowHeight());
-
-		// mapViewGlListener = new GL_Listner(initSize.width, initSize.height);
 
 		int Time = Config.settings.ScreenLock.getValue();
 		counter = new ScreenLockTimer(Time, Time);
@@ -442,7 +435,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		initialLocationManager();
 		initialMapView();
-		initialMapViewGl();
 		initialViewGL();
 		initialViews();
 		initalMicIcon();
@@ -503,10 +495,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			showView(11);
 
 			// und Map wenn Tablet
-			if (GlobalCore.isTab)
-			{
-				showView(2);
-			}
+			// if (GlobalCore.isTab)
+			// {
+			// showView(2);
+			// }
 
 			// chk if NightMode saved
 			if (N)
@@ -866,8 +858,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// only when showing Map or cacheList
 			if (!GlobalCore.ResortAtWork)
 			{
-				if (Global.autoResort
-						&& ((aktView == mapView) || (aktView == cacheListView || aktView == mapViewGl || aktView == compassView)))
+				if (Global.autoResort && ((aktView == mapView) || (aktView == cacheListView || aktView == compassView)))
 				{
 					int z = 0;
 					if (!(GlobalCore.NearestCache() == null))
@@ -1422,7 +1413,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				ViewList.clear();
 				cacheListView = null;
 				mapView = null;
-				mapViewGl = null;
 				viewGL = null;
 				notesView = null;
 				jokerView = null;
@@ -1534,7 +1524,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			else if (v == buttonNav)
 			{
-				ShowMapViewGL();
+				showView(0);
 			}
 
 			else if (v == buttonTools)
@@ -1660,9 +1650,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				waypointView = new WaypointView(this, this);
 				showView(waypointView, 15);
 				break;
-			case 2:
-				ShowMapViewGL();
-				break;
 			case 16:
 				ShowViewGL(ID);
 				break;
@@ -1682,26 +1669,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	}
 
-	private void ShowMapViewGL()
-	{
-		mapViewGl = null;
-		initialMapViewGl();
-		showView(mapViewGl, 2);
-	}
-
 	private void ShowViewGL(int ID)
 	{
-		viewGL = null;
 		initialViewGL();
 		showView(viewGL, ID);
 	}
 
 	private void showView(ViewOptionsMenu view, int Id)
 	{
+		boolean showAnGlView = false;
 
 		// eventuell GL_View umschalten
 		if (Id == 16 || Id == 17 || Id == 18)
 		{
+			showAnGlView = true;
 			MainView.setGLViewID(Id);
 		}
 
@@ -1802,15 +1783,21 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				waypointView.OnFree();
 				waypointView = null;
 			}
-			else if (aktView.equals(mapViewGl))
-			{
-				this.onPause();
-			}
 			else if (aktView.equals(viewGL))
 			{
 				this.onPause();
 			}
 		}
+
+		if (showAnGlView)
+		{
+
+			showGL(view, Id);
+			return;
+
+		}
+
+		frame.setVisibility(View.VISIBLE);
 
 		System.gc();
 
@@ -1830,6 +1817,19 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	}
 
+	private void showGL(ViewOptionsMenu view, int Id)
+	{
+		Log.d("CACHEBOX", "GL Frame" + GlFrame.getMeasuredWidth() + "/" + GlFrame.getMeasuredHeight());
+
+		frame.setVisibility(View.INVISIBLE);
+
+		aktView = view;
+		aktView.OnShow();
+		aktViewId = Id;
+		InfoDownSlider.invalidate();
+		((View) aktView).forceLayout();
+	}
+
 	ViewOptionsMenu tabView;
 	int aktTabViewId = -1;
 
@@ -1840,11 +1840,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			tabView.OnHide();
 
-			if (aktView.equals(mapViewGl))
-			{
-				this.onPause();
-			}
-			else if (aktView.equals(viewGL))
+			if (aktView.equals(viewGL))
 			{
 				this.onPause();
 			}
@@ -1933,9 +1929,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				break;
 			case R.id.miMapView:
 				showView(0);
-				break;
-			case R.id.miMapViewGl:
-				showView(2);
 				break;
 			case R.id.miViewGL:
 				showView(16);
@@ -2107,6 +2100,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		TopLayout = (LinearLayout) this.findViewById(R.id.layoutTop);
 		frame = (FrameLayout) this.findViewById(R.id.layoutContent);
 		tabFrame = (FrameLayout) this.findViewById(R.id.TabletlayoutContent);
+		GlFrame = (FrameLayout) this.findViewById(R.id.layoutGlContent);
+
 		InfoDownSlider = (downSlider) this.findViewById(R.id.downSlider);
 
 		debugInfoPanel = (DebugInfoPanel) this.findViewById(R.id.debugInfo);
@@ -2231,34 +2226,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 	}
 
-	private void initialMapViewGl()
-	{
-		try
-		{
-			if (mapViewGl == null)
-			{
-				viewGl = initializeForView(mapViewGlListener, false);
-				((GLSurfaceView) viewGl).setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-
-				mapViewGl = new MapViewGL(this, inflater, viewGl, mapViewGlListener);
-
-				mapViewGl.Initialize();
-				// mapViewGl.CurrentLayer =
-				// MapView.Manager.GetLayerByName(Config.settings.CurrentMapLayer.getValue(),
-				// Config.settings.CurrentMapLayer.getValue(), "");
-				// Global.TrackDistance =
-				// Config.settings.TrackDistance.getValue();
-				mapViewGl.InitializeMap();
-
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.initialMapViewGl()", "", e);
-			e.printStackTrace();
-		}
-	}
-
 	// Zwischenspeicher für die touchDown Positionen der einzelnen Finger
 	private SortedMap<Integer, Point> touchDownPos = new TreeMap<Integer, Point>();
 
@@ -2274,10 +2241,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (viewGL == null)
 			{
-				viewGl = initializeForView(glListener, false);
+				gdxView = initializeForView(glListener, false);
 				// ((GLSurfaceView) viewGl).setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
-				viewGl.setOnTouchListener(new OnTouchListener()
+				gdxView.setOnTouchListener(new OnTouchListener()
 				{
 					@Override
 					public boolean onTouch(View v, MotionEvent event)
@@ -2340,15 +2307,19 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				});
 
 				// mapViewGl = new MapViewGL(this, inflater, viewGl, mapViewGlListener);
-				viewGL = new ViewGL(this, inflater, viewGl, glListener);
+				viewGL = new ViewGL(this, inflater, gdxView, glListener);
 
 				viewGL.Initialize();
-				// mapViewGl.CurrentLayer =
-				// MapView.Manager.GetLayerByName(Config.settings.CurrentMapLayer.getValue(),
-				// Config.settings.CurrentMapLayer.getValue(), "");
-				// Global.TrackDistance =
-				// Config.settings.TrackDistance.getValue();
 				viewGL.InitializeMap();
+
+				GlFrame.removeAllViews();
+				ViewParent parent = ((View) gdxView).getParent();
+				if (parent != null)
+				{
+					// aktView ist noch gebunden, also lösen
+					((RelativeLayout) parent).removeAllViews();
+				}
+				GlFrame.addView((View) gdxView);
 
 			}
 		}
@@ -2358,9 +2329,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			e.printStackTrace();
 		}
 
-		// // Initial TestView
-		// testView = new TestView(0, 0, 400, 500);
-		// glListener.add(testView);
 	}
 
 	private void initalMicIcon()

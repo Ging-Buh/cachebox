@@ -115,7 +115,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu
 
 	public void InitializeMap()
 	{
-		glListener.InitializeMap();
+		// glListener.InitializeMap();
 
 	}
 

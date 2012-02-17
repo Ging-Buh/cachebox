@@ -5,8 +5,8 @@ import java.io.ByteArrayOutputStream;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Log.Logger;
+import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.graphics.Bitmap;
@@ -85,21 +85,21 @@ public class Bubble
 
 		if (!isShow) return;
 
-		DrawRec = new RectF(Pos.x - UiSizes.GL.halfBubble + WpUnderlay.halfWidth, Pos.y, Pos.x - UiSizes.GL.halfBubble + WpUnderlay.halfWidth
-				+ UiSizes.GL.Bubble.width, Pos.y + UiSizes.GL.Bubble.height);
+		DrawRec = new RectF(Pos.x - GL_UISizes.halfBubble + WpUnderlay.halfWidth, Pos.y, Pos.x - GL_UISizes.halfBubble
+				+ WpUnderlay.halfWidth + GL_UISizes.Bubble.width, Pos.y + GL_UISizes.Bubble.height);
 
 		Sprite sprite = (cache == GlobalCore.SelectedCache()) ? SpriteCache.Bubble.get(1) : SpriteCache.Bubble.get(0);
-		sprite.setPosition(Pos.x - UiSizes.GL.halfBubble + WpUnderlay.halfWidth, Pos.y);
-		sprite.setSize(UiSizes.GL.Bubble.width, UiSizes.GL.Bubble.height);
+		sprite.setPosition(Pos.x - GL_UISizes.halfBubble + WpUnderlay.halfWidth, Pos.y);
+		sprite.setSize(GL_UISizes.Bubble.width, GL_UISizes.Bubble.height);
 		sprite.draw(MapViewGlListener.batch);
 
 		try
 		{
 			Sprite contentSprite = GetBubbleContentSprite(512, 128);
 
-			contentSprite.setPosition(Pos.x - UiSizes.GL.halfBubble + WpUnderlay.halfWidth + UiSizes.GL.bubbleCorrect.width, Pos.y
-					+ UiSizes.GL.bubbleCorrect.height);
-			contentSprite.setSize(UiSizes.GL.Bubble.width, UiSizes.GL.Bubble.height - UiSizes.GL.bubbleCorrect.height);
+			contentSprite.setPosition(Pos.x - GL_UISizes.halfBubble + WpUnderlay.halfWidth + GL_UISizes.bubbleCorrect.width, Pos.y
+					+ GL_UISizes.bubbleCorrect.height);
+			contentSprite.setSize(GL_UISizes.Bubble.width, GL_UISizes.Bubble.height - GL_UISizes.bubbleCorrect.height);
 			contentSprite.draw(MapViewGlListener.batch);
 		}
 		catch (Exception e)

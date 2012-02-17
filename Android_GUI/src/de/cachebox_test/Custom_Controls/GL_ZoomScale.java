@@ -19,9 +19,10 @@ package de.cachebox_test.Custom_Controls;
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.GL_UISizes;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -109,11 +110,11 @@ public class GL_ZoomScale
 			valueBack.draw(batch, FadeValue);
 		}
 
-		com.badlogic.gdx.graphics.Color c = UiSizes.GL.fontAB22.getColor();
-		UiSizes.GL.fontAB22.setColor(1f, 1f, 1f, FadeValue);
-		UiSizes.GL.fontAB22.draw(batch, String.valueOf(zoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
+		com.badlogic.gdx.graphics.Color c = Fonts.get22().getColor();
+		Fonts.get22().setColor(1f, 1f, 1f, FadeValue);
+		Fonts.get22().draw(batch, String.valueOf(zoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
 				ValueRec.getY() + ValueRec.getHeight() / 1.5f);
-		UiSizes.GL.fontAB22.setColor(c.r, c.g, c.b, c.a);
+		Fonts.get22().setColor(c.r, c.g, c.b, c.a);
 	}
 
 	public void setDiffCameraZoom(float value, boolean positive)
@@ -188,7 +189,7 @@ public class GL_ZoomScale
 
 			dist = (bottomRow - topRow) / numSteps;
 
-			ValueRec = new CB_RectF(rect.getX() + UiSizes.GL.infoShadowHeight + centerColumn - rect.getWidth() / 2 - lineHeight / 2, grundY
+			ValueRec = new CB_RectF(rect.getX() + GL_UISizes.infoShadowHeight + centerColumn - rect.getWidth() / 2 - lineHeight / 2, grundY
 					+ y, rect.getWidth(), rect.getWidth() / 2);
 		}
 		else

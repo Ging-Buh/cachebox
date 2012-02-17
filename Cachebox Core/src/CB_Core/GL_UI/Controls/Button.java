@@ -16,11 +16,11 @@
 
 package CB_Core.GL_UI.Controls;
 
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -39,10 +39,9 @@ public class Button extends GL_View_Base
 	private String text;
 	private Label lblTxt;
 
-	public Button(float X, float Y, float Width, float Height)
+	public Button(float X, float Y, float Width, float Height, GL_View_Base Parent)
 	{
-		super(X, Y, Width, Height);
-
+		super(X, Y, Width, Height, Parent);
 	}
 
 	@Override
@@ -99,7 +98,7 @@ public class Button extends GL_View_Base
 	@Override
 	public boolean onTouchDragged(int x, int y, int pointer)
 	{
-		// TODO Auto-generated method stub
+		isPressed = false;
 		return false;
 	}
 
@@ -181,8 +180,8 @@ public class Button extends GL_View_Base
 
 			r.setPos(new Vector2(l, b));
 
-			lblTxt = new Label(r);
-			lblTxt.setFont(UiSizes.GL.fontAB18);
+			lblTxt = new Label(r, this);
+			lblTxt.setFont(Fonts.get18());
 			lblTxt.setHAlignment(HAlignment.CENTER);
 			lblTxt.setVAlignment(VAlignment.CENTER);
 			this.addChild(lblTxt);
