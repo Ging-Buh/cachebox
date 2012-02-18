@@ -85,7 +85,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu, Positio
 		@Override
 		public void onClick(View v)
 		{// bei click auf WP zeige WayPointView
-			((main) main.mainActivity).showView(2);
+			((main) main.mainActivity).showView(main.WAYPOINT_VIEW);
 			Toast.makeText(main.mainActivity, "Switch to Waypoint View", Toast.LENGTH_SHORT).show();
 		}
 	};

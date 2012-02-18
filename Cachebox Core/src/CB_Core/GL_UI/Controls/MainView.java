@@ -1,41 +1,60 @@
 package CB_Core.GL_UI.Controls;
 
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.Views.CreditsView;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.GL_UI.Views.TestView;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.GL_UISizes;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class MainView extends GL_View_Base
 {
 
-	/**
-	 * beinhaltet die ID der aktuell angezeigten GL_View
-	 */
-	private static int mGL_ViewID = -1;
-
-	public static final int TEST_VIEW = 16;
-	public static final int CREDITS_VIEW = 17;
-	public static final int MAP_VIEW = 18;
-
 	private TestView testView; // ID = 16
 	private CreditsView creditView; // ID = 17
 	private MapView mapView; // ID = 18
 
-	private static boolean viewChanged = false;
+	private GL_View_Base leftFrame;
+	private GL_View_Base rightFrame;
 
 	/**
 	 * Setzt die GL_View mit der übergebenen ID als anzuzeigende View Es wird nur diese View angezeigt!
 	 * 
 	 * @param ID
 	 */
-	public static void setGLViewID(int ID)
+	public void setGLViewID(ViewID ID)
 	{
-		mGL_ViewID = ID;
-		viewChanged = true;
+
+		if (leftFrame == null || rightFrame == null)
+		{
+			leftFrame = new Box(GL_UISizes.UI_Left);
+			rightFrame = new Box(GL_UISizes.UI_Right);
+
+			this.removeChilds();
+
+			this.addChild(leftFrame);
+
+			if (GlobalCore.isTab)
+			{
+				this.addChild(rightFrame);
+			}
+		}
+
+		if (ID.getPos() == ViewID.UI_Pos.Left)
+		{
+			leftFrame.removeChilds();
+			leftFrame.addChild(getView(ID));
+		}
+		else
+		{
+			rightFrame.removeChilds();
+			rightFrame.addChild(getView(ID));
+		}
 
 		Logger.LogCat("SetGlViewID" + ID);
 	}
@@ -53,42 +72,15 @@ public class MainView extends GL_View_Base
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		// Chk if ViewID changed
-		if (viewChanged)
-		{
-			Logger.LogCat("Chk if ViewID changed" + mGL_ViewID);
-			this.removeChilds();
-			switch (mGL_ViewID)
-			{
-			case TEST_VIEW:
-				if (testView == null)
-				{
-					testView = new TestView(this); // create Testview in voller Göße
-					testView.setClickable(true);
-				}
-				this.addChild(testView);
-				break;
-			case CREDITS_VIEW:
-				if (creditView == null)
-				{
-					creditView = new CreditsView(this); // create CreditsView in voller Göße
-					creditView.setClickable(true);
-				}
-				this.addChild(creditView);
-				break;
-			case MAP_VIEW:
-				if (mapView == null)
-				{
-					mapView = new MapView(this); // create MapView in voller Göße
-					mapView.setClickable(true);
-				}
-				this.addChild(mapView);
-				break;
-			}
 
-			viewChanged = false;
-		}
+	}
 
+	private GL_View_Base getView(ViewID ID)
+	{
+		if (ID.getID() == ViewID.TEST_VIEW) return testView = new TestView(GL_UISizes.UI_Right);
+		if (ID.getID() == ViewID.CREDITS_VIEW) return creditView = new CreditsView(GL_UISizes.UI_Right);
+		if (ID.getID() == ViewID.GL_MAP_VIEW) return mapView = new MapView(GL_UISizes.UI_Right);
+		return null;
 	}
 
 	@Override

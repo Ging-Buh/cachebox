@@ -100,7 +100,7 @@ public final class invertViewControl extends View
 								public void run()
 								{
 									firstDraw = false;
-									((main) main.mainActivity).showView(4);
+									((main) main.mainActivity).showView(main.DESCRIPTION_VIEW);
 								}
 							});
 						}

@@ -35,7 +35,9 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
-import CB_Core.GL_UI.Controls.MainView;
+import CB_Core.GL_UI.ViewID;
+import CB_Core.GL_UI.ViewID.UI_Pos;
+import CB_Core.GL_UI.ViewID.UI_Type;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
@@ -170,11 +172,42 @@ import de.cachebox_test.Views.Forms.SelectDB;
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEvent,
 		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent
 {
+
+	/*
+	 * Const
+	 */
+
+	public static final ViewID MAP_VIEW = new ViewID(ViewID.MAP_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Right);
+	public static final ViewID CACHE_LIST_VIEW = new ViewID(ViewID.CACHE_LIST_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
+	public static final ViewID LOG_VIEW = new ViewID(ViewID.LOG_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
+	public static final ViewID DESCRIPTION_VIEW = new ViewID(ViewID.DESCRIPTION_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Right);
+	public static final ViewID SPOILER_VIEW = new ViewID(ViewID.SPOILER_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Right);
+	public static final ViewID NOTES_VIEW = new ViewID(ViewID.NOTES_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Right);
+	public static final ViewID SOLVER_VIEW = new ViewID(ViewID.SOLVER_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Right);
+	public static final ViewID COMPASS_VIEW = new ViewID(ViewID.COMPASS_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
+	public static final ViewID FIELD_NOTES_VIEW = new ViewID(ViewID.FIELD_NOTES_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Right);
+	public static final ViewID ABOUT_VIEW = new ViewID(ViewID.ABOUT_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
+	public static final ViewID JOKER_VIEW = new ViewID(ViewID.JOKER_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
+	public static final ViewID TRACK_LIST_VIEW = new ViewID(ViewID.TRACK_LIST_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
+	public static final ViewID TB_LIST_VIEW = new ViewID(ViewID.TB_LIST_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
+	public static final ViewID WAYPOINT_VIEW = new ViewID(ViewID.WAYPOINT_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
+	public static final ViewID TEST_VIEW = new ViewID(ViewID.TEST_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
+	public static final ViewID CREDITS_VIEW = new ViewID(ViewID.CREDITS_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
+	public static final ViewID GL_MAP_VIEW = new ViewID(ViewID.CREDITS_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
+
+	public static final ViewID SETTINGS = new ViewID(ViewID.SETTINGS, UI_Type.Activity, null, null);
+	public static final ViewID FILTER_SETTINGS = new ViewID(ViewID.FILTER_SETTINGS, UI_Type.Activity, null, null);
+	public static final ViewID IMPORT = new ViewID(ViewID.IMPORT, UI_Type.Activity, null, null);
+
 	/*
 	 * private static member
 	 */
 
-	public static Integer aktViewId = -1;
+	public static ViewID aktViewId = null;
+	public static ViewID aktTabViewId = null;
+
+	ViewOptionsMenu tabView;
+
 	private static long GPSTimeStamp = 0;
 	public static MapView mapView = null; // ID 0
 	public static CacheListView cacheListView = null; // ID 1
@@ -196,7 +229,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	 * viewGl kann mehrere ID beinhalten, vieGL ist nur die Basis für alle Views auf Basis von GL_View_Base </br> TestView = 16 </br>
 	 * CreditsView = 17 </br> MapView = 18 </br>
 	 */
-	public static ViewGL viewGL = null; // ID 16;
+	public static ViewGL viewGL = null;
 
 	/**
 	 * gdxView ist die Android.View für gdx
@@ -266,9 +299,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	// Views
 	private ViewOptionsMenu aktView = null;
+	private ViewOptionsMenu aktTabView = null;
 	private CacheNameView cacheNameView;
 
-	private ArrayList<View> ViewList = new ArrayList<View>();
+	private ArrayList<ViewOptionsMenu> ViewList = new ArrayList<ViewOptionsMenu>();
 	// private int lastBtnDBView = 1;
 	// private int lastBtnCacheView = 4;
 	// private int lastBtnNavView = 0;
@@ -478,7 +512,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		Search = new search(this);
 
-		if (aktViewId != -1)
+		if (aktViewId != null)
 		{
 			// Zeige letzte gespeicherte View beim neustart der Activity
 			showView(aktViewId);
@@ -492,7 +526,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Logger.General("------ Start Rev: " + Global.CurrentRevision + "-------");
 
 			// Zeige About View als erstes!
-			showView(11);
+			showView(ABOUT_VIEW);
 
 			// und Map wenn Tablet
 			// if (GlobalCore.isTab)
@@ -686,7 +720,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							else
 							{
 								flag = true;
-								showView(1);
+								showView(CACHE_LIST_VIEW);
 								startTimer();
 							}
 
@@ -830,7 +864,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					// switch to Compass if the option seted
 					if (Config.settings.switchViewApproach.getValue())
 					{
-						showView(8);
+						showView(COMPASS_VIEW);
 					}
 				}
 			}
@@ -1285,7 +1319,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onPause()
 	{
-
+		Logger.LogCat("Main=> onPause");
 		if (input == null)
 		{
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
@@ -1295,13 +1329,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			input = new AndroidInput(this, graphics.getView(), config);
 		}
 
-		if (graphics != null)
-		{
-			if (aktViewId != 2)
-			{
-				graphics.isShown = false;
-			}
-		}
 		super.onPause();
 		graphics.isShown = true;
 	}
@@ -1309,7 +1336,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onResume()
 	{
-
+		Logger.LogCat("Main=> onResume");
 		if (input == null)
 		{
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
@@ -1318,13 +1345,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					: config.resolutionStrategy);
 			input = new AndroidInput(this, graphics.getView(), config);
 		}
-		if (graphics != null)
-		{
-			if (aktViewId != 2)
-			{
-				graphics.isShown = false;
-			}
-		}
+
 		super.onResume();
 		graphics.isShown = true;
 
@@ -1350,6 +1371,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onStop()
 	{
+		Logger.LogCat("Main=> onStop");
+
 		mSensorManager.unregisterListener(mListener);
 		this.unregisterReceiver(this.mBatInfoReceiver);
 		counter.cancel();
@@ -1359,6 +1382,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	public void onDestroy()
 	{
+
+		Logger.LogCat("Main=> onDestroy");
 		frame.removeAllViews();
 		if (isRestart)
 		{
@@ -1403,12 +1428,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					aktView.OnFree();
 				}
 				aktView = null;
-				for (View vom : ViewList)
+				for (ViewOptionsMenu vom : ViewList)
 				{
-					if (vom instanceof ViewOptionsMenu)
-					{
-						((ViewOptionsMenu) vom).OnFree();
-					}
+					vom.OnFree();
 				}
 				ViewList.clear();
 				cacheListView = null;
@@ -1514,27 +1536,27 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (v == buttonDB)
 			{
-				showView(1);
+				showView(CACHE_LIST_VIEW);
 			}
 
 			else if (v == buttonCache)
 			{
-				showView(4);
+				showView(DESCRIPTION_VIEW);
 			}
 
 			else if (v == buttonNav)
 			{
-				showView(0);
+				showView(MAP_VIEW);
 			}
 
 			else if (v == buttonTools)
 			{
-				// showView();
+
 			}
 
 			else if (v == buttonMisc)
 			{
-				showView(11);
+				showView(ABOUT_VIEW);
 			}
 		}
 	};
@@ -1561,136 +1583,132 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 	};
 
-	public void showView(Integer ID)
+	public void showView(ViewID ID)
 	{
-		if (ID == -1) return;// keine Action
+		if (ID == null) return;// keine Action
 
-		if (!(aktView == null) && ID == aktViewId)
+		String Pos = "null";
+		String Type = "null";
+		if (ID.getPos() != null)
 		{
-			aktView.OnShow();
+			Pos = ID.getPos().toString();
+			Type = ID.getType().toString();
+		}
+
+		Logger.LogCat("main.showView(" + ID.getID() + "/" + Pos + "/" + Type + ")");
+
+		if (ID.getType() == ViewID.UI_Type.Activity)
+		{
+			showActivity(ID);
 			return;
-		}
-
-		if (ID >= ViewList.size())
-		{
-			switch (ID)
-			{
-			case 102: // Settings
-				final Intent mainIntent = new Intent().setClass(mainActivity, SettingsScrollView.class);
-				Bundle b = new Bundle();
-				b.putSerializable("Show", -1);
-				mainIntent.putExtras(b);
-				mainActivity.startActivity(mainIntent);
-				break;
-
-			case 101: // Filtersettings
-				final Intent mainIntent1 = new Intent().setClass(mainActivity, EditFilterSettings.class);
-				mainActivity.startActivity(mainIntent1);
-				break;
-
-			case 103: // Import
-				final Intent mainIntent2 = new Intent().setClass(mainActivity, ImportDialog.class);
-				mainActivity.startActivity(mainIntent2);
-				break;
-
-			case 14: // TrackableListView
-				trackablelistView = new TrackableListView(this, this);
-				showView(trackablelistView, 14);
-				break;
-
-			case 13: // TrackListView
-				tracklistView = new TrackListView(this, this);
-				showView(tracklistView, 13);
-				break;
-
-			case 12: // jokerView
-				if (Config.settings.hasCallPermission.getValue())
-				{
-					jokerView = new JokerView(this, this);
-					showView(jokerView, 12);
-				}
-				break;
-
-			case 11: // aboutView
-				aboutView = new AboutView(this, inflater);
-				showView(aboutView, 11);
-				break;
-
-			case 9: // fieldNotesView
-				fieldNotesView = new FieldNotesView(this, this);
-				showView(fieldNotesView, 9);
-				break;
-
-			case 8: // compassView
-				compassView = new CompassView(this, inflater);
-				compassView.reInit();
-				showView(compassView, 8);
-				break;
-			case 7: // solverView
-				solverView = new SolverView(this, inflater);
-				showView(solverView, 7);
-				break;
-			case 6: // notesView
-				notesView = new NotesView(this, inflater);
-				showView(notesView, 6);
-				break;
-			case 5: // spoilerView
-				spoilerView = new SpoilerView(this, inflater);
-				showView(spoilerView, 5);
-				break;
-			case 4: // descriptionView
-				descriptionView = new DescriptionView(this, inflater);
-				showView(descriptionView, 4);
-				break;
-			case 3: // descriptionView
-				logView = new LogView(this);
-				showView(logView, 3);
-				break;
-			case 15: // waypointView
-				waypointView = new WaypointView(this, this);
-				showView(waypointView, 15);
-				break;
-			case 16:
-				ShowViewGL(ID);
-				break;
-			case 17:
-				ShowViewGL(ID);
-				break;
-			case 18:
-				ShowViewGL(ID);
-				break;
-			}
-		}
-		else
-		{
-			showView((ViewOptionsMenu) ViewList.get(ID), ID);
-
-		}
-
-	}
-
-	private void ShowViewGL(int ID)
-	{
-		initialViewGL();
-		showView(viewGL, ID);
-	}
-
-	private void showView(ViewOptionsMenu view, int Id)
-	{
-		boolean showAnGlView = false;
-
-		// eventuell GL_View umschalten
-		if (Id == 16 || Id == 17 || Id == 18)
-		{
-			showAnGlView = true;
-			MainView.setGLViewID(Id);
 		}
 
 		if (GlobalCore.isTab)
 		{
-			if (Id == 2 || Id == 16 || Id == 4)
+			if (ID.getPos() == UI_Pos.Left)
+			{
+				if (!(aktView == null) && ID == aktViewId)
+				{
+					aktView.OnShow();
+					return;
+				}
+			}
+			else
+			{
+				if (!(aktTabView == null) && ID == aktViewId)
+				{
+					aktTabView.OnShow();
+					return;
+				}
+			}
+		}
+		else
+		{
+			if (!(aktView == null) && ID == aktViewId)
+			{
+				aktView.OnShow();
+				return;
+			}
+		}
+
+		if (ID.getType() == UI_Type.Android)
+		{
+			showView(getView(ID), ID);
+		}
+
+		if (ID.getType() == UI_Type.OpenGl)
+		{
+			ShowViewGL(ID);
+		}
+
+	}
+
+	/**
+	 * Gibt die zur ViewID gehörige View zurück und erstellst eine Instanz, wenn sie nicht exestiert.
+	 * 
+	 * @param ID
+	 *            ViewID
+	 * @return View
+	 */
+	private ViewOptionsMenu getView(ViewID ID)
+	{
+		// first chek if view on List
+		if (ID.getID() < ViewList.size())
+		{
+			return ViewList.get(ID.getID());
+		}
+
+		if (ID == TRACK_LIST_VIEW) return trackablelistView = new TrackableListView(this, this);
+		else if (ID == TRACK_LIST_VIEW) return tracklistView = new TrackListView(this, this);
+		else if (ID == JOKER_VIEW) return jokerView = new JokerView(this, this);
+		else if (ID == ABOUT_VIEW) return aboutView = new AboutView(this, inflater);
+		else if (ID == FIELD_NOTES_VIEW) return fieldNotesView = new FieldNotesView(this, this);
+		else if (ID == SOLVER_VIEW) return solverView = new SolverView(this, inflater);
+		else if (ID == NOTES_VIEW) return notesView = new NotesView(this, inflater);
+		else if (ID == SPOILER_VIEW) return spoilerView = new SpoilerView(this, inflater);
+		else if (ID == DESCRIPTION_VIEW) return descriptionView = new DescriptionView(this, inflater);
+		else if (ID == LOG_VIEW) return logView = new LogView(this);
+		else if (ID == WAYPOINT_VIEW) return waypointView = new WaypointView(this, this);
+		else if (ID == COMPASS_VIEW)
+		{
+			compassView = new CompassView(this, inflater);
+			compassView.reInit();
+			return compassView;
+		}
+		return null;
+	}
+
+	private void showActivity(ViewID ID)
+	{
+		if (ID == SETTINGS)
+		{
+			final Intent mainIntent = new Intent().setClass(mainActivity, SettingsScrollView.class);
+			Bundle b = new Bundle();
+			b.putSerializable("Show", -1);
+			mainIntent.putExtras(b);
+			mainActivity.startActivity(mainIntent);
+		}
+		else if (ID == FILTER_SETTINGS)
+		{
+			final Intent mainIntent1 = new Intent().setClass(mainActivity, EditFilterSettings.class);
+			mainActivity.startActivity(mainIntent1);
+		}
+		else if (ID == IMPORT)
+		{
+			final Intent mainIntent2 = new Intent().setClass(mainActivity, ImportDialog.class);
+			mainActivity.startActivity(mainIntent2);
+		}
+
+	}
+
+	private void showView(ViewOptionsMenu view, ViewID ID)
+	{
+
+		if (GlobalCore.isTab)
+		{
+			if (ID.getPos() == ViewID.UI_Pos.Right)
 			{ // MapViewGL || ViewGL || DescriptionView
-				showTabletView(view, Id);
+				showTabletView(view, ID);
 				return;
 			}
 		}
@@ -1698,6 +1716,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (aktView != null)
 		{
 			aktView.OnHide();
+
+			if (ID.getType() == UI_Type.OpenGl)
+			{
+				this.onPause();
+			}
 
 			if (aktView.equals(trackablelistView))
 			{
@@ -1783,25 +1806,29 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				waypointView.OnFree();
 				waypointView = null;
 			}
-			else if (aktView.equals(viewGL))
-			{
-				this.onPause();
-			}
+
 		}
 
-		if (showAnGlView)
+		if (ID.getType() == UI_Type.OpenGl)
 		{
 
-			showGL(view, Id);
+			ShowViewGL(ID);
 			return;
 
 		}
 
-		frame.setVisibility(View.VISIBLE);
+		if (GlobalCore.isTab)
+		{
+			tabFrame.setVisibility(View.VISIBLE);
+		}
+		{
+			frame.setVisibility(View.VISIBLE);
+		}
 
 		System.gc();
 
 		aktView = view;
+
 		frame.removeAllViews();
 		ViewParent parent = ((View) aktView).getParent();
 		if (parent != null)
@@ -1811,29 +1838,43 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 		frame.addView((View) aktView);
 		aktView.OnShow();
-		aktViewId = Id;
+		aktViewId = ID;
 		InfoDownSlider.invalidate();
 		((View) aktView).forceLayout();
 
 	}
 
-	private void showGL(ViewOptionsMenu view, int Id)
+	private void ShowViewGL(ViewID Id)
 	{
 		Log.d("CACHEBOX", "GL Frame" + GlFrame.getMeasuredWidth() + "/" + GlFrame.getMeasuredHeight());
 
-		frame.setVisibility(View.INVISIBLE);
+		initialViewGL();
 
-		aktView = view;
-		aktView.OnShow();
-		aktViewId = Id;
+		glListener.onStart();
+		glListener.setGLViewID(Id);
+
+		if (GlobalCore.isTab)
+		{
+			tabFrame.setVisibility(View.INVISIBLE);
+		}
+		{
+			frame.setVisibility(View.INVISIBLE);
+		}
+
+		if (Id.getPos() == ViewID.UI_Pos.Left)
+		{
+			aktViewId = Id;
+		}
+		else
+		{
+			aktTabViewId = Id;
+		}
+
 		InfoDownSlider.invalidate();
-		((View) aktView).forceLayout();
+
 	}
 
-	ViewOptionsMenu tabView;
-	int aktTabViewId = -1;
-
-	private void showTabletView(ViewOptionsMenu view, int Id)
+	private void showTabletView(ViewOptionsMenu view, ViewID Id)
 	{
 
 		if (tabView != null)
@@ -1862,9 +1903,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		aktTabViewId = Id;
 		InfoDownSlider.invalidate();
 		((View) tabView).forceLayout();
+
 	}
 
 	/*
+	 * 
+	 * 
 	 * show ContextMenus
 	 */
 
@@ -1890,7 +1934,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				switchDayNight();
 				break;
 			case R.id.miSettings:
-				showView(102);
+				showView(SETTINGS);
 				break;
 			case R.id.miVoiceRecorder:
 				recVoice();
@@ -1902,60 +1946,59 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				recVideo();
 				break;
 			case R.id.miAbout:
-				showView(17); // Show CreditsView
+				showView(CREDITS_VIEW); // Show CreditsView
 				break;
-			// case R.id.miTestEmpty:showView(10);break;
 			case R.id.miImport:
-				showView(103);
+				showView(IMPORT);
 				break;
 			case R.id.miLogView:
-				showView(3);
+				showView(LOG_VIEW);
 				break;
 			case R.id.miSpoilerView:
-				showView(5);
+				showView(SPOILER_VIEW);
 				break;
 			case R.id.miHint:
 				showHint();
 				break;
 			case R.id.miFieldNotes:
-				showView(9);
+				showView(FIELD_NOTES_VIEW);
 				openOptionsMenu();
 				break;
 			case R.id.miTelJoker:
 				showJoker();
 				break;
 			case R.id.miCompassView:
-				showView(8);
+				showView(FIELD_NOTES_VIEW);
 				break;
 			case R.id.miMapView:
-				showView(0);
+				showView(MAP_VIEW);
 				break;
 			case R.id.miViewGL:
-				showView(16);
+				showView(TEST_VIEW);
 				break;
 			case R.id.miViewMap3:
-				showView(18);
+				showView(GL_MAP_VIEW);
 				break;
 			case R.id.miDescription:
-				showView(4);
+				showView(DESCRIPTION_VIEW);
 				break;
 			case R.id.miWaypoints:
-				showView(15);
+				showView(WAYPOINT_VIEW);
 				break;
 			case R.id.miNotes:
-				showView(6);
+				showView(NOTES_VIEW);
 				break;
 			case R.id.miSolver:
-				showView(7);
+				showView(SOLVER_VIEW);
 				break;
 			case R.id.miCacheList:
-				showView(1);
+				showView(CACHE_LIST_VIEW);
 				break;
 			case R.id.miTrackList:
-				showView(13);
+				showView(TRACK_LIST_VIEW);
 				break;
 			case R.id.miFilterset:
-				showView(101);
+				showView(FILTER_SETTINGS);
 				break;
 			case R.id.miManageDB:
 				showManageDB();
@@ -2029,25 +2072,25 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			switch (clicedItem.getActionId())
 			{
 			case 0:
-				showView(4);
+				showView(DESCRIPTION_VIEW);
 				break;
 			case 1:
-				showView(15);
+				showView(WAYPOINT_VIEW);
 				break;
 			case 2:
-				showView(3);
+				showView(LOG_VIEW);
 				break;
 			case 3:
-				showView(0);
+				showView(MAP_VIEW);
 				break;
 			case 4:
-				showView(8);
+				showView(COMPASS_VIEW);
 				break;
 			case 5:
-				showView(1);
+				showView(CACHE_LIST_VIEW);
 				break;
 			case 6:
-				showView(13);
+				showView(TRACK_LIST_VIEW);
 				break;
 			case 7:
 				takePhoto();
@@ -2061,9 +2104,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case 10:
 				Search.Show();
 				break;
-			case 11:
-				showView(101);
-				break;
+			// case 11:
+			// showView(101);
+			// break;
 			case 12:
 				startScreenLock(true);
 				break;
@@ -2072,10 +2115,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				QuickButtonList.invalidate();
 				break;
 			case 14:
-				showView(7);
+				showView(SOLVER_VIEW);
 				break;
 			case 15:
-				if (GlobalCore.SelectedCache() != null && GlobalCore.SelectedCache().SpoilerExists()) showView(5);
+				if (GlobalCore.SelectedCache() != null && GlobalCore.SelectedCache().SpoilerExists()) showView(SPOILER_VIEW);
 				break;
 			case 16:
 				if (GlobalCore.SelectedCache() != null && !(GlobalCore.SelectedCache().hint.equals(""))) showHint();
@@ -2621,7 +2664,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							else
 							{
 								Logger.General("Open JokerView...");
-								showView(12);
+								showView(JOKER_VIEW);
 							}
 						}
 						finally
@@ -2653,7 +2696,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private void showTbList()
 	{
 		// MessageBox.Show("comming soon", "sorry", MessageBoxIcon.Asterisk);
-		showView(14);
+		showView(TB_LIST_VIEW);
 	}
 
 	private void switchDayNight()

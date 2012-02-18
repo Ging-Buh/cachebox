@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.Controls.MainView;
 import CB_Core.Log.Logger;
 import CB_Core.Math.GL_UISizes;
@@ -303,6 +304,11 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 			child.setClickable(true);
 		}
 
+	}
+
+	public void setGLViewID(ViewID id)
+	{
+		child.setGLViewID(id);
 	}
 
 }

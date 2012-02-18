@@ -1,6 +1,7 @@
 package CB_Core.Math;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
 
@@ -77,6 +78,18 @@ public class GL_UISizes implements SizeChangedEvent
 			isInitial = true;
 		}
 	}
+
+	/**
+	 * das Rechteck, welches die Größe und Position aller GL_View´s auf der linken Seite darstellt. Dieses Rechteck ist immer Gültig! Das
+	 * Rechteck UI_Reight hat die Gleiche Größe und Position wie UI_Left, wenn es sich nicht um ein Tablet Layout handelt.
+	 */
+	public static CB_RectF UI_Left;
+
+	/**
+	 * Das Rechteck, welches die Größe und Position aller GL_View´s auf der rechten Seite darstellt, wenn es sich um ein Tablet Layout
+	 * handelt. Wenn es sich nicht um ein Tablet Layout handelt, hat dieses Rechteck die selbe Größe und Position wie UI_Left.
+	 */
+	public static CB_RectF UI_Right;
 
 	/**
 	 * Ist false solange die Größen nicht berechnet sind. Diese müssen nur einmal berechnet Werden, oder wenn ein Faktor (DPI oder
@@ -216,6 +229,23 @@ public class GL_UISizes implements SizeChangedEvent
 	 */
 	private static void calcSizes()
 	{
+		// größe der Frames berechnen
+		int frameLeftwidth = UiSizes.RefWidth;
+
+		int WindowWidth = UiSizes.getWindowWidth();
+		int frameRightWidth = WindowWidth - frameLeftwidth;
+
+		// Window height- CacheNameViewHeight(35dip)-ImageButtonHeight(65dip)
+		int frameHeight = UiSizes.getWindowHeight() - convertDip2Pix(35) - convertDip2Pix(65);
+
+		UI_Left = new CB_RectF(0, convertDip2Pix(65), frameLeftwidth, frameHeight);
+		UI_Right = UI_Left.copy();
+		if (GlobalCore.isTab)
+		{
+			UI_Right.setX(frameLeftwidth + 1);
+			UI_Right.setWidth(frameRightWidth);
+		}
+
 		infoShadowHeight = (float) (3.333333 * DPI);
 		Info.setSize(244 * DPI, 58 * DPI);
 		Compass.setSize((float) (44.6666667 * DPI), (float) (44.6666667 * DPI));
@@ -236,6 +266,15 @@ public class GL_UISizes implements SizeChangedEvent
 		Bubble.setSize((float) 253.3333334 * DPI, (float) 105.333334 * DPI);
 		halfBubble = Bubble.width / 2;
 		bubbleCorrect.setSize((float) (6.6666667 * DPI), (float) 26.66667 * DPI);
+	}
+
+	static float scale = 0;
+
+	private static int convertDip2Pix(float dips)
+	{
+		// Converting dips to pixels
+		if (scale == 0) scale = UiSizes.getScale();
+		return Math.round(dips * scale);
 	}
 
 	@Override

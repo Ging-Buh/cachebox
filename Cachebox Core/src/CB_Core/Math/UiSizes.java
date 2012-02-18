@@ -60,6 +60,9 @@ public class UiSizes
 
 	private static double calcBase;
 
+	private static int QuickButtonRef;
+	static int RefWidth;
+
 	public static Size initial(devicesSizes ini)
 	{
 		// Resources res = context.getResources();
@@ -84,8 +87,6 @@ public class UiSizes
 		// Button = new Size(96,88);
 		// QuickButtonList = new Size(460,90);
 
-		int QuickButtonRef;
-		int RefWidth;
 		if (GlobalCore.isTab)
 		{
 			QuickButtonRef = 350;

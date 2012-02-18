@@ -1,6 +1,8 @@
 package de.cachebox_test.Views;
 
 import CB_Core.GlobalCore;
+import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
@@ -21,7 +23,7 @@ import de.cachebox_test.Custom_Controls.DescriptionViewControl;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
 
-public class DescriptionView extends FrameLayout implements ViewOptionsMenu
+public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent
 {
 	Context context;
 	public Cache aktCache;
@@ -105,6 +107,12 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu
 		WebControl.setWillNotDraw(false);
 		WebControl.invalidate();
 
+		// register CacheChanged Event if Tablet
+		if (GlobalCore.isTab)
+		{
+			SelectedCacheEventList.Add(this);
+		}
+
 	}
 
 	public int getHeightForWebViewSpacious()
@@ -127,6 +135,11 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu
 	public void OnHide()
 	{
 		WebControl.OnHide();
+		// unregister CacheChanged Event if Tablet
+		if (GlobalCore.isTab)
+		{
+			SelectedCacheEventList.Remove(this);
+		}
 	}
 
 	@Override
@@ -161,6 +174,14 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu
 	public boolean ContextMenuItemSelected(MenuItem item)
 	{
 		return false;
+	}
+
+	@Override
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	{
+		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+		WebControl.OnShow();
+		WebControl.invalidate();
 	}
 
 }
