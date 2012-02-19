@@ -9,6 +9,7 @@ import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ZoomButtons;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.SizeF;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -33,6 +34,30 @@ public class TestView extends GL_View_Base
 
 		// Initial TestView
 		ZoomButtons btnZoom = new ZoomButtons(20, 20, 200, 75, "Test_Zoom");
+		btnZoom.setClickable(true);
+
+		btnZoom.setOnClickListenerDown(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				image.setSize(new SizeF(image.getWidth() - 5, image.getHeight() - 5));
+				return false;
+			}
+		});
+
+		btnZoom.setOnClickListenerUp(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				image.setSize(new SizeF(image.getWidth() + 5, image.getHeight() + 5));
+				return false;
+			}
+		});
+
 		this.addChild(btnZoom);
 
 		// initial Image

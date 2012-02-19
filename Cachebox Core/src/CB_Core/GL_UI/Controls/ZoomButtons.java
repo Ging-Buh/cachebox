@@ -20,6 +20,7 @@ import java.util.Date;
 
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -59,27 +60,57 @@ public class ZoomButtons extends GL_View_Base
 		resetFadeOut();
 	}
 
-	//
-	// /**
-	// * Standard Constructor. </br> minzoom = 6 </br> maxzoom = 20 </br> zoom = 13; </br>
-	// */
-	// public ZoomButtons()
-	// {
-	// }
-	//
-	// /**
-	// * Constructor, für die Übergabe von max,min und act Zoom Level
-	// *
-	// * @param minzoom
-	// * @param maxzoom
-	// * @param zoom
-	// */
-	// public ZoomButtons(int minzoom, int maxzoom, int zoom)
-	// {
-	// this.minzoom = minzoom;
-	// this.maxzoom = maxzoom;
-	// this.zoom = zoom;
-	// }
+	private OnClickListener mOnClickListenerUp;
+	private OnClickListener mOnClickListenerDown;
+
+	public void setOnClickListenerUp(OnClickListener l)
+	{
+		if (!isClickable)
+		{
+			isClickable = true;
+		}
+		mOnClickListenerUp = l;
+	}
+
+	public void setOnClickListenerDown(OnClickListener l)
+	{
+		if (!isClickable)
+		{
+			isClickable = true;
+		}
+		mOnClickListenerDown = l;
+	}
+
+	@Override
+	public boolean click(int x, int y, int pointer, int button)
+	{
+
+		boolean behandelt = false;
+
+		if (mOnClickListenerUp != null)
+		{
+			if (HitRecUp.contains(x, y))
+			{
+				if (GL_View_Base.debug) Logger.LogCat("ZoomButton OnClick UP x/Y " + x + "/" + y);
+				resetFadeOut();
+				mOnClickListenerUp.onClick(this, x, y, pointer, button);
+				behandelt = true;
+			}
+		}
+
+		if (mOnClickListenerUp != null && !behandelt)
+		{
+			if (HitRecDown.contains(x, y))
+			{
+				if (GL_View_Base.debug) Logger.LogCat("ZoomButton OnClick DOWN x/Y " + x + "/" + y);
+				resetFadeOut();
+				mOnClickListenerDown.onClick(this, x, y, pointer, button);
+				behandelt = true;
+			}
+		}
+
+		return behandelt;
+	}
 
 	public boolean hitTest(Vector2 pos)
 	{
@@ -313,10 +344,12 @@ public class ZoomButtons extends GL_View_Base
 	{
 		// rect auf Teilen in zwei gleich große
 		HitRecUp = rec.copy();
+		HitRecUp.setPos(new Vector2()); // setze auf 0,0
 		HitRecDown = rec.copy();
+		HitRecDown.setPos(new Vector2()); // setze auf 0,0
 		HitRecUp.setWidth(rec.getWidth() / 2);
 		HitRecDown.setWidth(rec.getWidth() / 2);
-		HitRecUp.setPos(new Vector2(rec.getX() + HitRecDown.getWidth(), rec.getY()));
+		HitRecUp.setPos(new Vector2(HitRecDown.getWidth(), 0));
 
 	}
 

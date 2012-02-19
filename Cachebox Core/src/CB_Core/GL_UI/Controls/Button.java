@@ -36,7 +36,6 @@ public class Button extends GL_View_Base
 
 	private boolean isPressed = false;
 	private boolean isDisabled = false;
-	private String text;
 	private Label lblTxt;
 
 	public Button(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name)
@@ -158,7 +157,6 @@ public class Button extends GL_View_Base
 	{
 		if (Text == null || Text.equals(""))
 		{
-			text = "";
 			if (lblTxt != null)
 			{
 
@@ -167,9 +165,9 @@ public class Button extends GL_View_Base
 			}
 
 			lblTxt = null;
+			return;
 		}
 
-		text = Text;
 		if (lblTxt == null)
 		{
 

@@ -47,7 +47,7 @@ public abstract class GL_View_Base extends CB_RectF
 	private MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
 
 	private OnClickListener mOnClickListener;
-	private boolean isClickable = false;
+	protected boolean isClickable = false;
 
 	protected boolean onTouchUp = false;
 	protected boolean onTouchDown = false;
@@ -259,6 +259,7 @@ public abstract class GL_View_Base extends CB_RectF
 	public void resize(float width, float height)
 	{
 		onRezised(this);
+		debugRec = null;
 	}
 
 	public abstract void onRezised(CB_RectF rec);
