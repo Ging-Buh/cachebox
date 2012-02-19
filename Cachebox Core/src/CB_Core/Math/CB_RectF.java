@@ -204,6 +204,20 @@ public class CB_RectF
 				&& x >= this.Pos.x && x <= this.crossPos.x && y >= this.Pos.y && y <= this.crossPos.y;
 	}
 
+	/**
+	 * liefert True, wenn das übergebene Rechteck kommplett in diese rechteck Passt.
+	 * 
+	 * @param rec
+	 * @return
+	 */
+	public boolean contains(CB_RectF rec)
+	{
+		boolean ret = this.contains(rec.Pos);
+		ret &= this.contains(rec.crossPos);
+
+		return ret;
+	}
+
 	private ArrayList<SizeChangedEvent> list = new ArrayList<SizeChangedEvent>();
 
 	public void Add(SizeChangedEvent event)
@@ -404,5 +418,54 @@ public class CB_RectF
 	}
 
 	private static MoveableList<Integer> Geraden = new MoveableList<Integer>();
+
+	/**
+	 * Returns the smallest X coordinate of the framing rectangle of the <code>CB_RectF</code> in <code>double</code> precision.
+	 * 
+	 * @return the smallest x coordinate of the framing rectangle of the <code>CB_RectF</code>.
+	 */
+	public float getMinX()
+	{
+		return getX();
+	}
+
+	/**
+	 * Returns the smallest Y coordinate of the framing rectangle of the <code>CB_RectF</code> in <code>double</code> precision.
+	 * 
+	 * @return the smallest y coordinate of the framing rectangle of the <code>CB_RectF</code>.
+	 */
+	public float getMinY()
+	{
+		return getY();
+	}
+
+	/**
+	 * Returns the largest X coordinate of the framing rectangle of the <code>CB_RectF</code> in <code>double</code> precision.
+	 * 
+	 * @return the largest x coordinate of the framing rectangle of the <code>CB_RectF</code>.
+	 */
+	public float getMaxX()
+	{
+		return getX() + getWidth();
+	}
+
+	/**
+	 * Returns the largest Y coordinate of the framing rectangle of the <code>CB_RectF</code> in <code>double</code> precision.
+	 * 
+	 * @return the largest y coordinate of the framing rectangle of the <code>CB_RectF</code>.
+	 */
+	public float getMaxY()
+	{
+		return getY() + getHeight();
+	}
+
+	public CB_RectF createIntersection(CB_RectF rec)
+	{
+		float x1 = Math.max(this.getMinX(), rec.getMinX());
+		float y1 = Math.max(this.getMinY(), rec.getMinY());
+		float x2 = Math.min(this.getMaxX(), rec.getMaxX());
+		float y2 = Math.min(this.getMaxY(), rec.getMaxY());
+		return new CB_RectF(x1, y1, x2 - x1, y2 - y1);
+	}
 
 }

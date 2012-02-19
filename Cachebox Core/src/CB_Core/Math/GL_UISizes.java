@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class GL_UISizes implements SizeChangedEvent
 {
+
 	// /**
 	// * Initialisiert die Größen und Positionen der UI-Elemente der OpenGL Map, anhand der zur Verfügung stehenden Größe und des
 	// * Eingestellten DPI Faktors. Für die Berechnung wird die Größe von Gdx.graphics genommen.
@@ -54,6 +55,7 @@ public class GL_UISizes implements SizeChangedEvent
 			if (SurfaceSize.setSize(width, height))
 			{
 				// Surface grösse hat sich geändert, die Positionen der UI-Elemente müssen neu Berechnet werden.
+				calcSizes();
 				calcPos();
 			}
 		}
@@ -222,6 +224,7 @@ public class GL_UISizes implements SizeChangedEvent
 		CompassMargin = null;
 		margin = null;
 		System.gc();
+
 	}
 
 	/**

@@ -67,6 +67,14 @@ public class HorizontalListView extends AdapterView<ListAdapter>
 
 	private int altPos = 0;
 
+	@Override
+	public void onSizeChanged(int w, int h, int oldw, int oldh)
+	{
+		super.onSizeChanged(w, h, oldw, oldh);
+		// GL größen müssen neu berechnet werden
+
+	}
+
 	public HorizontalListView(Context context)
 	{
 		super(context);

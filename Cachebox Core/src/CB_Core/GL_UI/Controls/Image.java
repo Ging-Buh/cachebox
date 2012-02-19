@@ -110,8 +110,8 @@ public class Image extends GL_View_Base
 		try
 		{
 
-			FileHandle marioFileHandle = Gdx.files.internal(mPath);
-			mImageTex = new Texture(marioFileHandle);
+			FileHandle imageFileHandle = Gdx.files.internal(mPath);
+			mImageTex = new Texture(imageFileHandle);
 		}
 		catch (Exception e)
 		{

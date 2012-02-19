@@ -169,7 +169,15 @@ public class Label extends GL_View_Base
 		chkCache();
 		this.text = text;
 		wrapType = WrapType.singleLine;
-		bounds = cache.setText(text, 0, cache.getFont().isFlipped() ? 0 : cache.getFont().getCapHeight());
+		try
+		{
+			bounds = cache.setText(text, 0, cache.getFont().isFlipped() ? 0 : cache.getFont().getCapHeight());
+		}
+		catch (Exception e)
+		{
+			// TODO: handle exception
+		}
+
 		fontPropertyChanged();
 	}
 

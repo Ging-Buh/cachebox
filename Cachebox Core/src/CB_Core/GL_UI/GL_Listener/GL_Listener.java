@@ -5,10 +5,12 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.Controls.MainView;
 import CB_Core.Log.Logger;
+import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -18,6 +20,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 
 public class GL_Listener implements ApplicationListener, InputProcessor
 {
@@ -34,7 +37,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	// # public static member
 	public static SpriteBatch batch;
 	public static OrthographicCamera camera;
-	private Matrix4 prjMatrix;
+	private ParentInfo prjMatrix;
 
 	private int width = 0;
 	private int height = 0;
@@ -210,7 +213,8 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 
 		if (child != null) child.setSize(width, height);
 		camera = new OrthographicCamera(width, height);
-		prjMatrix = new Matrix4().setToOrtho2D(0, 0, width, height);
+		prjMatrix = new ParentInfo(new Matrix4().setToOrtho2D(0, 0, width, height), new Vector2(0, 0), new CB_RectF(0, 0, width, height));
+
 	}
 
 	public static void startTimer(long delay)
@@ -261,7 +265,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 
-		batch.setProjectionMatrix(prjMatrix);
+		batch.setProjectionMatrix(prjMatrix.Matrix());
 
 		child.renderChilds(batch, prjMatrix);
 

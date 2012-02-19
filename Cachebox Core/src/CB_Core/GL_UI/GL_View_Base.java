@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class GL_View_Base extends CB_RectF
@@ -153,7 +152,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 * 
 	 * @param batch
 	 */
-	public void renderChilds(final SpriteBatch batch, Matrix4 prjMatrix)
+	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
 	{
 		// first Draw Background?
 		if (hasBackground || hasNinePatchBackground)
@@ -171,23 +170,30 @@ public abstract class GL_View_Base extends CB_RectF
 			batch.end();
 		}
 
-		float ScissorX = 0;
-		float ScissorY = 0;
+		boolean mustScissorCalc = false;
 
 		if (parent != null)
 		{
-			ScissorX = parent.getPos().x;
-			ScissorY = parent.getPos().y;
+			mustScissorCalc = !parent.contains(this);
 		}
 
-		// Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
+		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 
-		int scissorX = (int) (ScissorX + Pos.x);
-		int scissorY = (int) (ScissorY + Pos.y);
-		int scissorW = (int) width;
-		int scissorH = (int) height;
+		if (!mustScissorCalc)
+		{
+			CB_RectF temp = parentInfo.drawRec().copy();
+			temp.setPos(new Vector2()); // auf 0,0 setzen
+			CB_RectF intersectRec = temp.createIntersection(this);
 
-		Gdx.gl.glScissor(scissorX, scissorY, scissorW, scissorH);
+			intersectRec.setPos(parentInfo.Vector());
+
+			Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth(),
+					(int) intersectRec.getHeight());
+		}
+		else
+		{
+			Gdx.gl.glScissor((int) parentInfo.x(), (int) parentInfo.y(), (int) width, (int) height);
+		}
 
 		batch.begin();
 		this.render(batch);
@@ -205,11 +211,14 @@ public abstract class GL_View_Base extends CB_RectF
 			// view enthaldenen Childs nicht aufgerufen werden.
 			if (view.getVisibility() == VISIBLE)
 			{
-				Matrix4 tmpMatrix = prjMatrix.cpy();
-				tmpMatrix.translate(view.Pos.x, view.Pos.y, 0);
-				batch.setProjectionMatrix(tmpMatrix);
-				view.renderChilds(batch, tmpMatrix);
-				batch.setProjectionMatrix(prjMatrix);
+				ParentInfo tmpTranslate = parentInfo.cpy();
+				tmpTranslate.add(view.Pos.x, view.Pos.y);
+
+				batch.setProjectionMatrix(tmpTranslate.Matrix());
+
+				view.renderChilds(batch, tmpTranslate);
+
+				batch.setProjectionMatrix(parentInfo.Matrix());
 			}
 		}
 
@@ -230,7 +239,6 @@ public abstract class GL_View_Base extends CB_RectF
 				debugRec = new Sprite(tex, (int) width, (int) height);
 				Logger.LogCat("GL_Control ------[ " + name + " ]-----------------------");
 				Logger.LogCat("Create Debug Rec " + Pos.x + "/" + Pos.y + "/" + width + "/" + height);
-				Logger.LogCat("Scissor " + scissorX + "/" + scissorY + "/" + scissorW + "/" + scissorH);
 
 			}
 

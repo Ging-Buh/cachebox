@@ -207,8 +207,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public static ViewID aktViewId = null;
 	public static ViewID aktTabViewId = null;
 
-	ViewOptionsMenu tabView;
-
 	private static long GPSTimeStamp = 0;
 	public static MapView mapView = null; // ID 0
 	public static CacheListView cacheListView = null; // ID 1
@@ -1890,27 +1888,27 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private void showTabletView(ViewOptionsMenu view, ViewID Id)
 	{
 
-		if (tabView != null)
+		if (aktTabView != null)
 		{
-			tabView.OnHide();
+			aktTabView.OnHide();
 
 		}
 
 		System.gc();
 
-		tabView = view;
+		aktTabView = view;
 		tabFrame.removeAllViews();
-		ViewParent parent = ((View) tabView).getParent();
+		ViewParent parent = ((View) aktTabView).getParent();
 		if (parent != null)
 		{
 			// aktView ist noch gebunden, also lösen
 			((FrameLayout) parent).removeAllViews();
 		}
-		tabFrame.addView((View) tabView);
-		tabView.OnShow();
+		tabFrame.addView((View) aktTabView);
+		aktTabView.OnShow();
 		aktTabViewId = Id;
 		InfoDownSlider.invalidate();
-		((View) tabView).forceLayout();
+		((View) aktTabView).forceLayout();
 
 	}
 
