@@ -135,7 +135,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 
 	public MapViewForGl(int initalWidth, int initialHeight)
 	{
-		super(0, 0, initalWidth, initialHeight);
+		super(0, 0, initalWidth, initialHeight, "AltGlMapView");
 
 		Log.d(Tag, "Constructor");
 

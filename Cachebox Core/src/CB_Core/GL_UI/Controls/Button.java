@@ -39,9 +39,9 @@ public class Button extends GL_View_Base
 	private String text;
 	private Label lblTxt;
 
-	public Button(float X, float Y, float Width, float Height, GL_View_Base Parent)
+	public Button(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name)
 	{
-		super(X, Y, Width, Height, Parent);
+		super(X, Y, Width, Height, Parent, Name);
 	}
 
 	@Override
@@ -180,7 +180,7 @@ public class Button extends GL_View_Base
 
 			r.setPos(new Vector2(l, b));
 
-			lblTxt = new Label(r, this);
+			lblTxt = new Label(r, this, name + "Label");
 			lblTxt.setFont(Fonts.get18());
 			lblTxt.setHAlignment(HAlignment.CENTER);
 			lblTxt.setVAlignment(VAlignment.CENTER);

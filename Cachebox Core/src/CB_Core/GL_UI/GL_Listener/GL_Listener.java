@@ -300,7 +300,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 
 		if (child == null)
 		{
-			child = new MainView(0, 0, width, height);
+			child = new MainView(0, 0, width, height, "MainView");
 			child.setClickable(true);
 		}
 

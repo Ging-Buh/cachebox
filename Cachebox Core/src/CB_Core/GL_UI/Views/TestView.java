@@ -24,23 +24,23 @@ public class TestView extends GL_View_Base
 {
 	private Image image;
 
-	public TestView(CB_RectF rec)
+	public TestView(CB_RectF rec, String Name)
 	{
-		super(rec);
+		super(rec, Name);
 		// Initial TestView
-		ArrowView testView = new ArrowView(300, 300, 100, 100);
+		ArrowView testView = new ArrowView(300, 300, 100, 100, "Test_ArrowView");
 		this.addChild(testView);
 
 		// Initial TestView
-		ZoomButtons btnZoom = new ZoomButtons(20, 20, 200, 75);
+		ZoomButtons btnZoom = new ZoomButtons(20, 20, 200, 75, "Test_Zoom");
 		this.addChild(btnZoom);
 
 		// initial Image
-		image = new Image(300, 400, 128, 128);
+		image = new Image(300, 400, 128, 128, "Test_Image");
 		image.setImage("data/cb_test.png");
 		this.addChild(image);
 
-		Button btn = new Button(300, 100, 200, 64, this);
+		Button btn = new Button(300, 100, 200, 64, this, "Test_Btn");
 		this.addChild(btn);
 		btn.setText("Button");
 		btn.setOnClickListener(new OnClickListener()
@@ -65,7 +65,7 @@ public class TestView extends GL_View_Base
 			}
 		});
 
-		Button btn2 = new Button(300, 200, 64, 64, this);
+		Button btn2 = new Button(300, 200, 64, 64, this, "Test_BtnDis");
 		this.addChild(btn2);
 		btn2.disable();
 		btn2.setText("DISABLED");
@@ -83,7 +83,7 @@ public class TestView extends GL_View_Base
 		});
 
 		// Label Tests
-		Label lbl = new Label(10, 500, 100, 30);
+		Label lbl = new Label(10, 500, 100, 30, "Test_Lbl");
 		lbl.setFont(Fonts.get22());
 		lbl.setText("Single Line Text");
 		lbl.setHAlignment(HAlignment.CENTER);
@@ -94,7 +94,7 @@ public class TestView extends GL_View_Base
 		s += "Zeile 2" + br;
 		s += "Zeile 2" + br;
 
-		Label lbl2 = new Label(10, 400, 250, 70);
+		Label lbl2 = new Label(10, 400, 250, 70, "Test_Lbl2");
 		lbl2.setFont(Fonts.get18());
 		lbl2.setMultiLineText(s);
 		this.addChild(lbl2);
@@ -102,7 +102,7 @@ public class TestView extends GL_View_Base
 		s = "Ein Wraped Text, welcher automatisch umgebrochen wird, wenn dieser zu lang für das Label ist." + br + br;
 		s += "Es wird aber auch ein Line Breake innerhalb des Textes erkannt und zusätzlich umgebrochen." + br;
 
-		Label lbl3 = new Label(10, 100, 270, 200);
+		Label lbl3 = new Label(10, 100, 270, 200, "Test_Lbl3");
 		lbl3.setFont(Fonts.get18());
 		lbl3.setWrappedText(s);
 

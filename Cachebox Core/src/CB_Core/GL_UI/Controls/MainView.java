@@ -11,6 +11,7 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 public class MainView extends GL_View_Base
 {
@@ -32,8 +33,10 @@ public class MainView extends GL_View_Base
 
 		if (leftFrame == null || rightFrame == null)
 		{
-			leftFrame = new Box(GL_UISizes.UI_Left);
-			rightFrame = new Box(GL_UISizes.UI_Right);
+			leftFrame = new Box(GL_UISizes.UI_Left, "LeftBox");
+			rightFrame = new Box(GL_UISizes.UI_Right, "RightBox");
+
+			leftFrame.setClickable(true);
 
 			this.removeChilds();
 
@@ -42,6 +45,7 @@ public class MainView extends GL_View_Base
 			if (GlobalCore.isTab)
 			{
 				this.addChild(rightFrame);
+				rightFrame.setClickable(true);
 			}
 		}
 
@@ -59,9 +63,9 @@ public class MainView extends GL_View_Base
 		Logger.LogCat("SetGlViewID" + ID);
 	}
 
-	public MainView(float X, float Y, float Width, float Height)
+	public MainView(float X, float Y, float Width, float Height, String Name)
 	{
-		super(X, Y, Width, Height);
+		super(X, Y, Width, Height, Name);
 
 		Me = this;
 
@@ -77,9 +81,31 @@ public class MainView extends GL_View_Base
 
 	private GL_View_Base getView(ViewID ID)
 	{
-		if (ID.getID() == ViewID.TEST_VIEW) return testView = new TestView(GL_UISizes.UI_Right);
-		if (ID.getID() == ViewID.CREDITS_VIEW) return creditView = new CreditsView(GL_UISizes.UI_Right);
-		if (ID.getID() == ViewID.GL_MAP_VIEW) return mapView = new MapView(GL_UISizes.UI_Right);
+		Vector2 iniPos = new Vector2(0, 0);
+
+		if (ID.getID() == ViewID.TEST_VIEW)
+		{
+			testView = new TestView(GL_UISizes.UI_Right, "TestView");
+			testView.setClickable(true);
+			testView.setPos(iniPos);
+			return testView;
+		}
+
+		if (ID.getID() == ViewID.CREDITS_VIEW)
+		{
+			creditView = new CreditsView(GL_UISizes.UI_Right, "CreditView");
+			creditView.setClickable(true);
+			creditView.setPos(iniPos);
+			return creditView;
+		}
+
+		if (ID.getID() == ViewID.GL_MAP_VIEW)
+		{
+			mapView = new MapView(GL_UISizes.UI_Right, "MapView");
+			mapView.setClickable(true);
+			mapView.setPos(iniPos);
+			return mapView;
+		}
 		return null;
 	}
 

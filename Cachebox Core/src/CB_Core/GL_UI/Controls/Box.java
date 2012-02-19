@@ -29,9 +29,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class Box extends GL_View_Base
 {
 
-	public Box(CB_RectF rec)
+	public Box(CB_RectF rec, String Name)
 	{
-		super(rec);
+		super(rec, Name);
 	}
 
 	@Override

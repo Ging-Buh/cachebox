@@ -16,10 +16,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class CreditsView extends GL_View_Base
 {
 
-	public CreditsView(CB_RectF rec)
+	public CreditsView(CB_RectF rec, String Name)
 	{
-		super(rec);
-		Label test = new Label(100, 100, 300, 50);
+		super(rec, Name);
+		Label test = new Label(100, 100, 300, 50, "Credits_Label");
 		test.setFont(Fonts.get22());
 		test.setText("Credits View 2");
 		test.setHAlignment(HAlignment.CENTER);
@@ -27,7 +27,7 @@ public class CreditsView extends GL_View_Base
 
 		NinePatch back = new NinePatch(SpriteCache.uiAtlas.findRegion("shaddowrect"), 8, 8, 8, 8);
 
-		ScrollView scrollView = new ScrollView(new CB_RectF(25f, 25f, width - 50, height - 50), this);
+		ScrollView scrollView = new ScrollView(new CB_RectF(25f, 25f, width - 50, height - 50), this, "CreditsScrollView");
 		scrollView.setBackground(back);
 
 		float posY = scrollView.getHeight();
@@ -35,7 +35,7 @@ public class CreditsView extends GL_View_Base
 		int i;
 		for (i = 0; i < 10; i++)
 		{
-			Button btn = new Button(10f, posY - btnHeight - 10, width - 60, btnHeight, this);
+			Button btn = new Button(10f, posY - btnHeight - 10, width - 60, btnHeight, this, "Credits_Btn_" + i);
 			btn.setText("Button " + i);
 			scrollView.addChild(btn);
 			Logger.LogCat("ScrollView add Button" + i);

@@ -105,13 +105,15 @@
             <FrameLayout
                 android:id="@+id/layoutContent"
                 android:layout_width="340dip"
-                android:layout_height="fill_parent" >
+                android:layout_height="fill_parent" 
+                android:alwaysDrawnWithCache="true">
             </FrameLayout>
 
             <FrameLayout
                 android:id="@+id/TabletlayoutContent"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent" >
+                android:layout_height="fill_parent" 
+                android:alwaysDrawnWithCache="true">
             </FrameLayout>
         </LinearLayout>
 

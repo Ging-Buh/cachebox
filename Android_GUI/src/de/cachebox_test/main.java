@@ -191,9 +191,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public static final ViewID TRACK_LIST_VIEW = new ViewID(ViewID.TRACK_LIST_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
 	public static final ViewID TB_LIST_VIEW = new ViewID(ViewID.TB_LIST_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
 	public static final ViewID WAYPOINT_VIEW = new ViewID(ViewID.WAYPOINT_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
+
 	public static final ViewID TEST_VIEW = new ViewID(ViewID.TEST_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
 	public static final ViewID CREDITS_VIEW = new ViewID(ViewID.CREDITS_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
-	public static final ViewID GL_MAP_VIEW = new ViewID(ViewID.CREDITS_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
+	public static final ViewID GL_MAP_VIEW = new ViewID(ViewID.GL_MAP_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
 
 	public static final ViewID SETTINGS = new ViewID(ViewID.SETTINGS, UI_Type.Activity, null, null);
 	public static final ViewID FILTER_SETTINGS = new ViewID(ViewID.FILTER_SETTINGS, UI_Type.Activity, null, null);
@@ -1631,6 +1632,25 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		}
 
+		if (ID.getPos() == UI_Pos.Left)
+		{
+			aktViewId = ID;
+		}
+		else
+		{
+			aktTabViewId = ID;
+		}
+
+		if (aktTabViewId == null || aktTabViewId.getType() == ViewID.UI_Type.Android)
+		{
+			if (tabFrame != null) tabFrame.setVisibility(View.VISIBLE);
+		}
+
+		if (aktViewId == null || aktViewId.getType() == ViewID.UI_Type.Android)
+		{
+			frame.setVisibility(View.VISIBLE);
+		}
+
 		if (ID.getType() == UI_Type.Android)
 		{
 			showView(getView(ID), ID);
@@ -1641,7 +1661,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			ShowViewGL(ID);
 		}
 
+		if (ID == MAP_VIEW)
+		{
+			ScreenLockOff = true;
+			startScreenLock(true);
+		}
+
 	}
+
+	public static boolean ScreenLockOff = false;
 
 	/**
 	 * Gibt die zur ViewID gehörige View zurück und erstellst eine Instanz, wenn sie nicht exestiert.
@@ -1707,7 +1735,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (GlobalCore.isTab)
 		{
 			if (ID.getPos() == ViewID.UI_Pos.Right)
-			{ // MapViewGL || ViewGL || DescriptionView
+			{
 				showTabletView(view, ID);
 				return;
 			}
@@ -1817,14 +1845,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		}
 
-		if (GlobalCore.isTab)
-		{
-			tabFrame.setVisibility(View.VISIBLE);
-		}
-		{
-			frame.setVisibility(View.VISIBLE);
-		}
-
 		System.gc();
 
 		aktView = view;
@@ -1838,7 +1858,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 		frame.addView((View) aktView);
 		aktView.OnShow();
-		aktViewId = ID;
+
 		InfoDownSlider.invalidate();
 		((View) aktView).forceLayout();
 
@@ -1853,21 +1873,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		glListener.onStart();
 		glListener.setGLViewID(Id);
 
-		if (GlobalCore.isTab)
+		if (aktTabViewId != null && aktTabViewId.getType() == ViewID.UI_Type.OpenGl)
 		{
 			tabFrame.setVisibility(View.INVISIBLE);
 		}
+
+		if (aktViewId != null && aktViewId.getType() == ViewID.UI_Type.OpenGl)
 		{
 			frame.setVisibility(View.INVISIBLE);
-		}
-
-		if (Id.getPos() == ViewID.UI_Pos.Left)
-		{
-			aktViewId = Id;
-		}
-		else
-		{
-			aktTabViewId = Id;
 		}
 
 		InfoDownSlider.invalidate();
@@ -1880,11 +1893,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (tabView != null)
 		{
 			tabView.OnHide();
-
-			if (aktView.equals(viewGL))
-			{
-				this.onPause();
-			}
 
 		}
 
@@ -1968,7 +1976,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				showJoker();
 				break;
 			case R.id.miCompassView:
-				showView(FIELD_NOTES_VIEW);
+				showView(COMPASS_VIEW);
 				break;
 			case R.id.miMapView:
 				showView(MAP_VIEW);

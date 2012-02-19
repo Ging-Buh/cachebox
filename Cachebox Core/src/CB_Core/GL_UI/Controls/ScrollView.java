@@ -8,15 +8,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class ScrollView extends GL_View_Base
 {
 
-	public ScrollView(CB_RectF rec)
+	public ScrollView(CB_RectF rec, String Name)
 	{
-		super(rec);
+		super(rec, Name);
 		// TODO Auto-generated constructor stub
 	}
 
-	public ScrollView(CB_RectF cb_RectF, GL_View_Base Parent)
+	public ScrollView(CB_RectF cb_RectF, GL_View_Base Parent, String Name)
 	{
-		super(cb_RectF, Parent);
+		super(cb_RectF, Parent, Name);
 	}
 
 	@Override

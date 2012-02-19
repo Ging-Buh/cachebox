@@ -43,9 +43,9 @@ public class ArrowView extends GL_View_Base
 	 * @param Width
 	 * @param Height
 	 */
-	public ArrowView(float X, float Y, float Width, float Height)
+	public ArrowView(float X, float Y, float Width, float Height, String Name)
 	{
-		super(X, Y, Width, Height);
+		super(X, Y, Width, Height, Name);
 
 	}
 

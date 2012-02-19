@@ -11,10 +11,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class MapView extends GL_View_Base
 {
 
-	public MapView(CB_RectF rec)
+	public MapView(CB_RectF rec, String Name)
 	{
-		super(rec);
-		Label test = new Label(100, 100, 300, 50);
+		super(rec, Name);
+		Label test = new Label(100, 100, 300, 50, "MapView_Label");
 		test.setFont(Fonts.get18());
 		test.setText("Map View Version 3");
 		test.setHAlignment(HAlignment.CENTER);

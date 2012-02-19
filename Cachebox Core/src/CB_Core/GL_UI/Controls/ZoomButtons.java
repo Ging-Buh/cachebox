@@ -52,9 +52,9 @@ public class ZoomButtons extends GL_View_Base
 	 * @param Width
 	 * @param Height
 	 */
-	public ZoomButtons(float X, float Y, float Width, float Height)
+	public ZoomButtons(float X, float Y, float Width, float Height, String Name)
 	{
-		super(X, Y, Width, Height);
+		super(X, Y, Width, Height, Name);
 		onRezised(this);
 		resetFadeOut();
 	}

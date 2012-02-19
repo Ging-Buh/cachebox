@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import de.cachebox_test.R;
+import de.cachebox_test.main;
 
 public class ScreenLock extends Activity
 {
@@ -67,6 +67,7 @@ public class ScreenLock extends Activity
 			@Override
 			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2)
 			{
+
 				int setvalue = arg1;
 				if (arg1 > 50)// springen verhindern
 				{
@@ -80,6 +81,12 @@ public class ScreenLock extends Activity
 				lastValue = setvalue;
 			}
 		});
+
+		if (main.ScreenLockOff)
+		{
+			main.ScreenLockOff = false;
+			finish();
+		}
 
 	}
 
@@ -126,7 +133,7 @@ public class ScreenLock extends Activity
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
-		//Log.d("SolHunter", "Key event code " + keyCode);
+		// Log.d("SolHunter", "Key event code " + keyCode);
 		if (keyCode == KeyEvent.KEYCODE_BACK)
 		{
 			return true;

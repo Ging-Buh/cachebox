@@ -33,9 +33,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class Image extends GL_View_Base
 {
 
-	public Image(float X, float Y, float Width, float Height)
+	public Image(float X, float Y, float Width, float Height, String Name)
 	{
-		super(X, Y, Width, Height);
+		super(X, Y, Width, Height, Name);
 		// TODO Auto-generated constructor stub
 	}
 

@@ -36,7 +36,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	private boolean hasBackground = false;
 	private Sprite Background;
-
+	protected String name = "";
 	private boolean hasNinePatchBackground = false;
 	private NinePatch nineBackground;
 
@@ -60,9 +60,10 @@ public abstract class GL_View_Base extends CB_RectF
 
 	// # Constructors
 
-	public GL_View_Base()
+	public GL_View_Base(String Name)
 	{
-
+		Me = this;
+		name = Name;
 	}
 
 	/**
@@ -73,30 +74,34 @@ public abstract class GL_View_Base extends CB_RectF
 	 * @param Width
 	 * @param Height
 	 */
-	public GL_View_Base(float X, float Y, float Width, float Height)
+	public GL_View_Base(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height);
 		Me = this;
+		name = Name;
 	}
 
-	public GL_View_Base(float X, float Y, float Width, float Height, GL_View_Base Parent)
+	public GL_View_Base(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name)
 	{
 		super(X, Y, Width, Height);
 		Me = this;
 		parent = Parent;
+		name = Name;
 	}
 
-	public GL_View_Base(CB_RectF rec)
+	public GL_View_Base(CB_RectF rec, String Name)
 	{
 		super(rec);
 		Me = this;
+		name = Name;
 	}
 
-	public GL_View_Base(CB_RectF rec, GL_View_Base Parent)
+	public GL_View_Base(CB_RectF rec, GL_View_Base Parent, String Name)
 	{
 		super(rec);
 		Me = this;
 		parent = Parent;
+		name = Name;
 	}
 
 	// # Method
@@ -175,8 +180,14 @@ public abstract class GL_View_Base extends CB_RectF
 			ScissorY = parent.getPos().y;
 		}
 
-		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
-		Gdx.gl.glScissor((int) (ScissorX + Pos.x), (int) (ScissorY + Pos.y), (int) width, (int) height);
+		// Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
+
+		int scissorX = (int) (ScissorX + Pos.x);
+		int scissorY = (int) (ScissorY + Pos.y);
+		int scissorW = (int) width;
+		int scissorH = (int) height;
+
+		Gdx.gl.glScissor(scissorX, scissorY, scissorW, scissorH);
 
 		batch.begin();
 		this.render(batch);
@@ -217,7 +228,10 @@ public abstract class GL_View_Base extends CB_RectF
 				Texture tex = new Texture(p, Pixmap.Format.RGBA8888, false);
 
 				debugRec = new Sprite(tex, (int) width, (int) height);
-				Logger.LogCat("Create Debug Rec " + width + "/" + height);
+				Logger.LogCat("GL_Control ------[ " + name + " ]-----------------------");
+				Logger.LogCat("Create Debug Rec " + Pos.x + "/" + Pos.y + "/" + width + "/" + height);
+				Logger.LogCat("Scissor " + scissorX + "/" + scissorY + "/" + scissorW + "/" + scissorH);
+
 			}
 
 			batch.begin();

@@ -50,21 +50,21 @@ public class Label extends GL_View_Base
 
 	public final Color color = new Color(1, 1, 1, 1);
 
-	public Label(float X, float Y, float Width, float Height)
+	public Label(float X, float Y, float Width, float Height, String Name)
 	{
-		super(X, Y, Width, Height);
+		super(X, Y, Width, Height, Name);
 		calcInnerRec();
 	}
 
-	public Label(CB_RectF rec)
+	public Label(CB_RectF rec, String Name)
 	{
-		super(rec);
+		super(rec, Name);
 		calcInnerRec();
 	}
 
-	public Label(CB_RectF rec, GL_View_Base Parent)
+	public Label(CB_RectF rec, GL_View_Base Parent, String Name)
 	{
-		super(rec, Parent);
+		super(rec, Parent, Name);
 		calcInnerRec();
 	}
 
