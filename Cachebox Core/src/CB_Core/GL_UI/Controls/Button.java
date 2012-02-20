@@ -34,9 +34,9 @@ public class Button extends GL_View_Base
 	protected static NinePatch ninePatchPressed;
 	protected static NinePatch ninePatchDisabled;
 
-	private boolean isPressed = false;
-	private boolean isDisabled = false;
-	private Label lblTxt;
+	protected boolean isPressed = false;
+	protected boolean isDisabled = false;
+	protected Label lblTxt;
 
 	public Button(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name)
 	{
@@ -143,7 +143,7 @@ public class Button extends GL_View_Base
 	{
 		// wenn Button disabled ein Behandelt zurück schicken,
 		// damit keine weiteren Abfragen durchgereicht werden.
-		// Auch wenn dieser Button ein OnClickLÖistner hat.
+		// Auch wenn dieser Button ein OnClickListner hat.
 		if (isDisabled)
 		{
 			return true;

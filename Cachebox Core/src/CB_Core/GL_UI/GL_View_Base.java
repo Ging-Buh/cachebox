@@ -179,7 +179,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 
-		if (!mustScissorCalc)
+		if (mustScissorCalc)
 		{
 			CB_RectF temp = parentInfo.drawRec().copy();
 			temp.setPos(new Vector2()); // auf 0,0 setzen

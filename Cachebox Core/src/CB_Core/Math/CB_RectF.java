@@ -461,6 +461,7 @@ public class CB_RectF
 
 	public CB_RectF createIntersection(CB_RectF rec)
 	{
+
 		float x1 = Math.max(this.getMinX(), rec.getMinX());
 		float y1 = Math.max(this.getMinY(), rec.getMinY());
 		float x2 = Math.min(this.getMaxX(), rec.getMaxX());
