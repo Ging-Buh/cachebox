@@ -22,6 +22,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
+import CB_Core.Map.Layer;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
@@ -43,7 +44,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -109,6 +109,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	// int zoom = 13;
 	// #################################################################
 
+	String str = "";
 	final int maxMapZoom = 22;
 	int frameRateIdle = 200;
 	int frameRateAction = 30;
@@ -137,10 +138,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	public static SpriteBatch batch;
 	Matrix4 textMatrix;
 
-	CharSequence str = "Hello World!";
 	OrthographicCamera camera;
-	CameraController controller;
-	GestureDetector gestureDetector;
 
 	// Gdx2DPixmap circle;
 	// Texture tcircle;
@@ -219,14 +217,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		if (batch == null) batch = new SpriteBatch();
-		if (useNewInput)
-		{
-			if (Gdx.input.getInputProcessor() != this) Gdx.input.setInputProcessor(this);
-		}
-		else
-		{
-			if (Gdx.input.getInputProcessor() != gestureDetector) Gdx.input.setInputProcessor(gestureDetector);
-		}
+		if (Gdx.input.getInputProcessor() != this) Gdx.input.setInputProcessor(this);
 
 		startTime = System.currentTimeMillis();
 	}
@@ -286,9 +277,6 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		this.drawingHeight = height;
 
 		camera = new OrthographicCamera(width, height);
-
-		controller = new CameraController();
-		gestureDetector = new GestureDetector(20, 0.5f, 1, 0.15f, controller);
 
 		aktZoom = zoomBtn.getZoom();
 		zoomScale.setZoom(aktZoom);
@@ -533,7 +521,6 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
-		controller.update();
 
 		if (alignToCompass)
 		{

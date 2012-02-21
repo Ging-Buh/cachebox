@@ -1,6 +1,7 @@
 package de.cachebox_test.Views;
 
 import CB_Core.Config;
+import CB_Core.Map.Layer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +13,6 @@ import android.widget.RelativeLayout;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
-import de.cachebox_test.Map.Layer;
 import de.cachebox_test.Map.MapViewGlListener;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
 

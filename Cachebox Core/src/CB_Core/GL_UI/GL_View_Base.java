@@ -349,14 +349,20 @@ public abstract class GL_View_Base extends CB_RectF
 		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 		{
 			GL_View_Base view = iterator.next();
-			if (view.touchDragged(x, y, pointer))
-			{
-				behandelt = true;
-				break;
-			}
 
+			if (view.contains(x, y))
+			{
+				behandelt = view.touchDragged(x, y, pointer);
+			}
+			if (behandelt) break;
 		}
 
+		if (!behandelt)
+		{
+			// kein Klick in einem untergeordnetem View
+			// -> hier behandeln
+			behandelt = onTouchDragged(x, y, pointer);
+		}
 		return behandelt;
 	}
 

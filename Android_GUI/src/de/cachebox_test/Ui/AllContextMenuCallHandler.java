@@ -22,6 +22,7 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.SmoothScrollingTyp;
 import CB_Core.Log.Logger;
+import CB_Core.Map.Layer;
 import android.view.Menu;
 import android.view.MenuItem;
 import de.cachebox_test.Global;
@@ -29,7 +30,6 @@ import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.cachebox_test.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
-import de.cachebox_test.Map.Layer;
 import de.cachebox_test.Views.MapView;
 
 /**

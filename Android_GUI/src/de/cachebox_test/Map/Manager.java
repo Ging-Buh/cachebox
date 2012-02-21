@@ -21,6 +21,8 @@ import org.mapsforge.android.maps.Tile;
 
 import CB_Core.FileIO;
 import CB_Core.Map.Descriptor;
+import CB_Core.Map.Layer;
+import CB_Core.Map.ManagerBase;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
@@ -30,13 +32,12 @@ import de.cachebox_test.Global;
 import de.cachebox_test.main;
 import de.cachebox_test.Views.MapView;
 
-public class Manager
+public class Manager extends ManagerBase
 {
 
 	/*
 	 * public delegate void FetchAreaCallback();
 	 */
-	public ArrayList<Layer> Layers = new ArrayList<Layer>();
 
 	public static long NumBytesLoaded = 0;
 
@@ -50,6 +51,8 @@ public class Manager
 
 	public Manager()
 	{
+		// for the Access to the manager in the CB_Core
+		CB_Core.Map.ManagerBase.Manager = this;
 		// Layers.add(new Layer("MapsForge", "MapsForge", ""));
 		Layers.add(new Layer("Mapnik", "Mapnik", "http://a.tile.openstreetmap.org/"));
 		Layers.add(new Layer("OSM Cycle Map", "Open Cycle Map", "http://b.andy.sandbox.cloudmade.com/tiles/cycle/"));
@@ -85,21 +88,7 @@ public class Manager
 		return false;
 	}
 
-	public Layer GetLayerByName(String Name, String friendlyName, String url)
-	{
-		if (Name == "OSM") Name = "Mapnik";
-
-		for (Layer layer : Layers)
-		{
-			if (layer.Name.equalsIgnoreCase(Name)) return layer;
-		}
-
-		Layer newLayer = new Layer(Name, Name, url);
-		Layers.add(newLayer);
-
-		return newLayer;
-	}
-
+	@Override
 	public byte[] LoadLocalPixmap(String layer, Descriptor desc)
 	{
 		return LoadLocalPixmap(GetLayerByName(layer, layer, ""), desc);
@@ -110,6 +99,7 @@ public class Manager
 		return LoadLocalBitmap(GetLayerByName(layer, layer, ""), desc);
 	}
 
+	@Override
 	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc)
 	{
 		if (layer.isMapsForge)

@@ -18,6 +18,7 @@ import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
+import CB_Core.Map.Layer;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
@@ -64,7 +65,6 @@ import android.widget.TextView;
 import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.Components.copyAssetFolder;
 import de.cachebox_test.DB.AndroidDB;
-import de.cachebox_test.Map.Layer;
 import de.cachebox_test.Views.MapView;
 import de.cachebox_test.Views.Forms.SelectDB;
 

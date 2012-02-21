@@ -13,6 +13,7 @@ import org.apache.http.util.EncodingUtils;
 
 import CB_Core.FileIO;
 import CB_Core.Map.Descriptor;
+import CB_Core.Map.Layer;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
