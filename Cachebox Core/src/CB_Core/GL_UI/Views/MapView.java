@@ -144,7 +144,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		}
 
 		// initial Zoom Buttons
-		zoomBtn = new ZoomButtons(10, 10, 200, 75, "Zoom");
+		zoomBtn = new ZoomButtons(300, 10, 150, 75, "Zoom");
 		zoomBtn.setOnClickListenerDown(new OnClickListener()
 		{
 			@Override
@@ -201,7 +201,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 		textMatrix = new Matrix4().setToOrtho2D(0, 0, width, height);
 
-		MultiToggleButton togBtn = new MultiToggleButton(10, 100, 100, 100, this, "toggle");
+		MultiToggleButton togBtn = new MultiToggleButton(400, 100, 100, 100, this, "toggle");
 
 		togBtn.addState("Free", Color.GRAY);
 		togBtn.addState("GPS", Color.GREEN);
@@ -436,7 +436,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		// zoomBtn.Render(batch, GL_UISizes.ZoomBtn);
 		// zoomScale.Render(batch, GL_UISizes.ZoomScale);
 
-		// renderDebugInfo();
+		renderDebugInfo();
 		batch.end();
 	}
 
@@ -1505,7 +1505,8 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
-		// debugString = "touchDown " + inputState.toString();
+		y = height - y;
+		debugString = "touchDown " + x + " - " + y;
 		if (inputState == InputState.Idle)
 		{
 			fingerDown.clear();
@@ -1525,6 +1526,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 	public boolean onTouchDragged(int x, int y, int pointer)
 	{
 		y = height - y;
+		debugString = "touchDragged: " + x + " - " + y;
 		// debugString = "touchDragged " + inputState.toString();
 		if (inputState == InputState.IdleDown)
 		{
@@ -1624,6 +1626,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
 		y = height - y;
+		debugString = "touchUp: " + x + " - " + y;
 		// debugString = "touchUp " + inputState.toString();
 		if (inputState == InputState.IdleDown)
 		{
@@ -1864,7 +1867,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 			diffX = x[anzPoints - 1] - aktX;
 			diffY = aktY - y[anzPoints - 1];
 
-			debugString = x[2] + " - " + x[1] + " - " + x[0];
+			// debugString = x[2] + " - " + x[1] + " - " + x[0];
 		}
 
 		public boolean getFertig()

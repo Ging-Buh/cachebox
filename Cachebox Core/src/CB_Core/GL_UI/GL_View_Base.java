@@ -352,7 +352,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 			if (view.contains(x, y))
 			{
-				behandelt = view.touchDragged(x, y, pointer);
+				behandelt = view.touchDragged(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer);
 			}
 			if (behandelt) break;
 		}

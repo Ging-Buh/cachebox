@@ -2317,22 +2317,23 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							Point akt = new Point((int) event.getX(p), (int) event.getY(p));
 							if (distance(akt, first) > 15)
 							{
+								glListener.onTouchDragged((int) event.getX(p), (int) event.getY(p), event.getPointerId(p));
 								// onTouchMove Events erst generieren wenn die Bewegung mehr als 15 Pixel weit ist
-								final int historySize = event.getHistorySize();
-								final int pointerCount = event.getPointerCount();
-								for (int h = 0; h < historySize; h++)
-								{
-									for (int p1 = 0; p1 < pointerCount; p1++)
-									{
-										glListener.onTouchDragged((int) event.getHistoricalX(p1, h), (int) event.getHistoricalY(p1, h),
-												event.getPointerId(p1));
-									}
-								}
-								for (int p1 = 0; p1 < event.getPointerCount(); p1++)
-								{
-
-									glListener.onTouchDragged((int) event.getX(p1), (int) event.getY(p1), event.getPointerId(p1));
-								}
+								// final int historySize = event.getHistorySize();
+								// final int pointerCount = event.getPointerCount();
+								// for (int h = 0; h < historySize; h++)
+								// {
+								// for (int p1 = 0; p1 < pointerCount; p1++)
+								// {
+								// glListener.onTouchDragged((int) event.getHistoricalX(p1, h), (int) event.getHistoricalY(p1, h),
+								// event.getPointerId(p1));
+								// }
+								// }
+								// for (int p1 = 0; p1 < event.getPointerCount(); p1++)
+								// {
+								//
+								// glListener.onTouchDragged((int) event.getX(p1), (int) event.getY(p1), event.getPointerId(p1));
+								// }
 							}
 							break;
 						case MotionEvent.ACTION_POINTER_UP:
