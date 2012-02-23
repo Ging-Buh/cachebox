@@ -14,6 +14,7 @@ import CB_Core.Types.Waypoint;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -77,7 +78,7 @@ public class Bubble
 		CachedContentSprite = null;
 	}
 
-	public static void render(SizeF WpUnderlay)
+	public static void render(SizeF WpUnderlay, SpriteBatch batch)
 	{
 
 		if (!isShow) return;
@@ -88,7 +89,7 @@ public class Bubble
 		Sprite sprite = (cache == GlobalCore.SelectedCache()) ? SpriteCache.Bubble.get(1) : SpriteCache.Bubble.get(0);
 		sprite.setPosition(Pos.x - GL_UISizes.halfBubble + WpUnderlay.halfWidth, Pos.y);
 		sprite.setSize(GL_UISizes.Bubble.width, GL_UISizes.Bubble.height);
-		sprite.draw(MapView.batch);
+		sprite.draw(batch);
 
 		try
 		{
@@ -97,7 +98,7 @@ public class Bubble
 			contentSprite.setPosition(Pos.x - GL_UISizes.halfBubble + WpUnderlay.halfWidth + GL_UISizes.bubbleCorrect.width, Pos.y
 					+ GL_UISizes.bubbleCorrect.height);
 			contentSprite.setSize(GL_UISizes.Bubble.width, GL_UISizes.Bubble.height - GL_UISizes.bubbleCorrect.height);
-			contentSprite.draw(MapView.batch);
+			contentSprite.draw(batch);
 		}
 		catch (Exception e)
 		{

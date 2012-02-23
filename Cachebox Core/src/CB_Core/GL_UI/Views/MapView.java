@@ -40,11 +40,9 @@ import CB_Core.Types.Waypoint;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
 public class MapView extends GL_View_Base implements SelectedCacheEvent, PositionChangedEvent
@@ -94,7 +92,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 	// int zoom = 13;
 	// #################################################################
 
-	String str = "";
+	CharSequence str = "";
 	final int maxMapZoom = 22;
 	int frameRateIdle = 200;
 	int frameRateAction = 30;
@@ -120,9 +118,6 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 	// String CurrentLayer = "germany-0.2.4.map";
 	public Layer CurrentLayer = null;
 
-	public static SpriteBatch batch;
-	Matrix4 textMatrix;
-
 	OrthographicCamera camera;
 
 	// Gdx2DPixmap circle;
@@ -133,7 +128,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 	boolean useNewInput = true;
 
-	public MapView(CB_RectF rec, String Name)
+	public MapView(CB_RectF rec, CharSequence Name)
 	{
 		super(rec, Name);
 
@@ -199,7 +194,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 		iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
 
-		textMatrix = new Matrix4().setToOrtho2D(0, 0, width, height);
+		// textMatrix = new Matrix4().setToOrtho2D(0, 0, width, height);
 
 		MultiToggleButton togBtn = new MultiToggleButton(400, 100, 100, 100, this, "toggle");
 
@@ -224,8 +219,6 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		// PositionEventList.Add(this);
 
 		resize(rec.getWidth(), rec.getHeight());
-
-		if (batch == null) batch = new SpriteBatch();
 
 	}
 
@@ -259,7 +252,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		diffCameraZoom = 0;
 		camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
 
-		textMatrix.setToOrtho2D(0, 0, width, height);
+		// textMatrix.setToOrtho2D(0, 0, width, height);
 
 		// GL_UISizes.initial(width, height);
 
@@ -380,8 +373,8 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		// destroyScreenCapture();
 		// }
 
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
+		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		// Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 
 		if (alignToCompass)
 		{
@@ -399,51 +392,50 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 		camera.update();
 
-		renderMapTiles();
-		renderOverlay();
-		renderUI();
+		renderMapTiles(batch);
+		renderOverlay(batch);
+		renderUI(batch);
 
-		Gdx.gl.glFlush();
-		Gdx.gl.glFinish();
+		// Gdx.gl.glFlush();
+		// Gdx.gl.glFinish();
 	}
 
-	private void renderOverlay()
+	private void renderOverlay(SpriteBatch batch)
 	{
-		batch.setProjectionMatrix(textMatrix);
-		batch.begin();
+		batch.setProjectionMatrix(myParentInfo.Matrix());
 
 		// calculate icon size
 		int iconSize = 0; // 8x8
 		if ((aktZoom >= 13) && (aktZoom <= 14)) iconSize = 1; // 13x13
 		else if (aktZoom > 14) iconSize = 2; // default Images
 
-		renderWPs(GL_UISizes.WPSizes[iconSize], GL_UISizes.UnderlaySizes[iconSize]);
-		renderPositionMarker();
-		RenderTargetArrow();
-		Bubble.render(GL_UISizes.WPSizes[iconSize]);
+		renderWPs(GL_UISizes.WPSizes[iconSize], GL_UISizes.UnderlaySizes[iconSize], batch);
+		renderPositionMarker(batch);
+		RenderTargetArrow(batch);
+		Bubble.render(GL_UISizes.WPSizes[iconSize], batch);
 
-		batch.end();
 	}
 
-	private void renderUI()
+	private void renderUI(SpriteBatch batch)
 	{
-		batch.setProjectionMatrix(textMatrix);
-		batch.begin();
-		if (showCompass) renderInfoPanel();
+		batch.setProjectionMatrix(myParentInfo.Matrix());
+
+		// if (showCompass)
+
+		renderInfoPanel(batch);
 
 		// btnTrackPos.Render(batch, GL_UISizes.Toggle, Fonts.get18());
 
 		// zoomBtn.Render(batch, GL_UISizes.ZoomBtn);
 		// zoomScale.Render(batch, GL_UISizes.ZoomScale);
 
-		renderDebugInfo();
-		batch.end();
+		renderDebugInfo(batch);
+
 	}
 
-	private void renderMapTiles()
+	private void renderMapTiles(SpriteBatch batch)
 	{
 		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
 
 		try
 		{
@@ -516,10 +508,9 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		}
 		tilesToDraw.clear();
 
-		batch.end();
 	}
 
-	private void renderDebugInfo()
+	private void renderDebugInfo(SpriteBatch batch)
 	{
 		str = debugString;
 		Fonts.get18().draw(batch, str, 20, 120);
@@ -543,13 +534,13 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 	}
 
-	private void renderInfoPanel()
+	private void renderInfoPanel(SpriteBatch batch)
 	{
 		// draw background
 		Sprite sprite = SpriteCache.InfoBack;
 		sprite.setPosition(GL_UISizes.Info.getX(), GL_UISizes.Info.getY());
 		sprite.setSize(GL_UISizes.Info.getWidth(), GL_UISizes.Info.getHeight());
-		sprite.draw(MapView.batch);
+		sprite.draw(batch);
 
 		// Position ist entweder GPS-Position oder die des Markers, wenn
 		// dieser gesetzt wurde.
@@ -569,7 +560,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 			else
 				distance = position.Distance(GlobalCore.SelectedWaypoint().Pos);
 
-			String text = UnitFormatter.DistanceString(distance);
+			CharSequence text = UnitFormatter.DistanceString(distance);
 			Fonts.get18().draw(batch, text, GL_UISizes.InfoLine1.x, GL_UISizes.InfoLine1.y);
 			// canvas.drawText(text, leftString, bottom - 10, paint);
 
@@ -588,15 +579,15 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 				compass.setBounds(GL_UISizes.Compass.getX(), GL_UISizes.Compass.getY(), GL_UISizes.Compass.getWidth(),
 						GL_UISizes.Compass.getHeight());
 				compass.setOrigin(GL_UISizes.halfCompass, GL_UISizes.halfCompass);
-				compass.draw(MapView.batch);
+				compass.draw(batch);
 
 			}
 
 			// Koordinaten
 			if (position.Valid)
 			{
-				String textLatitude = GlobalCore.FormatLatitudeDM(position.Latitude);
-				String textLongitude = GlobalCore.FormatLongitudeDM(position.Longitude);
+				CharSequence textLatitude = GlobalCore.FormatLatitudeDM(position.Latitude);
+				CharSequence textLongitude = GlobalCore.FormatLongitudeDM(position.Longitude);
 
 				Fonts.get18().draw(batch, textLatitude, GL_UISizes.InfoLine2.x, GL_UISizes.InfoLine1.y);
 				Fonts.get18().draw(batch, textLongitude, GL_UISizes.InfoLine2.x, GL_UISizes.InfoLine2.y);
@@ -611,7 +602,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 	}
 
-	private void renderPositionMarker()
+	private void renderPositionMarker(SpriteBatch batch)
 	{
 		if (locator != null)
 		{
@@ -645,7 +636,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		}
 	}
 
-	private void RenderTargetArrow()
+	private void RenderTargetArrow(SpriteBatch batch)
 	{
 
 		if (GlobalCore.SelectedCache() == null) return;
@@ -763,7 +754,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		return (ang1);
 	}
 
-	private void renderWPs(SizeF WpUnderlay, SizeF WpSize)
+	private void renderWPs(SizeF WpUnderlay, SizeF WpSize, SpriteBatch batch)
 	{
 		if (mapCacheList.list != null)
 		{
@@ -858,7 +849,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 	}
 
-	private boolean renderBiggerTiles(SpriteBatch batch2, int i, int j, int zoom2)
+	private boolean renderBiggerTiles(SpriteBatch batch, int i, int j, int zoom2)
 	{
 		// für den aktuellen Zoom ist kein Tile vorhanden -> kleinere
 		// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...
@@ -897,7 +888,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		return false;
 	}
 
-	private void renderSmallerTiles(SpriteBatch batch2, int i, int j, int zoom2)
+	private void renderSmallerTiles(SpriteBatch batch, int i, int j, int zoom2)
 	{
 		// für den aktuellen Zoom ist kein Tile vorhanden -> größere
 		// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...
@@ -1493,7 +1484,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 	// speicher, welche Finger-Pointer aktuell gedrückt sind
 	private HashMap<Integer, Point> fingerDown = new LinkedHashMap<Integer, Point>();
 
-	private static String debugString = "";
+	private static CharSequence debugString = "";
 
 	@Override
 	public boolean onLongClick(int x, int y, int pointer, int button)

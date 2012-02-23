@@ -1628,6 +1628,13 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 			zoomBtn.TouchRelease();
 		}
 
+		@Override
+		public boolean pinch(Vector2 arg0, Vector2 arg1, Vector2 arg2, Vector2 arg3)
+		{
+			// TODO Auto-generated method stub
+			return false;
+		}
+
 	}
 
 	public void Initialize()

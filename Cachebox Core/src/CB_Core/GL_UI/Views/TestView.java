@@ -1,16 +1,23 @@
 package CB_Core.GL_UI.Views;
 
+import CB_Core.Config;
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.ArrowView;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Image;
+import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.ZoomButtons;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
@@ -60,7 +67,7 @@ public class TestView extends GL_View_Base
 
 		// initial Image
 		image = new Image(300, 400, 128, 128, "Test_Image");
-		image.setImage("data/cb_test.png");
+		image.setImage(Config.WorkPath + "/data/cb_test.png");
 		this.addChild(image);
 
 		Button btn = new Button(300, 100, 200, 64, this, "Test_Btn");
@@ -123,44 +130,45 @@ public class TestView extends GL_View_Base
 		});
 		this.addChild(togBtn);
 
-		// // Label Tests
-		// Label lbl = new Label(10, 500, 100, 30, "Test_Lbl");
-		// lbl.setFont(Fonts.get22());
-		// lbl.setText("Single Line Text");
-		// lbl.setHAlignment(HAlignment.CENTER);
-		// this.addChild(lbl);
-		//
-		// String br = System.getProperty("line.separator");
-		// String s = "Ein Multiline Text!" + br;
-		// s += "Zeile 2" + br;
-		// s += "Zeile 2" + br;
-		//
-		// Label lbl2 = new Label(10, 400, 250, 70, "Test_Lbl2");
-		// lbl2.setFont(Fonts.get18());
-		// lbl2.setMultiLineText(s);
-		// this.addChild(lbl2);
-		//
-		// s = "Ein Wraped Text, welcher automatisch umgebrochen wird, wenn dieser zu lang für das Label ist." + br + br;
-		// s += "Es wird aber auch ein Line Breake innerhalb des Textes erkannt und zusätzlich umgebrochen." + br;
-		//
-		// Label lbl3 = new Label(10, 100, 270, 200, "Test_Lbl3");
-		// lbl3.setFont(Fonts.get18());
-		// lbl3.setWrappedText(s);
-		//
-		// NinePatch back = new NinePatch(SpriteCache.uiAtlas.findRegion("shaddowrect"), 8, 8, 8, 8);
-		//
-		// lbl3.setBackground(back);
-		//
-		// lbl3.setTextMargin(10);
-		//
-		// this.addChild(lbl3);
+		// Label Tests
+		Label lbl = new Label(10, 500, 100, 30, "Test_Lbl");
+		lbl.setFont(Fonts.get22());
+		lbl.setText("Single Line Text");
+		lbl.setHAlignment(HAlignment.CENTER);
+		this.addChild(lbl);
+
+		String br = System.getProperty("line.separator");
+		String s = "Ein Multiline Text!" + br;
+		s += "Zeile 2" + br;
+		s += "Zeile 2" + br;
+
+		Label lbl2 = new Label(10, 400, 250, 70, "Test_Lbl2");
+		lbl2.setFont(Fonts.get18());
+		lbl2.setMultiLineText(s);
+		this.addChild(lbl2);
+
+		s = "Ein Wraped Text, welcher automatisch umgebrochen wird, wenn dieser zu lang für das Label ist." + br + br;
+		s += "Es wird aber auch ein Line Breake innerhalb des Textes erkannt und zusätzlich umgebrochen." + br;
+
+		Label lbl3 = new Label(10, 100, 270, 200, "Test_Lbl3");
+		lbl3.setFont(Fonts.get18());
+		lbl3.setWrappedText(s);
+
+		NinePatch back = new NinePatch(SpriteCache.uiAtlas.findRegion("shaddowrect"), 8, 8, 8, 8);
+
+		lbl3.setBackground(back);
+
+		lbl3.setTextMargin(10);
+
+		this.addChild(lbl3);
 
 	}
 
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		// TODO Auto-generated method stub
+		String str = "fps: " + Gdx.graphics.getFramesPerSecond();
+		Fonts.get18().draw(batch, str, 20, 100);
 
 	}
 

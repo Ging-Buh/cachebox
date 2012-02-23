@@ -35,7 +35,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	private boolean hasBackground = false;
 	private Sprite Background;
-	protected String name = "";
+	protected CharSequence name = "";
 	private boolean hasNinePatchBackground = false;
 	private NinePatch nineBackground;
 
@@ -56,6 +56,9 @@ public abstract class GL_View_Base extends CB_RectF
 	private int mViewState = VISIBLE;
 
 	private GL_View_Base parent;
+	protected static int TiefenZähler = 0;
+
+	private Sprite debugRec = null;
 
 	// # Constructors
 
@@ -73,14 +76,14 @@ public abstract class GL_View_Base extends CB_RectF
 	 * @param Width
 	 * @param Height
 	 */
-	public GL_View_Base(float X, float Y, float Width, float Height, String Name)
+	public GL_View_Base(float X, float Y, float Width, float Height, CharSequence Name)
 	{
 		super(X, Y, Width, Height);
 		Me = this;
 		name = Name;
 	}
 
-	public GL_View_Base(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name)
+	public GL_View_Base(float X, float Y, float Width, float Height, GL_View_Base Parent, CharSequence Name)
 	{
 		super(X, Y, Width, Height);
 		Me = this;
@@ -88,14 +91,14 @@ public abstract class GL_View_Base extends CB_RectF
 		name = Name;
 	}
 
-	public GL_View_Base(CB_RectF rec, String Name)
+	public GL_View_Base(CB_RectF rec, CharSequence Name)
 	{
 		super(rec);
 		Me = this;
 		name = Name;
 	}
 
-	public GL_View_Base(CB_RectF rec, GL_View_Base Parent, String Name)
+	public GL_View_Base(CB_RectF rec, GL_View_Base Parent, CharSequence Name)
 	{
 		super(rec);
 		Me = this;
@@ -154,6 +157,13 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
 	{
+
+		if (thisInvalidate)
+		{
+			myParentInfo = parentInfo;
+			CalcMyInfoForChild();
+		}
+
 		// first Draw Background?
 		if (hasBackground || hasNinePatchBackground)
 		{
@@ -170,30 +180,9 @@ public abstract class GL_View_Base extends CB_RectF
 			batch.end();
 		}
 
-		boolean mustScissorCalc = false;
-
-		if (parent != null)
-		{
-			mustScissorCalc = !parent.contains(this);
-		}
-
 		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
-
-		if (mustScissorCalc)
-		{
-			CB_RectF temp = parentInfo.drawRec().copy();
-			temp.setPos(new Vector2()); // auf 0,0 setzen
-			CB_RectF intersectRec = temp.createIntersection(this);
-
-			intersectRec.setPos(parentInfo.Vector());
-
-			Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth(),
-					(int) intersectRec.getHeight());
-		}
-		else
-		{
-			Gdx.gl.glScissor((int) parentInfo.x(), (int) parentInfo.y(), (int) width, (int) height);
-		}
+		Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth(),
+				(int) intersectRec.getHeight());
 
 		batch.begin();
 		this.render(batch);
@@ -211,47 +200,114 @@ public abstract class GL_View_Base extends CB_RectF
 			// view enthaldenen Childs nicht aufgerufen werden.
 			if (view.getVisibility() == VISIBLE)
 			{
-				ParentInfo tmpTranslate = parentInfo.cpy();
-				tmpTranslate.add(view.Pos.x, view.Pos.y);
 
-				batch.setProjectionMatrix(tmpTranslate.Matrix());
+				if (childsInvalidate) view.invalidate();
 
-				view.renderChilds(batch, tmpTranslate);
+				ParentInfo myInfoForChild = myParentInfo.cpy();
+				myInfoForChild.setWorldDrawRec(intersectRec);
 
-				batch.setProjectionMatrix(parentInfo.Matrix());
+				myInfoForChild.add(view.Pos.x, view.Pos.y);
+
+				batch.setProjectionMatrix(myInfoForChild.Matrix());
+				TiefenZähler++;
+
+				view.renderChilds(batch, myInfoForChild);
+				TiefenZähler--;
+				batch.setProjectionMatrix(myParentInfo.Matrix());
 			}
 		}
+
+		childsInvalidate = false;
 
 		// Draw Debug REC
 		if (debug)
 		{
 
-			if (debugRec == null)
+			if (debugRec != null)
 			{
-				int w = getNextHighestPO2((int) width);
-				int h = getNextHighestPO2((int) height);
-				Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-				p.setColor(1f, 0f, 0f, 1f);
-				p.drawRectangle(1, 1, (int) width - 1, (int) height - 1);
-
-				Texture tex = new Texture(p, Pixmap.Format.RGBA8888, false);
-
-				debugRec = new Sprite(tex, (int) width, (int) height);
-				Logger.LogCat("GL_Control ------[ " + name + " ]-----------------------");
-				Logger.LogCat("Create Debug Rec " + Pos.x + "/" + Pos.y + "/" + width + "/" + height);
-
+				batch.begin();
+				debugRec.draw(batch);
+				batch.end();
 			}
 
-			batch.begin();
-
-			debugRec.draw(batch);
-
-			batch.end();
 		}
 
 	}
 
-	private Sprite debugRec = null;
+	private void writeDebug()
+	{
+		if (debugRec == null)
+		{
+			int w = getNextHighestPO2((int) width);
+			int h = getNextHighestPO2((int) height);
+			Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+			p.setColor(1f, 0f, 0f, 1f);
+			p.drawRectangle(1, 1, (int) width - 1, (int) height - 1);
+
+			Texture tex = new Texture(p, Pixmap.Format.RGBA8888, false);
+
+			debugRec = new Sprite(tex, (int) width, (int) height);
+			Logger.LogCat("GL_Control ------[ " + name + " ]------[ Ebene: " + TiefenZähler + " ]----------");
+			Logger.LogCat("Create Debug Rec " + Pos.x + "/" + Pos.y + "/" + width + "/" + height);
+			Logger.LogCat("Parent Draw  Rec " + myParentInfo.drawRec().getPos().x + "/" + myParentInfo.drawRec().getPos().y + "/"
+					+ myParentInfo.drawRec().getWidth() + "/" + myParentInfo.drawRec().getHeight());
+			Logger.LogCat("intersectRec  Rec " + intersectRec.getPos().x + "/" + intersectRec.getPos().y + "/" + intersectRec.getWidth()
+					+ "/" + intersectRec.getHeight() + "  interscted =" + mustSetScissor);
+			Logger.LogCat("This World Rec    " + ThisWorldRec.getPos().x + "/" + ThisWorldRec.getPos().y + "/" + ThisWorldRec.getWidth()
+					+ "/" + ThisWorldRec.getHeight());
+			Logger.LogCat("ParentInfo.Vector= " + myParentInfo.Vector());
+		}
+	}
+
+	private CB_RectF ThisWorldRec;
+	private CB_RectF intersectRec;
+	protected ParentInfo myParentInfo;
+	private boolean mustSetScissor = false;
+	private boolean childsInvalidate = false;
+	private boolean thisInvalidate = true;
+
+	/**
+	 * Berechnet das Scissor Rechteck und die Infos für die Childs immer dann wenn sich etwas an Position oder Größe dieses GL_View_Base
+	 * geändert hat.</br> Wenn sich etwas geändert hat, wird auch ein Invalidate an die Childs übergeben, da diese auch neu berechnet werden
+	 * müssen. </br> Die detection wann sich etwas geändert hat, kommt von der überschriebenen CB_RectF Methode CalcCrossPos, da diese bei
+	 * jeder Änderung aufgerufen wird.
+	 */
+	private void CalcMyInfoForChild()
+	{
+		childsInvalidate = true;
+
+		mustSetScissor = !myParentInfo.drawRec().contains(this);
+
+		ThisWorldRec = this.copy().offset(myParentInfo.Vector());
+
+		ThisWorldRec.offset(-this.getX(), -this.getY());
+
+		if (mustSetScissor)
+		{
+			intersectRec = myParentInfo.drawRec().createIntersection(ThisWorldRec);
+		}
+		else
+		{
+			intersectRec = this.copy();
+		}
+
+		thisInvalidate = false;
+
+		// if (debug)
+		writeDebug();
+	}
+
+	public void invalidate()
+	{
+		thisInvalidate = true;
+	}
+
+	@Override
+	protected void calcCrossCorner()
+	{
+		super.calcCrossCorner();
+		thisInvalidate = true;
+	}
 
 	protected abstract void render(SpriteBatch batch);
 

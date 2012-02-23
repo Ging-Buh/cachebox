@@ -110,8 +110,9 @@ public class Image extends GL_View_Base
 		try
 		{
 
-			FileHandle imageFileHandle = Gdx.files.internal(mPath);
+			FileHandle imageFileHandle = Gdx.files.absolute(mPath);
 			mImageTex = new Texture(imageFileHandle);
+			Logger.LogCat("Load GL Image Texture Path= " + mPath);
 		}
 		catch (Exception e)
 		{

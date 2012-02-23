@@ -35,11 +35,11 @@ public class CreditsView extends GL_View_Base
 		int i;
 		for (i = 0; i < 10; i++)
 		{
-			Button btn = new Button(10f, posY - btnHeight - 10, width - 60, btnHeight, this, "Credits_Btn_" + i);
+			Button btn = new Button(10f, posY - btnHeight - 5, width - 30, btnHeight, this, "Credits_Btn_" + i);
 			btn.setText("Button " + i);
 			scrollView.addChild(btn);
 			Logger.LogCat("ScrollView add Button" + i);
-			posY -= btnHeight - 5;
+			posY -= btnHeight - 20;
 		}
 		Logger.LogCat("ScrollView END at " + i);
 		this.addChild(scrollView);

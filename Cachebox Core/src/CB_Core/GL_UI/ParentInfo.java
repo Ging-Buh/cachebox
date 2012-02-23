@@ -71,4 +71,10 @@ public class ParentInfo
 	{
 		return rec.copy();
 	}
+
+	public void setWorldDrawRec(CB_RectF Rect)
+	{
+		this.rec = Rect.copy();
+	}
+
 }

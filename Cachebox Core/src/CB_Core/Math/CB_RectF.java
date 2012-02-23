@@ -136,15 +136,21 @@ public class CB_RectF
 		calcCrossCorner();
 	}
 
-	public void offset(float offX, float offY)
+	public CB_RectF offset(Vector2 Offset)
+	{
+		return offset(Offset.x, Offset.y);
+	}
+
+	public CB_RectF offset(float offX, float offY)
 	{
 		float newX = this.Pos.x + offX;
 		float newY = this.Pos.y + offY;
 
-		if (this.Pos.x == newX && this.Pos.y == newY) return;
+		if (this.Pos.x == newX && this.Pos.y == newY) return this;
 		this.Pos.x = newX;
 		this.Pos.y = newY;
 		calcCrossCorner();
+		return this;
 	}
 
 	public float getX()
@@ -185,7 +191,7 @@ public class CB_RectF
 	/**
 	 * Berechnet die rechte obere Ecke
 	 */
-	private void calcCrossCorner()
+	protected void calcCrossCorner()
 	{
 		this.crossPos.x = this.Pos.x + this.width;
 		this.crossPos.y = this.Pos.y + this.height;

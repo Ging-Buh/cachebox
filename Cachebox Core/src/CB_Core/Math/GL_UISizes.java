@@ -199,7 +199,7 @@ public class GL_UISizes implements SizeChangedEvent
 	private static void calcPos()
 	{
 		Float margin = (float) (6.6666667 * DPI);
-		Info.setPos(new Vector2(margin, (float) (SurfaceSize.getHeight() - 66.666667 * DPI)));
+		Info.setPos(new Vector2(margin, (float) (SurfaceSize.getHeight() - 100 - 66.666667 * DPI)));
 
 		Float CompassMargin = (Info.getHeight() - Compass.getWidth()) / 2;
 

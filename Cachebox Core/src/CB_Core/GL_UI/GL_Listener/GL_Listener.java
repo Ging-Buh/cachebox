@@ -4,7 +4,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewID;
@@ -49,7 +48,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 	{
 		width = initalWidth;
 		height = initialHeight;
-		GL_View_Base.debug = true;
+		// GL_View_Base.debug = true;
 	}
 
 	@Override
@@ -312,6 +311,7 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 
 	public void setGLViewID(ViewID id)
 	{
+		if (child == null) Initialize();
 		child.setGLViewID(id);
 	}
 
