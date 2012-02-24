@@ -116,6 +116,7 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidGraphics;
 import com.badlogic.gdx.backends.android.AndroidInput;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 
 import de.cachebox_test.Components.CacheNameView;
 import de.cachebox_test.Components.search;
@@ -2291,7 +2292,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (viewGL == null)
 			{
 				gdxView = initializeForView(glListener, false);
-				// ((GLSurfaceView) viewGl).setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+				((GLSurfaceViewCupcake) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
 
 				gdxView.setOnTouchListener(new OnTouchListener()
 				{

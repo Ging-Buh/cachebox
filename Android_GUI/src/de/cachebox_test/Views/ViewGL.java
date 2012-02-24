@@ -1,6 +1,7 @@
 package de.cachebox_test.Views;
 
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL_Listener_Interface;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -9,11 +10,14 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
+
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
+
 import de.cachebox_test.R;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
 
-public class ViewGL extends RelativeLayout implements ViewOptionsMenu
+public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listener_Interface
 {
 	public GL_Listener glListener;
 
@@ -23,6 +27,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu
 	{
 		super(context);
 		ViewGl = glView;
+		GL_Listener.listenerInterface = this;
 		this.glListener = glListener;
 		try
 		{
@@ -130,8 +135,34 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu
 
 		return true;
 	}
+
 	// public Layer GetCurrentLayer()
 	// {
 	// return glListener.CurrentLayer;
 	// }
+
+	@Override
+	public void RequestRender()
+	{
+		((GLSurfaceViewCupcake) ViewGl).requestRender();
+	}
+
+	@Override
+	public void RenderDirty()
+	{
+		try
+		{
+			((GLSurfaceViewCupcake) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_WHEN_DIRTY);
+		}
+		catch (Exception ex)
+		{
+			String s = ex.getMessage();
+		}
+	}
+
+	@Override
+	public void RenderContinous()
+	{
+		((GLSurfaceViewCupcake) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+	}
 }

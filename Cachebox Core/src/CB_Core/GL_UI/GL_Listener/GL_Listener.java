@@ -22,7 +22,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class GL_Listener implements ApplicationListener // , InputProcessor
 {
-
+	public static GL_Listener_Interface listenerInterface;
 	// # private Member
 
 	MainView child;
@@ -30,7 +30,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	static boolean useNewInput = true;
 
 	public static final int FRAME_RATE_IDLE = 200;
-	public static final int FRAME_RATE_ACTION = 30;
+	public static final int FRAME_RATE_ACTION = 40;
 
 	// # public static member
 	public static SpriteBatch batch;
@@ -87,7 +87,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		Logger.LogCat("GL_Listner => onStart");
 		started.set(true);
-		startTimer(FRAME_RATE_IDLE);
+		startTimer(FRAME_RATE_ACTION);
 	}
 
 	public void onStop()
@@ -174,12 +174,12 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 			private void TimerMethod()
 			{
-				// ((GLSurfaceView) MapViewGL.ViewGl).requestRender();
+				listenerInterface.RequestRender();
 
 			}
 
 		}, 0, delay);
-		// ((GLSurfaceView) MapViewGL.ViewGl).setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+		listenerInterface.RenderDirty();
 	}
 
 	public static long timerValue;
@@ -193,7 +193,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			myTimer.cancel();
 			myTimer = null;
 		}
-		// ((GLSurfaceView) MapViewGL.ViewGl).setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+		listenerInterface.RenderContinous();
 	}
 
 	@Override
