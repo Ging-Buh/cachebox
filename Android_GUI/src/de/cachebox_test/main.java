@@ -1329,7 +1329,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 		super.onPause();
-		graphics.isShown = true;
+		// graphics.isShown = true;
 	}
 
 	@Override
@@ -1346,7 +1346,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 		super.onResume();
-		graphics.isShown = true;
+		// graphics.isShown = true;
 
 		if (runsWithAkku) counter.start();
 		mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
@@ -1517,7 +1517,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if ((Config.settings.ScreenLock.getValue() / 1000 < 10)) return;
 		}
 
-		dontStop = true;
+		// dontStop = true;
 		ScreenLock.isShown = true;
 
 		final Intent mainIntent = new Intent().setClass(this, ScreenLock.class);

@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Views;
 
-import CB_Core.Config;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -67,7 +66,7 @@ public class TestView extends GL_View_Base
 
 		// initial Image
 		image = new Image(300, 400, 128, 128, "Test_Image");
-		image.setImage(Config.WorkPath + "/data/cb_test.png");
+		image.setImage("data/cb_test.png");
 		this.addChild(image);
 
 		Button btn = new Button(300, 100, 200, 64, this, "Test_Btn");
@@ -107,7 +106,7 @@ public class TestView extends GL_View_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				image.setPos(new Vector2(Me.getPos().x, Me.getCrossPos().y - image.getHeight()));
+				// image.setPos(new Vector2(Me.getPos().x, Me.getCrossPos().y - image.getHeight()));
 				return true;
 			}
 		});

@@ -126,7 +126,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu
 		float ey = event.getY();
 		// Weitergabe der Toucheingabe an den Gl_Listener
 		// ToDo: noch nicht fertig!!!!!!!!!!!!!
-		glListener.touchDown((int) ex, (int) ey, 0, 0);
+		glListener.onTouchDown((int) ex, (int) ey, 0, 0);
 
 		return true;
 	}

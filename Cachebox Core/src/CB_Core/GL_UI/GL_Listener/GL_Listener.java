@@ -14,14 +14,13 @@ import CB_Core.Math.GL_UISizes;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
-public class GL_Listener implements ApplicationListener, InputProcessor
+public class GL_Listener implements ApplicationListener // , InputProcessor
 {
 
 	// # private Member
@@ -98,36 +97,6 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 		child.onStop();
 	}
 
-	// # ImputProzessor Implamantations
-
-	@Override
-	public boolean keyDown(int arg0)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped(char arg0)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean keyUp(int arg0)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int arg0)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	public boolean onClick(int x, int y, int pointer, int button)
 	{
 		boolean behandelt = false;
@@ -174,34 +143,6 @@ public class GL_Listener implements ApplicationListener, InputProcessor
 		behandelt = child.touchUp(x, (int) child.getHeight() - y, pointer, button);
 
 		return behandelt;
-	}
-
-	@Override
-	public boolean touchDown(int x, int y, int pointer, int button)
-	{
-		// Events vom Listener nicht behandeln, wir haben unsere eigenes Eventhandling
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int x, int y, int pointer)
-	{
-		// Events vom Listener nicht behandeln, wir haben unsere eigenes Eventhandling
-		return false;
-	}
-
-	@Override
-	public boolean touchMoved(int x, int y)
-	{
-		// Events vom Listener nicht behandeln, wir haben unsere eigenes Eventhandling
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int x, int y, int pointer, int button)
-	{
-		// Events vom Listener nicht behandeln, wir haben unsere eigenes Eventhandling
-		return false;
 	}
 
 	@Override

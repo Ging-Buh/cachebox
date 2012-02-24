@@ -1,0 +1,730 @@
+English
+// Main Menu
+	Misc = Misc
+	Find = Find
+	Nav = Nav
+	Cache = Cache
+	DB = DB
+	Description = Description
+	MakeSelection = Make Selection
+	Waypoints = Waypoints
+	Notes = Notes
+	Solver = Solver
+	Favorite = Favorite
+	Map = Map
+	Compass = Compass
+	Radar = Radar
+	Tracks = Tracks
+	ShowLogs = Show Logs
+	MyFieldNotes = My Fieldnotes
+	hint = Hint
+	joker = Telephon-Joker
+	spoiler = Spoiler
+	about = About Cachebox!
+	settings = Settings
+	tools = Tools
+	import = Import
+	quit = Quit 
+	found = Found!
+	DNF = Did not find!
+	maintenance = Needs Maintenance
+	AddNote = Add Fieldnote
+	ClearCurrentFieldNote = Clear current Fieldnotes
+	ShowRecentNotes = Show Recent Fieldnotes
+	ManageNotes = Manage Fieldnotes
+	DeleteAllNotes = Delete all Fieldnotes
+	DeleteAllFieldNotesQuestion = You are about to delete all your Fieldnotes. Are you sure you want to proceed?
+	cacheList = Cache List
+	filter = Filter
+	search = Search
+	ResortList = Resort List
+	AutoResort = Auto Select
+	record = Record
+	pause = Pause
+	stop = Stop
+	export = Export
+	TrackRec = Track Recorder
+	VoiceRec = Voice Recorder
+	createPQ = Create Pocket Query
+	uploadFieldNotes = Upload Fieldnotes
+	TomTom = TomTom
+	GPX = GPX
+	GoogleMap = Google Map
+	TakePhoto = Take Photo
+	RecVideo = Record Video
+	ChkUpdate = Check for Updates
+	manage = Manage DB
+	screenlock = Screenlock 
+	
+// AboutViewPanel
+	caches_found = Caches Found:
+	gps = GPS:
+	not_active = not active
+	not_detected = not detected
+	sats_nr = Sats:
+	Hdop = Hdop:
+	alt = Alt:
+	waiting_for_fix = Waiting for fix
+	not_responding = not responding
+	waypoint = Waypoint:
+	coordinate = Coordinate:
+	current = Current:
+	sats = Satellites:
+	accuracy = Accuracy:
+
+// MsgBox texts
+	Error = Error
+	Warning = Warning!
+	thisNotWork = This does not work!
+
+	Open_getcachebox_Link = Open www.team-cachebox.de in browser
+	allowInetConn = Internet connection disabled! You you want to open this link anyway?
+	
+	Open_Cache_Link = Open cache in browser
+	Cann_not_open_cache_browser = Cannot open cache in browser
+	
+	CanntProcessUpdateFiles = Cannot process updated files!
+	ErrDbStartup = Error during database startup!
+	ErrDbFNStartup = Error during Fieldnote database startup!
+	CanntCreateProxy = Cannot create Proxy!
+	
+	Quit? = Quit Cachebox?
+	QuitReally = Do you really want to close Cachebox?
+	
+	uploadFieldNotes? = Upload Fieldnotes to geocaching.com? This might imply costs!
+	NoFindsLogged = You do not have any finds logged with Cachebox!
+	
+	CreatePQ? = Create Pocket Query @ geocaching.com? This might imply costs!
+	
+	CanntOpenRecentNotes = Cannot open recent Fieldnotes in Browser
+	
+	ShowSpoiler = Show Spoiler
+	spoilSearch = Really search spoiler?
+	
+	ErrStartExternViewer = While starting external viewer
+	
+	downloadSpoiler = Download Spoiler
+	downloadSpoiler? = Really download spoiler?
+	NoSpoiler = No Spoilers available.
+	NoCacheSelect = No cache selected.
+	NoAccessAllowed = Internet access not allowed! Enable it in the settings to download spoilers.
+	
+	ErrNoCam = An error occured! Seems as if your device had no camera!
+	
+	AppUpdate = Update Application
+	AccessUpdate? = Access Internet to check for updates now?
+	
+	ErrLanchUpdater = Launching updater failed!
+	
+	upToDate = The installed version is up to date!
+	
+	ErrChkUpdate = Checking for updates failed...
+	
+	ErrSqlUpdate = The database [%dbfile%] is not a Sql3.0 database. Maybe the database is corrupt. Try to repair?\nThis may last some time (dependend on the database size)!
+	
+	GPSoff = GPS is deactivated.
+	GPSon? = Would like you to activate GPS now?
+	
+	welcome = Welcome to Cachebox!
+	wantApi = Do you want a GC API key now?
+	
+// Splash screan Messages
+	openDB = Opening Database...
+	IniUI = Initializing User Interface...
+	LoadMapPack = Loading Map Packs...
+	LoadCaches = Loading Caches...
+	
+	
+// Forms
+
+	// general
+		cancel = Cancel
+		confirm = Confirm
+		ok = Ok
+		edit = Edit	
+		call = Call
+		close = Close
+		decode = Decode
+		yes = Yes
+		no = No
+		abort = Abort
+		retry = Retry
+		ignore = Ignore
+			
+	// FormSelectDB
+		NewDB = New DB
+		SelDB = Select Database 
+		AutoStart = Automatic start
+		AutoStartTime = After {1} seconds
+		AutoStartDisabled = Disabled
+		StartWithoutSelection = automatic start disabled
+		
+	// DatabaseChangedForm
+		DatabaseChangedForm.Text = Database Scheme Changed
+		DatabaseChangedForm.Msg = Congratulations for updating your Cachebox! The database layout changed and needs to be updated. Doing so will slow down the import considerably, so setting up a new one is strongly recommended.	
+		deleteDB = Delete DB
+		convert = Convert
+		
+	// FormNewDB
+		InsNewDBName = Insert New DB name
+		UseDefaultRep = Use Default Repository?
+		
+	// FormCreatePocketQuery
+		connecting = Connecting...
+		createPQ = Create Pocket Query
+		ErrCreatePQ =  Error while trying to create a pocket query!
+		ErrLogInCreatePq = Login Error while trying to create a pocket query! Wrong login information?
+		ServerTimeout = Server Timeout...
+		NetConnectProb = Network connecting problems!
+		NoGCpassword = You didn't specify your GC password!
+		
+	// FormDownloadCacheImage
+		LowMemOperationCancel = Device is running low on memory! This operation will now cancel!
+		ImportImage = Importing Images
+		
+	//WaypointViewPanel
+		Projection = Projection
+		EnterMan = Enter Manually
+		FromGps = From GPS
+		FromMap = From map
+		details = Details
+		delete = Delete
+		DecDeg = Decimal Degrees
+		DegMin = Deg, Min
+		DegMinSec = Deg, Min, Sec
+		utm = UTM
+		addWaypoint = add Waypoint
+		?replaceCoord = Do you really want to replace coordinates?
+		!replaceCoord = Replace Coordinates
+		!DelWP = Delete Waypoint
+		?DelWP = Do you really want to delete this waypoint?
+		N = N
+		E = E
+		Zone = Zone
+		FromClipboard = From Clipboard
+		PasteCoord = Paste Coordinates
+		CopyCoord = Copy Coordinates
+		CopyGcCode = Copy GcCode
+		type = Type
+		Clue = Clue
+		wyptDefTitle = manual
+
+	//Waypoint Type select
+		Reference = reference
+		StageofMulti = Stage of a multicache
+		Question2Answer = question to answer
+		Trailhead = trailhead
+		Parking = parking
+		Final = final
+		
+	//SolverViewPanel
+		Solve = Solve
+		Funct. = Funct.
+		Select. = Select.
+		Keyb. = Keyb.
+		PasteClip = Paste Clipboard
+		AsCenter = As Center
+		AddWaypoint = Add Waypoint
+		Clipboard = Clipboard
+		
+	//GetSolverFunction
+		getSolverFunction = Insert Solver Function
+		groups = Groups
+		functions = Functions
+		otherNames = Other Names
+
+	//Solver
+		solverGroupText = Text
+		solverGroupNumbers = Numbers
+		solverGroupCoordinates = Coordinates
+
+	//Solver Functions
+		solverFuncAlphaSum = AlphaSum
+		solverDescAlphaSum = Sum of all positions of all characters in the Alphabet
+		solverFuncAlphaPos = AlphaPos
+		solverDescAlphaPos = Position of the first Character in the Alpahbet
+		solverFuncPhoneCode = PhoneCode
+		solverDescPhoneCode = Position of the first character on the phone keyboard
+		solverFuncPhoneSum = PhoneSum
+		solverDescPhoneSum = Sum of all position of all characters on the phone keyboard
+		solverFuncLength = Length
+		solverDescLength = Numbers of characters in the string
+		solverFuncCrosstotal = Crosstotal
+		solverDescCrosstotal = Sum of all single numbers in the number. \nExample: CT(123456) = 21
+		solverFuncICrosstotal = ICrosstotal
+		solverDescICrosstotal = Iterated Crosstotal until result has only 1 digit. \nExample: ICT(123456) = 3
+		solverFuncCrossproduct = Crossproduct
+		solverDescCrossprocuct = Product of all single numbers in the number. \nExample: CP(1234) = 24
+		solverFuncICrossproduct = ICrossproduct
+		solverDescICrossproduct = Iterated Crosstotal until result has only 1 digit. \nExample: ICP(1234) = 8
+		solverFuncRom2Dec = Rom2Dec
+		solverDescRom2Dec = Roman numerals to decimal
+		solverFuncPrimenumber = Primenumber
+		solverDescPrimenumber = Primenumber(x) Gives the x-th prime number. \nExample: Primenumber(5) = 11
+		solverFuncPrimeIndex = PrimeIndex
+		solverDescPrimeIndex = PrimeIndex(y) Gives the index of the prime number y. \nExample: PrimeIndex(11) = 5
+		solverFuncProjection = Projection
+		solverDescProjection = Projection of Coordinate. \nProjection(coord; length; angle)
+		solverFuncIntersection = Intersection
+		solverDescIntersection = Intersection of 2 Lines (coord1-coord2) with (coord3-coord4). \nIntersection(coord1; coord2; coord3; coord4)
+		solverFuncCrossbearing = Crossbearing
+		solverDescCrossbearing = Crossbearing between 2 points and 2 directions \nCrossbearing(coord1; angle1; coord2; angle2)
+		solverFuncBearing = Bearing
+		solverDescBearing = Gives the bearing from coord1 to coord2 \nBearing(coord1; coord2)
+		solverFuncDistance = Distance
+		solverDescDistance = Gives the distance between coord1 and coord2 in Meter \nDistance(coord1; coord2)
+		solverFuncInt = Int
+		solverDescInt = Gives the number before the Komma \nInt(-5.8) = 5
+		solverFuncRound = Round
+		solverDescRound = Rounds the number to x digits \nRound(1.8672; 2) = 1.87
+		solverFuncPi = Pi
+		solverDescPi = Gives the number Pi \nPi() = 3.14159265358979
+		solverFuncReverse = Reverse
+		solverDescReverse = Reverses the string \nReverse("ABC") = CBA
+		solverFuncRot13 = Rot13
+		solverDescRot13 = Gives the Rot13 encryption \nRot13("ABC") = NOP
+
+	//CompassViewPanel
+		SatHdop = Sats/Hdop:
+		BearSpeed = Bear/Speed:
+		distance = Distance:
+		Align = Align
+		AlignGps = Align \n GPS
+		AlignHtc = Align \n compass
+			
+	//Searchform
+		SearchCache = Search caches
+		Filter = Filter
+		Search = Search
+		Next = Next
+		Title = Title
+		GCCode = GC-Code
+		Owner = Owner
+		
+	//ProjectionForm
+		Projection = Projection
+		Distance = Distance
+		Bearing = Bearing
+		
+//Settings
+
+	//GPS
+	CompatibleWithGpsModDriver? = Compatible with GpsModDriver?
+	UseHtcCompass = Use Hardware Compass
+	Desc_HtcCompass = If Compass available it is used for bearing. Otherwise Bearing is appropriated by last GPS-Positions.
+	DescHtcLevel = Speed level for Hardware or GPS compass. \n-1 = GPS is not used at all.
+	Desc_HtcLevel = For driving GPS Bearing is suggested. For walking bearing by compass is more detailed.
+
+	//Data
+	AdjustFounds = Adjust number of finds ...
+	LoadFounds = Load number of finds from gc.com
+	DeleteLogs = Delete Logs
+	ButKeepLeast = but keep at least
+	ResetFavorites = Reset favorites (unmark) ...
+	ResetListingChanged = Reset listing changed ...
+	RemoveCaches = Remove caches ...
+	ArchiveFilterSelection? = You are about to mark all caches which currently match your filter settings as 'archived'. Are you sure you want to proceed?
+	ArchiveFilterSelection! = archiving Caches
+	DeleteFieldNotes = Delete all Fieldnotes ...
+	DelCaches? = You are about to delete all caches which currently match your filter settings. Are you sure you want to proceed?
+	DelCaches! = Delete caches
+	ArchiveFilterSelection = Archive filter selection
+	DeleteFilterSelection = Delete filter selection
+	DelLogs = You chose to delete logs immediately. During the next import all logs will be deleted. Are you sure you want to proceed?
+	PleaseConfirm = Please confirm!
+	comboBoxLogLifeItem_0 = immediately
+	comboBoxLogLifeItem_1 = after 1 month
+	comboBoxLogLifeItem_2 = after 2 months
+	comboBoxLogLifeItem_3 = after 3 months
+	comboBoxLogLifeItem_4 = after 4 months
+	comboBoxLogLifeItem_5 = after 5 months
+	comboBoxLogLifeItem_6 = after 6 months
+	DelFieldNotes? = You are about to delete all your Fieldnotes. Are you sure you want to proceed?
+	DelFieldNotes! = Delete Fieldnotes
+	ResetFavorites? = You are about to reset all 'favorit-markers'. Are you sure you want to proceed?
+	ResetFavorites! = Reset favorites
+	ResetListingChanged? = You are about to reset all 'listing changed' states. Are you sure you want to proceed?
+	ResetListingChanged! = Reset listing changed
+	LoadFinds! = Load number of finds from geocaching.com? This might imply costs!
+	LoadFinds? = Load number of Finds
+	LogInErrorLoadFinds = Login Error while trying to get number of finds! Wrong information?
+	CannotResolveHost = Cannot resolve Host!
+	ServerTimeout = Server Timeout...
+	FoundsSetTo = Founds set to: {1}
+	
+	//FormAdjustFounds
+	AdjustFinds = Adjust finds
+	TelMeFounds = Tell me how many caches you have found until now:
+	
+	//MiscSettings
+	units = Units:	
+	AllowInternet = Allow Internet Access
+	AllowLandscape = Allow Landscape view
+	Desc_AllowLandscape = Display is rotated if device is rotated. (Could cause design problems)
+	ShowKeypad = Show Keypad
+	Desc_ShowKeypad = allows keypad displayed in fieldnotes, notes, waypoints,...
+	SuppressPowerSaving = Suppress Power Saving
+	Desc_SuppressPowerSaving = prevents the power saving mode of device
+	UploadAllFieldnotes = Upload All Fieldnotes? (Ignore Date)
+	LogIn = Login at geocaching.com
+	GCPW = Password at geocaching.com
+	GCVotePW = GcVote Password
+	GCJoker = MD5-Hash at gcJoker.de
+	SelectLanguage = Select Language
+	save = Save
+		
+	
+//GC-Live
+
+	GC_title = Powered by Geocaching Live
+
+	GC_basic = With this online search only traditional caches without details were loaded. You as a basic member of geocaching.com can receive full details of 3 caches per day when you open the cache description. 
+ 
+	GC_NoDescription = This cache was downloaded with the API of Geocaching.com without details. Please click "Download Description" to download the full cache details.
+
+	GC_DownloadDescription = Download Description 
+	
+//new
+	AppliedFilter1 = Applied filter. Found
+	AppliedFilter2 = Caches!
+	ManuallyAddCache = Manually Add Cache
+	FindCachesOnline = Find Caches Online
+	TBList = TB List
+	ReloadCacheAPI = Reload Cache (API)
+	Fieldnotes = Fieldnotes
+	writenote = Write Note
+	generate = Generate
+	load = Load
+	NoTrackSelected = No track selected!
+	IsActualTrack = Current track cannot be deleted
+	preset = Preset
+	setting = Setting
+	category = Category
+	AllCaches = All caches
+	AllCachesToFind = All active caches
+	QuickCaches = Quick caches
+	GrabTB = Grab some travelbugs
+	DropTB = Drop off travelbugs
+	Highlights = Highlights
+	Favorites = Favorites
+	PrepareToArchive = Prepare to archive
+	ListingChanged = Listing changed
+	General = General
+	disabled = Disabled
+	archived = Archived
+	myfinds = My finds
+	myowncaches = My own caches
+	withtrackables = With trackables
+	hasuserdata = has user data
+	manualwaypoint = manual waypoint
+	minDifficulty = Min. Difficulty
+	maxDifficulty = Max. Difficulty
+	minTerrain = Min. Terrain
+	maxTerrain = Max. Terrain
+	minContainerSize = Min. Container Size
+	maxContainerSize = Max. Container Size
+	minRating = Min. Rating
+	maxRating = Max. Rating
+	NoCacheFound = No Cache found
+	NavigateTo = Navigate to...
+	Layer = Map type
+	AlignToCompass = Align to compass
+	SmoothScrolling = Smooth scrolling
+	Desc_SmoothScrolling = The map is displayed more smoothly during scrolling 
+	view = View
+	none = None
+	normal = Normal
+	fine = Fine
+	superfine = Superfine
+	HideFinds = Hide Finds
+	ShowRatings = Show Ratings
+	ShowDT = Show D/T
+	ShowTitle = Show Titles
+	ShowDirectLine = Show Direct Line
+	Desc_ShowDirectLine = Draws a line between own and cache position. Helpful if cache outside of displayed map
+	start = Start
+	DayNight = Day/Night
+	ScreenLock = ScreenLock [min/sec] 
+	Desc_ScreenLock = Screenlock
+	SelectCache = Select Cache
+	Maps = Maps
+	PQfromGC = Pocket Query from geocaching.com
+	GpxFromMail = GPX from mails
+	GCVoteRatings = GcVote cache ratings
+	PreloadImages = Description images
+	LoginSettings = Login and API - Settings
+	getApiKey = Get API key
+	DescMapLayer = Auto-download map layer
+	MoveMapCenterWithSpeed = Move map center with speed
+	Desc_MoveMapCenterWithSpeed = own position is displayed lower in mapview, so you have a better view on the map. Useful for driving. (Only available if map is alligned to compass)
+	MoveMapCenterMaxSpeed = Switches to driving mode at x km/h
+	Desc_MoveMapCenterMaxSpeed = speed of changing the own position displayed in the mapview 
+	DPIaware = DPI-aware rendering
+	StartTrackRecOnStart = Start Track Recorder on startup
+	TrackEvery = Track every
+	QuickButton = Quick Button
+	ShowQuickButton = Show Quick Button Panel
+	up = Up
+	down = Down
+	add = Add
+	deleteFieldnote = Delete Fieldnote
+	confirmFieldnoteDeletion = Really delete Fieldnote\n\n[{1}]\n\nof cache\n\n[{2}]?
+	confirmFieldnoteDeletionRst = \n\nThe "found it"-flag will be resetted!
+	solverErrParamCount = This function needs {1} parameters
+	apiKeyNeeded = No API-Key found.\nSee login settings.
+	chkApiState = Checking API state
+	searchingOnline = Running online search
+	uploadCanceled = Upload canceled
+	uploadFinished = Upload finished
+	missingVars = Missing variables
+	insertVars = Add the following missing variables?
+	loadingTrackables = Getting trackables
+	cacheOtherDb = The Cache [{1}] is not in the current DB.
+	fieldNoteNoDelete = This FieldNote can not be deleted!
+	fieldNoteNoSelect = This FieldNote can not be selected!
+	noJokers = No jokers present
+	internetError = Error accessing internet
+	errorAPI = Error during API access
+	chkState = Checking state
+
+// Attributes
+	att_1_0 = dogs does not permit
+	att_1_1 = dogs permits
+	att_2_1 = entrance or parking bay fee necessarily
+	att_3_1 = climbing equipment inevitably
+	att_4_1 = boat inevitably
+	att_5_1 = diver's equipment necessarily
+	att_6_0 = for children not recommended
+	att_6_1 = for children recommended
+	att_7_0 = duration of more than one hour
+	att_7_1 = duration less than one hour
+	att_8_0 = vantage point not available 
+	att_8_1 = vantage point available 
+	att_9_0 = travelling distance is not long
+	att_9_1 = travelling distance is long
+	att_10_0 = to gain promotion is not difficult
+	att_10_1 = to gain promotion is difficult
+	att_11_1 = it must become waded (wellington / chest wader necessarily)
+	att_12_1 = it must be swum
+	att_13_0 = Cache is not accessible round-the-clock
+	att_13_1 = Cache is accessible round-the-clock
+	att_14_0 = at night not recommended
+	att_14_1 = at night recommended 
+	att_15_0 = not to find with closed snowy cover 
+	att_15_1 = to find with closed snowy cover
+	att_16_1 = kaktus
+	att_17_0 = toxic plants
+	att_17_1 = toxic plants
+	att_18_1 = dangerous animals 
+	att_19_1 = ticks 
+	att_20_1 = closed mine / stone quarry
+	att_21_1 = risk of rock fall 
+	att_22_1 = hunting area 
+	att_23_1 = dangerous area (e.g., danger of falling)
+	att_24_0 = for wheel chair drivers not suitable
+	att_24_1 = for wheel chair drivers suitable
+	att_25_0 = no parking bay available 
+	att_25_1 = parking bay available 
+	att_26_1 = public transport nearby 
+	att_27_0 = no drinking water nearby 
+	att_27_1 = drinking water nearby 
+	att_28_0 = no public toilet nearby 
+	att_28_1 = public toilet nearby 
+	att_29_0 = no phone nearby 
+	att_29_1 = phone nearby 
+	att_30_0 = no picnic place nearby 
+	att_30_1 = picnic place nearby  
+	att_31_0 = no camp site / camping place nearby 
+	att_31_1 = camp site / camping place nearby  
+	att_32_0 = does not permit bicycles 
+	att_32_1 = permits bicycles 
+	att_33_0 = does not permit motorcycles
+	att_33_1 = permits motorcycles
+	att_34_0 = Quads does not permit
+	att_34_1 = Quads permits
+	att_35_0 = cross-country vehicle does not permit
+	att_35_1 = cross-country vehicle permits
+	att_36_0 = snowy mobile does not permit
+	att_36_1 = snowy mobile permits
+	att_37_0 = does not permit horses
+	att_37_1 = permits horses 
+	att_38_0 = campfire does not permit
+	att_38_1 = campfire permits
+	att_39_1 = thorns
+	att_40_0 = unobtrusive behavior not inevitably 
+	att_40_1 = unobtrusive behavior inevitably
+	att_41_0 = for baby carriage not suitable
+	att_41_1 = for baby carriage suitable
+	att_42_1 = Cache needs servicing (it is added by a "Needs Maintenance" log)
+	att_43_1 = Cache is possible surrounded from animals / animal contact
+	att_44_1 = flashlight needs
+	att_46_0 = LKWs, caravan, campers does not permit
+	att_46_1 = LKWs, caravan, campers permits
+	att_47_0 = it no riddle must be solved on site
+	att_47_1 = it a riddle must be solved on site
+	att_48_1 = ultraviolet light needs
+	att_49_1 = snowy shoes necessarily
+	att_50_1 = cross-country skiing necessarily
+	att_51_1 = special tools necessarily
+	att_52_0 = no Nightcache
+	att_52_1 = Nightcache (find cache only at night)
+	att_53_0 = no Drive-In-Cache (Cache can be started not directly)
+	att_53_1 = Drive-In-Cache (Cache can be started directly)
+	att_54_0 = no Lost-Place-Cache
+	att_54_1 = Lost-Place-Cache (lies in / close to desolate buildings)
+	att_55_0 = short wandering (more than 1 kilometer)
+	att_55_1 = short wandering (less than 1 kilometer)
+	att_56_0 = middle wandering (more than 10 kilometer)
+	att_56_1 = middle wandering (less than 10 kilometer)
+	att_57_0 = long wandering (less than 10 kilometer)
+	att_57_1 = long wandering (more than 10 kilometer)
+	att_58_0 = no filling station nearby
+	att_58_1 = filling station nearby
+	att_59_0 = no restaurant / snack nearby
+	att_59_1 = restaurant / snack nearby
+	att_60_1 = a radio transmitter is seated (e.g., a Chirp)
+	att_61_0 = not a Partnership Cache
+	att_61_1 = Partnership Cache
+	att_62_0 = not seasonal access
+	att_62_1 = seasonal access
+	att_63_0 = not Tourist friendly
+	att_63_1 = Tourist friendly
+	att_64_0 = no Tree Climbing
+	att_64_1 = Tree Climbing
+	att_65_0 = no Front Yard (Private Residence)
+	att_65_1 = Front Yard (Private Residence)
+	att_66_0 = no Teamwork Required
+	att_66_1 = Teamwork Required
+	
+	
+//new settings
+
+	QuickList = Edit Quick Button list!
+	Login = Login settings
+	GcVotePassword = Password for GC-Vote
+	Desc_GcVotePassword = For Greasemonkey script for displaying displaying votings. Account necessary (gcvote.com)
+	GcLogin = Groundspeak user name
+	Desc_GcLogin = your username at www.geocaching.com
+	GcJoker = MD5-Hash at gcJoker.de
+	Desc_GcJoker = telefonjoker of gcJoker.de. Instructions for building the hash can be found in the wiki of team-cachebox.de
+	GcAPI = Api key
+	lastZoomLevel = Last used zoom level 
+	OsmMinLevel = minimum zoom level for map 
+	Desc_OsmMinLevel = maximum overview of the map
+	OsmMaxLevel = maximum zoom level for map  
+	Desc_OsmMaxLevel = maximum detail on the map
+	MapShowDT = Show D/T on map view
+	Desc_MapShowDT = The difficulties of a cache are displayed next to the icon in mapview
+	Gps = GPS settings
+	HtcCompass = Use hardware compass
+	HtcLevel = Speed level for hardware or GPS compass. \n-1 = GPS is not used at all.
+	LeftWindow = formula window
+	BothWindow = both windows
+	RightWindow = solve window
+	MapHideMyFinds = Hide my finds on map
+	Desc_MapHideMyFinds = found caches are not visible in mapview
+	MapShowTitles = Show cache titles on map
+	Desc_MapShowTitles = Cachename is displayed above the cache icon in mapview
+	ZoomCross = Show cross when zoom level >
+	Desc_ZoomCross = displays a cross instead of icon when reducing the zoom level for a clearer view
+	MapShowCompass = Show compass on map
+	Desc_MapShowCompass = displays a info bar for bearing, speed and position
+	MapShowRating = Show rating on map
+	Desc_MapShowRating = display the votings of GCVote in mapview (account necessary)
+	ShowDirektLine = Show direkt line to target
+	Desc_ShowDirektLine = Draws a line between own and cache position. Helpful if cache outside of displayed map
+	Internal = Internal
+	PlaySounds = Play sounds
+	Desc_PlaySounds = gives an accoustic signal when approaching the cache
+	Folder = Folder
+	TrackFolder = Track Folder
+	Desc_TrackFolder = recorded tracks are stored in here
+	UserImageFolder = User Image Folder
+	Desc_UserImageFolder = taken pictures are stored in here
+	PocketQueryFolder = GPX Import Folder
+	Desc_PocketQueryFolder = downloaded pocketqueries (as zip) or gpx files have to be placed here for importing
+	MapPackFolder = Map pack Folder
+	Desc_MapPackFolder = place downloaded offline maps in here. don�t forget to switch the maptype
+	DatabasePath = Path to current database
+	Desc_DatabasePath = SQL-databases are stored in here
+	SpoilerFolder = Spoiler Folder
+	Desc_SpoilerFolder = spoilers are stored in here
+	DescriptionImageFolder = Description Image Folder
+	Desc_DescriptionImageFolder = images displayed in cache descriptions are stored in here
+	TileCacheFolder = Cache folder for map tiles
+	Desc_TileCacheFolder = downloaded map tiles are stored in here
+	LanguagePath = Path to language files
+	Desc_LanguagePath = language files are stored in here
+	TrackDistance = Track every [m]
+	Desc_TrackDistance = During track recording your position is saved every x meters.
+	SoundApproachDistance = Approach sound [m]
+	Desc_SoundApproachDistance = when approaching the cache location an accoustic signal is given
+	switchViewApproach = Switch view to compass with approach
+	Desc_switchViewApproach = when approaching the cache location map view is changed to compass view
+	TrackRecorderStartup = Start track recorder on startup
+	Desc_TrackRecorderStartup = Trackrecording automatically starts at every start of cachebox
+	DescriptionNoAttributes = Does not show attributes in the description
+	Desc_DescriptionNoAttributes = Don�t know what is not displayed here
+	Templates = Fieldnotes templates
+	DNFTemplate = DNF template
+	Desc_DNFTemplate = the template for "Did not find!" can be changed here
+	AddNoteTemplate = Add note template
+	Desc_AddNoteTemplate = the template for "Write note" can be changed here
+	FoundTemplate = Found template
+	Desc_FoundTemplate = the template for "Found!" can be changed here
+	NeedsMaintenanceTemplate = Needs Maintenance template
+	Desc_NeedsMaintenanceTemplate = the template for "Needs Maintenance" can be changed here
+	API = API
+	ImportGpx = Import GPX 
+	Desc_ImportGpx = for importing downloaded pocketqueries from the geocaching.com hp. files have to be stored in pq folder.
+	SearchWithoutOwns = Search without owns
+	Desc_SearchWithoutOwns = Search without owns
+	SearchOnlyAvible = Search only available
+	Desc_SearchOnlyAvible = Online search for available caches (disabled caches are not displayed)
+	ImportPQsFromGeocachingCom = Import PQs from geocaching.com
+	Desc_ImportPQsFromGeocachingCom = download and import your pocketqueries from geocaching.com. account necessary
+	SearchWithoutFounds = Search without founds 
+	Desc_SearchWithoutFounds = Online search without caches you found already
+	ImportRatings = Import Ratings from GC-Vote
+	Desc_ImportRatings = import ratings from gcvote.com into database. account necessary
+	lastSearchRadius = Last search radius
+	Desc_lastSearchRadius = saves last used search radius
+	Debug = debug
+	DebugDisplayInfo = Show display info 
+	OsmDpiAwareRendering = DPI-aware rendering
+	Desc_OsmDpiAwareRendering = the size of text and icons is adapted to definition. use this if you have problems displaying the map view.
+	PositionAtVertex = Draw position marker at vertex
+	Desc_PositionAtVertex = own position is displayed at vertex of marker (not in middle) for more detailed view
+	PositionMarkerTransparent = Draw position marker with transparence 
+	Desc_PositionMarkerTransparent = the position marker is displayed transparent
+	ImperialUnits = Imperial units
+	Desc_ImperialUnits = distance and speed are displayed in yard and mph. restart necessary
+	FoundOffset = number of finds
+	Desc_FoundOffset = here you can customize your founds. The number is used in the found template
+	FieldnotesUploadAll = Upload All Fieldnotes (ignore date)
+	Desc_FieldnotesUploadAll = all fieldnotes are uploaded to geocaching.com
+	dontShowChris = Don't show Christmas icons 
+	Desc_dontShowChris = Christmas icons are only available in december. If you want to change to usual view, check here and restart.
+	DelArchived = Delete archived
+	DelFound = Delete founds
+	DelActFilter = Delete filter selection
+	DeleteCaches = Delete Caches
+	MsgDelCaches = The data base is filtered to archived or found Caches and the searching result is automatically extinguished without farther confirmation!\n\nReally delete Caches?
+	CompassNorthOriented = Compass start north is top 
+	Desc_CompassNorthOriented = Compass start north is top, else running direction is top.	
+	
+	MeasureCount = Measurments
+	MeasureCoord = Coords
+	
+	IniPlugIn = Initializing PlugIn's
+	
+	MyParking = my parking bay
+	My_Parking_Area_Title = Administering your current parking bay!
+	My_Parking_Area_Text = Placing, Extinguishing or chooses your parking bay!
+	My_Parking_Area_select = Select parking bay
+	My_Parking_Area_Add = Set parking bay to GPS
+	My_Parking_Area_Del = Delete parking bay!
+	My_Parking_Area_Found = Congratulations, you have found your car!
+	My_Parking_Area_DNF = Too bad, then you must probably walk!
+
+	DeletedCaches = It were deleted {1} Caches with pictures.

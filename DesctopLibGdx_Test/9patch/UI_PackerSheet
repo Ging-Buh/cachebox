@@ -1,0 +1,32 @@
+UI_PackerSheet.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+day_btn_default_normal_pressed
+  rotate: false
+  xy: 72, 2
+  size: 33, 52
+  orig: 33, 52
+  offset: 0, 0
+  index: -1
+day_btn_default_normal
+  rotate: false
+  xy: 2, 2
+  size: 33, 52
+  orig: 33, 52
+  offset: 0, 0
+  index: -1
+shaddowrect
+  rotate: false
+  xy: 107, 2
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+day_btn_default_normal_disabled
+  rotate: false
+  xy: 37, 2
+  size: 33, 52
+  orig: 33, 52
+  offset: 0, 0
+  index: -1

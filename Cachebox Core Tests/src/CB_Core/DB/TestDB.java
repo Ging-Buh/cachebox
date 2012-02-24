@@ -9,6 +9,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map.Entry;
 
+import CB_Core.DB.CoreCursor;
+import CB_Core.DB.Database;
+import CB_Core.DB.Database.DatabaseType;
+import CB_Core.DB.Database.Parameters;
+
 public class TestDB extends Database
 {
 
