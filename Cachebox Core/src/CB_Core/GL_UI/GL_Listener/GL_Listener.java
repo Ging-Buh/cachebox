@@ -174,12 +174,12 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 			private void TimerMethod()
 			{
-				listenerInterface.RequestRender();
+				if (listenerInterface != null) listenerInterface.RequestRender();
 
 			}
 
 		}, 0, delay);
-		listenerInterface.RenderDirty();
+		if (listenerInterface != null) listenerInterface.RenderDirty();
 	}
 
 	public static long timerValue;
@@ -193,7 +193,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			myTimer.cancel();
 			myTimer = null;
 		}
-		listenerInterface.RenderContinous();
+		if (listenerInterface != null) listenerInterface.RenderContinous();
 	}
 
 	@Override
