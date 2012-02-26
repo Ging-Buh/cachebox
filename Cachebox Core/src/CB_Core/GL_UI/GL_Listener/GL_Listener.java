@@ -35,6 +35,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public static final int FRAME_RATE_IDLE = 200;
 	public static final int FRAME_RATE_ACTION = 50;
+	public static final int FRAME_RATE_FAST_ACTION = 15;
 
 	// # public static member
 	public static SpriteBatch batch;
@@ -196,7 +197,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	long startTime;
 	static Timer myTimer;
 
-	private static void stopTimer()
+	public static void stopTimer()
 	{
 		Logger.DEBUG("Stop Timer");
 		if (myTimer != null)

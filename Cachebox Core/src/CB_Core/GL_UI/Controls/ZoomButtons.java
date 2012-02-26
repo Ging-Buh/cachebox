@@ -17,9 +17,12 @@
 package CB_Core.GL_UI.Controls;
 
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
@@ -38,11 +41,13 @@ public class ZoomButtons extends GL_View_Base
 	private CB_RectF BtnDrawRec;
 
 	private Date timeLastAction = new Date();
-	private final int timeToFadeOut = 23000; // 7Sec
+	private final int timeToFadeOut = 13000; // 7Sec
 	private final int fadeStep = 50; // 100 mSec
 	private boolean fadeOut = false;
 	private boolean fadeIn = false;
 	private float FadeValue = 1.0f;
+
+	private ZoomButtons THIS;
 
 	// # Constructors
 	/**
@@ -56,6 +61,7 @@ public class ZoomButtons extends GL_View_Base
 	public ZoomButtons(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height, Name);
+		THIS = this;
 		onRezised(this);
 		resetFadeOut();
 	}
@@ -165,9 +171,17 @@ public class ZoomButtons extends GL_View_Base
 		return false;
 	}
 
+	private boolean firstDraw = true;
+
 	@Override
 	public void render(SpriteBatch batch)
 	{
+
+		if (firstDraw)
+		{
+			resetFadeOut();
+			firstDraw = false;
+		}
 
 		if (!this.isVisible()) return;
 		// Log.d("CACHEBOX", "in=" + fadeIn + " out=" + fadeOut + " Fade=" + FadeValue);
@@ -291,6 +305,36 @@ public class ZoomButtons extends GL_View_Base
 		}
 
 		timeLastAction = new Date();
+		startTimerToFadeOut();
+	}
+
+	Timer timer;
+
+	private void cancelTimerToFadeOut()
+	{
+
+		if (timer != null)
+		{
+			timer.cancel();
+			timer = null;
+		}
+	}
+
+	private void startTimerToFadeOut()
+	{
+		cancelTimerToFadeOut();
+
+		timer = new Timer();
+		TimerTask task = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				GL_Listener.glListener.addRenderView(THIS, GL_Listener.FRAME_RATE_ACTION);
+				cancelTimerToFadeOut();
+			}
+		};
+		timer.schedule(task, timeToFadeOut);
 	}
 
 	private void checkFade()
@@ -318,6 +362,7 @@ public class ZoomButtons extends GL_View_Base
 					FadeValue = 0f;
 					fadeOut = false;
 					this.setVisibility(INVISIBLE);
+					GL_Listener.glListener.removeRenderView(this);
 				}
 				timeLastAction = new Date();
 			}
@@ -333,6 +378,7 @@ public class ZoomButtons extends GL_View_Base
 					// Log.d("CACHEBOX", "Ende Fade In");
 					FadeValue = 1f;
 					fadeIn = false;
+					GL_Listener.glListener.removeRenderView(this);
 				}
 				timeLastAction = new Date();
 			}

@@ -171,6 +171,7 @@ public class TestView extends GL_View_Base
 		// MapInfoPanel
 		MapInfoPanel info = new MapInfoPanel(GL_UISizes.Info, "InfoPanel");
 		this.addChild(info);
+
 	}
 
 	@Override
@@ -178,10 +179,7 @@ public class TestView extends GL_View_Base
 	{
 		String str = "fps: " + Gdx.graphics.getFramesPerSecond();
 		Fonts.get18().draw(batch, str, 20, 100);
-		if (true)
-		{
-			GL_Listener.glListener.removeRenderView(this);
-		}
+
 	}
 
 	@Override

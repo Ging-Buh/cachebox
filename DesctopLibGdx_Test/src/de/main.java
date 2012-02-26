@@ -8,8 +8,10 @@ import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_Core.GL_UI.ViewID.UI_Pos;
 import CB_Core.GL_UI.ViewID.UI_Type;
+import CB_Core.Log.Logger;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
@@ -66,6 +68,7 @@ public class main {
 			}
 		};
 		timer.schedule(task, 1000);
+
 	}
 
 	private static void Run() {
@@ -105,4 +108,7 @@ public class main {
 		Config.AcceptChanges();
 	}
 
+
+	
+	
 }
