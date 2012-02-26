@@ -1,9 +1,12 @@
 package CB_Core.GL_UI.GL_Listener;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewID;
@@ -23,14 +26,15 @@ import com.badlogic.gdx.math.Vector2;
 public class GL_Listener implements ApplicationListener // , InputProcessor
 {
 	public static GL_Listener_Interface listenerInterface;
+	public static GL_Listener glListener;
 	// # private Member
-
+	private HashMap<GL_View_Base, Integer> renderViews = new HashMap<GL_View_Base, Integer>();
 	MainView child;
 	private static AtomicBoolean started = new AtomicBoolean(false);
 	static boolean useNewInput = true;
 
 	public static final int FRAME_RATE_IDLE = 200;
-	public static final int FRAME_RATE_ACTION = 40;
+	public static final int FRAME_RATE_ACTION = 50;
 
 	// # public static member
 	public static SpriteBatch batch;
@@ -45,6 +49,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	 */
 	public GL_Listener(int initalWidth, int initialHeight)
 	{
+		glListener = this;
 		width = initalWidth;
 		height = initialHeight;
 		// GL_View_Base.debug = true;
@@ -64,6 +69,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	@Override
 	public void pause()
 	{
+		Logger.DEBUG("Pause");
 
 		onStop();
 	}
@@ -71,6 +77,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	@Override
 	public void resume()
 	{
+		Logger.DEBUG("Resume");
 
 		onStart();
 	}
@@ -87,6 +94,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		Logger.LogCat("GL_Listner => onStart");
 		started.set(true);
+		if (listenerInterface != null) listenerInterface.RenderDirty();
 		startTimer(FRAME_RATE_ACTION);
 	}
 
@@ -94,6 +102,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		Logger.LogCat("GL_Listner => onStop");
 		stopTimer();
+		if (listenerInterface != null) listenerInterface.RenderContinous();
 		child.onStop();
 	}
 
@@ -161,6 +170,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		if (timerValue == delay) return;
 		stopTimer();
+		Logger.DEBUG("Start Timer: " + delay);
 
 		timerValue = delay;
 		myTimer = new Timer();
@@ -179,7 +189,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			}
 
 		}, 0, delay);
-		if (listenerInterface != null) listenerInterface.RenderDirty();
+		// if (listenerInterface != null) listenerInterface.RenderDirty();
 	}
 
 	public static long timerValue;
@@ -188,12 +198,14 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	private static void stopTimer()
 	{
+		Logger.DEBUG("Stop Timer");
 		if (myTimer != null)
 		{
 			myTimer.cancel();
 			myTimer = null;
 		}
-		if (listenerInterface != null) listenerInterface.RenderContinous();
+		timerValue = 0;
+		// if (listenerInterface != null) listenerInterface.RenderContinous();
 	}
 
 	@Override
@@ -256,4 +268,41 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		child.setGLViewID(id);
 	}
 
+	public void addRenderView(GL_View_Base view, int delay)
+	{
+		if (renderViews.containsKey(view))
+		{
+			renderViews.remove(view);
+		}
+		renderViews.put(view, delay);
+		calcNewRenderSpeed();
+	}
+
+	public void removeRenderView(GL_View_Base view)
+	{
+		if (renderViews.containsKey(view))
+		{
+			renderViews.remove(view);
+			calcNewRenderSpeed();
+		}
+	}
+
+	public void renderOnce()
+	{
+		if (listenerInterface != null) listenerInterface.RequestRender();
+	}
+
+	private void calcNewRenderSpeed()
+	{
+		int minDelay = 0;
+		Iterator<Integer> it = renderViews.values().iterator();
+		while (it.hasNext())
+		{
+			int delay = it.next();
+			if (delay > minDelay) minDelay = delay;
+		}
+		if (minDelay == 0) stopTimer();
+		else
+			startTimer(minDelay);
+	}
 }

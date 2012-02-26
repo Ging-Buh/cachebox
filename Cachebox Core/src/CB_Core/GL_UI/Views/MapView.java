@@ -22,6 +22,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.ZoomButtons;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
@@ -47,6 +48,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class MapView extends GL_View_Base implements SelectedCacheEvent, PositionChangedEvent
 {
+	private final MapView that; // für Zugriff aus Listeners heraus auf this
 	private final String Tag = "MAP_VIEW_GL";
 
 	private Locator locator = null;
@@ -131,6 +133,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 	public MapView(CB_RectF rec, CharSequence Name)
 	{
 		super(rec, Name);
+		that = this;
 
 		if (queueProcessor == null)
 		{
@@ -154,6 +157,8 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 				// camera.zoom = getMapTilePosFactor(aktZoom);
 				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System
 						.currentTimeMillis() + 1000);
+				GL_Listener.glListener.addRenderView(that, frameRateAction);
+				GL_Listener.glListener.renderOnce();
 				return true;
 			}
 		});
@@ -171,6 +176,8 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 				// camera.zoom = getMapTilePosFactor(aktZoom);
 				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System
 						.currentTimeMillis() + 1000);
+				GL_Listener.glListener.addRenderView(that, frameRateAction);
+				GL_Listener.glListener.renderOnce();
 				return true;
 			}
 		});
@@ -318,7 +325,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 			if (kineticZoom.getFertig())
 			{
-				// startTimer(frameRateIdle);
+				GL_Listener.glListener.removeRenderView(this);
 				kineticZoom = null;
 			}
 			else
@@ -345,7 +352,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 		if (reduceFps)
 		{
-			// startTimer(frameRateIdle);
+			GL_Listener.glListener.removeRenderView(this);
 		}
 
 		if (SpriteCache.MapIcons == null)
@@ -1528,6 +1535,8 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 				if ((Math.abs(p.x - x) > 10) || (Math.abs(p.y - y) > 10))
 				{
 					inputState = InputState.Pan;
+					GL_Listener.glListener.addRenderView(this, frameRateAction);
+					GL_Listener.glListener.renderOnce();
 					// xxx startTimer(frameRateAction);
 					// xxx ((GLSurfaceView) MapViewGL.ViewGl).requestRender();
 				}
@@ -1542,7 +1551,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 		if ((inputState == InputState.Pan) && (fingerDown.size() == 1))
 		{
-			// xxx startTimer(frameRateAction);
+			GL_Listener.glListener.addRenderView(this, frameRateAction);
 			// debugString = "";
 			long faktor = getMapTilePosFactor(aktZoom);
 			// debugString += faktor;
@@ -1657,7 +1666,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 				// camera.zoom = getMapTilePosFactor(aktZoom);
 				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(),
 						System.currentTimeMillis() + 1000);
-				// xxx startTimer(frameRateAction);
+				GL_Listener.glListener.addRenderView(this, frameRateAction);
 
 				return false;
 			}
@@ -1776,9 +1785,10 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		{
 			inputState = InputState.Idle;
 			// wieder langsam rendern
-			// xxx ((GLSurfaceView) MapViewGL.ViewGl).requestRender();
+			GL_Listener.glListener.renderOnce();
 
-			// xxx if ((kineticZoom == null) && (kineticPan == null)) startTimer(frameRateIdle);
+			if ((kineticZoom == null) && (kineticPan == null)) GL_Listener.glListener.removeRenderView(this);
+
 			if (kineticPan != null) kineticPan.start();
 		}
 

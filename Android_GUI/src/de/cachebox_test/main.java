@@ -2292,6 +2292,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (viewGL == null)
 			{
 				gdxView = initializeForView(glListener, false);
+				Logger.DEBUG("InitializeForView...");
 				((GLSurfaceViewCupcake) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
 
 				gdxView.setOnTouchListener(new OnTouchListener()

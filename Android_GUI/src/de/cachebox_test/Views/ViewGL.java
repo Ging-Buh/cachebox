@@ -2,6 +2,7 @@ package de.cachebox_test.Views;
 
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.GL_Listener.GL_Listener_Interface;
+import CB_Core.Log.Logger;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -71,6 +72,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	@Override
 	public void OnShow()
 	{
+		Logger.DEBUG("OnShow");
 		glListener.onStart();
 		// GL_Listener.onStart();
 	}
@@ -78,6 +80,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	@Override
 	public void OnHide()
 	{
+		Logger.DEBUG("OnHide");
 		glListener.onStop();
 		// GL_Listner.onStop();
 	}
@@ -150,6 +153,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	@Override
 	public void RenderDirty()
 	{
+		Logger.DEBUG("Set: RenderDirty");
 		try
 		{
 			((GLSurfaceViewCupcake) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_WHEN_DIRTY);
@@ -163,6 +167,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	@Override
 	public void RenderContinous()
 	{
+		Logger.DEBUG("Set: RenderContinous");
 		((GLSurfaceViewCupcake) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
 	}
 }
