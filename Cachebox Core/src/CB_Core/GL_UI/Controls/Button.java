@@ -20,6 +20,7 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -48,8 +49,8 @@ public class Button extends GL_View_Base
 	{
 		if (ninePatch == null)
 		{
-			ninePatch = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_default_normal"), 8, 8, 8, 8);
-			ninePatchPressed = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_default_normal_pressed"), 8, 8, 8, 8);
+			ninePatch = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_normal"), 16, 16, 16, 16);
+			ninePatchPressed = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_pressed"), 16, 16, 16, 16);
 			ninePatchDisabled = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_default_normal_disabled"), 8, 8, 8, 8);
 		}
 
@@ -90,6 +91,7 @@ public class Button extends GL_View_Base
 		if (!isDisabled)
 		{
 			isPressed = true;
+			GL_Listener.glListener.renderOnce();
 		}
 		return true;
 	}
@@ -98,6 +100,7 @@ public class Button extends GL_View_Base
 	public boolean onTouchDragged(int x, int y, int pointer)
 	{
 		isPressed = false;
+		GL_Listener.glListener.renderOnce();
 		return false;
 	}
 
@@ -106,6 +109,7 @@ public class Button extends GL_View_Base
 	{
 
 		isPressed = false;
+		GL_Listener.glListener.renderOnce();
 		return true;
 	}
 
@@ -165,6 +169,7 @@ public class Button extends GL_View_Base
 			}
 
 			lblTxt = null;
+			GL_Listener.glListener.renderOnce();
 			return;
 		}
 
@@ -186,6 +191,7 @@ public class Button extends GL_View_Base
 		}
 
 		lblTxt.setText(Text);
+		GL_Listener.glListener.renderOnce();
 	}
 
 }

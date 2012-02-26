@@ -75,7 +75,7 @@ public class main {
 		// CB_UI.setGLViewID(GL_MAP_VIEW);
 
 		Gdx.input.setInputProcessor((InputProcessor) CB_UI);
-
+		
 	}
 
 	/**

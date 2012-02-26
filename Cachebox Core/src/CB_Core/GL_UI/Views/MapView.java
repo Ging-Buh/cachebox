@@ -543,11 +543,6 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 	private void renderInfoPanel(SpriteBatch batch)
 	{
-		// draw background
-		Sprite sprite = SpriteCache.InfoBack;
-		sprite.setPosition(GL_UISizes.Info.getX(), GL_UISizes.Info.getY());
-		sprite.setSize(GL_UISizes.Info.getWidth(), GL_UISizes.Info.getHeight());
-		sprite.draw(batch);
 
 		// Position ist entweder GPS-Position oder die des Markers, wenn
 		// dieser gesetzt wurde.

@@ -7,10 +7,13 @@ import CB_Core.GL_UI.Controls.ArrowView;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
+import CB_Core.GL_UI.Controls.MapInfoPanel;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.ZoomButtons;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
 
 import com.badlogic.gdx.Gdx;
@@ -33,6 +36,9 @@ public class TestView extends GL_View_Base
 	public TestView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
+
+		GL_Listener.glListener.addRenderView(this, GL_Listener.FRAME_RATE_IDLE);
+
 		// Initial TestView
 		ArrowView testView = new ArrowView(300, 300, 100, 100, "Test_ArrowView");
 		this.addChild(testView);
@@ -162,6 +168,9 @@ public class TestView extends GL_View_Base
 
 		this.addChild(lbl3);
 
+		// MapInfoPanel
+		MapInfoPanel info = new MapInfoPanel(GL_UISizes.Info, "InfoPanel");
+		this.addChild(info);
 	}
 
 	@Override
@@ -169,7 +178,10 @@ public class TestView extends GL_View_Base
 	{
 		String str = "fps: " + Gdx.graphics.getFramesPerSecond();
 		Fonts.get18().draw(batch, str, 20, 100);
-
+		if (true)
+		{
+			GL_Listener.glListener.removeRenderView(this);
+		}
 	}
 
 	@Override

@@ -17,6 +17,7 @@ public class Desktop_GL_Listner extends GL_Listener implements InputProcessor {
 		super(initalWidth, initialHeight);
 
 		GL_View_Base.debug = true;
+		GL_View_Base.disableScissor = true;
 
 	}
 

@@ -30,6 +30,7 @@ public abstract class GL_View_Base extends CB_RectF
 	public static final int INVISIBLE = 0x00000002;
 
 	public static boolean debug = false;
+	public static boolean disableScissor = false;
 
 	// # private Member
 
@@ -180,7 +181,7 @@ public abstract class GL_View_Base extends CB_RectF
 			batch.end();
 		}
 
-		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
+		if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 		Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth(),
 				(int) intersectRec.getHeight());
 

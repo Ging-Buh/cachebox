@@ -30,7 +30,7 @@ import java.util.Date;
 public class Logger
 {
 
-	private static Boolean mDebug;
+	private static Boolean mDebug = false;
 	private static ArrayList<ILog> list = new ArrayList<ILog>();
 
 	/**
