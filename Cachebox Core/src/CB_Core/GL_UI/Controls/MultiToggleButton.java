@@ -56,8 +56,9 @@ public class MultiToggleButton extends Button
 
 		// verschiebe Text nach oben, wegen Platz für LED
 		CB_RectF r = this.ScaleCenter(0.9f);
-		float l = (float) ((this.width - r.getWidth()) / 1.8);
+		float l = (float) (r.getHeight() / 2);
 		lblTxt.setY(l);
+		lblTxt.setHeight(l);
 	}
 
 	@Override
@@ -191,7 +192,8 @@ public class MultiToggleButton extends Button
 
 		// Draw LED
 		led = SpriteCache.ToggleBtn.get(2);
-		led.setBounds(Pos.x, Pos.y, width, height);
+		led.setBounds(0, 0, width, height);
+		led.setColor(aktState.color);
 		led.draw(batch);
 
 	}

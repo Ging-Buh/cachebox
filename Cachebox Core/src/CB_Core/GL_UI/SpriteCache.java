@@ -50,6 +50,7 @@ public class SpriteCache
 	{
 		TextureAtlas atlas;
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
+		uiAtlas = new TextureAtlas(Gdx.files.internal("9patch/UI_PackerSheet"));
 
 		MapIconsSmall = new ArrayList<Sprite>();
 		MapIconsSmall.add(atlas.createSprite("small1yes"));
@@ -100,10 +101,10 @@ public class SpriteCache
 		MapIcons.add(atlas.createSprite("21"));
 
 		MapArrows = new ArrayList<Sprite>();
-		MapArrows.add(atlas.createSprite("arrow_Compass"));
-		MapArrows.add(atlas.createSprite("arrow_Compass_Trans"));
-		MapArrows.add(atlas.createSprite("arrow_GPS"));
-		MapArrows.add(atlas.createSprite("arrow_GPS_Trans"));
+		MapArrows.add(uiAtlas.createSprite("arrow_Compass"));
+		MapArrows.add(uiAtlas.createSprite("arrow_Compass_Trans"));
+		MapArrows.add(uiAtlas.createSprite("arrow_GPS"));
+		MapArrows.add(uiAtlas.createSprite("arrow_GPS_Trans"));
 		MapArrows.add(atlas.createSprite("target_arrow"));
 
 		MapStars = new ArrayList<Sprite>();
@@ -120,31 +121,26 @@ public class SpriteCache
 		MapStars.add(atlas.createSprite("stars5small"));
 
 		Bubble = new ArrayList<Sprite>();
-		Bubble.add(atlas.createSprite("Bubble"));
-		Bubble.add(atlas.createSprite("Bubble_selected"));
-		Bubble.add(atlas.createSprite("BubbleOverlay"));
+		Bubble.add(uiAtlas.createSprite("Bubble"));
+		Bubble.add(uiAtlas.createSprite("Bubble_selected"));
+		Bubble.add(uiAtlas.createSprite("BubbleOverlay"));
 
-		InfoBack = atlas.createSprite("InfoPanelBack");
+		InfoBack = uiAtlas.createSprite("InfoPanelBack");
 
 		ToggleBtn = new ArrayList<Sprite>();
-		ToggleBtn.add(atlas.createSprite("day_btn_normal"));
-		ToggleBtn.add(atlas.createSprite("day_btn_pressed"));
-		ToggleBtn.add(atlas.createSprite("toggle_led_gr"));
-		ToggleBtn.add(atlas.createSprite("toggle_led_gn"));
-		ToggleBtn.add(atlas.createSprite("toggle_led_rt"));
-		ToggleBtn.add(atlas.createSprite("toggle_led_gb"));
+		ToggleBtn.add(uiAtlas.createSprite("day_btn_normal"));
+		ToggleBtn.add(uiAtlas.createSprite("day_btn_pressed"));
+		ToggleBtn.add(uiAtlas.createSprite("toggle_led_gr"));
 
 		ZoomBtn = new ArrayList<Sprite>();
-		ZoomBtn.add(atlas.createSprite("day_btn_zoom_down_normal"));
-		ZoomBtn.add(atlas.createSprite("day_btn_zoom_down_pressed"));
-		ZoomBtn.add(atlas.createSprite("day_btn_zoom_down_disabled"));
-		ZoomBtn.add(atlas.createSprite("day_btn_zoom_up_normal"));
-		ZoomBtn.add(atlas.createSprite("day_btn_zoom_up_pressed"));
-		ZoomBtn.add(atlas.createSprite("day_btn_zoom_up_disabled"));
+		ZoomBtn.add(uiAtlas.createSprite("day_btn_zoom_down_normal"));
+		ZoomBtn.add(uiAtlas.createSprite("day_btn_zoom_down_pressed"));
+		ZoomBtn.add(uiAtlas.createSprite("day_btn_zoom_down_disabled"));
+		ZoomBtn.add(uiAtlas.createSprite("day_btn_zoom_up_normal"));
+		ZoomBtn.add(uiAtlas.createSprite("day_btn_zoom_up_pressed"));
+		ZoomBtn.add(uiAtlas.createSprite("day_btn_zoom_up_disabled"));
 
-		ZoomValueBack = atlas.createSprite("zoom_back");
-
-		uiAtlas = new TextureAtlas(Gdx.files.internal("9patch/UI_PackerSheet"));
+		ZoomValueBack = uiAtlas.createSprite("zoom_back");
 
 	}
 

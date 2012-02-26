@@ -288,7 +288,7 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		else
 		{
-			intersectRec = this.copy();
+			intersectRec = ThisWorldRec.copy();
 		}
 
 		thisInvalidate = false;
@@ -522,6 +522,11 @@ public abstract class GL_View_Base extends CB_RectF
 		hasNinePatchBackground = background != null;
 
 		nineBackground = background;
+	}
+
+	public CharSequence getName()
+	{
+		return name;
 	}
 
 }

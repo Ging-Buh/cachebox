@@ -356,7 +356,7 @@ public class ZoomButtons extends GL_View_Base
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
-		return true;
+		return touchDownTest(new Vector2(x, y));
 	}
 
 	@Override
@@ -376,7 +376,7 @@ public class ZoomButtons extends GL_View_Base
 	@Override
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
-		// TODO Auto-generated method stub
+		onTouchUp = onTouchDown = false;
 		return true;
 	}
 

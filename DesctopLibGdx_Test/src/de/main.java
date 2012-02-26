@@ -71,7 +71,7 @@ public class main {
 	private static void Run() {
 		CB_UI.onStart();
 		CB_UI.setGLViewID(TEST_VIEW);
-		// CB_UI.setGLViewID(CREDITS_VIEW);
+//		 CB_UI.setGLViewID(CREDITS_VIEW);
 		// CB_UI.setGLViewID(GL_MAP_VIEW);
 
 		Gdx.input.setInputProcessor((InputProcessor) CB_UI);

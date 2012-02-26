@@ -28,6 +28,7 @@ import com.badlogic.gdx.math.Vector2;
 public class TestView extends GL_View_Base
 {
 	private Image image;
+	private Label lbl;
 
 	public TestView(CB_RectF rec, String Name)
 	{
@@ -111,7 +112,14 @@ public class TestView extends GL_View_Base
 			}
 		});
 
-		MultiToggleButton togBtn = new MultiToggleButton(10, 100, 100, 100, this, "toggle");
+		// Label Tests
+		lbl = new Label(10, 410, 270, 30, "Test_Lbl");
+		lbl.setFont(Fonts.get16());
+		lbl.setText("Single Line Text");
+		lbl.setHAlignment(HAlignment.CENTER);
+		this.addChild(lbl);
+
+		MultiToggleButton togBtn = new MultiToggleButton(10, 450, 100, 100, this, "toggle");
 
 		togBtn.addState("Free", Color.GRAY);
 		togBtn.addState("GPS", Color.GREEN);
@@ -124,24 +132,17 @@ public class TestView extends GL_View_Base
 			@Override
 			public void onStateChange(GL_View_Base v, int State)
 			{
-				// TODO Auto-generated method stub
+				lbl.setText("State Change {" + v.getName() + "} State:" + State);
 			}
 		});
 		this.addChild(togBtn);
-
-		// Label Tests
-		Label lbl = new Label(10, 500, 100, 30, "Test_Lbl");
-		lbl.setFont(Fonts.get22());
-		lbl.setText("Single Line Text");
-		lbl.setHAlignment(HAlignment.CENTER);
-		this.addChild(lbl);
 
 		String br = System.getProperty("line.separator");
 		String s = "Ein Multiline Text!" + br;
 		s += "Zeile 2" + br;
 		s += "Zeile 2" + br;
 
-		Label lbl2 = new Label(10, 400, 250, 70, "Test_Lbl2");
+		Label lbl2 = new Label(10, 310, 250, 70, "Test_Lbl2");
 		lbl2.setFont(Fonts.get18());
 		lbl2.setMultiLineText(s);
 		this.addChild(lbl2);
