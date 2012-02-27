@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
+import de.cachebox_test.Ui.ActivityUtils;
 
 public class HintDialog extends Activity
 {
@@ -22,6 +23,7 @@ public class HintDialog extends Activity
 	{
 		// ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
+		ActivityUtils.setOriantation(this);
 		setContentView(R.layout.hint);
 
 		if (main.N)

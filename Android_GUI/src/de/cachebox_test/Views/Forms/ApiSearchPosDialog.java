@@ -9,7 +9,6 @@ import CB_Core.Types.Coordinate;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,9 +51,10 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 	{
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
+		ActivityUtils.setOriantation(this);
 		setContentView(R.layout.api_search_pos_dialog_layout);
 		Me = this;
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 		context = this.getBaseContext();
 		aktIntent = getIntent();
 		((TextView) this.findViewById(R.id.title)).setText("Import");

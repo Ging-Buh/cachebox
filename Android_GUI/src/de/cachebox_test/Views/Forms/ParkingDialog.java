@@ -14,6 +14,7 @@ import android.widget.TextView;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
+import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Views.FilterSettings.EditFilterSettings;
 
 public class ParkingDialog extends Activity
@@ -28,6 +29,7 @@ public class ParkingDialog extends Activity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		ActivityUtils.setOriantation(this);
 		setContentView(R.layout.parking_dialog);
 
 		final Intent aktIntent = getIntent();

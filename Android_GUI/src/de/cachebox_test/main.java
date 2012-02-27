@@ -77,6 +77,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -115,7 +116,9 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidGraphics;
 import com.badlogic.gdx.backends.android.AndroidInput;
+import com.badlogic.gdx.backends.android.surfaceview.DefaultGLSurfaceView;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 
 import de.cachebox_test.Components.CacheNameView;
@@ -372,18 +375,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		if (Config.settings == null)
-		{
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		}
-		else if (!Config.settings.AllowLandscape.getValue())
-		{
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		}
-		else
-		{
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-		}
+		ActivityUtils.setOriantation(this);
 
 		// initialize receiver for screen switched on/off
 		IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
@@ -529,10 +521,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			showView(ABOUT_VIEW);
 
 			// und Map wenn Tablet
-			// if (GlobalCore.isTab)
-			// {
-			// showView(2);
-			// }
+			if (GlobalCore.isTab)
+			{
+				showView(MAP_VIEW);
+			}
 
 			// chk if NightMode saved
 			if (N)
@@ -2190,10 +2182,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				buttonNav.setBackgroundResource(R.drawable.chris_nav_button_image_selector);
 				buttonTools.setBackgroundResource(R.drawable.chris_find_button_image_selector);
 			}
-			else
-			{
-				buttonCache.setBackgroundResource(R.drawable.cache_button_image_selector);
-			}
+
 		}
 		buttonCache.invalidate();
 	}
@@ -2292,8 +2281,32 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (viewGL == null)
 			{
 				gdxView = initializeForView(glListener, false);
+
+				int GlSurfaceType = -1;
+				if (gdxView instanceof GLSurfaceView20) GlSurfaceType = ViewGL.GLSURFACE_VIEW20;
+				if (gdxView instanceof GLSurfaceViewCupcake) GlSurfaceType = ViewGL.GLSURFACE_CUPCAKE;
+				if (gdxView instanceof DefaultGLSurfaceView) GlSurfaceType = ViewGL.GLSURFACE_DEFAULT;
+				if (gdxView instanceof GLSurfaceView) GlSurfaceType = ViewGL.GLSURFACE_GLSURFACE;
+
+				ViewGL.setSurfaceType(GlSurfaceType);
+
 				Logger.DEBUG("InitializeForView...");
-				((GLSurfaceViewCupcake) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+
+				switch (GlSurfaceType)
+				{
+				case ViewGL.GLSURFACE_VIEW20:
+					((GLSurfaceView20) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+					break;
+				case ViewGL.GLSURFACE_CUPCAKE:
+					((GLSurfaceViewCupcake) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+					break;
+				case ViewGL.GLSURFACE_DEFAULT:
+					((DefaultGLSurfaceView) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+					break;
+				case ViewGL.GLSURFACE_GLSURFACE:
+					((GLSurfaceView) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+					break;
+				}
 
 				gdxView.setOnTouchListener(new OnTouchListener()
 				{

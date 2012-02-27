@@ -37,6 +37,7 @@ import android.widget.Toast;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
+import de.cachebox_test.Ui.ActivityUtils;
 
 /**
  * <h1>ProgressDialog</h1> <img src="doc-files/ImportScreen.png" width=146 height=117> </br>
@@ -70,6 +71,7 @@ public class ImportDialog extends Activity
 	{
 		// ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
+		ActivityUtils.setOriantation(this);
 		setContentView(R.layout.import_dialog_layout);
 		Me = this;
 

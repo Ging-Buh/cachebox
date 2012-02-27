@@ -28,6 +28,7 @@ import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
+import de.cachebox_test.Ui.ActivityUtils;
 
 public class ApiPQDialog extends Activity implements ViewOptionsMenu
 {
@@ -55,6 +56,7 @@ public class ApiPQDialog extends Activity implements ViewOptionsMenu
 	{
 		// ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
+		ActivityUtils.setOriantation(this);
 		setContentView(R.layout.pq_list_view_layout);
 		Me = this;
 

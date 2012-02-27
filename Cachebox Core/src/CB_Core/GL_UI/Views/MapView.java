@@ -158,7 +158,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System
 						.currentTimeMillis() + 1000);
 				GL_Listener.glListener.addRenderView(that, frameRateAction);
-				GL_Listener.glListener.renderOnce();
+				GL_Listener.glListener.renderOnce(that);
 				return true;
 			}
 		});
@@ -177,7 +177,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System
 						.currentTimeMillis() + 1000);
 				GL_Listener.glListener.addRenderView(that, frameRateAction);
-				GL_Listener.glListener.renderOnce();
+				GL_Listener.glListener.renderOnce(that);
 				return true;
 			}
 		});
@@ -1531,7 +1531,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 				{
 					inputState = InputState.Pan;
 					GL_Listener.glListener.addRenderView(this, frameRateAction);
-					GL_Listener.glListener.renderOnce();
+					GL_Listener.glListener.renderOnce(this);
 					// xxx startTimer(frameRateAction);
 					// xxx ((GLSurfaceView) MapViewGL.ViewGl).requestRender();
 				}
@@ -1780,7 +1780,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		{
 			inputState = InputState.Idle;
 			// wieder langsam rendern
-			GL_Listener.glListener.renderOnce();
+			GL_Listener.glListener.renderOnce(this);
 
 			if ((kineticZoom == null) && (kineticPan == null)) GL_Listener.glListener.removeRenderView(this);
 

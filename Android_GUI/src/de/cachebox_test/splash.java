@@ -65,6 +65,7 @@ import android.widget.TextView;
 import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.Components.copyAssetFolder;
 import de.cachebox_test.DB.AndroidDB;
+import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Views.MapView;
 import de.cachebox_test.Views.Forms.SelectDB;
 
@@ -99,6 +100,7 @@ public class splash extends Activity
 		// chek if tablet
 
 		GlobalCore.isTab = sw > 400 ? true : false;
+		ActivityUtils.setOriantation(this);
 
 		setContentView(GlobalCore.isTab ? R.layout.tab_splash : R.layout.splash);
 

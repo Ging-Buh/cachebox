@@ -23,7 +23,7 @@ public class MapInfoPanel extends GL_View_Base
 		{
 			mLatitude = GlobalCore.FormatLatitudeDM(Coord.Latitude);
 			mLongitude = GlobalCore.FormatLongitudeDM(Coord.Longitude);
-			GL_Listener.glListener.renderOnce();
+			GL_Listener.glListener.renderOnce(this);
 		}
 	}
 

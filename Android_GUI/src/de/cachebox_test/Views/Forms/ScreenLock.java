@@ -10,6 +10,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
+import de.cachebox_test.Ui.ActivityUtils;
 
 public class ScreenLock extends Activity
 {
@@ -20,6 +21,7 @@ public class ScreenLock extends Activity
 	{
 
 		super.onCreate(savedInstanceState);
+		ActivityUtils.setOriantation(this);
 		setContentView(R.layout.screenlock);
 		this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		RelativeLayout layout = (RelativeLayout) findViewById(R.layout.screenlock);

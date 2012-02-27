@@ -28,6 +28,7 @@ public class GcApiLogin extends Activity
 	{
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
+		ActivityUtils.setOriantation(this);
 		setContentView(R.layout.gcapilogin);
 		gcApiLogin = this;
 

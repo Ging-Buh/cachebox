@@ -91,7 +91,7 @@ public class Button extends GL_View_Base
 		if (!isDisabled)
 		{
 			isPressed = true;
-			GL_Listener.glListener.renderOnce();
+			GL_Listener.glListener.renderOnce(this);
 		}
 		return true;
 	}
@@ -100,7 +100,7 @@ public class Button extends GL_View_Base
 	public boolean onTouchDragged(int x, int y, int pointer)
 	{
 		isPressed = false;
-		GL_Listener.glListener.renderOnce();
+		GL_Listener.glListener.renderOnce(this);
 		return false;
 	}
 
@@ -109,7 +109,7 @@ public class Button extends GL_View_Base
 	{
 
 		isPressed = false;
-		GL_Listener.glListener.renderOnce();
+		GL_Listener.glListener.renderOnce(this);
 		return true;
 	}
 
@@ -169,7 +169,7 @@ public class Button extends GL_View_Base
 			}
 
 			lblTxt = null;
-			GL_Listener.glListener.renderOnce();
+			GL_Listener.glListener.renderOnce(this);
 			return;
 		}
 
@@ -191,7 +191,7 @@ public class Button extends GL_View_Base
 		}
 
 		lblTxt.setText(Text);
-		GL_Listener.glListener.renderOnce();
+		GL_Listener.glListener.renderOnce(this);
 	}
 
 }

@@ -3,12 +3,8 @@ package de.cachebox_test.Views.Forms;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import de.cachebox_test.Global;
-import de.cachebox_test.R;
-import CB_Core.Types.FieldNoteEntry;
-import de.cachebox_test.Ui.ActivityUtils;
 import CB_Core.GlobalCore;
-
+import CB_Core.Types.FieldNoteEntry;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -20,8 +16,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import de.cachebox_test.Global;
+import de.cachebox_test.R;
+import de.cachebox_test.Ui.ActivityUtils;
 
-public class EditFieldNote extends Activity {
+public class EditFieldNote extends Activity
+{
 	private Intent aktIntent;
 	private FieldNoteEntry fieldNote;
 	Button bOK = null;
@@ -32,81 +32,82 @@ public class EditFieldNote extends Activity {
 	TextView tvFounds = null;
 	TextView tvDate = null;
 	TextView tvTime = null;
-	
-	public void onCreate(Bundle savedInstanceState) 
+
+	public void onCreate(Bundle savedInstanceState)
 	{
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
+		ActivityUtils.setOriantation(this);
 		setContentView(R.layout.edit_fieldnote);
-        aktIntent = getIntent();
+		aktIntent = getIntent();
 
 		// Übergebene FieldNote auslesen
-        Bundle bundle = getIntent().getExtras();
-        fieldNote = (FieldNoteEntry)bundle.getSerializable("FieldNote");
-	
-	
-        tvCacheName = (TextView) findViewById(R.id.edfn_cachename);
-        etComment = (EditText)findViewById(R.id.edfn_comment);
-        ivTyp = (ImageView) findViewById(R.id.edfn_image);
-        tvFounds = (TextView) findViewById(R.id.edfn_founds);
-        tvDate = (TextView) findViewById(R.id.edfn_date);
-        tvTime = (TextView) findViewById(R.id.edfn_time);
-        
-        // OK Button
-        bOK = (Button) findViewById(R.id.edfn_ok);
-        bOK.setOnClickListener(new OnClickListener() {
-        	@Override
-        	public void onClick(View v) {
-        
-        		fieldNote.comment = etComment.getText().toString();
-        		aktIntent.putExtra("SOMETHING", "EXTRAS");
-        		Bundle extras = new Bundle();
-        		extras.putSerializable("FieldNoteResult", fieldNote);
-        		aktIntent.putExtras(extras);
-        		setResult(RESULT_OK, aktIntent);
-        		nowFinish();	            	
-        	}
-        });
-        // Abbrechen Button
-        bCancel = (Button) findViewById(R.id.edfn_cancel);
-        bCancel.setOnClickListener(new OnClickListener() {
-        	@Override
-        	public void onClick(View v) {
-        		aktIntent.putExtra("SOMETHING", "EXTRAS");
-        		setResult(RESULT_CANCELED, aktIntent);
-        		nowFinish();	            	
-        	}
-        });
+		Bundle bundle = getIntent().getExtras();
+		fieldNote = (FieldNoteEntry) bundle.getSerializable("FieldNote");
 
-        
-        // Default values
-        etComment.setText(fieldNote.comment);
-        // Translations
-        bOK.setText(GlobalCore.Translations.Get("ok"));
+		tvCacheName = (TextView) findViewById(R.id.edfn_cachename);
+		etComment = (EditText) findViewById(R.id.edfn_comment);
+		ivTyp = (ImageView) findViewById(R.id.edfn_image);
+		tvFounds = (TextView) findViewById(R.id.edfn_founds);
+		tvDate = (TextView) findViewById(R.id.edfn_date);
+		tvTime = (TextView) findViewById(R.id.edfn_time);
+
+		// OK Button
+		bOK = (Button) findViewById(R.id.edfn_ok);
+		bOK.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+
+				fieldNote.comment = etComment.getText().toString();
+				aktIntent.putExtra("SOMETHING", "EXTRAS");
+				Bundle extras = new Bundle();
+				extras.putSerializable("FieldNoteResult", fieldNote);
+				aktIntent.putExtras(extras);
+				setResult(RESULT_OK, aktIntent);
+				nowFinish();
+			}
+		});
+		// Abbrechen Button
+		bCancel = (Button) findViewById(R.id.edfn_cancel);
+		bCancel.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				aktIntent.putExtra("SOMETHING", "EXTRAS");
+				setResult(RESULT_CANCELED, aktIntent);
+				nowFinish();
+			}
+		});
+
+		// Default values
+		etComment.setText(fieldNote.comment);
+		// Translations
+		bOK.setText(GlobalCore.Translations.Get("ok"));
 		bCancel.setText(GlobalCore.Translations.Get("cancel"));
 		tvCacheName.setText(fieldNote.CacheName);
 		tvFounds.setText("Founds: #" + fieldNote.foundNumber);
-        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd");
-        String sDate = iso8601Format.format(fieldNote.timestamp);
+		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd");
+		String sDate = iso8601Format.format(fieldNote.timestamp);
 		tvDate.setText("Date: " + sDate);
-        iso8601Format = new SimpleDateFormat("HH:mm");
-        String sTime = iso8601Format.format(fieldNote.timestamp);
+		iso8601Format = new SimpleDateFormat("HH:mm");
+		String sTime = iso8601Format.format(fieldNote.timestamp);
 		tvTime.setText("Time: " + sTime);
-//		ivTyp.setImageResource(fieldNote.typeIconId);
+		// ivTyp.setImageResource(fieldNote.typeIconId);
 		ivTyp.setImageDrawable(Global.LogIcons[fieldNote.typeIcon]);
 	}
-	
-	
-	/** 
-	 * vor dem Schließen der Activity muss erst das SoftKeypad
-	 * geschlossen werden, da es sonst zu Layout Unstimmigkeiten beim
-	 * zurückkehren gibt.
+
+	/**
+	 * vor dem Schließen der Activity muss erst das SoftKeypad geschlossen werden, da es sonst zu Layout Unstimmigkeiten beim zurückkehren
+	 * gibt.
 	 */
 	private void nowFinish()
 	{
 		// first close KeyPad
 
-		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(etComment.getWindowToken(), 0);
 
 		finish();

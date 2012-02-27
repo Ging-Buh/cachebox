@@ -1,10 +1,12 @@
 package de.cachebox_test.Views;
 
+import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_Core.Log.Logger;
 import android.content.Context;
 import android.content.Intent;
+import android.opengl.GLSurfaceView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +14,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.badlogic.gdx.backends.android.surfaceview.DefaultGLSurfaceView;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 
 import de.cachebox_test.R;
@@ -139,24 +143,74 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 		return true;
 	}
 
-	// public Layer GetCurrentLayer()
-	// {
-	// return glListener.CurrentLayer;
-	// }
+	public final static int GLSURFACE_VIEW20 = 0;
+	public final static int GLSURFACE_CUPCAKE = 1;
+	public final static int GLSURFACE_DEFAULT = 2;
+	public final static int GLSURFACE_GLSURFACE = 3;
+
+	private static int mAktSurfaceType = -1;
+
+	/**
+	 * Setzt den OpenGl Surface Type!
+	 * 
+	 * @param Type
+	 *            </br> GLSURFACE_VIEW20=0 </br> GLSURFACE_CUPCAKE = 1 </br> GLSURFACE_DEFAULT = 2 </br> GLSURFACE_GLSURFACE = 3
+	 */
+	public static void setSurfaceType(int Type)
+	{
+		mAktSurfaceType = Type;
+	}
+
+	public static int getSurfaceType()
+	{
+		return mAktSurfaceType;
+	}
 
 	@Override
-	public void RequestRender()
+	public void RequestRender(GL_View_Base view)
 	{
-		((GLSurfaceViewCupcake) ViewGl).requestRender();
+		CharSequence name = "?";
+		if (view != null) name = view.getName();
+		Logger.LogCat("RequestRender von : " + name);
+
+		switch (mAktSurfaceType)
+		{
+		case GLSURFACE_VIEW20:
+			((GLSurfaceView20) ViewGl).requestRender();
+			break;
+		case GLSURFACE_CUPCAKE:
+			((GLSurfaceViewCupcake) ViewGl).requestRender();
+			break;
+		case GLSURFACE_DEFAULT:
+			((DefaultGLSurfaceView) ViewGl).requestRender();
+			break;
+		case GLSURFACE_GLSURFACE:
+			((GLSurfaceView) ViewGl).requestRender();
+			break;
+		}
 	}
 
 	@Override
 	public void RenderDirty()
 	{
-		Logger.DEBUG("Set: RenderDirty");
+		Logger.LogCat("Set: RenderDirty");
 		try
 		{
-			((GLSurfaceViewCupcake) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_WHEN_DIRTY);
+			switch (mAktSurfaceType)
+			{
+			case GLSURFACE_VIEW20:
+				((GLSurfaceView20) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_WHEN_DIRTY);
+				break;
+			case GLSURFACE_CUPCAKE:
+				((GLSurfaceViewCupcake) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_WHEN_DIRTY);
+				break;
+			case GLSURFACE_DEFAULT:
+				((DefaultGLSurfaceView) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_WHEN_DIRTY);
+				break;
+			case GLSURFACE_GLSURFACE:
+				((GLSurfaceView) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_WHEN_DIRTY);
+				break;
+			}
 		}
 		catch (Exception ex)
 		{
@@ -167,7 +221,21 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	@Override
 	public void RenderContinous()
 	{
-		Logger.DEBUG("Set: RenderContinous");
-		((GLSurfaceViewCupcake) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+		Logger.LogCat("Set: RenderContinous");
+		switch (mAktSurfaceType)
+		{
+		case GLSURFACE_VIEW20:
+			((GLSurfaceView20) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+			break;
+		case GLSURFACE_CUPCAKE:
+			((GLSurfaceViewCupcake) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+			break;
+		case GLSURFACE_DEFAULT:
+			((DefaultGLSurfaceView) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+			break;
+		case GLSURFACE_GLSURFACE:
+			((GLSurfaceView) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+			break;
+		}
 	}
 }

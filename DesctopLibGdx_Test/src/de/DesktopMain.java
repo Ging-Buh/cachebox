@@ -20,7 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 
-public class main {
+public class DesktopMain {
 
 	static GL_Listener CB_UI;
 	public static final ViewID TEST_VIEW = new ViewID(ViewID.TEST_VIEW,

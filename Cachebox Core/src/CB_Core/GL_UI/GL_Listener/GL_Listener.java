@@ -33,7 +33,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	private static AtomicBoolean started = new AtomicBoolean(false);
 	static boolean useNewInput = true;
 
-	public static final int FRAME_RATE_IDLE = 200;
+	public static final int FRAME_RATE_IDLE = 500;
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 15;
 
@@ -185,7 +185,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 			private void TimerMethod()
 			{
-				if (listenerInterface != null) listenerInterface.RequestRender();
+				if (listenerInterface != null) listenerInterface.RequestRender(null);
 
 			}
 
@@ -277,6 +277,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		}
 		renderViews.put(view, delay);
 		calcNewRenderSpeed();
+		Logger.LogCat("addRenderView " + view.getName() + "/" + delay + " /registrierte RenderViews" + renderViews.size());
 	}
 
 	public void removeRenderView(GL_View_Base view)
@@ -285,12 +286,19 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		{
 			renderViews.remove(view);
 			calcNewRenderSpeed();
+			Logger.LogCat("removeRenderView " + view.getName() + "/verbleibende RenderViews" + renderViews.size());
 		}
 	}
 
-	public void renderOnce()
+	/**
+	 * Fürt EINEN Render Durchgang aus
+	 * 
+	 * @param view
+	 *            Aufrufendes GL_View_Base für Debug zwecke. Kann auch null sein.
+	 */
+	public void renderOnce(GL_View_Base view)
 	{
-		if (listenerInterface != null) listenerInterface.RequestRender();
+		if (listenerInterface != null) listenerInterface.RequestRender(view);
 	}
 
 	private void calcNewRenderSpeed()

@@ -21,8 +21,8 @@ import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
@@ -42,25 +42,39 @@ public class Image extends GL_View_Base
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		if (mImageTex != null)
+		if (mImageSprite != null)
 		{
-			batch.draw(mImageTex, 0, 0, width, height);
+
+			mImageSprite.draw(batch);
+
 		}
-		else
-		{
-			// Versuche Image noch einmal zu laden max 3 Versuche
-			if (mLoadCounter < 3)
+		else if (mPath != null && !mPath.equals(""))
+		{ // das laden darf erst hier passieren, damit es aus dem GL_Thread herraus läuft.
+			try
 			{
-				setImage(mPath);
+
+				Logger.LogCat("Load GL Image Texture Path= " + mPath);
+
+				mImageTex = new Texture(Gdx.files.internal(mPath));
+				mImageSprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);
+
+				mImageSprite.setBounds(0, 0, width, height);
+				// batch.draw(mImageTex, 0, 0, width, height);
+
+			}
+			catch (Exception e)
+			{
+				Logger.LogCat("E Load GL Image" + e.getMessage());
+				e.printStackTrace();
 			}
 		}
-
 	}
 
 	@Override
 	public void onRezised(CB_RectF rec)
 	{
-		// TODO Auto-generated method stub
+
+		if (mImageSprite != null) mImageSprite.setBounds(0, 0, width, height);
 
 	}
 
@@ -94,38 +108,27 @@ public class Image extends GL_View_Base
 
 	private String mPath;
 	private Texture mImageTex = null;
+	Sprite mImageSprite = null;
 	private int mLoadCounter = 0;
 
 	public void setImage(String Path)
 	{
-		if (Path.equals(mPath))
-		{
-			++mLoadCounter;
-		}
-		else
-		{
-			mLoadCounter = 0;
-		}
-		mPath = Path;
-		try
-		{
 
-			// FileHandle imageFileHandle = Gdx.files.absolute(mPath);
-			FileHandle imageFileHandle = Gdx.files.internal(mPath);
-			mImageTex = new Texture(imageFileHandle);
-			Logger.LogCat("Load GL Image Texture Path= " + mPath);
-		}
-		catch (Exception e)
+		mPath = Path;
+		if (mImageSprite != null)
 		{
-			Logger.LogCat("E Load GL Image" + e.getMessage());
-			e.printStackTrace();
+			dispose();
+			// das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus läuft.
 		}
+
 	}
 
 	public void dispose()
 	{
 		mImageTex.dispose();
 		mImageTex = null;
+
+		mImageSprite = null;
 	}
 
 }
