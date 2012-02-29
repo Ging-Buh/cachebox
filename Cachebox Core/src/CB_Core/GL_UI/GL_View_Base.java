@@ -260,7 +260,7 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 	}
 
-	private CB_RectF ThisWorldRec;
+	public CB_RectF ThisWorldRec;
 	private CB_RectF intersectRec;
 	protected ParentInfo myParentInfo;
 	private boolean mustSetScissor = false;

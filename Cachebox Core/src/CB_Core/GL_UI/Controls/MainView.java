@@ -22,6 +22,7 @@ public class MainView extends GL_View_Base
 
 	private GL_View_Base leftFrame;
 	private GL_View_Base rightFrame;
+	public static MainView mainView = null;
 
 	/**
 	 * Setzt die GL_View mit der übergebenen ID als anzuzeigende View Es wird nur diese View angezeigt!
@@ -68,6 +69,7 @@ public class MainView extends GL_View_Base
 		super(X, Y, Width, Height, Name);
 
 		Me = this;
+		mainView = this;
 
 		Logger.LogCat("Construct MainView " + X + "/" + Y + "/" + "/" + Width + "/" + Height);
 

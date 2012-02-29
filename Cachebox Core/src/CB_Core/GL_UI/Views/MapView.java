@@ -19,6 +19,7 @@ import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Controls.MainView;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.ZoomButtons;
@@ -44,6 +45,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
 public class MapView extends GL_View_Base implements SelectedCacheEvent, PositionChangedEvent
@@ -250,7 +252,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		this.drawingWidth = (int) rec.getWidth();
 		this.drawingHeight = (int) rec.getHeight();
 
-		camera = new OrthographicCamera(width, height);
+		camera = new OrthographicCamera(MainView.mainView.ThisWorldRec.getWidth(), MainView.mainView.ThisWorldRec.getHeight());
 
 		aktZoom = zoomBtn.getZoom();
 		// zoomScale.setZoom(aktZoom);
@@ -442,7 +444,12 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 	private void renderMapTiles(SpriteBatch batch)
 	{
-		batch.setProjectionMatrix(camera.combined);
+		float faktor = camera.zoom;
+		Matrix4 mat = camera.combined;
+		int dx = (int) (GL_UISizes.SurfaceSize.getWidth() - MainView.mainView.ThisWorldRec.getWidth());
+		int dy = (int) (GL_UISizes.SurfaceSize.getHeight() - MainView.mainView.ThisWorldRec.getHeight());
+		mat = mat.translate(dx * faktor, dy * faktor, 0);
+		batch.setProjectionMatrix(mat);
 
 		try
 		{
