@@ -43,7 +43,7 @@ public abstract class GL_View_Base extends CB_RectF
 	protected GL_View_Base Me;
 
 	/**
-	 * Enthält alle GL_Views innerhalb dieser Gl_View
+	 * Enthï¿½lt alle GL_Views innerhalb dieser Gl_View
 	 */
 	private MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
 
@@ -57,7 +57,7 @@ public abstract class GL_View_Base extends CB_RectF
 	private int mViewState = VISIBLE;
 
 	private GL_View_Base parent;
-	protected static int TiefenZähler = 0;
+	protected static int nDepthCounter = 0;
 
 	private Sprite debugRec = null;
 
@@ -70,7 +70,7 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	/**
-	 * Constructor für ein neues GL_View_Base mit Angabe der linken unteren Ecke und der Höhe und Breite
+	 * Constructor fuer ein neues GL_View_Base mit Angabe der linken unteren Ecke und der Hoehe und Breite
 	 * 
 	 * @param X
 	 * @param Y
@@ -114,7 +114,7 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	/**
-	 * Gibt die Visibility dieser GL_View zurück.</br> Wenn die Größe dieser GL_View <=0f ist, so wird INVISIBLE zurück gegeben.
+	 * Gibt die Visibility dieser GL_View zurueck.</br> Wenn die Groesse dieser GL_View <=0f ist, so wird INVISIBLE zurueck gegeben.
 	 * 
 	 * @return
 	 */
@@ -210,10 +210,10 @@ public abstract class GL_View_Base extends CB_RectF
 				myInfoForChild.add(view.Pos.x, view.Pos.y);
 
 				batch.setProjectionMatrix(myInfoForChild.Matrix());
-				TiefenZähler++;
+				nDepthCounter++;
 
 				view.renderChilds(batch, myInfoForChild);
-				TiefenZähler--;
+				nDepthCounter--;
 				batch.setProjectionMatrix(myParentInfo.Matrix());
 			}
 		}
@@ -248,7 +248,7 @@ public abstract class GL_View_Base extends CB_RectF
 			Texture tex = new Texture(p, Pixmap.Format.RGBA8888, false);
 
 			debugRec = new Sprite(tex, (int) width, (int) height);
-			Logger.LogCat("GL_Control ------[ " + name + " ]------[ Ebene: " + TiefenZähler + " ]----------");
+			Logger.LogCat("GL_Control ------[ " + name + " ]------[ Ebene: " + nDepthCounter + " ]----------");
 			Logger.LogCat("Create Debug Rec " + Pos.x + "/" + Pos.y + "/" + width + "/" + height);
 			Logger.LogCat("Parent Draw  Rec " + myParentInfo.drawRec().getPos().x + "/" + myParentInfo.drawRec().getPos().y + "/"
 					+ myParentInfo.drawRec().getWidth() + "/" + myParentInfo.drawRec().getHeight());
@@ -268,10 +268,10 @@ public abstract class GL_View_Base extends CB_RectF
 	private boolean thisInvalidate = true;
 
 	/**
-	 * Berechnet das Scissor Rechteck und die Infos für die Childs immer dann wenn sich etwas an Position oder Größe dieses GL_View_Base
-	 * geändert hat.</br> Wenn sich etwas geändert hat, wird auch ein Invalidate an die Childs übergeben, da diese auch neu berechnet werden
-	 * müssen. </br> Die detection wann sich etwas geändert hat, kommt von der überschriebenen CB_RectF Methode CalcCrossPos, da diese bei
-	 * jeder Änderung aufgerufen wird.
+	 * Berechnet das Scissor Rechteck und die Infos fï¿½r die Childs immer dann wenn sich etwas an Position oder Grï¿½ï¿½e dieses
+	 * GL_View_Base geï¿½ndert hat.</br> Wenn sich etwas geï¿½ndert hat, wird auch ein Invalidate an die Childs ï¿½bergeben, da diese auch
+	 * neu berechnet werden mï¿½ssen. </br> Die detection wann sich etwas geï¿½ndert hat, kommt von der ï¿½berschriebenen CB_RectF Methode
+	 * CalcCrossPos, da diese bei jeder ï¿½nderung aufgerufen wird.
 	 */
 	private void CalcMyInfoForChild()
 	{
@@ -328,8 +328,8 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public boolean click(int x, int y, int pointer, int button)
 	{
-		// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
-		// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
+		// Achtung: dieser touchDown ist nicht virtual und darf nicht ï¿½berschrieben werden!!!
+		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
 		boolean behandelt = false;
 		// alle Childs abfragen
 		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
@@ -361,16 +361,16 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public final boolean longClick(int x, int y, int pointer, int button)
 	{
-		// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
-		// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
+		// Achtung: dieser touchDown ist nicht virtual und darf nicht ï¿½berschrieben werden!!!
+		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
 		boolean behandelt = false;
 		return false;
 	}
 
 	public final boolean touchDown(int x, int y, int pointer, int button)
 	{
-		// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
-		// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
+		// Achtung: dieser touchDown ist nicht virtual und darf nicht ï¿½berschrieben werden!!!
+		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
 		boolean behandelt = false;
 		// alle Childs abfragen
 		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
@@ -399,8 +399,8 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public final boolean touchDragged(int x, int y, int pointer)
 	{
-		// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
-		// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
+		// Achtung: dieser touchDown ist nicht virtual und darf nicht ï¿½berschrieben werden!!!
+		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
 		boolean behandelt = false;
 		// alle Childs abfragen
 		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
@@ -425,8 +425,8 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public final boolean touchUp(int x, int y, int pointer, int button)
 	{
-		// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
-		// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
+		// Achtung: dieser touchDown ist nicht virtual und darf nicht ï¿½berschrieben werden!!!
+		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
 		boolean behandelt = false;
 		// alle Childs abfragen
 		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
@@ -452,7 +452,7 @@ public abstract class GL_View_Base extends CB_RectF
 		return behandelt;
 	}
 
-	// die untergeordneten Klassen müssen diese Event-Handler überschreiben!!!
+	// die untergeordneten Klassen mï¿½ssen diese Event-Handler ï¿½berschreiben!!!
 	// public abstract boolean onClick(int x, int y, int pointer, int button);
 
 	public abstract boolean onLongClick(int x, int y, int pointer, int button);
@@ -501,8 +501,8 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	/**
-	 * Setzt dieses View Clicable mit der übergabe von True. </br> Wenn Dieses View nicht Clickable ist, werde auch keine Click-Abfragen an
-	 * die Childs weitergegeben.
+	 * Setzt dieses View Clicable mit der ï¿½bergabe von True. </br> Wenn Dieses View nicht Clickable ist, werde auch keine Click-Abfragen
+	 * an die Childs weitergegeben.
 	 * 
 	 * @param value
 	 */
