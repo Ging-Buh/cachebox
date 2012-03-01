@@ -56,7 +56,7 @@ public class SelectDB extends Activity
 	{
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
-		ActivityUtils.setOriantation(this);
+
 		setContentView(R.layout.selectdb);
 
 		Me = this;

@@ -40,6 +40,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -65,7 +66,6 @@ import android.widget.TextView;
 import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.Components.copyAssetFolder;
 import de.cachebox_test.DB.AndroidDB;
-import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Views.MapView;
 import de.cachebox_test.Views.Forms.SelectDB;
 
@@ -86,6 +86,8 @@ public class splash extends Activity
 	String guid = null;
 	String name = null;
 
+	private boolean mOriantationRestart = false;
+
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
@@ -100,7 +102,23 @@ public class splash extends Activity
 		// chek if tablet
 
 		GlobalCore.isTab = sw > 400 ? true : false;
-		ActivityUtils.setOriantation(this);
+
+		if (GlobalCore.isTab)
+		{
+			// Tab Modus nur Landscape
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+		}
+		else if (Config.settings == null || !Config.settings.AllowLandscape.getValue())
+		{
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+		}
+		else
+		{
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+
+		}
 
 		setContentView(GlobalCore.isTab ? R.layout.tab_splash : R.layout.splash);
 
@@ -170,6 +188,14 @@ public class splash extends Activity
 		mainActivity = this;
 
 		LoadImages();
+
+		if (savedInstanceState != null)
+		{
+			mSelectDbIsStartet = savedInstanceState.getBoolean("SelectDbIsStartet");
+			mOriantationRestart = savedInstanceState.getBoolean("OriantationRestart");
+		}
+
+		if (mOriantationRestart) return; // wait for result
 
 		Thread thread = new Thread()
 		{
@@ -302,6 +328,13 @@ public class splash extends Activity
 			// cachebox.config umbenennen.
 			File f = new File(workPath + "/cachebox.config");
 			f.renameTo(new File(workPath + "/ALT_cachebox.config"));
+
+			// Enable allowLandscape if Tablet detected
+			if (GlobalCore.isTab)
+			{
+				Config.settings.AllowLandscape.setValue(true);
+				Config.AcceptChanges();
+			}
 
 		}
 
@@ -465,16 +498,21 @@ public class splash extends Activity
 			// show Database Selection
 			Intent selectDBIntent = new Intent().setClass(mainActivity, SelectDB.class);
 			SelectDB.autoStart = true;
-			// Bundle b = new Bundle();
-			// b.putSerializable("Waypoint", aktWaypoint);
-			// mainIntent.putExtras(b);
-			mainActivity.startActivityForResult(selectDBIntent, 546132);
+
+			if (!mSelectDbIsStartet)
+			{
+				mSelectDbIsStartet = true;
+				mainActivity.startActivityForResult(selectDBIntent, 546132);
+			}
+
 		}
 		else
 		{
 			Initial2();
 		}
 	}
+
+	private boolean mSelectDbIsStartet = false;
 
 	private void Initial2()
 	{
@@ -581,6 +619,14 @@ public class splash extends Activity
 				timer.schedule(task, 1000);
 			}
 		}
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		outState.putBoolean("SelectDbIsStartet", mSelectDbIsStartet);
+		outState.putBoolean("OriantationRestart", true);
 	}
 
 	private void LoadImages()

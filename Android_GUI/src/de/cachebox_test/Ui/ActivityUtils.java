@@ -16,13 +16,10 @@
 
 package de.cachebox_test.Ui;
 
-import CB_Core.Config;
-import CB_Core.GlobalCore;
 import CB_Core.Math.CB_Rect;
 import CB_Core.Math.UiSizes;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -62,24 +59,6 @@ public class ActivityUtils
 	public final static int THEME_NIGHT = 2;
 	public final static int THEME_DAY_TRANSPARENT = 3;
 	public final static int THEME_NIGHT_TRANSPARENT = 4;
-
-	public static void setOriantation(Activity aktivity)
-	{
-		if (GlobalCore.isTab)
-		{
-			// Tab Modus nur Landscape
-			aktivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		}
-		else if (Config.settings == null || !Config.settings.AllowLandscape.getValue())
-		{
-			aktivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		}
-		else
-		{
-			aktivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-		}
-
-	}
 
 	public static void changeToTheme(AndroidApplication activity, int theme)
 	{

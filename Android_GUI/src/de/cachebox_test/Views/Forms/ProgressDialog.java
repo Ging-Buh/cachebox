@@ -120,7 +120,7 @@ public class ProgressDialog extends Activity implements ProgressChangedEvent, Vi
 	{
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
-		ActivityUtils.setOriantation(this);
+
 		setContentView(R.layout.progress_dialog_layout);
 
 		Me = this;

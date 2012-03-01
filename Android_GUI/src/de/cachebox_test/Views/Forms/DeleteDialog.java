@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
-import de.cachebox_test.Ui.ActivityUtils;
 
 public class DeleteDialog extends Activity
 {
@@ -25,7 +24,7 @@ public class DeleteDialog extends Activity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		ActivityUtils.setOriantation(this);
+
 		setContentView(R.layout.del_caches);
 
 		final Intent aktIntent = getIntent();

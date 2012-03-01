@@ -73,7 +73,7 @@ public class MeasureCoordinateActivity extends Activity implements LocationListe
 	{
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
-		ActivityUtils.setOriantation(this);
+
 		setContentView(R.layout.measure_coordinate);
 
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

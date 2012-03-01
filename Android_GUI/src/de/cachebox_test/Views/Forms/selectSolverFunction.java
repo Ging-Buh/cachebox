@@ -65,7 +65,7 @@ public class selectSolverFunction extends Activity
 	{
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
-		ActivityUtils.setOriantation(this);
+
 		setContentView(R.layout.select_solver_function_layout);
 		context = this;
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

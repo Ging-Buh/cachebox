@@ -61,7 +61,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -375,8 +374,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		ActivityUtils.setOriantation(this);
-
 		// initialize receiver for screen switched on/off
 		IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
@@ -387,14 +384,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		N = Config.settings.nightMode.getValue();
 
-		try
-		{
-			setContentView(GlobalCore.isTab ? R.layout.tab_main : R.layout.main);
-		}
-		catch (Exception exc)
-		{
-			Logger.Error("main.onCreate()", "setContentView", exc);
-		}
+		setContentView(GlobalCore.isTab ? R.layout.tab_main : R.layout.main);
 
 		inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mainActivity = this;
@@ -1344,14 +1334,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (runsWithAkku) counter.start();
 		mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
 		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-		if (!Config.settings.AllowLandscape.getValue())
-		{
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		}
-		else
-		{
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-		}
 
 		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes
 				.getQuickButtonListHeight() : 0;
@@ -1420,6 +1402,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					aktView.OnFree();
 				}
 				aktView = null;
+
+				if (aktTabView != null)
+				{
+					aktTabView.OnHide();
+					aktTabView.OnFree();
+				}
+				aktTabView = null;
+
 				for (ViewOptionsMenu vom : ViewList)
 				{
 					vom.OnFree();
@@ -1448,6 +1438,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			else
 			{
 				if (aktView != null) aktView.OnHide();
+				if (aktTabView != null) aktTabView.OnHide();
 				super.onDestroy();
 			}
 		}
@@ -2141,7 +2132,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		TopLayout = (LinearLayout) this.findViewById(R.id.layoutTop);
 		frame = (FrameLayout) this.findViewById(R.id.layoutContent);
-		tabFrame = (FrameLayout) this.findViewById(R.id.TabletlayoutContent);
+		tabFrame = (FrameLayout) this.findViewById(R.id.tabletLayoutContent);
 		GlFrame = (FrameLayout) this.findViewById(R.id.layoutGlContent);
 
 		InfoDownSlider = (downSlider) this.findViewById(R.id.downSlider);
@@ -2333,22 +2324,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							if (distance(akt, first) > 15)
 							{
 								glListener.onTouchDragged((int) event.getX(p), (int) event.getY(p), event.getPointerId(p));
-								// onTouchMove Events erst generieren wenn die Bewegung mehr als 15 Pixel weit ist
-								// final int historySize = event.getHistorySize();
-								// final int pointerCount = event.getPointerCount();
-								// for (int h = 0; h < historySize; h++)
-								// {
-								// for (int p1 = 0; p1 < pointerCount; p1++)
-								// {
-								// glListener.onTouchDragged((int) event.getHistoricalX(p1, h), (int) event.getHistoricalY(p1, h),
-								// event.getPointerId(p1));
-								// }
-								// }
-								// for (int p1 = 0; p1 < event.getPointerCount(); p1++)
-								// {
-								//
-								// glListener.onTouchDragged((int) event.getX(p1), (int) event.getY(p1), event.getPointerId(p1));
-								// }
+
 							}
 							break;
 						case MotionEvent.ACTION_POINTER_UP:

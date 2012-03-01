@@ -37,7 +37,7 @@ public class EditFieldNote extends Activity
 	{
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
-		ActivityUtils.setOriantation(this);
+
 		setContentView(R.layout.edit_fieldnote);
 		aktIntent = getIntent();
 

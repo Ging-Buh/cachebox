@@ -40,7 +40,7 @@ public class projectionCoordinate extends Activity
 	{
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
-		ActivityUtils.setOriantation(this);
+
 		setContentView(R.layout.projection_coordinate);
 
 		Me = this;

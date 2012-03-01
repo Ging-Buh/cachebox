@@ -131,7 +131,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	 */
 	private int measure(int measureSpec)
 	{
-		QuickButtonMaxHeight = UiSizes.getQuickButtonListHeight();
+		QuickButtonMaxHeight = GlobalCore.isTab ? 0 : UiSizes.getQuickButtonListHeight();
 		int result = 0;
 		int specSize = MeasureSpec.getSize(measureSpec);
 		result = specSize;
@@ -226,7 +226,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		 */
 		if (!isInitial)
 		{
-			if (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue())
+			if (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue() && !GlobalCore.isTab)
 			{
 				setPos(QuickButtonMaxHeight);
 			}
@@ -239,9 +239,12 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		if (!drag && !AnimationIsRunning && !ButtonDrag)
 		{
-			yPos = QuickButtonHeight = Config.settings.quickButtonShow.getValue() ? main.getQuickButtonHeight() : 0;
-			// Toast.makeText(main.mainActivity, "!drag to" +
-			// String.valueOf(yPos), Toast.LENGTH_SHORT).show();
+
+			int value = 0;
+			if (!GlobalCore.isTab) value = Config.settings.quickButtonShow.getValue() ? main.getQuickButtonHeight() : 0;
+
+			yPos = QuickButtonHeight = value;
+
 		}
 
 		float FSize = ((float) (UiSizes.getScaledFontSize_big() * 1.3));
@@ -446,7 +449,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		int iconWidth = 0;
 		// draw icon
-		iconWidth = ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[30], UiSizes.getHalfCornerSize(), UiSizes.getCornerSize(), imgSize);
+		iconWidth = ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[30], UiSizes.getHalfCornerSize(), UiSizes.getCornerSize(),
+				imgSize);
 
 		// draw Text info
 		left += iconWidth;

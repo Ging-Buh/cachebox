@@ -44,7 +44,7 @@ public class EditWaypoint extends Activity
 	{
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
-		ActivityUtils.setOriantation(this);
+
 		setContentView(R.layout.edit_waypoint);
 
 		// Übergebenen Waypoint auslesen

@@ -51,7 +51,7 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 	{
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
-		ActivityUtils.setOriantation(this);
+
 		setContentView(R.layout.api_search_pos_dialog_layout);
 		Me = this;
 

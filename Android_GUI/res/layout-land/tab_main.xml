@@ -96,7 +96,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/TabletLayoutContent"
+            android:id="@+id/TabletLayout"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_above="@+id/TabletLayoutButtons"
@@ -110,7 +110,7 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/TabletlayoutContent"
+                android:id="@+id/tabletLayoutContent"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent" 
                 android:alwaysDrawnWithCache="true">
