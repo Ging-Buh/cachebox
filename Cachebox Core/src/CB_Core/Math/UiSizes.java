@@ -61,7 +61,7 @@ public class UiSizes
 	private static double calcBase;
 
 	private static int QuickButtonRef;
-	static int RefWidth;
+	public static int RefWidth;
 
 	public static Size initial(devicesSizes ini)
 	{

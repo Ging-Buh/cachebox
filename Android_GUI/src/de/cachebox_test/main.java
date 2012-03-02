@@ -38,10 +38,12 @@ import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.ViewID.UI_Pos;
 import CB_Core.GL_UI.ViewID.UI_Type;
+import CB_Core.GL_UI.Controls.MainView;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
+import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
@@ -402,8 +404,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		ui.Window = new Size(d.getWidth(), d.getHeight());
 		ui.Density = res.getDisplayMetrics().density;
-		ui.ButtonSize = new Size(res.getDimensionPixelSize(R.dimen.BtnSize),
-				(int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * ui.Density)));
+
+		int BH = (int) (res.getDimensionPixelSize(R.dimen.BtnSize));
+
+		ui.ButtonSize = new Size((int) (BH * 1.2), BH);
 		ui.RefSize = res.getDimensionPixelSize(R.dimen.RefSize);
 		ui.TextSize_Normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
 		ui.ButtonTextSize = res.getDimensionPixelSize(R.dimen.BtnTextSize);
@@ -1713,7 +1717,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void showView(ViewOptionsMenu view, ViewID ID)
 	{
-
+		if (ID == GL_MAP_VIEW) sendContentFrameSizeChanged();
 		if (GlobalCore.isTab)
 		{
 			if (ID.getPos() == ViewID.UI_Pos.Right)
@@ -3407,6 +3411,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						QuickButtonList.invalidate();
 						TopLayout.requestLayout();
 						frame.requestLayout();
+						sendContentFrameSizeChanged();
 					}
 				});
 			}
@@ -3580,6 +3585,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public static void Toast(String Msg)
 	{
 		Toast.makeText(mainActivity, Msg, Toast.LENGTH_SHORT).show();
+	}
+
+	public void sendContentFrameSizeChanged()
+	{
+		if (frame != null)
+		{
+			if (GL_UISizes.set_Top_Buttom_Height(TopLayout.getHeight(), buttonDB.getHeight()))
+			{
+				if (MainView.mainView != null)
+				{
+					MainView.mainView.requestLayout();
+				}
+			}
+		}
 	}
 
 }

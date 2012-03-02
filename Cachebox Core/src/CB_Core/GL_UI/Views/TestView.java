@@ -12,6 +12,7 @@ import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.ZoomButtons;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
@@ -32,6 +33,9 @@ public class TestView extends GL_View_Base
 {
 	private Image image;
 	private Label lbl;
+	private ZoomButtons btnZoom;
+	private MultiToggleButton togBtn;
+	private MapInfoPanel info;
 
 	public TestView(CB_RectF rec, String Name)
 	{
@@ -44,7 +48,7 @@ public class TestView extends GL_View_Base
 		this.addChild(testView);
 
 		// Initial TestView
-		ZoomButtons btnZoom = new ZoomButtons(20, 20, 200, 75, "Test_Zoom");
+		btnZoom = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
 		btnZoom.setClickable(true);
 
 		btnZoom.setOnClickListenerDown(new OnClickListener()
@@ -125,7 +129,7 @@ public class TestView extends GL_View_Base
 		lbl.setHAlignment(HAlignment.CENTER);
 		this.addChild(lbl);
 
-		MultiToggleButton togBtn = new MultiToggleButton(10, 450, 100, 100, this, "toggle");
+		togBtn = new MultiToggleButton(GL_UISizes.Toggle, this, "toggle");
 
 		togBtn.addState("Free", Color.GRAY);
 		togBtn.addState("GPS", Color.GREEN);
@@ -169,9 +173,9 @@ public class TestView extends GL_View_Base
 		this.addChild(lbl3);
 
 		// MapInfoPanel
-		MapInfoPanel info = new MapInfoPanel(GL_UISizes.Info, "InfoPanel");
-		this.addChild(info);
+		info = (MapInfoPanel) this.addChild(new MapInfoPanel(GL_UISizes.Info, "InfoPanel"));
 
+		requestLayout();
 	}
 
 	@Override
@@ -185,8 +189,7 @@ public class TestView extends GL_View_Base
 	@Override
 	public void onRezised(CB_RectF rec)
 	{
-		// TODO Auto-generated method stub
-
+		requestLayout();
 	}
 
 	@Override
@@ -222,6 +225,22 @@ public class TestView extends GL_View_Base
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onParentRezised(CB_RectF rec)
+	{
+		this.setSize(rec.getSize());
+	}
+
+	private void requestLayout()
+	{
+		Logger.LogCat("TestView clacLayout()");
+		float margin = GL_UISizes.margin;
+		info.setPos(new Vector2(margin, (float) (this.height - margin - info.getHeight())));
+		togBtn.setPos(new Vector2((float) (this.width - margin - togBtn.getWidth()), this.height - margin - togBtn.getHeight()));
+
+		GL_Listener.glListener.renderOnce(this);
 	}
 
 }

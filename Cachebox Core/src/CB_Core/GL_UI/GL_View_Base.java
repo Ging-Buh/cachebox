@@ -2,7 +2,6 @@ package CB_Core.GL_UI;
 
 import java.util.Iterator;
 
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Types.MoveableList;
 
@@ -129,9 +128,10 @@ public abstract class GL_View_Base extends CB_RectF
 		return (getVisibility() == VISIBLE);
 	}
 
-	public void addChild(GL_View_Base view)
+	public GL_View_Base addChild(GL_View_Base view)
 	{
 		childs.add(view);
+		return view;
 	}
 
 	public void removeChild(GL_View_Base view)
@@ -248,15 +248,16 @@ public abstract class GL_View_Base extends CB_RectF
 			Texture tex = new Texture(p, Pixmap.Format.RGBA8888, false);
 
 			debugRec = new Sprite(tex, (int) width, (int) height);
-			Logger.LogCat("GL_Control ------[ " + name + " ]------[ Ebene: " + nDepthCounter + " ]----------");
-			Logger.LogCat("Create Debug Rec " + Pos.x + "/" + Pos.y + "/" + width + "/" + height);
-			Logger.LogCat("Parent Draw  Rec " + myParentInfo.drawRec().getPos().x + "/" + myParentInfo.drawRec().getPos().y + "/"
-					+ myParentInfo.drawRec().getWidth() + "/" + myParentInfo.drawRec().getHeight());
-			Logger.LogCat("intersectRec  Rec " + intersectRec.getPos().x + "/" + intersectRec.getPos().y + "/" + intersectRec.getWidth()
-					+ "/" + intersectRec.getHeight() + "  interscted =" + mustSetScissor);
-			Logger.LogCat("This World Rec    " + ThisWorldRec.getPos().x + "/" + ThisWorldRec.getPos().y + "/" + ThisWorldRec.getWidth()
-					+ "/" + ThisWorldRec.getHeight());
-			Logger.LogCat("ParentInfo.Vector= " + myParentInfo.Vector());
+
+			// Logger.LogCat("GL_Control ------[ " + name + " ]------[ Ebene: " + nDepthCounter + " ]----------");
+			// Logger.LogCat("Create Debug Rec " + Pos.x + "/" + Pos.y + "/" + width + "/" + height);
+			// Logger.LogCat("Parent Draw  Rec " + myParentInfo.drawRec().getPos().x + "/" + myParentInfo.drawRec().getPos().y + "/"
+			// + myParentInfo.drawRec().getWidth() + "/" + myParentInfo.drawRec().getHeight());
+			// Logger.LogCat("intersectRec  Rec " + intersectRec.getPos().x + "/" + intersectRec.getPos().y + "/" + intersectRec.getWidth()
+			// + "/" + intersectRec.getHeight() + "  interscted =" + mustSetScissor);
+			// Logger.LogCat("This World Rec    " + ThisWorldRec.getPos().x + "/" + ThisWorldRec.getPos().y + "/" + ThisWorldRec.getWidth()
+			// + "/" + ThisWorldRec.getHeight());
+			// Logger.LogCat("ParentInfo.Vector= " + myParentInfo.Vector());
 		}
 	}
 
@@ -317,9 +318,21 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		onRezised(this);
 		debugRec = null;
+
+		// Eine Größenänderung an die Childs Melden
+		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+		{
+			// alle renderChilds() der in dieser GL_View_Base
+			// enthaltenen Childs auf rufen.
+			GL_View_Base view = iterator.next();
+			view.onParentRezised(this);
+		}
+
 	}
 
 	public abstract void onRezised(CB_RectF rec);
+
+	public abstract void onParentRezised(CB_RectF rec);
 
 	public void onStop()
 	{

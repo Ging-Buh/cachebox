@@ -33,7 +33,12 @@ public class MultiToggleButton extends Button
 	{
 		super(X, Y, Width, Height, Parent, Name);
 		setClickable(true);
+	}
 
+	public MultiToggleButton(CB_RectF rec, GL_View_Base Parent, String Name)
+	{
+		super(rec, Parent, Name);
+		setClickable(true);
 	}
 
 	private States aktState;

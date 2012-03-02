@@ -95,4 +95,10 @@ public class CreditsView extends GL_View_Base
 
 	}
 
+	@Override
+	public void onParentRezised(CB_RectF rec)
+	{
+		this.setSize(rec.getSize());
+	}
+
 }

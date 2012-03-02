@@ -4,6 +4,7 @@ import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.Log.Logger;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.math.Vector2;
@@ -78,6 +79,7 @@ public class GL_UISizes implements SizeChangedEvent
 			calcPos();
 
 			isInitial = true;
+
 		}
 	}
 
@@ -193,24 +195,27 @@ public class GL_UISizes implements SizeChangedEvent
 	 */
 	public static SizeF TargetArrow;
 
+	public static float margin;
+
 	/**
 	 * Berechnet die Positionen der UI-Elemente
 	 */
 	private static void calcPos()
 	{
-		Float margin = (float) (6.6666667 * DPI);
-		Info.setPos(new Vector2(margin, (float) (SurfaceSize.getHeight() - 100 - 66.666667 * DPI)));
+		float w = GlobalCore.isTab ? UI_Right.width : UI_Left.width;
+		float h = GlobalCore.isTab ? UI_Right.height : UI_Left.height;
+
+		margin = (float) (6.6666667 * DPI);
+		Info.setPos(new Vector2(margin, (float) (h - margin - Info.getHeight())));
 
 		Float CompassMargin = (Info.getHeight() - Compass.getWidth()) / 2;
 
 		Compass.setPos(new Vector2(Info.getX() + CompassMargin, Info.getY() + infoShadowHeight + CompassMargin));
 
-		Toggle.setPos(new Vector2((float) (SurfaceSize.getWidth() - margin - Toggle.getWidth()),
-				(float) (SurfaceSize.getHeight() - margin - Toggle.getHeight())));
+		Toggle.setPos(new Vector2((float) (w - margin - Toggle.getWidth()), h - margin - Toggle.getHeight()));
 
-		ZoomBtn.setPos(new Vector2((float) (SurfaceSize.getWidth() - margin - ZoomBtn.getWidth()), margin));
-		ZoomScale
-				.setPos(new Vector2(margin, (float) (SurfaceSize.getHeight() - (margin * 4) - Toggle.getHeight() - ZoomScale.getHeight())));
+		ZoomBtn.setPos(new Vector2((float) (w - margin - ZoomBtn.getWidth()), margin));
+		ZoomScale.setPos(new Vector2(margin, (float) (h - (margin * 4) - Toggle.getHeight() - ZoomScale.getHeight())));
 		InfoLine1.x = Compass.getCrossPos().x + margin;
 		TextBounds bounds = Fonts.get18().getBounds("52° 34,806N ");
 		InfoLine2.x = Info.getX() + Info.getWidth() - bounds.width - (margin * 2);
@@ -222,9 +227,38 @@ public class GL_UISizes implements SizeChangedEvent
 
 		// Aufräumen
 		CompassMargin = null;
-		margin = null;
 		System.gc();
 
+		if (true)
+		{
+			Logger.LogCat("------ GL UI Sizes--------");
+
+			writeDebug("UI_Left", UI_Left);
+			writeDebug("UI_Right", UI_Right);
+			writeDebug("Info", Info);
+			writeDebug("Toggle", Toggle);
+			writeDebug("ZoomBtn", ZoomBtn);
+			writeDebug("ZoomScale", ZoomScale);
+			writeDebug("PosMarkerSize", PosMarkerSize);
+			writeDebug("TargetArrow", TargetArrow);
+			writeDebug("UnderlaySizes", UnderlaySizes);
+			writeDebug("WPSizes", WPSizes);
+
+			Logger.LogCat("------ GL UI Sizes--------");
+		}
+
+	}
+
+	public static float BottomButtonHeight = convertDip2Pix(65);
+	public static float TopButtonHeight = convertDip2Pix(35);
+
+	public static boolean set_Top_Buttom_Height(float Top, float Bottom)
+	{
+		if (BottomButtonHeight == Bottom && TopButtonHeight == Top) return false;
+
+		BottomButtonHeight = Bottom;
+		TopButtonHeight = Top;
+		return true;
 	}
 
 	/**
@@ -238,8 +272,7 @@ public class GL_UISizes implements SizeChangedEvent
 		int WindowWidth = UiSizes.getWindowWidth();
 		int frameRightWidth = WindowWidth - frameLeftwidth;
 
-		// Window height- CacheNameViewHeight(35dip)-ImageButtonHeight(65dip)
-		int frameHeight = UiSizes.getWindowHeight() - convertDip2Pix(35) - convertDip2Pix(65);
+		frameHeight = UiSizes.getWindowHeight() - convertDip2Pix(35) - convertDip2Pix(65);
 
 		UI_Left = new CB_RectF(0, convertDip2Pix(65), frameLeftwidth, frameHeight);
 		UI_Right = UI_Left.copy();
@@ -250,10 +283,10 @@ public class GL_UISizes implements SizeChangedEvent
 		}
 
 		infoShadowHeight = (float) (3.333333 * DPI);
-		Info.setSize(244 * DPI, 58 * DPI);
+		Info.setSize((float) (UiSizes.getButtonWidth() * 3.5), UiSizes.getButtonHeight());
 		Compass.setSize((float) (44.6666667 * DPI), (float) (44.6666667 * DPI));
 		halfCompass = Compass.getHeight() / 2;
-		Toggle.setSize(58 * DPI, 58 * DPI);
+		Toggle.setSize(UiSizes.getButtonWidth(), UiSizes.getButtonHeight());
 		ZoomBtn.setSize((float) (158 * DPI), 48 * DPI);
 		ZoomScale.setSize((float) (58 * DPI), 170 * DPI); // 280
 		PosMarkerSize = (float) (46.666667 * DPI);
@@ -269,11 +302,37 @@ public class GL_UISizes implements SizeChangedEvent
 		Bubble.setSize((float) 253.3333334 * DPI, (float) 105.333334 * DPI);
 		halfBubble = Bubble.width / 2;
 		bubbleCorrect.setSize((float) (6.6666667 * DPI), (float) 26.66667 * DPI);
+
+	}
+
+	static float frameHeight = -1;
+
+	private static void writeDebug(String name, CB_RectF rec)
+	{
+		Logger.LogCat(name + "   ------ x/y/W/H =  " + rec.getX() + "/" + rec.getY() + "/" + rec.getWidth() + "/" + rec.getHeight());
+	}
+
+	private static void writeDebug(String name, float size)
+	{
+		Logger.LogCat(name + "   ------ size =  " + size);
+	}
+
+	private static void writeDebug(String name, SizeF sizeF)
+	{
+		Logger.LogCat(name + "   ------ W/H =  " + sizeF.width + "/" + sizeF.height);
+	}
+
+	private static void writeDebug(String name, SizeF[] SizeArray)
+	{
+		for (int i = 0; i < SizeArray.length; i++)
+		{
+			writeDebug(name + "[" + i + "]", SizeArray[i]);
+		}
 	}
 
 	static float scale = 0;
 
-	private static int convertDip2Pix(float dips)
+	public static int convertDip2Pix(float dips)
 	{
 		// Converting dips to pixels
 		if (scale == 0) scale = UiSizes.getScale();
@@ -284,6 +343,7 @@ public class GL_UISizes implements SizeChangedEvent
 	public void sizeChanged()
 	{
 		calcPos();
+
 	}
 
 }

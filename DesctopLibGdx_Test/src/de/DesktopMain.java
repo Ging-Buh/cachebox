@@ -4,11 +4,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.GL_Listener.GL_Listener_Interface;
+import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ViewID.UI_Pos;
 import CB_Core.GL_UI.ViewID.UI_Type;
 import CB_Core.Log.Logger;
@@ -30,10 +32,16 @@ public class DesktopMain {
 	public static final ViewID GL_MAP_VIEW = new ViewID(ViewID.GL_MAP_VIEW,
 			UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
 
-	private final static Size myInitialSize = new Size(480, 800);
+	private static Size myInitialSize = null;
+
+
+	static devicesSizes ui = null;
 
 	public static void main(String[] args) {
 		DesktopLogger iLogger = new DesktopLogger();
+
+		iniPhone();
+//		iniTab();
 
 		InitalConfig();
 		Config.settings.MapViewDPIFaktor.setValue(1);
@@ -41,20 +49,15 @@ public class DesktopMain {
 		CB_UI = new Desktop_GL_Listner(myInitialSize.width,
 				myInitialSize.height);
 
-		devicesSizes ui = new devicesSizes();
+		GL_View_Base.debug = true;
 
-		ui.Window = myInitialSize;
-		ui.Density = 1.0f;
-		ui.ButtonSize = new Size(65, 65);
-		ui.RefSize = 64;
-		ui.TextSize_Normal = 52;
-		ui.ButtonTextSize = 50;
-		ui.IconSize = 13;
-		ui.Margin = 4;
-		ui.ArrowSizeList = 11;
-		ui.ArrowSizeMap = 18;
-		ui.TB_IconSize = 8;
-		ui.isLandscape = false;
+		int sw = myInitialSize.height > myInitialSize.width ? myInitialSize.width
+				: myInitialSize.height;
+		sw /= ui.Density;
+
+		// chek if tablet
+
+		GlobalCore.isTab = sw > 400 ? true : false;
 
 		UiSizes.initial(ui);
 		new LwjglApplication(CB_UI, "Game", myInitialSize.width,
@@ -70,15 +73,58 @@ public class DesktopMain {
 		timer.schedule(task, 1000);
 
 	}
+	
+	
+	private static void iniPhone() {
+		myInitialSize = new Size(480, 800);
+
+		ui = new devicesSizes();
+
+		ui.Window = myInitialSize;
+		ui.Density = 1.5f;
+		ui.ButtonSize = new Size(65, 65);
+		ui.RefSize = 64;
+		ui.TextSize_Normal = 52;
+		ui.ButtonTextSize = 50;
+		ui.IconSize = 13;
+		ui.Margin = 4;
+		ui.ArrowSizeList = 11;
+		ui.ArrowSizeMap = 18;
+		ui.TB_IconSize = 8;
+		ui.isLandscape = false;
+
+	}
+
+	private static void iniTab() {
+
+		myInitialSize = new Size(1280, 750);
+		ui = new devicesSizes();
+
+		ui.Window = myInitialSize;
+		ui.Density = 1.0f;
+		ui.ButtonSize = new Size(65, 65);
+		ui.RefSize = 64;
+		ui.TextSize_Normal = 52;
+		ui.ButtonTextSize = 50;
+		ui.IconSize = 13;
+		ui.Margin = 4;
+		ui.ArrowSizeList = 11;
+		ui.ArrowSizeMap = 18;
+		ui.TB_IconSize = 8;
+		ui.isLandscape = false;
+
+	}
+
+	
 
 	private static void Run() {
 		CB_UI.onStart();
 		CB_UI.setGLViewID(TEST_VIEW);
-//		 CB_UI.setGLViewID(CREDITS_VIEW);
+		// CB_UI.setGLViewID(CREDITS_VIEW);
 		// CB_UI.setGLViewID(GL_MAP_VIEW);
 
 		Gdx.input.setInputProcessor((InputProcessor) CB_UI);
-		
+
 	}
 
 	/**
@@ -108,7 +154,4 @@ public class DesktopMain {
 		Config.AcceptChanges();
 	}
 
-
-	
-	
 }

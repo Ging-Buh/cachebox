@@ -94,7 +94,7 @@ public class CB_RectF
 		if (this.width == Width) return;
 		this.width = Width;
 		calcCrossCorner();
-		CallSizeChanged();
+		CallRecChanged();
 	}
 
 	public void setHeight(float Height)
@@ -102,7 +102,7 @@ public class CB_RectF
 		if (this.height == Height) return;
 		this.height = Height;
 		calcCrossCorner();
-		CallSizeChanged();
+		CallRecChanged();
 	}
 
 	public boolean setSize(SizeF Size)
@@ -123,7 +123,7 @@ public class CB_RectF
 		this.width = Width;
 		this.height = Height;
 		calcCrossCorner();
-		CallSizeChanged();
+		CallRecChanged();
 		return true;
 	}
 
@@ -235,7 +235,7 @@ public class CB_RectF
 		list.remove(event);
 	}
 
-	public void CallSizeChanged()
+	public void CallRecChanged()
 	{
 		resize(this.width, this.height);
 
@@ -472,6 +472,29 @@ public class CB_RectF
 		float x2 = Math.min(this.getMaxX(), rec.getMaxX());
 		float y2 = Math.min(this.getMaxY(), rec.getMaxY());
 		return new CB_RectF(x1, y1, x2 - x1, y2 - y1);
+	}
+
+	public SizeF getSize()
+	{
+		return new SizeF(width, height);
+	}
+
+	public void setRec(CB_RectF rec)
+	{
+		if (rec == null) return;
+		this.Pos.x = rec.Pos.x;
+		this.Pos.y = rec.Pos.y;
+		this.width = rec.width;
+		this.height = rec.height;
+
+		calcCrossCorner();
+		CallRecChanged();
+	}
+
+	@Override
+	public String toString()
+	{
+		return "rec X,Y/Width,Height = " + this.getX() + "," + this.getY() + "/" + this.width + "," + this.height;
 	}
 
 }

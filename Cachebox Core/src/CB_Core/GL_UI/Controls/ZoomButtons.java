@@ -66,6 +66,14 @@ public class ZoomButtons extends GL_View_Base
 		resetFadeOut();
 	}
 
+	public ZoomButtons(CB_RectF rec, GL_View_Base view, String name)
+	{
+		super(rec, view, name);
+		THIS = this;
+		onRezised(this);
+		resetFadeOut();
+	}
+
 	private OnClickListener mOnClickListenerUp;
 	private OnClickListener mOnClickListenerDown;
 
@@ -428,6 +436,13 @@ public class ZoomButtons extends GL_View_Base
 
 	@Override
 	public void dispose()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onParentRezised(CB_RectF rec)
 	{
 		// TODO Auto-generated method stub
 

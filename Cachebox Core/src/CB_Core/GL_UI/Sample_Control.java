@@ -77,4 +77,11 @@ public class Sample_Control extends GL_View_Base
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void onParentRezised(CB_RectF rec)
+	{
+		// TODO Auto-generated method stub
+
+	}
 }

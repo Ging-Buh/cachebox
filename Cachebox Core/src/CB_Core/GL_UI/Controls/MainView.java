@@ -9,6 +9,7 @@ import CB_Core.GL_UI.Views.TestView;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
+import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -114,8 +115,7 @@ public class MainView extends GL_View_Base
 	@Override
 	public void onRezised(CB_RectF rec)
 	{
-		// TODO Auto-generated method stub
-
+		requestLayout();
 	}
 
 	@Override
@@ -151,5 +151,34 @@ public class MainView extends GL_View_Base
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onParentRezised(CB_RectF rec)
+	{
+		requestLayout();
+
+	}
+
+	public void requestLayout()
+	{
+		// muss die Größe für leftFrame und rightFrame neu berechnen
+
+		Logger.LogCat("MainView onParentRezised()");
+
+		GL_UISizes.UI_Left = new CB_RectF(0, GL_UISizes.BottomButtonHeight, UiSizes.RefWidth, this.height - GL_UISizes.BottomButtonHeight
+				- GL_UISizes.TopButtonHeight);
+		GL_UISizes.UI_Right = GL_UISizes.UI_Left.copy();
+		if (GlobalCore.isTab)
+		{
+			GL_UISizes.UI_Right.setX(GL_UISizes.UI_Left.getWidth() + 1);
+			GL_UISizes.UI_Right.setWidth(this.width - UiSizes.RefWidth);
+		}
+
+		if (leftFrame != null && rightFrame != null)
+		{
+			leftFrame.setRec(GL_UISizes.UI_Left);
+			rightFrame.setRec(GL_UISizes.UI_Right);
+		}
 	}
 }

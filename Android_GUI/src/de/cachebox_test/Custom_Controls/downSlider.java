@@ -525,6 +525,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		}
 
 		this.invalidate();
+		((main) main.mainActivity).sendContentFrameSizeChanged();
 	}
 
 	int tmpPos = 0;

@@ -131,4 +131,11 @@ public class Image extends GL_View_Base
 		mImageSprite = null;
 	}
 
+	@Override
+	public void onParentRezised(CB_RectF rec)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

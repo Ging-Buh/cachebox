@@ -2299,4 +2299,11 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 
 	}
 
+	@Override
+	public void onParentRezised(CB_RectF rec)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

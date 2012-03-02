@@ -296,4 +296,11 @@ public class Label extends GL_View_Base
 		fontPropertyChanged();
 	}
 
+	@Override
+	public void onParentRezised(CB_RectF rec)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

@@ -20,6 +20,7 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.MainView;
+import CB_Core.GL_UI.Controls.MapInfoPanel;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.ZoomButtons;
@@ -53,6 +54,12 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 	private final MapView that; // für Zugriff aus Listeners heraus auf this
 	private final String Tag = "MAP_VIEW_GL";
 
+	// ####### Enthaltene Controls ##########
+	private MultiToggleButton togBtn;
+	private ZoomButtons zoomBtn;
+	private MapInfoPanel info;
+	// ########################################
+
 	private Locator locator = null;
 	protected SortedMap<Long, TileGL> loadedTiles = new TreeMap<Long, TileGL>();
 	final Lock loadedTilesLock = new ReentrantLock();
@@ -66,8 +73,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 	private MapViewCacheList mapCacheList;
 	private Point lastMovement = new Point(0, 0);
 	private int zoomCross = 16;
-	private MultiToggleButton togBtn;
-	private ZoomButtons zoomBtn;
+
 	// private GL_ZoomScale zoomScale;
 
 	// Settings values
@@ -144,7 +150,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		}
 
 		// initial Zoom Buttons
-		zoomBtn = new ZoomButtons(300, 10, 150, 75, "Zoom");
+		zoomBtn = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
 		zoomBtn.setOnClickListenerDown(new OnClickListener()
 		{
 			@Override
@@ -184,6 +190,9 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 			}
 		});
 		this.addChild(zoomBtn);
+
+		info = (MapInfoPanel) this.addChild(new MapInfoPanel(GL_UISizes.Info, "InfoPanel"));
+
 		InitializeMap();
 
 		// initial Zoom Scale
@@ -205,7 +214,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 		// textMatrix = new Matrix4().setToOrtho2D(0, 0, width, height);
 
-		MultiToggleButton togBtn = new MultiToggleButton(400, 100, 100, 100, this, "toggle");
+		togBtn = new MultiToggleButton(GL_UISizes.Toggle, this, "toggle");
 
 		togBtn.addState("Free", Color.GRAY);
 		togBtn.addState("GPS", Color.GREEN);
@@ -226,7 +235,6 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		// SelectedCacheEventList.Add(this);
 
 		// PositionEventList.Add(this);
-
 		resize(rec.getWidth(), rec.getHeight());
 
 	}
@@ -252,7 +260,16 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		this.drawingWidth = (int) rec.getWidth();
 		this.drawingHeight = (int) rec.getHeight();
 
-		camera = new OrthographicCamera(MainView.mainView.ThisWorldRec.getWidth(), MainView.mainView.ThisWorldRec.getHeight());
+		// camera = new OrthographicCamera(MainView.mainView.ThisWorldRec.getWidth(), MainView.mainView.ThisWorldRec.getHeight());
+
+		if (this.ThisWorldRec == null)
+		{
+			camera = new OrthographicCamera(this.getWidth(), this.getHeight());
+		}
+		else
+		{
+			camera = new OrthographicCamera(this.ThisWorldRec.getWidth(), this.ThisWorldRec.getHeight());
+		}
 
 		aktZoom = zoomBtn.getZoom();
 		// zoomScale.setZoom(aktZoom);
@@ -269,6 +286,8 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		Config.settings.MapIniWidth.setValue(width);
 		Config.settings.MapIniHeight.setValue(height);
 		Config.AcceptChanges();
+
+		requestLayout();
 
 	}
 
@@ -1945,6 +1964,22 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		{
 			return fertig;
 		}
+	}
+
+	@Override
+	public void onParentRezised(CB_RectF rec)
+	{
+		this.setSize(rec.getSize());
+	}
+
+	private void requestLayout()
+	{
+		Logger.LogCat("TestView clacLayout()");
+		float margin = GL_UISizes.margin;
+		info.setPos(new Vector2(margin, (float) (this.height - margin - info.getHeight())));
+		togBtn.setPos(new Vector2((float) (this.width - margin - togBtn.getWidth()), this.height - margin - togBtn.getHeight()));
+
+		GL_Listener.glListener.renderOnce(this);
 	}
 
 }

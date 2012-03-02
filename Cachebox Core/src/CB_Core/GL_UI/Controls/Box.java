@@ -83,4 +83,11 @@ public class Box extends GL_View_Base
 
 	}
 
+	@Override
+	public void onParentRezised(CB_RectF rec)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

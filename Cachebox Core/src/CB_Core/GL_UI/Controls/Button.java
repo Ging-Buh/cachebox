@@ -44,6 +44,11 @@ public class Button extends GL_View_Base
 		super(X, Y, Width, Height, Parent, Name);
 	}
 
+	public Button(CB_RectF rec, GL_View_Base parent, String name)
+	{
+		super(rec, parent, name);
+	}
+
 	@Override
 	protected void render(SpriteBatch batch)
 	{
@@ -192,6 +197,13 @@ public class Button extends GL_View_Base
 
 		lblTxt.setText(Text);
 		GL_Listener.glListener.renderOnce(this);
+	}
+
+	@Override
+	public void onParentRezised(CB_RectF rec)
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }

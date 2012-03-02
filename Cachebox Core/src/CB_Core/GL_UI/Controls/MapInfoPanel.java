@@ -7,6 +7,7 @@ import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Types.Coordinate;
 
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class MapInfoPanel extends GL_View_Base
@@ -30,7 +31,7 @@ public class MapInfoPanel extends GL_View_Base
 	public MapInfoPanel(CB_RectF rec, CharSequence Name)
 	{
 		super(rec, Name);
-		setBackground(SpriteCache.InfoBack);
+		setBackground(new NinePatch(SpriteCache.InfoBack, 16, 16, 16, 16));
 	}
 
 	@Override
@@ -76,6 +77,13 @@ public class MapInfoPanel extends GL_View_Base
 
 	@Override
 	public void dispose()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onParentRezised(CB_RectF rec)
 	{
 		// TODO Auto-generated method stub
 
