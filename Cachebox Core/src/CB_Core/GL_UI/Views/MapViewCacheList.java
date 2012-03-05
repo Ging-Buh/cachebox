@@ -51,6 +51,7 @@ public class MapViewCacheList
 			try
 			{
 				queueProcessor = new queueProcessor();
+				queueProcessor.setPriority(Thread.MIN_PRIORITY);
 			}
 			catch (Exception ex)
 			{

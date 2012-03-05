@@ -146,7 +146,9 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		if (queueProcessor == null)
 		{
 			queueProcessor = new queueProcessor();
+			queueProcessor.setPriority(Thread.MIN_PRIORITY);
 			queueProcessor.start();
+
 		}
 
 		// initial Zoom Buttons
@@ -236,7 +238,6 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 		// PositionEventList.Add(this);
 		resize(rec.getWidth(), rec.getHeight());
-
 	}
 
 	@Override
@@ -260,16 +261,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		this.drawingWidth = (int) rec.getWidth();
 		this.drawingHeight = (int) rec.getHeight();
 
-		// camera = new OrthographicCamera(MainView.mainView.ThisWorldRec.getWidth(), MainView.mainView.ThisWorldRec.getHeight());
-
-		if (this.ThisWorldRec == null)
-		{
-			camera = new OrthographicCamera(this.getWidth(), this.getHeight());
-		}
-		else
-		{
-			camera = new OrthographicCamera(this.ThisWorldRec.getWidth(), this.ThisWorldRec.getHeight());
-		}
+		camera = new OrthographicCamera(MainView.mainView.getWidth(), MainView.mainView.getHeight());
 
 		aktZoom = zoomBtn.getZoom();
 		// zoomScale.setZoom(aktZoom);
@@ -465,8 +457,8 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 	{
 		float faktor = camera.zoom;
 		Matrix4 mat = camera.combined;
-		int dx = (int) (GL_UISizes.SurfaceSize.getWidth() - MainView.mainView.ThisWorldRec.getWidth());
-		int dy = (int) (GL_UISizes.SurfaceSize.getHeight() - MainView.mainView.ThisWorldRec.getHeight());
+		float dx = this.ThisWorldRec.getCenterPos().x - MainView.mainView.getCenterPos().x;
+		float dy = this.ThisWorldRec.getCenterPos().y - MainView.mainView.getCenterPos().y;
 		mat = mat.translate(dx * faktor, dy * faktor, 0);
 		batch.setProjectionMatrix(mat);
 

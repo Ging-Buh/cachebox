@@ -188,6 +188,16 @@ public class CB_RectF
 	}
 
 	/**
+	 * Gibt die Position des Zentrums zurück
+	 * 
+	 * @return Vector2
+	 */
+	public Vector2 getCenterPos()
+	{
+		return this.centerPos;
+	}
+
+	/**
 	 * Berechnet die rechte obere Ecke
 	 */
 	protected void calcCrossCorner()
