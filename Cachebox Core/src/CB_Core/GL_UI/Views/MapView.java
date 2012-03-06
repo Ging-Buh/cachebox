@@ -1458,6 +1458,8 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		{
 			tileState = TileGL.TileState.Present;
 			addLoadedTile(desc, bytes, tileState);
+			// Redraw Map after a new Tile was loaded or generated
+			GL_Listener.glListener.renderOnce(this);
 		}
 	}
 
