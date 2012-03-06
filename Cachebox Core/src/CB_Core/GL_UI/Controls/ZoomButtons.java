@@ -105,9 +105,14 @@ public class ZoomButtons extends GL_View_Base
 		{
 			if (HitRecUp.contains(x, y))
 			{
-				if (GL_View_Base.debug) Logger.LogCat("ZoomButton OnClick UP x/Y " + x + "/" + y);
+
 				resetFadeOut();
-				mOnClickListenerUp.onClick(this, x, y, pointer, button);
+				if (zoom < maxzoom)
+				{
+					zoom++;
+					Logger.LogCat("ZoomButton OnClick UP (" + zoom + ")");
+					mOnClickListenerUp.onClick(this, x, y, pointer, button);
+				}
 				behandelt = true;
 			}
 		}
@@ -116,9 +121,13 @@ public class ZoomButtons extends GL_View_Base
 		{
 			if (HitRecDown.contains(x, y))
 			{
-				if (GL_View_Base.debug) Logger.LogCat("ZoomButton OnClick DOWN x/Y " + x + "/" + y);
 				resetFadeOut();
-				mOnClickListenerDown.onClick(this, x, y, pointer, button);
+				if (zoom > minzoom)
+				{
+					zoom--;
+					Logger.LogCat("ZoomButton OnClick Down (" + zoom + ")");
+					mOnClickListenerDown.onClick(this, x, y, pointer, button);
+				}
 				behandelt = true;
 			}
 		}

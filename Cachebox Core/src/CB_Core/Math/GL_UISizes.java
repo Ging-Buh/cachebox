@@ -205,7 +205,6 @@ public class GL_UISizes implements SizeChangedEvent
 		float w = GlobalCore.isTab ? UI_Right.width : UI_Left.width;
 		float h = GlobalCore.isTab ? UI_Right.height : UI_Left.height;
 
-		margin = (float) (6.6666667 * DPI);
 		Info.setPos(new Vector2(margin, (float) (h - margin - Info.getHeight())));
 
 		Float CompassMargin = (Info.getHeight() - Compass.getWidth()) / 2;
@@ -272,6 +271,8 @@ public class GL_UISizes implements SizeChangedEvent
 		int WindowWidth = UiSizes.getWindowWidth();
 		int frameRightWidth = WindowWidth - frameLeftwidth;
 
+		margin = (float) (6.6666667 * DPI);
+
 		frameHeight = UiSizes.getWindowHeight() - convertDip2Pix(35) - convertDip2Pix(65);
 
 		UI_Left = new CB_RectF(0, convertDip2Pix(65), frameLeftwidth, frameHeight);
@@ -283,12 +284,12 @@ public class GL_UISizes implements SizeChangedEvent
 		}
 
 		infoShadowHeight = (float) (3.333333 * DPI);
-		Info.setSize((float) (UiSizes.getButtonWidth() * 3.5), UiSizes.getButtonHeight());
+		Info.setSize((float) (UiSizes.RefWidth - UiSizes.getButtonWidth() - (margin * 3)), UiSizes.getButtonHeight());
 		Compass.setSize((float) (44.6666667 * DPI), (float) (44.6666667 * DPI));
 		halfCompass = Compass.getHeight() / 2;
 		Toggle.setSize(UiSizes.getButtonWidth(), UiSizes.getButtonHeight());
 		ZoomBtn.setSize((float) (158 * DPI), 48 * DPI);
-		ZoomScale.setSize((float) (58 * DPI), 170 * DPI); // 280
+		ZoomScale.setSize((float) (44.6666667 * DPI), frameLeftwidth); // 280
 		PosMarkerSize = (float) (46.666667 * DPI);
 		halfPosMarkerSize = PosMarkerSize / 2;
 

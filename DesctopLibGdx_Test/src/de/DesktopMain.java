@@ -31,6 +31,9 @@ public class DesktopMain {
 			UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
 	public static final ViewID GL_MAP_VIEW = new ViewID(ViewID.GL_MAP_VIEW,
 			UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
+	
+	public static final ViewID MAP_CONTROL_TEST_VIEW = new ViewID(ViewID.MAP_CONTROL_TEST_VIEW,
+			UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
 
 	private static Size myInitialSize = null;
 
@@ -119,7 +122,8 @@ public class DesktopMain {
 
 	private static void Run() {
 		CB_UI.onStart();
-		CB_UI.setGLViewID(TEST_VIEW);
+		CB_UI.setGLViewID(MAP_CONTROL_TEST_VIEW);
+//		CB_UI.setGLViewID(TEST_VIEW);
 		// CB_UI.setGLViewID(CREDITS_VIEW);
 		// CB_UI.setGLViewID(GL_MAP_VIEW);
 

@@ -44,6 +44,7 @@ public class ViewID
 	public final static int TEST_VIEW = 16;
 	public final static int CREDITS_VIEW = 17;
 	public final static int GL_MAP_VIEW = 18;
+	public final static int MAP_CONTROL_TEST_VIEW = 19;
 
 	public final static int SETTINGS = 102;
 	public final static int FILTER_SETTINGS = 101;

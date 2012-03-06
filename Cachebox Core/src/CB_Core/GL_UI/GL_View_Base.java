@@ -3,6 +3,7 @@ package CB_Core.GL_UI;
 import java.util.Iterator;
 
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.SizeF;
 import CB_Core.Types.MoveableList;
 
 import com.badlogic.gdx.Gdx;
@@ -106,6 +107,13 @@ public abstract class GL_View_Base extends CB_RectF
 		name = Name;
 	}
 
+	public GL_View_Base(SizeF size, CharSequence Name)
+	{
+		super(0, 0, size.width, size.height);
+		Me = this;
+		name = Name;
+	}
+
 	// # Method
 	public void setVisibility(int visibility)
 	{
@@ -199,7 +207,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 			// hier nicht view.render(batch) aufrufen, da sonnst die in der
 			// view enthaldenen Childs nicht aufgerufen werden.
-			if (view.getVisibility() == VISIBLE)
+			if (view != null && view.getVisibility() == VISIBLE)
 			{
 
 				if (childsInvalidate) view.invalidate();

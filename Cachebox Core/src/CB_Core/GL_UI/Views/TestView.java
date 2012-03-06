@@ -41,7 +41,7 @@ public class TestView extends GL_View_Base
 	{
 		super(rec, Name);
 
-		GL_Listener.glListener.addRenderView(this, GL_Listener.FRAME_RATE_IDLE);
+		// GL_Listener.glListener.addRenderView(this, GL_Listener.FRAME_RATE_IDLE);
 
 		// Initial TestView
 		ArrowView testView = new ArrowView(300, 300, 100, 100, "Test_ArrowView");

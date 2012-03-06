@@ -107,6 +107,7 @@ public class MultiToggleButton extends Button
 	public void addState(String Text, Color color)
 	{
 		State.add(new States(Text, color));
+		setState(0, true);
 	}
 
 	public void setState(int ID)
@@ -196,10 +197,13 @@ public class MultiToggleButton extends Button
 		super.render(batch); // draw Button with Txt
 
 		// Draw LED
-		led = SpriteCache.ToggleBtn.get(2);
-		led.setBounds(0, 0, width, height);
-		led.setColor(aktState.color);
-		led.draw(batch);
+		if (aktState != null)
+		{
+			led = SpriteCache.ToggleBtn.get(2);
+			led.setBounds(0, 0, width, height);
+			led.setColor(aktState.color);
+			led.draw(batch);
+		}
 
 	}
 

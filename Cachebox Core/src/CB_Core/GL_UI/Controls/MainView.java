@@ -4,6 +4,7 @@ import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.Views.CreditsView;
+import CB_Core.GL_UI.Views.MapControlTest;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.GL_UI.Views.TestView;
 import CB_Core.Log.Logger;
@@ -20,6 +21,7 @@ public class MainView extends GL_View_Base
 	private TestView testView; // ID = 16
 	private CreditsView creditView; // ID = 17
 	private MapView mapView; // ID = 18
+	private MapControlTest mapControlTest;// ID=19
 
 	private GL_View_Base leftFrame;
 	private GL_View_Base rightFrame;
@@ -109,6 +111,15 @@ public class MainView extends GL_View_Base
 			mapView.setPos(iniPos);
 			return mapView;
 		}
+
+		if (ID.getID() == ViewID.MAP_CONTROL_TEST_VIEW)
+		{
+			mapControlTest = new MapControlTest(GL_UISizes.UI_Right, "MapControlTestView");
+			mapControlTest.setClickable(true);
+			mapControlTest.setPos(iniPos);
+			return mapControlTest;
+		}
+
 		return null;
 	}
 

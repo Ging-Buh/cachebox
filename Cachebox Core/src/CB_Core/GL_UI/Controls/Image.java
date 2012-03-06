@@ -33,10 +33,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class Image extends GL_View_Base
 {
 
+	private float mRotate = 0;
+
 	public Image(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height, Name);
-		// TODO Auto-generated constructor stub
+	}
+
+	public Image(CB_RectF rec, String Name)
+	{
+		super(rec, Name);
 	}
 
 	@Override
@@ -44,7 +50,7 @@ public class Image extends GL_View_Base
 	{
 		if (mImageSprite != null)
 		{
-
+			mImageSprite.setRotation(mRotate);
 			mImageSprite.draw(batch);
 
 		}
@@ -59,7 +65,8 @@ public class Image extends GL_View_Base
 				mImageSprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);
 
 				mImageSprite.setBounds(0, 0, width, height);
-				// batch.draw(mImageTex, 0, 0, width, height);
+				mImageSprite.setRotation(mRotate);
+				mImageSprite.draw(batch);
 
 			}
 			catch (Exception e)
@@ -123,6 +130,13 @@ public class Image extends GL_View_Base
 
 	}
 
+	public void setSprite(Sprite sprite)
+	{
+		mImageSprite = new Sprite();
+		mImageSprite.set(sprite);
+		mImageSprite.setBounds(0, 0, this.width, this.height);
+	}
+
 	public void dispose()
 	{
 		mImageTex.dispose();
@@ -136,6 +150,26 @@ public class Image extends GL_View_Base
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	public void setRotate(float Rotate)
+	{
+		mRotate = Rotate;
+	}
+
+	public void setOrigin(float originX, float originY)
+	{
+		mImageSprite.setOrigin(originX, originY);
+	}
+
+	/**
+	 * setzt den Scale Factor des dargestellten Images, wobei die Größe nicht verändert wird. Ist das Image größer, wird es abgeschnitten
+	 * 
+	 * @param value
+	 */
+	public void setScale(float value)
+	{
+		mImageSprite.setScale(value);
 	}
 
 }

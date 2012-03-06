@@ -12,7 +12,6 @@ import javax.security.auth.DestroyFailedException;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
-import CB_Core.UnitFormatter;
 import CB_Core.DB.Database;
 import CB_Core.Events.PositionChangedEvent;
 import CB_Core.Events.SelectedCacheEvent;
@@ -24,6 +23,7 @@ import CB_Core.GL_UI.Controls.MapInfoPanel;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.ZoomButtons;
+import CB_Core.GL_UI.Controls.ZoomScale;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_Core.Log.Logger;
@@ -58,6 +58,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 	private MultiToggleButton togBtn;
 	private ZoomButtons zoomBtn;
 	private MapInfoPanel info;
+	private ZoomScale zoomScale;
 	// ########################################
 
 	private Locator locator = null;
@@ -158,13 +159,12 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				zoomBtn.ZoomAdd(-1);
-				// xxx zoomScale.setZoom(zoomBtn.getZoom());
-				// xxx zoomScale.resetFadeOut();
+				// bei einer Zoom Animation in negativer Richtung muss der setDiffCameraZoom gesetzt werden!
+				// zoomScale.setDiffCameraZoom(-1.9f, true);
+				// zoomScale.setZoom(zoomBtn.getZoom());
+				zoomScale.resetFadeOut();
 				inputState = InputState.Idle;
-				// debugString = "State: " + inputState;
-				// aktZoom = zoomBtn.getZoom();
-				// camera.zoom = getMapTilePosFactor(aktZoom);
+
 				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System
 						.currentTimeMillis() + 1000);
 				GL_Listener.glListener.addRenderView(that, frameRateAction);
@@ -177,9 +177,8 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				zoomBtn.ZoomAdd(1);
-				// xxx zoomScale.setZoom(zoomBtn.getZoom());
-				// xxx zoomScale.resetFadeOut();
+				zoomScale.setZoom(zoomBtn.getZoom());
+				zoomScale.resetFadeOut();
 				inputState = InputState.Idle;
 				// debugString = "State: " + inputState;
 				// aktZoom = zoomBtn.getZoom();
@@ -195,6 +194,9 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 		info = (MapInfoPanel) this.addChild(new MapInfoPanel(GL_UISizes.Info, "InfoPanel"));
 
+		zoomScale = new ZoomScale(GL_UISizes.ZoomScale, "zoomScale", 2, 21, 12);
+		this.addChild(zoomScale);
+
 		InitializeMap();
 
 		// initial Zoom Scale
@@ -207,14 +209,12 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		String currentLayerName = Config.settings.CurrentMapLayer.getValue();
 		CurrentLayer = ManagerBase.Manager.GetLayerByName((currentLayerName == "") ? "Mapnik" : currentLayerName, currentLayerName, "");
 
-		width = (int) rec.getWidth();// Gdx.graphics.getWidth();
-		height = (int) rec.getHeight(); // Gdx.graphics.getHeight();
+		width = (int) rec.getWidth();
+		height = (int) rec.getHeight();
 		drawingWidth = width;
 		drawingHeight = height;
 
 		iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
-
-		// textMatrix = new Matrix4().setToOrtho2D(0, 0, width, height);
 
 		togBtn = new MultiToggleButton(GL_UISizes.Toggle, this, "toggle");
 
@@ -229,15 +229,18 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 			@Override
 			public void onStateChange(GL_View_Base v, int State)
 			{
-				// TODO Auto-generated method stub
+				if (State > 0)
+				{
+					setCenter(new Coordinate(GlobalCore.LastValidPosition.Latitude, GlobalCore.LastValidPosition.Longitude));
+				}
 			}
 		});
 		this.addChild(togBtn);
 
-		// SelectedCacheEventList.Add(this);
-
-		// PositionEventList.Add(this);
 		resize(rec.getWidth(), rec.getHeight());
+
+		CB_Core.Events.SelectedCacheEventList.Add(this);
+		CB_Core.Events.PositionChangedEventList.Add(this);
 	}
 
 	@Override
@@ -264,7 +267,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		camera = new OrthographicCamera(MainView.mainView.getWidth(), MainView.mainView.getHeight());
 
 		aktZoom = zoomBtn.getZoom();
-		// zoomScale.setZoom(aktZoom);
+		zoomScale.setZoom(aktZoom);
 		camera.zoom = getMapTilePosFactor(aktZoom);
 		endCameraZoom = camera.zoom;
 		diffCameraZoom = 0;
@@ -321,7 +324,6 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		if (kineticZoom != null)
 		{
 			camera.zoom = kineticZoom.getAktZoom();
-			// debugString = "Kinetic: " + camera.zoom;
 
 			int zoom = maxMapZoom;
 			float tmpZoom = camera.zoom;
@@ -334,10 +336,13 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 			}
 			aktZoom = zoom;
 
-			// zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), true);
+			float diffZoom = 1 - (tmpZoom * 2);
+			Logger.LogCat("Kinetic: " + diffZoom);
+			zoomScale.setDiffCameraZoom(diffZoom, true);
 
 			if (kineticZoom.getFertig())
 			{
+				zoomScale.setZoom(zoomBtn.getZoom());
 				GL_Listener.glListener.removeRenderView(this);
 				kineticZoom = null;
 			}
@@ -375,27 +380,6 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 		loadTiles();
 
-		// if (!renderForced())
-		// {
-		// if (screenCapture != null)
-		// {
-		// float width = screenCapture.getTexture().getWidth();
-		// float height = screenCapture.getTexture().getHeight();
-		// batch.begin();
-		// batch.draw(screenCapture, 0, 0, width, height);
-		// batch.end();
-		//
-		// return;
-		// }
-		// }
-		// else
-		// {
-		// destroyScreenCapture();
-		// }
-
-		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		// Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
-
 		if (alignToCompass)
 		{
 			camera.up.x = 0;
@@ -416,8 +400,6 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		renderOverlay(batch);
 		renderUI(batch);
 
-		// Gdx.gl.glFlush();
-		// Gdx.gl.glFinish();
 	}
 
 	private void renderOverlay(SpriteBatch batch)
@@ -439,15 +421,6 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 	private void renderUI(SpriteBatch batch)
 	{
 		batch.setProjectionMatrix(myParentInfo.Matrix());
-
-		// if (showCompass)
-
-		renderInfoPanel(batch);
-
-		// btnTrackPos.Render(batch, GL_UISizes.Toggle, Fonts.get18());
-
-		// zoomBtn.Render(batch, GL_UISizes.ZoomBtn);
-		// zoomScale.Render(batch, GL_UISizes.ZoomScale);
 
 		renderDebugInfo(batch);
 
@@ -559,69 +532,6 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 	}
 
-	private void renderInfoPanel(SpriteBatch batch)
-	{
-
-		// Position ist entweder GPS-Position oder die des Markers, wenn
-		// dieser gesetzt wurde.
-		Coordinate position = null;
-		if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
-		else if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;
-		else
-			position = new Coordinate();
-
-		// Gps empfang ?
-		if (GlobalCore.SelectedCache() != null && position.Valid)
-		{
-			// Distanz einzeichnen
-			float distance = 0;
-
-			if (GlobalCore.SelectedWaypoint() == null) distance = position.Distance(GlobalCore.SelectedCache().Pos);
-			else
-				distance = position.Distance(GlobalCore.SelectedWaypoint().Pos);
-
-			CharSequence text = UnitFormatter.DistanceString(distance);
-			Fonts.get18().draw(batch, text, GL_UISizes.InfoLine1.x, GL_UISizes.InfoLine1.y);
-			// canvas.drawText(text, leftString, bottom - 10, paint);
-
-			// Kompassnadel zeichnen
-			if (locator != null)
-			{
-				Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos
-						: GlobalCore.SelectedCache().Pos;
-				double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
-				double relativeBearing = bearing - locator.getHeading();
-				// double relativeBearingRad = relativeBearing * Math.PI / 180.0;
-
-				// draw compass
-				Sprite compass = SpriteCache.MapArrows.get(0);
-				compass.setRotation((float) -relativeBearing);
-				compass.setBounds(GL_UISizes.Compass.getX(), GL_UISizes.Compass.getY(), GL_UISizes.Compass.getWidth(),
-						GL_UISizes.Compass.getHeight());
-				compass.setOrigin(GL_UISizes.halfCompass, GL_UISizes.halfCompass);
-				compass.draw(batch);
-
-			}
-
-			// Koordinaten
-			if (position.Valid)
-			{
-				CharSequence textLatitude = GlobalCore.FormatLatitudeDM(position.Latitude);
-				CharSequence textLongitude = GlobalCore.FormatLongitudeDM(position.Longitude);
-
-				Fonts.get18().draw(batch, textLatitude, GL_UISizes.InfoLine2.x, GL_UISizes.InfoLine1.y);
-				Fonts.get18().draw(batch, textLongitude, GL_UISizes.InfoLine2.x, GL_UISizes.InfoLine2.y);
-
-				if (locator != null)
-				{
-					Fonts.get18().draw(batch, locator.SpeedString(), GL_UISizes.InfoLine1.x, GL_UISizes.InfoLine2.y);
-				}
-
-			}
-		}
-
-	}
-
 	private void renderPositionMarker(SpriteBatch batch)
 	{
 		if (locator != null)
@@ -673,51 +583,21 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 		CB_RectF screenRec = new CB_RectF(0, 0, width, height);
 		screenRec.ScaleCenter(0.9f);
+		screenRec.setHeight(screenRec.getHeight() - (screenRec.getHeight() - info.getY()) - zoomBtn.getHeight());
+		screenRec.setY(zoomBtn.getMaxY());
 
 		Vector2 ScreenCenter = new Vector2(halfWidth, halfHeight);
 
 		Vector2 screen = worldToScreen(new Vector2(x, y));
 		Vector2 target = new Vector2(screen.x, screen.y);
 
-		Vector2 newTarget = null;
+		Vector2 newTarget = screenRec.getIntersection(ScreenCenter, target);
 
-		// Zuerst abfragen, ob der Target Arrow an ein Control stößt.
-		if (showCompass)
-		{
-			newTarget = GL_UISizes.Info.getIntersection(ScreenCenter, target, 1);
-		}
-
-		if (newTarget == null)
-		{
-			newTarget = GL_UISizes.Toggle.getIntersection(ScreenCenter, target, 1);
-		}
-
-		if (newTarget == null && zoomBtn.isVisible())
-		{
-			newTarget = GL_UISizes.ZoomBtn.getIntersection(ScreenCenter, target, 4);
-		}
-
-		// if (newTarget == null && zoomScale.isShown())
-		// {
-		// newTarget = GL_UISizes.ZoomScale.getIntersection(ScreenCenter, target, 3);
-		// }
-
-		if (newTarget == null)
-		{
-			newTarget = screenRec.getIntersection(ScreenCenter, target);
-		}
-
+		// Rotation berechnen
 		if (newTarget != null)
 		{
 
-			// Rotation berechnen
-
 			float direction = get_angle(ScreenCenter.x, ScreenCenter.y, newTarget.x, newTarget.y);
-
-			// direction -= 180;
-			//
-			// direction = 360 - direction;
-
 			direction = 180 - direction;
 
 			// draw sprite
@@ -730,7 +610,6 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 			arrow.setOrigin(GL_UISizes.TargetArrow.halfWidth, GL_UISizes.TargetArrow.height);
 			arrow.draw(batch);
 		}
-
 	}
 
 	float get_angle(float x1, float y1, float x2, float y2)
@@ -1054,14 +933,6 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		return loadedTiles.size();
 	}
 
-	private void stateChanged()
-	{
-		// if (btnTrackPos.getState() > 0)
-		{
-			setCenter(new Coordinate(GlobalCore.LastValidPosition.Latitude, GlobalCore.LastValidPosition.Longitude));
-		}
-	}
-
 	public void InitializeMap()
 	{
 		zoomCross = Config.settings.ZoomCross.getValue();
@@ -1144,9 +1015,10 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		zoomBtn.setMinZoom(Config.settings.OsmMinLevel.getValue());
 		zoomBtn.setZoom(aktZoom);
 
-		// zoomScale.setMaxZoom(Config.settings.OsmMaxLevel.getValue());
-		// zoomScale.setMinZoom(Config.settings.OsmMinLevel.getValue());
-		// zoomScale.setZoom(aktZoom);
+		zoomScale.setMaxZoom(Config.settings.OsmMaxLevel.getValue());
+		zoomScale.setMinZoom(Config.settings.OsmMinLevel.getValue());
+		zoomScale.setZoom(aktZoom);
+
 	}
 
 	public void saveToSettings()
@@ -1248,22 +1120,46 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		this.locator = locator;
 		GlobalCore.LastValidPosition = new Coordinate(locator.Position.Latitude, locator.Position.Longitude);
 		GlobalCore.LastValidPosition.Elevation = locator.getAlt();
+		info.setCoord(GlobalCore.LastValidPosition);
+		info.setSpeed(locator.SpeedString());
 
-		// xxx if (btnTrackPos.getState() > 0) setCenter(new Coordinate(locator.Position.Latitude, locator.Position.Longitude));
+		Coordinate position = null;
+		if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
+		else if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;
+		else
+			position = new Coordinate();
+
+		float distance = -1;
+
+		// Gps empfang ?
+		if (GlobalCore.SelectedCache() != null && position.Valid)
+		{
+			if (GlobalCore.SelectedWaypoint() == null) distance = position.Distance(GlobalCore.SelectedCache().Pos);
+			else
+				distance = position.Distance(GlobalCore.SelectedWaypoint().Pos);
+		}
+		info.setDistance(distance);
+
+		Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos : GlobalCore.SelectedCache().Pos;
+		double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
+		info.setBearing((float) (bearing - locator.getHeading()));
+
+		if (togBtn.getState() > 0) setCenter(new Coordinate(locator.Position.Latitude, locator.Position.Longitude));
 	}
 
 	@Override
 	public void OrientationChanged(float heading)
 	{
-		// // liefert die Richtung (abhängig von der Geschwindigkeit von
-		// // Kompass oder GPS
-		// if (!Global.Locator.UseCompass())
-		// {
-		// // GPS-Richtung soll verwendet werden!
-		// heading = Global.Locator.getHeading();
-		// }
+		Coordinate position = null;
+		if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
+		else if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;
+		else
+			position = new Coordinate();
 
-		// getHeading() entscheidet schon ob das Heading von GPS oder Hardware kommt!
+		Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos : GlobalCore.SelectedCache().Pos;
+		double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
+		info.setBearing((float) (bearing - locator.getHeading()));
+
 		heading = locator.getHeading();
 
 		if (alignToCompass)
@@ -1308,8 +1204,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 	public boolean GetCenterGps()
 	{
-		// xxx return (btnTrackPos.getState() > 0);
-		return false;
+		return (togBtn.getState() > 0);
 	}
 
 	public boolean GetAlignToCompass()
@@ -1566,6 +1461,16 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 		if ((inputState == InputState.Pan) && (fingerDown.size() == 1))
 		{
+
+			if (togBtn.getState() > 1)// für verschieben gesperrt!
+			{
+				return false;
+			}
+			else if (togBtn.getState() == 1)// auf GPS ausgerichtet und wird jetzt auf Free gestellt
+			{
+				togBtn.setState(0);
+			}
+
 			GL_Listener.glListener.addRenderView(this, frameRateAction);
 			// debugString = "";
 			long faktor = getMapTilePosFactor(aktZoom);
@@ -1624,9 +1529,9 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 				zoom--;
 			}
 			zoomBtn.setZoom(zoom);
-			// xxx zoomScale.resetFadeOut();
-			// xxx zoomScale.setZoom(zoom);
-			// xxx zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), true);
+			zoomScale.resetFadeOut();
+			zoomScale.setZoom(zoom);
+			zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), true);
 			aktZoom = zoom;
 
 			// debugString = currentDistance + " - " + originalDistance;
@@ -1658,33 +1563,6 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 			if (kineticPan != null)
 			// bei FingerKlick (wenn Idle) sofort das kinetische Scrollen stoppen
 			kineticPan = null;
-
-			// check ToggleBtn clicked
-			// xxx if (btnTrackPos.hitTest(clickedAt))
-			if (false)
-			{
-				// xxx main.vibrate();
-				stateChanged();
-				inputState = InputState.Idle;
-				// debugString = "State: " + inputState;
-				return false;
-			}
-
-			// check Zoom Button clicked
-			if (zoomBtn.hitTest(clickedAt))
-			{
-				// xxx zoomScale.setZoom(zoomBtn.getZoom());
-				// xxx zoomScale.resetFadeOut();
-				inputState = InputState.Idle;
-				// debugString = "State: " + inputState;
-				// aktZoom = zoomBtn.getZoom();
-				// camera.zoom = getMapTilePosFactor(aktZoom);
-				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(),
-						System.currentTimeMillis() + 1000);
-				GL_Listener.glListener.addRenderView(this, frameRateAction);
-
-				return false;
-			}
 
 			synchronized (mapCacheList.list)
 			{
@@ -1831,7 +1709,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		 */
 		positionInitialized = true;
 
-		// xxx btnTrackPos.setState(0, true);
+		togBtn.setState(0, true);
 		Coordinate target = (waypoint != null) ? new Coordinate(waypoint.Latitude(), waypoint.Longitude()) : new Coordinate(
 				cache.Latitude(), cache.Longitude());
 
@@ -1971,6 +1849,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		Logger.LogCat("TestView clacLayout()");
 		float margin = GL_UISizes.margin;
 		info.setPos(new Vector2(margin, (float) (this.height - margin - info.getHeight())));
+		info.setVisibility(showCompass ? GL_View_Base.VISIBLE : GL_View_Base.INVISIBLE);
 		togBtn.setPos(new Vector2((float) (this.width - margin - togBtn.getWidth()), this.height - margin - togBtn.getHeight()));
 
 		GL_Listener.glListener.renderOnce(this);

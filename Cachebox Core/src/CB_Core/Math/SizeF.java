@@ -89,4 +89,10 @@ public class SizeF
 		return new CB_RectF(x, y, width + x + k, height + y + l);
 	}
 
+	public void scale(float f)
+	{
+		width *= f;
+		height *= f;
+	}
+
 }

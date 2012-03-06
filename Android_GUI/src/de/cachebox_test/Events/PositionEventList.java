@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Types.Coordinate;
+import CB_Core.Types.Locator;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.SystemClock;
@@ -49,6 +50,14 @@ public class PositionEventList
 		{
 			event.PositionChanged(location);
 		}
+
+		// Call Core Event
+		CB_Core.Types.Locator locator = new Locator();
+
+		locator.setLocation(location.getLatitude(), location.getLongitude(), location.getAccuracy(), location.hasSpeed(),
+				location.getSpeed(), location.hasBearing(), location.getBearing(), location.getAltitude());
+		CB_Core.Events.PositionChangedEventList.PositionChanged(locator);
+
 	}
 
 	private static int anzCompassValues = 0;
@@ -95,6 +104,9 @@ public class PositionEventList
 			event.OrientationChanged(heading);
 			callCounter++;
 		}
+
+		// Call Core Event
+		CB_Core.Events.PositionChangedEventList.Orientation(heading);
 
 	}
 
