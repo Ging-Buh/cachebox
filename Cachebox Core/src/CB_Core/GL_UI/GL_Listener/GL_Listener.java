@@ -96,7 +96,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		Logger.LogCat("GL_Listner => onStart");
 		started.set(true);
 		if (listenerInterface != null) listenerInterface.RenderDirty();
-		startTimer(FRAME_RATE_ACTION);
+		// startTimer(FRAME_RATE_ACTION, "GL_Listner onStart()");
 	}
 
 	public void onStop()
@@ -167,11 +167,11 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	}
 
-	public static void startTimer(long delay)
+	public static void startTimer(long delay, String Name)
 	{
 		if (timerValue == delay) return;
 		stopTimer();
-		Logger.DEBUG("Start Timer: " + delay);
+		Logger.LogCat("Start Timer: " + delay + " (" + Name + ")");
 
 		timerValue = delay;
 		myTimer = new Timer();
@@ -199,7 +199,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public static void stopTimer()
 	{
-		Logger.DEBUG("Stop Timer");
+		Logger.LogCat("Stop Timer");
 		if (myTimer != null)
 		{
 			myTimer.cancel();
@@ -312,6 +312,6 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		}
 		if (minDelay == 0) stopTimer();
 		else
-			startTimer(minDelay);
+			startTimer(minDelay, "GL_Listner calcNewRenderSpeed()");
 	}
 }

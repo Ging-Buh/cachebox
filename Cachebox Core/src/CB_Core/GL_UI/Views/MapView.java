@@ -1150,6 +1150,9 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public void OrientationChanged(float heading)
 	{
+
+		if (locator == null) return;
+
 		Coordinate position = null;
 		if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
 		else if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;

@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Controls;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ViewID;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Views.CreditsView;
 import CB_Core.GL_UI.Views.MapControlTest;
 import CB_Core.GL_UI.Views.MapView;
@@ -64,6 +65,8 @@ public class MainView extends GL_View_Base
 			rightFrame.addChild(getView(ID));
 		}
 
+		GL_Listener.glListener.renderOnce(this);
+
 		Logger.LogCat("SetGlViewID" + ID);
 	}
 
@@ -87,6 +90,12 @@ public class MainView extends GL_View_Base
 	private GL_View_Base getView(ViewID ID)
 	{
 		Vector2 iniPos = new Vector2(0, 0);
+
+		// TODO nur aktive views, die nicht mehr benötigt werden löschen
+		testView = null;
+		creditView = null;
+		mapView = null;
+		mapControlTest = null;
 
 		if (ID.getID() == ViewID.TEST_VIEW)
 		{

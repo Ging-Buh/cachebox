@@ -321,7 +321,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 
 		if (reduceFps)
 		{
-			GL_Listener.startTimer(frameRateIdle);
+			GL_Listener.startTimer(frameRateIdle, "MapViewForGL");
 		}
 
 		if (SpriteCache.MapIcons == null)
@@ -2011,7 +2011,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 				if ((Math.abs(p.x - x) > 10) || (Math.abs(p.y - y) > 10))
 				{
 					inputState = InputState.Pan;
-					GL_Listener.startTimer(frameRateAction);
+					GL_Listener.startTimer(frameRateAction, "MapViewForGL");
 					((GLSurfaceView) MapViewGL.ViewGl).requestRender();
 				}
 				return false;
@@ -2025,7 +2025,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 
 		if ((inputState == InputState.Pan) && (fingerDown.size() == 1))
 		{
-			GL_Listener.startTimer(frameRateAction);
+			GL_Listener.startTimer(frameRateAction, "MapViewForGL");
 			// debugString = "";
 			long faktor = getMapTilePosFactor(aktZoom);
 			// debugString += faktor;
@@ -2136,7 +2136,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 				// camera.zoom = getMapTilePosFactor(aktZoom);
 				kineticZoom = new KineticZoom(GL_Listener.camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), SystemClock.uptimeMillis(),
 						SystemClock.uptimeMillis() + 1000);
-				GL_Listener.startTimer(frameRateAction);
+				GL_Listener.startTimer(frameRateAction, "MapViewForGL");
 
 				return false;
 			}
@@ -2255,7 +2255,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 			// wieder langsam rendern
 			((GLSurfaceView) MapViewGL.ViewGl).requestRender();
 
-			if ((kineticZoom == null) && (kineticPan == null)) GL_Listener.startTimer(frameRateIdle);
+			if ((kineticZoom == null) && (kineticPan == null)) GL_Listener.startTimer(frameRateIdle, "MapViewForGL");
 			if (kineticPan != null) kineticPan.start();
 		}
 

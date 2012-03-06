@@ -171,7 +171,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	{
 		CharSequence name = "?";
 		if (view != null) name = view.getName();
-		Logger.LogCat("RequestRender von : " + name);
+		if (view != null) Logger.LogCat("RequestRender von : " + name);
 
 		switch (mAktSurfaceType)
 		{
