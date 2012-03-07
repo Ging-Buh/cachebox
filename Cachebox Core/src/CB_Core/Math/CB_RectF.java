@@ -51,6 +51,19 @@ public class CB_RectF
 	protected float width;
 	protected float height;
 
+	protected float halfWidth;
+	protected float halfHeight;
+
+	public float getHalfWidth()
+	{
+		return halfWidth;
+	}
+
+	public float getHalfHeight()
+	{
+		return halfHeight;
+	}
+
 	// Constructors
 
 	/**
@@ -202,10 +215,13 @@ public class CB_RectF
 	 */
 	protected void calcCrossCorner()
 	{
+		this.halfWidth = this.width / 2;
+		this.halfHeight = this.height / 2;
+
 		this.crossPos.x = this.Pos.x + this.width;
 		this.crossPos.y = this.Pos.y + this.height;
-		this.centerPos.x = this.Pos.x + (this.width / 2);
-		this.centerPos.y = this.Pos.y + (this.height / 2);
+		this.centerPos.x = this.Pos.x + this.halfWidth;
+		this.centerPos.y = this.Pos.y + this.halfHeight;
 	}
 
 	private boolean contains(Vector2 ret)

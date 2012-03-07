@@ -48,7 +48,7 @@ public class MapInfoPanel extends GL_View_Base
 
 	public void setBearing(float Bearing)
 	{
-		arrow.setRotate(Bearing);
+		arrow.setRotate(-Bearing);
 		GL_Listener.glListener.renderOnce(this);
 	}
 

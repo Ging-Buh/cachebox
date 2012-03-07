@@ -18,6 +18,7 @@ import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Controls.InfoBubble;
 import CB_Core.GL_UI.Controls.MainView;
 import CB_Core.GL_UI.Controls.MapInfoPanel;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
@@ -44,6 +45,9 @@ import CB_Core.Types.Waypoint;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -59,6 +63,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 	private ZoomButtons zoomBtn;
 	private MapInfoPanel info;
 	private ZoomScale zoomScale;
+	private InfoBubble infoBubble;
 	// ########################################
 
 	private Locator locator = null;
@@ -169,6 +174,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 						.currentTimeMillis() + 1000);
 				GL_Listener.glListener.addRenderView(that, frameRateAction);
 				GL_Listener.glListener.renderOnce(that);
+				calcPixelsPerMeter();
 				return true;
 			}
 		});
@@ -187,6 +193,7 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 						.currentTimeMillis() + 1000);
 				GL_Listener.glListener.addRenderView(that, frameRateAction);
 				GL_Listener.glListener.renderOnce(that);
+				calcPixelsPerMeter();
 				return true;
 			}
 		});
@@ -236,6 +243,20 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 			}
 		});
 		this.addChild(togBtn);
+
+		infoBubble = new InfoBubble(GL_UISizes.Bubble, "infoBubble");
+		infoBubble.setVisibility(GL_View_Base.INVISIBLE);
+		infoBubble.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				GlobalCore.SelectedCache(infoBubble.getCache());
+				return false;
+			}
+		});
+		this.addChild(infoBubble);
 
 		resize(rec.getWidth(), rec.getHeight());
 
@@ -414,7 +435,6 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		renderWPs(GL_UISizes.WPSizes[iconSize], GL_UISizes.UnderlaySizes[iconSize], batch);
 		renderPositionMarker(batch);
 		RenderTargetArrow(batch);
-		Bubble.render(GL_UISizes.WPSizes[iconSize], batch);
 
 	}
 
@@ -543,6 +563,49 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 			Vector2 screen = worldToScreen(vPoint);
 
+			if (actAccuracy != locator.Position.Accuracy || actPixelsPerMeter != pixelsPerMeter)
+			{
+				actAccuracy = locator.Position.Accuracy;
+				actPixelsPerMeter = pixelsPerMeter;
+
+				int radius = (int) (pixelsPerMeter * locator.Position.Accuracy);
+				// Logger.LogCat("Accuracy radius " + radius);
+				// Logger.LogCat("pixelsPerMeter " + pixelsPerMeter);
+				if (radius > 0)
+				{
+
+					int squaredR = radius * 2;
+
+					int w = getNextHighestPO2(squaredR);
+					int h = getNextHighestPO2(squaredR);
+					Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+					Pixmap.setBlending(Blending.None);
+					p.setColor(0f, 0.1f, 0.4f, 0.1f);
+
+					p.fillCircle(radius, radius, radius);
+					p.setColor(0f, 0f, 1f, 0.8f);
+					p.drawCircle(radius, radius, radius);
+					p.setColor(0.5f, 0.5f, 1f, 0.7f);
+					p.drawCircle(radius, radius, radius - 1);
+					p.drawCircle(radius, radius, radius + 1);
+
+					AccuracySprite = new Sprite(new Texture(p), squaredR, squaredR);
+					p.dispose();
+					AccuracySprite.setSize(squaredR, squaredR);
+
+				}
+
+			}
+
+			if (AccuracySprite != null && AccuracySprite.getWidth() > GL_UISizes.PosMarkerSize)
+			{// nur wenn berechnet wurde und grösser als der PosMarker
+
+				float center = AccuracySprite.getWidth() / 2;
+
+				AccuracySprite.setPosition(screen.x - center, screen.y - center);
+				AccuracySprite.draw(batch);
+			}
+
 			boolean lastUsedCompass = locator.LastUsedCompass;
 			boolean Transparency = Config.settings.PositionMarkerTransparent.getValue();
 			// int arrowId = lastUsedCompass ? (Transparency ? 2 : 0) :
@@ -563,8 +626,13 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 					GL_UISizes.PosMarkerSize);
 			arrow.setOrigin(GL_UISizes.halfPosMarkerSize, GL_UISizes.halfPosMarkerSize);
 			arrow.draw(batch);
+
 		}
 	}
+
+	private Sprite AccuracySprite;
+	private int actAccuracy = 0;
+	private float actPixelsPerMeter = 0;
 
 	private void RenderTargetArrow(SpriteBatch batch)
 	{
@@ -737,9 +805,10 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 
 					}
 
-					if ((wpi.Cache.Id == Bubble.CacheId) && (wpi.Waypoint == Bubble.waypoint) && Bubble.isShow)
+					if ((wpi.Cache.Id == infoBubble.getCacheId()) && infoBubble.isVisible())
 					{
-						Bubble.Pos = screen;
+						Vector2 pos = new Vector2(screen.x - infoBubble.getHalfWidth(), screen.y);
+						infoBubble.setPos(pos);
 					}
 
 				}
@@ -1579,10 +1648,8 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 					// Bubble.waypoint);
 					// ThreadSaveSetSelectedWP(Bubble.cache, Bubble.waypoint);
 					// CacheDraw.ReleaseCacheBMP();
-					Bubble.isShow = false;
-					Bubble.CacheId = -1;
-					Bubble.cache = null;
-					Bubble.waypoint = null;
+					infoBubble.setVisibility(INVISIBLE);
+					infoBubble.setCache(null);
 					mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
 
 					// Shutdown Autoresort
@@ -1592,10 +1659,10 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 					// do nothing else with this click
 					return false;
 				}
-				else if (Bubble.isShow)
+				else if (infoBubble.isVisible())
 				{
 					// Click outside Bubble -> hide Bubble
-					Bubble.isShow = false;
+					infoBubble.setVisibility(INVISIBLE);
 				}
 
 				for (WaypointRenderInfo wpi : mapCacheList.list)
@@ -1622,11 +1689,9 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 						if (GlobalCore.SelectedCache() != minWpi.Cache)
 						{
 							// Show Bubble
-							Bubble.isShow = true;
-							Bubble.CacheId = minWpi.Cache.Id;
-							Bubble.cache = minWpi.Cache;
-							Bubble.waypoint = minWpi.Waypoint;
-							Bubble.disposeSprite();
+							infoBubble.setVisibility(VISIBLE);
+							infoBubble.setCache(minWpi.Cache);
+
 							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
 
 						}
@@ -1648,18 +1713,18 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 					{
 						if (GlobalCore.SelectedCache() != minWpi.Cache)
 						{
-							Bubble.isShow = true;
-							Bubble.CacheId = minWpi.Cache.Id;
-							Bubble.cache = minWpi.Cache;
-							Bubble.disposeSprite();
+							// Show Bubble
+							infoBubble.setVisibility(VISIBLE);
+							infoBubble.setCache(minWpi.Cache);
+
 							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
 						}
 						else
 						{
-							Bubble.isShow = true;
-							Bubble.CacheId = minWpi.Cache.Id;
-							Bubble.cache = minWpi.Cache;
-							Bubble.disposeSprite();
+							// Show Bubble
+							infoBubble.setVisibility(VISIBLE);
+							infoBubble.setCache(minWpi.Cache);
+
 							// Cacheliste ausrichten
 							// xxx ThreadSaveSetSelectedWP(minWpi.Cache);
 							// updateCacheList();
@@ -1699,6 +1764,17 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, maxMapZoom, maxMapZoom);
 
 		center = new Coordinate(Descriptor.TileYToLatitude(maxMapZoom, -point.Y), Descriptor.TileXToLongitude(maxMapZoom, point.X));
+	}
+
+	private float pixelsPerMeter = 0;
+
+	private void calcPixelsPerMeter()
+	{
+		Coordinate dummy = Coordinate.Project(center.Latitude, center.Longitude, 90, 1000);
+		double l1 = Descriptor.LongitudeToTileX(zoomBtn.getZoom(), center.Longitude);
+		double l2 = Descriptor.LongitudeToTileX(zoomBtn.getZoom(), dummy.Longitude);
+		double diff = Math.abs(l2 - l1);
+		pixelsPerMeter = (float) ((diff * 256) / 1000);
 	}
 
 	// @Override

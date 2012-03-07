@@ -2,6 +2,7 @@ package CB_Core.GL_UI;
 
 import java.util.Iterator;
 
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 import CB_Core.Types.MoveableList;
@@ -118,6 +119,7 @@ public abstract class GL_View_Base extends CB_RectF
 	public void setVisibility(int visibility)
 	{
 		mViewState = visibility;
+		GL_Listener.glListener.renderOnce(this);
 	}
 
 	/**

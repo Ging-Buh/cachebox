@@ -518,7 +518,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// und Map wenn Tablet
 			if (GlobalCore.isTab)
 			{
-				showView(MAP_VIEW);
+				// showView(MAP_VIEW);
+				showView(DESCRIPTION_VIEW);
 			}
 
 			// chk if NightMode saved
