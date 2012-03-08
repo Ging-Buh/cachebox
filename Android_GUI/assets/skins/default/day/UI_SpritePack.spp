@@ -1,0 +1,158 @@
+UI_SpritePack.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+shaddowrect
+  rotate: false
+  xy: 407, 699
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+arrow_Compass_Trans
+  rotate: false
+  xy: 436, 525
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+arrow_GPS
+  rotate: false
+  xy: 2, 612
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+day_btn_zoom_down_normal
+  rotate: false
+  xy: 2, 699
+  size: 79, 48
+  orig: 79, 48
+  offset: 0, 0
+  index: -1
+InfoPanelBack
+  rotate: false
+  xy: 2, 525
+  size: 366, 85
+  orig: 366, 85
+  offset: 0, 0
+  index: -1
+day_btn_default_normal_pressed
+  rotate: false
+  xy: 204, 612
+  size: 33, 52
+  orig: 33, 52
+  offset: 0, 0
+  index: -1
+zoom_back
+  rotate: false
+  xy: 86, 749
+  size: 80, 40
+  orig: 80, 40
+  offset: 0, 0
+  index: -1
+day_btn_zoom_up_disabled
+  rotate: false
+  xy: 164, 699
+  size: 79, 48
+  orig: 79, 48
+  offset: 0, 0
+  index: -1
+BubbleOverlay
+  rotate: false
+  xy: 2, 178
+  size: 430, 170
+  orig: 430, 170
+  offset: 0, 0
+  index: -1
+arrow_Compass
+  rotate: false
+  xy: 370, 525
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+Bubble
+  rotate: false
+  xy: 2, 2
+  size: 438, 174
+  orig: 438, 174
+  offset: 0, 0
+  index: -1
+toggle_led_gr
+  rotate: false
+  xy: 2, 749
+  size: 82, 85
+  orig: 82, 85
+  offset: 0, 0
+  index: -1
+day_btn_zoom_up_pressed
+  rotate: false
+  xy: 326, 699
+  size: 79, 48
+  orig: 79, 48
+  offset: 0, 0
+  index: -1
+Bubble_selected
+  rotate: false
+  xy: 2, 350
+  size: 438, 173
+  orig: 438, 173
+  offset: 0, 0
+  index: -1
+day_btn_zoom_down_disabled
+  rotate: false
+  xy: 407, 612
+  size: 79, 48
+  orig: 79, 48
+  offset: 0, 0
+  index: -1
+day_btn_default_normal
+  rotate: false
+  xy: 134, 612
+  size: 33, 52
+  orig: 33, 52
+  offset: 0, 0
+  index: -1
+day_btn_zoom_down_pressed
+  rotate: false
+  xy: 83, 699
+  size: 79, 48
+  orig: 79, 48
+  offset: 0, 0
+  index: -1
+arrow_GPS_Trans
+  rotate: false
+  xy: 68, 612
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+day_btn_normal
+  rotate: false
+  xy: 239, 612
+  size: 82, 85
+  orig: 82, 85
+  offset: 0, 0
+  index: -1
+day_btn_pressed
+  rotate: false
+  xy: 323, 612
+  size: 82, 85
+  orig: 82, 85
+  offset: 0, 0
+  index: -1
+day_btn_default_normal_disabled
+  rotate: false
+  xy: 169, 612
+  size: 33, 52
+  orig: 33, 52
+  offset: 0, 0
+  index: -1
+day_btn_zoom_up_normal
+  rotate: false
+  xy: 245, 699
+  size: 79, 48
+  orig: 79, 48
+  offset: 0, 0
+  index: -1

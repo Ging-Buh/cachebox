@@ -185,7 +185,7 @@ public class Label extends GL_View_Base
 	{
 		chkCache();
 		this.text = text;
-		valignment = VAlignment.BOTTOM;
+		valignment = VAlignment.TOP;
 		wrapType = WrapType.multiLine;
 		bounds = cache.getFont().getMultiLineBounds(text);
 		cache.setMultiLineText(text, 0, cache.getFont().isFlipped() ? 0 : bounds.height);
@@ -209,13 +209,15 @@ public class Label extends GL_View_Base
 		fontPropertyChanged();
 	}
 
+	private BitmapFont mBmpFont;
+
 	public void setFont(BitmapFont font)
 	{
-
+		mBmpFont = font;
 		boolean ini = false;
 
 		if (cache == null) ini = true;
-		cache = new BitmapFontCache(font);
+		cache = new BitmapFontCache(mBmpFont);
 
 		if (ini) return;
 		change();
@@ -301,6 +303,11 @@ public class Label extends GL_View_Base
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	public void setScale(float scaleFactor)
+	{
+		cache.getFont().setScale(scaleFactor);
 	}
 
 }

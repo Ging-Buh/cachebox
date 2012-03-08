@@ -195,6 +195,11 @@ public class GL_UISizes implements SizeChangedEvent
 	 */
 	public static SizeF TargetArrow;
 
+	/**
+	 * Die Größe der D/T Wertungs Stars
+	 */
+	public static SizeF DT_Size;
+
 	public static float margin;
 
 	/**
@@ -303,6 +308,8 @@ public class GL_UISizes implements SizeChangedEvent
 		Bubble.setSize((float) 253.3333334 * DPI, (float) 105.333334 * DPI);
 		halfBubble = Bubble.width / 2;
 		bubbleCorrect.setSize((float) (6.6666667 * DPI), (float) 26.66667 * DPI);
+
+		DT_Size = new SizeF(37 * DPI, (37 * DPI * 0.2f));
 
 	}
 

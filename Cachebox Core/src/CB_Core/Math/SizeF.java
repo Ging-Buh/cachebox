@@ -55,6 +55,12 @@ public class SizeF
 		this.height = 0f;
 	}
 
+	public SizeF(SizeF size)
+	{
+		this.width = size.width;
+		this.height = size.height;
+	}
+
 	/**
 	 * Setzt die Werte für Height und Width. Wenn sich einer der Werte geändert hat, wird ein True zurück gegeben, ansonsten False.
 	 * 

@@ -1786,6 +1786,9 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 		/*
 		 * if (InvokeRequired) { Invoke(new targetChangedDelegate(OnTargetChanged), new object[] { cache, waypoint }); return; }
 		 */
+
+		if (togBtn.getState() > 0) return;
+
 		positionInitialized = true;
 
 		togBtn.setState(0, true);

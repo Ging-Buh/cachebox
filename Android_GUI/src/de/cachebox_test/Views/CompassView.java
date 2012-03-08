@@ -2,6 +2,7 @@ package de.cachebox_test.Views;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.SelectedLangChangedEvent;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
@@ -31,7 +32,7 @@ import de.cachebox_test.Events.PositionEvent;
 import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Events.ViewOptionsMenu;
 
-public class CompassView extends FrameLayout implements ViewOptionsMenu, PositionEvent, SelectedLangChangedEvent
+public class CompassView extends FrameLayout implements ViewOptionsMenu, PositionEvent, SelectedLangChangedEvent, SelectedCacheEvent
 {
 	private Cache aktCache;
 	private Waypoint aktWaypoint;
@@ -293,6 +294,12 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu, Positio
 	{
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	{
+		SetSelectedCache(cache, waypoint);
 	}
 
 }

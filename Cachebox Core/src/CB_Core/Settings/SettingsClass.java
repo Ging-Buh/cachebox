@@ -29,6 +29,7 @@ public class SettingsClass extends SettingsList
 	public SettingFolder MapPackFolder;
 	public SettingFolder SpoilerFolder;
 	public SettingFolder TrackFolder;
+	public SettingFolder SkinFolder;
 
 	// Files
 	public SettingFile Sel_LanguagePath;
@@ -297,6 +298,8 @@ public class SettingsClass extends SettingsList
 		addSetting(Sel_LanguagePath = new SettingFile("Sel_LanguagePath", cat, INVISIBLE, Work + "/data/lang/en.lan", true, "lan"));
 		addSetting(DatabasePath = new SettingFile("DatabasePath", cat, NORMAL, Work + "/cachebox.db3", true, "db3"));
 		addSetting(FieldNotesGarminPath = new SettingFile("FieldNotesGarminPath", cat, INVISIBLE, Work + "/User/geocache_visits.txt", true));
+
+		addSetting(SkinFolder = new SettingFolder("SkinFolder", cat, NEVER, Work + "/skins/default", true)); // NEVER vorerst!
 
 	}
 

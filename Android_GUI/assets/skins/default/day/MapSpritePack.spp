@@ -1,234 +1,248 @@
-PackerSheet.png
+MapSpritePack.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 16
   rotate: false
-  xy: 216, 35
+  xy: 137, 47
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 small5no
   rotate: false
-  xy: 93, 20
+  xy: 0, 47
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 stars5small
   rotate: false
-  xy: 48, 0
+  xy: 48, 10
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 stars1small
   rotate: false
-  xy: 96, 10
+  xy: 0, 10
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 4
   rotate: false
-  xy: 88, 35
+  xy: 32, 79
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 shaddowrect
   rotate: false
-  xy: 48, 132
+  xy: 0, 144
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 stars3_5small
   rotate: false
-  xy: 0, 10
+  xy: 144, 10
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 stars0small
   rotate: false
-  xy: 144, 0
+  xy: 96, 10
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 17
   rotate: false
-  xy: 0, 67
+  xy: 32, 111
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 5
   rotate: false
-  xy: 224, 67
+  xy: 73, 47
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 11
   rotate: false
-  xy: 0, 99
+  xy: 96, 111
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-small5solved
-  rotate: false
-  xy: 138, 20
-  size: 15, 15
-  orig: 15, 15
-  offset: 0, 0
-  index: -1
 cross
   rotate: false
-  xy: 144, 132
+  xy: 144, 144
   size: 60, 60
   orig: 60, 60
   offset: 0, 0
   index: -1
+small5solved
+  rotate: false
+  xy: 90, 32
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: -1
 small3yes
   rotate: false
-  xy: 183, 20
+  xy: 60, 32
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 18
   rotate: false
-  xy: 160, 67
+  xy: 160, 79
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 small1yes
   rotate: false
-  xy: 108, 20
+  xy: 135, 32
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 stars4small
   rotate: false
-  xy: 0, 20
+  xy: 48, 0
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 small4no
   rotate: false
-  xy: 213, 20
+  xy: 105, 32
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 6
   rotate: false
-  xy: 96, 99
+  xy: 105, 47
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+other
+  rotate: false
+  xy: 183, 20
+  size: 45, 12
+  orig: 45, 12
+  offset: 0, 0
+  index: -1
 small7yes
   rotate: false
-  xy: 45, 35
+  xy: 30, 47
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 12
   rotate: false
-  xy: 60, 35
+  xy: 45, 47
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 small3no
   rotate: false
-  xy: 123, 20
+  xy: 165, 32
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small5yes
   rotate: false
-  xy: 78, 20
+  xy: 15, 47
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 stars2_5small
   rotate: false
-  xy: 192, 10
+  xy: 96, 0
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
+large
+  rotate: false
+  xy: 48, 20
+  size: 45, 12
+  orig: 45, 12
+  offset: 0, 0
+  index: -1
 0
   rotate: false
-  xy: 64, 67
+  xy: 192, 79
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 20
   rotate: false
-  xy: 184, 35
+  xy: 201, 47
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 10
   rotate: false
-  xy: 192, 99
+  xy: 192, 111
   size: 32, 33
   orig: 32, 33
   offset: 0, 0
   index: -1
 7
   rotate: false
-  xy: 32, 99
+  xy: 0, 111
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 13
   rotate: false
-  xy: 63, 20
+  xy: 45, 32
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small7no
   rotate: false
-  xy: 15, 35
+  xy: 240, 32
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 stars3small
   rotate: false
-  xy: 0, 0
+  xy: 192, 10
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 1
   rotate: false
-  xy: 192, 67
+  xy: 160, 111
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 21
   rotate: false
-  xy: 128, 67
+  xy: 224, 79
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -242,140 +256,161 @@ stars1_5small
   index: -1
 deact
   rotate: false
-  xy: 0, 132
+  xy: 48, 144
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 8
   rotate: false
-  xy: 160, 99
+  xy: 169, 47
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 14
   rotate: false
-  xy: 96, 67
+  xy: 128, 111
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 shaddowrect_selected
   rotate: false
-  xy: 96, 132
+  xy: 96, 144
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
+micro
+  rotate: false
+  xy: 93, 20
+  size: 45, 12
+  orig: 45, 12
+  offset: 0, 0
+  index: -1
 small5solved_no
   rotate: false
-  xy: 30, 35
+  xy: 210, 32
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 2
   rotate: false
-  xy: 32, 67
+  xy: 0, 79
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 small2no
   rotate: false
-  xy: 168, 20
+  xy: 120, 32
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
+small
+  rotate: false
+  xy: 0, 32
+  size: 45, 12
+  orig: 45, 12
+  offset: 0, 0
+  index: -1
 stars2small
   rotate: false
-  xy: 96, 0
+  xy: 0, 20
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
 small4yes
   rotate: false
-  xy: 198, 20
+  xy: 150, 32
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 9
   rotate: false
-  xy: 128, 99
+  xy: 128, 79
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 small1no
   rotate: false
-  xy: 228, 20
+  xy: 180, 32
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 15
   rotate: false
-  xy: 64, 99
+  xy: 64, 111
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 19
   rotate: false
-  xy: 152, 35
+  xy: 64, 79
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 small2yes
   rotate: false
-  xy: 153, 20
+  xy: 75, 32
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 stars4_5small
   rotate: false
-  xy: 48, 10
+  xy: 0, 0
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
   index: -1
+regular
+  rotate: false
+  xy: 138, 20
+  size: 45, 12
+  orig: 45, 12
+  offset: 0, 0
+  index: -1
 target_arrow
   rotate: false
-  xy: 204, 132
+  xy: 204, 144
   size: 21, 64
   orig: 21, 64
   offset: 0, 0
   index: -1
 3
   rotate: false
-  xy: 120, 35
+  xy: 96, 79
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 small6no
   rotate: false
-  xy: 48, 20
+  xy: 195, 32
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small6yes
   rotate: false
-  xy: 0, 35
+  xy: 225, 32
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 stars0_5small
   rotate: false
-  xy: 144, 10
+  xy: 144, 0
   size: 48, 10
   orig: 48, 10
   offset: 0, 0

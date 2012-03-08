@@ -308,4 +308,9 @@ public class CB_Rect
 
 	}
 
+	public CB_RectF asFloat()
+	{
+		return new CB_RectF(Pos.x, Pos.y, width, height);
+	}
+
 }

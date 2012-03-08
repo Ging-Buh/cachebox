@@ -43,8 +43,8 @@ public class DesktopMain {
 	public static void main(String[] args) {
 		DesktopLogger iLogger = new DesktopLogger();
 
-		iniPhone();
-//		iniTab();
+//		iniPhone();
+		iniTab();
 
 		InitalConfig();
 		Config.settings.MapViewDPIFaktor.setValue(1);

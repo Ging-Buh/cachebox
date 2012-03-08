@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Controls;
 
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
@@ -23,7 +24,7 @@ public class InfoBubble extends GL_View_Base
 
 	Pixmap pixmap = null;
 	Texture tex = null;
-	Sprite CachedContentSprite = null;
+	// Sprite CachedContentSprite = null;
 
 	/**
 	 * CacheID of the Cache showing Bubble
@@ -59,9 +60,12 @@ public class InfoBubble extends GL_View_Base
 		SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
 
 		cacheInfo = new CacheInfo(size, "CacheInfo", value);
+		cacheInfo.setViewMode(CacheInfo.VIEW_MODE_BUBBLE);
 		cacheInfo.setY(height - size.height);
+		cacheInfo.setFont(Fonts.get11());
 		this.removeChilds();
 		this.addChild(cacheInfo);
+		requestLayout();
 	}
 
 	public void showBubleSelected()
@@ -85,6 +89,11 @@ public class InfoBubble extends GL_View_Base
 
 	@Override
 	public void onRezised(CB_RectF rec)
+	{
+		requestLayout();
+	}
+
+	private void requestLayout()
 	{
 		SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
 		cacheInfo.setSize(size);

@@ -6,6 +6,7 @@ import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Button;
+import CB_Core.GL_UI.Controls.CacheInfo;
 import CB_Core.GL_UI.Controls.InfoBubble;
 import CB_Core.GL_UI.Controls.MapInfoPanel;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
@@ -17,6 +18,7 @@ import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 
@@ -33,6 +35,7 @@ public class MapControlTest extends GL_View_Base
 	private ZoomScale zoomScale;
 	private InfoBubble infoBubble;
 	private InfoBubble infoBubbleZoom;
+	private CacheInfo cacheInfo;
 
 	public MapControlTest(CB_RectF rec, CharSequence Name)
 	{
@@ -211,6 +214,12 @@ public class MapControlTest extends GL_View_Base
 		infoBubbleZoom.setCache(getTestCache());
 		this.addChild(infoBubbleZoom);
 
+		cacheInfo = new CacheInfo(UiSizes.getCacheListItemRec().asFloat(), "CacheInfo", getTestCache());
+		cacheInfo.setY(10);
+		cacheInfo.setX(200);
+		// cacheInfo.setViewMode(CacheInfo.VIEW_MODE_DESCRIPTION);
+		this.addChild(cacheInfo);
+
 		requestLayout();
 	}
 
@@ -224,6 +233,7 @@ public class MapControlTest extends GL_View_Base
 		tmp.Owner = "Ich";
 		tmp.Size = CacheSizes.regular;
 		tmp.Rating = 3;
+		tmp.Pos = new Coordinate(13.548, 42.568);
 		return tmp;
 	}
 
@@ -252,7 +262,6 @@ public class MapControlTest extends GL_View_Base
 	@Override
 	public void onRezised(CB_RectF rec)
 	{
-		// TODO Auto-generated method stub
 
 	}
 

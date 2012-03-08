@@ -18,6 +18,8 @@ package CB_Core.GL_UI;
 
 import java.util.ArrayList;
 
+import CB_Core.Config;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -49,8 +51,13 @@ public class SpriteCache
 	public static void LoadSprites()
 	{
 		TextureAtlas atlas;
-		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
-		uiAtlas = new TextureAtlas(Gdx.files.internal("9patch/UI_PackerSheet"));
+		// atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
+		// uiAtlas = new TextureAtlas(Gdx.files.internal("9patch/UI_PackerSheet"));
+
+		String skinPath = Config.settings.SkinFolder.getValue();
+
+		atlas = new TextureAtlas(Gdx.files.absolute(skinPath + "/day/MapSpritePack.spp"));
+		uiAtlas = new TextureAtlas(Gdx.files.absolute(skinPath + "/day/UI_SpritePack.spp"));
 
 		MapIconsSmall = new ArrayList<Sprite>();
 		MapIconsSmall.add(atlas.createSprite("small1yes"));
