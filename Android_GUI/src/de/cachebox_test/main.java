@@ -66,6 +66,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -128,6 +129,7 @@ import de.cachebox_test.Components.search.searchMode;
 import de.cachebox_test.Custom_Controls.DebugInfoPanel;
 import de.cachebox_test.Custom_Controls.DescriptionViewControl;
 import de.cachebox_test.Custom_Controls.Mic_On_Flash;
+import de.cachebox_test.Custom_Controls.MultiToggleButton;
 import de.cachebox_test.Custom_Controls.downSlider;
 import de.cachebox_test.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
 import de.cachebox_test.Custom_Controls.QuickButtonList.HorizontalListView;
@@ -606,6 +608,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 		setQuickButtonHeight(sollHeight);
 
+		iniMainBtnTgl();
+
 		if (isFirstStart)
 		{
 			// ask for API key only if Rev-Number changed, like at new
@@ -667,6 +671,40 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			startTimer();
 		}
+
+	}
+
+	private void iniMainBtnTgl()
+	{
+		final LinearLayout BtnLayout = (LinearLayout) this.findViewById(R.id.layoutButtons);
+
+		final MultiToggleButton tgl = (MultiToggleButton) this.findViewById(R.id.altNewMainBtn);
+
+		tgl.clearStates();
+		tgl.addState("alt", Color.GREEN);
+		tgl.addState("new", Color.RED);
+
+		tgl.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View v)
+			{
+				tgl.onClick(v);
+
+				if (tgl.getState() == 0)
+				{
+					BtnLayout.setVisibility(View.VISIBLE);
+				}
+				else
+				{
+					BtnLayout.setVisibility(View.INVISIBLE);
+				}
+
+			}
+		});
+
+		tgl.setState(0, true);
 
 	}
 

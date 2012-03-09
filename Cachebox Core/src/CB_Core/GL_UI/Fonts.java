@@ -57,9 +57,9 @@ public class Fonts
 		fontAB22 = new BitmapFont(Gdx.files.absolute(fontPath + "22.fnt"), Gdx.files.absolute(fontPath + "22.png"), false);
 		fontAB23 = new BitmapFont(Gdx.files.absolute(fontPath + "23.fnt"), Gdx.files.absolute(fontPath + "23.png"), false);
 
-		fontAB15_out = new BitmapFont(Gdx.files.absolute(fontPath + "15_out.fnt"), Gdx.files.absolute(fontPath + "15_out_00.png"), false);
-		fontAB16_out = new BitmapFont(Gdx.files.absolute(fontPath + "16_out.fnt"), Gdx.files.absolute(fontPath + "16_out_00.png"), false);
-		fontAB17_out = new BitmapFont(Gdx.files.absolute(fontPath + "17_out.fnt"), Gdx.files.absolute(fontPath + "17_out_00.png"), false);
+		fontAB15_out = new BitmapFont(Gdx.files.absolute(fontPath + "15_out.fnt"), Gdx.files.absolute(fontPath + "15_out.png"), false);
+		fontAB16_out = new BitmapFont(Gdx.files.absolute(fontPath + "16_out.fnt"), Gdx.files.absolute(fontPath + "16_out.png"), false);
+		fontAB17_out = new BitmapFont(Gdx.files.absolute(fontPath + "17_out.fnt"), Gdx.files.absolute(fontPath + "17_out.png"), false);
 
 	}
 

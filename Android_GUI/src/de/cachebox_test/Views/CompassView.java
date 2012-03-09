@@ -3,6 +3,7 @@ package de.cachebox_test.Views;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.SelectedLangChangedEvent;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
@@ -167,6 +168,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu, Positio
 		compassControl.N = Config.settings.nightMode.getValue();
 		PositionEventList.Add(this);
 		SelectedLangChangedEventList.Add(this);
+		SelectedCacheEventList.Add(this);
 	}
 
 	@Override
@@ -174,6 +176,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu, Positio
 	{
 		PositionEventList.Remove(this);
 		SelectedLangChangedEventList.Remove(this);
+		SelectedCacheEventList.Remove(this);
 	}
 
 	@Override

@@ -24,6 +24,8 @@ public class MainView extends GL_View_Base
 	private MapView mapView; // ID = 18
 	private MapControlTest mapControlTest;// ID=19
 
+	private MainButtonBar mainBtnBar;
+
 	private GL_View_Base leftFrame;
 	private GL_View_Base rightFrame;
 	public static MainView mainView = null;
@@ -52,6 +54,9 @@ public class MainView extends GL_View_Base
 				this.addChild(rightFrame);
 				rightFrame.setClickable(true);
 			}
+
+			addMainBtnBar();
+
 		}
 
 		if (ID.getPos() == ViewID.UI_Pos.Left)
@@ -68,6 +73,16 @@ public class MainView extends GL_View_Base
 		GL_Listener.glListener.renderOnce(this);
 
 		Logger.LogCat("SetGlViewID" + ID);
+	}
+
+	private void addMainBtnBar()
+	{
+		if (mainBtnBar == null)
+		{
+			int btnWidth = GlobalCore.isTab ? UiSizes.RefWidth * 2 : UiSizes.RefWidth;
+			mainBtnBar = new MainButtonBar(new CB_RectF(0, 0, btnWidth, GL_UISizes.BottomButtonHeight), "mainButtonBar");
+		}
+		this.addChild(mainBtnBar);
 	}
 
 	public MainView(float X, float Y, float Width, float Height, String Name)

@@ -21,6 +21,7 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -31,9 +32,9 @@ import com.badlogic.gdx.math.Vector2;
 public class Button extends GL_View_Base
 {
 
-	protected static NinePatch ninePatch;
-	protected static NinePatch ninePatchPressed;
-	protected static NinePatch ninePatchDisabled;
+	protected NinePatch mNinePatch;
+	protected NinePatch mNinePatchPressed;
+	protected NinePatch mNinePatchDisabled;
 
 	protected boolean isPressed = false;
 	protected boolean isDisabled = false;
@@ -49,35 +50,61 @@ public class Button extends GL_View_Base
 		super(rec, parent, name);
 	}
 
+	public Button(CB_RectF rec, String name)
+	{
+		super(rec, name);
+	}
+
+	public void setninePatch(NinePatch ninePatch)
+	{
+		mNinePatch = ninePatch;
+	}
+
+	public void setninePatchPressed(NinePatch ninePatch)
+	{
+		mNinePatchPressed = ninePatch;
+	}
+
+	public void setninePatchDisabled(NinePatch ninePatch)
+	{
+		mNinePatchDisabled = ninePatch;
+	}
+
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		if (ninePatch == null)
+		if (mNinePatch == null)
 		{
-			ninePatch = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_normal"), 16, 16, 16, 16);
-			ninePatchPressed = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_pressed"), 16, 16, 16, 16);
-			ninePatchDisabled = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_default_normal_disabled"), 8, 8, 8, 8);
+			mNinePatch = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_normal"), 16, 16, 16, 16);
+		}
+		if (mNinePatchPressed == null)
+		{
+			mNinePatchPressed = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_pressed"), 16, 16, 16, 16);
+		}
+		if (mNinePatchDisabled == null)
+		{
+			mNinePatchDisabled = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_default_normal_disabled"), 8, 8, 8, 8);
 		}
 
 		if (!isPressed && !isDisabled)
 		{
-			if (ninePatch != null)
+			if (mNinePatch != null)
 			{
-				ninePatch.draw(batch, 0, 0, width, height);
+				mNinePatch.draw(batch, 0, 0, width, height);
 			}
 		}
 		else if (isPressed)
 		{
-			if (ninePatchPressed != null)
+			if (mNinePatchPressed != null)
 			{
-				ninePatchPressed.draw(batch, 0, 0, width, height);
+				mNinePatchPressed.draw(batch, 0, 0, width, height);
 			}
 		}
 		else
 		{
-			if (ninePatchDisabled != null)
+			if (mNinePatchDisabled != null)
 			{
-				ninePatchDisabled.draw(batch, 0, 0, width, height);
+				mNinePatchDisabled.draw(batch, 0, 0, width, height);
 			}
 		}
 
@@ -159,7 +186,9 @@ public class Button extends GL_View_Base
 		}
 
 		else
-			return super.click(x, y, pointer, button);
+
+			Logger.LogCat("Button " + this.name + " Clicked");
+		return super.click(x, y, pointer, button);
 	}
 
 	public void setText(String Text)
