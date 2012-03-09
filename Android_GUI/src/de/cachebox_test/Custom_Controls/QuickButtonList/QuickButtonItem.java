@@ -158,6 +158,19 @@ public class QuickButtonItem extends View
 						Global.getColor(R.attr.TextColor_disable), Mode.SRC_IN);
 			}
 		}
+		else if (this.mAction.ordinal() == Actions.WaypointView.ordinal())
+		{// nur scharf, wenn es Wegpunkte gibt
+			if (GlobalCore.SelectedCache() != null && !GlobalCore.SelectedCache().waypoints.isEmpty())
+			{
+				Global.BtnIcons[3].clearColorFilter();
+				ActivityUtils.PutImageTargetHeight(canvas, Global.BtnIcons[3], 14, 12, height - 24);
+			}
+			else
+			{
+				ActivityUtils.PutImageTargetHeightColor(canvas, Global.BtnIcons[3], 14, 12, height - 24,
+						Global.getColor(R.attr.TextColor_disable), Mode.SRC_IN);
+			}
+		}
 		else
 		{
 			if (mButtonIcon != null)
