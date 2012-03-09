@@ -2,8 +2,10 @@ package CB_Core.GL_UI.GL_Listener;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.SortedMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_Core.GL_UI.GL_View_Base;
@@ -12,6 +14,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.Controls.MainView;
 import CB_Core.Log.Logger;
+import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 
@@ -128,13 +131,13 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		return behandelt;
 	}
 
-	public boolean onTouchDown(int x, int y, int pointer, int button)
+	public GL_View_Base onTouchDown(int x, int y, int pointer, int button)
 	{
-		boolean behandelt = false;
+		GL_View_Base view = null;
 
-		behandelt = child.touchDown(x, (int) child.getHeight() - y, pointer, button);
+		view = child.touchDown(x, (int) child.getHeight() - y, pointer, button);
 
-		return behandelt;
+		return view;
 	}
 
 	public boolean onTouchDragged(int x, int y, int pointer)
@@ -314,4 +317,82 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		else
 			startTimer(minDelay, "GL_Listner calcNewRenderSpeed()");
 	}
+
+	// TouchEreignisse die von der View gesendet werden
+	// hier wird entschieden, wann TouchDonw, TouchDragged, TouchUp und Clicked, LongClicked Ereignisse gesendet werden müssen
+	public boolean onTouchDownBase(int x, int y, int pointer, int button)
+	{
+		GL_View_Base view = child.touchDown(x, (int) child.getHeight() - y, pointer, button);
+		// down Position merken
+		touchDownPos.put(pointer, new TouchDownPointer(pointer, new Point(x, y), view));
+
+		Logger.LogCat("GL_Listner => onTouchDownBase : " + view.getName());
+
+		return true;
+	}
+
+	public boolean onTouchDraggedBase(int x, int y, int pointer)
+	{
+		if (!touchDownPos.containsKey(pointer)) return false; // für diesen Pointer ist kein touchDownPos gespeichert ->
+																// dürfte nicht passieren!!!
+		TouchDownPointer first = touchDownPos.get(pointer);
+
+		Point akt = new Point(x, y);
+		if (distance(akt, first.point) > 15)
+		{
+			// touchDragged Event an das View, das den onTouchDown bekommen hat
+			first.view.touchDragged(x, (int) child.getHeight() - y, pointer);
+			Logger.LogCat("GL_Listner => onTouchDraggedBase : " + first.view.getName());
+		}
+
+		return true;
+	}
+
+	public boolean onTouchUpBase(int x, int y, int pointer, int button)
+	{
+		if (!touchDownPos.containsKey(pointer)) return false; // für diesen Pointer ist kein touchDownPos gespeichert ->
+																// dürfte nicht passieren!!!
+		TouchDownPointer first = touchDownPos.get(pointer);
+		Point akt = new Point(x, y);
+		if (distance(akt, first.point) < 15)
+		{
+			// Finger wurde losgelassen ohne viel Bewegung -> onClick erzeugen
+			// glListener.onClick(akt.x, akt.y, pointer, 0);
+			if (first.view.isClickable())
+			{
+				first.view.click(x, (int) child.getHeight() - y, pointer, button);
+				Logger.LogCat("GL_Listner => onTouchUpBase (Click) : " + first.view.getName());
+			}
+		}
+		// onTouchUp immer auslösen
+		first.view.touchUp(x, (int) child.getHeight() - y, pointer, button);
+		Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
+		// glListener.onTouchUp(x, y, pointer, 0);
+
+		return true;
+	}
+
+	// Abstand zweier Punkte
+	private int distance(Point p1, Point p2)
+	{
+		return (int) Math.round(Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)));
+	}
+
+	// Zwischenspeicher für die touchDown Positionen der einzelnen Finger
+	private SortedMap<Integer, TouchDownPointer> touchDownPos = new TreeMap<Integer, TouchDownPointer>();
+
+	class TouchDownPointer
+	{
+		private Point point;
+		private int pointer;
+		private GL_View_Base view;
+
+		public TouchDownPointer(int pointer, Point point, GL_View_Base view)
+		{
+			this.pointer = pointer;
+			this.point = point;
+			this.view = view;
+		}
+	}
+
 }

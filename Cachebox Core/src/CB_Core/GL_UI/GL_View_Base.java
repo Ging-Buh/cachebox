@@ -390,11 +390,12 @@ public abstract class GL_View_Base extends CB_RectF
 		return false;
 	}
 
-	public final boolean touchDown(int x, int y, int pointer, int button)
+	public final GL_View_Base touchDown(int x, int y, int pointer, int button)
 	{
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht ï¿½berschrieben werden!!!
 		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
-		boolean behandelt = false;
+		// touchDown liefert die View zurück, die dieses TochDown Ereignis angenommen hat
+		GL_View_Base resultView = null;
 		// alle Childs abfragen
 		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 		{
@@ -405,19 +406,20 @@ public abstract class GL_View_Base extends CB_RectF
 			{
 				// touch innerhalb des Views
 				// -> Klick an das View weitergeben
-				behandelt = view.touchDown(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
+				resultView = view.touchDown(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
 			}
 
-			if (behandelt) break;
+			if (resultView != null) break;
 
 		}
-		if (!behandelt)
+		if (resultView == null)
 		{
 			// kein Klick in einem untergeordnetem View
 			// -> hier behandeln
-			behandelt = onTouchDown(x, y, pointer, button);
+			boolean behandelt = onTouchDown(x, y, pointer, button);
+			if (behandelt) resultView = this;
 		}
-		return behandelt;
+		return resultView;
 	}
 
 	public final boolean touchDragged(int x, int y, int pointer)

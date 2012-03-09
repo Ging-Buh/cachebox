@@ -61,7 +61,7 @@ public class Desktop_GL_Listner extends GL_Listener implements InputProcessor {
 		lastPointer=pointer;
 		lastbutton=button;
 		startLongClickTimer();
-		return this.onTouchDown(x, y, pointer, button);
+		return this.onTouchDown(x, y, pointer, button) != null;
 	}
 
 	@Override

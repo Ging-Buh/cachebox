@@ -2355,36 +2355,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						{
 						case MotionEvent.ACTION_POINTER_DOWN:
 						case MotionEvent.ACTION_DOWN:
-							glListener.onTouchDown((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
-							// down Position merken
-							touchDownPos.put(event.getPointerId(p), new Point((int) event.getX(p), (int) event.getY(p)));
+							glListener.onTouchDownBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
 							break;
 						case MotionEvent.ACTION_MOVE:
-							int id = event.getPointerId(p);
-							if (!touchDownPos.containsKey(id)) return false; // für diesen Pointer ist kein touchDownPos gespeichert ->
-																				// dürfte nicht passieren!!!
-							Point first = touchDownPos.get(id);
-							Point akt = new Point((int) event.getX(p), (int) event.getY(p));
-							if (distance(akt, first) > 15)
-							{
-								glListener.onTouchDragged((int) event.getX(p), (int) event.getY(p), event.getPointerId(p));
-
-							}
+							glListener.onTouchDraggedBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p));
 							break;
 						case MotionEvent.ACTION_POINTER_UP:
 						case MotionEvent.ACTION_UP:
-							id = event.getPointerId(p);
-							if (!touchDownPos.containsKey(id)) return false; // für diesen Pointer ist kein touchDownPos gespeichert ->
-																				// dürfte nicht passieren!!!
-							first = touchDownPos.get(id);
-							akt = new Point((int) event.getX(p), (int) event.getY(p));
-							if (distance(akt, first) < 15)
-							{
-								// Finger wurde losgelassen ohne viel Bewegung -> onClick erzeugen
-								glListener.onClick(akt.x, akt.y, id, 0);
-							}
-							// onTouchUp immer auslösen
-							glListener.onTouchUp((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
+							glListener.onTouchUpBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
 							break;
 						}
 						return true;

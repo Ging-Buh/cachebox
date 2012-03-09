@@ -1158,11 +1158,11 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 	private Vector2 worldToScreen(Vector2 point)
 	{
 		Vector2 result = new Vector2(0, 0);
-		result.x = (point.x - screenCenterW.x) / camera.zoom + width / 2;
-		result.y = -(-point.y + screenCenterW.y) / camera.zoom + height / 2;
-		result.add(-width / 2, -height / 2);
+		result.x = (point.x - screenCenterW.x) / camera.zoom + (float) width / 2;
+		result.y = -(-point.y + screenCenterW.y) / camera.zoom + (float) height / 2;
+		result.add(-(float) width / 2, -(float) height / 2);
 		result.rotate(mapHeading);
-		result.add(width / 2, height / 2);
+		result.add((float) width / 2, (float) height / 2);
 		return result;
 	}
 
@@ -1219,7 +1219,6 @@ public class MapView extends GL_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public void OrientationChanged(float heading)
 	{
-
 		if (locator == null) return;
 
 		Coordinate position = null;
