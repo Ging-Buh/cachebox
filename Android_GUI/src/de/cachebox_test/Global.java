@@ -38,7 +38,7 @@ import de.cachebox_test.Map.RouteOverlay;
 
 public class Global
 {
-	public static final int CurrentRevision = 746;
+	public static final int CurrentRevision = 751;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 	public static final int LatestDatabaseChange = 1016;
@@ -569,8 +569,7 @@ public class Global
 					getDrawable(R.drawable.button, R.drawable.night_button, res),
 					getDrawable(R.drawable.doc_icon, res),
 					getDrawable(R.drawable.big_16, res),
-					getDrawable(R.drawable.list_icon, res), // LogView braucht
-															// noch ein Icon
+					getDrawable(R.drawable.list_icon, res), // LogView braucht noch ein Icon
 					getDrawable(R.drawable.map, res), getDrawable(R.drawable.compass, res), getDrawable(R.drawable.cache_list_icon, res),
 					getDrawable(R.drawable.track_list_icon, res), getDrawable(R.drawable.log10, res),
 					getDrawable(R.drawable.video_icon, res), getDrawable(R.drawable.voice_rec_icon, res),
