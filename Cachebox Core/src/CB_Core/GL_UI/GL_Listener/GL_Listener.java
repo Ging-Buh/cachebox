@@ -360,7 +360,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			// glListener.onClick(akt.x, akt.y, pointer, 0);
 			if (first.view.isClickable())
 			{
-				first.view.click(x, (int) child.getHeight() - y, pointer, button);
+				first.view.click(x - (int) first.view.ThisWorldRec.getX(),
+						(int) child.getHeight() - y - (int) first.view.ThisWorldRec.getY(), pointer, button);
 				Logger.LogCat("GL_Listner => onTouchUpBase (Click) : " + first.view.getName());
 			}
 		}
