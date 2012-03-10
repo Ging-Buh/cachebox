@@ -4,6 +4,7 @@ import java.util.Date;
 
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CacheInfo;
@@ -23,10 +24,9 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-public class MapControlTest extends GL_View_Base
+public class MapControlTest extends CB_View_Base
 {
 
 	private ZoomButtons btnZoom;
@@ -250,61 +250,6 @@ public class MapControlTest extends GL_View_Base
 		togBtn.setPos(new Vector2((float) (this.width - margin - togBtn.getWidth()), this.height - margin - togBtn.getHeight()));
 
 		GL_Listener.glListener.renderOnce(this);
-	}
-
-	@Override
-	protected void render(SpriteBatch batch)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onRezised(CB_RectF rec)
-	{
-
-	}
-
-	@Override
-	public void onParentRezised(CB_RectF rec)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean onLongClick(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDragged(int x, int y, int pointer)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void dispose()
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 }

@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Views;
 
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -29,7 +30,7 @@ import com.badlogic.gdx.math.Vector2;
  * 
  * @author Longri
  */
-public class TestView extends GL_View_Base
+public class TestView extends CB_View_Base
 {
 	private Image image;
 	private Label lbl;
@@ -190,41 +191,6 @@ public class TestView extends GL_View_Base
 	public void onRezised(CB_RectF rec)
 	{
 		requestLayout();
-	}
-
-	@Override
-	public boolean onLongClick(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDragged(int x, int y, int pointer)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void dispose()
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

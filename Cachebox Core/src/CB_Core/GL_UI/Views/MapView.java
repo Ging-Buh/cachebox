@@ -15,6 +15,7 @@ import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Events.PositionChangedEvent;
 import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -53,7 +54,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
-public class MapView extends GL_View_Base implements SelectedCacheEvent, PositionChangedEvent
+public class MapView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent
 {
 	private final MapView that; // für Zugriff aus Listeners heraus auf this
 	private final String Tag = "MAP_VIEW_GL";
