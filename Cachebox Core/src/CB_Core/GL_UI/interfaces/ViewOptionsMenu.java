@@ -9,11 +9,11 @@ public interface ViewOptionsMenu
 {
 	public int GetMenuId();
 
-	public void OnShow();
+	public void onShow();
 
-	public void OnHide();
+	public void onHide();
 
-	public void OnFree();
+	public void onFree();
 
 	public int GetContextMenuId();
 

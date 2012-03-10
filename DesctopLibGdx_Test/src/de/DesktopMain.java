@@ -7,16 +7,12 @@ import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
-import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_Core.GL_UI.GL_View_Base;
-import CB_Core.GL_UI.ViewID.UI_Pos;
-import CB_Core.GL_UI.ViewID.UI_Type;
-import CB_Core.Log.Logger;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
+import CB_Core.GL_UI.ViewConst;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -24,17 +20,9 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 
 public class DesktopMain {
 
-	static GL_Listener CB_UI;
-	public static final ViewID TEST_VIEW = new ViewID(ViewID.TEST_VIEW,
-			UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
-	public static final ViewID CREDITS_VIEW = new ViewID(ViewID.CREDITS_VIEW,
-			UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
-	public static final ViewID GL_MAP_VIEW = new ViewID(ViewID.GL_MAP_VIEW,
-			UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
 	
-	public static final ViewID MAP_CONTROL_TEST_VIEW = new ViewID(ViewID.MAP_CONTROL_TEST_VIEW,
-			UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
-
+	static GL_Listener CB_UI;
+	
 	private static Size myInitialSize = null;
 
 
@@ -122,10 +110,11 @@ public class DesktopMain {
 
 	private static void Run() {
 		CB_UI.onStart();
-		CB_UI.setGLViewID(MAP_CONTROL_TEST_VIEW);
+		CB_UI.setGLViewID(ViewConst.MAP_CONTROL_TEST_VIEW);
 //		CB_UI.setGLViewID(TEST_VIEW);
 		// CB_UI.setGLViewID(CREDITS_VIEW);
 		// CB_UI.setGLViewID(GL_MAP_VIEW);
+//		CB_UI.setGLViewID(ViewConst.ABOUT_VIEW);
 
 		Gdx.input.setInputProcessor((InputProcessor) CB_UI);
 

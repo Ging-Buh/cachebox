@@ -35,6 +35,7 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.ViewID.UI_Pos;
 import CB_Core.GL_UI.ViewID.UI_Type;
@@ -179,34 +180,6 @@ import de.cachebox_test.Views.Forms.SelectDB;
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEvent,
 		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent
 {
-
-	/*
-	 * Const
-	 */
-
-	public static final ViewID MAP_VIEW = new ViewID(ViewID.MAP_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Right);
-	public static final ViewID CACHE_LIST_VIEW = new ViewID(ViewID.CACHE_LIST_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
-	public static final ViewID LOG_VIEW = new ViewID(ViewID.LOG_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
-	public static final ViewID DESCRIPTION_VIEW = new ViewID(ViewID.DESCRIPTION_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Right);
-	public static final ViewID SPOILER_VIEW = new ViewID(ViewID.SPOILER_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Right);
-	public static final ViewID NOTES_VIEW = new ViewID(ViewID.NOTES_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Right);
-	public static final ViewID SOLVER_VIEW = new ViewID(ViewID.SOLVER_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Right);
-	public static final ViewID COMPASS_VIEW = new ViewID(ViewID.COMPASS_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
-	public static final ViewID FIELD_NOTES_VIEW = new ViewID(ViewID.FIELD_NOTES_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Right);
-	public static final ViewID ABOUT_VIEW = new ViewID(ViewID.ABOUT_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
-	public static final ViewID JOKER_VIEW = new ViewID(ViewID.JOKER_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
-	public static final ViewID TRACK_LIST_VIEW = new ViewID(ViewID.TRACK_LIST_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
-	public static final ViewID TB_LIST_VIEW = new ViewID(ViewID.TB_LIST_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
-	public static final ViewID WAYPOINT_VIEW = new ViewID(ViewID.WAYPOINT_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
-
-	public static final ViewID TEST_VIEW = new ViewID(ViewID.TEST_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
-	public static final ViewID CREDITS_VIEW = new ViewID(ViewID.CREDITS_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
-	public static final ViewID GL_MAP_VIEW = new ViewID(ViewID.GL_MAP_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
-	public static final ViewID MAP_CONTROL_TEST_VIEW = new ViewID(ViewID.MAP_CONTROL_TEST_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
-
-	public static final ViewID SETTINGS = new ViewID(ViewID.SETTINGS, UI_Type.Activity, null, null);
-	public static final ViewID FILTER_SETTINGS = new ViewID(ViewID.FILTER_SETTINGS, UI_Type.Activity, null, null);
-	public static final ViewID IMPORT = new ViewID(ViewID.IMPORT, UI_Type.Activity, null, null);
 
 	/*
 	 * private static member
@@ -515,13 +488,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Logger.General("------ Start Rev: " + Global.CurrentRevision + "-------");
 
 			// Zeige About View als erstes!
-			showView(ABOUT_VIEW);
+			showView(ViewConst.ABOUT_VIEW);
 
 			// und Map wenn Tablet
 			if (GlobalCore.isTab)
 			{
 				// showView(MAP_VIEW);
-				showView(DESCRIPTION_VIEW);
+				showView(ViewConst.DESCRIPTION_VIEW);
 			}
 
 			// chk if NightMode saved
@@ -746,7 +719,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							else
 							{
 								flag = true;
-								showView(CACHE_LIST_VIEW);
+								showView(ViewConst.CACHE_LIST_VIEW);
 								startTimer();
 							}
 
@@ -890,7 +863,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					// switch to Compass if the option seted
 					if (Config.settings.switchViewApproach.getValue())
 					{
-						showView(COMPASS_VIEW);
+						showView(ViewConst.COMPASS_VIEW);
 					}
 				}
 			}
@@ -1563,17 +1536,17 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (v == buttonDB)
 			{
-				showView(CACHE_LIST_VIEW);
+				showView(ViewConst.CACHE_LIST_VIEW);
 			}
 
 			else if (v == buttonCache)
 			{
-				showView(DESCRIPTION_VIEW);
+				showView(ViewConst.DESCRIPTION_VIEW);
 			}
 
 			else if (v == buttonNav)
 			{
-				showView(MAP_VIEW);
+				showView(ViewConst.MAP_VIEW);
 			}
 
 			else if (v == buttonTools)
@@ -1583,7 +1556,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			else if (v == buttonMisc)
 			{
-				showView(ABOUT_VIEW);
+				showView(ViewConst.ABOUT_VIEW);
 			}
 		}
 	};
@@ -1687,7 +1660,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			ShowViewGL(ID);
 		}
 
-		if (ID == MAP_VIEW)
+		if (ID == ViewConst.MAP_VIEW)
 		{
 			ScreenLockOff = true;
 			startScreenLock(true);
@@ -1712,18 +1685,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			return ViewList.get(ID.getID());
 		}
 
-		if (ID == TRACK_LIST_VIEW) return trackablelistView = new TrackableListView(this, this);
-		else if (ID == TRACK_LIST_VIEW) return tracklistView = new TrackListView(this, this);
-		else if (ID == JOKER_VIEW) return jokerView = new JokerView(this, this);
-		else if (ID == ABOUT_VIEW) return aboutView = new AboutView(this, inflater);
-		else if (ID == FIELD_NOTES_VIEW) return fieldNotesView = new FieldNotesView(this, this);
-		else if (ID == SOLVER_VIEW) return solverView = new SolverView(this, inflater);
-		else if (ID == NOTES_VIEW) return notesView = new NotesView(this, inflater);
-		else if (ID == SPOILER_VIEW) return spoilerView = new SpoilerView(this, inflater);
-		else if (ID == DESCRIPTION_VIEW) return descriptionView = new DescriptionView(this, inflater);
-		else if (ID == LOG_VIEW) return logView = new LogView(this);
-		else if (ID == WAYPOINT_VIEW) return waypointView = new WaypointView(this, this);
-		else if (ID == COMPASS_VIEW)
+		if (ID == ViewConst.TRACK_LIST_VIEW) return trackablelistView = new TrackableListView(this, this);
+		else if (ID == ViewConst.TRACK_LIST_VIEW) return tracklistView = new TrackListView(this, this);
+		else if (ID == ViewConst.JOKER_VIEW) return jokerView = new JokerView(this, this);
+		else if (ID == ViewConst.ABOUT_VIEW) return aboutView = new AboutView(this, inflater);
+		else if (ID == ViewConst.FIELD_NOTES_VIEW) return fieldNotesView = new FieldNotesView(this, this);
+		else if (ID == ViewConst.SOLVER_VIEW) return solverView = new SolverView(this, inflater);
+		else if (ID == ViewConst.NOTES_VIEW) return notesView = new NotesView(this, inflater);
+		else if (ID == ViewConst.SPOILER_VIEW) return spoilerView = new SpoilerView(this, inflater);
+		else if (ID == ViewConst.DESCRIPTION_VIEW) return descriptionView = new DescriptionView(this, inflater);
+		else if (ID == ViewConst.LOG_VIEW) return logView = new LogView(this);
+		else if (ID == ViewConst.WAYPOINT_VIEW) return waypointView = new WaypointView(this, this);
+		else if (ID == ViewConst.COMPASS_VIEW)
 		{
 			compassView = new CompassView(this, inflater);
 			compassView.reInit();
@@ -1734,7 +1707,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void showActivity(ViewID ID)
 	{
-		if (ID == SETTINGS)
+		if (ID == ViewConst.SETTINGS)
 		{
 			final Intent mainIntent = new Intent().setClass(mainActivity, SettingsScrollView.class);
 			Bundle b = new Bundle();
@@ -1742,12 +1715,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			mainIntent.putExtras(b);
 			mainActivity.startActivity(mainIntent);
 		}
-		else if (ID == FILTER_SETTINGS)
+		else if (ID == ViewConst.FILTER_SETTINGS)
 		{
 			final Intent mainIntent1 = new Intent().setClass(mainActivity, EditFilterSettings.class);
 			mainActivity.startActivity(mainIntent1);
 		}
-		else if (ID == IMPORT)
+		else if (ID == ViewConst.IMPORT)
 		{
 			final Intent mainIntent2 = new Intent().setClass(mainActivity, ImportDialog.class);
 			mainActivity.startActivity(mainIntent2);
@@ -1757,7 +1730,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void showView(ViewOptionsMenu view, ViewID ID)
 	{
-		if (ID == GL_MAP_VIEW) sendContentFrameSizeChanged();
+		if (ID == ViewConst.GL_MAP_VIEW) sendContentFrameSizeChanged();
 		if (GlobalCore.isTab)
 		{
 			if (ID.getPos() == ViewID.UI_Pos.Right)
@@ -1968,7 +1941,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				switchDayNight();
 				break;
 			case R.id.miSettings:
-				showView(SETTINGS);
+				showView(ViewConst.SETTINGS);
 				break;
 			case R.id.miVoiceRecorder:
 				recVoice();
@@ -1980,59 +1953,59 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				recVideo();
 				break;
 			case R.id.miAbout:
-				showView(CREDITS_VIEW); // Show CreditsView
+				showView(ViewConst.CREDITS_VIEW); // Show CreditsView
 				break;
 			case R.id.miImport:
-				showView(IMPORT);
+				showView(ViewConst.IMPORT);
 				break;
 			case R.id.miLogView:
-				showView(LOG_VIEW);
+				showView(ViewConst.LOG_VIEW);
 				break;
 			case R.id.miSpoilerView:
-				showView(SPOILER_VIEW);
+				showView(ViewConst.SPOILER_VIEW);
 				break;
 			case R.id.miHint:
 				showHint();
 				break;
 			case R.id.miFieldNotes:
-				showView(FIELD_NOTES_VIEW);
+				showView(ViewConst.FIELD_NOTES_VIEW);
 				openOptionsMenu();
 				break;
 			case R.id.miTelJoker:
 				showJoker();
 				break;
 			case R.id.miCompassView:
-				showView(COMPASS_VIEW);
+				showView(ViewConst.COMPASS_VIEW);
 				break;
 			case R.id.miMapView:
-				showView(MAP_VIEW);
+				showView(ViewConst.MAP_VIEW);
 				break;
 			case R.id.miViewGL:
-				showView(MAP_CONTROL_TEST_VIEW);
+				showView(ViewConst.MAP_CONTROL_TEST_VIEW);
 				break;
 			case R.id.miViewMap3:
-				showView(GL_MAP_VIEW);
+				showView(ViewConst.GL_MAP_VIEW);
 				break;
 			case R.id.miDescription:
-				showView(DESCRIPTION_VIEW);
+				showView(ViewConst.DESCRIPTION_VIEW);
 				break;
 			case R.id.miWaypoints:
-				showView(WAYPOINT_VIEW);
+				showView(ViewConst.WAYPOINT_VIEW);
 				break;
 			case R.id.miNotes:
-				showView(NOTES_VIEW);
+				showView(ViewConst.NOTES_VIEW);
 				break;
 			case R.id.miSolver:
-				showView(SOLVER_VIEW);
+				showView(ViewConst.SOLVER_VIEW);
 				break;
 			case R.id.miCacheList:
-				showView(CACHE_LIST_VIEW);
+				showView(ViewConst.CACHE_LIST_VIEW);
 				break;
 			case R.id.miTrackList:
-				showView(TRACK_LIST_VIEW);
+				showView(ViewConst.TRACK_LIST_VIEW);
 				break;
 			case R.id.miFilterset:
-				showView(FILTER_SETTINGS);
+				showView(ViewConst.FILTER_SETTINGS);
 				break;
 			case R.id.miManageDB:
 				showManageDB();
@@ -2106,25 +2079,25 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			switch (clicedItem.getActionId())
 			{
 			case 0:
-				showView(DESCRIPTION_VIEW);
+				showView(ViewConst.DESCRIPTION_VIEW);
 				break;
 			case 1:
-				showView(WAYPOINT_VIEW);
+				showView(ViewConst.WAYPOINT_VIEW);
 				break;
 			case 2:
-				showView(LOG_VIEW);
+				showView(ViewConst.LOG_VIEW);
 				break;
 			case 3:
-				showView(MAP_VIEW);
+				showView(ViewConst.MAP_VIEW);
 				break;
 			case 4:
-				showView(COMPASS_VIEW);
+				showView(ViewConst.COMPASS_VIEW);
 				break;
 			case 5:
-				showView(CACHE_LIST_VIEW);
+				showView(ViewConst.CACHE_LIST_VIEW);
 				break;
 			case 6:
-				showView(TRACK_LIST_VIEW);
+				showView(ViewConst.TRACK_LIST_VIEW);
 				break;
 			case 7:
 				takePhoto();
@@ -2149,10 +2122,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				QuickButtonList.invalidate();
 				break;
 			case 14:
-				showView(SOLVER_VIEW);
+				showView(ViewConst.SOLVER_VIEW);
 				break;
 			case 15:
-				if (GlobalCore.SelectedCache() != null && GlobalCore.SelectedCache().SpoilerExists()) showView(SPOILER_VIEW);
+				if (GlobalCore.SelectedCache() != null && GlobalCore.SelectedCache().SpoilerExists()) showView(ViewConst.SPOILER_VIEW);
 				break;
 			case 16:
 				if (GlobalCore.SelectedCache() != null && !(GlobalCore.SelectedCache().hint.equals(""))) showHint();
@@ -2684,7 +2657,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							else
 							{
 								Logger.General("Open JokerView...");
-								showView(JOKER_VIEW);
+								showView(ViewConst.JOKER_VIEW);
 							}
 						}
 						finally
@@ -2716,7 +2689,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private void showTbList()
 	{
 		// MessageBox.Show("comming soon", "sorry", MessageBoxIcon.Asterisk);
-		showView(TB_LIST_VIEW);
+		showView(ViewConst.TB_LIST_VIEW);
 	}
 
 	private void switchDayNight()

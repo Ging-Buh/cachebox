@@ -1,8 +1,8 @@
 package CB_Core.GL_UI.Controls;
 
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
-import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class InfoBubble extends GL_View_Base
+public class InfoBubble extends CB_View_Base
 {
 
 	public InfoBubble(SizeF Size, CharSequence Name)
@@ -98,48 +98,6 @@ public class InfoBubble extends GL_View_Base
 		SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
 		cacheInfo.setSize(size);
 		cacheInfo.setY(height - size.height);
-	}
-
-	@Override
-	public void onParentRezised(CB_RectF rec)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean onLongClick(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDragged(int x, int y, int pointer)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void dispose()
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 	public Cache getCache()

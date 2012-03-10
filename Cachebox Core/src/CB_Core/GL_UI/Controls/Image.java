@@ -16,7 +16,7 @@
 
 package CB_Core.GL_UI.Controls;
 
-import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
@@ -30,7 +30,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * 
  * @author Longri
  */
-public class Image extends GL_View_Base
+public class Image extends CB_View_Base
 {
 
 	private float mRotate = 0;
@@ -85,34 +85,6 @@ public class Image extends GL_View_Base
 
 	}
 
-	@Override
-	public boolean onLongClick(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDragged(int x, int y, int pointer)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	private String mPath;
 	private Texture mImageTex = null;
 	Sprite mImageSprite = null;
@@ -143,13 +115,6 @@ public class Image extends GL_View_Base
 		mImageTex = null;
 
 		mImageSprite = null;
-	}
-
-	@Override
-	public void onParentRezised(CB_RectF rec)
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 	public void setRotate(float Rotate)

@@ -1,9 +1,11 @@
 package CB_Core.GL_UI.Controls;
 
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.Views.AboutView;
 import CB_Core.GL_UI.Views.CreditsView;
 import CB_Core.GL_UI.Views.MapControlTest;
 import CB_Core.GL_UI.Views.MapView;
@@ -16,8 +18,10 @@ import CB_Core.Math.UiSizes;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-public class MainView extends GL_View_Base
+public class MainView extends CB_View_Base
 {
+
+	private AboutView aboutView; // ID=11
 
 	private TestView testView; // ID = 16
 	private CreditsView creditView; // ID = 17
@@ -111,6 +115,7 @@ public class MainView extends GL_View_Base
 		creditView = null;
 		mapView = null;
 		mapControlTest = null;
+		aboutView = null;
 
 		if (ID.getID() == ViewID.TEST_VIEW)
 		{
@@ -144,6 +149,14 @@ public class MainView extends GL_View_Base
 			return mapControlTest;
 		}
 
+		if (ID.getID() == ViewID.ABOUT_VIEW)
+		{
+			aboutView = new AboutView(GL_UISizes.UI_Left, "AboutView");
+			aboutView.setClickable(true);
+			aboutView.setPos(iniPos);
+			return aboutView;
+		}
+
 		return null;
 	}
 
@@ -151,41 +164,6 @@ public class MainView extends GL_View_Base
 	public void onRezised(CB_RectF rec)
 	{
 		requestLayout();
-	}
-
-	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button)
-	{
-		// hier erstmal nichts machen
-		return true;
-	}
-
-	@Override
-	public boolean onLongClick(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDragged(int x, int y, int pointer)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void dispose()
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

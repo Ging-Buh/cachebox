@@ -16,9 +16,8 @@
 
 package CB_Core.GL_UI.Controls;
 
-import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -28,7 +27,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * 
  * @author Longri
  */
-public class ArrowView extends GL_View_Base
+public class ArrowView extends CB_View_Base
 {
 
 	int arrowX = 200;
@@ -62,53 +61,12 @@ public class ArrowView extends GL_View_Base
 	}
 
 	@Override
-	public void onRezised(CB_RectF rec)
-	{
-
-	}
-
-	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
 		// Pfeil auf Touch-Positon setzen zum Test
 		arrowX = x;
 		arrowY = y;
 		return true;
-	}
-
-	@Override
-	public boolean onLongClick(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDragged(int x, int y, int pointer)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void dispose()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onParentRezised(CB_RectF rec)
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 }

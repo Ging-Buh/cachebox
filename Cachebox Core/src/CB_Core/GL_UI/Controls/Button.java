@@ -16,6 +16,7 @@
 
 package CB_Core.GL_UI.Controls;
 
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -29,7 +30,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-public class Button extends GL_View_Base
+public class Button extends CB_View_Base
 {
 
 	protected NinePatch mNinePatch;
@@ -111,13 +112,6 @@ public class Button extends GL_View_Base
 	}
 
 	@Override
-	public void onRezised(CB_RectF rec)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
 		if (!isDisabled)
@@ -143,20 +137,6 @@ public class Button extends GL_View_Base
 		isPressed = false;
 		GL_Listener.glListener.renderOnce(this);
 		return true;
-	}
-
-	@Override
-	public void dispose()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean onLongClick(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	public void enable()
@@ -226,13 +206,6 @@ public class Button extends GL_View_Base
 
 		lblTxt.setText(Text);
 		GL_Listener.glListener.renderOnce(this);
-	}
-
-	@Override
-	public void onParentRezised(CB_RectF rec)
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 }

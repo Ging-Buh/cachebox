@@ -16,6 +16,7 @@
 
 package CB_Core.GL_UI.Controls;
 
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.Math.CB_RectF;
@@ -27,7 +28,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Label extends GL_View_Base
+public class Label extends CB_View_Base
 {
 	public BitmapFontCache cache;
 	public VAlignment valignment = VAlignment.CENTER;
@@ -119,41 +120,6 @@ public class Label extends GL_View_Base
 	public void onRezised(CB_RectF rec)
 	{
 		fontPropertyChanged();
-	}
-
-	@Override
-	public boolean onLongClick(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDragged(int x, int y, int pointer)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void dispose()
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 	private void chkCache()
@@ -296,13 +262,6 @@ public class Label extends GL_View_Base
 		right = left = top = bottom = value;
 		change();
 		fontPropertyChanged();
-	}
-
-	@Override
-	public void onParentRezised(CB_RectF rec)
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 	public void setScale(float scaleFactor)

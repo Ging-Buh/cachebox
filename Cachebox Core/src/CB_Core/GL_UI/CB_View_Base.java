@@ -57,21 +57,21 @@ public class CB_View_Base extends GL_View_Base implements ViewOptionsMenu
 	}
 
 	@Override
-	public void OnShow()
+	public void onShow()
 	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void OnHide()
+	public void onHide()
 	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void OnFree()
+	public void onFree()
 	{
 		// TODO Auto-generated method stub
 

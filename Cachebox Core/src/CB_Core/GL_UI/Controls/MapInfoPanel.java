@@ -2,8 +2,8 @@ package CB_Core.GL_UI.Controls;
 
 import CB_Core.GlobalCore;
 import CB_Core.UnitFormatter;
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
-import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
@@ -11,10 +11,9 @@ import CB_Core.Math.GL_UISizes;
 import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-public class MapInfoPanel extends GL_View_Base
+public class MapInfoPanel extends CB_View_Base
 {
 
 	private Image arrow;
@@ -92,61 +91,6 @@ public class MapInfoPanel extends GL_View_Base
 		lblLongitude.setPos(new Vector2(this.getWidth() - lblLongitude.getWidth(), this.height * 0.1f));
 		lblLongitude.setText("---");
 		this.addChild(lblLongitude);
-	}
-
-	@Override
-	protected void render(SpriteBatch batch)
-	{
-
-	}
-
-	@Override
-	public void onRezised(CB_RectF rec)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean onLongClick(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDragged(int x, int y, int pointer)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void dispose()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onParentRezised(CB_RectF rec)
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 }

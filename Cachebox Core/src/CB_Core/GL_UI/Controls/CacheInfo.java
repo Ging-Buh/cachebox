@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 import CB_Core.DB.Database;
 import CB_Core.Enums.LogTypes;
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
-import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.Math.CB_RectF;
@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-public class CacheInfo extends GL_View_Base
+public class CacheInfo extends CB_View_Base
 {
 
 	public static final int SHOW_COMPASS = 1;
@@ -217,48 +217,6 @@ public class CacheInfo extends GL_View_Base
 	public void onRezised(CB_RectF rec)
 	{
 		requestLayout();
-	}
-
-	@Override
-	public void onParentRezised(CB_RectF rec)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean onLongClick(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDragged(int x, int y, int pointer)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void dispose()
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 	public void setViewMode(int viewMode)

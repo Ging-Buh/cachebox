@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
@@ -30,7 +31,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-public class ZoomButtons extends GL_View_Base
+public class ZoomButtons extends CB_View_Base
 {
 
 	private int minzoom = 6;
@@ -423,38 +424,10 @@ public class ZoomButtons extends GL_View_Base
 	}
 
 	@Override
-	public boolean onLongClick(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean onTouchDragged(int x, int y, int pointer)
-	{
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
 		onTouchUp = onTouchDown = false;
 		return true;
-	}
-
-	@Override
-	public void dispose()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onParentRezised(CB_RectF rec)
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 }

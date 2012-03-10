@@ -4,6 +4,7 @@ import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.GL_UI.ViewConst;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.SelectedLangChangedEvent;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
@@ -87,7 +88,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu, Positio
 		@Override
 		public void onClick(View v)
 		{// bei click auf WP zeige WayPointView
-			((main) main.mainActivity).showView(main.WAYPOINT_VIEW);
+			((main) main.mainActivity).showView(ViewConst.WAYPOINT_VIEW);
 			Toast.makeText(main.mainActivity, "Switch to Waypoint View", Toast.LENGTH_SHORT).show();
 		}
 	};

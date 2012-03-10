@@ -19,6 +19,7 @@ package de.cachebox_test.Custom_Controls;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Core.GL_UI.ViewConst;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -100,7 +101,7 @@ public final class invertViewControl extends View
 								public void run()
 								{
 									firstDraw = false;
-									((main) main.mainActivity).showView(main.DESCRIPTION_VIEW);
+									((main) main.mainActivity).showView(ViewConst.DESCRIPTION_VIEW);
 								}
 							});
 						}
