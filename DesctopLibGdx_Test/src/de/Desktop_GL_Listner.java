@@ -56,42 +56,45 @@ public class Desktop_GL_Listner extends GL_Listener implements InputProcessor {
 	
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
-		lastTouchDown=new Point(x, y);
-		aktTouch=new Point(x, y);
-		lastPointer=pointer;
-		lastbutton=button;
-		startLongClickTimer();
-		return this.onTouchDown(x, y, pointer, button) != null;
+		return this.onTouchDownBase(x, y, pointer, button);
+//		lastTouchDown=new Point(x, y);
+//		aktTouch=new Point(x, y);
+//		lastPointer=pointer;
+//		lastbutton=button;
+//		startLongClickTimer();
+//		return this.onTouchDown(x, y, pointer, button) != null;
 	}
 
 	@Override
 	public boolean touchDragged(int x, int y, int pointer) {
 		// Events vom Listener nicht behandeln, wir haben unsere eigenes
 		// Eventhandling
-		return false;
+		return onTouchDraggedBase(x, y, pointer);
 	}
 
 	@Override
 	public boolean touchMoved(int x, int y) {
-		aktTouch=new Point(x, y);
-		return onTouchDragged(x, y, -1);
+//		aktTouch=new Point(x, y);
+//		return onTouchDragged(x, y, -1);
+		return onTouchDraggedBase(x, y, -1);
 	}
 
 	@Override
 	public boolean touchUp(int x, int y, int pointer, int button) {
-		cancelLongClickTimer();		
-		int tol=5;
-		
-		int minX= lastTouchDown.x-tol;
-		int maxX= lastTouchDown.x+tol;
-		int minY= lastTouchDown.y-tol;
-		int maxY= lastTouchDown.y+tol;
-		
-		
-		//Click detection
-		if(x>minX&&x<maxX&&y>minY&&y<maxY) onClick(x, y, pointer, button);
-		
-		return onTouchUp(x, y, pointer, button);
+		return onTouchUpBase(x, y, pointer, button);
+//		cancelLongClickTimer();		
+//		int tol=5;
+//		
+//		int minX= lastTouchDown.x-tol;
+//		int maxX= lastTouchDown.x+tol;
+//		int minY= lastTouchDown.y-tol;
+//		int maxY= lastTouchDown.y+tol;
+//		
+//		
+//		//Click detection
+//		if(x>minX&&x<maxX&&y>minY&&y<maxY) onClick(x, y, pointer, button);
+//		
+//		return onTouchUp(x, y, pointer, button);
 	}
 	
 	Timer timer;

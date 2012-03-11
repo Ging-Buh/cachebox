@@ -320,6 +320,53 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	// TouchEreignisse die von der View gesendet werden
 	// hier wird entschieden, wann TouchDonw, TouchDragged, TouchUp und Clicked, LongClicked Ereignisse gesendet werden müssen
+
+	// Timer für Long-Click
+	private Timer longTimer;
+
+	private void startLongClickTimer(final int pointer, final int x, final int y)
+	{
+		cancelLongClickTimer();
+
+		longTimer = new Timer();
+		TimerTask task = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				if (!touchDownPos.containsKey(pointer)) return;
+				// für diesen Pointer ist kein touchDownPos gespeichert ->
+				// dürfte nicht passieren!!!
+				TouchDownPointer first = touchDownPos.get(pointer);
+				Point akt = new Point(x, y);
+				if (distance(akt, first.point) < 15)
+				{
+					if (first.view.isClickable())
+					{
+						first.view.longClick(x - (int) first.view.ThisWorldRec.getX(), (int) child.getHeight() - y
+								- (int) first.view.ThisWorldRec.getY(), pointer, 0);
+						Logger.LogCat("GL_Listner => onLongClick : " + first.view.getName());
+						// für diesen TouchDownn darf kein normaler Click mehr ausgeführt werden
+						touchDownPos.remove(pointer);
+						// onTouchUp nach Long-Click direkt auslösen
+						first.view.touchUp(x, (int) child.getHeight() - y, pointer, 0);
+						Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
+					}
+				}
+			}
+		};
+		longTimer.schedule(task, 2000);
+	}
+
+	private void cancelLongClickTimer()
+	{
+		if (longTimer != null)
+		{
+			longTimer.cancel();
+			longTimer = null;
+		}
+	}
+
 	public boolean onTouchDownBase(int x, int y, int pointer, int button)
 	{
 		GL_View_Base view = child.touchDown(x, (int) child.getHeight() - y, pointer, button);
@@ -328,6 +375,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		touchDownPos.put(pointer, new TouchDownPointer(pointer, new Point(x, y), view));
 
 		Logger.LogCat("GL_Listner => onTouchDownBase : " + view.getName());
+		startLongClickTimer(pointer, x, y);
 
 		return true;
 	}
@@ -341,6 +389,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		Point akt = new Point(x, y);
 		if (distance(akt, first.point) > 15)
 		{
+			// zu weit verschoben -> Long-Click detection stoppen
+			cancelLongClickTimer();
 			// touchDragged Event an das View, das den onTouchDown bekommen hat
 			first.view.touchDragged(x, (int) child.getHeight() - y, pointer);
 			Logger.LogCat("GL_Listner => onTouchDraggedBase : " + first.view.getName());
@@ -351,6 +401,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public boolean onTouchUpBase(int x, int y, int pointer, int button)
 	{
+		cancelLongClickTimer();
+
 		if (!touchDownPos.containsKey(pointer)) return false; // für diesen Pointer ist kein touchDownPos gespeichert ->
 																// dürfte nicht passieren!!!
 		TouchDownPointer first = touchDownPos.get(pointer);
@@ -370,6 +422,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		first.view.touchUp(x, (int) child.getHeight() - y, pointer, button);
 		Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
 		// glListener.onTouchUp(x, y, pointer, 0);
+		touchDownPos.remove(pointer);
 
 		return true;
 	}
