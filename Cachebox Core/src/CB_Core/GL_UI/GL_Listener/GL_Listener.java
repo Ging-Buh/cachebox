@@ -323,6 +323,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	public boolean onTouchDownBase(int x, int y, int pointer, int button)
 	{
 		GL_View_Base view = child.touchDown(x, (int) child.getHeight() - y, pointer, button);
+		if (view == null) return false;
 		// down Position merken
 		touchDownPos.put(pointer, new TouchDownPointer(pointer, new Point(x, y), view));
 

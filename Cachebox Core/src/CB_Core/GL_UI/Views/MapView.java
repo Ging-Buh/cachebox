@@ -1499,7 +1499,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			if (fingerDown.size() == 2) inputState = InputState.Zoom;
 		}
 
-		return false;
+		return true;
 	}
 
 	@Override
@@ -1611,7 +1611,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 
 		// debugString = "State: " + inputState;
-		return false;
+		return true;
 	}
 
 	@Override
@@ -1755,7 +1755,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		// debugString = "State: " + inputState;
 
-		return false;
+		return true;
 	}
 
 	private void calcCenter()
