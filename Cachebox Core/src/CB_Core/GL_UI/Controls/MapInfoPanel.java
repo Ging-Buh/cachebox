@@ -24,7 +24,7 @@ public class MapInfoPanel extends CB_View_Base
 
 	public void setCoord(Coordinate Coord)
 	{
-		if (Coord != null)
+		if (Coord != null && lblLatitude != null && lblLongitude != null)
 		{
 			lblLatitude.setText(GlobalCore.FormatLatitudeDM(Coord.Latitude));
 			lblLongitude.setText(GlobalCore.FormatLongitudeDM(Coord.Longitude));
@@ -47,13 +47,21 @@ public class MapInfoPanel extends CB_View_Base
 
 	public void setBearing(float Bearing)
 	{
-		arrow.setRotate(-Bearing);
-		GL_Listener.glListener.renderOnce(this);
+		if (arrow != null)
+		{
+			arrow.setRotate(-Bearing);
+			GL_Listener.glListener.renderOnce(this);
+		}
 	}
 
 	public MapInfoPanel(CB_RectF rec, CharSequence Name)
 	{
 		super(rec, Name);
+	}
+
+	@Override
+	protected void Initial()
+	{
 		setBackground(new NinePatch(SpriteCache.InfoBack, 16, 16, 16, 16));
 
 		// initial Image

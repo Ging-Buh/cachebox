@@ -87,6 +87,8 @@ public class Label extends CB_View_Base
 	private void fontPropertyChanged()
 	{
 
+		if (bounds == null) return;
+
 		calcInnerRec();
 
 		float x = innerRec.getX();
@@ -267,6 +269,13 @@ public class Label extends CB_View_Base
 	public void setScale(float scaleFactor)
 	{
 		cache.getFont().setScale(scaleFactor);
+	}
+
+	@Override
+	protected void Initial()
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }

@@ -49,6 +49,7 @@ public abstract class GL_View_Base extends CB_RectF
 	private MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
 
 	private OnClickListener mOnClickListener;
+	private OnLongClickListener mOnLongClickListener;
 	protected boolean isClickable = false;
 
 	protected boolean onTouchUp = false;
@@ -382,12 +383,36 @@ public abstract class GL_View_Base extends CB_RectF
 		return behandelt;
 	}
 
-	public final boolean longClick(int x, int y, int pointer, int button)
+	public boolean longClick(int x, int y, int pointer, int button)
 	{
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht �berschrieben werden!!!
 		// das Ereignis wird dann in der richtigen View an onTouchDown �bergeben!!!
 		boolean behandelt = false;
-		return false;
+		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+		{
+			// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
+			GL_View_Base view = iterator.next();
+
+			if (!view.isClickable()) continue;
+
+			if (view.contains(x, y))
+			{
+				// touch innerhalb des Views
+				// -> Klick an das View weitergeben
+				behandelt = view.longClick(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
+			}
+		}
+		if (!behandelt)
+		{
+			// kein Klick in einem untergeordnetem View
+			// -> hier behandeln
+			if (mOnClickListener != null)
+			{
+				behandelt = mOnLongClickListener.onLongClick(this, x, y, pointer, button);
+			}
+
+		}
+		return behandelt;
 	}
 
 	public final GL_View_Base touchDown(int x, int y, int pointer, int button)
@@ -505,6 +530,20 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	/**
+	 * Interface definition for a callback to be invoked when a view is clicked.
+	 */
+	public interface OnLongClickListener
+	{
+		/**
+		 * Called when a view has been Longclicked.
+		 * 
+		 * @param v
+		 *            The view that was clicked.
+		 */
+		boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button);
+	}
+
+	/**
 	 * Register a callback to be invoked when this view is clicked. If this view is not clickable, it becomes clickable.
 	 * 
 	 * @param l
@@ -518,6 +557,22 @@ public abstract class GL_View_Base extends CB_RectF
 			isClickable = true;
 		}
 		mOnClickListener = l;
+	}
+
+	/**
+	 * Register a callback to be invoked when this view is clicked. If this view is not clickable, it becomes clickable.
+	 * 
+	 * @param l
+	 *            The callback that will run
+	 * @see #setClickable(boolean)
+	 */
+	public void setOnLongClickListener(OnLongClickListener l)
+	{
+		if (!isClickable)
+		{
+			isClickable = true;
+		}
+		mOnLongClickListener = l;
 	}
 
 	public boolean isClickable()

@@ -14,6 +14,9 @@ import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.ZoomButtons;
 import CB_Core.GL_UI.Controls.ZoomScale;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Controls.MessageBox.MsgBox;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
@@ -94,7 +97,16 @@ public class MapControlTest extends CB_View_Base
 			@Override
 			public void onStateChange(GL_View_Base v, int State)
 			{
+				MsgBox.Show("Set State to " + togBtn.getState(), "Titel", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk,
+						new MsgBox.OnClickListener()
+						{
 
+							@Override
+							public void onClick(int which)
+							{
+								MsgBox.Show("Button " + which + " clicked");
+							}
+						});
 			}
 		});
 		this.addChild(togBtn);
@@ -250,6 +262,13 @@ public class MapControlTest extends CB_View_Base
 		togBtn.setPos(new Vector2((float) (this.width - margin - togBtn.getWidth()), this.height - margin - togBtn.getHeight()));
 
 		GL_Listener.glListener.renderOnce(this);
+	}
+
+	@Override
+	protected void Initial()
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }

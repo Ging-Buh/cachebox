@@ -5,6 +5,8 @@ import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.app.Dialog;
@@ -38,8 +40,6 @@ import de.cachebox_test.Events.PositionEvent;
 import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Views.Forms.MessageBox;
-import de.cachebox_test.Views.Forms.MessageBoxButtons;
-import de.cachebox_test.Views.Forms.MessageBoxIcon;
 import de.cachebox_test.Views.Forms.NumerikInputBox;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 

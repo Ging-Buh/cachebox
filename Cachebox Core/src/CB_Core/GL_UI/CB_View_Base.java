@@ -6,7 +6,7 @@ import CB_Core.Math.SizeF;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class CB_View_Base extends GL_View_Base implements ViewOptionsMenu
+public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMenu
 {
 
 	// # Constructors
@@ -84,12 +84,23 @@ public class CB_View_Base extends GL_View_Base implements ViewOptionsMenu
 		return 0;
 	}
 
+	protected boolean isInitial = false;
+
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		// TODO Auto-generated method stub
-
+		if (!isInitial)
+		{
+			Initial();
+			isInitial = true;
+		}
 	}
+
+	/**
+	 * Da die meisten Sprite Initialisierungen von Sprites im Render Thread durchgeführt werden müssen, wird diese Methode, zu
+	 * Initialisierung im ersten Render Durchgang ausgeführt.
+	 */
+	protected abstract void Initial();
 
 	@Override
 	public void onRezised(CB_RectF rec)

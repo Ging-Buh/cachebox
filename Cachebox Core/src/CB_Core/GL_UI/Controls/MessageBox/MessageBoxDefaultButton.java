@@ -1,4 +1,4 @@
-package de.cachebox_test.Views.Forms;
+package CB_Core.GL_UI.Controls.MessageBox;
 
 public enum MessageBoxDefaultButton 
 {

@@ -80,14 +80,13 @@ public class CacheInfo extends CB_View_Base
 	{
 		super(size, Name);
 		mCache = value;
-		requestLayout();
 	}
 
 	public CacheInfo(CB_RectF rec, String Name, Cache value)
 	{
 		super(rec, Name);
 		mCache = value;
-		requestLayout();
+
 	}
 
 	public void setFont(BitmapFont font)
@@ -99,11 +98,11 @@ public class CacheInfo extends CB_View_Base
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		mIconSprite.draw(batch);
-		mRatingSprite.draw(batch);
-		mS_FontCache.draw(batch);
-		mD_FontCache.draw(batch);
-		mT_FontCache.draw(batch);
+		if (mIconSprite != null) mIconSprite.draw(batch);
+		if (mRatingSprite != null) mRatingSprite.draw(batch);
+		if (mS_FontCache != null) mS_FontCache.draw(batch);
+		if (mD_FontCache != null) mD_FontCache.draw(batch);
+		if (mT_FontCache != null) mT_FontCache.draw(batch);
 
 	}
 
@@ -216,18 +215,24 @@ public class CacheInfo extends CB_View_Base
 	@Override
 	public void onRezised(CB_RectF rec)
 	{
-		requestLayout();
+		if (isInitial) requestLayout();
 	}
 
 	public void setViewMode(int viewMode)
 	{
 		mViewMode = viewMode;
-		requestLayout();
+		if (isInitial) requestLayout();
 	}
 
 	public void setCache(Cache cache)
 	{
 		mCache = cache;
+		if (isInitial) requestLayout();
+	}
+
+	@Override
+	protected void Initial()
+	{
 		requestLayout();
 	}
 

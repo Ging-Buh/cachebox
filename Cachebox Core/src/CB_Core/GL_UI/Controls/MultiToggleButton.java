@@ -91,7 +91,7 @@ public class MultiToggleButton extends Button
 	}
 
 	@Override
-	public boolean onLongClick(int x, int y, int pointer, int button)
+	public boolean longClick(int x, int y, int pointer, int button)
 	{
 		if (lastStateWithLongClick)
 		{
@@ -99,7 +99,7 @@ public class MultiToggleButton extends Button
 		}
 		else
 		{
-			click(x, y, pointer, button);
+			onLongClick(x, y, pointer, button);
 		}
 		return true;
 	}

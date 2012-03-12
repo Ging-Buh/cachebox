@@ -4,6 +4,8 @@ import CB_Core.GlobalCore;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
@@ -28,8 +30,6 @@ import de.cachebox_test.Ui.AllContextMenuCallHandler;
 import de.cachebox_test.Views.Forms.EditWaypoint;
 import de.cachebox_test.Views.Forms.MeasureCoordinateActivity;
 import de.cachebox_test.Views.Forms.MessageBox;
-import de.cachebox_test.Views.Forms.MessageBoxButtons;
-import de.cachebox_test.Views.Forms.MessageBoxIcon;
 import de.cachebox_test.Views.Forms.projectionCoordinate;
 
 public class WaypointView extends ListView implements ViewOptionsMenu

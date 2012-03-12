@@ -69,4 +69,11 @@ public class ArrowView extends CB_View_Base
 		return true;
 	}
 
+	@Override
+	protected void Initial()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

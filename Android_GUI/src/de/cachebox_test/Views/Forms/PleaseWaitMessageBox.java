@@ -17,6 +17,8 @@
 package de.cachebox_test.Views.Forms;
 
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.Math.UiSizes;
 import android.app.Activity;
 import android.app.Dialog;

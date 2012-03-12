@@ -14,6 +14,8 @@ import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;

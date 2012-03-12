@@ -215,7 +215,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		// from create
 
 		String currentLayerName = Config.settings.CurrentMapLayer.getValue();
-		CurrentLayer = ManagerBase.Manager.GetLayerByName((currentLayerName == "") ? "Mapnik" : currentLayerName, currentLayerName, "");
+		if (ManagerBase.Manager != null)
+		{
+			CurrentLayer = ManagerBase.Manager.GetLayerByName((currentLayerName == "") ? "Mapnik" : currentLayerName, currentLayerName, "");
+		}
 
 		width = (int) rec.getWidth();
 		height = (int) rec.getHeight();
@@ -904,6 +907,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	private void loadTiles()
 	{
+
+		if (ManagerBase.Manager == null) return; // Kann nichts laden, wenn der Manager Null ist!
+
 		deleteUnusedTiles();
 		// alle notwendigen Tiles zum Laden einstellen in die Queue
 		// (queuedTiles)
@@ -933,15 +939,23 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				{
 					Descriptor desc = new Descriptor(i, j, aktZoom);
 
-					if (loadedTiles.containsKey(desc.GetHashCode()))
+					try
 					{
-						continue; // Dieses
-									// Tile
-									// existiert
-									// schon!
+						if (loadedTiles.containsKey(desc.GetHashCode()))
+						{
+							continue; // Dieses
+										// Tile
+										// existiert
+										// schon!
+						}
+						if (queuedTiles.containsKey(desc.GetHashCode())) continue;
+						queueTile(desc);
 					}
-					if (queuedTiles.containsKey(desc.GetHashCode())) continue;
-					queueTile(desc);
+					catch (Exception e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -1935,6 +1949,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		togBtn.setPos(new Vector2((float) (this.width - margin - togBtn.getWidth()), this.height - margin - togBtn.getHeight()));
 
 		GL_Listener.glListener.renderOnce(this);
+	}
+
+	@Override
+	protected void Initial()
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }

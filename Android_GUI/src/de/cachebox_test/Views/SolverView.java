@@ -5,6 +5,8 @@ import java.util.TimerTask;
 
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverZeile;
 import CB_Core.Solver.Functions.Function;
@@ -29,8 +31,6 @@ import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Views.Forms.MessageBox;
-import de.cachebox_test.Views.Forms.MessageBoxButtons;
-import de.cachebox_test.Views.Forms.MessageBoxIcon;
 import de.cachebox_test.Views.Forms.selectSolverFunction;
 
 public class SolverView extends FrameLayout implements ViewOptionsMenu

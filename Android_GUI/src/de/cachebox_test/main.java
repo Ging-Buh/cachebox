@@ -35,11 +35,14 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.Events.platformConector.OnShowMessageListner;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.ViewID.UI_Pos;
 import CB_Core.GL_UI.ViewID.UI_Type;
 import CB_Core.GL_UI.Controls.MainView;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
@@ -170,8 +173,6 @@ import de.cachebox_test.Views.Forms.GcApiLogin;
 import de.cachebox_test.Views.Forms.HintDialog;
 import de.cachebox_test.Views.Forms.ImportDialog;
 import de.cachebox_test.Views.Forms.MessageBox;
-import de.cachebox_test.Views.Forms.MessageBoxButtons;
-import de.cachebox_test.Views.Forms.MessageBoxIcon;
 import de.cachebox_test.Views.Forms.ParkingDialog;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 import de.cachebox_test.Views.Forms.ScreenLock;
@@ -351,6 +352,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+		initialPlatformConector();
 
 		// initialize receiver for screen switched on/off
 		IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
@@ -3591,5 +3594,168 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		}
 	}
+
+	// ########### Platform Conector ##########################
+
+	private void initialPlatformConector()
+	{
+		CB_Core.Events.platformConector.setOnShowMassageListneer(new OnShowMessageListner()
+		{
+
+			@Override
+			public void MsgShow(final String msg, final String title, final MessageBoxButtons buttons, final MessageBoxIcon icon,
+					final CB_Core.GL_UI.Controls.MessageBox.MsgBox.OnClickListener listener)
+			{
+
+				Thread t = new Thread()
+				{
+					public void run()
+					{
+						runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								MessageBox.Show(msg, title, buttons, icon, new DialogInterface.OnClickListener()
+								{
+
+									@Override
+									public void onClick(DialogInterface dialog, int which)
+									{
+										dialog.dismiss();
+										if (listener != null) listener.onClick(which);
+									}
+								});
+							}
+						});
+					}
+				};
+
+				t.start();
+
+			}
+
+			@Override
+			public void MsgShow(final String msg, final String title, final MessageBoxButtons buttons,
+					final CB_Core.GL_UI.Controls.MessageBox.MsgBox.OnClickListener listener)
+			{
+
+				Thread t = new Thread()
+				{
+					public void run()
+					{
+						runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								MessageBox.Show(msg, title, buttons, new DialogInterface.OnClickListener()
+								{
+
+									@Override
+									public void onClick(DialogInterface dialog, int which)
+									{
+										dialog.dismiss();
+										if (listener != null) listener.onClick(which);
+									}
+								});
+							}
+						});
+					}
+				};
+
+				t.start();
+			}
+
+			@Override
+			public void MsgShow(final String msg, final String title,
+					final CB_Core.GL_UI.Controls.MessageBox.MsgBox.OnClickListener listener)
+			{
+
+				Thread t = new Thread()
+				{
+					public void run()
+					{
+						runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								MessageBox.Show(msg, title, new DialogInterface.OnClickListener()
+								{
+
+									@Override
+									public void onClick(DialogInterface dialog, int which)
+									{
+										dialog.dismiss();
+										if (listener != null) listener.onClick(which);
+									}
+								});
+							}
+						});
+					}
+				};
+
+				t.start();
+
+			}
+
+			@Override
+			public void MsgShow(final String msg, final CB_Core.GL_UI.Controls.MessageBox.MsgBox.OnClickListener listener)
+			{
+				Thread t = new Thread()
+				{
+					public void run()
+					{
+						runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								MessageBox.Show(msg, new DialogInterface.OnClickListener()
+								{
+
+									@Override
+									public void onClick(DialogInterface dialog, int which)
+									{
+										dialog.dismiss();
+										if (listener != null) listener.onClick(which);
+									}
+								});
+							}
+						});
+					}
+				};
+
+				t.start();
+
+			}
+
+			@Override
+			public void MsgShow(final String msg)
+			{
+				Thread t = new Thread()
+				{
+					public void run()
+					{
+						runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								MessageBox.Show(msg);
+							}
+						});
+					}
+				};
+
+				t.start();
+
+			}
+		});
+
+	}
+
+	// #########################################################
 
 }

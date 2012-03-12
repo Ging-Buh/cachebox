@@ -194,4 +194,11 @@ public class MainView extends CB_View_Base
 			rightFrame.setRec(GL_UISizes.UI_Right);
 		}
 	}
+
+	@Override
+	protected void Initial()
+	{
+		// TODO Auto-generated method stub
+
+	}
 }

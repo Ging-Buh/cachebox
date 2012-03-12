@@ -25,4 +25,11 @@ public class CacheListView extends CB_View_Base
 		// TODO Rufe ANDROID VIEW auf
 	}
 
+	@Override
+	protected void Initial()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

@@ -310,4 +310,11 @@ public class ZoomScale extends CB_View_Base
 		return isVisible;
 	}
 
+	@Override
+	protected void Initial()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

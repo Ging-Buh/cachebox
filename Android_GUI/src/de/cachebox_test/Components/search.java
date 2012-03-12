@@ -31,6 +31,8 @@ import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
@@ -66,8 +68,6 @@ import de.cachebox_test.main;
 import de.cachebox_test.Custom_Controls.MultiToggleButton;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Views.Forms.MessageBox;
-import de.cachebox_test.Views.Forms.MessageBoxButtons;
-import de.cachebox_test.Views.Forms.MessageBoxIcon;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 
 /**

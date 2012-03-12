@@ -126,8 +126,10 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		boolean behandelt = false;
 
-		behandelt = child.longClick(x, (int) child.getHeight() - y, pointer, button);
-
+		if (child.isClickable())
+		{
+			behandelt = child.longClick(x, (int) child.getHeight() - y, pointer, button);
+		}
 		return behandelt;
 	}
 

@@ -54,8 +54,6 @@ public class MainButtonBar extends CB_View_Base
 			xPos += tmp.getWidth();
 		}
 
-		setBtnImages();
-
 	}
 
 	private OnClickListener mClickListner = new OnClickListener()
@@ -69,7 +67,8 @@ public class MainButtonBar extends CB_View_Base
 		}
 	};
 
-	private void setBtnImages()
+	@Override
+	protected void Initial()
 	{
 		// ListButton
 		mButtons.get(0).setninePatch(new NinePatch(SpriteCache.uiAtlas.findRegion("db"), 0, 0, 0, 0));
@@ -88,8 +87,8 @@ public class MainButtonBar extends CB_View_Base
 		mButtons.get(3).setninePatchPressed(new NinePatch(SpriteCache.uiAtlas.findRegion("tool_pressed"), 0, 0, 0, 0));
 
 		// MiscButton
-		mButtons.get(4).setninePatch(new NinePatch(SpriteCache.uiAtlas.findRegion("misc"), 16, 16, 16, 16));
-		mButtons.get(4).setninePatchPressed(new NinePatch(SpriteCache.uiAtlas.findRegion("misc_pressed"), 16, 16, 16, 16));
+		mButtons.get(4).setninePatch(new NinePatch(SpriteCache.uiAtlas.findRegion("misc"), 0, 0, 0, 0));
+		mButtons.get(4).setninePatchPressed(new NinePatch(SpriteCache.uiAtlas.findRegion("misc_pressed"), 0, 0, 0, 0));
 
 	}
 

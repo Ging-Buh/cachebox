@@ -137,4 +137,11 @@ public class Image extends CB_View_Base
 		mImageSprite.setScale(value);
 	}
 
+	@Override
+	protected void Initial()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

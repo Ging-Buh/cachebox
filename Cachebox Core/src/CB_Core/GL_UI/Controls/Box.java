@@ -32,4 +32,11 @@ public class Box extends CB_View_Base
 		super(rec, Name);
 	}
 
+	@Override
+	protected void Initial()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

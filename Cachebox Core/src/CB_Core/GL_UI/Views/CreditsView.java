@@ -51,4 +51,11 @@ public class CreditsView extends CB_View_Base
 		this.setSize(rec.getSize());
 	}
 
+	@Override
+	protected void Initial()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

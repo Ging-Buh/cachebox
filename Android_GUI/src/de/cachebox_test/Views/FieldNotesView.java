@@ -10,6 +10,8 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.ProgresssChangedEventList;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
@@ -37,8 +39,6 @@ import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
 import de.cachebox_test.Views.Forms.EditFieldNote;
 import de.cachebox_test.Views.Forms.MessageBox;
-import de.cachebox_test.Views.Forms.MessageBoxButtons;
-import de.cachebox_test.Views.Forms.MessageBoxIcon;
 import de.cachebox_test.Views.Forms.ProgressDialog;
 
 public class FieldNotesView extends ListView implements ViewOptionsMenu

@@ -8,6 +8,8 @@ import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
@@ -28,8 +30,6 @@ import de.cachebox_test.Global;
 import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Views.Forms.MessageBox;
-import de.cachebox_test.Views.Forms.MessageBoxButtons;
-import de.cachebox_test.Views.Forms.MessageBoxIcon;
 
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 {

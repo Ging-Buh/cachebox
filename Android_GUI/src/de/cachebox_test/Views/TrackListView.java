@@ -1,5 +1,7 @@
 package de.cachebox_test.Views;
 
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Types.Coordinate;
@@ -16,8 +18,6 @@ import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
 import de.cachebox_test.Views.Forms.EditCoordinate;
 import de.cachebox_test.Views.Forms.MessageBox;
-import de.cachebox_test.Views.Forms.MessageBoxButtons;
-import de.cachebox_test.Views.Forms.MessageBoxIcon;
 import de.cachebox_test.Views.Forms.projectionCoordinate;
 import android.app.Activity;
 import android.content.Context;

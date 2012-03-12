@@ -110,11 +110,11 @@ public class DesktopMain {
 
 	private static void Run() {
 		CB_UI.onStart();
-		CB_UI.setGLViewID(ViewConst.MAP_CONTROL_TEST_VIEW);
-//		CB_UI.setGLViewID(TEST_VIEW);
-		// CB_UI.setGLViewID(CREDITS_VIEW);
-		// CB_UI.setGLViewID(GL_MAP_VIEW);
-//		CB_UI.setGLViewID(ViewConst.ABOUT_VIEW);
+//		CB_UI.setGLViewID(ViewConst.MAP_CONTROL_TEST_VIEW);
+//		CB_UI.setGLViewID(ViewConst.TEST_VIEW);
+		// CB_UI.setGLViewID(ViewConst.CREDITS_VIEW);
+		 CB_UI.setGLViewID(ViewConst.GL_MAP_VIEW);
+//		CB_UI.setGLViewID(ViewConst.ViewConst.ABOUT_VIEW);
 
 		Gdx.input.setInputProcessor((InputProcessor) CB_UI);
 

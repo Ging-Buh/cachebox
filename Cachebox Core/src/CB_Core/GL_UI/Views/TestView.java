@@ -209,4 +209,11 @@ public class TestView extends CB_View_Base
 		GL_Listener.glListener.renderOnce(this);
 	}
 
+	@Override
+	protected void Initial()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

@@ -74,24 +74,17 @@ public class Button extends CB_View_Base
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		if (mNinePatch == null)
-		{
-			mNinePatch = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_normal"), 16, 16, 16, 16);
-		}
-		if (mNinePatchPressed == null)
-		{
-			mNinePatchPressed = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_pressed"), 16, 16, 16, 16);
-		}
-		if (mNinePatchDisabled == null)
-		{
-			mNinePatchDisabled = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_default_normal_disabled"), 8, 8, 8, 8);
-		}
 
 		if (!isPressed && !isDisabled)
 		{
 			if (mNinePatch != null)
 			{
 				mNinePatch.draw(batch, 0, 0, width, height);
+			}
+			else
+			{
+				Initial();
+				GL_Listener.glListener.renderOnce(this);
 			}
 		}
 		else if (isPressed)
@@ -206,6 +199,24 @@ public class Button extends CB_View_Base
 
 		lblTxt.setText(Text);
 		GL_Listener.glListener.renderOnce(this);
+	}
+
+	@Override
+	protected void Initial()
+	{
+		if (mNinePatch == null)
+		{
+			mNinePatch = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_normal"), 16, 16, 16, 16);
+		}
+		if (mNinePatchPressed == null)
+		{
+			mNinePatchPressed = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_pressed"), 16, 16, 16, 16);
+		}
+		if (mNinePatchDisabled == null)
+		{
+			mNinePatchDisabled = new NinePatch(SpriteCache.uiAtlas.findRegion("day_btn_default_normal_disabled"), 8, 8, 8, 8);
+		}
+
 	}
 
 }
