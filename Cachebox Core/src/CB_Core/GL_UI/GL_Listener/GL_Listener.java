@@ -394,7 +394,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			// zu weit verschoben -> Long-Click detection stoppen
 			cancelLongClickTimer();
 			// touchDragged Event an das View, das den onTouchDown bekommen hat
-			first.view.touchDragged(x, (int) child.getHeight() - y, pointer);
+			first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(),
+					(int) child.getHeight() - y - (int) first.view.ThisWorldRec.getY(), pointer);
 			Logger.LogCat("GL_Listner => onTouchDraggedBase : " + first.view.getName());
 		}
 
