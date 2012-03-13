@@ -1985,6 +1985,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				break;
 			case R.id.miViewGL:
 				showView(ViewConst.MAP_CONTROL_TEST_VIEW);
+				// showView(ViewConst.TEST_VIEW);
 				break;
 			case R.id.miViewMap3:
 				showView(ViewConst.GL_MAP_VIEW);

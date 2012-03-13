@@ -216,4 +216,9 @@ public class TestView extends CB_View_Base
 
 	}
 
+	public boolean onTouchDown(int x, int y, int pointer, int button)
+	{
+		return true;
+	}
+
 }

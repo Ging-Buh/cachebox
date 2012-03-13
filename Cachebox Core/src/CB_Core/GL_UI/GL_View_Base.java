@@ -46,7 +46,7 @@ public abstract class GL_View_Base extends CB_RectF
 	/**
 	 * Enth�lt alle GL_Views innerhalb dieser Gl_View
 	 */
-	private MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
+	protected MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
 
 	private OnClickListener mOnClickListener;
 	private OnLongClickListener mOnLongClickListener;
@@ -172,7 +172,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 		if (thisInvalidate)
 		{
-			myParentInfo = parentInfo;
+			myParentInfo = parentInfo.cpy();
 			CalcMyInfoForChild();
 		}
 
@@ -273,8 +273,8 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	public CB_RectF ThisWorldRec;
-	private CB_RectF intersectRec;
-	protected ParentInfo myParentInfo;
+	public CB_RectF intersectRec;
+	public ParentInfo myParentInfo;
 	private boolean mustSetScissor = false;
 	private boolean childsInvalidate = false;
 	private boolean thisInvalidate = true;
@@ -288,12 +288,9 @@ public abstract class GL_View_Base extends CB_RectF
 	private void CalcMyInfoForChild()
 	{
 		childsInvalidate = true;
-
-		mustSetScissor = !myParentInfo.drawRec().contains(this);
-
 		ThisWorldRec = this.copy().offset(myParentInfo.Vector());
-
 		ThisWorldRec.offset(-this.getX(), -this.getY());
+		mustSetScissor = !myParentInfo.drawRec().contains(ThisWorldRec);
 
 		if (mustSetScissor)
 		{
@@ -444,6 +441,9 @@ public abstract class GL_View_Base extends CB_RectF
 			boolean behandelt = onTouchDown(x, y, pointer, button);
 			if (behandelt) resultView = this;
 		}
+
+		GL_Listener.glListener.renderOnce(this);
+
 		return resultView;
 	}
 
@@ -499,6 +499,7 @@ public abstract class GL_View_Base extends CB_RectF
 			// -> hier behandeln
 			behandelt = onTouchUp(x, y, pointer, button);
 		}
+
 		return behandelt;
 	}
 
@@ -608,6 +609,31 @@ public abstract class GL_View_Base extends CB_RectF
 	public CharSequence getName()
 	{
 		return name;
+	}
+
+	@Override
+	public void setY(float i)
+	{
+		super.setY(i);
+		this.invalidate(); // Scissor muss neu berechnet werden
+		GL_Listener.glListener.renderOnce(this);
+
+	}
+
+	@Override
+	public void setX(float i)
+	{
+		super.setX(i);
+		this.invalidate(); // Scissor muss neu berechnet werden
+		GL_Listener.glListener.renderOnce(this);
+	}
+
+	@Override
+	public void setPos(Vector2 Pos)
+	{
+		super.setPos(Pos);
+		this.invalidate(); // Scissor muss neu berechnet werden
+		GL_Listener.glListener.renderOnce(this);
 	}
 
 }
