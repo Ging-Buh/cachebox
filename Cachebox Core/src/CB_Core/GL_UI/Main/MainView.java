@@ -1,9 +1,10 @@
-package CB_Core.GL_UI.Controls;
+package CB_Core.GL_UI.Main;
 
 import CB_Core.GlobalCore;
-import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ViewID;
+import CB_Core.GL_UI.Controls.Box;
+import CB_Core.GL_UI.Controls.MainButtonBar;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Views.AboutView;
 import CB_Core.GL_UI.Views.CreditsView;
@@ -18,7 +19,7 @@ import CB_Core.Math.UiSizes;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-public class MainView extends CB_View_Base
+public class MainView extends MainViewBase
 {
 
 	private AboutView aboutView; // ID=11

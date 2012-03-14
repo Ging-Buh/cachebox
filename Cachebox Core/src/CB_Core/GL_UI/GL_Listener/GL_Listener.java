@@ -12,7 +12,8 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewID;
-import CB_Core.GL_UI.Controls.MainView;
+import CB_Core.GL_UI.Main.MainView;
+import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
@@ -32,7 +33,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	public static GL_Listener glListener;
 	// # private Member
 	private HashMap<GL_View_Base, Integer> renderViews = new HashMap<GL_View_Base, Integer>();
-	MainView child;
+	protected MainViewBase child;
 	private static AtomicBoolean started = new AtomicBoolean(false);
 	static boolean useNewInput = true;
 
@@ -45,8 +46,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	public static OrthographicCamera camera;
 	private ParentInfo prjMatrix;
 
-	private int width = 0;
-	private int height = 0;
+	protected int width = 0;
+	protected int height = 0;
 
 	/**
 	 * Constructor

@@ -6,9 +6,12 @@ import java.util.TimerTask;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.Main.MainView;
+import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Log.Logger;
 
 public class Desktop_GL_Listner extends GL_Listener implements InputProcessor {
@@ -19,7 +22,24 @@ public class Desktop_GL_Listner extends GL_Listener implements InputProcessor {
 
 	}
 
-	
+	@Override
+	public void Initialize()
+	{
+		Logger.LogCat("GL_Listner => Initialize TabMainView");
+
+		if (batch == null)
+		{
+			batch = new SpriteBatch();
+		}
+
+		if (child == null)
+		{
+//			child = new MainView(0, 0, width, height, "MainView");
+			child = new TabMainView(0, 0, width, height, "TabMainView");
+			child.setClickable(true);
+		}
+
+	}
 	
 	
 	// # ImputProzessor Implamantations
