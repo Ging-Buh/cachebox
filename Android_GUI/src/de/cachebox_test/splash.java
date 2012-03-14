@@ -676,6 +676,9 @@ public class splash extends Activity
 		baseIntent.setFlags(Intent.FLAG_DEBUG_LOG_RESOLUTION);
 		List<ResolveInfo> list = packageManager.queryIntentServices(baseIntent, PackageManager.GET_RESOLVED_FILTER);
 		// Log.d(LOG_TAG, "fillPluginList: " + list);
+
+		Config.settings.hasFTF_PlugIn.setValue(false);
+		Config.settings.hasFTF_PlugIn.setValue(false);
 		int i;
 		for (i = 0; i < list.size(); ++i)
 		{
@@ -684,18 +687,31 @@ public class splash extends Activity
 			// Log.d(LOG_TAG, "fillPluginList: i: " + i + "; sinfo: " + sinfo);
 			if (sinfo != null)
 			{
-				HashMap<String, String> item = new HashMap<String, String>();
-				item.put(KEY_PKG, sinfo.packageName);
-				item.put(KEY_SERVICENAME, sinfo.name);
-				services.add(item);
-				if (i <= 4)
-				{
-					inflateToView(i, packageManager, sinfo.packageName);
 
+				if (sinfo.packageName.contains("de.CB_FTF_PlugIn")) // Don't bind, is an Widget
+				{
+					Config.settings.hasFTF_PlugIn.setValue(true);
+				}
+				else if (sinfo.packageName.contains("de.CB_PQ_PlugIn"))// Don't bind, is an Widget
+				{
+					Config.settings.hasPQ_PlugIn.setValue(true);
+				}
+				else
+				// PlugIn for Bind
+				{
+					HashMap<String, String> item = new HashMap<String, String>();
+					item.put(KEY_PKG, sinfo.packageName);
+					item.put(KEY_SERVICENAME, sinfo.name);
+					services.add(item);
+					if (i <= 4)
+					{
+						inflateToView(i, packageManager, sinfo.packageName);
+
+					}
 				}
 			}
 		}
-
+		Config.AcceptChanges();
 	}
 
 	private void inflateToView(int rowCtr, PackageManager packageManager, String packageName)

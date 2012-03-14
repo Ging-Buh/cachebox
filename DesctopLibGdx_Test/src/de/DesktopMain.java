@@ -115,7 +115,8 @@ public class DesktopMain {
 		CB_UI.setGLViewID(ViewConst.TEST_VIEW);
 		// CB_UI.setGLViewID(ViewConst.CREDITS_VIEW);
 //		 CB_UI.setGLViewID(ViewConst.GL_MAP_VIEW);
-//		CB_UI.setGLViewID(ViewConst.ABOUT_VIEW);
+//		CB_UI.setGLViewID(ViewConst.ViewConst.ABOUT_VIEW);
+		CB_UI.setGLViewID(ViewConst.TEST_LIST_VIEW);
 
 		Gdx.input.setInputProcessor((InputProcessor) CB_UI);
 

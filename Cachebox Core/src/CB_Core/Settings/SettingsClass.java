@@ -90,6 +90,9 @@ public class SettingsClass extends SettingsList
 	public SettingBool dontShowChris;
 	public SettingBool hasCallPermission;
 	public SettingBool vibrateFeedback;
+	public SettingBool hasPQ_PlugIn;
+	public SettingBool hasFTF_PlugIn;
+
 	// int
 	public SettingInt LogMaxMonthAge;
 	public SettingInt LogMinCount;
@@ -339,6 +342,8 @@ public class SettingsClass extends SettingsList
 		addSetting(quickButtonList = new SettingString("quickButtonList", cat, NEVER, "5,0,1,3,2", true));
 
 		addSetting(hasCallPermission = new SettingBool("hasCallPermission", cat, NEVER, false, true));
+		addSetting(hasPQ_PlugIn = new SettingBool("hasPQ_PlugIn", cat, NEVER, false, true));
+		addSetting(hasFTF_PlugIn = new SettingBool("hasFTF_PlugIn", cat, NEVER, false, true));
 	}
 
 	private void addAPISettings()

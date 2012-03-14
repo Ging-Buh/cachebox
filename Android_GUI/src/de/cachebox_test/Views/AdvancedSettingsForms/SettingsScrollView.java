@@ -112,7 +112,15 @@ public class SettingsScrollView extends Activity
 
 	public void onCreate(Bundle savedInstanceState)
 	{
-		ActivityUtils.onActivityCreateSetTheme(this);
+		try
+		{
+			ActivityUtils.onActivityCreateSetTheme(this);
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.setting_scroll_layout);
 		context = this;

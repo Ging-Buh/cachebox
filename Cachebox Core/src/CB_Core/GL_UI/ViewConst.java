@@ -24,6 +24,7 @@ public class ViewConst
 	public static final ViewID CREDITS_VIEW = new ViewID(ViewID.CREDITS_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
 	public static final ViewID GL_MAP_VIEW = new ViewID(ViewID.GL_MAP_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
 	public static final ViewID MAP_CONTROL_TEST_VIEW = new ViewID(ViewID.MAP_CONTROL_TEST_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
+	public static final ViewID TEST_LIST_VIEW = new ViewID(ViewID.TEST_LIST_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Left);
 
 	public static final ViewID SETTINGS = new ViewID(ViewID.SETTINGS, UI_Type.Activity, null, null);
 	public static final ViewID FILTER_SETTINGS = new ViewID(ViewID.FILTER_SETTINGS, UI_Type.Activity, null, null);

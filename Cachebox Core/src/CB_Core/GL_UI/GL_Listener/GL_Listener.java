@@ -377,7 +377,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		// down Position merken
 		touchDownPos.put(pointer, new TouchDownPointer(pointer, new Point(x, y), view));
 
-		Logger.LogCat("GL_Listner => onTouchDownBase : " + view.getName());
+		// Logger.LogCat("GL_Listner => onTouchDownBase : " + view.getName());
 		startLongClickTimer(pointer, x, y);
 
 		return true;
@@ -397,7 +397,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			// touchDragged Event an das View, das den onTouchDown bekommen hat
 			first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(),
 					(int) child.getHeight() - y - (int) first.view.ThisWorldRec.getY(), pointer);
-			Logger.LogCat("GL_Listner => onTouchDraggedBase : " + first.view.getName());
+			// Logger.LogCat("GL_Listner => onTouchDraggedBase : " + first.view.getName());
 		}
 
 		return true;
@@ -424,7 +424,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		}
 		// onTouchUp immer auslösen
 		first.view.touchUp(x, (int) child.getHeight() - y, pointer, button);
-		Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
+		// Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
 		// glListener.onTouchUp(x, y, pointer, 0);
 		touchDownPos.remove(pointer);
 
