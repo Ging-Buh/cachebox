@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Controls.List;
 
-
 public interface Adapter
 {
 

@@ -1,14 +1,16 @@
 package CB_Core.GL_UI.Controls.List;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
-public abstract class H_ListView extends ListViewBase
+public class H_ListView extends ListViewBase
 {
 
 	public H_ListView(CB_RectF rec, CharSequence Name)
@@ -46,11 +48,17 @@ public abstract class H_ListView extends ListViewBase
 			{
 				ListViewItemBase tmp = iterator.next();
 				mAddeedIndexList.remove((Object) tmp.getIndex());
+				Logger.LogCat("Remove: " + tmp.getName());
 				this.removeChild(tmp);
-				tmp.dispose();
+				if (mCanDispose) tmp.dispose();
 			}
 			clearList.clear();
 			clearList = null;
+
+			// setze First Index, damit nicht alle Items durchlaufen werden müssen
+			Collections.sort(mAddeedIndexList);
+			mFirstIndex = mAddeedIndexList.get(0) - mMaxItemCount;
+			if (mFirstIndex < 0) mFirstIndex = 0;
 		}
 
 		mPos = value;
@@ -67,23 +75,27 @@ public abstract class H_ListView extends ListViewBase
 
 		for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
 		{
-
-			// if (mPosDefault.get(i) < this.getMaxX())
-			if (mPosDefault.get(i) > mAllSize)
+			if (!mAddeedIndexList.contains(i))
 			{
-				ListViewItemBase tmp = mBaseAdapter.getView(i);
-				float itemPos = mPosDefault.get(i);
-				itemPos -= mPos;
 
-				if (itemPos <= this.getMaxX())
+				ListViewItemBase tmp = mBaseAdapter.getView(i);
+
+				// if (mPosDefault.get(i) < this.getMaxX())
+				if (mPosDefault.get(i) + tmp.getWidth() - mPos > 0)
 				{
-					if (!mAddeedIndexList.contains(tmp.getIndex()))
+
+					float itemPos = mPosDefault.get(i);
+					itemPos -= mPos;
+
+					if (itemPos <= this.getWidth())
 					{
-						if (itemPos + tmp.getWidth() < 0) break;
 						tmp.setX(itemPos);
+						Logger.LogCat("Add: " + tmp.getName());
 						this.addChild(tmp);
 						mAddeedIndexList.add(tmp.getIndex());
 					}
+					else
+						break;
 				}
 			}
 
@@ -102,23 +114,20 @@ public abstract class H_ListView extends ListViewBase
 
 		mPosDefault = new ArrayList<Float>();
 
-		float mesuredWidth = 0;
-
-		for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
-		{
-			mesuredWidth += mBaseAdapter.getView(i).getWidth();
-		}
-
 		float countPos = this.width;
+		float minimumItemWidth = this.width;
 		for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
 		{
 			CB_View_Base tmp = mBaseAdapter.getView(i);
 			countPos -= tmp.getWidth();
 			mPosDefault.add(countPos);
 			mPosDefault.add(0, countPos);
+			if (tmp.getWidth() < minimumItemWidth) minimumItemWidth = tmp.getWidth();
 		}
 		mAllSize = countPos;
 		mPos = countPos;
+		mMaxItemCount = (int) (this.width / minimumItemWidth);
+		if (mMaxItemCount < 1) mMaxItemCount = 1;
 	}
 
 	@Override
@@ -134,6 +143,13 @@ public abstract class H_ListView extends ListViewBase
 		mLastTouch = x;
 		mLastPos_onTouch = mPos;
 		return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelöst wird.
+	}
+
+	@Override
+	protected void Initial()
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }

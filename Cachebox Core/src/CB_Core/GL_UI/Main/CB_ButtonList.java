@@ -2,25 +2,25 @@ package CB_Core.GL_UI.Main;
 
 import java.util.ArrayList;
 
-import CB_Core.GL_UI.CB_View_Base;
-import CB_Core.Math.CB_RectF;
-
-public class CB_ButtonList extends CB_View_Base
+public class CB_ButtonList
 {
 
-	private ArrayList<CB_Button> mButtons;
+	public ArrayList<CB_Button> Buttons;
 
-	public CB_ButtonList(CB_RectF rec, CharSequence Name, ArrayList<CB_Button> Buttons)
+	public CB_ButtonList(ArrayList<CB_Button> Buttons)
 	{
-		super(rec, Name);
-		mButtons = Buttons;
+		this.Buttons = Buttons;
 	}
 
-	@Override
-	protected void Initial()
+	public CB_ButtonList()
 	{
-		// TODO Auto-generated method stub
 
+	}
+
+	public void addButton(CB_Button Button)
+	{
+		if (Buttons == null) Buttons = new ArrayList<CB_Button>();
+		Buttons.add(Button);
 	}
 
 }

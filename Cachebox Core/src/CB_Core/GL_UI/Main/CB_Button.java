@@ -16,6 +16,17 @@ public class CB_Button extends Button
 		mButtonActions = ButtonActions;
 	}
 
+	public CB_Button(CB_RectF rec, String Name)
+	{
+		super(rec, Name);
+		mButtonActions = new ArrayList<CB_ActionButton>();
+	}
+
+	public void addAction(CB_ActionButton Action)
+	{
+		mButtonActions.add(Action);
+	}
+
 	@Override
 	protected void Initial()
 	{

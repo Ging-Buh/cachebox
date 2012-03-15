@@ -5,31 +5,60 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_Core.GL_UI.CB_View_Base;
-import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class ListViewBase extends CB_View_Base
 {
 
-	Adapter mBaseAdapter;
+	private float mAnimationTarget = 0;
+	private Timer mAnimationTimer;
+	private long ANIMATION_TICK = 50;
+	private Boolean mBottomAnimation = false;
+
+	/**
+	 * Ermöglicht den Zugriff auf die Liste, welche Dargestellt werden soll.
+	 */
+	protected Adapter mBaseAdapter;
 
 	/**
 	 * Enthällt die Indexes, welche schon als Child exestieren.
 	 */
 	ArrayList<Integer> mAddeedIndexList = new ArrayList<Integer>();
 
+	/**
+	 * Aktuelle Position der Liste
+	 */
 	protected float mPos = 0;
+
+	/**
+	 * Der Start Index, ab dem gesucht wird, ob ein Item in den Sichtbaren Bereich geschoben wurde. Damit nicht eine Liste von 1000 Items
+	 * abgefragt werden muss wenn nur die letzten 5 sichtbar sind.
+	 */
 	protected int mFirstIndex = 0;
+
+	/**
+	 * Die Anzahl der Items, welche gleichzeitig dargestellt werden kann, wenn alle Items so Groß sind wie das kleinste Item in der List.
+	 */
+	protected int mMaxItemCount = 1;
 
 	/**
 	 * Komplette Breite oder Höhe aller Items
 	 */
 	protected float mAllSize = 0;
+
+	protected boolean mMustSetPos = false;
+	protected float mMustSetPosValue = 0;
+	protected ArrayList<Float> mPosDefault;
+
+	/**
+	 * Wenn True, werden die Items beim verlassen des sichtbaren Bereiches Disposed und auf NULL gesetzt.
+	 */
+	protected Boolean mCanDispose = true;
+
 	protected int mDraged = 0;
 	protected int mLastTouch = 0;
 	protected float mLastPos_onTouch = 0;
@@ -46,9 +75,10 @@ public abstract class ListViewBase extends CB_View_Base
 		addVisibleItems();
 	}
 
-	protected boolean mMustSetPos = false;
-	protected float mMustSetPosValue = 0;
-	protected ArrayList<Float> mPosDefault;
+	public void setDisposeFlag(Boolean CanDispose)
+	{
+		mCanDispose = CanDispose;
+	}
 
 	protected void setPos(float value)
 	{
@@ -77,8 +107,9 @@ public abstract class ListViewBase extends CB_View_Base
 	}
 
 	// Debug FontCaches
-	BitmapFontCache dPosy;
-	BitmapFontCache dDraged;
+	// BitmapFontCache dPosy;
+	// BitmapFontCache dDraged;
+	// BitmapFontCache dFirstIndex;
 
 	@Override
 	protected void render(SpriteBatch batch)
@@ -87,17 +118,20 @@ public abstract class ListViewBase extends CB_View_Base
 		if (mMustSetPos) RenderThreadSetPos(mMustSetPosValue);
 
 		// schreibe Debug
-		if (dPosy == null)
-		{
-			dPosy = new BitmapFontCache(Fonts.get11());
-			dDraged = new BitmapFontCache(Fonts.get11());
-
-		}
-		dPosy.setText("PosY= " + mPos, 220, 100);
-		dDraged.setText("Draged " + mDraged, 220, 85);
-
-		dPosy.draw(batch);
-		dDraged.draw(batch);
+		// if (dPosy == null)
+		// {
+		// dPosy = new BitmapFontCache(Fonts.get11());
+		// dDraged = new BitmapFontCache(Fonts.get11());
+		// dFirstIndex = new BitmapFontCache(Fonts.get11());
+		//
+		// }
+		// dPosy.setText("PosY= " + mPos, 220, 100);
+		// dDraged.setText("Draged " + mDraged, 220, 85);
+		// dFirstIndex.setText("First Index " + mFirstIndex, 220, 70);
+		//
+		// dPosy.draw(batch);
+		// dDraged.draw(batch);
+		// dFirstIndex.draw(batch);
 
 	}
 
@@ -126,11 +160,6 @@ public abstract class ListViewBase extends CB_View_Base
 		mBottomAnimation = true;
 		scrollTo(mAllSize);
 	}
-
-	private float mAnimationTarget = 0;
-	private Timer mAnimationTimer;
-	private long ANIMATION_TICK = 50;
-	private Boolean mBottomAnimation = false;
 
 	private void scrollTo(float Pos)
 	{

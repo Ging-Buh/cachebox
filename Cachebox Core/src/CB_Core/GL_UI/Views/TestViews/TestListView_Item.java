@@ -18,7 +18,7 @@ public class TestListView_Item extends ListViewItemBase
 
 	public TestListView_Item(int Index, String string, Boolean backGroundChanger, CharSequence Name)
 	{
-		super(new CB_RectF(0, 0, 200, 100), Index, Name);
+		super(new CB_RectF(0, 0, 100, 100), Index, Name);
 		this.string = string;
 	}
 
