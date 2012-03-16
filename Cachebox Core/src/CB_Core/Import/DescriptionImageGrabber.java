@@ -284,9 +284,11 @@ public class DescriptionImageGrabber
 
 		for (Segment img : imgTags)
 		{
+			int srcStart = -1;
+			int srcEnd = -1;
 			int srcIdx = img.text.toLowerCase().indexOf("src=");
-			int srcStart = img.text.indexOf('"', srcIdx + 4);
-			int srcEnd = img.text.indexOf('"', srcStart + 1);
+			if (srcIdx != -1) srcStart = img.text.indexOf('"', srcIdx + 4);
+			if (srcStart != -1) srcEnd = img.text.indexOf('"', srcStart + 1);
 
 			if (srcIdx != -1 && srcStart != -1 && srcEnd != -1)
 			{
