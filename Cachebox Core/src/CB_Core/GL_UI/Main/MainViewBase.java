@@ -17,4 +17,12 @@ public abstract class MainViewBase extends CB_View_Base
 
 	}
 
+	public static MainViewBase mainView = null;
+
+	public void requestLayout()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

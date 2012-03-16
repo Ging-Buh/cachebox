@@ -42,6 +42,12 @@ public class SpriteCache
 	public static ArrayList<Sprite> ZoomBtn = null;
 	public static Sprite ZoomValueBack = null;
 
+	public static ButtonSprites CacheList;
+	public static ButtonSprites Cache;
+	public static ButtonSprites Nav;
+	public static ButtonSprites Tool;
+	public static ButtonSprites Misc;
+
 	// UI Atlas
 	public static TextureAtlas uiAtlas;
 
@@ -148,7 +154,17 @@ public class SpriteCache
 		ZoomBtn.add(uiAtlas.createSprite("day_btn_zoom_up_disabled"));
 
 		ZoomValueBack = uiAtlas.createSprite("zoom_back");
+		loadButtnSprites();
 
+	}
+
+	private static void loadButtnSprites()
+	{
+		CacheList = new ButtonSprites(uiAtlas, "db", "db_pressed");
+		Cache = new ButtonSprites(uiAtlas, "cache", "cache_pressed");
+		Nav = new ButtonSprites(uiAtlas, "Nav", "Nav_pressed");
+		Tool = new ButtonSprites(uiAtlas, "tool", "tool_pressed");
+		Misc = new ButtonSprites(uiAtlas, "misc", "misc_pressed");
 	}
 
 	/**
@@ -165,6 +181,19 @@ public class SpriteCache
 		ToggleBtn = null;
 		ZoomBtn = null;
 		ZoomValueBack = null;
+
+		CacheList.dispose();
+		Cache.dispose();
+		Nav.dispose();
+		Tool.dispose();
+		Misc.dispose();
+
+		CacheList = null;
+		Cache = null;
+		Nav = null;
+		Tool = null;
+		Misc = null;
+
 	}
 
 }

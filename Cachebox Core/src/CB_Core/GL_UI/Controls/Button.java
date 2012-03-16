@@ -16,6 +16,7 @@
 
 package CB_Core.GL_UI.Controls;
 
+import CB_Core.GL_UI.ButtonSprites;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -56,6 +57,12 @@ public class Button extends CB_View_Base
 		super(rec, name);
 	}
 
+	public Button(CB_RectF rec, String name, ButtonSprites sprites)
+	{
+		super(rec, name);
+		setButtonSprites(sprites);
+	}
+
 	public void setninePatch(NinePatch ninePatch)
 	{
 		mNinePatch = ninePatch;
@@ -69,6 +76,16 @@ public class Button extends CB_View_Base
 	public void setninePatchDisabled(NinePatch ninePatch)
 	{
 		mNinePatchDisabled = ninePatch;
+	}
+
+	public void setButtonSprites(ButtonSprites sprites)
+	{
+		if (sprites != null)
+		{
+			mNinePatch = sprites.getNormal();
+			mNinePatchPressed = sprites.getPressed();
+			mNinePatchDisabled = sprites.getDisabled();
+		}
 	}
 
 	@Override

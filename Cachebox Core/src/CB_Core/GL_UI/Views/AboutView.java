@@ -7,12 +7,13 @@ import CB_Core.Math.CB_RectF;
 
 public class AboutView extends CB_View_Base
 {
+	Label lblDummy;
 
 	public AboutView(CB_RectF rec, CharSequence Name)
 	{
 		super(rec, Name);
 
-		Label lblDummy = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "DummyLabel");
+		lblDummy = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "DummyLabel");
 		lblDummy.setFont(Fonts.get22());
 		lblDummy.setText("Dummy AboutView");
 		this.addChild(lblDummy);
@@ -30,6 +31,12 @@ public class AboutView extends CB_View_Base
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onRezised(CB_RectF rec)
+	{
+		lblDummy.setRec(CB_RectF.ScaleCenter(rec, 0.8f));
 	}
 
 }

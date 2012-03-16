@@ -20,6 +20,11 @@ public abstract class ListViewBase extends CB_View_Base
 	private Boolean mBottomAnimation = false;
 
 	/**
+	 * Wen True, können die Items verschoben werden
+	 */
+	protected Boolean mIsDrageble = true;
+
+	/**
 	 * Ermöglicht den Zugriff auf die Liste, welche Dargestellt werden soll.
 	 */
 	protected Adapter mBaseAdapter;
@@ -48,7 +53,12 @@ public abstract class ListViewBase extends CB_View_Base
 	/**
 	 * Komplette Breite oder Höhe aller Items
 	 */
-	protected float mAllSize = 0;
+	protected float mAllSize = 0f;
+
+	/**
+	 * Abstand zwichen zwei Items
+	 */
+	protected float mDividerSize = 2.5f;
 
 	protected boolean mMustSetPos = false;
 	protected float mMustSetPosValue = 0;
@@ -73,6 +83,32 @@ public abstract class ListViewBase extends CB_View_Base
 	{
 		mBaseAdapter = adapter;
 		addVisibleItems();
+	}
+
+	/**
+	 * Stelt den Abstand zwichen zwei Items ein
+	 * 
+	 * @param value
+	 */
+	public void setDividerSize(float value)
+	{
+		mDividerSize = value;
+	}
+
+	/**
+	 * Setzt die ListView in in den unDrageble Modus
+	 */
+	public void setUndragable()
+	{
+		mIsDrageble = false;
+	}
+
+	/**
+	 * Setzt die ListView in in den Drageble Modus
+	 */
+	public void setDragable()
+	{
+		mIsDrageble = false;
 	}
 
 	public void setDisposeFlag(Boolean CanDispose)

@@ -276,6 +276,8 @@ public class GL_UISizes implements SizeChangedEvent
 		int WindowWidth = UiSizes.getWindowWidth();
 		int frameRightWidth = WindowWidth - frameLeftwidth;
 
+		BottomButtonHeight = frameLeftwidth / 5.18f;
+
 		margin = (float) (6.6666667 * DPI);
 
 		frameHeight = UiSizes.getWindowHeight() - convertDip2Pix(35) - convertDip2Pix(65);

@@ -57,8 +57,16 @@ public class H_ListView extends ListViewBase
 
 			// setze First Index, damit nicht alle Items durchlaufen werden müssen
 			Collections.sort(mAddeedIndexList);
-			mFirstIndex = mAddeedIndexList.get(0) - mMaxItemCount;
-			if (mFirstIndex < 0) mFirstIndex = 0;
+			if (mAddeedIndexList.size() > 0)
+			{
+				mFirstIndex = mAddeedIndexList.get(0) - mMaxItemCount;
+				if (mFirstIndex < 0) mFirstIndex = 0;
+			}
+			else
+			{
+				mFirstIndex = 0;
+			}
+
 		}
 
 		mPos = value;
@@ -119,13 +127,13 @@ public class H_ListView extends ListViewBase
 		for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
 		{
 			CB_View_Base tmp = mBaseAdapter.getView(i);
-			countPos -= tmp.getWidth();
+			countPos -= tmp.getWidth() + mDividerSize;
 			mPosDefault.add(countPos);
 			mPosDefault.add(0, countPos);
 			if (tmp.getWidth() < minimumItemWidth) minimumItemWidth = tmp.getWidth();
 		}
-		mAllSize = countPos;
-		mPos = countPos;
+		mAllSize = countPos - mDividerSize;
+		mPos = countPos - mDividerSize;
 		mMaxItemCount = (int) (this.width / minimumItemWidth);
 		if (mMaxItemCount < 1) mMaxItemCount = 1;
 	}
@@ -133,6 +141,7 @@ public class H_ListView extends ListViewBase
 	@Override
 	public boolean onTouchDragged(int x, int y, int pointer)
 	{
+		if (!mIsDrageble) return false;
 		mDraged = x - mLastTouch;
 		setPos(mLastPos_onTouch - mDraged);
 		return true;
@@ -140,6 +149,7 @@ public class H_ListView extends ListViewBase
 
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
+		if (!mIsDrageble) return false;
 		mLastTouch = x;
 		mLastPos_onTouch = mPos;
 		return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelöst wird.

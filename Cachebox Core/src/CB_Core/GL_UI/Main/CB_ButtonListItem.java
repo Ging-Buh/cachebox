@@ -18,9 +18,9 @@ public class CB_ButtonListItem extends ListViewItemBase
 
 	public CB_ButtonListItem(int Index, CB_Button Button, CharSequence Name)
 	{
-		super(new CB_RectF(0, 0, 100, 100), Index, Name);
+		super(new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight), Index, Name);
 		mCB_Button = Button;
-		btn = new Button(this, "Button");
+		btn = new Button(this, "Button", Button.getSprites());
 	}
 
 	CB_Button mCB_Button;

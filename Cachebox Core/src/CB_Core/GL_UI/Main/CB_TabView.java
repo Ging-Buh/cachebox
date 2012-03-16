@@ -7,11 +7,14 @@ import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 
+import com.badlogic.gdx.math.Vector2;
+
 public class CB_TabView extends CB_View_Base
 {
 
 	private CB_ButtonList mButtonList;
 	private H_ListView buttonListView;
+	private CB_View_Base aktView;
 
 	public void addButtonList(CB_ButtonList ButtonList)
 	{
@@ -24,6 +27,7 @@ public class CB_TabView extends CB_View_Base
 		if (mButtonList == null) return;
 		buttonListView = new H_ListView(new CB_RectF(0, 0, this.width, GL_UISizes.BottomButtonHeight), "ButtonList von " + this.getName());
 		buttonListView.setBaseAdapter(new CustomAdapter());
+		buttonListView.setUndragable();
 		this.addChild(buttonListView);
 	}
 
@@ -67,6 +71,27 @@ public class CB_TabView extends CB_View_Base
 		{
 			return mButtonList.Buttons.size();
 		}
+	}
+
+	public void ShowView(CB_View_Base view)
+	{
+		// delete all Views up to the ButtonList
+		if (aktView != null)
+		{
+			this.removeChild(aktView);
+			aktView.onStop();
+			aktView.onHide();
+		}
+
+		// set View size and pos
+		view.setSize(this.width, this.height - buttonListView.getHeight());
+		view.setPos(new Vector2(0, buttonListView.getHeight()));
+
+		aktView = view;
+		this.addChild(aktView);
+
+		aktView.onShow();
+
 	}
 
 }

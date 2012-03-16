@@ -33,7 +33,6 @@ public class MainView extends MainViewBase
 
 	private GL_View_Base leftFrame;
 	private GL_View_Base rightFrame;
-	public static MainView mainView = null;
 
 	/**
 	 * Setzt die GL_View mit der übergebenen ID als anzuzeigende View Es wird nur diese View angezeigt!

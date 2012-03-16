@@ -27,6 +27,7 @@ import CB_Core.GL_UI.Controls.ZoomButtons;
 import CB_Core.GL_UI.Controls.ZoomScale;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Main.MainView;
+import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
@@ -289,7 +290,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		this.drawingWidth = (int) rec.getWidth();
 		this.drawingHeight = (int) rec.getHeight();
 
-		camera = new OrthographicCamera(MainView.mainView.getWidth(), MainView.mainView.getHeight());
+		camera = new OrthographicCamera(MainViewBase.mainView.getWidth(), MainViewBase.mainView.getHeight());
 
 		aktZoom = zoomBtn.getZoom();
 		zoomScale.setZoom(aktZoom);
@@ -1046,32 +1047,40 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				{
 					try
 					{
-						if (Database.Data.Query != null)
+						if (Database.Data != null)
 						{
-							if (Database.Data.Query.size() > 0)
+
+							if (Database.Data.Query != null)
 							{
-								// Koordinaten des ersten Caches der Datenbank
-								// nehmen
-								setCenter(new Coordinate(Database.Data.Query.get(0).Latitude(), Database.Data.Query.get(0).Longitude()));
-								positionInitialized = true;
-								// setLockPosition(0);
+								if (Database.Data.Query.size() > 0)
+								{
+									// Koordinaten des ersten Caches der Datenbank
+									// nehmen
+									setCenter(new Coordinate(Database.Data.Query.get(0).Latitude(), Database.Data.Query.get(0).Longitude()));
+									positionInitialized = true;
+									// setLockPosition(0);
+								}
+								else
+								{
+									// Wenns auch den nicht gibt...)
+									setCenter(new Coordinate(48.0, 12.0));
+								}
 							}
 							else
 							{
-								// Wenns auch den nicht gibt...)
+								// Wenn Query == null
 								setCenter(new Coordinate(48.0, 12.0));
 							}
 						}
 						else
 						{
-							// Wenn Query == null
+							// Wenn Data == null
 							setCenter(new Coordinate(48.0, 12.0));
 						}
 					}
 					catch (Exception e)
 					{
 						setCenter(new Coordinate(48.0, 12.0));
-						e.printStackTrace();
 					}
 
 				}
