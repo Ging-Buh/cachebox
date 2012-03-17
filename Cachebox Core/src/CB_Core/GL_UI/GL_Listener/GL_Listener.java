@@ -374,6 +374,15 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		GL_View_Base view = child.touchDown(x, (int) child.getHeight() - y, pointer, button);
 		if (view == null) return false;
+
+		if (touchDownPos.containsKey(pointer))
+		{
+			// für diesen Pointer ist aktuell ein kinetisches Pan aktiv -> dieses abbrechen
+			TouchDownPointer first = touchDownPos.get(pointer);
+			first.stopKinetic();
+			first.kineticPan = null;
+		}
+
 		// down Position merken
 		touchDownPos.put(pointer, new TouchDownPointer(pointer, new Point(x, y), view));
 
@@ -398,6 +407,12 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(),
 					(int) child.getHeight() - y - (int) first.view.ThisWorldRec.getY(), pointer);
 			// Logger.LogCat("GL_Listner => onTouchDraggedBase : " + first.view.getName());
+
+			if (touchDownPos.size() == 1)
+			{
+				if (first.kineticPan == null) first.kineticPan = new KineticPan();
+				first.kineticPan.setLast(System.currentTimeMillis(), x, y);
+			}
 		}
 
 		return true;
@@ -422,11 +437,21 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 				Logger.LogCat("GL_Listner => onTouchUpBase (Click) : " + first.view.getName());
 			}
 		}
-		// onTouchUp immer auslösen
-		first.view.touchUp(x, (int) child.getHeight() - y, pointer, button);
+
+		if (first.kineticPan != null)
+		{
+			first.kineticPan.start();
+			first.startKinetic(this, x - (int) first.view.ThisWorldRec.getX(),
+					(int) child.getHeight() - y - (int) first.view.ThisWorldRec.getY());
+		}
+		else
+		{
+			// onTouchUp immer auslösen
+			first.view.touchUp(x, (int) child.getHeight() - y, pointer, button);
+			touchDownPos.remove(pointer);
+		}
 		// Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
 		// glListener.onTouchUp(x, y, pointer, 0);
-		touchDownPos.remove(pointer);
 
 		return true;
 	}
@@ -445,12 +470,156 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		private Point point;
 		private int pointer;
 		private GL_View_Base view;
+		private KineticPan kineticPan;
+		private Timer timer;
 
 		public TouchDownPointer(int pointer, Point point, GL_View_Base view)
 		{
 			this.pointer = pointer;
 			this.point = point;
 			this.view = view;
+			this.kineticPan = null;
+		}
+
+		public void startKinetic(final GL_Listener listener, final int x, final int y)
+		{
+			timer = new Timer();
+			timer.schedule(new TimerTask()
+			{
+				@Override
+				public void run()
+				{
+					Point pan = kineticPan.getAktPan();
+					Logger.LogCat("KinteicPan: " + pan.x + " - " + pan.y);
+					if (kineticPan.fertig)
+					{
+						Logger.LogCat("KineticPan fertig");
+						view.touchUp(x - pan.x, y - pan.y, pointer, 0);
+						touchDownPos.remove(pointer);
+						kineticPan = null;
+						this.cancel();
+						timer = null;
+
+					}
+					view.touchDragged(x - pan.x, y - pan.y, pointer);
+				}
+			}, 0, FRAME_RATE_ACTION);
+		}
+
+		public void stopKinetic()
+		{
+			if (timer != null)
+			{
+				timer.cancel();
+				timer = null;
+				kineticPan = null;
+			}
+		}
+	}
+
+	protected class KineticPan
+	{
+		private boolean started;
+		private boolean fertig;
+		// benutze den Abstand der letzten 5 Positionsänderungen
+		final int anzPoints = 3;
+		private int[] x = new int[anzPoints];
+		private int[] y = new int[anzPoints];
+		private long[] ts = new long[anzPoints];
+		private int diffX;
+		private int diffY;
+		private long diffTs;
+		private long startTs;
+		private long endTs;
+
+		public KineticPan()
+		{
+			fertig = false;
+			started = false;
+			diffX = 0;
+			diffY = 0;
+			for (int i = 0; i < anzPoints; i++)
+			{
+				x[i] = 0;
+				y[i] = 0;
+				ts[i] = 0;
+			}
+		}
+
+		public void setLast(long aktTs, int aktX, int aktY)
+		{
+			for (int i = anzPoints - 2; i >= 0; i--)
+			{
+				x[i + 1] = x[i];
+				y[i + 1] = y[i];
+				ts[i + 1] = ts[i];
+			}
+			x[0] = aktX;
+			y[0] = aktY;
+			ts[0] = aktTs;
+
+			for (int i = 1; i < anzPoints; i++)
+			{
+				if (x[i] == 0) x[i] = x[i - 1];
+				if (y[i] == 0) y[i] = y[i - 1];
+				if (ts[i] == 0) ts[i] = ts[i - 1];
+			}
+			diffX = x[anzPoints - 1] - aktX;
+			diffY = aktY - y[anzPoints - 1];
+			diffTs = aktTs - ts[anzPoints - 1];
+
+			if (diffTs > 0)
+			{
+				diffX = (int) (diffX * FRAME_RATE_ACTION / diffTs);
+				diffY = (int) (diffY * FRAME_RATE_ACTION / diffTs);
+			}
+
+			// debugString = x[2] + " - " + x[1] + " - " + x[0];
+		}
+
+		public boolean getFertig()
+		{
+			return fertig;
+		}
+
+		public boolean getStarted()
+		{
+			return started;
+		}
+
+		public void start()
+		{
+			startTs = System.currentTimeMillis();
+			int abstand = (int) Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
+
+			endTs = startTs + 2000 + abstand * 50 / anzPoints;
+			// endTs = startTs + 2000; // Povisorisch
+			started = true;
+		}
+
+		private int lastX = 0;
+		private int lastY = 0;
+
+		public Point getAktPan()
+		{
+			Point result = new Point(0, 0);
+
+			long aktTs = System.currentTimeMillis();
+			float faktor = (float) (aktTs - startTs) / (float) (endTs - startTs);
+			Logger.LogCat("Faktor: " + faktor);
+			faktor = com.badlogic.gdx.math.Interpolation.exp10Out.apply(faktor);
+			Logger.LogCat("Faktor2: " + faktor);
+			if (faktor >= 1)
+			{
+				fertig = true;
+				faktor = 1;
+			}
+
+			result.x = (int) (diffX / anzPoints * (1 - faktor)) + lastX;
+			result.y = (int) (diffY / anzPoints * (1 - faktor)) + lastY;
+			lastX = result.x;
+			lastY = result.y;
+			return result;
 		}
 	}
 

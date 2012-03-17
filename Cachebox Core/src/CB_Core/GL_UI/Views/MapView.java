@@ -1578,8 +1578,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			screenCenterW.x = camera.position.x;
 			screenCenterW.y = camera.position.y;
 			calcCenter();
-			if (kineticPan == null) kineticPan = new KineticPan();
-			kineticPan.setLast(System.currentTimeMillis(), x, y);
+
+			// if (kineticPan == null) kineticPan = new KineticPan();
+			// kineticPan.setLast(System.currentTimeMillis(), x, y);
 
 			lastPoint.x = x;
 			lastPoint.y = y;
