@@ -2,6 +2,8 @@ package CB_Core;
 
 import CB_Core.Enums.SmoothScrollingTyp;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.Events.platformConector;
+import CB_Core.Log.Logger;
 import CB_Core.TranslationEngine.LangStrings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
@@ -30,10 +32,13 @@ public class GlobalCore
 	public static LangStrings Translations = new LangStrings();
 
 	private static Cache selectedCache = null;
+	public static boolean autoResort;
 
 	public static SmoothScrollingTyp SmoothScrolling = SmoothScrollingTyp.normal;
 
 	public static final String br = System.getProperty("line.separator");
+
+	public static FilterProperties LastFilter = null;
 
 	public static void SelectedCache(Cache cache)
 	{
@@ -147,6 +152,40 @@ public class GlobalCore
 
 		return result;
 
+	}
+
+	/**
+	 * APIisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen und ein API Access Token vorhanden ist.
+	 */
+	public static boolean APIisOnline()
+	{
+		if (Config.GetAccessToken().length() == 0)
+		{
+			Logger.General("global.APIisOnline() -Invalid AccessToken");
+			return false;
+		}
+		if (platformConector.isOnline())
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * JokerisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen und ein Passwort für gcJoker.de vorhanden ist.
+	 */
+	public static boolean JokerisOnline()
+	{
+		if (Config.settings.GcJoker.getValue().length() == 0)
+		{
+			Logger.General("global.APIisOnline() -Invalid Joker");
+			return false;
+		}
+		if (platformConector.isOnline())
+		{
+			return true;
+		}
+		return false;
 	}
 
 }

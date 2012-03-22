@@ -75,5 +75,11 @@ public class Test_V_ListView extends V_ListView
 		{
 			return TestArray.size();
 		}
+
+		@Override
+		public float getItemSize(int position)
+		{
+			return 100;
+		}
 	}
 }

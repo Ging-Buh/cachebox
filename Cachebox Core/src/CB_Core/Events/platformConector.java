@@ -23,6 +23,11 @@ public class platformConector
 		void MsgShow(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnClickListener listener);
 	}
 
+	public interface isOnlineListner
+	{
+		boolean isOnline();
+	}
+
 	private static OnShowMessageListner massageShow;
 
 	public static void setOnShowMassageListneer(OnShowMessageListner listner)
@@ -74,6 +79,23 @@ public class platformConector
 			}
 		}
 
+	}
+
+	private static isOnlineListner IsOnline;
+
+	public static void setisOnlineListner(isOnlineListner listner)
+	{
+		IsOnline = listner;
+	}
+
+	public static boolean isOnline()
+	{
+		if (IsOnline == null)
+		{
+			return IsOnline.isOnline();
+		}
+
+		return false;
 	}
 
 }

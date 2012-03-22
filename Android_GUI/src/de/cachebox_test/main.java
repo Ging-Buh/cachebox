@@ -36,6 +36,7 @@ import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.platformConector.OnShowMessageListner;
+import CB_Core.Events.platformConector.isOnlineListner;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.ViewID.UI_Pos;
@@ -82,6 +83,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
@@ -445,9 +448,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (Database.Data == null)
 			{
 				String FilterString = Config.settings.Filter.getValue();
-				Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0])
+				GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0])
 						: new FilterProperties(FilterString);
-				String sqlWhere = Global.LastFilter.getSqlWhere();
+				String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
 
 				// initialize Database
 				Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
@@ -894,7 +897,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// only when showing Map or cacheList
 			if (!GlobalCore.ResortAtWork)
 			{
-				if (Global.autoResort && ((aktView == mapView) || (aktView == cacheListView || aktView == compassView)))
+				if (GlobalCore.autoResort && ((aktView == mapView) || (aktView == cacheListView || aktView == compassView)))
 				{
 					int z = 0;
 					if (!(GlobalCore.NearestCache() == null))
@@ -1055,9 +1058,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		int ButtonBackGroundResource = 0;
 
-		if ((Global.LastFilter == null) || (Global.LastFilter.ToString().equals(""))
-				|| (PresetListViewItem.chkPresetFilter(FilterProperties.presets[0], Global.LastFilter.ToString()))
-				&& !Global.LastFilter.isExtendsFilter())
+		if ((GlobalCore.LastFilter == null) || (GlobalCore.LastFilter.ToString().equals(""))
+				|| (PresetListViewItem.chkPresetFilter(FilterProperties.presets[0], GlobalCore.LastFilter.ToString()))
+				&& !GlobalCore.LastFilter.isExtendsFilter())
 		{
 			ButtonBackGroundResource = N ? R.drawable.night_db_button_image_selector
 					: Config.settings.isChris.getValue() ? R.drawable.chris_db_button_image_selector : R.drawable.db_button_image_selector;
@@ -1099,12 +1102,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				Config.settings.ReadFromDB();
 
 				GlobalCore.Categories = new Categories();
-				Global.LastFilter = (Config.settings.Filter.getValue().length() == 0) ? new FilterProperties(FilterProperties.presets[0])
-						: new FilterProperties(Config.settings.Filter.getValue());
-				// filterSettings.LoadFilterProperties(Global.LastFilter);
+				GlobalCore.LastFilter = (Config.settings.Filter.getValue().length() == 0) ? new FilterProperties(
+						FilterProperties.presets[0]) : new FilterProperties(Config.settings.Filter.getValue());
+				// filterSettings.LoadFilterProperties(GlobalCore.LastFilter);
 				Database.Data.GPXFilenameUpdateCacheCount();
 
-				String sqlWhere = Global.LastFilter.getSqlWhere();
+				String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
 				Logger.General("Main.ApplyFilter: " + sqlWhere);
 				Database.Data.Query.clear();
 				CacheListDAO cacheListDAO = new CacheListDAO();
@@ -1240,7 +1243,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				CacheListDAO dao = new CacheListDAO();
 				nun = dao.DelArchiv();
-				FilterProperties props = Global.LastFilter;
+				FilterProperties props = GlobalCore.LastFilter;
 				String sqlWhere = props.getSqlWhere();
 				Logger.General("Main.ApplyFilter: " + sqlWhere);
 				Database.Data.Query.clear();
@@ -1253,7 +1256,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				CacheListDAO dao = new CacheListDAO();
 				nun = dao.DelFound();
-				FilterProperties props = Global.LastFilter;
+				FilterProperties props = GlobalCore.LastFilter;
 				String sqlWhere = props.getSqlWhere();
 				Logger.General("Main.ApplyFilter: " + sqlWhere);
 				Database.Data.Query.clear();
@@ -1265,9 +1268,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case 2:// Filter gewählt
 			{
 				CacheListDAO dao = new CacheListDAO();
-				nun = dao.DelFilter(Global.LastFilter.getSqlWhere());
-				Global.LastFilter = new FilterProperties(FilterProperties.presets[0]);
-				EditFilterSettings.ApplyFilter(mainActivity, Global.LastFilter);
+				nun = dao.DelFilter(GlobalCore.LastFilter.getSqlWhere());
+				GlobalCore.LastFilter = new FilterProperties(FilterProperties.presets[0]);
+				EditFilterSettings.ApplyFilter(mainActivity, GlobalCore.LastFilter);
 				String msg = GlobalCore.Translations.Get("DeletedCaches", String.valueOf(nun));
 				Toast(msg);
 				return;
@@ -2710,11 +2713,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void switchAutoResort()
 	{
-		Global.autoResort = !(Global.autoResort);
+		GlobalCore.autoResort = !(GlobalCore.autoResort);
 
-		Config.settings.AutoResort.setValue(Global.autoResort);
+		Config.settings.AutoResort.setValue(GlobalCore.autoResort);
 
-		if (Global.autoResort)
+		if (GlobalCore.autoResort)
 		{
 			Database.Data.Query.Resort();
 		}
@@ -3752,6 +3755,25 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				t.start();
 
+			}
+		});
+
+		CB_Core.Events.platformConector.setisOnlineListner(new isOnlineListner()
+		{
+			/*
+			 * isOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen
+			 */
+
+			@Override
+			public boolean isOnline()
+			{
+				ConnectivityManager cm = (ConnectivityManager) main.mainActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+				NetworkInfo netInfo = cm.getActiveNetworkInfo();
+				if (netInfo != null && netInfo.isConnectedOrConnecting())
+				{
+					return true;
+				}
+				return false;
 			}
 		});
 

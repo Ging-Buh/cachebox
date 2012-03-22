@@ -38,6 +38,12 @@ public class Desktop_GL_Listner extends GL_Listener implements InputProcessor {
 			child = new TabMainView(0, 0, width, height, "TabMainView");
 			child.setClickable(true);
 		}
+		
+		if (mDialog == null)
+		{
+			mDialog = new MainView(0, 0, width, height, "Dialog");
+			mDialog.setClickable(true);
+		}
 
 	}
 	
@@ -117,41 +123,41 @@ public class Desktop_GL_Listner extends GL_Listener implements InputProcessor {
 //		return onTouchUp(x, y, pointer, button);
 	}
 	
-	Timer timer;
+//	Timer timer;
+//	
+//	private void cancelLongClickTimer()
+//	{
+//
+//		if(timer!=null)
+//		{
+//			timer.cancel();
+//			timer=null;
+//		}
+//	}
+//	
 	
-	private void cancelLongClickTimer()
-	{
-
-		if(timer!=null)
-		{
-			timer.cancel();
-			timer=null;
-		}
-	}
-	
-	
-	private void startLongClickTimer()
-	{
-		
-		cancelLongClickTimer();
-		
-		timer = new Timer();
-		TimerTask task = new TimerTask() {
-			@Override
-			public void run() {
-				int tol=5;
-				
-				int minX= lastTouchDown.x-tol;
-				int maxX= lastTouchDown.x+tol;
-				int minY= lastTouchDown.y-tol;
-				int maxY= lastTouchDown.y+tol;
-				
-				
-				//Click detection
-				if(aktTouch.x>minX&&aktTouch.x<maxX&&aktTouch.y>minY&&aktTouch.y<maxY) onLongClick(aktTouch.x, aktTouch.y, lastPointer, lastbutton);
-			}
-		};
-		timer.schedule(task, 2000);
-	}
+//	private void startLongClickTimer()
+//	{
+//		
+//		cancelLongClickTimer();
+//		
+//		timer = new Timer();
+//		TimerTask task = new TimerTask() {
+//			@Override
+//			public void run() {
+//				int tol=5;
+//				
+//				int minX= lastTouchDown.x-tol;
+//				int maxX= lastTouchDown.x+tol;
+//				int minY= lastTouchDown.y-tol;
+//				int maxY= lastTouchDown.y+tol;
+//				
+//				
+//				//Click detection
+//				if(aktTouch.x>minX&&aktTouch.x<maxX&&aktTouch.y>minY&&aktTouch.y<maxY) onLongClick(aktTouch.x, aktTouch.y, lastPointer, lastbutton);
+//			}
+//		};
+//		timer.schedule(task, 2000);
+//	}
 
 }

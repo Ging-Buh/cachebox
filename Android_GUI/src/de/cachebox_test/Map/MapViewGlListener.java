@@ -1362,7 +1362,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 					mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
 
 					// Shutdown Autoresort
-					Global.autoResort = false;
+					GlobalCore.autoResort = false;
 					forceRender();
 					// do nothing else with this click
 					return false;
@@ -2332,7 +2332,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 					mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
 
 					// Shutdown Autoresort
-					Global.autoResort = false;
+					GlobalCore.autoResort = false;
 					inputState = InputState.Idle;
 					// debugString = "State: " + inputState;
 					// do nothing else with this click
@@ -2487,7 +2487,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
-		if (Global.autoResort) return;
+		if (GlobalCore.autoResort) return;
 
 		if (cache == null) return;
 		/*

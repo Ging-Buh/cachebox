@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
-import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Custom_Controls.MultiToggleButton;
@@ -46,7 +45,7 @@ public class EditFilterSettings extends Activity
 		setContentView(R.layout.edit_filter);
 
 		filterActivity = this;
-		tmpFilterProps = Global.LastFilter;
+		tmpFilterProps = GlobalCore.LastFilter;
 
 		btPre = (MultiToggleButton) findViewById(R.id.edfi_pre);
 		btSet = (MultiToggleButton) findViewById(R.id.edfi_set);
@@ -110,11 +109,11 @@ public class EditFilterSettings extends Activity
 			public void onClick(View v)
 			{
 				lvCat.SetCategory();
-				Global.LastFilter = tmpFilterProps;
-				ApplyFilter(EditFilterSettings.filterActivity, Global.LastFilter);
+				GlobalCore.LastFilter = tmpFilterProps;
+				ApplyFilter(EditFilterSettings.filterActivity, GlobalCore.LastFilter);
 
 				// Save selected filter
-				Config.settings.Filter.setValue(Global.LastFilter.ToString());
+				Config.settings.Filter.setValue(GlobalCore.LastFilter.ToString());
 				Config.AcceptChanges();
 
 			}

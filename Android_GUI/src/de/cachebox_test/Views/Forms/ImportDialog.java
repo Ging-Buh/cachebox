@@ -419,7 +419,7 @@ public class ImportDialog extends Activity
 						Database.Data.beginTransaction();
 						try
 						{
-							importer.importGcVote(Global.LastFilter.getSqlWhere(), ip);
+							importer.importGcVote(GlobalCore.LastFilter.getSqlWhere(), ip);
 
 							Database.Data.setTransactionSuccessful();
 						}
@@ -432,7 +432,7 @@ public class ImportDialog extends Activity
 
 					if (checkBoxPreloadImages.isChecked())
 					{
-						importer.importImages(Global.LastFilter.getSqlWhere(), ip);
+						importer.importImages(GlobalCore.LastFilter.getSqlWhere(), ip);
 					}
 
 					Thread.sleep(1000);
@@ -500,7 +500,7 @@ public class ImportDialog extends Activity
 	public static void ApplyFilter()
 	{
 
-		props = Global.LastFilter;
+		props = GlobalCore.LastFilter;
 		pd = android.app.ProgressDialog.show(ImportDialog.Me, "", GlobalCore.Translations.Get("LoadCaches"), true);
 
 		Thread thread = new Thread()

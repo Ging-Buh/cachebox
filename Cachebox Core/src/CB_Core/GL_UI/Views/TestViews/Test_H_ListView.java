@@ -75,5 +75,11 @@ public class Test_H_ListView extends H_ListView
 		{
 			return TestArray.size();
 		}
+
+		@Override
+		public float getItemSize(int position)
+		{
+			return 100;
+		}
 	}
 }

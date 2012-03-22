@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Log.Logger;
@@ -30,14 +29,20 @@ public class H_ListView extends ListViewBase
 			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 			{
 				GL_View_Base tmp = iterator.next();
-				tmp.setX(tmp.getX() + distance);
-
-				if (tmp.getX() > this.getMaxX() || tmp.getMaxX() < 0)
+				if (mReloadItems)
 				{
-					// Item ist nicht mehr im sichtbaren Bereich!
 					clearList.add((ListViewItemBase) tmp);
 				}
+				else
+				{
+					tmp.setX(tmp.getX() + distance);
 
+					if (tmp.getX() > this.getMaxX() || tmp.getMaxX() < 0)
+					{
+						// Item ist nicht mehr im sichtbaren Bereich!
+						clearList.add((ListViewItemBase) tmp);
+					}
+				}
 			}
 		}
 
@@ -99,6 +104,11 @@ public class H_ListView extends ListViewBase
 					{
 						tmp.setX(itemPos);
 						Logger.LogCat("Add: " + tmp.getName());
+						if (i == mSelectedIndex)
+						{
+							tmp.isSelected = true;
+							tmp.resetInitial();
+						}
 						this.addChild(tmp);
 						mAddeedIndexList.add(tmp.getIndex());
 					}
@@ -126,11 +136,11 @@ public class H_ListView extends ListViewBase
 		float minimumItemWidth = this.width;
 		for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
 		{
-			CB_View_Base tmp = mBaseAdapter.getView(i);
-			countPos -= tmp.getWidth() + mDividerSize;
+			float itemWidth = mBaseAdapter.getItemSize(i);
+			countPos -= itemWidth + mDividerSize;
 			mPosDefault.add(countPos);
 			mPosDefault.add(0, countPos);
-			if (tmp.getWidth() < minimumItemWidth) minimumItemWidth = tmp.getWidth();
+			if (itemWidth < minimumItemWidth) minimumItemWidth = itemWidth;
 		}
 		mAllSize = countPos - mDividerSize;
 		mPos = countPos - mDividerSize;
@@ -143,7 +153,7 @@ public class H_ListView extends ListViewBase
 	{
 		if (!mIsDrageble) return false;
 		mDraged = x - mLastTouch;
-		setPos(mLastPos_onTouch - mDraged);
+		setListPos(mLastPos_onTouch - mDraged);
 		return true;
 	}
 

@@ -71,6 +71,12 @@ public class CB_TabView extends CB_View_Base
 		{
 			return mButtonList.Buttons.size();
 		}
+
+		@Override
+		public float getItemSize(int position)
+		{
+			return GL_UISizes.BottomButtonHeight;
+		}
 	}
 
 	public void ShowView(CB_View_Base view)

@@ -50,6 +50,7 @@ public class Image extends CB_View_Base
 	{
 		if (mImageSprite != null)
 		{
+			mImageSprite.setBounds(0, 0, width, height);
 			mImageSprite.setRotation(mRotate);
 			mImageSprite.draw(batch);
 
@@ -104,8 +105,8 @@ public class Image extends CB_View_Base
 
 	public void setSprite(Sprite sprite)
 	{
-		mImageSprite = new Sprite();
-		mImageSprite.set(sprite);
+		mImageSprite = new Sprite(sprite);
+		mImageSprite.setSize(width, height);
 		mImageSprite.setBounds(0, 0, this.width, this.height);
 	}
 

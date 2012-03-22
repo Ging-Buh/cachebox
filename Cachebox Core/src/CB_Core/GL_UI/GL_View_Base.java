@@ -48,8 +48,8 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	protected MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
 
-	private OnClickListener mOnClickListener;
-	private OnLongClickListener mOnLongClickListener;
+	protected OnClickListener mOnClickListener;
+	protected OnLongClickListener mOnLongClickListener;
 	protected boolean isClickable = false;
 
 	protected boolean onTouchUp = false;
@@ -176,6 +176,10 @@ public abstract class GL_View_Base extends CB_RectF
 			CalcMyInfoForChild();
 		}
 
+		if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
+		Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth(),
+				(int) intersectRec.getHeight());
+
 		// first Draw Background?
 		if (hasBackground || hasNinePatchBackground)
 		{
@@ -191,10 +195,6 @@ public abstract class GL_View_Base extends CB_RectF
 
 			batch.end();
 		}
-
-		if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
-		Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth(),
-				(int) intersectRec.getHeight());
 
 		batch.begin();
 		this.render(batch);
@@ -403,7 +403,7 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			// kein Klick in einem untergeordnetem View
 			// -> hier behandeln
-			if (mOnClickListener != null)
+			if (mOnLongClickListener != null)
 			{
 				behandelt = mOnLongClickListener.onLongClick(this, x, y, pointer, button);
 			}
@@ -632,6 +632,20 @@ public abstract class GL_View_Base extends CB_RectF
 	public void setPos(Vector2 Pos)
 	{
 		super.setPos(Pos);
+		this.invalidate(); // Scissor muss neu berechnet werden
+		GL_Listener.glListener.renderOnce(this);
+	}
+
+	public void setZeroPos()
+	{
+		super.setPos(new Vector2(0, 0));
+		this.invalidate(); // Scissor muss neu berechnet werden
+		GL_Listener.glListener.renderOnce(this);
+	}
+
+	public void setPos(float x, float y)
+	{
+		super.setPos(x, y);
 		this.invalidate(); // Scissor muss neu berechnet werden
 		GL_Listener.glListener.renderOnce(this);
 	}

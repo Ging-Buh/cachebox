@@ -99,6 +99,7 @@ public class SettingsClass extends SettingsList
 	public SettingInt installRev;
 	public SettingInt MapIniWidth;
 	public SettingInt MapIniHeight;
+	public SettingInt LongClicktime;
 
 	// public SettingInt OsmCoverage;
 	public SettingInt FoundOffset;
@@ -212,6 +213,7 @@ public class SettingsClass extends SettingsList
 		addSetting(MapViewDPIFaktor = new SettingDouble("MapViewDPIFaktor", SettingCategory.Map, EXPERT, GlobalCore.displayDensity, true));
 		addSetting(MapViewFontFaktor = new SettingDouble("MapViewFontFaktor", SettingCategory.Map, EXPERT, 1.0, true));
 		addSetting(vibrateFeedback = new SettingBool("vibrateFeedback", cat, NORMAL, true, true));
+		addSetting(LongClicktime = new SettingInt("LongClicktime", cat, NORMAL, 600, true));
 	}
 
 	private void addTemplateSettings()

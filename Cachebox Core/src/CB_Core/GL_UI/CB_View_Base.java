@@ -50,13 +50,6 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	}
 
 	@Override
-	public int GetMenuId()
-	{
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public void onShow()
 	{
 		// TODO Auto-generated method stub
@@ -77,14 +70,12 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	}
 
-	@Override
-	public int GetContextMenuId()
-	{
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	protected boolean isInitial = false;
+
+	public void resetInitial()
+	{
+		isInitial = false;
+	}
 
 	@Override
 	protected void render(SpriteBatch batch)
@@ -149,6 +140,11 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	public int getCildCount()
+	{
+		return childs.size();
 	}
 
 }

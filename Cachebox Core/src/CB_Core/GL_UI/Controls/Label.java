@@ -74,13 +74,14 @@ public class Label extends CB_View_Base
 
 		innerRec = new CB_RectF(left, bottom, width - right - left, height - top - bottom);
 
-		innerWidth = innerRec.getWidth() * 0.95f;
+		innerWidth = innerRec.getWidth() * 0.75f;
 	}
 
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		cache.draw(batch);
+
+		if (cache != null) cache.draw(batch);
 
 	}
 
@@ -276,6 +277,11 @@ public class Label extends CB_View_Base
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	public void setTextColor(Color color)
+	{
+		if (cache != null) cache.setColor(color);
 	}
 
 }

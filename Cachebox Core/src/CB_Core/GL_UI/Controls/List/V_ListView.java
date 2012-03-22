@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
 public class V_ListView extends ListViewBase
@@ -29,15 +29,23 @@ public class V_ListView extends ListViewBase
 			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 			{
 				GL_View_Base tmp = iterator.next();
-				tmp.setY(tmp.getY() + distance);
-
-				if (tmp.getY() > this.getMaxY() || tmp.getMaxY() < 0)
+				if (mReloadItems)
 				{
-					// Item ist nicht mehr im sichtbaren Bereich!
 					clearList.add((ListViewItemBase) tmp);
 				}
+				else
+				{
 
+					tmp.setY(tmp.getY() + distance);
+
+					if (tmp.getY() > this.getMaxY() || tmp.getMaxY() < 0)
+					{
+						// Item ist nicht mehr im sichtbaren Bereich!
+						clearList.add((ListViewItemBase) tmp);
+					}
+				}
 			}
+			mReloadItems = false;
 		}
 
 		// afräumen
@@ -47,6 +55,7 @@ public class V_ListView extends ListViewBase
 			{
 				ListViewItemBase tmp = iterator.next();
 				mAddeedIndexList.remove((Object) tmp.getIndex());
+				Logger.LogCat("Remove Item " + tmp.getIndex());
 				this.removeChild(tmp);
 				if (mCanDispose) tmp.dispose();
 			}
@@ -83,21 +92,29 @@ public class V_ListView extends ListViewBase
 		{
 			if (!mAddeedIndexList.contains(i))
 			{
-				if (mPosDefault.get(i) < this.getMaxY())
+
+				float itemPos = mPosDefault.get(i);
+				itemPos -= mPos;
+
+				if (itemPos < this.getMaxY() && itemPos + mBaseAdapter.getItemSize(i) > 0)
 				{
 					ListViewItemBase tmp = mBaseAdapter.getView(i);
-					float itemPos = mPosDefault.get(i);
-					itemPos -= mPos;
-
-					if (itemPos < this.getMaxY())
+					tmp.setY(itemPos);
+					if (i == mSelectedIndex)
 					{
-						tmp.setY(itemPos);
-						this.addChild(tmp);
-						mAddeedIndexList.add(tmp.getIndex());
+						tmp.isSelected = true;
+						tmp.resetInitial();
 					}
+					this.addChild(tmp);
+					Logger.LogCat("Add Item " + i);
+					mAddeedIndexList.add(tmp.getIndex());
 				}
-				else
+
+				else if (itemPos + mBaseAdapter.getItemSize(i) < 0)
+				{
 					break;
+				}
+
 			}
 
 			// RenderRequest
@@ -117,15 +134,16 @@ public class V_ListView extends ListViewBase
 
 		float minimumItemHeight = this.height;
 
-		float countPos = this.height;
+		float countPos = this.height - mDividerSize;
 
 		for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
 		{
-			CB_View_Base tmp = mBaseAdapter.getView(i);
-			countPos -= tmp.getHeight() + mDividerSize;
+			float itemHeight = mBaseAdapter.getItemSize(i);
+
+			countPos -= itemHeight + mDividerSize;
 			mPosDefault.add(countPos);
 
-			if (tmp.getHeight() < minimumItemHeight) minimumItemHeight = tmp.getHeight();
+			if (itemHeight < minimumItemHeight) minimumItemHeight = itemHeight;
 
 		}
 		mAllSize = countPos;
@@ -138,16 +156,25 @@ public class V_ListView extends ListViewBase
 	{
 		if (!mIsDrageble) return false;
 		mDraged = y - mLastTouch;
-		setPos(mLastPos_onTouch - mDraged);
+		setListPos(mLastPos_onTouch - mDraged);
 		return true;
 	}
 
+	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
 		if (!mIsDrageble) return false;
 		mLastTouch = y;
 		mLastPos_onTouch = mPos;
 		return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelöst wird.
+	}
+
+	@Override
+	protected void startAnimationtoTop()
+	{
+		if (mBaseAdapter == null) return;
+		mBottomAnimation = false;
+		scrollTo(mBaseAdapter.getItemSize(0));
 	}
 
 	@Override

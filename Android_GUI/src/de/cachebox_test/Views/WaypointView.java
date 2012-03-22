@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
@@ -61,7 +60,7 @@ public class WaypointView extends ListView implements ViewOptionsMenu
 				aktCache = GlobalCore.SelectedCache();
 				// shutdown AutoResort when selecting a cache or waypoint by
 				// hand
-				Global.autoResort = false;
+				GlobalCore.autoResort = false;
 				GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), aktWaypoint);
 			}
 		});
@@ -144,16 +143,13 @@ public class WaypointView extends ListView implements ViewOptionsMenu
 	}
 
 	public class CustomAdapter extends BaseAdapter /*
-													 * implements
-													 * OnClickListener
+													 * implements OnClickListener
 													 */
 	{
 
 		/*
-		 * private class OnItemClickListener implements OnClickListener{ private
-		 * int mPosition; OnItemClickListener(int position){ mPosition =
-		 * position; } public void onClick(View arg0) { Log.v("ddd",
-		 * "onItemClick at position" + mPosition); } }
+		 * private class OnItemClickListener implements OnClickListener{ private int mPosition; OnItemClickListener(int position){ mPosition
+		 * = position; } public void onClick(View arg0) { Log.v("ddd", "onItemClick at position" + mPosition); } }
 		 */
 
 		private Context context;
@@ -382,8 +378,8 @@ public class WaypointView extends ListView implements ViewOptionsMenu
 				}
 			};
 
-			MessageBox.Show(GlobalCore.Translations.Get("?DelWP") + "\n\n[" + aktWaypoint.Title + "]", GlobalCore.Translations.Get("!DelWP"),
-					MessageBoxButtons.YesNo, MessageBoxIcon.Question, dialogClickListener);
+			MessageBox.Show(GlobalCore.Translations.Get("?DelWP") + "\n\n[" + aktWaypoint.Title + "]",
+					GlobalCore.Translations.Get("!DelWP"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, dialogClickListener);
 			break;
 		case R.id.menu_waypointview_gps:
 			createNewWaypoint = true;

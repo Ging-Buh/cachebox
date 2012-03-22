@@ -7,15 +7,12 @@ package CB_Core.GL_UI.interfaces;
  */
 public interface ViewOptionsMenu
 {
-	public int GetMenuId();
 
 	public void onShow();
 
 	public void onHide();
 
 	public void onFree();
-
-	public int GetContextMenuId();
 
 	// TODO diese Methoden müssen noch implementiert werden, sobald das Context Menu im Core geschrieben wurde.
 

@@ -6,6 +6,14 @@ import CB_Core.Math.CB_RectF;
 public abstract class ListViewItemBase extends CB_View_Base
 {
 
+	/**
+	 * Constructor
+	 * 
+	 * @param rec
+	 * @param Index
+	 *            Index in der List
+	 * @param Name
+	 */
 	public ListViewItemBase(CB_RectF rec, int Index, CharSequence Name)
 	{
 		super(rec, Name);
@@ -18,5 +26,7 @@ public abstract class ListViewItemBase extends CB_View_Base
 	{
 		return mIndex;
 	}
+
+	public boolean isSelected = false;
 
 }

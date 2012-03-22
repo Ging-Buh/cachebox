@@ -80,13 +80,14 @@ public class CacheInfo extends CB_View_Base
 	{
 		super(size, Name);
 		mCache = value;
+		isInitial = false;
 	}
 
 	public CacheInfo(CB_RectF rec, String Name, Cache value)
 	{
 		super(rec, Name);
 		mCache = value;
-
+		isInitial = false;
 	}
 
 	public void setFont(BitmapFont font)
@@ -98,6 +99,8 @@ public class CacheInfo extends CB_View_Base
 	@Override
 	protected void render(SpriteBatch batch)
 	{
+		super.render(batch);
+
 		if (mIconSprite != null) mIconSprite.draw(batch);
 		if (mRatingSprite != null) mRatingSprite.draw(batch);
 		if (mS_FontCache != null) mS_FontCache.draw(batch);
@@ -162,11 +165,11 @@ public class CacheInfo extends CB_View_Base
 			if (mIconSize <= 0) mIconSize = GL_UISizes.PosMarkerSize * 1.2f;
 			if (mCache.MysterySolved())
 			{
-				mIconSprite = new Sprite(SpriteCache.MapIcons.get(19));
+				mIconSprite = new Sprite(SpriteCache.BigIcons.get(19));
 			}
 			else
 			{
-				mIconSprite = new Sprite(SpriteCache.MapIcons.get(mCache.Type.ordinal()));
+				mIconSprite = new Sprite(SpriteCache.BigIcons.get(mCache.Type.ordinal()));
 			}
 			mIconSprite.setSize(mIconSize, mIconSize);
 			mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);

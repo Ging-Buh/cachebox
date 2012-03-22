@@ -28,6 +28,7 @@ import CB_Core.GL_UI.Controls.ZoomScale;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Main.MainView;
 import CB_Core.GL_UI.Main.MainViewBase;
+import CB_Core.GL_UI.Menu.CB_AllContextMenuHandler;
 import CB_Core.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
@@ -57,7 +58,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class MapView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent
 {
-	private final MapView that; // für Zugriff aus Listeners heraus auf this
+	public static MapView that = null; // für Zugriff aus Listeners heraus auf this
 	private final String Tag = "MAP_VIEW_GL";
 
 	// ####### Enthaltene Controls ##########
@@ -267,6 +268,18 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		CB_Core.Events.SelectedCacheEventList.Add(this);
 		CB_Core.Events.PositionChangedEventList.Add(this);
+
+		this.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				CB_AllContextMenuHandler.showMapViewGLContextMenu();
+				return true;
+			}
+		});
+
 	}
 
 	@Override
@@ -909,6 +922,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private void loadTiles()
 	{
 
+		mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, false);
+
 		if (ManagerBase.Manager == null) return; // Kann nichts laden, wenn der Manager Null ist!
 
 		deleteUnusedTiles();
@@ -922,8 +937,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				- extensionTop), aktZoom);
 		Descriptor ru = screenToDescriptor(new Vector2(width / 2 + drawingWidth / 2 + extensionRight, height / 2 + drawingHeight / 2
 				+ extensionBottom), aktZoom);
-
-		mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, false);
 
 		loadedTilesLock.lock();
 		queuedTilesLock.lock();
@@ -1497,13 +1510,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private HashMap<Integer, Point> fingerDown = new LinkedHashMap<Integer, Point>();
 
 	private static CharSequence debugString = "";
-
-	@Override
-	public boolean onLongClick(int x, int y, int pointer, int button)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)

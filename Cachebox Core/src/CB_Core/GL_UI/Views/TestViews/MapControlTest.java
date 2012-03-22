@@ -102,9 +102,10 @@ public class MapControlTest extends CB_View_Base
 						{
 
 							@Override
-							public void onClick(int which)
+							public boolean onClick(int which)
 							{
 								MsgBox.Show("Button " + which + " clicked");
+								return true;
 							}
 						});
 			}

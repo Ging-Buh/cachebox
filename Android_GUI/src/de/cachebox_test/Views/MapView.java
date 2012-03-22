@@ -883,7 +883,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
-		if (Global.autoResort) return;
+		if (GlobalCore.autoResort) return;
 
 		if (cache == null) return;
 		/*
@@ -903,8 +903,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 	/*
 	 * delegate void targetChangedDelegate(Cache cache, Waypoint waypoint); void OnTargetChanged(Cache cache, Waypoint waypoint) { if
-	 * (Global.autoResort) return; if (cache == null) return; if (InvokeRequired) { Invoke(new targetChangedDelegate(OnTargetChanged), new
-	 * object[] { cache, waypoint }); return; } positionInitialized = true; // tabButtonTrackPosition.Down = false; Coordinate target =
+	 * (GlobalCore.autoResort) return; if (cache == null) return; if (InvokeRequired) { Invoke(new targetChangedDelegate(OnTargetChanged),
+	 * new object[] { cache, waypoint }); return; } positionInitialized = true; // tabButtonTrackPosition.Down = false; Coordinate target =
 	 * (waypoint != null) ? new Coordinate(waypoint.Latitude, waypoint.Longitude) : new Coordinate(cache.Latitude, cache.Longitude);
 	 * startAnimation(target); } public new void Dispose() { if (loaderThread != null) loaderThread.Abort(); base.Dispose(); }
 	 */
@@ -3562,7 +3562,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			BubbleCache = null;
 			BubbleWaypoint = null;
 			// Shutdown Autoresort
-			Global.autoResort = false;
+			GlobalCore.autoResort = false;
 			Render(true);
 			// do nothing else with this click
 			return;

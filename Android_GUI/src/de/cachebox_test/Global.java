@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Date;
 
 import CB_Core.Config;
-import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Math.UiSizes;
@@ -27,8 +26,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import de.CB_PlugIn.IPlugIn;
@@ -38,7 +35,7 @@ import de.cachebox_test.Map.RouteOverlay;
 
 public class Global
 {
-	public static final int CurrentRevision = 768;
+	public static final int CurrentRevision = 769;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 	public static final int LatestDatabaseChange = 1016;
@@ -72,8 +69,6 @@ public class Global
 	 */
 	public static MoveableList<QuickButtonItem> QuickButtonList;
 
-	public static FilterProperties LastFilter = null;
-	public static boolean autoResort;
 	public static Bitmap EmptyBmp = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565);
 
 	/**
@@ -564,16 +559,21 @@ public class Global
 					getDrawable(R.drawable.big_18, res), getDrawable(R.drawable.big_19, res), getDrawable(R.drawable.my_parking, res), };
 
 		BtnIcons = new Drawable[]
-			{
-					getDrawable(R.drawable.day_btn_default_normal, R.drawable.night_btn_default_normal, res),
-					getDrawable(R.drawable.button, R.drawable.night_button, res),
-					getDrawable(R.drawable.doc_icon, res),
-					getDrawable(R.drawable.big_16, res),
-					getDrawable(R.drawable.list_icon, res), // LogView braucht noch ein Icon
-					getDrawable(R.drawable.map, res), getDrawable(R.drawable.compass, res), getDrawable(R.drawable.cache_list_icon, res),
-					getDrawable(R.drawable.track_list_icon, res), getDrawable(R.drawable.log10, res),
-					getDrawable(R.drawable.video_icon, res), getDrawable(R.drawable.voice_rec_icon, res),
-					getDrawable(R.drawable.lupe, res), getDrawable(R.drawable.filter, res), getDrawable(R.drawable.lock_icon, res),
+			{ getDrawable(R.drawable.day_btn_default_normal, R.drawable.night_btn_default_normal, res),// 0
+					getDrawable(R.drawable.button, R.drawable.night_button, res),// 1
+					getDrawable(R.drawable.doc_icon, res),// 2
+					getDrawable(R.drawable.big_16, res),// 3
+					getDrawable(R.drawable.list_icon, res), // 4 LogView braucht noch ein Icon
+					getDrawable(R.drawable.map, res), // 5
+					getDrawable(R.drawable.compass, res),// 6
+					getDrawable(R.drawable.cache_list_icon, res),// 7
+					getDrawable(R.drawable.track_list_icon, res), // 8
+					getDrawable(R.drawable.log10, res),// 9
+					getDrawable(R.drawable.video_icon, res), // 10
+					getDrawable(R.drawable.voice_rec_icon, res),// 11
+					getDrawable(R.drawable.lupe, res), // 12
+					getDrawable(R.drawable.filter, res), // 13
+					getDrawable(R.drawable.lock_icon, res),// 14
 					getDrawable(R.drawable.auto_sort_on_icon, res), // 15
 					getDrawable(R.drawable.auto_sort_off_icon, res), // 16
 					getDrawable(R.drawable.solver_icon, res), // 17
@@ -822,54 +822,6 @@ public class Global
 			Logger.Error("Global.TranslateMenuItem()", "", e);
 		}
 		return mi;
-	}
-
-	/**
-	 * isOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen
-	 */
-	public static boolean isOnline()
-	{
-		ConnectivityManager cm = (ConnectivityManager) main.mainActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo netInfo = cm.getActiveNetworkInfo();
-		if (netInfo != null && netInfo.isConnectedOrConnecting())
-		{
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * APIisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen und ein API Access Token vorhanden ist.
-	 */
-	public static boolean APIisOnline()
-	{
-		if (Config.GetAccessToken().length() == 0)
-		{
-			Logger.General("global.APIisOnline() -Invalid AccessToken");
-			return false;
-		}
-		if (isOnline())
-		{
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * JokerisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen und ein Passwort für gcJoker.de vorhanden ist.
-	 */
-	public static boolean JokerisOnline()
-	{
-		if (Config.settings.GcJoker.getValue().length() == 0)
-		{
-			Logger.General("global.APIisOnline() -Invalid Joker");
-			return false;
-		}
-		if (isOnline())
-		{
-			return true;
-		}
-		return false;
 	}
 
 }

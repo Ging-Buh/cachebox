@@ -177,7 +177,7 @@ public enum Actions
 		case 12:
 			return Global.BtnIcons[14]; // ScreenLock
 		case 13:
-			return Global.autoResort ? Global.BtnIcons[16] : Global.BtnIcons[15]; // AutoResort
+			return GlobalCore.autoResort ? Global.BtnIcons[16] : Global.BtnIcons[15]; // AutoResort
 		case 14:
 			return Global.BtnIcons[17];
 		case 15:

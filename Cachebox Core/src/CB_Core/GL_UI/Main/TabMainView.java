@@ -2,7 +2,7 @@ package CB_Core.GL_UI.Main;
 
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Views.AboutView;
+import CB_Core.GL_UI.Views.CacheListView;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
@@ -58,7 +58,8 @@ public class TabMainView extends MainViewBase
 
 		this.addChild(Tab);
 
-		Tab.ShowView(new AboutView(this, "AboutView"));
+		// Tab.ShowView(new AboutView(this, "AboutView"));
+		Tab.ShowView(new CacheListView(this, "CacheListView"));
 
 	}
 
@@ -94,8 +95,8 @@ public class TabMainView extends MainViewBase
 		Tab.addButtonList(btnList);
 
 		this.addChild(Tab);
-		Tab.ShowView(new AboutView(this, "AboutView"));
-
+		// Tab.ShowView(new AboutView(this, "AboutView"));
+		Tab.ShowView(new CacheListView(this, "CacheListView"));
 	}
 
 	private void addRightForTabletsTab()

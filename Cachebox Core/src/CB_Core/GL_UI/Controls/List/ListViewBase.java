@@ -17,7 +17,8 @@ public abstract class ListViewBase extends CB_View_Base
 	private float mAnimationTarget = 0;
 	private Timer mAnimationTimer;
 	private long ANIMATION_TICK = 50;
-	private Boolean mBottomAnimation = false;
+	protected Boolean mBottomAnimation = false;
+	protected int mSelectedIndex = -1;
 
 	/**
 	 * Wen True, können die Items verschoben werden
@@ -58,7 +59,7 @@ public abstract class ListViewBase extends CB_View_Base
 	/**
 	 * Abstand zwichen zwei Items
 	 */
-	protected float mDividerSize = 2.5f;
+	protected float mDividerSize = 2f;
 
 	protected boolean mMustSetPos = false;
 	protected float mMustSetPosValue = 0;
@@ -93,6 +94,21 @@ public abstract class ListViewBase extends CB_View_Base
 	public void setDividerSize(float value)
 	{
 		mDividerSize = value;
+		calcDefaultPosList();
+
+		// Items neu laden
+		reloadItems();
+
+	}
+
+	protected boolean mReloadItems = false;
+
+	private void reloadItems()
+	{
+		mReloadItems = true;
+
+		// Position setzen, damit die items neu geladen werden
+		setListPos(mPos);
 	}
 
 	/**
@@ -116,7 +132,7 @@ public abstract class ListViewBase extends CB_View_Base
 		mCanDispose = CanDispose;
 	}
 
-	protected void setPos(float value)
+	protected void setListPos(float value)
 	{
 		mMustSetPosValue = value;
 		mMustSetPos = true;
@@ -185,7 +201,7 @@ public abstract class ListViewBase extends CB_View_Base
 
 	public abstract boolean onTouchDown(int x, int y, int pointer, int button);
 
-	private void startAnimationtoTop()
+	protected void startAnimationtoTop()
 	{
 		mBottomAnimation = false;
 		scrollTo(0);
@@ -197,7 +213,7 @@ public abstract class ListViewBase extends CB_View_Base
 		scrollTo(mAllSize);
 	}
 
-	private void scrollTo(float Pos)
+	protected void scrollTo(float Pos)
 	{
 
 		Logger.LogCat("Scroll TO:" + Pos);
@@ -220,12 +236,12 @@ public abstract class ListViewBase extends CB_View_Base
 				if ((!mBottomAnimation && mAnimationTarget + 1.5 > mPos) || (mBottomAnimation && mAnimationTarget - 1.5 < mPos))
 				{
 					Logger.LogCat("Animation Snapin");
-					setPos(mAnimationTarget);
+					setListPos(mAnimationTarget);
 					stopTimer();
 					return;
 				}
 
-				setPos(newPos);
+				setListPos(newPos);
 			}
 
 		}, 0, ANIMATION_TICK);
@@ -238,6 +254,35 @@ public abstract class ListViewBase extends CB_View_Base
 			mAnimationTimer.cancel();
 			mAnimationTimer = null;
 		}
+	}
+
+	public float getDividerHeight()
+	{
+		return mDividerSize;
+	}
+
+	protected void setSelection(int i)
+	{
+		if (mSelectedIndex != i && i > 0)
+		{
+			mSelectedIndex = i;
+
+			// alle Items löschen, damit das Selection flag neu gesetzt werden kann.
+			reloadItems();
+		}
+
+	}
+
+	protected int getLastVisiblePosition()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	protected int getFirstVisiblePosition()
+	{
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

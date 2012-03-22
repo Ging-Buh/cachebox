@@ -217,7 +217,7 @@ public class AllContextMenuCallHandler
 		}
 		// Menu Item Telefonjoker enabled / disabled abhänging von gcJoker MD5
 		enabled = false;
-		if (Global.JokerisOnline()) enabled = true;
+		if (GlobalCore.JokerisOnline()) enabled = true;
 		mi = IconMenu.findItem(R.id.miTelJoker);
 		if (mi != null)
 		{
@@ -277,7 +277,7 @@ public class AllContextMenuCallHandler
 		Global.TranslateMenuItem(IconMenu, R.id.miManageDB, "manage", "  (" + DBName + ")");
 		MenuItem miAutoResort = Global.TranslateMenuItem(IconMenu, R.id.miAutoResort, "AutoResort");
 		miAutoResort.setCheckable(true);
-		miAutoResort.setChecked(Global.autoResort);
+		miAutoResort.setChecked(GlobalCore.autoResort);
 		Global.TranslateMenuItem(IconMenu, R.id.miResort, "ResortList");
 		Global.TranslateMenuItem(IconMenu, R.id.miFilterset, "filter");
 		Global.TranslateMenuItem(IconMenu, R.id.miSearch, "search");

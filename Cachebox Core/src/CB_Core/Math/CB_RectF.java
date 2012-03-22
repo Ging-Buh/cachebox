@@ -77,6 +77,14 @@ public class CB_RectF
 		this.width = 0F;
 	}
 
+	public CB_RectF(SizeF size)
+	{
+		this.Pos.x = 0F;
+		this.Pos.y = 0F;
+		this.height = size.height;
+		this.width = size.width;
+	}
+
 	/**
 	 * Constructor für ein neues RectF mit Angabe der linken unteren Ecke und der Höhe und Breite
 	 * 
@@ -521,6 +529,13 @@ public class CB_RectF
 	public String toString()
 	{
 		return "rec X,Y/Width,Height = " + this.getX() + "," + this.getY() + "/" + this.width + "," + this.height;
+	}
+
+	public void setPos(float x, float y)
+	{
+		this.Pos.x = x;
+		this.Pos.y = y;
+		calcCrossCorner();
 	}
 
 }

@@ -1,22 +1,27 @@
 package de;
 
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
+import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
+import CB_Core.Types.Categories;
+import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ViewConst;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+
 
 public class DesktopMain {
 
@@ -36,12 +41,17 @@ public class DesktopMain {
 
 		InitalConfig();
 		Config.settings.MapViewDPIFaktor.setValue(1);
+		
+		Config.settings.OsmMinLevel.setValue(2);
+		
 
 		CB_UI = new Desktop_GL_Listner(myInitialSize.width,
 				myInitialSize.height);
 
-		GL_View_Base.debug = true;
-
+//		GL_View_Base.debug = true;
+//		GL_View_Base.disableScissor= true;
+		
+		
 		int sw = myInitialSize.height > myInitialSize.width ? myInitialSize.width
 				: myInitialSize.height;
 		sw /= ui.Density;
@@ -147,6 +157,50 @@ public class DesktopMain {
 		Database.Settings.StartUp(Config.WorkPath + "/Config.db3");
 		Config.settings.ReadFromDB();
 		Config.AcceptChanges();
+		
+		
+		
+		try {
+			Database.Data = new TestDB(DatabaseType.CacheBox);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String database = Config.settings.DatabasePath.getValue();
+		Database.Data.StartUp(database);
+
+		Config.settings.ReadFromDB();
+		
+		String FilterString = Config.settings.Filter.getValue();
+		GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0]) : new FilterProperties(
+				FilterString);
+		String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
+
+		GlobalCore.Categories = new Categories();
+		Database.Data.GPXFilenameUpdateCacheCount();
+
+		CacheListDAO cacheListDAO = new CacheListDAO();
+		cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+
+		try {
+			Database.FieldNotes = new TestDB(DatabaseType.FieldNotes);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
+		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
+		
+		
+		
+		try {
+			GlobalCore.Translations.ReadTranslationsFile(Config.settings.Sel_LanguagePath.getValue());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 }

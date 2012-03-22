@@ -121,7 +121,7 @@ public class QuickButtonItem extends View
 		if (this.mAction.ordinal() == Actions.AutoResort.ordinal())
 		{// Wenn die Action ID = AutoResort ist, muss erst der Zustand On/Off
 			// abgefragt werden
-			if (Global.autoResort)
+			if (GlobalCore.autoResort)
 			{
 				ActivityUtils.PutImageTargetHeight(canvas, Global.BtnIcons[15], 14, 12, height - 24);
 			}

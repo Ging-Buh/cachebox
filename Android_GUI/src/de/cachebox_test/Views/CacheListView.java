@@ -17,7 +17,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import de.cachebox_test.Global;
 import de.cachebox_test.Events.PositionEvent;
 import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Events.ViewOptionsMenu;
@@ -61,7 +60,7 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 				Waypoint finalWp = null;
 				if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
 				// shutdown AutoResort when selecting a cache by hand
-				Global.autoResort = false;
+				GlobalCore.autoResort = false;
 				GlobalCore.SelectedWaypoint(cache, finalWp);
 
 				invalidate();
@@ -80,7 +79,7 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 				Waypoint finalWp = null;
 				if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
 				// shutdown AutoResort when selecting a cache by hand
-				Global.autoResort = false;
+				GlobalCore.autoResort = false;
 				GlobalCore.SelectedWaypoint(cache, finalWp);
 
 				invalidate();

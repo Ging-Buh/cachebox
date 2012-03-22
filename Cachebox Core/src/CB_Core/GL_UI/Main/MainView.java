@@ -201,4 +201,26 @@ public class MainView extends MainViewBase
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public boolean onTouchDown(int x, int y, int pointer, int button)
+	{
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean onTouchDragged(int x, int y, int pointer)
+	{
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean onTouchUp(int x, int y, int pointer, int button)
+	{
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 }

@@ -28,7 +28,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 import de.cachebox_test.FileList;
-import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.DB.AndroidDB;
 import de.cachebox_test.Ui.ActivityUtils;
@@ -212,9 +211,9 @@ public class SelectDB extends Activity
 				dialog.dismiss();
 
 				String FilterString = Config.settings.Filter.getValue();
-				Global.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0])
+				GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0])
 						: new FilterProperties(FilterString);
-				String sqlWhere = Global.LastFilter.getSqlWhere();
+				String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
 
 				// initialize Database
 				Database.Data = new AndroidDB(DatabaseType.CacheBox, Me);

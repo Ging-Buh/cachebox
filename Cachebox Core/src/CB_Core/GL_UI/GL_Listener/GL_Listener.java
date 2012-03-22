@@ -8,10 +8,14 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import CB_Core.Config;
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewID;
+import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Main.MainView;
 import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.Log.Logger;
@@ -23,6 +27,9 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -34,8 +41,11 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	// # private Member
 	private HashMap<GL_View_Base, Integer> renderViews = new HashMap<GL_View_Base, Integer>();
 	protected MainViewBase child;
+	protected CB_View_Base mDialog;
 	private static AtomicBoolean started = new AtomicBoolean(false);
 	static boolean useNewInput = true;
+
+	private long mLongClickTime = 0;
 
 	public static final int FRAME_RATE_IDLE = 500;
 	public static final int FRAME_RATE_ACTION = 50;
@@ -57,7 +67,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		glListener = this;
 		width = initalWidth;
 		height = initialHeight;
-		// GL_View_Base.debug = true;
+		mLongClickTime = Config.settings.LongClicktime.getValue();
 	}
 
 	@Override
@@ -111,34 +121,40 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		child.onStop();
 	}
 
-	public boolean onClick(int x, int y, int pointer, int button)
-	{
-		boolean behandelt = false;
-
-		if (child.isClickable())
-		{
-			behandelt = child.click(x, (int) child.getHeight() - y, pointer, button);
-		}
-
-		return behandelt;
-	}
-
-	public boolean onLongClick(int x, int y, int pointer, int button)
-	{
-		boolean behandelt = false;
-
-		if (child.isClickable())
-		{
-			behandelt = child.longClick(x, (int) child.getHeight() - y, pointer, button);
-		}
-		return behandelt;
-	}
+	// public boolean onClick(int x, int y, int pointer, int button)
+	// {
+	// boolean behandelt = false;
+	//
+	// CB_View_Base testingView = DialogIsShown ? mDialog : child;
+	//
+	// if (testingView.isClickable())
+	// {
+	// behandelt = testingView.click(x, (int) testingView.getHeight() - y, pointer, button);
+	// }
+	//
+	// return behandelt;
+	// }
+	//
+	// public boolean onLongClick(int x, int y, int pointer, int button)
+	// {
+	// boolean behandelt = false;
+	//
+	// CB_View_Base testingView = DialogIsShown ? mDialog : child;
+	//
+	// if (testingView.isClickable())
+	// {
+	// behandelt = testingView.longClick(x, (int) testingView.getHeight() - y, pointer, button);
+	// }
+	// return behandelt;
+	// }
 
 	public GL_View_Base onTouchDown(int x, int y, int pointer, int button)
 	{
 		GL_View_Base view = null;
 
-		view = child.touchDown(x, (int) child.getHeight() - y, pointer, button);
+		CB_View_Base testingView = DialogIsShown ? mDialog : child;
+
+		view = testingView.touchDown(x, (int) testingView.getHeight() - y, pointer, button);
 
 		return view;
 	}
@@ -147,7 +163,9 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		boolean behandelt = false;
 
-		behandelt = child.touchDragged(x, (int) child.getHeight() - y, pointer);
+		CB_View_Base testingView = DialogIsShown ? mDialog : child;
+
+		behandelt = testingView.touchDragged(x, (int) testingView.getHeight() - y, pointer);
 
 		return behandelt;
 	}
@@ -156,7 +174,9 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		boolean behandelt = false;
 
-		behandelt = child.touchUp(x, (int) child.getHeight() - y, pointer, button);
+		CB_View_Base testingView = DialogIsShown ? mDialog : child;
+
+		behandelt = testingView.touchUp(x, (int) testingView.getHeight() - y, pointer, button);
 
 		return behandelt;
 	}
@@ -215,6 +235,9 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		// if (listenerInterface != null) listenerInterface.RenderContinous();
 	}
 
+	private float darknesAlpha = 0f;
+	private boolean darknesAnimationRuns = false;
+
 	@Override
 	public void render()
 	{
@@ -228,10 +251,49 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 		child.renderChilds(batch, prjMatrix);
 
+		if (DialogIsShown && mDialog.getCildCount() > 0)
+		{
+
+			// Zeichne Transparentes Rec um den Hintergrund abzudunkeln.
+			if (mDarknesSprite == null)
+			{
+				int w = CB_View_Base.getNextHighestPO2((int) width);
+				int h = CB_View_Base.getNextHighestPO2((int) height);
+				Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+				p.setColor(0f, 0.1f, 0f, 0.9f);
+				// p.drawRectangle(1, 1, (int) width - 1, (int) height - 1);
+				p.fillRectangle(0, 0, width, height);
+
+				Texture tex = new Texture(p, Pixmap.Format.RGBA8888, false);
+
+				mDarknesSprite = new Sprite(tex, (int) width, (int) height);
+			}
+
+			batch.begin();
+
+			mDarknesSprite.draw(batch, darknesAlpha);
+			if (darknesAnimationRuns)
+			{
+				darknesAlpha += 0.0185f;
+				if (darknesAlpha > 1f)
+				{
+					darknesAlpha = 1f;
+					darknesAnimationRuns = false;
+					removeRenderView(mDialog);
+				}
+			}
+
+			batch.end();
+
+			mDialog.renderChilds(batch, prjMatrix);
+		}
+
 		Gdx.gl.glFlush();
 		Gdx.gl.glFinish();
 
 	}
+
+	private Sprite mDarknesSprite;
 
 	private void reduceFPS()
 	{
@@ -265,6 +327,12 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		{
 			child = new MainView(0, 0, width, height, "MainView");
 			child.setClickable(true);
+		}
+
+		if (mDialog == null)
+		{
+			mDialog = new MainView(0, 0, width, height, "Dialog");
+			mDialog.setClickable(true);
 		}
 
 	}
@@ -358,7 +426,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 				}
 			}
 		};
-		longTimer.schedule(task, 2000);
+		longTimer.schedule(task, mLongClickTime);
 	}
 
 	private void cancelLongClickTimer()
@@ -372,7 +440,9 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public boolean onTouchDownBase(int x, int y, int pointer, int button)
 	{
-		GL_View_Base view = child.touchDown(x, (int) child.getHeight() - y, pointer, button);
+		CB_View_Base testingView = DialogIsShown ? mDialog : child;
+
+		GL_View_Base view = testingView.touchDown(x, (int) testingView.getHeight() - y, pointer, button);
 		if (view == null) return false;
 
 		if (touchDownPos.containsKey(pointer))
@@ -394,6 +464,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public boolean onTouchDraggedBase(int x, int y, int pointer)
 	{
+		CB_View_Base testingView = DialogIsShown ? mDialog : child;
+
 		if (!touchDownPos.containsKey(pointer)) return false; // für diesen Pointer ist kein touchDownPos gespeichert ->
 																// dürfte nicht passieren!!!
 		TouchDownPointer first = touchDownPos.get(pointer);
@@ -404,8 +476,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			// zu weit verschoben -> Long-Click detection stoppen
 			cancelLongClickTimer();
 			// touchDragged Event an das View, das den onTouchDown bekommen hat
-			first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(),
-					(int) child.getHeight() - y - (int) first.view.ThisWorldRec.getY(), pointer);
+			first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
+					- (int) first.view.ThisWorldRec.getY(), pointer);
 			// Logger.LogCat("GL_Listner => onTouchDraggedBase : " + first.view.getName());
 
 			if (touchDownPos.size() == 1)
@@ -422,6 +494,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		cancelLongClickTimer();
 
+		CB_View_Base testingView = DialogIsShown ? mDialog : child;
+
 		if (!touchDownPos.containsKey(pointer)) return false; // für diesen Pointer ist kein touchDownPos gespeichert ->
 																// dürfte nicht passieren!!!
 		TouchDownPointer first = touchDownPos.get(pointer);
@@ -432,8 +506,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			// glListener.onClick(akt.x, akt.y, pointer, 0);
 			if (first.view.isClickable())
 			{
-				first.view.click(x - (int) first.view.ThisWorldRec.getX(),
-						(int) child.getHeight() - y - (int) first.view.ThisWorldRec.getY(), pointer, button);
+				first.view.click(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
+						- (int) first.view.ThisWorldRec.getY(), pointer, button);
 				Logger.LogCat("GL_Listner => onTouchUpBase (Click) : " + first.view.getName());
 			}
 		}
@@ -441,13 +515,13 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		if (first.kineticPan != null)
 		{
 			first.kineticPan.start();
-			first.startKinetic(this, x - (int) first.view.ThisWorldRec.getX(),
-					(int) child.getHeight() - y - (int) first.view.ThisWorldRec.getY());
+			first.startKinetic(this, x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
+					- (int) first.view.ThisWorldRec.getY());
 		}
 		else
 		{
 			// onTouchUp immer auslösen
-			first.view.touchUp(x, (int) child.getHeight() - y, pointer, button);
+			first.view.touchUp(x, (int) testingView.getHeight() - y, pointer, button);
 			touchDownPos.remove(pointer);
 		}
 		// Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
@@ -621,6 +695,54 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			lastY = result.y;
 			return result;
 		}
+	}
+
+	private boolean DialogIsShown = false;
+	private Dialog actDialog;
+
+	public Dialog getActDialog()
+	{
+		return actDialog;
+	}
+
+	public void showDialog(Dialog dialog)
+	{
+
+		// Center Menu on Screen
+		float x = (width - dialog.getWidth()) / 2;
+		float y = (height - dialog.getHeight()) / 2;
+		dialog.setPos(x, y);
+		actDialog = dialog;
+
+		mDialog.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// Sollte bei einem Click neben dem Dialog ausgelöst werden.
+				// Dann soll der Dialog geschlossen werden.
+				closeDialog();
+				return true;
+			}
+		});
+
+		mDialog.addChild(dialog);
+		child.setClickable(false);
+		DialogIsShown = true;
+		darknesAnimationRuns = true;
+		addRenderView(mDialog, FRAME_RATE_FAST_ACTION);
+	}
+
+	public void closeDialog()
+	{
+		actDialog = null;
+		mDialog.removeChilds();
+		child.setClickable(true);
+		DialogIsShown = false;
+		darknesAlpha = 0f;
+		removeRenderView(mDialog);
+		renderOnce(mDialog);
 	}
 
 }

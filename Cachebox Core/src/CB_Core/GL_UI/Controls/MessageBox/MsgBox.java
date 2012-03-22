@@ -23,8 +23,9 @@ public class MsgBox
 		 * 
 		 * @param which
 		 *            The button that was clicked ( the position of the item clicked.
+		 * @return
 		 */
-		public void onClick(int which);
+		public boolean onClick(int which);
 	}
 
 	/**

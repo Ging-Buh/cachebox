@@ -604,7 +604,7 @@ public class search
 				if (tmp.HasFinalWaypoint()) finalWp = tmp.GetFinalWaypoint();
 				if (tmp != null) GlobalCore.SelectedWaypoint(tmp, finalWp);
 				// deactivate autoResort when Cache is selected by hand
-				Global.autoResort = false;
+				GlobalCore.autoResort = false;
 
 				ActivityUtils.setBtnState(mBtnNext, true);
 
@@ -636,15 +636,15 @@ public class search
 		String searchPattern = mEingabe.getEditableText().toString().toLowerCase();
 
 		String where = "";
-		if (Global.LastFilter.toString().length() > 0) where = " AND (";
+		if (GlobalCore.LastFilter.toString().length() > 0) where = " AND (";
 
-		Global.LastFilter.filterName = "";
-		Global.LastFilter.filterGcCode = "";
-		Global.LastFilter.filterOwner = "";
+		GlobalCore.LastFilter.filterName = "";
+		GlobalCore.LastFilter.filterGcCode = "";
+		GlobalCore.LastFilter.filterOwner = "";
 
-		if (mSearchState == 0) Global.LastFilter.filterName = searchPattern;
-		else if (mSearchState == 1) Global.LastFilter.filterGcCode = searchPattern;
-		if (mSearchState == 2) Global.LastFilter.filterOwner = searchPattern;
+		if (mSearchState == 0) GlobalCore.LastFilter.filterName = searchPattern;
+		else if (mSearchState == 1) GlobalCore.LastFilter.filterGcCode = searchPattern;
+		if (mSearchState == 2) GlobalCore.LastFilter.filterOwner = searchPattern;
 
 		ApplyFilter();
 	}
@@ -653,7 +653,7 @@ public class search
 
 	public void ApplyFilter()
 	{
-		ApplyFilter(Global.LastFilter);
+		ApplyFilter(GlobalCore.LastFilter);
 	}
 
 	public void ApplyFilter(FilterProperties filter)
