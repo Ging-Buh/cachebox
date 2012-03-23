@@ -284,4 +284,9 @@ public class Label extends CB_View_Base
 		if (cache != null) cache.setColor(color);
 	}
 
+	public String getText()
+	{
+		return this.text;
+	}
+
 }

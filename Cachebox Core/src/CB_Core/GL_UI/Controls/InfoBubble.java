@@ -4,6 +4,7 @@ import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 import CB_Core.Types.Cache;
@@ -20,6 +21,7 @@ public class InfoBubble extends CB_View_Base
 	public InfoBubble(SizeF Size, CharSequence Name)
 	{
 		super(Size, Name);
+		Logger.LogCat("Create InfoBubble");
 	}
 
 	Pixmap pixmap = null;
@@ -55,6 +57,9 @@ public class InfoBubble extends CB_View_Base
 			return;
 		}
 
+		if (mCache != null && mCache.Id == value.Id) return;
+
+		Logger.LogCat("New Cache @InfoBubble");
 		mCache = value;
 		mCacheId = value.Id;
 		SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
@@ -68,9 +73,9 @@ public class InfoBubble extends CB_View_Base
 		requestLayout();
 	}
 
-	public void showBubleSelected()
+	public void showBubbleSelected()
 	{
-
+		Logger.LogCat("Show BubbleSelected");
 		mCacheId = GlobalCore.SelectedCache().Id;
 		mCache = GlobalCore.SelectedCache();
 		setVisibility(VISIBLE);
@@ -95,6 +100,7 @@ public class InfoBubble extends CB_View_Base
 
 	private void requestLayout()
 	{
+		Logger.LogCat("InfoBubble RequestLayout");
 		SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
 		cacheInfo.setSize(size);
 		cacheInfo.setY(height - size.height);

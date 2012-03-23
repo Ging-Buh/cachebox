@@ -22,31 +22,48 @@ public class MapInfoPanel extends CB_View_Base
 	private Label lblLatitude;
 	private Label lblLongitude;
 
+	private Coordinate aktCoord;
+
 	public void setCoord(Coordinate Coord)
 	{
 		if (Coord != null && lblLatitude != null && lblLongitude != null)
 		{
-			lblLatitude.setText(GlobalCore.FormatLatitudeDM(Coord.Latitude));
-			lblLongitude.setText(GlobalCore.FormatLongitudeDM(Coord.Longitude));
-			GL_Listener.glListener.renderOnce(this);
+			if (aktCoord == null || !aktCoord.equals(Coord))
+			{
+				aktCoord = Coord;
+				lblLatitude.setText(GlobalCore.FormatLatitudeDM(Coord.Latitude));
+				lblLongitude.setText(GlobalCore.FormatLongitudeDM(Coord.Longitude));
+				GL_Listener.glListener.renderOnce(this);
+			}
+
 		}
 	}
 
 	public void setSpeed(String speed)
 	{
+		if (lblSpeed.getText().equals(speed)) return;
+
 		lblSpeed.setText(speed);
 	}
 
+	private float aktDistance = -1;
+
 	public void setDistance(float distance)
 	{
+		if (aktDistance == distance) return;
+		aktDistance = distance;
 		if (distance == -1) lblDistance.setText("?");
 		else
 			lblDistance.setText(UnitFormatter.DistanceString(distance));
 		GL_Listener.glListener.renderOnce(this);
 	}
 
+	private float aktBearing = 0;
+
 	public void setBearing(float Bearing)
 	{
+		if (aktBearing == Bearing) return;
+		aktBearing = Bearing;
 		if (arrow != null)
 		{
 			arrow.setRotate(-Bearing);

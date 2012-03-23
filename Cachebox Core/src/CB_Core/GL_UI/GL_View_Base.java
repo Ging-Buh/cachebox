@@ -119,6 +119,7 @@ public abstract class GL_View_Base extends CB_RectF
 	// # Method
 	public void setVisibility(int visibility)
 	{
+		if (mViewState == visibility) return;
 		mViewState = visibility;
 		GL_Listener.glListener.renderOnce(this);
 	}
@@ -614,6 +615,7 @@ public abstract class GL_View_Base extends CB_RectF
 	@Override
 	public void setY(float i)
 	{
+		if (this.getY() == i) return;
 		super.setY(i);
 		this.invalidate(); // Scissor muss neu berechnet werden
 		GL_Listener.glListener.renderOnce(this);
@@ -623,6 +625,7 @@ public abstract class GL_View_Base extends CB_RectF
 	@Override
 	public void setX(float i)
 	{
+		if (this.getX() == i) return;
 		super.setX(i);
 		this.invalidate(); // Scissor muss neu berechnet werden
 		GL_Listener.glListener.renderOnce(this);
@@ -631,6 +634,7 @@ public abstract class GL_View_Base extends CB_RectF
 	@Override
 	public void setPos(Vector2 Pos)
 	{
+		if (this.getPos().x == Pos.x && this.getPos().y == Pos.y) return;
 		super.setPos(Pos);
 		this.invalidate(); // Scissor muss neu berechnet werden
 		GL_Listener.glListener.renderOnce(this);

@@ -202,6 +202,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		});
 		this.addChild(zoomBtn);
 
+		this.setOnClickListener(onClickListner);
+
 		info = (MapInfoPanel) this.addChild(new MapInfoPanel(GL_UISizes.Info, "InfoPanel"));
 
 		zoomScale = new ZoomScale(GL_UISizes.ZoomScale, "zoomScale", 2, 21, 12);
@@ -1657,39 +1659,46 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			inputState = InputState.Idle;
 			// -> Buttons testen
 
-			double minDist = Double.MAX_VALUE;
-			WaypointRenderInfo minWpi = null;
-			Vector2 clickedAt = new Vector2(x, height - y);
-
 			// auf Button Clicks nur reagieren, wenn aktuell noch kein Finger gedrückt ist!!!
 			if (kineticPan != null)
 			// bei FingerKlick (wenn Idle) sofort das kinetische Scrollen stoppen
 			kineticPan = null;
 
+			inputState = InputState.Idle;
+			return false;
+		}
+
+		fingerDown.remove(pointer);
+		if (fingerDown.size() == 1) inputState = InputState.Pan;
+		else if (fingerDown.size() == 0)
+		{
+			inputState = InputState.Idle;
+			// wieder langsam rendern
+			GL_Listener.glListener.renderOnce(this);
+
+			if ((kineticZoom == null) && (kineticPan == null)) GL_Listener.glListener.removeRenderView(this);
+
+			if (kineticPan != null) kineticPan.start();
+		}
+
+		// debugString = "State: " + inputState;
+
+		return true;
+	}
+
+	private OnClickListener onClickListner = new OnClickListener()
+	{
+
+		@Override
+		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+		{
+			double minDist = Double.MAX_VALUE;
+			WaypointRenderInfo minWpi = null;
+			Vector2 clickedAt = new Vector2(x, y);
+
 			synchronized (mapCacheList.list)
 			{
-				// Bubble gedrückt?
-				// xxx if ((Bubble.cache != null) && Bubble.isShow && Bubble.DrawRec != null && Bubble.DrawRec.contains(clickedAt.x,
-				// clickedAt.y))
-				if (false)
-				{
-					// Click inside Bubble -> hide Bubble and select Cache
-					// GlobalCore.SelectedWaypoint(Bubble.cache,
-					// Bubble.waypoint);
-					// ThreadSaveSetSelectedWP(Bubble.cache, Bubble.waypoint);
-					// CacheDraw.ReleaseCacheBMP();
-					infoBubble.setVisibility(INVISIBLE);
-					infoBubble.setCache(null);
-					mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
-
-					// Shutdown Autoresort
-					// Global.autoResort = false;
-					inputState = InputState.Idle;
-					// debugString = "State: " + inputState;
-					// do nothing else with this click
-					return false;
-				}
-				else if (infoBubble.isVisible())
+				if (infoBubble.isVisible())
 				{
 					// Click outside Bubble -> hide Bubble
 					infoBubble.setVisibility(INVISIBLE);
@@ -1710,6 +1719,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				}
 
 				if (minWpi == null || minWpi.Cache == null) return false;
+				Vector2 screen = worldToScreen(new Vector2(Math.round(minWpi.MapX), Math.round(minWpi.MapY)));
+				Logger.LogCat("MapClick at:" + clickedAt + " minDistance: " + minDist + " screen:" + screen + " wpi:" + minWpi.Cache.Name
+						+ "/ ");
 
 				if (minDist < 40)
 				{
@@ -1766,27 +1778,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					// return false;
 				}
 			}
-			inputState = InputState.Idle;
 			return false;
 		}
-
-		fingerDown.remove(pointer);
-		if (fingerDown.size() == 1) inputState = InputState.Pan;
-		else if (fingerDown.size() == 0)
-		{
-			inputState = InputState.Idle;
-			// wieder langsam rendern
-			GL_Listener.glListener.renderOnce(this);
-
-			if ((kineticZoom == null) && (kineticPan == null)) GL_Listener.glListener.removeRenderView(this);
-
-			if (kineticPan != null) kineticPan.start();
-		}
-
-		// debugString = "State: " + inputState;
-
-		return true;
-	}
+	};
 
 	private void calcCenter()
 	{

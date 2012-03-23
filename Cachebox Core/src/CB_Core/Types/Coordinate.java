@@ -455,4 +455,12 @@ public class Coordinate implements Serializable
 		computeDistanceAndBearing(startLatitude, startLongitude, endLatitude, endLongitude, results);
 	}
 
+	public boolean equals(Coordinate coord)
+	{
+		if (this.Latitude != coord.Latitude) return false;
+		if (this.Longitude != coord.Longitude) return false;
+
+		return true;
+	}
+
 }
