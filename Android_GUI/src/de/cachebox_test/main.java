@@ -2787,7 +2787,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Intent implicitIntent = null;
 			try
 			{
-				implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + lat + "," + lon));
+				implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + lat + "," + lon));
 			}
 			catch (Exception e)
 			{
