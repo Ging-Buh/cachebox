@@ -84,7 +84,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	@Override
 	public void pause()
 	{
-		Logger.DEBUG("Pause");
+		Logger.LogCat("Pause");
 
 		onStop();
 	}
@@ -92,7 +92,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	@Override
 	public void resume()
 	{
-		Logger.DEBUG("Resume");
+		Logger.LogCat("Resume");
 
 		onStart();
 	}
@@ -274,7 +274,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			mDarknesSprite.draw(batch, darknesAlpha);
 			if (darknesAnimationRuns)
 			{
-				darknesAlpha += 0.0185f;
+				darknesAlpha += 0.1f;
 				if (darknesAlpha > 1f)
 				{
 					darknesAlpha = 1f;
@@ -564,17 +564,28 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 				public void run()
 				{
 					Point pan = kineticPan.getAktPan();
-					Logger.LogCat("KinteicPan: " + pan.x + " - " + pan.y);
-					if (kineticPan.fertig)
+					// Logger.LogCat("KinteicPan: " + pan.x + " - " + pan.y);
+
+					try
 					{
-						Logger.LogCat("KineticPan fertig");
-						view.touchUp(x - pan.x, y - pan.y, pointer, 0);
+						if (kineticPan.fertig)
+						{
+							Logger.LogCat("KineticPan fertig");
+							view.touchUp(x - pan.x, y - pan.y, pointer, 0);
+							touchDownPos.remove(pointer);
+							kineticPan = null;
+							this.cancel();
+							timer = null;
+						}
+					}
+					catch (Exception e)
+					{
 						touchDownPos.remove(pointer);
 						kineticPan = null;
 						this.cancel();
 						timer = null;
-
 					}
+
 					view.touchDragged(x - pan.x, y - pan.y, pointer);
 				}
 			}, 0, FRAME_RATE_ACTION);
@@ -680,9 +691,9 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 			long aktTs = System.currentTimeMillis();
 			float faktor = (float) (aktTs - startTs) / (float) (endTs - startTs);
-			Logger.LogCat("Faktor: " + faktor);
+			// Logger.LogCat("Faktor: " + faktor);
 			faktor = com.badlogic.gdx.math.Interpolation.exp10Out.apply(faktor);
-			Logger.LogCat("Faktor2: " + faktor);
+			// Logger.LogCat("Faktor2: " + faktor);
 			if (faktor >= 1)
 			{
 				fertig = true;

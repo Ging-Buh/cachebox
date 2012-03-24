@@ -533,23 +533,14 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	public void setPos_onUI(final int Pos)
 	{
 		tmpPos = Pos;
-		Thread t = new Thread()
+		((main) main.mainActivity).runOnUiThread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
-				((main) main.mainActivity).runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						((main) main.mainActivity).InfoDownSlider.setPos(Pos);
-					}
-				});
+				((main) main.mainActivity).InfoDownSlider.setPos(Pos);
 			}
-		};
-
-		t.start();
-
+		});
 	}
 
 	private void startUpdateTimer()
@@ -647,42 +638,65 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
-		mCache = cache;
-		mWaypoint = waypoint;
+		setCache_onUI(cache, waypoint);
+	}
 
-		attCompleadHeight = 0;
-		CacheInfoHeight = 0;
-		WPInfoHeight = 0;
-		topCalc = 0;
+	public void setCache_onUI(final Cache cache, final Waypoint waypoint)
+	{
 
-		int TextWidth = this.width - this.imgSize;
-
-		Rect bounds = new Rect();
-		WPLayoutTextPaint = new TextPaint();
-		WPLayoutTextPaint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
-		WPLayoutTextPaint.getTextBounds("T", 0, 1, bounds);
-		LineSep = bounds.height() / 3;
-
-		String Clue = "";
-		if (mWaypoint != null)
+		Thread t = new Thread()
 		{
-			if (waypoint.Clue != null) Clue = waypoint.Clue;
-			WPLayoutTextPaint.setAntiAlias(true);
-			WPLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
-			WPLayoutCord = new StaticLayout(GlobalCore.FormatLatitudeDM(waypoint.Latitude()) + " / "
-					+ GlobalCore.FormatLongitudeDM(waypoint.Longitude()), WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f,
-					false);
-			WPLayoutDesc = new StaticLayout(waypoint.Description, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-			WPLayoutClue = new StaticLayout(Clue, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-			WPLayoutTextPaintBold = new TextPaint(WPLayoutTextPaint);
-			WPLayoutTextPaintBold.setFakeBoldText(true);
-			WPLayoutName = new StaticLayout(waypoint.GcCode + ": " + waypoint.Title, WPLayoutTextPaintBold, TextWidth,
-					Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-			WPInfoHeight = (LineSep * 5) + WPLayoutCord.getHeight() + WPLayoutDesc.getHeight() + WPLayoutClue.getHeight()
-					+ WPLayoutName.getHeight();
-		}
+			public void run()
+			{
+				((main) main.mainActivity).runOnUiThread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						mCache = cache;
+						mWaypoint = waypoint;
 
-		this.invalidate();
+						attCompleadHeight = 0;
+						CacheInfoHeight = 0;
+						WPInfoHeight = 0;
+						topCalc = 0;
+
+						int TextWidth = downSlider.Me.width - downSlider.Me.imgSize;
+
+						Rect bounds = new Rect();
+						WPLayoutTextPaint = new TextPaint();
+						WPLayoutTextPaint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
+						WPLayoutTextPaint.getTextBounds("T", 0, 1, bounds);
+						LineSep = bounds.height() / 3;
+
+						String Clue = "";
+						if (mWaypoint != null)
+						{
+							if (waypoint.Clue != null) Clue = waypoint.Clue;
+							WPLayoutTextPaint.setAntiAlias(true);
+							WPLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
+							WPLayoutCord = new StaticLayout(GlobalCore.FormatLatitudeDM(waypoint.Latitude()) + " / "
+									+ GlobalCore.FormatLongitudeDM(waypoint.Longitude()), WPLayoutTextPaint, TextWidth,
+									Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+							WPLayoutDesc = new StaticLayout(waypoint.Description, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL,
+									1.0f, 0.0f, false);
+							WPLayoutClue = new StaticLayout(Clue, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+							WPLayoutTextPaintBold = new TextPaint(WPLayoutTextPaint);
+							WPLayoutTextPaintBold.setFakeBoldText(true);
+							WPLayoutName = new StaticLayout(waypoint.GcCode + ": " + waypoint.Title, WPLayoutTextPaintBold, TextWidth,
+									Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+							WPInfoHeight = (LineSep * 5) + WPLayoutCord.getHeight() + WPLayoutDesc.getHeight() + WPLayoutClue.getHeight()
+									+ WPLayoutName.getHeight();
+						}
+
+						downSlider.Me.invalidate();
+
+					}
+				});
+			}
+		};
+
+		t.start();
 
 	}
 

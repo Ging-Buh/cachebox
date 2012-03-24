@@ -6,7 +6,6 @@ import java.util.Iterator;
 
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
 public class H_ListView extends ListViewBase
@@ -53,7 +52,7 @@ public class H_ListView extends ListViewBase
 			{
 				ListViewItemBase tmp = iterator.next();
 				mAddeedIndexList.remove((Object) tmp.getIndex());
-				Logger.LogCat("Remove: " + tmp.getName());
+				// Logger.LogCat("Remove: " + tmp.getName());
 				this.removeChild(tmp);
 				if (mCanDispose) tmp.dispose();
 			}
@@ -103,7 +102,7 @@ public class H_ListView extends ListViewBase
 					if (itemPos <= this.getWidth())
 					{
 						tmp.setX(itemPos);
-						Logger.LogCat("Add: " + tmp.getName());
+						// Logger.LogCat("Add: " + tmp.getName());
 						if (i == mSelectedIndex)
 						{
 							tmp.isSelected = true;

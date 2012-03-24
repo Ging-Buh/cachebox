@@ -4,6 +4,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.H_ListView;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 
@@ -97,6 +98,7 @@ public class CB_TabView extends CB_View_Base
 		this.addChild(aktView);
 
 		aktView.onShow();
+		GL_Listener.glListener.renderOnce(aktView);
 
 	}
 

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.SortedMap;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -1140,6 +1141,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		screenCenterW.x = newCenter.x;
 		screenCenterW.y = -newCenter.y;
 		if (camera != null) camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
+		GL_Listener.glListener.renderOnce(this);
 	}
 
 	public void setCenter(Coordinate value)
@@ -1548,7 +1550,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				if ((Math.abs(p.x - x) > 10) || (Math.abs(p.y - y) > 10))
 				{
 					inputState = InputState.Pan;
-					GL_Listener.glListener.addRenderView(this, frameRateAction);
+					// GL_Listener.glListener.addRenderView(this, frameRateAction);
 					GL_Listener.glListener.renderOnce(this);
 					// xxx startTimer(frameRateAction);
 					// xxx ((GLSurfaceView) MapViewGL.ViewGl).requestRender();
@@ -1574,7 +1576,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				togBtn.setState(0);
 			}
 
-			GL_Listener.glListener.addRenderView(this, frameRateAction);
+			// GL_Listener.glListener.addRenderView(this, frameRateAction);
+			GL_Listener.glListener.renderOnce(this);
 			// debugString = "";
 			long faktor = getMapTilePosFactor(aktZoom);
 			// debugString += faktor;
@@ -1811,6 +1814,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		 * if (InvokeRequired) { Invoke(new targetChangedDelegate(OnTargetChanged), new object[] { cache, waypoint }); return; }
 		 */
 
+		mapCacheList = new MapViewCacheList(maxMapZoom);
+
 		if (togBtn.getState() > 0) return;
 
 		positionInitialized = true;
@@ -1820,6 +1825,21 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				cache.Latitude(), cache.Longitude());
 
 		setCenter(target);
+
+		GL_Listener.glListener.addRenderView(MapView.that, GL_Listener.FRAME_RATE_ACTION);
+
+		// für 2sec rendern lassen, bis Änderungen der WPI-list neu berechnet wurden
+		TimerTask task = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				GL_Listener.glListener.removeRenderView(MapView.that);
+			}
+		};
+
+		Timer timer = new Timer();
+		timer.schedule(task, 2000);
 
 	}
 

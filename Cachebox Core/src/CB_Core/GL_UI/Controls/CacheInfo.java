@@ -9,7 +9,6 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
@@ -113,11 +112,7 @@ public class CacheInfo extends CB_View_Base
 	private void requestLayout()
 	{
 		this.removeChilds();
-
-		Logger.LogCat("ChacheInfo requestLayout");
-
 		float scaleFactor = width / UiSizes.getCacheListItemRec().getWidth();
-
 		float mLeft = 5 * scaleFactor;
 		float mTop = 5 * scaleFactor;
 

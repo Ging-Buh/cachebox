@@ -44,6 +44,7 @@ import CB_Core.GL_UI.ViewID.UI_Type;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
 import CB_Core.GL_UI.Main.MainView;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
@@ -184,6 +185,8 @@ import de.cachebox_test.Views.Forms.SelectDB;
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEvent,
 		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent
 {
+
+	private static final boolean useGL_Tab = false;
 
 	/*
 	 * private static member
@@ -403,7 +406,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		UiSizes.initial(ui);
 
 		// Initial GL_Listner in Full Screen with font color black
-		glListener = new GL_Listener(UiSizes.getWindowWidth(), UiSizes.getWindowHeight());
+
+		if (useGL_Tab)
+		{
+			glListener = new Tab_GL_Listner(UiSizes.getWindowWidth(), UiSizes.getWindowHeight());
+		}
+		else
+		{
+			glListener = new GL_Listener(UiSizes.getWindowWidth(), UiSizes.getWindowHeight());
+		}
 
 		int Time = Config.settings.ScreenLock.getValue();
 		counter = new ScreenLockTimer(Time, Time);
@@ -480,33 +491,48 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		Search = new search(this);
 
-		if (aktViewId != null)
+		if (useGL_Tab)
 		{
-			// Zeige letzte gespeicherte View beim neustart der Activity
-			showView(aktViewId);
+			initialViewGL();
+
+			glListener.onStart();
+			if (tabFrame != null) tabFrame.setVisibility(View.INVISIBLE);
+			if (frame != null) frame.setVisibility(View.INVISIBLE);
+
+			InfoDownSlider.invalidate();
 
 		}
 		else
 		{
-
-			// Start CB!
-
-			Logger.General("------ Start Rev: " + Global.CurrentRevision + "-------");
-
-			// Zeige About View als erstes!
-			showView(ViewConst.ABOUT_VIEW);
-
-			// und Map wenn Tablet
-			if (GlobalCore.isTab)
+			if (aktViewId != null)
 			{
-				// showView(MAP_VIEW);
-				showView(ViewConst.DESCRIPTION_VIEW);
+				// Zeige letzte gespeicherte View beim neustart der Activity
+				showView(aktViewId);
+
 			}
-
-			// chk if NightMode saved
-			if (N)
+			else
 			{
-				ActivityUtils.changeToTheme(mainActivity, ActivityUtils.THEME_NIGHT, true);
+
+				// Start CB!
+
+				Logger.General("------ Start Rev: " + Global.CurrentRevision + "-------");
+
+				// Zeige About View als erstes!
+				showView(ViewConst.ABOUT_VIEW);
+
+				// und Map wenn Tablet
+				if (GlobalCore.isTab)
+				{
+					// showView(MAP_VIEW);
+					showView(ViewConst.DESCRIPTION_VIEW);
+				}
+
+				// chk if NightMode saved
+				if (N)
+				{
+					ActivityUtils.changeToTheme(mainActivity, ActivityUtils.THEME_NIGHT, true);
+				}
+
 			}
 
 		}
@@ -778,13 +804,22 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
-		approachSoundCompleted = false;
-		cacheListView.setSelectedCacheVisible(0);
-		initialCaheInfoSlider();
 
-		// QuickButtonsAdapter.notifyDataSetInvalidated();
-		// QuickButtonList.invalidate();
+		setSelectedCache_onUI(cache, waypoint);
+	}
 
+	public void setSelectedCache_onUI(Cache cache, Waypoint waypoint)
+	{
+		((main) main.mainActivity).runOnUiThread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				approachSoundCompleted = false;
+				cacheListView.setSelectedCacheVisible(0);
+				initialCaheInfoSlider();
+			}
+		});
 	}
 
 	public void newLocationReceived(Location location)
@@ -2331,19 +2366,27 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						// Weitergabe der Toucheingabe an den Gl_Listener
 						// ToDo: noch nicht fertig!!!!!!!!!!!!!
 						int p = event.getActionIndex();
-						switch (event.getActionMasked())
+						try
 						{
-						case MotionEvent.ACTION_POINTER_DOWN:
-						case MotionEvent.ACTION_DOWN:
-							glListener.onTouchDownBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
-							break;
-						case MotionEvent.ACTION_MOVE:
-							glListener.onTouchDraggedBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p));
-							break;
-						case MotionEvent.ACTION_POINTER_UP:
-						case MotionEvent.ACTION_UP:
-							glListener.onTouchUpBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
-							break;
+							switch (event.getActionMasked())
+							{
+							case MotionEvent.ACTION_POINTER_DOWN:
+							case MotionEvent.ACTION_DOWN:
+								glListener.onTouchDownBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
+								break;
+							case MotionEvent.ACTION_MOVE:
+								glListener.onTouchDraggedBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p));
+								break;
+							case MotionEvent.ACTION_POINTER_UP:
+							case MotionEvent.ACTION_UP:
+								glListener.onTouchUpBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
+								break;
+							}
+						}
+						catch (Exception e)
+						{
+							e.printStackTrace();
+							return false;
 						}
 						return true;
 					}

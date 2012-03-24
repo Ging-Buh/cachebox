@@ -16,16 +16,15 @@ public class TabMainView extends MainViewBase
 
 		mainView = this;
 
-		if (GlobalCore.isTab) addTabletTabs();
-		else
-			addPhoneTab();
-
 	}
 
 	@Override
 	protected void Initial()
 	{
 		// TODO Auto-generated method stub
+		if (GlobalCore.isTab) addTabletTabs();
+		else
+			addPhoneTab();
 
 	}
 

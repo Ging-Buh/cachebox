@@ -336,14 +336,14 @@ public class MapViewCacheList
 							list = tmplist;
 							tmplist = null;
 						}
-						Thread.sleep(250);
+						Thread.sleep(400);
 						state.set(0);
 						anz++;
 						// State ist jetzt 3
 					}
 					else
 					{
-						Thread.sleep(250);
+						Thread.sleep(400);
 					}
 				}
 				while (true);

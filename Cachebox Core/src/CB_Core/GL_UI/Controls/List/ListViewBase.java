@@ -6,7 +6,6 @@ import java.util.TimerTask;
 
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -216,7 +215,7 @@ public abstract class ListViewBase extends CB_View_Base
 	protected void scrollTo(float Pos)
 	{
 
-		Logger.LogCat("Scroll TO:" + Pos);
+		// Logger.LogCat("Scroll TO:" + Pos);
 
 		mAnimationTarget = Pos;
 		stopTimer();
@@ -235,7 +234,7 @@ public abstract class ListViewBase extends CB_View_Base
 				float newPos = mPos - ((mPos - mAnimationTarget) / 2);
 				if ((!mBottomAnimation && mAnimationTarget + 1.5 > mPos) || (mBottomAnimation && mAnimationTarget - 1.5 < mPos))
 				{
-					Logger.LogCat("Animation Snapin");
+					// Logger.LogCat("Animation Snapin");
 					setListPos(mAnimationTarget);
 					stopTimer();
 					return;
