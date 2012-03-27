@@ -58,4 +58,9 @@ public class Size
 	{
 		return new Size(this.width, this.height);
 	}
+
+	public SizeF asFloat()
+	{
+		return new SizeF(width, height);
+	}
 }

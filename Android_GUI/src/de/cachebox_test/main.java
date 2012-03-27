@@ -186,7 +186,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent
 {
 
-	private static final boolean useGL_Tab = false;
+	private static final boolean useGL_Tab = true;
 
 	/*
 	 * private static member

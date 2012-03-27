@@ -16,25 +16,37 @@ public class V_ListView extends ListViewBase
 		super(rec, Name);
 	}
 
+	ArrayList<ListViewItemBase> clearList = new ArrayList<ListViewItemBase>();
+
 	protected void RenderThreadSetPos(float value)
 	{
 		float distance = mPos - value;
 
-		ArrayList<ListViewItemBase> clearList = new ArrayList<ListViewItemBase>();
+		clearList.clear();
 
 		// alle childs verschieben
-		synchronized (childs)
-		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-			{
-				GL_View_Base tmp = iterator.next();
-				if (mReloadItems)
-				{
-					clearList.add((ListViewItemBase) tmp);
-				}
-				else
-				{
 
+		if (mReloadItems)
+		{
+			mAddeedIndexList.clear();
+			if (mCanDispose)
+			{
+				synchronized (childs)
+				{
+					for (GL_View_Base v : childs)
+					{
+						v.dispose();
+					}
+				}
+			}
+			this.removeChilds();
+		}
+		else
+		{
+			synchronized (childs)
+			{
+				for (GL_View_Base tmp : childs)
+				{
 					tmp.setY(tmp.getY() + distance);
 
 					if (tmp.getY() > this.getMaxY() || tmp.getMaxY() < 0)
@@ -44,8 +56,9 @@ public class V_ListView extends ListViewBase
 					}
 				}
 			}
-			mReloadItems = false;
 		}
+
+		mReloadItems = false;
 
 		// afräumen
 		if (clearList.size() > 0)
@@ -59,7 +72,6 @@ public class V_ListView extends ListViewBase
 				if (mCanDispose) tmp.dispose();
 			}
 			clearList.clear();
-			clearList = null;
 
 			// setze First Index, damit nicht alle Items durchlaufen werden müssen
 			Collections.sort(mAddeedIndexList);

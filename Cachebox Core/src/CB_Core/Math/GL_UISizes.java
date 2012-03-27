@@ -248,6 +248,9 @@ public class GL_UISizes implements SizeChangedEvent
 			writeDebug("UnderlaySizes", UnderlaySizes);
 			writeDebug("WPSizes", WPSizes);
 
+			writeDebug("Button", UiSizes.Button.asFloat());
+			writeDebug("RefWidth", UiSizes.RefWidth);
+
 			Logger.LogCat("------ GL UI Sizes--------");
 		}
 
@@ -317,22 +320,22 @@ public class GL_UISizes implements SizeChangedEvent
 
 	static float frameHeight = -1;
 
-	private static void writeDebug(String name, CB_RectF rec)
+	public static void writeDebug(String name, CB_RectF rec)
 	{
 		Logger.LogCat(name + "   ------ x/y/W/H =  " + rec.getX() + "/" + rec.getY() + "/" + rec.getWidth() + "/" + rec.getHeight());
 	}
 
-	private static void writeDebug(String name, float size)
+	public static void writeDebug(String name, float size)
 	{
 		Logger.LogCat(name + "   ------ size =  " + size);
 	}
 
-	private static void writeDebug(String name, SizeF sizeF)
+	public static void writeDebug(String name, SizeF sizeF)
 	{
 		Logger.LogCat(name + "   ------ W/H =  " + sizeF.width + "/" + sizeF.height);
 	}
 
-	private static void writeDebug(String name, SizeF[] SizeArray)
+	public static void writeDebug(String name, SizeF[] SizeArray)
 	{
 		for (int i = 0; i < SizeArray.length; i++)
 		{

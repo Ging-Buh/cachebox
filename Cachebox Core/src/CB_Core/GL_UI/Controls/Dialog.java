@@ -62,7 +62,7 @@ public abstract class Dialog extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		super.removeChilds();
+		super.removeChildsDirekt();
 
 		if (mTitle != null && !mTitle.equals(""))
 		{
@@ -78,7 +78,7 @@ public abstract class Dialog extends CB_View_Base
 			titleLabel.setFont(Fonts.get19());
 			titleLabel.setText(mTitle);
 
-			super.addChild(titleLabel);
+			super.addChildDirekt(titleLabel);
 
 		}
 
@@ -90,7 +90,7 @@ public abstract class Dialog extends CB_View_Base
 
 		for (Iterator<GL_View_Base> iterator = contentChilds.iterator(); iterator.hasNext();)
 		{
-			mContent.addChild(iterator.next());
+			mContent.addChildDirekt(iterator.next());
 		}
 
 		super.addChild(mContent);

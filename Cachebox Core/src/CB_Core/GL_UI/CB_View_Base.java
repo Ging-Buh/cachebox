@@ -80,6 +80,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	@Override
 	protected void render(SpriteBatch batch)
 	{
+
 		if (!isInitial)
 		{
 			Initial();
@@ -145,6 +146,16 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	public int getCildCount()
 	{
 		return childs.size();
+	}
+
+	public void addChildDirekt(final GL_View_Base view)
+	{
+		childs.add(view);
+	}
+
+	public void removeChildsDirekt()
+	{
+		childs.clear();
 	}
 
 }

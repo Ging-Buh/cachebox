@@ -25,6 +25,7 @@ public class CacheListView extends V_ListView implements PositionChangedEvent
 		super(rec, Name);
 		lvAdapter = new CustomAdapter(Database.Data.Query);
 		this.setBaseAdapter(lvAdapter);
+		this.setDisposeFlag(false);
 	}
 
 	@Override

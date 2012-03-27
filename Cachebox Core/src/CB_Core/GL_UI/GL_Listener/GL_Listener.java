@@ -249,8 +249,6 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 		batch.setProjectionMatrix(prjMatrix.Matrix());
 
-		child.renderChilds(batch, prjMatrix);
-
 		if (DialogIsShown && mDialog.getCildCount() > 0)
 		{
 
@@ -286,6 +284,10 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			batch.end();
 
 			mDialog.renderChilds(batch, prjMatrix);
+		}
+		else
+		{
+			child.renderChilds(batch, prjMatrix);
 		}
 
 		Gdx.gl.glFlush();
@@ -422,6 +424,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 						// onTouchUp nach Long-Click direkt auslösen
 						first.view.touchUp(x, (int) child.getHeight() - y, pointer, 0);
 						Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
+
 					}
 				}
 			}
@@ -716,7 +719,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		return actDialog;
 	}
 
-	public void showDialog(Dialog dialog)
+	public void showDialog(final Dialog dialog)
 	{
 
 		// Center Menu on Screen
@@ -725,6 +728,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		dialog.setPos(x, y);
 		actDialog = dialog;
 
+		mDialog.addChildDirekt(dialog);
 		mDialog.setOnClickListener(new OnClickListener()
 		{
 
@@ -738,21 +742,23 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			}
 		});
 
-		mDialog.addChild(dialog);
 		child.setClickable(false);
 		DialogIsShown = true;
 		darknesAnimationRuns = true;
+
 		addRenderView(mDialog, FRAME_RATE_FAST_ACTION);
 	}
 
 	public void closeDialog()
 	{
+
 		actDialog = null;
-		mDialog.removeChilds();
+		mDialog.removeChildsDirekt();
 		child.setClickable(true);
 		DialogIsShown = false;
 		darknesAlpha = 0f;
 		removeRenderView(mDialog);
+
 		renderOnce(mDialog);
 	}
 

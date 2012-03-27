@@ -28,7 +28,7 @@ import CB_Core.GlobalCore;
 public class UiSizes
 {
 	private static Size QuickButton;
-	private static Size Button;
+	static Size Button;
 	private static Size QuickButtonList;
 	private static int CacheInfoHeight;
 	private static int scaledRefSize_normal;
@@ -104,6 +104,15 @@ public class UiSizes
 		// (int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * scale)));
 
 		Button = ini.ButtonSize.Copy();
+
+		GL_UISizes.writeDebug("Button", Button.asFloat());
+
+		if (Button.width * 4 * 1.8 >= RefWidth)
+		{
+			double s = RefWidth / Button.width / 5.3;// 3.5;
+			Button.height = (int) (Button.height * s);
+			Button.width = (int) (Button.width * s);
+		}
 
 		QuickButtonList = new Size((int) (QuickButtonRef * scale - (13.3333f * scale)), (int) (((QuickButtonRef * scale) / 5) - 4 * scale));
 
