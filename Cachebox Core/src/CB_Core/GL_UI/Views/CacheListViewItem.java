@@ -23,6 +23,7 @@ public class CacheListViewItem extends ListViewItemBase
 		info = new CacheInfo(UiSizes.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
 		// info.setViewMode(CacheInfo.VIEW_MODE_BUBBLE);
 		info.setZeroPos();
+		setBackground();
 		this.addChild(info);
 	}
 
@@ -49,7 +50,7 @@ public class CacheListViewItem extends ListViewItemBase
 	}
 
 	@Override
-	public boolean onTouchDragged(int x, int y, int pointer)
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 		isPressed = false;
 		setBackground();

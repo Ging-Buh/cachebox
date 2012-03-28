@@ -530,7 +530,7 @@ public abstract class GL_View_Base extends CB_RectF
 		return resultView;
 	}
 
-	public final boolean touchDragged(int x, int y, int pointer)
+	public final boolean touchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht �berschrieben werden!!!
 		// das Ereignis wird dann in der richtigen View an onTouchDown �bergeben!!!
@@ -545,7 +545,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 				if (view.contains(x, y))
 				{
-					behandelt = view.touchDragged(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer);
+					behandelt = view.touchDragged(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, KineticPan);
 				}
 				if (behandelt) break;
 			}
@@ -554,7 +554,7 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			// kein Klick in einem untergeordnetem View
 			// -> hier behandeln
-			behandelt = onTouchDragged(x, y, pointer);
+			behandelt = onTouchDragged(x, y, pointer, KineticPan);
 		}
 		return behandelt;
 	}
@@ -599,7 +599,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public abstract boolean onTouchDown(int x, int y, int pointer, int button);
 
-	public abstract boolean onTouchDragged(int x, int y, int pointer);
+	public abstract boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan);
 
 	public abstract boolean onTouchUp(int x, int y, int pointer, int button);
 

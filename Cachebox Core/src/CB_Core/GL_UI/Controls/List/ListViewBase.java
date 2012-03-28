@@ -18,6 +18,8 @@ public abstract class ListViewBase extends CB_View_Base
 	private long ANIMATION_TICK = 50;
 	protected Boolean mBottomAnimation = false;
 	protected int mSelectedIndex = -1;
+	protected float firstItemSize = -1;
+	protected float lastItemSize = -1;
 
 	/**
 	 * Wen True, können die Items verschoben werden
@@ -83,6 +85,10 @@ public abstract class ListViewBase extends CB_View_Base
 	{
 		mBaseAdapter = adapter;
 		addVisibleItems();
+
+		// set first and Last Item Size
+		firstItemSize = mBaseAdapter.getItemSize(0);
+		lastItemSize = mBaseAdapter.getItemSize(mBaseAdapter.getCount() - 1);
 	}
 
 	/**
@@ -196,7 +202,7 @@ public abstract class ListViewBase extends CB_View_Base
 		else if (mPos < mAllSize) startAnimationToBottom();
 	}
 
-	public abstract boolean onTouchDragged(int x, int y, int pointer);
+	public abstract boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan);
 
 	public abstract boolean onTouchDown(int x, int y, int pointer, int button);
 

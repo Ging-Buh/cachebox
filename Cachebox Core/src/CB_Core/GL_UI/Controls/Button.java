@@ -133,7 +133,7 @@ public class Button extends CB_View_Base
 	}
 
 	@Override
-	public boolean onTouchDragged(int x, int y, int pointer)
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 		isPressed = false;
 		GL_Listener.glListener.renderOnce(this);

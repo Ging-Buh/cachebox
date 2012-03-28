@@ -165,7 +165,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 		CB_View_Base testingView = DialogIsShown ? mDialog : child;
 
-		behandelt = testingView.touchDragged(x, (int) testingView.getHeight() - y, pointer);
+		behandelt = testingView.touchDragged(x, (int) testingView.getHeight() - y, pointer, false);
 
 		return behandelt;
 	}
@@ -451,9 +451,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		if (touchDownPos.containsKey(pointer))
 		{
 			// für diesen Pointer ist aktuell ein kinetisches Pan aktiv -> dieses abbrechen
-			TouchDownPointer first = touchDownPos.get(pointer);
-			first.stopKinetic();
-			first.kineticPan = null;
+			StopKinetic(x, y, pointer, false);
 		}
 
 		// down Position merken
@@ -463,6 +461,14 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		startLongClickTimer(pointer, x, y);
 
 		return true;
+	}
+
+	public void StopKinetic(int x, int y, int pointer, boolean forceTouchUp)
+	{
+		TouchDownPointer first = touchDownPos.get(pointer);
+		first.stopKinetic();
+		first.kineticPan = null;
+		if (forceTouchUp) first.view.touchUp(x, y, pointer, 0);
 	}
 
 	public boolean onTouchDraggedBase(int x, int y, int pointer)
@@ -480,7 +486,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			cancelLongClickTimer();
 			// touchDragged Event an das View, das den onTouchDown bekommen hat
 			first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
-					- (int) first.view.ThisWorldRec.getY(), pointer);
+					- (int) first.view.ThisWorldRec.getY(), pointer, false);
 			// Logger.LogCat("GL_Listner => onTouchDraggedBase : " + first.view.getName());
 
 			if (touchDownPos.size() == 1)
@@ -589,7 +595,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 						timer = null;
 					}
 
-					view.touchDragged(x - pan.x, y - pan.y, pointer);
+					view.touchDragged(x - pan.x, y - pan.y, pointer, true);
 				}
 			}, 0, FRAME_RATE_ACTION);
 		}

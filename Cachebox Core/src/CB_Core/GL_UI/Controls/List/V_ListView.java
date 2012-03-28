@@ -89,9 +89,25 @@ public class V_ListView extends ListViewBase
 
 		mPos = value;
 
-		addVisibleItems();
+		// addVisibleItems();
+		addVisibleItemsThread();
 		mMustSetPos = false;
 
+	}
+
+	protected void addVisibleItemsThread()
+	{
+		Thread th = new Thread(new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				addVisibleItems();
+			}
+		});
+
+		th.run();
 	}
 
 	protected void addVisibleItems()
@@ -163,11 +179,34 @@ public class V_ListView extends ListViewBase
 	}
 
 	@Override
-	public boolean onTouchDragged(int x, int y, int pointer)
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 		if (!mIsDrageble) return false;
 		mDraged = y - mLastTouch;
-		setListPos(mLastPos_onTouch - mDraged);
+
+		float sollPos = mLastPos_onTouch - mDraged;
+		float toMuch = 0;
+		if (sollPos - firstItemSize > 0 || sollPos < mAllSize)
+		{
+			if (sollPos - (firstItemSize * 3) > 0 || sollPos + (lastItemSize * 3) < mAllSize)
+			{
+				if (KineticPan) GL_Listener.glListener.StopKinetic(x, y, pointer, true);
+				return true;
+			}
+
+			if (sollPos - firstItemSize > 0)
+			{
+				toMuch = 0 - sollPos + firstItemSize;
+				toMuch /= 2;
+			}
+			else if (sollPos < mAllSize)
+			{
+				toMuch = mAllSize - sollPos;
+				toMuch /= 2;
+			}
+		}
+
+		setListPos(sollPos + toMuch);
 		return true;
 	}
 

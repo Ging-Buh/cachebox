@@ -1536,7 +1536,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	}
 
 	@Override
-	public boolean onTouchDragged(int x, int y, int pointer)
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 		y = height - y;
 		debugString = "touchDragged: " + x + " - " + y;

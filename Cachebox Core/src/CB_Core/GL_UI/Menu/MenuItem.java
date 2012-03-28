@@ -185,7 +185,7 @@ public class MenuItem extends ListViewItemBase
 	}
 
 	@Override
-	public boolean onTouchDragged(int x, int y, int pointer)
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 		isPressed = false;
 		setBackground();

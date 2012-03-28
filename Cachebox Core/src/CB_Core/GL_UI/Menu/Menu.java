@@ -18,7 +18,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Menu extends Dialog
 {
-	public static final float ITEM_HEIGHT = 50f;
+	public static float ItemHeight = -1f;
 
 	private ArrayList<MenuItem> mItems = new ArrayList<MenuItem>();
 	private V_ListView mListView;
@@ -41,7 +41,7 @@ public class Menu extends Dialog
 	{
 		super(rec, Name);
 		Me = this;
-
+		if (ItemHeight == -1f) ItemHeight = UiSizes.getButtonHeight();
 	}
 
 	@Override
@@ -94,9 +94,9 @@ public class Menu extends Dialog
 
 		String trans = GlobalCore.Translations.Get(StringId);
 
-		MenuItem item = new MenuItem(new SizeF(this.width * 0.95f, ITEM_HEIGHT), mItems.size(), ID, "Menu Item@" + ID);
+		MenuItem item = new MenuItem(new SizeF(this.width * 0.95f, ItemHeight), mItems.size(), ID, "Menu Item@" + ID);
 
-		float higherValue = this.height + ITEM_HEIGHT + 2; // 2= Standard divider Height
+		float higherValue = this.height + ItemHeight + 2; // 2= Standard divider Height
 
 		if (higherValue < UiSizes.getWindowHeight() * 0.8f)
 		{

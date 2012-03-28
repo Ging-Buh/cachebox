@@ -2279,7 +2279,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 	}
 
 	@Override
-	public boolean onTouchDragged(int x, int y, int pointer)
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 		// TODO Auto-generated method stub
 		return false;
