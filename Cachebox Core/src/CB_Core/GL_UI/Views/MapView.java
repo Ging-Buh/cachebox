@@ -304,7 +304,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			// Ausser wenn Camera == null!
 			if (camera != null) return;
 		}
-
+		TargetArrowScreenRec = null;
 		this.width = (int) rec.getWidth();
 		this.height = (int) rec.getHeight(); // Gdx.graphics.getHeight();
 		this.drawingWidth = (int) rec.getWidth();
@@ -663,6 +663,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private int actAccuracy = 0;
 	private float actPixelsPerMeter = 0;
 
+	private CB_RectF TargetArrowScreenRec;
+
 	private void RenderTargetArrow(SpriteBatch batch)
 	{
 
@@ -678,17 +680,21 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		// create ScreenRec
 
-		CB_RectF screenRec = new CB_RectF(0, 0, width, height);
-		screenRec.ScaleCenter(0.9f);
-		screenRec.setHeight(screenRec.getHeight() - (screenRec.getHeight() - info.getY()) - zoomBtn.getHeight());
-		screenRec.setY(zoomBtn.getMaxY());
+		if (TargetArrowScreenRec == null)
+		{
+			TargetArrowScreenRec = new CB_RectF(0, 0, width, height);
+			TargetArrowScreenRec.ScaleCenter(0.9f);
+			TargetArrowScreenRec.setHeight(TargetArrowScreenRec.getHeight() - (TargetArrowScreenRec.getHeight() - info.getY())
+					- zoomBtn.getHeight());
+			TargetArrowScreenRec.setY(zoomBtn.getMaxY());
+		}
 
 		Vector2 ScreenCenter = new Vector2(halfWidth, halfHeight);
 
 		Vector2 screen = worldToScreen(new Vector2(x, y));
 		Vector2 target = new Vector2(screen.x, screen.y);
 
-		Vector2 newTarget = screenRec.getIntersection(ScreenCenter, target);
+		Vector2 newTarget = TargetArrowScreenRec.getIntersection(ScreenCenter, target);
 
 		// Rotation berechnen
 		if (newTarget != null)

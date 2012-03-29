@@ -239,8 +239,16 @@ public class CB_RectF
 
 	public boolean contains(float x, float y)
 	{
+		// runde
+		float rX = Math.round(x);
+		float rY = Math.round(y);
+		float rTX = Math.round(this.Pos.x);
+		float rTY = Math.round(this.Pos.y);
+		float rTCX = Math.round(this.crossPos.x);
+		float rTCY = Math.round(this.crossPos.y);
+
 		return width > 0 && height > 0 // check for empty first
-				&& x >= this.Pos.x && x <= this.crossPos.x && y >= this.Pos.y && y <= this.crossPos.y;
+				&& rX >= rTX && rX <= rTCX && rY >= rTY && rY <= rTCY;
 	}
 
 	/**
