@@ -118,6 +118,8 @@ public class MapViewCacheList
 							if ((MapX >= point1.x) && (MapX < point2.x) && (Math.abs(MapY) > Math.abs(point1.y))
 									&& (Math.abs(MapY) < Math.abs(point2.y))) show = true;
 
+							if (cache == GlobalCore.SelectedCache()) show = true;
+
 							if ((hideCacheWithFinal) && (cache.Type == CacheTypes.Mystery) && cache.MysterySolved()
 									&& cache.HasFinalWaypoint())
 							{
@@ -237,6 +239,8 @@ public class MapViewCacheList
 							boolean show = false;
 							if ((mapX >= point1.x) && (mapX < point2.x) && (Math.abs(mapY) > Math.abs(point1.y))
 									&& (Math.abs(mapY) < Math.abs(point2.y))) show = true;
+
+							if (solution.Cache != GlobalCore.SelectedCache()) show = true;
 
 							if (!show) continue;
 

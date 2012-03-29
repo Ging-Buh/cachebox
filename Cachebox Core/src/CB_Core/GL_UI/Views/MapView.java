@@ -76,13 +76,17 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	protected SortedMap<Long, Descriptor> queuedTiles = new TreeMap<Long, Descriptor>();
 	private Lock queuedTilesLock = new ReentrantLock();
 	private Thread queueProcessor = null;
-	public boolean alignToCompass = false;
+	private boolean alignToCompass = false;
 	// private boolean centerGps = false;
 	private float mapHeading = 0;
 	private float arrowHeading = 0;
 	private MapViewCacheList mapCacheList;
 	private Point lastMovement = new Point(0, 0);
 	private int zoomCross = 16;
+	private Vector2 myPointOnScreen;
+	private Sprite directLineOverlay;
+	private Texture directLineTexture;
+	private Texture AccuracyTexture;
 
 	// private GL_ZoomScale zoomScale;
 
@@ -582,10 +586,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 			Vector2 vPoint = new Vector2((float) point.X, -(float) point.Y);
 
-			Vector2 screen = worldToScreen(vPoint);
-
+			myPointOnScreen = worldToScreen(vPoint);
+			directLineOverlay = null;
+			if (directLineTexture != null) directLineTexture.dispose();
 			if (actAccuracy != locator.Position.Accuracy || actPixelsPerMeter != pixelsPerMeter)
 			{
+				if (AccuracyTexture != null) AccuracyTexture.dispose();
 				actAccuracy = locator.Position.Accuracy;
 				actPixelsPerMeter = pixelsPerMeter;
 
@@ -610,7 +616,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					p.drawCircle(radius, radius, radius - 1);
 					p.drawCircle(radius, radius, radius + 1);
 
-					AccuracySprite = new Sprite(new Texture(p), squaredR, squaredR);
+					AccuracyTexture = new Texture(p);
+
+					AccuracySprite = new Sprite(AccuracyTexture, squaredR, squaredR);
 					p.dispose();
 					AccuracySprite.setSize(squaredR, squaredR);
 
@@ -623,7 +631,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				float center = AccuracySprite.getWidth() / 2;
 
-				AccuracySprite.setPosition(screen.x - center, screen.y - center);
+				AccuracySprite.setPosition(myPointOnScreen.x - center, myPointOnScreen.y - center);
 				AccuracySprite.draw(batch);
 			}
 
@@ -643,8 +651,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 			Sprite arrow = SpriteCache.MapArrows.get(arrowId);
 			arrow.setRotation(-arrowHeading);
-			arrow.setBounds(screen.x - GL_UISizes.halfPosMarkerSize, screen.y - GL_UISizes.halfPosMarkerSize, GL_UISizes.PosMarkerSize,
-					GL_UISizes.PosMarkerSize);
+			arrow.setBounds(myPointOnScreen.x - GL_UISizes.halfPosMarkerSize, myPointOnScreen.y - GL_UISizes.halfPosMarkerSize,
+					GL_UISizes.PosMarkerSize, GL_UISizes.PosMarkerSize);
 			arrow.setOrigin(GL_UISizes.halfPosMarkerSize, GL_UISizes.halfPosMarkerSize);
 			arrow.draw(batch);
 
@@ -751,6 +759,29 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				for (WaypointRenderInfo wpi : mapCacheList.list)
 				{
 					Vector2 screen = worldToScreen(new Vector2(wpi.MapX, wpi.MapY));
+
+					if (myPointOnScreen != null && showDirektLine && (wpi.Selected) && (wpi.Waypoint == GlobalCore.SelectedWaypoint()))
+					{
+
+						if (directLineOverlay == null)
+						{
+							int w = getNextHighestPO2((int) width);
+							int h = getNextHighestPO2((int) height);
+							Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+							p.setColor(1f, 0f, 0f, 1f);
+							p.drawLine((int) myPointOnScreen.x, (int) myPointOnScreen.y, (int) screen.x, (int) screen.y);
+
+							directLineTexture = new Texture(p, Pixmap.Format.RGBA8888, false);
+
+							directLineOverlay = new Sprite(directLineTexture, (int) width, (int) height);
+							directLineOverlay.setPosition(0, 0);
+							directLineOverlay.flip(false, true);
+							p.dispose();
+
+						}
+
+						directLineOverlay.draw(batch);
+					}
 
 					float NameYMovement = 0;
 
@@ -1250,9 +1281,42 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 		info.setDistance(distance);
 
-		Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos : GlobalCore.SelectedCache().Pos;
-		double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
-		info.setBearing((float) (bearing - locator.getHeading()));
+		if (GlobalCore.SelectedCache() != null)
+		{
+			Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos : GlobalCore.SelectedCache().Pos;
+			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
+			info.setBearing((float) (bearing - locator.getHeading()));
+		}
+
+		float heading = locator.getHeading();
+
+		if (alignToCompass)
+		{
+			this.mapHeading = heading;
+			this.arrowHeading = 0;
+
+			// da die Map gedreht in die offScreenBmp gezeichnet werden soll,
+			// muss der Bereich, der gezeichnet werden soll größer sein, wenn
+			// gedreht wird.
+			if (heading >= 180) heading -= 180;
+			if (heading > 90) heading = 180 - heading;
+			double alpha = heading / 180 * Math.PI;
+			double beta = Math.atan((double) width / (double) height);
+			double gammaW = Math.PI / 2 - alpha - beta;
+			// halbe Länge der Diagonalen
+			double diagonal = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2)) / 2;
+			drawingWidth = (int) (Math.cos(gammaW) * diagonal * 2);
+
+			double gammaH = alpha - beta;
+			drawingHeight = (int) (Math.cos(gammaH) * diagonal * 2);
+		}
+		else
+		{
+			this.mapHeading = 0;
+			this.arrowHeading = heading;
+			drawingWidth = width;
+			drawingHeight = height;
+		}
 
 		if (togBtn.getState() > 0) setCenter(new Coordinate(locator.Position.Latitude, locator.Position.Longitude));
 	}
@@ -1268,10 +1332,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		else
 			position = new Coordinate();
 
-		Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos : GlobalCore.SelectedCache().Pos;
-		double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
-		info.setBearing((float) (bearing - locator.getHeading()));
-
+		if (GlobalCore.SelectedCache() != null)
+		{
+			Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos : GlobalCore.SelectedCache().Pos;
+			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
+			info.setBearing((float) (bearing - locator.getHeading()));
+		}
 		heading = locator.getHeading();
 
 		if (alignToCompass)

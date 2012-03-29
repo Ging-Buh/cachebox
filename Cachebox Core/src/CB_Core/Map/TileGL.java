@@ -3,7 +3,6 @@ package CB_Core.Map;
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 
-
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 

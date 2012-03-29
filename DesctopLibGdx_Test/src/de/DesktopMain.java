@@ -10,11 +10,14 @@ import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
+import CB_Core.Events.PositionChangedEventList;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.Types.Categories;
+import CB_Core.Types.Coordinate;
+import CB_Core.Types.Locator;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ViewConst;
 
@@ -43,7 +46,7 @@ public class DesktopMain {
 		Config.settings.MapViewDPIFaktor.setValue(1);
 		
 		Config.settings.OsmMinLevel.setValue(2);
-		
+			
 
 		CB_UI = new Desktop_GL_Listner(myInitialSize.width,
 				myInitialSize.height);
@@ -129,8 +132,45 @@ public class DesktopMain {
 		CB_UI.setGLViewID(ViewConst.TEST_LIST_VIEW);
 
 		Gdx.input.setInputProcessor((InputProcessor) CB_UI);
-
+		
+		
+		// set Debug Pos
+		Timer timer = new Timer();
+		TimerTask task = new TimerTask() {
+			@Override
+			public void run() {
+				Coordinate pos = new Coordinate("N 52 27.130  E 13 33.117");
+				Locator Loc = new Locator();
+				
+				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, 175, true, 45, 95);
+				PositionChangedEventList.PositionChanged(Loc);
+				setBearing();
+			}
+		};
+		timer.schedule(task, 5000);
+		
 	}
+	
+	
+	private static int Bearing=45;
+	private static void setBearing()
+	{
+		Timer timer = new Timer();
+		TimerTask task = new TimerTask() {
+			@Override
+			public void run() {
+				Coordinate pos = new Coordinate("N 52 27.130  E 13 33.117");
+				Locator Loc = new Locator();
+				Bearing+=5;
+				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, 175, true, Bearing, 95);
+				PositionChangedEventList.PositionChanged(Loc);
+				setBearing();
+			}
+		};
+		timer.schedule(task, 2000);
+		
+	}
+	
 
 	/**
 	 * Initialisiert die Config für die Tests! initialisiert wird die Config mit

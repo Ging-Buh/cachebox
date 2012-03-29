@@ -37,6 +37,12 @@ public class CB_AllContextMenuHandler
 	public static final int MI_SMOOTH_SCROLLING = 17;
 	public static final int MI_SEARCH = 18;
 	public static final int MI_TREC_REC = 19;
+	public static final int MI_HIDE_FINDS = 20;
+	public static final int MI_SHOW_RATINGS = 21;
+	public static final int MI_SHOW_DT = 22;
+	public static final int MI_SHOW_TITLE = 23;
+	public static final int MI_SHOW_DIRECT_LINE = 24;
+	public static final int MI_MAPVIEW_VIEW = 25;
 
 	public static final CB_RectF MENU_REC = new CB_RectF(0, 0, 400, 60); // wird mit jedem Item größer
 
@@ -142,12 +148,43 @@ public class CB_AllContextMenuHandler
 		mi = icm.addItem(MI_Layer, "Layer");
 		mi = icm.addItem(MI_ALIGN_TO_COMPSS, "AlignToCompass");
 		mi.setCheckable(true);
-		mi.setChecked(MapView.that.alignToCompass);
+		mi.setChecked(MapView.that.GetAlignToCompass());
 
 		mi = icm.addItem(MI_SMOOTH_SCROLLING, "SmoothScrolling");
 		mi = icm.addItem(MI_SETTINGS, "settings", SpriteCache.BtnIcons.get(26));
 		mi = icm.addItem(MI_SEARCH, "search", SpriteCache.BtnIcons.get(27));
+		mi = icm.addItem(MI_MAPVIEW_VIEW, "view");
 		mi = icm.addItem(MI_TREC_REC, "TrackRec");
+
+		icm.show();
+	}
+
+	public static void showMapViewLayerMenu()
+	{
+		Menu icm = new Menu(MENU_REC, "MapViewShowLayerContextMenu");
+
+		icm.setItemClickListner(onItemClickListner);
+		MenuItem mi;
+
+		mi = icm.addItem(MI_HIDE_FINDS, "HideFinds");
+		mi.setCheckable(true);
+		mi.setChecked(MapView.that.hideMyFinds);
+
+		mi = icm.addItem(MI_SHOW_RATINGS, "ShowRatings");
+		mi.setCheckable(true);
+		mi.setChecked(MapView.that.showRating);
+
+		mi = icm.addItem(MI_SHOW_DT, "ShowDT");
+		mi.setCheckable(true);
+		mi.setChecked(MapView.that.showDT);
+
+		mi = icm.addItem(MI_SHOW_TITLE, "ShowTitle");
+		mi.setCheckable(true);
+		mi.setChecked(MapView.that.showTitles);
+
+		mi = icm.addItem(MI_SHOW_DIRECT_LINE, "ShowDirectLine");
+		mi.setCheckable(true);
+		mi.setChecked(MapView.that.showDirektLine);
 
 		icm.show();
 	}
@@ -163,6 +200,34 @@ public class CB_AllContextMenuHandler
 			{
 			case MI_HINT:
 				HintDialog.show();
+				return true;
+
+			case MI_MAPVIEW_VIEW:
+				showMapViewLayerMenu();
+				return true;
+
+			case MI_ALIGN_TO_COMPSS:
+				MapView.that.SetAlignToCompass(!MapView.that.GetAlignToCompass());
+				return true;
+
+			case MI_HIDE_FINDS:
+				MapView.that.hideMyFinds = !MapView.that.hideMyFinds;
+				return true;
+
+			case MI_SHOW_RATINGS:
+				MapView.that.showRating = !MapView.that.showRating;
+				return true;
+
+			case MI_SHOW_DT:
+				MapView.that.showDT = !MapView.that.showDT;
+				return true;
+
+			case MI_SHOW_TITLE:
+				MapView.that.showTitles = !MapView.that.showTitles;
+				return true;
+
+			case MI_SHOW_DIRECT_LINE:
+				MapView.that.showDirektLine = !MapView.that.showDirektLine;
 				return true;
 
 			default:

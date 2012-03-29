@@ -11,17 +11,17 @@ public class Locator
 	private float bearing = 0;
 	private float altitude = 0;
 
-	public void setLocation(double latitude, double longitude, float f, boolean hasSpeed, float speed, boolean hasBearing, float bearing,
-			double d)
+	public void setLocation(double latitude, double longitude, float accuracy, boolean hasSpeed, float speed, boolean hasBearing,
+			float bearing, double altitude)
 	{
 		synchronized (this)
 		{
-			Position = new Coordinate(latitude, longitude, (int) f);
+			Position = new Coordinate(latitude, longitude, (int) accuracy);
 			this.hasSpeed = hasSpeed;
 			this.speed = speed;
 			this.hasBearing = hasBearing;
 			this.bearing = bearing;
-			this.altitude = (float) d;
+			this.altitude = (float) altitude;
 		}
 	}
 
