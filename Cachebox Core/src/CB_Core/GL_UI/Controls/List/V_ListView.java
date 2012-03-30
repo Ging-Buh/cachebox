@@ -18,7 +18,7 @@ public class V_ListView extends ListViewBase
 
 	ArrayList<ListViewItemBase> clearList = new ArrayList<ListViewItemBase>();
 
-	protected void RenderThreadSetPos(float value)
+	protected void RenderThreadSetPos(float value, boolean Kinetic)
 	{
 		float distance = mPos - value;
 
@@ -49,10 +49,13 @@ public class V_ListView extends ListViewBase
 				{
 					tmp.setY(tmp.getY() + distance);
 
-					if (tmp.getY() > this.getMaxY() || tmp.getMaxY() < 0)
+					if (!isTouch)
 					{
-						// Item ist nicht mehr im sichtbaren Bereich!
-						clearList.add((ListViewItemBase) tmp);
+						if (tmp.getY() > this.getMaxY() || tmp.getMaxY() < 0)
+						{
+							// Item ist nicht mehr im sichtbaren Bereich!
+							clearList.add((ListViewItemBase) tmp);
+						}
 					}
 				}
 			}
@@ -72,30 +75,32 @@ public class V_ListView extends ListViewBase
 				if (mCanDispose) tmp.dispose();
 			}
 			clearList.clear();
-
-			// setze First Index, damit nicht alle Items durchlaufen werden müssen
-			Collections.sort(mAddeedIndexList);
-			if (mAddeedIndexList.size() > 0)
-			{
-				mFirstIndex = mAddeedIndexList.get(0) - mMaxItemCount;
-				if (mFirstIndex < 0) mFirstIndex = 0;
-			}
-			else
-			{
-				mFirstIndex = 0;
-			}
-
 		}
+
+		// setze First Index, damit nicht alle Items durchlaufen werden müssen
+		Collections.sort(mAddeedIndexList);
+		if (mAddeedIndexList.size() > 0)
+		{
+			mFirstIndex = mAddeedIndexList.get(0) - mMaxItemCount;
+			if (mFirstIndex < 0) mFirstIndex = 0;
+		}
+		else
+		{
+			mFirstIndex = 0;
+		}
+
+		if (mLastIndex == mFirstIndex) mFirstIndex = 0;
 
 		mPos = value;
 
 		// addVisibleItems();
-		addVisibleItemsThread();
+		addVisibleItemsThread(Kinetic);
 		mMustSetPos = false;
+		mMustSetPosKinetic = false;
 
 	}
 
-	protected void addVisibleItemsThread()
+	protected void addVisibleItemsThread(final boolean Kinetic)
 	{
 		Thread th = new Thread(new Runnable()
 		{
@@ -103,14 +108,20 @@ public class V_ListView extends ListViewBase
 			@Override
 			public void run()
 			{
-				addVisibleItems();
+				addVisibleItems(Kinetic);
 			}
 		});
 
 		th.run();
 	}
 
-	protected void addVisibleItems()
+	/**
+	 * Wenn Kinetic == True werden mehr Items geladen, damit beim schnellen Scrollen die Items schon erstellt sind, bevor sie in den
+	 * sichtbaren Bereich kommen.
+	 * 
+	 * @param Kinetic
+	 */
+	protected void addVisibleItems(boolean Kinetic)
 	{
 		if (mBaseAdapter == null) return;
 		if (mPosDefault == null) calcDefaultPosList();
@@ -123,7 +134,7 @@ public class V_ListView extends ListViewBase
 				float itemPos = mPosDefault.get(i);
 				itemPos -= mPos;
 
-				if (itemPos < this.getMaxY() && itemPos + mBaseAdapter.getItemSize(i) > 0)
+				if (itemPos < this.getMaxY() && itemPos + mBaseAdapter.getItemSize(i) > -(mMaxItemCount * minimumItemSize))
 				{
 					ListViewItemBase tmp = mBaseAdapter.getView(i);
 					tmp.setY(itemPos);
@@ -137,8 +148,9 @@ public class V_ListView extends ListViewBase
 					mAddeedIndexList.add(tmp.getIndex());
 				}
 
-				else if (itemPos + mBaseAdapter.getItemSize(i) < 0)
+				else if (itemPos + mBaseAdapter.getItemSize(i) < -(mMaxItemCount * minimumItemSize))
 				{
+					mLastIndex = i;
 					break;
 				}
 
@@ -159,22 +171,22 @@ public class V_ListView extends ListViewBase
 
 		mPosDefault = new ArrayList<Float>();
 
-		float minimumItemHeight = this.height;
+		minimumItemSize = this.height;
 
 		float countPos = this.height - mDividerSize;
 
-		for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
+		for (int i = 0; i < mBaseAdapter.getCount(); i++)
 		{
 			float itemHeight = mBaseAdapter.getItemSize(i);
 
 			countPos -= itemHeight + mDividerSize;
 			mPosDefault.add(countPos);
 
-			if (itemHeight < minimumItemHeight) minimumItemHeight = itemHeight;
+			if (itemHeight < minimumItemSize) minimumItemSize = itemHeight;
 
 		}
 		mAllSize = countPos;
-		mMaxItemCount = (int) (this.height / minimumItemHeight);
+		mMaxItemCount = (int) (this.height / minimumItemSize);
 		if (mMaxItemCount < 1) mMaxItemCount = 1;
 	}
 
@@ -206,13 +218,14 @@ public class V_ListView extends ListViewBase
 			}
 		}
 
-		setListPos(sollPos + toMuch);
+		setListPos(sollPos + toMuch, KineticPan);
 		return true;
 	}
 
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
+		super.onTouchDown(x, y, pointer, button);
 		if (!mIsDrageble) return false;
 		mLastTouch = y;
 		mLastPos_onTouch = mPos;

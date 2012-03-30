@@ -16,7 +16,7 @@ public class H_ListView extends ListViewBase
 		super(rec, Name);
 	}
 
-	protected void RenderThreadSetPos(float value)
+	protected void RenderThreadSetPos(float value, boolean Kinetic)
 	{
 		float distance = mPos - value;
 
@@ -75,12 +75,12 @@ public class H_ListView extends ListViewBase
 
 		mPos = value;
 
-		addVisibleItems();
+		addVisibleItems(Kinetic);
 		mMustSetPos = false;
 
 	}
 
-	protected void addVisibleItems()
+	protected void addVisibleItems(boolean Kinetic)
 	{
 		if (mBaseAdapter == null) return;
 		if (mPosDefault == null) calcDefaultPosList();
@@ -132,18 +132,18 @@ public class H_ListView extends ListViewBase
 		mPosDefault = new ArrayList<Float>();
 
 		float countPos = this.width;
-		float minimumItemWidth = this.width;
-		for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
+		minimumItemSize = this.width;
+		for (int i = 0; i < mBaseAdapter.getCount(); i++)
 		{
 			float itemWidth = mBaseAdapter.getItemSize(i);
 			countPos -= itemWidth + mDividerSize;
 			mPosDefault.add(countPos);
 			mPosDefault.add(0, countPos);
-			if (itemWidth < minimumItemWidth) minimumItemWidth = itemWidth;
+			if (itemWidth < minimumItemSize) minimumItemSize = itemWidth;
 		}
 		mAllSize = countPos - mDividerSize;
 		mPos = countPos - mDividerSize;
-		mMaxItemCount = (int) (this.width / minimumItemWidth);
+		mMaxItemCount = (int) (this.width / minimumItemSize);
 		if (mMaxItemCount < 1) mMaxItemCount = 1;
 	}
 
@@ -174,12 +174,13 @@ public class H_ListView extends ListViewBase
 			}
 		}
 
-		setListPos(sollPos + toMuch);
+		setListPos(sollPos + toMuch, KineticPan);
 		return true;
 	}
 
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
+		super.onTouchDown(x, y, pointer, button);
 		if (!mIsDrageble) return false;
 		mLastTouch = x;
 		mLastPos_onTouch = mPos;
