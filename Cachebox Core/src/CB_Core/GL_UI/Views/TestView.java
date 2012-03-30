@@ -125,7 +125,7 @@ public class TestView extends CB_View_Base
 
 		// Label Tests
 		lbl = new Label(10, 410, 270, 30, "Test_Lbl");
-		lbl.setFont(Fonts.get16());
+		lbl.setFont(Fonts.getNormal());
 		lbl.setText("Single Line Text");
 		lbl.setHAlignment(HAlignment.CENTER);
 		this.addChild(lbl);
@@ -154,7 +154,7 @@ public class TestView extends CB_View_Base
 		s += "Zeile 2" + br;
 
 		Label lbl2 = new Label(10, 310, 250, 70, "Test_Lbl2");
-		lbl2.setFont(Fonts.get18());
+		lbl2.setFont(Fonts.getNormal());
 		lbl2.setMultiLineText(s);
 		this.addChild(lbl2);
 
@@ -162,7 +162,7 @@ public class TestView extends CB_View_Base
 		s += "Es wird aber auch ein Line Breake innerhalb des Textes erkannt und zusätzlich umgebrochen." + br;
 
 		Label lbl3 = new Label(10, 100, 270, 200, "Test_Lbl3");
-		lbl3.setFont(Fonts.get18());
+		lbl3.setFont(Fonts.getNormal());
 		lbl3.setWrappedText(s);
 
 		NinePatch back = new NinePatch(SpriteCache.uiAtlas.findRegion("shaddowrect"), 8, 8, 8, 8);
@@ -183,7 +183,7 @@ public class TestView extends CB_View_Base
 	protected void render(SpriteBatch batch)
 	{
 		String str = "fps: " + Gdx.graphics.getFramesPerSecond();
-		Fonts.get18().draw(batch, str, 20, 100);
+		Fonts.getNormal().draw(batch, str, 20, 100);
 
 	}
 

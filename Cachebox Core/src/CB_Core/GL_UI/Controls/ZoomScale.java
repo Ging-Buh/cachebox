@@ -86,11 +86,11 @@ public class ZoomScale extends CB_View_Base
 			valueBack.draw(batch, FadeValue);
 		}
 
-		com.badlogic.gdx.graphics.Color c = Fonts.get21().getColor();
-		Fonts.get21().setColor(1f, 1f, 1f, FadeValue);
-		Fonts.get21().draw(batch, String.valueOf(zoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
+		com.badlogic.gdx.graphics.Color c = Fonts.getNormal().getColor();
+		Fonts.getNormal().setColor(1f, 1f, 1f, FadeValue);
+		Fonts.getNormal().draw(batch, String.valueOf(zoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
 				ValueRec.getY() + ValueRec.getHeight() / 1.15f);
-		Fonts.get21().setColor(c.r, c.g, c.b, c.a);
+		Fonts.getNormal().setColor(c.r, c.g, c.b, c.a);
 	}
 
 	public void setDiffCameraZoom(float value, boolean positive)

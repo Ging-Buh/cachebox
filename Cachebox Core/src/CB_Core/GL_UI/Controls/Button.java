@@ -212,7 +212,7 @@ public class Button extends CB_View_Base
 			r.setPos(new Vector2(l, b));
 
 			lblTxt = new Label(r, this, name + "Label");
-			lblTxt.setFont(Fonts.get18());
+			lblTxt.setFont(Fonts.getNormal());
 			lblTxt.setHAlignment(HAlignment.CENTER);
 			lblTxt.setVAlignment(VAlignment.CENTER);
 			this.addChild(lblTxt);

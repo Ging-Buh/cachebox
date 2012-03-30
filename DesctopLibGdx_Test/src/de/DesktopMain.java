@@ -30,33 +30,30 @@ public class DesktopMain {
 
 	
 	static GL_Listener CB_UI;
+		
 	
-	private static Size myInitialSize = null;
 
-
-	static devicesSizes ui = null;
-
-	public static void main(String[] args) {
+	public static void test(devicesSizes ui) {
 		DesktopLogger iLogger = new DesktopLogger();
 
-//		iniPhone();
-		iniTab();
 
 		InitalConfig();
 		Config.settings.MapViewDPIFaktor.setValue(1);
+		Config.settings.MapViewFontFaktor.setValue(1);
 		
 		Config.settings.OsmMinLevel.setValue(2);
 			
 
-		CB_UI = new Desktop_GL_Listner(myInitialSize.width,
-				myInitialSize.height);
-
+		CB_UI = new Desktop_GL_Listner(ui.Window.width,
+				ui.Window.height);
+		
+	
 //		GL_View_Base.debug = true;
 //		GL_View_Base.disableScissor= true;
 		
 		
-		int sw = myInitialSize.height > myInitialSize.width ? myInitialSize.width
-				: myInitialSize.height;
+		int sw = ui.Window.height > ui.Window.width ? ui.Window.width
+				: ui.Window.height;
 		sw /= ui.Density;
 
 		// chek if tablet
@@ -64,9 +61,10 @@ public class DesktopMain {
 		GlobalCore.isTab = sw > 400 ? true : false;
 
 		UiSizes.initial(ui);
-		new LwjglApplication(CB_UI, "Game", myInitialSize.width,
-				myInitialSize.height, false);
+		new LwjglApplication(CB_UI, "Game", ui.Window.width,
+				ui.Window.height, false);
 
+		
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {
 			@Override
@@ -74,52 +72,12 @@ public class DesktopMain {
 				Run();
 			}
 		};
-		timer.schedule(task, 1000);
+		timer.schedule(task, 600);
 
 	}
 	
 	
-	private static void iniPhone() {
-		myInitialSize = new Size(480, 800);
-//		myInitialSize = new Size(240, 400);
-
-		ui = new devicesSizes();
-
-		ui.Window = myInitialSize;
-		ui.Density = 1.5f;
-		ui.ButtonSize = new Size(65, 65);
-		ui.RefSize = 64;
-		ui.TextSize_Normal = 52;
-		ui.ButtonTextSize = 50;
-		ui.IconSize = 13;
-		ui.Margin = 4;
-		ui.ArrowSizeList = 11;
-		ui.ArrowSizeMap = 18;
-		ui.TB_IconSize = 8;
-		ui.isLandscape = false;
-
-	}
-
-	private static void iniTab() {
-
-		myInitialSize = new Size(1280, 750);
-		ui = new devicesSizes();
-
-		ui.Window = myInitialSize;
-		ui.Density = 1.0f;
-		ui.ButtonSize = new Size(65, 65);
-		ui.RefSize = 64;
-		ui.TextSize_Normal = 52;
-		ui.ButtonTextSize = 50;
-		ui.IconSize = 13;
-		ui.Margin = 4;
-		ui.ArrowSizeList = 11;
-		ui.ArrowSizeMap = 18;
-		ui.TB_IconSize = 8;
-		ui.isLandscape = false;
-
-	}
-
+	
 	
 
 	private static void Run() {

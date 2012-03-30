@@ -103,7 +103,8 @@ public class Label extends CB_View_Base
 			x = innerRec.getWidth() - bounds.width;
 		}
 
-		cache.setColor(color.r, color.g, color.b, color.a);
+		// cache.setColor(color.r, color.g, color.b, color.a);
+
 		switch (valignment)
 		{
 		case TOP:
@@ -128,7 +129,7 @@ public class Label extends CB_View_Base
 	private void chkCache()
 	{
 		// Initial mit Arial 18
-		if (cache == null) setFont(Fonts.get18());
+		if (cache == null) setFont(Fonts.getNormal());
 	}
 
 	// code from Libgdx Label

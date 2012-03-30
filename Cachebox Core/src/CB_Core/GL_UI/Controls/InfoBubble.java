@@ -67,7 +67,8 @@ public class InfoBubble extends CB_View_Base
 		cacheInfo = new CacheInfo(size, "CacheInfo", value);
 		cacheInfo.setViewMode(CacheInfo.VIEW_MODE_BUBBLE);
 		cacheInfo.setY(height - size.height);
-		cacheInfo.setFont(Fonts.get11());
+		cacheInfo.setFont(Fonts.getBubbleNormal());
+		cacheInfo.setSmallFont(Fonts.getBubbleSmall());
 		this.removeChilds();
 		this.addChild(cacheInfo);
 		requestLayout();

@@ -556,24 +556,24 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private void renderDebugInfo(SpriteBatch batch)
 	{
 		str = debugString;
-		Fonts.get18().draw(batch, str, 20, 120);
+		Fonts.getNormal().draw(batch, str, 20, 120);
 
 		str = "fps: " + Gdx.graphics.getFramesPerSecond();
-		Fonts.get18().draw(batch, str, 20, 100);
+		Fonts.getNormal().draw(batch, str, 20, 100);
 
 		str = String.valueOf(aktZoom) + " - camzoom: " + Math.round(camera.zoom * 100) / 100;
-		Fonts.get18().draw(batch, str, 20, 80);
+		Fonts.getNormal().draw(batch, str, 20, 80);
 
 		str = "lTiles: " + loadedTiles.size() + " - qTiles: " + queuedTiles.size();
-		Fonts.get18().draw(batch, str, 20, 60);
+		Fonts.getNormal().draw(batch, str, 20, 60);
 
 		if (mapCacheList != null)
 		{
 			str = "listCalc: " + mapCacheList.anz + " - C: " + mapCacheList.list.size();
-			Fonts.get18().draw(batch, str, 20, 40);
+			Fonts.getNormal().draw(batch, str, 20, 40);
 		}
 		str = "lastMove: " + lastMovement.x + " - " + lastMovement.y;
-		Fonts.get18().draw(batch, str, 20, 20);
+		Fonts.getNormal().draw(batch, str, 20, 20);
 
 	}
 

@@ -94,25 +94,25 @@ public class MapInfoPanel extends CB_View_Base
 		float margin = GL_UISizes.margin;
 
 		lblSpeed = new Label(this.ScaleCenter(0.4f), "lblSpeed");
-		lblSpeed.setFont(Fonts.get16());
+		lblSpeed.setFont(Fonts.getSmall());
 		lblSpeed.setPos(new Vector2(arrowRec.getWidth() + margin, this.height * 0.1f));
 		lblSpeed.setText("---");
 		this.addChild(lblSpeed);
 
 		lblDistance = new Label(this.ScaleCenter(0.4f), "lblDistance");
-		lblDistance.setFont(Fonts.get20());
+		lblDistance.setFont(Fonts.getBig());
 		lblDistance.setPos(new Vector2(arrowRec.getWidth() + margin, arrowRec.getWidth() / 2));
 		lblDistance.setText("---");
 		this.addChild(lblDistance);
 
 		lblLatitude = new Label(this.ScaleCenter(0.4f), "lblLatitude");
-		lblLatitude.setFont(Fonts.get16());
+		lblLatitude.setFont(Fonts.getSmall());
 		lblLatitude.setPos(new Vector2(this.getWidth() - lblLatitude.getWidth(), arrowRec.getWidth() / 2));
 		lblLatitude.setText("---");
 		this.addChild(lblLatitude);
 
 		lblLongitude = new Label(this.ScaleCenter(0.4f), "lblLongitude");
-		lblLongitude.setFont(Fonts.get16());
+		lblLongitude.setFont(Fonts.getSmall());
 		lblLongitude.setPos(new Vector2(this.getWidth() - lblLongitude.getWidth(), this.height * 0.1f));
 		lblLongitude.setText("---");
 		this.addChild(lblLongitude);

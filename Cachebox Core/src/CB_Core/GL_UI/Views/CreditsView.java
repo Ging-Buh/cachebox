@@ -19,7 +19,7 @@ public class CreditsView extends CB_View_Base
 	{
 		super(rec, Name);
 		Label test = new Label(100, 100, 300, 50, "Credits_Label");
-		test.setFont(Fonts.get22());
+		test.setFont(Fonts.getNormal());
 		test.setText("Credits View 2");
 		test.setHAlignment(HAlignment.CENTER);
 		this.addChild(test);

@@ -107,7 +107,7 @@ public class UiSizes
 
 		GL_UISizes.writeDebug("Button", Button.asFloat());
 
-		if (Button.width * 4 * 1.8 >= RefWidth)
+		if (Button.width * 7.2 >= RefWidth)
 		{
 			double s = RefWidth / Button.width / 5.3;// 3.5;
 			Button.height = (int) (Button.height * s);
@@ -135,7 +135,7 @@ public class UiSizes
 		tabWidth = (int) (scaledFontSize_normal * 0.6);
 		halfCornerSize = (int) CornerSize / 2;
 
-		CacheListItemSize = new Size(RefWidth, (int) (scaledRefSize_normal * 8.6));
+		CacheListItemSize = new Size(RefWidth, (int) (RefWidth / 5));
 		CacheListDrawRec = CacheListItemSize.getBounds(5, 2, -5, -2);
 		StrengthHeightMultipler = (int) (calcBase / 600);
 		IconContextMenuHeight = (int) (calcBase / 11.1);

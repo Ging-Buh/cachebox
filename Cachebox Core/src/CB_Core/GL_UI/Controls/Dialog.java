@@ -69,13 +69,13 @@ public abstract class Dialog extends CB_View_Base
 			mHasTitle = true;
 			mTitleHeight = 40;
 
-			BitmapFontCache mesure = new BitmapFontCache(Fonts.get19());
+			BitmapFontCache mesure = new BitmapFontCache(Fonts.getNormal());
 			TextBounds bounds = mesure.setText(mTitle, 0, 0);
 			mTitleWidth = bounds.width + 40;
 			if (mTitleWidth > this.width) mTitleWidth = this.width - 10;
 
 			Label titleLabel = new Label(new CB_RectF(10, this.height - 30, mTitleWidth - 25, 20), "DialogTitleLabel");
-			titleLabel.setFont(Fonts.get19());
+			titleLabel.setFont(Fonts.getNormal());
 			titleLabel.setText(mTitle);
 
 			super.addChildDirekt(titleLabel);

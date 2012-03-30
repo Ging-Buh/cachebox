@@ -221,7 +221,7 @@ public class GL_UISizes implements SizeChangedEvent
 		ZoomBtn.setPos(new Vector2((float) (w - margin - ZoomBtn.getWidth()), margin));
 		ZoomScale.setPos(new Vector2(margin, (float) (h - (margin * 4) - Toggle.getHeight() - ZoomScale.getHeight())));
 		InfoLine1.x = Compass.getCrossPos().x + margin;
-		TextBounds bounds = Fonts.get18().getBounds("52° 34,806N ");
+		TextBounds bounds = Fonts.getNormal().getBounds("52° 34,806N ");
 		InfoLine2.x = Info.getX() + Info.getWidth() - bounds.width - (margin * 2);
 
 		Float T1 = Info.getHeight() / 4;

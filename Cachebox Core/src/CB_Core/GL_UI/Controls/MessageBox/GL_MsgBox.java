@@ -57,7 +57,7 @@ public class GL_MsgBox extends Dialog
 	{
 		float Width = (((UiSizes.getButtonWidthWide() + margin) * 3) + margin);
 
-		BitmapFontCache mesure = new BitmapFontCache(Fonts.get18());
+		BitmapFontCache mesure = new BitmapFontCache(Fonts.getNormal());
 		TextBounds bounds = mesure.setWrappedText(Text, 0, 0, Width - 20);
 		int Height = (int) bounds.height + 150;// + footer and header height + x(=100)
 

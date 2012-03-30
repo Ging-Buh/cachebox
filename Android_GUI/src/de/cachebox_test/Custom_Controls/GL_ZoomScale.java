@@ -110,11 +110,11 @@ public class GL_ZoomScale
 			valueBack.draw(batch, FadeValue);
 		}
 
-		com.badlogic.gdx.graphics.Color c = Fonts.get22().getColor();
-		Fonts.get22().setColor(1f, 1f, 1f, FadeValue);
-		Fonts.get22().draw(batch, String.valueOf(zoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
+		com.badlogic.gdx.graphics.Color c = Fonts.getNormal().getColor();
+		Fonts.getNormal().setColor(1f, 1f, 1f, FadeValue);
+		Fonts.getNormal().draw(batch, String.valueOf(zoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
 				ValueRec.getY() + ValueRec.getHeight() / 1.5f);
-		Fonts.get22().setColor(c.r, c.g, c.b, c.a);
+		Fonts.getNormal().setColor(c.r, c.g, c.b, c.a);
 	}
 
 	public void setDiffCameraZoom(float value, boolean positive)

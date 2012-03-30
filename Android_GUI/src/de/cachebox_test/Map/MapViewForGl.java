@@ -398,7 +398,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 		batch.begin();
 		if (showCompass) renderInfoPanel(batch);
 
-		btnTrackPos.Render(batch, GL_UISizes.Toggle, Fonts.get18());
+		btnTrackPos.Render(batch, GL_UISizes.Toggle, Fonts.getNormal());
 
 		zoomBtn.Render(batch, GL_UISizes.ZoomBtn);
 		zoomScale.Render(batch, GL_UISizes.ZoomScale);
@@ -487,24 +487,24 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 	private void renderDebugInfo(SpriteBatch batch)
 	{
 		str = debugString;
-		Fonts.get18().draw(batch, str, 20, 120);
+		Fonts.getNormal().draw(batch, str, 20, 120);
 
 		str = "timer: " + GL_Listener.timerValue + " - fps: " + Gdx.graphics.getFramesPerSecond();
-		Fonts.get18().draw(batch, str, 20, 100);
+		Fonts.getNormal().draw(batch, str, 20, 100);
 
 		str = String.valueOf(aktZoom) + " - camzoom: " + Math.round(GL_Listener.camera.zoom * 100) / 100;
-		Fonts.get18().draw(batch, str, 20, 80);
+		Fonts.getNormal().draw(batch, str, 20, 80);
 
 		str = "lTiles: " + loadedTiles.size() + " - qTiles: " + queuedTiles.size();
-		Fonts.get18().draw(batch, str, 20, 60);
+		Fonts.getNormal().draw(batch, str, 20, 60);
 
 		if (mapCacheList != null)
 		{
 			str = "listCalc: " + mapCacheList.anz + " - C: " + mapCacheList.list.size();
-			Fonts.get18().draw(batch, str, 20, 40);
+			Fonts.getNormal().draw(batch, str, 20, 40);
 		}
 		str = "lastMove: " + lastMovement.x + " - " + lastMovement.y;
-		Fonts.get18().draw(batch, str, 20, 20);
+		Fonts.getNormal().draw(batch, str, 20, 20);
 
 	}
 
@@ -535,7 +535,7 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 				distance = position.Distance(GlobalCore.SelectedWaypoint().Pos);
 
 			String text = UnitFormatter.DistanceString(distance);
-			Fonts.get18().draw(batch, text, GL_UISizes.InfoLine1.x, GL_UISizes.InfoLine1.y);
+			Fonts.getNormal().draw(batch, text, GL_UISizes.InfoLine1.x, GL_UISizes.InfoLine1.y);
 			// canvas.drawText(text, leftString, bottom - 10, paint);
 
 			// Kompassnadel zeichnen
@@ -563,12 +563,12 @@ public class MapViewForGl extends GL_View_Base implements SelectedCacheEvent, Po
 				String textLatitude = GlobalCore.FormatLatitudeDM(position.Latitude);
 				String textLongitude = GlobalCore.FormatLongitudeDM(position.Longitude);
 
-				Fonts.get18().draw(batch, textLatitude, GL_UISizes.InfoLine2.x, GL_UISizes.InfoLine1.y);
-				Fonts.get18().draw(batch, textLongitude, GL_UISizes.InfoLine2.x, GL_UISizes.InfoLine2.y);
+				Fonts.getNormal().draw(batch, textLatitude, GL_UISizes.InfoLine2.x, GL_UISizes.InfoLine1.y);
+				Fonts.getNormal().draw(batch, textLongitude, GL_UISizes.InfoLine2.x, GL_UISizes.InfoLine2.y);
 
 				if (Global.Locator != null)
 				{
-					Fonts.get18().draw(batch, Global.Locator.SpeedString(), GL_UISizes.InfoLine1.x, GL_UISizes.InfoLine2.y);
+					Fonts.getNormal().draw(batch, Global.Locator.SpeedString(), GL_UISizes.InfoLine1.x, GL_UISizes.InfoLine2.y);
 				}
 
 			}

@@ -29,7 +29,7 @@ public class TestListView_Item extends ListViewItemBase
 	protected void Initial()
 	{
 		lbl = new Label(CB_RectF.ScaleCenter(this, 0.9f), "Label for " + this.getName());
-		lbl.setFont(Fonts.get13());
+		lbl.setFont(Fonts.getNormal());
 		lbl.setPos(new Vector2(5, 2.5f));
 		lbl.setText(string);
 		this.addChild(lbl);

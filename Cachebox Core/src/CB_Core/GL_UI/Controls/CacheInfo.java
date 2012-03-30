@@ -69,7 +69,10 @@ public class CacheInfo extends CB_View_Base
 	private float mMargin = 0;
 	private Sprite mRatingSprite;
 	private Sprite mIconSprite;
-	private BitmapFont mBitmapFont = Fonts.get16();
+
+	private BitmapFont mBitmapFont = Fonts.getNormal();
+	private BitmapFont mBitmapFontSmall = Fonts.getSmall();
+
 	private BitmapFontCache mS_FontCache;
 	private BitmapFontCache mD_FontCache;
 	private BitmapFontCache mT_FontCache;
@@ -126,7 +129,7 @@ public class CacheInfo extends CB_View_Base
 		mRatingSprite.setOrigin(0, mStarSize.halfHeight);
 		mRatingSprite.setRotation(90);
 
-		mIconSize = (UiSizes.getScaledIconSize() / 1.5f) * scaleFactor;
+		mIconSize = (UiSizes.getButtonHeight() / 1.6f) * scaleFactor;
 
 		mCompasswidth = ifModeFlag(SHOW_COMPASS) ? width / 6 : 0;
 
@@ -173,19 +176,19 @@ public class CacheInfo extends CB_View_Base
 			mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
 		}
 
-		mS_FontCache = new BitmapFontCache(mBitmapFont);
+		mS_FontCache = new BitmapFontCache(mBitmapFontSmall);
 		mS_FontCache.setText("S", 0, 0);
 		mS_FontCache.setPosition(mLeft, mMargin + mS_FontCache.getBounds().height);
 
 		mLeft += mS_FontCache.getBounds().width + mMargin;
 
-		mD_FontCache = new BitmapFontCache(mBitmapFont);
+		mD_FontCache = new BitmapFontCache(mBitmapFontSmall);
 		mD_FontCache.setText("D", 0, 0);
 		mD_FontCache.setPosition(mLeft, mMargin + mD_FontCache.getBounds().height);
 
 		mLeft += mD_FontCache.getBounds().width + mMargin;
 
-		mT_FontCache = new BitmapFontCache(mBitmapFont);
+		mT_FontCache = new BitmapFontCache(mBitmapFontSmall);
 		mT_FontCache.setText("T", 0, 0);
 		mT_FontCache.setPosition(mLeft, mMargin + mT_FontCache.getBounds().height);
 
@@ -235,6 +238,12 @@ public class CacheInfo extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
+		requestLayout();
+	}
+
+	public void setSmallFont(BitmapFont font)
+	{
+		mBitmapFontSmall = font;
 		requestLayout();
 	}
 

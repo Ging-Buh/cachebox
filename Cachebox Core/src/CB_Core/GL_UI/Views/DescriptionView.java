@@ -13,7 +13,7 @@ public class DescriptionView extends CB_View_Base
 		super(rec, Name);
 
 		Label lblDummy = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "DummyLabel");
-		lblDummy.setFont(Fonts.get22());
+		lblDummy.setFont(Fonts.getNormal());
 		lblDummy.setText("Dummy DescriptionView");
 		this.addChild(lblDummy);
 
