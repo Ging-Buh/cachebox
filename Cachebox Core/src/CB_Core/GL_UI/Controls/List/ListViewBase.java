@@ -201,6 +201,8 @@ public abstract class ListViewBase extends CB_View_Base
 	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
 	{
 		super.renderChilds(batch, parentInfo);
+
+		if (true) return;
 		// schreibe Debug
 		if (dPosy == null)
 		{
