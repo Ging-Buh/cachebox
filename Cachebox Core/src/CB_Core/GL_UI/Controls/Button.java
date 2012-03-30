@@ -45,22 +45,26 @@ public class Button extends CB_View_Base
 	public Button(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name)
 	{
 		super(X, Y, Width, Height, Parent, Name);
+		this.isClickable = true;
 	}
 
 	public Button(CB_RectF rec, GL_View_Base parent, String name)
 	{
 		super(rec, parent, name);
+		this.isClickable = true;
 	}
 
 	public Button(CB_RectF rec, String name)
 	{
 		super(rec, name);
+		this.isClickable = true;
 	}
 
 	public Button(CB_RectF rec, String name, ButtonSprites sprites)
 	{
 		super(rec, name);
 		setButtonSprites(sprites);
+		this.isClickable = true;
 	}
 
 	public void setninePatch(NinePatch ninePatch)
