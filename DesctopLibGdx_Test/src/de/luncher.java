@@ -34,6 +34,10 @@ class Gui extends Frame implements ActionListener, WindowListener {
 		add(pushButton2);
 		pushButton2.addActionListener(this); // listen for Button press
 
+		Button pushButton3 = new Button("Tab 1024x768 MDPI");
+		add(pushButton3);
+		pushButton3.addActionListener(this); // listen for Button press
+
 	}
 
 	// define action for Button press
@@ -42,6 +46,8 @@ class Gui extends Frame implements ActionListener, WindowListener {
 			DesktopMain.test(iniPhone());
 		} else if (event.getActionCommand().equals("Tab 1280x752 MDPI")) {
 			DesktopMain.test(iniTab());
+		} else if (event.getActionCommand().equals("Tab 1024x768 MDPI")) {
+			DesktopMain.test(iniPad10());
 		}
 		
 //		System.exit(0);
@@ -94,6 +100,28 @@ class Gui extends Frame implements ActionListener, WindowListener {
 	private static devicesSizes iniTab() {
 
 		Size myInitialSize = new Size(1280, 752);
+		devicesSizes ui = new devicesSizes();
+
+		ui.Window = myInitialSize;
+		ui.Density = 1.0f;
+		ui.ButtonSize = new Size(53, 53);
+		ui.RefSize = 54;
+		ui.TextSize_Normal = 52;
+		ui.ButtonTextSize = 50;
+		ui.IconSize = 13;
+		ui.Margin = 3;
+		ui.ArrowSizeList = 20;
+		ui.ArrowSizeMap = 18;
+		ui.TB_IconSize = 12;
+		ui.isLandscape = false;
+
+		return ui;
+
+	}
+
+	private static devicesSizes iniPad10() {
+
+		Size myInitialSize = new Size(1024, 768);
 		devicesSizes ui = new devicesSizes();
 
 		ui.Window = myInitialSize;
