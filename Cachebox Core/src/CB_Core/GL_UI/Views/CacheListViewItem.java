@@ -2,7 +2,6 @@ package CB_Core.GL_UI.Views;
 
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.CacheInfo;
-import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
@@ -16,7 +15,8 @@ public class CacheListViewItem extends ListViewItemBase
 
 	protected CacheInfo info;
 	protected boolean isPressed = false;
-	protected Label mDebugIndex;
+
+	// protected Label mDebugIndex;
 
 	public CacheListViewItem(CB_RectF rec, int Index, Cache cache)
 	{
@@ -27,9 +27,9 @@ public class CacheListViewItem extends ListViewItemBase
 		setBackground();
 		this.addChild(info);
 
-		mDebugIndex = new Label(150, 3, 50, 20, "DebugLabel");
-		mDebugIndex.setText("" + Index);
-		this.addChild(mDebugIndex);
+		// mDebugIndex = new Label(150, 3, 50, 20, "DebugLabel");
+		// mDebugIndex.setText("" + Index);
+		// this.addChild(mDebugIndex);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class CacheListViewItem extends ListViewItemBase
 	{
 
 		isPressed = true;
-		setBackground();
+
 		return false;
 	}
 
@@ -58,7 +58,7 @@ public class CacheListViewItem extends ListViewItemBase
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 		isPressed = false;
-		setBackground();
+
 		return false;
 	}
 
@@ -66,7 +66,7 @@ public class CacheListViewItem extends ListViewItemBase
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
 		isPressed = false;
-		setBackground();
+
 		return false;
 	}
 
@@ -78,10 +78,6 @@ public class CacheListViewItem extends ListViewItemBase
 		if (isSelected)
 		{
 			this.setBackground(new NinePatch(SpriteCache.uiAtlas.findRegion("listrec_selected"), 8, 8, 8, 8));
-		}
-		else if (isPressed)
-		{
-			this.setBackground(new NinePatch(SpriteCache.uiAtlas.findRegion("listrec_pressed"), 8, 8, 8, 8));
 		}
 		else if (BackGroundChanger)
 		{

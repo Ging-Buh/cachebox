@@ -10,7 +10,6 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
@@ -69,6 +68,10 @@ public class CacheInfo extends CB_View_Base
 	private float mMargin = 0;
 	private Sprite mRatingSprite;
 	private Sprite mIconSprite;
+	private Sprite mSSprite;
+	private Sprite mDSprite;
+	private Sprite mTSprite;
+	private Sprite mTBSprite;
 
 	private BitmapFont mBitmapFont = Fonts.getNormal();
 	private BitmapFont mBitmapFontSmall = Fonts.getSmall();
@@ -76,6 +79,7 @@ public class CacheInfo extends CB_View_Base
 	private BitmapFontCache mS_FontCache;
 	private BitmapFontCache mD_FontCache;
 	private BitmapFontCache mT_FontCache;
+	private BitmapFontCache mTB_FontCache;
 
 	private Label lblTextInfo;
 
@@ -109,31 +113,97 @@ public class CacheInfo extends CB_View_Base
 		if (mS_FontCache != null) mS_FontCache.draw(batch);
 		if (mD_FontCache != null) mD_FontCache.draw(batch);
 		if (mT_FontCache != null) mT_FontCache.draw(batch);
-
+		if (mTB_FontCache != null) mTB_FontCache.draw(batch);
+		if (mSSprite != null) mSSprite.draw(batch);
+		if (mDSprite != null) mDSprite.draw(batch);
+		if (mTSprite != null) mTSprite.draw(batch);
+		if (mTBSprite != null) mTBSprite.draw(batch);
 	}
 
 	private void requestLayout()
 	{
 		this.removeChilds();
 		float scaleFactor = width / UiSizes.getCacheListItemRec().getWidth();
-		float mLeft = 5 * scaleFactor;
-		float mTop = 5 * scaleFactor;
+		float mLeft = 4 * scaleFactor;
+		float mTop = 4 * scaleFactor;
+		mMargin = mLeft;
 
-		mStarSize = new SizeF(GL_UISizes.DT_Size);
+		float mBottom = mMargin;
+
+		mCompasswidth = ifModeFlag(SHOW_COMPASS) ? width / 6 : 0;
+
+		mS_FontCache = new BitmapFontCache(mBitmapFontSmall);
+		mS_FontCache.setText("S", 0, 0);
+
+		mBottom += mS_FontCache.getBounds().height;
+		float mSpriteBottom = mMargin;
+
+		mS_FontCache.setPosition(mLeft, mBottom);
+
+		mLeft += mS_FontCache.getBounds().width + mMargin;
+		float starHeight = mS_FontCache.getBounds().height * 1.1f;
+		mStarSize = new SizeF(starHeight / 0.28f, starHeight);
 		mStarSize.scale(scaleFactor);
-		mMargin = mStarSize.height / 2;
 
+		mSSprite = new Sprite(SpriteCache.SizesIcons.get((int) (mCache.Size.ordinal())));
+		mSSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
+
+		mLeft += mSSprite.getWidth() + mMargin + mMargin;
+
+		mD_FontCache = new BitmapFontCache(mBitmapFontSmall);
+		mD_FontCache.setText("D", mLeft, mBottom);
+
+		mLeft += mD_FontCache.getBounds().width + mMargin;
+
+		mDSprite = new Sprite(SpriteCache.MapStars.get((int) (mCache.Difficulty * 2)));
+		mDSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
+		mDSprite.setRotation(0);
+
+		mLeft += mDSprite.getWidth() + mMargin + mMargin;
+
+		mT_FontCache = new BitmapFontCache(mBitmapFontSmall);
+		mT_FontCache.setText("T", mLeft, mBottom);
+
+		mLeft += mT_FontCache.getBounds().width + mMargin;
+
+		mTSprite = new Sprite(SpriteCache.MapStars.get((int) (mCache.Terrain * 2)));
+		mTSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
+		mTSprite.setRotation(0);
+
+		mLeft += mTSprite.getWidth() + mMargin + mMargin + mMargin + mMargin;
+
+		// Draw TB
+		int numTb = mCache.NumTravelbugs;
+		if (numTb > 0)
+		{
+			float sizes = mStarSize.width / 1.5f;
+
+			mTBSprite = new Sprite(SpriteCache.Icons.get(36));
+			mTBSprite.setBounds(mLeft, mBottom - (sizes / 2) - mMargin, sizes, sizes);
+			mTBSprite.setOrigin(sizes / 2, sizes / 2);
+			mTBSprite.setRotation(90);
+
+			if (numTb > 1)
+			{
+				mLeft += mTBSprite.getWidth() + mMargin;
+				mTB_FontCache = new BitmapFontCache(mBitmapFontSmall);
+				mTB_FontCache.setText("x" + String.valueOf(numTb), mLeft, mBottom);
+			}
+		}
+
+		mLeft = 4 * scaleFactor;
+		mLeft *= -1;
+		mIconSize = mT_FontCache.getBounds().height * 3.5f * scaleFactor;
+		mStarSize.scale(0.7f);
 		mRatingSprite = new Sprite(SpriteCache.MapStars.get((int) Math.min(mCache.Rating * 2, 5 * 2)));
-		mRatingSprite.setBounds(mLeft + mMargin + mStarSize.height, height - mTop - mStarSize.width - mMargin, mStarSize.width,
+		mRatingSprite.setBounds(mLeft + mStarSize.height, height - mTop - mStarSize.width - mMargin - mMargin - mMargin, mStarSize.width,
 				mStarSize.height);
 		mRatingSprite.setOrigin(0, mStarSize.halfHeight);
 		mRatingSprite.setRotation(90);
 
-		mIconSize = (UiSizes.getButtonHeight() / 1.6f) * scaleFactor;
+		mLeft += starHeight;
 
-		mCompasswidth = ifModeFlag(SHOW_COMPASS) ? width / 6 : 0;
-
-		Vector2 mSpriteCachePos = new Vector2(mLeft + mMargin + mMargin + mStarSize.height, height - mTop - mIconSize);
+		Vector2 mSpriteCachePos = new Vector2(mLeft + mMargin, height - mTop - mIconSize);
 		CB_RectF lblRec = new CB_RectF(mSpriteCachePos.x + mIconSize + mMargin, 0, this.width - mSpriteCachePos.x - mIconSize
 				- mCompasswidth, height - mTop);
 		lblTextInfo = new Label(lblRec, "CacheInfoText");
@@ -163,7 +233,6 @@ public class CacheInfo extends CB_View_Base
 
 		{ // Icon Sprite erstellen
 
-			if (mIconSize <= 0) mIconSize = GL_UISizes.PosMarkerSize * 1.2f;
 			if (mCache.MysterySolved())
 			{
 				mIconSprite = new Sprite(SpriteCache.BigIcons.get(19));
@@ -175,22 +244,6 @@ public class CacheInfo extends CB_View_Base
 			mIconSprite.setSize(mIconSize, mIconSize);
 			mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
 		}
-
-		mS_FontCache = new BitmapFontCache(mBitmapFontSmall);
-		mS_FontCache.setText("S", 0, 0);
-		mS_FontCache.setPosition(mLeft, mMargin + mS_FontCache.getBounds().height);
-
-		mLeft += mS_FontCache.getBounds().width + mMargin;
-
-		mD_FontCache = new BitmapFontCache(mBitmapFontSmall);
-		mD_FontCache.setText("D", 0, 0);
-		mD_FontCache.setPosition(mLeft, mMargin + mD_FontCache.getBounds().height);
-
-		mLeft += mD_FontCache.getBounds().width + mMargin;
-
-		mT_FontCache = new BitmapFontCache(mBitmapFontSmall);
-		mT_FontCache.setText("T", 0, 0);
-		mT_FontCache.setPosition(mLeft, mMargin + mT_FontCache.getBounds().height);
 
 	}
 

@@ -310,7 +310,7 @@ public class GL_UISizes implements SizeChangedEvent
 		WPSizes = new SizeF[]
 			{ new SizeF(13 * DPI, 13 * DPI), new SizeF(20 * DPI, 20 * DPI), new SizeF(32 * DPI, 32 * DPI) };
 
-		Bubble.setSize((float) 253.3333334 * DPI, (float) 105.333334 * DPI);
+		Bubble.setSize((float) 273.3333334 * DPI, (float) 113.333334 * DPI);
 		halfBubble = Bubble.width / 2;
 		bubbleCorrect.setSize((float) (6.6666667 * DPI), (float) 26.66667 * DPI);
 

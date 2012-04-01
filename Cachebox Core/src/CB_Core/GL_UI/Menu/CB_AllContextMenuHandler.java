@@ -85,13 +85,13 @@ public class CB_AllContextMenuHandler
 		icm.setItemClickListner(onItemClickListner);
 		MenuItem mi;
 
-		mi = icm.addItem(MI_DESCRIPTION, "Description", SpriteCache.BtnIcons.get(20));
+		mi = icm.addItem(MI_DESCRIPTION, "Description", SpriteCache.Icons.get(20));
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
 		mi = icm.addItem(MI_WAYPOINTS, "Waypoints", SpriteCache.BigIcons.get(16));
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
-		mi = icm.addItem(MI_SHOW_LOGS, "ShowLogs", SpriteCache.BtnIcons.get(21));
+		mi = icm.addItem(MI_SHOW_LOGS, "ShowLogs", SpriteCache.Icons.get(21));
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
 		mi = icm.addItem(MI_HINT, "hint");
@@ -100,10 +100,10 @@ public class CB_AllContextMenuHandler
 			boolean enabled = false;
 			if (!selectedCacheIsNull && (!Database.Hint(GlobalCore.SelectedCache()).equals(""))) enabled = true;
 			mi.setEnabled(enabled);
-			mi.setIcon(SpriteCache.BtnIcons.get(19));
+			mi.setIcon(SpriteCache.Icons.get(19));
 		}
 
-		mi = icm.addItem(MI_SPOILER, "spoiler", SpriteCache.BtnIcons.get(22));
+		mi = icm.addItem(MI_SPOILER, "spoiler", SpriteCache.Icons.get(22));
 		if (selectedCacheIsNull)
 		{
 			mi.setEnabled(GlobalCore.SelectedCache().SpoilerExists());
@@ -113,16 +113,16 @@ public class CB_AllContextMenuHandler
 			mi.setEnabled(false);
 		}
 
-		icm.addItem(MI_FIELDNOTES, "Fieldnotes", SpriteCache.BtnIcons.get(23));
-		mi = icm.addItem(MI_NOTES, "Notes", SpriteCache.BtnIcons.get(23));
+		icm.addItem(MI_FIELDNOTES, "Fieldnotes", SpriteCache.Icons.get(23));
+		mi = icm.addItem(MI_NOTES, "Notes", SpriteCache.Icons.get(23));
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
-		mi = icm.addItem(MI_SOLVER, "Solver", SpriteCache.BtnIcons.get(24));
+		mi = icm.addItem(MI_SOLVER, "Solver", SpriteCache.Icons.get(24));
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
 		if (Config.settings.hasCallPermission.getValue())
 		{
-			mi = icm.addItem(MI_JOKER, "joker", SpriteCache.BtnIcons.get(25));
+			mi = icm.addItem(MI_JOKER, "joker", SpriteCache.Icons.get(25));
 			// Menu Item Telefonjoker enabled / disabled abhänging von gcJoker MD5
 
 			if (mi != null)
@@ -151,8 +151,8 @@ public class CB_AllContextMenuHandler
 		mi.setChecked(MapView.that.GetAlignToCompass());
 
 		mi = icm.addItem(MI_SMOOTH_SCROLLING, "SmoothScrolling");
-		mi = icm.addItem(MI_SETTINGS, "settings", SpriteCache.BtnIcons.get(26));
-		mi = icm.addItem(MI_SEARCH, "search", SpriteCache.BtnIcons.get(27));
+		mi = icm.addItem(MI_SETTINGS, "settings", SpriteCache.Icons.get(26));
+		mi = icm.addItem(MI_SEARCH, "search", SpriteCache.Icons.get(27));
 		mi = icm.addItem(MI_MAPVIEW_VIEW, "view");
 		mi = icm.addItem(MI_TREC_REC, "TrackRec");
 

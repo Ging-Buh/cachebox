@@ -42,9 +42,10 @@ public class SpriteCache
 	public static ArrayList<Sprite> ZoomBtn = null;
 	public static Sprite ZoomValueBack = null;
 	public static ArrayList<Sprite> BigIcons = null;
-	public static ArrayList<Sprite> BtnIcons = null;
+	public static ArrayList<Sprite> Icons = null;
 	public static ArrayList<Sprite> ChkIcons = null;
 	public static ArrayList<Sprite> Dialog = null;
+	public static ArrayList<Sprite> SizesIcons = null;
 
 	public static ButtonSprites CacheList;
 	public static ButtonSprites Cache;
@@ -171,6 +172,13 @@ public class SpriteCache
 
 		ZoomValueBack = uiAtlas.createSprite("zoom_back");
 
+		SizesIcons = new ArrayList<Sprite>();
+		SizesIcons.add(atlas.createSprite("other"));
+		SizesIcons.add(atlas.createSprite("micro"));
+		SizesIcons.add(atlas.createSprite("small"));
+		SizesIcons.add(atlas.createSprite("regular"));
+		SizesIcons.add(atlas.createSprite("large"));
+
 		BigIcons = new ArrayList<Sprite>();
 		BigIcons.add(iconAtlas.createSprite("big0icon"));
 		BigIcons.add(iconAtlas.createSprite("big1icon"));
@@ -192,46 +200,47 @@ public class SpriteCache
 		BigIcons.add(iconAtlas.createSprite("big17icon"));
 		BigIcons.add(iconAtlas.createSprite("big18icon"));
 		BigIcons.add(iconAtlas.createSprite("log0icon"));
-		BigIcons.add(iconAtlas.createSprite("star"));
+		BigIcons.add(iconAtlas.createSprite("my_parking"));
 		BigIcons.add(iconAtlas.createSprite("big19icon"));
 
-		BtnIcons = new ArrayList<Sprite>();
-		BtnIcons.add(iconAtlas.createSprite("day_btn_default_normal"));// 0
-		BtnIcons.add(iconAtlas.createSprite("button"));// 1
-		BtnIcons.add(iconAtlas.createSprite("doc_icon"));// 2
-		BtnIcons.add(iconAtlas.createSprite("big_16"));// 3
-		BtnIcons.add(iconAtlas.createSprite("list_icon")); // 4 LogView braucht noch ein Icon
-		BtnIcons.add(iconAtlas.createSprite("map")); // 5
-		BtnIcons.add(iconAtlas.createSprite("compass"));// 6
-		BtnIcons.add(iconAtlas.createSprite("cache_list_icon"));// 7
-		BtnIcons.add(iconAtlas.createSprite("track_list_icon")); // 8
-		BtnIcons.add(iconAtlas.createSprite("log10"));// 9
-		BtnIcons.add(iconAtlas.createSprite("video_icon")); // 10
-		BtnIcons.add(iconAtlas.createSprite("voice_rec_icon"));// 11
-		BtnIcons.add(iconAtlas.createSprite("lupe")); // 12
-		BtnIcons.add(iconAtlas.createSprite("filter")); // 13
-		BtnIcons.add(iconAtlas.createSprite("lock_icon"));// 14
-		BtnIcons.add(iconAtlas.createSprite("auto_sort_on_icon")); // 15
-		BtnIcons.add(iconAtlas.createSprite("auto_sort_off_icon")); // 16
-		BtnIcons.add(iconAtlas.createSprite("solver_icon")); // 17
-		BtnIcons.add(iconAtlas.createSprite("images_icon")); // 18
-		BtnIcons.add(iconAtlas.createSprite("hint_icon")); // 19
-		BtnIcons.add(iconAtlas.createSprite("doc_icon")); // 20
-		BtnIcons.add(iconAtlas.createSprite("list_icon")); // 21
-		BtnIcons.add(iconAtlas.createSprite("images_icon")); // 22
-		BtnIcons.add(iconAtlas.createSprite("note_icon")); // 23
-		BtnIcons.add(iconAtlas.createSprite("solver_icon")); // 24
-		BtnIcons.add(iconAtlas.createSprite("joker_phone")); // 25
-		BtnIcons.add(iconAtlas.createSprite("settings")); // 26
-		BtnIcons.add(iconAtlas.createSprite("lupe")); // 27
-		BtnIcons.add(iconAtlas.createSprite("delete_icon")); // 28
-		BtnIcons.add(iconAtlas.createSprite("voice_rec_icon")); // 29
-		BtnIcons.add(iconAtlas.createSprite("satellite")); // 30
-		BtnIcons.add(iconAtlas.createSprite("close_icon")); // 31
-		BtnIcons.add(iconAtlas.createSprite("info_icon")); // 32
-		BtnIcons.add(iconAtlas.createSprite("warning_icon")); // 33
-		BtnIcons.add(iconAtlas.createSprite("help_icon")); // 34
-		BtnIcons.add(iconAtlas.createSprite("day_gc_live_icon")); // 35
+		Icons = new ArrayList<Sprite>();
+		Icons.add(iconAtlas.createSprite("day_btn_default_normal"));// 0
+		Icons.add(iconAtlas.createSprite("button"));// 1
+		Icons.add(iconAtlas.createSprite("doc_icon"));// 2
+		Icons.add(iconAtlas.createSprite("big_16"));// 3
+		Icons.add(iconAtlas.createSprite("list_icon")); // 4 LogView braucht noch ein Icon
+		Icons.add(iconAtlas.createSprite("map")); // 5
+		Icons.add(iconAtlas.createSprite("compass"));// 6
+		Icons.add(iconAtlas.createSprite("cache_list_icon"));// 7
+		Icons.add(iconAtlas.createSprite("track_list_icon")); // 8
+		Icons.add(iconAtlas.createSprite("log10"));// 9
+		Icons.add(iconAtlas.createSprite("video_icon")); // 10
+		Icons.add(iconAtlas.createSprite("voice_rec_icon"));// 11
+		Icons.add(iconAtlas.createSprite("lupe")); // 12
+		Icons.add(iconAtlas.createSprite("filter")); // 13
+		Icons.add(iconAtlas.createSprite("lock_icon"));// 14
+		Icons.add(iconAtlas.createSprite("auto_sort_on_icon")); // 15
+		Icons.add(iconAtlas.createSprite("auto_sort_off_icon")); // 16
+		Icons.add(iconAtlas.createSprite("solver_icon")); // 17
+		Icons.add(iconAtlas.createSprite("images_icon")); // 18
+		Icons.add(iconAtlas.createSprite("hint_icon")); // 19
+		Icons.add(iconAtlas.createSprite("doc_icon")); // 20
+		Icons.add(iconAtlas.createSprite("list_icon")); // 21
+		Icons.add(iconAtlas.createSprite("images_icon")); // 22
+		Icons.add(iconAtlas.createSprite("note_icon")); // 23
+		Icons.add(iconAtlas.createSprite("solver_icon")); // 24
+		Icons.add(iconAtlas.createSprite("joker_phone")); // 25
+		Icons.add(iconAtlas.createSprite("settings")); // 26
+		Icons.add(iconAtlas.createSprite("lupe")); // 27
+		Icons.add(iconAtlas.createSprite("delete_icon")); // 28
+		Icons.add(iconAtlas.createSprite("voice_rec_icon")); // 29
+		Icons.add(iconAtlas.createSprite("satellite")); // 30
+		Icons.add(iconAtlas.createSprite("close_icon")); // 31
+		Icons.add(iconAtlas.createSprite("info_icon")); // 32
+		Icons.add(iconAtlas.createSprite("warning_icon")); // 33
+		Icons.add(iconAtlas.createSprite("help_icon")); // 34
+		Icons.add(iconAtlas.createSprite("day_gc_live_icon")); // 35
+		Icons.add(iconAtlas.createSprite("tb")); // 36
 
 		loadButtnSprites();
 

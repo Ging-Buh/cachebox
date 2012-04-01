@@ -194,37 +194,37 @@ public class GL_MsgBox extends Dialog
 		switch (msgIcon.ordinal())
 		{
 		case 0:
-			icon = SpriteCache.BtnIcons.get(32);
+			icon = SpriteCache.Icons.get(32);
 			break;
 		case 1:
-			icon = SpriteCache.BtnIcons.get(31);
+			icon = SpriteCache.Icons.get(31);
 			break;
 		case 2:
-			icon = SpriteCache.BtnIcons.get(33);
+			icon = SpriteCache.Icons.get(33);
 			break;
 		case 3:
-			icon = SpriteCache.BtnIcons.get(31);
+			icon = SpriteCache.Icons.get(31);
 			break;
 		case 4:
-			icon = SpriteCache.BtnIcons.get(32);
+			icon = SpriteCache.Icons.get(32);
 			break;
 		case 5:
 			icon = null;
 			break;
 		case 6:
-			icon = SpriteCache.BtnIcons.get(34);
+			icon = SpriteCache.Icons.get(34);
 			break;
 		case 7:
-			icon = SpriteCache.BtnIcons.get(31);
+			icon = SpriteCache.Icons.get(31);
 			break;
 		case 8:
-			icon = SpriteCache.BtnIcons.get(33);
+			icon = SpriteCache.Icons.get(33);
 			break;
 		case 9:
-			icon = SpriteCache.BtnIcons.get(35);
+			icon = SpriteCache.Icons.get(35);
 			break;
 		case 10:
-			icon = SpriteCache.BtnIcons.get(35);
+			icon = SpriteCache.Icons.get(35);
 			break;
 
 		default:
