@@ -4,11 +4,16 @@ import java.util.ArrayList;
 
 import CB_Core.GL_UI.ButtonSprites;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.GL_View_Base.OnClickListener;
+import CB_Core.GL_UI.GL_View_Base.OnLongClickListener;
 import CB_Core.GL_UI.Controls.Button;
-import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_Core.GL_UI.Main.Actions.CB_Action;
+import CB_Core.GL_UI.Menu.CB_AllContextMenuHandler;
+import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
 
-public class CB_Button extends Button
+public class CB_Button extends Button implements OnClickListener, OnLongClickListener
 {
 
 	ArrayList<CB_ActionButton> mButtonActions;
@@ -17,24 +22,24 @@ public class CB_Button extends Button
 	{
 		super(rec, Name);
 		mButtonActions = ButtonActions;
-		setOnClickListner();
-		setOnLongClickListner();
+		this.setOnClickListener(this);
+		this.setOnLongClickListener(this);
 	}
 
 	public CB_Button(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 		mButtonActions = new ArrayList<CB_ActionButton>();
-		setOnClickListner();
-		setOnLongClickListner();
+		this.setOnClickListener(this);
+		this.setOnLongClickListener(this);
 	}
 
 	public CB_Button(CB_RectF rec, String Name, ButtonSprites sprites)
 	{
 		super(rec, Name);
 		mButtonActions = new ArrayList<CB_ActionButton>();
-		setOnClickListner();
-		setOnLongClickListner();
+		this.setOnClickListener(this);
+		this.setOnLongClickListener(this);
 		this.setButtonSprites(sprites);
 	}
 
@@ -49,32 +54,73 @@ public class CB_Button extends Button
 
 	}
 
-	private void setOnLongClickListner()
+	@Override
+	public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
 	{
-		this.setOnLongClickListener(new OnLongClickListener()
-		{
+		// GL_MsgBox.Show("Button " + Me.getName() + " recivet a LongClick Event");
+		// Wenn diesem Button mehrere Actions zugeordnet sind dann wird nach einem Lang-Click ein Menü angezeigt aus dem eine dieser
+		// Actions gewählt werden kann
 
-			@Override
-			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+		if (mButtonActions.size() > 1)
+		{
+			Menu cm = new Menu(CB_AllContextMenuHandler.MENU_REC, "Name");
+			cm.setItemClickListner(new OnClickListener()
 			{
-				GL_MsgBox.Show("Button " + Me.getName() + " recivet a LongClick Event");
-				return false;
+				@Override
+				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+				{
+					for (CB_ActionButton ba : mButtonActions)
+					{
+						CB_Action action = ba.getAction();
+						if (action == null) continue;
+						int mId = ((MenuItem) v).getMenuItemId();
+						if (mId == action.getId())
+						{
+							// Action ausführen
+							action.Execute();
+							break;
+						}
+					}
+					return true;
+				}
+			});
+			for (CB_ActionButton ba : mButtonActions)
+			{
+				CB_Action action = ba.getAction();
+				if (action == null) continue;
+				MenuItem mi = cm.addItem(action.getId(), action.getName());
+				mi.setEnabled(action.getEnabled());
 			}
-		});
+			cm.show();
+		}
+		else if (mButtonActions.size() == 1)
+		{
+			// nur eine Action dem Button zugeordnet -> diese Action gleich ausführen
+			CB_ActionButton ba = mButtonActions.get(0);
+			CB_Action action = ba.getAction();
+			if (action != null) action.Execute();
+		}
+
+		return true;
 	}
 
-	private void setOnClickListner()
+	@Override
+	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 	{
-		this.setOnClickListener(new OnClickListener()
+		// Einfacher Click -> Default Action starten
+		for (CB_ActionButton ba : mButtonActions)
 		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			if (ba.isDefaultAction())
 			{
-				GL_MsgBox.Show("Button " + Me.getName() + " recivet a Click Event");
-				return true;
+				CB_Action action = ba.getAction();
+				if (action != null)
+				{
+					action.Execute();
+					break;
+				}
 			}
-		});
+		}
+		return true;
 	}
 
 }
