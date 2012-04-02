@@ -8,7 +8,6 @@ import CB_Core.Enums.LogTypes;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
@@ -81,7 +80,7 @@ public class CacheInfo extends CB_View_Base
 	private BitmapFontCache mT_FontCache;
 	private BitmapFontCache mTB_FontCache;
 
-	private Label lblTextInfo;
+	private BitmapFontCache mInfo_FontCache;
 
 	public CacheInfo(SizeF size, CharSequence Name, Cache value)
 	{
@@ -118,6 +117,7 @@ public class CacheInfo extends CB_View_Base
 		if (mDSprite != null) mDSprite.draw(batch);
 		if (mTSprite != null) mTSprite.draw(batch);
 		if (mTBSprite != null) mTBSprite.draw(batch);
+		if (mInfo_FontCache != null) mInfo_FontCache.draw(batch);
 	}
 
 	private void requestLayout()
@@ -204,12 +204,6 @@ public class CacheInfo extends CB_View_Base
 		mLeft += starHeight;
 
 		Vector2 mSpriteCachePos = new Vector2(mLeft + mMargin, height - mTop - mIconSize);
-		CB_RectF lblRec = new CB_RectF(mSpriteCachePos.x + mIconSize + mMargin, 0, this.width - mSpriteCachePos.x - mIconSize
-				- mCompasswidth, height - mTop);
-		lblTextInfo = new Label(lblRec, "CacheInfoText");
-		lblTextInfo.setFont(mBitmapFont);
-		lblTextInfo.setVAlignment(VAlignment.TOP);
-		this.addChild(lblTextInfo);
 
 		{// Text zusammensetzen
 
@@ -228,7 +222,9 @@ public class CacheInfo extends CB_View_Base
 				}
 			}
 
-			lblTextInfo.setMultiLineText(text.toString());
+			mInfo_FontCache = new BitmapFontCache(mBitmapFont);
+			mInfo_FontCache.setMultiLineText(text.toString(), mSpriteCachePos.x + mIconSize + mMargin, this.height - mMargin);
+
 		}
 
 		{ // Icon Sprite erstellen
