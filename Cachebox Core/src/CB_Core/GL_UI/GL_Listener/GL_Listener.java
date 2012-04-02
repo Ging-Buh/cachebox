@@ -36,6 +36,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class GL_Listener implements ApplicationListener // , InputProcessor
 {
+
 	public static GL_Listener_Interface listenerInterface;
 	public static GL_Listener glListener;
 	// # private Member
@@ -47,6 +48,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	private long mLongClickTime = 0;
 
+	public static final int MAX_KINETIC_SCROLL_DISTANCE = 100;
 	public static final int FRAME_RATE_IDLE = 500;
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 15;
@@ -545,6 +547,11 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		return (int) Math.round(Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)));
 	}
 
+	private int distance(int x1, int y1, int x2, int y2)
+	{
+		return (int) Math.round(Math.sqrt(Math.pow(x1 - x1, 2) + Math.pow(y1 - y2, 2)));
+	}
+
 	// Zwischenspeicher für die touchDown Positionen der einzelnen Finger
 	private SortedMap<Integer, TouchDownPointer> touchDownPos = new TreeMap<Integer, TouchDownPointer>();
 
@@ -701,7 +708,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			long aktTs = System.currentTimeMillis();
 			float faktor = (float) (aktTs - startTs) / (float) (endTs - startTs);
 			// Logger.LogCat("Faktor: " + faktor);
-			faktor = com.badlogic.gdx.math.Interpolation.exp10Out.apply(faktor);
+			faktor = com.badlogic.gdx.math.Interpolation.pow3Out.apply(faktor);
 			// Logger.LogCat("Faktor2: " + faktor);
 			if (faktor >= 1)
 			{
@@ -711,6 +718,23 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 			result.x = (int) (diffX / anzPoints * (1 - faktor)) + lastX;
 			result.y = (int) (diffY / anzPoints * (1 - faktor)) + lastY;
+
+			if ((result.x == lastX) && (result.y == lastY))
+			{
+				// wenn keine Nennenswerten Änderungen mehr gemacht werden dann einfach auf fertig schalten
+				fertig = true;
+				faktor = 1;
+				result.x = (int) (diffX / anzPoints * (1 - faktor)) + lastX;
+				result.y = (int) (diffY / anzPoints * (1 - faktor)) + lastY;
+			}
+			double abstand = distance(lastX, lastY, result.x, result.y);
+			if (abstand > MAX_KINETIC_SCROLL_DISTANCE)
+			{
+				double fkt = MAX_KINETIC_SCROLL_DISTANCE / abstand;
+				result.x = (int) ((result.x - lastX) * fkt + lastX);
+				result.y = (int) ((result.y - lastY) * fkt + lastY);
+			}
+
 			lastX = result.x;
 			lastY = result.y;
 			return result;
