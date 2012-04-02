@@ -224,11 +224,11 @@ public abstract class GL_View_Base extends CB_RectF
 	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
 	{
 
-		// if (thisInvalidate)
-		// {
-		myParentInfo = parentInfo.cpy();
-		CalcMyInfoForChild();
-		// }
+		if (thisInvalidate)
+		{
+			myParentInfo = parentInfo.cpy();
+			CalcMyInfoForChild();
+		}
 
 		if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 		Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth(),
@@ -374,7 +374,7 @@ public abstract class GL_View_Base extends CB_RectF
 		thisInvalidate = false;
 
 		// if (debug)
-		writeDebug();
+		// writeDebug();
 	}
 
 	public void invalidate()

@@ -12,7 +12,7 @@ import CB_Core.Math.devicesSizes;
 
 class Ex_1 {
 	public static void main(String[] args) {
-		Gui screen = new Gui("Device Luncher");
+		Gui screen = new Gui("Device Launcher");
 		screen.setSize(250, 500);
 		screen.setVisible(true);
 	}
