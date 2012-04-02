@@ -5,6 +5,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowHint;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowMap;
 import CB_Core.GL_UI.Views.CacheListView;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Math.CB_RectF;
@@ -14,7 +15,6 @@ public class TabMainView extends MainViewBase
 {
 	private CB_Action actionTest;
 	private CB_Action actionTest2;
-	private CB_Action_ShowHint actionShowHint;
 
 	public TabMainView(float X, float Y, float Width, float Height, String Name)
 	{
@@ -28,9 +28,8 @@ public class TabMainView extends MainViewBase
 	protected void Initial()
 	{
 		// TODO Auto-generated method stub
-		actionTest = new CB_ActionCommand("Test", 1);
-		actionTest2 = new CB_ActionCommand("Test2", 2);
-		actionShowHint = new CB_Action_ShowHint(1001);
+		actionTest = new CB_ActionCommand("Test", CB_Action.AID_TEST1);
+		actionTest2 = new CB_ActionCommand("Test2", CB_Action.AID_TEST1);
 
 		if (GlobalCore.isTab) addTabletTabs();
 		else
@@ -110,7 +109,7 @@ public class TabMainView extends MainViewBase
 		// Actions den Buttons zuweisen
 		btn1.addAction(new CB_ActionButton(actionTest, true));
 		btn1.addAction(new CB_ActionButton(actionTest2, false));
-		btn1.addAction(new CB_ActionButton(actionShowHint, false));
+		btn1.addAction(new CB_ActionButton(new CB_Action_ShowHint(), false));
 	}
 
 	private void addRightForTabletsTab()
@@ -143,7 +142,11 @@ public class TabMainView extends MainViewBase
 
 		Tab.ShowView(new MapView(this, "MapView"));
 
-		btn1.addAction(new CB_ActionButton(actionShowHint, true));
+		// Actions den Buttons zuweisen
+		btn1.addAction(new CB_ActionButton(new CB_Action_ShowHint(), false));
+
+		btn1.addAction(new CB_ActionButton(new CB_Action_ShowMap(), true));
+
 	}
 
 }
