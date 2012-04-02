@@ -1,11 +1,12 @@
 package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.GL_UI.Views.MapView;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_ShowMap extends CB_Action
+public class CB_Action_ShowMap extends CB_Action_ShowView
 {
 
 	public CB_Action_ShowMap()
@@ -16,7 +17,9 @@ public class CB_Action_ShowMap extends CB_Action
 	@Override
 	public void Execute()
 	{
-		GL_MsgBox.Show("SHOW Map");
+		if ((TabMainView.mapView == null) && (tabMainView != null)) TabMainView.mapView = new MapView(tabMainView, "MapView");
+
+		if ((TabMainView.mapView != null) && (tab != null)) tab.ShowView(TabMainView.mapView);
 	}
 
 	@Override

@@ -4,8 +4,10 @@ import CB_Core.GlobalCore;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_ActionCommand;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCacheList;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowHint;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowMap;
+import CB_Core.GL_UI.Views.AboutView;
 import CB_Core.GL_UI.Views.CacheListView;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Math.CB_RectF;
@@ -15,6 +17,12 @@ public class TabMainView extends MainViewBase
 {
 	private CB_Action actionTest;
 	private CB_Action actionTest2;
+	private CB_Action_ShowHint actionShowHint;
+	private CB_Action_ShowMap actionShowMap;
+	private CB_Action_ShowCacheList actionShowCacheList;
+
+	public static MapView mapView = null;
+	public static CacheListView cacheListView = null;
 
 	public TabMainView(float X, float Y, float Width, float Height, String Name)
 	{
@@ -30,6 +38,10 @@ public class TabMainView extends MainViewBase
 		// TODO Auto-generated method stub
 		actionTest = new CB_ActionCommand("Test", CB_Action.AID_TEST1);
 		actionTest2 = new CB_ActionCommand("Test2", CB_Action.AID_TEST1);
+
+		actionShowMap = new CB_Action_ShowMap();
+		actionShowHint = new CB_Action_ShowHint();
+		actionShowCacheList = new CB_Action_ShowCacheList();
 
 		if (GlobalCore.isTab) addTabletTabs();
 		else
@@ -66,8 +78,18 @@ public class TabMainView extends MainViewBase
 
 		this.addChild(Tab);
 
-		// Tab.ShowView(new AboutView(this, "AboutView"));
-		Tab.ShowView(new CacheListView(this, "CacheListView"));
+		// Tab den entsprechneden Actions zuweisen
+		actionShowMap.setTab(this, Tab);
+		actionShowCacheList.setTab(this, Tab);
+		// Actions den Buttons zuweisen
+		btn1.addAction(new CB_ActionButton(actionShowCacheList, true));
+		btn1.addAction(new CB_ActionButton(actionShowHint, false));
+
+		btn3.addAction(new CB_ActionButton(actionShowMap, true));
+
+		Tab.ShowView(new AboutView(this, "AboutView"));
+		// Tab.ShowView(new CacheListView(this, "CacheListView"));
+		// Tab.ShowView(new MapView(this, "MapView"));
 
 	}
 
@@ -104,12 +126,19 @@ public class TabMainView extends MainViewBase
 
 		this.addChild(Tab);
 		// Tab.ShowView(new AboutView(this, "AboutView"));
-		Tab.ShowView(new CacheListView(this, "CacheListView"));
+
+		if (cacheListView == null)
+		{
+			cacheListView = new CacheListView(this, "CacheListView");
+		}
+		Tab.ShowView(cacheListView);
+
+		// Tab den entsprechneden Actions zuweisen
+		actionShowCacheList.setTab(this, Tab);
 
 		// Actions den Buttons zuweisen
-		btn1.addAction(new CB_ActionButton(actionTest, true));
-		btn1.addAction(new CB_ActionButton(actionTest2, false));
-		btn1.addAction(new CB_ActionButton(new CB_Action_ShowHint(), false));
+		btn1.addAction(new CB_ActionButton(actionShowCacheList, true));
+		btn1.addAction(new CB_ActionButton(actionShowHint, false));
 	}
 
 	private void addRightForTabletsTab()
@@ -140,13 +169,19 @@ public class TabMainView extends MainViewBase
 
 		this.addChild(Tab);
 
-		Tab.ShowView(new MapView(this, "MapView"));
+		if (mapView == null)
+		{
+			mapView = new MapView(this, "MapView");
+		}
+		Tab.ShowView(mapView);
 
+		// Tab den entsprechneden Actions zuweisen
+		actionShowMap.setTab(this, Tab);
+
+		// Tab den entsprechneden Actions zuweisen
+		actionShowMap.setTab(this, Tab);
 		// Actions den Buttons zuweisen
-		btn1.addAction(new CB_ActionButton(new CB_Action_ShowHint(), false));
-
-		btn1.addAction(new CB_ActionButton(new CB_Action_ShowMap(), true));
-
+		btn3.addAction(new CB_ActionButton(actionShowMap, true));
 	}
 
 }
