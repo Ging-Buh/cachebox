@@ -36,11 +36,11 @@ public abstract class GL_View_Base extends CB_RectF
 
 	// # private Member
 
-	private boolean hasBackground = false;
-	private Sprite Background;
+	protected boolean hasBackground = false;
+	protected Sprite Background;
 	protected CharSequence name = "";
-	private boolean hasNinePatchBackground = false;
-	private NinePatch nineBackground;
+	protected boolean hasNinePatchBackground = false;
+	protected NinePatch nineBackground;
 
 	protected GL_View_Base Me;
 

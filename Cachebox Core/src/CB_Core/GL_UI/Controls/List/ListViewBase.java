@@ -11,13 +11,14 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class ListViewBase extends CB_View_Base
 {
-
+	protected float mLastDragedDistance = 0;
 	private float mAnimationTarget = 0;
 	private Timer mAnimationTimer;
 	private long ANIMATION_TICK = 50;
@@ -186,6 +187,7 @@ public abstract class ListViewBase extends CB_View_Base
 	BitmapFontCache dDraged;
 	BitmapFontCache dFirstIndex;
 	BitmapFontCache dChildCount;
+	BitmapFontCache dFPS;
 
 	@Override
 	protected void render(SpriteBatch batch)
@@ -202,7 +204,7 @@ public abstract class ListViewBase extends CB_View_Base
 	{
 		super.renderChilds(batch, parentInfo);
 
-		if (true) return;
+		if (false) return;
 		// schreibe Debug
 		if (dPosy == null)
 		{
@@ -210,12 +212,15 @@ public abstract class ListViewBase extends CB_View_Base
 			dDraged = new BitmapFontCache(Fonts.getSmall());
 			dFirstIndex = new BitmapFontCache(Fonts.getSmall());
 			dChildCount = new BitmapFontCache(Fonts.getSmall());
+			dFPS = new BitmapFontCache(Fonts.getSmall());
 		}
+
+		dFPS.setText("FPS:  " + Gdx.graphics.getFramesPerSecond(), 220, 140);
 
 		dChildCount.setText("ChildCount: " + childs.size(), 220, 115);
 
 		dPosy.setText("PosY= " + mPos, 220, 100);
-		dDraged.setText("Draged " + mDraged, 220, 85);
+		dDraged.setText("Draged " + mLastDragedDistance, 220, 85);
 		dFirstIndex.setText("Index " + mFirstIndex + "-" + mLastIndex, 220, 70);
 
 		batch.begin();
@@ -226,6 +231,7 @@ public abstract class ListViewBase extends CB_View_Base
 		dDraged.draw(batch);
 		dFirstIndex.draw(batch);
 		dChildCount.draw(batch);
+		dFPS.draw(batch);
 
 		batch.end();
 	}
@@ -245,7 +251,7 @@ public abstract class ListViewBase extends CB_View_Base
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
-		isTouch = true;
+		// isTouch = true;
 		return true;
 	}
 

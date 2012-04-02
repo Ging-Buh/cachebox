@@ -18,9 +18,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 public class Fonts
 {
 
-	private static int FONT_SIZE_BIG = 20;
-	private static int FONT_SIZE_NORMAL = 17;
-	private static int FONT_SIZE_SMALL = 15;
+	private static int FONT_SIZE_BIG = 18;
+	private static int FONT_SIZE_NORMAL = 15;
+	private static int FONT_SIZE_SMALL = 13;
 
 	private static BitmapFont big;
 	private static BitmapFont normal;

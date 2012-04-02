@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Views;
 
+import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.CacheInfo;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
@@ -8,12 +9,56 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class CacheListViewItem extends ListViewItemBase
 {
 
-	protected CacheInfo info;
+	/**
+	 * mit ausgeschaltener scissor berechnung
+	 * 
+	 * @author Longri
+	 */
+	private class extendedCacheInfo extends CacheInfo
+	{
+
+		public extendedCacheInfo(CB_RectF rec, String Name, Cache value)
+		{
+			super(rec, Name, value);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
+		{
+			if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
+
+			batch.begin();
+			if (hasBackground || hasNinePatchBackground)
+			{
+
+				if (hasNinePatchBackground)
+				{
+					nineBackground.draw(batch, 0, 0, width, height);
+				}
+				else
+				{
+					batch.draw(Background, 0, 0, width, height);
+				}
+
+			}
+
+			this.render(batch);
+			batch.end();
+
+			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
+		}
+	}
+
+	protected extendedCacheInfo info;
 	protected boolean isPressed = false;
 
 	// protected Label mDebugIndex;
@@ -22,7 +67,7 @@ public class CacheListViewItem extends ListViewItemBase
 	{
 		super(rec, Index, cache.Name);
 
-		info = new CacheInfo(UiSizes.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
+		info = new extendedCacheInfo(UiSizes.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
 		info.setZeroPos();
 		setBackground();
 		this.addChild(info);

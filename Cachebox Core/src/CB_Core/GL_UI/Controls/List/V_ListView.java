@@ -21,7 +21,7 @@ public class V_ListView extends ListViewBase
 	protected void RenderThreadSetPos(float value, boolean Kinetic)
 	{
 		float distance = mPos - value;
-
+		mLastDragedDistance = distance;
 		clearList.clear();
 
 		// alle childs verschieben
