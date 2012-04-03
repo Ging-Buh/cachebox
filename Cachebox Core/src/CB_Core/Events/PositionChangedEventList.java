@@ -3,6 +3,7 @@ package CB_Core.Events;
 import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Types.Locator;
 
 public class PositionChangedEventList
@@ -26,6 +27,9 @@ public class PositionChangedEventList
 		{
 			event.PositionChanged(locator);
 		}
+
+		// alle events abgearbeitet, jetzt kann die GL_View einmal Rendern
+		GL_Listener.glListener.renderOnce(null);
 	}
 
 	public static void Orientation(float heading)
@@ -34,5 +38,7 @@ public class PositionChangedEventList
 		{
 			event.OrientationChanged(heading);
 		}
+		// alle events abgearbeitet, jetzt kann die GL_View einmal Rendern
+		GL_Listener.glListener.renderOnce(null);
 	}
 }

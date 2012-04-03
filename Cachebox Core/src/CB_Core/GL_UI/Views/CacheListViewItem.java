@@ -122,7 +122,7 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, mCache.Latitude(), mCache.Longitude());
 			double cacheBearing = bearing - heading;
 			setDistanceString(UnitFormatter.DistanceString(mCache.Distance(false)));
-			arrow.setRotation((float) cacheBearing);
+			arrow.setRotation((float) -cacheBearing);
 			if (arrow.getColor() == DISABLE_COLOR)
 			{
 				float size = this.height / 2.3f;
@@ -142,7 +142,7 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		// super.render(batch);
+		super.render(batch);
 
 		if (arrow != null) arrow.draw(batch);
 		if (distance != null) distance.draw(batch);
