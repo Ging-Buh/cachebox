@@ -8,9 +8,9 @@ public class CB_Action_ShowView extends CB_Action
 	protected CB_TabView tab;
 	protected TabMainView tabMainView;
 
-	public CB_Action_ShowView(String name, int id)
+	public CB_Action_ShowView(String translationId, int id)
 	{
-		super(name, id);
+		super(translationId, id);
 		tab = null;
 		tabMainView = null;
 	}

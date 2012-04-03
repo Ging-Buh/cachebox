@@ -218,7 +218,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu, Positio
 		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
 		{
 			Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
-			double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
+			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
 			if (!align) heading = 0;
 			// FillArrow: Luftfahrt
 			// Bearing: Luftfahrt
@@ -248,7 +248,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu, Positio
 		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
 		{
 			Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
-			double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
+			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
 			if (!align) heading = 0;
 			// FillArrow: Luftfahrt
 			// Bearing: Luftfahrt

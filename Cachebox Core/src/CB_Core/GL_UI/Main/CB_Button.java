@@ -77,7 +77,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 						if (mId == action.getId())
 						{
 							// Action ausführen
-							action.Execute();
+							action.CallExecute();
 							break;
 						}
 					}
@@ -101,7 +101,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 			// nur eine Action dem Button zugeordnet -> diese Action gleich ausführen
 			CB_ActionButton ba = mButtonActions.get(0);
 			CB_Action action = ba.getAction();
-			if (action != null) action.Execute();
+			if (action != null) action.CallExecute();
 		}
 
 		return true;
@@ -118,7 +118,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 				CB_Action action = ba.getAction();
 				if (action != null)
 				{
-					action.Execute();
+					action.CallExecute();
 					break;
 				}
 			}

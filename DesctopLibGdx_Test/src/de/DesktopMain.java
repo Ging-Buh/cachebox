@@ -33,7 +33,7 @@ public class DesktopMain {
 		
 	
 
-	public static void test(devicesSizes ui) {
+	public static void test(devicesSizes ui,boolean debug,boolean scissor) {
 		DesktopLogger iLogger = new DesktopLogger();
 
 
@@ -48,8 +48,8 @@ public class DesktopMain {
 				ui.Window.height);
 		
 	
-//		GL_View_Base.debug = true;
-//		GL_View_Base.disableScissor= true;
+		GL_View_Base.debug = debug;
+		GL_View_Base.disableScissor= scissor;
 		
 		
 		int sw = ui.Window.height > ui.Window.width ? ui.Window.width
@@ -100,7 +100,7 @@ public class DesktopMain {
 				Coordinate pos = new Coordinate("N 52 27.130  E 13 33.117");
 				Locator Loc = new Locator();
 				
-				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, 175, true, 45, 95);
+				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, 175, true, 45, 95,"DesctopTimer");
 				PositionChangedEventList.PositionChanged(Loc);
 				setBearing();
 			}
@@ -120,7 +120,7 @@ public class DesktopMain {
 				Coordinate pos = new Coordinate("N 52 27.130  E 13 33.117");
 				Locator Loc = new Locator();
 				Bearing+=5;
-				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, 175, true, Bearing, 95);
+				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, 175, true, Bearing, 95,"DesctopTimer");
 				PositionChangedEventList.PositionChanged(Loc);
 				setBearing();
 			}

@@ -11,8 +11,10 @@ public class Locator
 	private float bearing = 0;
 	private float altitude = 0;
 
+	private String ProviderString = "?";
+
 	public void setLocation(double latitude, double longitude, float accuracy, boolean hasSpeed, float speed, boolean hasBearing,
-			float bearing, double altitude)
+			float bearing, double altitude, String providerString)
 	{
 		synchronized (this)
 		{
@@ -22,13 +24,29 @@ public class Locator
 			this.hasBearing = hasBearing;
 			this.bearing = bearing;
 			this.altitude = (float) altitude;
+			this.ProviderString = providerString;
 		}
 	}
 
 	// / <summary>
 	// / Aktuelle Position des Empfängers
 	// / </summary>
-	public Coordinate Position = new Coordinate();
+	private Coordinate Position = new Coordinate();
+
+	public String ProviderString()
+	{
+		return ProviderString;
+	}
+
+	public Coordinate getLocation()
+	{
+		return Position;
+	}
+
+	public boolean isGPSprovided()
+	{
+		return (ProviderString.equalsIgnoreCase("GPS"));
+	}
 
 	// / <summary>
 	// / Aktueller Winkel des mag. Kompass

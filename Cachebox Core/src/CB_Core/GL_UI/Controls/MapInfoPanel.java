@@ -41,6 +41,8 @@ public class MapInfoPanel extends CB_View_Base
 
 	public void setSpeed(String speed)
 	{
+
+		if (lblSpeed == null) return;
 		if (lblSpeed.getText().equals(speed)) return;
 
 		lblSpeed.setText(speed);

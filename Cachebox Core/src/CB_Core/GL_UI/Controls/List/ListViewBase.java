@@ -6,9 +6,11 @@ import java.util.TimerTask;
 
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
+import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.Gdx;
@@ -97,11 +99,32 @@ public abstract class ListViewBase extends CB_View_Base
 	public void setBaseAdapter(Adapter adapter)
 	{
 		mBaseAdapter = adapter;
-		addVisibleItems(false);
 
-		// set first and Last Item Size
-		firstItemSize = mBaseAdapter.getItemSize(0);
-		lastItemSize = mBaseAdapter.getItemSize(mBaseAdapter.getCount() - 1);
+		mAddeedIndexList.clear();
+		if (mCanDispose)
+		{
+			synchronized (childs)
+			{
+				for (GL_View_Base v : childs)
+				{
+					v.dispose();
+				}
+			}
+		}
+		this.removeChilds();
+
+		if (mBaseAdapter != null)
+		{
+			calcDefaultPosList();
+
+			// Items neu laden
+			reloadItems();
+
+			// set first and Last Item Size
+			firstItemSize = mBaseAdapter.getItemSize(0);
+			lastItemSize = mBaseAdapter.getItemSize(mBaseAdapter.getCount() - 1);
+		}
+
 	}
 
 	/**
@@ -204,7 +227,7 @@ public abstract class ListViewBase extends CB_View_Base
 	{
 		super.renderChilds(batch, parentInfo);
 
-		if (false) return;
+		if (!debug) return;
 		// schreibe Debug
 		if (dPosy == null)
 		{
@@ -257,12 +280,14 @@ public abstract class ListViewBase extends CB_View_Base
 
 	protected void startAnimationtoTop()
 	{
+		if (mBaseAdapter == null) return;
 		mBottomAnimation = false;
 		scrollTo(0);
 	}
 
 	private void startAnimationToBottom()
 	{
+		if (mBaseAdapter == null) return;
 		mBottomAnimation = true;
 		scrollTo(mAllSize);
 	}
@@ -270,7 +295,7 @@ public abstract class ListViewBase extends CB_View_Base
 	protected void scrollTo(float Pos)
 	{
 
-		// Logger.LogCat("Scroll TO:" + Pos);
+		Logger.LogCat("Scroll TO:" + Pos);
 
 		mAnimationTarget = Pos;
 		stopTimer();

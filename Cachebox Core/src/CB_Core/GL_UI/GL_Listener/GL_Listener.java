@@ -468,9 +468,12 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	public void StopKinetic(int x, int y, int pointer, boolean forceTouchUp)
 	{
 		TouchDownPointer first = touchDownPos.get(pointer);
-		first.stopKinetic();
-		first.kineticPan = null;
-		if (forceTouchUp) first.view.touchUp(x, y, pointer, 0);
+		if (first != null)
+		{
+			first.stopKinetic();
+			first.kineticPan = null;
+			if (forceTouchUp) first.view.touchUp(x, y, pointer, 0);
+		}
 	}
 
 	public boolean onTouchDraggedBase(int x, int y, int pointer)

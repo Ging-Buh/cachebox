@@ -12,6 +12,7 @@ import CB_Core.GL_UI.Views.CacheListView;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
+import CB_Core.Math.UiSizes;
 
 public class TabMainView extends MainViewBase
 {
@@ -23,6 +24,7 @@ public class TabMainView extends MainViewBase
 
 	public static MapView mapView = null;
 	public static CacheListView cacheListView = null;
+	public static AboutView aboutView = null;
 
 	public TabMainView(float X, float Y, float Width, float Height, String Name)
 	{
@@ -53,13 +55,16 @@ public class TabMainView extends MainViewBase
 	{
 		// nur ein Tab
 
+		// mit fünf Buttons
+		CB_RectF btnRec = new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
+
 		CB_RectF rec = this.copy();
 		rec.setWidth(GL_UISizes.UI_Left.getWidth());
 
-		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
+		rec.setHeight(this.getHeight() - UiSizes.getInfoSliderHeight());
+		rec.setPos(0, 0);
 
-		// mit fünf Buttons
-		CB_RectF btnRec = new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
+		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
 
 		CB_Button btn1 = new CB_Button(btnRec, "Button1", SpriteCache.CacheList);
 		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCache.Cache);
@@ -97,17 +102,22 @@ public class TabMainView extends MainViewBase
 	{
 		addLeftForTabletsTab();
 		addRightForTabletsTab();
+		actionShowCacheList.Execute();
+		actionShowMap.Execute();
 	}
 
 	private void addLeftForTabletsTab()
 	{
+		// mit fünf Buttons
+		CB_RectF btnRec = new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
+
 		CB_RectF rec = this.copy();
 		rec.setWidth(GL_UISizes.UI_Left.getWidth());
 
-		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
+		rec.setHeight(this.getHeight() - UiSizes.getInfoSliderHeight());
+		rec.setPos(0, 0);
 
-		// mit fünf Buttons
-		CB_RectF btnRec = new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
+		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
 
 		CB_Button btn1 = new CB_Button(btnRec, "Button1", SpriteCache.CacheList);
 		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCache.Cache);
@@ -127,12 +137,6 @@ public class TabMainView extends MainViewBase
 		this.addChild(Tab);
 		// Tab.ShowView(new AboutView(this, "AboutView"));
 
-		if (cacheListView == null)
-		{
-			cacheListView = new CacheListView(this, "CacheListView");
-		}
-		Tab.ShowView(cacheListView);
-
 		// Tab den entsprechneden Actions zuweisen
 		actionShowCacheList.setTab(this, Tab);
 
@@ -143,14 +147,18 @@ public class TabMainView extends MainViewBase
 
 	private void addRightForTabletsTab()
 	{
-		CB_RectF rec = this.copy();
-		rec.setWidth(GL_UISizes.UI_Right.getWidth());
-		rec.setX(GL_UISizes.UI_Left.getWidth());
-
-		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
 
 		// mit fünf Buttons
 		CB_RectF btnRec = new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
+
+		CB_RectF rec = this.copy();
+		rec.setWidth(GL_UISizes.UI_Right.getWidth());
+		rec.setX(GL_UISizes.UI_Left.getWidth());
+		rec.setY(0);
+
+		rec.setHeight(this.getHeight() - UiSizes.getInfoSliderHeight());
+
+		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
 
 		CB_Button btn1 = new CB_Button(btnRec, "Button1", SpriteCache.CacheList);
 		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCache.Cache);
@@ -168,12 +176,6 @@ public class TabMainView extends MainViewBase
 		Tab.addButtonList(btnList);
 
 		this.addChild(Tab);
-
-		if (mapView == null)
-		{
-			mapView = new MapView(this, "MapView");
-		}
-		Tab.ShowView(mapView);
 
 		// Tab den entsprechneden Actions zuweisen
 		actionShowMap.setTab(this, Tab);

@@ -2,6 +2,7 @@ package CB_Core.Events;
 
 import java.util.ArrayList;
 
+import CB_Core.GlobalCore;
 import CB_Core.Types.Locator;
 
 public class PositionChangedEventList
@@ -20,6 +21,7 @@ public class PositionChangedEventList
 
 	public static void PositionChanged(Locator locator)
 	{
+		GlobalCore.Locator = locator;
 		for (PositionChangedEvent event : list)
 		{
 			event.PositionChanged(locator);

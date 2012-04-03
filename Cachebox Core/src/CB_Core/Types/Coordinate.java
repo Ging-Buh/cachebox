@@ -64,6 +64,27 @@ public class Coordinate implements Serializable
 		this.Valid = parent.Valid;
 	}
 
+	public double getLatitude()
+	{
+		return this.Latitude;
+	}
+
+	public double getLongitude()
+	{
+		return this.Longitude;
+	}
+
+	public boolean hasAccuracy()
+	{
+		if (Accuracy == -1) return false;
+		return true;
+	}
+
+	public int getAccuracy()
+	{
+		return Accuracy;
+	}
+
 	// Parse Coordinates from String
 	public Coordinate(String text)
 	{

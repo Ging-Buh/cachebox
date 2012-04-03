@@ -2281,7 +2281,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 					{
 						if (lastRenderZoomScale == renderZoomScaleActive
 								&& lastWpCount == wpToRender.size()
-								&& lastHeading == ((Global.Locator != null) && (Global.Locator.getLocation() != null) ? Global.Locator
+								&& lastHeading == ((GlobalCore.Locator != null) && (GlobalCore.Locator.getLocation() != null) ? GlobalCore.Locator
 										.getHeading() : 0) && lastPosition.Latitude == GlobalCore.LastValidPosition.Latitude
 								&& lastPosition.Longitude == GlobalCore.LastValidPosition.Longitude && lastZoom == Zoom && !tilesFinished
 								&& lastRenderedPosition.X == screenCenter.X && lastRenderedPosition.Y == screenCenter.Y)
@@ -2564,10 +2564,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			canvasOverlay.drawText(textLatitude, right - 5, top + compassCenter - 10, paint);
 			canvasOverlay.drawText(textLongitude, right - 5, bottom - 10, paint);
 
-			if (Global.Locator != null)
+			if (GlobalCore.Locator != null)
 			{
 				paint.setTextAlign(Align.LEFT);
-				canvasOverlay.drawText(Global.Locator.SpeedString(), leftString, top + compassCenter - 10, paint);
+				canvasOverlay.drawText(GlobalCore.Locator.SpeedString(), leftString, top + compassCenter - 10, paint);
 			}
 
 			if (!debugString1.equals(""))
@@ -2594,12 +2594,12 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			canvas.drawText(text, leftString, bottom - 10, paint);
 
 			// Kompassnadel zeichnen
-			if (Global.Locator != null)
+			if (GlobalCore.Locator != null)
 			{
 				Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos
 						: GlobalCore.SelectedCache().Pos;
 				double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
-				double relativeBearing = bearing - Global.Locator.getHeading();
+				double relativeBearing = bearing - GlobalCore.Locator.getHeading();
 				double relativeBearingRad = relativeBearing * Math.PI / 180.0;
 
 				int cs = canvas.save(123);
@@ -3193,7 +3193,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 	void renderPositionAndMarker()
 	{
 
-		if (Global.Locator != null)
+		if (GlobalCore.Locator != null)
 		{
 			// Position auf der Karte
 			myPointOnScreen = ToScreen(Descriptor.LongitudeToTileX(Zoom, GlobalCore.LastValidPosition.Longitude),
@@ -3205,8 +3205,8 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			 * debugString2 = "";
 			 */
 
-			double courseRad = Global.Locator.getHeading() * Math.PI / 180.0;
-			boolean lastUsedCompass = Global.Locator.LastUsedCompass;
+			double courseRad = GlobalCore.Locator.getHeading() * Math.PI / 180.0;
+			boolean lastUsedCompass = GlobalCore.Locator.LastUsedCompass;
 			float dirX = (float) Math.sin(courseRad);
 			float dirY = (float) -Math.cos(courseRad);
 
@@ -3243,9 +3243,9 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				canvas.drawPath(path, paint);
 			}
 
-			if ((Global.Locator.getLocation() != null) && (Global.Locator.getLocation().hasAccuracy()))
+			if ((GlobalCore.Locator.getLocation() != null) && (GlobalCore.Locator.getLocation().hasAccuracy()))
 			{
-				float radius = Global.Locator.getLocation().getAccuracy();
+				float radius = GlobalCore.Locator.getLocation().getAccuracy();
 				// debugString1 = String.valueOf(radius) + "m";
 				Paint circlePaint = new Paint();
 				circlePaint.setColor(Color.argb(55, 0, 0, 0));
@@ -4396,10 +4396,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 			float newCanvasHeading = heading;
 			// liefert die Richtung (abhängig von der Geschwindigkeit von
 			// Kompass oder GPS
-			if (!Global.Locator.UseCompass() && alignToCompass)
+			if (!GlobalCore.Locator.UseCompass() && alignToCompass)
 			{
 				// GPS-Richtung soll verwendet werden!
-				newCanvasHeading = Global.Locator.getHeading();
+				newCanvasHeading = GlobalCore.Locator.getHeading();
 				heading = newCanvasHeading;
 			}
 

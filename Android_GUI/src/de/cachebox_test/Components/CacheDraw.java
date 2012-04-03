@@ -350,7 +350,7 @@ public class CacheDraw
 		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
 		{
 			Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
-			double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
+			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
 			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude(), cache.Longitude());
 			double cacheBearing = bearing - heading;
 			String cacheDistance = UnitFormatter.DistanceString(cache.Distance(false));
@@ -364,7 +364,7 @@ public class CacheDraw
 		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
 		{
 			Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
-			double heading = (Global.Locator != null) ? Global.Locator.getHeading() : 0;
+			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
 			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, waypoint.Latitude(), waypoint.Longitude());
 			double waypointBearing = bearing - heading;
 			float distance = 0;

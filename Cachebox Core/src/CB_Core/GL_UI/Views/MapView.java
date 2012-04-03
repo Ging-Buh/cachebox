@@ -273,9 +273,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		resize(rec.getWidth(), rec.getHeight());
 
-		CB_Core.Events.SelectedCacheEventList.Add(this);
-		CB_Core.Events.PositionChangedEventList.Add(this);
-
 		this.setOnLongClickListener(new OnLongClickListener()
 		{
 
@@ -287,6 +284,20 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 		});
 
+	}
+
+	@Override
+	public void onShow()
+	{
+		CB_Core.Events.SelectedCacheEventList.Add(this);
+		CB_Core.Events.PositionChangedEventList.Add(this);
+	}
+
+	@Override
+	public void onHide()
+	{
+		CB_Core.Events.SelectedCacheEventList.Remove(this);
+		CB_Core.Events.PositionChangedEventList.Remove(this);
 	}
 
 	@Override
@@ -589,13 +600,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			myPointOnScreen = worldToScreen(vPoint);
 			directLineOverlay = null;
 			if (directLineTexture != null) directLineTexture.dispose();
-			if (actAccuracy != locator.Position.Accuracy || actPixelsPerMeter != pixelsPerMeter)
+			if (actAccuracy != locator.getLocation().Accuracy || actPixelsPerMeter != pixelsPerMeter)
 			{
 				if (AccuracyTexture != null) AccuracyTexture.dispose();
-				actAccuracy = locator.Position.Accuracy;
+				actAccuracy = locator.getLocation().Accuracy;
 				actPixelsPerMeter = pixelsPerMeter;
 
-				int radius = (int) (pixelsPerMeter * locator.Position.Accuracy);
+				int radius = (int) (pixelsPerMeter * locator.getLocation().Accuracy);
 				// Logger.LogCat("Accuracy radius " + radius);
 				// Logger.LogCat("pixelsPerMeter " + pixelsPerMeter);
 				if (radius > 0)
@@ -1265,7 +1276,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	public void PositionChanged(Locator locator)
 	{
 		this.locator = locator;
-		GlobalCore.LastValidPosition = new Coordinate(locator.Position.Latitude, locator.Position.Longitude);
+		GlobalCore.LastValidPosition = new Coordinate(locator.getLocation().Latitude, locator.getLocation().Longitude);
 		GlobalCore.LastValidPosition.Elevation = locator.getAlt();
 		info.setCoord(GlobalCore.LastValidPosition);
 		info.setSpeed(locator.SpeedString());
@@ -1324,7 +1335,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			drawingHeight = height;
 		}
 
-		if (togBtn.getState() > 0) setCenter(new Coordinate(locator.Position.Latitude, locator.Position.Longitude));
+		if (togBtn.getState() > 0) setCenter(new Coordinate(locator.getLocation().Latitude, locator.getLocation().Longitude));
 	}
 
 	@Override

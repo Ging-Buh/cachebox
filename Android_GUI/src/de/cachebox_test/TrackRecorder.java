@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
@@ -15,7 +16,6 @@ import CB_Core.Types.Coordinate;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.location.Location;
-
 import de.cachebox_test.Map.RouteOverlay;
 
 public class TrackRecorder
@@ -105,8 +105,8 @@ public class TrackRecorder
 	{
 		PointD NewPoint;
 
-		if (writer == null || pauseRecording || (Global.Locator != null && !GlobalCore.LastValidPosition.Valid)
-				|| !Global.Locator.isGPSprovided()) return;
+		if (writer == null || pauseRecording || (GlobalCore.Locator != null && !GlobalCore.LastValidPosition.Valid)
+				|| !GlobalCore.Locator.isGPSprovided()) return;
 
 		// wurden seit dem letzten aufgenommenen Wegpunkt mehr als x Meter
 		// zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
@@ -131,8 +131,8 @@ public class TrackRecorder
 				datFormat = new SimpleDateFormat("HH:mm:ss");
 				sDate += "T" + datFormat.format(now) + "Z";
 				writer.append("   <time>" + sDate + "</time>\n");
-				writer.append("   <course>" + String.valueOf(Global.Locator.getHeading()) + "</course>\n");
-				writer.append("   <speed>" + String.valueOf(Global.Locator.SpeedOverGround()) + "</speed>\n");
+				writer.append("   <course>" + String.valueOf(GlobalCore.Locator.getHeading()) + "</course>\n");
+				writer.append("   <speed>" + String.valueOf(GlobalCore.Locator.SpeedOverGround()) + "</speed>\n");
 				writer.append("</trkpt>\n");
 				writer.flush();
 			}
@@ -191,9 +191,8 @@ public class TrackRecorder
 	}
 
 	/*
-	 * void updateRecorderButtonAccessibility() { recordButton.Enabled =
-	 * outStream == null || pauseRecording; stopButton.Enabled = outStream !=
-	 * null; pauseButton.Enabled = !pauseRecording && outStream != null; }
+	 * void updateRecorderButtonAccessibility() { recordButton.Enabled = outStream == null || pauseRecording; stopButton.Enabled = outStream
+	 * != null; pauseButton.Enabled = !pauseRecording && outStream != null; }
 	 */
 	private static String generateTrackFileName()
 	{

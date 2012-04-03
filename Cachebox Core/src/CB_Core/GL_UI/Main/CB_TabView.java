@@ -17,6 +17,8 @@ public class CB_TabView extends CB_View_Base
 	private H_ListView buttonListView;
 	private CB_View_Base aktView;
 
+	private CB_RectF mContentRec;
+
 	public void addButtonList(CB_ButtonList ButtonList)
 	{
 		mButtonList = ButtonList;
@@ -35,7 +37,9 @@ public class CB_TabView extends CB_View_Base
 	public CB_TabView(CB_RectF rec, CharSequence Name)
 	{
 		super(rec, Name);
-		// TODO Auto-generated constructor stub
+		mContentRec = rec.copy();
+		mContentRec.setHeight(this.getHeight() - GL_UISizes.BottomButtonHeight);
+		mContentRec.setPos(0, GL_UISizes.BottomButtonHeight);
 	}
 
 	@Override
@@ -100,6 +104,11 @@ public class CB_TabView extends CB_View_Base
 		aktView.onShow();
 		GL_Listener.glListener.renderOnce(aktView);
 
+	}
+
+	public CB_RectF getContentRec()
+	{
+		return mContentRec;
 	}
 
 }

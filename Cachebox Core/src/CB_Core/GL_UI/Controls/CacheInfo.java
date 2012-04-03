@@ -120,6 +120,22 @@ public class CacheInfo extends CB_View_Base
 		if (mInfo_FontCache != null) mInfo_FontCache.draw(batch);
 	}
 
+	@Override
+	public void dispose()
+	{
+		mIconSprite = null;
+		mRatingSprite = null;
+		mS_FontCache = null;
+		mD_FontCache = null;
+		mT_FontCache = null;
+		mTB_FontCache = null;
+		mSSprite = null;
+		mDSprite = null;
+		mTSprite = null;
+		mTBSprite = null;
+		mInfo_FontCache = null;
+	}
+
 	private void requestLayout()
 	{
 		this.removeChilds();
@@ -142,7 +158,7 @@ public class CacheInfo extends CB_View_Base
 
 		mLeft += mS_FontCache.getBounds().width + mMargin;
 		float starHeight = mS_FontCache.getBounds().height * 1.1f;
-		mStarSize = new SizeF(starHeight / 0.28f, starHeight);
+		mStarSize = new SizeF(starHeight * 5, starHeight);
 		mStarSize.scale(scaleFactor);
 
 		mSSprite = new Sprite(SpriteCache.SizesIcons.get((int) (mCache.Size.ordinal())));
@@ -155,7 +171,7 @@ public class CacheInfo extends CB_View_Base
 
 		mLeft += mD_FontCache.getBounds().width + mMargin;
 
-		mDSprite = new Sprite(SpriteCache.MapStars.get((int) (mCache.Difficulty * 2)));
+		mDSprite = new Sprite(SpriteCache.Stars.get((int) (mCache.Difficulty * 2)));
 		mDSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
 		mDSprite.setRotation(0);
 
@@ -166,7 +182,7 @@ public class CacheInfo extends CB_View_Base
 
 		mLeft += mT_FontCache.getBounds().width + mMargin;
 
-		mTSprite = new Sprite(SpriteCache.MapStars.get((int) (mCache.Terrain * 2)));
+		mTSprite = new Sprite(SpriteCache.Stars.get((int) (mCache.Terrain * 2)));
 		mTSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
 		mTSprite.setRotation(0);
 
@@ -176,10 +192,10 @@ public class CacheInfo extends CB_View_Base
 		int numTb = mCache.NumTravelbugs;
 		if (numTb > 0)
 		{
-			float sizes = mStarSize.width / 1.5f;
+			float sizes = mStarSize.width / 2.1f;
 
 			mTBSprite = new Sprite(SpriteCache.Icons.get(36));
-			mTBSprite.setBounds(mLeft, mBottom - (sizes / 2) - mMargin, sizes, sizes);
+			mTBSprite.setBounds(mLeft, mBottom - (sizes / 1.8f) - mMargin, sizes, sizes);
 			mTBSprite.setOrigin(sizes / 2, sizes / 2);
 			mTBSprite.setRotation(90);
 
@@ -195,7 +211,7 @@ public class CacheInfo extends CB_View_Base
 		mLeft *= -1;
 		mIconSize = mT_FontCache.getBounds().height * 3.5f * scaleFactor;
 		mStarSize.scale(0.7f);
-		mRatingSprite = new Sprite(SpriteCache.MapStars.get((int) Math.min(mCache.Rating * 2, 5 * 2)));
+		mRatingSprite = new Sprite(SpriteCache.Stars.get((int) Math.min(mCache.Rating * 2, 5 * 2)));
 		mRatingSprite.setBounds(mLeft + mStarSize.height, height - mTop - mStarSize.width - mMargin - mMargin - mMargin, mStarSize.width,
 				mStarSize.height);
 		mRatingSprite.setOrigin(0, mStarSize.halfHeight);

@@ -149,7 +149,6 @@ import de.cachebox_test.Events.GpsStateChangeEventList;
 import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Locator.GPS;
-import de.cachebox_test.Locator.Locator;
 import de.cachebox_test.Map.MapViewForGl;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
@@ -824,15 +823,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public void newLocationReceived(Location location)
 	{
-		try
-		{
-			Global.Locator.setLocation(location);
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.newLocationReceived()", "Global.Locator.setLocation(location)", e);
-			e.printStackTrace();
-		}
 
 		try
 		{
@@ -846,7 +836,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		try
 		{
-			InfoDownSlider.setNewLocation(location);
+			InfoDownSlider.setNewLocation(GlobalCore.LastPosition);
 		}
 		catch (Exception e)
 		{
@@ -1609,7 +1599,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			try
 			{
 				mCompassValues = event.values;
-				Global.Locator.setCompassHeading(mCompassValues[0]);
+				GlobalCore.Locator.setCompassHeading(mCompassValues[0]);
 				PositionEventList.Call(mCompassValues[0]);
 			}
 			catch (Exception e)
@@ -2267,7 +2257,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			criteria.setCostAllowed(true);
 			criteria.setPowerRequirement(Criteria.POWER_LOW);
 
-			Global.Locator = new Locator();
+			// Global.Locator = new Locator();
 			// locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
 			// 1000, 1, this);
 			// locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
@@ -3299,7 +3289,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					if (s[11].equals("")) return;
 					double altCorrection = Double.valueOf(s[11]);
 					Logger.General("AltCorrection: " + String.valueOf(altCorrection));
-					Global.Locator.altCorrection = altCorrection;
+					GlobalCore.Locator.altCorrection = altCorrection;
 					// Höhenkorrektur ändert sich normalerweise nicht, einmal
 					// auslesen reicht...
 					locationManager.removeNmeaListener(this);

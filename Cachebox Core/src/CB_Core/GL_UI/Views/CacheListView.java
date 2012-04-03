@@ -2,30 +2,28 @@ package CB_Core.GL_UI.Views;
 
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
-import CB_Core.Events.PositionChangedEvent;
-import CB_Core.Events.PositionChangedEventList;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.Menu.CB_AllContextMenuHandler;
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
-import CB_Core.Types.Locator;
 import CB_Core.Types.Waypoint;
 
-public class CacheListView extends V_ListView implements PositionChangedEvent
+public class CacheListView extends V_ListView
 {
 	private CustomAdapter lvAdapter;
 
 	public CacheListView(CB_RectF rec, CharSequence Name)
 	{
 		super(rec, Name);
-		lvAdapter = new CustomAdapter(Database.Data.Query);
-		this.setBaseAdapter(lvAdapter);
-		this.setDisposeFlag(false);
+
+		Logger.LogCat("Create CacheListView => " + rec.toString());
+
 	}
 
 	@Override
@@ -38,7 +36,9 @@ public class CacheListView extends V_ListView implements PositionChangedEvent
 	@Override
 	public void onShow()
 	{
-		PositionChangedEventList.Add(this);
+
+		lvAdapter = new CustomAdapter(Database.Data.Query);
+		this.setBaseAdapter(lvAdapter);
 
 		// aktuellen Cache in der List anzeigen
 		if (GlobalCore.SelectedCache() != null)
@@ -82,14 +82,8 @@ public class CacheListView extends V_ListView implements PositionChangedEvent
 	@Override
 	public void onHide()
 	{
-		PositionChangedEventList.Remove(this);
-
-	}
-
-	@Override
-	public void OrientationChanged(float heading)
-	{
-		this.invalidate();
+		lvAdapter = null;
+		this.setBaseAdapter(lvAdapter);
 	}
 
 	private OnClickListener onItemClickListner = new OnClickListener()
@@ -140,17 +134,20 @@ public class CacheListView extends V_ListView implements PositionChangedEvent
 
 		public int getCount()
 		{
+			if (cacheList == null) return 0;
 			return cacheList.size();
 		}
 
 		public Object getItem(int position)
 		{
+			if (cacheList == null) return null;
 			return cacheList.get(position);
 		}
 
 		@Override
 		public ListViewItemBase getView(int position)
 		{
+			if (cacheList == null) return null;
 			Cache cache = cacheList.get(position);
 			CacheListViewItem v = new CacheListViewItem(UiSizes.getCacheListItemRec().asFloat(), position, cache);
 			v.setClickable(true);
@@ -163,16 +160,11 @@ public class CacheListView extends V_ListView implements PositionChangedEvent
 		@Override
 		public float getItemSize(int position)
 		{
+			if (cacheList == null) return 0;
 			// alle Items haben die gleiche Größe (Höhe)
 			return UiSizes.getCacheListItemRec().getHeight();
 		}
 
-	}
-
-	@Override
-	public void PositionChanged(Locator locator)
-	{
-		this.invalidate();
 	}
 
 }

@@ -36,6 +36,7 @@ public class SpriteCache
 	public static ArrayList<Sprite> MapIcons = null;
 	public static ArrayList<Sprite> MapArrows = null;
 	public static ArrayList<Sprite> MapStars = null;
+	public static ArrayList<Sprite> Stars = null;
 	public static ArrayList<Sprite> Bubble = null;
 	public static Sprite InfoBack = null;
 	public static ArrayList<Sprite> ToggleBtn = null;
@@ -139,6 +140,19 @@ public class SpriteCache
 		MapStars.add(atlas.createSprite("stars4small"));
 		MapStars.add(atlas.createSprite("stars4_5small"));
 		MapStars.add(atlas.createSprite("stars5small"));
+
+		Stars = new ArrayList<Sprite>();
+		Stars.add(iconAtlas.createSprite("stars0icon"));
+		Stars.add(iconAtlas.createSprite("stars0_5icon"));
+		Stars.add(iconAtlas.createSprite("stars1icon"));
+		Stars.add(iconAtlas.createSprite("stars1_5icon"));
+		Stars.add(iconAtlas.createSprite("stars2icon"));
+		Stars.add(iconAtlas.createSprite("stars2_5icon"));
+		Stars.add(iconAtlas.createSprite("stars3icon"));
+		Stars.add(iconAtlas.createSprite("stars3_5icon"));
+		Stars.add(iconAtlas.createSprite("stars4icon"));
+		Stars.add(iconAtlas.createSprite("stars4_5icon"));
+		Stars.add(iconAtlas.createSprite("stars5icon"));
 
 		Bubble = new ArrayList<Sprite>();
 		Bubble.add(uiAtlas.createSprite("Bubble"));

@@ -128,7 +128,7 @@ public class UiSizes
 		margin = ini.Margin;
 
 		CornerSize = scaledRefSize_normal;
-		CacheInfoHeight = (int) (scaledRefSize_normal * 8);
+		CacheInfoHeight = (int) (scaledRefSize_normal * 8.5);
 		infoSliderHeight = (int) (scaledRefSize_normal * 2.4);
 		iconSize = (int) (int) ((calcBase / ini.IconSize) * scale);
 		spaceWidth = (int) (scaledFontSize_normal * 0.9);

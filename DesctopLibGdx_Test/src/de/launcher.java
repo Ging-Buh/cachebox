@@ -7,6 +7,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import javax.swing.text.AttributeSet;
+import javax.swing.text.html.Option;
+
 import CB_Core.Math.Size;
 import CB_Core.Math.devicesSizes;
 
@@ -19,6 +22,11 @@ class Ex_1 {
 } // class Ex_1
 
 class Gui extends Frame implements ActionListener, WindowListener {
+	
+	Checkbox debugChkBox;
+	Checkbox scissorChkBox;
+	
+	
 	// constructor
 	public Gui(String s) {
 		super(s);
@@ -37,17 +45,23 @@ class Gui extends Frame implements ActionListener, WindowListener {
 		Button pushButton3 = new Button("Tab 1024x768 MDPI");
 		add(pushButton3);
 		pushButton3.addActionListener(this); // listen for Button press
+		
+		 debugChkBox = new Checkbox("Enable Debug on Main", null, false);
+		 scissorChkBox = new Checkbox("Disable scissor on Main", null, false);
+		
+		 add(debugChkBox);
+		 add(scissorChkBox);
 
 	}
 
 	// define action for Button press
 	public void actionPerformed(ActionEvent event) {
 		if (event.getActionCommand().equals("Phone 480x800 HDPI")) {
-			DesktopMain.test(iniPhone());
+			DesktopMain.test(iniPhone(),debugChkBox.getState(),scissorChkBox.getState());
 		} else if (event.getActionCommand().equals("Tab 1280x752 MDPI")) {
-			DesktopMain.test(iniTab());
+			DesktopMain.test(iniTab(),debugChkBox.getState(),scissorChkBox.getState());
 		} else if (event.getActionCommand().equals("Tab 1024x768 MDPI")) {
-			DesktopMain.test(iniPad10());
+			DesktopMain.test(iniPad10(),debugChkBox.getState(),scissorChkBox.getState());
 		}
 		
 //		System.exit(0);

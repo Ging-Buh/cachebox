@@ -2,14 +2,14 @@ package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Main.TabMainView;
-import CB_Core.GL_UI.Views.MapView;
+import CB_Core.GL_UI.Views.AboutView;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_ShowMap extends CB_Action_ShowView
+public class CB_Action_ShowAbout extends CB_Action_ShowView
 {
 
-	public CB_Action_ShowMap()
+	public CB_Action_ShowAbout()
 	{
 		super("Map", AID_SHOW_MAP);
 	}
@@ -17,10 +17,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 	@Override
 	public void Execute()
 	{
-		if ((TabMainView.mapView == null) && (tabMainView != null) && (tab != null)) TabMainView.mapView = new MapView(tab.getContentRec(),
-				"MapView");
+		if ((TabMainView.aboutView == null) && (tabMainView != null) && (tab != null)) TabMainView.aboutView = new AboutView(
+				tab.getContentRec(), "AboutView");
 
-		if ((TabMainView.mapView != null) && (tab != null)) tab.ShowView(TabMainView.mapView);
+		if ((TabMainView.aboutView != null) && (tab != null)) tab.ShowView(TabMainView.aboutView);
 	}
 
 	@Override

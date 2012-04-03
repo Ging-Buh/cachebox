@@ -26,6 +26,7 @@ import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Math.CB_Rect;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
+import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
@@ -34,7 +35,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Handler;
 import android.text.Layout.Alignment;
@@ -556,7 +556,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		public void run()
 		{
 			String provider = LocationManager.GPS_PROVIDER;
-			Location location = Global.Locator.getLocation();
+			Coordinate location = GlobalCore.Locator.getLocation();
 			// Location location = ((main)
 			// main.mainActivity).locationManager.getLastKnownLocation(provider);
 
@@ -711,7 +711,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 	private StaticLayout GPSLayout;
 
-	public void setNewLocation(Location location)
+	public void setNewLocation(Coordinate location)
 	{
 
 		if (this.width == 0) return;
@@ -720,7 +720,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		mSats = GPS.getSatAndFix();
 
 		mAccuracy = String.valueOf((int) location.getAccuracy());
-		mAlt = Global.Locator.getAltString();
+		mAlt = GlobalCore.Locator.getAltString();
 		mLatitude = GlobalCore.FormatLatitudeDM(location.getLatitude());
 		mLongitude = GlobalCore.FormatLongitudeDM(location.getLongitude());
 

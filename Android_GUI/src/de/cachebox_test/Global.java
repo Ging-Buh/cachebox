@@ -30,12 +30,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.Custom_Controls.QuickButtonList.QuickButtonItem;
-import de.cachebox_test.Locator.Locator;
 import de.cachebox_test.Map.RouteOverlay;
 
 public class Global
 {
-	public static final int CurrentRevision = 789;
+	public static final int CurrentRevision = 791;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 	public static final int LatestDatabaseChange = 1016;
@@ -292,7 +291,6 @@ public class Global
 	// / <summary>
 	// / Instanz des GPS-Parsers
 	// / </summary>
-	public static Locator Locator = null;
 
 	public static class Paints
 	{

@@ -1,10 +1,10 @@
 package de.cachebox_test.Locator;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import CB_Core.Types.Coordinate;
 import android.location.Location;
 import android.location.LocationManager;
-import de.cachebox_test.Global;
 import de.cachebox_test.UnitFormatter;
 
 public class Locator
@@ -66,7 +66,7 @@ public class Locator
 
 	public String SpeedString()
 	{
-		if ((location != null) && (location.hasSpeed())) return UnitFormatter.SpeedString(Global.Locator.SpeedOverGround());
+		if ((location != null) && (location.hasSpeed())) return UnitFormatter.SpeedString(GlobalCore.Locator.SpeedOverGround());
 		else
 			return "-----";
 	}

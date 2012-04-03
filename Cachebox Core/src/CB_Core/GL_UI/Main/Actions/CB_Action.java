@@ -1,5 +1,7 @@
 package CB_Core.GL_UI.Main.Actions;
 
+import CB_Core.Log.Logger;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action
@@ -30,7 +32,13 @@ public class CB_Action
 		this.id = id;
 	}
 
-	public void Execute()
+	public void CallExecute()
+	{
+		Logger.LogCat("ACTION => " + name + " execute");
+		Execute();
+	}
+
+	protected void Execute()
 	{
 		return;
 	}

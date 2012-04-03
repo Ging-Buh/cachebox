@@ -24,6 +24,8 @@ public class GlobalCore
 	public static final int LatestDatabaseSettingsChange = 1002;
 	public static double displayDensity = 1;
 
+	public static CB_Core.Types.Locator Locator = null;
+
 	/**
 	 * Wird im Splash gesetzt und ist True, wenn es sich um ein Tablet handelt!
 	 */

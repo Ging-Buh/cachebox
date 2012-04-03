@@ -459,24 +459,24 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	@Override
 	public void GpsStateChanged()
 	{
-		if ((Global.Locator.getLocation() != null) && (Global.Locator.getLocation().hasAccuracy()))
+		if ((GlobalCore.Locator.getLocation() != null) && (GlobalCore.Locator.getLocation().hasAccuracy()))
 		{
-			int radius = (int) Global.Locator.getLocation().getAccuracy();
-			Accuracy.setText("+/- " + String.valueOf(radius) + "m (" + Global.Locator.ProviderString() + ")");
+			int radius = (int) GlobalCore.Locator.getLocation().getAccuracy();
+			Accuracy.setText("+/- " + String.valueOf(radius) + "m (" + GlobalCore.Locator.ProviderString() + ")");
 		}
 		else
 		{
 			Accuracy.setText("");
 		}
-		if (Global.Locator.getLocation() != null)
+		if (GlobalCore.Locator.getLocation() != null)
 		{
-			Current.setText(GlobalCore.FormatLatitudeDM(Global.Locator.getLocation().getLatitude()) + " "
-					+ GlobalCore.FormatLongitudeDM(Global.Locator.getLocation().getLongitude()));
+			Current.setText(GlobalCore.FormatLatitudeDM(GlobalCore.Locator.getLocation().getLatitude()) + " "
+					+ GlobalCore.FormatLongitudeDM(GlobalCore.Locator.getLocation().getLongitude()));
 			GPS.setText(de.cachebox_test.Locator.GPS.getSatAndFix() + "   " + GlobalCore.Translations.Get("alt") + " "
-					+ Global.Locator.getAltString());
+					+ GlobalCore.Locator.getAltString());
 		}
 
-		if (Global.Locator == null)
+		if (GlobalCore.Locator == null)
 		{
 			GPS.setText(GlobalCore.Translations.Get("not_detected"));
 			return;

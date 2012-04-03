@@ -232,13 +232,13 @@ public class V_ListView extends ListViewBase
 		return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelöst wird.
 	}
 
-	@Override
-	protected void startAnimationtoTop()
-	{
-		if (mBaseAdapter == null) return;
-		mBottomAnimation = false;
-		scrollTo(mBaseAdapter.getItemSize(0));
-	}
+	// @Override
+	// protected void startAnimationtoTop()
+	// {
+	// if (mBaseAdapter == null) return;
+	// mBottomAnimation = false;
+	// scrollTo(mBaseAdapter.getItemSize(0));
+	// }
 
 	@Override
 	protected void Initial()

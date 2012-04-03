@@ -55,7 +55,7 @@ public class PositionEventList
 		CB_Core.Types.Locator locator = new Locator();
 
 		locator.setLocation(location.getLatitude(), location.getLongitude(), location.getAccuracy(), location.hasSpeed(),
-				location.getSpeed(), location.hasBearing(), location.getBearing(), location.getAltitude());
+				location.getSpeed(), location.hasBearing(), location.getBearing(), location.getAltitude(), location.getProvider());
 		CB_Core.Events.PositionChangedEventList.PositionChanged(locator);
 
 	}

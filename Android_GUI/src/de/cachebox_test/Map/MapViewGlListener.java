@@ -48,7 +48,6 @@ import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
-import de.cachebox_test.Global;
 import de.cachebox_test.UnitFormatter;
 import de.cachebox_test.main;
 import de.cachebox_test.Components.CacheDraw;
@@ -735,12 +734,12 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 			// canvas.drawText(text, leftString, bottom - 10, paint);
 
 			// Kompassnadel zeichnen
-			if (Global.Locator != null)
+			if (GlobalCore.Locator != null)
 			{
 				Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos
 						: GlobalCore.SelectedCache().Pos;
 				double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
-				double relativeBearing = bearing - Global.Locator.getHeading();
+				double relativeBearing = bearing - GlobalCore.Locator.getHeading();
 				// double relativeBearingRad = relativeBearing * Math.PI / 180.0;
 
 				// draw compass
@@ -762,9 +761,9 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 				Fonts.getNormal().draw(batch, textLatitude, GL_UISizes.InfoLine2.x, GL_UISizes.InfoLine1.y);
 				Fonts.getNormal().draw(batch, textLongitude, GL_UISizes.InfoLine2.x, GL_UISizes.InfoLine2.y);
 
-				if (Global.Locator != null)
+				if (GlobalCore.Locator != null)
 				{
-					Fonts.getNormal().draw(batch, Global.Locator.SpeedString(), GL_UISizes.InfoLine1.x, GL_UISizes.InfoLine2.y);
+					Fonts.getNormal().draw(batch, GlobalCore.Locator.SpeedString(), GL_UISizes.InfoLine1.x, GL_UISizes.InfoLine2.y);
 				}
 
 			}
@@ -774,7 +773,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 	private void renderPositionMarker()
 	{
-		if (Global.Locator != null)
+		if (GlobalCore.Locator != null)
 		{
 			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(maxMapZoom, GlobalCore.LastValidPosition.Longitude),
 					Descriptor.LatitudeToTileY(maxMapZoom, GlobalCore.LastValidPosition.Latitude), maxMapZoom, maxMapZoom);
@@ -783,7 +782,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 
 			Vector2 screen = worldToScreen(vPoint);
 
-			boolean lastUsedCompass = Global.Locator.LastUsedCompass;
+			boolean lastUsedCompass = GlobalCore.Locator.LastUsedCompass;
 			boolean Transparency = Config.settings.PositionMarkerTransparent.getValue();
 			// int arrowId = lastUsedCompass ? (Transparency ? 2 : 0) :
 			// (Transparency ? 3 : 1);
@@ -1850,7 +1849,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 		// }
 
 		// getHeading() entscheidet schon ob das Heading von GPS oder Hardware kommt!
-		heading = Global.Locator.getHeading();
+		heading = GlobalCore.Locator.getHeading();
 
 		if (alignToCompass)
 		{
