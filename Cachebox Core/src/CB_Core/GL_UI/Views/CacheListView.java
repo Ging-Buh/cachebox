@@ -2,6 +2,10 @@ package CB_Core.GL_UI.Views;
 
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
+import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEvent;
+import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
@@ -14,7 +18,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
 
-public class CacheListView extends V_ListView
+public class CacheListView extends V_ListView implements CacheListChangedEvent, SelectedCacheEvent
 {
 	private CustomAdapter lvAdapter;
 
@@ -36,7 +40,8 @@ public class CacheListView extends V_ListView
 	@Override
 	public void onShow()
 	{
-
+		CachListChangedEventList.Add(this);
+		SelectedCacheEventList.Add(this);
 		lvAdapter = new CustomAdapter(Database.Data.Query);
 		this.setBaseAdapter(lvAdapter);
 
@@ -54,7 +59,8 @@ public class CacheListView extends V_ListView
 	 */
 	public void setSelectedCacheVisible()
 	{
-		setSelectedCacheVisible(2);
+		int centerList = mMaxItemCount / 2;
+		setSelectedCacheVisible(-centerList);
 	}
 
 	/**
@@ -72,7 +78,8 @@ public class CacheListView extends V_ListView
 		{
 			if (ca == GlobalCore.SelectedCache())
 			{
-				if (!(first < id && last > id)) this.setSelection(id - pos);
+				this.setSelection(id);
+				if (!(first < id && last > id)) this.scrollToItem(id - pos);
 				break;
 			}
 			id++;
@@ -82,6 +89,8 @@ public class CacheListView extends V_ListView
 	@Override
 	public void onHide()
 	{
+		SelectedCacheEventList.Remove(this);
+		CachListChangedEventList.Remove(this);
 		lvAdapter = null;
 		this.setBaseAdapter(lvAdapter);
 	}
@@ -165,6 +174,23 @@ public class CacheListView extends V_ListView
 			return UiSizes.getCacheListItemRec().getHeight();
 		}
 
+	}
+
+	@Override
+	public void CacheListChangedEvent()
+	{
+		this.setBaseAdapter(null);
+		lvAdapter = new CustomAdapter(Database.Data.Query);
+		this.setBaseAdapter(lvAdapter);
+	}
+
+	@Override
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	{
+		if (GlobalCore.SelectedCache() != null)
+		{
+			setSelectedCacheVisible();
+		}
 	}
 
 }

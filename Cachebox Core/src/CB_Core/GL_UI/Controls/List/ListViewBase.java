@@ -292,6 +292,11 @@ public abstract class ListViewBase extends CB_View_Base
 		scrollTo(mAllSize);
 	}
 
+	protected void scrollToItem(int i)
+	{
+		setListPos(mPosDefault.get(i), false);
+	}
+
 	protected void scrollTo(float Pos)
 	{
 
@@ -354,13 +359,22 @@ public abstract class ListViewBase extends CB_View_Base
 
 	protected int getLastVisiblePosition()
 	{
-		// TODO Auto-generated method stub
+
+		boolean help = false;
+		for (GL_View_Base v : childs)
+		{
+			if (!help && this.contains(v)) help = true;
+			if (help && !this.contains(v)) return ((ListViewItemBase) v).getIndex() - 1;
+		}
 		return 0;
 	}
 
 	protected int getFirstVisiblePosition()
 	{
-		// TODO Auto-generated method stub
+		for (GL_View_Base v : childs)
+		{
+			if (this.contains(v)) return ((ListViewItemBase) v).getIndex();
+		}
 		return 0;
 	}
 
