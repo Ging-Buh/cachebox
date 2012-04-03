@@ -4,12 +4,37 @@ import CB_Core.GlobalCore;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_ActionCommand;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowAbout;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCacheList;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCompassView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCreditsView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowDescriptionView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowFieldNotesView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowHint;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowJokerView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowLogView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowMap;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowNotesView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSolverView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSpoilerView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackListView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackableListView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowWaypointView;
 import CB_Core.GL_UI.Views.AboutView;
 import CB_Core.GL_UI.Views.CacheListView;
+import CB_Core.GL_UI.Views.CompassView;
+import CB_Core.GL_UI.Views.CreditsView;
+import CB_Core.GL_UI.Views.DescriptionView;
+import CB_Core.GL_UI.Views.FieldNotesView;
+import CB_Core.GL_UI.Views.JokerView;
+import CB_Core.GL_UI.Views.LogView;
 import CB_Core.GL_UI.Views.MapView;
+import CB_Core.GL_UI.Views.NotesView;
+import CB_Core.GL_UI.Views.SolverView;
+import CB_Core.GL_UI.Views.SpoilerView;
+import CB_Core.GL_UI.Views.TrackListView;
+import CB_Core.GL_UI.Views.TrackableListView;
+import CB_Core.GL_UI.Views.WaypointView;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.UiSizes;
@@ -21,10 +46,35 @@ public class TabMainView extends MainViewBase
 	private CB_Action_ShowHint actionShowHint;
 	private CB_Action_ShowMap actionShowMap;
 	private CB_Action_ShowCacheList actionShowCacheList;
+	private CB_Action_ShowAbout actionShowAboutView;
+	private CB_Action_ShowCompassView actionShowCompassView;
+	private CB_Action_ShowCreditsView actionShowCreditsView;
+	private CB_Action_ShowDescriptionView actionShowDescriptionView;
+	private CB_Action_ShowFieldNotesView actionShowFieldNotesView;
+	private CB_Action_ShowJokerView actionShowJokerView;
+	private CB_Action_ShowLogView actionShowLogView;
+	private CB_Action_ShowNotesView actionShowNotesView;
+	private CB_Action_ShowSolverView actionShowSolverView;
+	private CB_Action_ShowSpoilerView actionShowSpoilerView;
+	private CB_Action_ShowTrackableListView actionShowTrackableListView;
+	private CB_Action_ShowTrackListView actionShowTrackListView;
+	private CB_Action_ShowWaypointView actionShowWaypointView;
 
 	public static MapView mapView = null;
 	public static CacheListView cacheListView = null;
 	public static AboutView aboutView = null;
+	public static CompassView compassView = null;
+	public static CreditsView creditsView = null;
+	public static DescriptionView descriptionView = null;
+	public static FieldNotesView fieldNotesView = null;
+	public static JokerView jokerView = null;
+	public static LogView logView = null;
+	public static NotesView notesView = null;
+	public static SolverView solverView = null;
+	public static SpoilerView spoilerView = null;
+	public static TrackableListView trackableListView = null;
+	public static TrackListView trackListView = null;
+	public static WaypointView waypointView = null;
 
 	public TabMainView(float X, float Y, float Width, float Height, String Name)
 	{
@@ -44,6 +94,19 @@ public class TabMainView extends MainViewBase
 		actionShowMap = new CB_Action_ShowMap();
 		actionShowHint = new CB_Action_ShowHint();
 		actionShowCacheList = new CB_Action_ShowCacheList();
+		actionShowAboutView = new CB_Action_ShowAbout();
+		actionShowCompassView = new CB_Action_ShowCompassView();
+		actionShowCreditsView = new CB_Action_ShowCreditsView();
+		actionShowDescriptionView = new CB_Action_ShowDescriptionView();
+		actionShowFieldNotesView = new CB_Action_ShowFieldNotesView();
+		actionShowJokerView = new CB_Action_ShowJokerView();
+		actionShowLogView = new CB_Action_ShowLogView();
+		actionShowNotesView = new CB_Action_ShowNotesView();
+		actionShowSolverView = new CB_Action_ShowSolverView();
+		actionShowSpoilerView = new CB_Action_ShowSpoilerView();
+		actionShowTrackableListView = new CB_Action_ShowTrackableListView();
+		actionShowTrackListView = new CB_Action_ShowTrackListView();
+		actionShowWaypointView = new CB_Action_ShowWaypointView();
 
 		if (GlobalCore.isTab) addTabletTabs();
 		else
@@ -86,16 +149,43 @@ public class TabMainView extends MainViewBase
 		// Tab den entsprechneden Actions zuweisen
 		actionShowMap.setTab(this, Tab);
 		actionShowCacheList.setTab(this, Tab);
+		actionShowAboutView.setTab(this, Tab);
+		actionShowCompassView.setTab(this, Tab);
+		actionShowCreditsView.setTab(this, Tab);
+		actionShowDescriptionView.setTab(this, Tab);
+		actionShowFieldNotesView.setTab(this, Tab);
+		actionShowJokerView.setTab(this, Tab);
+		actionShowLogView.setTab(this, Tab);
+		actionShowNotesView.setTab(this, Tab);
+		actionShowSolverView.setTab(this, Tab);
+		actionShowSpoilerView.setTab(this, Tab);
+		actionShowTrackableListView.setTab(this, Tab);
+		actionShowTrackListView.setTab(this, Tab);
+		actionShowWaypointView.setTab(this, Tab);
+
 		// Actions den Buttons zuweisen
+
 		btn1.addAction(new CB_ActionButton(actionShowCacheList, true));
-		btn1.addAction(new CB_ActionButton(actionShowHint, false));
+		btn1.addAction(new CB_ActionButton(actionShowTrackableListView, false));
+		btn1.addAction(new CB_ActionButton(actionShowTrackListView, false));
+
+		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true));
+		btn2.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
+		btn2.addAction(new CB_ActionButton(actionShowJokerView, false));
+		btn2.addAction(new CB_ActionButton(actionShowLogView, false));
+		btn2.addAction(new CB_ActionButton(actionShowNotesView, false));
+		btn2.addAction(new CB_ActionButton(actionShowSolverView, false));
+		btn2.addAction(new CB_ActionButton(actionShowSpoilerView, false));
+		btn2.addAction(new CB_ActionButton(actionShowWaypointView, false));
+		btn2.addAction(new CB_ActionButton(actionShowHint, false));
 
 		btn3.addAction(new CB_ActionButton(actionShowMap, true));
+		btn3.addAction(new CB_ActionButton(actionShowCompassView, false));
 
-		Tab.ShowView(new AboutView(this, "AboutView"));
-		// Tab.ShowView(new CacheListView(this, "CacheListView"));
-		// Tab.ShowView(new MapView(this, "MapView"));
+		btn5.addAction(new CB_ActionButton(actionShowAboutView, true));
+		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
 
+		actionShowAboutView.Execute();
 	}
 
 	private void addTabletTabs()
@@ -139,10 +229,18 @@ public class TabMainView extends MainViewBase
 
 		// Tab den entsprechneden Actions zuweisen
 		actionShowCacheList.setTab(this, Tab);
+		actionShowAboutView.setTab(this, Tab);
+		actionShowCreditsView.setTab(this, Tab);
+		actionShowTrackableListView.setTab(this, Tab);
+		actionShowTrackListView.setTab(this, Tab);
 
 		// Actions den Buttons zuweisen
 		btn1.addAction(new CB_ActionButton(actionShowCacheList, true));
-		btn1.addAction(new CB_ActionButton(actionShowHint, false));
+		btn1.addAction(new CB_ActionButton(actionShowTrackableListView, false));
+		btn1.addAction(new CB_ActionButton(actionShowTrackListView, false));
+
+		btn5.addAction(new CB_ActionButton(actionShowAboutView, true));
+		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
 	}
 
 	private void addRightForTabletsTab()
@@ -179,11 +277,28 @@ public class TabMainView extends MainViewBase
 
 		// Tab den entsprechneden Actions zuweisen
 		actionShowMap.setTab(this, Tab);
-
-		// Tab den entsprechneden Actions zuweisen
-		actionShowMap.setTab(this, Tab);
+		actionShowCompassView.setTab(this, Tab);
+		actionShowDescriptionView.setTab(this, Tab);
+		actionShowFieldNotesView.setTab(this, Tab);
+		actionShowJokerView.setTab(this, Tab);
+		actionShowLogView.setTab(this, Tab);
+		actionShowNotesView.setTab(this, Tab);
+		actionShowSolverView.setTab(this, Tab);
+		actionShowSpoilerView.setTab(this, Tab);
+		actionShowWaypointView.setTab(this, Tab);
 		// Actions den Buttons zuweisen
+		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true));
+		btn2.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
+		btn2.addAction(new CB_ActionButton(actionShowJokerView, false));
+		btn2.addAction(new CB_ActionButton(actionShowLogView, false));
+		btn2.addAction(new CB_ActionButton(actionShowNotesView, false));
+		btn2.addAction(new CB_ActionButton(actionShowSolverView, false));
+		btn2.addAction(new CB_ActionButton(actionShowSpoilerView, false));
+		btn2.addAction(new CB_ActionButton(actionShowWaypointView, false));
+		btn2.addAction(new CB_ActionButton(actionShowHint, false));
+
 		btn3.addAction(new CB_ActionButton(actionShowMap, true));
+		btn3.addAction(new CB_ActionButton(actionShowCompassView, false));
 	}
 
 }

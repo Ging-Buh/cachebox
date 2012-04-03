@@ -1,0 +1,37 @@
+package CB_Core.GL_UI.Main.Actions;
+
+import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.GL_UI.Views.SpoilerView;
+
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
+public class CB_Action_ShowSpoilerView extends CB_Action_ShowView
+{
+
+	public CB_Action_ShowSpoilerView()
+	{
+		super("Spoiler", AID_SHOW_SPOILER);
+	}
+
+	@Override
+	public void Execute()
+	{
+		if ((TabMainView.spoilerView == null) && (tabMainView != null) && (tab != null)) TabMainView.spoilerView = new SpoilerView(
+				tab.getContentRec(), "SpoilerView");
+
+		if ((TabMainView.spoilerView != null) && (tab != null)) tab.ShowView(TabMainView.spoilerView);
+	}
+
+	@Override
+	public boolean getEnabled()
+	{
+		return true;
+	}
+
+	@Override
+	public Sprite getIcon()
+	{
+		return SpriteCache.Icons.get(0);
+	}
+}

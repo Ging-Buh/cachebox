@@ -13,6 +13,18 @@ public class CB_Action
 	public static int AID_SHOW_MAP = 0;
 	public static int AID_SHOW_HINT = 1;
 	public static int AID_SHOW_CACHELIST = 2;
+	public static int AID_SHOW_COMPASS = 3;
+	public static int AID_SHOW_CREDITS = 4;
+	public static int AID_SHOW_DESCRIPTION = 5;
+	public static int AID_SHOW_FIELDNOTES = 6;
+	public static int AID_SHOW_JOKERS = 7;
+	public static int AID_SHOW_LOGS = 8;
+	public static int AID_SHOW_NOTES = 9;
+	public static int AID_SHOW_SOLVER = 10;
+	public static int AID_SHOW_SPOILER = 11;
+	public static int AID_SHOW_TRACKABLELIST = 12;
+	public static int AID_SHOW_TRACKLIST = 13;
+	public static int AID_SHOW_WAYPOINTS = 14;
 
 	protected String name;
 	protected int id;
