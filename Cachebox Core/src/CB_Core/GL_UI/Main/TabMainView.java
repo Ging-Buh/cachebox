@@ -6,6 +6,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowAbout;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCacheList;
+import CB_Core.GL_UI.Main.Actions.CB_Action_Show_CacheList_ContextMenu;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCompassView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCreditsView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowDescriptionView;
@@ -46,6 +47,7 @@ public class TabMainView extends MainViewBase
 	private CB_Action_ShowHint actionShowHint;
 	private CB_Action_ShowMap actionShowMap;
 	private CB_Action_ShowCacheList actionShowCacheList;
+	private CB_Action_Show_CacheList_ContextMenu actionShowCacheListContextMenu;
 	private CB_Action_ShowAbout actionShowAboutView;
 	private CB_Action_ShowCompassView actionShowCompassView;
 	private CB_Action_ShowCreditsView actionShowCreditsView;
@@ -94,6 +96,7 @@ public class TabMainView extends MainViewBase
 		actionShowMap = new CB_Action_ShowMap();
 		actionShowHint = new CB_Action_ShowHint();
 		actionShowCacheList = new CB_Action_ShowCacheList();
+		actionShowCacheListContextMenu = new CB_Action_Show_CacheList_ContextMenu();
 		actionShowAboutView = new CB_Action_ShowAbout();
 		actionShowCompassView = new CB_Action_ShowCompassView();
 		actionShowCreditsView = new CB_Action_ShowCreditsView();
@@ -149,6 +152,8 @@ public class TabMainView extends MainViewBase
 		// Tab den entsprechneden Actions zuweisen
 		actionShowMap.setTab(this, Tab);
 		actionShowCacheList.setTab(this, Tab);
+		actionShowCacheListContextMenu.setTab(this, Tab);
+
 		actionShowAboutView.setTab(this, Tab);
 		actionShowCompassView.setTab(this, Tab);
 		actionShowCreditsView.setTab(this, Tab);
@@ -168,6 +173,7 @@ public class TabMainView extends MainViewBase
 		btn1.addAction(new CB_ActionButton(actionShowCacheList, true));
 		btn1.addAction(new CB_ActionButton(actionShowTrackableListView, false));
 		btn1.addAction(new CB_ActionButton(actionShowTrackListView, false));
+		btn1.addAction(new CB_ActionButton(actionShowCacheListContextMenu, false));
 
 		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true));
 		btn2.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
@@ -229,6 +235,7 @@ public class TabMainView extends MainViewBase
 
 		// Tab den entsprechneden Actions zuweisen
 		actionShowCacheList.setTab(this, Tab);
+		actionShowCacheListContextMenu.setTab(this, Tab);
 		actionShowAboutView.setTab(this, Tab);
 		actionShowCreditsView.setTab(this, Tab);
 		actionShowTrackableListView.setTab(this, Tab);
@@ -241,6 +248,7 @@ public class TabMainView extends MainViewBase
 
 		btn5.addAction(new CB_ActionButton(actionShowAboutView, true));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
+		btn1.addAction(new CB_ActionButton(actionShowCacheListContextMenu, false));
 	}
 
 	private void addRightForTabletsTab()

@@ -13,6 +13,7 @@ public class CB_Action
 	public static int AID_SHOW_MAP = 0;
 	public static int AID_SHOW_HINT = 1;
 	public static int AID_SHOW_CACHELIST = 2;
+	public static int AID_SHOW_CACHELIST_CONTEXT_MENU = 3;
 	public static int AID_SHOW_COMPASS = 3;
 	public static int AID_SHOW_CREDITS = 4;
 	public static int AID_SHOW_DESCRIPTION = 5;

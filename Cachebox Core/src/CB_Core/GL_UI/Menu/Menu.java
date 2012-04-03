@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Menu extends Dialog
 {
+	public static final CB_RectF MENU_REC = new CB_RectF(0, 0, 400, 60); // wird mit jedem Item größer
 	public static float ItemHeight = -1f;
 
 	private ArrayList<MenuItem> mItems = new ArrayList<MenuItem>();
@@ -37,9 +38,9 @@ public class Menu extends Dialog
 		}
 	};
 
-	public Menu(CB_RectF rec, CharSequence Name)
+	public Menu(CharSequence Name)
 	{
-		super(rec, Name);
+		super(MENU_REC, Name);
 		Me = this;
 		if (ItemHeight == -1f) ItemHeight = UiSizes.getButtonHeight();
 	}
@@ -91,8 +92,13 @@ public class Menu extends Dialog
 
 	public MenuItem addItem(int ID, String StringId)
 	{
+		return addItem(ID, StringId, "");
+	}
 
-		String trans = GlobalCore.Translations.Get(StringId);
+	public MenuItem addItem(int ID, String StringId, String anhang)
+	{
+
+		String trans = GlobalCore.Translations.Get(StringId) + anhang;
 
 		MenuItem item = new MenuItem(new SizeF(this.width * 0.95f, ItemHeight), mItems.size(), ID, "Menu Item@" + ID);
 

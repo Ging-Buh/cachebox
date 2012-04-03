@@ -8,7 +8,6 @@ import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.GL_View_Base.OnLongClickListener;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
-import CB_Core.GL_UI.Menu.CB_AllContextMenuHandler;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
@@ -63,7 +62,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 
 		if (mButtonActions.size() > 1)
 		{
-			Menu cm = new Menu(CB_AllContextMenuHandler.MENU_REC, "Name");
+			Menu cm = new Menu("Name");
 			cm.setItemClickListner(new OnClickListener()
 			{
 				@Override

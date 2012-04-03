@@ -11,7 +11,6 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.Views.MapView;
-import CB_Core.Math.CB_RectF;
 
 public class CB_AllContextMenuHandler
 {
@@ -44,14 +43,10 @@ public class CB_AllContextMenuHandler
 	public static final int MI_SHOW_DIRECT_LINE = 24;
 	public static final int MI_MAPVIEW_VIEW = 25;
 
-	public static final CB_RectF MENU_REC = new CB_RectF(0, 0, 400, 60); // wird mit jedem Item größer
-
-	// public static final CB_RectF MENU_Item_REC = new CB_RectF(0, 0, 50, 400);
-
 	public static void showBtnMiscContextMenu()
 	{
 
-		Menu cm = new Menu(MENU_REC, "MiscContextMenu");
+		Menu cm = new Menu("MiscContextMenu");
 
 		cm.setItemClickListner(onItemClickListner);
 
@@ -81,7 +76,7 @@ public class CB_AllContextMenuHandler
 
 		boolean selectedCacheIsNull = (GlobalCore.SelectedCache() == null);
 
-		Menu icm = new Menu(MENU_REC, "BtnCacheContextMenu");
+		Menu icm = new Menu("BtnCacheContextMenu");
 		icm.setItemClickListner(onItemClickListner);
 		MenuItem mi;
 
@@ -141,7 +136,7 @@ public class CB_AllContextMenuHandler
 
 	public static void showMapViewGLContextMenu()
 	{
-		Menu icm = new Menu(MENU_REC, "menu_mapviewgl");
+		Menu icm = new Menu("menu_mapviewgl");
 		icm.setItemClickListner(onItemClickListner);
 		MenuItem mi;
 
@@ -161,7 +156,7 @@ public class CB_AllContextMenuHandler
 
 	public static void showMapViewLayerMenu()
 	{
-		Menu icm = new Menu(MENU_REC, "MapViewShowLayerContextMenu");
+		Menu icm = new Menu("MapViewShowLayerContextMenu");
 
 		icm.setItemClickListner(onItemClickListner);
 		MenuItem mi;
