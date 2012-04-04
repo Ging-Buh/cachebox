@@ -359,23 +359,46 @@ public abstract class ListViewBase extends CB_View_Base
 
 	protected int getLastVisiblePosition()
 	{
-
+		int ret = 0;
 		boolean help = false;
-		for (GL_View_Base v : childs)
+		synchronized (childs)
 		{
-			if (!help && this.contains(v)) help = true;
-			if (help && !this.contains(v)) return ((ListViewItemBase) v).getIndex() - 1;
+			for (GL_View_Base v : childs)
+			{
+				if (!help && this.contains(v)) help = true;
+				if (help && !this.contains(v))
+				{
+					ret = ((ListViewItemBase) v).getIndex();
+					break;
+				}
+			}
 		}
-		return 0;
+
+		Logger.LogCat("getLastVisiblePosition = " + ret);
+
+		return ret;
 	}
 
 	protected int getFirstVisiblePosition()
 	{
-		for (GL_View_Base v : childs)
+		int ret = mBaseAdapter.getCount();
+		synchronized (childs)
 		{
-			if (this.contains(v)) return ((ListViewItemBase) v).getIndex();
+			for (GL_View_Base v : childs)
+			{
+				if (this.contains(v))
+				{
+					int i = ((ListViewItemBase) v).getIndex();
+
+					if (i < ret) ret = i;
+				}
+			}
+
 		}
-		return 0;
+
+		Logger.LogCat("getFirstVisiblePosition = " + ret);
+
+		return ret;
 	}
 
 }

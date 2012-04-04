@@ -79,7 +79,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 			if (ca == GlobalCore.SelectedCache())
 			{
 				this.setSelection(id);
-				if (!(first < id && last > id)) this.scrollToItem(id - pos);
+				if (!(first <= id && last >= id)) this.scrollToItem(id - pos);
 				break;
 			}
 			id++;

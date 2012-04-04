@@ -75,6 +75,9 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 
 	private Sprite arrow = new Sprite(SpriteCache.MapArrows.get(0));
 	private BitmapFontCache distance = new BitmapFontCache(Fonts.getSmall());
+
+	private BitmapFontCache debugIndex = new BitmapFontCache(Fonts.getSmall());
+
 	private CB_RectF ArrowRec;
 
 	private Cache mCache;
@@ -103,6 +106,8 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 		{
 			setActLocator();
 		}
+
+		debugIndex.setText(String.valueOf(Index), this.width - ArrowRec.getWidth() - ArrowRec.getWidth(), 20);
 
 	}
 
@@ -147,6 +152,7 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 
 		if (arrow != null) arrow.draw(batch);
 		if (distance != null) distance.draw(batch);
+		if (debugIndex != null) debugIndex.draw(batch);
 
 	}
 

@@ -12,20 +12,31 @@ public class PositionChangedEventList
 
 	public static void Add(PositionChangedEvent event)
 	{
-		list.add(event);
+		synchronized (list)
+		{
+			list.add(event);
+		}
+
 	}
 
 	public static void Remove(PositionChangedEvent event)
 	{
-		list.remove(event);
+		synchronized (list)
+		{
+			list.remove(event);
+		}
+
 	}
 
 	public static void PositionChanged(Locator locator)
 	{
 		GlobalCore.Locator = locator;
-		for (PositionChangedEvent event : list)
+		synchronized (list)
 		{
-			event.PositionChanged(locator);
+			for (PositionChangedEvent event : list)
+			{
+				event.PositionChanged(locator);
+			}
 		}
 
 		// alle events abgearbeitet, jetzt kann die GL_View einmal Rendern
@@ -34,10 +45,14 @@ public class PositionChangedEventList
 
 	public static void Orientation(float heading)
 	{
-		for (PositionChangedEvent event : list)
+		synchronized (list)
 		{
-			event.OrientationChanged(heading);
+			for (PositionChangedEvent event : list)
+			{
+				event.OrientationChanged(heading);
+			}
 		}
+
 		// alle events abgearbeitet, jetzt kann die GL_View einmal Rendern
 		GL_Listener.glListener.renderOnce(null);
 	}
