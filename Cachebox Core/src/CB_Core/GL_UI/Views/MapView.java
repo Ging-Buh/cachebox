@@ -1341,7 +1341,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public void OrientationChanged(float heading)
 	{
-		if (locator == null) return;
+		if (GlobalCore.Locator == null) return;
 
 		Coordinate position = null;
 		if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
@@ -1353,9 +1353,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos : GlobalCore.SelectedCache().Pos;
 			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
-			info.setBearing((float) (bearing - locator.getHeading()));
+			info.setBearing((float) (bearing - GlobalCore.Locator.getHeading()));
 		}
-		heading = locator.getHeading();
+		heading = GlobalCore.Locator.getHeading();
 
 		if (alignToCompass)
 		{
