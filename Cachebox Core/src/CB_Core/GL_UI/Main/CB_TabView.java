@@ -92,6 +92,7 @@ public class CB_TabView extends CB_View_Base
 			this.removeChild(aktView);
 			aktView.onStop();
 			aktView.onHide();
+			aktView.setVisibility(INVISIBLE);
 		}
 
 		// set View size and pos
@@ -101,6 +102,7 @@ public class CB_TabView extends CB_View_Base
 		aktView = view;
 		this.addChild(aktView);
 
+		aktView.setVisibility(VISIBLE);
 		aktView.onShow();
 		GL_Listener.glListener.renderOnce(aktView);
 

@@ -8,6 +8,7 @@ import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.GL_View_Base.OnLongClickListener;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
@@ -16,6 +17,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 {
 
 	ArrayList<CB_ActionButton> mButtonActions;
+	CB_Action_ShowView aktActionView = null;
 
 	public CB_Button(CB_RectF rec, String Name, ArrayList<CB_ActionButton> ButtonActions)
 	{
@@ -77,6 +79,9 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 						{
 							// Action ausführen
 							action.CallExecute();
+							if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
+							else
+								aktActionView = null;
 							break;
 						}
 					}
@@ -100,7 +105,13 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 			// nur eine Action dem Button zugeordnet -> diese Action gleich ausführen
 			CB_ActionButton ba = mButtonActions.get(0);
 			CB_Action action = ba.getAction();
-			if (action != null) action.CallExecute();
+			if (action != null)
+			{
+				action.CallExecute();
+				if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
+				else
+					aktActionView = null;
+			}
 		}
 
 		return true;
@@ -109,6 +120,22 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 	{
+		// Einfacher Click -> alle Actions durchsuchen, ob die aktActionView darin enthalten ist und diese sichtbar ist
+		if ((aktActionView != null) && (aktActionView.HasContextMenu()))
+		{
+			for (CB_ActionButton ba : mButtonActions)
+			{
+				if (ba.getAction() == aktActionView)
+				{
+					if (aktActionView.getView().isVisible())
+					{
+						// Dieses View ist aktuell das Sichtbare
+						// -> ein Click auf den Menü-Button zeigt das Contextmenü
+						if (aktActionView.ShowContextMenu()) return true;
+					}
+				}
+			}
+		}
 		// Einfacher Click -> Default Action starten
 		for (CB_ActionButton ba : mButtonActions)
 		{
@@ -118,6 +145,9 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 				if (action != null)
 				{
 					action.CallExecute();
+					if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
+					else
+						aktActionView = null;
 					break;
 				}
 			}

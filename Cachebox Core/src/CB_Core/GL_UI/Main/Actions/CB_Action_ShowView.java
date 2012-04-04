@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Main.Actions;
 
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Main.CB_TabView;
 import CB_Core.GL_UI.Main.TabMainView;
 
@@ -15,10 +16,26 @@ public class CB_Action_ShowView extends CB_Action
 		tabMainView = null;
 	}
 
+	public CB_View_Base getView()
+	{
+		return null;
+	}
+
 	public void setTab(TabMainView tabMainView, CB_TabView tab)
 	{
 		this.tab = tab;
 		this.tabMainView = tabMainView;
 	}
 
+	public boolean HasContextMenu()
+	{
+		return false;
+	}
+
+	// zeigt, falls vorhanden das Contectmenü dieser View an und gibt true zurück
+	// oder gibt false zurück, falls kein Contextmenü vorhanden ist
+	public boolean ShowContextMenu()
+	{
+		return false;
+	}
 }
