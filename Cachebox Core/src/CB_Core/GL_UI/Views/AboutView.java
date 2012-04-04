@@ -1,8 +1,10 @@
 package CB_Core.GL_UI.Views;
 
+import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Menu.CB_AllContextMenuHandler;
@@ -41,6 +43,13 @@ public class AboutView extends CB_View_Base
 	public void onShow()
 	{
 		// TODO Rufe ANDROID VIEW auf
+		platformConector.showView(ViewConst.ABOUT_VIEW, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+	}
+
+	@Override
+	public void onHide()
+	{
+		platformConector.hideView(ViewConst.ABOUT_VIEW);
 	}
 
 	@Override

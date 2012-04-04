@@ -33,12 +33,27 @@ public class GL_MsgBox extends Dialog
 
 	static float margin = 5f;
 
-	protected static MsgBox.OnClickListener mMsgBoxClickListner;
+	protected static OnMsgBoxClickListener mMsgBoxClickListner;
 
 	protected static OnClickListener positiveButtonClickListener;
 
 	protected static OnClickListener neutralButtonClickListener;
 	protected static OnClickListener negativeButtonClickListener;
+
+	/**
+	 * Interface used to allow the creator of a dialog to run some code when an item on the dialog is clicked..
+	 */
+	public interface OnMsgBoxClickListener
+	{
+		/**
+		 * This method will be invoked when a button in the dialog is clicked.
+		 * 
+		 * @param which
+		 *            The button that was clicked ( the position of the item clicked.
+		 * @return
+		 */
+		public boolean onClick(int which);
+	}
 
 	private static boolean ButtonClick(int button)
 	{
@@ -90,18 +105,18 @@ public class GL_MsgBox extends Dialog
 
 	}
 
-	public static void Show(String msg, MsgBox.OnClickListener Listener)
+	public static void Show(String msg, OnMsgBoxClickListener Listener)
 	{
 		mMsgBoxClickListner = Listener;
 		Show(msg);
 	}
 
-	public static void Show(String msg, String title, MsgBox.OnClickListener Listener)
+	public static void Show(String msg, String title, OnMsgBoxClickListener Listener)
 	{
 		Show(msg, title, MessageBoxButtons.OK, Listener);
 	}
 
-	public static void Show(String msg, String title, MessageBoxButtons buttons, MsgBox.OnClickListener Listener)
+	public static void Show(String msg, String title, MessageBoxButtons buttons, OnMsgBoxClickListener Listener)
 	{
 		mMsgBoxClickListner = Listener;
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true), "MsgBox");
@@ -114,7 +129,7 @@ public class GL_MsgBox extends Dialog
 		GL_Listener.glListener.showDialog(msgBox);
 	}
 
-	public static void Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, MsgBox.OnClickListener Listener)
+	public static void Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener)
 	{
 		mMsgBoxClickListner = Listener;
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true), "MsgBox");

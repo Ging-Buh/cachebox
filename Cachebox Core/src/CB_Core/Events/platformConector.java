@@ -1,84 +1,45 @@
 package CB_Core.Events;
 
-import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_Core.GL_UI.Controls.MessageBox.MsgBox;
-import CB_Core.GL_UI.Controls.MessageBox.MsgBox.OnClickListener;
+import CB_Core.GL_UI.ViewID;
 
 public class platformConector
 {
 	/**
-	 * Interface definition for a callback to be invoked when a platform must show a massage.
+	 * Interface definition for a callback to be invoked when a platform must show a view.
 	 */
-	public interface OnShowMessageListner
+	public interface IShowViewListner
 	{
-		void MsgShow(String msg);
+		void show(ViewID viewID, int x, int y, int width, int height);
 
-		void MsgShow(String msg, OnClickListener listener);
+		void hide(ViewID viewID);
+	}
 
-		void MsgShow(String msg, String title, OnClickListener listener);
+	private static IShowViewListner showViewListner;
 
-		void MsgShow(String msg, String title, MessageBoxButtons buttons, OnClickListener listener);
+	public static void setShowViewListner(IShowViewListner listner)
+	{
+		showViewListner = listner;
+	}
 
-		void MsgShow(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnClickListener listener);
+	public static void showView(ViewID viewID, float x, float y, float width, float height)
+	{
+		if (showViewListner != null)
+		{
+			showViewListner.show(viewID, (int) x, (int) y, (int) width, (int) height);
+		}
+	}
+
+	public static void hideView(ViewID viewID)
+	{
+		if (showViewListner != null)
+		{
+			showViewListner.hide(viewID);
+		}
 	}
 
 	public interface isOnlineListner
 	{
 		boolean isOnline();
-	}
-
-	private static OnShowMessageListner massageShow;
-
-	public static void setOnShowMassageListneer(OnShowMessageListner listner)
-	{
-		massageShow = listner;
-	}
-
-	public static class Msg
-	{
-
-		public static void Show(String msg)
-		{
-			if (massageShow != null)
-			{
-				massageShow.MsgShow(msg, null);
-			}
-
-		}
-
-		public static void Show(String msg, MsgBox.OnClickListener listener)
-		{
-			if (massageShow != null)
-			{
-				massageShow.MsgShow(msg, listener);
-			}
-		}
-
-		public static void Show(String msg, String title, OnClickListener listener)
-		{
-			if (massageShow != null)
-			{
-				massageShow.MsgShow(msg, title, listener);
-			}
-		}
-
-		public static void Show(String msg, String title, MessageBoxButtons buttons, OnClickListener listener)
-		{
-			if (massageShow != null)
-			{
-				massageShow.MsgShow(msg, title, buttons, listener);
-			}
-		}
-
-		public static void Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnClickListener listener)
-		{
-			if (massageShow != null)
-			{
-				massageShow.MsgShow(msg, title, buttons, icon, listener);
-			}
-		}
-
 	}
 
 	private static isOnlineListner IsOnline;

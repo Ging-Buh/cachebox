@@ -35,7 +35,7 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
-import CB_Core.Events.platformConector.OnShowMessageListner;
+import CB_Core.Events.platformConector.IShowViewListner;
 import CB_Core.Events.platformConector.isOnlineListner;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.ViewID;
@@ -290,16 +290,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private CacheNameView cacheNameView;
 
 	private ArrayList<ViewOptionsMenu> ViewList = new ArrayList<ViewOptionsMenu>();
-	// private int lastBtnDBView = 1;
-	// private int lastBtnCacheView = 4;
-	// private int lastBtnNavView = 0;
-	// private int lastBtnToolsView = -1;
-	// private int lastBtnMiscView = 11;
-	// ArrayList<Integer> btnDBActionIds;
-	// ArrayList<Integer> btnCacheActionIds;
-	// ArrayList<Integer> btnNavActionIds;
-	// ArrayList<Integer> btnToolsActionIds;
-	// ArrayList<Integer> btnMiscActionIds;
 
 	// Powermanager
 	protected PowerManager.WakeLock mWakeLock;
@@ -3643,160 +3633,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void initialPlatformConector()
 	{
-		CB_Core.Events.platformConector.setOnShowMassageListneer(new OnShowMessageListner()
-		{
-
-			@Override
-			public void MsgShow(final String msg, final String title, final MessageBoxButtons buttons, final MessageBoxIcon icon,
-					final CB_Core.GL_UI.Controls.MessageBox.MsgBox.OnClickListener listener)
-			{
-
-				Thread t = new Thread()
-				{
-					public void run()
-					{
-						runOnUiThread(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								MessageBox.Show(msg, title, buttons, icon, new DialogInterface.OnClickListener()
-								{
-
-									@Override
-									public void onClick(DialogInterface dialog, int which)
-									{
-										dialog.dismiss();
-										if (listener != null) listener.onClick(which);
-									}
-								});
-							}
-						});
-					}
-				};
-
-				t.start();
-
-			}
-
-			@Override
-			public void MsgShow(final String msg, final String title, final MessageBoxButtons buttons,
-					final CB_Core.GL_UI.Controls.MessageBox.MsgBox.OnClickListener listener)
-			{
-
-				Thread t = new Thread()
-				{
-					public void run()
-					{
-						runOnUiThread(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								MessageBox.Show(msg, title, buttons, new DialogInterface.OnClickListener()
-								{
-
-									@Override
-									public void onClick(DialogInterface dialog, int which)
-									{
-										dialog.dismiss();
-										if (listener != null) listener.onClick(which);
-									}
-								});
-							}
-						});
-					}
-				};
-
-				t.start();
-			}
-
-			@Override
-			public void MsgShow(final String msg, final String title,
-					final CB_Core.GL_UI.Controls.MessageBox.MsgBox.OnClickListener listener)
-			{
-
-				Thread t = new Thread()
-				{
-					public void run()
-					{
-						runOnUiThread(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								MessageBox.Show(msg, title, new DialogInterface.OnClickListener()
-								{
-
-									@Override
-									public void onClick(DialogInterface dialog, int which)
-									{
-										dialog.dismiss();
-										if (listener != null) listener.onClick(which);
-									}
-								});
-							}
-						});
-					}
-				};
-
-				t.start();
-
-			}
-
-			@Override
-			public void MsgShow(final String msg, final CB_Core.GL_UI.Controls.MessageBox.MsgBox.OnClickListener listener)
-			{
-				Thread t = new Thread()
-				{
-					public void run()
-					{
-						runOnUiThread(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								MessageBox.Show(msg, new DialogInterface.OnClickListener()
-								{
-
-									@Override
-									public void onClick(DialogInterface dialog, int which)
-									{
-										dialog.dismiss();
-										if (listener != null) listener.onClick(which);
-									}
-								});
-							}
-						});
-					}
-				};
-
-				t.start();
-
-			}
-
-			@Override
-			public void MsgShow(final String msg)
-			{
-				Thread t = new Thread()
-				{
-					public void run()
-					{
-						runOnUiThread(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								MessageBox.Show(msg);
-							}
-						});
-					}
-				};
-
-				t.start();
-
-			}
-		});
 
 		CB_Core.Events.platformConector.setisOnlineListner(new isOnlineListner()
 		{
@@ -3814,6 +3650,24 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					return true;
 				}
 				return false;
+			}
+		});
+
+		CB_Core.Events.platformConector.setShowViewListner(new IShowViewListner()
+		{
+
+			@Override
+			public void show(ViewID viewID, int x, int y, int width, int height)
+			{
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void hide(ViewID viewID)
+			{
+				// TODO Auto-generated method stub
+
 			}
 		});
 
