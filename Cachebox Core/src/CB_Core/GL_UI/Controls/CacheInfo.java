@@ -228,7 +228,7 @@ public class CacheInfo extends CB_View_Base
 			if (ifModeFlag(SHOW_NAME)) text.append(mCache.Name + br);
 			if (ifModeFlag(SHOW_OWNER)) text.append("by " + mCache.Owner + ", " + postFormater.format(mCache.DateHidden) + br);
 			if (ifModeFlag(SHOW_CORRDS)) text.append(mCache.Pos.FormatCoordinate() + br);
-			if (ifModeFlag(SHOW_GC)) text.append(mCache.GcCode + " " + scaleFactor + br);
+			if (ifModeFlag(SHOW_GC)) text.append(mCache.GcCode + br);
 			if (ifModeFlag(SHOW_LAST_FOUND))
 			{
 				String LastFound = getLastFoundLogDate(mCache);

@@ -61,6 +61,7 @@ import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.ImageEntry;
+import CB_Core.Types.Locator;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import android.content.BroadcastReceiver;
@@ -1596,6 +1597,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		public void onSensorChanged(SensorEvent event)
 		{
+
+			if (GlobalCore.Locator == null)
+			{
+				GlobalCore.Locator = new Locator();
+			}
+
 			try
 			{
 				mCompassValues = event.values;

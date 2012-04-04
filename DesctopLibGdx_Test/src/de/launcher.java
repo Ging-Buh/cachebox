@@ -38,6 +38,14 @@ class Gui extends Frame implements ActionListener, WindowListener {
 		add(pushButton);
 		pushButton.addActionListener(this); // listen for Button press
 
+		Button pushButton4 = new Button("Phone 240x400 LDPI");
+		add(pushButton4);
+		pushButton4.addActionListener(this); // listen for Button press
+
+		Button pushButton5 = new Button("Phone 720x1280 XHDPI");
+		add(pushButton5);
+		pushButton5.addActionListener(this); // listen for Button press
+
 		Button pushButton2 = new Button("Tab 1280x752 MDPI");
 		add(pushButton2);
 		pushButton2.addActionListener(this); // listen for Button press
@@ -62,8 +70,11 @@ class Gui extends Frame implements ActionListener, WindowListener {
 			DesktopMain.test(iniTab(),debugChkBox.getState(),scissorChkBox.getState());
 		} else if (event.getActionCommand().equals("Tab 1024x768 MDPI")) {
 			DesktopMain.test(iniPad10(),debugChkBox.getState(),scissorChkBox.getState());
+		}else if (event.getActionCommand().equals("Phone 240x400 LDPI")) {
+			DesktopMain.test(iniLowPhone(),debugChkBox.getState(),scissorChkBox.getState());
+		}else if (event.getActionCommand().equals("Phone 720x1280 XHDPI")) {
+			DesktopMain.test(iniHighPhone(),debugChkBox.getState(),scissorChkBox.getState());
 		}
-		
 //		System.exit(0);
 	}
 
@@ -92,6 +103,86 @@ class Gui extends Frame implements ActionListener, WindowListener {
 
 	private static devicesSizes iniPhone() {
 		Size myInitialSize = new Size(480, 772);
+		devicesSizes ui = getHDPI(myInitialSize);
+
+		return ui;
+
+	}
+
+	private static devicesSizes iniTab() {
+
+		Size myInitialSize = new Size(1280, 752);
+		devicesSizes ui = getMDPI(myInitialSize);
+
+		return ui;
+
+	}
+
+	private static devicesSizes iniPad10() {
+
+		Size myInitialSize = new Size(1024, 768);
+		devicesSizes ui = getMDPI(myInitialSize);
+
+		return ui;
+
+	}
+	
+	private static devicesSizes iniLowPhone() {
+
+		Size myInitialSize = new Size(240, 400);
+		devicesSizes ui = getLDPI(myInitialSize);
+
+		return ui;
+
+	}
+	
+	private static devicesSizes iniHighPhone() {
+
+		Size myInitialSize = new Size(720, 1280);
+		devicesSizes ui = getXHDPI(myInitialSize);
+
+		return ui;
+
+	}
+
+	
+	private static devicesSizes getLDPI(Size myInitialSize) {
+		devicesSizes ui = new devicesSizes();
+
+		ui.Window = myInitialSize;
+		ui.Density = 0.75f;
+		ui.ButtonSize = new Size(53, 53);
+		ui.RefSize = 44;
+		ui.TextSize_Normal = 36;
+		ui.ButtonTextSize = 27;
+		ui.IconSize = 11;
+		ui.Margin = 3;
+		ui.ArrowSizeList = 26;
+		ui.ArrowSizeMap = 18;
+		ui.TB_IconSize = 20;
+		ui.isLandscape = false;
+		return ui;
+	}
+	
+	private static devicesSizes getMDPI(Size myInitialSize) {
+		devicesSizes ui = new devicesSizes();
+
+		ui.Window = myInitialSize;
+		ui.Density = 1.0f;
+		ui.ButtonSize = new Size(53, 53);
+		ui.RefSize = 54;
+		ui.TextSize_Normal = 52;
+		ui.ButtonTextSize = 50;
+		ui.IconSize = 13;
+		ui.Margin = 3;
+		ui.ArrowSizeList = 20;
+		ui.ArrowSizeMap = 18;
+		ui.TB_IconSize = 12;
+		ui.isLandscape = false;
+		return ui;
+	}
+	
+	private static devicesSizes getHDPI(Size myInitialSize) {
 		devicesSizes ui = new devicesSizes();
 
 		ui.Window = myInitialSize;
@@ -106,53 +197,24 @@ class Gui extends Frame implements ActionListener, WindowListener {
 		ui.ArrowSizeMap = 18;
 		ui.TB_IconSize = 8;
 		ui.isLandscape = false;
-
 		return ui;
-
 	}
-
-	private static devicesSizes iniTab() {
-
-		Size myInitialSize = new Size(1280, 752);
+	
+	private static devicesSizes getXHDPI(Size myInitialSize) {
 		devicesSizes ui = new devicesSizes();
 
 		ui.Window = myInitialSize;
-		ui.Density = 1.0f;
-		ui.ButtonSize = new Size(53, 53);
-		ui.RefSize = 54;
-		ui.TextSize_Normal = 52;
-		ui.ButtonTextSize = 50;
-		ui.IconSize = 13;
+		ui.Density = 2f;
+		ui.ButtonSize = new Size(53,53);
+		ui.RefSize = 74;
+		ui.TextSize_Normal = 62;
+		ui.ButtonTextSize = 60;
+		ui.IconSize = 12;
 		ui.Margin = 3;
-		ui.ArrowSizeList = 20;
+		ui.ArrowSizeList = 11;
 		ui.ArrowSizeMap = 18;
-		ui.TB_IconSize = 12;
+		ui.TB_IconSize = 4;
 		ui.isLandscape = false;
-
 		return ui;
-
 	}
-
-	private static devicesSizes iniPad10() {
-
-		Size myInitialSize = new Size(1024, 768);
-		devicesSizes ui = new devicesSizes();
-
-		ui.Window = myInitialSize;
-		ui.Density = 1.0f;
-		ui.ButtonSize = new Size(53, 53);
-		ui.RefSize = 54;
-		ui.TextSize_Normal = 52;
-		ui.ButtonTextSize = 50;
-		ui.IconSize = 13;
-		ui.Margin = 3;
-		ui.ArrowSizeList = 20;
-		ui.ArrowSizeMap = 18;
-		ui.TB_IconSize = 12;
-		ui.isLandscape = false;
-
-		return ui;
-
-	}
-
 }
