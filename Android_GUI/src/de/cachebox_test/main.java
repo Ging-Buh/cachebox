@@ -508,13 +508,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				Logger.General("------ Start Rev: " + Global.CurrentRevision + "-------");
 
 				// Zeige About View als erstes!
-				showView(ViewConst.ABOUT_VIEW);
+				// showView(ViewConst.ABOUT_VIEW);
 
 				// und Map wenn Tablet
 				if (GlobalCore.isTab)
 				{
 					// showView(MAP_VIEW);
-					showView(ViewConst.DESCRIPTION_VIEW);
+					// showView(ViewConst.DESCRIPTION_VIEW);
 				}
 
 				// chk if NightMode saved
@@ -699,8 +699,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		});
 
-		tgl.setState(0, true);
-
+		tgl.setState(1, true);
+		BtnLayout.setVisibility(View.INVISIBLE);
 	}
 
 	boolean flag = false;
@@ -1610,91 +1610,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 		}
 	};
-
-	public void showView(ViewID ID)
-	{
-		if (ID == null) return;// keine Action
-
-		String Pos = "null";
-		String Type = "null";
-		if (ID.getPos() != null)
-		{
-			Pos = ID.getPos().toString();
-			Type = ID.getType().toString();
-		}
-
-		Logger.LogCat("main.showView(" + ID.getID() + "/" + Pos + "/" + Type + ")");
-
-		if (ID.getType() == ViewID.UI_Type.Activity)
-		{
-			showActivity(ID);
-			return;
-		}
-
-		if (GlobalCore.isTab)
-		{
-			if (ID.getPos() == UI_Pos.Left)
-			{
-				if (!(aktView == null) && ID == aktViewId)
-				{
-					aktView.OnShow();
-					return;
-				}
-			}
-			else
-			{
-				if (!(aktTabView == null) && ID == aktViewId)
-				{
-					aktTabView.OnShow();
-					return;
-				}
-			}
-		}
-		else
-		{
-			if (!(aktView == null) && ID == aktViewId)
-			{
-				aktView.OnShow();
-				return;
-			}
-		}
-
-		if (ID.getPos() == UI_Pos.Left)
-		{
-			aktViewId = ID;
-		}
-		else
-		{
-			aktTabViewId = ID;
-		}
-
-		if (aktTabViewId == null || aktTabViewId.getType() == ViewID.UI_Type.Android)
-		{
-			if (tabFrame != null) tabFrame.setVisibility(View.VISIBLE);
-		}
-
-		if (aktViewId == null || aktViewId.getType() == ViewID.UI_Type.Android)
-		{
-			frame.setVisibility(View.VISIBLE);
-		}
-
-		if (ID.getType() == UI_Type.Android)
-		{
-			showView(getView(ID), ID);
-		}
-
-		if (ID.getType() == UI_Type.OpenGl)
-		{
-			ShowViewGL(ID);
-		}
-
-		if (ID == ViewConst.MAP_VIEW)
-		{
-			ScreenLockOff = true;
-			startScreenLock(true);
-		}
-
-	}
 
 	public static boolean ScreenLockOff = false;
 
@@ -3422,7 +3337,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (GlobalCore.isTab)
 		{ // im Tab Layout wird die QuickButton list nicht verkleinert!
-			value = UiSizes.getQuickButtonListHeight();
+			value = 0;
 		}
 
 		horizontalListViewHeigt = value;
@@ -3629,6 +3544,91 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 	}
 
+	public void showView(ViewID ID)
+	{
+		if (ID == null) return;// keine Action
+
+		String Pos = "null";
+		String Type = "null";
+		if (ID.getPos() != null)
+		{
+			Pos = ID.getPos().toString();
+			Type = ID.getType().toString();
+		}
+
+		Logger.LogCat("main.showView(" + ID.getID() + "/" + Pos + "/" + Type + ")");
+
+		if (ID.getType() == ViewID.UI_Type.Activity)
+		{
+			showActivity(ID);
+			return;
+		}
+
+		if (GlobalCore.isTab)
+		{
+			if (ID.getPos() == UI_Pos.Left)
+			{
+				if (!(aktView == null) && ID == aktViewId)
+				{
+					aktView.OnShow();
+					return;
+				}
+			}
+			else
+			{
+				if (!(aktTabView == null) && ID == aktViewId)
+				{
+					aktTabView.OnShow();
+					return;
+				}
+			}
+		}
+		else
+		{
+			if (!(aktView == null) && ID == aktViewId)
+			{
+				aktView.OnShow();
+				return;
+			}
+		}
+
+		if (ID.getPos() == UI_Pos.Left)
+		{
+			aktViewId = ID;
+		}
+		else
+		{
+			aktTabViewId = ID;
+		}
+
+		if (aktTabViewId == null || aktTabViewId.getType() == ViewID.UI_Type.Android)
+		{
+			if (tabFrame != null) tabFrame.setVisibility(View.VISIBLE);
+		}
+
+		if (aktViewId == null || aktViewId.getType() == ViewID.UI_Type.Android)
+		{
+			frame.setVisibility(View.VISIBLE);
+		}
+
+		if (ID.getType() == UI_Type.Android)
+		{
+			showView(getView(ID), ID);
+		}
+
+		if (ID.getType() == UI_Type.OpenGl)
+		{
+			ShowViewGL(ID);
+		}
+
+		if (ID == ViewConst.MAP_VIEW)
+		{
+			ScreenLockOff = true;
+			startScreenLock(true);
+		}
+
+	}
+
 	// ########### Platform Conector ##########################
 
 	private void initialPlatformConector()
@@ -3657,16 +3657,75 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 
 			@Override
-			public void show(ViewID viewID, int x, int y, int width, int height)
+			public void show(final ViewID viewID, int x, int y, int width, int height)
 			{
-				// TODO Auto-generated method stub
+
+				runOnUiThread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						Logger.LogCat("Show View from GL =>" + viewID.getID());
+						showView(viewID);
+					}
+				});
 
 			}
 
 			@Override
-			public void hide(ViewID viewID)
+			public void hide(final ViewID viewID)
 			{
-				// TODO Auto-generated method stub
+
+				runOnUiThread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						if (aktTabViewId != null && aktTabViewId == viewID && aktTabViewId.getPos() == UI_Pos.Right)
+						{
+							tabFrame.setVisibility(View.INVISIBLE);
+							aktTabViewId = null;
+							aktTabView = null;
+						}
+
+						if (aktViewId != null && aktViewId == viewID && aktViewId.getPos() == UI_Pos.Left)
+						{
+							frame.setVisibility(View.INVISIBLE);
+							aktViewId = null;
+							aktView = null;
+						}
+					}
+				});
+
+			}
+
+			@Override
+			public void showForDialog()
+			{
+				runOnUiThread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						if (aktView != null) ((View) aktView).setVisibility(View.INVISIBLE);
+						if (aktTabView != null) ((View) aktTabView).setVisibility(View.INVISIBLE);
+					}
+				});
+
+			}
+
+			@Override
+			public void hideForDialog()
+			{
+				runOnUiThread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						if (aktView != null) ((View) aktView).setVisibility(View.VISIBLE);
+						if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
+					}
+				});
 
 			}
 		});

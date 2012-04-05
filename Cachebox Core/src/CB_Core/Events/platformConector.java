@@ -12,6 +12,10 @@ public class platformConector
 		void show(ViewID viewID, int x, int y, int width, int height);
 
 		void hide(ViewID viewID);
+
+		void showForDialog();
+
+		void hideForDialog();
 	}
 
 	private static IShowViewListner showViewListner;
@@ -34,6 +38,22 @@ public class platformConector
 		if (showViewListner != null)
 		{
 			showViewListner.hide(viewID);
+		}
+	}
+
+	public static void showForDialog()
+	{
+		if (showViewListner != null)
+		{
+			showViewListner.showForDialog();
+		}
+	}
+
+	public static void hideForDialog()
+	{
+		if (showViewListner != null)
+		{
+			showViewListner.hideForDialog();
 		}
 	}
 

@@ -87,12 +87,7 @@
                     android:text="@string/Misc" >
                 </ImageButton>
             </LinearLayout>
-
-            <de.cachebox_test.Custom_Controls.QuickButtonList.HorizontalListView
-                android:id="@+id/main_quick_button_list"
-                android:layout_width="wrap_content"
-                android:layout_height="70dip"
-                android:layout_marginLeft="15dip" />
+          
         </LinearLayout>
 
         <LinearLayout
@@ -124,6 +119,12 @@
             android:layout_alignParentTop="true"
             android:orientation="vertical" >
 
+             <de.cachebox_test.Custom_Controls.QuickButtonList.HorizontalListView
+                android:id="@+id/main_quick_button_list"
+                android:layout_width="fill_parent"
+                android:layout_height="0dip" />
+            
+            
             <de.cachebox_test.Components.CacheNameView
                 android:id="@+id/main_cache_name_view"
                 android:layout_width="fill_parent"

@@ -255,6 +255,7 @@ public class SpriteCache
 		Icons.add(iconAtlas.createSprite("help_icon")); // 34
 		Icons.add(iconAtlas.createSprite("day_gc_live_icon")); // 35
 		Icons.add(iconAtlas.createSprite("tb")); // 36
+		Icons.add(iconAtlas.createSprite("cm_icon")); // 37
 
 		loadButtnSprites();
 

@@ -86,4 +86,5 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		cm.show();
 		return true;
 	}
+
 }

@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_Core.Config;
+import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
@@ -754,6 +755,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public void showDialog(final Dialog dialog)
 	{
+		platformConector.showForDialog();
 
 		// Center Menu on Screen
 		float x = (width - dialog.getWidth()) / 2;
@@ -784,7 +786,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public void closeDialog()
 	{
-
+		platformConector.hideForDialog();
 		actDialog = null;
 		mDialog.removeChildsDirekt();
 		child.setClickable(true);

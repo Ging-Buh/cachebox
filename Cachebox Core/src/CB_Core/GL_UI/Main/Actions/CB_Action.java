@@ -26,6 +26,7 @@ public class CB_Action
 	public static int AID_SHOW_TRACKABLELIST = 12;
 	public static int AID_SHOW_TRACKLIST = 13;
 	public static int AID_SHOW_WAYPOINTS = 14;
+	public static int AID_SHOW_SETTINGS = 15;
 
 	protected String name;
 	protected int id;

@@ -15,6 +15,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_ShowJokerView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowLogView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowMap;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowNotesView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSettings;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSolverView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSpoilerView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackListView;
@@ -61,6 +62,7 @@ public class TabMainView extends MainViewBase
 	private CB_Action_ShowTrackableListView actionShowTrackableListView;
 	private CB_Action_ShowTrackListView actionShowTrackListView;
 	private CB_Action_ShowWaypointView actionShowWaypointView;
+	private CB_Action_ShowSettings actionShowSettings;
 
 	public static MapView mapView = null;
 	public static CacheListView cacheListView = null;
@@ -89,7 +91,16 @@ public class TabMainView extends MainViewBase
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
+		// Wird inerhalb des ersten Render Vorgangs aufgerufen.
+
+		// eine Initialisierung der actions kommt hier zu spät, daher als Aufruf aus dem Constructor verschoben!
+
+		ini();
+
+	}
+
+	private void ini()
+	{
 		actionTest = new CB_ActionCommand("Test", CB_Action.AID_TEST1);
 		actionTest2 = new CB_ActionCommand("Test2", CB_Action.AID_TEST1);
 
@@ -110,11 +121,11 @@ public class TabMainView extends MainViewBase
 		actionShowTrackableListView = new CB_Action_ShowTrackableListView();
 		actionShowTrackListView = new CB_Action_ShowTrackListView();
 		actionShowWaypointView = new CB_Action_ShowWaypointView();
+		actionShowSettings = new CB_Action_ShowSettings();
 
 		if (GlobalCore.isTab) addTabletTabs();
 		else
 			addPhoneTab();
-
 	}
 
 	private void addPhoneTab()
@@ -190,6 +201,7 @@ public class TabMainView extends MainViewBase
 
 		btn5.addAction(new CB_ActionButton(actionShowAboutView, true));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
+		btn5.addAction(new CB_ActionButton(actionShowSettings, false));
 
 		btn5.performClick();// actionShowAboutView.Execute();
 	}
@@ -238,15 +250,20 @@ public class TabMainView extends MainViewBase
 		actionShowCreditsView.setTab(this, Tab);
 		actionShowTrackableListView.setTab(this, Tab);
 		actionShowTrackListView.setTab(this, Tab);
+		actionShowSettings.setTab(this, Tab);
+		actionShowCompassView.setTab(this, Tab);
 
 		// Actions den Buttons zuweisen
 		btn1.addAction(new CB_ActionButton(actionShowCacheList, true));
 		btn1.addAction(new CB_ActionButton(actionShowTrackableListView, false));
 		btn1.addAction(new CB_ActionButton(actionShowTrackListView, false));
+		btn1.addAction(new CB_ActionButton(actionShowCacheListContextMenu, false));
+
+		btn3.addAction(new CB_ActionButton(actionShowCompassView, true));
 
 		btn5.addAction(new CB_ActionButton(actionShowAboutView, true));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
-		btn1.addAction(new CB_ActionButton(actionShowCacheListContextMenu, false));
+		btn5.addAction(new CB_ActionButton(actionShowSettings, false));
 
 		btn5.performClick();// actionShowAboutView.Execute();
 	}
@@ -285,7 +302,7 @@ public class TabMainView extends MainViewBase
 
 		// Tab den entsprechneden Actions zuweisen
 		actionShowMap.setTab(this, Tab);
-		actionShowCompassView.setTab(this, Tab);
+
 		actionShowDescriptionView.setTab(this, Tab);
 		actionShowFieldNotesView.setTab(this, Tab);
 		actionShowJokerView.setTab(this, Tab);
@@ -306,9 +323,8 @@ public class TabMainView extends MainViewBase
 		btn2.addAction(new CB_ActionButton(actionShowHint, false));
 
 		btn3.addAction(new CB_ActionButton(actionShowMap, true));
-		btn3.addAction(new CB_ActionButton(actionShowCompassView, false));
 
-		btn5.performClick();// actionShowMap.Execute();
+		btn3.performClick();// actionShowMap.Execute();
 	}
 
 }

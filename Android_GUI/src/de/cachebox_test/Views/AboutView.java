@@ -311,7 +311,15 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
-		refreshText();
+		main.mainActivity.runOnUiThread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				refreshText();
+			}
+		});
+
 	}
 
 	@Override

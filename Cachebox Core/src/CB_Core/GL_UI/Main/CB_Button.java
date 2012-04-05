@@ -6,6 +6,7 @@ import CB_Core.GL_UI.ButtonSprites;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.GL_View_Base.OnLongClickListener;
+import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowView;
@@ -13,6 +14,7 @@ import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class CB_Button extends Button implements OnClickListener, OnLongClickListener
@@ -82,8 +84,8 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 							// Action ausführen
 							action.CallExecute();
 							if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
-							else
-								aktActionView = null;
+							// else
+							// aktActionView = null;
 							break;
 						}
 					}
@@ -111,8 +113,8 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 			{
 				action.CallExecute();
 				if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
-				else
-					aktActionView = null;
+				// else
+				// aktActionView = null;
 			}
 		}
 
@@ -148,8 +150,8 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 				{
 					action.CallExecute();
 					if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
-					else
-						aktActionView = null;
+					// else
+					// aktActionView = null;
 					break;
 				}
 			}
@@ -164,11 +166,31 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 
 	// ---------- überschreiben des isPresed, weil dies zur Anzeige der Activen View benutzt wird ---------
 
+	protected static Sprite menuSprite;
+
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		if (aktActionView != null && aktActionView.getView() != null) isPressed = aktActionView.getView().isVisible();
+		boolean hasContextMenu = false;
+
+		if (aktActionView != null && aktActionView.getView() != null)
+		{
+			isPressed = aktActionView.getView().isVisible();
+			hasContextMenu = aktActionView.HasContextMenu();
+		}
 		super.render(batch);
+
+		if (hasContextMenu && isPressed)
+		{
+			// draw Menu Sprite
+			if (menuSprite == null)
+			{
+				menuSprite = new Sprite(SpriteCache.Icons.get(37));
+				menuSprite.setBounds(this.halfWidth, 5, this.halfWidth, this.halfHeight);
+			}
+
+			if (menuSprite != null) menuSprite.draw(batch);
+		}
 	}
 
 	// --------------------------------------------------------------------------------------------------
