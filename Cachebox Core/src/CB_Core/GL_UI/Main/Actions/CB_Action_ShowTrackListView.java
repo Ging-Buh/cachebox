@@ -12,7 +12,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 	public CB_Action_ShowTrackListView()
 	{
-		super("TrackList", AID_SHOW_TRACKLIST);
+		super("Tracks", AID_SHOW_TRACKLIST);
 	}
 
 	@Override

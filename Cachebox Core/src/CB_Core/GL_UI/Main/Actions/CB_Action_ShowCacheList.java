@@ -25,7 +25,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 
 	public CB_Action_ShowCacheList()
 	{
-		super("cacheList", AID_SHOW_CACHELIST);
+		super("cacheList", "  (" + String.valueOf(Database.Data.Query.size()) + ")", AID_SHOW_CACHELIST);
 	}
 
 	@Override

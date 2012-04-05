@@ -27,9 +27,13 @@ public class CB_Action
 	public static int AID_SHOW_TRACKLIST = 13;
 	public static int AID_SHOW_WAYPOINTS = 14;
 	public static int AID_SHOW_SETTINGS = 15;
+	public static int AID_TRACKLIST_CREATE = 16;
+	public static int AID_TRACKLIST_LOAD = 17;
+	public static int AID_TRACKLIST_DELETE = 18;
 
 	protected String name;
 	protected int id;
+	protected String nameExtention = "";
 
 	/**
 	 * Constructor
@@ -46,6 +50,14 @@ public class CB_Action
 		this.id = id;
 	}
 
+	public CB_Action(String name, String nameExtention, int id)
+	{
+		super();
+		this.name = name;
+		this.id = id;
+		this.nameExtention = nameExtention;
+	}
+
 	public void CallExecute()
 	{
 		Logger.LogCat("ACTION => " + name + " execute");
@@ -60,6 +72,11 @@ public class CB_Action
 	public String getName()
 	{
 		return name;
+	}
+
+	public String getNameExtention()
+	{
+		return nameExtention;
 	}
 
 	public int getId()

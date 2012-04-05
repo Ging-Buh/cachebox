@@ -16,6 +16,13 @@ public abstract class CB_Action_ShowView extends CB_Action
 		tabMainView = null;
 	}
 
+	public CB_Action_ShowView(String translationId, String translationExtention, int id)
+	{
+		super(translationId, translationExtention, id);
+		tab = null;
+		tabMainView = null;
+	}
+
 	public abstract CB_View_Base getView();
 
 	public void setTab(TabMainView tabMainView, CB_TabView tab)

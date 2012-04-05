@@ -96,7 +96,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 			{
 				CB_Action action = ba.getAction();
 				if (action == null) continue;
-				MenuItem mi = cm.addItem(action.getId(), action.getName());
+				MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtention());
 				mi.setEnabled(action.getEnabled());
 				mi.setCheckable(action.getIsCheckable());
 				mi.setChecked(action.getIsChecked());
