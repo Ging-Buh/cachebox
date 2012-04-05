@@ -2,6 +2,7 @@ package CB_Core.GL_UI.Main;
 
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowAbout;
@@ -179,26 +180,26 @@ public class TabMainView extends MainViewBase
 
 		// Actions den Buttons zuweisen
 
-		btn1.addAction(new CB_ActionButton(actionShowCacheList, true));
-		btn1.addAction(new CB_ActionButton(actionShowTrackableListView, false));
-		btn1.addAction(new CB_ActionButton(actionShowTrackListView, false));
+		btn1.addAction(new CB_ActionButton(actionShowCacheList, true, GestureDirection.Up));
+		btn1.addAction(new CB_ActionButton(actionShowTrackableListView, false, GestureDirection.Right));
+		btn1.addAction(new CB_ActionButton(actionShowTrackListView, false, GestureDirection.Down));
 
-		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true));
+		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true, GestureDirection.Up));
 		btn2.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
 		btn2.addAction(new CB_ActionButton(actionShowJokerView, false));
-		btn2.addAction(new CB_ActionButton(actionShowLogView, false));
+		btn2.addAction(new CB_ActionButton(actionShowLogView, false, GestureDirection.Down));
 		btn2.addAction(new CB_ActionButton(actionShowNotesView, false));
-		btn2.addAction(new CB_ActionButton(actionShowSolverView, false));
+		btn2.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
 		btn2.addAction(new CB_ActionButton(actionShowSpoilerView, false));
-		btn2.addAction(new CB_ActionButton(actionShowWaypointView, false));
+		btn2.addAction(new CB_ActionButton(actionShowWaypointView, false, GestureDirection.Right));
 		btn2.addAction(new CB_ActionButton(actionShowHint, false));
 
-		btn3.addAction(new CB_ActionButton(actionShowMap, true));
-		btn3.addAction(new CB_ActionButton(actionShowCompassView, false));
+		btn3.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
+		btn3.addAction(new CB_ActionButton(actionShowCompassView, false, GestureDirection.Right));
 
-		btn5.addAction(new CB_ActionButton(actionShowAboutView, true));
+		btn5.addAction(new CB_ActionButton(actionShowAboutView, true, GestureDirection.Up));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
-		btn5.addAction(new CB_ActionButton(actionShowSettings, false));
+		btn5.addAction(new CB_ActionButton(actionShowSettings, false, GestureDirection.Left));
 
 		btn5.performClick();// actionShowAboutView.Execute();
 	}

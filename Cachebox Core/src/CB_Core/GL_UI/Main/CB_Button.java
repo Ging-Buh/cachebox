@@ -8,10 +8,13 @@ import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.GL_View_Base.OnLongClickListener;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
+import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -194,5 +197,68 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 	}
 
 	// --------------------------------------------------------------------------------------------------
+
+	// Auswertung der Finger-Gesten zum Schnellzugriff auf einige ButtonActions
+	private boolean isDragged = false;
+	private Point downPos = null;
+
+	@Override
+	public boolean onTouchDown(int x, int y, int pointer, int button)
+	{
+		isDragged = false;
+		downPos = new Point(x, y);
+		return super.onTouchDown(x, y, pointer, button);
+	}
+
+	@Override
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
+	{
+		super.onTouchDragged(x, y, pointer, KineticPan);
+		if (KineticPan) GL_Listener.glListener.StopKinetic(x, y, pointer, true);
+		isDragged = true;
+		return true;
+	}
+
+	@Override
+	public boolean onTouchUp(int x, int y, int pointer, int button)
+	{
+		boolean result = super.onTouchUp(x, y, pointer, button);
+
+		if (!isDragged) return result;
+
+		int dx = x - downPos.x;
+		int dy = y - downPos.y;
+		GestureDirection direction = GestureDirection.Up;
+		if (Math.abs(dx) > Math.abs(dy))
+		{
+			if (dx > 0) direction = GestureDirection.Right;
+			else
+				direction = GestureDirection.Left;
+		}
+		else
+		{
+			if (dy > 0) direction = GestureDirection.Up;
+			else
+				direction = GestureDirection.Down;
+		}
+		for (CB_ActionButton ba : mButtonActions)
+		{
+			if (ba.getGestureDirection() == direction)
+			{
+				CB_Action action = ba.getAction();
+				if (action != null)
+				{
+					action.CallExecute();
+					if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
+					// else
+					// aktActionView = null;
+					break;
+				}
+
+			}
+		}
+		isDragged = false;
+		return true;
+	}
 
 }
