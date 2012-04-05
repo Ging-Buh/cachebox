@@ -1628,7 +1628,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			return ViewList.get(ID.getID());
 		}
 
-		if (ID == ViewConst.TRACK_LIST_VIEW) return trackablelistView = new TrackableListView(this, this);
+		if (ID == ViewConst.TB_LIST_VIEW) return trackablelistView = new TrackableListView(this, this);
 		else if (ID == ViewConst.TRACK_LIST_VIEW) return tracklistView = new TrackListView(this, this);
 		else if (ID == ViewConst.JOKER_VIEW) return jokerView = new JokerView(this, this);
 		else if (ID == ViewConst.ABOUT_VIEW) return aboutView = new AboutView(this, inflater);

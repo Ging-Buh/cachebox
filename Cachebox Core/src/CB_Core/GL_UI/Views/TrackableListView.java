@@ -24,13 +24,18 @@ public class TrackableListView extends CB_View_Base
 	@Override
 	public void onShow()
 	{
-		platformConector.showView(ViewConst.TRACK_LIST_VIEW, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+		platformConector.showView(ViewConst.TB_LIST_VIEW, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+	}
+
+	@Override
+	public void onHide()
+	{
+		platformConector.hideView(ViewConst.TB_LIST_VIEW);
 	}
 
 	@Override
 	protected void Initial()
 	{
-		platformConector.hideView(ViewConst.TRACK_LIST_VIEW);
 
 	}
 

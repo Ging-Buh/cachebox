@@ -1,7 +1,9 @@
 package CB_Core.GL_UI.Views;
 
+import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
+import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.Math.CB_RectF;
 
@@ -22,7 +24,13 @@ public class TrackListView extends CB_View_Base
 	@Override
 	public void onShow()
 	{
-		// TODO Rufe ANDROID VIEW auf
+		platformConector.showView(ViewConst.TRACK_LIST_VIEW, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+	}
+
+	@Override
+	public void onHide()
+	{
+		platformConector.hideView(ViewConst.TRACK_LIST_VIEW);
 	}
 
 	@Override
