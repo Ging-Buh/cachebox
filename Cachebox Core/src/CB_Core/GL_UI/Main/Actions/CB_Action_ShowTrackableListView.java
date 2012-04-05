@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Main.Actions;
 
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Views.TrackableListView;
@@ -32,6 +33,12 @@ public class CB_Action_ShowTrackableListView extends CB_Action_ShowView
 	public Sprite getIcon()
 	{
 		return SpriteCache.Icons.get(0);
+	}
+
+	@Override
+	public CB_View_Base getView()
+	{
+		return TabMainView.trackableListView;
 	}
 
 }

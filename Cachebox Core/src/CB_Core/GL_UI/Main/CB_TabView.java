@@ -45,7 +45,13 @@ public class CB_TabView extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
+		// Wenn die Anzahl der Buttons = der Anzahl der Möglichen Buttons ist, diese gleichmäßig verteilen
+		if (mButtonList.Buttons.size() == buttonListView.getMaxItemCount())
+		{
+			float sollDivider = (buttonListView.getWidth() - (GL_UISizes.BottomButtonHeight * mButtonList.Buttons.size()))
+					/ (mButtonList.Buttons.size() + 1);
+			buttonListView.setDividerSize(sollDivider);
+		}
 
 	}
 

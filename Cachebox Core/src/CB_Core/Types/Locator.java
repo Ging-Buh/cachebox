@@ -81,7 +81,7 @@ public class Locator
 
 	public String SpeedString()
 	{
-		if (hasSpeed) return UnitFormatter.SpeedString(speed);
+		if (hasSpeed) return UnitFormatter.SpeedString(SpeedOverGround());
 		else
 			return "-----";
 	}

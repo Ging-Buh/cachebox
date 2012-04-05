@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Main.Actions;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
@@ -81,5 +82,12 @@ public class CB_Action_Show_CacheList_ContextMenu extends CB_Action_ShowView
 	public Sprite getIcon()
 	{
 		return SpriteCache.Icons.get(7);
+	}
+
+	@Override
+	public CB_View_Base getView()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

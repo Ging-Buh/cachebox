@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Main.Actions;
 
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Views.AboutView;
@@ -33,5 +34,11 @@ public class CB_Action_ShowAbout extends CB_Action_ShowView
 	public Sprite getIcon()
 	{
 		return SpriteCache.Icons.get(5);
+	}
+
+	@Override
+	public CB_View_Base getView()
+	{
+		return TabMainView.aboutView;
 	}
 }

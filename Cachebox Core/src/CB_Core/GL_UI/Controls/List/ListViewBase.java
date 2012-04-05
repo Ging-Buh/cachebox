@@ -401,4 +401,13 @@ public abstract class ListViewBase extends CB_View_Base
 		return ret;
 	}
 
+	/**
+	 * Gibt die Anzahl der Items, welche gleichzeitig dargestellt werden können, wenn alle Items so Groß sind wie das kleinste Item in der
+	 * List, zurück.
+	 */
+	public int getMaxItemCount()
+	{
+		return mMaxItemCount;
+	}
+
 }

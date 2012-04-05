@@ -4,7 +4,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Main.CB_TabView;
 import CB_Core.GL_UI.Main.TabMainView;
 
-public class CB_Action_ShowView extends CB_Action
+public abstract class CB_Action_ShowView extends CB_Action
 {
 	protected CB_TabView tab;
 	protected TabMainView tabMainView;
@@ -16,10 +16,7 @@ public class CB_Action_ShowView extends CB_Action
 		tabMainView = null;
 	}
 
-	public CB_View_Base getView()
-	{
-		return null;
-	}
+	public abstract CB_View_Base getView();
 
 	public void setTab(TabMainView tabMainView, CB_TabView tab)
 	{

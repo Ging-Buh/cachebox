@@ -13,6 +13,8 @@ import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 public class CB_Button extends Button implements OnClickListener, OnLongClickListener
 {
 
@@ -154,5 +156,21 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 		}
 		return true;
 	}
+
+	public void performClick()
+	{
+		onClick(null, 0, 0, 0, 0);
+	}
+
+	// ---------- überschreiben des isPresed, weil dies zur Anzeige der Activen View benutzt wird ---------
+
+	@Override
+	protected void render(SpriteBatch batch)
+	{
+		if (aktActionView != null && aktActionView.getView() != null) isPressed = aktActionView.getView().isVisible();
+		super.render(batch);
+	}
+
+	// --------------------------------------------------------------------------------------------------
 
 }

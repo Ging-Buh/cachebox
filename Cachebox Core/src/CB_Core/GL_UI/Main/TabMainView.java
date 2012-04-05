@@ -6,7 +6,6 @@ import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowAbout;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCacheList;
-import CB_Core.GL_UI.Main.Actions.CB_Action_Show_CacheList_ContextMenu;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCompassView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCreditsView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowDescriptionView;
@@ -21,6 +20,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSpoilerView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackListView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackableListView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowWaypointView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_Show_CacheList_ContextMenu;
 import CB_Core.GL_UI.Views.AboutView;
 import CB_Core.GL_UI.Views.CacheListView;
 import CB_Core.GL_UI.Views.CompassView;
@@ -191,15 +191,13 @@ public class TabMainView extends MainViewBase
 		btn5.addAction(new CB_ActionButton(actionShowAboutView, true));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
 
-		actionShowAboutView.Execute();
+		btn5.performClick();// actionShowAboutView.Execute();
 	}
 
 	private void addTabletTabs()
 	{
 		addLeftForTabletsTab();
 		addRightForTabletsTab();
-		actionShowCacheList.Execute();
-		actionShowMap.Execute();
 	}
 
 	private void addLeftForTabletsTab()
@@ -249,6 +247,8 @@ public class TabMainView extends MainViewBase
 		btn5.addAction(new CB_ActionButton(actionShowAboutView, true));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
 		btn1.addAction(new CB_ActionButton(actionShowCacheListContextMenu, false));
+
+		btn5.performClick();// actionShowAboutView.Execute();
 	}
 
 	private void addRightForTabletsTab()
@@ -307,6 +307,8 @@ public class TabMainView extends MainViewBase
 
 		btn3.addAction(new CB_ActionButton(actionShowMap, true));
 		btn3.addAction(new CB_ActionButton(actionShowCompassView, false));
+
+		btn5.performClick();// actionShowMap.Execute();
 	}
 
 }
