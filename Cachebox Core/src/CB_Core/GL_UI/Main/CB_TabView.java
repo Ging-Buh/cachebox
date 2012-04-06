@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Main;
 
 import CB_Core.GL_UI.CB_View_Base;
+import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.H_ListView;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
@@ -31,6 +32,7 @@ public class CB_TabView extends CB_View_Base
 		buttonListView = new H_ListView(new CB_RectF(0, 0, this.width, GL_UISizes.BottomButtonHeight), "ButtonList von " + this.getName());
 		buttonListView.setBaseAdapter(new CustomAdapter());
 		buttonListView.setUndragable();
+		buttonListView.setBackground(SpriteCache.ButtonBack);
 		this.addChild(buttonListView);
 	}
 

@@ -4,21 +4,21 @@ filter: Linear,Linear
 repeat: none
 day_btn_zoom_up_disabled
   rotate: false
-  xy: 81, 438
+  xy: 562, 439
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 listrec_selected
   rotate: false
-  xy: 927, 438
-  size: 42, 42
-  orig: 42, 42
+  xy: 1, 657
+  size: 207, 129
+  orig: 207, 129
   offset: 0, 0
   index: -1
 toggle_led_gr
   rotate: false
-  xy: 228, 515
+  xy: 436, 657
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
@@ -32,14 +32,14 @@ Bubble
   index: -1
 shaddowrect
   rotate: false
-  xy: 179, 515
+  xy: 387, 657
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 cache_pressed
   rotate: false
-  xy: 350, 350
+  xy: 842, 350
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
@@ -60,7 +60,7 @@ arrow_GPS
   index: -1
 cache
   rotate: false
-  xy: 261, 350
+  xy: 753, 350
   size: 88, 81
   orig: 88, 81
   offset: 0, 0
@@ -74,42 +74,42 @@ arrow_Compass_Trans
   index: -1
 db_pressed
   rotate: false
-  xy: 499, 438
+  xy: 1, 527
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 zoom_back
   rotate: false
-  xy: 491, 515
+  xy: 699, 657
   size: 80, 40
   orig: 80, 40
   offset: 0, 0
   index: -1
 tool
   rotate: false
-  xy: 313, 515
+  xy: 521, 657
   size: 88, 81
   orig: 88, 81
   offset: 0, 0
   index: -1
 day_btn_default_normal_pressed
   rotate: false
-  xy: 605, 350
+  xy: 118, 439
   size: 33, 52
   orig: 33, 52
   offset: 0, 0
   index: -1
 misc_pressed
   rotate: false
-  xy: 90, 515
+  xy: 298, 657
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 db_filter_active_yellow
   rotate: false
-  xy: 410, 438
+  xy: 891, 439
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
@@ -123,84 +123,91 @@ InfoPanelBack
   index: -1
 day_btn_zoom_up_pressed
   rotate: false
-  xy: 241, 438
+  xy: 722, 439
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 listrec_secend
   rotate: false
-  xy: 884, 438
-  size: 42, 42
-  orig: 42, 42
+  xy: 716, 527
+  size: 207, 129
+  orig: 207, 129
   offset: 0, 0
   index: -1
 db
   rotate: false
-  xy: 321, 438
+  xy: 802, 439
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 dialog_center
   rotate: false
-  xy: 588, 438
+  xy: 90, 527
   size: 51, 11
   orig: 51, 11
   offset: 0, 0
   index: -1
 day_btn_pressed
   rotate: false
-  xy: 724, 350
+  xy: 237, 439
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
 misc
   rotate: false
-  xy: 1, 515
+  xy: 209, 657
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 day_btn_zoom_down_normal
   rotate: false
-  xy: 889, 350
+  xy: 402, 439
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 day_btn_zoom_down_pressed
   rotate: false
-  xy: 1, 438
+  xy: 482, 439
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
+button_list_back
+  rotate: false
+  xy: 272, 350
+  size: 480, 88
+  orig: 480, 88
+  offset: 0, 0
+  index: -1
 listrec_first
   rotate: false
-  xy: 798, 438
-  size: 42, 42
-  orig: 42, 42
+  xy: 300, 527
+  size: 207, 129
+  orig: 207, 129
   offset: 0, 0
   index: -1
 day_btn_default_normal_disabled
   rotate: false
-  xy: 571, 350
+  xy: 84, 439
   size: 33, 52
   orig: 33, 52
   offset: 0, 0
   index: -1
 day_btn_normal
   rotate: false
-  xy: 639, 350
+  xy: 152, 439
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
 dialog_header
   rotate: false
-  xy: 692, 438
+  xy: 194, 527
   size: 51, 17
   orig: 51, 17
   offset: 0, 0
@@ -212,30 +219,37 @@ Bubble_selected
   orig: 438, 173
   offset: 0, 0
   index: -1
+background
+  rotate: false
+  xy: 261, 350
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
 dialog_footer
   rotate: false
-  xy: 640, 438
+  xy: 142, 527
   size: 51, 14
   orig: 51, 14
   offset: 0, 0
   index: -1
 day_btn_zoom_down_disabled
   rotate: false
-  xy: 809, 350
+  xy: 322, 439
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 check_off
   rotate: false
-  xy: 439, 350
+  xy: 931, 350
   size: 48, 61
   orig: 48, 61
   offset: 0, 0
   index: -1
 dialog_title
   rotate: false
-  xy: 744, 438
+  xy: 246, 527
   size: 53, 16
   orig: 53, 16
   offset: 0, 0
@@ -263,28 +277,28 @@ Nav_pressed
   index: -1
 day_btn_default_normal
   rotate: false
-  xy: 537, 350
+  xy: 50, 439
   size: 33, 52
   orig: 33, 52
   offset: 0, 0
   index: -1
 check_on
   rotate: false
-  xy: 488, 350
+  xy: 1, 439
   size: 48, 61
   orig: 48, 61
   offset: 0, 0
   index: -1
 listrec_pressed
   rotate: false
-  xy: 841, 438
-  size: 42, 42
-  orig: 42, 42
+  xy: 508, 527
+  size: 207, 129
+  orig: 207, 129
   offset: 0, 0
   index: -1
 day_btn_zoom_up_normal
   rotate: false
-  xy: 161, 438
+  xy: 642, 439
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
@@ -298,7 +312,7 @@ arrow_GPS_Trans
   index: -1
 tool_pressed
   rotate: false
-  xy: 402, 515
+  xy: 610, 657
   size: 88, 81
   orig: 88, 81
   offset: 0, 0

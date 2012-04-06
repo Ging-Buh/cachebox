@@ -7,6 +7,7 @@ import CB_Core.Events.CacheListChangedEvent;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
@@ -33,13 +34,14 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void onShow()
 	{
+		setBackground(SpriteCache.ListBack);
+
 		CachListChangedEventList.Add(this);
 		SelectedCacheEventList.Add(this);
 		lvAdapter = new CustomAdapter(Database.Data.Query);

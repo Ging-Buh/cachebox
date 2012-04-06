@@ -14,6 +14,7 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -22,7 +23,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class CacheInfo extends CB_View_Base
 {
-
+	public static final Color gcVoteColor = new Color(0.5f, 0.5f, 1f, 1f);
 	public static final int SHOW_COMPASS = 1;
 	public static final int SHOW_NAME = 2;
 	public static final int SHOW_OWNER = 4;
@@ -216,6 +217,7 @@ public class CacheInfo extends CB_View_Base
 				mStarSize.height);
 		mRatingSprite.setOrigin(0, mStarSize.halfHeight);
 		mRatingSprite.setRotation(90);
+		mRatingSprite.setColor(gcVoteColor);
 
 		mLeft += starHeight;
 

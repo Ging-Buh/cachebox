@@ -1,5 +1,6 @@
 package CB_Core.Events;
 
+import CB_Core.GL_UI.MenuID;
 import CB_Core.GL_UI.ViewID;
 
 public class platformConector
@@ -16,6 +17,8 @@ public class platformConector
 		void showForDialog();
 
 		void hideForDialog();
+
+		void menuItemClicked(MenuID ID);
 	}
 
 	private static IShowViewListner showViewListner;
@@ -54,6 +57,14 @@ public class platformConector
 		if (showViewListner != null)
 		{
 			showViewListner.hideForDialog();
+		}
+	}
+
+	public static void menuItemClicked(MenuID ID)
+	{
+		if (showViewListner != null)
+		{
+			showViewListner.menuItemClicked(ID);
 		}
 	}
 

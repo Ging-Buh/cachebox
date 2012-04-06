@@ -1,25 +1,19 @@
 package de.cachebox_test.Views;
 
+import java.io.File;
+
+import org.openintents.intents.FileManagerIntents;
+
+import CB_Core.Config;
+import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Types.Coordinate;
-import CB_Core.Config;
-import CB_Core.FileIO;
-import CB_Core.GlobalCore;
-import de.cachebox_test.Global;
-import de.cachebox_test.R;
-import de.cachebox_test.main;
-import de.cachebox_test.Events.ViewOptionsMenu;
-import de.cachebox_test.Map.RouteOverlay;
-import de.cachebox_test.Map.RouteOverlay.Trackable;
-import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.AllContextMenuCallHandler;
-import de.cachebox_test.Views.Forms.EditCoordinate;
-import de.cachebox_test.Views.Forms.MessageBox;
-import de.cachebox_test.Views.Forms.projectionCoordinate;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -35,23 +29,18 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-
-import java.io.File;
-
-import org.openintents.intents.FileManagerIntents;
-
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.provider.MediaStore.Images;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
+import de.cachebox_test.Global;
+import de.cachebox_test.R;
+import de.cachebox_test.main;
+import de.cachebox_test.Events.ViewOptionsMenu;
+import de.cachebox_test.Map.RouteOverlay;
+import de.cachebox_test.Map.RouteOverlay.Trackable;
+import de.cachebox_test.Ui.ActivityUtils;
+import de.cachebox_test.Ui.AllContextMenuCallHandler;
+import de.cachebox_test.Views.Forms.EditCoordinate;
+import de.cachebox_test.Views.Forms.MessageBox;
+import de.cachebox_test.Views.Forms.projectionCoordinate;
 
 /**
  * Liste zur darstellung und verwaltung der Routes in RouteOverlay.Routes <br>
@@ -75,16 +64,11 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 
 	// Schrit-ablauf Member
 	/**
-	 * Aktiver Schritt einer Schritt-ablaufkette </br> wird benötigt, um zu
-	 * erkennen, welches ActivitieResult behandelt werden soll <h1>Point to
-	 * Point ablaufkette:</h1> Schritt1: get from Coords
-	 * [value=P2P_GET_FIRST_POINT] </br> Schritt2: get to Coords
-	 * [value=P2P_GET_SECEND_POINT] </br><h1>Point to Point ablaufkette:</h1>
-	 * Schritt1: get from Coords [value=PROJECT_GET_FIRST_POINT] </br> Schritt2:
-	 * get projection values [value=PROJECT_GET_PROJECT_VALUES] </br><h1>Point
-	 * to Point ablaufkette:</h1> Schritt1: get from Coords
-	 * [value=CIRCLE_GET_FIRST_POINT] </br> Schritt2: get circ radius
-	 * [value=CIRCLE_GET_PROJECT_VALUE]
+	 * Aktiver Schritt einer Schritt-ablaufkette </br> wird benötigt, um zu erkennen, welches ActivitieResult behandelt werden soll <h1>
+	 * Point to Point ablaufkette:</h1> Schritt1: get from Coords [value=P2P_GET_FIRST_POINT] </br> Schritt2: get to Coords
+	 * [value=P2P_GET_SECEND_POINT] </br><h1>Point to Point ablaufkette:</h1> Schritt1: get from Coords [value=PROJECT_GET_FIRST_POINT]
+	 * </br> Schritt2: get projection values [value=PROJECT_GET_PROJECT_VALUES] </br><h1>Point to Point ablaufkette:</h1> Schritt1: get from
+	 * Coords [value=CIRCLE_GET_FIRST_POINT] </br> Schritt2: get circ radius [value=CIRCLE_GET_PROJECT_VALUE]
 	 */
 	private static int nextStep = -1;
 	private static final int P2P_GET_FIRST_POINT = 1;
@@ -173,8 +157,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 	}
 
 	public class CustomAdapter extends BaseAdapter /*
-													 * implements
-													 * OnClickListener
+													 * implements OnClickListener
 													 */
 	{
 
@@ -221,7 +204,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 	/**
 	 * Lädt einen Track in die RouteList
 	 */
-	private void HandleLoad()
+	public void HandleLoad()
 	{
 		String fileName = Config.settings.TrackFolder.getValue();
 
@@ -247,10 +230,9 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 	}
 
 	/**
-	 * erstellt einen neuen Track aus Point und Radius und fügt diesen der
-	 * Routes List hinzu
+	 * erstellt einen neuen Track aus Point und Radius und fügt diesen der Routes List hinzu
 	 */
-	private void HandleGenerate_Circle()
+	public void HandleGenerate_Circle()
 	{
 
 		showEditCoord(CIRCLE_GET_FIRST_POINT);
@@ -258,19 +240,17 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 	}
 
 	/**
-	 * erstellt einen neuen Track aus Point und Point und fügt diesen der Routes
-	 * List hinzu
+	 * erstellt einen neuen Track aus Point und Point und fügt diesen der Routes List hinzu
 	 */
-	private void HandleGenerate_Point2Point()
+	public void HandleGenerate_Point2Point()
 	{
 		showEditCoord(P2P_GET_FIRST_POINT);
 	}
 
 	/**
-	 * erstellt einen Track aus Point,Richtung und Entfernung und fügt diesen
-	 * der Routes List hinzu
+	 * erstellt einen Track aus Point,Richtung und Entfernung und fügt diesen der Routes List hinzu
 	 */
-	private void HandleGenerate_Projection()
+	public void HandleGenerate_Projection()
 	{
 		showEditCoord(PROJECT_GET_FIRST_POINT);
 	}
@@ -278,7 +258,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 	/**
 	 * Löscht den selectierten Track aus der Routes List
 	 */
-	private void HandleTrackDelete()
+	public void HandleTrackDelete()
 	{
 		// MessageBox.Show("Handle Track Delete");
 		if (selectedItem == null)
@@ -662,8 +642,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 	}
 
 	/**
-	 * Read track from gpx file attention it is possible that a gpx file
-	 * contains more than 1 <trk> segments in this case all segments was
+	 * Read track from gpx file attention it is possible that a gpx file contains more than 1 <trk> segments in this case all segments was
 	 * connectet to one track
 	 * 
 	 * @param file
@@ -679,40 +658,23 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 		try
 		{
 			/*
-			 * BinaryReader reader = new BinaryReader(File.Open(file,
-			 * FileMode.Open)); long length = reader.BaseStream.Length; String
-			 * line = null; bool inBody = false; bool inTrk = false; bool
-			 * ReadName = false; Coordinate lastAcceptedCoordinate = null;
-			 * StringBuilder sb = new StringBuilder(); while
-			 * (reader.BaseStream.Position < length) { char nextChar =
-			 * reader.ReadChar(); sb.Append(nextChar); if (nextChar == '>') {
-			 * line = sb.ToString().Trim().ToLower(); sb = new StringBuilder();
-			 * // Read Routename form gpx file // attention it is possible that
-			 * a gpx file contains more than 1 <trk> segments // In this case
-			 * the first name was used if (ReadName && (route.Name == null)) {
-			 * route.Name = line.Substring(0,line.IndexOf("</name>")); ReadName
-			 * = false; continue; } if (!inTrk) { // Begin of the Track
-			 * detected? if (line.IndexOf("<trk>") > -1) inTrk = true; continue;
-			 * } else { // found <name>? if (line.IndexOf("<name>") > -1) {
-			 * ReadName = true; continue; } } if (!inBody) { // Anfang der
-			 * Trackpoints gefunden? if (line.IndexOf("<trkseg>") > -1) inBody =
-			 * true; continue; } // Ende gefunden? if (line.IndexOf("</trkseg>")
-			 * > 0) break; if (line.IndexOf("<trkpt") > -1) { // Trackpoint
-			 * lesen int lonIdx = line.IndexOf("lon=\"") + 5; int latIdx =
-			 * line.IndexOf("lat=\"") + 5; int lonEndIdx = line.IndexOf("\"",
-			 * lonIdx); int latEndIdx = line.IndexOf("\"", latIdx); String
-			 * latStr = line.Substring(latIdx, latEndIdx - latIdx); String
-			 * lonStr = line.Substring(lonIdx, lonEndIdx - lonIdx); double lat =
-			 * double.Parse(latStr, NumberFormatInfo.InvariantInfo); double lon
-			 * = double.Parse(lonStr, NumberFormatInfo.InvariantInfo); if
-			 * (lastAcceptedCoordinate != null) if (Datum.WGS84.Distance(lat,
-			 * lon, lastAcceptedCoordinate.Latitude,
-			 * lastAcceptedCoordinate.Longitude) < minDistanceMeters) continue;
-			 * lastAcceptedCoordinate = new Coordinate(lat, lon); PointD
-			 * projectedPoint = new
-			 * PointD(Descriptor.LongitudeToTileX(projectionZoomLevel, lon),
-			 * Descriptor.LatitudeToTileY(projectionZoomLevel, lat));
-			 * route.Points.Add(projectedPoint); } } } reader.Close();
+			 * BinaryReader reader = new BinaryReader(File.Open(file, FileMode.Open)); long length = reader.BaseStream.Length; String line =
+			 * null; bool inBody = false; bool inTrk = false; bool ReadName = false; Coordinate lastAcceptedCoordinate = null; StringBuilder
+			 * sb = new StringBuilder(); while (reader.BaseStream.Position < length) { char nextChar = reader.ReadChar();
+			 * sb.Append(nextChar); if (nextChar == '>') { line = sb.ToString().Trim().ToLower(); sb = new StringBuilder(); // Read
+			 * Routename form gpx file // attention it is possible that a gpx file contains more than 1 <trk> segments // In this case the
+			 * first name was used if (ReadName && (route.Name == null)) { route.Name = line.Substring(0,line.IndexOf("</name>")); ReadName
+			 * = false; continue; } if (!inTrk) { // Begin of the Track detected? if (line.IndexOf("<trk>") > -1) inTrk = true; continue; }
+			 * else { // found <name>? if (line.IndexOf("<name>") > -1) { ReadName = true; continue; } } if (!inBody) { // Anfang der
+			 * Trackpoints gefunden? if (line.IndexOf("<trkseg>") > -1) inBody = true; continue; } // Ende gefunden? if
+			 * (line.IndexOf("</trkseg>") > 0) break; if (line.IndexOf("<trkpt") > -1) { // Trackpoint lesen int lonIdx =
+			 * line.IndexOf("lon=\"") + 5; int latIdx = line.IndexOf("lat=\"") + 5; int lonEndIdx = line.IndexOf("\"", lonIdx); int
+			 * latEndIdx = line.IndexOf("\"", latIdx); String latStr = line.Substring(latIdx, latEndIdx - latIdx); String lonStr =
+			 * line.Substring(lonIdx, lonEndIdx - lonIdx); double lat = double.Parse(latStr, NumberFormatInfo.InvariantInfo); double lon =
+			 * double.Parse(lonStr, NumberFormatInfo.InvariantInfo); if (lastAcceptedCoordinate != null) if (Datum.WGS84.Distance(lat, lon,
+			 * lastAcceptedCoordinate.Latitude, lastAcceptedCoordinate.Longitude) < minDistanceMeters) continue; lastAcceptedCoordinate =
+			 * new Coordinate(lat, lon); PointD projectedPoint = new PointD(Descriptor.LongitudeToTileX(projectionZoomLevel, lon),
+			 * Descriptor.LatitudeToTileY(projectionZoomLevel, lat)); route.Points.Add(projectedPoint); } } } reader.Close();
 			 */
 
 			if (route.Points.size() < 2) route.Name = "no Route segment found";

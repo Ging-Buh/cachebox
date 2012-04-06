@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import CB_Core.Config;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
@@ -47,6 +48,9 @@ public class SpriteCache
 	public static ArrayList<Sprite> ChkIcons = null;
 	public static ArrayList<Sprite> Dialog = null;
 	public static ArrayList<Sprite> SizesIcons = null;
+	public static NinePatch ListBack = null;
+	public static Sprite ButtonBack = null;
+	public static Sprite AboutBack = null;
 
 	public static ButtonSprites CacheList;
 	public static ButtonSprites Cache;
@@ -259,6 +263,9 @@ public class SpriteCache
 		Icons.add(iconAtlas.createSprite("tb_list_icon")); // 38
 		loadButtnSprites();
 
+		ListBack = new NinePatch(uiAtlas.createSprite("background"), 1, 1, 1, 1);
+		ButtonBack = uiAtlas.createSprite("button_list_back");
+		AboutBack = iconAtlas.createSprite("splash_back");
 	}
 
 	private static void loadButtnSprites()

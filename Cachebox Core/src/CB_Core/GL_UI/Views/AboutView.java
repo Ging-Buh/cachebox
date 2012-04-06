@@ -3,11 +3,9 @@ package CB_Core.GL_UI.Views;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
-import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
-import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Label;
-import CB_Core.GL_UI.Menu.CB_AllContextMenuHandler;
 import CB_Core.Math.CB_RectF;
 
 public class AboutView extends CB_View_Base
@@ -25,18 +23,6 @@ public class AboutView extends CB_View_Base
 		lblDummy.setText("Dummy AboutView");
 		this.addChild(lblDummy);
 
-		Button btn = new Button(new CB_RectF(100, 100, 100, 50), "");
-		btn.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				CB_AllContextMenuHandler.showBtnMiscContextMenu();
-				return true;
-			}
-		});
-		this.addChild(btn);
 	}
 
 	@Override
@@ -55,7 +41,7 @@ public class AboutView extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
+		this.setBackground(SpriteCache.AboutBack);
 
 	}
 

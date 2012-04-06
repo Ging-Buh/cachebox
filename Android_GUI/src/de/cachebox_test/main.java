@@ -37,6 +37,8 @@ import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.platformConector.IShowViewListner;
 import CB_Core.Events.platformConector.isOnlineListner;
+import CB_Core.GL_UI.MenuID;
+import CB_Core.GL_UI.MenuItemConst;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.ViewID.UI_Pos;
@@ -3728,10 +3730,35 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				});
 
 			}
+
+			@Override
+			public void menuItemClicked(MenuID ID)
+			{
+				if (ID == MenuItemConst.TRACK_LIST_LOAD)
+				{
+					if (tracklistView != null) tracklistView.HandleLoad();
+				}
+				else if (ID == MenuItemConst.TRACK_LIST_DELETE)
+				{
+					if (tracklistView != null) tracklistView.HandleTrackDelete();
+				}
+				else if (ID == MenuItemConst.TRACK_LIST_CIRCLE)
+				{
+					if (tracklistView != null) tracklistView.HandleGenerate_Circle();
+				}
+				else if (ID == MenuItemConst.TRACK_LIST_P2P)
+				{
+					if (tracklistView != null) tracklistView.HandleGenerate_Point2Point();
+				}
+				else if (ID == MenuItemConst.TRACK_LIST_PROJECT)
+				{
+					if (tracklistView != null) tracklistView.HandleGenerate_Projection();
+				}
+
+			}
 		});
 
 	}
-
 	// #########################################################
 
 }

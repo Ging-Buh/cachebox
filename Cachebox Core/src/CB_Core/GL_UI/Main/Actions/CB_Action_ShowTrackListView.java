@@ -1,13 +1,12 @@
 package CB_Core.GL_UI.Main.Actions;
 
+import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
+import CB_Core.GL_UI.MenuItemConst;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Main.TabMainView;
-import CB_Core.GL_UI.Main.Actions.MenuActions.CB_Action_TrackList_Create;
-import CB_Core.GL_UI.Main.Actions.MenuActions.CB_Action_TrackList_Delete;
-import CB_Core.GL_UI.Main.Actions.MenuActions.CB_Action_TrackList_Load;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.TrackListView;
@@ -52,6 +51,9 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	private static final int GENERATE = 1;
 	private static final int LOAD = 2;
 	private static final int DELETE = 3;
+	private static final int P2P = 4;
+	private static final int PROJECT = 5;
+	private static final int CIRCLE = 6;
 
 	@Override
 	public boolean HasContextMenu()
@@ -62,7 +64,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	@Override
 	public boolean ShowContextMenu()
 	{
-		Menu cm = new Menu("CacheListContextMenu");
+		Menu cm = new Menu("TrackListContextMenu");
 
 		cm.setItemClickListner(new OnClickListener()
 		{
@@ -73,13 +75,13 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 				switch (((MenuItem) v).getMenuItemId())
 				{
 				case GENERATE:
-					new CB_Action_TrackList_Create().Execute();
+					showMenuCreate();
 					return true;
 				case LOAD:
-					new CB_Action_TrackList_Load().Execute();
+					platformConector.menuItemClicked(MenuItemConst.TRACK_LIST_LOAD);
 					return true;
 				case DELETE:
-					new CB_Action_TrackList_Delete().Execute();
+					platformConector.menuItemClicked(MenuItemConst.TRACK_LIST_DELETE);
 					return true;
 
 				}
@@ -87,15 +89,43 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 			}
 		});
 
-		MenuItem mi;
-
-		mi = cm.addItem(GENERATE, "generate");
-		mi = cm.addItem(LOAD, "load");
-		mi = cm.addItem(DELETE, "delete");
+		cm.addItem(GENERATE, "generate");
+		cm.addItem(LOAD, "load");
+		cm.addItem(DELETE, "delete");
 
 		cm.show();
 
 		return true;
 	}
 
+	private void showMenuCreate()
+	{
+		Menu cm2 = new Menu("TrackListCreateContextMenu");
+		cm2.setItemClickListner(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				switch (((MenuItem) v).getMenuItemId())
+				{
+				case P2P:
+					platformConector.menuItemClicked(MenuItemConst.TRACK_LIST_P2P);
+					return true;
+				case PROJECT:
+					platformConector.menuItemClicked(MenuItemConst.TRACK_LIST_PROJECT);
+					return true;
+				case CIRCLE:
+					platformConector.menuItemClicked(MenuItemConst.TRACK_LIST_CIRCLE);
+					return true;
+				}
+				return false;
+			}
+		});
+		cm2.addItem(P2P, "Point2Point");
+		cm2.addItem(PROJECT, "Projection");
+		cm2.addItem(CIRCLE, "Circle");
+
+		cm2.show();
+	}
 }
