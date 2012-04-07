@@ -25,6 +25,7 @@ public class MenuItem extends ListViewItemBase
 	private boolean mIsCheckable = false;
 	private boolean mIsChecked = false;
 	private boolean mLeft = false;
+	private Object data = null;
 
 	private Image mImage;
 	private int mID;
@@ -235,6 +236,16 @@ public class MenuItem extends ListViewItemBase
 	{
 		mLeft = value;
 		this.resetInitial();
+	}
+
+	public void setData(Object data)
+	{
+		this.data = data;
+	}
+
+	public Object getData()
+	{
+		return this.data;
 	}
 
 }

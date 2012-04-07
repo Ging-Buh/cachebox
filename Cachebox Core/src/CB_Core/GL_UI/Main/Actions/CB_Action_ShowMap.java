@@ -8,6 +8,8 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.MapView;
+import CB_Core.Map.Layer;
+import CB_Core.Map.ManagerBase;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -67,6 +69,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 			{
 				switch (((MenuItem) v).getMenuItemId())
 				{
+				case MI_LAYER:
+					Layer layer = (Layer) ((MenuItem) v).getData();
+					TabMainView.mapView.SetCurrentLayer(layer);
+					return true;
 				case MI_ROTATE:
 					TabMainView.mapView.SetAlignToCompass(!TabMainView.mapView.GetAlignToCompass());
 					return true;
@@ -79,6 +85,16 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		MenuItem mi;
 
 		mi = cm.addItem(MI_LAYER, "Layer");
+		for (Layer layer : ManagerBase.Manager.Layers)
+		{
+			mi = cm.addItem(MI_LAYER, layer.Name);
+			mi.setData(layer);
+			mi.setCheckable(true);
+			if (layer == TabMainView.mapView.CurrentLayer)
+			{
+				mi.setChecked(true);
+			}
+		}
 		mi = cm.addItem(MI_ROTATE, "Rotate Map");
 		mi.setCheckable(true);
 		mi.setChecked(TabMainView.mapView.GetAlignToCompass());
@@ -86,5 +102,4 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		cm.show();
 		return true;
 	}
-
 }

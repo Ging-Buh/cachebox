@@ -1,5 +1,6 @@
 package de;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -12,6 +13,8 @@ import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.PositionChangedEventList;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.Map.Descriptor;
+import CB_Core.Map.Layer;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
@@ -24,6 +27,8 @@ import CB_Core.GL_UI.ViewConst;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+
+import de.Map.Manager;
 
 
 public class DesktopMain {
@@ -51,6 +56,28 @@ public class DesktopMain {
 		GL_View_Base.debug = debug;
 		GL_View_Base.disableScissor= scissor;
 		
+		Manager manager = new Manager();
+		// Map Packs laden
+		File dir = new File(Config.settings.MapPackFolder.getValue());
+		String[] files = dir.list();
+		if (!(files == null))
+		{
+			if (files.length > 0)
+			{
+				for (String file : files)
+				{
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack")) manager.LoadMapPack(Config.settings.MapPackFolder
+							.getValue() + "/" + file);
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("map"))
+					{
+						Layer layer = new Layer(file, file, "");
+						layer.isMapsForge = true;
+						manager.Layers.add(layer);
+					}
+				}
+			}
+		}
+		Descriptor.Init();
 		
 		int sw = ui.Window.height > ui.Window.width ? ui.Window.width
 				: ui.Window.height;
