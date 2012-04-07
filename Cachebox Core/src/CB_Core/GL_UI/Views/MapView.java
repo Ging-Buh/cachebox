@@ -327,7 +327,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		camera.zoom = getMapTilePosFactor(aktZoom);
 		endCameraZoom = camera.zoom;
 		diffCameraZoom = 0;
-		camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
+		// camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
+		camera.position.set(0, 0, 0);
 
 		// textMatrix.setToOrtho2D(0, 0, width, height);
 
@@ -411,9 +412,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			long faktor = getMapTilePosFactor(aktZoom);
 			Point pan = kineticPan.getAktPan();
 			// debugString = pan.x + " - " + pan.y;
-			camera.position.add(pan.x * faktor, pan.y * faktor, 0);
-			screenCenterW.x = camera.position.x;
-			screenCenterW.y = camera.position.y;
+			// camera.position.add(pan.x * faktor, pan.y * faktor, 0);
+			// screenCenterW.x = camera.position.x;
+			// screenCenterW.y = camera.position.y;
+			screenCenterW.x += pan.x * faktor;
+			screenCenterW.y += pan.y * faktor;
 			calcCenter();
 
 			if (kineticPan.getFertig())
@@ -552,8 +555,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				// werden muﬂ
 				long posFactor = getMapTilePosFactor(tile.Descriptor.Zoom);
 
-				float xPos = tile.Descriptor.X * posFactor * 256;
-				float yPos = -(tile.Descriptor.Y + 1) * posFactor * 256;
+				float xPos = tile.Descriptor.X * posFactor * 256 - screenCenterW.x;
+				float yPos = -(tile.Descriptor.Y + 1) * posFactor * 256 - screenCenterW.y;
 				float xSize = tile.texture.getWidth() * posFactor;
 				float ySize = tile.texture.getHeight() * posFactor;
 				batch.draw(tile.texture, xPos, yPos, xSize, ySize);
@@ -1187,7 +1190,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		screenCenterW.x = newCenter.x;
 		screenCenterW.y = -newCenter.y;
-		if (camera != null) camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
+		// if (camera != null) camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
 		GL_Listener.glListener.renderOnce(this);
 	}
 
@@ -1666,10 +1669,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			Point lastPoint = (Point) fingerDown.values().toArray()[0];
 			// debugString += " - " + (lastPoint.x - x) * faktor + " - " + (y - lastPoint.y) * faktor;
 
-			camera.position.add((lastPoint.x - x) * faktor, (y - lastPoint.y) * faktor, 0);
-			// debugString = camera.position.x + " - " + camera.position.y;
-			screenCenterW.x = camera.position.x;
-			screenCenterW.y = camera.position.y;
+			// camera.position.add((lastPoint.x - x) * faktor, (y - lastPoint.y) * faktor, 0);
+			// screenCenterW.x = camera.position.x;
+			// screenCenterW.y = camera.position.y;
+			screenCenterW.x += (lastPoint.x - x) * faktor;
+			screenCenterW.y += (y - lastPoint.y) * faktor;
 			calcCenter();
 
 			// if (kineticPan == null) kineticPan = new KineticPan();
