@@ -72,6 +72,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 		if (mButtonActions.size() > 1)
 		{
 			Menu cm = new Menu("Name");
+
 			cm.setItemClickListner(new OnClickListener()
 			{
 				@Override

@@ -29,7 +29,6 @@ import CB_Core.GL_UI.Controls.ZoomScale;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Main.MainView;
 import CB_Core.GL_UI.Main.MainViewBase;
-import CB_Core.GL_UI.Menu.CB_AllContextMenuHandler;
 import CB_Core.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
@@ -279,7 +278,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			@Override
 			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				CB_AllContextMenuHandler.showMapViewGLContextMenu();
+				// CB_AllContextMenuHandler.showMapViewGLContextMenu();
 				return true;
 			}
 		});

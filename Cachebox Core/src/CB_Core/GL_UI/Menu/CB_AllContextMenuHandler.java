@@ -134,55 +134,55 @@ public class CB_AllContextMenuHandler
 
 	}
 
-	public static void showMapViewGLContextMenu()
-	{
-		Menu icm = new Menu("menu_mapviewgl");
-		icm.setItemClickListner(onItemClickListner);
-		MenuItem mi;
+	// public static void showMapViewGLContextMenu()
+	// {
+	// Menu icm = new Menu("menu_mapviewgl");
+	// icm.setItemClickListner(onItemClickListner);
+	// MenuItem mi;
+	//
+	// mi = icm.addItem(MI_Layer, "Layer");
+	// mi = icm.addItem(MI_ALIGN_TO_COMPSS, "AlignToCompass");
+	// mi.setCheckable(true);
+	// mi.setChecked(MapView.that.GetAlignToCompass());
+	//
+	// mi = icm.addItem(MI_SMOOTH_SCROLLING, "SmoothScrolling");
+	// mi = icm.addItem(MI_SETTINGS, "settings", SpriteCache.Icons.get(26));
+	// mi = icm.addItem(MI_SEARCH, "search", SpriteCache.Icons.get(27));
+	// mi = icm.addItem(MI_MAPVIEW_VIEW, "view");
+	// mi = icm.addItem(MI_TREC_REC, "TrackRec");
+	//
+	// icm.show();
+	// }
 
-		mi = icm.addItem(MI_Layer, "Layer");
-		mi = icm.addItem(MI_ALIGN_TO_COMPSS, "AlignToCompass");
-		mi.setCheckable(true);
-		mi.setChecked(MapView.that.GetAlignToCompass());
-
-		mi = icm.addItem(MI_SMOOTH_SCROLLING, "SmoothScrolling");
-		mi = icm.addItem(MI_SETTINGS, "settings", SpriteCache.Icons.get(26));
-		mi = icm.addItem(MI_SEARCH, "search", SpriteCache.Icons.get(27));
-		mi = icm.addItem(MI_MAPVIEW_VIEW, "view");
-		mi = icm.addItem(MI_TREC_REC, "TrackRec");
-
-		icm.show();
-	}
-
-	public static void showMapViewLayerMenu()
-	{
-		Menu icm = new Menu("MapViewShowLayerContextMenu");
-
-		icm.setItemClickListner(onItemClickListner);
-		MenuItem mi;
-
-		mi = icm.addItem(MI_HIDE_FINDS, "HideFinds");
-		mi.setCheckable(true);
-		mi.setChecked(MapView.that.hideMyFinds);
-
-		mi = icm.addItem(MI_SHOW_RATINGS, "ShowRatings");
-		mi.setCheckable(true);
-		mi.setChecked(MapView.that.showRating);
-
-		mi = icm.addItem(MI_SHOW_DT, "ShowDT");
-		mi.setCheckable(true);
-		mi.setChecked(MapView.that.showDT);
-
-		mi = icm.addItem(MI_SHOW_TITLE, "ShowTitle");
-		mi.setCheckable(true);
-		mi.setChecked(MapView.that.showTitles);
-
-		mi = icm.addItem(MI_SHOW_DIRECT_LINE, "ShowDirectLine");
-		mi.setCheckable(true);
-		mi.setChecked(MapView.that.showDirektLine);
-
-		icm.show();
-	}
+	// public static void showMapViewLayerMenu()
+	// {
+	// Menu icm = new Menu("MapViewShowLayerContextMenu");
+	//
+	// icm.setItemClickListner(onItemClickListner);
+	// MenuItem mi;
+	//
+	// mi = icm.addItem(MI_HIDE_FINDS, "HideFinds");
+	// mi.setCheckable(true);
+	// mi.setChecked(MapView.that.hideMyFinds);
+	//
+	// mi = icm.addItem(MI_SHOW_RATINGS, "ShowRatings");
+	// mi.setCheckable(true);
+	// mi.setChecked(MapView.that.showRating);
+	//
+	// mi = icm.addItem(MI_SHOW_DT, "ShowDT");
+	// mi.setCheckable(true);
+	// mi.setChecked(MapView.that.showDT);
+	//
+	// mi = icm.addItem(MI_SHOW_TITLE, "ShowTitle");
+	// mi.setCheckable(true);
+	// mi.setChecked(MapView.that.showTitles);
+	//
+	// mi = icm.addItem(MI_SHOW_DIRECT_LINE, "ShowDirectLine");
+	// mi.setCheckable(true);
+	// mi.setChecked(MapView.that.showDirektLine);
+	//
+	// icm.show();
+	// }
 
 	private static OnClickListener onItemClickListner = new OnClickListener()
 	{
@@ -197,9 +197,9 @@ public class CB_AllContextMenuHandler
 				HintDialog.show();
 				return true;
 
-			case MI_MAPVIEW_VIEW:
-				showMapViewLayerMenu();
-				return true;
+				// case MI_MAPVIEW_VIEW:
+				// showMapViewLayerMenu();
+				// return true;
 
 			case MI_ALIGN_TO_COMPSS:
 				MapView.that.SetAlignToCompass(!MapView.that.GetAlignToCompass());

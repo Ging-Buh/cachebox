@@ -18,8 +18,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Menu extends Dialog
 {
-	public static final CB_RectF MENU_REC = new CB_RectF(0, 0, 400, 60); // wird mit jedem Item größer
-	public static float ItemHeight = -1f;
+	public static CB_RectF MENU_REC = new CB_RectF(0, 0, 400, 60); // wird mit jedem Item größer
+	public float ItemHeight = -1f;
 
 	private ArrayList<MenuItem> mItems = new ArrayList<MenuItem>();
 	private V_ListView mListView;
@@ -60,7 +60,9 @@ public class Menu extends Dialog
 		mListView.setBaseAdapter(new CustomAdapter());
 
 		super.Initial();
-
+		if (mListView.getMaxItemCount() < mItems.size()) mListView.setDragable();
+		else
+			mListView.setUndragable();
 	}
 
 	public class CustomAdapter implements Adapter
@@ -97,8 +99,15 @@ public class Menu extends Dialog
 
 	public MenuItem addItem(int ID, String StringId, String anhang)
 	{
-
-		String trans = GlobalCore.Translations.Get(StringId) + anhang;
+		String trans;
+		if (StringId == null || StringId.equals(""))
+		{
+			trans = anhang;
+		}
+		else
+		{
+			trans = GlobalCore.Translations.Get(StringId) + anhang;
+		}
 
 		MenuItem item = new MenuItem(new SizeF(this.width * 0.95f, ItemHeight), mItems.size(), ID, "Menu Item@" + ID);
 
@@ -106,7 +115,8 @@ public class Menu extends Dialog
 
 		if (higherValue < UiSizes.getWindowHeight() * 0.8f)
 		{
-			this.setHeight((higherValue));
+			this.setSize(UiSizes.getWindowWidth() / 1.2f, higherValue);
+
 			this.resetInitial();
 		}
 
@@ -138,6 +148,7 @@ public class Menu extends Dialog
 		}
 
 		GL_Listener.glListener.showDialog(this);
+
 	}
 
 	public MenuItem addItem(int ID, String StringId, Sprite icon)

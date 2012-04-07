@@ -185,14 +185,14 @@ public class TabMainView extends MainViewBase
 		btn1.addAction(new CB_ActionButton(actionShowTrackListView, false, GestureDirection.Down));
 
 		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true, GestureDirection.Up));
+		btn2.addAction(new CB_ActionButton(actionShowWaypointView, false, GestureDirection.Right));
+		btn2.addAction(new CB_ActionButton(actionShowLogView, false, GestureDirection.Down));
+		btn2.addAction(new CB_ActionButton(actionShowHint, false));
+		btn2.addAction(new CB_ActionButton(actionShowSpoilerView, false));
 		btn2.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
 		btn2.addAction(new CB_ActionButton(actionShowJokerView, false));
-		btn2.addAction(new CB_ActionButton(actionShowLogView, false, GestureDirection.Down));
 		btn2.addAction(new CB_ActionButton(actionShowNotesView, false));
 		btn2.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
-		btn2.addAction(new CB_ActionButton(actionShowSpoilerView, false));
-		btn2.addAction(new CB_ActionButton(actionShowWaypointView, false, GestureDirection.Right));
-		btn2.addAction(new CB_ActionButton(actionShowHint, false));
 
 		btn3.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
 		btn3.addAction(new CB_ActionButton(actionShowCompassView, false, GestureDirection.Right));

@@ -165,7 +165,7 @@ public abstract class ListViewBase extends CB_View_Base
 	 */
 	public void setDragable()
 	{
-		mIsDrageble = false;
+		mIsDrageble = true;
 	}
 
 	public void setDisposeFlag(Boolean CanDispose)

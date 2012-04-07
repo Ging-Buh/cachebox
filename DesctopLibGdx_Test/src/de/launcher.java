@@ -187,7 +187,7 @@ class Gui extends Frame implements ActionListener, WindowListener {
 
 		ui.Window = myInitialSize;
 		ui.Density = 1.5f;
-		ui.ButtonSize = new Size(55,55);
+		ui.ButtonSize = new Size(65,65);
 		ui.RefSize = 64;
 		ui.TextSize_Normal = 52;
 		ui.ButtonTextSize = 50;

@@ -8,7 +8,7 @@
 	<dimen name="ArrowSize_Map">18dip</dimen>
 	<dimen name="TB_icon_Size">8dip</dimen>
 
-	<dimen name="BtnSize">55dip</dimen>
+	<dimen name="BtnSize">65dip</dimen>
 	<dimen name="BtnTextSize">50dip</dimen>
 	<dimen name="IconSize">13dip</dimen>
 	<dimen name="Margin">4dip</dimen>
