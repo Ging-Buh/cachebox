@@ -547,20 +547,23 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				}
 			}
 		}
-		for (TileGL tile : tilesToDraw.values())
+		synchronized (screenCenterW)
 		{
-			tile.createTexture();
-			if (tile.texture != null)
+			for (TileGL tile : tilesToDraw.values())
 			{
-				// Faktor, mit der dieses MapTile vergrößert gezeichnet
-				// werden muß
-				long posFactor = getMapTilePosFactor(tile.Descriptor.Zoom);
+				tile.createTexture();
+				if (tile.texture != null)
+				{
+					// Faktor, mit der dieses MapTile vergrößert gezeichnet
+					// werden muß
+					long posFactor = getMapTilePosFactor(tile.Descriptor.Zoom);
 
-				long xPos = (long) tile.Descriptor.X * posFactor * 256 - screenCenterW.x;
-				long yPos = -(tile.Descriptor.Y + 1) * posFactor * 256 - screenCenterW.y;
-				float xSize = tile.texture.getWidth() * posFactor;
-				float ySize = tile.texture.getHeight() * posFactor;
-				batch.draw(tile.texture, (float) xPos, (float) yPos, xSize, ySize);
+					long xPos = (long) tile.Descriptor.X * posFactor * 256 - screenCenterW.x;
+					long yPos = -(tile.Descriptor.Y + 1) * posFactor * 256 - screenCenterW.y;
+					float xSize = tile.texture.getWidth() * posFactor;
+					float ySize = tile.texture.getHeight() * posFactor;
+					batch.draw(tile.texture, (float) xPos, (float) yPos, xSize, ySize);
+				}
 			}
 		}
 		tilesToDraw.clear();
@@ -1189,8 +1192,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	private void setScreenCenter(Vector2 newCenter)
 	{
-		screenCenterW.x = (long) newCenter.x;
-		screenCenterW.y = (long) (-newCenter.y);
+		synchronized (screenCenterW)
+		{
+			screenCenterW.x = (long) newCenter.x;
+			screenCenterW.y = (long) (-newCenter.y);
+		}
 		// if (camera != null) camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
 		GL_Listener.glListener.renderOnce(this);
 	}
@@ -1242,8 +1248,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private Vector2 screenToWorld(Vector2 point)
 	{
 		Vector2 result = new Vector2(0, 0);
-		result.x = screenCenterW.x + ((long) point.x - width / 2) * camera.zoom;
-		result.y = -screenCenterW.y + ((long) point.y - height / 2) * camera.zoom;
+		synchronized (screenCenterW)
+		{
+			result.x = screenCenterW.x + ((long) point.x - width / 2) * camera.zoom;
+			result.y = -screenCenterW.y + ((long) point.y - height / 2) * camera.zoom;
+		}
 		return result;
 	}
 
@@ -1673,8 +1682,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			// camera.position.add((lastPoint.x - x) * faktor, (y - lastPoint.y) * faktor, 0);
 			// screenCenterW.x = camera.position.x;
 			// screenCenterW.y = camera.position.y;
-			screenCenterW.x += (long) ((lastPoint.x - x) * faktor);
-			screenCenterW.y += (long) ((y - lastPoint.y) * faktor);
+			synchronized (screenCenterW)
+			{
+				screenCenterW.x += (long) ((lastPoint.x - x) * faktor);
+				screenCenterW.y += (long) ((y - lastPoint.y) * faktor);
+			}
 			calcCenter();
 
 			// if (kineticPan == null) kineticPan = new KineticPan();
