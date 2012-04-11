@@ -344,6 +344,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	}
 
+	@Override
+	public void onStop()
+	{
+		super.onStop();
+		loadedTiles.clear();
+	}
+
 	public void SetCurrentLayer(Layer newLayer)
 	{
 		Config.settings.CurrentMapLayer.setValue(newLayer.Name);

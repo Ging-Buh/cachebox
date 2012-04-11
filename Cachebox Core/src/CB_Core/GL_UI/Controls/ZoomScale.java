@@ -317,4 +317,10 @@ public class ZoomScale extends CB_View_Base
 
 	}
 
+	@Override
+	public void onStop()
+	{
+		super.onStop();
+		CachedScaleSprite = null;
+	}
 }

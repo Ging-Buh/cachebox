@@ -416,7 +416,16 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void onStop()
 	{
-
+		synchronized (childs)
+		{
+			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			{
+				// alle renderChilds() der in dieser GL_View_Base
+				// enthaltenen Childs auf rufen.
+				GL_View_Base view = iterator.next();
+				view.onStop();
+			}
+		}
 	}
 
 	public boolean click(int x, int y, int pointer, int button)

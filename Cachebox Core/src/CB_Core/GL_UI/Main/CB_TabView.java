@@ -98,7 +98,7 @@ public class CB_TabView extends CB_View_Base
 		if (aktView != null)
 		{
 			this.removeChild(aktView);
-			aktView.onStop();
+			// aktView.onStop();
 			aktView.onHide();
 			aktView.setVisibility(INVISIBLE);
 		}

@@ -87,6 +87,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	@Override
 	public void pause()
 	{
+		// wird aufgerufen beim Wechsel der aktiven App und beim Ausschalten des Geräts
 		Logger.LogCat("Pause");
 
 		onStop();
