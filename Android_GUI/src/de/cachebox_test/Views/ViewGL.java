@@ -77,7 +77,6 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	public void OnShow()
 	{
 		Logger.DEBUG("OnShow");
-		glListener.onStart();
 		// GL_Listener.onStart();
 	}
 
@@ -85,7 +84,6 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	public void OnHide()
 	{
 		Logger.DEBUG("OnHide");
-		glListener.onStop();
 		// GL_Listner.onStop();
 	}
 

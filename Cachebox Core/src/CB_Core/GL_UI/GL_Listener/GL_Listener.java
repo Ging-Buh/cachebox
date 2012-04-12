@@ -111,6 +111,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public void onStart()
 	{
+		// App wird wiederhergestellt oder Gerät eingeschaltet
 		Logger.LogCat("GL_Listner => onStart");
 		started.set(true);
 		if (listenerInterface != null) listenerInterface.RenderDirty();
@@ -119,6 +120,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public void onStop()
 	{
+		// App wird verkleinert oder Gerät ausgeschaltet
 		Logger.LogCat("GL_Listner => onStop");
 		stopTimer();
 		if (listenerInterface != null) listenerInterface.RenderContinous();
