@@ -1653,6 +1653,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			final Intent mainIntent2 = new Intent().setClass(mainActivity, ImportDialog.class);
 			mainActivity.startActivity(mainIntent2);
 		}
+		else if (ID == ViewConst.SEARCH)
+		{
+			Search.Show();
+		}
+		else if (ID == ViewConst.MANAGE_DB)
+		{
+			showManageDB();
+		}
+		else if (ID == ViewConst.CHK_STATE_API)
+		{
+			chkCachesStateFilterSelection();
+		}
 
 	}
 

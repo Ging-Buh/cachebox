@@ -99,6 +99,13 @@ public class Menu extends Dialog
 		return addItem(ID, StringId, "");
 	}
 
+	public MenuItem addItem(int ID, String StringId, String anhang, Sprite icon)
+	{
+		MenuItem item = addItem(ID, StringId, anhang);
+		item.setIcon(icon);
+		return item;
+	}
+
 	public MenuItem addItem(int ID, String StringId, String anhang)
 	{
 		String trans;
@@ -166,4 +173,5 @@ public class Menu extends Dialog
 	{
 		this.mOnItemClickListner = onItemClickListner;
 	}
+
 }

@@ -8,10 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 /**
- * Enthält die benutzten und geladenen GDX-Fonts Benutzte Fonts sind in der Größe von 16 22 wählbar. Der FontFaktor bestimmt aber ob der
- * gewählte font, ein Größerer oder kleinerer font zurück gegeben wird. Bsb GetFont16() gibt bei einem FontFaktor = 1 den Font 16 zurück.
- * bei einem FontFaktor >1 den Font 17 und bei einem Fontfaktor <1 den Font 15. Damit wird der Font nicht mehr Scalliert und ist immer Klar
- * zu erkennen.
+ * Enthält die benutzten und geladenen GDX-Fonts
  * 
  * @author Longri
  */
@@ -71,6 +68,8 @@ public class Fonts
 		big.dispose();
 		normal.dispose();
 		small.dispose();
+		normalBubble.dispose();
+		smallBubble.dispose();
 
 		fontAB15_out.dispose();
 		fontAB16_out.dispose();
@@ -79,6 +78,8 @@ public class Fonts
 		big = null;
 		normal = null;
 		small = null;
+		normalBubble = null;
+		smallBubble = null;
 
 		fontAB15_out = null;
 		fontAB16_out = null;

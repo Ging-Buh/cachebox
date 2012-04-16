@@ -3,22 +3,24 @@ package CB_Core.GL_UI.Main.Actions;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.ViewConst;
+import CB_Core.GL_UI.ViewID;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_ShowSettings extends CB_Action_ShowView
+public class CB_Action_ShowActivity extends CB_Action_ShowView
 {
+	private ViewID viewConst;
 
-	public CB_Action_ShowSettings()
+	public CB_Action_ShowActivity(String Name, int ID, ViewID ViewConst)
 	{
-		super("settings", AID_SHOW_SETTINGS);
+		super(Name, ID);
+		viewConst = ViewConst;
 	}
 
 	@Override
 	public void Execute()
 	{
-		platformConector.showView(ViewConst.SETTINGS, 0, 0, 0, 0);
+		platformConector.showView(viewConst, 0, 0, 0, 0);
 	}
 
 	@Override
@@ -30,7 +32,7 @@ public class CB_Action_ShowSettings extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(5);
+		return SpriteCache.Icons.get(13);
 	}
 
 	@Override

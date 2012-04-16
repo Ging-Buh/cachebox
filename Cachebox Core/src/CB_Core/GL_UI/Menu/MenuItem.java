@@ -50,7 +50,7 @@ public class MenuItem extends ListViewItemBase
 
 		boolean hasIcon = (mIcon != null);
 
-		float left = (mIsCheckable || mLeft) ? this.height * 0.75f : 0;
+		float left = (mIsCheckable || mLeft) ? this.height * 0.97f : 0;
 		float right = hasIcon ? this.height : 0;
 		float labelWidth = (this.width - right - left) * 0.97f;
 
@@ -59,7 +59,8 @@ public class MenuItem extends ListViewItemBase
 
 		mLabel.setWidth(labelWidth);
 
-		float x = ((this.width - mLabel.getWidth()) / 2) + left;
+		// float x = ((this.width - mLabel.getWidth()) / 2) + left;
+		float x = left;
 		float y = (this.height - mLabel.getHeight()) / 2;
 
 		if (hasIcon)

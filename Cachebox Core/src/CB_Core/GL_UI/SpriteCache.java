@@ -261,6 +261,9 @@ public class SpriteCache
 		Icons.add(iconAtlas.createSprite("tb")); // 36
 		Icons.add(iconAtlas.createSprite("cm_icon")); // 37
 		Icons.add(iconAtlas.createSprite("tb_list_icon")); // 38
+		Icons.add(iconAtlas.createSprite("sort_icon")); // 39
+		Icons.add(iconAtlas.createSprite("import")); // 40
+		Icons.add(iconAtlas.createSprite("manage_db")); // 41
 		loadButtnSprites();
 
 		ListBack = new NinePatch(uiAtlas.createSprite("background"), 1, 1, 1, 1);

@@ -50,6 +50,9 @@ public class ViewID
 	public final static int SETTINGS = 102;
 	public final static int FILTER_SETTINGS = 101;
 	public final static int IMPORT = 103;
+	public final static int SEARCH = 104;
+	public final static int MANAGE_DB = 105;
+	public final static int CHK_STATE_API = 106;
 
 	public enum UI_Pos
 	{

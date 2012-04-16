@@ -7,6 +7,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
@@ -22,6 +23,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 	public final int MI_FilterSet = 4;
 	public final int MI_SEARCH = 5;
 	public final int MI_IMPORT = 6;
+	public final int MI_CHK_STATE_API = 7;
 
 	public CB_Action_ShowCacheList()
 	{
@@ -77,7 +79,29 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 				case MI_RESORT:
 					Database.Data.Query.Resort();
 					return true;
-
+				case MI_FilterSet:
+					new CB_Action_ShowActivity("filtersettings", MI_FilterSet, ViewConst.FILTER_SETTINGS).Execute();
+					return true;
+				case MI_SEARCH:
+					new CB_Action_ShowActivity("search", MI_SEARCH, ViewConst.SEARCH).Execute();
+					return true;
+				case MI_IMPORT:
+					new CB_Action_ShowActivity("import", MI_IMPORT, ViewConst.IMPORT).Execute();
+					return true;
+				case MI_MANAGE_DB:
+					new CB_Action_ShowActivity("manageDB", MI_MANAGE_DB, ViewConst.MANAGE_DB).Execute();
+					return true;
+				case MI_AUTO_RESORT:
+					GlobalCore.autoResort = !(GlobalCore.autoResort);
+					Config.settings.AutoResort.setValue(GlobalCore.autoResort);
+					if (GlobalCore.autoResort)
+					{
+						Database.Data.Query.Resort();
+					}
+					return true;
+				case MI_CHK_STATE_API:
+					new CB_Action_ShowActivity("chkState", MI_CHK_STATE_API, ViewConst.CHK_STATE_API).Execute();
+					return true;
 				}
 				return false;
 			}
@@ -90,16 +114,15 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		DBName = DBName.substring(0, Pos);
 
 		MenuItem mi;
-
-		mi = cm.addItem(MI_MANAGE_DB, "manage", "  (" + DBName + ")");
+		cm.addItem(MI_RESORT, "ResortList", SpriteCache.Icons.get(39));
+		cm.addItem(MI_FilterSet, "filter", SpriteCache.Icons.get(13));
+		cm.addItem(MI_SEARCH, "search", SpriteCache.Icons.get(12));
+		cm.addItem(MI_IMPORT, "import", SpriteCache.Icons.get(40));
+		mi = cm.addItem(MI_MANAGE_DB, "manage", "  (" + DBName + ")", SpriteCache.Icons.get(41));
 		mi = cm.addItem(MI_AUTO_RESORT, "AutoResort");
 		mi.setCheckable(true);
 		mi.setChecked(GlobalCore.autoResort);
-		cm.addItem(MI_RESORT, "ResortList");
-		cm.addItem(MI_FilterSet, "filter");
-		cm.addItem(MI_SEARCH, "search");
-		// Global.TranslateMenuItem(IconMenu, R.id.miAddCache, "ManuallyAddCache");
-		cm.addItem(MI_IMPORT, "import");
+		cm.addItem(MI_CHK_STATE_API, "chkState");
 
 		cm.show();
 

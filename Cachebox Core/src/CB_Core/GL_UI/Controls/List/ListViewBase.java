@@ -294,7 +294,7 @@ public abstract class ListViewBase extends CB_View_Base
 
 	protected void scrollToItem(int i)
 	{
-		setListPos(mPosDefault.get(i), false);
+		if (i >= 0 && i < mPosDefault.size()) setListPos(mPosDefault.get(i), false);
 	}
 
 	protected void scrollTo(float Pos)

@@ -2,10 +2,12 @@ package CB_Core.GL_UI.Main;
 
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowAbout;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowActivity;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCacheList;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCompassView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCreditsView;
@@ -16,7 +18,6 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_ShowJokerView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowLogView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowMap;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowNotesView;
-import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSettings;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSolverView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSpoilerView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackListView;
@@ -62,7 +63,7 @@ public class TabMainView extends MainViewBase
 	private CB_Action_ShowTrackableListView actionShowTrackableListView;
 	private CB_Action_ShowTrackListView actionShowTrackListView;
 	private CB_Action_ShowWaypointView actionShowWaypointView;
-	private CB_Action_ShowSettings actionShowSettings;
+	private CB_Action_ShowActivity actionShowSettings;
 
 	public static MapView mapView = null;
 	public static CacheListView cacheListView = null;
@@ -121,7 +122,7 @@ public class TabMainView extends MainViewBase
 		actionShowTrackableListView = new CB_Action_ShowTrackableListView();
 		actionShowTrackListView = new CB_Action_ShowTrackListView();
 		actionShowWaypointView = new CB_Action_ShowWaypointView();
-		actionShowSettings = new CB_Action_ShowSettings();
+		actionShowSettings = new CB_Action_ShowActivity("showSettings", CB_Action.AID_SHOW_SETTINGS, ViewConst.SETTINGS);
 
 		if (GlobalCore.isTab) addTabletTabs();
 		else

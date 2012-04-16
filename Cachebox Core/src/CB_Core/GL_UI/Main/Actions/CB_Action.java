@@ -30,6 +30,7 @@ public class CB_Action
 	public static int AID_TRACKLIST_CREATE = 16;
 	public static int AID_TRACKLIST_LOAD = 17;
 	public static int AID_TRACKLIST_DELETE = 18;
+	public static int AID_SHOW_FILTER_SETTINGS = 19;
 
 	protected String name;
 	protected int id;

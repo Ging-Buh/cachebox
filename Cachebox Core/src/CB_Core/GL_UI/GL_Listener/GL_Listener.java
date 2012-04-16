@@ -793,8 +793,10 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		actDialog = null;
 		mDialog.removeChildsDirekt();
 		child.setClickable(true);
+		child.invalidate();
 		DialogIsShown = false;
 		darknesAlpha = 0f;
+		mDarknesSprite = null;// Create new Pixmap on next call
 		removeRenderView(mDialog);
 
 		renderOnce(mDialog);
