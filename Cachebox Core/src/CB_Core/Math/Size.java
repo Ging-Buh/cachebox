@@ -17,13 +17,19 @@
 
 package CB_Core.Math;
 
+import java.io.Serializable;
+
 /**
  * Die Size Structur enthält die Member width und height
  * 
  * @author Longri
  */
-public class Size
+public class Size implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -294972224345431899L;
 	public int width;
 	public int height;
 

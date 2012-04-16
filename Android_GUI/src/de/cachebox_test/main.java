@@ -52,7 +52,6 @@ import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Math.GL_UISizes;
-import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
@@ -102,7 +101,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -115,7 +113,6 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -213,6 +210,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static TrackListView tracklistView = null; // ID 13
 	private static TrackableListView trackablelistView = null; // ID 14
 	public static WaypointView waypointView = null; // ID 15
+
+	private devicesSizes ui;
 
 	/**
 	 * viewGl kann mehrere ID beinhalten, vieGL ist nur die Basis für alle Views auf Basis von GL_View_Base </br> TestView = 16 </br>
@@ -374,26 +373,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// UiSize Structur für die Berechnung der Größen zusammen stellen!
 		Resources res = this.getResources();
 
-		WindowManager w = this.getWindowManager();
-		Display d = w.getDefaultDisplay();
-
-		devicesSizes ui = new devicesSizes();
-
-		ui.Window = new Size(d.getWidth(), d.getHeight());
-		ui.Density = res.getDisplayMetrics().density;
-
-		int BH = (int) (res.getDimensionPixelSize(R.dimen.BtnSize));
-
-		ui.ButtonSize = new Size((int) (BH * 1.2), BH);
-		ui.RefSize = res.getDimensionPixelSize(R.dimen.RefSize);
-		ui.TextSize_Normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
-		ui.ButtonTextSize = res.getDimensionPixelSize(R.dimen.BtnTextSize);
-		ui.IconSize = res.getDimensionPixelSize(R.dimen.IconSize);
-		ui.Margin = res.getDimensionPixelSize(R.dimen.Margin);
-		ui.ArrowSizeList = res.getDimensionPixelSize(R.dimen.ArrowSize_List);
-		ui.ArrowSizeMap = res.getDimensionPixelSize(R.dimen.ArrowSize_Map);
-		ui.TB_IconSize = res.getDimensionPixelSize(R.dimen.TB_icon_Size);
-		ui.isLandscape = false;
+		final Bundle extras = getIntent().getExtras();
+		if (extras != null)
+		{
+			ui = (devicesSizes) extras.get("UI");
+		}
 
 		UiSizes.initial(ui);
 
@@ -656,7 +640,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		}
 
-		final Bundle extras = getIntent().getExtras();
 		if (extras != null)
 		{
 			GcCode = extras.getString("GcCode");

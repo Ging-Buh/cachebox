@@ -1,13 +1,20 @@
 package CB_Core.Math;
 
+import java.io.Serializable;
+
 /**
  * UiSize ist eine Struktur die alle Wichtigen Geräte abhängigen Größen enthält. Sie wird in der Regel der Klasse Sizes im Constructor
  * übergeben, damit die Größen in dieser berechnet werden können!
  * 
  * @author Longri
  */
-public class devicesSizes
+public class devicesSizes implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5441749943486589905L;
+
 	/**
 	 * Die Größe die CB im gesamten zur Verfügung steht.
 	 */

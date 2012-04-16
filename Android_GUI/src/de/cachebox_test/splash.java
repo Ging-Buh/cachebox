@@ -60,6 +60,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -87,6 +88,7 @@ public class splash extends Activity
 	String name = null;
 
 	private boolean mOriantationRestart = false;
+	private devicesSizes ui;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -429,9 +431,13 @@ public class splash extends Activity
 		WindowManager w = this.getWindowManager();
 		Display d = w.getDefaultDisplay();
 
-		devicesSizes ui = new devicesSizes();
+		FrameLayout frame = (FrameLayout) findViewById(R.id.frameLayout1);
+		int width = frame.getMeasuredWidth();
+		int height = frame.getMeasuredHeight();
 
-		ui.Window = new Size(d.getWidth(), d.getHeight());
+		ui = new devicesSizes();
+
+		ui.Window = new Size(width, height);
 		ui.Density = res.getDisplayMetrics().density;
 		ui.ButtonSize = new Size(res.getDimensionPixelSize(R.dimen.BtnSize),
 				(int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * ui.Density)));
@@ -558,16 +564,17 @@ public class splash extends Activity
 		// Initial Ready Show main
 		finish();
 		Intent mainIntent = new Intent().setClass(splash.this, main.class);
-
+		Bundle b = new Bundle();
 		if (GcCode != null)
 		{
-			Bundle b = new Bundle();
+
 			b.putSerializable("GcCode", GcCode);
 			b.putSerializable("name", name);
 			b.putSerializable("guid", guid);
-			mainIntent.putExtras(b);
-		}
 
+		}
+		b.putSerializable("UI", ui);
+		mainIntent.putExtras(b);
 		startActivity(mainIntent);
 	}
 

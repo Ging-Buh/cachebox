@@ -11,6 +11,7 @@ import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
 
@@ -52,6 +53,7 @@ public class Menu extends Dialog
 
 		mListView = new V_ListView(this, "MenuList");
 
+		mListView.setWidth(this.width - 4);
 		mListView.setHeight(this.height - 50);
 
 		mListView.setZeroPos();
@@ -109,16 +111,16 @@ public class Menu extends Dialog
 			trans = GlobalCore.Translations.Get(StringId) + anhang;
 		}
 
-		MenuItem item = new MenuItem(new SizeF(this.width * 0.95f, ItemHeight), mItems.size(), ID, "Menu Item@" + ID);
-
 		float higherValue = this.height + ItemHeight + 2; // 2= Standard divider Height
 
 		if (higherValue < UiSizes.getWindowHeight() * 0.8f)
 		{
-			this.setSize(UiSizes.getWindowWidth() / 1.2f, higherValue);
+			this.setSize(GL_UISizes.UI_Left.getWidth() / 1.2f, higherValue);
 
 			this.resetInitial();
 		}
+
+		MenuItem item = new MenuItem(new SizeF(this.width * 0.95f, ItemHeight), mItems.size(), ID, "Menu Item@" + ID);
 
 		item.setTitle(trans);
 		addItem(item);

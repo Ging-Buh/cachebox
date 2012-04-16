@@ -238,6 +238,7 @@ public abstract class GL_View_Base extends CB_RectF
 		if (hasBackground || hasNinePatchBackground)
 		{
 			batch.begin();
+
 			if (hasNinePatchBackground)
 			{
 				nineBackground.draw(batch, 0, 0, width, height);
