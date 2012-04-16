@@ -59,6 +59,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -93,7 +94,7 @@ public class splash extends Activity
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		GlobalCore.displayDensity = this.getResources().getDisplayMetrics().density;
 		int h = this.getResources().getDisplayMetrics().heightPixels;
 		int w = this.getResources().getDisplayMetrics().widthPixels;
