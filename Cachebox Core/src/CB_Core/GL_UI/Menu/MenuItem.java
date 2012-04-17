@@ -183,7 +183,7 @@ public class MenuItem extends ListViewItemBase
 
 		isPressed = true;
 		setBackground();
-		return true;
+		return false;
 	}
 
 	@Override
