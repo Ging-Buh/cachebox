@@ -62,9 +62,14 @@ public class Menu extends Dialog
 		mListView.setBaseAdapter(new CustomAdapter());
 
 		super.Initial();
-		if (mListView.getMaxItemCount() < mItems.size()) mListView.setDragable();
+		if (mListView.getMaxItemCount() < mItems.size())
+		{
+			mListView.setDragable();
+		}
 		else
+		{
 			mListView.setUndragable();
+		}
 	}
 
 	public class CustomAdapter implements Adapter

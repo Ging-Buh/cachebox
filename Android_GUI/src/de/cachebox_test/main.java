@@ -750,6 +750,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
+		if (aktView == null) return false;
 		menu.clear();
 		int menuId = aktView.GetMenuId();
 		if (menuId > 0)
@@ -1664,6 +1665,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		else if (ID == ViewConst.CHK_STATE_API)
 		{
 			chkCachesStateFilterSelection();
+		}
+		else if (ID == ViewConst.RELOAD_CACHE)
+		{
+			if (descriptionView != null) descriptionView.reloadCacheInfo();
 		}
 
 	}
@@ -3543,7 +3548,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public void showView(ViewID ID)
 	{
-		if (ID == null) return;// keine Action
+		if (ID == null)
+		{
+			Logger.LogCat("main.showView(is NULL)");
+			return;// keine Action
+		}
 
 		String Pos = "null";
 		String Type = "null";
@@ -3598,12 +3607,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			aktTabViewId = ID;
 		}
 
-		if (aktTabViewId == null || aktTabViewId.getType() == ViewID.UI_Type.Android)
+		if (aktTabViewId != null && aktTabViewId.getType() == ViewID.UI_Type.Android)
 		{
 			if (tabFrame != null) tabFrame.setVisibility(View.VISIBLE);
 		}
 
-		if (aktViewId == null || aktViewId.getType() == ViewID.UI_Type.Android)
+		if (aktViewId != null && aktViewId.getType() == ViewID.UI_Type.Android)
 		{
 			frame.setVisibility(View.VISIBLE);
 		}

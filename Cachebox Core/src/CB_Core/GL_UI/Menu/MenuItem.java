@@ -191,7 +191,7 @@ public class MenuItem extends ListViewItemBase
 	{
 		isPressed = false;
 		setBackground();
-		return true;
+		return false;
 	}
 
 	@Override
@@ -199,7 +199,7 @@ public class MenuItem extends ListViewItemBase
 	{
 		isPressed = false;
 		setBackground();
-		return true;
+		return false;
 	}
 
 	public void setEnabled(boolean enabled)

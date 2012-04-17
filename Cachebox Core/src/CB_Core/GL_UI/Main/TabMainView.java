@@ -244,18 +244,29 @@ public class TabMainView extends MainViewBase
 
 		// Tab den entsprechneden Actions zuweisen
 		actionShowCacheList.setTab(this, Tab);
-
+		actionShowWaypointView.setTab(this, Tab);
 		actionShowAboutView.setTab(this, Tab);
 		actionShowCreditsView.setTab(this, Tab);
 		actionShowTrackableListView.setTab(this, Tab);
 		actionShowTrackListView.setTab(this, Tab);
 		actionShowSettings.setTab(this, Tab);
 		actionShowCompassView.setTab(this, Tab);
+		actionShowLogView.setTab(this, Tab);
+		actionShowFieldNotesView.setTab(this, Tab);
+		actionShowJokerView.setTab(this, Tab);
+		actionShowNotesView.setTab(this, Tab);
 
 		// Actions den Buttons zuweisen
 		btn1.addAction(new CB_ActionButton(actionShowCacheList, true));
 		btn1.addAction(new CB_ActionButton(actionShowTrackableListView, false));
 		btn1.addAction(new CB_ActionButton(actionShowTrackListView, false));
+
+		btn2.addAction(new CB_ActionButton(actionShowWaypointView, true, GestureDirection.Right));
+		btn2.addAction(new CB_ActionButton(actionShowLogView, false, GestureDirection.Down));
+		btn2.addAction(new CB_ActionButton(actionShowHint, false));
+		btn2.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
+		btn2.addAction(new CB_ActionButton(actionShowJokerView, false));
+		btn2.addAction(new CB_ActionButton(actionShowNotesView, false));
 
 		btn3.addAction(new CB_ActionButton(actionShowCompassView, true));
 
@@ -281,18 +292,18 @@ public class TabMainView extends MainViewBase
 
 		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
 
-		CB_Button btn1 = new CB_Button(btnRec, "Button1", SpriteCache.CacheList);
+		// CB_Button btn1 = new CB_Button(btnRec, "Button1", SpriteCache.CacheList);
 		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCache.Cache);
 		CB_Button btn3 = new CB_Button(btnRec, "Button3", SpriteCache.Nav);
-		CB_Button btn4 = new CB_Button(btnRec, "Button4", SpriteCache.Tool);
-		CB_Button btn5 = new CB_Button(btnRec, "Button5", SpriteCache.Misc);
+		// CB_Button btn4 = new CB_Button(btnRec, "Button4", SpriteCache.Tool);
+		// CB_Button btn5 = new CB_Button(btnRec, "Button5", SpriteCache.Misc);
 
 		CB_ButtonList btnList = new CB_ButtonList();
-		btnList.addButton(btn1);
+		// btnList.addButton(btn1);
 		btnList.addButton(btn2);
 		btnList.addButton(btn3);
-		btnList.addButton(btn4);
-		btnList.addButton(btn5);
+		// btnList.addButton(btn4);
+		// btnList.addButton(btn5);
 
 		Tab.addButtonList(btnList);
 
@@ -300,25 +311,12 @@ public class TabMainView extends MainViewBase
 
 		// Tab den entsprechneden Actions zuweisen
 		actionShowMap.setTab(this, Tab);
-
-		actionShowDescriptionView.setTab(this, Tab);
-		actionShowFieldNotesView.setTab(this, Tab);
-		actionShowJokerView.setTab(this, Tab);
-		actionShowLogView.setTab(this, Tab);
-		actionShowNotesView.setTab(this, Tab);
 		actionShowSolverView.setTab(this, Tab);
-		actionShowSpoilerView.setTab(this, Tab);
-		actionShowWaypointView.setTab(this, Tab);
+		actionShowDescriptionView.setTab(this, Tab);
+
 		// Actions den Buttons zuweisen
 		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true));
-		btn2.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
-		btn2.addAction(new CB_ActionButton(actionShowJokerView, false));
-		btn2.addAction(new CB_ActionButton(actionShowLogView, false));
-		btn2.addAction(new CB_ActionButton(actionShowNotesView, false));
-		btn2.addAction(new CB_ActionButton(actionShowSolverView, false));
-		btn2.addAction(new CB_ActionButton(actionShowSpoilerView, false));
-		btn2.addAction(new CB_ActionButton(actionShowWaypointView, false));
-		btn2.addAction(new CB_ActionButton(actionShowHint, false));
+		btn2.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
 
 		btn3.addAction(new CB_ActionButton(actionShowMap, true));
 
