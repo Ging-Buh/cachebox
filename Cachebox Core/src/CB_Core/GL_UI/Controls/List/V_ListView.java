@@ -226,7 +226,7 @@ public class V_ListView extends ListViewBase
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
 		super.onTouchDown(x, y, pointer, button);
-		if (!mIsDrageble) return false;
+		if (!mIsDrageble) return true;
 		mLastTouch = y;
 		mLastPos_onTouch = mPos;
 		return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelöst wird.

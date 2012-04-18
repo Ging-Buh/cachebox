@@ -22,6 +22,7 @@ import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
+import CB_Core.Plattform;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
@@ -3640,6 +3641,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private void initialPlatformConector()
 	{
 
+		GlobalCore.platform = Plattform.Android;
+
 		CB_Core.Events.platformConector.setisOnlineListner(new isOnlineListner()
 		{
 			/*
@@ -3757,6 +3760,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				else if (ID == MenuItemConst.TRACK_LIST_PROJECT)
 				{
 					if (tracklistView != null) tracklistView.HandleGenerate_Projection();
+				}
+				else if (ID == MenuItemConst.SHOW_WP_CONTEXT_MENU)
+				{
+					if (waypointView != null) waypointView.BeforeShowMenu(null);
+				}
+				else if (ID == MenuItemConst.SHOW_FIELD_NOTE_CONTEXT_MENU)
+				{
+					if (fieldNotesView != null) fieldNotesView.BeforeShowMenu(null);
+				}
+				else if (ID == MenuItemConst.SHOW_TB_CONTEXT_MENU)
+				{
+					if (trackablelistView != null) trackablelistView.BeforeShowMenu(null);
 				}
 
 			}

@@ -23,6 +23,7 @@ public class GlobalCore
 	public static final int LatestDatabaseFieldNoteChange = 1001;
 	public static final int LatestDatabaseSettingsChange = 1002;
 	public static double displayDensity = 1;
+	public static Plattform platform = Plattform.undef;
 
 	public static CB_Core.Types.Locator Locator = null;
 

@@ -265,6 +265,7 @@ public abstract class ListViewBase extends CB_View_Base
 	 */
 	private void chkSlideBack()
 	{
+		if (!mIsDrageble) return;
 		if (mPos > 0) startAnimationtoTop();
 		else if (mPos < mAllSize) startAnimationToBottom();
 	}

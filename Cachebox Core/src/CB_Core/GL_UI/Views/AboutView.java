@@ -1,5 +1,7 @@
 package CB_Core.GL_UI.Views;
 
+import CB_Core.GlobalCore;
+import CB_Core.Plattform;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
@@ -21,7 +23,8 @@ public class AboutView extends CB_View_Base
 		lblDummy = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "DummyLabel");
 		lblDummy.setFont(Fonts.getNormal());
 		lblDummy.setText("Dummy AboutView");
-		this.addChild(lblDummy);
+
+		if (GlobalCore.platform == Plattform.Desktop) this.addChild(lblDummy);
 
 	}
 

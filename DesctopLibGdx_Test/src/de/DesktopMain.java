@@ -8,6 +8,7 @@ import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
+import CB_Core.Plattform;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
@@ -39,6 +40,8 @@ public class DesktopMain {
 	
 
 	public static void test(devicesSizes ui,boolean debug,boolean scissor) {
+		GlobalCore.platform=Plattform.Desktop;
+		
 		DesktopLogger iLogger = new DesktopLogger();
 
 
