@@ -62,7 +62,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool AutoResort;
 	public SettingBool FieldnotesUploadAll;
 	public SettingBool MultiDBAsk;
-	public SettingBool AllowLandscape;
+	// public SettingBool AllowLandscape;
 	public SettingBool MoveMapCenterWithSpeed;
 	// public SettingBool PremiumMember;
 	public SettingBool SearchWithoutFounds;
@@ -205,7 +205,7 @@ public class SettingsClass extends SettingsList
 		// addSetting(ShowKeypad = new SettingBool("ShowKeypad", cat, NORMAL, true, true));
 		addSetting(PlaySounds = new SettingBool("PlaySounds", cat, NORMAL, true, true));
 		addSetting(SuppressPowerSaving = new SettingBool("SuppressPowerSaving", cat, NORMAL, true, true));
-		addSetting(AllowLandscape = new SettingBool("AllowLandscape", cat, NORMAL, false, true));
+		// addSetting(AllowLandscape = new SettingBool("AllowLandscape", cat, NORMAL, false, true));
 		addSetting(ImperialUnits = new SettingBool("ImperialUnits", cat, NORMAL, false, true));
 		addSetting(ScreenLock = new SettingTime("ScreenLock", cat, NORMAL, 60000, true));
 		addSetting(ParkingLatitude = new SettingDouble("ParkingLatitude", SettingCategory.Gps, EXPERT, 0, true));

@@ -89,7 +89,7 @@ public class splash extends Activity
 	String name = null;
 
 	private boolean mOriantationRestart = false;
-	private devicesSizes ui;
+	private static devicesSizes ui;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -112,16 +112,22 @@ public class splash extends Activity
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
 		}
-		else if (Config.settings == null || !Config.settings.AllowLandscape.getValue())
+		else
 		{
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		}
-		else
-		{
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
-		}
+		// else if (Config.settings == null || !Config.settings.AllowLandscape.getValue())
+		// {
+		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		//
+		// }
+		// else
+		// {
+		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+		//
+		// }
 
 		setContentView(GlobalCore.isTab ? R.layout.tab_splash : R.layout.splash);
 
@@ -332,13 +338,6 @@ public class splash extends Activity
 			File f = new File(workPath + "/cachebox.config");
 			f.renameTo(new File(workPath + "/ALT_cachebox.config"));
 
-			// Enable allowLandscape if Tablet detected
-			if (GlobalCore.isTab)
-			{
-				Config.settings.AllowLandscape.setValue(true);
-				Config.AcceptChanges();
-			}
-
 		}
 
 		String PocketQueryFolder = Config.settings.PocketQueryFolder.getValue();
@@ -436,22 +435,24 @@ public class splash extends Activity
 		int width = frame.getMeasuredWidth();
 		int height = frame.getMeasuredHeight();
 
-		ui = new devicesSizes();
+		if (ui == null)
+		{
+			ui = new devicesSizes();
 
-		ui.Window = new Size(width, height);
-		ui.Density = res.getDisplayMetrics().density;
-		ui.ButtonSize = new Size(res.getDimensionPixelSize(R.dimen.BtnSize),
-				(int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * ui.Density)));
-		ui.RefSize = res.getDimensionPixelSize(R.dimen.RefSize);
-		ui.TextSize_Normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
-		ui.ButtonTextSize = res.getDimensionPixelSize(R.dimen.BtnTextSize);
-		ui.IconSize = res.getDimensionPixelSize(R.dimen.IconSize);
-		ui.Margin = res.getDimensionPixelSize(R.dimen.Margin);
-		ui.ArrowSizeList = res.getDimensionPixelSize(R.dimen.ArrowSize_List);
-		ui.ArrowSizeMap = res.getDimensionPixelSize(R.dimen.ArrowSize_Map);
-		ui.TB_IconSize = res.getDimensionPixelSize(R.dimen.TB_icon_Size);
-		ui.isLandscape = false;
-
+			ui.Window = new Size(width, height);
+			ui.Density = res.getDisplayMetrics().density;
+			ui.ButtonSize = new Size(res.getDimensionPixelSize(R.dimen.BtnSize),
+					(int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * ui.Density)));
+			ui.RefSize = res.getDimensionPixelSize(R.dimen.RefSize);
+			ui.TextSize_Normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
+			ui.ButtonTextSize = res.getDimensionPixelSize(R.dimen.BtnTextSize);
+			ui.IconSize = res.getDimensionPixelSize(R.dimen.IconSize);
+			ui.Margin = res.getDimensionPixelSize(R.dimen.Margin);
+			ui.ArrowSizeList = res.getDimensionPixelSize(R.dimen.ArrowSize_List);
+			ui.ArrowSizeMap = res.getDimensionPixelSize(R.dimen.ArrowSize_Map);
+			ui.TB_IconSize = res.getDimensionPixelSize(R.dimen.TB_icon_Size);
+			ui.isLandscape = false;
+		}
 		UiSizes.initial(ui);
 		Global.Paints.init(this);
 		Global.InitIcons(this);
