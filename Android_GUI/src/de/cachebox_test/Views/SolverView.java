@@ -351,11 +351,13 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 		{
 			// Keyboard is shown set Buttons Gone
 			ButtonsLayout.setVisibility(GONE);
+			((main) main.mainActivity).setBottomButtonVisibility(GONE);
 		}
 		else
 		{
 			// Keyboard is hidden set Buttons Visible
 			ButtonsLayout.setVisibility(VISIBLE);
+			((main) main.mainActivity).setBottomButtonVisibility(VISIBLE);
 		}
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}

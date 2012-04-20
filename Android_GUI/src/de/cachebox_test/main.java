@@ -660,11 +660,34 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	}
 
+	public void setBottomButtonVisibility(int visibility)
+	{
+		if (visibility == View.GONE)
+		{
+			BtnLayout.setVisibility(View.GONE);
+		}
+		else
+		{
+			if (tgl.getState() == 0)
+			{
+				BtnLayout.setVisibility(View.VISIBLE);
+			}
+			else
+			{
+				BtnLayout.setVisibility(View.INVISIBLE);
+			}
+		}
+
+	}
+
+	LinearLayout BtnLayout;
+	MultiToggleButton tgl;
+
 	private void iniMainBtnTgl()
 	{
-		final LinearLayout BtnLayout = (LinearLayout) this.findViewById(R.id.layoutButtons);
+		BtnLayout = (LinearLayout) this.findViewById(R.id.layoutButtons);
 
-		final MultiToggleButton tgl = (MultiToggleButton) this.findViewById(R.id.altNewMainBtn);
+		tgl = (MultiToggleButton) this.findViewById(R.id.altNewMainBtn);
 
 		tgl.clearStates();
 		tgl.addState("alt", Color.GREEN);
