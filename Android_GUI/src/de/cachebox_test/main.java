@@ -428,14 +428,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		Config.AcceptChanges();
 
-		// Ausschalten verhindern
-		/*
-		 * This code together with the one in onDestroy() will make the screen be always on until this Activity gets destroyed.
-		 */
-		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-		this.mWakeLock.acquire();
-
 		initialLocationManager();
 		initialMapView();
 		initialViewGL();
@@ -1379,6 +1371,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 		downSlider.isInitial = false;
 		InfoDownSlider.invalidate();
+
+		// Ausschalten verhindern
+		/*
+		 * This code together with the one in onDestroy() will make the screen be always on until this Activity gets destroyed.
+		 */
+		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+		this.mWakeLock.acquire();
+
 	}
 
 	@Override
@@ -1390,6 +1391,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		this.unregisterReceiver(this.mBatInfoReceiver);
 		counter.cancel();
 		super.onStop();
+
+		// Ausschalten wieder zulassen!
+		/*
+		 * This code together with the one in onDestroy() will make the screen be always on until this Activity gets destroyed.
+		 */
+		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
+		this.mWakeLock.acquire();
 	}
 
 	@Override
