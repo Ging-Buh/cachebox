@@ -78,7 +78,8 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 
 					return true;
 				case MI_RELOAD_CACHE:
-					new CB_Action_ShowActivity("reload_CacheInfo", MI_RELOAD_CACHE, ViewConst.RELOAD_CACHE).Execute();
+					new CB_Action_ShowActivity("reload_CacheInfo", MI_RELOAD_CACHE, ViewConst.RELOAD_CACHE, SpriteCache.Icons.get(35))
+							.Execute();
 					return true;
 				}
 				return false;

@@ -189,8 +189,12 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 			// draw Menu Sprite
 			if (menuSprite == null)
 			{
+				float iconWidth = this.width / 5f;
+				float iconHeight = this.height / 2.3f;
+				float Versatz = this.height / 38f;
+
 				menuSprite = new Sprite(SpriteCache.Icons.get(37));
-				menuSprite.setBounds(this.halfWidth, 5, this.halfWidth, this.halfHeight);
+				menuSprite.setBounds(this.width - iconWidth - Versatz, Versatz, iconWidth, iconHeight);
 			}
 
 			if (menuSprite != null) menuSprite.draw(batch);

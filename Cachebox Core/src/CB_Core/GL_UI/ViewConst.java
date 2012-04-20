@@ -33,4 +33,5 @@ public class ViewConst
 	public static final ViewID MANAGE_DB = new ViewID(ViewID.MANAGE_DB, UI_Type.Activity, null, null);
 	public static final ViewID CHK_STATE_API = new ViewID(ViewID.CHK_STATE_API, UI_Type.Activity, null, null);
 	public static final ViewID RELOAD_CACHE = new ViewID(ViewID.RELOAD_CACHE, UI_Type.Activity, null, null);
+	public static final ViewID NAVIGATE_TO = new ViewID(ViewID.NAVIGATE_TO, UI_Type.Activity, null, null);
 }

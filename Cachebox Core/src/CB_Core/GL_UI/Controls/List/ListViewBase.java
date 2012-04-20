@@ -226,7 +226,7 @@ public abstract class ListViewBase extends CB_View_Base
 	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
 	{
 		super.renderChilds(batch, parentInfo);
-
+		chkSlideBack();
 		if (!debug) return;
 		// schreibe Debug
 		if (dPosy == null)
@@ -348,7 +348,7 @@ public abstract class ListViewBase extends CB_View_Base
 
 	protected void setSelection(int i)
 	{
-		if (mSelectedIndex != i && i > 0)
+		if (mSelectedIndex != i && i >= 0)
 		{
 			mSelectedIndex = i;
 

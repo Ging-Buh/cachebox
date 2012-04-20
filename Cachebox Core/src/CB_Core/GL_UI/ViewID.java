@@ -54,6 +54,7 @@ public class ViewID
 	public final static int MANAGE_DB = 105;
 	public final static int CHK_STATE_API = 106;
 	public final static int RELOAD_CACHE = 107;
+	public final static int NAVIGATE_TO = 108;
 
 	public enum UI_Pos
 	{

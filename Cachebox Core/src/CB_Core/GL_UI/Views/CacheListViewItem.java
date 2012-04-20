@@ -47,19 +47,19 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 			if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 
 			batch.begin();
-			if (hasBackground || hasNinePatchBackground)
-			{
-
-				if (hasNinePatchBackground)
-				{
-					nineBackground.draw(batch, 0, 0, width, height);
-				}
-				else
-				{
-					batch.draw(Background, 0, 0, width, height);
-				}
-
-			}
+			// if (hasBackground || hasNinePatchBackground)
+			// {
+			//
+			// if (hasNinePatchBackground)
+			// {
+			// nineBackground.draw(batch, 0, 0, width, height);
+			// }
+			// else
+			// {
+			// batch.draw(Background, 0, 0, width, height);
+			// }
+			//
+			// }
 
 			this.render(batch);
 			batch.end();
@@ -88,7 +88,7 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 		mCache = cache;
 		info = new extendedCacheInfo(UiSizes.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
 		info.setZeroPos();
-		setBackground();
+
 		this.addChild(info);
 		PositionChangedEventList.Add(this);
 
@@ -142,12 +142,40 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 	@Override
 	protected void Initial()
 	{
-		setBackground();
+		if (!mBackIsInitial)
+		{
+			backSelect = new NinePatch(SpriteCache.uiAtlas.findRegion("listrec_selected"), 8, 8, 8, 8);
+			back1 = new NinePatch(SpriteCache.uiAtlas.findRegion("listrec_first"), 8, 8, 8, 8);
+			back2 = new NinePatch(SpriteCache.uiAtlas.findRegion("listrec_secend"), 8, 8, 8, 8);
+			mBackIsInitial = true;
+		}
 	}
+
+	private static NinePatch backSelect;
+	private static NinePatch back1;
+	private static NinePatch back2;
+	private static boolean mBackIsInitial = false;
 
 	@Override
 	protected void render(SpriteBatch batch)
 	{
+		// Draw Background
+		if (mBackIsInitial)
+		{
+			Boolean BackGroundChanger = ((this.getIndex() % 2) == 1);
+			if (isSelected)
+			{
+				backSelect.draw(batch, 0, 0, this.width, this.height);
+			}
+			else if (BackGroundChanger)
+			{
+				back1.draw(batch, 0, 0, this.width, this.height);
+			}
+			else
+			{
+				back2.draw(batch, 0, 0, this.width, this.height);
+			}
+		}
 		super.render(batch);
 
 		if (arrow != null) arrow.draw(batch);
@@ -193,7 +221,7 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 		return false;
 	}
 
-	private void setBackground()
+	private void xxxxsetBackground()
 	{
 
 		Boolean BackGroundChanger = ((this.getIndex() % 2) == 1);

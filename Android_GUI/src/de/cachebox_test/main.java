@@ -1684,6 +1684,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (descriptionView != null) descriptionView.reloadCacheInfo();
 		}
+		else if (ID == ViewConst.NAVIGATE_TO)
+		{
+			NavigateTo();
+		}
 
 	}
 

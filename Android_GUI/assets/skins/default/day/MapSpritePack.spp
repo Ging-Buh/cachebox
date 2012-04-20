@@ -121,6 +121,13 @@ stars4small
   orig: 50, 12
   offset: 0, 0
   index: -1
+track_line
+  rotate: false
+  xy: 76, 164
+  size: 9, 12
+  orig: 9, 12
+  offset: 0, 0
+  index: -1
 small4no
   rotate: false
   xy: 307, 100

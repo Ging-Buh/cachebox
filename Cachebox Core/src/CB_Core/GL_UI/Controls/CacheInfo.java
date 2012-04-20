@@ -68,6 +68,9 @@ public class CacheInfo extends CB_View_Base
 	private float mMargin = 0;
 	private Sprite mRatingSprite;
 	private Sprite mIconSprite;
+	private Sprite mFoundOwnerSprite;
+	private Sprite mFavoriteSprite;
+	private Sprite mAvibleSprite;
 	private Sprite mSSprite;
 	private Sprite mDSprite;
 	private Sprite mTSprite;
@@ -109,6 +112,7 @@ public class CacheInfo extends CB_View_Base
 		super.render(batch);
 
 		if (mIconSprite != null) mIconSprite.draw(batch);
+		if (mFoundOwnerSprite != null) mFoundOwnerSprite.draw(batch);
 		if (mRatingSprite != null) mRatingSprite.draw(batch);
 		if (mS_FontCache != null) mS_FontCache.draw(batch);
 		if (mD_FontCache != null) mD_FontCache.draw(batch);
@@ -119,12 +123,15 @@ public class CacheInfo extends CB_View_Base
 		if (mTSprite != null) mTSprite.draw(batch);
 		if (mTBSprite != null) mTBSprite.draw(batch);
 		if (mInfo_FontCache != null) mInfo_FontCache.draw(batch);
+		if (mFavoriteSprite != null) mFavoriteSprite.draw(batch);
+		if (mAvibleSprite != null) mAvibleSprite.draw(batch);
 	}
 
 	@Override
 	public void dispose()
 	{
 		mIconSprite = null;
+		mFoundOwnerSprite = null;
 		mRatingSprite = null;
 		mS_FontCache = null;
 		mD_FontCache = null;
@@ -135,6 +142,8 @@ public class CacheInfo extends CB_View_Base
 		mTSprite = null;
 		mTBSprite = null;
 		mInfo_FontCache = null;
+		mFavoriteSprite = null;
+		mAvibleSprite = null;
 	}
 
 	private void requestLayout()
@@ -242,6 +251,11 @@ public class CacheInfo extends CB_View_Base
 
 			mInfo_FontCache = new BitmapFontCache(mBitmapFont);
 			mInfo_FontCache.setMultiLineText(text.toString(), mSpriteCachePos.x + mIconSize + mMargin, this.height - mMargin);
+			if (mCache.Archived || !mCache.Available)
+			{
+				mInfo_FontCache.setColor(Color.RED);
+
+			}
 
 		}
 
@@ -249,7 +263,7 @@ public class CacheInfo extends CB_View_Base
 
 			if (mCache.MysterySolved())
 			{
-				mIconSprite = new Sprite(SpriteCache.BigIcons.get(19));
+				mIconSprite = new Sprite(SpriteCache.BigIcons.get(21));
 			}
 			else
 			{
@@ -257,6 +271,46 @@ public class CacheInfo extends CB_View_Base
 			}
 			mIconSprite.setSize(mIconSize, mIconSize);
 			mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
+		}
+
+		{// infoIcons erstellen
+
+			float infoSize = mIconSize / 2;
+
+			if (mCache.Found)
+			{
+				mFoundOwnerSprite = new Sprite(SpriteCache.BigIcons.get(19));
+			}
+			else if (mCache.ImTheOwner())
+			{
+				mFoundOwnerSprite = new Sprite(SpriteCache.Icons.get(43));
+			}
+			if (mFoundOwnerSprite != null)
+			{
+				mFoundOwnerSprite.setSize(infoSize, infoSize);
+				mFoundOwnerSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
+			}
+
+			if (mCache.Favorit())
+			{
+				mFavoriteSprite = new Sprite(SpriteCache.Icons.get(42));
+				mFavoriteSprite.setSize(infoSize, infoSize);
+				mFavoriteSprite.setPosition(mSpriteCachePos.x + infoSize, mSpriteCachePos.y + infoSize);
+			}
+
+			if (mCache.Archived)
+			{
+				mAvibleSprite = new Sprite(SpriteCache.Icons.get(45));
+			}
+			else if (!mCache.Available)
+			{
+				mAvibleSprite = new Sprite(SpriteCache.Icons.get(44));
+			}
+			if (mAvibleSprite != null)
+			{
+				mAvibleSprite.setSize(infoSize, infoSize);
+				mAvibleSprite.setPosition(mSpriteCachePos.x + infoSize, mSpriteCachePos.y);
+			}
 		}
 
 	}

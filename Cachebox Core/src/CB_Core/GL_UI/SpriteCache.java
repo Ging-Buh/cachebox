@@ -131,6 +131,7 @@ public class SpriteCache
 		MapArrows.add(uiAtlas.createSprite("arrow_GPS"));
 		MapArrows.add(uiAtlas.createSprite("arrow_GPS_Trans"));
 		MapArrows.add(atlas.createSprite("target_arrow"));
+		MapArrows.add(atlas.createSprite("track_line"));
 
 		MapStars = new ArrayList<Sprite>();
 		MapStars.add(atlas.createSprite("stars0small"));
@@ -198,28 +199,28 @@ public class SpriteCache
 		SizesIcons.add(atlas.createSprite("large"));
 
 		BigIcons = new ArrayList<Sprite>();
-		BigIcons.add(iconAtlas.createSprite("big0icon"));
-		BigIcons.add(iconAtlas.createSprite("big1icon"));
-		BigIcons.add(iconAtlas.createSprite("big2icon"));
-		BigIcons.add(iconAtlas.createSprite("big3icon"));
-		BigIcons.add(iconAtlas.createSprite("big4icon"));
-		BigIcons.add(iconAtlas.createSprite("big5icon"));
-		BigIcons.add(iconAtlas.createSprite("big6icon"));
-		BigIcons.add(iconAtlas.createSprite("big7icon"));
-		BigIcons.add(iconAtlas.createSprite("big8icon"));
-		BigIcons.add(iconAtlas.createSprite("big9icon"));
-		BigIcons.add(iconAtlas.createSprite("big10icon"));
-		BigIcons.add(iconAtlas.createSprite("big11icon"));
-		BigIcons.add(iconAtlas.createSprite("big12icon"));
-		BigIcons.add(iconAtlas.createSprite("big13icon"));
-		BigIcons.add(iconAtlas.createSprite("big14icon"));
-		BigIcons.add(iconAtlas.createSprite("big15icon"));
-		BigIcons.add(iconAtlas.createSprite("big16icon"));
-		BigIcons.add(iconAtlas.createSprite("big17icon"));
-		BigIcons.add(iconAtlas.createSprite("big18icon"));
-		BigIcons.add(iconAtlas.createSprite("log0icon"));
-		BigIcons.add(iconAtlas.createSprite("my_parking"));
-		BigIcons.add(iconAtlas.createSprite("big19icon"));
+		BigIcons.add(iconAtlas.createSprite("big0icon")); // 0
+		BigIcons.add(iconAtlas.createSprite("big1icon")); // 1
+		BigIcons.add(iconAtlas.createSprite("big2icon")); // 2
+		BigIcons.add(iconAtlas.createSprite("big3icon")); // 3
+		BigIcons.add(iconAtlas.createSprite("big4icon")); // 4
+		BigIcons.add(iconAtlas.createSprite("big5icon")); // 5
+		BigIcons.add(iconAtlas.createSprite("big6icon")); // 6
+		BigIcons.add(iconAtlas.createSprite("big7icon")); // 7
+		BigIcons.add(iconAtlas.createSprite("big8icon")); // 8
+		BigIcons.add(iconAtlas.createSprite("big9icon")); // 9
+		BigIcons.add(iconAtlas.createSprite("big10icon")); // 10
+		BigIcons.add(iconAtlas.createSprite("big11icon")); // 11
+		BigIcons.add(iconAtlas.createSprite("big12icon")); // 12
+		BigIcons.add(iconAtlas.createSprite("big13icon")); // 13
+		BigIcons.add(iconAtlas.createSprite("big14icon")); // 14
+		BigIcons.add(iconAtlas.createSprite("big15icon")); // 15
+		BigIcons.add(iconAtlas.createSprite("big16icon")); // 16
+		BigIcons.add(iconAtlas.createSprite("big17icon")); // 17
+		BigIcons.add(iconAtlas.createSprite("big18icon")); // 18
+		BigIcons.add(iconAtlas.createSprite("log0icon")); // 19
+		BigIcons.add(iconAtlas.createSprite("my_parking")); // 20
+		BigIcons.add(iconAtlas.createSprite("big19icon")); // 21
 
 		Icons = new ArrayList<Sprite>();
 		Icons.add(iconAtlas.createSprite("day_btn_default_normal"));// 0
@@ -265,6 +266,10 @@ public class SpriteCache
 		Icons.add(iconAtlas.createSprite("import")); // 40
 		Icons.add(iconAtlas.createSprite("manage_db")); // 41
 		Icons.add(iconAtlas.createSprite("favorit")); // 42
+		Icons.add(iconAtlas.createSprite("star")); // 43
+		Icons.add(iconAtlas.createSprite("disabled")); // 44
+		Icons.add(iconAtlas.createSprite("not_available")); // 45
+		Icons.add(iconAtlas.createSprite("navigate")); // 46
 		loadButtnSprites();
 
 		ListBack = new NinePatch(uiAtlas.createSprite("background"), 1, 1, 1, 1);

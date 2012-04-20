@@ -80,16 +80,17 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					Database.Data.Query.Resort();
 					return true;
 				case MI_FilterSet:
-					new CB_Action_ShowActivity("filtersettings", MI_FilterSet, ViewConst.FILTER_SETTINGS).Execute();
+					new CB_Action_ShowActivity("filtersettings", MI_FilterSet, ViewConst.FILTER_SETTINGS, SpriteCache.Icons.get(13))
+							.Execute();
 					return true;
 				case MI_SEARCH:
-					new CB_Action_ShowActivity("search", MI_SEARCH, ViewConst.SEARCH).Execute();
+					new CB_Action_ShowActivity("search", MI_SEARCH, ViewConst.SEARCH, SpriteCache.Icons.get(27)).Execute();
 					return true;
 				case MI_IMPORT:
-					new CB_Action_ShowActivity("import", MI_IMPORT, ViewConst.IMPORT).Execute();
+					new CB_Action_ShowActivity("import", MI_IMPORT, ViewConst.IMPORT, SpriteCache.Icons.get(40)).Execute();
 					return true;
 				case MI_MANAGE_DB:
-					new CB_Action_ShowActivity("manageDB", MI_MANAGE_DB, ViewConst.MANAGE_DB).Execute();
+					new CB_Action_ShowActivity("manageDB", MI_MANAGE_DB, ViewConst.MANAGE_DB, SpriteCache.Icons.get(41)).Execute();
 					return true;
 				case MI_AUTO_RESORT:
 					GlobalCore.autoResort = !(GlobalCore.autoResort);
@@ -100,7 +101,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					}
 					return true;
 				case MI_CHK_STATE_API:
-					new CB_Action_ShowActivity("chkState", MI_CHK_STATE_API, ViewConst.CHK_STATE_API).Execute();
+					new CB_Action_ShowActivity("chkState", MI_CHK_STATE_API, ViewConst.CHK_STATE_API, SpriteCache.Icons.get(35)).Execute();
 					return true;
 				}
 				return false;
