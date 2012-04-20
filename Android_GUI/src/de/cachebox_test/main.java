@@ -1399,9 +1399,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		/*
 		 * This code together with the one in onDestroy() will make the screen be always on until this Activity gets destroyed.
 		 */
-		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-		this.mWakeLock.acquire();
+		if (Config.settings.SuppressPowerSaving.getValue())
+		{
+			final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+			this.mWakeLock.acquire();
+		}
 
 	}
 
@@ -1419,9 +1422,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		/*
 		 * This code together with the one in onDestroy() will make the screen be always on until this Activity gets destroyed.
 		 */
-		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
-		this.mWakeLock.acquire();
+		if (Config.settings.SuppressPowerSaving.getValue())
+		{
+			final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
+			this.mWakeLock.acquire();
+		}
 	}
 
 	@Override
