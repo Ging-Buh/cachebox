@@ -34,4 +34,13 @@ public class ViewConst
 	public static final ViewID CHK_STATE_API = new ViewID(ViewID.CHK_STATE_API, UI_Type.Activity, null, null);
 	public static final ViewID RELOAD_CACHE = new ViewID(ViewID.RELOAD_CACHE, UI_Type.Activity, null, null);
 	public static final ViewID NAVIGATE_TO = new ViewID(ViewID.NAVIGATE_TO, UI_Type.Activity, null, null);
+	public static final ViewID TRACK_REC = new ViewID(ViewID.TRACK_REC, UI_Type.Activity, null, null);
+	public static final ViewID VOICE_REC = new ViewID(ViewID.VOICE_REC, UI_Type.Activity, null, null);
+	public static final ViewID TAKE_PHOTO = new ViewID(ViewID.TAKE_PHOTO, UI_Type.Activity, null, null);
+	public static final ViewID VIDEO_REC = new ViewID(ViewID.VIDEO_REC, UI_Type.Activity, null, null);
+	public static final ViewID DELETE_CACHES = new ViewID(ViewID.DELETE_CACHES, UI_Type.Activity, null, null);
+	public static final ViewID PARKING = new ViewID(ViewID.PARKING, UI_Type.Activity, null, null);
+	public static final ViewID DAY_NIGHT = new ViewID(ViewID.DAY_NIGHT, UI_Type.Activity, null, null);
+	public static final ViewID LOCK = new ViewID(ViewID.LOCK, UI_Type.Activity, null, null);
+	public static final ViewID QUIT = new ViewID(ViewID.QUIT, UI_Type.Activity, null, null);
 }

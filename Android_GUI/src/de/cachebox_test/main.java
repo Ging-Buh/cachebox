@@ -213,7 +213,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static TrackableListView trackablelistView = null; // ID 14
 	public static WaypointView waypointView = null; // ID 15
 
-	private devicesSizes ui;
+	private static devicesSizes ui;
 
 	/**
 	 * viewGl kann mehrere ID beinhalten, vieGL ist nur die Basis für alle Views auf Basis von GL_View_Base </br> TestView = 16 </br>
@@ -1310,7 +1310,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			return;
 		}
 
-		aktView.ActivityResult(requestCode, resultCode, data);
+		if (aktView != null) aktView.ActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
@@ -1725,6 +1725,42 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		else if (ID == ViewConst.NAVIGATE_TO)
 		{
 			NavigateTo();
+		}
+		else if (ID == ViewConst.TRACK_REC)
+		{
+			AllContextMenuCallHandler.showTrackContextMenu();
+		}
+		else if (ID == ViewConst.VOICE_REC)
+		{
+			recVoice();
+		}
+		else if (ID == ViewConst.TAKE_PHOTO)
+		{
+			takePhoto();
+		}
+		else if (ID == ViewConst.VIDEO_REC)
+		{
+			recVideo();
+		}
+		else if (ID == ViewConst.DELETE_CACHES)
+		{
+			DeleteFilterSelection();
+		}
+		else if (ID == ViewConst.PARKING)
+		{
+			showParkingDialog();
+		}
+		else if (ID == ViewConst.DAY_NIGHT)
+		{
+			switchDayNight();
+		}
+		else if (ID == ViewConst.LOCK)
+		{
+			startScreenLock(true);
+		}
+		else if (ID == ViewConst.QUIT)
+		{
+			onKeyDown(KeyEvent.KEYCODE_BACK, null);
 		}
 
 	}

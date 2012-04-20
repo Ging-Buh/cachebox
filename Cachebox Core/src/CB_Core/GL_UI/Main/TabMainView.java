@@ -66,6 +66,17 @@ public class TabMainView extends MainViewBase
 	private CB_Action_ShowActivity actionNavigateTo1;
 	private CB_Action_ShowActivity actionNavigateTo2;
 
+	private CB_Action_ShowActivity actionRecTrack;
+	private CB_Action_ShowActivity actionRecVoice;
+	private CB_Action_ShowActivity actionRecPicture;
+	private CB_Action_ShowActivity actionRecVideo;
+	private CB_Action_ShowActivity actionDelCaches;
+	private CB_Action_ShowActivity actionParking;
+
+	private CB_Action_ShowActivity actionDayNight;
+	private CB_Action_ShowActivity actionScreenLock;
+	private CB_Action_ShowActivity actionClose;
+
 	public static MapView mapView = null;
 	public static CacheListView cacheListView = null;
 	public static AboutView aboutView = null;
@@ -123,10 +134,25 @@ public class TabMainView extends MainViewBase
 		actionShowTrackableListView = new CB_Action_ShowTrackableListView();
 		actionShowTrackListView = new CB_Action_ShowTrackListView();
 		actionShowWaypointView = new CB_Action_ShowWaypointView();
+
 		actionShowSettings = new CB_Action_ShowActivity("settings", CB_Action.AID_SHOW_SETTINGS, ViewConst.SETTINGS,
 				SpriteCache.Icons.get(26));
+
 		actionNavigateTo1 = actionNavigateTo2 = new CB_Action_ShowActivity("NavigateTo", CB_Action.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO,
 				SpriteCache.Icons.get(46));
+
+		actionRecTrack = new CB_Action_ShowActivity("TrackRec", CB_Action.AID_TRACK_REC, ViewConst.TRACK_REC, null);
+		actionRecVoice = new CB_Action_ShowActivity("VoiceRec", CB_Action.AID_VOICE_REC, ViewConst.VOICE_REC, SpriteCache.Icons.get(11));
+		actionRecPicture = new CB_Action_ShowActivity("TakePhoto", CB_Action.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO,
+				SpriteCache.Icons.get(47));
+		actionRecVideo = new CB_Action_ShowActivity("RecVideo", CB_Action.AID_VIDEO_REC, ViewConst.VIDEO_REC, SpriteCache.Icons.get(10));
+		actionDelCaches = new CB_Action_ShowActivity("DeleteCaches", CB_Action.AID_DELETE_CACHES, ViewConst.DELETE_CACHES,
+				SpriteCache.Icons.get(28));
+		actionParking = new CB_Action_ShowActivity("Parking", CB_Action.AID_PARKING, ViewConst.PARKING, SpriteCache.BigIcons.get(20));
+
+		actionDayNight = new CB_Action_ShowActivity("DayNight", CB_Action.AID_DAY_NIGHT, ViewConst.DAY_NIGHT, SpriteCache.Icons.get(48));
+		actionScreenLock = new CB_Action_ShowActivity("screenlock", CB_Action.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
+		actionClose = new CB_Action_ShowActivity("quit", CB_Action.AID_QUIT, ViewConst.QUIT, SpriteCache.Icons.get(31));
 
 		if (GlobalCore.isTab) addTabletTabs();
 		else
@@ -184,6 +210,17 @@ public class TabMainView extends MainViewBase
 		actionShowWaypointView.setTab(this, Tab);
 		actionNavigateTo1.setTab(this, Tab);
 
+		actionRecTrack.setTab(this, Tab);
+		actionRecVoice.setTab(this, Tab);
+		actionRecPicture.setTab(this, Tab);
+		actionRecVideo.setTab(this, Tab);
+		actionDelCaches.setTab(this, Tab);
+		actionParking.setTab(this, Tab);
+
+		actionDayNight.setTab(this, Tab);
+		actionScreenLock.setTab(this, Tab);
+		actionClose.setTab(this, Tab);
+
 		// Actions den Buttons zuweisen
 
 		btn1.addAction(new CB_ActionButton(actionShowCacheList, true, GestureDirection.Up));
@@ -200,6 +237,13 @@ public class TabMainView extends MainViewBase
 		btn2.addAction(new CB_ActionButton(actionShowNotesView, false));
 		btn2.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
 
+		btn4.addAction(new CB_ActionButton(actionRecTrack, false));
+		btn4.addAction(new CB_ActionButton(actionRecVoice, false));
+		btn4.addAction(new CB_ActionButton(actionRecPicture, false));
+		btn4.addAction(new CB_ActionButton(actionRecVideo, false));
+		btn4.addAction(new CB_ActionButton(actionDelCaches, false));
+		btn4.addAction(new CB_ActionButton(actionParking, false));
+
 		btn3.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
 		btn3.addAction(new CB_ActionButton(actionShowCompassView, false, GestureDirection.Right));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
@@ -207,6 +251,9 @@ public class TabMainView extends MainViewBase
 		btn5.addAction(new CB_ActionButton(actionShowAboutView, true, GestureDirection.Up));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
 		btn5.addAction(new CB_ActionButton(actionShowSettings, false, GestureDirection.Left));
+		btn5.addAction(new CB_ActionButton(actionDayNight, false));
+		btn5.addAction(new CB_ActionButton(actionScreenLock, false));
+		btn5.addAction(new CB_ActionButton(actionClose, false));
 
 		btn5.performClick();// actionShowAboutView.Execute();
 	}
@@ -263,6 +310,17 @@ public class TabMainView extends MainViewBase
 		actionShowNotesView.setTab(this, Tab);
 		actionNavigateTo1.setTab(this, Tab);
 
+		actionRecTrack.setTab(this, Tab);
+		actionRecVoice.setTab(this, Tab);
+		actionRecPicture.setTab(this, Tab);
+		actionRecVideo.setTab(this, Tab);
+		actionDelCaches.setTab(this, Tab);
+		actionParking.setTab(this, Tab);
+
+		actionDayNight.setTab(this, Tab);
+		actionScreenLock.setTab(this, Tab);
+		actionClose.setTab(this, Tab);
+
 		// Actions den Buttons zuweisen
 		btn1.addAction(new CB_ActionButton(actionShowCacheList, true));
 		btn1.addAction(new CB_ActionButton(actionShowTrackableListView, false));
@@ -278,9 +336,19 @@ public class TabMainView extends MainViewBase
 		btn3.addAction(new CB_ActionButton(actionShowCompassView, true, GestureDirection.Right));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
 
-		btn5.addAction(new CB_ActionButton(actionShowAboutView, true));
+		btn4.addAction(new CB_ActionButton(actionRecTrack, false));
+		btn4.addAction(new CB_ActionButton(actionRecVoice, false));
+		btn4.addAction(new CB_ActionButton(actionRecPicture, false));
+		btn4.addAction(new CB_ActionButton(actionRecVideo, false));
+		btn4.addAction(new CB_ActionButton(actionDelCaches, false));
+		btn4.addAction(new CB_ActionButton(actionParking, false));
+
+		btn5.addAction(new CB_ActionButton(actionShowAboutView, true, GestureDirection.Up));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
-		btn5.addAction(new CB_ActionButton(actionShowSettings, false));
+		btn5.addAction(new CB_ActionButton(actionShowSettings, false, GestureDirection.Left));
+		btn5.addAction(new CB_ActionButton(actionDayNight, false));
+		btn5.addAction(new CB_ActionButton(actionScreenLock, false));
+		btn5.addAction(new CB_ActionButton(actionClose, false));
 
 		btn5.performClick();// actionShowAboutView.Execute();
 	}

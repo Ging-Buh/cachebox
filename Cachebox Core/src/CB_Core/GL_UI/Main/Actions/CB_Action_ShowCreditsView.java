@@ -32,7 +32,7 @@ public class CB_Action_ShowCreditsView extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(0);
+		return SpriteCache.Icons.get(49);
 	}
 
 	@Override

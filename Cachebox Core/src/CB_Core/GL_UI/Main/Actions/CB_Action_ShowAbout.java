@@ -12,7 +12,7 @@ public class CB_Action_ShowAbout extends CB_Action_ShowView
 
 	public CB_Action_ShowAbout()
 	{
-		super("Map", AID_SHOW_MAP);
+		super("About", AID_SHOW_ABOUT);
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class CB_Action_ShowAbout extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(5);
+		return SpriteCache.Icons.get(49);
 	}
 
 	@Override

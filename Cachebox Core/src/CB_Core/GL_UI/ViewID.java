@@ -55,6 +55,15 @@ public class ViewID
 	public final static int CHK_STATE_API = 106;
 	public final static int RELOAD_CACHE = 107;
 	public final static int NAVIGATE_TO = 108;
+	public final static int TRACK_REC = 109;
+	public final static int VOICE_REC = 110;
+	public final static int TAKE_PHOTO = 111;
+	public final static int VIDEO_REC = 112;
+	public final static int DELETE_CACHES = 113;
+	public final static int PARKING = 114;
+	public final static int DAY_NIGHT = 115;
+	public final static int LOCK = 116;
+	public final static int QUIT = 117;
 
 	public enum UI_Pos
 	{

@@ -270,6 +270,9 @@ public class SpriteCache
 		Icons.add(iconAtlas.createSprite("disabled")); // 44
 		Icons.add(iconAtlas.createSprite("not_available")); // 45
 		Icons.add(iconAtlas.createSprite("navigate")); // 46
+		Icons.add(iconAtlas.createSprite("log10icon")); // 47
+		Icons.add(iconAtlas.createSprite("d_n")); // 48
+		Icons.add(iconAtlas.createSprite("cb")); // 49
 		loadButtnSprites();
 
 		ListBack = new NinePatch(uiAtlas.createSprite("background"), 1, 1, 1, 1);
