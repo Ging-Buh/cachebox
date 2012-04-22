@@ -52,7 +52,7 @@ public class ArrowView extends CB_View_Base
 	public void render(SpriteBatch batch)
 	{
 
-		Sprite arrow = SpriteCache.MapArrows.get(0);
+		Sprite arrow = SpriteCache.Arrows.get(0);
 		arrow.setRotation(0);
 		arrow.setBounds(-(width / 2), 0, width, height);
 		arrow.setOrigin(centerPos.x, centerPos.y);

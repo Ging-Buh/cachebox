@@ -8,6 +8,7 @@ import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.GL_View_Base.OnLongClickListener;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
+import CB_Core.GL_UI.Controls.GestureHelp;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
@@ -16,6 +17,8 @@ import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.GL_UISizes;
+import CB_Core.Math.SizeF;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,6 +28,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 
 	ArrayList<CB_ActionButton> mButtonActions;
 	CB_Action_ShowView aktActionView = null;
+	GestureHelp help;
 
 	public CB_Button(CB_RectF rec, String Name, ArrayList<CB_ActionButton> ButtonActions)
 	{
@@ -54,6 +58,34 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 	public void addAction(CB_ActionButton Action)
 	{
 		mButtonActions.add(Action);
+		GestureDirection gestureDirection = Action.getGestureDirection();
+		if (gestureDirection != GestureDirection.None)
+		{
+			if (help == null)
+			{
+				float h = GL_UISizes.BottomButtonHeight * 2;
+				help = new GestureHelp(new SizeF(h, h), "help");
+			}
+
+			help.addBtnIcon(this.mNinePatch);
+
+			if (gestureDirection == GestureDirection.Up)
+			{
+				help.addUp(Action.getIcon());
+			}
+			else if (gestureDirection == GestureDirection.Down)
+			{
+				help.addDown(Action.getIcon());
+			}
+			else if (gestureDirection == GestureDirection.Left)
+			{
+				help.addLeft(Action.getIcon());
+			}
+			else if (gestureDirection == GestureDirection.Right)
+			{
+				help.addRight(Action.getIcon());
+			}
+		}
 	}
 
 	@Override
@@ -120,6 +152,16 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 				// else
 				// aktActionView = null;
 			}
+		}
+
+		// Show Gester Help
+
+		if (help != null)
+		{
+			CB_RectF rec = this.ThisWorldRec;
+
+			help.setPos(rec.getX(), rec.getMaxY());
+			GL_Listener.glListener.Toast(help, 4000);
 		}
 
 		return true;

@@ -22,6 +22,7 @@ import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -48,7 +49,11 @@ public class Image extends CB_View_Base
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		if (mImageSprite != null)
+		if (mNinePatchImage != null)
+		{
+			mNinePatchImage.draw(batch, 0, 0, width, height);
+		}
+		else if (mImageSprite != null)
 		{
 			mImageSprite.setBounds(0, 0, width, height);
 			mImageSprite.setRotation(mRotate);
@@ -89,6 +94,7 @@ public class Image extends CB_View_Base
 	private String mPath;
 	private Texture mImageTex = null;
 	Sprite mImageSprite = null;
+	NinePatch mNinePatchImage = null;
 	private int mLoadCounter = 0;
 
 	public void setImage(String Path)
@@ -143,6 +149,11 @@ public class Image extends CB_View_Base
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	public void setNinePatch(NinePatch ninePatch)
+	{
+		mNinePatchImage = new NinePatch(ninePatch);
 	}
 
 }

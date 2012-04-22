@@ -100,6 +100,13 @@ sonne
   orig: 48, 48
   offset: 0, 0
   index: -1
+5bubble
+  rotate: false
+  xy: 180, 1
+  size: 178, 190
+  orig: 178, 190
+  offset: 0, 0
+  index: -1
 big19icon
   rotate: false
   xy: 50, 273
@@ -147,6 +154,13 @@ big1icon
   xy: 131, 273
   size: 80, 80
   orig: 80, 80
+  offset: 0, 0
+  index: -1
+1to4bubble
+  rotate: false
+  xy: 1, 1
+  size: 178, 190
+  orig: 178, 190
   offset: 0, 0
   index: -1
 settings
@@ -359,13 +373,6 @@ filter
   orig: 48, 48
   offset: 0, 0
   index: -1
-1to
-  rotate: false
-  xy: 1, 1
-  size: 178, 190
-  orig: 178, 190
-  offset: 0, 0
-  index: 4
 video_icon
   rotate: false
   xy: 148, 1729
@@ -679,13 +686,6 @@ big10icon
   xy: 131, 192
   size: 80, 80
   orig: 80, 80
-  offset: 0, 0
-  index: -1
-5
-  rotate: false
-  xy: 180, 1
-  size: 178, 190
-  orig: 178, 190
   offset: 0, 0
   index: -1
 rec_pause

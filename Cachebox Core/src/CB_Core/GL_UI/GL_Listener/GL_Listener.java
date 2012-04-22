@@ -16,6 +16,7 @@ import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewID;
+import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Main.MainView;
 import CB_Core.GL_UI.Main.MainViewBase;
@@ -44,6 +45,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	private HashMap<GL_View_Base, Integer> renderViews = new HashMap<GL_View_Base, Integer>();
 	protected MainViewBase child;
 	protected CB_View_Base mDialog;
+	protected CB_View_Base mToastOverlay;
 	private static AtomicBoolean started = new AtomicBoolean(false);
 	static boolean useNewInput = true;
 
@@ -255,6 +257,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 		batch.setProjectionMatrix(prjMatrix.Matrix());
 
+		child.renderChilds(batch, prjMatrix);
+
 		if (DialogIsShown && mDialog.getCildCount() > 0)
 		{
 
@@ -291,9 +295,10 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 			mDialog.renderChilds(batch, prjMatrix);
 		}
-		else
+
+		if (ToastIsShown)
 		{
-			child.renderChilds(batch, prjMatrix);
+			mToastOverlay.renderChilds(batch, prjMatrix);
 		}
 
 		Gdx.gl.glFlush();
@@ -800,6 +805,40 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		removeRenderView(mDialog);
 
 		renderOnce(mDialog);
+	}
+
+	private boolean ToastIsShown = false;
+
+	public void Toast(CB_View_Base view)
+	{
+		Toast(view, 2000);
+	}
+
+	public void Toast(CB_View_Base view, int delay)
+	{
+		if (mToastOverlay == null)
+		{
+			mToastOverlay = new Box(new CB_RectF(0, 0, width, height), "ToastView");
+		}
+		else
+		{
+			mToastOverlay.removeChilds();
+		}
+
+		mToastOverlay.addChild(view);
+		ToastIsShown = true;
+
+		TimerTask task = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				ToastIsShown = false;
+			}
+		};
+
+		Timer timer = new Timer();
+		timer.schedule(task, delay);
 	}
 
 }

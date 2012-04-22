@@ -35,7 +35,7 @@ public class SpriteCache
 	public static ArrayList<Sprite> MapIconsSmall = null;
 	public static ArrayList<Sprite> MapOverlay = null;
 	public static ArrayList<Sprite> MapIcons = null;
-	public static ArrayList<Sprite> MapArrows = null;
+	public static ArrayList<Sprite> Arrows = null;
 	public static ArrayList<Sprite> MapStars = null;
 	public static ArrayList<Sprite> Stars = null;
 	public static ArrayList<Sprite> Bubble = null;
@@ -125,13 +125,17 @@ public class SpriteCache
 		MapIcons.add(atlas.createSprite("20"));
 		MapIcons.add(atlas.createSprite("21"));
 
-		MapArrows = new ArrayList<Sprite>();
-		MapArrows.add(uiAtlas.createSprite("arrow_Compass"));
-		MapArrows.add(uiAtlas.createSprite("arrow_Compass_Trans"));
-		MapArrows.add(uiAtlas.createSprite("arrow_GPS"));
-		MapArrows.add(uiAtlas.createSprite("arrow_GPS_Trans"));
-		MapArrows.add(atlas.createSprite("target_arrow"));
-		MapArrows.add(atlas.createSprite("track_line"));
+		Arrows = new ArrayList<Sprite>();
+		Arrows.add(uiAtlas.createSprite("arrow_Compass"));
+		Arrows.add(uiAtlas.createSprite("arrow_Compass_Trans"));
+		Arrows.add(uiAtlas.createSprite("arrow_GPS"));
+		Arrows.add(uiAtlas.createSprite("arrow_GPS_Trans"));
+		Arrows.add(atlas.createSprite("target_arrow"));
+		Arrows.add(atlas.createSprite("track_line"));
+		Arrows.add(iconAtlas.createSprite("arrow_down"));
+		Arrows.add(iconAtlas.createSprite("arrow_up"));
+		Arrows.add(iconAtlas.createSprite("arrow_left"));
+		Arrows.add(iconAtlas.createSprite("arrow_right"));
 
 		MapStars = new ArrayList<Sprite>();
 		MapStars.add(atlas.createSprite("stars0small"));
@@ -163,6 +167,8 @@ public class SpriteCache
 		Bubble.add(uiAtlas.createSprite("Bubble"));
 		Bubble.add(uiAtlas.createSprite("Bubble_selected"));
 		Bubble.add(uiAtlas.createSprite("BubbleOverlay"));
+		Bubble.add(iconAtlas.createSprite("1to4bubble"));
+		Bubble.add(iconAtlas.createSprite("5bubble"));
 
 		ChkIcons = new ArrayList<Sprite>();
 		ChkIcons.add(uiAtlas.createSprite("check_off"));
@@ -297,7 +303,7 @@ public class SpriteCache
 		MapIconsSmall = null;
 		MapOverlay = null;
 		MapIcons = null;
-		MapArrows = null;
+		Arrows = null;
 		MapStars = null;
 		Bubble = null;
 		ToggleBtn = null;

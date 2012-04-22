@@ -743,7 +743,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 				// double relativeBearingRad = relativeBearing * Math.PI / 180.0;
 
 				// draw compass
-				Sprite compass = SpriteCache.MapArrows.get(0);
+				Sprite compass = SpriteCache.Arrows.get(0);
 				compass.setRotation((float) -relativeBearing);
 				compass.setBounds(GL_UISizes.Compass.getX(), GL_UISizes.Compass.getY(), GL_UISizes.Compass.getWidth(),
 						GL_UISizes.Compass.getHeight());
@@ -796,7 +796,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 				arrowId = Transparency ? 3 : 2;
 			}
 
-			Sprite arrow = SpriteCache.MapArrows.get(arrowId);
+			Sprite arrow = SpriteCache.Arrows.get(arrowId);
 			arrow.setRotation(-arrowHeading);
 			arrow.setBounds(screen.x - GL_UISizes.halfPosMarkerSize, screen.y - GL_UISizes.halfPosMarkerSize, GL_UISizes.PosMarkerSize,
 					GL_UISizes.PosMarkerSize);
@@ -870,7 +870,7 @@ public class MapViewGlListener implements ApplicationListener, PositionEvent, Se
 			direction = 180 - direction;
 
 			// draw sprite
-			Sprite arrow = SpriteCache.MapArrows.get(4);
+			Sprite arrow = SpriteCache.Arrows.get(4);
 			arrow.setRotation(direction);
 
 			arrow.setBounds(newTarget.x - GL_UISizes.TargetArrow.halfWidth, newTarget.y - GL_UISizes.TargetArrow.height,

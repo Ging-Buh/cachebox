@@ -2,6 +2,8 @@ package CB_Core.GL_UI.Main;
 
 import CB_Core.GL_UI.Main.Actions.CB_Action;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 public class CB_ActionButton
 {
 	public enum GestureDirection
@@ -44,5 +46,10 @@ public class CB_ActionButton
 	public GestureDirection getGestureDirection()
 	{
 		return gestureDirection;
+	}
+
+	public Sprite getIcon()
+	{
+		return action.getIcon();
 	}
 }

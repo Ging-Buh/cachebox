@@ -73,7 +73,7 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 	protected extendedCacheInfo info;
 	protected boolean isPressed = false;
 
-	private Sprite arrow = new Sprite(SpriteCache.MapArrows.get(0));
+	private Sprite arrow = new Sprite(SpriteCache.Arrows.get(0));
 	private BitmapFontCache distance = new BitmapFontCache(Fonts.getSmall());
 
 	// private BitmapFontCache debugIndex = new BitmapFontCache(Fonts.getSmall());
@@ -132,7 +132,7 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 			if (arrow.getColor() == DISABLE_COLOR)
 			{
 				float size = this.height / 2.3f;
-				arrow = new Sprite(SpriteCache.MapArrows.get(0));
+				arrow = new Sprite(SpriteCache.Arrows.get(0));
 				arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 				arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 			}
