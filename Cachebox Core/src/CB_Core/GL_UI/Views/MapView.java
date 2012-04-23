@@ -1621,7 +1621,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
 		y = height - y;
-		debugString = "touchDown " + x + " - " + y;
+		// debugString = "touchDown " + x + " - " + y;
 		if (inputState == InputState.Idle)
 		{
 			fingerDown.clear();
@@ -1641,7 +1641,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 		y = height - y;
-		debugString = "touchDragged: " + x + " - " + y;
+		// debugString = "touchDragged: " + x + " - " + y;
 		// debugString = "touchDragged " + inputState.toString();
 		if (inputState == InputState.IdleDown)
 		{
@@ -1691,8 +1691,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			// screenCenterW.y = camera.position.y;
 			synchronized (screenCenterW)
 			{
-				screenCenterW.x += (long) ((lastPoint.x - x) * faktor);
-				screenCenterW.y += (long) ((y - lastPoint.y) * faktor);
+				double angle = mapHeading * Math.PI / 180;
+				int dx = (lastPoint.x - x);
+				int dy = (y - lastPoint.y);
+				int dxr = (int) (Math.cos(angle) * dx + Math.sin(angle) * dy);
+				int dyr = (int) (-Math.sin(angle) * dx + Math.cos(angle) * dy);
+				debugString = dx + " - " + dy + " - " + dxr + " - " + dyr;
+				screenCenterW.x += (long) (dxr * faktor);
+				screenCenterW.y += (long) (dyr * faktor);
 			}
 			calcCenter();
 
