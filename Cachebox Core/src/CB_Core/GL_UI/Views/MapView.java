@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Views;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.SortedMap;
@@ -12,6 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.security.auth.DestroyFailedException;
 
 import CB_Core.Config;
+import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Events.PositionChangedEvent;
@@ -37,6 +39,7 @@ import CB_Core.Map.Layer;
 import CB_Core.Map.ManagerBase;
 import CB_Core.Map.Point;
 import CB_Core.Map.PointL;
+import CB_Core.Map.RouteOverlay;
 import CB_Core.Map.TileGL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
@@ -55,6 +58,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class MapView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent
@@ -117,7 +121,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	// #################################################################
 
 	CharSequence str = "";
-	final int maxMapZoom = 22;
+	public static final int MAX_MAP_ZOOM = 22;
 	int frameRateIdle = 200;
 	int frameRateAction = 30;
 
@@ -219,7 +223,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		// initial Zoom Scale
 		// zoomScale = new GL_ZoomScale(6, 20, 13);
 
-		mapCacheList = new MapViewCacheList(maxMapZoom);
+		mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
 
 		// from create
 
@@ -240,6 +244,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		togBtn.addState("Free", Color.GRAY);
 		togBtn.addState("GPS", Color.GREEN);
+		togBtn.addState("WP", Color.MAGENTA);
 		togBtn.addState("Lock", Color.RED);
 		togBtn.addState("Car", Color.YELLOW);
 		togBtn.setLastStateWithLongClick(true);
@@ -249,7 +254,21 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			@Override
 			public void onStateChange(GL_View_Base v, int State)
 			{
-				if (State > 0)
+				if (State == 2)
+				{
+					if (GlobalCore.SelectedCache() != null)
+					{
+						if (GlobalCore.SelectedWaypoint() != null)
+						{
+							GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+						}
+						else
+						{
+							GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), null);
+						}
+					}
+				}
+				else if (State > 0)
 				{
 					setCenter(new Coordinate(GlobalCore.LastValidPosition.Latitude, GlobalCore.LastValidPosition.Longitude));
 				}
@@ -291,6 +310,31 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		CB_Core.Events.SelectedCacheEventList.Add(this);
 		CB_Core.Events.PositionChangedEventList.Add(this);
+
+		RouteOverlay.Routes.clear();
+
+		String trackPath = Config.settings.TrackFolder.getValue() + "/Autoload";
+		if (FileIO.DirectoryExists(trackPath))
+		{
+			File dir = new File(trackPath);
+			String[] files = dir.list();
+			if (!(files == null))
+			{
+				if (files.length > 0)
+				{
+					for (String file : files)
+					{
+						LoadTrack(trackPath, file);
+
+					}
+				}
+			}
+		}
+		else
+		{
+			File sddir = new File(trackPath);
+			sddir.mkdirs();
+		}
 	}
 
 	@Override
@@ -390,7 +434,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			camera.zoom = kineticZoom.getAktZoom();
 
-			int zoom = maxMapZoom;
+			int zoom = MAX_MAP_ZOOM;
 			float tmpZoom = camera.zoom;
 			float faktor = 1.5f;
 			faktor = faktor - iconFactor + 1;
@@ -478,6 +522,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if ((aktZoom >= 13) && (aktZoom <= 14)) iconSize = 1; // 13x13
 		else if (aktZoom > 14) iconSize = 2; // default Images
 
+		CB_Core.Map.RouteOverlay.RenderRoute(batch, aktZoom);
 		renderWPs(GL_UISizes.WPSizes[iconSize], GL_UISizes.UnderlaySizes[iconSize], batch);
 		renderPositionMarker(batch);
 		RenderTargetArrow(batch);
@@ -605,8 +650,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		if (locator != null)
 		{
-			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(maxMapZoom, GlobalCore.LastValidPosition.Longitude),
-					Descriptor.LatitudeToTileY(maxMapZoom, GlobalCore.LastValidPosition.Latitude), maxMapZoom, maxMapZoom);
+			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MAX_MAP_ZOOM, GlobalCore.LastValidPosition.Longitude),
+					Descriptor.LatitudeToTileY(MAX_MAP_ZOOM, GlobalCore.LastValidPosition.Latitude), MAX_MAP_ZOOM, MAX_MAP_ZOOM);
 
 			Vector2 vPoint = new Vector2((float) point.X, -(float) point.Y);
 
@@ -696,8 +741,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		Coordinate coord = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos : GlobalCore.SelectedCache().Pos;
 
-		float x = (float) (256.0 * Descriptor.LongitudeToTileX(maxMapZoom, coord.Longitude));
-		float y = (float) (-256.0 * Descriptor.LatitudeToTileY(maxMapZoom, coord.Latitude));
+		float x = (float) (256.0 * Descriptor.LongitudeToTileX(MAX_MAP_ZOOM, coord.Longitude));
+		float y = (float) (-256.0 * Descriptor.LatitudeToTileY(MAX_MAP_ZOOM, coord.Latitude));
 
 		float halfHeight = height / 2;
 		float halfWidth = width / 2;
@@ -736,8 +781,22 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 			arrow.setOrigin(GL_UISizes.TargetArrow.halfWidth, GL_UISizes.TargetArrow.height);
 			arrow.draw(batch);
+
+			Rectangle bound = arrow.getBoundingRectangle();
+
+			TargetArrow = new CB_RectF(bound.x, bound.y, bound.width, bound.height);
+
+		}
+		else
+		{
+			TargetArrow = null;
 		}
 	}
+
+	/**
+	 * Rechteck vom Target-Pfeil zur onClick bestimmung
+	 */
+	private CB_RectF TargetArrow = null;
 
 	float get_angle(float x1, float y1, float x2, float y2)
 	{
@@ -969,7 +1028,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					// eigentlich nicht das richtige Tile ist!!!
 					// tile.Age = 0;
 				}
-				else if ((zoomzoom <= aktZoom + 0) && (zoomzoom <= maxMapZoom))
+				else if ((zoomzoom <= aktZoom + 0) && (zoomzoom <= MAX_MAP_ZOOM))
 				{
 					// für den aktuellen Zoom ist kein Tile vorhanden -> größere
 					// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden
@@ -1222,8 +1281,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 			center = value;
 
-			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(maxMapZoom, center.Longitude),
-					Descriptor.LatitudeToTileY(maxMapZoom, center.Latitude), maxMapZoom, maxMapZoom);
+			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MAX_MAP_ZOOM, center.Longitude),
+					Descriptor.LatitudeToTileY(MAX_MAP_ZOOM, center.Latitude), MAX_MAP_ZOOM, MAX_MAP_ZOOM);
 
 			setScreenCenter(new Vector2((float) point.X, (float) point.Y));
 		}
@@ -1232,7 +1291,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private long getMapTileSizeFactor(int zoom)
 	{
 		long result = 1;
-		for (int z = maxMapZoom; z < zoom; z++)
+		for (int z = MAX_MAP_ZOOM; z < zoom; z++)
 		{
 			result *= 2;
 		}
@@ -1242,7 +1301,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private long getMapTilePosFactor(int zoom)
 	{
 		long result = 1;
-		for (int z = zoom; z < maxMapZoom; z++)
+		for (int z = zoom; z < MAX_MAP_ZOOM; z++)
 		{
 			result *= 2;
 		}
@@ -1263,22 +1322,25 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		return result;
 	}
 
-	private Vector2 worldToScreen(Vector2 point)
+	public Vector2 worldToScreen(Vector2 point)
 	{
-		Vector2 result = new Vector2(0, 0);
-		result.x = ((long) point.x - screenCenterW.x) / camera.zoom + (float) width / 2;
-		result.y = -(-(long) point.y + screenCenterW.y) / camera.zoom + (float) height / 2;
-		result.add(-(float) width / 2, -(float) height / 2);
-		result.rotate(mapHeading);
-		result.add((float) width / 2, (float) height / 2);
-		return result;
+		synchronized (screenCenterW)
+		{
+			Vector2 result = new Vector2(0, 0);
+			result.x = ((long) point.x - screenCenterW.x) / camera.zoom + (float) width / 2;
+			result.y = -(-(long) point.y + screenCenterW.y) / camera.zoom + (float) height / 2;
+			result.add(-(float) width / 2, -(float) height / 2);
+			result.rotate(mapHeading);
+			result.add((float) width / 2, (float) height / 2);
+			return result;
+		}
 	}
 
 	private Descriptor screenToDescriptor(Vector2 point, int zoom)
 	{
 		// World-Koordinaten in Pixel
 		Vector2 world = screenToWorld(point);
-		for (int i = maxMapZoom; i > zoom; i--)
+		for (int i = MAX_MAP_ZOOM; i > zoom; i--)
 		{
 			world.x /= 2;
 			world.y /= 2;
@@ -1354,7 +1416,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			drawingHeight = height;
 		}
 
-		if (togBtn.getState() > 0) setCenter(new Coordinate(locator.getLocation().Latitude, locator.getLocation().Longitude));
+		if (togBtn.getState() > 0 && togBtn.getState() != 2) setCenter(new Coordinate(locator.getLocation().Latitude,
+				locator.getLocation().Longitude));
 	}
 
 	@Override
@@ -1418,7 +1481,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	public boolean GetCenterGps()
 	{
-		return (togBtn.getState() > 0);
+		return (togBtn.getState() > 0 && togBtn.getState() != 2);
 	}
 
 	public boolean GetAlignToCompass()
@@ -1738,7 +1801,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			endCameraZoom = camera.zoom;
 
 			System.out.println(camera.zoom);
-			int zoom = maxMapZoom;
+			int zoom = MAX_MAP_ZOOM;
 			float tmpZoom = camera.zoom;
 			float faktor = 1.5f;
 			faktor = faktor - iconFactor + 1;
@@ -1810,6 +1873,22 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			double minDist = Double.MAX_VALUE;
 			WaypointRenderInfo minWpi = null;
 			Vector2 clickedAt = new Vector2(x, y);
+
+			if (TargetArrow != null && TargetArrow.contains(x, y))
+			{
+				if (GlobalCore.SelectedCache() != null)
+				{
+					if (GlobalCore.SelectedWaypoint() != null)
+					{
+						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+					}
+					else
+					{
+						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), null);
+					}
+					return false;
+				}
+			}
 
 			synchronized (mapCacheList.list)
 			{
@@ -1893,6 +1972,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					// return false;
 				}
 			}
+
 			return false;
 		}
 	};
@@ -1900,9 +1980,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private void calcCenter()
 	{
 		// berechnet anhand des ScreenCenterW die Center-Coordinaten
-		PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, maxMapZoom, maxMapZoom);
+		PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, MAX_MAP_ZOOM, MAX_MAP_ZOOM);
 
-		center = new Coordinate(Descriptor.TileYToLatitude(maxMapZoom, -point.Y), Descriptor.TileXToLongitude(maxMapZoom, point.X));
+		center = new Coordinate(Descriptor.TileYToLatitude(MAX_MAP_ZOOM, -point.Y), Descriptor.TileXToLongitude(MAX_MAP_ZOOM, point.X));
 	}
 
 	private float pixelsPerMeter = 0;
@@ -1926,13 +2006,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		 * if (InvokeRequired) { Invoke(new targetChangedDelegate(OnTargetChanged), new object[] { cache, waypoint }); return; }
 		 */
 
-		mapCacheList = new MapViewCacheList(maxMapZoom);
+		mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
 
-		if (togBtn.getState() > 0) return;
+		if (togBtn.getState() > 0 && togBtn.getState() != 2) return;
 
 		positionInitialized = true;
 
-		togBtn.setState(0, true);
+		if (togBtn.getState() != 2) togBtn.setState(0, true);
+
 		Coordinate target = (waypoint != null) ? new Coordinate(waypoint.Latitude(), waypoint.Longitude()) : new Coordinate(
 				cache.Latitude(), cache.Longitude());
 
@@ -1952,7 +2033,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		Timer timer = new Timer();
 		timer.schedule(task, 2000);
-
 	}
 
 	protected class KineticPan
@@ -2100,4 +2180,39 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	}
 
+	public void LoadTrack(String trackPath)
+	{
+		LoadTrack(trackPath, "");
+	}
+
+	public void LoadTrack(String trackPath, String file)
+	{
+		Color[] ColorField = new Color[8];
+		ColorField[0] = Color.RED;
+		ColorField[1] = Color.YELLOW;
+		ColorField[2] = Color.BLACK;
+		ColorField[3] = Color.LIGHT_GRAY;
+		ColorField[4] = Color.GREEN;
+		ColorField[5] = Color.BLUE;
+		ColorField[6] = Color.CYAN;
+		ColorField[7] = Color.GRAY;
+		Color TrackColor;
+		TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
+
+		String absolutPath = "";
+		if (file.equals(""))
+		{
+			absolutPath = trackPath;
+		}
+		else
+		{
+			absolutPath = trackPath + "/" + file;
+		}
+		RouteOverlay.Routes.add(RouteOverlay.LoadRoute(absolutPath, TrackColor, Config.settings.TrackDistance.getValue()));
+	}
+
+	public int getAktZoom()
+	{
+		return aktZoom;
+	}
 }

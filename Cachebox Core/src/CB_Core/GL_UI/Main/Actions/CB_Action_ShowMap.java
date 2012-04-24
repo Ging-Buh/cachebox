@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Main.Actions;
 
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
@@ -31,6 +32,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 	public final int MI_MAPVIEW_VIEW = 25;
 	public final int MI_SETTINGS = 3;
 	public final int MI_ROTATE = 2;
+	public final int MI_CENTER_WP = 1;
 
 	public CB_Action_ShowMap()
 	{
@@ -82,6 +84,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		mi = icm.addItem(MI_ALIGN_TO_COMPSS, "AlignToCompass");
 		mi.setCheckable(true);
 		mi.setChecked(MapView.that.GetAlignToCompass());
+
+		mi = icm.addItem(MI_CENTER_WP, "CenterWP");
 
 		mi = icm.addItem(MI_SMOOTH_SCROLLING, "SmoothScrolling");
 		mi = icm.addItem(MI_SETTINGS, "settings", SpriteCache.Icons.get(26));
@@ -210,6 +214,21 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 			case MI_SHOW_DIRECT_LINE:
 				MapView.that.showDirektLine = !MapView.that.showDirektLine;
+				return true;
+
+			case MI_CENTER_WP:
+				if (GlobalCore.SelectedCache() != null)
+				{
+					if (GlobalCore.SelectedWaypoint() != null)
+					{
+						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+					}
+					else
+					{
+						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), null);
+					}
+				}
+
 				return true;
 
 			default:

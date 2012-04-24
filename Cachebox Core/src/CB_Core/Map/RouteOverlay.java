@@ -1,4 +1,4 @@
-package de.cachebox_test.Map;
+package CB_Core.Map;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -7,33 +7,34 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import CB_Core.Map.Descriptor;
+import CB_Core.GL_UI.DrawUtils;
+import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Types.Coordinate;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Point;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 public class RouteOverlay
 {
 
-	public final static int projectionZoomLevel = 15;
-
 	public static class Trackable
 	{
-		public Paint paint;
 		public ArrayList<PointD> Points;
 		public String Name;
 		public String FileName;
 		public boolean ShowRoute = false;
 		public boolean IsActualTrack = false;
+		public Color mColor;
 
-		public Trackable(Paint paint, String name)
+		public Trackable(String name, Color color)
 		{
-			this.paint = paint;
 			Points = new ArrayList<PointD>();
 			Name = name;
+			mColor = color;
 		}
 
 	}
@@ -43,14 +44,14 @@ public class RouteOverlay
 	// Read track from gpx file
 	// attention it is possible that a gpx file contains more than 1 <trk> segments
 	// in this case all segments was connectet to one track
-	public static Trackable LoadRoute(String file, Paint paint, double minDistanceMeters)
+	public static Trackable LoadRoute(String file, Color color, double minDistanceMeters)
 	{
 		BufferedReader reader;
 		try
 		{
 			InputStreamReader isr = new InputStreamReader(new FileInputStream(file), "UTF8");
 			reader = new BufferedReader(isr);
-			Trackable route = new Trackable(paint, null);
+			Trackable route = new Trackable(null, color);
 			route.FileName = file;
 
 			String line = null;
@@ -137,10 +138,13 @@ public class RouteOverlay
 							 */
 							lastAcceptedCoordinate = new Coordinate(lat, lon);
 
-							PointD projectedPoint = new PointD(Descriptor.LongitudeToTileX(projectionZoomLevel, lon),
-									Descriptor.LatitudeToTileY(projectionZoomLevel, lat));
+							// PointD projectedPoint = new PointD(Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, lon),
+							// Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, lat));
+							//
+							// route.Points.add(projectedPoint);
 
-							route.Points.add(projectedPoint);
+							route.Points.add(new PointD(lon, lat));
+
 						}
 					}
 				}
@@ -175,11 +179,11 @@ public class RouteOverlay
 		}
 	}
 
-	public static void RenderRoute(Canvas canvas, Bitmap bitmap, Descriptor desc, float dpiScaleFactorX, float dpiScaleFactorY)
+	public static void RenderRoute(SpriteBatch batch, int Zoom) // , Descriptor desc, float dpiScaleFactorX, float dpiScaleFactorY)
 	{
-		double tileX = desc.X * 256 * dpiScaleFactorX;
-		double tileY = desc.Y * 256 * dpiScaleFactorY;
-		ArrayList<Point> points = new ArrayList<Point>();
+		// double tileX = desc.X * 256 * dpiScaleFactorX;
+		// double tileY = desc.Y * 256 * dpiScaleFactorY;
+		ArrayList<PointD> points = new ArrayList<PointD>();
 
 		for (int i = 0; i < Routes.size(); i++)
 		{
@@ -190,62 +194,34 @@ public class RouteOverlay
 
 			if (Routes.get(i).ShowRoute)
 			{
-				Paint paint = Routes.get(i).paint;
+				Sprite ArrowSprite = SpriteCache.Arrows.get(5);
+				ArrowSprite.setColor(Routes.get(i).mColor);
 
-				double adjustmentX = Math.pow(2, desc.Zoom - projectionZoomLevel) * 256 * dpiScaleFactorX;
-				double adjustmentY = Math.pow(2, desc.Zoom - projectionZoomLevel) * 256 * dpiScaleFactorY;
-
-				int step = Routes.get(i).Points.size() / 600;
+				int step = Routes.get(i).Points.size() / 1200;
 				if (step < 1) step = 1;
+
+				step = 1;
 
 				for (int j = 0; j < (Routes.get(i).Points.size()); j = j + step)
 				{
-					int x1 = (int) (Routes.get(i).Points.get(j).X * adjustmentX - tileX);
-					int y1 = (int) (Routes.get(i).Points.get(j).Y * adjustmentY - tileY);
 
-					// if (Routes[i].Points.Count > 360)
-					// {
-					// aktIn = (x1 >= -bitmap.Width) && (x1 <= bitmap.Width * 2) && (y1 >= -bitmap.Height) && (y1 <= bitmap.Height * 2);
+					points.add(new PointD(Routes.get(i).Points.get(j).X, Routes.get(i).Points.get(j).Y));
 
-					// if (aktIn)
-					// {
-					// if (!lastIn) // wenn letzter Punkt nicht innerhalb war -> trotzdem hinzuf?gen, damit die Linie vollst?ndig wird
-					// points.Add(new Point((int)lastX, (int)lastY));
-					// if ((x1 != lastX) || (y1 != lastY))
-					// points.Add(new Point(x1, y1));
-					// }
-					// else
-					// {
-					// if (lastIn)
-					// {
-					// // wenn der letzte Punkt noch sichtbar war, aktuellen Punkt hinzuf?gen, obwohl er ausserhalb ist, damit die Linie
-					// abgeschlossen wird
-					// points.Add(new Point(x1, y1));
-					// // Linienzug zeichnen
-					// graphics.DrawLines(pen, points.ToArray());
-					// points.Clear();
-					// }
-					// }
-
-					// lastX = x1;
-					// lastY = y1;
-					// lastIn = aktIn;
-					// }
-					// else
-					{
-						points.add(new Point(x1, y1));
-					}
 				}
-				// letzte Punkte bis zum aktuellen noch zeichnen
-				/*
-				 * float[] ppp = new float[points.size() * 2]; int i1 = 0; for (Point pp : points) { ppp[i1] = pp.x; i1++; ppp[i1] = pp.y;
-				 * i1++; } canvas.drawLines(ppp, paint);
-				 */
+
 				for (int ii = 0; ii < points.size() - 1; ii++)
 				{
-					Point pp = points.get(ii);
-					Point ppp = points.get(ii + 1);
-					canvas.drawLine(pp.x, pp.y, ppp.x, ppp.y, paint);
+
+					double MapX1 = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, points.get(ii).X);
+					double MapY1 = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, points.get(ii).Y);
+
+					double MapX2 = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, points.get(ii + 1).X);
+					double MapY2 = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, points.get(ii + 1).Y);
+
+					Vector2 screen1 = MapView.that.worldToScreen(new Vector2((float) MapX1, (float) MapY1));
+					Vector2 screen2 = MapView.that.worldToScreen(new Vector2((float) MapX2, (float) MapY2));
+
+					DrawUtils.drawSpriteLine(batch, ArrowSprite, screen1.x, screen1.y, screen2.x, screen2.y);
 				}
 
 				points.clear();

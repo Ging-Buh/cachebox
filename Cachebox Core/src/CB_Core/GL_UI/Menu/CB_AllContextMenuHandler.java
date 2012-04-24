@@ -42,6 +42,7 @@ public class CB_AllContextMenuHandler
 	public static final int MI_SHOW_TITLE = 23;
 	public static final int MI_SHOW_DIRECT_LINE = 24;
 	public static final int MI_MAPVIEW_VIEW = 25;
+	public static final int MI_RELOAD_CACHE_INFO = 26;
 
 	public static void showBtnMiscContextMenu()
 	{
@@ -81,6 +82,9 @@ public class CB_AllContextMenuHandler
 		MenuItem mi;
 
 		mi = icm.addItem(MI_DESCRIPTION, "Description", SpriteCache.Icons.get(20));
+		if (selectedCacheIsNull) mi.setEnabled(false);
+
+		mi = icm.addItem(MI_RELOAD_CACHE_INFO, "reload_CacheInfo", SpriteCache.Icons.get(35));
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
 		mi = icm.addItem(MI_WAYPOINTS, "Waypoints", SpriteCache.BigIcons.get(16));
@@ -223,6 +227,9 @@ public class CB_AllContextMenuHandler
 
 			case MI_SHOW_DIRECT_LINE:
 				MapView.that.showDirektLine = !MapView.that.showDirektLine;
+				return true;
+			case MI_RELOAD_CACHE_INFO:
+
 				return true;
 
 			default:
