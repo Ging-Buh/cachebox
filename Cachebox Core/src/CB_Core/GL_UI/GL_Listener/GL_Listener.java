@@ -753,7 +753,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		}
 	}
 
-	private boolean DialogIsShown = false;
+	protected boolean DialogIsShown = false;
 	private Dialog actDialog;
 
 	public Dialog getActDialog()
@@ -794,6 +794,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public void closeDialog()
 	{
+		if (!DialogIsShown) return;
+
 		platformConector.hideForDialog();
 		actDialog = null;
 		mDialog.removeChildsDirekt();

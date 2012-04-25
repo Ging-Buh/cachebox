@@ -1047,7 +1047,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
-		// Log.d("SolHunter", "Key event code " + keyCode);
+
+		// send KeyCode to OpenGL-UI
+		if (CB_Core.Events.platformConector.sendKey(keyCode)) return true;
+
 		if (keyCode == KeyEvent.KEYCODE_BACK)
 		{
 			DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()

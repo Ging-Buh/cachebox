@@ -1,5 +1,8 @@
 package CB_Core.GL_UI.GL_Listener;
 
+import CB_Core.Events.KeyCodes;
+import CB_Core.Events.platformConector;
+import CB_Core.Events.platformConector.KeyEventListner;
 import CB_Core.GL_UI.Main.MainView;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Log.Logger;
@@ -37,6 +40,21 @@ public class Tab_GL_Listner extends GL_Listener
 			mDialog = new MainView(0, 0, width, height, "Dialog");
 			mDialog.setClickable(true);
 		}
+
+		platformConector.setKeyEventListner(new KeyEventListner()
+		{
+
+			@Override
+			public boolean onKeyPressed(int KeyCode)
+			{
+				if (DialogIsShown && KeyCode == KeyCodes.KEYCODE_BACK)
+				{
+					closeDialog();
+					return true; // behandelt!
+				}
+				return false;
+			}
+		});
 
 	}
 

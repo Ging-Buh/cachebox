@@ -90,4 +90,26 @@ public class platformConector
 		return false;
 	}
 
+	private static KeyEventListner mKeyListner;
+
+	public interface KeyEventListner
+	{
+		public boolean onKeyPressed(int KeyCode);
+	}
+
+	public static void setKeyEventListner(KeyEventListner listner)
+	{
+		mKeyListner = listner;
+	}
+
+	public static boolean sendKey(int KeyCode)
+	{
+		if (mKeyListner != null)
+		{
+			return mKeyListner.onKeyPressed(KeyCode);
+		}
+
+		return false;
+	}
+
 }
