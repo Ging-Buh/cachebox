@@ -490,21 +490,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 
 		loadTiles();
-
-		if (alignToCompass)
-		{
-			camera.up.x = 0;
-			camera.up.y = 1;
-			camera.up.z = 0;
-			camera.rotate(-mapHeading, 0, 0, 1);
-		}
-		else
-		{
-			camera.up.x = 0;
-			camera.up.y = 1;
-			camera.up.z = 0;
-		}
-
+		/*
+		 * if (alignToCompass) { camera.up.x = 0; camera.up.y = 1; camera.up.z = 0; camera.rotate(-mapHeading, 0, 0, 1); } else {
+		 * camera.up.x = 0; camera.up.y = 1; camera.up.z = 0; }
+		 */
 		camera.update();
 
 		renderMapTiles(batch);
@@ -540,10 +529,39 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private void renderMapTiles(SpriteBatch batch)
 	{
 		float faktor = camera.zoom;
-		Matrix4 mat = camera.combined;
 		float dx = this.ThisWorldRec.getCenterPos().x - MainView.mainView.getCenterPos().x;
 		float dy = this.ThisWorldRec.getCenterPos().y - MainView.mainView.getCenterPos().y;
-		mat = mat.translate(dx * faktor, dy * faktor, 0);
+
+		camera.position.set(0, 0, 0);
+		float dxr = dx;
+		float dyr = dy;
+
+		if (alignToCompass)
+		{
+			camera.up.x = 0;
+			camera.up.y = 1;
+			camera.up.z = 0;
+			camera.rotate(-mapHeading, 0, 0, 1);
+			double angle = mapHeading * Math.PI / 180;
+			dxr = (float) (Math.cos(angle) * dx + Math.sin(angle) * dy);
+			dyr = (float) (-Math.sin(angle) * dx + Math.cos(angle) * dy);
+		}
+		else
+		{
+			camera.up.x = 0;
+			camera.up.y = 1;
+			camera.up.z = 0;
+		}
+		camera.translate(-dxr * faktor, -dyr * faktor, 0);
+
+		camera.update();
+
+		Matrix4 mat = camera.combined;
+		/*
+		 * float dx = this.ThisWorldRec.getCenterPos().x - MainView.mainView.getCenterPos().x; float dy = this.ThisWorldRec.getCenterPos().y
+		 * - MainView.mainView.getCenterPos().y; mat = mat.translate(dx * faktor, dy * faktor, 0);
+		 */
+
 		batch.setProjectionMatrix(mat);
 
 		try
