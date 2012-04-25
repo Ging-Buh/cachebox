@@ -1374,6 +1374,18 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public void PositionChanged(Locator locator)
 	{
+
+		float heading = 0;
+
+		if (this.locator != null)
+		{
+			heading = this.locator.getHeading();
+		}
+		else
+		{
+			heading = locator.getHeading();
+		}
+
 		this.locator = locator;
 		GlobalCore.LastValidPosition = new Coordinate(locator.getLocation().Latitude, locator.getLocation().Longitude);
 		GlobalCore.LastValidPosition.Elevation = locator.getAlt();
@@ -1403,8 +1415,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
 			info.setBearing((float) (bearing - locator.getHeading()));
 		}
-
-		float heading = locator.getHeading();
 
 		if (alignToCompass)
 		{
@@ -1758,6 +1768,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			{
 				togBtn.setState(0);
 			}
+
+			// Fadein ZoomButtons!
+			zoomBtn.resetFadeOut();
 
 			// GL_Listener.glListener.addRenderView(this, frameRateAction);
 			GL_Listener.glListener.renderOnce(this);

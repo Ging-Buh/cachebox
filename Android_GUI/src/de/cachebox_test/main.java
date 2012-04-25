@@ -1458,7 +1458,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				Config.settings.WriteToDB();
 
-				this.mWakeLock.release();
+				if (this.mWakeLock != null) this.mWakeLock.release();
 				counter.cancel();
 				TrackRecorder.StopRecording();
 				// GPS Verbindung beenden

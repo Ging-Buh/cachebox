@@ -301,7 +301,7 @@ public class ZoomButtons extends CB_View_Base
 	/**
 	 * Irgend eine Taste gedrückt, also FadeOut zurück setzen
 	 */
-	private void resetFadeOut()
+	public void resetFadeOut()
 	{
 		// Log.d("CACHEBOX", "Reset Fade Out");
 		if (fadeIn && !fadeOut)
