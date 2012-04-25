@@ -88,6 +88,8 @@ public class splash extends Activity
 	String guid = null;
 	String name = null;
 
+	String workPath;
+
 	private boolean mOriantationRestart = false;
 	private static devicesSizes ui;
 
@@ -102,9 +104,21 @@ public class splash extends Activity
 		int sw = h > w ? w : h;
 		sw /= GlobalCore.displayDensity;
 
-		// chek if tablet
+		// check if tablet
 
 		GlobalCore.isTab = sw > 400 ? true : false;
+
+		// check if Layout forced from User
+		workPath = Environment.getExternalStorageDirectory() + "/cachebox";
+
+		if (FileIO.FileExists(workPath + "/.forcePhone"))
+		{
+			GlobalCore.isTab = false;
+		}
+		else if (FileIO.FileExists(workPath + "/.forceTablet"))
+		{
+			GlobalCore.isTab = true;
+		}
 
 		if (GlobalCore.isTab)
 		{
@@ -239,8 +253,6 @@ public class splash extends Activity
 		Logger.setDebug(Global.Debug);
 
 		// Read Config
-		String workPath = Environment.getExternalStorageDirectory() + "/cachebox";
-
 		Config.Initialize(workPath, workPath + "/cachebox.config");
 
 		// hier muss die Config Db initialisiert werden
