@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Main;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
+import CB_Core.GL_UI.Controls.Slider;
 import CB_Core.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowAbout;
@@ -157,6 +158,10 @@ public class TabMainView extends MainViewBase
 		if (GlobalCore.isTab) addTabletTabs();
 		else
 			addPhoneTab();
+
+		// add Slider as last
+		Slider slider = new Slider(this, "Slider");
+		this.addChild(slider);
 	}
 
 	private void addPhoneTab()

@@ -88,11 +88,21 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 
 		MenuItem mi;
 
+		boolean isSelected = (GlobalCore.SelectedCache() != null);
+
 		mi = cm.addItem(MI_FAVORIT, "favorit", SpriteCache.Icons.get(42));
 		mi.setCheckable(true);
-		mi.setChecked(GlobalCore.SelectedCache().Favorit());
-		cm.addItem(MI_RELOAD_CACHE, "chkState", SpriteCache.Icons.get(35));
+		if (isSelected)
+		{
+			mi.setChecked(GlobalCore.SelectedCache().Favorit());
+		}
+		else
+		{
+			mi.setEnabled(false);
+		}
 
+		mi = cm.addItem(MI_RELOAD_CACHE, "chkState", SpriteCache.Icons.get(35));
+		mi.setEnabled(isSelected);
 		cm.show();
 
 		return true;
