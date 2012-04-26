@@ -151,7 +151,6 @@ import de.cachebox_test.Events.GpsStateChangeEventList;
 import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Locator.GPS;
-import de.cachebox_test.Map.MapViewForGl;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
 import de.cachebox_test.Views.AboutView;
@@ -1453,8 +1452,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				// Config.settings.MapInitLatitude.setValue(mapViewGlListener.center.Latitude);
 				// Config.settings.MapInitLongitude.setValue(mapViewGlListener.center.Longitude);
-				Config.settings.MapInitLatitude.setValue(MapViewForGl.center.Latitude);
-				Config.settings.MapInitLongitude.setValue(MapViewForGl.center.Longitude);
+				// Config.settings.MapInitLatitude.setValue(MapViewForGl.center.Latitude);
+				// Config.settings.MapInitLongitude.setValue(MapViewForGl.center.Longitude);
 
 				Config.settings.WriteToDB();
 

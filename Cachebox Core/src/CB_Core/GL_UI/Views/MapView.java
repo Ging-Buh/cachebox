@@ -142,6 +142,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	long size20 = 256;
 
 	public Coordinate center = new Coordinate(48.0, 12.0);
+
 	private boolean positionInitialized = false;
 	// String CurrentLayer = "germany-0.2.4.map";
 	public Layer CurrentLayer = null;
@@ -302,6 +303,17 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				return true;
 			}
 		});
+		center.Latitude = Config.settings.MapInitLatitude.getValue();
+		center.Longitude = Config.settings.MapInitLongitude.getValue();
+		aktZoom = Config.settings.lastZoomLevel.getValue();
+		zoomBtn.setZoom(aktZoom);
+		if ((center.Latitude == -1000) && (center.Longitude == -1000))
+		{
+			// not initialized
+			center.Latitude = 48;
+			center.Longitude = 12;
+		}
+		// Config.settings.MapInitLongitude.setValue(MapViewForGl.center.Longitude);
 
 	}
 
@@ -391,6 +403,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public void onStop()
 	{
+		Config.settings.MapInitLatitude.setValue(center.Latitude);
+		Config.settings.MapInitLongitude.setValue(center.Longitude);
+		Config.settings.lastZoomLevel.setValue(aktZoom);
+		Config.settings.WriteToDB();
 		super.onStop();
 		loadedTiles.clear();
 	}
