@@ -127,7 +127,8 @@ public class DesktopMain {
 		TimerTask task = new TimerTask() {
 			@Override
 			public void run() {
-				Coordinate pos = new Coordinate("N 52 27.130  E 13 33.117");
+//				Coordinate pos = new Coordinate("N 52 27.130  E 13 33.117");
+				Coordinate pos = new Coordinate("N 48 00.00  E 12 00.000");
 				Locator Loc = new Locator();
 				
 				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, 175, true, 45, 95,"DesctopTimer");
@@ -147,7 +148,8 @@ public class DesktopMain {
 		TimerTask task = new TimerTask() {
 			@Override
 			public void run() {
-				Coordinate pos = new Coordinate("N 52 27.130  E 13 33.117");
+//				Coordinate pos = new Coordinate("N 52 27.130  E 13 33.117");
+				Coordinate pos = new Coordinate("N 48 00.00  E 12 00.000");
 				Locator Loc = new Locator();
 				Bearing+=5;
 				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, 175, true, Bearing, 95,"DesctopTimer");
@@ -155,7 +157,7 @@ public class DesktopMain {
 				setBearing();
 			}
 		};
-		timer.schedule(task, 2000);
+		timer.schedule(task, 1000);
 		
 	}
 	

@@ -4,11 +4,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
-import org.mapsforge.android.maps.CanvasRenderer;
-import org.mapsforge.android.maps.MapDatabase;
-import org.mapsforge.android.maps.MapGeneratorJob;
-import org.mapsforge.android.maps.MapViewMode;
-import org.mapsforge.android.maps.Tile;
+import org.mapsforge.android.maps.DebugSettings;
+import org.mapsforge.android.maps.mapgenerator.JobParameters;
+import org.mapsforge.android.maps.mapgenerator.MapGenerator;
+import org.mapsforge.android.maps.mapgenerator.MapGeneratorFactory;
+import org.mapsforge.android.maps.mapgenerator.MapGeneratorInternal;
+import org.mapsforge.android.maps.mapgenerator.MapGeneratorJob;
+import org.mapsforge.android.maps.mapgenerator.databaserenderer.DatabaseRenderer;
+import org.mapsforge.android.maps.rendertheme.InternalRenderTheme;
+import org.mapsforge.core.Tile;
+import org.mapsforge.map.reader.MapDatabase;
+import org.mapsforge.map.reader.header.FileOpenResult;
 
 import CB_Core.FileIO;
 import CB_Core.Map.BoundingBox;
@@ -17,16 +23,16 @@ import CB_Core.Map.Layer;
 import CB_Core.Map.ManagerBase;
 import CB_Core.Map.PackBase;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import de.cachebox_test.Global;
-import de.cachebox_test.main;
-import de.cachebox_test.Views.MapView;
 
 public class Manager extends ManagerBase
 {
+
+	MapGenerator mapGenerator = null;
+	MapDatabase mapDatabase = null;
+	DatabaseRenderer databaseRenderer = null;
+	Bitmap tileBitmap = null;
+	File mapFile = null;
 
 	/*
 	 * public delegate void FetchAreaCallback();
@@ -63,59 +69,78 @@ public class Manager extends ManagerBase
 	@Override
 	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc)
 	{
+		// Mapsforge 3.0
 		if (layer.isMapsForge)
 		{
+			byte[] result = null;
+
+			if (mapGenerator == null) mapGenerator = MapGeneratorFactory.createMapGenerator(MapGeneratorInternal.DATABASE_RENDERER);
+
 			if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name)))
 			{
+				mapFile = new File(CB_Core.Config.settings.MapPackFolder.getValue() + "/" + layer.Name);
 				mapDatabase = new MapDatabase();
-				mapDatabase.openFile(CB_Core.Config.settings.MapPackFolder.getValue() + "/" + layer.Name);
-				renderer = new CanvasRenderer();
-				renderer.setDatabase(mapDatabase);
-				tileBitmap = Bitmap.createBitmap(256, 256, Config.RGB_565);
-				renderer.setupMapGenerator(tileBitmap);
+				mapDatabase.closeFile();
+				FileOpenResult fileOpenResult = mapDatabase.openFile(mapFile);
+
+				databaseRenderer = (DatabaseRenderer) mapGenerator;
+				databaseRenderer.setMapDatabase(mapDatabase);
+
+				tileBitmap = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Bitmap.Config.RGB_565);
 				mapsForgeFile = layer.Name;
 			}
+
 			Tile tile = new Tile(desc.X, desc.Y, (byte) desc.Zoom);
 
-			/**
-			 * Original value = 1.333f now 1.333 * dpiScaleFactorX from MapView
-			 */
-			float DPIawareFaktor = (float) (MapView.dpiScaleFactorX * 1.333);
+			InternalRenderTheme DEFAULT_RENDER_THEME = InternalRenderTheme.OSMARENDER;
+			float DEFAULT_TEXT_SCALE = 1;
 
-			MapGeneratorJob job = new MapGeneratorJob(tile, MapViewMode.CANVAS_RENDERER, "xxx", DPIawareFaktor, false, false, false);
+			JobParameters jobParameters = new JobParameters(DEFAULT_RENDER_THEME, DEFAULT_TEXT_SCALE);
+			DebugSettings debugSettings = new DebugSettings(false, false, false);
 
-			// renderer.setupMapGenerator(tileBitmap);
-			renderer.prepareMapGeneration();
-			renderer.executeJob(job);
-			// Bitmap bit = renderer.tileBitmap.copy(Config.RGB_565, true);
+			MapGeneratorJob job = new MapGeneratorJob(tile, mapFile, jobParameters, debugSettings);
 
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			if (main.N)
+			if (databaseRenderer.executeJob(job, tileBitmap))
 			{
-				Bitmap b = Bitmap.createBitmap(256, 256, Config.RGB_565);
-				Canvas c = new Canvas(b);
-				c.drawBitmap(renderer.tileBitmap, 0, 0, main.N ? Global.invertPaint : new Paint());
-				b.compress(Bitmap.CompressFormat.PNG, 50, baos);
-			}
-			else
-			{
-				renderer.tileBitmap.compress(Bitmap.CompressFormat.PNG, 50, baos);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				tileBitmap.compress(Bitmap.CompressFormat.PNG, 50, baos);
+
+				result = baos.toByteArray();
+
+				try
+				{
+					baos.close();
+				}
+				catch (IOException e)
+				{ // TODO Auto-generated catch block e.printStackTrace(); } return result; }
+				}
 			}
 
-			byte[] result = baos.toByteArray();
-
-			try
-			{
-				baos.close();
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			return result;
 		}
-
+		/*
+		 * 0.2.x if (layer.isMapsForge) { if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name))) { mapDatabase = new
+		 * MapDatabase(); mapDatabase.openFile(CB_Core.Config.settings.MapPackFolder.getValue() + "/" + layer.Name); renderer = new
+		 * CanvasRenderer(); renderer.setDatabase(mapDatabase); tileBitmap = Bitmap.createBitmap(256, 256, Config.RGB_565);
+		 * renderer.setupMapGenerator(tileBitmap); mapsForgeFile = layer.Name; } Tile tile = new Tile(desc.X, desc.Y, (byte) desc.Zoom);
+		 * 
+		 * // Original value = 1.333f now 1.333 * dpiScaleFactorX from MapView
+		 * 
+		 * float DPIawareFaktor = (float) (MapView.dpiScaleFactorX * 1.333);
+		 * 
+		 * MapGeneratorJob job = new MapGeneratorJob(tile, MapViewMode.CANVAS_RENDERER, "xxx", DPIawareFaktor, false, false, false);
+		 * 
+		 * // renderer.setupMapGenerator(tileBitmap); renderer.prepareMapGeneration(); renderer.executeJob(job); // Bitmap bit =
+		 * renderer.tileBitmap.copy(Config.RGB_565, true);
+		 * 
+		 * ByteArrayOutputStream baos = new ByteArrayOutputStream(); if (main.N) { Bitmap b = Bitmap.createBitmap(256, 256, Config.RGB_565);
+		 * Canvas c = new Canvas(b); c.drawBitmap(renderer.tileBitmap, 0, 0, main.N ? Global.invertPaint : new Paint());
+		 * b.compress(Bitmap.CompressFormat.PNG, 50, baos); } else { renderer.tileBitmap.compress(Bitmap.CompressFormat.PNG, 50, baos); }
+		 * 
+		 * byte[] result = baos.toByteArray();
+		 * 
+		 * try { baos.close(); } catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); } return result; }
+		 */
 		try
 		{
 			// Schauen, ob Tile im Cache liegt
@@ -172,54 +197,33 @@ public class Manager extends ManagerBase
 	// / <param name="layer">Layer</param>
 	// / <param name="desc">Descriptor der Kachel</param>
 	// / <returns>Bitmap oder null, falls Kachel nicht lokal vorliegt</returns>
-	private MapDatabase mapDatabase = null;
-	private CanvasRenderer renderer = null;
-	private Bitmap tileBitmap = null;
+	// private MapDatabase mapDatabase = null;
+	// private CanvasRenderer renderer = null;
+	// private Bitmap tileBitmap = null;
 	private String mapsForgeFile = "";
 
 	public Bitmap LoadLocalBitmap(Layer layer, Descriptor desc)
 	{
-		if (layer.isMapsForge)
-		{
-			if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name)))
-			{
-				mapDatabase = new MapDatabase();
-				mapDatabase.openFile(CB_Core.Config.settings.MapPackFolder.getValue() + "/" + layer.Name);
-				renderer = new CanvasRenderer();
-				renderer.setDatabase(mapDatabase);
-				tileBitmap = Bitmap.createBitmap(256, 256, Config.RGB_565);
-				renderer.setupMapGenerator(tileBitmap);
-				mapsForgeFile = layer.Name;
-			}
-			Tile tile = new Tile(desc.X, desc.Y, (byte) desc.Zoom);
-
-			/**
-			 * Original value = 1.333f now 1.333 * dpiScaleFactorX from MapView
-			 */
-			float DPIawareFaktor = (float) (MapView.dpiScaleFactorX * 1.333);
-
-			MapGeneratorJob job = new MapGeneratorJob(tile, MapViewMode.CANVAS_RENDERER, "xxx", DPIawareFaktor, false, false, false);
-
-			// renderer.setupMapGenerator(tileBitmap);
-			renderer.prepareMapGeneration();
-			renderer.executeJob(job);
-			// Bitmap bit = renderer.tileBitmap.copy(Config.RGB_565, true);
-
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			renderer.tileBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-			Bitmap bitj = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.size());
-			try
-			{
-				baos.close();
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return bitj;
-		}
-
+		/*
+		 * if (layer.isMapsForge) { if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name))) { mapDatabase = new
+		 * MapDatabase(); mapDatabase.openFile(CB_Core.Config.settings.MapPackFolder.getValue() + "/" + layer.Name); renderer = new
+		 * CanvasRenderer(); renderer.setDatabase(mapDatabase); tileBitmap = Bitmap.createBitmap(256, 256, Config.RGB_565);
+		 * renderer.setupMapGenerator(tileBitmap); mapsForgeFile = layer.Name; } Tile tile = new Tile(desc.X, desc.Y, (byte) desc.Zoom);
+		 * 
+		 * 
+		 * // Original value = 1.333f now 1.333 * dpiScaleFactorX from MapView
+		 * 
+		 * float DPIawareFaktor = (float) (MapView.dpiScaleFactorX * 1.333);
+		 * 
+		 * MapGeneratorJob job = new MapGeneratorJob(tile, MapViewMode.CANVAS_RENDERER, "xxx", DPIawareFaktor, false, false, false);
+		 * 
+		 * // renderer.setupMapGenerator(tileBitmap); renderer.prepareMapGeneration(); renderer.executeJob(job); // Bitmap bit =
+		 * renderer.tileBitmap.copy(Config.RGB_565, true);
+		 * 
+		 * ByteArrayOutputStream baos = new ByteArrayOutputStream(); renderer.tileBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+		 * Bitmap bitj = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.size()); try { baos.close(); } catch (IOException e) { //
+		 * TODO Auto-generated catch block e.printStackTrace(); } return bitj; }
+		 */
 		try
 		{
 			// Schauen, ob Tile im Cache liegt
