@@ -18,6 +18,7 @@ import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Events.PositionChangedEvent;
 import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -337,6 +338,23 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					for (String file : files)
 					{
 						LoadTrack(trackPath, file);
+
+					}
+				}
+			}
+
+			files = platformConector.getTrackList();
+
+			if (!(files == null))
+			{
+
+				RouteOverlay.Routes.clear();
+
+				if (files.length > 0)
+				{
+					for (String file : files)
+					{
+						LoadTrack(file);
 
 					}
 				}
@@ -670,11 +688,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		str = "lTiles: " + loadedTiles.size() + " - qTiles: " + queuedTiles.size();
 		Fonts.getNormal().draw(batch, str, 20, 60);
 
-		if (mapCacheList != null)
-		{
-			str = "listCalc: " + mapCacheList.anz + " - C: " + mapCacheList.list.size();
-			Fonts.getNormal().draw(batch, str, 20, 40);
-		}
+		str = "TrackPoi: " + RouteOverlay.AllTrackPoints + " -  " + RouteOverlay.ReduceTrackPoints + " [" + RouteOverlay.DrawedLineCount
+				+ "]";
+		Fonts.getNormal().draw(batch, str, 20, 40);
+
 		str = "lastMove: " + lastMovement.x + " - " + lastMovement.y;
 		Fonts.getNormal().draw(batch, str, 20, 20);
 

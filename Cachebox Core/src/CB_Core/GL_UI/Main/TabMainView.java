@@ -20,6 +20,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_ShowMap;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowNotesView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSolverView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSpoilerView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTestView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackListView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackableListView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowWaypointView;
@@ -38,6 +39,7 @@ import CB_Core.GL_UI.Views.SpoilerView;
 import CB_Core.GL_UI.Views.TrackListView;
 import CB_Core.GL_UI.Views.TrackableListView;
 import CB_Core.GL_UI.Views.WaypointView;
+import CB_Core.GL_UI.Views.TestViews.TestView;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.UiSizes;
@@ -45,7 +47,7 @@ import CB_Core.Math.UiSizes;
 public class TabMainView extends MainViewBase
 {
 	// private CB_Action actionTest;
-	// private CB_Action actionTest2;
+	private CB_Action_ShowTestView actionTestView;
 	private CB_Action_ShowHint actionShowHint;
 	private CB_Action_ShowMap actionShowMap;
 	private CB_Action_ShowCacheList actionShowCacheList;
@@ -93,6 +95,7 @@ public class TabMainView extends MainViewBase
 	public static TrackableListView trackableListView = null;
 	public static TrackListView trackListView = null;
 	public static WaypointView waypointView = null;
+	public static TestView testView = null;
 
 	public TabMainView(float X, float Y, float Width, float Height, String Name)
 	{
@@ -135,6 +138,7 @@ public class TabMainView extends MainViewBase
 		actionShowTrackableListView = new CB_Action_ShowTrackableListView();
 		actionShowTrackListView = new CB_Action_ShowTrackListView();
 		actionShowWaypointView = new CB_Action_ShowWaypointView();
+		actionTestView = new CB_Action_ShowTestView();
 
 		actionShowSettings = new CB_Action_ShowActivity("settings", CB_Action.AID_SHOW_SETTINGS, ViewConst.SETTINGS,
 				SpriteCache.Icons.get(26));
@@ -395,6 +399,7 @@ public class TabMainView extends MainViewBase
 		actionShowSolverView.setTab(this, Tab);
 		actionShowDescriptionView.setTab(this, Tab);
 		actionNavigateTo2.setTab(this, Tab);
+		actionTestView.setTab(this, Tab);
 
 		// Actions den Buttons zuweisen
 		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true));
@@ -402,6 +407,7 @@ public class TabMainView extends MainViewBase
 
 		btn3.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo2, false, GestureDirection.Down));
+		btn3.addAction(new CB_ActionButton(actionTestView, false));
 
 		btn3.performClick();// actionShowMap.Execute();
 	}

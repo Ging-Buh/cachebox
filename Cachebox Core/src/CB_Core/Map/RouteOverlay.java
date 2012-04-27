@@ -10,7 +10,10 @@ import java.util.ArrayList;
 import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Views.MapView;
+import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor.PointD;
+import CB_Core.Math.CB_RectF;
+import CB_Core.Math.PolylineReduction;
 import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.graphics.Color;
@@ -179,52 +182,109 @@ public class RouteOverlay
 		}
 	}
 
+	public static int AllTrackPoints = 0;
+	public static int ReduceTrackPoints = 0;
+	public static int DrawedLineCount = 0;
+	public static double Tolleranz = 0;
+
+	public static int aktCalcedZoomLevel = -1;
+
+	public class Route
+	{
+		private Color mColor;
+		protected ArrayList<PointD> Points;
+
+		public Route(Color color)
+		{
+			mColor = color;
+			Points = new ArrayList<PointD>();
+		}
+	}
+
+	private static ArrayList<Route> DrawRoutes;
+
 	public static void RenderRoute(SpriteBatch batch, int Zoom) // , Descriptor desc, float dpiScaleFactorX, float dpiScaleFactorY)
 	{
-		// double tileX = desc.X * 256 * dpiScaleFactorX;
-		// double tileY = desc.Y * 256 * dpiScaleFactorY;
-		ArrayList<PointD> points = new ArrayList<PointD>();
 
-		for (int i = 0; i < Routes.size(); i++)
-		{
-			// int lastX = -999;
-			// int lastY = -999;
-			// bool lastIn = true;
-			// bool aktIn = false;
+		if (aktCalcedZoomLevel != Zoom)
+		{// Zoom changed => calculate new Sprites Points
 
-			if (Routes.get(i).ShowRoute)
+			Logger.LogCat("Zoom Changed => Calc Track Points");
+
+			aktCalcedZoomLevel = Zoom;
+			DrawRoutes = new ArrayList<RouteOverlay.Route>();
+
+			for (int i = 0; i < Routes.size(); i++)
 			{
-				Sprite ArrowSprite = SpriteCache.Arrows.get(5);
-				ArrowSprite.setColor(Routes.get(i).mColor);
 
-				int step = Routes.get(i).Points.size() / 1200;
-				if (step < 1) step = 1;
-
-				step = 1;
-
-				for (int j = 0; j < (Routes.get(i).Points.size()); j = j + step)
+				if (Routes.get(i) != null && Routes.get(i).ShowRoute)
 				{
 
-					points.add(new PointD(Routes.get(i).Points.get(j).X, Routes.get(i).Points.get(j).Y));
+					double tolerance = 0.01 * Math.exp(-1 * (Zoom - 11));
+
+					Tolleranz = tolerance;
+
+					ArrayList<PointD> reducedPoints = PolylineReduction.DouglasPeuckerReduction(Routes.get(i).Points, tolerance);
+
+					AllTrackPoints = Routes.get(i).Points.size();
+					ReduceTrackPoints = reducedPoints.size();
+
+					Route tmp = (new RouteOverlay()).new Route(Routes.get(i).mColor);
+					tmp.Points = reducedPoints;
+
+					DrawRoutes.add(tmp);
 
 				}
+			}
 
-				for (int ii = 0; ii < points.size() - 1; ii++)
+		}
+
+		DrawedLineCount = 0;
+
+		if (DrawRoutes != null && DrawRoutes.size() > 0)
+		{
+			for (Route rt : DrawRoutes)
+			{
+				Sprite ArrowSprite = SpriteCache.Arrows.get(5);
+				ArrowSprite.setColor(rt.mColor);
+
+				Sprite PointSprite = SpriteCache.Arrows.get(10);
+				PointSprite.setColor(rt.mColor);
+
+				for (int ii = 0; ii < rt.Points.size() - 1; ii++)
 				{
 
-					double MapX1 = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, points.get(ii).X);
-					double MapY1 = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, points.get(ii).Y);
+					double MapX1 = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, rt.Points.get(ii).X);
+					double MapY1 = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, rt.Points.get(ii).Y);
 
-					double MapX2 = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, points.get(ii + 1).X);
-					double MapY2 = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, points.get(ii + 1).Y);
+					double MapX2 = 256.0 * Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, rt.Points.get(ii + 1).X);
+					double MapY2 = -256.0 * Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, rt.Points.get(ii + 1).Y);
 
 					Vector2 screen1 = MapView.that.worldToScreen(new Vector2((float) MapX1, (float) MapY1));
 					Vector2 screen2 = MapView.that.worldToScreen(new Vector2((float) MapX2, (float) MapY2));
 
-					DrawUtils.drawSpriteLine(batch, ArrowSprite, screen1.x, screen1.y, screen2.x, screen2.y);
+					CB_RectF chkRec = new CB_RectF(MapView.that);
+					chkRec.setPos(0, 0);
+
+					// chk if line on Screen
+					if (chkRec.contains(screen1.x, screen1.y) || chkRec.contains(screen1.x, screen1.y))
+					{
+						DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, 0.7f, screen1.x, screen1.y, screen2.x, screen2.y);
+						DrawedLineCount++;
+					}
+					else
+					{// chk if intersection
+						if (chkRec.getIntersection(screen1, screen2, 2) != null)
+						{
+							DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, 0.7f, screen1.x, screen1.y, screen2.x, screen2.y);
+							DrawedLineCount++;
+						}
+
+						// the line is not on the screen
+					}
+
 				}
 
-				points.clear();
 			}
 		}
 	}

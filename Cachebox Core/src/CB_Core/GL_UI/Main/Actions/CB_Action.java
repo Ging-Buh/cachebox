@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class CB_Action
 {
 
-	public static int AID_TEST1 = -1;
+	public static int AID_TEST_VIEW = -1;
 	public static int AID_TEST2 = -2;
 
 	public static int AID_SHOW_MAP = 0;

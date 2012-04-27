@@ -124,8 +124,8 @@ stars4small
 track_line
   rotate: false
   xy: 76, 164
-  size: 9, 12
-  orig: 9, 12
+  size: 7, 11
+  orig: 7, 11
   offset: 0, 0
   index: -1
 small4no
@@ -287,6 +287,13 @@ shaddowrect_selected
   xy: 100, 100
   size: 50, 50
   orig: 50, 50
+  offset: 0, 0
+  index: -1
+track_point
+  rotate: false
+  xy: 84, 164
+  size: 14, 14
+  orig: 14, 14
   offset: 0, 0
   index: -1
 micro

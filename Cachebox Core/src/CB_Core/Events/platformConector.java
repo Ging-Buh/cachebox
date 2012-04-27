@@ -112,4 +112,22 @@ public class platformConector
 		return false;
 	}
 
+	public static interface trackListListner
+	{
+		public String[] getTracks();
+	}
+
+	private static trackListListner mTrackListner;
+
+	public static void setGetTrackListner(trackListListner listner)
+	{
+		mTrackListner = listner;
+	}
+
+	public static String[] getTrackList()
+	{
+		if (mTrackListner != null) return mTrackListner.getTracks();
+		return null;
+	}
+
 }

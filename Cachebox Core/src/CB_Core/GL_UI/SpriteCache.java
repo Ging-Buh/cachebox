@@ -136,6 +136,7 @@ public class SpriteCache
 		Arrows.add(iconAtlas.createSprite("arrow_up"));
 		Arrows.add(iconAtlas.createSprite("arrow_left"));
 		Arrows.add(iconAtlas.createSprite("arrow_right"));
+		Arrows.add(atlas.createSprite("track_point"));
 
 		MapStars = new ArrayList<Sprite>();
 		MapStars.add(atlas.createSprite("stars0small"));

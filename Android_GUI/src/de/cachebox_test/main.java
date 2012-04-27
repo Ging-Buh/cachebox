@@ -38,6 +38,7 @@ import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.platformConector.IShowViewListner;
 import CB_Core.Events.platformConector.isOnlineListner;
+import CB_Core.Events.platformConector.trackListListner;
 import CB_Core.GL_UI.MenuID;
 import CB_Core.GL_UI.MenuItemConst;
 import CB_Core.GL_UI.ViewConst;
@@ -52,6 +53,8 @@ import CB_Core.GL_UI.Main.MainView;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
+import CB_Core.Map.RouteOverlay;
+import CB_Core.Map.RouteOverlay.Trackable;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
@@ -1388,7 +1391,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// graphics.isShown = true;
 
 		if (runsWithAkku) counter.start();
-		mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
+		if (mSensorManager != null) mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
 		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
 		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes
@@ -1415,7 +1418,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		Logger.LogCat("Main=> onStop");
 
-		mSensorManager.unregisterListener(mListener);
+		if (mSensorManager != null) mSensorManager.unregisterListener(mListener);
 		this.unregisterReceiver(this.mBatInfoReceiver);
 		counter.cancel();
 		super.onStop();
@@ -3870,7 +3873,30 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		});
 
+		CB_Core.Events.platformConector.setGetTrackListner(new trackListListner()
+		{
+
+			@Override
+			public String[] getTracks()
+			{
+				String[] ret = null;
+
+				if (RouteOverlay.Routes != null)
+				{
+					ret = new String[RouteOverlay.Routes.size()];
+
+					int i = 0;
+					for (Trackable r : RouteOverlay.Routes)
+					{
+						ret[i] = r.FileName;
+					}
+				}
+				return ret;
+			}
+		});
+
 	}
+
 	// #########################################################
 
 }
