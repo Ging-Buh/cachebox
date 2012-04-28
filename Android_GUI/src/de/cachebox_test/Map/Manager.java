@@ -2,21 +2,26 @@ package de.cachebox_test.Map;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.mapsforge.android.maps.DebugSettings;
 import org.mapsforge.android.maps.mapgenerator.JobParameters;
+import org.mapsforge.android.maps.mapgenerator.JobTheme;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorFactory;
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorInternal;
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorJob;
 import org.mapsforge.android.maps.mapgenerator.databaserenderer.DatabaseRenderer;
+import org.mapsforge.android.maps.mapgenerator.databaserenderer.ExternalRenderTheme;
 import org.mapsforge.android.maps.rendertheme.InternalRenderTheme;
 import org.mapsforge.core.Tile;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.header.FileOpenResult;
 
+import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.Log.Logger;
 import CB_Core.Map.BoundingBox;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Layer;
@@ -33,6 +38,11 @@ public class Manager extends ManagerBase
 	DatabaseRenderer databaseRenderer = null;
 	Bitmap tileBitmap = null;
 	File mapFile = null;
+	JobParameters jobParameters = null;
+	float textScale = 1;
+	InternalRenderTheme DEFAULT_RENDER_THEME = InternalRenderTheme.OSMARENDER;
+	JobTheme jobTheme = null;
+	float DEFAULT_TEXT_SCALE = 1;
 
 	/*
 	 * public delegate void FetchAreaCallback();
@@ -86,16 +96,29 @@ public class Manager extends ManagerBase
 				databaseRenderer = (DatabaseRenderer) mapGenerator;
 				databaseRenderer.setMapDatabase(mapDatabase);
 
+				try
+				{
+					File file = new File(Config.WorkPath + "/repository/maps/renderthemes/test.xml");
+					if (file.exists())
+					{
+						JobTheme jobTheme = new ExternalRenderTheme(file);
+						jobParameters = new JobParameters(jobTheme, DEFAULT_TEXT_SCALE);
+					}
+					else
+						jobParameters = new JobParameters(DEFAULT_RENDER_THEME, DEFAULT_TEXT_SCALE);
+
+				}
+				catch (FileNotFoundException e)
+				{
+					jobParameters = new JobParameters(DEFAULT_RENDER_THEME, DEFAULT_TEXT_SCALE);
+				}
+
 				tileBitmap = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Bitmap.Config.RGB_565);
 				mapsForgeFile = layer.Name;
 			}
 
 			Tile tile = new Tile(desc.X, desc.Y, (byte) desc.Zoom);
 
-			InternalRenderTheme DEFAULT_RENDER_THEME = InternalRenderTheme.OSMARENDER;
-			float DEFAULT_TEXT_SCALE = 1;
-
-			JobParameters jobParameters = new JobParameters(DEFAULT_RENDER_THEME, DEFAULT_TEXT_SCALE);
 			DebugSettings debugSettings = new DebugSettings(false, false, false);
 
 			MapGeneratorJob job = new MapGeneratorJob(tile, mapFile, jobParameters, debugSettings);
@@ -184,6 +207,7 @@ public class Manager extends ManagerBase
 		}
 		catch (Exception exc)
 		{
+			Logger.Error("Manager", "Exception", exc);
 			/*
 			 * #if DEBUG Global.AddLog("Manager.LoadLocalBitmap: " + exc.ToString()); #endif
 			 */
