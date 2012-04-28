@@ -1114,6 +1114,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
+		// Back from Activitiy
+		glListener.onStart();
+
 		// SelectDB
 		if (requestCode == 546132)
 		{

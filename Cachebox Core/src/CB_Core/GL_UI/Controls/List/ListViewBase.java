@@ -226,7 +226,7 @@ public abstract class ListViewBase extends CB_View_Base
 	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
 	{
 		super.renderChilds(batch, parentInfo);
-		chkSlideBack();
+
 		if (!debug) return;
 		// schreibe Debug
 		if (dPosy == null)
@@ -263,11 +263,20 @@ public abstract class ListViewBase extends CB_View_Base
 	 * Überprüft ob die Liste oben oder unten Platz hat und lösst eine Animation aus, in der die Liste auf die erste oder letzte Position
 	 * scrollt.
 	 */
-	private void chkSlideBack()
+	protected void chkSlideBack()
 	{
-		if (!mIsDrageble) return;
+		if (!mIsDrageble)
+		{
+			startAnimationtoTop();
+			return;
+		}
 		if (mPos > 0) startAnimationtoTop();
 		else if (mPos < mAllSize) startAnimationToBottom();
+	}
+
+	public boolean isDrageble()
+	{
+		return mIsDrageble;
 	}
 
 	public abstract boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan);

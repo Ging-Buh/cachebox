@@ -118,6 +118,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		started.set(true);
 		if (listenerInterface != null) listenerInterface.RenderDirty();
 		// startTimer(FRAME_RATE_ACTION, "GL_Listner onStart()");
+		if (child != null) child.onShow();
 	}
 
 	public void onStop()

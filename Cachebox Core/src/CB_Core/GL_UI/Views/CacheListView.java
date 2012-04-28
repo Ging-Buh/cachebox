@@ -34,7 +34,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 	@Override
 	protected void Initial()
 	{
-
+		chkSlideBack();
 	}
 
 	@Override
@@ -47,6 +47,18 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 		lvAdapter = new CustomAdapter(Database.Data.Query);
 		this.setBaseAdapter(lvAdapter);
 
+		int itemCount = Database.Data.Query.size();
+		int itemSpace = this.getMaxItemCount();
+
+		if (itemSpace >= itemCount)
+		{
+			this.setUndragable();
+		}
+		else
+		{
+			this.setDragable();
+		}
+
 		// aktuellen Cache in der List anzeigen
 		if (GlobalCore.SelectedCache() != null)
 		{
@@ -54,6 +66,9 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 		}
 		else
 			this.setSelection(0);
+
+		this.invalidate();
+
 	}
 
 	/**
@@ -72,6 +87,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 	 */
 	public void setSelectedCacheVisible(int pos)
 	{
+		if (!this.isDrageble()) return;
 		int id = 0;
 		int first = this.getFirstVisiblePosition();
 		int last = this.getLastVisiblePosition();
@@ -86,6 +102,8 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 			}
 			id++;
 		}
+
+		this.invalidate();
 	}
 
 	@Override
@@ -184,6 +202,20 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 		this.setBaseAdapter(null);
 		lvAdapter = new CustomAdapter(Database.Data.Query);
 		this.setBaseAdapter(lvAdapter);
+
+		int itemCount = Database.Data.Query.size();
+		int itemSpace = this.getMaxItemCount();
+
+		if (itemSpace >= itemCount)
+		{
+			this.setUndragable();
+		}
+		else
+		{
+			this.setDragable();
+		}
+
+		chkSlideBack();
 	}
 
 	@Override

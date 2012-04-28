@@ -262,7 +262,7 @@ public class TabMainView extends MainViewBase
 		btn5.addAction(new CB_ActionButton(actionShowSettings, false, GestureDirection.Left));
 		btn5.addAction(new CB_ActionButton(actionDayNight, false));
 		btn5.addAction(new CB_ActionButton(actionScreenLock, false));
-		btn5.addAction(new CB_ActionButton(actionClose, false));
+		btn5.addAction(new CB_ActionButton(actionClose, false, GestureDirection.Down));
 
 		btn5.performClick();// actionShowAboutView.Execute();
 	}

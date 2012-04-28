@@ -50,13 +50,6 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	}
 
 	@Override
-	public void onShow()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void onHide()
 	{
 		// TODO Auto-generated method stub
