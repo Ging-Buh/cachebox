@@ -165,7 +165,7 @@ public class TestView extends CB_View_Base
 		lbl3.setFont(Fonts.getNormal());
 		lbl3.setWrappedText(s);
 
-		NinePatch back = new NinePatch(SpriteCache.uiAtlas.findRegion("shaddowrect"), 8, 8, 8, 8);
+		NinePatch back = new NinePatch(SpriteCache.getThemedSprite("shaddowrect"), 8, 8, 8, 8);
 
 		lbl3.setBackground(back);
 

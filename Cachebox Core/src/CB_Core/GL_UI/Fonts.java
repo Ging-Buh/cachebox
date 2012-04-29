@@ -1,6 +1,7 @@
 package CB_Core.GL_UI;
 
 import CB_Core.Config;
+import CB_Core.FileIO;
 import CB_Core.Log.Logger;
 import CB_Core.Math.UiSizes;
 
@@ -35,23 +36,62 @@ public class Fonts
 	public static void LoadCalcFonts()
 	{
 		Logger.LogCat("Fonts => Load");
-		String fontPath = Config.settings.SkinFolder.getValue() + "/day/fonts/";
+
 		double density = UiSizes.getScale();
 
-		big = loadScaledFont(fontPath, FONT_SIZE_BIG, density);
-		normal = loadScaledFont(fontPath, FONT_SIZE_NORMAL, density);
-		small = loadScaledFont(fontPath, FONT_SIZE_SMALL, density);
-		normalBubble = loadScaledFont(fontPath, (int) (FONT_SIZE_NORMAL * 0.7), density);
-		smallBubble = loadScaledFont(fontPath, (int) (FONT_SIZE_SMALL * 0.7), density);
+		big = loadScaledFont(FONT_SIZE_BIG, density);
+		normal = loadScaledFont(FONT_SIZE_NORMAL, density);
+		small = loadScaledFont(FONT_SIZE_SMALL, density);
+		normalBubble = loadScaledFont((int) (FONT_SIZE_NORMAL * 0.7), density);
+		smallBubble = loadScaledFont((int) (FONT_SIZE_SMALL * 0.7), density);
 
-		fontAB15_out = new BitmapFont(Gdx.files.absolute(fontPath + "15_out.fnt"), Gdx.files.absolute(fontPath + "15_out.png"), false);
-		fontAB16_out = new BitmapFont(Gdx.files.absolute(fontPath + "16_out.fnt"), Gdx.files.absolute(fontPath + "16_out.png"), false);
-		fontAB17_out = new BitmapFont(Gdx.files.absolute(fontPath + "17_out.fnt"), Gdx.files.absolute(fontPath + "17_out.png"), false);
+		fontAB15_out = new BitmapFont(Gdx.files.absolute(defaultFontPath + "15_out.fnt"),
+				Gdx.files.absolute(defaultFontPath + "15_out.png"), false);
+		fontAB16_out = new BitmapFont(Gdx.files.absolute(defaultFontPath + "16_out.fnt"),
+				Gdx.files.absolute(defaultFontPath + "16_out.png"), false);
+		fontAB17_out = new BitmapFont(Gdx.files.absolute(defaultFontPath + "17_out.fnt"),
+				Gdx.files.absolute(defaultFontPath + "17_out.png"), false);
 
 	}
 
-	private static BitmapFont loadScaledFont(String fontPath, int Size, double density)
+	static String defaultFontPath;
+	static String defaultFontPathNight;
+
+	static String costumFontPath;
+	static String costumFontPathNight;
+
+	private static BitmapFont loadScaledFont(int Size, double density)
 	{
+
+		String fontPath = null;
+
+		String path = Config.settings.SkinFolder.getValue();
+
+		costumFontPath = path + "/day/fonts/";
+		costumFontPathNight = path + "/night/fonts/";
+
+		String defaultPath = path;
+		int pos = defaultPath.lastIndexOf("/");
+		defaultPath = defaultPath.substring(0, pos) + "/default";
+
+		defaultFontPath = defaultPath + "/day/fonts/";
+		defaultFontPathNight = defaultPath + "/night/fonts/";
+
+		if (Config.settings.nightMode.getValue())
+		{
+			if (FileIO.FileExists(costumFontPathNight)) fontPath = costumFontPathNight;
+			if (fontPath == null) if (FileIO.FileExists(defaultFontPathNight)) fontPath = defaultFontPathNight;
+		}
+		else
+		{
+			if (FileIO.FileExists(costumFontPath)) fontPath = costumFontPath;
+		}
+
+		if (fontPath == null)
+		{
+			fontPath = defaultFontPath;
+			;
+		}
 
 		int scaled = (int) (Size * density);
 

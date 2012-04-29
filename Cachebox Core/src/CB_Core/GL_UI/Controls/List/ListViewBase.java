@@ -220,7 +220,7 @@ public abstract class ListViewBase extends CB_View_Base
 
 	}
 
-	NinePatch debugBack = new NinePatch(SpriteCache.uiAtlas.findRegion("listrec_first"), 8, 8, 8, 8);
+	NinePatch debugBack = new NinePatch(SpriteCache.getThemedSprite("listrec_first"), 8, 8, 8, 8);
 
 	@Override
 	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)

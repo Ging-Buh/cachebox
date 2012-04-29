@@ -1,6 +1,7 @@
 package CB_Core.GL_UI;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 /**
@@ -81,10 +82,10 @@ public class ButtonSprites
 	 * @param Pressed
 	 *            Name für das Pressed Sprite
 	 */
-	public ButtonSprites(TextureAtlas atlas, String Normal, String Pressed)
+	public ButtonSprites(Sprite Normal, Sprite Pressed)
 	{
-		mPressed = new NinePatch(atlas.findRegion(Pressed), 0, 0, 0, 0);
-		mNormal = new NinePatch(atlas.findRegion(Normal), 0, 0, 0, 0);
+		mPressed = new NinePatch(Pressed, 0, 0, 0, 0);
+		mNormal = new NinePatch(Normal, 0, 0, 0, 0);
 	}
 
 	/**
@@ -101,10 +102,10 @@ public class ButtonSprites
 	 * @param top
 	 * @param bottom
 	 */
-	public ButtonSprites(TextureAtlas atlas, String Normal, String Pressed, int left, int right, int top, int bottom)
+	public ButtonSprites(Sprite Normal, Sprite Pressed, int left, int right, int top, int bottom)
 	{
-		mPressed = new NinePatch(atlas.findRegion(Pressed), left, right, top, bottom);
-		mNormal = new NinePatch(atlas.findRegion(Normal), left, right, top, bottom);
+		mPressed = new NinePatch(Pressed, left, right, top, bottom);
+		mNormal = new NinePatch(Normal, left, right, top, bottom);
 	}
 
 	public void dispose()

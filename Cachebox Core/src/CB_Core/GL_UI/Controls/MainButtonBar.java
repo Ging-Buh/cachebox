@@ -71,24 +71,24 @@ public class MainButtonBar extends CB_View_Base
 	protected void Initial()
 	{
 		// ListButton
-		mButtons.get(0).setninePatch(new NinePatch(SpriteCache.uiAtlas.findRegion("db"), 0, 0, 0, 0));
-		mButtons.get(0).setninePatchPressed(new NinePatch(SpriteCache.uiAtlas.findRegion("db_pressed"), 0, 0, 0, 0));
+		mButtons.get(0).setninePatch(new NinePatch(SpriteCache.getThemedSprite("db"), 0, 0, 0, 0));
+		mButtons.get(0).setninePatchPressed(new NinePatch(SpriteCache.getThemedSprite("db_pressed"), 0, 0, 0, 0));
 
 		// CacheButton
-		mButtons.get(1).setninePatch(new NinePatch(SpriteCache.uiAtlas.findRegion("cache"), 0, 0, 0, 0));
-		mButtons.get(1).setninePatchPressed(new NinePatch(SpriteCache.uiAtlas.findRegion("cache_pressed"), 0, 0, 0, 0));
+		mButtons.get(1).setninePatch(new NinePatch(SpriteCache.getThemedSprite("cache"), 0, 0, 0, 0));
+		mButtons.get(1).setninePatchPressed(new NinePatch(SpriteCache.getThemedSprite("cache_pressed"), 0, 0, 0, 0));
 
 		// NavButton
-		mButtons.get(2).setninePatch(new NinePatch(SpriteCache.uiAtlas.findRegion("Nav"), 0, 0, 0, 0));
-		mButtons.get(2).setninePatchPressed(new NinePatch(SpriteCache.uiAtlas.findRegion("Nav_pressed"), 0, 0, 0, 0));
+		mButtons.get(2).setninePatch(new NinePatch(SpriteCache.getThemedSprite("Nav"), 0, 0, 0, 0));
+		mButtons.get(2).setninePatchPressed(new NinePatch(SpriteCache.getThemedSprite("Nav_pressed"), 0, 0, 0, 0));
 
 		// ToolsButton
-		mButtons.get(3).setninePatch(new NinePatch(SpriteCache.uiAtlas.findRegion("tool"), 0, 0, 0, 0));
-		mButtons.get(3).setninePatchPressed(new NinePatch(SpriteCache.uiAtlas.findRegion("tool_pressed"), 0, 0, 0, 0));
+		mButtons.get(3).setninePatch(new NinePatch(SpriteCache.getThemedSprite("tool"), 0, 0, 0, 0));
+		mButtons.get(3).setninePatchPressed(new NinePatch(SpriteCache.getThemedSprite("tool_pressed"), 0, 0, 0, 0));
 
 		// MiscButton
-		mButtons.get(4).setninePatch(new NinePatch(SpriteCache.uiAtlas.findRegion("misc"), 0, 0, 0, 0));
-		mButtons.get(4).setninePatchPressed(new NinePatch(SpriteCache.uiAtlas.findRegion("misc_pressed"), 0, 0, 0, 0));
+		mButtons.get(4).setninePatch(new NinePatch(SpriteCache.getThemedSprite("misc"), 0, 0, 0, 0));
+		mButtons.get(4).setninePatchPressed(new NinePatch(SpriteCache.getThemedSprite("misc_pressed"), 0, 0, 0, 0));
 
 	}
 

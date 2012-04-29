@@ -24,7 +24,7 @@ public class CreditsView extends CB_View_Base
 		test.setHAlignment(HAlignment.CENTER);
 		this.addChild(test);
 
-		NinePatch back = new NinePatch(SpriteCache.uiAtlas.findRegion("shaddowrect"), 8, 8, 8, 8);
+		NinePatch back = new NinePatch(SpriteCache.getThemedSprite("shaddowrect"), 8, 8, 8, 8);
 
 		ScrollView scrollView = new ScrollView(new CB_RectF(25f, 25f, width - 50, height - 50), this, "CreditsScrollView");
 		scrollView.setBackground(back);

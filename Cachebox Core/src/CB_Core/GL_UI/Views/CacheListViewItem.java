@@ -144,9 +144,9 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 	{
 		if (!mBackIsInitial)
 		{
-			backSelect = new NinePatch(SpriteCache.uiAtlas.findRegion("listrec_selected"), 8, 8, 8, 8);
-			back1 = new NinePatch(SpriteCache.uiAtlas.findRegion("listrec_first"), 8, 8, 8, 8);
-			back2 = new NinePatch(SpriteCache.uiAtlas.findRegion("listrec_secend"), 8, 8, 8, 8);
+			backSelect = new NinePatch(SpriteCache.getThemedSprite("listrec_selected"), 8, 8, 8, 8);
+			back1 = new NinePatch(SpriteCache.getThemedSprite("listrec_first"), 8, 8, 8, 8);
+			back2 = new NinePatch(SpriteCache.getThemedSprite("listrec_secend"), 8, 8, 8, 8);
 			mBackIsInitial = true;
 		}
 	}
@@ -228,15 +228,15 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 
 		if (isSelected)
 		{
-			this.setBackground(new NinePatch(SpriteCache.uiAtlas.findRegion("listrec_selected"), 8, 8, 8, 8));
+			this.setBackground(new NinePatch(SpriteCache.getThemedSprite("listrec_selected"), 8, 8, 8, 8));
 		}
 		else if (BackGroundChanger)
 		{
-			this.setBackground(new NinePatch(SpriteCache.uiAtlas.findRegion("listrec_first"), 8, 8, 8, 8));
+			this.setBackground(new NinePatch(SpriteCache.getThemedSprite("listrec_first"), 8, 8, 8, 8));
 		}
 		else
 		{
-			this.setBackground(new NinePatch(SpriteCache.uiAtlas.findRegion("listrec_secend"), 8, 8, 8, 8));
+			this.setBackground(new NinePatch(SpriteCache.getThemedSprite("listrec_secend"), 8, 8, 8, 8));
 		}
 
 		GL_Listener.glListener.renderOnce(this);

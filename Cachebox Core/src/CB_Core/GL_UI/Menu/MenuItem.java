@@ -163,15 +163,15 @@ public class MenuItem extends ListViewItemBase
 
 		if (isPressed)
 		{
-			this.setBackground(new NinePatch(SpriteCache.uiAtlas.findRegion("listrec_pressed"), 20, 20, 20, 20));
+			this.setBackground(new NinePatch(SpriteCache.getThemedSprite("listrec_pressed"), 20, 20, 20, 20));
 		}
 		else if (BackGroundChanger)
 		{
-			this.setBackground(new NinePatch(SpriteCache.uiAtlas.findRegion("listrec_first"), 20, 20, 20, 20));
+			this.setBackground(new NinePatch(SpriteCache.getThemedSprite("listrec_first"), 20, 20, 20, 20));
 		}
 		else
 		{
-			this.setBackground(new NinePatch(SpriteCache.uiAtlas.findRegion("listrec_secend"), 20, 20, 20, 20));
+			this.setBackground(new NinePatch(SpriteCache.getThemedSprite("listrec_secend"), 20, 20, 20, 20));
 		}
 
 		GL_Listener.glListener.renderOnce(this);

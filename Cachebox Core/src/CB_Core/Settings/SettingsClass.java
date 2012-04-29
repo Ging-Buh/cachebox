@@ -304,7 +304,7 @@ public class SettingsClass extends SettingsList
 		addSetting(DatabasePath = new SettingFile("DatabasePath", cat, NORMAL, Work + "/cachebox.db3", true, "db3"));
 		addSetting(FieldNotesGarminPath = new SettingFile("FieldNotesGarminPath", cat, INVISIBLE, Work + "/User/geocache_visits.txt", true));
 
-		addSetting(SkinFolder = new SettingFolder("SkinFolder", cat, NEVER, Work + "/skins/default", true)); // NEVER vorerst!
+		addSetting(SkinFolder = new SettingFolder("SkinFolder", cat, INVISIBLE, Work + "/skins/default", true)); // NEVER vorerst!
 
 	}
 

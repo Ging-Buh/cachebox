@@ -19,6 +19,7 @@ package CB_Core.GL_UI;
 import java.util.ArrayList;
 
 import CB_Core.Config;
+import CB_Core.FileIO;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -58,242 +59,300 @@ public class SpriteCache
 	public static ButtonSprites Tool;
 	public static ButtonSprites Misc;
 
-	// UI Atlas
-	public static TextureAtlas uiAtlas;
-	public static TextureAtlas iconAtlas;
+	private static String PathDefault;
+	private static String PathCostum;
+	private static String PathDefaultNight;
+	private static String PathCostumNight;
+
+	private static void setPath(String path)
+	{
+		PathCostum = path + "/day/UI_IconPack.spp";
+		PathCostumNight = path + "/night/UI_IconPack.spp";
+
+		String defaultPath = path;
+		int pos = defaultPath.lastIndexOf("/");
+		defaultPath = defaultPath.substring(0, pos) + "/default";
+
+		PathDefault = defaultPath + "/day/UI_IconPack.spp";
+		PathDefaultNight = defaultPath + "/night/UI_IconPack.spp";
+
+		if (FileIO.FileExists(PathDefault)) atlasDefault = new TextureAtlas(Gdx.files.absolute(PathDefault));
+		if (FileIO.FileExists(PathDefaultNight)) atlasDefaultNight = new TextureAtlas(Gdx.files.absolute(PathDefaultNight));
+		if (FileIO.FileExists(PathCostum)) atlasCostum = new TextureAtlas(Gdx.files.absolute(PathCostum));
+		if (FileIO.FileExists(PathCostumNight)) atlasCostumtNight = new TextureAtlas(Gdx.files.absolute(PathCostumNight));
+
+	}
+
+	static TextureAtlas atlasDefault;
+	static TextureAtlas atlasDefaultNight;
+	static TextureAtlas atlasCostum;
+	static TextureAtlas atlasCostumtNight;
+
+	public static Sprite getThemedSprite(String name)
+	{
+		Sprite tmp = null;
+		if (Config.settings.nightMode.getValue())
+		{
+			tmp = test(atlasCostumtNight, name);
+			if (tmp == null)
+			{
+				tmp = test(atlasCostum, name);
+			}
+			if (tmp == null)
+			{
+				tmp = test(atlasDefaultNight, name);
+			}
+
+		}
+		else
+		{
+			tmp = test(atlasCostum, name);
+		}
+
+		if (tmp == null)
+		{
+			tmp = test(atlasDefault, name);
+		}
+
+		return tmp;
+	}
+
+	private static Sprite test(TextureAtlas atlas, String name)
+	{
+		Sprite tmp = null;
+		if (atlas != null)
+		{
+			tmp = atlas.createSprite(name);
+		}
+		return tmp;
+	}
 
 	/**
 	 * Load the Sprites from recorce
 	 */
 	public static void LoadSprites()
 	{
-		TextureAtlas atlas;
-		// atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
-		// uiAtlas = new TextureAtlas(Gdx.files.internal("9patch/UI_PackerSheet"));
 
-		String skinPath = Config.settings.SkinFolder.getValue();
-
-		atlas = new TextureAtlas(Gdx.files.absolute(skinPath + "/day/MapSpritePack.spp"));
-		uiAtlas = new TextureAtlas(Gdx.files.absolute(skinPath + "/day/UI_SpritePack.spp"));
-		iconAtlas = new TextureAtlas(Gdx.files.absolute(skinPath + "/day/UI_IconPack.spp"));
+		// Config.settings.SkinFolder.setValue("./testdata/skins/small");
+		setPath(Config.settings.SkinFolder.getValue());
 
 		MapIconsSmall = new ArrayList<Sprite>();
-		MapIconsSmall.add(atlas.createSprite("small1yes"));
-		MapIconsSmall.add(atlas.createSprite("small2yesyes"));
-		MapIconsSmall.add(atlas.createSprite("small3yes"));
-		MapIconsSmall.add(atlas.createSprite("small4yes"));
-		MapIconsSmall.add(atlas.createSprite("small5yes"));
-		MapIconsSmall.add(atlas.createSprite("small5solved"));
-		MapIconsSmall.add(atlas.createSprite("small6yes"));
-		MapIconsSmall.add(atlas.createSprite("small7yes"));
-		MapIconsSmall.add(atlas.createSprite("small1no"));
-		MapIconsSmall.add(atlas.createSprite("small2no"));
-		MapIconsSmall.add(atlas.createSprite("small3no"));
-		MapIconsSmall.add(atlas.createSprite("small4no"));
-		MapIconsSmall.add(atlas.createSprite("small5no"));
-		MapIconsSmall.add(atlas.createSprite("small5solved_no"));
-		MapIconsSmall.add(atlas.createSprite("small6no"));
-		MapIconsSmall.add(atlas.createSprite("small7no"));
+		MapIconsSmall.add(getThemedSprite("small1yes"));
+		MapIconsSmall.add(getThemedSprite("small2yesyes"));
+		MapIconsSmall.add(getThemedSprite("small3yes"));
+		MapIconsSmall.add(getThemedSprite("small4yes"));
+		MapIconsSmall.add(getThemedSprite("small5yes"));
+		MapIconsSmall.add(getThemedSprite("small5solved"));
+		MapIconsSmall.add(getThemedSprite("small6yes"));
+		MapIconsSmall.add(getThemedSprite("small7yes"));
+		MapIconsSmall.add(getThemedSprite("small1no"));
+		MapIconsSmall.add(getThemedSprite("small2no"));
+		MapIconsSmall.add(getThemedSprite("small3no"));
+		MapIconsSmall.add(getThemedSprite("small4no"));
+		MapIconsSmall.add(getThemedSprite("small5no"));
+		MapIconsSmall.add(getThemedSprite("small5solved_no"));
+		MapIconsSmall.add(getThemedSprite("small6no"));
+		MapIconsSmall.add(getThemedSprite("small7no"));
 
 		MapOverlay = new ArrayList<Sprite>();
-		MapOverlay.add(atlas.createSprite("shaddowrect"));
-		MapOverlay.add(atlas.createSprite("shaddowrect_selected"));
-		MapOverlay.add(atlas.createSprite("deact"));
-		MapOverlay.add(atlas.createSprite("cross"));
+		MapOverlay.add(getThemedSprite("shaddowrect"));
+		MapOverlay.add(getThemedSprite("shaddowrect_selected"));
+		MapOverlay.add(getThemedSprite("deact"));
+		MapOverlay.add(getThemedSprite("cross"));
 
 		MapIcons = new ArrayList<Sprite>();
-		MapIcons.add(atlas.createSprite("0"));
-		MapIcons.add(atlas.createSprite("1"));
-		MapIcons.add(atlas.createSprite("2"));
-		MapIcons.add(atlas.createSprite("3"));
-		MapIcons.add(atlas.createSprite("4"));
-		MapIcons.add(atlas.createSprite("5"));
-		MapIcons.add(atlas.createSprite("6"));
-		MapIcons.add(atlas.createSprite("7"));
-		MapIcons.add(atlas.createSprite("8"));
-		MapIcons.add(atlas.createSprite("9"));
-		MapIcons.add(atlas.createSprite("10"));
-		MapIcons.add(atlas.createSprite("11"));
-		MapIcons.add(atlas.createSprite("12"));
-		MapIcons.add(atlas.createSprite("13"));
-		MapIcons.add(atlas.createSprite("14"));
-		MapIcons.add(atlas.createSprite("15"));
-		MapIcons.add(atlas.createSprite("16"));
-		MapIcons.add(atlas.createSprite("17"));
-		MapIcons.add(atlas.createSprite("18"));
-		MapIcons.add(atlas.createSprite("19"));
-		MapIcons.add(atlas.createSprite("20"));
-		MapIcons.add(atlas.createSprite("21"));
+		MapIcons.add(getThemedSprite("0"));
+		MapIcons.add(getThemedSprite("1"));
+		MapIcons.add(getThemedSprite("2"));
+		MapIcons.add(getThemedSprite("3"));
+		MapIcons.add(getThemedSprite("4"));
+		MapIcons.add(getThemedSprite("5"));
+		MapIcons.add(getThemedSprite("6"));
+		MapIcons.add(getThemedSprite("7"));
+		MapIcons.add(getThemedSprite("8"));
+		MapIcons.add(getThemedSprite("9"));
+		MapIcons.add(getThemedSprite("10"));
+		MapIcons.add(getThemedSprite("11"));
+		MapIcons.add(getThemedSprite("12"));
+		MapIcons.add(getThemedSprite("13"));
+		MapIcons.add(getThemedSprite("14"));
+		MapIcons.add(getThemedSprite("15"));
+		MapIcons.add(getThemedSprite("16"));
+		MapIcons.add(getThemedSprite("17"));
+		MapIcons.add(getThemedSprite("18"));
+		MapIcons.add(getThemedSprite("19"));
+		MapIcons.add(getThemedSprite("20"));
+		MapIcons.add(getThemedSprite("21"));
 
 		Arrows = new ArrayList<Sprite>();
-		Arrows.add(uiAtlas.createSprite("arrow_Compass"));
-		Arrows.add(uiAtlas.createSprite("arrow_Compass_Trans"));
-		Arrows.add(uiAtlas.createSprite("arrow_GPS"));
-		Arrows.add(uiAtlas.createSprite("arrow_GPS_Trans"));
-		Arrows.add(atlas.createSprite("target_arrow"));
-		Arrows.add(atlas.createSprite("track_line"));
-		Arrows.add(iconAtlas.createSprite("arrow_down"));
-		Arrows.add(iconAtlas.createSprite("arrow_up"));
-		Arrows.add(iconAtlas.createSprite("arrow_left"));
-		Arrows.add(iconAtlas.createSprite("arrow_right"));
-		Arrows.add(atlas.createSprite("track_point"));
+		Arrows.add(getThemedSprite("arrow_Compass"));
+		Arrows.add(getThemedSprite("arrow_Compass_Trans"));
+		Arrows.add(getThemedSprite("arrow_GPS"));
+		Arrows.add(getThemedSprite("arrow_GPS_Trans"));
+		Arrows.add(getThemedSprite("target_arrow"));
+		Arrows.add(getThemedSprite("track_line"));
+		Arrows.add(getThemedSprite("arrow_down"));
+		Arrows.add(getThemedSprite("arrow_up"));
+		Arrows.add(getThemedSprite("arrow_left"));
+		Arrows.add(getThemedSprite("arrow_right"));
+		Arrows.add(getThemedSprite("track_point"));
 
 		MapStars = new ArrayList<Sprite>();
-		MapStars.add(atlas.createSprite("stars0small"));
-		MapStars.add(atlas.createSprite("stars0_5small"));
-		MapStars.add(atlas.createSprite("stars1small"));
-		MapStars.add(atlas.createSprite("stars1_5small"));
-		MapStars.add(atlas.createSprite("stars2small"));
-		MapStars.add(atlas.createSprite("stars2_5small"));
-		MapStars.add(atlas.createSprite("stars3small"));
-		MapStars.add(atlas.createSprite("stars3_5small"));
-		MapStars.add(atlas.createSprite("stars4small"));
-		MapStars.add(atlas.createSprite("stars4_5small"));
-		MapStars.add(atlas.createSprite("stars5small"));
+		MapStars.add(getThemedSprite("stars0small"));
+		MapStars.add(getThemedSprite("stars0_5small"));
+		MapStars.add(getThemedSprite("stars1small"));
+		MapStars.add(getThemedSprite("stars1_5small"));
+		MapStars.add(getThemedSprite("stars2small"));
+		MapStars.add(getThemedSprite("stars2_5small"));
+		MapStars.add(getThemedSprite("stars3small"));
+		MapStars.add(getThemedSprite("stars3_5small"));
+		MapStars.add(getThemedSprite("stars4small"));
+		MapStars.add(getThemedSprite("stars4_5small"));
+		MapStars.add(getThemedSprite("stars5small"));
 
 		Stars = new ArrayList<Sprite>();
-		Stars.add(iconAtlas.createSprite("stars0icon"));
-		Stars.add(iconAtlas.createSprite("stars0_5icon"));
-		Stars.add(iconAtlas.createSprite("stars1icon"));
-		Stars.add(iconAtlas.createSprite("stars1_5icon"));
-		Stars.add(iconAtlas.createSprite("stars2icon"));
-		Stars.add(iconAtlas.createSprite("stars2_5icon"));
-		Stars.add(iconAtlas.createSprite("stars3icon"));
-		Stars.add(iconAtlas.createSprite("stars3_5icon"));
-		Stars.add(iconAtlas.createSprite("stars4icon"));
-		Stars.add(iconAtlas.createSprite("stars4_5icon"));
-		Stars.add(iconAtlas.createSprite("stars5icon"));
+		Stars.add(getThemedSprite("stars0icon"));
+		Stars.add(getThemedSprite("stars0_5icon"));
+		Stars.add(getThemedSprite("stars1icon"));
+		Stars.add(getThemedSprite("stars1_5icon"));
+		Stars.add(getThemedSprite("stars2icon"));
+		Stars.add(getThemedSprite("stars2_5icon"));
+		Stars.add(getThemedSprite("stars3icon"));
+		Stars.add(getThemedSprite("stars3_5icon"));
+		Stars.add(getThemedSprite("stars4icon"));
+		Stars.add(getThemedSprite("stars4_5icon"));
+		Stars.add(getThemedSprite("stars5icon"));
 
 		Bubble = new ArrayList<Sprite>();
-		Bubble.add(uiAtlas.createSprite("Bubble"));
-		Bubble.add(uiAtlas.createSprite("Bubble_selected"));
-		Bubble.add(uiAtlas.createSprite("BubbleOverlay"));
-		Bubble.add(iconAtlas.createSprite("1to4bubble"));
-		Bubble.add(iconAtlas.createSprite("5bubble"));
+		Bubble.add(getThemedSprite("Bubble"));
+		Bubble.add(getThemedSprite("Bubble_selected"));
+		Bubble.add(getThemedSprite("BubbleOverlay"));
+		Bubble.add(getThemedSprite("1to4bubble"));
+		Bubble.add(getThemedSprite("5bubble"));
 
 		ChkIcons = new ArrayList<Sprite>();
-		ChkIcons.add(uiAtlas.createSprite("check_off"));
-		ChkIcons.add(uiAtlas.createSprite("check_on"));
+		ChkIcons.add(getThemedSprite("check_off"));
+		ChkIcons.add(getThemedSprite("check_on"));
 
 		Dialog = new ArrayList<Sprite>();
-		Dialog.add(uiAtlas.createSprite("dialog_header"));
-		Dialog.add(uiAtlas.createSprite("dialog_center"));
-		Dialog.add(uiAtlas.createSprite("dialog_footer"));
-		Dialog.add(uiAtlas.createSprite("dialog_title"));
+		Dialog.add(getThemedSprite("dialog_header"));
+		Dialog.add(getThemedSprite("dialog_center"));
+		Dialog.add(getThemedSprite("dialog_footer"));
+		Dialog.add(getThemedSprite("dialog_title"));
 
-		InfoBack = uiAtlas.createSprite("InfoPanelBack");
+		InfoBack = getThemedSprite("InfoPanelBack");
 
 		ToggleBtn = new ArrayList<Sprite>();
-		ToggleBtn.add(uiAtlas.createSprite("day_btn_normal"));
-		ToggleBtn.add(uiAtlas.createSprite("day_btn_pressed"));
-		ToggleBtn.add(uiAtlas.createSprite("toggle_led_gr"));
+		ToggleBtn.add(getThemedSprite("day_btn_normal"));
+		ToggleBtn.add(getThemedSprite("day_btn_pressed"));
+		ToggleBtn.add(getThemedSprite("toggle_led_gr"));
 
 		ZoomBtn = new ArrayList<Sprite>();
-		ZoomBtn.add(uiAtlas.createSprite("day_btn_zoom_down_normal"));
-		ZoomBtn.add(uiAtlas.createSprite("day_btn_zoom_down_pressed"));
-		ZoomBtn.add(uiAtlas.createSprite("day_btn_zoom_down_disabled"));
-		ZoomBtn.add(uiAtlas.createSprite("day_btn_zoom_up_normal"));
-		ZoomBtn.add(uiAtlas.createSprite("day_btn_zoom_up_pressed"));
-		ZoomBtn.add(uiAtlas.createSprite("day_btn_zoom_up_disabled"));
+		ZoomBtn.add(getThemedSprite("day_btn_zoom_down_normal"));
+		ZoomBtn.add(getThemedSprite("day_btn_zoom_down_pressed"));
+		ZoomBtn.add(getThemedSprite("day_btn_zoom_down_disabled"));
+		ZoomBtn.add(getThemedSprite("day_btn_zoom_up_normal"));
+		ZoomBtn.add(getThemedSprite("day_btn_zoom_up_pressed"));
+		ZoomBtn.add(getThemedSprite("day_btn_zoom_up_disabled"));
 
-		ZoomValueBack = uiAtlas.createSprite("zoom_back");
+		ZoomValueBack = getThemedSprite("zoom_back");
 
 		SizesIcons = new ArrayList<Sprite>();
-		SizesIcons.add(atlas.createSprite("other"));
-		SizesIcons.add(atlas.createSprite("micro"));
-		SizesIcons.add(atlas.createSprite("small"));
-		SizesIcons.add(atlas.createSprite("regular"));
-		SizesIcons.add(atlas.createSprite("large"));
+		SizesIcons.add(getThemedSprite("other"));
+		SizesIcons.add(getThemedSprite("micro"));
+		SizesIcons.add(getThemedSprite("small"));
+		SizesIcons.add(getThemedSprite("regular"));
+		SizesIcons.add(getThemedSprite("large"));
 
 		BigIcons = new ArrayList<Sprite>();
-		BigIcons.add(iconAtlas.createSprite("big0icon")); // 0
-		BigIcons.add(iconAtlas.createSprite("big1icon")); // 1
-		BigIcons.add(iconAtlas.createSprite("big2icon")); // 2
-		BigIcons.add(iconAtlas.createSprite("big3icon")); // 3
-		BigIcons.add(iconAtlas.createSprite("big4icon")); // 4
-		BigIcons.add(iconAtlas.createSprite("big5icon")); // 5
-		BigIcons.add(iconAtlas.createSprite("big6icon")); // 6
-		BigIcons.add(iconAtlas.createSprite("big7icon")); // 7
-		BigIcons.add(iconAtlas.createSprite("big8icon")); // 8
-		BigIcons.add(iconAtlas.createSprite("big9icon")); // 9
-		BigIcons.add(iconAtlas.createSprite("big10icon")); // 10
-		BigIcons.add(iconAtlas.createSprite("big11icon")); // 11
-		BigIcons.add(iconAtlas.createSprite("big12icon")); // 12
-		BigIcons.add(iconAtlas.createSprite("big13icon")); // 13
-		BigIcons.add(iconAtlas.createSprite("big14icon")); // 14
-		BigIcons.add(iconAtlas.createSprite("big15icon")); // 15
-		BigIcons.add(iconAtlas.createSprite("big16icon")); // 16
-		BigIcons.add(iconAtlas.createSprite("big17icon")); // 17
-		BigIcons.add(iconAtlas.createSprite("big18icon")); // 18
-		BigIcons.add(iconAtlas.createSprite("log0icon")); // 19
-		BigIcons.add(iconAtlas.createSprite("my_parking")); // 20
-		BigIcons.add(iconAtlas.createSprite("big19icon")); // 21
+		BigIcons.add(getThemedSprite("big0icon")); // 0
+		BigIcons.add(getThemedSprite("big1icon")); // 1
+		BigIcons.add(getThemedSprite("big2icon")); // 2
+		BigIcons.add(getThemedSprite("big3icon")); // 3
+		BigIcons.add(getThemedSprite("big4icon")); // 4
+		BigIcons.add(getThemedSprite("big5icon")); // 5
+		BigIcons.add(getThemedSprite("big6icon")); // 6
+		BigIcons.add(getThemedSprite("big7icon")); // 7
+		BigIcons.add(getThemedSprite("big8icon")); // 8
+		BigIcons.add(getThemedSprite("big9icon")); // 9
+		BigIcons.add(getThemedSprite("big10icon")); // 10
+		BigIcons.add(getThemedSprite("big11icon")); // 11
+		BigIcons.add(getThemedSprite("big12icon")); // 12
+		BigIcons.add(getThemedSprite("big13icon")); // 13
+		BigIcons.add(getThemedSprite("big14icon")); // 14
+		BigIcons.add(getThemedSprite("big15icon")); // 15
+		BigIcons.add(getThemedSprite("big16icon")); // 16
+		BigIcons.add(getThemedSprite("big17icon")); // 17
+		BigIcons.add(getThemedSprite("big18icon")); // 18
+		BigIcons.add(getThemedSprite("log0icon")); // 19
+		BigIcons.add(getThemedSprite("my_parking")); // 20
+		BigIcons.add(getThemedSprite("big19icon")); // 21
 
 		Icons = new ArrayList<Sprite>();
-		Icons.add(iconAtlas.createSprite("day_btn_default_normal"));// 0
-		Icons.add(iconAtlas.createSprite("button"));// 1
-		Icons.add(iconAtlas.createSprite("doc_icon"));// 2
-		Icons.add(iconAtlas.createSprite("big_16"));// 3
-		Icons.add(iconAtlas.createSprite("list_icon")); // 4 LogView braucht noch ein Icon
-		Icons.add(iconAtlas.createSprite("map")); // 5
-		Icons.add(iconAtlas.createSprite("compass"));// 6
-		Icons.add(iconAtlas.createSprite("cache_list_icon"));// 7
-		Icons.add(iconAtlas.createSprite("track_list_icon")); // 8
-		Icons.add(iconAtlas.createSprite("log10"));// 9
-		Icons.add(iconAtlas.createSprite("video_icon")); // 10
-		Icons.add(iconAtlas.createSprite("voice_rec_icon"));// 11
-		Icons.add(iconAtlas.createSprite("lupe")); // 12
-		Icons.add(iconAtlas.createSprite("filter")); // 13
-		Icons.add(iconAtlas.createSprite("lock_icon"));// 14
-		Icons.add(iconAtlas.createSprite("auto_sort_on_icon")); // 15
-		Icons.add(iconAtlas.createSprite("auto_sort_off_icon")); // 16
-		Icons.add(iconAtlas.createSprite("solver_icon")); // 17
-		Icons.add(iconAtlas.createSprite("images_icon")); // 18
-		Icons.add(iconAtlas.createSprite("hint_icon")); // 19
-		Icons.add(iconAtlas.createSprite("doc_icon")); // 20
-		Icons.add(iconAtlas.createSprite("list_icon")); // 21
-		Icons.add(iconAtlas.createSprite("images_icon")); // 22
-		Icons.add(iconAtlas.createSprite("note_icon")); // 23
-		Icons.add(iconAtlas.createSprite("solver_icon")); // 24
-		Icons.add(iconAtlas.createSprite("joker_phone")); // 25
-		Icons.add(iconAtlas.createSprite("settings")); // 26
-		Icons.add(iconAtlas.createSprite("lupe")); // 27
-		Icons.add(iconAtlas.createSprite("delete_icon")); // 28
-		Icons.add(iconAtlas.createSprite("voice_rec_icon")); // 29
-		Icons.add(iconAtlas.createSprite("satellite")); // 30
-		Icons.add(iconAtlas.createSprite("close_icon")); // 31
-		Icons.add(iconAtlas.createSprite("info_icon")); // 32
-		Icons.add(iconAtlas.createSprite("warning_icon")); // 33
-		Icons.add(iconAtlas.createSprite("help_icon")); // 34
-		Icons.add(iconAtlas.createSprite("day_gc_live_icon")); // 35
-		Icons.add(iconAtlas.createSprite("tb")); // 36
-		Icons.add(iconAtlas.createSprite("cm_icon")); // 37
-		Icons.add(iconAtlas.createSprite("tb_list_icon")); // 38
-		Icons.add(iconAtlas.createSprite("sort_icon")); // 39
-		Icons.add(iconAtlas.createSprite("import")); // 40
-		Icons.add(iconAtlas.createSprite("manage_db")); // 41
-		Icons.add(iconAtlas.createSprite("favorit")); // 42
-		Icons.add(iconAtlas.createSprite("star")); // 43
-		Icons.add(iconAtlas.createSprite("disabled")); // 44
-		Icons.add(iconAtlas.createSprite("not_available")); // 45
-		Icons.add(iconAtlas.createSprite("navigate")); // 46
-		Icons.add(iconAtlas.createSprite("log10icon")); // 47
-		Icons.add(iconAtlas.createSprite("d_n")); // 48
-		Icons.add(iconAtlas.createSprite("cb")); // 49
+		Icons.add(getThemedSprite("day_btn_default_normal"));// 0
+		Icons.add(getThemedSprite("button"));// 1
+		Icons.add(getThemedSprite("doc_icon"));// 2
+		Icons.add(getThemedSprite("big_16"));// 3
+		Icons.add(getThemedSprite("list_icon")); // 4 LogView braucht noch ein Icon
+		Icons.add(getThemedSprite("map")); // 5
+		Icons.add(getThemedSprite("compass"));// 6
+		Icons.add(getThemedSprite("cache_list_icon"));// 7
+		Icons.add(getThemedSprite("track_list_icon")); // 8
+		Icons.add(getThemedSprite("log10"));// 9
+		Icons.add(getThemedSprite("video_icon")); // 10
+		Icons.add(getThemedSprite("voice_rec_icon"));// 11
+		Icons.add(getThemedSprite("lupe")); // 12
+		Icons.add(getThemedSprite("filter")); // 13
+		Icons.add(getThemedSprite("lock_icon"));// 14
+		Icons.add(getThemedSprite("auto_sort_on_icon")); // 15
+		Icons.add(getThemedSprite("auto_sort_off_icon")); // 16
+		Icons.add(getThemedSprite("solver_icon")); // 17
+		Icons.add(getThemedSprite("images_icon")); // 18
+		Icons.add(getThemedSprite("hint_icon")); // 19
+		Icons.add(getThemedSprite("doc_icon")); // 20
+		Icons.add(getThemedSprite("list_icon")); // 21
+		Icons.add(getThemedSprite("images_icon")); // 22
+		Icons.add(getThemedSprite("note_icon")); // 23
+		Icons.add(getThemedSprite("solver_icon")); // 24
+		Icons.add(getThemedSprite("joker_phone")); // 25
+		Icons.add(getThemedSprite("settings")); // 26
+		Icons.add(getThemedSprite("lupe")); // 27
+		Icons.add(getThemedSprite("delete_icon")); // 28
+		Icons.add(getThemedSprite("voice_rec_icon")); // 29
+		Icons.add(getThemedSprite("satellite")); // 30
+		Icons.add(getThemedSprite("close_icon")); // 31
+		Icons.add(getThemedSprite("info_icon")); // 32
+		Icons.add(getThemedSprite("warning_icon")); // 33
+		Icons.add(getThemedSprite("help_icon")); // 34
+		Icons.add(getThemedSprite("day_gc_live_icon")); // 35
+		Icons.add(getThemedSprite("tb")); // 36
+		Icons.add(getThemedSprite("cm_icon")); // 37
+		Icons.add(getThemedSprite("tb_list_icon")); // 38
+		Icons.add(getThemedSprite("sort_icon")); // 39
+		Icons.add(getThemedSprite("import")); // 40
+		Icons.add(getThemedSprite("manage_db")); // 41
+		Icons.add(getThemedSprite("favorit")); // 42
+		Icons.add(getThemedSprite("star")); // 43
+		Icons.add(getThemedSprite("disabled")); // 44
+		Icons.add(getThemedSprite("not_available")); // 45
+		Icons.add(getThemedSprite("navigate")); // 46
+		Icons.add(getThemedSprite("log10icon")); // 47
+		Icons.add(getThemedSprite("d_n")); // 48
+		Icons.add(getThemedSprite("cb")); // 49
 		loadButtnSprites();
 
-		ListBack = new NinePatch(uiAtlas.createSprite("background"), 1, 1, 1, 1);
-		ButtonBack = uiAtlas.createSprite("button_list_back");
-		AboutBack = iconAtlas.createSprite("splash_back");
+		ListBack = new NinePatch(getThemedSprite("background"), 1, 1, 1, 1);
+		ButtonBack = getThemedSprite("button_list_back");
+		AboutBack = getThemedSprite("splash_back");
 	}
 
 	private static void loadButtnSprites()
 	{
-		CacheList = new ButtonSprites(uiAtlas, "db", "db_pressed");
-		Cache = new ButtonSprites(uiAtlas, "cache", "cache_pressed");
-		Nav = new ButtonSprites(uiAtlas, "Nav", "Nav_pressed");
-		Tool = new ButtonSprites(uiAtlas, "tool", "tool_pressed");
-		Misc = new ButtonSprites(uiAtlas, "misc", "misc_pressed");
+		CacheList = new ButtonSprites(getThemedSprite("db"), getThemedSprite("db_pressed"));
+		Cache = new ButtonSprites(getThemedSprite("cache"), getThemedSprite("cache_pressed"));
+		Nav = new ButtonSprites(getThemedSprite("Nav"), getThemedSprite("Nav_pressed"));
+		Tool = new ButtonSprites(getThemedSprite("tool"), getThemedSprite("tool_pressed"));
+		Misc = new ButtonSprites(getThemedSprite("misc"), getThemedSprite("misc_pressed"));
 	}
 
 	/**
