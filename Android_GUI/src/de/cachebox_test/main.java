@@ -3765,7 +3765,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 
 			@Override
-			public void show(final ViewID viewID, int x, int y, int width, int height)
+			public void show(final ViewID viewID, int x, int y, final int width, final int height)
 			{
 
 				runOnUiThread(new Runnable()
@@ -3774,6 +3774,30 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					public void run()
 					{
 						Logger.LogCat("Show View from GL =>" + viewID.getID());
+
+						// set Content size
+
+						if (viewID.getType() != ViewID.UI_Type.Activity)
+						{
+							if (viewID.getPos() == UI_Pos.Left)
+							{
+								android.view.ViewGroup.LayoutParams params = frame.getLayoutParams();
+
+								params.height = height;
+								params.width = width;
+							}
+							else
+							{
+								if (tabFrame != null)
+								{
+									android.view.ViewGroup.LayoutParams params = tabFrame.getLayoutParams();
+
+									params.height = height;
+									params.width = width;
+								}
+							}
+						}
+
 						showView(viewID);
 					}
 				});

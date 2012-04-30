@@ -86,18 +86,20 @@ public class CacheInfo extends CB_View_Base
 
 	private BitmapFontCache mInfo_FontCache;
 
+	private boolean cacheIsInitial = false;
+
 	public CacheInfo(SizeF size, CharSequence Name, Cache value)
 	{
 		super(size, Name);
 		mCache = value;
-		isInitial = false;
+		cacheIsInitial = false;
 	}
 
 	public CacheInfo(CB_RectF rec, String Name, Cache value)
 	{
 		super(rec, Name);
 		mCache = value;
-		isInitial = false;
+		cacheIsInitial = false;
 	}
 
 	public void setFont(BitmapFont font)
@@ -340,20 +342,20 @@ public class CacheInfo extends CB_View_Base
 	@Override
 	public void onRezised(CB_RectF rec)
 	{
-		if (isInitial) requestLayout();
+		if (cacheIsInitial) requestLayout();
 	}
 
 	public void setViewMode(int viewMode)
 	{
 		mViewMode = viewMode;
-		if (isInitial) requestLayout();
+		if (cacheIsInitial) requestLayout();
 	}
 
 	public void setCache(Cache cache)
 	{
 		if (mCache != null && cache != null && mCache.Id == cache.Id) return;
 		mCache = cache;
-		if (isInitial) requestLayout();
+		if (cacheIsInitial) requestLayout();
 	}
 
 	@Override

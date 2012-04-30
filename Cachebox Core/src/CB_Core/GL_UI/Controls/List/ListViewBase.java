@@ -215,7 +215,7 @@ public abstract class ListViewBase extends CB_View_Base
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-
+		super.render(batch);
 		if (mMustSetPos) RenderThreadSetPos(mMustSetPosValue, mMustSetPosKinetic);
 
 	}
@@ -265,6 +265,7 @@ public abstract class ListViewBase extends CB_View_Base
 	 */
 	protected void chkSlideBack()
 	{
+		Logger.LogCat("chkSlideBack()");
 		if (!mIsDrageble)
 		{
 			startAnimationtoTop();

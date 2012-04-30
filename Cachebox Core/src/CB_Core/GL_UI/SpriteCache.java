@@ -133,7 +133,8 @@ public class SpriteCache
 	public static void LoadSprites()
 	{
 
-		// Config.settings.SkinFolder.setValue("./testdata/skins/small");
+		// Config.settings.SkinFolder.setValue("./testdata/skins/default");
+		// Config.AcceptChanges();
 		setPath(Config.settings.SkinFolder.getValue());
 
 		MapIconsSmall = new ArrayList<Sprite>();

@@ -11,6 +11,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Menu.CB_AllContextMenuHandler;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
@@ -34,7 +35,8 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 	@Override
 	protected void Initial()
 	{
-		chkSlideBack();
+		Logger.LogCat("CacheListView => Initial()");
+		this.scrollToItem(0);
 	}
 
 	@Override
@@ -68,7 +70,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 			this.setSelection(0);
 
 		this.invalidate();
-
+		GL_Listener.glListener.renderOnce(this);
 	}
 
 	/**
@@ -103,7 +105,8 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 			id++;
 		}
 
-		this.invalidate();
+		chkSlideBack();
+		GL_Listener.glListener.renderOnce(this);
 	}
 
 	@Override
