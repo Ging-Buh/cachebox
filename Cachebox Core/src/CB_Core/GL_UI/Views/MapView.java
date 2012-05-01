@@ -133,7 +133,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	long posy = 5685;
 
 	// screencenter in World Coordinates (Pixels in Zoom Level maxzoom
-	PointL screenCenterW = new PointL(0, 0);
+	PointL screenCenterW = new PointL(0, 0); // wird am Anfang von Render() gesetzt
+	PointL screenCenterT = new PointL(0, 0); // speichert dauerhaft den Zustand
 	int width;
 	int height;
 	int drawingWidth;
@@ -501,8 +502,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			// camera.position.add(pan.x * faktor, pan.y * faktor, 0);
 			// screenCenterW.x = camera.position.x;
 			// screenCenterW.y = camera.position.y;
-			screenCenterW.x += (long) pan.x * faktor;
-			screenCenterW.y += (long) pan.y * faktor;
+			screenCenterT.x += (long) pan.x * faktor;
+			screenCenterT.y += (long) pan.y * faktor;
 			calcCenter();
 
 			if (kineticPan.getFertig())
@@ -523,6 +524,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			SpriteCache.LoadSprites();
 		}
 
+		synchronized (screenCenterT)
+		{
+			screenCenterW.x = screenCenterT.x;
+			screenCenterW.y = screenCenterT.y;
+		}
 		loadTiles();
 		/*
 		 * if (alignToCompass) { camera.up.x = 0; camera.up.y = 1; camera.up.z = 0; camera.rotate(-mapHeading, 0, 0, 1); } else {
@@ -1309,10 +1315,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	private void setScreenCenter(Vector2 newCenter)
 	{
-		synchronized (screenCenterW)
+		synchronized (screenCenterT)
 		{
-			screenCenterW.x = (long) newCenter.x;
-			screenCenterW.y = (long) (-newCenter.y);
+			screenCenterT.x = (long) newCenter.x;
+			screenCenterT.y = (long) (-newCenter.y);
 		}
 		// if (camera != null) camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
 		GL_Listener.glListener.renderOnce(this);
@@ -1816,7 +1822,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			// camera.position.add((lastPoint.x - x) * faktor, (y - lastPoint.y) * faktor, 0);
 			// screenCenterW.x = camera.position.x;
 			// screenCenterW.y = camera.position.y;
-			synchronized (screenCenterW)
+			synchronized (screenCenterT)
 			{
 				double angle = mapHeading * Math.PI / 180;
 				int dx = (lastPoint.x - x);
@@ -1824,8 +1830,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				int dxr = (int) (Math.cos(angle) * dx + Math.sin(angle) * dy);
 				int dyr = (int) (-Math.sin(angle) * dx + Math.cos(angle) * dy);
 				debugString = dx + " - " + dy + " - " + dxr + " - " + dyr;
-				screenCenterW.x += (long) (dxr * faktor);
-				screenCenterW.y += (long) (dyr * faktor);
+				screenCenterT.x += (long) (dxr * faktor);
+				screenCenterT.y += (long) (dyr * faktor);
 			}
 			calcCenter();
 
