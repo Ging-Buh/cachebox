@@ -24,6 +24,7 @@ import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Map.Layer;
+import CB_Core.Map.RouteOverlay;
 import CB_Core.Math.CB_Rect;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
@@ -71,7 +72,6 @@ import de.cachebox_test.Events.PositionEvent;
 import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Map.Manager;
-import de.cachebox_test.Map.RouteOverlay;
 import de.cachebox_test.Map.Tile;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
@@ -796,7 +796,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		 * Config.settings.TrackDistance"))); else
 		 */
 
-		RouteOverlay.Routes.clear();
+		// RouteOverlay.Routes.clear();
 		/*
 		 * Paint paint = new Paint(); paint.setColor(Color.BLUE); paint.setStrokeWidth(4); Global.AktuelleRoute = new
 		 * RouteOverlay.Route(paint, "actual Track"); Global.AktuelleRoute.ShowRoute = false; RouteOverlay.Routes.add(Global.AktuelleRoute);
@@ -817,7 +817,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 				{
 					for (String file : files)
 					{
-						LoadTrack(trackPath, file);
+						// LoadTrack(trackPath, file);
 
 					}
 				}
@@ -831,39 +831,39 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 	}
 
-	public void LoadTrack(String trackPath)
-	{
-		LoadTrack(trackPath, "");
-	}
-
-	public void LoadTrack(String trackPath, String file)
-	{
-		int[] ColorField = new int[8];
-		ColorField[0] = Color.RED;
-		ColorField[1] = Color.YELLOW;
-		ColorField[2] = Color.BLACK;
-		ColorField[3] = Color.LTGRAY;
-		ColorField[4] = Color.GREEN;
-		ColorField[5] = Color.BLUE;
-		ColorField[6] = Color.CYAN;
-		ColorField[7] = Color.GRAY;
-		int TrackColor;
-		TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
-
-		Paint paint = new Paint();
-		paint.setColor(TrackColor);
-		paint.setStrokeWidth(4);
-		String absolutPath = "";
-		if (file.equals(""))
-		{
-			absolutPath = trackPath;
-		}
-		else
-		{
-			absolutPath = trackPath + "/" + file;
-		}
-		RouteOverlay.Routes.add(RouteOverlay.LoadRoute(absolutPath, paint, Config.settings.TrackDistance.getValue()));
-	}
+	// public void LoadTrack(String trackPath)
+	// {
+	// LoadTrack(trackPath, "");
+	// }
+	//
+	// public void LoadTrack(String trackPath, String file)
+	// {
+	// int[] ColorField = new int[8];
+	// ColorField[0] = Color.RED;
+	// ColorField[1] = Color.YELLOW;
+	// ColorField[2] = Color.BLACK;
+	// ColorField[3] = Color.LTGRAY;
+	// ColorField[4] = Color.GREEN;
+	// ColorField[5] = Color.BLUE;
+	// ColorField[6] = Color.CYAN;
+	// ColorField[7] = Color.GRAY;
+	// int TrackColor;
+	// TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
+	//
+	// Paint paint = new Paint();
+	// paint.setColor(TrackColor);
+	// paint.setStrokeWidth(4);
+	// String absolutPath = "";
+	// if (file.equals(""))
+	// {
+	// absolutPath = trackPath;
+	// }
+	// else
+	// {
+	// absolutPath = trackPath + "/" + file;
+	// }
+	// RouteOverlay.Routes.add(RouteOverlay.LoadRoute(absolutPath, paint, Config.settings.TrackDistance.getValue()));
+	// }
 
 	/*
 	 * void MapView_MouseWheel(object sender, MouseEventArgs e) { if (e.Delta > 0) zoomIn(); else zoomOut(); }
@@ -1124,7 +1124,7 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 
 		Canvas canv = new Canvas(bitmap);
 		// canvas.drawRect(0, 0, 255, 255, ppp);
-		RouteOverlay.RenderRoute(canv, bitmap, desc, 1, 1);
+		// RouteOverlay.RenderRoute(canv, bitmap, desc, 1, 1);
 
 		Tile.TileState tileState = Tile.TileState.Disposed;
 
@@ -4155,66 +4155,66 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		GlobalCore.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());
 		GlobalCore.LastValidPosition.Elevation = location.getAltitude();
 		// Muss der aktive Track gezeichnet werden?
-		if ((Global.AktuelleRoute != null) && Global.AktuelleRoute.ShowRoute)
-		{
-			try
-			{
-				// Map Tiles aktualisieren, wenn der AktiveTrack erweitert
-				// wurde!
-				if ((Global.AktuelleRoute.Points.size() > Global.aktuelleRouteCount) && (Global.AktuelleRoute.Points.size() > 1))
-				{
-					// Liste aller neuen Punkte erstellen incl. dem letzten.
-					ArrayList<PointD> punkte = new ArrayList<PointD>();
-					for (int i = Global.aktuelleRouteCount - 1; i < Global.AktuelleRoute.Points.size(); i++)
-					{
-						if (i < 0) continue;
-						punkte.add(Global.AktuelleRoute.Points.get(i));
-					}
-					Global.aktuelleRouteCount = Global.AktuelleRoute.Points.size();
-
-					Paint paint = Global.AktuelleRoute.paint;
-					trackTilesLock.lock();
-					try
-					{
-						for (long hash : trackTiles.keySet())
-						{
-							Tile tile = trackTiles.get(hash);
-							if (tile.Image == null) continue;
-							Canvas canvas = new Canvas(tile.Image);
-
-							double tileX = tile.Descriptor.X * 256;
-							double tileY = tile.Descriptor.Y * 256;
-
-							double adjustmentX = Math.pow(2, tile.Descriptor.Zoom - RouteOverlay.projectionZoomLevel) * 256;
-							double adjustmentY = Math.pow(2, tile.Descriptor.Zoom - RouteOverlay.projectionZoomLevel) * 256;
-
-							for (int j = 0; j < (punkte.size() - 1); j++)
-							{
-								canvas.drawLine((int) (punkte.get(j).X * adjustmentX - tileX),
-										(int) (punkte.get(j).Y * adjustmentY - tileY), (int) (punkte.get(j + 1).X * adjustmentX - tileX),
-										(int) (punkte.get(j + 1).Y * adjustmentY - tileY), paint);
-							}
-							if (punkte.size() > 0)
-							{
-								double x = (punkte.get(punkte.size() - 1).X * adjustmentX - tileX);
-								double y = (punkte.get(punkte.size() - 1).Y * adjustmentY - tileY);
-								// graphics.DrawString(x.ToString() + " - " +
-								// y.ToString(), fontSmall, new
-								// SolidBrush(Color.Black), 20, 20);
-							}
-						}
-					}
-					finally
-					{
-						trackTilesLock.unlock();
-					}
-				}
-			}
-			catch (Exception exc)
-			{
-				Logger.Error("MapView.PositionChanged()", "1", exc);
-			}
-		}
+		// if ((Global.AktuelleRoute != null) && Global.AktuelleRoute.ShowRoute)
+		// {
+		// try
+		// {
+		// // Map Tiles aktualisieren, wenn der AktiveTrack erweitert
+		// // wurde!
+		// if ((Global.AktuelleRoute.Points.size() > Global.aktuelleRouteCount) && (Global.AktuelleRoute.Points.size() > 1))
+		// {
+		// // Liste aller neuen Punkte erstellen incl. dem letzten.
+		// ArrayList<PointD> punkte = new ArrayList<PointD>();
+		// for (int i = Global.aktuelleRouteCount - 1; i < Global.AktuelleRoute.Points.size(); i++)
+		// {
+		// if (i < 0) continue;
+		// punkte.add(Global.AktuelleRoute.Points.get(i));
+		// }
+		// Global.aktuelleRouteCount = Global.AktuelleRoute.Points.size();
+		//
+		// Paint paint = Global.AktuelleRoute.paint;
+		// trackTilesLock.lock();
+		// try
+		// {
+		// for (long hash : trackTiles.keySet())
+		// {
+		// Tile tile = trackTiles.get(hash);
+		// if (tile.Image == null) continue;
+		// Canvas canvas = new Canvas(tile.Image);
+		//
+		// double tileX = tile.Descriptor.X * 256;
+		// double tileY = tile.Descriptor.Y * 256;
+		//
+		// double adjustmentX = Math.pow(2, tile.Descriptor.Zoom - RouteOverlay.projectionZoomLevel) * 256;
+		// double adjustmentY = Math.pow(2, tile.Descriptor.Zoom - RouteOverlay.projectionZoomLevel) * 256;
+		//
+		// for (int j = 0; j < (punkte.size() - 1); j++)
+		// {
+		// canvas.drawLine((int) (punkte.get(j).X * adjustmentX - tileX),
+		// (int) (punkte.get(j).Y * adjustmentY - tileY), (int) (punkte.get(j + 1).X * adjustmentX - tileX),
+		// (int) (punkte.get(j + 1).Y * adjustmentY - tileY), paint);
+		// }
+		// if (punkte.size() > 0)
+		// {
+		// double x = (punkte.get(punkte.size() - 1).X * adjustmentX - tileX);
+		// double y = (punkte.get(punkte.size() - 1).Y * adjustmentY - tileY);
+		// // graphics.DrawString(x.ToString() + " - " +
+		// // y.ToString(), fontSmall, new
+		// // SolidBrush(Color.Black), 20, 20);
+		// }
+		// }
+		// }
+		// finally
+		// {
+		// trackTilesLock.unlock();
+		// }
+		// }
+		// }
+		// catch (Exception exc)
+		// {
+		// Logger.Error("MapView.PositionChanged()", "1", exc);
+		// }
+		// }
 
 		if (Config.settings.MoveMapCenterWithSpeed.getValue() && alignToCompass && (lockPosition >= 1))
 		{

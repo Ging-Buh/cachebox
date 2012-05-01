@@ -4,6 +4,7 @@ import CB_Core.Enums.SmoothScrollingTyp;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.platformConector;
 import CB_Core.Log.Logger;
+import CB_Core.Map.RouteOverlay;
 import CB_Core.TranslationEngine.LangStrings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
@@ -26,6 +27,10 @@ public class GlobalCore
 	public static Plattform platform = Plattform.undef;
 
 	public static CB_Core.Types.Locator Locator = null;
+
+	public static RouteOverlay.Trackable AktuelleRoute = null;
+	public static int aktuelleRouteCount = 0;
+	public static long TrackDistance;
 
 	/**
 	 * Wird im Splash gesetzt und ist True, wenn es sich um ein Tablet handelt!

@@ -23,6 +23,7 @@ import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Plattform;
+import CB_Core.TrackRecorder;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
@@ -2308,7 +2309,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				mapView.Initialize();
 				mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.settings.CurrentMapLayer.getValue(),
 						Config.settings.CurrentMapLayer.getValue(), "");
-				Global.TrackDistance = Config.settings.TrackDistance.getValue();
+				GlobalCore.TrackDistance = Config.settings.TrackDistance.getValue();
 				mapView.InitializeMap();
 			}
 		}

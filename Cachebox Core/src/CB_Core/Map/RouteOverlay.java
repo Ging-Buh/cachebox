@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Views.MapView;
@@ -23,6 +24,13 @@ import com.badlogic.gdx.math.Vector2;
 
 public class RouteOverlay
 {
+	public static ArrayList<Trackable> Routes = new ArrayList<Trackable>();
+	public static boolean mRoutesChanged = false;
+
+	public static void RoutesChanged()
+	{
+		mRoutesChanged = true;
+	}
 
 	public static class Trackable
 	{
@@ -40,9 +48,18 @@ public class RouteOverlay
 			mColor = color;
 		}
 
-	}
+		public Color getColor()
+		{
+			return mColor;
+		}
 
-	public static ArrayList<Trackable> Routes = new ArrayList<Trackable>();
+		public void setColor(Color color)
+		{
+			mColor = color;
+			RoutesChanged();
+		}
+
+	}
 
 	// Read track from gpx file
 	// attention it is possible that a gpx file contains more than 1 <trk> segments
@@ -206,35 +223,29 @@ public class RouteOverlay
 	public static void RenderRoute(SpriteBatch batch, int Zoom) // , Descriptor desc, float dpiScaleFactorX, float dpiScaleFactorY)
 	{
 
-		if (aktCalcedZoomLevel != Zoom)
-		{// Zoom changed => calculate new Sprites Points
+		if (aktCalcedZoomLevel != Zoom || mRoutesChanged)
+		{// Zoom or Routes changed => calculate new Sprites Points
 
 			Logger.LogCat("Zoom Changed => Calc Track Points");
 
+			mRoutesChanged = false;
 			aktCalcedZoomLevel = Zoom;
 			DrawRoutes = new ArrayList<RouteOverlay.Route>();
+			double tolerance = 0.01 * Math.exp(-1 * (Zoom - 11));
+			Tolleranz = tolerance;
 
 			for (int i = 0; i < Routes.size(); i++)
 			{
 
 				if (Routes.get(i) != null && Routes.get(i).ShowRoute)
 				{
-
-					double tolerance = 0.01 * Math.exp(-1 * (Zoom - 11));
-
-					Tolleranz = tolerance;
-
-					ArrayList<PointD> reducedPoints = PolylineReduction.DouglasPeuckerReduction(Routes.get(i).Points, tolerance);
-
-					AllTrackPoints = Routes.get(i).Points.size();
-					ReduceTrackPoints = reducedPoints.size();
-
-					Route tmp = (new RouteOverlay()).new Route(Routes.get(i).mColor);
-					tmp.Points = reducedPoints;
-
-					DrawRoutes.add(tmp);
-
+					addToDrawRoutes(tolerance, Routes.get(i));
 				}
+			}
+
+			if (GlobalCore.AktuelleRoute != null)
+			{
+				addToDrawRoutes(tolerance, GlobalCore.AktuelleRoute);
 			}
 
 		}
@@ -287,5 +298,18 @@ public class RouteOverlay
 
 			}
 		}
+	}
+
+	private static void addToDrawRoutes(double tolerance, Trackable track)
+	{
+		ArrayList<PointD> reducedPoints = PolylineReduction.DouglasPeuckerReduction(track.Points, tolerance);
+
+		AllTrackPoints = track.Points.size();
+		ReduceTrackPoints = reducedPoints.size();
+
+		Route tmp = (new RouteOverlay()).new Route(track.mColor);
+		tmp.Points = reducedPoints;
+
+		DrawRoutes.add(tmp);
 	}
 }

@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Views;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.SortedMap;
@@ -13,12 +12,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.security.auth.DestroyFailedException;
 
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Events.PositionChangedEvent;
 import CB_Core.Events.SelectedCacheEvent;
-import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -325,47 +322,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		CB_Core.Events.SelectedCacheEventList.Add(this);
 		CB_Core.Events.PositionChangedEventList.Add(this);
 
-		RouteOverlay.Routes.clear();
-
-		String trackPath = Config.settings.TrackFolder.getValue() + "/Autoload";
-		if (FileIO.DirectoryExists(trackPath))
-		{
-			File dir = new File(trackPath);
-			String[] files = dir.list();
-			if (!(files == null))
-			{
-				if (files.length > 0)
-				{
-					for (String file : files)
-					{
-						LoadTrack(trackPath, file);
-
-					}
-				}
-			}
-
-			files = platformConector.getTrackList();
-
-			if (!(files == null))
-			{
-
-				RouteOverlay.Routes.clear();
-
-				if (files.length > 0)
-				{
-					for (String file : files)
-					{
-						LoadTrack(file);
-
-					}
-				}
-			}
-		}
-		else
-		{
-			File sddir = new File(trackPath);
-			sddir.mkdirs();
-		}
 	}
 
 	@Override
@@ -2279,6 +2235,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			absolutPath = trackPath + "/" + file;
 		}
 		RouteOverlay.Routes.add(RouteOverlay.LoadRoute(absolutPath, TrackColor, Config.settings.TrackDistance.getValue()));
+		RouteOverlay.RoutesChanged();
 	}
 
 	public int getAktZoom()

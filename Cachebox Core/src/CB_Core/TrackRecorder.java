@@ -1,4 +1,4 @@
-package de.cachebox_test;
+package CB_Core;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -7,16 +7,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import CB_Core.Config;
-import CB_Core.FileIO;
-import CB_Core.GlobalCore;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
+import CB_Core.Map.RouteOverlay;
 import CB_Core.Types.Coordinate;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.location.Location;
-import de.cachebox_test.Map.RouteOverlay;
+
+import com.badlogic.gdx.graphics.Color;
 
 public class TrackRecorder
 {
@@ -34,15 +30,12 @@ public class TrackRecorder
 
 	public static void StartRecording()
 	{
-		Paint paint = new Paint();
-		paint.setColor(Color.BLUE);
-		paint.setStrokeWidth(4);
 
-		Global.AktuelleRoute = new RouteOverlay.Trackable(paint, "actual Track");
-		Global.AktuelleRoute.ShowRoute = true;
-		Global.AktuelleRoute.IsActualTrack = true;
-		Global.aktuelleRouteCount = 0;
-		RouteOverlay.Routes.add(Global.AktuelleRoute);
+		GlobalCore.AktuelleRoute = new RouteOverlay.Trackable("actual Track", Color.BLUE);
+		GlobalCore.AktuelleRoute.ShowRoute = true;
+		GlobalCore.AktuelleRoute.IsActualTrack = true;
+		GlobalCore.aktuelleRouteCount = 0;
+		RouteOverlay.Routes.add(GlobalCore.AktuelleRoute);
 
 		String directory = Config.settings.TrackFolder.getValue();
 		if (!FileIO.DirectoryExists(directory)) return;
@@ -111,14 +104,15 @@ public class TrackRecorder
 		// wurden seit dem letzten aufgenommenen Wegpunkt mehr als x Meter
 		// zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
 		float[] dist = new float[4];
-		Location.distanceBetween(LastRecordedPosition.Latitude, LastRecordedPosition.Longitude, GlobalCore.LastValidPosition.Latitude,
+
+		Coordinate.distanceBetween(LastRecordedPosition.Latitude, LastRecordedPosition.Longitude, GlobalCore.LastValidPosition.Latitude,
 				GlobalCore.LastValidPosition.Longitude, dist);
 		float cachedDistance = dist[0];
 
 		// if ((float)Datum.WGS84.Distance(LastRecordedPosition.Latitude,
 		// LastRecordedPosition.Longitude, Global.LastValidPosition.Latitude,
 		// Global.LastValidPosition.Longitude) > Global.TrackDistance)
-		if (cachedDistance > Global.TrackDistance)
+		if (cachedDistance > GlobalCore.TrackDistance)
 		{
 			try
 			{
@@ -144,7 +138,8 @@ public class TrackRecorder
 
 			NewPoint = new PointD(Descriptor.LongitudeToTileX(15, GlobalCore.LastValidPosition.Longitude), Descriptor.LatitudeToTileY(15,
 					GlobalCore.LastValidPosition.Latitude));
-			Global.AktuelleRoute.Points.add(NewPoint);
+			GlobalCore.AktuelleRoute.Points.add(NewPoint);
+			RouteOverlay.RoutesChanged();
 			LastRecordedPosition = new Coordinate(GlobalCore.LastValidPosition);
 		}
 	}
@@ -183,8 +178,8 @@ public class TrackRecorder
 		}
 		writer = null;
 
-		Global.AktuelleRoute.IsActualTrack = false;
-		Global.AktuelleRoute.Name = "recorded Track";
+		GlobalCore.AktuelleRoute.IsActualTrack = false;
+		GlobalCore.AktuelleRoute.Name = "recorded Track";
 		pauseRecording = false;
 		recording = false;
 		// updateRecorderButtonAccessibility();

@@ -30,11 +30,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.Custom_Controls.QuickButtonList.QuickButtonItem;
-import de.cachebox_test.Map.RouteOverlay;
 
 public class Global
 {
-	public static final int CurrentRevision = 842;
+	public static final int CurrentRevision = 844;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 	public static final int LatestDatabaseChange = 1016;
@@ -76,11 +75,6 @@ public class Global
 	public static IPlugIn iPlugin[] = new IPlugIn[10];
 
 	// for MapView
-
-	public static RouteOverlay.Trackable AktuelleRoute = null;
-	public static int aktuelleRouteCount = 0;
-
-	public static long TrackDistance;
 
 	/**
 	 * Nacht Color Matrix
@@ -820,6 +814,26 @@ public class Global
 			Logger.Error("Global.TranslateMenuItem()", "", e);
 		}
 		return mi;
+	}
+
+	public static int TranslateColorToInt(com.badlogic.gdx.graphics.Color color)
+	{
+		int a = (int) (255 * color.a);
+		int r = (int) (255 * color.r);
+		int g = (int) (255 * color.g);
+		int b = (int) (255 * color.b);
+
+		return Color.argb(a, r, g, b);
+	}
+
+	public static com.badlogic.gdx.graphics.Color TranslateToLibGdxColor(int color)
+	{
+		float a = (Color.alpha(color) / 255);
+		float r = (Color.red(color) / 255);
+		float g = (Color.green(color) / 255);
+		float b = (Color.blue(color) / 255);
+
+		return new com.badlogic.gdx.graphics.Color(r, g, b, a);
 	}
 
 }

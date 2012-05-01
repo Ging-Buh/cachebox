@@ -1,5 +1,9 @@
 package CB_Core.GL_UI.Main;
 
+import java.io.File;
+
+import CB_Core.Config;
+import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
@@ -40,9 +44,12 @@ import CB_Core.GL_UI.Views.TrackListView;
 import CB_Core.GL_UI.Views.TrackableListView;
 import CB_Core.GL_UI.Views.WaypointView;
 import CB_Core.GL_UI.Views.TestViews.TestView;
+import CB_Core.Map.RouteOverlay;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.UiSizes;
+
+import com.badlogic.gdx.graphics.Color;
 
 public class TabMainView extends MainViewBase
 {
@@ -166,6 +173,8 @@ public class TabMainView extends MainViewBase
 		// add Slider as last
 		Slider slider = new Slider(this, "Slider");
 		this.addChild(slider);
+
+		autoLoadTrack();
 	}
 
 	private void addPhoneTab()
@@ -412,4 +421,62 @@ public class TabMainView extends MainViewBase
 		btn3.performClick();// actionShowMap.Execute();
 	}
 
+	private void autoLoadTrack()
+	{
+		RouteOverlay.Routes.clear();
+
+		String trackPath = Config.settings.TrackFolder.getValue() + "/Autoload";
+		if (FileIO.DirectoryExists(trackPath))
+		{
+			File dir = new File(trackPath);
+			String[] files = dir.list();
+			if (!(files == null))
+			{
+				if (files.length > 0)
+				{
+					for (String file : files)
+					{
+						LoadTrack(trackPath, file);
+
+					}
+				}
+			}
+		}
+		else
+		{
+			File sddir = new File(trackPath);
+			sddir.mkdirs();
+		}
+	}
+
+	public void LoadTrack(String trackPath)
+	{
+		LoadTrack(trackPath, "");
+	}
+
+	public void LoadTrack(String trackPath, String file)
+	{
+		Color[] ColorField = new Color[8];
+		ColorField[0] = Color.RED;
+		ColorField[1] = Color.YELLOW;
+		ColorField[2] = Color.BLACK;
+		ColorField[3] = Color.LIGHT_GRAY;
+		ColorField[4] = Color.GREEN;
+		ColorField[5] = Color.BLUE;
+		ColorField[6] = Color.CYAN;
+		ColorField[7] = Color.GRAY;
+		Color TrackColor;
+		TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
+
+		String absolutPath = "";
+		if (file.equals(""))
+		{
+			absolutPath = trackPath;
+		}
+		else
+		{
+			absolutPath = trackPath + "/" + file;
+		}
+		RouteOverlay.Routes.add(RouteOverlay.LoadRoute(absolutPath, TrackColor, Config.settings.TrackDistance.getValue()));
+	}
 }

@@ -9,15 +9,16 @@ import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
+import CB_Core.Map.RouteOverlay;
+import CB_Core.Map.RouteOverlay.Trackable;
 import CB_Core.Types.Coordinate;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,8 +35,6 @@ import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
-import de.cachebox_test.Map.RouteOverlay;
-import de.cachebox_test.Map.RouteOverlay.Trackable;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
 import de.cachebox_test.Views.Forms.EditCoordinate;
@@ -58,8 +57,9 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 	protected static float lastTouchX;
 	protected static float lastTouchY;
 	TrackListViewItem selectedItem;
-	int[] ColorField = new int[]
-		{ Color.RED, Color.YELLOW, Color.BLACK, Color.GREEN, Color.GRAY };
+	com.badlogic.gdx.graphics.Color[] ColorField = new com.badlogic.gdx.graphics.Color[]
+		{ com.badlogic.gdx.graphics.Color.RED, com.badlogic.gdx.graphics.Color.YELLOW, com.badlogic.gdx.graphics.Color.BLACK,
+				com.badlogic.gdx.graphics.Color.GREEN, com.badlogic.gdx.graphics.Color.GRAY };
 	final int projectionZoomLevel = 15;
 
 	// Schrit-ablauf Member
@@ -433,7 +433,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 					String filePath = fileUri.getPath();
 					if (filePath != null)
 					{
-						((main) main.mainActivity).mapView.LoadTrack(filePath);
+						if (TabMainView.mapView != null) TabMainView.mapView.LoadTrack(filePath);
 					}
 				}
 			}
@@ -459,11 +459,8 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 					Lon2 = coord.Longitude;
 					Lat2 = coord.Latitude;
 
-					int TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
-					Paint paint = new Paint();
-					paint.setColor(TrackColor);
-					paint.setStrokeWidth(3);
-					RouteOverlay.Routes.add(GenP2PRoute(Lat1, Lon1, Lat2, Lon2, paint));
+					com.badlogic.gdx.graphics.Color TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
+					RouteOverlay.Routes.add(GenP2PRoute(Lat1, Lon1, Lat2, Lon2, TrackColor));
 					lvAdapter.notifyDataSetChanged();
 					resetStep();
 				}
@@ -488,11 +485,8 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 																		// 180°
 																		// drehen?
 
-					int TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
-					Paint paint = new Paint();
-					paint.setColor(TrackColor);
-					paint.setStrokeWidth(3);
-					RouteOverlay.Routes.add(GenProjectRoute(Lat1, Lon1, distance, bearing, paint));
+					com.badlogic.gdx.graphics.Color TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
+					RouteOverlay.Routes.add(GenProjectRoute(Lat1, Lon1, distance, bearing, TrackColor));
 					lvAdapter.notifyDataSetChanged();
 					resetStep();
 
@@ -513,11 +507,8 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 
 					double distance = coord.Distance(FromCoord);
 
-					int TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
-					Paint paint = new Paint();
-					paint.setColor(TrackColor);
-					paint.setStrokeWidth(3);
-					RouteOverlay.Routes.add(GenCircleRoute(Lat1, Lon1, distance, paint));
+					com.badlogic.gdx.graphics.Color TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
+					RouteOverlay.Routes.add(GenCircleRoute(Lat1, Lon1, distance, TrackColor));
 					lvAdapter.notifyDataSetChanged();
 					resetStep();
 				}
@@ -550,9 +541,9 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 	 *            Das Paint, mit der die Route in die Karte gezeichnet wird.
 	 * @return Generierte Route
 	 */
-	public Trackable GenP2PRoute(double FromLat, double FromLon, double ToLat, double ToLon, Paint paint)
+	public Trackable GenP2PRoute(double FromLat, double FromLon, double ToLat, double ToLon, com.badlogic.gdx.graphics.Color color)
 	{
-		Trackable route = new Trackable(paint, null);
+		Trackable route = new Trackable(null, color);
 
 		route.Name = "Point 2 Point Route";
 
@@ -578,9 +569,9 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 	 *            Das Paint, mit der die Route in die Karte gezeichnet wird.
 	 * @return Generierte Route
 	 */
-	public Trackable GenCircleRoute(double FromLat, double FromLon, double Distance, Paint paint)
+	public Trackable GenCircleRoute(double FromLat, double FromLon, double Distance, com.badlogic.gdx.graphics.Color color)
 	{
-		Trackable route = new Trackable(paint, null);
+		Trackable route = new Trackable(null, color);
 
 		route.Name = "Circle Route";
 
@@ -616,9 +607,9 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 	 *            Das Paint, mit der die Route in die Karte gezeichnet wird.
 	 * @return Generierte Route
 	 */
-	public Trackable GenProjectRoute(double FromLat, double FromLon, double Distance, double Bearing, Paint paint)
+	public Trackable GenProjectRoute(double FromLat, double FromLon, double Distance, double Bearing, com.badlogic.gdx.graphics.Color color)
 	{
-		Trackable route = new Trackable(paint, null);
+		Trackable route = new Trackable(null, color);
 
 		route.Name = "Projected Route";
 
@@ -650,9 +641,9 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 	 * @param minDistanceMeters
 	 * @return geladene Route
 	 */
-	public Trackable LoadRoute(String file, Paint pen, double minDistanceMeters)
+	public Trackable LoadRoute(String file, com.badlogic.gdx.graphics.Color color, double minDistanceMeters)
 	{
-		Trackable route = new Trackable(pen, null);
+		Trackable route = new Trackable(null, color);
 		route.FileName = FileIO.GetFileName(file);
 
 		try

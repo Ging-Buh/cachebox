@@ -1,5 +1,6 @@
 package de.cachebox_test.Views;
 
+import CB_Core.Map.RouteOverlay.Trackable;
 import CB_Core.Math.CB_Rect;
 import CB_Core.Math.UiSizes;
 import android.content.Context;
@@ -14,7 +15,6 @@ import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Custom_Controls.ColorDialog.AmbilWarnaDialog;
 import de.cachebox_test.Custom_Controls.ColorDialog.AmbilWarnaDialog.OnAmbilWarnaListener;
-import de.cachebox_test.Map.RouteOverlay.Trackable;
 import de.cachebox_test.Ui.ActivityUtils;
 
 /**
@@ -45,11 +45,14 @@ public class TrackListViewItem extends View
 	private static CB_Rect rBounds;
 	private static CB_Rect rChkBounds;
 
+	private static TrackListViewItem that;
+
 	public TrackListViewItem(Context context, Trackable route, Boolean BackColorId)
 	{
 		super(context);
 		this.route = route;
 		BackColorChanger = BackColorId;
+		that = this;
 	}
 
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
@@ -123,7 +126,11 @@ public class TrackListViewItem extends View
 		}
 
 		// Draw Color of Route
-		int RouteColor = route.paint.getColor();
+
+		com.badlogic.gdx.graphics.Color routeColor = route.getColor();
+
+		int RouteColor = Global.TranslateColorToInt(routeColor);
+
 		if (lBounds == null || lColorBounds == null)
 		{
 			lBounds = new CB_Rect(7, 7, height - 7, height - 7);
@@ -197,20 +204,22 @@ public class TrackListViewItem extends View
 		// rectangle on the left of the arrow.
 		// for example, 0xff000000 is black, 0xff0000ff is blue. Please be aware
 		// of the initial 0xff which is the alpha.
-		AmbilWarnaDialog dialog = new AmbilWarnaDialog(main.mainActivity, route.paint.getColor(), new OnAmbilWarnaListener()
-		{
-			@Override
-			public void onOk(AmbilWarnaDialog dialog, int color)
-			{
-				route.paint.setColor(color);
-			}
+		AmbilWarnaDialog dialog = new AmbilWarnaDialog(main.mainActivity, Global.TranslateColorToInt(route.getColor()),
+				new OnAmbilWarnaListener()
+				{
+					@Override
+					public void onOk(AmbilWarnaDialog dialog, int color)
+					{
+						route.setColor(Global.TranslateToLibGdxColor(color));
+						that.invalidate();
+					}
 
-			@Override
-			public void onCancel(AmbilWarnaDialog dialog)
-			{
-				// cancel was selected by the user
-			}
-		});
+					@Override
+					public void onCancel(AmbilWarnaDialog dialog)
+					{
+						// cancel was selected by the user
+					}
+				});
 
 		dialog.show();
 

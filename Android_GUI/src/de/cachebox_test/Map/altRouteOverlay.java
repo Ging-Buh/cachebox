@@ -15,7 +15,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 
-public class RouteOverlay
+public class altRouteOverlay
 {
 
 	public final static int projectionZoomLevel = 15;
