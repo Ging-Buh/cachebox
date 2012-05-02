@@ -30,11 +30,21 @@ public class TestView extends CB_View_Base
 	private MultiToggleButton togBtn;
 	private MapInfoPanel info;
 
+	private CB_Core.GL_UI.libGdx_Controls.Button button;
+	private CB_Core.GL_UI.libGdx_Controls.TextField textField;
+
 	public TestView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 
-		// /
+		CB_RectF r = new CB_RectF(100, 500, 100, 100);
+		button = new CB_Core.GL_UI.libGdx_Controls.Button(r, "TestButton", SpriteCache.Misc);
+		this.addChild(button);
+
+		// CB_RectF r2 = new CB_RectF(300, 400, 150, 200);
+		// textField = new TextField(r2, "TestTextField");
+		// this.addChild(textField);
+
 		requestLayout();
 	}
 
