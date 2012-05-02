@@ -9,7 +9,6 @@ import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.CacheInfo;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
@@ -221,26 +220,26 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 		return false;
 	}
 
-	private void xxxxsetBackground()
-	{
-
-		Boolean BackGroundChanger = ((this.getIndex() % 2) == 1);
-
-		if (isSelected)
-		{
-			this.setBackground(new NinePatch(SpriteCache.getThemedSprite("listrec_selected"), 8, 8, 8, 8));
-		}
-		else if (BackGroundChanger)
-		{
-			this.setBackground(new NinePatch(SpriteCache.getThemedSprite("listrec_first"), 8, 8, 8, 8));
-		}
-		else
-		{
-			this.setBackground(new NinePatch(SpriteCache.getThemedSprite("listrec_secend"), 8, 8, 8, 8));
-		}
-
-		GL_Listener.glListener.renderOnce(this);
-	}
+	// private void xxxxsetBackground()
+	// {
+	//
+	// Boolean BackGroundChanger = ((this.getIndex() % 2) == 1);
+	//
+	// if (isSelected)
+	// {
+	// this.setBackground(new NinePatch(SpriteCache.getThemedSprite("listrec_selected"), 8, 8, 8, 8));
+	// }
+	// else if (BackGroundChanger)
+	// {
+	// this.setBackground(new NinePatch(SpriteCache.getThemedSprite("listrec_first"), 8, 8, 8, 8));
+	// }
+	// else
+	// {
+	// this.setBackground(new NinePatch(SpriteCache.getThemedSprite("listrec_secend"), 8, 8, 8, 8));
+	// }
+	//
+	// GL_Listener.glListener.renderOnce(this.getName()+" ");
+	// }
 
 	@Override
 	public void PositionChanged(Locator locator)

@@ -13,7 +13,7 @@ import CB_Core.Math.CB_RectF;
 public class SolverView extends CB_View_Base
 {
 
-	public SolverView(CB_RectF rec, CharSequence Name)
+	public SolverView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 

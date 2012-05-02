@@ -22,7 +22,7 @@ public class MainButtonBar extends CB_View_Base
 
 	ArrayList<MainButton> mButtons;
 
-	public MainButtonBar(CB_RectF rec, CharSequence Name)
+	public MainButtonBar(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 

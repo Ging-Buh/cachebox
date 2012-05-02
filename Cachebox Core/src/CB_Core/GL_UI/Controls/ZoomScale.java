@@ -45,7 +45,7 @@ public class ZoomScale extends CB_View_Base
 
 	private ZoomScale THIS;
 
-	public ZoomScale(CB_RectF rec, CharSequence Name, int minzoom, int maxzoom, int zoom)
+	public ZoomScale(CB_RectF rec, String Name, int minzoom, int maxzoom, int zoom)
 	{
 		super(rec, Name);
 		this.minzoom = minzoom;

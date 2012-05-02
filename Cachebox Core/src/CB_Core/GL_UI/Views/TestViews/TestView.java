@@ -84,7 +84,7 @@ public class TestView extends CB_View_Base
 	private void requestLayout()
 	{
 
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + " requestLayout");
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import CB_Core.Math.CB_RectF;
 public class Test_H_ListView extends H_ListView
 {
 
-	public Test_H_ListView(CB_RectF rec, CharSequence Name)
+	public Test_H_ListView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 

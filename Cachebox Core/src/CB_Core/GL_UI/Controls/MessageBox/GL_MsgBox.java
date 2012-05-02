@@ -62,7 +62,7 @@ public class GL_MsgBox extends Dialog
 		return false;
 	}
 
-	public GL_MsgBox(CB_RectF rec, CharSequence Name)
+	public GL_MsgBox(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 		mFooterHeight = 80;

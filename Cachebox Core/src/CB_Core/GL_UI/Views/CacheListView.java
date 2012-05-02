@@ -24,7 +24,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 {
 	private CustomAdapter lvAdapter;
 
-	public CacheListView(CB_RectF rec, CharSequence Name)
+	public CacheListView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 
@@ -37,6 +37,8 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 	{
 		Logger.LogCat("CacheListView => Initial()");
 		this.scrollToItem(0);
+		chkSlideBack();
+		GL_Listener.glListener.renderOnce(this.getName() + " Initial()");
 	}
 
 	@Override
@@ -70,7 +72,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 			this.setSelection(0);
 
 		this.invalidate();
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + " onShow()");
 	}
 
 	/**
@@ -106,7 +108,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 		}
 
 		chkSlideBack();
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + " setSelectedCachVisible");
 	}
 
 	@Override

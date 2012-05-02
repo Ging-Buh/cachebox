@@ -18,7 +18,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class InfoBubble extends CB_View_Base
 {
 
-	public InfoBubble(SizeF Size, CharSequence Name)
+	public InfoBubble(SizeF Size, String Name)
 	{
 		super(Size, Name);
 		Logger.LogCat("Create InfoBubble");

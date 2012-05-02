@@ -13,7 +13,7 @@ import CB_Core.Math.CB_RectF;
 public class JokerView extends CB_View_Base
 {
 
-	public JokerView(CB_RectF rec, CharSequence Name)
+	public JokerView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 

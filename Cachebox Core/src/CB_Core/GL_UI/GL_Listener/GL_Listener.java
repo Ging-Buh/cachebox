@@ -202,7 +202,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	}
 
-	public static void startTimer(long delay, String Name)
+	public static void startTimer(long delay, final String Name)
 	{
 		if (timerValue == delay) return;
 		stopTimer();
@@ -220,7 +220,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 			private void TimerMethod()
 			{
-				if (listenerInterface != null) listenerInterface.RequestRender(null);
+				if (listenerInterface != null) listenerInterface.RequestRender("Timer" + Name);
 
 			}
 
@@ -384,9 +384,15 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	 * @param view
 	 *            Aufrufendes GL_View_Base für Debug zwecke. Kann auch null sein.
 	 */
-	public void renderOnce(GL_View_Base view)
+	public void renderOnce(String requestName)
 	{
-		if (listenerInterface != null) listenerInterface.RequestRender(view);
+
+		if (requestName == null)
+		{
+			return;
+		}
+
+		if (listenerInterface != null) listenerInterface.RequestRender(requestName);
 	}
 
 	private void calcNewRenderSpeed()
@@ -807,7 +813,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		mDarknesSprite = null;// Create new Pixmap on next call
 		removeRenderView(mDialog);
 
-		renderOnce(mDialog);
+		renderOnce("Close Dialog");
 	}
 
 	private boolean ToastIsShown = false;

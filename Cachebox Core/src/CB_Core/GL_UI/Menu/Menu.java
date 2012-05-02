@@ -39,7 +39,7 @@ public class Menu extends Dialog
 		}
 	};
 
-	public Menu(CharSequence Name)
+	public Menu(String Name)
 	{
 		super(MENU_REC, Name);
 		Me = this;

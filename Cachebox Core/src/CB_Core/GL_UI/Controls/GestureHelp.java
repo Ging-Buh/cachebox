@@ -16,7 +16,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class GestureHelp extends CB_View_Base
 {
 
-	public GestureHelp(SizeF Size, CharSequence Name)
+	public GestureHelp(SizeF Size, String Name)
 	{
 		super(Size, Name);
 

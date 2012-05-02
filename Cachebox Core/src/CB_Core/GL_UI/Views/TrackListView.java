@@ -13,7 +13,7 @@ import CB_Core.Math.CB_RectF;
 public class TrackListView extends CB_View_Base
 {
 
-	public TrackListView(CB_RectF rec, CharSequence Name)
+	public TrackListView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 

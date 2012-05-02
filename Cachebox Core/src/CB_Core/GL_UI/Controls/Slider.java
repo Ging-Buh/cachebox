@@ -20,7 +20,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 	private float PosY = 0;
 
-	public Slider(CB_RectF rec, CharSequence Name)
+	public Slider(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 		SelectedCacheEventList.Add(this);

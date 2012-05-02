@@ -14,7 +14,7 @@ public abstract class ListViewItemBase extends CB_View_Base
 	 *            Index in der List
 	 * @param Name
 	 */
-	public ListViewItemBase(CB_RectF rec, int Index, CharSequence Name)
+	public ListViewItemBase(CB_RectF rec, int Index, String Name)
 	{
 		super(rec, Name);
 		mIndex = Index;

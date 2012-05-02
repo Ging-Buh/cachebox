@@ -10,13 +10,13 @@ import com.badlogic.gdx.math.Vector2;
 public class TestListView_Item extends ListViewItemBase
 {
 
-	public TestListView_Item(CB_RectF rec, int Index, CharSequence Name)
+	public TestListView_Item(CB_RectF rec, int Index, String Name)
 	{
 		super(rec, Index, Name);
 		// TODO Auto-generated constructor stub
 	}
 
-	public TestListView_Item(int Index, String string, Boolean backGroundChanger, CharSequence Name)
+	public TestListView_Item(int Index, String string, Boolean backGroundChanger, String Name)
 	{
 		super(new CB_RectF(0, 0, 100, 100), Index, Name);
 		this.string = string;

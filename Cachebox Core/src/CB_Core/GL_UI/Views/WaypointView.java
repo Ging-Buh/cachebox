@@ -13,7 +13,7 @@ import CB_Core.Math.CB_RectF;
 public class WaypointView extends CB_View_Base
 {
 
-	public WaypointView(CB_RectF rec, CharSequence Name)
+	public WaypointView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 

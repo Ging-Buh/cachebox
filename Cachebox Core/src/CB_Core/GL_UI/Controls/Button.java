@@ -105,7 +105,7 @@ public class Button extends CB_View_Base
 			else
 			{
 				Initial();
-				GL_Listener.glListener.renderOnce(this);
+				GL_Listener.glListener.renderOnce(this.getName() + " render");
 			}
 		}
 		else if (isPressed)
@@ -131,7 +131,7 @@ public class Button extends CB_View_Base
 		if (!isDisabled)
 		{
 			isPressed = true;
-			GL_Listener.glListener.renderOnce(this);
+			GL_Listener.glListener.renderOnce(this.getName() + " touchDown");
 		}
 		return true;
 	}
@@ -140,7 +140,7 @@ public class Button extends CB_View_Base
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 		isPressed = false;
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + " Dragged");
 		return false;
 	}
 
@@ -149,7 +149,7 @@ public class Button extends CB_View_Base
 	{
 
 		isPressed = false;
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + " touchUp");
 		return true;
 	}
 
@@ -197,7 +197,7 @@ public class Button extends CB_View_Base
 			}
 
 			lblTxt = null;
-			GL_Listener.glListener.renderOnce(this);
+			GL_Listener.glListener.renderOnce(this.getName() + " setText");
 			return;
 		}
 
@@ -219,7 +219,7 @@ public class Button extends CB_View_Base
 		}
 
 		lblTxt.setText(Text);
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + " setText2");
 	}
 
 	@Override

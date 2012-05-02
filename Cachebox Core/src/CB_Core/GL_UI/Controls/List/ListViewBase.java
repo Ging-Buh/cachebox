@@ -90,7 +90,7 @@ public abstract class ListViewBase extends CB_View_Base
 	protected int mLastTouch = 0;
 	protected float mLastPos_onTouch = 0;
 
-	public ListViewBase(CB_RectF rec, CharSequence Name)
+	public ListViewBase(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 		isClickable = true;
@@ -178,7 +178,7 @@ public abstract class ListViewBase extends CB_View_Base
 		mMustSetPosValue = value;
 		mMustSetPos = true;
 		mMustSetPosKinetic = Kinetic;
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + " setListPos");
 	}
 
 	protected abstract void RenderThreadSetPos(float value, boolean Kinetic);

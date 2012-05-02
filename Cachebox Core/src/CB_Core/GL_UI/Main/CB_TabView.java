@@ -36,7 +36,7 @@ public class CB_TabView extends CB_View_Base
 		this.addChild(buttonListView);
 	}
 
-	public CB_TabView(CB_RectF rec, CharSequence Name)
+	public CB_TabView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 		mContentRec = rec.copy();
@@ -112,7 +112,7 @@ public class CB_TabView extends CB_View_Base
 
 		aktView.setVisibility(VISIBLE);
 		aktView.onShow();
-		GL_Listener.glListener.renderOnce(aktView);
+		GL_Listener.glListener.renderOnce(aktView.getName() + " TabView=>ShowView()");
 
 	}
 

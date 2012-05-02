@@ -11,7 +11,7 @@ import CB_Core.Math.CB_RectF;
 public class V_ListView extends ListViewBase
 {
 
-	public V_ListView(CB_RectF rec, CharSequence Name)
+	public V_ListView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 	}
@@ -157,7 +157,7 @@ public class V_ListView extends ListViewBase
 			}
 
 			// RenderRequest
-			GL_Listener.glListener.renderOnce(this);
+			GL_Listener.glListener.renderOnce(this.getName() + " addVisibleItems");
 		}
 	}
 

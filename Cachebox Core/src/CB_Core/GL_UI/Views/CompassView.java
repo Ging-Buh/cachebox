@@ -13,7 +13,7 @@ import CB_Core.Math.CB_RectF;
 public class CompassView extends CB_View_Base
 {
 
-	public CompassView(CB_RectF rec, CharSequence Name)
+	public CompassView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 

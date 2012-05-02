@@ -11,7 +11,7 @@ import CB_Core.Math.CB_RectF;
 public class NotesView extends CB_View_Base
 {
 
-	public NotesView(CB_RectF rec, CharSequence Name)
+	public NotesView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 

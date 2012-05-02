@@ -13,7 +13,7 @@ import CB_Core.Math.CB_RectF;
 public class LogView extends CB_View_Base
 {
 
-	public LogView(CB_RectF rec, CharSequence Name)
+	public LogView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 

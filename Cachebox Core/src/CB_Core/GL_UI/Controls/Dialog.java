@@ -37,7 +37,7 @@ public abstract class Dialog extends CB_View_Base
 	protected float mHeaderHight = 20;
 	protected float mFooterHeight = 20;
 
-	public Dialog(CB_RectF rec, CharSequence Name)
+	public Dialog(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 

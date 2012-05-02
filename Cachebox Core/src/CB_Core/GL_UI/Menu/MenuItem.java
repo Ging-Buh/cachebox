@@ -32,7 +32,7 @@ public class MenuItem extends ListViewItemBase
 
 	protected boolean isPressed = false;
 
-	public MenuItem(SizeF size, int Index, int ID, CharSequence Name)
+	public MenuItem(SizeF size, int Index, int ID, String Name)
 	{
 		super(new CB_RectF(size), Index, Name);
 		mID = ID;
@@ -136,7 +136,7 @@ public class MenuItem extends ListViewItemBase
 	 * 
 	 * @return The title.
 	 */
-	public CharSequence getTitle()
+	public String getTitle()
 	{
 		return mTitle;
 	}
@@ -174,7 +174,7 @@ public class MenuItem extends ListViewItemBase
 			this.setBackground(new NinePatch(SpriteCache.getThemedSprite("listrec_secend"), 20, 20, 20, 20));
 		}
 
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + " SetBackGround");
 	}
 
 	@Override

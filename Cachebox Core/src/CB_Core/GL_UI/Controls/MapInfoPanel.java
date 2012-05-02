@@ -33,7 +33,7 @@ public class MapInfoPanel extends CB_View_Base
 				aktCoord = Coord;
 				lblLatitude.setText(GlobalCore.FormatLatitudeDM(Coord.Latitude));
 				lblLongitude.setText(GlobalCore.FormatLongitudeDM(Coord.Longitude));
-				GL_Listener.glListener.renderOnce(this);
+				GL_Listener.glListener.renderOnce(this.getName() + " setCoord");
 			}
 
 		}
@@ -57,7 +57,7 @@ public class MapInfoPanel extends CB_View_Base
 		if (distance == -1) lblDistance.setText("?");
 		else
 			lblDistance.setText(UnitFormatter.DistanceString(distance));
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + " setDistance");
 	}
 
 	private float aktBearing = 0;
@@ -69,11 +69,11 @@ public class MapInfoPanel extends CB_View_Base
 		if (arrow != null)
 		{
 			arrow.setRotate(-Bearing);
-			GL_Listener.glListener.renderOnce(this);
+			GL_Listener.glListener.renderOnce(this.getName() + " setBearing");
 		}
 	}
 
-	public MapInfoPanel(CB_RectF rec, CharSequence Name)
+	public MapInfoPanel(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 	}

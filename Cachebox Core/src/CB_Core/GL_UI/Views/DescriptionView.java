@@ -13,7 +13,7 @@ import CB_Core.Math.CB_RectF;
 public class DescriptionView extends CB_View_Base
 {
 
-	public DescriptionView(CB_RectF rec, CharSequence Name)
+	public DescriptionView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 

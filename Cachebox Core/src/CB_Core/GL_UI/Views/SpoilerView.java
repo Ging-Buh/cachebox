@@ -13,7 +13,7 @@ import CB_Core.Math.CB_RectF;
 public class SpoilerView extends CB_View_Base
 {
 
-	public SpoilerView(CB_RectF rec, CharSequence Name)
+	public SpoilerView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 

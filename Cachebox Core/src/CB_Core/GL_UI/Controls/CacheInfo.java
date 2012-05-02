@@ -88,7 +88,7 @@ public class CacheInfo extends CB_View_Base
 
 	private boolean cacheIsInitial = false;
 
-	public CacheInfo(SizeF size, CharSequence Name, Cache value)
+	public CacheInfo(SizeF size, String Name, Cache value)
 	{
 		super(size, Name);
 		mCache = value;
@@ -236,7 +236,7 @@ public class CacheInfo extends CB_View_Base
 
 		{// Text zusammensetzen
 
-			CharSequence br = String.format("%n");
+			String br = String.format("%n");
 			StringBuilder text = new StringBuilder();
 			if (ifModeFlag(SHOW_NAME)) text.append(mCache.Name + br);
 			if (ifModeFlag(SHOW_OWNER)) text.append("by " + mCache.Owner + ", " + postFormater.format(mCache.DateHidden) + br);

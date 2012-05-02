@@ -24,27 +24,27 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	 * @param Width
 	 * @param Height
 	 */
-	public CB_View_Base(float X, float Y, float Width, float Height, CharSequence Name)
+	public CB_View_Base(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height, Name);
 	}
 
-	public CB_View_Base(float X, float Y, float Width, float Height, GL_View_Base Parent, CharSequence Name)
+	public CB_View_Base(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name)
 	{
 		super(X, Y, Width, Height, Parent, Name);
 	}
 
-	public CB_View_Base(CB_RectF rec, CharSequence Name)
+	public CB_View_Base(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 	}
 
-	public CB_View_Base(CB_RectF rec, GL_View_Base Parent, CharSequence Name)
+	public CB_View_Base(CB_RectF rec, GL_View_Base Parent, String Name)
 	{
 		super(rec, Parent, Name);
 	}
 
-	public CB_View_Base(SizeF size, CharSequence Name)
+	public CB_View_Base(SizeF size, String Name)
 	{
 		super(size, Name);
 	}

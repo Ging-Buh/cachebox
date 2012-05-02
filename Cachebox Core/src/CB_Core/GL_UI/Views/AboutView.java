@@ -16,7 +16,7 @@ public class AboutView extends CB_View_Base
 
 	AboutView Me;
 
-	public AboutView(CB_RectF rec, CharSequence Name)
+	public AboutView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 		Me = this;

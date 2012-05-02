@@ -74,7 +74,7 @@ public class MainView extends MainViewBase
 			rightFrame.addChild(getView(ID));
 		}
 
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce("MainView SetGlViewID");
 
 		Logger.LogCat("SetGlViewID" + ID);
 	}

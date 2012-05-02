@@ -38,7 +38,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	protected boolean hasBackground = false;
 	protected Sprite Background;
-	protected CharSequence name = "";
+	protected String name = "";
 	protected boolean hasNinePatchBackground = false;
 	protected NinePatch nineBackground;
 
@@ -80,14 +80,14 @@ public abstract class GL_View_Base extends CB_RectF
 	 * @param Width
 	 * @param Height
 	 */
-	public GL_View_Base(float X, float Y, float Width, float Height, CharSequence Name)
+	public GL_View_Base(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height);
 		Me = this;
 		name = Name;
 	}
 
-	public GL_View_Base(float X, float Y, float Width, float Height, GL_View_Base Parent, CharSequence Name)
+	public GL_View_Base(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name)
 	{
 		super(X, Y, Width, Height);
 		Me = this;
@@ -95,14 +95,14 @@ public abstract class GL_View_Base extends CB_RectF
 		name = Name;
 	}
 
-	public GL_View_Base(CB_RectF rec, CharSequence Name)
+	public GL_View_Base(CB_RectF rec, String Name)
 	{
 		super(rec);
 		Me = this;
 		name = Name;
 	}
 
-	public GL_View_Base(CB_RectF rec, GL_View_Base Parent, CharSequence Name)
+	public GL_View_Base(CB_RectF rec, GL_View_Base Parent, String Name)
 	{
 		super(rec);
 		Me = this;
@@ -110,7 +110,7 @@ public abstract class GL_View_Base extends CB_RectF
 		name = Name;
 	}
 
-	public GL_View_Base(SizeF size, CharSequence Name)
+	public GL_View_Base(SizeF size, String Name)
 	{
 		super(0, 0, size.width, size.height);
 		Me = this;
@@ -122,7 +122,7 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		if (mViewState == visibility) return;
 		mViewState = visibility;
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + "setVisibility");
 	}
 
 	/**
@@ -549,7 +549,7 @@ public abstract class GL_View_Base extends CB_RectF
 			if (behandelt) resultView = this;
 		}
 
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + " touchDown");
 
 		return resultView;
 	}
@@ -719,7 +719,7 @@ public abstract class GL_View_Base extends CB_RectF
 		nineBackground = background;
 	}
 
-	public CharSequence getName()
+	public String getName()
 	{
 		return name;
 	}
@@ -730,7 +730,7 @@ public abstract class GL_View_Base extends CB_RectF
 		if (this.getY() == i) return;
 		super.setY(i);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + " setY");
 
 	}
 
@@ -740,7 +740,7 @@ public abstract class GL_View_Base extends CB_RectF
 		if (this.getX() == i) return;
 		super.setX(i);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + " setX");
 	}
 
 	@Override
@@ -749,21 +749,21 @@ public abstract class GL_View_Base extends CB_RectF
 		if (this.getPos().x == Pos.x && this.getPos().y == Pos.y) return;
 		super.setPos(Pos);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + " setPos(Vector)");
 	}
 
 	public void setZeroPos()
 	{
 		super.setPos(new Vector2(0, 0));
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + " setZeroPos");
 	}
 
 	public void setPos(float x, float y)
 	{
 		super.setPos(x, y);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + " setPos(float)");
 	}
 
 }

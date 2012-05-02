@@ -1,6 +1,5 @@
 package de.cachebox_test.Views;
 
-import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_Core.Log.Logger;
@@ -165,11 +164,10 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	}
 
 	@Override
-	public void RequestRender(GL_View_Base view)
+	public void RequestRender(String requestName)
 	{
-		CharSequence name = "?";
-		if (view != null) name = view.getName();
-		// Logger.LogCat("RequestRender von : " + name);
+
+		Logger.LogCat("RequestRender von : " + requestName);
 
 		switch (mAktSurfaceType)
 		{

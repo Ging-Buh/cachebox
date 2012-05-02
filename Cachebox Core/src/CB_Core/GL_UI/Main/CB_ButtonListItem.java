@@ -10,7 +10,7 @@ public class CB_ButtonListItem extends ListViewItemBase
 {
 	CB_Button mCB_Button;
 
-	public CB_ButtonListItem(CB_RectF rec, int Index, CharSequence Name)
+	public CB_ButtonListItem(CB_RectF rec, int Index, String Name)
 	{
 		super(rec, Index, Name);
 		mCB_Button = new CB_Button(this, "Button");
@@ -19,7 +19,7 @@ public class CB_ButtonListItem extends ListViewItemBase
 		this.addChild(mCB_Button);
 	}
 
-	public CB_ButtonListItem(int Index, CB_Button Button, CharSequence Name)
+	public CB_ButtonListItem(int Index, CB_Button Button, String Name)
 	{
 		super(new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight), Index, Name);
 		mCB_Button = Button;

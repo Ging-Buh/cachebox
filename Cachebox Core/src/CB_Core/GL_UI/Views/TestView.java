@@ -206,7 +206,7 @@ public class TestView extends CB_View_Base
 		info.setPos(new Vector2(margin, (float) (this.height - margin - info.getHeight())));
 		togBtn.setPos(new Vector2((float) (this.width - margin - togBtn.getWidth()), this.height - margin - togBtn.getHeight()));
 
-		GL_Listener.glListener.renderOnce(this);
+		GL_Listener.glListener.renderOnce(this.getName() + " requestLayout");
 	}
 
 	@Override
