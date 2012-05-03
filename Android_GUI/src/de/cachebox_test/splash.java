@@ -260,10 +260,6 @@ public class splash extends Activity
 		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
 		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
 
-		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
-		String database = Config.settings.DatabasePath.getValue();
-		Database.Data.StartUp(database);
-
 		// wenn die Settings DB neu Erstellt wurde, müssen die Default werte
 		// geschrieben werden.
 		if (Database.Settings.isDbNew())
@@ -275,6 +271,10 @@ public class splash extends Activity
 		{
 			Config.settings.ReadFromDB();
 		}
+
+		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
+		String database = Config.settings.DatabasePath.getValue();
+		Database.Data.StartUp(database);
 
 		// prevent mediascanner to parse all the images in the cachebox folder
 		File nomedia = new File(workPath, ".nomedia");

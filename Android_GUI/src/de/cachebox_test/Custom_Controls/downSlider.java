@@ -556,7 +556,11 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		public void run()
 		{
 			String provider = LocationManager.GPS_PROVIDER;
-			Coordinate location = GlobalCore.Locator.getLocation();
+			Coordinate location = null;
+			if (GlobalCore.Locator != null)
+			{
+				location = GlobalCore.Locator.getLocation();
+			}
 			// Location location = ((main)
 			// main.mainActivity).locationManager.getLastKnownLocation(provider);
 
