@@ -2,18 +2,26 @@ package CB_Core.GL_UI.libGdx_Controls;
 
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public abstract class LibGdx_Host_Control extends CB_View_Base
 {
 
 	private Actor mActor;
 
+	private static Stage mStage;
+
 	public LibGdx_Host_Control(CB_RectF rec, Actor actor, String Name)
 	{
+
 		super(rec, Name);
+
+		chkStageInitial();
+
 		mActor = actor;
 
 		mActor.height = rec.getHeight();
@@ -22,6 +30,16 @@ public abstract class LibGdx_Host_Control extends CB_View_Base
 		mActor.x = 0f;
 		mActor.y = 0f;
 
+		mStage.addActor(mActor);
+
+	}
+
+	private static void chkStageInitial()
+	{
+		if (mStage == null)
+		{// initial a virtual stage
+			mStage = new Stage(UiSizes.getWindowWidth(), UiSizes.getWindowHeight(), false);
+		}
 	}
 
 	protected Actor getActor()
@@ -62,29 +80,34 @@ public abstract class LibGdx_Host_Control extends CB_View_Base
 		mActor.draw(batch, 1f);
 	}
 
-	public boolean touchMoved(float x, float y)
+	public static boolean touchMoved(float x, float y)
 	{
-		return false;
+		chkStageInitial();
+		return mStage.touchMoved((int) x, (int) y);
 	}
 
-	public boolean scrolled(int amount)
+	public static boolean scrolled(int amount)
 	{
-		return false;
+		chkStageInitial();
+		return mStage.scrolled(amount);
 	}
 
-	public boolean keyDown(int keycode)
+	public static boolean keyDown(int keycode)
 	{
-		return false;
+		chkStageInitial();
+		return mStage.keyDown(keycode);
 	}
 
-	public boolean keyUp(int keycode)
+	public static boolean keyUp(int keycode)
 	{
-		return false;
+		chkStageInitial();
+		return mStage.keyUp(keycode);
 	}
 
-	public boolean keyTyped(char character)
+	public static boolean keyTyped(char character)
 	{
-		return false;
+		chkStageInitial();
+		return mStage.keyTyped(character);
 	}
 
 }

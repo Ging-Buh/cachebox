@@ -10,6 +10,7 @@ import CB_Core.GL_UI.Controls.MapInfoPanel;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.ZoomButtons;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.libGdx_Controls.TextField;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.Gdx;
@@ -41,9 +42,13 @@ public class TestView extends CB_View_Base
 		button = new CB_Core.GL_UI.libGdx_Controls.Button(r, "TestButton", SpriteCache.Misc);
 		this.addChild(button);
 
-		// CB_RectF r2 = new CB_RectF(300, 400, 150, 200);
-		// textField = new TextField(r2, "TestTextField");
-		// this.addChild(textField);
+		CB_RectF r2 = new CB_RectF(20, 450, 400, 40);
+		textField = new TextField(r2, "TestTextField");
+		this.addChild(textField);
+
+		textField.setText(" Das ist ein Text fürs Text Feld");
+		textField.setSelection(3, 9);
+		textField.setCursorPosition(17);
 
 		requestLayout();
 	}

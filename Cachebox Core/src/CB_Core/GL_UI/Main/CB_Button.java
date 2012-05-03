@@ -187,6 +187,8 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 			}
 		}
 		// Einfacher Click -> Default Action starten
+
+		boolean actionExecuted = false;
 		for (CB_ActionButton ba : mButtonActions)
 		{
 			if (ba.isDefaultAction())
@@ -196,12 +198,18 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 				{
 					action.CallExecute();
 					if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
-					// else
-					// aktActionView = null;
+					actionExecuted = true;
 					break;
 				}
 			}
 		}
+
+		// wenn keine Default Action defeniert ist, dann einen LongClick (Zeige ContextMenu) ausführen
+		if (!actionExecuted)
+		{
+			return onLongClick(v, x, y, pointer, button);
+		}
+
 		return true;
 	}
 

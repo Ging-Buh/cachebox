@@ -5,6 +5,7 @@ import CB_Core.Events.platformConector;
 import CB_Core.Events.platformConector.KeyEventListner;
 import CB_Core.GL_UI.Main.MainView;
 import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.GL_UI.libGdx_Controls.LibGdx_Host_Control;
 import CB_Core.Log.Logger;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -45,14 +46,29 @@ public class Tab_GL_Listner extends GL_Listener
 		{
 
 			@Override
-			public boolean onKeyPressed(int KeyCode)
+			public boolean onKeyPressed(Character character)
 			{
-				if (DialogIsShown && KeyCode == KeyCodes.KEYCODE_BACK)
+				if (DialogIsShown && character == KeyCodes.KEYCODE_BACK)
 				{
 					closeDialog();
 					return true; // behandelt!
 				}
-				return false;
+
+				// WeiterLeiten an VirtualStage!
+				return LibGdx_Host_Control.keyTyped(character);
+
+			}
+
+			@Override
+			public boolean keyUp(int KeyCode)
+			{
+				return LibGdx_Host_Control.keyUp(KeyCode);
+			}
+
+			@Override
+			public boolean keyDown(int keycode)
+			{
+				return LibGdx_Host_Control.keyDown(keycode);
 			}
 		});
 

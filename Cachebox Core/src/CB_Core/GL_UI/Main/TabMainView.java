@@ -234,6 +234,7 @@ public class TabMainView extends MainViewBase
 		actionRecVideo.setTab(this, Tab);
 		actionDelCaches.setTab(this, Tab);
 		actionParking.setTab(this, Tab);
+		actionTestView.setTab(this, Tab);
 
 		actionDayNight.setTab(this, Tab);
 		actionScreenLock.setTab(this, Tab);
@@ -265,6 +266,7 @@ public class TabMainView extends MainViewBase
 		btn3.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
 		btn3.addAction(new CB_ActionButton(actionShowCompassView, false, GestureDirection.Right));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
+		btn3.addAction(new CB_ActionButton(actionTestView, false));
 
 		btn5.addAction(new CB_ActionButton(actionShowAboutView, true, GestureDirection.Up));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));

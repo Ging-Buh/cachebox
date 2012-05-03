@@ -1048,11 +1048,25 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event)
+	{
+		return CB_Core.Events.platformConector.sendKeyUp(keyCode);
+	}
+
+	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
 
+		Character chr = (char) event.getUnicodeChar();
+
+		if (chr == null)
+		{
+			return CB_Core.Events.platformConector.sendKeyUp(keyCode);
+		}
+
 		// send KeyCode to OpenGL-UI
-		if (CB_Core.Events.platformConector.sendKey(keyCode)) return true;
+		if (CB_Core.Events.platformConector.sendKey((char) event.getUnicodeChar()))
+		;
 
 		if (keyCode == KeyEvent.KEYCODE_BACK)
 		{

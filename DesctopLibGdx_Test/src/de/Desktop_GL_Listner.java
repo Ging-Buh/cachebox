@@ -28,29 +28,6 @@ public class Desktop_GL_Listner extends Tab_GL_Listner implements InputProcessor
 	
 	// # ImputProzessor Implamantations
 
-	@Override
-	public boolean keyDown(int arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped(char arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean keyUp(int arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	
 	private Point lastTouchDown;

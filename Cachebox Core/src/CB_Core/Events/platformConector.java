@@ -94,7 +94,11 @@ public class platformConector
 
 	public interface KeyEventListner
 	{
-		public boolean onKeyPressed(int KeyCode);
+		public boolean onKeyPressed(Character character);
+
+		public boolean keyUp(int KeyCode);
+
+		public boolean keyDown(int keycode);
 	}
 
 	public static void setKeyEventListner(KeyEventListner listner)
@@ -102,11 +106,31 @@ public class platformConector
 		mKeyListner = listner;
 	}
 
-	public static boolean sendKey(int KeyCode)
+	public static boolean sendKey(Character character)
 	{
 		if (mKeyListner != null)
 		{
-			return mKeyListner.onKeyPressed(KeyCode);
+			return mKeyListner.onKeyPressed(character);
+		}
+
+		return false;
+	}
+
+	public static boolean sendKeyDown(int KeyCode)
+	{
+		if (mKeyListner != null)
+		{
+			return mKeyListner.keyDown(KeyCode);
+		}
+
+		return false;
+	}
+
+	public static boolean sendKeyUp(int KeyCode)
+	{
+		if (mKeyListner != null)
+		{
+			return mKeyListner.keyUp(KeyCode);
 		}
 
 		return false;

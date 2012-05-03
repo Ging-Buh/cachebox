@@ -20,6 +20,7 @@ import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Main.MainView;
 import CB_Core.GL_UI.Main.MainViewBase;
+import CB_Core.GL_UI.libGdx_Controls.LibGdx_Host_Control;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
@@ -52,7 +53,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	private long mLongClickTime = 0;
 
 	public static final int MAX_KINETIC_SCROLL_DISTANCE = 100;
-	public static final int FRAME_RATE_IDLE = 500;
+	public static final int FRAME_RATE_IDLE = 200;
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 15;
 
@@ -848,6 +849,26 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 		Timer timer = new Timer();
 		timer.schedule(task, delay);
+	}
+
+	public boolean keyDown(int keycode)
+	{
+		return LibGdx_Host_Control.keyDown(keycode);
+	}
+
+	public boolean keyTyped(char character)
+	{
+		return LibGdx_Host_Control.keyTyped(character);
+	}
+
+	public boolean keyUp(int keycode)
+	{
+		return LibGdx_Host_Control.keyUp(keycode);
+	}
+
+	public boolean scrolled(int amount)
+	{
+		return LibGdx_Host_Control.scrolled(amount);
 	}
 
 }
