@@ -34,6 +34,10 @@ public class TestView extends CB_View_Base
 	private CB_Core.GL_UI.libGdx_Controls.Button button;
 	private CB_Core.GL_UI.libGdx_Controls.TextField textField;
 
+	public static final String br = System.getProperty("line.separator");
+	public static final String splashMsg = "Team Cachebox (2011-2012)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009,"
+			+ br + "Groundspeak Inc. Used with permission";
+
 	public TestView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
@@ -46,7 +50,7 @@ public class TestView extends CB_View_Base
 		textField = new TextField(r2, "TestTextField");
 		this.addChild(textField);
 
-		textField.setText(" Das ist ein Text fürs Text Feld");
+		textField.setText(splashMsg);
 		textField.setSelection(3, 9);
 		textField.setCursorPosition(17);
 

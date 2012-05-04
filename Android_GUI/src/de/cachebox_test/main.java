@@ -1070,38 +1070,43 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (keyCode == KeyEvent.KEYCODE_BACK)
 		{
-			DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
-			{
-				@Override
-				public void onClick(DialogInterface dialog, int which)
-				{
-					switch (which)
-					{
-					case -1:
-						// Yes button clicked
-						try
-						{
-							finish();
-						}
-						catch (Throwable e)
-						{
-
-							e.printStackTrace();
-						}
-						break;
-					case -2:
-						// No button clicked
-						dialog.dismiss();
-						break;
-					}
-				}
-			};
-			MessageBox.Show(GlobalCore.Translations.Get("QuitReally"), GlobalCore.Translations.Get("Quit?"), MessageBoxButtons.YesNo,
-					MessageBoxIcon.Question, dialogClickListener);
+			Quitt();
 
 			return true;
 		}
 		return false;
+	}
+
+	private void Quitt()
+	{
+		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				switch (which)
+				{
+				case -1:
+					// Yes button clicked
+					try
+					{
+						finish();
+					}
+					catch (Throwable e)
+					{
+
+						e.printStackTrace();
+					}
+					break;
+				case -2:
+					// No button clicked
+					dialog.dismiss();
+					break;
+				}
+			}
+		};
+		MessageBox.Show(GlobalCore.Translations.Get("QuitReally"), GlobalCore.Translations.Get("Quit?"), MessageBoxButtons.YesNo,
+				MessageBoxIcon.Question, dialogClickListener);
 	}
 
 	@Override
@@ -1783,7 +1788,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 		else if (ID == ViewConst.QUIT)
 		{
-			onKeyDown(KeyEvent.KEYCODE_BACK, null);
+			Quitt();
 		}
 
 	}
@@ -1995,7 +2000,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				DeleteFilterSelection();
 				break;
 			case R.id.miClose:
-				onKeyDown(KeyEvent.KEYCODE_BACK, null);
+				Quitt();
 				break;
 			case R.id.miDayNight:
 				switchDayNight();
