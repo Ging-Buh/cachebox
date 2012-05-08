@@ -350,4 +350,9 @@ public class GL_MsgBox extends Dialog
 		label.setWrappedText(text);
 
 	}
+
+	public void close()
+	{
+		GL_Listener.glListener.closeDialog();
+	}
 }

@@ -26,6 +26,7 @@ import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -33,6 +34,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Button extends CB_View_Base
 {
+	protected BitmapFont mFont;
 
 	protected NinePatch mNinePatch;
 	protected NinePatch mNinePatchPressed;
@@ -90,6 +92,11 @@ public class Button extends CB_View_Base
 			mNinePatchPressed = sprites.getPressed();
 			mNinePatchDisabled = sprites.getDisabled();
 		}
+	}
+
+	public void setFont(BitmapFont font)
+	{
+		mFont = font;
 	}
 
 	@Override
@@ -212,7 +219,15 @@ public class Button extends CB_View_Base
 			r.setPos(new Vector2(l, b));
 
 			lblTxt = new Label(r, this, name + "Label");
-			lblTxt.setFont(Fonts.getNormal());
+			if (mFont != null)
+			{
+				lblTxt.setFont(mFont);
+			}
+			else
+			{
+				lblTxt.setFont(Fonts.getNormal());
+			}
+
 			lblTxt.setHAlignment(HAlignment.CENTER);
 			lblTxt.setVAlignment(VAlignment.CENTER);
 			this.addChild(lblTxt);

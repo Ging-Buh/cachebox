@@ -36,7 +36,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 	protected void Initial()
 	{
 		Logger.LogCat("CacheListView => Initial()");
-		this.scrollToItem(0);
+		this.setListPos(0, false);
 		chkSlideBack();
 		GL_Listener.glListener.renderOnce(this.getName() + " Initial()");
 	}

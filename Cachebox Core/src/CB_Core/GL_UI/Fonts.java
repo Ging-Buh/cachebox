@@ -6,7 +6,10 @@ import CB_Core.Log.Logger;
 import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Enthält die benutzten und geladenen GDX-Fonts
@@ -98,8 +101,15 @@ public class Fonts
 		if (scaled < 6) scaled = 6;
 		if (scaled > 44) scaled = 44;
 
-		BitmapFont ret = new BitmapFont(Gdx.files.absolute(fontPath + scaled + ".fnt"), Gdx.files.absolute(fontPath + scaled + ".png"),
-				false);
+		// BitmapFont ret = new BitmapFont(Gdx.files.absolute(fontPath + scaled + ".fnt"), Gdx.files.absolute(fontPath + scaled + ".png"),
+		// false);
+
+		Texture tex = new Texture(Gdx.files.absolute(fontPath + scaled + ".png"));
+		// tex.setFilter(TextureFilter.Nearest, TextureFilter.Linear);
+		tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		TextureRegion region = new TextureRegion(tex);
+		BitmapFont ret = new BitmapFont(Gdx.files.absolute(fontPath + scaled + ".fnt"), region, false);
+
 		return ret;
 	}
 

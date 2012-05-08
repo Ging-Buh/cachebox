@@ -6,8 +6,8 @@
 	<classpathentry kind="lib" path="Lib/gdx-backend-lwjgl.jar"/>
 	<classpathentry kind="lib" path="Lib/gdx-backend-lwjgl-natives.jar"/>
 	<classpathentry kind="lib" path="Lib/gdx-natives.jar"/>
-	<classpathentry kind="lib" path="Lib/gdx.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Cachebox Core"/>
 	<classpathentry kind="lib" path="Lib/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="Lib/gdx.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

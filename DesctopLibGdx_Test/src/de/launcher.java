@@ -7,9 +7,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import javax.swing.text.AttributeSet;
-import javax.swing.text.html.Option;
-
 import CB_Core.Math.Size;
 import CB_Core.Math.devicesSizes;
 
@@ -23,6 +20,10 @@ class Ex_1 {
 
 class Gui extends Frame implements ActionListener, WindowListener {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	Checkbox debugChkBox;
 	Checkbox scissorChkBox;
 	
