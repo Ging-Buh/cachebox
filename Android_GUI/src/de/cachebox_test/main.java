@@ -128,6 +128,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidGraphics;
@@ -191,6 +192,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 {
 
 	private static final boolean useGL_Tab = true;
+	static private final char BACKSPACE = 8;
 
 	/*
 	 * private static member
@@ -1057,23 +1059,19 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
 
-		Character chr = (char) event.getUnicodeChar();
-
-		if (chr == null)
-		{
-			return CB_Core.Events.platformConector.sendKeyUp(keyCode);
-		}
-
-		// send KeyCode to OpenGL-UI
-		if (CB_Core.Events.platformConector.sendKey((char) event.getUnicodeChar()))
-		;
-
 		if (keyCode == KeyEvent.KEYCODE_BACK)
 		{
 			Quitt();
 
 			return true;
 		}
+
+		// send KeyCode to OpenGL-UI
+		Character chr = (char) event.getUnicodeChar();
+		if (keyCode == Keys.BACKSPACE) chr = BACKSPACE;
+
+		if (CB_Core.Events.platformConector.sendKeyDown(keyCode) && CB_Core.Events.platformConector.sendKey(chr)) return true;
+
 		return false;
 	}
 

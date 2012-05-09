@@ -1,5 +1,8 @@
 package CB_Core.GL_UI.Main;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
@@ -111,9 +114,29 @@ public class CB_TabView extends CB_View_Base
 		this.addChild(aktView);
 
 		aktView.setVisibility(VISIBLE);
-		aktView.onShow();
+		sendOnShow2aktView();
 		GL_Listener.glListener.renderOnce(aktView.getName() + " TabView=>ShowView()");
 
+	}
+
+	/**
+	 * Beim Wechsel der View, kann es sein, dass noch nicht alle Childs der View geladen sind, da die meisten Childs erst in der initial()
+	 * erstellt werden. Damit erhalten diese Childs dann kein onShow(). Als Abhilfe werden hier erst 150ms gewartet, bevor ein onShow()
+	 * ausgeführt wird.
+	 */
+	private void sendOnShow2aktView()
+	{
+		TimerTask task = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				if (aktView != null && aktView.isVisible()) aktView.onShow();
+			}
+		};
+
+		Timer timer = new Timer();
+		timer.schedule(task, 150);
 	}
 
 	public CB_RectF getContentRec()

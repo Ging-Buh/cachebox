@@ -1,5 +1,8 @@
 package CB_Core.GL_UI.Views;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
@@ -36,7 +39,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 	protected void Initial()
 	{
 		Logger.LogCat("CacheListView => Initial()");
-		this.setListPos(0, false);
+		// this.setListPos(0, false);
 		chkSlideBack();
 		GL_Listener.glListener.renderOnce(this.getName() + " Initial()");
 	}
@@ -63,15 +66,27 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 			this.setDragable();
 		}
 
-		// aktuellen Cache in der List anzeigen
-		if (GlobalCore.SelectedCache() != null)
+		TimerTask task = new TimerTask()
 		{
-			setSelectedCacheVisible();
-		}
-		else
-			this.setSelection(0);
+			@Override
+			public void run()
+			{
+				// aktuellen Cache in der List anzeigen
+				if (GlobalCore.SelectedCache() != null)
+				{
+					setSelectedCacheVisible();
 
-		this.invalidate();
+				}
+				else
+					setSelection(0);
+
+				resetInitial();
+			}
+		};
+
+		Timer timer = new Timer();
+		timer.schedule(task, 150);
+
 		GL_Listener.glListener.renderOnce(this.getName() + " onShow()");
 	}
 
@@ -106,7 +121,6 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 			}
 			id++;
 		}
-
 		chkSlideBack();
 		GL_Listener.glListener.renderOnce(this.getName() + " setSelectedCachVisible");
 	}
