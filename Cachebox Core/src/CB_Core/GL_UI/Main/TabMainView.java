@@ -23,6 +23,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_ShowLogView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowMap;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowNotesView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSolverView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSolverView2;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSpoilerView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTestView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackListView;
@@ -39,6 +40,7 @@ import CB_Core.GL_UI.Views.LogView;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.GL_UI.Views.NotesView;
 import CB_Core.GL_UI.Views.SolverView;
+import CB_Core.GL_UI.Views.SolverView2;
 import CB_Core.GL_UI.Views.SpoilerView;
 import CB_Core.GL_UI.Views.TrackListView;
 import CB_Core.GL_UI.Views.TrackableListView;
@@ -68,6 +70,7 @@ public class TabMainView extends MainViewBase
 	private CB_Action_ShowLogView actionShowLogView;
 	private CB_Action_ShowNotesView actionShowNotesView;
 	private CB_Action_ShowSolverView actionShowSolverView;
+	private CB_Action_ShowSolverView2 actionShowSolverView2;
 	private CB_Action_ShowSpoilerView actionShowSpoilerView;
 	private CB_Action_ShowTrackableListView actionShowTrackableListView;
 	private CB_Action_ShowTrackListView actionShowTrackListView;
@@ -103,6 +106,7 @@ public class TabMainView extends MainViewBase
 	public static TrackListView trackListView = null;
 	public static WaypointView waypointView = null;
 	public static TestView testView = null;
+	public static SolverView2 solverView2 = null;
 
 	public TabMainView(float X, float Y, float Width, float Height, String Name)
 	{
@@ -141,6 +145,7 @@ public class TabMainView extends MainViewBase
 		actionShowLogView = new CB_Action_ShowLogView();
 		actionShowNotesView = new CB_Action_ShowNotesView();
 		actionShowSolverView = new CB_Action_ShowSolverView();
+		actionShowSolverView2 = new CB_Action_ShowSolverView2();
 		actionShowSpoilerView = new CB_Action_ShowSpoilerView();
 		actionShowTrackableListView = new CB_Action_ShowTrackableListView();
 		actionShowTrackListView = new CB_Action_ShowTrackListView();
@@ -222,6 +227,7 @@ public class TabMainView extends MainViewBase
 		actionShowLogView.setTab(this, Tab);
 		actionShowNotesView.setTab(this, Tab);
 		actionShowSolverView.setTab(this, Tab);
+		actionShowSolverView2.setTab(this, Tab);
 		actionShowSpoilerView.setTab(this, Tab);
 		actionShowTrackableListView.setTab(this, Tab);
 		actionShowTrackListView.setTab(this, Tab);
@@ -255,6 +261,7 @@ public class TabMainView extends MainViewBase
 		btn2.addAction(new CB_ActionButton(actionShowJokerView, false));
 		btn2.addAction(new CB_ActionButton(actionShowNotesView, false));
 		btn2.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
+		btn2.addAction(new CB_ActionButton(actionShowSolverView2, false));
 
 		btn4.addAction(new CB_ActionButton(actionRecTrack, false));
 		btn4.addAction(new CB_ActionButton(actionRecVoice, false));
@@ -408,6 +415,7 @@ public class TabMainView extends MainViewBase
 		// Tab den entsprechneden Actions zuweisen
 		actionShowMap.setTab(this, Tab);
 		actionShowSolverView.setTab(this, Tab);
+		actionShowSolverView2.setTab(this, Tab);
 		actionShowDescriptionView.setTab(this, Tab);
 		actionNavigateTo2.setTab(this, Tab);
 		actionTestView.setTab(this, Tab);
@@ -415,6 +423,7 @@ public class TabMainView extends MainViewBase
 		// Actions den Buttons zuweisen
 		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true));
 		btn2.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
+		btn2.addAction(new CB_ActionButton(actionShowSolverView2, false));
 
 		btn3.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo2, false, GestureDirection.Down));

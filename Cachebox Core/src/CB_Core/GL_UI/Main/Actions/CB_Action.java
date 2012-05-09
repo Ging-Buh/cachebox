@@ -42,6 +42,7 @@ public class CB_Action
 	public static int AID_LOCK = 28;
 	public static int AID_QUIT = 29;
 	public static int AID_SHOW_ABOUT = 30;
+	public static int AID_SHOW_SOLVER2 = 31;
 
 	protected String name;
 	protected int id;
