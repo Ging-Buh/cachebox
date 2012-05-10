@@ -92,24 +92,31 @@ public class Manager extends ManagerBase
 				mapDatabase = new MapDatabase();
 				mapDatabase.closeFile();
 				FileOpenResult fileOpenResult = mapDatabase.openFile(mapFile);
+				Logger.DEBUG("Open MapsForge Map: " + mapFile);
 
 				databaseRenderer = (DatabaseRenderer) mapGenerator;
 				databaseRenderer.setMapDatabase(mapDatabase);
 
 				try
 				{
+					Logger.DEBUG("Suche RenderTheme: " + Config.WorkPath + "/repository/maps/renderthemes/test.xml");
 					File file = new File(Config.WorkPath + "/repository/maps/renderthemes/test.xml");
 					if (file.exists())
 					{
+						Logger.DEBUG("RenderTheme found!");
 						JobTheme jobTheme = new ExternalRenderTheme(file);
 						jobParameters = new JobParameters(jobTheme, DEFAULT_TEXT_SCALE);
 					}
 					else
+					{
+						Logger.DEBUG("RenderTheme not found!");
 						jobParameters = new JobParameters(DEFAULT_RENDER_THEME, DEFAULT_TEXT_SCALE);
+					}
 
 				}
 				catch (FileNotFoundException e)
 				{
+					Logger.Error("Load RenderTheme", "Error loading RenderTheme!", e);
 					jobParameters = new JobParameters(DEFAULT_RENDER_THEME, DEFAULT_TEXT_SCALE);
 				}
 
