@@ -777,7 +777,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		popUp.setX(x);
 		popUp.setY(y);
-		child.addChild(popUp, true);
+		child.addChild(popUp, false);
 		aktPopUp = popUp;
 	}
 

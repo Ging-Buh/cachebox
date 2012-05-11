@@ -469,7 +469,8 @@ public abstract class GL_View_Base extends CB_RectF
 		// alle Childs abfragen
 		synchronized (childs)
 		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 			{
 				// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
 				GL_View_Base view = iterator.next();
@@ -505,7 +506,8 @@ public abstract class GL_View_Base extends CB_RectF
 
 		synchronized (childs)
 		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 			{
 				// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
 				GL_View_Base view = iterator.next();
@@ -543,7 +545,8 @@ public abstract class GL_View_Base extends CB_RectF
 		// alle Childs abfragen
 		synchronized (childs)
 		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 			{
 				// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
 				GL_View_Base view = iterator.next();
@@ -581,7 +584,8 @@ public abstract class GL_View_Base extends CB_RectF
 		// alle Childs abfragen
 		synchronized (childs)
 		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 			{
 				GL_View_Base view = iterator.next();
 
@@ -610,7 +614,8 @@ public abstract class GL_View_Base extends CB_RectF
 		// alle Childs abfragen
 		synchronized (childs)
 		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 			{
 				GL_View_Base view = iterator.next();
 				if (view.contains(x, y))
