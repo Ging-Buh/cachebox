@@ -777,14 +777,20 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		popUp.setX(x);
 		popUp.setY(y);
-		child.addChild(popUp, false);
+
+		CB_View_Base aktView = DialogIsShown ? mDialog : child;
+
+		aktView.addChild(popUp);
 		aktPopUp = popUp;
+
 	}
 
 	public void closePopUp(PopUp_Base popUp)
 	{
-		child.removeChild(popUp);
+		CB_View_Base aktView = DialogIsShown ? mDialog : child;
+		aktView.removeChild(popUp);
 		aktPopUp = null;
+
 	}
 
 	public void showDialog(final Dialog dialog)
