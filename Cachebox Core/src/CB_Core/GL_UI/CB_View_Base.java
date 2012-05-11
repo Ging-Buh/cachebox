@@ -151,4 +151,9 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		childs.clear();
 	}
 
+	public GL_View_Base getChild(int i)
+	{
+		return childs.get(i);
+	}
+
 }

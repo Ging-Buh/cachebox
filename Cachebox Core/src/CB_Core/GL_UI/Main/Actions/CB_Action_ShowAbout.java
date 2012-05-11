@@ -12,7 +12,7 @@ public class CB_Action_ShowAbout extends CB_Action_ShowView
 
 	public CB_Action_ShowAbout()
 	{
-		super("About", AID_SHOW_ABOUT);
+		super("about", AID_SHOW_ABOUT);
 	}
 
 	@Override

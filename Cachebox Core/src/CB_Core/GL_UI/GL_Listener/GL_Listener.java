@@ -18,8 +18,10 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Dialog;
+import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Main.MainView;
 import CB_Core.GL_UI.Main.MainViewBase;
+import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.libGdx_Controls.LibGdx_Host_Control;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Point;
@@ -769,6 +771,22 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		return actDialog;
 	}
 
+	private PopUp_Base aktPopUp = null;
+
+	public void showPopUp(PopUp_Base popUp, float x, float y)
+	{
+		popUp.setX(x);
+		popUp.setY(y);
+		child.addChild(popUp, true);
+		aktPopUp = popUp;
+	}
+
+	public void closePopUp(PopUp_Base popUp)
+	{
+		child.removeChild(popUp);
+		aktPopUp = null;
+	}
+
 	public void showDialog(final Dialog dialog)
 	{
 		platformConector.showForDialog();
@@ -787,9 +805,25 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// Sollte bei einem Click neben dem Dialog ausgelöst werden.
-				// Dann soll der Dialog geschlossen werden.
-				closeDialog();
-				return true;
+				// Dann soll der Dialog geschlossen werden, wenn es sich um ein Menü handelt.
+				if (DialogIsShown)
+				{
+					GL_View_Base vDialog = mDialog.getChild(0);
+					if (vDialog instanceof Menu) closeDialog();
+					if (aktPopUp != null)
+					{
+						closePopUp(aktPopUp);
+					}
+					return true;
+				}
+
+				if (aktPopUp != null)
+				{
+					closePopUp(aktPopUp);
+					return true;
+				}
+
+				return false;
 			}
 		});
 

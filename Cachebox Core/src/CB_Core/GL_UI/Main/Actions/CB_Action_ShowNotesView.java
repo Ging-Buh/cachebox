@@ -33,7 +33,7 @@ public class CB_Action_ShowNotesView extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(23);
+		return SpriteCache.Icons.get(50);
 	}
 
 	@Override

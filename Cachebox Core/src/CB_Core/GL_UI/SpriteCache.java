@@ -340,6 +340,7 @@ public class SpriteCache
 		Icons.add(getThemedSprite("log10icon")); // 47
 		Icons.add(getThemedSprite("d_n")); // 48
 		Icons.add(getThemedSprite("cb")); // 49
+		Icons.add(getThemedSprite("userdata")); // 50
 		loadButtnSprites();
 
 		ListBack = new NinePatch(getThemedSprite("background"), 1, 1, 1, 1);

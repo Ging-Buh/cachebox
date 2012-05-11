@@ -57,20 +57,56 @@ public abstract class LibGdx_Host_Control extends CB_View_Base
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
-		return mActor.touchDown(x, y, pointer);
+		float offset = 0;
+
+		if (mActor instanceof com.badlogic.gdx.scenes.scene2d.ui.TextField)
+		{
+			offset = -((com.badlogic.gdx.scenes.scene2d.ui.TextField) mActor).getStyle().background.getLeftWidth();
+		}
+
+		if (mActor instanceof CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField)
+		{
+			offset = -((CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField) mActor).getStyle().background.getLeftWidth();
+		}
+
+		mActor.touchDown(x + offset, y, pointer);
+		return true;
 	}
 
 	@Override
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
-		mActor.touchDragged(x, y, pointer);
+		float offset = 0;
+
+		if (mActor instanceof com.badlogic.gdx.scenes.scene2d.ui.TextField)
+		{
+			offset = -((com.badlogic.gdx.scenes.scene2d.ui.TextField) mActor).getStyle().background.getLeftWidth();
+		}
+
+		if (mActor instanceof CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField)
+		{
+			offset = -((CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField) mActor).getStyle().background.getLeftWidth();
+		}
+
+		mActor.touchDragged(x + offset, y, pointer);
 		return true;
 	}
 
 	@Override
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
-		mActor.touchUp(x, y, pointer);
+		float offset = 0;
+
+		if (mActor instanceof com.badlogic.gdx.scenes.scene2d.ui.TextField)
+		{
+			offset = -((com.badlogic.gdx.scenes.scene2d.ui.TextField) mActor).getStyle().background.getLeftWidth();
+		}
+
+		if (mActor instanceof CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField)
+		{
+			offset = -((CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField) mActor).getStyle().background.getLeftWidth();
+		}
+		mActor.touchUp(x + offset, y, pointer);
 		return true;
 	}
 

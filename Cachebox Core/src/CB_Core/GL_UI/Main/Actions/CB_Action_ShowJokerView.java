@@ -12,7 +12,7 @@ public class CB_Action_ShowJokerView extends CB_Action_ShowView
 
 	public CB_Action_ShowJokerView()
 	{
-		super("Jokers", AID_SHOW_JOKERS);
+		super("joker", AID_SHOW_JOKERS);
 	}
 
 	@Override

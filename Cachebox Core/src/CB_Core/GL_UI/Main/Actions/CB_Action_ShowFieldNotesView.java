@@ -14,7 +14,7 @@ public class CB_Action_ShowFieldNotesView extends CB_Action_ShowView
 
 	public CB_Action_ShowFieldNotesView()
 	{
-		super("FieldNotes", AID_SHOW_FIELDNOTES);
+		super("Fieldnotes", AID_SHOW_FIELDNOTES);
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class CB_Action_ShowFieldNotesView extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(0);
+		return SpriteCache.Icons.get(23);
 	}
 
 	@Override

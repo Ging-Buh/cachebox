@@ -143,6 +143,11 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public GL_View_Base addChild(final GL_View_Base view)
 	{
+		return addChild(view, false);
+	}
+
+	public GL_View_Base addChild(final GL_View_Base view, final boolean last)
+	{
 		this.RunOnGL(new runOnGL()
 		{
 			@Override
@@ -150,7 +155,15 @@ public abstract class GL_View_Base extends CB_RectF
 			{
 				synchronized (childs)
 				{
-					childs.add(view);
+
+					if (last)
+					{
+						childs.add(0, view);
+					}
+					else
+					{
+						childs.add(view);
+					}
 				}
 			}
 		});
@@ -349,6 +362,11 @@ public abstract class GL_View_Base extends CB_RectF
 	private boolean mustSetScissor = false;
 	private boolean childsInvalidate = false;
 	private boolean thisInvalidate = true;
+
+	public CB_RectF getWorldRec()
+	{
+		return ThisWorldRec.copy();
+	}
 
 	/**
 	 * Berechnet das Scissor Rechteck und die Infos f�r die Childs immer dann wenn sich etwas an Position oder Gr��e dieses

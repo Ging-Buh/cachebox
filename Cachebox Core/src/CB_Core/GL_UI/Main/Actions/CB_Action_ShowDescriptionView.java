@@ -43,7 +43,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(0);
+		return SpriteCache.Icons.get(2);
 	}
 
 	@Override

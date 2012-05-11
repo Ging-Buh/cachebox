@@ -12,7 +12,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView
 
 	public CB_Action_ShowLogView()
 	{
-		super("Logs", AID_SHOW_LOGS);
+		super("ShowLogs", AID_SHOW_LOGS);
 	}
 
 	@Override

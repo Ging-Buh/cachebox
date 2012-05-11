@@ -42,6 +42,8 @@ public class TestView extends CB_View_Base
 	{
 		super(rec, Name);
 
+		this.setClickable(true);
+
 		CB_RectF r2 = new CB_RectF(20, 350, 250, 250);
 		wrappedTextField = new WrappedTextField(r2, "TestWrappedTextField");
 		this.addChild(wrappedTextField);
