@@ -15,7 +15,7 @@ import CB_Core.Math.CB_RectF;
 public abstract class PopUp_Base extends CB_View_Base
 {
 
-	private final int SHOW_TIME = 2000;
+	private final int SHOW_TIME = 4000;
 
 	public PopUp_Base(CB_RectF rec, String Name)
 	{

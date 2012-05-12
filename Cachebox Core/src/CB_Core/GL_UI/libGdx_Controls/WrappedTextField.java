@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.libGdx_Controls;
 
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 
@@ -14,7 +15,7 @@ public class WrappedTextField extends LibGdx_Host_Control
 		super(rec, new CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField(Style.getWrappedTextFieldStyle()), Name);
 
 		mTextField = (CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField) getActor();
-
+		mTextField.setClipboard(GlobalCore.getDefaultClipboard());
 	}
 
 	@Override

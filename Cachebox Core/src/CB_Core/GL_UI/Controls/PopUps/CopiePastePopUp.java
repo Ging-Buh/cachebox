@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Controls.PopUps;
 
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
@@ -17,13 +18,15 @@ public class CopiePastePopUp extends PopUp_Base
 	public CopiePastePopUp(CB_RectF rec, String Name, final TextField textField)
 	{
 		super(rec, Name);
-		setBackground(new NinePatch(SpriteCache.Bubble.get(3), 16, 16, 16, 16));
+		setBackground(new NinePatch(SpriteCache.Bubble.get(3), 16, 16, 16, 23));
 
 		this.setClickable(true);
 
-		pasteButton = new Button(rec.ScaleCenter(0.5f), "PasteButton");
-		pasteButton.setText("Paste");
-
+		pasteButton = new Button(rec.ScaleCenter(0.6f), "PasteButton");
+		pasteButton.setFont(Fonts.getBubbleNormal());
+		pasteButton.setText("paste");
+		pasteButton.setBackground(new NinePatch(SpriteCache.Icons.get(50), 1, 1, 1, 1));
+		pasteButton.setY(rec.getHeight() * 0.4f);
 		pasteButton.setOnClickListener(new OnClickListener()
 		{
 
@@ -40,4 +43,17 @@ public class CopiePastePopUp extends PopUp_Base
 		this.addChild(pasteButton);
 	}
 
+	@Override
+	public void Initial()
+	{
+		pasteButton.setninePatch((new NinePatch(SpriteCache.Icons.get(50), 1, 1, 1, 1)));
+		pasteButton.setninePatchPressed((new NinePatch(SpriteCache.Icons.get(50), 1, 1, 1, 1)));
+	}
+
+	public void flipX()
+	{
+		NinePatch patch = new NinePatch(SpriteCache.Bubble.get(5), 16, 16, 23, 16);
+		setBackground(patch);
+		pasteButton.setY(this.height * 0.07f);
+	}
 }

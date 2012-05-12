@@ -230,6 +230,8 @@ public class SpriteCache
 		Bubble.add(getThemedSprite("BubbleOverlay"));
 		Bubble.add(getThemedSprite("1to4bubble"));
 		Bubble.add(getThemedSprite("5bubble"));
+		Bubble.add(getThemedSprite("1to4bubble_flip"));
+		Bubble.add(getThemedSprite("5bubble_flip"));
 
 		ChkIcons = new ArrayList<Sprite>();
 		ChkIcons.add(getThemedSprite("check_off"));

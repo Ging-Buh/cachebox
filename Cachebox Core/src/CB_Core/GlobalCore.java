@@ -10,6 +10,8 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 
+import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
+
 public class GlobalCore
 {
 
@@ -31,6 +33,25 @@ public class GlobalCore
 	public static RouteOverlay.Trackable AktuelleRoute = null;
 	public static int aktuelleRouteCount = 0;
 	public static long TrackDistance;
+
+	private static Clipboard defaultClipBoard;
+
+	public static Clipboard getDefaultClipboard()
+	{
+		if (defaultClipBoard == null)
+		{
+			return Clipboard.getDefaultClipboard();
+		}
+		else
+		{
+			return defaultClipBoard;
+		}
+	}
+
+	public static void setDefaultClipboard(Clipboard clipBoard)
+	{
+		defaultClipBoard = clipBoard;
+	}
 
 	/**
 	 * Wird im Splash gesetzt und ist True, wenn es sich um ein Tablet handelt!

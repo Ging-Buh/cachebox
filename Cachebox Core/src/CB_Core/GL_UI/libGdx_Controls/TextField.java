@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.libGdx_Controls;
 
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.PopUps.CopiePastePopUp;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
@@ -22,6 +23,7 @@ public class TextField extends LibGdx_Host_Control
 		that = this;
 
 		mTextField = (com.badlogic.gdx.scenes.scene2d.ui.TextField) getActor();
+		mTextField.setClipboard(GlobalCore.getDefaultClipboard());
 		this.setClickable(true);
 
 		this.setOnLongClickListener(new OnLongClickListener()
@@ -30,21 +32,7 @@ public class TextField extends LibGdx_Host_Control
 			@Override
 			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				if (popUp == null)
-				{
-					popUp = new CopiePastePopUp(new CB_RectF(0, 0, UiSizes.getButtonWidth() * 1.7f, UiSizes.getButtonHeight() * 1.4f),
-							"CopiePastePopUp=>" + getName(), that);
-				}
-
-				float noseOffset = popUp.getHalfWidth() / 2;
-
-				Logger.LogCat("Show CopyPaste PopUp");
-
-				CB_RectF world = getWorldRec();
-
-				x += world.getX() - noseOffset;
-				y += world.getY();
-				popUp.show(x, y);
+				showPopUp(x, y);
 				return true;
 			}
 		});
@@ -90,8 +78,35 @@ public class TextField extends LibGdx_Host_Control
 
 	public void paste()
 	{
-
 		mTextField.paste();
 	}
 
+	private void showPopUp(int x, int y)
+	{
+		if (popUp == null)
+		{
+			popUp = new CopiePastePopUp(new CB_RectF(0, 0, UiSizes.getButtonWidth() * 1.2f, UiSizes.getButtonHeight()), "CopiePastePopUp=>"
+					+ getName(), that);
+		}
+
+		float noseOffset = popUp.getHalfWidth() / 2;
+
+		Logger.LogCat("Show CopyPaste PopUp");
+
+		CB_RectF world = getWorldRec();
+
+		// not enough place on Top?
+		float windowH = UiSizes.getWindowHeight();
+		float worldY = world.getY();
+
+		if (popUp.getHeight() + worldY > windowH * 0.8f)
+		{
+			popUp.flipX();
+			worldY -= popUp.getHeight() + (popUp.getHeight() * 0.2f);
+		}
+
+		x += world.getX() - noseOffset;
+		y += worldY + (popUp.getHeight() * 0.2f);
+		popUp.show(x, y);
+	}
 }

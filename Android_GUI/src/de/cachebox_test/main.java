@@ -104,6 +104,7 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.provider.MediaStore;
+import android.text.ClipboardManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -158,6 +159,7 @@ import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Locator.GPS;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
+import de.cachebox_test.Ui.AndroidClipboard;
 import de.cachebox_test.Views.AboutView;
 import de.cachebox_test.Views.CacheListView;
 import de.cachebox_test.Views.CompassView;
@@ -3939,6 +3941,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				return ret;
 			}
 		});
+
+		// set AndroidClipboard
+
+		ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+
+		if (cm != null) GlobalCore.setDefaultClipboard(new AndroidClipboard(cm));
 
 	}
 
