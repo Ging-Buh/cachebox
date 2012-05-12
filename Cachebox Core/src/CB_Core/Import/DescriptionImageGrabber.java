@@ -31,6 +31,11 @@ public class DescriptionImageGrabber
 	{
 		ArrayList<Segment> result = new ArrayList<Segment>();
 
+		if (text == null)
+		{
+			return result;
+		}
+
 		int idx = 0;
 
 		while (true)
