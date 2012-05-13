@@ -280,14 +280,14 @@ public class RouteOverlay
 					// chk if line on Screen
 					if (chkRec.contains(screen1.x, screen1.y) || chkRec.contains(screen1.x, screen1.y))
 					{
-						DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, 0.7f, screen1.x, screen1.y, screen2.x, screen2.y);
+						DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, 0.8f, screen1.x, screen1.y, screen2.x, screen2.y);
 						DrawedLineCount++;
 					}
 					else
 					{// chk if intersection
 						if (chkRec.getIntersection(screen1, screen2, 2) != null)
 						{
-							DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, 0.7f, screen1.x, screen1.y, screen2.x, screen2.y);
+							DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, 0.8f, screen1.x, screen1.y, screen2.x, screen2.y);
 							DrawedLineCount++;
 						}
 

@@ -158,14 +158,6 @@
 
     <!-- das strength_control ist invisible, weil es im main plaziert ist aber nur im sleider gezeichnet wird. -->
     
-    <de.cachebox_test.Custom_Controls.MultiToggleButton
-    android:id="@+id/altNewMainBtn" 
-    android:text="Tog" 
-    android:layout_alignParentLeft="true" 
-    android:layout_alignParentTop="true" 
-    android:layout_marginLeft="5dip" 
-    android:layout_marginTop="50dip" 
-    android:layout_width="50dip" 
-    android:layout_height="45dip"/>
+   
 
 </RelativeLayout>

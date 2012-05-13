@@ -638,6 +638,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	private void renderDebugInfo(SpriteBatch batch)
 	{
+		if (true) return;
+
 		str = debugString;
 		Fonts.getNormal().draw(batch, str, 20, 120);
 

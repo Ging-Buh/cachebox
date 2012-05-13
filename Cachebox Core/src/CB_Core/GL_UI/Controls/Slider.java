@@ -24,6 +24,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	{
 		super(rec, Name);
 		SelectedCacheEventList.Add(this);
+		this.setClickable(true);
 	}
 
 	@Override
@@ -54,6 +55,34 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	{
 		PosY = value;
 		mSlideBox.setY(value);
+	}
+
+	@Override
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
+	{
+		float newY = this.height - touchY + y - mSlideBox.getHeight();
+		setSliderPos(newY);
+		return true;
+	}
+
+	private float touchY = 0;
+
+	@Override
+	public boolean onTouchDown(int x, int y, int pointer, int button)
+	{
+		if (mSlideBox.contains(x, y))
+		{
+			touchY = y;
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean onTouchUp(int x, int y, int pointer, int button)
+	{
+		return true;
 	}
 
 }

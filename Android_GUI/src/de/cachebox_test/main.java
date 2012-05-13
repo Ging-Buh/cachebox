@@ -80,7 +80,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -145,7 +144,6 @@ import de.cachebox_test.Components.search.searchMode;
 import de.cachebox_test.Custom_Controls.DebugInfoPanel;
 import de.cachebox_test.Custom_Controls.DescriptionViewControl;
 import de.cachebox_test.Custom_Controls.Mic_On_Flash;
-import de.cachebox_test.Custom_Controls.MultiToggleButton;
 import de.cachebox_test.Custom_Controls.downSlider;
 import de.cachebox_test.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
 import de.cachebox_test.Custom_Controls.QuickButtonList.HorizontalListView;
@@ -602,7 +600,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 		setQuickButtonHeight(sollHeight);
 
-		iniMainBtnTgl();
+		LinearLayout BtnLayout = (LinearLayout) this.findViewById(R.id.layoutButtons);
+		BtnLayout.setVisibility(View.INVISIBLE);
 
 		if (isFirstStart)
 		{
@@ -665,63 +664,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			startTimer();
 		}
 
-	}
-
-	public void setBottomButtonVisibility(int visibility)
-	{
-		if (visibility == View.GONE)
-		{
-			BtnLayout.setVisibility(View.GONE);
-		}
-		else
-		{
-			if (tgl.getState() == 0)
-			{
-				BtnLayout.setVisibility(View.VISIBLE);
-			}
-			else
-			{
-				BtnLayout.setVisibility(View.INVISIBLE);
-			}
-		}
-
-	}
-
-	LinearLayout BtnLayout;
-	MultiToggleButton tgl;
-
-	private void iniMainBtnTgl()
-	{
-		BtnLayout = (LinearLayout) this.findViewById(R.id.layoutButtons);
-
-		tgl = (MultiToggleButton) this.findViewById(R.id.altNewMainBtn);
-
-		tgl.clearStates();
-		tgl.addState("alt", Color.GREEN);
-		tgl.addState("new", Color.RED);
-
-		tgl.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View v)
-			{
-				tgl.onClick(v);
-
-				if (tgl.getState() == 0)
-				{
-					BtnLayout.setVisibility(View.VISIBLE);
-				}
-				else
-				{
-					BtnLayout.setVisibility(View.INVISIBLE);
-				}
-
-			}
-		});
-
-		tgl.setState(1, true);
-		BtnLayout.setVisibility(View.INVISIBLE);
 	}
 
 	boolean flag = false;
