@@ -125,44 +125,55 @@ public class V_ListView extends ListViewBase
 	{
 		if (mBaseAdapter == null) return;
 		if (mPosDefault == null) calcDefaultPosList();
-
-		for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
+		ArrayList<Float> tmpPosDefault;
+		synchronized (mPosDefault)
 		{
-			if (!mAddeedIndexList.contains(i))
+			tmpPosDefault = (ArrayList<Float>) mPosDefault.clone();
+		}
+		synchronized (mBaseAdapter)
+		{
+
+			for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
 			{
-
-				float itemPos = mPosDefault.get(i);
-				itemPos -= mPos;
-
-				if (itemPos < this.getMaxY() && itemPos + mBaseAdapter.getItemSize(i) > -(mMaxItemCount * minimumItemSize))
+				if (!mAddeedIndexList.contains(i))
 				{
-					ListViewItemBase tmp = mBaseAdapter.getView(i);
-					tmp.setY(itemPos);
-					if (i == mSelectedIndex)
+					if (tmpPosDefault.size() - 1 < i) return;
+
+					float itemPos = tmpPosDefault.get(i);
+					itemPos -= mPos;
+
+					if (itemPos < this.getMaxY() && itemPos + mBaseAdapter.getItemSize(i) > -(mMaxItemCount * minimumItemSize))
 					{
-						tmp.isSelected = true;
-						tmp.resetInitial();
+						ListViewItemBase tmp = mBaseAdapter.getView(i);
+						tmp.setY(itemPos);
+						if (i == mSelectedIndex)
+						{
+							tmp.isSelected = true;
+							tmp.resetInitial();
+						}
+						this.addChild(tmp);
+						// Logger.LogCat("Add Item " + i);
+						mAddeedIndexList.add(tmp.getIndex());
 					}
-					this.addChild(tmp);
-					// Logger.LogCat("Add Item " + i);
-					mAddeedIndexList.add(tmp.getIndex());
+
+					else if (itemPos + mBaseAdapter.getItemSize(i) < -(mMaxItemCount * minimumItemSize))
+					{
+						mLastIndex = i;
+						break;
+					}
+
 				}
 
-				else if (itemPos + mBaseAdapter.getItemSize(i) < -(mMaxItemCount * minimumItemSize))
-				{
-					mLastIndex = i;
-					break;
-				}
-
+				// RenderRequest
+				GL_Listener.glListener.renderOnce(this.getName() + " addVisibleItems");
 			}
-
-			// RenderRequest
-			GL_Listener.glListener.renderOnce(this.getName() + " addVisibleItems");
 		}
 	}
 
 	protected void calcDefaultPosList()
 	{
+		if (mBaseAdapter == null) return; // can´t calc
+
 		if (mPosDefault != null)
 		{
 			mPosDefault.clear();

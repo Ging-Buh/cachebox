@@ -148,6 +148,16 @@ public class CB_RectF
 		return true;
 	}
 
+	public boolean setSize(CB_RectF rec)
+	{
+		if (this.width == rec.width && this.height == rec.height) return false;
+		this.width = rec.width;
+		this.height = rec.height;
+		calcCrossCorner();
+		CallRecChanged();
+		return true;
+	}
+
 	public void setPos(Vector2 Pos)
 	{
 		if (this.Pos.x == Pos.x && this.Pos.y == Pos.y) return;

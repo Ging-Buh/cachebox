@@ -131,7 +131,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	 */
 	private int measure(int measureSpec)
 	{
-		QuickButtonMaxHeight = GlobalCore.isTab ? 0 : UiSizes.getQuickButtonListHeight();
+		QuickButtonMaxHeight = UiSizes.getQuickButtonListHeight();
 		int result = 0;
 		int specSize = MeasureSpec.getSize(measureSpec);
 		result = specSize;
@@ -226,7 +226,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		 */
 		if (!isInitial)
 		{
-			if (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue() && !GlobalCore.isTab)
+			if (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue())
 			{
 				setPos(QuickButtonMaxHeight);
 			}
@@ -234,17 +234,16 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			{
 				setPos(0);
 			}
-			isInitial = true;
+
+			if (CB_Core.GL_UI.Controls.Slider.setAndroidSliderHeight(mBtnRec.height()))
+			{
+				isInitial = true;
+			}
 		}
 
 		if (!drag && !AnimationIsRunning && !ButtonDrag)
 		{
-
-			int value = 0;
-			if (!GlobalCore.isTab) value = Config.settings.quickButtonShow.getValue() ? main.getQuickButtonHeight() : 0;
-
-			yPos = QuickButtonHeight = value;
-
+			yPos = QuickButtonHeight = Config.settings.quickButtonShow.getValue() ? main.getQuickButtonHeight() : 0;
 		}
 
 		float FSize = ((float) (UiSizes.getScaledFontSize_big() * 1.3));
@@ -526,6 +525,9 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		this.invalidate();
 		((main) main.mainActivity).sendContentFrameSizeChanged();
+
+		CB_Core.GL_UI.Controls.Slider.setAndroidSliderPos(Pos + mBtnRec.height());
+
 	}
 
 	int tmpPos = 0;

@@ -210,7 +210,12 @@ public class MapControlTest extends CB_View_Base
 		});
 		this.addChild(btnToggleDebugRec);
 
-		zoomScale = new ZoomScale(GL_UISizes.ZoomScale, "zoomScale", 2, 21, 12);
+		CB_RectF ZoomScale = new CB_RectF();
+		ZoomScale.setSize((float) (44.6666667 * GL_UISizes.DPI), this.height - info.getHeight() - (GL_UISizes.margin * 3)); // 280
+		ZoomScale.setPos(new Vector2(GL_UISizes.margin,
+				(float) (this.height - (GL_UISizes.margin * 4) - GL_UISizes.Toggle.getHeight() - ZoomScale.getHeight())));
+
+		zoomScale = new ZoomScale(ZoomScale, "zoomScale", 2, 21, 12);
 		btnZoom.setMaxZoom(21);
 		btnZoom.setMinZoom(2);
 		btnZoom.setZoom(12);

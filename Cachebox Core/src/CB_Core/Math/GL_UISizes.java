@@ -64,7 +64,6 @@ public class GL_UISizes implements SizeChangedEvent
 		if (Info == null) Info = new CB_RectF();
 		if (Toggle == null) Toggle = new CB_RectF();
 		if (ZoomBtn == null) ZoomBtn = new CB_RectF();
-		if (ZoomScale == null) ZoomScale = new CB_RectF();
 		if (Compass == null) Compass = new CB_RectF();
 		if (InfoLine1 == null) InfoLine1 = new Vector2();
 		if (InfoLine2 == null) InfoLine2 = new Vector2();
@@ -134,11 +133,6 @@ public class GL_UISizes implements SizeChangedEvent
 	 * Das Rechteck in dem die Zoom Buttons dargestellt wird.
 	 */
 	public static CB_RectF ZoomBtn;
-
-	/**
-	 * Das Rechteck in dem die Zoom Scala dargestellt wird.
-	 */
-	public static CB_RectF ZoomScale;
 
 	/**
 	 * Die Größe des Compass Icons. Welche Abhängig von der Höhe des Info Panels ist.
@@ -219,7 +213,7 @@ public class GL_UISizes implements SizeChangedEvent
 		Toggle.setPos(new Vector2((float) (w - margin - Toggle.getWidth()), h - margin - Toggle.getHeight()));
 
 		ZoomBtn.setPos(new Vector2((float) (w - margin - ZoomBtn.getWidth()), margin));
-		ZoomScale.setPos(new Vector2(margin, (float) (h - (margin * 4) - Toggle.getHeight() - ZoomScale.getHeight())));
+
 		InfoLine1.x = Compass.getCrossPos().x + margin;
 		TextBounds bounds = Fonts.getNormal().getBounds("52° 34,806N ");
 		InfoLine2.x = Info.getX() + Info.getWidth() - bounds.width - (margin * 2);
@@ -242,7 +236,6 @@ public class GL_UISizes implements SizeChangedEvent
 			writeDebug("Info", Info);
 			writeDebug("Toggle", Toggle);
 			writeDebug("ZoomBtn", ZoomBtn);
-			writeDebug("ZoomScale", ZoomScale);
 			writeDebug("PosMarkerSize", PosMarkerSize);
 			writeDebug("TargetArrow", TargetArrow);
 			writeDebug("UnderlaySizes", UnderlaySizes);
@@ -299,7 +292,6 @@ public class GL_UISizes implements SizeChangedEvent
 		halfCompass = Compass.getHeight() / 2;
 		Toggle.setSize(UiSizes.getButtonWidth(), UiSizes.getButtonHeight());
 		ZoomBtn.setSize((float) (158 * DPI), 48 * DPI);
-		ZoomScale.setSize((float) (44.6666667 * DPI), frameLeftwidth); // 280
 		PosMarkerSize = (float) (46.666667 * DPI);
 		halfPosMarkerSize = PosMarkerSize / 2;
 

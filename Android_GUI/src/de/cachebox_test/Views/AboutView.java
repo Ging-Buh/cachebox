@@ -467,7 +467,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	@Override
 	public void GpsStateChanged()
 	{
-		if ((GlobalCore.Locator.getLocation() != null) && (GlobalCore.Locator.getLocation().hasAccuracy()))
+		if ((GlobalCore.Locator != null) && (GlobalCore.Locator.getLocation() != null) && (GlobalCore.Locator.getLocation().hasAccuracy()))
 		{
 			int radius = (int) GlobalCore.Locator.getLocation().getAccuracy();
 			Accuracy.setText("+/- " + String.valueOf(radius) + "m (" + GlobalCore.Locator.ProviderString() + ")");
@@ -476,7 +476,7 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		{
 			Accuracy.setText("");
 		}
-		if (GlobalCore.Locator.getLocation() != null)
+		if ((GlobalCore.Locator != null) && GlobalCore.Locator.getLocation() != null)
 		{
 			Current.setText(GlobalCore.FormatLatitudeDM(GlobalCore.Locator.getLocation().getLatitude()) + " "
 					+ GlobalCore.FormatLongitudeDM(GlobalCore.Locator.getLocation().getLongitude()));

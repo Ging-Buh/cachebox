@@ -198,6 +198,16 @@ public abstract class ListViewBase extends CB_View_Base
 	protected abstract void calcDefaultPosList();
 
 	@Override
+	public void onRezised(CB_RectF rec)
+	{
+		// setBaseAdapter(mBaseAdapter);
+
+		// Items neu laden
+		calcDefaultPosList();
+		reloadItems();
+	}
+
+	@Override
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
 		isTouch = false;

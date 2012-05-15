@@ -5,6 +5,7 @@ import java.io.File;
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Controls.Slider;
@@ -46,6 +47,7 @@ import CB_Core.GL_UI.Views.TrackListView;
 import CB_Core.GL_UI.Views.TrackableListView;
 import CB_Core.GL_UI.Views.WaypointView;
 import CB_Core.GL_UI.Views.TestViews.TestView;
+import CB_Core.Log.Logger;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
@@ -55,7 +57,8 @@ import com.badlogic.gdx.graphics.Color;
 
 public class TabMainView extends MainViewBase
 {
-	// private CB_Action actionTest;
+	public static TabMainView that;
+
 	private CB_Action_ShowTestView actionTestView;
 	private CB_Action_ShowHint actionShowHint;
 	private CB_Action_ShowMap actionShowMap;
@@ -112,7 +115,7 @@ public class TabMainView extends MainViewBase
 	{
 		super(X, Y, Width, Height, Name);
 
-		mainView = this;
+		that = (TabMainView) (mainView = this);
 
 	}
 
@@ -122,6 +125,9 @@ public class TabMainView extends MainViewBase
 		// Wird inerhalb des ersten Render Vorgangs aufgerufen.
 
 		// eine Initialisierung der actions kommt hier zu spät, daher als Aufruf aus dem Constructor verschoben!
+
+		// Config.settings.quickButtonShow.setValue(false);
+		// Config.AcceptChanges();
 
 		ini();
 
@@ -489,5 +495,18 @@ public class TabMainView extends MainViewBase
 			absolutPath = trackPath + "/" + file;
 		}
 		RouteOverlay.Routes.add(RouteOverlay.LoadRoute(absolutPath, TrackColor, Config.settings.TrackDistance.getValue()));
+	}
+
+	public void setContentMaxY(float y)
+	{
+		Logger.LogCat("TabMainView SetContent maxY" + y);
+		for (GL_View_Base view : this.childs)
+		{
+			if (view instanceof CB_TabView)
+			{
+				view.setHeight(y);
+			}
+		}
+
 	}
 }

@@ -85,34 +85,49 @@ public class H_ListView extends ListViewBase
 		if (mBaseAdapter == null) return;
 		if (mPosDefault == null) calcDefaultPosList();
 
+		ArrayList<Float> tmpPosDefault;
+		synchronized (mPosDefault)
+		{
+			tmpPosDefault = (ArrayList<Float>) mPosDefault.clone();
+		}
+
 		for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
 		{
 			if (!mAddeedIndexList.contains(i))
 			{
 
+				if (tmpPosDefault.size() - 1 < i || mBaseAdapter.getCount() < i) return;
+
 				ListViewItemBase tmp = mBaseAdapter.getView(i);
 
-				// if (mPosDefault.get(i) < this.getMaxX())
-				if (mPosDefault.get(i) + tmp.getWidth() - mPos > 0)
+				if (tmp == null) return;
+				try
 				{
-
-					float itemPos = mPosDefault.get(i);
-					itemPos -= mPos;
-
-					if (itemPos <= this.getWidth())
+					if (tmpPosDefault.get(i) + tmp.getWidth() - mPos > 0)
 					{
-						tmp.setX(itemPos);
-						// Logger.LogCat("Add: " + tmp.getName());
-						if (i == mSelectedIndex)
+
+						float itemPos = tmpPosDefault.get(i);
+						itemPos -= mPos;
+
+						if (itemPos <= this.getWidth())
 						{
-							tmp.isSelected = true;
-							tmp.resetInitial();
+							tmp.setX(itemPos);
+							// Logger.LogCat("Add: " + tmp.getName());
+							if (i == mSelectedIndex)
+							{
+								tmp.isSelected = true;
+								tmp.resetInitial();
+							}
+							this.addChild(tmp);
+							mAddeedIndexList.add(tmp.getIndex());
 						}
-						this.addChild(tmp);
-						mAddeedIndexList.add(tmp.getIndex());
+						else
+							break;
 					}
-					else
-						break;
+				}
+				catch (Exception e)
+				{
+					// egal
 				}
 			}
 

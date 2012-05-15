@@ -15,6 +15,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
+import CB_Core.Log.Logger;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
@@ -26,9 +27,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class CB_Button extends Button implements OnClickListener, OnLongClickListener
 {
 
-	ArrayList<CB_ActionButton> mButtonActions;
-	CB_Action_ShowView aktActionView = null;
-	GestureHelp help;
+	private ArrayList<CB_ActionButton> mButtonActions;
+	private CB_Action_ShowView aktActionView = null;
+	private GestureHelp help;
+	private boolean GestureIsOn = true;
 
 	public CB_Button(CB_RectF rec, String Name, ArrayList<CB_ActionButton> ButtonActions)
 	{
@@ -260,15 +262,21 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
+
 		isDragged = false;
 		downPos = new Point(x, y);
-		return super.onTouchDown(x, y, pointer, button);
+		boolean ret = super.onTouchDown(x, y, pointer, button);
+
+		return (GestureIsOn) ? ret : false;
 	}
 
 	@Override
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 		super.onTouchDragged(x, y, pointer, KineticPan);
+
+		if (!GestureIsOn) return false;
+
 		if (KineticPan) GL_Listener.glListener.StopKinetic(x, y, pointer, true);
 		isDragged = true;
 		return true;
@@ -279,8 +287,8 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 	{
 		boolean result = super.onTouchUp(x, y, pointer, button);
 
-		if (!isDragged) return result;
-
+		if (!isDragged) return (GestureIsOn) ? result : true;
+		Logger.LogCat("CB_Button onTouchUP()");
 		int dx = x - downPos.x;
 		int dy = y - downPos.y;
 		GestureDirection direction = GestureDirection.Up;
@@ -314,6 +322,18 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 		}
 		isDragged = false;
 		return true;
+	}
+
+	public CB_Button disableGester()
+	{
+		GestureIsOn = false;
+		return this;
+	}
+
+	public CB_Button enableGester()
+	{
+		GestureIsOn = true;
+		return this;
 	}
 
 }

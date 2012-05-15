@@ -8,6 +8,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 
@@ -145,6 +146,7 @@ public class ZoomScale extends CB_View_Base
 	 */
 	private Sprite drawSprite(CB_RectF rect)
 	{
+		if (rect == null) return null;
 
 		if (storedRec == null || !(storedRec.equals(rect)))
 		{
@@ -313,7 +315,6 @@ public class ZoomScale extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -323,4 +324,14 @@ public class ZoomScale extends CB_View_Base
 		super.onStop();
 		CachedScaleSprite = null;
 	}
+
+	@Override
+	public void onRezised(CB_RectF rec)
+	{
+		Logger.LogCat("ZoomScale Rezised");
+		ScaleDrawRec = null;
+		storedRec = null;
+		CachedScaleSprite = null;
+	}
+
 }

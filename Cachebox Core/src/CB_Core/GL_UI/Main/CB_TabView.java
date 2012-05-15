@@ -43,8 +43,27 @@ public class CB_TabView extends CB_View_Base
 	{
 		super(rec, Name);
 		mContentRec = rec.copy();
+		layout();
+	}
+
+	@Override
+	public void onRezised(CB_RectF rec)
+	{
+		layout();
+	}
+
+	private void layout()
+	{
 		mContentRec.setHeight(this.getHeight() - GL_UISizes.BottomButtonHeight);
 		mContentRec.setPos(0, GL_UISizes.BottomButtonHeight);
+
+		if (aktView != null)
+		{
+			// set View size and pos
+			aktView.setSize(this.width, this.height - buttonListView.getHeight());
+			aktView.setPos(new Vector2(0, buttonListView.getHeight()));
+
+		}
 	}
 
 	@Override

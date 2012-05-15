@@ -33,7 +33,7 @@ import de.cachebox_test.Custom_Controls.QuickButtonList.QuickButtonItem;
 
 public class Global
 {
-	public static final int CurrentRevision = 860;
+	public static final int CurrentRevision = 861;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 	public static final int LatestDatabaseChange = 1016;
@@ -571,7 +571,7 @@ public class Global
 					getDrawable(R.drawable.solver_icon, res), // 17
 					getDrawable(R.drawable.images_icon, res), // 18
 					getDrawable(R.drawable.hint_icon, res), // 19
-
+					getDrawable(R.drawable.hintergrund, res), // 20
 			};
 
 		Arrows = new Drawable[]

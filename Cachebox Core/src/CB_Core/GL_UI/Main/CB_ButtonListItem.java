@@ -21,11 +21,23 @@ public class CB_ButtonListItem extends ListViewItemBase
 
 	public CB_ButtonListItem(int Index, CB_Button Button, String Name)
 	{
-		super(new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight), Index, Name);
+		super(new CB_RectF(Button), Index, Name);
 		mCB_Button = Button;
 		mCB_Button.setPos(new Vector2(0, 0));
-		mCB_Button.setSize(GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
+		mCB_Button.setSize(Button);
 		this.addChild(mCB_Button);
+	}
+
+	@Override
+	public boolean onTouchUp(int x, int y, int pointer, int button)
+	{
+		return mCB_Button.onTouchUp(x, y, pointer, button);
+	}
+
+	@Override
+	public boolean click(int x, int y, int pointer, int button)
+	{
+		return mCB_Button.click(x, y, pointer, button);
 	}
 
 	@Override

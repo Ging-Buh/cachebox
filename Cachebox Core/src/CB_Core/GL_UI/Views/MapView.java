@@ -132,8 +132,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	// screencenter in World Coordinates (Pixels in Zoom Level maxzoom
 	PointL screenCenterW = new PointL(0, 0); // wird am Anfang von Render() gesetzt
 	PointL screenCenterT = new PointL(0, 0); // speichert dauerhaft den Zustand
-	int width;
-	int height;
+	int mapIntWidth;
+	int mapIntHeight;
 	int drawingWidth;
 	int drawingHeight;
 
@@ -215,7 +215,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		info = (MapInfoPanel) this.addChild(new MapInfoPanel(GL_UISizes.Info, "InfoPanel"));
 
-		zoomScale = new ZoomScale(GL_UISizes.ZoomScale, "zoomScale", 2, 21, 12);
+		CB_RectF ZoomScaleRec = new CB_RectF();
+		ZoomScaleRec.setSize((float) (44.6666667 * GL_UISizes.DPI),
+				this.height - info.getHeight() - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
+		ZoomScaleRec.setPos(new Vector2(GL_UISizes.margin, zoomBtn.getMaxY() + GL_UISizes.margin));
+
+		zoomScale = new ZoomScale(ZoomScaleRec, "zoomScale", 2, 21, 12);
 		this.addChild(zoomScale);
 
 		InitializeMap();
@@ -233,10 +238,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			CurrentLayer = ManagerBase.Manager.GetLayerByName((currentLayerName == "") ? "Mapnik" : currentLayerName, currentLayerName, "");
 		}
 
-		width = (int) rec.getWidth();
-		height = (int) rec.getHeight();
-		drawingWidth = width;
-		drawingHeight = height;
+		mapIntWidth = (int) rec.getWidth();
+		mapIntHeight = (int) rec.getHeight();
+		drawingWidth = mapIntWidth;
+		drawingHeight = mapIntHeight;
 
 		iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
 
@@ -341,14 +346,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	public void onRezised(CB_RectF rec)
 	{
 		// wenn sich die Größe nicht geändert hat, brauchen wir nicht zu machen!
-		if (rec.getWidth() == this.width && rec.getHeight() == this.height)
+		if (rec.getWidth() == this.mapIntWidth && rec.getHeight() == this.mapIntHeight)
 		{
 			// Ausser wenn Camera == null!
 			if (camera != null) return;
 		}
 		TargetArrowScreenRec = null;
-		this.width = (int) rec.getWidth();
-		this.height = (int) rec.getHeight(); // Gdx.graphics.getHeight();
+		this.mapIntWidth = (int) rec.getWidth();
+		this.mapIntHeight = (int) rec.getHeight(); // Gdx.graphics.getHeight();
 		this.drawingWidth = (int) rec.getWidth();
 		this.drawingHeight = (int) rec.getHeight();
 
@@ -362,14 +367,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		// camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
 		camera.position.set(0, 0, 0);
 
-		// textMatrix.setToOrtho2D(0, 0, width, height);
-
-		// GL_UISizes.initial(width, height);
-
 		// setze Size als IniSize
-		Config.settings.MapIniWidth.setValue(width);
-		Config.settings.MapIniHeight.setValue(height);
+		Config.settings.MapIniWidth.setValue(mapIntWidth);
+		Config.settings.MapIniHeight.setValue(mapIntHeight);
 		Config.AcceptChanges();
+
+		Logger.LogCat("MapView Size Changed MaxY=" + this.getMaxY());
 
 		requestLayout();
 
@@ -575,8 +578,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		// for (int tmpzoom = zoom; tmpzoom <= zoom; tmpzoom++)
 		{
 			int tmpzoom = aktZoom;
-			Descriptor lo = screenToDescriptor(new Vector2(width / 2 - drawingWidth / 2, height / 2 - drawingHeight / 2), tmpzoom);
-			Descriptor ru = screenToDescriptor(new Vector2(width / 2 + drawingWidth / 2, height / 2 + drawingHeight / 2), tmpzoom);
+			Descriptor lo = screenToDescriptor(new Vector2(mapIntWidth / 2 - drawingWidth / 2, mapIntHeight / 2 - drawingHeight / 2),
+					tmpzoom);
+			Descriptor ru = screenToDescriptor(new Vector2(mapIntWidth / 2 + drawingWidth / 2, mapIntHeight / 2 + drawingHeight / 2),
+					tmpzoom);
 			for (int i = lo.X; i <= ru.X; i++)
 			{
 				for (int j = lo.Y; j <= ru.Y; j++)
@@ -759,14 +764,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		float x = (float) (256.0 * Descriptor.LongitudeToTileX(MAX_MAP_ZOOM, coord.Longitude));
 		float y = (float) (-256.0 * Descriptor.LatitudeToTileY(MAX_MAP_ZOOM, coord.Latitude));
 
-		float halfHeight = height / 2;
-		float halfWidth = width / 2;
+		float halfHeight = mapIntHeight / 2;
+		float halfWidth = mapIntWidth / 2;
 
 		// create ScreenRec
 
 		if (TargetArrowScreenRec == null)
 		{
-			TargetArrowScreenRec = new CB_RectF(0, 0, width, height);
+			TargetArrowScreenRec = new CB_RectF(0, 0, mapIntWidth, mapIntHeight);
 			TargetArrowScreenRec.ScaleCenter(0.9f);
 			TargetArrowScreenRec.setHeight(TargetArrowScreenRec.getHeight() - (TargetArrowScreenRec.getHeight() - info.getY())
 					- zoomBtn.getHeight());
@@ -778,31 +783,38 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		Vector2 screen = worldToScreen(new Vector2(x, y));
 		Vector2 target = new Vector2(screen.x, screen.y);
 
-		Vector2 newTarget = TargetArrowScreenRec.getIntersection(ScreenCenter, target);
-
-		// Rotation berechnen
-		if (newTarget != null)
+		try
 		{
+			Vector2 newTarget = TargetArrowScreenRec.getIntersection(ScreenCenter, target);
 
-			float direction = get_angle(ScreenCenter.x, ScreenCenter.y, newTarget.x, newTarget.y);
-			direction = 180 - direction;
+			// Rotation berechnen
+			if (newTarget != null)
+			{
 
-			// draw sprite
-			Sprite arrow = SpriteCache.Arrows.get(4);
-			arrow.setRotation(direction);
+				float direction = get_angle(ScreenCenter.x, ScreenCenter.y, newTarget.x, newTarget.y);
+				direction = 180 - direction;
 
-			arrow.setBounds(newTarget.x - GL_UISizes.TargetArrow.halfWidth, newTarget.y - GL_UISizes.TargetArrow.height,
-					GL_UISizes.TargetArrow.width, GL_UISizes.TargetArrow.height);
+				// draw sprite
+				Sprite arrow = SpriteCache.Arrows.get(4);
+				arrow.setRotation(direction);
 
-			arrow.setOrigin(GL_UISizes.TargetArrow.halfWidth, GL_UISizes.TargetArrow.height);
-			arrow.draw(batch);
+				arrow.setBounds(newTarget.x - GL_UISizes.TargetArrow.halfWidth, newTarget.y - GL_UISizes.TargetArrow.height,
+						GL_UISizes.TargetArrow.width, GL_UISizes.TargetArrow.height);
 
-			Rectangle bound = arrow.getBoundingRectangle();
+				arrow.setOrigin(GL_UISizes.TargetArrow.halfWidth, GL_UISizes.TargetArrow.height);
+				arrow.draw(batch);
 
-			TargetArrow = new CB_RectF(bound.x, bound.y, bound.width, bound.height);
+				Rectangle bound = arrow.getBoundingRectangle();
 
+				TargetArrow = new CB_RectF(bound.x, bound.y, bound.width, bound.height);
+
+			}
+			else
+			{
+				TargetArrow = null;
+			}
 		}
-		else
+		catch (Exception e)
 		{
 			TargetArrow = null;
 		}
@@ -869,15 +881,15 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 						if (directLineOverlay == null)
 						{
-							int w = getNextHighestPO2((int) width);
-							int h = getNextHighestPO2((int) height);
+							int w = getNextHighestPO2((int) mapIntWidth);
+							int h = getNextHighestPO2((int) mapIntHeight);
 							Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
 							p.setColor(1f, 0f, 0f, 1f);
 							p.drawLine((int) myPointOnScreen.x, (int) myPointOnScreen.y, (int) screen.x, (int) screen.y);
 
 							directLineTexture = new Texture(p, Pixmap.Format.RGBA8888, false);
 
-							directLineOverlay = new Sprite(directLineTexture, (int) width, (int) height);
+							directLineOverlay = new Sprite(directLineTexture, (int) mapIntWidth, (int) mapIntHeight);
 							directLineOverlay.setPosition(0, 0);
 							directLineOverlay.flip(false, true);
 							p.dispose();
@@ -1060,21 +1072,21 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private void loadTiles()
 	{
 
-		mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, false);
+		mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, false);
 
 		if (ManagerBase.Manager == null) return; // Kann nichts laden, wenn der Manager Null ist!
 
 		deleteUnusedTiles();
 		// alle notwendigen Tiles zum Laden einstellen in die Queue
 		// (queuedTiles)
-		int extensionTop = width / 2;
-		int extensionBottom = width / 2;
-		int extensionLeft = width / 2;
-		int extensionRight = width / 2;
-		Descriptor lo = screenToDescriptor(new Vector2(width / 2 - drawingWidth / 2 - extensionLeft, height / 2 - drawingHeight / 2
-				- extensionTop), aktZoom);
-		Descriptor ru = screenToDescriptor(new Vector2(width / 2 + drawingWidth / 2 + extensionRight, height / 2 + drawingHeight / 2
-				+ extensionBottom), aktZoom);
+		int extensionTop = mapIntWidth / 2;
+		int extensionBottom = mapIntWidth / 2;
+		int extensionLeft = mapIntWidth / 2;
+		int extensionRight = mapIntWidth / 2;
+		Descriptor lo = screenToDescriptor(new Vector2(mapIntWidth / 2 - drawingWidth / 2 - extensionLeft, mapIntHeight / 2 - drawingHeight
+				/ 2 - extensionTop), aktZoom);
+		Descriptor ru = screenToDescriptor(new Vector2(mapIntWidth / 2 + drawingWidth / 2 + extensionRight, mapIntHeight / 2
+				+ drawingHeight / 2 + extensionBottom), aktZoom);
 
 		loadedTilesLock.lock();
 		queuedTilesLock.lock();
@@ -1331,8 +1343,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		Vector2 result = new Vector2(0, 0);
 		synchronized (screenCenterW)
 		{
-			result.x = screenCenterW.x + ((long) point.x - width / 2) * camera.zoom;
-			result.y = -screenCenterW.y + ((long) point.y - height / 2) * camera.zoom;
+			result.x = screenCenterW.x + ((long) point.x - mapIntWidth / 2) * camera.zoom;
+			result.y = -screenCenterW.y + ((long) point.y - mapIntHeight / 2) * camera.zoom;
 		}
 		return result;
 	}
@@ -1342,11 +1354,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		synchronized (screenCenterW)
 		{
 			Vector2 result = new Vector2(0, 0);
-			result.x = ((long) point.x - screenCenterW.x) / camera.zoom + (float) width / 2;
-			result.y = -(-(long) point.y + screenCenterW.y) / camera.zoom + (float) height / 2;
-			result.add(-(float) width / 2, -(float) height / 2);
+			result.x = ((long) point.x - screenCenterW.x) / camera.zoom + (float) mapIntWidth / 2;
+			result.y = -(-(long) point.y + screenCenterW.y) / camera.zoom + (float) mapIntHeight / 2;
+			result.add(-(float) mapIntWidth / 2, -(float) mapIntHeight / 2);
 			result.rotate(mapHeading);
-			result.add((float) width / 2, (float) height / 2);
+			result.add((float) mapIntWidth / 2, (float) mapIntHeight / 2);
 			return result;
 		}
 	}
@@ -1424,10 +1436,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			if (heading >= 180) heading -= 180;
 			if (heading > 90) heading = 180 - heading;
 			double alpha = heading / 180 * Math.PI;
-			double beta = Math.atan((double) width / (double) height);
+			double beta = Math.atan((double) mapIntWidth / (double) mapIntHeight);
 			double gammaW = Math.PI / 2 - alpha - beta;
 			// halbe Länge der Diagonalen
-			double diagonal = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2)) / 2;
+			double diagonal = Math.sqrt(Math.pow(mapIntWidth, 2) + Math.pow(mapIntHeight, 2)) / 2;
 			drawingWidth = (int) (Math.cos(gammaW) * diagonal * 2);
 
 			double gammaH = alpha - beta;
@@ -1437,8 +1449,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			this.mapHeading = 0;
 			this.arrowHeading = heading;
-			drawingWidth = width;
-			drawingHeight = height;
+			drawingWidth = mapIntWidth;
+			drawingHeight = mapIntHeight;
 		}
 
 		if (togBtn.getState() > 0 && togBtn.getState() != 2) setCenter(new Coordinate(locator.getLocation().Latitude,
@@ -1475,10 +1487,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			if (heading >= 180) heading -= 180;
 			if (heading > 90) heading = 180 - heading;
 			double alpha = heading / 180 * Math.PI;
-			double beta = Math.atan((double) width / (double) height);
+			double beta = Math.atan((double) mapIntWidth / (double) mapIntHeight);
 			double gammaW = Math.PI / 2 - alpha - beta;
 			// halbe Länge der Diagonalen
-			double diagonal = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2)) / 2;
+			double diagonal = Math.sqrt(Math.pow(mapIntWidth, 2) + Math.pow(mapIntHeight, 2)) / 2;
 			drawingWidth = (int) (Math.cos(gammaW) * diagonal * 2);
 
 			double gammaH = alpha - beta;
@@ -1488,8 +1500,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			this.mapHeading = 0;
 			this.arrowHeading = heading;
-			drawingWidth = width;
-			drawingHeight = height;
+			drawingWidth = mapIntWidth;
+			drawingHeight = mapIntHeight;
 		}
 
 	}
@@ -1499,8 +1511,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		alignToCompass = value;
 		if (!value)
 		{
-			drawingWidth = width;
-			drawingHeight = height;
+			drawingWidth = mapIntWidth;
+			drawingHeight = mapIntHeight;
 		}
 	}
 
@@ -1708,7 +1720,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
-		y = height - y;
+		y = mapIntHeight - y;
 		// debugString = "touchDown " + x + " - " + y;
 		if (inputState == InputState.Idle)
 		{
@@ -1728,7 +1740,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
-		y = height - y;
+		y = mapIntHeight - y;
 		// debugString = "touchDragged: " + x + " - " + y;
 		// debugString = "touchDragged " + inputState.toString();
 		if (inputState == InputState.IdleDown)
@@ -1855,7 +1867,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
-		y = height - y;
+		y = mapIntHeight - y;
 		debugString = "touchUp: " + x + " - " + y;
 		// debugString = "touchUp " + inputState.toString();
 		if (inputState == InputState.IdleDown)
@@ -1956,7 +1968,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 							infoBubble.setVisibility(VISIBLE);
 							infoBubble.setCache(minWpi.Cache);
 
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
+									aktZoom, true);
 
 						}
 						else
@@ -1969,7 +1982,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 							// xxx ThreadSaveSetSelectedWP(minWpi.Cache, minWpi.Waypoint);
 							// FormMain.WaypointListPanel.AlignSelected();
 							// updateCacheList();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
+									aktZoom, true);
 						}
 
 					}
@@ -1981,7 +1995,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 							infoBubble.setVisibility(VISIBLE);
 							infoBubble.setCache(minWpi.Cache);
 
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
+									aktZoom, true);
 						}
 						else
 						{
@@ -1992,7 +2007,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 							// Cacheliste ausrichten
 							// xxx ThreadSaveSetSelectedWP(minWpi.Cache);
 							// updateCacheList();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(width, height)), aktZoom, true);
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
+									aktZoom, true);
 						}
 					}
 					inputState = InputState.Idle;
@@ -2184,19 +2200,22 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 	}
 
-	@Override
-	public void onParentRezised(CB_RectF rec)
-	{
-		this.setSize(rec.getSize());
-	}
+	// @Override
+	// public void onParentRezised(CB_RectF rec)
+	// {
+	// this.setSize(rec.getSize());
+	// }
 
 	private void requestLayout()
 	{
-		Logger.LogCat("TestView clacLayout()");
+		Logger.LogCat("MapView clacLayout()");
 		float margin = GL_UISizes.margin;
-		info.setPos(new Vector2(margin, (float) (this.height - margin - info.getHeight())));
+		info.setPos(new Vector2(margin, (float) (this.mapIntHeight - margin - info.getHeight())));
 		info.setVisibility(showCompass ? GL_View_Base.VISIBLE : GL_View_Base.INVISIBLE);
-		togBtn.setPos(new Vector2((float) (this.width - margin - togBtn.getWidth()), this.height - margin - togBtn.getHeight()));
+		togBtn.setPos(new Vector2((float) (this.mapIntWidth - margin - togBtn.getWidth()), this.mapIntHeight - margin - togBtn.getHeight()));
+
+		zoomScale.setSize((float) (44.6666667 * GL_UISizes.DPI),
+				this.height - info.getHeight() - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
 
 		GL_Listener.glListener.renderOnce(this.getName() + " requestLayout");
 	}

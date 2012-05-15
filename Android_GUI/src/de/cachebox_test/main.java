@@ -78,7 +78,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.hardware.Sensor;
@@ -390,7 +389,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		// initial UiSizes
 		// UiSize Structur für die Berechnung der Größen zusammen stellen!
-		Resources res = this.getResources();
+		// Resources res = this.getResources();
 
 		final Bundle extras = getIntent().getExtras();
 		if (extras != null)
@@ -588,16 +587,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 		downSlider.isInitial = false;
-		int sollHeight = 0;
-		if (GlobalCore.isTab)
-		{
-			sollHeight = UiSizes.getQuickButtonListHeight();
-		}
-		else
-		{
-			sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes
-					.getQuickButtonListHeight() : 0;
-		}
+
+		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes
+				.getQuickButtonListHeight() : 0;
+
 		setQuickButtonHeight(sollHeight);
 
 		LinearLayout BtnLayout = (LinearLayout) this.findViewById(R.id.layoutButtons);
@@ -1353,7 +1346,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 		super.onResume();
-		// graphics.isShown = true;
 
 		if (runsWithAkku) counter.start();
 		if (mSensorManager != null) mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
@@ -2172,7 +2164,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		buttonMisc = (ImageButton) this.findViewById(R.id.buttonMisc);
 
 		cacheNameView = (CacheNameView) this.findViewById(R.id.main_cache_name_view);
+
 		QuickButtonList = (HorizontalListView) this.findViewById(R.id.main_quick_button_list);
+		QuickButtonList.setBackgroundDrawable(Global.BtnIcons[20]);
+
 		strengthLayout = (LinearLayout) this.findViewById(R.id.main_strength_control);
 
 		searchLayout = (LinearLayout) this.findViewById(R.id.searchDialog);
@@ -3398,12 +3393,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public void setQuickButtonHeight(int value)
 	{
-
-		if (GlobalCore.isTab)
-		{ // im Tab Layout wird die QuickButton list nicht verkleinert!
-			value = 0;
-		}
-
 		horizontalListViewHeigt = value;
 		Thread t = new Thread()
 		{
