@@ -46,11 +46,11 @@ public class DesktopMain {
 
 
 		InitalConfig();
-		Config.settings.MapViewDPIFaktor.setValue(1);
-		Config.settings.MapViewFontFaktor.setValue(1);
-		
-		Config.settings.OsmMinLevel.setValue(2);
-			
+//		Config.settings.MapViewDPIFaktor.setValue(1);
+//		Config.settings.MapViewFontFaktor.setValue(1);
+//		
+//		Config.settings.OsmMinLevel.setValue(2);
+//		Config.settings.nightMode.setValue(true);
 
 		CB_UI = new Desktop_GL_Listner(ui.Window.width,
 				ui.Window.height);

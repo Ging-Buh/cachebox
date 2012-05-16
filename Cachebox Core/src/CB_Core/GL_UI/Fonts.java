@@ -48,13 +48,9 @@ public class Fonts
 		normalBubble = loadScaledFont((int) (FONT_SIZE_NORMAL * 0.7), density);
 		smallBubble = loadScaledFont((int) (FONT_SIZE_SMALL * 0.7), density);
 
-		fontAB15_out = new BitmapFont(Gdx.files.absolute(defaultFontPath + "15_out.fnt"),
-				Gdx.files.absolute(defaultFontPath + "15_out.png"), false);
-		fontAB16_out = new BitmapFont(Gdx.files.absolute(defaultFontPath + "16_out.fnt"),
-				Gdx.files.absolute(defaultFontPath + "16_out.png"), false);
-		fontAB17_out = new BitmapFont(Gdx.files.absolute(defaultFontPath + "17_out.fnt"),
-				Gdx.files.absolute(defaultFontPath + "17_out.png"), false);
-
+		fontAB15_out = loadScaledFont("15_out");
+		fontAB16_out = loadScaledFont("16_out");
+		fontAB17_out = loadScaledFont("17_out");
 	}
 
 	static String defaultFontPath;
@@ -65,20 +61,32 @@ public class Fonts
 
 	private static BitmapFont loadScaledFont(int Size, double density)
 	{
+		int scaled = (int) (Size * density);
+
+		if (scaled < 6) scaled = 6;
+		if (scaled > 44) scaled = 44;
+
+		String strScaled = String.valueOf(scaled);
+
+		return loadScaledFont(strScaled);
+	}
+
+	private static BitmapFont loadScaledFont(String strScaled)
+	{
 
 		String fontPath = null;
 
 		String path = Config.settings.SkinFolder.getValue();
 
-		costumFontPath = path + "/day/fonts/";
-		costumFontPathNight = path + "/night/fonts/";
+		costumFontPath = path + "/day/fonts/" + strScaled + ".png";
+		costumFontPathNight = path + "/night/fonts/" + strScaled + ".png";
 
 		String defaultPath = path;
 		int pos = defaultPath.lastIndexOf("/");
 		defaultPath = defaultPath.substring(0, pos) + "/default";
 
-		defaultFontPath = defaultPath + "/day/fonts/";
-		defaultFontPathNight = defaultPath + "/night/fonts/";
+		defaultFontPath = defaultPath + "/day/fonts/" + strScaled + ".png";
+		defaultFontPathNight = defaultPath + "/night/fonts/" + strScaled + ".png";
 
 		if (Config.settings.nightMode.getValue())
 		{
@@ -96,19 +104,13 @@ public class Fonts
 			;
 		}
 
-		int scaled = (int) (Size * density);
-
-		if (scaled < 6) scaled = 6;
-		if (scaled > 44) scaled = 44;
-
-		// BitmapFont ret = new BitmapFont(Gdx.files.absolute(fontPath + scaled + ".fnt"), Gdx.files.absolute(fontPath + scaled + ".png"),
-		// false);
-
-		Texture tex = new Texture(Gdx.files.absolute(fontPath + scaled + ".png"));
-		// tex.setFilter(TextureFilter.Nearest, TextureFilter.Linear);
+		Texture tex = new Texture(Gdx.files.absolute(fontPath));
 		tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		TextureRegion region = new TextureRegion(tex);
-		BitmapFont ret = new BitmapFont(Gdx.files.absolute(fontPath + scaled + ".fnt"), region, false);
+
+		fontPath = fontPath.replace(".png", ".fnt");
+
+		BitmapFont ret = new BitmapFont(Gdx.files.absolute(fontPath), region, false);
 
 		return ret;
 	}
