@@ -1,13 +1,15 @@
 package CB_Core.GL_UI.Controls;
 
+import java.util.ArrayList;
+
+import CB_Core.Config;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.H_ListView;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
-import CB_Core.GL_UI.Main.CB_Button;
-import CB_Core.GL_UI.Main.CB_ButtonList;
-import CB_Core.GL_UI.Main.CB_ButtonListItem;
+import CB_Core.GL_UI.Main.Actions.QuickButton.QuickActions;
+import CB_Core.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_Core.Math.CB_RectF;
 
 public class QuickButtonList extends H_ListView
@@ -27,30 +29,6 @@ public class QuickButtonList extends H_ListView
 
 		btnYPos = this.halfHeight - btnRec.getHalfHeight();
 
-		CB_Button btn1 = new CB_Button(btnRec, "Button1", SpriteCache.CacheList).disableGester();
-		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCache.Cache).disableGester();
-		CB_Button btn3 = new CB_Button(btnRec, "Button3", SpriteCache.Nav).disableGester();
-		CB_Button btn4 = new CB_Button(btnRec, "Button4", SpriteCache.Tool).disableGester();
-		CB_Button btn5 = new CB_Button(btnRec, "Button5", SpriteCache.Misc).disableGester();
-		CB_Button btn6 = new CB_Button(btnRec, "Button1", SpriteCache.CacheList).disableGester();
-		CB_Button btn7 = new CB_Button(btnRec, "Button2", SpriteCache.Cache).disableGester();
-		CB_Button btn8 = new CB_Button(btnRec, "Button3", SpriteCache.Nav).disableGester();
-		CB_Button btn9 = new CB_Button(btnRec, "Button4", SpriteCache.Tool).disableGester();
-		CB_Button btn10 = new CB_Button(btnRec, "Button5", SpriteCache.Misc).disableGester();
-
-		CB_ButtonList btnList = new CB_ButtonList();
-		btnList.addButton(btn1);
-		btnList.addButton(btn2);
-		btnList.addButton(btn3);
-		btnList.addButton(btn4);
-		btnList.addButton(btn5);
-		btnList.addButton(btn6);
-		btnList.addButton(btn7);
-		btnList.addButton(btn8);
-		btnList.addButton(btn9);
-		btnList.addButton(btn10);
-
-		mButtonList = btnList;
 		this.setBaseAdapter(new CustomAdapter());
 	}
 
@@ -58,13 +36,6 @@ public class QuickButtonList extends H_ListView
 	public void Initial()
 	{
 		this.setDragable();
-	}
-
-	private CB_ButtonList mButtonList;
-
-	public void addButtonList(CB_ButtonList ButtonList)
-	{
-		mButtonList = ButtonList;
 	}
 
 	@Override
@@ -94,12 +65,19 @@ public class QuickButtonList extends H_ListView
 		return true;
 	}
 
+	ArrayList<QuickButtonItem> quickButtonList;
+
 	public class CustomAdapter implements Adapter
 	{
 
 		public CustomAdapter()
 		{
-
+			if (quickButtonList == null)
+			{
+				String ConfigActionList = Config.settings.quickButtonList.getValue();
+				String[] ConfigList = ConfigActionList.split(",");
+				quickButtonList = QuickActions.getListFromConfig(ConfigList, btnHeight);
+			}
 		}
 
 		public long getItemId(int position)
@@ -110,9 +88,9 @@ public class QuickButtonList extends H_ListView
 		public ListViewItemBase getView(int position)
 		{
 
-			if (mButtonList == null || mButtonList.Buttons == null) return null;
+			if (quickButtonList == null) return null;
 
-			CB_ButtonListItem v = new CB_ButtonListItem(position, mButtonList.Buttons.get(position), "Item " + position);
+			QuickButtonItem v = quickButtonList.get(position);
 			v.setSize(btnHeight, btnHeight);
 			v.setY(btnYPos);// center btn on y direction
 			return v;
@@ -121,7 +99,7 @@ public class QuickButtonList extends H_ListView
 		@Override
 		public int getCount()
 		{
-			return mButtonList.Buttons.size();
+			return quickButtonList.size();
 		}
 
 		@Override

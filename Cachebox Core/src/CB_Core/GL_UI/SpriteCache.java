@@ -58,6 +58,7 @@ public class SpriteCache
 	public static ButtonSprites Nav;
 	public static ButtonSprites Tool;
 	public static ButtonSprites Misc;
+	public static ButtonSprites QuickButton;
 
 	private static String PathDefault;
 	private static String PathCostum;
@@ -357,6 +358,7 @@ public class SpriteCache
 		Nav = new ButtonSprites(getThemedSprite("Nav"), getThemedSprite("Nav_pressed"));
 		Tool = new ButtonSprites(getThemedSprite("tool"), getThemedSprite("tool_pressed"));
 		Misc = new ButtonSprites(getThemedSprite("misc"), getThemedSprite("misc_pressed"));
+		QuickButton = new ButtonSprites(getThemedSprite("button"), getThemedSprite("day_btn_pressed"));
 	}
 
 	/**
@@ -385,7 +387,7 @@ public class SpriteCache
 		Nav = null;
 		Tool = null;
 		Misc = null;
-
+		QuickButton = null;
 	}
 
 }

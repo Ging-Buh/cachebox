@@ -61,23 +61,23 @@ public class TabMainView extends MainViewBase
 
 	private CB_Action_ShowTestView actionTestView;
 	private CB_Action_ShowHint actionShowHint;
-	private CB_Action_ShowMap actionShowMap;
-	private CB_Action_ShowCacheList actionShowCacheList;
+	public static CB_Action_ShowMap actionShowMap;
+	public static CB_Action_ShowCacheList actionShowCacheList;
 
 	private CB_Action_ShowAbout actionShowAboutView;
-	private CB_Action_ShowCompassView actionShowCompassView;
+	public static CB_Action_ShowCompassView actionShowCompassView;
 	private CB_Action_ShowCreditsView actionShowCreditsView;
-	private CB_Action_ShowDescriptionView actionShowDescriptionView;
+	public static CB_Action_ShowDescriptionView actionShowDescriptionView;
 	private CB_Action_ShowFieldNotesView actionShowFieldNotesView;
 	private CB_Action_ShowJokerView actionShowJokerView;
-	private CB_Action_ShowLogView actionShowLogView;
+	public static CB_Action_ShowLogView actionShowLogView;
 	private CB_Action_ShowNotesView actionShowNotesView;
-	private CB_Action_ShowSolverView actionShowSolverView;
+	public static CB_Action_ShowSolverView actionShowSolverView;
 	private CB_Action_ShowSolverView2 actionShowSolverView2;
-	private CB_Action_ShowSpoilerView actionShowSpoilerView;
+	public static CB_Action_ShowSpoilerView actionShowSpoilerView;
 	private CB_Action_ShowTrackableListView actionShowTrackableListView;
-	private CB_Action_ShowTrackListView actionShowTrackListView;
-	private CB_Action_ShowWaypointView actionShowWaypointView;
+	public static CB_Action_ShowTrackListView actionShowTrackListView;
+	public static CB_Action_ShowWaypointView actionShowWaypointView;
 	private CB_Action_ShowActivity actionShowSettings;
 	private CB_Action_ShowActivity actionNavigateTo1;
 	private CB_Action_ShowActivity actionNavigateTo2;

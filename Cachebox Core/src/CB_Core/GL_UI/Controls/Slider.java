@@ -94,7 +94,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 	private void setSliderPos(float value)
 	{
-		if (value == yPos) return;
+		if (value == yPos || mSlideBox == null) return;
 
 		yPos = value;
 		mSlideBox.setY(value);
@@ -340,7 +340,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 	public static boolean setAndroidSliderHeight(int height)
 	{
-		if (that != null)
+		if (that != null && that.mSlideBox != null)
 		{
 			that.mSlideBox.setHeight(height);
 			return true;

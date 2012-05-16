@@ -51,7 +51,8 @@ public class DesktopMain {
 //		
 //		Config.settings.OsmMinLevel.setValue(2);
 //		Config.settings.nightMode.setValue(true);
-
+		Config.settings.quickButtonShow.setValue(true);
+		
 		CB_UI = new Desktop_GL_Listner(ui.Window.width,
 				ui.Window.height);
 		
