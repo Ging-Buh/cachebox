@@ -19,7 +19,6 @@ import org.mapsforge.core.Tile;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.header.FileOpenResult;
 
-import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.Log.Logger;
 import CB_Core.Map.BoundingBox;
@@ -99,8 +98,8 @@ public class Manager extends ManagerBase
 
 				try
 				{
-					Logger.DEBUG("Suche RenderTheme: " + Config.WorkPath + "/repository/maps/renderthemes/test.xml");
-					File file = new File(Config.WorkPath + "/repository/maps/renderthemes/test.xml");
+					Logger.DEBUG("Suche RenderTheme: " + CB_Core.Config.settings.MapPackFolder.getValue() + "/renderthemes/test.xml");
+					File file = new File(CB_Core.Config.settings.MapPackFolder.getValue() + "/renderthemes/test.xml");
 					if (file.exists())
 					{
 						Logger.DEBUG("RenderTheme found!");
