@@ -16,7 +16,9 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.Menu.CB_AllContextMenuHandler;
+import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
@@ -151,6 +153,10 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		}
 	};
 
+	public final int MI_CHANGE_LINE = 2;
+	public final int MI_DELETE_LINE = 3;
+	public final int MI_INSERT_LINE = 4;
+
 	private OnLongClickListener onItemLongClickListner = new OnLongClickListener()
 	{
 
@@ -158,9 +164,38 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
 			int selectionIndex = ((ListViewItemBase) v).getIndex();
+			setSelection(selectionIndex);
 
-			invalidate();
-			CB_AllContextMenuHandler.showBtnCacheContextMenu();
+			Menu cm = new Menu("SolverViewItemContextMenu");
+
+			cm.setItemClickListner(new OnClickListener()
+			{
+
+				@Override
+				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+				{
+					switch (((MenuItem) v).getMenuItemId())
+					{
+					case MI_CHANGE_LINE:
+						TabMainView.solverView2.ChangeLine();
+						return true;
+					case MI_INSERT_LINE:
+						TabMainView.solverView2.InsertLine();
+						return true;
+					case MI_DELETE_LINE:
+						TabMainView.solverView2.DeleteLine();
+						return true;
+					}
+					return false;
+				}
+			});
+
+			MenuItem mi;
+			cm.addItem(MI_CHANGE_LINE, "Zeile ändern", SpriteCache.Icons.get(13));
+			cm.addItem(MI_INSERT_LINE, "Zeile einfügen", SpriteCache.Icons.get(13));
+			cm.addItem(MI_DELETE_LINE, "Zeile löschen", SpriteCache.Icons.get(13));
+			cm.show();
+
 			return true;
 		}
 	};
@@ -216,7 +251,8 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 		// Solver speichern
-		Database.SetSolver(this.cache, solver.getSolverString());
+		if (this.cache != null) Database.SetSolver(this.cache, solver.getSolverString());
+		// nächsten Cache laden
 		this.cache = cache;
 		intiList();
 	}
