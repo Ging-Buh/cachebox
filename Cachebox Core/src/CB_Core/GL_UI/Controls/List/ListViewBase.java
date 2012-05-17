@@ -62,7 +62,7 @@ public abstract class ListViewBase extends CB_View_Base
 	/**
 	 * Die Anzahl der Items, welche gleichzeitig dargestellt werden kann, wenn alle Items so Groß sind wie das kleinste Item in der List.
 	 */
-	protected int mMaxItemCount = 1;
+	protected int mMaxItemCount = -1;
 
 	protected float minimumItemSize = 0;
 
@@ -278,7 +278,7 @@ public abstract class ListViewBase extends CB_View_Base
 		Logger.LogCat("chkSlideBack()");
 		if (!mIsDrageble)
 		{
-			startAnimationtoTop();
+			// startAnimationtoTop();
 			return;
 		}
 		if (mPos > 0) startAnimationtoTop();

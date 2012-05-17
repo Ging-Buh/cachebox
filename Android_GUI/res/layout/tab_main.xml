@@ -123,7 +123,7 @@
                 android:id="@+id/main_quick_button_list"
                 android:layout_width="fill_parent"
                 android:layout_height="0dip"
-                 android:visibility="visible" /> />
+                 android:visibility="invisible" /> />
             
             
             <de.cachebox_test.Components.CacheNameView

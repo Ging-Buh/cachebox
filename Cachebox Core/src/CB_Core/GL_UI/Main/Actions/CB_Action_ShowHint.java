@@ -17,7 +17,7 @@ public class CB_Action_ShowHint extends CB_Action
 	@Override
 	public void Execute()
 	{
-		HintDialog.show();
+		if (getEnabled()) HintDialog.show();
 	}
 
 	@Override

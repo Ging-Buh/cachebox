@@ -24,7 +24,7 @@ public class CB_Action_switch_Autoresort extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(49);
+		return SpriteCache.Icons.get(16);
 	}
 
 	@Override

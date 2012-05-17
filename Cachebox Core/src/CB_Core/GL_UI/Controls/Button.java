@@ -43,6 +43,7 @@ public class Button extends CB_View_Base
 	protected boolean isPressed = false;
 	protected boolean isDisabled = false;
 	protected Label lblTxt;
+	protected boolean dragableButton = false;
 
 	public Button(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name)
 	{
@@ -140,7 +141,7 @@ public class Button extends CB_View_Base
 			isPressed = true;
 			GL_Listener.glListener.renderOnce(this.getName() + " touchDown");
 		}
-		return true;
+		return dragableButton ? false : true;
 	}
 
 	@Override
@@ -157,7 +158,7 @@ public class Button extends CB_View_Base
 
 		isPressed = false;
 		GL_Listener.glListener.renderOnce(this.getName() + " touchUp");
-		return true;
+		return dragableButton ? false : true;
 	}
 
 	public void enable()
@@ -253,6 +254,16 @@ public class Button extends CB_View_Base
 			mNinePatchDisabled = new NinePatch(SpriteCache.getThemedSprite("day_btn_default_normal_disabled"), 8, 8, 8, 8);
 		}
 
+	}
+
+	public void setDrageble()
+	{
+		setDrageble(true);
+	}
+
+	public void setDrageble(boolean value)
+	{
+		dragableButton = value;
 	}
 
 }

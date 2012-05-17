@@ -112,6 +112,12 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 				quickButtonList.setY(this.height - quickButtonList.getHeight());
 				TabMainView.that.setContentMaxY(mSlideBox.getY());
 			}
+			else
+			{
+				quickButtonList.setHeight(QuickButtonMaxHeight);
+				quickButtonList.setY(this.height - quickButtonList.getHeight());
+				TabMainView.that.setContentMaxY(this.height - quickButtonList.getHeight() - mSlideBox.getHeight());
+			}
 		}
 		else
 		{

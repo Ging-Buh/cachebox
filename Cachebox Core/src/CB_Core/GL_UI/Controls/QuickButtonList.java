@@ -35,7 +35,22 @@ public class QuickButtonList extends H_ListView
 	@Override
 	public void Initial()
 	{
-		this.setDragable();
+		chkIsDrageble();
+	}
+
+	private void chkIsDrageble()
+	{
+		if (quickButtonList != null)
+		{
+			if (this.getMaxItemCount() < quickButtonList.size())
+			{
+				this.setDragable();
+			}
+			else
+			{
+				this.setUndragable();
+			}
+		}
 	}
 
 	@Override
@@ -55,6 +70,17 @@ public class QuickButtonList extends H_ListView
 	}
 
 	@Override
+	public boolean onTouchDown(int x, int y, int pointer, int button)
+	{
+		for (GL_View_Base btn : this.childs)
+		{
+			btn.onTouchDown(x, y, pointer, button);
+		}
+
+		return super.onTouchDown(x, y, pointer, button);
+	}
+
+	@Override
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
 		for (GL_View_Base btn : this.childs)
@@ -62,7 +88,18 @@ public class QuickButtonList extends H_ListView
 			btn.onTouchUp(x, y, pointer, button);
 		}
 
-		return true;
+		return super.onTouchUp(x, y, pointer, button);
+	}
+
+	@Override
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
+	{
+		for (GL_View_Base btn : this.childs)
+		{
+			btn.onTouchDragged(x, y, pointer, KineticPan);
+		}
+
+		return super.onTouchDragged(x, y, pointer, KineticPan);
 	}
 
 	ArrayList<QuickButtonItem> quickButtonList;
@@ -78,6 +115,7 @@ public class QuickButtonList extends H_ListView
 				String[] ConfigList = ConfigActionList.split(",");
 				quickButtonList = QuickActions.getListFromConfig(ConfigList, btnHeight);
 			}
+			chkIsDrageble();
 		}
 
 		public long getItemId(int position)
