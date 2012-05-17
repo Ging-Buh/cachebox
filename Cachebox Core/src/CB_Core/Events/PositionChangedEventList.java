@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.Log.Logger;
 import CB_Core.Types.Locator;
 
 public class PositionChangedEventList
@@ -35,7 +36,15 @@ public class PositionChangedEventList
 		{
 			for (PositionChangedEvent event : list)
 			{
-				event.PositionChanged(locator);
+				try
+				{
+					event.PositionChanged(locator);
+				}
+				catch (Exception e)
+				{
+					Logger.Error("Core.PositionEventList.Call(location)", event.getReceiverName(), e);
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -49,7 +58,15 @@ public class PositionChangedEventList
 		{
 			for (PositionChangedEvent event : list)
 			{
-				event.OrientationChanged(heading);
+				try
+				{
+					event.OrientationChanged(heading);
+				}
+				catch (Exception e)
+				{
+					Logger.Error("Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
+					e.printStackTrace();
+				}
 			}
 		}
 

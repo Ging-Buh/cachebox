@@ -254,4 +254,10 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 
 	}
 
+	@Override
+	public String getReceiverName()
+	{
+		return "Core.CacheListViewItem";
+	}
+
 }

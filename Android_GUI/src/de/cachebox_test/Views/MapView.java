@@ -5054,4 +5054,10 @@ public class MapView extends RelativeLayout implements SelectedCacheEvent, Posit
 		updateCacheList();
 		Render(true);
 	}
+
+	@Override
+	public String getReceiverName()
+	{
+		return "MapView";
+	}
 }

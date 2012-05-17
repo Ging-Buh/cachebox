@@ -503,4 +503,10 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 
 	}
 
+	@Override
+	public String getReceiverName()
+	{
+		return "AboutView";
+	}
+
 }

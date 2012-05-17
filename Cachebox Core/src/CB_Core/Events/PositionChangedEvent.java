@@ -7,4 +7,6 @@ public interface PositionChangedEvent
 	public void PositionChanged(Locator locator);
 
 	public void OrientationChanged(float heading);
+
+	public String getReceiverName();
 }

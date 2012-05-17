@@ -95,20 +95,23 @@ public class PolylineReduction
 	// / <returns></returns>
 	public static Double PerpendicularDistance(PointD Point1, PointD Point2, PointD Point)
 	{
-		// Area = |(1/2)(x1y2 + x2y3 + x3y1 - x2y1 - x3y2 - x1y3)| *Area of triangle
-		// Base = v((x1-x2)²+(x1-x2)²) *Base of Triangle*
-		// Area = .5*Base*H *Solve for height
-		// Height = Area/.5/Base
 
-		Double area = Math.abs(.5 * (Point1.X * Point2.Y + Point2.X * Point.Y + Point.X * Point1.Y - Point2.X * Point1.Y - Point.X
-				* Point2.Y - Point1.X * Point.Y));
-		Double bottom = Math.sqrt(Math.pow(Point1.X - Point2.X, 2) + Math.pow(Point1.Y - Point2.Y, 2));
+		try
+		{
+			Double area = Math.abs(.5 * (Point1.X * Point2.Y + Point2.X * Point.Y + Point.X * Point1.Y - Point2.X * Point1.Y - Point.X
+					* Point2.Y - Point1.X * Point.Y));
+			Double bottom = Math.sqrt(Math.pow(Point1.X - Point2.X, 2) + Math.pow(Point1.Y - Point2.Y, 2));
 
-		if (bottom == 0.0) return 0.0;
+			if (bottom == 0.0) return 0.0;
 
-		Double height = area / bottom * 2;
+			Double height = area / bottom * 2;
 
-		return height;
+			return height;
+		}
+		catch (Exception e)
+		{
+			return 0.0;
+		}
 
 	}
 

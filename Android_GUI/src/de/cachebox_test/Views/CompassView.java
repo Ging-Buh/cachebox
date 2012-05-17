@@ -307,4 +307,10 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu, Positio
 		SetSelectedCache(cache, waypoint);
 	}
 
+	@Override
+	public String getReceiverName()
+	{
+		return "CompassView";
+	}
+
 }

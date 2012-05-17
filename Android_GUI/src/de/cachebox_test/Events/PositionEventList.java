@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Log.Logger;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Locator;
 import android.location.Location;
@@ -48,7 +49,15 @@ public class PositionEventList
 		GlobalCore.Marker.Valid = false;
 		for (PositionEvent event : list)
 		{
-			event.PositionChanged(location);
+			try
+			{
+				event.PositionChanged(location);
+			}
+			catch (Exception e)
+			{
+				Logger.Error("PositionEventList.Call(location)", event.getReceiverName(), e);
+				e.printStackTrace();
+			}
 		}
 
 		// Call Core Event
@@ -101,8 +110,16 @@ public class PositionEventList
 		int callCounter = 0;
 		for (PositionEvent event : list)
 		{
-			event.OrientationChanged(heading);
-			callCounter++;
+			try
+			{
+				event.OrientationChanged(heading);
+				callCounter++;
+			}
+			catch (Exception e)
+			{
+				Logger.Error("PositionEventList.Call(heading)", event.getReceiverName(), e);
+				e.printStackTrace();
+			}
 		}
 
 		// Call Core Event

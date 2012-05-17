@@ -2263,4 +2263,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		return aktZoom;
 	}
+
+	@Override
+	public String getReceiverName()
+	{
+		return "Core.MapView";
+	}
 }

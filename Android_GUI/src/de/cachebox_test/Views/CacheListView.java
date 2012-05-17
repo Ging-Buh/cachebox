@@ -320,4 +320,10 @@ public class CacheListView extends ListView implements ViewOptionsMenu, Position
 		lvAdapter.notifyDataSetChanged();
 	}
 
+	@Override
+	public String getReceiverName()
+	{
+		return "CacheListView";
+	}
+
 }
