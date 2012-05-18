@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import CB_Core.Map.Descriptor;
-import CB_Core.Map.Descriptor.PointD;
+import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Types.Coordinate;
 
@@ -96,7 +96,7 @@ public class TrackRecorder
 
 	public static void recordPosition()
 	{
-		PointD NewPoint;
+		TrackPoint NewPoint;
 
 		if (writer == null || pauseRecording || (GlobalCore.Locator != null && !GlobalCore.LastValidPosition.Valid)
 				|| !GlobalCore.Locator.isGPSprovided()) return;
@@ -136,8 +136,8 @@ public class TrackRecorder
 				e.printStackTrace();
 			}
 
-			NewPoint = new PointD(Descriptor.LongitudeToTileX(15, GlobalCore.LastValidPosition.Longitude), Descriptor.LatitudeToTileY(15,
-					GlobalCore.LastValidPosition.Latitude));
+			NewPoint = new TrackPoint(Descriptor.LongitudeToTileX(15, GlobalCore.LastValidPosition.Longitude), Descriptor.LatitudeToTileY(
+					15, GlobalCore.LastValidPosition.Latitude), GlobalCore.Locator.getHeading(), new Date());
 			GlobalCore.AktuelleRoute.Points.add(NewPoint);
 			RouteOverlay.RoutesChanged();
 			LastRecordedPosition = new Coordinate(GlobalCore.LastValidPosition);

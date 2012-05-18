@@ -18,6 +18,8 @@
 
 package CB_Core.Map;
 
+import java.util.Date;
+
 public class Descriptor implements Comparable<Descriptor>
 {
 
@@ -42,6 +44,20 @@ public class Descriptor implements Comparable<Descriptor>
 			this.Y = y;
 		}
 	};
+
+	public static class TrackPoint extends PointD
+	{
+		public double Direction;
+
+		public Date TimeStamp;
+
+		public TrackPoint(double x, double y, double direction, Date time)
+		{
+			super(x, y);
+			this.Direction = direction;
+			this.TimeStamp = time;
+		}
+	}
 
 	public static int[] TilesPerLine = null;
 	public static int[] TilesPerColumn = null;

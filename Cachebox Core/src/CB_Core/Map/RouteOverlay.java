@@ -6,13 +6,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Log.Logger;
-import CB_Core.Map.Descriptor.PointD;
+import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.PolylineReduction;
 import CB_Core.Types.Coordinate;
@@ -34,7 +36,7 @@ public class RouteOverlay
 
 	public static class Trackable
 	{
-		public ArrayList<PointD> Points;
+		public ArrayList<TrackPoint> Points;
 		public String Name;
 		public String FileName;
 		public boolean ShowRoute = false;
@@ -43,7 +45,7 @@ public class RouteOverlay
 
 		public Trackable(String name, Color color)
 		{
-			Points = new ArrayList<PointD>();
+			Points = new ArrayList<TrackPoint>();
 			Name = name;
 			mColor = color;
 		}
@@ -80,11 +82,14 @@ public class RouteOverlay
 			boolean ReadName = false;
 
 			Coordinate lastAcceptedCoordinate = null;
+			double lastAcceptedDirection = -1;
+			Date lastAcceptedTime = null;
 
 			StringBuilder sb = new StringBuilder();
 			String rline = null;
 			while ((rline = reader.readLine()) != null)
 			{
+				line = rline;
 				for (int i = 0; i < rline.length(); i++)
 				{
 					char nextChar = rline.charAt(i);
@@ -152,21 +157,39 @@ public class RouteOverlay
 
 							double lat = Double.valueOf(latStr);
 							double lon = Double.valueOf(lonStr);
-							/*
-							 * if (lastAcceptedCoordinate != null) if (Datum.WGS84.Distance(lat, lon, lastAcceptedCoordinate.Latitude,
-							 * lastAcceptedCoordinate.Longitude) < minDistanceMeters) continue;
-							 */
+
 							lastAcceptedCoordinate = new Coordinate(lat, lon);
 
-							// PointD projectedPoint = new PointD(Descriptor.LongitudeToTileX(MapView.MAX_MAP_ZOOM, lon),
-							// Descriptor.LatitudeToTileY(MapView.MAX_MAP_ZOOM, lat));
-							//
-							// route.Points.add(projectedPoint);
-
-							route.Points.add(new PointD(lon, lat));
-
 						}
+
 					}
+
+				}
+
+				if (rline.indexOf("<time>") > -1)
+				{
+					// Time lesen
+					int timIdx = rline.indexOf("<time>") + 6;
+					int timEndIdx = rline.indexOf("</time>", timIdx);
+
+					String timStr = rline.substring(timIdx, timEndIdx);
+
+					lastAcceptedTime = parseDate(timStr);
+				}
+
+				if (rline.indexOf("<course>") > -1)
+				{
+					// Time lesen
+					int couIdx = rline.indexOf("<course>") + 8;
+					int couEndIdx = rline.indexOf("</course>", couIdx);
+
+					String couStr = rline.substring(couIdx, couEndIdx);
+
+					lastAcceptedDirection = Double.valueOf(couStr);
+
+					// letzte Abfrage, jetzt kann der Trackpunkt erzeugt werden
+					route.Points.add(new TrackPoint(lastAcceptedCoordinate.Longitude, lastAcceptedCoordinate.Latitude,
+							lastAcceptedDirection, lastAcceptedTime));
 				}
 			}
 
@@ -199,6 +222,60 @@ public class RouteOverlay
 		}
 	}
 
+	/**
+	 * Going to assume date is always in the form:<br>
+	 * 2006-05-25T08:55:01Z<br>
+	 * 2006-05-25T08:56:35Z<br>
+	 * <br>
+	 * i.e.: yyyy-mm-ddThh-mm-ssZ <br>
+	 * code from Tommi Laukkanen http://www.substanceofcode.com
+	 * 
+	 * @param dateString
+	 * @return
+	 */
+	private static Date parseDate(String dateString)
+	{
+		try
+		{
+			final int year = Integer.parseInt(dateString.substring(0, 4));
+			final int month = Integer.parseInt(dateString.substring(5, 7));
+			final int day = Integer.parseInt(dateString.substring(8, 10));
+
+			final int hour = Integer.parseInt(dateString.substring(11, 13));
+			final int minute = Integer.parseInt(dateString.substring(14, 16));
+			final int second = Integer.parseInt(dateString.substring(17, 19));
+
+			final String reconstruct = year + "-" + (month < 10 ? "0" : "") + month + "-" + (day < 10 ? "0" : "") + day + "T"
+					+ (hour < 10 ? "0" : "") + hour + ":" + (minute < 10 ? "0" : "") + minute + ":" + (second < 10 ? "0" : "") + second
+					+ "Z";
+
+			// XXX : mchr : What purpose does this output have?
+			if (dateString.toLowerCase().equals(reconstruct.toLowerCase()))
+			{
+				System.out.println("Same");
+			}
+			else
+			{
+				System.out.println(dateString + " not same as " + reconstruct);
+			}
+
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.YEAR, year);
+			calendar.set(Calendar.MONTH, month);
+			calendar.set(Calendar.DAY_OF_MONTH, day);
+			calendar.set(Calendar.HOUR_OF_DAY, hour);
+			calendar.set(Calendar.MINUTE, minute);
+			calendar.set(Calendar.SECOND, second);
+
+			return calendar.getTime();
+		}
+		catch (Exception e)
+		{
+			Logger.Error("RouteOverlay", "Exception caught trying to parse date : ", e);
+		}
+		return null;
+	}
+
 	public static int AllTrackPoints = 0;
 	public static int ReduceTrackPoints = 0;
 	public static int DrawedLineCount = 0;
@@ -209,12 +286,12 @@ public class RouteOverlay
 	public class Route
 	{
 		private Color mColor;
-		protected ArrayList<PointD> Points;
+		protected ArrayList<TrackPoint> Points;
 
 		public Route(Color color)
 		{
 			mColor = color;
-			Points = new ArrayList<PointD>();
+			Points = new ArrayList<TrackPoint>();
 		}
 	}
 
@@ -302,7 +379,7 @@ public class RouteOverlay
 
 	private static void addToDrawRoutes(double tolerance, Trackable track)
 	{
-		ArrayList<PointD> reducedPoints = PolylineReduction.DouglasPeuckerReduction(track.Points, tolerance);
+		ArrayList<TrackPoint> reducedPoints = PolylineReduction.DouglasPeuckerReduction(track.Points, tolerance);
 
 		AllTrackPoints = track.Points.size();
 		ReduceTrackPoints = reducedPoints.size();

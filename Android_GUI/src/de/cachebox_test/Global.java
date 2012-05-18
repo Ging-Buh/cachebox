@@ -33,7 +33,7 @@ import de.cachebox_test.Custom_Controls.QuickButtonList.QuickButtonItem;
 
 public class Global
 {
-	public static final int CurrentRevision = 868;
+	public static final int CurrentRevision = 869;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 	public static final int LatestDatabaseChange = 1016;

@@ -26,6 +26,7 @@ class Gui extends Frame implements ActionListener, WindowListener {
 	private static final long serialVersionUID = 1L;
 	Checkbox debugChkBox;
 	Checkbox scissorChkBox;
+	Checkbox simulateChkBox;
 	
 	
 	// constructor
@@ -57,24 +58,26 @@ class Gui extends Frame implements ActionListener, WindowListener {
 		
 		 debugChkBox = new Checkbox("Enable Debug on Main", null, false);
 		 scissorChkBox = new Checkbox("Disable scissor on Main", null, false);
-		
+		 simulateChkBox= new Checkbox("Simulate GPS from simulation.gpx", null, false);
+		 
 		 add(debugChkBox);
 		 add(scissorChkBox);
+		 add(simulateChkBox);
 
 	}
 
 	// define action for Button press
 	public void actionPerformed(ActionEvent event) {
 		if (event.getActionCommand().equals("Phone 480x800 HDPI")) {
-			DesktopMain.test(iniPhone(),debugChkBox.getState(),scissorChkBox.getState());
+			DesktopMain.test(iniPhone(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState());
 		} else if (event.getActionCommand().equals("Tab 1280x752 MDPI")) {
-			DesktopMain.test(iniTab(),debugChkBox.getState(),scissorChkBox.getState());
+			DesktopMain.test(iniTab(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState());
 		} else if (event.getActionCommand().equals("Tab 1024x768 MDPI")) {
-			DesktopMain.test(iniPad10(),debugChkBox.getState(),scissorChkBox.getState());
+			DesktopMain.test(iniPad10(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState());
 		}else if (event.getActionCommand().equals("Phone 240x400 LDPI")) {
-			DesktopMain.test(iniLowPhone(),debugChkBox.getState(),scissorChkBox.getState());
+			DesktopMain.test(iniLowPhone(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState());
 		}else if (event.getActionCommand().equals("Phone 720x1280 XHDPI")) {
-			DesktopMain.test(iniHighPhone(),debugChkBox.getState(),scissorChkBox.getState());
+			DesktopMain.test(iniHighPhone(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState());
 		}
 //		System.exit(0);
 	}

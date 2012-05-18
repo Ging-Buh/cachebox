@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import CB_Core.Map.Descriptor.PointD;
+import CB_Core.Map.Descriptor.TrackPoint;
 
 /**
  * Reduktion of Ploylines with Douglas-Peucker-Algorithmus </br> </br> http://de.wikipedia.org/wiki/Douglas-Peucker-Algorithmus </br> </br>
@@ -20,12 +21,12 @@ public class PolylineReduction
 	// / <param name="Points">The points.</param>
 	// / <param name="Tolerance">The tolerance.</param>
 	// / <returns></returns>
-	public static ArrayList<PointD> DouglasPeuckerReduction(ArrayList<PointD> Points, Double Tolerance)
+	public static ArrayList<TrackPoint> DouglasPeuckerReduction(ArrayList<TrackPoint> points, Double Tolerance)
 	{
-		if (Points == null || Points.size() < 3) return Points;
+		if (points == null || points.size() < 3) return points;
 
 		int firstPoint = 0;
-		int lastPoint = Points.size() - 1;
+		int lastPoint = points.size() - 1;
 		ArrayList<Integer> pointIndexsToKeep = new ArrayList<Integer>();
 
 		// Add the first and last index to the keepers
@@ -33,20 +34,20 @@ public class PolylineReduction
 		pointIndexsToKeep.add(lastPoint);
 
 		// The first and the last point cannot be the same
-		while (Points.get(firstPoint) == Points.get(lastPoint))
+		while (points.get(firstPoint) == points.get(lastPoint))
 		{
 			lastPoint--;
 		}
 
-		DouglasPeuckerReduction(Points, firstPoint, lastPoint, Tolerance, pointIndexsToKeep);
+		DouglasPeuckerReduction(points, firstPoint, lastPoint, Tolerance, pointIndexsToKeep);
 
-		ArrayList<PointD> returnPoints = new ArrayList<PointD>();
+		ArrayList<TrackPoint> returnPoints = new ArrayList<TrackPoint>();
 
 		Collections.sort(pointIndexsToKeep);
 
 		for (int index : pointIndexsToKeep)
 		{
-			returnPoints.add(Points.get(index));
+			returnPoints.add(points.get(index));
 		}
 
 		return returnPoints;
@@ -60,7 +61,7 @@ public class PolylineReduction
 	// / <param name="lastPoint">The last point.</param>
 	// / <param name="tolerance">The tolerance.</param>
 	// / <param name="pointIndexsToKeep">The point index to keep.</param>
-	private static void DouglasPeuckerReduction(ArrayList<PointD> points, int firstPoint, int lastPoint, Double tolerance,
+	private static void DouglasPeuckerReduction(ArrayList<TrackPoint> points, int firstPoint, int lastPoint, Double tolerance,
 			ArrayList<Integer> pointIndexsToKeep)
 	{
 		Double maxDistance = 0.0;

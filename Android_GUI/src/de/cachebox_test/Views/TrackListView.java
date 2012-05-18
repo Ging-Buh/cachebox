@@ -1,6 +1,7 @@
 package de.cachebox_test.Views;
 
 import java.io.File;
+import java.util.Date;
 
 import org.openintents.intents.FileManagerIntents;
 
@@ -11,7 +12,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Map.Descriptor;
-import CB_Core.Map.Descriptor.PointD;
+import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Map.RouteOverlay.Trackable;
 import CB_Core.Types.Coordinate;
@@ -547,11 +548,11 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 
 		route.Name = "Point 2 Point Route";
 
-		PointD projectedPoint = new PointD(Descriptor.LongitudeToTileX(projectionZoomLevel, FromLon), Descriptor.LatitudeToTileY(
-				projectionZoomLevel, FromLat));
+		TrackPoint projectedPoint = new TrackPoint(Descriptor.LongitudeToTileX(projectionZoomLevel, FromLon), Descriptor.LatitudeToTileY(
+				projectionZoomLevel, FromLat), 0, new Date());
 		route.Points.add(projectedPoint);
-		projectedPoint = new PointD(Descriptor.LongitudeToTileX(projectionZoomLevel, ToLon), Descriptor.LatitudeToTileY(
-				projectionZoomLevel, ToLat));
+		projectedPoint = new TrackPoint(Descriptor.LongitudeToTileX(projectionZoomLevel, ToLon), Descriptor.LatitudeToTileY(
+				projectionZoomLevel, ToLat), 0, new Date());
 		route.Points.add(projectedPoint);
 
 		route.ShowRoute = true;
@@ -585,8 +586,8 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 		{
 			Projektion = Coordinate.Project(GEOPosition.Latitude, GEOPosition.Longitude, (double) i, Distance);
 
-			PointD projectedPoint = new PointD(Descriptor.LongitudeToTileX(projectionZoomLevel, Projektion.Longitude),
-					Descriptor.LatitudeToTileY(projectionZoomLevel, Projektion.Latitude));
+			TrackPoint projectedPoint = new TrackPoint(Descriptor.LongitudeToTileX(projectionZoomLevel, Projektion.Longitude),
+					Descriptor.LatitudeToTileY(projectionZoomLevel, Projektion.Latitude), 0, new Date());
 			route.Points.add(projectedPoint);
 
 		}
@@ -616,16 +617,16 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 		Coordinate GEOPosition = new Coordinate();
 		GEOPosition.Latitude = FromLat;
 		GEOPosition.Longitude = FromLon;
-		PointD projectedPoint = new PointD(Descriptor.LongitudeToTileX(projectionZoomLevel, GEOPosition.Longitude),
-				Descriptor.LatitudeToTileY(projectionZoomLevel, GEOPosition.Latitude));
+		TrackPoint projectedPoint = new TrackPoint(Descriptor.LongitudeToTileX(projectionZoomLevel, GEOPosition.Longitude),
+				Descriptor.LatitudeToTileY(projectionZoomLevel, GEOPosition.Latitude), 0, new Date());
 		route.Points.add(projectedPoint);
 
 		Coordinate Projektion = new Coordinate();
 
 		Projektion = Coordinate.Project(GEOPosition.Latitude, GEOPosition.Longitude, Bearing, Distance);
 
-		projectedPoint = new PointD(Descriptor.LongitudeToTileX(projectionZoomLevel, Projektion.Longitude), Descriptor.LatitudeToTileY(
-				projectionZoomLevel, Projektion.Latitude));
+		projectedPoint = new TrackPoint(Descriptor.LongitudeToTileX(projectionZoomLevel, Projektion.Longitude), Descriptor.LatitudeToTileY(
+				projectionZoomLevel, Projektion.Latitude), 0, new Date());
 		route.Points.add(projectedPoint);
 		route.ShowRoute = true;
 
