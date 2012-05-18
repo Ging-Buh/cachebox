@@ -280,6 +280,19 @@ public abstract class Database
 					execSQL("CREATE INDEX [images_iscacheimage_idx] ON [Images] ([IsCacheImage] ASC);");
 					execSQL("CREATE UNIQUE INDEX [images_imageurl_idx] ON [Images] ([ImageUrl] ASC);");
 				}
+				if (lastDatabaseSchemeVersion < 1022)
+				{
+					execSQL("ALTER TABLE [Caches] ALTER COLUMN [GcCode] nvarchar(15); ");
+
+					execSQL("ALTER TABLE [Waypoint] DROP CONSTRAINT Waypoint_PK ");
+					execSQL("ALTER TABLE [Waypoint] ALTER COLUMN [GcCode] nvarchar(15) NOT NULL; ");
+					execSQL("ALTER TABLE [Waypoint] ADD CONSTRAINT  [Waypoint_PK] PRIMARY KEY ([GcCode]); ");
+
+					execSQL("ALTER TABLE [Replication] ALTER COLUMN [WpGcCode] nvarchar(15); ");
+					execSQL("ALTER TABLE [Trackable] ALTER COLUMN [GcCode] nvarchar(15); ");
+					execSQL("ALTER TABLE [TbLogs] ALTER COLUMN [GcCode] nvarchar(15); ");
+					execSQL("ALTER TABLE [Images] ALTER COLUMN [GcCode] nvarchar(15); ");
+				}
 
 				setTransactionSuccessful();
 			}
