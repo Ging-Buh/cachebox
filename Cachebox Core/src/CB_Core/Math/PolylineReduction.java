@@ -98,7 +98,7 @@ public class PolylineReduction
 
 		try
 		{
-			Double area = Math.abs(.5 * (Point1.X * Point2.Y + Point2.X * Point.Y + Point.X * Point1.Y - Point2.X * Point1.Y - Point.X
+			Double area = Math.abs(0.5 * (Point1.X * Point2.Y + Point2.X * Point.Y + Point.X * Point1.Y - Point2.X * Point1.Y - Point.X
 					* Point2.Y - Point1.X * Point.Y));
 			Double bottom = Math.sqrt(Math.pow(Point1.X - Point2.X, 2) + Math.pow(Point1.Y - Point2.Y, 2));
 

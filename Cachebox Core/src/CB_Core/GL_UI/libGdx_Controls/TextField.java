@@ -8,6 +8,8 @@ import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
+
 public class TextField extends LibGdx_Host_Control
 {
 
@@ -108,5 +110,30 @@ public class TextField extends LibGdx_Host_Control
 		x += world.getX() - noseOffset;
 		y += worldY + (popUp.getHeight() * 0.2f);
 		popUp.show(x, y);
+	}
+
+	public float getMesuredWidth()
+	{
+		TextFieldStyle style = mTextField.getStyle();
+		float back = style.background.getLeftWidth() + style.background.getRightWidth();
+		float txtW = style.font.getBounds(mTextField.getText()).width;
+		return back + txtW;
+	}
+
+	public void enable()
+	{
+		mTextField.touchable = true;
+	}
+
+	public void disable()
+	{
+		mTextField.touchable = false;
+	}
+
+	@Override
+	public void setWidth(float width)
+	{
+		super.setWidth(width);
+		mTextField.width = width;
 	}
 }

@@ -891,6 +891,24 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		timer.schedule(task, delay);
 	}
 
+	private CB_Core.GL_UI.Controls.Dialogs.Toast toast;
+
+	public void Toast(String string, int length)
+	{
+		if (toast == null)
+		{
+			toast = new CB_Core.GL_UI.Controls.Dialogs.Toast(new CB_RectF(0, 0, 100, GL_UISizes.BottomButtonHeight / 2), "StringToast");
+		}
+		toast.setText(string);
+
+		float mesuredWidth = toast.getMesuredWidth();
+		toast.setWidth(mesuredWidth);
+
+		toast.setPos((width / 2) - (mesuredWidth / 2), GL_UISizes.BottomButtonHeight * 1.3f);
+
+		Toast(toast, length);
+	}
+
 	public boolean keyDown(int keycode)
 	{
 		return LibGdx_Host_Control.keyDown(keycode);

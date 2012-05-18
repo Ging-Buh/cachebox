@@ -2706,7 +2706,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private void switchDayNight()
 	{
 		// frame.removeAllViews();
-		Config.changeDayNight();
+		// Config.changeDayNight();
 		DescriptionViewControl.mustLoadDescription = true;
 		downSlider.isInitial = false;
 		ActivityUtils.changeToTheme(mainActivity, Config.settings.nightMode.getValue() ? ActivityUtils.THEME_NIGHT
@@ -3792,6 +3792,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					{
 						if (aktView != null) ((View) aktView).setVisibility(View.INVISIBLE);
 						if (aktTabView != null) ((View) aktTabView).setVisibility(View.INVISIBLE);
+						if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
+						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 					}
 				});
 
@@ -3807,6 +3809,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					{
 						if (aktView != null) ((View) aktView).setVisibility(View.VISIBLE);
 						if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
+						if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.VISIBLE);
+						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
 					}
 				});
 

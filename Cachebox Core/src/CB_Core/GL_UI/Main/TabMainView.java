@@ -9,6 +9,8 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Controls.Slider;
+import CB_Core.GL_UI.Controls.Dialogs.Toast;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowAbout;
@@ -509,4 +511,15 @@ public class TabMainView extends MainViewBase
 		}
 
 	}
+
+	public void switchDayNight()
+	{
+
+		Config.changeDayNight();
+
+		String state = Config.settings.nightMode.getValue() ? "Night" : "Day";
+
+		GL_Listener.glListener.Toast("Switch to " + state, Toast.LENGTH_SHORT);
+	}
+
 }

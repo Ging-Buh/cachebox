@@ -122,6 +122,8 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu, Positio
 
 	public void SetSelectedCache(Cache cache, Waypoint waypoint)
 	{
+		if (WP_info == null) return;
+
 		if ((aktCache != cache) || (aktWaypoint != waypoint))
 		{
 			aktCache = cache;

@@ -23,6 +23,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowActivity;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowHint;
 import CB_Core.GL_UI.Main.Actions.CB_Action_switch_Autoresort;
+import CB_Core.GL_UI.Main.Actions.CB_Action_switch_DayNight;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Types.MoveableList;
 
@@ -222,6 +223,5 @@ public enum QuickActions
 	private static CB_Action action_Parking = new CB_Action_ShowActivity("Parking", CB_Action.AID_PARKING, ViewConst.PARKING,
 			SpriteCache.BigIcons.get(20));
 
-	private static CB_Action action_DayNight = new CB_Action_ShowActivity("DayNight", CB_Action.AID_DAY_NIGHT, ViewConst.DAY_NIGHT,
-			SpriteCache.Icons.get(48));
+	private static CB_Action action_DayNight = new CB_Action_switch_DayNight();
 }
