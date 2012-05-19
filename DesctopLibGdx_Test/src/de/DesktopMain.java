@@ -50,8 +50,8 @@ public class DesktopMain {
 		// Config.settings.MapViewFontFaktor.setValue(1);
 		//
 		// Config.settings.OsmMinLevel.setValue(2);
-		// Config.settings.nightMode.setValue(true);
-		Config.settings.quickButtonShow.setValue(true);
+//		 Config.settings.MapShowCompass.setValue(false);
+//		Config.settings.quickButtonShow.setValue(true);
 
 		CB_UI = new Desktop_GL_Listner(ui.Window.width, ui.Window.height);
 
@@ -173,7 +173,7 @@ public class DesktopMain {
 		trackStartTime = simulationRoute.Points.get(trackPointIndex).TimeStamp;
 		long nextTimeStamp = (simulationRoute.Points.get(trackPointIndex+1).TimeStamp.getTime()-simulationRoute.Points.get(trackPointIndex).TimeStamp.getTime());
 		
-		nextTimeStamp/=4; // ein wenig schneller ablaufen lassen
+		nextTimeStamp/=8; // ein wenig schneller ablaufen lassen
 		
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {

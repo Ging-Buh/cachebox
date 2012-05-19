@@ -21,7 +21,7 @@ public class PolylineReduction
 	// / <param name="Points">The points.</param>
 	// / <param name="Tolerance">The tolerance.</param>
 	// / <returns></returns>
-	public static ArrayList<TrackPoint> DouglasPeuckerReduction(ArrayList<TrackPoint> points, Double Tolerance)
+	public static ArrayList<TrackPoint> DouglasPeuckerReduction(ArrayList<TrackPoint> points, double Tolerance)
 	{
 		if (points == null || points.size() < 3) return points;
 
@@ -61,15 +61,15 @@ public class PolylineReduction
 	// / <param name="lastPoint">The last point.</param>
 	// / <param name="tolerance">The tolerance.</param>
 	// / <param name="pointIndexsToKeep">The point index to keep.</param>
-	private static void DouglasPeuckerReduction(ArrayList<TrackPoint> points, int firstPoint, int lastPoint, Double tolerance,
+	private static void DouglasPeuckerReduction(ArrayList<TrackPoint> points, int firstPoint, int lastPoint, double tolerance,
 			ArrayList<Integer> pointIndexsToKeep)
 	{
-		Double maxDistance = 0.0;
+		double maxDistance = 0.0;
 		int indexFarthest = 0;
 
 		for (int index = firstPoint; index < lastPoint; index++)
 		{
-			Double distance = PerpendicularDistance(points.get(firstPoint), points.get(lastPoint), points.get(index));
+			double distance = PerpendicularDistance(points.get(firstPoint), points.get(lastPoint), points.get(index));
 			if (distance > maxDistance)
 			{
 				maxDistance = distance;
@@ -94,18 +94,28 @@ public class PolylineReduction
 	// / <param name="pt2">The PT2.</param>
 	// / <param name="p">The p.</param>
 	// / <returns></returns>
-	public static Double PerpendicularDistance(PointD Point1, PointD Point2, PointD Point)
+	public static double PerpendicularDistance(PointD Point1, PointD Point2, PointD Point)
 	{
 
 		try
 		{
-			Double area = Math.abs(0.5 * (Point1.X * Point2.Y + Point2.X * Point.Y + Point.X * Point1.Y - Point2.X * Point1.Y - Point.X
-					* Point2.Y - Point1.X * Point.Y));
-			Double bottom = Math.sqrt(Math.pow(Point1.X - Point2.X, 2) + Math.pow(Point1.Y - Point2.Y, 2));
+			// double area = Math.abs(0.5 * (Point1.X * Point2.Y + Point2.X * Point.Y + Point.X * Point1.Y - Point2.X * Point1.Y - Point.X
+			// * Point2.Y - Point1.X * Point.Y));
+
+			double pr1 = Point1.X * Point2.Y;
+			double pr2 = Point2.X * Point.Y;
+			double pr3 = Point.X * Point1.Y;
+			double pr4 = Point2.X * Point1.Y;
+			double pr5 = Point.X * Point2.Y;
+			double pr6 = Point1.X * Point.Y;
+
+			double area = Math.abs((pr1 + pr2 + pr3 - pr4 - pr5 - pr6) / 2);
+
+			double bottom = Math.sqrt(Math.pow(Point1.X - Point2.X, 2) + Math.pow(Point1.Y - Point2.Y, 2));
 
 			if (bottom == 0.0) return 0.0;
 
-			Double height = area / bottom * 2;
+			double height = area / bottom * 2;
 
 			return height;
 		}

@@ -185,6 +185,7 @@ public class SpriteCache
 		MapIcons.add(getThemedSprite("19"));
 		MapIcons.add(getThemedSprite("20"));
 		MapIcons.add(getThemedSprite("21"));
+		MapIcons.add(getThemedSprite("star"));
 
 		Arrows = new ArrayList<Sprite>();
 		Arrows.add(getThemedSprite("arrow_Compass"));

@@ -52,6 +52,7 @@ public class MapInfoPanel extends CB_View_Base
 
 	public void setDistance(float distance)
 	{
+		if (lblDistance == null) return;
 		if (aktDistance == distance) return;
 		aktDistance = distance;
 		if (distance == -1) lblDistance.setText("?");

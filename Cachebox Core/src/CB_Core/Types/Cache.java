@@ -510,7 +510,7 @@ public class Cache implements Comparable<Cache>
 	 */
 	public int GetMapIconId()
 	{
-		if (this.ImTheOwner()) return 20;
+		if (this.ImTheOwner()) return 22;
 		if (this.Found) return 19;
 		if ((Type == CacheTypes.Mystery) && this.MysterySolved()) return 21;
 

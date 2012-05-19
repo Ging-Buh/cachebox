@@ -266,7 +266,7 @@ public class MapViewCacheList
 										// necessary
 										// when the cache is found or own
 										if (solution.Cache.Found) wpiF.Icon = SpriteCache.MapIcons.get(19);
-										if (solution.Cache.ImTheOwner()) wpiF.Icon = SpriteCache.MapIcons.get(20);
+										if (solution.Cache.ImTheOwner()) wpiF.Icon = SpriteCache.MapIcons.get(22);
 									}
 									else
 									{
