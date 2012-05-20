@@ -74,6 +74,11 @@ public class GlobalCore
 		selectedCache = cache;
 		GlobalCore.selectedWaypoint = null;
 		SelectedCacheEventList.Call(cache, null);
+
+		// switch off auto select
+		GlobalCore.autoResort = false;
+		Config.settings.AutoResort.setValue(GlobalCore.autoResort);
+
 	}
 
 	public static Cache SelectedCache()

@@ -301,7 +301,7 @@ public class RouteOverlay
 	{
 
 		if (aktCalcedZoomLevel != Zoom || mRoutesChanged)
-		{// Zoom or Routes changed => calculate new Sprites Points
+		{// Zoom or Routes changed => calculate new Sprite Points
 
 			Logger.LogCat("Zoom Changed => Calc Track Points");
 
@@ -316,13 +316,13 @@ public class RouteOverlay
 
 				if (Routes.get(i) != null && Routes.get(i).ShowRoute)
 				{
-					addToDrawRoutes(tolerance, Routes.get(i));
+					addToDrawRoutes(tolerance, Routes.get(i), Zoom);
 				}
 			}
 
 			if (GlobalCore.AktuelleRoute != null)
 			{
-				addToDrawRoutes(tolerance, GlobalCore.AktuelleRoute);
+				addToDrawRoutes(tolerance, GlobalCore.AktuelleRoute, Zoom);
 			}
 
 		}
@@ -377,9 +377,20 @@ public class RouteOverlay
 		}
 	}
 
-	private static void addToDrawRoutes(double tolerance, Trackable track)
+	private static void addToDrawRoutes(double tolerance, Trackable track, int Zoom)
 	{
-		ArrayList<TrackPoint> reducedPoints = PolylineReduction.DouglasPeuckerReduction(track.Points, tolerance);
+		ArrayList<TrackPoint> reducedPoints;
+
+		// ab zoom level 18 keine Punkte Reduzieren
+
+		if (Zoom <= 18)
+		{
+			reducedPoints = track.Points;
+		}
+		else
+		{
+			reducedPoints = PolylineReduction.DouglasPeuckerReduction(track.Points, tolerance);
+		}
 
 		AllTrackPoints = track.Points.size();
 		ReduceTrackPoints = reducedPoints.size();
