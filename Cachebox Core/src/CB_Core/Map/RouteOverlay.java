@@ -307,7 +307,10 @@ public class RouteOverlay
 
 			mRoutesChanged = false;
 			aktCalcedZoomLevel = Zoom;
-			DrawRoutes = new ArrayList<RouteOverlay.Route>();
+			if (DrawRoutes == null) DrawRoutes = new ArrayList<RouteOverlay.Route>();
+			else
+				DrawRoutes.clear();
+
 			double tolerance = 0.01 * Math.exp(-1 * (Zoom - 11));
 			Tolleranz = tolerance;
 
@@ -316,13 +319,13 @@ public class RouteOverlay
 
 				if (Routes.get(i) != null && Routes.get(i).ShowRoute)
 				{
-					addToDrawRoutes(tolerance, Routes.get(i), Zoom);
+					addToDrawRoutes(tolerance, Routes.get(i), Zoom, false);
 				}
 			}
 
 			if (GlobalCore.AktuelleRoute != null)
 			{
-				addToDrawRoutes(tolerance, GlobalCore.AktuelleRoute, Zoom);
+				addToDrawRoutes(tolerance, GlobalCore.AktuelleRoute, Zoom, false);
 			}
 
 		}
@@ -355,7 +358,7 @@ public class RouteOverlay
 					chkRec.setPos(0, 0);
 
 					// chk if line on Screen
-					if (chkRec.contains(screen1.x, screen1.y) || chkRec.contains(screen1.x, screen1.y))
+					if (chkRec.contains(screen1.x, screen1.y) || chkRec.contains(screen2.x, screen2.y))
 					{
 						DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, 0.8f, screen1.x, screen1.y, screen2.x, screen2.y);
 						DrawedLineCount++;
@@ -377,27 +380,34 @@ public class RouteOverlay
 		}
 	}
 
-	private static void addToDrawRoutes(double tolerance, Trackable track, int Zoom)
+	private static void addToDrawRoutes(double tolerance, Trackable track, int Zoom, boolean dontReduce)
 	{
-		ArrayList<TrackPoint> reducedPoints;
 
-		// ab zoom level 18 keine Punkte Reduzieren
-
-		if (Zoom <= 18)
+		synchronized (track.Points)
 		{
-			reducedPoints = track.Points;
+
+			ArrayList<TrackPoint> reducedPoints;
+
+			// ab zoom level 18 keine Punkte Reduzieren
+
+			if (dontReduce || Zoom >= 18)
+			{
+				reducedPoints = track.Points;
+			}
+			else
+			{
+				reducedPoints = PolylineReduction.DouglasPeuckerReduction(track.Points, tolerance);
+			}
+
+			AllTrackPoints = track.Points.size();
+			ReduceTrackPoints = reducedPoints.size();
+
+			Route tmp = (new RouteOverlay()).new Route(track.mColor);
+			tmp.Points = reducedPoints;
+
+			DrawRoutes.add(tmp);
+
 		}
-		else
-		{
-			reducedPoints = PolylineReduction.DouglasPeuckerReduction(track.Points, tolerance);
-		}
 
-		AllTrackPoints = track.Points.size();
-		ReduceTrackPoints = reducedPoints.size();
-
-		Route tmp = (new RouteOverlay()).new Route(track.mColor);
-		tmp.Points = reducedPoints;
-
-		DrawRoutes.add(tmp);
 	}
 }

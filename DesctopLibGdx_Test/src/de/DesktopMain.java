@@ -51,7 +51,7 @@ public class DesktopMain {
 		//
 		// Config.settings.OsmMinLevel.setValue(2);
 //		 Config.settings.MapShowCompass.setValue(false);
-//		Config.settings.quickButtonShow.setValue(true);
+		Config.settings.TrackRecorderStartup.setValue(true);
 
 		CB_UI = new Desktop_GL_Listner(ui.Window.width, ui.Window.height);
 
@@ -124,7 +124,7 @@ public class DesktopMain {
 					Locator Loc = new Locator();
 
 					Loc.setLocation(pos.Latitude, pos.Longitude, 100, true,
-							175, true, 45, 95, "DesctopTimer");
+							175, true, 45, 95, "GPS");
 					PositionChangedEventList.PositionChanged(Loc);
 					setBearing();
 				}
@@ -184,7 +184,7 @@ public class DesktopMain {
 				Locator Loc = new Locator();
 
 				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true,
-						175, true, (float) trk.Direction, 95, "DesctopTimer");
+						175, true, (float) trk.Direction, 95, "GPS");
 				PositionChangedEventList.PositionChanged(Loc);
 								
 				if(trackPointIndex<trackPointIndexEnd-2)
@@ -211,7 +211,7 @@ public class DesktopMain {
 				Locator Loc = new Locator();
 				Bearing += 5;
 				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, 175,
-						true, Bearing, 95, "DesctopTimer");
+						true, Bearing, 95, "GPS");
 				PositionChangedEventList.PositionChanged(Loc);
 				setBearing();
 			}

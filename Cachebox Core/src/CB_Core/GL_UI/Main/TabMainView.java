@@ -5,6 +5,7 @@ import java.io.File;
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
+import CB_Core.TrackRecorder;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
@@ -188,6 +189,9 @@ public class TabMainView extends MainViewBase
 		this.addChild(slider);
 
 		autoLoadTrack();
+
+		if (Config.settings.TrackRecorderStartup.getValue()) TrackRecorder.StartRecording();
+
 	}
 
 	private void addPhoneTab()

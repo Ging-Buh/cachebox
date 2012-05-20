@@ -34,6 +34,12 @@ public class NotesView extends CB_View_Base
 	}
 
 	@Override
+	public void onHide()
+	{
+		platformConector.hideView(ViewConst.NOTES_VIEW);
+	}
+
+	@Override
 	protected void Initial()
 	{
 		// TODO Auto-generated method stub

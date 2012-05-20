@@ -1777,11 +1777,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if ((inputState == InputState.Pan) && (fingerDown.size() == 1))
 		{
 
-			if (togBtn.getState() > 1)// für verschieben gesperrt!
+			if (togBtn.getState() > 1 && togBtn.getState() != 2)// für verschieben gesperrt!
 			{
 				return false;
 			}
-			else if (togBtn.getState() == 1)// auf GPS ausgerichtet und wird jetzt auf Free gestellt
+			else if (togBtn.getState() == 1 || togBtn.getState() == 2)// auf GPS oder WP ausgerichtet und wird jetzt auf Free gestellt
 			{
 				togBtn.setState(0);
 			}

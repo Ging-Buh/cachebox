@@ -570,8 +570,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		setDebugVisible();
 
-		if (Config.settings.TrackRecorderStartup.getValue()) TrackRecorder.StartRecording();
-
 		try
 		{
 			this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -850,16 +848,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		catch (Exception e)
 		{
 			Logger.Error("main.newLocationReceived()", "Global.PlaySound(Approach.ogg)", e);
-			e.printStackTrace();
-		}
-
-		try
-		{
-			TrackRecorder.recordPosition();
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.newLocationReceived()", "TrackRecorder.recordPosition()", e);
 			e.printStackTrace();
 		}
 

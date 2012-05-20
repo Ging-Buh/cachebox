@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Types.Coordinate;
@@ -35,7 +34,6 @@ public class TrackRecorder
 		GlobalCore.AktuelleRoute.ShowRoute = true;
 		GlobalCore.AktuelleRoute.IsActualTrack = true;
 		GlobalCore.aktuelleRouteCount = 0;
-		RouteOverlay.Routes.add(GlobalCore.AktuelleRoute);
 
 		String directory = Config.settings.TrackFolder.getValue();
 		if (!FileIO.DirectoryExists(directory)) return;
@@ -98,7 +96,7 @@ public class TrackRecorder
 	{
 		TrackPoint NewPoint;
 
-		if (writer == null || pauseRecording || (GlobalCore.Locator != null && !GlobalCore.LastValidPosition.Valid)
+		if (writer == null || pauseRecording || (GlobalCore.Locator == null && !GlobalCore.LastValidPosition.Valid)
 				|| !GlobalCore.Locator.isGPSprovided()) return;
 
 		// wurden seit dem letzten aufgenommenen Wegpunkt mehr als x Meter
@@ -136,8 +134,13 @@ public class TrackRecorder
 				e.printStackTrace();
 			}
 
-			NewPoint = new TrackPoint(Descriptor.LongitudeToTileX(15, GlobalCore.LastValidPosition.Longitude), Descriptor.LatitudeToTileY(
-					15, GlobalCore.LastValidPosition.Latitude), GlobalCore.Locator.getHeading(), new Date());
+			// NewPoint = new TrackPoint(Descriptor.LongitudeToTileX(15, GlobalCore.LastValidPosition.Longitude),
+			// Descriptor.LatitudeToTileY(
+			// 15, GlobalCore.LastValidPosition.Latitude), GlobalCore.Locator.getHeading(), new Date());
+
+			NewPoint = new TrackPoint(GlobalCore.LastValidPosition.Longitude, GlobalCore.LastValidPosition.Latitude,
+					GlobalCore.Locator.getHeading(), new Date());
+
 			GlobalCore.AktuelleRoute.Points.add(NewPoint);
 			RouteOverlay.RoutesChanged();
 			LastRecordedPosition = new Coordinate(GlobalCore.LastValidPosition);
