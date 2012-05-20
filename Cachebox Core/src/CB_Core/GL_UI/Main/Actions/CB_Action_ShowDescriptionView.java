@@ -90,7 +90,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 
 		boolean isSelected = (GlobalCore.SelectedCache() != null);
 
-		mi = cm.addItem(MI_FAVORIT, "favorit", SpriteCache.Icons.get(42));
+		mi = cm.addItem(MI_FAVORIT, "Favorite", SpriteCache.Icons.get(42));
 		mi.setCheckable(true);
 		if (isSelected)
 		{

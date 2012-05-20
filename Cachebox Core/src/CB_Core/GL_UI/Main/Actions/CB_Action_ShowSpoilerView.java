@@ -13,7 +13,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView
 
 	public CB_Action_ShowSpoilerView()
 	{
-		super("Spoiler", AID_SHOW_SPOILER);
+		super("spoiler", AID_SHOW_SPOILER);
 	}
 
 	@Override

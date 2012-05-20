@@ -36,6 +36,8 @@ public class CacheList extends MoveableList<Cache>
 
 	public void Resort()
 	{
+		if (GlobalCore.Marker == null || GlobalCore.LastValidPosition == null) return;
+
 		GlobalCore.ResortAtWork = true;
 		// Alle Distanzen aktualisieren
 		for (Cache cache : this)

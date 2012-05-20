@@ -80,11 +80,11 @@ public class TabMainView extends MainViewBase
 	private CB_Action_ShowTrackableListView actionShowTrackableListView;
 	public static CB_Action_ShowTrackListView actionShowTrackListView;
 	public static CB_Action_ShowWaypointView actionShowWaypointView;
-	private CB_Action_ShowActivity actionShowSettings;
+	public static CB_Action_ShowActivity actionShowSettings;
 	private CB_Action_ShowActivity actionNavigateTo1;
 	private CB_Action_ShowActivity actionNavigateTo2;
 
-	private CB_Action_ShowActivity actionRecTrack;
+	public static CB_Action_ShowActivity actionRecTrack;
 	private CB_Action_ShowActivity actionRecVoice;
 	private CB_Action_ShowActivity actionRecPicture;
 	private CB_Action_ShowActivity actionRecVideo;

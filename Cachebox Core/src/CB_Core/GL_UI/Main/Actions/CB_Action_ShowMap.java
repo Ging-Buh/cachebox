@@ -5,6 +5,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -87,7 +88,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 		mi = icm.addItem(MI_CENTER_WP, "CenterWP");
 
-		mi = icm.addItem(MI_SMOOTH_SCROLLING, "SmoothScrolling");
+		// mi = icm.addItem(MI_SMOOTH_SCROLLING, "SmoothScrolling");
 		mi = icm.addItem(MI_SETTINGS, "settings", SpriteCache.Icons.get(26));
 		mi = icm.addItem(MI_SEARCH, "search", SpriteCache.Icons.get(27));
 		mi = icm.addItem(MI_MAPVIEW_VIEW, "view");
@@ -229,6 +230,18 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 					}
 				}
 
+				return true;
+
+			case MI_SETTINGS:
+				TabMainView.actionShowSettings.Execute();
+				return true;
+
+			case MI_SEARCH:
+				new CB_Action_ShowActivity("search", MI_SEARCH, ViewConst.SEARCH, SpriteCache.Icons.get(27)).Execute();
+				return true;
+
+			case MI_TREC_REC:
+				TabMainView.actionRecTrack.Execute();
 				return true;
 
 			default:
