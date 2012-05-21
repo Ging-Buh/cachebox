@@ -21,6 +21,7 @@ public class Solver extends ArrayList<SolverZeile>
 
 	public Solver(String source)
 	{
+		if (source == null) source = "";
 		if (operatoren.size() == 0)
 		{
 			ArrayList<String> ops = new ArrayList<String>();

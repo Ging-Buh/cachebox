@@ -70,6 +70,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		{
 			this.cache = GlobalCore.SelectedCache();
 			String s = Database.GetSolver(this.cache);
+			if (s == null) s = "";
 			solver = new Solver(s);
 			solver.Solve();
 			// wenn der Solver noch leer ist oder die letzte Zeile nicht leer ist dann am Ende eine leere Zeile einfügen

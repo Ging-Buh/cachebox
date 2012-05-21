@@ -3,6 +3,8 @@ package CB_Core.GL_UI.Controls.Dialogs;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
@@ -20,7 +22,8 @@ public class SolverDialog extends GL_MsgBox
 	}
 
 	private GL_MsgBox mMsgBox;
-	private TextField mTextField;
+	private TextField mVariableField;
+	private TextField mFormulaField;
 	private String mSolverString;
 	private SloverBackStringListner mBackStringListner;
 
@@ -32,6 +35,19 @@ public class SolverDialog extends GL_MsgBox
 
 	private void initialLayout()
 	{
+		// Split Solver String by =
+		String[] solverStrings = mSolverString.split("=", 2);
+		String sVar = "";
+		String sForm = "";
+		if (solverStrings.length == 1)
+		{
+			sForm = solverStrings[0];
+		}
+		else if (solverStrings.length > 1)
+		{
+			sVar = solverStrings[0];
+			sForm = solverStrings[1];
+		}
 
 		// initial MsgBox
 		mMsgBox = new GL_MsgBox(new Size((int) width, (int) height), "MsgBox");
@@ -40,14 +56,28 @@ public class SolverDialog extends GL_MsgBox
 		setButtonCaptions(mMsgBox, MessageBoxButtons.OKCancel);
 		SizeF msgBoxContentSize = mMsgBox.getContentSize();
 
-		// initial TextField
+		// initial VariableField
 		float TextFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
 		CB_RectF rec = new CB_RectF(0, msgBoxContentSize.height - TextFieldHeight, msgBoxContentSize.width, TextFieldHeight);
-		mTextField = new TextField(rec, "SolverDialogTextField");
-		mTextField.setText(mSolverString);
-		mTextField.setMsg("Enter formula");
+		mVariableField = new TextField(rec, "SolverDialogTextField");
+		mVariableField.setText(sVar);
+		mVariableField.setMsg("Enter formula");
+		mMsgBox.addChild(mVariableField);
 
-		mMsgBox.addChild(mTextField);
+		rec = new CB_RectF(0, msgBoxContentSize.height - TextFieldHeight * 2, msgBoxContentSize.width, TextFieldHeight);
+		Label lbGleich = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "=");
+		lbGleich.setFont(Fonts.getNormal());
+		lbGleich.setText("=");
+		setBackground(SpriteCache.ListBack);
+		mMsgBox.addChild(lbGleich);
+
+		// initial FormulaField
+		rec = new CB_RectF(0, msgBoxContentSize.height - TextFieldHeight * 3, msgBoxContentSize.width, TextFieldHeight);
+		mFormulaField = new TextField(rec, "SolverDialogTextField");
+		mFormulaField.setText(sForm);
+		mFormulaField.setMsg("Enter formula");
+
+		mMsgBox.addChild(mFormulaField);
 
 		button3.setText(GlobalCore.Translations.Get("close"));
 		button1.setText(GlobalCore.Translations.Get("Ok"));
@@ -62,7 +92,10 @@ public class SolverDialog extends GL_MsgBox
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
-			if (mBackStringListner != null) mBackStringListner.BackString(mTextField.getText());
+			String result = mVariableField.getText();
+			if (result.length() > 0) result += "=";
+			result += mFormulaField.getText();
+			if (mBackStringListner != null) mBackStringListner.BackString(result);
 			mMsgBox.close();
 			mMsgBox.dispose();
 			return true;
