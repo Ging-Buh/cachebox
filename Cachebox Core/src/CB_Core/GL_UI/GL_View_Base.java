@@ -85,6 +85,7 @@ public abstract class GL_View_Base extends CB_RectF
 		super(X, Y, Width, Height);
 		Me = this;
 		name = Name;
+
 	}
 
 	public GL_View_Base(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name)
@@ -93,6 +94,7 @@ public abstract class GL_View_Base extends CB_RectF
 		Me = this;
 		parent = Parent;
 		name = Name;
+
 	}
 
 	public GL_View_Base(CB_RectF rec, String Name)
@@ -100,6 +102,7 @@ public abstract class GL_View_Base extends CB_RectF
 		super(rec);
 		Me = this;
 		name = Name;
+
 	}
 
 	public GL_View_Base(CB_RectF rec, GL_View_Base Parent, String Name)
@@ -108,6 +111,7 @@ public abstract class GL_View_Base extends CB_RectF
 		Me = this;
 		parent = Parent;
 		name = Name;
+
 	}
 
 	public GL_View_Base(SizeF size, String Name)
@@ -115,6 +119,7 @@ public abstract class GL_View_Base extends CB_RectF
 		super(0, 0, size.width, size.height);
 		Me = this;
 		name = Name;
+
 	}
 
 	// # Method
@@ -788,5 +793,52 @@ public abstract class GL_View_Base extends CB_RectF
 		this.invalidate(); // Scissor muss neu berechnet werden
 		GL_Listener.glListener.renderOnce(this.getName() + " setPos(float)");
 	}
+
+	// ############# Skin changed ################
+
+	private interface skinChangedEventListner
+	{
+		public void SkinChanged();
+	}
+
+	private static ArrayList<skinChangedEventListner> skinChangedEventList = new ArrayList<GL_View_Base.skinChangedEventListner>();
+
+	public void registerSkinChangedEvent()
+	{
+		if (calling) return;
+		synchronized (skinChangedEventList)
+		{
+			skinChangedEventList.add(listner);
+		}
+	}
+
+	private static boolean calling = false;
+
+	public static void CallSkinChanged()
+	{
+		synchronized (skinChangedEventList)
+		{
+			calling = true;
+			for (skinChangedEventListner listner : skinChangedEventList)
+			{
+				if (listner != null) listner.SkinChanged();
+			}
+			calling = false;
+		}
+	}
+
+	protected skinChangedEventListner listner = new skinChangedEventListner()
+	{
+
+		@Override
+		public void SkinChanged()
+		{
+			SkinIsChanged();
+		}
+	};
+
+	protected abstract void SkinIsChanged();
+
+	// ############# End Skin changed ############
 
 }

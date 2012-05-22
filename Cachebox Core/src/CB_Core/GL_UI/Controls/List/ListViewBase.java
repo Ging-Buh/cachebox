@@ -143,7 +143,7 @@ public abstract class ListViewBase extends CB_View_Base
 
 	protected boolean mReloadItems = false;
 
-	private void reloadItems()
+	protected void reloadItems()
 	{
 		mReloadItems = true;
 

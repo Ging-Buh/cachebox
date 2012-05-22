@@ -290,4 +290,11 @@ public class Label extends CB_View_Base
 		return this.text;
 	}
 
+	@Override
+	protected void SkinIsChanged()
+	{
+		cache = null;
+		chkCache();
+	}
+
 }

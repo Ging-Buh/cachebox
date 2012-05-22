@@ -108,4 +108,11 @@ public class SolverViewItem extends ListViewItemBase
 		return false;
 	}
 
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

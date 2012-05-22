@@ -212,4 +212,20 @@ public class MultiToggleButton extends Button
 		setClickable(true);
 		mOnStateChangeListener = l;
 	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		mNinePatch = null;
+
+		mNinePatchPressed = null;
+
+		mNinePatchDisabled = null;
+		mFont = null;
+		lblTxt = null;
+		this.removeChilds();
+		setState(getState(), true);
+
+	}
+
 }

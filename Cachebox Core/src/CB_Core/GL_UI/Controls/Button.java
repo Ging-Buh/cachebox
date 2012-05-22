@@ -242,15 +242,15 @@ public class Button extends CB_View_Base
 	{
 		if (mNinePatch == null)
 		{
-			mNinePatch = new NinePatch(SpriteCache.getThemedSprite("day_btn_normal"), 16, 16, 16, 16);
+			mNinePatch = new NinePatch(SpriteCache.getThemedSprite("btn_normal"), 16, 16, 16, 16);
 		}
 		if (mNinePatchPressed == null)
 		{
-			mNinePatchPressed = new NinePatch(SpriteCache.getThemedSprite("day_btn_pressed"), 16, 16, 16, 16);
+			mNinePatchPressed = new NinePatch(SpriteCache.getThemedSprite("btn_pressed"), 16, 16, 16, 16);
 		}
 		if (mNinePatchDisabled == null)
 		{
-			mNinePatchDisabled = new NinePatch(SpriteCache.getThemedSprite("day_btn_default_normal_disabled"), 8, 8, 8, 8);
+			mNinePatchDisabled = new NinePatch(SpriteCache.getThemedSprite("btn_disabled"), 8, 8, 8, 8);
 		}
 
 	}
@@ -263,6 +263,19 @@ public class Button extends CB_View_Base
 	public void setDrageble(boolean value)
 	{
 		dragableButton = value;
+	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		mNinePatch = null;
+
+		mNinePatchPressed = null;
+
+		mNinePatchDisabled = null;
+		mFont = null;
+		lblTxt = null;
+		this.removeChilds();
 	}
 
 }

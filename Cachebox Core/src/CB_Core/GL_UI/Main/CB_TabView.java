@@ -163,4 +163,11 @@ public class CB_TabView extends CB_View_Base
 		return mContentRec;
 	}
 
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

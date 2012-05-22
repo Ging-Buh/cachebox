@@ -7,7 +7,6 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Waypoint;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,7 +19,7 @@ public class InfoBubble extends CB_View_Base
 	public InfoBubble(SizeF Size, String Name)
 	{
 		super(Size, Name);
-		// Logger.LogCat("Create InfoBubble");
+		registerSkinChangedEvent();
 	}
 
 	Pixmap pixmap = null;
@@ -41,11 +40,16 @@ public class InfoBubble extends CB_View_Base
 	 * Cache showing Bubble
 	 */
 	private Cache mCache = null;
-	private Waypoint mWaypoint = null;
+	// private Waypoint mWaypoint = null;
 
 	private CacheInfo cacheInfo;
 
 	public void setCache(Cache value)
+	{
+		setCache(value, false);
+	}
+
+	public void setCache(Cache value, boolean force)
 	{
 		if (value == null)
 		{
@@ -56,7 +60,7 @@ public class InfoBubble extends CB_View_Base
 			return;
 		}
 
-		if (mCache != null && mCache.Id == value.Id) return;
+		if (mCache != null && mCache.Id == value.Id && !force) return;
 
 		// Logger.LogCat("New Cache @InfoBubble");
 		mCache = value;
@@ -116,6 +120,18 @@ public class InfoBubble extends CB_View_Base
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		if (cacheInfo != null)
+		{
+			cacheInfo.dispose();
+			cacheInfo = null;
+		}
+
+		setCache(mCache, true);
 	}
 
 }

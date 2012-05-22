@@ -32,24 +32,43 @@ public class Fonts
 	private static BitmapFont fontAB16_out;
 	private static BitmapFont fontAB17_out;
 
+	private static BitmapFont night_big;
+	private static BitmapFont night_normal;
+	private static BitmapFont night_small;
+	private static BitmapFont night_normalBubble;
+	private static BitmapFont night_smallBubble;
+
+	private static BitmapFont night_fontAB15_out;
+	private static BitmapFont night_fontAB16_out;
+	private static BitmapFont night_fontAB17_out;
+
 	/**
 	 * Lädt die verwendeten Bitmap Fonts und berechnet die entsprechenden Größen
 	 */
 	public static void LoadCalcFonts()
 	{
-		// Logger.LogCat("Fonts => Load");
 
 		double density = UiSizes.getScale();
 
-		big = loadScaledFont(FONT_SIZE_BIG, density);
-		normal = loadScaledFont(FONT_SIZE_NORMAL, density);
-		small = loadScaledFont(FONT_SIZE_SMALL, density);
-		normalBubble = loadScaledFont((int) (FONT_SIZE_NORMAL * 0.7), density);
-		smallBubble = loadScaledFont((int) (FONT_SIZE_SMALL * 0.7), density);
+		big = loadScaledFont(FONT_SIZE_BIG, density, false);
+		normal = loadScaledFont(FONT_SIZE_NORMAL, density, false);
+		small = loadScaledFont(FONT_SIZE_SMALL, density, false);
+		normalBubble = loadScaledFont((int) (FONT_SIZE_NORMAL * 0.7), density, false);
+		smallBubble = loadScaledFont((int) (FONT_SIZE_SMALL * 0.7), density, false);
 
-		fontAB15_out = loadScaledFont("15_out");
-		fontAB16_out = loadScaledFont("16_out");
-		fontAB17_out = loadScaledFont("17_out");
+		fontAB15_out = loadScaledFont("15_out", false);
+		fontAB16_out = loadScaledFont("16_out", false);
+		fontAB17_out = loadScaledFont("17_out", false);
+
+		night_big = loadScaledFont(FONT_SIZE_BIG, density, true);
+		night_normal = loadScaledFont(FONT_SIZE_NORMAL, density, true);
+		night_small = loadScaledFont(FONT_SIZE_SMALL, density, true);
+		night_normalBubble = loadScaledFont((int) (FONT_SIZE_NORMAL * 0.7), density, true);
+		night_smallBubble = loadScaledFont((int) (FONT_SIZE_SMALL * 0.7), density, true);
+
+		night_fontAB15_out = loadScaledFont("15_out", true);
+		night_fontAB16_out = loadScaledFont("16_out", true);
+		night_fontAB17_out = loadScaledFont("17_out", true);
 	}
 
 	static String defaultFontPath;
@@ -58,7 +77,7 @@ public class Fonts
 	static String costumFontPath;
 	static String costumFontPathNight;
 
-	private static BitmapFont loadScaledFont(int Size, double density)
+	private static BitmapFont loadScaledFont(int Size, double density, boolean night)
 	{
 		int scaled = (int) (Size * density);
 
@@ -67,10 +86,10 @@ public class Fonts
 
 		String strScaled = String.valueOf(scaled);
 
-		return loadScaledFont(strScaled);
+		return loadScaledFont(strScaled, night);
 	}
 
-	private static BitmapFont loadScaledFont(String strScaled)
+	private static BitmapFont loadScaledFont(String strScaled, boolean night)
 	{
 
 		String fontPath = null;
@@ -87,7 +106,7 @@ public class Fonts
 		defaultFontPath = defaultPath + "/day/fonts/" + strScaled + ".png";
 		defaultFontPathNight = defaultPath + "/night/fonts/" + strScaled + ".png";
 
-		if (Config.settings.nightMode.getValue())
+		if (night)
 		{
 			if (FileIO.FileExists(costumFontPathNight)) fontPath = costumFontPathNight;
 			if (fontPath == null) if (FileIO.FileExists(defaultFontPathNight)) fontPath = defaultFontPathNight;
@@ -139,37 +158,36 @@ public class Fonts
 
 	public static BitmapFont getBig()
 	{
-		return big;
+		return Config.settings.nightMode.getValue() ? night_big : big;
 	}
 
 	public static BitmapFont getNormal()
 	{
-		return normal;
+		return Config.settings.nightMode.getValue() ? night_normal : normal;
 	}
 
 	public static BitmapFont getSmall()
 	{
-		return small;
+		return Config.settings.nightMode.getValue() ? night_small : small;
 	}
 
 	public static BitmapFont getBubbleNormal()
 	{
-		return normalBubble;
+		return Config.settings.nightMode.getValue() ? night_normalBubble : normalBubble;
 	}
 
 	public static BitmapFont getBubbleSmall()
 	{
-		return smallBubble;
+		return Config.settings.nightMode.getValue() ? night_smallBubble : smallBubble;
 	}
 
 	public static BitmapFont get16_Out()
 	{
-		return fontAB16_out;
+		return Config.settings.nightMode.getValue() ? night_fontAB16_out : fontAB16_out;
 	}
 
 	public static BitmapFont get15_Out()
 	{
-		return fontAB15_out;
+		return Config.settings.nightMode.getValue() ? night_fontAB15_out : fontAB15_out;
 	}
-
 }

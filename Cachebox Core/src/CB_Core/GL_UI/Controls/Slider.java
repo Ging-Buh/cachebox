@@ -48,6 +48,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	{
 		super(rec, Name);
 		that = this;
+		registerSkinChangedEvent();
 		SelectedCacheEventList.Add(this);
 		this.setClickable(true);
 
@@ -70,7 +71,16 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	@Override
 	protected void Initial()
 	{
-		setSliderPos(this.height - mSlideBox.getHeight());
+		float initialPos = 0;
+		if (Config.settings.quickButtonShow.getValue())
+		{
+			initialPos = this.height - mSlideBox.getHeight() - QuickButtonMaxHeight;
+		}
+		else
+		{
+			initialPos = this.height - mSlideBox.getHeight();
+		}
+		setSliderPos(initialPos);
 		ActionUp();
 	}
 
@@ -351,6 +361,13 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		mSlideBox.setBackground(new NinePatch(SpriteCache.ToggleBtn.get(0), 16, 16, 16, 16));
+
 	}
 
 }

@@ -77,11 +77,14 @@ public class MapInfoPanel extends CB_View_Base
 	public MapInfoPanel(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
+		registerSkinChangedEvent();
 	}
 
 	@Override
 	protected void Initial()
 	{
+		this.removeChilds();
+
 		setBackground(new NinePatch(SpriteCache.InfoBack, 16, 16, 16, 16));
 
 		// initial Image
@@ -119,6 +122,12 @@ public class MapInfoPanel extends CB_View_Base
 		lblLongitude.setPos(new Vector2(this.getWidth() - lblLongitude.getWidth(), this.height * 0.1f));
 		lblLongitude.setText("---");
 		this.addChild(lblLongitude);
+	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		Initial();
 	}
 
 }

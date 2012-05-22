@@ -45,4 +45,11 @@ public class WrappedTextField extends LibGdx_Host_Control
 		mTextField.setCursorPosition(cursorPosition);
 	}
 
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

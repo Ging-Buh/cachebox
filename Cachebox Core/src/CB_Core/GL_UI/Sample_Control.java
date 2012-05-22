@@ -84,4 +84,11 @@ public class Sample_Control extends GL_View_Base
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
+	}
 }

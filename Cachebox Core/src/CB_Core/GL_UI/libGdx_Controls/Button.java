@@ -15,4 +15,11 @@ public class Button extends LibGdx_Host_Control
 		mButton = (com.badlogic.gdx.scenes.scene2d.ui.Button) getActor();
 	}
 
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

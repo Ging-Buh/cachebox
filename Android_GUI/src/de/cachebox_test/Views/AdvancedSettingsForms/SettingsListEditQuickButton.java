@@ -63,6 +63,10 @@ public class SettingsListEditQuickButton extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.advanced_settings_quick_button);
 
+		String ConfigActionList = Config.settings.quickButtonList.getValue();
+		String[] configList = ConfigActionList.split(",");
+		Global.QuickButtonList = Actions.getListFromConfig(configList);
+
 		context = this.getBaseContext();
 		Me = this;
 		findViewById();
@@ -237,6 +241,7 @@ public class SettingsListEditQuickButton extends Activity
 
 	public void resortList()
 	{
+
 		ActionListButtonAddClicked = false;
 		chkQuickButtonShow.setChecked(Config.settings.quickButtonShow.getValue());
 		ActionListView.setAdapter(QuickListBaseAdapter);

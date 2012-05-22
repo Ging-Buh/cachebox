@@ -220,4 +220,11 @@ public class TestView extends CB_View_Base
 		return true;
 	}
 
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

@@ -30,6 +30,8 @@ public class QuickButtonList extends H_ListView
 		btnYPos = this.halfHeight - btnRec.getHalfHeight();
 
 		this.setBaseAdapter(new CustomAdapter());
+
+		registerSkinChangedEvent();
 	}
 
 	@Override
@@ -109,13 +111,8 @@ public class QuickButtonList extends H_ListView
 
 		public CustomAdapter()
 		{
-			if (quickButtonList == null)
-			{
-				String ConfigActionList = Config.settings.quickButtonList.getValue();
-				String[] ConfigList = ConfigActionList.split(",");
-				quickButtonList = QuickActions.getListFromConfig(ConfigList, btnHeight);
-			}
-			chkIsDrageble();
+			readQuickButtonItemsList();
+
 		}
 
 		public long getItemId(int position)
@@ -145,6 +142,27 @@ public class QuickButtonList extends H_ListView
 		{
 			return btnHeight;
 		}
+	}
+
+	private void readQuickButtonItemsList()
+	{
+		if (quickButtonList == null)
+		{
+			String ConfigActionList = Config.settings.quickButtonList.getValue();
+			String[] ConfigList = ConfigActionList.split(",");
+			quickButtonList = QuickActions.getListFromConfig(ConfigList, btnHeight);
+		}
+		chkIsDrageble();
+	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		quickButtonList = null;
+		readQuickButtonItemsList();
+		setBackground(SpriteCache.ButtonBack);
+		reloadItems();
+
 	}
 
 }

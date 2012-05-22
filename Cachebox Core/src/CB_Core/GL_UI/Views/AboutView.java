@@ -54,4 +54,11 @@ public class AboutView extends CB_View_Base
 		lblDummy.setRec(CB_RectF.ScaleCenter(rec, 0.8f));
 	}
 
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

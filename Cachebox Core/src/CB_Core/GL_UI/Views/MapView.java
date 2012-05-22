@@ -159,7 +159,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		super(rec, Name);
 		that = this;
-
+		registerSkinChangedEvent();
+		setBackground(SpriteCache.ListBack);
 		if (queueProcessor == null)
 		{
 			queueProcessor = new queueProcessor();
@@ -278,6 +279,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				}
 			}
 		});
+		togBtn.registerSkinChangedEvent();
 		this.addChild(togBtn);
 
 		infoBubble = new InfoBubble(GL_UISizes.Bubble, "infoBubble");
@@ -475,11 +477,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if (reduceFps)
 		{
 			GL_Listener.glListener.removeRenderView(this);
-		}
-
-		if (SpriteCache.MapIcons == null)
-		{
-			SpriteCache.LoadSprites();
 		}
 
 		synchronized (screenCenterT)
@@ -2275,5 +2272,16 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	public String getReceiverName()
 	{
 		return "Core.MapView";
+	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		setBackground(SpriteCache.ListBack);
+		mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
+		if (infoBubble.isVisible())
+		{
+			infoBubble.setCache(infoBubble.getCache(), true);
+		}
 	}
 }

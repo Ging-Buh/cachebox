@@ -29,9 +29,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 	public CacheListView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-
-		// Logger.LogCat("Create CacheListView => " + rec.toString());
-
+		registerSkinChangedEvent();
 	}
 
 	@Override
@@ -243,6 +241,14 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 		{
 			setSelectedCacheVisible();
 		}
+	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		reloadItems();
+		setBackground(SpriteCache.ListBack);
+		CacheListViewItem.ResetBackground();
 	}
 
 }

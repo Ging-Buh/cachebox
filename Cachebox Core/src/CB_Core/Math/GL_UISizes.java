@@ -74,7 +74,7 @@ public class GL_UISizes implements SizeChangedEvent
 			calcSizes();
 
 			Fonts.LoadCalcFonts();
-			SpriteCache.LoadSprites();
+			SpriteCache.LoadSprites(false);
 			calcPos();
 
 			isInitial = true;

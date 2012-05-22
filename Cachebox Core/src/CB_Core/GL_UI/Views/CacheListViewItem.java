@@ -155,6 +155,11 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 	private static NinePatch back2;
 	private static boolean mBackIsInitial = false;
 
+	public static void ResetBackground()
+	{
+		mBackIsInitial = false;
+	}
+
 	@Override
 	protected void render(SpriteBatch batch)
 	{
@@ -258,6 +263,13 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 	public String getReceiverName()
 	{
 		return "Core.CacheListViewItem";
+	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }

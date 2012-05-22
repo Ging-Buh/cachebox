@@ -45,4 +45,11 @@ public class NotesView extends CB_View_Base
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
+	}
 }

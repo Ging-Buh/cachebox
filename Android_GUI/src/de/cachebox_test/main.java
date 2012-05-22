@@ -118,8 +118,6 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -141,14 +139,11 @@ import de.cachebox_test.Components.CacheNameView;
 import de.cachebox_test.Components.search;
 import de.cachebox_test.Components.search.searchMode;
 import de.cachebox_test.Custom_Controls.DebugInfoPanel;
-import de.cachebox_test.Custom_Controls.DescriptionViewControl;
 import de.cachebox_test.Custom_Controls.Mic_On_Flash;
 import de.cachebox_test.Custom_Controls.downSlider;
 import de.cachebox_test.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
 import de.cachebox_test.Custom_Controls.QuickButtonList.HorizontalListView;
-import de.cachebox_test.Custom_Controls.QuickButtonList.QuickButtonItem;
 import de.cachebox_test.DB.AndroidDB;
-import de.cachebox_test.Enums.Actions;
 import de.cachebox_test.Events.GpsStateChangeEvent;
 import de.cachebox_test.Events.GpsStateChangeEventList;
 import de.cachebox_test.Events.PositionEventList;
@@ -1682,10 +1677,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			showParkingDialog();
 		}
-		else if (ID == ViewConst.DAY_NIGHT)
-		{
-			switchDayNight();
-		}
+
 		else if (ID == ViewConst.LOCK)
 		{
 			startScreenLock(true);
@@ -1906,9 +1898,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case R.id.miClose:
 				Quitt();
 				break;
-			case R.id.miDayNight:
-				switchDayNight();
-				break;
+
 			case R.id.miSettings:
 				showView(ViewConst.SETTINGS);
 				break;
@@ -2036,79 +2026,79 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (Config.settings.vibrateFeedback.getValue()) vibrator.vibrate(20);
 	}
 
-	OnItemClickListener QuickButtonOnItemClickListner = new OnItemClickListener()
-	{
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
-		{
-
-			// give feedback
-			vibrate();
-
-			QuickButtonItem clicedItem = Global.QuickButtonList.get(arg2);
-
-			switch (clicedItem.getActionId())
-			{
-			case 0:
-				showView(ViewConst.DESCRIPTION_VIEW);
-				break;
-			case 1:
-				showView(ViewConst.WAYPOINT_VIEW);
-				break;
-			case 2:
-				showView(ViewConst.LOG_VIEW);
-				break;
-			case 3:
-				showView(ViewConst.MAP_VIEW);
-				break;
-			case 4:
-				showView(ViewConst.COMPASS_VIEW);
-				break;
-			case 5:
-				showView(ViewConst.CACHE_LIST_VIEW);
-				break;
-			case 6:
-				showView(ViewConst.TRACK_LIST_VIEW);
-				break;
-			case 7:
-				takePhoto();
-				break;
-			case 8:
-				recVideo();
-				break;
-			case 9:
-				recVoice();
-				break;
-			case 10:
-				Search.Show();
-				break;
-			// case 11:
-			// showView(101);
-			// break;
-			case 12:
-				startScreenLock(true);
-				break;
-			case 13:
-				switchAutoResort();
-				QuickButtonList.invalidate();
-				break;
-			case 14:
-				showView(ViewConst.SOLVER_VIEW);
-				break;
-			case 15:
-				if (GlobalCore.SelectedCache() != null && GlobalCore.SelectedCache().SpoilerExists()) showView(ViewConst.SPOILER_VIEW);
-				break;
-			case 16:
-				if (GlobalCore.SelectedCache() != null && !(GlobalCore.SelectedCache().hint.equals(""))) showHint();
-				break;
-			case 17:
-				showParkingDialog();
-				break;
-			case 18:
-				switchDayNight();
-				break;
-			}
-		}
-	};
+	// OnItemClickListener QuickButtonOnItemClickListner = new OnItemClickListener()
+	// {
+	// public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
+	// {
+	//
+	// // give feedback
+	// vibrate();
+	//
+	// QuickButtonItem clicedItem = Global.QuickButtonList.get(arg2);
+	//
+	// switch (clicedItem.getActionId())
+	// {
+	// case 0:
+	// showView(ViewConst.DESCRIPTION_VIEW);
+	// break;
+	// case 1:
+	// showView(ViewConst.WAYPOINT_VIEW);
+	// break;
+	// case 2:
+	// showView(ViewConst.LOG_VIEW);
+	// break;
+	// case 3:
+	// showView(ViewConst.MAP_VIEW);
+	// break;
+	// case 4:
+	// showView(ViewConst.COMPASS_VIEW);
+	// break;
+	// case 5:
+	// showView(ViewConst.CACHE_LIST_VIEW);
+	// break;
+	// case 6:
+	// showView(ViewConst.TRACK_LIST_VIEW);
+	// break;
+	// case 7:
+	// takePhoto();
+	// break;
+	// case 8:
+	// recVideo();
+	// break;
+	// case 9:
+	// recVoice();
+	// break;
+	// case 10:
+	// Search.Show();
+	// break;
+	// // case 11:
+	// // showView(101);
+	// // break;
+	// case 12:
+	// startScreenLock(true);
+	// break;
+	// case 13:
+	// switchAutoResort();
+	// QuickButtonList.invalidate();
+	// break;
+	// case 14:
+	// showView(ViewConst.SOLVER_VIEW);
+	// break;
+	// case 15:
+	// if (GlobalCore.SelectedCache() != null && GlobalCore.SelectedCache().SpoilerExists()) showView(ViewConst.SPOILER_VIEW);
+	// break;
+	// case 16:
+	// if (GlobalCore.SelectedCache() != null && !(GlobalCore.SelectedCache().hint.equals(""))) showHint();
+	// break;
+	// case 17:
+	// showParkingDialog();
+	// break;
+	// case 18:
+	// switchDayNight();
+	// break;
+	// }
+	// }
+	// };
 
 	/*
 	 * Initial Methods
@@ -2382,11 +2372,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 
 		QuickButtonList.setHeight(UiSizes.getQuickButtonListHeight());
-		QuickButtonList.setAdapter(QuickButtonsAdapter);
-		QuickButtonList.setOnItemClickListener(QuickButtonOnItemClickListner);
-		String ConfigActionList = Config.settings.quickButtonList.getValue();
-		String[] ConfigList = ConfigActionList.split(",");
-		Global.QuickButtonList = Actions.getListFromConfig(ConfigList);
+		// QuickButtonList.setAdapter(QuickButtonsAdapter);
+		// QuickButtonList.setOnItemClickListener(QuickButtonOnItemClickListner);
+		// String ConfigActionList = Config.settings.quickButtonList.getValue();
+		// String[] ConfigList = ConfigActionList.split(",");
+		// Global.QuickButtonList = Actions.getListFromConfig(ConfigList);
 
 		// cacheNameView.setHeight((int) (Sizes.getScaledRefSize_normal() *
 		// 3.3));
@@ -2665,17 +2655,17 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		showView(ViewConst.TB_LIST_VIEW);
 	}
 
-	private void switchDayNight()
-	{
-		// frame.removeAllViews();
-		// Config.changeDayNight();
-		DescriptionViewControl.mustLoadDescription = true;
-		downSlider.isInitial = false;
-		ActivityUtils.changeToTheme(mainActivity, Config.settings.nightMode.getValue() ? ActivityUtils.THEME_NIGHT
-				: ActivityUtils.THEME_DAY);
-		Toast.makeText(mainActivity, "changeDayNight", Toast.LENGTH_SHORT).show();
-
-	}
+	// private void switchDayNight()
+	// {
+	// // frame.removeAllViews();
+	// // Config.changeDayNight();
+	// DescriptionViewControl.mustLoadDescription = true;
+	// downSlider.isInitial = false;
+	// ActivityUtils.changeToTheme(mainActivity, Config.settings.nightMode.getValue() ? ActivityUtils.THEME_NIGHT
+	// : ActivityUtils.THEME_DAY);
+	// Toast.makeText(mainActivity, "changeDayNight", Toast.LENGTH_SHORT).show();
+	//
+	// }
 
 	private void switchAutoResort()
 	{

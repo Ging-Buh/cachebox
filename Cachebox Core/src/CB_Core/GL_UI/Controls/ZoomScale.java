@@ -333,4 +333,12 @@ public class ZoomScale extends CB_View_Base
 		CachedScaleSprite = null;
 	}
 
+	@Override
+	protected void SkinIsChanged()
+	{
+		CachedScaleSprite = null;
+		ValueRec = null;
+		storedRec = null;
+	}
+
 }

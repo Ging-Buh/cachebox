@@ -135,4 +135,11 @@ public class TextField extends LibGdx_Host_Control
 		super.setWidth(width);
 		mTextField.width = width;
 	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
+	}
 }

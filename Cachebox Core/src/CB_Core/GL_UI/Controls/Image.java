@@ -156,4 +156,11 @@ public class Image extends CB_View_Base
 		mNinePatchImage = new NinePatch(ninePatch);
 	}
 
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

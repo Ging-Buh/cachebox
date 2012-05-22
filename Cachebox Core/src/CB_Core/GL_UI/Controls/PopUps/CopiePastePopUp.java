@@ -55,4 +55,11 @@ public class CopiePastePopUp extends PopUp_Base
 		setBackground(patch);
 		pasteButton.setY(this.height * 0.07f);
 	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
+	}
 }

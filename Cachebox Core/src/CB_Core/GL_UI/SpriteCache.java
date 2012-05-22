@@ -77,6 +77,30 @@ public class SpriteCache
 		PathDefault = defaultPath + "/day/UI_IconPack.spp";
 		PathDefaultNight = defaultPath + "/night/UI_IconPack.spp";
 
+		if (atlasDefault != null)
+		{
+			atlasDefault.dispose();
+			atlasDefault = null;
+		}
+
+		if (atlasDefaultNight != null)
+		{
+			atlasDefaultNight.dispose();
+			atlasDefaultNight = null;
+		}
+
+		if (atlasCostum != null)
+		{
+			atlasCostum.dispose();
+			atlasCostum = null;
+		}
+
+		if (atlasCostumtNight != null)
+		{
+			atlasCostumtNight.dispose();
+			atlasCostumtNight = null;
+		}
+
 		if (FileIO.FileExists(PathDefault)) atlasDefault = new TextureAtlas(Gdx.files.absolute(PathDefault));
 		if (FileIO.FileExists(PathDefaultNight)) atlasDefaultNight = new TextureAtlas(Gdx.files.absolute(PathDefaultNight));
 		if (FileIO.FileExists(PathCostum)) atlasCostum = new TextureAtlas(Gdx.files.absolute(PathCostum));
@@ -94,31 +118,31 @@ public class SpriteCache
 		Sprite tmp = null;
 		if (Config.settings.nightMode.getValue())
 		{
-			tmp = test(atlasCostumtNight, name);
+			tmp = createSprite(atlasCostumtNight, name);
 			if (tmp == null)
 			{
-				tmp = test(atlasCostum, name);
+				tmp = createSprite(atlasCostum, name);
 			}
 			if (tmp == null)
 			{
-				tmp = test(atlasDefaultNight, name);
+				tmp = createSprite(atlasDefaultNight, name);
 			}
 
 		}
 		else
 		{
-			tmp = test(atlasCostum, name);
+			tmp = createSprite(atlasCostum, name);
 		}
 
 		if (tmp == null)
 		{
-			tmp = test(atlasDefault, name);
+			tmp = createSprite(atlasDefault, name);
 		}
 
 		return tmp;
 	}
 
-	private static Sprite test(TextureAtlas atlas, String name)
+	private static Sprite createSprite(TextureAtlas atlas, String name)
 	{
 		Sprite tmp = null;
 		if (atlas != null)
@@ -131,14 +155,14 @@ public class SpriteCache
 	/**
 	 * Load the Sprites from recorce
 	 */
-	public static void LoadSprites()
+	public static void LoadSprites(boolean reload)
 	{
 
-		// Config.settings.SkinFolder.setValue("./testdata/skins/default");
-		// Config.AcceptChanges();
-		setPath(Config.settings.SkinFolder.getValue());
+		if (!reload) setPath(Config.settings.SkinFolder.getValue());
 
-		MapIconsSmall = new ArrayList<Sprite>();
+		if (MapIconsSmall == null) MapIconsSmall = new ArrayList<Sprite>();
+		else
+			MapIconsSmall.clear();
 		MapIconsSmall.add(getThemedSprite("small1yes"));
 		MapIconsSmall.add(getThemedSprite("small2yesyes"));
 		MapIconsSmall.add(getThemedSprite("small3yes"));
@@ -156,13 +180,17 @@ public class SpriteCache
 		MapIconsSmall.add(getThemedSprite("small6no"));
 		MapIconsSmall.add(getThemedSprite("small7no"));
 
-		MapOverlay = new ArrayList<Sprite>();
+		if (MapOverlay == null) MapOverlay = new ArrayList<Sprite>();
+		else
+			MapOverlay.clear();
 		MapOverlay.add(getThemedSprite("shaddowrect"));
 		MapOverlay.add(getThemedSprite("shaddowrect_selected"));
 		MapOverlay.add(getThemedSprite("deact"));
 		MapOverlay.add(getThemedSprite("cross"));
 
-		MapIcons = new ArrayList<Sprite>();
+		if (MapIcons == null) MapIcons = new ArrayList<Sprite>();
+		else
+			MapIcons.clear();
 		MapIcons.add(getThemedSprite("0"));
 		MapIcons.add(getThemedSprite("1"));
 		MapIcons.add(getThemedSprite("2"));
@@ -187,7 +215,9 @@ public class SpriteCache
 		MapIcons.add(getThemedSprite("21"));
 		MapIcons.add(getThemedSprite("star"));
 
-		Arrows = new ArrayList<Sprite>();
+		if (Arrows == null) Arrows = new ArrayList<Sprite>();
+		else
+			Arrows.clear();
 		Arrows.add(getThemedSprite("arrow_Compass"));
 		Arrows.add(getThemedSprite("arrow_Compass_Trans"));
 		Arrows.add(getThemedSprite("arrow_GPS"));
@@ -200,7 +230,9 @@ public class SpriteCache
 		Arrows.add(getThemedSprite("arrow_right"));
 		Arrows.add(getThemedSprite("track_point"));
 
-		MapStars = new ArrayList<Sprite>();
+		if (MapStars == null) MapStars = new ArrayList<Sprite>();
+		else
+			MapStars.clear();
 		MapStars.add(getThemedSprite("stars0small"));
 		MapStars.add(getThemedSprite("stars0_5small"));
 		MapStars.add(getThemedSprite("stars1small"));
@@ -213,7 +245,9 @@ public class SpriteCache
 		MapStars.add(getThemedSprite("stars4_5small"));
 		MapStars.add(getThemedSprite("stars5small"));
 
-		Stars = new ArrayList<Sprite>();
+		if (Stars == null) Stars = new ArrayList<Sprite>();
+		else
+			Stars.clear();
 		Stars.add(getThemedSprite("stars0icon"));
 		Stars.add(getThemedSprite("stars0_5icon"));
 		Stars.add(getThemedSprite("stars1icon"));
@@ -226,7 +260,9 @@ public class SpriteCache
 		Stars.add(getThemedSprite("stars4_5icon"));
 		Stars.add(getThemedSprite("stars5icon"));
 
-		Bubble = new ArrayList<Sprite>();
+		if (Bubble == null) Bubble = new ArrayList<Sprite>();
+		else
+			Bubble.clear();
 		Bubble.add(getThemedSprite("Bubble"));
 		Bubble.add(getThemedSprite("Bubble_selected"));
 		Bubble.add(getThemedSprite("BubbleOverlay"));
@@ -235,11 +271,15 @@ public class SpriteCache
 		Bubble.add(getThemedSprite("1to4bubble_flip"));
 		Bubble.add(getThemedSprite("5bubble_flip"));
 
-		ChkIcons = new ArrayList<Sprite>();
+		if (ChkIcons == null) ChkIcons = new ArrayList<Sprite>();
+		else
+			ChkIcons.clear();
 		ChkIcons.add(getThemedSprite("check_off"));
 		ChkIcons.add(getThemedSprite("check_on"));
 
-		Dialog = new ArrayList<Sprite>();
+		if (Dialog == null) Dialog = new ArrayList<Sprite>();
+		else
+			Dialog.clear();
 		Dialog.add(getThemedSprite("dialog_header"));
 		Dialog.add(getThemedSprite("dialog_center"));
 		Dialog.add(getThemedSprite("dialog_footer"));
@@ -247,12 +287,16 @@ public class SpriteCache
 
 		InfoBack = getThemedSprite("InfoPanelBack");
 
-		ToggleBtn = new ArrayList<Sprite>();
-		ToggleBtn.add(getThemedSprite("day_btn_normal"));
-		ToggleBtn.add(getThemedSprite("day_btn_pressed"));
+		if (ToggleBtn == null) ToggleBtn = new ArrayList<Sprite>();
+		else
+			ToggleBtn.clear();
+		ToggleBtn.add(getThemedSprite("btn_normal"));
+		ToggleBtn.add(getThemedSprite("btn_pressed"));
 		ToggleBtn.add(getThemedSprite("toggle_led_gr"));
 
-		ZoomBtn = new ArrayList<Sprite>();
+		if (ZoomBtn == null) ZoomBtn = new ArrayList<Sprite>();
+		else
+			ZoomBtn.clear();
 		ZoomBtn.add(getThemedSprite("day_btn_zoom_down_normal"));
 		ZoomBtn.add(getThemedSprite("day_btn_zoom_down_pressed"));
 		ZoomBtn.add(getThemedSprite("day_btn_zoom_down_disabled"));
@@ -262,14 +306,18 @@ public class SpriteCache
 
 		ZoomValueBack = getThemedSprite("zoom_back");
 
-		SizesIcons = new ArrayList<Sprite>();
+		if (SizesIcons == null) SizesIcons = new ArrayList<Sprite>();
+		else
+			SizesIcons.clear();
 		SizesIcons.add(getThemedSprite("other"));
 		SizesIcons.add(getThemedSprite("micro"));
 		SizesIcons.add(getThemedSprite("small"));
 		SizesIcons.add(getThemedSprite("regular"));
 		SizesIcons.add(getThemedSprite("large"));
 
-		BigIcons = new ArrayList<Sprite>();
+		if (BigIcons == null) BigIcons = new ArrayList<Sprite>();
+		else
+			BigIcons.clear();
 		BigIcons.add(getThemedSprite("big0icon")); // 0
 		BigIcons.add(getThemedSprite("big1icon")); // 1
 		BigIcons.add(getThemedSprite("big2icon")); // 2
@@ -293,8 +341,10 @@ public class SpriteCache
 		BigIcons.add(getThemedSprite("my_parking")); // 20
 		BigIcons.add(getThemedSprite("big19icon")); // 21
 
-		Icons = new ArrayList<Sprite>();
-		Icons.add(getThemedSprite("day_btn_default_normal"));// 0
+		if (Icons == null) Icons = new ArrayList<Sprite>();
+		else
+			Icons.clear();
+		Icons.add(getThemedSprite("btn_default_normal"));// 0
 		Icons.add(getThemedSprite("button"));// 1
 		Icons.add(getThemedSprite("doc_icon"));// 2
 		Icons.add(getThemedSprite("big_16"));// 3
@@ -359,7 +409,7 @@ public class SpriteCache
 		Nav = new ButtonSprites(getThemedSprite("Nav"), getThemedSprite("Nav_pressed"));
 		Tool = new ButtonSprites(getThemedSprite("tool"), getThemedSprite("tool_pressed"));
 		Misc = new ButtonSprites(getThemedSprite("misc"), getThemedSprite("misc_pressed"));
-		QuickButton = new ButtonSprites(getThemedSprite("button"), getThemedSprite("day_btn_pressed"));
+		QuickButton = new ButtonSprites(getThemedSprite("button"), getThemedSprite("btn_pressed"));
 	}
 
 	/**

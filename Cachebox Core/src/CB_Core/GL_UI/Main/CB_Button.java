@@ -223,6 +223,11 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 
 	protected static Sprite menuSprite;
 
+	public static void reloadMenuSprite()
+	{
+		menuSprite = null;
+	}
+
 	@Override
 	protected void render(SpriteBatch batch)
 	{

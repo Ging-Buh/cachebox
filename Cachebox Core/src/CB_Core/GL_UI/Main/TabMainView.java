@@ -33,6 +33,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTestView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackListView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackableListView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowWaypointView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_switch_DayNight;
 import CB_Core.GL_UI.Views.AboutView;
 import CB_Core.GL_UI.Views.CacheListView;
 import CB_Core.GL_UI.Views.CompassView;
@@ -92,7 +93,7 @@ public class TabMainView extends MainViewBase
 	private CB_Action_ShowActivity actionDelCaches;
 	private CB_Action_ShowActivity actionParking;
 
-	private CB_Action_ShowActivity actionDayNight;
+	private CB_Action_switch_DayNight actionDayNight;
 	private CB_Action_ShowActivity actionScreenLock;
 	private CB_Action_ShowActivity actionClose;
 
@@ -175,7 +176,7 @@ public class TabMainView extends MainViewBase
 				SpriteCache.Icons.get(28));
 		actionParking = new CB_Action_ShowActivity("Parking", CB_Action.AID_PARKING, ViewConst.PARKING, SpriteCache.BigIcons.get(20));
 
-		actionDayNight = new CB_Action_ShowActivity("DayNight", CB_Action.AID_DAY_NIGHT, ViewConst.DAY_NIGHT, SpriteCache.Icons.get(48));
+		actionDayNight = new CB_Action_switch_DayNight();
 		actionScreenLock = new CB_Action_ShowActivity("screenlock", CB_Action.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
 		actionClose = new CB_Action_ShowActivity("quit", CB_Action.AID_QUIT, ViewConst.QUIT, SpriteCache.Icons.get(31));
 
@@ -255,7 +256,6 @@ public class TabMainView extends MainViewBase
 		actionParking.setTab(this, Tab);
 		actionTestView.setTab(this, Tab);
 
-		actionDayNight.setTab(this, Tab);
 		actionScreenLock.setTab(this, Tab);
 		actionClose.setTab(this, Tab);
 
@@ -357,7 +357,6 @@ public class TabMainView extends MainViewBase
 		actionDelCaches.setTab(this, Tab);
 		actionParking.setTab(this, Tab);
 
-		actionDayNight.setTab(this, Tab);
 		actionScreenLock.setTab(this, Tab);
 		actionClose.setTab(this, Tab);
 
@@ -521,6 +520,23 @@ public class TabMainView extends MainViewBase
 	{
 
 		Config.changeDayNight();
+
+		GL_Listener.glListener.onStop();
+
+		SpriteCache.LoadSprites(true);
+		GL_Listener.glListener.onStart();
+		CallSkinChanged();
+
+		this.removeChilds();
+
+		CB_Button.reloadMenuSprite();
+		if (GlobalCore.isTab) addTabletTabs();
+		else
+			addPhoneTab();
+
+		// add Slider as last
+		Slider slider = new Slider(this, "Slider");
+		this.addChild(slider);
 
 		String state = Config.settings.nightMode.getValue() ? "Night" : "Day";
 

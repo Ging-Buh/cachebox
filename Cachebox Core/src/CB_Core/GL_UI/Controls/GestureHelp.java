@@ -152,4 +152,11 @@ public class GestureHelp extends CB_View_Base
 		this.addChild(RightIcon);
 	}
 
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

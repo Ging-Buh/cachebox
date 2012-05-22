@@ -65,6 +65,7 @@ public enum QuickActions
 	 */
 	public static MoveableList<QuickButtonItem> getListFromConfig(String[] configList, float height)
 	{
+		InitialActions();
 		MoveableList<QuickButtonItem> retVel = new MoveableList<QuickButtonItem>();
 		if (configList == null || configList.length == 0)
 		{
@@ -198,30 +199,39 @@ public enum QuickActions
 		return "empty";
 	}
 
-	private static CB_Action action_TakePhoto = new CB_Action_ShowActivity("TakePhoto", CB_Action.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO,
-			SpriteCache.Icons.get(47));
+	public static void InitialActions()
+	{
+		action_Parking = new CB_Action_ShowActivity("Parking", CB_Action.AID_PARKING, ViewConst.PARKING, SpriteCache.BigIcons.get(20));
 
-	private static CB_Action action_TakeVideo = new CB_Action_ShowActivity("RecVideo", CB_Action.AID_VIDEO_REC, ViewConst.VIDEO_REC,
-			SpriteCache.Icons.get(10));
+		action_TakePhoto = new CB_Action_ShowActivity("TakePhoto", CB_Action.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO,
+				SpriteCache.Icons.get(47));
 
-	private static CB_Action action_Voicerec = new CB_Action_ShowActivity("VoiceRec", CB_Action.AID_VOICE_REC, ViewConst.VOICE_REC,
-			SpriteCache.Icons.get(11));
+		action_TakeVideo = new CB_Action_ShowActivity("RecVideo", CB_Action.AID_VIDEO_REC, ViewConst.VIDEO_REC, SpriteCache.Icons.get(10));
 
-	private static CB_Action action_Search = new CB_Action_ShowActivity("search", CB_Action.AID_SEARCH, ViewConst.SEARCH,
-			SpriteCache.Icons.get(27));
+		action_Voicerec = new CB_Action_ShowActivity("VoiceRec", CB_Action.AID_VOICE_REC, ViewConst.VOICE_REC, SpriteCache.Icons.get(11));
 
-	private static CB_Action action_Filtersettings = new CB_Action_ShowActivity("filtersettings", CB_Action.AID_SHOW_FILTER_SETTINGS,
-			ViewConst.FILTER_SETTINGS, SpriteCache.Icons.get(13));
+		action_Search = new CB_Action_ShowActivity("search", CB_Action.AID_SEARCH, ViewConst.SEARCH, SpriteCache.Icons.get(27));
 
-	private static CB_Action action_ScreenLock = new CB_Action_ShowActivity("screenlock", CB_Action.AID_LOCK, ViewConst.LOCK,
-			SpriteCache.Icons.get(14));
+		action_Filtersettings = new CB_Action_ShowActivity("filtersettings", CB_Action.AID_SHOW_FILTER_SETTINGS, ViewConst.FILTER_SETTINGS,
+				SpriteCache.Icons.get(13));
+
+		action_ScreenLock = new CB_Action_ShowActivity("screenlock", CB_Action.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
+
+	}
+
+	private static CB_Action action_TakePhoto;
+	private static CB_Action action_Parking;
+	private static CB_Action action_TakeVideo;
+
+	private static CB_Action action_Voicerec;
+	private static CB_Action action_Search;
+
+	private static CB_Action action_Filtersettings;
+	private static CB_Action action_ScreenLock;
 
 	private static CB_Action action_SwitchAutoResort = new CB_Action_switch_Autoresort();
 
 	private static CB_Action action_Hint = new CB_Action_ShowHint();
-
-	private static CB_Action action_Parking = new CB_Action_ShowActivity("Parking", CB_Action.AID_PARKING, ViewConst.PARKING,
-			SpriteCache.BigIcons.get(20));
 
 	private static CB_Action action_DayNight = new CB_Action_switch_DayNight();
 }

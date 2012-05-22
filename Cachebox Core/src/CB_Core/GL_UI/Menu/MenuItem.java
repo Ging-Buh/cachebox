@@ -249,4 +249,11 @@ public class MenuItem extends ListViewItemBase
 		return this.data;
 	}
 
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

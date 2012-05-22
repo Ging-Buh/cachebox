@@ -80,4 +80,11 @@ public class MainViewBase extends CB_View_Base implements PositionChangedEvent
 		return true;
 	}
 
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

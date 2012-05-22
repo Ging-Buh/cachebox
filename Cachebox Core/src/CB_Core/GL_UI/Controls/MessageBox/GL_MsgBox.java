@@ -355,4 +355,11 @@ public class GL_MsgBox extends Dialog
 	{
 		GL_Listener.glListener.closeDialog();
 	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
+	}
 }

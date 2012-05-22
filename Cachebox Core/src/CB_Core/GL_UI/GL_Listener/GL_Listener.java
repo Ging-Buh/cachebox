@@ -270,8 +270,10 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 				int w = CB_View_Base.getNextHighestPO2((int) width);
 				int h = CB_View_Base.getNextHighestPO2((int) height);
 				Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-				p.setColor(0f, 0.1f, 0f, 0.9f);
-				// p.drawRectangle(1, 1, (int) width - 1, (int) height - 1);
+				if (Config.settings.nightMode.getValue()) p.setColor(0.07f, 0f, 0f, 0.96f);
+				else
+					p.setColor(0f, 0.1f, 0f, 0.9f);
+
 				p.fillRectangle(0, 0, width, height);
 
 				Texture tex = new Texture(p, Pixmap.Format.RGBA8888, false);
@@ -501,21 +503,28 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 																// dürfte nicht passieren!!!
 		TouchDownPointer first = touchDownPos.get(pointer);
 
-		Point akt = new Point(x, y);
-		if (distance(akt, first.point) > 15)
+		try
 		{
-			// zu weit verschoben -> Long-Click detection stoppen
-			cancelLongClickTimer();
-			// touchDragged Event an das View, das den onTouchDown bekommen hat
-			first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
-					- (int) first.view.ThisWorldRec.getY(), pointer, false);
-			// Logger.LogCat("GL_Listner => onTouchDraggedBase : " + first.view.getName());
-
-			if (touchDownPos.size() == 1)
+			Point akt = new Point(x, y);
+			if (distance(akt, first.point) > 15)
 			{
-				if (first.kineticPan == null) first.kineticPan = new KineticPan();
-				first.kineticPan.setLast(System.currentTimeMillis(), x, y);
+				// zu weit verschoben -> Long-Click detection stoppen
+				cancelLongClickTimer();
+				// touchDragged Event an das View, das den onTouchDown bekommen hat
+				first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
+						- (int) first.view.ThisWorldRec.getY(), pointer, false);
+				// Logger.LogCat("GL_Listner => onTouchDraggedBase : " + first.view.getName());
+
+				if (touchDownPos.size() == 1)
+				{
+					if (first.kineticPan == null) first.kineticPan = new KineticPan();
+					first.kineticPan.setLast(System.currentTimeMillis(), x, y);
+				}
 			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 
 		return true;

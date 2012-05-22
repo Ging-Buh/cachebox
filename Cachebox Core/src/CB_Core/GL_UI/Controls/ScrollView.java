@@ -10,7 +10,6 @@ public class ScrollView extends CB_View_Base
 	public ScrollView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-
 	}
 
 	public ScrollView(CB_RectF cb_RectF, GL_View_Base Parent, String Name)
@@ -20,6 +19,13 @@ public class ScrollView extends CB_View_Base
 
 	@Override
 	protected void Initial()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	protected void SkinIsChanged()
 	{
 		// TODO Auto-generated method stub
 

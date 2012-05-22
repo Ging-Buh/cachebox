@@ -179,4 +179,11 @@ public class Menu extends Dialog
 		this.mOnItemClickListner = onItemClickListner;
 	}
 
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

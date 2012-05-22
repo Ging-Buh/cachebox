@@ -18,6 +18,8 @@ public class Toast extends Dialog
 		mTextField.disable();
 		super.removeChildsDirekt();
 		super.addChildDirekt(mTextField);
+
+		registerSkinChangedEvent();
 	}
 
 	@Override
@@ -41,6 +43,16 @@ public class Toast extends Dialog
 	{
 		super.setWidth(width);
 		mTextField.setWidth(width);
+	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		mTextField = new TextField(this, "Toast.TextField");
+		mTextField.disable();
+		super.removeChildsDirekt();
+		super.addChildDirekt(mTextField);
+
 	}
 
 }

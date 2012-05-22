@@ -258,4 +258,10 @@ public class V_ListView extends ListViewBase
 
 	}
 
+	@Override
+	protected void SkinIsChanged()
+	{
+		reloadItems();
+	}
+
 }
