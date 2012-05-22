@@ -68,7 +68,6 @@ import android.widget.TextView;
 import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.Components.copyAssetFolder;
 import de.cachebox_test.DB.AndroidDB;
-import de.cachebox_test.Views.MapView;
 import de.cachebox_test.Views.Forms.SelectDB;
 
 public class splash extends Activity
@@ -470,6 +469,9 @@ public class splash extends Activity
 		Global.InitIcons(this);
 
 		setProgressState(40, GlobalCore.Translations.Get("LoadMapPack"));
+
+		de.cachebox_test.Map.Manager manager = new de.cachebox_test.Map.Manager();
+
 		File dir = new File(Config.settings.MapPackFolder.getValue());
 		String[] files = dir.list();
 		if (!(files == null))
@@ -478,13 +480,13 @@ public class splash extends Activity
 			{
 				for (String file : files)
 				{
-					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack")) MapView.Manager.LoadMapPack(Config.settings.MapPackFolder
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack")) manager.LoadMapPack(Config.settings.MapPackFolder
 							.getValue() + "/" + file);
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("map"))
 					{
 						Layer layer = new Layer(file, file, "");
 						layer.isMapsForge = true;
-						MapView.Manager.Layers.add(layer);
+						manager.Layers.add(layer);
 					}
 				}
 			}

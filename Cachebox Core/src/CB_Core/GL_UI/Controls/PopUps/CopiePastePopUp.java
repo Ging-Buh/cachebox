@@ -5,7 +5,6 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.libGdx_Controls.TextField;
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -33,7 +32,7 @@ public class CopiePastePopUp extends PopUp_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				Logger.LogCat("Paste Button Clicked");
+				// Logger.LogCat("Paste Button Clicked");
 				close();
 				textField.paste();
 				return false;

@@ -20,9 +20,7 @@ import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
-import CB_Core.Enums.SmoothScrollingTyp;
 import CB_Core.Log.Logger;
-import CB_Core.Map.Layer;
 import android.view.Menu;
 import android.view.MenuItem;
 import de.cachebox_test.Global;
@@ -30,7 +28,6 @@ import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Custom_Controls.IconContextMenu.IconContextMenu;
 import de.cachebox_test.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
-import de.cachebox_test.Views.MapView;
 
 /**
  * Diese Klasse enthält alle Statischen Methoden, um ein bestimmtes ContextMenu aufzurufen. Als Grundlage, für ein Menü, dient das
@@ -377,185 +374,185 @@ public class AllContextMenuCallHandler
 		icm.show();
 	}
 
-	public static void showMapViewContextMenu()
-	{
-		icm = new IconContextMenu(Main, R.menu.menu_mapview);
-		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
-		Menu IconMenu = icm.getMenu();
-
-		Global.TranslateMenuItem(IconMenu, R.id.layer, "Layer");
-		Global.TranslateMenuItem(IconMenu, R.id.miAlignCompass, "AlignToCompass");
-		Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth, "SmoothScrolling");
-		Global.TranslateMenuItem(IconMenu, R.id.mapview_go_settings, "settings");
-		Global.TranslateMenuItem(IconMenu, R.id.miSearch, "search");
-		Global.TranslateMenuItem(IconMenu, R.id.mimapview_view, "view");
-		Global.TranslateMenuItem(IconMenu, R.id.mi_Track, "TrackRec");
-
-		try
-		{
-
-			MenuItem mi = IconMenu.findItem(R.id.miAlignCompass);
-			mi.setCheckable(true);
-			mi.setChecked(Main.mapView.alignToCompass);
-
-		}
-		catch (Exception exc)
-		{
-			Logger.Error("MapView.BeforeShowMenu()", "", exc);
-			return;
-		}
-
-		icm.show();
-	}
-
-	public static void showMapViewGLContextMenu()
-	{
-		icm = new IconContextMenu(Main, R.menu.menu_mapviewgl);
-		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
-		Menu IconMenu = icm.getMenu();
-
-		Global.TranslateMenuItem(IconMenu, R.id.layer, "Layer");
-		Global.TranslateMenuItem(IconMenu, R.id.miAlignCompass, "AlignToCompass");
-		Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth, "SmoothScrolling");
-		Global.TranslateMenuItem(IconMenu, R.id.mapview_go_settings, "settings");
-		Global.TranslateMenuItem(IconMenu, R.id.miSearch, "search");
-		Global.TranslateMenuItem(IconMenu, R.id.mimapview_view, "view");
-		Global.TranslateMenuItem(IconMenu, R.id.mi_Track, "TrackRec");
-
-		try
-		{
-
-			MenuItem mi = IconMenu.findItem(R.id.miAlignCompass);
-			mi.setCheckable(true);
-			// mi.setChecked(Main.mapViewGl.mapViewGlListener.alignToCompass);
-
-		}
-		catch (Exception exc)
-		{
-			Logger.Error("MapViewGL.BeforeShowMenu()", "", exc);
-			return;
-		}
-
-		icm.show();
-	}
-
-	public static void showMapViewGLLayerMenu()
-	{
-		icm = new IconContextMenu(Main, R.menu.menu_map_view_layer);
-		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
-		Menu IconMenu = icm.getMenu();
-
-		Global.TranslateMenuItem(IconMenu, R.id.miMap_HideFinds, "HideFinds");
-		Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowRatings, "ShowRatings");
-		Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowDT, "ShowDT");
-		Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowTitles, "ShowTitle");
-		Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowDirektLine, "ShowDirectLine");
-
-		MenuItem miFinds = IconMenu.findItem(R.id.miMap_HideFinds);
-		MenuItem miRaiting = IconMenu.findItem(R.id.miMap_ShowRatings);
-		MenuItem miDT = IconMenu.findItem(R.id.miMap_ShowDT);
-		MenuItem miTitles = IconMenu.findItem(R.id.miMap_ShowTitles);
-		MenuItem miLine = IconMenu.findItem(R.id.miMap_ShowDirektLine);
-
-		// miFinds.setChecked(Main.mapViewGl.mapViewGlListener.hideMyFinds);
-		// miRaiting.setChecked(Main.mapViewGl.mapViewGlListener.showRating);
-		// miDT.setChecked(Main.mapViewGl.mapViewGlListener.showDT);
-		// miTitles.setChecked(Main.mapViewGl.mapViewGlListener.showTitles);
-		// miLine.setChecked(Main.mapViewGl.mapViewGlListener.showDirektLine);
-
-		icm.show();
-	}
-
-	public static void showMapLayerMenu()
-	{
-		icm = new IconContextMenu(Main, R.menu.menu_layer);
-		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
-
-		Menu IconMenu = icm.getMenu();
-
-		IconMenu.clear();
-		for (Layer layer : MapView.Manager.Layers)
-		{
-			MenuItem mi22 = IconMenu.add(layer.Name);
-			mi22.setCheckable(true);
-			if (layer == Main.mapView.CurrentLayer)
-			{
-				mi22.setChecked(true);
-			}
-		}
-		icm.show();
-	}
-
-	public static void showMapGLLayerMenu()
-	{
-		icm = new IconContextMenu(Main, R.menu.menu_layer);
-		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
-
-		Menu IconMenu = icm.getMenu();
-
-		IconMenu.clear();
-		for (Layer layer : MapView.Manager.Layers)
-		{
-			MenuItem mi22 = IconMenu.add(layer.Name);
-			mi22.setCheckable(true);
-			// if (layer == Main.mapViewGl.GetCurrentLayer())
-			// {
-			// mi22.setChecked(true);
-			// }
-		}
-		icm.show();
-	}
-
-	public static void showMapSmoothMenu()
-	{
-		icm = new IconContextMenu(Main, R.menu.menu_smooth);
-		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
-
-		Menu IconMenu = icm.getMenu();
-
-		Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth_none, "none");
-		Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth_normal, "normal");
-		Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth_fine, "fine");
-		Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth_superfine, "superfine");
-
-		MenuItem mi2 = IconMenu.findItem(R.id.mapview_smooth_none);
-		if (mi2 != null) mi2.setChecked(GlobalCore.SmoothScrolling == SmoothScrollingTyp.none);
-		mi2 = IconMenu.findItem(R.id.mapview_smooth_normal);
-		if (mi2 != null) mi2.setChecked(GlobalCore.SmoothScrolling == SmoothScrollingTyp.normal);
-		mi2 = IconMenu.findItem(R.id.mapview_smooth_fine);
-		if (mi2 != null) mi2.setChecked(GlobalCore.SmoothScrolling == SmoothScrollingTyp.fine);
-		mi2 = IconMenu.findItem(R.id.mapview_smooth_superfine);
-		if (mi2 != null) mi2.setChecked(GlobalCore.SmoothScrolling == SmoothScrollingTyp.superfine);
-
-		icm.show();
-	}
-
-	public static void showMapViewLayerMenu()
-	{
-		icm = new IconContextMenu(Main, R.menu.menu_map_view_layer);
-		icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
-		Menu IconMenu = icm.getMenu();
-
-		Global.TranslateMenuItem(IconMenu, R.id.miMap_HideFinds, "HideFinds");
-		Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowRatings, "ShowRatings");
-		Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowDT, "ShowDT");
-		Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowTitles, "ShowTitle");
-		Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowDirektLine, "ShowDirectLine");
-
-		MenuItem miFinds = IconMenu.findItem(R.id.miMap_HideFinds);
-		MenuItem miRaiting = IconMenu.findItem(R.id.miMap_ShowRatings);
-		MenuItem miDT = IconMenu.findItem(R.id.miMap_ShowDT);
-		MenuItem miTitles = IconMenu.findItem(R.id.miMap_ShowTitles);
-		MenuItem miLine = IconMenu.findItem(R.id.miMap_ShowDirektLine);
-
-		miFinds.setChecked(Main.mapView.hideMyFinds);
-		miRaiting.setChecked(Main.mapView.showRating);
-		miDT.setChecked(Main.mapView.showDT);
-		miTitles.setChecked(Main.mapView.showTitles);
-		miLine.setChecked(Main.mapView.showDirektLine);
-
-		icm.show();
-	}
+	// public static void showMapViewContextMenu()
+	// {
+	// icm = new IconContextMenu(Main, R.menu.menu_mapview);
+	// icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
+	// Menu IconMenu = icm.getMenu();
+	//
+	// Global.TranslateMenuItem(IconMenu, R.id.layer, "Layer");
+	// Global.TranslateMenuItem(IconMenu, R.id.miAlignCompass, "AlignToCompass");
+	// Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth, "SmoothScrolling");
+	// Global.TranslateMenuItem(IconMenu, R.id.mapview_go_settings, "settings");
+	// Global.TranslateMenuItem(IconMenu, R.id.miSearch, "search");
+	// Global.TranslateMenuItem(IconMenu, R.id.mimapview_view, "view");
+	// Global.TranslateMenuItem(IconMenu, R.id.mi_Track, "TrackRec");
+	//
+	// try
+	// {
+	//
+	// MenuItem mi = IconMenu.findItem(R.id.miAlignCompass);
+	// mi.setCheckable(true);
+	// mi.setChecked(Main.mapView.alignToCompass);
+	//
+	// }
+	// catch (Exception exc)
+	// {
+	// Logger.Error("MapView.BeforeShowMenu()", "", exc);
+	// return;
+	// }
+	//
+	// icm.show();
+	// }
+	//
+	// public static void showMapViewGLContextMenu()
+	// {
+	// icm = new IconContextMenu(Main, R.menu.menu_mapviewgl);
+	// icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
+	// Menu IconMenu = icm.getMenu();
+	//
+	// Global.TranslateMenuItem(IconMenu, R.id.layer, "Layer");
+	// Global.TranslateMenuItem(IconMenu, R.id.miAlignCompass, "AlignToCompass");
+	// Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth, "SmoothScrolling");
+	// Global.TranslateMenuItem(IconMenu, R.id.mapview_go_settings, "settings");
+	// Global.TranslateMenuItem(IconMenu, R.id.miSearch, "search");
+	// Global.TranslateMenuItem(IconMenu, R.id.mimapview_view, "view");
+	// Global.TranslateMenuItem(IconMenu, R.id.mi_Track, "TrackRec");
+	//
+	// try
+	// {
+	//
+	// MenuItem mi = IconMenu.findItem(R.id.miAlignCompass);
+	// mi.setCheckable(true);
+	// // mi.setChecked(Main.mapViewGl.mapViewGlListener.alignToCompass);
+	//
+	// }
+	// catch (Exception exc)
+	// {
+	// Logger.Error("MapViewGL.BeforeShowMenu()", "", exc);
+	// return;
+	// }
+	//
+	// icm.show();
+	// }
+	//
+	// public static void showMapViewGLLayerMenu()
+	// {
+	// icm = new IconContextMenu(Main, R.menu.menu_map_view_layer);
+	// icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
+	// Menu IconMenu = icm.getMenu();
+	//
+	// Global.TranslateMenuItem(IconMenu, R.id.miMap_HideFinds, "HideFinds");
+	// Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowRatings, "ShowRatings");
+	// Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowDT, "ShowDT");
+	// Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowTitles, "ShowTitle");
+	// Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowDirektLine, "ShowDirectLine");
+	//
+	// MenuItem miFinds = IconMenu.findItem(R.id.miMap_HideFinds);
+	// MenuItem miRaiting = IconMenu.findItem(R.id.miMap_ShowRatings);
+	// MenuItem miDT = IconMenu.findItem(R.id.miMap_ShowDT);
+	// MenuItem miTitles = IconMenu.findItem(R.id.miMap_ShowTitles);
+	// MenuItem miLine = IconMenu.findItem(R.id.miMap_ShowDirektLine);
+	//
+	// // miFinds.setChecked(Main.mapViewGl.mapViewGlListener.hideMyFinds);
+	// // miRaiting.setChecked(Main.mapViewGl.mapViewGlListener.showRating);
+	// // miDT.setChecked(Main.mapViewGl.mapViewGlListener.showDT);
+	// // miTitles.setChecked(Main.mapViewGl.mapViewGlListener.showTitles);
+	// // miLine.setChecked(Main.mapViewGl.mapViewGlListener.showDirektLine);
+	//
+	// icm.show();
+	// }
+	//
+	// public static void showMapLayerMenu()
+	// {
+	// icm = new IconContextMenu(Main, R.menu.menu_layer);
+	// icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
+	//
+	// Menu IconMenu = icm.getMenu();
+	//
+	// IconMenu.clear();
+	// for (Layer layer : MapView.Manager.Layers)
+	// {
+	// MenuItem mi22 = IconMenu.add(layer.Name);
+	// mi22.setCheckable(true);
+	// if (layer == Main.mapView.CurrentLayer)
+	// {
+	// mi22.setChecked(true);
+	// }
+	// }
+	// icm.show();
+	// }
+	//
+	// public static void showMapGLLayerMenu()
+	// {
+	// icm = new IconContextMenu(Main, R.menu.menu_layer);
+	// icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
+	//
+	// Menu IconMenu = icm.getMenu();
+	//
+	// IconMenu.clear();
+	// for (Layer layer : MapView.Manager.Layers)
+	// {
+	// MenuItem mi22 = IconMenu.add(layer.Name);
+	// mi22.setCheckable(true);
+	// // if (layer == Main.mapViewGl.GetCurrentLayer())
+	// // {
+	// // mi22.setChecked(true);
+	// // }
+	// }
+	// icm.show();
+	// }
+	//
+	// public static void showMapSmoothMenu()
+	// {
+	// icm = new IconContextMenu(Main, R.menu.menu_smooth);
+	// icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
+	//
+	// Menu IconMenu = icm.getMenu();
+	//
+	// Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth_none, "none");
+	// Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth_normal, "normal");
+	// Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth_fine, "fine");
+	// Global.TranslateMenuItem(IconMenu, R.id.mapview_smooth_superfine, "superfine");
+	//
+	// MenuItem mi2 = IconMenu.findItem(R.id.mapview_smooth_none);
+	// if (mi2 != null) mi2.setChecked(GlobalCore.SmoothScrolling == SmoothScrollingTyp.none);
+	// mi2 = IconMenu.findItem(R.id.mapview_smooth_normal);
+	// if (mi2 != null) mi2.setChecked(GlobalCore.SmoothScrolling == SmoothScrollingTyp.normal);
+	// mi2 = IconMenu.findItem(R.id.mapview_smooth_fine);
+	// if (mi2 != null) mi2.setChecked(GlobalCore.SmoothScrolling == SmoothScrollingTyp.fine);
+	// mi2 = IconMenu.findItem(R.id.mapview_smooth_superfine);
+	// if (mi2 != null) mi2.setChecked(GlobalCore.SmoothScrolling == SmoothScrollingTyp.superfine);
+	//
+	// icm.show();
+	// }
+	//
+	// public static void showMapViewLayerMenu()
+	// {
+	// icm = new IconContextMenu(Main, R.menu.menu_map_view_layer);
+	// icm.setOnIconContextItemSelectedListener(Main.OnIconContextItemSelectedListener);
+	// Menu IconMenu = icm.getMenu();
+	//
+	// Global.TranslateMenuItem(IconMenu, R.id.miMap_HideFinds, "HideFinds");
+	// Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowRatings, "ShowRatings");
+	// Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowDT, "ShowDT");
+	// Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowTitles, "ShowTitle");
+	// Global.TranslateMenuItem(IconMenu, R.id.miMap_ShowDirektLine, "ShowDirectLine");
+	//
+	// MenuItem miFinds = IconMenu.findItem(R.id.miMap_HideFinds);
+	// MenuItem miRaiting = IconMenu.findItem(R.id.miMap_ShowRatings);
+	// MenuItem miDT = IconMenu.findItem(R.id.miMap_ShowDT);
+	// MenuItem miTitles = IconMenu.findItem(R.id.miMap_ShowTitles);
+	// MenuItem miLine = IconMenu.findItem(R.id.miMap_ShowDirektLine);
+	//
+	// miFinds.setChecked(Main.mapView.hideMyFinds);
+	// miRaiting.setChecked(Main.mapView.showRating);
+	// miDT.setChecked(Main.mapView.showDT);
+	// miTitles.setChecked(Main.mapView.showTitles);
+	// miLine.setChecked(Main.mapView.showDirektLine);
+	//
+	// icm.show();
+	// }
 
 	public static void showFiledNotesViewContextMenu()
 	{

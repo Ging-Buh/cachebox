@@ -227,7 +227,7 @@ public class GL_UISizes implements SizeChangedEvent
 		CompassMargin = null;
 		System.gc();
 
-		if (true)
+		if (false)
 		{
 			Logger.LogCat("------ GL UI Sizes--------");
 

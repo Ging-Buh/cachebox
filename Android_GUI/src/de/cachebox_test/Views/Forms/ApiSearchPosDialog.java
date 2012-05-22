@@ -2,8 +2,7 @@ package de.cachebox_test.Views.Forms;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
-import CB_Core.Map.Descriptor;
-import CB_Core.Map.Descriptor.PointD;
+import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
 import android.app.Activity;
@@ -19,7 +18,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import de.cachebox_test.R;
-import de.cachebox_test.main;
 import de.cachebox_test.Custom_Controls.MultiToggleButton;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
@@ -147,24 +145,14 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 			@Override
 			public void onClick(View arg0)
 			{
-				PointD point = new PointD(0, 0);
-				point.X = main.mapView.screenCenter.X;
-				point.Y = main.mapView.screenCenter.Y;
-				main.mapView.lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(main.mapView.Zoom, point.Y / (256.0)),
-						Descriptor.TileXToLongitude(main.mapView.Zoom, point.X / (256.0)));
-				actSearchPos = main.mapView.lastMouseCoordinate;
+				actSearchPos = MapView.that.center;
 				setToggleBtnState(1);
 			}
 		});
 
-		if (main.mapView.isShown())
+		if (MapView.that.isVisible())
 		{
-			PointD point = new PointD(0, 0);
-			point.X = main.mapView.screenCenter.X;
-			point.Y = main.mapView.screenCenter.Y;
-			main.mapView.lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(main.mapView.Zoom, point.Y / (256.0)),
-					Descriptor.TileXToLongitude(main.mapView.Zoom, point.X / (256.0)));
-			actSearchPos = main.mapView.lastMouseCoordinate;
+			actSearchPos = MapView.that.center;
 			searcheState = 1;
 		}
 		else

@@ -19,7 +19,6 @@ import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 
 import de.cachebox_test.R;
 import de.cachebox_test.Events.ViewOptionsMenu;
-import de.cachebox_test.Ui.AllContextMenuCallHandler;
 
 public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listener_Interface
 {
@@ -63,7 +62,6 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	@Override
 	public void BeforeShowMenu(Menu menu)
 	{
-		AllContextMenuCallHandler.showMapViewGLContextMenu();
 	}
 
 	@Override

@@ -10,7 +10,6 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Main.TabMainView;
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
@@ -177,7 +176,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 	public void ActionUp() // Slider zurück scrolllen lassen
 	{
-		Logger.LogCat("ActionUP");
+		// Logger.LogCat("ActionUP");
 
 		boolean QuickButtonShow = Config.settings.quickButtonShow.getValue();
 
@@ -226,7 +225,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	{
 		if (yPos == newYPos) return; // wir brauchen nichts Animieren
 
-		Logger.LogCat("Start Animation To " + newYPos);
+		// Logger.LogCat("Start Animation To " + newYPos);
 
 		AnimationIsRunning = true;
 		AnimationTarget = newYPos;

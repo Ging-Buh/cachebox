@@ -23,7 +23,6 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -189,8 +188,8 @@ public class Button extends CB_View_Base
 
 		else
 
-			Logger.LogCat("Button " + this.name + " Clicked");
-		return super.click(x, y, pointer, button);
+			// Logger.LogCat("Button " + this.name + " Clicked");
+			return super.click(x, y, pointer, button);
 	}
 
 	public void setText(String Text)

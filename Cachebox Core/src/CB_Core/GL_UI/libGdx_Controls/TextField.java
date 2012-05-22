@@ -4,7 +4,6 @@ import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.PopUps.CopiePastePopUp;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -93,7 +92,7 @@ public class TextField extends LibGdx_Host_Control
 
 		float noseOffset = popUp.getHalfWidth() / 2;
 
-		Logger.LogCat("Show CopyPaste PopUp");
+		// Logger.LogCat("Show CopyPaste PopUp");
 
 		CB_RectF world = getWorldRec();
 

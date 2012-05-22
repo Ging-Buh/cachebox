@@ -176,7 +176,6 @@ public class Logger
 		for (ILog event : list)
 		{
 			event.receiveLogCat(Msg);
-
 		}
 
 	}

@@ -65,7 +65,7 @@ public class Image extends CB_View_Base
 			try
 			{
 
-				Logger.LogCat("Load GL Image Texture Path= " + mPath);
+				// Logger.LogCat("Load GL Image Texture Path= " + mPath);
 
 				mImageTex = new Texture(Gdx.files.internal(mPath));
 				mImageSprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);

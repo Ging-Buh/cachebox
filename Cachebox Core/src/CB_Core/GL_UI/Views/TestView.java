@@ -13,7 +13,6 @@ import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.ZoomButtons;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
@@ -201,7 +200,7 @@ public class TestView extends CB_View_Base
 
 	private void requestLayout()
 	{
-		Logger.LogCat("TestView clacLayout()");
+		// Logger.LogCat("TestView clacLayout()");
 		float margin = GL_UISizes.margin;
 		info.setPos(new Vector2(margin, (float) (this.height - margin - info.getHeight())));
 		togBtn.setPos(new Vector2((float) (this.width - margin - togBtn.getWidth()), this.height - margin - togBtn.getHeight()));

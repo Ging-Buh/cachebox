@@ -138,8 +138,7 @@ public class TabMainView extends MainViewBase
 
 	private void ini()
 	{
-		// actionTest = new CB_ActionCommand("Test", CB_Action.AID_TEST1);
-		// actionTest2 = new CB_ActionCommand("Test2", CB_Action.AID_TEST1);
+		Logger.LogCat("Start TabMainView-Initial");
 
 		actionShowMap = new CB_Action_ShowMap();
 		actionShowHint = new CB_Action_ShowHint();
@@ -187,6 +186,8 @@ public class TabMainView extends MainViewBase
 		// add Slider as last
 		Slider slider = new Slider(this, "Slider");
 		this.addChild(slider);
+
+		Logger.LogCat("Ende TabMainView-Initial");
 
 		autoLoadTrack();
 
@@ -505,7 +506,7 @@ public class TabMainView extends MainViewBase
 
 	public void setContentMaxY(float y)
 	{
-		Logger.LogCat("TabMainView SetContent maxY" + y);
+		// Logger.LogCat("TabMainView SetContent maxY" + y);
 		for (GL_View_Base view : this.childs)
 		{
 			if (view instanceof CB_TabView)

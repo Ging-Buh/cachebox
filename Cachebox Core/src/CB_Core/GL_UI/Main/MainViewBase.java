@@ -8,13 +8,16 @@ import CB_Core.GL_UI.ViewID;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Locator;
 
-public abstract class MainViewBase extends CB_View_Base implements PositionChangedEvent
+public class MainViewBase extends CB_View_Base implements PositionChangedEvent
 {
+
+	private static boolean TrackRecIsRegisted = false;
 
 	public MainViewBase(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height, Name);
-		PositionChangedEventList.Add(this);
+		if (!TrackRecIsRegisted) PositionChangedEventList.Add(this);
+		TrackRecIsRegisted = true;
 	}
 
 	public void setGLViewID(ViewID id)
@@ -44,7 +47,6 @@ public abstract class MainViewBase extends CB_View_Base implements PositionChang
 	@Override
 	public void OrientationChanged(float heading)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -52,6 +54,30 @@ public abstract class MainViewBase extends CB_View_Base implements PositionChang
 	public String getReceiverName()
 	{
 		return "Core.MainViewBase";
+	}
+
+	@Override
+	protected void Initial()
+	{
+
+	}
+
+	@Override
+	public boolean onTouchDown(int x, int y, int pointer, int button)
+	{
+		return true;
+	}
+
+	@Override
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
+	{
+		return true;
+	}
+
+	@Override
+	public boolean onTouchUp(int x, int y, int pointer, int button)
+	{
+		return true;
 	}
 
 }

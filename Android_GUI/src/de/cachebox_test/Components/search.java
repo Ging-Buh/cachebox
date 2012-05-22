@@ -33,9 +33,9 @@ import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
-import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
@@ -608,8 +608,6 @@ public class search
 
 				ActivityUtils.setBtnState(mBtnNext, true);
 
-				((main) main.mainActivity).mapView.showBubleSelected();
-
 			}
 		}
 		else
@@ -857,14 +855,9 @@ public class search
 
 			Coordinate searchCoord = null;
 
-			if (main.mapView.isShown())
+			if (MapView.that.isVisible())
 			{
-				PointD point = new PointD(0, 0);
-				point.X = main.mapView.screenCenter.X;
-				point.Y = main.mapView.screenCenter.Y;
-				main.mapView.lastMouseCoordinate = new Coordinate(Descriptor.TileYToLatitude(main.mapView.Zoom, point.Y / (256.0)),
-						Descriptor.TileXToLongitude(main.mapView.Zoom, point.X / (256.0)));
-				searchCoord = main.mapView.lastMouseCoordinate;
+				searchCoord = MapView.that.center;
 			}
 			else
 			{
@@ -997,12 +990,6 @@ public class search
 
 				Database.Data.GPXFilenameUpdateCacheCount();
 
-				if (main.mapView.isShown())
-				{
-					main.mapView.updateCacheList();
-					main.mapView.Render(true);
-				}
-
 			}
 
 			onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
@@ -1021,7 +1008,6 @@ public class search
 			{
 				pd.dismiss();
 				CachListChangedEventList.Call();
-				main.cacheListView.notifyCacheListChange();
 				// Lokale Suche ausführen!
 				// Und dabei den Filter zurück setzen.
 				reSearch = true;

@@ -6,7 +6,6 @@ import java.util.Iterator;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -62,7 +61,7 @@ public class MainButtonBar extends CB_View_Base
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
-			Logger.LogCat("MainButtonBar " + v.getName() + " Clicked");
+			// Logger.LogCat("MainButtonBar " + v.getName() + " Clicked");
 			return false;
 		}
 	};

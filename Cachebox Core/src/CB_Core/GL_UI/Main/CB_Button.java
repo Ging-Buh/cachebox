@@ -15,7 +15,6 @@ import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
-import CB_Core.Log.Logger;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
@@ -288,7 +287,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 		boolean result = super.onTouchUp(x, y, pointer, button);
 
 		if (!isDragged) return (GestureIsOn) ? result : true;
-		Logger.LogCat("CB_Button onTouchUP()");
+		// Logger.LogCat("CB_Button onTouchUP()");
 		int dx = x - downPos.x;
 		int dy = y - downPos.y;
 		GestureDirection direction = GestureDirection.Up;

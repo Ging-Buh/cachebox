@@ -10,7 +10,6 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.Gdx;
@@ -275,7 +274,7 @@ public abstract class ListViewBase extends CB_View_Base
 	 */
 	protected void chkSlideBack()
 	{
-		Logger.LogCat("chkSlideBack()");
+		// Logger.LogCat("chkSlideBack()");
 		if (!mIsDrageble)
 		{
 			// startAnimationtoTop();
@@ -321,7 +320,7 @@ public abstract class ListViewBase extends CB_View_Base
 	protected void scrollTo(float Pos)
 	{
 
-		Logger.LogCat("Scroll TO:" + Pos);
+		// Logger.LogCat("Scroll TO:" + Pos);
 
 		mAnimationTarget = Pos;
 		stopTimer();
@@ -395,7 +394,7 @@ public abstract class ListViewBase extends CB_View_Base
 			}
 		}
 
-		Logger.LogCat("getLastVisiblePosition = " + ret);
+		// Logger.LogCat("getLastVisiblePosition = " + ret);
 
 		return ret;
 	}
@@ -417,7 +416,7 @@ public abstract class ListViewBase extends CB_View_Base
 
 		}
 
-		Logger.LogCat("getFirstVisiblePosition = " + ret);
+		// Logger.LogCat("getFirstVisiblePosition = " + ret);
 
 		return ret;
 	}

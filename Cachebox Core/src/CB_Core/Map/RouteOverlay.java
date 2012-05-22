@@ -303,7 +303,7 @@ public class RouteOverlay
 		if (aktCalcedZoomLevel != Zoom || mRoutesChanged)
 		{// Zoom or Routes changed => calculate new Sprite Points
 
-			Logger.LogCat("Zoom Changed => Calc Track Points");
+			// Logger.LogCat("Zoom Changed => Calc Track Points");
 
 			mRoutesChanged = false;
 			aktCalcedZoomLevel = Zoom;

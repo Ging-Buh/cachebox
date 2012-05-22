@@ -16,7 +16,6 @@ import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Menu.CB_AllContextMenuHandler;
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
@@ -31,14 +30,14 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 	{
 		super(rec, Name);
 
-		Logger.LogCat("Create CacheListView => " + rec.toString());
+		// Logger.LogCat("Create CacheListView => " + rec.toString());
 
 	}
 
 	@Override
 	protected void Initial()
 	{
-		Logger.LogCat("CacheListView => Initial()");
+		// Logger.LogCat("CacheListView => Initial()");
 		// this.setListPos(0, false);
 		chkSlideBack();
 		GL_Listener.glListener.renderOnce(this.getName() + " Initial()");

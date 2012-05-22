@@ -24,7 +24,6 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -111,7 +110,7 @@ public class ZoomButtons extends CB_View_Base
 				if (zoom < maxzoom)
 				{
 					zoom++;
-					Logger.LogCat("ZoomButton OnClick UP (" + zoom + ")");
+					// Logger.LogCat("ZoomButton OnClick UP (" + zoom + ")");
 					mOnClickListenerUp.onClick(this, x, y, pointer, button);
 				}
 				behandelt = true;
@@ -126,7 +125,7 @@ public class ZoomButtons extends CB_View_Base
 				if (zoom > minzoom)
 				{
 					zoom--;
-					Logger.LogCat("ZoomButton OnClick Down (" + zoom + ")");
+					// Logger.LogCat("ZoomButton OnClick Down (" + zoom + ")");
 					mOnClickListenerDown.onClick(this, x, y, pointer, button);
 				}
 				behandelt = true;

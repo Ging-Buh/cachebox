@@ -1,19 +1,8 @@
 package de;
 
 import java.awt.Point;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-import CB_Core.GL_UI.GL_View_Base;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
-import CB_Core.GL_UI.Main.MainView;
-import CB_Core.GL_UI.Main.TabMainView;
-import CB_Core.Log.Logger;
 
 public class Desktop_GL_Listner extends Tab_GL_Listner implements InputProcessor {
 

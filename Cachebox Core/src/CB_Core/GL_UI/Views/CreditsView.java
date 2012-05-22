@@ -6,7 +6,6 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ScrollView;
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -37,10 +36,10 @@ public class CreditsView extends CB_View_Base
 			Button btn = new Button(10f, posY - btnHeight - 5, width - 30, btnHeight, this, "Credits_Btn_" + i);
 			btn.setText("Button " + i);
 			scrollView.addChild(btn);
-			Logger.LogCat("ScrollView add Button" + i);
+			// Logger.LogCat("ScrollView add Button" + i);
 			posY -= btnHeight - 20;
 		}
-		Logger.LogCat("ScrollView END at " + i);
+		// Logger.LogCat("ScrollView END at " + i);
 		this.addChild(scrollView);
 
 	}

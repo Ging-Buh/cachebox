@@ -50,7 +50,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
-import CB_Core.GL_UI.Main.MainView;
+import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
@@ -158,13 +158,11 @@ import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
 import de.cachebox_test.Ui.AndroidClipboard;
 import de.cachebox_test.Views.AboutView;
-import de.cachebox_test.Views.CacheListView;
 import de.cachebox_test.Views.CompassView;
 import de.cachebox_test.Views.DescriptionView;
 import de.cachebox_test.Views.FieldNotesView;
 import de.cachebox_test.Views.JokerView;
 import de.cachebox_test.Views.LogView;
-import de.cachebox_test.Views.MapView;
 import de.cachebox_test.Views.NotesView;
 import de.cachebox_test.Views.SolverView;
 import de.cachebox_test.Views.SpoilerView;
@@ -190,7 +188,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent
 {
 
-	private static final boolean useGL_Tab = true;
+	// private static final boolean useGL_Tab = true;
 	static private final char BACKSPACE = 8;
 
 	/*
@@ -201,8 +199,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public static ViewID aktTabViewId = null;
 
 	private static long GPSTimeStamp = 0;
-	public static MapView mapView = null; // ID 0
-	public static CacheListView cacheListView = null; // ID 1
 
 	private static LogView logView = null; // ID 3
 	public static DescriptionView descriptionView = null; // ID 4
@@ -401,14 +397,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		// Initial GL_Listner in Full Screen with font color black
 
-		if (useGL_Tab)
-		{
-			glListener = new Tab_GL_Listner(UiSizes.getWindowWidth(), UiSizes.getWindowHeight());
-		}
-		else
-		{
-			glListener = new GL_Listener(UiSizes.getWindowWidth(), UiSizes.getWindowHeight());
-		}
+		glListener = new Tab_GL_Listner(UiSizes.getWindowWidth(), UiSizes.getWindowHeight());
 
 		int Time = Config.settings.ScreenLock.getValue();
 		counter = new ScreenLockTimer(Time, Time);
@@ -433,9 +422,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		Config.AcceptChanges();
 
 		initialLocationManager();
-		initialMapView();
+
 		initialViewGL();
-		initialViews();
 		initalMicIcon();
 		initialButtons();
 		initialCaheInfoSlider();
@@ -477,51 +465,48 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		Search = new search(this);
 
-		if (useGL_Tab)
-		{
-			initialViewGL();
+		initialViewGL();
 
-			glListener.onStart();
-			if (tabFrame != null) tabFrame.setVisibility(View.INVISIBLE);
-			if (frame != null) frame.setVisibility(View.INVISIBLE);
+		glListener.onStart();
+		if (tabFrame != null) tabFrame.setVisibility(View.INVISIBLE);
+		if (frame != null) frame.setVisibility(View.INVISIBLE);
 
-			InfoDownSlider.invalidate();
+		InfoDownSlider.invalidate();
 
-		}
-		else
-		{
-			if (aktViewId != null)
-			{
-				// Zeige letzte gespeicherte View beim neustart der Activity
-				showView(aktViewId);
-
-			}
-			else
-			{
-
-				// Start CB!
-
-				Logger.General("------ Start Rev: " + Global.CurrentRevision + "-------");
-
-				// Zeige About View als erstes!
-				// showView(ViewConst.ABOUT_VIEW);
-
-				// und Map wenn Tablet
-				if (GlobalCore.isTab)
-				{
-					// showView(MAP_VIEW);
-					// showView(ViewConst.DESCRIPTION_VIEW);
-				}
-
-				// chk if NightMode saved
-				if (N)
-				{
-					ActivityUtils.changeToTheme(mainActivity, ActivityUtils.THEME_NIGHT, true);
-				}
-
-			}
-
-		}
+		// else
+		// {
+		// if (aktViewId != null)
+		// {
+		// // Zeige letzte gespeicherte View beim neustart der Activity
+		// showView(aktViewId);
+		//
+		// }
+		// else
+		// {
+		//
+		// // Start CB!
+		//
+		// Logger.General("------ Start Rev: " + Global.CurrentRevision + "-------");
+		//
+		// // Zeige About View als erstes!
+		// // showView(ViewConst.ABOUT_VIEW);
+		//
+		// // und Map wenn Tablet
+		// if (GlobalCore.isTab)
+		// {
+		// // showView(MAP_VIEW);
+		// // showView(ViewConst.DESCRIPTION_VIEW);
+		// }
+		//
+		// // chk if NightMode saved
+		// if (N)
+		// {
+		// ActivityUtils.changeToTheme(mainActivity, ActivityUtils.THEME_NIGHT, true);
+		// }
+		//
+		// }
+		//
+		// }
 
 		// Initialisiere Icons neu.
 		Global.InitIcons(this);
@@ -761,7 +746,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			public void run()
 			{
 				approachSoundCompleted = false;
-				cacheListView.setSelectedCacheVisible(0);
 				initialCaheInfoSlider();
 			}
 		});
@@ -858,7 +842,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// only when showing Map or cacheList
 			if (!GlobalCore.ResortAtWork)
 			{
-				if (GlobalCore.autoResort && ((aktView == mapView) || (aktView == cacheListView || aktView == compassView)))
+				if (GlobalCore.autoResort)
 				{
 					int z = 0;
 					if (!(GlobalCore.NearestCache() == null))
@@ -1442,8 +1426,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					vom.OnFree();
 				}
 				ViewList.clear();
-				cacheListView = null;
-				mapView = null;
 				viewGL = null;
 				notesView = null;
 				jokerView = null;
@@ -2186,13 +2168,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		buttonCache.invalidate();
 	}
 
-	private void initialViews()
-	{
-		if (cacheListView == null) cacheListView = new CacheListView(this);
-		ViewList.add(mapView); // ID 0
-		ViewList.add(cacheListView); // ID 1
-	}
-
 	private void initialLocationManager()
 	{
 
@@ -2243,26 +2218,26 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	}
 
-	private void initialMapView()
-	{
-		try
-		{
-			if (mapView == null)
-			{
-				mapView = new MapView(this, inflater);
-				mapView.Initialize();
-				mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.settings.CurrentMapLayer.getValue(),
-						Config.settings.CurrentMapLayer.getValue(), "");
-				GlobalCore.TrackDistance = Config.settings.TrackDistance.getValue();
-				mapView.InitializeMap();
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.initialMapView()", "", e);
-			e.printStackTrace();
-		}
-	}
+	// private void initialMapView()
+	// {
+	// try
+	// {
+	// if (mapView == null)
+	// {
+	// mapView = new MapView(this, inflater);
+	// mapView.Initialize();
+	// mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.settings.CurrentMapLayer.getValue(),
+	// Config.settings.CurrentMapLayer.getValue(), "");
+	// GlobalCore.TrackDistance = Config.settings.TrackDistance.getValue();
+	// mapView.InitializeMap();
+	// }
+	// }
+	// catch (Exception e)
+	// {
+	// Logger.Error("main.initialMapView()", "", e);
+	// e.printStackTrace();
+	// }
+	// }
 
 	// Zwischenspeicher für die touchDown Positionen der einzelnen Finger
 	private SortedMap<Integer, Point> touchDownPos = new TreeMap<Integer, Point>();
@@ -2341,7 +2316,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					}
 				});
 
-				// mapViewGl = new MapViewGL(this, inflater, viewGl, mapViewGlListener);
 				viewGL = new ViewGL(this, inflater, gdxView, glListener);
 
 				viewGL.Initialize();
@@ -3030,11 +3004,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				Database.Data.GPXFilenameUpdateCacheCount();
 
-				if (mapView.isShown())
-				{
-					mapView.updateCacheList();
-					mapView.Render(true);
-				}
+				// if (mapView.isShown())
+				// {
+				// mapView.updateCacheList();
+				// mapView.Render(true);
+				// }
 
 			}
 
@@ -3151,9 +3125,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case 1:
 			{
 				pd.dismiss();
-
-				cacheListView.notifyCacheListChange();
-				break;
 			}
 
 			case 2:
@@ -3577,9 +3548,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (GL_UISizes.set_Top_Buttom_Height(TopLayout.getHeight(), buttonDB.getHeight()))
 			{
-				if (MainView.mainView != null)
+				if (MainViewBase.mainView != null)
 				{
-					MainView.mainView.requestLayout();
+					MainViewBase.mainView.requestLayout();
 				}
 			}
 		}

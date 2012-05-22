@@ -27,7 +27,6 @@ import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.ZoomButtons;
 import CB_Core.GL_UI.Controls.ZoomScale;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.Main.MainView;
 import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_Core.Log.Logger;
@@ -372,7 +371,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		Config.settings.MapIniHeight.setValue(mapIntHeight);
 		Config.AcceptChanges();
 
-		Logger.LogCat("MapView Size Changed MaxY=" + this.getMaxY());
+		// Logger.LogCat("MapView Size Changed MaxY=" + this.getMaxY());
 
 		requestLayout();
 
@@ -440,7 +439,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			aktZoom = zoom;
 
 			float diffZoom = 1 - (tmpZoom * 2);
-			Logger.LogCat("Kinetic: " + diffZoom);
+			// Logger.LogCat("Kinetic: " + diffZoom);
 			zoomScale.setDiffCameraZoom(diffZoom, true);
 
 			if (kineticZoom.getFertig())
@@ -528,8 +527,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private void renderMapTiles(SpriteBatch batch)
 	{
 		float faktor = camera.zoom;
-		float dx = this.ThisWorldRec.getCenterPos().x - MainView.mainView.getCenterPos().x;
-		float dy = this.ThisWorldRec.getCenterPos().y - MainView.mainView.getCenterPos().y;
+		float dx = this.ThisWorldRec.getCenterPos().x - MainViewBase.mainView.getCenterPos().x;
+		float dy = this.ThisWorldRec.getCenterPos().y - MainViewBase.mainView.getCenterPos().y;
 
 		camera.position.set(0, 0, 0);
 		float dxr = dx;
@@ -1962,8 +1961,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				if (minWpi == null || minWpi.Cache == null) return false;
 				Vector2 screen = worldToScreen(new Vector2(Math.round(minWpi.MapX), Math.round(minWpi.MapY)));
-				Logger.LogCat("MapClick at:" + clickedAt + " minDistance: " + minDist + " screen:" + screen + " wpi:" + minWpi.Cache.Name
-						+ "/ ");
+				// Logger.LogCat("MapClick at:" + clickedAt + " minDistance: " + minDist + " screen:" + screen + " wpi:" + minWpi.Cache.Name
+				// + "/ ");
 
 				if (minDist < 40)
 				{
@@ -2216,7 +2215,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	private void requestLayout()
 	{
-		Logger.LogCat("MapView clacLayout()");
+		// Logger.LogCat("MapView clacLayout()");
 		float margin = GL_UISizes.margin;
 		info.setPos(new Vector2(margin, (float) (this.mapIntHeight - margin - info.getHeight())));
 		info.setVisibility(showCompass ? GL_View_Base.VISIBLE : GL_View_Base.INVISIBLE);

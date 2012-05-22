@@ -19,11 +19,9 @@ import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
-import CB_Core.GL_UI.Main.MainView;
 import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.libGdx_Controls.LibGdx_Host_Control;
-import CB_Core.Log.Logger;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
@@ -81,7 +79,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	@Override
 	public void create()
 	{
-		Logger.LogCat("GL_Listner => Create");
+		// Logger.LogCat("GL_Listner => Create");
 
 		GL_UISizes.initial(width, height);
 
@@ -93,7 +91,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	public void pause()
 	{
 		// wird aufgerufen beim Wechsel der aktiven App und beim Ausschalten des Geräts
-		Logger.LogCat("Pause");
+		// Logger.LogCat("Pause");
 
 		onStop();
 	}
@@ -101,7 +99,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	@Override
 	public void resume()
 	{
-		Logger.LogCat("Resume");
+		// Logger.LogCat("Resume");
 
 		onStart();
 	}
@@ -117,7 +115,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	public void onStart()
 	{
 		// App wird wiederhergestellt oder Gerät eingeschaltet
-		Logger.LogCat("GL_Listner => onStart");
+		// Logger.LogCat("GL_Listner => onStart");
 		started.set(true);
 		if (listenerInterface != null) listenerInterface.RenderDirty();
 		// startTimer(FRAME_RATE_ACTION, "GL_Listner onStart()");
@@ -127,7 +125,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	public void onStop()
 	{
 		// App wird verkleinert oder Gerät ausgeschaltet
-		Logger.LogCat("GL_Listner => onStop");
+		// Logger.LogCat("GL_Listner => onStop");
 		stopTimer();
 		if (listenerInterface != null) listenerInterface.RenderContinous();
 		child.onStop();
@@ -209,7 +207,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		if (timerValue == delay) return;
 		stopTimer();
-		Logger.LogCat("Start Timer: " + delay + " (" + Name + ")");
+		// Logger.LogCat("Start Timer: " + delay + " (" + Name + ")");
 
 		timerValue = delay;
 		myTimer = new Timer();
@@ -237,7 +235,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public static void stopTimer()
 	{
-		Logger.LogCat("Stop Timer");
+		// Logger.LogCat("Stop Timer");
 		if (myTimer != null)
 		{
 			myTimer.cancel();
@@ -333,7 +331,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public void Initialize()
 	{
-		Logger.LogCat("GL_Listner => Initialize");
+		// Logger.LogCat("GL_Listner => Initialize");
 
 		if (batch == null)
 		{
@@ -342,13 +340,13 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 		if (child == null)
 		{
-			child = new MainView(0, 0, width, height, "MainView");
+			child = new MainViewBase(0, 0, width, height, "MainView");
 			child.setClickable(true);
 		}
 
 		if (mDialog == null)
 		{
-			mDialog = new MainView(0, 0, width, height, "Dialog");
+			mDialog = new MainViewBase(0, 0, width, height, "Dialog");
 			mDialog.setClickable(true);
 		}
 
@@ -368,7 +366,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		}
 		renderViews.put(view, delay);
 		calcNewRenderSpeed();
-		Logger.LogCat("addRenderView " + view.getName() + "/" + delay + " /registrierte RenderViews" + renderViews.size());
+		// Logger.LogCat("addRenderView " + view.getName() + "/" + delay + " /registrierte RenderViews" + renderViews.size());
 	}
 
 	public void removeRenderView(GL_View_Base view)
@@ -377,7 +375,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		{
 			renderViews.remove(view);
 			calcNewRenderSpeed();
-			Logger.LogCat("removeRenderView " + view.getName() + "/verbleibende RenderViews" + renderViews.size());
+			// Logger.LogCat("removeRenderView " + view.getName() + "/verbleibende RenderViews" + renderViews.size());
 		}
 	}
 
@@ -439,12 +437,12 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 					{
 						first.view.longClick(x - (int) first.view.ThisWorldRec.getX(), (int) child.getHeight() - y
 								- (int) first.view.ThisWorldRec.getY(), pointer, 0);
-						Logger.LogCat("GL_Listner => onLongClick : " + first.view.getName());
+						// Logger.LogCat("GL_Listner => onLongClick : " + first.view.getName());
 						// für diesen TouchDownn darf kein normaler Click mehr ausgeführt werden
 						touchDownPos.remove(pointer);
 						// onTouchUp nach Long-Click direkt auslösen
 						first.view.touchUp(x, (int) child.getHeight() - y, pointer, 0);
-						Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
+						// Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
 
 					}
 				}
@@ -541,7 +539,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			{
 				first.view.click(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
 						- (int) first.view.ThisWorldRec.getY(), pointer, button);
-				Logger.LogCat("GL_Listner => onTouchUpBase (Click) : " + first.view.getName());
+				// Logger.LogCat("GL_Listner => onTouchUpBase (Click) : " + first.view.getName());
 			}
 		}
 
@@ -608,7 +606,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 					{
 						if (kineticPan.fertig)
 						{
-							Logger.LogCat("KineticPan fertig");
+							// Logger.LogCat("KineticPan fertig");
 							view.touchUp(x - pan.x, y - pan.y, pointer, 0);
 							touchDownPos.remove(pointer);
 							kineticPan = null;
