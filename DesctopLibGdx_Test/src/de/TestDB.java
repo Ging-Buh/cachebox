@@ -461,4 +461,23 @@ public class TestDB extends Database
 
 	}
 
+	@Override
+	public int getCacheCountInDB(String filename) {
+		int count = 0;
+		Connection myDB = null;
+		try {
+			myDB = DriverManager.getConnection("jdbc:sqlite:" + filename);
+			
+			Statement statement = myDB.createStatement();
+			ResultSet result = statement.executeQuery("select count(*) from caches");
+		//	result.first();
+			count = result.getInt(1);
+			result.close();			
+			myDB.close();
+		} catch (SQLException e) {
+			String s = e.getMessage();
+		}
+		return count;
+	}
+
 }

@@ -8,6 +8,7 @@ import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.FileList;
 import CB_Core.GlobalCore;
+import CB_Core.DB.Database;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -49,6 +50,8 @@ public class SelectDB extends CB_View_Base
 		for (File file : files)
 		{
 			if (file.getName().equalsIgnoreCase(DBFile)) AktFile = file;
+
+			int count = Database.Data.getCacheCountInDB(Config.WorkPath + "/" + file.getPath());
 		}
 
 		lvFiles = new V_ListView(new CB_RectF(0, UiSizes.getButtonHeight() * 2, width, height - UiSizes.getButtonHeight() * 2),

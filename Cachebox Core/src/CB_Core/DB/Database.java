@@ -872,4 +872,6 @@ public abstract class Database
 	public abstract long insertWithConflictIgnore(String tablename, Parameters val);
 
 	public abstract void Close();
+
+	public abstract int getCacheCountInDB(String filename);
 }
