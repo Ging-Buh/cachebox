@@ -46,11 +46,7 @@ public class DesktopMain {
 		DesktopLogger iLogger = new DesktopLogger();
 
 		InitalConfig();
-		// Config.settings.MapViewDPIFaktor.setValue(1);
-		// Config.settings.MapViewFontFaktor.setValue(1);
-		//
-		// Config.settings.OsmMinLevel.setValue(2);
-//		 Config.settings.MapShowCompass.setValue(false);
+		
 		Config.settings.TrackRecorderStartup.setValue(true);
 
 		CB_UI = new Desktop_GL_Listner(ui.Window.width, ui.Window.height);
@@ -103,12 +99,12 @@ public class DesktopMain {
 
 	private static void Run(boolean simulate) {
 		CB_UI.onStart();
-		// CB_UI.setGLViewID(ViewConst.MAP_CONTROL_TEST_VIEW);
-		CB_UI.setGLViewID(ViewConst.TEST_VIEW);
-		// CB_UI.setGLViewID(ViewConst.CREDITS_VIEW);
-		// CB_UI.setGLViewID(ViewConst.GL_MAP_VIEW);
-		// CB_UI.setGLViewID(ViewConst.ViewConst.ABOUT_VIEW);
-		CB_UI.setGLViewID(ViewConst.TEST_LIST_VIEW);
+//		// CB_UI.setGLViewID(ViewConst.MAP_CONTROL_TEST_VIEW);
+//		CB_UI.setGLViewID(ViewConst.TEST_VIEW);
+//		// CB_UI.setGLViewID(ViewConst.CREDITS_VIEW);
+//		// CB_UI.setGLViewID(ViewConst.GL_MAP_VIEW);
+//		// CB_UI.setGLViewID(ViewConst.ViewConst.ABOUT_VIEW);
+//		CB_UI.setGLViewID(ViewConst.TEST_LIST_VIEW);
 
 		Gdx.input.setInputProcessor((InputProcessor) CB_UI);
 
@@ -240,11 +236,7 @@ public class DesktopMain {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		if (!FileIO.DirectoryExists(Config.WorkPath))
-			return;
-		Database.Settings.StartUp(Config.WorkPath + "/Config.db3");
-		Config.settings.ReadFromDB();
-		Config.AcceptChanges();
+		
 
 		try {
 			Database.Data = new TestDB(DatabaseType.CacheBox);
@@ -252,22 +244,7 @@ public class DesktopMain {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String database = Config.settings.DatabasePath.getValue();
-		Database.Data.StartUp(database);
 
-		Config.settings.ReadFromDB();
-
-		String FilterString = Config.settings.Filter.getValue();
-		GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(
-				FilterProperties.presets[0]) : new FilterProperties(
-				FilterString);
-		String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
-
-		GlobalCore.Categories = new Categories();
-		Database.Data.GPXFilenameUpdateCacheCount();
-
-		CacheListDAO cacheListDAO = new CacheListDAO();
-		cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
 
 		try {
 			Database.FieldNotes = new TestDB(DatabaseType.FieldNotes);

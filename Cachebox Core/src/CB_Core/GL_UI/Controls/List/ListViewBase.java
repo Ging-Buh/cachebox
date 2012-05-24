@@ -365,7 +365,7 @@ public abstract class ListViewBase extends CB_View_Base
 		return mDividerSize;
 	}
 
-	protected void setSelection(int i)
+	public void setSelection(int i)
 	{
 		if (mSelectedIndex != i && i >= 0)
 		{

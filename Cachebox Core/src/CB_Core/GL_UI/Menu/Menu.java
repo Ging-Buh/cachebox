@@ -101,7 +101,12 @@ public class Menu extends Dialog
 
 	public MenuItem addItem(int ID, String StringId)
 	{
-		return addItem(ID, StringId, "");
+		return addItem(ID, StringId, "", false);
+	}
+
+	public MenuItem addItem(int ID, String StringId, boolean withoutTranslation)
+	{
+		return addItem(ID, StringId, "", withoutTranslation);
 	}
 
 	public MenuItem addItem(int ID, String StringId, String anhang, Sprite icon)
@@ -113,6 +118,11 @@ public class Menu extends Dialog
 
 	public MenuItem addItem(int ID, String StringId, String anhang)
 	{
+		return addItem(ID, StringId, anhang, false);
+	}
+
+	public MenuItem addItem(int ID, String StringId, String anhang, boolean withoutTranslation)
+	{
 		String trans;
 		if (StringId == null || StringId.equals(""))
 		{
@@ -122,6 +132,8 @@ public class Menu extends Dialog
 		{
 			trans = GlobalCore.Translations.Get(StringId) + anhang;
 		}
+
+		if (withoutTranslation) trans = StringId;
 
 		float higherValue = this.height + ItemHeight + 2; // 2= Standard divider Height
 

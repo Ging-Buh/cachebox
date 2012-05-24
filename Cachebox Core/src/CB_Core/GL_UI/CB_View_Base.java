@@ -76,8 +76,8 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 		if (!isInitial)
 		{
-			Initial();
 			isInitial = true;
+			Initial();
 		}
 	}
 

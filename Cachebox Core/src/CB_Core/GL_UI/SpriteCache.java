@@ -52,6 +52,7 @@ public class SpriteCache
 	public static NinePatch ListBack = null;
 	public static Sprite ButtonBack = null;
 	public static Sprite AboutBack = null;
+	public static Sprite Progress = null;
 
 	public static ButtonSprites CacheList;
 	public static ButtonSprites Cache;
@@ -293,6 +294,8 @@ public class SpriteCache
 		ToggleBtn.add(getThemedSprite("btn_normal"));
 		ToggleBtn.add(getThemedSprite("btn_pressed"));
 		ToggleBtn.add(getThemedSprite("toggle_led_gr"));
+
+		Progress = getThemedSprite("progress");
 
 		if (ZoomBtn == null) ZoomBtn = new ArrayList<Sprite>();
 		else

@@ -5,6 +5,7 @@ import CB_Core.Events.platformConector;
 import CB_Core.Events.platformConector.KeyEventListner;
 import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.GL_UI.Views.splash;
 import CB_Core.GL_UI.libGdx_Controls.LibGdx_Host_Control;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -29,8 +30,9 @@ public class Tab_GL_Listner extends GL_Listener
 
 		if (child == null)
 		{
-			// child = new MainView(0, 0, width, height, "MainView");
-			child = new TabMainView(0, 0, width, height, "TabMainView");
+			// child = new TabMainView(0, 0, width, height, "TabMainView");
+			child = new splash(0, 0, width, height, "SplashView");
+
 			child.setClickable(true);
 		}
 
@@ -70,6 +72,11 @@ public class Tab_GL_Listner extends GL_Listener
 			}
 		});
 
+	}
+
+	public void switchToTabMainView()
+	{
+		child = new TabMainView(0, 0, width, height, "TabMainView");
 	}
 
 }

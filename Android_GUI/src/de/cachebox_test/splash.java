@@ -11,6 +11,7 @@ import java.util.TimerTask;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.FileList;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;

@@ -120,7 +120,7 @@ public class TabMainView extends MainViewBase
 		super(X, Y, Width, Height, Name);
 
 		that = (TabMainView) (mainView = this);
-
+		GL_Listener.glListener.addRenderView(this, GL_Listener.FRAME_RATE_IDLE);
 	}
 
 	@Override
@@ -194,6 +194,7 @@ public class TabMainView extends MainViewBase
 
 		if (Config.settings.TrackRecorderStartup.getValue()) TrackRecorder.StartRecording();
 
+		GL_Listener.glListener.removeRenderView(this);
 	}
 
 	private void addPhoneTab()

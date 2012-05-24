@@ -4,6 +4,7 @@ import java.io.File;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.FileList;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;
@@ -27,7 +28,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
-import de.cachebox_test.FileList;
 import de.cachebox_test.R;
 import de.cachebox_test.DB.AndroidDB;
 import de.cachebox_test.Ui.ActivityUtils;
@@ -62,8 +62,6 @@ public class SelectDB extends Activity
 
 		DBPath = FileIO.GetDirectoryName(Config.settings.DatabasePath.getValue());
 		String DBFile = FileIO.GetFileName(Config.settings.DatabasePath.getValue());
-		// Toast.makeText(getApplicationContext(), DBPath,
-		// Toast.LENGTH_LONG).show();
 
 		aktIntent = getIntent();
 

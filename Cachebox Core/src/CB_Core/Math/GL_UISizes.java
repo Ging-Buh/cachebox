@@ -3,7 +3,6 @@ package CB_Core.Math;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
-import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Log.Logger;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -74,7 +73,7 @@ public class GL_UISizes implements SizeChangedEvent
 			calcSizes();
 
 			Fonts.LoadCalcFonts();
-			SpriteCache.LoadSprites(false);
+
 			calcPos();
 
 			isInitial = true;
