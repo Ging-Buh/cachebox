@@ -15,6 +15,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
 public class GlobalCore
 {
 
+	public static final int CurrentRevision = 880;
+	public static final String CurrentVersion = "0.5.";
+	public static final String VersionPrefix = "Test";
+
+	public static final String br = System.getProperty("line.separator");
+	public static final String splashMsg = "Team Cachebox (2011-2012)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009,"
+			+ br + "Groundspeak Inc. Used with permission";
+
 	// / <summary>
 	// / Letzte bekannte Position
 	// / </summary>
@@ -64,8 +72,6 @@ public class GlobalCore
 	public static boolean autoResort;
 
 	public static SmoothScrollingTyp SmoothScrolling = SmoothScrollingTyp.normal;
-
-	public static final String br = System.getProperty("line.separator");
 
 	public static FilterProperties LastFilter = null;
 
@@ -220,6 +226,13 @@ public class GlobalCore
 			return true;
 		}
 		return false;
+	}
+
+	public static String getVersionString()
+	{
+		final String ret = "Version: " + CurrentVersion + String.valueOf(CurrentRevision) + "  "
+				+ (VersionPrefix.equals("") ? "" : "(" + VersionPrefix + ")");
+		return ret;
 	}
 
 }

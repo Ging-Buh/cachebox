@@ -32,7 +32,6 @@ import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
@@ -61,7 +60,6 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheList;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
@@ -382,13 +380,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// UiSize Structur für die Berechnung der Größen zusammen stellen!
 		// Resources res = this.getResources();
 
-		final Bundle extras = getIntent().getExtras();
-		if (extras != null)
-		{
-			ui = (devicesSizes) extras.get("UI");
-		}
-
-		UiSizes.initial(ui);
+		// final Bundle extras = getIntent().getExtras();
+		// if (extras != null)
+		// {
+		// ui = (devicesSizes) extras.get("UI");
+		// }
+		//
+		// UiSizes.initial(ui);
 
 		// Initial GL_Listner in Full Screen with font color black
 
@@ -423,40 +421,40 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		initialButtons();
 		initialCaheInfoSlider();
 
-		if (GlobalCore.SelectedCache() == null)
-		{
-			if (Database.Data == null)
-			{
-				String FilterString = Config.settings.Filter.getValue();
-				GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0])
-						: new FilterProperties(FilterString);
-				String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
-
-				// initialize Database
-				Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
-				String database = Config.settings.DatabasePath.getValue();
-				Database.Data.StartUp(database);
-
-				GlobalCore.Categories = new Categories();
-				Database.Data.GPXFilenameUpdateCacheCount();
-
-				CacheListDAO cacheListDAO = new CacheListDAO();
-				cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
-
-			}
-
-			CacheList cacheList = Database.Data.Query;
-			if (cacheList.size() > 0)
-			{
-				Cache cache = cacheList.get(0);
-				GlobalCore.SelectedCache(cache);
-			}
-		}
-		else
-		// Activity wurde neu Gestartet
-		{
-			GlobalCore.SelectedCache(GlobalCore.SelectedCache());
-		}
+		// if (GlobalCore.SelectedCache() == null)
+		// {
+		// if (Database.Data == null)
+		// {
+		// String FilterString = Config.settings.Filter.getValue();
+		// GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0])
+		// : new FilterProperties(FilterString);
+		// String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
+		//
+		// // initialize Database
+		// Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
+		// String database = Config.settings.DatabasePath.getValue();
+		// Database.Data.StartUp(database);
+		//
+		// GlobalCore.Categories = new Categories();
+		// Database.Data.GPXFilenameUpdateCacheCount();
+		//
+		// CacheListDAO cacheListDAO = new CacheListDAO();
+		// cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+		//
+		// }
+		//
+		// CacheList cacheList = Database.Data.Query;
+		// if (cacheList.size() > 0)
+		// {
+		// Cache cache = cacheList.get(0);
+		// GlobalCore.SelectedCache(cache);
+		// }
+		// }
+		// else
+		// // Activity wurde neu Gestartet
+		// {
+		// GlobalCore.SelectedCache(GlobalCore.SelectedCache());
+		// }
 
 		Search = new search(this);
 
@@ -504,47 +502,47 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// }
 
 		// Initialisiere Icons neu.
-		Global.InitIcons(this);
+		// Global.InitIcons(this);
 
-		if (Config.settings.nightMode.getValue())
-		{
-			if (Config.settings.isChris.getValue())
-			{
-				buttonCache.setBackgroundResource(R.drawable.chris_night_cache_button_image_selector);
-				buttonDB.setBackgroundResource(R.drawable.night_db_button_image_selector);
-				buttonMisc.setBackgroundResource(R.drawable.night_misc_button_image_selector);
-				buttonNav.setBackgroundResource(R.drawable.night_nav_button_image_selector);
-				buttonTools.setBackgroundResource(R.drawable.night_find_button_image_selector);
-			}
-			else
-			{
-				buttonCache.setBackgroundResource(R.drawable.night_cache_button_image_selector);
-				buttonDB.setBackgroundResource(R.drawable.night_db_button_image_selector);
-				buttonMisc.setBackgroundResource(R.drawable.night_misc_button_image_selector);
-				buttonNav.setBackgroundResource(R.drawable.night_nav_button_image_selector);
-				buttonTools.setBackgroundResource(R.drawable.night_find_button_image_selector);
-			}
-		}
-		else
-		{
-			if (Config.settings.isChris.getValue())
-			{
-				buttonCache.setBackgroundResource(R.drawable.chris_cache_button_image_selector);
-				buttonDB.setBackgroundResource(R.drawable.chris_db_button_image_selector);
-				buttonMisc.setBackgroundResource(R.drawable.chris_misc_button_image_selector);
-				buttonNav.setBackgroundResource(R.drawable.chris_nav_button_image_selector);
-				buttonTools.setBackgroundResource(R.drawable.chris_find_button_image_selector);
-			}
-			else
-			{
-				buttonCache.setBackgroundResource(R.drawable.cache_button_image_selector);
-				buttonDB.setBackgroundResource(R.drawable.db_button_image_selector);
-				buttonMisc.setBackgroundResource(R.drawable.misc_button_image_selector);
-				buttonNav.setBackgroundResource(R.drawable.nav_button_image_selector);
-				buttonTools.setBackgroundResource(R.drawable.find_button_image_selector);
-			}
-		}
-		buttonCache.invalidate();
+		// if (Config.settings.nightMode.getValue())
+		// {
+		// if (Config.settings.isChris.getValue())
+		// {
+		// buttonCache.setBackgroundResource(R.drawable.chris_night_cache_button_image_selector);
+		// buttonDB.setBackgroundResource(R.drawable.night_db_button_image_selector);
+		// buttonMisc.setBackgroundResource(R.drawable.night_misc_button_image_selector);
+		// buttonNav.setBackgroundResource(R.drawable.night_nav_button_image_selector);
+		// buttonTools.setBackgroundResource(R.drawable.night_find_button_image_selector);
+		// }
+		// else
+		// {
+		// buttonCache.setBackgroundResource(R.drawable.night_cache_button_image_selector);
+		// buttonDB.setBackgroundResource(R.drawable.night_db_button_image_selector);
+		// buttonMisc.setBackgroundResource(R.drawable.night_misc_button_image_selector);
+		// buttonNav.setBackgroundResource(R.drawable.night_nav_button_image_selector);
+		// buttonTools.setBackgroundResource(R.drawable.night_find_button_image_selector);
+		// }
+		// }
+		// else
+		// {
+		// if (Config.settings.isChris.getValue())
+		// {
+		// buttonCache.setBackgroundResource(R.drawable.chris_cache_button_image_selector);
+		// buttonDB.setBackgroundResource(R.drawable.chris_db_button_image_selector);
+		// buttonMisc.setBackgroundResource(R.drawable.chris_misc_button_image_selector);
+		// buttonNav.setBackgroundResource(R.drawable.chris_nav_button_image_selector);
+		// buttonTools.setBackgroundResource(R.drawable.chris_find_button_image_selector);
+		// }
+		// else
+		// {
+		// buttonCache.setBackgroundResource(R.drawable.cache_button_image_selector);
+		// buttonDB.setBackgroundResource(R.drawable.db_button_image_selector);
+		// buttonMisc.setBackgroundResource(R.drawable.misc_button_image_selector);
+		// buttonNav.setBackgroundResource(R.drawable.nav_button_image_selector);
+		// buttonTools.setBackgroundResource(R.drawable.find_button_image_selector);
+		// }
+		// }
+		// buttonCache.invalidate();
 
 		CacheListChangedEvent();
 
@@ -623,6 +621,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		}
 
+		final Bundle extras = getIntent().getExtras();
 		if (extras != null)
 		{
 			GcCode = extras.getString("GcCode");
@@ -634,6 +633,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			startTimer();
 		}
+
+		if (aktView != null) ((View) aktView).setVisibility(View.INVISIBLE);
+		if (aktTabView != null) ((View) aktTabView).setVisibility(View.INVISIBLE);
+		if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
+		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 
 	}
 
@@ -3698,6 +3702,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							}
 						}
 
+						if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.VISIBLE);
+						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
 						showView(viewID);
 					}
 				});

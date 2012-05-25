@@ -1,25 +1,17 @@
 package de.cachebox_test;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
-import CB_Core.FileList;
-import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
-import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Log.Logger;
-import CB_Core.Map.Descriptor;
-import CB_Core.Map.Layer;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
@@ -34,7 +26,6 @@ import CB_Core.Settings.SettingInt;
 import CB_Core.Settings.SettingIntArray;
 import CB_Core.Settings.SettingString;
 import CB_Core.Settings.SettingTime;
-import CB_Core.Types.Categories;
 import CB_Core.Types.Coordinate;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -51,7 +42,6 @@ import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -64,25 +54,19 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.Components.copyAssetFolder;
 import de.cachebox_test.DB.AndroidDB;
-import de.cachebox_test.Views.Forms.SelectDB;
 
 public class splash extends Activity
 {
 	public static Activity mainActivity;
 
-	ProgressBar myProgressBar;
-	TextView myTextView;
-	TextView versionTextView;
-	TextView descTextView;
+	// TextView myTextView;
+	// TextView versionTextView;
+	// TextView descTextView;
 	Handler handler;
 	Bitmap bitmap;
-	Bitmap logo;
-	Bitmap gc_power_logo;
 
 	String GcCode = null;
 	String guid = null;
@@ -122,26 +106,16 @@ public class splash extends Activity
 
 		if (GlobalCore.isTab)
 		{
-			// Tab Modus nur Landscape
+			// Tab Modus only Landscape
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
 		}
 		else
 		{
+			// Phone Modus only Landscape
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		}
-
-		// else if (Config.settings == null || !Config.settings.AllowLandscape.getValue())
-		// {
-		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		//
-		// }
-		// else
-		// {
-		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-		//
-		// }
 
 		setContentView(GlobalCore.isTab ? R.layout.tab_splash : R.layout.splash);
 
@@ -201,13 +175,12 @@ public class splash extends Activity
 			}
 		}
 
-		myProgressBar = (ProgressBar) findViewById(R.id.splash_progressbar);
-		myTextView = (TextView) findViewById(R.id.splash_TextView);
-		myTextView.setTextColor(Color.BLACK);
-		versionTextView = (TextView) findViewById(R.id.splash_textViewVersion);
-		versionTextView.setText(Global.getVersionString());
-		descTextView = (TextView) findViewById(R.id.splash_textViewDesc);
-		descTextView.setText(Global.splashMsg);
+		// myTextView = (TextView) findViewById(R.id.splash_TextView);
+		// myTextView.setTextColor(Color.BLACK);
+		// // versionTextView = (TextView) findViewById(R.id.splash_textViewVersion);
+		// // versionTextView.setText(Global.getVersionString());
+		// descTextView = (TextView) findViewById(R.id.splash_textViewDesc);
+		// descTextView.setText(Global.splashMsg);
 		mainActivity = this;
 
 		LoadImages();
@@ -239,9 +212,9 @@ public class splash extends Activity
 		if (isFinishing())
 		{
 			ReleaseImages();
-			versionTextView = null;
-			myTextView = null;
-			descTextView = null;
+			// versionTextView = null;
+			// myTextView = null;
+			// descTextView = null;
 			mainActivity = null;
 
 		}
@@ -273,23 +246,6 @@ public class splash extends Activity
 		}
 
 		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
-		String database = Config.settings.DatabasePath.getValue();
-		Database.Data.StartUp(database);
-
-		// prevent mediascanner to parse all the images in the cachebox folder
-		File nomedia = new File(workPath, ".nomedia");
-		if (!nomedia.exists())
-		{
-			try
-			{
-				nomedia.createNewFile();
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 
 		// wenn eine cachebox.config existiert, werden die Werte in die DB
 		// übertragen
@@ -352,70 +308,14 @@ public class splash extends Activity
 
 		}
 
-		String PocketQueryFolder = Config.settings.PocketQueryFolder.getValue();
-		File directoryPocketQueryFolder = new File(PocketQueryFolder);
-		if (!directoryPocketQueryFolder.exists())
-		{
-			directoryPocketQueryFolder.mkdir();
-		}
-		String TileCacheFolder = Config.settings.TileCacheFolder.getValue();
-		File directoryTileCacheFolder = new File(TileCacheFolder);
-		if (!directoryTileCacheFolder.exists())
-		{
-			directoryTileCacheFolder.mkdir();
-		}
-		String User = workPath + "/User";
-		File directoryUser = new File(User);
-		if (!directoryUser.exists())
-		{
-			directoryUser.mkdir();
-		}
-		String TrackFolder = Config.settings.TrackFolder.getValue();
-		File directoryTrackFolder = new File(TrackFolder);
-		if (!directoryTrackFolder.exists())
-		{
-			directoryTrackFolder.mkdir();
-		}
-		String UserImageFolder = Config.settings.UserImageFolder.getValue();
-		File directoryUserImageFolder = new File(UserImageFolder);
-		if (!directoryUserImageFolder.exists())
-		{
-			directoryUserImageFolder.mkdir();
-		}
-
-		String repository = workPath + "/repository";
-		File directoryrepository = new File(repository);
-		if (!directoryrepository.exists())
-		{
-			directoryrepository.mkdir();
-		}
-		String DescriptionImageFolder = Config.settings.DescriptionImageFolder.getValue();
-		File directoryDescriptionImageFolder = new File(DescriptionImageFolder);
-		if (!directoryDescriptionImageFolder.exists())
-		{
-			directoryDescriptionImageFolder.mkdir();
-		}
-		String MapPackFolder = Config.settings.MapPackFolder.getValue();
-		File directoryMapPackFolder = new File(MapPackFolder);
-		if (!directoryMapPackFolder.exists())
-		{
-			directoryMapPackFolder.mkdir();
-		}
-		String SpoilerFolder = Config.settings.SpoilerFolder.getValue();
-		File directorySpoilerFolder = new File(SpoilerFolder);
-		if (!directorySpoilerFolder.exists())
-		{
-			directorySpoilerFolder.mkdir();
-		}
-
 		// copy AssetFolder only if Rev-Number changed, like at new installation
-		if (Config.settings.installRev.getValue() < Global.CurrentRevision)
+		if (Config.settings.installRev.getValue() < GlobalCore.CurrentRevision)
 		// if (true)
 		{
 			// String[] exclude = new String[]{"webkit","sounds","images"};
 			copyAssetFolder myCopie = new copyAssetFolder();
 			myCopie.copyAll(getAssets(), Config.WorkPath);
-			Config.settings.installRev.setValue(Global.CurrentRevision);
+			Config.settings.installRev.setValue(GlobalCore.CurrentRevision);
 			Config.settings.newInstall.setValue(true);
 			Config.AcceptChanges();
 		}
@@ -424,18 +324,6 @@ public class splash extends Activity
 			Config.settings.newInstall.setValue(false);
 			Config.AcceptChanges();
 		}
-
-		try
-		{
-			GlobalCore.Translations.ReadTranslationsFile(Config.settings.Sel_LanguagePath.getValue());
-		}
-		catch (IOException e)
-		{
-
-			e.printStackTrace();
-		}
-
-		setProgressState(20, GlobalCore.Translations.Get("IniUI"));
 
 		// UiSize Structur für die Berechnung der Größen zusammen stellen!
 		Resources res = this.getResources();
@@ -469,31 +357,7 @@ public class splash extends Activity
 		Global.Paints.init(this);
 		Global.InitIcons(this);
 
-		setProgressState(40, GlobalCore.Translations.Get("LoadMapPack"));
-
-		de.cachebox_test.Map.Manager manager = new de.cachebox_test.Map.Manager();
-
-		File dir = new File(Config.settings.MapPackFolder.getValue());
-		String[] files = dir.list();
-		if (!(files == null))
-		{
-			if (files.length > 0)
-			{
-				for (String file : files)
-				{
-					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack")) manager.LoadMapPack(Config.settings.MapPackFolder
-							.getValue() + "/" + file);
-					if (FileIO.GetFileExtension(file).equalsIgnoreCase("map"))
-					{
-						Layer layer = new Layer(file, file, "");
-						layer.isMapsForge = true;
-						manager.Layers.add(layer);
-					}
-				}
-			}
-		}
-		setProgressState(60, GlobalCore.Translations.Get("LoadCaches"));
-		if (Database.Data != null) Database.Data = null;
+		new de.cachebox_test.Map.Manager();
 
 		double lat = Config.settings.MapInitLatitude.getValue();
 		double lon = Config.settings.MapInitLongitude.getValue();
@@ -503,37 +367,11 @@ public class splash extends Activity
 		}
 
 		// Initial PlugIn
-		setProgressState(60, GlobalCore.Translations.Get("IniPlugIn"));
+
 		fillPluginList();
 		bindPluginServices();
 
-		// search number of DB3 files
-		FileList fileList = null;
-		try
-		{
-			fileList = new FileList(Config.WorkPath, "DB3");
-		}
-		catch (Exception ex)
-		{
-			Logger.Error("slpash.Initial()", "search number of DB3 files", ex);
-		}
-		if ((fileList.size() > 1) && Config.settings.MultiDBAsk.getValue())
-		{
-			// show Database Selection
-			Intent selectDBIntent = new Intent().setClass(mainActivity, SelectDB.class);
-			SelectDB.autoStart = true;
-
-			if (!mSelectDbIsStartet)
-			{
-				mSelectDbIsStartet = true;
-				mainActivity.startActivityForResult(selectDBIntent, 546132);
-			}
-
-		}
-		else
-		{
-			Initial2();
-		}
+		Initial2();
 	}
 
 	private boolean mSelectDbIsStartet = false;
@@ -543,27 +381,7 @@ public class splash extends Activity
 
 		// initialize Database
 		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
-		String database = Config.settings.DatabasePath.getValue();
-		Database.Data.StartUp(database);
-
-		Config.settings.ReadFromDB();
-		setProgressState(62, GlobalCore.Translations.Get("LoadCaches") + FileIO.GetFileName(Config.settings.DatabasePath.getValue()));
-		String FilterString = Config.settings.Filter.getValue();
-		GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0]) : new FilterProperties(
-				FilterString);
-		String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
-
-		GlobalCore.Categories = new Categories();
-		Database.Data.GPXFilenameUpdateCacheCount();
-
-		CacheListDAO cacheListDAO = new CacheListDAO();
-		cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
-
 		Database.FieldNotes = new AndroidDB(DatabaseType.FieldNotes, this);
-		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
-		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
-
-		Descriptor.Init();
 
 		// chek Joker PlugIn
 
@@ -595,57 +413,6 @@ public class splash extends Activity
 		startActivity(mainIntent);
 	}
 
-	private void setProgressState(int progress, final String msg)
-	{
-		myProgressBar.setProgress(progress);
-
-		Thread t = new Thread()
-		{
-			public void run()
-			{
-				runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						myTextView.setText(msg);
-					}
-				});
-			}
-		};
-
-		t.start();
-
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-
-		// SelectDB
-		if (requestCode == 546132)
-		{
-			if (resultCode == RESULT_CANCELED)
-			{
-				finish();
-			}
-			else
-			{
-				TimerTask task = new TimerTask()
-				{
-					@Override
-					public void run()
-					{
-						Initial2();
-					}
-				};
-
-				Timer timer = new Timer();
-				timer.schedule(task, 1000);
-			}
-		}
-	}
-
 	@Override
 	protected void onSaveInstanceState(Bundle outState)
 	{
@@ -659,27 +426,21 @@ public class splash extends Activity
 		Resources res = getResources();
 
 		bitmap = BitmapFactory.decodeResource(res, R.drawable.splash_back);
-		logo = BitmapFactory.decodeResource(res, R.drawable.cachebox_logo);
-		gc_power_logo = BitmapFactory.decodeResource(res, R.drawable.power_gc_live);
+
 		((ImageView) findViewById(R.id.splash_BackImage)).setImageBitmap(bitmap);
-		((ImageView) findViewById(R.id.splash_Logo)).setImageBitmap(logo);
-		((ImageView) findViewById(R.id.splash_GcPowerLogo)).setImageBitmap(gc_power_logo);
+
 	}
 
 	private void ReleaseImages()
 	{
 		((ImageView) findViewById(R.id.splash_BackImage)).setImageResource(0);
-		((ImageView) findViewById(R.id.splash_Logo)).setImageResource(0);
+
 		if (bitmap != null)
 		{
 			bitmap.recycle();
 			bitmap = null;
 		}
-		if (logo != null)
-		{
-			logo.recycle();
-			logo = null;
-		}
+
 	}
 
 	// PlugIn Methodes

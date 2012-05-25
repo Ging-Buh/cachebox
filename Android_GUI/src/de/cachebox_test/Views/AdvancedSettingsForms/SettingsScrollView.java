@@ -1123,11 +1123,11 @@ public class SettingsScrollView extends Activity
 				{
 					String info = "";
 
-					info += "Density= " + SettingsScrollView.Me.getString(R.string.density) + Global.br + Global.br;
-					info += "Height= " + String.valueOf(UiSizes.getWindowHeight()) + Global.br;
-					info += "Width= " + String.valueOf(UiSizes.getWindowWidth()) + Global.br;
-					info += "Scale= " + String.valueOf(UiSizes.getScale()) + Global.br;
-					info += "FontSize= " + String.valueOf(UiSizes.getScaledFontSize()) + Global.br;
+					info += "Density= " + SettingsScrollView.Me.getString(R.string.density) + GlobalCore.br + GlobalCore.br;
+					info += "Height= " + String.valueOf(UiSizes.getWindowHeight()) + GlobalCore.br;
+					info += "Width= " + String.valueOf(UiSizes.getWindowWidth()) + GlobalCore.br;
+					info += "Scale= " + String.valueOf(UiSizes.getScale()) + GlobalCore.br;
+					info += "FontSize= " + String.valueOf(UiSizes.getScaledFontSize()) + GlobalCore.br;
 
 					MessageBox.Show(info, SettingsScrollView.Me);
 

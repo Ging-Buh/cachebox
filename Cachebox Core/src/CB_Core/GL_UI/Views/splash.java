@@ -1,24 +1,35 @@
 package CB_Core.GL_UI.Views;
 
+import java.io.File;
 import java.io.IOException;
 
 import CB_Core.Config;
+import CB_Core.FileIO;
+import CB_Core.FileList;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Controls.Image;
+import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ProgressBar;
 import CB_Core.GL_UI.Controls.Dialogs.SelectDB;
 import CB_Core.GL_UI.Controls.Dialogs.SelectDB.ReturnListner;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
 import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.Log.Logger;
+import CB_Core.Map.Descriptor;
+import CB_Core.Map.Layer;
+import CB_Core.Map.ManagerBase;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Categories;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
@@ -28,15 +39,23 @@ public class splash extends TabMainView
 	{
 		super(X, Y, Width, Height, Name);
 		GL_Listener.glListener.addRenderView(this, GL_Listener.FRAME_RATE_IDLE);
+		workPath = Config.WorkPath;
 	}
 
 	TextureAtlas atlas;
 	ProgressBar progress;
+	Image CB_Logo;
+	Image Mapsforge_Logo;
+	Image LibGdx_Logeo;
+	Image FX2_Logo;
+	Label versionTextView;
+	Label descTextView;
 	SelectDB selectDBDialog;
 
 	int step = 0;
 	boolean switcher = false;
 	boolean breakForWait = false;
+	String workPath;
 
 	@Override
 	protected void Initial()
@@ -71,14 +90,22 @@ public class splash extends TabMainView
 				break;
 			case 4:
 				ini_Sprites();
-				progress.setProgress(30, "Select DB");
+				progress.setProgress(30, "check directoiries");
 				break;
 			case 5:
-				ini_SelectDB();
-				progress.setProgress(40, "Load Caches");
+				ini_Dir();
+				progress.setProgress(40, "Select DB");
 				break;
 			case 6:
+				ini_SelectDB();
+				progress.setProgress(60, "Load Caches");
+				break;
+			case 7:
 				ini_CacheDB();
+				progress.setProgress(80, "initial Map layer");
+				break;
+			case 8:
+				ini_MapPaks();
 				progress.setProgress(100, "Run");
 				break;
 			case 100:
@@ -105,6 +132,26 @@ public class splash extends TabMainView
 	 */
 	private void ini_Progressbar()
 	{
+		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (UiSizes.getButtonWidth() * 2.5f), this.height
+				- ((UiSizes.getButtonWidth() * 5) / 4.11f) - UiSizes.getButtonWidth(), UiSizes.getButtonWidth() * 5,
+				(UiSizes.getButtonWidth() * 5) / 4.11f);
+		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
+		CB_Logo.setSprite(atlas.createSprite("cachebox_logo"));
+		this.addChild(CB_Logo);
+
+		TextBounds bounds = Fonts.getNormal().getMultiLineBounds(GlobalCore.getVersionString());
+
+		versionTextView = new Label(0, CB_Logo.getY() - UiSizes.getButtonHeight() - bounds.height, this.width, bounds.height, "VesionLabel");
+		versionTextView.setMultiLineText(GlobalCore.getVersionString());
+		this.addChild(versionTextView);
+
+		bounds = Fonts.getNormal().getMultiLineBounds(GlobalCore.splashMsg);
+
+		descTextView = new Label(0, versionTextView.getY() - UiSizes.getButtonHeight() - bounds.height, this.width, bounds.height,
+				"DescLabel");
+		descTextView.setMultiLineText(GlobalCore.splashMsg);
+		this.addChild(descTextView);
+
 		progress = new ProgressBar(new CB_RectF(0, 0, this.width, UiSizes.getButtonHeight() / 1.5f), "Splash.ProgressBar");
 		progress.setBackground(new NinePatch(atlas.createSprite("btn_normal"), 16, 16, 16, 16));
 		progress.setProgressNinePatch(new NinePatch(atlas.createSprite("progress"), 15, 15, 15, 15));
@@ -117,7 +164,7 @@ public class splash extends TabMainView
 	 */
 	private void ini_Config()
 	{
-		Database.Settings.StartUp(Config.WorkPath + "/Config.db3");
+		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
 		Config.settings.ReadFromDB();
 		Config.AcceptChanges();
 	}
@@ -149,21 +196,113 @@ public class splash extends TabMainView
 
 	/**
 	 * Step 5 <br>
+	 * chk directories
+	 */
+	private void ini_Dir()
+	{
+		String PocketQueryFolder = Config.settings.PocketQueryFolder.getValue();
+		File directoryPocketQueryFolder = new File(PocketQueryFolder);
+		if (!directoryPocketQueryFolder.exists())
+		{
+			directoryPocketQueryFolder.mkdir();
+		}
+		String TileCacheFolder = Config.settings.TileCacheFolder.getValue();
+		File directoryTileCacheFolder = new File(TileCacheFolder);
+		if (!directoryTileCacheFolder.exists())
+		{
+			directoryTileCacheFolder.mkdir();
+		}
+		String User = workPath + "/User";
+		File directoryUser = new File(User);
+		if (!directoryUser.exists())
+		{
+			directoryUser.mkdir();
+		}
+		String TrackFolder = Config.settings.TrackFolder.getValue();
+		File directoryTrackFolder = new File(TrackFolder);
+		if (!directoryTrackFolder.exists())
+		{
+			directoryTrackFolder.mkdir();
+		}
+		String UserImageFolder = Config.settings.UserImageFolder.getValue();
+		File directoryUserImageFolder = new File(UserImageFolder);
+		if (!directoryUserImageFolder.exists())
+		{
+			directoryUserImageFolder.mkdir();
+		}
+
+		String repository = workPath + "/repository";
+		File directoryrepository = new File(repository);
+		if (!directoryrepository.exists())
+		{
+			directoryrepository.mkdir();
+		}
+		String DescriptionImageFolder = Config.settings.DescriptionImageFolder.getValue();
+		File directoryDescriptionImageFolder = new File(DescriptionImageFolder);
+		if (!directoryDescriptionImageFolder.exists())
+		{
+			directoryDescriptionImageFolder.mkdir();
+		}
+		String MapPackFolder = Config.settings.MapPackFolder.getValue();
+		File directoryMapPackFolder = new File(MapPackFolder);
+		if (!directoryMapPackFolder.exists())
+		{
+			directoryMapPackFolder.mkdir();
+		}
+		String SpoilerFolder = Config.settings.SpoilerFolder.getValue();
+		File directorySpoilerFolder = new File(SpoilerFolder);
+		if (!directorySpoilerFolder.exists())
+		{
+			directorySpoilerFolder.mkdir();
+		}
+
+		// prevent mediascanner to parse all the images in the cachebox folder
+		File nomedia = new File(workPath, ".nomedia");
+		if (!nomedia.exists())
+		{
+			try
+			{
+				nomedia.createNewFile();
+			}
+			catch (IOException e)
+			{
+
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Step 5 <br>
 	 * show select DB Dialog
 	 */
 	private void ini_SelectDB()
 	{
-		breakForWait = true;
-		selectDBDialog = new SelectDB(this, "SelectDbDialog");
-		selectDBDialog.setReturnListner(new ReturnListner()
+		// search number of DB3 files
+		FileList fileList = null;
+		try
 		{
-			@Override
-			public void back()
+			fileList = new FileList(Config.WorkPath, "DB3");
+		}
+		catch (Exception ex)
+		{
+			Logger.Error("slpash.Initial()", "search number of DB3 files", ex);
+		}
+		if ((fileList.size() > 1) && Config.settings.MultiDBAsk.getValue())
+		{
+			breakForWait = true;
+			selectDBDialog = new SelectDB(this, "SelectDbDialog");
+			selectDBDialog.setReturnListner(new ReturnListner()
 			{
-				returnFromSelectDB();
-			}
-		});
-		this.addChild(selectDBDialog);
+				@Override
+				public void back()
+				{
+					returnFromSelectDB();
+				}
+			});
+			this.addChild(selectDBDialog);
+		}
+
 	}
 
 	private void returnFromSelectDB()
@@ -194,6 +333,38 @@ public class splash extends TabMainView
 
 		CacheListDAO cacheListDAO = new CacheListDAO();
 		cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+
+		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
+		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
+
+	}
+
+	/**
+	 * Step 7 <br>
+	 * chk installed map packs/layers
+	 */
+	private void ini_MapPaks()
+	{
+		File dir = new File(Config.settings.MapPackFolder.getValue());
+		String[] files = dir.list();
+		if (!(files == null))
+		{
+			if (files.length > 0)
+			{
+				for (String file : files)
+				{
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack")) ManagerBase.Manager
+							.LoadMapPack(Config.settings.MapPackFolder.getValue() + "/" + file);
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("map"))
+					{
+						Layer layer = new Layer(file, file, "");
+						layer.isMapsForge = true;
+						ManagerBase.Manager.Layers.add(layer);
+					}
+				}
+			}
+		}
+		Descriptor.Init();
 	}
 
 	/**

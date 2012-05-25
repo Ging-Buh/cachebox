@@ -54,25 +54,9 @@ public class DesktopMain {
 		GL_View_Base.debug = debug;
 		GL_View_Base.disableScissor = scissor;
 
-		Manager manager = new Manager();
-		// Map Packs laden
-		File dir = new File(Config.settings.MapPackFolder.getValue());
-		String[] files = dir.list();
-		if (!(files == null)) {
-			if (files.length > 0) {
-				for (String file : files) {
-					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack"))
-						manager.LoadMapPack(Config.settings.MapPackFolder
-								.getValue() + "/" + file);
-					if (FileIO.GetFileExtension(file).equalsIgnoreCase("map")) {
-						Layer layer = new Layer(file, file, "");
-						layer.isMapsForge = true;
-						manager.Layers.add(layer);
-					}
-				}
-			}
-		}
-		Descriptor.Init();
+		 new Manager();
+		 
+
 
 		int sw = ui.Window.height > ui.Window.width ? ui.Window.width
 				: ui.Window.height;

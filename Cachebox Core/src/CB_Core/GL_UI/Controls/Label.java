@@ -134,6 +134,12 @@ public class Label extends CB_View_Base
 
 	// code from Libgdx Label
 
+	public void setText(String txt, HAlignment aligment)
+	{
+		setText(txt);
+		setHAlignment(aligment);
+	}
+
 	public void setText(String text)
 	{
 		chkCache();

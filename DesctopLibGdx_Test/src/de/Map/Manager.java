@@ -1,9 +1,5 @@
 package de.Map;
 
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Blending;
-
-import CB_Core.Map.Descriptor;
 import CB_Core.Map.Layer;
 import CB_Core.Map.ManagerBase;
 

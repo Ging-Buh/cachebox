@@ -9,11 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map.Entry;
 
-import CB_Core.DB.CoreCursor;
-import CB_Core.DB.Database;
-import CB_Core.DB.Database.DatabaseType;
-import CB_Core.DB.Database.Parameters;
-
 public class TestDB extends Database
 {
 
@@ -461,6 +456,29 @@ public class TestDB extends Database
 			return 0;
 		}
 
+	}
+
+	@Override
+	public int getCacheCountInDB(String filename)
+	{
+		int count = 0;
+		Connection myDB = null;
+		try
+		{
+			myDB = DriverManager.getConnection("jdbc:sqlite:" + filename);
+
+			Statement statement = myDB.createStatement();
+			ResultSet result = statement.executeQuery("select count(*) from caches");
+			// result.first();
+			count = result.getInt(1);
+			result.close();
+			myDB.close();
+		}
+		catch (SQLException e)
+		{
+			String s = e.getMessage();
+		}
+		return count;
 	}
 
 }

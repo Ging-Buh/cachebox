@@ -273,8 +273,8 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 
 	private void setText()
 	{
-		versionTextView.setText(Global.getVersionString());
-		descTextView.setText(Global.splashMsg);
+		versionTextView.setText(GlobalCore.getVersionString());
+		descTextView.setText(GlobalCore.splashMsg);
 
 		lblGPS.setText(GlobalCore.Translations.Get("gps"));
 

@@ -1,13 +1,16 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.FileList;
+import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
+import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
@@ -16,11 +19,13 @@ import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.Types.Categories;
 
 public class SelectDB extends CB_View_Base
 {
@@ -36,6 +41,8 @@ public class SelectDB extends CB_View_Base
 
 	public static File AktFile = null;
 
+	private String[] countList;
+
 	public SelectDB(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
@@ -46,12 +53,15 @@ public class SelectDB extends CB_View_Base
 		String DBFile = FileIO.GetFileName(Config.settings.DatabasePath.getValue());
 
 		// lvFiles = (ListView) findViewById(R.id.sdb_list);
-		final FileList files = new FileList(Config.WorkPath, "DB3");
+		final FileList files = new FileList(Config.WorkPath, "DB3", true);
+		countList = new String[files.size()];
+
+		int index = 0;
 		for (File file : files)
 		{
 			if (file.getName().equalsIgnoreCase(DBFile)) AktFile = file;
-
-			int count = Database.Data.getCacheCountInDB(Config.WorkPath + "/" + file.getPath());
+			countList[index] = "";
+			index++;
 		}
 
 		lvFiles = new V_ListView(new CB_RectF(0, UiSizes.getButtonHeight() * 2, width, height - UiSizes.getButtonHeight() * 2),
@@ -81,8 +91,8 @@ public class SelectDB extends CB_View_Base
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				stopTimer();
-				// StringInputBox.Show(GlobalCore.Translations.Get("NewDB"), GlobalCore.Translations.Get("InsNewDBName"), "NewDB",
-				// DialogListnerNewDB, Me);
+				StringInputBox.Show(GlobalCore.Translations.Get("NewDB"), GlobalCore.Translations.Get("InsNewDBName"), "NewDB",
+						DialogListnerNewDB);
 				return true;
 			}
 		});
@@ -152,6 +162,8 @@ public class SelectDB extends CB_View_Base
 			else
 				stopTimer();
 		}
+
+		readCountatThread();
 	}
 
 	TimerTask timerTask = new TimerTask()
@@ -172,6 +184,30 @@ public class SelectDB extends CB_View_Base
 			}
 		}
 	};
+
+	private void readCountatThread()
+	{
+		Thread thread = new Thread()
+		{
+			@Override
+			public void run()
+			{
+				SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+				int index = 0;
+				for (File file : lvAdapter.files)
+				{
+					String LastModifit = sdf.format(file.lastModified());
+					String FileSize = String.valueOf(file.length() / (1024 * 1024)) + "MB";
+					String CacheCount = String.valueOf(Database.Data.getCacheCountInDB(file.getAbsolutePath()));
+					countList[index] = CacheCount + " Caches  " + FileSize + "    last use " + LastModifit;
+					index++;
+				}
+
+				lvFiles.setBaseAdapter(lvAdapter);
+			}
+		};
+		thread.start();
+	}
 
 	@Override
 	protected void Initial()
@@ -229,6 +265,56 @@ public class SelectDB extends CB_View_Base
 	{
 	}
 
+	OnMsgBoxClickListener DialogListnerNewDB = new OnMsgBoxClickListener()
+	{
+
+		@Override
+		public boolean onClick(int which)
+		{
+			String text = StringInputBox.editText.getText();
+			// Behandle das ergebniss
+			switch (which)
+			{
+			case 1: // ok Clicket
+
+				String FilterString = Config.settings.Filter.getValue();
+				GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0])
+						: new FilterProperties(FilterString);
+				String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
+
+				// initialize Database
+
+				Config.settings.DatabasePath.setValue(Config.WorkPath + "/" + text + ".db3");
+				String database = Config.settings.DatabasePath.getValue();
+				Database.Data.StartUp(database);
+				Config.AcceptChanges();
+
+				GlobalCore.Categories = new Categories();
+				Database.Data.GPXFilenameUpdateCacheCount();
+
+				CacheListDAO cacheListDAO = new CacheListDAO();
+				cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+
+				if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return true;
+				Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
+
+				Config.AcceptChanges();
+				AktFile = new File(database);
+				selectDB();
+
+				break;
+			case 2: // cancel clicket
+
+				break;
+			case 3:
+
+				break;
+			}
+
+			return true;
+		}
+	};
+
 	protected void selectDB()
 	{
 		Config.settings.MultiDBAutoStartTime.setValue(autoStartTime);
@@ -272,6 +358,7 @@ public class SelectDB extends CB_View_Base
 		{
 			this.files = files;
 			recItem = UiSizes.getCacheListItemRec().asFloat();
+			recItem.setHeight(recItem.getHeight() * 0.8f);
 		}
 
 		public void setFiles(FileList files)
@@ -298,7 +385,7 @@ public class SelectDB extends CB_View_Base
 		@Override
 		public ListViewItemBase getView(int position)
 		{
-			SelectDBItem v = new SelectDBItem(recItem, position, files.get(position));
+			SelectDBItem v = new SelectDBItem(recItem, position, files.get(position), countList[position]);
 			v.setOnClickListener(onItemClickListner);
 			return v;
 		}
