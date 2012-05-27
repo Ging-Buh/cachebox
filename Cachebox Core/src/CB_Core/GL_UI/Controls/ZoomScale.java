@@ -74,8 +74,11 @@ public class ZoomScale extends CB_View_Base
 		// Draw Scale
 		Sprite scale;
 		scale = drawSprite(ScaleDrawRec);
-		scale.setY(valueRecHeight / 2);
-		scale.draw(batch, FadeValue);
+		if (scale != null)
+		{
+			scale.setY(valueRecHeight / 2);
+			scale.draw(batch, FadeValue);
+		}
 
 		// Draw Value Background
 		if (ValueRec != null)

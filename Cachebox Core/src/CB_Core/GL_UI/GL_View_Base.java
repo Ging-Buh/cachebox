@@ -481,6 +481,8 @@ public abstract class GL_View_Base extends CB_RectF
 				GL_View_Base view = iterator.next();
 
 				if (!view.isClickable()) continue;
+				// Invisible Views can not be clicked!
+				if (!view.isVisible()) continue;
 
 				if (view.contains(x, y))
 				{

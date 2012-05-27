@@ -291,7 +291,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				GlobalCore.SelectedCache(infoBubble.getCache());
-				return false;
+				infoBubble.setVisibility(INVISIBLE);
+				return true;
 			}
 		});
 		this.addChild(infoBubble);
@@ -1956,7 +1957,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					}
 				}
 
-				if (minWpi == null || minWpi.Cache == null) return false;
+				if (minWpi == null || minWpi.Cache == null) return true;
 				Vector2 screen = worldToScreen(new Vector2(Math.round(minWpi.MapX), Math.round(minWpi.MapY)));
 				// Logger.LogCat("MapClick at:" + clickedAt + " minDistance: " + minDist + " screen:" + screen + " wpi:" + minWpi.Cache.Name
 				// + "/ ");
@@ -1969,11 +1970,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 						if (GlobalCore.SelectedCache() != minWpi.Cache)
 						{
 							// Show Bubble
-							infoBubble.setVisibility(VISIBLE);
 							infoBubble.setCache(minWpi.Cache);
+							infoBubble.setVisibility(VISIBLE);
 
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
-									aktZoom, true);
+							// mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
+							// aktZoom, true);
 
 						}
 						else
@@ -1986,8 +1987,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 							// xxx ThreadSaveSetSelectedWP(minWpi.Cache, minWpi.Waypoint);
 							// FormMain.WaypointListPanel.AlignSelected();
 							// updateCacheList();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
-									aktZoom, true);
+							// mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
+							// aktZoom, true);
 						}
 
 					}
@@ -1996,23 +1997,23 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 						if (GlobalCore.SelectedCache() != minWpi.Cache)
 						{
 							// Show Bubble
-							infoBubble.setVisibility(VISIBLE);
 							infoBubble.setCache(minWpi.Cache);
+							infoBubble.setVisibility(VISIBLE);
 
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
-									aktZoom, true);
+							// mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
+							// aktZoom, true);
 						}
 						else
 						{
 							// Show Bubble
-							infoBubble.setVisibility(VISIBLE);
 							infoBubble.setCache(minWpi.Cache);
+							infoBubble.setVisibility(VISIBLE);
 
 							// Cacheliste ausrichten
 							// xxx ThreadSaveSetSelectedWP(minWpi.Cache);
 							// updateCacheList();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
-									aktZoom, true);
+							// mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
+							// aktZoom, true);
 						}
 					}
 					inputState = InputState.Idle;
@@ -2054,7 +2055,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		 * if (InvokeRequired) { Invoke(new targetChangedDelegate(OnTargetChanged), new object[] { cache, waypoint }); return; }
 		 */
 
-		mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
+		// mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
+		mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
 
 		if (togBtn.getState() > 0 && togBtn.getState() != 2) return;
 
