@@ -150,7 +150,7 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 			}
 		});
 
-		if (MapView.that.isVisible())
+		if (MapView.that != null && MapView.that.isVisible())
 		{
 			actSearchPos = MapView.that.center;
 			searcheState = 1;

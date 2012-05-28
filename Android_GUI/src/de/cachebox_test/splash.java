@@ -49,11 +49,12 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Display;
-import android.view.LayoutInflater;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.Components.copyAssetFolder;
 import de.cachebox_test.DB.AndroidDB;
@@ -62,9 +63,6 @@ public class splash extends Activity
 {
 	public static Activity mainActivity;
 
-	// TextView myTextView;
-	// TextView versionTextView;
-	// TextView descTextView;
 	Handler handler;
 	Bitmap bitmap;
 
@@ -175,12 +173,6 @@ public class splash extends Activity
 			}
 		}
 
-		// myTextView = (TextView) findViewById(R.id.splash_TextView);
-		// myTextView.setTextColor(Color.BLACK);
-		// // versionTextView = (TextView) findViewById(R.id.splash_textViewVersion);
-		// // versionTextView.setText(Global.getVersionString());
-		// descTextView = (TextView) findViewById(R.id.splash_textViewDesc);
-		// descTextView.setText(Global.splashMsg);
 		mainActivity = this;
 
 		LoadImages();
@@ -428,6 +420,9 @@ public class splash extends Activity
 		bitmap = BitmapFactory.decodeResource(res, R.drawable.splash_back);
 
 		((ImageView) findViewById(R.id.splash_BackImage)).setImageBitmap(bitmap);
+		((TextView) findViewById(R.id.splash_textViewDesc)).setVisibility(View.INVISIBLE);
+		((TextView) findViewById(R.id.splash_textViewVersion)).setVisibility(View.INVISIBLE);
+		((TextView) findViewById(R.id.splash_TextView)).setVisibility(View.INVISIBLE);
 
 	}
 
@@ -449,8 +444,8 @@ public class splash extends Activity
 	private static final String KEY_PKG = "pkg";
 	private static final String KEY_SERVICENAME = "servicename";
 	private ArrayList<HashMap<String, String>> services;
-	private LayoutInflater inflater;
-	private Handler uiHandler;
+	// private LayoutInflater inflater;
+	// private Handler uiHandler;
 	private PluginServiceConnection pluginServiceConnection[] = new PluginServiceConnection[4];
 
 	private void fillPluginList()
@@ -465,36 +460,43 @@ public class splash extends Activity
 		Config.settings.hasFTF_PlugIn.setValue(false);
 		Config.settings.hasFTF_PlugIn.setValue(false);
 		int i;
-		for (i = 0; i < list.size(); ++i)
+		try
 		{
-			ResolveInfo info = list.get(i);
-			ServiceInfo sinfo = info.serviceInfo;
-			// Log.d(LOG_TAG, "fillPluginList: i: " + i + "; sinfo: " + sinfo);
-			if (sinfo != null)
+			for (i = 0; i < list.size(); ++i)
 			{
+				ResolveInfo info = list.get(i);
+				ServiceInfo sinfo = info.serviceInfo;
+				// Log.d(LOG_TAG, "fillPluginList: i: " + i + "; sinfo: " + sinfo);
+				if (sinfo != null)
+				{
 
-				if (sinfo.packageName.contains("de.CB_FTF_PlugIn")) // Don't bind, is an Widget
-				{
-					Config.settings.hasFTF_PlugIn.setValue(true);
-				}
-				else if (sinfo.packageName.contains("de.CB_PQ_PlugIn"))// Don't bind, is an Widget
-				{
-					Config.settings.hasPQ_PlugIn.setValue(true);
-				}
-				else
-				// PlugIn for Bind
-				{
-					HashMap<String, String> item = new HashMap<String, String>();
-					item.put(KEY_PKG, sinfo.packageName);
-					item.put(KEY_SERVICENAME, sinfo.name);
-					services.add(item);
-					if (i <= 4)
+					if (sinfo.packageName.contains("de.CB_FTF_PlugIn")) // Don't bind, is an Widget
 					{
-						inflateToView(i, packageManager, sinfo.packageName);
+						Config.settings.hasFTF_PlugIn.setValue(true);
+					}
+					else if (sinfo.packageName.contains("de.CB_PQ_PlugIn"))// Don't bind, is an Widget
+					{
+						Config.settings.hasPQ_PlugIn.setValue(true);
+					}
+					else
+					// PlugIn for Bind
+					{
+						HashMap<String, String> item = new HashMap<String, String>();
+						item.put(KEY_PKG, sinfo.packageName);
+						item.put(KEY_SERVICENAME, sinfo.name);
+						services.add(item);
+						if (i <= 4)
+						{
+							inflateToView(i, packageManager, sinfo.packageName);
 
+						}
 					}
 				}
 			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 		Config.AcceptChanges();
 	}
@@ -507,11 +509,7 @@ public class splash extends Activity
 			Resources res = packageManager.getResourcesForApplication(info);
 
 			XmlResourceParser xres = res.getLayout(0x7f030000);
-			// int parentId = selectRow(rowCtr);
-			// ViewGroup parentView = (ViewGroup) findViewById(parentId);
-			// parentView.removeAllViews();
-			// View view = inflater.inflate(xres, parentView);
-			// adjustSubViewIds(parentView, idxToIdOffset(rowCtr));
+
 		}
 		catch (NameNotFoundException ex)
 		{

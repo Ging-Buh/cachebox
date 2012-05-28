@@ -401,6 +401,7 @@ public abstract class ListViewBase extends CB_View_Base
 
 	protected int getFirstVisiblePosition()
 	{
+		if (mBaseAdapter == null) return 0;
 		int ret = mBaseAdapter.getCount();
 		synchronized (childs)
 		{

@@ -42,7 +42,10 @@ public class Label extends CB_View_Base
 	private float top = 0;
 
 	private WrapType wrapType = WrapType.singleLine;
+	private int lineCount = 1;
 	private HAlignment halignment = HAlignment.LEFT;
+	private BitmapFont mBmpFont;
+	private int initialedLineCount = 0;
 
 	/**
 	 * Dieser Wert entspricht width*0.95. Damit ein TextWrap richtig dargestellt wird.
@@ -71,10 +74,8 @@ public class Label extends CB_View_Base
 
 	private void calcInnerRec()
 	{
-
 		innerRec = new CB_RectF(left, bottom, width - right - left, height - top - bottom);
-
-		innerWidth = innerRec.getWidth() * 0.75f;
+		innerWidth = innerRec.getWidth();
 	}
 
 	@Override
@@ -91,33 +92,50 @@ public class Label extends CB_View_Base
 		if (bounds == null) return;
 
 		calcInnerRec();
-
 		float x = innerRec.getX();
 
 		if (this.halignment == HAlignment.CENTER && innerRec.getWidth() > bounds.width)
 		{
 			x = (innerRec.getWidth() / 2f) - (bounds.width / 2f);
 		}
-		else if (this.halignment == HAlignment.CENTER && innerRec.getWidth() > bounds.width)
+		else if (this.halignment == HAlignment.RIGHT && innerRec.getWidth() > bounds.width)
 		{
 			x = innerRec.getWidth() - bounds.width;
 		}
 
-		// cache.setColor(color.r, color.g, color.b, color.a);
+		// TODO wenn mehrere Zeilen gecentert werden sollen, muss das Label für jede Zeile ein Label erhalten, damit jede Zeile eigenständig
+		// gecentert werden kann.
 
-		switch (valignment)
+		if (wrapType == WrapType.singleLine)
 		{
-		case TOP:
-			cache.setPosition(x, innerRec.getHeight() - bounds.height);
-			break;
-		case CENTER:
-			cache.setPosition(x, (innerRec.getHeight() - bounds.height) / 2);
-			break;
-		case BOTTOM:
-			cache.setPosition(x, 0);
-			break;
+			switch (valignment)
+			{
+			case TOP:
+				cache.setPosition(x, innerRec.getHeight() - bounds.height);
+				break;
+			case CENTER:
+				cache.setPosition(x, (innerRec.getHeight() - bounds.height) / 2);
+				break;
+			case BOTTOM:
+				cache.setPosition(x, 0);
+				break;
+			}
 		}
-
+		else
+		{
+			switch (valignment)
+			{
+			case TOP:
+				cache.setPosition(cache.getX(), (bounds.height + cache.getFont().getDescent()) - 1);
+				break;
+			case CENTER:
+				cache.setPosition(cache.getX(), (innerRec.getHeight() - bounds.height) / 2);
+				break;
+			case BOTTOM:
+				cache.setPosition(cache.getX(), 0);
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -145,6 +163,7 @@ public class Label extends CB_View_Base
 		chkCache();
 		this.text = text;
 		wrapType = WrapType.singleLine;
+		lineCount = 1;
 		try
 		{
 			bounds = cache.setText(text, 0, cache.getFont().isFlipped() ? 0 : cache.getFont().getCapHeight());
@@ -159,12 +178,19 @@ public class Label extends CB_View_Base
 
 	public void setMultiLineText(String text)
 	{
+		setMultiLineText(text, HAlignment.LEFT);
+	}
+
+	public void setMultiLineText(String text, HAlignment alignment)
+	{
 		chkCache();
 		this.text = text;
 		valignment = VAlignment.TOP;
 		wrapType = WrapType.multiLine;
+
 		bounds = cache.getFont().getMultiLineBounds(text);
-		cache.setMultiLineText(text, 0, cache.getFont().isFlipped() ? 0 : bounds.height);
+		// cache.setMultiLineText(text, 0, cache.getFont().isFlipped() ? 0 : bounds.height);
+		cache.setMultiLineText(text, 0, cache.getFont().isFlipped() ? 0 : bounds.height, innerWidth, alignment);
 		fontPropertyChanged();
 	}
 
@@ -185,19 +211,18 @@ public class Label extends CB_View_Base
 		fontPropertyChanged();
 	}
 
-	private BitmapFont mBmpFont;
-
 	public void setFont(BitmapFont font)
 	{
 		mBmpFont = font;
-		boolean ini = false;
 
-		if (cache == null) ini = true;
+		if (cache == null) initialedLineCount = 0;
+
 		cache = new BitmapFontCache(mBmpFont);
 
-		if (ini) return;
+		if (lineCount != initialedLineCount) return;
 		change();
 		fontPropertyChanged();
+		initialedLineCount = lineCount;
 	}
 
 	private void change()
@@ -210,7 +235,7 @@ public class Label extends CB_View_Base
 			setText(text);
 			break;
 		case multiLine:
-			setMultiLineText(text);
+			setMultiLineText(text, halignment);
 			break;
 		case wrapped:
 			setWrappedText(text, halignment);
@@ -222,11 +247,13 @@ public class Label extends CB_View_Base
 	public void setHAlignment(HAlignment aligment)
 	{
 		this.halignment = aligment;
+		change();
 	}
 
 	public void setVAlignment(VAlignment aligment)
 	{
 		this.valignment = aligment;
+		change();
 	}
 
 	static public enum VAlignment

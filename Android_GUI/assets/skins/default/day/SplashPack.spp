@@ -9,6 +9,13 @@ libgdx
   orig: 313, 75
   offset: 0, 0
   index: -1
+FXzwei
+  rotate: false
+  xy: 1, 1
+  size: 84, 64
+  orig: 84, 64
+  offset: 0, 0
+  index: -1
 btn_normal
   rotate: false
   xy: 86, 1
@@ -23,13 +30,6 @@ progress
   orig: 84, 87
   offset: 0, 0
   index: -1
-X2_
-  rotate: false
-  xy: 1, 1
-  size: 84, 64
-  orig: 84, 64
-  offset: 0, 0
-  index: 64
 gc_live
   rotate: false
   xy: 472, 1

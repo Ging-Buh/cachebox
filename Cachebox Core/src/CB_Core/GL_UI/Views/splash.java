@@ -29,6 +29,7 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Types.Categories;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -46,8 +47,9 @@ public class splash extends TabMainView
 	ProgressBar progress;
 	Image CB_Logo;
 	Image Mapsforge_Logo;
-	Image LibGdx_Logeo;
+	Image LibGdx_Logo;
 	Image FX2_Logo;
+	Image GC_Logo;
 	Label versionTextView;
 	Label descTextView;
 	SelectDB selectDBDialog;
@@ -141,21 +143,65 @@ public class splash extends TabMainView
 
 		TextBounds bounds = Fonts.getNormal().getMultiLineBounds(GlobalCore.getVersionString());
 
-		versionTextView = new Label(0, CB_Logo.getY() - UiSizes.getButtonHeight() - bounds.height, this.width, bounds.height, "VesionLabel");
+		versionTextView = new Label(0, CB_Logo.getY() - UiSizes.getButtonHeight() - bounds.height, this.width, bounds.height + 10,
+				"VesionLabel");
 		versionTextView.setMultiLineText(GlobalCore.getVersionString());
+		versionTextView.setHAlignment(HAlignment.CENTER);
 		this.addChild(versionTextView);
 
 		bounds = Fonts.getNormal().getMultiLineBounds(GlobalCore.splashMsg);
 
-		descTextView = new Label(0, versionTextView.getY() - UiSizes.getButtonHeight() - bounds.height, this.width, bounds.height,
+		descTextView = new Label(0, versionTextView.getY() - UiSizes.getButtonHeight() - bounds.height, this.width, bounds.height + 10,
 				"DescLabel");
 		descTextView.setMultiLineText(GlobalCore.splashMsg);
+		descTextView.setHAlignment(HAlignment.CENTER);
 		this.addChild(descTextView);
 
 		progress = new ProgressBar(new CB_RectF(0, 0, this.width, UiSizes.getButtonHeight() / 1.5f), "Splash.ProgressBar");
 		progress.setBackground(new NinePatch(atlas.createSprite("btn_normal"), 16, 16, 16, 16));
 		progress.setProgressNinePatch(new NinePatch(atlas.createSprite("progress"), 15, 15, 15, 15));
 		this.addChild(progress);
+
+		float logoCalcRef = UiSizes.getButtonHeight() * 1.5f;
+
+		CB_RectF rec_GC_Logo = new CB_RectF(20, 50, logoCalcRef, logoCalcRef);
+		CB_RectF rec_Mapsforge_Logo = new CB_RectF(200, 50, logoCalcRef, logoCalcRef / 1.142f);
+		CB_RectF rec_FX2_Logo = new CB_RectF(rec_Mapsforge_Logo);
+		CB_RectF rec_LibGdx_Logo = new CB_RectF(20, 50, logoCalcRef * 4.17f * 0.8f, logoCalcRef * 0.8f);
+
+		rec_FX2_Logo.setX(400);
+
+		GC_Logo = new Image(rec_GC_Logo, "GC_Logo");
+		GC_Logo.setSprite(atlas.createSprite("gc_live"));
+
+		Mapsforge_Logo = new Image(rec_Mapsforge_Logo, "Mapsforge_Logo");
+		Mapsforge_Logo.setSprite(atlas.createSprite("mapsforge_logo"));
+
+		FX2_Logo = new Image(rec_FX2_Logo, "FX2_Logo");
+		FX2_Logo.setSprite(atlas.createSprite("FXzwei"));
+
+		LibGdx_Logo = new Image(rec_LibGdx_Logo, "LibGdx_Logo");
+		LibGdx_Logo.setSprite(atlas.createSprite("libgdx"));
+
+		float yPos = descTextView.getY() - GC_Logo.getHeight();
+		float xPos = (this.width - (UiSizes.getButtonHeight() * 2) - GC_Logo.getWidth() - Mapsforge_Logo.getWidth() - FX2_Logo.getWidth()) / 2;
+
+		GC_Logo.setPos(xPos, yPos);
+		xPos += GC_Logo.getWidth() + UiSizes.getButtonHeight();
+
+		Mapsforge_Logo.setPos(xPos, yPos);
+		xPos += Mapsforge_Logo.getWidth() + UiSizes.getButtonHeight();
+
+		FX2_Logo.setPos(xPos, yPos);
+
+		yPos -= GC_Logo.getHeight();// + UiSizes.getButtonHeight();
+		LibGdx_Logo.setPos(this.getHalfWidth() - LibGdx_Logo.getHalfWidth(), yPos);
+
+		this.addChild(GC_Logo);
+		this.addChild(Mapsforge_Logo);
+		this.addChild(FX2_Logo);
+		this.addChild(LibGdx_Logo);
+
 	}
 
 	/**

@@ -15,13 +15,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 881;
+	public static final int CurrentRevision = 882;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
 	public static final String br = System.getProperty("line.separator");
 	public static final String splashMsg = "Team Cachebox (2011-2012)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009,"
-			+ br + "Groundspeak Inc. Used with permission";
+			+ br + "Groundspeak Inc. Used with permission" + br + br + br + "POWERED BY:";
 
 	// / <summary>
 	// / Letzte bekannte Position
