@@ -9,5 +9,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Cachebox Core"/>
 	<classpathentry kind="lib" path="Lib/log4j-1.2.16.jar"/>
 	<classpathentry kind="lib" path="Lib/gdx.jar"/>
+	<classpathentry kind="lib" path="Lib/httpclient-4.0-alpha1.jar"/>
+	<classpathentry kind="lib" path="Lib/httpcore-4.0-alpha5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

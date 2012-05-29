@@ -1668,12 +1668,16 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 		// byte[] bytes = MapManagerEventPtr.OnGetMapTile(CurrentLayer, desc);
 		// Texture texture = new Texture(new Pixmap(bytes, 0, bytes.length));
-		if (bytes != null)
+		if (bytes != null && bytes.length > 0)
 		{
 			tileState = TileGL.TileState.Present;
 			addLoadedTile(desc, bytes, tileState);
 			// Redraw Map after a new Tile was loaded or generated
 			GL_Listener.glListener.renderOnce(this.getName() + " loadTile");
+		}
+		else
+		{
+			ManagerBase.Manager.CacheTile(CurrentLayer, desc);
 		}
 	}
 

@@ -153,7 +153,7 @@ public class AndroidDB extends Database
 	public void Close()
 	{
 		myDB.close();
-
+		myDB = null;
 	}
 
 	@Override
