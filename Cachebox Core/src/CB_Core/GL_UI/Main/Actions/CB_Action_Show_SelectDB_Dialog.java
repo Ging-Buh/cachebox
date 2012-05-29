@@ -80,7 +80,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 		Logger.General("Main.ApplyFilter: " + sqlWhere);
 
 		Database.Data.Query.clear();
-
+		Database.Data.Close();
 		Database.Data.StartUp(Config.settings.DatabasePath.getValue());
 
 		CacheListDAO cacheListDAO = new CacheListDAO();

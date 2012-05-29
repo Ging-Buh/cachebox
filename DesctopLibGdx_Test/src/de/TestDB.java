@@ -31,6 +31,7 @@ public class TestDB extends Database
 		try
 		{
 			myDB.close();
+			myDB = null;
 		}
 		catch (SQLException e)
 		{
