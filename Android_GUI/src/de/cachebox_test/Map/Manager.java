@@ -60,8 +60,8 @@ public class Manager extends ManagerBase
 		CB_Core.Map.ManagerBase.Manager = this;
 		// Layers.add(new Layer("MapsForge", "MapsForge", ""));
 		Layers.add(new Layer("Mapnik", "Mapnik", "http://a.tile.openstreetmap.org/"));
-		Layers.add(new Layer("OSM Cycle Map", "Open Cycle Map", "http://b.andy.sandbox.cloudmade.com/tiles/cycle/"));
-		Layers.add(new Layer("TilesAtHome", "Osmarender", "http://a.tah.openstreetmap.org/Tiles/tile/"));
+		Layers.add(new Layer("OSM Cycle Map", "Open Cycle Map", "http://c.tile.opencyclemap.org/cycle/"));
+		// Layers.add(new Layer("TilesAtHome", "Osmarender", "http://a.tah.openstreetmap.org/Tiles/tile/"));
 	}
 
 	/*
