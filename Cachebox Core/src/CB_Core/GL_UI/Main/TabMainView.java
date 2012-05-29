@@ -33,6 +33,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTestView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackListView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackableListView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowWaypointView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_Show_SelectDB_Dialog;
 import CB_Core.GL_UI.Main.Actions.CB_Action_switch_DayNight;
 import CB_Core.GL_UI.Views.AboutView;
 import CB_Core.GL_UI.Views.CacheListView;
@@ -85,6 +86,7 @@ public class TabMainView extends MainViewBase
 	public static CB_Action_ShowActivity actionShowSettings;
 	private CB_Action_ShowActivity actionNavigateTo1;
 	private CB_Action_ShowActivity actionNavigateTo2;
+	public static CB_Action_Show_SelectDB_Dialog actionShowSelectDbDialog = new CB_Action_Show_SelectDB_Dialog();
 
 	public static CB_Action_ShowActivity actionRecTrack;
 	private CB_Action_ShowActivity actionRecVoice;
@@ -160,7 +162,6 @@ public class TabMainView extends MainViewBase
 		actionShowTrackListView = new CB_Action_ShowTrackListView();
 		actionShowWaypointView = new CB_Action_ShowWaypointView();
 		actionTestView = new CB_Action_ShowTestView();
-
 		actionShowSettings = new CB_Action_ShowActivity("settings", CB_Action.AID_SHOW_SETTINGS, ViewConst.SETTINGS,
 				SpriteCache.Icons.get(26));
 

@@ -90,7 +90,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					new CB_Action_ShowActivity("import", MI_IMPORT, ViewConst.IMPORT, SpriteCache.Icons.get(40)).Execute();
 					return true;
 				case MI_MANAGE_DB:
-					new CB_Action_ShowActivity("manageDB", MI_MANAGE_DB, ViewConst.MANAGE_DB, SpriteCache.Icons.get(41)).Execute();
+					TabMainView.actionShowSelectDbDialog.Execute();
 					return true;
 				case MI_AUTO_RESORT:
 					GlobalCore.autoResort = !(GlobalCore.autoResort);

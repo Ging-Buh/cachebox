@@ -40,7 +40,7 @@
                     android:layout_margin="2dip"
                     android:layout_marginLeft="1dip"
                     android:layout_weight="1"
-                    android:background="?attr/DbBtnImageSelector" >
+                   >
                 </ImageButton>
 
                 <ImageButton
@@ -51,7 +51,7 @@
                     android:layout_marginLeft="1dip"
                     android:layout_weight="1"
                     android:background="?attr/CacheBtnImageSelector"
-                    android:text="@string/Cache" >
+                    >
                 </ImageButton>
 
                 <ImageButton
@@ -61,7 +61,7 @@
                     android:layout_margin="2dip"
                     android:layout_marginLeft="1dip"
                     android:layout_weight="1"
-                    android:background="?attr/NavBtnImageSelector"
+                   
                     android:text="@string/Map" >
                 </ImageButton>
 
@@ -72,7 +72,7 @@
                     android:layout_margin="2dip"
                     android:layout_marginLeft="1dip"
                     android:layout_weight="1"
-                    android:background="?attr/FindBtnImageSelector"
+                   
                     android:text="@string/Info" >
                 </ImageButton>
 
@@ -83,7 +83,7 @@
                     android:layout_margin="2dip"
                     android:layout_marginLeft="1dip"
                     android:layout_weight="1"
-                    android:background="?attr/MiscBtnImageSelector"
+                  
                     android:text="@string/Misc" >
                 </ImageButton>
             </LinearLayout>

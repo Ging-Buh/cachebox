@@ -45,6 +45,7 @@ public class CB_Action
 	public static int AID_SHOW_SOLVER2 = 31;
 	public static int AID_SEARCH = 32;
 	public static int AID_AUTO_RESORT = 33;
+	public static int AID_SHOW_SELECT_DB_DIALOG = 34;
 
 	protected String name;
 	protected int id;

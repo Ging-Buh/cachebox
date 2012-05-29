@@ -17,7 +17,6 @@ import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.Controls.Box;
-import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Menu.Menu;
@@ -64,6 +63,16 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	protected int width = 0;
 	protected int height = 0;
+
+	public float getWidth()
+	{
+		return width;
+	}
+
+	public float getHeight()
+	{
+		return height;
+	}
 
 	/**
 	 * Constructor
@@ -637,7 +646,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 					view.touchDragged(x - pan.x, y - pan.y, pointer, true);
 				}
-			}, 0, FRAME_RATE_ACTION);
+			}, 0, FRAME_RATE_FAST_ACTION);
 		}
 
 		public void stopKinetic()
@@ -775,9 +784,9 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	}
 
 	protected boolean DialogIsShown = false;
-	private Dialog actDialog;
+	private CB_View_Base actDialog;
 
-	public Dialog getActDialog()
+	public CB_View_Base getActDialog()
 	{
 		return actDialog;
 	}
@@ -804,7 +813,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	}
 
-	public void showDialog(final Dialog dialog)
+	public void showDialog(final CB_View_Base dialog)
 	{
 		platformConector.showForDialog();
 

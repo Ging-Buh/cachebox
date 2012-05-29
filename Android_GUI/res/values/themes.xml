@@ -35,11 +35,7 @@
 		<item name="LinkLabelColor">@color/Day_LinkLabelColor</item>
 		<item name="MsgBoxBack">@drawable/day_settings_group</item>
 		<item name="TitleBarBackColor">@color/Day_TitleBarBackColor</item>
-		<item name="CacheBtnImageSelector">@drawable/cache_button_image_selector</item>
-		<item name="DbBtnImageSelector">@drawable/db_button_image_selector</item>
-		<item name="NavBtnImageSelector">@drawable/nav_button_image_selector</item>
-		<item name="FindBtnImageSelector">@drawable/find_button_image_selector</item>
-		<item name="MiscBtnImageSelector">@drawable/misc_button_image_selector</item>
+
 		<item name="BtnBackGround">@drawable/hintergrund</item>
 		<item name="Map_Compass_TextColor">@color/Day_ColorCompassText</item>
 		<item name="Map_ColorCompassPanel">@color/Day_ColorCompassPanel</item>
@@ -80,11 +76,7 @@
 		<item name="LinkLabelColor">@color/Night_LinkLabelColor</item>
 		<item name="MsgBoxBack">@drawable/day_settings_group</item>
 		<item name="TitleBarBackColor">@color/Night_TitleBarBackColor</item>
-		<item name="CacheBtnImageSelector">@drawable/night_cache_button_image_selector</item>
-		<item name="DbBtnImageSelector">@drawable/night_db_button_image_selector</item>
-		<item name="NavBtnImageSelector">@drawable/night_nav_button_image_selector</item>
-		<item name="FindBtnImageSelector">@drawable/night_find_button_image_selector</item>
-		<item name="MiscBtnImageSelector">@drawable/night_misc_button_image_selector</item>
+		
 		<item name="BtnBackGround">@drawable/night_hintergrund</item>
 		<item name="Map_Compass_TextColor">@color/Night_ColorCompassText</item>
 		<item name="Map_ColorCompassPanel">@color/Night_ColorCompassPanel</item>

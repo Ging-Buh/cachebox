@@ -588,14 +588,9 @@ public class AllContextMenuCallHandler
 		mi = IconMenu.findItem(R.id.fieldnotesview_found);
 		if (mi != null)
 		{
-			if (Config.settings.isChris.getValue())
-			{
-				mi.setIcon(R.drawable.chris_log0);
-			}
-			else
-			{
-				mi.setIcon(R.drawable.log0);
-			}
+
+			mi.setIcon(R.drawable.log0);
+
 			;
 		}
 

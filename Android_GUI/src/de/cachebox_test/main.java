@@ -49,13 +49,11 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
-import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Map.RouteOverlay.Trackable;
-import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
@@ -118,7 +116,6 @@ import android.view.ViewParent;
 import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -165,7 +162,6 @@ import de.cachebox_test.Views.ViewGL;
 import de.cachebox_test.Views.WaypointView;
 import de.cachebox_test.Views.AdvancedSettingsForms.SettingsScrollView;
 import de.cachebox_test.Views.FilterSettings.EditFilterSettings;
-import de.cachebox_test.Views.FilterSettings.PresetListViewItem;
 import de.cachebox_test.Views.Forms.ApiSearchPosDialog;
 import de.cachebox_test.Views.Forms.DeleteDialog;
 import de.cachebox_test.Views.Forms.GcApiLogin;
@@ -175,9 +171,8 @@ import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.ParkingDialog;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 import de.cachebox_test.Views.Forms.ScreenLock;
-import de.cachebox_test.Views.Forms.SelectDB;
 
-public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEvent,
+public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
 		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent
 {
 
@@ -260,11 +255,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private boolean approachSoundCompleted = false;
 	private boolean runsWithAkku = true;
 
-	private ImageButton buttonDB;
-	private ImageButton buttonCache;
-	private ImageButton buttonNav;
-	private ImageButton buttonTools;
-	private ImageButton buttonMisc;
 	private FrameLayout frame;
 	private FrameLayout tabFrame;
 	private FrameLayout GlFrame;
@@ -376,20 +366,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		AllContextMenuCallHandler.Main = this;
 		mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-		// initial UiSizes
-		// UiSize Structur für die Berechnung der Größen zusammen stellen!
-		// Resources res = this.getResources();
-
-		// final Bundle extras = getIntent().getExtras();
-		// if (extras != null)
-		// {
-		// ui = (devicesSizes) extras.get("UI");
-		// }
-		//
-		// UiSizes.initial(ui);
-
-		// Initial GL_Listner in Full Screen with font color black
-
 		glListener = new Tab_GL_Listner(UiSizes.getWindowWidth(), UiSizes.getWindowHeight());
 
 		int Time = Config.settings.ScreenLock.getValue();
@@ -418,43 +394,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		initialViewGL();
 		initalMicIcon();
-		initialButtons();
 		initialCaheInfoSlider();
-
-		// if (GlobalCore.SelectedCache() == null)
-		// {
-		// if (Database.Data == null)
-		// {
-		// String FilterString = Config.settings.Filter.getValue();
-		// GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0])
-		// : new FilterProperties(FilterString);
-		// String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
-		//
-		// // initialize Database
-		// Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
-		// String database = Config.settings.DatabasePath.getValue();
-		// Database.Data.StartUp(database);
-		//
-		// GlobalCore.Categories = new Categories();
-		// Database.Data.GPXFilenameUpdateCacheCount();
-		//
-		// CacheListDAO cacheListDAO = new CacheListDAO();
-		// cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
-		//
-		// }
-		//
-		// CacheList cacheList = Database.Data.Query;
-		// if (cacheList.size() > 0)
-		// {
-		// Cache cache = cacheList.get(0);
-		// GlobalCore.SelectedCache(cache);
-		// }
-		// }
-		// else
-		// // Activity wurde neu Gestartet
-		// {
-		// GlobalCore.SelectedCache(GlobalCore.SelectedCache());
-		// }
 
 		Search = new search(this);
 
@@ -465,84 +405,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (frame != null) frame.setVisibility(View.INVISIBLE);
 
 		InfoDownSlider.invalidate();
-
-		// else
-		// {
-		// if (aktViewId != null)
-		// {
-		// // Zeige letzte gespeicherte View beim neustart der Activity
-		// showView(aktViewId);
-		//
-		// }
-		// else
-		// {
-		//
-		// // Start CB!
-		//
-		// Logger.General("------ Start Rev: " + Global.CurrentRevision + "-------");
-		//
-		// // Zeige About View als erstes!
-		// // showView(ViewConst.ABOUT_VIEW);
-		//
-		// // und Map wenn Tablet
-		// if (GlobalCore.isTab)
-		// {
-		// // showView(MAP_VIEW);
-		// // showView(ViewConst.DESCRIPTION_VIEW);
-		// }
-		//
-		// // chk if NightMode saved
-		// if (N)
-		// {
-		// ActivityUtils.changeToTheme(mainActivity, ActivityUtils.THEME_NIGHT, true);
-		// }
-		//
-		// }
-		//
-		// }
-
-		// Initialisiere Icons neu.
-		// Global.InitIcons(this);
-
-		// if (Config.settings.nightMode.getValue())
-		// {
-		// if (Config.settings.isChris.getValue())
-		// {
-		// buttonCache.setBackgroundResource(R.drawable.chris_night_cache_button_image_selector);
-		// buttonDB.setBackgroundResource(R.drawable.night_db_button_image_selector);
-		// buttonMisc.setBackgroundResource(R.drawable.night_misc_button_image_selector);
-		// buttonNav.setBackgroundResource(R.drawable.night_nav_button_image_selector);
-		// buttonTools.setBackgroundResource(R.drawable.night_find_button_image_selector);
-		// }
-		// else
-		// {
-		// buttonCache.setBackgroundResource(R.drawable.night_cache_button_image_selector);
-		// buttonDB.setBackgroundResource(R.drawable.night_db_button_image_selector);
-		// buttonMisc.setBackgroundResource(R.drawable.night_misc_button_image_selector);
-		// buttonNav.setBackgroundResource(R.drawable.night_nav_button_image_selector);
-		// buttonTools.setBackgroundResource(R.drawable.night_find_button_image_selector);
-		// }
-		// }
-		// else
-		// {
-		// if (Config.settings.isChris.getValue())
-		// {
-		// buttonCache.setBackgroundResource(R.drawable.chris_cache_button_image_selector);
-		// buttonDB.setBackgroundResource(R.drawable.chris_db_button_image_selector);
-		// buttonMisc.setBackgroundResource(R.drawable.chris_misc_button_image_selector);
-		// buttonNav.setBackgroundResource(R.drawable.chris_nav_button_image_selector);
-		// buttonTools.setBackgroundResource(R.drawable.chris_find_button_image_selector);
-		// }
-		// else
-		// {
-		// buttonCache.setBackgroundResource(R.drawable.cache_button_image_selector);
-		// buttonDB.setBackgroundResource(R.drawable.db_button_image_selector);
-		// buttonMisc.setBackgroundResource(R.drawable.misc_button_image_selector);
-		// buttonNav.setBackgroundResource(R.drawable.nav_button_image_selector);
-		// buttonTools.setBackgroundResource(R.drawable.find_button_image_selector);
-		// }
-		// }
-		// buttonCache.invalidate();
 
 		CacheListChangedEvent();
 
@@ -1018,22 +880,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	public void CacheListChangedEvent()
 	{
-		int ButtonBackGroundResource = 0;
-
-		if ((GlobalCore.LastFilter == null) || (GlobalCore.LastFilter.ToString().equals(""))
-				|| (PresetListViewItem.chkPresetFilter(FilterProperties.presets[0], GlobalCore.LastFilter.ToString()))
-				&& !GlobalCore.LastFilter.isExtendsFilter())
-		{
-			ButtonBackGroundResource = N ? R.drawable.night_db_button_image_selector
-					: Config.settings.isChris.getValue() ? R.drawable.chris_db_button_image_selector : R.drawable.db_button_image_selector;
-		}
-		else
-		{
-			ButtonBackGroundResource = N ? R.drawable.night_db_button_image_selector_filter : R.drawable.db_button_image_selector_filter;
-		}
-		;
-
-		this.buttonDB.setBackgroundResource(ButtonBackGroundResource);
 
 	}
 
@@ -1264,26 +1110,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			return;
 		}
 
-		if (v == buttonDB)
-		{
-			AllContextMenuCallHandler.showBtnListsContextMenu();
-		}
-		else if (v == buttonCache)
-		{
-			AllContextMenuCallHandler.showBtnCacheContextMenu();
-		}
-		else if (v == buttonNav)
-		{
-			AllContextMenuCallHandler.showBtnNavContextMenu();
-		}
-		else if (v == buttonTools)
-		{
-			AllContextMenuCallHandler.showBtnToolsContextMenu();
-		}
-		else if (v == buttonMisc)
-		{
-			AllContextMenuCallHandler.showBtnMiscContextMenu();
-		}
 	}
 
 	@Override
@@ -1520,38 +1346,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	 * Handler
 	 */
 
-	private final View.OnClickListener ButtonOnClick = new OnClickListener()
-	{
-		@Override
-		public void onClick(View v)
-		{
-			if (v == buttonDB)
-			{
-				showView(ViewConst.CACHE_LIST_VIEW);
-			}
-
-			else if (v == buttonCache)
-			{
-				showView(ViewConst.DESCRIPTION_VIEW);
-			}
-
-			else if (v == buttonNav)
-			{
-				showView(ViewConst.MAP_VIEW);
-			}
-
-			else if (v == buttonTools)
-			{
-
-			}
-
-			else if (v == buttonMisc)
-			{
-				showView(ViewConst.ABOUT_VIEW);
-			}
-		}
-	};
-
 	private final SensorEventListener mListener = new SensorEventListener()
 	{
 		public void onSensorChanged(SensorEvent event)
@@ -1641,10 +1435,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			Search.Show();
 		}
-		else if (ID == ViewConst.MANAGE_DB)
-		{
-			showManageDB();
-		}
 		else if (ID == ViewConst.CHK_STATE_API)
 		{
 			chkCachesStateFilterSelection();
@@ -1695,7 +1485,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void showView(ViewOptionsMenu view, ViewID ID)
 	{
-		if (ID == ViewConst.GL_MAP_VIEW) sendContentFrameSizeChanged();
 		if (GlobalCore.isTab)
 		{
 			if (ID.getPos() == ViewID.UI_Pos.Right)
@@ -1971,9 +1760,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case R.id.miFilterset:
 				showView(ViewConst.FILTER_SETTINGS);
 				break;
-			case R.id.miManageDB:
-				showManageDB();
-				break;
+
 			case R.id.miResort:
 				Database.Data.Query.Resort();
 				break;
@@ -2030,80 +1817,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (Config.settings.vibrateFeedback.getValue()) vibrator.vibrate(20);
 	}
 
-	// OnItemClickListener QuickButtonOnItemClickListner = new OnItemClickListener()
-	// {
-	// public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
-	// {
-	//
-	// // give feedback
-	// vibrate();
-	//
-	// QuickButtonItem clicedItem = Global.QuickButtonList.get(arg2);
-	//
-	// switch (clicedItem.getActionId())
-	// {
-	// case 0:
-	// showView(ViewConst.DESCRIPTION_VIEW);
-	// break;
-	// case 1:
-	// showView(ViewConst.WAYPOINT_VIEW);
-	// break;
-	// case 2:
-	// showView(ViewConst.LOG_VIEW);
-	// break;
-	// case 3:
-	// showView(ViewConst.MAP_VIEW);
-	// break;
-	// case 4:
-	// showView(ViewConst.COMPASS_VIEW);
-	// break;
-	// case 5:
-	// showView(ViewConst.CACHE_LIST_VIEW);
-	// break;
-	// case 6:
-	// showView(ViewConst.TRACK_LIST_VIEW);
-	// break;
-	// case 7:
-	// takePhoto();
-	// break;
-	// case 8:
-	// recVideo();
-	// break;
-	// case 9:
-	// recVoice();
-	// break;
-	// case 10:
-	// Search.Show();
-	// break;
-	// // case 11:
-	// // showView(101);
-	// // break;
-	// case 12:
-	// startScreenLock(true);
-	// break;
-	// case 13:
-	// switchAutoResort();
-	// QuickButtonList.invalidate();
-	// break;
-	// case 14:
-	// showView(ViewConst.SOLVER_VIEW);
-	// break;
-	// case 15:
-	// if (GlobalCore.SelectedCache() != null && GlobalCore.SelectedCache().SpoilerExists()) showView(ViewConst.SPOILER_VIEW);
-	// break;
-	// case 16:
-	// if (GlobalCore.SelectedCache() != null && !(GlobalCore.SelectedCache().hint.equals(""))) showHint();
-	// break;
-	// case 17:
-	// showParkingDialog();
-	// break;
-	// case 18:
-	// switchDayNight();
-	// break;
-	// }
-	// }
-	// };
-
 	/*
 	 * Initial Methods
 	 */
@@ -2121,12 +1834,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		debugInfoPanel = (DebugInfoPanel) this.findViewById(R.id.debugInfo);
 		Mic_Icon = (Mic_On_Flash) this.findViewById(R.id.mic_flash);
 
-		buttonDB = (ImageButton) this.findViewById(R.id.buttonDB);
-		buttonCache = (ImageButton) this.findViewById(R.id.buttonCache);
-		buttonNav = (ImageButton) this.findViewById(R.id.buttonMap);
-		buttonTools = (ImageButton) this.findViewById(R.id.buttonInfo);
-		buttonMisc = (ImageButton) this.findViewById(R.id.buttonMisc);
-
 		cacheNameView = (CacheNameView) this.findViewById(R.id.main_cache_name_view);
 
 		QuickButtonList = (HorizontalListView) this.findViewById(R.id.main_quick_button_list);
@@ -2136,30 +1843,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		searchLayout = (LinearLayout) this.findViewById(R.id.searchDialog);
 
-		if (Config.settings.nightMode.getValue())
-		{
-			if (Config.settings.isChris.getValue())
-			{
-				buttonCache.setBackgroundResource(R.drawable.chris_night_cache_button_image_selector);
-			}
-			else
-			{
-				buttonCache.setBackgroundResource(R.drawable.night_cache_button_image_selector);
-			}
-		}
-		else
-		{
-			if (Config.settings.isChris.getValue())
-			{
-				buttonCache.setBackgroundResource(R.drawable.chris_cache_button_image_selector);
-				buttonDB.setBackgroundResource(R.drawable.chris_db_button_image_selector);
-				buttonMisc.setBackgroundResource(R.drawable.chris_misc_button_image_selector);
-				buttonNav.setBackgroundResource(R.drawable.chris_nav_button_image_selector);
-				buttonTools.setBackgroundResource(R.drawable.chris_find_button_image_selector);
-			}
-
-		}
-		buttonCache.invalidate();
 	}
 
 	private void initialLocationManager()
@@ -2198,7 +1881,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			 * Verhältnis zwichen Performance und Stromverbrauch, geliefert werden. Andere apps haben hier 0.
 			 */
 
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, this);
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300, 1, this);
 			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 500, this);
 
 			locationManager.addNmeaListener(this);
@@ -2211,27 +1894,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 	}
-
-	// private void initialMapView()
-	// {
-	// try
-	// {
-	// if (mapView == null)
-	// {
-	// mapView = new MapView(this, inflater);
-	// mapView.Initialize();
-	// mapView.CurrentLayer = MapView.Manager.GetLayerByName(Config.settings.CurrentMapLayer.getValue(),
-	// Config.settings.CurrentMapLayer.getValue(), "");
-	// GlobalCore.TrackDistance = Config.settings.TrackDistance.getValue();
-	// mapView.InitializeMap();
-	// }
-	// }
-	// catch (Exception e)
-	// {
-	// Logger.Error("main.initialMapView()", "", e);
-	// e.printStackTrace();
-	// }
-	// }
 
 	// Zwischenspeicher für die touchDown Positionen der einzelnen Finger
 	private SortedMap<Integer, Point> touchDownPos = new TreeMap<Integer, Point>();
@@ -2347,25 +2009,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				setVoiceRecIsStart(false);
 			}
 		});
-	}
-
-	private void initialButtons()
-	{
-		registerForContextMenu(buttonDB);
-		buttonDB.setOnClickListener(ButtonOnClick);
-
-		registerForContextMenu(buttonCache);
-		buttonCache.setOnClickListener(ButtonOnClick);
-
-		registerForContextMenu(buttonNav);
-		this.buttonNav.setOnClickListener(ButtonOnClick);
-
-		registerForContextMenu(buttonTools);
-		this.buttonTools.setOnClickListener(ButtonOnClick);
-
-		registerForContextMenu(buttonMisc);
-		this.buttonMisc.setOnClickListener(ButtonOnClick);
-
 	}
 
 	/*
@@ -2681,14 +2324,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			Database.Data.Query.Resort();
 		}
-	}
-
-	private void showManageDB()
-	{
-		SelectDB.autoStart = false;
-		Config.settings.WriteToDB();
-		Intent selectDBIntent = new Intent().setClass(mainActivity, SelectDB.class);
-		mainActivity.startActivityForResult(selectDBIntent, 546132);
 	}
 
 	public void ListSearch()
@@ -3360,7 +2995,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						QuickButtonList.invalidate();
 						TopLayout.requestLayout();
 						frame.requestLayout();
-						sendContentFrameSizeChanged();
 					}
 				});
 			}
@@ -3534,20 +3168,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public static void Toast(String Msg)
 	{
 		Toast.makeText(mainActivity, Msg, Toast.LENGTH_SHORT).show();
-	}
-
-	public void sendContentFrameSizeChanged()
-	{
-		if (frame != null)
-		{
-			if (GL_UISizes.set_Top_Buttom_Height(TopLayout.getHeight(), buttonDB.getHeight()))
-			{
-				if (MainViewBase.mainView != null)
-				{
-					MainViewBase.mainView.requestLayout();
-				}
-			}
-		}
 	}
 
 	public void showView(ViewID ID)

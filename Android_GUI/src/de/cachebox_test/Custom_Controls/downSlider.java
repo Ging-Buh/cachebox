@@ -524,7 +524,6 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		}
 
 		this.invalidate();
-		((main) main.mainActivity).sendContentFrameSizeChanged();
 
 		CB_Core.GL_UI.Controls.Slider.setAndroidSliderPos(Pos + mBtnRec.height());
 

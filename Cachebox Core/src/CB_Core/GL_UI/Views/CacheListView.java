@@ -6,7 +6,7 @@ import java.util.TimerTask;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.Events.CacheListChangedEvent;
+import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.GL_View_Base;
@@ -22,7 +22,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
 
-public class CacheListView extends V_ListView implements CacheListChangedEvent, SelectedCacheEvent
+public class CacheListView extends V_ListView implements CacheListChangedEventListner, SelectedCacheEvent
 {
 	private CustomAdapter lvAdapter;
 
@@ -30,6 +30,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEvent, 
 	{
 		super(rec, Name);
 		registerSkinChangedEvent();
+		CachListChangedEventList.Add(this);
 	}
 
 	@Override

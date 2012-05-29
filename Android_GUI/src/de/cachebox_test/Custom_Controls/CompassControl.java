@@ -201,25 +201,15 @@ public final class CompassControl extends View
 		int arroeResource = 0;
 		if (Config.settings.nightMode.getValue())
 		{
-			if (Config.settings.isChris.getValue())
-			{
-				arroeResource = R.drawable.chris_compass_arrow;
-			}
-			else
-			{
-				arroeResource = R.drawable.compass_arrow;
-			}
+
+			arroeResource = R.drawable.compass_arrow;
+
 		}
 		else
 		{
-			if (Config.settings.isChris.getValue())
-			{
-				arroeResource = R.drawable.chris_compass_arrow;
-			}
-			else
-			{
-				arroeResource = R.drawable.compass_arrow;
-			}
+
+			arroeResource = R.drawable.compass_arrow;
+
 		}
 
 		arrow = BitmapFactory.decodeResource(getContext().getResources(), arroeResource);
