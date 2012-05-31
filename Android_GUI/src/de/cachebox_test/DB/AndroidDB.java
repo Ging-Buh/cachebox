@@ -73,7 +73,15 @@ public class AndroidDB extends Database
 	@Override
 	public void execSQL(String sql)
 	{
-		myDB.execSQL(sql);
+		try
+		{
+			myDB.execSQL(sql);
+		}
+		catch (Exception ex)
+		{
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
 	}
 
 	private ContentValues getContentValues(Parameters val)

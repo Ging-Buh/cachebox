@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 888;
+	public static final int CurrentRevision = 889;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -31,7 +31,7 @@ public class GlobalCore
 	public static Coordinate LastPosition = new Coordinate();
 	public static Coordinate Marker = new Coordinate();
 	public static boolean ResortAtWork = false;
-	public static final int LatestDatabaseChange = 1021;
+	public static final int LatestDatabaseChange = 1022;
 	public static final int LatestDatabaseFieldNoteChange = 1001;
 	public static final int LatestDatabaseSettingsChange = 1002;
 	public static double displayDensity = 1;
