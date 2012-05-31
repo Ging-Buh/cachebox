@@ -33,7 +33,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.graphics.Color;
 
-import de.Map.Manager;
+import de.Map.DesctopManager;
 
 public class DesktopMain {
 
@@ -54,7 +54,7 @@ public class DesktopMain {
 		GL_View_Base.debug = debug;
 		GL_View_Base.disableScissor = scissor;
 
-		 new Manager();
+		 new DesctopManager();
 		 
 
 

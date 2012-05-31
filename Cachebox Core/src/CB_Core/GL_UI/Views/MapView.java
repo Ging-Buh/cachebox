@@ -1664,7 +1664,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		byte[] bytes = null;
 		if (ManagerBase.Manager != null)
 		{
-			bytes = ManagerBase.Manager.LoadLocalPixmap(CurrentLayer, desc);
+			bytes = ManagerBase.Manager.LoadInvertedPixmap(CurrentLayer, desc);
 		}
 		// byte[] bytes = MapManagerEventPtr.OnGetMapTile(CurrentLayer, desc);
 		// Texture texture = new Texture(new Pixmap(bytes, 0, bytes.length));

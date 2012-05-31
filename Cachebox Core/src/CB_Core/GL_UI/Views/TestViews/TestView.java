@@ -1,22 +1,28 @@
 package CB_Core.GL_UI.Views.TestViews;
 
-import CB_Core.GlobalCore;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
+import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Dialogs.SolverDialog;
-import CB_Core.GL_UI.Controls.Dialogs.SolverDialog.SloverBackStringListner;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.libGdx_Controls.TextField;
 import CB_Core.GL_UI.libGdx_Controls.WrappedTextField;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.GL_UISizes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -27,7 +33,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  */
 public class TestView extends CB_View_Base
 {
-	private Button showSolverDialogButton;
+	private Button TestButton;
 	private SolverDialog solverDialog;
 
 	private CB_Core.GL_UI.libGdx_Controls.TextField textField;
@@ -56,49 +62,74 @@ public class TestView extends CB_View_Base
 
 		textField.setText("Single Line Text");
 
-		// ######## Solver Dialog #####################################################
+		// ######## Test Invert Image Byte[] #####################################################
 		CB_RectF r4 = new CB_RectF(20, 250, 250, 63);
-		showSolverDialogButton = new Button(r4, "SolverDialogButton");
-		showSolverDialogButton.setFont(Fonts.getSmall());
-		showSolverDialogButton.setText("Solver Dialog with Single Line Text");
-		this.addChild(showSolverDialogButton);
+		TestButton = new Button(r4, "SolverDialogButton");
+		TestButton.setFont(Fonts.getSmall());
+		TestButton.setText("Invert Image Test");
+		this.addChild(TestButton);
 
-		final SloverBackStringListner backListner = new SloverBackStringListner()
-		{
+		final Image testImage = new Image(new CB_RectF(0, 0, 20, 20), "Test");
+		this.addChild(testImage);
 
-			@Override
-			public void BackString(String backString)
-			{
-				textField.setText(backString);
-			}
-		};
+		final Image testImage2 = new Image(new CB_RectF(0, 22, 20, 20), "Test");
+		this.addChild(testImage2);
 
-		showSolverDialogButton.setOnClickListener(new OnClickListener()
+		TestButton.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				// Show Dialog
-				CB_RectF rec = GL_UISizes.UI_Left.copy();
-				if (GlobalCore.isTab)
+
+				int intBlack = ((0 & 0xFF) << 24) | ((0 & 0xFF) << 16) | ((0 & 0xFF) << 8) | ((0 & 0xFF));
+				int intWhite = ((0 & 0xFF) << 24) | ((255 & 0xFF) << 16) | ((255 & 0xFF) << 8) | ((255 & 0xFF));
+				int intRed = ((0 & 0xFF) << 24) | ((255 & 0xFF) << 16) | ((0 & 0xFF) << 8) | ((0 & 0xFF));
+				int intGreen = ((0 & 0xFF) << 24) | ((0 & 0xFF) << 16) | ((255 & 0xFF) << 8) | ((0 & 0xFF));
+
+				// create Image 2x2 black
+				BufferedImage img = new BufferedImage(2, 2, BufferedImage.TYPE_BYTE_INDEXED);
+
+				img.setRGB(0, 0, intBlack);
+				img.setRGB(1, 0, intWhite);
+				img.setRGB(0, 1, intRed);
+				img.setRGB(1, 1, intGreen);
+
+				ByteArrayOutputStream bas2 = new ByteArrayOutputStream();
+				try
 				{
-					// da der Linke Tab bei einem Tablett nicht so Breit ist wie auf einem Phone,
-					// Verdoppeln wir hier die Breite (sieht besser aus)
-					rec.setWidth(rec.getWidth() * 2);
+					ImageIO.write(img, "png", bas2);
 				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+				byte[] data2 = bas2.toByteArray();
 
-				String SolverString = textField.getText();
+				Texture texture2 = new Texture(new Pixmap(data2, 0, data2.length));
+				testImage2.setSprite(new Sprite(texture2));
 
-				solverDialog = new SolverDialog(rec, "SolverDialog", SolverString);
-
-				solverDialog.show(backListner);
-
+				// img = ManagerBase.changeColorMatrix(img, ManagerBase.NIGHT_COLOR_MATRIX);
+				//
+				// ByteArrayOutputStream bas = new ByteArrayOutputStream();
+				// try
+				// {
+				// ImageIO.write(img, "png", bas);
+				// }
+				// catch (IOException e)
+				// {
+				// e.printStackTrace();
+				// }
+				// byte[] data = bas.toByteArray();
+				//
+				// Texture texture = new Texture(new Pixmap(data, 0, data.length));
+				// testImage.setSprite(new Sprite(texture));
 				return true;
 			}
+
 		});
 
-		// ####### END Solver Dialog ##################################################
+		// ####### END ##################################################
 
 		requestLayout();
 	}

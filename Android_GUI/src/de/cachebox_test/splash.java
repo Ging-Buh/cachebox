@@ -349,7 +349,7 @@ public class splash extends Activity
 		Global.Paints.init(this);
 		Global.InitIcons(this);
 
-		new de.cachebox_test.Map.Manager();
+		new de.cachebox_test.Map.AndroidManager();
 
 		double lat = Config.settings.MapInitLatitude.getValue();
 		double lon = Config.settings.MapInitLongitude.getValue();

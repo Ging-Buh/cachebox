@@ -50,7 +50,7 @@
                     android:layout_margin="2dip"
                     android:layout_marginLeft="1dip"
                     android:layout_weight="1"
-                    android:background="?attr/CacheBtnImageSelector"
+                   
                     >
                 </ImageButton>
 

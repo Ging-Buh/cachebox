@@ -13,9 +13,10 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import CB_Core.Config;
 import CB_Core.FileIO;
 
-public class ManagerBase
+public abstract class ManagerBase
 {
 	public static ManagerBase Manager = null;
 
@@ -74,6 +75,30 @@ public class ManagerBase
 		return newLayer;
 	}
 
+	public byte[] LoadInvertedPixmap(Layer layer, Descriptor desc)
+	{
+		byte[] tmp = LoadLocalPixmap(layer, desc);
+
+		if (!Config.settings.nightMode.getValue()) return tmp;
+
+		if (tmp == null) return null;
+
+		ImageData imgData = getImagePixel(tmp);
+
+		imgData = getImageDataWithColormatrixManipulation(NIGHT_COLOR_MATRIX, imgData);
+
+		tmp = getImageFromData(imgData);
+
+		return tmp;
+	}
+
+	public class ImageData
+	{
+		public int[] PixelColorArray;
+		public int width;
+		public int height;
+	}
+
 	public byte[] LoadLocalPixmap(String layer, Descriptor desc)
 	{
 		return LoadLocalPixmap(GetLayerByName(layer, layer, ""), desc);
@@ -99,6 +124,10 @@ public class ManagerBase
 		}
 		return null;
 	}
+
+	protected abstract ImageData getImagePixel(byte[] img);
+
+	protected abstract byte[] getImageFromData(ImageData imgData);
 
 	// / <summary>
 	// / Läd die Kachel mit dem übergebenen Descriptor
@@ -184,5 +213,73 @@ public class ManagerBase
 		 */
 		return true;
 	}
+
+	/**
+	 * The matrix is stored in a single array, and its treated as follows: [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t ] <br>
+	 * <br>
+	 * When applied to a color [r, g, b, a], the resulting color is computed as (after clamping) <br>
+	 * R' = a*R + b*G + c*B + d*A + e;<br>
+	 * G' = f*R + g*G + h*B + i*A + j;<br>
+	 * B' = k*R + l*G + m*B + n*A + o;<br>
+	 * A' = p*R + q*G + r*B + s*A + t;<br>
+	 * 
+	 * @param src
+	 * @param matrix
+	 * @return
+	 */
+	public static ImageData getImageDataWithColormatrixManipulation(float[] matrix, ImageData imgData)
+	{
+
+		int[] data = imgData.PixelColorArray;
+
+		int len = data.length;
+
+		int[] dst = new int[len];
+
+		for (int i = 0; i < len; i++)
+		{
+			int[] color = new int[4];
+
+			color[0] = (int) (data[i] >> 24) & (0xff);
+			color[1] = (int) ((data[i] << 8) >> 24) & (0xff);
+			color[2] = (int) ((data[i] << 16) >> 24) & (0xff);
+			color[3] = (int) ((data[i] << 24) >> 24) & (0xff);
+
+			int R = color[1];
+			int G = color[2];
+			int B = color[3];
+			int A = color[0];
+
+			color[1] = Math
+					.max(0, Math.min(255, (int) ((matrix[0] * R) + (matrix[1] * G) + (matrix[2] * B) + (matrix[3] * A) + matrix[4])));
+			color[2] = Math
+					.max(0, Math.min(255, (int) ((matrix[5] * R) + (matrix[6] * G) + (matrix[7] * B) + (matrix[8] * A) + matrix[9])));
+			color[3] = Math.max(0,
+					Math.min(255, (int) ((matrix[10] * R) + (matrix[11] * G) + (matrix[12] * B) + (matrix[13] * A) + matrix[14])));
+			color[0] = Math.max(0,
+					Math.min(255, (int) ((matrix[15] * R) + (matrix[16] * G) + (matrix[17] * B) + (matrix[18] * A) + matrix[19])));
+
+			dst[i] = ((color[0] & 0xFF) << 24) | ((color[1] & 0xFF) << 16) | ((color[2] & 0xFF) << 8) | ((color[3] & 0xFF));
+		}
+
+		imgData.PixelColorArray = dst;
+
+		return imgData;
+	}
+
+	/**
+	 * Night Color Matrix <br>
+	 * <br>
+	 * R= -1.0f, 0.0f, 0.0f, 0.0f, 255.0f, <br>
+	 * G= 0.0f, -1.5f, 0.0f, 0.0f, 200.0f, <br>
+	 * B= 0.0f, 0.0f, -1.5f, 0.0f, 0.f, <br>
+	 * A= 0.0f, 0.0f, 0.0f, 0.0f, 255f <br>
+	 */
+	public static final float[] NIGHT_COLOR_MATRIX =
+		{ /* */
+		-1.0f, 0.0f, 0.0f, 0.0f, 255.0f, /* */
+		0.0f, -1.5f, 0.0f, 0.0f, 200.0f, /* */
+		0.0f, 0.0f, -1.5f, 0.0f, 0.f, /* */
+		0.0f, 0.0f, 0.0f, 0.0f, 255f };
 
 }

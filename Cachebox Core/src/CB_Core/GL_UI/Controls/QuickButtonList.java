@@ -74,33 +74,41 @@ public class QuickButtonList extends H_ListView
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
-		for (GL_View_Base btn : this.childs)
+		synchronized (this.childs)
 		{
-			btn.onTouchDown(x, y, pointer, button);
+			for (GL_View_Base btn : this.childs)
+			{
+				btn.onTouchDown(x, y, pointer, button);
+			}
 		}
-
 		return super.onTouchDown(x, y, pointer, button);
 	}
 
 	@Override
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
-		for (GL_View_Base btn : this.childs)
+		synchronized (this.childs)
 		{
-			btn.onTouchUp(x, y, pointer, button);
+			for (GL_View_Base btn : this.childs)
+			{
+				btn.onTouchUp(x, y, pointer, button);
+			}
 		}
-
 		return super.onTouchUp(x, y, pointer, button);
 	}
 
 	@Override
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
-		for (GL_View_Base btn : this.childs)
+		synchronized (this.childs)
 		{
-			btn.onTouchDragged(x, y, pointer, KineticPan);
-		}
 
+			for (GL_View_Base btn : this.childs)
+			{
+				btn.onTouchDragged(x, y, pointer, KineticPan);
+			}
+
+		}
 		return super.onTouchDragged(x, y, pointer, KineticPan);
 	}
 

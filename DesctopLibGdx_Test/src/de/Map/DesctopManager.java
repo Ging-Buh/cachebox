@@ -1,9 +1,15 @@
 package de.Map;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
+import java.awt.image.DataBufferInt;
+import java.awt.image.Raster;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
@@ -20,10 +26,11 @@ import CB_Core.Map.Descriptor;
 import CB_Core.Map.Layer;
 import CB_Core.Map.ManagerBase;
 import CB_Core.Map.PackBase;
+import CB_Core.Map.ManagerBase.ImageData;
 
-public class Manager extends ManagerBase {
+public class DesctopManager extends ManagerBase {
 	
-	public Manager()
+	public DesctopManager()
 	{
 		// for the Access to the manager in the CB_Core
 		CB_Core.Map.ManagerBase.Manager = this;
@@ -91,7 +98,7 @@ public class Manager extends ManagerBase {
 		return null;
 		}
 	
-	
+
 	// / <summary>
 		// / Läd die Kachel mit dem übergebenen Descriptor
 		// / </summary>
@@ -171,6 +178,50 @@ public class Manager extends ManagerBase {
 			 * null; } GC.Collect(); }
 			 */
 			return true;
+		}
+
+
+		@Override
+		protected ImageData getImagePixel(byte[] img) {
+			InputStream in = new ByteArrayInputStream(img);
+			BufferedImage bImage;
+			try {
+				 bImage = ImageIO.read(in);
+			} catch (IOException e) {
+				return null;
+			}
+			
+			ImageData imgData = new ImageData();
+			imgData.width=bImage.getWidth();
+			imgData.height=bImage.getHeight();
+			
+			BufferedImage intimg = new BufferedImage(bImage.getWidth(), bImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+			ColorConvertOp op = new ColorConvertOp(null);
+			op.filter(bImage, intimg);
+
+			Raster ras = ((BufferedImage) intimg).getData();
+			DataBufferInt db = (DataBufferInt) ras.getDataBuffer();
+			imgData.PixelColorArray = db.getData();
+	
+		return imgData;
+		
+		}
+
+
+		@Override
+		protected byte[] getImageFromData(ImageData imgData) {
+			
+			BufferedImage dstImage = new BufferedImage(imgData.width, imgData.height, BufferedImage.TYPE_INT_RGB);
+
+			dstImage.getRaster().setDataElements(0, 0, imgData.width, imgData.height, imgData.PixelColorArray);
+			ByteArrayOutputStream bas = new ByteArrayOutputStream();
+			try {
+				ImageIO.write(dstImage, "png", bas);
+			} catch (IOException e) {
+					return null;
+			}
+			return bas.toByteArray();
 		}
 	
 	

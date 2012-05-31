@@ -36,7 +36,7 @@ import CB_Core.Map.PackBase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-public class Manager extends ManagerBase
+public class AndroidManager extends ManagerBase
 {
 
 	MapGenerator mapGenerator = null;
@@ -54,7 +54,7 @@ public class Manager extends ManagerBase
 	 * public delegate void FetchAreaCallback();
 	 */
 
-	public Manager()
+	public AndroidManager()
 	{
 		// for the Access to the manager in the CB_Core
 		CB_Core.Map.ManagerBase.Manager = this;
@@ -386,4 +386,32 @@ public class Manager extends ManagerBase
 		return true;
 	}
 
+	@Override
+	protected ImageData getImagePixel(byte[] img)
+	{
+		Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+		// Buffer dst = null;
+		int[] pixels = new int[bitmap.getWidth() * bitmap.getHeight()];
+		// bitmap.getPixels(pixels, 0, 0, 0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+		bitmap.getPixels(pixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+		ImageData imgData = new ImageData();
+		imgData.width = bitmap.getWidth();
+		imgData.height = bitmap.getHeight();
+		imgData.PixelColorArray = pixels;
+
+		return imgData;
+	}
+
+	@Override
+	protected byte[] getImageFromData(ImageData imgData)
+	{
+		Bitmap bmp = Bitmap.createBitmap(imgData.PixelColorArray, imgData.width, imgData.height, Bitmap.Config.ARGB_8888);
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		bmp.compress(Bitmap.CompressFormat.PNG, 100, baos);
+		byte[] b = baos.toByteArray();
+		return b;
+	}
 }
