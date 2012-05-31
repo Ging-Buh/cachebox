@@ -252,7 +252,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private ExtAudioRecorder extAudioRecorder = null;
 	private boolean initialResortAfterFirstFixCompleted = false;
 	private boolean initialFixSoundCompleted = false;
-	private boolean approachSoundCompleted = false;
+
 	private boolean runsWithAkku = true;
 
 	private FrameLayout frame;
@@ -606,7 +606,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			@Override
 			public void run()
 			{
-				approachSoundCompleted = false;
+				GlobalCore.switchToCompassCompleted = false;
+				GlobalCore.approachSoundCompleted = false;
 				initialCaheInfoSlider();
 			}
 		});
@@ -677,16 +678,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					distance = GlobalCore.SelectedWaypoint().Distance();
 				}
 
-				if (!approachSoundCompleted && (distance < Config.settings.SoundApproachDistance.getValue()))
+				if (!GlobalCore.approachSoundCompleted && (distance < Config.settings.SoundApproachDistance.getValue()))
 				{
 					Global.PlaySound("Approach.ogg");
-					approachSoundCompleted = true;
+					GlobalCore.approachSoundCompleted = true;
 
-					// switch to Compass if the option seted
-					if (Config.settings.switchViewApproach.getValue())
-					{
-						showView(ViewConst.COMPASS_VIEW);
-					}
 				}
 			}
 		}

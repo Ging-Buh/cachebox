@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 887;
+	public static final int CurrentRevision = 888;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -42,6 +42,9 @@ public class GlobalCore
 	public static RouteOverlay.Trackable AktuelleRoute = null;
 	public static int aktuelleRouteCount = 0;
 	public static long TrackDistance;
+
+	public static boolean approachSoundCompleted = false;
+	public static boolean switchToCompassCompleted = false;
 
 	private static Clipboard defaultClipBoard;
 

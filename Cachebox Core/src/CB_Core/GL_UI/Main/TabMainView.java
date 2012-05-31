@@ -70,7 +70,7 @@ public class TabMainView extends MainViewBase
 	public static CB_Action_ShowCacheList actionShowCacheList;
 
 	private CB_Action_ShowAbout actionShowAboutView;
-	public static CB_Action_ShowCompassView actionShowCompassView;
+
 	private CB_Action_ShowCreditsView actionShowCreditsView;
 	public static CB_Action_ShowDescriptionView actionShowDescriptionView;
 	private CB_Action_ShowFieldNotesView actionShowFieldNotesView;
