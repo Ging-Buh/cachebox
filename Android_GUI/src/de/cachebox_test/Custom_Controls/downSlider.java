@@ -235,10 +235,6 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				setPos(0);
 			}
 
-			if (CB_Core.GL_UI.Controls.Slider.setAndroidSliderHeight(mBtnRec.height()))
-			{
-				isInitial = true;
-			}
 		}
 
 		if (!drag && !AnimationIsRunning && !ButtonDrag)
@@ -272,7 +268,14 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		mBackRec.set(-10, QuickButtonHeight + 2, width + 10, yPos + 1);
 		canvas.drawRect(mBackRec, backPaint);
 
-		if (mCache == null) return;
+		if (!isInitial)
+		{
+
+			if (CB_Core.GL_UI.Controls.Slider.setAndroidSliderHeight(mBtnRec.height()))
+			{
+				isInitial = true;
+			}
+		}
 
 		// Draw Slide Icons
 		final Drawable SlideIcon = (QuickButtonHeight > 0) ? Global.Icons[41] : Global.Icons[40];
@@ -284,6 +287,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		SlideIconRec.offset(width - SlideIconRec.width(), 0);
 		SlideIcon.setBounds(SlideIconRec);
 		SlideIcon.draw(canvas);
+
+		if (mCache == null) return;
 
 		// draw Cache Name
 		canvas.drawText(mCache.Name, 20 + SlideIconRec.width(), yPos + (FSize + (FSize / 3)), paint);
@@ -470,11 +475,11 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		{
 			if (Config.settings.quickButtonShow.getValue())
 			{
-				downSlider.Me.setPos(downSlider.Me.QuickButtonMaxHeight);
+				downSlider.Me.setPos_onUI(downSlider.Me.QuickButtonMaxHeight);
 			}
 			else
 			{
-				downSlider.Me.setPos(0);
+				downSlider.Me.setPos_onUI(0);
 			}
 		}
 
@@ -525,7 +530,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		this.invalidate();
 
-		CB_Core.GL_UI.Controls.Slider.setAndroidSliderPos(Pos + mBtnRec.height());
+		CB_Core.GL_UI.Controls.Slider.setAndroidSliderPos(yPos);
 
 	}
 
@@ -540,6 +545,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			public void run()
 			{
 				((main) main.mainActivity).InfoDownSlider.setPos(Pos);
+				((main) main.mainActivity).InfoDownSlider.invalidate();
 			}
 		});
 	}
@@ -588,51 +594,72 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 	public void ActionUp() // Slider zurück scrolllen lassen
 	{
-		boolean QuickButtonShow = Config.settings.quickButtonShow.getValue();
-
-		// check if QuickButtonList snap in
-		if (yPos >= (QuickButtonMaxHeight * 0.5) && QuickButtonShow)
+		Thread t = new Thread()
 		{
-			QuickButtonHeight = QuickButtonMaxHeight;
-			Config.settings.quickButtonLastShow.setValue(true);
-			Config.AcceptChanges();
-		}
-		else
-		{
-			QuickButtonHeight = 0;
-			Config.settings.quickButtonLastShow.setValue(false);
-			Config.AcceptChanges();
-		}
-
-		((main) main.mainActivity).setQuickButtonHeight(QuickButtonHeight);
-
-		if (swipeUp || swipeDown)
-		{
-			if (swipeUp)
+			public void run()
 			{
-				startAnimationTo(QuickButtonShow ? QuickButtonHeight : 0);
-			}
-			else
-			{
-				startAnimationTo((int) (height - (UiSizes.getScaledFontSize() * 2.2)));
-			}
-			swipeUp = swipeDown = false;
+				if (main.mainActivity != null)
+				{
+					((main) main.mainActivity).runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
 
-		}
-		else
-		{
-			if (yPos > height * 0.7)
-			{
-				startAnimationTo((int) (height - (UiSizes.getScaledFontSize() * 2.2)));
-			}
-			else
-			{
-				startAnimationTo(QuickButtonShow ? QuickButtonHeight : 0);
-				// isVisible=false;
-			}
-		}
+							boolean QuickButtonShow = Config.settings.quickButtonShow.getValue();
 
-		invalidate();
+							// check if QuickButtonList snap in
+							if (yPos >= (QuickButtonMaxHeight * 0.5) && QuickButtonShow)
+							{
+								QuickButtonHeight = QuickButtonMaxHeight;
+								Config.settings.quickButtonLastShow.setValue(true);
+								Config.AcceptChanges();
+							}
+							else
+							{
+								QuickButtonHeight = 0;
+								Config.settings.quickButtonLastShow.setValue(false);
+								Config.AcceptChanges();
+							}
+
+							((main) main.mainActivity).setQuickButtonHeight(QuickButtonHeight);
+
+							if (swipeUp || swipeDown)
+							{
+								if (swipeUp)
+								{
+									startAnimationTo(QuickButtonShow ? QuickButtonHeight : 0);
+								}
+								else
+								{
+									startAnimationTo((int) (height - (UiSizes.getScaledFontSize() * 2.2)));
+								}
+								swipeUp = swipeDown = false;
+
+							}
+							else
+							{
+								if (yPos > height * 0.7)
+								{
+									startAnimationTo((int) (height - (UiSizes.getScaledFontSize() * 2.2)));
+								}
+								else
+								{
+									startAnimationTo(QuickButtonShow ? QuickButtonHeight : 0);
+									// isVisible=false;
+								}
+							}
+
+							invalidate();
+
+						}
+					});
+				}
+			}
+		};
+
+		t.start();
+
 	}
 
 	public static int getAktQuickButtonHeight()

@@ -51,6 +51,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
+import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
@@ -278,6 +279,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private String GcCode = null;
 	private String name = null;
 	private String guid = null;
+	private boolean mustRunSearch = false;
 
 	private Mic_On_Flash Mic_Icon;
 	private static DebugInfoPanel debugInfoPanel;
@@ -504,8 +506,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			// MessageBox.Show("GcCode=" + GcCode + String.format("%n") +
 			// "name =" + name + String.format("%n") + "guid =" + guid);
+			mustRunSearch = true;
 
-			startTimer();
 		}
 
 		if (aktView != null) ((View) aktView).setVisibility(View.INVISIBLE);
@@ -521,7 +523,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	boolean flag = false;
 
-	private void startTimer()
+	private void startSearchTimer()
 	{
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask()
@@ -557,8 +559,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							else
 							{
 								flag = true;
-								showView(ViewConst.CACHE_LIST_VIEW);
-								startTimer();
+								TabMainView.that.showCacheList();
+								startSearchTimer();
 							}
 
 						}
@@ -624,7 +626,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				GlobalCore.switchToCompassCompleted = false;
 				GlobalCore.approachSoundCompleted = false;
-				initialCaheInfoSlider();
+
 			}
 		});
 	}
@@ -2031,14 +2033,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 
 		QuickButtonList.setHeight(UiSizes.getQuickButtonListHeight());
-		// QuickButtonList.setAdapter(QuickButtonsAdapter);
-		// QuickButtonList.setOnItemClickListener(QuickButtonOnItemClickListner);
-		// String ConfigActionList = Config.settings.quickButtonList.getValue();
-		// String[] ConfigList = ConfigActionList.split(",");
-		// Global.QuickButtonList = Actions.getListFromConfig(ConfigList);
-
-		// cacheNameView.setHeight((int) (Sizes.getScaledRefSize_normal() *
-		// 3.3));
 
 	}
 
@@ -3500,7 +3494,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							}
 						}
 
-						if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.VISIBLE);
+						if (InfoDownSlider != null)
+						{
+							InfoDownSlider.ActionUp();
+							((View) InfoDownSlider).setVisibility(View.VISIBLE);
+						}
+
 						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
 
 						if (viewID == ViewConst.JOKER_VIEW)
@@ -3615,6 +3614,28 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 
 			}
+
+			@Override
+			public void firstShow()
+			{
+				Timer timer = new Timer();
+				TimerTask task = new TimerTask()
+				{
+					@Override
+					public void run()
+					{
+						downSlider.ButtonShowStateChanged();
+					}
+				};
+				timer.schedule(task, 200);
+
+				if (mustRunSearch)
+				{
+					startSearchTimer();
+				}
+
+			}
+
 		});
 
 		CB_Core.Events.platformConector.setGetTrackListner(new trackListListner()

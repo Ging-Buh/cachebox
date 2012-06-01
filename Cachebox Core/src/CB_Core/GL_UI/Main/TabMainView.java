@@ -199,6 +199,8 @@ public class TabMainView extends MainViewBase
 			TrackRecorder.StartRecording();
 		}
 
+		platformConector.FirstShow();
+
 		GL_Listener.glListener.removeRenderView(this);
 	}
 
@@ -549,4 +551,8 @@ public class TabMainView extends MainViewBase
 		GL_Listener.glListener.Toast("Switch to " + state, Toast.LENGTH_SHORT);
 	}
 
+	public void showCacheList()
+	{
+		actionShowCacheList.Execute();
+	}
 }

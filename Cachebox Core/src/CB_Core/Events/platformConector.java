@@ -19,6 +19,8 @@ public class platformConector
 		void hideForDialog();
 
 		void menuItemClicked(MenuID ID);
+
+		void firstShow();
 	}
 
 	private static IShowViewListner showViewListner;
@@ -33,6 +35,14 @@ public class platformConector
 		if (showViewListner != null)
 		{
 			showViewListner.show(viewID, (int) x, (int) y, (int) width, (int) height);
+		}
+	}
+
+	public static void FirstShow()
+	{
+		if (showViewListner != null)
+		{
+			showViewListner.firstShow();
 		}
 	}
 

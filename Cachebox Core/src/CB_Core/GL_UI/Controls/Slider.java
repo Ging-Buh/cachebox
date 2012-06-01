@@ -27,7 +27,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	private QuickButtonList quickButtonList;
 
 	private Label mLblCacheName;
-	private Box mSlideBox;
+	private static Box mSlideBox;
 	private int QuickButtonMaxHeight;
 	private int QuickButtonHeight;
 
@@ -119,19 +119,19 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 			{
 				quickButtonList.setHeight(this.height - mSlideBox.getMaxY());
 				quickButtonList.setY(this.height - quickButtonList.getHeight());
-				TabMainView.that.setContentMaxY(mSlideBox.getY());
 			}
 			else
 			{
 				quickButtonList.setHeight(QuickButtonMaxHeight);
 				quickButtonList.setY(this.height - quickButtonList.getHeight());
-				TabMainView.that.setContentMaxY(this.height - quickButtonList.getHeight() - mSlideBox.getHeight());
 			}
 		}
 		else
 		{
 			quickButtonList.setHeight(0);
 		}
+
+		TabMainView.that.setContentMaxY(this.height - quickButtonList.getHeight() - mSlideBox.getHeight());
 	}
 
 	int debugInt = 0;
@@ -349,7 +349,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	{
 		if (that != null)
 		{
-			that.setSliderPos(that.height - pos);
+			that.setSliderPos(that.height - pos - mSlideBox.getHeight());
 		}
 	}
 

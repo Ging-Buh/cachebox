@@ -224,8 +224,15 @@ public abstract class ListViewBase extends CB_View_Base
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		super.render(batch);
-		if (mMustSetPos) RenderThreadSetPos(mMustSetPosValue, mMustSetPosKinetic);
+		try
+		{
+			super.render(batch);
+			if (mMustSetPos) RenderThreadSetPos(mMustSetPosValue, mMustSetPosKinetic);
+		}
+		catch (Exception e)
+		{
+
+		}
 
 	}
 
