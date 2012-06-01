@@ -68,23 +68,35 @@ public class platformConector
 		}
 	}
 
-	public interface isOnlineListner
+	public interface IHardwarStateListner
 	{
 		boolean isOnline();
+
+		boolean isGPSon();
 	}
 
-	private static isOnlineListner IsOnline;
+	private static IHardwarStateListner hardwareListner;
 
-	public static void setisOnlineListner(isOnlineListner listner)
+	public static void setisOnlineListner(IHardwarStateListner listner)
 	{
-		IsOnline = listner;
+		hardwareListner = listner;
 	}
 
 	public static boolean isOnline()
 	{
-		if (IsOnline == null)
+		if (hardwareListner != null)
 		{
-			return IsOnline.isOnline();
+			return hardwareListner.isOnline();
+		}
+
+		return false;
+	}
+
+	public static boolean isGPSon()
+	{
+		if (hardwareListner != null)
+		{
+			return hardwareListner.isGPSon();
 		}
 
 		return false;

@@ -12,7 +12,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,8 +38,8 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.Events.platformConector.IHardwarStateListner;
 import CB_Core.Events.platformConector.IShowViewListner;
-import CB_Core.Events.platformConector.isOnlineListner;
 import CB_Core.Events.platformConector.trackListListner;
 import CB_Core.GL_UI.MenuID;
 import CB_Core.GL_UI.MenuItemConst;
@@ -67,13 +69,21 @@ import CB_Core.Types.Locator;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
+import android.content.pm.ServiceInfo;
+import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.hardware.Sensor;
@@ -94,6 +104,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.Vibrator;
@@ -130,6 +141,7 @@ import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 
+import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.Components.CacheNameView;
 import de.cachebox_test.Components.search;
 import de.cachebox_test.Components.search.searchMode;
@@ -501,6 +513,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
 		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 
+		// Initial PlugIn
+
+		fillPluginList();
+		bindPluginServices();
 	}
 
 	boolean flag = false;
@@ -2256,15 +2272,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 									return;
 								}
 							}
-							if (Global.Jokers.isEmpty())
-							{
-								MessageBox.Show(GlobalCore.Translations.Get("noJokers"));
-							}
-							else
-							{
-								Logger.General("Open JokerView...");
-								showView(ViewConst.JOKER_VIEW);
-							}
+
 						}
 						finally
 						{
@@ -2290,6 +2298,17 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				// Log.d("DroidCachebox", ex.getMessage());
 			}
 		}
+
+		if (Global.Jokers.isEmpty())
+		{
+			MessageBox.Show(GlobalCore.Translations.Get("noJokers"));
+		}
+		else
+		{
+			Logger.General("Open JokerView...");
+			showView(ViewConst.JOKER_VIEW);
+		}
+
 	}
 
 	private void showTbList()
@@ -3046,8 +3065,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		try
 		{
-			LocationManager locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-			if (!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+			if (!GpsOn())
 			{
 				Thread t = new Thread()
 				{
@@ -3100,6 +3118,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Logger.Error("main.chkGpsIsOn()", "", e);
 			e.printStackTrace();
 		}
+	}
+
+	private boolean GpsOn()
+	{
+		LocationManager locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		boolean GpsOn = locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		return GpsOn;
 	}
 
 	@Override
@@ -3255,6 +3280,157 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	}
 
+	// PlugIn Methodes
+	private static final String LOG_TAG = "CB_PlugIn";
+	private static final String ACTION_PICK_PLUGIN = "de.cachebox.action.PICK_PLUGIN";
+	private static final String KEY_PKG = "pkg";
+	private static final String KEY_SERVICENAME = "servicename";
+	private ArrayList<HashMap<String, String>> services;
+	private PluginServiceConnection pluginServiceConnection[] = new PluginServiceConnection[4];
+
+	private void fillPluginList()
+	{
+		services = new ArrayList<HashMap<String, String>>();
+		PackageManager packageManager = getPackageManager();
+		Intent baseIntent = new Intent(ACTION_PICK_PLUGIN);
+		baseIntent.setFlags(Intent.FLAG_DEBUG_LOG_RESOLUTION);
+		List<ResolveInfo> list = packageManager.queryIntentServices(baseIntent, PackageManager.GET_RESOLVED_FILTER);
+		// Log.d(LOG_TAG, "fillPluginList: " + list);
+
+		Config.settings.hasFTF_PlugIn.setValue(false);
+		Config.settings.hasFTF_PlugIn.setValue(false);
+		int i;
+		try
+		{
+			for (i = 0; i < list.size(); ++i)
+			{
+				ResolveInfo info = list.get(i);
+				ServiceInfo sinfo = info.serviceInfo;
+				// Log.d(LOG_TAG, "fillPluginList: i: " + i + "; sinfo: " + sinfo);
+				if (sinfo != null)
+				{
+
+					if (sinfo.packageName.contains("de.CB_FTF_PlugIn")) // Don't bind, is an Widget
+					{
+						Config.settings.hasFTF_PlugIn.setValue(true);
+					}
+					else if (sinfo.packageName.contains("de.CB_PQ_PlugIn"))// Don't bind, is an Widget
+					{
+						Config.settings.hasPQ_PlugIn.setValue(true);
+					}
+					else
+					// PlugIn for Bind
+					{
+						HashMap<String, String> item = new HashMap<String, String>();
+						item.put(KEY_PKG, sinfo.packageName);
+						item.put(KEY_SERVICENAME, sinfo.name);
+						services.add(item);
+						if (i <= 4)
+						{
+							inflateToView(i, packageManager, sinfo.packageName);
+
+						}
+					}
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		Config.AcceptChanges();
+	}
+
+	private void inflateToView(int rowCtr, PackageManager packageManager, String packageName)
+	{
+		try
+		{
+			ApplicationInfo info = packageManager.getApplicationInfo(packageName, 0);
+			Resources res = packageManager.getResourcesForApplication(info);
+
+			XmlResourceParser xres = res.getLayout(0x7f030000);
+
+		}
+		catch (NameNotFoundException ex)
+		{
+			Log.e(LOG_TAG, "NameNotFoundException", ex);
+		}
+	}
+
+	private void bindPluginServices()
+	{
+
+		for (int i = 0; i < services.size(); ++i)
+		{
+			final PluginServiceConnection con = new PluginServiceConnection();
+
+			pluginServiceConnection[i] = con;
+			final Intent intent = new Intent();
+			final HashMap<String, String> data = services.get(i);
+			intent.setClassName(data.get(KEY_PKG), data.get(KEY_SERVICENAME));
+			// Log.d(LOG_TAG, "bindPluginServices: " + intent);
+			Thread t = new Thread()
+			{
+				public void run()
+				{
+					try
+					{
+						bindService(intent, con, Context.BIND_AUTO_CREATE);
+					}
+					catch (Exception e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+			};
+			t.start();
+
+		}
+
+	}
+
+	class PluginServiceConnection implements ServiceConnection
+	{
+		public void onServiceConnected(ComponentName className, IBinder boundService)
+		{
+			int idx = getServiceConnectionIndex();
+			Log.d(LOG_TAG, "onServiceConnected: ComponentName: " + className + "; idx: " + idx);
+			if (idx >= 0)
+			{
+				Global.iPlugin[idx] = IPlugIn.Stub.asInterface((IBinder) boundService);
+
+				// set Joker PlugIn
+
+				if (Global.iPlugin != null && Global.iPlugin[0] != null)
+				{
+					Config.settings.hasCallPermission.setValue(true);
+				}
+				else
+				{
+					Config.settings.hasCallPermission.setValue(false);
+				}
+
+				Config.AcceptChanges();
+			}
+		}
+
+		public void onServiceDisconnected(ComponentName className)
+		{
+			int idx = getServiceConnectionIndex();
+			Log.d(LOG_TAG, "onServiceDisconnected: ComponentName: " + className + "; idx: " + idx);
+			if (idx >= 0) Global.iPlugin[idx] = null;
+		}
+
+		private int getServiceConnectionIndex()
+		{
+			for (int i = 0; i < pluginServiceConnection.length; ++i)
+				if (this == pluginServiceConnection[i]) return i;
+			return -1;
+		}
+	};
+
 	// ########### Platform Conector ##########################
 
 	private void initialPlatformConector()
@@ -3262,7 +3438,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		GlobalCore.platform = Plattform.Android;
 
-		CB_Core.Events.platformConector.setisOnlineListner(new isOnlineListner()
+		CB_Core.Events.platformConector.setisOnlineListner(new IHardwarStateListner()
 		{
 			/*
 			 * isOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen
@@ -3278,6 +3454,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					return true;
 				}
 				return false;
+			}
+
+			@Override
+			public boolean isGPSon()
+			{
+				return GpsOn();
 			}
 		});
 
@@ -3320,7 +3502,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 						if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.VISIBLE);
 						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
-						showView(viewID);
+
+						if (viewID == ViewConst.JOKER_VIEW)
+						{
+							showJoker();
+						}
+						else
+						{
+							showView(viewID);
+						}
+
 					}
 				});
 
