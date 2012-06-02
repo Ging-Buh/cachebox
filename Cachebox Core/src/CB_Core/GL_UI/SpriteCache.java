@@ -185,7 +185,7 @@ public class SpriteCache
 		{
 			MapIconsSmall.clear();
 			MapIconsSmall.add(getThemedSprite("small1yes"));
-			MapIconsSmall.add(getThemedSprite("small2yesyes"));
+			MapIconsSmall.add(getThemedSprite("small2yes"));
 			MapIconsSmall.add(getThemedSprite("small3yes"));
 			MapIconsSmall.add(getThemedSprite("small4yes"));
 			MapIconsSmall.add(getThemedSprite("small5yes"));
@@ -200,6 +200,7 @@ public class SpriteCache
 			MapIconsSmall.add(getThemedSprite("small5solved_no"));
 			MapIconsSmall.add(getThemedSprite("small6no"));
 			MapIconsSmall.add(getThemedSprite("small7no"));
+			MapIconsSmall.add(getThemedSprite("20"));
 
 		}
 

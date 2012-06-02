@@ -204,6 +204,8 @@ public class MapViewCacheList
 
 										if (cache.Archived || !cache.Available) iconId += 8;
 
+										if (cache.Type == CacheTypes.MyParking) iconId = 20;
+
 										wpi.Icon = SpriteCache.MapIconsSmall.get(iconId);
 										wpi.UnderlayIcon = null;
 
@@ -331,6 +333,8 @@ public class MapViewCacheList
 							wpiF.Cache = solution.Cache;
 							wpiF.Waypoint = solution.Waypoint;
 							wpiF.Selected = (GlobalCore.SelectedWaypoint() == solution.Waypoint);
+							if (iconSize > 0) wpiF.UnderlayIcon = getUnderlayIcon(solution.Cache, solution.Waypoint);
+
 							tmplist.add(wpiF);
 						}
 
