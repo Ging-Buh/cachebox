@@ -69,6 +69,7 @@ import CB_Core.Types.ImageEntry;
 import CB_Core.Types.Locator;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -3274,6 +3275,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	}
 
+	// ########### PlugIn Method ##########################
+
 	// PlugIn Methodes
 	private static final String LOG_TAG = "CB_PlugIn";
 	private static final String ACTION_PICK_PLUGIN = "de.cachebox.action.PICK_PLUGIN";
@@ -3425,6 +3428,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 	};
 
+	// #########################################################
+
 	// ########### Platform Conector ##########################
 
 	private void initialPlatformConector()
@@ -3502,7 +3507,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
 
-						if (viewID == ViewConst.JOKER_VIEW)
+						if (viewID == ViewConst.RELOAD_CACHE)
+						{
+							reloadSelectedCacheInfo();
+						}
+						else if (viewID == ViewConst.JOKER_VIEW)
 						{
 							showJoker();
 						}
@@ -3667,6 +3676,134 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (cm != null) GlobalCore.setDefaultClipboard(new AndroidClipboard(cm));
 
 	}
+
+	// #########################################################
+
+	// ########### Reload CacheInfo ##########################
+
+	private static ProgressDialog waitPD;
+
+	private void reloadSelectedCacheInfo()
+	{
+		Thread thread = new Thread()
+		{
+			public void run()
+			{
+
+				String accessToken = Config.GetAccessToken();
+				if (!CB_Core.Api.GroundspeakAPI.CacheStatusValid)
+				{
+					int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(accessToken);
+					if (result != 0)
+					{
+						onlineReloadReadyHandler.sendMessage(onlineReloadReadyHandler.obtainMessage(1));
+						return;
+					}
+				}
+				if (CB_Core.Api.GroundspeakAPI.CachesLeft <= 0)
+				{
+					String s = "Download limit is reached!\n";
+					s += "You have downloaded the full cache details of " + CB_Core.Api.GroundspeakAPI.MaxCacheCount
+							+ " caches in the last 24 hours.\n";
+					if (CB_Core.Api.GroundspeakAPI.MaxCacheCount < 10) s += "If you want to download the full cache details of 6000 caches per day you can upgrade to Premium Member at \nwww.geocaching.com!";
+
+					message = s;
+
+					onlineReloadReadyHandler.sendMessage(onlineReloadReadyHandler.obtainMessage(2));
+
+					return;
+				}
+
+				if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember(accessToken))
+				{
+					String s = "Download Details of this cache?\n";
+					s += "Full Downloads left: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
+					s += "Actual Downloads: " + CB_Core.Api.GroundspeakAPI.CurrentCacheCount + "\n";
+					s += "Max. Downloads in 24h: " + CB_Core.Api.GroundspeakAPI.MaxCacheCount;
+					message = s;
+					onlineReloadReadyHandler.sendMessage(onlineReloadReadyHandler.obtainMessage(3));
+					return;
+				}
+				else
+				{
+					// call the download directly
+					onlineReloadReadyHandler.sendMessage(onlineReloadReadyHandler.obtainMessage(4));
+					return;
+				}
+			}
+		};
+		waitPD = ProgressDialog.show(this, "", "Download Description", true);
+
+		thread.start();
+	}
+
+	private String message = "";
+	private Handler onlineReloadReadyHandler = new Handler()
+	{
+		public void handleMessage(Message msg)
+		{
+			switch (msg.what)
+			{
+			case 1:
+			{
+				waitPD.dismiss();
+				break;
+			}
+			case 2:
+			{
+				waitPD.dismiss();
+				MessageBox.Show(message, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
+						MessageBoxIcon.Powerd_by_GC_Live, null);
+				break;
+			}
+			case 3:
+			{
+				waitPD.dismiss();
+				MessageBox.Show(message, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
+						MessageBoxIcon.Powerd_by_GC_Live, DownloadCacheDialogResult);
+				break;
+			}
+			case 4:
+			{
+				waitPD.dismiss();
+				DownloadCacheDialogResult.onClick(null, -1);
+				break;
+			}
+			}
+		}
+	};
+
+	private DialogInterface.OnClickListener DownloadCacheDialogResult = new DialogInterface.OnClickListener()
+	{
+		@Override
+		public void onClick(DialogInterface dialog, int button)
+		{
+			switch (button)
+			{
+			case -1:
+				CacheDAO dao = new CacheDAO();
+				Cache newCache = dao.LoadApiDetails(GlobalCore.SelectedCache());
+				if (newCache != null)
+				{
+					GlobalCore.SelectedCache(newCache);
+
+					// hier ist kein AccessToke mehr notwendig, da diese Info
+					// bereits im Cache sein muss!
+					if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember(""))
+					{
+						String s = "Download successful!\n";
+						s += "Downloads left for today: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
+						s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
+
+						MessageBox.Show(s, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
+								MessageBoxIcon.Powerd_by_GC_Live, null);
+					}
+				}
+				break;
+			}
+			if (dialog != null) dialog.dismiss();
+		}
+	};
 
 	// #########################################################
 

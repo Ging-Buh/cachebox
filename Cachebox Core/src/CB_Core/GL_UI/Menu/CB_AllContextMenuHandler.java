@@ -6,10 +6,12 @@ import CB_Core.DB.Database;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Controls.Dialogs.HintDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowActivity;
 import CB_Core.GL_UI.Views.MapView;
 
 public class CB_AllContextMenuHandler
@@ -229,7 +231,8 @@ public class CB_AllContextMenuHandler
 				MapView.that.showDirektLine = !MapView.that.showDirektLine;
 				return true;
 			case MI_RELOAD_CACHE_INFO:
-
+				new CB_Action_ShowActivity("reload_CacheInfo", MI_RELOAD_CACHE_INFO, ViewConst.RELOAD_CACHE, SpriteCache.Icons.get(35))
+						.Execute();
 				return true;
 
 			default:
