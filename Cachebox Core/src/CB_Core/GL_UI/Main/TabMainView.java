@@ -54,6 +54,7 @@ import CB_Core.GL_UI.Views.TrackableListView;
 import CB_Core.GL_UI.Views.WaypointView;
 import CB_Core.GL_UI.Views.TestViews.TestView;
 import CB_Core.Log.Logger;
+import CB_Core.Map.ManagerBase;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
@@ -530,7 +531,7 @@ public class TabMainView extends MainViewBase
 	{
 
 		Config.changeDayNight();
-
+		ManagerBase.RenderThemeChanged = true;
 		GL_Listener.glListener.onStop();
 
 		SpriteCache.LoadSprites(true);
@@ -551,6 +552,7 @@ public class TabMainView extends MainViewBase
 		String state = Config.settings.nightMode.getValue() ? "Night" : "Day";
 
 		GL_Listener.glListener.Toast("Switch to " + state, Toast.LENGTH_SHORT);
+
 	}
 
 	public void showCacheList()

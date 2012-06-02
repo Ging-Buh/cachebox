@@ -17,6 +17,7 @@
 package de.cachebox_test.Views.AdvancedSettingsForms;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -266,6 +267,17 @@ public class SettingsScrollView extends Activity
 							SettingModus.Normal, true);
 					final View btnDisp = getView(disp, content, true);
 					lay.addView(btnDisp);
+					entrieCount++;
+				}
+
+				if (cat == SettingCategory.Skin)
+				{
+					SettingsListButtonSkinSpinner skin = new SettingsListButtonSkinSpinner("Skin", SettingCategory.Button,
+							SettingModus.Normal, true);
+					View skinView = getSkinSpinnerView(skin, content);
+					langView.setMinimumWidth(UiSizes.getQuickButtonWidth());
+					langView.setMinimumHeight(UiSizes.getQuickButtonHeight());
+					lay.addView(skinView);
 					entrieCount++;
 				}
 
@@ -526,6 +538,10 @@ public class SettingsScrollView extends Activity
 		else if (SB instanceof SettingsListButtonLangSpinner)
 		{
 			return getLangSpinnerView((SettingsListButtonLangSpinner) SB, parent);
+		}
+		else if (SB instanceof SettingsListButtonSkinSpinner)
+		{
+			return getSkinSpinnerView((SettingsListButtonSkinSpinner) SB, parent);
 		}
 
 		return null;
@@ -1348,6 +1364,86 @@ public class SettingsScrollView extends Activity
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
+							break;
+						}
+
+					}
+				}
+
+				@Override
+				public void onNothingSelected(AdapterView<?> arg0)
+				{
+					// do nothing
+				}
+			});
+		}
+		return row;
+	}
+
+	private View getSkinSpinnerView(final SettingsListButtonSkinSpinner SB, ViewGroup parent)
+	{
+		LayoutInflater inflater = getLayoutInflater();
+		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_lang_spinner, parent, false);
+
+		final Spinner spinner = (Spinner) row.findViewById(R.id.Spinner);
+
+		int Height = (int) (UiSizes.getScaledRefSize_normal() * 4);
+		spinner.setMinimumHeight(Height);
+
+		spinner.setPrompt(GlobalCore.Translations.Get("SelectSkin"));
+		if (spinner.getAdapter() == null)
+		{
+
+			String SkinFolder = Config.WorkPath + "/skins";
+			File dir = new File(SkinFolder);
+
+			final ArrayList<String> skinFolders = new ArrayList<String>();
+			dir.listFiles(new FileFilter()
+			{
+
+				public boolean accept(File f)
+				{
+					if (f.isDirectory())
+					{
+						Object Path = f.getAbsolutePath();
+						skinFolders.add((String) Path);
+					}
+
+					return false;
+				}
+			});
+
+			String[] items = new String[skinFolders.size()];
+			int index = 0;
+			int selection = -1;
+			for (String tmp : skinFolders)
+			{
+				if (Config.settings.SkinFolder.getValue().equals(tmp)) selection = index;
+
+				// cut folder name
+				int Pos = tmp.lastIndexOf("/");
+				tmp = tmp.substring(Pos + 1);
+
+				items[index++] = tmp;
+			}
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			spinner.setAdapter(adapter);
+			spinner.setSelection(selection);
+
+			spinner.setOnItemSelectedListener(new OnItemSelectedListener()
+			{
+
+				@Override
+				public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
+				{
+					String selected = (String) skinFolders.get(arg2);
+					for (String tmp : skinFolders)
+					{
+						if (selected.equals(tmp))
+						{
+							Config.settings.SkinFolder.setValue(tmp);
+
 							break;
 						}
 

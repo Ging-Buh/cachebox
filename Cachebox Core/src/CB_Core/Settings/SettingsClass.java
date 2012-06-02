@@ -35,6 +35,8 @@ public class SettingsClass extends SettingsList
 	public SettingFile Sel_LanguagePath;
 	public SettingFile DatabasePath;
 	public SettingFile FieldNotesGarminPath;
+	public SettingFile MapsforgeDayTheme;
+	public SettingFile MapsforgeNightTheme;
 
 	// Bool
 	// public SettingBool SaveFieldNotesHtml;
@@ -184,6 +186,7 @@ public class SettingsClass extends SettingsList
 		addTemplateSettings();
 		addInternalSettings();
 		addAPISettings();
+		addSkinSettings();
 		addDebugSettings();
 	}
 
@@ -362,6 +365,15 @@ public class SettingsClass extends SettingsList
 		addSetting(SearchWithoutOwns = new SettingBool("SearchWithoutOwns", cat, INVISIBLE, true, true));
 		addSetting(SearchOnlyAvible = new SettingBool("SearchOnlyAvible", cat, INVISIBLE, true, true));
 		addSetting(lastSearchRadius = new SettingInt("lastSearchRadius", cat, INVISIBLE, 5, true));
+	}
+
+	private void addSkinSettings()
+	{
+		String Work = Config.WorkPath;
+
+		SettingCategory cat = SettingCategory.Skin;
+		addSetting(MapsforgeDayTheme = new SettingFile("MapsforgeDayTheme", cat, NORMAL, "", true, "xml"));
+		addSetting(MapsforgeNightTheme = new SettingFile("MapsforgeNightTheme", cat, NORMAL, "", true, "xml"));
 	}
 
 	private void addDebugSettings()

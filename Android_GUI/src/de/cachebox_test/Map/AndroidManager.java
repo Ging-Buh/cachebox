@@ -26,6 +26,7 @@ import org.mapsforge.core.Tile;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.header.FileOpenResult;
 
+import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.Log.Logger;
 import CB_Core.Map.BoundingBox;
@@ -83,6 +84,13 @@ public class AndroidManager extends ManagerBase
 	}
 
 	@Override
+	protected boolean mapsforgeNightThemeExist()
+	{
+		File file = new File(CB_Core.Config.settings.MapsforgeNightTheme.getValue());
+		return file.exists();
+	}
+
+	@Override
 	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc)
 	{
 		// Mapsforge 3.0
@@ -103,10 +111,19 @@ public class AndroidManager extends ManagerBase
 				databaseRenderer = (DatabaseRenderer) mapGenerator;
 				databaseRenderer.setMapDatabase(mapDatabase);
 
+				tileBitmap = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Bitmap.Config.RGB_565);
+				mapsForgeFile = layer.Name;
+			}
+
+			if (RenderThemeChanged || jobParameters == null)
+			{
 				try
 				{
-					Logger.DEBUG("Suche RenderTheme: " + CB_Core.Config.settings.MapPackFolder.getValue() + "/renderthemes/test.xml");
-					File file = new File(CB_Core.Config.settings.MapPackFolder.getValue() + "/renderthemes/test.xml");
+					String themePath = Config.settings.nightMode.getValue() ? Config.settings.MapsforgeNightTheme.getValue()
+							: Config.settings.MapsforgeDayTheme.getValue();
+
+					Logger.DEBUG("Suche RenderTheme: " + themePath);
+					File file = new File(themePath);
 					if (file.exists())
 					{
 						Logger.DEBUG("RenderTheme found!");
@@ -125,9 +142,7 @@ public class AndroidManager extends ManagerBase
 					Logger.Error("Load RenderTheme", "Error loading RenderTheme!", e);
 					jobParameters = new JobParameters(DEFAULT_RENDER_THEME, DEFAULT_TEXT_SCALE);
 				}
-
-				tileBitmap = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Bitmap.Config.RGB_565);
-				mapsForgeFile = layer.Name;
+				RenderThemeChanged = false;
 			}
 
 			Tile tile = new Tile(desc.X, desc.Y, (byte) desc.Zoom);

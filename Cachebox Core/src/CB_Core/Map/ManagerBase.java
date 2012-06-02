@@ -18,6 +18,8 @@ import CB_Core.FileIO;
 
 public abstract class ManagerBase
 {
+	public static boolean RenderThemeChanged = true;
+
 	public static ManagerBase Manager = null;
 
 	public static long NumBytesLoaded = 0;
@@ -81,6 +83,8 @@ public abstract class ManagerBase
 
 		if (!Config.settings.nightMode.getValue()) return tmp;
 
+		if (layer.isMapsForge && mapsforgeNightThemeExist()) return tmp;
+
 		if (tmp == null) return null;
 
 		ImageData imgData = getImagePixel(tmp);
@@ -90,6 +94,11 @@ public abstract class ManagerBase
 		tmp = getImageFromData(imgData);
 
 		return tmp;
+	}
+
+	protected boolean mapsforgeNightThemeExist()
+	{
+		return false;
 	}
 
 	public class ImageData
