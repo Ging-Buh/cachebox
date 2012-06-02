@@ -39,6 +39,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 	private LinkedList<String> NonLocalImages = new LinkedList<String>();
 	private LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
 	private static ProgressDialog pd;
+	private static DescriptionViewControl that;
 
 	public DescriptionViewControl(Context context)
 	{
@@ -139,7 +140,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			}
 
 		});
-
+		that = this;
 	}
 
 	private String message = "";
@@ -362,41 +363,41 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 	public void OnShow()
 	{
 
-		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
-		this.getParent().requestLayout();
-
-		//
-		//
-		// android.view.ViewGroup.LayoutParams params = this.getLayoutParams();
-		//
-		// params.height = 416;
-		// params.width = 480;
-		//
-		// this.setLayoutParams(params);
-
-		if (downloadTryCounter > 9) mustLoadDescription = true; // Versuchs
-																// nochmal mit
-																// dem Download
-		downloadTryCounter = 0;
-		if (mustLoadDescription)
+		main.mainActivity.runOnUiThread(new Runnable()
 		{
-			setCache(aktCache);
-			mustLoadDescription = false;
-		}
 
-		// im Day Mode brauchen wir kein InvertView
-		// das sollte mehr Performance geben
-		if (main.N)
-		{
-			invertViewControl.Me.setVisibility(VISIBLE);
-		}
-		else
-		{
-			invertViewControl.Me.setVisibility(GONE);
-		}
+			@Override
+			public void run()
+			{
+				SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+				that.getParent().requestLayout();
 
-		this.setWillNotDraw(false);
-		this.invalidate();
+				if (downloadTryCounter > 9) mustLoadDescription = true; // Versuchs
+																		// nochmal mit
+																		// dem Download
+				downloadTryCounter = 0;
+				if (mustLoadDescription)
+				{
+					setCache(aktCache);
+					mustLoadDescription = false;
+				}
+
+				// im Day Mode brauchen wir kein InvertView
+				// das sollte mehr Performance geben
+				if (main.N)
+				{
+					invertViewControl.Me.setVisibility(VISIBLE);
+				}
+				else
+				{
+					invertViewControl.Me.setVisibility(GONE);
+				}
+
+				that.setWillNotDraw(false);
+				that.invalidate();
+			}
+		});
+
 	}
 
 	@Override

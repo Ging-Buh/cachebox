@@ -865,8 +865,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	private void renderWPs(SizeF wpUnderlay, SizeF wpSize, SpriteBatch batch)
 	{
-		SizeF WpUnderlay;
-		SizeF WpSize;
 
 		WaypointRenderInfo selectedWPI = null;
 
@@ -888,7 +886,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				if (selectedWPI != null)
 				{
-					renderWPI(batch, GL_UISizes.WPSizes[2], WpSize = GL_UISizes.UnderlaySizes[2], selectedWPI);
+					renderWPI(batch, GL_UISizes.WPSizes[2], GL_UISizes.UnderlaySizes[2], selectedWPI);
 				}
 			}
 		}

@@ -347,7 +347,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 	public static void setAndroidSliderPos(int pos)
 	{
-		if (that != null)
+		if (that != null && mSlideBox != null)
 		{
 			that.setSliderPos(that.height - pos - mSlideBox.getHeight());
 		}

@@ -204,7 +204,7 @@ public class MapViewCacheList
 
 										if (cache.Archived || !cache.Available) iconId += 8;
 
-										if (cache.Type == CacheTypes.MyParking) iconId = 20;
+										if (cache.Type == CacheTypes.MyParking) iconId = 16;
 
 										wpi.Icon = SpriteCache.MapIconsSmall.get(iconId);
 										wpi.UnderlayIcon = null;

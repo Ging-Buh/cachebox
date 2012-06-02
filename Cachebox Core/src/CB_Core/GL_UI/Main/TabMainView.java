@@ -439,11 +439,13 @@ public class TabMainView extends MainViewBase
 		actionShowDescriptionView.setTab(this, Tab);
 		actionNavigateTo2.setTab(this, Tab);
 		actionTestView.setTab(this, Tab);
+		actionShowSpoilerView.setTab(this, Tab);
 
 		// Actions den Buttons zuweisen
 		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true));
 		btn2.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
 		btn2.addAction(new CB_ActionButton(actionShowSolverView2, false));
+		btn2.addAction(new CB_ActionButton(actionShowSpoilerView, false));
 
 		btn3.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo2, false, GestureDirection.Down));
