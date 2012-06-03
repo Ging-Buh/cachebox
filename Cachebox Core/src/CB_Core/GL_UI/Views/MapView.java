@@ -22,6 +22,7 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.InfoBubble;
 import CB_Core.GL_UI.Controls.MapInfoPanel;
+import CB_Core.GL_UI.Controls.MapScale;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.ZoomButtons;
@@ -69,6 +70,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private MapInfoPanel info;
 	private ZoomScale zoomScale;
 	private InfoBubble infoBubble;
+	private MapScale mapScale;
 	// ########################################
 
 	private Locator locator = null;
@@ -98,11 +100,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	public boolean hideMyFinds;
 	private boolean showCompass;
 	public boolean showDirektLine;
-	private boolean nightMode;
+	// private boolean nightMode;
 	private int aktZoom;
-	private float startCameraZoom;
-	private float endCameraZoom;
-	private float diffCameraZoom;
+	// private float startCameraZoom;
+	// private float endCameraZoom;
+	// private float diffCameraZoom;
 
 	// für kinetischen Zoom und Pan
 	private KineticZoom kineticZoom = null;
@@ -166,8 +168,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			queueProcessor = new queueProcessor();
 			queueProcessor.setPriority(Thread.MIN_PRIORITY);
 			queueProcessor.start();
-
 		}
+
+		mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, this.halfWidth, GL_UISizes.ZoomBtn.getHalfWidth() / 4),
+				"mapScale");
+
+		this.addChild(mapScale);
 
 		// initial Zoom Buttons
 		zoomBtn = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
@@ -195,7 +201,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				zoomScale.setZoom(zoomBtn.getZoom());
+				setZoomScale(zoomBtn.getZoom());
 				zoomScale.resetFadeOut();
 				inputState = InputState.Idle;
 				// debugString = "State: " + inputState;
@@ -313,13 +319,15 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		center.Longitude = Config.settings.MapInitLongitude.getValue();
 		aktZoom = Config.settings.lastZoomLevel.getValue();
 		zoomBtn.setZoom(aktZoom);
+		calcPixelsPerMeter();
+		mapScale.zoomChanged(this);
+
 		if ((center.Latitude == -1000) && (center.Longitude == -1000))
 		{
 			// not initialized
 			center.Latitude = 48;
 			center.Longitude = 12;
 		}
-		// Config.settings.MapInitLongitude.setValue(MapViewForGl.center.Longitude);
 
 	}
 
@@ -362,10 +370,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		camera = new OrthographicCamera(MainViewBase.mainView.getWidth(), MainViewBase.mainView.getHeight());
 
 		aktZoom = zoomBtn.getZoom();
-		zoomScale.setZoom(aktZoom);
+		setZoomScale(aktZoom);
 		camera.zoom = getMapTilePosFactor(aktZoom);
-		endCameraZoom = camera.zoom;
-		diffCameraZoom = 0;
+		// endCameraZoom = camera.zoom;
+		// diffCameraZoom = 0;
 		// camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
 		camera.position.set(0, 0, 0);
 
@@ -447,7 +455,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 			if (kineticZoom.getFertig())
 			{
-				zoomScale.setZoom(zoomBtn.getZoom());
+				setZoomScale(zoomBtn.getZoom());
 				GL_Listener.glListener.removeRenderView(this);
 				kineticZoom = null;
 			}
@@ -1278,7 +1286,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		hideMyFinds = Config.settings.MapHideMyFinds.getValue();
 		showCompass = Config.settings.MapShowCompass.getValue();
 		showDirektLine = Config.settings.ShowDirektLine.getValue();
-		nightMode = Config.settings.nightMode.getValue();
+		// nightMode = Config.settings.nightMode.getValue();
 		iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
 		aktZoom = Config.settings.lastZoomLevel.getValue();
 		zoomBtn.setMaxZoom(Config.settings.OsmMaxLevel.getValue());
@@ -1287,7 +1295,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		zoomScale.setMaxZoom(Config.settings.OsmMaxLevel.getValue());
 		zoomScale.setMinZoom(Config.settings.OsmMinLevel.getValue());
-		zoomScale.setZoom(aktZoom);
+		setZoomScale(aktZoom);
 
 	}
 
@@ -1864,7 +1872,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				camera.zoom = getMapTilePosFactor(zoomBtn.getMinZoom());
 			}
 
-			endCameraZoom = camera.zoom;
+			// endCameraZoom = camera.zoom;
 
 			System.out.println(camera.zoom);
 			int zoom = MAX_MAP_ZOOM;
@@ -1878,7 +1886,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 			zoomBtn.setZoom(zoom);
 			zoomScale.resetFadeOut();
-			zoomScale.setZoom(zoom);
+			setZoomScale(zoom);
 			zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), true);
 			aktZoom = zoom;
 
@@ -1888,6 +1896,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		// debugString = "State: " + inputState;
 		return true;
+	}
+
+	private void setZoomScale(int zoom)
+	{
+		Logger.LogCat("set zoom");
+		zoomScale.setZoom(zoom);
+		mapScale.zoomChanged(this);
 	}
 
 	@Override
@@ -2055,7 +2070,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		center = new Coordinate(Descriptor.TileYToLatitude(MAX_MAP_ZOOM, -point.Y), Descriptor.TileXToLongitude(MAX_MAP_ZOOM, point.X));
 	}
 
-	private float pixelsPerMeter = 0;
+	public float pixelsPerMeter = 0;
 
 	private void calcPixelsPerMeter()
 	{

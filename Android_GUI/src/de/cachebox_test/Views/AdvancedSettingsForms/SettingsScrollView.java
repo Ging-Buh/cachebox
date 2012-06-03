@@ -29,6 +29,7 @@ import org.openintents.intents.FileManagerIntents;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Map.ManagerBase;
 import CB_Core.Math.UiSizes;
 import CB_Core.Settings.SettingBase;
 import CB_Core.Settings.SettingBool;
@@ -168,6 +169,7 @@ public class SettingsScrollView extends Activity
 				}
 
 				Config.AcceptChanges();
+				ManagerBase.RenderThemeChanged = true;
 				finish();
 
 			}
