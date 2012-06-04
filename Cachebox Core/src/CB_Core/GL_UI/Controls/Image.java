@@ -118,7 +118,7 @@ public class Image extends CB_View_Base
 
 	public void dispose()
 	{
-		mImageTex.dispose();
+		if (mImageTex != null) mImageTex.dispose();
 		mImageTex = null;
 
 		mImageSprite = null;

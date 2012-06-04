@@ -134,35 +134,35 @@ public class splash extends TabMainView
 	 */
 	private void ini_Progressbar()
 	{
-		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (UiSizes.getButtonWidth() * 2.5f), this.height
-				- ((UiSizes.getButtonWidth() * 5) / 4.11f) - UiSizes.getButtonWidth(), UiSizes.getButtonWidth() * 5,
-				(UiSizes.getButtonWidth() * 5) / 4.11f);
+
+		float ref = UiSizes.getWindowHeight() / 13;
+
+		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref, ref * 5,
+				(ref * 5) / 4.11f);
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
 		CB_Logo.setSprite(atlas.createSprite("cachebox_logo"));
 		this.addChild(CB_Logo);
 
 		TextBounds bounds = Fonts.getNormal().getMultiLineBounds(GlobalCore.getVersionString());
 
-		versionTextView = new Label(0, CB_Logo.getY() - UiSizes.getButtonHeight() - bounds.height, this.width, bounds.height + 10,
-				"VesionLabel");
+		versionTextView = new Label(0, CB_Logo.getY() - ref - bounds.height, this.width, bounds.height + 10, "VesionLabel");
 		versionTextView.setMultiLineText(GlobalCore.getVersionString());
 		versionTextView.setHAlignment(HAlignment.CENTER);
 		this.addChild(versionTextView);
 
 		bounds = Fonts.getNormal().getMultiLineBounds(GlobalCore.splashMsg);
 
-		descTextView = new Label(0, versionTextView.getY() - UiSizes.getButtonHeight() - bounds.height, this.width, bounds.height + 10,
-				"DescLabel");
+		descTextView = new Label(0, versionTextView.getY() - ref - bounds.height, this.width, bounds.height + 10, "DescLabel");
 		descTextView.setMultiLineText(GlobalCore.splashMsg);
 		descTextView.setHAlignment(HAlignment.CENTER);
 		this.addChild(descTextView);
 
-		progress = new ProgressBar(new CB_RectF(0, 0, this.width, UiSizes.getButtonHeight() / 1.5f), "Splash.ProgressBar");
+		progress = new ProgressBar(new CB_RectF(0, 0, this.width, ref / 1.5f), "Splash.ProgressBar");
 		progress.setBackground(new NinePatch(atlas.createSprite("btn_normal"), 16, 16, 16, 16));
 		progress.setProgressNinePatch(new NinePatch(atlas.createSprite("progress"), 15, 15, 15, 15));
 		this.addChild(progress);
 
-		float logoCalcRef = UiSizes.getButtonHeight() * 1.5f;
+		float logoCalcRef = ref * 1.5f;
 
 		CB_RectF rec_GC_Logo = new CB_RectF(20, 50, logoCalcRef, logoCalcRef);
 		CB_RectF rec_Mapsforge_Logo = new CB_RectF(200, 50, logoCalcRef, logoCalcRef / 1.142f);
@@ -184,17 +184,17 @@ public class splash extends TabMainView
 		LibGdx_Logo.setSprite(atlas.createSprite("libgdx"));
 
 		float yPos = descTextView.getY() - GC_Logo.getHeight();
-		float xPos = (this.width - (UiSizes.getButtonHeight() * 2) - GC_Logo.getWidth() - Mapsforge_Logo.getWidth() - FX2_Logo.getWidth()) / 2;
+		float xPos = (this.width - (ref * 2) - GC_Logo.getWidth() - Mapsforge_Logo.getWidth() - FX2_Logo.getWidth()) / 2;
 
 		GC_Logo.setPos(xPos, yPos);
-		xPos += GC_Logo.getWidth() + UiSizes.getButtonHeight();
+		xPos += GC_Logo.getWidth() + ref;
 
 		Mapsforge_Logo.setPos(xPos, yPos);
-		xPos += Mapsforge_Logo.getWidth() + UiSizes.getButtonHeight();
+		xPos += Mapsforge_Logo.getWidth() + ref;
 
 		FX2_Logo.setPos(xPos, yPos);
 
-		yPos -= GC_Logo.getHeight();// + UiSizes.getButtonHeight();
+		yPos -= GC_Logo.getHeight();// + refHeight;
 		LibGdx_Logo.setPos(this.getHalfWidth() - LibGdx_Logo.getHalfWidth(), yPos);
 
 		this.addChild(GC_Logo);
@@ -422,4 +422,33 @@ public class splash extends TabMainView
 		GL_Listener.glListener.removeRenderView(this);
 		((Tab_GL_Listner) GL_Listener.glListener).switchToTabMainView();
 	}
+
+	public void dispose()
+	{
+		this.removeChildsDirekt();
+
+		selectDBDialog.dispose();
+		descTextView.dispose();
+		versionTextView.dispose();
+		GC_Logo.dispose();
+		FX2_Logo.dispose();
+		LibGdx_Logo.dispose();
+		Mapsforge_Logo.dispose();
+		CB_Logo.dispose();
+		progress.dispose();
+		atlas.dispose();
+
+		selectDBDialog = null;
+		descTextView = null;
+		versionTextView = null;
+		GC_Logo = null;
+		FX2_Logo = null;
+		LibGdx_Logo = null;
+		Mapsforge_Logo = null;
+		CB_Logo = null;
+		progress = null;
+		atlas = null;
+
+	}
+
 }
