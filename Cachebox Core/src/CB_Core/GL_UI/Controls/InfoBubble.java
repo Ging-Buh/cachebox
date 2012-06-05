@@ -7,6 +7,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -36,20 +37,25 @@ public class InfoBubble extends CB_View_Base
 		return mCacheId;
 	}
 
+	public Waypoint getWaypoint()
+	{
+		return mWaypoint;
+	}
+
 	/**
 	 * Cache showing Bubble
 	 */
 	private Cache mCache = null;
-	// private Waypoint mWaypoint = null;
+	private Waypoint mWaypoint = null;
 
 	private CacheInfo cacheInfo;
 
-	public void setCache(Cache value)
+	public void setCache(Cache value, Waypoint waypoint)
 	{
-		setCache(value, false);
+		setCache(value, waypoint, false);
 	}
 
-	public void setCache(Cache value, boolean force)
+	public void setCache(Cache value, Waypoint waypoint, boolean force)
 	{
 		if (value == null)
 		{
@@ -60,11 +66,15 @@ public class InfoBubble extends CB_View_Base
 			return;
 		}
 
-		if (mCache != null && mCache.Id == value.Id && !force) return;
+		if (!force)
+		{
+			if ((mCache != null) && (mCache.Id == value.Id) && (mWaypoint == waypoint)) return;
+		}
 
 		// Logger.LogCat("New Cache @InfoBubble");
 		mCache = value;
 		mCacheId = value.Id;
+		mWaypoint = waypoint;
 		SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
 
 		cacheInfo = new CacheInfo(size, "CacheInfo", value);
@@ -131,7 +141,7 @@ public class InfoBubble extends CB_View_Base
 			cacheInfo = null;
 		}
 
-		setCache(mCache, true);
+		setCache(mCache, mWaypoint, true);
 	}
 
 }

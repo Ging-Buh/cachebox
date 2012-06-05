@@ -224,13 +224,13 @@ public class MapControlTest extends CB_View_Base
 		infoBubble = new InfoBubble(new SizeF(400, 150), "infoBubble");
 		infoBubble.setX(70);
 		infoBubble.setY(350);
-		infoBubble.setCache(getTestCache());
+		infoBubble.setCache(getTestCache(), null);
 		this.addChild(infoBubble);
 
 		infoBubbleZoom = new InfoBubble(GL_UISizes.Bubble, "infoBubble");
 		infoBubbleZoom.setX(70);
 		infoBubbleZoom.setY(80);
-		infoBubbleZoom.setCache(getTestCache());
+		infoBubbleZoom.setCache(getTestCache(), null);
 		this.addChild(infoBubbleZoom);
 
 		cacheInfo = new CacheInfo(UiSizes.getCacheListItemRec().asFloat(), "CacheInfo", getTestCache());

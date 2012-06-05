@@ -140,8 +140,13 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 		{
 			int selectionIndex = ((ListViewItemBase) v).getIndex();
 
-			GlobalCore.SelectedCache(Database.Data.Query.get(selectionIndex));
-
+			Cache cache = Database.Data.Query.get(selectionIndex);
+			if (cache != null)
+			{
+				// Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
+				Waypoint waypoint = cache.GetFinalWaypoint();
+				GlobalCore.SelectedWaypoint(cache, waypoint);
+			}
 			setSelection(selectionIndex);
 			return true;
 		}

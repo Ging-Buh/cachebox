@@ -303,7 +303,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				GlobalCore.SelectedCache(infoBubble.getCache());
+				GlobalCore.SelectedWaypoint(infoBubble.getCache(), infoBubble.getWaypoint());
 				infoBubble.setVisibility(INVISIBLE);
 				return true;
 			}
@@ -891,17 +891,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				{
 					if (wpi.Selected)
 					{
-						selectedWPI = wpi;
+						renderWPI(batch, GL_UISizes.WPSizes[2], GL_UISizes.UnderlaySizes[2], wpi);
+						// selectedWPI = wpi;
 					}
 					else
 					{
 						renderWPI(batch, wpUnderlay, wpSize, wpi);
 					}
-				}
-
-				if (selectedWPI != null)
-				{
-					renderWPI(batch, GL_UISizes.WPSizes[2], GL_UISizes.UnderlaySizes[2], selectedWPI);
 				}
 			}
 		}
@@ -1009,8 +1005,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		if ((wpi.Cache.Id == infoBubble.getCacheId()) && infoBubble.isVisible())
 		{
-			Vector2 pos = new Vector2(screen.x - infoBubble.getHalfWidth(), screen.y);
-			infoBubble.setPos(pos);
+			if (infoBubble.getWaypoint() == wpi.Waypoint)
+			{
+				Vector2 pos = new Vector2(screen.x - infoBubble.getHalfWidth(), screen.y);
+				infoBubble.setPos(pos);
+			}
 		}
 	}
 
@@ -2016,13 +2015,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					{
 						if (GlobalCore.SelectedCache() != minWpi.Cache)
 						{
-							// Show Bubble
-							infoBubble.setCache(minWpi.Cache);
+							// Show Bubble at the location of the Waypoint!!!
+							infoBubble.setCache(minWpi.Cache, minWpi.Waypoint);
 							infoBubble.setVisibility(VISIBLE);
-
-							// mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
-							// aktZoom, true);
-
 						}
 						else
 						{
@@ -2031,37 +2026,20 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 							// a
 							// different cache but only a different waypoint
 							// Wegpunktliste ausrichten
-							// xxx ThreadSaveSetSelectedWP(minWpi.Cache, minWpi.Waypoint);
+							GlobalCore.SelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
 							// FormMain.WaypointListPanel.AlignSelected();
 							// updateCacheList();
-							// mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
-							// aktZoom, true);
+							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
+									aktZoom, true);
 						}
 
 					}
 					else
 					{
-						if (GlobalCore.SelectedCache() != minWpi.Cache)
-						{
-							// Show Bubble
-							infoBubble.setCache(minWpi.Cache);
-							infoBubble.setVisibility(VISIBLE);
-
-							// mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
-							// aktZoom, true);
-						}
-						else
-						{
-							// Show Bubble
-							infoBubble.setCache(minWpi.Cache);
-							infoBubble.setVisibility(VISIBLE);
-
-							// Cacheliste ausrichten
-							// xxx ThreadSaveSetSelectedWP(minWpi.Cache);
-							// updateCacheList();
-							// mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
-							// aktZoom, true);
-						}
+						// Show Bubble
+						// unabhängig davon, ob der angeklickte Cache == der selectedCache ist
+						infoBubble.setCache(minWpi.Cache, null);
+						infoBubble.setVisibility(VISIBLE);
 					}
 					inputState = InputState.Idle;
 					// debugString = "State: " + inputState;
@@ -2330,7 +2308,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
 		if (infoBubble.isVisible())
 		{
-			infoBubble.setCache(infoBubble.getCache(), true);
+			infoBubble.setCache(infoBubble.getCache(), infoBubble.getWaypoint(), true);
 		}
 	}
 }

@@ -81,14 +81,7 @@ public class GlobalCore
 
 	public static void SelectedCache(Cache cache)
 	{
-		selectedCache = cache;
-		GlobalCore.selectedWaypoint = null;
-		SelectedCacheEventList.Call(cache, null);
-
-		// switch off auto select
-		GlobalCore.autoResort = false;
-		Config.settings.AutoResort.setValue(GlobalCore.autoResort);
-
+		SelectedWaypoint(cache, null);
 	}
 
 	public static Cache SelectedCache()
@@ -110,6 +103,10 @@ public class GlobalCore
 		selectedCache = cache;
 		selectedWaypoint = waypoint;
 		SelectedCacheEventList.Call(selectedCache, waypoint);
+
+		// switch off auto select
+		GlobalCore.autoResort = false;
+		Config.settings.AutoResort.setValue(GlobalCore.autoResort);
 	}
 
 	public static void NearestCache(Cache nearest)

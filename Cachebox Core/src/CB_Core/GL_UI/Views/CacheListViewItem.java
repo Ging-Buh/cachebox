@@ -125,7 +125,7 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
 			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, mCache.Latitude(), mCache.Longitude());
 			double cacheBearing = -(bearing - heading);
-			setDistanceString(UnitFormatter.DistanceString(mCache.Distance(false)));
+			setDistanceString(UnitFormatter.DistanceString(mCache.Distance(true)));
 
 			arrow.setRotation((float) cacheBearing);
 			if (arrow.getColor() == DISABLE_COLOR)

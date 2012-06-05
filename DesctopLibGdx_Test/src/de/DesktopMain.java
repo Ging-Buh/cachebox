@@ -100,7 +100,7 @@ public class DesktopMain {
 				public void run() {
 					// Coordinate pos = new
 					// Coordinate("N 52 27.130  E 13 33.117");
-					Coordinate pos = new Coordinate("N 48 00.00  E 12 00.000");
+					Coordinate pos = new Coordinate("N 48 5.929  E 12 07.176");
 					Locator Loc = new Locator();
 
 					Loc.setLocation(pos.Latitude, pos.Longitude, 100, true,
@@ -187,7 +187,7 @@ public class DesktopMain {
 			@Override
 			public void run() {
 				// Coordinate pos = new Coordinate("N 52 27.130  E 13 33.117");
-				Coordinate pos = new Coordinate("N 48 00.00  E 12 00.000");
+				Coordinate pos = new Coordinate("N 48 5.929  E 12 07.176");
 				Locator Loc = new Locator();
 				Bearing += 5;
 				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, 175,
