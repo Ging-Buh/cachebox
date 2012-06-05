@@ -167,9 +167,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		// calculate max Map Tile cache
 		int aTile = 256 * 256;
-		int aScreen = (int) (rec.getWidth() * rec.getHeight());
-		maxTilesPerScreen = aScreen / aTile;
-		maxNumTiles = (int) (maxTilesPerScreen * 10);
+		maxTilesPerScreen = (int) ((rec.getWidth() * rec.getHeight()) / aTile + 0.5);
+		maxNumTiles = maxTilesPerScreen * 10;
 
 		if (queueProcessor == null)
 		{
