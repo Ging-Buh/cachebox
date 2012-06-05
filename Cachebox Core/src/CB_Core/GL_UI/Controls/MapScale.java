@@ -53,12 +53,15 @@ public class MapScale extends CB_View_Base
 
 	float pixelsPerMeter;
 
+	int generatedZomm = -1;
+
 	/**
 	 * Nachdem Zoom verändert wurde müssen einige Werte neu berechnet werden
 	 */
 	public void zoomChanged(MapView mapInstans)
 	{
 		if (mapInstans.pixelsPerMeter <= 0) return;
+		if (mapInstans.getAktZoom() == generatedZomm) return;
 
 		try
 		{

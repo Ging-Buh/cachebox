@@ -125,6 +125,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	int frameRateAction = 30;
 
 	int maxNumTiles = 100;
+	int maxTilesPerScreen = 0;
 	float iconFactor = 1.5f;
 
 	long posx = 8745;
@@ -163,6 +164,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		that = this;
 		registerSkinChangedEvent();
 		setBackground(SpriteCache.ListBack);
+
+		// calculate max Map Tile cache
+		int aTile = 256 * 256;
+		int aScreen = (int) (rec.getWidth() * rec.getHeight());
+		maxTilesPerScreen = aScreen / aTile;
+		maxNumTiles = (int) (maxTilesPerScreen * 10);
+
 		if (queueProcessor == null)
 		{
 			queueProcessor = new queueProcessor();
@@ -1579,6 +1587,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			try
 			{
+
 				do
 				{
 					Descriptor desc = null;
@@ -1656,6 +1665,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 							{
 								LoadTile(desc);
 							}
+
+							if (queuedTiles.size() < maxTilesPerScreen) Thread.sleep(100);
+
 						}
 						catch (Exception ex1)
 						{
@@ -1664,7 +1676,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					}
 					else
 					{
-						Thread.sleep(100);
+						Thread.sleep(200);
 					}
 				}
 				while (true);
@@ -1900,7 +1912,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	private void setZoomScale(int zoom)
 	{
-		Logger.LogCat("set zoom");
+		// Logger.LogCat("set zoom");
 		zoomScale.setZoom(zoom);
 		mapScale.zoomChanged(this);
 	}
