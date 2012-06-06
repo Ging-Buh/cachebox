@@ -125,7 +125,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	int frameRateAction = 30;
 
 	int maxNumTiles = 100;
-	int maxTilesPerScreen = 0;
+	float maxTilesPerScreen = 0;
 	float iconFactor = 1.5f;
 
 	long posx = 8745;
@@ -166,9 +166,28 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		setBackground(SpriteCache.ListBack);
 
 		// calculate max Map Tile cache
-		int aTile = 256 * 256;
-		maxTilesPerScreen = (int) ((rec.getWidth() * rec.getHeight()) / aTile + 0.5);
-		maxNumTiles = maxTilesPerScreen * 10;
+		try
+		{
+			int aTile = 256 * 256;
+			maxTilesPerScreen = (int) ((rec.getWidth() * rec.getHeight()) / aTile + 0.5);
+
+			if (maxTilesPerScreen < 10)
+			{
+				float a = maxTilesPerScreen - 10;
+				maxNumTiles = (int) (-90.0 / 6561.0 * (a * a * a * a) + 108);
+			}
+			else
+			{
+				maxNumTiles = 150;
+			}
+		}
+		catch (Exception e)
+		{
+			maxNumTiles = 100;
+		}
+
+		maxNumTiles = Math.min(maxNumTiles, 150);
+		maxNumTiles = Math.max(maxNumTiles, 15);
 
 		if (queueProcessor == null)
 		{
