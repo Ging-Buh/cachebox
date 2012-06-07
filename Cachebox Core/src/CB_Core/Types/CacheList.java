@@ -84,8 +84,9 @@ public class CacheList extends MoveableList<Cache>
 			// When the next Cache is a mystery with final waypoint
 			// -> activate the final waypoint!!!
 			Waypoint waypoint = nextCache.GetFinalWaypoint();
-			GlobalCore.SelectedWaypoint(nextCache, waypoint);
-			// Global.SelectedCache = Geocaching.Cache.Query[0];
+
+			// do not Change AutoResort Flag when selecting a Cache in the Resort function
+			GlobalCore.SelectedWaypoint(nextCache, waypoint, false);
 			GlobalCore.NearestCache(nextCache);
 		}
 

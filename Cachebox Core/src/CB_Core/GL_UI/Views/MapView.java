@@ -1803,128 +1803,136 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
-		y = mapIntHeight - y;
-		// debugString = "touchDragged: " + x + " - " + y;
-		// debugString = "touchDragged " + inputState.toString();
-		if (inputState == InputState.IdleDown)
+		try
 		{
-			// es wurde 1x gedrückt -> testen, ob ein gewisser Minimum Bereich verschoben wurde
-			Point p = fingerDown.get(pointer);
-			if (p != null)
+			y = mapIntHeight - y;
+			// debugString = "touchDragged: " + x + " - " + y;
+			// debugString = "touchDragged " + inputState.toString();
+			if (inputState == InputState.IdleDown)
 			{
-				if ((Math.abs(p.x - x) > 10) || (Math.abs(p.y - y) > 10))
+				// es wurde 1x gedrückt -> testen, ob ein gewisser Minimum Bereich verschoben wurde
+				Point p = fingerDown.get(pointer);
+				if (p != null)
 				{
-					inputState = InputState.Pan;
-					// GL_Listener.glListener.addRenderView(this, frameRateAction);
-					GL_Listener.glListener.renderOnce(this.getName() + " Dragged");
-					// xxx startTimer(frameRateAction);
-					// xxx ((GLSurfaceView) MapViewGL.ViewGl).requestRender();
+					if ((Math.abs(p.x - x) > 10) || (Math.abs(p.y - y) > 10))
+					{
+						inputState = InputState.Pan;
+						// GL_Listener.glListener.addRenderView(this, frameRateAction);
+						GL_Listener.glListener.renderOnce(this.getName() + " Dragged");
+						// xxx startTimer(frameRateAction);
+						// xxx ((GLSurfaceView) MapViewGL.ViewGl).requestRender();
+					}
+					return false;
 				}
+			}
+			if (inputState == InputState.Button)
+			{
+				// wenn ein Button gedrückt war -> beim Verschieben nichts machen!!!
 				return false;
 			}
-		}
-		if (inputState == InputState.Button)
-		{
-			// wenn ein Button gedrückt war -> beim Verschieben nichts machen!!!
-			return false;
-		}
 
-		if ((inputState == InputState.Pan) && (fingerDown.size() == 1))
-		{
-
-			if (togBtn.getState() > 1 && togBtn.getState() != 2)// für verschieben gesperrt!
+			if ((inputState == InputState.Pan) && (fingerDown.size() == 1))
 			{
+
+				if (togBtn.getState() > 1 && togBtn.getState() != 2)// für verschieben gesperrt!
+				{
+					return false;
+				}
+				else if (togBtn.getState() == 1 || togBtn.getState() == 2)// auf GPS oder WP ausgerichtet und wird jetzt auf Free gestellt
+				{
+					togBtn.setState(0);
+				}
+
+				// Fadein ZoomButtons!
+				zoomBtn.resetFadeOut();
+
+				// GL_Listener.glListener.addRenderView(this, frameRateAction);
+				GL_Listener.glListener.renderOnce(this.getName() + " Pan");
+				// debugString = "";
+				long faktor = getMapTilePosFactor(aktZoom);
+				// debugString += faktor;
+				Point lastPoint = (Point) fingerDown.values().toArray()[0];
+				// debugString += " - " + (lastPoint.x - x) * faktor + " - " + (y - lastPoint.y) * faktor;
+
+				// camera.position.add((lastPoint.x - x) * faktor, (y - lastPoint.y) * faktor, 0);
+				// screenCenterW.x = camera.position.x;
+				// screenCenterW.y = camera.position.y;
+				synchronized (screenCenterT)
+				{
+					double angle = mapHeading * Math.PI / 180;
+					int dx = (lastPoint.x - x);
+					int dy = (y - lastPoint.y);
+					int dxr = (int) (Math.cos(angle) * dx + Math.sin(angle) * dy);
+					int dyr = (int) (-Math.sin(angle) * dx + Math.cos(angle) * dy);
+					debugString = dx + " - " + dy + " - " + dxr + " - " + dyr;
+					screenCenterT.x += (long) (dxr * faktor);
+					screenCenterT.y += (long) (dyr * faktor);
+				}
+				calcCenter();
+
+				// if (kineticPan == null) kineticPan = new KineticPan();
+				// kineticPan.setLast(System.currentTimeMillis(), x, y);
+
+				lastPoint.x = x;
+				lastPoint.y = y;
+			}
+			else if ((inputState == InputState.Zoom) && (fingerDown.size() == 2))
+			{
+				Point p1 = (Point) fingerDown.values().toArray()[0];
+				Point p2 = (Point) fingerDown.values().toArray()[1];
+				float originalDistance = (float) Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+
+				if (fingerDown.containsKey(pointer))
+				{
+					// neue Werte setzen
+					fingerDown.get(pointer).x = x;
+					fingerDown.get(pointer).y = y;
+					p1 = (Point) fingerDown.values().toArray()[0];
+					p2 = (Point) fingerDown.values().toArray()[1];
+				}
+				float currentDistance = (float) Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+				float ratio = originalDistance / currentDistance;
+				camera.zoom = camera.zoom * ratio;
+
+				if (camera.zoom < getMapTilePosFactor(zoomBtn.getMaxZoom()))
+				{
+					camera.zoom = getMapTilePosFactor(zoomBtn.getMaxZoom());
+				}
+				if (camera.zoom > getMapTilePosFactor(zoomBtn.getMinZoom()))
+				{
+					camera.zoom = getMapTilePosFactor(zoomBtn.getMinZoom());
+				}
+
+				// endCameraZoom = camera.zoom;
+
+				System.out.println(camera.zoom);
+				int zoom = MAX_MAP_ZOOM;
+				float tmpZoom = camera.zoom;
+				float faktor = 1.5f;
+				faktor = faktor - iconFactor + 1;
+				while (tmpZoom > faktor)
+				{
+					tmpZoom /= 2;
+					zoom--;
+				}
+				zoomBtn.setZoom(zoom);
+				zoomScale.resetFadeOut();
+				setZoomScale(zoom);
+				zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), true);
+				aktZoom = zoom;
+
+				// debugString = currentDistance + " - " + originalDistance;
 				return false;
 			}
-			else if (togBtn.getState() == 1 || togBtn.getState() == 2)// auf GPS oder WP ausgerichtet und wird jetzt auf Free gestellt
-			{
-				togBtn.setState(0);
-			}
 
-			// Fadein ZoomButtons!
-			zoomBtn.resetFadeOut();
-
-			// GL_Listener.glListener.addRenderView(this, frameRateAction);
-			GL_Listener.glListener.renderOnce(this.getName() + " Pan");
-			// debugString = "";
-			long faktor = getMapTilePosFactor(aktZoom);
-			// debugString += faktor;
-			Point lastPoint = (Point) fingerDown.values().toArray()[0];
-			// debugString += " - " + (lastPoint.x - x) * faktor + " - " + (y - lastPoint.y) * faktor;
-
-			// camera.position.add((lastPoint.x - x) * faktor, (y - lastPoint.y) * faktor, 0);
-			// screenCenterW.x = camera.position.x;
-			// screenCenterW.y = camera.position.y;
-			synchronized (screenCenterT)
-			{
-				double angle = mapHeading * Math.PI / 180;
-				int dx = (lastPoint.x - x);
-				int dy = (y - lastPoint.y);
-				int dxr = (int) (Math.cos(angle) * dx + Math.sin(angle) * dy);
-				int dyr = (int) (-Math.sin(angle) * dx + Math.cos(angle) * dy);
-				debugString = dx + " - " + dy + " - " + dxr + " - " + dyr;
-				screenCenterT.x += (long) (dxr * faktor);
-				screenCenterT.y += (long) (dyr * faktor);
-			}
-			calcCenter();
-
-			// if (kineticPan == null) kineticPan = new KineticPan();
-			// kineticPan.setLast(System.currentTimeMillis(), x, y);
-
-			lastPoint.x = x;
-			lastPoint.y = y;
+			// debugString = "State: " + inputState;
+			return true;
 		}
-		else if ((inputState == InputState.Zoom) && (fingerDown.size() == 2))
+		catch (Exception ex)
 		{
-			Point p1 = (Point) fingerDown.values().toArray()[0];
-			Point p2 = (Point) fingerDown.values().toArray()[1];
-			float originalDistance = (float) Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-
-			if (fingerDown.containsKey(pointer))
-			{
-				// neue Werte setzen
-				fingerDown.get(pointer).x = x;
-				fingerDown.get(pointer).y = y;
-				p1 = (Point) fingerDown.values().toArray()[0];
-				p2 = (Point) fingerDown.values().toArray()[1];
-			}
-			float currentDistance = (float) Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-			float ratio = originalDistance / currentDistance;
-			camera.zoom = camera.zoom * ratio;
-
-			if (camera.zoom < getMapTilePosFactor(zoomBtn.getMaxZoom()))
-			{
-				camera.zoom = getMapTilePosFactor(zoomBtn.getMaxZoom());
-			}
-			if (camera.zoom > getMapTilePosFactor(zoomBtn.getMinZoom()))
-			{
-				camera.zoom = getMapTilePosFactor(zoomBtn.getMinZoom());
-			}
-
-			// endCameraZoom = camera.zoom;
-
-			System.out.println(camera.zoom);
-			int zoom = MAX_MAP_ZOOM;
-			float tmpZoom = camera.zoom;
-			float faktor = 1.5f;
-			faktor = faktor - iconFactor + 1;
-			while (tmpZoom > faktor)
-			{
-				tmpZoom /= 2;
-				zoom--;
-			}
-			zoomBtn.setZoom(zoom);
-			zoomScale.resetFadeOut();
-			setZoomScale(zoom);
-			zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), true);
-			aktZoom = zoom;
-
-			// debugString = currentDistance + " - " + originalDistance;
-			return false;
+			Logger.Error("MapView", "-onTouchDragged Error", ex);
 		}
-
-		// debugString = "State: " + inputState;
-		return true;
+		return false;
 	}
 
 	private void setZoomScale(int zoom)

@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 902;
+	public static final int CurrentRevision = 901;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -100,16 +100,22 @@ public class GlobalCore
 
 	public static void SelectedWaypoint(Cache cache, Waypoint waypoint)
 	{
+		SelectedWaypoint(cache, waypoint, true);
+	}
+
+	// when changeAutoResort == false -> do not change state of autoResort Flag
+	public static void SelectedWaypoint(Cache cache, Waypoint waypoint, boolean changeAutoResort)
+	{
 		selectedCache = cache;
 		selectedWaypoint = waypoint;
 		SelectedCacheEventList.Call(selectedCache, waypoint);
 
-		// temporary removed for testing
-		// if db has corrected coordinates autoresort is immediatdly reset after set
-		// perhaps manually switching autoresort of is doing good as well
-		// switch off auto select
-		// GlobalCore.autoResort = false;
-		// Config.settings.AutoResort.setValue(GlobalCore.autoResort);
+		if (changeAutoResort)
+		{
+			// switch off auto select
+			GlobalCore.autoResort = false;
+			Config.settings.AutoResort.setValue(GlobalCore.autoResort);
+		}
 	}
 
 	public static void NearestCache(Cache nearest)
