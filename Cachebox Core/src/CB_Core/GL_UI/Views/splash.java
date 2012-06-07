@@ -427,16 +427,16 @@ public class splash extends TabMainView
 	{
 		this.removeChildsDirekt();
 
-		selectDBDialog.dispose();
-		descTextView.dispose();
-		versionTextView.dispose();
-		GC_Logo.dispose();
-		FX2_Logo.dispose();
-		LibGdx_Logo.dispose();
-		Mapsforge_Logo.dispose();
-		CB_Logo.dispose();
-		progress.dispose();
-		atlas.dispose();
+		if (selectDBDialog != null) selectDBDialog.dispose();
+		if (descTextView != null) descTextView.dispose();
+		if (versionTextView != null) versionTextView.dispose();
+		if (GC_Logo != null) GC_Logo.dispose();
+		if (FX2_Logo != null) FX2_Logo.dispose();
+		if (LibGdx_Logo != null) LibGdx_Logo.dispose();
+		if (Mapsforge_Logo != null) Mapsforge_Logo.dispose();
+		if (CB_Logo != null) CB_Logo.dispose();
+		if (progress != null) progress.dispose();
+		if (atlas != null) atlas.dispose();
 
 		selectDBDialog = null;
 		descTextView = null;
