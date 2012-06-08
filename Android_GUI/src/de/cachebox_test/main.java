@@ -2776,6 +2776,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case 1:
 			{
 				pd.dismiss();
+				break;
 			}
 
 			case 2:
