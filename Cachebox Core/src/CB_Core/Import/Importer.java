@@ -71,6 +71,15 @@ public class Importer
 			ip.ProgressInkrement("ExtractZip", "", true);
 		}
 
+		try
+		{
+			Thread.sleep(2000);
+		}
+		catch (InterruptedException e2)
+		{
+			e2.printStackTrace();
+		}
+
 		// Import all GPX files
 		File[] FileList = GetFilesToLoad(directoryPath);
 
