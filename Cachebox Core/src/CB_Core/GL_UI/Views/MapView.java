@@ -362,9 +362,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		CB_Core.Events.SelectedCacheEventList.Add(this);
 		CB_Core.Events.PositionChangedEventList.Add(this);
-		this.setVisibility(CB_View_Base.VISIBLE);
-		if (zoomScale != null) zoomScale.setVisibility(CB_View_Base.VISIBLE);
-		if (zoomBtn != null) zoomBtn.setVisibility(CB_View_Base.VISIBLE);
+		// this.setVisibility(CB_View_Base.VISIBLE);
+		// if (zoomScale != null) zoomScale.setVisibility(CB_View_Base.VISIBLE);
+		// if (zoomBtn != null) zoomBtn.setVisibility(CB_View_Base.VISIBLE);
 	}
 
 	@Override
@@ -372,12 +372,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		CB_Core.Events.SelectedCacheEventList.Remove(this);
 		CB_Core.Events.PositionChangedEventList.Remove(this);
-		this.setVisibility(CB_View_Base.INVISIBLE);
-		if (zoomScale != null) zoomScale.setVisibility(CB_View_Base.INVISIBLE);
-		if (zoomBtn != null) zoomBtn.setVisibility(CB_View_Base.INVISIBLE);
+		// this.setVisibility(CB_View_Base.INVISIBLE);
+		// if (zoomScale != null) zoomScale.setVisibility(CB_View_Base.INVISIBLE);
+		// if (zoomBtn != null) zoomBtn.setVisibility(CB_View_Base.INVISIBLE);
 
-		loadedTiles.clear();
-		tilesToDraw.clear();
+		// loadedTiles.clear();
+		// tilesToDraw.clear();
 	}
 
 	@Override
