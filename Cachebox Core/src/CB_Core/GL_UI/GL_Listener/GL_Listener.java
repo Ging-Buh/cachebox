@@ -970,8 +970,9 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public void clearRenderViews()
 	{
+		stopTimer();
 		renderViews.clear();
-		calcNewRenderSpeed();
+
 	}
 
 }
