@@ -6,6 +6,7 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 import CB_Core.Config;
 import CB_Core.InitTestDBs;
+import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.ImageEntry;
@@ -23,7 +24,7 @@ public class searchForGeoCache_Test extends TestCase
 	public void setUp() throws Exception
 	{
 		super.setUp();
-		// LoadConfig();
+		LoadConfig();
 	}
 
 	@Override
@@ -156,6 +157,43 @@ public class searchForGeoCache_Test extends TestCase
 		}
 
 		assertTrue("Nicht den Richtigen Cache gefunden", Assert);
+	}
+
+	public void testChkState()
+	{
+		String accessToken = Config.GetAccessToken();
+
+		ArrayList<Cache> chkList = new ArrayList<Cache>();
+
+		Cache c = new Cache(0.0, 0.0, "", CacheTypes.Traditional, "GC2JT2F");
+
+		chkList.add(c);
+
+		int result = GroundspeakAPI.GetGeocacheStatus(accessToken, chkList);
+
+		boolean Assert = false;
+
+		boolean changedState = false;
+		Cache cacheNew = null;
+		for (Cache cache : chkList)
+		{
+			changedState = cache.Available;
+			cache.Available = !changedState;
+			cacheNew = cache;
+			break;
+		}
+
+		chkList.clear();
+		chkList.add(cacheNew);
+
+		result = GroundspeakAPI.GetGeocacheStatus(accessToken, chkList);
+
+		for (Cache cache : chkList)
+		{
+			if (changedState == cache.Available) Assert = true;
+		}
+
+		assertTrue("Nicht richtig aktualisiert", Assert);
 	}
 
 }

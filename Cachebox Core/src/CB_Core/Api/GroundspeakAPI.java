@@ -21,7 +21,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
@@ -30,7 +29,7 @@ import CB_Core.Types.Trackable;
 
 public class GroundspeakAPI
 {
-	public static final String GS_LIVE_URL = "https://api.groundspeak.com/LiveV6/geocaching.svc/";
+	public static final String GS_LIVE_URL = "https://api.groundspeak.com/LiveV5/geocaching.svc/";
 
 	public static String LastAPIError = "";
 	public static boolean CacheStatusValid = false;
@@ -222,8 +221,7 @@ public class GroundspeakAPI
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
 			requestString += "\"ProfileOptions\":{";
-			requestString += "}" + ",";
-			requestString += getDeviceInfoRequestString();
+			requestString += "}";
 			requestString += "}";
 
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
@@ -581,17 +579,9 @@ public class GroundspeakAPI
 	{
 		try
 		{
-			HttpPost httppost = new HttpPost(GS_LIVE_URL + "GetUsersTrackables?format=json");
+			HttpGet httppost = new HttpGet(GS_LIVE_URL + "GetUsersTrackables?AccessToken=" + accessToken
+					+ "&StartIndex=0&MaxPerPage=30&TrackableLogCount=2&format=json");
 
-			JSONObject request = new JSONObject();
-			request.put("AccessToken", accessToken);
-			request.put("MaxPerPage", 30);
-
-			String requestString = request.toString();
-
-			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
-
-			// Execute HTTP Post Request
 			String result = Execute(httppost);
 
 			try
@@ -729,26 +719,6 @@ public class GroundspeakAPI
 			result += line + "\n";
 		}
 		return result;
-	}
-
-	private static String getDeviceInfoRequestString()
-	{
-		String string = "\"DeviceInfo\":{";
-
-		string += "\"ApplicationCurrentMemoryUsage\":\"" + String.valueOf(2147483647) + "\",";
-		string += "\"ApplicationPeakMemoryUsage\":\"" + String.valueOf(2147483647) + "\",";
-		string += "\"ApplicationSoftwareVersion\":\"" + GlobalCore.getVersionString() + "\",";
-		string += "\"DeviceManufacturer\":\"" + "?\"" + ",";
-		string += "\"DeviceName\":\"" + "?\"" + ",";
-		string += "\"DeviceOperatingSystem\":\"ANDROID\"" + ",";
-		string += "\"DeviceTotalMemoryInMB\":\"" + String.valueOf(1.26743233E+15) + "\",";
-		string += "\"DeviceUniqueId\":\"" + "?\"" + ",";
-		string += "\"MobileHardwareVersion\":\"" + "?\"" + ",";
-		string += "\"WebBrowserVersion\":\"" + "?\"";
-
-		string += "}";
-
-		return string;
 	}
 
 }
