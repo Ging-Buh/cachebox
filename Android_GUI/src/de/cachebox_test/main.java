@@ -235,10 +235,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public LinearLayout searchLayout;
 	private search Search;
 
-	/**
-	 * Night Mode aktive
-	 */
-	public static Boolean N = false;
+	// /**
+	// * Night Mode aktive
+	// */
+	// public static Boolean N = false;
 
 	// Media
 
@@ -372,7 +372,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		Logger.Add(this);
 
-		N = Config.settings.nightMode.getValue();
+		// N = Config.settings.nightMode.getValue();
 
 		setContentView(GlobalCore.isTab ? R.layout.tab_main : R.layout.main);
 
@@ -1414,7 +1414,19 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		else if (ID == ViewConst.SOLVER_VIEW) return solverView = new SolverView(this, inflater);
 		else if (ID == ViewConst.NOTES_VIEW) return notesView = new NotesView(this, inflater);
 		else if (ID == ViewConst.SPOILER_VIEW) return spoilerView = new SpoilerView(this, inflater);
-		else if (ID == ViewConst.DESCRIPTION_VIEW) return descriptionView = new DescriptionView(this, inflater);
+		else if (ID == ViewConst.DESCRIPTION_VIEW)
+		{
+			if (descriptionView != null)
+			{
+				return descriptionView;
+			}
+			else
+			{
+				return descriptionView = new DescriptionView(this, inflater);
+			}
+
+		}
+
 		else if (ID == ViewConst.LOG_VIEW) return logView = new LogView(this);
 		else if (ID == ViewConst.WAYPOINT_VIEW) return waypointView = new WaypointView(this, this);
 		else if (ID == ViewConst.COMPASS_VIEW)
@@ -3478,7 +3490,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 						// set Content size
 
-						if (viewID.getType() != ViewID.UI_Type.Activity)
+						if (viewID.getType() != ViewID.UI_Type.Activity && width > 1)
 						{
 							if (viewID.getPos() == UI_Pos.Left)
 							{
@@ -3643,6 +3655,28 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					startSearchTimer();
 				}
 
+			}
+
+			@Override
+			public void dayNightSwitched()
+			{
+
+				Global.InitIcons(mainActivity);
+				Global.initTheme(mainActivity);
+
+				if (aktViewId == ViewConst.DESCRIPTION_VIEW || aktTabViewId == ViewConst.DESCRIPTION_VIEW)
+				{
+					if (descriptionView.getVisibility() == View.VISIBLE)
+					{
+						if (aktView == descriptionView)
+						{
+							hide(ViewConst.DESCRIPTION_VIEW);
+							descriptionView = null;
+
+						}
+					}
+
+				}
 			}
 
 		});

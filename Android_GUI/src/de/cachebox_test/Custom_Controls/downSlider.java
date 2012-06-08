@@ -154,6 +154,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	private boolean swipeUp = false;
 	private boolean swipeDown = false;
 
+	private boolean initialNight = false;
+
 	private OnTouchListener myTouchListner = new OnTouchListener()
 	{
 
@@ -244,12 +246,13 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		float FSize = ((float) (UiSizes.getScaledFontSize_big() * 1.3));
 
-		if (paint == null)
+		if (paint == null || Config.settings.nightMode.getValue() != initialNight)
 		{
 			paint = new Paint();
 			paint.setColor(Global.getColor(R.attr.TextColor));
 			paint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
 			paint.setAntiAlias(true);
+			initialNight = Config.settings.nightMode.getValue();
 		}
 
 		final Drawable Slide = Global.BtnIcons[0];

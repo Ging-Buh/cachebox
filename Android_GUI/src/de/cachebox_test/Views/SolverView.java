@@ -3,6 +3,7 @@ package de.cachebox_test.Views;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -54,7 +55,8 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	{
 		super(context);
 		mustLoadSolver = false;
-		LinearLayout solverLayout = (LinearLayout) inflater.inflate(main.N ? R.layout.night_solverview : R.layout.solverview, null, false);
+		LinearLayout solverLayout = (LinearLayout) inflater.inflate(Config.settings.nightMode.getValue() ? R.layout.night_solverview
+				: R.layout.solverview, null, false);
 
 		this.addView(solverLayout);
 

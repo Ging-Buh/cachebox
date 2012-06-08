@@ -344,4 +344,13 @@ public class ZoomScale extends CB_View_Base
 		storedRec = null;
 	}
 
+	@Override
+	public void setVisibility(int value)
+	{
+		super.setVisibility(value);
+
+		cancelTimerToFadeOut();
+
+	}
+
 }

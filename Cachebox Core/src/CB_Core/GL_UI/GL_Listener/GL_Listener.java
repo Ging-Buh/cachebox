@@ -265,7 +265,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	public void render()
 	{
 
-		if (!started.get()) return;
+		if (!started.get() || stopRender) return;
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
@@ -947,6 +947,31 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	public boolean scrolled(int amount)
 	{
 		return LibGdx_Host_Control.scrolled(amount);
+	}
+
+	private boolean stopRender = false;
+
+	/**
+	 * Stopt den Rendervorgang bis er durch RestartRender() wieder gestartet wird
+	 */
+	public void StopRender()
+	{
+		stopRender = true;
+	}
+
+	/**
+	 * Startet den Renderer wenn er durch StopRender() gestoppt wurde
+	 */
+	public void RestartRender()
+	{
+		stopRender = false;
+		renderOnce("Restart Render");
+	}
+
+	public void clearRenderViews()
+	{
+		renderViews.clear();
+		calcNewRenderSpeed();
 	}
 
 }

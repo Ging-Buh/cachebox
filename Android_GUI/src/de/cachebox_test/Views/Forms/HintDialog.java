@@ -1,5 +1,6 @@
 package de.cachebox_test.Views.Forms;
 
+import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Math.UiSizes;
 import android.app.Activity;
@@ -9,7 +10,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import de.cachebox_test.R;
-import de.cachebox_test.main;
 
 public class HintDialog extends Activity
 {
@@ -25,7 +25,7 @@ public class HintDialog extends Activity
 
 		setContentView(R.layout.hint);
 
-		if (main.N)
+		if (Config.settings.nightMode.getValue())
 		{
 			this.setTheme(R.style.Theme_night_transparent);
 		}

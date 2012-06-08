@@ -443,4 +443,13 @@ public class ZoomButtons extends CB_View_Base
 
 	}
 
+	@Override
+	public void setVisibility(int value)
+	{
+		super.setVisibility(value);
+
+		cancelTimerToFadeOut();
+
+	}
+
 }

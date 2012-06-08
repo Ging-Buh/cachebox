@@ -19,6 +19,7 @@ package de.cachebox_test.Custom_Controls;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Core.Config;
 import CB_Core.GL_UI.ViewConst;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -76,7 +77,7 @@ public final class invertViewControl extends View
 
 		WebViewLayout.draw(c);
 
-		canvas.drawBitmap(b, 0, 0, main.N ? Global.invertPaint : new Paint());
+		canvas.drawBitmap(b, 0, 0, Config.settings.nightMode.getValue() ? Global.invertPaint : new Paint());
 
 		super.onDraw(canvas);
 
@@ -86,7 +87,7 @@ public final class invertViewControl extends View
 		// Also machen wir das nach 100 msec
 		if (firstDraw)
 		{
-			TimerTask task = new TimerTask()
+			final TimerTask task = new TimerTask()
 			{
 				@Override
 				public void run()
@@ -100,8 +101,11 @@ public final class invertViewControl extends View
 								@Override
 								public void run()
 								{
-									firstDraw = false;
-									((main) main.mainActivity).showView(ViewConst.DESCRIPTION_VIEW);
+									if (firstDraw)
+									{
+										firstDraw = false;
+										((main) main.mainActivity).showView(ViewConst.DESCRIPTION_VIEW);
+									}
 								}
 							});
 						}
@@ -116,6 +120,9 @@ public final class invertViewControl extends View
 			timer.schedule(task, 100);
 
 		}
+
+		b.recycle();
+		b = null;
 
 	}
 

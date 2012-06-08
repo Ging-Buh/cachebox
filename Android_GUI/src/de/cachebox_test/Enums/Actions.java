@@ -15,6 +15,7 @@
  */
 package de.cachebox_test.Enums;
 
+import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Types.MoveableList;
 import android.graphics.drawable.Drawable;
@@ -187,7 +188,7 @@ public enum Actions
 		case 17:
 			return Global.CacheIconsBig[20]; // Parking
 		case 18:
-			return main.N ? Global.Icons[8] : Global.Icons[9]; // NightMode
+			return Config.settings.nightMode.getValue() ? Global.Icons[8] : Global.Icons[9]; // NightMode
 		}
 		return null;
 	}

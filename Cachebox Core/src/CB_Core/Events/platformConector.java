@@ -2,6 +2,7 @@ package CB_Core.Events;
 
 import CB_Core.GL_UI.MenuID;
 import CB_Core.GL_UI.ViewID;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 
 public class platformConector
 {
@@ -20,6 +21,8 @@ public class platformConector
 
 		void menuItemClicked(MenuID ID);
 
+		void dayNightSwitched();
+
 		void firstShow();
 	}
 
@@ -34,6 +37,7 @@ public class platformConector
 	{
 		if (showViewListner != null)
 		{
+			GL_Listener.glListener.clearRenderViews();
 			showViewListner.show(viewID, (int) x, (int) y, (int) width, (int) height);
 		}
 	}
@@ -43,6 +47,14 @@ public class platformConector
 		if (showViewListner != null)
 		{
 			showViewListner.firstShow();
+		}
+	}
+
+	public static void DayNightSwitched()
+	{
+		if (showViewListner != null)
+		{
+			showViewListner.dayNightSwitched();
 		}
 	}
 
@@ -58,6 +70,7 @@ public class platformConector
 	{
 		if (showViewListner != null)
 		{
+			GL_Listener.glListener.clearRenderViews();
 			showViewListner.showForDialog();
 		}
 	}

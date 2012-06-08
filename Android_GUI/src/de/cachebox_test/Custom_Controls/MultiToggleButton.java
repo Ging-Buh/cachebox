@@ -17,6 +17,7 @@ package de.cachebox_test.Custom_Controls;
 
 import java.util.ArrayList;
 
+import CB_Core.Config;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
 import android.content.Context;
@@ -105,7 +106,7 @@ public class MultiToggleButton extends Button implements OnClickListener, OnLong
 		Math.min(chosenWidth, chosenHeight);
 
 		setMeasuredDimension(widthSize, heightSize);
-		this.setBackgroundResource(main.N ? R.drawable.night_btn : R.drawable.day_btn);
+		this.setBackgroundResource(Config.settings.nightMode.getValue() ? R.drawable.night_btn : R.drawable.day_btn);
 	}
 
 	private int chooseDimension(int mode, int size)

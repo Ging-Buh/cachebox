@@ -129,19 +129,6 @@ public class ImportDialog extends Activity
 		checkImportPQfromGC.setOnCheckedChangeListener(checkImportPQfromGC_CheckStateChanged);
 		checkBoxGcVote.setChecked(Config.settings.ImportRatings.getValue());
 
-		// if (Config.settings.PopHost.getValue().length() > 0 &&
-		// Config.GetStringEncrypted("PopLogin").length() > 0
-		// && Config.GetStringEncrypted("PopPassword").length() > 0)
-		// {
-		// checkBoxImportGpxFromMail.setChecked(Config.settings.ImportGpxFromMail.getValue());
-		// checkBoxImportGpxFromMail.setEnabled(true);
-		// }
-		// else
-		// {
-		// checkBoxImportGpxFromMail.setEnabled(false);
-		// checkBoxImportGpxFromMail.setChecked(false);
-		// }
-
 		if (Config.settings.GcAPI.getValue().length() > 0)
 		{
 			checkImportPQfromGC.setChecked(Config.settings.ImportPQsFromGeocachingCom.getValue());

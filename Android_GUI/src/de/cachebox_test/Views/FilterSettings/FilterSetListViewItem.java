@@ -2,6 +2,7 @@ package de.cachebox_test.Views.FilterSettings;
 
 import java.util.ArrayList;
 
+import CB_Core.Config;
 import CB_Core.Math.CB_Rect;
 import CB_Core.Math.UiSizes;
 import android.content.Context;
@@ -16,7 +17,6 @@ import android.text.TextPaint;
 import android.view.View;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
-import de.cachebox_test.main;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Views.FilterSettings.FilterSetListView.FilterSetEntry;
 
@@ -175,7 +175,8 @@ public class FilterSetListViewItem extends View
 	private void drawCollabseButtonItem(Canvas canvas)
 	{
 
-		btnBack = mRes.getDrawable(main.N ? R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal);
+		btnBack = mRes.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_btn_default_normal
+				: R.drawable.day_btn_default_normal);
 
 		Rect bounds = new Rect(3, 7, width - 3, height);
 		btnBack.setBounds(bounds);
@@ -223,8 +224,10 @@ public class FilterSetListViewItem extends View
 	private void drawNumerickItem(Canvas canvas)
 	{
 
-		plusBtn = mRes.getDrawable(main.N ? R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal);
-		minusBtn = mRes.getDrawable(main.N ? R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal);
+		plusBtn = mRes.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_btn_default_normal
+				: R.drawable.day_btn_default_normal);
+		minusBtn = mRes.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_btn_default_normal
+				: R.drawable.day_btn_default_normal);
 
 		lBounds = new CB_Rect(7, 7, height - 7, height - 7);
 		minusBtn.setBounds(lBounds.getX(), lBounds.getY(), lBounds.getWidth(), lBounds.getHeight());

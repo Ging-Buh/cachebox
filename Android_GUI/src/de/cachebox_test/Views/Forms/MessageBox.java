@@ -16,6 +16,7 @@
 
 package de.cachebox_test.Views.Forms;
 
+import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -825,10 +826,10 @@ public class MessageBox extends android.app.Dialog
 		{
 			Resources res = context.getResources();
 
-			Drawable header = res.getDrawable(main.N ? R.drawable.night_header : R.drawable.header);
-			Drawable title = res.getDrawable(main.N ? R.drawable.night_title : R.drawable.title);
-			Drawable center = res.getDrawable(main.N ? R.drawable.night_center : R.drawable.center);
-			Drawable footer = res.getDrawable(main.N ? R.drawable.night_footer : R.drawable.footer);
+			Drawable header = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_header : R.drawable.header);
+			Drawable title = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_title : R.drawable.title);
+			Drawable center = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_center : R.drawable.center);
+			Drawable footer = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_footer : R.drawable.footer);
 
 			((LinearLayout) layout.findViewById(R.id.header)).setBackgroundDrawable(header);
 			((TextView) layout.findViewById(R.id.title)).setBackgroundDrawable(title);

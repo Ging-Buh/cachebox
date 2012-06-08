@@ -390,13 +390,13 @@ public class Global
 	{
 		Drawable ret = null;
 
-		if (NightResId == -1 || !main.N)
+		if (NightResId == -1 || !Config.settings.nightMode.getValue())
 		{
 			ret = res.getDrawable(ResId);
 
 			// im Nacht Mode wird das Drawable mit einem Filter belegt, um es
 			// ein wenig abzudunkeln
-			if (main.N)
+			if (Config.settings.nightMode.getValue())
 			{
 				ret.setColorFilter(Color.argb(255, 100, 100, 100), Mode.MULTIPLY);
 			}
@@ -407,7 +407,7 @@ public class Global
 			ret = res.getDrawable(NightResId);
 		}
 
-		if (!main.N)
+		if (!Config.settings.nightMode.getValue())
 		{
 			ret.clearColorFilter();
 		}
@@ -734,6 +734,8 @@ public class Global
 					R.attr.ToggleBtColor_off, R.attr.ToggleBtColor_on, R.attr.TitleBarBackColor, R.attr.SlideDownBackColor,
 					R.attr.LinkLabelColor, R.attr.Compass_rimColorFilter, R.attr.Compass_faceColorFilter, R.attr.Compass_TextColor,
 					R.attr.Compass_N_TextColor, R.attr.Map_Compass_TextColor, R.attr.Map_ColorCompassPanel };
+
+		context.setTheme(Config.settings.nightMode.getValue() ? R.style.Theme_night : R.style.Theme_day);
 
 		Theme t = context.getTheme();
 		Arrays.sort(colorAttrs);

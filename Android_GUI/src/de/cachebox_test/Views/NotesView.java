@@ -1,11 +1,8 @@
 package de.cachebox_test.Views;
 
+import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
-import de.cachebox_test.R;
-import de.cachebox_test.main;
-import de.cachebox_test.Events.ViewOptionsMenu;
-
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
@@ -16,6 +13,8 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import de.cachebox_test.R;
+import de.cachebox_test.Events.ViewOptionsMenu;
 
 public class NotesView extends FrameLayout implements ViewOptionsMenu
 {
@@ -29,7 +28,8 @@ public class NotesView extends FrameLayout implements ViewOptionsMenu
 		super(context);
 		mustLoadNotes = false;
 
-		RelativeLayout notesLayout = (RelativeLayout) inflater.inflate(main.N ? R.layout.night_notesview : R.layout.notesview, null, false);
+		RelativeLayout notesLayout = (RelativeLayout) inflater.inflate(Config.settings.nightMode.getValue() ? R.layout.night_notesview
+				: R.layout.notesview, null, false);
 		this.addView(notesLayout);
 		edNotes = (EditText) findViewById(R.id.notesText);
 		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());

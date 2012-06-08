@@ -1,5 +1,6 @@
 package de.cachebox_test.Views.Forms;
 
+import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Math.UiSizes;
@@ -32,7 +33,7 @@ public class ParkingDialog extends Activity
 
 		final Intent aktIntent = getIntent();
 
-		if (main.N)
+		if (Config.settings.nightMode.getValue())
 		{
 			this.setTheme(R.style.Theme_night_transparent);
 		}

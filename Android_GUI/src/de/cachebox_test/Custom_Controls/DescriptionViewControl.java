@@ -384,7 +384,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 				// im Day Mode brauchen wir kein InvertView
 				// das sollte mehr Performance geben
-				if (main.N)
+				if (Config.settings.nightMode.getValue())
 				{
 					invertViewControl.Me.setVisibility(VISIBLE);
 				}

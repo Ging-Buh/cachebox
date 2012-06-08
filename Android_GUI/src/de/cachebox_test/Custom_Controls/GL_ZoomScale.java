@@ -19,6 +19,7 @@ package de.cachebox_test.Custom_Controls;
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
+import CB_Core.Config;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
@@ -35,7 +36,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.cachebox_test.Global;
-import de.cachebox_test.main;
 
 /**
  * Enthält die Logik und Render Methoden für die Zoom Scala
@@ -207,7 +207,7 @@ public class GL_ZoomScale
 		Canvas canvas = new Canvas(drawSurface);
 
 		Paint paint = new Paint();
-		paint.setColor(main.N ? Global.getInvertMatrixBlack() : Color.BLACK);
+		paint.setColor(Config.settings.nightMode.getValue() ? Global.getInvertMatrixBlack() : Color.BLACK);
 		canvas.drawLine(centerColumn, topRow, centerColumn, bottomRow, paint);
 
 		// Paint font = new Paint();
@@ -218,7 +218,7 @@ public class GL_ZoomScale
 		// white.setColor(main.N ? Global.getInvertMatrixWhite() : Color.WHITE);
 		// white.setStyle(Style.FILL);
 		Paint black = new Paint();
-		black.setColor(main.N ? Global.getInvertMatrixBlack() : Color.BLACK);
+		black.setColor(Config.settings.nightMode.getValue() ? Global.getInvertMatrixBlack() : Color.BLACK);
 		black.setStyle(Style.STROKE);
 		black.setStrokeWidth(2f);
 

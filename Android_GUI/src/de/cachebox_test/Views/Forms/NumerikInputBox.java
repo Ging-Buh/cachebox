@@ -16,6 +16,7 @@
 
 package de.cachebox_test.Views.Forms;
 
+import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Math.UiSizes;
 import android.app.Activity;
@@ -38,8 +39,7 @@ import de.cachebox_test.main;
 import de.cachebox_test.Ui.ActivityUtils;
 
 /**
- * Zeigt eine InputBox an, in welcher der Benutzer ein Int Wert eintragen kann.
- * Da nicht auf ein Result gewartet werden kann, muss ein
+ * Zeigt eine InputBox an, in welcher der Benutzer ein Int Wert eintragen kann. Da nicht auf ein Result gewartet werden kann, muss ein
  * DialogInterface.OnClickListener() übergeben werden.
  * 
  * @author Longri
@@ -279,8 +279,7 @@ public class NumerikInputBox extends android.app.Dialog
 		}
 
 		/**
-		 * Set a custom content view for the Dialog. If a message is set, the
-		 * contentView is not added to the Dialog...
+		 * Set a custom content view for the Dialog. If a message is set, the contentView is not added to the Dialog...
 		 * 
 		 * @param v
 		 * @return
@@ -448,10 +447,10 @@ public class NumerikInputBox extends android.app.Dialog
 	{
 		Resources res = Builder.context.getResources();
 
-		Drawable header = res.getDrawable(main.N ? R.drawable.night_header : R.drawable.header);
-		Drawable title = res.getDrawable(main.N ? R.drawable.night_title : R.drawable.title);
-		Drawable center = res.getDrawable(main.N ? R.drawable.night_center : R.drawable.center);
-		Drawable footer = res.getDrawable(main.N ? R.drawable.night_footer : R.drawable.footer);
+		Drawable header = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_header : R.drawable.header);
+		Drawable title = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_title : R.drawable.title);
+		Drawable center = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_center : R.drawable.center);
+		Drawable footer = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_footer : R.drawable.footer);
 
 		((LinearLayout) layout.findViewById(R.id.header)).setBackgroundDrawable(header);
 		((TextView) layout.findViewById(R.id.title)).setBackgroundDrawable(title);

@@ -1,28 +1,20 @@
 package CB_Core.GL_UI.Views.TestViews;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
+import CB_Core.Config;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
-import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Dialogs.SolverDialog;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.libGdx_Controls.TextField;
-import CB_Core.GL_UI.libGdx_Controls.WrappedTextField;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -44,100 +36,97 @@ public class TestView extends CB_View_Base
 	public static final String splashMsg = "Team" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009," + br
 			+ "Groundspeak Inc. Used with permission" + br + " " + br + "7.Zeile";
 
+	public static final String FONT_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789][_!$%#@|\\/?-+=()*&.;,{}\"´`'<>";
+
+	private int fontsize = 18;
+
+	Button btn1;
+	Button btn2;
+
 	public TestView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 
 		this.setClickable(true);
 
-		CB_RectF r2 = new CB_RectF(20, 350, 250, 250);
-		wrappedTextField = new WrappedTextField(r2, "TestWrappedTextField");
-		this.addChild(wrappedTextField);
+		setBackground(SpriteCache.ListBack);
 
-		wrappedTextField.setText(splashMsg);
+		bf = new BitmapFontCache(Fonts.getBig());
+		bf.setText("BF Test", 10, 300);
 
-		CB_RectF r3 = new CB_RectF(20, 600, 250, 40);
-		textField = new TextField(r3, "TestTextField");
-		this.addChild(textField);
+		// ####################################################
 
-		textField.setText("Single Line Text");
+		CB_RectF btnRec = new CB_RectF(0, 200, UiSizes.getButtonWidth() * 2, UiSizes.getButtonHeight());
 
-		// ######## Test Invert Image Byte[] #####################################################
-		CB_RectF r4 = new CB_RectF(20, 250, 250, 63);
-		TestButton = new Button(r4, "SolverDialogButton");
-		TestButton.setFont(Fonts.getSmall());
-		TestButton.setText("Invert Image Test");
-		this.addChild(TestButton);
+		btn1 = new Button(btnRec, "");
+		btn2 = new Button(btnRec, "");
 
-		final Image testImage = new Image(new CB_RectF(0, 0, 20, 20), "Test");
-		this.addChild(testImage);
+		btn1.setX(20);
+		btn2.setX(btn1.getMaxX());
 
-		final Image testImage2 = new Image(new CB_RectF(0, 22, 20, 20), "Test");
-		this.addChild(testImage2);
+		this.addChild(btn1);
+		this.addChild(btn2);
 
-		TestButton.setOnClickListener(new OnClickListener()
+		btn1.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-
-				int intBlack = ((0 & 0xFF) << 24) | ((0 & 0xFF) << 16) | ((0 & 0xFF) << 8) | ((0 & 0xFF));
-				int intWhite = ((0 & 0xFF) << 24) | ((255 & 0xFF) << 16) | ((255 & 0xFF) << 8) | ((255 & 0xFF));
-				int intRed = ((0 & 0xFF) << 24) | ((255 & 0xFF) << 16) | ((0 & 0xFF) << 8) | ((0 & 0xFF));
-				int intGreen = ((0 & 0xFF) << 24) | ((0 & 0xFF) << 16) | ((255 & 0xFF) << 8) | ((0 & 0xFF));
-
-				// create Image 2x2 black
-				BufferedImage img = new BufferedImage(2, 2, BufferedImage.TYPE_BYTE_INDEXED);
-
-				img.setRGB(0, 0, intBlack);
-				img.setRGB(1, 0, intWhite);
-				img.setRGB(0, 1, intRed);
-				img.setRGB(1, 1, intGreen);
-
-				ByteArrayOutputStream bas2 = new ByteArrayOutputStream();
-				try
-				{
-					ImageIO.write(img, "png", bas2);
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
-				byte[] data2 = bas2.toByteArray();
-
-				Texture texture2 = new Texture(new Pixmap(data2, 0, data2.length));
-				testImage2.setSprite(new Sprite(texture2));
-
-				// img = ManagerBase.changeColorMatrix(img, ManagerBase.NIGHT_COLOR_MATRIX);
-				//
-				// ByteArrayOutputStream bas = new ByteArrayOutputStream();
-				// try
-				// {
-				// ImageIO.write(img, "png", bas);
-				// }
-				// catch (IOException e)
-				// {
-				// e.printStackTrace();
-				// }
-				// byte[] data = bas.toByteArray();
-				//
-				// Texture texture = new Texture(new Pixmap(data, 0, data.length));
-				// testImage.setSprite(new Sprite(texture));
+				fontsize--;
+				setTTF();
 				return true;
 			}
-
 		});
 
-		// ####### END ##################################################
+		btn2.setOnClickListener(new OnClickListener()
+		{
 
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				fontsize++;
+				setTTF();
+				return true;
+			}
+		});
+
+		setTTF();
 		requestLayout();
 	}
+
+	void setTTF()
+	{
+
+		String costumFontPath = Config.settings.SkinFolder.getValue() + "/calibri.ttf";
+
+		// BitmapFont ttFont = TrueTypeFontFactory.createBitmapFont(Gdx.files.absolute(costumFontPath), FONT_CHARACTERS, fontsize, 7.5f,
+		// 1.0f,
+		// Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		// ttFont.setColor(1f, 0f, 0f, 1f);
+
+		// FreeTypeFontGenerator gen = new FreeTypeFontGenerator(Gdx.files.absolute(costumFontPath));
+		// BitmapFont ttFont = gen.generateFont(44);
+		// gen.dispose();
+		//
+		// ttf = new BitmapFontCache(ttFont);
+		// ttf.setText("BF Test", 10, 300);
+		// ttf.setColor(Color.RED);
+
+		btn1.setText("--");
+		btn2.setText(String.valueOf(fontsize) + "  ++");
+	}
+
+	BitmapFontCache bf;
+	BitmapFontCache ttf;
 
 	@Override
 	protected void render(SpriteBatch batch)
 	{
 		// drawHausVomNikolaus(batch);
+
+		if (bf != null) bf.draw(batch);
+		if (ttf != null) ttf.draw(batch);
 
 		renderDebugInfo(batch);
 	}

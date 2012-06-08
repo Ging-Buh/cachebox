@@ -3,6 +3,7 @@ package de.cachebox_test.Views.FilterSettings;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import CB_Core.Config;
 import CB_Core.Math.CB_Rect;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.GpxFilename;
@@ -18,7 +19,6 @@ import android.text.TextPaint;
 import android.view.View;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
-import de.cachebox_test.main;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Views.FilterSettings.CategorieListView.CategorieEntry;
 
@@ -214,7 +214,8 @@ public class CategorieListViewItem extends View
 	private void drawCollabseButtonItem(Canvas canvas)
 	{
 
-		btnBack = mRes.getDrawable(main.N ? R.drawable.night_btn_default_normal : R.drawable.day_btn_default_normal);
+		btnBack = mRes.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_btn_default_normal
+				: R.drawable.day_btn_default_normal);
 
 		Rect bounds = new Rect(3, 7, width - 3, height - 7);
 		btnBack.setBounds(bounds);

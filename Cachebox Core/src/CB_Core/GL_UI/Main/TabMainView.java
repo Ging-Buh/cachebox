@@ -529,7 +529,7 @@ public class TabMainView extends MainViewBase
 
 	public void switchDayNight()
 	{
-
+		GL_Listener.glListener.StopRender();
 		Config.changeDayNight();
 		ManagerBase.RenderThemeChanged = true;
 		GL_Listener.glListener.onStop();
@@ -553,6 +553,16 @@ public class TabMainView extends MainViewBase
 
 		GL_Listener.glListener.Toast("Switch to " + state, Toast.LENGTH_SHORT);
 
+		platformConector.DayNightSwitched();
+
+		for (GL_View_Base view : this.childs)
+		{
+			if (view instanceof CB_TabView)
+			{
+				((CB_TabView) view).SkinIsChanged();
+			}
+		}
+		GL_Listener.glListener.RestartRender();
 	}
 
 	public void showCacheList()

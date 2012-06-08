@@ -39,7 +39,6 @@ import android.util.Log;
 import android.view.View;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
-import de.cachebox_test.main;
 
 public final class CompassControl extends View
 {
@@ -137,8 +136,8 @@ public final class CompassControl extends View
 		// the linear gradient is a bit skewed for realism
 		rimPaint = new Paint();
 		rimPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-		rimPaint.setShader(new LinearGradient(0.40f, 0.0f, 0.60f, 1.0f, main.N ? Color.rgb(0x40, 0x45, 0x40) : Color.rgb(0xf0, 0xf5, 0xf0),
-				Color.rgb(0x30, 0x31, 0x30), Shader.TileMode.CLAMP));
+		rimPaint.setShader(new LinearGradient(0.40f, 0.0f, 0.60f, 1.0f, Config.settings.nightMode.getValue() ? Color.rgb(0x40, 0x45, 0x40)
+				: Color.rgb(0xf0, 0xf5, 0xf0), Color.rgb(0x30, 0x31, 0x30), Shader.TileMode.CLAMP));
 
 		rimCirclePaint = new Paint();
 		rimCirclePaint.setAntiAlias(true);

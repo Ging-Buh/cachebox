@@ -116,6 +116,9 @@ public class CB_TabView extends CB_View_Base
 
 	public void ShowView(CB_View_Base view)
 	{
+
+		GL_Listener.glListener.clearRenderViews();
+
 		// delete all Views up to the ButtonList
 		if (aktView != null)
 		{
@@ -166,8 +169,7 @@ public class CB_TabView extends CB_View_Base
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
-
+		ShowView(aktView);
 	}
 
 }

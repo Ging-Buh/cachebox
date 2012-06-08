@@ -446,11 +446,11 @@ public class search
 	{
 		Resources res = mPtrMain.getResources();
 
-		Drawable header = res.getDrawable(main.N ? R.drawable.night_header : R.drawable.header);
+		Drawable header = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_header : R.drawable.header);
 		// Drawable title = res.getDrawable(main.N? R.drawable.night_title :
 		// R.drawable.title);
-		Drawable center = res.getDrawable(main.N ? R.drawable.night_center : R.drawable.center);
-		Drawable footer = res.getDrawable(main.N ? R.drawable.night_footer : R.drawable.footer);
+		Drawable center = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_center : R.drawable.center);
+		Drawable footer = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_footer : R.drawable.footer);
 
 		((LinearLayout) mPtrMain.findViewById(R.id.header)).setBackgroundDrawable(header);
 		// ((TextView)

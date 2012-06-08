@@ -162,7 +162,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 			CB_RectF rec = this.ThisWorldRec;
 
 			help.setPos(rec.getX(), rec.getMaxY());
-			GL_Listener.glListener.Toast(help, 4000);
+			GL_Listener.glListener.Toast(help, 2000);
 		}
 
 		return true;
