@@ -46,19 +46,6 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 			if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 
 			batch.begin();
-			// if (hasBackground || hasNinePatchBackground)
-			// {
-			//
-			// if (hasNinePatchBackground)
-			// {
-			// nineBackground.draw(batch, 0, 0, width, height);
-			// }
-			// else
-			// {
-			// batch.draw(Background, 0, 0, width, height);
-			// }
-			//
-			// }
 
 			this.render(batch);
 			batch.end();
@@ -255,8 +242,7 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 	@Override
 	public void OrientationChanged(float heading)
 	{
-		// TODO Auto-generated method stub
-
+		setActLocator();
 	}
 
 	@Override

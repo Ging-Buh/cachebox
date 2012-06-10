@@ -94,6 +94,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 		Initialize();
 		startTime = System.currentTimeMillis();
+
 	}
 
 	@Override
@@ -131,8 +132,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		if (child != null)
 		{
 			child.onShow();
-			renderOnce("Gl_Listner.onStart()");
 		}
+		renderOnce("Gl_Listner.onStart()");
 	}
 
 	public void onStop()

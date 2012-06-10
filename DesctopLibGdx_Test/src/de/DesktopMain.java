@@ -14,6 +14,8 @@ import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.PositionChangedEventList;
+import CB_Core.Events.platformConector;
+import CB_Core.Events.platformConector.IHardwarStateListner;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.TrackPoint;
@@ -47,7 +49,7 @@ public class DesktopMain {
 
 		InitalConfig();
 		
-		Config.settings.TrackRecorderStartup.setValue(true);
+		
 
 		CB_UI = new Desktop_GL_Listner(ui.Window.width, ui.Window.height);
 
@@ -70,6 +72,11 @@ public class DesktopMain {
 		new LwjglApplication(CB_UI, "Game", ui.Window.width, ui.Window.height,
 				false);
 
+		
+		Config.settings.TrackRecorderStartup.setValue(true);
+
+		
+		
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {
 			@Override
@@ -79,6 +86,24 @@ public class DesktopMain {
 		};
 		timer.schedule(task, 600);
 
+		
+		//''''''''''''''''''''''
+		platformConector.setisOnlineListner(new IHardwarStateListner() {
+			
+			@Override
+			public boolean isOnline() {
+				// TODO Auto-generated method stub
+				return true;
+			}
+			
+			@Override
+			public boolean isGPSon() {
+				// TODO Auto-generated method stub
+				return true;
+			}
+		});
+		
+		
 	}
 
 	private static void Run(boolean simulate) {

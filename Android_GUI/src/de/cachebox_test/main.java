@@ -957,7 +957,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (resultCode == RESULT_OK)
 			{
 				// Log.d("DroidCachebox", "Picture taken!!!");
-				GlobalCore.SelectedCache().ReloadSpoilerRessources();
+				if (GlobalCore.SelectedCache() != null) GlobalCore.SelectedCache().ReloadSpoilerRessources();
 				String MediaFolder = Config.settings.UserImageFolder.getValue();
 				String TrackFolder = Config.settings.TrackFolder.getValue();
 				String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");

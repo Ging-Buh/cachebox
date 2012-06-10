@@ -7,6 +7,8 @@ import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
+import CB_Core.Events.PositionChangedEvent;
+import CB_Core.Events.PositionChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.GL_View_Base;
@@ -20,9 +22,10 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
+import CB_Core.Types.Locator;
 import CB_Core.Types.Waypoint;
 
-public class CacheListView extends V_ListView implements CacheListChangedEventListner, SelectedCacheEvent
+public class CacheListView extends V_ListView implements CacheListChangedEventListner, SelectedCacheEvent, PositionChangedEvent
 {
 	private CustomAdapter lvAdapter;
 
@@ -49,6 +52,8 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 
 		CachListChangedEventList.Add(this);
 		SelectedCacheEventList.Add(this);
+		PositionChangedEventList.Add(this);
+
 		lvAdapter = new CustomAdapter(Database.Data.Query);
 		this.setBaseAdapter(lvAdapter);
 
@@ -128,6 +133,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 	{
 		SelectedCacheEventList.Remove(this);
 		CachListChangedEventList.Remove(this);
+		PositionChangedEventList.Remove(this);
 		lvAdapter = null;
 		this.setBaseAdapter(lvAdapter);
 	}
@@ -255,6 +261,24 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 		reloadItems();
 		setBackground(SpriteCache.ListBack);
 		CacheListViewItem.ResetBackground();
+	}
+
+	@Override
+	public void PositionChanged(Locator locator)
+	{
+		GL_Listener.glListener.renderOnce("Core.CacheListView");
+	}
+
+	@Override
+	public void OrientationChanged(float heading)
+	{
+		GL_Listener.glListener.renderOnce("Core.CacheListView");
+	}
+
+	@Override
+	public String getReceiverName()
+	{
+		return "Core.CacheListView";
 	}
 
 }

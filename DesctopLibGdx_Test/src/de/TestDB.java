@@ -68,7 +68,7 @@ public class TestDB extends Database
 
 		try
 		{
-			Connection myDB = DriverManager.getConnection("jdbc:sqlite:" + databasePath);
+			myDB = DriverManager.getConnection("jdbc:sqlite:" + databasePath);
 			myDB.commit();
 			myDB.close();
 
@@ -82,7 +82,7 @@ public class TestDB extends Database
 	@Override
 	public CoreCursor rawQuery(String sql, String[] args)
 	{
-
+		if(myDB==null)return null;
 		ResultSet rs = null;
 
 		try
@@ -141,6 +141,7 @@ public class TestDB extends Database
 	@Override
 	public void execSQL(String sql)
 	{
+		if(myDB==null)return;
 		Statement statement;
 		try
 		{
@@ -158,7 +159,8 @@ public class TestDB extends Database
 	@Override
 	public long update(String tablename, Parameters val, String whereClause, String[] whereArgs)
 	{
-
+		if(myDB==null)return 0;
+		
 		StringBuilder sql = new StringBuilder();
 
 		sql.append("update ");
@@ -216,7 +218,7 @@ public class TestDB extends Database
 	@Override
 	public long insert(String tablename, Parameters val)
 	{
-
+if(myDB==null)return 0;
 		StringBuilder sql = new StringBuilder();
 
 		sql.append("insert into ");
@@ -273,7 +275,7 @@ public class TestDB extends Database
 	@Override
 	public long delete(String tablename, String whereClause, String[] whereArgs)
 	{
-
+		if(myDB==null)return 0;
 		StringBuilder sql = new StringBuilder();
 
 		sql.append("delete from ");
@@ -312,7 +314,7 @@ public class TestDB extends Database
 	{
 		try
 		{
-			myDB.setAutoCommit(false);
+			if(myDB!=null)myDB.setAutoCommit(false);
 		}
 		catch (SQLException e)
 		{
@@ -326,7 +328,7 @@ public class TestDB extends Database
 	{
 		try
 		{
-			myDB.commit();
+			if(myDB!=null)myDB.commit();
 		}
 		catch (SQLException e)
 		{
@@ -340,7 +342,7 @@ public class TestDB extends Database
 	{
 		try
 		{
-			myDB.setAutoCommit(true);
+			if(myDB!=null)myDB.setAutoCommit(true);
 		}
 		catch (SQLException e)
 		{
@@ -353,6 +355,8 @@ public class TestDB extends Database
 	@Override
 	public long insertWithConflictReplace(String tablename, Parameters val)
 	{
+		if(myDB==null)return 0;
+		
 		StringBuilder sql = new StringBuilder();
 
 		sql.append("insert OR REPLACE into ");
@@ -409,6 +413,8 @@ public class TestDB extends Database
 	@Override
 	public long insertWithConflictIgnore(String tablename, Parameters val)
 	{
+		if(myDB!=null) return 0;
+		
 		StringBuilder sql = new StringBuilder();
 
 		sql.append("insert OR IGNORE into ");
@@ -464,6 +470,10 @@ public class TestDB extends Database
 
 	@Override
 	public int getCacheCountInDB(String filename) {
+		
+		if(myDB==null)return 0;
+		
+		
 		int count = 0;
 		Connection myDB = null;
 		try {
