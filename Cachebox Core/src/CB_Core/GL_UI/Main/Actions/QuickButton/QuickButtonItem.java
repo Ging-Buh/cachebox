@@ -133,7 +133,7 @@ public class QuickButtonItem extends ListViewItemBase
 				autoResortState = 0;
 			}
 		}
-		else if (mAction.getName().equals("Spoiler"))
+		else if (mAction.getName().toLowerCase().equals("spoiler"))
 		{
 
 			if (mAction.getEnabled() && spoilerState != 1)
