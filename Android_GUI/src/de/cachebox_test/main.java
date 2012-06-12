@@ -179,7 +179,6 @@ import de.cachebox_test.Views.FilterSettings.EditFilterSettings;
 import de.cachebox_test.Views.Forms.ApiSearchPosDialog;
 import de.cachebox_test.Views.Forms.DeleteDialog;
 import de.cachebox_test.Views.Forms.GcApiLogin;
-import de.cachebox_test.Views.Forms.HintDialog;
 import de.cachebox_test.Views.Forms.ImportDialog;
 import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.ParkingDialog;
@@ -1743,9 +1742,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case R.id.miSpoilerView:
 				showView(ViewConst.SPOILER_VIEW);
 				break;
-			case R.id.miHint:
-				showHint();
-				break;
 			case R.id.miFieldNotes:
 				showView(ViewConst.FIELD_NOTES_VIEW);
 				openOptionsMenu();
@@ -2205,19 +2201,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		final Intent delIntent = new Intent().setClass(mainActivity, DeleteDialog.class);
 		mainActivity.startActivityForResult(delIntent, Global.REQUEST_CODE_DELETE_DIALOG);
-	}
-
-	private void showHint()
-	{
-		if (GlobalCore.SelectedCache() == null) return;
-		String hint = Database.Hint(GlobalCore.SelectedCache());
-		if (hint.equals("")) return;
-
-		final Intent hintIntent = new Intent().setClass(mainActivity, HintDialog.class);
-		Bundle b = new Bundle();
-		b.putSerializable("Hint", hint);
-		hintIntent.putExtras(b);
-		mainActivity.startActivity(hintIntent);
 	}
 
 	private void showJoker()

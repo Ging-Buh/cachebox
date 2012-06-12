@@ -190,7 +190,7 @@ public class UiSizes
 
 	public static int getButtonWidthWide()
 	{
-		return (int) (Button.width * 1.8);
+		return (int) (Button.width * 1.6);
 	}
 
 	public static int getQuickButtonHeight()
