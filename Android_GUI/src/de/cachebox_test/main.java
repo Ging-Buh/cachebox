@@ -2647,6 +2647,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 
 			onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
+			// MapView benachrichtigen, dass die Waypoint-Liste aktualisiert werden muﬂ!!!
 			return null;
 		}
 
@@ -2759,7 +2760,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case 1:
 			{
 				pd.dismiss();
-				break;
 			}
 
 			case 2:
@@ -3530,6 +3530,30 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					@Override
 					public void run()
 					{
+						if (GlobalCore.isTab)
+						{
+							if (viewID.getPos() == UI_Pos.Left)
+							{
+								if (!(aktView == null) && viewID == aktViewId)
+								{
+									aktView.OnHide();
+								}
+							}
+							else
+							{
+								if (!(aktTabView == null) && viewID == aktViewId)
+								{
+									aktTabView.OnHide();
+								}
+							}
+						}
+						else
+						{
+							if (!(aktView == null) && viewID == aktViewId)
+							{
+								aktView.OnHide();
+							}
+						}
 						if (aktTabViewId != null && aktTabViewId == viewID && aktTabViewId.getPos() == UI_Pos.Right)
 						{
 							tabFrame.setVisibility(View.INVISIBLE);
