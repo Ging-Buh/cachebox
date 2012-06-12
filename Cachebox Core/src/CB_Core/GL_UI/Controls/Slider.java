@@ -1,6 +1,8 @@
 package CB_Core.GL_UI.Controls;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
+import CB_Core.Plattform;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.CB_View_Base;
@@ -72,7 +74,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		mLblCacheName.setPos(30, 0);
 		mLblCacheName.setHAlignment(HAlignment.CENTER);
 		mSlideBox.addChild(mLblCacheName);
-		this.addChild(mSlideBox);
+		if (GlobalCore.platform == Plattform.Desktop) this.addChild(mSlideBox);
 
 		Pixmap p = new Pixmap(2, 2, Pixmap.Format.RGBA8888);
 		Pixmap.setBlending(Blending.None);

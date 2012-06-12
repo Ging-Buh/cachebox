@@ -855,7 +855,7 @@ public class search
 
 			Coordinate searchCoord = null;
 
-			if (MapView.that.isVisible())
+			if (MapView.that != null && MapView.that.isVisible())
 			{
 				searchCoord = MapView.that.center;
 			}
