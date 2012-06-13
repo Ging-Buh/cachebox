@@ -49,25 +49,27 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 		{
 			Logger.Error("slpash.Initial()", "search number of DB3 files", ex);
 		}
-		if ((fileList.size() > 1) && Config.settings.MultiDBAsk.getValue())
+
+		SelectDB selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL_Listener.glListener.getWidth(), GL_Listener.glListener.getHeight()),
+				"SelectDbDialog");
+		selectDBDialog.setReturnListner(new ReturnListner()
 		{
-			SelectDB selectDBDialog = new SelectDB(
-					new CB_RectF(0, 0, GL_Listener.glListener.getWidth(), GL_Listener.glListener.getHeight()), "SelectDbDialog");
-			selectDBDialog.setReturnListner(new ReturnListner()
+			@Override
+			public void back()
 			{
-				@Override
-				public void back()
-				{
-					returnFromSelectDB();
-				}
-			});
-			GL_Listener.glListener.showDialog(selectDBDialog);
-		}
+				returnFromSelectDB();
+			}
+		});
+		GL_Listener.glListener.showDialog(selectDBDialog);
+
 	}
 
 	private void returnFromSelectDB()
 	{
 		GL_Listener.glListener.closeDialog();
+
+		// TODO show Wait Dialog
+
 		Config.settings.ReadFromDB();
 
 		GlobalCore.Categories = new Categories();
@@ -89,6 +91,8 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 		GlobalCore.SelectedCache(null);
 		GlobalCore.SelectedWaypoint(null, null);
 		CachListChangedEventList.Call();
+
+		// TODO Close Wait Dialog
 
 	}
 }

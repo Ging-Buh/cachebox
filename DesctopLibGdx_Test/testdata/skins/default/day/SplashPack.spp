@@ -47,8 +47,8 @@ mapsforge_logo
 splash_back
   rotate: false
   xy: 1, 177
-  size: 230, 389
-  orig: 230, 389
+  size: 161, 272
+  orig: 161, 272
   offset: 0, 0
   index: -1
 cachebox_logo

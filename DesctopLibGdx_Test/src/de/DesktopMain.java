@@ -62,12 +62,17 @@ public class DesktopMain {
 
 		int sw = ui.Window.height > ui.Window.width ? ui.Window.width
 				: ui.Window.height;
+		
+		// chek if use small skin
+				GlobalCore.useSmallSkin = sw < 360 ? true : false;
+		
 		sw /= ui.Density;
 
 		// chek if tablet
-
 		GlobalCore.isTab = sw > 400 ? true : false;
 
+		
+		
 		UiSizes.initial(ui);
 		new LwjglApplication(CB_UI, "Game", ui.Window.width, ui.Window.height,
 				false);

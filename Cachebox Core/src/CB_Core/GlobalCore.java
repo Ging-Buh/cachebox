@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 916;
+	public static final int CurrentRevision = 917;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -69,6 +69,8 @@ public class GlobalCore
 	 * Wird im Splash gesetzt und ist True, wenn es sich um ein Tablet handelt!
 	 */
 	public static boolean isTab = false;
+
+	public static boolean useSmallSkin = false;
 
 	public static LangStrings Translations = new LangStrings();
 

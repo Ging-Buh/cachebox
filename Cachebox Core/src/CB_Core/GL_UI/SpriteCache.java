@@ -16,13 +16,11 @@
 
 package CB_Core.GL_UI;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -70,14 +68,39 @@ public class SpriteCache
 	private static String PathDefaultNight;
 	private static String PathCostumNight;
 
+	private static TextureAtlas atlasDefault;
+	private static TextureAtlas atlasDefaultNight;
+	private static TextureAtlas atlasCostum;
+	private static TextureAtlas atlasCostumtNight;
+
+	private static Boolean atlasDefaultIsNeverUsed = true;
+	private static Boolean atlasDefaultNightIsNeverUsed = true;
+	private static Boolean atlasCostumIsNeverUsed = true;
+	private static Boolean atlasCostumtNightIsNeverUsed = true;
+
 	private static void setPath(String path)
 	{
+
+		atlasDefaultIsNeverUsed = true;
+		atlasDefaultNightIsNeverUsed = true;
+		atlasCostumIsNeverUsed = true;
+		atlasCostumtNightIsNeverUsed = true;
+
 		PathCostum = path + "/day/UI_IconPack.spp";
 		PathCostumNight = path + "/night/UI_IconPack.spp";
 
 		String defaultPath = path;
 		int pos = defaultPath.lastIndexOf("/");
-		defaultPath = defaultPath.substring(0, pos) + "/default";
+		if (GlobalCore.useSmallSkin)
+		{
+			defaultPath = defaultPath.substring(0, pos) + "/small";
+			PathCostum = "";
+			PathCostumNight = "";
+		}
+		else
+		{
+			defaultPath = defaultPath.substring(0, pos) + "/default";
+		}
 
 		PathDefault = defaultPath + "/day/UI_IconPack.spp";
 		PathDefaultNight = defaultPath + "/night/UI_IconPack.spp";
@@ -113,11 +136,6 @@ public class SpriteCache
 
 	}
 
-	static TextureAtlas atlasDefault;
-	static TextureAtlas atlasDefaultNight;
-	static TextureAtlas atlasCostum;
-	static TextureAtlas atlasCostumtNight;
-
 	public static Sprite getThemedSprite(String name)
 	{
 		Sprite tmp = null;
@@ -129,11 +147,27 @@ public class SpriteCache
 				tmp = createSprite(atlasCostum, name);
 				if (tmp != null) tmp = setNightColorMatrix(name, atlasCostum);
 			}
+			else
+			{
+				atlasCostumtNightIsNeverUsed = false;
+			}
+
 			if (tmp == null)
 			{
 				tmp = createSprite(atlasDefaultNight, name);
 
-				if (tmp == null) tmp = setNightColorMatrix(name, atlasDefault);
+				if (tmp == null)
+				{
+					tmp = setNightColorMatrix(name, atlasDefault);
+				}
+				else
+				{
+					atlasDefaultNightIsNeverUsed = false;
+				}
+			}
+			else
+			{
+				atlasCostumIsNeverUsed = false;
 			}
 
 		}
@@ -145,6 +179,10 @@ public class SpriteCache
 		if (tmp == null)
 		{
 			tmp = createSprite(atlasDefault, name);
+		}
+		else
+		{
+			atlasCostumIsNeverUsed = false;
 		}
 
 		return tmp;
@@ -408,16 +446,16 @@ public class SpriteCache
 		synchronized (Icons)
 		{
 			Icons.clear();
-			Icons.add(getThemedSprite("btn_default_normal"));// 0
+			Icons.add(getThemedSprite("btn_normal"));// 0
 			Icons.add(getThemedSprite("button"));// 1
 			Icons.add(getThemedSprite("doc_icon"));// 2
-			Icons.add(getThemedSprite("big_16"));// 3
+			Icons.add(getThemedSprite("big16icon"));// 3
 			Icons.add(getThemedSprite("list_icon")); // 4 LogView braucht noch ein Icon
 			Icons.add(getThemedSprite("map")); // 5
 			Icons.add(getThemedSprite("compass"));// 6
 			Icons.add(getThemedSprite("cache_list_icon"));// 7
 			Icons.add(getThemedSprite("track_list_icon")); // 8
-			Icons.add(getThemedSprite("log10"));// 9
+			Icons.add(getThemedSprite("log10icon"));// 9
 			Icons.add(getThemedSprite("video_icon")); // 10
 			Icons.add(getThemedSprite("voice_rec_icon"));// 11
 			Icons.add(getThemedSprite("lupe")); // 12
@@ -467,6 +505,8 @@ public class SpriteCache
 		ListBack = new NinePatch(getThemedSprite("background"), 1, 1, 1, 1);
 		ButtonBack = getThemedSprite("button_list_back");
 		AboutBack = getThemedSprite("splash_back");
+
+		// cleanUp();
 	}
 
 	private static void loadButtnSprites()
@@ -508,57 +548,35 @@ public class SpriteCache
 		QuickButton = null;
 	}
 
-}
-
-class ZLIB
-{
-	static final int BLOCK_SIZE = 32000;
-
-	public static byte[] toZLIB(byte[] raw) throws IOException
+	private static void cleanUp()
 	{
-		ByteArrayOutputStream baos = new ByteArrayOutputStream(raw.length + 6 + (raw.length / BLOCK_SIZE) * 5);
-		DataOutputStream zlib = new DataOutputStream(baos);
 
-		byte tmp = (byte) 8;
-		zlib.writeByte(tmp); // CM = 8, CMINFO = 0
-		zlib.writeByte((31 - ((tmp << 8) % 31)) % 31); // FCHECK (FDICT/FLEVEL=0)
+		// die TextureAtlanten, welche nicht benutzt werden, werden hier Disposed
 
-		int pos = 0;
-		while (raw.length - pos > BLOCK_SIZE)
+		if (atlasDefaultIsNeverUsed && atlasDefault != null)
 		{
-			writeUncompressedDeflateBlock(zlib, false, raw, pos, (char) BLOCK_SIZE);
-			pos += BLOCK_SIZE;
+			atlasDefault.dispose();
+			atlasDefault = null;
 		}
 
-		writeUncompressedDeflateBlock(zlib, true, raw, pos, (char) (raw.length - pos));
-
-		// zlib check sum of uncompressed data
-		zlib.writeInt(calcADLER32(raw));
-
-		return baos.toByteArray();
-	}
-
-	private static void writeUncompressedDeflateBlock(DataOutputStream zlib, boolean last, byte[] raw, int off, char len)
-			throws IOException
-	{
-		zlib.writeByte((byte) (last ? 1 : 0)); // Final flag, Compression type 0
-		zlib.writeByte((byte) (len & 0xFF)); // Length LSB
-		zlib.writeByte((byte) ((len & 0xFF00) >> 8)); // Length MSB
-		zlib.writeByte((byte) (~len & 0xFF)); // Length 1st complement LSB
-		zlib.writeByte((byte) ((~len & 0xFF00) >> 8)); // Length 1st complement MSB
-		zlib.write(raw, off, len); // Data
-	}
-
-	private static int calcADLER32(byte[] raw)
-	{
-		int s1 = 1;
-		int s2 = 0;
-		for (int i = 0; i < raw.length; i++)
+		if (atlasDefaultNightIsNeverUsed && atlasDefaultNight != null)
 		{
-			int abs = raw[i] >= 0 ? raw[i] : (raw[i] + 256);
-			s1 = (s1 + abs) % 65521;
-			s2 = (s2 + s1) % 65521;
+			atlasDefaultNight.dispose();
+			atlasDefaultNight = null;
 		}
-		return (s2 << 16) + s1;
+
+		if (atlasCostumIsNeverUsed && atlasCostum != null)
+		{
+			atlasCostum.dispose();
+			atlasCostum = null;
+		}
+
+		if (atlasCostumtNightIsNeverUsed && atlasCostumtNight != null)
+		{
+			atlasCostumtNight.dispose();
+			atlasCostumtNight = null;
+		}
+
 	}
+
 }

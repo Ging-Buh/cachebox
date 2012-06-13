@@ -72,8 +72,10 @@ public class splash extends Activity
 		sw /= GlobalCore.displayDensity;
 
 		// check if tablet
-
 		GlobalCore.isTab = sw > 400 ? true : false;
+
+		// chek if use small skin
+		GlobalCore.useSmallSkin = sw < 200 ? true : false;
 
 		// check if Layout forced from User
 		workPath = Environment.getExternalStorageDirectory() + "/cachebox";

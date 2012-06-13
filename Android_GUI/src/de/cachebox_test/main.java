@@ -2758,16 +2758,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			switch (msg.what)
 			{
 			case 1:
-			{
+
 				pd.dismiss();
-			}
+				break;
 
 			case 2:
-			{
+
 				pd.dismiss();
 				MessageBox.Show(GlobalCore.Translations.Get("errorAPI"), GlobalCore.Translations.Get("Error"), MessageBoxIcon.Error);
 				break;
-			}
 
 			}
 		}
