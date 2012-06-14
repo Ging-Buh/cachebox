@@ -233,6 +233,8 @@ public class ApiPQDialog extends Activity implements ViewOptionsMenu
 					row = inflater.inflate(R.layout.pq_list_view_item, parent, false);
 				}
 
+				row.setBackgroundColor(Global.getColor(R.attr.ListBackground));
+
 				TextView label = (TextView) row.findViewById(R.id.textView1);
 				label.setText(pq.Name);
 				label.setTextSize(UiSizes.getScaledFontSize());

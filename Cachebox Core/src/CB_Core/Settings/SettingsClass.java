@@ -126,7 +126,7 @@ public class SettingsClass extends SettingsList
 
 	// String
 	public SettingString CurrentMapLayer;
-
+	public SettingString LastSelectedCache;
 	public SettingString NavigationProvider;
 	public SettingString FoundTemplate;
 	public SettingString DNFTemplate;
@@ -195,6 +195,7 @@ public class SettingsClass extends SettingsList
 		SettingCategory cat = SettingCategory.Misc;
 
 		addSetting(Filter = new SettingLongString("Filter", cat, NEVER, FilterProperties.presets[0].toString(), false));
+		addSetting(LastSelectedCache = new SettingString("LastSelectedCache", cat, NORMAL, "", false));
 		// addSetting(SaveFieldNotesHtml = new SettingBool("SaveFieldNotesHtml", cat, NORMAL, true, true));
 		// addSetting(AllowInternetAccess = new SettingBool("AllowInternetAccess", cat, NORMAL, true, true));
 		// addSetting(AllowRouteInternet = new SettingBool("AllowRouteInternet", cat, NORMAL, true, true));
@@ -217,6 +218,7 @@ public class SettingsClass extends SettingsList
 		addSetting(MapViewFontFaktor = new SettingDouble("MapViewFontFaktor", SettingCategory.Map, EXPERT, 1.0, true));
 		addSetting(vibrateFeedback = new SettingBool("vibrateFeedback", cat, NORMAL, true, true));
 		addSetting(LongClicktime = new SettingInt("LongClicktime", cat, NORMAL, 600, true));
+
 	}
 
 	private void addTemplateSettings()

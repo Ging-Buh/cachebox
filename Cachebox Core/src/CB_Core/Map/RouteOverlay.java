@@ -249,16 +249,6 @@ public class RouteOverlay
 					+ (hour < 10 ? "0" : "") + hour + ":" + (minute < 10 ? "0" : "") + minute + ":" + (second < 10 ? "0" : "") + second
 					+ "Z";
 
-			// XXX : mchr : What purpose does this output have?
-			if (dateString.toLowerCase().equals(reconstruct.toLowerCase()))
-			{
-				System.out.println("Same");
-			}
-			else
-			{
-				System.out.println(dateString + " not same as " + reconstruct);
-			}
-
 			Calendar calendar = Calendar.getInstance();
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.MONTH, month);

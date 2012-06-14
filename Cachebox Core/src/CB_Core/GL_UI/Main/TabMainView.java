@@ -6,6 +6,7 @@ import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.TrackRecorder;
+import CB_Core.DB.Database;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -59,6 +60,7 @@ import CB_Core.Map.RouteOverlay;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.UiSizes;
+import CB_Core.Types.Cache;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -198,6 +200,20 @@ public class TabMainView extends MainViewBase
 		if (Config.settings.TrackRecorderStartup.getValue() && platformConector.isGPSon())
 		{
 			TrackRecorder.StartRecording();
+		}
+
+		// set last selected Cache
+		String sGc = Config.settings.LastSelectedCache.getValue();
+		if (sGc != null && !sGc.equals(""))
+		{
+			for (Cache c : Database.Data.Query)
+			{
+				if (c.GcCode.equalsIgnoreCase(sGc))
+				{
+					GlobalCore.SelectedCache(c);
+					break;
+				}
+			}
 		}
 
 		platformConector.FirstShow();

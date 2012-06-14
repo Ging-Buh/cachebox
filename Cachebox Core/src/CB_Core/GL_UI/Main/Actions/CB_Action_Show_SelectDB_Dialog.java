@@ -13,6 +13,7 @@ import CB_Core.GL_UI.Controls.Dialogs.SelectDB.ReturnListner;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -91,6 +92,20 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 		GlobalCore.SelectedCache(null);
 		GlobalCore.SelectedWaypoint(null, null);
 		CachListChangedEventList.Call();
+
+		// set last selected Cache
+		String sGc = Config.settings.LastSelectedCache.getValue();
+		if (sGc != null && !sGc.equals(""))
+		{
+			for (Cache c : Database.Data.Query)
+			{
+				if (c.GcCode.equalsIgnoreCase(sGc))
+				{
+					GlobalCore.SelectedCache(c);
+					break;
+				}
+			}
+		}
 
 		// TODO Close Wait Dialog
 
