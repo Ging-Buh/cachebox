@@ -8,6 +8,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -189,5 +191,21 @@ public class Fonts
 	public static BitmapFont get15_Out()
 	{
 		return Config.settings.nightMode.getValue() ? night_fontAB15_out : fontAB15_out;
+	}
+
+	public static TextBounds Mesure(String txt)
+	{
+		BitmapFontCache mesure = new BitmapFontCache(Fonts.getNormal());
+		TextBounds bounds = mesure.setText(txt, 0, 0);
+		mesure.dispose();
+		return bounds;
+	}
+
+	public static TextBounds MesureWrapped(String txt, float width)
+	{
+		BitmapFontCache mesure = new BitmapFontCache(Fonts.getNormal());
+		TextBounds bounds = mesure.setWrappedText(txt, 0, 0, width);
+		mesure.dispose();
+		return bounds;
 	}
 }

@@ -1,5 +1,8 @@
 package CB_Core.GL_UI.Views.TestViews;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import CB_Core.Config;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.DrawUtils;
@@ -8,6 +11,7 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialogs.SolverDialog;
+import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
@@ -42,6 +46,7 @@ public class TestView extends CB_View_Base
 
 	Button btn1;
 	Button btn2;
+	WaitDialog wd;
 
 	public TestView(CB_RectF rec, String Name)
 	{
@@ -73,8 +78,22 @@ public class TestView extends CB_View_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				fontsize--;
-				setTTF();
+				// fontsize--;
+				// setTTF();
+
+				wd = WaitDialog
+						.ShowWait("Bitte warten mit umgebrochenen Text, weil er sehr lang ist und das Icon dann oben gezeichnet werden soll");
+
+				Timer timer = new Timer();
+				TimerTask task = new TimerTask()
+				{
+					@Override
+					public void run()
+					{
+						if (wd != null) wd.dismis();
+					}
+				};
+				timer.schedule(task, 7000);
 				return true;
 			}
 		});
@@ -85,9 +104,23 @@ public class TestView extends CB_View_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				fontsize++;
-				setTTF();
+				// fontsize++;
+				// setTTF();
+
+				wd = WaitDialog.ShowWait("Bitte warten");
+
+				Timer timer = new Timer();
+				TimerTask task = new TimerTask()
+				{
+					@Override
+					public void run()
+					{
+						if (wd != null) wd.dismis();
+					}
+				};
+				timer.schedule(task, 7000);
 				return true;
+
 			}
 		});
 

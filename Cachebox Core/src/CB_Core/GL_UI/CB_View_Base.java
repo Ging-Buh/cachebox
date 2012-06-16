@@ -156,4 +156,10 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		return childs.get(i);
 	}
 
+	@Override
+	public String toString()
+	{
+		return getName() + " X,Y/Width,Height = " + this.getX() + "," + this.getY() + "/" + this.width + "," + this.height;
+	}
+
 }

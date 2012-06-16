@@ -10,9 +10,9 @@ import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
+import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -34,13 +34,16 @@ public abstract class Dialog extends CB_View_Base
 	protected float mTitleVersatz = 6;
 	protected boolean mHasTitle = false;
 
-	protected float mHeaderHight = 20;
-	protected float mFooterHeight = 20;
+	protected float mHeaderHight = 200;
+	protected float mFooterHeight = 200;
+
+	protected static float margin = 5f;
 
 	public Dialog(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-
+		mHeaderHight = margin = calcHeaderHeight();
+		mFooterHeight = calcFooterHeight(false);
 	}
 
 	@Override
@@ -63,18 +66,25 @@ public abstract class Dialog extends CB_View_Base
 	protected void Initial()
 	{
 		super.removeChildsDirekt();
+		mTitleHeight = 0;
+
+		// calcBase
+		int pW = (int) (SpriteCache.Dialog.get(2).getWidth() / 8);
 
 		if (mTitle != null && !mTitle.equals(""))
 		{
 			mHasTitle = true;
-			mTitleHeight = 40;
 
-			BitmapFontCache mesure = new BitmapFontCache(Fonts.getNormal());
-			TextBounds bounds = mesure.setText(mTitle, 0, 0);
-			mTitleWidth = bounds.width + 40;
-			if (mTitleWidth > this.width) mTitleWidth = this.width - 10;
+			TextBounds bounds = Fonts.Mesure(mTitle);
+			mTitleWidth = bounds.width + (6.666f * pW);
+			if (mTitleWidth > this.width) mTitleWidth = this.width - (1.666f * pW);
 
-			Label titleLabel = new Label(new CB_RectF(10, this.height - 30, mTitleWidth - 25, 20), "DialogTitleLabel");
+			mTitleHeight = bounds.height * 1.6f;
+
+			bounds = null;
+
+			Label titleLabel = new Label(new CB_RectF((1.666f * pW), this.height - (5f * pW), mTitleWidth - (4.1666f * pW), (3.333f * pW)),
+					"DialogTitleLabel");
 			titleLabel.setFont(Fonts.getNormal());
 			titleLabel.setText(mTitle);
 
@@ -85,7 +95,7 @@ public abstract class Dialog extends CB_View_Base
 		mContent = new Box(this.ScaleCenter(0.95f), "Dialog Content Box");
 		mContent.setHeight(this.height - mHeaderHight - mFooterHeight - mTitleHeight);
 		float centerversatzX = this.halfWidth - mContent.getHalfWidth();
-		float centerversatzY = this.halfHeight - mContent.getHalfHeight();
+		float centerversatzY = mFooterHeight;// this.halfHeight - mContent.getHalfHeight();
 		mContent.setPos(new Vector2(centerversatzX, centerversatzY));
 
 		for (Iterator<GL_View_Base> iterator = contentChilds.iterator(); iterator.hasNext();)
@@ -95,11 +105,12 @@ public abstract class Dialog extends CB_View_Base
 
 		super.addChild(mContent);
 
-		mTitle9patch = new NinePatch(SpriteCache.Dialog.get(3), 6, 9, 6, 5);
-		mHeader9patch = new NinePatch(SpriteCache.Dialog.get(0), 6, 6, 6, 1);
-		mCenter9patch = new NinePatch(SpriteCache.Dialog.get(1), 6, 6, 1, 1);
-		mFooter9patch = new NinePatch(SpriteCache.Dialog.get(2), 6, 6, 1, 6);
+		mTitle9patch = new NinePatch(SpriteCache.Dialog.get(3), pW, (pW * 12 / 8), pW, pW);
+		mHeader9patch = new NinePatch(SpriteCache.Dialog.get(0), pW, pW, pW, 1);
+		mCenter9patch = new NinePatch(SpriteCache.Dialog.get(1), pW, pW, 1, 1);
+		mFooter9patch = new NinePatch(SpriteCache.Dialog.get(2), pW, pW, 1, pW);
 
+		mTitleVersatz = (float) pW;
 	}
 
 	@Override
@@ -132,6 +143,16 @@ public abstract class Dialog extends CB_View_Base
 	public void setTitle(String title)
 	{
 		mTitle = title;
+	}
+
+	public static float calcHeaderHeight()
+	{
+		return (Fonts.Mesure("T").height);
+	}
+
+	public static float calcFooterHeight(boolean hasButtons)
+	{
+		return hasButtons ? UiSizes.getButtonHeight() * 1.2f : calcHeaderHeight();
 	}
 
 }

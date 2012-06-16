@@ -22,16 +22,23 @@ public class HintDialog extends GL_MsgBox
 	public static void show()
 	{
 		if (GlobalCore.SelectedCache() == null) return;
-		String hintText = GlobalCore.Rot13(GlobalCore.SelectedCache().hint);
+		String hintTextDecoded = GlobalCore.Rot13(GlobalCore.SelectedCache().hint);
+		String hintTextEncoded = GlobalCore.SelectedCache().hint;
+
+		Size decodedSize = calcMsgBoxSize(hintTextDecoded, true, true, false);
+		Size encodedSize = calcMsgBoxSize(hintTextEncoded, true, true, false);
+
+		Size maxTextSize = decodedSize.height > encodedSize.height ? decodedSize : encodedSize;
 
 		mMsgBoxClickListner = null;
-		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(hintText, true), "MsgBox");
+		GL_MsgBox msgBox = new GL_MsgBox(maxTextSize, "MsgBox");
 		msgBox.setTitle(GlobalCore.Translations.Get("hint"));
+		setButtonCaptions(msgBox, MessageBoxButtons.OKCancel);
+
 		label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
 		label.setZeroPos();
-		label.setWrappedText(hintText);
+		label.setWrappedText(hintTextDecoded);
 		msgBox.addChild(label);
-		setButtonCaptions(msgBox, MessageBoxButtons.OKCancel);
 
 		button3.setText(GlobalCore.Translations.Get("close"));
 		button1.setText(GlobalCore.Translations.Get("decode"));

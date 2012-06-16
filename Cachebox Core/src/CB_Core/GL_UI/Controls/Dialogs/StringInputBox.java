@@ -21,7 +21,7 @@ public class StringInputBox extends GL_MsgBox
 	{
 		mMsgBoxClickListner = Listener;
 
-		Size msgBoxSize = calcMsgBoxSize(msg, true);
+		Size msgBoxSize = calcMsgBoxSize(msg, true, true, false);
 
 		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);

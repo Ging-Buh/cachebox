@@ -19,7 +19,6 @@ import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class GL_MsgBox extends Dialog
@@ -30,8 +29,6 @@ public class GL_MsgBox extends Dialog
 	protected static Button button1;
 	protected static Button button2;
 	protected static Button button3;
-
-	static float margin = 5f;
 
 	protected static OnMsgBoxClickListener mMsgBoxClickListner;
 
@@ -68,15 +65,24 @@ public class GL_MsgBox extends Dialog
 		mFooterHeight = 80;
 	}
 
-	protected static Size calcMsgBoxSize(String Text, boolean hasTitle)
+	protected static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon)
 	{
 		float Width = (((UiSizes.getButtonWidthWide() + margin) * 3) + margin);
 
-		BitmapFontCache mesure = new BitmapFontCache(Fonts.getNormal());
-		TextBounds bounds = mesure.setWrappedText(Text, 0, 0, Width - 20);
-		int Height = (int) bounds.height + 150;// + footer and header height + x(=100)
+		float iconWidth = 0;
+
+		if (hasIcon) iconWidth += UiSizes.getButtonHeight() + margin * 4.5;
+
+		float MsgWidth = Width - iconWidth;
+
+		TextBounds bounds = Fonts.MesureWrapped(Text, MsgWidth);
+		int Height = (int) (hasIcon ? Math.max(bounds.height, (int) UiSizes.getButtonHeight()) : (int) bounds.height);
 
 		if (hasTitle) Height += 40;
+		Height += calcFooterHeight(hasButtons);
+		Height += calcHeaderHeight();
+
+		Height += margin * 2;
 
 		Size ret = new Size((int) Width, Height);
 		return ret;
@@ -85,7 +91,7 @@ public class GL_MsgBox extends Dialog
 	public GL_MsgBox(Size size, String name)
 	{
 		super(size.getBounds().asFloat(), name);
-		mFooterHeight = 80;
+
 	}
 
 	public void addFooterChild(CB_View_Base view)
@@ -95,7 +101,7 @@ public class GL_MsgBox extends Dialog
 
 	public static void Show(String msg)
 	{
-		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, false), "MsgBox");
+		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, false, true, false), "MsgBox");
 		Label label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
 		label.setZeroPos();
 		label.setWrappedText(msg);
@@ -119,7 +125,7 @@ public class GL_MsgBox extends Dialog
 	public static void Show(String msg, String title, MessageBoxButtons buttons, OnMsgBoxClickListener Listener)
 	{
 		mMsgBoxClickListner = Listener;
-		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true), "MsgBox");
+		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), false), "MsgBox");
 		msgBox.setTitle(title);
 		label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
 		label.setZeroPos();
@@ -132,7 +138,7 @@ public class GL_MsgBox extends Dialog
 	public static void Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener)
 	{
 		mMsgBoxClickListner = Listener;
-		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true), "MsgBox");
+		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true), "MsgBox");
 		msgBox.setTitle(title);
 
 		SizeF contentSize = msgBox.getContentSize();
@@ -198,6 +204,11 @@ public class GL_MsgBox extends Dialog
 			button1.setText(GlobalCore.Translations.Get("yes"));
 			button2.setText(GlobalCore.Translations.Get("no"));
 			button3.setText(GlobalCore.Translations.Get("cancel"));
+		}
+		else
+		{
+			// no Buttons
+			msgBox.mFooterHeight = calcFooterHeight(false);
 		}
 	}
 
@@ -293,6 +304,8 @@ public class GL_MsgBox extends Dialog
 			break;
 
 		}
+
+		msgBox.mFooterHeight = calcFooterHeight(true);
 	}
 
 	private static void setButtonListner()

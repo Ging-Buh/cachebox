@@ -10,6 +10,7 @@ import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Dialogs.SelectDB;
 import CB_Core.GL_UI.Controls.Dialogs.SelectDB.ReturnListner;
+import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
@@ -65,49 +66,61 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 
 	}
 
+	WaitDialog wd;
+
 	private void returnFromSelectDB()
 	{
 		GL_Listener.glListener.closeDialog();
 
-		// TODO show Wait Dialog
+		wd = WaitDialog.ShowWait("Load DB ...");
 
-		Config.settings.ReadFromDB();
-
-		GlobalCore.Categories = new Categories();
-		GlobalCore.LastFilter = (Config.settings.Filter.getValue().length() == 0) ? new FilterProperties(FilterProperties.presets[0])
-				: new FilterProperties(Config.settings.Filter.getValue());
-		// filterSettings.LoadFilterProperties(GlobalCore.LastFilter);
-		Database.Data.GPXFilenameUpdateCacheCount();
-
-		String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
-		Logger.General("Main.ApplyFilter: " + sqlWhere);
-
-		Database.Data.Query.clear();
-		Database.Data.Close();
-		Database.Data.StartUp(Config.settings.DatabasePath.getValue());
-
-		CacheListDAO cacheListDAO = new CacheListDAO();
-		cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
-
-		GlobalCore.SelectedCache(null);
-		GlobalCore.SelectedWaypoint(null, null);
-		CachListChangedEventList.Call();
-
-		// set last selected Cache
-		String sGc = Config.settings.LastSelectedCache.getValue();
-		if (sGc != null && !sGc.equals(""))
+		Thread thread = new Thread(new Runnable()
 		{
-			for (Cache c : Database.Data.Query)
-			{
-				if (c.GcCode.equalsIgnoreCase(sGc))
-				{
-					GlobalCore.SelectedCache(c);
-					break;
-				}
-			}
-		}
 
-		// TODO Close Wait Dialog
+			@Override
+			public void run()
+			{
+				Config.settings.ReadFromDB();
+
+				GlobalCore.Categories = new Categories();
+				GlobalCore.LastFilter = (Config.settings.Filter.getValue().length() == 0) ? new FilterProperties(
+						FilterProperties.presets[0]) : new FilterProperties(Config.settings.Filter.getValue());
+				// filterSettings.LoadFilterProperties(GlobalCore.LastFilter);
+				Database.Data.GPXFilenameUpdateCacheCount();
+
+				String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
+				Logger.General("Main.ApplyFilter: " + sqlWhere);
+
+				Database.Data.Query.clear();
+				Database.Data.Close();
+				Database.Data.StartUp(Config.settings.DatabasePath.getValue());
+
+				CacheListDAO cacheListDAO = new CacheListDAO();
+				cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+
+				GlobalCore.SelectedCache(null);
+				GlobalCore.SelectedWaypoint(null, null);
+				CachListChangedEventList.Call();
+
+				// set last selected Cache
+				String sGc = Config.settings.LastSelectedCache.getValue();
+				if (sGc != null && !sGc.equals(""))
+				{
+					for (Cache c : Database.Data.Query)
+					{
+						if (c.GcCode.equalsIgnoreCase(sGc))
+						{
+							GlobalCore.SelectedCache(c);
+							break;
+						}
+					}
+				}
+
+				wd.dismis();
+			}
+		});
+
+		thread.start();
 
 	}
 }

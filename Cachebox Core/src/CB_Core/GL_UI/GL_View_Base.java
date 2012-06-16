@@ -397,8 +397,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 		thisInvalidate = false;
 
-		// if (debug)
-		// writeDebug();
+		if (debug) writeDebug();
 	}
 
 	public void invalidate()

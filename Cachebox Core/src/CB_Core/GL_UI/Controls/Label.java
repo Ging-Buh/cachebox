@@ -103,9 +103,6 @@ public class Label extends CB_View_Base
 			x = innerRec.getWidth() - bounds.width;
 		}
 
-		// TODO wenn mehrere Zeilen gecentert werden sollen, muss das Label für jede Zeile ein Label erhalten, damit jede Zeile eigenständig
-		// gecentert werden kann.
-
 		if (wrapType == WrapType.singleLine)
 		{
 			switch (valignment)
@@ -136,6 +133,8 @@ public class Label extends CB_View_Base
 				break;
 			}
 		}
+
+		lineCount = (int) (bounds.height / cache.getFont().getCapHeight());
 	}
 
 	@Override
@@ -207,7 +206,7 @@ public class Label extends CB_View_Base
 		this.halignment = alignment;
 		wrapType = WrapType.wrapped;
 		bounds = cache.getFont().getWrappedBounds(text, innerWidth);
-		cache.setWrappedText(text, 0, cache.getFont().isFlipped() ? 0 : bounds.height, innerWidth, alignment);
+		cache.setWrappedText(text, 0, cache.getFont().isFlipped() ? bounds.height : cache.getFont().getLineHeight(), innerWidth, alignment);
 		fontPropertyChanged();
 	}
 
@@ -328,6 +327,28 @@ public class Label extends CB_View_Base
 	{
 		cache = null;
 		chkCache();
+	}
+
+	@Override
+	public void setWidth(float Width)
+	{
+		super.setWidth(Width);
+		change();
+		fontPropertyChanged();
+	}
+
+	@Override
+	public void setHeight(float Height)
+	{
+		super.setHeight(Height);
+		change();
+		fontPropertyChanged();
+	}
+
+	public int getLineCount()
+	{
+		if (cache == null) return 0;
+		return lineCount;
 	}
 
 }

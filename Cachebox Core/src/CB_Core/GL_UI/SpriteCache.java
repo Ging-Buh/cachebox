@@ -497,6 +497,7 @@ public class SpriteCache
 			Icons.add(getThemedSprite("d_n")); // 48
 			Icons.add(getThemedSprite("cb")); // 49
 			Icons.add(getThemedSprite("userdata")); // 50
+			Icons.add(getThemedSprite("day_spinner")); // 51
 
 		}
 
