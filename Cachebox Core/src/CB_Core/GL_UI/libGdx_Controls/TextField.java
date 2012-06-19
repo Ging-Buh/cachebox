@@ -7,6 +7,7 @@ import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 
 public class TextField extends LibGdx_Host_Control
@@ -38,6 +39,11 @@ public class TextField extends LibGdx_Host_Control
 			}
 		});
 
+	}
+
+	public void setOnscreenKeyboard(OnscreenKeyboard keyboard)
+	{
+		mTextField.setOnscreenKeyboard(keyboard);
 	}
 
 	@Override
@@ -148,8 +154,21 @@ public class TextField extends LibGdx_Host_Control
 
 	}
 
+	boolean hasFocus = false;
+
 	public void setFocus()
 	{
+		hasFocus = true;
 		mTextField.touchDown(0, 0, 0);
+	}
+
+	public void setFocus(boolean value)
+	{
+		hasFocus = value;
+	}
+
+	public void resetFocus()
+	{
+		hasFocus = false;
 	}
 }

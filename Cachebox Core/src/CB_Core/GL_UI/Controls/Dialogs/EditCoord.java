@@ -9,6 +9,9 @@ import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
+import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
+import CB_Core.GL_UI.Controls.NumPad;
+import CB_Core.GL_UI.Controls.NumPad.keyEventListner;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.libGdx_Controls.TextField;
 import CB_Core.Math.CB_RectF;
@@ -16,6 +19,7 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
 
 public class EditCoord extends Dialog
 {
@@ -61,6 +65,10 @@ public class EditCoord extends Dialog
 	Button bUX;
 	Button bUY;
 
+	NumPad numPad;
+
+	TextField focusedTextField = null;
+
 	public interface ReturnListner
 	{
 		public void returnCoord(Coordinate coord);
@@ -101,10 +109,10 @@ public class EditCoord extends Dialog
 
 		Button bOK = new Button(left, left, innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
 		Button bCancel = new Button(bOK.getMaxX(), left, innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
-		bDLat = new Button(left, bDec.getX() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), "BDLat");
-		bDLon = new Button(left, bDLat.getX() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), "BDLat");
-		CB_RectF EditTextBoxRec = new CB_RectF(bDLon.getMaxX() + margin, bDLon.getY(), this.width - bDLon.getMaxX() - margin, this.height
-				- bDLon.getX() - bDec.getHeight() - left);
+		bDLat = new Button(left, bDec.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), "BDLat");
+		bDLon = new Button(left, bDLat.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), "BDLat");
+		CB_RectF EditTextBoxRec = new CB_RectF(bDLon.getMaxX() + margin, bDLon.getY(), this.width - bDLon.getMaxX() - margin,
+				bDLat.getMaxY() - bDLon.getY());
 
 		trDec = new Box(EditTextBoxRec, "trDec");
 		trMin = new Box(EditTextBoxRec, "trMin");
@@ -151,6 +159,42 @@ public class EditCoord extends Dialog
 			{
 				GL_Listener.glListener.closeDialog();
 				return true;
+			}
+		});
+
+		bDec.setOnStateChangedListner(new OnStateChangeListener()
+		{
+			@Override
+			public void onStateChange(GL_View_Base v, int State)
+			{
+				if (State == 1) showPage(0);
+			}
+		});
+
+		bMin.setState(1);
+		bMin.setOnStateChangedListner(new OnStateChangeListener()
+		{
+			@Override
+			public void onStateChange(GL_View_Base v, int State)
+			{
+				if (State == 1) showPage(1);
+			}
+		});
+
+		bSec.setOnStateChangedListner(new OnStateChangeListener()
+		{
+			@Override
+			public void onStateChange(GL_View_Base v, int State)
+			{
+				if (State == 1) showPage(2);
+			}
+		});
+		bUtm.setOnStateChangedListner(new OnStateChangeListener()
+		{
+			@Override
+			public void onStateChange(GL_View_Base v, int State)
+			{
+				if (State == 1) showPage(3);
 			}
 		});
 
@@ -227,20 +271,105 @@ public class EditCoord extends Dialog
 		});
 
 		// trMin
+		createTrMin();
+
+		showPage(1);
+
+		// trDec
+		createTrDec();
+
+		GL_Listener.glListener.addRenderView(this, GL_Listener.FRAME_RATE_IDLE); // Cursor blink
+
+	}
+
+	private void createTrDec()
+	{
+		CB_RectF editRec = new CB_RectF(0, 0, (trMin.getWidth() - (margin * 3)), UiSizes.getButtonHeight());
+
+		tbDLat = new TextField(editRec, "tbDLat");
+		tbDLat.setOnscreenKeyboard(new OnscreenKeyboard()
+		{
+			@Override
+			public void show(boolean arg0)
+			{
+				tbDLat.setFocus(true);
+				focusedTextField = tbDLat;
+			}
+		});
+
+		editRec.setY(tbDLat.getMaxY());
+
+		tbDLon = new TextField(editRec, "tbDLon");
+		tbDLon.setOnscreenKeyboard(new OnscreenKeyboard()
+		{
+			@Override
+			public void show(boolean arg0)
+			{
+				tbDLon.setFocus(true);
+				focusedTextField = tbDLon;
+			}
+		});
+
+		trDec.addChild(tbDLat);
+		trDec.addChild(tbDLon);
+	}
+
+	private void createTrMin()
+	{
 		CB_RectF editRec = new CB_RectF(0, 0, (trMin.getWidth() - (margin * 3)) / 2, UiSizes.getButtonHeight());
 
-		tbMLatDeg = new TextField(editRec, "tbMLatDeg");
-		tbMLatMin = new TextField(editRec, "tbMLatMin");
 		tbMLonDeg = new TextField(editRec, "tbMLonDeg");
+		tbMLonDeg.setOnscreenKeyboard(new OnscreenKeyboard()
+		{
+			@Override
+			public void show(boolean arg0)
+			{
+				tbMLonDeg.setFocus(true);
+				focusedTextField = tbMLonDeg;
+			}
+		});
+
+		editRec.setX(tbMLonDeg.getMaxX());
 		tbMLonMin = new TextField(editRec, "tbMLonMin");
+		tbMLonMin.setOnscreenKeyboard(new OnscreenKeyboard()
+		{
+			@Override
+			public void show(boolean arg0)
+			{
+				tbMLonMin.setFocus(true);
+				focusedTextField = tbMLonMin;
+			}
+		});
+
+		editRec.setX(tbMLonDeg.getX());
+		editRec.setY(tbMLonDeg.getMaxY());
+		tbMLatDeg = new TextField(editRec, "tbMLatDeg");
+		tbMLatDeg.setOnscreenKeyboard(new OnscreenKeyboard()
+		{
+			@Override
+			public void show(boolean arg0)
+			{
+				tbMLatDeg.setFocus(true);
+				focusedTextField = tbMLatDeg;
+			}
+		});
+
+		editRec.setX(tbMLatDeg.getMaxX());
+		tbMLatMin = new TextField(editRec, "tbMLatMin");
+		tbMLatMin.setOnscreenKeyboard(new OnscreenKeyboard()
+		{
+			@Override
+			public void show(boolean arg0)
+			{
+				tbMLatMin.setFocus(true);
+				focusedTextField = tbMLatMin;
+			}
+		});
 
 		trMin.addChild(tbMLatDeg);
 		trMin.addChild(tbMLatMin);
 		trMin.addChild(tbMLonDeg);
 		trMin.addChild(tbMLonMin);
-
-		showPage(1);
-
 	}
 
 	@Override
@@ -272,7 +401,11 @@ public class EditCoord extends Dialog
 			else
 				bDLon.setText("W");
 			tbDLat.setText(String.format("%.5f", coord.Latitude).replace(",", "."));
+			tbDLat.setFocus();
 			tbDLon.setText(String.format("%.5f", coord.Longitude).replace(",", "."));
+
+			showNumPad(NumPad.Type.withDot);
+
 			break;
 		case 1:
 			// show Degree - Minute
@@ -302,6 +435,10 @@ public class EditCoord extends Dialog
 			min = frac * 60;
 			tbMLonDeg.setText(String.format("%.0f", deg).replace(",", "."));
 			tbMLonMin.setText(String.format("%.3f", min).replace(",", "."));
+
+			tbMLonDeg.setFocus();
+
+			showNumPad(NumPad.Type.withDot);
 
 			break;
 		case 2:
@@ -343,6 +480,10 @@ public class EditCoord extends Dialog
 			tbSLonMin.setText(String.valueOf(imin).replace(",", "."));
 			tbSLonSec.setText(String.format("%.2f", sec).replace(",", "."));
 
+			tbSLonDeg.setFocus();
+
+			showNumPad(NumPad.Type.withDot);
+
 			break;
 		case 3:
 			// show UTM
@@ -371,6 +512,11 @@ public class EditCoord extends Dialog
 			else if (coord.Latitude < 0) bUY.setText("S");
 			if (coord.Longitude > 0) bUX.setText("E");
 			else if (coord.Longitude < 0) bUX.setText("W");
+
+			tbUY.setFocus();
+
+			showNumPad(NumPad.Type.withDot);
+
 			break;
 		}
 		aktPage = newPage;
@@ -432,4 +578,75 @@ public class EditCoord extends Dialog
 		this.removeChildsDirekt();
 	}
 
+	private void showNumPad(NumPad.Type type)
+	{
+		if (numPad != null) return;
+		float numWidth = this.width - nineBackground.getLeftWidth() - nineBackground.getRightWidth();
+		float numHeight = this.height - nineBackground.getBottomHeight() - nineBackground.getTopHeight() - (UiSizes.getButtonHeight() * 2)
+				- (margin * 2);
+		if (trUtm.getVisibility() == CB_View_Base.VISIBLE)
+		{
+			numHeight -= trUtm.getHeight();
+		}
+		else
+		{
+			numHeight -= trMin.getHeight();
+		}
+
+		CB_RectF numRec = new CB_RectF(nineBackground.getLeftWidth(), UiSizes.getButtonHeight() + (margin * 3), numWidth, numHeight);
+
+		numPad = new NumPad(numRec, "numPad", type, keyListner);
+
+		this.addChild(numPad);
+	}
+
+	keyEventListner keyListner = new keyEventListner()
+	{
+
+		@Override
+		public void KeyPressed(String value)
+		{
+			if (focusedTextField == null) return;
+
+			int cursorPos = focusedTextField.getCursorPosition();
+
+			if (value.equals("O"))
+			{
+				// sollte nicht passieren, da der Button nicht sichtbar ist
+			}
+			else if (value.equals("C"))
+			{
+				// sollte nicht passieren, da der Button nicht sichtbar ist
+			}
+			else if (value.equals("<"))
+			{
+				if (cursorPos == 0) cursorPos = 1; // cursorPos darf nicht 0 sein
+				focusedTextField.setCursorPosition(cursorPos - 1);
+			}
+			else if (value.equals(">"))
+			{
+				focusedTextField.setCursorPosition(cursorPos + 1);
+			}
+			else if (value.equals("D"))
+			{
+				if (cursorPos > 0)
+				{
+					String text2 = focusedTextField.getText().substring(cursorPos);
+					String text1 = focusedTextField.getText().substring(0, cursorPos - 1);
+
+					focusedTextField.setText(text1 + text2);
+					focusedTextField.setCursorPosition(cursorPos + -1);
+				}
+			}
+			else
+			{
+				String text2 = focusedTextField.getText().substring(cursorPos);
+				String text1 = focusedTextField.getText().substring(0, cursorPos);
+
+				focusedTextField.setText(text1 + value + text2);
+				focusedTextField.setCursorPosition(cursorPos + value.length());
+			}
+
+		}
+	};
 }

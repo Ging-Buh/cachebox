@@ -10,6 +10,8 @@ import CB_Core.GL_UI.libGdx_Controls.TextField;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
+
 public class NumerikInputBox extends GL_MsgBox
 {
 
@@ -39,8 +41,17 @@ public class NumerikInputBox extends GL_MsgBox
 		editText.setZeroPos();
 		editText.setY(margin);
 		editText.setText(String.valueOf(initialValue));
-		editText.setFocus();
 		editText.setCursorPosition((String.valueOf(initialValue)).length());
+		editText.setOnscreenKeyboard(new OnscreenKeyboard()
+		{
+
+			@Override
+			public void show(boolean arg0)
+			{
+				// do nothing, don´t show Keybord
+			}
+		});
+		editText.setFocus();
 
 		CB_RectF LabelRec = msgBox.getContentSize().getBounds();
 		LabelRec.setHeight(LabelRec.getHeight() - textFieldRec.getHeight());
@@ -63,6 +74,7 @@ public class NumerikInputBox extends GL_MsgBox
 		msgBox.mFooterHeight = numPad.getHeight() + (margin * 2);
 
 		GL_Listener.glListener.showDialog(msgBox);
+		GL_Listener.glListener.addRenderView(msgBox, GL_Listener.FRAME_RATE_IDLE);// Cursor blink
 	}
 
 	public interface returnValueListner

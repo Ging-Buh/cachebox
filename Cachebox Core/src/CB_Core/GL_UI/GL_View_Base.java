@@ -557,6 +557,8 @@ public abstract class GL_View_Base extends CB_RectF
 				// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
 				GL_View_Base view = iterator.next();
 
+				// Invisible Views can not be clicked!
+				if (!view.isVisible()) continue;
 				if (view.contains(x, y))
 				{
 					// touch innerhalb des Views
