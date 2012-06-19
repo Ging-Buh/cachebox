@@ -283,6 +283,9 @@
 		solverDescReverse = Kehrt die Zeichenkette um \nReverse("ABC") = CBA
 		solverFuncRot13 = Rot13
 		solverDescRot13 = Liefert die Rot13 Entschlüsselung \nRot13("ABC") = NOP
+		solverFuncMid = Mid
+		solverDescMid = Teilstring ausliefern. Parameter 3: Default=1 \nMid("String";StartPosition;[Zeichenzahl])
+
 		
 	//CompassViewPanel
 		SatHdop = Sats/Hdop:
@@ -731,3 +734,7 @@
 	My_Parking_Area_DNF = Schade, dann musst Du wohl laufen!
 	
 	DeletedCaches = Es wurden {1} Caches mit Bildern gelöscht.
+	
+	Credits = Credits
+	
+	CenterWP = Center => WP

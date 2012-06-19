@@ -274,7 +274,9 @@
 		solverDescReverse = Reverses the string \nReverse("ABC") = CBA
 		solverFuncRot13 = Rot13
 		solverDescRot13 = Gives the Rot13 encryption \nRot13("ABC") = NOP
-		
+		solverFuncMid = Mid
+		solverDescMid = Return a substring of a string. Parameter 3: Default=1 \nMid("String";StartPosition;[CharacterCount])
+
 	//CompassViewPanel
 		SatHdop = Sats/Hdop:
 		BearSpeed = Dir/Veloc:
