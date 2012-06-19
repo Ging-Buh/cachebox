@@ -8,20 +8,41 @@ public class CachListChangedEventList
 
 	public static void Add(CacheListChangedEventListner event)
 	{
-		if (!list.contains(event)) list.add(event);
+		synchronized (list)
+		{
+			if (!list.contains(event)) list.add(event);
+		}
 	}
 
 	public static void Remove(CacheListChangedEventListner event)
 	{
-		list.remove(event);
+		synchronized (list)
+		{
+			list.remove(event);
+		}
 	}
 
 	public static void Call()
 	{
-		for (CacheListChangedEventListner event : list)
+		Thread thread = new Thread(new Runnable()
 		{
-			event.CacheListChangedEvent();
-		}
+
+			@Override
+			public void run()
+			{
+				synchronized (list)
+				{
+					for (CacheListChangedEventListner event : list)
+					{
+						event.CacheListChangedEvent();
+					}
+				}
+
+			}
+		});
+
+		thread.run();
+
 	}
 
 }

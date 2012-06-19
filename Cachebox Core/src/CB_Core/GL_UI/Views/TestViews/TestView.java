@@ -1,20 +1,22 @@
 package CB_Core.GL_UI.Views.TestViews;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import CB_Core.Config;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
+import CB_Core.GL_UI.Controls.CoordinateButton;
+import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox;
+import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
 import CB_Core.GL_UI.Controls.Dialogs.SolverDialog;
+import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -78,22 +80,26 @@ public class TestView extends CB_View_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				// fontsize--;
-				// setTTF();
 
-				wd = WaitDialog
-						.ShowWait("Bitte warten mit umgebrochenen Text, weil er sehr lang ist und das Icon dann oben gezeichnet werden soll");
-
-				Timer timer = new Timer();
-				TimerTask task = new TimerTask()
+				int initValue = 200;
+				try
 				{
+					initValue = Integer.parseInt(btn1.getText());
+				}
+				catch (NumberFormatException e)
+				{
+					e.printStackTrace();
+				}
+
+				NumerikInputBox.Show("Wie viele Caches hast Du bis jetzt gefunden:", "Funde anpassen", initValue, new returnValueListner()
+				{
+
 					@Override
-					public void run()
+					public void returnValue(int value)
 					{
-						if (wd != null) wd.dismis();
+						btn1.setText(String.valueOf(value));
 					}
-				};
-				timer.schedule(task, 7000);
+				});
 				return true;
 			}
 		});
@@ -104,51 +110,31 @@ public class TestView extends CB_View_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				// fontsize++;
-				// setTTF();
-
-				wd = WaitDialog.ShowWait("Bitte warten");
-
-				Timer timer = new Timer();
-				TimerTask task = new TimerTask()
-				{
-					@Override
-					public void run()
-					{
-						if (wd != null) wd.dismis();
-					}
-				};
-				timer.schedule(task, 7000);
+				StringInputBox.Show("Wie viele Caches hast Du bis jetzt gefunden:", "Funde anpassen", "200", click);
 				return true;
-
 			}
 		});
 
-		setTTF();
 		requestLayout();
+
+		// Coord edit
+
+		Coordinate pos = new Coordinate("N 48 5.929  E 12 07.176");
+		CoordinateButton cBtn = new CoordinateButton(new CB_RectF(50, 120, this.width - 100, 65), "CoordButton", pos);
+		this.addChild(cBtn);
+
 	}
 
-	void setTTF()
+	OnMsgBoxClickListener click = new OnMsgBoxClickListener()
 	{
 
-		String costumFontPath = Config.settings.SkinFolder.getValue() + "/calibri.ttf";
-
-		// BitmapFont ttFont = TrueTypeFontFactory.createBitmapFont(Gdx.files.absolute(costumFontPath), FONT_CHARACTERS, fontsize, 7.5f,
-		// 1.0f,
-		// Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		// ttFont.setColor(1f, 0f, 0f, 1f);
-
-		// FreeTypeFontGenerator gen = new FreeTypeFontGenerator(Gdx.files.absolute(costumFontPath));
-		// BitmapFont ttFont = gen.generateFont(44);
-		// gen.dispose();
-		//
-		// ttf = new BitmapFontCache(ttFont);
-		// ttf.setText("BF Test", 10, 300);
-		// ttf.setColor(Color.RED);
-
-		btn1.setText("--");
-		btn2.setText(String.valueOf(fontsize) + "  ++");
-	}
+		@Override
+		public boolean onClick(int which)
+		{
+			// TODO Auto-generated method stub
+			return false;
+		}
+	};
 
 	BitmapFontCache bf;
 	BitmapFontCache ttf;

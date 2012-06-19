@@ -816,11 +816,19 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public void showDialog(final CB_View_Base dialog)
 	{
+		showDialog(dialog, false);
+	}
+
+	public void showDialog(final CB_View_Base dialog, boolean atTop)
+	{
 		platformConector.showForDialog();
 
 		// Center Menu on Screen
 		float x = (width - dialog.getWidth()) / 2;
 		float y = (height - dialog.getHeight()) / 2;
+
+		if (atTop) y = height - dialog.getHeight();
+
 		dialog.setPos(x, y);
 		actDialog = dialog;
 

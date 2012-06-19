@@ -1,5 +1,7 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
+import CB_Core.GL_UI.Fonts;
+import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
@@ -27,20 +29,28 @@ public class StringInputBox extends GL_MsgBox
 		msgBox.setTitle(title);
 
 		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
-		float newYPos = textFieldRec.getHeight();
 
-		textFieldRec.setHeight(textFieldRec.getHeight() / 1.2f);
-
-		newYPos -= textFieldRec.getHeight();
+		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
 
 		editText = new TextField(textFieldRec, "MsgBoxLabel");
 		editText.setZeroPos();
-		editText.setY(newYPos);
 		editText.setText(initialString);
+
+		CB_RectF LabelRec = msgBox.getContentSize().getBounds();
+		LabelRec.setHeight(LabelRec.getHeight() - textFieldRec.getHeight());
+
+		Label label = new Label(LabelRec, "MsgBoxLabel");
+		label.setZeroPos();
+		label.setY(editText.getMaxY() + margin);
+		label.setWrappedText(msg);
+		msgBox.addChild(label);
+
+		msgBox.setHeight(msgBox.getHeight() + editText.getHeight());
+
 		msgBox.addChild(editText);
 		setButtonCaptions(msgBox, MessageBoxButtons.OKCancel);
 
-		GL_Listener.glListener.showDialog(msgBox);
+		GL_Listener.glListener.showDialog(msgBox, true);
 
 	}
 }

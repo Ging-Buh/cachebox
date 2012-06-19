@@ -277,7 +277,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
 
-		togBtn = new MultiToggleButton(GL_UISizes.Toggle, this, "toggle");
+		togBtn = new MultiToggleButton(GL_UISizes.Toggle, "toggle");
 
 		togBtn.addState("Free", Color.GRAY);
 		togBtn.addState("GPS", Color.GREEN);

@@ -67,6 +67,11 @@ public class TextField extends LibGdx_Host_Control
 		mTextField.setCursorPosition(cursorPosition);
 	}
 
+	public int getCursorPosition()
+	{
+		return mTextField.getCursorPosition();
+	}
+
 	public String getText()
 	{
 		return mTextField.getText();
@@ -141,5 +146,10 @@ public class TextField extends LibGdx_Host_Control
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	public void setFocus()
+	{
+		mTextField.touchDown(0, 0, 0);
 	}
 }

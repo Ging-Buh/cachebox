@@ -147,7 +147,7 @@ public abstract class Dialog extends CB_View_Base
 
 	public static float calcHeaderHeight()
 	{
-		return (Fonts.Mesure("T").height);
+		return (Fonts.Mesure("T").height) / 2;
 	}
 
 	public static float calcFooterHeight(boolean hasButtons)

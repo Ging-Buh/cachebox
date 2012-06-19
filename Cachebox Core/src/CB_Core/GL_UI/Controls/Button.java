@@ -44,9 +44,9 @@ public class Button extends CB_View_Base
 	protected Label lblTxt;
 	protected boolean dragableButton = false;
 
-	public Button(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name)
+	public Button(float X, float Y, float Width, float Height, String Name)
 	{
-		super(X, Y, Width, Height, Parent, Name);
+		super(X, Y, Width, Height, Name);
 		this.isClickable = true;
 	}
 
@@ -276,6 +276,12 @@ public class Button extends CB_View_Base
 		mFont = null;
 		lblTxt = null;
 		this.removeChilds();
+	}
+
+	public String getText()
+	{
+		if (lblTxt != null) return lblTxt.getText();
+		return null;
 	}
 
 }

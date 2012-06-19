@@ -106,6 +106,12 @@ public class DesktopMain {
 				// TODO Auto-generated method stub
 				return true;
 			}
+
+			@Override
+			public void vibrate() {
+				// TODO Auto-generated method stub
+				
+			}
 		});
 		
 		

@@ -29,15 +29,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class MultiToggleButton extends Button
 {
 
-	public MultiToggleButton(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name)
+	public MultiToggleButton(float X, float Y, float Width, float Height, String Name)
 	{
-		super(X, Y, Width, Height, Parent, Name);
+		super(X, Y, Width, Height, Name);
 		setClickable(true);
 	}
 
-	public MultiToggleButton(CB_RectF rec, GL_View_Base Parent, String Name)
+	public MultiToggleButton(CB_RectF rec, String Name)
 	{
-		super(rec, Parent, Name);
+		super(rec, Name);
 		setClickable(true);
 	}
 

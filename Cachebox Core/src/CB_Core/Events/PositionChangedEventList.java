@@ -29,48 +29,70 @@ public class PositionChangedEventList
 
 	}
 
-	public static void PositionChanged(Locator locator)
+	public static void PositionChanged(final Locator locator)
 	{
-		GlobalCore.Locator = locator;
-		synchronized (list)
+		Thread thread = new Thread(new Runnable()
 		{
-			for (PositionChangedEvent event : list)
-			{
-				try
-				{
-					event.PositionChanged(locator);
-				}
-				catch (Exception e)
-				{
-					Logger.Error("Core.PositionEventList.Call(location)", event.getReceiverName(), e);
-					e.printStackTrace();
-				}
-			}
-		}
 
-		// alle events abgearbeitet, jetzt kann die GL_View einmal Rendern
-		GL_Listener.glListener.renderOnce(null);
+			@Override
+			public void run()
+			{
+				GlobalCore.Locator = locator;
+				synchronized (list)
+				{
+					for (PositionChangedEvent event : list)
+					{
+						try
+						{
+							event.PositionChanged(locator);
+						}
+						catch (Exception e)
+						{
+							Logger.Error("Core.PositionEventList.Call(location)", event.getReceiverName(), e);
+							e.printStackTrace();
+						}
+					}
+				}
+
+				// alle events abgearbeitet, jetzt kann die GL_View einmal Rendern
+				GL_Listener.glListener.renderOnce(null);
+			}
+		});
+
+		thread.run();
+
 	}
 
-	public static void Orientation(float heading)
+	public static void Orientation(final float heading)
 	{
-		synchronized (list)
+		Thread thread = new Thread(new Runnable()
 		{
-			for (PositionChangedEvent event : list)
-			{
-				try
-				{
-					event.OrientationChanged(heading);
-				}
-				catch (Exception e)
-				{
-					Logger.Error("Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
-					e.printStackTrace();
-				}
-			}
-		}
 
-		// alle events abgearbeitet, jetzt kann die GL_View einmal Rendern
-		GL_Listener.glListener.renderOnce(null);
+			@Override
+			public void run()
+			{
+				synchronized (list)
+				{
+					for (PositionChangedEvent event : list)
+					{
+						try
+						{
+							event.OrientationChanged(heading);
+						}
+						catch (Exception e)
+						{
+							Logger.Error("Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
+							e.printStackTrace();
+						}
+					}
+				}
+
+				// alle events abgearbeitet, jetzt kann die GL_View einmal Rendern
+				GL_Listener.glListener.renderOnce(null);
+			}
+		});
+
+		thread.run();
+
 	}
 }

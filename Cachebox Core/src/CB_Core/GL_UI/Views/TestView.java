@@ -80,7 +80,7 @@ public class TestView extends CB_View_Base
 		image.setImage("data/cb_test.png");
 		this.addChild(image);
 
-		Button btn = new Button(300, 100, 200, 64, this, "Test_Btn");
+		Button btn = new Button(300, 100, 200, 64, "Test_Btn");
 		this.addChild(btn);
 		btn.setText("Button");
 		btn.setOnClickListener(new OnClickListener()
@@ -105,7 +105,7 @@ public class TestView extends CB_View_Base
 			}
 		});
 
-		Button btn2 = new Button(300, 200, 64, 64, this, "Test_BtnDis");
+		Button btn2 = new Button(300, 200, 64, 64, "Test_BtnDis");
 		this.addChild(btn2);
 		btn2.disable();
 		btn2.setText("DISABLED");
@@ -129,7 +129,7 @@ public class TestView extends CB_View_Base
 		lbl.setHAlignment(HAlignment.CENTER);
 		this.addChild(lbl);
 
-		togBtn = new MultiToggleButton(GL_UISizes.Toggle, this, "toggle");
+		togBtn = new MultiToggleButton(GL_UISizes.Toggle, "toggle");
 
 		togBtn.addState("Free", Color.GRAY);
 		togBtn.addState("GPS", Color.GREEN);

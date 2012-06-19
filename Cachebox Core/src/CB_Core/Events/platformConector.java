@@ -96,6 +96,8 @@ public class platformConector
 		boolean isOnline();
 
 		boolean isGPSon();
+
+		void vibrate();
 	}
 
 	private static IHardwarStateListner hardwareListner;
@@ -103,6 +105,15 @@ public class platformConector
 	public static void setisOnlineListner(IHardwarStateListner listner)
 	{
 		hardwareListner = listner;
+	}
+
+	public static void vibrate()
+	{
+		if (hardwareListner != null)
+		{
+			hardwareListner.vibrate();
+		}
+
 	}
 
 	public static boolean isOnline()

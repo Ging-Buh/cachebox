@@ -3455,6 +3455,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				return GpsOn();
 			}
+
+			@Override
+			public void vibrate()
+			{
+				main.vibrate();
+			}
 		});
 
 		CB_Core.Events.platformConector.setShowViewListner(new IShowViewListner()

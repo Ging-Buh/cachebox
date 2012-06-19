@@ -313,4 +313,9 @@ public class UiSizes
 		return scale;
 	}
 
+	public static float getSmallestWidth()
+	{
+		return Math.min(windowHeight, windowWidth);
+	}
+
 }

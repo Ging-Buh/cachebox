@@ -69,6 +69,8 @@ public class GL_MsgBox extends Dialog
 	{
 		float Width = (((UiSizes.getButtonWidthWide() + margin) * 3) + margin);
 
+		if (Width * 1.2 < UiSizes.getWindowWidth()) Width *= 1.2f;
+
 		float iconWidth = 0;
 
 		if (hasIcon) iconWidth += UiSizes.getButtonHeight() + margin * 4.5;
