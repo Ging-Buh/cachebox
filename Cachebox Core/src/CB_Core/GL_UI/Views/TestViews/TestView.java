@@ -119,7 +119,7 @@ public class TestView extends CB_View_Base
 
 		// Coord edit
 
-		Coordinate pos = new Coordinate("N 48 5.929  E 12 07.176");
+		Coordinate pos = new Coordinate("N 52 27.354  E 13 30.690");
 		CoordinateButton cBtn = new CoordinateButton(new CB_RectF(50, 120, this.width - 100, 65), "CoordButton", pos);
 		this.addChild(cBtn);
 

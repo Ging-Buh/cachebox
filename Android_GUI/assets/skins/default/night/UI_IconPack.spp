@@ -4,350 +4,371 @@ filter: Linear,Linear
 repeat: none
 day_btn_zoom_up_disabled
   rotate: false
-  xy: 553, 1
+  xy: 350, 632
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 listrec_selected
   rotate: false
-  xy: 581, 215
+  xy: 625, 709
   size: 207, 129
   orig: 207, 129
   offset: 0, 0
   index: -1
 toggle_led_gr
   rotate: false
-  xy: 457, 127
+  xy: 687, 839
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
 Bubble
   rotate: false
-  xy: 440, 516
+  xy: 1, 192
   size: 438, 174
   orig: 438, 174
   offset: 0, 0
   index: -1
 btn_disabled
   rotate: false
-  xy: 797, 127
+  xy: 97, 541
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
 shaddowrect
   rotate: false
-  xy: 922, 1
+  xy: 188, 839
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 cache_pressed
   rotate: false
-  xy: 606, 50
+  xy: 1, 632
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 5bubble
   rotate: false
-  xy: 1, 691
+  xy: 359, 1
   size: 178, 190
   orig: 178, 190
   offset: 0, 0
   index: -1
 Nav
   rotate: false
-  xy: 695, 50
+  xy: 807, 367
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 cache
   rotate: false
-  xy: 428, 50
+  xy: 932, 541
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 db_pressed
   rotate: false
-  xy: 517, 50
+  xy: 679, 632
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 zoom_back
   rotate: false
-  xy: 452, 1
+  xy: 1, 1151
   size: 80, 40
   orig: 80, 40
   offset: 0, 0
   index: -1
 tool
   rotate: false
-  xy: 161, 50
+  xy: 772, 839
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 button
   rotate: false
-  xy: 482, 215
+  xy: 352, 541
   size: 98, 90
   orig: 98, 90
   offset: 0, 0
   index: -1
 btn_normal
   rotate: false
-  xy: 627, 127
+  xy: 182, 541
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
 misc_pressed
   rotate: false
-  xy: 1, 127
+  xy: 1, 839
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 InfoPanelBack
   rotate: false
-  xy: 90, 127
+  xy: 440, 367
   size: 366, 85
   orig: 366, 85
   offset: 0, 0
   index: -1
 day_btn_zoom_up_pressed
   rotate: false
-  xy: 633, 1
+  xy: 510, 632
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 listrec_secend
   rotate: false
-  xy: 789, 215
+  xy: 417, 709
   size: 207, 129
   orig: 207, 129
   offset: 0, 0
   index: -1
 db
   rotate: false
-  xy: 339, 50
+  xy: 590, 632
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 dialog_center
   rotate: false
-  xy: 12, 1
+  xy: 768, 632
   size: 51, 11
   orig: 51, 11
   offset: 0, 0
   index: -1
 other
   rotate: false
-  xy: 156, 1
+  xy: 90, 839
   size: 45, 12
   orig: 45, 12
   offset: 0, 0
   index: -1
 misc
   rotate: false
-  xy: 873, 50
+  xy: 879, 709
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 day_btn_zoom_down_normal
   rotate: false
-  xy: 1, 50
+  xy: 190, 632
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 1to4bubble_flip
   rotate: false
-  xy: 359, 691
+  xy: 180, 1
   size: 178, 190
   orig: 178, 190
   offset: 0, 0
   index: -1
 1to4bubble
   rotate: false
-  xy: 538, 691
+  xy: 1, 1
   size: 178, 190
   orig: 178, 190
   offset: 0, 0
   index: -1
 day_btn_zoom_down_pressed
   rotate: false
-  xy: 81, 50
+  xy: 270, 632
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 5bubble_flip
   rotate: false
-  xy: 180, 691
+  xy: 538, 1
   size: 178, 190
   orig: 178, 190
   offset: 0, 0
   index: -1
 button_list_back
   rotate: false
-  xy: 1, 215
+  xy: 451, 541
   size: 480, 88
   orig: 480, 88
   offset: 0, 0
   index: -1
 listrec_first
   rotate: false
-  xy: 1, 345
+  xy: 1, 709
   size: 207, 129
   orig: 207, 129
   offset: 0, 0
   index: -1
 large
   rotate: false
-  xy: 202, 1
+  xy: 978, 632
   size: 45, 12
   orig: 45, 12
   offset: 0, 0
   index: -1
 dialog_header
   rotate: false
-  xy: 400, 1
+  xy: 872, 632
   size: 51, 17
   orig: 51, 17
   offset: 0, 0
   index: -1
+text_field_back_focus
+  rotate: false
+  xy: 602, 839
+  size: 84, 87
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
 Bubble_selected
   rotate: false
-  xy: 1, 516
+  xy: 1, 367
   size: 438, 173
   orig: 438, 173
   offset: 0, 0
   index: -1
 background
   rotate: false
-  xy: 1, 1
+  xy: 86, 541
   size: 10, 10
   orig: 10, 10
   offset: 0, 0
   index: -1
+activity_back
+  rotate: false
+  xy: 1, 541
+  size: 84, 87
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+selection-input-icon
+  rotate: false
+  xy: 182, 839
+  size: 5, 8
+  orig: 5, 8
+  offset: 0, 0
+  index: -1
 dialog_footer
   rotate: false
-  xy: 294, 1
+  xy: 820, 632
   size: 51, 14
   orig: 51, 14
   offset: 0, 0
   index: -1
 btn_pressed
   rotate: false
-  xy: 542, 127
+  xy: 267, 541
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
 day_btn_zoom_down_disabled
   rotate: false
-  xy: 793, 1
+  xy: 110, 632
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 shaddowrect_selected
   rotate: false
-  xy: 873, 1
+  xy: 237, 839
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 micro
   rotate: false
-  xy: 248, 1
+  xy: 833, 709
   size: 45, 12
   orig: 45, 12
   offset: 0, 0
   index: -1
 dialog_title
   rotate: false
-  xy: 346, 1
+  xy: 924, 632
   size: 53, 16
   orig: 53, 16
   offset: 0, 0
   index: -1
 small
   rotate: false
-  xy: 64, 1
+  xy: 286, 839
   size: 45, 12
   orig: 45, 12
   offset: 0, 0
   index: -1
 BubbleOverlay
   rotate: false
-  xy: 417, 345
+  xy: 440, 192
   size: 430, 170
   orig: 430, 170
   offset: 0, 0
   index: -1
 Nav_pressed
   rotate: false
-  xy: 250, 50
+  xy: 896, 367
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 cm_icon
   rotate: false
-  xy: 533, 1
+  xy: 90, 632
   size: 19, 42
   orig: 19, 42
   offset: 0, 0
   index: -1
 splash_back
   rotate: false
-  xy: 717, 691
+  xy: 332, 839
   size: 184, 311
   orig: 184, 311
   offset: 0, 0
   index: -1
 text_field_back
   rotate: false
-  xy: 712, 127
+  xy: 517, 839
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
 listrec_pressed
   rotate: false
-  xy: 209, 345
+  xy: 209, 709
   size: 207, 129
   orig: 207, 129
   offset: 0, 0
   index: -1
 day_btn_zoom_up_normal
   rotate: false
-  xy: 713, 1
+  xy: 430, 632
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 regular
   rotate: false
-  xy: 110, 1
+  xy: 136, 839
   size: 45, 12
   orig: 45, 12
   offset: 0, 0
   index: -1
 tool_pressed
   rotate: false
-  xy: 784, 50
+  xy: 861, 839
   size: 88, 76
   orig: 88, 76
   offset: 0, 0

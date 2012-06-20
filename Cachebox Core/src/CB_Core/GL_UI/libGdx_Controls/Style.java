@@ -16,10 +16,28 @@ public class Style
 
 		ret.background = new NinePatch(SpriteCache.getThemedSprite("text_field_back"), 16, 16, 16, 16);
 		ret.font = Fonts.getNormal();
-		ret.fontColor = Color.BLACK;
+		ret.fontColor = Color.WHITE;
 
 		ret.messageFont = Fonts.getSmall();
-		ret.messageFontColor = Color.RED;
+		ret.messageFontColor = Color.WHITE;
+
+		ret.cursor = new NinePatch(SpriteCache.getThemedSprite("selection-input-icon"), 1, 1, 2, 2);
+
+		ret.selection = SpriteCache.getThemedSprite("InfoPanelBack");
+
+		return ret;
+	}
+
+	public static TextFieldStyle getTextFieldStyleFocus()
+	{
+		TextFieldStyle ret = new TextFieldStyle();
+
+		ret.background = new NinePatch(SpriteCache.getThemedSprite("text_field_back_focus"), 16, 16, 16, 16);
+		ret.font = Fonts.getNormal();
+		ret.fontColor = Color.WHITE;
+
+		ret.messageFont = Fonts.getSmall();
+		ret.messageFontColor = Color.WHITE;
 
 		ret.cursor = new NinePatch(SpriteCache.getThemedSprite("selection-input-icon"), 1, 1, 2, 2);
 
@@ -34,10 +52,10 @@ public class Style
 
 		ret.background = new NinePatch(SpriteCache.getThemedSprite("text_field_back"), 16, 16, 16, 16);
 		ret.font = Fonts.getNormal();
-		ret.fontColor = Color.BLACK;
+		ret.fontColor = Color.WHITE;
 
 		ret.messageFont = Fonts.getSmall();
-		ret.messageFontColor = Color.RED;
+		ret.messageFontColor = Color.WHITE;
 
 		ret.cursor = new NinePatch(SpriteCache.getThemedSprite("selection-input-icon"), 1, 1, 2, 2);
 

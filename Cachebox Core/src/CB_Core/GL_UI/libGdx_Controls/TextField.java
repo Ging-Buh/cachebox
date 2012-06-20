@@ -160,15 +160,30 @@ public class TextField extends LibGdx_Host_Control
 	{
 		hasFocus = true;
 		mTextField.touchDown(0, 0, 0);
+		setTextFieldStyle();
 	}
 
 	public void setFocus(boolean value)
 	{
 		hasFocus = value;
+		setTextFieldStyle();
 	}
 
 	public void resetFocus()
 	{
 		hasFocus = false;
+		setTextFieldStyle();
+	}
+
+	private void setTextFieldStyle()
+	{
+		if (!hasFocus)
+		{
+			mTextField.setStyle(Style.getTextFieldStyle());
+		}
+		else
+		{
+			mTextField.setStyle(Style.getTextFieldStyleFocus());
+		}
 	}
 }

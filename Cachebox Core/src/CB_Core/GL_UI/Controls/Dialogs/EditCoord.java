@@ -1,5 +1,7 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
+import java.util.ArrayList;
+
 import CB_Core.GlobalCore;
 import CB_Core.Converter.UTMConvert;
 import CB_Core.GL_UI.CB_View_Base;
@@ -8,6 +10,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
+import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.NumPad;
@@ -15,9 +18,11 @@ import CB_Core.GL_UI.Controls.NumPad.keyEventListner;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.libGdx_Controls.TextField;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
 
@@ -50,11 +55,11 @@ public class EditCoord extends Dialog
 	TextField tbMLonDeg;
 	TextField tbMLonMin;
 	// Deg - Min - Sec
-	Button bSLat;
+
 	TextField tbSLatDeg;
 	TextField tbSLatMin;
 	TextField tbSLatSec;
-	Button bSLon;
+
 	TextField tbSLonDeg;
 	TextField tbSLonMin;
 	TextField tbSLonSec;
@@ -62,8 +67,9 @@ public class EditCoord extends Dialog
 	TextField tbUX;
 	TextField tbUY;
 	TextField tbUZone;
-	Button bUX;
-	Button bUY;
+	Label lUtmO;
+	Label lUtmN;
+	Label lUtmZ;
 
 	NumPad numPad;
 
@@ -80,7 +86,7 @@ public class EditCoord extends Dialog
 		coord = Coord;
 		mReturnListner = returnListner;
 
-		this.setBackground(new NinePatch(SpriteCache.getThemedSprite("text_field_back"), 16, 16, 16, 16));
+		this.setBackground(new NinePatch(SpriteCache.getThemedSprite("activity_back"), 16, 16, 16, 16));
 
 		float left = nineBackground.getLeftWidth();
 		float innerWidth = this.width - left - left;
@@ -110,13 +116,17 @@ public class EditCoord extends Dialog
 		Button bOK = new Button(left, left, innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
 		Button bCancel = new Button(bOK.getMaxX(), left, innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
 		bDLat = new Button(left, bDec.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), "BDLat");
-		bDLon = new Button(left, bDLat.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), "BDLat");
+		bDLon = new Button(left, bDLat.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), "bDLon");
 		CB_RectF EditTextBoxRec = new CB_RectF(bDLon.getMaxX() + margin, bDLon.getY(), this.width - bDLon.getMaxX() - margin,
 				bDLat.getMaxY() - bDLon.getY());
 
 		trDec = new Box(EditTextBoxRec, "trDec");
 		trMin = new Box(EditTextBoxRec, "trMin");
 		trSec = new Box(EditTextBoxRec, "trSec");
+
+		EditTextBoxRec.setHeight((bDLat.getMaxY() - bDLon.getY()) * 1.5f);
+		EditTextBoxRec.setY(bDLon.getY() - bDLon.getHeight());
+		EditTextBoxRec.setX(EditTextBoxRec.getX() + (margin * 3f));
 		trUtm = new Box(EditTextBoxRec, "trUtm");
 
 		this.addChild(trDec);
@@ -157,7 +167,13 @@ public class EditCoord extends Dialog
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				GL_Listener.glListener.closeDialog();
+				if (mReturnListner != null)
+				{
+					GL_Listener.glListener.closeDialog();
+					mReturnListner.returnCoord(null);
+				}
+				else
+					GL_Listener.glListener.closeDialog();
 				return true;
 			}
 		});
@@ -203,6 +219,21 @@ public class EditCoord extends Dialog
 	@Override
 	protected void Initial()
 	{
+
+		lUtmO = new Label(nineBackground.getLeftWidth(), bDec.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide(),
+				UiSizes.getButtonHeight(), "lUtmO");
+		lUtmO.setText("Ostwert");
+		this.addChild(lUtmO);
+
+		lUtmN = new Label(nineBackground.getLeftWidth(), bDLat.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide(),
+				UiSizes.getButtonHeight(), "lUtmN");
+		lUtmN.setText("Nordwert");
+		this.addChild(lUtmN);
+
+		lUtmZ = new Label(nineBackground.getLeftWidth(), bDLat.getY() - UiSizes.getButtonHeight() - UiSizes.getButtonHeight(),
+				UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight(), "lUtmZ");
+		lUtmZ.setText("Zone");
+		this.addChild(lUtmZ);
 
 		bDec.setOnClickListener(new OnClickListener()
 		{
@@ -275,40 +306,134 @@ public class EditCoord extends Dialog
 
 		showPage(1);
 
-		// trDec
 		createTrDec();
+		createTrSec();
+		createTrUtn();
 
 		GL_Listener.glListener.addRenderView(this, GL_Listener.FRAME_RATE_IDLE); // Cursor blink
+
+	}
+
+	private void createTrUtn()
+	{
+		CB_RectF editRec = new CB_RectF(0, 0, (trMin.getWidth() - (margin * 3)), UiSizes.getButtonHeight());
+		editRec.setWidth(editRec.getWidth() - (margin * 2));
+
+		tbUZone = new TextField(editRec, "tbUZone");
+		setKeyboardHandling(tbUZone);
+
+		editRec.setY(tbUZone.getMaxY());
+
+		tbUY = new TextField(editRec, "tbUY");
+		setKeyboardHandling(tbUY);
+
+		editRec.setY(tbUY.getMaxY());
+
+		tbUX = new TextField(editRec, "tbUX");
+		setKeyboardHandling(tbUX);
+
+		trUtm.addChild(tbUX);
+		trUtm.addChild(tbUY);
+		trUtm.addChild(tbUZone);
+	}
+
+	private void createTrSec()
+	{
+		CB_RectF editRec = new CB_RectF(0, 0, (trMin.getWidth() - (margin * 3)) / 3, UiSizes.getButtonHeight());
+		editRec.setWidth(editRec.getWidth() - (margin * 2));
+
+		CB_RectF labelRec = new CB_RectF(new SizeF(margin, UiSizes.getButtonHeight()));
+
+		tbSLonDeg = new TextField(editRec, "tbSLonDeg");
+		setKeyboardHandling(tbSLonDeg);
+
+		labelRec.setX(tbSLonDeg.getMaxX());
+		Label l1 = new Label(labelRec, "l1");
+		l1.setText("°");
+		trSec.addChild(l1);
+
+		editRec.setX(l1.getMaxX() + margin);
+		tbSLonMin = new TextField(editRec, "tbSLonMin");
+		setKeyboardHandling(tbSLonMin);
+
+		labelRec.setX(tbSLonMin.getMaxX());
+		Label l3 = new Label(labelRec, "l3");
+		l3.setText("'");
+		trSec.addChild(l3);
+
+		editRec.setX(l3.getMaxX() + margin);
+		tbSLonSec = new TextField(editRec, "tbSLonSec");
+		setKeyboardHandling(tbSLonSec);
+
+		labelRec.setX(tbSLonSec.getMaxX());
+		Label l5 = new Label(labelRec, "l5");
+		l5.setText("\"");
+		trSec.addChild(l5);
+
+		editRec.setX(tbSLonDeg.getX());
+		editRec.setY(tbSLonDeg.getMaxY());
+
+		tbSLatDeg = new TextField(editRec, "tbSLatDeg");
+		setKeyboardHandling(tbSLatDeg);
+
+		labelRec.setX(tbSLonDeg.getMaxX());
+		labelRec.setY(tbSLonDeg.getMaxY());
+		Label l2 = new Label(labelRec, "l2");
+		l2.setText("°");
+		trSec.addChild(l2);
+
+		editRec.setX(l2.getMaxX() + margin);
+		tbSLatMin = new TextField(editRec, "tbSLatMin");
+		setKeyboardHandling(tbSLatMin);
+
+		labelRec.setX(tbSLatMin.getMaxX());
+		Label l4 = new Label(labelRec, "l4");
+		l4.setText("'");
+		trSec.addChild(l4);
+
+		editRec.setX(l4.getMaxX() + margin);
+		tbSLatSec = new TextField(editRec, "tbSLatSec");
+		setKeyboardHandling(tbSLatSec);
+
+		labelRec.setX(tbSLatSec.getMaxX());
+		Label l6 = new Label(labelRec, "l6");
+		l6.setText("\"");
+		trSec.addChild(l6);
+
+		trSec.addChild(tbSLatDeg);
+		trSec.addChild(tbSLatMin);
+		trSec.addChild(tbSLatSec);
+		trSec.addChild(tbSLonDeg);
+		trSec.addChild(tbSLonMin);
+		trSec.addChild(tbSLonSec);
 
 	}
 
 	private void createTrDec()
 	{
 		CB_RectF editRec = new CB_RectF(0, 0, (trMin.getWidth() - (margin * 3)), UiSizes.getButtonHeight());
+		editRec.setWidth(editRec.getWidth() - (margin * 2));
 
-		tbDLat = new TextField(editRec, "tbDLat");
-		tbDLat.setOnscreenKeyboard(new OnscreenKeyboard()
-		{
-			@Override
-			public void show(boolean arg0)
-			{
-				tbDLat.setFocus(true);
-				focusedTextField = tbDLat;
-			}
-		});
-
-		editRec.setY(tbDLat.getMaxY());
+		CB_RectF labelRec = new CB_RectF(new SizeF(margin, UiSizes.getButtonHeight()));
 
 		tbDLon = new TextField(editRec, "tbDLon");
-		tbDLon.setOnscreenKeyboard(new OnscreenKeyboard()
-		{
-			@Override
-			public void show(boolean arg0)
-			{
-				tbDLon.setFocus(true);
-				focusedTextField = tbDLon;
-			}
-		});
+		setKeyboardHandling(tbDLon);
+
+		labelRec.setX(tbDLon.getMaxX());
+		Label l1 = new Label(labelRec, "l1");
+		l1.setText("°");
+		trDec.addChild(l1);
+
+		editRec.setY(tbDLon.getMaxY());
+
+		tbDLat = new TextField(editRec, "tbDLat");
+		setKeyboardHandling(tbDLat);
+
+		labelRec.setX(tbDLon.getMaxX());
+		labelRec.setY(tbDLon.getMaxY());
+		Label l2 = new Label(labelRec, "l2");
+		l2.setText("°");
+		trDec.addChild(l2);
 
 		trDec.addChild(tbDLat);
 		trDec.addChild(tbDLon);
@@ -317,59 +442,79 @@ public class EditCoord extends Dialog
 	private void createTrMin()
 	{
 		CB_RectF editRec = new CB_RectF(0, 0, (trMin.getWidth() - (margin * 3)) / 2, UiSizes.getButtonHeight());
+		editRec.setWidth(editRec.getWidth() - (margin * 2));
+
+		CB_RectF labelRec = new CB_RectF(new SizeF(margin, UiSizes.getButtonHeight()));
 
 		tbMLonDeg = new TextField(editRec, "tbMLonDeg");
-		tbMLonDeg.setOnscreenKeyboard(new OnscreenKeyboard()
-		{
-			@Override
-			public void show(boolean arg0)
-			{
-				tbMLonDeg.setFocus(true);
-				focusedTextField = tbMLonDeg;
-			}
-		});
+		setKeyboardHandling(tbMLonDeg);
 
-		editRec.setX(tbMLonDeg.getMaxX());
+		labelRec.setX(tbMLonDeg.getMaxX());
+		Label l1 = new Label(labelRec, "l1");
+		l1.setText("°");
+		trMin.addChild(l1);
+
+		editRec.setX(l1.getMaxX() + margin);
 		tbMLonMin = new TextField(editRec, "tbMLonMin");
-		tbMLonMin.setOnscreenKeyboard(new OnscreenKeyboard()
-		{
-			@Override
-			public void show(boolean arg0)
-			{
-				tbMLonMin.setFocus(true);
-				focusedTextField = tbMLonMin;
-			}
-		});
+		setKeyboardHandling(tbMLonMin);
+
+		labelRec.setX(tbMLonMin.getMaxX());
+		Label l3 = new Label(labelRec, "l3");
+		l3.setText("'");
+		trMin.addChild(l3);
 
 		editRec.setX(tbMLonDeg.getX());
 		editRec.setY(tbMLonDeg.getMaxY());
 		tbMLatDeg = new TextField(editRec, "tbMLatDeg");
-		tbMLatDeg.setOnscreenKeyboard(new OnscreenKeyboard()
-		{
-			@Override
-			public void show(boolean arg0)
-			{
-				tbMLatDeg.setFocus(true);
-				focusedTextField = tbMLatDeg;
-			}
-		});
+		setKeyboardHandling(tbMLatDeg);
 
-		editRec.setX(tbMLatDeg.getMaxX());
+		labelRec.setX(tbMLatDeg.getMaxX());
+		labelRec.setY(tbMLonDeg.getMaxY());
+		Label l2 = new Label(labelRec, "l2");
+		l2.setText("°");
+		trMin.addChild(l2);
+
+		editRec.setX(l2.getMaxX() + margin);
 		tbMLatMin = new TextField(editRec, "tbMLatMin");
-		tbMLatMin.setOnscreenKeyboard(new OnscreenKeyboard()
-		{
-			@Override
-			public void show(boolean arg0)
-			{
-				tbMLatMin.setFocus(true);
-				focusedTextField = tbMLatMin;
-			}
-		});
+		setKeyboardHandling(tbMLatMin);
+
+		labelRec.setX(tbMLatMin.getMaxX());
+		Label l4 = new Label(labelRec, "l4");
+		l4.setText("'");
+		trMin.addChild(l4);
 
 		trMin.addChild(tbMLatDeg);
 		trMin.addChild(tbMLatMin);
 		trMin.addChild(tbMLonDeg);
 		trMin.addChild(tbMLonMin);
+	}
+
+	private ArrayList<TextField> allTextFields = new ArrayList<TextField>();
+
+	private void setKeyboardHandling(final TextField textField)
+	{
+		textField.setOnscreenKeyboard(new OnscreenKeyboard()
+		{
+			@Override
+			public void show(boolean arg0)
+			{
+				boolean showKeayboard = false;
+
+				for (TextField tmp : allTextFields)
+				{
+					tmp.resetFocus();
+				}
+
+				textField.setFocus(true);
+				focusedTextField = textField;
+
+				if (tbUZone != null && textField.equals(tbUZone)) showKeayboard = true;
+
+				if (showKeayboard) Gdx.input.setOnscreenKeyboardVisible(showKeayboard);
+			}
+		});
+
+		allTextFields.add(textField);
 	}
 
 	@Override
@@ -386,6 +531,11 @@ public class EditCoord extends Dialog
 		{
 		case 0:
 			// show Degrees
+			lUtmO.setVisibility(CB_View_Base.INVISIBLE);
+			lUtmN.setVisibility(CB_View_Base.INVISIBLE);
+			lUtmZ.setVisibility(CB_View_Base.INVISIBLE);
+			bDLat.setVisibility(CB_View_Base.VISIBLE);
+			bDLon.setVisibility(CB_View_Base.VISIBLE);
 			trDec.setVisibility(CB_View_Base.VISIBLE);
 			trMin.setVisibility(CB_View_Base.INVISIBLE);
 			trSec.setVisibility(CB_View_Base.INVISIBLE);
@@ -409,6 +559,11 @@ public class EditCoord extends Dialog
 			break;
 		case 1:
 			// show Degree - Minute
+			lUtmO.setVisibility(CB_View_Base.INVISIBLE);
+			lUtmN.setVisibility(CB_View_Base.INVISIBLE);
+			lUtmZ.setVisibility(CB_View_Base.INVISIBLE);
+			bDLat.setVisibility(CB_View_Base.VISIBLE);
+			bDLon.setVisibility(CB_View_Base.VISIBLE);
 			trDec.setVisibility(CB_View_Base.INVISIBLE);
 			trMin.setVisibility(CB_View_Base.VISIBLE);
 			trSec.setVisibility(CB_View_Base.INVISIBLE);
@@ -443,6 +598,11 @@ public class EditCoord extends Dialog
 			break;
 		case 2:
 			// show Degree - Minute - Second
+			lUtmO.setVisibility(CB_View_Base.INVISIBLE);
+			lUtmN.setVisibility(CB_View_Base.INVISIBLE);
+			lUtmZ.setVisibility(CB_View_Base.INVISIBLE);
+			bDLat.setVisibility(CB_View_Base.VISIBLE);
+			bDLon.setVisibility(CB_View_Base.VISIBLE);
 			trMin.setVisibility(CB_View_Base.INVISIBLE);
 			trDec.setVisibility(CB_View_Base.INVISIBLE);
 			trSec.setVisibility(CB_View_Base.VISIBLE);
@@ -459,9 +619,13 @@ public class EditCoord extends Dialog
 			frac = min - imin;
 			double sec = frac * 60;
 
-			if (coord.Latitude > 0) bSLat.setText("N");
+			if (coord.Latitude >= 0) bDLat.setText("N");
 			else
-				bSLat.setText("S");
+				bDLat.setText("S");
+			if (coord.Longitude >= 0) bDLon.setText("E");
+			else
+				bDLon.setText("W");
+
 			tbSLatDeg.setText(String.format("%.0f", deg).replace(",", "."));
 			tbSLatMin.setText(String.valueOf(imin).replace(",", "."));
 			tbSLatSec.setText(String.format("%.2f", sec).replace(",", "."));
@@ -473,9 +637,6 @@ public class EditCoord extends Dialog
 			frac = min - imin;
 			sec = frac * 60;
 
-			if (coord.Longitude > 0) bSLon.setText("E");
-			else
-				bSLon.setText("W");
 			tbSLonDeg.setText(String.format("%.0f", deg).replace(",", "."));
 			tbSLonMin.setText(String.valueOf(imin).replace(",", "."));
 			tbSLonSec.setText(String.format("%.2f", sec).replace(",", "."));
@@ -487,6 +648,11 @@ public class EditCoord extends Dialog
 			break;
 		case 3:
 			// show UTM
+			lUtmO.setVisibility(CB_View_Base.VISIBLE);
+			lUtmN.setVisibility(CB_View_Base.VISIBLE);
+			lUtmZ.setVisibility(CB_View_Base.VISIBLE);
+			bDLat.setVisibility(CB_View_Base.INVISIBLE);
+			bDLon.setVisibility(CB_View_Base.INVISIBLE);
 			trMin.setVisibility(CB_View_Base.INVISIBLE);
 			trDec.setVisibility(CB_View_Base.INVISIBLE);
 			trSec.setVisibility(CB_View_Base.INVISIBLE);
@@ -508,10 +674,13 @@ public class EditCoord extends Dialog
 			tbUY.setText(String.format("%.1f", nording).replace(",", "."));
 			tbUX.setText(String.format("%.1f", easting).replace(",", "."));
 			tbUZone.setText(zone);
-			if (coord.Latitude > 0) bUY.setText("N");
-			else if (coord.Latitude < 0) bUY.setText("S");
-			if (coord.Longitude > 0) bUX.setText("E");
-			else if (coord.Longitude < 0) bUX.setText("W");
+
+			if (coord.Latitude >= 0) bDLat.setText("N");
+			else
+				bDLat.setText("S");
+			if (coord.Longitude >= 0) bDLon.setText("E");
+			else
+				bDLon.setText("W");
 
 			tbUY.setFocus();
 
@@ -539,9 +708,9 @@ public class EditCoord extends Dialog
 			break;
 		case 2:
 			// show Degree - Minute - Second
-			scoord += bSLat.getText() + " " + tbSLatDeg.getText() + "\u00B0 " + tbSLatMin.getText() + "\u0027 " + tbSLatSec.getText()
+			scoord += bDLat.getText() + " " + tbSLatDeg.getText() + "\u00B0 " + tbSLatMin.getText() + "\u0027 " + tbSLatSec.getText()
 					+ "\\u0022";
-			scoord += " " + bSLon.getText() + " " + tbSLonDeg.getText() + "\u00B0 " + tbSLonMin.getText() + "\u0027 " + tbSLonSec.getText()
+			scoord += " " + bDLon.getText() + " " + tbSLonDeg.getText() + "\u00B0 " + tbSLonMin.getText() + "\u0027 " + tbSLonSec.getText()
 					+ "\\u0022";
 			break;
 		case 3:
@@ -584,14 +753,8 @@ public class EditCoord extends Dialog
 		float numWidth = this.width - nineBackground.getLeftWidth() - nineBackground.getRightWidth();
 		float numHeight = this.height - nineBackground.getBottomHeight() - nineBackground.getTopHeight() - (UiSizes.getButtonHeight() * 2)
 				- (margin * 2);
-		if (trUtm.getVisibility() == CB_View_Base.VISIBLE)
-		{
-			numHeight -= trUtm.getHeight();
-		}
-		else
-		{
-			numHeight -= trMin.getHeight();
-		}
+
+		numHeight -= trUtm.getHeight();
 
 		CB_RectF numRec = new CB_RectF(nineBackground.getLeftWidth(), UiSizes.getButtonHeight() + (margin * 3), numWidth, numHeight);
 

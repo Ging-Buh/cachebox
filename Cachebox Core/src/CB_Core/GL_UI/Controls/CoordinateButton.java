@@ -20,20 +20,6 @@ public class CoordinateButton extends Button
 		mActCoord = coord;
 		setText();
 		this.setOnClickListener(click);
-		dialogRec = new CB_RectF(0, 0, UiSizes.getSmallestWidth(), UiSizes.getWindowHeight());
-		edCo = new EditCoord(dialogRec, "EditCoord", mActCoord, new ReturnListner()
-		{
-
-			@Override
-			public void returnCoord(Coordinate coord)
-			{
-				if (coord != null && coord.Valid)
-				{
-					mActCoord = coord;
-					setText();
-				}
-			}
-		});
 
 	}
 
@@ -46,9 +32,7 @@ public class CoordinateButton extends Button
 	protected void Initial()
 	{
 		super.Initial();
-
 		// switch ninePatchImages
-
 		NinePatch tmp = mNinePatch;
 		mNinePatch = mNinePatchPressed;
 		mNinePatchPressed = tmp;
@@ -58,13 +42,32 @@ public class CoordinateButton extends Button
 
 	EditCoord edCo;
 
+	private void initialEdCo()
+	{
+		dialogRec = new CB_RectF(0, 0, UiSizes.getSmallestWidth(), UiSizes.getWindowHeight());
+		edCo = new EditCoord(dialogRec, "EditCoord", mActCoord, new ReturnListner()
+		{
+
+			@Override
+			public void returnCoord(Coordinate coord)
+			{
+				if (coord != null && coord.Valid)
+				{
+					mActCoord = coord;
+					setText();
+				}
+				edCo = null;
+			}
+		});
+	}
+
 	OnClickListener click = new OnClickListener()
 	{
 
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
-
+			if (edCo == null) initialEdCo();
 			GL_Listener.glListener.showDialog(edCo);
 
 			return true;
