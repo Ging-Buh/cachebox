@@ -35,10 +35,11 @@ public class FunctionCategories extends TreeMap<String, Functions>
 		functions.add(new FunctionPi());
 		this.put(functions.Name, functions);
 		functions = new Functions("solverGroupCoordinates");
-		/*
-		 * functions.add(new FunctionProjection()); functions.Add(new FunctionIntersection()); functions.Add(new FunctionCrossbearing());
-		 * functions.add(new FunctionBearing()); functions.Add(new FunctionDistance());
-		 */
+		functions.add(new FunctionProjection());
+		functions.add(new FunctionIntersection());
+		functions.add(new FunctionCrossbearing());
+		functions.add(new FunctionBearing());
+		functions.add(new FunctionDistance());
 		this.put(functions.Name, functions);
 
 	}

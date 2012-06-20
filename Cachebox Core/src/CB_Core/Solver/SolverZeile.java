@@ -480,10 +480,14 @@ public class SolverZeile
 			TempEntity tEntity = (TempEntity) entity;
 			String s = tEntity.Text.trim();
 			if (s == "") continue;
-			/*
-			 * if (s.charAt(0) == '$') { // GC-Koordinate suchen CoordinateEntity cEntity = new CoordinateEntity(-1, s.Substring(1, s.Length
-			 * - 1)); string var = entities.Insert(cEntity); tEntity.Text = var; s = ""; }
-			 */
+			if (s.charAt(0) == '$')
+			{
+				// GC-Koordinate suchen
+				CoordinateEntity cEntity = new CoordinateEntity(-1, s.substring(1, s.length()));
+				String var = entities.Insert(cEntity);
+				tEntity.Text = var;
+				s = "";
+			}
 			if ((s.length() >= 2) && (s.charAt(0) == '"') && (s.charAt(s.length() - 1) == '"'))
 			{
 				// dies ist ein String -> in StringEntity umwandeln
