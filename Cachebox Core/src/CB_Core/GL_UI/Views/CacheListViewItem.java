@@ -20,7 +20,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -126,47 +125,8 @@ public class CacheListViewItem extends ListViewItemBase implements PositionChang
 	}
 
 	@Override
-	protected void Initial()
-	{
-		if (!mBackIsInitial)
-		{
-			backSelect = new NinePatch(SpriteCache.getThemedSprite("listrec_selected"), 8, 8, 8, 8);
-			back1 = new NinePatch(SpriteCache.getThemedSprite("listrec_first"), 8, 8, 8, 8);
-			back2 = new NinePatch(SpriteCache.getThemedSprite("listrec_secend"), 8, 8, 8, 8);
-			mBackIsInitial = true;
-		}
-	}
-
-	private static NinePatch backSelect;
-	private static NinePatch back1;
-	private static NinePatch back2;
-	private static boolean mBackIsInitial = false;
-
-	public static void ResetBackground()
-	{
-		mBackIsInitial = false;
-	}
-
-	@Override
 	protected void render(SpriteBatch batch)
 	{
-		// Draw Background
-		if (mBackIsInitial)
-		{
-			Boolean BackGroundChanger = ((this.getIndex() % 2) == 1);
-			if (isSelected)
-			{
-				backSelect.draw(batch, 0, 0, this.width, this.height);
-			}
-			else if (BackGroundChanger)
-			{
-				back1.draw(batch, 0, 0, this.width, this.height);
-			}
-			else
-			{
-				back2.draw(batch, 0, 0, this.width, this.height);
-			}
-		}
 		super.render(batch);
 
 		if (arrow != null) arrow.draw(batch);
