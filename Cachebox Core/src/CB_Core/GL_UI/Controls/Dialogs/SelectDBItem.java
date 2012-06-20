@@ -5,10 +5,10 @@ import java.io.File;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
-import CB_Core.GL_UI.Controls.List.ListViewItemBase;
+import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.Math.CB_RectF;
 
-public class SelectDBItem extends ListViewItemBase
+public class SelectDBItem extends ListViewItemBackground
 {
 
 	Label nameLabel;

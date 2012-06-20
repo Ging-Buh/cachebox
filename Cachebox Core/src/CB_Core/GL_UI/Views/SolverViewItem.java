@@ -1,7 +1,7 @@
 package CB_Core.GL_UI.Views;
 
 import CB_Core.GL_UI.Fonts;
-import CB_Core.GL_UI.Controls.List.ListViewItemBase;
+import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Solver.SolverZeile;
 
@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class SolverViewItem extends ListViewItemBase
+public class SolverViewItem extends ListViewItemBackground
 {
 	protected boolean isPressed = false;
 	protected SolverZeile solverZeile;

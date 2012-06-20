@@ -8,7 +8,7 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.CacheInfo;
-import CB_Core.GL_UI.Controls.List.ListViewItemBase;
+import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class CacheListViewItem extends ListViewItemBase implements PositionChangedEvent
+public class CacheListViewItem extends ListViewItemBackground implements PositionChangedEvent
 {
 
 	/**
