@@ -38,7 +38,7 @@ public class FunctionBearing extends Function
 				coord[i] = new Coordinate(parameter[i]);
 				if (!coord[i].Valid) return "Parameter " + String.valueOf(i + 1) + " must be a Coordinate!";
 			}
-			double bearing = -Coordinate.Bearing(coord[0], coord[1]);
+			double bearing = Coordinate.Bearing(coord[0], coord[1]);
 			if (bearing < 0) bearing = bearing + 360;
 			return String.valueOf(bearing);
 		}
