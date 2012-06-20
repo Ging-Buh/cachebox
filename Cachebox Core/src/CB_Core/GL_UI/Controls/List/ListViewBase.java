@@ -376,10 +376,36 @@ public abstract class ListViewBase extends CB_View_Base
 	{
 		if (mSelectedIndex != i && i >= 0)
 		{
+			for (GL_View_Base v : childs)
+			{
+				if (v instanceof ListViewItemBase)
+				{
+					if (((ListViewItemBase) v).getIndex() == mSelectedIndex)
+					{
+						((ListViewItemBase) v).isSelected = false;
+						break;
+					}
+				}
+			}
 			mSelectedIndex = i;
+			for (GL_View_Base v : childs)
+			{
+				if (v instanceof ListViewItemBase)
+				{
+					if (((ListViewItemBase) v).getIndex() == mSelectedIndex)
+					{
+						((ListViewItemBase) v).isSelected = true;
+						break;
+					}
+				}
+			}
 
 			// alle Items löschen, damit das Selection flag neu gesetzt werden kann.
-			reloadItems();
+			if (childs.size() == 0)
+			{
+				reloadItems();
+			}
+			GL_Listener.glListener.renderOnce(this.getName() + " setListPos");
 		}
 
 	}
