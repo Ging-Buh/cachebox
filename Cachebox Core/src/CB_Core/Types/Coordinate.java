@@ -157,7 +157,7 @@ public class Coordinate implements Serializable
 		else
 		{
 			slat = text.substring(0, ilat).trim().replace("\u00B0", " ");
-			slon = text.substring(ilat + 1, ilon - ilat - 1).trim().replace("\u00B0", " ");
+			slon = text.substring(ilat + 1, text.length() - 1).trim().replace("\u00B0", " ");
 		}
 
 		String[] clat = slat.split(" ");
@@ -484,4 +484,44 @@ public class Coordinate implements Serializable
 		return true;
 	}
 
+	public static Coordinate Intersection(Coordinate coord1, Coordinate coord2, Coordinate coord3, Coordinate coord4)
+	{
+		Coordinate result = null;
+
+		double[] x = new double[4];
+		double[] y = new double[4];
+		x[0] = coord1.Longitude;
+		y[0] = coord1.Latitude;
+		x[1] = coord2.Longitude;
+		y[1] = coord2.Latitude;
+		x[2] = coord3.Longitude;
+		y[2] = coord3.Latitude;
+		x[3] = coord4.Longitude;
+		y[3] = coord4.Latitude;
+
+		// Steigungen
+		double steig1 = (y[1] - y[0]) / (x[1] - x[0]);
+		double steig2 = (y[3] - y[2]) / (x[3] - x[2]);
+		// Nullwerte
+		double null1 = y[0] - x[0] * steig1;
+		double null2 = y[2] - x[2] * steig2;
+		// Schnittpunkt
+		double X = (null2 - null1) / (steig1 - steig2);
+		double Y = steig1 * X + null1;
+		// Konvertieren in Lat-Lon
+
+		result = new Coordinate(Y, X);
+		return result;
+	}
+
+	public static Coordinate Crossbearing(Coordinate coord1, double direction1, Coordinate coord2, double direction2)
+	{
+		float[] dist = new float[4];
+		distanceBetween(coord1.Latitude, coord1.Longitude, coord2.Latitude, coord2.Longitude, dist);
+		double distance = dist[0];
+		Coordinate coord3 = Project(coord1, direction1, distance);
+		Coordinate coord4 = Project(coord2, direction2, distance);
+
+		return Intersection(coord1, coord3, coord2, coord4);
+	}
 }
