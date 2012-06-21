@@ -12,11 +12,11 @@ import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Activitys.SelectDB;
+import CB_Core.GL_UI.Activitys.SelectDB.ReturnListner;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ProgressBar;
-import CB_Core.GL_UI.Controls.Dialogs.SelectDB;
-import CB_Core.GL_UI.Controls.Dialogs.SelectDB.ReturnListner;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
 import CB_Core.GL_UI.Main.TabMainView;
@@ -337,7 +337,7 @@ public class splash extends TabMainView
 		if ((fileList.size() > 1) && Config.settings.MultiDBAsk.getValue())
 		{
 			breakForWait = true;
-			selectDBDialog = new SelectDB(this, "SelectDbDialog");
+			selectDBDialog = new SelectDB(this, "SelectDbDialog", true);
 			selectDBDialog.setReturnListner(new ReturnListner()
 			{
 				@Override
@@ -346,14 +346,13 @@ public class splash extends TabMainView
 					returnFromSelectDB();
 				}
 			});
-			this.addChild(selectDBDialog);
+			selectDBDialog.show();
 		}
 
 	}
 
 	private void returnFromSelectDB()
 	{
-		this.removeChild(selectDBDialog);
 		breakForWait = false;
 		switcher = true;
 	}

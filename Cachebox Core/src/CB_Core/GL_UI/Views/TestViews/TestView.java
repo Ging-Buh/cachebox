@@ -1,22 +1,26 @@
 package CB_Core.GL_UI.Views.TestViews;
 
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Activitys.ActivityBase;
+import CB_Core.GL_UI.Activitys.EditWaypoint;
+import CB_Core.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
 import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox;
 import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
 import CB_Core.GL_UI.Controls.Dialogs.SolverDialog;
-import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
+import CB_Core.Types.Waypoint;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -110,7 +114,28 @@ public class TestView extends CB_View_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				StringInputBox.Show("Wie viele Caches hast Du bis jetzt gefunden:", "Funde anpassen", "200", click);
+				if (GlobalCore.SelectedCache() != null)
+				{
+					if (GlobalCore.SelectedCache().waypoints.size() > 0)
+					{
+						Waypoint wp = GlobalCore.SelectedCache().waypoints.get(0);
+						EditWaypoint EdWp = new EditWaypoint(ActivityBase.ActivityRec(), "EditWP", wp, new ReturnListner()
+						{
+
+							@Override
+							public void returnedWP(Waypoint wp)
+							{
+								// TODO Auto-generated method stub
+
+							}
+						});
+						EdWp.show();
+					}
+					else
+					{
+						GL_Listener.glListener.Toast("Der Cache hat keine WP´s", 200);
+					}
+				}
 				return true;
 			}
 		});

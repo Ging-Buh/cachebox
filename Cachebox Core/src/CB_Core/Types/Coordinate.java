@@ -524,4 +524,9 @@ public class Coordinate implements Serializable
 
 		return Intersection(coord1, coord3, coord2, coord4);
 	}
+
+	public Coordinate copy()
+	{
+		return new Coordinate(this);
+	}
 }

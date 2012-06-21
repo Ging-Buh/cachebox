@@ -1,4 +1,4 @@
-package CB_Core.GL_UI.Controls.Dialogs;
+package CB_Core.GL_UI.Activitys;
 
 import java.io.File;
 

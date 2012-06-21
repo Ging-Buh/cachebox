@@ -1,4 +1,4 @@
-package CB_Core.GL_UI.Controls.Dialogs;
+package CB_Core.GL_UI.Activitys;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -12,10 +12,10 @@ import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
-import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
-import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
+import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
+import CB_Core.GL_UI.Controls.Dialogs.Toast;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
@@ -27,7 +27,7 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Categories;
 
-public class SelectDB extends CB_View_Base
+public class SelectDB extends ActivityBase
 {
 	private int autoStartTime = 10;
 	private int autoStartCounter = 0;
@@ -43,12 +43,12 @@ public class SelectDB extends CB_View_Base
 
 	private String[] countList;
 
-	public SelectDB(CB_RectF rec, String Name)
+	private boolean MusstSelect = false;
+
+	public SelectDB(CB_RectF rec, String Name, boolean mustSelect)
 	{
 		super(rec, Name);
-
-		setBackground(SpriteCache.ListBack);
-
+		MusstSelect = mustSelect;
 		DBPath = FileIO.GetDirectoryName(Config.settings.DatabasePath.getValue());
 		String DBFile = FileIO.GetFileName(Config.settings.DatabasePath.getValue());
 
@@ -64,20 +64,20 @@ public class SelectDB extends CB_View_Base
 			index++;
 		}
 
-		lvFiles = new V_ListView(new CB_RectF(0, UiSizes.getButtonHeight() * 2, width, height - UiSizes.getButtonHeight() * 2),
-				"DB File ListView");
+		lvFiles = new V_ListView(new CB_RectF(Left, Bottom + UiSizes.getButtonHeight() * 2, width - Left - Right, height
+				- (UiSizes.getButtonHeight() * 2) - Top - Bottom), "DB File ListView");
 
 		lvAdapter = new CustomAdapter(files);
 		lvFiles.setBaseAdapter(lvAdapter);
 
 		this.addChild(lvFiles);
 
-		float btWidth = width / 3;
+		float btWidth = (width - Left - Right) / 3;
 
-		bNew = new Button(new CB_RectF(0, 0, btWidth, UiSizes.getButtonHeight()), "selectDB.bNew");
-		bSelect = new Button(new CB_RectF(btWidth, 0, btWidth, UiSizes.getButtonHeight()), "selectDB.bSelect");
-		bCancel = new Button(new CB_RectF(btWidth * 2, 0, btWidth, UiSizes.getButtonHeight()), "selectDB.bCancel");
-		bAutostart = new Button(new CB_RectF(0, UiSizes.getButtonHeight(), width, UiSizes.getButtonHeight()), "selectDB.bAutostart");
+		bNew = new Button(new CB_RectF(Left, Bottom, btWidth, UiSizes.getButtonHeight()), "selectDB.bNew");
+		bSelect = new Button(new CB_RectF(bNew.getMaxX(), Bottom, btWidth, UiSizes.getButtonHeight()), "selectDB.bSelect");
+		bCancel = new Button(new CB_RectF(bSelect.getMaxX(), Bottom, btWidth, UiSizes.getButtonHeight()), "selectDB.bCancel");
+		bAutostart = new Button(new CB_RectF(Left, bNew.getMaxY(), width - Left - Right, UiSizes.getButtonHeight()), "selectDB.bAutostart");
 
 		this.addChild(bSelect);
 		this.addChild(bNew);
@@ -121,10 +121,15 @@ public class SelectDB extends CB_View_Base
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				stopTimer();
-				// aktIntent.putExtra("SOMETHING", "EXTRAS");
-				// setResult(RESULT_CANCELED, aktIntent);
-				// finish();
-				//
+				if (MusstSelect)
+				{
+					selectDB();
+				}
+				else
+				{
+					finish();
+				}
+
 				return true;
 			}
 		});
@@ -307,10 +312,10 @@ public class SelectDB extends CB_View_Base
 
 				break;
 			case 2: // cancel clicket
-
+				that.show();
 				break;
 			case 3:
-
+				that.show();
 				break;
 			}
 
@@ -320,6 +325,13 @@ public class SelectDB extends CB_View_Base
 
 	protected void selectDB()
 	{
+
+		if (AktFile == null)
+		{
+			GL_Listener.glListener.Toast("no DB selected", 200);
+			return;
+		}
+
 		Config.settings.MultiDBAutoStartTime.setValue(autoStartTime);
 		Config.settings.MultiDBAsk.setValue(autoStartTime >= 0);
 
@@ -338,6 +350,7 @@ public class SelectDB extends CB_View_Base
 		Config.settings.ReadFromDB();
 
 		if (returnListner != null) returnListner.back();
+		finish();
 	}
 
 	private void setAutoStartText()
@@ -362,6 +375,7 @@ public class SelectDB extends CB_View_Base
 			this.files = files;
 			recItem = UiSizes.getCacheListItemRec().asFloat();
 			recItem.setHeight(recItem.getHeight() * 0.8f);
+			recItem.setWidth(width - Left - Right);
 		}
 
 		public void setFiles(FileList files)
@@ -475,7 +489,7 @@ public class SelectDB extends CB_View_Base
 					break;
 
 				}
-
+				that.show();
 				return true;
 			}
 		});

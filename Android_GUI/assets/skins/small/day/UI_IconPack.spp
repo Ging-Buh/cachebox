@@ -165,7 +165,7 @@ day_btn_zoom_down_pressed
   index: -1
 stars1_5small
   rotate: false
-  xy: 940, 408
+  xy: 983, 408
   size: 24, 5
   orig: 24, 5
   offset: 0, 0
@@ -228,7 +228,7 @@ lupe
   index: -1
 star
   rotate: false
-  xy: 622, 408
+  xy: 665, 408
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
@@ -312,7 +312,7 @@ button_list_back
   index: -1
 stars0small
   rotate: false
-  xy: 834, 408
+  xy: 877, 408
   size: 24, 5
   orig: 24, 5
   offset: 0, 0
@@ -403,7 +403,7 @@ not_available
   index: -1
 splash_back
   rotate: false
-  xy: 391, 408
+  xy: 434, 408
   size: 230, 389
   orig: 230, 389
   offset: 0, 0
@@ -646,6 +646,13 @@ small4no
   orig: 8, 8
   offset: 0, 0
   index: -1
+spinner_triangle
+  rotate: false
+  xy: 391, 408
+  size: 42, 44
+  orig: 42, 44
+  offset: 0, 0
+  index: -1
 small6no
   rotate: false
   xy: 280, 408
@@ -732,7 +739,7 @@ big6icon
   index: -1
 stars0_5small
   rotate: false
-  xy: 728, 408
+  xy: 771, 408
   size: 24, 5
   orig: 24, 5
   offset: 0, 0
@@ -795,7 +802,7 @@ track_point
   index: -1
 stars1_5icon
   rotate: false
-  xy: 859, 408
+  xy: 902, 408
   size: 80, 16
   orig: 80, 16
   offset: 0, 0
@@ -872,7 +879,7 @@ big1icon
   index: -1
 stars0_5icon
   rotate: false
-  xy: 647, 408
+  xy: 690, 408
   size: 80, 16
   orig: 80, 16
   offset: 0, 0
@@ -1446,7 +1453,7 @@ log4icon
   index: -1
 stars0icon
   rotate: false
-  xy: 753, 408
+  xy: 796, 408
   size: 80, 16
   orig: 80, 16
   offset: 0, 0

@@ -29,16 +29,16 @@ public class EditWaypoint extends Activity
 {
 	private Intent aktIntent;
 	private Waypoint waypoint;
-	Button bCoord = null;
-	Button bOK = null;
-	Button bCancel = null;
-	TextView tvCacheName = null;
-	TextView tvTyp = null;
-	TextView tvTitle = null;
-	TextView tvDescription = null;
-	EditText etDescription = null;
-	TextView tvClue = null;
-	EditText etClue = null;
+	private Button bCoord = null;
+	private Button bOK = null;
+	private Button bCancel = null;
+	private TextView tvCacheName = null;
+	private TextView tvTyp = null;
+	private TextView tvTitle = null;
+	private TextView tvDescription = null;
+	private EditText etDescription = null;
+	private TextView tvClue = null;
+	private EditText etClue = null;
 
 	public void onCreate(Bundle savedInstanceState)
 	{

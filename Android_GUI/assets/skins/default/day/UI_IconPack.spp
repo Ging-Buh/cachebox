@@ -165,7 +165,7 @@ day_btn_zoom_down_pressed
   index: -1
 stars1_5small
   rotate: false
-  xy: 1239, 763
+  xy: 1324, 763
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
@@ -228,7 +228,7 @@ lupe
   index: -1
 star
   rotate: false
-  xy: 609, 763
+  xy: 694, 763
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -312,7 +312,7 @@ button_list_back
   index: -1
 stars0small
   rotate: false
-  xy: 1029, 763
+  xy: 1114, 763
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
@@ -333,7 +333,7 @@ arrow_left
   index: -1
 stars2_5small
   rotate: false
-  xy: 1659, 763
+  xy: 1744, 763
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
@@ -403,7 +403,7 @@ not_available
   index: -1
 splash_back
   rotate: false
-  xy: 148, 763
+  xy: 233, 763
   size: 460, 778
   orig: 460, 778
   offset: 0, 0
@@ -646,6 +646,13 @@ small4no
   orig: 15, 15
   offset: 0, 0
   index: -1
+spinner_triangle
+  rotate: false
+  xy: 148, 763
+  size: 84, 87
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
 small6no
   rotate: false
   xy: 1944, 675
@@ -732,7 +739,7 @@ big6icon
   index: -1
 stars0_5small
   rotate: false
-  xy: 819, 763
+  xy: 904, 763
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
@@ -795,7 +802,7 @@ track_point
   index: -1
 stars1_5icon
   rotate: false
-  xy: 1078, 763
+  xy: 1163, 763
   size: 160, 32
   orig: 160, 32
   offset: 0, 0
@@ -858,7 +865,7 @@ solver_icon
   index: -1
 stars2_5icon
   rotate: false
-  xy: 1498, 763
+  xy: 1583, 763
   size: 160, 32
   orig: 160, 32
   offset: 0, 0
@@ -872,7 +879,7 @@ big1icon
   index: -1
 stars0_5icon
   rotate: false
-  xy: 658, 763
+  xy: 743, 763
   size: 160, 32
   orig: 160, 32
   offset: 0, 0
@@ -1229,7 +1236,7 @@ listrec_selected
   index: -1
 stars2icon
   rotate: false
-  xy: 1708, 763
+  xy: 1793, 763
   size: 160, 32
   orig: 160, 32
   offset: 0, 0
@@ -1257,7 +1264,7 @@ BubbleOverlay
   index: -1
 stars1small
   rotate: false
-  xy: 1449, 763
+  xy: 1534, 763
   size: 48, 10
   orig: 48, 10
   offset: 0, 0
@@ -1425,7 +1432,7 @@ background
   index: -1
 stars1icon
   rotate: false
-  xy: 1288, 763
+  xy: 1373, 763
   size: 160, 32
   orig: 160, 32
   offset: 0, 0
@@ -1446,7 +1453,7 @@ log4icon
   index: -1
 stars0icon
   rotate: false
-  xy: 868, 763
+  xy: 953, 763
   size: 160, 32
   orig: 160, 32
   offset: 0, 0
@@ -1530,7 +1537,7 @@ big11icon
   index: -1
 stars2small
   rotate: false
-  xy: 1869, 763
+  xy: 1954, 763
   size: 48, 10
   orig: 48, 10
   offset: 0, 0

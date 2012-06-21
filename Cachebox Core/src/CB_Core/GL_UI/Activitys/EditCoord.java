@@ -1,4 +1,4 @@
-package CB_Core.GL_UI.Controls.Dialogs;
+package CB_Core.GL_UI.Activitys;
 
 import java.util.ArrayList;
 
@@ -6,10 +6,8 @@ import CB_Core.GlobalCore;
 import CB_Core.Converter.UTMConvert;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
-import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
-import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
@@ -23,57 +21,60 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
 
-public class EditCoord extends Dialog
+public class EditCoord extends ActivityBase
 {
 	private int aktPage = -1; // Deg-Min
-	UTMConvert convert = new UTMConvert();
+	private UTMConvert convert = new UTMConvert();
 
-	Coordinate coord;
-	ReturnListner mReturnListner;
-	Box trDec;
-	Box trMin;
-	Box trSec;
-	Box trUtm;
+	private Coordinate cancelCoord;
+	private Coordinate coord;
+	private ReturnListner mReturnListner;
+	private Box trDec;
+	private Box trMin;
+	private Box trSec;
+	private Box trUtm;
+
 	// Allgemein
-	MultiToggleButton bDec;
-	MultiToggleButton bMin;
-	MultiToggleButton bSec;
-	MultiToggleButton bUtm;
+	private MultiToggleButton bDec;
+	private MultiToggleButton bMin;
+	private MultiToggleButton bSec;
+	private MultiToggleButton bUtm;
+
 	// Deg
-	Button bDLat;
-	TextField tbDLat;
-	Button bDLon;
-	TextField tbDLon;
+	private Button bDLat;
+	private TextField tbDLat;
+	private Button bDLon;
+	private TextField tbDLon;
+
 	// Deg - Min
-	// Button bMLat;
-	TextField tbMLatDeg;
-	TextField tbMLatMin;
+	private TextField tbMLatDeg;
+	private TextField tbMLatMin;
+
 	// Button bMLon;
-	TextField tbMLonDeg;
-	TextField tbMLonMin;
+	private TextField tbMLonDeg;
+	private TextField tbMLonMin;
 	// Deg - Min - Sec
 
-	TextField tbSLatDeg;
-	TextField tbSLatMin;
-	TextField tbSLatSec;
+	private TextField tbSLatDeg;
+	private TextField tbSLatMin;
+	private TextField tbSLatSec;
 
-	TextField tbSLonDeg;
-	TextField tbSLonMin;
-	TextField tbSLonSec;
+	private TextField tbSLonDeg;
+	private TextField tbSLonMin;
+	private TextField tbSLonSec;
 	// Utm
-	TextField tbUX;
-	TextField tbUY;
-	TextField tbUZone;
-	Label lUtmO;
-	Label lUtmN;
-	Label lUtmZ;
+	private TextField tbUX;
+	private TextField tbUY;
+	private TextField tbUZone;
+	private Label lUtmO;
+	private Label lUtmN;
+	private Label lUtmZ;
 
-	NumPad numPad;
+	private NumPad numPad;
 
-	TextField focusedTextField = null;
+	private TextField focusedTextField = null;
 
 	public interface ReturnListner
 	{
@@ -84,9 +85,8 @@ public class EditCoord extends Dialog
 	{
 		super(rec, Name);
 		coord = Coord;
+		cancelCoord = coord.copy();
 		mReturnListner = returnListner;
-
-		this.setBackground(new NinePatch(SpriteCache.getThemedSprite("activity_back"), 16, 16, 16, 16));
 
 		float left = nineBackground.getLeftWidth();
 		float innerWidth = this.width - left - left;
@@ -152,11 +152,11 @@ public class EditCoord extends Dialog
 
 				if (mReturnListner != null)
 				{
-					GL_Listener.glListener.closeDialog();
+					finish();
 					mReturnListner.returnCoord(coord);
 				}
 				else
-					GL_Listener.glListener.closeDialog();
+					finish();
 				return true;
 			}
 		});
@@ -170,7 +170,7 @@ public class EditCoord extends Dialog
 				if (mReturnListner != null)
 				{
 					GL_Listener.glListener.closeDialog();
-					mReturnListner.returnCoord(null);
+					mReturnListner.returnCoord(cancelCoord);
 				}
 				else
 					GL_Listener.glListener.closeDialog();
@@ -517,13 +517,6 @@ public class EditCoord extends Dialog
 		allTextFields.add(textField);
 	}
 
-	@Override
-	protected void SkinIsChanged()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
 	private void showPage(int newPage)
 	{
 		if (aktPage >= 0) parseView();
@@ -730,21 +723,6 @@ public class EditCoord extends Dialog
 		}
 		else
 			return false;
-	}
-
-	@Override
-	public GL_View_Base addChild(GL_View_Base view)
-	{
-		// die Childs in die Box umleiten
-		this.addChildDirekt(view);
-
-		return view;
-	}
-
-	@Override
-	public void removeChilds()
-	{
-		this.removeChildsDirekt();
 	}
 
 	private void showNumPad(NumPad.Type type)

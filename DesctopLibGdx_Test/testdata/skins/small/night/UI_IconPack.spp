@@ -18,7 +18,7 @@ listrec_selected
   index: -1
 toggle_led_gr
   rotate: false
-  xy: 87, 814
+  xy: 318, 469
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
@@ -81,14 +81,14 @@ db_pressed
   index: -1
 zoom_back
   rotate: false
-  xy: 262, 814
+  xy: 1, 859
   size: 40, 20
   orig: 40, 20
   offset: 0, 0
   index: -1
 tool
   rotate: false
-  xy: 172, 814
+  xy: 403, 469
   size: 44, 38
   orig: 44, 38
   offset: 0, 0
@@ -228,7 +228,7 @@ dialog_header
   index: -1
 text_field_back_focus
   rotate: false
-  xy: 44, 814
+  xy: 275, 469
   size: 42, 44
   orig: 42, 44
   offset: 0, 0
@@ -331,16 +331,23 @@ cm_icon
   orig: 10, 21
   offset: 0, 0
   index: -1
-splash_back
+spinner_triangle
   rotate: false
   xy: 243, 424
+  size: 42, 44
+  orig: 42, 44
+  offset: 0, 0
+  index: -1
+splash_back
+  rotate: false
+  xy: 1, 469
   size: 230, 389
   orig: 230, 389
   offset: 0, 0
   index: -1
 text_field_back
   rotate: false
-  xy: 1, 814
+  xy: 232, 469
   size: 42, 44
   orig: 42, 44
   offset: 0, 0
@@ -368,7 +375,7 @@ regular
   index: -1
 tool_pressed
   rotate: false
-  xy: 217, 814
+  xy: 448, 469
   size: 44, 38
   orig: 44, 38
   offset: 0, 0

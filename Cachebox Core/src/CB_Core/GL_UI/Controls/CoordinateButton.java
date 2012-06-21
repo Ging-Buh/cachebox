@@ -1,11 +1,11 @@
 package CB_Core.GL_UI.Controls;
 
 import CB_Core.GL_UI.GL_View_Base;
-import CB_Core.GL_UI.Controls.Dialogs.EditCoord;
-import CB_Core.GL_UI.Controls.Dialogs.EditCoord.ReturnListner;
+import CB_Core.GL_UI.Activitys.ActivityBase;
+import CB_Core.GL_UI.Activitys.EditCoord;
+import CB_Core.GL_UI.Activitys.EditCoord.ReturnListner;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -14,6 +14,13 @@ public class CoordinateButton extends Button
 {
 	Coordinate mActCoord;
 
+	public interface CoordinateChangeListner
+	{
+		public void coordinateChanged(Coordinate coord);
+	}
+
+	private CoordinateChangeListner mCoordinateChangedListner;
+
 	public CoordinateButton(CB_RectF rec, String name, Coordinate coord)
 	{
 		super(rec, name);
@@ -21,6 +28,11 @@ public class CoordinateButton extends Button
 		setText();
 		this.setOnClickListener(click);
 
+	}
+
+	public void setCoordinateChangedListner(CoordinateChangeListner listner)
+	{
+		mCoordinateChangedListner = listner;
 	}
 
 	private void setText()
@@ -38,14 +50,12 @@ public class CoordinateButton extends Button
 		mNinePatchPressed = tmp;
 	}
 
-	CB_RectF dialogRec;
-
 	EditCoord edCo;
 
 	private void initialEdCo()
 	{
-		dialogRec = new CB_RectF(0, 0, UiSizes.getSmallestWidth(), UiSizes.getWindowHeight());
-		edCo = new EditCoord(dialogRec, "EditCoord", mActCoord, new ReturnListner()
+
+		edCo = new EditCoord(ActivityBase.ActivityRec(), "EditCoord", mActCoord, new ReturnListner()
 		{
 
 			@Override
@@ -54,6 +64,7 @@ public class CoordinateButton extends Button
 				if (coord != null && coord.Valid)
 				{
 					mActCoord = coord;
+					if (mCoordinateChangedListner != null) mCoordinateChangedListner.coordinateChanged(coord);
 					setText();
 				}
 				edCo = null;

@@ -6,7 +6,8 @@ import java.util.Date;
 import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheTypes;
 
-public class Waypoint implements Serializable {
+public class Waypoint implements Serializable
+{
 	/**
 	 * 
 	 */
@@ -21,12 +22,14 @@ public class Waypoint implements Serializable {
 	public Coordinate Pos;
 
 	// / Breitengrad
-	public double Latitude() {
+	public double Latitude()
+	{
 		return Pos.Latitude;
 	}
 
 	// / Längengrad
-	public double Longitude() {
+	public double Longitude()
+	{
 		return Pos.Longitude;
 	}
 
@@ -48,7 +51,8 @@ public class Waypoint implements Serializable {
 	// / Lösung einer QTA
 	public String Clue = "";
 
-	public Waypoint() {
+	public Waypoint()
+	{
 		CacheId = -1;
 		GcCode = "";
 		Pos = new Coordinate();
@@ -59,9 +63,9 @@ public class Waypoint implements Serializable {
 
 	public Date time;
 
-	public Waypoint(String gcCode, CacheTypes type, String description,
-			double latitude, double longitude, long cacheId, String clue,
-			String title) {
+	public Waypoint(String gcCode, CacheTypes type, String description, double latitude, double longitude, long cacheId, String clue,
+			String title)
+	{
 		GcCode = gcCode;
 		CacheId = cacheId;
 		Pos = new Coordinate(latitude, longitude);
@@ -76,44 +80,46 @@ public class Waypoint implements Serializable {
 	// / <summary>
 	// / Entfernung von der letzten gültigen Position
 	// / </summary>
-	public float Distance() {
-		Coordinate fromPos = (GlobalCore.Marker.Valid) ? GlobalCore.Marker
-				: GlobalCore.LastValidPosition;
+	public float Distance()
+	{
+		Coordinate fromPos = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
 		float[] dist = new float[4];
-		Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude,
-				Pos.Latitude, Pos.Longitude, dist);
+		Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude, Pos.Latitude, Pos.Longitude, dist);
 		return dist[0];
 	}
 
-	public void setLatitude(double parseDouble) {
+	public void setLatitude(double parseDouble)
+	{
 		Pos.Latitude = parseDouble;
 	}
 
-	public void setLongitude(double parseDouble) {
+	public void setLongitude(double parseDouble)
+	{
 		Pos.Longitude = parseDouble;
 	}
 
 	/**
-	 * 
 	 * @param strText
 	 */
-	public void parseTypeString(String strText) {
+	public void parseTypeString(String strText)
+	{
 		// Log.d(TAG, "Parsing type string: " + strText);
 
 		/*
-		 * Geocaching.com cache types are in the form Geocache|Multi-cache
-		 * Waypoint|Question to Answer Waypoint|Stages of a Multicache Other
-		 * pages / bcaching.com results do not contain the | separator, so make
-		 * sure that the parsing functionality does work with both variants
+		 * Geocaching.com cache types are in the form Geocache|Multi-cache Waypoint|Question to Answer Waypoint|Stages of a Multicache Other
+		 * pages / bcaching.com results do not contain the | separator, so make sure that the parsing functionality does work with both
+		 * variants
 		 */
 
 		String[] arrSplitted = strText.split("\\|");
-		if (arrSplitted[0].toLowerCase().equals("geocache")) {
+		if (arrSplitted[0].toLowerCase().equals("geocache"))
+		{
 			this.Type = CacheTypes.Cache;
-		} else {
+		}
+		else
+		{
 			String strCacheType;
-			if (arrSplitted.length > 1)
-				strCacheType = arrSplitted[1];
+			if (arrSplitted.length > 1) strCacheType = arrSplitted[1];
 			else
 				strCacheType = arrSplitted[0];
 
@@ -122,7 +128,7 @@ public class Waypoint implements Serializable {
 		}
 		// Log.d(TAG, "Waypoint type: " + this.mWaypointType.toString());
 	}
-	
+
 	public void clear()
 	{
 		CacheId = -1;
@@ -146,6 +152,11 @@ public class Waypoint implements Serializable {
 		checkSum = 0;
 
 		time = null;
+	}
+
+	public Waypoint copy()
+	{
+		return new Waypoint(GcCode, Type, Description, Latitude(), Longitude(), CacheId, Clue, Title);
 	}
 
 }

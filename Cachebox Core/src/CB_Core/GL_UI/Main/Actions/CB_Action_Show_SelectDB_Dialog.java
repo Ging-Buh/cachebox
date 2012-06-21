@@ -8,8 +8,8 @@ import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Controls.Dialogs.SelectDB;
-import CB_Core.GL_UI.Controls.Dialogs.SelectDB.ReturnListner;
+import CB_Core.GL_UI.Activitys.SelectDB;
+import CB_Core.GL_UI.Activitys.SelectDB.ReturnListner;
 import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Log.Logger;
@@ -53,7 +53,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 		}
 
 		SelectDB selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL_Listener.glListener.getWidth(), GL_Listener.glListener.getHeight()),
-				"SelectDbDialog");
+				"SelectDbDialog", false);
 		selectDBDialog.setReturnListner(new ReturnListner()
 		{
 			@Override
@@ -62,7 +62,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 				returnFromSelectDB();
 			}
 		});
-		GL_Listener.glListener.showDialog(selectDBDialog);
+		selectDBDialog.show();
 
 	}
 
@@ -70,7 +70,6 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 
 	private void returnFromSelectDB()
 	{
-		GL_Listener.glListener.closeDialog();
 
 		wd = WaitDialog.ShowWait("Load DB ...");
 
