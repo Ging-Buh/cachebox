@@ -441,46 +441,49 @@ public class CacheDAO
 			ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 			CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, search, apiCaches, apiLogs, apiImages,
 					aktCache.GPXFilename_ID);
-			if (apiCaches.size() == 1)
+			synchronized (Database.Data.Query)
 			{
-				Database.Data.beginTransaction();
-				newCache = apiCaches.get(0);
-				Database.Data.Query.remove(aktCache);
-				Database.Data.Query.add(newCache);
-				newCache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, newCache.Longitude());
-				newCache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, newCache.Latitude());
-
-				UpdateDatabase(newCache);
-
-				LogDAO logDAO = new LogDAO();
-				for (LogEntry log : apiLogs)
+				if (apiCaches.size() == 1)
 				{
-					if (log.CacheId != newCache.Id) continue;
-					// Write Log to database
+					Database.Data.beginTransaction();
+					newCache = apiCaches.get(0);
+					Database.Data.Query.remove(aktCache);
+					Database.Data.Query.add(newCache);
+					newCache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, newCache.Longitude());
+					newCache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, newCache.Latitude());
 
-					logDAO.WriteToDatabase(log);
+					UpdateDatabase(newCache);
+
+					LogDAO logDAO = new LogDAO();
+					for (LogEntry log : apiLogs)
+					{
+						if (log.CacheId != newCache.Id) continue;
+						// Write Log to database
+
+						logDAO.WriteToDatabase(log);
+					}
+
+					WaypointDAO waypointDAO = new WaypointDAO();
+					for (Waypoint waypoint : newCache.waypoints)
+					{
+
+						waypointDAO.WriteToDatabase(waypoint);
+					}
+
+					ImageDAO imageDAO = new ImageDAO();
+					for (ImageEntry image : apiImages)
+					{
+						if (image.CacheId != newCache.Id) continue;
+						// Write Image to database
+
+						imageDAO.WriteToDatabase(image, false);
+					}
+
+					Database.Data.setTransactionSuccessful();
+					Database.Data.endTransaction();
+
+					Database.Data.GPXFilenameUpdateCacheCount();
 				}
-
-				WaypointDAO waypointDAO = new WaypointDAO();
-				for (Waypoint waypoint : newCache.waypoints)
-				{
-
-					waypointDAO.WriteToDatabase(waypoint);
-				}
-
-				ImageDAO imageDAO = new ImageDAO();
-				for (ImageEntry image : apiImages)
-				{
-					if (image.CacheId != newCache.Id) continue;
-					// Write Image to database
-
-					imageDAO.WriteToDatabase(image, false);
-				}
-
-				Database.Data.setTransactionSuccessful();
-				Database.Data.endTransaction();
-
-				Database.Data.GPXFilenameUpdateCacheCount();
 			}
 		}
 		catch (Exception ex)

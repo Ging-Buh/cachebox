@@ -206,12 +206,15 @@ public class TabMainView extends MainViewBase
 		String sGc = Config.settings.LastSelectedCache.getValue();
 		if (sGc != null && !sGc.equals(""))
 		{
-			for (Cache c : Database.Data.Query)
+			synchronized (Database.Data.Query)
 			{
-				if (c.GcCode.equalsIgnoreCase(sGc))
+				for (Cache c : Database.Data.Query)
 				{
-					GlobalCore.SelectedCache(c);
-					break;
+					if (c.GcCode.equalsIgnoreCase(sGc))
+					{
+						GlobalCore.SelectedCache(c);
+						break;
+					}
 				}
 			}
 		}

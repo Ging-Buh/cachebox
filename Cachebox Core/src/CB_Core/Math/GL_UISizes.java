@@ -224,7 +224,7 @@ public class GL_UISizes implements SizeChangedEvent
 
 		// Aufräumen
 		CompassMargin = null;
-		System.gc();
+		// System.gc();
 
 		if (false)
 		{

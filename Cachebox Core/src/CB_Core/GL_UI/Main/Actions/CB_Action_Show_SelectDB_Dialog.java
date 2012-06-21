@@ -80,42 +80,44 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 			@Override
 			public void run()
 			{
-				Config.settings.ReadFromDB();
-
-				GlobalCore.Categories = new Categories();
-				GlobalCore.LastFilter = (Config.settings.Filter.getValue().length() == 0) ? new FilterProperties(
-						FilterProperties.presets[0]) : new FilterProperties(Config.settings.Filter.getValue());
-				// filterSettings.LoadFilterProperties(GlobalCore.LastFilter);
-				Database.Data.GPXFilenameUpdateCacheCount();
-
-				String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
-				Logger.General("Main.ApplyFilter: " + sqlWhere);
-
-				Database.Data.Query.clear();
-				Database.Data.Close();
-				Database.Data.StartUp(Config.settings.DatabasePath.getValue());
-
-				CacheListDAO cacheListDAO = new CacheListDAO();
-				cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
-
-				GlobalCore.SelectedCache(null);
-				GlobalCore.SelectedWaypoint(null, null);
-				CachListChangedEventList.Call();
-
-				// set last selected Cache
-				String sGc = Config.settings.LastSelectedCache.getValue();
-				if (sGc != null && !sGc.equals(""))
+				synchronized (Database.Data.Query)
 				{
-					for (Cache c : Database.Data.Query)
+					Config.settings.ReadFromDB();
+
+					GlobalCore.Categories = new Categories();
+					GlobalCore.LastFilter = (Config.settings.Filter.getValue().length() == 0) ? new FilterProperties(
+							FilterProperties.presets[0]) : new FilterProperties(Config.settings.Filter.getValue());
+					// filterSettings.LoadFilterProperties(GlobalCore.LastFilter);
+					Database.Data.GPXFilenameUpdateCacheCount();
+
+					String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
+					Logger.General("Main.ApplyFilter: " + sqlWhere);
+
+					Database.Data.Query.clear();
+					Database.Data.Close();
+					Database.Data.StartUp(Config.settings.DatabasePath.getValue());
+
+					CacheListDAO cacheListDAO = new CacheListDAO();
+					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+
+					GlobalCore.SelectedCache(null);
+					GlobalCore.SelectedWaypoint(null, null);
+					CachListChangedEventList.Call();
+
+					// set last selected Cache
+					String sGc = Config.settings.LastSelectedCache.getValue();
+					if (sGc != null && !sGc.equals(""))
 					{
-						if (c.GcCode.equalsIgnoreCase(sGc))
+						for (Cache c : Database.Data.Query)
 						{
-							GlobalCore.SelectedCache(c);
-							break;
+							if (c.GcCode.equalsIgnoreCase(sGc))
+							{
+								GlobalCore.SelectedCache(c);
+								break;
+							}
 						}
 					}
 				}
-
 				wd.dismis();
 			}
 		});

@@ -1264,18 +1264,22 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 							if (Database.Data.Query != null)
 							{
-								if (Database.Data.Query.size() > 0)
+								synchronized (Database.Data.Query)
 								{
-									// Koordinaten des ersten Caches der Datenbank
-									// nehmen
-									setCenter(new Coordinate(Database.Data.Query.get(0).Latitude(), Database.Data.Query.get(0).Longitude()));
-									positionInitialized = true;
-									// setLockPosition(0);
-								}
-								else
-								{
-									// Wenns auch den nicht gibt...)
-									setCenter(new Coordinate(48.0, 12.0));
+									if (Database.Data.Query.size() > 0)
+									{
+										// Koordinaten des ersten Caches der Datenbank
+										// nehmen
+										setCenter(new Coordinate(Database.Data.Query.get(0).Latitude(), Database.Data.Query.get(0)
+												.Longitude()));
+										positionInitialized = true;
+										// setLockPosition(0);
+									}
+									else
+									{
+										// Wenns auch den nicht gibt...)
+										setCenter(new Coordinate(48.0, 12.0));
+									}
 								}
 							}
 							else

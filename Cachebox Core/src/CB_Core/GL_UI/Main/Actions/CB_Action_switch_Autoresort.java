@@ -34,7 +34,10 @@ public class CB_Action_switch_Autoresort extends CB_ActionCommand
 		Config.settings.AutoResort.setValue(GlobalCore.autoResort);
 		if (GlobalCore.autoResort)
 		{
-			Database.Data.Query.Resort();
+			synchronized (Database.Data.Query)
+			{
+				Database.Data.Query.Resort();
+			}
 		}
 	}
 }

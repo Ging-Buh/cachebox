@@ -54,21 +54,23 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 		SelectedCacheEventList.Add(this);
 		PositionChangedEventList.Add(this);
 
-		lvAdapter = new CustomAdapter(Database.Data.Query);
-		this.setBaseAdapter(lvAdapter);
-
-		int itemCount = Database.Data.Query.size();
-		int itemSpace = this.getMaxItemCount();
-
-		if (itemSpace >= itemCount)
+		synchronized (Database.Data.Query)
 		{
-			this.setUndragable();
-		}
-		else
-		{
-			this.setDragable();
-		}
+			lvAdapter = new CustomAdapter(Database.Data.Query);
+			this.setBaseAdapter(lvAdapter);
 
+			int itemCount = Database.Data.Query.size();
+			int itemSpace = this.getMaxItemCount();
+
+			if (itemSpace >= itemCount)
+			{
+				this.setUndragable();
+			}
+			else
+			{
+				this.setDragable();
+			}
+		}
 		TimerTask task = new TimerTask()
 		{
 			@Override
@@ -114,16 +116,20 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 		int first = this.getFirstVisiblePosition();
 		int last = this.getLastVisiblePosition();
 
-		for (Cache ca : Database.Data.Query)
+		synchronized (Database.Data.Query)
 		{
-			if (ca == GlobalCore.SelectedCache())
+			for (Cache ca : Database.Data.Query)
 			{
-				this.setSelection(id);
-				if (!(first <= id && last >= id)) this.scrollToItem(id - pos);
-				break;
+				if (ca == GlobalCore.SelectedCache())
+				{
+					this.setSelection(id);
+					if (!(first <= id && last >= id)) this.scrollToItem(id - pos);
+					break;
+				}
+				id++;
 			}
-			id++;
 		}
+
 		chkSlideBack();
 		GL_Listener.glListener.renderOnce(this.getName() + " setSelectedCachVisible");
 	}
@@ -146,7 +152,11 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 		{
 			int selectionIndex = ((ListViewItemBase) v).getIndex();
 
-			Cache cache = Database.Data.Query.get(selectionIndex);
+			Cache cache;
+			synchronized (Database.Data.Query)
+			{
+				cache = Database.Data.Query.get(selectionIndex);
+			}
 			if (cache != null)
 			{
 				// Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
@@ -166,8 +176,11 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 		{
 			int selectionIndex = ((ListViewItemBase) v).getIndex();
 
-			Cache cache = Database.Data.Query.get(selectionIndex);
-
+			Cache cache;
+			synchronized (Database.Data.Query)
+			{
+				cache = Database.Data.Query.get(selectionIndex);
+			}
 			Waypoint finalWp = null;
 			if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
 			// shutdown AutoResort when selecting a cache by hand
@@ -228,21 +241,24 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 	public void CacheListChangedEvent()
 	{
 		this.setBaseAdapter(null);
-		lvAdapter = new CustomAdapter(Database.Data.Query);
-		this.setBaseAdapter(lvAdapter);
-
-		int itemCount = Database.Data.Query.size();
-		int itemSpace = this.getMaxItemCount();
-
-		if (itemSpace >= itemCount)
+		synchronized (Database.Data.Query)
 		{
-			this.setUndragable();
-		}
-		else
-		{
-			this.setDragable();
-		}
+			lvAdapter = new CustomAdapter(Database.Data.Query);
 
+			this.setBaseAdapter(lvAdapter);
+
+			int itemCount = Database.Data.Query.size();
+			int itemSpace = this.getMaxItemCount();
+
+			if (itemSpace >= itemCount)
+			{
+				this.setUndragable();
+			}
+			else
+			{
+				this.setDragable();
+			}
+		}
 		chkSlideBack();
 	}
 

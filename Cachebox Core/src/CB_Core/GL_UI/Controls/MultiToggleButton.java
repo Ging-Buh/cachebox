@@ -124,7 +124,7 @@ public class MultiToggleButton extends Button
 		aktState = State.get(StateId);
 		this.setText(aktState.Text);
 		led = null;
-		System.gc();
+		// System.gc();
 
 		if (mOnStateChangeListener != null) mOnStateChangeListener.onStateChange(this, StateId);
 

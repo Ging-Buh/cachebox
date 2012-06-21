@@ -292,8 +292,11 @@ public class SelectDB extends CB_View_Base
 				GlobalCore.Categories = new Categories();
 				Database.Data.GPXFilenameUpdateCacheCount();
 
-				CacheListDAO cacheListDAO = new CacheListDAO();
-				cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+				synchronized (Database.Data.Query)
+				{
+					CacheListDAO cacheListDAO = new CacheListDAO();
+					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+				}
 
 				if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return true;
 				Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");

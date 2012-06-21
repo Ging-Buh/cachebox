@@ -77,7 +77,10 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 				switch (((MenuItem) v).getMenuItemId())
 				{
 				case MI_RESORT:
-					Database.Data.Query.Resort();
+					synchronized (Database.Data.Query)
+					{
+						Database.Data.Query.Resort();
+					}
 					return true;
 				case MI_FilterSet:
 					new CB_Action_ShowActivity("filtersettings", MI_FilterSet, ViewConst.FILTER_SETTINGS, SpriteCache.Icons.get(13))
@@ -97,7 +100,10 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					Config.settings.AutoResort.setValue(GlobalCore.autoResort);
 					if (GlobalCore.autoResort)
 					{
-						Database.Data.Query.Resort();
+						synchronized (Database.Data.Query)
+						{
+							Database.Data.Query.Resort();
+						}
 					}
 					return true;
 				case MI_CHK_STATE_API:
