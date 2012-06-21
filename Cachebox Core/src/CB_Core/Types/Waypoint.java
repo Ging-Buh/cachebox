@@ -98,6 +98,11 @@ public class Waypoint implements Serializable
 		Pos.Longitude = parseDouble;
 	}
 
+	public void setCoordinate(Coordinate result)
+	{
+		Pos = result;
+	}
+
 	/**
 	 * @param strText
 	 */

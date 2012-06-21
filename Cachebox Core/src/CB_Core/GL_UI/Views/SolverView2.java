@@ -2,10 +2,14 @@ package CB_Core.GL_UI.Views;
 
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
+import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Activitys.ActivityBase;
+import CB_Core.GL_UI.Activitys.EditWaypoint;
+import CB_Core.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_Core.GL_UI.Controls.Dialogs.SolverDialog;
 import CB_Core.GL_UI.Controls.Dialogs.SolverDialog.SloverBackStringListner;
 import CB_Core.GL_UI.Controls.List.Adapter;
@@ -26,6 +30,7 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverZeile;
 import CB_Core.Types.Cache;
+import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 
 public class SolverView2 extends V_ListView implements SelectedCacheEvent
@@ -355,5 +360,77 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	public void DeleteLine()
 	{
 		GL_MsgBox.Show("Zeile löschen?", "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, deleteListener);
+	}
+
+	private Coordinate getSelectedCoordinateResult()
+	{
+		// Get the coordinate of the actual selected solver line
+		// if one Coordinate is splitted into 2 Lines (first Line latitude, second Line longitude) then the first line has to be selected
+		// if the result(s) does not include any coordinate -> return null
+		try
+		{
+			SolverZeile zeile = solver.get(mSelectedIndex);
+			String text = zeile.getText();
+			// Wenn in dieser Zeile eine Zuweisung enthalten ist -> diese einfach entfernen!
+			if (text.contains("="))
+			{
+				text = text.substring(text.indexOf("=") + 1);
+			}
+			Coordinate result = new Coordinate(text);
+			if (!result.Valid)
+			{
+				// Zweizeilig versuchen
+				SolverZeile zeile2 = solver.get(mSelectedIndex + 1);
+				String text2 = zeile2.getText();
+				if (text2.contains("=")) text2 = text2.substring(text2.indexOf("=") + 1);
+				result = new Coordinate(text + " " + text2);
+			}
+			if (result.Valid) return result;
+			else
+				return null;
+		}
+		catch (Exception ex)
+		{
+			return null;
+		}
+	}
+
+	public void SetAsWaypoint()
+	{
+		// Add new Waypoint with the selected Coordinates in the solver list
+		// if one Coordinate is splitted into 2 Lines (first Line latitude, second Line longitude) then the first line has to be selected
+		Coordinate result = getSelectedCoordinateResult();
+		if (result != null)
+		{
+			// Create New Waypoint
+			Waypoint wp = new Waypoint();
+			wp.setCoordinate(result);
+			wp.Type = CacheTypes.Final;
+			wp.Description = "Final";
+			wp.GcCode = GlobalCore.SelectedCache().GcCode + "01";
+			EditWaypoint EdWp = new EditWaypoint(ActivityBase.ActivityRec(), "EditWP", wp, new ReturnListner()
+			{
+				@Override
+				public void returnedWP(Waypoint wp)
+				{
+
+				}
+			});
+			EdWp.show();
+		}
+	}
+
+	public void SetAsMapCenter()
+	{
+		// Center Map to the actual selected Coordinates in the solver list
+		// if one Coordinate is splitted into 2 Lines (first Line latitude, second Line longitude) then the first line has to be selected
+		Coordinate result = getSelectedCoordinateResult();
+		if (result != null)
+		{
+			// Set Map Center
+			TabMainView.mapView.setCenter(result);
+			// Show MapView
+			TabMainView.actionShowMap.Execute();
+		}
 	}
 }
