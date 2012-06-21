@@ -6,6 +6,7 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.MysterySolution;
@@ -84,18 +85,17 @@ public class CoordinateEntity extends Entity
 			return coord.FormatCoordinate();
 	}
 
-	private boolean AskUpdateDiffCache(Cache cache, Waypoint waypoint, Coordinate coord)
+	private boolean DontUpdateDiffCache;
+
+	final OnMsgBoxClickListener DiffCacheListener = new OnMsgBoxClickListener()
 	{
-		String sFmt = "Change Coordinates of a waypoint which does not belong to the actual Cache?\n";
-		sFmt += "Cache: [%s]\nWaypoint: [%s]\nCoordinates: [%s]";
-		String s = String.format(sFmt, cache.Name, waypoint.Title, coord.FormatCoordinate());
-
-		// return MessageBox(s, "Change Coordinates", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) ==
-		// DialogResult.No;
-
-		return true;
-
-	}
+		@Override
+		public boolean onClick(int which)
+		{
+			DontUpdateDiffCache = which == 2;
+			return true;
+		}
+	};
 
 	public String SetCoordinate(String sCoord)
 	{
@@ -119,16 +119,19 @@ public class CoordinateEntity extends Entity
 		}
 		if ((CB_Core.GlobalCore.SelectedCache() == null) || (CB_Core.GlobalCore.SelectedCache().Id != dbWaypoint.CacheId))
 		{
-			// Zuweisung soll an einen Waypoint eines anderen als dem aktuellen Cache gemacht werden
-			// Sicherheitsabfrage, ob diese Zuweisung richtig ist!
+			// Zuweisung soll an einen Waypoint eines anderen als dem aktuellen Cache gemacht werden.
+			// Vermutlich Tippfehler daher Update verhindern. Modale Dialoge gehen in Android nicht
 			CacheDAO cacheDAO = new CacheDAO();
 			Cache cache = cacheDAO.getFromDbByCacheId(dbWaypoint.CacheId);
-			if (!AskUpdateDiffCache(cache, dbWaypoint, coord)) return "Refused to change Coordinates of Waypoint [" + dbWaypoint.Title
-					+ "] of Cache [" + cache.Name + "] with Coordinates [" + coord.FormatCoordinate() + "]";
+			// String sFmt = "Change Coordinates of a waypoint which does not belong to the actual Cache?\n";
+			// sFmt += "Cache: [%s]\nWaypoint: [%s]\nCoordinates: [%s]";
+			// String s = String.format(sFmt, cache.Name, waypoint.Title, coord.FormatCoordinate());
+			// MessageBox(s, "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, DiffCac//heListener);
+			return "NOT updated: " + coord.FormatCoordinate() + " - WP [" + dbWaypoint.Title + "] : Different Cache [" + cache.Name + "]";
 		}
 		dbWaypoint.Pos.Latitude = coord.Latitude;
 		dbWaypoint.Pos.Longitude = coord.Longitude;
-		// waypointDAO.UpdateDatabase(dbWaypoint);
+		waypointDAO.UpdateDatabase(dbWaypoint);
 
 		// evtl. bereits geladenen Waypoint aktualisieren
 		Cache cacheFromCacheList = Database.Data.Query.GetCacheById(dbWaypoint.CacheId);
@@ -151,13 +154,13 @@ public class CoordinateEntity extends Entity
 					break;
 				}
 			}
-			if (CB_Core.GlobalCore.SelectedCache() == cacheFromCacheList)
+			if (CB_Core.GlobalCore.SelectedCache().Id == cacheFromCacheList.Id)
 
 			// Views.WaypointView.View.Refresh();
 			;
 
 		}
-		return "Test Only - NOT UPDATED IN DATABASE: " + gcCode + "=" + coord.FormatCoordinate();
+		return gcCode + "=" + coord.FormatCoordinate();
 	}
 
 	@Override
