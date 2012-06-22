@@ -9,10 +9,9 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.EditWaypoint;
 import CB_Core.GL_UI.Activitys.EditWaypoint.ReturnListner;
+import CB_Core.GL_UI.Activitys.ProjectionCoordinate;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
-import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox;
-import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
 import CB_Core.GL_UI.Controls.Dialogs.SolverDialog;
 import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
@@ -84,26 +83,21 @@ public class TestView extends CB_View_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
+				Coordinate pos = new Coordinate("N 52 27.354  E 13 30.690");
+				ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Projection", pos,
+						new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
+						{
 
-				int initValue = 200;
-				try
-				{
-					initValue = Integer.parseInt(btn1.getText());
-				}
-				catch (NumberFormatException e)
-				{
-					e.printStackTrace();
-				}
+							@Override
+							public void returnCoord(Coordinate coord)
+							{
+								// TODO Auto-generated method stub
 
-				NumerikInputBox.Show("Wie viele Caches hast Du bis jetzt gefunden:", "Funde anpassen", initValue, new returnValueListner()
-				{
+							}
+						}, false);
 
-					@Override
-					public void returnValue(int value)
-					{
-						btn1.setText(String.valueOf(value));
-					}
-				});
+				pC.show();
+
 				return true;
 			}
 		});

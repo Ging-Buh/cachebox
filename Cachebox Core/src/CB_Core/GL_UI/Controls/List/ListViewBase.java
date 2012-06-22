@@ -376,34 +376,37 @@ public abstract class ListViewBase extends CB_View_Base
 	{
 		if (mSelectedIndex != i && i >= 0)
 		{
-			for (GL_View_Base v : childs)
+			synchronized (childs)
 			{
-				if (v instanceof ListViewItemBase)
+				for (GL_View_Base v : childs)
 				{
-					if (((ListViewItemBase) v).getIndex() == mSelectedIndex)
+					if (v instanceof ListViewItemBase)
 					{
-						((ListViewItemBase) v).isSelected = false;
-						break;
+						if (((ListViewItemBase) v).getIndex() == mSelectedIndex)
+						{
+							((ListViewItemBase) v).isSelected = false;
+							break;
+						}
 					}
 				}
-			}
-			mSelectedIndex = i;
-			for (GL_View_Base v : childs)
-			{
-				if (v instanceof ListViewItemBase)
+				mSelectedIndex = i;
+				for (GL_View_Base v : childs)
 				{
-					if (((ListViewItemBase) v).getIndex() == mSelectedIndex)
+					if (v instanceof ListViewItemBase)
 					{
-						((ListViewItemBase) v).isSelected = true;
-						break;
+						if (((ListViewItemBase) v).getIndex() == mSelectedIndex)
+						{
+							((ListViewItemBase) v).isSelected = true;
+							break;
+						}
 					}
 				}
-			}
 
-			// alle Items löschen, damit das Selection flag neu gesetzt werden kann.
-			if (childs.size() == 0)
-			{
-				reloadItems();
+				// alle Items löschen, damit das Selection flag neu gesetzt werden kann.
+				if (childs.size() == 0)
+				{
+					reloadItems();
+				}
 			}
 			GL_Listener.glListener.renderOnce(this.getName() + " setListPos");
 		}

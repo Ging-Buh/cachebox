@@ -347,9 +347,12 @@ public class GL_MsgBox extends Dialog
 	protected void Initial()
 	{
 		super.Initial();
-		for (Iterator<CB_View_Base> iterator = FooterItems.iterator(); iterator.hasNext();)
+		synchronized (childs)
 		{
-			childs.add(iterator.next());
+			for (Iterator<CB_View_Base> iterator = FooterItems.iterator(); iterator.hasNext();)
+			{
+				childs.add(iterator.next());
+			}
 		}
 	}
 

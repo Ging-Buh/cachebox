@@ -536,14 +536,16 @@ public class TabMainView extends MainViewBase
 	public void setContentMaxY(float y)
 	{
 		// Logger.LogCat("TabMainView SetContent maxY" + y);
-		for (GL_View_Base view : this.childs)
+		synchronized (childs)
 		{
-			if (view instanceof CB_TabView)
+			for (GL_View_Base view : this.childs)
 			{
-				view.setHeight(y);
+				if (view instanceof CB_TabView)
+				{
+					view.setHeight(y);
+				}
 			}
 		}
-
 	}
 
 	public void switchDayNight()
@@ -574,11 +576,14 @@ public class TabMainView extends MainViewBase
 
 		platformConector.DayNightSwitched();
 
-		for (GL_View_Base view : this.childs)
+		synchronized (childs)
 		{
-			if (view instanceof CB_TabView)
+			for (GL_View_Base view : this.childs)
 			{
-				((CB_TabView) view).SkinIsChanged();
+				if (view instanceof CB_TabView)
+				{
+					((CB_TabView) view).SkinIsChanged();
+				}
 			}
 		}
 		GL_Listener.glListener.RestartRender();

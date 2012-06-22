@@ -18,6 +18,7 @@ public class ActivityBase extends Dialog
 	protected float Top;
 	protected float Bottom;
 	protected float MesuredLabelHeight;
+	protected float ButtonHeight;
 
 	public ActivityBase(CB_RectF rec, String Name)
 	{
@@ -29,7 +30,8 @@ public class ActivityBase extends Dialog
 		Right = nineBackground.getRightWidth();
 		Top = nineBackground.getTopHeight();
 		Bottom = nineBackground.getBottomHeight();
-		MesuredLabelHeight = Fonts.Mesure("T").height;
+		MesuredLabelHeight = Fonts.Mesure("T").height * 1.5f;
+		ButtonHeight = UiSizes.getButtonHeight();
 	}
 
 	@Override

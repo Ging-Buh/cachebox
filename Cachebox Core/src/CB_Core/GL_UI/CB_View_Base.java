@@ -138,17 +138,26 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	public int getCildCount()
 	{
-		return childs.size();
+		synchronized (childs)
+		{
+			return childs.size();
+		}
 	}
 
 	public void addChildDirekt(final GL_View_Base view)
 	{
-		childs.add(view);
+		synchronized (childs)
+		{
+			childs.add(view);
+		}
 	}
 
 	public void removeChildsDirekt()
 	{
-		childs.clear();
+		synchronized (childs)
+		{
+			childs.clear();
+		}
 	}
 
 	public GL_View_Base getChild(int i)

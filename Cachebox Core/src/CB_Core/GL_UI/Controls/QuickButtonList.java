@@ -59,15 +59,17 @@ public class QuickButtonList extends H_ListView
 	public boolean click(int x, int y, int pointer, int button)
 	{
 		// send Event to Buttons
-		for (GL_View_Base btn : this.childs)
+		synchronized (childs)
 		{
-			btn.onTouchUp(x, y, pointer, button);
-			if (btn.contains(x, y))
+			for (GL_View_Base btn : this.childs)
 			{
-				return btn.click(x, y, pointer, button);
+				btn.onTouchUp(x, y, pointer, button);
+				if (btn.contains(x, y))
+				{
+					return btn.click(x, y, pointer, button);
+				}
 			}
 		}
-
 		return super.click(x, y, pointer, button);
 	}
 
