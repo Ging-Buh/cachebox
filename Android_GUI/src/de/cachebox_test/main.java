@@ -520,6 +520,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		fillPluginList();
 		bindPluginServices();
 
+		descriptionView = new DescriptionView(this, inflater);
+
 	}
 
 	boolean flag = false;
@@ -1597,8 +1599,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				// Instanz löschenn
 				aktView = null;
-				descriptionView.OnFree();
-				descriptionView = null;
+				descriptionView.OnHide();
+
 			}
 			else if (aktView.equals(logView))
 			{

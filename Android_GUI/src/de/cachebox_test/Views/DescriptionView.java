@@ -35,7 +35,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	public DescriptionView(Context context, LayoutInflater inflater)
 	{
 		super(context);
-
+		SelectedCacheEventList.Add(this);
 		RelativeLayout descriptionLayout = (RelativeLayout) inflater.inflate(R.layout.description_view, null, false);
 		this.addView(descriptionLayout);
 		webViewLayout = (LinearLayout) findViewById(R.id.WebViewLayout);
@@ -106,11 +106,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 		WebControl.setWillNotDraw(false);
 		WebControl.invalidate();
 
-		// register CacheChanged Event if Tablet
-		if (GlobalCore.isTab)
-		{
-			SelectedCacheEventList.Add(this);
-		}
+		SelectedCacheEventList.Add(this);
 
 	}
 
@@ -134,11 +130,6 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	public void OnHide()
 	{
 		WebControl.OnHide();
-		// unregister CacheChanged Event if Tablet
-		if (GlobalCore.isTab)
-		{
-			SelectedCacheEventList.Remove(this);
-		}
 	}
 
 	@Override

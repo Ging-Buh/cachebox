@@ -12,7 +12,7 @@ public class WrappedTextField extends LibGdx_Host_Control
 	public WrappedTextField(CB_RectF rec, String Name)
 	{
 
-		super(rec, new CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField(Style.getWrappedTextFieldStyle()), Name);
+		super(rec, new CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField(Style.getTextFieldStyle()), Name);
 
 		mTextField = (CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField) getActor();
 		mTextField.setClipboard(GlobalCore.getDefaultClipboard());

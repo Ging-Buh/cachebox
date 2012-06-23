@@ -6,7 +6,6 @@ import java.util.List;
 import CB_Core.Math.SimplePointF;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -19,7 +18,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -40,7 +39,7 @@ import com.badlogic.gdx.utils.TimeUtils;
  * 
  * @author mzechner
  */
-public class WrappedTextField extends Widget
+public class WrappedTextField extends TextField
 {
 	static private final char BACKSPACE = 8;
 	static private final char ENTER_DESKTOP = '\r';
@@ -49,7 +48,7 @@ public class WrappedTextField extends Widget
 	static private final char DELETE = 127;
 	static private final char BULLET = 149;
 
-	private WrappedTextFieldStyle style;
+	private TextFieldStyle style;
 	private String text, messageText;
 	private CharSequence displayText;
 	private int cursor;
@@ -88,12 +87,12 @@ public class WrappedTextField extends Widget
 
 	public WrappedTextField(Skin skin)
 	{
-		this("", null, skin.getStyle(WrappedTextFieldStyle.class), null);
+		this("", null, skin.getStyle(TextFieldStyle.class), null);
 	}
 
 	public WrappedTextField(String text, Skin skin)
 	{
-		this(text, null, skin.getStyle(WrappedTextFieldStyle.class), null);
+		this(text, null, skin.getStyle(TextFieldStyle.class), null);
 	}
 
 	/**
@@ -102,15 +101,15 @@ public class WrappedTextField extends Widget
 	 */
 	public WrappedTextField(String text, String messageText, Skin skin)
 	{
-		this(text, messageText, skin.getStyle(WrappedTextFieldStyle.class), null);
+		this(text, messageText, skin.getStyle(TextFieldStyle.class), null);
 	}
 
-	public WrappedTextField(WrappedTextFieldStyle style)
+	public WrappedTextField(TextFieldStyle style)
 	{
 		this("", null, style, null);
 	}
 
-	public WrappedTextField(String text, WrappedTextFieldStyle style)
+	public WrappedTextField(String text, TextFieldStyle style)
 	{
 		this(text, null, style, null);
 	}
@@ -119,7 +118,7 @@ public class WrappedTextField extends Widget
 	 * @param messageText
 	 *            Text to show when empty. May be null.
 	 */
-	public WrappedTextField(String text, String messageText, WrappedTextFieldStyle style)
+	public WrappedTextField(String text, String messageText, TextFieldStyle style)
 	{
 		this(text, messageText, style, null);
 	}
@@ -128,36 +127,10 @@ public class WrappedTextField extends Widget
 	 * @param messageText
 	 *            Text to show when empty. May be null.
 	 */
-	public WrappedTextField(String text, String messageText, WrappedTextFieldStyle style, String name)
+	public WrappedTextField(String text, String messageText, TextFieldStyle style, String name)
 	{
-		super(name);
-		setStyle(style);
-		this.clipboard = Clipboard.getDefaultClipboard();
-		setText(text);
-		this.messageText = messageText;
-		width = getPrefWidth();
-		height = getPrefHeight();
-	}
+		super(text, messageText, style, name);
 
-	public void setStyle(WrappedTextFieldStyle style)
-	{
-		if (style == null) throw new IllegalArgumentException("style cannot be null.");
-		this.style = style;
-		invalidateHierarchy();
-	}
-
-	public void setPasswordCharacter(char passwordCharacter)
-	{
-		this.passwordCharacter = passwordCharacter;
-	}
-
-	/**
-	 * Returns the text field's style. Modifying the returned style may not have an effect until {@link #setStyle(WrappedTextFieldStyle)} is
-	 * called.
-	 */
-	public WrappedTextFieldStyle getStyle()
-	{
-		return style;
 	}
 
 	@Override
@@ -527,50 +500,6 @@ public class WrappedTextField extends Widget
 		return false;
 	}
 
-	private void copy()
-	{
-		if (hasSelection)
-		{
-			int minIndex = Math.min(cursor, selectionStart);
-			int maxIndex = Math.max(cursor, selectionStart);
-			clipboard.setContents(text.substring(minIndex, maxIndex));
-		}
-	}
-
-	private void paste()
-	{
-		String content = clipboard.getContents();
-		if (content != null)
-		{
-			// StringBuilder builder = new StringBuilder();
-			// for (int i = 0; i < content.length(); i++)
-			// {
-			// char c = content.charAt(i);
-			// if (style.font.containsCharacter(c)) builder.append(c);
-			// }
-			// content = builder.toString();
-			if (!hasSelection)
-			{
-				text = text.substring(0, cursor) + content + text.substring(cursor, text.length());
-				updateDisplayText();
-				cursor += content.length();
-			}
-			else
-			{
-				int minIndex = Math.min(cursor, selectionStart);
-				int maxIndex = Math.max(cursor, selectionStart);
-
-				text = (minIndex > 0 ? text.substring(0, minIndex) : "")
-						+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
-				cursor = minIndex;
-				text = text.substring(0, cursor) + content + text.substring(cursor, text.length());
-				updateDisplayText();
-				cursor = minIndex + content.length();
-				clearSelection();
-			}
-		}
-	}
-
 	private void delete()
 	{
 		int minIndex = Math.min(cursor, selectionStart);
@@ -904,25 +833,6 @@ public class WrappedTextField extends Widget
 		}
 	}
 
-	static boolean isLineBraek(char c)
-	{
-		switch (c)
-		{
-		case '\n':
-		case '\r':
-		case '\t':
-			return true;
-		default:
-			return false;
-		}
-	}
-
-	/** @return Never null, might be an empty string. */
-	public String getText()
-	{
-		return text;
-	}
-
 	/** Sets the selected text. */
 	public void setSelection(int selectionStart, int selectionEnd)
 	{
@@ -953,159 +863,4 @@ public class WrappedTextField extends Widget
 		calcLineRow();
 	}
 
-	/** Sets the cursor position and clears any selection. */
-	public void setCursorPosition(int cursorPosition)
-	{
-		if (cursorPosition < 0) throw new IllegalArgumentException("cursorPosition must be >= 0");
-		clearSelection();
-		cursor = Math.min(cursorPosition, text.length());
-	}
-
-	public int getCursorPosition()
-	{
-		return cursor;
-	}
-
-	/** Default is an instance of {@link DefaultOnscreenKeyboard}. */
-	public OnscreenKeyboard getOnscreenKeyboard()
-	{
-		return keyboard;
-	}
-
-	public void setOnscreenKeyboard(OnscreenKeyboard keyboard)
-	{
-		this.keyboard = keyboard;
-	}
-
-	public void setClipboard(Clipboard clipboard)
-	{
-		this.clipboard = clipboard;
-	}
-
-	public float getPrefWidth()
-	{
-		return 150;
-	}
-
-	public float getPrefHeight()
-	{
-		float prefHeight = textBounds.height;
-		if (style.background != null) prefHeight += style.background.getBottomHeight() + style.background.getTopHeight();
-		return prefHeight;
-	}
-
-	/**
-	 * If true, the text in this text field will be shown as bullet characters. The font must have character 149 or this will have no
-	 * affect.
-	 */
-	public void setPasswordMode(boolean passwordMode)
-	{
-		this.passwordMode = passwordMode;
-	}
-
-	/**
-	 * Interface for listening to typed characters.
-	 * 
-	 * @author mzechner
-	 */
-	static public interface TextFieldListener
-	{
-		public void keyTyped(WrappedTextField textField, char key);
-	}
-
-	/**
-	 * Interface for filtering characters entered into the text field.
-	 * 
-	 * @author mzechner
-	 */
-	static public interface TextFieldFilter
-	{
-		/**
-		 * @param textField
-		 * @param key
-		 * @return whether to accept the character
-		 */
-		public boolean acceptChar(WrappedTextField textField, char key);
-
-		static public class DigitsOnlyFilter implements TextFieldFilter
-		{
-			@Override
-			public boolean acceptChar(WrappedTextField textField, char key)
-			{
-				return Character.isDigit(key);
-			}
-
-		}
-	}
-
-	/**
-	 * An interface for onscreen keyboards. Can invoke the default keyboard or render your own keyboard!
-	 * 
-	 * @author mzechner
-	 */
-	static public interface OnscreenKeyboard
-	{
-		public void show(boolean visible);
-	}
-
-	/**
-	 * The default {@link OnscreenKeyboard} used by all {@link TextField} instances. Just uses
-	 * {@link Input#setOnscreenKeyboardVisible(boolean)} as appropriate. Might overlap your actual rendering, so use with care!
-	 * 
-	 * @author mzechner
-	 */
-	static public class DefaultOnscreenKeyboard implements OnscreenKeyboard
-	{
-		@Override
-		public void show(boolean visible)
-		{
-			Gdx.input.setOnscreenKeyboardVisible(visible);
-		}
-	}
-
-	/**
-	 * The style for a text field, see {@link TextField}.
-	 * 
-	 * @author mzechner
-	 */
-	static public class WrappedTextFieldStyle
-	{
-		/** Optional. */
-		public NinePatch background, cursor;
-		public BitmapFont font;
-		public Color fontColor;
-		/** Optional. */
-		public TextureRegion selection;
-		/** Optional. */
-		public BitmapFont messageFont;
-		/** Optional. */
-		public Color messageFontColor;
-
-		public WrappedTextFieldStyle()
-		{
-		}
-
-		public WrappedTextFieldStyle(BitmapFont font, Color fontColor, BitmapFont messageFont, Color messageFontColor, NinePatch cursor,
-				TextureRegion selection, NinePatch background)
-		{
-			this.messageFont = messageFont;
-			this.messageFontColor = messageFontColor;
-			this.background = background;
-			this.cursor = cursor;
-			this.font = font;
-			this.fontColor = fontColor;
-			this.selection = selection;
-		}
-
-		public WrappedTextFieldStyle(WrappedTextFieldStyle style)
-		{
-			this.messageFont = style.messageFont;
-			if (style.messageFontColor != null) this.messageFontColor = new Color(style.messageFontColor);
-			this.background = style.background;
-			this.cursor = style.cursor;
-			this.font = style.font;
-			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
-			this.selection = style.selection;
-		}
-	}
 }

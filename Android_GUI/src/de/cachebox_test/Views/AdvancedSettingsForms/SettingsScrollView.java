@@ -29,6 +29,10 @@ import org.openintents.intents.FileManagerIntents;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListButtonLangSpinner;
+import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListButtonSkinSpinner;
+import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListCategoryButton;
+import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListGetApiButton;
 import CB_Core.Map.ManagerBase;
 import CB_Core.Math.UiSizes;
 import CB_Core.Settings.SettingBase;

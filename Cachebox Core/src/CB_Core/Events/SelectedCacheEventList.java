@@ -14,7 +14,7 @@ public class SelectedCacheEventList
 	{
 		synchronized (list)
 		{
-			list.add(event);
+			if (!list.contains(event)) list.add(event);
 		}
 	}
 
