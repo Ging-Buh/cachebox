@@ -31,6 +31,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -66,6 +67,10 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	protected int width = 0;
 	protected int height = 0;
 
+	private Texture FpsInfoTexture;
+	private Sprite FpsInfoSprite;
+	private int FpsInfoPos = 0;
+
 	public float getWidth()
 	{
 		return width;
@@ -97,6 +102,16 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		Initialize();
 		startTime = System.currentTimeMillis();
 
+		Pixmap p = new Pixmap(4, 4, Pixmap.Format.RGBA8888);
+		Pixmap.setBlending(Blending.None);
+		p.setColor(1.0f, 1.0f, 0.0f, 1.0f);
+		p.drawRectangle(0, 0, 4, 4);
+		p.setColor(0f, 0.0f, 0.0f, 1.0f);
+		p.drawRectangle(1, 1, 2, 2);
+		FpsInfoTexture = new Texture(p);
+		FpsInfoSprite = new Sprite(FpsInfoTexture, 4, 4);
+		p.dispose();
+		FpsInfoSprite.setSize(4, 4);
 	}
 
 	@Override
@@ -324,6 +339,12 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			}
 
 		}
+
+		batch.begin();
+		batch.draw(FpsInfoSprite, FpsInfoPos, 2, 4, 4);
+		FpsInfoPos++;
+		if (FpsInfoPos > 60) FpsInfoPos = 0;
+		batch.end();
 
 		Gdx.gl.glFlush();
 		Gdx.gl.glFinish();

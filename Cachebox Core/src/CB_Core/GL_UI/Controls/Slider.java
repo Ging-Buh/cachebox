@@ -18,12 +18,8 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Blending;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Slider extends CB_View_Base implements SelectedCacheEvent
@@ -50,10 +46,6 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 	private float yPos = 0;
 
-	private Texture FpsInfoTexture;
-	private Sprite FpsInfoSprite;
-	private int FpsInfoPos = 0;
-
 	public Slider(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
@@ -75,15 +67,6 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		mLblCacheName.setHAlignment(HAlignment.CENTER);
 		mSlideBox.addChild(mLblCacheName);
 		if (GlobalCore.platform == Plattform.Desktop) this.addChild(mSlideBox);
-
-		Pixmap p = new Pixmap(2, 2, Pixmap.Format.RGBA8888);
-		Pixmap.setBlending(Blending.None);
-		p.setColor(1f, 0.5f, 1f, 1f);
-		p.drawRectangle(0, 0, 2, 2);
-		FpsInfoTexture = new Texture(p);
-		FpsInfoSprite = new Sprite(FpsInfoTexture, 2, 2);
-		p.dispose();
-		FpsInfoSprite.setSize(2, 2);
 	}
 
 	@Override
@@ -107,9 +90,6 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	{
 		super.render(batch);
 		// renderDebugInfo(batch);
-		batch.draw(FpsInfoSprite, FpsInfoPos, 2, 3, 3);
-		FpsInfoPos++;
-		if (FpsInfoPos > 60) FpsInfoPos = 0;
 	}
 
 	@Override
