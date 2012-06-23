@@ -126,6 +126,9 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 							break;
 						}
 					}
+
+					GL_Listener.glListener.closeToast();
+
 					return true;
 				}
 			});

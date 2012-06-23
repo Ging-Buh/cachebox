@@ -1,5 +1,9 @@
 package CB_Core.GL_UI;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.interfaces.ViewOptionsMenu;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
@@ -68,6 +72,16 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	public void resetInitial()
 	{
 		isInitial = false;
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask()
+		{
+
+			@Override
+			public void run()
+			{
+				GL_Listener.glListener.renderOnce("ResetInitial");
+			}
+		}, 50);
 	}
 
 	@Override

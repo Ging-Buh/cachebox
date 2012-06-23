@@ -21,7 +21,6 @@ import de.cachebox_test.Components.CacheDraw.DrawStyle;
 import de.cachebox_test.Custom_Controls.CacheInfoControl;
 import de.cachebox_test.Custom_Controls.DescriptionViewControl;
 import de.cachebox_test.Events.ViewOptionsMenu;
-import de.cachebox_test.Ui.AllContextMenuCallHandler;
 
 public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent
 {
@@ -83,7 +82,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	@Override
 	public void BeforeShowMenu(Menu menu)
 	{
-		AllContextMenuCallHandler.showCacheDescViewContextMenu();
+		// AllContextMenuCallHandler.showCacheDescViewContextMenu();
 	}
 
 	public void reloadCacheInfo()

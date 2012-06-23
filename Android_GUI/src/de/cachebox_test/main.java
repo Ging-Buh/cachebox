@@ -519,6 +519,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		fillPluginList();
 		bindPluginServices();
+
 	}
 
 	boolean flag = false;
@@ -845,7 +846,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (keyCode == KeyEvent.KEYCODE_BACK)
 		{
-			Quitt();
+			if (!GL_Listener.glListener.keyBackCliced()) Quitt();
 
 			return true;
 		}
@@ -1837,7 +1838,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public static void vibrate()
 	{
-		if (Config.settings.vibrateFeedback.getValue()) vibrator.vibrate(20);
+		if (Config.settings.vibrateFeedback.getValue()) vibrator.vibrate(15);
 	}
 
 	/*

@@ -21,6 +21,7 @@ import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.libGdx_Controls.LibGdx_Host_Control;
+import CB_Core.GL_UI.libGdx_Controls.TextField;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
@@ -55,6 +56,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	public static final int FRAME_RATE_IDLE = 200;
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 15;
+	public static final int FRAME_RATE_TEXT_FIELD = 350;
 
 	// # public static member
 	public static SpriteBatch batch;
@@ -316,7 +318,11 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 		if (ToastIsShown)
 		{
-			mToastOverlay.renderChilds(batch, prjMatrix);
+			synchronized (mToastOverlay)
+			{
+				mToastOverlay.renderChilds(batch, prjMatrix);
+			}
+
 		}
 
 		Gdx.gl.glFlush();
@@ -395,6 +401,11 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		}
 	}
 
+	public void renderForTextField(TextField textField)
+	{
+		addRenderView(textField, FRAME_RATE_TEXT_FIELD);
+	}
+
 	/**
 	 * Fürt EINEN Render Durchgang aus
 	 * 
@@ -451,7 +462,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 				{
 					if (first.view.isClickable())
 					{
-						first.view.longClick(x - (int) first.view.ThisWorldRec.getX(), (int) child.getHeight() - y
+						boolean handled = first.view.longClick(x - (int) first.view.ThisWorldRec.getX(), (int) child.getHeight() - y
 								- (int) first.view.ThisWorldRec.getY(), pointer, 0);
 						// Logger.LogCat("GL_Listner => onLongClick : " + first.view.getName());
 						// für diesen TouchDownn darf kein normaler Click mehr ausgeführt werden
@@ -459,7 +470,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 						// onTouchUp nach Long-Click direkt auslösen
 						first.view.touchUp(x, (int) child.getHeight() - y, pointer, 0);
 						// Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
-
+						if (handled) platformConector.vibrate();
 					}
 				}
 			}
@@ -560,8 +571,9 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			// glListener.onClick(akt.x, akt.y, pointer, 0);
 			if (first.view.isClickable())
 			{
-				first.view.click(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
+				boolean handled = first.view.click(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
 						- (int) first.view.ThisWorldRec.getY(), pointer, button);
+				if (handled) platformConector.vibrate();
 				// Logger.LogCat("GL_Listner => onTouchUpBase (Click) : " + first.view.getName());
 			}
 		}
@@ -816,11 +828,13 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public void showDialog(final CB_View_Base dialog)
 	{
+
 		showDialog(dialog, false);
 	}
 
 	public void showDialog(final CB_View_Base dialog, boolean atTop)
 	{
+		clearRenderViews();
 		platformConector.showForDialog();
 
 		// Center Menu on Screen
@@ -866,7 +880,6 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		DialogIsShown = true;
 		darknesAnimationRuns = true;
 
-		addRenderView(mDialog, FRAME_RATE_FAST_ACTION);
 	}
 
 	public void closeDialog()
@@ -881,8 +894,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		DialogIsShown = false;
 		darknesAlpha = 0f;
 		mDarknesSprite = null;// Create new Pixmap on next call
-		removeRenderView(mDialog);
 
+		clearRenderViews();
 		renderOnce("Close Dialog");
 	}
 
@@ -893,31 +906,43 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		Toast(view, 2000);
 	}
 
+	public void closeToast()
+	{
+		synchronized (mToastOverlay)
+		{
+
+			ToastIsShown = false;
+			mToastOverlay.removeChilds();
+		}
+		renderOnce("ToastClosing");
+	}
+
 	public void Toast(CB_View_Base view, int delay)
 	{
 		if (mToastOverlay == null)
 		{
 			mToastOverlay = new Box(new CB_RectF(0, 0, width, height), "ToastView");
 		}
-		else
+		synchronized (mToastOverlay)
 		{
 			mToastOverlay.removeChilds();
-		}
 
-		mToastOverlay.addChild(view);
-		ToastIsShown = true;
+			mToastOverlay.addChild(view);
+			ToastIsShown = true;
 
-		TimerTask task = new TimerTask()
-		{
-			@Override
-			public void run()
+			TimerTask task = new TimerTask()
 			{
-				ToastIsShown = false;
-			}
-		};
+				@Override
+				public void run()
+				{
+					ToastIsShown = false;
+					renderOnce("ToastClosing");
+				}
+			};
 
-		Timer timer = new Timer();
-		timer.schedule(task, delay);
+			Timer timer = new Timer();
+			timer.schedule(task, delay);
+		}
 	}
 
 	private CB_Core.GL_UI.Controls.Dialogs.Toast toast;
@@ -982,6 +1007,19 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		stopTimer();
 		renderViews.clear();
 
+	}
+
+	/**
+	 * @return true wenn behandeld
+	 */
+	public boolean keyBackCliced()
+	{
+		if (actDialog instanceof Menu)
+		{
+			closeDialog();
+			return true;
+		}
+		return false;
 	}
 
 }

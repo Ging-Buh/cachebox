@@ -1,10 +1,15 @@
 package CB_Core.GL_UI.Controls;
 
+import java.util.ArrayList;
+
 import CB_Core.GlobalCore;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.libGdx_Controls.TextField;
 import CB_Core.Math.CB_RectF;
+
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
 
 public class NumPad extends CB_View_Base
 {
@@ -59,6 +64,13 @@ public class NumPad extends CB_View_Base
 		super(rec, Name);
 		mType = type;
 		mKeyPressedListner = listner;
+	}
+
+	public NumPad(CB_RectF rec, String Name, Type type)
+	{
+		super(rec, Name);
+		mType = type;
+		mKeyPressedListner = ownKeyListner;
 	}
 
 	@Override
@@ -263,6 +275,82 @@ public class NumPad extends CB_View_Base
 				}
 			}
 			return false;
+		}
+	};
+
+	// ######## Register TextFields
+
+	private ArrayList<TextField> allTextFields = new ArrayList<TextField>();
+	private TextField focusedTextField = null;
+
+	public void registerTextField(final TextField textField)
+	{
+		textField.setOnscreenKeyboard(new OnscreenKeyboard()
+		{
+			@Override
+			public void show(boolean arg0)
+			{
+
+				for (TextField tmp : allTextFields)
+				{
+					tmp.resetFocus();
+				}
+
+				textField.setFocus(true);
+				focusedTextField = textField;
+			}
+		});
+
+		allTextFields.add(textField);
+	}
+
+	keyEventListner ownKeyListner = new keyEventListner()
+	{
+
+		@Override
+		public void KeyPressed(String value)
+		{
+			if (focusedTextField == null) return;
+
+			int cursorPos = focusedTextField.getCursorPosition();
+
+			if (value.equals("O"))
+			{
+				// sollte nicht passieren, da der Button nicht sichtbar ist
+			}
+			else if (value.equals("C"))
+			{
+				// sollte nicht passieren, da der Button nicht sichtbar ist
+			}
+			else if (value.equals("<"))
+			{
+				if (cursorPos == 0) cursorPos = 1; // cursorPos darf nicht 0 sein
+				focusedTextField.setCursorPosition(cursorPos - 1);
+			}
+			else if (value.equals(">"))
+			{
+				focusedTextField.setCursorPosition(cursorPos + 1);
+			}
+			else if (value.equals("D"))
+			{
+				if (cursorPos > 0)
+				{
+					String text2 = focusedTextField.getText().substring(cursorPos);
+					String text1 = focusedTextField.getText().substring(0, cursorPos - 1);
+
+					focusedTextField.setText(text1 + text2);
+					focusedTextField.setCursorPosition(cursorPos + -1);
+				}
+			}
+			else
+			{
+				String text2 = focusedTextField.getText().substring(cursorPos);
+				String text1 = focusedTextField.getText().substring(0, cursorPos);
+
+				focusedTextField.setText(text1 + value + text2);
+				focusedTextField.setCursorPosition(cursorPos + value.length());
+			}
+
 		}
 	};
 

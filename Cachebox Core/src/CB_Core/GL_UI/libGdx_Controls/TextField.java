@@ -3,7 +3,6 @@ package CB_Core.GL_UI.libGdx_Controls;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.PopUps.CopiePastePopUp;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -23,6 +22,17 @@ public class TextField extends LibGdx_Host_Control
 
 		super(rec, new com.badlogic.gdx.scenes.scene2d.ui.TextField(Style.getTextFieldStyle()), Name);
 		that = this;
+
+		this.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// Handle ClickEvent for vibrate feedback
+				return true;
+			}
+		});
 
 		mTextField = (com.badlogic.gdx.scenes.scene2d.ui.TextField) getActor();
 		mTextField.setClipboard(GlobalCore.getDefaultClipboard());
@@ -49,13 +59,13 @@ public class TextField extends LibGdx_Host_Control
 	@Override
 	public void onShow()
 	{
-		GL_Listener.glListener.addRenderView(this, GL_Listener.FRAME_RATE_IDLE);
+
 	}
 
 	@Override
 	public void onStop()
 	{
-		GL_Listener.glListener.removeRenderView(this);
+
 	}
 
 	public void setText(String text)

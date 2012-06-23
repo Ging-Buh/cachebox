@@ -375,7 +375,7 @@ public class SelectDB extends ActivityBase
 			this.files = files;
 			recItem = UiSizes.getCacheListItemRec().asFloat();
 			recItem.setHeight(recItem.getHeight() * 0.8f);
-			recItem.setWidth(width - Left - Right);
+			recItem.setWidth(width - Left - Right - (margin * 1.5f));
 		}
 
 		public void setFiles(FileList files)

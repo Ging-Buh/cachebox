@@ -1,5 +1,7 @@
 package CB_Core.GL_UI.Activitys;
 
+import java.util.ArrayList;
+
 import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.GL_UI.Fonts;
@@ -10,12 +12,16 @@ import CB_Core.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Spinner;
 import CB_Core.GL_UI.Controls.Spinner.selectionChangedListner;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.libGdx_Controls.TextField;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.LangStrings;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.DefaultOnscreenKeyboard;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
 
 public class EditWaypoint extends ActivityBase
 {
@@ -60,6 +66,13 @@ public class EditWaypoint extends ActivityBase
 		iniLabelClue();
 		iniTitleTextClue();
 		iniOkCancel();
+		iniTextfieldFocus();
+	}
+
+	@Override
+	protected void Initial()
+	{
+		GL_Listener.glListener.renderForTextField(etClue);
 	}
 
 	private void iniCacheNameLabel()
@@ -266,6 +279,38 @@ public class EditWaypoint extends ActivityBase
 			}
 		});
 
+	}
+
+	private void iniTextfieldFocus()
+	{
+		registerTextField(etTitle);
+		registerTextField(etDescription);
+		registerTextField(etClue);
+	}
+
+	private ArrayList<TextField> allTextFields = new ArrayList<TextField>();
+
+	private OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
+
+	public void registerTextField(final TextField textField)
+	{
+		textField.setOnscreenKeyboard(new OnscreenKeyboard()
+		{
+			@Override
+			public void show(boolean arg0)
+			{
+
+				for (TextField tmp : allTextFields)
+				{
+					tmp.resetFocus();
+				}
+
+				textField.setFocus(true);
+				keyboard.show(true);
+			}
+		});
+
+		allTextFields.add(textField);
 	}
 
 }

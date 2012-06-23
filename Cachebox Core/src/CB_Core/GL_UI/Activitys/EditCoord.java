@@ -147,7 +147,7 @@ public class EditCoord extends ActivityBase
 				if (!parseView())
 				{
 					GL_Listener.glListener.Toast("Invalid COORD", 2000);
-					return false;
+					return true;
 				}
 
 				if (mReturnListner != null)
@@ -310,8 +310,7 @@ public class EditCoord extends ActivityBase
 		createTrSec();
 		createTrUtn();
 
-		GL_Listener.glListener.addRenderView(this, GL_Listener.FRAME_RATE_IDLE); // Cursor blink
-
+		GL_Listener.glListener.renderForTextField(tbUZone);
 	}
 
 	private void createTrUtn()

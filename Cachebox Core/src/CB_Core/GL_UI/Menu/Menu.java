@@ -35,7 +35,7 @@ public class Menu extends Dialog
 			GL_Listener.glListener.closeDialog();
 			if (mOnItemClickListner != null) mOnItemClickListner.onClick(v, x, y, pointer, button);
 
-			return false;
+			return true;
 		}
 	};
 

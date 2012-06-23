@@ -1,7 +1,5 @@
 package CB_Core.GL_UI.Activitys;
 
-import java.util.ArrayList;
-
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
@@ -11,13 +9,11 @@ import CB_Core.GL_UI.Controls.CoordinateButton;
 import CB_Core.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.NumPad;
-import CB_Core.GL_UI.Controls.NumPad.keyEventListner;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.libGdx_Controls.TextField;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
-
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
 
 public class ProjectionCoordinate extends ActivityBase
 {
@@ -58,6 +54,12 @@ public class ProjectionCoordinate extends ActivityBase
 		iniTextFields();
 		iniOkCancel();
 		iniNumPad();
+	}
+
+	@Override
+	protected void Initial()
+	{
+		GL_Listener.glListener.renderForTextField(valueDistance);
 	}
 
 	private void iniCacheNameLabel()
@@ -133,9 +135,6 @@ public class ProjectionCoordinate extends ActivityBase
 		this.addChild(lblBearingUnit);
 		this.addChild(lblDistanceUnit);
 
-		setKeyboardHandling(valueDistance);
-		setKeyboardHandling(valueBearing);
-
 	}
 
 	private void iniOkCancel()
@@ -182,7 +181,10 @@ public class ProjectionCoordinate extends ActivityBase
 	private void iniNumPad()
 	{
 		CB_RectF numRec = new CB_RectF(Left, bOK.getMaxY(), width - Left - Right, lblDistance.getY() - bOK.getMaxY());
-		numPad = new NumPad(numRec, "numPad", NumPad.Type.withDot, keyListner);
+		numPad = new NumPad(numRec, "numPad", NumPad.Type.withDot);
+
+		numPad.registerTextField(valueDistance);
+		numPad.registerTextField(valueBearing);
 
 		this.addChild(numPad);
 	}
@@ -205,79 +207,5 @@ public class ProjectionCoordinate extends ActivityBase
 		else
 			return false;
 	}
-
-	private ArrayList<TextField> allTextFields = new ArrayList<TextField>();
-	private TextField focusedTextField = null;
-
-	private void setKeyboardHandling(final TextField textField)
-	{
-		textField.setOnscreenKeyboard(new OnscreenKeyboard()
-		{
-			@Override
-			public void show(boolean arg0)
-			{
-
-				for (TextField tmp : allTextFields)
-				{
-					tmp.resetFocus();
-				}
-
-				textField.setFocus(true);
-				focusedTextField = textField;
-			}
-		});
-
-		allTextFields.add(textField);
-	}
-
-	keyEventListner keyListner = new keyEventListner()
-	{
-
-		@Override
-		public void KeyPressed(String value)
-		{
-			if (focusedTextField == null) return;
-
-			int cursorPos = focusedTextField.getCursorPosition();
-
-			if (value.equals("O"))
-			{
-				// sollte nicht passieren, da der Button nicht sichtbar ist
-			}
-			else if (value.equals("C"))
-			{
-				// sollte nicht passieren, da der Button nicht sichtbar ist
-			}
-			else if (value.equals("<"))
-			{
-				if (cursorPos == 0) cursorPos = 1; // cursorPos darf nicht 0 sein
-				focusedTextField.setCursorPosition(cursorPos - 1);
-			}
-			else if (value.equals(">"))
-			{
-				focusedTextField.setCursorPosition(cursorPos + 1);
-			}
-			else if (value.equals("D"))
-			{
-				if (cursorPos > 0)
-				{
-					String text2 = focusedTextField.getText().substring(cursorPos);
-					String text1 = focusedTextField.getText().substring(0, cursorPos - 1);
-
-					focusedTextField.setText(text1 + text2);
-					focusedTextField.setCursorPosition(cursorPos + -1);
-				}
-			}
-			else
-			{
-				String text2 = focusedTextField.getText().substring(cursorPos);
-				String text1 = focusedTextField.getText().substring(0, cursorPos);
-
-				focusedTextField.setText(text1 + value + text2);
-				focusedTextField.setCursorPosition(cursorPos + value.length());
-			}
-
-		}
-	};
 
 }
