@@ -1190,7 +1190,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		Logger.LogCat("Main=> onStop");
 
 		if (mSensorManager != null) mSensorManager.unregisterListener(mListener);
-		this.unregisterReceiver(this.mBatInfoReceiver);
+
+		try
+		{
+			this.unregisterReceiver(this.mBatInfoReceiver);
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		counter.cancel();
 		super.onStop();
 

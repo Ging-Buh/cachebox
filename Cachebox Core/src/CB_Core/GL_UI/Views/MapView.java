@@ -42,6 +42,7 @@ import CB_Core.Map.TileGL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Locator;
@@ -720,29 +721,36 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				int radius = (int) (pixelsPerMeter * locator.getLocation().Accuracy);
 				// Logger.LogCat("Accuracy radius " + radius);
 				// Logger.LogCat("pixelsPerMeter " + pixelsPerMeter);
-				if (radius > 0)
+				if (radius > 0 && radius < UiSizes.getSmallestWidth())
 				{
 
-					int squaredR = radius * 2;
+					try
+					{
+						int squaredR = radius * 2;
 
-					int w = getNextHighestPO2(squaredR);
-					int h = getNextHighestPO2(squaredR);
-					Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-					Pixmap.setBlending(Blending.None);
-					p.setColor(0f, 0.1f, 0.4f, 0.1f);
+						int w = getNextHighestPO2(squaredR);
+						int h = getNextHighestPO2(squaredR);
+						Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+						Pixmap.setBlending(Blending.None);
+						p.setColor(0f, 0.1f, 0.4f, 0.1f);
 
-					p.fillCircle(radius, radius, radius);
-					p.setColor(0f, 0f, 1f, 0.8f);
-					p.drawCircle(radius, radius, radius);
-					p.setColor(0.5f, 0.5f, 1f, 0.7f);
-					p.drawCircle(radius, radius, radius - 1);
-					p.drawCircle(radius, radius, radius + 1);
+						p.fillCircle(radius, radius, radius);
+						p.setColor(0f, 0f, 1f, 0.8f);
+						p.drawCircle(radius, radius, radius);
+						p.setColor(0.5f, 0.5f, 1f, 0.7f);
+						p.drawCircle(radius, radius, radius - 1);
+						p.drawCircle(radius, radius, radius + 1);
 
-					AccuracyTexture = new Texture(p);
+						AccuracyTexture = new Texture(p);
 
-					AccuracySprite = new Sprite(AccuracyTexture, squaredR, squaredR);
-					p.dispose();
-					AccuracySprite.setSize(squaredR, squaredR);
+						AccuracySprite = new Sprite(AccuracyTexture, squaredR, squaredR);
+						p.dispose();
+						AccuracySprite.setSize(squaredR, squaredR);
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
 
 				}
 

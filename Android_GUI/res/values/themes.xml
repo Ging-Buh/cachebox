@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<style name="Theme_day" parent="android:Theme">
-		<item name="android:windowBackground">@color/Day_Background</item>
+	    <item name="android:windowBackground">@color/Day_Background</item>
 		<item name="EmptyBackground">@color/Day_EmptyBackground</item>
 		<item name="myBackground">@color/Day_Background</item>
 		<item name="TextColor">@color/Day_Foreground</item>
@@ -41,6 +41,7 @@
 		<item name="Map_ColorCompassPanel">@color/Day_ColorCompassPanel</item>
 	</style>
 
+	
 
 	<style name="Theme_night" parent="android:Theme">
 		<item name="android:windowBackground">@color/Night_EmptyBackground</item>

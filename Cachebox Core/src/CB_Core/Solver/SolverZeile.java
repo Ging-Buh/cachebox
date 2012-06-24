@@ -479,7 +479,7 @@ public class SolverZeile
 			if (!(entity instanceof TempEntity)) continue;
 			TempEntity tEntity = (TempEntity) entity;
 			String s = tEntity.Text.trim();
-			if ((s == null) || (s == "")) continue;
+			if (s == null || s.length() < 1) continue;
 			if (s.charAt(0) == '$')
 			{
 				// GC-Koordinate suchen
