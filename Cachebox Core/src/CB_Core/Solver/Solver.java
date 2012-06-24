@@ -9,6 +9,8 @@ import CB_Core.Solver.Functions.FunctionCategories;
 public class Solver extends ArrayList<SolverZeile>
 {
 	private static final long serialVersionUID = 132452345624562L;
+	public static final String errorPrefix = "Error: ";
+	public static final String errorPostfix = "";
 
 	// Liste mit den Operatoren, werden in dieser Reihenfolge abgearbeitet (. vor -)...
 	static SortedMap<Integer, ArrayList<String>> operatoren = new TreeMap<Integer, ArrayList<String>>();
@@ -16,6 +18,14 @@ public class Solver extends ArrayList<SolverZeile>
 	// hier werden die Loesungen aller Variablen gespeichert
 	static TreeMap<String, String> Variablen = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 	static public SortedMap<String, Integer> MissingVariables = null;
+
+	public static boolean isError(String s)
+	{
+		if (s.substring(0, errorPrefix.length()).equals(errorPrefix)
+		/* && s.substring(s.length() - errorPostfix.length(), s.length()).equals(errorPostfix) */) return true;
+		else
+			return false;
+	}
 
 	String source;
 

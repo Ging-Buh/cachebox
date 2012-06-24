@@ -80,7 +80,7 @@ public class CoordinateEntity extends Entity
 		if (coord == null)
 		// gesuchter Waypoint ist kein Cache-Waypoint, jetzt in Waypoint-Tabelle danach suchen
 		coord = LoadFromDB("select GcCode, Latitude, Longitude from Waypoint where GcCode = \"" + this.gcCode + "\"");
-		if (coord == null) return "Cache/Waypoint not found: " + gcCode;
+		if (coord == null) return Solver.errorPrefix + "Cache/Waypoint not found: " + gcCode + Solver.errorPostfix;
 		else
 			return coord.FormatCoordinate();
 	}
@@ -99,6 +99,7 @@ public class CoordinateEntity extends Entity
 
 	public String SetCoordinate(String sCoord)
 	{
+		if (Solver.isError(sCoord)) return sCoord;
 		Coordinate coord = new Coordinate(sCoord);
 		if (!coord.Valid) return "Koordinate not valid";
 		WaypointDAO waypointDAO = new WaypointDAO();
