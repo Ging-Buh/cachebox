@@ -22,11 +22,14 @@ public class MapScale extends CB_View_Base
 {
 	private BitmapFontCache fontCache;
 	float sollwidth = 0;
+	private MapView mapInstanz;
 
-	public MapScale(CB_RectF rec, String Name)
+	public MapScale(CB_RectF rec, String Name, MapView mapInstanz)
 	{
 		super(rec, Name);
 		sollwidth = rec.getWidth();
+		this.mapInstanz = mapInstanz;
+		CachedScaleSprite = null;
 	}
 
 	@Override
@@ -58,10 +61,10 @@ public class MapScale extends CB_View_Base
 	/**
 	 * Nachdem Zoom verändert wurde müssen einige Werte neu berechnet werden
 	 */
-	public void zoomChanged(MapView mapInstans)
+	public void zoomChanged()
 	{
-		if (mapInstans.pixelsPerMeter <= 0) return;
-		if (mapInstans.getAktZoom() == generatedZomm) return;
+		if (mapInstanz.pixelsPerMeter <= 0) return;
+		if (mapInstanz.getAktZoom() == generatedZomm) return;
 
 		try
 		{
@@ -70,7 +73,7 @@ public class MapScale extends CB_View_Base
 			float[] scaleSteps = new float[]
 				{ 1, 1.5f, 2, 3, 4, 5, 7.5f };
 
-			pixelsPerMeter = mapInstans.pixelsPerMeter;
+			pixelsPerMeter = mapInstanz.pixelsPerMeter;
 
 			int multiplyer = 1;
 			double scaleSize = 0;
@@ -169,9 +172,15 @@ public class MapScale extends CB_View_Base
 	protected void render(SpriteBatch batch)
 	{
 		if (pixelsPerMeter <= 0) return;
+		if (CachedScaleSprite == null) zoomChanged();
 		if (CachedScaleSprite != null) CachedScaleSprite.draw(batch);
 		if (fontCache != null) fontCache.draw(batch);
 
+	}
+
+	public void invalidateTexture()
+	{
+		CachedScaleSprite = null;
 	}
 
 }

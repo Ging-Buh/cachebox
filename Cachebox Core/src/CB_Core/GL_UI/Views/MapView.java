@@ -198,7 +198,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 
 		mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, this.halfWidth, GL_UISizes.ZoomBtn.getHalfWidth() / 4),
-				"mapScale");
+				"mapScale", this);
 
 		this.addChild(mapScale);
 
@@ -347,7 +347,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		aktZoom = Config.settings.lastZoomLevel.getValue();
 		zoomBtn.setZoom(aktZoom);
 		calcPixelsPerMeter();
-		mapScale.zoomChanged(this);
+		mapScale.zoomChanged();
 
 		if ((center.Latitude == -1000) && (center.Longitude == -1000))
 		{
@@ -425,6 +425,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		Config.settings.WriteToDB();
 		super.onStop();
 		loadedTiles.clear();
+		mapScale.invalidateTexture();
 		tilesToDraw.clear();
 	}
 
@@ -1953,7 +1954,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		// Logger.LogCat("set zoom");
 		zoomScale.setZoom(zoom);
-		mapScale.zoomChanged(this);
+		mapScale.zoomChanged();
 	}
 
 	@Override
