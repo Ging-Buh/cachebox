@@ -4,6 +4,8 @@ import java.text.NumberFormat;
 
 import CB_Core.Config;
 import CB_Core.UnitFormatter;
+import CB_Core.Events.invalidateTextureEvent;
+import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.Views.MapView;
@@ -18,7 +20,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class MapScale extends CB_View_Base
+public class MapScale extends CB_View_Base implements invalidateTextureEvent
 {
 	private BitmapFontCache fontCache;
 	float sollwidth = 0;
@@ -30,18 +32,21 @@ public class MapScale extends CB_View_Base
 		sollwidth = rec.getWidth();
 		this.mapInstanz = mapInstanz;
 		CachedScaleSprite = null;
+		invalidateTextureEventList.Add(this);
 	}
 
 	@Override
 	protected void Initial()
 	{
-
+		generatedZomm = -1;
+		zoomChanged();
 	}
 
 	@Override
 	protected void SkinIsChanged()
 	{
-
+		invalidateTexture();
+		zoomChanged();
 	}
 
 	/**
@@ -155,7 +160,9 @@ public class MapScale extends CB_View_Base
 		p.setColor(brushes[0]);
 		p.drawRectangle(0, 0, (int) (pos), ((int) height) - 1);
 
-		CachedScaleSprite = new Sprite(new Texture(p), (int) pos, (int) this.getHeight());
+		Texture tex = new Texture(p);
+
+		CachedScaleSprite = new Sprite(tex, (int) pos, (int) this.getHeight());
 		p.dispose();
 
 		float margin = (this.getHeight() - bounds.height) / 1.6f;
@@ -178,9 +185,15 @@ public class MapScale extends CB_View_Base
 
 	}
 
+	@Override
 	public void invalidateTexture()
 	{
-		CachedScaleSprite = null;
+		if (CachedScaleSprite != null)
+		{
+			CachedScaleSprite.getTexture().dispose();
+			CachedScaleSprite = null;
+		}
+		generatedZomm = -1;
 	}
 
 }

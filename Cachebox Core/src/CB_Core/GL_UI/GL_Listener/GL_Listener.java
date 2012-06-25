@@ -71,6 +71,11 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	private Sprite FpsInfoSprite;
 	private int FpsInfoPos = 0;
 
+	public int getFpsInfoPos()
+	{
+		return FpsInfoPos;
+	}
+
 	public float getWidth()
 	{
 		return width;
@@ -162,33 +167,6 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		child.onStop();
 	}
 
-	// public boolean onClick(int x, int y, int pointer, int button)
-	// {
-	// boolean behandelt = false;
-	//
-	// CB_View_Base testingView = DialogIsShown ? mDialog : child;
-	//
-	// if (testingView.isClickable())
-	// {
-	// behandelt = testingView.click(x, (int) testingView.getHeight() - y, pointer, button);
-	// }
-	//
-	// return behandelt;
-	// }
-	//
-	// public boolean onLongClick(int x, int y, int pointer, int button)
-	// {
-	// boolean behandelt = false;
-	//
-	// CB_View_Base testingView = DialogIsShown ? mDialog : child;
-	//
-	// if (testingView.isClickable())
-	// {
-	// behandelt = testingView.longClick(x, (int) testingView.getHeight() - y, pointer, button);
-	// }
-	// return behandelt;
-	// }
-
 	public GL_View_Base onTouchDown(int x, int y, int pointer, int button)
 	{
 		GL_View_Base view = null;
@@ -279,11 +257,29 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	private float darknesAlpha = 0f;
 	private boolean darknesAnimationRuns = false;
 
+	public interface renderStartet
+	{
+		public void renderIsStartet();
+	}
+
+	private renderStartet renserStartetListner = null;
+
+	public void registerRenderStartetListner(renderStartet listner)
+	{
+		renserStartetListner = listner;
+	}
+
 	@Override
 	public void render()
 	{
 
 		if (!started.get() || stopRender) return;
+
+		if (renserStartetListner != null)
+		{
+			renserStartetListner.renderIsStartet();
+			renserStartetListner = null;
+		}
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);

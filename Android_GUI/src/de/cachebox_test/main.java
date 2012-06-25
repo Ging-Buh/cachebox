@@ -38,6 +38,7 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.Events.platformConector.IHardwarStateListner;
 import CB_Core.Events.platformConector.IShowViewListner;
 import CB_Core.Events.platformConector.trackListListner;
@@ -50,6 +51,7 @@ import CB_Core.GL_UI.ViewID.UI_Type;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL_Listener.renderStartet;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Log.ILog;
@@ -69,6 +71,7 @@ import CB_Core.Types.ImageEntry;
 import CB_Core.Types.Locator;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -1132,6 +1135,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onPause()
 	{
+		stopped = true;
 		Logger.LogCat("Main=> onPause");
 		if (input == null)
 		{
@@ -1146,9 +1150,34 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// graphics.isShown = true;
 	}
 
+	Dialog pWaitD;
+	private int WaitPos = -1;
+	private boolean stopped = false;
+
+	private void showWaitToRenderStartet()
+	{
+		WaitPos = GL_Listener.glListener.getFpsInfoPos();
+		pWaitD = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("waitForGL"), "", MessageBoxButtons.NOTHING, MessageBoxIcon.None,
+				null);
+		stopped = false;
+		GL_Listener.glListener.registerRenderStartetListner(new renderStartet()
+		{
+
+			@Override
+			public void renderIsStartet()
+			{
+				pWaitD.dismiss();
+			}
+		});
+	}
+
 	@Override
 	protected void onResume()
 	{
+		if (stopped) showWaitToRenderStartet();
+
+		invalidateTextureEventList.Call();
+
 		Logger.LogCat("Main=> onResume");
 		if (input == null)
 		{
@@ -1976,25 +2005,53 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				gdxView.setOnTouchListener(new OnTouchListener()
 				{
 					@Override
-					public boolean onTouch(View v, MotionEvent event)
+					public boolean onTouch(View v, final MotionEvent event)
 					{
 						// Weitergabe der Toucheingabe an den Gl_Listener
 						// ToDo: noch nicht fertig!!!!!!!!!!!!!
-						int p = event.getActionIndex();
+						final int p = event.getActionIndex();
 						try
 						{
 							switch (event.getActionMasked())
 							{
 							case MotionEvent.ACTION_POINTER_DOWN:
 							case MotionEvent.ACTION_DOWN:
-								glListener.onTouchDownBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
+								Thread threadDown = new Thread(new Runnable()
+								{
+									@Override
+									public void run()
+									{
+										glListener.onTouchDownBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
+									}
+								});
+								threadDown.run();
+
 								break;
 							case MotionEvent.ACTION_MOVE:
-								glListener.onTouchDraggedBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p));
+								Thread threadMove = new Thread(new Runnable()
+								{
+									@Override
+									public void run()
+									{
+										glListener.onTouchDraggedBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p));
+									}
+								});
+								threadMove.run();
+
 								break;
 							case MotionEvent.ACTION_POINTER_UP:
 							case MotionEvent.ACTION_UP:
-								glListener.onTouchUpBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
+
+								Thread threadUp = new Thread(new Runnable()
+								{
+									@Override
+									public void run()
+									{
+										glListener.onTouchUpBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
+									}
+								});
+								threadUp.run();
+
 								break;
 							}
 						}
@@ -2318,18 +2375,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// MessageBox.Show("comming soon", "sorry", MessageBoxIcon.Asterisk);
 		showView(ViewConst.TB_LIST_VIEW);
 	}
-
-	// private void switchDayNight()
-	// {
-	// // frame.removeAllViews();
-	// // Config.changeDayNight();
-	// DescriptionViewControl.mustLoadDescription = true;
-	// downSlider.isInitial = false;
-	// ActivityUtils.changeToTheme(mainActivity, Config.settings.nightMode.getValue() ? ActivityUtils.THEME_NIGHT
-	// : ActivityUtils.THEME_DAY);
-	// Toast.makeText(mainActivity, "changeDayNight", Toast.LENGTH_SHORT).show();
-	//
-	// }
 
 	private void switchAutoResort()
 	{

@@ -16,6 +16,8 @@ import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Events.PositionChangedEvent;
 import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.invalidateTextureEvent;
+import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -60,7 +62,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public class MapView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent
+public class MapView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent
 {
 	public static MapView that = null; // für Zugriff aus Listeners heraus auf this
 	private final String Tag = "MAP_VIEW_GL";
@@ -163,6 +165,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		super(rec, Name);
 		that = this;
+		invalidateTextureEventList.Add(this);
 		registerSkinChangedEvent();
 		setBackground(SpriteCache.ListBack);
 
@@ -363,7 +366,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		CB_Core.Events.SelectedCacheEventList.Add(this);
 		CB_Core.Events.PositionChangedEventList.Add(this);
-
+		PositionChanged(GlobalCore.Locator);
 	}
 
 	@Override
@@ -424,9 +427,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		Config.settings.lastZoomLevel.setValue(aktZoom);
 		Config.settings.WriteToDB();
 		super.onStop();
-		loadedTiles.clear();
-		mapScale.invalidateTexture();
-		tilesToDraw.clear();
 	}
 
 	public void SetCurrentLayer(Layer newLayer)
@@ -436,6 +436,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		CurrentLayer = newLayer;
 
+		clearLoadedTiles();
+	}
+
+	private void clearLoadedTiles()
+	{
 		loadedTilesLock.lock();
 		try
 		{
@@ -2150,6 +2155,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		Timer timer = new Timer();
 		timer.schedule(task, 2000);
+		PositionChanged(GlobalCore.Locator);
 	}
 
 	protected class KineticPan
@@ -2273,12 +2279,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 	}
 
-	// @Override
-	// public void onParentRezised(CB_RectF rec)
-	// {
-	// this.setSize(rec.getSize());
-	// }
-
 	private void requestLayout()
 	{
 		// Logger.LogCat("MapView clacLayout()");
@@ -2352,5 +2352,19 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			infoBubble.setCache(infoBubble.getCache(), infoBubble.getWaypoint(), true);
 		}
+	}
+
+	@Override
+	public void invalidateTexture()
+	{
+		clearLoadedTiles();
+		tilesToDraw.clear();
+		if (directLineOverlay != null) directLineOverlay.getTexture().dispose();
+		directLineOverlay = null;
+		if (directLineTexture != null) directLineTexture.dispose();
+		directLineTexture = null;
+		if (AccuracyTexture != null) AccuracyTexture.dispose();
+		AccuracyTexture = null;
+
 	}
 }

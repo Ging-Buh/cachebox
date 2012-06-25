@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Core.Events.invalidateTextureEvent;
+import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
@@ -17,7 +19,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-public class ZoomScale extends CB_View_Base
+public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 {
 	private int minzoom = 6;
 	private int maxzoom = 20;
@@ -94,6 +96,8 @@ public class ZoomScale extends CB_View_Base
 		Fonts.getNormal().draw(batch, String.valueOf(zoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
 				ValueRec.getY() + ValueRec.getHeight() / 1.15f);
 		Fonts.getNormal().setColor(c.r, c.g, c.b, c.a);
+
+		invalidateTextureEventList.Add(this);
 	}
 
 	public void setDiffCameraZoom(float value, boolean positive)
@@ -351,6 +355,15 @@ public class ZoomScale extends CB_View_Base
 
 		cancelTimerToFadeOut();
 
+	}
+
+	@Override
+	public void invalidateTexture()
+	{
+		ScaleDrawRec = null;
+		storedRec = null;
+		CachedScaleSprite.getTexture().dispose();
+		CachedScaleSprite = null;
 	}
 
 }

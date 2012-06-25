@@ -9,7 +9,6 @@ import android.opengl.GLSurfaceView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -126,17 +125,25 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 
 	}
 
-	@Override
-	public boolean onTouchEvent(MotionEvent event)
-	{
-		float ex = event.getX();
-		float ey = event.getY();
-		// Weitergabe der Toucheingabe an den Gl_Listener
-		// ToDo: noch nicht fertig!!!!!!!!!!!!!
-		glListener.onTouchDown((int) ex, (int) ey, 0, 0);
-
-		return true;
-	}
+	// @Override
+	// public boolean onTouchEvent(MotionEvent event)
+	// {
+	// final float ex = event.getX();
+	// final float ey = event.getY();
+	// // Weitergabe der Toucheingabe an den Gl_Listener
+	// // ToDo: noch nicht fertig!!!!!!!!!!!!!
+	// Thread thread = new Thread(new Runnable()
+	// {
+	// @Override
+	// public void run()
+	// {
+	// glListener.onTouchDown((int) ex, (int) ey, 0, 0);
+	// }
+	// });
+	// thread.run();
+	//
+	// return true;
+	// }
 
 	public final static int GLSURFACE_VIEW20 = 0;
 	public final static int GLSURFACE_CUPCAKE = 1;

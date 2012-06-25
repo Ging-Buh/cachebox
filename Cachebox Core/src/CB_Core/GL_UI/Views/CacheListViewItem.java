@@ -92,8 +92,6 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 			setActLocator();
 		}
 
-		// debugIndex.setText(String.valueOf(Index), this.width - ArrowRec.getWidth() - ArrowRec.getWidth(), 20);
-
 	}
 
 	private void setDistanceString(String txt)
