@@ -1450,7 +1450,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public void PositionChanged(Locator locator)
 	{
-
+		if (locator == null) return;
+		if (locator.getLocation() == null) return;
 		float heading = 0;
 
 		if (this.locator != null)
