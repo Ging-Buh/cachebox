@@ -362,7 +362,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	{
 		ScaleDrawRec = null;
 		storedRec = null;
-		CachedScaleSprite.getTexture().dispose();
+		if (CachedScaleSprite != null) CachedScaleSprite.getTexture().dispose();
 		CachedScaleSprite = null;
 	}
 
