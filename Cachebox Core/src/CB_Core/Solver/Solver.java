@@ -21,6 +21,8 @@ public class Solver extends ArrayList<SolverZeile>
 
 	public static boolean isError(String s)
 	{
+		if (s.length() <= errorPrefix.length()) return false;
+
 		if (s.substring(0, errorPrefix.length()).equals(errorPrefix)
 		/* && s.substring(s.length() - errorPostfix.length(), s.length()).equals(errorPostfix) */) return true;
 		else
