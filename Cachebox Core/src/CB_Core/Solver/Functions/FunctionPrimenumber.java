@@ -27,7 +27,7 @@ public class FunctionPrimenumber extends FunctionPrimeBase
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncPrimenumber");
 		}
 		String wert = parameter[0].trim();
 		int number = 0;
@@ -37,7 +37,7 @@ public class FunctionPrimenumber extends FunctionPrimeBase
 		}
 		catch (Exception ex)
 		{
-			return ex.getMessage();
+			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncPrimenumber", "1", "$value", "$number", parameter[0]);
 		}
 		int anz = 0;
 		int akt = 0;

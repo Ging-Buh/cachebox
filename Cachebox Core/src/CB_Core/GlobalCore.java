@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 945;
+	public static final int CurrentRevision = 947;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 

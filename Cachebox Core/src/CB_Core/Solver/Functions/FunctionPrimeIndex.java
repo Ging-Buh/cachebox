@@ -27,7 +27,7 @@ public class FunctionPrimeIndex extends FunctionPrimeBase
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncPrimeIndex");
 		}
 		int number = 0;
 		try
@@ -36,7 +36,7 @@ public class FunctionPrimeIndex extends FunctionPrimeBase
 		}
 		catch (Exception ex)
 		{
-			return ex.getMessage();
+			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncPrimeIndex", "1", "$value", "$number", parameter[0]);
 		}
 		if (!IsPrimeNumber(number)) return "0";
 		int anz = 0;

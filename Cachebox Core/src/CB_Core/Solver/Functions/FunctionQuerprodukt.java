@@ -29,7 +29,7 @@ public class FunctionQuerprodukt extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncCrossproduct");
 		}
 		String wert = parameter[0].trim();
 		int result = 1;

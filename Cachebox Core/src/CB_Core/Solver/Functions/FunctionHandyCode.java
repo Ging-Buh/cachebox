@@ -29,7 +29,7 @@ public class FunctionHandyCode extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncPhoneCode");
 		}
 		String wert = parameter[0].trim().toLowerCase();
 		if (wert.length() == 0) return "0";

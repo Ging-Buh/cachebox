@@ -238,6 +238,7 @@ public class LangStrings
 		int i = 1;
 		for (String param : params)
 		{
+			if (!param.isEmpty() && (param.charAt(0) == '$')) param = Get(param.substring(1));
 			retString = retString.replace("{" + i + "}", param);
 			i++;
 		}

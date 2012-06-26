@@ -27,7 +27,7 @@ public class FunctionAlphaSum extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncAlphaSum");
 		}
 		int result = 0;
 		if (parameter[0].length() == 0) return "0";

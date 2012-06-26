@@ -2,11 +2,11 @@ package CB_Core.Solver;
 
 import java.util.ArrayList;
 
+import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
-import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.MysterySolution;
@@ -80,28 +80,16 @@ public class CoordinateEntity extends Entity
 		if (coord == null)
 		// gesuchter Waypoint ist kein Cache-Waypoint, jetzt in Waypoint-Tabelle danach suchen
 		coord = LoadFromDB("select GcCode, Latitude, Longitude from Waypoint where GcCode = \"" + this.gcCode + "\"");
-		if (coord == null) return Solver.errorPrefix + "Cache/Waypoint not found: " + gcCode + Solver.errorPostfix;
+		if (coord == null) return GlobalCore.Translations.Get("CacheOrWaypointNotFound", gcCode);
 		else
 			return coord.FormatCoordinate();
 	}
-
-	private boolean DontUpdateDiffCache;
-
-	final OnMsgBoxClickListener DiffCacheListener = new OnMsgBoxClickListener()
-	{
-		@Override
-		public boolean onClick(int which)
-		{
-			DontUpdateDiffCache = which == 2;
-			return true;
-		}
-	};
 
 	public String SetCoordinate(String sCoord)
 	{
 		if (Solver.isError(sCoord)) return sCoord;
 		Coordinate coord = new Coordinate(sCoord);
-		if (!coord.Valid) return "Koordinate not valid";
+		if (!coord.Valid) return GlobalCore.Translations.Get("InvalidCoordinate", "SetCoordinate", sCoord);
 		WaypointDAO waypointDAO = new WaypointDAO();
 		Waypoint dbWaypoint = null;
 		// Suchen, ob dieser Waypoint bereits vorhanden ist.
@@ -111,7 +99,7 @@ public class CoordinateEntity extends Entity
 		try
 		{
 			reader.moveToFirst();
-			if (reader.isAfterLast()) return this.gcCode + " does not exist!";
+			if (reader.isAfterLast()) return GlobalCore.Translations.Get("CacheOrWaypointNotFound", this.gcCode);
 			dbWaypoint = waypointDAO.getWaypoint(reader);
 		}
 		finally
@@ -128,7 +116,7 @@ public class CoordinateEntity extends Entity
 			// sFmt += "Cache: [%s]\nWaypoint: [%s]\nCoordinates: [%s]";
 			// String s = String.format(sFmt, cache.Name, waypoint.Title, coord.FormatCoordinate());
 			// MessageBox(s, "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, DiffCac//heListener);
-			return "NOT updated: " + coord.FormatCoordinate() + " - WP [" + dbWaypoint.Title + "] : Different Cache [" + cache.Name + "]";
+			return GlobalCore.Translations.Get("solverErrDiffCache", coord.FormatCoordinate(), dbWaypoint.Title, cache.Name);
 		}
 		dbWaypoint.Pos.Latitude = coord.Latitude;
 		dbWaypoint.Pos.Longitude = coord.Longitude;

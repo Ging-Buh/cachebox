@@ -29,13 +29,14 @@ public class FunctionIntersection extends Function
 	{
 		if (parameter.length != 4)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "4");
+			return GlobalCore.Translations.Get("solverErrParamCount", "4", "$solverFuncIntersection");
 		}
 		Coordinate[] coord = new Coordinate[4];
 		for (int i = 0; i < 4; i++)
 		{
 			coord[i] = new Coordinate(parameter[i]);
-			if (!coord[i].Valid) return "Parameter " + String.valueOf(i + 1) + " must be a valid Coordinate!";
+			if (!coord[i].Valid) return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncIntersection", String.valueOf(i + 1),
+					"$coordinate", "$coordinate", parameter[i]);
 		}
 		try
 		{
@@ -43,7 +44,9 @@ public class FunctionIntersection extends Function
 		}
 		catch (Exception ex)
 		{
-			return ex.getMessage();
+			String s = coord[0].FormatCoordinate() + " / " + coord[1].FormatCoordinate() + " -> " + coord[2].FormatCoordinate() + " / "
+					+ coord[3].FormatCoordinate();
+			return GlobalCore.Translations.Get("StdError", "$solverFuncIntersection", ex.getMessage(), s);
 		}
 	}
 

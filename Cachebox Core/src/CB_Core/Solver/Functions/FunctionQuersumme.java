@@ -29,7 +29,7 @@ public class FunctionQuersumme extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncCrosstotal");
 		}
 		String wert = parameter[0].trim();
 		int result = 0;

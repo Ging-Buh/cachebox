@@ -27,7 +27,7 @@ public class FunctionRound extends Function
 	{
 		if (parameter.length != 2)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "2");
+			return GlobalCore.Translations.Get("solverErrParamCount", "2", "$solverFuncRound");
 		}
 		double number = 0;
 		try
@@ -36,7 +36,7 @@ public class FunctionRound extends Function
 		}
 		catch (Exception ex)
 		{
-			return "1. Parameter must be a number!";
+			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncRound", "1", "$value", "$number", parameter[0]);
 		}
 		int digits = 0;
 		try
@@ -45,7 +45,7 @@ public class FunctionRound extends Function
 		}
 		catch (Exception ex)
 		{
-			return "2. Parameter must be an integer!";
+			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncRound", "2", "$value", "$number", parameter[1]);
 		}
 		return String.format("%." + String.valueOf(digits) + "f", number);
 	}

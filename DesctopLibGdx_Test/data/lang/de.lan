@@ -473,7 +473,7 @@
 	deleteFieldnote = Fieldnote löschen
 	confirmFieldnoteDeletion = Soll die Fieldnote\n\n[{1}]\n\ndes Caches\n\n[{2}]\n\ngelöscht werden?
 	confirmFieldnoteDeletionRst = \n\nDer Found Status des Caches wird dabei zurückgesetzt!
-	solverErrParamCount = Diese Funktion benötigt {1} Parameter
+	solverErrParamCount = Fehler: Die Funktion {2} benötigt {1} Parameter
 	apiKeyNeeded = Kein API-Key gefunden.\nSiehe Login-Einstellungen.
 	chkApiState = Prüfe API Status
 	searchingOnline = Online-Suche läuft
@@ -489,6 +489,31 @@
 	internetError = Fehler bei Internetzugriff
 	errorAPI = Fehler während dem API-Zugriff
 	chkState = Prüfe Status
+	solverErrParamType = Fehler: Funktion {1}/Parameter {2} ({3}) ist keine gültige {4}: [{5}]
+	CacheOrWaypointNotFound = Fehler: Cache/Wegpunkt [{1}] nicht gefunden
+	// ALLE Fehlertexte MÜSSEN mit diesem Prefix beginnen
+	solverErrorPrefix = Fehler:
+	number = Zahl
+	angle = Winkel
+	InvalidCoordinate = Fehler: Funktion {1}: Koordinate ungültig: {2}
+	solverErrDiffCache = Fehler: Koordinate [{1}] für WP [{2}] gehört zu Cache [{3}]
+	LastSelectedCache = zuletzt gawählter Cache
+	vibrateFeedback = Vibration bei Tastendruck
+	LongClickTime = Erkennungszeit für langen Klick
+	Skin = Skin
+	MapsforgeDayTheme = Aussehen tagsüber
+	MapsforgeNightTheme = Aussehen nachts
+	Solver v2 = Solver (v2)
+	waitForGL = Warte ...
+	Position = Position
+	Count = Anzahl
+	PosGtLength = Fehler: Funktion {1}: Position [{2}] muss kleiner sein als Länge [{3}]
+	InvalidRomString = Fehler: Zeichenfolge ist keine römische Zahl [{1]}
+	value = Wert
+	StdError = Fehler: Funktion {1}: {2} [{3}]
+	SolverErrPostfix =
+	InvalidVariableName = Fehler: Ungültiger Variablen-Name: {1}
+	LeftMustBeAVariable = Fehler: Links muss eine Variable stehen [{1}]
 	
 	
 // Attributes

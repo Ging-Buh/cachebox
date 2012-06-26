@@ -29,31 +29,34 @@ public class FunctionCrossbearing extends Function
 	{
 		if (parameter.length != 4)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "4");
+			return GlobalCore.Translations.Get("solverErrParamCount", "4", "$solverFuncBearing");
 		}
+		Coordinate[] coord = new Coordinate[2];
+		double[] angle = new double[2];
+		for (int i = 0; i < 2; i++)
+		{
+			coord[i] = new Coordinate(parameter[i * 2]);
+			if (!coord[i].Valid) return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncCrossbearing",
+					String.valueOf(i * 2 + 1), "$coordinate", "$coordinate", parameter[i * 2]);
+			try
+			{
+				angle[i] = Double.valueOf(parameter[i * 2 + 1]);
+			}
+			catch (Exception ex)
+			{
+				return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncCrossbearing", String.valueOf(i * 2 + 2), "$angle",
+						"$number", parameter[i * 2 + 1]);
+			}
+		}
+
 		try
 		{
-			Coordinate[] coord = new Coordinate[2];
-			double[] angle = new double[2];
-			for (int i = 0; i < 2; i++)
-			{
-				coord[i] = new Coordinate(parameter[i * 2]);
-				if (!coord[i].Valid) return "Parameter " + String.valueOf(i * 2 + 1) + " must be a Coordinate!";
-				try
-				{
-					angle[i] = Double.valueOf(parameter[i * 2 + 1]);
-				}
-				catch (Exception ex)
-				{
-					return "Parameter " + String.valueOf(i * 2 + 2) + " must be a number!";
-				}
-			}
-
 			return Coordinate.Crossbearing(coord[0], angle[0], coord[1], angle[1]).FormatCoordinate();
 		}
 		catch (Exception ex)
 		{
-			return ex.getMessage();
+			return GlobalCore.Translations.Get("StdError", "$solverFuncCrossbearing", ex.getMessage(), coord[0].FormatCoordinate() + " -> "
+					+ coord[1].FormatCoordinate());
 		}
 	}
 

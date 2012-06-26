@@ -40,7 +40,7 @@ public class FunctionIQuerprodukt extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncICrossproduct");
 		}
 		String wert = parameter[0].trim();
 		while (wert.length() > 1)

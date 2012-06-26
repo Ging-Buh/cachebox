@@ -26,7 +26,7 @@ public class FunctionRot13 extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncRot13");
 		}
 		return GlobalCore.Rot13(parameter[0]);
 	}

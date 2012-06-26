@@ -28,23 +28,25 @@ public class FunctionDistance extends Function
 	{
 		if (parameter.length != 2)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "2");
+			return GlobalCore.Translations.Get("solverErrParamCount", "2", "$solverFuncDistance");
 		}
+		Coordinate[] coord = new Coordinate[2];
+		for (int i = 0; i < 2; i++)
+		{
+			coord[i] = new Coordinate(parameter[i]);
+			if (!coord[i].Valid) return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncDistance", String.valueOf(i + 1),
+					"$coordinate", "$coordinate", parameter[i]);
+		}
+		float[] dist = new float[2];
 		try
 		{
-			Coordinate[] coord = new Coordinate[2];
-			for (int i = 0; i < 2; i++)
-			{
-				coord[i] = new Coordinate(parameter[i]);
-				if (!coord[i].Valid) return "Parameter " + String.valueOf(i + 1) + " must be a Coordinate!";
-			}
-			float[] dist = new float[2];
 			Coordinate.distanceBetween(coord[0].Latitude, coord[0].Longitude, coord[1].Latitude, coord[1].Longitude, dist);
 			return String.valueOf(dist[0]);
 		}
 		catch (Exception ex)
 		{
-			return ex.getMessage();
+			return GlobalCore.Translations.Get("StdError", "$solverFuncDistance", ex.getMessage(), coord[0].FormatCoordinate() + " -> "
+					+ coord[1].FormatCoordinate());
 		}
 	}
 

@@ -24,7 +24,8 @@ public class FunctionPi extends Function
 	@Override
 	public String Calculate(String[] parameter)
 	{
-		if ((parameter.length != 1) || (parameter[0].trim() != "")) return GlobalCore.Translations.Get("solverErrParamCount", "0");
+		if ((parameter.length != 1) || (parameter[0].trim() != "")) return GlobalCore.Translations.Get("solverErrParamCount", "0",
+				"$solverFuncPi");
 		return String.valueOf(Math.PI);
 	}
 

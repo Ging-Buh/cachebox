@@ -29,12 +29,14 @@ public class FunctionProjection extends Function
 	{
 		if (parameter.length != 3)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "3");
+			String s = GlobalCore.Translations.Get("solverErrParamCount", "3", "$solverFuncProjection");
+			return s;
 		}
 		Coordinate coord = new Coordinate(parameter[0]);
 		if (!coord.Valid)
 		{
-			return "Parameter 1 (coord) must be a valid Coordinate!";
+			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncProjection", "1", "$coordinate", "$coordinate",
+					parameter[0]);
 		}
 		double distance;
 		double angle;
@@ -44,7 +46,7 @@ public class FunctionProjection extends Function
 		}
 		catch (Exception ex)
 		{
-			return "Parameter 2 (distance) must be number!";
+			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncProjection", "2", "$distance", "$number", parameter[1]);
 		}
 		try
 		{
@@ -52,12 +54,12 @@ public class FunctionProjection extends Function
 		}
 		catch (Exception ex)
 		{
-			return "Parameter 3 (angle) must be number!";
+			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncProjection", "3", "$angle", "$number", parameter[2]);
 		}
 
 		Coordinate result = Coordinate.Project(coord.Latitude, coord.Longitude, angle, distance);
-		if (!result.Valid) return "Error: Projection";
-
+		if (!result.Valid) return GlobalCore.Translations.Get("InvalidCoordinate", "$solverFuncProjection",
+				"Lat: " + String.valueOf(coord.Latitude) + ", Lon: " + String.valueOf(coord.Longitude));
 		return result.FormatCoordinate();
 	}
 

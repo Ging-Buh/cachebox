@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import CB_Core.GlobalCore;
 import CB_Core.Solver.Functions.FunctionCategories;
 
 public class Solver extends ArrayList<SolverZeile>
 {
 	private static final long serialVersionUID = 132452345624562L;
-	public static final String errorPrefix = "Error: ";
+	public static final String errorPrefix = GlobalCore.Translations.Get("solverErrorPrefix");
 	public static final String errorPostfix = "";
 
 	// Liste mit den Operatoren, werden in dieser Reihenfolge abgearbeitet (. vor -)...

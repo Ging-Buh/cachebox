@@ -488,6 +488,32 @@ English
 	internetError = Error accessing internet
 	errorAPI = Error during API access
 	chkState = Checking state
+	solverErrParamType = Error: function {1}/parameter {2} ({3}) is no valid {4}: [{5}]
+	CacheOrWaypointNotFound = Error: cache/waypoint [{1}] not found
+    // ALL error texts MUST begin with this prefix
+    solverErrorPrefix = Error:
+	number = number
+	angle = angle
+	InvalidCoordinate = Error: function {1}: Invalid coordinate: {2}
+	solverErrDiffCache = Error: Coordinate [{1}] for WP [{2}] belongs to cache [{3}]
+	LastSelectedCache = last selected cache
+	vibrateFeedback = vibrate feedback
+	LongClickTime = long click detection time
+	Skin = Skin
+	MapsforgeDayTheme = daylight theme
+	MapsforgeNightTheme = night theme
+	Solver v2 = Solver (v2)
+	waitForGL = wait for GL ...
+	Position = position
+	Count = count
+	PosGtLength = Error: function {1}: position [{2}] must be less than length of [{3}]
+	InvalidRomString = Error: string is no roman numeral [{1]}
+	value = value
+	StdError = Error: function {1}: {2} [{3}]
+	SolverErrPostfix =
+	InvalidVariableName = Error: invalid variable name: {1}
+	LeftMustBeAVariable = Error: Left of assignment must be a variable [{1}]
+	
 
 // Attributes
 	att_1_0 = dogs does not permit

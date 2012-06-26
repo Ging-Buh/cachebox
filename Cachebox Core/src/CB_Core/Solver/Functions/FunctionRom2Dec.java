@@ -26,7 +26,7 @@ public class FunctionRom2Dec extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncRom2Dec");
 		}
 		String wert = parameter[0].trim();
 		String ziffern = "IVXLCDM";
@@ -63,7 +63,7 @@ public class FunctionRom2Dec extends Function
 		}
 		catch (Exception ex)
 		{
-			return "Error";
+			return GlobalCore.Translations.Get("$InvalidRomString", parameter[0]);
 		}
 		return String.valueOf(result);
 	}

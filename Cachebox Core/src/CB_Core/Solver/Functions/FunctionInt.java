@@ -27,7 +27,7 @@ public class FunctionInt extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncInt");
 		}
 		double number = 0;
 		try
@@ -36,7 +36,7 @@ public class FunctionInt extends Function
 		}
 		catch (Exception ex)
 		{
-			return "Parameter must be a number!";
+			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncInt", "1", "$value", "$number", parameter[0]);
 		}
 		return String.valueOf((int) number);
 	}

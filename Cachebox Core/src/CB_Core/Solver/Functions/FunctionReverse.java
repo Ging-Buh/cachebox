@@ -26,7 +26,7 @@ public class FunctionReverse extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1");
+			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncReverse");
 		}
 		String result = "";
 		for (char c : parameter[0].toCharArray())

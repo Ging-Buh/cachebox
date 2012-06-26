@@ -27,7 +27,7 @@ public class FunctionMid extends Function
 	{
 		if ((parameter.length < 2) || (parameter.length > 3))
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "2-3");
+			return GlobalCore.Translations.Get("solverErrParamCount", "2-3", "$solverFuncMid");
 		}
 		String Wert = parameter[0].trim();
 		int iPos, iCount;
@@ -37,7 +37,7 @@ public class FunctionMid extends Function
 		}
 		catch (Exception ex)
 		{
-			return "Parameter 2 (Position) must be number!";
+			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncMid", "2", "$Position", "$number", parameter[1]);
 		}
 		try
 		{
@@ -47,11 +47,11 @@ public class FunctionMid extends Function
 		}
 		catch (Exception ex)
 		{
-			return "Parameter 3 (Count) must be number!";
+			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncMid", "5", "$count", "$number", parameter[2]);
 		}
 		if (iPos > Wert.length())
 		{
-			return "Position must be less than length of string";
+			return GlobalCore.Translations.Get("PosGtLength", "$solverFuncMid", String.valueOf(iPos), Wert);
 		}
 		return Wert.substring(iPos - 1, iPos - 1 + iCount);
 	}
