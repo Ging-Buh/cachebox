@@ -5,7 +5,7 @@ import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.libGdx_Controls.TextField;
+import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 
@@ -17,7 +17,7 @@ public class StringInputBox extends GL_MsgBox
 
 	}
 
-	public static TextField editText;
+	public static CB_TextField editText;
 
 	public static void Show(String msg, String title, String initialString, OnMsgBoxClickListener Listener)
 	{
@@ -32,7 +32,7 @@ public class StringInputBox extends GL_MsgBox
 
 		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
 
-		editText = new TextField(textFieldRec, "MsgBoxLabel");
+		editText = new CB_TextField(textFieldRec, "MsgBoxLabel");
 		editText.setZeroPos();
 		editText.setText(initialString);
 

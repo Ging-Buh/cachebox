@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 947;
+	public static final int CurrentRevision = 948;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -37,7 +37,7 @@ public class GlobalCore
 	public static double displayDensity = 1;
 	public static Plattform platform = Plattform.undef;
 
-	public static CB_Core.Types.Locator Locator = null;
+	public static CB_Core.Locator.Locator Locator = null;
 
 	public static RouteOverlay.Trackable AktuelleRoute = null;
 	public static int aktuelleRouteCount = 0;

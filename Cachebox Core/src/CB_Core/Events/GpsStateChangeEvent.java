@@ -1,4 +1,4 @@
-package de.cachebox_test.Events;
+package CB_Core.Events;
 
 public interface GpsStateChangeEvent 
 {

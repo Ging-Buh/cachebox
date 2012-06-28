@@ -6,6 +6,7 @@ import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
 import CB_Core.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
@@ -13,7 +14,8 @@ import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Spinner;
 import CB_Core.GL_UI.Controls.Spinner.selectionChangedListner;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.libGdx_Controls.TextField;
+import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
+import CB_Core.GL_UI.libGdx_Controls.CB_WrappedTextField;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.LangStrings;
@@ -22,6 +24,7 @@ import CB_Core.Types.Waypoint;
 
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.DefaultOnscreenKeyboard;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 
 public class EditWaypoint extends ActivityBase
 {
@@ -35,11 +38,13 @@ public class EditWaypoint extends ActivityBase
 	private Label tvCacheName = null;
 	private Label tvTyp = null;
 	private Label tvTitle = null;
-	private TextField etTitle = null;
+	private CB_TextField etTitle = null;
 	private Label tvDescription = null;
-	private TextField etDescription = null;
+	private CB_WrappedTextField etDescription = null;
 	private Label tvClue = null;
-	private TextField etClue = null;
+	private CB_WrappedTextField etClue = null;
+
+	private Box scrollBox;
 
 	public interface ReturnListner
 	{
@@ -51,6 +56,8 @@ public class EditWaypoint extends ActivityBase
 	public EditWaypoint(CB_RectF rec, String Name, Waypoint waypoint, ReturnListner listner)
 	{
 		super(rec, Name);
+		scrollBox = new Box(rec, Name);
+		this.addChild(scrollBox);
 		this.waypoint = waypoint;
 		this.mReturnListner = listner;
 		this.cancelWaypoint = waypoint.copy();
@@ -67,12 +74,32 @@ public class EditWaypoint extends ActivityBase
 		iniTitleTextClue();
 		iniOkCancel();
 		iniTextfieldFocus();
+
+		layoutTextFields();
+
+		this.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				for (CB_TextField tmp : allTextFields)
+				{
+					tmp.resetFocus();
+				}
+
+				keyboard.show(false);
+				scrollToY(that.getHeight(), that.getHeight());
+				return true;
+			}
+		});
+
 	}
 
 	@Override
 	protected void Initial()
 	{
-		GL_Listener.glListener.renderForTextField(etClue);
+		GL_Listener.glListener.renderForTextField(etTitle);
 	}
 
 	private void iniCacheNameLabel()
@@ -81,7 +108,7 @@ public class EditWaypoint extends ActivityBase
 				"CacheNameLabel");
 		tvCacheName.setFont(Fonts.getBubbleNormal());
 		tvCacheName.setText(GlobalCore.SelectedCache().Name);
-		this.addChild(tvCacheName);
+		scrollBox.addChild(tvCacheName);
 	}
 
 	private void iniCoordButton()
@@ -99,7 +126,7 @@ public class EditWaypoint extends ActivityBase
 			}
 		});
 
-		this.addChild(bCoord);
+		scrollBox.addChild(bCoord);
 	}
 
 	private void iniLabelTyp()
@@ -108,7 +135,7 @@ public class EditWaypoint extends ActivityBase
 				"TypeLabel");
 		tvTyp.setFont(Fonts.getBubbleNormal());
 		tvTyp.setText(GlobalCore.Translations.Get("type"));
-		this.addChild(tvTyp);
+		scrollBox.addChild(tvTyp);
 
 	}
 
@@ -170,7 +197,7 @@ public class EditWaypoint extends ActivityBase
 			break;
 		}
 
-		this.addChild(sType);
+		scrollBox.addChild(sType);
 	}
 
 	private String[] getWaypointTypes()
@@ -187,18 +214,18 @@ public class EditWaypoint extends ActivityBase
 				"TitleLabel");
 		tvTitle.setFont(Fonts.getBubbleNormal());
 		tvTitle.setText(GlobalCore.Translations.Get("Title"));
-		this.addChild(tvTitle);
+		scrollBox.addChild(tvTitle);
 	}
 
 	private void iniTitleTextField()
 	{
 		CB_RectF rec = new CB_RectF(Left, tvTitle.getY() - UiSizes.getButtonHeight(), width - Left - Right, UiSizes.getButtonHeight());
-		etTitle = new TextField(rec, "TitleTextField");
+		etTitle = new CB_TextField(rec, "TitleTextField");
 
 		String txt = (waypoint.Title == null) ? "" : waypoint.Title;
 
 		etTitle.setText(txt);
-		this.addChild(etTitle);
+		scrollBox.addChild(etTitle);
 	}
 
 	private void iniLabelDesc()
@@ -207,18 +234,29 @@ public class EditWaypoint extends ActivityBase
 				MesuredLabelHeight, "DescLabel");
 		tvDescription.setFont(Fonts.getBubbleNormal());
 		tvDescription.setText(GlobalCore.Translations.Get("Description"));
-		this.addChild(tvDescription);
+		scrollBox.addChild(tvDescription);
 	}
 
 	private void iniTitleTextDesc()
 	{
 		CB_RectF rec = new CB_RectF(Left, tvDescription.getY() - UiSizes.getButtonHeight(), width - Left - Right, UiSizes.getButtonHeight());
-		etDescription = new TextField(rec, "DescTextField");
+		etDescription = new CB_WrappedTextField(rec, "DescTextField");
 
 		String txt = (waypoint.Description == null) ? "" : waypoint.Description;
 
 		etDescription.setText(txt);
-		this.addChild(etDescription);
+
+		etDescription.setTextChangedListner(new TextFieldListener()
+		{
+
+			@Override
+			public void keyTyped(com.badlogic.gdx.scenes.scene2d.ui.TextField textField, char key)
+			{
+				layoutTextFields();
+			}
+		});
+
+		scrollBox.addChild(etDescription);
 	}
 
 	private void iniLabelClue()
@@ -227,18 +265,29 @@ public class EditWaypoint extends ActivityBase
 				MesuredLabelHeight, "ClueLabel");
 		tvClue.setFont(Fonts.getBubbleNormal());
 		tvClue.setText(GlobalCore.Translations.Get("Clue"));
-		this.addChild(tvClue);
+		scrollBox.addChild(tvClue);
 	}
 
 	private void iniTitleTextClue()
 	{
 		CB_RectF rec = new CB_RectF(Left, tvClue.getY() - UiSizes.getButtonHeight(), width - Left - Right, UiSizes.getButtonHeight());
-		etClue = new TextField(rec, "ClueTextField");
+		etClue = new CB_WrappedTextField(rec, "ClueTextField");
 
 		String txt = (waypoint.Clue == null) ? "" : waypoint.Clue;
 
 		etClue.setText(txt);
-		this.addChild(etClue);
+
+		etClue.setTextChangedListner(new TextFieldListener()
+		{
+
+			@Override
+			public void keyTyped(com.badlogic.gdx.scenes.scene2d.ui.TextField textField, char key)
+			{
+				layoutTextFields();
+			}
+		});
+
+		scrollBox.addChild(etClue);
 	}
 
 	private void iniOkCancel()
@@ -288,11 +337,11 @@ public class EditWaypoint extends ActivityBase
 		registerTextField(etClue);
 	}
 
-	private ArrayList<TextField> allTextFields = new ArrayList<TextField>();
+	private ArrayList<CB_TextField> allTextFields = new ArrayList<CB_TextField>();
 
 	private OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
-	public void registerTextField(final TextField textField)
+	public void registerTextField(final CB_TextField textField)
 	{
 		textField.setOnscreenKeyboard(new OnscreenKeyboard()
 		{
@@ -300,17 +349,51 @@ public class EditWaypoint extends ActivityBase
 			public void show(boolean arg0)
 			{
 
-				for (TextField tmp : allTextFields)
+				for (CB_TextField tmp : allTextFields)
 				{
 					tmp.resetFocus();
 				}
 
 				textField.setFocus(true);
 				keyboard.show(true);
+				scrollToY(textField.getY(), textField.getMaxY());
 			}
 		});
 
 		allTextFields.add(textField);
+	}
+
+	private void scrollToY(float y, float maxY)
+	{
+		if (y < this.halfHeight)// wird von softKeyboard verdeckt
+		{
+			scrollBox.setY(this.height - maxY - MesuredLabelHeight);
+		}
+		else
+		{
+			scrollBox.setY(0);
+		}
+	}
+
+	private void layoutTextFields()
+	{
+		float maxTextFieldHeight = this.height / 5;
+		float rand = etClue.getStyle().background.getBottomHeight() + etClue.getStyle().background.getTopHeight();
+		float descriptionHeight = Math.min(maxTextFieldHeight, etDescription.getmesuredHeight() + rand);
+		float clueHeight = Math.min(maxTextFieldHeight, etClue.getmesuredHeight() + rand);
+
+		descriptionHeight = Math.max(descriptionHeight, UiSizes.getButtonHeight());
+		clueHeight = Math.max(clueHeight, UiSizes.getButtonHeight());
+
+		etDescription.setHeight(descriptionHeight);
+		etClue.setHeight(clueHeight);
+
+		etDescription.setY(tvDescription.getY() - descriptionHeight);
+
+		tvClue.setY(etDescription.getY() - margin - MesuredLabelHeight);
+
+		etClue.setY(tvClue.getY() - clueHeight);
+
 	}
 
 }

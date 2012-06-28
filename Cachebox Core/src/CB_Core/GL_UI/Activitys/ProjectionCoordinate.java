@@ -10,7 +10,7 @@ import CB_Core.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.NumPad;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.libGdx_Controls.TextField;
+import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
@@ -20,13 +20,13 @@ public class ProjectionCoordinate extends ActivityBase
 	private Coordinate cancelCoord;
 	private Coordinate coord;
 	private Coordinate projCoord;
-	private TextField valueBearing = null;
+	private CB_TextField valueBearing = null;
 	private Label lblBearing = null;
 	private Label lblBearingUnit = null;
-	private TextField valueDistance = null;
+	private CB_TextField valueDistance = null;
 	private Label lblDistance = null;
 	private Label lblDistanceUnit = null;
-	private ReturnListner mReturnListner;
+
 	private Label Title = null;
 	private CoordinateButton bCoord = null;
 	private Button bOK = null;
@@ -34,6 +34,8 @@ public class ProjectionCoordinate extends ActivityBase
 	private Boolean radius = false;
 	private boolean ImperialUnits = false;
 	private NumPad numPad;
+
+	private ReturnListner mReturnListner;
 
 	public interface ReturnListner
 	{
@@ -109,7 +111,7 @@ public class ProjectionCoordinate extends ActivityBase
 		CB_RectF UnitRec = new CB_RectF(textFieldRec.getMaxX(), y, eWidth, ButtonHeight);
 
 		lblBearing = new Label(labelRec, "lblBearing");
-		valueBearing = new TextField(textFieldRec, "valueBearing");
+		valueBearing = new CB_TextField(textFieldRec, "valueBearing");
 		lblBearingUnit = new Label(UnitRec, "lblBearingEinheit");
 
 		labelRec.setY(lblBearing.getY() - ButtonHeight);
@@ -117,7 +119,7 @@ public class ProjectionCoordinate extends ActivityBase
 		UnitRec.setY(lblBearing.getY() - ButtonHeight);
 
 		lblDistance = new Label(labelRec, "lblBearing");
-		valueDistance = new TextField(textFieldRec, "valueBearing");
+		valueDistance = new CB_TextField(textFieldRec, "valueBearing");
 		lblDistanceUnit = new Label(UnitRec, "lblBearingEinheit");
 
 		lblBearing.setText(sBearing);

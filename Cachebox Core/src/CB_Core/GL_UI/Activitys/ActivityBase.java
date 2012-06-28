@@ -72,7 +72,9 @@ public class ActivityBase extends Dialog
 
 	public static CB_RectF ActivityRec()
 	{
-		return new CB_RectF(0, 0, UiSizes.getSmallestWidth(), UiSizes.getWindowHeight());
+		float w = Math.min(UiSizes.getSmallestWidth(), UiSizes.getWindowHeight() * 0.66f);
+
+		return new CB_RectF(0, 0, w, UiSizes.getWindowHeight());
 	}
 
 }

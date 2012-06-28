@@ -32,6 +32,7 @@ import CB_Core.GL_UI.Controls.ZoomScale;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
+import CB_Core.Locator.Locator;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
@@ -47,7 +48,6 @@ import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
-import CB_Core.Types.Locator;
 import CB_Core.Types.Waypoint;
 
 import com.badlogic.gdx.Gdx;

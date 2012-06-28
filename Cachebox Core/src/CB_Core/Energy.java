@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package de.cachebox_test;
+package CB_Core;
 
 import CB_Core.Log.Logger;
-import android.util.Log;
 
 /**
  * Contains the static queries of the state of CacheBox, for the decision whether a job being processed has to do. Thus delivers
@@ -78,13 +77,13 @@ public class Energy
 	public static void setSliderIsShown()
 	{
 		sliderIsShown = true;
-		Log.d("CACHEBOX", "SliderIsShown = True");
+
 	}
 
 	public static void resetSliderIsShown()
 	{
 		sliderIsShown = false;
-		Log.d("CACHEBOX", "SliderIsShown = False");
+
 	}
 
 	// ##############################
@@ -102,12 +101,12 @@ public class Energy
 	public static void setAboutIsShown()
 	{
 		aboutIsShown = true;
-		Log.d("CACHEBOX", "AboutIsShown = True");
+
 	}
 
 	public static void resetAboutIsShown()
 	{
 		aboutIsShown = false;
-		Log.d("CACHEBOX", "AboutIsShown = False");
+
 	}
 }

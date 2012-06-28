@@ -1,6 +1,6 @@
 package CB_Core.Events;
 
-import CB_Core.Types.Locator;
+import CB_Core.Locator.Locator;
 
 public interface PositionChangedEvent
 {

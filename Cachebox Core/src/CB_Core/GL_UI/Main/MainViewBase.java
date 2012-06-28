@@ -8,8 +8,8 @@ import CB_Core.Events.PositionChangedEventList;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCompassView;
+import CB_Core.Locator.Locator;
 import CB_Core.Log.Logger;
-import CB_Core.Types.Locator;
 
 public class MainViewBase extends CB_View_Base implements PositionChangedEvent
 {

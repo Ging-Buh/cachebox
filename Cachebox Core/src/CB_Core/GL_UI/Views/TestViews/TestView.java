@@ -9,13 +9,14 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.EditWaypoint;
 import CB_Core.GL_UI.Activitys.EditWaypoint.ReturnListner;
+import CB_Core.GL_UI.Activitys.MesureCoordinate;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
-import CB_Core.GL_UI.Controls.Dialogs.SolverDialog;
 import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.libGdx_Controls.CB_WrappedTextField;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
@@ -23,7 +24,6 @@ import CB_Core.Types.Waypoint;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -34,11 +34,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  */
 public class TestView extends CB_View_Base
 {
-	private Button TestButton;
-	private SolverDialog solverDialog;
 
-	private CB_Core.GL_UI.libGdx_Controls.TextField textField;
-	private CB_Core.GL_UI.libGdx_Controls.WrappedTextField wrappedTextField;
+	private CB_Core.GL_UI.libGdx_Controls.CB_TextField textField;
+	private CB_Core.GL_UI.libGdx_Controls.CB_WrappedTextField wrappedTextField;
 
 	public static final String br = "¶" + System.getProperty("line.separator");
 
@@ -47,10 +45,9 @@ public class TestView extends CB_View_Base
 
 	public static final String FONT_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789][_!$%#@|\\/?-+=()*&.;,{}\"´`'<>";
 
-	private int fontsize = 18;
-
 	Button btn1;
 	Button btn2;
+	Button btn3;
 	WaitDialog wd;
 
 	public TestView(CB_RectF rec, String Name)
@@ -61,21 +58,29 @@ public class TestView extends CB_View_Base
 
 		setBackground(SpriteCache.ListBack);
 
-		bf = new BitmapFontCache(Fonts.getBig());
-		bf.setText("BF Test", 10, 300);
+		CB_RectF TextFieldRec = new CB_RectF(0, 150, UiSizes.getButtonWidth() * 6, UiSizes.getButtonHeight() * 3);
+
+		wrappedTextField = new CB_WrappedTextField(TextFieldRec, "");
+		wrappedTextField.setText(splashMsg);
+		// wrappedTextField.setText("");
+
+		this.addChild(wrappedTextField);
 
 		// ####################################################
 
-		CB_RectF btnRec = new CB_RectF(0, 200, UiSizes.getButtonWidth() * 2, UiSizes.getButtonHeight());
+		CB_RectF btnRec = new CB_RectF(0, 450, UiSizes.getButtonWidth() * 2, UiSizes.getButtonHeight());
 
 		btn1 = new Button(btnRec, "");
 		btn2 = new Button(btnRec, "");
+		btn3 = new Button(btnRec, "");
 
 		btn1.setX(20);
 		btn2.setX(btn1.getMaxX());
+		btn3.setX(btn2.getMaxX());
 
 		this.addChild(btn1);
 		this.addChild(btn2);
+		this.addChild(btn3);
 
 		btn1.setOnClickListener(new OnClickListener()
 		{
@@ -134,12 +139,35 @@ public class TestView extends CB_View_Base
 			}
 		});
 
+		btn3.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				MesureCoordinate mC = new MesureCoordinate(ActivityBase.ActivityRec(), "Projection", new MesureCoordinate.ReturnListner()
+				{
+
+					@Override
+					public void returnCoord(Coordinate coord)
+					{
+						// TODO Auto-generated method stub
+
+					}
+				});
+
+				mC.show();
+				return true;
+			}
+		});
+
 		requestLayout();
 
 		// Coord edit
 
 		Coordinate pos = new Coordinate("N 52 27.354  E 13 30.690");
-		CoordinateButton cBtn = new CoordinateButton(new CB_RectF(50, 120, this.width - 100, 65), "CoordButton", pos);
+		CoordinateButton cBtn = new CoordinateButton(new CB_RectF(50, wrappedTextField.getMaxY() + 25, this.width - 100, 65),
+				"CoordButton", pos);
 		this.addChild(cBtn);
 
 	}
@@ -155,16 +183,10 @@ public class TestView extends CB_View_Base
 		}
 	};
 
-	BitmapFontCache bf;
-	BitmapFontCache ttf;
-
 	@Override
 	protected void render(SpriteBatch batch)
 	{
 		// drawHausVomNikolaus(batch);
-
-		if (bf != null) bf.draw(batch);
-		if (ttf != null) ttf.draw(batch);
 
 		renderDebugInfo(batch);
 	}

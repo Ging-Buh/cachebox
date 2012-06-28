@@ -81,6 +81,9 @@ public class SpriteCache
 	private static void setPath(String path)
 	{
 
+		Gdx.gl11.glFlush();
+		Gdx.gl11.glFinish();
+
 		atlasDefaultIsNeverUsed = true;
 		atlasDefaultNightIsNeverUsed = true;
 		atlasCostumIsNeverUsed = true;
@@ -131,9 +134,12 @@ public class SpriteCache
 
 		if (FileIO.FileExists(PathDefault)) atlasDefault = new TextureAtlas(Gdx.files.absolute(PathDefault));
 		if (FileIO.FileExists(PathDefaultNight)) atlasDefaultNight = new TextureAtlas(Gdx.files.absolute(PathDefaultNight));
-		if (FileIO.FileExists(PathCostum)) atlasCostum = new TextureAtlas(Gdx.files.absolute(PathCostum));
-		if (FileIO.FileExists(PathCostumNight)) atlasCostumtNight = new TextureAtlas(Gdx.files.absolute(PathCostumNight));
 
+		if (!PathDefault.equals(PathCostum))
+		{
+			if (FileIO.FileExists(PathCostum)) atlasCostum = new TextureAtlas(Gdx.files.absolute(PathCostum));
+			if (FileIO.FileExists(PathCostumNight)) atlasCostumtNight = new TextureAtlas(Gdx.files.absolute(PathCostumNight));
+		}
 	}
 
 	public static Sprite getThemedSprite(String name)
@@ -535,11 +541,11 @@ public class SpriteCache
 		ZoomBtn = null;
 		ZoomValueBack = null;
 
-		CacheList.dispose();
-		Cache.dispose();
-		Nav.dispose();
-		Tool.dispose();
-		Misc.dispose();
+		if (CacheList != null) CacheList.dispose();
+		if (Cache != null) Cache.dispose();
+		if (Nav != null) Nav.dispose();
+		if (Tool != null) Tool.dispose();
+		if (Misc != null) Misc.dispose();
 
 		CacheList = null;
 		Cache = null;
@@ -547,6 +553,30 @@ public class SpriteCache
 		Tool = null;
 		Misc = null;
 		QuickButton = null;
+
+		if (atlasDefault != null)
+		{
+			atlasDefault.dispose();
+			atlasDefault = null;
+		}
+
+		if (atlasDefaultNight != null)
+		{
+			atlasDefaultNight.dispose();
+			atlasDefaultNight = null;
+		}
+
+		if (atlasCostum != null)
+		{
+			atlasCostum.dispose();
+			atlasCostum = null;
+		}
+
+		if (atlasCostumtNight != null)
+		{
+			atlasCostumtNight.dispose();
+			atlasCostumtNight = null;
+		}
 	}
 
 	private static void cleanUp()

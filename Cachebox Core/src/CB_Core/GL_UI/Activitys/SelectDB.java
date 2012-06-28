@@ -353,6 +353,12 @@ public class SelectDB extends ActivityBase
 		finish();
 	}
 
+	@Override
+	protected void finish()
+	{
+		GL_Listener.glListener.closeDialog(!MusstSelect);
+	}
+
 	private void setAutoStartText()
 	{
 		if (autoStartTime < 0) bAutostart.setText(GlobalCore.Translations.Get("AutoStart") + " "

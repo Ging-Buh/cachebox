@@ -1,8 +1,11 @@
 package de.cachebox_test.Views;
 
 import CB_Core.Config;
+import CB_Core.Energy;
 import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Events.GpsStateChangeEvent;
+import CB_Core.Events.GpsStateChangeEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -30,12 +33,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import de.cachebox_test.Energy;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
-import de.cachebox_test.Events.GpsStateChangeEvent;
-import de.cachebox_test.Events.GpsStateChangeEventList;
 import de.cachebox_test.Events.PositionEvent;
 import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Events.ViewOptionsMenu;

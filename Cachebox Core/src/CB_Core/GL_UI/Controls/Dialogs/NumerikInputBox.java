@@ -6,7 +6,7 @@ import CB_Core.GL_UI.Controls.NumPad;
 import CB_Core.GL_UI.Controls.NumPad.keyEventListner;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.libGdx_Controls.TextField;
+import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 
@@ -20,7 +20,7 @@ public class NumerikInputBox extends GL_MsgBox
 		super(size, name);
 	}
 
-	public static TextField editText;
+	public static CB_TextField editText;
 	public static returnValueListner mReturnListner;
 
 	public static void Show(String msg, String title, int initialValue, returnValueListner Listner)
@@ -37,7 +37,7 @@ public class NumerikInputBox extends GL_MsgBox
 
 		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
 
-		editText = new TextField(textFieldRec, "MsgBoxLabel");
+		editText = new CB_TextField(textFieldRec, "MsgBoxLabel");
 		editText.setZeroPos();
 		editText.setY(margin);
 		editText.setText(String.valueOf(initialValue));

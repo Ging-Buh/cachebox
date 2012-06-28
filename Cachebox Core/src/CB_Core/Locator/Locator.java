@@ -1,7 +1,8 @@
-package CB_Core.Types;
+package CB_Core.Locator;
 
 import CB_Core.Config;
 import CB_Core.UnitFormatter;
+import CB_Core.Types.Coordinate;
 
 public class Locator
 {

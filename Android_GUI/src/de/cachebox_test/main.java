@@ -21,6 +21,7 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 
 import CB_Core.Config;
+import CB_Core.Energy;
 import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
@@ -36,6 +37,8 @@ import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.GpsStateChangeEvent;
+import CB_Core.Events.GpsStateChangeEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.invalidateTextureEventList;
@@ -44,6 +47,7 @@ import CB_Core.Events.platformConector.IShowViewListner;
 import CB_Core.Events.platformConector.trackListListner;
 import CB_Core.GL_UI.MenuID;
 import CB_Core.GL_UI.MenuItemConst;
+import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.ViewID.UI_Pos;
@@ -54,6 +58,7 @@ import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.GL_Listener.GL_Listener.renderStartet;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
 import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.Locator.Locator;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
@@ -68,7 +73,6 @@ import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.ImageEntry;
-import CB_Core.Types.Locator;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import android.app.Dialog;
@@ -96,6 +100,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Criteria;
+import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
@@ -156,8 +161,6 @@ import de.cachebox_test.Custom_Controls.downSlider;
 import de.cachebox_test.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
 import de.cachebox_test.Custom_Controls.QuickButtonList.HorizontalListView;
 import de.cachebox_test.DB.AndroidDB;
-import de.cachebox_test.Events.GpsStateChangeEvent;
-import de.cachebox_test.Events.GpsStateChangeEventList;
 import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Locator.GPS;
@@ -1319,6 +1322,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				Database.Data.Close();
 				Database.FieldNotes.Close();
+
+				SpriteCache.destroyCache();
 
 				Database.Settings.Close();
 				super.onDestroy();
@@ -3517,6 +3522,29 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			public void vibrate()
 			{
 				main.vibrate();
+			}
+
+			@Override
+			public CB_Core.Locator.GpsStatus getGpsStatus()
+			{
+				GpsStatus status = null;
+				locationManager.getGpsStatus(status);
+
+				CB_Core.Locator.GpsStatus coreStatus = new CB_Core.Locator.GpsStatus();
+
+				int index = 0;
+				if (status == null) return null;
+				for (GpsSatellite sat : status.getSatellites())
+				{
+					CB_Core.Locator.GpsSatellite coreSat = new CB_Core.Locator.GpsSatellite(sat.getPrn());
+					coreSat.setSnr(sat.getSnr());
+					coreSat.setElevation(sat.getElevation());
+					coreSat.setAzimuth(sat.getAzimuth());
+					coreStatus.setSatelite(index, coreSat);
+					index++;
+				}
+
+				return coreStatus;
 			}
 		});
 

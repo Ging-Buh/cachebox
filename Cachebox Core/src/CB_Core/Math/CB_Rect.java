@@ -313,4 +313,14 @@ public class CB_Rect
 		return new CB_RectF(Pos.x, Pos.y, width, height);
 	}
 
+	public int getMaxX()
+	{
+		return this.crossPos.x;
+	}
+
+	public int getMaxY()
+	{
+		return this.crossPos.y;
+	}
+
 }

@@ -14,7 +14,7 @@ import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.NumPad;
 import CB_Core.GL_UI.Controls.NumPad.keyEventListner;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.libGdx_Controls.TextField;
+import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
@@ -44,37 +44,37 @@ public class EditCoord extends ActivityBase
 
 	// Deg
 	private Button bDLat;
-	private TextField tbDLat;
+	private CB_TextField tbDLat;
 	private Button bDLon;
-	private TextField tbDLon;
+	private CB_TextField tbDLon;
 
 	// Deg - Min
-	private TextField tbMLatDeg;
-	private TextField tbMLatMin;
+	private CB_TextField tbMLatDeg;
+	private CB_TextField tbMLatMin;
 
 	// Button bMLon;
-	private TextField tbMLonDeg;
-	private TextField tbMLonMin;
+	private CB_TextField tbMLonDeg;
+	private CB_TextField tbMLonMin;
 	// Deg - Min - Sec
 
-	private TextField tbSLatDeg;
-	private TextField tbSLatMin;
-	private TextField tbSLatSec;
+	private CB_TextField tbSLatDeg;
+	private CB_TextField tbSLatMin;
+	private CB_TextField tbSLatSec;
 
-	private TextField tbSLonDeg;
-	private TextField tbSLonMin;
-	private TextField tbSLonSec;
+	private CB_TextField tbSLonDeg;
+	private CB_TextField tbSLonMin;
+	private CB_TextField tbSLonSec;
 	// Utm
-	private TextField tbUX;
-	private TextField tbUY;
-	private TextField tbUZone;
+	private CB_TextField tbUX;
+	private CB_TextField tbUY;
+	private CB_TextField tbUZone;
 	private Label lUtmO;
 	private Label lUtmN;
 	private Label lUtmZ;
 
 	private NumPad numPad;
 
-	private TextField focusedTextField = null;
+	private CB_TextField focusedTextField = null;
 
 	public interface ReturnListner
 	{
@@ -318,17 +318,17 @@ public class EditCoord extends ActivityBase
 		CB_RectF editRec = new CB_RectF(0, 0, (trMin.getWidth() - (margin * 3)), UiSizes.getButtonHeight());
 		editRec.setWidth(editRec.getWidth() - (margin * 2));
 
-		tbUZone = new TextField(editRec, "tbUZone");
+		tbUZone = new CB_TextField(editRec, "tbUZone");
 		setKeyboardHandling(tbUZone);
 
 		editRec.setY(tbUZone.getMaxY());
 
-		tbUY = new TextField(editRec, "tbUY");
+		tbUY = new CB_TextField(editRec, "tbUY");
 		setKeyboardHandling(tbUY);
 
 		editRec.setY(tbUY.getMaxY());
 
-		tbUX = new TextField(editRec, "tbUX");
+		tbUX = new CB_TextField(editRec, "tbUX");
 		setKeyboardHandling(tbUX);
 
 		trUtm.addChild(tbUX);
@@ -343,7 +343,7 @@ public class EditCoord extends ActivityBase
 
 		CB_RectF labelRec = new CB_RectF(new SizeF(margin, UiSizes.getButtonHeight()));
 
-		tbSLonDeg = new TextField(editRec, "tbSLonDeg");
+		tbSLonDeg = new CB_TextField(editRec, "tbSLonDeg");
 		setKeyboardHandling(tbSLonDeg);
 
 		labelRec.setX(tbSLonDeg.getMaxX());
@@ -352,7 +352,7 @@ public class EditCoord extends ActivityBase
 		trSec.addChild(l1);
 
 		editRec.setX(l1.getMaxX() + margin);
-		tbSLonMin = new TextField(editRec, "tbSLonMin");
+		tbSLonMin = new CB_TextField(editRec, "tbSLonMin");
 		setKeyboardHandling(tbSLonMin);
 
 		labelRec.setX(tbSLonMin.getMaxX());
@@ -361,7 +361,7 @@ public class EditCoord extends ActivityBase
 		trSec.addChild(l3);
 
 		editRec.setX(l3.getMaxX() + margin);
-		tbSLonSec = new TextField(editRec, "tbSLonSec");
+		tbSLonSec = new CB_TextField(editRec, "tbSLonSec");
 		setKeyboardHandling(tbSLonSec);
 
 		labelRec.setX(tbSLonSec.getMaxX());
@@ -372,7 +372,7 @@ public class EditCoord extends ActivityBase
 		editRec.setX(tbSLonDeg.getX());
 		editRec.setY(tbSLonDeg.getMaxY());
 
-		tbSLatDeg = new TextField(editRec, "tbSLatDeg");
+		tbSLatDeg = new CB_TextField(editRec, "tbSLatDeg");
 		setKeyboardHandling(tbSLatDeg);
 
 		labelRec.setX(tbSLonDeg.getMaxX());
@@ -382,7 +382,7 @@ public class EditCoord extends ActivityBase
 		trSec.addChild(l2);
 
 		editRec.setX(l2.getMaxX() + margin);
-		tbSLatMin = new TextField(editRec, "tbSLatMin");
+		tbSLatMin = new CB_TextField(editRec, "tbSLatMin");
 		setKeyboardHandling(tbSLatMin);
 
 		labelRec.setX(tbSLatMin.getMaxX());
@@ -391,7 +391,7 @@ public class EditCoord extends ActivityBase
 		trSec.addChild(l4);
 
 		editRec.setX(l4.getMaxX() + margin);
-		tbSLatSec = new TextField(editRec, "tbSLatSec");
+		tbSLatSec = new CB_TextField(editRec, "tbSLatSec");
 		setKeyboardHandling(tbSLatSec);
 
 		labelRec.setX(tbSLatSec.getMaxX());
@@ -415,7 +415,7 @@ public class EditCoord extends ActivityBase
 
 		CB_RectF labelRec = new CB_RectF(new SizeF(margin, UiSizes.getButtonHeight()));
 
-		tbDLon = new TextField(editRec, "tbDLon");
+		tbDLon = new CB_TextField(editRec, "tbDLon");
 		setKeyboardHandling(tbDLon);
 
 		labelRec.setX(tbDLon.getMaxX());
@@ -425,7 +425,7 @@ public class EditCoord extends ActivityBase
 
 		editRec.setY(tbDLon.getMaxY());
 
-		tbDLat = new TextField(editRec, "tbDLat");
+		tbDLat = new CB_TextField(editRec, "tbDLat");
 		setKeyboardHandling(tbDLat);
 
 		labelRec.setX(tbDLon.getMaxX());
@@ -445,7 +445,7 @@ public class EditCoord extends ActivityBase
 
 		CB_RectF labelRec = new CB_RectF(new SizeF(margin, UiSizes.getButtonHeight()));
 
-		tbMLonDeg = new TextField(editRec, "tbMLonDeg");
+		tbMLonDeg = new CB_TextField(editRec, "tbMLonDeg");
 		setKeyboardHandling(tbMLonDeg);
 
 		labelRec.setX(tbMLonDeg.getMaxX());
@@ -454,7 +454,7 @@ public class EditCoord extends ActivityBase
 		trMin.addChild(l1);
 
 		editRec.setX(l1.getMaxX() + margin);
-		tbMLonMin = new TextField(editRec, "tbMLonMin");
+		tbMLonMin = new CB_TextField(editRec, "tbMLonMin");
 		setKeyboardHandling(tbMLonMin);
 
 		labelRec.setX(tbMLonMin.getMaxX());
@@ -464,7 +464,7 @@ public class EditCoord extends ActivityBase
 
 		editRec.setX(tbMLonDeg.getX());
 		editRec.setY(tbMLonDeg.getMaxY());
-		tbMLatDeg = new TextField(editRec, "tbMLatDeg");
+		tbMLatDeg = new CB_TextField(editRec, "tbMLatDeg");
 		setKeyboardHandling(tbMLatDeg);
 
 		labelRec.setX(tbMLatDeg.getMaxX());
@@ -474,7 +474,7 @@ public class EditCoord extends ActivityBase
 		trMin.addChild(l2);
 
 		editRec.setX(l2.getMaxX() + margin);
-		tbMLatMin = new TextField(editRec, "tbMLatMin");
+		tbMLatMin = new CB_TextField(editRec, "tbMLatMin");
 		setKeyboardHandling(tbMLatMin);
 
 		labelRec.setX(tbMLatMin.getMaxX());
@@ -488,9 +488,9 @@ public class EditCoord extends ActivityBase
 		trMin.addChild(tbMLonMin);
 	}
 
-	private ArrayList<TextField> allTextFields = new ArrayList<TextField>();
+	private ArrayList<CB_TextField> allTextFields = new ArrayList<CB_TextField>();
 
-	private void setKeyboardHandling(final TextField textField)
+	private void setKeyboardHandling(final CB_TextField textField)
 	{
 		textField.setOnscreenKeyboard(new OnscreenKeyboard()
 		{
@@ -499,7 +499,7 @@ public class EditCoord extends ActivityBase
 			{
 				boolean showKeayboard = false;
 
-				for (TextField tmp : allTextFields)
+				for (CB_TextField tmp : allTextFields)
 				{
 					tmp.resetFocus();
 				}

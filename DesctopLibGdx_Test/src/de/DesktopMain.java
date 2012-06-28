@@ -17,6 +17,8 @@ import CB_Core.Events.PositionChangedEventList;
 import CB_Core.Events.platformConector;
 import CB_Core.Events.platformConector.IHardwarStateListner;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.Locator.GpsStatus;
+import CB_Core.Locator.Locator;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.Layer;
@@ -26,7 +28,6 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Coordinate;
-import CB_Core.Types.Locator;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ViewConst;
 
@@ -111,6 +112,12 @@ public class DesktopMain {
 			public void vibrate() {
 				// TODO Auto-generated method stub
 				
+			}
+
+			@Override
+			public GpsStatus getGpsStatus() {
+				// TODO Auto-generated method stub
+				return null;
 			}
 		});
 		

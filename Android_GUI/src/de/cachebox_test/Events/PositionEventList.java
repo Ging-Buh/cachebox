@@ -3,14 +3,14 @@ package de.cachebox_test.Events;
 import java.util.ArrayList;
 
 import CB_Core.Config;
+import CB_Core.Energy;
 import CB_Core.GlobalCore;
+import CB_Core.Locator.Locator;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Coordinate;
-import CB_Core.Types.Locator;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.SystemClock;
-import de.cachebox_test.Energy;
 
 public class PositionEventList
 {
@@ -61,7 +61,7 @@ public class PositionEventList
 		}
 
 		// Call Core Event
-		CB_Core.Types.Locator locator = new Locator();
+		CB_Core.Locator.Locator locator = new Locator();
 
 		locator.setLocation(location.getLatitude(), location.getLongitude(), location.getAccuracy(), location.hasSpeed(),
 				location.getSpeed(), location.hasBearing(), location.getBearing(), location.getAltitude(), location.getProvider());

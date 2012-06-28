@@ -9,11 +9,11 @@ import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.CacheInfo;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
+import CB_Core.Locator.Locator;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
-import CB_Core.Types.Locator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

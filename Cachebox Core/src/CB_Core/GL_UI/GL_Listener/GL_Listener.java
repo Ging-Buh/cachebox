@@ -20,8 +20,8 @@ import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
 import CB_Core.GL_UI.libGdx_Controls.LibGdx_Host_Control;
-import CB_Core.GL_UI.libGdx_Controls.TextField;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
@@ -405,7 +405,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		}
 		renderViews.put(view, delay);
 		calcNewRenderSpeed();
-		// Logger.LogCat("addRenderView " + view.getName() + "/" + delay + " /registrierte RenderViews" + renderViews.size());
+		if (listenerInterface != null) listenerInterface.RequestRender("");
 	}
 
 	public void removeRenderView(GL_View_Base view)
@@ -418,7 +418,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		}
 	}
 
-	public void renderForTextField(TextField textField)
+	public void renderForTextField(CB_TextField textField)
 	{
 		addRenderView(textField, FRAME_RATE_TEXT_FIELD);
 	}
@@ -901,9 +901,14 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public void closeDialog()
 	{
+		closeDialog(true);
+	}
+
+	public void closeDialog(boolean MsgToPlatformConector)
+	{
 		if (!DialogIsShown) return;
 
-		platformConector.hideForDialog();
+		if (MsgToPlatformConector) platformConector.hideForDialog();
 		actDialog = null;
 		mDialog.removeChildsDirekt();
 		child.setClickable(true);
@@ -963,6 +968,11 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	}
 
 	private CB_Core.GL_UI.Controls.Dialogs.Toast toast;
+
+	public void Toast(String string)
+	{
+		Toast(string, 2000);
+	}
 
 	public void Toast(String string, int length)
 	{

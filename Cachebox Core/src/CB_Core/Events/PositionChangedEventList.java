@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.Locator.Locator;
 import CB_Core.Log.Logger;
-import CB_Core.Types.Locator;
 
 public class PositionChangedEventList
 {

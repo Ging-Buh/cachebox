@@ -297,6 +297,8 @@ public class ZoomButtons extends CB_View_Base
 		return minzoom;
 	}
 
+	boolean virtualVisible = false;
+
 	/**
 	 * Irgend eine Taste gedrückt, also FadeOut zurück setzen
 	 */
@@ -308,10 +310,11 @@ public class ZoomButtons extends CB_View_Base
 			fadeIn = false;
 			FadeValue = 1.0f;
 		}
-		else if (!this.isVisible())
+		else if (!virtualVisible)
 		{
 			// Log.d("CACHEBOX", "Start Fade In");
 			this.setVisibility(VISIBLE);
+			virtualVisible = true;
 			fadeIn = true;
 			FadeValue = 0f;
 		}
@@ -378,7 +381,8 @@ public class ZoomButtons extends CB_View_Base
 					// Log.d("CACHEBOX", "Ende Fade Out");
 					FadeValue = 0f;
 					fadeOut = false;
-					this.setVisibility(INVISIBLE);
+					// this.setVisibility(INVISIBLE);
+					virtualVisible = false;
 					GL_Listener.glListener.removeRenderView(this);
 				}
 				timeLastAction = new Date();

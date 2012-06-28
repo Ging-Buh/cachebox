@@ -6,7 +6,7 @@ import CB_Core.GlobalCore;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
-import CB_Core.GL_UI.libGdx_Controls.TextField;
+import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
@@ -280,10 +280,10 @@ public class NumPad extends CB_View_Base
 
 	// ######## Register TextFields
 
-	private ArrayList<TextField> allTextFields = new ArrayList<TextField>();
-	private TextField focusedTextField = null;
+	private ArrayList<CB_TextField> allTextFields = new ArrayList<CB_TextField>();
+	private CB_TextField focusedTextField = null;
 
-	public void registerTextField(final TextField textField)
+	public void registerTextField(final CB_TextField textField)
 	{
 		textField.setOnscreenKeyboard(new OnscreenKeyboard()
 		{
@@ -291,7 +291,7 @@ public class NumPad extends CB_View_Base
 			public void show(boolean arg0)
 			{
 
-				for (TextField tmp : allTextFields)
+				for (CB_TextField tmp : allTextFields)
 				{
 					tmp.resetFocus();
 				}

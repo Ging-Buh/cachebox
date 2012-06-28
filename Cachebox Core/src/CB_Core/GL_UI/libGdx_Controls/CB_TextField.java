@@ -9,15 +9,48 @@ import CB_Core.Math.UiSizes;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 
-public class TextField extends LibGdx_Host_Control
+public class CB_TextField extends LibGdx_Host_Control
 {
 
 	private com.badlogic.gdx.scenes.scene2d.ui.TextField mTextField;
 	private CopiePastePopUp popUp;
 
-	private TextField that;
+	private CB_TextField that;
 
-	public TextField(CB_RectF rec, String Name)
+	public CB_TextField(CB_RectF rec, CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField wrappedTextField, String Name)
+	{
+		super(rec, new CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField(Style.getTextFieldStyle()), Name);
+		that = this;
+
+		this.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// Handle ClickEvent for vibrate feedback
+				return true;
+			}
+		});
+
+		mTextField = (com.badlogic.gdx.scenes.scene2d.ui.TextField) getActor();
+		mTextField.setClipboard(GlobalCore.getDefaultClipboard());
+		this.setClickable(true);
+
+		this.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				showPopUp(x, y);
+				return true;
+			}
+		});
+
+	}
+
+	public CB_TextField(CB_RectF rec, String Name)
 	{
 
 		super(rec, new com.badlogic.gdx.scenes.scene2d.ui.TextField(Style.getTextFieldStyle()), Name);
@@ -176,12 +209,14 @@ public class TextField extends LibGdx_Host_Control
 	public void setFocus(boolean value)
 	{
 		hasFocus = value;
+		if (value == true) if (mTextField.getStage() != null) mTextField.getStage().setKeyboardFocus(mTextField);
 		setTextFieldStyle();
 	}
 
 	public void resetFocus()
 	{
 		hasFocus = false;
+		if (mTextField.getStage() != null) mTextField.getStage().setKeyboardFocus(null);
 		setTextFieldStyle();
 	}
 
@@ -195,5 +230,12 @@ public class TextField extends LibGdx_Host_Control
 		{
 			mTextField.setStyle(Style.getTextFieldStyleFocus());
 		}
+	}
+
+	@Override
+	public void resize(float width, float height)
+	{
+		mTextField.height = height;
+		mTextField.width = width;
 	}
 }

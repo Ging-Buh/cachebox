@@ -3,6 +3,7 @@ package CB_Core.Events;
 import CB_Core.GL_UI.MenuID;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.Locator.GpsStatus;
 
 public class platformConector
 {
@@ -98,6 +99,8 @@ public class platformConector
 		boolean isGPSon();
 
 		void vibrate();
+
+		GpsStatus getGpsStatus();
 	}
 
 	private static IHardwarStateListner hardwareListner;
@@ -134,6 +137,16 @@ public class platformConector
 		}
 
 		return false;
+	}
+
+	public static GpsStatus getGpsStatus()
+	{
+		if (hardwareListner != null)
+		{
+			return hardwareListner.getGpsStatus();
+		}
+
+		return null;
 	}
 
 	private static KeyEventListner mKeyListner;

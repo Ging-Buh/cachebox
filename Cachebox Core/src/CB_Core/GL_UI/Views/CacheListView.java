@@ -18,11 +18,11 @@ import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Menu.CB_AllContextMenuHandler;
+import CB_Core.Locator.Locator;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
-import CB_Core.Types.Locator;
 import CB_Core.Types.Waypoint;
 
 public class CacheListView extends V_ListView implements CacheListChangedEventListner, SelectedCacheEvent, PositionChangedEvent

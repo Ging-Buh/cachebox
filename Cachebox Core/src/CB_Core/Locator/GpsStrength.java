@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package de.cachebox_test.Locator;
+package CB_Core.Locator;
 
-import CB_Core.Types.Cache;
 
 /**
  * Structur für die Signal Stärken der Satteliten
+ * 
  * @author Longri
- *
  */
 public class GpsStrength implements Comparable<GpsStrength>
 {
 	/**
 	 * Constructor
+	 * 
 	 * @param fixed
 	 * @param value
 	 */
@@ -35,50 +35,56 @@ public class GpsStrength implements Comparable<GpsStrength>
 		mFixed = fixed;
 		mSnr = value;
 	}
-	
+
 	private boolean mFixed = false;
 	private float mSnr = 0.0f;
-	
+
 	/**
 	 * Gibt zurück ob der Sattelit ein Fix hat
+	 * 
 	 * @return boolean
 	 */
-	public boolean getFixed(){return mFixed;}
-	
+	public boolean getFixed()
+	{
+		return mFixed;
+	}
+
 	/**
 	 * Gibt die Signal Stärke des Sateliten zurück
+	 * 
 	 * @return float
 	 */
-	public float getStrength(){return mSnr;}
-	
-	
+	public float getStrength()
+	{
+		return mSnr;
+	}
+
 	@Override
-	 public int compareTo(GpsStrength c2) 
-	 {
-		int ret=0;
-		
-		if(this.mFixed==c2.mFixed)
+	public int compareTo(GpsStrength c2)
+	{
+		int ret = 0;
+
+		if (this.mFixed == c2.mFixed)
 		{
-			if(this.mSnr>c2.mSnr)
+			if (this.mSnr > c2.mSnr)
 			{
-				ret=-1;
+				ret = -1;
 			}
-			else if (this.mSnr<c2.mSnr)
+			else if (this.mSnr < c2.mSnr)
 			{
-				ret=1;
+				ret = 1;
 			}
 		}
 		else
 		{
-			if(this.mFixed)
+			if (this.mFixed)
 			{
-				ret=-1;
+				ret = -1;
 			}
 		}
-		
+
 		return ret;
-		
-	   	
-	 }
-	
+
+	}
+
 }

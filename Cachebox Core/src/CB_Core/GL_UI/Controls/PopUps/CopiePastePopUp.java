@@ -4,7 +4,7 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
-import CB_Core.GL_UI.libGdx_Controls.TextField;
+import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -14,7 +14,7 @@ public class CopiePastePopUp extends PopUp_Base
 
 	private Button pasteButton;
 
-	public CopiePastePopUp(CB_RectF rec, String Name, final TextField textField)
+	public CopiePastePopUp(CB_RectF rec, String Name, final CB_TextField textField)
 	{
 		super(rec, Name);
 		setBackground(new NinePatch(SpriteCache.Bubble.get(3), 16, 16, 16, 23));
