@@ -37,7 +37,7 @@ public class MesureCoordinate extends ActivityBase implements PositionChangedEve
 	private Sprite drawing;
 	private SatBarChart chart;
 
-	private final int projectionZoom = 18;
+	private final int projectionZoom = 16;// 18;
 	// Erdradius / anzahl Kacheln = Meter pro Kachel
 	private final double metersPerTile = 6378137.0 / Math.pow(2, projectionZoom);
 
@@ -140,10 +140,10 @@ public class MesureCoordinate extends ActivityBase implements PositionChangedEve
 
 	private void iniChart()
 	{
-		float w = UiSizes.getButtonWidthWide() * 2;
-		float h = UiSizes.getButtonHeight() * 2;
+		float w = this.width - Left - Right - margin - margin;
+		float h = this.height - lblDescMeasureCoord.getMaxY() - Top - margin;
 
-		CB_RectF rec = new CB_RectF(Left + margin, this.height - h - margin, w, h);
+		CB_RectF rec = new CB_RectF(Left + margin, lblDescMeasureCoord.getMaxY() + margin, w, h);
 		chart = new SatBarChart(rec, "");
 		this.addChild(chart);
 	}
@@ -310,11 +310,7 @@ public class MesureCoordinate extends ActivityBase implements PositionChangedEve
 			lblMeasureCoord.setText(mMeasureList.toString());
 		}
 
-		if (drawing != null)
-		{
-
-			drawing = null;
-		}
+		redraw = true;
 
 	}
 

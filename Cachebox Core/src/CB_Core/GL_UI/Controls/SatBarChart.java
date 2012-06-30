@@ -57,9 +57,9 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 		CB_Rect[] balken = null;
 		if (balken == null)
 		{
-			int w = (int) (this.width / 10);
+			int w = (int) (this.width / 14);
 
-			balken = new CB_Rect[10];
+			balken = new CB_Rect[14];
 			balken[0] = new CB_Rect(0, 0, w, 10);
 			balken[1] = new CB_Rect(balken[0].getMaxX() + 3, 0, w, 10);
 			balken[2] = new CB_Rect(balken[1].getMaxX() + 3, 0, w, 10);
@@ -70,6 +70,10 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 			balken[7] = new CB_Rect(balken[6].getMaxX() + 3, 0, w, 10);
 			balken[8] = new CB_Rect(balken[7].getMaxX() + 3, 0, w, 10);
 			balken[9] = new CB_Rect(balken[8].getMaxX() + 3, 0, w, 10);
+			balken[10] = new CB_Rect(balken[9].getMaxX() + 3, 0, w, 10);
+			balken[11] = new CB_Rect(balken[10].getMaxX() + 3, 0, w, 10);
+			balken[12] = new CB_Rect(balken[11].getMaxX() + 3, 0, w, 10);
+			balken[13] = new CB_Rect(balken[12].getMaxX() + 3, 0, w, 10);
 		}
 
 		int w = getNextHighestPO2((int) this.getWidth());
@@ -84,7 +88,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 
 				// balken höhe festlegen
 
-				balken[count].setHeight((int) (this.height * (tmp.getStrength() / 30)));
+				balken[count].setHeight((int) ((tmp.getStrength() * 3 / 100) * this.height));
 
 				// // balken farbe festlegen
 				if (tmp.getFixed())
@@ -99,14 +103,14 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 				p.fillRectangle(balken[count].getX(), balken[count].getY(), balken[count].getWidth(), balken[count].getHeight());
 
 				count++;
-				if (count >= 9) break;
+				if (count >= 13) break;
 			}
 		}
 
 		// restliche balken ausschalten!
-		if (count < 10)
+		if (count < 14)
 		{
-			for (int i = count; i <= 9; i++)
+			for (int i = count; i <= 13; i++)
 			{
 				p.setColor(Color.LIGHT_GRAY);
 

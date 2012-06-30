@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 948;
+	public static final int CurrentRevision = 949;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -105,7 +105,13 @@ public class GlobalCore
 		SelectedWaypoint(cache, waypoint, true);
 	}
 
-	// when changeAutoResort == false -> do not change state of autoResort Flag
+	/**
+	 * if changeAutoResort == false -> do not change state of autoResort Flag
+	 * 
+	 * @param cache
+	 * @param waypoint
+	 * @param changeAutoResort
+	 */
 	public static void SelectedWaypoint(Cache cache, Waypoint waypoint, boolean changeAutoResort)
 	{
 		selectedCache = cache;
