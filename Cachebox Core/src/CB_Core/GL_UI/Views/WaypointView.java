@@ -106,6 +106,11 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 			else
 			{
 				// waypoint selected
+				WaypointViewItem wpi = (WaypointViewItem) v;
+				if (wpi != null)
+				{
+					aktWaypoint = wpi.getWaypoint();
+				}
 				GlobalCore.SelectedWaypoint(aktCache, aktWaypoint);
 			}
 

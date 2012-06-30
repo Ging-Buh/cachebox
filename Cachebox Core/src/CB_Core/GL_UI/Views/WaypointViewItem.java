@@ -106,6 +106,11 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 	}
 
+	public Waypoint getWaypoint()
+	{
+		return mWaypoint;
+	}
+
 	private void setDistanceString(String txt)
 	{
 		TextBounds bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
