@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Views;
 
+import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Plattform;
 import CB_Core.DAO.WaypointDAO;
@@ -15,6 +16,8 @@ import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.EditWaypoint;
 import CB_Core.GL_UI.Activitys.EditWaypoint.ReturnListner;
+import CB_Core.GL_UI.Activitys.MesureCoordinate;
+import CB_Core.GL_UI.Activitys.ProjectionCoordinate;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
@@ -59,8 +62,12 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 	@Override
 	public void onShow()
 	{
-		// TODO Rufe ANDROID VIEW auf
-		platformConector.showView(ViewConst.WAYPOINT_VIEW, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+		if (Config.settings.altWP_View.getValue())
+		{
+			// Rufe ANDROID VIEW auf
+			platformConector.showView(ViewConst.WAYPOINT_VIEW, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+			return;
+		}
 
 		// aktuellen Waypoint in der List anzeigen
 		int first = this.getFirstVisiblePosition();
@@ -102,7 +109,11 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 	@Override
 	public void onHide()
 	{
-		platformConector.hideView(ViewConst.WAYPOINT_VIEW);
+		if (Config.settings.altWP_View.getValue())
+		{
+			platformConector.hideView(ViewConst.WAYPOINT_VIEW);
+		}
+
 	}
 
 	private OnClickListener onItemClickListner = new OnClickListener()
@@ -285,6 +296,13 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 
 	public void ShowContextMenu()
 	{
+
+		if (Config.settings.altWP_View.getValue())
+		{
+			platformConector.hideView(ViewConst.WAYPOINT_VIEW);
+			return;
+		}
+
 		Menu cm = new Menu("CacheListContextMenu");
 
 		cm.setItemClickListner(new OnClickListener()
@@ -304,6 +322,13 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 				case MI_DELETE:
 					deleteWP();
 					return true;
+				case MI_PROJECTION:
+					addProjection();
+					return true;
+				case MI_FROM_GPS:
+					addMesure();
+					return true;
+
 				}
 				return false;
 			}
@@ -442,4 +467,84 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 					}
 				});
 	}
+
+	private void addProjection()
+	{
+		createNewWaypoint = true;
+
+		final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.Pos : (aktCache != null) ? aktCache.Pos : GlobalCore.LastValidPosition;
+
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Projection", coord,
+				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
+				{
+
+					@Override
+					public void returnCoord(Coordinate returnCoord)
+					{
+						if (coord == null || returnCoord.equals(coord)) return;
+
+						String newGcCode = "";
+						try
+						{
+							newGcCode = Database.CreateFreeGcCode(GlobalCore.SelectedCache().GcCode);
+						}
+						catch (Exception e)
+						{
+
+							return;
+						}
+						Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", returnCoord.Latitude,
+								returnCoord.Longitude, GlobalCore.SelectedCache().Id, "", "projiziert");
+						GlobalCore.SelectedCache().waypoints.add(newWP);
+						that.setBaseAdapter(lvAdapter);
+						aktWaypoint = newWP;
+						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), newWP);
+						WaypointDAO waypointDAO = new WaypointDAO();
+						waypointDAO.WriteToDatabase(newWP);
+
+					}
+				}, false);
+
+		pC.show();
+
+	}
+
+	private void addMesure()
+	{
+		createNewWaypoint = true;
+
+		MesureCoordinate mC = new MesureCoordinate(ActivityBase.ActivityRec(), "Projection", new MesureCoordinate.ReturnListner()
+		{
+
+			@Override
+			public void returnCoord(Coordinate returnCoord)
+			{
+				if (returnCoord == null) return;
+
+				String newGcCode = "";
+				try
+				{
+					newGcCode = Database.CreateFreeGcCode(GlobalCore.SelectedCache().GcCode);
+				}
+				catch (Exception e)
+				{
+
+					return;
+				}
+				Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoord.Latitude,
+						returnCoord.Longitude, GlobalCore.SelectedCache().Id, "", "Measured");
+				GlobalCore.SelectedCache().waypoints.add(newWP);
+				that.setBaseAdapter(lvAdapter);
+				aktWaypoint = newWP;
+				GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), newWP);
+				WaypointDAO waypointDAO = new WaypointDAO();
+				waypointDAO.WriteToDatabase(newWP);
+
+			}
+		});
+
+		mC.show();
+
+	}
+
 }

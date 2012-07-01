@@ -48,7 +48,7 @@ public class ProjectionCoordinate extends ActivityBase
 		coord = Coord;
 		cancelCoord = Coord.copy();
 		radius = Radius;
-
+		mReturnListner = listner;
 		ImperialUnits = Config.settings.ImperialUnits.getValue();
 
 		iniCacheNameLabel();

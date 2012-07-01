@@ -50,7 +50,7 @@ public class CacheInfo extends CB_View_Base
 	/**
 	 * SHOW_COMPASS, SHOW_NAME
 	 */
-	public static final int VIEW_MODE_WAYPOINTS = 3;
+	public static final int VIEW_MODE_WAYPOINTS = 11;
 
 	/**
 	 * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS, SHOW_GC
