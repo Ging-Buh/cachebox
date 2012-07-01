@@ -930,13 +930,16 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public void closeToast()
 	{
-		synchronized (mToastOverlay)
+		if (mToastOverlay != null)
 		{
+			synchronized (mToastOverlay)
+			{
 
-			ToastIsShown = false;
-			mToastOverlay.removeChilds();
+				ToastIsShown = false;
+				mToastOverlay.removeChilds();
+			}
+			renderOnce("ToastClosing");
 		}
-		renderOnce("ToastClosing");
 	}
 
 	public void Toast(CB_View_Base view, int delay)

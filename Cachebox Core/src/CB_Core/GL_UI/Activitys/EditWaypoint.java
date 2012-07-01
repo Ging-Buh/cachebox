@@ -310,7 +310,14 @@ public class EditWaypoint extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				if (mReturnListner != null) mReturnListner.returnedWP(waypoint);
+				if (mReturnListner != null)
+				{
+					waypoint.Pos = bCoord.getCoordinate();
+					waypoint.Title = etTitle.getText();
+					waypoint.Description = etDescription.getText();
+					waypoint.Clue = etClue.getText();
+					mReturnListner.returnedWP(waypoint);
+				}
 				finish();
 				return true;
 			}

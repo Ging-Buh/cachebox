@@ -225,6 +225,11 @@ public class SelectDB extends ActivityBase
 			{
 				lvFiles.setSelection(i);
 			}
+
+			int first = lvFiles.getFirstVisiblePosition();
+			int last = lvFiles.getLastVisiblePosition();
+
+			if (!(first < i && last > i)) lvFiles.scrollToItem(i);
 		}
 
 		int itemSpace = lvFiles.getMaxItemCount();

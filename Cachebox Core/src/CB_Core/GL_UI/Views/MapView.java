@@ -1013,10 +1013,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 
 		// Beschriftung
-		if (showTitles && (aktZoom >= 15) && (!drawAsWaypoint))
+		if (showTitles && (aktZoom >= 15))
 		{
+			String Name = drawAsWaypoint ? wpi.Waypoint.Description : wpi.Cache.Name;
+
 			float halfWidth = Fonts.get16_Out().getBounds(wpi.Cache.Name).width / 2;
-			Fonts.get16_Out().draw(batch, wpi.Cache.Name, screen.x - halfWidth, screen.y - WpUnderlay.halfHeight - NameYMovement);
+			Fonts.get16_Out().draw(batch, Name, screen.x - halfWidth, screen.y - WpUnderlay.halfHeight - NameYMovement);
 		}
 
 		// Show D/T-Rating

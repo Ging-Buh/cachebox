@@ -2,6 +2,9 @@ package CB_Core.GL_UI.Views;
 
 import CB_Core.GlobalCore;
 import CB_Core.Plattform;
+import CB_Core.DAO.WaypointDAO;
+import CB_Core.DB.Database;
+import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.platformConector;
@@ -9,13 +12,23 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
+import CB_Core.GL_UI.Activitys.ActivityBase;
+import CB_Core.GL_UI.Activitys.EditWaypoint;
+import CB_Core.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
+import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 
 public class WaypointView extends V_ListView implements SelectedCacheEvent
@@ -26,10 +39,12 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 	boolean createNewWaypoint = false;
 	public Cache aktCache = null;
 
+	public static WaypointView that;
+
 	public WaypointView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-
+		that = this;
 		Label lblDummy = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "DummyLabel");
 		lblDummy.setFont(Fonts.getNormal());
 		lblDummy.setText("Dummy WaypointView");
@@ -262,4 +277,169 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 		SetSelectedCache(cache, waypoint);
 	}
 
+	private final int MI_EDIT = 0;
+	private final int MI_ADD = 1;
+	private final int MI_DELETE = 2;
+	private final int MI_PROJECTION = 3;
+	private final int MI_FROM_GPS = 4;
+
+	public void ShowContextMenu()
+	{
+		Menu cm = new Menu("CacheListContextMenu");
+
+		cm.setItemClickListner(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				switch (((MenuItem) v).getMenuItemId())
+				{
+				case MI_ADD:
+					addWP();
+					return true;
+				case MI_EDIT:
+					editWP();
+					return true;
+				case MI_DELETE:
+					deleteWP();
+					return true;
+				}
+				return false;
+			}
+		});
+
+		if (aktWaypoint != null) cm.addItem(MI_EDIT, "edit");
+		cm.addItem(MI_ADD, "addWaypoint");
+		if ((aktWaypoint != null) && (aktWaypoint.IsUserWaypoint)) cm.addItem(MI_DELETE, "delete");
+		if (aktWaypoint != null || aktCache != null) cm.addItem(MI_PROJECTION, "Projection");
+
+		cm.addItem(MI_FROM_GPS, "FromGps");
+
+		cm.show();
+
+	}
+
+	private void addWP()
+	{
+		createNewWaypoint = true;
+		String newGcCode = "";
+		try
+		{
+			newGcCode = Database.CreateFreeGcCode(GlobalCore.SelectedCache().GcCode);
+		}
+		catch (Exception e)
+		{
+			return;
+		}
+		Coordinate coord = GlobalCore.LastValidPosition;
+		if ((coord == null) || (!coord.Valid)) coord = GlobalCore.SelectedCache().Pos;
+		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.Latitude, coord.Longitude,
+				GlobalCore.SelectedCache().Id, "", GlobalCore.Translations.Get("wyptDefTitle"));
+		editWP(newWP);
+
+	}
+
+	private void editWP()
+	{
+		if (aktWaypoint != null)
+		{
+			createNewWaypoint = false;
+			editWP(aktWaypoint);
+		}
+	}
+
+	private void editWP(Waypoint wp)
+	{
+
+		EditWaypoint EdWp = new EditWaypoint(ActivityBase.ActivityRec(), "EditWP", wp, new ReturnListner()
+		{
+
+			@Override
+			public void returnedWP(Waypoint waypoint)
+			{
+				if (waypoint != null)
+				{
+					if (createNewWaypoint)
+					{
+						GlobalCore.SelectedCache().waypoints.add(waypoint);
+						that.setBaseAdapter(lvAdapter);
+						aktWaypoint = waypoint;
+						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), waypoint);
+						WaypointDAO waypointDAO = new WaypointDAO();
+						waypointDAO.WriteToDatabase(waypoint);
+
+						int itemCount = lvAdapter.getCount();
+						int itemSpace = that.getMaxItemCount();
+
+						if (itemSpace >= itemCount)
+						{
+							that.setUndragable();
+						}
+						else
+						{
+							that.setDragable();
+						}
+
+					}
+					else
+					{
+						aktWaypoint.Title = waypoint.Title;
+						aktWaypoint.Type = waypoint.Type;
+						aktWaypoint.Pos = waypoint.Pos;
+						aktWaypoint.Description = waypoint.Description;
+						aktWaypoint.Clue = waypoint.Clue;
+						WaypointDAO waypointDAO = new WaypointDAO();
+						waypointDAO.UpdateDatabase(aktWaypoint);
+						that.setBaseAdapter(lvAdapter);
+					}
+				}
+			}
+		});
+		EdWp.show();
+
+	}
+
+	private void deleteWP()
+	{
+		GL_MsgBox.Show(GlobalCore.Translations.Get("?DelWP") + "\n\n[" + aktWaypoint.Title + "]", GlobalCore.Translations.Get("!DelWP"),
+				MessageBoxButtons.YesNo, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+				{
+
+					@Override
+					public boolean onClick(int which)
+					{
+						switch (which)
+						{
+						case GL_MsgBox.BUTTON_POSITIVE:
+							// Yes button clicked
+							Database.DeleteFromDatabase(aktWaypoint);
+							GlobalCore.SelectedCache().waypoints.remove(aktWaypoint);
+							GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), null);
+							aktWaypoint = null;
+							that.setBaseAdapter(lvAdapter);
+
+							int itemCount = lvAdapter.getCount();
+							int itemSpace = that.getMaxItemCount();
+
+							if (itemSpace >= itemCount)
+							{
+								that.setUndragable();
+							}
+							else
+							{
+								that.setDragable();
+							}
+
+							that.scrollToItem(0);
+
+							break;
+						case GL_MsgBox.BUTTON_NEGATIVE:
+							// No button clicked
+							break;
+						}
+						return true;
+					}
+				});
+	}
 }

@@ -24,6 +24,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class GL_MsgBox extends Dialog
 {
 
+	public static final int BUTTON_POSITIVE = 1;
+	public static final int BUTTON_NEUTRAL = 2;
+	public static final int BUTTON_NEGATIVE = 3;
+
 	private ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
 
 	protected static Button button1;

@@ -166,6 +166,19 @@ public class V_ListView extends ListViewBase
 
 				// RenderRequest
 				GL_Listener.glListener.renderOnce(this.getName() + " addVisibleItems");
+
+				if (selectionchanged)
+				{
+					if (this.isDrageble())
+					{
+						if (!(getFirstVisiblePosition() < mSelectedIndex && getLastVisiblePosition() > mSelectedIndex)) scrollToItem(mSelectedIndex);
+					}
+					else
+					{
+						scrollTo(0);
+					}
+					selectionchanged = false;
+				}
 			}
 		}
 	}

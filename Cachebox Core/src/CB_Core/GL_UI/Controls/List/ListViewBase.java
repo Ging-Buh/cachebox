@@ -122,6 +122,7 @@ public abstract class ListViewBase extends CB_View_Base
 			// set first and Last Item Size
 			firstItemSize = mBaseAdapter.getItemSize(0);
 			lastItemSize = mBaseAdapter.getItemSize(mBaseAdapter.getCount() - 1);
+
 		}
 
 	}
@@ -319,8 +320,10 @@ public abstract class ListViewBase extends CB_View_Base
 		scrollTo(mAllSize);
 	}
 
-	protected void scrollToItem(int i)
+	public void scrollToItem(int i)
 	{
+		if (i < getMaxItemCount()) i = getMaxItemCount();
+
 		if (i >= 0 && i < mPosDefault.size()) setListPos(mPosDefault.get(i), false);
 	}
 
@@ -372,10 +375,13 @@ public abstract class ListViewBase extends CB_View_Base
 		return mDividerSize;
 	}
 
+	protected boolean selectionchanged = false;
+
 	public void setSelection(int i)
 	{
 		if (mSelectedIndex != i && i >= 0)
 		{
+			selectionchanged = true;
 			synchronized (childs)
 			{
 				for (GL_View_Base v : childs)
@@ -409,11 +415,12 @@ public abstract class ListViewBase extends CB_View_Base
 				}
 			}
 			GL_Listener.glListener.renderOnce(this.getName() + " setListPos");
+
 		}
 
 	}
 
-	protected int getLastVisiblePosition()
+	public int getLastVisiblePosition()
 	{
 		int ret = 0;
 		boolean help = false;
@@ -422,7 +429,7 @@ public abstract class ListViewBase extends CB_View_Base
 			for (GL_View_Base v : childs)
 			{
 				if (!help && this.contains(v)) help = true;
-				if (help && !this.contains(v))
+				if (help && !this.contains(v) && v instanceof ListViewItemBase)
 				{
 					ret = ((ListViewItemBase) v).getIndex();
 					break;
@@ -435,7 +442,7 @@ public abstract class ListViewBase extends CB_View_Base
 		return ret;
 	}
 
-	protected int getFirstVisiblePosition()
+	public int getFirstVisiblePosition()
 	{
 		if (mBaseAdapter == null) return 0;
 		int ret = mBaseAdapter.getCount();
@@ -443,7 +450,7 @@ public abstract class ListViewBase extends CB_View_Base
 		{
 			for (GL_View_Base v : childs)
 			{
-				if (this.contains(v))
+				if (this.contains(v) && v instanceof ListViewItemBase)
 				{
 					int i = ((ListViewItemBase) v).getIndex();
 
