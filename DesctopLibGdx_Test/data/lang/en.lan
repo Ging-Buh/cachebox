@@ -498,7 +498,7 @@ English
 	solverErrDiffCache = Error: Coordinate [{1}] for WP [{2}] belongs to cache [{3}]
 	LastSelectedCache = last selected cache
 	vibrateFeedback = vibrate feedback
-	LongClickTime = long click detection time
+	LongClicktime = long click detection time
 	Skin = Skin
 	MapsforgeDayTheme = daylight theme
 	MapsforgeNightTheme = night theme

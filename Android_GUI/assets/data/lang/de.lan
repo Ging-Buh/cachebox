@@ -497,9 +497,9 @@
 	angle = Winkel
 	InvalidCoordinate = Fehler: Funktion {1}: Koordinate ungültig: {2}
 	solverErrDiffCache = Fehler: Koordinate [{1}] für WP [{2}] gehört zu Cache [{3}]
-	LastSelectedCache = zuletzt gawählter Cache
+	LastSelectedCache = zuletzt gewählter Cache
 	vibrateFeedback = Vibration bei Tastendruck
-	LongClickTime = Erkennungszeit für langen Klick
+	LongClicktime = Erkennungszeit für langen Klick
 	Skin = Skin
 	MapsforgeDayTheme = Aussehen tagsüber
 	MapsforgeNightTheme = Aussehen nachts

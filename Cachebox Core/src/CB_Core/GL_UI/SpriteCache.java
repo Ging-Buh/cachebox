@@ -81,8 +81,11 @@ public class SpriteCache
 	private static void setPath(String path)
 	{
 
-		Gdx.gl11.glFlush();
-		Gdx.gl11.glFinish();
+		if (Gdx.gl11 != null)
+		{
+			Gdx.gl11.glFlush();
+			Gdx.gl11.glFinish();
+		}
 
 		atlasDefaultIsNeverUsed = true;
 		atlasDefaultNightIsNeverUsed = true;
