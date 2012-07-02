@@ -166,30 +166,35 @@ public class RouteOverlay
 
 				}
 
-				if (rline.indexOf("<time>") > -1)
+				if (line.indexOf("<time>") > -1)
 				{
 					// Time lesen
-					int timIdx = rline.indexOf("<time>") + 6;
-					int timEndIdx = rline.indexOf("</time>", timIdx);
+					int timIdx = line.indexOf("<time>") + 6;
+					int timEndIdx = line.indexOf("</time>", timIdx);
 
-					String timStr = rline.substring(timIdx, timEndIdx);
+					String timStr = line.substring(timIdx, timEndIdx);
 
 					lastAcceptedTime = parseDate(timStr);
 				}
 
-				if (rline.indexOf("<course>") > -1)
+				if (line.indexOf("<course>") > -1)
 				{
 					// Time lesen
-					int couIdx = rline.indexOf("<course>") + 8;
-					int couEndIdx = rline.indexOf("</course>", couIdx);
+					int couIdx = line.indexOf("<course>") + 8;
+					int couEndIdx = line.indexOf("</course>", couIdx);
 
-					String couStr = rline.substring(couIdx, couEndIdx);
+					String couStr = line.substring(couIdx, couEndIdx);
 
 					lastAcceptedDirection = Double.valueOf(couStr);
 
-					// letzte Abfrage, jetzt kann der Trackpunkt erzeugt werden
+				}
+
+				if (line.indexOf("</trkpt>") > -1)
+				{
+					// trkpt abgeschlossen, jetzt kann der Trackpunkt erzeugt werden
 					route.Points.add(new TrackPoint(lastAcceptedCoordinate.Longitude, lastAcceptedCoordinate.Latitude,
 							lastAcceptedDirection, lastAcceptedTime));
+
 				}
 			}
 
