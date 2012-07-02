@@ -34,7 +34,7 @@ public class FunctionAlphaSum extends Function
 		parameter[0] = parameter[0].toLowerCase();
 		for (char c : parameter[0].toCharArray())
 		{
-			result += (int) c - (int) ('a') + 1;
+			if ((c >= 'a') && (c <= 'z')) result += (int) c - (int) ('a') + 1;
 		}
 		return String.valueOf(result);
 	}
