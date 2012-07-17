@@ -321,6 +321,10 @@ public abstract class Database
 					execSQL("CREATE TABLE [Config] ([Key] nvarchar (30) NOT NULL, [Value] nvarchar (255) NULL);");
 					execSQL("CREATE INDEX [Key_idx] ON [Config] ([Key] ASC);");
 				}
+				if (lastDatabaseSchemeVersion < 1002)
+				{
+					execSQL("ALTER TABLE [FieldNotes] ADD COLUMN [Uploaded] BOOLEAN DEFAULT 'false' NULL");
+				}
 				setTransactionSuccessful();
 			}
 			catch (Exception exc)
@@ -342,7 +346,7 @@ public abstract class Database
 					execSQL("CREATE TABLE [Config] ([Key] nvarchar (30) NOT NULL, [Value] nvarchar (255) NULL);");
 					execSQL("CREATE INDEX [Key_idx] ON [Config] ([Key] ASC);");
 				}
-				if (lastDatabaseSchemeVersion <= 1002)
+				if (lastDatabaseSchemeVersion < 1002)
 				{
 					// Long Text Field for long Strings
 					execSQL("ALTER TABLE [Config] ADD [LongString] ntext NULL;");

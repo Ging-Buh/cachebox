@@ -32,7 +32,7 @@ public class GlobalCore
 	public static Coordinate Marker = new Coordinate();
 	public static boolean ResortAtWork = false;
 	public static final int LatestDatabaseChange = 1022;
-	public static final int LatestDatabaseFieldNoteChange = 1001;
+	public static final int LatestDatabaseFieldNoteChange = 1002;
 	public static final int LatestDatabaseSettingsChange = 1002;
 	public static double displayDensity = 1;
 	public static Plattform platform = Plattform.undef;

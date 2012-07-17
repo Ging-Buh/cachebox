@@ -6,9 +6,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.Parameters;
-import CB_Core.DB.CoreCursor;
 
 public class FieldNoteEntry implements Serializable
 {
@@ -29,6 +29,7 @@ public class FieldNoteEntry implements Serializable
 	public String CacheName;
 	public String CacheUrl;
 	public int typeIcon;
+	public boolean uploaded;
 
 	public FieldNoteEntry(int type)
 	{
@@ -60,6 +61,7 @@ public class FieldNoteEntry implements Serializable
 		foundNumber = reader.getInt(6);
 		CacheName = reader.getString(2);
 		CacheUrl = reader.getString(9);
+		uploaded = reader.getInt(10) != 0;
 
 		fillType();
 
@@ -103,8 +105,7 @@ public class FieldNoteEntry implements Serializable
 	 * FoundIt | 1 |2| <br>
 	 * DNF | 2| 3| <br>
 	 * Note | 4|4| <br>
-	 * Need Archived | |7| Bei uns nicht vorgesehen 
-	 * Need Maintenance |3|45| <br>
+	 * Need Archived | |7| Bei uns nicht vorgesehen Need Maintenance |3|45| <br>
 	 * 
 	 * @return
 	 */
@@ -148,6 +149,7 @@ public class FieldNoteEntry implements Serializable
 		args.put("comment", comment);
 		args.put("cachetype", cacheType);
 		args.put("url", CacheUrl);
+		args.put("Uploaded", uploaded);
 
 		try
 		{
@@ -158,10 +160,9 @@ public class FieldNoteEntry implements Serializable
 			return;
 		}
 		// search FieldNote Id
-		CoreCursor reader = Database.FieldNotes
-				.rawQuery(
-						"select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url from FieldNotes where GcCode='"
-								+ gcCode + "' and type=" + type, null);
+		CoreCursor reader = Database.FieldNotes.rawQuery(
+				"select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded from FieldNotes where GcCode='"
+						+ gcCode + "' and type=" + type, null);
 		reader.moveToFirst();
 		while (reader.isAfterLast() == false)
 		{
@@ -187,11 +188,11 @@ public class FieldNoteEntry implements Serializable
 		args.put("comment", comment);
 		args.put("cachetype", cacheType);
 		args.put("url", CacheUrl);
+		args.put("Uploaded", uploaded);
 
 		try
 		{
-			long count = Database.FieldNotes.update("FieldNotes", args,
-					"id=" + Id, null);
+			long count = Database.FieldNotes.update("FieldNotes", args, "id=" + Id, null);
 			if (count > 0) return;
 		}
 		catch (Exception exc)
