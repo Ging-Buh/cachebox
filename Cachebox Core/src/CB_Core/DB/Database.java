@@ -325,6 +325,10 @@ public abstract class Database
 				{
 					execSQL("ALTER TABLE [FieldNotes] ADD COLUMN [Uploaded] BOOLEAN DEFAULT 'false' NULL");
 				}
+				if (lastDatabaseSchemeVersion < 1003)
+				{
+					execSQL("ALTER TABLE [FieldNotes] ADD COLUMN [GC_Vote] integer default 0");
+				}
 				setTransactionSuccessful();
 			}
 			catch (Exception exc)

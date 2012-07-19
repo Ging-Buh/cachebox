@@ -30,6 +30,7 @@ public class FieldNoteEntry implements Serializable
 	public String CacheUrl;
 	public int typeIcon;
 	public boolean uploaded;
+	public int gc_Vote;
 
 	public FieldNoteEntry(int type)
 	{
@@ -62,6 +63,7 @@ public class FieldNoteEntry implements Serializable
 		CacheName = reader.getString(2);
 		CacheUrl = reader.getString(9);
 		uploaded = reader.getInt(10) != 0;
+		gc_Vote = reader.getInt(11);
 
 		fillType();
 
@@ -150,6 +152,7 @@ public class FieldNoteEntry implements Serializable
 		args.put("cachetype", cacheType);
 		args.put("url", CacheUrl);
 		args.put("Uploaded", uploaded);
+		args.put("gc_Vote", gc_Vote);
 
 		try
 		{
@@ -161,7 +164,7 @@ public class FieldNoteEntry implements Serializable
 		}
 		// search FieldNote Id
 		CoreCursor reader = Database.FieldNotes.rawQuery(
-				"select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded from FieldNotes where GcCode='"
+				"select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote from FieldNotes where GcCode='"
 						+ gcCode + "' and type=" + type, null);
 		reader.moveToFirst();
 		while (reader.isAfterLast() == false)
@@ -189,6 +192,7 @@ public class FieldNoteEntry implements Serializable
 		args.put("cachetype", cacheType);
 		args.put("url", CacheUrl);
 		args.put("Uploaded", uploaded);
+		args.put("gc_Vote", gc_Vote);
 
 		try
 		{
