@@ -3,6 +3,7 @@ package de.cachebox_test.Views.Forms;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
+import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import android.app.Activity;
@@ -13,8 +14,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import de.cachebox_test.R;
-import de.cachebox_test.main;
-import de.cachebox_test.Views.FilterSettings.EditFilterSettings;
 
 public class ParkingDialog extends Activity
 {
@@ -83,7 +82,7 @@ public class ParkingDialog extends Activity
 				{
 					CB_Core.Config.settings.ParkingLatitude.setValue(GlobalCore.LastValidPosition.Latitude);
 					CB_Core.Config.settings.ParkingLongitude.setValue(GlobalCore.LastValidPosition.Longitude);
-					EditFilterSettings.ApplyFilter(main.mainActivity, GlobalCore.LastFilter);
+					EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
 				}
 
 				finish();
@@ -98,7 +97,7 @@ public class ParkingDialog extends Activity
 			{
 				CB_Core.Config.settings.ParkingLatitude.setValue(0);
 				CB_Core.Config.settings.ParkingLongitude.setValue(0);
-				EditFilterSettings.ApplyFilter(main.mainActivity, GlobalCore.LastFilter);
+				EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
 				finish();
 			}
 		});

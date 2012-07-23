@@ -10,6 +10,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.CacheInfo;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.Locator.Locator;
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
@@ -92,6 +93,8 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 			setActLocator();
 		}
 
+		Logger.LogCat("New CacheListItem Index:" + String.valueOf(Index));
+
 	}
 
 	private void setDistanceString(String txt)
@@ -103,9 +106,12 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
 	private void setActLocator()
 	{
-		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
+
+		// Logger.LogCat("CacheListItem set ActLocator");
+
+		if (GlobalCore.LastValidPosition.Valid)
 		{
-			Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
+			Coordinate position = GlobalCore.LastValidPosition;
 			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
 			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, mCache.Latitude(), mCache.Longitude());
 			double cacheBearing = -(bearing - heading);

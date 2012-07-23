@@ -120,14 +120,14 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 	private void setActLocator()
 	{
-		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
+		if (GlobalCore.LastValidPosition.Valid)
 		{
 
 			double lat = (mWaypoint == null) ? mCache.Latitude() : mWaypoint.Latitude();
 			double lon = (mWaypoint == null) ? mCache.Longitude() : mWaypoint.Longitude();
 			float distance = (mWaypoint == null) ? mCache.Distance(true) : mWaypoint.Distance();
 
-			Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
+			Coordinate position = GlobalCore.LastValidPosition;
 			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
 			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, lat, lon);
 			double cacheBearing = -(bearing - heading);

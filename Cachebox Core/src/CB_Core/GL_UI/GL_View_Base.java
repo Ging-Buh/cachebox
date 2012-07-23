@@ -55,7 +55,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	protected boolean onTouchUp = false;
 	protected boolean onTouchDown = false;
-	protected Vector2 lastTouchPos;
+	public Vector2 lastTouchPos;
 
 	private int mViewState = VISIBLE;
 
@@ -128,6 +128,11 @@ public abstract class GL_View_Base extends CB_RectF
 		if (mViewState == visibility) return;
 		mViewState = visibility;
 		GL_Listener.glListener.renderOnce(this.getName() + "setVisibility");
+	}
+
+	public MoveableList<GL_View_Base> getchilds()
+	{
+		return childs;
 	}
 
 	/**
@@ -249,8 +254,8 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 
 		if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
-		Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth(),
-				(int) intersectRec.getHeight());
+		Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth() + 1,
+				(int) intersectRec.getHeight() + 1);
 
 		// first Draw Background?
 		if (hasBackground || hasNinePatchBackground)
@@ -563,6 +568,7 @@ public abstract class GL_View_Base extends CB_RectF
 				{
 					// touch innerhalb des Views
 					// -> Klick an das View weitergeben
+					lastTouchPos = new Vector2(x - view.Pos.x, y - view.Pos.y);
 					resultView = view.touchDown(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
 				}
 

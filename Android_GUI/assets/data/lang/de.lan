@@ -763,3 +763,9 @@
 	Credits = Credits
 	
 	CenterWP = Center => WP
+	
+	date = Datum
+	time = Zeit
+	
+	wrongDate = Falsches Datum oder Zeit eingegeben!
+	EmptyFieldNotes = Keine Fieldnotes eingetragen!

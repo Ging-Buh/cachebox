@@ -62,12 +62,19 @@ public class ActivityBase extends Dialog
 
 	protected void finish()
 	{
-		GL_Listener.glListener.closeDialog();
+		GL_Listener.glListener.closeActivity();
+	}
+
+	@Override
+	public void onShow()
+	{
+		// register for TextField render, the most Activitys have an Textfield
+		GL_Listener.glListener.addRenderView(this, GL_Listener.FRAME_RATE_TEXT_FIELD);
 	}
 
 	public void show()
 	{
-		GL_Listener.glListener.showDialog(this);
+		GL_Listener.glListener.showActivity(this);
 	}
 
 	public static CB_RectF ActivityRec()

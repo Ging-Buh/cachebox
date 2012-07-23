@@ -19,10 +19,12 @@ public class WaitDialog extends GL_MsgBox
 {
 
 	static Image iconImage;
+	WaitDialog that;
 
 	public WaitDialog(Size size, String name)
 	{
 		super(size, name);
+		that = this;
 	}
 
 	public static WaitDialog ShowWait()
@@ -113,7 +115,7 @@ public class WaitDialog extends GL_MsgBox
 		RotateTimer.cancel();
 		iconImage.dispose();
 
-		GL_Listener.glListener.closeDialog();
+		GL_Listener.glListener.closeDialog(that);
 	}
 
 }

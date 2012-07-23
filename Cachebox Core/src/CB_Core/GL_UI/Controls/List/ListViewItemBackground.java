@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Controls.List;
 
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -25,7 +26,13 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	private static NinePatch backSelect;
 	private static NinePatch back1;
 	private static NinePatch back2;
-	private static boolean mBackIsInitial = false;
+	protected static boolean mBackIsInitial = false;
+	protected boolean isPressed = false;
+
+	protected static float LeftWidth = 0;
+	protected static float RightWidth = 0;
+	protected static float TopHight = 0;
+	protected static float BottomHeight = 0;
 
 	public static void ResetBackground()
 	{
@@ -37,9 +44,15 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	{
 		if (!mBackIsInitial)
 		{
-			backSelect = new NinePatch(SpriteCache.getThemedSprite("listrec_selected"), 8, 8, 8, 8);
-			back1 = new NinePatch(SpriteCache.getThemedSprite("listrec_first"), 8, 8, 8, 8);
-			back2 = new NinePatch(SpriteCache.getThemedSprite("listrec_secend"), 8, 8, 8, 8);
+			backSelect = new NinePatch(SpriteCache.getThemedSprite("listrec_selected"), 16, 16, 16, 16);
+			back1 = new NinePatch(SpriteCache.getThemedSprite("listrec_first"), 16, 16, 16, 16);
+			back2 = new NinePatch(SpriteCache.getThemedSprite("listrec_secend"), 16, 16, 16, 16);
+
+			LeftWidth = back1.getLeftWidth();
+			RightWidth = back1.getRightWidth();
+			TopHight = back1.getTopHeight();
+			BottomHeight = back1.getBottomHeight();
+
 			mBackIsInitial = true;
 		}
 	}
@@ -47,6 +60,12 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	@Override
 	protected void render(SpriteBatch batch)
 	{
+		if (isPressed)
+		{
+			isPressed = GL_Listener.isTouchDown();
+		}
+
+		if (!this.isVisible()) return;
 		super.render(batch);
 		// Draw Background
 		if (mBackIsInitial)
@@ -65,6 +84,19 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 				back2.draw(batch, 0, 0, this.width, this.height);
 			}
 		}
+		else
+		{
+			Initial();
+		}
+
 	}
 
+	@Override
+	public boolean onTouchDown(int x, int y, int pointer, int button)
+	{
+		isPressed = true;
+		GL_Listener.glListener.renderOnce(this.getName() + " touchDown");
+
+		return false;
+	}
 }

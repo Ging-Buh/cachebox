@@ -169,11 +169,11 @@ public class EditCoord extends ActivityBase
 			{
 				if (mReturnListner != null)
 				{
-					GL_Listener.glListener.closeDialog();
+					GL_Listener.glListener.closeActivity();
 					mReturnListner.returnCoord(cancelCoord);
 				}
 				else
-					GL_Listener.glListener.closeDialog();
+					GL_Listener.glListener.closeActivity();
 				return true;
 			}
 		});

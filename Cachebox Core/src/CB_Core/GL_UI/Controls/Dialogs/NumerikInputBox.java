@@ -15,9 +15,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
 public class NumerikInputBox extends GL_MsgBox
 {
 
+	private static NumerikInputBox that;
+
 	public NumerikInputBox(Size size, String name)
 	{
 		super(size, name);
+		that = this;
 	}
 
 	public static CB_TextField editText;
@@ -104,11 +107,11 @@ public class NumerikInputBox extends GL_MsgBox
 						e.printStackTrace();
 					}
 				}
-				GL_Listener.glListener.closeDialog();
+				GL_Listener.glListener.closeDialog(that);
 			}
 			else if (value.equals("C"))
 			{
-				GL_Listener.glListener.closeDialog();
+				GL_Listener.glListener.closeDialog(that);
 			}
 			else if (value.equals("<"))
 			{

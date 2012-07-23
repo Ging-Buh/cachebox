@@ -347,9 +347,9 @@ public class CacheDraw
 	private static void DrawBearing(Cache cache, Canvas canvas, CB_Rect drawingRec)
 	{
 
-		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
+		if (GlobalCore.LastValidPosition.Valid)
 		{
-			Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
+			Coordinate position = GlobalCore.LastValidPosition;
 			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
 			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude(), cache.Longitude());
 			double cacheBearing = bearing - heading;
@@ -361,9 +361,9 @@ public class CacheDraw
 
 	public void DrawBearing(Cache cache, Canvas canvas, CB_Rect drawingRec, Waypoint waypoint)
 	{
-		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
+		if (GlobalCore.LastValidPosition.Valid)
 		{
-			Coordinate position = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
+			Coordinate position = GlobalCore.LastValidPosition;
 			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
 			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, waypoint.Latitude(), waypoint.Longitude());
 			double waypointBearing = bearing - heading;

@@ -42,6 +42,12 @@ public class Tab_GL_Listner extends GL_Listener
 			mDialog.setClickable(true);
 		}
 
+		if (mActivity == null)
+		{
+			mActivity = new MainViewBase(0, 0, width, height, "Dialog");
+			mActivity.setClickable(true);
+		}
+
 		platformConector.setKeyEventListner(new KeyEventListner()
 		{
 
@@ -50,7 +56,13 @@ public class Tab_GL_Listner extends GL_Listener
 			{
 				if (DialogIsShown && character == KeyCodes.KEYCODE_BACK)
 				{
-					closeDialog();
+					closeDialog(mDialog);
+					return true; // behandelt!
+				}
+
+				if (ActivityIsShown && character == KeyCodes.KEYCODE_BACK)
+				{
+					closeActivity();
 					return true; // behandelt!
 				}
 

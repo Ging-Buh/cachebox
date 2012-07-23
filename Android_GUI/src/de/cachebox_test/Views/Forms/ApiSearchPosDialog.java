@@ -220,11 +220,11 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 			public void onClick(View v)
 			{
 				// Koordinaten Dialog öffnen
-				Intent coordIntent = new Intent().setClass(CurentMarkerPos.getContext(), EditCoordinate.class);
-				Bundle b = new Bundle();
-				b.putSerializable("Coord", actSearchPos);
-				coordIntent.putExtras(b);
-				startActivityForResult(coordIntent, 0);
+				// Intent coordIntent = new Intent().setClass(CurentMarkerPos.getContext(), EditCoordinate.class);
+				// Bundle b = new Bundle();
+				// b.putSerializable("Coord", actSearchPos);
+				// coordIntent.putExtras(b);
+				// startActivityForResult(coordIntent, 0);
 			}
 		});
 	}

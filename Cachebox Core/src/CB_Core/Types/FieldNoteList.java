@@ -47,7 +47,11 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 		while (reader.isAfterLast() == false)
 		{
 			FieldNoteEntry fne = new FieldNoteEntry(reader);
-			this.add(fne);
+			if (!this.contains(fne))
+			{
+				this.add(fne);
+			}
+
 			reader.moveToNext();
 		}
 		reader.close();
@@ -148,5 +152,14 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 				}
 			}
 		}
+	}
+
+	public boolean contains(FieldNoteEntry fne)
+	{
+		for (FieldNoteEntry item : this)
+		{
+			if (fne.equals(item)) return true;
+		}
+		return false;
 	}
 }

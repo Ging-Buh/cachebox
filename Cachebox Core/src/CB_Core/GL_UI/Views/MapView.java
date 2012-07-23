@@ -736,7 +736,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 						int w = getNextHighestPO2(squaredR);
 						int h = getNextHighestPO2(squaredR);
-						Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+						// Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+						Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA4444);
 						Pixmap.setBlending(Blending.None);
 						p.setColor(0f, 0.1f, 0.4f, 0.1f);
 
@@ -1475,8 +1476,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			info.setSpeed(locator.SpeedString());
 
 			Coordinate position = null;
-			if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
-			else if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;
+			// if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
+			if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;
 			else
 				position = new Coordinate();
 
@@ -1540,8 +1541,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if (info != null)
 		{
 			Coordinate position = null;
-			if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
-			else if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;
+			// if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
+			if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;
 			else
 				position = new Coordinate();
 			if (GlobalCore.SelectedCache() != null)

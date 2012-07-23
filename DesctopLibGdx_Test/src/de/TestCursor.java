@@ -23,6 +23,7 @@ public class TestCursor extends CoreCursor {
 	@Override
 	public boolean moveToFirst() {
 		try {
+			if(rs.isFirst())return true;
 			return rs.first();
 		} catch (SQLException e) {
 			return false;

@@ -38,9 +38,7 @@ import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
-import de.cachebox_test.Views.Forms.EditCoordinate;
 import de.cachebox_test.Views.Forms.MessageBox;
-import de.cachebox_test.Views.Forms.projectionCoordinate;
 
 /**
  * Liste zur darstellung und verwaltung der Routes in RouteOverlay.Routes <br>
@@ -321,12 +319,12 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 		}
 
 		// Koordinaten Dialog öffnen
-		Intent coordIntent = new Intent().setClass(getContext(), EditCoordinate.class);
-		Bundle b = new Bundle();
-		b.putSerializable("Coord", coord);
-		b.putSerializable("Title", Title);
-		coordIntent.putExtras(b);
-		parentActivity.startActivityForResult(coordIntent, 0);
+		// Intent coordIntent = new Intent().setClass(getContext(), EditCoordinate.class);
+		// Bundle b = new Bundle();
+		// b.putSerializable("Coord", coord);
+		// b.putSerializable("Title", Title);
+		// coordIntent.putExtras(b);
+		// parentActivity.startActivityForResult(coordIntent, 0);
 
 	}
 
@@ -360,14 +358,14 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 			coord = new Coordinate(0.0, 0.0);
 		}
 
-		// Projection Dialog öffnen
-		Intent coordIntent = new Intent().setClass(getContext(), projectionCoordinate.class);
-		Bundle b = new Bundle();
-		b.putSerializable("Coord", coord);
-		b.putSerializable("Title", GlobalCore.Translations.Get("Projection"));
-		b.putSerializable("Radius", false);
-		coordIntent.putExtras(b);
-		parentActivity.startActivityForResult(coordIntent, 0);
+		// // Projection Dialog öffnen
+		// Intent coordIntent = new Intent().setClass(getContext(), projectionCoordinate.class);
+		// Bundle b = new Bundle();
+		// b.putSerializable("Coord", coord);
+		// b.putSerializable("Title", GlobalCore.Translations.Get("Projection"));
+		// b.putSerializable("Radius", false);
+		// coordIntent.putExtras(b);
+		// parentActivity.startActivityForResult(coordIntent, 0);
 	}
 
 	private void showCircle(int NextStep)
@@ -400,14 +398,14 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 			coord = new Coordinate(0.0, 0.0);
 		}
 
-		// Projection Dialog öffnen
-		Intent coordIntent = new Intent().setClass(getContext(), projectionCoordinate.class);
-		Bundle b = new Bundle();
-		b.putSerializable("Coord", coord);
-		b.putSerializable("Title", "Circle");
-		b.putSerializable("Radius", true);
-		coordIntent.putExtras(b);
-		parentActivity.startActivityForResult(coordIntent, 0);
+		// // Projection Dialog öffnen
+		// Intent coordIntent = new Intent().setClass(getContext(), projectionCoordinate.class);
+		// Bundle b = new Bundle();
+		// b.putSerializable("Coord", coord);
+		// b.putSerializable("Title", "Circle");
+		// b.putSerializable("Radius", true);
+		// coordIntent.putExtras(b);
+		// parentActivity.startActivityForResult(coordIntent, 0);
 	}
 
 	/**

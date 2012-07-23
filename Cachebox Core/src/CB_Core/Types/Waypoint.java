@@ -82,7 +82,7 @@ public class Waypoint implements Serializable
 	// / </summary>
 	public float Distance()
 	{
-		Coordinate fromPos = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
+		Coordinate fromPos = GlobalCore.LastValidPosition;
 		float[] dist = new float[4];
 		Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude, Pos.Latitude, Pos.Longitude, dist);
 		return dist[0];

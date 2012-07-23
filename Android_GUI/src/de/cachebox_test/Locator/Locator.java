@@ -80,11 +80,11 @@ public class Locator
 	{
 		synchronized (this)
 		{
-			if (!Config.settings.HtcCompass.getValue()) return false;
+			if (!Config.settings.HardwareCompass.getValue()) return false;
 			if (CompassHeading < 0) return false; // kein Kompass Wert -> Komapass nicht verwenden!
 
 			// Geschwindigkeit > 5 km/h -> GPs Kompass verwenden
-			if ((location != null) && location.hasBearing() && (SpeedOverGround() > Config.settings.HtcLevel.getValue())) return false;
+			if ((location != null) && location.hasBearing() && (SpeedOverGround() > Config.settings.HardwareCompassLevel.getValue())) return false;
 
 			return true;
 		}

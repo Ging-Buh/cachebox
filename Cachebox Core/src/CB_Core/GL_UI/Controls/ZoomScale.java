@@ -189,7 +189,8 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 		int w = getNextHighestPO2((int) width);
 		int h = getNextHighestPO2((int) height);
-		Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+		// Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+		Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA4444);
 		p.setColor(0f, 0f, 0f, 1f);
 
 		p.drawLine(centerColumn, bottomRow, centerColumn, topRow);

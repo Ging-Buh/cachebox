@@ -146,7 +146,16 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	@Override
 	public void dispose()
 	{
-		// TODO Auto-generated method stub
+		synchronized (childs)
+		{
+			for (GL_View_Base v : childs)
+			{
+				removeChild(v);
+				v.dispose();
+			}
+
+			childs.clear();
+		}
 
 	}
 
@@ -176,7 +185,11 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	public GL_View_Base getChild(int i)
 	{
-		return childs.get(i);
+		synchronized (childs)
+		{
+			if (childs.size() < i || childs.size() == 0) return null;
+			return childs.get(i);
+		}
 	}
 
 	@Override

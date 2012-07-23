@@ -242,7 +242,7 @@ public class CB_RectF
 		this.centerPos.y = this.Pos.y + this.halfHeight;
 	}
 
-	private boolean contains(Vector2 ret)
+	public boolean contains(Vector2 ret)
 	{
 		return contains(ret.x, ret.y);
 	}

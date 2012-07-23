@@ -27,7 +27,7 @@ public abstract class ListViewBase extends CB_View_Base
 	protected int mSelectedIndex = -1;
 	protected float firstItemSize = -1;
 	protected float lastItemSize = -1;
-
+	protected boolean hasInvisibleItems = false;
 	protected boolean isTouch = false;
 
 	/**
@@ -88,6 +88,17 @@ public abstract class ListViewBase extends CB_View_Base
 	protected int mDraged = 0;
 	protected int mLastTouch = 0;
 	protected float mLastPos_onTouch = 0;
+
+	/**
+	 * Setzt ein Flag, welches angibt, ob dies ListView Invisible Items hat. Da die Berechnung der Positionen deutlich länger dauert, ist
+	 * der Standard auf False gesetzt.
+	 * 
+	 * @param value
+	 */
+	public void setHasInvisibleItems(Boolean value)
+	{
+		hasInvisibleItems = value;
+	}
 
 	public ListViewBase(CB_RectF rec, String Name)
 	{
@@ -157,6 +168,7 @@ public abstract class ListViewBase extends CB_View_Base
 	 */
 	public void setUndragable()
 	{
+		mPos = 0;
 		mIsDrageble = false;
 	}
 
@@ -474,4 +486,22 @@ public abstract class ListViewBase extends CB_View_Base
 		return mMaxItemCount;
 	}
 
+	public void notifyDataSetChanged()
+	{
+		calcDefaultPosList();
+		reloadItems();
+
+		int itemCount = mBaseAdapter.getCount();
+		int itemSpace = this.getMaxItemCount();
+
+		if (itemSpace >= itemCount)
+		{
+			this.setUndragable();
+		}
+		else
+		{
+			this.setDragable();
+		}
+
+	}
 }

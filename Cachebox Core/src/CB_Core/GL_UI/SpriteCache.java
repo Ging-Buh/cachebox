@@ -35,12 +35,34 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
  */
 public class SpriteCache
 {
+	public static class SpriteList extends ArrayList<Sprite>
+	{
+		private static final long serialVersionUID = 1L;
+
+		public SpriteList()
+		{
+			new ArrayList<Sprite>();
+		}
+
+		public Sprite[] toArray()
+		{
+			Sprite[] tmp = new Sprite[this.size()];
+
+			int index = 0;
+			for (Sprite s : this)
+			{
+				tmp[index++] = s;
+			}
+			return tmp;
+		}
+	}
+
 	public static ArrayList<Sprite> MapIconsSmall = null;
 	public static ArrayList<Sprite> MapOverlay = null;
 	public static ArrayList<Sprite> MapIcons = null;
 	public static ArrayList<Sprite> Arrows = null;
 	public static ArrayList<Sprite> MapStars = null;
-	public static ArrayList<Sprite> Stars = null;
+	public static SpriteList Stars = null;
 	public static ArrayList<Sprite> Bubble = null;
 	public static Sprite InfoBack = null;
 	public static ArrayList<Sprite> ToggleBtn = null;
@@ -50,13 +72,14 @@ public class SpriteCache
 	public static ArrayList<Sprite> Icons = null;
 	public static ArrayList<Sprite> ChkIcons = null;
 	public static ArrayList<Sprite> Dialog = null;
-	public static ArrayList<Sprite> SizesIcons = null;
+	public static SpriteList SizesIcons = null;
 	public static NinePatch ListBack = null;
 	public static Sprite ButtonBack = null;
 	public static Sprite AboutBack = null;
 	public static Sprite Progress = null;
 
 	public static ButtonSprites CacheList;
+	public static ButtonSprites CacheListFilter;
 	public static ButtonSprites Cache;
 	public static ButtonSprites Nav;
 	public static ButtonSprites Tool;
@@ -77,6 +100,7 @@ public class SpriteCache
 	private static Boolean atlasDefaultNightIsNeverUsed = true;
 	private static Boolean atlasCostumIsNeverUsed = true;
 	private static Boolean atlasCostumtNightIsNeverUsed = true;
+	public static ArrayList<Sprite> LogIcons;
 
 	private static void setPath(String path)
 	{
@@ -227,6 +251,34 @@ public class SpriteCache
 
 		if (!reload) setPath(Config.settings.SkinFolder.getValue());
 
+		if (LogIcons == null) LogIcons = new ArrayList<Sprite>();
+		synchronized (LogIcons)
+		{
+			LogIcons.clear();
+			LogIcons.add(getThemedSprite("log0icon"));
+			LogIcons.add(getThemedSprite("log1icon"));
+			LogIcons.add(getThemedSprite("log2icon"));
+			LogIcons.add(getThemedSprite("log3icon"));
+			LogIcons.add(getThemedSprite("log4icon"));
+			LogIcons.add(getThemedSprite("log5icon"));
+			LogIcons.add(getThemedSprite("log6icon"));
+			LogIcons.add(getThemedSprite("log7icon"));
+			LogIcons.add(getThemedSprite("log8icon"));
+			LogIcons.add(getThemedSprite("log9icon"));
+			LogIcons.add(getThemedSprite("log10icon"));
+			LogIcons.add(getThemedSprite("log11icon"));
+			LogIcons.add(getThemedSprite("log12icon"));
+			LogIcons.add(getThemedSprite("log13icon"));
+			LogIcons.add(getThemedSprite("log14icon"));
+			LogIcons.add(getThemedSprite("log15icon"));
+			LogIcons.add(getThemedSprite("log16icon"));
+			LogIcons.add(getThemedSprite("log17icon"));
+			LogIcons.add(getThemedSprite("log18icon"));
+			LogIcons.add(getThemedSprite("log19icon"));
+			LogIcons.add(getThemedSprite("log20icon"));
+			LogIcons.add(getThemedSprite("log21icon"));
+		}
+
 		if (MapIconsSmall == null) MapIconsSmall = new ArrayList<Sprite>();
 		synchronized (MapIconsSmall)
 		{
@@ -328,7 +380,7 @@ public class SpriteCache
 
 		}
 
-		if (Stars == null) Stars = new ArrayList<Sprite>();
+		if (Stars == null) Stars = new SpriteList();
 		synchronized (Stars)
 		{
 			Stars.clear();
@@ -410,7 +462,7 @@ public class SpriteCache
 
 		ZoomValueBack = getThemedSprite("zoom_back");
 
-		if (SizesIcons == null) SizesIcons = new ArrayList<Sprite>();
+		if (SizesIcons == null) SizesIcons = new SpriteList();
 		synchronized (SizesIcons)
 		{
 			SizesIcons.clear();
@@ -522,6 +574,7 @@ public class SpriteCache
 	private static void loadButtnSprites()
 	{
 		CacheList = new ButtonSprites(getThemedSprite("db"), getThemedSprite("db_pressed"));
+		CacheListFilter = new ButtonSprites(getThemedSprite("db_filter_active"), getThemedSprite("db_pressed_filter_active"));
 		Cache = new ButtonSprites(getThemedSprite("cache"), getThemedSprite("cache_pressed"));
 		Nav = new ButtonSprites(getThemedSprite("Nav"), getThemedSprite("Nav_pressed"));
 		Tool = new ButtonSprites(getThemedSprite("tool"), getThemedSprite("tool_pressed"));

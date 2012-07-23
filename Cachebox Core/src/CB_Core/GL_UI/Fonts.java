@@ -201,6 +201,14 @@ public class Fonts
 		return bounds;
 	}
 
+	public static TextBounds MesureSmall(String txt)
+	{
+		BitmapFontCache mesure = new BitmapFontCache(Fonts.getSmall());
+		TextBounds bounds = mesure.setText(txt, 0, 0);
+		mesure.dispose();
+		return bounds;
+	}
+
 	public static TextBounds MesureWrapped(String txt, float width)
 	{
 		BitmapFontCache mesure = new BitmapFontCache(Fonts.getNormal());

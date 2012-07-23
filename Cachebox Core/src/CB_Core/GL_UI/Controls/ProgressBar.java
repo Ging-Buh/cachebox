@@ -70,7 +70,16 @@ public class ProgressBar extends CB_View_Base
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		progressNinePatch.draw(batch, 0, 0, progressDrawWidth, height);
+		if (progressNinePatch == null) Initial();
+
+		if (progressNinePatch != null)
+		{
+			float patch = progressNinePatch.getLeftWidth() + progressNinePatch.getRightWidth();
+			if (progressDrawWidth >= patch)
+			{
+				progressNinePatch.draw(batch, 0, 0, progressDrawWidth, height);
+			}
+		}
 		super.render(batch);
 	}
 

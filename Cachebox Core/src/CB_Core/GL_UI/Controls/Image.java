@@ -21,6 +21,7 @@ import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -35,6 +36,7 @@ public class Image extends CB_View_Base
 {
 
 	private float mRotate = 0;
+	private Color mColor = new Color(1, 1, 1, 1);
 
 	public Image(float X, float Y, float Width, float Height, String Name)
 	{
@@ -49,6 +51,10 @@ public class Image extends CB_View_Base
 	@Override
 	protected void render(SpriteBatch batch)
 	{
+		Color altColor = batch.getColor();
+
+		batch.setColor(mColor);
+
 		if (mNinePatchImage != null)
 		{
 			mNinePatchImage.draw(batch, 0, 0, width, height);
@@ -81,6 +87,8 @@ public class Image extends CB_View_Base
 				e.printStackTrace();
 			}
 		}
+
+		batch.setColor(altColor);
 	}
 
 	@Override
@@ -161,6 +169,12 @@ public class Image extends CB_View_Base
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	public void setColor(Color color)
+	{
+		mColor = color;
+		if (mImageSprite != null) mImageSprite.setColor(mColor);
 	}
 
 }

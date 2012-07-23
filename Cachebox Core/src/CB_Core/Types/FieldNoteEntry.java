@@ -32,6 +32,24 @@ public class FieldNoteEntry implements Serializable
 	public boolean uploaded;
 	public int gc_Vote;
 
+	public FieldNoteEntry(FieldNoteEntry fne)
+	{
+		this.Id = fne.Id;
+		this.CacheId = fne.CacheId;
+		this.gcCode = fne.gcCode;
+		this.timestamp = fne.timestamp;
+		this.typeString = fne.typeString;
+		this.type = fne.type;
+		this.cacheType = fne.cacheType;
+		this.comment = fne.comment;
+		this.foundNumber = fne.foundNumber;
+		this.CacheName = fne.CacheName;
+		this.CacheUrl = fne.CacheUrl;
+		this.typeIcon = fne.typeIcon;
+		this.uploaded = fne.uploaded;
+		this.gc_Vote = fne.gc_Vote;
+	}
+
 	public FieldNoteEntry(int type)
 	{
 		Id = -1;
@@ -215,6 +233,33 @@ public class FieldNoteEntry implements Serializable
 		{
 			return;
 		}
+	}
+
+	public boolean equals(FieldNoteEntry fne)
+	{
+		boolean ret = true;
+
+		if (this.Id != fne.Id) ret = false;
+		if (this.CacheId != fne.CacheId) ret = false;
+		if (this.gcCode != fne.gcCode) ret = false;
+		if (this.timestamp != fne.timestamp) ret = false;
+		if (this.typeString != fne.typeString) ret = false;
+		if (this.type != fne.type) ret = false;
+		if (this.cacheType != fne.cacheType) ret = false;
+		if (this.comment != fne.comment) ret = false;
+		if (this.foundNumber != fne.foundNumber) ret = false;
+		if (this.CacheName != fne.CacheName) ret = false;
+		if (this.CacheUrl != fne.CacheUrl) ret = false;
+		if (this.typeIcon != fne.typeIcon) ret = false;
+		if (this.uploaded != fne.uploaded) ret = false;
+		if (this.gc_Vote != fne.gc_Vote) ret = false;
+
+		return ret;
+	}
+
+	public FieldNoteEntry copy()
+	{
+		return new FieldNoteEntry(this);
 	}
 
 }

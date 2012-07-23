@@ -28,7 +28,7 @@ public class PositionEventList
 
 	public static void Call(Location location)
 	{
-		if (!Config.settings.HtcCompass.getValue())
+		if (!Config.settings.HardwareCompass.getValue())
 		{
 			// GPS richtung senden
 			Call(location.getBearing(), true);
@@ -46,7 +46,7 @@ public class PositionEventList
 		{
 			GlobalCore.LastValidPosition.Valid = false;
 		}
-		GlobalCore.Marker.Valid = false;
+		// GlobalCore.Marker.Valid = false;
 		for (PositionEvent event : list)
 		{
 			try
@@ -85,7 +85,7 @@ public class PositionEventList
 		 */
 		if (Energy.DisplayOff()) return;
 
-		if (!Config.settings.HtcCompass.getValue() && !force) return;
+		if (!Config.settings.HardwareCompass.getValue() && !force) return;
 
 		anzCompassValues++;
 		compassValue += heading;

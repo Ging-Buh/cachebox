@@ -16,6 +16,7 @@ import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewID;
+import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Main.MainViewBase;
@@ -47,6 +48,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	private HashMap<GL_View_Base, Integer> renderViews = new HashMap<GL_View_Base, Integer>();
 	protected MainViewBase child;
 	protected CB_View_Base mDialog;
+	protected CB_View_Base mActivity;
 	protected CB_View_Base mToastOverlay;
 	private static AtomicBoolean started = new AtomicBoolean(false);
 	static boolean useNewInput = true;
@@ -63,6 +65,12 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	public static SpriteBatch batch;
 	public static OrthographicCamera camera;
 	private ParentInfo prjMatrix;
+	private static boolean misTouchDown = false;
+
+	public static boolean isTouchDown()
+	{
+		return misTouchDown;
+	}
 
 	protected int width = 0;
 	protected int height = 0;
@@ -171,7 +179,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		GL_View_Base view = null;
 
-		CB_View_Base testingView = DialogIsShown ? mDialog : child;
+		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
 
 		view = testingView.touchDown(x, (int) testingView.getHeight() - y, pointer, button);
 
@@ -182,7 +190,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		boolean behandelt = false;
 
-		CB_View_Base testingView = DialogIsShown ? mDialog : child;
+		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
 
 		behandelt = testingView.touchDragged(x, (int) testingView.getHeight() - y, pointer, false);
 
@@ -193,7 +201,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		boolean behandelt = false;
 
-		CB_View_Base testingView = DialogIsShown ? mDialog : child;
+		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
 
 		behandelt = testingView.touchUp(x, (int) testingView.getHeight() - y, pointer, button);
 
@@ -286,7 +294,14 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 		batch.setProjectionMatrix(prjMatrix.Matrix());
 
-		child.renderChilds(batch, prjMatrix);
+		if (ActivityIsShown)
+		{
+			mActivity.renderChilds(batch, prjMatrix);
+		}
+		else
+		{
+			child.renderChilds(batch, prjMatrix);
+		}
 
 		if (DialogIsShown && mDialog.getCildCount() > 0)
 		{
@@ -318,7 +333,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 				{
 					darknesAlpha = 1f;
 					darknesAnimationRuns = false;
-					removeRenderView(mDialog);
+					if (actDialog instanceof Menu) clearRenderViews();
 				}
 			}
 
@@ -389,6 +404,11 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			mDialog.setClickable(true);
 		}
 
+		if (mActivity == null)
+		{
+			mActivity = new MainViewBase(0, 0, width, height, "Dialog");
+			mActivity.setClickable(true);
+		}
 	}
 
 	public void setGLViewID(ViewID id)
@@ -506,7 +526,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public boolean onTouchDownBase(int x, int y, int pointer, int button)
 	{
-		CB_View_Base testingView = DialogIsShown ? mDialog : child;
+		misTouchDown = true;
+		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
 
 		GL_View_Base view = testingView.touchDown(x, (int) testingView.getHeight() - y, pointer, button);
 		if (view == null) return false;
@@ -539,7 +560,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public boolean onTouchDraggedBase(int x, int y, int pointer)
 	{
-		CB_View_Base testingView = DialogIsShown ? mDialog : child;
+		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
 
 		if (!touchDownPos.containsKey(pointer)) return false; // für diesen Pointer ist kein touchDownPos gespeichert ->
 																// dürfte nicht passieren!!!
@@ -574,9 +595,10 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public boolean onTouchUpBase(int x, int y, int pointer, int button)
 	{
+		misTouchDown = false;
 		cancelLongClickTimer();
 
-		CB_View_Base testingView = DialogIsShown ? mDialog : child;
+		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
 
 		if (!touchDownPos.containsKey(pointer)) return false; // für diesen Pointer ist kein touchDownPos gespeichert ->
 																// dürfte nicht passieren!!!
@@ -816,6 +838,9 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	protected boolean DialogIsShown = false;
 	private CB_View_Base actDialog;
 
+	protected boolean ActivityIsShown = false;
+	private CB_View_Base actActivity;
+
 	public CB_View_Base getActDialog()
 	{
 		return actDialog;
@@ -845,14 +870,21 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	public void showDialog(final CB_View_Base dialog)
 	{
+		if (dialog instanceof ActivityBase) throw new IllegalArgumentException(
+				"don´t show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
 
 		showDialog(dialog, false);
 	}
 
 	public void showDialog(final CB_View_Base dialog, boolean atTop)
 	{
+		if (dialog instanceof ActivityBase) throw new IllegalArgumentException(
+				"don´t show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
+
 		clearRenderViews();
 		platformConector.showForDialog();
+
+		if (dialog instanceof Menu) addRenderView(dialog, FRAME_RATE_ACTION);
 
 		// Center Menu on Screen
 		float x = (width - dialog.getWidth()) / 2;
@@ -861,6 +893,13 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		if (atTop) y = height - dialog.getHeight();
 
 		dialog.setPos(x, y);
+
+		if (actDialog != null)
+		{
+			actDialog.onHide();
+			// mDialog.removeChilds();
+		}
+
 		actDialog = dialog;
 
 		mDialog.addChildDirekt(dialog);
@@ -875,7 +914,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 				if (DialogIsShown)
 				{
 					GL_View_Base vDialog = mDialog.getChild(0);
-					if (vDialog instanceof Menu) closeDialog();
+					if (vDialog instanceof Menu) closeDialog(actDialog);
 					if (aktPopUp != null)
 					{
 						closePopUp(aktPopUp);
@@ -896,19 +935,99 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		child.setClickable(false);
 		DialogIsShown = true;
 		darknesAnimationRuns = true;
-
+		actDialog.onShow();
 	}
 
-	public void closeDialog()
+	public void showActivity(final ActivityBase activity)
 	{
-		closeDialog(true);
+		clearRenderViews();
+		platformConector.showForDialog();
+
+		// Center activity on Screen
+		float x = (width - activity.getWidth()) / 2;
+		float y = (height - activity.getHeight()) / 2;
+
+		activity.setPos(x, y);
+
+		if (actDialog != null)
+		{
+			actDialog.onHide();
+			// mDialog.removeChilds();
+		}
+
+		actActivity = activity;
+
+		mActivity.addChildDirekt(activity);
+		// mActivity.setOnClickListener(new OnClickListener()
+		// {
+		//
+		// @Override
+		// public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+		// {
+		// // Sollte bei einem Click neben dem Dialog ausgelöst werden.
+		// // Dann soll der Dialog geschlossen werden, wenn es sich um ein Menü handelt.
+		// if (DialogIsShown)
+		// {
+		// GL_View_Base vDialog = mDialog.getChild(0);
+		// if (vDialog instanceof Menu) closeDialog();
+		// if (aktPopUp != null)
+		// {
+		// closePopUp(aktPopUp);
+		// }
+		// return true;
+		// }
+		//
+		// if (aktPopUp != null)
+		// {
+		// closePopUp(aktPopUp);
+		// return true;
+		// }
+		//
+		// return false;
+		// }
+		// });
+
+		child.setClickable(false);
+		ActivityIsShown = true;
+		darknesAnimationRuns = true;
+		actActivity.onShow();
 	}
 
-	public void closeDialog(boolean MsgToPlatformConector)
+	public void closeActivity()
+	{
+		closeActivity(true);
+	}
+
+	public void closeActivity(boolean MsgToPlatformConector)
+	{
+		if (!ActivityIsShown) return;
+		if (MsgToPlatformConector) platformConector.hideForDialog();
+		if (actActivity != null) actActivity.onHide();
+		actActivity = null;
+		mActivity.removeChildsDirekt();
+		child.setClickable(true);
+		child.invalidate();
+		ActivityIsShown = false;
+		darknesAlpha = 0f;
+		mDarknesSprite = null;// Create new Pixmap on next call
+
+		clearRenderViews();
+		renderOnce("Close Dialog");
+	}
+
+	public void closeDialog(CB_View_Base dialog)
+	{
+		if (dialog instanceof ActivityBase) throw new IllegalArgumentException(
+				"don´t show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
+		closeDialog(dialog, true);
+	}
+
+	public void closeDialog(CB_View_Base dialog, boolean MsgToPlatformConector)
 	{
 		if (!DialogIsShown) return;
 
 		if (MsgToPlatformConector) platformConector.hideForDialog();
+		if (actDialog != null) actDialog.onHide();
 		actDialog = null;
 		mDialog.removeChildsDirekt();
 		child.setClickable(true);
@@ -1046,7 +1165,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		if (actDialog instanceof Menu)
 		{
-			closeDialog();
+			closeDialog(actDialog);
 			return true;
 		}
 		return false;

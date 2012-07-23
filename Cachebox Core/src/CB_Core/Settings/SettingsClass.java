@@ -3,7 +3,6 @@ package CB_Core.Settings;
 import CB_Core.Config;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
-import CB_Core.Enums.SmoothScrollingTyp;
 
 public class SettingsClass extends SettingsList
 {
@@ -11,14 +10,15 @@ public class SettingsClass extends SettingsList
 	private static final long serialVersionUID = 7330937438116889415L;
 
 	// Settings Compass
-	public SettingBool HtcCompass;
-	public SettingInt HtcLevel;
+	public SettingBool HardwareCompass;
+	public SettingInt HardwareCompassLevel;
 
 	// Settings Map
 	public SettingBool MapHideMyFinds;
 
 	// Invisible
 	public SettingLongString Filter;
+	public SettingLongString UserFilter;
 
 	// Folder
 	public SettingFolder UserImageFolder;
@@ -39,10 +39,7 @@ public class SettingsClass extends SettingsList
 	public SettingFile MapsforgeNightTheme;
 
 	// Bool
-	// public SettingBool SaveFieldNotesHtml;
-	public SettingBool OsmDpiAwareRendering;
-	// public SettingBool AllowInternetAccess;
-	// public SettingBool AllowRouteInternet;
+
 	public SettingBool ImportGpx;
 	public SettingBool CacheMapData;
 	public SettingBool CacheImageData;
@@ -53,7 +50,6 @@ public class SettingsClass extends SettingsList
 	public SettingBool MapShowDT;
 	public SettingBool MapShowTitles;
 	// public SettingBool ShowKeypad;
-	public SettingBool isChris;
 	public SettingBool ImportLayerOsm;
 	public SettingBool TrackRecorderStartup;
 	public SettingBool MapShowCompass;
@@ -82,14 +78,13 @@ public class SettingsClass extends SettingsList
 	public SettingBool ImperialUnits;
 	public SettingBool ShowDirektLine;
 	public SettingBool PositionMarkerTransparent;
-	public SettingBool PositionAtVertex;
+
 	public SettingBool DebugShowMarker;
 	public SettingBool ImportRatings;
 	public SettingBool ImportPQsFromGeocachingCom;
 	public SettingBool SettingsShowExpert;
 	public SettingBool SettingsShowAll;
 	public SettingBool switchViewApproach;
-	public SettingBool dontShowChris;
 	public SettingBool hasCallPermission;
 	public SettingBool vibrateFeedback;
 	public SettingBool hasPQ_PlugIn;
@@ -145,7 +140,7 @@ public class SettingsClass extends SettingsList
 	public SettingEncryptedString GcVotePassword;
 
 	// Enums
-	public SettingEnum<SmoothScrollingTyp> SmoothScrolling;
+	// public SettingEnum<SmoothScrollingTyp> SmoothScrolling;
 
 	// ArrayInt
 	public SettingIntArray ZoomCross;
@@ -196,21 +191,16 @@ public class SettingsClass extends SettingsList
 		SettingCategory cat = SettingCategory.Misc;
 
 		addSetting(Filter = new SettingLongString("Filter", cat, NEVER, FilterProperties.presets[0].toString(), false));
+		addSetting(UserFilter = new SettingLongString("UserFilter", cat, NEVER, "", true));
 		addSetting(LastSelectedCache = new SettingString("LastSelectedCache", cat, NORMAL, "", false));
-		// addSetting(SaveFieldNotesHtml = new SettingBool("SaveFieldNotesHtml", cat, NORMAL, true, true));
-		// addSetting(AllowInternetAccess = new SettingBool("AllowInternetAccess", cat, NORMAL, true, true));
-		// addSetting(AllowRouteInternet = new SettingBool("AllowRouteInternet", cat, NORMAL, true, true));
 		addSetting(FoundOffset = new SettingInt("FoundOffset", cat, NORMAL, 0, true));
 		addSetting(TrackDistance = new SettingIntArray("TrackDistance", cat, NORMAL, 3, true, TrackDistanceArray));
 		addSetting(SoundApproachDistance = new SettingIntArray("SoundApproachDistance", cat, NORMAL, 50, true, approach));
 		addSetting(TrackRecorderStartup = new SettingBool("TrackRecorderStartup", cat, NORMAL, false, true));
 		addSetting(DescriptionNoAttributes = new SettingBool("DescriptionNoAttributes", cat, NORMAL, false, true));
 		addSetting(switchViewApproach = new SettingBool("switchViewApproach", cat, NORMAL, false, true));
-		addSetting(dontShowChris = new SettingBool("dontShowChris", cat, NORMAL, false, true));
-		// addSetting(ShowKeypad = new SettingBool("ShowKeypad", cat, NORMAL, true, true));
 		addSetting(PlaySounds = new SettingBool("PlaySounds", cat, NORMAL, true, true));
 		addSetting(SuppressPowerSaving = new SettingBool("SuppressPowerSaving", cat, NORMAL, true, true));
-		// addSetting(AllowLandscape = new SettingBool("AllowLandscape", cat, NORMAL, false, true));
 		addSetting(ImperialUnits = new SettingBool("ImperialUnits", cat, NORMAL, false, true));
 		addSetting(ScreenLock = new SettingTime("ScreenLock", cat, NORMAL, 60000, true));
 		addSetting(ParkingLatitude = new SettingDouble("ParkingLatitude", SettingCategory.Gps, EXPERT, 0, true));
@@ -238,16 +228,14 @@ public class SettingsClass extends SettingsList
 	{
 		SettingCategory cat = SettingCategory.Gps;
 
-		addSetting(HtcLevel = new SettingInt("HtcLevel", cat, NORMAL, 5, true));
-		addSetting(HtcCompass = new SettingBool("HtcCompass", cat, NORMAL, false, true));
+		addSetting(HardwareCompassLevel = new SettingInt("HardwareCompassLevel", cat, NORMAL, 5, true));
+		addSetting(HardwareCompass = new SettingBool("HardwareCompass", cat, NORMAL, true, true));
 	}
 
 	private void addMapSettings()
 	{
 		SettingCategory cat = SettingCategory.Map;
 
-		addSetting(SmoothScrolling = new SettingEnum<SmoothScrollingTyp>("SmoothScrolling", cat, NORMAL, SmoothScrollingTyp.normal, true,
-				GlobalCore.SmoothScrolling));
 		addSetting(ZoomCross = new SettingIntArray("ZoomCross", cat, NORMAL, 16, true, CrossLevel));
 		addSetting(OsmMaxLevel = new SettingIntArray("OsmMaxLevel", cat, NORMAL, 17, true, Level));
 		addSetting(OsmMinLevel = new SettingIntArray("OsmMinLevel", cat, NORMAL, 8, true, Level));
@@ -259,10 +247,8 @@ public class SettingsClass extends SettingsList
 		addSetting(MapShowDT = new SettingBool("MapShowDT", cat, NORMAL, true, true));
 		addSetting(MapShowTitles = new SettingBool("MapShowTitles", cat, NORMAL, true, true));
 		addSetting(PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", cat, NORMAL, false, true));
-		addSetting(PositionAtVertex = new SettingBool("PositionAtVertex", cat, NORMAL, false, true));
 		addSetting(MapShowCompass = new SettingBool("MapShowCompass", cat, NORMAL, true, true));
 		addSetting(CompassNorthOriented = new SettingBool("CompassNorthOriented", cat, NORMAL, true, true));
-		addSetting(OsmDpiAwareRendering = new SettingBool("OsmDpiAwareRendering", cat, NORMAL, false, true));
 
 		addSetting(MapInitLatitude = new SettingDouble("MapInitLatitude", SettingCategory.Gps, EXPERT, -1000, true));
 		addSetting(MapInitLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Gps, EXPERT, -1000, true));
@@ -325,7 +311,6 @@ public class SettingsClass extends SettingsList
 		addSetting(ImportGpx = new SettingBool("ImportGpx", cat, INVISIBLE, true, true));
 		addSetting(CacheMapData = new SettingBool("CacheMapData", cat, INVISIBLE, false, true));
 		addSetting(CacheImageData = new SettingBool("CacheImageData", cat, INVISIBLE, true, true));
-		addSetting(isChris = new SettingBool("isChris", cat, NEVER, false, true));
 		addSetting(AutoResort = new SettingBool("AutoResort", cat, INVISIBLE, false, true));
 
 		addSetting(ImportLayerOsm = new SettingBool("ImportLayerOsm", cat, INVISIBLE, true, true));

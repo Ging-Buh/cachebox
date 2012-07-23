@@ -39,6 +39,8 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 		return SpriteCache.Icons.get(41);
 	}
 
+	SelectDB selectDBDialog;
+
 	@Override
 	public void Execute()
 	{
@@ -52,7 +54,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 			Logger.Error("slpash.Initial()", "search number of DB3 files", ex);
 		}
 
-		SelectDB selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL_Listener.glListener.getWidth(), GL_Listener.glListener.getHeight()),
+		selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL_Listener.glListener.getWidth(), GL_Listener.glListener.getHeight()),
 				"SelectDbDialog", false);
 		selectDBDialog.setReturnListner(new ReturnListner()
 		{
@@ -70,7 +72,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 
 	private void returnFromSelectDB()
 	{
-
+		GL_Listener.glListener.closeActivity();
 		wd = WaitDialog.ShowWait("Load DB ...");
 
 		Thread thread = new Thread(new Runnable()
@@ -81,6 +83,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 			{
 				synchronized (Database.Data.Query)
 				{
+					GL_Listener.glListener.showDialog(wd);
 					Config.settings.ReadFromDB();
 
 					GlobalCore.Categories = new Categories();

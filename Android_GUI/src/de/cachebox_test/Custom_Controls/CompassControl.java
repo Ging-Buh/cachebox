@@ -364,7 +364,7 @@ public final class CompassControl extends View
 
 	private void drawArrow(Canvas canvas)
 	{
-		if (GlobalCore.LastValidPosition.Valid || GlobalCore.Marker.Valid)
+		if (GlobalCore.LastValidPosition.Valid)
 		{
 			canvas.save(Canvas.MATRIX_SAVE_FLAG);
 			canvas.rotate(cacheDegree, 0.5f, 0.5f);

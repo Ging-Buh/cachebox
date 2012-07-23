@@ -24,7 +24,7 @@ public class Menu extends Dialog
 
 	private ArrayList<MenuItem> mItems = new ArrayList<MenuItem>();
 	private V_ListView mListView;
-	private Menu Me;
+	private Menu that;
 
 	private OnClickListener MenuItemClickListner = new OnClickListener()
 	{
@@ -32,7 +32,7 @@ public class Menu extends Dialog
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
-			GL_Listener.glListener.closeDialog();
+			GL_Listener.glListener.closeDialog(that);
 			if (mOnItemClickListner != null) mOnItemClickListner.onClick(v, x, y, pointer, button);
 
 			return true;
@@ -42,23 +42,34 @@ public class Menu extends Dialog
 	public Menu(String Name)
 	{
 		super(MENU_REC, Name);
-		Me = this;
+		that = this;
+
 		if (ItemHeight == -1f) ItemHeight = UiSizes.getButtonHeight();
+
+		MENU_REC = new CB_RectF(new SizeF(400, mHeaderHight + mFooterHeight + (margin * 2)));
+
+		this.setRec(MENU_REC);
+
+		mListView = new V_ListView(this, "MenuList");
+
+		mListView.setWidth(this.width);
+		mListView.setHeight(this.height);
+
+		mListView.setZeroPos();
+		this.addChild(mListView);
+
 	}
 
 	@Override
 	protected void Initial()
 	{
+		super.Initial();
+
 		this.removeChilds();
 
-		mListView = new V_ListView(this, "MenuList");
+		mListView.setSize(this.getContentSize());
 
-		mListView.setWidth(this.width - 4);
-		mListView.setHeight(this.height - 50);
-
-		mListView.setZeroPos();
 		this.addChild(mListView);
-
 		mListView.setBaseAdapter(new CustomAdapter());
 
 		super.Initial();
@@ -77,7 +88,9 @@ public class Menu extends Dialog
 
 		public ListViewItemBase getView(int position)
 		{
-			return mItems.get(position);
+			ListViewItemBase v = mItems.get(position);
+			v.resetInitial();
+			return v;
 		}
 
 		@Override
@@ -89,6 +102,7 @@ public class Menu extends Dialog
 		@Override
 		public float getItemSize(int position)
 		{
+			if (mItems == null || mItems.size() == 0 || mItems.size() < position) return 0;
 			return mItems.get(position).getHeight();
 		}
 	}
@@ -135,7 +149,7 @@ public class Menu extends Dialog
 
 		if (withoutTranslation) trans = StringId;
 
-		float higherValue = this.height + ItemHeight + 2; // 2= Standard divider Height
+		float higherValue = this.height + ItemHeight + mListView.getDividerHeight();
 
 		if (higherValue < UiSizes.getWindowHeight() * 0.8f)
 		{
@@ -144,11 +158,16 @@ public class Menu extends Dialog
 			this.resetInitial();
 		}
 
-		MenuItem item = new MenuItem(new SizeF(this.width * 0.95f, ItemHeight), mItems.size(), ID, "Menu Item@" + ID);
+		// mListView.setWidth(this.width - Left - Reight);
+		// mListView.setHeight(this.height - mFooterHeight - mHeaderHight - Top - Bottom - margin);
+
+		mListView.setSize(this.getContentSize());
+		mListView.setHeight(mListView.getHeight());
+		MenuItem item = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), ID, "Menu Item@" + ID);
 
 		item.setTitle(trans);
 		addItem(item);
-
+		mListView.notifyDataSetChanged();
 		return item;
 	}
 

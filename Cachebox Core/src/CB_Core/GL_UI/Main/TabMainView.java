@@ -4,6 +4,7 @@ import java.io.File;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.TrackRecorder;
 import CB_Core.DB.Database;
@@ -11,6 +12,7 @@ import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
+import CB_Core.GL_UI.Activitys.FilterSettings.PresetListViewItem;
 import CB_Core.GL_UI.Controls.Slider;
 import CB_Core.GL_UI.Controls.Dialogs.Toast;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
@@ -220,7 +222,7 @@ public class TabMainView extends MainViewBase
 		}
 
 		platformConector.FirstShow();
-
+		filterSetChanged();
 		GL_Listener.glListener.removeRenderView(this);
 	}
 
@@ -239,14 +241,14 @@ public class TabMainView extends MainViewBase
 
 		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
 
-		CB_Button btn1 = new CB_Button(btnRec, "Button1", SpriteCache.CacheList);
+		CacheListButton = new CB_Button(btnRec, "Button1", SpriteCache.CacheList);
 		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCache.Cache);
 		CB_Button btn3 = new CB_Button(btnRec, "Button3", SpriteCache.Nav);
 		CB_Button btn4 = new CB_Button(btnRec, "Button4", SpriteCache.Tool);
 		CB_Button btn5 = new CB_Button(btnRec, "Button5", SpriteCache.Misc);
 
 		CB_ButtonList btnList = new CB_ButtonList();
-		btnList.addButton(btn1);
+		btnList.addButton(CacheListButton);
 		btnList.addButton(btn2);
 		btnList.addButton(btn3);
 		btnList.addButton(btn4);
@@ -289,9 +291,9 @@ public class TabMainView extends MainViewBase
 
 		// Actions den Buttons zuweisen
 
-		btn1.addAction(new CB_ActionButton(actionShowCacheList, true, GestureDirection.Up));
-		btn1.addAction(new CB_ActionButton(actionShowTrackableListView, false, GestureDirection.Right));
-		btn1.addAction(new CB_ActionButton(actionShowTrackListView, false, GestureDirection.Down));
+		CacheListButton.addAction(new CB_ActionButton(actionShowCacheList, true, GestureDirection.Up));
+		CacheListButton.addAction(new CB_ActionButton(actionShowTrackableListView, false, GestureDirection.Right));
+		CacheListButton.addAction(new CB_ActionButton(actionShowTrackListView, false, GestureDirection.Down));
 
 		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true, GestureDirection.Up));
 		btn2.addAction(new CB_ActionButton(actionShowWaypointView, false, GestureDirection.Right));
@@ -332,6 +334,8 @@ public class TabMainView extends MainViewBase
 		addRightForTabletsTab();
 	}
 
+	CB_Button CacheListButton;
+
 	private void addLeftForTabletsTab()
 	{
 		// mit fünf Buttons
@@ -345,14 +349,14 @@ public class TabMainView extends MainViewBase
 
 		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
 
-		CB_Button btn1 = new CB_Button(btnRec, "Button1", SpriteCache.CacheList);
+		CacheListButton = new CB_Button(btnRec, "Button1", SpriteCache.CacheList);
 		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCache.Cache);
 		CB_Button btn3 = new CB_Button(btnRec, "Button3", SpriteCache.Nav);
 		CB_Button btn4 = new CB_Button(btnRec, "Button4", SpriteCache.Tool);
 		CB_Button btn5 = new CB_Button(btnRec, "Button5", SpriteCache.Misc);
 
 		CB_ButtonList btnList = new CB_ButtonList();
-		btnList.addButton(btn1);
+		btnList.addButton(CacheListButton);
 		btnList.addButton(btn2);
 		btnList.addButton(btn3);
 		btnList.addButton(btn4);
@@ -389,9 +393,9 @@ public class TabMainView extends MainViewBase
 		actionClose.setTab(this, Tab);
 
 		// Actions den Buttons zuweisen
-		btn1.addAction(new CB_ActionButton(actionShowCacheList, true));
-		btn1.addAction(new CB_ActionButton(actionShowTrackableListView, false));
-		btn1.addAction(new CB_ActionButton(actionShowTrackListView, false));
+		CacheListButton.addAction(new CB_ActionButton(actionShowCacheList, true));
+		CacheListButton.addAction(new CB_ActionButton(actionShowTrackableListView, false));
+		CacheListButton.addAction(new CB_ActionButton(actionShowTrackListView, false));
 
 		btn2.addAction(new CB_ActionButton(actionShowWaypointView, true, GestureDirection.Right));
 		btn2.addAction(new CB_ActionButton(actionShowLogView, false, GestureDirection.Down));
@@ -435,18 +439,13 @@ public class TabMainView extends MainViewBase
 
 		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
 
-		// CB_Button btn1 = new CB_Button(btnRec, "Button1", SpriteCache.CacheList);
 		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCache.Cache);
 		CB_Button btn3 = new CB_Button(btnRec, "Button3", SpriteCache.Nav);
-		// CB_Button btn4 = new CB_Button(btnRec, "Button4", SpriteCache.Tool);
-		// CB_Button btn5 = new CB_Button(btnRec, "Button5", SpriteCache.Misc);
 
 		CB_ButtonList btnList = new CB_ButtonList();
-		// btnList.addButton(btn1);
+
 		btnList.addButton(btn2);
 		btnList.addButton(btn3);
-		// btnList.addButton(btn4);
-		// btnList.addButton(btn5);
 
 		Tab.addButtonList(btnList);
 
@@ -587,6 +586,21 @@ public class TabMainView extends MainViewBase
 			}
 		}
 		GL_Listener.glListener.RestartRender();
+	}
+
+	public void filterSetChanged()
+	{
+		if ((GlobalCore.LastFilter == null) || (GlobalCore.LastFilter.ToString().equals(""))
+				|| (PresetListViewItem.chkPresetFilter(FilterProperties.presets[0], GlobalCore.LastFilter.ToString()))
+				&& !GlobalCore.LastFilter.isExtendsFilter())
+		{
+			CacheListButton.setButtonSprites(SpriteCache.CacheList);
+		}
+		else
+		{
+			CacheListButton.setButtonSprites(SpriteCache.CacheListFilter);
+		}
+
 	}
 
 	public void showCacheList()

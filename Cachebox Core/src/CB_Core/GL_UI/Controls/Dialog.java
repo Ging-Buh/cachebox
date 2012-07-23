@@ -36,14 +36,34 @@ public abstract class Dialog extends CB_View_Base
 
 	protected float mHeaderHight = 200;
 	protected float mFooterHeight = 200;
+	public float Left;
+	public float Reight;
+	public float Top;
+	public float Bottom;
 
-	protected static float margin = 5f;
+	public static float margin = 5f;
+
+	int pW = 0;
 
 	public Dialog(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 		mHeaderHight = margin = calcHeaderHeight();
 		mFooterHeight = calcFooterHeight(false);
+		// calcBase
+		pW = (int) (SpriteCache.Dialog.get(2).getWidth() / 8);
+
+		mTitle9patch = new NinePatch(SpriteCache.Dialog.get(3), pW, (pW * 12 / 8), pW, pW);
+		mHeader9patch = new NinePatch(SpriteCache.Dialog.get(0), pW, pW, pW, 3);
+		mCenter9patch = new NinePatch(SpriteCache.Dialog.get(1), pW, pW, 3, 3);
+		mFooter9patch = new NinePatch(SpriteCache.Dialog.get(2), pW, pW, 3, pW);
+
+		Left = mCenter9patch.getLeftWidth();
+		Reight = mCenter9patch.getRightWidth();
+		Top = mCenter9patch.getTopHeight();
+		Bottom = mFooter9patch.getBottomHeight();
+		mTitleVersatz = (float) pW;
+
 	}
 
 	@Override
@@ -68,9 +88,6 @@ public abstract class Dialog extends CB_View_Base
 		super.removeChildsDirekt();
 		mTitleHeight = 0;
 
-		// calcBase
-		int pW = (int) (SpriteCache.Dialog.get(2).getWidth() / 8);
-
 		if (mTitle != null && !mTitle.equals(""))
 		{
 			mHasTitle = true;
@@ -79,21 +96,20 @@ public abstract class Dialog extends CB_View_Base
 			mTitleWidth = bounds.width + (6.666f * pW);
 			if (mTitleWidth > this.width) mTitleWidth = this.width - (1.666f * pW);
 
-			mTitleHeight = bounds.height * 1.6f;
+			mTitleHeight = bounds.height * 3f;
 
-			bounds = null;
-
-			Label titleLabel = new Label(new CB_RectF((1.666f * pW), this.height - (5f * pW), mTitleWidth - (4.1666f * pW), (3.333f * pW)),
-					"DialogTitleLabel");
+			Label titleLabel = new Label(new CB_RectF((1.666f * pW), this.height - bounds.height - (margin * 3), mTitleWidth
+					- (4.1666f * pW), (5.16666f * pW)), "DialogTitleLabel");
 			titleLabel.setFont(Fonts.getNormal());
 			titleLabel.setText(mTitle);
 
+			bounds = null;
 			super.addChildDirekt(titleLabel);
 
 		}
 
 		mContent = new Box(this.ScaleCenter(0.95f), "Dialog Content Box");
-		mContent.setHeight(this.height - mHeaderHight - mFooterHeight - mTitleHeight);
+		mContent.setHeight(this.height - mHeaderHight - mFooterHeight - mTitleHeight - margin);
 		float centerversatzX = this.halfWidth - mContent.getHalfWidth();
 		float centerversatzY = mFooterHeight;// this.halfHeight - mContent.getHalfHeight();
 		mContent.setPos(new Vector2(centerversatzX, centerversatzY));
@@ -105,12 +121,6 @@ public abstract class Dialog extends CB_View_Base
 
 		super.addChild(mContent);
 
-		mTitle9patch = new NinePatch(SpriteCache.Dialog.get(3), pW, (pW * 12 / 8), pW, pW);
-		mHeader9patch = new NinePatch(SpriteCache.Dialog.get(0), pW, pW, pW, 1);
-		mCenter9patch = new NinePatch(SpriteCache.Dialog.get(1), pW, pW, 1, 1);
-		mFooter9patch = new NinePatch(SpriteCache.Dialog.get(2), pW, pW, 1, pW);
-
-		mTitleVersatz = (float) pW;
 	}
 
 	@Override
@@ -120,9 +130,10 @@ public abstract class Dialog extends CB_View_Base
 		batch.begin();
 
 		if (mHeader9patch != null) mHeader9patch.draw(batch, 0, this.height - mTitleHeight - mHeaderHight, this.width, mHeaderHight);
-		if (mCenter9patch != null) mCenter9patch.draw(batch, 0, mFooterHeight - 1, this.width, this.height - mFooterHeight - mHeaderHight
-				- mTitleHeight + 2);
-		if (mFooter9patch != null) mFooter9patch.draw(batch, 0, 0, this.width, mFooterHeight);
+		if (mFooter9patch != null) mFooter9patch.draw(batch, 0, 0, this.width, mFooterHeight + 2);
+
+		if (mCenter9patch != null) mCenter9patch.draw(batch, 0, mFooterHeight, this.width,
+				(this.height - mFooterHeight - mHeaderHight - mTitleHeight) + 3.5f);
 
 		if (mHasTitle)
 		{

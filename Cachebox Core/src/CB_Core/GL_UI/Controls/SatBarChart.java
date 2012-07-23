@@ -78,8 +78,8 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 
 		int w = getNextHighestPO2((int) this.getWidth());
 		int h = getNextHighestPO2((int) this.getHeight());
-		Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-
+		// Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+		Pixmap p = new Pixmap(w, h, Pixmap.Format.RGB565);
 		int count = 0;
 		if (GPS.getSatList() != null)
 		{

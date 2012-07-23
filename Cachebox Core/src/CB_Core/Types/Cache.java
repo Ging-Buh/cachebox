@@ -534,7 +534,7 @@ public class Cache implements Comparable<Cache>
 	 */
 	public float Distance(boolean useFinal)
 	{
-		Coordinate fromPos = (GlobalCore.Marker.Valid) ? GlobalCore.Marker : GlobalCore.LastValidPosition;
+		Coordinate fromPos = GlobalCore.LastValidPosition;
 		Waypoint waypoint = null;
 		if (useFinal) waypoint = this.GetFinalWaypoint();
 		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die

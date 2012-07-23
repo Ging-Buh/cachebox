@@ -11,7 +11,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -52,6 +51,7 @@ import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.ViewID.UI_Pos;
 import CB_Core.GL_UI.ViewID.UI_Type;
+import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
@@ -170,7 +170,6 @@ import de.cachebox_test.Ui.AndroidClipboard;
 import de.cachebox_test.Views.AboutView;
 import de.cachebox_test.Views.CompassView;
 import de.cachebox_test.Views.DescriptionView;
-import de.cachebox_test.Views.FieldNotesView;
 import de.cachebox_test.Views.JokerView;
 import de.cachebox_test.Views.LogView;
 import de.cachebox_test.Views.NotesView;
@@ -179,9 +178,7 @@ import de.cachebox_test.Views.SpoilerView;
 import de.cachebox_test.Views.TrackListView;
 import de.cachebox_test.Views.TrackableListView;
 import de.cachebox_test.Views.ViewGL;
-import de.cachebox_test.Views.WaypointView;
 import de.cachebox_test.Views.AdvancedSettingsForms.SettingsScrollView;
-import de.cachebox_test.Views.FilterSettings.EditFilterSettings;
 import de.cachebox_test.Views.Forms.ApiSearchPosDialog;
 import de.cachebox_test.Views.Forms.DeleteDialog;
 import de.cachebox_test.Views.Forms.GcApiLogin;
@@ -213,12 +210,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static NotesView notesView = null; // ID 6
 	private static SolverView solverView = null; // ID 7
 	private static CompassView compassView = null; //
-	public static FieldNotesView fieldNotesView = null; // ID 9
 	private static AboutView aboutView = null; // ID 11
 	private static JokerView jokerView = null; // ID 12
 	private static TrackListView tracklistView = null; // ID 13
 	private static TrackableListView trackablelistView = null; // ID 14
-	public static WaypointView waypointView = null; // ID 15
 
 	private static devicesSizes ui;
 
@@ -404,10 +399,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
-		Date now = new Date();
-		boolean c = (now.getMonth() == 11 && !Config.settings.dontShowChris.getValue());
-		Config.settings.isChris.setValue(c);
-
 		Config.AcceptChanges();
 
 		initialLocationManager();
@@ -474,11 +465,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				try
 				{
 					Welcome = GlobalCore.Translations.getTextFile("welcome", LangId);
-
-					if (Config.settings.isChris.getValue())
-					{
-						Welcome += GlobalCore.Translations.getTextFile("chris", LangId);
-					}
 
 					Welcome += GlobalCore.Translations.getTextFile("changelog", LangId);
 				}
@@ -1104,7 +1090,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				CacheListDAO dao = new CacheListDAO();
 				nun = dao.DelFilter(GlobalCore.LastFilter.getSqlWhere());
 				GlobalCore.LastFilter = new FilterProperties(FilterProperties.presets[0]);
-				EditFilterSettings.ApplyFilter(mainActivity, GlobalCore.LastFilter);
+				EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
 				String msg = GlobalCore.Translations.Get("DeletedCaches", String.valueOf(nun));
 				Toast(msg);
 				return;
@@ -1455,7 +1441,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		else if (ID == ViewConst.TRACK_LIST_VIEW) return tracklistView = new TrackListView(this, this);
 		else if (ID == ViewConst.JOKER_VIEW) return jokerView = new JokerView(this, this);
 		else if (ID == ViewConst.ABOUT_VIEW) return aboutView = new AboutView(this, inflater);
-		else if (ID == ViewConst.FIELD_NOTES_VIEW) return fieldNotesView = new FieldNotesView(this, this);
 		else if (ID == ViewConst.SOLVER_VIEW) return solverView = new SolverView(this, inflater);
 		else if (ID == ViewConst.NOTES_VIEW) return notesView = new NotesView(this, inflater);
 		else if (ID == ViewConst.SPOILER_VIEW) return spoilerView = new SpoilerView(this, inflater);
@@ -1473,7 +1458,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 		else if (ID == ViewConst.LOG_VIEW) return logView = new LogView(this);
-		else if (ID == ViewConst.WAYPOINT_VIEW) return waypointView = new WaypointView(this, this);
 		else if (ID == ViewConst.COMPASS_VIEW)
 		{
 			compassView = new CompassView(this, inflater);
@@ -1603,13 +1587,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				aboutView.OnFree();
 				aboutView = null;
 			}
-			else if (aktView.equals(fieldNotesView))
-			{
-				// Instanz löschenn
-				aktView = null;
-				fieldNotesView.OnFree();
-				fieldNotesView = null;
-			}
 			else if (aktView.equals(compassView))
 			{
 				// Instanz löschenn
@@ -1651,13 +1628,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				aktView = null;
 				logView.OnFree();
 				logView = null;
-			}
-			else if (aktView.equals(waypointView))
-			{
-				// Instanz löschenn
-				aktView = null;
-				waypointView.OnFree();
-				waypointView = null;
 			}
 
 		}
@@ -1950,7 +1920,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			 * Verhältnis zwichen Performance und Stromverbrauch, geliefert werden. Andere apps haben hier 0.
 			 */
 
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300, 1, this);
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 500, this);
 
 			locationManager.addNmeaListener(this);
@@ -3719,19 +3689,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				{
 					if (tracklistView != null) tracklistView.HandleGenerate_Projection();
 				}
-				else if (ID == MenuItemConst.SHOW_WP_CONTEXT_MENU)
-				{
-					if (waypointView != null) waypointView.BeforeShowMenu(null);
-				}
-				else if (ID == MenuItemConst.SHOW_FIELD_NOTE_CONTEXT_MENU)
-				{
-					if (fieldNotesView != null) fieldNotesView.BeforeShowMenu(null);
-				}
 				else if (ID == MenuItemConst.SHOW_TB_CONTEXT_MENU)
 				{
 					if (trackablelistView != null) trackablelistView.BeforeShowMenu(null);
 				}
-
 			}
 
 			@Override

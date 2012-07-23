@@ -330,7 +330,6 @@ public class SelectDB extends ActivityBase
 
 	protected void selectDB()
 	{
-
 		if (AktFile == null)
 		{
 			GL_Listener.glListener.Toast("no DB selected", 200);
@@ -361,7 +360,7 @@ public class SelectDB extends ActivityBase
 	@Override
 	protected void finish()
 	{
-		GL_Listener.glListener.closeDialog(!MusstSelect);
+		GL_Listener.glListener.closeActivity(!MusstSelect);
 	}
 
 	private void setAutoStartText()

@@ -5,16 +5,14 @@ import java.awt.Menu;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
-import CB_Core.GL_UI.Controls.List.ListViewItemBase;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class MenuItem extends ListViewItemBase
+public class MenuItem extends ListViewItemBackground
 {
 	private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 
@@ -27,7 +25,6 @@ public class MenuItem extends ListViewItemBase
 	private boolean mLeft = false;
 	private Object data = null;
 
-	private Image mImage;
 	private int mID;
 
 	protected boolean isPressed = false;
@@ -46,6 +43,7 @@ public class MenuItem extends ListViewItemBase
 	@Override
 	protected void Initial()
 	{
+		super.Initial();
 		this.removeChilds();
 
 		boolean hasIcon = (mIcon != null);
@@ -54,7 +52,6 @@ public class MenuItem extends ListViewItemBase
 		float right = hasIcon ? this.height : 0;
 		float labelWidth = (this.width - right - left) * 0.97f;
 
-		setBackground();
 		mLabel = new Label(this.ScaleCenter(0.97f), "MenuItemLabel");
 
 		mLabel.setWidth(labelWidth);
@@ -156,33 +153,12 @@ public class MenuItem extends ListViewItemBase
 		return this;
 	}
 
-	private void setBackground()
-	{
-
-		Boolean BackGroundChanger = ((this.getIndex() % 2) == 1);
-
-		if (isPressed)
-		{
-			this.setBackground(new NinePatch(SpriteCache.getThemedSprite("listrec_pressed"), 20, 20, 20, 20));
-		}
-		else if (BackGroundChanger)
-		{
-			this.setBackground(new NinePatch(SpriteCache.getThemedSprite("listrec_first"), 20, 20, 20, 20));
-		}
-		else
-		{
-			this.setBackground(new NinePatch(SpriteCache.getThemedSprite("listrec_secend"), 20, 20, 20, 20));
-		}
-
-		GL_Listener.glListener.renderOnce(this.getName() + " SetBackGround");
-	}
-
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
 
 		isPressed = true;
-		setBackground();
+
 		return false;
 	}
 
@@ -190,7 +166,7 @@ public class MenuItem extends ListViewItemBase
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 		isPressed = false;
-		setBackground();
+
 		return false;
 	}
 
@@ -198,7 +174,7 @@ public class MenuItem extends ListViewItemBase
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
 		isPressed = false;
-		setBackground();
+
 		return false;
 	}
 
@@ -252,8 +228,6 @@ public class MenuItem extends ListViewItemBase
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 }

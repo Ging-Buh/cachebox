@@ -31,7 +31,6 @@ import android.view.View;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Views.WaypointView;
 
 public final class WayPointInfoControl extends View
 {
@@ -84,8 +83,8 @@ public final class WayPointInfoControl extends View
 			return;
 		}
 
-		this.imgSize = (int) ((WaypointView.windowH / 5) * 0.6);
-		this.rightBorder = (int) (WaypointView.windowH / 5);
+		this.imgSize = (int) ((UiSizes.getWindowHeight() / 5) * 0.6);
+		this.rightBorder = (int) (UiSizes.getWindowHeight() / 5);
 		int TextWidth = this.width - this.imgSize - this.rightBorder;
 
 		Rect bounds = new Rect();

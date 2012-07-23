@@ -760,3 +760,9 @@ English
 	Credits = Credits
 	
 	CenterWP = Center => WP
+	
+	date = Date
+	time = Time
+	
+	wrongDate = Wrong date or time entered!
+	EmptyFieldNotes = No Fieldnotes entered!

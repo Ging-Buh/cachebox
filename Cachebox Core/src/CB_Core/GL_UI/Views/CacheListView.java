@@ -19,6 +19,7 @@ import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Menu.CB_AllContextMenuHandler;
 import CB_Core.Locator.Locator;
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
@@ -45,9 +46,15 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 		GL_Listener.glListener.renderOnce(this.getName() + " Initial()");
 	}
 
+	private Boolean isShown = false;
+
 	@Override
 	public void onShow()
 	{
+
+		if (isShown) return;
+		isShown = true;
+		Logger.LogCat("CacheList onShow");
 		setBackground(SpriteCache.ListBack);
 
 		CachListChangedEventList.Add(this);
@@ -137,6 +144,8 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 	@Override
 	public void onHide()
 	{
+		isShown = false;
+		Logger.LogCat("CacheList onHide");
 		SelectedCacheEventList.Remove(this);
 		CachListChangedEventList.Remove(this);
 		PositionChangedEventList.Remove(this);
@@ -199,6 +208,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 
 		public CustomAdapter(CacheList cacheList)
 		{
+			Logger.DEBUG("CacheList new Costum Adapter");
 			this.cacheList = cacheList;
 		}
 
@@ -240,6 +250,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 	@Override
 	public void CacheListChangedEvent()
 	{
+		Logger.DEBUG("CacheListChangetEvent on Cache List");
 		this.setBaseAdapter(null);
 		synchronized (Database.Data.Query)
 		{
