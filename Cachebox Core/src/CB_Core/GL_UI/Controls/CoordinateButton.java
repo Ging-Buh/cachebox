@@ -79,7 +79,7 @@ public class CoordinateButton extends Button
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
 			if (edCo == null) initialEdCo();
-			GL_Listener.glListener.showDialog(edCo);
+			GL_Listener.glListener.showActivity(edCo);
 
 			return true;
 		}
