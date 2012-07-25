@@ -44,9 +44,9 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	{
 		if (!mBackIsInitial)
 		{
-			backSelect = new NinePatch(SpriteCache.getThemedSprite("listrec_selected"), 16, 16, 16, 16);
-			back1 = new NinePatch(SpriteCache.getThemedSprite("listrec_first"), 16, 16, 16, 16);
-			back2 = new NinePatch(SpriteCache.getThemedSprite("listrec_secend"), 16, 16, 16, 16);
+			backSelect = new NinePatch(SpriteCache.getThemedSprite("listrec-selected"), 16, 16, 16, 16);
+			back1 = new NinePatch(SpriteCache.getThemedSprite("listrec-first"), 16, 16, 16, 16);
+			back2 = new NinePatch(SpriteCache.getThemedSprite("listrec-secend"), 16, 16, 16, 16);
 
 			LeftWidth = back1.getLeftWidth();
 			RightWidth = back1.getRightWidth();

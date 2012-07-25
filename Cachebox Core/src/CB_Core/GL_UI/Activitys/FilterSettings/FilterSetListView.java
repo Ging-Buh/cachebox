@@ -310,128 +310,128 @@ public class FilterSetListView extends V_ListView
 
 		// add Attributes
 		Attr = addFilterSetCollabseItem(null, "Attributes", COLLABSE_BUTTON_ITEM);
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_1_1Icon"), GlobalCore.Translations.Get("att_1_1"), THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_2_1Icon"), GlobalCore.Translations.Get("att_2_1"), THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_3_1Icon"), GlobalCore.Translations.Get("att_3_1"), THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_4_1Icon"), GlobalCore.Translations.Get("att_4_1"), THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_5_1Icon"), GlobalCore.Translations.Get("att_5_1"), THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_6_1Icon"), GlobalCore.Translations.Get("att_6_1"), THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_7_1Icon"), GlobalCore.Translations.Get("att_7_1"), THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_8_1Icon"), GlobalCore.Translations.Get("att_8_1"), THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_9_1Icon"), GlobalCore.Translations.Get("att_9_1"), THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_10_1Icon"), GlobalCore.Translations.Get("att_10_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-1-1Icon"), GlobalCore.Translations.Get("att_1_1"), THREE_STATE_ITEM));
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-2-1Icon"), GlobalCore.Translations.Get("att_2_1"), THREE_STATE_ITEM));
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-3-1Icon"), GlobalCore.Translations.Get("att_3_1"), THREE_STATE_ITEM));
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-4-1Icon"), GlobalCore.Translations.Get("att_4_1"), THREE_STATE_ITEM));
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-5-1Icon"), GlobalCore.Translations.Get("att_5_1"), THREE_STATE_ITEM));
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-6-1Icon"), GlobalCore.Translations.Get("att_6_1"), THREE_STATE_ITEM));
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-7-1Icon"), GlobalCore.Translations.Get("att_7_1"), THREE_STATE_ITEM));
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-8-1Icon"), GlobalCore.Translations.Get("att_8_1"), THREE_STATE_ITEM));
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-9-1Icon"), GlobalCore.Translations.Get("att_9_1"), THREE_STATE_ITEM));
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-10-1Icon"), GlobalCore.Translations.Get("att_10_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_11_1Icon"), GlobalCore.Translations.Get("att_11_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-11-1Icon"), GlobalCore.Translations.Get("att_11_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_12_1Icon"), GlobalCore.Translations.Get("att_12_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-12-1Icon"), GlobalCore.Translations.Get("att_12_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_13_1Icon"), GlobalCore.Translations.Get("att_13_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-13-1Icon"), GlobalCore.Translations.Get("att_13_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_14_1Icon"), GlobalCore.Translations.Get("att_14_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-14-1Icon"), GlobalCore.Translations.Get("att_14_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_15_1Icon"), GlobalCore.Translations.Get("att_15_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-15-1Icon"), GlobalCore.Translations.Get("att_15_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_16_1Icon"), GlobalCore.Translations.Get("att_16_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-16-1Icon"), GlobalCore.Translations.Get("att_16_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_17_1Icon"), GlobalCore.Translations.Get("att_17_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-17-1Icon"), GlobalCore.Translations.Get("att_17_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_18_1Icon"), GlobalCore.Translations.Get("att_18_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-18-1Icon"), GlobalCore.Translations.Get("att_18_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_19_1Icon"), GlobalCore.Translations.Get("att_19_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-19-1Icon"), GlobalCore.Translations.Get("att_19_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_20_1Icon"), GlobalCore.Translations.Get("att_20_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-20-1Icon"), GlobalCore.Translations.Get("att_20_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_21_1Icon"), GlobalCore.Translations.Get("att_21_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-21-1Icon"), GlobalCore.Translations.Get("att_21_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_22_1Icon"), GlobalCore.Translations.Get("att_22_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-22-1Icon"), GlobalCore.Translations.Get("att_22_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_23_1Icon"), GlobalCore.Translations.Get("att_23_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-23-1Icon"), GlobalCore.Translations.Get("att_23_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_24_1Icon"), GlobalCore.Translations.Get("att_24_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-24-1Icon"), GlobalCore.Translations.Get("att_24_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_25_1Icon"), GlobalCore.Translations.Get("att_25_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-25-1Icon"), GlobalCore.Translations.Get("att_25_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_26_1Icon"), GlobalCore.Translations.Get("att_26_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-26-1Icon"), GlobalCore.Translations.Get("att_26_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_27_1Icon"), GlobalCore.Translations.Get("att_27_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-27-1Icon"), GlobalCore.Translations.Get("att_27_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_28_1Icon"), GlobalCore.Translations.Get("att_28_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-28-1Icon"), GlobalCore.Translations.Get("att_28_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_29_1Icon"), GlobalCore.Translations.Get("att_29_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-29-1Icon"), GlobalCore.Translations.Get("att_29_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_30_1Icon"), GlobalCore.Translations.Get("att_30_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-30-1Icon"), GlobalCore.Translations.Get("att_30_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_31_1Icon"), GlobalCore.Translations.Get("att_31_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-31-1Icon"), GlobalCore.Translations.Get("att_31_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_32_1Icon"), GlobalCore.Translations.Get("att_32_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-32-1Icon"), GlobalCore.Translations.Get("att_32_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_33_1Icon"), GlobalCore.Translations.Get("att_33_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-33-1Icon"), GlobalCore.Translations.Get("att_33_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_34_1Icon"), GlobalCore.Translations.Get("att_34_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-34-1Icon"), GlobalCore.Translations.Get("att_34_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_35_1Icon"), GlobalCore.Translations.Get("att_35_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-35-1Icon"), GlobalCore.Translations.Get("att_35_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_36_1Icon"), GlobalCore.Translations.Get("att_36_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-36-1Icon"), GlobalCore.Translations.Get("att_36_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_37_1Icon"), GlobalCore.Translations.Get("att_37_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-37-1Icon"), GlobalCore.Translations.Get("att_37_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_38_1Icon"), GlobalCore.Translations.Get("att_38_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-38-1Icon"), GlobalCore.Translations.Get("att_38_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_39_1Icon"), GlobalCore.Translations.Get("att_39_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-39-1Icon"), GlobalCore.Translations.Get("att_39_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_40_1Icon"), GlobalCore.Translations.Get("att_40_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-40-1Icon"), GlobalCore.Translations.Get("att_40_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_41_1Icon"), GlobalCore.Translations.Get("att_41_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-41-1Icon"), GlobalCore.Translations.Get("att_41_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_42_1Icon"), GlobalCore.Translations.Get("att_42_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-42-1Icon"), GlobalCore.Translations.Get("att_42_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_43_1Icon"), GlobalCore.Translations.Get("att_43_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-43-1Icon"), GlobalCore.Translations.Get("att_43_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_44_1Icon"), GlobalCore.Translations.Get("att_44_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-44-1Icon"), GlobalCore.Translations.Get("att_44_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_45_1Icon"), GlobalCore.Translations.Get("att_45_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-45-1Icon"), GlobalCore.Translations.Get("att_45_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_46_1Icon"), GlobalCore.Translations.Get("att_46_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-46-1Icon"), GlobalCore.Translations.Get("att_46_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_47_1Icon"), GlobalCore.Translations.Get("att_47_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-47-1Icon"), GlobalCore.Translations.Get("att_47_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_48_1Icon"), GlobalCore.Translations.Get("att_48_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-48-1Icon"), GlobalCore.Translations.Get("att_48_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_49_1Icon"), GlobalCore.Translations.Get("att_49_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-49-1Icon"), GlobalCore.Translations.Get("att_49_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_50_1Icon"), GlobalCore.Translations.Get("att_50_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-50-1Icon"), GlobalCore.Translations.Get("att_50_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_51_1Icon"), GlobalCore.Translations.Get("att_51_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-51-1Icon"), GlobalCore.Translations.Get("att_51_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_52_1Icon"), GlobalCore.Translations.Get("att_52_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-52-1Icon"), GlobalCore.Translations.Get("att_52_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_53_1Icon"), GlobalCore.Translations.Get("att_53_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-53-1Icon"), GlobalCore.Translations.Get("att_53_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_54_1Icon"), GlobalCore.Translations.Get("att_54_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-54-1Icon"), GlobalCore.Translations.Get("att_54_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_55_1Icon"), GlobalCore.Translations.Get("att_55_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-55-1Icon"), GlobalCore.Translations.Get("att_55_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_56_1Icon"), GlobalCore.Translations.Get("att_56_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-56-1Icon"), GlobalCore.Translations.Get("att_56_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_57_1Icon"), GlobalCore.Translations.Get("att_57_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-57-1Icon"), GlobalCore.Translations.Get("att_57_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_58_1Icon"), GlobalCore.Translations.Get("att_58_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-58-1Icon"), GlobalCore.Translations.Get("att_58_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_59_1Icon"), GlobalCore.Translations.Get("att_59_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-59-1Icon"), GlobalCore.Translations.Get("att_59_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_60_1Icon"), GlobalCore.Translations.Get("att_60_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-60-1Icon"), GlobalCore.Translations.Get("att_60_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_61_1Icon"), GlobalCore.Translations.Get("att_61_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-61-1Icon"), GlobalCore.Translations.Get("att_61_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_62_1Icon"), GlobalCore.Translations.Get("att_62_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-62-1Icon"), GlobalCore.Translations.Get("att_62_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_63_1Icon"), GlobalCore.Translations.Get("att_63_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-63-1Icon"), GlobalCore.Translations.Get("att_63_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_64_1Icon"), GlobalCore.Translations.Get("att_64_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-64-1Icon"), GlobalCore.Translations.Get("att_64_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_65_1Icon"), GlobalCore.Translations.Get("att_65_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-65-1Icon"), GlobalCore.Translations.Get("att_65_1"),
 				THREE_STATE_ITEM));
-		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att_66_1Icon"), GlobalCore.Translations.Get("att_66_1"),
+		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-66-1Icon"), GlobalCore.Translations.Get("att_66_1"),
 				THREE_STATE_ITEM));
 
 	}

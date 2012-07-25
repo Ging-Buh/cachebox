@@ -834,11 +834,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		return CB_Core.Events.platformConector.sendKeyUp(keyCode);
 	}
 
+	private long lastKeyEventTime = 0;
+
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event)
+	public boolean dispatchKeyEvent(KeyEvent event)
 	{
 
-		if (keyCode == KeyEvent.KEYCODE_BACK)
+		if (lastKeyEventTime == event.getEventTime()) return true;
+		lastKeyEventTime = event.getEventTime();
+
+		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
 		{
 			if (!GL_Listener.glListener.keyBackCliced()) Quitt();
 
@@ -846,13 +851,34 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 		// send KeyCode to OpenGL-UI
-		Character chr = (char) event.getUnicodeChar();
-		if (keyCode == Keys.BACKSPACE) chr = BACKSPACE;
+		Character chr;
 
-		if (CB_Core.Events.platformConector.sendKeyDown(keyCode) && CB_Core.Events.platformConector.sendKey(chr)) return true;
+		if (event.getKeyCode() == 57)
+		{
+			chr = ("ß").charAt(0);
+		}
+		else if (event.getCharacters() != null && event.getCharacters().length() > 0)
+		{
+			chr = (char) event.getCharacters().charAt(0);
+		}
+		else
+		{
+			chr = (char) event.getUnicodeChar();
+		}
+
+		if (event.getKeyCode() == Keys.BACKSPACE) chr = BACKSPACE;
+
+		if (CB_Core.Events.platformConector.sendKeyDown(event.getKeyCode()) && CB_Core.Events.platformConector.sendKey(chr)) return true;
 
 		return false;
 	}
+
+	// @Override
+	// public boolean onKeyDown(int keyCode, KeyEvent event)
+	// {
+	//
+	//
+	// }
 
 	private void Quitt()
 	{

@@ -13,7 +13,7 @@ public class Style
 	{
 		TextFieldStyle ret = new TextFieldStyle();
 
-		ret.background = new NinePatch(SpriteCache.getThemedSprite("text_field_back"), 16, 16, 16, 16);
+		ret.background = new NinePatch(SpriteCache.getThemedSprite("text-field-back"), 16, 16, 16, 16);
 		ret.font = Fonts.getNormal();
 		ret.fontColor = Color.WHITE;
 
@@ -31,7 +31,7 @@ public class Style
 	{
 		TextFieldStyle ret = new TextFieldStyle();
 
-		ret.background = new NinePatch(SpriteCache.getThemedSprite("text_field_back_focus"), 16, 16, 16, 16);
+		ret.background = new NinePatch(SpriteCache.getThemedSprite("text-field-back-focus"), 16, 16, 16, 16);
 		ret.font = Fonts.getNormal();
 		ret.fontColor = Color.WHITE;
 

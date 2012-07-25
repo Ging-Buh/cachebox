@@ -191,7 +191,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 		{
 			if (btnBack_pressed == null)
 			{
-				btnBack_pressed = new NinePatch(SpriteCache.getThemedSprite("btn_pressed"), 16, 16, 16, 16);
+				btnBack_pressed = new NinePatch(SpriteCache.getThemedSprite("btn-pressed"), 16, 16, 16, 16);
 			}
 
 			btnBack_pressed.draw(batch, 0, 0, width, height);
@@ -201,7 +201,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 		{
 			if (btnBack == null)
 			{
-				btnBack = new NinePatch(SpriteCache.getThemedSprite("btn_normal"), 16, 16, 16, 16);
+				btnBack = new NinePatch(SpriteCache.getThemedSprite("btn-normal"), 16, 16, 16, 16);
 			}
 
 			btnBack.draw(batch, 0, 0, width, height);
@@ -227,7 +227,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 		{
 			if (sPinOn == null)
 			{
-				sPinOn = SpriteCache.getThemedSprite("pin_icon");
+				sPinOn = SpriteCache.getThemedSprite("pin-icon");
 				sPinOn.setBounds(left, UiSizes.getMargin(), iconWidth, iconHeight);
 			}
 
@@ -237,7 +237,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 		{
 			if (sPinOff == null)
 			{
-				sPinOff = SpriteCache.getThemedSprite("pin_icon_disable");
+				sPinOff = SpriteCache.getThemedSprite("pin-icon-disable");
 				sPinOff.setBounds(left, UiSizes.getMargin(), iconWidth, iconHeight);
 			}
 			sPinOff.draw(batch);
@@ -268,7 +268,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 		{
 			if (chkOn == null)
 			{
-				chkOn = SpriteCache.getThemedSprite("check_on");
+				chkOn = SpriteCache.getThemedSprite("check-on");
 
 				chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 
@@ -280,7 +280,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 		{
 			if (chkOff == null)
 			{
-				chkOff = SpriteCache.getThemedSprite("check_disable");
+				chkOff = SpriteCache.getThemedSprite("check-disable");
 
 				chkOff.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 
@@ -317,7 +317,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 		{
 			if (chkOn == null)
 			{
-				chkOn = SpriteCache.getThemedSprite("check_on");
+				chkOn = SpriteCache.getThemedSprite("check-on");
 
 				chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 
@@ -329,7 +329,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 		{
 			if (chkNo == null)
 			{
-				chkNo = SpriteCache.getThemedSprite("delete_icon");
+				chkNo = SpriteCache.getThemedSprite("delete-icon");
 
 				chkNo.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 
@@ -377,7 +377,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 
 		if (chkBox == null)
 		{
-			chkBox = SpriteCache.getThemedSprite("check_off");
+			chkBox = SpriteCache.getThemedSprite("check-off");
 
 			chkBox.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 

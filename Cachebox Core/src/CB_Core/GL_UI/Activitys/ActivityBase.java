@@ -24,7 +24,7 @@ public class ActivityBase extends Dialog
 	{
 		super(rec, Name);
 		that = this;
-		this.setBackground(new NinePatch(SpriteCache.getThemedSprite("activity_back"), 16, 16, 16, 16));
+		this.setBackground(new NinePatch(SpriteCache.getThemedSprite("activity-back"), 16, 16, 16, 16));
 
 		Left = nineBackground.getLeftWidth();
 		Right = nineBackground.getRightWidth();

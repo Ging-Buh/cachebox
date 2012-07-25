@@ -124,7 +124,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 	@Override
 	protected void Initial()
 	{
-		backheader = new NinePatch(SpriteCache.getThemedSprite("listrec_header"), 8, 8, 8, 8);
+		backheader = new NinePatch(SpriteCache.getThemedSprite("listrec-header"), 8, 8, 8, 8);
 		super.Initial();
 	}
 

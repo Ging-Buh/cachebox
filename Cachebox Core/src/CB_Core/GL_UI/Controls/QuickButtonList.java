@@ -7,6 +7,7 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.H_ListView;
+import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Main.Actions.QuickButton.QuickActions;
 import CB_Core.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
@@ -30,6 +31,7 @@ public class QuickButtonList extends H_ListView
 		btnYPos = this.halfHeight - btnRec.getHalfHeight();
 
 		this.setBaseAdapter(new CustomAdapter());
+		this.setDisposeFlag(false);
 
 		registerSkinChangedEvent();
 	}
@@ -172,7 +174,7 @@ public class QuickButtonList extends H_ListView
 		readQuickButtonItemsList();
 		setBackground(SpriteCache.ButtonBack);
 		reloadItems();
-
+		ListViewItemBackground.ResetBackground();
 	}
 
 }

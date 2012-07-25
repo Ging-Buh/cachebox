@@ -10,7 +10,6 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.CacheInfo;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.Locator.Locator;
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
@@ -93,7 +92,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 			setActLocator();
 		}
 
-		Logger.LogCat("New CacheListItem Index:" + String.valueOf(Index));
+		// Logger.LogCat("New CacheListItem Index:" + String.valueOf(Index));
 
 	}
 

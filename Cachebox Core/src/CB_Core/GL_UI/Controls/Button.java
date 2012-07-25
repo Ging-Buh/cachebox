@@ -242,15 +242,15 @@ public class Button extends CB_View_Base
 	{
 		if (mNinePatch == null)
 		{
-			mNinePatch = new NinePatch(SpriteCache.getThemedSprite("btn_normal"), 16, 16, 16, 16);
+			mNinePatch = new NinePatch(SpriteCache.getThemedSprite("btn-normal"), 16, 16, 16, 16);
 		}
 		if (mNinePatchPressed == null)
 		{
-			mNinePatchPressed = new NinePatch(SpriteCache.getThemedSprite("btn_pressed"), 16, 16, 16, 16);
+			mNinePatchPressed = new NinePatch(SpriteCache.getThemedSprite("btn-pressed"), 16, 16, 16, 16);
 		}
 		if (mNinePatchDisabled == null)
 		{
-			mNinePatchDisabled = new NinePatch(SpriteCache.getThemedSprite("btn_disabled"), 8, 8, 8, 8);
+			mNinePatchDisabled = new NinePatch(SpriteCache.getThemedSprite("btn-disabled"), 8, 8, 8, 8);
 		}
 
 	}

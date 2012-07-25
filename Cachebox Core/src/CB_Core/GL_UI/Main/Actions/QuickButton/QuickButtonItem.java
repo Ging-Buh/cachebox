@@ -118,6 +118,12 @@ public class QuickButtonItem extends ListViewItemBase
 	@Override
 	protected void render(SpriteBatch batch)
 	{
+		if (childs.size() == 0)
+		{
+			this.addChild(mButton);
+			this.addChild(mButtonIcon);
+		}
+
 		super.render(batch);
 
 		if (mAction.getName().equals("AutoResort"))

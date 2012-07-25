@@ -48,7 +48,7 @@ public class Spinner extends Button
 
 		if (triangle == null)
 		{
-			Sprite tr = SpriteCache.getThemedSprite("spinner_triangle");
+			Sprite tr = SpriteCache.getThemedSprite("spinner-triangle");
 			int patch = (int) tr.getWidth() / 2;
 			triangle = new NinePatch(tr, 0, patch, patch, 0);
 		}

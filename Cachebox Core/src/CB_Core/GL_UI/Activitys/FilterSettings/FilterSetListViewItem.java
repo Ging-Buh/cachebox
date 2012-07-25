@@ -144,7 +144,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		{
 			if (btnBack_pressed == null)
 			{
-				btnBack_pressed = new NinePatch(SpriteCache.getThemedSprite("btn_pressed"), 16, 16, 16, 16);
+				btnBack_pressed = new NinePatch(SpriteCache.getThemedSprite("btn-pressed"), 16, 16, 16, 16);
 			}
 
 			btnBack_pressed.draw(batch, 0, 0, width, height);
@@ -154,7 +154,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		{
 			if (btnBack == null)
 			{
-				btnBack = new NinePatch(SpriteCache.getThemedSprite("btn_normal"), 16, 16, 16, 16);
+				btnBack = new NinePatch(SpriteCache.getThemedSprite("btn-normal"), 16, 16, 16, 16);
 			}
 
 			btnBack.draw(batch, 0, 0, width, height);
@@ -171,7 +171,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		{
 			if (chkOn == null)
 			{
-				chkOn = SpriteCache.getThemedSprite("check_on");
+				chkOn = SpriteCache.getThemedSprite("check-on");
 
 				chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 
@@ -208,7 +208,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		{
 			if (chkOn == null)
 			{
-				chkOn = SpriteCache.getThemedSprite("check_on");
+				chkOn = SpriteCache.getThemedSprite("check-on");
 
 				chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 
@@ -220,7 +220,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		{
 			if (chkNo == null)
 			{
-				chkNo = SpriteCache.getThemedSprite("delete_icon");
+				chkNo = SpriteCache.getThemedSprite("delete-icon");
 
 				chkNo.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 
@@ -286,8 +286,8 @@ public class FilterSetListViewItem extends ListViewItemBackground
 			}
 		}
 
-		plusBtn = rClick ? SpriteCache.getThemedSprite("btn_pressed") : SpriteCache.getThemedSprite("btn_normal");
-		minusBtn = lClick ? SpriteCache.getThemedSprite("btn_pressed") : SpriteCache.getThemedSprite("btn_normal");
+		plusBtn = rClick ? SpriteCache.getThemedSprite("btn-pressed") : SpriteCache.getThemedSprite("btn-normal");
+		minusBtn = lClick ? SpriteCache.getThemedSprite("btn-pressed") : SpriteCache.getThemedSprite("btn-normal");
 
 		minusBtn.setBounds(lBounds.getX(), lBounds.getY(), lBounds.getWidth(), lBounds.getHeight());
 
@@ -356,7 +356,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 		if (chkOff == null)
 		{
-			chkOff = SpriteCache.getThemedSprite("check_off");
+			chkOff = SpriteCache.getThemedSprite("check-off");
 
 			chkOff.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 
