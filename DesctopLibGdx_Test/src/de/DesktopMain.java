@@ -79,8 +79,6 @@ public class DesktopMain {
 				false);
 
 		
-		Config.settings.TrackRecorderStartup.setValue(true);
-
 		
 		
 		Timer timer = new Timer();
@@ -291,6 +289,11 @@ public class DesktopMain {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
+		
+		
+		
 
 	}
 

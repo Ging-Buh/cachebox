@@ -343,6 +343,7 @@ public class FieldNotesView extends V_ListView
 
 	void sendCacheVote(FieldNoteEntry fieldNote)
 	{
+
 		// Stimme abgeben
 		try
 		{

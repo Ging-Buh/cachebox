@@ -285,7 +285,7 @@ public class EditFieldNotes extends ActivityBase
 			float itemHeight = UiSizes.getButtonHeight() * 1.1f;
 
 			FilterSetEntry tmp = new FilterSetEntry(GlobalCore.Translations.Get("maxRating"), SpriteCache.Stars.toArray(),
-					FilterSetListView.NUMERICK_ITEM, 0, 5, fieldNote.gc_Vote / 100, 0.5f);
+					FilterSetListView.NUMERICK_ITEM, 0, 5, fieldNote.gc_Vote / 100.0, 0.5f);
 			GcVote = new FilterSetListViewItem(new CB_RectF(Left, lblTime.getY() - itemHeight - margin, this.width - Left - Right,
 					itemHeight), 0, tmp);
 			scrollBox.addChild(GcVote);

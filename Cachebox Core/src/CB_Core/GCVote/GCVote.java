@@ -114,19 +114,19 @@ public class GCVote
 	{
 		String guid = url.substring(url.indexOf("guid=") + 5).trim();
 
-		String data = "userName=" + User + "&password=" + password + "&voteUser=" + String.valueOf(vote / 100) + "&cacheId=" + guid
+		String data = "userName=" + User + "&password=" + password + "&voteUser=" + String.valueOf(vote / 100.0) + "&cacheId=" + guid
 				+ "&waypoint=" + waypoint;
 
 		try
 		{
-			HttpPost httppost = new HttpPost("http://gcvote.de/getVotes.php");
+			HttpPost httppost = new HttpPost("http://dosensuche.de/GCVote/setVote.php");
 
 			httppost.setEntity(new ByteArrayEntity(data.getBytes("UTF8")));
 
 			// Execute HTTP Post Request
 			String responseString = Execute(httppost);
 
-			return responseString == "OK";
+			return responseString.equals("OK\n");
 
 		}
 		catch (Exception ex)
