@@ -717,7 +717,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		private boolean started;
 		private boolean fertig;
 		// benutze den Abstand der letzten 5 Positionsänderungen
-		final int anzPoints = 3;
+		final int anzPoints = 6;
 		private int[] x = new int[anzPoints];
 		private int[] y = new int[anzPoints];
 		private long[] ts = new long[anzPoints];
@@ -787,7 +787,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			startTs = System.currentTimeMillis();
 			int abstand = (int) Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
 
-			endTs = startTs + 2000 + abstand * 50 / anzPoints;
+			endTs = startTs + 500 + abstand * 20 / anzPoints;
 			// endTs = startTs + 2000; // Povisorisch
 			started = true;
 		}
