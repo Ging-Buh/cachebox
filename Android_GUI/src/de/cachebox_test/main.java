@@ -171,7 +171,6 @@ import de.cachebox_test.Views.AboutView;
 import de.cachebox_test.Views.CompassView;
 import de.cachebox_test.Views.DescriptionView;
 import de.cachebox_test.Views.JokerView;
-import de.cachebox_test.Views.LogView;
 import de.cachebox_test.Views.NotesView;
 import de.cachebox_test.Views.SolverView;
 import de.cachebox_test.Views.SpoilerView;
@@ -204,7 +203,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private static long GPSTimeStamp = 0;
 
-	private static LogView logView = null; // ID 3
 	public static DescriptionView descriptionView = null; // ID 4
 	private static SpoilerView spoilerView = null; // ID 5
 	private static NotesView notesView = null; // ID 6
@@ -1502,8 +1500,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 
 		}
-
-		else if (ID == ViewConst.LOG_VIEW) return logView = new LogView(this);
 		else if (ID == ViewConst.COMPASS_VIEW)
 		{
 			compassView = new CompassView(this, inflater);
@@ -1667,13 +1663,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				aktView = null;
 				descriptionView.OnHide();
 
-			}
-			else if (aktView.equals(logView))
-			{
-				// Instanz löschenn
-				aktView = null;
-				logView.OnFree();
-				logView = null;
 			}
 
 		}

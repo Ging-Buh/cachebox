@@ -138,7 +138,7 @@ public class FieldNotesView extends V_ListView
 		{
 			FieldNoteEntry fne = fieldNoteList.get(position);
 
-			CB_RectF rec = ItemRec.copy();
+			CB_RectF rec = ItemRec.copy().ScaleCenter(0.97f);
 			rec.setHeight(mesureItemHeight(fne));
 			FieldNoteViewItem v = new FieldNoteViewItem(rec, position, fne);
 
