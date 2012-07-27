@@ -24,10 +24,10 @@ public abstract class Dialog extends CB_View_Base
 	private Box mContent;
 	private ArrayList<GL_View_Base> contentChilds = new ArrayList<GL_View_Base>();
 
-	private NinePatch mTitle9patch;
-	private NinePatch mHeader9patch;
-	private NinePatch mCenter9patch;
-	private NinePatch mFooter9patch;
+	protected NinePatch mTitle9patch;
+	protected NinePatch mHeader9patch;
+	protected NinePatch mCenter9patch;
+	protected NinePatch mFooter9patch;
 
 	protected float mTitleHeight = 0;
 	protected float mTitleWidth = 100;

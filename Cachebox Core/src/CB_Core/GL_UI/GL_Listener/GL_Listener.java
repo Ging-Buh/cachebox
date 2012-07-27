@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
@@ -271,11 +272,11 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		public void renderIsStartet();
 	}
 
-	private renderStartet renserStartetListner = null;
+	private renderStartet renderStartetListner = null;
 
 	public void registerRenderStartetListner(renderStartet listner)
 	{
-		renserStartetListner = listner;
+		renderStartetListner = listner;
 	}
 
 	@Override
@@ -284,63 +285,52 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 		if (!started.get() || stopRender) return;
 
-		if (renserStartetListner != null)
+		if (renderStartetListner != null)
 		{
-			renserStartetListner.renderIsStartet();
-			renserStartetListner = null;
+			renderStartetListner.renderIsStartet();
+			renderStartetListner = null;
 		}
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
+
+		if (Config.settings.nightMode.getValue())
+		{
+			Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+		}
+		else
+		{
+			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
+		}
 
 		batch.setProjectionMatrix(prjMatrix.Matrix());
 
-		if (ActivityIsShown)
+		// if Tablet, so the Activity is smaller the screen size
+		// render childs and darkness Sprite
+		if (GlobalCore.isTab)
+		{
+			child.renderChilds(batch, prjMatrix);
+			if (ActivityIsShown && mActivity.getCildCount() > 0)
+			{
+				// Zeichne Transparentes Rec um den Hintergrund abzudunkeln.
+				drawDarknessSprite();
+				mActivity.renderChilds(batch, prjMatrix);
+			}
+		}
+
+		if (ActivityIsShown && !GlobalCore.isTab)
 		{
 			mActivity.renderChilds(batch, prjMatrix);
 		}
-		else
+
+		if (!ActivityIsShown)
 		{
 			child.renderChilds(batch, prjMatrix);
 		}
 
 		if (DialogIsShown && mDialog.getCildCount() > 0)
 		{
-
 			// Zeichne Transparentes Rec um den Hintergrund abzudunkeln.
-			if (mDarknesSprite == null)
-			{
-				int w = CB_View_Base.getNextHighestPO2((int) width);
-				int h = CB_View_Base.getNextHighestPO2((int) height);
-				Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-				if (Config.settings.nightMode.getValue()) p.setColor(0.07f, 0f, 0f, 0.96f);
-				else
-					p.setColor(0f, 0.1f, 0f, 0.9f);
-
-				p.fillRectangle(0, 0, width, height);
-
-				Texture tex = new Texture(p, Pixmap.Format.RGBA8888, false);
-
-				mDarknesSprite = new Sprite(tex, (int) width, (int) height);
-			}
-
-			batch.begin();
-
-			mDarknesSprite.draw(batch, darknesAlpha);
-			if (darknesAnimationRuns)
-			{
-				darknesAlpha += 0.1f;
-				if (darknesAlpha > 1f)
-				{
-					darknesAlpha = 1f;
-					darknesAnimationRuns = false;
-					// unregister TabmainView, we have register on ShowDialog for the animation time
-					removeRenderView(TabMainView.that);
-				}
-			}
-
-			batch.end();
-
+			drawDarknessSprite();
 			mDialog.renderChilds(batch, prjMatrix);
 		}
 
@@ -362,6 +352,42 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		Gdx.gl.glFlush();
 		Gdx.gl.glFinish();
 
+	}
+
+	private void drawDarknessSprite()
+	{
+		if (mDarknesSprite == null)
+		{
+			int w = CB_View_Base.getNextHighestPO2((int) width);
+			int h = CB_View_Base.getNextHighestPO2((int) height);
+			Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+			if (Config.settings.nightMode.getValue()) p.setColor(0.07f, 0f, 0f, 0.96f);
+			else
+				p.setColor(0f, 0.1f, 0f, 0.9f);
+
+			p.fillRectangle(0, 0, width, height);
+
+			Texture tex = new Texture(p, Pixmap.Format.RGBA8888, false);
+
+			mDarknesSprite = new Sprite(tex, (int) width, (int) height);
+		}
+
+		batch.begin();
+
+		mDarknesSprite.draw(batch, darknesAlpha);
+		if (darknesAnimationRuns)
+		{
+			darknesAlpha += 0.1f;
+			if (darknesAlpha > 1f)
+			{
+				darknesAlpha = 1f;
+				darknesAnimationRuns = false;
+				// unregister TabmainView, we have register on ShowDialog for the animation time
+				removeRenderView(TabMainView.that);
+			}
+		}
+
+		batch.end();
 	}
 
 	private Sprite mDarknesSprite;
@@ -947,6 +973,14 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		clearRenderViews();
 		platformConector.showForDialog();
 
+		if (GlobalCore.isTab)
+		{
+			// register render view to darknes animation ready.
+			// use TabMainView to register
+			addRenderView(TabMainView.that, FRAME_RATE_ACTION);
+			darknesAnimationRuns = true;
+		}
+
 		// Center activity on Screen
 		float x = (width - activity.getWidth()) / 2;
 		float y = (height - activity.getHeight()) / 2;
@@ -956,44 +990,15 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		if (actDialog != null)
 		{
 			actDialog.onHide();
-			// mDialog.removeChilds();
 		}
 
 		actActivity = activity;
 
 		mActivity.addChildDirekt(activity);
-		// mActivity.setOnClickListener(new OnClickListener()
-		// {
-		//
-		// @Override
-		// public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-		// {
-		// // Sollte bei einem Click neben dem Dialog ausgelöst werden.
-		// // Dann soll der Dialog geschlossen werden, wenn es sich um ein Menü handelt.
-		// if (DialogIsShown)
-		// {
-		// GL_View_Base vDialog = mDialog.getChild(0);
-		// if (vDialog instanceof Menu) closeDialog();
-		// if (aktPopUp != null)
-		// {
-		// closePopUp(aktPopUp);
-		// }
-		// return true;
-		// }
-		//
-		// if (aktPopUp != null)
-		// {
-		// closePopUp(aktPopUp);
-		// return true;
-		// }
-		//
-		// return false;
-		// }
-		// });
 
 		child.setClickable(false);
 		ActivityIsShown = true;
-		darknesAnimationRuns = true;
+
 		actActivity.onShow();
 	}
 
@@ -1016,7 +1021,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		mDarknesSprite = null;// Create new Pixmap on next call
 
 		clearRenderViews();
-		renderOnce("Close Dialog");
+		renderOnce("Close Activity");
 	}
 
 	public void closeDialog(CB_View_Base dialog)

@@ -2,6 +2,7 @@ package CB_Core.GL_UI.Activitys;
 
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
@@ -9,6 +10,7 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class ActivityBase extends Dialog
 {
@@ -37,7 +39,7 @@ public class ActivityBase extends Dialog
 	@Override
 	protected void SkinIsChanged()
 	{
-		this.setBackground(new NinePatch(SpriteCache.getThemedSprite("activity_back"), 16, 16, 16, 16));
+		this.setBackground(new NinePatch(SpriteCache.getThemedSprite("activity-back"), 16, 16, 16, 16));
 	}
 
 	@Override
@@ -82,6 +84,18 @@ public class ActivityBase extends Dialog
 		float w = Math.min(UiSizes.getSmallestWidth(), UiSizes.getWindowHeight() * 0.66f);
 
 		return new CB_RectF(0, 0, w, UiSizes.getWindowHeight());
+	}
+
+	@Override
+	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
+	{
+		// clear dialog BackGrounds
+		if (mHeader9patch != null) mHeader9patch = null;
+		if (mFooter9patch != null) mFooter9patch = null;
+		if (mCenter9patch != null) mCenter9patch = null;
+		if (mTitle9patch != null) mTitle9patch = null;
+
+		super.renderChilds(batch, parentInfo);
 	}
 
 }
