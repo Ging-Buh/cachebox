@@ -336,10 +336,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 		if (ToastIsShown)
 		{
-			synchronized (mToastOverlay)
-			{
-				mToastOverlay.renderChilds(batch, prjMatrix);
-			}
+
+			mToastOverlay.renderChilds(batch, prjMatrix);
 
 		}
 
@@ -1060,12 +1058,10 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		if (mToastOverlay != null)
 		{
-			synchronized (mToastOverlay)
-			{
 
-				ToastIsShown = false;
-				mToastOverlay.removeChilds();
-			}
+			ToastIsShown = false;
+			mToastOverlay.removeChilds();
+
 			renderOnce("ToastClosing");
 		}
 	}
