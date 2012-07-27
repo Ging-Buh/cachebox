@@ -3683,6 +3683,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
 						if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.VISIBLE);
 						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
+
+						// set position of slider
+						downSlider.ButtonShowStateChanged();
 					}
 				});
 

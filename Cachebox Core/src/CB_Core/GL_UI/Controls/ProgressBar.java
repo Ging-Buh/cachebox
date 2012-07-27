@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Controls;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -40,7 +41,7 @@ public class ProgressBar extends CB_View_Base
 		{
 			progressNinePatch = new NinePatch(SpriteCache.Progress, 15, 15, 15, 15);
 		}
-
+		GL_Listener.glListener.renderOnce("InitialProgressBar reday");
 	}
 
 	@Override
@@ -54,12 +55,14 @@ public class ProgressBar extends CB_View_Base
 		progress = value;
 		if (progress > 100) progress = 100;
 		progressDrawWidth = (width / 100) * progress;
+		GL_Listener.glListener.renderOnce("ProgressBar state changed");
 	}
 
 	public void setProgress(int value, String msg)
 	{
 		setProgress(value);
 		label.setText(msg);
+		GL_Listener.glListener.renderOnce("ProgressBar state changed");
 	}
 
 	public void setProgressNinePatch(NinePatch ninePatch)

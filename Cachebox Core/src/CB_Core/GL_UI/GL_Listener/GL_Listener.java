@@ -20,6 +20,7 @@ import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Main.MainViewBase;
+import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
 import CB_Core.GL_UI.libGdx_Controls.LibGdx_Host_Control;
@@ -333,7 +334,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 				{
 					darknesAlpha = 1f;
 					darknesAnimationRuns = false;
-					if (actDialog instanceof Menu) clearRenderViews();
+					// unregister TabmainView, we have register on ShowDialog for the animation time
+					removeRenderView(TabMainView.that);
 				}
 			}
 
@@ -884,7 +886,9 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		clearRenderViews();
 		platformConector.showForDialog();
 
-		if (dialog instanceof Menu) addRenderView(dialog, FRAME_RATE_ACTION);
+		// register render view to darknes animation ready.
+		// use TabMainView to register
+		addRenderView(TabMainView.that, FRAME_RATE_ACTION);
 
 		// Center Menu on Screen
 		float x = (width - dialog.getWidth()) / 2;
