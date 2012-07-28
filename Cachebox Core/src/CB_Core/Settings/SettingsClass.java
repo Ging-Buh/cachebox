@@ -89,7 +89,6 @@ public class SettingsClass extends SettingsList
 	public SettingBool vibrateFeedback;
 	public SettingBool hasPQ_PlugIn;
 	public SettingBool hasFTF_PlugIn;
-	public SettingBool altWP_View;
 
 	// int
 	public SettingInt LogMaxMonthAge;
@@ -374,7 +373,7 @@ public class SettingsClass extends SettingsList
 		addSetting(DebugShowMarker = new SettingBool("DebugShowMarker", cat, EXPERT, false, true));
 		addSetting(DebugShowLog = new SettingBool("DebugShowLog", cat, EXPERT, false, true));
 		addSetting(OverrideUrl = new SettingString("OverrideUrl", cat, EXPERT, "", true));
-		addSetting(altWP_View = new SettingBool("altWP_View", cat, NORMAL, false, true));
+
 	}
 
 }

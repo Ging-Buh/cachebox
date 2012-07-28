@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Views;
 
-import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Plattform;
 import CB_Core.DAO.WaypointDAO;
@@ -8,11 +7,9 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
-import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.EditWaypoint;
 import CB_Core.GL_UI.Activitys.EditWaypoint.ReturnListner;
@@ -62,12 +59,6 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 	@Override
 	public void onShow()
 	{
-		if (Config.settings.altWP_View.getValue())
-		{
-			// Rufe ANDROID VIEW auf
-			platformConector.showView(ViewConst.WAYPOINT_VIEW, this.getX(), this.getY(), this.getWidth(), this.getHeight());
-			return;
-		}
 
 		// aktuellen Waypoint in der List anzeigen
 		int first = this.getFirstVisiblePosition();
@@ -109,10 +100,6 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 	@Override
 	public void onHide()
 	{
-		if (Config.settings.altWP_View.getValue())
-		{
-			platformConector.hideView(ViewConst.WAYPOINT_VIEW);
-		}
 
 	}
 
@@ -296,12 +283,6 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 
 	public void ShowContextMenu()
 	{
-
-		if (Config.settings.altWP_View.getValue())
-		{
-			platformConector.hideView(ViewConst.WAYPOINT_VIEW);
-			return;
-		}
 
 		Menu cm = new Menu("CacheListContextMenu");
 

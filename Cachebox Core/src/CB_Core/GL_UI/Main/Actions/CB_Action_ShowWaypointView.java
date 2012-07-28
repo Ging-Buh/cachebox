@@ -1,9 +1,6 @@
 package CB_Core.GL_UI.Main.Actions;
 
-import CB_Core.Config;
-import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
-import CB_Core.GL_UI.MenuItemConst;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Views.WaypointView;
@@ -60,11 +57,6 @@ public class CB_Action_ShowWaypointView extends CB_Action_ShowView
 	@Override
 	public boolean ShowContextMenu()
 	{
-		if (Config.settings.altWP_View.getValue())
-		{
-			platformConector.menuItemClicked(MenuItemConst.SHOW_WP_CONTEXT_MENU);
-			return true;
-		}
 
 		if (WaypointView.that != null) WaypointView.that.ShowContextMenu();
 		return true;
