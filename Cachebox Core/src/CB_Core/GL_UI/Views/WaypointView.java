@@ -132,6 +132,36 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 		}
 	};
 
+	private OnLongClickListener onItemLongClickListner = new OnLongClickListener()
+	{
+
+		@Override
+		public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+		{
+			int selectionIndex = ((ListViewItemBase) v).getIndex();
+
+			if (selectionIndex == 0)
+			{
+				// Cache selected
+				GlobalCore.SelectedCache(aktCache);
+			}
+			else
+			{
+				// waypoint selected
+				WaypointViewItem wpi = (WaypointViewItem) v;
+				if (wpi != null)
+				{
+					aktWaypoint = wpi.getWaypoint();
+				}
+				GlobalCore.SelectedWaypoint(aktCache, aktWaypoint);
+			}
+
+			setSelection(selectionIndex);
+			ShowContextMenu();
+			return true;
+		}
+	};
+
 	@Override
 	protected void Initial()
 	{
@@ -195,6 +225,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 					WaypointViewItem v = new WaypointViewItem(UiSizes.getCacheListItemRec().asFloat(), position, cache, null);
 					v.setClickable(true);
 					v.setOnClickListener(onItemClickListner);
+					v.setOnLongClickListener(onItemLongClickListner);
 					return v;
 				}
 				else
@@ -203,6 +234,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 					WaypointViewItem v = new WaypointViewItem(UiSizes.getCacheListItemRec().asFloat(), position, cache, waypoint);
 					v.setClickable(true);
 					v.setOnClickListener(onItemClickListner);
+					v.setOnLongClickListener(onItemLongClickListner);
 					return v;
 				}
 			}
@@ -283,7 +315,6 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 
 	public void ShowContextMenu()
 	{
-
 		Menu cm = new Menu("CacheListContextMenu");
 
 		cm.setItemClickListner(new OnClickListener()

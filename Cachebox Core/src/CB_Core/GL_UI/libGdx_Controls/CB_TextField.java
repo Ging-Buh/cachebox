@@ -222,14 +222,19 @@ public class CB_TextField extends LibGdx_Host_Control
 
 	private void setTextFieldStyle()
 	{
+		TextFieldStyle style = null;
+
 		if (!hasFocus)
 		{
-			mTextField.setStyle(Style.getTextFieldStyle());
+			style = Style.getTextFieldStyle();
 		}
 		else
 		{
-			mTextField.setStyle(Style.getTextFieldStyleFocus());
+			style = Style.getTextFieldStyleFocus();
 		}
+
+		mTextField.setStyle(style);
+		this.setBackground(style.background);
 	}
 
 	@Override
