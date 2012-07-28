@@ -3,6 +3,7 @@ package CB_Core.GL_UI.libGdx_Controls.derived;
 import java.util.ArrayList;
 import java.util.List;
 
+import CB_Core.Log.Logger;
 import CB_Core.Math.SimplePointF;
 
 import com.badlogic.gdx.Gdx;
@@ -105,7 +106,7 @@ public class WrappedTextField extends TextField
 	{
 		offsetY = 0;
 		float lineHeight = style.font.getLineHeight();
-		int lastVisibleLine = (int) (this.height / lineHeight) - 1;
+		int lastVisibleLine = (int) ((this.height - this.style.background.getBottomHeight() - this.style.background.getTopHeight()) / lineHeight) - 1;
 
 		if (CursorLine > lastVisibleLine)
 		{
@@ -315,6 +316,8 @@ public class WrappedTextField extends TextField
 
 		float lineHeight = style.font.getLineHeight();
 		int clickedCursorLine = (int) ((this.height - y + (lineHeight / 2)) / lineHeight) - 1;
+
+		Logger.LogCat("Clicked Cursor Line=" + clickedCursorLine);
 
 		int lineBeginn = 0;
 		for (int l = 0; l < clickedCursorLine; l++)
@@ -772,7 +775,7 @@ public class WrappedTextField extends TextField
 		textBounds.width = maxWidth;
 		textBounds.height = (font.getData().capHeight + (numLines - 1) * font.getData().lineHeight) - font.getDescent() * 2;
 
-		font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
+		// font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
 
 		lineCount = numLines;
 
