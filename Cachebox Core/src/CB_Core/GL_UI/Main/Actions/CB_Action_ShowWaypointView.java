@@ -10,12 +10,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class CB_Action_ShowWaypointView extends CB_Action_ShowView
 {
 
-	private final static int MI_ADD_WAYPOINT = 0;
-	private final static int MI_PROJEKTION = 1;
-	private final static int MI_FROM_GPS = 2;
-	private final static int MI_EDIT = 3;
-	private final static int MI_DELETE = 4;
-
 	public CB_Action_ShowWaypointView()
 	{
 		super("Waypoints", AID_SHOW_WAYPOINTS);

@@ -139,6 +139,8 @@ public class CB_TabView extends CB_View_Base
 		sendOnShow2aktView();
 		GL_Listener.glListener.renderOnce(aktView.getName() + " TabView=>ShowView()");
 
+		buttonListView.notifyDataSetChanged();
+
 	}
 
 	/**
