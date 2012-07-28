@@ -97,7 +97,11 @@ public class CB_TabView extends CB_View_Base
 
 			if (mButtonList == null || mButtonList.Buttons == null) return null;
 
-			CB_ButtonListItem v = new CB_ButtonListItem(position, mButtonList.Buttons.get(position), "Item " + position);
+			CB_Button btn = mButtonList.Buttons.get(position);
+
+			btn.setActView(aktView);
+
+			CB_ButtonListItem v = new CB_ButtonListItem(position, btn, "Item " + position);
 			return v;
 		}
 
@@ -137,9 +141,8 @@ public class CB_TabView extends CB_View_Base
 
 		aktView.setVisibility(VISIBLE);
 		sendOnShow2aktView();
-		GL_Listener.glListener.renderOnce(aktView.getName() + " TabView=>ShowView()");
 
-		buttonListView.notifyDataSetChanged();
+		GL_Listener.glListener.renderOnce(aktView.getName() + " TabView=>ShowView()");
 
 	}
 
@@ -156,6 +159,7 @@ public class CB_TabView extends CB_View_Base
 			public void run()
 			{
 				if (aktView != null && aktView.isVisible()) aktView.onShow();
+				buttonListView.notifyDataSetChanged();
 			}
 		};
 

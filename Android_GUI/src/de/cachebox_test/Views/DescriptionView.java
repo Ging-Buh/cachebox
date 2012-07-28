@@ -170,8 +170,24 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
-		WebControl.OnShow();
-		WebControl.invalidate();
-	}
 
+		Thread t = new Thread()
+		{
+			public void run()
+			{
+				main.mainActivity.runOnUiThread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						WebControl.OnShow();
+						WebControl.invalidate();
+					}
+				});
+			}
+		};
+
+		t.start();
+
+	}
 }

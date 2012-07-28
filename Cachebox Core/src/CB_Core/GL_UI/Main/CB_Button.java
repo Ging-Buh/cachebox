@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Main;
 import java.util.ArrayList;
 
 import CB_Core.GL_UI.ButtonSprites;
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.GL_View_Base.OnLongClickListener;
@@ -341,6 +342,25 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 	{
 		GestureIsOn = true;
 		return this;
+	}
+
+	public void setActView(CB_View_Base View)
+	{
+		for (CB_ActionButton ba : mButtonActions)
+		{
+			CB_Action action = ba.getAction();
+			CB_Action_ShowView ActionView = null;
+			if (action != null)
+			{
+				if (action instanceof CB_Action_ShowView) ActionView = (CB_Action_ShowView) action;
+				if (ActionView != null && ActionView.getView() == View)
+				{
+					aktActionView = ActionView;
+					break;
+				}
+			}
+
+		}
 	}
 
 }
