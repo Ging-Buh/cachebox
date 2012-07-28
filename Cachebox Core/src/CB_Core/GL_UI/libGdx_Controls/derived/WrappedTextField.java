@@ -328,7 +328,7 @@ public class WrappedTextField extends TextField
 		for (int i = lineBeginn; i < glyphPositions.size; i++)
 		{
 			float pos = glyphPositions.items[i];
-			if (pos > x)
+			if ((pos > x) | (i - lineBeginn >= lineCharCount[clickedCursorLine] - 1))
 			{
 				cursor = Math.max(0, i - 1);
 				return true;
