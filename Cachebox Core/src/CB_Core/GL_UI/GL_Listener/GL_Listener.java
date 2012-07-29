@@ -19,6 +19,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.Box;
+import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Main.TabMainView;
@@ -68,6 +69,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	public static OrthographicCamera camera;
 	private ParentInfo prjMatrix;
 	private static boolean misTouchDown = false;
+
+	protected static EditTextFieldBase keyboardFocus;
 
 	public static boolean isTouchDown()
 	{
@@ -1174,6 +1177,21 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			return true;
 		}
 		return false;
+	}
+
+	public static void setKeyboardFocus(EditTextFieldBase view)
+	{
+		keyboardFocus = view;
+	}
+
+	public static EditTextFieldBase getKeyboardFocus()
+	{
+		return keyboardFocus;
+	}
+
+	public static boolean hasFocus(EditTextFieldBase view)
+	{
+		return view == keyboardFocus;
 	}
 
 }

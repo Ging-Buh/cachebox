@@ -2,7 +2,10 @@ package de;
 
 import java.awt.Point;
 import com.badlogic.gdx.InputProcessor;
+
+import CB_Core.Events.KeyCodes;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
+import CB_Core.GL_UI.libGdx_Controls.LibGdx_Host_Control;
 
 public class Desktop_GL_Listner extends Tab_GL_Listner implements InputProcessor {
 
@@ -27,12 +30,7 @@ public class Desktop_GL_Listner extends Tab_GL_Listner implements InputProcessor
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
 		return this.onTouchDownBase(x, y, pointer, button);
-//		lastTouchDown=new Point(x, y);
-//		aktTouch=new Point(x, y);
-//		lastPointer=pointer;
-//		lastbutton=button;
-//		startLongClickTimer();
-//		return this.onTouchDown(x, y, pointer, button) != null;
+
 	}
 
 	@Override
@@ -52,56 +50,49 @@ public class Desktop_GL_Listner extends Tab_GL_Listner implements InputProcessor
 	@Override
 	public boolean touchUp(int x, int y, int pointer, int button) {
 		return onTouchUpBase(x, y, pointer, button);
-//		cancelLongClickTimer();		
-//		int tol=5;
-//		
-//		int minX= lastTouchDown.x-tol;
-//		int maxX= lastTouchDown.x+tol;
-//		int minY= lastTouchDown.y-tol;
-//		int maxY= lastTouchDown.y+tol;
-//		
-//		
-//		//Click detection
-//		if(x>minX&&x<maxX&&y>minY&&y<maxY) onClick(x, y, pointer, button);
-//		
-//		return onTouchUp(x, y, pointer, button);
+
 	}
 	
-//	Timer timer;
-//	
-//	private void cancelLongClickTimer()
-//	{
-//
-//		if(timer!=null)
-//		{
-//			timer.cancel();
-//			timer=null;
-//		}
-//	}
-//	
+		
 	
-//	private void startLongClickTimer()
-//	{
-//		
-//		cancelLongClickTimer();
-//		
-//		timer = new Timer();
-//		TimerTask task = new TimerTask() {
-//			@Override
-//			public void run() {
-//				int tol=5;
-//				
-//				int minX= lastTouchDown.x-tol;
-//				int maxX= lastTouchDown.x+tol;
-//				int minY= lastTouchDown.y-tol;
-//				int maxY= lastTouchDown.y+tol;
-//				
-//				
-//				//Click detection
-//				if(aktTouch.x>minX&&aktTouch.x<maxX&&aktTouch.y>minY&&aktTouch.y<maxY) onLongClick(aktTouch.x, aktTouch.y, lastPointer, lastbutton);
-//			}
-//		};
-//		timer.schedule(task, 2000);
-//	}
+	@Override
+	public boolean keyTyped (char character) 
+	{
+		if (DialogIsShown && character == KeyCodes.KEYCODE_BACK)
+		{
+			closeDialog(mDialog);
+			return true; // behandelt!
+		}
+
+		if (ActivityIsShown && character == KeyCodes.KEYCODE_BACK)
+		{
+			closeActivity();
+			return true; // behandelt!
+		}
+
+		// WeiterLeiten an EditTextView, welches den Focus Hat
+		if (keyboardFocus != null && keyboardFocus.keyTyped(character)) return true;
+
+		// WeiterLeiten an VirtualStage!
+		return LibGdx_Host_Control.keyTyped(character);
+
+	}
+
+	@Override
+	public boolean keyUp(int KeyCode)
+	{
+		// WeiterLeiten an EditTextView, welches den Focus Hat
+		if (keyboardFocus != null && keyboardFocus.keyUp(KeyCode)) return true;
+		return LibGdx_Host_Control.keyUp(KeyCode);
+	}
+
+	@Override
+	public boolean keyDown(int keycode)
+	{
+		// WeiterLeiten an EditTextView, welches den Focus Hat
+		if (keyboardFocus != null && keyboardFocus.keyDown(keycode)) return true;
+		return LibGdx_Host_Control.keyDown(keycode);
+	}
+
 
 }

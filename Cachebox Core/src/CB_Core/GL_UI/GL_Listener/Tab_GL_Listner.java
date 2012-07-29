@@ -66,6 +66,9 @@ public class Tab_GL_Listner extends GL_Listener
 					return true; // behandelt!
 				}
 
+				// WeiterLeiten an EditTextView, welches den Focus Hat
+				if (keyboardFocus != null && keyboardFocus.keyTyped(character)) return true;
+
 				// WeiterLeiten an VirtualStage!
 				return LibGdx_Host_Control.keyTyped(character);
 
@@ -74,12 +77,16 @@ public class Tab_GL_Listner extends GL_Listener
 			@Override
 			public boolean keyUp(int KeyCode)
 			{
+				// WeiterLeiten an EditTextView, welches den Focus Hat
+				if (keyboardFocus != null && keyboardFocus.keyUp(KeyCode)) return true;
 				return LibGdx_Host_Control.keyUp(KeyCode);
 			}
 
 			@Override
 			public boolean keyDown(int keycode)
 			{
+				// WeiterLeiten an EditTextView, welches den Focus Hat
+				if (keyboardFocus != null && keyboardFocus.keyDown(keycode)) return true;
 				return LibGdx_Host_Control.keyDown(keycode);
 			}
 		});

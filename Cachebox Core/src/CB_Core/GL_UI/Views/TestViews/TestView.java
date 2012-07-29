@@ -1,26 +1,14 @@
 package CB_Core.GL_UI.Views.TestViews;
 
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.Fonts;
-import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Activitys.ActivityBase;
-import CB_Core.GL_UI.Activitys.EditWaypoint;
-import CB_Core.GL_UI.Activitys.EditWaypoint.ReturnListner;
-import CB_Core.GL_UI.Activitys.MesureCoordinate;
-import CB_Core.GL_UI.Activitys.ProjectionCoordinate;
-import CB_Core.GL_UI.Controls.Button;
-import CB_Core.GL_UI.Controls.CoordinateButton;
-import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.libGdx_Controls.CB_WrappedTextField;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
-import CB_Core.Types.Coordinate;
-import CB_Core.Types.Waypoint;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -35,20 +23,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class TestView extends CB_View_Base
 {
 
-	private CB_Core.GL_UI.libGdx_Controls.CB_TextField textField;
-	private CB_Core.GL_UI.libGdx_Controls.CB_WrappedTextField wrappedTextField;
+	private CB_Core.GL_UI.Controls.EditTextField textField;
+	private CB_Core.GL_UI.Controls.EditWrapedTextField wrappedTextField;
 
 	public static final String br = "¶" + System.getProperty("line.separator");
 
 	public static final String splashMsg = "Team" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009," + br
 			+ "Groundspeak Inc. Used with permission" + br + " " + br + "7.Zeile";
-
-	public static final String FONT_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789][_!$%#@|\\/?-+=()*&.;,{}\"´`'<>";
-
-	Button btn1;
-	Button btn2;
-	Button btn3;
-	WaitDialog wd;
 
 	public TestView(CB_RectF rec, String Name)
 	{
@@ -60,7 +41,7 @@ public class TestView extends CB_View_Base
 
 		CB_RectF TextFieldRec = new CB_RectF(0, 150, UiSizes.getButtonWidth() * 6, UiSizes.getButtonHeight() * 3);
 
-		wrappedTextField = new CB_WrappedTextField(TextFieldRec, "");
+		wrappedTextField = new CB_Core.GL_UI.Controls.EditWrapedTextField(TextFieldRec, EditTextField.getDefaultStyle(), "");
 		wrappedTextField.setText(splashMsg);
 		// wrappedTextField.setText("");
 
@@ -68,107 +49,13 @@ public class TestView extends CB_View_Base
 
 		// ####################################################
 
-		CB_RectF btnRec = new CB_RectF(0, 450, UiSizes.getButtonWidth() * 2, UiSizes.getButtonHeight());
+		CB_RectF TextFieldRec2 = new CB_RectF(0, wrappedTextField.getMaxY() + 25, UiSizes.getButtonWidth() * 6,
+				UiSizes.getButtonHeight() * 1.1f);
 
-		btn1 = new Button(btnRec, "");
-		btn2 = new Button(btnRec, "");
-		btn3 = new Button(btnRec, "");
-
-		btn1.setX(20);
-		btn2.setX(btn1.getMaxX());
-		btn3.setX(btn2.getMaxX());
-
-		this.addChild(btn1);
-		this.addChild(btn2);
-		this.addChild(btn3);
-
-		btn1.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				Coordinate pos = new Coordinate("N 52 27.354  E 13 30.690");
-				ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Projection", pos,
-						new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
-						{
-
-							@Override
-							public void returnCoord(Coordinate coord)
-							{
-								// TODO Auto-generated method stub
-
-							}
-						}, false);
-
-				pC.show();
-
-				return true;
-			}
-		});
-
-		btn2.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				if (GlobalCore.SelectedCache() != null)
-				{
-					if (GlobalCore.SelectedCache().waypoints.size() > 0)
-					{
-						Waypoint wp = GlobalCore.SelectedCache().waypoints.get(0);
-						EditWaypoint EdWp = new EditWaypoint(ActivityBase.ActivityRec(), "EditWP", wp, new ReturnListner()
-						{
-
-							@Override
-							public void returnedWP(Waypoint wp)
-							{
-								// TODO Auto-generated method stub
-
-							}
-						});
-						EdWp.show();
-					}
-					else
-					{
-						GL_Listener.glListener.Toast("Der Cache hat keine WP´s", 200);
-					}
-				}
-				return true;
-			}
-		});
-
-		btn3.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				MesureCoordinate mC = new MesureCoordinate(ActivityBase.ActivityRec(), "Projection", new MesureCoordinate.ReturnListner()
-				{
-
-					@Override
-					public void returnCoord(Coordinate coord)
-					{
-						// TODO Auto-generated method stub
-
-					}
-				});
-
-				mC.show();
-				return true;
-			}
-		});
+		textField = new EditTextField(TextFieldRec2, EditTextField.getDefaultStyle(), "Test");
+		this.addChild(textField);
 
 		requestLayout();
-
-		// Coord edit
-
-		Coordinate pos = new Coordinate("N 52 27.354  E 13 30.690");
-		CoordinateButton cBtn = new CoordinateButton(new CB_RectF(50, wrappedTextField.getMaxY() + 25, this.width - 100, 65),
-				"CoordButton", pos);
-		this.addChild(cBtn);
 
 	}
 
