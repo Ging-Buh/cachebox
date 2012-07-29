@@ -1,13 +1,11 @@
 package CB_Core.GL_UI.Views;
 
 import CB_Core.GlobalCore;
-import CB_Core.Plattform;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
-import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.ActivityBase;
@@ -15,7 +13,6 @@ import CB_Core.GL_UI.Activitys.EditWaypoint;
 import CB_Core.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_Core.GL_UI.Activitys.MesureCoordinate;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate;
-import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
@@ -45,12 +42,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 	{
 		super(rec, Name);
 		that = this;
-		Label lblDummy = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "DummyLabel");
-		lblDummy.setFont(Fonts.getNormal());
-		lblDummy.setText("Dummy WaypointView");
-		setBackground(SpriteCache.ListBack);
 
-		if (GlobalCore.platform == Plattform.Desktop) this.addChild(lblDummy);
+		setBackground(SpriteCache.ListBack);
 
 		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
 		SelectedCacheEventList.Add(this);

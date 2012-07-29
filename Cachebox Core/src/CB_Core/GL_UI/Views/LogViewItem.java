@@ -79,7 +79,7 @@ public class LogViewItem extends ListViewItemBackground
 	{
 		lblComment = new Label(LeftWidth + Dialog.margin, 0, this.width - LeftWidth - RightWidth - (Dialog.margin * 2), this.height
 				- Dialog.margin, "");
-		lblComment.setFont(Fonts.getSmall());
+		lblComment.setFont(Fonts.getNormal());
 		lblComment.setWrappedText(logEntry.Comment);
 		this.addChild(lblComment);
 

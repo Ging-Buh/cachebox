@@ -21,6 +21,7 @@ import CB_Core.GL_UI.Activitys.EditFieldNotes.ReturnListner;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_Core.GL_UI.Controls.List.Adapter;
+import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -159,7 +160,9 @@ public class FieldNotesView extends V_ListView
 		{
 			float headHeight = (UiSizes.getButtonHeight() / 1.5f) + (Dialog.margin);
 			float cacheIfoHeight = (UiSizes.getButtonHeight() / 1.5f) + Dialog.margin + Fonts.Mesure("T").height;
-			float commentHeight = (Dialog.margin * 2) + Fonts.MesureWrapped(fne.comment, ItemRec.getWidth() - (Dialog.margin * 2)).height;
+			float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidth() - ListViewItemBackground.getRightWidth()
+					- (Dialog.margin * 2);
+			float commentHeight = (Dialog.margin * 3) + Fonts.MesureWrapped(fne.comment, mesurdWidth).height;
 
 			return headHeight + cacheIfoHeight + commentHeight;
 		}

@@ -99,4 +99,22 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 
 		return false;
 	}
+
+	public static float getLeftWidth()
+	{
+		if (mBackIsInitial)
+		{
+			return backSelect.getLeftWidth();
+		}
+		return 0;
+	}
+
+	public static float getRightWidth()
+	{
+		if (mBackIsInitial)
+		{
+			return backSelect.getRightWidth();
+		}
+		return 0;
+	}
 }

@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.libGdx_Controls;
 
 import CB_Core.GL_UI.CB_View_Base;
+import CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -108,6 +109,17 @@ public abstract class LibGdx_Host_Control extends CB_View_Base
 		}
 		mActor.touchUp(x + offset, y, pointer);
 		return true;
+	}
+
+	@Override
+	public boolean click(int x, int y, int pointer, int button)
+	{
+		if (mActor instanceof WrappedTextField)
+		{
+			((WrappedTextField) mActor).click(x, y, pointer, button);
+		}
+
+		return false;
 	}
 
 	// ___________________

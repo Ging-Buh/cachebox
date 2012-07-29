@@ -104,6 +104,7 @@ public class WrappedTextField extends TextField
 
 	private void calculateOffsets()
 	{
+		Logger.LogCat("CalcOffset");
 		offsetY = 0;
 		float lineHeight = style.font.getLineHeight();
 		int lastVisibleLine = (int) ((this.height - this.style.background.getBottomHeight() - this.style.background.getTopHeight()) / lineHeight) - 1;
@@ -158,7 +159,7 @@ public class WrappedTextField extends TextField
 		}
 
 		float textY = (int) (height + font.getDescent() - bgTopHeight);
-		calculateOffsets();
+
 		textY += offsetY;
 
 		boolean focused = stage != null && stage.getKeyboardFocus() == this;
@@ -297,8 +298,7 @@ public class WrappedTextField extends TextField
 		}
 	}
 
-	@Override
-	public boolean touchDown(float x, float y, int pointer)
+	public boolean click(int x, int y, int pointer, int button)
 	{
 		if (pointer != 0) return false;
 
@@ -315,9 +315,10 @@ public class WrappedTextField extends TextField
 		}
 
 		float lineHeight = style.font.getLineHeight();
-		int clickedCursorLine = (int) ((this.height - y + (lineHeight / 2)) / lineHeight) - 1;
+		float clickPos = y - offsetY;
+		int clickedCursorLine = (int) ((this.height - clickPos + (lineHeight / 2)) / lineHeight) - 1;
 
-		Logger.LogCat("Clicked Cursor Line=" + clickedCursorLine);
+		if (clickedCursorLine >= lineCount) return true;
 
 		int lineBeginn = 0;
 		for (int l = 0; l < clickedCursorLine; l++)
@@ -337,6 +338,37 @@ public class WrappedTextField extends TextField
 		cursor = Math.max(0, glyphPositions.size - 1);
 		calcLineRow();
 		return true;
+	}
+
+	private float mLastTouch = 0;
+	private float mLastTouchOffset = 0;
+
+	@Override
+	public boolean touchDown(float x, float y, int pointer)
+	{
+		Logger.LogCat("Offset:" + offsetY);
+		mLastTouch = y;
+		mLastTouchOffset = offsetY;
+		return true;
+	}
+
+	@Override
+	public void touchDragged(float x, float y, int pointer)
+	{
+		offsetY = mLastTouchOffset + (y - mLastTouch);
+		if (offsetY < 0)
+		{
+			offsetY = 0;
+			return;
+		}
+
+		float lineHeight = style.font.getLineHeight();
+
+		float maxYPos = lineCount * lineHeight / 2;
+		if (offsetY > maxYPos)
+		{
+			offsetY = maxYPos;
+		}
 	}
 
 	private void cursorLinUpDown(int value)
@@ -367,6 +399,7 @@ public class WrappedTextField extends TextField
 		if (lineCharCount[CursorLine] < CursorRow) row = lineCharCount[CursorLine] - 1;
 
 		cursor = calcedCursor + row;
+		calculateOffsets();
 	}
 
 	public boolean keyDown(int keycode)
@@ -475,7 +508,7 @@ public class WrappedTextField extends TextField
 				cursor = Math.max(0, cursor);
 				cursor = Math.min(text.length(), cursor);
 			}
-
+			calculateOffsets();
 			return true;
 		}
 		return false;

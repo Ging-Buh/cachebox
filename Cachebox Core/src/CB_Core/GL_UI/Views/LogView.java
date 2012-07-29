@@ -4,10 +4,13 @@ import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
+import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.List.Adapter;
+import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.Math.CB_RectF;
@@ -16,7 +19,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
-public class LogView extends V_ListView
+public class LogView extends V_ListView implements SelectedCacheEvent
 {
 	public static CB_RectF ItemRec;
 	public static LogView that;
@@ -25,10 +28,8 @@ public class LogView extends V_ListView
 	{
 		super(rec, Name);
 		that = this;
-		ItemRec = new CB_RectF(0, 0, this.width, UiSizes.getButtonHeight() * 1.1f);
+		ItemRec = (new CB_RectF(0, 0, this.width, UiSizes.getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
 		setBackground(SpriteCache.ListBack);
-
-		mustLoad = false;
 
 		this.setBaseAdapter(null);
 		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
@@ -38,20 +39,24 @@ public class LogView extends V_ListView
 	@Override
 	public void onShow()
 	{
-		if (mustLoad)
+		// if Tab register for Cache Changed Event
+		if (GlobalCore.isTab)
 		{
-			this.setBaseAdapter(null);
-			lvAdapter = new CustomAdapter(aktCache);
-			this.setBaseAdapter(lvAdapter);
-			this.notifyDataSetChanged();
-			mustLoad = false;
+			SelectedCacheEventList.Add(this);
 		}
+
+		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+
+		this.setBaseAdapter(null);
+		lvAdapter = new CustomAdapter(aktCache);
+		this.setBaseAdapter(lvAdapter);
+		this.notifyDataSetChanged();
 	}
 
 	@Override
 	public void onHide()
 	{
-
+		SelectedCacheEventList.Remove(this);
 	}
 
 	@Override
@@ -67,7 +72,6 @@ public class LogView extends V_ListView
 	}
 
 	Cache aktCache;
-	boolean mustLoad;
 	CustomAdapter lvAdapter;
 
 	public class CustomAdapter implements Adapter
@@ -115,7 +119,7 @@ public class LogView extends V_ListView
 			{
 				LogEntry logEntry = logs.get(position);
 
-				CB_RectF rec = ItemRec.copy().ScaleCenter(0.97f);
+				CB_RectF rec = ItemRec.copy();
 				rec.setHeight(mesureItemHeight(logEntry));
 				LogViewItem v = new LogViewItem(rec, position, logEntry);
 
@@ -137,8 +141,11 @@ public class LogView extends V_ListView
 		private float mesureItemHeight(LogEntry logEntry)
 		{
 			float headHeight = (UiSizes.getButtonHeight() / 1.5f) + (Dialog.margin);
-			float commentHeight = (Dialog.margin * 2)
-					+ Fonts.MesureWrapped(logEntry.Comment, ItemRec.getWidth() - (Dialog.margin * 2)).height;
+
+			float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidth() - ListViewItemBackground.getRightWidth()
+					- (Dialog.margin * 2);
+
+			float commentHeight = (Dialog.margin * 3) + Fonts.MesureWrapped(logEntry.Comment, mesurdWidth).height;
 
 			return headHeight + commentHeight;
 		}
@@ -149,8 +156,13 @@ public class LogView extends V_ListView
 		if (aktCache != cache)
 		{
 			aktCache = cache;
-			mustLoad = true;
 		}
+	}
+
+	@Override
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	{
+		SetSelectedCache(cache, waypoint);
 	}
 
 }

@@ -114,8 +114,8 @@ public class FieldNoteViewItem extends ListViewItemBackground
 	private void iniCommentLabel()
 	{
 		lblComment = new Label(LeftWidth + Dialog.margin, 0, this.width - LeftWidth - RightWidth - (Dialog.margin * 2), this.height
-				- lblGcCode.getY() - Dialog.margin, "");
-		lblComment.setFont(Fonts.getSmall());
+				- (this.height - lblGcCode.getY()) - Dialog.margin, "");
+		lblComment.setFont(Fonts.getNormal());
 		lblComment.setWrappedText(fieldnote.comment);
 		this.addChild(lblComment);
 

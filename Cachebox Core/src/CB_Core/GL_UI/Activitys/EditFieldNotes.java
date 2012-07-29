@@ -369,7 +369,7 @@ public class EditFieldNotes extends ActivityBase
 
 	private void layoutTextFields()
 	{
-		float maxTextFieldHeight = this.height / 5;
+		float maxTextFieldHeight = this.height / 2.3f;
 		float rand = etComment.getStyle().background.getBottomHeight() + etComment.getStyle().background.getTopHeight();
 		float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getmesuredHeight() + rand);
 

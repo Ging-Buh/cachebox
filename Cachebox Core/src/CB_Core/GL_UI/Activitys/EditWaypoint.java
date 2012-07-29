@@ -384,7 +384,7 @@ public class EditWaypoint extends ActivityBase
 
 	private void layoutTextFields()
 	{
-		float maxTextFieldHeight = this.height / 5;
+		float maxTextFieldHeight = this.height / 2.3f;
 		float rand = etClue.getStyle().background.getBottomHeight() + etClue.getStyle().background.getTopHeight();
 		float descriptionHeight = Math.min(maxTextFieldHeight, etDescription.getmesuredHeight() + rand);
 		float clueHeight = Math.min(maxTextFieldHeight, etClue.getmesuredHeight() + rand);
