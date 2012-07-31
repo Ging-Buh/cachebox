@@ -1492,42 +1492,42 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 			info.setDistance(distance);
 
-			if (GlobalCore.SelectedCache() != null)
-			{
-				Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos
-						: GlobalCore.SelectedCache().Pos;
-				double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
-				info.setBearing((float) (bearing - locator.getHeading()));
-			}
+			// if (GlobalCore.SelectedCache() != null)
+			// {
+			// Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos
+			// : GlobalCore.SelectedCache().Pos;
+			// double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
+			// info.setBearing((float) (bearing - locator.getHeading()));
+			// }
 		}
 
-		if (alignToCompass)
-		{
-			this.mapHeading = heading;
-			this.arrowHeading = 0;
-
-			// da die Map gedreht in die offScreenBmp gezeichnet werden soll,
-			// muss der Bereich, der gezeichnet werden soll größer sein, wenn
-			// gedreht wird.
-			if (heading >= 180) heading -= 180;
-			if (heading > 90) heading = 180 - heading;
-			double alpha = heading / 180 * Math.PI;
-			double beta = Math.atan((double) mapIntWidth / (double) mapIntHeight);
-			double gammaW = Math.PI / 2 - alpha - beta;
-			// halbe Länge der Diagonalen
-			double diagonal = Math.sqrt(Math.pow(mapIntWidth, 2) + Math.pow(mapIntHeight, 2)) / 2;
-			drawingWidth = (int) (Math.cos(gammaW) * diagonal * 2);
-
-			double gammaH = alpha - beta;
-			drawingHeight = (int) (Math.cos(gammaH) * diagonal * 2);
-		}
-		else
-		{
-			this.mapHeading = 0;
-			this.arrowHeading = heading;
-			drawingWidth = mapIntWidth;
-			drawingHeight = mapIntHeight;
-		}
+		// if (alignToCompass)
+		// {
+		// this.mapHeading = heading;
+		// this.arrowHeading = 0;
+		//
+		// // da die Map gedreht in die offScreenBmp gezeichnet werden soll,
+		// // muss der Bereich, der gezeichnet werden soll größer sein, wenn
+		// // gedreht wird.
+		// if (heading >= 180) heading -= 180;
+		// if (heading > 90) heading = 180 - heading;
+		// double alpha = heading / 180 * Math.PI;
+		// double beta = Math.atan((double) mapIntWidth / (double) mapIntHeight);
+		// double gammaW = Math.PI / 2 - alpha - beta;
+		// // halbe Länge der Diagonalen
+		// double diagonal = Math.sqrt(Math.pow(mapIntWidth, 2) + Math.pow(mapIntHeight, 2)) / 2;
+		// drawingWidth = (int) (Math.cos(gammaW) * diagonal * 2);
+		//
+		// double gammaH = alpha - beta;
+		// drawingHeight = (int) (Math.cos(gammaH) * diagonal * 2);
+		// }
+		// else
+		// {
+		// this.mapHeading = 0;
+		// this.arrowHeading = heading;
+		// drawingWidth = mapIntWidth;
+		// drawingHeight = mapIntHeight;
+		// }
 
 		if (togBtn.getState() > 0 && togBtn.getState() != 2) setCenter(new Coordinate(locator.getLocation().Latitude,
 				locator.getLocation().Longitude));

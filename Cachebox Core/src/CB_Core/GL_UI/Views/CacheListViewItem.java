@@ -103,6 +103,8 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		distance.setPosition(x, 0);
 	}
 
+	double heading = 0;
+
 	private void setActLocator()
 	{
 
@@ -111,12 +113,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		if (GlobalCore.LastValidPosition.Valid)
 		{
 			Coordinate position = GlobalCore.LastValidPosition;
-			double heading = 0;
 
-			if (GlobalCore.Locator != null)
-			{
-				heading = GlobalCore.Locator.getHeading();
-			}
 			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, mCache.Latitude(), mCache.Longitude());
 			double cacheBearing = -(bearing - heading);
 			setDistanceString(UnitFormatter.DistanceString(mCache.Distance(true)));
@@ -189,6 +186,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	@Override
 	public void OrientationChanged(float heading)
 	{
+		this.heading = heading;
 		setActLocator();
 	}
 

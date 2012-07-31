@@ -627,6 +627,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public void newLocationReceived(Location location)
 	{
 
+		if (!location.hasBearing())
+		{
+			location.setBearing(compassHeading);
+		}
+
 		try
 		{
 			PositionEventList.Call(location);
@@ -1443,6 +1448,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	 * Handler
 	 */
 
+	private float compassHeading = 0;
+
 	private final SensorEventListener mListener = new SensorEventListener()
 	{
 		public void onSensorChanged(SensorEvent event)
@@ -1456,8 +1463,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			try
 			{
 				mCompassValues = event.values;
+				compassHeading = mCompassValues[0];
+
 				GlobalCore.Locator.setCompassHeading(mCompassValues[0]);
-				PositionEventList.Call(mCompassValues[0]);
+				PositionEventList.Call(mCompassValues[0], "CompassValue");
 			}
 			catch (Exception e)
 			{

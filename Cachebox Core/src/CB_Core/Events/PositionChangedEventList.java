@@ -38,14 +38,10 @@ public class PositionChangedEventList
 			public void run()
 			{
 
-				if (locator.getHeading() < 0.0f)
+				if (!locator.hasHeading())
 				{
-					// -1 are undefined heading
-					// use last heading if available
-					if (GlobalCore.Locator != null)
-					{
-						locator.setHeading(GlobalCore.Locator.getHeading());
-					}
+					Logger.LogCat("Locator has noe Heading Last Heading= " + lastHeading);
+					locator.setHeading(lastHeading);
 
 				}
 
@@ -75,9 +71,13 @@ public class PositionChangedEventList
 
 	}
 
+	private static float lastHeading = 0;
+
 	public static void Orientation(final float heading)
 	{
-		if (heading < 0.0f) return; // -1 are undefined heading
+
+		lastHeading = heading;
+
 		Thread thread = new Thread(new Runnable()
 		{
 

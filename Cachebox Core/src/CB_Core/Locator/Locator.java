@@ -153,4 +153,9 @@ public class Locator
 
 	}
 
+	public boolean hasHeading()
+	{
+		return hasBearing;
+	}
+
 }

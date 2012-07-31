@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Views;
 
-import java.awt.Paint;
 import java.text.SimpleDateFormat;
 
 import CB_Core.GL_UI.Fonts;
@@ -78,7 +77,7 @@ public class LogViewItem extends ListViewItemBackground
 	private void iniCommentLabel()
 	{
 		lblComment = new Label(LeftWidth + Dialog.margin, 0, this.width - LeftWidth - RightWidth - (Dialog.margin * 2), this.height
-				- Dialog.margin, "");
+				- headHeight, "");
 		lblComment.setFont(Fonts.getNormal());
 		lblComment.setWrappedText(logEntry.Comment);
 		this.addChild(lblComment);
@@ -93,9 +92,7 @@ public class LogViewItem extends ListViewItemBackground
 	}
 
 	// static Member
-	public static Paint Linepaint;
-	public static Paint KopfPaint;
-	public static Paint TextPaint;
+
 	private static float headHeight;
 	public static BitmapFontCache cacheNamePaint;
 

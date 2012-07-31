@@ -31,7 +31,8 @@ public class PositionEventList
 		if (!Config.settings.HardwareCompass.getValue())
 		{
 			// GPS richtung senden
-			Call(location.getBearing(), true);
+
+			Call(location.getBearing(), true, "Force Call from GPS Compass is off");
 		}
 
 		GlobalCore.LastPosition = new Coordinate(location.getLatitude(), location.getLongitude());
@@ -73,12 +74,12 @@ public class PositionEventList
 	private static float compassValue = 0;
 	private static long lastCompassTick = -99999;
 
-	public static void Call(float heading)
+	public static void Call(float heading, String Sender)
 	{
-		Call(heading, false);
+		Call(heading, false, Sender);
 	}
 
-	public static void Call(float heading, boolean force)
+	public static void Call(float heading, boolean force, String Sender)
 	{
 		/**
 		 * if display is switched off, so we need no heading changes
@@ -108,6 +109,7 @@ public class PositionEventList
 		lastCompassTick = aktTick;
 
 		int callCounter = 0;
+
 		for (PositionEvent event : list)
 		{
 			try

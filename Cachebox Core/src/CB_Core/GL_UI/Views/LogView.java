@@ -33,7 +33,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 
 		this.setBaseAdapter(null);
 		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
-
+		this.setDisposeFlag(false);
 	}
 
 	@Override
@@ -47,10 +47,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 
 		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
 
-		this.setBaseAdapter(null);
-		lvAdapter = new CustomAdapter(aktCache);
-		this.setBaseAdapter(lvAdapter);
-		this.notifyDataSetChanged();
+		resetInitial();
 	}
 
 	@Override
@@ -62,7 +59,15 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 	@Override
 	protected void Initial()
 	{
+		super.Initial();
 
+		createItemList(aktCache);
+
+		this.setBaseAdapter(null);
+		lvAdapter = new CustomAdapter();
+		this.setBaseAdapter(lvAdapter);
+
+		this.scrollTo(0);
 	}
 
 	@Override
@@ -74,37 +79,54 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 	Cache aktCache;
 	CustomAdapter lvAdapter;
 
-	public class CustomAdapter implements Adapter
+	ArrayList<LogViewItem> itemList;
+
+	private void createItemList(Cache cache)
 	{
-		private Cache cache;
-		private ArrayList<LogEntry> logs;
+		if (itemList == null) itemList = new ArrayList<LogViewItem>();
+		itemList.clear();
 
-		public CustomAdapter(Cache cache)
+		ArrayList<LogEntry> cleanLogs = new ArrayList<LogEntry>();
+		cleanLogs = Database.Logs(cache);// cache.Logs();
+
+		int index = 0;
+		for (LogEntry logEntry : cleanLogs)
 		{
-			this.cache = cache;
-			ArrayList<LogEntry> cleanLogs = new ArrayList<LogEntry>();
-			cleanLogs = Database.Logs(cache);// cache.Logs();
+			CB_RectF rec = ItemRec.copy();
+			rec.setHeight(mesureItemHeight(logEntry));
+			LogViewItem v = new LogViewItem(rec, index++, logEntry);
 
-			// clean up logs
-			logs = new ArrayList<LogEntry>();
-			for (LogEntry l : cleanLogs)
-			{
-				logs.add(l);
-			}
-
+			itemList.add(v);
 		}
 
-		public void setCache(Cache cache)
+	}
+
+	private float mesureItemHeight(LogEntry logEntry)
+	{
+		float headHeight = (UiSizes.getButtonHeight() / 1.5f) + (Dialog.margin);
+
+		float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidth() - ListViewItemBackground.getRightWidth()
+				- (Dialog.margin * 2);
+
+		float commentHeight = (Dialog.margin * 3) + Fonts.MesureWrapped(logEntry.Comment, mesurdWidth).height;
+
+		return headHeight + commentHeight;
+	}
+
+	public class CustomAdapter implements Adapter
+	{
+		public CustomAdapter()
 		{
-			this.cache = cache;
 
 		}
 
 		public int getCount()
 		{
-			if (cache != null)
+			if (itemList != null)
 			{
-				return logs.size();
+
+				return itemList.size();
+
 			}
 			else
 			{
@@ -115,15 +137,9 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 		@Override
 		public ListViewItemBase getView(int position)
 		{
-			if (cache != null)
+			if (itemList != null)
 			{
-				LogEntry logEntry = logs.get(position);
-
-				CB_RectF rec = ItemRec.copy();
-				rec.setHeight(mesureItemHeight(logEntry));
-				LogViewItem v = new LogViewItem(rec, position, logEntry);
-
-				return v;
+				return itemList.get(position);
 
 			}
 			else
@@ -133,22 +149,9 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 		@Override
 		public float getItemSize(int position)
 		{
-			if (position > logs.size() || logs.size() == 0) return 0;
-			LogEntry logEntry = logs.get(position);
-			return mesureItemHeight(logEntry);
+			return itemList.get(position).getHeight();
 		}
 
-		private float mesureItemHeight(LogEntry logEntry)
-		{
-			float headHeight = (UiSizes.getButtonHeight() / 1.5f) + (Dialog.margin);
-
-			float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidth() - ListViewItemBackground.getRightWidth()
-					- (Dialog.margin * 2);
-
-			float commentHeight = (Dialog.margin * 3) + Fonts.MesureWrapped(logEntry.Comment, mesurdWidth).height;
-
-			return headHeight + commentHeight;
-		}
 	}
 
 	public void SetSelectedCache(Cache cache, Waypoint waypoint)
@@ -157,6 +160,8 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 		{
 			aktCache = cache;
 		}
+
+		resetInitial();
 	}
 
 	@Override
