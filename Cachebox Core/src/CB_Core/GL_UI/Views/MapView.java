@@ -1553,7 +1553,15 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				info.setBearing((float) (bearing - GlobalCore.Locator.getHeading()));
 			}
 		}
-		heading = GlobalCore.Locator.getHeading();
+
+		if (this.locator != null)
+		{
+			heading = this.locator.getHeading();
+		}
+		else
+		{
+			heading = GlobalCore.Locator.getHeading();
+		}
 
 		if (alignToCompass)
 		{

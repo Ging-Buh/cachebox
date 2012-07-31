@@ -55,7 +55,7 @@ public abstract class Dialog extends CB_View_Base
 
 		mTitle9patch = new NinePatch(SpriteCache.Dialog.get(3), pW, (pW * 12 / 8), pW, pW);
 		mHeader9patch = new NinePatch(SpriteCache.Dialog.get(0), pW, pW, pW, 3);
-		mCenter9patch = new NinePatch(SpriteCache.Dialog.get(1), pW, pW, 3, 3);
+		mCenter9patch = new NinePatch(SpriteCache.Dialog.get(1), pW, pW, 1, 1);
 		mFooter9patch = new NinePatch(SpriteCache.Dialog.get(2), pW, pW, 3, pW);
 
 		Left = mCenter9patch.getLeftWidth();

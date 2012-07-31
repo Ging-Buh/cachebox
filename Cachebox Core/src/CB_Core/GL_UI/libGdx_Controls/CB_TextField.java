@@ -6,6 +6,7 @@ import CB_Core.GL_UI.Controls.PopUps.CopiePastePopUp;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 
@@ -19,7 +20,7 @@ public class CB_TextField extends LibGdx_Host_Control
 
 	public CB_TextField(CB_RectF rec, CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField wrappedTextField, String Name)
 	{
-		super(rec, new CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField(Style.getTextFieldStyle()), Name);
+		super(rec, new CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField("", Style.getTextFieldStyle()), Name);
 		that = this;
 
 		this.setOnClickListener(new OnClickListener()
@@ -53,7 +54,7 @@ public class CB_TextField extends LibGdx_Host_Control
 	public CB_TextField(CB_RectF rec, String Name)
 	{
 
-		super(rec, new com.badlogic.gdx.scenes.scene2d.ui.TextField(Style.getTextFieldStyle()), Name);
+		super(rec, new com.badlogic.gdx.scenes.scene2d.ui.TextField("", Style.getTextFieldStyle()), Name);
 		that = this;
 
 		this.setOnClickListener(new OnClickListener()
@@ -175,19 +176,19 @@ public class CB_TextField extends LibGdx_Host_Control
 
 	public void enable()
 	{
-		mTextField.touchable = true;
+		mTextField.setTouchable(Touchable.enabled);
 	}
 
 	public void disable()
 	{
-		mTextField.touchable = false;
+		mTextField.setTouchable(Touchable.disabled);
 	}
 
 	@Override
 	public void setWidth(float width)
 	{
 		super.setWidth(width);
-		mTextField.width = width;
+		mTextField.setWidth(width);
 	}
 
 	@Override
@@ -202,7 +203,7 @@ public class CB_TextField extends LibGdx_Host_Control
 	public void setFocus()
 	{
 		hasFocus = true;
-		mTextField.touchDown(0, 0, 0);
+		mTextField.hit(0, 0);
 		setTextFieldStyle();
 	}
 
@@ -240,7 +241,7 @@ public class CB_TextField extends LibGdx_Host_Control
 	@Override
 	public void resize(float width, float height)
 	{
-		mTextField.height = height;
-		mTextField.width = width;
+		mTextField.setHeight(height);
+		mTextField.setWidth(width);
 	}
 }

@@ -10,14 +10,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
+import com.badlogic.gdx.scenes.scene2d.utils.Clipboard;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -49,57 +51,257 @@ public class WrappedTextField extends TextField
 	private int[] lineCharCount;
 	private boolean[] lineEndsWidthLineBreak;
 
-	public WrappedTextField(Skin skin)
-	{
-		this("", null, skin.getStyle(TextFieldStyle.class), null);
-	}
-
-	public WrappedTextField(String text, Skin skin)
-	{
-		this(text, null, skin.getStyle(TextFieldStyle.class), null);
-	}
-
-	/**
-	 * @param messageText
-	 *            Text to show when empty. May be null.
-	 */
-	public WrappedTextField(String text, String messageText, Skin skin)
-	{
-		this(text, messageText, skin.getStyle(TextFieldStyle.class), null);
-	}
-
-	public WrappedTextField(TextFieldStyle style)
-	{
-		this("", null, style, null);
-	}
-
 	public WrappedTextField(String text, TextFieldStyle style)
 	{
-		this(text, null, style, null);
+		super(text, style);
+		initialize();
 	}
 
-	/**
-	 * @param messageText
-	 *            Text to show when empty. May be null.
-	 */
-	public WrappedTextField(String text, String messageText, TextFieldStyle style)
+	private void initialize()
 	{
-		this(text, messageText, style, null);
-	}
+		Array<EventListener> listners = getListeners();
 
-	/**
-	 * @param messageText
-	 *            Text to show when empty. May be null.
-	 */
-	public WrappedTextField(String text, String messageText, TextFieldStyle style, String name)
-	{
-		super(text, messageText, style, name);
+		for (EventListener eventListner : listners)
+		{
+			if (eventListner instanceof InputListener) removeListener(eventListner);
+		}
 
-	}
+		addListener(new InputListener()
+		{
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button)
+			{
+				Logger.LogCat("Offset:" + offsetY);
+				mLastTouch = y;
+				mLastTouchOffset = offsetY;
+				return true;
+			}
 
-	@Override
-	public void layout()
-	{
+			public boolean keyDown(InputEvent event, int keycode)
+			{
+				Logger.LogCat("KeyDown: " + keycode);
+
+				final BitmapFont font = style.font;
+
+				Stage stage = getStage();
+				if (stage != null && stage.getKeyboardFocus() == WrappedTextField.this)
+				{
+					if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))
+					{
+						// paste
+						if (keycode == Keys.V) paste();
+						// copy
+						if (keycode == Keys.C || keycode == Keys.INSERT) copy();
+						calculateOffsets();
+					}
+					else if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))
+					{
+						// paste
+						if (keycode == Keys.INSERT) paste();
+						// cut
+						if (keycode == Keys.FORWARD_DEL)
+						{
+							if (hasSelection)
+							{
+								copy();
+								delete();
+							}
+						}
+						// selection
+						if (keycode == Keys.LEFT)
+						{
+							if (!hasSelection)
+							{
+								selectionStart = cursor;
+								hasSelection = true;
+							}
+							cursor--;
+						}
+						if (keycode == Keys.RIGHT)
+						{
+							if (!hasSelection)
+							{
+								selectionStart = cursor;
+								hasSelection = true;
+							}
+							cursor++;
+						}
+						if (keycode == Keys.HOME)
+						{
+							if (!hasSelection)
+							{
+								selectionStart = cursor;
+								hasSelection = true;
+							}
+							cursor = 0;
+						}
+						if (keycode == Keys.END)
+						{
+							if (!hasSelection)
+							{
+								selectionStart = cursor;
+								hasSelection = true;
+							}
+							cursor = text.length();
+						}
+
+					}
+					else
+					{
+
+						// cursor movement or other keys (kill selection)
+						if (keycode == Keys.LEFT)
+						{
+							cursor--;
+							clearSelection();
+						}
+						if (keycode == Keys.RIGHT)
+						{
+							cursor++;
+							clearSelection();
+						}
+
+						if (keycode == Keys.UP)
+						{
+							cursorLinUpDown(-1);
+							clearSelection();
+						}
+						if (keycode == Keys.DOWN)
+						{
+							cursorLinUpDown(1);
+							clearSelection();
+						}
+
+						if (keycode == Keys.HOME)
+						{
+							cursor = 0;
+							clearSelection();
+						}
+						if (keycode == Keys.END)
+						{
+							cursor = text.length();
+							clearSelection();
+						}
+
+					}
+
+					cursor = Math.max(0, cursor);
+					cursor = Math.min(text.length(), cursor);
+					calculateOffsets();
+
+					return true;
+				}
+				return false;
+			}
+
+			public boolean keyUp(InputEvent event, int keycode)
+			{
+				Logger.LogCat("KeyUp" + keycode);
+				return true;
+			}
+
+			public boolean keyTyped(InputEvent event, char character)
+			{
+				Logger.LogCat("keyTyped: " + character);
+
+				int realCursorPos = getRealCusorPos();
+				int versatz = cursor - realCursorPos;
+
+				final BitmapFont font = style.font;
+
+				if (getStage() != null && getStage().getKeyboardFocus() == WrappedTextField.this)
+				{
+					if (character == BACKSPACE && (realCursorPos > 0 || hasSelection))
+					{
+						if (!hasSelection)
+						{
+							text = text.substring(0, realCursorPos - 1) + text.substring(realCursorPos);
+							updateDisplayText();
+							realCursorPos--;
+						}
+						else
+						{
+							delete();
+						}
+					}
+					if (character == DELETE)
+					{
+						if (realCursorPos < text.length() || hasSelection)
+						{
+							if (!hasSelection)
+							{
+								text = text.substring(0, realCursorPos) + text.substring(realCursorPos + 1);
+								updateDisplayText();
+							}
+							else
+							{
+								delete();
+							}
+						}
+						calcLineRow();
+						return true;
+					}
+					if (character != ENTER_DESKTOP && character != ENTER_ANDROID)
+					{
+						if (filter != null && !filter.acceptChar(WrappedTextField.this, character)) return true;
+					}
+
+					if (character == TAB) next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
+
+					if (character == ENTER_DESKTOP) character = ENTER_ANDROID;
+
+					if (font.containsCharacter(character) || character == ENTER_ANDROID)
+					{
+						if (!hasSelection)
+						{
+							text = text.substring(0, realCursorPos) + character + text.substring(realCursorPos, text.length());
+							updateDisplayText();
+							realCursorPos++;
+						}
+						else
+						{
+							int minIndex = Math.min(realCursorPos, selectionStart);
+							int maxIndex = Math.max(realCursorPos, selectionStart);
+
+							text = (minIndex > 0 ? text.substring(0, minIndex) : "")
+									+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
+							realCursorPos = minIndex;
+							text = text.substring(0, realCursorPos) + character + text.substring(realCursorPos, text.length());
+							updateDisplayText();
+							realCursorPos++;
+							clearSelection();
+						}
+
+					}
+
+					cursor = realCursorPos + versatz;
+
+					if (listener != null) listener.keyTyped(WrappedTextField.this, character);
+					calcLineRow();
+					return true;
+				}
+				else
+					return false;
+			}
+
+			public void touchDragged(InputEvent event, float x, float y, int pointer)
+			{
+				offsetY = mLastTouchOffset + (y - mLastTouch);
+				if (offsetY < 0)
+				{
+					offsetY = 0;
+					return;
+				}
+
+				float lineHeight = style.font.getLineHeight();
+
+				float maxYPos = lineCount * lineHeight / 2;
+				if (offsetY > maxYPos)
+				{
+					offsetY = maxYPos;
+				}
+			}
+
+		});
 	}
 
 	private void calculateOffsets()
@@ -107,7 +309,7 @@ public class WrappedTextField extends TextField
 		Logger.LogCat("CalcOffset");
 		offsetY = 0;
 		float lineHeight = style.font.getLineHeight();
-		int lastVisibleLine = (int) ((this.height - this.style.background.getBottomHeight() - this.style.background.getTopHeight()) / lineHeight) - 1;
+		int lastVisibleLine = (int) ((this.getHeight() - this.style.background.getBottomHeight() - this.style.background.getTopHeight()) / lineHeight) - 1;
 
 		if (CursorLine > lastVisibleLine)
 		{
@@ -130,9 +332,11 @@ public class WrappedTextField extends TextField
 	{
 		final BitmapFont font = style.font;
 		final Color fontColor = style.fontColor;
-		final TextureRegion selection = style.selection;
-		final NinePatch cursorPatch = style.cursor;
 
+		final Drawable selection = style.selection;
+		final Drawable cursorPatch = style.cursor;
+
+		Color color = getColor();
 		{
 			// Debug
 			debugCursorPos = cursor;
@@ -151,22 +355,22 @@ public class WrappedTextField extends TextField
 		float bgTopHeight = 0;
 		if (style.background != null)
 		{
-			style.background.draw(batch, x, y, width, height);
+			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 			bgLeftWidth = style.background.getLeftWidth();
 			bgRightWidth = style.background.getRightWidth();
 			bgTopHeight = style.background.getTopHeight();
 
 		}
 
-		float textY = (int) (height + font.getDescent() - bgTopHeight);
+		float textY = (int) (getHeight() + font.getDescent() - bgTopHeight);
 
 		textY += offsetY;
 
-		boolean focused = stage != null && stage.getKeyboardFocus() == this;
+		boolean focused = getStage() != null && getStage().getKeyboardFocus() == this;
 		if (focused && hasSelection && selection != null)
 		{
-			batch.draw(selection, x + selectionX + bgLeftWidth + renderOffset, y + textY - textBounds.height - font.getDescent() / 2,
-					selectionWidth, textBounds.height);
+			selection.draw(batch, getX() + selectionX + bgLeftWidth + renderOffset, getY() + textY - textBounds.height - font.getDescent()
+					/ 2, selectionWidth, textBounds.height);
 		}
 
 		if (displayText.length() == 0)
@@ -181,14 +385,14 @@ public class WrappedTextField extends TextField
 				else
 					font.setColor(0.7f, 0.7f, 0.7f, parentAlpha);
 				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
-				font.draw(batch, messageText, x + bgLeftWidth, y + textY);
+				font.draw(batch, messageText, getX() + bgLeftWidth, getY() + textY);
 			}
 		}
 		else
 		{
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
 			// font.draw(batch, displayText, x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
-			font.drawWrapped(batch, displayText, x + bgLeftWidth + textOffset, y + textY, width - bgLeftWidth - bgRightWidth);
+			font.drawWrapped(batch, displayText, getX() + bgLeftWidth + textOffset, getY() + textY, getWidth() - bgLeftWidth - bgRightWidth);
 		}
 		if (focused)
 		{
@@ -210,8 +414,8 @@ public class WrappedTextField extends TextField
 					cY = glyphPointF.get(cursor).y;
 				}
 
-				cursorPatch.draw(batch, x + bgLeftWidth + cX + renderOffset - 1, y + textY - lineHeight - font.getDescent() - cY,
-						cursorPatch.getTotalWidth(), lineHeight + font.getDescent() / 2);
+				cursorPatch.draw(batch, getX() + bgLeftWidth + cX + renderOffset - 1, getY() + textY - lineHeight - font.getDescent() - cY,
+						cursorPatch.getMinWidth(), lineHeight + font.getDescent() / 2);
 
 			}
 		}
@@ -302,7 +506,7 @@ public class WrappedTextField extends TextField
 	{
 		if (pointer != 0) return false;
 
-		if (stage != null) stage.setKeyboardFocus(this);
+		if (getStage() != null) getStage().setKeyboardFocus(this);
 		keyboard.show(true);
 		clearSelection();
 		lastBlink = 0;
@@ -316,7 +520,7 @@ public class WrappedTextField extends TextField
 
 		float lineHeight = style.font.getLineHeight();
 		float clickPos = y - offsetY;
-		int clickedCursorLine = (int) ((this.height - clickPos + (lineHeight / 2)) / lineHeight) - 1;
+		int clickedCursorLine = (int) ((this.getHeight() - clickPos + (lineHeight / 2)) / lineHeight) - 1;
 
 		if (clickedCursorLine >= lineCount) return true;
 
@@ -343,33 +547,11 @@ public class WrappedTextField extends TextField
 	private float mLastTouch = 0;
 	private float mLastTouchOffset = 0;
 
-	@Override
-	public boolean touchDown(float x, float y, int pointer)
-	{
-		Logger.LogCat("Offset:" + offsetY);
-		mLastTouch = y;
-		mLastTouchOffset = offsetY;
-		return true;
-	}
+	// @Override
+	// public void touchDragged(float x, float y, int pointer)
+	// {
 
-	@Override
-	public void touchDragged(float x, float y, int pointer)
-	{
-		offsetY = mLastTouchOffset + (y - mLastTouch);
-		if (offsetY < 0)
-		{
-			offsetY = 0;
-			return;
-		}
-
-		float lineHeight = style.font.getLineHeight();
-
-		float maxYPos = lineCount * lineHeight / 2;
-		if (offsetY > maxYPos)
-		{
-			offsetY = maxYPos;
-		}
-	}
+	// }
 
 	private void cursorLinUpDown(int value)
 	{
@@ -402,118 +584,6 @@ public class WrappedTextField extends TextField
 		calculateOffsets();
 	}
 
-	public boolean keyDown(int keycode)
-	{
-		final BitmapFont font = style.font;
-
-		if (stage != null && stage.getKeyboardFocus() == this)
-		{
-			if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))
-			{
-				// paste
-				if (keycode == Keys.V) paste();
-				// copy
-				if (keycode == Keys.C || keycode == Keys.INSERT) copy();
-			}
-			else if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))
-			{
-				// paste
-				if (keycode == Keys.INSERT) paste();
-				// cut
-				if (keycode == Keys.FORWARD_DEL)
-				{
-					if (hasSelection)
-					{
-						copy();
-						delete();
-					}
-				}
-				// selection
-				if (keycode == Keys.LEFT)
-				{
-					if (!hasSelection)
-					{
-						selectionStart = cursor;
-						hasSelection = true;
-					}
-					cursor--;
-				}
-				if (keycode == Keys.RIGHT)
-				{
-					if (!hasSelection)
-					{
-						selectionStart = cursor;
-						hasSelection = true;
-					}
-					cursor++;
-				}
-				if (keycode == Keys.HOME)
-				{
-					if (!hasSelection)
-					{
-						selectionStart = cursor;
-						hasSelection = true;
-					}
-					cursor = 0;
-				}
-				if (keycode == Keys.END)
-				{
-					if (!hasSelection)
-					{
-						selectionStart = cursor;
-						hasSelection = true;
-					}
-					cursor = text.length();
-				}
-
-				cursor = Math.max(0, cursor);
-				cursor = Math.min(text.length(), cursor);
-			}
-			else
-			{
-				// cursor movement or other keys (kill selection)
-				if (keycode == Keys.LEFT)
-				{
-					cursor--;
-					clearSelection();
-				}
-				if (keycode == Keys.RIGHT)
-				{
-					cursor++;
-					clearSelection();
-				}
-
-				if (keycode == Keys.UP)
-				{
-					cursorLinUpDown(-1);
-					clearSelection();
-				}
-				if (keycode == Keys.DOWN)
-				{
-					cursorLinUpDown(1);
-					clearSelection();
-				}
-
-				if (keycode == Keys.HOME)
-				{
-					cursor = 0;
-					clearSelection();
-				}
-				if (keycode == Keys.END)
-				{
-					cursor = text.length();
-					clearSelection();
-				}
-
-				cursor = Math.max(0, cursor);
-				cursor = Math.min(text.length(), cursor);
-			}
-			calculateOffsets();
-			return true;
-		}
-		return false;
-	}
-
 	private void delete()
 	{
 		int minIndex = Math.min(cursor, selectionStart);
@@ -525,88 +595,6 @@ public class WrappedTextField extends TextField
 		clearSelection();
 	}
 
-	public boolean keyTyped(char character)
-	{
-		int realCursorPos = getRealCusorPos();
-		int versatz = cursor - realCursorPos;
-
-		final BitmapFont font = style.font;
-
-		if (stage != null && stage.getKeyboardFocus() == this)
-		{
-			if (character == BACKSPACE && (realCursorPos > 0 || hasSelection))
-			{
-				if (!hasSelection)
-				{
-					text = text.substring(0, realCursorPos - 1) + text.substring(realCursorPos);
-					updateDisplayText();
-					realCursorPos--;
-				}
-				else
-				{
-					delete();
-				}
-			}
-			if (character == DELETE)
-			{
-				if (realCursorPos < text.length() || hasSelection)
-				{
-					if (!hasSelection)
-					{
-						text = text.substring(0, realCursorPos) + text.substring(realCursorPos + 1);
-						updateDisplayText();
-					}
-					else
-					{
-						delete();
-					}
-				}
-				calcLineRow();
-				return true;
-			}
-			if (character != ENTER_DESKTOP && character != ENTER_ANDROID)
-			{
-				if (filter != null && !filter.acceptChar(this, character)) return true;
-			}
-
-			if (character == TAB) next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
-
-			if (character == ENTER_DESKTOP) character = ENTER_ANDROID;
-
-			if (font.containsCharacter(character) || character == ENTER_ANDROID)
-			{
-				if (!hasSelection)
-				{
-					text = text.substring(0, realCursorPos) + character + text.substring(realCursorPos, text.length());
-					updateDisplayText();
-					realCursorPos++;
-				}
-				else
-				{
-					int minIndex = Math.min(realCursorPos, selectionStart);
-					int maxIndex = Math.max(realCursorPos, selectionStart);
-
-					text = (minIndex > 0 ? text.substring(0, minIndex) : "")
-							+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
-					realCursorPos = minIndex;
-					text = text.substring(0, realCursorPos) + character + text.substring(realCursorPos, text.length());
-					updateDisplayText();
-					realCursorPos++;
-					clearSelection();
-				}
-
-			}
-
-			cursor = realCursorPos + versatz;
-
-			if (listener != null) listener.keyTyped(this, character);
-			calcLineRow();
-			return true;
-		}
-		else
-			return false;
-	}
-
 	/**
 	 * Focuses the next TextField. If none is found, the keyboard is hidden. Does nothing if the text field is not in a stage.
 	 * 
@@ -615,9 +603,9 @@ public class WrappedTextField extends TextField
 	 */
 	public void next(boolean up)
 	{
-		if (stage == null) return;
-		WrappedTextField textField = findNextTextField(stage.getActors(), null, up);
-		if (textField != null) stage.setKeyboardFocus(textField);
+		if (getStage() == null) return;
+		TextField textField = findNextTextField(getStage().getActors(), null, up);
+		if (textField != null) getStage().setKeyboardFocus(textField);
 		else
 			Gdx.input.setOnscreenKeyboardVisible(false);
 	}
@@ -630,16 +618,16 @@ public class WrappedTextField extends TextField
 			if (actor instanceof WrappedTextField)
 			{
 				if (actor == this) continue;
-				if (actor.y == y)
+				if (actor.getY() == getY())
 				{
-					if (best == null && actor.x >= x ^ up) best = (WrappedTextField) actor;
+					if (best == null && actor.getX() >= getX() ^ up) best = (WrappedTextField) actor;
 				}
-				else if (actor.y < y ^ up && (best == null || actor.y - y > best.y - y ^ up))
+				else if (actor.getY() < getY() ^ up && (best == null || actor.getY() - getY() > best.getY() - getY() ^ up))
 				{
 					best = (WrappedTextField) actor;
 				}
 			}
-			if (actor instanceof Group) best = findNextTextField(((Group) actor).getActors(), best, up);
+			// if (actor instanceof Group) best = findNextTextField(((Group) actor).getActors(), best, up);
 		}
 		return best;
 	}
@@ -695,7 +683,7 @@ public class WrappedTextField extends TextField
 
 	private void calcTextBounds()
 	{
-		if (width == 0 || style == null) return;
+		if (getWidth() == 0 || style == null) return;
 		BitmapFont font = style.font;
 		float bgLeftWidth = 0;
 		float bgRightWidth = 0;
@@ -706,7 +694,7 @@ public class WrappedTextField extends TextField
 
 		}
 
-		float wrapWidth = width - bgLeftWidth - bgRightWidth;
+		float wrapWidth = getWidth() - bgLeftWidth - bgRightWidth;
 		int lines = (int) (font.getWrappedBounds(displayText, wrapWidth).height / font.getLineHeight() + 1);
 		lineCharCount = new int[lines];
 		lineEndsWidthLineBreak = new boolean[lines];
@@ -803,7 +791,7 @@ public class WrappedTextField extends TextField
 		}
 
 		glyphAdvances.add(0);
-		glyphPositions.add(width);
+		glyphPositions.add(getWidth());
 
 		textBounds.width = maxWidth;
 		textBounds.height = (font.getData().capHeight + (numLines - 1) * font.getData().lineHeight) - font.getDescent() * 2;

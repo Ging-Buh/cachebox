@@ -2,7 +2,7 @@ package de.cachebox_test.Ui;
 
 import android.text.ClipboardManager;
 
-import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
+import com.badlogic.gdx.scenes.scene2d.utils.Clipboard;
 
 public class AndroidClipboard extends Clipboard
 {

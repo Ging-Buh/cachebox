@@ -146,4 +146,11 @@ public class Locator
 		return result;
 	}
 
+	public void setHeading(float heading)
+	{
+		bearing = heading;
+		hasBearing = true;
+
+	}
+
 }

@@ -41,7 +41,7 @@ public class Desktop_GL_Listner extends Tab_GL_Listner implements InputProcessor
 	}
 
 	@Override
-	public boolean touchMoved(int x, int y) {
+	public boolean mouseMoved(int x, int y) {
 //		aktTouch=new Point(x, y);
 //		return onTouchDragged(x, y, -1);
 		return onTouchDraggedBase(x, y, -1);
@@ -93,6 +93,8 @@ public class Desktop_GL_Listner extends Tab_GL_Listner implements InputProcessor
 		if (keyboardFocus != null && keyboardFocus.keyDown(keycode)) return true;
 		return LibGdx_Host_Control.keyDown(keycode);
 	}
+
+	
 
 
 }

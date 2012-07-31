@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public abstract class GL_View_Base extends CB_RectF
 {
@@ -41,6 +42,9 @@ public abstract class GL_View_Base extends CB_RectF
 	protected String name = "";
 	protected boolean hasNinePatchBackground = false;
 	protected NinePatch nineBackground;
+
+	protected boolean hasDrawableBackground = false;
+	protected Drawable drawableBackground;
 
 	protected GL_View_Base Me;
 
@@ -163,18 +167,18 @@ public abstract class GL_View_Base extends CB_RectF
 			@Override
 			public void run()
 			{
-				synchronized (childs)
-				{
+				// synchronized (childs)
+				// {
 
-					if (last)
-					{
-						childs.add(0, view);
-					}
-					else
-					{
-						childs.add(view);
-					}
+				if (last)
+				{
+					childs.add(0, view);
 				}
+				else
+				{
+					childs.add(view);
+				}
+				// }
 			}
 		});
 
@@ -188,10 +192,10 @@ public abstract class GL_View_Base extends CB_RectF
 			@Override
 			public void run()
 			{
-				synchronized (childs)
-				{
-					childs.remove(view);
-				}
+				// synchronized (childs)
+				// {
+				childs.remove(view);
+				// }
 			}
 		});
 	}
@@ -203,10 +207,10 @@ public abstract class GL_View_Base extends CB_RectF
 			@Override
 			public void run()
 			{
-				synchronized (childs)
-				{
-					childs.clear();
-				}
+				// synchronized (childs)
+				// {
+				childs.clear();
+				// }
 			}
 		});
 	}
@@ -218,10 +222,10 @@ public abstract class GL_View_Base extends CB_RectF
 			@Override
 			public void run()
 			{
-				synchronized (childs)
-				{
-					childs.remove(Childs);
-				}
+				// synchronized (childs)
+				// {
+				childs.remove(Childs);
+				// }
 			}
 		});
 	}
@@ -230,10 +234,10 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void RunOnGL(runOnGL run)
 	{
-		synchronized (runOnGL_List)
-		{
-			runOnGL_List.add(run);
-		}
+		// synchronized (runOnGL_List)
+		// {
+		runOnGL_List.add(run);
+		// }
 
 	}
 
@@ -260,11 +264,15 @@ public abstract class GL_View_Base extends CB_RectF
 				(int) intersectRec.getHeight() + 1);
 
 		// first Draw Background?
-		if (hasBackground || hasNinePatchBackground)
+		if (hasBackground || hasNinePatchBackground || hasDrawableBackground)
 		{
 			batch.begin();
 
-			if (hasNinePatchBackground)
+			if (hasDrawableBackground)
+			{
+				drawableBackground.draw(batch, 0, 0, width, height);
+			}
+			else if (hasNinePatchBackground)
 			{
 				nineBackground.draw(batch, 0, 0, width, height);
 			}
@@ -276,19 +284,19 @@ public abstract class GL_View_Base extends CB_RectF
 			batch.end();
 		}
 
-		synchronized (runOnGL_List)
+		// synchronized (runOnGL_List)
+		// {
+
+		if (runOnGL_List.size() > 0)
 		{
-
-			if (runOnGL_List.size() > 0)
+			for (runOnGL run : runOnGL_List)
 			{
-				for (runOnGL run : runOnGL_List)
-				{
-					run.run();
-				}
-
-				runOnGL_List.clear();
+				if (run != null) run.run();
 			}
+
+			runOnGL_List.clear();
 		}
+		// }
 
 		batch.begin();
 		this.render(batch);
@@ -296,13 +304,17 @@ public abstract class GL_View_Base extends CB_RectF
 
 		Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 
-		synchronized (childs)
+		// synchronized (childs)
+		// {
+		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			// alle renderChilds() der in dieser GL_View_Base
+			// enthaltenen Childs auf rufen.
+
+			GL_View_Base view;
+			try
 			{
-				// alle renderChilds() der in dieser GL_View_Base
-				// enthaltenen Childs auf rufen.
-				GL_View_Base view = iterator.next();
+				view = iterator.next();
 
 				// hier nicht view.render(batch) aufrufen, da sonnst die in der
 				// view enthaldenen Childs nicht aufgerufen werden.
@@ -323,8 +335,15 @@ public abstract class GL_View_Base extends CB_RectF
 					nDepthCounter--;
 					batch.setProjectionMatrix(myParentInfo.Matrix());
 				}
+
+			}
+			catch (java.util.ConcurrentModificationException e)
+			{
+				// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
+				break;
 			}
 		}
+		// }
 		childsInvalidate = false;
 
 		// Draw Debug REC
@@ -428,16 +447,16 @@ public abstract class GL_View_Base extends CB_RectF
 		debugRec = null;
 
 		// Eine Größenänderung an die Childs Melden
-		synchronized (childs)
+		// synchronized (childs)
+		// {
+		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-			{
-				// alle renderChilds() der in dieser GL_View_Base
-				// enthaltenen Childs auf rufen.
-				GL_View_Base view = iterator.next();
-				view.onParentRezised(this);
-			}
+			// alle renderChilds() der in dieser GL_View_Base
+			// enthaltenen Childs auf rufen.
+			GL_View_Base view = iterator.next();
+			view.onParentRezised(this);
 		}
+		// }
 	}
 
 	public abstract void onRezised(CB_RectF rec);
@@ -446,30 +465,30 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void onShow()
 	{
-		synchronized (childs)
+		// synchronized (childs)
+		// {
+		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-			{
-				// alle renderChilds() der in dieser GL_View_Base
-				// enthaltenen Childs auf rufen.
-				GL_View_Base view = iterator.next();
-				view.onShow();
-			}
+			// alle renderChilds() der in dieser GL_View_Base
+			// enthaltenen Childs auf rufen.
+			GL_View_Base view = iterator.next();
+			view.onShow();
 		}
+		// }
 	}
 
 	public void onStop()
 	{
-		synchronized (childs)
+		// synchronized (childs)
+		// {
+		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-			{
-				// alle renderChilds() der in dieser GL_View_Base
-				// enthaltenen Childs auf rufen.
-				GL_View_Base view = iterator.next();
-				view.onStop();
-			}
+			// alle renderChilds() der in dieser GL_View_Base
+			// enthaltenen Childs auf rufen.
+			GL_View_Base view = iterator.next();
+			view.onStop();
 		}
+		// }
 	}
 
 	public boolean click(int x, int y, int pointer, int button)
@@ -478,26 +497,26 @@ public abstract class GL_View_Base extends CB_RectF
 		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
 		boolean behandelt = false;
 		// alle Childs abfragen
-		synchronized (childs)
+		// synchronized (childs)
+		// {
+		// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+		for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 		{
-			// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
+			// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
+			GL_View_Base view = iterator.next();
+
+			if (!view.isClickable()) continue;
+			// Invisible Views can not be clicked!
+			if (!view.isVisible()) continue;
+
+			if (view.contains(x, y))
 			{
-				// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
-				GL_View_Base view = iterator.next();
-
-				if (!view.isClickable()) continue;
-				// Invisible Views can not be clicked!
-				if (!view.isVisible()) continue;
-
-				if (view.contains(x, y))
-				{
-					// touch innerhalb des Views
-					// -> Klick an das View weitergeben
-					behandelt = view.click(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
-				}
+				// touch innerhalb des Views
+				// -> Klick an das View weitergeben
+				behandelt = view.click(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
 			}
 		}
+		// }
 		if (!behandelt)
 		{
 			// kein Klick in einem untergeordnetem View
@@ -517,24 +536,24 @@ public abstract class GL_View_Base extends CB_RectF
 		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
 		boolean behandelt = false;
 
-		synchronized (childs)
+		// synchronized (childs)
+		// {
+		// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+		for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 		{
-			// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
+			// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
+			GL_View_Base view = iterator.next();
+
+			if (!view.isClickable()) continue;
+
+			if (view.contains(x, y))
 			{
-				// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
-				GL_View_Base view = iterator.next();
-
-				if (!view.isClickable()) continue;
-
-				if (view.contains(x, y))
-				{
-					// touch innerhalb des Views
-					// -> Klick an das View weitergeben
-					behandelt = view.longClick(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
-				}
+				// touch innerhalb des Views
+				// -> Klick an das View weitergeben
+				behandelt = view.longClick(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
 			}
 		}
+		// }
 		if (!behandelt)
 		{
 			// kein Klick in einem untergeordnetem View
@@ -556,27 +575,27 @@ public abstract class GL_View_Base extends CB_RectF
 		GL_View_Base resultView = null;
 
 		// alle Childs abfragen
-		synchronized (childs)
+		// synchronized (childs)
+		// {
+		// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+		for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 		{
-			// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
+			// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
+			GL_View_Base view = iterator.next();
+
+			// Invisible Views can not be clicked!
+			if (!view.isVisible()) continue;
+			if (view.contains(x, y))
 			{
-				// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
-				GL_View_Base view = iterator.next();
-
-				// Invisible Views can not be clicked!
-				if (!view.isVisible()) continue;
-				if (view.contains(x, y))
-				{
-					// touch innerhalb des Views
-					// -> Klick an das View weitergeben
-					lastTouchPos = new Vector2(x - view.Pos.x, y - view.Pos.y);
-					resultView = view.touchDown(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
-				}
-
-				if (resultView != null) break;
+				// touch innerhalb des Views
+				// -> Klick an das View weitergeben
+				lastTouchPos = new Vector2(x - view.Pos.x, y - view.Pos.y);
+				resultView = view.touchDown(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
 			}
+
+			if (resultView != null) break;
 		}
+		// }
 
 		if (resultView == null)
 		{
@@ -598,20 +617,20 @@ public abstract class GL_View_Base extends CB_RectF
 		boolean behandelt = false;
 
 		// alle Childs abfragen
-		synchronized (childs)
+		// synchronized (childs)
+		// {
+		// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+		for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 		{
-			// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
-			{
-				GL_View_Base view = iterator.next();
+			GL_View_Base view = iterator.next();
 
-				if (view.contains(x, y))
-				{
-					behandelt = view.touchDragged(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, KineticPan);
-				}
-				if (behandelt) break;
+			if (view.contains(x, y))
+			{
+				behandelt = view.touchDragged(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, KineticPan);
 			}
+			if (behandelt) break;
 		}
+		// }
 		if (!behandelt)
 		{
 			// kein Klick in einem untergeordnetem View
@@ -628,22 +647,22 @@ public abstract class GL_View_Base extends CB_RectF
 		boolean behandelt = false;
 
 		// alle Childs abfragen
-		synchronized (childs)
+		// synchronized (childs)
+		// {
+		// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+		for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 		{
-			// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
+			GL_View_Base view = iterator.next();
+			if (view.contains(x, y))
 			{
-				GL_View_Base view = iterator.next();
-				if (view.contains(x, y))
-				{
-					// touch innerhalb des Views
-					// -> Klick an das View weitergeben
-					behandelt = view.touchUp(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
-				}
-
-				if (behandelt) break;
+				// touch innerhalb des Views
+				// -> Klick an das View weitergeben
+				behandelt = view.touchUp(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
 			}
+
+			if (behandelt) break;
 		}
+		// }
 
 		if (!behandelt)
 		{
@@ -758,6 +777,13 @@ public abstract class GL_View_Base extends CB_RectF
 		nineBackground = background;
 	}
 
+	public void setBackground(Drawable background)
+	{
+		hasDrawableBackground = background != null;
+
+		drawableBackground = background;
+	}
+
 	public String getName()
 	{
 		return name;
@@ -817,25 +843,25 @@ public abstract class GL_View_Base extends CB_RectF
 	public void registerSkinChangedEvent()
 	{
 		if (calling) return;
-		synchronized (skinChangedEventList)
-		{
-			skinChangedEventList.add(listner);
-		}
+		// synchronized (skinChangedEventList)
+		// {
+		skinChangedEventList.add(listner);
+		// }
 	}
 
 	private static boolean calling = false;
 
 	public static void CallSkinChanged()
 	{
-		synchronized (skinChangedEventList)
+		// synchronized (skinChangedEventList)
+		// {
+		calling = true;
+		for (skinChangedEventListner listner : skinChangedEventList)
 		{
-			calling = true;
-			for (skinChangedEventListner listner : skinChangedEventList)
-			{
-				if (listner != null) listner.SkinChanged();
-			}
-			calling = false;
+			if (listner != null) listner.SkinChanged();
 		}
+		calling = false;
+		// }
 	}
 
 	protected skinChangedEventListner listner = new skinChangedEventListner()

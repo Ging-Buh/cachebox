@@ -5,9 +5,9 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Cachebox Core"/>
 	<classpathentry kind="lib" path="/Cachebox Core/lib/sjxp-2.2.jar" sourcepath="C:/Users/dirkr/workspace/sjxp-2.2-sources.jar"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="lib" path="libs/gdx-backend-android.jar"/>
 	<classpathentry kind="lib" path="lib/mapsforge-map-0.3.0-jar-with-dependencies.jar"/>
-	<classpathentry kind="lib" path="libs/gdx.jar"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry kind="lib" path="libs/gdx-backend-android.jar"/>
+	<classpathentry kind="lib" path="libs/gdx.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -7,16 +7,19 @@ import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 
 public abstract class LibGdx_Host_Control extends CB_View_Base
 {
 
-	private Actor mActor;
+	private com.badlogic.gdx.scenes.scene2d.ui.TextField mActor;
 
 	private static Stage mStage;
 
-	public LibGdx_Host_Control(CB_RectF rec, Actor actor, String Name)
+	public LibGdx_Host_Control(CB_RectF rec, com.badlogic.gdx.scenes.scene2d.ui.TextField actor, String Name)
 	{
 
 		super(rec, Name);
@@ -25,11 +28,11 @@ public abstract class LibGdx_Host_Control extends CB_View_Base
 
 		mActor = actor;
 
-		mActor.height = rec.getHeight();
-		mActor.width = rec.getWidth();
+		mActor.setHeight(rec.getHeight());
+		mActor.setWidth(rec.getWidth());
 
-		mActor.x = 0f;
-		mActor.y = 0f;
+		mActor.setX(0f);
+		mActor.setY(0f);
 
 		mStage.addActor(mActor);
 
@@ -70,8 +73,25 @@ public abstract class LibGdx_Host_Control extends CB_View_Base
 			offset = -((CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField) mActor).getStyle().background.getLeftWidth();
 		}
 
-		mActor.touchDown(x + offset, y, pointer);
+		chkInputListner();
+		if (inputEventListner != null) return inputEventListner.touchDown(null, x + offset, y, pointer, 0);
+
 		return true;
+	}
+
+	InputListener inputEventListner;
+
+	private void chkInputListner()
+	{
+		if (inputEventListner != null) return;
+
+		Array<EventListener> listners = mActor.getListeners();
+
+		for (EventListener listner : listners)
+		{
+			if (listner instanceof InputListener) inputEventListner = (InputListener) listner;
+		}
+
 	}
 
 	@Override
@@ -89,7 +109,9 @@ public abstract class LibGdx_Host_Control extends CB_View_Base
 			offset = -((CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField) mActor).getStyle().background.getLeftWidth();
 		}
 
-		mActor.touchDragged(x + offset, y, pointer);
+		chkInputListner();
+		if (inputEventListner != null) inputEventListner.touchDragged(null, x + offset, y, pointer);
+
 		return true;
 	}
 
@@ -107,7 +129,10 @@ public abstract class LibGdx_Host_Control extends CB_View_Base
 		{
 			offset = -((CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField) mActor).getStyle().background.getLeftWidth();
 		}
-		mActor.touchUp(x + offset, y, pointer);
+
+		chkInputListner();
+		if (inputEventListner != null) inputEventListner.touchUp(null, x + offset, y, pointer, 0);
+
 		return true;
 	}
 
@@ -128,10 +153,10 @@ public abstract class LibGdx_Host_Control extends CB_View_Base
 		mActor.draw(batch, 1f);
 	}
 
-	public static boolean touchMoved(float x, float y)
+	private boolean touchMoved(float x, float y)
 	{
 		chkStageInitial();
-		return mStage.touchMoved((int) x, (int) y);
+		return mStage.mouseMoved((int) x, (int) y);
 	}
 
 	public static boolean scrolled(int amount)

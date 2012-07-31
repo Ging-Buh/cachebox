@@ -862,7 +862,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				if (lastKeyEventTime == event.getEventTime()) return true;
 				lastKeyEventTime = event.getEventTime();
-				if (CB_Core.Events.platformConector.sendKeyDown(event.getKeyCode()) && CB_Core.Events.platformConector.sendKey(chr)) return true;
+
+				boolean handeld = CB_Core.Events.platformConector.sendKeyDown(event.getKeyCode());
+				boolean handeld2 = CB_Core.Events.platformConector.sendKey(chr);
+
+				if (handeld && handeld2) return true;
 			}
 
 		}
@@ -891,7 +895,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		Character chr = (char) event.getUnicodeChar();
 		if (keyCode == Keys.BACKSPACE) chr = BACKSPACE;
 
-		if (CB_Core.Events.platformConector.sendKeyDown(keyCode) && CB_Core.Events.platformConector.sendKey(chr)) return true;
+		boolean handeld = CB_Core.Events.platformConector.sendKeyDown(event.getKeyCode());
+		boolean handeld2 = CB_Core.Events.platformConector.sendKey(chr);
+
+		if (handeld && handeld2) return true;
 
 		return false;
 	}
@@ -3804,7 +3811,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
-		if (cm != null) GlobalCore.setDefaultClipboard(new AndroidClipboard(cm));
+		AndroidClipboard acb = new AndroidClipboard(cm);
+
+		if (cm != null) GlobalCore.setDefaultClipboard(acb);
 
 	}
 

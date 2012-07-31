@@ -193,27 +193,30 @@ public class Fonts
 		return Config.settings.nightMode.getValue() ? night_fontAB15_out : fontAB15_out;
 	}
 
+	private static BitmapFontCache mesureNormalCache;
+	private static BitmapFontCache mesureSmallCache;
+
 	public static TextBounds Mesure(String txt)
 	{
-		BitmapFontCache mesure = new BitmapFontCache(Fonts.getNormal());
-		TextBounds bounds = mesure.setText(txt, 0, 0);
-		mesure.dispose();
+		if (mesureNormalCache == null) mesureNormalCache = new BitmapFontCache(Fonts.getNormal());
+		TextBounds bounds = mesureNormalCache.setText(txt, 0, 0);
+
 		return bounds;
 	}
 
 	public static TextBounds MesureSmall(String txt)
 	{
-		BitmapFontCache mesure = new BitmapFontCache(Fonts.getSmall());
-		TextBounds bounds = mesure.setText(txt, 0, 0);
-		mesure.dispose();
+		if (mesureSmallCache == null) mesureSmallCache = new BitmapFontCache(Fonts.getSmall());
+		TextBounds bounds = mesureSmallCache.setText(txt, 0, 0);
+
 		return bounds;
 	}
 
 	public static TextBounds MesureWrapped(String txt, float width)
 	{
-		BitmapFontCache mesure = new BitmapFontCache(Fonts.getNormal());
-		TextBounds bounds = mesure.setWrappedText(txt, 0, 0, width);
-		mesure.dispose();
+		if (mesureNormalCache == null) mesureNormalCache = new BitmapFontCache(Fonts.getNormal());
+		TextBounds bounds = mesureNormalCache.setWrappedText(txt, 0, 0, width);
+
 		return bounds;
 	}
 }

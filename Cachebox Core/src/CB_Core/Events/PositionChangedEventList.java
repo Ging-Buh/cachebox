@@ -37,6 +37,18 @@ public class PositionChangedEventList
 			@Override
 			public void run()
 			{
+
+				if (locator.getHeading() < 0.0f)
+				{
+					// -1 are undefined heading
+					// use last heading if available
+					if (GlobalCore.Locator != null)
+					{
+						locator.setHeading(GlobalCore.Locator.getHeading());
+					}
+
+				}
+
 				GlobalCore.Locator = locator;
 				synchronized (list)
 				{
@@ -65,6 +77,7 @@ public class PositionChangedEventList
 
 	public static void Orientation(final float heading)
 	{
+		if (heading < 0.0f) return; // -1 are undefined heading
 		Thread thread = new Thread(new Runnable()
 		{
 

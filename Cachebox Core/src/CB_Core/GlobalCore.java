@@ -9,12 +9,12 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 
-import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
+import com.badlogic.gdx.scenes.scene2d.utils.Clipboard;
 
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 974;
+	public static final int CurrentRevision = 977;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 

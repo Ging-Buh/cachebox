@@ -22,7 +22,7 @@ public class CB_WrappedTextField extends CB_Core.GL_UI.libGdx_Controls.CB_TextFi
 	public CB_WrappedTextField(CB_RectF rec, String Name)
 	{
 
-		super(rec, new CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField(Style.getTextFieldStyle()), Name);
+		super(rec, new CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField("", Style.getTextFieldStyle()), Name);
 
 		mTextField = (CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField) getActor();
 		mTextField.setClipboard(GlobalCore.getDefaultClipboard());
@@ -115,8 +115,8 @@ public class CB_WrappedTextField extends CB_Core.GL_UI.libGdx_Controls.CB_TextFi
 	@Override
 	public void resize(float width, float height)
 	{
-		mTextField.height = height;
-		mTextField.width = width;
+		mTextField.setHeight(height);
+		mTextField.setWidth(width);
 	}
 
 }
