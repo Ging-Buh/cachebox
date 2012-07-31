@@ -1,5 +1,7 @@
 package CB_Core.GL_UI.Controls;
 
+import java.util.ArrayList;
+
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 
@@ -30,8 +32,9 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	protected TextFieldStyle style;
 	protected String text, messageText;
-	protected CharSequence displayText;
+	protected ArrayList<DisplayText> displayText;
 	protected int cursor;
+	protected int cursorLine;
 	protected Clipboard clipboard;
 	protected TextFieldListener listener;
 	protected TextFieldFilter filter;
@@ -41,12 +44,13 @@ public class EditWrapedTextField extends EditTextFieldBase
 	protected StringBuilder passwordBuffer;
 
 	protected final Rectangle fieldBounds = new Rectangle();
-	protected final TextBounds textBounds = new TextBounds();
+	protected float textHeight;
+	protected float lineHeight;
 	protected final Rectangle scissor = new Rectangle();
 	protected float renderOffset, textOffset;
 	protected int visibleTextStart, visibleTextEnd;
-	protected final FloatArray glyphAdvances = new FloatArray();
-	protected final FloatArray glyphPositions = new FloatArray();
+	// protected final FloatArray glyphAdvances = new FloatArray();
+	// protected final FloatArray glyphPositions = new FloatArray();
 
 	protected boolean cursorOn = true;
 	protected float blinkTime = 0.42f;
@@ -63,6 +67,9 @@ public class EditWrapedTextField extends EditTextFieldBase
 		super(rec, Name);
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
+		displayText = new ArrayList<EditWrapedTextField.DisplayText>();
+		cursorLine = 0;
+		lineHeight = style.font.getLineHeight();
 		setText("");
 	}
 
@@ -103,62 +110,63 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	private void calculateOffsets()
 	{
-		float position = glyphPositions.get(cursor);
-		float distance = position - Math.abs(renderOffset);
-		float visibleWidth = width;
-		if (style.background != null) visibleWidth -= style.background.getLeftWidth() + style.background.getRightWidth();
+		if (true) return;
+		// float position = glyphPositions.get(cursor);
+		// float distance = position - Math.abs(renderOffset);
+		// float visibleWidth = width;
+		// if (style.background != null) visibleWidth -= style.background.getLeftWidth() + style.background.getRightWidth();
 
 		// check whether the cursor left the left or right side of
 		// the visible area and adjust renderoffset.
-		if (distance <= 0)
-		{
-			if (cursor > 0) renderOffset = -glyphPositions.get(cursor - 1);
-			else
-				renderOffset = 0;
-		}
-		else
-		{
-			if (distance > visibleWidth)
-			{
-				renderOffset -= distance - visibleWidth;
-			}
-		}
-
-		// calculate first visible char based on render offset
-		visibleTextStart = 0;
-		textOffset = 0;
-		float start = Math.abs(renderOffset);
-		int len = glyphPositions.size;
-		float startPos = 0;
-		for (int i = 0; i < len; i++)
-		{
-			if (glyphPositions.items[i] >= start)
-			{
-				visibleTextStart = i;
-				startPos = glyphPositions.items[i];
-				textOffset = glyphPositions.items[visibleTextStart] - start;
-				break;
-			}
-		}
-
-		// calculate last visible char based on visible width and render offset
-		visibleTextEnd = Math.min(displayText.length(), cursor + 1);
-		for (; visibleTextEnd <= displayText.length(); visibleTextEnd++)
-		{
-			if (glyphPositions.items[visibleTextEnd] - startPos > visibleWidth) break;
-		}
-		visibleTextEnd = Math.max(0, visibleTextEnd - 1);
-
-		// calculate selection x position and width
-		if (hasSelection)
-		{
-			int minIndex = Math.min(cursor, selectionStart);
-			int maxIndex = Math.max(cursor, selectionStart);
-			float minX = Math.max(glyphPositions.get(minIndex), glyphPositions.get(visibleTextStart));
-			float maxX = Math.min(glyphPositions.get(maxIndex), glyphPositions.get(visibleTextEnd));
-			selectionX = minX;
-			selectionWidth = maxX - minX;
-		}
+		// if (distance <= 0)
+		// {
+		// if (cursor > 0) renderOffset = -glyphPositions.get(cursor - 1);
+		// else
+		// renderOffset = 0;
+		// }
+		// else
+		// {
+		// if (distance > visibleWidth)
+		// {
+		// renderOffset -= distance - visibleWidth;
+		// }
+		// }
+		//
+		// // calculate first visible char based on render offset
+		// visibleTextStart = 0;
+		// textOffset = 0;
+		// float start = Math.abs(renderOffset);
+		// int len = glyphPositions.size;
+		// float startPos = 0;
+		// for (int i = 0; i < len; i++)
+		// {
+		// if (glyphPositions.items[i] >= start)
+		// {
+		// visibleTextStart = i;
+		// startPos = glyphPositions.items[i];
+		// textOffset = glyphPositions.items[visibleTextStart] - start;
+		// break;
+		// }
+		// }
+		//
+		// // calculate last visible char based on visible width and render offset
+		// visibleTextEnd = Math.min(displayText.get(cursorLine).getDisplayText().length(), cursor + 1);
+		// for (; visibleTextEnd <= displayText.get(cursorLine).getDisplayText().length(); visibleTextEnd++)
+		// {
+		// if (glyphPositions.items[visibleTextEnd] - startPos > visibleWidth) break;
+		// }
+		// visibleTextEnd = Math.max(0, visibleTextEnd - 1);
+		//
+		// // calculate selection x position and width
+		// if (hasSelection)
+		// {
+		// int minIndex = Math.min(cursor, selectionStart);
+		// int maxIndex = Math.max(cursor, selectionStart);
+		// float minX = Math.max(glyphPositions.get(minIndex), glyphPositions.get(visibleTextStart));
+		// float maxX = Math.min(glyphPositions.get(maxIndex), glyphPositions.get(visibleTextEnd));
+		// selectionX = minX;
+		// selectionWidth = maxX - minX;
+		// }
 	}
 
 	@Override
@@ -168,8 +176,11 @@ public class EditWrapedTextField extends EditTextFieldBase
 		final Color fontColor = style.fontColor;
 		final TextureRegion selection = style.selection;
 		final NinePatch cursorPatch = style.cursor;
+		lineHeight = style.font.getLineHeight();
 
 		float bgLeftWidth = 0;
+		float bgRightWidth = 0;
+		float bgTopHeight = 0;
 		boolean focused = GL_Listener.hasFocus(this);
 
 		if (focused)
@@ -178,6 +189,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 			{
 				style.backgroundFocused.draw(batch, x, y, width, height);
 				bgLeftWidth = style.backgroundFocused.getLeftWidth();
+				bgRightWidth = style.background.getRightWidth();
+				bgTopHeight = style.background.getTopHeight();
 			}
 		}
 		else
@@ -186,19 +199,22 @@ public class EditWrapedTextField extends EditTextFieldBase
 			{
 				style.background.draw(batch, x, y, width, height);
 				bgLeftWidth = style.background.getLeftWidth();
+				bgRightWidth = style.background.getRightWidth();
+				bgTopHeight = style.background.getTopHeight();
 			}
 		}
 
-		float textY = (int) (height / 2 + textBounds.height / 2 + font.getDescent());
+		float textY = (int) (height / 2 + textHeight / 2 + font.getDescent());
+		textY = (int) height - textHeight - bgTopHeight;
 		calculateOffsets();
 
 		if (focused && hasSelection && selection != null)
 		{
-			batch.draw(selection, x + selectionX + bgLeftWidth + renderOffset, y + textY - textBounds.height - font.getDescent() / 2,
-					selectionWidth, textBounds.height);
+			batch.draw(selection, x + selectionX + bgLeftWidth + renderOffset, y + textY - textHeight - font.getDescent() / 2,
+					selectionWidth, textHeight);
 		}
 
-		if (displayText.length() == 0)
+		if ((displayText.size() == 1) && (displayText.get(0).getDisplayText().length() == 0))
 		{
 			if (!focused && messageText != null)
 			{
@@ -215,21 +231,34 @@ public class EditWrapedTextField extends EditTextFieldBase
 		else
 		{
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a);
-			font.draw(batch, displayText, x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
+			for (DisplayText dt : displayText)
+			{
+				// font.draw(batch, dt.getDisplayText(), x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
+				font.draw(batch, dt.getDisplayText(), x + bgLeftWidth, y + textY);
+				textY -= lineHeight;
+			}
 		}
 		if (focused)
 		{
 			blink();
 			if (cursorOn && cursorPatch != null)
 			{
-				cursorPatch.draw(batch, x + bgLeftWidth + glyphPositions.get(cursor) + renderOffset - 1, y + textY - textBounds.height
-						- font.getDescent(), cursorPatch.getTotalWidth(), textBounds.height + font.getDescent() / 2);
+				DisplayText dt = displayText.get(cursorLine);
+				float xpos = 0;
+
+				if (cursor < dt.glyphPositions.size) xpos = dt.glyphPositions.get(cursor);
+				else
+					xpos = dt.glyphPositions.get(dt.glyphPositions.size - 1); // letztes Zeichen
+				textY = (int) height - textHeight - bgTopHeight;
+				cursorPatch.draw(batch, x + bgLeftWidth + xpos - 1, y + textY - bgTopHeight - lineHeight * cursorLine,
+						cursorPatch.getTotalWidth(), lineHeight - font.getDescent() / 2);
 			}
 		}
 	}
 
 	private void updateDisplayText()
 	{
+		displayText.clear();
 		if (passwordMode && style.font.containsCharacter(passwordCharacter))
 		{
 			if (passwordBuffer == null) passwordBuffer = new StringBuilder(text.length());
@@ -240,11 +269,18 @@ public class EditWrapedTextField extends EditTextFieldBase
 				for (int i = passwordBuffer.length(), n = text.length(); i < n; i++)
 					passwordBuffer.append(passwordCharacter);
 			}
-			displayText = passwordBuffer;
+			displayText.add(new DisplayText(passwordBuffer));
 		}
 		else
-			displayText = text;
-		style.font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
+		{
+			displayText.add(new DisplayText(text));
+			displayText.add(new DisplayText("2. Zeile"));
+		}
+
+		for (DisplayText dt : displayText)
+		{
+			style.font.computeGlyphAdvancesAndPositions(dt.getDisplayText(), dt.glyphAdvances, dt.glyphPositions);
+		}
 	}
 
 	private void blink()
@@ -269,17 +305,29 @@ public class EditWrapedTextField extends EditTextFieldBase
 		clearSelection();
 		lastBlink = 0;
 		cursorOn = false;
-		x = x - renderOffset;
-		for (int i = 0; i < glyphPositions.size; i++)
+		x = x - style.backgroundFocused.getLeftWidth();
+
+		// Zeile bestimmen, in die geklickt wurde
+
+		float clickPos = y;
+		int clickedCursorLine = (int) ((this.height - style.font.getLineHeight() - clickPos + (lineHeight)) / lineHeight) - 1;
+		if (clickedCursorLine < 0) return false;
+		if (clickedCursorLine >= displayText.size()) return false;
+
+		DisplayText dt = displayText.get(clickedCursorLine);
+
+		for (int i = 0; i < dt.glyphPositions.size; i++)
 		{
-			float pos = glyphPositions.items[i];
+			float pos = dt.glyphPositions.items[i];
 			if (pos > x)
 			{
 				cursor = Math.max(0, i - 1);
+				cursorLine = clickedCursorLine;
 				return true;
 			}
 		}
-		cursor = Math.max(0, glyphPositions.size - 1);
+		cursor = Math.max(0, dt.glyphPositions.size - 1);
+		cursorLine = clickedCursorLine;
 		return true;
 	}
 
@@ -373,7 +421,16 @@ public class EditWrapedTextField extends EditTextFieldBase
 					cursor = text.length();
 					clearSelection();
 				}
-
+				if (keycode == Keys.UP)
+				{
+					cursorUpDown(-1);
+					clearSelection();
+				}
+				if (keycode == Keys.DOWN)
+				{
+					cursorUpDown(1);
+					clearSelection();
+				}
 				cursor = Math.max(0, cursor);
 				cursor = Math.min(text.length(), cursor);
 			}
@@ -381,6 +438,52 @@ public class EditWrapedTextField extends EditTextFieldBase
 			return true;
 		}
 		return false;
+	}
+
+	private void cursorUpDown(int i)
+	{
+		int newCursorLine = cursorLine + i;
+		if (newCursorLine < 0) return;
+		if (newCursorLine >= displayText.size()) return;
+		DisplayText oldDt = displayText.get(cursorLine);
+		// X-Koordinate von alter Cursor Position bestimmen
+		float x = oldDt.glyphPositions.items[cursor];
+		// Cursor in neue Zeile plazieren
+		cursorLine = newCursorLine;
+		// Cursor möglichst an gleiche x-Position plazieren
+		setCursorXPos(x);
+	}
+
+	// liefert das DisplayText-Object der aktuellen Zeile
+	private DisplayText getAktDisplayText()
+	{
+		if (cursorLine < 0) return null;
+		if (cursorLine >= displayText.size()) return null;
+		DisplayText newDt = displayText.get(cursorLine);
+		return newDt;
+	}
+
+	// Cursor in aktueller Zeile an die gegebene X-Position (in Pixel) senden
+	private void setCursorXPos(float xPos)
+	{
+		DisplayText dt = getAktDisplayText();
+		if (dt == null) return;
+		if (xPos <= 0)
+		{
+			cursor = 0;
+			return;
+		}
+		for (int i = 0; i < dt.glyphPositions.size; i++)
+		{
+			float pos = dt.glyphPositions.items[i];
+			if (pos > xPos)
+			{
+				cursor = Math.max(0, i - 1);
+				return;
+			}
+		}
+		// kein Passendes Zeichen gefunden an gegebener Position -> Cursor ans Ende setzen
+		cursor = Math.max(0, dt.glyphPositions.size - 1);
 	}
 
 	/**
@@ -581,9 +684,11 @@ public class EditWrapedTextField extends EditTextFieldBase
 		cursor = 0;
 		clearSelection();
 
-		textBounds.set(font.getBounds(displayText));
-		textBounds.height -= font.getDescent() * 2;
-		font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
+		textHeight = -font.getDescent() * 2;
+		for (DisplayText dt : displayText)
+		{
+			dt.calcTextBounds(font);
+		}
 	}
 
 	/** @return Never null, might be an empty string. */
@@ -655,6 +760,36 @@ public class EditWrapedTextField extends EditTextFieldBase
 	{
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	private class DisplayText
+	{
+		private CharSequence displayText;
+		private TextBounds textBounds = new TextBounds();
+		private final FloatArray glyphAdvances = new FloatArray();
+		private final FloatArray glyphPositions = new FloatArray();
+
+		public DisplayText(CharSequence displayText)
+		{
+			this.displayText = displayText;
+		}
+
+		public void calcTextBounds(BitmapFont font)
+		{
+			textBounds.set(font.getBounds(displayText));
+			textBounds.height -= font.getDescent() * 2;
+			font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
+		}
+
+		public CharSequence getDisplayText()
+		{
+			return displayText;
+		}
+
+		public TextBounds getTextBounds()
+		{
+			return textBounds;
+		}
 	}
 
 }
