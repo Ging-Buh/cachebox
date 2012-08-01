@@ -47,7 +47,6 @@ public class FileIO
 	public static String GetFileExtension(String filename)
 	{
 		int dotposition = filename.lastIndexOf(".");
-		// String filename_Without_Ext = filename.substring(0, dotposition);
 		String ext = filename.substring(dotposition + 1, filename.length());
 		return ext;
 	}
@@ -55,7 +54,7 @@ public class FileIO
 	public static String GetFileNameWithoutExtension(String filename)
 	{
 		int dotposition = filename.lastIndexOf(".");
-		if (dotposition >= 0) filename = filename.substring(dotposition - 1);
+		if (dotposition >= 0) filename = filename.substring(0, dotposition);
 		int slashposition = filename.lastIndexOf("/");
 		if (slashposition >= 0) filename = filename.substring(slashposition + 1, filename.length());
 		return filename;
