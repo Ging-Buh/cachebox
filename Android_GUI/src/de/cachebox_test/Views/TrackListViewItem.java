@@ -1,6 +1,6 @@
 package de.cachebox_test.Views;
 
-import CB_Core.Map.RouteOverlay.Trackable;
+import CB_Core.Map.RouteOverlay.Track;
 import CB_Core.Math.CB_Rect;
 import CB_Core.Math.UiSizes;
 import android.content.Context;
@@ -27,7 +27,7 @@ import de.cachebox_test.Ui.ActivityUtils;
  */
 public class TrackListViewItem extends View
 {
-	private Trackable route;
+	private Track route;
 	private int width;
 	private int height;
 	private boolean BackColorChanger = false;
@@ -47,7 +47,7 @@ public class TrackListViewItem extends View
 
 	private static TrackListViewItem that;
 
-	public TrackListViewItem(Context context, Trackable route, Boolean BackColorId)
+	public TrackListViewItem(Context context, Track route, Boolean BackColorId)
 	{
 		super(context);
 		this.route = route;
@@ -225,7 +225,7 @@ public class TrackListViewItem extends View
 
 	}
 
-	public Trackable getRoute()
+	public Track getRoute()
 	{
 		return route;
 	}

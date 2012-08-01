@@ -155,7 +155,7 @@ public class DesktopMain {
 
 	}
 
-	private static RouteOverlay.Trackable simulationRoute = null;
+	private static RouteOverlay.Track simulationRoute = null;
 
 	private static boolean simulateGpsWithGpxFile(boolean simulate) {
 		if (simulate) {

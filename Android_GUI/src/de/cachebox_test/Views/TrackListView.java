@@ -14,7 +14,7 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
-import CB_Core.Map.RouteOverlay.Trackable;
+import CB_Core.Map.RouteOverlay.Track;
 import CB_Core.Types.Coordinate;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -540,9 +540,9 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 	 *            Das Paint, mit der die Route in die Karte gezeichnet wird.
 	 * @return Generierte Route
 	 */
-	public Trackable GenP2PRoute(double FromLat, double FromLon, double ToLat, double ToLon, com.badlogic.gdx.graphics.Color color)
+	public Track GenP2PRoute(double FromLat, double FromLon, double ToLat, double ToLon, com.badlogic.gdx.graphics.Color color)
 	{
-		Trackable route = new Trackable(null, color);
+		Track route = new Track(null, color);
 
 		route.Name = "Point 2 Point Route";
 
@@ -568,9 +568,9 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 	 *            Das Paint, mit der die Route in die Karte gezeichnet wird.
 	 * @return Generierte Route
 	 */
-	public Trackable GenCircleRoute(double FromLat, double FromLon, double Distance, com.badlogic.gdx.graphics.Color color)
+	public Track GenCircleRoute(double FromLat, double FromLon, double Distance, com.badlogic.gdx.graphics.Color color)
 	{
-		Trackable route = new Trackable(null, color);
+		Track route = new Track(null, color);
 
 		route.Name = "Circle Route";
 
@@ -606,9 +606,9 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 	 *            Das Paint, mit der die Route in die Karte gezeichnet wird.
 	 * @return Generierte Route
 	 */
-	public Trackable GenProjectRoute(double FromLat, double FromLon, double Distance, double Bearing, com.badlogic.gdx.graphics.Color color)
+	public Track GenProjectRoute(double FromLat, double FromLon, double Distance, double Bearing, com.badlogic.gdx.graphics.Color color)
 	{
-		Trackable route = new Trackable(null, color);
+		Track route = new Track(null, color);
 
 		route.Name = "Projected Route";
 
@@ -640,9 +640,9 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 	 * @param minDistanceMeters
 	 * @return geladene Route
 	 */
-	public Trackable LoadRoute(String file, com.badlogic.gdx.graphics.Color color, double minDistanceMeters)
+	public Track LoadRoute(String file, com.badlogic.gdx.graphics.Color color, double minDistanceMeters)
 	{
-		Trackable route = new Trackable(null, color);
+		Track route = new Track(null, color);
 		route.FileName = FileIO.GetFileName(file);
 
 		try

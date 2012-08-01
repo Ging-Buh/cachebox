@@ -29,7 +29,7 @@ public class TrackRecorder
 	public static void StartRecording()
 	{
 
-		GlobalCore.AktuelleRoute = new RouteOverlay.Trackable("actual Track", Color.BLUE);
+		GlobalCore.AktuelleRoute = new RouteOverlay.Track("actual Track", Color.BLUE);
 		GlobalCore.AktuelleRoute.ShowRoute = true;
 		GlobalCore.AktuelleRoute.IsActualTrack = true;
 		GlobalCore.aktuelleRouteCount = 0;

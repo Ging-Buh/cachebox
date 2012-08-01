@@ -26,7 +26,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class RouteOverlay
 {
-	public static ArrayList<Trackable> Routes = new ArrayList<Trackable>();
+	public static ArrayList<Track> Routes = new ArrayList<Track>();
 	public static boolean mRoutesChanged = false;
 
 	public static void RoutesChanged()
@@ -34,7 +34,7 @@ public class RouteOverlay
 		mRoutesChanged = true;
 	}
 
-	public static class Trackable
+	public static class Track
 	{
 		public ArrayList<TrackPoint> Points;
 		public String Name;
@@ -43,7 +43,7 @@ public class RouteOverlay
 		public boolean IsActualTrack = false;
 		public Color mColor;
 
-		public Trackable(String name, Color color)
+		public Track(String name, Color color)
 		{
 			Points = new ArrayList<TrackPoint>();
 			Name = name;
@@ -66,14 +66,14 @@ public class RouteOverlay
 	// Read track from gpx file
 	// attention it is possible that a gpx file contains more than 1 <trk> segments
 	// in this case all segments was connectet to one track
-	public static Trackable LoadRoute(String file, Color color, double minDistanceMeters)
+	public static Track LoadRoute(String file, Color color, double minDistanceMeters)
 	{
 		BufferedReader reader;
 		try
 		{
 			InputStreamReader isr = new InputStreamReader(new FileInputStream(file), "UTF8");
 			reader = new BufferedReader(isr);
-			Trackable route = new Trackable(null, color);
+			Track route = new Track(null, color);
 			route.FileName = file;
 
 			String line = null;
@@ -375,7 +375,7 @@ public class RouteOverlay
 		}
 	}
 
-	private static void addToDrawRoutes(double tolerance, Trackable track, int Zoom, boolean dontReduce)
+	private static void addToDrawRoutes(double tolerance, Track track, int Zoom, boolean dontReduce)
 	{
 
 		synchronized (track.Points)
