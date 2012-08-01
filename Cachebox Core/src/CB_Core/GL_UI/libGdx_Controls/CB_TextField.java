@@ -3,6 +3,7 @@ package CB_Core.GL_UI.libGdx_Controls;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.PopUps.CopiePastePopUp;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -205,12 +206,14 @@ public class CB_TextField extends LibGdx_Host_Control
 		hasFocus = true;
 		mTextField.hit(0, 0);
 		setTextFieldStyle();
+		GL_Listener.glListener.renderForTextField(this);
 	}
 
 	public void setFocus(boolean value)
 	{
 		hasFocus = value;
 		if (value == true) if (mTextField.getStage() != null) mTextField.getStage().setKeyboardFocus(mTextField);
+		GL_Listener.glListener.renderForTextField(this);
 		setTextFieldStyle();
 	}
 

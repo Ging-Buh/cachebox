@@ -29,6 +29,12 @@ import org.openintents.intents.FileManagerIntents;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox;
+import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
+import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListnerDouble;
+import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListButtonLangSpinner;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListButtonSkinSpinner;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListCategoryButton;
@@ -53,7 +59,6 @@ import android.R.color;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
@@ -93,8 +98,6 @@ import de.cachebox_test.Custom_Controls.wheel.adapters.NumericWheelAdapter;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AllContextMenuCallHandler;
 import de.cachebox_test.Views.Forms.MessageBox;
-import de.cachebox_test.Views.Forms.NumerikInputBox;
-import de.cachebox_test.Views.Forms.StringInputBox;
 
 /**
  * @author Longri
@@ -588,32 +591,29 @@ public class SettingsScrollView extends Activity
 				SettingsScrollView.EditKey = SB.getName();
 				selectedItem = SB;
 				// Show NumPad Int Edit
-				StringInputBox.Show(SB.getName(), "default: " + SB.getDefaultValue(), SB.getValue(), new DialogInterface.OnClickListener()
+				StringInputBox.Show(SB.getName(), "default: " + SB.getDefaultValue(), SB.getValue(), new OnMsgBoxClickListener()
 				{
 
 					@Override
-					public void onClick(DialogInterface dialog, int button)
+					public boolean onClick(int which)
 					{
 						String text = StringInputBox.editText.getText().toString();
-						switch (button)
+						if (which == GL_MsgBox.BUTTON_POSITIVE)
 						{
-						case -1: // ok Clicket
 							SettingString value = (SettingString) Config.settings.get(SettingsScrollView.EditKey);
 							if (value != null) value.setValue(text);
 							SettingsScrollView.Me.ListInvalidate();
-							break;
-						case -2: // cancel clicket
 
-							break;
-						case -3:
-
-							break;
 						}
-
-						dialog.dismiss();
-
+						// Activity wieder anzeigen
+						main.mainActivity.startActivity(aktIntent);
+						return true;
 					}
-				}, SettingsScrollView.Me);
+				});
+
+				// Activity ausblenden, damit OpenGL-InputBox sichtbar wird
+				finish();
+
 			}
 		});
 
@@ -815,41 +815,28 @@ public class SettingsScrollView extends Activity
 				SettingsScrollView.EditKey = SB.getName();
 				// Show NumPad Int Edit
 				NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()), SB.getValue(),
-						new DialogInterface.OnClickListener()
+						new returnValueListner()
 						{
+							@Override
+							public void returnValue(int value)
+							{
+								SettingInt SetValue = (SettingInt) Config.settings.get(SettingsScrollView.EditKey);
+								if (SetValue != null) SetValue.setValue(value);
+								SettingsScrollView.Me.ListInvalidate();
+								// Activity wieder anzeigen
+								main.mainActivity.startActivity(aktIntent);
+							}
 
 							@Override
-							public void onClick(DialogInterface dialog, int button)
+							public void cancelClicked()
 							{
-								String text = NumerikInputBox.editText.getText().toString();
-								switch (button)
-								{
-								case -1: // ok Clicket
-
-									try
-									{
-										int newValue = Integer.parseInt(text);
-										SettingInt value = (SettingInt) Config.settings.get(SettingsScrollView.EditKey);
-										if (value != null) value.setValue(newValue);
-										SettingsScrollView.Me.ListInvalidate();
-									}
-									catch (NumberFormatException e)
-									{
-										// falsche Eingabe
-									}
-									break;
-								case -2: // cancel clicket
-
-									break;
-								case -3:
-
-									break;
-								}
-
-								dialog.dismiss();
-
+								// Activity wieder anzeigen
+								main.mainActivity.startActivity(aktIntent);
 							}
-						}, SettingsScrollView.Me);
+
+						});
+				// Activity ausblenden, damit OpenGL-InputBox sichtbar wird
+				finish();
 			}
 		});
 
@@ -906,41 +893,30 @@ public class SettingsScrollView extends Activity
 				selectedItem = SB;
 				SettingsScrollView.EditKey = SB.getName();
 				// Show NumPad Int Edit
-				NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()), SB.getValue(),
-						new DialogInterface.OnClickListener()
+				NumerikInputBox input = NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()),
+						SB.getValue(), new returnValueListnerDouble()
 						{
+							@Override
+							public void returnValue(double value)
+							{
+								SettingDouble setValue = (SettingDouble) Config.settings.get(SettingsScrollView.EditKey);
+								if (setValue != null) setValue.setValue(value);
+								SettingsScrollView.Me.ListInvalidate();
+								// Activity wieder anzeigen
+								main.mainActivity.startActivity(aktIntent);
+							}
 
 							@Override
-							public void onClick(DialogInterface dialog, int button)
+							public void cancelClicked()
 							{
-								String text = NumerikInputBox.editText.getText().toString();
-								switch (button)
-								{
-								case -1: // ok Clicket
-									try
-									{
-										double newValue = Double.parseDouble(text);
-										SettingDouble value = (SettingDouble) Config.settings.get(SettingsScrollView.EditKey);
-										if (value != null) value.setValue(newValue);
-										SettingsScrollView.Me.ListInvalidate();
-									}
-									catch (NumberFormatException e)
-									{
-										// falsche Eingabe
-									}
-									break;
-								case -2: // cancel clicket
-
-									break;
-								case -3:
-
-									break;
-								}
-
-								dialog.dismiss();
-
+								// Activity wieder anzeigen
+								main.mainActivity.startActivity(aktIntent);
 							}
-						}, SettingsScrollView.Me);
+
+						});
+
+				// Activity ausblenden, damit OpenGL-InputBox sichtbar wird
+				finish();
 			}
 		});
 

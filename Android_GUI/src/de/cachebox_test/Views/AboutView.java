@@ -8,6 +8,8 @@ import CB_Core.Events.GpsStateChangeEvent;
 import CB_Core.Events.GpsStateChangeEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox;
+import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.Types.Cache;
@@ -40,7 +42,6 @@ import de.cachebox_test.Events.PositionEvent;
 import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Views.Forms.MessageBox;
-import de.cachebox_test.Views.Forms.NumerikInputBox;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 
 public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent, PositionEvent, GpsStateChangeEvent
@@ -171,33 +172,20 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 
 	}
 
-	protected static final DialogInterface.OnClickListener DialogListner = new DialogInterface.OnClickListener()
+	protected static final returnValueListner DialogListner = new returnValueListner()
 	{
+		@Override
+		public void returnValue(int value)
+		{
+			Config.settings.FoundOffset.setValue(value);
+			Config.AcceptChanges();
+			AboutView.Me.refreshText();
+		}
 
 		@Override
-		public void onClick(DialogInterface dialog, int button)
+		public void cancelClicked()
 		{
-			String text = NumerikInputBox.editText.getText().toString();
-			// Behandle das ergebniss
-			switch (button)
-			{
-			case -1: // ok Clicket
-				int newFounds = Integer.parseInt(text);
 
-				Config.settings.FoundOffset.setValue(newFounds);
-				Config.AcceptChanges();
-
-				break;
-			case -2: // cancel clicket
-
-				break;
-			case -3:
-
-				break;
-			}
-
-			dialog.dismiss();
-			AboutView.Me.refreshText();
 		}
 
 	};

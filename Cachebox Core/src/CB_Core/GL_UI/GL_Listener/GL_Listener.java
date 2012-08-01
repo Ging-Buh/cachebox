@@ -19,6 +19,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.Box;
+import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Main.MainViewBase;
@@ -62,7 +63,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	public static final int FRAME_RATE_IDLE = 200;
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 15;
-	public static final int FRAME_RATE_TEXT_FIELD = 350;
+	public static final int FRAME_RATE_TEXT_FIELD = 35;
 
 	// # public static member
 	public static SpriteBatch batch;
@@ -164,11 +165,27 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		started.set(true);
 		if (listenerInterface != null) listenerInterface.RenderDirty();
 		// startTimer(FRAME_RATE_ACTION, "GL_Listner onStart()");
-		if (child != null)
+
+		if (ActivityIsShown || DialogIsShown)
+		{
+			platformConector.showForDialog();
+		}
+		else if (child != null)
 		{
 			child.onShow();
 		}
+
+		if (ActivityIsShown)
+		{
+			if (mActivity != null) mActivity.onShow();
+		}
+		if (DialogIsShown)
+		{
+			if (mDialog != null) mDialog.onShow();
+		}
+
 		renderOnce("Gl_Listner.onStart()");
+
 	}
 
 	public void onStop()
@@ -911,17 +928,12 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 				"don´t show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
 
 		clearRenderViews();
-		platformConector.showForDialog();
-
-		// register render view to darknes animation ready.
-		// use TabMainView to register
-		addRenderView(TabMainView.that, FRAME_RATE_ACTION);
 
 		// Center Menu on Screen
 		float x = (width - dialog.getWidth()) / 2;
 		float y = (height - dialog.getHeight()) / 2;
 
-		if (atTop) y = height - dialog.getHeight();
+		if (atTop) y = height - dialog.getHeight() - (Dialog.margin * 4);
 
 		dialog.setPos(x, y);
 
@@ -967,6 +979,13 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		DialogIsShown = true;
 		darknesAnimationRuns = true;
 		actDialog.onShow();
+
+		platformConector.showForDialog();
+
+		// register render view to darknes animation ready.
+		// use TabMainView to register
+		addRenderView(TabMainView.that, FRAME_RATE_ACTION);
+
 	}
 
 	public void showActivity(final ActivityBase activity)

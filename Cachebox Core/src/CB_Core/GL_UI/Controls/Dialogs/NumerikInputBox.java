@@ -25,11 +25,68 @@ public class NumerikInputBox extends GL_MsgBox
 
 	public static CB_TextField editText;
 	public static returnValueListner mReturnListner;
+	public static returnValueListnerDouble mReturnListnerDouble;
 
-	public static void Show(String msg, String title, int initialValue, returnValueListner Listner)
+	public static NumerikInputBox Show(String msg, String title, int initialValue, returnValueListner Listner)
 	{
 		mReturnListner = Listner;
+		isDoubleInputBox = false;
+		Size msgBoxSize = calcMsgBoxSize(msg, true, true, false);
+		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, (msgBoxSize.width - (margin * 2)) / 5 * 4);
 
+		NumerikInputBox msgBox = new NumerikInputBox(msgBoxSize, "MsgBox");
+		msgBox.setTitle(title);
+
+		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
+
+		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
+
+		editText = new CB_TextField(textFieldRec, "MsgBoxLabel");
+		editText.setZeroPos();
+		editText.setY(margin);
+		editText.setText(String.valueOf(initialValue));
+		editText.setCursorPosition((String.valueOf(initialValue)).length());
+		editText.setOnscreenKeyboard(new OnscreenKeyboard()
+		{
+
+			@Override
+			public void show(boolean arg0)
+			{
+				// do nothing, don´t show Keybord
+			}
+		});
+		editText.setFocus();
+
+		CB_RectF LabelRec = msgBox.getContentSize().getBounds();
+		LabelRec.setHeight(LabelRec.getHeight() - textFieldRec.getHeight());
+
+		Label label = new Label(LabelRec, "MsgBoxLabel");
+		label.setZeroPos();
+		label.setY(editText.getMaxY() + margin);
+		label.setWrappedText(msg);
+		msgBox.addChild(label);
+
+		msgBox.setHeight(msgBox.getHeight() + editText.getHeight() + numPadRec.getHeight());
+
+		msgBox.addChild(editText);
+
+		// ######### NumPad ################
+
+		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withoutDotOkCancel, listner);
+		numPad.setY(margin);
+		msgBox.addFooterChild(numPad);
+		msgBox.mFooterHeight = numPad.getHeight() + (margin * 2);
+
+		GL_Listener.glListener.showDialog(msgBox);
+		GL_Listener.glListener.addRenderView(msgBox, GL_Listener.FRAME_RATE_IDLE);// Cursor blink
+
+		return msgBox;
+	}
+
+	public static NumerikInputBox Show(String msg, String title, double initialValue, returnValueListnerDouble Listner)
+	{
+		mReturnListnerDouble = Listner;
+		isDoubleInputBox = true;
 		Size msgBoxSize = calcMsgBoxSize(msg, true, true, false);
 		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, (msgBoxSize.width - (margin * 2)) / 5 * 4);
 
@@ -78,12 +135,25 @@ public class NumerikInputBox extends GL_MsgBox
 
 		GL_Listener.glListener.showDialog(msgBox);
 		GL_Listener.glListener.addRenderView(msgBox, GL_Listener.FRAME_RATE_IDLE);// Cursor blink
+
+		return msgBox;
 	}
 
 	public interface returnValueListner
 	{
 		public void returnValue(int value);
+
+		public void cancelClicked();
 	}
+
+	public interface returnValueListnerDouble
+	{
+		public void returnValue(double value);
+
+		public void cancelClicked();
+	}
+
+	private static boolean isDoubleInputBox = false;
 
 	static keyEventListner listner = new keyEventListner()
 	{
@@ -95,22 +165,56 @@ public class NumerikInputBox extends GL_MsgBox
 
 			if (value.equals("O"))
 			{
-				if (mReturnListner != null)
+				if (isDoubleInputBox)
 				{
-					try
+					if (mReturnListnerDouble != null)
 					{
-						int intValue = Integer.parseInt(editText.getText());
-						mReturnListner.returnValue(intValue);
-					}
-					catch (NumberFormatException e)
-					{
-						e.printStackTrace();
+						try
+						{
+							double dblValue = Double.parseDouble(editText.getText());
+							mReturnListnerDouble.returnValue(dblValue);
+						}
+						catch (NumberFormatException e)
+						{
+							e.printStackTrace();
+						}
 					}
 				}
+				else
+				{
+					if (mReturnListner != null)
+					{
+						try
+						{
+							int intValue = Integer.parseInt(editText.getText());
+							mReturnListner.returnValue(intValue);
+						}
+						catch (NumberFormatException e)
+						{
+							e.printStackTrace();
+						}
+					}
+				}
+
 				GL_Listener.glListener.closeDialog(that);
 			}
 			else if (value.equals("C"))
 			{
+				if (isDoubleInputBox)
+				{
+					if (mReturnListnerDouble != null)
+					{
+						mReturnListnerDouble.cancelClicked();
+					}
+				}
+				else
+				{
+					if (mReturnListner != null)
+					{
+						mReturnListner.cancelClicked();
+					}
+				}
+
 				GL_Listener.glListener.closeDialog(that);
 			}
 			else if (value.equals("<"))
@@ -144,5 +248,14 @@ public class NumerikInputBox extends GL_MsgBox
 
 		}
 	};
+
+	@Override
+	public void onShow()
+	{
+		super.onShow();
+
+		// register Textfield render
+		editText.setFocus();
+	}
 
 }

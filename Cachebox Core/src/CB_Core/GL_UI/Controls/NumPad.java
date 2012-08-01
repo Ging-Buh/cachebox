@@ -117,15 +117,24 @@ public class NumPad extends CB_View_Base
 		btn_5.setPos(btn_4.getMaxX(), y);
 		btn_6.setPos(btn_5.getMaxX(), y);
 
-		if (mType == Type.withOkCancel)
-		{
-			btn_Cancel.setPos(btn_6.getMaxX(), y);
-			this.addChild(btn_Cancel);
-		}
-		else if (mType == Type.withDot)
+		if (mType == Type.withDot || mType == Type.withOkCancel)
 		{
 			btn_Dot.setPos(btn_6.getMaxX(), y);
 			this.addChild(btn_Dot);
+		}
+
+		if (mType == Type.withOkCancel || mType == Type.withoutDotOkCancel)
+		{
+			if (mType == Type.withoutDotOkCancel)
+			{
+				btn_Cancel.setPos(btn_6.getMaxX(), y);
+				this.addChild(btn_Cancel);
+			}
+			else
+			{
+				btn_Cancel.setPos(btn_Dot.getMaxX(), y);
+				this.addChild(btn_Cancel);
+			}
 		}
 
 		y = btn_4.getMaxY();
@@ -133,7 +142,7 @@ public class NumPad extends CB_View_Base
 		btn_2.setPos(btn_1.getMaxX(), y);
 		btn_3.setPos(btn_2.getMaxX(), y);
 
-		if (mType == Type.withOkCancel)
+		if (mType == Type.withOkCancel || mType == Type.withoutDotOkCancel)
 		{
 			btn_OK.setPos(btn_3.getMaxX(), y);
 			this.addChild(btn_OK);
@@ -169,7 +178,15 @@ public class NumPad extends CB_View_Base
 		btn_right = new Button(btnRecHalfWide, "btn right");
 
 		btn_OK = new Button(btnRecWide, "btn OK");
-		btn_Cancel = new Button(btnRecWide, "btn Cancel");
+
+		if (mType == Type.withoutDotOkCancel)
+		{
+			btn_Cancel = new Button(btnRecWide, "btn Cancel");
+		}
+		else
+		{
+			btn_Cancel = new Button(btnRec, "btn Cancel");
+		}
 
 		// set captions
 		btn_0.setText("0");

@@ -25,7 +25,7 @@ public class StringInputBox extends GL_MsgBox
 
 		Size msgBoxSize = calcMsgBoxSize(msg, true, true, false);
 
-		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
+		StringInputBox msgBox = new StringInputBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);
 
 		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
@@ -53,4 +53,14 @@ public class StringInputBox extends GL_MsgBox
 		GL_Listener.glListener.showDialog(msgBox, true);
 
 	}
+
+	@Override
+	public void onShow()
+	{
+		super.onShow();
+
+		// register Textfield render
+		editText.setFocus();
+	}
+
 }
