@@ -194,6 +194,8 @@ public class EditWaypoint extends ActivityBase
 		case Final:
 			sType.setSelection(5);
 			break;
+		default:
+			sType.setSelection(0);
 		}
 
 		scrollBox.addChild(sType);

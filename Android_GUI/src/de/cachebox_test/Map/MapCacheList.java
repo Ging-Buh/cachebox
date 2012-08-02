@@ -195,6 +195,7 @@ public class MapCacheList
 										case Wherigo:
 											iconId = 4;
 											break;
+										default:
 										}
 
 										if (cache.Found) iconId = 6;
@@ -315,6 +316,8 @@ public class MapCacheList
 								case Wherigo:
 									iconId = 4;
 									break;
+								default:
+									iconId = 0;
 								}
 
 								if (solution.Cache.Found) iconId = 6;
