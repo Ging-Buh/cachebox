@@ -220,7 +220,7 @@ public class CB_Rect
 	public boolean equals(CB_Rect rec)
 	{
 		if (this.Pos.x != rec.Pos.x || this.Pos.y != rec.Pos.y) return false;
-		if (this.width != rec.width || this.height != this.height) return false;
+		if (this.width != rec.width || this.height != rec.height) return false;
 		return true;
 	}
 
