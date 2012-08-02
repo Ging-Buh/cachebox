@@ -271,11 +271,18 @@ public class GL_UISizes implements SizeChangedEvent
 		int WindowWidth = UiSizes.getWindowWidth();
 		int frameRightWidth = WindowWidth - frameLeftwidth;
 
-		BottomButtonHeight = frameLeftwidth / 5.18f;
+		if (frameLeftwidth < 400)
+		{
+			BottomButtonHeight = frameLeftwidth / 5.8f;
+		}
+		else
+		{
+			BottomButtonHeight = frameLeftwidth / 5.18f;
+		}
 
 		margin = (float) (6.6666667 * DPI);
 
-		frameHeight = UiSizes.getWindowHeight() - convertDip2Pix(35) - convertDip2Pix(65);
+		frameHeight = UiSizes.getWindowHeight() - convertDip2Pix(35) - BottomButtonHeight;
 
 		UI_Left = new CB_RectF(0, convertDip2Pix(65), frameLeftwidth, frameHeight);
 		UI_Right = UI_Left.copy();
