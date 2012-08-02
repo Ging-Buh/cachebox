@@ -1,4 +1,4 @@
-English
+﻿English
 // Main Menu
 	Misc = Misc
 	Find = Find
@@ -399,6 +399,7 @@ English
 	load = Load
 	NoTrackSelected = No track selected!
 	IsActualTrack = Current track cannot be deleted
+	Point2Point = Point to Point
 	preset = Preset
 	setting = Setting
 	category = Category

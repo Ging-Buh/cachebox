@@ -382,6 +382,7 @@ utf8
 	load = Load
 	NoTrackSelected = No track selected!
 	IsActualTrack = Currently used track can't be deleted!
+	Point2Point = Point to Point	
 	preset = Preset
 	setting = Setting
 	category = Category
