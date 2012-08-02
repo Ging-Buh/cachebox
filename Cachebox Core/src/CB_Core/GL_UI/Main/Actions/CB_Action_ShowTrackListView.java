@@ -78,7 +78,22 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					showMenuCreate();
 					return true;
 				case LOAD:
+
 					platformConector.menuItemClicked(MenuItemConst.TRACK_LIST_LOAD);
+
+					// platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", new IgetFileReturnListner()
+					// {
+					// @Override
+					// public void getFieleReturn(String Path)
+					// {
+					// // TODO Load Track from Path
+					// if (Path != null)
+					// {
+					// Logger.LogCat("Load Track :" + Path);
+					// }
+					// }
+					// });
+
 					return true;
 				case DELETE:
 					platformConector.menuItemClicked(MenuItemConst.TRACK_LIST_DELETE);

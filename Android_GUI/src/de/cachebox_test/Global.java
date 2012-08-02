@@ -51,6 +51,7 @@ public class Global
 	public static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 61216517;
 	public static final int REQUEST_CODE_DELETE_DIALOG = 15122011;
 	public static final int REQUEST_CODE_PARKING_DIALOG = 40120112;
+	public static final int REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR = 2082012;
 
 	/**
 	 * Liste der Buttons in der QuickButton Leiste

@@ -1,5 +1,7 @@
 package de;
 
+import java.awt.FileDialog;
+import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -7,30 +9,24 @@ import java.util.Timer;
 import java.util.TimerTask;
 import CB_Core.Config;
 import CB_Core.FileIO;
-import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Plattform;
-import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.PositionChangedEventList;
 import CB_Core.Events.platformConector;
 import CB_Core.Events.platformConector.IHardwarStateListner;
+import CB_Core.Events.platformConector.IgetFileListner;
+import CB_Core.Events.platformConector.IgetFileReturnListner;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Locator.GpsStatus;
 import CB_Core.Locator.Locator;
-import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.TrackPoint;
-import CB_Core.Map.Layer;
 import CB_Core.Map.RouteOverlay;
-import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
-import CB_Core.Types.Categories;
 import CB_Core.Types.Coordinate;
 import CB_Core.GL_UI.GL_View_Base;
-import CB_Core.GL_UI.ViewConst;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -42,8 +38,8 @@ public class DesktopMain {
 
 	static GL_Listener CB_UI;
 
-	public static void test(devicesSizes ui, boolean debug, boolean scissor,
-			final boolean simulate) {
+	public static void start(devicesSizes ui, boolean debug, boolean scissor,
+			final boolean simulate, final Frame frame) {
 		GlobalCore.platform = Plattform.Desktop;
 
 		DesktopLogger iLogger = new DesktopLogger();
@@ -119,6 +115,23 @@ public class DesktopMain {
 			}
 		});
 		
+		
+		platformConector.setGetFileListner(new IgetFileListner() 
+		{
+			@Override
+			public void getFile(String initialPath, String extension, IgetFileReturnListner returnListner) 
+			{
+				FileDialog filedia = new FileDialog(frame, "Öffnen");
+				filedia.setDirectory(initialPath);
+				filedia.setFile(extension);
+				filedia.show();
+				String filename = filedia.getDirectory()+filedia.getFile();
+				if (filename != null) {
+				  if(returnListner!=null)returnListner.getFieleReturn(filename);
+				}
+				filedia.dispose();
+			}
+		});
 		
 	}
 

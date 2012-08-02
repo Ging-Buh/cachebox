@@ -12,7 +12,7 @@ import CB_Core.Math.devicesSizes;
 
 class Ex_1 {
 	public static void main(String[] args) {
-		Gui screen = new Gui("Device Launcher");
+	final Gui screen = new Gui("Device Launcher");
 		screen.setSize(250, 500);
 		screen.setVisible(true);
 	}
@@ -69,15 +69,15 @@ class Gui extends Frame implements ActionListener, WindowListener {
 	// define action for Button press
 	public void actionPerformed(ActionEvent event) {
 		if (event.getActionCommand().equals("Phone 480x800 HDPI")) {
-			DesktopMain.test(iniPhone(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState());
+			DesktopMain.start(iniPhone(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState(),this);
 		} else if (event.getActionCommand().equals("Tab 1280x752 MDPI")) {
-			DesktopMain.test(iniTab(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState());
+			DesktopMain.start(iniTab(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState(),this);
 		} else if (event.getActionCommand().equals("Tab 1024x768 MDPI")) {
-			DesktopMain.test(iniPad10(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState());
+			DesktopMain.start(iniPad10(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState(),this);
 		}else if (event.getActionCommand().equals("Phone 240x400 LDPI")) {
-			DesktopMain.test(iniLowPhone(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState());
+			DesktopMain.start(iniLowPhone(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState(),this);
 		}else if (event.getActionCommand().equals("Phone 720x1280 XHDPI")) {
-			DesktopMain.test(iniHighPhone(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState());
+			DesktopMain.start(iniHighPhone(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState(),this);
 		}
 //		System.exit(0);
 	}

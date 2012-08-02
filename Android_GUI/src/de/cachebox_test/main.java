@@ -19,6 +19,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
+import org.openintents.intents.FileManagerIntents;
+
 import CB_Core.Config;
 import CB_Core.Energy;
 import CB_Core.FileIO;
@@ -43,6 +45,8 @@ import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.Events.platformConector.IHardwarStateListner;
 import CB_Core.Events.platformConector.IShowViewListner;
+import CB_Core.Events.platformConector.IgetFileListner;
+import CB_Core.Events.platformConector.IgetFileReturnListner;
 import CB_Core.Events.platformConector.trackListListner;
 import CB_Core.GL_UI.MenuID;
 import CB_Core.GL_UI.MenuItemConst;
@@ -77,6 +81,7 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -1024,6 +1029,25 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				// Log.d("DroidCachebox", "Picture NOT taken!!!");
 				return;
 			}
+		}
+
+		if (requestCode == Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR)
+		{
+			if (resultCode == android.app.Activity.RESULT_OK && data != null)
+			{
+				// obtain the filename
+				Uri fileUri = data.getData();
+				if (fileUri != null)
+				{
+					String filePath = fileUri.getPath();
+					if (filePath != null)
+					{
+						if (getFileReturnListner != null) getFileReturnListner.getFieleReturn(filePath);
+					}
+				}
+			}
+			return;
+
 		}
 
 		// Intent Result Record Video
@@ -3824,7 +3848,40 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (cm != null) GlobalCore.setDefaultClipboard(acb);
 
+		CB_Core.Events.platformConector.setGetFileListner(new IgetFileListner()
+		{
+
+			@Override
+			public void getFile(String initialPath, String extension, IgetFileReturnListner returnListner)
+			{
+				getFileReturnListner = returnListner;
+
+				Intent intent = new Intent(FileManagerIntents.ACTION_PICK_FILE);
+
+				// Construct URI from file name.
+				File file = new File(initialPath);
+				intent.setData(Uri.fromFile(file));
+
+				// Set fancy title and button (optional)
+				intent.putExtra(FileManagerIntents.EXTRA_TITLE, "Select file to open");
+				intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, "Open");
+
+				try
+				{
+					main.mainActivity.startActivityForResult(intent, Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR);
+				}
+				catch (ActivityNotFoundException e)
+				{
+					// No compatible file manager was found.
+					Toast.makeText(main.mainActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
+				}
+
+			}
+		});
+
 	}
+
+	IgetFileReturnListner getFileReturnListner = null;
 
 	// #########################################################
 

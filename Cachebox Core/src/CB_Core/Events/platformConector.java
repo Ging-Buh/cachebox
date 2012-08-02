@@ -213,4 +213,30 @@ public class platformConector
 		return null;
 	}
 
+	// ------ get File from Fiele Dialog ------
+
+	public interface IgetFileReturnListner
+	{
+		public void getFieleReturn(String Path);
+	}
+
+	public interface IgetFileListner
+	{
+		public void getFile(String initialPath, String extension, IgetFileReturnListner returnListner);
+	}
+
+	private static IgetFileListner getFileListner;
+
+	public static void setGetFileListner(IgetFileListner listner)
+	{
+		getFileListner = listner;
+	}
+
+	public static void getFile(String initialPath, String extension, IgetFileReturnListner returnListner)
+	{
+		if (getFileListner != null) getFileListner.getFile(initialPath, extension, returnListner);
+	}
+
+	// ----------------------------------------
+
 }
