@@ -46,7 +46,7 @@ public abstract class LibGdx_Host_Control extends CB_View_Base
 		}
 	}
 
-	protected Actor getActor()
+	public Actor getActor()
 	{
 		return mActor;
 	}

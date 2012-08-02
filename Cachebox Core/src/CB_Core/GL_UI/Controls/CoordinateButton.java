@@ -96,4 +96,9 @@ public class CoordinateButton extends Button
 		return mActCoord;
 	}
 
+	public void performClick()
+	{
+		super.performClick();
+	}
+
 }

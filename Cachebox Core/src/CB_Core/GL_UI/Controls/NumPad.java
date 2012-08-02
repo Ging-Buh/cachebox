@@ -152,6 +152,9 @@ public class NumPad extends CB_View_Base
 
 	private void calcSizes()
 	{
+
+		this.setOnClickListener(clickListner);
+
 		float btnHeight = this.height / 4f;
 		float btnWidth = this.width / 5f;
 		float minValue = Math.min(btnHeight, btnWidth);
@@ -291,7 +294,7 @@ public class NumPad extends CB_View_Base
 					return true;
 				}
 			}
-			return false;
+			return true;
 		}
 	};
 

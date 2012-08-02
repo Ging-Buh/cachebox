@@ -30,7 +30,6 @@ public class EditWaypoint extends ActivityBase
 {
 
 	private Waypoint waypoint;
-	private Waypoint cancelWaypoint;
 	private CoordinateButton bCoord = null;
 	private Spinner sType = null;
 	private Button bOK = null;
@@ -43,6 +42,7 @@ public class EditWaypoint extends ActivityBase
 	private CB_WrappedTextField etDescription = null;
 	private Label tvClue = null;
 	private CB_WrappedTextField etClue = null;
+	private Boolean firstShow = true;
 
 	private Box scrollBox;
 
@@ -60,7 +60,6 @@ public class EditWaypoint extends ActivityBase
 		this.addChild(scrollBox);
 		this.waypoint = waypoint;
 		this.mReturnListner = listner;
-		this.cancelWaypoint = waypoint.copy();
 
 		iniCacheNameLabel();
 		iniCoordButton();
@@ -329,7 +328,7 @@ public class EditWaypoint extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				if (mReturnListner != null) mReturnListner.returnedWP(cancelWaypoint);
+				if (mReturnListner != null) mReturnListner.returnedWP(null);
 				finish();
 				return true;
 			}
@@ -401,6 +400,14 @@ public class EditWaypoint extends ActivityBase
 
 		etClue.setY(tvClue.getY() - clueHeight);
 
+	}
+
+	@Override
+	public void onShow()
+	{
+		// onShow switch to editCoord Dialog if this the first show
+		if (firstShow) bCoord.performClick();
+		firstShow = false;
 	}
 
 }

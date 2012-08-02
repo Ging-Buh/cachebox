@@ -284,4 +284,10 @@ public class Button extends CB_View_Base
 		return null;
 	}
 
+	public void performClick()
+	{
+		click(0, 0, 0, 0);
+
+	}
+
 }

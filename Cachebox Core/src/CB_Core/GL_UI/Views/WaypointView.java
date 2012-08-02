@@ -392,6 +392,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 				{
 					if (createNewWaypoint)
 					{
+
 						GlobalCore.SelectedCache().waypoints.add(waypoint);
 						that.setBaseAdapter(lvAdapter);
 						aktWaypoint = waypoint;

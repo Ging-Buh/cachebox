@@ -21,6 +21,8 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
 
 public class EditCoord extends ActivityBase
@@ -88,17 +90,16 @@ public class EditCoord extends ActivityBase
 		cancelCoord = coord.copy();
 		mReturnListner = returnListner;
 
-		float left = nineBackground.getLeftWidth();
-		float innerWidth = this.width - left - left;
+		float innerWidth = this.width - Left - Left;
 
-		CB_RectF MTBRec = new CB_RectF(left, this.height - left - UiSizes.getButtonHeight(), innerWidth / 4, UiSizes.getButtonHeight());
+		CB_RectF MTBRec = new CB_RectF(Left, this.height - Left - UiSizes.getButtonHeight(), innerWidth / 4, UiSizes.getButtonHeight());
 
 		bDec = new MultiToggleButton(MTBRec, "bDec");
 		bMin = new MultiToggleButton(MTBRec, "bDec");
 		bSec = new MultiToggleButton(MTBRec, "bDec");
 		bUtm = new MultiToggleButton(MTBRec, "bDec");
 
-		bDec.setX(left);
+		bDec.setX(Left);
 		bMin.setX(bDec.getMaxX());
 		bSec.setX(bMin.getMaxX());
 		bUtm.setX(bSec.getMaxX());
@@ -113,10 +114,10 @@ public class EditCoord extends ActivityBase
 		MultiToggleButton.initialOn_Off_ToggleStates(bSec, "Sec", "Sec");
 		MultiToggleButton.initialOn_Off_ToggleStates(bUtm, "UTM", "UTM");
 
-		Button bOK = new Button(left, left, innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
-		Button bCancel = new Button(bOK.getMaxX(), left, innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
-		bDLat = new Button(left, bDec.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), "BDLat");
-		bDLon = new Button(left, bDLat.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), "bDLon");
+		Button bOK = new Button(Left, Left, innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
+		Button bCancel = new Button(bOK.getMaxX(), Left, innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
+		bDLat = new Button(Left, bDec.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), "BDLat");
+		bDLon = new Button(Left, bDLat.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), "bDLon");
 		CB_RectF EditTextBoxRec = new CB_RectF(bDLon.getMaxX() + margin, bDLon.getY(), this.width - bDLon.getMaxX() - margin,
 				bDLat.getMaxY() - bDLon.getY());
 
@@ -497,7 +498,6 @@ public class EditCoord extends ActivityBase
 			@Override
 			public void show(boolean arg0)
 			{
-				boolean showKeayboard = false;
 
 				for (CB_TextField tmp : allTextFields)
 				{
@@ -507,9 +507,15 @@ public class EditCoord extends ActivityBase
 				textField.setFocus(true);
 				focusedTextField = textField;
 
-				if (tbUZone != null && textField.equals(tbUZone)) showKeayboard = true;
+				if (tbUZone != null && textField.equals(tbUZone))
+				{
+					Gdx.input.setOnscreenKeyboardVisible(true);
+				}
+				else
+				{
+					Gdx.input.setOnscreenKeyboardVisible(false);
+				}
 
-				if (showKeayboard) Gdx.input.setOnscreenKeyboardVisible(showKeayboard);
 			}
 		});
 
@@ -727,17 +733,16 @@ public class EditCoord extends ActivityBase
 	private void showNumPad(NumPad.Type type)
 	{
 		if (numPad != null) return;
-		float numWidth = this.width - nineBackground.getLeftWidth() - nineBackground.getRightWidth();
-		float numHeight = this.height - nineBackground.getBottomHeight() - nineBackground.getTopHeight() - (UiSizes.getButtonHeight() * 2)
-				- (margin * 2);
+		float numWidth = this.width - Left - Right;
+		float numHeight = this.height - Bottom - Top - (UiSizes.getButtonHeight() * 2) - (margin * 2);
 
 		numHeight -= trUtm.getHeight();
 
-		CB_RectF numRec = new CB_RectF(nineBackground.getLeftWidth(), UiSizes.getButtonHeight() + (margin * 3), numWidth, numHeight);
+		CB_RectF numRec = new CB_RectF(Left, UiSizes.getButtonHeight() + (margin * 3), numWidth, numHeight);
 
 		numPad = new NumPad(numRec, "numPad", type, keyListner);
 
-		this.addChild(numPad);
+		this.addChildAtLast(numPad);
 	}
 
 	keyEventListner keyListner = new keyEventListner()
@@ -789,4 +794,16 @@ public class EditCoord extends ActivityBase
 
 		}
 	};
+
+	@Override
+	protected void render(SpriteBatch batch)
+	{
+		super.render(batch);
+
+		// wenn utm Zone TextField kein Focus hat, SoftKeyBoard ausblenden
+		Stage stage = tbUZone.getStage();
+		if (stage.getKeyboardFocus() != tbUZone.getActor()) Gdx.input.setOnscreenKeyboardVisible(false);
+
+	}
+
 }

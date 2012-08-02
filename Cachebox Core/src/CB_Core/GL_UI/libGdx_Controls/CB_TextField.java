@@ -7,6 +7,7 @@ import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
@@ -246,5 +247,11 @@ public class CB_TextField extends LibGdx_Host_Control
 	{
 		mTextField.setHeight(height);
 		mTextField.setWidth(width);
+	}
+
+	public Stage getStage()
+	{
+		if (mTextField != null) return mTextField.getStage();
+		return null;
 	}
 }

@@ -21,17 +21,18 @@ public class ActivityBase extends Dialog
 	protected float Bottom;
 	protected float MesuredLabelHeight;
 	protected float ButtonHeight;
+	private int mPatchValue;
 
 	public ActivityBase(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 		that = this;
-		this.setBackground(new NinePatch(SpriteCache.getThemedSprite("activity-back"), 16, 16, 16, 16));
 
-		Left = nineBackground.getLeftWidth();
-		Right = nineBackground.getRightWidth();
-		Top = nineBackground.getTopHeight();
-		Bottom = nineBackground.getBottomHeight();
+		mPatchValue = (SpriteCache.getThemedSprite("activity-back").getWidth() > 60) ? 16 : 8;
+
+		this.setBackground(new NinePatch(SpriteCache.getThemedSprite("activity-back"), mPatchValue, mPatchValue, mPatchValue, mPatchValue));
+
+		Left = Right = Top = Bottom = mPatchValue / 2;
 		MesuredLabelHeight = Fonts.Mesure("T").height * 1.5f;
 		ButtonHeight = UiSizes.getButtonHeight();
 	}
@@ -39,13 +40,20 @@ public class ActivityBase extends Dialog
 	@Override
 	protected void SkinIsChanged()
 	{
-		this.setBackground(new NinePatch(SpriteCache.getThemedSprite("activity-back"), 16, 16, 16, 16));
+		this.setBackground(new NinePatch(SpriteCache.getThemedSprite("activity-back"), mPatchValue, mPatchValue, mPatchValue, mPatchValue));
 	}
 
 	@Override
 	public GL_View_Base addChild(GL_View_Base view)
 	{
 		this.addChildDirekt(view);
+
+		return view;
+	}
+
+	public GL_View_Base addChildAtLast(GL_View_Base view)
+	{
+		this.addChildDirektLast(view);
 
 		return view;
 	}

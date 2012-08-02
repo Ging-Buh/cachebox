@@ -175,6 +175,14 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		}
 	}
 
+	public void addChildDirektLast(final GL_View_Base view)
+	{
+		synchronized (childs)
+		{
+			childs.add(0, view);
+		}
+	}
+
 	public void removeChildsDirekt()
 	{
 		synchronized (childs)
