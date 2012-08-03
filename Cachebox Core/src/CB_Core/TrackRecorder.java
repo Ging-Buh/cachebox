@@ -34,6 +34,7 @@ public class TrackRecorder
 		GlobalCore.AktuelleRoute.ShowRoute = true;
 		GlobalCore.AktuelleRoute.IsActualTrack = true;
 		GlobalCore.aktuelleRouteCount = 0;
+		GlobalCore.AktuelleRoute.TrackLength = 0;
 
 		String directory = Config.settings.TrackFolder.getValue();
 		if (!FileIO.DirectoryExists(directory)) return;
@@ -124,8 +125,6 @@ public class TrackRecorder
 				+ "   <ele>" + String.valueOf(GlobalCore.LastValidPosition.Elevation) + "</ele>\n" + "   <time>" + timestamp + "</time>\n"
 				+ "   <name>" + friendlyName + "</name>\n" + "   <link href=\"" + mediaPath + "\" />\n" + "</wpt>\n";
 
-		// 6
-
 		RandomAccessFile rand;
 		try
 		{
@@ -185,93 +184,88 @@ public class TrackRecorder
 			mustRecPos = true;
 		}
 
-		writePos = true;
-		TrackPoint NewPoint;
-
-		// wurden seit dem letzten aufgenommenen Wegpunkt mehr als x Meter
-		// zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
-		float[] dist = new float[4];
-
-		Coordinate.distanceBetween(LastRecordedPosition.Latitude, LastRecordedPosition.Longitude, GlobalCore.LastValidPosition.Latitude,
-				GlobalCore.LastValidPosition.Longitude, dist);
-		float cachedDistance = dist[0];
-
-		// if ((float)Datum.WGS84.Distance(LastRecordedPosition.Latitude,
-		// LastRecordedPosition.Longitude, Global.LastValidPosition.Latitude,
-		// Global.LastValidPosition.Longitude) > Global.TrackDistance)
-		if (cachedDistance > GlobalCore.TrackDistance)
+		if (!LastRecordedPosition.Valid) // Warte bis 2 gültige Koordinaten vorliegen
 		{
+			LastRecordedPosition = GlobalCore.LastValidPosition;
+		}
+		else
+		{
+			writePos = true;
+			TrackPoint NewPoint;
 
-			StringBuilder sb = new StringBuilder();
+			// wurden seit dem letzten aufgenommenen Wegpunkt mehr als x Meter
+			// zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
+			float[] dist = new float[4];
 
-			sb.append("<trkpt lat=\"" + String.valueOf(GlobalCore.LastValidPosition.Latitude) + "\" lon=\""
-					+ String.valueOf(GlobalCore.LastValidPosition.Longitude) + "\">\n");
-			sb.append("   <ele>" + String.valueOf(GlobalCore.LastValidPosition.Elevation) + "</ele>\n");
-			Date now = new Date();
-			SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
-			String sDate = datFormat.format(now);
-			datFormat = new SimpleDateFormat("HH:mm:ss");
-			sDate += "T" + datFormat.format(now) + "Z";
-			sb.append("   <time>" + sDate + "</time>\n");
-			sb.append("   <course>" + String.valueOf(GlobalCore.Locator.getHeading()) + "</course>\n");
-			sb.append("   <speed>" + String.valueOf(GlobalCore.Locator.SpeedOverGround()) + "</speed>\n");
-			sb.append("</trkpt>\n");
+			Coordinate.distanceBetween(LastRecordedPosition.Latitude, LastRecordedPosition.Longitude,
+					GlobalCore.LastValidPosition.Latitude, GlobalCore.LastValidPosition.Longitude, dist);
+			float cachedDistance = dist[0];
 
-			RandomAccessFile rand;
-			try
+			if (cachedDistance > GlobalCore.TrackDistance)
 			{
-				rand = new RandomAccessFile(gpxfile, "rw");
+				StringBuilder sb = new StringBuilder();
 
-				int i = (int) rand.length();
+				sb.append("<trkpt lat=\"" + String.valueOf(GlobalCore.LastValidPosition.Latitude) + "\" lon=\""
+						+ String.valueOf(GlobalCore.LastValidPosition.Longitude) + "\">\n");
+				sb.append("   <ele>" + String.valueOf(GlobalCore.LastValidPosition.Elevation) + "</ele>\n");
+				Date now = new Date();
+				SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String sDate = datFormat.format(now);
+				datFormat = new SimpleDateFormat("HH:mm:ss");
+				sDate += "T" + datFormat.format(now) + "Z";
+				sb.append("   <time>" + sDate + "</time>\n");
+				sb.append("   <course>" + String.valueOf(GlobalCore.Locator.getHeading()) + "</course>\n");
+				sb.append("   <speed>" + String.valueOf(GlobalCore.Locator.SpeedOverGround()) + "</speed>\n");
+				sb.append("</trkpt>\n");
 
-				byte[] bEnde = new byte[24];
-
-				rand.seek(i - insertPos); // Seek to start point of file
-
-				for (int ct = 0; ct < insertPos; ct++)
+				RandomAccessFile rand;
+				try
 				{
-					bEnde[ct] = rand.readByte(); // read byte from the file
+					rand = new RandomAccessFile(gpxfile, "rw");
+					int i = (int) rand.length();
+					byte[] bEnde = new byte[24];
+					rand.seek(i - insertPos); // Seek to start point of file
+
+					for (int ct = 0; ct < insertPos; ct++)
+					{
+						bEnde[ct] = rand.readByte(); // read byte from the file
+					}
+
+					// insert point
+					byte[] b = sb.toString().getBytes();
+					rand.setLength(i + b.length);
+					rand.seek(i - insertPos);
+					rand.write(b);
+					rand.write(bEnde);
+					rand.close();
+				}
+				catch (FileNotFoundException e)
+				{
+					CB_Core.Log.Logger.Error("Trackrecorder", "IOException", e);
+				}
+				catch (IOException e)
+				{
+					CB_Core.Log.Logger.Error("Trackrecorder", "IOException", e);
 				}
 
-				// insert point
+				NewPoint = new TrackPoint(GlobalCore.LastValidPosition.Longitude, GlobalCore.LastValidPosition.Latitude,
+						GlobalCore.Locator.getHeading(), new Date());
 
-				byte[] b = sb.toString().getBytes();
+				GlobalCore.AktuelleRoute.Points.add(NewPoint);
 
-				rand.setLength(i + b.length);
-				rand.seek(i - insertPos);
-				rand.write(b);
-				rand.write(bEnde);
-				rand.close();
+				// notify TrackListView
+				if (TrackListView.that != null) TrackListView.that.notifyActTrackChanged();
 
-			}
-			catch (FileNotFoundException e)
-			{
-				CB_Core.Log.Logger.Error("Trackrecorder", "IOException", e);
-			}
-			catch (IOException e)
-			{
-				CB_Core.Log.Logger.Error("Trackrecorder", "IOException", e);
-			}
+				RouteOverlay.RoutesChanged();
+				LastRecordedPosition = GlobalCore.LastValidPosition;
+				GlobalCore.AktuelleRoute.TrackLength += cachedDistance;
+				writePos = false;
 
-			NewPoint = new TrackPoint(GlobalCore.LastValidPosition.Longitude, GlobalCore.LastValidPosition.Latitude,
-					GlobalCore.Locator.getHeading(), new Date());
-
-			GlobalCore.AktuelleRoute.Points.add(NewPoint);
-
-			GlobalCore.AktuelleRoute.TrackLength += cachedDistance;
-
-			// notify TrackListView
-			if (TrackListView.that != null) TrackListView.that.notifyActTrackChanged();
-
-			RouteOverlay.RoutesChanged();
-			LastRecordedPosition = new Coordinate(GlobalCore.LastValidPosition);
-
-			writePos = false;
-
-			if (mustWriteMedia)
-			{
-				mustWriteMedia = false;
-				AnnotateMedia(mFriendlyName, mMediaPath, mMediaCoord, mTimestamp);
+				if (mustWriteMedia)
+				{
+					mustWriteMedia = false;
+					AnnotateMedia(mFriendlyName, mMediaPath, mMediaCoord, mTimestamp);
+				}
 			}
 		}
 	}
