@@ -3,11 +3,9 @@ package CB_Core.GL_UI.Views;
 import java.util.Iterator;
 
 import CB_Core.GlobalCore;
-import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
@@ -27,9 +25,12 @@ public class TrackListView extends V_ListView
 	public static CB_RectF ItemRec;
 	BitmapFontCache emptyMsg;
 
+	public static TrackListView that;
+
 	public TrackListView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
+		that = this;
 
 		ItemRec = new CB_RectF(0, 0, this.width, UiSizes.getButtonHeight() * 1.1f);
 
@@ -43,13 +44,15 @@ public class TrackListView extends V_ListView
 	@Override
 	public void onShow()
 	{
-		platformConector.showView(ViewConst.TRACK_LIST_VIEW, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+		this.notifyDataSetChanged();
+
+		// platformConector.showView(ViewConst.TRACK_LIST_VIEW, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 	}
 
 	@Override
 	public void onHide()
 	{
-		platformConector.hideView(ViewConst.TRACK_LIST_VIEW);
+		// platformConector.hideView(ViewConst.TRACK_LIST_VIEW);
 	}
 
 	@Override
@@ -86,6 +89,8 @@ public class TrackListView extends V_ListView
 
 	}
 
+	TrackListViewItem aktRouteItem;
+
 	public class CustomAdapter implements Adapter
 	{
 
@@ -96,12 +101,35 @@ public class TrackListView extends V_ListView
 		@Override
 		public int getCount()
 		{
+
+			if (GlobalCore.AktuelleRoute != null) return RouteOverlay.Routes.size() + 1;
+
 			return RouteOverlay.Routes.size();
 		}
 
 		@Override
 		public ListViewItemBase getView(int position)
 		{
+
+			if (GlobalCore.AktuelleRoute != null)
+			{
+				if (position == 0)
+				{
+					aktRouteItem = new TrackListViewItem(ItemRec, position, GlobalCore.AktuelleRoute, new RouteChangedListner()
+					{
+
+						@Override
+						public void RouteChanged(Track route)
+						{
+							// Notify Map to Reload RouteOverlay
+							RouteOverlay.RoutesChanged();
+						}
+					});
+					return aktRouteItem;
+				}
+				position--;
+			}
+
 			TrackListViewItem v = new TrackListViewItem(ItemRec, position, RouteOverlay.Routes.get(position), new RouteChangedListner()
 			{
 
@@ -118,6 +146,11 @@ public class TrackListView extends V_ListView
 		@Override
 		public float getItemSize(int position)
 		{
+			if (GlobalCore.AktuelleRoute != null && position == 1)
+			{
+				return ItemRec.getHeight() + ItemRec.getHalfHeight();
+			}
+
 			return ItemRec.getHeight();
 		}
 
@@ -143,6 +176,11 @@ public class TrackListView extends V_ListView
 			}
 		}
 		return true;
+	}
+
+	public void notifyActTrackChanged()
+	{
+		aktRouteItem.notifyTrackChanged(GlobalCore.AktuelleRoute);
 	}
 
 }

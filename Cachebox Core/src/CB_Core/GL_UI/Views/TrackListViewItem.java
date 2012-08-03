@@ -180,4 +180,12 @@ public class TrackListViewItem extends ListViewItemBackground
 
 	}
 
+	public void notifyTrackChanged(Track route)
+	{
+		mRoute = route;
+		if (EntryLength != null) EntryLength.setText(GlobalCore.Translations.Get("length") + ": "
+				+ UnitFormatter.DistanceString((float) mRoute.TrackLength));
+
+	}
+
 }

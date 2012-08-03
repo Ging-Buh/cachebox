@@ -8,6 +8,7 @@ import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import CB_Core.GL_UI.Views.TrackListView;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Types.Coordinate;
@@ -257,6 +258,12 @@ public class TrackRecorder
 					GlobalCore.Locator.getHeading(), new Date());
 
 			GlobalCore.AktuelleRoute.Points.add(NewPoint);
+
+			GlobalCore.AktuelleRoute.TrackLength += cachedDistance;
+
+			// notify TrackListView
+			if (TrackListView.that != null) TrackListView.that.notifyActTrackChanged();
+
 			RouteOverlay.RoutesChanged();
 			LastRecordedPosition = new Coordinate(GlobalCore.LastValidPosition);
 
