@@ -69,6 +69,12 @@ public class PositionChangedEventList
 
 		thread.run();
 
+		if (!locator.UseCompass())
+		{
+			// Use GPS direction
+			Orientation(locator.getHeading());
+		}
+
 	}
 
 	private static float lastHeading = 0;

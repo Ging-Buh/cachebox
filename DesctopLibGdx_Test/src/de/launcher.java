@@ -1,7 +1,11 @@
 package de;
 
 //program to demonstrate the construction of a Container and a Button
-import java.awt.*;
+import java.awt.Button;
+import java.awt.Checkbox;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -10,16 +14,19 @@ import java.awt.event.WindowListener;
 import CB_Core.Math.Size;
 import CB_Core.Math.devicesSizes;
 
-class Ex_1 {
-	public static void main(String[] args) {
-	final Gui screen = new Gui("Device Launcher");
+class Ex_1
+{
+	public static void main(String[] args)
+	{
+		final Gui screen = new Gui("Device Launcher");
 		screen.setSize(250, 500);
 		screen.setVisible(true);
 	}
 } // class Ex_1
 
-class Gui extends Frame implements ActionListener, WindowListener {
-	
+class Gui extends Frame implements ActionListener, WindowListener
+{
+
 	/**
 	 * 
 	 */
@@ -27,10 +34,10 @@ class Gui extends Frame implements ActionListener, WindowListener {
 	Checkbox debugChkBox;
 	Checkbox scissorChkBox;
 	Checkbox simulateChkBox;
-	
-	
+
 	// constructor
-	public Gui(String s) {
+	public Gui(String s)
+	{
 		super(s);
 		setBackground(Color.LIGHT_GRAY);
 		setLayout(new FlowLayout());
@@ -55,57 +62,75 @@ class Gui extends Frame implements ActionListener, WindowListener {
 		Button pushButton3 = new Button("Tab 1024x768 MDPI");
 		add(pushButton3);
 		pushButton3.addActionListener(this); // listen for Button press
-		
-		 debugChkBox = new Checkbox("Enable Debug on Main", null, false);
-		 scissorChkBox = new Checkbox("Disable scissor on Main", null, false);
-		 simulateChkBox= new Checkbox("Simulate GPS from simulation.gpx", null, false);
-		 
-		 add(debugChkBox);
-		 add(scissorChkBox);
-		 add(simulateChkBox);
+
+		debugChkBox = new Checkbox("Enable Debug on Main", null, false);
+		scissorChkBox = new Checkbox("Disable scissor on Main", null, false);
+		simulateChkBox = new Checkbox("Simulate GPS from simulation.gpx", null, false);
+
+		add(debugChkBox);
+		add(scissorChkBox);
+		add(simulateChkBox);
 
 	}
 
 	// define action for Button press
-	public void actionPerformed(ActionEvent event) {
-		if (event.getActionCommand().equals("Phone 480x800 HDPI")) {
-			DesktopMain.start(iniPhone(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState(),this);
-		} else if (event.getActionCommand().equals("Tab 1280x752 MDPI")) {
-			DesktopMain.start(iniTab(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState(),this);
-		} else if (event.getActionCommand().equals("Tab 1024x768 MDPI")) {
-			DesktopMain.start(iniPad10(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState(),this);
-		}else if (event.getActionCommand().equals("Phone 240x400 LDPI")) {
-			DesktopMain.start(iniLowPhone(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState(),this);
-		}else if (event.getActionCommand().equals("Phone 720x1280 XHDPI")) {
-			DesktopMain.start(iniHighPhone(),debugChkBox.getState(),scissorChkBox.getState(),simulateChkBox.getState(),this);
+	public void actionPerformed(ActionEvent event)
+	{
+		if (event.getActionCommand().equals("Phone 480x800 HDPI"))
+		{
+			DesktopMain.start(iniPhone(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
 		}
-//		System.exit(0);
+		else if (event.getActionCommand().equals("Tab 1280x752 MDPI"))
+		{
+			DesktopMain.start(iniTab(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
+		}
+		else if (event.getActionCommand().equals("Tab 1024x768 MDPI"))
+		{
+			DesktopMain.start(iniPad10(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
+		}
+		else if (event.getActionCommand().equals("Phone 240x400 LDPI"))
+		{
+			DesktopMain.start(iniLowPhone(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
+		}
+		else if (event.getActionCommand().equals("Phone 720x1280 XHDPI"))
+		{
+			DesktopMain.start(iniHighPhone(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
+		}
+		// System.exit(0);
 	}
 
 	// define methods in WindowListener interface
-	public void windowClosing(WindowEvent event) {
+	public void windowClosing(WindowEvent event)
+	{
 		System.exit(0);
 	}
 
-	public void windowClosed(WindowEvent event) {
+	public void windowClosed(WindowEvent event)
+	{
 	} // do nothing for now
 
-	public void windowDeiconified(WindowEvent event) {
+	public void windowDeiconified(WindowEvent event)
+	{
 	}
 
-	public void windowIconified(WindowEvent event) {
+	public void windowIconified(WindowEvent event)
+	{
 	}
 
-	public void windowActivated(WindowEvent event) {
+	public void windowActivated(WindowEvent event)
+	{
 	}
 
-	public void windowDeactivated(WindowEvent event) {
+	public void windowDeactivated(WindowEvent event)
+	{
 	}
 
-	public void windowOpened(WindowEvent event) {
+	public void windowOpened(WindowEvent event)
+	{
 	}
 
-	private static devicesSizes iniPhone() {
+	private static devicesSizes iniPhone()
+	{
 		Size myInitialSize = new Size(480, 772);
 		devicesSizes ui = getHDPI(myInitialSize);
 
@@ -113,7 +138,8 @@ class Gui extends Frame implements ActionListener, WindowListener {
 
 	}
 
-	private static devicesSizes iniTab() {
+	private static devicesSizes iniTab()
+	{
 
 		Size myInitialSize = new Size(1280, 752);
 		devicesSizes ui = getMDPI(myInitialSize);
@@ -122,7 +148,8 @@ class Gui extends Frame implements ActionListener, WindowListener {
 
 	}
 
-	private static devicesSizes iniPad10() {
+	private static devicesSizes iniPad10()
+	{
 
 		Size myInitialSize = new Size(1024, 768);
 		devicesSizes ui = getMDPI(myInitialSize);
@@ -130,8 +157,9 @@ class Gui extends Frame implements ActionListener, WindowListener {
 		return ui;
 
 	}
-	
-	private static devicesSizes iniLowPhone() {
+
+	private static devicesSizes iniLowPhone()
+	{
 
 		Size myInitialSize = new Size(240, 400);
 		devicesSizes ui = getLDPI(myInitialSize);
@@ -139,8 +167,9 @@ class Gui extends Frame implements ActionListener, WindowListener {
 		return ui;
 
 	}
-	
-	private static devicesSizes iniHighPhone() {
+
+	private static devicesSizes iniHighPhone()
+	{
 
 		Size myInitialSize = new Size(720, 1280);
 		devicesSizes ui = getXHDPI(myInitialSize);
@@ -149,8 +178,8 @@ class Gui extends Frame implements ActionListener, WindowListener {
 
 	}
 
-	
-	private static devicesSizes getLDPI(Size myInitialSize) {
+	private static devicesSizes getLDPI(Size myInitialSize)
+	{
 		devicesSizes ui = new devicesSizes();
 
 		ui.Window = myInitialSize;
@@ -167,8 +196,9 @@ class Gui extends Frame implements ActionListener, WindowListener {
 		ui.isLandscape = false;
 		return ui;
 	}
-	
-	private static devicesSizes getMDPI(Size myInitialSize) {
+
+	private static devicesSizes getMDPI(Size myInitialSize)
+	{
 		devicesSizes ui = new devicesSizes();
 
 		ui.Window = myInitialSize;
@@ -185,13 +215,14 @@ class Gui extends Frame implements ActionListener, WindowListener {
 		ui.isLandscape = false;
 		return ui;
 	}
-	
-	private static devicesSizes getHDPI(Size myInitialSize) {
+
+	private static devicesSizes getHDPI(Size myInitialSize)
+	{
 		devicesSizes ui = new devicesSizes();
 
 		ui.Window = myInitialSize;
 		ui.Density = 1.5f;
-		ui.ButtonSize = new Size(65,65);
+		ui.ButtonSize = new Size(65, 65);
 		ui.RefSize = 64;
 		ui.TextSize_Normal = 52;
 		ui.ButtonTextSize = 50;
@@ -203,13 +234,14 @@ class Gui extends Frame implements ActionListener, WindowListener {
 		ui.isLandscape = false;
 		return ui;
 	}
-	
-	private static devicesSizes getXHDPI(Size myInitialSize) {
+
+	private static devicesSizes getXHDPI(Size myInitialSize)
+	{
 		devicesSizes ui = new devicesSizes();
 
 		ui.Window = myInitialSize;
 		ui.Density = 2f;
-		ui.ButtonSize = new Size(53,53);
+		ui.ButtonSize = new Size(53, 53);
 		ui.RefSize = 74;
 		ui.TextSize_Normal = 62;
 		ui.ButtonTextSize = 60;

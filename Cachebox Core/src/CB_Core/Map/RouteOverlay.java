@@ -171,10 +171,11 @@ public class RouteOverlay
 
 				}
 
-				if (line.indexOf("<time>") > -1)
+				if (line.indexOf("</time>") > -1)
 				{
 					// Time lesen
 					int timIdx = line.indexOf("<time>") + 6;
+					if (timIdx == 5) timIdx = 0;
 					int timEndIdx = line.indexOf("</time>", timIdx);
 
 					String timStr = line.substring(timIdx, timEndIdx);
@@ -182,10 +183,11 @@ public class RouteOverlay
 					lastAcceptedTime = parseDate(timStr);
 				}
 
-				if (line.indexOf("<course>") > -1)
+				if (line.indexOf("</course>") > -1)
 				{
 					// Time lesen
 					int couIdx = line.indexOf("<course>") + 8;
+					if (couIdx == 7) couIdx = 0;
 					int couEndIdx = line.indexOf("</course>", couIdx);
 
 					String couStr = line.substring(couIdx, couEndIdx);
