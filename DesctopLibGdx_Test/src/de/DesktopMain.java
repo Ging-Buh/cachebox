@@ -152,9 +152,9 @@ public class DesktopMain {
 			TimerTask task = new TimerTask() {
 				@Override
 				public void run() {
-					// Coordinate pos = new
-					// Coordinate("N 52 27.130  E 13 33.117");
-					Coordinate pos = new Coordinate("N 48 5.929  E 12 07.176");
+					// Coordinate pos = new Coordinate("N 52 27.130  E 13 33.117");
+					// Coordinate pos = new Coordinate("N 48 5.929  E 12 07.176");
+					Coordinate pos = new Coordinate("N 51 54.031  E 9 06.064");
 					Locator Loc = new Locator();
 
 					Loc.setLocation(pos.Latitude, pos.Longitude, 100, true,

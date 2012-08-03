@@ -1,5 +1,7 @@
 package CB_Core.GL_UI.Views;
 
+import CB_Core.GlobalCore;
+import CB_Core.UnitFormatter;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Label;
@@ -27,6 +29,7 @@ public class TrackListViewItem extends ListViewItemBackground
 	private float top;
 
 	private Label EntryName;
+	private Label EntryLength;
 	private Sprite colorReck;
 	private boolean Clicked = false;
 	public Vector2 lastItemTouchPos;
@@ -89,12 +92,23 @@ public class TrackListViewItem extends ListViewItemBackground
 		if (EntryName == null)
 		{
 
-			CB_RectF rec = new CB_RectF(left, 0, this.width - left - height - 10, this.height);
+			CB_RectF rec = new CB_RectF(left, this.height / 2, this.width - left - height - 10, this.height / 2);
 			EntryName = new Label(rec, "");
 
 			EntryName.setText(mRoute.Name);
 
 			this.addChild(EntryName);
+		}
+
+		// draw Lenght
+		if (EntryLength == null)
+		{
+
+			CB_RectF rec = new CB_RectF(left, 0, this.width - left - height - 10, this.height / 2);
+			EntryLength = new Label(rec, "");
+			EntryLength.setText(GlobalCore.Translations.Get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.TrackLength));
+
+			this.addChild(EntryLength);
 		}
 
 		drawRightChkBox(batch);

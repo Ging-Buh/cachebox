@@ -49,11 +49,13 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	}
 
 	private static final int GENERATE = 1;
-	private static final int LOAD = 2;
-	private static final int DELETE = 3;
-	private static final int P2P = 4;
-	private static final int PROJECT = 5;
-	private static final int CIRCLE = 6;
+	private static final int RENAME = 2;
+	private static final int LOAD = 3;
+	private static final int SAVE = 4;
+	private static final int DELETE = 5;
+	private static final int P2P = 6;
+	private static final int PROJECT = 7;
+	private static final int CIRCLE = 8;
 
 	@Override
 	public boolean HasContextMenu()
@@ -77,6 +79,9 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 				case GENERATE:
 					showMenuCreate();
 					return true;
+				case RENAME:
+					// ;
+					return true;
 				case LOAD:
 
 					platformConector.menuItemClicked(MenuItemConst.TRACK_LIST_LOAD);
@@ -95,6 +100,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					// });
 
 					return true;
+				case SAVE:
+					return true;
 				case DELETE:
 					platformConector.menuItemClicked(MenuItemConst.TRACK_LIST_DELETE);
 					return true;
@@ -105,7 +112,9 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 		});
 
 		cm.addItem(GENERATE, "generate");
+		cm.addItem(RENAME, "rename");
 		cm.addItem(LOAD, "load");
+		cm.addItem(SAVE, "save");
 		cm.addItem(DELETE, "delete");
 
 		cm.show();

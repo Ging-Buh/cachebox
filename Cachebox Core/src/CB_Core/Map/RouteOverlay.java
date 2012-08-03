@@ -42,6 +42,7 @@ public class RouteOverlay
 		public boolean ShowRoute = false;
 		public boolean IsActualTrack = false;
 		public Color mColor;
+		public double TrackLength;
 
 		public Track(String name, Color color)
 		{
@@ -68,7 +69,11 @@ public class RouteOverlay
 	// in this case all segments was connectet to one track
 	public static Track LoadRoute(String file, Color color, double minDistanceMeters)
 	{
+		float[] dist = new float[4];
+		double Distance = 0;
+		Coordinate FromPosition = new Coordinate();
 		BufferedReader reader;
+
 		try
 		{
 			InputStreamReader isr = new InputStreamReader(new FileInputStream(file), "UTF8");
@@ -195,6 +200,21 @@ public class RouteOverlay
 					route.Points.add(new TrackPoint(lastAcceptedCoordinate.Longitude, lastAcceptedCoordinate.Latitude,
 							lastAcceptedDirection, lastAcceptedTime));
 
+					// Calculate the length of a Track
+					if (!FromPosition.Valid)
+					{
+						FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
+						FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
+						FromPosition.Valid = true;
+					}
+					else
+					{
+						Coordinate.distanceBetween(FromPosition.Latitude, FromPosition.Longitude, lastAcceptedCoordinate.Latitude,
+								lastAcceptedCoordinate.Longitude, dist);
+						Distance += dist[0];
+						FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
+						FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
+					}
 				}
 			}
 
@@ -210,6 +230,7 @@ public class RouteOverlay
 			}
 
 			route.ShowRoute = true;
+			route.TrackLength = Distance;
 
 			return route;
 		}

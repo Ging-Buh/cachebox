@@ -400,6 +400,9 @@
 	NoTrackSelected = No track selected!
 	IsActualTrack = Current track cannot be deleted
 	Point2Point = Point to Point
+	Circle = Circle
+	rename = Rename
+	length = Distance
 	preset = Preset
 	setting = Setting
 	category = Category
