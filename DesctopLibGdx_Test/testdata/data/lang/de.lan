@@ -400,6 +400,10 @@
 	load = Laden
 	NoTrackSelected = Kein Track ausgewählt!
 	IsActualTrack = Aktueller Track kann nicht gelöscht werden!
+	Point2Point = Point to Point
+	Circle = Kreis
+	rename = Umbenennen
+	length = Länge
 	preset = Vorgaben
 	setting = Einstellung
 	category = Kategorie
@@ -763,9 +767,3 @@
 	Credits = Credits
 	
 	CenterWP = Center => WP
-	
-	date = Datum
-	time = Zeit
-	
-	wrongDate = Falsches Datum oder Zeit eingegeben!
-	EmptyFieldNotes = Keine Fieldnotes eingetragen!

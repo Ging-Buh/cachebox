@@ -83,7 +83,6 @@ public class TrackRecorder
 			}
 			catch (IOException e)
 			{
-				// TODO Auto-generated catch block
 				CB_Core.Log.Logger.Error("Trackrecorder", "IOException", e);
 			}
 			writer = null;

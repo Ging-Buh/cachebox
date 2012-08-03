@@ -57,7 +57,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 
 		mesuredLabelHeight = Fonts.Mesure("T").height * 1.5f;
 
-		progressMessageTextView = new Label(Left, margin, this.width - Left - Reight, mesuredLabelHeight, "");
+		progressMessageTextView = new Label(Left, margin, this.width - Left - Right, mesuredLabelHeight, "");
 		this.addChild(progressMessageTextView);
 
 		CB_RectF rec = new CB_RectF(0, progressMessageTextView.getMaxY() + margin, this.getContentSize().width,
@@ -67,7 +67,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 		progressBar.setProgress(0);
 		this.addChild(progressBar);
 
-		messageTextView = new Label(Left, progressBar.getMaxY() + margin, this.width - Left - Reight, mesuredLabelHeight, "");
+		messageTextView = new Label(Left, progressBar.getMaxY() + margin, this.width - Left - Right, mesuredLabelHeight, "");
 		this.addChild(messageTextView);
 
 	}

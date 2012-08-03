@@ -3,6 +3,9 @@ package CB_Core.GL_UI.Views;
 import CB_Core.GlobalCore;
 import CB_Core.UnitFormatter;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Activitys.ActivityBase;
+import CB_Core.GL_UI.Activitys.ColorPicker;
+import CB_Core.GL_UI.Activitys.ColorPicker.IReturnListner;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
@@ -10,6 +13,7 @@ import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Map.RouteOverlay.Track;
 import CB_Core.Math.CB_RectF;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -176,8 +180,17 @@ public class TrackListViewItem extends ListViewItemBackground
 
 	private void colorClick()
 	{
-		// TODO Auto-generated method stub
+		ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), mRoute.getColor(), new IReturnListner()
+		{
 
+			@Override
+			public void returnColor(Color color)
+			{
+				// TODO Auto-generated method stub
+
+			}
+		});
+		clrPick.show();
 	}
 
 	public void notifyTrackChanged(Track route)

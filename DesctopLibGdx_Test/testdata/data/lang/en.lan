@@ -1,4 +1,4 @@
-English
+﻿English
 // Main Menu
 	Misc = Misc
 	Find = Find
@@ -400,6 +400,9 @@ English
 	NoTrackSelected = No track selected!
 	IsActualTrack = Current track cannot be deleted
 	Point2Point = Point to Point
+	Circle = Circle
+	rename = Rename
+	length = Distance
 	preset = Preset
 	setting = Setting
 	category = Category
@@ -761,9 +764,3 @@ English
 	Credits = Credits
 	
 	CenterWP = Center => WP
-	
-	date = Date
-	time = Time
-	
-	wrongDate = Wrong date or time entered!
-	EmptyFieldNotes = No Fieldnotes entered!

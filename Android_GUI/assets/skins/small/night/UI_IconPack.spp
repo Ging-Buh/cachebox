@@ -38,28 +38,28 @@ button-list-back
   orig: 240, 44
   offset: 0, 0
   index: -1
-5bubble
+5bubble-flip
   rotate: false
   xy: 2, 296
   size: 89, 95
   orig: 89, 95
   offset: 0, 0
   index: -1
-5bubble-flip
+1to4bubble
   rotate: false
   xy: 2, 393
   size: 89, 95
   orig: 89, 95
   offset: 0, 0
   index: -1
-1to4bubble
+1to4bubble-flip
   rotate: false
   xy: 177, 313
   size: 89, 95
   orig: 89, 95
   offset: 0, 0
   index: -1
-1to4bubble-flip
+5bubble
   rotate: false
   xy: 177, 410
   size: 89, 95
@@ -87,21 +87,21 @@ listrec-selected
   orig: 104, 65
   offset: 0, 0
   index: -1
-listrec-secend
+listrec-pressed
   rotate: false
   xy: 394, 180
   size: 104, 65
   orig: 104, 65
   offset: 0, 0
   index: -1
-listrec-pressed
+listrec-first
   rotate: false
   xy: 268, 358
   size: 104, 65
   orig: 104, 65
   offset: 0, 0
   index: -1
-listrec-first
+listrec-secend
   rotate: false
   xy: 268, 425
   size: 104, 65
@@ -115,44 +115,37 @@ button
   orig: 49, 45
   offset: 0, 0
   index: -1
-text-field-back-focus
+btn-pressed
   rotate: false
   xy: 93, 343
   size: 42, 44
   orig: 42, 44
   offset: 0, 0
   index: -1
-spinner-triangle
+text-field-back-focus
   rotate: false
   xy: 93, 393
   size: 42, 44
   orig: 42, 44
   offset: 0, 0
   index: -1
-btn-pressed
+btn-disabled
   rotate: false
   xy: 93, 439
   size: 42, 44
   orig: 42, 44
   offset: 0, 0
   index: -1
-btn-normal
+spinner-triangle
   rotate: false
   xy: 419, 267
   size: 42, 44
   orig: 42, 44
   offset: 0, 0
   index: -1
-btn-disabled
+btn-normal
   rotate: false
   xy: 463, 267
-  size: 42, 44
-  orig: 42, 44
-  offset: 0, 0
-  index: -1
-activity-back
-  rotate: false
-  xy: 374, 358
   size: 42, 44
   orig: 42, 44
   offset: 0, 0
@@ -164,112 +157,119 @@ text-field-back
   orig: 42, 44
   offset: 0, 0
   index: -1
-tool
+activity-back
+  rotate: false
+  xy: 374, 358
+  size: 42, 44
+  orig: 42, 44
+  offset: 0, 0
+  index: -1
+db-pressed
   rotate: false
   xy: 453, 313
   size: 44, 38
   orig: 44, 38
   offset: 0, 0
   index: -1
-tool-pressed
+Nav-pressed
   rotate: false
   xy: 418, 358
   size: 44, 38
   orig: 44, 38
   offset: 0, 0
   index: -1
-Nav
+db
   rotate: false
   xy: 464, 358
   size: 44, 38
   orig: 44, 38
   offset: 0, 0
   index: -1
-Nav-pressed
+Nav
   rotate: false
   xy: 374, 404
   size: 44, 38
   orig: 44, 38
   offset: 0, 0
   index: -1
-misc
+misc-pressed
   rotate: false
   xy: 374, 444
   size: 44, 38
   orig: 44, 38
   offset: 0, 0
   index: -1
-misc-pressed
+misc
   rotate: false
   xy: 420, 404
   size: 44, 38
   orig: 44, 38
   offset: 0, 0
   index: -1
-db
+tool-pressed
   rotate: false
   xy: 466, 404
   size: 44, 38
   orig: 44, 38
   offset: 0, 0
   index: -1
-db-pressed
+tool
   rotate: false
   xy: 420, 444
   size: 44, 38
   orig: 44, 38
   offset: 0, 0
   index: -1
-cache
+cache-pressed
   rotate: false
   xy: 466, 444
   size: 44, 38
   orig: 44, 38
   offset: 0, 0
   index: -1
-cache-pressed
+cache
   rotate: true
   xy: 137, 343
   size: 44, 38
   orig: 44, 38
   offset: 0, 0
   index: -1
-day-btn-zoom-up-pressed
+day-btn-zoom-down-pressed
   rotate: false
   xy: 93, 485
   size: 40, 24
   orig: 40, 24
   offset: 0, 0
   index: -1
-day-btn-zoom-up-normal
+day-btn-zoom-up-disabled
   rotate: false
   xy: 374, 484
   size: 40, 24
   orig: 40, 24
   offset: 0, 0
   index: -1
-day-btn-zoom-up-disabled
+day-btn-zoom-up-pressed
   rotate: false
   xy: 420, 484
   size: 40, 24
   orig: 40, 24
   offset: 0, 0
   index: -1
-day-btn-zoom-down-pressed
+day-btn-zoom-down-disabled
   rotate: false
   xy: 466, 484
   size: 40, 24
   orig: 40, 24
   offset: 0, 0
   index: -1
-day-btn-zoom-down-normal
+day-btn-zoom-up-normal
   rotate: true
   xy: 144, 296
   size: 40, 24
   orig: 40, 24
   offset: 0, 0
   index: -1
-day-btn-zoom-down-disabled
+day-btn-zoom-down-normal
   rotate: true
   xy: 137, 393
   size: 40, 24
@@ -283,14 +283,14 @@ zoom-back
   orig: 40, 20
   offset: 0, 0
   index: -1
-shaddowrect
+shaddowrect-selected
   rotate: false
   xy: 137, 439
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
-shaddowrect-selected
+shaddowrect
   rotate: false
   xy: 137, 465
   size: 24, 24
@@ -332,35 +332,35 @@ dialog-center
   orig: 26, 6
   offset: 0, 0
   index: -1
-small
+micro
   rotate: false
   xy: 484, 2
   size: 23, 6
   orig: 23, 6
   offset: 0, 0
   index: -1
-regular
+small
   rotate: false
   xy: 484, 10
   size: 23, 6
   orig: 23, 6
   offset: 0, 0
   index: -1
-other
+regular
   rotate: false
   xy: 484, 18
   size: 23, 6
   orig: 23, 6
   offset: 0, 0
   index: -1
-micro
+large
   rotate: false
   xy: 484, 26
   size: 23, 6
   orig: 23, 6
   offset: 0, 0
   index: -1
-large
+other
   rotate: false
   xy: 484, 34
   size: 23, 6

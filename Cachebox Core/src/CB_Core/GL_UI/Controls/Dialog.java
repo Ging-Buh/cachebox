@@ -37,7 +37,7 @@ public abstract class Dialog extends CB_View_Base
 	protected float mHeaderHight = 200;
 	protected float mFooterHeight = 200;
 	public float Left;
-	public float Reight;
+	public float Right;
 	public float Top;
 	public float Bottom;
 
@@ -59,7 +59,7 @@ public abstract class Dialog extends CB_View_Base
 		mFooter9patch = new NinePatch(SpriteCache.Dialog.get(2), pW, pW, 3, pW);
 
 		Left = mCenter9patch.getLeftWidth();
-		Reight = mCenter9patch.getRightWidth();
+		Right = mCenter9patch.getRightWidth();
 		Top = mCenter9patch.getTopHeight();
 		Bottom = mFooter9patch.getBottomHeight();
 		mTitleVersatz = (float) pW;

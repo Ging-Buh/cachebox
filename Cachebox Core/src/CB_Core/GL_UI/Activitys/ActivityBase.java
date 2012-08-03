@@ -15,10 +15,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class ActivityBase extends Dialog
 {
 	protected ActivityBase that;
-	protected float Left;
-	protected float Right;
-	protected float Top;
-	protected float Bottom;
 	protected float MesuredLabelHeight;
 	protected float ButtonHeight;
 	private int mPatchValue;

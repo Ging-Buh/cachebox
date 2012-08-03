@@ -10,28 +10,28 @@ splash-back
   orig: 184, 311
   offset: 0, 0
   index: -1
-5bubble
+5bubble-flip
   rotate: false
   xy: 2, 315
   size: 178, 190
   orig: 178, 190
   offset: 0, 0
   index: -1
-5bubble-flip
+1to4bubble
   rotate: false
   xy: 188, 2
   size: 178, 190
   orig: 178, 190
   offset: 0, 0
   index: -1
-1to4bubble
+1to4bubble-flip
   rotate: false
   xy: 188, 194
   size: 178, 190
   orig: 178, 190
   offset: 0, 0
   index: -1
-1to4bubble-flip
+5bubble
   rotate: false
   xy: 368, 2
   size: 178, 190
@@ -66,21 +66,21 @@ listrec-selected
   orig: 207, 129
   offset: 0, 0
   index: -1
-listrec-secend
+listrec-pressed
   rotate: false
   xy: 757, 353
   size: 207, 129
   orig: 207, 129
   offset: 0, 0
   index: -1
-listrec-pressed
+listrec-first
   rotate: false
   xy: 988, 174
   size: 207, 129
   orig: 207, 129
   offset: 0, 0
   index: -1
-listrec-first
+listrec-secend
   rotate: false
   xy: 988, 305
   size: 207, 129
@@ -101,7 +101,7 @@ button-list-back
   orig: 480, 88
   offset: 0, 0
   index: -1
-toggle-led-gr
+btn-pressed
   rotate: false
   xy: 368, 194
   size: 84, 87
@@ -115,42 +115,42 @@ text-field-back-focus
   orig: 84, 87
   offset: 0, 0
   index: -1
-spinner-triangle
+toggle-led-gr
   rotate: false
   xy: 368, 283
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
-btn-pressed
+btn-disabled
   rotate: false
   xy: 454, 283
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
-btn-normal
+spinner-triangle
   rotate: false
   xy: 368, 372
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
-btn-disabled
+btn-normal
   rotate: false
   xy: 454, 372
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
-activity-back
+text-field-back
   rotate: false
   xy: 1197, 174
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
-text-field-back
+activity-back
   rotate: false
   xy: 1197, 174
   size: 84, 87
@@ -164,126 +164,126 @@ InfoPanelBack
   orig: 366, 85
   offset: 0, 0
   index: -1
-tool
+db-pressed
   rotate: false
   xy: 1283, 174
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
-tool-pressed
+Nav-pressed
   rotate: false
   xy: 1197, 263
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
-Nav
+db
   rotate: false
   xy: 1287, 263
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
-Nav-pressed
+Nav
   rotate: false
   xy: 1197, 341
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
-misc
+misc-pressed
   rotate: false
   xy: 1197, 419
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
-misc-pressed
+misc
   rotate: false
   xy: 1287, 341
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
-db
+tool-pressed
   rotate: false
   xy: 1287, 419
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
-db-pressed
+tool
   rotate: false
   xy: 1902, 2
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
-cache
+cache-pressed
   rotate: false
   xy: 1788, 92
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
-cache-pressed
+cache
   rotate: false
   xy: 1878, 92
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
-day-btn-zoom-up-pressed
+day-btn-zoom-down-pressed
   rotate: false
   xy: 368, 461
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
-day-btn-zoom-up-normal
+day-btn-zoom-up-disabled
   rotate: false
   xy: 454, 461
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
-day-btn-zoom-up-disabled
+day-btn-zoom-up-pressed
   rotate: false
   xy: 988, 436
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
-day-btn-zoom-down-pressed
+day-btn-zoom-down-disabled
   rotate: false
   xy: 1069, 436
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
-day-btn-zoom-down-normal
+day-btn-zoom-up-normal
   rotate: false
   xy: 1420, 179
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
-day-btn-zoom-down-disabled
+day-btn-zoom-down-normal
   rotate: false
   xy: 1420, 229
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
-shaddowrect
+shaddowrect-selected
   rotate: false
   xy: 288, 386
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-shaddowrect-selected
+shaddowrect
   rotate: false
   xy: 288, 436
   size: 48, 48
@@ -325,35 +325,35 @@ dialog-footer
   orig: 51, 14
   offset: 0, 0
   index: -1
-small
+micro
   rotate: false
   xy: 188, 497
   size: 45, 12
   orig: 45, 12
   offset: 0, 0
   index: -1
-regular
+small
   rotate: false
   xy: 241, 478
   size: 45, 12
   orig: 45, 12
   offset: 0, 0
   index: -1
-other
+regular
   rotate: false
   xy: 241, 492
   size: 45, 12
   orig: 45, 12
   offset: 0, 0
   index: -1
-micro
+large
   rotate: false
   xy: 288, 486
   size: 45, 12
   orig: 45, 12
   offset: 0, 0
   index: -1
-large
+other
   rotate: false
   xy: 656, 484
   size: 45, 12
