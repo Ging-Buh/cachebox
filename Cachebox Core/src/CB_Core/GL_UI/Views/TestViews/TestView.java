@@ -26,7 +26,7 @@ public class TestView extends CB_View_Base
 	private CB_Core.GL_UI.Controls.EditTextField textField;
 	private CB_Core.GL_UI.Controls.EditWrapedTextField wrappedTextField;
 
-	public static final String br = "¶" + System.getProperty("line.separator");
+	public static final String br = System.getProperty("line.separator");
 
 	public static final String splashMsg = "Team" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009," + br
 			+ "Groundspeak Inc. Used with permission" + br + " " + br + "7.Zeile";

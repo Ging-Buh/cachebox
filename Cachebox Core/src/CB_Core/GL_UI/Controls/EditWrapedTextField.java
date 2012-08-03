@@ -1,6 +1,8 @@
 package CB_Core.GL_UI.Controls;
 
 import java.util.ArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
@@ -61,6 +63,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 	protected float selectionX, selectionWidth;
 
 	protected char passwordCharacter = BULLET;
+	final Lock displayTextLock = new ReentrantLock();
 
 	public EditWrapedTextField(CB_RectF rec, TextFieldStyle style, String Name)
 	{
@@ -172,87 +175,105 @@ public class EditWrapedTextField extends EditTextFieldBase
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		final BitmapFont font = style.font;
-		final Color fontColor = style.fontColor;
-		final TextureRegion selection = style.selection;
-		final NinePatch cursorPatch = style.cursor;
-		lineHeight = style.font.getLineHeight();
-
-		float bgLeftWidth = 0;
-		float bgRightWidth = 0;
-		float bgTopHeight = 0;
-		boolean focused = GL_Listener.hasFocus(this);
-
-		if (focused)
+		displayTextLock.lock();
+		try
 		{
-			if (style.backgroundFocused != null)
+			final BitmapFont font = style.font;
+			final Color fontColor = style.fontColor;
+			final TextureRegion selection = style.selection;
+			final NinePatch cursorPatch = style.cursor;
+			lineHeight = style.font.getLineHeight();
+
+			float bgLeftWidth = 0;
+			float bgRightWidth = 0;
+			float bgTopHeight = 0;
+			boolean focused = GL_Listener.hasFocus(this);
+
+			if (focused)
 			{
-				style.backgroundFocused.draw(batch, x, y, width, height);
-				bgLeftWidth = style.backgroundFocused.getLeftWidth();
-				bgRightWidth = style.background.getRightWidth();
-				bgTopHeight = style.background.getTopHeight();
-			}
-		}
-		else
-		{
-			if (style.background != null)
-			{
-				style.background.draw(batch, x, y, width, height);
-				bgLeftWidth = style.background.getLeftWidth();
-				bgRightWidth = style.background.getRightWidth();
-				bgTopHeight = style.background.getTopHeight();
-			}
-		}
-
-		float textY = (int) (height / 2 + textHeight / 2 + font.getDescent());
-		textY = (int) height - textHeight - bgTopHeight;
-		calculateOffsets();
-
-		if (focused && hasSelection && selection != null)
-		{
-			batch.draw(selection, x + selectionX + bgLeftWidth + renderOffset, y + textY - textHeight - font.getDescent() / 2,
-					selectionWidth, textHeight);
-		}
-
-		if ((displayText.size() == 1) && (displayText.get(0).getDisplayText().length() == 0))
-		{
-			if (!focused && messageText != null)
-			{
-				if (style.messageFontColor != null)
+				if (style.backgroundFocused != null)
 				{
-					font.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b, style.messageFontColor.a);
+					style.backgroundFocused.draw(batch, x, y, width, height);
+					bgLeftWidth = style.backgroundFocused.getLeftWidth();
+					bgRightWidth = style.background.getRightWidth();
+					bgTopHeight = style.background.getTopHeight();
 				}
-				else
-					font.setColor(0.7f, 0.7f, 0.7f, 1f);
-				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
-				font.draw(batch, messageText, x + bgLeftWidth, y + textY);
 			}
-		}
-		else
-		{
-			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a);
-			for (DisplayText dt : displayText)
+			else
 			{
-				// font.draw(batch, dt.getDisplayText(), x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
-				font.draw(batch, dt.getDisplayText(), x + bgLeftWidth, y + textY);
-				textY -= lineHeight;
+				if (style.background != null)
+				{
+					style.background.draw(batch, x, y, width, height);
+					bgLeftWidth = style.background.getLeftWidth();
+					bgRightWidth = style.background.getRightWidth();
+					bgTopHeight = style.background.getTopHeight();
+				}
 			}
-		}
-		if (focused)
-		{
-			blink();
-			if (cursorOn && cursorPatch != null)
-			{
-				DisplayText dt = displayText.get(cursorLine);
-				float xpos = 0;
 
-				if (cursor < dt.glyphPositions.size) xpos = dt.glyphPositions.get(cursor);
-				else
-					xpos = dt.glyphPositions.get(dt.glyphPositions.size - 1); // letztes Zeichen
-				textY = (int) height - textHeight - bgTopHeight;
-				cursorPatch.draw(batch, x + bgLeftWidth + xpos - 1, y + textY - bgTopHeight - lineHeight * cursorLine,
-						cursorPatch.getTotalWidth(), lineHeight - font.getDescent() / 2);
+			float textY = (int) (height / 2 + textHeight / 2 + font.getDescent());
+			textY = (int) height - textHeight - bgTopHeight;
+			calculateOffsets();
+
+			if (focused && hasSelection && selection != null)
+			{
+				batch.draw(selection, x + selectionX + bgLeftWidth + renderOffset, y + textY - textHeight - font.getDescent() / 2,
+						selectionWidth, textHeight);
 			}
+
+			if ((displayText.size() == 1) && (displayText.get(0).getDisplayText().length() == 0))
+			{
+				if (!focused && messageText != null)
+				{
+					if (style.messageFontColor != null)
+					{
+						font.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b,
+								style.messageFontColor.a);
+					}
+					else
+						font.setColor(0.7f, 0.7f, 0.7f, 1f);
+					BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
+					font.draw(batch, messageText, x + bgLeftWidth, y + textY);
+				}
+			}
+			else
+			{
+				font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a);
+				for (DisplayText dt : displayText)
+				{
+					// font.draw(batch, dt.getDisplayText(), x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
+					font.draw(batch, dt.getDisplayText(), x + bgLeftWidth, y + textY);
+					textY -= lineHeight;
+				}
+			}
+			if (focused)
+			{
+				blink();
+				if (cursorOn && cursorPatch != null)
+				{
+					DisplayText dt = displayText.get(cursorLine);
+					float xpos = 0;
+
+					if (cursor < dt.glyphPositions.size)
+					{
+						xpos = dt.glyphPositions.get(cursor);
+					}
+					else if (dt.glyphPositions.size == 0)
+					{
+						xpos = 0;
+					}
+					else
+					{
+						xpos = dt.glyphPositions.get(dt.glyphPositions.size - 1); // letztes Zeichen
+					}
+					textY = (int) height - textHeight - bgTopHeight;
+					cursorPatch.draw(batch, x + bgLeftWidth + xpos - 1, y + textY - bgTopHeight - lineHeight * cursorLine,
+							cursorPatch.getTotalWidth(), lineHeight - font.getDescent() / 2);
+				}
+			}
+		}
+		finally
+		{
+			displayTextLock.unlock();
 		}
 	}
 
@@ -269,12 +290,13 @@ public class EditWrapedTextField extends EditTextFieldBase
 				for (int i = passwordBuffer.length(), n = text.length(); i < n; i++)
 					passwordBuffer.append(passwordCharacter);
 			}
-			displayText.add(new DisplayText(passwordBuffer));
+			displayText.add(new DisplayText(new String(passwordBuffer)));
 		}
 		else
 		{
-			displayText.add(new DisplayText(text));
-			displayText.add(new DisplayText("2. Zeile"));
+			String[] dts = text.split("\n");
+			for (String s : dts)
+				displayText.add(new DisplayText(s));
 		}
 
 		for (DisplayText dt : displayText)
@@ -335,116 +357,178 @@ public class EditWrapedTextField extends EditTextFieldBase
 	{
 		final BitmapFont font = style.font;
 
-		if (GL_Listener.hasFocus(this))
+		displayTextLock.lock();
+		try
 		{
-			if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))
+
+			if (GL_Listener.hasFocus(this))
 			{
-				// paste
-				if (keycode == Keys.V) paste();
-				// copy
-				if (keycode == Keys.C || keycode == Keys.INSERT) copy();
-			}
-			else if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))
-			{
-				// paste
-				if (keycode == Keys.INSERT) paste();
-				// cut
-				if (keycode == Keys.FORWARD_DEL)
+				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))
 				{
-					if (hasSelection)
-					{
-						copy();
-						delete();
-					}
+					// paste
+					if (keycode == Keys.V) paste();
+					// copy
+					if (keycode == Keys.C || keycode == Keys.INSERT) copy();
 				}
-				// selection
-				if (keycode == Keys.LEFT)
+				else if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))
 				{
-					if (!hasSelection)
+					// paste
+					if (keycode == Keys.INSERT) paste();
+					// cut
+					if (keycode == Keys.FORWARD_DEL)
 					{
-						selectionStart = cursor;
-						hasSelection = true;
+						if (hasSelection)
+						{
+							copy();
+							delete();
+						}
 					}
-					cursor--;
+					// selection
+					if (keycode == Keys.LEFT)
+					{
+						if (!hasSelection)
+						{
+							selectionStart = cursor;
+							hasSelection = true;
+						}
+						cursor--;
+					}
+					if (keycode == Keys.RIGHT)
+					{
+						if (!hasSelection)
+						{
+							selectionStart = cursor;
+							hasSelection = true;
+						}
+						cursor++;
+					}
+					if (keycode == Keys.HOME)
+					{
+						if (!hasSelection)
+						{
+							selectionStart = cursor;
+							hasSelection = true;
+						}
+						cursor = 0;
+					}
+					if (keycode == Keys.END)
+					{
+						if (!hasSelection)
+						{
+							selectionStart = cursor;
+							hasSelection = true;
+						}
+						cursor = text.length();
+					}
+
+					cursor = Math.max(0, cursor);
+					cursor = Math.min(text.length(), cursor);
 				}
-				if (keycode == Keys.RIGHT)
+				else
 				{
-					if (!hasSelection)
+					// cursor movement or other keys (kill selection)
+					if (keycode == Keys.LEFT)
 					{
-						selectionStart = cursor;
-						hasSelection = true;
+						cursorLeftRight(-1);
+						clearSelection();
 					}
-					cursor++;
-				}
-				if (keycode == Keys.HOME)
-				{
-					if (!hasSelection)
+					if (keycode == Keys.RIGHT)
 					{
-						selectionStart = cursor;
-						hasSelection = true;
+						cursorLeftRight(1);
+						clearSelection();
 					}
-					cursor = 0;
-				}
-				if (keycode == Keys.END)
-				{
-					if (!hasSelection)
+					if (keycode == Keys.HOME)
 					{
-						selectionStart = cursor;
-						hasSelection = true;
+						cursorHomeEnd(-1);
+						clearSelection();
 					}
-					cursor = text.length();
+					if (keycode == Keys.END)
+					{
+						cursorHomeEnd(1);
+						clearSelection();
+					}
+					if (keycode == Keys.UP)
+					{
+						cursorUpDown(-1);
+						clearSelection();
+					}
+					if (keycode == Keys.DOWN)
+					{
+						cursorUpDown(1);
+						clearSelection();
+					}
 				}
 
-				cursor = Math.max(0, cursor);
-				cursor = Math.min(text.length(), cursor);
+				return true;
 			}
-			else
-			{
-				// cursor movement or other keys (kill selection)
-				if (keycode == Keys.LEFT)
-				{
-					cursor--;
-					clearSelection();
-				}
-				if (keycode == Keys.RIGHT)
-				{
-					cursor++;
-					clearSelection();
-				}
-				if (keycode == Keys.HOME)
-				{
-					cursor = 0;
-					clearSelection();
-				}
-				if (keycode == Keys.END)
-				{
-					cursor = text.length();
-					clearSelection();
-				}
-				if (keycode == Keys.UP)
-				{
-					cursorUpDown(-1);
-					clearSelection();
-				}
-				if (keycode == Keys.DOWN)
-				{
-					cursorUpDown(1);
-					clearSelection();
-				}
-				cursor = Math.max(0, cursor);
-				cursor = Math.min(text.length(), cursor);
-			}
-
-			return true;
+		}
+		finally
+		{
+			displayTextLock.unlock();
 		}
 		return false;
 	}
 
-	private void cursorUpDown(int i)
+	// bewegt den Cursor an den Anfang / Ende der aktuellen Zeile
+	private void cursorHomeEnd(int i)
+	{
+		DisplayText dt = getAktDisplayText();
+		if (dt == null) return;
+		if (i < 0)
+		{
+			cursor = 0;
+		}
+		else
+		{
+			cursor = dt.displayText.length();
+		}
+	}
+
+	// bewegt den Cursor nach links - rechts
+	private void cursorLeftRight(int i)
+	{
+		DisplayText dt = getAktDisplayText();
+		if (dt == null) return;
+		int newCursor = cursor + i;
+		if (newCursor > dt.displayText.length())
+		{
+			if (cursorUpDown(1)) cursor = 0;
+		}
+		else if (newCursor < 0)
+		{
+			if (cursorUpDown(-1))
+			{
+				DisplayText newDt = getAktDisplayText();
+				cursor = newDt.displayText.length();
+			}
+		}
+		else
+		{
+			cursor = newCursor;
+		}
+	}
+
+	// fügt eine neue Zeile an der Cursor Position ein
+	private void insertNewLine()
+	{
+		DisplayText dt = getAktDisplayText();
+		if (dt == null) return;
+		// aktuellen String bei Cursor-Position trennen
+		String s1 = dt.displayText.toString().substring(0, cursor);
+		String s2 = dt.displayText.toString().substring(cursor, dt.displayText.length());
+		dt.displayText = s1;
+		DisplayText newDt = new DisplayText(s2);
+		displayText.add(cursorLine + 1, newDt);
+		cursorLine++;
+		cursor = 0;
+	}
+
+	// bewegt den Cursor nach oben / unten. X-Position des Cursors soll möglichst gleich bleiben
+	private boolean cursorUpDown(int i)
 	{
 		int newCursorLine = cursorLine + i;
-		if (newCursorLine < 0) return;
-		if (newCursorLine >= displayText.size()) return;
+		if (newCursorLine < 0) return false;
+		if (newCursorLine >= displayText.size()) return false;
 		DisplayText oldDt = displayText.get(cursorLine);
 		// X-Koordinate von alter Cursor Position bestimmen
 		float x = oldDt.glyphPositions.items[cursor];
@@ -452,6 +536,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		cursorLine = newCursorLine;
 		// Cursor möglichst an gleiche x-Position plazieren
 		setCursorXPos(x);
+		return true;
 	}
 
 	// liefert das DisplayText-Object der aktuellen Zeile
@@ -554,36 +639,90 @@ public class EditWrapedTextField extends EditTextFieldBase
 	public boolean keyTyped(char character)
 	{
 		final BitmapFont font = style.font;
+		DisplayText dt = getAktDisplayText();
+		if (dt == null) return false;
 
 		if (GL_Listener.hasFocus(this))
 		{
-			if (character == BACKSPACE && (cursor > 0 || hasSelection))
+			if (character == BACKSPACE)
 			{
-				if (!hasSelection)
+				if (cursor > 0)
 				{
-					text = text.substring(0, cursor - 1) + text.substring(cursor);
-					updateDisplayText();
+					dt.displayText = dt.displayText.substring(0, cursor - 1) + dt.displayText.substring(cursor, dt.displayText.length());
+					dt.update();
 					cursor--;
+					return true;
 				}
 				else
 				{
-					delete();
+					if (cursorLine > 0)
+					{
+						cursorLine--;
+						DisplayText dt2 = getAktDisplayText();
+						cursor = dt2.displayText.length();
+						dt2.displayText += dt.displayText;
+						displayText.remove(cursorLine + 1);
+						dt2.update();
+					}
+					return true;
 				}
 			}
 			if (character == DELETE)
 			{
-				if (cursor < text.length() || hasSelection)
+				if (cursor < dt.displayText.length())
 				{
-					if (!hasSelection)
-					{
-						text = text.substring(0, cursor) + text.substring(cursor + 1);
-						updateDisplayText();
-					}
-					else
-					{
-						delete();
-					}
+					dt.displayText = dt.displayText.substring(0, cursor) + dt.displayText.substring(cursor + 1, dt.displayText.length());
+					dt.update();
+					return true;
 				}
+				else
+				{
+					if (cursorLine + 1 < displayText.size())
+					{
+						cursorLine++;
+						DisplayText dt2 = getAktDisplayText();
+						cursorLine--;
+						displayText.remove(dt2);
+						dt.displayText += dt2.displayText;
+						dt.update();
+					}
+					return true;
+				}
+			}
+			// if (character == BACKSPACE && (cursor > 0 || hasSelection))
+			// {
+			// if (!hasSelection)
+			// {
+			// text = text.substring(0, cursor - 1) + text.substring(cursor);
+			// updateDisplayText();
+			// cursor--;
+			// }
+			// else
+			// {
+			// delete();
+			// }
+			// }
+			// if (character == DELETE)
+			// {
+			// if (cursor < text.length() || hasSelection)
+			// {
+			// if (!hasSelection)
+			// {
+			// text = text.substring(0, cursor) + text.substring(cursor + 1);
+			// updateDisplayText();
+			// }
+			// else
+			// {
+			// delete();
+			// }
+			// }
+			// return true;
+			// }
+
+			if (character == ENTER_DESKTOP || character == ENTER_ANDROID)
+			{
+				insertNewLine();
+				clearSelection();
 				return true;
 			}
 			if (character != ENTER_DESKTOP && character != ENTER_ANDROID)
@@ -603,8 +742,9 @@ public class EditWrapedTextField extends EditTextFieldBase
 			{
 				if (!hasSelection)
 				{
-					text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
-					updateDisplayText();
+					dt.displayText = dt.displayText.substring(0, cursor) + character
+							+ dt.displayText.substring(cursor, dt.displayText.length());
+					dt.update();
 					cursor++;
 				}
 				else
@@ -672,7 +812,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		for (int i = 0; i < text.length(); i++)
 		{
 			char c = text.charAt(i);
-			if (font.containsCharacter(c)) buffer.append(c);
+			if (font.containsCharacter(c) || (c == '\n')) buffer.append(c);
 		}
 
 		String bText = buffer.toString();
@@ -764,12 +904,12 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	private class DisplayText
 	{
-		private CharSequence displayText;
+		private String displayText;
 		private TextBounds textBounds = new TextBounds();
 		private final FloatArray glyphAdvances = new FloatArray();
 		private final FloatArray glyphPositions = new FloatArray();
 
-		public DisplayText(CharSequence displayText)
+		public DisplayText(String displayText)
 		{
 			this.displayText = displayText;
 		}
@@ -781,7 +921,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 			font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
 		}
 
-		public CharSequence getDisplayText()
+		public String getDisplayText()
 		{
 			return displayText;
 		}
@@ -789,6 +929,11 @@ public class EditWrapedTextField extends EditTextFieldBase
 		public TextBounds getTextBounds()
 		{
 			return textBounds;
+		}
+
+		public void update()
+		{
+			style.font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
 		}
 	}
 
