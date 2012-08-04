@@ -21,8 +21,11 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
 
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class CB_Button extends Button implements OnClickListener, OnLongClickListener
 {
@@ -69,7 +72,19 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 				help = new GestureHelp(new SizeF(h, h), "help");
 			}
 
-			help.addBtnIcon(this.mNinePatch);
+			NinePatch ninePatch = null;
+			if (this.drawableNormal instanceof NinePatchDrawable)
+			{
+				ninePatch = ((NinePatchDrawable) this.drawableNormal).getPatch();
+			}
+			else if (this.drawableNormal instanceof SpriteDrawable)
+			{
+				int p = SpriteCache.patch;
+				Sprite s = ((SpriteDrawable) this.drawableNormal).getSprite();
+				ninePatch = new NinePatch(s, p, p, p, p);
+			}
+
+			help.addBtnIcon(ninePatch);
 
 			if (gestureDirection == GestureDirection.Up)
 			{

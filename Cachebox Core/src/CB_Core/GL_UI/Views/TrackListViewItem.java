@@ -93,6 +93,17 @@ public class TrackListViewItem extends ListViewItemBackground
 		drawColorRec(batch);
 
 		// draw Name
+		if (EntryName == null || EntryLength == null)
+		{
+			createLabel();
+		}
+
+		drawRightChkBox(batch);
+
+	}
+
+	private void createLabel()
+	{
 		if (EntryName == null)
 		{
 
@@ -115,8 +126,7 @@ public class TrackListViewItem extends ListViewItemBackground
 			this.addChild(EntryLength);
 		}
 
-		drawRightChkBox(batch);
-
+		GL_Listener.glListener.renderOnce("CreateTrackListItem_Label");
 	}
 
 	private void drawColorRec(SpriteBatch batch)

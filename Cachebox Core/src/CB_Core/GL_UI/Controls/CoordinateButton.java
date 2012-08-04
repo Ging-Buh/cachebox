@@ -8,7 +8,7 @@ import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Types.Coordinate;
 
-import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class CoordinateButton extends Button
 {
@@ -45,9 +45,9 @@ public class CoordinateButton extends Button
 	{
 		super.Initial();
 		// switch ninePatchImages
-		NinePatch tmp = mNinePatch;
-		mNinePatch = mNinePatchPressed;
-		mNinePatchPressed = tmp;
+		Drawable tmp = drawableNormal;
+		drawableNormal = drawablePressed;
+		drawablePressed = tmp;
 	}
 
 	EditCoord edCo;

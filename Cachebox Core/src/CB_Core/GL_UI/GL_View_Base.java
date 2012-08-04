@@ -12,7 +12,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -36,14 +35,8 @@ public abstract class GL_View_Base extends CB_RectF
 	public static boolean disableScissor = false;
 
 	// # private Member
-
-	protected boolean hasBackground = false;
-	protected Sprite Background;
 	protected String name = "";
-	protected boolean hasNinePatchBackground = false;
-	protected NinePatch nineBackground;
 
-	protected boolean hasDrawableBackground = false;
 	protected Drawable drawableBackground;
 
 	protected GL_View_Base Me;
@@ -264,25 +257,15 @@ public abstract class GL_View_Base extends CB_RectF
 				(int) intersectRec.getHeight() + 1);
 
 		// first Draw Background?
-		if (hasBackground || hasNinePatchBackground || hasDrawableBackground)
+
+		batch.begin();
+
+		if (drawableBackground != null)
 		{
-			batch.begin();
-
-			if (hasDrawableBackground)
-			{
-				drawableBackground.draw(batch, 0, 0, width, height);
-			}
-			else if (hasNinePatchBackground)
-			{
-				nineBackground.draw(batch, 0, 0, width, height);
-			}
-			else
-			{
-				batch.draw(Background, 0, 0, width, height);
-			}
-
-			batch.end();
+			drawableBackground.draw(batch, 0, 0, width, height);
 		}
+
+		batch.end();
 
 		// synchronized (runOnGL_List)
 		// {
@@ -763,24 +746,8 @@ public abstract class GL_View_Base extends CB_RectF
 		isClickable = value;
 	}
 
-	public void setBackground(Sprite background)
-	{
-		hasBackground = background != null;
-
-		Background = background;
-	}
-
-	public void setBackground(NinePatch background)
-	{
-		hasNinePatchBackground = background != null;
-
-		nineBackground = background;
-	}
-
 	public void setBackground(Drawable background)
 	{
-		hasDrawableBackground = background != null;
-
 		drawableBackground = background;
 	}
 

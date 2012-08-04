@@ -221,17 +221,17 @@ public class EditCoord extends ActivityBase
 	protected void Initial()
 	{
 
-		lUtmO = new Label(nineBackground.getLeftWidth(), bDec.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide(),
+		lUtmO = new Label(drawableBackground.getLeftWidth(), bDec.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide(),
 				UiSizes.getButtonHeight(), "lUtmO");
 		lUtmO.setText("Ostwert");
 		this.addChild(lUtmO);
 
-		lUtmN = new Label(nineBackground.getLeftWidth(), bDLat.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide(),
+		lUtmN = new Label(drawableBackground.getLeftWidth(), bDLat.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide(),
 				UiSizes.getButtonHeight(), "lUtmN");
 		lUtmN.setText("Nordwert");
 		this.addChild(lUtmN);
 
-		lUtmZ = new Label(nineBackground.getLeftWidth(), bDLat.getY() - UiSizes.getButtonHeight() - UiSizes.getButtonHeight(),
+		lUtmZ = new Label(drawableBackground.getLeftWidth(), bDLat.getY() - UiSizes.getButtonHeight() - UiSizes.getButtonHeight(),
 				UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight(), "lUtmZ");
 		lUtmZ.setText("Zone");
 		this.addChild(lUtmZ);

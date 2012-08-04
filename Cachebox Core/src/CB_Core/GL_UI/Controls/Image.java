@@ -159,9 +159,9 @@ public class Image extends CB_View_Base
 
 	}
 
-	public void setNinePatch(NinePatch ninePatch)
+	public void setNinePatch(NinePatch icon)
 	{
-		mNinePatchImage = new NinePatch(ninePatch);
+		mNinePatchImage = new NinePatch(icon);
 	}
 
 	@Override

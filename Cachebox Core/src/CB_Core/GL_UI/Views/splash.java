@@ -33,6 +33,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class splash extends TabMainView
 {
@@ -76,7 +79,7 @@ public class splash extends TabMainView
 
 				String path = defaultPath + "/day/SplashPack.spp";
 				atlas = new TextureAtlas(Gdx.files.absolute(path));
-				setBackground(atlas.createSprite("splash_back"));
+				setBackground(new SpriteDrawable(atlas.createSprite("splash_back")));
 				break;
 			case 1:
 				ini_Progressbar();
@@ -157,9 +160,16 @@ public class splash extends TabMainView
 		descTextView.setHAlignment(HAlignment.CENTER);
 		this.addChild(descTextView);
 
+		int patch = (UiSizes.getWindowWidth() > 330) ? 16 : 8;
+
 		progress = new ProgressBar(new CB_RectF(0, 0, this.width, ref / 1.5f), "Splash.ProgressBar");
-		progress.setBackground(new NinePatch(atlas.createSprite("btn_normal"), 16, 16, 16, 16));
-		progress.setProgressNinePatch(new NinePatch(atlas.createSprite("progress"), 15, 15, 15, 15));
+
+		Drawable ProgressBack = new NinePatchDrawable(new NinePatch(atlas.createSprite("btn_normal"), patch, patch, patch, patch));
+		Drawable ProgressFill = new NinePatchDrawable(new NinePatch(atlas.createSprite("progress"), patch - 1, patch - 1, patch - 1,
+				patch - 1));
+
+		progress.setBackground(ProgressBack);
+		progress.setProgressFill(ProgressFill);
 		this.addChild(progress);
 
 		float logoCalcRef = ref * 1.5f;

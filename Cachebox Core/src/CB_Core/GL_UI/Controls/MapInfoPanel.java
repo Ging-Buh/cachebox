@@ -10,7 +10,6 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Types.Coordinate;
 
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class MapInfoPanel extends CB_View_Base
@@ -85,7 +84,7 @@ public class MapInfoPanel extends CB_View_Base
 	{
 		this.removeChilds();
 
-		setBackground(new NinePatch(SpriteCache.InfoBack, 16, 16, 16, 16));
+		setBackground(SpriteCache.InfoBack);
 
 		// initial Image
 

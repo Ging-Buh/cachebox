@@ -3,6 +3,9 @@ package CB_Core.GL_UI;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 /**
  * Strucutr für die Aufnahme von drei Sprites für die drei Zustände eines Buttons </BR> Normal, Pressed, Disabled
@@ -11,21 +14,21 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
  */
 public class ButtonSprites
 {
-	NinePatch mPressed;
-	NinePatch mNormal;
-	NinePatch mDisabled;
+	Drawable mPressed;
+	Drawable mNormal;
+	Drawable mDisabled;
 
-	public NinePatch getPressed()
+	public Drawable getPressed()
 	{
 		return mPressed;
 	}
 
-	public NinePatch getNormal()
+	public Drawable getNormal()
 	{
 		return mNormal;
 	}
 
-	public NinePatch getDisabled()
+	public Drawable getDisabled()
 	{
 		return mDisabled;
 	}
@@ -44,9 +47,9 @@ public class ButtonSprites
 	 */
 	public ButtonSprites(TextureAtlas atlas, String Normal, String Pressed, String Disabled)
 	{
-		mPressed = new NinePatch(atlas.findRegion(Pressed), 0, 0, 0, 0);
-		mNormal = new NinePatch(atlas.findRegion(Normal), 0, 0, 0, 0);
-		mDisabled = new NinePatch(atlas.findRegion(Disabled), 0, 0, 0, 0);
+		mPressed = new SpriteDrawable(atlas.createSprite(Pressed));
+		mNormal = new SpriteDrawable(atlas.createSprite(Normal));
+		mDisabled = new SpriteDrawable(atlas.createSprite(Disabled));
 	}
 
 	/**
@@ -67,9 +70,9 @@ public class ButtonSprites
 	 */
 	public ButtonSprites(TextureAtlas atlas, String Normal, String Pressed, String Disabled, int left, int right, int top, int bottom)
 	{
-		mPressed = new NinePatch(atlas.findRegion(Pressed), left, right, top, bottom);
-		mNormal = new NinePatch(atlas.findRegion(Normal), left, right, top, bottom);
-		mDisabled = new NinePatch(atlas.findRegion(Disabled), left, right, top, bottom);
+		mPressed = new NinePatchDrawable(new NinePatch(atlas.findRegion(Pressed), left, right, top, bottom));
+		mNormal = new NinePatchDrawable(new NinePatch(atlas.findRegion(Normal), left, right, top, bottom));
+		mDisabled = new NinePatchDrawable(new NinePatch(atlas.findRegion(Disabled), left, right, top, bottom));
 	}
 
 	/**
@@ -84,8 +87,8 @@ public class ButtonSprites
 	 */
 	public ButtonSprites(Sprite Normal, Sprite Pressed)
 	{
-		mPressed = new NinePatch(Pressed, 0, 0, 0, 0);
-		mNormal = new NinePatch(Normal, 0, 0, 0, 0);
+		mPressed = new SpriteDrawable(Pressed);
+		mNormal = new SpriteDrawable(Normal);
 	}
 
 	/**
@@ -104,8 +107,8 @@ public class ButtonSprites
 	 */
 	public ButtonSprites(Sprite Normal, Sprite Pressed, int left, int right, int top, int bottom)
 	{
-		mPressed = new NinePatch(Pressed, left, right, top, bottom);
-		mNormal = new NinePatch(Normal, left, right, top, bottom);
+		mPressed = new NinePatchDrawable(new NinePatch(Pressed, left, right, top, bottom));
+		mNormal = new NinePatchDrawable(new NinePatch(Normal, left, right, top, bottom));
 	}
 
 	public void dispose()

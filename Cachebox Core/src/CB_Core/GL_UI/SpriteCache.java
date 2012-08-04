@@ -27,6 +27,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 /**
  * Enthält die geladenen Sprites und das Handling für Laden und Entladen.
@@ -64,7 +67,7 @@ public class SpriteCache
 	public static ArrayList<Sprite> MapStars = null;
 	public static SpriteList Stars = null;
 	public static ArrayList<Sprite> Bubble = null;
-	public static Sprite InfoBack = null;
+
 	public static ArrayList<Sprite> ToggleBtn = null;
 	public static ArrayList<Sprite> ZoomBtn = null;
 	public static Sprite ZoomValueBack = null;
@@ -73,9 +76,10 @@ public class SpriteCache
 	public static ArrayList<Sprite> ChkIcons = null;
 	public static ArrayList<Sprite> Dialog = null;
 	public static SpriteList SizesIcons = null;
-	public static NinePatch ListBack = null;
-	public static Sprite ButtonBack = null;
-	public static Sprite AboutBack = null;
+
+	public static Drawable ListBack = null;
+	public static Drawable ButtonBack = null;
+	public static Drawable AboutBack = null;
 	public static Sprite Progress = null;
 	public static Sprite ambilwarna_hue = null;
 
@@ -102,6 +106,17 @@ public class SpriteCache
 	private static Boolean atlasCostumIsNeverUsed = true;
 	private static Boolean atlasCostumtNightIsNeverUsed = true;
 	public static ArrayList<Sprite> LogIcons;
+
+	public static Drawable activityBackground;
+	public static Drawable InfoBack;
+	public static Drawable ProgressBack;
+	public static Drawable ProgressFill;
+	public static Drawable btn;
+	public static Drawable btnPressed;
+	public static Drawable btnDisabled;
+	public static Drawable shaddowRec;
+
+	public static int patch;
 
 	private static void setPath(String path)
 	{
@@ -436,8 +451,6 @@ public class SpriteCache
 
 		}
 
-		InfoBack = getThemedSprite("InfoPanelBack");
-
 		if (ToggleBtn == null) ToggleBtn = new ArrayList<Sprite>();
 		synchronized (ToggleBtn)
 		{
@@ -568,11 +581,29 @@ public class SpriteCache
 
 		loadButtnSprites();
 
-		ListBack = new NinePatch(getThemedSprite("background"), 1, 1, 1, 1);
-		ButtonBack = getThemedSprite("button-list-back");
-		AboutBack = getThemedSprite("splash-back");
+		createDrawables();
 
 		// cleanUp();
+	}
+
+	private static void createDrawables()
+	{
+		patch = (SpriteCache.getThemedSprite("activity-back").getWidth() > 60) ? 16 : 8;
+
+		activityBackground = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("activity-back"), patch, patch, patch, patch));
+		ListBack = new NinePatchDrawable(new NinePatch(getThemedSprite("background"), 1, 1, 1, 1));
+		ButtonBack = new SpriteDrawable(getThemedSprite("button-list-back"));
+		AboutBack = new SpriteDrawable(getThemedSprite("splash-back"));
+		InfoBack = new NinePatchDrawable(new NinePatch(getThemedSprite("InfoPanelBack"), patch, patch, patch, patch));
+		ProgressBack = new NinePatchDrawable(new NinePatch(ToggleBtn.get(0), patch, patch, patch, patch));
+		ProgressFill = new NinePatchDrawable(new NinePatch(SpriteCache.Progress, patch - 1, patch - 1, patch - 1, patch - 1));
+		btn = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("btn-normal"), patch, patch, patch, patch));
+		btnPressed = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("btn-pressed"), patch, patch, patch, patch));
+		btnDisabled = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("btn-disabled"), patch, patch, patch, patch));
+
+		int hp = patch / 2;
+		shaddowRec = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("shaddowrect"), hp, hp, hp, hp));
+
 	}
 
 	private static void loadButtnSprites()
@@ -584,6 +615,7 @@ public class SpriteCache
 		Tool = new ButtonSprites(getThemedSprite("tool"), getThemedSprite("tool-pressed"));
 		Misc = new ButtonSprites(getThemedSprite("misc"), getThemedSprite("misc-pressed"));
 		QuickButton = new ButtonSprites(getThemedSprite("button"), getThemedSprite("btn-pressed"));
+
 	}
 
 	/**

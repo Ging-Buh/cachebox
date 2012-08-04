@@ -7,15 +7,15 @@ import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class ProgressBar extends CB_View_Base
 {
-	int progress = 0;
-	float progressDrawWidth = 0;
-	NinePatch progressNinePatch;
-	Label label;
+	private int progress = 0;
+	private float progressDrawWidth = 0;
+	private Drawable progressFill;
+	private Label label;
 
 	public ProgressBar(CB_RectF rec, String Name)
 	{
@@ -32,14 +32,14 @@ public class ProgressBar extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		if (nineBackground == null)
+		if (drawableBackground == null)
 		{
-			setBackground(new NinePatch(SpriteCache.ToggleBtn.get(0), 16, 16, 16, 16));
+			setBackground(SpriteCache.ProgressBack);
 		}
 
-		if (progressNinePatch == null)
+		if (progressFill == null)
 		{
-			progressNinePatch = new NinePatch(SpriteCache.Progress, 15, 15, 15, 15);
+			progressFill = SpriteCache.ProgressFill;
 		}
 		GL_Listener.glListener.renderOnce("InitialProgressBar reday");
 	}
@@ -65,22 +65,22 @@ public class ProgressBar extends CB_View_Base
 		GL_Listener.glListener.renderOnce("ProgressBar state changed");
 	}
 
-	public void setProgressNinePatch(NinePatch ninePatch)
+	public void setProgressFill(Drawable drawable)
 	{
-		progressNinePatch = ninePatch;
+		progressFill = drawable;
 	}
 
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		if (progressNinePatch == null) Initial();
+		if (progressFill == null) Initial();
 
-		if (progressNinePatch != null)
+		if (progressFill != null)
 		{
-			float patch = progressNinePatch.getLeftWidth() + progressNinePatch.getRightWidth();
+			float patch = progressFill.getLeftWidth() + progressFill.getRightWidth();
 			if (progressDrawWidth >= patch)
 			{
-				progressNinePatch.draw(batch, 0, 0, progressDrawWidth, height);
+				progressFill.draw(batch, 0, 0, progressDrawWidth, height);
 			}
 		}
 		super.render(batch);

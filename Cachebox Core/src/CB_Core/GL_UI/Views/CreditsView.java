@@ -9,7 +9,6 @@ import CB_Core.GL_UI.Controls.ScrollView;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 
 public class CreditsView extends CB_View_Base
 {
@@ -23,10 +22,8 @@ public class CreditsView extends CB_View_Base
 		test.setHAlignment(HAlignment.CENTER);
 		this.addChild(test);
 
-		NinePatch back = new NinePatch(SpriteCache.getThemedSprite("shaddowrect"), 8, 8, 8, 8);
-
 		ScrollView scrollView = new ScrollView(new CB_RectF(25f, 25f, width - 50, height - 50), this, "CreditsScrollView");
-		scrollView.setBackground(back);
+		scrollView.setBackground(SpriteCache.shaddowRec);
 
 		float posY = scrollView.getHeight();
 		final float btnHeight = 65;

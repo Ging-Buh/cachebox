@@ -19,7 +19,6 @@ import CB_Core.Types.Waypoint;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Slider extends CB_View_Base implements SelectedCacheEvent
@@ -61,7 +60,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		this.addChild(quickButtonList);
 
 		mSlideBox = new Box(new CB_RectF(-15, 100, this.width + 30, UiSizes.getInfoSliderHeight()), "SlideBox");
-		mSlideBox.setBackground(new NinePatch(SpriteCache.ToggleBtn.get(0), 16, 16, 16, 16));
+		mSlideBox.setBackground(SpriteCache.ProgressBack);
 		mLblCacheName = new Label(new CB_RectF(20, 0, this.width - 30, mSlideBox.getHeight()), "CacheNameLbl");
 		mLblCacheName.setPos(30, 0);
 		mLblCacheName.setHAlignment(HAlignment.CENTER);
@@ -356,9 +355,9 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 	public static boolean setAndroidSliderHeight(int height)
 	{
-		if (that != null && that.mSlideBox != null)
+		if (that != null && mSlideBox != null)
 		{
-			that.mSlideBox.setHeight(height);
+			mSlideBox.setHeight(height);
 			return true;
 		}
 		return false;
@@ -367,7 +366,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	@Override
 	protected void SkinIsChanged()
 	{
-		mSlideBox.setBackground(new NinePatch(SpriteCache.ToggleBtn.get(0), 16, 16, 16, 16));
+		mSlideBox.setBackground(SpriteCache.ProgressBack);
 
 	}
 

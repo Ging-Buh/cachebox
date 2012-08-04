@@ -9,6 +9,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Views.TrackListViewItem.RouteChangedListner;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Map.RouteOverlay.Track;
@@ -110,12 +111,12 @@ public class TrackListView extends V_ListView
 		@Override
 		public ListViewItemBase getView(int position)
 		{
-
+			int index = position;
 			if (GlobalCore.AktuelleRoute != null)
 			{
 				if (position == 0)
 				{
-					aktRouteItem = new TrackListViewItem(ItemRec, position, GlobalCore.AktuelleRoute, new RouteChangedListner()
+					aktRouteItem = new TrackListViewItem(ItemRec, index, GlobalCore.AktuelleRoute, new RouteChangedListner()
 					{
 
 						@Override
@@ -125,12 +126,15 @@ public class TrackListView extends V_ListView
 							RouteOverlay.RoutesChanged();
 						}
 					});
+					aktRouteItem.setOnClickListener(onItemClickListner);
+					aktRouteItem.setOnLongClickListener(mOnLongClickListener);
+
 					return aktRouteItem;
 				}
 				position--;
 			}
 
-			TrackListViewItem v = new TrackListViewItem(ItemRec, position, RouteOverlay.Routes.get(position), new RouteChangedListner()
+			TrackListViewItem v = new TrackListViewItem(ItemRec, index, RouteOverlay.Routes.get(position), new RouteChangedListner()
 			{
 
 				@Override
@@ -140,6 +144,9 @@ public class TrackListView extends V_ListView
 					RouteOverlay.RoutesChanged();
 				}
 			});
+
+			v.setOnClickListener(onItemClickListner);
+			v.setOnLongClickListener(mOnLongClickListener);
 			return v;
 		}
 
@@ -181,6 +188,32 @@ public class TrackListView extends V_ListView
 	public void notifyActTrackChanged()
 	{
 		aktRouteItem.notifyTrackChanged(GlobalCore.AktuelleRoute);
+
+		GL_Listener.glListener.renderOnce("ActTrackChanged");
 	}
+
+	private OnClickListener onItemClickListner = new OnClickListener()
+	{
+
+		@Override
+		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+		{
+			int selectionIndex = ((ListViewItemBase) v).getIndex();
+
+			setSelection(selectionIndex);
+			return true;
+		}
+	};
+
+	private OnLongClickListener onItemLongClickListner = new OnLongClickListener()
+	{
+
+		@Override
+		public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+		{
+			// TODO Auto-generated method stub
+			return false;
+		}
+	};
 
 }

@@ -23,6 +23,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 
 /**
  * Enthält die TestContols
@@ -164,7 +166,7 @@ public class TestView extends CB_View_Base
 		lbl3.setFont(Fonts.getNormal());
 		lbl3.setWrappedText(s);
 
-		NinePatch back = new NinePatch(SpriteCache.getThemedSprite("shaddowrect"), 8, 8, 8, 8);
+		Drawable back = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("shaddowrect"), 8, 8, 8, 8));
 
 		lbl3.setBackground(back);
 

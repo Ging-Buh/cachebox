@@ -8,6 +8,9 @@ import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class CopiePastePopUp extends PopUp_Base
 {
@@ -17,14 +20,17 @@ public class CopiePastePopUp extends PopUp_Base
 	public CopiePastePopUp(CB_RectF rec, String Name, final CB_TextField textField)
 	{
 		super(rec, Name);
-		setBackground(new NinePatch(SpriteCache.Bubble.get(3), 16, 16, 16, 23));
+
+		int p = SpriteCache.patch;
+
+		setBackground(new NinePatchDrawable(new NinePatch(SpriteCache.Bubble.get(3), p, p, p, (int) (p * 1.432))));
 
 		this.setClickable(true);
 
 		pasteButton = new Button(rec.ScaleCenter(0.6f), "PasteButton");
 		pasteButton.setFont(Fonts.getBubbleNormal());
 		pasteButton.setText("paste");
-		pasteButton.setBackground(new NinePatch(SpriteCache.Icons.get(50), 1, 1, 1, 1));
+		pasteButton.setBackground(new NinePatchDrawable(new NinePatch(SpriteCache.Icons.get(50), 1, 1, 1, 1)));
 		pasteButton.setY(rec.getHeight() * 0.4f);
 		pasteButton.setOnClickListener(new OnClickListener()
 		{
@@ -45,14 +51,16 @@ public class CopiePastePopUp extends PopUp_Base
 	@Override
 	public void Initial()
 	{
-		pasteButton.setninePatch((new NinePatch(SpriteCache.Icons.get(50), 1, 1, 1, 1)));
-		pasteButton.setninePatchPressed((new NinePatch(SpriteCache.Icons.get(50), 1, 1, 1, 1)));
+		pasteButton.setninePatch((new SpriteDrawable(SpriteCache.Icons.get(50))));
+		pasteButton.setninePatchPressed((new SpriteDrawable(SpriteCache.Icons.get(50))));
 	}
 
 	public void flipX()
 	{
-		NinePatch patch = new NinePatch(SpriteCache.Bubble.get(5), 16, 16, 23, 16);
-		setBackground(patch);
+		int p = SpriteCache.patch;
+
+		Drawable drawable = new NinePatchDrawable(new NinePatch(SpriteCache.Bubble.get(5), p, p, (int) (p * 1.432), p));
+		setBackground(drawable);
 		pasteButton.setY(this.height * 0.07f);
 	}
 

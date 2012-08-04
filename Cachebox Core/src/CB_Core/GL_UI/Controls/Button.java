@@ -27,17 +27,17 @@ import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Button extends CB_View_Base
 {
 	protected BitmapFont mFont;
 
-	protected NinePatch mNinePatch;
-	protected NinePatch mNinePatchPressed;
-	protected NinePatch mNinePatchDisabled;
+	protected Drawable drawableNormal;
+	protected Drawable drawablePressed;
+	protected Drawable drawableDisabled;
 
 	protected boolean isPressed = false;
 	protected boolean isDisabled = false;
@@ -69,28 +69,28 @@ public class Button extends CB_View_Base
 		this.isClickable = true;
 	}
 
-	public void setninePatch(NinePatch ninePatch)
+	public void setninePatch(Drawable drawable)
 	{
-		mNinePatch = ninePatch;
+		drawableNormal = drawable;
 	}
 
-	public void setninePatchPressed(NinePatch ninePatch)
+	public void setninePatchPressed(Drawable drawable)
 	{
-		mNinePatchPressed = ninePatch;
+		drawablePressed = drawable;
 	}
 
-	public void setninePatchDisabled(NinePatch ninePatch)
+	public void setninePatchDisabled(Drawable drawable)
 	{
-		mNinePatchDisabled = ninePatch;
+		drawableDisabled = drawable;
 	}
 
 	public void setButtonSprites(ButtonSprites sprites)
 	{
 		if (sprites != null)
 		{
-			mNinePatch = sprites.getNormal();
-			mNinePatchPressed = sprites.getPressed();
-			mNinePatchDisabled = sprites.getDisabled();
+			drawableNormal = sprites.getNormal();
+			drawablePressed = sprites.getPressed();
+			drawableDisabled = sprites.getDisabled();
 		}
 	}
 
@@ -105,9 +105,9 @@ public class Button extends CB_View_Base
 
 		if (!isPressed && !isDisabled)
 		{
-			if (mNinePatch != null)
+			if (drawableNormal != null)
 			{
-				mNinePatch.draw(batch, 0, 0, width, height);
+				drawableNormal.draw(batch, 0, 0, width, height);
 			}
 			else
 			{
@@ -117,16 +117,16 @@ public class Button extends CB_View_Base
 		}
 		else if (isPressed)
 		{
-			if (mNinePatchPressed != null)
+			if (drawablePressed != null)
 			{
-				mNinePatchPressed.draw(batch, 0, 0, width, height);
+				drawablePressed.draw(batch, 0, 0, width, height);
 			}
 		}
 		else
 		{
-			if (mNinePatchDisabled != null)
+			if (drawableDisabled != null)
 			{
-				mNinePatchDisabled.draw(batch, 0, 0, width, height);
+				drawableDisabled.draw(batch, 0, 0, width, height);
 			}
 		}
 
@@ -240,17 +240,17 @@ public class Button extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		if (mNinePatch == null)
+		if (drawableNormal == null)
 		{
-			mNinePatch = new NinePatch(SpriteCache.getThemedSprite("btn-normal"), 16, 16, 16, 16);
+			drawableNormal = SpriteCache.btn;
 		}
-		if (mNinePatchPressed == null)
+		if (drawablePressed == null)
 		{
-			mNinePatchPressed = new NinePatch(SpriteCache.getThemedSprite("btn-pressed"), 16, 16, 16, 16);
+			drawablePressed = SpriteCache.btnPressed;
 		}
-		if (mNinePatchDisabled == null)
+		if (drawableDisabled == null)
 		{
-			mNinePatchDisabled = new NinePatch(SpriteCache.getThemedSprite("btn-disabled"), 8, 8, 8, 8);
+			drawableDisabled = SpriteCache.btnDisabled;
 		}
 
 	}
@@ -268,11 +268,11 @@ public class Button extends CB_View_Base
 	@Override
 	protected void SkinIsChanged()
 	{
-		mNinePatch = null;
+		drawableNormal = null;
 
-		mNinePatchPressed = null;
+		drawablePressed = null;
 
-		mNinePatchDisabled = null;
+		drawableDisabled = null;
 		mFont = null;
 		lblTxt = null;
 		this.removeChilds();

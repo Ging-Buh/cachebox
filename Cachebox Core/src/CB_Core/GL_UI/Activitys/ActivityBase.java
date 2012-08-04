@@ -9,7 +9,6 @@ import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class ActivityBase extends Dialog
@@ -17,18 +16,15 @@ public class ActivityBase extends Dialog
 	protected ActivityBase that;
 	protected float MesuredLabelHeight;
 	protected float ButtonHeight;
-	private int mPatchValue;
 
 	public ActivityBase(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 		that = this;
 
-		mPatchValue = (SpriteCache.getThemedSprite("activity-back").getWidth() > 60) ? 16 : 8;
+		this.setBackground(SpriteCache.activityBackground);
 
-		this.setBackground(new NinePatch(SpriteCache.getThemedSprite("activity-back"), mPatchValue, mPatchValue, mPatchValue, mPatchValue));
-
-		Left = Right = Top = Bottom = mPatchValue / 2;
+		Left = Right = Top = Bottom = drawableBackground.getLeftWidth() / 2;
 		MesuredLabelHeight = Fonts.Mesure("T").height * 1.5f;
 		ButtonHeight = UiSizes.getButtonHeight();
 	}
@@ -36,7 +32,7 @@ public class ActivityBase extends Dialog
 	@Override
 	protected void SkinIsChanged()
 	{
-		this.setBackground(new NinePatch(SpriteCache.getThemedSprite("activity-back"), mPatchValue, mPatchValue, mPatchValue, mPatchValue));
+		this.setBackground(SpriteCache.activityBackground);
 	}
 
 	@Override

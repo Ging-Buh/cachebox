@@ -216,11 +216,11 @@ public class MultiToggleButton extends Button
 	@Override
 	protected void SkinIsChanged()
 	{
-		mNinePatch = null;
+		drawableNormal = null;
 
-		mNinePatchPressed = null;
+		drawablePressed = null;
 
-		mNinePatchDisabled = null;
+		drawableDisabled = null;
 		mFont = null;
 		lblTxt = null;
 		this.removeChilds();

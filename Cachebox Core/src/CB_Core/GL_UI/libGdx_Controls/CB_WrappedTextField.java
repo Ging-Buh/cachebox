@@ -68,9 +68,9 @@ public class CB_WrappedTextField extends CB_Core.GL_UI.libGdx_Controls.CB_TextFi
 	protected void render(SpriteBatch batch)
 	{
 
-		if (hasNinePatchBackground)
+		if (drawableBackground != null)
 		{
-			nineBackground.draw(batch, 0, 0, width, height);
+			drawableBackground.draw(batch, 0, 0, width, height);
 		}
 		batch.end();
 
@@ -84,10 +84,7 @@ public class CB_WrappedTextField extends CB_Core.GL_UI.libGdx_Controls.CB_TextFi
 				(int) innerScissorReg.getHeight() + 1);
 
 		super.render(batch);
-		// batch.end();
-		// Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth() + 1,
-		// (int) intersectRec.getHeight() + 1);
-		// batch.begin();
+
 	}
 
 	@Override
