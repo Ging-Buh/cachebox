@@ -277,7 +277,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		}
 	}
 
-	private void updateDisplayText()
+	private void updateDisplayTextList()
 	{
 		displayText.clear();
 		if (passwordMode && style.font.containsCharacter(passwordCharacter))
@@ -302,6 +302,213 @@ public class EditWrapedTextField extends EditTextFieldBase
 		for (DisplayText dt : displayText)
 		{
 			style.font.computeGlyphAdvancesAndPositions(dt.getDisplayText(), dt.glyphAdvances, dt.glyphPositions);
+		}
+	}
+
+	// Wenn calcCursor == true -> Cursorposition wird evtl. angepasst, sonst nicht
+	private void updateDisplayText(DisplayText dt, boolean calcCursor)
+	{
+		float maxWidth = width - 50; // noch falsch!!!!!!!!!!!!!!!!!!!!!
+		// wenn dies eine autoWrap Zeile ist muss zuerst die Zeile davor überprüft werden, ob die ersten Zeichen dieser Zeile dahinein
+		// kopiert werden können
+		if (dt.autoWrap)
+		{
+			DisplayText prevDt = getDisplayText(cursorLine - 1);
+			if (prevDt != null)
+			{
+				// Restlichen Platz suchen
+				float len = prevDt.getWidth();
+				float rest = maxWidth - prevDt.getWidth(); // Restlicher Platz der vorherigen Zeile
+				// Breite des ersten Wortes incl. abschließendem Leerzeichen suchen
+				float posWord = 0;
+				int idWord = 0;
+				for (int i = 0; i < dt.displayText.length(); i++)
+				{
+					char c = dt.displayText.charAt(i);
+					float pos = dt.glyphPositions.get(i + 1);
+					// Prüfen, ob aktuelles Zeichen ein Leerzeichen ist und ob das Ende nicht weiter als "rest" vom Start der Linie entfernt
+					// ist
+					if ((c == ' ') && (pos <= rest))
+					{
+						posWord = pos;
+						idWord = i + 1;
+					}
+					else if (pos > rest)
+					{
+						break;
+					}
+				}
+				if (idWord == 0)
+				{
+					// Prüfen, ob komplette nächste Zeile in diese rein passt
+					if (dt.getWidth() <= rest)
+					{
+						idWord = dt.displayText.length();
+					}
+				}
+				if (idWord > 0)
+				{
+					// dieses erste Wort passt noch in die letzte Zeile
+					String s1 = dt.displayText.toString().substring(0, idWord);
+					String s2 = dt.displayText.toString().substring(idWord, dt.displayText.length());
+					prevDt.displayText += s1;
+					style.font.computeGlyphAdvancesAndPositions(prevDt.displayText, prevDt.glyphAdvances, prevDt.glyphPositions);
+					dt.displayText = s2;
+					if (s2.length() == 0)
+					{
+						// komplette Zeile löschen
+						displayText.remove(dt);
+					}
+					else
+					{
+						style.font.computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
+					}
+					if (cursor > idWord)
+					{
+						cursor -= idWord; // Cursor ist hinter den Zeichen die in die vorherige Zeile verschoben werden -> nach Vorne setzen
+					}
+					else
+					{
+						// cursor ist innerhalb der Zeichen, die in die vorherige Zeile verschoben werden -> Cursor in die vorherige Zeile
+						// verschieben
+						cursor = prevDt.displayText.length() - 1;
+						cursorLine--;
+						// anschließende Zeile noch mal berechnen.
+						cursorLine++;
+						DisplayText nextDt = getAktDisplayText();
+						if (nextDt != null)
+						{
+							updateDisplayText(nextDt, false);
+						}
+						cursorLine--;
+						return;
+					}
+				}
+			}
+		}
+		style.font.computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
+		float len = dt.getWidth();
+
+		// Prüfen, ob Zeile zu lang geworden ist und ob am Ende Zeichen in die nächste Zeile verschoben werden müssen
+		if (len > maxWidth)
+		{
+			// automatischen Umbruch einfügen
+			// erstes Zeichen suchen, das außerhalb des max. Bereichs liegt
+			int id = 0;
+			for (int i = 1; i < dt.glyphPositions.size; i++)
+			{
+				// abschließende Leerzeichen hier nicht berücksichtigen
+				if ((dt.displayText.length() > i - 1) && (dt.displayText.charAt(i - 1) == ' ')) continue;
+				float pos = dt.glyphPositions.get(i);
+				if (pos > maxWidth) id = i;
+			}
+			if (id > 0)
+			{
+				if (!calcCursor)
+				{
+					calcCursor = false;
+				}
+				// Zeile Trennen nach dem letzten "Space" vor dem Zeichen id
+				for (int j = id - 1; j >= 0; j--)
+				{
+					if (dt.displayText.charAt(j) == ' ')
+					{
+						id = j + 1;
+						break;
+					}
+				}
+				// Zeilenumbruch an Zeichen id
+				// aktuellen String bei id trennen
+				String s1 = dt.displayText.toString().substring(0, id);
+				String s2 = dt.displayText.toString().substring(id, dt.displayText.length());
+				dt.displayText = s1;
+				style.font.computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
+				cursorLine++;
+				// Text der nächsten Zeile holen und prüfen, ob dies eine durch einen autoWrap eingefügte Zeile ist
+				DisplayText nextDt = getAktDisplayText();
+				cursorLine--;
+				if ((nextDt != null) && nextDt.autoWrap)
+				{
+					// Umzubrechnenden Text am Anfang von nextDT anfügen
+					nextDt.displayText = s2 + nextDt.displayText;
+					style.font.computeGlyphAdvancesAndPositions(nextDt.displayText, nextDt.glyphAdvances, nextDt.glyphPositions);
+					cursorLine++;
+					updateDisplayText(nextDt, false);
+					cursorLine--;
+				}
+				else
+				{
+					// neue Zeile erstellen
+					DisplayText newDt = new DisplayText(s2, true);
+					displayText.add(cursorLine + 1, newDt);
+					style.font.computeGlyphAdvancesAndPositions(newDt.displayText, newDt.glyphAdvances, newDt.glyphPositions);
+				}
+				if (calcCursor && (cursor >= id))
+				{
+					// Cursor auch in die nächste Zeile verschieben, an die Stelle im Wort an der der Cursor vorher auch war
+					cursor = cursor - id;
+					cursorLine++;
+				}
+			}
+		}
+		// Prüfen, ob am Ende der Zeile wieder Platz für Zeichen / Wörter der vorgänger-Zeile ist
+		float rest = maxWidth - dt.getWidth(); // Restlicher Platz
+		// Wenn anschließend eine Wraped-Zeile kommt dann erstes Word dessen suchen und Prüfen, ob dies hier eingefügt werden kann
+		DisplayText nextDt = getDisplayText(cursorLine + 1);
+		if ((nextDt != null) && (nextDt.autoWrap))
+		{
+			// Breite des ersten Wortes incl. abschließendem Leerzeichen suchen
+			float posWord = 0;
+			int idWord = 0;
+			for (int i = 0; i < nextDt.displayText.length(); i++)
+			{
+				char c = nextDt.displayText.charAt(i);
+				float pos = nextDt.glyphPositions.get(i + 1);
+				// Prüfen, ob aktuelles Zeichen ein Leerzeichen ist und ob das Ende nicht weiter als "rest" vom Start der Linie entfernt ist
+				if ((c == ' ') && (pos <= rest))
+				{
+					posWord = pos;
+					idWord = i + 1;
+				}
+				else if (pos > rest)
+				{
+					break;
+				}
+			}
+			if (idWord == 0)
+			{
+				// Prüfen, ob komplette nächste Zeile in diese rein passt
+				if (nextDt.getWidth() <= rest)
+				{
+					idWord = nextDt.displayText.length();
+				}
+			}
+			if (idWord > 0)
+			{
+				// dieses erste Wort passt noch in die letzte Zeile
+				String s1 = nextDt.displayText.toString().substring(0, idWord);
+				String s2 = nextDt.displayText.toString().substring(idWord, nextDt.displayText.length());
+				dt.displayText += s1;
+				style.font.computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
+				updateDisplayText(dt, false);
+				nextDt.displayText = s2;
+				if (s2.length() == 0)
+				{
+					// komplette Zeile löschen
+					displayText.remove(nextDt);
+				}
+				else
+				{
+					cursorLine++;
+					style.font.computeGlyphAdvancesAndPositions(nextDt.displayText, nextDt.glyphAdvances, nextDt.glyphPositions);
+					updateDisplayText(nextDt, false);
+					cursorLine--;
+				}
+			}
+		}
+		else
+		{
+			// anschließend kommt keine Zeile, die automatisch umgebrochen wurde -> nichts machen
 		}
 	}
 
@@ -519,6 +726,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 		dt.displayText = s1;
 		DisplayText newDt = new DisplayText(s2);
 		displayText.add(cursorLine + 1, newDt);
+		style.font.computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
+		style.font.computeGlyphAdvancesAndPositions(newDt.displayText, newDt.glyphAdvances, newDt.glyphPositions);
 		cursorLine++;
 		cursor = 0;
 	}
@@ -545,6 +754,15 @@ public class EditWrapedTextField extends EditTextFieldBase
 		if (cursorLine < 0) return null;
 		if (cursorLine >= displayText.size()) return null;
 		DisplayText newDt = displayText.get(cursorLine);
+		return newDt;
+	}
+
+	// liefert das DisplayText-Object der aktuellen Zeile
+	private DisplayText getDisplayText(int line)
+	{
+		if (line < 0) return null;
+		if (line >= displayText.size()) return null;
+		DisplayText newDt = displayText.get(line);
 		return newDt;
 	}
 
@@ -605,7 +823,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 			if (!hasSelection)
 			{
 				text = text.substring(0, cursor) + content + text.substring(cursor, text.length());
-				updateDisplayText();
+				// updateDisplayText();
 				cursor += content.length();
 			}
 			else
@@ -617,7 +835,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
 				cursor = minIndex;
 				text = text.substring(0, cursor) + content + text.substring(cursor, text.length());
-				updateDisplayText();
+				// updateDisplayText();
 				cursor = minIndex + content.length();
 				clearSelection();
 			}
@@ -631,7 +849,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		int maxIndex = Math.max(cursor, selectionStart);
 		text = (minIndex > 0 ? text.substring(0, minIndex) : "")
 				+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
-		updateDisplayText();
+		// updateDisplayText();
 		cursor = minIndex;
 		clearSelection();
 	}
@@ -649,7 +867,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				if (cursor > 0)
 				{
 					dt.displayText = dt.displayText.substring(0, cursor - 1) + dt.displayText.substring(cursor, dt.displayText.length());
-					dt.update();
+					updateDisplayText(dt, true);
 					cursor--;
 					return true;
 				}
@@ -662,7 +880,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						cursor = dt2.displayText.length();
 						dt2.displayText += dt.displayText;
 						displayText.remove(cursorLine + 1);
-						dt2.update();
+						updateDisplayText(dt2, true);
 					}
 					return true;
 				}
@@ -672,7 +890,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				if (cursor < dt.displayText.length())
 				{
 					dt.displayText = dt.displayText.substring(0, cursor) + dt.displayText.substring(cursor + 1, dt.displayText.length());
-					dt.update();
+					updateDisplayText(dt, true);
 					return true;
 				}
 				else
@@ -684,7 +902,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						cursorLine--;
 						displayText.remove(dt2);
 						dt.displayText += dt2.displayText;
-						dt.update();
+						updateDisplayText(dt, true);
 					}
 					return true;
 				}
@@ -744,7 +962,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				{
 					dt.displayText = dt.displayText.substring(0, cursor) + character
 							+ dt.displayText.substring(cursor, dt.displayText.length());
-					dt.update();
+					updateDisplayText(dt, true);
 					cursor++;
 				}
 				else
@@ -756,7 +974,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 							+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
 					cursor = minIndex;
 					text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
-					updateDisplayText();
+					// updateDisplayText();
 					cursor++;
 					clearSelection();
 				}
@@ -820,7 +1038,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		// replace lineBreaks
 		this.text = bText.replace("\r\n", "\r");
 
-		updateDisplayText();
+		updateDisplayTextList();
 		cursor = 0;
 		clearSelection();
 
@@ -908,10 +1126,17 @@ public class EditWrapedTextField extends EditTextFieldBase
 		private TextBounds textBounds = new TextBounds();
 		private final FloatArray glyphAdvances = new FloatArray();
 		private final FloatArray glyphPositions = new FloatArray();
+		private boolean autoWrap;
 
 		public DisplayText(String displayText)
 		{
 			this.displayText = displayText;
+		}
+
+		public DisplayText(String displayText, boolean autoWrap)
+		{
+			this.displayText = displayText;
+			this.autoWrap = autoWrap;
 		}
 
 		public void calcTextBounds(BitmapFont font)
@@ -931,9 +1156,9 @@ public class EditWrapedTextField extends EditTextFieldBase
 			return textBounds;
 		}
 
-		public void update()
+		public float getWidth()
 		{
-			style.font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
+			return glyphPositions.get(glyphPositions.size - 1) + glyphAdvances.get(glyphAdvances.size - 1);
 		}
 	}
 
