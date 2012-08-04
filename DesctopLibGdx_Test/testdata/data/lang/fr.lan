@@ -41,6 +41,7 @@ utf8
 	AutoResort = Tri automatique
 	record = Enregistre
 	pause = Pause
+	continue = Continue
 	stop = Stop
 	export = Exportation
 	TrackRec = Enregistrer trace
@@ -355,7 +356,7 @@ utf8
 	GCPW = Mot de passe pour geocaching.com
 	GCVotePW = Mote de passe pour GcVote 
 	GCJoker = MD5-Hash au site gcJoker.de
-    SelectLanguage = Select Language
+    	SelectLanguage = Select Language
 	save = save
 		
 
@@ -382,6 +383,8 @@ utf8
 	load = Load
 	NoTrackSelected = No track selected!
 	IsActualTrack = Currently used track can't be deleted!
+	actualTrack = Actual Track
+	recordetTrack = Recordet Track
 	Point2Point = Point to Point
 	Circle = Circle
 	rename = Rename

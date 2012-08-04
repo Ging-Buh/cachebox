@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.GlobalCore;
+import CB_Core.TrackRecorder;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
@@ -241,7 +242,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 				return true;
 
 			case MI_TREC_REC:
-				TabMainView.actionRecTrack.Execute();
+				showMenuTrackRecording();
 				return true;
 
 			default:
@@ -260,4 +261,47 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		}
 	};
 
+	private static final int START = 1;
+	private static final int PAUSE = 2;
+	private static final int STOP = 3;
+
+	private void showMenuTrackRecording()
+	{
+		MenuItem mi;
+		Menu cm2 = new Menu("TrackRecordContextMenu");
+		cm2.setItemClickListner(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				switch (((MenuItem) v).getMenuItemId())
+				{
+				case START:
+					TrackRecorder.StartRecording();
+					return true;
+				case PAUSE:
+					TrackRecorder.PauseRecording();
+					return true;
+				case STOP:
+					TrackRecorder.StopRecording();
+					return true;
+				}
+				return false;
+			}
+		});
+		mi = cm2.addItem(START, "start");
+		mi.setEnabled(!TrackRecorder.recording);
+
+		if (TrackRecorder.pauseRecording) mi = cm2.addItem(PAUSE, "continue");
+		else
+			mi = cm2.addItem(PAUSE, "pause");
+
+		mi.setEnabled(TrackRecorder.recording);
+
+		mi = cm2.addItem(STOP, "stop");
+		mi.setEnabled(TrackRecorder.recording | TrackRecorder.pauseRecording);
+
+		cm2.show();
+	}
 }

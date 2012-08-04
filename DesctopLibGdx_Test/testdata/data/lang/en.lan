@@ -41,6 +41,7 @@
 	AutoResort = Auto Select
 	record = Record
 	pause = Pause
+	continue = Continue
 	stop = Stop
 	export = Export
 	TrackRec = Track Recorder
@@ -399,6 +400,8 @@
 	load = Load
 	NoTrackSelected = No track selected!
 	IsActualTrack = Current track cannot be deleted
+	actualTrack = Actual Track
+	recordetTrack = Recordet Track
 	Point2Point = Point to Point
 	Circle = Circle
 	rename = Rename

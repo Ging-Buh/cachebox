@@ -41,6 +41,7 @@
 	AutoResort = Ordenação Automática
 	record = Gravar
 	pause = Pausa
+	continue = Continue
 	stop = Parar
 	export = Exportar
 	TrackRec = Gravação Trilhos
@@ -385,6 +386,8 @@
 	load = Load
 	NoTrackSelected = No track selected!
 	IsActualTrack = Currently used track can't be deleted!
+	actualTrack = Actual Track
+	recordetTrack = Recordet Track
 	Point2Point = Point to Point
 	Circle = Circle
 	rename = Rename
