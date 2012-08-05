@@ -9,6 +9,7 @@ import CB_Core.GL_UI.MenuItemConst;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate;
+import CB_Core.GL_UI.Activitys.ProjectionCoordinate.Type;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
@@ -161,7 +162,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	{
 		final Coordinate coord = GlobalCore.LastValidPosition;
 
-		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Track-Point2Point", coord,
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("fromPoint"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
 				{
 
@@ -171,7 +172,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 					}
 
-				}, false);
+				}, Type.p2p);
 
 		pC.show();
 	}
@@ -180,7 +181,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	{
 		final Coordinate coord = GlobalCore.LastValidPosition;
 
-		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Track-Projection", coord,
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("projection"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
 				{
 
@@ -190,7 +191,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 					}
 
-				}, false);
+				}, Type.projetion);
 
 		pC.show();
 
@@ -200,7 +201,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	{
 		final Coordinate coord = GlobalCore.LastValidPosition;
 
-		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Track-Circle", coord,
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("centerPoint"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
 				{
 
@@ -210,7 +211,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 					}
 
-				}, false);
+				}, Type.circle);
 
 		pC.show();
 

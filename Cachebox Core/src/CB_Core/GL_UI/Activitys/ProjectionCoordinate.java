@@ -26,6 +26,7 @@ public class ProjectionCoordinate extends ActivityBase
 
 	private CB_TextField valueBearing = null;
 	private Label lblBearing = null;
+	private Label lblP2P = null;
 	private Label lblBearingUnit = null;
 	private CB_TextField valueDistance = null;
 	private Label lblDistance = null;
@@ -33,13 +34,20 @@ public class ProjectionCoordinate extends ActivityBase
 
 	private Label Title = null;
 	private CoordinateButton bCoord = null;
+	private CoordinateButton bCoord2 = null;
 	private Button bOK = null;
 	private Button bCancel = null;
 	private Boolean radius = false;
+	private Boolean p2p = false;
 	private boolean ImperialUnits = false;
 	private NumPad numPad;
 
 	private ReturnListner mReturnListner;
+
+	public enum Type
+	{
+		projetion, circle, p2p
+	}
 
 	public interface ReturnListner
 	{
@@ -54,20 +62,24 @@ public class ProjectionCoordinate extends ActivityBase
 		public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance);
 	}
 
-	public ProjectionCoordinate(CB_RectF rec, String Name, Coordinate Coord, ReturnListner listner, Boolean Radius)
+	public ProjectionCoordinate(CB_RectF rec, String Name, Coordinate Coord, ReturnListner listner, Type type)
 	{
 		super(rec, Name);
 		coord = Coord;
 		cancelCoord = Coord.copy();
-		radius = Radius;
+		radius = (type == Type.circle);
+		p2p = (type == Type.p2p);
 		mReturnListner = listner;
 		ImperialUnits = Config.settings.ImperialUnits.getValue();
 
+		if (p2p) projCoord = Coord.copy();
+
 		iniCacheNameLabel();
 		iniCoordButton();
-		iniTextFields();
+		if (p2p) iniCoordButton2();
+		if (!p2p) iniTextFields();
 		iniOkCancel();
-		iniNumPad();
+		if (!p2p) iniNumPad();
 	}
 
 	@Override
@@ -102,6 +114,33 @@ public class ProjectionCoordinate extends ActivityBase
 		});
 
 		this.addChild(bCoord);
+	}
+
+	private void iniCoordButton2()
+	{
+
+		CB_RectF labelRec = new CB_RectF(Left + margin, bCoord.getY() - ButtonHeight - MesuredLabelHeight, this.width - Left - Right,
+				MesuredLabelHeight);
+
+		lblP2P = new Label(labelRec, "lblBearing");
+		lblP2P.setText(GlobalCore.Translations.Get("toPoint"));
+		this.addChild(lblP2P);
+
+		CB_RectF rec = new CB_RectF(Left, lblP2P.getY() - UiSizes.getButtonHeight(), width - Left - Right, UiSizes.getButtonHeight());
+		bCoord2 = new CoordinateButton(rec, "CoordButton2", projCoord);
+
+		bCoord2.setCoordinateChangedListner(new CoordinateChangeListner()
+		{
+
+			@Override
+			public void coordinateChanged(Coordinate Coord)
+			{
+				that.show();
+				projCoord = Coord;
+			}
+		});
+
+		this.addChild(bCoord2);
 	}
 
 	private void iniTextFields()
@@ -142,11 +181,11 @@ public class ProjectionCoordinate extends ActivityBase
 		lblBearingUnit.setText("°");
 		lblDistanceUnit.setText(sUnit);
 
-		this.addChild(lblBearing);
+		if (!radius) this.addChild(lblBearing);
 		this.addChild(lblDistance);
 		this.addChild(valueDistance);
-		this.addChild(valueBearing);
-		this.addChild(lblBearingUnit);
+		if (!radius) this.addChild(valueBearing);
+		if (!radius) this.addChild(lblBearingUnit);
 		this.addChild(lblDistanceUnit);
 
 	}
@@ -206,19 +245,36 @@ public class ProjectionCoordinate extends ActivityBase
 	private boolean parseView()
 	{
 
-		Bearing = Double.parseDouble(valueBearing.getText().toString());
-		Distance = Double.parseDouble(valueDistance.getText().toString());
-
-		if (ImperialUnits) Distance *= 0.9144f;
-
-		Coordinate newCoord = Coordinate.Project(coord.Latitude, coord.Longitude, Bearing, Distance);
-
-		if (newCoord.Valid)
+		if (p2p)
 		{
-			projCoord = newCoord;
-			return true;
+			try
+			{
+				Distance = coord.Distance(projCoord);
+				Bearing = coord.bearingTo(projCoord); // TODO chk -180°
+				return true;
+			}
+			catch (Exception e)
+			{
+				return false;
+			}
 		}
 		else
-			return false;
+		{
+			Bearing = Double.parseDouble(valueBearing.getText().toString());
+			Distance = Double.parseDouble(valueDistance.getText().toString());
+
+			if (ImperialUnits) Distance *= 0.9144f;
+
+			Coordinate newCoord = Coordinate.Project(coord.Latitude, coord.Longitude, Bearing, Distance);
+
+			if (newCoord.Valid)
+			{
+				projCoord = newCoord;
+				return true;
+			}
+			else
+				return false;
+		}
+
 	}
 }

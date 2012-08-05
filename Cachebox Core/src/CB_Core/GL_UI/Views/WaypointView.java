@@ -13,6 +13,7 @@ import CB_Core.GL_UI.Activitys.EditWaypoint;
 import CB_Core.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_Core.GL_UI.Activitys.MesureCoordinate;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate;
+import CB_Core.GL_UI.Activitys.ProjectionCoordinate.Type;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
@@ -510,7 +511,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 
 					}
 
-				}, false);
+				}, Type.projetion);
 
 		pC.show();
 
