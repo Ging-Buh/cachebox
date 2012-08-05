@@ -341,7 +341,7 @@ public class RouteOverlay
 				}
 			}
 
-			if (GlobalCore.AktuelleRoute != null)
+			if (GlobalCore.AktuelleRoute != null && GlobalCore.AktuelleRoute.ShowRoute)
 			{
 				addToDrawRoutes(tolerance, GlobalCore.AktuelleRoute, Zoom, false);
 			}
