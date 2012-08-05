@@ -407,6 +407,9 @@
 	Circle = Kreis
 	rename = Umbenennen
 	length = Länge
+	fromPoint = Von Punkt
+	toPoint = Zu Punkt
+	centerPoint = Mittelpunkt
 	preset = Vorgaben
 	setting = Einstellung
 	category = Kategorie

@@ -406,6 +406,9 @@
 	Circle = Circle
 	length = Distance
 	rename = Rename
+	fromPoint = From Point
+	toPoint = To Point
+	centerPoint = Cener Point
 	preset = Preset
 	setting = Setting
 	category = Category

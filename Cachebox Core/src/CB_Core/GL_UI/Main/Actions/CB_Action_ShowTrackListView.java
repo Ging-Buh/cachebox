@@ -1,5 +1,7 @@
 package CB_Core.GL_UI.Main.Actions;
 
+import java.util.Date;
+
 import CB_Core.GlobalCore;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
@@ -14,8 +16,12 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.TrackListView;
+import CB_Core.Map.Descriptor.TrackPoint;
+import CB_Core.Map.RouteOverlay;
+import CB_Core.Map.RouteOverlay.Track;
 import CB_Core.Types.Coordinate;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowTrackListView extends CB_Action_ShowView
@@ -169,25 +175,71 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					@Override
 					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
 					{
+						float[] dist = new float[4];
+						Color[] ColorField = new Color[8];
+						ColorField[0] = Color.RED;
+						ColorField[1] = Color.YELLOW;
+						ColorField[2] = Color.BLACK;
+						ColorField[3] = Color.LIGHT_GRAY;
+						ColorField[4] = Color.GREEN;
+						ColorField[5] = Color.BLUE;
+						ColorField[6] = Color.CYAN;
+						ColorField[7] = Color.GRAY;
+						Color TrackColor;
+						TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
+						Track route = new Track(null, TrackColor);
 
+						route.Name = "Point 2 Point Route";
+						route.Points.add(new TrackPoint(targetCoord.Longitude, targetCoord.Latitude, 0, new Date()));
+						route.Points.add(new TrackPoint(startCoord.Longitude, startCoord.Latitude, 0, new Date()));
+
+						Coordinate.distanceBetween(targetCoord.Latitude, targetCoord.Longitude, startCoord.Latitude, startCoord.Longitude,
+								dist);
+						route.TrackLength = dist[0];
+
+						route.ShowRoute = true;
+						RouteOverlay.Routes.add(route);
 					}
-
 				}, Type.p2p);
-
 		pC.show();
+
 	}
 
 	private void GenTrackProjection()
 	{
 		final Coordinate coord = GlobalCore.LastValidPosition;
 
-		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("projection"), coord,
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("Projection"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
 				{
 
 					@Override
 					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
 					{
+						float[] dist = new float[4];
+						Color[] ColorField = new Color[8];
+						ColorField[0] = Color.RED;
+						ColorField[1] = Color.YELLOW;
+						ColorField[2] = Color.BLACK;
+						ColorField[3] = Color.LIGHT_GRAY;
+						ColorField[4] = Color.GREEN;
+						ColorField[5] = Color.BLUE;
+						ColorField[6] = Color.CYAN;
+						ColorField[7] = Color.GRAY;
+						Color TrackColor;
+						TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
+						Track route = new Track(null, TrackColor);
+						route.Name = "Projected Route";
+
+						route.Points.add(new TrackPoint(targetCoord.Longitude, targetCoord.Latitude, 0, new Date()));
+						route.Points.add(new TrackPoint(startCoord.Longitude, startCoord.Latitude, 0, new Date()));
+
+						Coordinate.distanceBetween(targetCoord.Latitude, targetCoord.Longitude, startCoord.Latitude, startCoord.Longitude,
+								dist);
+						route.TrackLength = dist[0];
+
+						route.ShowRoute = true;
+						RouteOverlay.Routes.add(route);
 
 					}
 
@@ -208,13 +260,55 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					@Override
 					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
 					{
+						float[] dist = new float[4];
+						Color[] ColorField = new Color[8];
+						ColorField[0] = Color.RED;
+						ColorField[1] = Color.YELLOW;
+						ColorField[2] = Color.BLACK;
+						ColorField[3] = Color.LIGHT_GRAY;
+						ColorField[4] = Color.GREEN;
+						ColorField[5] = Color.BLUE;
+						ColorField[6] = Color.CYAN;
+						ColorField[7] = Color.GRAY;
+						Color TrackColor;
+						TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
+						Track route = new Track(null, TrackColor);
+						route.Name = "Circle Route";
 
+						route.ShowRoute = true;
+						RouteOverlay.Routes.add(route);
+
+						Coordinate Projektion = new Coordinate();
+						Coordinate LastCoord = new Coordinate();
+
+						for (int i = 0; i <= 360; i++)
+						{
+							Projektion = Coordinate.Project(startCoord.Latitude, startCoord.Longitude, (double) i, distance);
+
+							route.Points.add(new TrackPoint(Projektion.Longitude, Projektion.Latitude, 0, new Date()));
+
+							if (!LastCoord.Valid)
+							{
+								LastCoord = Projektion;
+								LastCoord.Valid = true;
+							}
+							else
+							{
+								Coordinate.distanceBetween(Projektion.Latitude, Projektion.Longitude, LastCoord.Latitude,
+										LastCoord.Longitude, dist);
+								route.TrackLength += dist[0];
+								LastCoord = Projektion;
+								LastCoord.Valid = true;
+							}
+
+						}
+						int j = 10;
+						j++;
 					}
 
 				}, Type.circle);
 
 		pC.show();
-
 	}
 
 }
