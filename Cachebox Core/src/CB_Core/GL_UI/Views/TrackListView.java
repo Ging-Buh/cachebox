@@ -25,6 +25,7 @@ public class TrackListView extends V_ListView
 {
 	public static CB_RectF ItemRec;
 	BitmapFontCache emptyMsg;
+	int selectedTrackItem;
 
 	public static TrackListView that;
 
@@ -198,9 +199,9 @@ public class TrackListView extends V_ListView
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
-			int selectionIndex = ((ListViewItemBase) v).getIndex();
+			selectedTrackItem = ((ListViewItemBase) v).getIndex();
 
-			setSelection(selectionIndex);
+			setSelection(selectedTrackItem);
 			return true;
 		}
 	};

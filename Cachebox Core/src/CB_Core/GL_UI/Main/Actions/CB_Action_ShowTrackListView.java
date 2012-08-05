@@ -1,15 +1,19 @@
 package CB_Core.GL_UI.Main.Actions;
 
+import CB_Core.GlobalCore;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.MenuItemConst;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Activitys.ActivityBase;
+import CB_Core.GL_UI.Activitys.ProjectionCoordinate;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.TrackListView;
+import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -134,13 +138,13 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 				switch (((MenuItem) v).getMenuItemId())
 				{
 				case P2P:
-					platformConector.menuItemClicked(MenuItemConst.TRACK_LIST_P2P);
+					GenTrackP2P();
 					return true;
 				case PROJECT:
-					platformConector.menuItemClicked(MenuItemConst.TRACK_LIST_PROJECT);
+					GenTrackProjection();
 					return true;
 				case CIRCLE:
-					platformConector.menuItemClicked(MenuItemConst.TRACK_LIST_CIRCLE);
+					GenTrackCircle();
 					return true;
 				}
 				return false;
@@ -152,4 +156,64 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 		cm2.show();
 	}
+
+	private void GenTrackP2P()
+	{
+		final Coordinate coord = GlobalCore.LastValidPosition;
+
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Track-Point2Point", coord,
+				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
+				{
+
+					@Override
+					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
+					{
+
+					}
+
+				}, false);
+
+		pC.show();
+	}
+
+	private void GenTrackProjection()
+	{
+		final Coordinate coord = GlobalCore.LastValidPosition;
+
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Track-Projection", coord,
+				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
+				{
+
+					@Override
+					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
+					{
+
+					}
+
+				}, false);
+
+		pC.show();
+
+	}
+
+	private void GenTrackCircle()
+	{
+		final Coordinate coord = GlobalCore.LastValidPosition;
+
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Track-Circle", coord,
+				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
+				{
+
+					@Override
+					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
+					{
+
+					}
+
+				}, false);
+
+		pC.show();
+
+	}
+
 }
