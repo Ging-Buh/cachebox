@@ -5,6 +5,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.Gdx;
@@ -76,6 +77,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		lineHeight = style.font.getLineHeight();
 		setText("");
 		topLine = 0;
+		this.isClickable = true;
 	}
 
 	@Override
@@ -244,7 +246,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				for (DisplayText dt : displayText)
 				{
 					// font.draw(batch, dt.getDisplayText(), x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
-					font.draw(batch, dt.getDisplayText(), x + bgLeftWidth, y + textY);
+					font.draw(batch, dt.getDisplayText(), x + bgLeftWidth, y + textY + mouseTempMove);
 					textY -= lineHeight;
 				}
 			}
@@ -525,8 +527,43 @@ public class EditWrapedTextField extends EditTextFieldBase
 		}
 	}
 
+	private Point mouseDown = null;
+	private float mouseDownTopLine = 0;
+	private int mouseTempMove = 0;
+
 	@Override
 	public boolean onTouchDown(int X, int Y, int pointer, int button)
+	{
+		mouseDown = new Point(X, Y);
+		// topLine merken, zu dem Zeitpunkt als die Maus gedrückt wurde
+		mouseDownTopLine = topLine;
+		return true;
+	}
+
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
+	{
+		if (mouseDown != null)
+		{
+			topLine = mouseDownTopLine + (float) (y - mouseDown.y) / lineHeight;
+		}
+		return true;
+	};
+
+	@Override
+	public boolean onTouchUp(int x, int y, int pointer, int button)
+	{
+		if (mouseDown != null)
+		{
+			mouseTempMove = y - mouseDown.y;
+
+			mouseTempMove = 0;
+		}
+		mouseDown = null;
+		return false;
+	}
+
+	@Override
+	public boolean click(int X, int Y, int pointer, int button)
 	{
 		float x = (float) X;
 		float y = (float) Y;
@@ -603,6 +640,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 							hasSelection = true;
 						}
 						cursor--;
+						checkCursorVisible();
 					}
 					if (keycode == Keys.RIGHT)
 					{
@@ -612,6 +650,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 							hasSelection = true;
 						}
 						cursor++;
+						checkCursorVisible();
 					}
 					if (keycode == Keys.HOME)
 					{
@@ -621,6 +660,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 							hasSelection = true;
 						}
 						cursor = 0;
+						// überprüfen, ob der Cursor sichtbar ist
+						checkCursorVisible();
 					}
 					if (keycode == Keys.END)
 					{
@@ -630,10 +671,14 @@ public class EditWrapedTextField extends EditTextFieldBase
 							hasSelection = true;
 						}
 						cursor = text.length();
+						// überprüfen, ob der Cursor sichtbar ist
+						checkCursorVisible();
 					}
 
 					cursor = Math.max(0, cursor);
 					cursor = Math.min(text.length(), cursor);
+					// überprüfen, ob der Cursor sichtbar ist
+					checkCursorVisible();
 				}
 				else
 				{
@@ -688,10 +733,14 @@ public class EditWrapedTextField extends EditTextFieldBase
 		if (i < 0)
 		{
 			cursor = 0;
+			// überprüfen, ob der Cursor sichtbar ist
+			checkCursorVisible();
 		}
 		else
 		{
 			cursor = dt.displayText.length();
+			// überprüfen, ob der Cursor sichtbar ist
+			checkCursorVisible();
 		}
 	}
 
@@ -717,6 +766,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 		{
 			cursor = newCursor;
 		}
+		// überprüfen, ob der Cursor sichtbar ist
+		checkCursorVisible();
 	}
 
 	// fügt eine neue Zeile an der Cursor Position ein
@@ -774,11 +825,25 @@ public class EditWrapedTextField extends EditTextFieldBase
 	private void setCursorLine(int newCursorLine)
 	{
 		cursorLine = newCursorLine;
+		checkCursorVisible();
+	}
+
+	private void checkCursorVisible()
+	{
 		// Cursorpos prüfen, ob ausserhalb sichtbaren Bereich
-		float maxHeight = height - 50; // noch falsch!!!!!!!!!!!!!!!!!!!!!
+		float maxHeight = height - 40; // noch falsch!!!!!!!!!!!!!!!!!!!!!
+
 		float cursorYPos = (cursorLine - topLine) * lineHeight;
-		if (cursorYPos > maxHeight) topLine++;
-		if (cursorYPos < 0) topLine--;
+		while (cursorYPos > maxHeight)
+		{
+			topLine++;
+			cursorYPos = (cursorLine - topLine) * lineHeight;
+		}
+		while (cursorYPos < 0)
+		{
+			topLine--;
+			cursorYPos = (cursorLine - topLine) * lineHeight;
+		}
 	}
 
 	// Cursor in aktueller Zeile an die gegebene X-Position (in Pixel) senden
@@ -789,6 +854,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		if (xPos <= 0)
 		{
 			cursor = 0;
+			checkCursorVisible();
 			return;
 		}
 		for (int i = 0; i < dt.glyphPositions.size; i++)
@@ -797,11 +863,13 @@ public class EditWrapedTextField extends EditTextFieldBase
 			if (pos > xPos)
 			{
 				cursor = Math.max(0, i - 1);
+				checkCursorVisible();
 				return;
 			}
 		}
 		// kein Passendes Zeichen gefunden an gegebener Position -> Cursor ans Ende setzen
 		cursor = Math.max(0, dt.glyphPositions.size - 1);
+		checkCursorVisible();
 	}
 
 	/**
@@ -852,6 +920,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				text = text.substring(0, cursor) + content + text.substring(cursor, text.length());
 				// updateDisplayText();
 				cursor = minIndex + content.length();
+				checkCursorVisible();
 				clearSelection();
 			}
 
@@ -866,6 +935,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
 		// updateDisplayText();
 		cursor = minIndex;
+		checkCursorVisible();
 		clearSelection();
 	}
 
@@ -884,6 +954,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 					dt.displayText = dt.displayText.substring(0, cursor - 1) + dt.displayText.substring(cursor, dt.displayText.length());
 					updateDisplayText(dt, true);
 					cursor--;
+					checkCursorVisible();
 					return true;
 				}
 				else
@@ -893,6 +964,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						setCursorLine(cursorLine - 1);
 						DisplayText dt2 = getAktDisplayText();
 						cursor = dt2.displayText.length();
+						checkCursorVisible();
 						dt2.displayText += dt.displayText;
 						displayText.remove(cursorLine + 1);
 						updateDisplayText(dt2, true);
@@ -979,6 +1051,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 							+ dt.displayText.substring(cursor, dt.displayText.length());
 					updateDisplayText(dt, true);
 					cursor++;
+					checkCursorVisible();
 				}
 				else
 				{
@@ -991,6 +1064,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 					text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
 					// updateDisplayText();
 					cursor++;
+					checkCursorVisible();
 					clearSelection();
 				}
 			}
@@ -1055,6 +1129,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 		updateDisplayTextList();
 		cursor = 0;
+		checkCursorVisible();
 		clearSelection();
 
 		textHeight = -font.getDescent() * 2;
@@ -1092,6 +1167,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		hasSelection = true;
 		this.selectionStart = selectionStart;
 		cursor = selectionEnd;
+		checkCursorVisible();
 	}
 
 	public void clearSelection()
@@ -1105,6 +1181,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		if (cursorPosition < 0) throw new IllegalArgumentException("cursorPosition must be >= 0");
 		clearSelection();
 		cursor = Math.min(cursorPosition, text.length());
+		checkCursorVisible();
 	}
 
 	public int getCursorPosition()
