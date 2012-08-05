@@ -5,8 +5,10 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
+import CB_Core.GL_UI.Controls.ColorPickerRec;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.utils.ColorDrawable;
+import CB_Core.GL_UI.utils.HSV_Color;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -14,7 +16,8 @@ import com.badlogic.gdx.graphics.Color;
 
 public class ColorPicker extends ActivityBase
 {
-	private Color InitialColor;
+	private HSV_Color InitialColor;
+	private HSV_Color actColor;
 	private Button bOK;
 	private Button bCancel;
 	private float innerWidth;
@@ -23,6 +26,7 @@ public class ColorPicker extends ActivityBase
 	private Box lastColor;
 	private Box aktColor;
 	private Image arrow;
+	private ColorPickerRec colorSelectBox;
 
 	private Image viewHue;
 
@@ -34,12 +38,15 @@ public class ColorPicker extends ActivityBase
 	public ColorPicker(CB_RectF rec, Color color, IReturnListner listner)
 	{
 		super(rec, "ColorPicker");
-		InitialColor = color;
+		actColor = InitialColor = new HSV_Color(color);
 		innerWidth = this.width - Left - Left;
 
 		createOkCancelBtn();
 		createColorPreviewLine();
 		createViewHue();
+		createTest();
+
+		hueChanged();
 	}
 
 	private void createOkCancelBtn()
@@ -111,4 +118,20 @@ public class ColorPicker extends ActivityBase
 		this.addChild(viewHue);
 	}
 
+	private void createTest()
+	{
+		CB_RectF rec = new CB_RectF(10, 100, 300, 300);
+
+		colorSelectBox = new ColorPickerRec(rec, "");
+		this.addChild(colorSelectBox);
+
+		// rectangle test = new rectangle(rec, "");
+		//
+		// this.addChild(test);
+	}
+
+	private void hueChanged()
+	{
+		if (colorSelectBox != null) colorSelectBox.setHue(actColor.getHue());
+	}
 }

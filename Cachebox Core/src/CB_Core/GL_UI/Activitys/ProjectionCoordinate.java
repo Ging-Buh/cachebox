@@ -20,6 +20,10 @@ public class ProjectionCoordinate extends ActivityBase
 	private Coordinate cancelCoord;
 	private Coordinate coord;
 	private Coordinate projCoord;
+
+	private double Bearing;
+	private double Distance;
+
 	private CB_TextField valueBearing = null;
 	private Label lblBearing = null;
 	private Label lblBearingUnit = null;
@@ -39,7 +43,15 @@ public class ProjectionCoordinate extends ActivityBase
 
 	public interface ReturnListner
 	{
-		public void returnCoord(Coordinate coord);
+		/**
+		 * Return from ProjectionCoordinate Dialog
+		 * 
+		 * @param targetCoord
+		 * @param startCoord
+		 * @param Bearing
+		 * @param distance
+		 */
+		public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance);
 	}
 
 	public ProjectionCoordinate(CB_RectF rec, String Name, Coordinate Coord, ReturnListner listner, Boolean Radius)
@@ -160,7 +172,7 @@ public class ProjectionCoordinate extends ActivityBase
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				if (!parseView()) return true;
-				if (mReturnListner != null) mReturnListner.returnCoord(projCoord);
+				if (mReturnListner != null) mReturnListner.returnCoord(projCoord, coord, Bearing, Distance);
 				finish();
 				return true;
 			}
@@ -172,7 +184,7 @@ public class ProjectionCoordinate extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				if (mReturnListner != null) mReturnListner.returnCoord(cancelCoord);
+				if (mReturnListner != null) mReturnListner.returnCoord(null, null, 0, 0);
 				finish();
 				return true;
 			}
@@ -194,8 +206,8 @@ public class ProjectionCoordinate extends ActivityBase
 	private boolean parseView()
 	{
 
-		double Bearing = Double.parseDouble(valueBearing.getText().toString());
-		double Distance = Double.parseDouble(valueDistance.getText().toString());
+		Bearing = Double.parseDouble(valueBearing.getText().toString());
+		Distance = Double.parseDouble(valueDistance.getText().toString());
 
 		if (ImperialUnits) Distance *= 0.9144f;
 
@@ -209,5 +221,4 @@ public class ProjectionCoordinate extends ActivityBase
 		else
 			return false;
 	}
-
 }

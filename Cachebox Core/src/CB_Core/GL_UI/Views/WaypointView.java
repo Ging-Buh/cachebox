@@ -485,9 +485,9 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 				{
 
 					@Override
-					public void returnCoord(Coordinate returnCoord)
+					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
 					{
-						if (coord == null || returnCoord.equals(coord)) return;
+						if (coord == null || targetCoord.equals(coord)) return;
 
 						String newGcCode = "";
 						try
@@ -499,8 +499,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 
 							return;
 						}
-						Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", returnCoord.Latitude,
-								returnCoord.Longitude, GlobalCore.SelectedCache().Id, "", "projiziert");
+						Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", targetCoord.Latitude,
+								targetCoord.Longitude, GlobalCore.SelectedCache().Id, "", "projiziert");
 						GlobalCore.SelectedCache().waypoints.add(newWP);
 						that.setBaseAdapter(lvAdapter);
 						aktWaypoint = newWP;
@@ -509,6 +509,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 						waypointDAO.WriteToDatabase(newWP);
 
 					}
+
 				}, false);
 
 		pC.show();
