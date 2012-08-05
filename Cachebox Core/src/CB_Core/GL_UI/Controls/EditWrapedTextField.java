@@ -37,6 +37,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 	protected ArrayList<DisplayText> displayText;
 	protected int cursor;
 	protected int cursorLine;
+	protected float topLine;
 	protected Clipboard clipboard;
 	protected TextFieldListener listener;
 	protected TextFieldFilter filter;
@@ -71,9 +72,10 @@ public class EditWrapedTextField extends EditTextFieldBase
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		displayText = new ArrayList<EditWrapedTextField.DisplayText>();
-		cursorLine = 0;
+		setCursorLine(0);
 		lineHeight = style.font.getLineHeight();
 		setText("");
+		topLine = 0;
 	}
 
 	@Override
@@ -238,6 +240,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 			else
 			{
 				font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a);
+				textY += lineHeight * topLine;
 				for (DisplayText dt : displayText)
 				{
 					// font.draw(batch, dt.getDisplayText(), x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
@@ -266,7 +269,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						xpos = dt.glyphPositions.get(dt.glyphPositions.size - 1); // letztes Zeichen
 					}
 					textY = (int) height - textHeight - bgTopHeight;
-					cursorPatch.draw(batch, x + bgLeftWidth + xpos - 1, y + textY - bgTopHeight - lineHeight * cursorLine,
+					cursorPatch.draw(batch, x + bgLeftWidth + xpos - 1, y + textY - bgTopHeight - lineHeight * (cursorLine - topLine),
 							cursorPatch.getTotalWidth(), lineHeight - font.getDescent() / 2);
 				}
 			}
@@ -372,7 +375,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						// cursor ist innerhalb der Zeichen, die in die vorherige Zeile verschoben werden -> Cursor in die vorherige Zeile
 						// verschieben
 						cursor = prevDt.displayText.length() - 1;
-						cursorLine--;
+						setCursorLine(cursorLine - 1);
 						// anschlieﬂende Zeile noch mal berechnen.
 						cursorLine++;
 						DisplayText nextDt = getAktDisplayText();
@@ -447,7 +450,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				{
 					// Cursor auch in die n‰chste Zeile verschieben, an die Stelle im Wort an der der Cursor vorher auch war
 					cursor = cursor - id;
-					cursorLine++;
+					setCursorLine(cursorLine + 1);
 				}
 			}
 		}
@@ -540,6 +543,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 		float clickPos = y;
 		int clickedCursorLine = (int) ((this.height - style.font.getLineHeight() - clickPos + (lineHeight)) / lineHeight) - 1;
+		clickedCursorLine += topLine;
 		if (clickedCursorLine < 0) return false;
 		if (clickedCursorLine >= displayText.size()) return false;
 
@@ -551,12 +555,12 @@ public class EditWrapedTextField extends EditTextFieldBase
 			if (pos > x)
 			{
 				cursor = Math.max(0, i - 1);
-				cursorLine = clickedCursorLine;
+				setCursorLine(clickedCursorLine);
 				return true;
 			}
 		}
 		cursor = Math.max(0, dt.glyphPositions.size - 1);
-		cursorLine = clickedCursorLine;
+		setCursorLine(clickedCursorLine);
 		return true;
 	}
 
@@ -728,7 +732,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		displayText.add(cursorLine + 1, newDt);
 		style.font.computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
 		style.font.computeGlyphAdvancesAndPositions(newDt.displayText, newDt.glyphAdvances, newDt.glyphPositions);
-		cursorLine++;
+		setCursorLine(cursorLine + 1);
 		cursor = 0;
 	}
 
@@ -742,7 +746,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		// X-Koordinate von alter Cursor Position bestimmen
 		float x = oldDt.glyphPositions.items[cursor];
 		// Cursor in neue Zeile plazieren
-		cursorLine = newCursorLine;
+		setCursorLine(newCursorLine);
 		// Cursor mˆglichst an gleiche x-Position plazieren
 		setCursorXPos(x);
 		return true;
@@ -764,6 +768,17 @@ public class EditWrapedTextField extends EditTextFieldBase
 		if (line >= displayText.size()) return null;
 		DisplayText newDt = displayText.get(line);
 		return newDt;
+	}
+
+	// Zeile des Cursors ‰ndern. Sicherstellen, dass der Cursor sichtbar ist
+	private void setCursorLine(int newCursorLine)
+	{
+		cursorLine = newCursorLine;
+		// Cursorpos pr¸fen, ob ausserhalb sichtbaren Bereich
+		float maxHeight = height - 50; // noch falsch!!!!!!!!!!!!!!!!!!!!!
+		float cursorYPos = (cursorLine - topLine) * lineHeight;
+		if (cursorYPos > maxHeight) topLine++;
+		if (cursorYPos < 0) topLine--;
 	}
 
 	// Cursor in aktueller Zeile an die gegebene X-Position (in Pixel) senden
@@ -875,7 +890,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				{
 					if (cursorLine > 0)
 					{
-						cursorLine--;
+						setCursorLine(cursorLine - 1);
 						DisplayText dt2 = getAktDisplayText();
 						cursor = dt2.displayText.length();
 						dt2.displayText += dt.displayText;
