@@ -32,9 +32,6 @@ public class EditTextField extends EditTextFieldBase
 	protected String text, messageText;
 	protected CharSequence displayText;
 	protected int cursor;
-	protected Clipboard clipboard;
-
-	protected OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
 	protected boolean passwordMode;
 	protected StringBuilder passwordBuffer;
@@ -56,6 +53,13 @@ public class EditTextField extends EditTextFieldBase
 	protected float selectionX, selectionWidth;
 
 	protected char passwordCharacter = BULLET;
+
+	public EditTextField(CB_RectF rec, String Name)
+	{
+		super(rec, Name);
+		this.style = getDefaultStyle();
+		setText("");
+	}
 
 	public EditTextField(CB_RectF rec, TextFieldStyle style, String Name)
 	{
@@ -450,7 +454,7 @@ public class EditTextField extends EditTextFieldBase
 	public boolean keyTyped(char character)
 	{
 		final BitmapFont font = style.font;
-
+		if (disabled) return false;
 		if (GL_Listener.hasFocus(this))
 		{
 			if (character == BACKSPACE && (cursor > 0 || hasSelection))
@@ -522,15 +526,6 @@ public class EditTextField extends EditTextFieldBase
 		}
 		else
 			return false;
-	}
-
-	/**
-	 * @param listener
-	 *            May be null.
-	 */
-	public void setTextFieldListener(TextFieldListener listener)
-	{
-		this.listener = listener;
 	}
 
 	/**
@@ -633,27 +628,16 @@ public class EditTextField extends EditTextFieldBase
 		return cursor;
 	}
 
-	/** Default is an instance of {@link DefaultOnscreenKeyboard}. */
-	public OnscreenKeyboard getOnscreenKeyboard()
-	{
-		return keyboard;
-	}
-
-	public void setOnscreenKeyboard(OnscreenKeyboard keyboard)
-	{
-		this.keyboard = keyboard;
-	}
-
-	public void setClipboard(Clipboard clipboard)
-	{
-		this.clipboard = clipboard;
-	}
-
 	@Override
 	public boolean keyUp(int KeyCode)
 	{
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public float getMesuredWidth()
+	{
+		return textBounds.width;
 	}
 
 }

@@ -19,6 +19,12 @@ import CB_Core.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
 import CB_Core.GL_UI.Activitys.FilterSettings.FilterSetListViewItem;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
+import CB_Core.GL_UI.Controls.EditTextField;
+import CB_Core.GL_UI.Controls.EditTextFieldBase;
+import CB_Core.GL_UI.Controls.EditTextFieldBase.DefaultOnscreenKeyboard;
+import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
+import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
+import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -26,16 +32,11 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
-import CB_Core.GL_UI.libGdx_Controls.CB_WrappedTextField;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.FieldNoteEntry;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.DefaultOnscreenKeyboard;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 
 public class EditFieldNotes extends ActivityBase
 {
@@ -44,11 +45,11 @@ public class EditFieldNotes extends ActivityBase
 	private Button bOK = null;
 	private Button bCancel = null;
 	private Label tvCacheName = null;
-	private CB_WrappedTextField etComment = null;
+	private EditWrapedTextField etComment = null;
 	private Image ivTyp = null;
 	private Label tvFounds = null;
-	private CB_TextField tvDate = null;
-	private CB_TextField tvTime = null;
+	private EditTextField tvDate = null;
+	private EditTextField tvTime = null;
 	private Label lblDate = null;
 	private Label lblTime = null;
 	private Box scrollBox = null;
@@ -259,7 +260,7 @@ public class EditFieldNotes extends ActivityBase
 		CB_RectF rec = new CB_RectF(lblDate.getMaxX() + margin, lblDate.getY() - margin, width - lblDate.getMaxX() - margin - Right,
 				MesuredLabelHeight * 2);
 
-		tvDate = new CB_TextField(rec, "");
+		tvDate = new EditTextField(rec, "");
 		scrollBox.addChild(tvDate);
 	}
 
@@ -273,7 +274,7 @@ public class EditFieldNotes extends ActivityBase
 		CB_RectF rec = new CB_RectF(lblTime.getMaxX() + margin, lblTime.getY() - margin, width - lblTime.getMaxX() - margin - Right,
 				MesuredLabelHeight * 2);
 
-		tvTime = new CB_TextField(rec, "");
+		tvTime = new EditTextField(rec, "");
 		scrollBox.addChild(tvTime);
 	}
 
@@ -305,14 +306,14 @@ public class EditFieldNotes extends ActivityBase
 			rec = new CB_RectF(Left, lblTime.getY() - UiSizes.getButtonHeight() - margin, width - Left - Right, UiSizes.getButtonHeight());
 		}
 
-		etComment = new CB_WrappedTextField(rec, "DescTextField");
+		etComment = new EditWrapedTextField(rec, "DescTextField");
 		etComment.setText(fieldNote.comment);
 
-		etComment.setTextChangedListner(new TextFieldListener()
+		etComment.setTextFieldListener(new TextFieldListener()
 		{
 
 			@Override
-			public void keyTyped(com.badlogic.gdx.scenes.scene2d.ui.TextField textField, char key)
+			public void keyTyped(EditTextFieldBase textField, char key)
 			{
 				layoutTextFields();
 			}
@@ -329,11 +330,11 @@ public class EditFieldNotes extends ActivityBase
 		registerTextField(tvTime);
 	}
 
-	private ArrayList<CB_TextField> allTextFields = new ArrayList<CB_TextField>();
+	private ArrayList<EditTextFieldBase> allTextFields = new ArrayList<EditTextFieldBase>();
 
 	private OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
-	public void registerTextField(final CB_TextField textField)
+	public void registerTextField(final EditTextFieldBase textField)
 	{
 		textField.setOnscreenKeyboard(new OnscreenKeyboard()
 		{
@@ -341,7 +342,7 @@ public class EditFieldNotes extends ActivityBase
 			public void show(boolean arg0)
 			{
 
-				for (CB_TextField tmp : allTextFields)
+				for (EditTextFieldBase tmp : allTextFields)
 				{
 					tmp.resetFocus();
 				}
@@ -371,7 +372,7 @@ public class EditFieldNotes extends ActivityBase
 	{
 		float maxTextFieldHeight = this.height / 2.3f;
 		float rand = etComment.getStyle().background.getBottomHeight() + etComment.getStyle().background.getTopHeight();
-		float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getmesuredHeight() + rand);
+		float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getMesuredHeight() + rand);
 
 		descriptionHeight = Math.max(descriptionHeight, UiSizes.getButtonHeight());
 

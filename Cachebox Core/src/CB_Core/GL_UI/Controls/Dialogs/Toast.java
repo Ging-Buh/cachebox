@@ -1,7 +1,7 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
 import CB_Core.GL_UI.Controls.Dialog;
-import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.Math.CB_RectF;
 
 public class Toast extends Dialog
@@ -9,12 +9,12 @@ public class Toast extends Dialog
 	public static final int LENGTH_SHORT = 1500;
 	public static final int LENGTH_LONG = 3000;
 
-	public CB_TextField mTextField;
+	public EditTextField mTextField;
 
 	public Toast(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-		mTextField = new CB_TextField(rec, "Toast.TextField");
+		mTextField = new EditTextField(rec, "Toast.TextField");
 		mTextField.disable();
 		super.removeChildsDirekt();
 		super.addChildDirekt(mTextField);
@@ -48,7 +48,7 @@ public class Toast extends Dialog
 	@Override
 	protected void SkinIsChanged()
 	{
-		mTextField = new CB_TextField(this, "Toast.TextField");
+		mTextField = new EditTextField(this, "Toast.TextField");
 		mTextField.disable();
 		super.removeChildsDirekt();
 		super.addChildDirekt(mTextField);

@@ -108,21 +108,21 @@ public class TestView extends CB_View_Base
 
 	private void renderDebugInfo(SpriteBatch batch)
 	{
-		str = "Coursor Pos:" + String.valueOf(CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField.debugCursorPos) + "/"
-				+ String.valueOf(CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField.debugRealCursorPos);
-		Fonts.getNormal().draw(batch, str, 20, 120);
-
-		str = "LineCount: " + String.valueOf(CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField.debugLineCount);
-		Fonts.getNormal().draw(batch, str, 20, 100);
-
-		str = "L:" + String.valueOf(CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField.debugCursorLine) + " R:"
-				+ String.valueOf(CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField.debugCursorRow);
-		Fonts.getNormal().draw(batch, str, 20, 80);
-
-		String ch = CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField.debugCharBeforCursor;
-
-		str = "Vor Cursor: " + ch;
-		Fonts.getNormal().draw(batch, str, 20, 60);
+		// str = "Coursor Pos:" + String.valueOf(CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField.debugCursorPos) + "/"
+		// + String.valueOf(CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField.debugRealCursorPos);
+		// Fonts.getNormal().draw(batch, str, 20, 120);
+		//
+		// str = "LineCount: " + String.valueOf(CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField.debugLineCount);
+		// Fonts.getNormal().draw(batch, str, 20, 100);
+		//
+		// str = "L:" + String.valueOf(CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField.debugCursorLine) + " R:"
+		// + String.valueOf(CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField.debugCursorRow);
+		// Fonts.getNormal().draw(batch, str, 20, 80);
+		//
+		// String ch = CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField.debugCharBeforCursor;
+		//
+		// str = "Vor Cursor: " + ch;
+		// Fonts.getNormal().draw(batch, str, 20, 60);
 
 		// str = "TrackPoi: " + RouteOverlay.AllTrackPoints + " -  " + RouteOverlay.ReduceTrackPoints + " [" + RouteOverlay.DrawedLineCount
 		// + "]";

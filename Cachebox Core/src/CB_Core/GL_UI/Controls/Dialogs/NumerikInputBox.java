@@ -1,16 +1,15 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
 import CB_Core.GL_UI.Fonts;
+import CB_Core.GL_UI.Controls.EditTextField;
+import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.NumPad;
 import CB_Core.GL_UI.Controls.NumPad.keyEventListner;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
-
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
 
 public class NumerikInputBox extends GL_MsgBox
 {
@@ -23,7 +22,7 @@ public class NumerikInputBox extends GL_MsgBox
 		that = this;
 	}
 
-	public static CB_TextField editText;
+	public static EditTextField editText;
 	public static returnValueListner mReturnListner;
 	public static returnValueListnerDouble mReturnListnerDouble;
 
@@ -41,7 +40,7 @@ public class NumerikInputBox extends GL_MsgBox
 
 		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
 
-		editText = new CB_TextField(textFieldRec, "MsgBoxLabel");
+		editText = new EditTextField(textFieldRec, "MsgBoxLabel");
 		editText.setZeroPos();
 		editText.setY(margin);
 		editText.setText(String.valueOf(initialValue));
@@ -97,7 +96,7 @@ public class NumerikInputBox extends GL_MsgBox
 
 		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
 
-		editText = new CB_TextField(textFieldRec, "MsgBoxLabel");
+		editText = new EditTextField(textFieldRec, "MsgBoxLabel");
 		editText.setZeroPos();
 		editText.setY(margin);
 		editText.setText(String.valueOf(initialValue));

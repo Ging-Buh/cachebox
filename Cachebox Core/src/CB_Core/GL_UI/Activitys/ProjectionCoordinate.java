@@ -7,10 +7,10 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
 import CB_Core.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.NumPad;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
@@ -24,11 +24,11 @@ public class ProjectionCoordinate extends ActivityBase
 	private double Bearing;
 	private double Distance;
 
-	private CB_TextField valueBearing = null;
+	private EditTextField valueBearing = null;
 	private Label lblBearing = null;
 	private Label lblP2P = null;
 	private Label lblBearingUnit = null;
-	private CB_TextField valueDistance = null;
+	private EditTextField valueDistance = null;
 	private Label lblDistance = null;
 	private Label lblDistanceUnit = null;
 
@@ -162,7 +162,7 @@ public class ProjectionCoordinate extends ActivityBase
 		CB_RectF UnitRec = new CB_RectF(textFieldRec.getMaxX(), y, eWidth, ButtonHeight);
 
 		lblBearing = new Label(labelRec, "lblBearing");
-		valueBearing = new CB_TextField(textFieldRec, "valueBearing");
+		valueBearing = new EditTextField(textFieldRec, "valueBearing");
 		lblBearingUnit = new Label(UnitRec, "lblBearingEinheit");
 
 		labelRec.setY(lblBearing.getY() - ButtonHeight);
@@ -170,7 +170,7 @@ public class ProjectionCoordinate extends ActivityBase
 		UnitRec.setY(lblBearing.getY() - ButtonHeight);
 
 		lblDistance = new Label(labelRec, "lblBearing");
-		valueDistance = new CB_TextField(textFieldRec, "valueBearing");
+		valueDistance = new EditTextField(textFieldRec, "valueBearing");
 		lblDistanceUnit = new Label(UnitRec, "lblBearingEinheit");
 
 		lblBearing.setText(sBearing);

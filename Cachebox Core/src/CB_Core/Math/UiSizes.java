@@ -63,6 +63,8 @@ public class UiSizes
 	private static int QuickButtonRef;
 	public static int RefWidth;
 
+	private static int mClickToleranz;
+
 	public static Size initial(devicesSizes ini)
 	{
 		// Resources res = context.getResources();
@@ -81,6 +83,8 @@ public class UiSizes
 		// }
 
 		scale = ini.Density;// res.getDisplayMetrics().density;
+
+		mClickToleranz = (int) (15 * scale);
 
 		calcBase = 533.333 * scale;
 
@@ -146,6 +150,11 @@ public class UiSizes
 
 		return new Size(windowWidth, windowHeight);
 
+	}
+
+	public static int getClickToleranz()
+	{
+		return mClickToleranz;
 	}
 
 	public static int getTbIconSize()

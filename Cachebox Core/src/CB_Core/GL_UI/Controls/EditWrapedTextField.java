@@ -67,6 +67,18 @@ public class EditWrapedTextField extends EditTextFieldBase
 	protected char passwordCharacter = BULLET;
 	final Lock displayTextLock = new ReentrantLock();
 
+	public EditWrapedTextField(CB_RectF rec, String Name)
+	{
+		super(rec, Name);
+		this.style = getDefaultStyle();
+		displayText = new ArrayList<EditWrapedTextField.DisplayText>();
+		setCursorLine(0);
+		lineHeight = style.font.getLineHeight();
+		setText("");
+		topLine = 0;
+		this.isClickable = true;
+	}
+
 	public EditWrapedTextField(CB_RectF rec, TextFieldStyle style, String Name)
 	{
 		super(rec, Name);
@@ -191,6 +203,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 			float bgLeftWidth = 0;
 			float bgRightWidth = 0;
 			float bgTopHeight = 0;
+			float bgBottomHeight = 0;
 			boolean focused = GL_Listener.hasFocus(this);
 
 			if (focused)
@@ -201,6 +214,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 					bgLeftWidth = style.backgroundFocused.getLeftWidth();
 					bgRightWidth = style.background.getRightWidth();
 					bgTopHeight = style.background.getTopHeight();
+					bgBottomHeight = style.background.getBottomHeight();
 				}
 			}
 			else
@@ -211,7 +225,22 @@ public class EditWrapedTextField extends EditTextFieldBase
 					bgLeftWidth = style.background.getLeftWidth();
 					bgRightWidth = style.background.getRightWidth();
 					bgTopHeight = style.background.getTopHeight();
+					bgBottomHeight = style.background.getBottomHeight();
 				}
+			}
+
+			{// Background is drawed, now set scissor to inner rec
+				batch.end();
+
+				CB_RectF innerScissorReg = intersectRec.copy();
+				innerScissorReg.setHeight(intersectRec.getHeight() - bgTopHeight - bgBottomHeight);
+				innerScissorReg.setY(intersectRec.getY() + bgBottomHeight);
+
+				batch.begin();
+
+				Gdx.gl.glScissor((int) innerScissorReg.getX(), (int) innerScissorReg.getY(), (int) innerScissorReg.getWidth() + 1,
+						(int) innerScissorReg.getHeight() + 1);
+
 			}
 
 			float textY = (int) (height / 2 + textHeight / 2 + font.getDescent());
@@ -943,7 +972,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 	{
 		final BitmapFont font = style.font;
 		DisplayText dt = getAktDisplayText();
-		if (dt == null) return false;
+		if (dt == null || disabled) return false;
 
 		if (GL_Listener.hasFocus(this))
 		{
@@ -1252,6 +1281,19 @@ public class EditWrapedTextField extends EditTextFieldBase
 		{
 			return glyphPositions.get(glyphPositions.size - 1) + glyphAdvances.get(glyphAdvances.size - 1);
 		}
+	}
+
+	public float getMesuredHeight()
+	{
+
+		float h = 0;
+
+		for (DisplayText text : displayText)
+		{
+			h += text.getTextBounds().height;
+		}
+
+		return h;
 	}
 
 }

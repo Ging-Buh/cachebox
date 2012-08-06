@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Controls;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.Gdx;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.Clipboard;
 
 public abstract class EditTextFieldBase extends CB_View_Base
 {
@@ -28,6 +30,19 @@ public abstract class EditTextFieldBase extends CB_View_Base
 
 	protected TextFieldListener listener;
 	protected TextFieldFilter filter;
+	protected OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
+	protected Clipboard clipboard;
+	protected boolean disabled = false;
+
+	public void disable()
+	{
+		disabled = true;
+	}
+
+	public void enable()
+	{
+		disabled = false;
+	}
 
 	/**
 	 * Interface for listening to typed characters.
@@ -37,6 +52,15 @@ public abstract class EditTextFieldBase extends CB_View_Base
 	static public interface TextFieldListener
 	{
 		public void keyTyped(EditTextFieldBase textField, char key);
+	}
+
+	/**
+	 * @param listener
+	 *            May be null.
+	 */
+	public void setTextFieldListener(TextFieldListener newlistener)
+	{
+		this.listener = newlistener;
 	}
 
 	/**
@@ -153,6 +177,51 @@ public abstract class EditTextFieldBase extends CB_View_Base
 		ret.selection = SpriteCache.getThemedSprite("InfoPanelBack");
 
 		return ret;
+	}
+
+	boolean hasFocus = false;
+
+	public void setFocus()
+	{
+		hasFocus = true;
+		this.onTouchDown(0, 0, 0, 0);
+
+		GL_Listener.glListener.renderForTextField(this);
+	}
+
+	public void setFocus(boolean value)
+	{
+		hasFocus = value;
+		if (value == true) GL_Listener.setKeyboardFocus(this);
+		else
+		{
+			if (GL_Listener.getKeyboardFocus() == this) GL_Listener.setKeyboardFocus(null);
+		}
+		GL_Listener.glListener.renderForTextField(this);
+
+	}
+
+	public void resetFocus()
+	{
+		hasFocus = false;
+		GL_Listener.setKeyboardFocus(null);
+
+	}
+
+	/** Default is an instance of {@link DefaultOnscreenKeyboard}. */
+	public OnscreenKeyboard getOnscreenKeyboard()
+	{
+		return keyboard;
+	}
+
+	public void setOnscreenKeyboard(OnscreenKeyboard keyboard)
+	{
+		this.keyboard = keyboard;
+	}
+
+	public void setClipboard(Clipboard clipboard)
+	{
+		this.clipboard = clipboard;
 	}
 
 }

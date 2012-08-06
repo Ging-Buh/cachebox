@@ -4,11 +4,11 @@ import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
@@ -22,8 +22,8 @@ public class SolverDialog extends GL_MsgBox
 	}
 
 	private GL_MsgBox mMsgBox;
-	private CB_TextField mVariableField;
-	private CB_TextField mFormulaField;
+	private EditTextField mVariableField;
+	private EditTextField mFormulaField;
 	private String mSolverString;
 	private SloverBackStringListner mBackStringListner;
 
@@ -59,9 +59,9 @@ public class SolverDialog extends GL_MsgBox
 		// initial VariableField
 		float TextFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
 		CB_RectF rec = new CB_RectF(0, msgBoxContentSize.height - TextFieldHeight, msgBoxContentSize.width, TextFieldHeight);
-		mVariableField = new CB_TextField(rec, "SolverDialogTextField");
+		mVariableField = new EditTextField(rec, "SolverDialogTextField");
 		mVariableField.setText(sVar);
-		mVariableField.setMsg("Enter formula");
+		// mVariableField.setMsg("Enter formula");
 		mMsgBox.addChild(mVariableField);
 
 		rec = new CB_RectF(0, msgBoxContentSize.height - TextFieldHeight * 2, msgBoxContentSize.width, TextFieldHeight);
@@ -73,9 +73,9 @@ public class SolverDialog extends GL_MsgBox
 
 		// initial FormulaField
 		rec = new CB_RectF(0, msgBoxContentSize.height - TextFieldHeight * 3, msgBoxContentSize.width, TextFieldHeight);
-		mFormulaField = new CB_TextField(rec, "SolverDialogTextField");
+		mFormulaField = new EditTextField(rec, "SolverDialogTextField");
 		mFormulaField.setText(sForm);
-		mFormulaField.setMsg("Enter formula");
+		// mFormulaField.setMsg("Enter formula");
 
 		mMsgBox.addChild(mFormulaField);
 

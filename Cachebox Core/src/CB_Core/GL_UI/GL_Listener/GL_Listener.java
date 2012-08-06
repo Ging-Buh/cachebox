@@ -25,11 +25,10 @@ import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
-import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
-import CB_Core.GL_UI.libGdx_Controls.LibGdx_Host_Control;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
+import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -42,6 +41,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class GL_Listener implements ApplicationListener // , InputProcessor
 {
@@ -484,7 +484,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		}
 	}
 
-	public void renderForTextField(CB_TextField textField)
+	public void renderForTextField(EditTextFieldBase textField)
 	{
 		addRenderView(textField, FRAME_RATE_TEXT_FIELD);
 	}
@@ -615,7 +615,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		try
 		{
 			Point akt = new Point(x, y);
-			if (distance(akt, first.point) > 15)
+			if (distance(akt, first.point) > UiSizes.getClickToleranz())
 			{
 				// zu weit verschoben -> Long-Click detection stoppen
 				cancelLongClickTimer();
@@ -1139,24 +1139,38 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		Toast(toast, length);
 	}
 
+	private Stage mStage;
+
+	private void chkStageInitial()
+	{
+		if (mStage == null)
+		{// initial a virtual stage
+			mStage = new Stage(UiSizes.getWindowWidth(), UiSizes.getWindowHeight(), false);
+		}
+	}
+
 	public boolean keyDown(int keycode)
 	{
-		return LibGdx_Host_Control.keyDown(keycode);
+		chkStageInitial();
+		return mStage.keyDown(keycode);
 	}
 
 	public boolean keyTyped(char character)
 	{
-		return LibGdx_Host_Control.keyTyped(character);
+		chkStageInitial();
+		return mStage.keyTyped(character);
 	}
 
 	public boolean keyUp(int keycode)
 	{
-		return LibGdx_Host_Control.keyUp(keycode);
+		chkStageInitial();
+		return mStage.keyUp(keycode);
 	}
 
 	public boolean scrolled(int amount)
 	{
-		return LibGdx_Host_Control.scrolled(amount);
+		chkStageInitial();
+		return mStage.scrolled(amount);
 	}
 
 	private boolean stopRender = false;

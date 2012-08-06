@@ -6,7 +6,6 @@ import CB_Core.Events.platformConector.KeyEventListner;
 import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Views.splash;
-import CB_Core.GL_UI.libGdx_Controls.LibGdx_Host_Control;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -69,8 +68,7 @@ public class Tab_GL_Listner extends GL_Listener
 				// WeiterLeiten an EditTextView, welches den Focus Hat
 				if (keyboardFocus != null && keyboardFocus.keyTyped(character)) return true;
 
-				// WeiterLeiten an VirtualStage!
-				return LibGdx_Host_Control.keyTyped(character);
+				return false;
 
 			}
 
@@ -79,7 +77,7 @@ public class Tab_GL_Listner extends GL_Listener
 			{
 				// WeiterLeiten an EditTextView, welches den Focus Hat
 				if (keyboardFocus != null && keyboardFocus.keyUp(KeyCode)) return true;
-				return LibGdx_Host_Control.keyUp(KeyCode);
+				return false;
 			}
 
 			@Override
@@ -87,7 +85,7 @@ public class Tab_GL_Listner extends GL_Listener
 			{
 				// WeiterLeiten an EditTextView, welches den Focus Hat
 				if (keyboardFocus != null && keyboardFocus.keyDown(keycode)) return true;
-				return LibGdx_Host_Control.keyDown(keycode);
+				return false;
 			}
 		});
 

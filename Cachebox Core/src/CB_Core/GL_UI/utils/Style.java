@@ -1,4 +1,4 @@
-package CB_Core.GL_UI.libGdx_Controls;
+package CB_Core.GL_UI.utils;
 
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;

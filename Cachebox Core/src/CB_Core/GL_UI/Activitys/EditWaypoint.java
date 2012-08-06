@@ -10,21 +10,21 @@ import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
 import CB_Core.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
+import CB_Core.GL_UI.Controls.EditTextField;
+import CB_Core.GL_UI.Controls.EditTextFieldBase;
+import CB_Core.GL_UI.Controls.EditTextFieldBase.DefaultOnscreenKeyboard;
+import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
+import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
+import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Spinner;
 import CB_Core.GL_UI.Controls.Spinner.selectionChangedListner;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.libGdx_Controls.CB_TextField;
-import CB_Core.GL_UI.libGdx_Controls.CB_WrappedTextField;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.LangStrings;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
-
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.DefaultOnscreenKeyboard;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 
 public class EditWaypoint extends ActivityBase
 {
@@ -37,11 +37,11 @@ public class EditWaypoint extends ActivityBase
 	private Label tvCacheName = null;
 	private Label tvTyp = null;
 	private Label tvTitle = null;
-	private CB_TextField etTitle = null;
+	private EditTextField etTitle = null;
 	private Label tvDescription = null;
-	private CB_WrappedTextField etDescription = null;
+	private EditWrapedTextField etDescription = null;
 	private Label tvClue = null;
-	private CB_WrappedTextField etClue = null;
+	private EditWrapedTextField etClue = null;
 	private Boolean firstShow = true;
 
 	private Box scrollBox;
@@ -82,7 +82,7 @@ public class EditWaypoint extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				for (CB_TextField tmp : allTextFields)
+				for (EditTextFieldBase tmp : allTextFields)
 				{
 					tmp.resetFocus();
 				}
@@ -221,7 +221,7 @@ public class EditWaypoint extends ActivityBase
 	private void iniTitleTextField()
 	{
 		CB_RectF rec = new CB_RectF(Left, tvTitle.getY() - UiSizes.getButtonHeight(), width - Left - Right, UiSizes.getButtonHeight());
-		etTitle = new CB_TextField(rec, "TitleTextField");
+		etTitle = new EditTextField(rec, "TitleTextField");
 
 		String txt = (waypoint.Title == null) ? "" : waypoint.Title;
 
@@ -241,17 +241,17 @@ public class EditWaypoint extends ActivityBase
 	private void iniTitleTextDesc()
 	{
 		CB_RectF rec = new CB_RectF(Left, tvDescription.getY() - UiSizes.getButtonHeight(), width - Left - Right, UiSizes.getButtonHeight());
-		etDescription = new CB_WrappedTextField(rec, "DescTextField");
+		etDescription = new EditWrapedTextField(rec, "DescTextField");
 
 		String txt = (waypoint.Description == null) ? "" : waypoint.Description;
 
 		etDescription.setText(txt);
 
-		etDescription.setTextChangedListner(new TextFieldListener()
+		etDescription.setTextFieldListener(new TextFieldListener()
 		{
 
 			@Override
-			public void keyTyped(com.badlogic.gdx.scenes.scene2d.ui.TextField textField, char key)
+			public void keyTyped(EditTextFieldBase textField, char key)
 			{
 				layoutTextFields();
 			}
@@ -272,17 +272,16 @@ public class EditWaypoint extends ActivityBase
 	private void iniTitleTextClue()
 	{
 		CB_RectF rec = new CB_RectF(Left, tvClue.getY() - UiSizes.getButtonHeight(), width - Left - Right, UiSizes.getButtonHeight());
-		etClue = new CB_WrappedTextField(rec, "ClueTextField");
+		etClue = new EditWrapedTextField(rec, "ClueTextField");
 
 		String txt = (waypoint.Clue == null) ? "" : waypoint.Clue;
 
 		etClue.setText(txt);
 
-		etClue.setTextChangedListner(new TextFieldListener()
+		etClue.setTextFieldListener(new TextFieldListener()
 		{
-
 			@Override
-			public void keyTyped(com.badlogic.gdx.scenes.scene2d.ui.TextField textField, char key)
+			public void keyTyped(EditTextFieldBase textField, char key)
 			{
 				layoutTextFields();
 			}
@@ -345,11 +344,11 @@ public class EditWaypoint extends ActivityBase
 		registerTextField(etClue);
 	}
 
-	private ArrayList<CB_TextField> allTextFields = new ArrayList<CB_TextField>();
+	private ArrayList<EditTextFieldBase> allTextFields = new ArrayList<EditTextFieldBase>();
 
 	private OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
-	public void registerTextField(final CB_TextField textField)
+	public void registerTextField(final EditTextFieldBase textField)
 	{
 		textField.setOnscreenKeyboard(new OnscreenKeyboard()
 		{
@@ -357,7 +356,7 @@ public class EditWaypoint extends ActivityBase
 			public void show(boolean arg0)
 			{
 
-				for (CB_TextField tmp : allTextFields)
+				for (EditTextFieldBase tmp : allTextFields)
 				{
 					tmp.resetFocus();
 				}
@@ -387,8 +386,8 @@ public class EditWaypoint extends ActivityBase
 	{
 		float maxTextFieldHeight = this.height / 2.3f;
 		float rand = etClue.getStyle().background.getBottomHeight() + etClue.getStyle().background.getTopHeight();
-		float descriptionHeight = Math.min(maxTextFieldHeight, etDescription.getmesuredHeight() + rand);
-		float clueHeight = Math.min(maxTextFieldHeight, etClue.getmesuredHeight() + rand);
+		float descriptionHeight = Math.min(maxTextFieldHeight, etDescription.getMesuredHeight() + rand);
+		float clueHeight = Math.min(maxTextFieldHeight, etClue.getMesuredHeight() + rand);
 
 		descriptionHeight = Math.max(descriptionHeight, UiSizes.getButtonHeight());
 		clueHeight = Math.max(clueHeight, UiSizes.getButtonHeight());
