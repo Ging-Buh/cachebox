@@ -211,4 +211,9 @@ public class TrackListViewItem extends ListViewItemBackground
 
 	}
 
+	public Track getRoute()
+	{
+		return mRoute;
+	}
+
 }

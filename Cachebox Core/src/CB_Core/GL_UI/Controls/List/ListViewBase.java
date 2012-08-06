@@ -391,6 +391,13 @@ public abstract class ListViewBase extends CB_View_Base
 
 	protected boolean selectionchanged = false;
 
+	public ListViewItemBase getSelectedItem()
+	{
+		if (mBaseAdapter == null) return null;
+		if (mSelectedIndex == -1) return null;
+		return mBaseAdapter.getView(mSelectedIndex);
+	}
+
 	public void setSelection(int i)
 	{
 		if (mSelectedIndex != i && i >= 0)

@@ -217,4 +217,10 @@ public class TrackListView extends V_ListView
 		}
 	};
 
+	public TrackListViewItem getSelectetItem()
+	{
+		return (TrackListViewItem) getSelectedItem();
+
+	}
+
 }

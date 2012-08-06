@@ -13,11 +13,15 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate.Type;
-import CB_Core.GL_UI.Controls.List.ListViewItemBase;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.TrackListView;
+import CB_Core.GL_UI.Views.TrackListViewItem;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
@@ -118,6 +122,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 								RouteOverlay.Routes.add(RouteOverlay.LoadRoute(Path, TrackColor, Config.settings.TrackDistance.getValue()));
 								Logger.LogCat("Load Track :" + Path);
+								if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
 							}
 						}
 					});
@@ -126,35 +131,38 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 				case SAVE:
 					return true;
 				case DELETE:
-					// platformConector.menuItemClicked(MenuItemConst.TRACK_LIST_DELETE);
-					int selectedTrackItem = ((ListViewItemBase) v).getIndex();
-					// if (selectedTrackItem == null)
-					// {
-					// GL_MsgBox.Show(GlobalCore.Translations.Get("NoTrackSelected"), null,
-					// MessageBoxButtons.OK, MessageBoxIcon.Warning, new OnMsgBoxClickListener()
-					// {
-					//
-					// @Override
-					// public boolean onClick(int which)
-					// {
-					// that.show();
-					// return true;
-					// }
-					// });
-					// return true;
-					// }
-					//
-					// if (selectedItem.getRoute().IsActualTrack)
-					// {
-					// MessageBox.Show(GlobalCore.Translations.Get("IsActualTrack"));
-					// return;
-					// }
-					//
-					// RouteOverlay.Routes.remove(selectedItem.getRoute());
-					// selectedItem = null;
-					// lvAdapter.notifyDataSetChanged();
-					return true;
+					if (TrackListView.that != null)
+					{
+						TrackListViewItem selectedTrackItem = TrackListView.that.getSelectetItem();
 
+						if (selectedTrackItem == null)
+						{
+							GL_MsgBox.Show(GlobalCore.Translations.Get("NoTrackSelected"), null, MessageBoxButtons.OK,
+									MessageBoxIcon.Warning, new OnMsgBoxClickListener()
+									{
+
+										@Override
+										public boolean onClick(int which)
+										{
+											// hier btauchen wir nichts machen!
+											return true;
+										}
+									});
+							return true;
+						}
+
+						if (selectedTrackItem.getRoute().IsActualTrack)
+						{
+							GL_MsgBox.Show(GlobalCore.Translations.Get("IsActualTrack"), null, MessageBoxButtons.OK,
+									MessageBoxIcon.Warning, null);
+							return false;
+						}
+
+						RouteOverlay.Routes.remove(selectedTrackItem.getRoute());
+						selectedTrackItem = null;
+						TrackListView.that.notifyDataSetChanged();
+						return true;
+					}
 				}
 				return false;
 			}
