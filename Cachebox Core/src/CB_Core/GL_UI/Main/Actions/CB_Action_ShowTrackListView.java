@@ -2,20 +2,23 @@ package CB_Core.GL_UI.Main.Actions;
 
 import java.util.Date;
 
+import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Events.platformConector;
+import CB_Core.Events.platformConector.IgetFileReturnListner;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
-import CB_Core.GL_UI.MenuItemConst;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate.Type;
+import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.TrackListView;
+import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Map.RouteOverlay.Track;
@@ -94,27 +97,62 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					// ;
 					return true;
 				case LOAD:
+					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", new IgetFileReturnListner()
+					{
+						@Override
+						public void getFieleReturn(String Path)
+						{
+							if (Path != null)
+							{
+								Color[] ColorField = new Color[8];
+								ColorField[0] = Color.RED;
+								ColorField[1] = Color.YELLOW;
+								ColorField[2] = Color.BLACK;
+								ColorField[3] = Color.LIGHT_GRAY;
+								ColorField[4] = Color.GREEN;
+								ColorField[5] = Color.BLUE;
+								ColorField[6] = Color.CYAN;
+								ColorField[7] = Color.GRAY;
+								Color TrackColor;
+								TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
 
-					platformConector.menuItemClicked(MenuItemConst.TRACK_LIST_LOAD);
-
-					// platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", new IgetFileReturnListner()
-					// {
-					// @Override
-					// public void getFieleReturn(String Path)
-					// {
-					// // TODO Load Track from Path
-					// if (Path != null)
-					// {
-					// Logger.LogCat("Load Track :" + Path);
-					// }
-					// }
-					// });
+								RouteOverlay.Routes.add(RouteOverlay.LoadRoute(Path, TrackColor, Config.settings.TrackDistance.getValue()));
+								Logger.LogCat("Load Track :" + Path);
+							}
+						}
+					});
 
 					return true;
 				case SAVE:
 					return true;
 				case DELETE:
-					platformConector.menuItemClicked(MenuItemConst.TRACK_LIST_DELETE);
+					// platformConector.menuItemClicked(MenuItemConst.TRACK_LIST_DELETE);
+					int selectedTrackItem = ((ListViewItemBase) v).getIndex();
+					// if (selectedTrackItem == null)
+					// {
+					// GL_MsgBox.Show(GlobalCore.Translations.Get("NoTrackSelected"), null,
+					// MessageBoxButtons.OK, MessageBoxIcon.Warning, new OnMsgBoxClickListener()
+					// {
+					//
+					// @Override
+					// public boolean onClick(int which)
+					// {
+					// that.show();
+					// return true;
+					// }
+					// });
+					// return true;
+					// }
+					//
+					// if (selectedItem.getRoute().IsActualTrack)
+					// {
+					// MessageBox.Show(GlobalCore.Translations.Get("IsActualTrack"));
+					// return;
+					// }
+					//
+					// RouteOverlay.Routes.remove(selectedItem.getRoute());
+					// selectedItem = null;
+					// lvAdapter.notifyDataSetChanged();
 					return true;
 
 				}
@@ -302,8 +340,6 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 							}
 
 						}
-						int j = 10;
-						j++;
 					}
 
 				}, Type.circle);
