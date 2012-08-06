@@ -23,7 +23,7 @@ public class PolylineReduction
 	// / <returns></returns>
 	public static ArrayList<TrackPoint> DouglasPeuckerReduction(ArrayList<TrackPoint> points, double Tolerance)
 	{
-		if (points == null || points.size() < 5) return points;
+		if (points == null || points.size() < 50) return points; // created Circle have 36 points and don`t need reduction
 
 		int firstPoint = 0;
 		int lastPoint = points.size() - 1;
