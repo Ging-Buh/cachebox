@@ -1,6 +1,8 @@
 package CB_Core.GL_UI.Controls;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -19,7 +21,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
-import com.badlogic.gdx.utils.TimeUtils;
 
 public class EditWrapedTextField extends EditTextFieldBase
 {
@@ -57,7 +58,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 	// protected final FloatArray glyphPositions = new FloatArray();
 
 	protected boolean cursorOn = true;
-	protected float blinkTime = 0.42f;
+	protected long blinkTime = 420;
 	protected long lastBlink;
 
 	protected boolean hasSelection;
@@ -66,6 +67,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	protected char passwordCharacter = BULLET;
 	final Lock displayTextLock = new ReentrantLock();
+	private Timer blinkTimer;
 
 	public EditWrapedTextField(CB_RectF rec, String Name)
 	{
@@ -90,6 +92,38 @@ public class EditWrapedTextField extends EditTextFieldBase
 		setText("");
 		topLine = 0;
 		this.isClickable = true;
+	}
+
+	@Override
+	public void onShow()
+	{
+		// TODO Auto-generated method stub
+		super.onShow();
+		blinkTimer = new Timer();
+		TimerTask blinkTimerTask = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				cursorOn = !cursorOn;
+				GL_Listener.glListener.renderOnce("EditWrapedTextField: CursorBlink");
+			}
+		};
+		blinkTimer.scheduleAtFixedRate(blinkTimerTask, 0, blinkTime);
+	}
+
+	@Override
+	public void onHide()
+	{
+		try
+		{
+			blinkTimer.cancel();
+		}
+		catch (Exception ex)
+		{
+
+		}
+		super.onHide();
 	}
 
 	@Override
@@ -281,7 +315,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 			}
 			if (focused)
 			{
-				blink();
 				if (cursorOn && cursorPatch != null)
 				{
 					DisplayText dt = displayText.get(cursorLine);
@@ -546,16 +579,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 		}
 	}
 
-	private void blink()
-	{
-		long time = TimeUtils.nanoTime();
-		if ((time - lastBlink) / 1000000000.0f > blinkTime)
-		{
-			cursorOn = !cursorOn;
-			lastBlink = time;
-		}
-	}
-
 	private Point mouseDown = null;
 	private float mouseDownTopLine = 0;
 	private int mouseTempMove = 0;
@@ -602,7 +625,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		GL_Listener.setKeyboardFocus(this);
 		keyboard.show(true);
 		clearSelection();
-		lastBlink = 0;
+
 		cursorOn = false;
 		x = x - style.backgroundFocused.getLeftWidth();
 
