@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.Color;
 public class ColorPickerRec extends CB_View_Base
 {
 
-	private HSV_Color mColor = new HSV_Color(Color.WHITE);
+	private HSV_Color mColor = new HSV_Color(Color.YELLOW);
 
 	public ColorPickerRec(CB_RectF rec, String Name)
 	{
@@ -34,6 +34,16 @@ public class ColorPickerRec extends CB_View_Base
 	{
 		mColor.setHue(hue);
 		colorChanged();
+	}
+
+	public void setColor(HSV_Color color)
+	{
+		mColor = color;
+	}
+
+	public void setColor(Color color)
+	{
+		mColor = new HSV_Color(color);
 	}
 
 	private void colorChanged()

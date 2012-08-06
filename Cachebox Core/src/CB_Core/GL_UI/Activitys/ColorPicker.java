@@ -8,7 +8,10 @@ import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.ColorPickerRec;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.utils.ColorDrawable;
+import CB_Core.GL_UI.utils.GradiantFill;
+import CB_Core.GL_UI.utils.GradiantFill.direction;
 import CB_Core.GL_UI.utils.HSV_Color;
+import CB_Core.GL_UI.utils.rectangle;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -111,23 +114,27 @@ public class ColorPicker extends ActivityBase
 	{
 		float vWidth = bOK.getHeight();
 
-		viewHue = new Image(this.width - Right - vWidth, aktColor.getMaxY() + margin, vWidth, this.height - Top - aktColor.getMaxY()
-				- margin, "viewHue");
+		viewHue = new Image(this.width - Right - margin - vWidth, aktColor.getMaxY() + margin, vWidth, this.height - Top
+				- aktColor.getMaxY() - margin * 2, "viewHue");
 		viewHue.setSprite(SpriteCache.ambilwarna_hue);
 
 		this.addChild(viewHue);
 	}
 
+	private GradiantFill gradiant;
+
 	private void createTest()
 	{
-		CB_RectF rec = new CB_RectF(10, 100, 300, 300);
+		CB_RectF rec = new CB_RectF(Left + margin, viewHue.getY(), viewHue.getX() - margin * 3 - Left, viewHue.getHeight());
 
 		colorSelectBox = new ColorPickerRec(rec, "");
 		this.addChild(colorSelectBox);
 
-		// rectangle test = new rectangle(rec, "");
-		//
-		// this.addChild(test);
+		gradiant = new GradiantFill(Color.WHITE, actColor, direction.left2reight);
+
+		rectangle test = new rectangle(rec, gradiant);
+
+		this.addChild(test);
 	}
 
 	private void hueChanged()

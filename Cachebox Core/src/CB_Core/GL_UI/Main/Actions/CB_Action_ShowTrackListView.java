@@ -237,6 +237,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 						route.ShowRoute = true;
 						RouteOverlay.Routes.add(route);
+						if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
 					}
 				}, Type.p2p);
 		pC.show();
@@ -278,7 +279,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 						route.ShowRoute = true;
 						RouteOverlay.Routes.add(route);
-
+						if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
 					}
 
 				}, Type.projetion);
@@ -319,7 +320,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						Coordinate Projektion = new Coordinate();
 						Coordinate LastCoord = new Coordinate();
 
-						for (int i = 0; i <= 360; i++)
+						for (int i = 0; i <= 360; i += 10)
 						{
 							Projektion = Coordinate.Project(startCoord.Latitude, startCoord.Longitude, (double) i, distance);
 
@@ -340,6 +341,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 							}
 
 						}
+						if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
 					}
 
 				}, Type.circle);

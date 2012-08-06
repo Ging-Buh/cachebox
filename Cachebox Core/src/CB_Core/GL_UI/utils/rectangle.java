@@ -11,11 +11,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 public class rectangle extends CB_View_Base
 {
 	private ShapeRenderer renderer;
+	private GradiantFill gradiant;
 
-	public rectangle(CB_RectF rec, String Name)
+	public rectangle(CB_RectF rec, GradiantFill fill)
 	{
-		super(rec, Name);
-		// TODO Auto-generated constructor stub
+		super(rec, "");
+		gradiant = fill;
 	}
 
 	@Override
@@ -46,16 +47,47 @@ public class rectangle extends CB_View_Base
 		renderer.setTransformMatrix(batch.getTransformMatrix());
 		renderer.translate(getX(), getY(), 0);
 
-		Color c1 = Color.BLACK;
-		Color c2 = Color.BLACK;
-		Color c3 = Color.GREEN;
-		Color c4 = Color.WHITE;
+		Color[] c = new Color[5];
+
+		getFillColors(c);
 
 		renderer.begin(ShapeType.FilledRectangle);
-		renderer.filledRect(0.0f, 0.0f, getWidth(), getHeight(), c1, c2, c3, c4);
+		renderer.filledRect(0.0f, 0.0f, getWidth(), getHeight(), c[1], c[2], c[3], c[4]);
 		renderer.end();
 
 		batch.begin();
+	}
+
+	private void getFillColors(Color[] c)
+	{
+		switch (gradiant.Direction)
+		{
+		case left2reight:
+			c[1] = gradiant.Color1;
+			c[2] = gradiant.Color2;
+			c[3] = gradiant.Color1;
+			c[4] = gradiant.Color2;
+			break;
+		case right2left:
+			c[1] = gradiant.Color1;
+			c[2] = gradiant.Color1;
+			c[3] = gradiant.Color1;
+			c[4] = gradiant.Color1;
+			break;
+		case top2bottom:
+			c[1] = gradiant.Color2;
+			c[2] = gradiant.Color2;
+			c[3] = gradiant.Color1;
+			c[4] = gradiant.Color1;
+			break;
+		case bottom2top:
+			c[1] = gradiant.Color1;
+			c[2] = gradiant.Color1;
+			c[3] = gradiant.Color2;
+			c[4] = gradiant.Color2;
+			break;
+		}
+
 	}
 
 }
