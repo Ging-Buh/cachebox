@@ -217,9 +217,9 @@ public class TrackListView extends V_ListView
 		}
 	};
 
-	public TrackListViewItem getSelectetItem()
+	public TrackListViewItem getSelectedItem()
 	{
-		return (TrackListViewItem) getSelectedItem();
+		return (TrackListViewItem) super.getSelectedItem();
 
 	}
 

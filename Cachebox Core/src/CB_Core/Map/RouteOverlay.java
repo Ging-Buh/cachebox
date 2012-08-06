@@ -471,7 +471,7 @@ public class RouteOverlay
 		{
 			for (int i = 0; i <= track.Points.size(); i++)
 			{
-				// track.Points.
+				// track.Points..
 				// writer.append("<trkpt lat=\"" + String.valueOf(track.Points[i].GlobalCore.LastValidPosition.Latitude) + "\" lon=\""
 				// + String.valueOf(GlobalCore.LastValidPosition.Longitude) + "\">\n");
 				// writer.append("   <ele>" + String.valueOf(GlobalCore.LastValidPosition.Elevation) + "</ele>\n");

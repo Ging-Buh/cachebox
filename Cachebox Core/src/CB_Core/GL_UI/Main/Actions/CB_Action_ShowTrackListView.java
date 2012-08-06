@@ -113,7 +113,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 				case RENAME:
 					if (TrackListView.that != null)
 					{
-						final TrackListViewItem selectedTrackItem = TrackListView.that.getSelectetItem();
+						final TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
 
 						StringInputBox.Show(selectedTrackItem.getRoute().Name, GlobalCore.Translations.Get("RenameTrack"),
 								selectedTrackItem.getRoute().Name, new OnMsgBoxClickListener()
@@ -167,7 +167,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 				case SAVE:
 					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", new IgetFileReturnListner()
 					{
-						TrackListViewItem selectedTrackItem = TrackListView.that.getSelectetItem();
+						TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
 
 						@Override
 						public void getFieleReturn(String Path)
@@ -185,7 +185,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 				case DELETE:
 					if (TrackListView.that != null)
 					{
-						TrackListViewItem selectedTrackItem = TrackListView.that.getSelectetItem();
+						TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
 
 						if (selectedTrackItem == null)
 						{
@@ -220,7 +220,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 			}
 		});
 
-		TrackListViewItem selectedTrackItem = TrackListView.that.getSelectetItem();
+		TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
 		cm.addItem(LOAD, "load");
 		cm.addItem(GENERATE, "generate");
 		// rename, save, delete darf nicht mit dem aktuellen Track gemacht werden....
