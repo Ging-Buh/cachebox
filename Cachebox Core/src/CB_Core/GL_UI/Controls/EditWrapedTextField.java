@@ -575,6 +575,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		{
 			topLine = mouseDownTopLine + (float) (y - mouseDown.y) / lineHeight;
 		}
+		GL_Listener.glListener.renderOnce("EditWrapedTextField");
 		return true;
 	};
 
@@ -627,6 +628,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		}
 		cursor = Math.max(0, dt.glyphPositions.size - 1);
 		setCursorLine(clickedCursorLine);
+		GL_Listener.glListener.renderOnce("EditWrapedTextField");
 		return true;
 	}
 
@@ -743,6 +745,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						clearSelection();
 					}
 				}
+				GL_Listener.glListener.renderOnce("EditWrapedTextField");
 
 				return true;
 			}
@@ -984,6 +987,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 					updateDisplayText(dt, true);
 					cursor--;
 					checkCursorVisible();
+					GL_Listener.glListener.renderOnce("EditWrapedTextField");
 					return true;
 				}
 				else
@@ -998,6 +1002,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						displayText.remove(cursorLine + 1);
 						updateDisplayText(dt2, true);
 					}
+					GL_Listener.glListener.renderOnce("EditWrapedTextField");
 					return true;
 				}
 			}
@@ -1007,6 +1012,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				{
 					dt.displayText = dt.displayText.substring(0, cursor) + dt.displayText.substring(cursor + 1, dt.displayText.length());
 					updateDisplayText(dt, true);
+					GL_Listener.glListener.renderOnce("EditWrapedTextField");
 					return true;
 				}
 				else
@@ -1019,6 +1025,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						displayText.remove(dt2);
 						dt.displayText += dt2.displayText;
 						updateDisplayText(dt, true);
+						GL_Listener.glListener.renderOnce("EditWrapedTextField");
 					}
 					return true;
 				}
@@ -1096,6 +1103,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 					checkCursorVisible();
 					clearSelection();
 				}
+				GL_Listener.glListener.renderOnce("EditWrapedTextField");
 			}
 			if (listener != null) listener.keyTyped(this, character);
 			return true;

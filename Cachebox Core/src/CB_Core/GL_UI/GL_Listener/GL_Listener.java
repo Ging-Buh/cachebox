@@ -70,6 +70,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	public static OrthographicCamera camera;
 	private ParentInfo prjMatrix;
 	private static boolean misTouchDown = false;
+	private boolean touchDraggedActive = false;
 
 	protected static EditTextFieldBase keyboardFocus;
 
@@ -541,7 +542,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 				// dürfte nicht passieren!!!
 				TouchDownPointer first = touchDownPos.get(pointer);
 				Point akt = new Point(x, y);
-				if (distance(akt, first.point) < 15)
+				if (distance(akt, first.point) < UiSizes.getClickToleranz())
 				{
 					if (first.view.isClickable())
 					{
@@ -573,6 +574,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	public boolean onTouchDownBase(int x, int y, int pointer, int button)
 	{
 		misTouchDown = true;
+		touchDraggedActive = false;
 		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
 
 		GL_View_Base view = testingView.touchDown(x, (int) testingView.getHeight() - y, pointer, button);
@@ -615,8 +617,10 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		try
 		{
 			Point akt = new Point(x, y);
-			if (distance(akt, first.point) > UiSizes.getClickToleranz())
+			if (touchDraggedActive || (distance(akt, first.point) > UiSizes.getClickToleranz()))
 			{
+				// merken, dass das Dragging aktiviert wurde, bis der Finger wieder losgelassen wird
+				touchDraggedActive = true;
 				// zu weit verschoben -> Long-Click detection stoppen
 				cancelLongClickTimer();
 				// touchDragged Event an das View, das den onTouchDown bekommen hat
@@ -650,7 +654,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 																// dürfte nicht passieren!!!
 		TouchDownPointer first = touchDownPos.get(pointer);
 		Point akt = new Point(x, y);
-		if (distance(akt, first.point) < 15)
+		if (distance(akt, first.point) < UiSizes.getClickToleranz())
 		{
 			// Finger wurde losgelassen ohne viel Bewegung -> onClick erzeugen
 			// glListener.onClick(akt.x, akt.y, pointer, 0);
