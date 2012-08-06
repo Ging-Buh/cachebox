@@ -1,10 +1,13 @@
 package CB_Core.Map;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -428,4 +431,75 @@ public class RouteOverlay
 		}
 
 	}
+
+	public static void SaveRoute(String Path, Track track)
+	{
+		FileWriter writer = null;
+		File gpxfile = new File(Path);
+		try
+		{
+			writer = new FileWriter(gpxfile);
+			try
+			{
+				writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+				writer.append("<gpx version=\"1.0\" creator=\"cachebox track recorder\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n");
+				Date now = new Date();
+				SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String sDate = datFormat.format(now);
+				datFormat = new SimpleDateFormat("HH:mm:ss");
+				sDate += "T" + datFormat.format(now) + "Z";
+
+				writer.append("<time>" + sDate + "</time>\n");
+
+				writer.append("<bounds minlat=\"-90\" minlon=\"-180\" maxlat=\"90\" maxlon=\"180\"/>\n");
+
+				writer.append("<trk><trkseg>\n");
+
+				writer.flush();
+			}
+			catch (IOException e)
+			{
+				CB_Core.Log.Logger.Error("SaveTrack", "IOException", e);
+			}
+		}
+		catch (IOException e1)
+		{
+			CB_Core.Log.Logger.Error("SaveTrack", "IOException", e1);
+		}
+
+		try
+		{
+			for (int i = 0; i <= track.Points.size(); i++)
+			{
+				// track.Points.
+				// writer.append("<trkpt lat=\"" + String.valueOf(track.Points[i].GlobalCore.LastValidPosition.Latitude) + "\" lon=\""
+				// + String.valueOf(GlobalCore.LastValidPosition.Longitude) + "\">\n");
+				// writer.append("   <ele>" + String.valueOf(GlobalCore.LastValidPosition.Elevation) + "</ele>\n");
+				// Date now = new Date();
+				// SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
+				// String sDate = datFormat.format(now);
+				// datFormat = new SimpleDateFormat("HH:mm:ss");
+				// sDate += "T" + datFormat.format(now) + "Z";
+				// writer.append("   <time>" + sDate + "</time>\n");
+				// writer.append("   <course>" + String.valueOf(GlobalCore.Locator.getHeading()) + "</course>\n");
+				// writer.append("   <speed>" + String.valueOf(GlobalCore.Locator.SpeedOverGround()) + "</speed>\n");
+				// writer.append("</trkpt>\n");
+			}
+
+			writer.append("</trkseg>\n");
+			writer.append("</trk>\n");
+
+			writer.append("</gpx>\n");
+			writer.flush();
+			writer.close();
+		}
+
+		catch (IOException e)
+		{
+			CB_Core.Log.Logger.Error("SaveTrack", "IOException", e);
+		}
+		writer = null;
+
+	}
+
 }

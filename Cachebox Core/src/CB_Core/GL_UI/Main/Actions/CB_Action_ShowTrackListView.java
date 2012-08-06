@@ -13,6 +13,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate.Type;
+import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -33,6 +34,18 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 {
+	Color[] ColorField = new Color[8];
+	{
+		ColorField[0] = Color.RED;
+		ColorField[1] = Color.YELLOW;
+		ColorField[2] = Color.BLACK;
+		ColorField[3] = Color.LIGHT_GRAY;
+		ColorField[4] = Color.GREEN;
+		ColorField[5] = Color.BLUE;
+		ColorField[6] = Color.CYAN;
+		ColorField[7] = Color.GRAY;
+	}
+	Color TrackColor;
 
 	public CB_Action_ShowTrackListView()
 	{
@@ -98,7 +111,40 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					showMenuCreate();
 					return true;
 				case RENAME:
-					// ;
+					if (TrackListView.that != null)
+					{
+						final TrackListViewItem selectedTrackItem = TrackListView.that.getSelectetItem();
+
+						StringInputBox.Show(selectedTrackItem.getRoute().Name, GlobalCore.Translations.Get("RenameTrack"),
+								selectedTrackItem.getRoute().Name, new OnMsgBoxClickListener()
+								{
+
+									@Override
+									public boolean onClick(int which)
+									{
+										String text = StringInputBox.editText.getText();
+										// Behandle das ergebniss
+										switch (which)
+										{
+										case 1: // ok Clicket
+											selectedTrackItem.getRoute().Name = text;
+											TrackListView.that.notifyDataSetChanged();
+											break;
+										case 2: // cancel clicket
+											break;
+										case 3:
+											break;
+										}
+
+										return true;
+									}
+								});
+
+						TrackListView.that.notifyDataSetChanged();
+						return true;
+
+					}
+
 					return true;
 				case LOAD:
 					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", new IgetFileReturnListner()
@@ -108,16 +154,6 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						{
 							if (Path != null)
 							{
-								Color[] ColorField = new Color[8];
-								ColorField[0] = Color.RED;
-								ColorField[1] = Color.YELLOW;
-								ColorField[2] = Color.BLACK;
-								ColorField[3] = Color.LIGHT_GRAY;
-								ColorField[4] = Color.GREEN;
-								ColorField[5] = Color.BLUE;
-								ColorField[6] = Color.CYAN;
-								ColorField[7] = Color.GRAY;
-								Color TrackColor;
 								TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
 
 								RouteOverlay.Routes.add(RouteOverlay.LoadRoute(Path, TrackColor, Config.settings.TrackDistance.getValue()));
@@ -129,6 +165,22 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 					return true;
 				case SAVE:
+					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", new IgetFileReturnListner()
+					{
+						TrackListViewItem selectedTrackItem = TrackListView.that.getSelectetItem();
+
+						@Override
+						public void getFieleReturn(String Path)
+						{
+							if (Path != null)
+							{
+								RouteOverlay.SaveRoute(Path, selectedTrackItem.getRoute());
+								Logger.LogCat("Load Track :" + Path);
+								if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
+							}
+						}
+					});
+
 					return true;
 				case DELETE:
 					if (TrackListView.that != null)
@@ -168,11 +220,16 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 			}
 		});
 
-		cm.addItem(GENERATE, "generate");
-		cm.addItem(RENAME, "rename");
+		TrackListViewItem selectedTrackItem = TrackListView.that.getSelectetItem();
 		cm.addItem(LOAD, "load");
-		cm.addItem(SAVE, "save");
-		cm.addItem(DELETE, "delete");
+		cm.addItem(GENERATE, "generate");
+		// rename, save, delete darf nicht mit dem aktuellen Track gemacht werden....
+		if (selectedTrackItem != null && !selectedTrackItem.getRoute().IsActualTrack)
+		{
+			cm.addItem(RENAME, "rename");
+			cm.addItem(SAVE, "save");
+			cm.addItem(DELETE, "delete");
+		}
 
 		cm.show();
 
@@ -222,16 +279,6 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
 					{
 						float[] dist = new float[4];
-						Color[] ColorField = new Color[8];
-						ColorField[0] = Color.RED;
-						ColorField[1] = Color.YELLOW;
-						ColorField[2] = Color.BLACK;
-						ColorField[3] = Color.LIGHT_GRAY;
-						ColorField[4] = Color.GREEN;
-						ColorField[5] = Color.BLUE;
-						ColorField[6] = Color.CYAN;
-						ColorField[7] = Color.GRAY;
-						Color TrackColor;
 						TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
 						Track route = new Track(null, TrackColor);
 
@@ -264,16 +311,6 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
 					{
 						float[] dist = new float[4];
-						Color[] ColorField = new Color[8];
-						ColorField[0] = Color.RED;
-						ColorField[1] = Color.YELLOW;
-						ColorField[2] = Color.BLACK;
-						ColorField[3] = Color.LIGHT_GRAY;
-						ColorField[4] = Color.GREEN;
-						ColorField[5] = Color.BLUE;
-						ColorField[6] = Color.CYAN;
-						ColorField[7] = Color.GRAY;
-						Color TrackColor;
 						TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
 						Track route = new Track(null, TrackColor);
 						route.Name = "Projected Route";
@@ -309,15 +346,6 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					{
 						float[] dist = new float[4];
 						Color[] ColorField = new Color[8];
-						ColorField[0] = Color.RED;
-						ColorField[1] = Color.YELLOW;
-						ColorField[2] = Color.BLACK;
-						ColorField[3] = Color.LIGHT_GRAY;
-						ColorField[4] = Color.GREEN;
-						ColorField[5] = Color.BLUE;
-						ColorField[6] = Color.CYAN;
-						ColorField[7] = Color.GRAY;
-						Color TrackColor;
 						TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
 						Track route = new Track(null, TrackColor);
 						route.Name = "Circle Route";
