@@ -401,12 +401,14 @@
 	load = Laden
 	NoTrackSelected = Kein Track ausgewählt!
 	IsActualTrack = Aktueller Track kann nicht gelöscht werden!
+	renActualTrack = Aktueller Track darf nicht umbenannt werden!
 	actualTrack = Aktueller Track
 	recordetTrack = Aufgezeichneter Track
 	Point2Point = Punkt zu Punkt
 	Circle = Kreis
 	length = Länge
 	rename = Umbenennen
+	RenameTrack = Track umbenennen in
 	fromPoint = Von Punkt
 	toPoint = Zu Punkt
 	centerPoint = Mittelpunkt

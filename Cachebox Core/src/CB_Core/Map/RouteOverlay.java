@@ -169,9 +169,7 @@ public class RouteOverlay
 							lastAcceptedCoordinate = new Coordinate(lat, lon);
 
 						}
-
 					}
-
 				}
 
 				if (line.indexOf("</time>") > -1)
@@ -469,21 +467,21 @@ public class RouteOverlay
 
 		try
 		{
-			for (int i = 0; i <= track.Points.size(); i++)
+			for (int i = 0; i < track.Points.size(); i++)
 			{
-				// track.Points..
-				// writer.append("<trkpt lat=\"" + String.valueOf(track.Points[i].GlobalCore.LastValidPosition.Latitude) + "\" lon=\""
-				// + String.valueOf(GlobalCore.LastValidPosition.Longitude) + "\">\n");
+				writer.append("<trkpt lat=\"" + String.valueOf(track.Points.get(i).Y) + "\" lon=\"" + String.valueOf(track.Points.get(i).X)
+						+ "\">\n");
+
 				// writer.append("   <ele>" + String.valueOf(GlobalCore.LastValidPosition.Elevation) + "</ele>\n");
 				// Date now = new Date();
-				// SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
-				// String sDate = datFormat.format(now);
-				// datFormat = new SimpleDateFormat("HH:mm:ss");
-				// sDate += "T" + datFormat.format(now) + "Z";
-				// writer.append("   <time>" + sDate + "</time>\n");
+				SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String sDate = datFormat.format(track.Points.get(i).TimeStamp);
+				datFormat = new SimpleDateFormat("HH:mm:ss");
+				sDate += "T" + datFormat.format(track.Points.get(i).TimeStamp) + "Z";
+				writer.append("   <time>" + sDate + "</time>\n");
 				// writer.append("   <course>" + String.valueOf(GlobalCore.Locator.getHeading()) + "</course>\n");
 				// writer.append("   <speed>" + String.valueOf(GlobalCore.Locator.SpeedOverGround()) + "</speed>\n");
-				// writer.append("</trkpt>\n");
+				writer.append("</trkpt>\n");
 			}
 
 			writer.append("</trkseg>\n");

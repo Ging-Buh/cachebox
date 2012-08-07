@@ -110,6 +110,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 				case GENERATE:
 					showMenuCreate();
 					return true;
+
 				case RENAME:
 					if (TrackListView.that != null)
 					{
@@ -142,10 +143,9 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 						TrackListView.that.notifyDataSetChanged();
 						return true;
-
 					}
-
 					return true;
+
 				case LOAD:
 					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", new IgetFileReturnListner()
 					{
@@ -164,6 +164,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					});
 
 					return true;
+
 				case SAVE:
 					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", new IgetFileReturnListner()
 					{
@@ -182,6 +183,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					});
 
 					return true;
+
 				case DELETE:
 					if (TrackListView.that != null)
 					{
@@ -232,7 +234,6 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 		}
 
 		cm.show();
-
 		return true;
 	}
 

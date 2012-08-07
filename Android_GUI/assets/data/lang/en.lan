@@ -400,12 +400,14 @@
 	load = Load
 	NoTrackSelected = No track selected!
 	IsActualTrack = Current track cannot be deleted
+	renActualTrack = Rename of current track is not allowed!
 	actualTrack = Actual Track
 	recordetTrack = Recordet Track
 	Point2Point = Point to Point
 	Circle = Circle
 	length = Distance
 	rename = Rename
+	RenameTrack = Rename Track as
 	fromPoint = From Point
 	toPoint = To Point
 	centerPoint = Cener Point

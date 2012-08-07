@@ -383,11 +383,13 @@ utf8
 	load = Load
 	NoTrackSelected = No track selected!
 	IsActualTrack = Currently used track can't be deleted!
+	renActualTrack = Rename of current track is not allowed!
 	actualTrack = Actual Track
 	recordetTrack = Recordet Track
 	Point2Point = Point to Point
 	Circle = Circle
 	rename = Rename
+	RenameTrack = Rename Track as
 	length = Distance
 	fromPoint = From Point
 	toPoint = To Point
