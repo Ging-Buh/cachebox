@@ -346,7 +346,6 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
 					{
 						float[] dist = new float[4];
-						Color[] ColorField = new Color[8];
 						TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
 						Track route = new Track(null, TrackColor);
 						route.Name = "Circle Route";
