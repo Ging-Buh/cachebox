@@ -547,10 +547,10 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 		route.Name = "Point 2 Point Route";
 
 		TrackPoint projectedPoint = new TrackPoint(Descriptor.LongitudeToTileX(projectionZoomLevel, FromLon), Descriptor.LatitudeToTileY(
-				projectionZoomLevel, FromLat), 0, new Date());
+				projectionZoomLevel, FromLat), 0, 0, new Date());
 		route.Points.add(projectedPoint);
 		projectedPoint = new TrackPoint(Descriptor.LongitudeToTileX(projectionZoomLevel, ToLon), Descriptor.LatitudeToTileY(
-				projectionZoomLevel, ToLat), 0, new Date());
+				projectionZoomLevel, ToLat), 0, 0, new Date());
 		route.Points.add(projectedPoint);
 
 		route.ShowRoute = true;
@@ -585,7 +585,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 			Projektion = Coordinate.Project(GEOPosition.Latitude, GEOPosition.Longitude, (double) i, Distance);
 
 			TrackPoint projectedPoint = new TrackPoint(Descriptor.LongitudeToTileX(projectionZoomLevel, Projektion.Longitude),
-					Descriptor.LatitudeToTileY(projectionZoomLevel, Projektion.Latitude), 0, new Date());
+					Descriptor.LatitudeToTileY(projectionZoomLevel, Projektion.Latitude), 0, 0, new Date());
 			route.Points.add(projectedPoint);
 
 		}
@@ -616,7 +616,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 		GEOPosition.Latitude = FromLat;
 		GEOPosition.Longitude = FromLon;
 		TrackPoint projectedPoint = new TrackPoint(Descriptor.LongitudeToTileX(projectionZoomLevel, GEOPosition.Longitude),
-				Descriptor.LatitudeToTileY(projectionZoomLevel, GEOPosition.Latitude), 0, new Date());
+				Descriptor.LatitudeToTileY(projectionZoomLevel, GEOPosition.Latitude), 0, 0, new Date());
 		route.Points.add(projectedPoint);
 
 		Coordinate Projektion = new Coordinate();
@@ -624,7 +624,7 @@ public class TrackListView extends ListView implements ViewOptionsMenu
 		Projektion = Coordinate.Project(GEOPosition.Latitude, GEOPosition.Longitude, Bearing, Distance);
 
 		projectedPoint = new TrackPoint(Descriptor.LongitudeToTileX(projectionZoomLevel, Projektion.Longitude), Descriptor.LatitudeToTileY(
-				projectionZoomLevel, Projektion.Latitude), 0, new Date());
+				projectionZoomLevel, Projektion.Latitude), 0, 0, new Date());
 		route.Points.add(projectedPoint);
 		route.ShowRoute = true;
 

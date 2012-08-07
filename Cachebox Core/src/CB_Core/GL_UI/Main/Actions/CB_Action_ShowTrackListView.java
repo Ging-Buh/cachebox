@@ -284,8 +284,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						Track route = new Track(null, TrackColor);
 
 						route.Name = "Point 2 Point Route";
-						route.Points.add(new TrackPoint(targetCoord.Longitude, targetCoord.Latitude, 0, new Date()));
-						route.Points.add(new TrackPoint(startCoord.Longitude, startCoord.Latitude, 0, new Date()));
+						route.Points.add(new TrackPoint(targetCoord.Longitude, targetCoord.Latitude, 0, 0, new Date()));
+						route.Points.add(new TrackPoint(startCoord.Longitude, startCoord.Latitude, 0, 0, new Date()));
 
 						Coordinate.distanceBetween(targetCoord.Latitude, targetCoord.Longitude, startCoord.Latitude, startCoord.Longitude,
 								dist);
@@ -316,8 +316,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						Track route = new Track(null, TrackColor);
 						route.Name = "Projected Route";
 
-						route.Points.add(new TrackPoint(targetCoord.Longitude, targetCoord.Latitude, 0, new Date()));
-						route.Points.add(new TrackPoint(startCoord.Longitude, startCoord.Latitude, 0, new Date()));
+						route.Points.add(new TrackPoint(targetCoord.Longitude, targetCoord.Latitude, 0, 0, new Date()));
+						route.Points.add(new TrackPoint(startCoord.Longitude, startCoord.Latitude, 0, 0, new Date()));
 
 						Coordinate.distanceBetween(targetCoord.Latitude, targetCoord.Longitude, startCoord.Latitude, startCoord.Longitude,
 								dist);
@@ -360,7 +360,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						{
 							Projektion = Coordinate.Project(startCoord.Latitude, startCoord.Longitude, (double) i, distance);
 
-							route.Points.add(new TrackPoint(Projektion.Longitude, Projektion.Latitude, 0, new Date()));
+							route.Points.add(new TrackPoint(Projektion.Longitude, Projektion.Latitude, 0, 0, new Date()));
 
 							if (!LastCoord.Valid)
 							{

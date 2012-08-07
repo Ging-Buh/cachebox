@@ -121,7 +121,8 @@ public class TrackListViewItem extends ListViewItemBackground
 
 			CB_RectF rec = new CB_RectF(left, 0, this.width - left - height - 10, this.height / 2);
 			EntryLength = new Label(rec, "");
-			EntryLength.setText(GlobalCore.Translations.Get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.TrackLength));
+			EntryLength.setText(GlobalCore.Translations.Get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.TrackLength)
+					+ " / " + UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
 
 			this.addChild(EntryLength);
 		}

@@ -46,6 +46,7 @@ public class RouteOverlay
 		public boolean IsActualTrack = false;
 		public Color mColor;
 		public double TrackLength;
+		public double AltitudeDifference;
 
 		public Track(String name, Color color)
 		{
@@ -74,6 +75,7 @@ public class RouteOverlay
 	{
 		float[] dist = new float[4];
 		double Distance = 0;
+		double AltitudeDifference = 0;
 		Coordinate FromPosition = new Coordinate();
 		BufferedReader reader;
 
@@ -197,17 +199,31 @@ public class RouteOverlay
 
 				}
 
+				if (line.indexOf("</ele>") > -1)
+				{
+					// Time lesen
+					int couIdx = line.indexOf("<ele>") + 5;
+					if (couIdx == 4) couIdx = 0;
+					int couEndIdx = line.indexOf("</ele>", couIdx);
+
+					String couStr = line.substring(couIdx, couEndIdx);
+
+					lastAcceptedCoordinate.Elevation = Double.valueOf(couStr);
+
+				}
+
 				if (line.indexOf("</trkpt>") > -1)
 				{
 					// trkpt abgeschlossen, jetzt kann der Trackpunkt erzeugt werden
 					route.Points.add(new TrackPoint(lastAcceptedCoordinate.Longitude, lastAcceptedCoordinate.Latitude,
-							lastAcceptedDirection, lastAcceptedTime));
+							lastAcceptedCoordinate.Elevation, lastAcceptedDirection, lastAcceptedTime));
 
 					// Calculate the length of a Track
 					if (!FromPosition.Valid)
 					{
 						FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
 						FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
+						FromPosition.Elevation = lastAcceptedCoordinate.Elevation;
 						FromPosition.Valid = true;
 					}
 					else
@@ -217,6 +233,10 @@ public class RouteOverlay
 						Distance += dist[0];
 						FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
 						FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
+						AltitudeDifference += Math.abs(FromPosition.Elevation - lastAcceptedCoordinate.Elevation);
+
+						// Höhendifferenzen nur in 10m Schritten
+						if (AltitudeDifference > 10) FromPosition.Elevation = lastAcceptedCoordinate.Elevation;
 					}
 				}
 			}
@@ -234,6 +254,7 @@ public class RouteOverlay
 
 			route.ShowRoute = true;
 			route.TrackLength = Distance;
+			route.AltitudeDifference = AltitudeDifference;
 
 			return route;
 		}

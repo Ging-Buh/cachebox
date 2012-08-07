@@ -249,7 +249,7 @@ public class TrackRecorder
 				}
 
 				NewPoint = new TrackPoint(GlobalCore.LastValidPosition.Longitude, GlobalCore.LastValidPosition.Latitude,
-						GlobalCore.Locator.getHeading(), new Date());
+						GlobalCore.LastValidPosition.Elevation, GlobalCore.Locator.getHeading(), new Date());
 
 				GlobalCore.AktuelleRoute.Points.add(NewPoint);
 
