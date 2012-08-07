@@ -9,7 +9,6 @@ import CB_Core.GL_UI.Controls.ColorPickerRec;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.utils.ColorDrawable;
 import CB_Core.GL_UI.utils.GradiantFill;
-import CB_Core.GL_UI.utils.GradiantFill.direction;
 import CB_Core.GL_UI.utils.HSV_Color;
 import CB_Core.GL_UI.utils.rectangle;
 import CB_Core.Math.CB_RectF;
@@ -121,7 +120,8 @@ public class ColorPicker extends ActivityBase
 		this.addChild(viewHue);
 	}
 
-	private GradiantFill gradiant;
+	private GradiantFill gradiantWhite;
+	private GradiantFill gradiantBlack;
 
 	private void createTest()
 	{
@@ -130,11 +130,16 @@ public class ColorPicker extends ActivityBase
 		colorSelectBox = new ColorPickerRec(rec, "");
 		this.addChild(colorSelectBox);
 
-		gradiant = new GradiantFill(Color.WHITE, actColor, direction.left2reight);
+		Color whiteTransparent = new Color(1f, 1f, 1f, 0f);
+		gradiantWhite = new GradiantFill(Color.WHITE, whiteTransparent, 0);
+		rectangle FillRecWhite = new rectangle(rec, gradiantWhite);
+		this.addChild(FillRecWhite);
 
-		rectangle test = new rectangle(rec, gradiant);
+		Color blackTransparent = new Color(0f, 0f, 0f, 0f);
+		gradiantBlack = new GradiantFill(Color.BLACK, blackTransparent, 90);
+		rectangle FillRecBlack = new rectangle(rec, gradiantBlack);
+		this.addChild(FillRecBlack);
 
-		this.addChild(test);
 	}
 
 	private void hueChanged()

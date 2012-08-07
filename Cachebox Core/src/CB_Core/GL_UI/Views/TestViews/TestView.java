@@ -7,6 +7,10 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.utils.GradiantFill;
+import CB_Core.GL_UI.utils.GradiantFill.GradiantStop;
+import CB_Core.GL_UI.utils.HSV_Color;
+import CB_Core.GL_UI.utils.rectangle;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -54,6 +58,23 @@ public class TestView extends CB_View_Base
 
 		textField = new EditTextField(TextFieldRec2, EditTextField.getDefaultStyle(), "Test");
 		this.addChild(textField);
+
+		// ####################################################
+		CB_RectF GradiantRec = new CB_RectF(10, 40, this.width - 20, UiSizes.getButtonHeight() * 1.5f);
+
+		GradiantFill fill = new GradiantFill(Color.RED, Color.RED, 0);
+
+		for (int i = 60; i < 300; i += 60)
+		{
+			HSV_Color c = new HSV_Color(Color.RED);
+			c.setHue(i);
+			GradiantStop stop = new GradiantStop(c.cpy(), (float) i / 360f);
+			fill.addStop(stop);
+			// break;
+		}
+
+		rectangle testRec = new rectangle(GradiantRec, fill);
+		this.addChild(testRec);
 
 		requestLayout();
 
