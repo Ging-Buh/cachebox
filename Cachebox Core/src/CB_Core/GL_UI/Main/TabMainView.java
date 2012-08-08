@@ -529,7 +529,7 @@ public class TabMainView extends MainViewBase
 		{
 			absolutPath = trackPath + "/" + file;
 		}
-		RouteOverlay.Routes.add(RouteOverlay.LoadRoute(absolutPath, TrackColor, Config.settings.TrackDistance.getValue()));
+		RouteOverlay.MultiLoadRoute(absolutPath, TrackColor);
 	}
 
 	public void setContentMaxY(float y)

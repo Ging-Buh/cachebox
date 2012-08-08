@@ -2340,7 +2340,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			absolutPath = trackPath + "/" + file;
 		}
-		RouteOverlay.Routes.add(RouteOverlay.LoadRoute(absolutPath, TrackColor, Config.settings.TrackDistance.getValue()));
+		RouteOverlay.MultiLoadRoute(absolutPath, TrackColor);
 		RouteOverlay.RoutesChanged();
 	}
 

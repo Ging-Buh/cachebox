@@ -156,7 +156,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 							{
 								TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
 
-								RouteOverlay.Routes.add(RouteOverlay.LoadRoute(Path, TrackColor, Config.settings.TrackDistance.getValue()));
+								RouteOverlay.MultiLoadRoute(Path, TrackColor);
 								Logger.LogCat("Load Track :" + Path);
 								if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
 							}

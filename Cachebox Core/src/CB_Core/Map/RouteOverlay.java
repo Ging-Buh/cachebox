@@ -70,7 +70,243 @@ public class RouteOverlay
 
 	// Read track from gpx file
 	// attention it is possible that a gpx file contains more than 1 <trk> segments
-	// in this case all segments was connectet to one track
+	public static void MultiLoadRoute(String file, Color color)
+	{
+		float[] dist = new float[4];
+		double Distance = 0;
+		double AltitudeDifference = 0;
+		Coordinate FromPosition = new Coordinate();
+		BufferedReader reader;
+
+		try
+		{
+			InputStreamReader isr = new InputStreamReader(new FileInputStream(file), "UTF8");
+			reader = new BufferedReader(isr);
+			Track route = new Track(null, color);
+
+			String line = null;
+			String GPXName = null;
+			boolean isSeg = false;
+			boolean isTrk = false;
+			boolean isRte = false;
+			boolean IStrkptORrtept = false;
+			boolean ReadName = false;
+			int AnzTracks = 0;
+
+			Coordinate lastAcceptedCoordinate = null;
+			double lastAcceptedDirection = -1;
+			Date lastAcceptedTime = null;
+
+			StringBuilder sb = new StringBuilder();
+			String rline = null;
+			while ((rline = reader.readLine()) != null)
+			{
+				for (int i = 0; i < rline.length(); i++)
+				{
+					char nextChar = rline.charAt(i);
+					sb.append(nextChar);
+
+					if (nextChar == '>')
+					{
+						line = sb.toString().trim().toLowerCase();
+						sb = new StringBuilder();
+
+						if (!isTrk) // Begin of the Track detected?
+						{
+							if (line.indexOf("<trk>") > -1)
+							{
+								isTrk = true;
+								continue;
+							}
+						}
+
+						if (!isSeg) // Begin of the Track Segment detected?
+						{
+							if (line.indexOf("<trkseg>") > -1)
+							{
+								isSeg = true;
+								route = new Track(null, color);
+								route.FileName = file;
+								AnzTracks++;
+								if (GPXName == null) route.Name = file;
+								else
+								{
+									if (AnzTracks < 1) route.Name = GPXName;
+									else
+										route.Name = GPXName + AnzTracks;
+								}
+								continue;
+							}
+						}
+
+						if (!isRte) // Begin of the Route detected?
+						{
+							if (line.indexOf("<rte>") > -1)
+							{
+								isRte = true;
+								route = new Track(null, color);
+								route.FileName = file;
+								AnzTracks++;
+								if (GPXName != null) route.Name = file;
+								else
+								{
+									if (AnzTracks < 1) route.Name = GPXName;
+									else
+										route.Name = GPXName + AnzTracks;
+								}
+								continue;
+							}
+						}
+
+						if ((line.indexOf("<name>") > -1) & !IStrkptORrtept) // found <name>?
+						{
+							ReadName = true;
+							continue;
+						}
+
+						if (ReadName & !IStrkptORrtept)
+						{
+							if (isSeg | isRte) route.Name = line.substring(0, line.indexOf("</name>"));
+							else
+								GPXName = line.substring(0, line.indexOf("</name>"));
+
+							ReadName = false;
+							continue;
+						}
+
+						if (line.indexOf("</trkseg>") > -1) // End of the Track Segment detected?
+						{
+							if (route.Points.size() < 2) route.Name = "no Route segment found";
+							route.ShowRoute = true;
+							route.TrackLength = Distance;
+							route.AltitudeDifference = AltitudeDifference;
+							RouteOverlay.Routes.add(route);
+							isSeg = false;
+							break;
+						}
+
+						if (line.indexOf("</rte>") > -1) // End of the Route detected?
+						{
+							if (route.Points.size() < 2) route.Name = "no Route segment found";
+							route.ShowRoute = true;
+							route.TrackLength = Distance;
+							route.AltitudeDifference = AltitudeDifference;
+							RouteOverlay.Routes.add(route);
+							isRte = false;
+							break;
+						}
+
+						if ((line.indexOf("<trkpt") > -1) | (line.indexOf("<rtept") > -1))
+						{
+							IStrkptORrtept = true;
+							// Trackpoint lesen
+							int lonIdx = line.indexOf("lon=\"") + 5;
+							int latIdx = line.indexOf("lat=\"") + 5;
+
+							int lonEndIdx = line.indexOf("\"", lonIdx);
+							int latEndIdx = line.indexOf("\"", latIdx);
+
+							String latStr = line.substring(latIdx, latEndIdx);
+							String lonStr = line.substring(lonIdx, lonEndIdx);
+
+							double lat = Double.valueOf(latStr);
+							double lon = Double.valueOf(lonStr);
+
+							lastAcceptedCoordinate = new Coordinate(lat, lon);
+						}
+
+						if (line.indexOf("</time>") > -1)
+						{
+							// Time lesen
+							int timIdx = line.indexOf("<time>") + 6;
+							if (timIdx == 5) timIdx = 0;
+							int timEndIdx = line.indexOf("</time>", timIdx);
+
+							String timStr = line.substring(timIdx, timEndIdx);
+
+							lastAcceptedTime = parseDate(timStr);
+						}
+
+						if (line.indexOf("</course>") > -1)
+						{
+							// Time lesen
+							int couIdx = line.indexOf("<course>") + 8;
+							if (couIdx == 7) couIdx = 0;
+							int couEndIdx = line.indexOf("</course>", couIdx);
+
+							String couStr = line.substring(couIdx, couEndIdx);
+
+							lastAcceptedDirection = Double.valueOf(couStr);
+
+						}
+
+						if (line.indexOf("</ele>") > -1)
+						{
+							// Time lesen
+							int couIdx = line.indexOf("<ele>") + 5;
+							if (couIdx == 4) couIdx = 0;
+							int couEndIdx = line.indexOf("</ele>", couIdx);
+
+							String couStr = line.substring(couIdx, couEndIdx);
+
+							lastAcceptedCoordinate.Elevation = Double.valueOf(couStr);
+
+						}
+
+						if ((line.indexOf("</trkpt>") > -1) | (line.indexOf("</rtept>") > -1))
+						{
+							// trkpt abgeschlossen, jetzt kann der Trackpunkt erzeugt werden
+							IStrkptORrtept = false;
+							route.Points.add(new TrackPoint(lastAcceptedCoordinate.Longitude, lastAcceptedCoordinate.Latitude,
+									lastAcceptedCoordinate.Elevation, lastAcceptedDirection, lastAcceptedTime));
+
+							// Calculate the length of a Track
+							if (!FromPosition.Valid)
+							{
+								FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
+								FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
+								FromPosition.Elevation = lastAcceptedCoordinate.Elevation;
+								FromPosition.Valid = true;
+							}
+							else
+							{
+								Coordinate.distanceBetween(FromPosition.Latitude, FromPosition.Longitude, lastAcceptedCoordinate.Latitude,
+										lastAcceptedCoordinate.Longitude, dist);
+								Distance += dist[0];
+								FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
+								FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
+								AltitudeDifference += Math.abs(FromPosition.Elevation - lastAcceptedCoordinate.Elevation);
+
+								// Höhendifferenzen nur in 10m Schritten
+								if (AltitudeDifference > 10) FromPosition.Elevation = lastAcceptedCoordinate.Elevation;
+							}
+						}
+					}
+				}
+			}
+			reader.close();
+			return;
+		}
+
+		catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
+	}
+
+	// -------------------------------------------------------------------------------
+	// Funktion kann gelöscht werden, wenn es mit MultiLoadRoute keine Probleme gibt
+	// und diese Funktion in simulateForm.java nicht mehr gebraucht wird
+	// -------------------------------------------------------------------------------
+	//
 	public static Track LoadRoute(String file, Color color, double minDistanceMeters)
 	{
 		float[] dist = new float[4];
