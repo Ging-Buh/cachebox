@@ -395,6 +395,7 @@ public abstract class ListViewBase extends CB_View_Base
 	{
 		if (mBaseAdapter == null) return null;
 		if (mSelectedIndex == -1) return null;
+		if (mSelectedIndex >= mBaseAdapter.getCount()) return null;
 		return mBaseAdapter.getView(mSelectedIndex);
 	}
 
@@ -511,6 +512,8 @@ public abstract class ListViewBase extends CB_View_Base
 		{
 			this.setDragable();
 		}
+
+		if (itemCount <= mSelectedIndex) setSelection(itemCount - 1);
 
 	}
 }

@@ -197,8 +197,8 @@ public class TrackListViewItem extends ListViewItemBackground
 			@Override
 			public void returnColor(Color color)
 			{
-				// TODO Auto-generated method stub
-
+				mRoute.setColor(color);
+				colorReck = null;
 			}
 		});
 		clrPick.show();

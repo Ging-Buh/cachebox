@@ -10,7 +10,7 @@ import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.utils.GradiantFill;
 import CB_Core.GL_UI.utils.GradiantFill.GradiantStop;
 import CB_Core.GL_UI.utils.HSV_Color;
-import CB_Core.GL_UI.utils.rectangle;
+import CB_Core.GL_UI.utils.GradiantFilledRectangle;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -73,7 +73,7 @@ public class TestView extends CB_View_Base
 			// break;
 		}
 
-		rectangle testRec = new rectangle(GradiantRec, fill);
+		GradiantFilledRectangle testRec = new GradiantFilledRectangle(GradiantRec, fill);
 		this.addChild(testRec);
 
 		requestLayout();

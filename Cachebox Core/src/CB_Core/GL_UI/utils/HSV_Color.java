@@ -101,10 +101,6 @@ public class HSV_Color extends Color
 			b = q;
 			break;
 		}
-
-		r = r;
-		g = g;
-		b = b;
 	}
 
 	public void setHue(float hue)
@@ -116,5 +112,27 @@ public class HSV_Color extends Color
 	public float getHue()
 	{
 		return h;
+	}
+
+	public float getSat()
+	{
+		return s;
+	}
+
+	public float getVal()
+	{
+		return v;
+	}
+
+	public void setSat(float sat)
+	{
+		s = sat;
+		convertHSVtoRGB();
+	}
+
+	public void setVal(float val)
+	{
+		v = val;
+		convertHSVtoRGB();
 	}
 }

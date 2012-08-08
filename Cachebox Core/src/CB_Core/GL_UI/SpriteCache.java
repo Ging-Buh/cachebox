@@ -82,6 +82,8 @@ public class SpriteCache
 	public static Drawable AboutBack = null;
 	public static Sprite Progress = null;
 	public static Sprite ambilwarna_hue = null;
+	public static Sprite ambilwarna_cursor = null;
+	public static Sprite ambilwarna_target = null;
 
 	public static ButtonSprites CacheList;
 	public static ButtonSprites CacheListFilter;
@@ -463,6 +465,8 @@ public class SpriteCache
 
 		Progress = getThemedSprite("progress");
 		ambilwarna_hue = getThemedSprite("ambilwarna-hue");
+		ambilwarna_cursor = getThemedSprite("ambilwarna-cursor");
+		ambilwarna_target = getThemedSprite("ambilwarna-target");
 
 		if (ZoomBtn == null) ZoomBtn = new ArrayList<Sprite>();
 		synchronized (ZoomBtn)

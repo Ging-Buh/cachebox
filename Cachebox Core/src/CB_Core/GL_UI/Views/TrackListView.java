@@ -68,7 +68,7 @@ public class TrackListView extends V_ListView
 	public void render(SpriteBatch batch)
 	{
 		// if Track List empty, draw empty Msg
-		if (RouteOverlay.Routes == null || RouteOverlay.Routes.size() == 0)
+		if ((RouteOverlay.Routes == null || RouteOverlay.Routes.size() == 0) && GlobalCore.AktuelleRoute == null)
 		{
 			if (emptyMsg == null)
 			{
