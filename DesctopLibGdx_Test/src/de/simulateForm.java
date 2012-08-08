@@ -187,7 +187,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 	private void loadSimulateRoute(String Path)
 	{
 
-		simulationRoute = RouteOverlay.LoadRoute(Path, Color.BLACK, 0);
+		simulationRoute = RouteOverlay.MultiLoadRoute(Path, Color.BLACK);
 
 		// TODO set GPX File Name to lblGPX
 		if (simulationRoute != null && simulationRoute.Name != null)
