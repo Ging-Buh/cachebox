@@ -128,6 +128,8 @@ public class RouteOverlay
 								isSeg = true;
 								route = new Track(null, color);
 								route.FileName = file;
+								Distance = 0;
+								AltitudeDifference = 0;
 								AnzTracks++;
 								if (GPXName == null) route.Name = FileIO.GetFileName(file);
 								else
@@ -147,6 +149,8 @@ public class RouteOverlay
 								isRte = true;
 								route = new Track(null, color);
 								route.FileName = file;
+								Distance = 0;
+								AltitudeDifference = 0;
 								AnzTracks++;
 								if (GPXName != null) route.Name = FileIO.GetFileName(file);
 								else
