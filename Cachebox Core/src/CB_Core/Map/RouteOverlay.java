@@ -537,7 +537,7 @@ public class RouteOverlay
 
 			Calendar calendar = Calendar.getInstance();
 			calendar.set(Calendar.YEAR, year);
-			calendar.set(Calendar.MONTH, month);
+			calendar.set(Calendar.MONTH, month - 1); // Beware MONTH was counted for 0 to 11, so we have to subtract 1
 			calendar.set(Calendar.DAY_OF_MONTH, day);
 			calendar.set(Calendar.HOUR_OF_DAY, hour);
 			calendar.set(Calendar.MINUTE, minute);
