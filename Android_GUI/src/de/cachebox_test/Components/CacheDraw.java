@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
+import CB_Core.UnitFormatter;
 import CB_Core.DB.Database;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Math.CB_Rect;
@@ -23,7 +24,6 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
-import de.cachebox_test.UnitFormatter;
 import de.cachebox_test.Ui.ActivityUtils;
 
 public class CacheDraw

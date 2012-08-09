@@ -1,29 +1,12 @@
 package de.cachebox_test.Views;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import CB_Core.Config;
 import CB_Core.GlobalCore;
-import CB_Core.DAO.CacheDAO;
-import CB_Core.DAO.CategoryDAO;
-import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.TrackableListDAO;
-import CB_Core.DAO.WaypointDAO;
-import CB_Core.DB.Database;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_Core.Map.Descriptor;
-import CB_Core.Map.Descriptor.PointD;
-import CB_Core.Types.Cache;
-import CB_Core.Types.Category;
-import CB_Core.Types.Coordinate;
-import CB_Core.Types.GpxFilename;
-import CB_Core.Types.LogEntry;
 import CB_Core.Types.TbList;
-import CB_Core.Types.Waypoint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,7 +26,6 @@ import android.widget.ListView;
 import de.cachebox_test.R;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.AllContextMenuCallHandler;
 import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 
@@ -144,8 +126,7 @@ public class TrackableListView extends ListView implements ViewOptionsMenu
 	}
 
 	public class CustomAdapter extends BaseAdapter /*
-													 * implements
-													 * OnClickListener
+													 * implements OnClickListener
 													 */
 	{
 
@@ -315,7 +296,7 @@ public class TrackableListView extends ListView implements ViewOptionsMenu
 	@Override
 	public void BeforeShowMenu(Menu menu)
 	{
-		AllContextMenuCallHandler.showTrackableListViewContextMenu();
+		// AllContextMenuCallHandler.showTrackableListViewContextMenu();
 	}
 
 	@Override

@@ -14,7 +14,7 @@ public class CB_Action_RecTrack extends CB_ActionCommand
 
 	public CB_Action_RecTrack()
 	{
-		super("DayNight", AID_DAY_NIGHT);
+		super("RecTrack", AID_SHOW_TRACK_MENU);
 	}
 
 	@Override

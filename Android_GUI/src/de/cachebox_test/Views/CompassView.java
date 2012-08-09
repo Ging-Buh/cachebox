@@ -2,6 +2,7 @@ package de.cachebox_test.Views;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.UnitFormatter;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.ViewConst;
@@ -24,7 +25,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
-import de.cachebox_test.UnitFormatter;
 import de.cachebox_test.main;
 import de.cachebox_test.Custom_Controls.CacheInfoControl;
 import de.cachebox_test.Custom_Controls.CompassControl;

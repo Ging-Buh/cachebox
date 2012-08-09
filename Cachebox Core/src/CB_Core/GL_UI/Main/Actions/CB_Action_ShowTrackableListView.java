@@ -1,8 +1,6 @@
 package CB_Core.GL_UI.Main.Actions;
 
-import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
-import CB_Core.GL_UI.MenuItemConst;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Views.TrackableListView;
@@ -46,14 +44,13 @@ public class CB_Action_ShowTrackableListView extends CB_Action_ShowView
 	@Override
 	public boolean HasContextMenu()
 	{
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean ShowContextMenu()
 	{
-		platformConector.menuItemClicked(MenuItemConst.SHOW_TB_CONTEXT_MENU);
-		return true;
+		return false;
 	}
 
 }

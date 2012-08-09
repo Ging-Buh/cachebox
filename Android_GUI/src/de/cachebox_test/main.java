@@ -48,8 +48,6 @@ import CB_Core.Events.platformConector.IShowViewListner;
 import CB_Core.Events.platformConector.IgetFileListner;
 import CB_Core.Events.platformConector.IgetFileReturnListner;
 import CB_Core.Events.platformConector.trackListListner;
-import CB_Core.GL_UI.MenuID;
-import CB_Core.GL_UI.MenuItemConst;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.ViewID;
@@ -170,7 +168,6 @@ import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Locator.GPS;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.AllContextMenuCallHandler;
 import de.cachebox_test.Ui.AndroidClipboard;
 import de.cachebox_test.Views.AboutView;
 import de.cachebox_test.Views.CompassView;
@@ -179,7 +176,6 @@ import de.cachebox_test.Views.JokerView;
 import de.cachebox_test.Views.NotesView;
 import de.cachebox_test.Views.SolverView;
 import de.cachebox_test.Views.SpoilerView;
-import de.cachebox_test.Views.TrackListView;
 import de.cachebox_test.Views.TrackableListView;
 import de.cachebox_test.Views.ViewGL;
 import de.cachebox_test.Views.AdvancedSettingsForms.SettingsScrollView;
@@ -215,7 +211,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static CompassView compassView = null; //
 	private static AboutView aboutView = null; // ID 11
 	private static JokerView jokerView = null; // ID 12
-	private static TrackListView tracklistView = null; // ID 13
 	private static TrackableListView trackablelistView = null; // ID 14
 
 	private static devicesSizes ui;
@@ -381,7 +376,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mainActivity = this;
-		AllContextMenuCallHandler.Main = this;
 		mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		glListener = new Tab_GL_Listner(UiSizes.getWindowWidth(), UiSizes.getWindowHeight());
@@ -1522,7 +1516,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 		if (ID == ViewConst.TB_LIST_VIEW) return trackablelistView = new TrackableListView(this, this);
-		else if (ID == ViewConst.TRACK_LIST_VIEW) return tracklistView = new TrackListView(this, this);
 		else if (ID == ViewConst.JOKER_VIEW) return jokerView = new JokerView(this, this);
 		else if (ID == ViewConst.ABOUT_VIEW) return aboutView = new AboutView(this, inflater);
 		else if (ID == ViewConst.SOLVER_VIEW) return solverView = new SolverView(this, inflater);
@@ -1585,10 +1578,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			NavigateTo();
 		}
-		else if (ID == ViewConst.TRACK_REC)
-		{
-			AllContextMenuCallHandler.showTrackContextMenu();
-		}
 		else if (ID == ViewConst.VOICE_REC)
 		{
 			recVoice();
@@ -1647,13 +1636,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				aktView = null;
 				trackablelistView.OnFree();
 				trackablelistView = null;
-			}
-			else if (aktView.equals(tracklistView))
-			{
-				// Instanz löschenn
-				aktView = null;
-				tracklistView.OnFree();
-				tracklistView = null;
 			}
 			else if (aktView.equals(jokerView))
 			{
@@ -1898,21 +1880,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				break;
 			case R.id.miTakePhoto:
 				takePhoto();
-				break;
-			case R.id.miTrackRec:
-				AllContextMenuCallHandler.showTrackContextMenu();
-				break;
-			case R.id.miTrackStart:
-				TrackRecorder.StartRecording();
-				break;
-			case R.id.miTrackStop:
-				TrackRecorder.StopRecording();
-				break;
-			case R.id.miTrackPause:
-				TrackRecorder.PauseRecording();
-				break;
-			case R.id.menu_tracklistview_generate:
-				AllContextMenuCallHandler.showTrackListView_generateContextMenu();
 				break;
 			case R.id.miNavigateTo:
 				NavigateTo();
@@ -3742,35 +3709,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					}
 				});
 
-			}
-
-			@Override
-			public void menuItemClicked(MenuID ID)
-			{
-				if (ID == MenuItemConst.TRACK_LIST_LOAD)
-				{
-					if (tracklistView != null) tracklistView.HandleLoad();
-				}
-				else if (ID == MenuItemConst.TRACK_LIST_DELETE)
-				{
-					if (tracklistView != null) tracklistView.HandleTrackDelete();
-				}
-				else if (ID == MenuItemConst.TRACK_LIST_CIRCLE)
-				{
-					if (tracklistView != null) tracklistView.HandleGenerate_Circle();
-				}
-				else if (ID == MenuItemConst.TRACK_LIST_P2P)
-				{
-					if (tracklistView != null) tracklistView.HandleGenerate_Point2Point();
-				}
-				else if (ID == MenuItemConst.TRACK_LIST_PROJECT)
-				{
-					if (tracklistView != null) tracklistView.HandleGenerate_Projection();
-				}
-				else if (ID == MenuItemConst.SHOW_TB_CONTEXT_MENU)
-				{
-					if (trackablelistView != null) trackablelistView.BeforeShowMenu(null);
-				}
 			}
 
 			@Override

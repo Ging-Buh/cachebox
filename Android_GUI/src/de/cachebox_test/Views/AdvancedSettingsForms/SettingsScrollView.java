@@ -96,7 +96,6 @@ import de.cachebox_test.Custom_Controls.wheel.OnWheelScrollListener;
 import de.cachebox_test.Custom_Controls.wheel.WheelView;
 import de.cachebox_test.Custom_Controls.wheel.adapters.NumericWheelAdapter;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.AllContextMenuCallHandler;
 import de.cachebox_test.Views.Forms.MessageBox;
 
 /**
@@ -400,9 +399,9 @@ public class SettingsScrollView extends Activity
 	{
 		menu.clear();
 
-		AllContextMenuCallHandler.icm = new IconContextMenu(this, R.menu.menu_settings_view_mode);
-		AllContextMenuCallHandler.icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-		Menu IconMenu = AllContextMenuCallHandler.icm.getMenu();
+		IconContextMenu icm = new IconContextMenu(this, R.menu.menu_settings_view_mode);
+		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
+		Menu IconMenu = icm.getMenu();
 
 		MenuItem miExpert = IconMenu.findItem(R.id.miSettings_show_Expert);
 		MenuItem miAll = IconMenu.findItem(R.id.miSettings_show_All);
@@ -410,7 +409,7 @@ public class SettingsScrollView extends Activity
 		miExpert.setChecked(Config.settings.SettingsShowExpert.getValue());
 		miAll.setChecked(Config.settings.SettingsShowAll.getValue());
 
-		AllContextMenuCallHandler.icm.show();
+		icm.show();
 
 		return super.onPrepareOptionsMenu(IconMenu);
 	}
@@ -1519,9 +1518,9 @@ public class SettingsScrollView extends Activity
 	public void onCreateContextMenu(final ContextMenu menu, View v, ContextMenuInfo menuInfo)
 	{
 
-		AllContextMenuCallHandler.icm = new IconContextMenu(this, R.menu.menu_settings_view_mode);
-		AllContextMenuCallHandler.icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-		Menu IconMenu = AllContextMenuCallHandler.icm.getMenu();
+		IconContextMenu icm = new IconContextMenu(this, R.menu.menu_settings_view_mode);
+		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
+		Menu IconMenu = icm.getMenu();
 
 		MenuItem miExpert = IconMenu.findItem(R.id.miMap_HideFinds);
 		MenuItem miAll = IconMenu.findItem(R.id.miMap_ShowRatings);
@@ -1529,7 +1528,7 @@ public class SettingsScrollView extends Activity
 		miExpert.setChecked(Config.settings.SettingsShowExpert.getValue());
 		miAll.setChecked(Config.settings.SettingsShowAll.getValue());
 
-		AllContextMenuCallHandler.icm.show();
+		icm.show();
 
 	}
 

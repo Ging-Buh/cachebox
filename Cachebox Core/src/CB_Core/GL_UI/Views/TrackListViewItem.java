@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Views;
 import CB_Core.GlobalCore;
 import CB_Core.UnitFormatter;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.ColorPicker;
 import CB_Core.GL_UI.Activitys.ColorPicker.IReturnListner;
@@ -68,16 +69,29 @@ public class TrackListViewItem extends ListViewItemBackground
 		boolean lClick = false;
 		if (this.isPressed)
 		{
+			// Logger.LogCat("TrackListViewItem => is Pressed");
+
 			lClick = lBounds.contains(this.lastItemTouchPos);
 			rClick = rBounds.contains(this.lastItemTouchPos);
 
 			if (lClick || rClick) Clicked = true;
+
+			try
+			{
+				Thread.sleep(50);
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+
 			isPressed = GL_Listener.isTouchDown();
 		}
 		else
 		{
 			if (Clicked)
 			{
+				// Logger.LogCat("TrackListViewItem => is Clicked");
 				Clicked = false;
 				lClick = lBounds.contains(this.lastItemTouchPos);
 				rClick = rBounds.contains(this.lastItemTouchPos);
@@ -185,23 +199,45 @@ public class TrackListViewItem extends ListViewItemBackground
 
 	private void chkClick()
 	{
-		mRoute.ShowRoute = !mRoute.ShowRoute;
-		if (mRouteChangedListner != null) mRouteChangedListner.RouteChanged(mRoute);
+		// Logger.LogCat("TrackListViewItem => Chk Clicked");
+
+		RunOnGL(new runOnGL()
+		{
+
+			@Override
+			public void run()
+			{
+				mRoute.ShowRoute = !mRoute.ShowRoute;
+				if (mRouteChangedListner != null) mRouteChangedListner.RouteChanged(mRoute);
+			}
+		});
+		GL_Listener.glListener.renderOnce("TrackListViewItem_Click_Color_Rec");
 	}
 
 	private void colorClick()
 	{
-		ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), mRoute.getColor(), new IReturnListner()
+		// Logger.LogCat("TrackListViewItem => Color Clicked");
+
+		RunOnGL(new runOnGL()
 		{
 
 			@Override
-			public void returnColor(Color color)
+			public void run()
 			{
-				mRoute.setColor(color);
-				colorReck = null;
+				ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), mRoute.getColor(), new IReturnListner()
+				{
+
+					@Override
+					public void returnColor(Color color)
+					{
+						mRoute.setColor(color);
+						colorReck = null;
+					}
+				});
+				clrPick.show();
 			}
 		});
-		clrPick.show();
+		GL_Listener.glListener.renderOnce("TrackListViewItem_Click_Color_Rec");
 	}
 
 	public void notifyTrackChanged(Track route)

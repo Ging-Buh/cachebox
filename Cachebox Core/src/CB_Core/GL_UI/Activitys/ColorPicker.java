@@ -4,14 +4,15 @@ import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.ColorPickerRec;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.utils.ColorDrawable;
 import CB_Core.GL_UI.utils.GradiantFill;
-import CB_Core.GL_UI.utils.HSV_Color;
 import CB_Core.GL_UI.utils.GradiantFilledRectangle;
+import CB_Core.GL_UI.utils.HSV_Color;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -25,6 +26,8 @@ public class ColorPicker extends ActivityBase
 	private Button bCancel;
 	private float innerWidth;
 	private IReturnListner mReturnListner;
+
+	private ColorDrawable actColorDrawable;
 
 	private Box lastColorBox;
 	private Box actColorBox;
@@ -239,7 +242,7 @@ public class ColorPicker extends ActivityBase
 		// update view
 		viewSatVal.setHue(getHue());
 		moveCursor();
-		actColorBox.setBackground(new ColorDrawable(actColor));
+		regenarateActColorBox();
 	}
 
 	private void onClickDragg_Sat(float x, float y)
@@ -254,7 +257,31 @@ public class ColorPicker extends ActivityBase
 
 		// update view
 		moveTarget();
-		actColorBox.setBackground(new ColorDrawable(actColor));
+		regenarateActColorBox();
+	}
+
+	private void regenarateActColorBox()
+	{
+
+		RunOnGL(new runOnGL()
+		{
+
+			@Override
+			public void run()
+			{
+				if (actColorDrawable == null)
+				{
+					actColorDrawable = new ColorDrawable(actColor);
+				}
+				else
+				{
+					actColorDrawable.setColor(actColor);
+				}
+
+				actColorBox.setBackground(actColorDrawable);
+			}
+		});
+
 	}
 
 	@Override

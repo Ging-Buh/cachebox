@@ -255,7 +255,10 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 				Locator Loc = new Locator();
 
 				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, 50, true, (float) trk.Direction, 95, "GPS");
+				Loc.setCompassHeading((float) trk.Direction);
+				Loc.LastUsedCompass = true;
 				PositionChangedEventList.PositionChanged(Loc);
+				PositionChangedEventList.Orientation((float) trk.Direction);
 
 				if (trackPointIndex < trackPointIndexEnd - 2)
 				{

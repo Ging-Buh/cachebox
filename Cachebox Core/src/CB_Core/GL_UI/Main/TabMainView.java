@@ -18,6 +18,7 @@ import CB_Core.GL_UI.Controls.Dialogs.Toast;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
+import CB_Core.GL_UI.Main.Actions.CB_Action_RecTrack;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowAbout;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowActivity;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCacheList;
@@ -94,7 +95,7 @@ public class TabMainView extends MainViewBase
 	private CB_Action_ShowActivity actionNavigateTo2;
 	public static CB_Action_Show_SelectDB_Dialog actionShowSelectDbDialog = new CB_Action_Show_SelectDB_Dialog();
 
-	public static CB_Action_ShowActivity actionRecTrack;
+	public static CB_Action_RecTrack actionRecTrack;
 	private CB_Action_ShowActivity actionRecVoice;
 	private CB_Action_ShowActivity actionRecPicture;
 	private CB_Action_ShowActivity actionRecVideo;
@@ -174,7 +175,7 @@ public class TabMainView extends MainViewBase
 		actionNavigateTo1 = actionNavigateTo2 = new CB_Action_ShowActivity("NavigateTo", CB_Action.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO,
 				SpriteCache.Icons.get(46));
 
-		actionRecTrack = new CB_Action_ShowActivity("TrackRec", CB_Action.AID_TRACK_REC, ViewConst.TRACK_REC, null);
+		actionRecTrack = new CB_Action_RecTrack();
 		actionRecVoice = new CB_Action_ShowActivity("VoiceRec", CB_Action.AID_VOICE_REC, ViewConst.VOICE_REC, SpriteCache.Icons.get(11));
 		actionRecPicture = new CB_Action_ShowActivity("TakePhoto", CB_Action.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO,
 				SpriteCache.Icons.get(47));
@@ -278,7 +279,6 @@ public class TabMainView extends MainViewBase
 		actionShowWaypointView.setTab(this, Tab);
 		actionNavigateTo1.setTab(this, Tab);
 
-		actionRecTrack.setTab(this, Tab);
 		actionRecVoice.setTab(this, Tab);
 		actionRecPicture.setTab(this, Tab);
 		actionRecVideo.setTab(this, Tab);
@@ -382,7 +382,6 @@ public class TabMainView extends MainViewBase
 		actionShowNotesView.setTab(this, Tab);
 		actionNavigateTo1.setTab(this, Tab);
 
-		actionRecTrack.setTab(this, Tab);
 		actionRecVoice.setTab(this, Tab);
 		actionRecPicture.setTab(this, Tab);
 		actionRecVideo.setTab(this, Tab);

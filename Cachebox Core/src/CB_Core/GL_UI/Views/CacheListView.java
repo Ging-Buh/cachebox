@@ -11,6 +11,7 @@ import CB_Core.Events.PositionChangedEvent;
 import CB_Core.Events.PositionChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
@@ -26,9 +27,14 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 public class CacheListView extends V_ListView implements CacheListChangedEventListner, SelectedCacheEvent, PositionChangedEvent
 {
 	private CustomAdapter lvAdapter;
+	private BitmapFontCache emptyMsg;
 
 	public CacheListView(CB_RectF rec, String Name)
 	{
@@ -44,6 +50,26 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 		// this.setListPos(0, false);
 		chkSlideBack();
 		GL_Listener.glListener.renderOnce(this.getName() + " Initial()");
+	}
+
+	@Override
+	public void render(SpriteBatch batch)
+	{
+		// if Track List empty, draw empty Msg
+		if (lvAdapter == null || lvAdapter.getCount() == 0)
+		{
+			if (emptyMsg == null)
+			{
+				emptyMsg = new BitmapFontCache(Fonts.getBig());
+				TextBounds bounds = emptyMsg.setText(GlobalCore.Translations.Get("EmptyCacheList"), 0, 0);
+				emptyMsg.setPosition(this.halfWidth - (bounds.width / 2), this.halfHeight - (bounds.height / 2));
+			}
+			if (emptyMsg != null) emptyMsg.draw(batch, 0.5f);
+		}
+		else
+		{
+			super.render(batch);
+		}
 	}
 
 	private Boolean isShown = false;

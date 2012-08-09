@@ -2,10 +2,10 @@ package de.cachebox_test.Locator;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.UnitFormatter;
 import CB_Core.Types.Coordinate;
 import android.location.Location;
 import android.location.LocationManager;
-import de.cachebox_test.UnitFormatter;
 
 public class Locator
 {

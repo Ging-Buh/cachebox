@@ -1,6 +1,5 @@
 package CB_Core.Events;
 
-import CB_Core.GL_UI.MenuID;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Locator.GpsStatus;
@@ -19,8 +18,6 @@ public class platformConector
 		void showForDialog();
 
 		void hideForDialog();
-
-		void menuItemClicked(MenuID ID);
 
 		void dayNightSwitched();
 
@@ -81,14 +78,6 @@ public class platformConector
 		if (showViewListner != null)
 		{
 			showViewListner.hideForDialog();
-		}
-	}
-
-	public static void menuItemClicked(MenuID ID)
-	{
-		if (showViewListner != null)
-		{
-			showViewListner.menuItemClicked(ID);
 		}
 	}
 
