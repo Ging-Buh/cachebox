@@ -2319,17 +2319,24 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	public void LoadTrack(String trackPath, String file)
 	{
-		Color[] ColorField = new Color[8];
-		ColorField[0] = Color.RED;
-		ColorField[1] = Color.YELLOW;
-		ColorField[2] = Color.BLACK;
-		ColorField[3] = Color.LIGHT_GRAY;
-		ColorField[4] = Color.GREEN;
-		ColorField[5] = Color.BLUE;
-		ColorField[6] = Color.CYAN;
-		ColorField[7] = Color.GRAY;
+		Color[] ColorField = new Color[13];
+		{
+			ColorField[0] = Color.RED;
+			ColorField[1] = Color.YELLOW;
+			ColorField[2] = Color.BLACK;
+			ColorField[3] = Color.LIGHT_GRAY;
+			ColorField[4] = Color.GREEN;
+			ColorField[5] = Color.BLUE;
+			ColorField[6] = Color.CYAN;
+			ColorField[7] = Color.GRAY;
+			ColorField[8] = Color.MAGENTA;
+			ColorField[9] = Color.ORANGE;
+			ColorField[10] = Color.DARK_GRAY;
+			ColorField[11] = Color.PINK;
+			ColorField[12] = Color.WHITE;
+		}
 		Color TrackColor;
-		TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
+		TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
 
 		String absolutPath = "";
 		if (file.equals(""))

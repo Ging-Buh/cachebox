@@ -498,18 +498,18 @@ public class RouteOverlay
 			{
 				writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 				writer.append("<gpx version=\"1.0\" creator=\"cachebox track recorder\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n");
+				writer.append("<name>" + track.Name + "</name>\n");
+
 				Date now = new Date();
 				SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
 				String sDate = datFormat.format(now);
 				datFormat = new SimpleDateFormat("HH:mm:ss");
 				sDate += "T" + datFormat.format(now) + "Z";
-
 				writer.append("<time>" + sDate + "</time>\n");
 
 				writer.append("<bounds minlat=\"-90\" minlon=\"-180\" maxlat=\"90\" maxlon=\"180\"/>\n");
 
 				writer.append("<trk><trkseg>\n");
-
 				writer.flush();
 			}
 			catch (IOException e)
@@ -529,15 +529,12 @@ public class RouteOverlay
 				writer.append("<trkpt lat=\"" + String.valueOf(track.Points.get(i).Y) + "\" lon=\"" + String.valueOf(track.Points.get(i).X)
 						+ "\">\n");
 
-				// writer.append("   <ele>" + String.valueOf(GlobalCore.LastValidPosition.Elevation) + "</ele>\n");
-				// Date now = new Date();
+				writer.append("   <ele>" + String.valueOf(String.valueOf(track.Points.get(i).Elevation)) + "</ele>\n");
 				SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
 				String sDate = datFormat.format(track.Points.get(i).TimeStamp);
 				datFormat = new SimpleDateFormat("HH:mm:ss");
 				sDate += "T" + datFormat.format(track.Points.get(i).TimeStamp) + "Z";
 				writer.append("   <time>" + sDate + "</time>\n");
-				// writer.append("   <course>" + String.valueOf(GlobalCore.Locator.getHeading()) + "</course>\n");
-				// writer.append("   <speed>" + String.valueOf(GlobalCore.Locator.SpeedOverGround()) + "</speed>\n");
 				writer.append("</trkpt>\n");
 			}
 

@@ -34,7 +34,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 {
-	Color[] ColorField = new Color[8];
+	Color[] ColorField = new Color[13];
 	{
 		ColorField[0] = Color.RED;
 		ColorField[1] = Color.YELLOW;
@@ -44,6 +44,11 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 		ColorField[5] = Color.BLUE;
 		ColorField[6] = Color.CYAN;
 		ColorField[7] = Color.GRAY;
+		ColorField[8] = Color.MAGENTA;
+		ColorField[9] = Color.ORANGE;
+		ColorField[10] = Color.DARK_GRAY;
+		ColorField[11] = Color.PINK;
+		ColorField[12] = Color.WHITE;
 	}
 	Color TrackColor;
 
@@ -154,7 +159,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						{
 							if (Path != null)
 							{
-								TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
+								TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
 
 								RouteOverlay.MultiLoadRoute(Path, TrackColor);
 								Logger.LogCat("Load Track :" + Path);
@@ -280,7 +285,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
 					{
 						float[] dist = new float[4];
-						TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
+						TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
 						Track route = new Track(null, TrackColor);
 
 						route.Name = "Point 2 Point Route";
@@ -312,7 +317,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
 					{
 						float[] dist = new float[4];
-						TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
+						TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
 						Track route = new Track(null, TrackColor);
 						route.Name = "Projected Route";
 
@@ -346,7 +351,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
 					{
 						float[] dist = new float[4];
-						TrackColor = ColorField[(RouteOverlay.Routes.size()) % 8];
+						TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
 						Track route = new Track(null, TrackColor);
 						route.Name = "Circle Route";
 
