@@ -134,7 +134,7 @@ public class RouteOverlay
 								if (GPXName == null) route.Name = FileIO.GetFileName(file);
 								else
 								{
-									if (AnzTracks < 1) route.Name = GPXName;
+									if (AnzTracks <= 1) route.Name = GPXName;
 									else
 										route.Name = GPXName + AnzTracks;
 								}
@@ -155,7 +155,7 @@ public class RouteOverlay
 								if (GPXName != null) route.Name = FileIO.GetFileName(file);
 								else
 								{
-									if (AnzTracks < 1) route.Name = GPXName;
+									if (AnzTracks <= 1) route.Name = GPXName;
 									else
 										route.Name = GPXName + AnzTracks;
 								}
@@ -258,7 +258,8 @@ public class RouteOverlay
 
 						}
 
-						if ((line.indexOf("</trkpt>") > -1) | (line.indexOf("</rtept>") > -1))
+						if ((line.indexOf("</trkpt>") > -1) | (line.indexOf("</rtept>") > -1)
+								| ((line.indexOf("/>") > -1) & IStrkptORrtept))
 						{
 							// trkpt abgeschlossen, jetzt kann der Trackpunkt erzeugt werden
 							IStrkptORrtept = false;
