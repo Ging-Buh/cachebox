@@ -152,8 +152,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					return true;
 
 				case LOAD:
-					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", "LoadTrack", "Load",
-							new IgetFileReturnListner()
+					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", GlobalCore.Translations.Get("LoadTrack"),
+							GlobalCore.Translations.Get("load"), new IgetFileReturnListner()
 							{
 								@Override
 								public void getFieleReturn(String Path)
@@ -172,8 +172,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					return true;
 
 				case SAVE:
-					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", "SaveTrack", "Save",
-							new IgetFileReturnListner()
+					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", GlobalCore.Translations.Get("SaveTrack"),
+							GlobalCore.Translations.Get("save"), new IgetFileReturnListner()
 							{
 								TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
 

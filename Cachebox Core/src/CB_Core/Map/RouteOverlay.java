@@ -17,6 +17,7 @@ import CB_Core.GlobalCore;
 import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Views.MapView;
+import CB_Core.GL_UI.utils.HSV_Color;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Math.CB_RectF;
@@ -86,6 +87,7 @@ public class RouteOverlay
 			Track route = new Track(null, color);
 
 			String line = null;
+			String tmpLine = null;
 			String GPXName = null;
 			boolean isSeg = false;
 			boolean isTrk = false;
@@ -110,6 +112,7 @@ public class RouteOverlay
 					if (nextChar == '>')
 					{
 						line = sb.toString().trim().toLowerCase();
+						tmpLine = sb.toString();
 						sb = new StringBuilder();
 
 						if (!isTrk) // Begin of the Track detected?
@@ -173,7 +176,8 @@ public class RouteOverlay
 						{
 							if (isSeg | isRte) route.Name = line.substring(0, line.indexOf("</name>"));
 							else
-								GPXName = line.substring(0, line.indexOf("</name>"));
+								// tmpLine, damit Groﬂ-/Kleinschreibung beachtet wird
+								GPXName = tmpLine.substring(0, line.indexOf("</name>"));
 
 							ReadName = false;
 							continue;
@@ -258,17 +262,15 @@ public class RouteOverlay
 
 						}
 
-						if (line.indexOf("</gpxx:ColorRGB>") > -1)
+						if (line.indexOf("</gpxx:colorrgb>") > -1)
 						{
 							// Color lesen
-							int couIdx = line.indexOf("<gpxx:ColorRGB>") + 15;
+							int couIdx = line.indexOf("<gpxx:colorrgb>") + 15;
 							if (couIdx == 14) couIdx = 0;
-							int couEndIdx = line.indexOf("</gpxx:ColorRGB>", couIdx);
+							int couEndIdx = line.indexOf("</gpxx:colorrgb>", couIdx);
 
 							String couStr = line.substring(couIdx, couEndIdx);
-
-							// route.mColor.toColor(couStr);
-							// toColor muss noch geschrieben werden
+							route.mColor = new HSV_Color(couStr);
 						}
 
 						if ((line.indexOf("</trkpt>") > -1) | (line.indexOf("</rtept>") > -1)

@@ -398,6 +398,9 @@
 	writenote = Write Note
 	generate = Generate
 	load = Load
+	save = Save
+	LoadTrack = Load Track
+	SaveTrack = Save Track
 	NoTrackSelected = No track selected!
 	IsActualTrack = Current track cannot be deleted
 	renActualTrack = Rename of current track is not allowed!

@@ -399,6 +399,9 @@
 	writenote = Schreibe Notiz
 	generate = Erstellen
 	load = Laden
+	save = Speichern
+	LoadTrack = Track laden
+	SaveTrack = Track speichern
 	NoTrackSelected = Kein Track ausgewählt!
 	IsActualTrack = Aktueller Track kann nicht gelöscht werden!
 	renActualTrack = Aktueller Track darf nicht umbenannt werden!
