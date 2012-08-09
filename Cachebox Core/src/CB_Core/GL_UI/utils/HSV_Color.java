@@ -30,17 +30,17 @@ public class HSV_Color extends Color
 
 		if (values == 4)
 		{
-			a = ret[0] / 255;
-			r = ret[1] / 255;
-			g = ret[2] / 255;
-			b = ret[3] / 255;
+			a = ret[0] / 255f;
+			r = ret[1] / 255f;
+			g = ret[2] / 255f;
+			b = ret[3] / 255f;
 		}
 		else
 		{
 			a = 1f;
-			r = ret[0] / 255;
-			g = ret[1] / 255;
-			b = ret[2] / 255;
+			r = ret[0] / 255f;
+			g = ret[1] / 255f;
+			b = ret[2] / 255f;
 		}
 
 		clamp();
@@ -49,9 +49,10 @@ public class HSV_Color extends Color
 
 	private int hexToInt(char c1, char c2)
 	{
-		int x = c1 < 65 ? c1 - 48 : c1 - 55;
-		int y = c2 < 65 ? c2 - 48 : c2 - 55;
-		return x * 16 + y;
+		String s = String.valueOf(c1) + String.valueOf(c2);
+		int z = Integer.parseInt(s, 16);
+
+		return z;
 	}
 
 	@Override
