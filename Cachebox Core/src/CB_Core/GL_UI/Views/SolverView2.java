@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Views;
 
 import CB_Core.GlobalCore;
+import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.SelectedCacheEvent;
@@ -370,7 +371,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		try
 		{
 			SolverZeile zeile = solver.get(mSelectedIndex);
-			String text = zeile.getText();
+			String text = zeile.Solution;
 			// Wenn in dieser Zeile eine Zuweisung enthalten ist -> diese einfach entfernen!
 			if (text.contains("="))
 			{
@@ -381,7 +382,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			{
 				// Zweizeilig versuchen
 				SolverZeile zeile2 = solver.get(mSelectedIndex + 1);
-				String text2 = zeile2.getText();
+				String text2 = zeile2.Solution;
 				if (text2.contains("=")) text2 = text2.substring(text2.indexOf("=") + 1);
 				result = new Coordinate(text + " " + text2);
 			}
@@ -411,9 +412,13 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			EditWaypoint EdWp = new EditWaypoint(ActivityBase.ActivityRec(), "EditWP", wp, new ReturnListner()
 			{
 				@Override
-				public void returnedWP(Waypoint wp)
+				public void returnedWP(Waypoint waypoint)
 				{
-
+					// Waypoint in der DB speichern
+					GlobalCore.SelectedCache().waypoints.add(waypoint);
+					GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), waypoint);
+					WaypointDAO waypointDAO = new WaypointDAO();
+					waypointDAO.WriteToDatabase(waypoint);
 				}
 			});
 			EdWp.show();
