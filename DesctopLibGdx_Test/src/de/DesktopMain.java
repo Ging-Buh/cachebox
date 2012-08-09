@@ -108,11 +108,13 @@ public class DesktopMain
 		platformConector.setGetFileListner(new IgetFileListner()
 		{
 			@Override
-			public void getFile(String initialPath, String extension, IgetFileReturnListner returnListner)
+			public void getFile(String initialPath, String extension, String TitleText, String ButtonText,
+					IgetFileReturnListner returnListner)
 			{
-				FileDialog filedia = new FileDialog(frame, "Öffnen");
+				FileDialog filedia = new FileDialog(frame, ButtonText);
 				filedia.setDirectory(initialPath);
 				filedia.setFile(extension);
+				filedia.setTitle(TitleText);
 				filedia.show();
 				String filename = filedia.getDirectory() + filedia.getFile();
 				if (filename != null)
@@ -120,6 +122,7 @@ public class DesktopMain
 					if (returnListner != null) returnListner.getFieleReturn(filename);
 				}
 				filedia.dispose();
+
 			}
 		});
 

@@ -211,7 +211,7 @@ public class platformConector
 
 	public interface IgetFileListner
 	{
-		public void getFile(String initialPath, String extension, IgetFileReturnListner returnListner);
+		public void getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListner returnListner);
 	}
 
 	private static IgetFileListner getFileListner;
@@ -221,9 +221,10 @@ public class platformConector
 		getFileListner = listner;
 	}
 
-	public static void getFile(String initialPath, String extension, IgetFileReturnListner returnListner)
+	public static void getFile(String initialPath, String extension, String TitleText, String ButtonText,
+			IgetFileReturnListner returnListner)
 	{
-		if (getFileListner != null) getFileListner.getFile(initialPath, extension, returnListner);
+		if (getFileListner != null) getFileListner.getFile(initialPath, extension, TitleText, ButtonText, returnListner);
 	}
 
 	// ----------------------------------------

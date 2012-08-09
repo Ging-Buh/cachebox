@@ -3790,7 +3790,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 
 			@Override
-			public void getFile(String initialPath, String extension, IgetFileReturnListner returnListner)
+			public void getFile(String initialPath, String extension, String TitleText, String ButtonText,
+					IgetFileReturnListner returnListner)
 			{
 				getFileReturnListner = returnListner;
 
@@ -3801,8 +3802,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				intent.setData(Uri.fromFile(file));
 
 				// Set fancy title and button (optional)
-				intent.putExtra(FileManagerIntents.EXTRA_TITLE, "Select file to open");
-				intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, "Open");
+				intent.putExtra(FileManagerIntents.EXTRA_TITLE, TitleText);
+				intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, ButtonText);
 
 				try
 				{

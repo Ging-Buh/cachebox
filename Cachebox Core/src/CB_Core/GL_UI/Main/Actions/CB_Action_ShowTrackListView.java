@@ -152,40 +152,42 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					return true;
 
 				case LOAD:
-					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", new IgetFileReturnListner()
-					{
-						@Override
-						public void getFieleReturn(String Path)
-						{
-							if (Path != null)
+					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", "LoadTrack", "Load",
+							new IgetFileReturnListner()
 							{
-								TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
+								@Override
+								public void getFieleReturn(String Path)
+								{
+									if (Path != null)
+									{
+										TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
 
-								RouteOverlay.MultiLoadRoute(Path, TrackColor);
-								Logger.LogCat("Load Track :" + Path);
-								if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
-							}
-						}
-					});
+										RouteOverlay.MultiLoadRoute(Path, TrackColor);
+										Logger.LogCat("Load Track :" + Path);
+										if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
+									}
+								}
+							});
 
 					return true;
 
 				case SAVE:
-					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", new IgetFileReturnListner()
-					{
-						TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
-
-						@Override
-						public void getFieleReturn(String Path)
-						{
-							if (Path != null)
+					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", "SaveTrack", "Save",
+							new IgetFileReturnListner()
 							{
-								RouteOverlay.SaveRoute(Path, selectedTrackItem.getRoute());
-								Logger.LogCat("Load Track :" + Path);
-								if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
-							}
-						}
-					});
+								TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
+
+								@Override
+								public void getFieleReturn(String Path)
+								{
+									if (Path != null)
+									{
+										RouteOverlay.SaveRoute(Path, selectedTrackItem.getRoute());
+										Logger.LogCat("Load Track :" + Path);
+										if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
+									}
+								}
+							});
 
 					return true;
 
