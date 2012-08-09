@@ -234,7 +234,7 @@ public class RouteOverlay
 
 						if (line.indexOf("</course>") > -1)
 						{
-							// Time lesen
+							// Course lesen
 							int couIdx = line.indexOf("<course>") + 8;
 							if (couIdx == 7) couIdx = 0;
 							int couEndIdx = line.indexOf("</course>", couIdx);
@@ -247,7 +247,7 @@ public class RouteOverlay
 
 						if (line.indexOf("</ele>") > -1)
 						{
-							// Time lesen
+							// Elevation lesen
 							int couIdx = line.indexOf("<ele>") + 5;
 							if (couIdx == 4) couIdx = 0;
 							int couEndIdx = line.indexOf("</ele>", couIdx);
@@ -256,6 +256,19 @@ public class RouteOverlay
 
 							lastAcceptedCoordinate.Elevation = Double.valueOf(couStr);
 
+						}
+
+						if (line.indexOf("</gpxx:ColorRGB>") > -1)
+						{
+							// Color lesen
+							int couIdx = line.indexOf("<gpxx:ColorRGB>") + 15;
+							if (couIdx == 14) couIdx = 0;
+							int couEndIdx = line.indexOf("</gpxx:ColorRGB>", couIdx);
+
+							String couStr = line.substring(couIdx, couEndIdx);
+
+							// route.mColor.toColor(couStr);
+							// toColor muss noch geschrieben werden
 						}
 
 						if ((line.indexOf("</trkpt>") > -1) | (line.indexOf("</rtept>") > -1)
@@ -498,7 +511,6 @@ public class RouteOverlay
 			{
 				writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 				writer.append("<gpx version=\"1.0\" creator=\"cachebox track recorder\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n");
-				writer.append("<name>" + track.Name + "</name>\n");
 
 				Date now = new Date();
 				SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -509,7 +521,12 @@ public class RouteOverlay
 
 				writer.append("<bounds minlat=\"-90\" minlon=\"-180\" maxlat=\"90\" maxlon=\"180\"/>\n");
 
-				writer.append("<trk><trkseg>\n");
+				writer.append("<trk>\n");
+				writer.append("<name>" + track.Name + "</name>\n");
+				writer.append("<extensions>\n<gpxx:TrackExtension>\n");
+				writer.append("<gpxx:ColorRGB>" + track.mColor.toString() + "</gpxx:ColorRGB>\n");
+				writer.append("</gpxx:TrackExtension>\n</extensions>\n");
+				writer.append("<trkseg>\n");
 				writer.flush();
 			}
 			catch (IOException e)
