@@ -18,6 +18,42 @@ public class HSV_Color extends Color
 		super(color);
 	}
 
+	public HSV_Color(String hex)
+	{
+		int values = hex.length() / 2;
+
+		int[] ret = new int[values];
+		for (int i = 0; i < values; i++)
+		{
+			ret[i] = hexToInt(hex.charAt(i * 2), hex.charAt(i * 2 + 1));
+		}
+
+		if (values == 4)
+		{
+			a = ret[0] / 255;
+			r = ret[1] / 255;
+			g = ret[2] / 255;
+			b = ret[3] / 255;
+		}
+		else
+		{
+			a = 1f;
+			r = ret[0] / 255;
+			g = ret[1] / 255;
+			b = ret[2] / 255;
+		}
+
+		clamp();
+
+	}
+
+	private int hexToInt(char c1, char c2)
+	{
+		int x = c1 < 65 ? c1 - 48 : c1 - 55;
+		int y = c2 < 65 ? c2 - 48 : c2 - 55;
+		return x * 16 + y;
+	}
+
 	@Override
 	public void clamp()
 	{
