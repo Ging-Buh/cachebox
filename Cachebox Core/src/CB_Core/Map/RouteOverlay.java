@@ -46,7 +46,7 @@ public class RouteOverlay
 		public String FileName;
 		public boolean ShowRoute = false;
 		public boolean IsActualTrack = false;
-		public Color mColor;
+		private Color mColor;
 		public double TrackLength;
 		public double AltitudeDifference;
 
@@ -270,7 +270,8 @@ public class RouteOverlay
 							int couEndIdx = line.indexOf("</gpxx:colorrgb>", couIdx);
 
 							String couStr = line.substring(couIdx, couEndIdx);
-							route.mColor = new HSV_Color(couStr);
+							color = new HSV_Color(couStr);
+							route.setColor(color);
 						}
 
 						if ((line.indexOf("</trkpt>") > -1) | (line.indexOf("</rtept>") > -1)
