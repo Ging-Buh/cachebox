@@ -98,7 +98,7 @@ public class FieldNotesView extends V_ListView
 	}
 
 	@Override
-	protected void Initial()
+	public void Initial()
 	{
 
 	}
@@ -160,8 +160,8 @@ public class FieldNotesView extends V_ListView
 		{
 			float headHeight = (UiSizes.getButtonHeight() / 1.5f) + (Dialog.margin);
 			float cacheIfoHeight = (UiSizes.getButtonHeight() / 1.5f) + Dialog.margin + Fonts.Mesure("T").height;
-			float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidth() - ListViewItemBackground.getRightWidth()
-					- (Dialog.margin * 2);
+			float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic()
+					- ListViewItemBackground.getRightWidthStatic() - (Dialog.margin * 2);
 			float commentHeight = (Dialog.margin * 3) + Fonts.MesureWrapped(fne.comment, mesurdWidth).height;
 
 			return headHeight + cacheIfoHeight + commentHeight;

@@ -157,7 +157,7 @@ public class Label extends CB_View_Base
 		setHAlignment(aligment);
 	}
 
-	public void setText(String text)
+	public TextBounds setText(String text)
 	{
 		chkCache();
 		this.text = text;
@@ -173,6 +173,8 @@ public class Label extends CB_View_Base
 		}
 
 		fontPropertyChanged();
+
+		return bounds;
 	}
 
 	public void setMultiLineText(String text)

@@ -40,10 +40,9 @@ public class Test_V_ListView extends V_ListView
 	}
 
 	@Override
-	protected void Initial()
+	public void Initial()
 	{
-		// TODO Auto-generated method stub
-
+		super.Initial();
 	}
 
 	ArrayList<String> TestArray = new ArrayList<String>();

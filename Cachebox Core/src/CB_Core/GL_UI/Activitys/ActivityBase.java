@@ -15,6 +15,7 @@ public class ActivityBase extends Dialog
 {
 	protected ActivityBase that;
 	protected float MesuredLabelHeight;
+	protected float MesuredLabelHeightBig;
 	protected float ButtonHeight;
 
 	public ActivityBase(CB_RectF rec, String Name)
@@ -26,6 +27,7 @@ public class ActivityBase extends Dialog
 
 		Left = Right = Top = Bottom = drawableBackground.getLeftWidth() / 2;
 		MesuredLabelHeight = Fonts.Mesure("T").height * 1.5f;
+		MesuredLabelHeightBig = Fonts.MesureBig("T").height * 1.5f;
 		ButtonHeight = UiSizes.getButtonHeight();
 	}
 

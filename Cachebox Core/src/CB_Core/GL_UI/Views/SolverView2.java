@@ -137,7 +137,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	}
 
 	@Override
-	protected void Initial()
+	public void Initial()
 	{
 		Logger.LogCat("SolverView2 => Initial()");
 		this.setListPos(0, false);

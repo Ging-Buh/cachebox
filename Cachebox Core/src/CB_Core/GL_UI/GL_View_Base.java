@@ -234,6 +234,30 @@ public abstract class GL_View_Base extends CB_RectF
 
 	}
 
+	public float getLeftWidth()
+	{
+		if (drawableBackground != null) return drawableBackground.getLeftWidth();
+		return 0;
+	}
+
+	public float getRightWidth()
+	{
+		if (drawableBackground != null) return drawableBackground.getRightWidth();
+		return 0;
+	}
+
+	public float getTopHeight()
+	{
+		if (drawableBackground != null) return drawableBackground.getTopHeight();
+		return 0;
+	}
+
+	public float getBottomHeight()
+	{
+		if (drawableBackground != null) return drawableBackground.getBottomHeight();
+		return 0;
+	}
+
 	/**
 	 * Die renderChilds() Methode wird vom GL_Listner bei jedem Render-Vorgang aufgerufen. </br> Hier wird dann zuerst die render() Methode
 	 * dieser View aufgerufen. </br> Danach werden alle Childs iteriert und dessen renderChilds() Methode aufgerufen, wenn die View sichtbar
@@ -557,28 +581,30 @@ public abstract class GL_View_Base extends CB_RectF
 		// touchDown liefert die View zurück, die dieses TochDown Ereignis angenommen hat
 		GL_View_Base resultView = null;
 
-		// alle Childs abfragen
-		// synchronized (childs)
-		// {
-		// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-		for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
+		try
 		{
-			// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
-			GL_View_Base view = iterator.next();
-
-			// Invisible Views can not be clicked!
-			if (!view.isVisible()) continue;
-			if (view.contains(x, y))
+			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 			{
-				// touch innerhalb des Views
-				// -> Klick an das View weitergeben
-				lastTouchPos = new Vector2(x - view.Pos.x, y - view.Pos.y);
-				resultView = view.touchDown(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
-			}
+				// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
+				GL_View_Base view = iterator.next();
 
-			if (resultView != null) break;
+				// Invisible Views can not be clicked!
+				if (!view.isVisible()) continue;
+				if (view.contains(x, y))
+				{
+					// touch innerhalb des Views
+					// -> Klick an das View weitergeben
+					lastTouchPos = new Vector2(x - view.Pos.x, y - view.Pos.y);
+					resultView = view.touchDown(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
+				}
+
+				if (resultView != null) break;
+			}
 		}
-		// }
+		catch (IndexOutOfBoundsException e)
+		{
+			return null;
+		}
 
 		if (resultView == null)
 		{
@@ -599,21 +625,24 @@ public abstract class GL_View_Base extends CB_RectF
 		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
 		boolean behandelt = false;
 
-		// alle Childs abfragen
-		// synchronized (childs)
-		// {
-		// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-		for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
+		try
 		{
-			GL_View_Base view = iterator.next();
-
-			if (view.contains(x, y))
+			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 			{
-				behandelt = view.touchDragged(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, KineticPan);
+				GL_View_Base view = iterator.next();
+
+				if (view.contains(x, y))
+				{
+					behandelt = view.touchDragged(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, KineticPan);
+				}
+				if (behandelt) break;
 			}
-			if (behandelt) break;
 		}
-		// }
+		catch (IndexOutOfBoundsException e)
+		{
+			return false;
+		}
+
 		if (!behandelt)
 		{
 			// kein Klick in einem untergeordnetem View
@@ -629,23 +658,25 @@ public abstract class GL_View_Base extends CB_RectF
 		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
 		boolean behandelt = false;
 
-		// alle Childs abfragen
-		// synchronized (childs)
-		// {
-		// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-		for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
+		try
 		{
-			GL_View_Base view = iterator.next();
-			if (view.contains(x, y))
+			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 			{
-				// touch innerhalb des Views
-				// -> Klick an das View weitergeben
-				behandelt = view.touchUp(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
-			}
+				GL_View_Base view = iterator.next();
+				if (view.contains(x, y))
+				{
+					// touch innerhalb des Views
+					// -> Klick an das View weitergeben
+					behandelt = view.touchUp(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
+				}
 
-			if (behandelt) break;
+				if (behandelt) break;
+			}
 		}
-		// }
+		catch (IndexOutOfBoundsException e)
+		{
+			return false;
+		}
 
 		if (!behandelt)
 		{
@@ -749,6 +780,11 @@ public abstract class GL_View_Base extends CB_RectF
 	public void setBackground(Drawable background)
 	{
 		drawableBackground = background;
+	}
+
+	public Drawable getBackground()
+	{
+		return drawableBackground;
 	}
 
 	public String getName()

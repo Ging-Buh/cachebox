@@ -57,7 +57,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 	}
 
 	@Override
-	protected void Initial()
+	public void Initial()
 	{
 		super.Initial();
 
@@ -105,7 +105,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 	{
 		float headHeight = (UiSizes.getButtonHeight() / 1.5f) + (Dialog.margin);
 
-		float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidth() - ListViewItemBackground.getRightWidth()
+		float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic()
 				- (Dialog.margin * 2);
 
 		float commentHeight = (Dialog.margin * 3) + Fonts.MesureWrapped(logEntry.Comment, mesurdWidth).height;

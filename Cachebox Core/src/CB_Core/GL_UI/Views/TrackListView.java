@@ -58,10 +58,9 @@ public class TrackListView extends V_ListView
 	}
 
 	@Override
-	protected void Initial()
+	public void Initial()
 	{
-		// TODO Auto-generated method stub
-
+		super.Initial();
 	}
 
 	@Override

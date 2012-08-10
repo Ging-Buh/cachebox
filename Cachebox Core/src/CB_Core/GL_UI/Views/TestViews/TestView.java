@@ -3,14 +3,18 @@ package CB_Core.GL_UI.Views.TestViews;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.Fonts;
+import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Activitys.Import;
+import CB_Core.GL_UI.Controls.Button;
+import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.utils.GradiantFill;
 import CB_Core.GL_UI.utils.GradiantFill.GradiantStop;
-import CB_Core.GL_UI.utils.HSV_Color;
 import CB_Core.GL_UI.utils.GradiantFilledRectangle;
+import CB_Core.GL_UI.utils.HSV_Color;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -75,6 +79,27 @@ public class TestView extends CB_View_Base
 
 		GradiantFilledRectangle testRec = new GradiantFilledRectangle(GradiantRec, fill);
 		this.addChild(testRec);
+
+		// ####################################################
+
+		// Import Button
+		Button btnImport = new Button(this.width - Dialog.margin - UiSizes.getButtonWidthWide(), this.height - Dialog.margin
+				- UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight(), "");
+
+		btnImport.setText("Import");
+		btnImport.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				Import imp = new Import();
+				imp.show();
+				return false;
+			}
+		});
+
+		this.addChild(btnImport);
 
 		requestLayout();
 

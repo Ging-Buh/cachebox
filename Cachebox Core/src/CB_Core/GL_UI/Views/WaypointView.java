@@ -157,10 +157,9 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 	};
 
 	@Override
-	protected void Initial()
+	public void Initial()
 	{
-		// TODO Auto-generated method stub
-
+		super.Initial();
 	}
 
 	@Override

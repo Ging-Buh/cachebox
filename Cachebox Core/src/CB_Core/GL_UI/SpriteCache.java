@@ -118,6 +118,11 @@ public class SpriteCache
 	public static Drawable btnDisabled;
 	public static Drawable shaddowRec;
 
+	public static Drawable chkOn;
+	public static Drawable chkOff;
+	public static Drawable chkOnDisabled;
+	public static Drawable chkOffDisabled;
+
 	public static int patch;
 
 	private static void setPath(String path)
@@ -604,6 +609,11 @@ public class SpriteCache
 		btn = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("btn-normal"), patch, patch, patch, patch));
 		btnPressed = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("btn-pressed"), patch, patch, patch, patch));
 		btnDisabled = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("btn-disabled"), patch, patch, patch, patch));
+
+		chkOn = new SpriteDrawable(getThemedSprite("check-on"));
+		chkOff = new SpriteDrawable(getThemedSprite("check-off"));
+		chkOnDisabled = new SpriteDrawable(getThemedSprite("check-disable"));
+		chkOffDisabled = new SpriteDrawable(getThemedSprite("check-off"));
 
 		int hp = patch / 2;
 		shaddowRec = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("shaddowrect"), hp, hp, hp, hp));

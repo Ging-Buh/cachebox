@@ -24,6 +24,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -53,6 +54,12 @@ public class Button extends CB_View_Base
 	public Button(CB_RectF rec, GL_View_Base parent, String name)
 	{
 		super(rec, parent, name);
+		this.isClickable = true;
+	}
+
+	public Button(String name)
+	{
+		super(new CB_RectF(0, 0, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()), name);
 		this.isClickable = true;
 	}
 

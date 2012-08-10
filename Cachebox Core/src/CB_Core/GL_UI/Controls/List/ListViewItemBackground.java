@@ -100,7 +100,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 		return false;
 	}
 
-	public static float getLeftWidth()
+	public static float getLeftWidthStatic()
 	{
 		if (mBackIsInitial)
 		{
@@ -109,7 +109,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 		return 0;
 	}
 
-	public static float getRightWidth()
+	public static float getRightWidthStatic()
 	{
 		if (mBackIsInitial)
 		{

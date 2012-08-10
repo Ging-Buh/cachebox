@@ -195,6 +195,7 @@ public class Fonts
 
 	private static BitmapFontCache mesureNormalCache;
 	private static BitmapFontCache mesureSmallCache;
+	private static BitmapFontCache mesureBigCache;
 
 	public static TextBounds Mesure(String txt)
 	{
@@ -208,6 +209,14 @@ public class Fonts
 	{
 		if (mesureSmallCache == null) mesureSmallCache = new BitmapFontCache(Fonts.getSmall());
 		TextBounds bounds = mesureSmallCache.setText(txt, 0, 0);
+
+		return bounds;
+	}
+
+	public static TextBounds MesureBig(String txt)
+	{
+		if (mesureBigCache == null) mesureBigCache = new BitmapFontCache(Fonts.getBig());
+		TextBounds bounds = mesureBigCache.setText(txt, 0, 0);
 
 		return bounds;
 	}

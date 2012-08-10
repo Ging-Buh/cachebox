@@ -44,7 +44,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 	}
 
 	@Override
-	protected void Initial()
+	public void Initial()
 	{
 		// Logger.LogCat("CacheListView => Initial()");
 		// this.setListPos(0, false);

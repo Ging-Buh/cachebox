@@ -244,7 +244,7 @@ public abstract class ListViewBase extends CB_View_Base
 		}
 		catch (Exception e)
 		{
-
+			// e.printStackTrace();
 		}
 
 	}
@@ -504,13 +504,27 @@ public abstract class ListViewBase extends CB_View_Base
 		int itemCount = mBaseAdapter.getCount();
 		int itemSpace = this.getMaxItemCount();
 
-		if (itemSpace >= itemCount)
+		if (itemCount == 1)
 		{
-			this.setUndragable();
+			if (mBaseAdapter.getItemSize(0) > this.height)
+			{
+				this.setDragable();
+			}
+			else
+			{
+				this.setUndragable();
+			}
 		}
 		else
 		{
-			this.setDragable();
+			if (itemSpace >= itemCount)
+			{
+				this.setUndragable();
+			}
+			else
+			{
+				this.setDragable();
+			}
 		}
 
 		if (itemCount <= mSelectedIndex) setSelection(itemCount - 1);

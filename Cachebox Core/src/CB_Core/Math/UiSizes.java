@@ -202,6 +202,12 @@ public class UiSizes
 		return (int) (Button.width * 1.6);
 	}
 
+	public static SizeF getChkBoxSize()
+	{
+		float h = Button.height * 0.88f;
+		return new SizeF(h, h);
+	}
+
 	public static int getQuickButtonHeight()
 	{
 		return QuickButton.height;
