@@ -72,5 +72,6 @@ public class UnZip
 				extractFolder(destFile.getAbsolutePath());
 			}
 		}
+		zip.close();
 	}
 }

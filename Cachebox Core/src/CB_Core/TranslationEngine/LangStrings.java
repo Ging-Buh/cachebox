@@ -155,6 +155,8 @@ public class LangStrings
 			Temp.add(new _Translations(readID.trim(), ReplacedRead));
 		}
 
+		reader.close();
+		Filereader.close();
 		return Temp;
 	}
 
@@ -312,7 +314,6 @@ public class LangStrings
 	 */
 	public String getTextFile(String Name, String overrideLangId) throws IOException
 	{
-
 		String FilePath = Config.WorkPath + "/data/string_files/" + Name + "." + overrideLangId + ".txt";
 
 		if (!FileIO.FileExists(FilePath))
@@ -325,12 +326,7 @@ public class LangStrings
 		}
 
 		StringBuilder retSb = new StringBuilder();
-
-		BufferedReader reader;
-		reader = new BufferedReader(new FileReader(FilePath));
-
 		BufferedReader Filereader;
-
 		Filereader = new BufferedReader(new InputStreamReader(new FileInputStream(FilePath), "UTF8"));
 
 		String line;
@@ -339,6 +335,7 @@ public class LangStrings
 			retSb.append(line + String.format("%n"));
 		}
 
+		Filereader.close();
 		return retSb.toString();
 	}
 

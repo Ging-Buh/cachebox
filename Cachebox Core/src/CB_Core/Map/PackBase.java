@@ -277,12 +277,17 @@ public class PackBase implements Comparable<PackBase>
 			long nextOffset = Long.reverseBytes(reader.readLong());
 			long length = nextOffset - tileOffset;
 
-			if (length == 0) return null;
+			if (length == 0)
+			{
+				reader.close();
+				return null;
+			}
 
 			stream.skip(tileOffset - offset - 16);
 			byte[] buffer = new byte[(int) length];
 			stream.read(buffer, 0, (int) length);
 
+			reader.close();
 			return buffer;
 			// Bitmap result = BitmapFactory.decodeByteArray(buffer, 0, (int)length);
 			//
