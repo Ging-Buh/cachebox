@@ -512,7 +512,7 @@ public abstract class GL_View_Base extends CB_RectF
 			// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
 			GL_View_Base view = iterator.next();
 
-			if (!view.isClickable()) continue;
+			if (view == null || !view.isClickable()) continue;
 			// Invisible Views can not be clicked!
 			if (!view.isVisible()) continue;
 
@@ -551,7 +551,7 @@ public abstract class GL_View_Base extends CB_RectF
 			// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
 			GL_View_Base view = iterator.next();
 
-			if (!view.isClickable()) continue;
+			if (view == null || !view.isClickable()) continue;
 
 			if (view.contains(x, y))
 			{
@@ -589,7 +589,7 @@ public abstract class GL_View_Base extends CB_RectF
 				GL_View_Base view = iterator.next();
 
 				// Invisible Views can not be clicked!
-				if (!view.isVisible()) continue;
+				if (view == null || !view.isVisible()) continue;
 				if (view.contains(x, y))
 				{
 					// touch innerhalb des Views
@@ -631,7 +631,7 @@ public abstract class GL_View_Base extends CB_RectF
 			{
 				GL_View_Base view = iterator.next();
 
-				if (view.contains(x, y))
+				if (view != null && view.contains(x, y))
 				{
 					behandelt = view.touchDragged(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, KineticPan);
 				}

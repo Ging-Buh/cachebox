@@ -63,7 +63,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	public static final int FRAME_RATE_IDLE = 200;
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 15;
-	public static final int FRAME_RATE_TEXT_FIELD = 35;
+	public static final int FRAME_RATE_TEXT_FIELD = 35;// TODO wird nicht mehr benötigt Blinken geht auch mit gestoppten Renderer
 
 	// # public static member
 	public static SpriteBatch batch;

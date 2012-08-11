@@ -253,6 +253,12 @@ public class EditWaypoint extends ActivityBase
 			@Override
 			public void keyTyped(EditTextFieldBase textField, char key)
 			{
+
+			}
+
+			@Override
+			public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight)
+			{
 				layoutTextFields();
 			}
 		});
@@ -282,6 +288,12 @@ public class EditWaypoint extends ActivityBase
 		{
 			@Override
 			public void keyTyped(EditTextFieldBase textField, char key)
+			{
+
+			}
+
+			@Override
+			public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight)
 			{
 				layoutTextFields();
 			}

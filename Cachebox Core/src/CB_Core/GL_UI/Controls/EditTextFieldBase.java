@@ -1,5 +1,8 @@
 package CB_Core.GL_UI.Controls;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
@@ -34,6 +37,39 @@ public abstract class EditTextFieldBase extends CB_View_Base
 	protected Clipboard clipboard;
 	protected boolean disabled = false;
 
+	protected boolean cursorOn = true;
+	protected long blinkTime = 420;
+	protected Timer blinkTimer;
+
+	protected void blinkStart()
+	{
+		blinkTimer = new Timer();
+		TimerTask blinkTimerTask = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				cursorOn = !cursorOn;
+				GL_Listener.glListener.renderOnce("TextFieldBase: CursorBlink");
+			}
+		};
+		blinkTimer.scheduleAtFixedRate(blinkTimerTask, 0, blinkTime);
+	}
+
+	protected void blinkStop()
+	{
+		try
+		{
+			blinkTimer.cancel();
+		}
+		catch (Exception ex)
+		{
+
+		}
+
+		blinkTimer = null;
+	}
+
 	public void disable()
 	{
 		disabled = true;
@@ -52,6 +88,8 @@ public abstract class EditTextFieldBase extends CB_View_Base
 	static public interface TextFieldListener
 	{
 		public void keyTyped(EditTextFieldBase textField, char key);
+
+		public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight);
 	}
 
 	/**

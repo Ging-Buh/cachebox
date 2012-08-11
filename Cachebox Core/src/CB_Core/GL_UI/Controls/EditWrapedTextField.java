@@ -1,11 +1,10 @@
 package CB_Core.GL_UI.Controls;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
@@ -57,17 +56,12 @@ public class EditWrapedTextField extends EditTextFieldBase
 	// protected final FloatArray glyphAdvances = new FloatArray();
 	// protected final FloatArray glyphPositions = new FloatArray();
 
-	protected boolean cursorOn = true;
-	protected long blinkTime = 420;
-	protected long lastBlink;
-
 	protected boolean hasSelection;
 	protected int selectionStart;
 	protected float selectionX, selectionWidth;
 
 	protected char passwordCharacter = BULLET;
 	final Lock displayTextLock = new ReentrantLock();
-	private Timer blinkTimer;
 
 	public EditWrapedTextField(CB_RectF rec, String Name)
 	{
@@ -97,32 +91,13 @@ public class EditWrapedTextField extends EditTextFieldBase
 	@Override
 	public void onShow()
 	{
-		// TODO Auto-generated method stub
 		super.onShow();
-		blinkTimer = new Timer();
-		TimerTask blinkTimerTask = new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				cursorOn = !cursorOn;
-				GL_Listener.glListener.renderOnce("EditWrapedTextField: CursorBlink");
-			}
-		};
-		blinkTimer.scheduleAtFixedRate(blinkTimerTask, 0, blinkTime);
+
 	}
 
 	@Override
 	public void onHide()
 	{
-		try
-		{
-			blinkTimer.cancel();
-		}
-		catch (Exception ex)
-		{
-
-		}
 		super.onHide();
 	}
 
@@ -144,7 +119,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 	{
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
-		// invalidateHierarchy();
 	}
 
 	public void setPasswordCharacter(char passwordCharacter)
@@ -315,6 +289,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 			}
 			if (focused)
 			{
+
 				if (cursorOn && cursorPatch != null)
 				{
 					DisplayText dt = displayText.get(cursorLine);
@@ -333,9 +308,22 @@ public class EditWrapedTextField extends EditTextFieldBase
 						xpos = dt.glyphPositions.get(dt.glyphPositions.size - 1); // letztes Zeichen
 					}
 					textY = (int) height - textHeight - bgTopHeight;
-					cursorPatch.draw(batch, x + bgLeftWidth + xpos - 1, y + textY - bgTopHeight - lineHeight * (cursorLine - topLine),
-							cursorPatch.getTotalWidth(), lineHeight - font.getDescent() / 2);
+
+					float cursorHeight = displayText.get(0).textBounds.height + font.getDescent() / 2;
+
+					cursorPatch.draw(batch, x + bgLeftWidth + xpos - 1, (y + textY - bgTopHeight - lineHeight * (cursorLine - topLine))
+							+ font.getDescent(), cursorPatch.getTotalWidth(), cursorHeight);
+
 				}
+			}
+
+			if (focused)
+			{
+				if (blinkTimer == null) blinkStart();
+			}
+			else
+			{
+				if (blinkTimer != null) blinkStop();
 			}
 		}
 		finally
@@ -357,19 +345,22 @@ public class EditWrapedTextField extends EditTextFieldBase
 				for (int i = passwordBuffer.length(), n = text.length(); i < n; i++)
 					passwordBuffer.append(passwordCharacter);
 			}
-			displayText.add(new DisplayText(new String(passwordBuffer)));
+			displayText.add(new DisplayText(new String(passwordBuffer), style.font));
 		}
 		else
 		{
 			String[] dts = text.split("\n");
 			for (String s : dts)
-				displayText.add(new DisplayText(s));
+				displayText.add(new DisplayText(s, style.font));
 		}
 
 		for (DisplayText dt : displayText)
 		{
 			style.font.computeGlyphAdvancesAndPositions(dt.getDisplayText(), dt.glyphAdvances, dt.glyphPositions);
 		}
+
+		int lineCount = displayText.size();
+		if (listener != null) listener.lineCountChanged(this, lineCount, lineHeight * lineCount);
 	}
 
 	// Wenn calcCursor == true -> Cursorposition wird evtl. angepasst, sonst nicht
@@ -425,6 +416,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 					{
 						// komplette Zeile löschen
 						displayText.remove(dt);
+						int lineCount = displayText.size();
+						if (listener != null) listener.lineCountChanged(this, lineCount, lineHeight * lineCount);
 					}
 					else
 					{
@@ -506,7 +499,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				else
 				{
 					// neue Zeile erstellen
-					DisplayText newDt = new DisplayText(s2, true);
+					DisplayText newDt = new DisplayText(s2, true, style.font);
 					displayText.add(cursorLine + 1, newDt);
 					style.font.computeGlyphAdvancesAndPositions(newDt.displayText, newDt.glyphAdvances, newDt.glyphPositions);
 				}
@@ -834,12 +827,17 @@ public class EditWrapedTextField extends EditTextFieldBase
 		String s1 = dt.displayText.toString().substring(0, cursor);
 		String s2 = dt.displayText.toString().substring(cursor, dt.displayText.length());
 		dt.displayText = s1;
-		DisplayText newDt = new DisplayText(s2);
+		DisplayText newDt = new DisplayText(s2, style.font);
 		displayText.add(cursorLine + 1, newDt);
 		style.font.computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
 		style.font.computeGlyphAdvancesAndPositions(newDt.displayText, newDt.glyphAdvances, newDt.glyphPositions);
 		setCursorLine(cursorLine + 1);
 		cursor = 0;
+
+		int lineCount = displayText.size();
+
+		if (listener != null) listener.lineCountChanged(this, lineCount, lineHeight * lineCount);
+
 	}
 
 	// bewegt den Cursor nach oben / unten. X-Position des Cursors soll möglichst gleich bleiben
@@ -1024,6 +1022,9 @@ public class EditWrapedTextField extends EditTextFieldBase
 						dt2.displayText += dt.displayText;
 						displayText.remove(cursorLine + 1);
 						updateDisplayText(dt2, true);
+
+						int lineCount = displayText.size();
+						if (listener != null) listener.lineCountChanged(this, lineCount, lineHeight * lineCount);
 					}
 					GL_Listener.glListener.renderOnce("EditWrapedTextField");
 					return true;
@@ -1202,7 +1203,19 @@ public class EditWrapedTextField extends EditTextFieldBase
 	/** @return Never null, might be an empty string. */
 	public String getText()
 	{
-		return text;
+
+		StringBuilder sb = new StringBuilder();
+
+		int lastLine = displayText.size();
+		int index = 0;
+		for (DisplayText dt : displayText)
+		{
+			sb.append(dt.displayText);
+			if (!dt.autoWrap && index != lastLine) sb.append(GlobalCore.br);
+			index++;
+		}
+
+		return sb.toString();
 	}
 
 	/** Sets the selected text. */
@@ -1280,15 +1293,19 @@ public class EditWrapedTextField extends EditTextFieldBase
 		private final FloatArray glyphPositions = new FloatArray();
 		private boolean autoWrap;
 
-		public DisplayText(String displayText)
+		public DisplayText(String displayText, BitmapFont font)
 		{
 			this.displayText = displayText;
+
+			calcTextBounds(font);
 		}
 
-		public DisplayText(String displayText, boolean autoWrap)
+		public DisplayText(String displayText, boolean autoWrap, BitmapFont font)
 		{
 			this.displayText = displayText;
 			this.autoWrap = autoWrap;
+
+			calcTextBounds(font);
 		}
 
 		public void calcTextBounds(BitmapFont font)

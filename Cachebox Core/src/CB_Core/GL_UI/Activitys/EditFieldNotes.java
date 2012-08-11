@@ -124,7 +124,7 @@ public class EditFieldNotes extends ActivityBase
 			{
 				if (mReturnListner != null)
 				{
-					fieldNote.comment = etComment.getText().toString();
+					fieldNote.comment = etComment.getText();
 					if (GcVote != null)
 					{
 						fieldNote.gc_Vote = (int) (GcVote.getValue() * 100);
@@ -314,6 +314,12 @@ public class EditFieldNotes extends ActivityBase
 
 			@Override
 			public void keyTyped(EditTextFieldBase textField, char key)
+			{
+
+			}
+
+			@Override
+			public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight)
 			{
 				layoutTextFields();
 			}

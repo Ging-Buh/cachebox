@@ -65,6 +65,8 @@ public abstract class ListViewBase extends CB_View_Base
 
 	protected float minimumItemSize = 0;
 
+	protected float mcalcAllSizeBase = 0f;
+
 	/**
 	 * Komplette Breite oder Höhe aller Items
 	 */
@@ -301,7 +303,7 @@ public abstract class ListViewBase extends CB_View_Base
 			return;
 		}
 		if (mPos > 0) startAnimationtoTop();
-		else if (mPos < mAllSize) startAnimationToBottom();
+		else if (mPos < mcalcAllSizeBase) startAnimationToBottom();
 	}
 
 	public boolean isDrageble()
@@ -329,7 +331,7 @@ public abstract class ListViewBase extends CB_View_Base
 	{
 		if (mBaseAdapter == null) return;
 		mBottomAnimation = true;
-		scrollTo(mAllSize);
+		scrollTo(mcalcAllSizeBase);
 	}
 
 	public void scrollToItem(int i)
@@ -496,38 +498,6 @@ public abstract class ListViewBase extends CB_View_Base
 		return mMaxItemCount;
 	}
 
-	public void notifyDataSetChanged()
-	{
-		calcDefaultPosList();
-		reloadItems();
+	public abstract void notifyDataSetChanged();
 
-		int itemCount = mBaseAdapter.getCount();
-		int itemSpace = this.getMaxItemCount();
-
-		if (itemCount == 1)
-		{
-			if (mBaseAdapter.getItemSize(0) > this.height)
-			{
-				this.setDragable();
-			}
-			else
-			{
-				this.setUndragable();
-			}
-		}
-		else
-		{
-			if (itemSpace >= itemCount)
-			{
-				this.setUndragable();
-			}
-			else
-			{
-				this.setDragable();
-			}
-		}
-
-		if (itemCount <= mSelectedIndex) setSelection(itemCount - 1);
-
-	}
 }

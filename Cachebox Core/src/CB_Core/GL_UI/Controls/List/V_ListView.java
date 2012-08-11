@@ -205,6 +205,8 @@ public class V_ListView extends ListViewBase
 		minimumItemSize = this.height;
 
 		float countPos = this.height - mDividerSize;
+
+		mAllSize = 0;
 		if (hasInvisibleItems)
 		{
 			for (int i = 0; i < mBaseAdapter.getCount(); i++)
@@ -216,6 +218,7 @@ public class V_ListView extends ListViewBase
 					itemHeight = mBaseAdapter.getItemSize(i);
 					countPos -= itemHeight + mDividerSize;
 					if (itemHeight < minimumItemSize) minimumItemSize = itemHeight;
+					mAllSize += itemHeight + mDividerSize;
 					mVisibleItemCount++;
 				}
 
@@ -231,19 +234,16 @@ public class V_ListView extends ListViewBase
 				countPos -= itemHeight + mDividerSize;
 				if (itemHeight < minimumItemSize) minimumItemSize = itemHeight;
 				mVisibleItemCount++;
-
+				mAllSize += itemHeight + mDividerSize;
 				mPosDefault.add(countPos);
 
 			}
 		}
 
-		mAllSize = countPos;
+		mcalcAllSizeBase = countPos - mDividerSize;
 		mMaxItemCount = (int) (this.height / minimumItemSize);
 		if (mMaxItemCount < 1) mMaxItemCount = 1;
 
-		if (mMaxItemCount > mVisibleItemCount) setUndragable();
-		else
-			setDragable();
 	}
 
 	@Override
@@ -254,9 +254,9 @@ public class V_ListView extends ListViewBase
 
 		float sollPos = mLastPos_onTouch - mDraged;
 		float toMuch = 0;
-		if (sollPos - firstItemSize > 0 || sollPos < mAllSize)
+		if (sollPos - firstItemSize > 0 || sollPos < mcalcAllSizeBase)
 		{
-			if (sollPos - (firstItemSize * 3) > 0 || sollPos + (lastItemSize * 3) < mAllSize)
+			if (sollPos - (firstItemSize * 3) > 0 || sollPos + (lastItemSize * 3) < mcalcAllSizeBase)
 			{
 				if (KineticPan) GL_Listener.glListener.StopKinetic(x, y, pointer, true);
 				return true;
@@ -267,9 +267,9 @@ public class V_ListView extends ListViewBase
 				toMuch = 0 - sollPos + firstItemSize;
 				toMuch /= 2;
 			}
-			else if (sollPos < mAllSize)
+			else if (sollPos < mcalcAllSizeBase)
 			{
-				toMuch = mAllSize - sollPos;
+				toMuch = mcalcAllSizeBase - sollPos;
 				toMuch /= 2;
 			}
 		}
@@ -307,6 +307,25 @@ public class V_ListView extends ListViewBase
 	protected void SkinIsChanged()
 	{
 		reloadItems();
+	}
+
+	@Override
+	public void notifyDataSetChanged()
+	{
+		calcDefaultPosList();
+		reloadItems();
+
+		if (mAllSize > this.height)
+		{
+			this.setDragable();
+		}
+		else
+		{
+			this.setUndragable();
+		}
+
+		if (mBaseAdapter.getCount() <= mSelectedIndex) setSelection(mBaseAdapter.getCount() - 1);
+
 	}
 
 }

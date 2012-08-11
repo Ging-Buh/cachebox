@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
-import com.badlogic.gdx.utils.TimeUtils;
 
 public class EditTextField extends EditTextFieldBase
 {
@@ -43,10 +42,6 @@ public class EditTextField extends EditTextFieldBase
 	protected int visibleTextStart, visibleTextEnd;
 	protected final FloatArray glyphAdvances = new FloatArray();
 	protected final FloatArray glyphPositions = new FloatArray();
-
-	protected boolean cursorOn = true;
-	protected float blinkTime = 0.42f;
-	protected long lastBlink;
 
 	protected boolean hasSelection;
 	protected int selectionStart;
@@ -222,12 +217,20 @@ public class EditTextField extends EditTextFieldBase
 		}
 		if (focused)
 		{
-			blink();
 			if (cursorOn && cursorPatch != null)
 			{
 				cursorPatch.draw(batch, x + bgLeftWidth + glyphPositions.get(cursor) + renderOffset - 1, y + textY - textBounds.height
 						- font.getDescent(), cursorPatch.getTotalWidth(), textBounds.height + font.getDescent() / 2);
 			}
+		}
+
+		if (focused)
+		{
+			if (blinkTimer == null) blinkStart();
+		}
+		else
+		{
+			if (blinkTimer != null) blinkStop();
 		}
 	}
 
@@ -250,16 +253,6 @@ public class EditTextField extends EditTextFieldBase
 		style.font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
 	}
 
-	private void blink()
-	{
-		long time = TimeUtils.nanoTime();
-		if ((time - lastBlink) / 1000000000.0f > blinkTime)
-		{
-			cursorOn = !cursorOn;
-			lastBlink = time;
-		}
-	}
-
 	@Override
 	public boolean onTouchDown(int X, int Y, int pointer, int button)
 	{
@@ -270,8 +263,7 @@ public class EditTextField extends EditTextFieldBase
 		GL_Listener.setKeyboardFocus(this);
 		keyboard.show(true);
 		clearSelection();
-		lastBlink = 0;
-		cursorOn = false;
+
 		x = x - renderOffset;
 		for (int i = 0; i < glyphPositions.size; i++)
 		{

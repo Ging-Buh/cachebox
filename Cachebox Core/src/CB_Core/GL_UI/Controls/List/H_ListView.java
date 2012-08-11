@@ -161,15 +161,18 @@ public class H_ListView extends ListViewBase
 
 		float countPos = this.width;
 		minimumItemSize = this.width;
+		mAllSize = 0;
 		for (int i = 0; i < mBaseAdapter.getCount(); i++)
 		{
 			float itemWidth = mBaseAdapter.getItemSize(i);
 			countPos -= itemWidth + mDividerSize;
-			mPosDefault.add(countPos);
+			// mPosDefault.add(countPos);
 			mPosDefault.add(0, countPos);
+			mAllSize += itemWidth + mDividerSize;
+
 			if (itemWidth < minimumItemSize) minimumItemSize = itemWidth;
 		}
-		mAllSize = countPos - mDividerSize;
+		mcalcAllSizeBase = countPos - mDividerSize;
 		mPos = countPos - mDividerSize;
 		mMaxItemCount = (int) (this.width / minimumItemSize);
 		if (mMaxItemCount < 1) mMaxItemCount = 1;
@@ -182,9 +185,9 @@ public class H_ListView extends ListViewBase
 		mDraged = x - mLastTouch;
 		float sollPos = mLastPos_onTouch - mDraged;
 		float toMuch = 0;
-		if (sollPos - firstItemSize > 0 || sollPos < mAllSize)
+		if (sollPos - firstItemSize > 0 || sollPos < mcalcAllSizeBase)
 		{
-			if (sollPos - (firstItemSize * 3) > 0 || sollPos + (lastItemSize * 3) < mAllSize)
+			if (sollPos - (firstItemSize * 3) > 0 || sollPos + (lastItemSize * 3) < mcalcAllSizeBase)
 			{
 				if (KineticPan) GL_Listener.glListener.StopKinetic(x, y, pointer, true);
 				return true;
@@ -195,9 +198,9 @@ public class H_ListView extends ListViewBase
 				toMuch = 0 - sollPos + firstItemSize;
 				toMuch /= 2;
 			}
-			else if (sollPos < mAllSize)
+			else if (sollPos < mcalcAllSizeBase)
 			{
-				toMuch = mAllSize - sollPos;
+				toMuch = mcalcAllSizeBase - sollPos;
 				toMuch /= 2;
 			}
 		}
@@ -227,6 +230,25 @@ public class H_ListView extends ListViewBase
 	protected void SkinIsChanged()
 	{
 		reloadItems();
+	}
+
+	@Override
+	public void notifyDataSetChanged()
+	{
+		calcDefaultPosList();
+		reloadItems();
+
+		if (mcalcAllSizeBase > this.width)
+		{
+			this.setDragable();
+		}
+		else
+		{
+			this.setUndragable();
+		}
+
+		if (mBaseAdapter.getCount() <= mSelectedIndex) setSelection(mBaseAdapter.getCount() - 1);
+
 	}
 
 }
