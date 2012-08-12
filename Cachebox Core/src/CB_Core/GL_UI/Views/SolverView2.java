@@ -6,6 +6,7 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.Events.WaypointListChangedEventList;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.ActivityBase;
@@ -163,6 +164,8 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	public final int MI_CHANGE_LINE = 2;
 	public final int MI_DELETE_LINE = 3;
 	public final int MI_INSERT_LINE = 4;
+	public final int MI_SET_AS_WAYPOINT = 5;
+	public final int MI_SET_AS_MAPCENTER = 6;
 
 	private OnLongClickListener onItemLongClickListner = new OnLongClickListener()
 	{
@@ -192,6 +195,12 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 					case MI_DELETE_LINE:
 						TabMainView.solverView2.DeleteLine();
 						return true;
+					case MI_SET_AS_WAYPOINT:
+						TabMainView.solverView2.SetAsWaypoint();
+						break;
+					case MI_SET_AS_MAPCENTER:
+						TabMainView.solverView2.SetAsMapCenter();
+						break;
 					}
 					return false;
 				}
@@ -201,6 +210,8 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			cm.addItem(MI_CHANGE_LINE, "Zeile ändern", SpriteCache.Icons.get(13));
 			cm.addItem(MI_INSERT_LINE, "Zeile einfügen", SpriteCache.Icons.get(13));
 			cm.addItem(MI_DELETE_LINE, "Zeile löschen", SpriteCache.Icons.get(13));
+			cm.addItem(MI_SET_AS_WAYPOINT, "Waypoint einfügen", SpriteCache.Icons.get(13));
+			cm.addItem(MI_SET_AS_MAPCENTER, "Map-Center setzen", SpriteCache.Icons.get(13));
 			cm.show();
 
 			return true;
@@ -405,22 +416,35 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		{
 			// Create New Waypoint
 			Waypoint wp = new Waypoint();
+			wp.CacheId = GlobalCore.SelectedCache().Id;
 			wp.setCoordinate(result);
 			wp.Type = CacheTypes.Final;
 			wp.Description = "Final";
-			wp.GcCode = GlobalCore.SelectedCache().GcCode + "01";
+			wp.IsUserWaypoint = true;
+			try
+			{
+				wp.GcCode = Database.CreateFreeGcCode(GlobalCore.SelectedCache().GcCode);
+			}
+			catch (Exception e)
+			{
+				return;
+			}
 			EditWaypoint EdWp = new EditWaypoint(ActivityBase.ActivityRec(), "EditWP", wp, new ReturnListner()
 			{
 				@Override
 				public void returnedWP(Waypoint waypoint)
 				{
-					// Waypoint in der DB speichern
-					GlobalCore.SelectedCache().waypoints.add(waypoint);
-					GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), waypoint);
-					WaypointDAO waypointDAO = new WaypointDAO();
-					waypointDAO.WriteToDatabase(waypoint);
+					if (waypoint != null)
+					{
+						// Waypoint in der DB speichern
+						GlobalCore.SelectedCache().waypoints.add(waypoint);
+						WaypointDAO waypointDAO = new WaypointDAO();
+						waypointDAO.WriteToDatabase(waypoint);
+						WaypointListChangedEventList.Call(GlobalCore.SelectedCache());
+						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), waypoint);
+					}
 				}
-			});
+			}, false);
 			EdWp.show();
 		}
 	}

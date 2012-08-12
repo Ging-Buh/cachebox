@@ -6,6 +6,8 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.Events.WaypointListChangedEvent;
+import CB_Core.Events.WaypointListChangedEventList;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.ActivityBase;
@@ -29,7 +31,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 
-public class WaypointView extends V_ListView implements SelectedCacheEvent
+public class WaypointView extends V_ListView implements SelectedCacheEvent, WaypointListChangedEvent
 {
 	CustomAdapter lvAdapter;
 
@@ -48,6 +50,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 
 		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
 		SelectedCacheEventList.Add(this);
+		WaypointListChangedEventList.Add(this);
 	}
 
 	@Override
@@ -300,6 +303,14 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 		SetSelectedCache(cache, waypoint);
 	}
 
+	@Override
+	public void WaypointListChanged(Cache cache)
+	{
+		if (cache != aktCache) return;
+		aktCache = null;
+		SetSelectedCache(cache, aktWaypoint);
+	}
+
 	private final int MI_EDIT = 0;
 	private final int MI_ADD = 1;
 	private final int MI_DELETE = 2;
@@ -426,7 +437,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent
 					}
 				}
 			}
-		});
+		}, true);
 		EdWp.show();
 
 	}

@@ -43,6 +43,8 @@ public class EditWaypoint extends ActivityBase
 	private Label tvClue = null;
 	private EditWrapedTextField etClue = null;
 	private Boolean firstShow = true;
+	// damit kann festgelegt werden, ob beim Start des WaypointDialogs gleich der Coordinaten-Dialog gezeigt werden soll oder nicht.
+	private Boolean showCoordinateDialog = false;
 
 	private Box scrollBox;
 
@@ -53,13 +55,14 @@ public class EditWaypoint extends ActivityBase
 
 	private ReturnListner mReturnListner;
 
-	public EditWaypoint(CB_RectF rec, String Name, Waypoint waypoint, ReturnListner listner)
+	public EditWaypoint(CB_RectF rec, String Name, Waypoint waypoint, ReturnListner listner, boolean showCoordinateDialog)
 	{
 		super(rec, Name);
 		scrollBox = new Box(rec, Name);
 		this.addChild(scrollBox);
 		this.waypoint = waypoint;
 		this.mReturnListner = listner;
+		this.showCoordinateDialog = this.showCoordinateDialog;
 
 		iniCacheNameLabel();
 		iniCoordButton();
@@ -419,7 +422,7 @@ public class EditWaypoint extends ActivityBase
 	public void onShow()
 	{
 		// onShow switch to editCoord Dialog if this the first show
-		if (firstShow) bCoord.performClick();
+		if (firstShow && showCoordinateDialog) bCoord.performClick();
 		firstShow = false;
 	}
 
