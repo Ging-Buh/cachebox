@@ -65,22 +65,13 @@ public class UiSizes
 
 	private static int mClickToleranz;
 
+	public static devicesSizes ui;
+
 	public static Size initial(devicesSizes ini)
 	{
-		// Resources res = context.getResources();
-
-		// WindowManager w = context.getWindowManager();
-		// Display d = w.getDefaultDisplay();
+		ui = ini;
 		windowWidth = ini.Window.width;// d.getWidth();
 		windowHeight = ini.Window.height;// d.getHeight();
-
-		// if width>height switch the values (landscape start bug)
-		// if (windowWidth > windowHeight)
-		// {
-		// int temp = windowWidth;
-		// windowWidth = windowHeight;
-		// windowHeight = temp;
-		// }
 
 		scale = ini.Density;// res.getDisplayMetrics().density;
 

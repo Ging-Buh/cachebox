@@ -2967,6 +2967,34 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		synchronized (lockObject)
 		{
 			File file = new File(Config.WorkPath + "/debug.txt");
+
+			if (!file.exists())
+			{
+				// schreibe UI Sizes als erstes in die dbug.txt
+				String br = GlobalCore.br;
+				devicesSizes ui = UiSizes.ui;
+
+				StringBuilder sb = new StringBuilder();
+				sb.append("################  Ui Sizes ############" + br);
+				sb.append("Window = " + ui.Window.toString() + br);
+				sb.append("Density = " + ui.Density + br);
+				sb.append("ButtonSize = " + ui.ButtonSize.toString() + br);
+				sb.append("RefSize = " + ui.RefSize + br);
+				sb.append("TextSize_Normal = " + ui.TextSize_Normal + br);
+				sb.append("ButtonTextSize = " + ui.ButtonTextSize + br);
+				sb.append("IconSize = " + ui.IconSize + br);
+				sb.append("ArrowSizeList = " + ui.ArrowSizeList + br);
+				sb.append("ArrowSizeMap = " + ui.ArrowSizeMap + br);
+				sb.append("TB_IconSize = " + ui.TB_IconSize + br);
+				sb.append("isLandscape = " + ui.isLandscape + br);
+				sb.append("    " + br);
+				sb.append("MapViewDPIFaktor = " + Config.settings.MapViewDPIFaktor.getValue() + br);
+				sb.append("MapViewFontFaktor = " + Config.settings.MapViewFontFaktor.getValue() + br);
+				sb.append("#######################################" + br + br);
+				Msg = sb.toString() + Msg;
+
+			}
+
 			FileWriter writer;
 			try
 			{

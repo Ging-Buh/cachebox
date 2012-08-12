@@ -69,4 +69,11 @@ public class Size implements Serializable
 	{
 		return new SizeF(width, height);
 	}
+
+	@Override
+	public String toString()
+	{
+		String s = " " + width + "/" + height;
+		return s;
+	}
 }
