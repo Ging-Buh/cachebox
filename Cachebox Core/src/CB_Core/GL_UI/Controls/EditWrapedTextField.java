@@ -39,6 +39,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 	protected int cursor;
 	protected int cursorLine;
 	protected float topLine;
+	protected float maxLineCount; // Anzahl der darzustellenden Zeilen
 	protected Clipboard clipboard;
 	protected TextFieldListener listener;
 	protected TextFieldFilter filter;
@@ -253,6 +254,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 			float textY = (int) (height / 2 + textHeight / 2 + font.getDescent());
 			textY = (int) height - textHeight - bgTopHeight;
+			maxLineCount = (height - bgTopHeight - bgBottomHeight - lineHeight / 2) / lineHeight;
 			calculateOffsets();
 
 			if (focused && hasSelection && selection != null)
@@ -589,7 +591,23 @@ public class EditWrapedTextField extends EditTextFieldBase
 	{
 		if (mouseDown != null)
 		{
-			topLine = mouseDownTopLine + (float) (y - mouseDown.y) / lineHeight;
+			if (displayText.size() < maxLineCount)
+			{
+				topLine = 0;
+			}
+			else
+			{
+				topLine = mouseDownTopLine + (float) (y - mouseDown.y) / lineHeight;
+				if (topLine < 0)
+				{
+					topLine = 0;
+				}
+
+				if (displayText.size() - topLine < maxLineCount)
+				{
+					topLine = displayText.size() - maxLineCount;
+				}
+			}
 		}
 		GL_Listener.glListener.renderOnce("EditWrapedTextField");
 		return true;
@@ -884,18 +902,13 @@ public class EditWrapedTextField extends EditTextFieldBase
 	private void checkCursorVisible()
 	{
 		// Cursorpos prüfen, ob ausserhalb sichtbaren Bereich
-		float maxHeight = height - 40; // noch falsch!!!!!!!!!!!!!!!!!!!!!
-
-		float cursorYPos = (cursorLine - topLine) * lineHeight;
-		while (cursorYPos > maxHeight)
+		if (cursorLine - topLine >= maxLineCount)
 		{
-			topLine++;
-			cursorYPos = (cursorLine - topLine) * lineHeight;
+			topLine = cursorLine - maxLineCount + 1;
 		}
-		while (cursorYPos < 0)
+		if (cursorLine < topLine)
 		{
-			topLine--;
-			cursorYPos = (cursorLine - topLine) * lineHeight;
+			topLine = cursorLine;
 		}
 	}
 
