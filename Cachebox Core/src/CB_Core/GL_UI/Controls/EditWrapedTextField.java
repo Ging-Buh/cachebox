@@ -46,7 +46,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 	protected float maxLineCount; // Anzahl der darzustellenden Zeilen
 	protected float leftPos; // Anzahl der Pixel, um die nach links gescrollt ist
 	protected float maxTextWidth; // Anzahl der Pixel des sichtbaren Textes
-	protected Clipboard clipboard;
 	protected TextFieldListener listener;
 	protected TextFieldFilter filter;
 	protected OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
@@ -1064,9 +1063,11 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 			if (!hasSelection)
 			{
-				text = text.substring(0, cursor) + content + text.substring(cursor, text.length());
-				// updateDisplayText();
+				DisplayText dt = getDisplayText(cursorLine);
+				dt.displayText = dt.displayText.substring(0, cursor) + content + dt.displayText.substring(cursor, dt.displayText.length());
+				updateDisplayText(dt, true);
 				cursor += content.length();
+				checkCursorVisible();
 			}
 			else
 			{
@@ -1392,11 +1393,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 	public void setOnscreenKeyboard(OnscreenKeyboard keyboard)
 	{
 		this.keyboard = keyboard;
-	}
-
-	public void setClipboard(Clipboard clipboard)
-	{
-		this.clipboard = clipboard;
 	}
 
 	@Override
