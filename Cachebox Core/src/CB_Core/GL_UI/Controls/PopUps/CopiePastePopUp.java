@@ -4,22 +4,24 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
-import CB_Core.GL_UI.Controls.EditTextField;
+import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class CopiePastePopUp extends PopUp_Base
 {
 
-	private Button pasteButton;
+	private Button btnCopy;
+	private Button btnCut;
+	private Button btnPaste;
 
-	public CopiePastePopUp(CB_RectF rec, String Name, final EditTextField textField)
+	public CopiePastePopUp(String Name, final EditTextFieldBase textField)
 	{
-		super(rec, Name);
+		super(new CB_RectF(0, 0, UiSizes.getButtonWidth() * 3.2f, UiSizes.getButtonHeight() * 1.5f), Name);
 
 		int p = SpriteCache.patch;
 
@@ -27,12 +29,13 @@ public class CopiePastePopUp extends PopUp_Base
 
 		this.setClickable(true);
 
-		pasteButton = new Button(rec.ScaleCenter(0.6f), "PasteButton");
-		pasteButton.setFont(Fonts.getBubbleNormal());
-		pasteButton.setText("paste");
-		pasteButton.setBackground(new NinePatchDrawable(new NinePatch(SpriteCache.Icons.get(50), 1, 1, 1, 1)));
-		pasteButton.setY(rec.getHeight() * 0.4f);
-		pasteButton.setOnClickListener(new OnClickListener()
+		CB_RectF rec = new CB_RectF(0, 0, UiSizes.getButtonHeight(), UiSizes.getButtonHeight());
+
+		btnPaste = new Button(rec, "PasteButton");
+		btnPaste.setFont(Fonts.getBubbleNormal());
+		btnPaste.setImage(SpriteCache.paste);
+		btnPaste.setY(rec.getHeight() * 0.4f);
+		btnPaste.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
@@ -40,19 +43,62 @@ public class CopiePastePopUp extends PopUp_Base
 			{
 				// Logger.LogCat("Paste Button Clicked");
 				close();
-				textField.paste();
+				textField.pasteFromClipboard();
 				return false;
 			}
 		});
 
-		this.addChild(pasteButton);
+		this.addChild(btnPaste);
+
+		btnCopy = new Button(rec, "CopyButton");
+		btnCopy.setFont(Fonts.getBubbleNormal());
+		btnCopy.setImage(SpriteCache.copy);
+		btnCopy.setY(rec.getHeight() * 0.4f);
+		btnCopy.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// Logger.LogCat("Copy Button Clicked");
+				close();
+				textField.copyToClipboard();
+				return false;
+			}
+		});
+
+		this.addChild(btnCopy);
+
+		btnCut = new Button(rec, "CutButton");
+		btnCut.setFont(Fonts.getBubbleNormal());
+		btnCut.setImage(SpriteCache.cut);
+		btnCut.setY(rec.getHeight() * 0.4f);
+		btnCut.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// Logger.LogCat("Cut Button Clicked");
+				close();
+				textField.copyToClipboard();
+				return false;
+			}
+		});
+
+		this.addChild(btnCut);
+
+		float sollDivider = (this.getWidth() - p - (rec.getWidth() * 3)) / 4;
+
+		btnCut.setX(sollDivider + (p / 2));
+		btnCopy.setX(btnCut.getMaxX() + sollDivider);
+		btnPaste.setX(btnCopy.getMaxX() + sollDivider);
 	}
 
 	@Override
 	public void Initial()
 	{
-		pasteButton.setninePatch((new SpriteDrawable(SpriteCache.Icons.get(50))));
-		pasteButton.setninePatchPressed((new SpriteDrawable(SpriteCache.Icons.get(50))));
+
 	}
 
 	public void flipX()
@@ -61,7 +107,12 @@ public class CopiePastePopUp extends PopUp_Base
 
 		Drawable drawable = new NinePatchDrawable(new NinePatch(SpriteCache.Bubble.get(5), p, p, (int) (p * 1.432), p));
 		setBackground(drawable);
-		pasteButton.setY(this.height * 0.07f);
+
+		float yValue = this.height * 0.07f;
+
+		btnPaste.setY(yValue);
+		btnCopy.setY(yValue);
+		btnCut.setY(yValue);
 	}
 
 	@Override

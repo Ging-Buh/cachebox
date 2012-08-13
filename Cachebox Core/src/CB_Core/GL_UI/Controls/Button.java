@@ -40,6 +40,8 @@ public class Button extends CB_View_Base
 	protected Drawable drawablePressed;
 	protected Drawable drawableDisabled;
 
+	protected Drawable image;
+
 	protected boolean isPressed = false;
 	protected boolean isDisabled = false;
 	protected Label lblTxt;
@@ -79,6 +81,11 @@ public class Button extends CB_View_Base
 	public void setninePatch(Drawable drawable)
 	{
 		drawableNormal = drawable;
+	}
+
+	public void setImage(Drawable drawable)
+	{
+		image = drawable;
 	}
 
 	public void setninePatchPressed(Drawable drawable)
@@ -135,6 +142,11 @@ public class Button extends CB_View_Base
 			{
 				drawableDisabled.draw(batch, 0, 0, width, height);
 			}
+		}
+
+		if (image != null)
+		{
+			image.draw(batch, 0, 0, width, height);
 		}
 
 	}

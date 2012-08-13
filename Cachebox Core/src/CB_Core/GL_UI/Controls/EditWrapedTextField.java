@@ -14,11 +14,10 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.utils.Clipboard;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.FloatArray;
 
 public class EditWrapedTextField extends EditTextFieldBase
@@ -205,8 +204,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 		{
 			final BitmapFont font = style.font;
 			final Color fontColor = style.fontColor;
-			final TextureRegion selection = style.selection;
-			final NinePatch cursorPatch = style.cursor;
+			final Drawable selection = style.selection;
+			final Drawable cursorPatch = style.cursor;
 			lineHeight = style.font.getLineHeight();
 
 			float bgLeftWidth = 0;
@@ -259,7 +258,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 			if (focused && hasSelection && selection != null)
 			{
-				batch.draw(selection, x + selectionX + bgLeftWidth + renderOffset, y + textY - textHeight - font.getDescent() / 2,
+				selection.draw(batch, x + selectionX + bgLeftWidth + renderOffset, y + textY - textHeight - font.getDescent() / 2,
 						selectionWidth, textHeight);
 			}
 
@@ -314,7 +313,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 					float cursorHeight = displayText.get(0).textBounds.height + font.getDescent() / 2;
 
 					cursorPatch.draw(batch, x + bgLeftWidth + xpos - 1, (y + textY - bgTopHeight - lineHeight * (cursorLine - topLine))
-							+ font.getDescent(), cursorPatch.getTotalWidth(), cursorHeight);
+							+ font.getDescent(), cursorPatch.getMinWidth(), cursorHeight);
 
 				}
 			}
@@ -679,14 +678,14 @@ public class EditWrapedTextField extends EditTextFieldBase
 				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))
 				{
 					// paste
-					if (keycode == Keys.V) paste();
+					if (keycode == Keys.V) pasteFromClipboard();
 					// copy
 					if (keycode == Keys.C || keycode == Keys.INSERT) copy();
 				}
 				else if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))
 				{
 					// paste
-					if (keycode == Keys.INSERT) paste();
+					if (keycode == Keys.INSERT) pasteFromClipboard();
 					// cut
 					if (keycode == Keys.FORWARD_DEL)
 					{
@@ -941,6 +940,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 	/**
 	 * Copies the contents of this TextField to the {@link Clipboard} implementation set on this TextField.
 	 */
+	@Override
 	public void copyToClipboard()
 	{
 		if (hasSelection && clipboard != null)
@@ -951,10 +951,18 @@ public class EditWrapedTextField extends EditTextFieldBase
 		}
 	}
 
+	@Override
+	public void cutToClipboard()
+	{
+		copyToClipboard();
+		delete();
+	}
+
 	/**
 	 * Pastes the content of the {@link Clipboard} implementation set on this Textfield to this TextField.
 	 */
-	public void paste()
+	@Override
+	public void pasteFromClipboard()
 	{
 		if (clipboard == null) return;
 

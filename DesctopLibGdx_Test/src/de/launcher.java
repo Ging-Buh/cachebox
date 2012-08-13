@@ -161,7 +161,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 	private static devicesSizes iniLowPhone()
 	{
 
-		Size myInitialSize = new Size(240, 400);
+		Size myInitialSize = new Size(240, 381);
 		devicesSizes ui = getLDPI(myInitialSize);
 
 		return ui;
@@ -171,7 +171,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 	private static devicesSizes iniHighPhone()
 	{
 
-		Size myInitialSize = new Size(720, 1280);
+		Size myInitialSize = new Size(720, 1230);
 		devicesSizes ui = getXHDPI(myInitialSize);
 
 		return ui;
@@ -184,15 +184,15 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 		ui.Window = myInitialSize;
 		ui.Density = 0.75f;
-		ui.ButtonSize = new Size(53, 53);
-		ui.RefSize = 44;
-		ui.TextSize_Normal = 36;
-		ui.ButtonTextSize = 27;
-		ui.IconSize = 11;
-		ui.Margin = 3;
-		ui.ArrowSizeList = 26;
-		ui.ArrowSizeMap = 18;
-		ui.TB_IconSize = 20;
+		ui.ButtonSize = new Size(40, 36);
+		ui.RefSize = 33;
+		ui.TextSize_Normal = 27;
+		ui.ButtonTextSize = 20;
+		ui.IconSize = 8;
+		ui.Margin = 4;
+		ui.ArrowSizeList = 20;
+		ui.ArrowSizeMap = 14;
+		ui.TB_IconSize = 15;
 		ui.isLandscape = false;
 		return ui;
 	}
@@ -241,15 +241,15 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 		ui.Window = myInitialSize;
 		ui.Density = 2f;
-		ui.ButtonSize = new Size(53, 53);
-		ui.RefSize = 74;
-		ui.TextSize_Normal = 62;
-		ui.ButtonTextSize = 60;
-		ui.IconSize = 12;
+		ui.ButtonSize = new Size(106, 95);
+		ui.RefSize = 148;
+		ui.TextSize_Normal = 124;
+		ui.ButtonTextSize = 120;
+		ui.IconSize = 24;
 		ui.Margin = 3;
-		ui.ArrowSizeList = 11;
-		ui.ArrowSizeMap = 18;
-		ui.TB_IconSize = 4;
+		ui.ArrowSizeList = 22;
+		ui.ArrowSizeMap = 36;
+		ui.TB_IconSize = 8;
 		ui.isLandscape = false;
 		return ui;
 	}

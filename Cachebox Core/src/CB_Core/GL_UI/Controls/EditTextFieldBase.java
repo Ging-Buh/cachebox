@@ -3,26 +3,36 @@ package CB_Core.GL_UI.Controls;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
+import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Controls.PopUps.CopiePastePopUp;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.Clipboard;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public abstract class EditTextFieldBase extends CB_View_Base
 {
 
+	public EditTextFieldBase that;
+
 	public EditTextFieldBase(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
+		that = this;
+		registerPopUpLongClick();
+
+		clipboard = GlobalCore.getDefaultClipboard();
+
 	}
 
 	public abstract boolean keyTyped(char character);
@@ -35,6 +45,7 @@ public abstract class EditTextFieldBase extends CB_View_Base
 	protected TextFieldFilter filter;
 	protected OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 	protected Clipboard clipboard;
+	protected CopiePastePopUp popUp;
 	protected boolean disabled = false;
 
 	protected boolean cursorOn = true;
@@ -159,11 +170,10 @@ public abstract class EditTextFieldBase extends CB_View_Base
 	static public class TextFieldStyle
 	{
 		/** Optional. */
-		public NinePatch background, cursor, backgroundFocused;
+		public Drawable background, cursor, backgroundFocused, selection;
 		public BitmapFont font;
 		public Color fontColor;
-		/** Optional. */
-		public TextureRegion selection;
+
 		/** Optional. */
 		public BitmapFont messageFont;
 		/** Optional. */
@@ -173,8 +183,8 @@ public abstract class EditTextFieldBase extends CB_View_Base
 		{
 		}
 
-		public TextFieldStyle(BitmapFont font, Color fontColor, BitmapFont messageFont, Color messageFontColor, NinePatch cursor,
-				TextureRegion selection, NinePatch background, NinePatch backgroundFocused)
+		public TextFieldStyle(BitmapFont font, Color fontColor, BitmapFont messageFont, Color messageFontColor, Drawable cursor,
+				Drawable selection, Drawable background, Drawable backgroundFocused)
 		{
 			this.messageFont = messageFont;
 			this.messageFontColor = messageFontColor;
@@ -202,17 +212,17 @@ public abstract class EditTextFieldBase extends CB_View_Base
 	{
 		TextFieldStyle ret = new TextFieldStyle();
 
-		ret.background = new NinePatch(SpriteCache.getThemedSprite("text-field-back"), 16, 16, 16, 16);
-		ret.backgroundFocused = new NinePatch(SpriteCache.getThemedSprite("text-field-back-focus"), 16, 16, 16, 16);
+		ret.background = SpriteCache.textFiledBackground;
+		ret.backgroundFocused = SpriteCache.textFiledBackgroundFocus;
 		ret.font = Fonts.getNormal();
 		ret.fontColor = Color.WHITE;
 
 		ret.messageFont = Fonts.getSmall();
 		ret.messageFontColor = Color.WHITE;
 
-		ret.cursor = new NinePatch(SpriteCache.getThemedSprite("selection-input-icon"), 1, 1, 2, 2);
+		ret.cursor = SpriteCache.textFieldCursor;
 
-		ret.selection = SpriteCache.getThemedSprite("InfoPanelBack");
+		ret.selection = SpriteCache.selection;
 
 		return ret;
 	}
@@ -261,5 +271,59 @@ public abstract class EditTextFieldBase extends CB_View_Base
 	{
 		this.clipboard = clipboard;
 	}
+
+	protected void registerPopUpLongClick()
+	{
+		this.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				showPopUp(x, y);
+				return true;
+			}
+
+		});
+	}
+
+	protected void showPopUp(int x, int y)
+	{
+		if (popUp == null)
+		{
+			popUp = new CopiePastePopUp("CopiePastePopUp=>" + getName(), that);
+		}
+
+		float noseOffset = popUp.getHalfWidth() / 2;
+
+		// Logger.LogCat("Show CopyPaste PopUp");
+
+		CB_RectF world = getWorldRec();
+
+		// not enough place on Top?
+		float windowH = UiSizes.getWindowHeight();
+		float windowW = UiSizes.getWindowWidth();
+		float worldY = world.getY();
+
+		if (popUp.getHeight() + worldY > windowH * 0.8f)
+		{
+			popUp.flipX();
+			worldY -= popUp.getHeight() + (popUp.getHeight() * 0.2f);
+		}
+
+		x += world.getX() - noseOffset;
+
+		if (x < 0) x = 0;
+		if (x + popUp.getWidth() > windowW) x = (int) (windowW - popUp.getWidth());
+
+		y += worldY + (popUp.getHeight() * 0.2f);
+		popUp.show(x, y);
+	}
+
+	public abstract void pasteFromClipboard();
+
+	public abstract void copyToClipboard();
+
+	public abstract void cutToClipboard();
 
 }

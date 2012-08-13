@@ -123,6 +123,18 @@ public class SpriteCache
 	public static Drawable chkOnDisabled;
 	public static Drawable chkOffDisabled;
 
+	public static Drawable selection;
+	public static Drawable selection_set;
+	public static Drawable selection_left;
+	public static Drawable selection_right;
+	public static Drawable textFieldCursor;
+	public static Drawable textFiledBackground;
+	public static Drawable textFiledBackgroundFocus;
+
+	public static Drawable copy;
+	public static Drawable paste;
+	public static Drawable cut;
+
 	public static int patch;
 
 	private static void setPath(String path)
@@ -614,6 +626,22 @@ public class SpriteCache
 		chkOff = new SpriteDrawable(getThemedSprite("check-off"));
 		chkOnDisabled = new SpriteDrawable(getThemedSprite("check-disable"));
 		chkOffDisabled = new SpriteDrawable(getThemedSprite("check-off"));
+
+		textFiledBackground = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("text-field-back"), patch, patch, patch,
+				patch));
+		textFiledBackgroundFocus = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("text-field-back-focus"), patch, patch,
+				patch, patch));
+
+		selection = new SpriteDrawable(getThemedSprite("Selection"));
+		selection_set = new SpriteDrawable(getThemedSprite("Selection-set"));
+		selection_left = new SpriteDrawable(getThemedSprite("Selection-Left"));
+		selection_right = new SpriteDrawable(getThemedSprite("Selection-Right"));
+
+		copy = new SpriteDrawable(getThemedSprite("tf-copy"));
+		paste = new SpriteDrawable(getThemedSprite("tf-paste"));
+		cut = new SpriteDrawable(getThemedSprite("tf-cut"));
+
+		textFieldCursor = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("selection-input-icon"), 1, 1, 2, 2));
 
 		int hp = patch / 2;
 		shaddowRec = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("shaddowrect"), hp, hp, hp, hp));

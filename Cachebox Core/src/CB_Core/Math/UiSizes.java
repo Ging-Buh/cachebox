@@ -75,7 +75,7 @@ public class UiSizes
 
 		scale = ini.Density;// res.getDisplayMetrics().density;
 
-		mClickToleranz = (int) (15 * scale);
+		mClickToleranz = (int) (17 * scale);
 
 		calcBase = 533.333 * scale;
 
@@ -130,7 +130,9 @@ public class UiSizes
 		tabWidth = (int) (scaledFontSize_normal * 0.6);
 		halfCornerSize = (int) CornerSize / 2;
 
-		CacheListItemSize = new Size(RefWidth, (int) (RefWidth / 5));
+		float ItemHeight = ui.Density * 63;
+
+		CacheListItemSize = new Size(RefWidth, (int) ItemHeight);
 		CacheListDrawRec = CacheListItemSize.getBounds(5, 2, -5, -2);
 		StrengthHeightMultipler = (int) (calcBase / 600);
 		IconContextMenuHeight = (int) (calcBase / 11.1);

@@ -353,4 +353,9 @@ public class Label extends CB_View_Base
 		return lineCount;
 	}
 
+	public BitmapFont getFont()
+	{
+		return cache.getFont();
+	}
+
 }
