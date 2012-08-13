@@ -22,6 +22,11 @@ import com.badlogic.gdx.utils.FloatArray;
 
 public class EditWrapedTextField extends EditTextFieldBase
 {
+	public enum TextFieldType
+	{
+		SingleLine, MultiLine, MultiLineWraped
+	}
+
 	static protected final char BACKSPACE = 8;
 	static protected final char ENTER_DESKTOP = '\r';
 	static protected final char ENTER_ANDROID = '\n';
@@ -39,6 +44,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 	protected int cursorLine;
 	protected float topLine;
 	protected float maxLineCount; // Anzahl der darzustellenden Zeilen
+	protected float leftPos; // Anzahl der Pixel, um die nach links gescrollt ist
+	protected float maxTextWidth; // Anzahl der Pixel des sichtbaren Textes
 	protected Clipboard clipboard;
 	protected TextFieldListener listener;
 	protected TextFieldFilter filter;
@@ -63,6 +70,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 	protected char passwordCharacter = BULLET;
 	final Lock displayTextLock = new ReentrantLock();
 
+	protected TextFieldType type = TextFieldType.SingleLine;
+
 	public EditWrapedTextField(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
@@ -72,6 +81,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		lineHeight = style.font.getLineHeight();
 		setText("");
 		topLine = 0;
+		leftPos = 0;
 		this.isClickable = true;
 	}
 
@@ -85,7 +95,14 @@ public class EditWrapedTextField extends EditTextFieldBase
 		lineHeight = style.font.getLineHeight();
 		setText("");
 		topLine = 0;
+		leftPos = 0;
 		this.isClickable = true;
+	}
+
+	public EditWrapedTextField(CB_RectF rec, TextFieldStyle style, String Name, TextFieldType type)
+	{
+		this(rec, style, Name);
+		this.type = type;
 	}
 
 	@Override
@@ -254,6 +271,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 			float textY = (int) (height / 2 + textHeight / 2 + font.getDescent());
 			textY = (int) height - textHeight - bgTopHeight;
 			maxLineCount = (height - bgTopHeight - bgBottomHeight - lineHeight / 2) / lineHeight;
+			maxTextWidth = width - bgLeftWidth - bgRightWidth;
 			calculateOffsets();
 
 			if (focused && hasSelection && selection != null)
@@ -284,7 +302,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				for (DisplayText dt : displayText)
 				{
 					// font.draw(batch, dt.getDisplayText(), x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
-					font.draw(batch, dt.getDisplayText(), x + bgLeftWidth, y + textY + mouseTempMove);
+					font.draw(batch, dt.getDisplayText(), x + bgLeftWidth - leftPos, y + textY + mouseTempMove);
 					textY -= lineHeight;
 				}
 			}
@@ -312,7 +330,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 					float cursorHeight = displayText.get(0).textBounds.height + font.getDescent() / 2;
 
-					cursorPatch.draw(batch, x + bgLeftWidth + xpos - 1, (y + textY - bgTopHeight - lineHeight * (cursorLine - topLine))
+					cursorPatch.draw(batch, x + bgLeftWidth + xpos - 1 - leftPos, (y + textY - bgTopHeight - lineHeight
+							* (cursorLine - topLine))
 							+ font.getDescent(), cursorPatch.getMinWidth(), cursorHeight);
 
 				}
@@ -451,7 +470,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		float len = dt.getWidth();
 
 		// Prüfen, ob Zeile zu lang geworden ist und ob am Ende Zeichen in die nächste Zeile verschoben werden müssen
-		if (len > maxWidth)
+		if ((len > maxWidth) && isWraped())
 		{
 			// automatischen Umbruch einfügen
 			// erstes Zeichen suchen, das außerhalb des max. Bereichs liegt
@@ -576,6 +595,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 	private Point mouseDown = null;
 	private float mouseDownTopLine = 0;
 	private int mouseTempMove = 0;
+	private float mouseDownLeftPos = 0;
 
 	@Override
 	public boolean onTouchDown(int X, int Y, int pointer, int button)
@@ -583,6 +603,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 		mouseDown = new Point(X, Y);
 		// topLine merken, zu dem Zeitpunkt als die Maus gedrückt wurde
 		mouseDownTopLine = topLine;
+		// leftPos merken, zu dem Zeitpunkt als die Maus gedrückt wurde
+		mouseDownLeftPos = leftPos;
 		return true;
 	}
 
@@ -590,27 +612,65 @@ public class EditWrapedTextField extends EditTextFieldBase
 	{
 		if (mouseDown != null)
 		{
-			if (displayText.size() < maxLineCount)
+			if (isMultiLine())
 			{
-				topLine = 0;
-			}
-			else
-			{
-				topLine = mouseDownTopLine + (float) (y - mouseDown.y) / lineHeight;
-				if (topLine < 0)
+				// Scrollen Oben - Unten
+				if (displayText.size() < maxLineCount)
 				{
 					topLine = 0;
 				}
-
-				if (displayText.size() - topLine < maxLineCount)
+				else
 				{
-					topLine = displayText.size() - maxLineCount;
+					topLine = mouseDownTopLine + (float) (y - mouseDown.y) / lineHeight;
+					if (topLine < 0)
+					{
+						topLine = 0;
+					}
+
+					if (displayText.size() - topLine < maxLineCount)
+					{
+						topLine = displayText.size() - maxLineCount;
+					}
+				}
+			}
+			if (!isWraped())
+			{
+				// Scrollen Links - Rechts
+				float maxWidth = getMaxDisplayTextWidth();
+				if (maxWidth < maxTextWidth)
+				{
+					// Text hat auf einmal Platz -> auf Ursprung hin scrollen
+					leftPos = 0;
+				}
+				else
+				{
+					// Text hat nicht auf einmal Platz -> Scrollen möglich
+					leftPos = mouseDownLeftPos + (float) (mouseDown.x - x);
+					if (leftPos < 0)
+					{
+						leftPos = 0;
+					}
+					if (leftPos > maxWidth - maxTextWidth)
+					{
+						leftPos = maxWidth - maxTextWidth;
+					}
 				}
 			}
 		}
 		GL_Listener.glListener.renderOnce("EditWrapedTextField");
 		return true;
 	};
+
+	private float getMaxDisplayTextWidth()
+	{
+		float result = 0;
+		for (DisplayText dt : displayText)
+		{
+			float w = dt.getWidth();
+			if (w > result) result = w;
+		}
+		return result;
+	}
 
 	@Override
 	public boolean onTouchUp(int x, int y, int pointer, int button)
@@ -637,7 +697,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		clearSelection();
 
 		cursorOn = false;
-		x = x - style.backgroundFocused.getLeftWidth();
+		x = x - style.backgroundFocused.getLeftWidth() + leftPos;
 
 		// Zeile bestimmen, in die geklickt wurde
 
@@ -900,7 +960,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	private void checkCursorVisible()
 	{
-		// Cursorpos prüfen, ob ausserhalb sichtbaren Bereich
+		// Cursorpos prüfen, ob ausserhalb sichtbaren Bereich (Oben-Unten)
 		if (cursorLine - topLine >= maxLineCount)
 		{
 			topLine = cursorLine - maxLineCount + 1;
@@ -908,6 +968,31 @@ public class EditWrapedTextField extends EditTextFieldBase
 		if (cursorLine < topLine)
 		{
 			topLine = cursorLine;
+		}
+		// links-Rechts
+		// Cursor Pos in Pixeln vom Textanfang an
+		DisplayText dt = getAktDisplayText();
+		if (dt != null)
+		{
+			float xCursor = 0;
+			if (cursor < dt.glyphPositions.size)
+			{
+				xCursor = dt.glyphPositions.get(cursor);
+			}
+			else
+			{
+				xCursor = dt.glyphPositions.get(dt.glyphPositions.size - 1);
+			}
+			// Prüfen, ob der Cursor links außen ist
+			if (xCursor < leftPos)
+			{
+				leftPos = xCursor;
+			}
+			// Prüfen, ob der Cursr rechts außen ist
+			if (xCursor > leftPos + maxTextWidth)
+			{
+				leftPos = xCursor - maxTextWidth;
+			}
 		}
 	}
 
@@ -1107,9 +1192,12 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 			if (character == ENTER_DESKTOP || character == ENTER_ANDROID)
 			{
-				insertNewLine();
-				clearSelection();
-				return true;
+				if (isMultiLine())
+				{
+					insertNewLine();
+					clearSelection();
+					return true;
+				}
 			}
 			if (character != ENTER_DESKTOP && character != ENTER_ANDROID)
 			{
@@ -1155,6 +1243,18 @@ public class EditWrapedTextField extends EditTextFieldBase
 		}
 		else
 			return false;
+	}
+
+	private boolean isMultiLine()
+	{
+		if ((type == TextFieldType.MultiLine) || (type == TextFieldType.MultiLineWraped)) return true;
+		else
+			return false;
+	}
+
+	private boolean isWraped()
+	{
+		return type == TextFieldType.MultiLineWraped;
 	}
 
 	/**

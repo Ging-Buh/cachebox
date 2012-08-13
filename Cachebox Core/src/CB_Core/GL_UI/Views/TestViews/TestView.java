@@ -9,6 +9,7 @@ import CB_Core.GL_UI.Activitys.Import;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditTextField;
+import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.utils.GradiantFill;
@@ -49,7 +50,8 @@ public class TestView extends CB_View_Base
 
 		CB_RectF TextFieldRec = new CB_RectF(0, 150, UiSizes.getButtonWidth() * 6, UiSizes.getButtonHeight() * 3);
 
-		wrappedTextField = new CB_Core.GL_UI.Controls.EditWrapedTextField(TextFieldRec, EditTextField.getDefaultStyle(), "");
+		wrappedTextField = new CB_Core.GL_UI.Controls.EditWrapedTextField(TextFieldRec, EditTextField.getDefaultStyle(), "",
+				EditWrapedTextField.TextFieldType.MultiLine);
 		wrappedTextField.setText(splashMsg);
 		// wrappedTextField.setText("");
 
