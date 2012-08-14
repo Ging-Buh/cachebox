@@ -9,6 +9,7 @@ import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Activitys.ActivityBase;
+import CB_Core.GL_UI.Activitys.Import;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
@@ -95,7 +96,8 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					new CB_Action_ShowActivity("search", MI_SEARCH, ViewConst.SEARCH, SpriteCache.Icons.get(27)).Execute();
 					return true;
 				case MI_IMPORT:
-					new CB_Action_ShowActivity("import", MI_IMPORT, ViewConst.IMPORT, SpriteCache.Icons.get(40)).Execute();
+					Import imp = new Import();
+					imp.show();
 					return true;
 				case MI_MANAGE_DB:
 					TabMainView.actionShowSelectDbDialog.Execute();

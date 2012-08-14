@@ -17,14 +17,18 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class MapScale extends CB_View_Base implements invalidateTextureEvent
 {
 	private BitmapFontCache fontCache;
 	float sollwidth = 0;
 	private MapView mapInstanz;
+	Drawable CachedScaleSprite;
+	float drawableWidth = 0;
 
 	public MapScale(CB_RectF rec, String Name, MapView mapInstanz)
 	{
@@ -163,7 +167,10 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 
 		Texture tex = new Texture(p);
 
-		CachedScaleSprite = new Sprite(tex, (int) pos, (int) this.getHeight());
+		// CachedScaleSprite = new Sprite(tex, (int) pos, (int) this.getHeight());
+
+		CachedScaleSprite = new TextureRegionDrawable(new TextureRegion(tex, (int) pos, (int) this.getHeight()));
+		drawableWidth = pos;
 		p.dispose();
 
 		float margin = (this.getHeight() - bounds.height) / 1.6f;
@@ -171,19 +178,16 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 
 	}
 
-	Sprite CachedScaleSprite;
-
 	/**
 	 * Zeichnet den Maﬂstab. pixelsPerKm muss durch zoomChanged initialisiert sein!
 	 */
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void renderWithoutScissor(SpriteBatch batch)
 	{
 		if (pixelsPerMeter <= 0) return;
 		if (CachedScaleSprite == null) zoomChanged();
-		if (CachedScaleSprite != null) CachedScaleSprite.draw(batch);
+		if (CachedScaleSprite != null) CachedScaleSprite.draw(batch, 0, 0, drawableWidth, this.height);
 		if (fontCache != null) fontCache.draw(batch);
-
 	}
 
 	@Override
@@ -191,7 +195,6 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 	{
 		if (CachedScaleSprite != null)
 		{
-			CachedScaleSprite.getTexture().dispose();
 			CachedScaleSprite = null;
 		}
 		generatedZomm = -1;

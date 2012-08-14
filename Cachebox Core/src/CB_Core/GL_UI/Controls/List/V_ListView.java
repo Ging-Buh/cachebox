@@ -324,7 +324,7 @@ public class V_ListView extends ListViewBase
 			this.setUndragable();
 		}
 
-		if (mBaseAdapter.getCount() <= mSelectedIndex) setSelection(mBaseAdapter.getCount() - 1);
+		if (mBaseAdapter != null && mBaseAdapter.getCount() <= mSelectedIndex) setSelection(mBaseAdapter.getCount() - 1);
 
 	}
 

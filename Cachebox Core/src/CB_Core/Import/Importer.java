@@ -41,6 +41,11 @@ public class Importer
 	 */
 	public void importGpx(String directoryPath, ImporterProgress ip)
 	{
+		// resest import Counter
+
+		GPXFileImporter.CacheCount = 0;
+		GPXFileImporter.LogCount = 0;
+
 		// Extract all Zip Files!
 		ArrayList<File> ordnerInhalt_Zip = FileIO.recursiveDirectoryReader(new File(directoryPath), new ArrayList<File>(), "zip", false);
 

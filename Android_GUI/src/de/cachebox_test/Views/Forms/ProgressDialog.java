@@ -222,7 +222,7 @@ public class ProgressDialog extends Activity implements ProgressChangedEvent, Vi
 	public void OnHide()
 	{
 		// lösche Registrierung Progress Changed Event
-		ProgresssChangedEventList.Del(this);
+		ProgresssChangedEventList.Remove(this);
 	}
 
 	@Override

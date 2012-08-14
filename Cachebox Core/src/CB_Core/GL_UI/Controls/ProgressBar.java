@@ -1,7 +1,9 @@
 package CB_Core.GL_UI.Controls;
 
 import CB_Core.GL_UI.CB_View_Base;
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
@@ -16,12 +18,16 @@ public class ProgressBar extends CB_View_Base
 	private float progressDrawWidth = 0;
 	private Drawable progressFill;
 	private Label label;
+	private String msg = "";
 
 	public ProgressBar(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 
 		label = new Label(this, "ProgressLabel");
+		label.setZeroPos();
+		label.setFont(Fonts.getNormal());
+		label.setText("");
 		label.setHAlignment(HAlignment.CENTER);
 		label.setVAlignment(VAlignment.CENTER);
 
@@ -41,6 +47,7 @@ public class ProgressBar extends CB_View_Base
 		{
 			progressFill = SpriteCache.ProgressFill;
 		}
+
 		GL_Listener.glListener.renderOnce("InitialProgressBar reday");
 	}
 
@@ -58,10 +65,22 @@ public class ProgressBar extends CB_View_Base
 		GL_Listener.glListener.renderOnce("ProgressBar state changed");
 	}
 
-	public void setProgress(int value, String msg)
+	public void setProgress(int value, final String Msg)
 	{
+		msg = Msg;
+
 		setProgress(value);
-		label.setText(msg);
+
+		this.RunOnGL(new runOnGL()
+		{
+
+			@Override
+			public void run()
+			{
+				label.setText(msg);
+			}
+		});
+
 		GL_Listener.glListener.renderOnce("ProgressBar state changed");
 	}
 
@@ -84,6 +103,12 @@ public class ProgressBar extends CB_View_Base
 			}
 		}
 		super.render(batch);
+	}
+
+	public void setText(String message)
+	{
+		msg = message;
+		label.setText(msg);
 	}
 
 }

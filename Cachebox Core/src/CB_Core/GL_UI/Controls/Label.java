@@ -32,7 +32,7 @@ public class Label extends CB_View_Base
 {
 	public BitmapFontCache cache;
 	public VAlignment valignment = VAlignment.CENTER;
-	public String text;
+	public String text = "";
 	public TextBounds bounds;
 	private CB_RectF innerRec;
 
@@ -82,7 +82,14 @@ public class Label extends CB_View_Base
 	protected void render(SpriteBatch batch)
 	{
 
-		if (cache != null) cache.draw(batch);
+		try
+		{
+			if (cache != null) cache.draw(batch);
+		}
+		catch (ArrayIndexOutOfBoundsException e)
+		{
+			// kommt manchmal wenn der Text geändert wird
+		}
 
 	}
 
@@ -159,13 +166,15 @@ public class Label extends CB_View_Base
 
 	public TextBounds setText(String text)
 	{
+		if (text == null) throw new IllegalArgumentException("text cannot be null.");
+
 		chkCache();
 		this.text = text;
 		wrapType = WrapType.singleLine;
 		lineCount = 1;
 		try
 		{
-			bounds = cache.setText(text, 0, cache.getFont().isFlipped() ? 0 : cache.getFont().getCapHeight());
+			bounds = cache.setText(this.text, 0, cache.getFont().isFlipped() ? 0 : cache.getFont().getCapHeight());
 		}
 		catch (Exception e)
 		{
@@ -191,7 +200,7 @@ public class Label extends CB_View_Base
 
 		bounds = cache.getFont().getMultiLineBounds(text);
 		// cache.setMultiLineText(text, 0, cache.getFont().isFlipped() ? 0 : bounds.height);
-		cache.setMultiLineText(text, 0, cache.getFont().isFlipped() ? 0 : bounds.height, innerWidth, alignment);
+		cache.setMultiLineText(this.text, 0, cache.getFont().isFlipped() ? 0 : bounds.height, innerWidth, alignment);
 		fontPropertyChanged();
 	}
 
@@ -208,7 +217,8 @@ public class Label extends CB_View_Base
 		this.halignment = alignment;
 		wrapType = WrapType.wrapped;
 		bounds = cache.getFont().getWrappedBounds(text, innerWidth);
-		cache.setWrappedText(text, 0, cache.getFont().isFlipped() ? bounds.height : cache.getFont().getLineHeight(), innerWidth, alignment);
+		cache.setWrappedText(this.text, 0, cache.getFont().isFlipped() ? bounds.height : cache.getFont().getLineHeight(), innerWidth,
+				alignment);
 		fontPropertyChanged();
 	}
 

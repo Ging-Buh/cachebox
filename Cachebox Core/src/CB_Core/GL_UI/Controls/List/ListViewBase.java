@@ -13,6 +13,7 @@ import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -90,6 +91,16 @@ public abstract class ListViewBase extends CB_View_Base
 	protected int mDraged = 0;
 	protected int mLastTouch = 0;
 	protected float mLastPos_onTouch = 0;
+
+	protected String mEmptaMsg = null;
+	protected BitmapFontCache emptyMsg;
+
+	public void setEmptyMsg(String Msg)
+	{
+		mEmptaMsg = Msg;
+		emptyMsg = null;
+		GL_Listener.glListener.renderOnce("ListView.setEmptyMsg");
+	}
 
 	/**
 	 * Setzt ein Flag, welches angibt, ob dies ListView Invisible Items hat. Da die Berechnung der Positionen deutlich länger dauert, ist
@@ -239,14 +250,28 @@ public abstract class ListViewBase extends CB_View_Base
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		try
+
+		if (this.mBaseAdapter == null || this.mBaseAdapter.getCount() == 0)
 		{
-			super.render(batch);
-			if (mMustSetPos) RenderThreadSetPos(mMustSetPosValue, mMustSetPosKinetic);
+			if (emptyMsg == null && mEmptaMsg != null)
+			{
+				emptyMsg = new BitmapFontCache(Fonts.getBig());
+				TextBounds bounds = emptyMsg.setText(mEmptaMsg, 0, 0);
+				emptyMsg.setPosition(this.halfWidth - (bounds.width / 2), this.halfHeight - (bounds.height / 2));
+			}
+			if (emptyMsg != null) emptyMsg.draw(batch, 0.5f);
 		}
-		catch (Exception e)
+		else
 		{
-			// e.printStackTrace();
+			try
+			{
+				super.render(batch);
+				if (mMustSetPos) RenderThreadSetPos(mMustSetPosValue, mMustSetPosKinetic);
+			}
+			catch (Exception e)
+			{
+				// e.printStackTrace();
+			}
 		}
 
 	}

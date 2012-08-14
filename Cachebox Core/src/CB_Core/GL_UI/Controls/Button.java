@@ -247,6 +247,7 @@ public class Button extends CB_View_Base
 				lblTxt.setFont(Fonts.getNormal());
 			}
 
+			lblTxt.setText(Text);
 			lblTxt.setHAlignment(HAlignment.CENTER);
 			lblTxt.setVAlignment(VAlignment.CENTER);
 			this.addChild(lblTxt);

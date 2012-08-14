@@ -311,6 +311,10 @@ public abstract class GL_View_Base extends CB_RectF
 
 		Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 
+		batch.begin();
+		this.renderWithoutScissor(batch);
+		batch.end();
+
 		// synchronized (childs)
 		// {
 		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
@@ -446,6 +450,8 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	protected abstract void render(SpriteBatch batch);
+
+	protected abstract void renderWithoutScissor(SpriteBatch batch);
 
 	@Override
 	public void resize(float width, float height)

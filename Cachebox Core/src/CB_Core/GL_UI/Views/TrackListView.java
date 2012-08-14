@@ -3,7 +3,6 @@ package CB_Core.GL_UI.Views;
 import java.util.Iterator;
 
 import CB_Core.GlobalCore;
-import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
@@ -16,9 +15,7 @@ import CB_Core.Map.RouteOverlay.Track;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class TrackListView extends V_ListView
@@ -35,6 +32,8 @@ public class TrackListView extends V_ListView
 		that = this;
 
 		ItemRec = new CB_RectF(0, 0, this.width, UiSizes.getButtonHeight() * 1.1f);
+
+		this.setEmptyMsg(GlobalCore.Translations.Get("EmptyTrackList"));
 
 		setBackground(SpriteCache.ListBack);
 
@@ -61,26 +60,6 @@ public class TrackListView extends V_ListView
 	public void Initial()
 	{
 		super.Initial();
-	}
-
-	@Override
-	public void render(SpriteBatch batch)
-	{
-		// if Track List empty, draw empty Msg
-		if ((RouteOverlay.Routes == null || RouteOverlay.Routes.size() == 0) && GlobalCore.AktuelleRoute == null)
-		{
-			if (emptyMsg == null)
-			{
-				emptyMsg = new BitmapFontCache(Fonts.getBig());
-				TextBounds bounds = emptyMsg.setText(GlobalCore.Translations.Get("EmptyTrackList"), 0, 0);
-				emptyMsg.setPosition(this.halfWidth - (bounds.width / 2), this.halfHeight - (bounds.height / 2));
-			}
-			if (emptyMsg != null) emptyMsg.draw(batch, 0.5f);
-		}
-		else
-		{
-			super.render(batch);
-		}
 	}
 
 	@Override

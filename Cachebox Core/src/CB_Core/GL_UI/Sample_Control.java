@@ -91,4 +91,11 @@ public class Sample_Control extends GL_View_Base
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	protected void renderWithoutScissor(SpriteBatch batch)
+	{
+		// TODO Auto-generated method stub
+
+	}
 }

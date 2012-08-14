@@ -133,6 +133,9 @@ public class GPXFileImporter
 		return ruleList;
 	}
 
+	public static int CacheCount = 0;
+	public static int LogCount = 0;
+
 	private List<IRule<Map<String, String>>> createWPTRules(List<IRule<Map<String, String>>> ruleList) throws Exception
 	{
 
@@ -155,6 +158,7 @@ public class GPXFileImporter
 						try
 						{
 							createCache(values);
+							CacheCount++;
 						}
 						catch (Exception e)
 						{
@@ -975,6 +979,7 @@ public class GPXFileImporter
 
 				if (log != null)
 				{
+					LogCount++;
 					mImportHandler.handleLog(log);
 				}
 

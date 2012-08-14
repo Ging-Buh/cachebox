@@ -30,7 +30,7 @@ public class ProgresssChangedEventList
 	
 	}
 
-	public static void Del(ProgressChangedEvent event) 
+	public static void Remove(ProgressChangedEvent event) 
 	{
 		list.remove(event);
 	}
