@@ -389,7 +389,8 @@ public class RouteOverlay
 
 	private static ArrayList<Route> DrawRoutes;
 
-	public static void RenderRoute(SpriteBatch batch, int Zoom) // , Descriptor desc, float dpiScaleFactorX, float dpiScaleFactorY)
+	public static void RenderRoute(SpriteBatch batch, int Zoom, float yVersatz) // , Descriptor desc, float dpiScaleFactorX, float
+																				// dpiScaleFactorY)
 	{
 
 		if (aktCalcedZoomLevel != Zoom || mRoutesChanged)
@@ -445,6 +446,9 @@ public class RouteOverlay
 
 					Vector2 screen1 = MapView.that.worldToScreen(new Vector2((float) MapX1, (float) MapY1));
 					Vector2 screen2 = MapView.that.worldToScreen(new Vector2((float) MapX2, (float) MapY2));
+
+					screen1.y -= yVersatz;
+					screen2.y -= yVersatz;
 
 					CB_RectF chkRec = new CB_RectF(MapView.that);
 					chkRec.setPos(0, 0);

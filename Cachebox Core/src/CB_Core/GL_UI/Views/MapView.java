@@ -94,6 +94,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private Texture directLineTexture;
 	private Texture AccuracyTexture;
 
+	private float ySpeedVersatz = 200;
+
 	// private GL_ZoomScale zoomScale;
 
 	// Settings values
@@ -295,7 +297,18 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			@Override
 			public void onStateChange(GL_View_Base v, int State)
 			{
-				if (State == 2)
+
+				Config.settings.LastMapToggleBtnState.setValue(State);
+				Config.AcceptChanges();
+
+				if (State == 4)
+				{
+					// Car mode
+					alignToCompass = true;
+
+				}
+
+				else if (State == 2)
 				{
 					if (GlobalCore.SelectedCache() != null)
 					{
@@ -316,6 +329,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 		});
 		togBtn.registerSkinChangedEvent();
+		togBtn.setState(Config.settings.LastMapToggleBtnState.getValue(), true);
 		this.addChild(togBtn);
 
 		infoBubble = new InfoBubble(GL_UISizes.Bubble, "infoBubble");
@@ -367,6 +381,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		CB_Core.Events.SelectedCacheEventList.Add(this);
 		CB_Core.Events.PositionChangedEventList.Add(this);
 		PositionChanged(GlobalCore.Locator);
+
+		alignToCompass = !Config.settings.CompassNorthOriented.getValue();
+		if (!alignToCompass)
+		{
+			drawingWidth = mapIntWidth;
+			drawingHeight = mapIntHeight;
+		}
+		Config.settings.MoveMapCenterWithSpeed.setValue(true); // TODO Debug set
 	}
 
 	@Override
@@ -468,6 +490,21 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	protected void render(SpriteBatch batch)
 	{
+
+		if (Config.settings.MoveMapCenterWithSpeed.getValue() && alignToCompass && (togBtn.getState() >= 4))
+		{
+			if (this.locator.hasSpeed())
+			{
+				double maxSpeed = Config.settings.MoveMapCenterMaxSpeed.getValue();
+				float diff = (float) ((height) / 3 * this.locator.getSpeed() / maxSpeed);
+				if (diff > height / 3) diff = height / 3;
+
+				ySpeedVersatz = diff;
+			}
+		}
+		else
+			ySpeedVersatz = 0;
+
 		boolean reduceFps = ((kineticZoom != null) || ((kineticPan != null) && (kineticPan.started)));
 		if (kineticZoom != null)
 		{
@@ -550,7 +587,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if ((aktZoom >= 13) && (aktZoom <= 14)) iconSize = 1; // 13x13
 		else if (aktZoom > 14) iconSize = 2; // default Images
 
-		CB_Core.Map.RouteOverlay.RenderRoute(batch, aktZoom);
+		CB_Core.Map.RouteOverlay.RenderRoute(batch, aktZoom, ySpeedVersatz);
 		renderWPs(GL_UISizes.WPSizes[iconSize], GL_UISizes.UnderlaySizes[iconSize], batch);
 		renderPositionMarker(batch);
 		RenderTargetArrow(batch);
@@ -570,6 +607,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		float faktor = camera.zoom;
 		float dx = this.ThisWorldRec.getCenterPos().x - MainViewBase.mainView.getCenterPos().x;
 		float dy = this.ThisWorldRec.getCenterPos().y - MainViewBase.mainView.getCenterPos().y;
+
+		dy -= ySpeedVersatz;
 
 		camera.position.set(0, 0, 0);
 		float dxr = dx;
@@ -716,6 +755,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			Vector2 vPoint = new Vector2((float) point.X, -(float) point.Y);
 
 			myPointOnScreen = worldToScreen(vPoint);
+
+			myPointOnScreen.y -= ySpeedVersatz;
+
 			directLineOverlay = null;
 			if (directLineTexture != null) directLineTexture.dispose();
 			if (actAccuracy != locator.getLocation().Accuracy || actPixelsPerMeter != pixelsPerMeter)
@@ -812,7 +854,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		float x = (float) (256.0 * Descriptor.LongitudeToTileX(MAX_MAP_ZOOM, coord.Longitude));
 		float y = (float) (-256.0 * Descriptor.LatitudeToTileY(MAX_MAP_ZOOM, coord.Latitude));
 
-		float halfHeight = mapIntHeight / 2;
+		float halfHeight = (mapIntHeight / 2) - ySpeedVersatz;
 		float halfWidth = mapIntWidth / 2;
 
 		// create ScreenRec
@@ -917,8 +959,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private void renderWPs(SizeF wpUnderlay, SizeF wpSize, SpriteBatch batch)
 	{
 
-		WaypointRenderInfo selectedWPI = null;
-
 		if (mapCacheList.list != null)
 		{
 			synchronized (mapCacheList.list)
@@ -928,7 +968,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					if (wpi.Selected)
 					{
 						renderWPI(batch, GL_UISizes.WPSizes[2], GL_UISizes.UnderlaySizes[2], wpi);
-						// selectedWPI = wpi;
 					}
 					else
 					{
@@ -943,6 +982,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private void renderWPI(SpriteBatch batch, SizeF WpUnderlay, SizeF WpSize, WaypointRenderInfo wpi)
 	{
 		Vector2 screen = worldToScreen(new Vector2(wpi.MapX, wpi.MapY));
+
+		screen.y -= ySpeedVersatz;
 
 		if (myPointOnScreen != null && showDirektLine && (wpi.Selected) && (wpi.Waypoint == GlobalCore.SelectedWaypoint()))
 		{
@@ -1455,16 +1496,16 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		if (locator == null) return;
 		if (locator.getLocation() == null) return;
-		float heading = 0;
-
-		if (this.locator != null)
-		{
-			heading = this.locator.getHeading();
-		}
-		else
-		{
-			heading = locator.getHeading();
-		}
+		// float heading = 0;
+		//
+		// if (this.locator != null)
+		// {
+		// heading = this.locator.getHeading();
+		// }
+		// else
+		// {
+		// heading = locator.getHeading();
+		// }
 
 		this.locator = locator;
 		GlobalCore.LastValidPosition = new Coordinate(locator.getLocation().Latitude, locator.getLocation().Longitude);
@@ -1601,6 +1642,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			drawingWidth = mapIntWidth;
 			drawingHeight = mapIntHeight;
 		}
+
+		Config.settings.CompassNorthOriented.setValue(!alignToCompass);
+		Config.AcceptChanges();
+
 	}
 
 	public boolean GetCenterGps()

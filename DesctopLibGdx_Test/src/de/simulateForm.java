@@ -160,7 +160,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 			{
 				Locator Loc = new Locator();
 				Bearing += 5;
-				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, 175, true, Bearing, 95, "GPS");
+				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, 2, true, Bearing, 95, "GPS");
 				PositionChangedEventList.PositionChanged(Loc);
 			}
 

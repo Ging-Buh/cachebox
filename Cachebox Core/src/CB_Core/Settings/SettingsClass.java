@@ -54,6 +54,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool TrackRecorderStartup;
 	public SettingBool MapShowCompass;
 	public SettingBool CompassNorthOriented;
+	public SettingBool MapNorthOriented;
 	// public SettingBool ResortRepaint;
 	public SettingBool GCAutoSyncCachesFound;
 	public SettingBool GCAdditionalImageDownload;
@@ -107,6 +108,7 @@ public class SettingsClass extends SettingsList
 	public SettingInt MoveMapCenterMaxSpeed;
 	public SettingInt lastZoomLevel;
 	public SettingInt lastSearchRadius;
+	public SettingInt LastMapToggleBtnState;
 	// public SettingInt GCRequestDelay;
 
 	public SettingTime ScreenLock;
@@ -248,6 +250,8 @@ public class SettingsClass extends SettingsList
 		addSetting(PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", cat, NORMAL, false, true));
 		addSetting(MapShowCompass = new SettingBool("MapShowCompass", cat, NORMAL, true, true));
 		addSetting(CompassNorthOriented = new SettingBool("CompassNorthOriented", cat, NORMAL, true, true));
+		addSetting(MapNorthOriented = new SettingBool("MapNorthOriented", cat, NORMAL, true, true));
+		addSetting(LastMapToggleBtnState = new SettingInt("LastMapToggleBtnState", cat, INVISIBLE, 0, true));
 
 		addSetting(MapInitLatitude = new SettingDouble("MapInitLatitude", SettingCategory.Gps, EXPERT, -1000, true));
 		addSetting(MapInitLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Gps, EXPERT, -1000, true));

@@ -158,4 +158,14 @@ public class Locator
 		return hasBearing;
 	}
 
+	public boolean hasSpeed()
+	{
+		return hasSpeed;
+	}
+
+	public double getSpeed()
+	{
+		return speed;
+	}
+
 }
