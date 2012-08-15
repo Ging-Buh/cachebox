@@ -24,15 +24,16 @@ public abstract class EditTextFieldBase extends CB_View_Base
 {
 
 	public EditTextFieldBase that;
+	protected CB_View_Base parent;
 
-	public EditTextFieldBase(CB_RectF rec, String Name)
+	public EditTextFieldBase(CB_View_Base parent, CB_RectF rec, String Name)
 	{
 		super(rec, Name);
+		this.parent = parent;
 		that = this;
 		registerPopUpLongClick();
 
 		clipboard = GlobalCore.getDefaultClipboard();
-
 	}
 
 	public abstract boolean keyTyped(char character);

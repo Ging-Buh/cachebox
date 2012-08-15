@@ -59,7 +59,7 @@ public class SolverDialog extends GL_MsgBox
 		// initial VariableField
 		float TextFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
 		CB_RectF rec = new CB_RectF(0, msgBoxContentSize.height - TextFieldHeight, msgBoxContentSize.width, TextFieldHeight);
-		mVariableField = new EditTextField(rec, "SolverDialogTextField");
+		mVariableField = new EditTextField(this, rec, "SolverDialogTextField");
 		mVariableField.setText(sVar);
 		// mVariableField.setMsg("Enter formula");
 		mMsgBox.addChild(mVariableField);
@@ -73,7 +73,7 @@ public class SolverDialog extends GL_MsgBox
 
 		// initial FormulaField
 		rec = new CB_RectF(0, msgBoxContentSize.height - TextFieldHeight * 3, msgBoxContentSize.width, TextFieldHeight);
-		mFormulaField = new EditTextField(rec, "SolverDialogTextField");
+		mFormulaField = new EditTextField(this, rec, "SolverDialogTextField");
 		mFormulaField.setText(sForm);
 		// mFormulaField.setMsg("Enter formula");
 

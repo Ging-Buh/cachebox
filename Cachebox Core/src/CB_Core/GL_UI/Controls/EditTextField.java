@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Controls;
 
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 
@@ -47,16 +48,16 @@ public class EditTextField extends EditTextFieldBase
 
 	protected char passwordCharacter = BULLET;
 
-	public EditTextField(CB_RectF rec, String Name)
+	public EditTextField(CB_View_Base parent, CB_RectF rec, String Name)
 	{
-		super(rec, Name);
+		super(parent, rec, Name);
 		this.style = getDefaultStyle();
 		setText("");
 	}
 
-	public EditTextField(CB_RectF rec, TextFieldStyle style, String Name)
+	public EditTextField(CB_View_Base parent, CB_RectF rec, TextFieldStyle style, String Name)
 	{
-		super(rec, Name);
+		super(parent, rec, Name);
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		setText("");

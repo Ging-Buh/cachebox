@@ -162,7 +162,7 @@ public class ProjectionCoordinate extends ActivityBase
 		CB_RectF UnitRec = new CB_RectF(textFieldRec.getMaxX(), y, eWidth, ButtonHeight);
 
 		lblBearing = new Label(labelRec, "lblBearing");
-		valueBearing = new EditTextField(textFieldRec, "valueBearing");
+		valueBearing = new EditTextField(this, textFieldRec, "valueBearing");
 		lblBearingUnit = new Label(UnitRec, "lblBearingEinheit");
 
 		labelRec.setY(lblBearing.getY() - ButtonHeight);
@@ -170,7 +170,7 @@ public class ProjectionCoordinate extends ActivityBase
 		UnitRec.setY(lblBearing.getY() - ButtonHeight);
 
 		lblDistance = new Label(labelRec, "lblBearing");
-		valueDistance = new EditTextField(textFieldRec, "valueBearing");
+		valueDistance = new EditTextField(this, textFieldRec, "valueBearing");
 		lblDistanceUnit = new Label(UnitRec, "lblBearingEinheit");
 
 		lblBearing.setText(sBearing);

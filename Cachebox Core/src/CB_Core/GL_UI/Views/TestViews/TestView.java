@@ -50,7 +50,7 @@ public class TestView extends CB_View_Base
 
 		CB_RectF TextFieldRec = new CB_RectF(0, 150, UiSizes.getButtonWidth() * 6, UiSizes.getButtonHeight() * 3);
 
-		wrappedTextField = new CB_Core.GL_UI.Controls.EditWrapedTextField(TextFieldRec, EditTextField.getDefaultStyle(), "",
+		wrappedTextField = new CB_Core.GL_UI.Controls.EditWrapedTextField(this, TextFieldRec, EditTextField.getDefaultStyle(), "",
 				EditWrapedTextField.TextFieldType.MultiLineWraped);
 		wrappedTextField.setText(splashMsg);
 		// wrappedTextField.setText("");
@@ -65,7 +65,7 @@ public class TestView extends CB_View_Base
 		// CB_RectF TextFieldRec2 = new CB_RectF(0, this.height - (UiSizes.getButtonHeight() * 1.1f), UiSizes.getButtonWidth() * 7,
 		// UiSizes.getButtonHeight() * 1.1f);
 
-		textField = new EditTextField(TextFieldRec2, EditTextField.getDefaultStyle(), "Test");
+		textField = new EditTextField(this, TextFieldRec2, EditTextField.getDefaultStyle(), "Test");
 		this.addChild(textField);
 
 		// ####################################################

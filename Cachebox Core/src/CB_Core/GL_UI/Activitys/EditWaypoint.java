@@ -224,7 +224,7 @@ public class EditWaypoint extends ActivityBase
 	private void iniTitleTextField()
 	{
 		CB_RectF rec = new CB_RectF(Left, tvTitle.getY() - UiSizes.getButtonHeight(), width - Left - Right, UiSizes.getButtonHeight());
-		etTitle = new EditTextField(rec, "TitleTextField");
+		etTitle = new EditTextField(this, rec, "TitleTextField");
 
 		String txt = (waypoint.Title == null) ? "" : waypoint.Title;
 
@@ -244,7 +244,7 @@ public class EditWaypoint extends ActivityBase
 	private void iniTitleTextDesc()
 	{
 		CB_RectF rec = new CB_RectF(Left, tvDescription.getY() - UiSizes.getButtonHeight(), width - Left - Right, UiSizes.getButtonHeight());
-		etDescription = new EditWrapedTextField(rec, "DescTextField");
+		etDescription = new EditWrapedTextField(this, rec, "DescTextField");
 
 		String txt = (waypoint.Description == null) ? "" : waypoint.Description;
 
@@ -281,7 +281,7 @@ public class EditWaypoint extends ActivityBase
 	private void iniTitleTextClue()
 	{
 		CB_RectF rec = new CB_RectF(Left, tvClue.getY() - UiSizes.getButtonHeight(), width - Left - Right, UiSizes.getButtonHeight());
-		etClue = new EditWrapedTextField(rec, "ClueTextField");
+		etClue = new EditWrapedTextField(this, rec, "ClueTextField");
 
 		String txt = (waypoint.Clue == null) ? "" : waypoint.Clue;
 

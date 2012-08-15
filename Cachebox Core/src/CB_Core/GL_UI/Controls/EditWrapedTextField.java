@@ -5,6 +5,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
@@ -71,9 +72,13 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	protected TextFieldType type = TextFieldType.SingleLine;
 
-	public EditWrapedTextField(CB_RectF rec, String Name)
+	protected SelectionMarker selectionMarkerCenter = null;
+	protected SelectionMarker selectionMarkerLeft = null;
+	protected SelectionMarker selectionMarkerRight = null;
+
+	public EditWrapedTextField(CB_View_Base parent, CB_RectF rec, String Name)
 	{
-		super(rec, Name);
+		super(parent, rec, Name);
 		this.style = getDefaultStyle();
 		displayText = new ArrayList<EditWrapedTextField.DisplayText>();
 		setCursorLine(0);
@@ -84,9 +89,9 @@ public class EditWrapedTextField extends EditTextFieldBase
 		this.isClickable = true;
 	}
 
-	public EditWrapedTextField(CB_RectF rec, TextFieldStyle style, String Name)
+	public EditWrapedTextField(CB_View_Base parent, CB_RectF rec, TextFieldStyle style, String Name)
 	{
-		super(rec, Name);
+		super(parent, rec, Name);
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		displayText = new ArrayList<EditWrapedTextField.DisplayText>();
@@ -98,9 +103,9 @@ public class EditWrapedTextField extends EditTextFieldBase
 		this.isClickable = true;
 	}
 
-	public EditWrapedTextField(CB_RectF rec, TextFieldStyle style, String Name, TextFieldType type)
+	public EditWrapedTextField(CB_View_Base parent, CB_RectF rec, TextFieldStyle style, String Name, TextFieldType type)
 	{
-		this(rec, style, Name);
+		this(parent, rec, style, Name);
 		this.type = type;
 	}
 
@@ -310,28 +315,27 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 				if (cursorOn && cursorPatch != null)
 				{
-					DisplayText dt = displayText.get(cursorLine);
-					float xpos = 0;
-
-					if (cursor < dt.glyphPositions.size)
-					{
-						xpos = dt.glyphPositions.get(cursor);
-					}
-					else if (dt.glyphPositions.size == 0)
-					{
-						xpos = 0;
-					}
-					else
-					{
-						xpos = dt.glyphPositions.get(dt.glyphPositions.size - 1); // letztes Zeichen
-					}
+					// DisplayText dt = displayText.get(cursorLine);
+					// float xpos = 0;
+					//
+					// if (cursor < dt.glyphPositions.size)
+					// {
+					// xpos = dt.glyphPositions.get(cursor);
+					// }
+					// else if (dt.glyphPositions.size == 0)
+					// {
+					// xpos = 0;
+					// }
+					// else
+					// {
+					// xpos = dt.glyphPositions.get(dt.glyphPositions.size - 1); // letztes Zeichen
+					// }
+					float xpos = getCursorX();
 					textY = (int) height - textHeight - bgTopHeight;
 
 					float cursorHeight = displayText.get(0).textBounds.height + font.getDescent() / 2;
 
-					cursorPatch.draw(batch, x + bgLeftWidth + xpos - 1 - leftPos, (y + textY - bgTopHeight - lineHeight
-							* (cursorLine - topLine))
-							+ font.getDescent(), cursorPatch.getMinWidth(), cursorHeight);
+					cursorPatch.draw(batch, getCursorX(), getCursorY(), cursorPatch.getMinWidth(), cursorHeight);
 
 				}
 			}
@@ -349,6 +353,32 @@ public class EditWrapedTextField extends EditTextFieldBase
 		{
 			displayTextLock.unlock();
 		}
+	}
+
+	private float getCursorX()
+	{
+		DisplayText dt = displayText.get(cursorLine);
+		float xpos = 0;
+
+		if (cursor < dt.glyphPositions.size)
+		{
+			xpos = dt.glyphPositions.get(cursor);
+		}
+		else if (dt.glyphPositions.size == 0)
+		{
+			xpos = 0;
+		}
+		else
+		{
+			xpos = dt.glyphPositions.get(dt.glyphPositions.size - 1); // letztes Zeichen
+		}
+		return x + style.background.getLeftWidth() + xpos - 1;
+	}
+
+	private float getCursorY()
+	{
+		float textY = (int) height - textHeight - style.background.getTopHeight();
+		return (y + textY - style.background.getTopHeight() - lineHeight * (cursorLine - topLine)) + style.font.getDescent();
 	}
 
 	private void updateDisplayTextList()
@@ -715,12 +745,14 @@ public class EditWrapedTextField extends EditTextFieldBase
 			{
 				cursor = Math.max(0, i - 1);
 				setCursorLine(clickedCursorLine);
+				showSelectionMarker(SelectionMarker.Type.Center);
 				return true;
 			}
 		}
 		cursor = Math.max(0, dt.glyphPositions.size - 1);
 		setCursorLine(clickedCursorLine);
 		GL_Listener.glListener.renderOnce("EditWrapedTextField");
+		showSelectionMarker(SelectionMarker.Type.Center);
 		return true;
 	}
 
@@ -959,6 +991,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	private void checkCursorVisible()
 	{
+		hideSelectionMarker();
 		// Cursorpos prüfen, ob ausserhalb sichtbaren Bereich (Oben-Unten)
 		if (cursorLine - topLine >= maxLineCount)
 		{
@@ -1400,6 +1433,25 @@ public class EditWrapedTextField extends EditTextFieldBase
 	{
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	protected void showSelectionMarker(SelectionMarker.Type type)
+	{
+		if (selectionMarkerCenter == null)
+		{
+			selectionMarkerCenter = new SelectionMarker(0, 0, 22, 30, type);
+			parent.addChild(selectionMarkerCenter);
+		}
+		selectionMarkerCenter.setPos(getX() + getCursorX() - 11 + style.cursor.getMinWidth() / 2, getY() + getCursorY() - 30);
+	}
+
+	protected void hideSelectionMarker()
+	{
+		if (selectionMarkerCenter != null)
+		{
+			parent.removeChild(selectionMarkerCenter);
+			selectionMarkerCenter = null;
+		}
 	}
 
 	private class DisplayText

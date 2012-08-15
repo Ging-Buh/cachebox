@@ -40,7 +40,7 @@ public class NumerikInputBox extends GL_MsgBox
 
 		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
 
-		editText = new EditTextField(textFieldRec, "MsgBoxLabel");
+		editText = new EditTextField(msgBox, textFieldRec, "MsgBoxLabel");
 		editText.setZeroPos();
 		editText.setY(margin);
 		editText.setText(String.valueOf(initialValue));
@@ -96,7 +96,7 @@ public class NumerikInputBox extends GL_MsgBox
 
 		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
 
-		editText = new EditTextField(textFieldRec, "MsgBoxLabel");
+		editText = new EditTextField(msgBox, textFieldRec, "MsgBoxLabel");
 		editText.setZeroPos();
 		editText.setY(margin);
 		editText.setText(String.valueOf(initialValue));

@@ -14,7 +14,7 @@ public class Toast extends Dialog
 	public Toast(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-		mTextField = new EditTextField(rec, "Toast.TextField");
+		mTextField = new EditTextField(this, rec, "Toast.TextField");
 		mTextField.disable();
 		super.removeChildsDirekt();
 		super.addChildDirekt(mTextField);
@@ -48,7 +48,7 @@ public class Toast extends Dialog
 	@Override
 	protected void SkinIsChanged()
 	{
-		mTextField = new EditTextField(this, "Toast.TextField");
+		mTextField = new EditTextField(this, this, "Toast.TextField");
 		mTextField.disable();
 		super.removeChildsDirekt();
 		super.addChildDirekt(mTextField);

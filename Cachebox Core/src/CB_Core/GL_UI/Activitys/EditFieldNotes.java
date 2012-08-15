@@ -260,7 +260,7 @@ public class EditFieldNotes extends ActivityBase
 		CB_RectF rec = new CB_RectF(lblDate.getMaxX() + margin, lblDate.getY() - margin, width - lblDate.getMaxX() - margin - Right,
 				MesuredLabelHeight * 2);
 
-		tvDate = new EditTextField(rec, "");
+		tvDate = new EditTextField(this, rec, "");
 		scrollBox.addChild(tvDate);
 	}
 
@@ -274,7 +274,7 @@ public class EditFieldNotes extends ActivityBase
 		CB_RectF rec = new CB_RectF(lblTime.getMaxX() + margin, lblTime.getY() - margin, width - lblTime.getMaxX() - margin - Right,
 				MesuredLabelHeight * 2);
 
-		tvTime = new EditTextField(rec, "");
+		tvTime = new EditTextField(this, rec, "");
 		scrollBox.addChild(tvTime);
 	}
 
@@ -306,7 +306,7 @@ public class EditFieldNotes extends ActivityBase
 			rec = new CB_RectF(Left, lblTime.getY() - UiSizes.getButtonHeight() - margin, width - Left - Right, UiSizes.getButtonHeight());
 		}
 
-		etComment = new EditWrapedTextField(rec, "DescTextField");
+		etComment = new EditWrapedTextField(this, rec, "DescTextField");
 		etComment.setText(fieldNote.comment);
 
 		etComment.setTextFieldListener(new TextFieldListener()
