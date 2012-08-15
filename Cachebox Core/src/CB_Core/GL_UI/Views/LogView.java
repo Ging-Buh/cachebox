@@ -67,6 +67,8 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 		lvAdapter = new CustomAdapter();
 		this.setBaseAdapter(lvAdapter);
 
+		this.setEmptyMsg(GlobalCore.Translations.Get("EmptyLogList"));
+
 		this.scrollTo(0);
 	}
 

@@ -126,6 +126,10 @@ public class DesktopMain
 			}
 		});
 
+		DesktopClipboard dcb = new DesktopClipboard();
+
+		if (dcb != null) GlobalCore.setDefaultClipboard(dcb);
+
 	}
 
 	private static void Run(boolean simulate)

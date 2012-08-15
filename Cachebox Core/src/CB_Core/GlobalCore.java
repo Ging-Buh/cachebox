@@ -9,12 +9,12 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 
-import com.badlogic.gdx.scenes.scene2d.utils.Clipboard;
+import com.badlogic.gdx.utils.Clipboard;
 
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1049;
+	public static final int CurrentRevision = 1050;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -51,7 +51,7 @@ public class GlobalCore
 	{
 		if (defaultClipBoard == null)
 		{
-			return Clipboard.getDefaultClipboard();
+			return null;
 		}
 		else
 		{

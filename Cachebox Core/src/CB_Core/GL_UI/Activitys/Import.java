@@ -19,11 +19,14 @@ import CB_Core.Events.ProgressChangedEvent;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
+import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CollabseBox;
 import CB_Core.GL_UI.Controls.CollabseBox.animatetHeightChangedListner;
+import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ProgressBar;
 import CB_Core.GL_UI.Controls.ScrollBox;
@@ -40,6 +43,10 @@ import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Import extends ActivityBase implements ProgressChangedEvent
 {
@@ -69,6 +76,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	private float itemHeight = -1;
 
 	private ScrollBox scrollBox;
+	private disable dis;
 
 	public Import()
 	{
@@ -135,8 +143,11 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				if (importStarted) importCancel = true;
-				finish();
+				if (importCancel) return true;
+
+				if (importStarted) cancelImport();
+				else
+					finish();
 				return true;
 			}
 		});
@@ -488,6 +499,12 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		// disable btn
 		bOK.disable();
 
+		// disable UI
+		dis = new disable(scrollBox);
+		dis.setBackground(getBackground());
+
+		this.addChild(dis, false);
+
 		Config.settings.CacheMapData.setValue(checkBoxImportMaps.isChecked());
 		Config.settings.CacheImageData.setValue(checkBoxPreloadImages.isChecked());
 		Config.settings.ImportGpx.setValue(checkBoxImportGPX.isChecked());
@@ -503,14 +520,15 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	}
 
+	private volatile Thread thread;
+
 	public void ImportThread(final String directoryPath, final File directory)
 	{
-		Thread ImportThread = new Thread()
+		thread = new Thread()
 		{
 			public void run()
 			{
 				importStarted = true;
-				importCancel = false;
 
 				Importer importer = new Importer();
 				ImporterProgress ip = new ImporterProgress();
@@ -560,6 +578,12 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 							do
 							{
+								if (importCancel)
+								{
+									importCanceld();
+									return;
+								}
+
 								PQ pq = iterator.next();
 
 								if (pq.downloadAvible)
@@ -608,6 +632,12 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						}
 						Database.Data.endTransaction();
 
+						if (importCancel)
+						{
+							importCanceld();
+							return;
+						}
+
 						Logger.LogCat("Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
 
 						System.gc();
@@ -644,24 +674,39 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 							exc.printStackTrace();
 						}
 						Database.Data.endTransaction();
+						if (importCancel)
+						{
+							importCanceld();
+							return;
+						}
 					}
 
 					if (checkBoxPreloadImages.isChecked())
 					{
 						importer.importImages(GlobalCore.LastFilter.getSqlWhere(), ip);
+						if (importCancel)
+						{
+							importCanceld();
+							return;
+						}
 					}
 
 					Thread.sleep(1000);
 					if (checkBoxImportMaps.isChecked()) importer.importMaps();
 
-					if (importCancel) // wenn im ProgressDialog Cancel gedrückt
-										// wurde.
-
 					Thread.sleep(1000);
 				}
 				catch (InterruptedException e)
 				{
-					e.printStackTrace();
+					// import canceld
+					importCanceld();
+					return;
+				}
+
+				if (importCancel)
+				{
+					importCanceld();
+					return;
 				}
 
 				finish();
@@ -688,9 +733,27 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			}
 		};
 
-		ImportThread.setPriority(Thread.MAX_PRIORITY);
+		thread.setPriority(Thread.MAX_PRIORITY);
 		ImportStart = new Date();
-		ImportThread.start();
+		thread.start();
+	}
+
+	private void importCanceld()
+	{
+		importCancel = false;
+		importStarted = false;
+		that.removeChild(dis);
+		bOK.enable();
+	}
+
+	private void cancelImport()
+	{
+		importCancel = true;
+		thread.interrupt();
+		thread = null;
+
+		importStarted = false;
+
 	}
 
 	@Override
@@ -708,6 +771,119 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 				if (!Message.equals("")) pgBar.setText(Message);
 			}
 		});
+
+	}
+
+	private class disable extends Box
+	{
+
+		public disable(CB_RectF rec)
+		{
+			super(rec, "");
+
+			float size = rec.getHalfWidth() / 2;
+			float halfSize = rec.getHalfWidth() / 4;
+
+			CB_RectF imageRec = new CB_RectF(this.halfWidth - halfSize, this.halfHeight - halfSize, size, size);
+
+			iconImage = new Image(imageRec, "MsgBoxIcon");
+			iconImage.setSprite(SpriteCache.Icons.get(51));
+			iconImage.setOrigin(imageRec.getHalfWidth(), imageRec.getHalfHeight());
+
+			this.addChild(iconImage);
+
+			rotateAngle = 0;
+
+			RotateTimer = new Timer();
+
+			RotateTimer.schedule(rotateTimertask, 60, 60);
+
+		}
+
+		private Drawable back;
+		private Image iconImage;
+
+		Timer RotateTimer;
+		float rotateAngle = 0;
+		TimerTask rotateTimertask = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				if (iconImage != null)
+				{
+					rotateAngle += 5;
+					if (rotateAngle > 360) rotateAngle = 0;
+					iconImage.setRotate(rotateAngle);
+					GL_Listener.glListener.renderOnce("WaitRotateAni");
+				}
+			}
+		};
+
+		public void renderWithoutScissor(SpriteBatch batch)
+		{
+			if (drawableBackground != null)
+			{
+				back = drawableBackground;
+				drawableBackground = null;
+			}
+
+			if (back != null)
+			{
+				Color c = batch.getColor();
+
+				float a = c.a;
+				float r = c.r;
+				float g = c.g;
+				float b = c.b;
+
+				Color trans = new Color(0, 0.3f, 0, 0.25f);
+				batch.setColor(trans);
+				back.draw(batch, 0, 0, this.width, this.height);
+
+				batch.setColor(new Color(r, g, b, a));
+
+			}
+		}
+
+		@Override
+		public void onHide()
+		{
+			RotateTimer.cancel();
+			iconImage.dispose();
+		}
+
+		// alle Touch events abfangen
+
+		@Override
+		public boolean onTouchDown(int x, int y, int pointer, int button)
+		{
+			return true;
+		}
+
+		@Override
+		public boolean onLongClick(int x, int y, int pointer, int button)
+		{
+			return true;
+		}
+
+		@Override
+		public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
+		{
+			return true;
+		}
+
+		@Override
+		public boolean onTouchUp(int x, int y, int pointer, int button)
+		{
+			return true;
+		}
+
+		@Override
+		public boolean click(int x, int y, int pointer, int button)
+		{
+			return true;
+		}
 
 	}
 

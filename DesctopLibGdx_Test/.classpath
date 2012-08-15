@@ -11,7 +11,5 @@
 	<classpathentry kind="lib" path="Lib/httpcore-4.0-alpha5.jar"/>
 	<classpathentry kind="lib" path="Lib/gdx-backend-lwjgl.jar"/>
 	<classpathentry kind="lib" path="Lib/gdx.jar"/>
-	<classpathentry kind="lib" path="Lib/lwjgl_util.jar"/>
-	<classpathentry kind="lib" path="Lib/gdx-openal.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

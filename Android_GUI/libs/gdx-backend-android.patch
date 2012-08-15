@@ -1,8 +1,8 @@
 Index: src/com/badlogic/gdx/backends/android/AndroidApplication.java
 ===================================================================
---- src/com/badlogic/gdx/backends/android/AndroidApplication.java	(Revision 3053)
+--- src/com/badlogic/gdx/backends/android/AndroidApplication.java	(Revision 4537)
 +++ src/com/badlogic/gdx/backends/android/AndroidApplication.java	(Arbeitskopie)
-@@ -182,18 +182,32 @@
+@@ -184,20 +184,34 @@
  		return graphics.getView();
  	}
  
@@ -20,6 +20,8 @@ Index: src/com/badlogic/gdx/backends/android/AndroidApplication.java
 +		}
 +		
  		if (wakeLock != null) wakeLock.release();
+ 		boolean isContinuous = graphics.isContinuousRendering();
+ 		graphics.setContinuousRendering(true);
 -		graphics.pause();
 +		if(graphics!=null)graphics.pause();
  
@@ -38,7 +40,7 @@ Index: src/com/badlogic/gdx/backends/android/AndroidApplication.java
  			graphics.clearManagedCaches();
  			graphics.destroy();
  		}
-@@ -208,6 +222,10 @@
+@@ -213,6 +227,10 @@
  
  	@Override
  	protected void onResume () {
@@ -49,21 +51,21 @@ Index: src/com/badlogic/gdx/backends/android/AndroidApplication.java
  		if (wakeLock != null) wakeLock.acquire();
  		Gdx.app = this;
  		Gdx.input = this.getInput();
-@@ -215,7 +233,8 @@
+@@ -220,7 +238,8 @@
  		Gdx.files = this.getFiles();
  		Gdx.graphics = this.getGraphics();
  
 -		((AndroidInput)getInput()).registerSensorListeners();
 +		if(input != null)((AndroidInput)getInput()).registerSensorListeners();
 +		
- 		if (audio != null) audio.resume();
  
  		if (graphics != null && graphics.view != null) {
+ 			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onResume();
 Index: src/com/badlogic/gdx/backends/android/AndroidGraphics.java
 ===================================================================
---- src/com/badlogic/gdx/backends/android/AndroidGraphics.java	(Revision 3053)
+--- src/com/badlogic/gdx/backends/android/AndroidGraphics.java	(Revision 4537)
 +++ src/com/badlogic/gdx/backends/android/AndroidGraphics.java	(Arbeitskopie)
-@@ -361,11 +361,15 @@
+@@ -379,11 +379,15 @@
  		}
  	}
  

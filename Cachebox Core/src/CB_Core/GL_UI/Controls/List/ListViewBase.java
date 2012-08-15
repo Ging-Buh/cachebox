@@ -251,6 +251,13 @@ public abstract class ListViewBase extends CB_View_Base
 	protected void render(SpriteBatch batch)
 	{
 
+		if (!isInitial)
+		{
+			isInitial = true;
+			Initial();
+			return;
+		}
+
 		if (this.mBaseAdapter == null || this.mBaseAdapter.getCount() == 0)
 		{
 			if (emptyMsg == null && mEmptaMsg != null)

@@ -1198,7 +1198,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onPause()
 	{
-		stopped = true;
+		if (!dontStop) stopped = true;
 		Logger.LogCat("Main=> onPause");
 		if (input == null)
 		{
@@ -1237,9 +1237,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onResume()
 	{
-		if (stopped) showWaitToRenderStartet();
-
-		invalidateTextureEventList.Call();
+		if (stopped)
+		{
+			showWaitToRenderStartet();
+			invalidateTextureEventList.Call();
+		}
 
 		Logger.LogCat("Main=> onResume");
 		if (input == null)
@@ -1270,7 +1272,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (Config.settings.SuppressPowerSaving.getValue())
 		{
 			final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-			this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+
+			int flags = runsWithAkku ? PowerManager.SCREEN_BRIGHT_WAKE_LOCK : PowerManager.SCREEN_DIM_WAKE_LOCK;
+
+			this.mWakeLock = pm.newWakeLock(flags, "My Tag");
 			this.mWakeLock.acquire();
 		}
 
@@ -1455,7 +1460,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if ((Config.settings.ScreenLock.getValue() / 1000 < 10)) return;
 		}
 
-		// dontStop = true;
+		dontStop = true;
 		ScreenLock.isShown = true;
 
 		final Intent mainIntent = new Intent().setClass(this, ScreenLock.class);

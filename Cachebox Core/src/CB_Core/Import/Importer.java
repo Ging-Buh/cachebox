@@ -53,6 +53,15 @@ public class Importer
 
 		for (File tmpZip : ordnerInhalt_Zip)
 		{
+			try
+			{
+				Thread.sleep(20);
+			}
+			catch (InterruptedException e2)
+			{
+				return; // Thread Canceld
+			}
+
 			ip.ProgressInkrement("ExtractZip", "", false);
 			// Extract ZIP
 			try
@@ -82,7 +91,7 @@ public class Importer
 		}
 		catch (InterruptedException e2)
 		{
-			e2.printStackTrace();
+			return; // Thread Canceld
 		}
 
 		// Import all GPX files
@@ -97,6 +106,16 @@ public class Importer
 
 		for (File File : FileList)
 		{
+
+			try
+			{
+				Thread.sleep(20);
+			}
+			catch (InterruptedException e2)
+			{
+				return; // Thread Canceld
+			}
+
 			ip.ProgressInkrement("AnalyseGPX", File.getName(), false);
 
 			BufferedReader br;
@@ -137,6 +156,15 @@ public class Importer
 		ip.setJobMax("ImportGPX", FileList.length + countwpt);
 		for (File File : FileList)
 		{
+			try
+			{
+				Thread.sleep(20);
+			}
+			catch (InterruptedException e2)
+			{
+				return; // Thread Canceld
+			}
+
 			ip.ProgressInkrement("ImportGPX", "Import: " + File.getName(), false);
 			GPXFileImporter importer = new GPXFileImporter(File, ip);
 			try
@@ -171,6 +199,16 @@ public class Importer
 
 		for (GCVoteCacheInfo info : pendingVotes)
 		{
+
+			try
+			{
+				Thread.sleep(20);
+			}
+			catch (InterruptedException e2)
+			{
+				return; // Thread Canceld
+			}
+
 			i++;
 
 			ip.ProgressInkrement("sendGcVote", "Sending Votes (" + String.valueOf(i) + " / " + String.valueOf(pendingVotes.size()) + ")",
@@ -208,6 +246,15 @@ public class Importer
 
 			for (GCVoteCacheInfo info : workpackage)
 			{
+				try
+				{
+					Thread.sleep(20);
+				}
+				catch (InterruptedException e2)
+				{
+					return; // Thread Canceld
+				}
+
 				if (!info.GcCode.toLowerCase().startsWith("gc"))
 				{
 					ip.ProgressInkrement("importGcVote", "Not a GC.com Cache", false);
@@ -287,6 +334,14 @@ public class Importer
 
 			for (String url : imageURLs)
 			{
+				try
+				{
+					Thread.sleep(20);
+				}
+				catch (InterruptedException e2)
+				{
+					return; // Thread Canceld
+				}
 				String localFile = DescriptionImageGrabber.BuildImageFilename(gccode, URI.create(url));
 
 				if (!FileIO.FileExists(localFile))
