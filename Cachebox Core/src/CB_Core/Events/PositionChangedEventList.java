@@ -15,7 +15,7 @@ public class PositionChangedEventList
 	{
 		synchronized (list)
 		{
-			list.add(event);
+			if (!list.contains(event)) list.add(event);
 		}
 
 	}

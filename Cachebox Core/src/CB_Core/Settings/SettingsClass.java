@@ -23,6 +23,7 @@ public class SettingsClass extends SettingsList
 	// Folder
 	public SettingFolder UserImageFolder;
 	public SettingFolder LanguagePath;
+	public SettingFolder SoundPath;
 	public SettingFolder TileCacheFolder;
 	public SettingFolder PocketQueryFolder;
 	public SettingFolder DescriptionImageFolder;
@@ -90,6 +91,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool vibrateFeedback;
 	public SettingBool hasPQ_PlugIn;
 	public SettingBool hasFTF_PlugIn;
+	public SettingBool dynamicZoom;
 
 	// int
 	public SettingInt LogMaxMonthAge;
@@ -109,7 +111,8 @@ public class SettingsClass extends SettingsList
 	public SettingInt lastZoomLevel;
 	public SettingInt lastSearchRadius;
 	public SettingInt LastMapToggleBtnState;
-	// public SettingInt GCRequestDelay;
+	public SettingInt dynamicZoomLevelMax;
+	public SettingInt dynamicZoomLevelMin;
 
 	public SettingTime ScreenLock;
 
@@ -176,6 +179,7 @@ public class SettingsClass extends SettingsList
 		}
 
 		addMapSettings();
+		addCarModeSettings();
 		addLogInSettings();
 		addFolderSettings();
 		addGpsSettings();
@@ -185,6 +189,19 @@ public class SettingsClass extends SettingsList
 		addAPISettings();
 		addSkinSettings();
 		addDebugSettings();
+	}
+
+	private void addCarModeSettings()
+	{
+		SettingCategory cat = SettingCategory.CarMode;
+
+		addSetting(MoveMapCenterWithSpeed = new SettingBool("MoveMapCenterWithSpeed", cat, NORMAL, false, true));
+		addSetting(MoveMapCenterMaxSpeed = new SettingInt("MoveMapCenterMaxSpeed", cat, NORMAL, 20, true));
+
+		addSetting(dynamicZoom = new SettingBool("dynamicZoom", cat, NORMAL, true, true));
+		addSetting(dynamicZoomLevelMax = new SettingInt("dynamicZoomLevelMax", cat, NORMAL, 16, true));
+		addSetting(dynamicZoomLevelMin = new SettingInt("dynamicZoomLevelMin", cat, NORMAL, 10, true));
+
 	}
 
 	private void addMiscSettings()
@@ -240,8 +257,7 @@ public class SettingsClass extends SettingsList
 		addSetting(ZoomCross = new SettingIntArray("ZoomCross", cat, NORMAL, 16, true, CrossLevel));
 		addSetting(OsmMaxLevel = new SettingIntArray("OsmMaxLevel", cat, NORMAL, 17, true, Level));
 		addSetting(OsmMinLevel = new SettingIntArray("OsmMinLevel", cat, NORMAL, 8, true, Level));
-		addSetting(MoveMapCenterWithSpeed = new SettingBool("MoveMapCenterWithSpeed", cat, NORMAL, false, true));
-		addSetting(MoveMapCenterMaxSpeed = new SettingInt("MoveMapCenterMaxSpeed", cat, NORMAL, 20, true));
+
 		addSetting(ShowDirektLine = new SettingBool("ShowDirektLine", cat, NORMAL, false, true));
 		addSetting(MapHideMyFinds = new SettingBool("MapHideMyFinds", cat, NORMAL, false, true));
 		addSetting(MapShowRating = new SettingBool("MapShowRating", cat, NORMAL, true, true));
@@ -286,6 +302,7 @@ public class SettingsClass extends SettingsList
 
 		addSetting(UserImageFolder = new SettingFolder("UserImageFolder", cat, NORMAL, Work + "/User/Media", true));
 		addSetting(LanguagePath = new SettingFolder("LanguagePath", cat, NORMAL, Work + "/data/lang", true));
+		addSetting(SoundPath = new SettingFolder("SoundPath", cat, NORMAL, Work + "/data/sound", true));
 		addSetting(TileCacheFolder = new SettingFolder("TileCacheFolder", cat, NORMAL, Work + "/cache", true));
 		addSetting(PocketQueryFolder = new SettingFolder("PocketQueryFolder", cat, NORMAL, Work + "/PocketQuery", true));
 

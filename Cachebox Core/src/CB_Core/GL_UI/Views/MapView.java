@@ -65,7 +65,6 @@ import com.badlogic.gdx.math.Vector2;
 public class MapView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent
 {
 	public static MapView that = null; // für Zugriff aus Listeners heraus auf this
-	private final String Tag = "MAP_VIEW_GL";
 
 	// ####### Enthaltene Controls ##########
 	private MultiToggleButton togBtn;
@@ -83,6 +82,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private Lock queuedTilesLock = new ReentrantLock();
 	private Thread queueProcessor = null;
 	private boolean alignToCompass = false;
+	private boolean alignToCompassCarMode = false;
+	private boolean autoResortFromCarMode = false;
 	// private boolean centerGps = false;
 	private float mapHeading = 0;
 	private float arrowHeading = 0;
@@ -304,12 +305,26 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				if (State == 4)
 				{
 					// Car mode
-					alignToCompass = true;
+					alignToCompassCarMode = true;
+					if (!GlobalCore.autoResort)
+					{
+						GlobalCore.autoResort = true;
+						Config.settings.AutoResort.setValue(GlobalCore.autoResort);
+						if (GlobalCore.autoResort)
+						{
+							synchronized (Database.Data.Query)
+							{
+								Database.Data.Query.Resort();
+							}
+						}
+						autoResortFromCarMode = true;
+					}
 
 				}
 
 				else if (State == 2)
 				{
+
 					if (GlobalCore.SelectedCache() != null)
 					{
 						if (GlobalCore.SelectedWaypoint() != null)
@@ -326,6 +341,19 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				{
 					setCenter(new Coordinate(GlobalCore.LastValidPosition.Latitude, GlobalCore.LastValidPosition.Longitude));
 				}
+
+				if (State != 4)
+				{
+					alignToCompassCarMode = false;
+
+					if (autoResortFromCarMode)
+					{
+						autoResortFromCarMode = false;
+						GlobalCore.autoResort = false;
+						Config.settings.AutoResort.setValue(GlobalCore.autoResort);
+					}
+				}
+
 			}
 		});
 		togBtn.registerSkinChangedEvent();
@@ -382,13 +410,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		CB_Core.Events.PositionChangedEventList.Add(this);
 		PositionChanged(GlobalCore.Locator);
 
-		alignToCompass = !Config.settings.CompassNorthOriented.getValue();
-		if (!alignToCompass)
+		alignToCompassCarMode = !Config.settings.CompassNorthOriented.getValue();
+		if (!alignToCompassCarMode)
 		{
 			drawingWidth = mapIntWidth;
 			drawingHeight = mapIntHeight;
 		}
-		Config.settings.MoveMapCenterWithSpeed.setValue(true); // TODO Debug set
 	}
 
 	@Override
@@ -491,16 +518,18 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	protected void render(SpriteBatch batch)
 	{
 
-		if (Config.settings.MoveMapCenterWithSpeed.getValue() && alignToCompass && (togBtn.getState() >= 4))
+		if (Config.settings.MoveMapCenterWithSpeed.getValue() && alignToCompassCarMode && this.locator != null && this.locator.hasSpeed())
 		{
-			if (this.locator.hasSpeed())
-			{
-				double maxSpeed = Config.settings.MoveMapCenterMaxSpeed.getValue();
-				float diff = (float) ((height) / 3 * this.locator.getSpeed() / maxSpeed);
-				if (diff > height / 3) diff = height / 3;
 
-				ySpeedVersatz = diff;
-			}
+			double maxSpeed = Config.settings.MoveMapCenterMaxSpeed.getValue();
+
+			double percent = this.locator.SpeedOverGround() / maxSpeed;
+
+			float diff = (float) ((height) / 3 * percent);
+			if (diff > height / 3) diff = height / 3;
+
+			ySpeedVersatz = diff;
+
 		}
 		else
 			ySpeedVersatz = 0;
@@ -614,7 +643,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		float dxr = dx;
 		float dyr = dy;
 
-		if (alignToCompass)
+		if (alignToCompass || alignToCompassCarMode)
 		{
 			camera.up.x = 0;
 			camera.up.y = 1;
@@ -657,10 +686,17 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		// for (int tmpzoom = zoom; tmpzoom <= zoom; tmpzoom++)
 		{
 			int tmpzoom = aktZoom;
-			Descriptor lo = screenToDescriptor(new Vector2(mapIntWidth / 2 - drawingWidth / 2, mapIntHeight / 2 - drawingHeight / 2),
-					tmpzoom);
-			Descriptor ru = screenToDescriptor(new Vector2(mapIntWidth / 2 + drawingWidth / 2, mapIntHeight / 2 + drawingHeight / 2),
-					tmpzoom);
+
+			int halfMapIntWidth = mapIntWidth / 2;
+			int halfMapIntHeight = mapIntHeight / 2;
+
+			int halfDrawingtWidth = drawingWidth / 2;
+			int halfDrawingHeight = drawingHeight / 2;
+
+			Descriptor lo = screenToDescriptor(new Vector2(halfMapIntWidth - halfDrawingtWidth, halfMapIntHeight - halfDrawingHeight
+					- ySpeedVersatz), tmpzoom);
+			Descriptor ru = screenToDescriptor(new Vector2(halfMapIntWidth + halfDrawingtWidth, halfMapIntHeight + halfDrawingHeight
+					+ ySpeedVersatz), tmpzoom);
 			for (int i = lo.X; i <= ru.X; i++)
 			{
 				for (int j = lo.Y; j <= ru.Y; j++)
@@ -720,6 +756,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	}
 
+	@SuppressWarnings("unused")
 	private void renderDebugInfo(SpriteBatch batch)
 	{
 		if (true) return;
@@ -1186,13 +1223,17 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		deleteUnusedTiles();
 		// alle notwendigen Tiles zum Laden einstellen in die Queue
 		// (queuedTiles)
-		int extensionTop = mapIntWidth / 2;
-		int extensionBottom = mapIntWidth / 2;
-		int extensionLeft = mapIntWidth / 2;
-		int extensionRight = mapIntWidth / 2;
-		Descriptor lo = screenToDescriptor(new Vector2(mapIntWidth / 2 - drawingWidth / 2 - extensionLeft, mapIntHeight / 2 - drawingHeight
+
+		int halfMapIntWidth = mapIntWidth / 2;
+		int halfMapIntHeight = mapIntHeight / 2;
+
+		int extensionTop = (int) (halfMapIntHeight - ySpeedVersatz);
+		int extensionBottom = (int) (halfMapIntHeight + ySpeedVersatz);
+		int extensionLeft = halfMapIntWidth;
+		int extensionRight = halfMapIntWidth;
+		Descriptor lo = screenToDescriptor(new Vector2(halfMapIntWidth - drawingWidth / 2 - extensionLeft, halfMapIntHeight - drawingHeight
 				/ 2 - extensionTop), aktZoom);
-		Descriptor ru = screenToDescriptor(new Vector2(mapIntWidth / 2 + drawingWidth / 2 + extensionRight, mapIntHeight / 2
+		Descriptor ru = screenToDescriptor(new Vector2(halfMapIntWidth + drawingWidth / 2 + extensionRight, halfMapIntHeight
 				+ drawingHeight / 2 + extensionBottom), aktZoom);
 
 		loadedTilesLock.lock();
@@ -1224,7 +1265,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					}
 					catch (Exception e)
 					{
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -1426,16 +1466,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 	}
 
-	private long getMapTileSizeFactor(int zoom)
-	{
-		long result = 1;
-		for (int z = MAX_MAP_ZOOM; z < zoom; z++)
-		{
-			result *= 2;
-		}
-		return result;
-	}
-
 	private long getMapTilePosFactor(int zoom)
 	{
 		long result = 1;
@@ -1496,16 +1526,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		if (locator == null) return;
 		if (locator.getLocation() == null) return;
-		// float heading = 0;
-		//
-		// if (this.locator != null)
-		// {
-		// heading = this.locator.getHeading();
-		// }
-		// else
-		// {
-		// heading = locator.getHeading();
-		// }
 
 		this.locator = locator;
 		GlobalCore.LastValidPosition = new Coordinate(locator.getLocation().Latitude, locator.getLocation().Longitude);
@@ -1533,46 +1553,47 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 			info.setDistance(distance);
 
-			// if (GlobalCore.SelectedCache() != null)
-			// {
-			// Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos
-			// : GlobalCore.SelectedCache().Pos;
-			// double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
-			// info.setBearing((float) (bearing - locator.getHeading()));
-			// }
 		}
-
-		// if (alignToCompass)
-		// {
-		// this.mapHeading = heading;
-		// this.arrowHeading = 0;
-		//
-		// // da die Map gedreht in die offScreenBmp gezeichnet werden soll,
-		// // muss der Bereich, der gezeichnet werden soll größer sein, wenn
-		// // gedreht wird.
-		// if (heading >= 180) heading -= 180;
-		// if (heading > 90) heading = 180 - heading;
-		// double alpha = heading / 180 * Math.PI;
-		// double beta = Math.atan((double) mapIntWidth / (double) mapIntHeight);
-		// double gammaW = Math.PI / 2 - alpha - beta;
-		// // halbe Länge der Diagonalen
-		// double diagonal = Math.sqrt(Math.pow(mapIntWidth, 2) + Math.pow(mapIntHeight, 2)) / 2;
-		// drawingWidth = (int) (Math.cos(gammaW) * diagonal * 2);
-		//
-		// double gammaH = alpha - beta;
-		// drawingHeight = (int) (Math.cos(gammaH) * diagonal * 2);
-		// }
-		// else
-		// {
-		// this.mapHeading = 0;
-		// this.arrowHeading = heading;
-		// drawingWidth = mapIntWidth;
-		// drawingHeight = mapIntHeight;
-		// }
 
 		if (togBtn.getState() > 0 && togBtn.getState() != 2) setCenter(new Coordinate(locator.getLocation().Latitude,
 				locator.getLocation().Longitude));
+
+		if (togBtn.getState() == 4 && Config.settings.dynamicZoom.getValue())
+		{
+			// calculate dynamic Zoom
+
+			double maxSpeed = Config.settings.MoveMapCenterMaxSpeed.getValue();
+			int maxZoom = Config.settings.dynamicZoomLevelMax.getValue();
+			int minZoom = Config.settings.dynamicZoomLevelMin.getValue();
+
+			double percent = this.locator.SpeedOverGround() / maxSpeed;
+
+			int dynZoom = (int) (maxZoom - ((maxZoom - minZoom) * percent));
+			if (dynZoom > maxZoom) dynZoom = maxZoom;
+			if (dynZoom < minZoom) dynZoom = minZoom;
+
+			if (lastDynamicZoom != dynZoom)
+			{
+				lastDynamicZoom = dynZoom;
+				zoomBtn.setZoom(lastDynamicZoom);
+				inputState = InputState.Idle;
+
+				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(),
+						System.currentTimeMillis() + 1000);
+				GL_Listener.glListener.addRenderView(that, frameRateAction);
+				GL_Listener.glListener.renderOnce(that.getName() + " ZoomButtonClick");
+				calcPixelsPerMeter();
+			}
+
+			// Logger.LogCat("SpeedVersatz = " + String.valueOf(ySpeedVersatz) + " / 1/3=" + String.valueOf(height / 3));
+			// Logger.LogCat("MaxSpeed = " + String.valueOf(maxSpeed));
+			// Logger.LogCat("Dyn Zoom = " + String.valueOf(dynZoom));
+
+		}
+
 	}
+
+	private int lastDynamicZoom;
 
 	@Override
 	public void OrientationChanged(float heading)
@@ -1604,7 +1625,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			heading = GlobalCore.Locator.getHeading();
 		}
 
-		if (alignToCompass)
+		if (alignToCompass || alignToCompassCarMode)
 		{
 			this.mapHeading = heading;
 			this.arrowHeading = 0;
@@ -1615,10 +1636,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			if (heading >= 180) heading -= 180;
 			if (heading > 90) heading = 180 - heading;
 			double alpha = heading / 180 * Math.PI;
-			double beta = Math.atan((double) mapIntWidth / (double) mapIntHeight);
+			double mapHeightCalcBase = mapIntHeight + (ySpeedVersatz * 1.7);
+			double mapWidthCalcBase = mapIntWidth + (ySpeedVersatz * 1.7);
+			double beta = Math.atan(mapWidthCalcBase / mapHeightCalcBase);
 			double gammaW = Math.PI / 2 - alpha - beta;
 			// halbe Länge der Diagonalen
-			double diagonal = Math.sqrt(Math.pow(mapIntWidth, 2) + Math.pow(mapIntHeight, 2)) / 2;
+			double diagonal = Math.sqrt(Math.pow(mapWidthCalcBase, 2) + Math.pow(mapHeightCalcBase, 2)) / 2;
 			drawingWidth = (int) (Math.cos(gammaW) * diagonal * 2);
 
 			double gammaH = alpha - beta;
@@ -2108,7 +2131,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				}
 
 				if (minWpi == null || minWpi.Cache == null) return true;
-				Vector2 screen = worldToScreen(new Vector2(Math.round(minWpi.MapX), Math.round(minWpi.MapY)));
+				// Vector2 screen = worldToScreen(new Vector2(Math.round(minWpi.MapX), Math.round(minWpi.MapY)));
 				// Logger.LogCat("MapClick at:" + clickedAt + " minDistance: " + minDist + " screen:" + screen + " wpi:" + minWpi.Cache.Name
 				// + "/ ");
 

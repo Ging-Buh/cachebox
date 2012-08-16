@@ -36,7 +36,6 @@ import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
-import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.GpsStateChangeEvent;
 import CB_Core.Events.GpsStateChangeEventList;
@@ -202,8 +201,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public static ViewID aktViewId = null;
 	public static ViewID aktTabViewId = null;
 
-	private static long GPSTimeStamp = 0;
-
 	public static DescriptionView descriptionView = null; // ID 4
 	private static SpoilerView spoilerView = null; // ID 5
 	private static NotesView notesView = null; // ID 6
@@ -262,8 +259,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private LayoutInflater inflater;
 
 	private ExtAudioRecorder extAudioRecorder = null;
-	private boolean initialResortAfterFirstFixCompleted = false;
-	private boolean initialFixSoundCompleted = false;
 
 	private boolean runsWithAkku = true;
 
@@ -617,8 +612,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			public void run()
 			{
 				GlobalCore.switchToCompassCompleted = false;
-				GlobalCore.approachSoundCompleted = false;
-
 			}
 		});
 	}
@@ -651,169 +644,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			e.printStackTrace();
 		}
 
-		try
-		{
-			if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)
-			{
-				if (GlobalCore.SelectedCache() == null)
-				{
-					Database.Data.Query.Resort();
-				}
-				initialResortAfterFirstFixCompleted = true;
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.newLocationReceived()", "if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)", e);
-			e.printStackTrace();
-		}
-
-		try
-		{
-			if (!initialFixSoundCompleted && GlobalCore.LastValidPosition.Valid
-					&& location.getProvider().equalsIgnoreCase(LocationManager.GPS_PROVIDER))
-			{
-				Global.PlaySound("GPS_Fix.ogg");
-				initialFixSoundCompleted = true;
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.newLocationReceived()", "Global.PlaySound(GPS_Fix.ogg)", e);
-			e.printStackTrace();
-		}
-
-		try
-		{
-			if (GlobalCore.SelectedCache() != null)
-			{
-				float distance = GlobalCore.SelectedCache().Distance(false);
-				if (GlobalCore.SelectedWaypoint() != null)
-				{
-					distance = GlobalCore.SelectedWaypoint().Distance();
-				}
-
-				if (!GlobalCore.approachSoundCompleted && (distance < Config.settings.SoundApproachDistance.getValue()))
-				{
-					Global.PlaySound("Approach.ogg");
-					GlobalCore.approachSoundCompleted = true;
-
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.newLocationReceived()", "Global.PlaySound(Approach.ogg)", e);
-			e.printStackTrace();
-		}
-
-		try
-		{
-			// schau die 50 nächsten Caches durch, wenn einer davon näher ist
-			// als der aktuell nächste -> umsortieren und raus
-			// only when showing Map or cacheList
-			if (!GlobalCore.ResortAtWork)
-			{
-				if (GlobalCore.autoResort)
-				{
-					int z = 0;
-					if (!(GlobalCore.NearestCache() == null))
-					{
-						boolean resort = false;
-						if (GlobalCore.NearestCache().Found)
-						{
-							resort = true;
-						}
-						else
-						{
-							for (Cache cache : Database.Data.Query)
-							{
-								z++;
-								if (z >= 50) return;
-								if (cache.Archived) continue;
-								if (!cache.Available) continue;
-								if (cache.Found) continue;
-								if (cache.ImTheOwner()) continue;
-								if (cache.Type == CacheTypes.Mystery) if (!cache.MysterySolved()) continue;
-								if (cache.Distance(true) < GlobalCore.NearestCache().Distance(true))
-								{
-									resort = true;
-									break;
-								}
-							}
-						}
-						if (resort)
-						{
-							Database.Data.Query.Resort();
-							Global.PlaySound("AutoResort.ogg");
-							return;
-						}
-					}
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.newLocationReceived()", "Resort", e);
-			e.printStackTrace();
-		}
-
 	}
 
 	@Override
 	public void onLocationChanged(Location location)
 	{
 
-		try
-		{
-			if (location.getProvider().equalsIgnoreCase(LocationManager.GPS_PROVIDER)) // Neue
-																						// Position
-																						// von
-																						// GPS-Empfänger
-			{
-				newLocationReceived(location);
-				GPSTimeStamp = java.lang.System.currentTimeMillis();
-				return;
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.onLocationChanged()", "GPS_PROVIDER", e);
-			e.printStackTrace();
-		}
-
-		try
-		{
-			// Neue Position vom Netzwerk
-			if (location.getProvider().equalsIgnoreCase(LocationManager.NETWORK_PROVIDER))
-			{
-				// Wenn 10 Sekunden kein GPS Signal
-				if ((java.lang.System.currentTimeMillis() - GPSTimeStamp) > NetworkPositionTime)
-				{
-					NetworkPositionTime = 90000;
-					newLocationReceived(location);
-					if (initialFixSoundCompleted)
-					{
-						Global.PlaySound("GPS_lose.ogg");
-						initialFixSoundCompleted = false;
-					}
-
-					Toast.makeText(mainActivity, "Network-Position", Toast.LENGTH_SHORT).show();
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.onLocationChanged()", "NETWORK_PROVIDER", e);
-			e.printStackTrace();
-		}
+		newLocationReceived(location);
 
 	}
-
-	/*
-	 * Wenn 10 Sekunden kein gültiges GPS Signal gefunden wird. Aber nur beim Ersten mal. Danach warten wir lieber 90 sec
-	 */
-	private int NetworkPositionTime = 10000;
 
 	@Override
 	public void onProviderDisabled(String provider)

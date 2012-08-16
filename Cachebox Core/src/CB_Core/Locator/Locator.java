@@ -168,4 +168,14 @@ public class Locator
 		return speed;
 	}
 
+	public String getProvider()
+	{
+		return ProviderString;
+	}
+
+	public void setProvider(String provider)
+	{
+		ProviderString = provider;
+	}
+
 }

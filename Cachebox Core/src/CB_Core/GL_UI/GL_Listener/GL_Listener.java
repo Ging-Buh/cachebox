@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.GlobalLocationReceiver;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
@@ -110,6 +111,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		width = initalWidth;
 		height = initialHeight;
 		mLongClickTime = Config.settings.LongClicktime.getValue();
+
 	}
 
 	@Override
@@ -132,6 +134,8 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		FpsInfoSprite = new Sprite(FpsInfoTexture, 4, 4);
 		p.dispose();
 		FpsInfoSprite.setSize(4, 4);
+
+		GlobalCore.receiver = new GlobalLocationReceiver();
 	}
 
 	@Override

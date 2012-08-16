@@ -145,7 +145,17 @@ public class ApiSearchPosDialog extends Activity implements ViewOptionsMenu
 			@Override
 			public void onClick(View arg0)
 			{
-				actSearchPos = MapView.that.center;
+				if (MapView.that == null)
+				{
+					actSearchPos = new Coordinate();
+					actSearchPos.Latitude = Config.settings.MapInitLatitude.getValue();
+					actSearchPos.Longitude = Config.settings.MapInitLongitude.getValue();
+				}
+				else
+				{
+					actSearchPos = MapView.that.center;
+				}
+
 				setToggleBtnState(1);
 			}
 		});

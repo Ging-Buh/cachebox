@@ -32,9 +32,10 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 	 */
 	private static final long serialVersionUID = -3001260409970853805L;
 
-	private Label lblGPX;
-	private TextField txt;
-	private Button pushButton5;
+	private Label lblGPX, lblSetSpeed;
+	private TextField txt, speedTxt;
+	private Button pushButton5, sendSpeed;
+	private static float speed = 50;
 
 	public simulateForm(String s)
 	{
@@ -66,6 +67,19 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 		pushButton5 = new Button("Start simulate");
 		add(pushButton5);
 		pushButton5.addActionListener(this); // listen for Button press
+
+		lblSetSpeed = new Label("set Speed               ");
+		add(lblSetSpeed);
+
+		speedTxt = new TextField();
+		speedTxt.addActionListener(this);
+		speedTxt.setText(String.valueOf(speed));
+		speedTxt.setSize(200, 30);
+		add(speedTxt);
+
+		sendSpeed = new Button("Set Speed");
+		add(sendSpeed);
+		sendSpeed.addActionListener(this); // listen for Button press
 
 		File dir = new File(Config.settings.TrackFolder.getValue());
 		String[] files = dir.list();
@@ -168,6 +182,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
 		else if (event.getActionCommand().equals("Start simulate"))
 		{
+			NetworkSend = false;
 			simulateGpsWithGpxFile();
 			pushButton5.setLabel("Stop simulate");
 
@@ -179,7 +194,14 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 			pushButton5.setLabel("Start simulate");
 
 		}
+		else if (event.getActionCommand().equals("Set Speed"))
+		{
 
+			float d = Float.parseFloat(speedTxt.getText());
+
+			speed = d / 3600 * 1000;
+
+		}
 	}
 
 	private static int Bearing = 45;
@@ -232,10 +254,37 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
 	private static boolean BreakSimulate = false;
 
+	private static Locator lastLoc;
+	private static boolean NetworkSend = false;
+
 	private static void runSimulation()
 	{
 
-		if (BreakSimulate) return;
+		if (BreakSimulate)
+		{
+			if (!NetworkSend)
+			{
+				if (lastLoc != null)
+				{
+					lastLoc.setProvider("network");
+					try
+					{
+						Thread.sleep(10000);
+					}
+					catch (InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+					PositionChangedEventList.PositionChanged(lastLoc);
+				}
+
+				NetworkSend = true;
+			}
+
+			return;
+		}
+
+		NetworkSend = false;
 
 		trackPointIndexEnd = simulationRoute.Points.size() - 1;
 		trackStartTime = simulationRoute.Points.get(trackPointIndex).TimeStamp;
@@ -243,6 +292,8 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 				.get(trackPointIndex).TimeStamp.getTime());
 
 		nextTimeStamp /= 8; // ein wenig schneller ablaufen lassen
+
+		if (nextTimeStamp < 0) nextTimeStamp = 10;
 
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask()
@@ -254,9 +305,12 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 				Coordinate pos = new Coordinate(trk.Y, trk.X);
 				Locator Loc = new Locator();
 
-				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, 50, true, (float) trk.Direction, 95, "GPS");
+				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, speed, true, (float) trk.Direction, 95, "GPS");
 				Loc.setCompassHeading((float) trk.Direction);
 				Loc.LastUsedCompass = true;
+
+				lastLoc = Loc;
+
 				PositionChangedEventList.PositionChanged(Loc);
 				PositionChangedEventList.Orientation((float) trk.Direction);
 

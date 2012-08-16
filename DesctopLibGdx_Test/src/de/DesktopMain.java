@@ -156,7 +156,7 @@ public class DesktopMain
 	private static void showSimmulateForm()
 	{
 		final simulateForm sim = new simulateForm("Simulate Form");
-		sim.setSize(400, 100);
+		sim.setSize(400, 130);
 		sim.setVisible(true);
 	}
 
