@@ -14,29 +14,58 @@ public class SelectionMarker extends CB_View_Base
 		Center, Left, Right
 	}
 
+	protected EditWrapedTextField textField;
 	protected Type type;
 	protected Drawable marker;
+	// Breite des Markers
+	protected float markerWidth;
+	// X-Position des Einfügepunktes des Markers relativ zur linke Seite
+	protected float markerXPos;
 
-	public SelectionMarker(float X, float Y, float Width, float Height, Type type)
+	public SelectionMarker(EditWrapedTextField textField, float X, float Y, float Height, Type type)
 	{
-		super(X, Y, Width, Height, "");
+		super(X, Y, Height, Height, "");
 		this.type = type;
+		Initial();
+		// Orginalgröße des Marker-Sprites
+		float orgWidth = marker.getMinWidth();
+		float orgHeight = marker.getMinHeight();
+
+		float Width = Height / orgHeight * orgWidth;
+		// markerXPos ist der Einfügepunkt rel. der linken Seite
+		switch (type)
+		{
+		case Center:
+			markerXPos = ((orgWidth - 1) / 2) / Width * orgWidth;
+			break;
+		case Right:
+			markerXPos = 0;
+			break;
+		case Left:
+			markerXPos = (orgWidth - 1) / Width * orgWidth;
+			break;
+		}
+		this.setWidth(Width);
+		this.textField = textField;
 	}
 
 	@Override
 	protected void Initial()
 	{
-		switch (type)
+		if (marker == null)
 		{
-		case Center:
-			marker = SpriteCache.selection_set;
-			break;
-		case Left:
-			marker = SpriteCache.selection_left;
-			break;
-		case Right:
-			marker = SpriteCache.selection_right;
-			break;
+			switch (type)
+			{
+			case Center:
+				marker = SpriteCache.selection_set;
+				break;
+			case Left:
+				marker = SpriteCache.selection_left;
+				break;
+			case Right:
+				marker = SpriteCache.selection_right;
+				break;
+			}
 		}
 	}
 
@@ -72,7 +101,20 @@ public class SelectionMarker extends CB_View_Base
 		if ((pointer == 0) && (touchDownPos != null) && (!KineticPan))
 		{
 			// SelectionMarker verschieben
-			this.setPos(this.getX() + x - touchDownPos.x, this.getY() + y - touchDownPos.y);
+			// neue gewünschte Koordinaten rel. links unten
+			float newX = this.getX() + x - touchDownPos.x;
+			float newY = this.getY() + y - touchDownPos.y;
+
+			// neue gewünschte Koordinaten am Einfügepunkt des Markers
+			newX = newX + markerXPos;
+			newY = newY + height;
+			Point cursorPos = textField.GetNextCursorPos(new Point((int) newX, (int) newY), true);
+			if (cursorPos != null)
+			{
+				// SelectionMarker verschieben
+				moveTo(cursorPos.x, cursorPos.y);
+			}
+			// this.setPos(newX, newY);
 		}
 		return true;
 	}
@@ -80,10 +122,24 @@ public class SelectionMarker extends CB_View_Base
 	@Override
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
-		if (pointer == 0)
+		if ((pointer == 0) && (touchDownPos != null))
 		{
+			// SelectionMarker verschieben
+			// neue gewünschte Koordinaten rel. links unten
+			float newX = this.getX() + x - touchDownPos.x;
+			float newY = this.getY() + y - touchDownPos.y;
+
+			// neue gewünschte Koordinaten am Einfügepunkt des Markers
+			newX = newX + markerXPos;
+			newY = newY + height;
+			Point cursorPos = textField.GetNextCursorPos(new Point((int) newX, (int) newY), true);
 			touchDownPos = null;
 		}
 		return true;
+	}
+
+	public void moveTo(float x, float y)
+	{
+		this.setPos(x - markerXPos, y - height);
 	}
 }

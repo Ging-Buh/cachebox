@@ -42,6 +42,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 	protected String text, messageText;
 	protected ArrayList<DisplayText> displayText;
 	protected int cursor;
+	protected float cursorHeight;
 	protected int cursorLine;
 	protected float topLine;
 	protected float maxLineCount; // Anzahl der darzustellenden Zeilen
@@ -81,7 +82,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		super(parent, rec, Name);
 		this.style = getDefaultStyle();
 		displayText = new ArrayList<EditWrapedTextField.DisplayText>();
-		setCursorLine(0);
+		setCursorLine(0, true);
 		lineHeight = style.font.getLineHeight();
 		setText("");
 		topLine = 0;
@@ -95,7 +96,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		displayText = new ArrayList<EditWrapedTextField.DisplayText>();
-		setCursorLine(0);
+		setCursorLine(0, true);
 		lineHeight = style.font.getLineHeight();
 		setText("");
 		topLine = 0;
@@ -333,7 +334,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 					float xpos = getCursorX();
 					textY = (int) height - textHeight - bgTopHeight;
 
-					float cursorHeight = displayText.get(0).textBounds.height + font.getDescent() / 2;
+					cursorHeight = displayText.get(0).textBounds.height + font.getDescent() / 2;
 
 					cursorPatch.draw(batch, getCursorX(), getCursorY(), cursorPatch.getMinWidth(), cursorHeight);
 
@@ -357,12 +358,17 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	private float getCursorX()
 	{
-		DisplayText dt = displayText.get(cursorLine);
+		return getCursorX(cursor, cursorLine);
+	}
+
+	private float getCursorX(int aCursor, int aCursorLine)
+	{
+		DisplayText dt = displayText.get(aCursorLine);
 		float xpos = 0;
 
-		if (cursor < dt.glyphPositions.size)
+		if (aCursor < dt.glyphPositions.size)
 		{
-			xpos = dt.glyphPositions.get(cursor);
+			xpos = dt.glyphPositions.get(aCursor);
 		}
 		else if (dt.glyphPositions.size == 0)
 		{
@@ -377,8 +383,13 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	private float getCursorY()
 	{
+		return getCursorY(cursorLine);
+	}
+
+	private float getCursorY(int aCursorLine)
+	{
 		float textY = (int) height - textHeight - style.background.getTopHeight();
-		return (y + textY - style.background.getTopHeight() - lineHeight * (cursorLine - topLine)) + style.font.getDescent();
+		return (y + textY - style.background.getTopHeight() - lineHeight * (aCursorLine - topLine)) + style.font.getDescent();
 	}
 
 	private void updateDisplayTextList()
@@ -481,7 +492,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						// cursor ist innerhalb der Zeichen, die in die vorherige Zeile verschoben werden -> Cursor in die vorherige Zeile
 						// verschieben
 						cursor = prevDt.displayText.length() - 1;
-						setCursorLine(cursorLine - 1);
+						setCursorLine(cursorLine - 1, true);
 						// anschließende Zeile noch mal berechnen.
 						cursorLine++;
 						DisplayText nextDt = getAktDisplayText();
@@ -556,7 +567,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				{
 					// Cursor auch in die nächste Zeile verschieben, an die Stelle im Wort an der der Cursor vorher auch war
 					cursor = cursor - id;
-					setCursorLine(cursorLine + 1);
+					setCursorLine(cursorLine + 1, true);
 				}
 			}
 		}
@@ -744,15 +755,59 @@ public class EditWrapedTextField extends EditTextFieldBase
 			if (pos > x)
 			{
 				cursor = Math.max(0, i - 1);
-				setCursorLine(clickedCursorLine);
+				setCursorLine(clickedCursorLine, true);
 				showSelectionMarker(SelectionMarker.Type.Center);
 				return true;
 			}
 		}
 		cursor = Math.max(0, dt.glyphPositions.size - 1);
-		setCursorLine(clickedCursorLine);
+		setCursorLine(clickedCursorLine, true);
 		GL_Listener.glListener.renderOnce("EditWrapedTextField");
 		showSelectionMarker(SelectionMarker.Type.Center);
+		return true;
+	}
+
+	public Point GetNextCursorPos(Point touch, boolean setCursor)
+	{
+		float x = touch.x - this.getX() - style.backgroundFocused.getLeftWidth() + leftPos;
+		float clickPos = touch.y - this.getY() + cursorHeight / 2;
+		int clickedCursorLine = (int) ((this.height - style.font.getLineHeight() - clickPos + (lineHeight)) / lineHeight) - 1;
+		clickedCursorLine += topLine;
+		if (clickedCursorLine < 0) return null;
+		if (clickedCursorLine >= displayText.size()) return null;
+
+		DisplayText dt = displayText.get(clickedCursorLine);
+
+		for (int i = 0; i < dt.glyphPositions.size; i++)
+		{
+			float pos = dt.glyphPositions.items[i];
+			if (pos > x)
+			{
+				int tmpCursor = Math.max(0, i - 1);
+				Point result = new Point((int) (getX() + getCursorX(tmpCursor, clickedCursorLine) + style.cursor.getMinWidth() / 2),
+						(int) (getY() + getCursorY(clickedCursorLine)));
+				if (setCursor)
+				{
+					cursor = tmpCursor;
+					setCursorLine(clickedCursorLine, false);
+				}
+				return result;
+			}
+		}
+		int tmpCursor = Math.max(0, dt.glyphPositions.size - 1);
+		Point result = new Point((int) (getX() + getCursorX(tmpCursor, clickedCursorLine) + style.cursor.getMinWidth() / 2),
+				(int) (getY() + getCursorY(clickedCursorLine)));
+		if (setCursor)
+		{
+			cursor = tmpCursor;
+			setCursorLine(clickedCursorLine, false);
+		}
+		return result;
+	}
+
+	@Override
+	public boolean doubleClick(int x, int y, int pointer, int button)
+	{
 		return true;
 	}
 
@@ -795,7 +850,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 							hasSelection = true;
 						}
 						cursor--;
-						checkCursorVisible();
+						checkCursorVisible(true);
 					}
 					if (keycode == Keys.RIGHT)
 					{
@@ -805,7 +860,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 							hasSelection = true;
 						}
 						cursor++;
-						checkCursorVisible();
+						checkCursorVisible(true);
 					}
 					if (keycode == Keys.HOME)
 					{
@@ -816,7 +871,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						}
 						cursor = 0;
 						// überprüfen, ob der Cursor sichtbar ist
-						checkCursorVisible();
+						checkCursorVisible(true);
 					}
 					if (keycode == Keys.END)
 					{
@@ -827,13 +882,13 @@ public class EditWrapedTextField extends EditTextFieldBase
 						}
 						cursor = text.length();
 						// überprüfen, ob der Cursor sichtbar ist
-						checkCursorVisible();
+						checkCursorVisible(true);
 					}
 
 					cursor = Math.max(0, cursor);
 					cursor = Math.min(text.length(), cursor);
 					// überprüfen, ob der Cursor sichtbar ist
-					checkCursorVisible();
+					checkCursorVisible(true);
 				}
 				else
 				{
@@ -890,13 +945,13 @@ public class EditWrapedTextField extends EditTextFieldBase
 		{
 			cursor = 0;
 			// überprüfen, ob der Cursor sichtbar ist
-			checkCursorVisible();
+			checkCursorVisible(true);
 		}
 		else
 		{
 			cursor = dt.displayText.length();
 			// überprüfen, ob der Cursor sichtbar ist
-			checkCursorVisible();
+			checkCursorVisible(true);
 		}
 	}
 
@@ -923,7 +978,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 			cursor = newCursor;
 		}
 		// überprüfen, ob der Cursor sichtbar ist
-		checkCursorVisible();
+		checkCursorVisible(true);
 	}
 
 	// fügt eine neue Zeile an der Cursor Position ein
@@ -939,7 +994,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		displayText.add(cursorLine + 1, newDt);
 		style.font.computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
 		style.font.computeGlyphAdvancesAndPositions(newDt.displayText, newDt.glyphAdvances, newDt.glyphPositions);
-		setCursorLine(cursorLine + 1);
+		setCursorLine(cursorLine + 1, true);
 		cursor = 0;
 
 		int lineCount = displayText.size();
@@ -958,7 +1013,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		// X-Koordinate von alter Cursor Position bestimmen
 		float x = oldDt.glyphPositions.items[cursor];
 		// Cursor in neue Zeile plazieren
-		setCursorLine(newCursorLine);
+		setCursorLine(newCursorLine, true);
 		// Cursor möglichst an gleiche x-Position plazieren
 		setCursorXPos(x);
 		return true;
@@ -983,15 +1038,15 @@ public class EditWrapedTextField extends EditTextFieldBase
 	}
 
 	// Zeile des Cursors ändern. Sicherstellen, dass der Cursor sichtbar ist
-	private void setCursorLine(int newCursorLine)
+	private void setCursorLine(int newCursorLine, boolean hideCursor)
 	{
 		cursorLine = newCursorLine;
-		checkCursorVisible();
+		checkCursorVisible(hideCursor);
 	}
 
-	private void checkCursorVisible()
+	private void checkCursorVisible(boolean hideCursor)
 	{
-		hideSelectionMarker();
+		if (hideCursor) hideSelectionMarker();
 		// Cursorpos prüfen, ob ausserhalb sichtbaren Bereich (Oben-Unten)
 		if (cursorLine - topLine >= maxLineCount)
 		{
@@ -1036,7 +1091,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		if (xPos <= 0)
 		{
 			cursor = 0;
-			checkCursorVisible();
+			checkCursorVisible(true);
 			return;
 		}
 		for (int i = 0; i < dt.glyphPositions.size; i++)
@@ -1045,13 +1100,13 @@ public class EditWrapedTextField extends EditTextFieldBase
 			if (pos > xPos)
 			{
 				cursor = Math.max(0, i - 1);
-				checkCursorVisible();
+				checkCursorVisible(true);
 				return;
 			}
 		}
 		// kein Passendes Zeichen gefunden an gegebener Position -> Cursor ans Ende setzen
 		cursor = Math.max(0, dt.glyphPositions.size - 1);
-		checkCursorVisible();
+		checkCursorVisible(true);
 	}
 
 	/**
@@ -1100,7 +1155,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				dt.displayText = dt.displayText.substring(0, cursor) + content + dt.displayText.substring(cursor, dt.displayText.length());
 				updateDisplayText(dt, true);
 				cursor += content.length();
-				checkCursorVisible();
+				checkCursorVisible(true);
 			}
 			else
 			{
@@ -1113,7 +1168,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				text = text.substring(0, cursor) + content + text.substring(cursor, text.length());
 				// updateDisplayText();
 				cursor = minIndex + content.length();
-				checkCursorVisible();
+				checkCursorVisible(true);
 				clearSelection();
 			}
 
@@ -1128,7 +1183,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
 		// updateDisplayText();
 		cursor = minIndex;
-		checkCursorVisible();
+		checkCursorVisible(true);
 		clearSelection();
 	}
 
@@ -1147,7 +1202,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 					dt.displayText = dt.displayText.substring(0, cursor - 1) + dt.displayText.substring(cursor, dt.displayText.length());
 					updateDisplayText(dt, true);
 					cursor--;
-					checkCursorVisible();
+					checkCursorVisible(true);
 					GL_Listener.glListener.renderOnce("EditWrapedTextField");
 					return true;
 				}
@@ -1155,10 +1210,10 @@ public class EditWrapedTextField extends EditTextFieldBase
 				{
 					if (cursorLine > 0)
 					{
-						setCursorLine(cursorLine - 1);
+						setCursorLine(cursorLine - 1, true);
 						DisplayText dt2 = getAktDisplayText();
 						cursor = dt2.displayText.length();
-						checkCursorVisible();
+						checkCursorVisible(true);
 						dt2.displayText += dt.displayText;
 						displayText.remove(cursorLine + 1);
 						updateDisplayText(dt2, true);
@@ -1254,7 +1309,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 							+ dt.displayText.substring(cursor, dt.displayText.length());
 					updateDisplayText(dt, true);
 					cursor++;
-					checkCursorVisible();
+					checkCursorVisible(true);
 				}
 				else
 				{
@@ -1267,7 +1322,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 					text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
 					// updateDisplayText();
 					cursor++;
-					checkCursorVisible();
+					checkCursorVisible(true);
 					clearSelection();
 				}
 				GL_Listener.glListener.renderOnce("EditWrapedTextField");
@@ -1345,7 +1400,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 		updateDisplayTextList();
 		cursor = 0;
-		checkCursorVisible();
+		checkCursorVisible(true);
 		clearSelection();
 
 		textHeight = -font.getDescent() * 2;
@@ -1395,7 +1450,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		hasSelection = true;
 		this.selectionStart = selectionStart;
 		cursor = selectionEnd;
-		checkCursorVisible();
+		checkCursorVisible(true);
 	}
 
 	public void clearSelection()
@@ -1409,7 +1464,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		if (cursorPosition < 0) throw new IllegalArgumentException("cursorPosition must be >= 0");
 		clearSelection();
 		cursor = Math.min(cursorPosition, text.length());
-		checkCursorVisible();
+		checkCursorVisible(true);
 	}
 
 	public int getCursorPosition()
@@ -1439,10 +1494,10 @@ public class EditWrapedTextField extends EditTextFieldBase
 	{
 		if (selectionMarkerCenter == null)
 		{
-			selectionMarkerCenter = new SelectionMarker(0, 0, 22, 30, type);
+			selectionMarkerCenter = new SelectionMarker(this, 0, 0, 30, type);
 			parent.addChild(selectionMarkerCenter);
 		}
-		selectionMarkerCenter.setPos(getX() + getCursorX() - 11 + style.cursor.getMinWidth() / 2, getY() + getCursorY() - 30);
+		selectionMarkerCenter.moveTo(getX() + getCursorX() + style.cursor.getMinWidth() / 2, getY() + getCursorY());
 	}
 
 	protected void hideSelectionMarker()

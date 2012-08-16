@@ -59,6 +59,9 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	static boolean useNewInput = true;
 
 	private long mLongClickTime = 0;
+	private long mDoubleClickTime = 500;
+	private long lastClickTime = 0; // zur Erkennung von Doppenklicks
+	private Point lastClickPoint = null;
 
 	public static final int MAX_KINETIC_SCROLL_DISTANCE = 100;
 	public static final int FRAME_RATE_IDLE = 200;
@@ -664,10 +667,27 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			// glListener.onClick(akt.x, akt.y, pointer, 0);
 			if (first.view.isClickable())
 			{
-				boolean handled = first.view.click(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
-						- (int) first.view.ThisWorldRec.getY(), pointer, button);
-				if (handled) platformConector.vibrate();
-				// Logger.LogCat("GL_Listner => onTouchUpBase (Click) : " + first.view.getName());
+				// Testen, ob dies ein Doppelklick ist
+				if ((System.currentTimeMillis() < lastClickTime + mDoubleClickTime) && (lastClickPoint != null)
+						&& (distance(akt, lastClickPoint) < UiSizes.getClickToleranz()))
+				{
+					boolean handled = first.view.doubleClick(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
+							- (int) first.view.ThisWorldRec.getY(), pointer, button);
+					if (handled) platformConector.vibrate();
+
+					lastClickTime = 0;
+					lastClickPoint = null;
+				}
+				else
+				{
+					// normaler Click
+					boolean handled = first.view.click(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
+							- (int) first.view.ThisWorldRec.getY(), pointer, button);
+					if (handled) platformConector.vibrate();
+					// Logger.LogCat("GL_Listner => onTouchUpBase (Click) : " + first.view.getName());
+					lastClickTime = System.currentTimeMillis();
+					lastClickPoint = akt;
+				}
 			}
 		}
 

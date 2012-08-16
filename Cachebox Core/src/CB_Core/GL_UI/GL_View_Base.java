@@ -543,6 +543,35 @@ public abstract class GL_View_Base extends CB_RectF
 		return behandelt;
 	}
 
+	public boolean doubleClick(int x, int y, int pointer, int button)
+	{
+		// Achtung: dieser touchDown ist nicht virtual und darf nicht �berschrieben werden!!!
+		// das Ereignis wird dann in der richtigen View an onTouchDown �bergeben!!!
+		boolean behandelt = false;
+		// alle Childs abfragen
+		// synchronized (childs)
+		// {
+		// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+		for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
+		{
+			// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
+			GL_View_Base view = iterator.next();
+
+			if (view == null || !view.isClickable()) continue;
+			// Invisible Views can not be clicked!
+			if (!view.isVisible()) continue;
+
+			if (view.contains(x, y))
+			{
+				// touch innerhalb des Views
+				// -> Klick an das View weitergeben
+				behandelt = view.doubleClick(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
+			}
+		}
+		// }
+		return behandelt;
+	}
+
 	public boolean longClick(int x, int y, int pointer, int button)
 	{
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht �berschrieben werden!!!
