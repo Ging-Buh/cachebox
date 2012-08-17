@@ -216,7 +216,7 @@ public class FieldNotesView extends V_ListView
 		cm.addItem(MI_NOT_FOUND, "DNF", SpriteCache.getThemedSprite("log1icon"));
 		cm.addItem(MI_MAINTANCE, "maintenance", SpriteCache.getThemedSprite("log5icon"));
 		cm.addItem(MI_NOTE, "writenote", SpriteCache.getThemedSprite("log2icon"));
-		cm.addItem(MI_MANAGE, "ManageNotes", SpriteCache.getThemedSprite(""));
+		cm.addItem(MI_MANAGE, "ManageNotes");
 
 		cm.show();
 

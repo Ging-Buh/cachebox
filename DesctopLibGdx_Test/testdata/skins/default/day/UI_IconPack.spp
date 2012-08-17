@@ -2166,6 +2166,13 @@ ambilwarna-target
   orig: 20, 20
   offset: 0, 0
   index: -1
+draw-line
+  rotate: false
+  xy: 1007, 69
+  size: 3, 20
+  orig: 3, 20
+  offset: 0, 0
+  index: -1
 dialog-title
   rotate: false
   xy: 952, 1022
@@ -2231,126 +2238,126 @@ log15icon
   index: -1
 small6yes
   rotate: false
-  xy: 1007, 69
+  xy: 1007, 91
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small5solved-no
   rotate: false
-  xy: 1007, 86
+  xy: 1007, 108
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small5no
   rotate: false
-  xy: 1007, 103
+  xy: 1007, 125
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small1yes
   rotate: false
-  xy: 1007, 120
+  xy: 1007, 142
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small2no
   rotate: false
-  xy: 1007, 137
+  xy: 1007, 159
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small3yes
   rotate: false
-  xy: 1007, 154
+  xy: 1007, 176
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small7no
   rotate: false
-  xy: 1007, 171
+  xy: 1007, 677
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small5yes
   rotate: false
-  xy: 1007, 677
+  xy: 1007, 694
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small4no
   rotate: false
-  xy: 1007, 694
+  xy: 1007, 711
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small7yes
   rotate: false
-  xy: 1007, 711
+  xy: 1007, 728
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small1no
   rotate: false
-  xy: 1007, 728
+  xy: 1007, 745
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small5solved
   rotate: false
-  xy: 1007, 745
+  xy: 1007, 762
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 big13icon
   rotate: false
-  xy: 1007, 762
+  xy: 1002, 854
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 13
   rotate: false
-  xy: 1007, 762
+  xy: 1002, 854
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small6no
   rotate: false
-  xy: 1002, 854
+  xy: 1006, 889
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small2yes
   rotate: false
-  xy: 1006, 889
+  xy: 1006, 906
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small3no
   rotate: false
-  xy: 1006, 906
+  xy: 1006, 923
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small4yes
   rotate: false
-  xy: 1006, 923
+  xy: 1007, 1022
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -2413,7 +2420,7 @@ ambilwarna-cursor
   index: -1
 track-point
   rotate: false
-  xy: 1007, 1022
+  xy: 1008, 1097
   size: 12, 12
   orig: 12, 12
   offset: 0, 0
@@ -2511,7 +2518,7 @@ stars1-5small
   index: -1
 background
   rotate: false
-  xy: 1004, 373
+  xy: 1012, 69
   size: 10, 10
   orig: 10, 10
   offset: 0, 0
@@ -2525,8 +2532,15 @@ track-line
   index: -1
 selection-input-icon
   rotate: false
-  xy: 847, 336
+  xy: 1012, 81
   size: 5, 8
   orig: 5, 8
+  offset: 0, 0
+  index: -1
+draw-point
+  rotate: false
+  xy: 1019, 81
+  size: 3, 3
+  orig: 3, 3
   offset: 0, 0
   index: -1

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
+import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -206,6 +207,11 @@ public class SpriteCache
 
 	public static Sprite getThemedSprite(String name)
 	{
+		return getThemedSprite(name, 1.0f);
+	}
+
+	public static Sprite getThemedSprite(String name, float scale)
+	{
 		Sprite tmp = null;
 		if (Config.settings.nightMode.getValue())
 		{
@@ -252,6 +258,8 @@ public class SpriteCache
 		{
 			atlasCostumIsNeverUsed = false;
 		}
+
+		if (tmp != null) tmp.setScale(scale);
 
 		return tmp;
 	}
@@ -382,20 +390,25 @@ public class SpriteCache
 		if (Arrows == null) Arrows = new ArrayList<Sprite>();
 		synchronized (Arrows)
 		{
+
+			float scale = UiSizes.getScale();
+
 			Arrows.clear();
 			Arrows.add(getThemedSprite("arrow-Compass"));
 			Arrows.add(getThemedSprite("arrow-Compass-Trans"));
 			Arrows.add(getThemedSprite("arrow-GPS"));
 			Arrows.add(getThemedSprite("arrow-GPS-Trans"));
-			Arrows.add(getThemedSprite("target-arrow"));
-			Arrows.add(getThemedSprite("track-line"));
+			Arrows.add(getThemedSprite("target-arrow", scale));
+			Arrows.add(getThemedSprite("track-line", scale));
 			Arrows.add(getThemedSprite("arrow-down"));
 			Arrows.add(getThemedSprite("arrow-up"));
 			Arrows.add(getThemedSprite("arrow-left"));
 			Arrows.add(getThemedSprite("arrow-right"));
-			Arrows.add(getThemedSprite("track-point"));
+			Arrows.add(getThemedSprite("track-point", scale));
 			Arrows.add(getThemedSprite("ambilwarna-arrow-right"));
 			Arrows.add(getThemedSprite("ambilwarna-arrow-down"));
+			Arrows.add(getThemedSprite("draw-line", scale));
+			Arrows.add(getThemedSprite("draw-point", scale));
 
 		}
 

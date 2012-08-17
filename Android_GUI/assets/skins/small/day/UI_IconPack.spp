@@ -1018,6 +1018,13 @@ zoom-back
   orig: 40, 20
   offset: 0, 0
   index: -1
+draw-line
+  rotate: false
+  xy: 172, 296
+  size: 3, 20
+  orig: 3, 20
+  offset: 0, 0
+  index: -1
 day-spinner
   rotate: false
   xy: 47, 490
@@ -2539,8 +2546,15 @@ background
   index: -1
 track-line
   rotate: false
-  xy: 172, 296
+  xy: 348, 490
   size: 3, 5
   orig: 3, 5
+  offset: 0, 0
+  index: -1
+draw-point
+  rotate: false
+  xy: 160, 337
+  size: 3, 3
+  orig: 3, 3
   offset: 0, 0
   index: -1

@@ -22,6 +22,7 @@ import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.PolylineReduction;
+import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.graphics.Color;
@@ -435,6 +436,8 @@ public class RouteOverlay
 				Sprite PointSprite = SpriteCache.Arrows.get(10);
 				PointSprite.setColor(rt.mColor);
 
+				float scale = UiSizes.getScale();
+
 				for (int ii = 0; ii < rt.Points.size() - 1; ii++)
 				{
 
@@ -456,14 +459,15 @@ public class RouteOverlay
 					// chk if line on Screen
 					if (chkRec.contains(screen1.x, screen1.y) || chkRec.contains(screen2.x, screen2.y))
 					{
-						DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, 0.8f, screen1.x, screen1.y, screen2.x, screen2.y);
+						DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, 0.9f * scale, screen1.x, screen1.y, screen2.x, screen2.y);
 						DrawedLineCount++;
 					}
 					else
 					{// chk if intersection
 						if (chkRec.getIntersection(screen1, screen2, 2) != null)
 						{
-							DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, 0.8f, screen1.x, screen1.y, screen2.x, screen2.y);
+							DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, 0.9f * scale, screen1.x, screen1.y, screen2.x,
+									screen2.y);
 							DrawedLineCount++;
 						}
 

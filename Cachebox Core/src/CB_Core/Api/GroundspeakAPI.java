@@ -123,7 +123,6 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				Logger.Error("UploadFieldNotesAPI", "JSON-Error", e);
 				LastAPIError = e.getMessage();
@@ -192,7 +191,6 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -258,7 +256,6 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -350,7 +347,6 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -414,7 +410,6 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				System.out.println(e.getMessage());
 				LastAPIError = "API Error: " + e.getMessage();
@@ -615,7 +610,6 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -678,7 +672,6 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 

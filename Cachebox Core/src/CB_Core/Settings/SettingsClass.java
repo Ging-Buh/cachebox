@@ -200,7 +200,7 @@ public class SettingsClass extends SettingsList
 
 		addSetting(dynamicZoom = new SettingBool("dynamicZoom", cat, NORMAL, true, true));
 		addSetting(dynamicZoomLevelMax = new SettingInt("dynamicZoomLevelMax", cat, NORMAL, 16, true));
-		addSetting(dynamicZoomLevelMin = new SettingInt("dynamicZoomLevelMin", cat, NORMAL, 10, true));
+		addSetting(dynamicZoomLevelMin = new SettingInt("dynamicZoomLevelMin", cat, NORMAL, 14, true));
 
 	}
 

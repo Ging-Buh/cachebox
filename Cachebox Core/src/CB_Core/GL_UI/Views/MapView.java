@@ -19,6 +19,7 @@ import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.invalidateTextureEvent;
 import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.GL_UI.CB_View_Base;
+import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -410,7 +411,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		CB_Core.Events.PositionChangedEventList.Add(this);
 		PositionChanged(GlobalCore.Locator);
 
-		alignToCompassCarMode = !Config.settings.CompassNorthOriented.getValue();
+		alignToCompass = !Config.settings.MapNorthOriented.getValue();
+
+		alignToCompassCarMode = (togBtn.getState() == 4);
 		if (!alignToCompassCarMode)
 		{
 			drawingWidth = mapIntWidth;
@@ -1016,6 +1019,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	}
 
+	private Sprite LineSprite, PointSprite;
+	private float scale;
+
 	private void renderWPI(SpriteBatch batch, SizeF WpUnderlay, SizeF WpSize, WaypointRenderInfo wpi)
 	{
 		Vector2 screen = worldToScreen(new Vector2(wpi.MapX, wpi.MapY));
@@ -1025,24 +1031,37 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if (myPointOnScreen != null && showDirektLine && (wpi.Selected) && (wpi.Waypoint == GlobalCore.SelectedWaypoint()))
 		{
 
-			if (directLineOverlay == null)
+			// if (directLineOverlay == null)
+			// {
+			// int w = getNextHighestPO2((int) mapIntWidth);
+			// int h = getNextHighestPO2((int) mapIntHeight);
+			// Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+			// p.setColor(1f, 0f, 0f, 1f);
+			// p.drawLine((int) myPointOnScreen.x, (int) myPointOnScreen.y, (int) screen.x, (int) screen.y);
+			//
+			// directLineTexture = new Texture(p, Pixmap.Format.RGBA8888, false);
+			//
+			// directLineOverlay = new Sprite(directLineTexture, (int) mapIntWidth, (int) mapIntHeight);
+			// directLineOverlay.setPosition(0, 0);
+			// directLineOverlay.flip(false, true);
+			// p.dispose();
+			//
+			// }
+			//
+			// directLineOverlay.draw(batch);
+
+			if (LineSprite == null || PointSprite == null)
 			{
-				int w = getNextHighestPO2((int) mapIntWidth);
-				int h = getNextHighestPO2((int) mapIntHeight);
-				Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-				p.setColor(1f, 0f, 0f, 1f);
-				p.drawLine((int) myPointOnScreen.x, (int) myPointOnScreen.y, (int) screen.x, (int) screen.y);
-
-				directLineTexture = new Texture(p, Pixmap.Format.RGBA8888, false);
-
-				directLineOverlay = new Sprite(directLineTexture, (int) mapIntWidth, (int) mapIntHeight);
-				directLineOverlay.setPosition(0, 0);
-				directLineOverlay.flip(false, true);
-				p.dispose();
-
+				LineSprite = SpriteCache.Arrows.get(13);
+				PointSprite = SpriteCache.Arrows.get(14);
+				scale = 0.8f * UiSizes.getScale();
 			}
 
-			directLineOverlay.draw(batch);
+			LineSprite.setColor(Color.RED);
+			PointSprite.setColor(Color.RED);
+
+			DrawUtils.drawSpriteLine(batch, LineSprite, PointSprite, scale, myPointOnScreen.x, myPointOnScreen.y, screen.x, screen.y);
+
 		}
 
 		float NameYMovement = 0;
@@ -1466,13 +1485,17 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 	}
 
-	private long getMapTilePosFactor(int zoom)
+	private long getMapTilePosFactor(float zoom)
 	{
 		long result = 1;
-		for (int z = zoom; z < MAX_MAP_ZOOM; z++)
-		{
-			result *= 2;
-		}
+
+		// for (int z = zoom; z < MAX_MAP_ZOOM; z++)
+		// {
+		// result *= 2;
+		// }
+
+		result = (long) Math.pow(2.0, MAX_MAP_ZOOM - zoom);
+
 		return result;
 	}
 
@@ -1568,18 +1591,22 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 			double percent = this.locator.SpeedOverGround() / maxSpeed;
 
-			int dynZoom = (int) (maxZoom - ((maxZoom - minZoom) * percent));
+			float dynZoom = (float) (maxZoom - ((maxZoom - minZoom) * percent));
 			if (dynZoom > maxZoom) dynZoom = maxZoom;
 			if (dynZoom < minZoom) dynZoom = minZoom;
 
 			if (lastDynamicZoom != dynZoom)
 			{
 				lastDynamicZoom = dynZoom;
-				zoomBtn.setZoom(lastDynamicZoom);
+				zoomBtn.setZoom((int) lastDynamicZoom);
 				inputState = InputState.Idle;
 
-				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(),
+				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(),
 						System.currentTimeMillis() + 1000);
+
+				// kineticZoom = new KineticZoom(camera.zoom, lastDynamicZoom, System.currentTimeMillis(), System.currentTimeMillis() +
+				// 1000);
+
 				GL_Listener.glListener.addRenderView(that, frameRateAction);
 				GL_Listener.glListener.renderOnce(that.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
@@ -1593,7 +1620,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	}
 
-	private int lastDynamicZoom;
+	private float lastDynamicZoom;
 
 	@Override
 	public void OrientationChanged(float heading)
@@ -1666,7 +1693,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			drawingHeight = mapIntHeight;
 		}
 
-		Config.settings.CompassNorthOriented.setValue(!alignToCompass);
+		Config.settings.MapNorthOriented.setValue(!alignToCompass);
 		Config.AcceptChanges();
 
 	}
