@@ -108,7 +108,7 @@ public class SelectionMarker extends CB_View_Base
 			// neue gewünschte Koordinaten am Einfügepunkt des Markers
 			newX = newX + markerXPos;
 			newY = newY + height;
-			Point cursorPos = textField.GetNextCursorPos(new Point((int) newX, (int) newY), true);
+			Point cursorPos = textField.GetNextCursorPos(new Point((int) newX, (int) newY), type, true);
 			if (cursorPos != null)
 			{
 				// SelectionMarker verschieben
@@ -132,7 +132,7 @@ public class SelectionMarker extends CB_View_Base
 			// neue gewünschte Koordinaten am Einfügepunkt des Markers
 			newX = newX + markerXPos;
 			newY = newY + height;
-			Point cursorPos = textField.GetNextCursorPos(new Point((int) newX, (int) newY), true);
+			Point cursorPos = textField.GetNextCursorPos(new Point((int) newX, (int) newY), type, true);
 			touchDownPos = null;
 		}
 		return true;
