@@ -105,6 +105,9 @@ public abstract class Dialog extends CB_View_Base
 		}
 
 		mContent = new Box(this.ScaleCenter(0.95f), "Dialog Content Box");
+
+		// debug mContent.setBackground(new ColorDrawable(Color.RED));
+
 		mContent.setHeight(this.height - mHeaderHight - mFooterHeight - mTitleHeight - margin);
 		float centerversatzX = this.halfWidth - mContent.getHalfWidth();
 		float centerversatzY = mFooterHeight;// this.halfHeight - mContent.getHalfHeight();
@@ -160,6 +163,44 @@ public abstract class Dialog extends CB_View_Base
 	public static float calcFooterHeight(boolean hasButtons)
 	{
 		return hasButtons ? UiSizes.getButtonHeight() * 1.2f : calcHeaderHeight();
+	}
+
+	public void setWidth(float Width)
+	{
+		super.setWidth(Width);
+		this.Initial();
+	}
+
+	public void setHeight(float Height)
+	{
+		super.setHeight(Height);
+		this.Initial();
+	}
+
+	public boolean setSize(SizeF Size)
+	{
+		return setSize(Size.width, Size.height);
+	}
+
+	/**
+	 * Setzt die Werte für Height und Width. Wenn sich einer der Werte geändert hat, wird ein True zurück gegeben, ansonsten False.
+	 * 
+	 * @param Width
+	 * @param Height
+	 * @return
+	 */
+	public boolean setSize(float Width, float Height)
+	{
+		boolean ret = super.setSize(Width, Height);
+		this.Initial();
+		return ret;
+	}
+
+	public boolean setSize(CB_RectF rec)
+	{
+		boolean ret = super.setSize(rec);
+		this.Initial();
+		return ret;
 	}
 
 }

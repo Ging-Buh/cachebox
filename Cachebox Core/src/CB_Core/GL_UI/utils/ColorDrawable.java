@@ -30,7 +30,14 @@ public class ColorDrawable extends EmptyDrawable
 
 		p.fillRectangle(0, 0, w, h);
 
-		tex = new Texture(p);
+		try
+		{
+			tex = new Texture(p);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		p.dispose();
 	}

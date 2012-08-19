@@ -17,6 +17,7 @@ public class Spinner extends Button
 	private String[] mItems;
 	private int mSelectedIndex = -1;
 	private Spinner that;
+	private String prompt;
 
 	public interface selectionChangedListner
 	{
@@ -79,6 +80,11 @@ public class Spinner extends Button
 					icm.addItem(index++, tmp, true);
 				}
 
+				if (prompt != null && !prompt.equalsIgnoreCase(""))
+				{
+					icm.setPrompt(prompt);
+				}
+
 				icm.show();
 				return true;
 			}
@@ -117,6 +123,11 @@ public class Spinner extends Button
 	public String getSelectedItem()
 	{
 		return this.getText();
+	}
+
+	public void setPrompt(String Prompt)
+	{
+		prompt = Prompt;
 	}
 
 }

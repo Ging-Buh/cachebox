@@ -25,6 +25,7 @@ public class Menu extends Dialog
 	private ArrayList<MenuItem> mItems = new ArrayList<MenuItem>();
 	private V_ListView mListView;
 	private Menu that;
+	private MenuItem prompt;
 
 	private OnClickListener MenuItemClickListner = new OnClickListener()
 	{
@@ -149,6 +150,17 @@ public class Menu extends Dialog
 
 		if (withoutTranslation) trans = StringId;
 
+		layout();
+		MenuItem item = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), ID, "Menu Item@" + ID);
+
+		item.setTitle(trans);
+		addItem(item);
+		mListView.notifyDataSetChanged();
+		return item;
+	}
+
+	private void layout()
+	{
 		float higherValue = this.height + ItemHeight + mListView.getDividerHeight();
 
 		if (higherValue < UiSizes.getWindowHeight() * 0.8f)
@@ -158,17 +170,11 @@ public class Menu extends Dialog
 			this.resetInitial();
 		}
 
-		// mListView.setWidth(this.width - Left - Reight);
-		// mListView.setHeight(this.height - mFooterHeight - mHeaderHight - Top - Bottom - margin);
+		float promptH = (prompt == null) ? 0 : prompt.getHeight() + margin;
 
 		mListView.setSize(this.getContentSize());
-		mListView.setHeight(mListView.getHeight());
-		MenuItem item = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), ID, "Menu Item@" + ID);
-
-		item.setTitle(trans);
-		addItem(item);
-		mListView.notifyDataSetChanged();
-		return item;
+		mListView.setHeight(mListView.getHeight() - promptH);
+		mListView.setZeroPos();
 	}
 
 	public void show()
@@ -213,8 +219,21 @@ public class Menu extends Dialog
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
 
 	}
 
+	public void setPrompt(String Prompt)
+	{
+
+		prompt = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), -1, "Menu Item@" + -1);
+		prompt.setTitle(Prompt);
+
+		prompt.setY(this.height - prompt.getHeight());
+
+		this.addChild(prompt);
+
+		layout();
+
+		mListView.notifyDataSetChanged();
+	}
 }

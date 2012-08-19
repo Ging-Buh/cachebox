@@ -28,30 +28,39 @@ public class StringInputBox extends GL_MsgBox
 		StringInputBox msgBox = new StringInputBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);
 
-		if (type != TextFieldType.SingleLine)
-		{
-			msgBoxSize.height += (int) msgBox.getContentSize().height * 2;
-			msgBox.setSize(msgBoxSize.asFloat());
-		}
-
 		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 
 		editText = new EditWrapedTextField(msgBox, textFieldRec, type, "MsgBoxLabel");
 		editText.setZeroPos();
+
 		editText.setText(initialString);
 
+		float topBottom = editText.getStyle().background.getTopHeight() + editText.getStyle().background.getBottomHeight();
+
+		float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 2);
+
+		if (type == TextFieldType.SingleLine)
+		{
+			editText.setHeight(topBottom + SingleLineHeight);
+		}
+		else
+		{
+			editText.setHeight(topBottom + (SingleLineHeight * 5));
+		}
+		msgBox.setHeight(msgBox.getHeight() + editText.getHeight());
+		msgBox.Initial();
+
 		CB_RectF LabelRec = msgBox.getContentSize().getBounds();
-		LabelRec.setHeight(LabelRec.getHeight() - textFieldRec.getHeight());
+		LabelRec.setHeight(LabelRec.getHeight() - editText.getHeight());
 
 		Label label = new Label(LabelRec, "MsgBoxLabel");
 		label.setZeroPos();
-		label.setY(editText.getMaxY() + margin);
+		label.setY(editText.getMaxY());
 		label.setWrappedText(msg);
-		msgBox.addChild(label);
-
-		msgBox.setHeight(msgBox.getHeight() + editText.getHeight());
 
 		msgBox.addChild(editText);
+		msgBox.addChild(label);
+
 		setButtonCaptions(msgBox, MessageBoxButtons.OKCancel);
 
 		GL_Listener.glListener.showDialog(msgBox, true);

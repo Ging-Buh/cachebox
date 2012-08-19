@@ -11,8 +11,6 @@ import CB_Core.Math.CB_RectF;
 public class V_ListView extends ListViewBase
 {
 
-	private int mVisibleItemCount = 0;
-
 	public V_ListView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
@@ -201,7 +199,6 @@ public class V_ListView extends ListViewBase
 
 		mPosDefault = new ArrayList<Float>();
 
-		mVisibleItemCount = 0;
 		minimumItemSize = this.height;
 
 		float countPos = this.height - mDividerSize;
@@ -219,7 +216,6 @@ public class V_ListView extends ListViewBase
 					countPos -= itemHeight + mDividerSize;
 					if (itemHeight < minimumItemSize) minimumItemSize = itemHeight;
 					mAllSize += itemHeight + mDividerSize;
-					mVisibleItemCount++;
 				}
 
 				mPosDefault.add(countPos);
@@ -233,7 +229,6 @@ public class V_ListView extends ListViewBase
 				float itemHeight = mBaseAdapter.getItemSize(i);
 				countPos -= itemHeight + mDividerSize;
 				if (itemHeight < minimumItemSize) minimumItemSize = itemHeight;
-				mVisibleItemCount++;
 				mAllSize += itemHeight + mDividerSize;
 				mPosDefault.add(countPos);
 
@@ -287,14 +282,6 @@ public class V_ListView extends ListViewBase
 		mLastPos_onTouch = mPos;
 		return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelöst wird.
 	}
-
-	// @Override
-	// protected void startAnimationtoTop()
-	// {
-	// if (mBaseAdapter == null) return;
-	// mBottomAnimation = false;
-	// scrollTo(mBaseAdapter.getItemSize(0));
-	// }
 
 	@Override
 	protected void Initial()

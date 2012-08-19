@@ -202,6 +202,16 @@ public class ScrollBox extends CB_View_Base
 		lv.setDragable();
 	}
 
+	public float getScrollY()
+	{
+		return lv.getScrollPos();
+	}
+
+	public void scrollTo(float scrollPos)
+	{
+		lv.scrollTo(scrollPos);
+	}
+
 	// ############### touch overrides #################
 
 }

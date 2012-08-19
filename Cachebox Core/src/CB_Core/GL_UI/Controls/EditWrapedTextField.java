@@ -1759,4 +1759,9 @@ public class EditWrapedTextField extends EditTextFieldBase
 		}
 	}
 
+	public BitmapFont getFont()
+	{
+		return style.font;
+	}
+
 }

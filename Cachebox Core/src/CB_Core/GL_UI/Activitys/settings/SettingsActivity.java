@@ -20,6 +20,9 @@ import CB_Core.GL_UI.Controls.Spinner;
 import CB_Core.GL_UI.Controls.Spinner.selectionChangedListner;
 import CB_Core.GL_UI.Controls.chkBox;
 import CB_Core.GL_UI.Controls.chkBox.OnCheckedChangeListener;
+import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox;
+import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
+import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListnerDouble;
 import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
@@ -103,7 +106,9 @@ public class SettingsActivity extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				// TODO Save settings
+				Config.settings.SaveToLastValue();
+				Config.AcceptChanges();
+
 				finish();
 				return true;
 			}
@@ -115,6 +120,8 @@ public class SettingsActivity extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
+				Config.settings.LoadFromLastValue();
+
 				finish();
 				return true;
 			}
@@ -407,25 +414,25 @@ public class SettingsActivity extends ActivityBase
 
 				type = (SB instanceof SettingLongString) ? TextFieldType.MultiLineWraped : TextFieldType.SingleLine;
 
-				StringInputBox.Show(type, "default: " + SB.getDefaultValue(), SB.getName(), SB.getValue(), new OnMsgBoxClickListener()
-				{
-
-					@Override
-					public boolean onClick(int which)
-					{
-						String text = StringInputBox.editText.getText().toString();
-						if (which == GL_MsgBox.BUTTON_POSITIVE)
+				StringInputBox.Show(type, "default:" + GlobalCore.br + SB.getDefaultValue(), SB.getName(), SB.getValue(),
+						new OnMsgBoxClickListener()
 						{
-							SettingString value = (SettingString) Config.settings.get(EditKey);
-							if (value != null) value.setValue(text);
-							// SettingsScrollView.Me.ListInvalidate();
 
-						}
-						// Activity wieder anzeigen
-						that.show();
-						return true;
-					}
-				});
+							@Override
+							public boolean onClick(int which)
+							{
+								String text = StringInputBox.editText.getText().toString();
+								if (which == GL_MsgBox.BUTTON_POSITIVE)
+								{
+									SettingString value = (SettingString) Config.settings.get(EditKey);
+									if (value != null) value.setValue(text);
+									resortList();
+								}
+								// Activity wieder anzeigen
+								that.show();
+								return true;
+							}
+						});
 
 				return true;
 			}
@@ -597,160 +604,122 @@ public class SettingsActivity extends ActivityBase
 
 	private CB_View_Base getIntView(final SettingInt SB, int backgroundChanger)
 	{
-		// LayoutInflater inflater = getLayoutInflater();
-		// View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
-		//
-		// LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
-		// if (BackgroundChanger)
-		// {
-		// LL.setBackgroundResource(R.drawable.settings_list_background);
-		// }
-		// else
-		// {
-		// LL.setBackgroundResource(R.drawable.settings_list_background2);
-		// }
-		//
-		// TextView label = (TextView) row.findViewById(R.id.textView1);
-		// label.setText(GlobalCore.Translations.Get(SB.getName()));
-		// label.setTextSize(UiSizes.getScaledFontSize_big());
-		// label.setTextColor(Global.getColor(R.attr.TextColor));
-		//
-		// TextView label2 = (TextView) row.findViewById(R.id.textView2);
-		//
-		// label2.setText(String.valueOf(SB.getValue()));
-		// label2.setTextSize((float) UiSizes.getScaledFontSize());
-		// label2.setTextColor(Global.getColor(R.attr.TextColor));
-		//
-		// row.setOnClickListener(new OnClickListener()
-		// {
-		//
-		// @Override
-		// public void onClick(View arg0)
-		// {
-		// selectedItem = SB;
-		// SettingsScrollView.EditKey = SB.getName();
-		// // Show NumPad Int Edit
-		// NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()), SB.getValue(),
-		// new returnValueListner()
-		// {
-		// @Override
-		// public void returnValue(int value)
-		// {
-		// SettingInt SetValue = (SettingInt) Config.settings.get(SettingsScrollView.EditKey);
-		// if (SetValue != null) SetValue.setValue(value);
-		// SettingsScrollView.Me.ListInvalidate();
-		// // Activity wieder anzeigen
-		// main.mainActivity.startActivity(aktIntent);
-		// }
-		//
-		// @Override
-		// public void cancelClicked()
-		// {
-		// // Activity wieder anzeigen
-		// main.mainActivity.startActivity(aktIntent);
-		// }
-		//
-		// });
-		// // Activity ausblenden, damit OpenGL-InputBox sichtbar wird
-		// finish();
-		// }
-		// });
-		//
-		// row.setOnLongClickListener(new OnLongClickListener()
-		// {
-		//
-		// @Override
-		// public boolean onLongClick(View arg0)
-		// {
-		// // zeige Beschreibung der Einstellung
-		//
-		// MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
-		//
-		// return false;
-		// }
-		// });
 
-		return null;
+		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
 
+		item.setName(GlobalCore.Translations.Get(SB.getName()));
+		item.setDefault(String.valueOf(SB.getValue()));
+
+		item.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				EditKey = SB.getName();
+
+				// Show NumPad Int Edit
+				NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()), SB.getValue(),
+						new returnValueListner()
+						{
+							@Override
+							public void returnValue(int value)
+							{
+								SettingInt SetValue = (SettingInt) Config.settings.get(EditKey);
+								if (SetValue != null) SetValue.setValue(value);
+								resortList();
+								// Activity wieder anzeigen
+								that.show();
+							}
+
+							@Override
+							public void cancelClicked()
+							{
+								// Activity wieder anzeigen
+								that.show();
+							}
+
+						});
+				return true;
+			}
+
+		});
+
+		item.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// zeige Beschreibung der Einstellung
+
+				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()));
+
+				return false;
+			}
+
+		});
+
+		return item;
 	}
 
 	private CB_View_Base getDblView(final SettingDouble SB, int backgroundChanger)
 	{
-		// LayoutInflater inflater = getLayoutInflater();
-		// View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
-		//
-		// LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
-		// if (BackgroundChanger)
-		// {
-		// LL.setBackgroundResource(R.drawable.settings_list_background);
-		// }
-		// else
-		// {
-		// LL.setBackgroundResource(R.drawable.settings_list_background2);
-		// }
-		//
-		// TextView label = (TextView) row.findViewById(R.id.textView1);
-		// label.setText(GlobalCore.Translations.Get(SB.getName()));
-		// label.setTextSize(UiSizes.getScaledFontSize_big());
-		// label.setTextColor(Global.getColor(R.attr.TextColor));
-		//
-		// TextView label2 = (TextView) row.findViewById(R.id.textView2);
-		//
-		// label2.setText(String.valueOf(SB.getValue()));
-		// label2.setTextSize((float) UiSizes.getScaledFontSize());
-		// label2.setTextColor(Global.getColor(R.attr.TextColor));
-		//
-		// row.setOnClickListener(new OnClickListener()
-		// {
-		//
-		// @Override
-		// public void onClick(View arg0)
-		// {
-		// selectedItem = SB;
-		// SettingsScrollView.EditKey = SB.getName();
-		// // Show NumPad Int Edit
-		// NumerikInputBox input = NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()),
-		// SB.getValue(), new returnValueListnerDouble()
-		// {
-		// @Override
-		// public void returnValue(double value)
-		// {
-		// SettingDouble setValue = (SettingDouble) Config.settings.get(SettingsScrollView.EditKey);
-		// if (setValue != null) setValue.setValue(value);
-		// SettingsScrollView.Me.ListInvalidate();
-		// // Activity wieder anzeigen
-		// main.mainActivity.startActivity(aktIntent);
-		// }
-		//
-		// @Override
-		// public void cancelClicked()
-		// {
-		// // Activity wieder anzeigen
-		// main.mainActivity.startActivity(aktIntent);
-		// }
-		//
-		// });
-		//
-		// // Activity ausblenden, damit OpenGL-InputBox sichtbar wird
-		// finish();
-		// }
-		// });
-		//
-		// row.setOnLongClickListener(new OnLongClickListener()
-		// {
-		//
-		// @Override
-		// public boolean onLongClick(View arg0)
-		// {
-		// // zeige Beschreibung der Einstellung
-		//
-		// MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
-		//
-		// return false;
-		// }
-		// });
+		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
 
-		return null;
+		item.setName(GlobalCore.Translations.Get(SB.getName()));
+		item.setDefault(String.valueOf(SB.getValue()));
+
+		item.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				EditKey = SB.getName();
+
+				// Show NumPad Int Edit
+				NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()), SB.getValue(),
+						new returnValueListnerDouble()
+						{
+							@Override
+							public void returnValue(double value)
+							{
+								SettingDouble SetValue = (SettingDouble) Config.settings.get(EditKey);
+								if (SetValue != null) SetValue.setValue(value);
+								resortList();
+								// Activity wieder anzeigen
+								that.show();
+							}
+
+							@Override
+							public void cancelClicked()
+							{
+								// Activity wieder anzeigen
+								that.show();
+							}
+						});
+				return true;
+			}
+
+		});
+
+		item.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// zeige Beschreibung der Einstellung
+
+				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()));
+
+				return false;
+			}
+
+		});
+
+		return item;
 
 	}
 
@@ -1133,8 +1102,10 @@ public class SettingsActivity extends ActivityBase
 			}
 		});
 
+		spinner.setSelection(selection);
+
 		// TODO Prompt in Spinner einbauen
-		// spinner.setPrompt(GlobalCore.Translations.Get("SelectLanguage"));
+		spinner.setPrompt(GlobalCore.Translations.Get("SelectLanguage"));
 
 		spinner.setDrageble();
 
@@ -1258,6 +1229,16 @@ public class SettingsActivity extends ActivityBase
 
 		return item;
 
+	}
+
+	private void resortList()
+	{
+		float scrollPos = scrollBox.getScrollY();
+		scrollBox = null;
+		LinearLayout = null;
+
+		fillContent();
+		scrollBox.scrollTo(scrollPos);
 	}
 
 }

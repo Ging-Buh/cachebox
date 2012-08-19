@@ -375,7 +375,7 @@ public abstract class ListViewBase extends CB_View_Base
 		if (i >= 0 && i < mPosDefault.size()) setListPos(mPosDefault.get(i), false);
 	}
 
-	protected void scrollTo(float Pos)
+	public void scrollTo(float Pos)
 	{
 
 		// Logger.LogCat("Scroll TO:" + Pos);
@@ -531,5 +531,10 @@ public abstract class ListViewBase extends CB_View_Base
 	}
 
 	public abstract void notifyDataSetChanged();
+
+	public float getScrollPos()
+	{
+		return mPos;
+	}
 
 }
