@@ -368,7 +368,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				}
 			}
 
-			if (focused)
+			if (focused && (selection == null))
 			{
 				if (blinkTimer == null) blinkStart();
 			}
@@ -861,7 +861,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		case Center:
 			if (selectionMarkerCenter == null)
 			{
-				selectionMarkerCenter = new SelectionMarker(this, 0, 0, 30, type);
+				selectionMarkerCenter = new SelectionMarker(this, 0, 0, (int) (lineHeight * 1.5), type);
 				parent.addChild(selectionMarkerCenter);
 			}
 			selectionMarkerCenter.moveTo(getX() + getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getY()
@@ -870,7 +870,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		case Left:
 			if (selectionMarkerLeft == null)
 			{
-				selectionMarkerLeft = new SelectionMarker(this, 0, 0, 30, type);
+				selectionMarkerLeft = new SelectionMarker(this, 0, 0, (int) (lineHeight * 1.5), type);
 				parent.addChild(selectionMarkerLeft);
 			}
 			selectionMarkerLeft
@@ -879,7 +879,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		case Right:
 			if (selectionMarkerRight == null)
 			{
-				selectionMarkerRight = new SelectionMarker(this, 0, 0, 30, type);
+				selectionMarkerRight = new SelectionMarker(this, 0, 0, (int) (lineHeight * 1.5), type);
 				parent.addChild(selectionMarkerRight);
 			}
 			selectionMarkerRight.moveTo(getX() + getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getY()
@@ -1360,6 +1360,36 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	private void delete()
 	{
+		if (selection == null) return;
+		// markierte Zeichen löschen
+		String text = "";
+		// Zeilenanfang bis Markierung Start
+		DisplayText dt = getDisplayText(selection.cursorStart.line);
+		if (dt == null) return;
+		if (selection.cursorStart.pos > 0)
+		{
+			text = dt.getDisplayText().substring(0, selection.cursorStart.pos);
+		}
+
+		// Markierung Ende bis Zeilenende
+		DisplayText dt2 = getDisplayText(selection.cursorEnd.line);
+		if (dt2 == null) return;
+		if (selection.cursorEnd.pos < dt2.getDisplayText().length())
+		{
+			text += dt2.getDisplayText().substring(selection.cursorEnd.pos, dt2.getDisplayText().length());
+		}
+		dt.displayText = text;
+		updateDisplayText(dt, false);
+		for (int i = selection.cursorEnd.line; i > selection.cursorStart.line; i--)
+		{
+			displayText.remove(i);
+		}
+
+		cursor.pos = selection.cursorStart.pos;
+		cursor.line = selection.cursorStart.line;
+		checkCursorVisible(true);
+		clearSelection();
+
 		// int minIndex = Math.min(cursor, selectionStart);
 		// int maxIndex = Math.max(cursor, selectionStart);
 		// text = (minIndex > 0 ? text.substring(0, minIndex) : "")
@@ -1380,58 +1410,74 @@ public class EditWrapedTextField extends EditTextFieldBase
 		{
 			if (character == BACKSPACE)
 			{
-				if (cursor.pos > 0)
+				if (selection != null)
 				{
-					dt.displayText = dt.displayText.substring(0, cursor.pos - 1)
-							+ dt.displayText.substring(cursor.pos, dt.displayText.length());
-					updateDisplayText(dt, true);
-					cursor.pos--;
-					checkCursorVisible(true);
-					GL_Listener.glListener.renderOnce("EditWrapedTextField");
+					delete();
 					return true;
 				}
 				else
 				{
-					if (cursor.line > 0)
+					if (cursor.pos > 0)
 					{
-						setCursorLine(cursor.line - 1, true);
-						DisplayText dt2 = getAktDisplayText();
-						cursor.pos = dt2.displayText.length();
+						dt.displayText = dt.displayText.substring(0, cursor.pos - 1)
+								+ dt.displayText.substring(cursor.pos, dt.displayText.length());
+						updateDisplayText(dt, true);
+						cursor.pos--;
 						checkCursorVisible(true);
-						dt2.displayText += dt.displayText;
-						displayText.remove(cursor.line + 1);
-						updateDisplayText(dt2, true);
-
-						int lineCount = displayText.size();
-						if (listener != null) listener.lineCountChanged(this, lineCount, lineHeight * lineCount);
+						GL_Listener.glListener.renderOnce("EditWrapedTextField");
+						return true;
 					}
-					GL_Listener.glListener.renderOnce("EditWrapedTextField");
-					return true;
+					else
+					{
+						if (cursor.line > 0)
+						{
+							setCursorLine(cursor.line - 1, true);
+							DisplayText dt2 = getAktDisplayText();
+							cursor.pos = dt2.displayText.length();
+							checkCursorVisible(true);
+							dt2.displayText += dt.displayText;
+							displayText.remove(cursor.line + 1);
+							updateDisplayText(dt2, true);
+
+							int lineCount = displayText.size();
+							if (listener != null) listener.lineCountChanged(this, lineCount, lineHeight * lineCount);
+						}
+						GL_Listener.glListener.renderOnce("EditWrapedTextField");
+						return true;
+					}
 				}
 			}
 			if (character == DELETE)
 			{
-				if (cursor.pos < dt.displayText.length())
+				if (selection != null)
 				{
-					dt.displayText = dt.displayText.substring(0, cursor.pos)
-							+ dt.displayText.substring(cursor.pos + 1, dt.displayText.length());
-					updateDisplayText(dt, true);
-					GL_Listener.glListener.renderOnce("EditWrapedTextField");
+					delete();
 					return true;
 				}
 				else
 				{
-					if (cursor.line + 1 < displayText.size())
+					if (cursor.pos < dt.displayText.length())
 					{
-						cursor.line++;
-						DisplayText dt2 = getAktDisplayText();
-						cursor.line--;
-						displayText.remove(dt2);
-						dt.displayText += dt2.displayText;
+						dt.displayText = dt.displayText.substring(0, cursor.pos)
+								+ dt.displayText.substring(cursor.pos + 1, dt.displayText.length());
 						updateDisplayText(dt, true);
 						GL_Listener.glListener.renderOnce("EditWrapedTextField");
+						return true;
 					}
-					return true;
+					else
+					{
+						if (cursor.line + 1 < displayText.size())
+						{
+							cursor.line++;
+							DisplayText dt2 = getAktDisplayText();
+							cursor.line--;
+							displayText.remove(dt2);
+							dt.displayText += dt2.displayText;
+							updateDisplayText(dt, true);
+							GL_Listener.glListener.renderOnce("EditWrapedTextField");
+						}
+						return true;
+					}
 				}
 			}
 			// if (character == BACKSPACE && (cursor > 0 || hasSelection))
@@ -1468,6 +1514,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 			{
 				if (isMultiLine())
 				{
+					if (selection != null) delete();
 					insertNewLine();
 					clearSelection();
 					return true;
@@ -1488,6 +1535,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 			if (font.containsCharacter(character))
 			{
+				if (selection != null) delete();
 				// if (!hasSelection)
 				{
 					dt.displayText = dt.displayText.substring(0, cursor.pos) + character

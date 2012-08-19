@@ -72,6 +72,7 @@ public abstract class EditTextFieldBase extends CB_View_Base
 		try
 		{
 			blinkTimer.cancel();
+			cursorOn = false;
 		}
 		catch (Exception ex)
 		{
