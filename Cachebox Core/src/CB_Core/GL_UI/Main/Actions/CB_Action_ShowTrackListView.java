@@ -13,6 +13,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate.Type;
+import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
@@ -121,8 +122,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					{
 						final TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
 
-						StringInputBox.Show(selectedTrackItem.getRoute().Name, GlobalCore.Translations.Get("RenameTrack"),
-								selectedTrackItem.getRoute().Name, new OnMsgBoxClickListener()
+						StringInputBox.Show(TextFieldType.SingleLine, selectedTrackItem.getRoute().Name,
+								GlobalCore.Translations.Get("RenameTrack"), selectedTrackItem.getRoute().Name, new OnMsgBoxClickListener()
 								{
 
 									@Override

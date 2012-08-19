@@ -1,7 +1,7 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
-import CB_Core.GL_UI.Fonts;
-import CB_Core.GL_UI.Controls.EditTextField;
+import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -17,9 +17,9 @@ public class StringInputBox extends GL_MsgBox
 
 	}
 
-	public static EditTextField editText;
+	public static EditWrapedTextField editText;
 
-	public static void Show(String msg, String title, String initialString, OnMsgBoxClickListener Listener)
+	public static void Show(TextFieldType type, String msg, String title, String initialString, OnMsgBoxClickListener Listener)
 	{
 		mMsgBoxClickListner = Listener;
 
@@ -28,11 +28,15 @@ public class StringInputBox extends GL_MsgBox
 		StringInputBox msgBox = new StringInputBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);
 
+		if (type != TextFieldType.SingleLine)
+		{
+			msgBoxSize.height += (int) msgBox.getContentSize().height * 2;
+			msgBox.setSize(msgBoxSize.asFloat());
+		}
+
 		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 
-		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
-
-		editText = new EditTextField(msgBox, textFieldRec, "MsgBoxLabel");
+		editText = new EditWrapedTextField(msgBox, textFieldRec, type, "MsgBoxLabel");
 		editText.setZeroPos();
 		editText.setText(initialString);
 

@@ -418,24 +418,24 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 	private Sprite mDarknesSprite;
 
-	private void reduceFPS()
-	{
-		if (useNewInput) return;
-		long endTime = System.currentTimeMillis();
-		long dt = endTime - startTime;
-		if (dt < 33)
-		{
-			try
-			{
-				if (20 - dt > 0) Thread.sleep(20 - dt);
-			}
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-		}
-		startTime = System.currentTimeMillis();
-	}
+	// private void reduceFPS()
+	// {
+	// if (useNewInput) return;
+	// long endTime = System.currentTimeMillis();
+	// long dt = endTime - startTime;
+	// if (dt < 33)
+	// {
+	// try
+	// {
+	// if (20 - dt > 0) Thread.sleep(20 - dt);
+	// }
+	// catch (InterruptedException e)
+	// {
+	// e.printStackTrace();
+	// }
+	// }
+	// startTime = System.currentTimeMillis();
+	// }
 
 	public void Initialize()
 	{

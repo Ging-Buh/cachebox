@@ -17,6 +17,7 @@ public class ActivityBase extends Dialog
 	protected float MesuredLabelHeight;
 	protected float MesuredLabelHeightBig;
 	protected float ButtonHeight;
+	protected float innerWidth;
 
 	public ActivityBase(CB_RectF rec, String Name)
 	{
@@ -26,6 +27,7 @@ public class ActivityBase extends Dialog
 		this.setBackground(SpriteCache.activityBackground);
 
 		Left = Right = Top = Bottom = drawableBackground.getLeftWidth() / 2;
+		innerWidth = this.width - Left - Left;
 		MesuredLabelHeight = Fonts.Mesure("T").height * 1.5f;
 		MesuredLabelHeightBig = Fonts.MesureBig("T").height * 1.5f;
 		ButtonHeight = UiSizes.getButtonHeight();

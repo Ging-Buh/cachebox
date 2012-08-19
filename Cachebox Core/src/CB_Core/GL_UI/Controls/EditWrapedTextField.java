@@ -112,6 +112,12 @@ public class EditWrapedTextField extends EditTextFieldBase
 		this.type = type;
 	}
 
+	public EditWrapedTextField(CB_View_Base parent, CB_RectF rec, TextFieldType type, String Name)
+	{
+		this(parent, rec, Name);
+		this.type = type;
+	}
+
 	@Override
 	public void onShow()
 	{

@@ -30,9 +30,10 @@ public class ScrollBox extends CB_View_Base
 
 		this.innerHeight = innerHeight;
 
-		lv = new V_ListView(rec, Name);
+		lv = new V_ListView(rec, "ListView-" + Name);
+		lv.setClickable(true);
 
-		item = new ListViewItemBase(rec, 0, Name)
+		item = new ListViewItemBase(rec, 0, "ListViewItem-" + Name)
 		{
 
 			@Override
@@ -48,7 +49,7 @@ public class ScrollBox extends CB_View_Base
 		};
 
 		item.setHeight(innerHeight);
-
+		item.setClickable(true);
 		thisAdapter = new CustomAdapter();
 		lv.setDisposeFlag(false);
 		lv.setBaseAdapter(thisAdapter);
@@ -119,16 +120,18 @@ public class ScrollBox extends CB_View_Base
 		return item.getCildCount();
 	}
 
-	public void addChildDirekt(final GL_View_Base view)
+	public GL_View_Base addChildDirekt(final GL_View_Base view)
 	{
 		item.addChildDirekt(view);
 		lv.notifyDataSetChanged();
+		return view;
 	}
 
-	public void addChildDirektLast(final GL_View_Base view)
+	public GL_View_Base addChildDirektLast(final GL_View_Base view)
 	{
 		item.addChildDirektLast(view);
 		lv.notifyDataSetChanged();
+		return view;
 	}
 
 	public void removeChildsDirekt()

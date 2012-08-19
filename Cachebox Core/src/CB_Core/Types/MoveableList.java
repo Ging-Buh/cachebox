@@ -266,7 +266,6 @@ public class MoveableList<T> extends ArrayList<T>
 			@Override
 			public void remove()
 			{
-				// TODO Auto-generated method stub
 
 			}
 		};

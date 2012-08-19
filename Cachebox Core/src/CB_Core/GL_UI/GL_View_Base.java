@@ -56,7 +56,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	private int mViewState = VISIBLE;
 
-	private GL_View_Base parent;
+	protected GL_View_Base parent;
 	protected static int nDepthCounter = 0;
 
 	private Sprite debugRec = null;
@@ -130,6 +130,16 @@ public abstract class GL_View_Base extends CB_RectF
 	public MoveableList<GL_View_Base> getchilds()
 	{
 		return childs;
+	}
+
+	/**
+	 * Gibt die Parent View zurück, wenn diese über den Constructor übergeben wurde!
+	 * 
+	 * @return parent View oder null
+	 */
+	public GL_View_Base getParent()
+	{
+		return parent;
 	}
 
 	/**
@@ -467,7 +477,7 @@ public abstract class GL_View_Base extends CB_RectF
 			// alle renderChilds() der in dieser GL_View_Base
 			// enthaltenen Childs auf rufen.
 			GL_View_Base view = iterator.next();
-			view.onParentRezised(this);
+			if (view != null) view.onParentRezised(this);
 		}
 		// }
 	}
@@ -698,7 +708,7 @@ public abstract class GL_View_Base extends CB_RectF
 			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 			{
 				GL_View_Base view = iterator.next();
-				if (view.contains(x, y))
+				if (view != null && view.contains(x, y))
 				{
 					// touch innerhalb des Views
 					// -> Klick an das View weitergeben
@@ -802,7 +812,7 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	/**
-	 * Setzt dieses View Clicable mit der ï¿½bergabe von True. </br> Wenn Dieses View nicht Clickable ist, werde auch keine Click-Abfragen
+	 * Setzt dieses View Clicable mit der ï¿½bergabe von True. </br> Wenn Dieses View nicht Clickable ist, werden auch keine Click-Abfragen
 	 * an die Childs weitergegeben.
 	 * 
 	 * @param value

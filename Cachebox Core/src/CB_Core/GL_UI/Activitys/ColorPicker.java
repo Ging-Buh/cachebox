@@ -24,7 +24,7 @@ public class ColorPicker extends ActivityBase
 	private HSV_Color actColor;
 	private Button bOK;
 	private Button bCancel;
-	private float innerWidth;
+
 	private IReturnListner mReturnListner;
 
 	private ColorDrawable actColorDrawable;
@@ -48,7 +48,7 @@ public class ColorPicker extends ActivityBase
 	{
 		super(rec, "ColorPicker");
 		actColor = InitialColor = new HSV_Color(color);
-		innerWidth = this.width - Left - Left;
+
 		mReturnListner = listner;
 		this.setClickable(true);
 		createOkCancelBtn();

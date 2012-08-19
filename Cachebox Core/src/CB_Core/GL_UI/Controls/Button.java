@@ -116,6 +116,14 @@ public class Button extends CB_View_Base
 	@Override
 	protected void render(SpriteBatch batch)
 	{
+		if (dragableButton)
+		{
+			if (isPressed && !GL_Listener.isTouchDown())
+			{
+				isPressed = false;
+				GL_Listener.glListener.renderOnce(this.getName() + " Dragged");
+			}
+		}
 
 		if (!isPressed && !isDisabled)
 		{

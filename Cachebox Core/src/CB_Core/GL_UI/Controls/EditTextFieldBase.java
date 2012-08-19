@@ -24,7 +24,6 @@ public abstract class EditTextFieldBase extends CB_View_Base
 {
 
 	public EditTextFieldBase that;
-	protected CB_View_Base parent;
 
 	public EditTextFieldBase(CB_View_Base parent, CB_RectF rec, String Name)
 	{

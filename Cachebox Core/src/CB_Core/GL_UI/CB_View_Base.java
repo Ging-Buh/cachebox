@@ -7,11 +7,17 @@ import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.GL_UI.interfaces.ViewOptionsMenu;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
+import CB_Core.Types.MoveableList;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMenu
 {
+
+	public float Left;
+	public float Right;
+	public float Top;
+	public float Bottom;
 
 	// # Constructors
 
@@ -173,20 +179,24 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		}
 	}
 
-	public void addChildDirekt(final GL_View_Base view)
+	public GL_View_Base addChildDirekt(final GL_View_Base view)
 	{
 		synchronized (childs)
 		{
 			childs.add(view);
 		}
+
+		return view;
 	}
 
-	public void addChildDirektLast(final GL_View_Base view)
+	public GL_View_Base addChildDirektLast(final GL_View_Base view)
 	{
 		synchronized (childs)
 		{
 			childs.add(0, view);
 		}
+
+		return view;
 	}
 
 	public void removeChildsDirekt()
@@ -194,6 +204,22 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		synchronized (childs)
 		{
 			childs.clear();
+		}
+	}
+
+	public void removeChildsDirekt(GL_View_Base view)
+	{
+		synchronized (childs)
+		{
+			childs.remove(view);
+		}
+	}
+
+	public void removeChildsDirekt(MoveableList<GL_View_Base> childs)
+	{
+		synchronized (childs)
+		{
+			childs.remove(childs);
 		}
 	}
 

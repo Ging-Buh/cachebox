@@ -14,6 +14,7 @@ import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Button;
+import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_Core.GL_UI.Controls.Dialogs.Toast;
 import CB_Core.GL_UI.Controls.List.Adapter;
@@ -91,8 +92,8 @@ public class SelectDB extends ActivityBase
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				stopTimer();
-				StringInputBox.Show(GlobalCore.Translations.Get("NewDB"), GlobalCore.Translations.Get("InsNewDBName"), "NewDB",
-						DialogListnerNewDB);
+				StringInputBox.Show(TextFieldType.SingleLine, GlobalCore.Translations.Get("NewDB"),
+						GlobalCore.Translations.Get("InsNewDBName"), "NewDB", DialogListnerNewDB);
 				return true;
 			}
 		});

@@ -29,6 +29,7 @@ import org.openintents.intents.FileManagerIntents;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox;
 import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
 import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListnerDouble;
@@ -590,25 +591,26 @@ public class SettingsScrollView extends Activity
 				SettingsScrollView.EditKey = SB.getName();
 				selectedItem = SB;
 				// Show NumPad Int Edit
-				StringInputBox.Show(SB.getName(), "default: " + SB.getDefaultValue(), SB.getValue(), new OnMsgBoxClickListener()
-				{
-
-					@Override
-					public boolean onClick(int which)
-					{
-						String text = StringInputBox.editText.getText().toString();
-						if (which == GL_MsgBox.BUTTON_POSITIVE)
+				StringInputBox.Show(TextFieldType.SingleLine, SB.getName(), "default: " + SB.getDefaultValue(), SB.getValue(),
+						new OnMsgBoxClickListener()
 						{
-							SettingString value = (SettingString) Config.settings.get(SettingsScrollView.EditKey);
-							if (value != null) value.setValue(text);
-							SettingsScrollView.Me.ListInvalidate();
 
-						}
-						// Activity wieder anzeigen
-						main.mainActivity.startActivity(aktIntent);
-						return true;
-					}
-				});
+							@Override
+							public boolean onClick(int which)
+							{
+								String text = StringInputBox.editText.getText().toString();
+								if (which == GL_MsgBox.BUTTON_POSITIVE)
+								{
+									SettingString value = (SettingString) Config.settings.get(SettingsScrollView.EditKey);
+									if (value != null) value.setValue(text);
+									SettingsScrollView.Me.ListInvalidate();
+
+								}
+								// Activity wieder anzeigen
+								main.mainActivity.startActivity(aktIntent);
+								return true;
+							}
+						});
 
 				// Activity ausblenden, damit OpenGL-InputBox sichtbar wird
 				finish();

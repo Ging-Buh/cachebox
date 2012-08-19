@@ -115,6 +115,7 @@ public class CollabseBox extends Box
 	public void setAnimationHeight(float Height)
 	{
 		super.setHeight(Height);
+		collabse = (Height == 0);
 		if (listner != null) listner.animatetHeightCanged(Height);
 		GL_Listener.glListener.renderOnce("CollabseBox.setAnimationHeight");
 	}

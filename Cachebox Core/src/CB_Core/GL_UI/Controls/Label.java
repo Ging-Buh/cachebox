@@ -204,12 +204,12 @@ public class Label extends CB_View_Base
 		fontPropertyChanged();
 	}
 
-	public void setWrappedText(String text)
+	public TextBounds setWrappedText(String text)
 	{
-		setWrappedText(text, HAlignment.LEFT);
+		return setWrappedText(text, HAlignment.LEFT);
 	}
 
-	public void setWrappedText(String text, HAlignment alignment)
+	public TextBounds setWrappedText(String text, HAlignment alignment)
 	{
 		chkCache();
 		this.text = text;
@@ -220,6 +220,8 @@ public class Label extends CB_View_Base
 		cache.setWrappedText(this.text, 0, cache.getFont().isFlipped() ? bounds.height : cache.getFont().getLineHeight(), innerWidth,
 				alignment);
 		fontPropertyChanged();
+
+		return bounds;
 	}
 
 	public void setFont(BitmapFont font)
@@ -366,6 +368,21 @@ public class Label extends CB_View_Base
 	public BitmapFont getFont()
 	{
 		return cache.getFont();
+	}
+
+	/**
+	 * setzt die Höhe des Labels auf die gemessene Höhe!
+	 */
+	public void setMesuredHeight()
+	{
+		float m = cache.getFont().getLineHeight() + (cache.getFont().getAscent() * 2);
+
+		float h = m * lineCount * 1.1f;
+
+		// h += (cache.getFont().getDescent());
+
+		this.setHeight(h);
+
 	}
 
 }

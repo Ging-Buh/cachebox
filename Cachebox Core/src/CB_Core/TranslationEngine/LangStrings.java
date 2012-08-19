@@ -258,8 +258,15 @@ public class LangStrings
 
 			public boolean accept(File f)
 			{
-				Object Path = f.getAbsolutePath();
-				files.add((String) Path);
+				if (f.isFile())
+				{
+					String Path = f.getAbsolutePath();
+					int dot = Path.lastIndexOf(".");
+					String ext = Path.substring(dot + 1);
+					if (ext.equalsIgnoreCase("lan")) files.add(Path);
+
+				}
+
 				return false;
 			}
 		});
@@ -273,7 +280,6 @@ public class LangStrings
 			}
 			catch (IOException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 

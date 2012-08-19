@@ -36,10 +36,6 @@ public abstract class Dialog extends CB_View_Base
 
 	protected float mHeaderHight = 200;
 	protected float mFooterHeight = 200;
-	public float Left;
-	public float Right;
-	public float Top;
-	public float Bottom;
 
 	public static float margin = 5f;
 

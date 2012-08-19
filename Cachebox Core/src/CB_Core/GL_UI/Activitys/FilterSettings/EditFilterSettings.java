@@ -10,6 +10,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.Button;
+import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
@@ -339,8 +340,8 @@ public class EditFilterSettings extends ActivityBase
 			return;
 		}
 
-		StringInputBox.Show(GlobalCore.Translations.Get("NewUserPreset"), GlobalCore.Translations.Get("InsNewUserPreset"), "UserPreset",
-				new OnMsgBoxClickListener()
+		StringInputBox.Show(TextFieldType.SingleLine, GlobalCore.Translations.Get("NewUserPreset"),
+				GlobalCore.Translations.Get("InsNewUserPreset"), "UserPreset", new OnMsgBoxClickListener()
 				{
 
 					@Override

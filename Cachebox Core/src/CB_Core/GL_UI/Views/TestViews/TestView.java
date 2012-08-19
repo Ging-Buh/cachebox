@@ -5,17 +5,13 @@ import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Activitys.Import;
+import CB_Core.GL_UI.Activitys.settings.SettingsActivity;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.utils.GradiantFill;
-import CB_Core.GL_UI.utils.GradiantFill.GradiantStop;
-import CB_Core.GL_UI.utils.GradiantFilledRectangle;
-import CB_Core.GL_UI.utils.HSV_Color;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -32,7 +28,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class TestView extends CB_View_Base
 {
 
-	private CB_Core.GL_UI.Controls.EditTextField textField;
+	private CB_Core.GL_UI.Controls.EditWrapedTextField textField;
 	private CB_Core.GL_UI.Controls.EditWrapedTextField wrappedTextField;
 
 	public static final String br = System.getProperty("line.separator");
@@ -65,46 +61,47 @@ public class TestView extends CB_View_Base
 		// CB_RectF TextFieldRec2 = new CB_RectF(0, this.height - (UiSizes.getButtonHeight() * 1.1f), UiSizes.getButtonWidth() * 7,
 		// UiSizes.getButtonHeight() * 1.1f);
 
-		textField = new EditTextField(this, TextFieldRec2, EditTextField.getDefaultStyle(), "Test");
+		textField = new EditWrapedTextField(this, TextFieldRec2, EditTextField.getDefaultStyle(), "Test",
+				EditWrapedTextField.TextFieldType.SingleLine);
 		this.addChild(textField);
 
 		// ####################################################
-		CB_RectF GradiantRec = new CB_RectF(10, 40, this.width - 20, UiSizes.getButtonHeight() * 1.5f);
-
-		GradiantFill fill = new GradiantFill(Color.RED, Color.RED, 0);
-
-		for (int i = 60; i < 300; i += 60)
-		{
-			HSV_Color c = new HSV_Color(Color.RED);
-			c.setHue(i);
-			GradiantStop stop = new GradiantStop(c.cpy(), (float) i / 360f);
-			fill.addStop(stop);
-			// break;
-		}
-
-		GradiantFilledRectangle testRec = new GradiantFilledRectangle(GradiantRec, fill);
-		this.addChild(testRec);
+		// CB_RectF GradiantRec = new CB_RectF(10, 40, this.width - 20, UiSizes.getButtonHeight() * 1.5f);
+		//
+		// GradiantFill fill = new GradiantFill(Color.RED, Color.RED, 0);
+		//
+		// for (int i = 60; i < 300; i += 60)
+		// {
+		// HSV_Color c = new HSV_Color(Color.RED);
+		// c.setHue(i);
+		// GradiantStop stop = new GradiantStop(c.cpy(), (float) i / 360f);
+		// fill.addStop(stop);
+		// // break;
+		// }
+		//
+		// GradiantFilledRectangle testRec = new GradiantFilledRectangle(GradiantRec, fill);
+		// this.addChild(testRec);
 
 		// ####################################################
 
-		// Import Button
-		Button btnImport = new Button(this.width - Dialog.margin - UiSizes.getButtonWidthWide(), this.height - Dialog.margin
+		// Setting Button
+		Button btnSetting = new Button(this.width - Dialog.margin - UiSizes.getButtonWidthWide(), this.height - Dialog.margin
 				- UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight(), "");
 
-		btnImport.setText("Import");
-		btnImport.setOnClickListener(new OnClickListener()
+		btnSetting.setText("Setting");
+		btnSetting.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				Import imp = new Import();
+				SettingsActivity imp = new SettingsActivity();
 				imp.show();
 				return false;
 			}
 		});
 
-		this.addChild(btnImport);
+		this.addChild(btnSetting);
 
 		requestLayout();
 

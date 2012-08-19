@@ -114,4 +114,9 @@ public class Spinner extends Button
 
 	}
 
+	public String getSelectedItem()
+	{
+		return this.getText();
+	}
+
 }
