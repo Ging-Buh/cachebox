@@ -32,12 +32,13 @@ public class StringInputBox extends GL_MsgBox
 
 		editText = new EditWrapedTextField(msgBox, textFieldRec, type, "MsgBoxLabel");
 		editText.setZeroPos();
+		editText.setY(margin * 2);
 
 		editText.setText(initialString);
 
 		float topBottom = editText.getStyle().background.getTopHeight() + editText.getStyle().background.getBottomHeight();
 
-		float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 2);
+		float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
 
 		if (type == TextFieldType.SingleLine)
 		{
@@ -47,8 +48,8 @@ public class StringInputBox extends GL_MsgBox
 		{
 			editText.setHeight(topBottom + (SingleLineHeight * 5));
 		}
-		msgBox.setHeight(msgBox.getHeight() + editText.getHeight());
-		msgBox.Initial();
+		msgBox.setHeight(msgBox.getHeight() + editText.getHeight() + (margin * 4));
+		msgBox.initialDialog();
 
 		CB_RectF LabelRec = msgBox.getContentSize().getBounds();
 		LabelRec.setHeight(LabelRec.getHeight() - editText.getHeight());

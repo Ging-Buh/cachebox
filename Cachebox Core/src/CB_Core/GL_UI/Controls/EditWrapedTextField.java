@@ -79,6 +79,11 @@ public class EditWrapedTextField extends EditTextFieldBase
 	protected SelectionMarker selectionMarkerLeft = null;
 	protected SelectionMarker selectionMarkerRight = null;
 
+	/**
+	 * true wenn ein Marker angezeigt wird. Beim verlust des Focuses, werden dann alle Marker ausgeblendet!
+	 */
+	protected boolean markerIsShohing = false;
+
 	public EditWrapedTextField(CB_View_Base parent, CB_RectF rec, String Name)
 	{
 		super(parent, rec, Name);
@@ -257,6 +262,9 @@ public class EditWrapedTextField extends EditTextFieldBase
 			}
 			else
 			{
+				// Marker ausblenden, wenn das TextField kein Focus mehr hat!
+				if (markerIsShohing) hideSelectionMarker();
+
 				if (style.background != null)
 				{
 					style.background.draw(batch, x, y, width, height);
@@ -886,6 +894,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 					+ getCursorY(tmpCursor.line));
 			break;
 		}
+
+		markerIsShohing = true;
 	}
 
 	protected void hideSelectionMarker()
@@ -905,6 +915,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 			parent.removeChild(selectionMarkerRight);
 			selectionMarkerRight = null;
 		}
+
+		markerIsShohing = false;
 	}
 
 	public void moveSelectionMarker(SelectionMarker.Type type, int newCursor, int newCursorLine)

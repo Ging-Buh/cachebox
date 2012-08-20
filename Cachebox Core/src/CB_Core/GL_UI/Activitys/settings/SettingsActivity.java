@@ -26,6 +26,8 @@ import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListnerDouble;
 import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListButtonLangSpinner;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListButtonSkinSpinner;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListCategoryButton;
@@ -50,6 +52,9 @@ import CB_Core.TranslationEngine.LangStrings.Langs;
 
 public class SettingsActivity extends ActivityBase
 {
+	private final int MI_SHOW_EXPERT = 0;
+	private final int MI_SHOW_ALL = 1;
+
 	private static SettingsActivity that;
 	private ArrayList<SettingCategory> Categorys = new ArrayList<SettingCategory>();
 	private Button btnOk, btnCancel, btnMenu;
@@ -95,7 +100,43 @@ public class SettingsActivity extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				// TODO Show Menu
+				Menu icm = new Menu("menu_mapviewgl");
+				icm.setItemClickListner(new OnClickListener()
+				{
+
+					@Override
+					public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+					{
+						switch (((MenuItem) v).getMenuItemId())
+						{
+						case MI_SHOW_EXPERT:
+							Config.settings.SettingsShowExpert.setValue(!Config.settings.SettingsShowExpert.getValue());
+							resortList();
+							return true;
+
+						case MI_SHOW_ALL:
+							Config.settings.SettingsShowAll.setValue(!Config.settings.SettingsShowAll.getValue());
+							resortList();
+							return true;
+						}
+
+						return false;
+					}
+				});
+				MenuItem mi;
+
+				mi = icm.addItem(MI_SHOW_EXPERT, "Settings_Expert");
+				mi.setCheckable(true);
+				mi.setChecked(Config.settings.SettingsShowExpert.getValue());
+
+				mi = icm.addItem(MI_SHOW_ALL, "Settings_All");
+
+				mi.setCheckable(true);
+				mi.setChecked(Config.settings.SettingsShowAll.getValue());
+
+				icm.setPrompt(GlobalCore.Translations.Get("changeSettingsVisibility"));
+
+				icm.show();
 				return true;
 			}
 		});
@@ -619,7 +660,7 @@ public class SettingsActivity extends ActivityBase
 				EditKey = SB.getName();
 
 				// Show NumPad Int Edit
-				NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()), SB.getValue(),
+				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), SB.getName(), SB.getValue(),
 						new returnValueListner()
 						{
 							@Override
@@ -679,7 +720,7 @@ public class SettingsActivity extends ActivityBase
 				EditKey = SB.getName();
 
 				// Show NumPad Int Edit
-				NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()), SB.getValue(),
+				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), SB.getName(), SB.getValue(),
 						new returnValueListnerDouble()
 						{
 							@Override

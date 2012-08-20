@@ -21,6 +21,17 @@ public abstract class GL_View_Base extends CB_RectF
 {
 
 	// # CONSTANDS
+
+	/**
+	 * Pointer ID for Mouse wheel scrolling up
+	 */
+	public static final int MOUSE_WHEEL_POINTER_UP = -280272;
+
+	/**
+	 * Pointer ID for Mouse wheel scrolling down
+	 */
+	public static final int MOUSE_WHEEL_POINTER_DOWN = -280273;
+
 	/**
 	 * This view is visible. Use with {@link #setVisibility}.
 	 */

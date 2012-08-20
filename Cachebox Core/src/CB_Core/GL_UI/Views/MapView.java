@@ -222,6 +222,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				zoomScale.resetFadeOut();
 				inputState = InputState.Idle;
 
+				lastDynamicZoom = zoomBtn.getZoom();
+
 				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System
 						.currentTimeMillis() + 1000);
 				GL_Listener.glListener.addRenderView(that, frameRateAction);
@@ -238,9 +240,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				setZoomScale(zoomBtn.getZoom());
 				zoomScale.resetFadeOut();
 				inputState = InputState.Idle;
-				// debugString = "State: " + inputState;
-				// aktZoom = zoomBtn.getZoom();
-				// camera.zoom = getMapTilePosFactor(aktZoom);
+
+				lastDynamicZoom = zoomBtn.getZoom();
+
 				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System
 						.currentTimeMillis() + 1000);
 				GL_Listener.glListener.addRenderView(that, frameRateAction);
@@ -1620,7 +1622,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	}
 
-	private float lastDynamicZoom;
+	private float lastDynamicZoom = -1;
 
 	@Override
 	public void OrientationChanged(float heading)
@@ -1910,6 +1912,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
+
+		if (pointer == MOUSE_WHEEL_POINTER_UP || pointer == MOUSE_WHEEL_POINTER_DOWN)
+		{
+			lastTouchPos = new Vector2(x, y);
+			return true;
+		}
+
 		y = mapIntHeight - y;
 		// debugString = "touchDown " + x + " - " + y;
 		if (inputState == InputState.Idle)
@@ -1930,6 +1939,47 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
+
+		if (pointer == MOUSE_WHEEL_POINTER_UP || pointer == MOUSE_WHEEL_POINTER_DOWN)
+		{
+			// Mouse wheel scrolling => Zoom in/out
+
+			if (lastDynamicZoom == -1) lastDynamicZoom = zoomBtn.getZoom();
+
+			float div = lastTouchPos.x - x;
+
+			float zoomValue = div / 100f;
+
+			int maxZoom = Config.settings.OsmMaxLevel.getValue();
+			int minZoom = Config.settings.OsmMinLevel.getValue();
+			float dynZoom = (lastDynamicZoom - zoomValue);
+
+			if (dynZoom > maxZoom) dynZoom = maxZoom;
+			if (dynZoom < minZoom) dynZoom = minZoom;
+
+			if (lastDynamicZoom != dynZoom)
+			{
+
+				// Logger.LogCat("Mouse Zoom:" + div + "/" + zoomValue + "/" + dynZoom);
+
+				lastDynamicZoom = dynZoom;
+				zoomBtn.setZoom((int) lastDynamicZoom);
+				inputState = InputState.Idle;
+
+				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(),
+						System.currentTimeMillis() + 500);
+
+				// kineticZoom = new KineticZoom(camera.zoom, lastDynamicZoom, System.currentTimeMillis(), System.currentTimeMillis() +
+				// 1000);
+
+				GL_Listener.glListener.addRenderView(that, frameRateAction);
+				GL_Listener.glListener.renderOnce(that.getName() + " ZoomButtonClick");
+				calcPixelsPerMeter();
+			}
+
+			return true;
+		}
+
 		try
 		{
 			y = mapIntHeight - y;
@@ -2034,6 +2084,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				System.out.println(camera.zoom);
 				int zoom = MAX_MAP_ZOOM;
+
+				lastDynamicZoom = camera.zoom;
+
 				float tmpZoom = camera.zoom;
 				float faktor = 1.5f;
 				faktor = faktor - iconFactor + 1;
@@ -2072,6 +2125,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
+
+		if (pointer == MOUSE_WHEEL_POINTER_UP || pointer == MOUSE_WHEEL_POINTER_DOWN)
+		{
+			return true;
+		}
+
 		y = mapIntHeight - y;
 		debugString = "touchUp: " + x + " - " + y;
 		// debugString = "touchUp " + inputState.toString();

@@ -3,6 +3,7 @@ package de;
 import java.awt.Point;
 
 import CB_Core.Events.KeyCodes;
+import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
 import CB_Core.Math.UiSizes;
 
@@ -40,11 +41,14 @@ public class Desktop_GL_Listner extends Tab_GL_Listner implements InputProcessor
 		return onTouchDraggedBase(x, y, pointer);
 	}
 
+	private int MouseX = 0;
+	private int MouseY = 0;
+
 	@Override
 	public boolean mouseMoved(int x, int y)
 	{
-		// aktTouch=new Point(x, y);
-		// return onTouchDragged(x, y, -1);
+		MouseX = x;
+		MouseY = y;
 		return onTouchDraggedBase(x, y, -1);
 	}
 
@@ -101,6 +105,23 @@ public class Desktop_GL_Listner extends Tab_GL_Listner implements InputProcessor
 		// WeiterLeiten an EditTextView, welches den Focus Hat
 		if (keyboardFocus != null && keyboardFocus.keyDown(keycode)) return true;
 		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount)
+	{
+
+		int scrollSize = (UiSizes.getClickToleranz() + 10) * amount;
+
+		int Pointer = (scrollSize > 0) ? GL_View_Base.MOUSE_WHEEL_POINTER_UP : GL_View_Base.MOUSE_WHEEL_POINTER_DOWN;
+
+		this.onTouchDownBase(MouseX, MouseY, Pointer, -1);
+
+		this.onTouchDraggedBase(MouseX - scrollSize, MouseY - scrollSize, Pointer);
+
+		this.onTouchUpBase(MouseX - scrollSize, MouseY - scrollSize, Pointer, -1);
+
+		return true;
 	}
 
 }

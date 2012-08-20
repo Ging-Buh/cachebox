@@ -122,10 +122,17 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		});
 
 		String DBName = Config.settings.DatabasePath.getValue();
-		int Pos = DBName.lastIndexOf("/");
-		DBName = DBName.substring(Pos + 1);
-		Pos = DBName.lastIndexOf(".");
-		DBName = DBName.substring(0, Pos);
+		try
+		{
+			int Pos = DBName.lastIndexOf("/");
+			DBName = DBName.substring(Pos + 1);
+			Pos = DBName.lastIndexOf(".");
+			DBName = DBName.substring(0, Pos);
+		}
+		catch (Exception e)
+		{
+			DBName = "???";
+		}
 
 		MenuItem mi;
 		cm.addItem(MI_RESORT, "ResortList", SpriteCache.Icons.get(39));

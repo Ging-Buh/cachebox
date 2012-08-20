@@ -25,7 +25,6 @@ public class Menu extends Dialog
 	private ArrayList<MenuItem> mItems = new ArrayList<MenuItem>();
 	private V_ListView mListView;
 	private Menu that;
-	private MenuItem prompt;
 
 	private OnClickListener MenuItemClickListner = new OnClickListener()
 	{
@@ -64,16 +63,11 @@ public class Menu extends Dialog
 	@Override
 	protected void Initial()
 	{
-		super.Initial();
-
-		this.removeChilds();
-
 		mListView.setSize(this.getContentSize());
 
 		this.addChild(mListView);
 		mListView.setBaseAdapter(new CustomAdapter());
 
-		super.Initial();
 		if (mListView.getMaxItemCount() < mItems.size())
 		{
 			mListView.setDragable();
@@ -82,6 +76,9 @@ public class Menu extends Dialog
 		{
 			mListView.setUndragable();
 		}
+
+		super.Initial();
+
 	}
 
 	public class CustomAdapter implements Adapter
@@ -170,10 +167,7 @@ public class Menu extends Dialog
 			this.resetInitial();
 		}
 
-		float promptH = (prompt == null) ? 0 : prompt.getHeight() + margin;
-
 		mListView.setSize(this.getContentSize());
-		mListView.setHeight(mListView.getHeight() - promptH);
 		mListView.setZeroPos();
 	}
 
@@ -225,15 +219,11 @@ public class Menu extends Dialog
 	public void setPrompt(String Prompt)
 	{
 
-		prompt = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), -1, "Menu Item@" + -1);
-		prompt.setTitle(Prompt);
+		// set Title with full width, add many blanks
+		this.setTitle(Prompt + "                                                       ");
+		super.initialDialog();
 
-		prompt.setY(this.height - prompt.getHeight());
+		this.setHeight(this.height + mTitleHeight);
 
-		this.addChild(prompt);
-
-		layout();
-
-		mListView.notifyDataSetChanged();
 	}
 }

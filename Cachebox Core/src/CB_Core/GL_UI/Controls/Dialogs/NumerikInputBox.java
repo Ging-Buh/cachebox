@@ -1,8 +1,8 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
 import CB_Core.GL_UI.Fonts;
-import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
+import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.NumPad;
 import CB_Core.GL_UI.Controls.NumPad.keyEventListner;
@@ -22,7 +22,7 @@ public class NumerikInputBox extends GL_MsgBox
 		that = this;
 	}
 
-	public static EditTextField editText;
+	public static EditWrapedTextField editText;
 	public static returnValueListner mReturnListner;
 	public static returnValueListnerDouble mReturnListnerDouble;
 
@@ -40,11 +40,17 @@ public class NumerikInputBox extends GL_MsgBox
 
 		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
 
-		editText = new EditTextField(msgBox, textFieldRec, "MsgBoxLabel");
+		editText = new EditWrapedTextField(msgBox, textFieldRec, "MsgBoxLabel");
 		editText.setZeroPos();
-		editText.setY(margin);
+		editText.setY(margin * 3);
 		editText.setText(String.valueOf(initialValue));
 		editText.setCursorPosition((String.valueOf(initialValue)).length());
+
+		float topBottom = editText.getStyle().background.getTopHeight() + editText.getStyle().background.getBottomHeight();
+		float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
+
+		editText.setHeight(topBottom + SingleLineHeight);
+
 		editText.setOnscreenKeyboard(new OnscreenKeyboard()
 		{
 
@@ -96,11 +102,17 @@ public class NumerikInputBox extends GL_MsgBox
 
 		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
 
-		editText = new EditTextField(msgBox, textFieldRec, "MsgBoxLabel");
+		editText = new EditWrapedTextField(msgBox, textFieldRec, "MsgBoxLabel");
 		editText.setZeroPos();
-		editText.setY(margin);
+		editText.setY(margin * 3);
 		editText.setText(String.valueOf(initialValue));
 		editText.setCursorPosition((String.valueOf(initialValue)).length());
+
+		float topBottom = editText.getStyle().background.getTopHeight() + editText.getStyle().background.getBottomHeight();
+		float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
+
+		editText.setHeight(topBottom + SingleLineHeight);
+
 		editText.setOnscreenKeyboard(new OnscreenKeyboard()
 		{
 

@@ -24,6 +24,11 @@ public abstract class Dialog extends CB_View_Base
 	private Box mContent;
 	private ArrayList<GL_View_Base> contentChilds = new ArrayList<GL_View_Base>();
 
+	/**
+	 * enthällt die Controls, welche über allen anderen gezeichnet werden zB. Selection Marker des TextFields
+	 */
+	private ArrayList<GL_View_Base> overlay = new ArrayList<GL_View_Base>();
+
 	protected NinePatch mTitle9patch;
 	protected NinePatch mHeader9patch;
 	protected NinePatch mCenter9patch;
@@ -65,10 +70,34 @@ public abstract class Dialog extends CB_View_Base
 	@Override
 	public GL_View_Base addChild(GL_View_Base view)
 	{
-		// die Childs in die Box umleiten
-		contentChilds.add(view);
+		// die Childs in die Box umleiten ausser TextMarker
+
+		if (view instanceof SelectionMarker)
+		{
+			overlay.add(view);
+			mContent.addChildDirekt(view);
+		}
+		else
+		{
+			contentChilds.add(view);
+		}
 
 		return view;
+	}
+
+	@Override
+	public void removeChild(GL_View_Base view)
+	{
+		if (view instanceof SelectionMarker)
+		{
+			overlay.remove(view);
+			mContent.removeChildsDirekt(view);
+		}
+		else
+		{
+			contentChilds.remove(view);
+		}
+
 	}
 
 	@Override
@@ -81,6 +110,14 @@ public abstract class Dialog extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
+		initialDialog();
+
+		super.isInitial = true;
+
+	}
+
+	protected void initialDialog()
+	{
 		super.removeChildsDirekt();
 		mTitleHeight = 0;
 
@@ -90,7 +127,7 @@ public abstract class Dialog extends CB_View_Base
 
 			TextBounds bounds = Fonts.Mesure(mTitle);
 			mTitleWidth = bounds.width + (6.666f * pW);
-			if (mTitleWidth > this.width) mTitleWidth = this.width - (1.666f * pW);
+			if (mTitleWidth > this.width) mTitleWidth = this.width;// - (1.666f * pW);
 
 			mTitleHeight = bounds.height * 3f;
 
@@ -120,6 +157,13 @@ public abstract class Dialog extends CB_View_Base
 
 		super.addChild(mContent);
 
+		if (overlay.size() > 0)
+		{
+			for (GL_View_Base view : overlay)
+			{
+				mContent.addChildDirekt(view);
+			}
+		}
 	}
 
 	@Override
@@ -136,7 +180,16 @@ public abstract class Dialog extends CB_View_Base
 
 		if (mHasTitle)
 		{
-			if (mTitle9patch != null) mTitle9patch.draw(batch, 0, this.height - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+			if (mTitleWidth < this.width)
+			{
+				if (mTitle9patch != null) mTitle9patch
+						.draw(batch, 0, this.height - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+			}
+			else
+			{
+				if (mHeader9patch != null) mHeader9patch.draw(batch, 0, this.height - mTitleHeight - mTitleVersatz, mTitleWidth,
+						mTitleHeight);
+			}
 		}
 
 		batch.end();
@@ -146,7 +199,7 @@ public abstract class Dialog extends CB_View_Base
 
 	public SizeF getContentSize()
 	{
-		if (mContent == null) this.Initial();
+		if (mContent == null) this.initialDialog();
 		return mContent.getSize();
 	}
 
@@ -168,13 +221,13 @@ public abstract class Dialog extends CB_View_Base
 	public void setWidth(float Width)
 	{
 		super.setWidth(Width);
-		this.Initial();
+		this.initialDialog();
 	}
 
 	public void setHeight(float Height)
 	{
 		super.setHeight(Height);
-		this.Initial();
+		this.initialDialog();
 	}
 
 	public boolean setSize(SizeF Size)
@@ -192,14 +245,14 @@ public abstract class Dialog extends CB_View_Base
 	public boolean setSize(float Width, float Height)
 	{
 		boolean ret = super.setSize(Width, Height);
-		this.Initial();
+		this.initialDialog();
 		return ret;
 	}
 
 	public boolean setSize(CB_RectF rec)
 	{
 		boolean ret = super.setSize(rec);
-		this.Initial();
+		this.initialDialog();
 		return ret;
 	}
 
