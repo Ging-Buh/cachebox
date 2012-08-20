@@ -549,7 +549,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 				// dürfte nicht passieren!!!
 				TouchDownPointer first = touchDownPos.get(pointer);
 				Point akt = new Point(x, y);
-				if (distance(akt, first.point) < UiSizes.getClickToleranz())
+				if (distance(akt, first.point) < first.view.getClickTolerance())
 				{
 					if (first.view.isClickable())
 					{
@@ -624,7 +624,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		try
 		{
 			Point akt = new Point(x, y);
-			if (touchDraggedActive || (distance(akt, first.point) > UiSizes.getClickToleranz()))
+			if (touchDraggedActive || (distance(akt, first.point) > first.view.getClickTolerance()))
 			{
 				// merken, dass das Dragging aktiviert wurde, bis der Finger wieder losgelassen wird
 				touchDraggedActive = true;
@@ -661,7 +661,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 																// dürfte nicht passieren!!!
 		TouchDownPointer first = touchDownPos.get(pointer);
 		Point akt = new Point(x, y);
-		if (distance(akt, first.point) < UiSizes.getClickToleranz())
+		if (distance(akt, first.point) < first.view.getClickTolerance())
 		{
 			// Finger wurde losgelassen ohne viel Bewegung -> onClick erzeugen
 			// glListener.onClick(akt.x, akt.y, pointer, 0);
@@ -669,7 +669,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			{
 				// Testen, ob dies ein Doppelklick ist
 				if ((System.currentTimeMillis() < lastClickTime + mDoubleClickTime) && (lastClickPoint != null)
-						&& (distance(akt, lastClickPoint) < UiSizes.getClickToleranz()))
+						&& (distance(akt, lastClickPoint) < first.view.getClickTolerance()))
 				{
 					boolean handled = first.view.doubleClick(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
 							- (int) first.view.ThisWorldRec.getY(), pointer, button);
