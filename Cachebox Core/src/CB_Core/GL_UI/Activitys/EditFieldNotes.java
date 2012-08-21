@@ -37,6 +37,7 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Types.FieldNoteEntry;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class EditFieldNotes extends ActivityBase
 {
@@ -99,7 +100,7 @@ public class EditFieldNotes extends ActivityBase
 		String sTime = iso8601Format.format(fieldNote.timestamp);
 		tvTime.setText(sTime);
 
-		ivTyp.setSprite(SpriteCache.LogIcons.get(fieldNote.typeIcon));
+		ivTyp.setDrawable(new SpriteDrawable(SpriteCache.LogIcons.get(fieldNote.typeIcon)));
 	}
 
 	private void iniOkCancel()

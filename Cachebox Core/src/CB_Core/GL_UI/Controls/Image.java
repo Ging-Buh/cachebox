@@ -23,9 +23,10 @@ import CB_Core.Math.CB_RectF;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 /**
  * Ein Control, welches ein Bild aus einem Pfad Darstellt.
@@ -51,19 +52,31 @@ public class Image extends CB_View_Base
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		Color altColor = batch.getColor();
+		Color altColor = batch.getColor().cpy();
 
 		batch.setColor(mColor);
 
-		if (mNinePatchImage != null)
+		// set rotation
+		boolean isRotated = false;
+
+		if (mRotate != 0 || mScale != 1)
 		{
-			mNinePatchImage.draw(batch, 0, 0, width, height);
+			isRotated = true;
+
+			Matrix4 matrix = new Matrix4();
+
+			matrix.idt();
+			matrix.translate(this.getX() + mOriginX, this.getY() + mOriginY, 0);
+			matrix.rotate(0, 0, 1, mRotate);
+			matrix.scale(mScale, mScale, 1);
+			matrix.translate(-mOriginX, -mOriginY, 0);
+
+			batch.setTransformMatrix(matrix);
 		}
-		else if (mImageSprite != null)
+
+		if (mDrawable != null)
 		{
-			mImageSprite.setBounds(0, 0, width, height);
-			mImageSprite.setRotation(mRotate);
-			mImageSprite.draw(batch);
+			mDrawable.draw(batch, 0, 0, width, height);
 
 		}
 		else if (mPath != null && !mPath.equals(""))
@@ -74,11 +87,9 @@ public class Image extends CB_View_Base
 				// Logger.LogCat("Load GL Image Texture Path= " + mPath);
 
 				mImageTex = new Texture(Gdx.files.internal(mPath));
-				mImageSprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);
+				mDrawable = new SpriteDrawable(new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex));
 
-				mImageSprite.setBounds(0, 0, width, height);
-				mImageSprite.setRotation(mRotate);
-				mImageSprite.draw(batch);
+				mDrawable.draw(batch, 0, 0, width, height);
 
 			}
 			catch (Exception e)
@@ -89,27 +100,31 @@ public class Image extends CB_View_Base
 		}
 
 		batch.setColor(altColor);
-	}
+		if (isRotated)
+		{
+			Matrix4 matrix = new Matrix4();
 
-	@Override
-	public void onRezised(CB_RectF rec)
-	{
+			matrix.idt();
+			// matrix.translate(mOriginX, mOriginY, 0);
+			matrix.rotate(0, 0, 1, 0);
+			matrix.scale(1, 1, 1);
+			// matrix.translate(-mOriginX, -mOriginY, 0);
 
-		if (mImageSprite != null) mImageSprite.setBounds(0, 0, width, height);
+			batch.setTransformMatrix(matrix);
+
+		}
 
 	}
 
 	private String mPath;
 	private Texture mImageTex = null;
-	Sprite mImageSprite = null;
-	NinePatch mNinePatchImage = null;
-	private int mLoadCounter = 0;
+	Drawable mDrawable = null;
 
 	public void setImage(String Path)
 	{
 
 		mPath = Path;
-		if (mImageSprite != null)
+		if (mDrawable != null)
 		{
 			dispose();
 			// das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus läuft.
@@ -117,11 +132,9 @@ public class Image extends CB_View_Base
 
 	}
 
-	public void setSprite(Sprite sprite)
+	public void setDrawable(Drawable drawable)
 	{
-		mImageSprite = new Sprite(sprite);
-		mImageSprite.setSize(width, height);
-		mImageSprite.setBounds(0, 0, this.width, this.height);
+		mDrawable = drawable;
 	}
 
 	public void dispose()
@@ -129,7 +142,7 @@ public class Image extends CB_View_Base
 		if (mImageTex != null) mImageTex.dispose();
 		mImageTex = null;
 
-		mImageSprite = null;
+		mDrawable = null;
 	}
 
 	public void setRotate(float Rotate)
@@ -137,9 +150,14 @@ public class Image extends CB_View_Base
 		mRotate = Rotate;
 	}
 
+	private float mOriginX;
+	private float mOriginY;
+	private float mScale = 1f;
+
 	public void setOrigin(float originX, float originY)
 	{
-		mImageSprite.setOrigin(originX, originY);
+		mOriginX = originX;
+		mOriginY = originY;
 	}
 
 	/**
@@ -149,32 +167,23 @@ public class Image extends CB_View_Base
 	 */
 	public void setScale(float value)
 	{
-		mImageSprite.setScale(value);
+		mScale = value;
 	}
 
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
-
-	}
-
-	public void setNinePatch(NinePatch icon)
-	{
-		mNinePatchImage = new NinePatch(icon);
 	}
 
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
 
 	}
 
 	public void setColor(Color color)
 	{
 		mColor = color;
-		if (mImageSprite != null) mImageSprite.setColor(mColor);
 	}
 
 }

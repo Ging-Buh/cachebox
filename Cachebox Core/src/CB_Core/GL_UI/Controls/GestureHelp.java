@@ -2,7 +2,6 @@ package CB_Core.GL_UI.Controls;
 
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
@@ -12,6 +11,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class GestureHelp extends CB_View_Base
 {
@@ -47,21 +48,8 @@ public class GestureHelp extends CB_View_Base
 	}
 
 	@Override
-	public void onRezised(CB_RectF rec)
-	{
-		requestLayout();
-	}
-
-	private void requestLayout()
-	{
-		SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
-
-	}
-
-	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -104,58 +92,57 @@ public class GestureHelp extends CB_View_Base
 		ArrowW = h / 3;
 
 		Button = new Image(cX, cY, h, h, "UpIcon");
-		if (icon != null) Button.setNinePatch(icon);
+		if (icon != null) Button.setDrawable(new NinePatchDrawable(icon));
 		this.addChild(Button);
 	}
 
 	public void addUp(Sprite icon)
 	{
 		Up = new Image(cX, cY + h + d, h, ArrowH, "Up");
-		if (icon != null) Up.setSprite(SpriteCache.Arrows.get(7));
+		if (icon != null) Up.setDrawable(new SpriteDrawable(SpriteCache.Arrows.get(7)));
 		this.addChild(Up);
 
 		UpIcon = new Image(cX, cY + h + d + ArrowH, h, h, "UpIcon");
-		if (icon != null) UpIcon.setSprite(icon);
+		if (icon != null) UpIcon.setDrawable(new SpriteDrawable(icon));
 		this.addChild(UpIcon);
 	}
 
 	public void addDown(Sprite icon)
 	{
 		Down = new Image(cX, cY - d - ArrowH, h, ArrowH, "Down");
-		if (icon != null) Down.setSprite(SpriteCache.Arrows.get(6));
+		if (icon != null) Down.setDrawable(new SpriteDrawable(SpriteCache.Arrows.get(6)));
 		this.addChild(Down);
 
 		DownIcon = new Image(cX, cY - d - ArrowH - h, h, h, "DownIcon");
-		if (icon != null) DownIcon.setSprite(icon);
+		if (icon != null) DownIcon.setDrawable(new SpriteDrawable(icon));
 		this.addChild(DownIcon);
 	}
 
 	public void addLeft(Sprite icon)
 	{
 		Left = new Image(cX - d - ArrowW, cY, ArrowW, h, "Left");
-		if (icon != null) Left.setSprite(SpriteCache.Arrows.get(8));
+		if (icon != null) Left.setDrawable(new SpriteDrawable(SpriteCache.Arrows.get(8)));
 		this.addChild(Left);
 
 		LeftIcon = new Image(cX - d - ArrowH - h, cY, h, h, "LeftIcon");
-		if (icon != null) LeftIcon.setSprite(icon);
+		if (icon != null) LeftIcon.setDrawable(new SpriteDrawable(icon));
 		this.addChild(LeftIcon);
 	}
 
 	public void addRight(Sprite icon)
 	{
 		Right = new Image(cX + h + d, cY, ArrowW, h, "Up");
-		if (icon != null) Right.setSprite(SpriteCache.Arrows.get(9));
+		if (icon != null) Right.setDrawable(new SpriteDrawable(SpriteCache.Arrows.get(9)));
 		this.addChild(Right);
 
 		RightIcon = new Image(cX + h + d + ArrowW, cY, h, h, "UpIcon");
-		if (icon != null) RightIcon.setSprite(icon);
+		if (icon != null) RightIcon.setDrawable(new SpriteDrawable(icon));
 		this.addChild(RightIcon);
 	}
 
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
 
 	}
 

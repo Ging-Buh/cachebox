@@ -719,6 +719,10 @@ public abstract class Database
 			reader.close();
 			setTransactionSuccessful();
 		}
+		catch (Exception e)
+		{
+
+		}
 		finally
 		{
 			endTransaction();

@@ -143,7 +143,7 @@ public class splash extends TabMainView
 		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref, ref * 5,
 				(ref * 5) / 4.11f);
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
-		CB_Logo.setSprite(atlas.createSprite("cachebox_logo"));
+		CB_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("cachebox_logo")));
 		this.addChild(CB_Logo);
 
 		TextBounds bounds = Fonts.getNormal().getMultiLineBounds(GlobalCore.getVersionString());
@@ -182,16 +182,16 @@ public class splash extends TabMainView
 		rec_FX2_Logo.setX(400);
 
 		GC_Logo = new Image(rec_GC_Logo, "GC_Logo");
-		GC_Logo.setSprite(atlas.createSprite("gc_live"));
+		GC_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("gc_live")));
 
 		Mapsforge_Logo = new Image(rec_Mapsforge_Logo, "Mapsforge_Logo");
-		Mapsforge_Logo.setSprite(atlas.createSprite("mapsforge_logo"));
+		Mapsforge_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("mapsforge_logo")));
 
 		FX2_Logo = new Image(rec_FX2_Logo, "FX2_Logo");
-		FX2_Logo.setSprite(atlas.createSprite("FXzwei"));
+		FX2_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("FXzwei")));
 
 		LibGdx_Logo = new Image(rec_LibGdx_Logo, "LibGdx_Logo");
-		LibGdx_Logo.setSprite(atlas.createSprite("libgdx"));
+		LibGdx_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("libgdx")));
 
 		float yPos = descTextView.getY() - GC_Logo.getHeight();
 		float xPos = (this.width - (ref * 2) - GC_Logo.getWidth() - Mapsforge_Logo.getWidth() - FX2_Logo.getWidth()) / 2;

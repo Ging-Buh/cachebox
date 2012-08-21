@@ -229,4 +229,30 @@ public class platformConector
 
 	// ----------------------------------------
 
+	// ------ get folder from Folder Dialog ------
+
+	public interface IgetFolderReturnListner
+	{
+		public void getFolderReturn(String Path);
+	}
+
+	public interface IgetFolderListner
+	{
+		public void getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListner returnListner);
+	}
+
+	private static IgetFolderListner getfolderListner;
+
+	public static void setGetFolderListner(IgetFolderListner listner)
+	{
+		getfolderListner = listner;
+	}
+
+	public static void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListner returnListner)
+	{
+		if (getfolderListner != null) getfolderListner.getfolder(initialPath, TitleText, ButtonText, returnListner);
+	}
+
+	// ----------------------------------------
+
 }

@@ -15,6 +15,8 @@ import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
 
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 public class WaitDialog extends GL_MsgBox
 {
 
@@ -51,7 +53,7 @@ public class WaitDialog extends GL_MsgBox
 		CB_RectF imageRec = new CB_RectF(0, 0, UiSizes.getButtonHeight(), UiSizes.getButtonHeight());
 
 		iconImage = new Image(imageRec, "MsgBoxIcon");
-		iconImage.setSprite(SpriteCache.Icons.get(51));
+		iconImage.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(51)));
 		iconImage.setOrigin(imageRec.getHalfWidth(), imageRec.getHalfHeight());
 		waitDialog.addChild(iconImage);
 

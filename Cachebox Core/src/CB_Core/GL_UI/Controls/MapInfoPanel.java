@@ -11,6 +11,7 @@ import CB_Core.Math.GL_UISizes;
 import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class MapInfoPanel extends CB_View_Base
 {
@@ -91,7 +92,7 @@ public class MapInfoPanel extends CB_View_Base
 		CB_RectF arrowRec = new CB_RectF(0, 0, this.height, this.height);
 
 		arrow = new Image(arrowRec, "Test_Image");
-		arrow.setSprite(SpriteCache.Arrows.get(0));
+		arrow.setDrawable(new SpriteDrawable(SpriteCache.Arrows.get(0)));
 		arrow.setOrigin(arrowRec.getWidth() / 2, arrowRec.getHeight() / 2);
 		arrow.setScale(0.65f);
 		this.addChild(arrow);

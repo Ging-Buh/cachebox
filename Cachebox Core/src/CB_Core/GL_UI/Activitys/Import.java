@@ -47,6 +47,7 @@ import CB_Core.Math.UiSizes;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class Import extends ActivityBase implements ProgressChangedEvent
 {
@@ -70,7 +71,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	private Boolean importStarted = false;
 
 	private ArrayList<PQ> PqList;
-	private CustomAdapter lvAdapter;
 
 	private CB_RectF itemRec;
 	private float itemHeight = -1;
@@ -787,7 +787,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			CB_RectF imageRec = new CB_RectF(this.halfWidth - halfSize, this.halfHeight - halfSize, size, size);
 
 			iconImage = new Image(imageRec, "MsgBoxIcon");
-			iconImage.setSprite(SpriteCache.Icons.get(51));
+			iconImage.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(51)));
 			iconImage.setOrigin(imageRec.getHalfWidth(), imageRec.getHalfHeight());
 
 			this.addChild(iconImage);

@@ -60,9 +60,13 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 		}
 	}
 
+	private static boolean PlaySounds = false;
+
 	@Override
 	public void PositionChanged(Locator location)
 	{
+
+		PlaySounds = Config.settings.PlaySounds.getValue();
 
 		try
 		{
@@ -131,19 +135,22 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 
 		try
 		{
-			if (GlobalCore.SelectedCache() != null)
+			if (PlaySounds && !approachSoundCompleted)
 			{
-				float distance = GlobalCore.SelectedCache().Distance(false);
-				if (GlobalCore.SelectedWaypoint() != null)
+				if (GlobalCore.SelectedCache() != null)
 				{
-					distance = GlobalCore.SelectedWaypoint().Distance();
-				}
+					float distance = GlobalCore.SelectedCache().Distance(false);
+					if (GlobalCore.SelectedWaypoint() != null)
+					{
+						distance = GlobalCore.SelectedWaypoint().Distance();
+					}
 
-				if (!approachSoundCompleted && (distance < Config.settings.SoundApproachDistance.getValue()))
-				{
-					Approach.play();
-					approachSoundCompleted = true;
+					if (!approachSoundCompleted && (distance < Config.settings.SoundApproachDistance.getValue()))
+					{
+						Approach.play();
+						approachSoundCompleted = true;
 
+					}
 				}
 			}
 		}

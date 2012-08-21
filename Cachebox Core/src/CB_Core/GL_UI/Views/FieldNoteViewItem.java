@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class FieldNoteViewItem extends ListViewItemBackground
 {
@@ -56,7 +57,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 		ivTyp = new Image(LeftWidth, this.height - (headHeight / 2) - (UiSizes.getButtonHeight() / 1.5f / 2),
 				UiSizes.getButtonHeight() / 1.5f, UiSizes.getButtonHeight() / 1.5f, "");
 		this.addChild(ivTyp);
-		ivTyp.setSprite(SpriteCache.LogIcons.get(fieldnote.typeIcon));
+		ivTyp.setDrawable(new SpriteDrawable(SpriteCache.LogIcons.get(fieldnote.typeIcon)));
 		secondTab = ivTyp.getMaxX() + (Dialog.margin * 2);
 	}
 
@@ -86,7 +87,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 		ivCacheType = new Image(LeftWidth + Dialog.margin, this.height - headHeight - (UiSizes.getButtonHeight()) - Dialog.margin,
 				UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), "");
 		this.addChild(ivCacheType);
-		ivCacheType.setSprite(SpriteCache.BigIcons.get(fieldnote.cacheType));
+		ivCacheType.setDrawable(new SpriteDrawable(SpriteCache.BigIcons.get(fieldnote.cacheType)));
 		secondTab = ivTyp.getMaxX() + (Dialog.margin * 3);
 
 	}
@@ -128,21 +129,17 @@ public class FieldNoteViewItem extends ListViewItemBackground
 		super.Initial();
 	}
 
-	private Boolean isNullHeightItem = false;
-
 	// static Member
 	public static Paint Linepaint;
 	public static Paint KopfPaint;
 	public static Paint TextPaint;
 	private static float headHeight;
-	private static int headLinePos;
+
 	public static BitmapFontCache cacheNamePaint;
-	private static int nameLayoutWidth = 0;
 
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
 
 	}
 

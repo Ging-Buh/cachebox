@@ -1,10 +1,13 @@
 package de;
 
-import java.awt.FileDialog;
 import java.awt.Frame;
+import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
@@ -16,6 +19,8 @@ import CB_Core.Events.platformConector;
 import CB_Core.Events.platformConector.IHardwarStateListner;
 import CB_Core.Events.platformConector.IgetFileListner;
 import CB_Core.Events.platformConector.IgetFileReturnListner;
+import CB_Core.Events.platformConector.IgetFolderListner;
+import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Locator.GpsStatus;
@@ -108,20 +113,78 @@ public class DesktopMain
 		platformConector.setGetFileListner(new IgetFileListner()
 		{
 			@Override
-			public void getFile(String initialPath, String extension, String TitleText, String ButtonText,
+			public void getFile(String initialPath, final String extension, String TitleText, String ButtonText,
 					IgetFileReturnListner returnListner)
 			{
-				FileDialog filedia = new FileDialog(frame, ButtonText);
-				filedia.setDirectory(initialPath);
-				filedia.setFile(extension);
-				filedia.setTitle(TitleText);
-				filedia.show();
-				String filename = filedia.getDirectory() + filedia.getFile();
-				if (filename != null)
+
+				final String ext = extension.replace("*", "");
+
+				JFileChooser chooser = new JFileChooser();
+
+				chooser.setCurrentDirectory(new java.io.File(initialPath));
+				chooser.setDialogTitle(TitleText);
+
+				FileFilter filter = new FileFilter()
 				{
-					if (returnListner != null) returnListner.getFieleReturn(filename);
+
+					@Override
+					public String getDescription()
+					{
+
+						return extension;
+					}
+
+					@Override
+					public boolean accept(File f)
+					{
+						if (f.getAbsolutePath().endsWith(ext)) return true;
+						return false;
+					}
+				};
+
+				chooser.setFileFilter(filter);
+
+				int returnVal = chooser.showOpenDialog(null);
+				if (returnVal == JFileChooser.APPROVE_OPTION)
+				{
+					if (returnListner != null) returnListner.getFieleReturn(chooser.getSelectedFile().getAbsolutePath());
+					System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
 				}
-				filedia.dispose();
+
+				// FileDialog filedia = new FileDialog(frame, ButtonText);
+				// filedia.setDirectory(initialPath);
+				// filedia.setFile(extension);
+				// filedia.setTitle(TitleText);
+				// filedia.show();
+				// String filename = filedia.getDirectory() + filedia.getFile();
+				// if (filename != null)
+				// {
+				// if (returnListner != null) returnListner.getFieleReturn(filename);
+				// }
+				// filedia.dispose();
+
+			}
+		});
+
+		platformConector.setGetFolderListner(new IgetFolderListner()
+		{
+
+			@Override
+			public void getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListner returnListner)
+			{
+
+				JFileChooser chooser = new JFileChooser();
+
+				chooser.setCurrentDirectory(new java.io.File(initialPath));
+				chooser.setDialogTitle(TitleText);
+
+				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int returnVal = chooser.showOpenDialog(null);
+				if (returnVal == JFileChooser.APPROVE_OPTION)
+				{
+					if (returnListner != null) returnListner.getFolderReturn(chooser.getSelectedFile().getAbsolutePath());
+					System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+				}
 
 			}
 		});

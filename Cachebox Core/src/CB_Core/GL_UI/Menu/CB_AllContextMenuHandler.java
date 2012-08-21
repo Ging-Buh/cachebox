@@ -15,6 +15,8 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowActivity;
 import CB_Core.GL_UI.Views.MapView;
 
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 public class CB_AllContextMenuHandler
 {
 	// Constant Item ID´s
@@ -102,7 +104,7 @@ public class CB_AllContextMenuHandler
 			boolean enabled = false;
 			if (!selectedCacheIsNull && (!Database.Hint(GlobalCore.SelectedCache()).equals(""))) enabled = true;
 			mi.setEnabled(enabled);
-			mi.setIcon(SpriteCache.Icons.get(19));
+			mi.setIcon(new SpriteDrawable(SpriteCache.Icons.get(19)));
 		}
 
 		mi = icm.addItem(MI_SPOILER, "spoiler", SpriteCache.Icons.get(22));

@@ -16,6 +16,8 @@ import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class Menu extends Dialog
 {
@@ -124,13 +126,27 @@ public class Menu extends Dialog
 	public MenuItem addItem(int ID, String StringId, String anhang, Sprite icon)
 	{
 		MenuItem item = addItem(ID, StringId, anhang);
-		item.setIcon(icon);
+		if (icon != null) item.setIcon(new SpriteDrawable(icon));
+		return item;
+	}
+
+	public MenuItem addItem(int ID, String StringId, String anhang, Drawable icon)
+	{
+		MenuItem item = addItem(ID, StringId, anhang);
+		if (icon != null) item.setIcon(icon);
 		return item;
 	}
 
 	public MenuItem addItem(int ID, String StringId, String anhang)
 	{
 		return addItem(ID, StringId, anhang, false);
+	}
+
+	public MenuItem addItem(int index, String text, Drawable drawable, boolean withoutTranslation)
+	{
+		MenuItem item = addItem(index, text, "", withoutTranslation);
+		if (drawable != null) item.setIcon(drawable);
+		return item;
 	}
 
 	public MenuItem addItem(int ID, String StringId, String anhang, boolean withoutTranslation)
@@ -199,7 +215,7 @@ public class Menu extends Dialog
 	public MenuItem addItem(int ID, String StringId, Sprite icon)
 	{
 		MenuItem item = addItem(ID, StringId);
-		item.setIcon(icon);
+		item.setIcon(new SpriteDrawable(icon));
 		return item;
 	}
 
@@ -226,4 +242,5 @@ public class Menu extends Dialog
 		this.setHeight(this.height + mTitleHeight);
 
 	}
+
 }

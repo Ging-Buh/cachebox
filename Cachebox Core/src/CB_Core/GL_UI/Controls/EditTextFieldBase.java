@@ -232,10 +232,7 @@ public abstract class EditTextFieldBase extends CB_View_Base
 
 	public void setFocus()
 	{
-		hasFocus = true;
-		this.onTouchDown(0, 0, 0, 0);
-
-		GL_Listener.glListener.renderForTextField(this);
+		setFocus(true);
 	}
 
 	public void setFocus(boolean value)

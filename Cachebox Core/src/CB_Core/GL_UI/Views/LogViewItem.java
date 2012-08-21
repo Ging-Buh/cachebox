@@ -15,6 +15,7 @@ import CB_Core.Types.LogEntry;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class LogViewItem extends ListViewItemBackground
 {
@@ -48,7 +49,7 @@ public class LogViewItem extends ListViewItemBackground
 		ivTyp = new Image(LeftWidth, this.height - (headHeight / 2) - (UiSizes.getButtonHeight() / 1.5f / 2),
 				UiSizes.getButtonHeight() / 1.5f, UiSizes.getButtonHeight() / 1.5f, "");
 		this.addChild(ivTyp);
-		ivTyp.setSprite(SpriteCache.LogIcons.get(logEntry.Type.getIconID()));
+		ivTyp.setDrawable(new SpriteDrawable(SpriteCache.LogIcons.get(logEntry.Type.getIconID())));
 		secondTab = ivTyp.getMaxX() + (Dialog.margin * 2);
 	}
 
@@ -99,8 +100,6 @@ public class LogViewItem extends ListViewItemBackground
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

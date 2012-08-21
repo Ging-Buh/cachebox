@@ -20,6 +20,7 @@ import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class GL_MsgBox extends Dialog
 {
@@ -81,10 +82,6 @@ public class GL_MsgBox extends Dialog
 		float Width = (((UiSizes.getButtonWidthWide() + margin) * 3) + margin);
 
 		if (Width * 1.2 < UiSizes.getWindowWidth()) Width *= 1.2f;
-
-		float iconWidth = 0;
-
-		if (hasIcon) iconWidth += UiSizes.getButtonHeight() + margin * 4.5;
 
 		float MsgWidth = (Width * 0.95f) - 5 - UiSizes.getButtonHeight();
 
@@ -180,7 +177,7 @@ public class GL_MsgBox extends Dialog
 				UiSizes.getButtonHeight());
 
 		Image iconImage = new Image(imageRec, "MsgBoxIcon");
-		iconImage.setSprite(getIcon(icon));
+		iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
 		msgBox.addChild(iconImage);
 
 		label = new Label(contentSize.getBounds(), "MsgBoxLabel");
@@ -417,7 +414,5 @@ public class GL_MsgBox extends Dialog
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
-
 	}
 }

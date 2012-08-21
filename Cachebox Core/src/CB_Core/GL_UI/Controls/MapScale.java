@@ -165,13 +165,13 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		p.setColor(brushes[0]);
 		p.drawRectangle(0, 0, (int) (pos), ((int) height) - 1);
 
-		Texture tex = new Texture(p);
-
-		// CachedScaleSprite = new Sprite(tex, (int) pos, (int) this.getHeight());
-
-		CachedScaleSprite = new TextureRegionDrawable(new TextureRegion(tex, (int) pos, (int) this.getHeight()));
-		drawableWidth = pos;
-		p.dispose();
+		if (p != null)
+		{
+			Texture tex = new Texture(p);
+			CachedScaleSprite = new TextureRegionDrawable(new TextureRegion(tex, (int) pos, (int) this.getHeight()));
+			drawableWidth = pos;
+			p.dispose();
+		}
 
 		float margin = (this.getHeight() - bounds.height) / 1.6f;
 		fontCache.setPosition(this.width - bounds.width - margin, margin);

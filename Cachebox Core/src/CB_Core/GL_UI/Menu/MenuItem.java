@@ -10,7 +10,8 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class MenuItem extends ListViewItemBackground
 {
@@ -18,7 +19,7 @@ public class MenuItem extends ListViewItemBackground
 
 	private String mTitle;
 	private boolean mIsEnabled = true;
-	private Sprite mIcon;
+	private Drawable mIcon;
 	private Label mLabel;
 	private boolean mIsCheckable = false;
 	private boolean mIsChecked = false;
@@ -66,18 +67,12 @@ public class MenuItem extends ListViewItemBackground
 
 			Image iconImage = new Image(rec, "MenuItemImage");
 
-			Sprite sprite = null;
-			if (mIsEnabled)
+			iconImage.setDrawable(mIcon);
+			if (!mIsEnabled)
 			{
-				sprite = mIcon;
-			}
-			else
-			{
-				sprite = new Sprite(mIcon);
-				sprite.setColor(DISABLE_COLOR);
+				iconImage.setColor(DISABLE_COLOR);
 			}
 
-			iconImage.setSprite(sprite);
 			this.addChild(iconImage);
 		}
 
@@ -89,17 +84,17 @@ public class MenuItem extends ListViewItemBackground
 
 			Image checkImage = new Image(rec, "MenuItemCheckImage");
 
-			Sprite sprite = null;
+			Drawable drawable = null;
 			if (mIsChecked)
 			{
-				sprite = SpriteCache.ChkIcons.get(1);
+				drawable = new SpriteDrawable(SpriteCache.ChkIcons.get(1));
 			}
 			else
 			{
-				sprite = SpriteCache.ChkIcons.get(0);
+				drawable = new SpriteDrawable(SpriteCache.ChkIcons.get(0));
 			}
 
-			checkImage.setSprite(sprite);
+			checkImage.setDrawable(drawable);
 			this.addChild(checkImage);
 		}
 
@@ -146,7 +141,7 @@ public class MenuItem extends ListViewItemBackground
 	 *            The new icon (as a Sprite) to be displayed.
 	 * @return This Item so additional setters can be called.
 	 */
-	public MenuItem setIcon(Sprite icon)
+	public MenuItem setIcon(Drawable icon)
 	{
 		mIcon = icon;
 		this.resetInitial();

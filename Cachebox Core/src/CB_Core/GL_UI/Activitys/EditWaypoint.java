@@ -6,6 +6,7 @@ import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
@@ -19,12 +20,16 @@ import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Spinner;
 import CB_Core.GL_UI.Controls.Spinner.selectionChangedListner;
+import CB_Core.GL_UI.Controls.SpinnerAdapter;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.LangStrings;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class EditWaypoint extends ActivityBase
 {
@@ -62,7 +67,7 @@ public class EditWaypoint extends ActivityBase
 		this.addChild(scrollBox);
 		this.waypoint = waypoint;
 		this.mReturnListner = listner;
-		this.showCoordinateDialog = this.showCoordinateDialog;
+		this.showCoordinateDialog = showCoordinateDialog;
 
 		iniCacheNameLabel();
 		iniCoordButton();
@@ -144,7 +149,7 @@ public class EditWaypoint extends ActivityBase
 	private void iniTypeSpinner()
 	{
 		CB_RectF rec = new CB_RectF(Left, tvTyp.getY() - UiSizes.getButtonHeight(), width - Left - Right, UiSizes.getButtonHeight());
-		sType = new Spinner(rec, "CoordButton", getWaypointTypes(), new selectionChangedListner()
+		sType = new Spinner(rec, "CoordButton", getSpinerAdapter(), new selectionChangedListner()
 		{
 
 			@Override
@@ -204,12 +209,55 @@ public class EditWaypoint extends ActivityBase
 		scrollBox.addChild(sType);
 	}
 
-	private String[] getWaypointTypes()
+	private SpinnerAdapter getSpinerAdapter()
 	{
 		final LangStrings ls = GlobalCore.Translations;
-		return new String[]
+
+		final String[] names = new String[]
 			{ ls.Get("Reference"), ls.Get("StageofMulti"), ls.Get("Question2Answer"), ls.Get("Trailhead"), ls.Get("Parking"),
 					ls.Get("Final") };
+
+		SpinnerAdapter adapter = new SpinnerAdapter()
+		{
+
+			@Override
+			public String getText(int position)
+			{
+				return names[position];
+			}
+
+			@Override
+			public Drawable getIcon(int Position)
+			{
+				switch (Position)
+				{
+				case 0:
+					return new SpriteDrawable(SpriteCache.BigIcons.get(CacheTypes.ReferencePoint.ordinal()));
+				case 1:
+					return new SpriteDrawable(SpriteCache.BigIcons.get(CacheTypes.MultiStage.ordinal()));
+				case 2:
+					return new SpriteDrawable(SpriteCache.BigIcons.get(CacheTypes.MultiQuestion.ordinal()));
+				case 3:
+					return new SpriteDrawable(SpriteCache.BigIcons.get(CacheTypes.Trailhead.ordinal()));
+				case 4:
+					return new SpriteDrawable(SpriteCache.BigIcons.get(CacheTypes.ParkingArea.ordinal()));
+				case 5:
+					return new SpriteDrawable(SpriteCache.BigIcons.get(CacheTypes.Final.ordinal()));
+
+				}
+
+				return null;
+			}
+
+			@Override
+			public int getCount()
+			{
+				return names.length;
+			}
+		};
+
+		return adapter;
+
 	}
 
 	private void iniLabelTitle()

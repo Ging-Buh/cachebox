@@ -17,6 +17,7 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class ColorPicker extends ActivityBase
 {
@@ -105,7 +106,7 @@ public class ColorPicker extends ActivityBase
 
 		rec.setWidth(rec.getHeight());
 		arrow = new Image(rec, "arrowImage");
-		arrow.setSprite(SpriteCache.Arrows.get(11));
+		arrow.setDrawable(new SpriteDrawable(SpriteCache.Arrows.get(11)));
 
 		float lineWidth = lastColorBox.getWidth() + margin + arrow.getWidth() + margin + actColorBox.getWidth();
 		float left = this.getHalfWidth() - (lineWidth / 2);
@@ -127,13 +128,13 @@ public class ColorPicker extends ActivityBase
 
 		viewHue = new Image(this.width - Right - margin - vWidth, actColorBox.getMaxY() + margin, vWidth, this.height - Top
 				- actColorBox.getMaxY() - margin * 2, "viewHue");
-		viewHue.setSprite(SpriteCache.ambilwarna_hue);
+		viewHue.setDrawable(new SpriteDrawable(SpriteCache.ambilwarna_hue));
 		this.addChild(viewHue);
 
 		float cursorSize = Fonts.Mesure("T").height;
 
 		viewCursor = new Image(0, 0, cursorSize, cursorSize, "");
-		viewCursor.setSprite(SpriteCache.ambilwarna_cursor);
+		viewCursor.setDrawable(new SpriteDrawable(SpriteCache.ambilwarna_cursor));
 		this.addChild(viewCursor);
 
 	}
@@ -170,7 +171,7 @@ public class ColorPicker extends ActivityBase
 		float cursorSize = Fonts.Mesure("T").height;
 
 		viewTarget = new Image(0, 0, cursorSize, cursorSize, "");
-		viewTarget.setSprite(SpriteCache.ambilwarna_target);
+		viewTarget.setDrawable(new SpriteDrawable(SpriteCache.ambilwarna_target));
 		this.addChild(viewTarget);
 
 	}

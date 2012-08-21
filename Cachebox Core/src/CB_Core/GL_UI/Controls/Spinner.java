@@ -5,19 +5,23 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Spinner extends Button
 {
 	private NinePatch triangle;
-	private String[] mItems;
 	private int mSelectedIndex = -1;
 	private Spinner that;
 	private String prompt;
+	private Image icon;
+
+	private SpinnerAdapter mAdapter;
 
 	public interface selectionChangedListner
 	{
@@ -26,18 +30,18 @@ public class Spinner extends Button
 
 	private selectionChangedListner mListner;
 
-	public Spinner(float X, float Y, float Width, float Height, String Name, String[] items, selectionChangedListner listner)
+	public Spinner(float X, float Y, float Width, float Height, String Name, SpinnerAdapter adapter, selectionChangedListner listner)
 	{
 		super(X, Y, Width, Height, Name);
-		mItems = items;
+		mAdapter = adapter;
 		that = this;
 		mListner = listner;
 	}
 
-	public Spinner(CB_RectF rec, String Name, String[] items, selectionChangedListner listner)
+	public Spinner(CB_RectF rec, String Name, SpinnerAdapter adapter, selectionChangedListner listner)
 	{
 		super(rec, Name);
-		mItems = items;
+		mAdapter = adapter;
 		that = this;
 		mListner = listner;
 	}
@@ -60,6 +64,8 @@ public class Spinner extends Button
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
+				if (mAdapter == null) return true; // kann nix anzeigen
+
 				// show Menu to select
 				Menu icm = new Menu("SpinnerSelection" + that.name);
 				icm.setItemClickListner(new OnClickListener()
@@ -74,10 +80,12 @@ public class Spinner extends Button
 					}
 				});
 
-				int index = 0;
-				for (String tmp : mItems)
+				for (int index = 0; index < mAdapter.getCount(); index++)
 				{
-					icm.addItem(index++, tmp, true);
+					String text = mAdapter.getText(index);
+					Drawable drawable = mAdapter.getIcon(index);
+
+					icm.addItem(index, text, drawable, true);
 				}
 
 				if (prompt != null && !prompt.equalsIgnoreCase(""))
@@ -108,26 +116,64 @@ public class Spinner extends Button
 
 	public void setSelection(int i)
 	{
-		if (mItems.length >= i)
+		if (mAdapter != null && mAdapter.getCount() >= i)
 		{
-			String Text = mItems[i];
+			String Text = mAdapter.getText(i);
 			mSelectedIndex = i;
 			this.setText(Text);
 			lblTxt.setHAlignment(HAlignment.LEFT);
 			lblTxt.setText(Text);
 
+			Drawable drw = mAdapter.getIcon(i);
+
+			if (drw != null)
+			{
+				if (icon == null)
+				{
+					CB_RectF rec = (new CB_RectF(0, 0, this.height, this.height)).ScaleCenter(0.7f);
+
+					icon = new Image(rec, "");
+					icon.setY(this.halfHeight - icon.getHalfHeight());
+
+					float margin = UiSizes.getMargin();
+
+					icon.setX(margin * 2);
+
+					this.addChild(icon);
+
+					lblTxt.setX(icon.getMaxX() + margin);
+				}
+
+				icon.setDrawable(drw);
+			}
+
 		}
 
 	}
 
-	public String getSelectedItem()
+	public int getSelectedItem()
 	{
-		return this.getText();
+		return mSelectedIndex;
 	}
 
 	public void setPrompt(String Prompt)
 	{
 		prompt = Prompt;
+	}
+
+	public SpinnerAdapter getAdapter()
+	{
+		return mAdapter;
+	}
+
+	public void setAdapter(SpinnerAdapter adapter)
+	{
+		mAdapter = adapter;
+	}
+
+	public void setSelectionChangedListner(selectionChangedListner selectionChangedListner)
+	{
+		mListner = selectionChangedListner;
 	}
 
 }

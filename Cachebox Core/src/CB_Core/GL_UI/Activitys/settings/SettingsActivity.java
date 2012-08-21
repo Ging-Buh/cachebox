@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Activitys.settings;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,6 +8,9 @@ import java.util.Iterator;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Events.platformConector;
+import CB_Core.Events.platformConector.IgetFileReturnListner;
+import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Activitys.ActivityBase;
@@ -18,6 +22,7 @@ import CB_Core.GL_UI.Controls.Linearlayout;
 import CB_Core.GL_UI.Controls.ScrollBox;
 import CB_Core.GL_UI.Controls.Spinner;
 import CB_Core.GL_UI.Controls.Spinner.selectionChangedListner;
+import CB_Core.GL_UI.Controls.SpinnerAdapter;
 import CB_Core.GL_UI.Controls.chkBox;
 import CB_Core.GL_UI.Controls.chkBox.OnCheckedChangeListener;
 import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox;
@@ -49,6 +54,8 @@ import CB_Core.Settings.SettingModus;
 import CB_Core.Settings.SettingString;
 import CB_Core.Settings.SettingTime;
 import CB_Core.TranslationEngine.LangStrings.Langs;
+
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class SettingsActivity extends ActivityBase
 {
@@ -410,7 +417,7 @@ public class SettingsActivity extends ActivityBase
 		}
 		else if (SB instanceof SettingEnum)
 		{
-			return getEnumView((SettingEnum) SB, BackgroundChanger);
+			return getEnumView((SettingEnum<?>) SB, BackgroundChanger);
 		}
 		else if (SB instanceof SettingString)
 		{
@@ -499,147 +506,130 @@ public class SettingsActivity extends ActivityBase
 
 	}
 
-	private CB_View_Base getEnumView(final SettingEnum SB, int backgroundChanger)
+	private CB_View_Base getEnumView(final SettingEnum<?> SB, int backgroundChanger)
 	{
-		// LayoutInflater inflater = getLayoutInflater();
-		// View row = inflater.inflate(R.layout.advanced_settings_list_view_item_enum, parent, false);
-		//
-		// LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
-		// if (BackgroundChanger)
-		// {
-		// LL.setBackgroundResource(R.drawable.settings_list_background);
-		// }
-		// else
-		// {
-		// LL.setBackgroundResource(R.drawable.settings_list_background2);
-		// }
-		//
-		// TextView label = (TextView) row.findViewById(R.id.textView1);
-		// label.setText(GlobalCore.Translations.Get(SB.getName()));
-		// label.setTextSize(UiSizes.getScaledFontSize_big());
-		// label.setTextColor(Global.getColor(R.attr.TextColor));
-		//
-		// final Spinner spinner = (Spinner) row.findViewById(R.id.spinner1);
-		//
-		// if (spinner.getAdapter() == null)
-		// {
-		// ArrayAdapter<String> enumAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, SB.getValues());
-		// enumAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		// spinner.setAdapter(enumAdapter);
-		// spinner.setSelection(SB.getValues().indexOf(SB.getValue()));
-		//
-		// spinner.setOnItemSelectedListener(new OnItemSelectedListener()
-		// {
-		//
-		// @Override
-		// public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
-		// {
-		// if (SB != null)
-		// {
-		// selectedItem = SB;
-		// SB.setValue((String) SB.getValues().get(arg2));
-		// }
-		// }
-		//
-		// @Override
-		// public void onNothingSelected(AdapterView<?> arg0)
-		// {
-		// if (SB != null)
-		// {
-		// selectedItem = SB;
-		//
-		// }
-		// }
-		// });
-		// }
-		//
-		// row.setOnLongClickListener(new OnLongClickListener()
-		// {
-		//
-		// @Override
-		// public boolean onLongClick(View arg0)
-		// {
-		// // zeige Beschreibung der Einstellung
-		//
-		// MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
-		//
-		// return false;
-		// }
-		// });
 
-		return null;
+		SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, SB.getName());
 
+		item.setName(GlobalCore.Translations.Get(SB.getName()));
+
+		final Spinner spinner = item.getSpinner();
+
+		spinner.setDrageble();
+
+		final SpinnerAdapter adapter = new SpinnerAdapter()
+		{
+
+			@Override
+			public String getText(int position)
+			{
+				return String.valueOf(SB.getValues().get(position));
+			}
+
+			@Override
+			public Drawable getIcon(int Position)
+			{
+				return null;
+			}
+
+			@Override
+			public int getCount()
+			{
+				return SB.getValues().size();
+			}
+		};
+
+		spinner.setAdapter(adapter);
+		spinner.setSelection(SB.getValues().indexOf(SB.getValue()));
+
+		spinner.setSelectionChangedListner(new selectionChangedListner()
+		{
+			@Override
+			public void selectionChanged(int index)
+			{
+				SB.setValue((String) SB.getValues().get(index));
+			}
+		});
+
+		item.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// zeige Beschreibung der Einstellung
+
+				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()));
+
+				return false;
+			}
+
+		});
+
+		return item;
 	}
 
 	private CB_View_Base getIntArrayView(final SettingIntArray SB, int backgroundChanger)
 	{
-		// LayoutInflater inflater = getLayoutInflater();
-		// View row = inflater.inflate(R.layout.advanced_settings_list_view_item_enum, parent, false);
-		//
-		// LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
-		// if (BackgroundChanger)
-		// {
-		// LL.setBackgroundResource(R.drawable.settings_list_background);
-		// }
-		// else
-		// {
-		// LL.setBackgroundResource(R.drawable.settings_list_background2);
-		// }
-		//
-		// TextView label = (TextView) row.findViewById(R.id.textView1);
-		// label.setText(GlobalCore.Translations.Get(SB.getName()));
-		// label.setTextSize(UiSizes.getScaledFontSize_big());
-		// label.setTextColor(Global.getColor(R.attr.TextColor));
-		//
-		// final Spinner spinner = (Spinner) row.findViewById(R.id.spinner1);
-		//
-		// if (spinner.getAdapter() == null)
-		// {
-		// ArrayAdapter<Integer> enumAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, SB.getValues());
-		// enumAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		// spinner.setAdapter(enumAdapter);
-		// spinner.setSelection(SB.getIndex());
-		//
-		// spinner.setOnItemSelectedListener(new OnItemSelectedListener()
-		// {
-		//
-		// @Override
-		// public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
-		// {
-		// if (SB != null)
-		// {
-		// selectedItem = SB;
-		// SB.setValue(SB.getValueFromIndex(arg2));
-		// }
-		// }
-		//
-		// @Override
-		// public void onNothingSelected(AdapterView<?> arg0)
-		// {
-		// if (SB != null)
-		// {
-		// selectedItem = SB;
-		//
-		// }
-		// }
-		// });
-		// }
-		//
-		// row.setOnLongClickListener(new OnLongClickListener()
-		// {
-		//
-		// @Override
-		// public boolean onLongClick(View arg0)
-		// {
-		// // zeige Beschreibung der Einstellung
-		//
-		// MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
-		//
-		// return false;
-		// }
-		// });
 
-		return null;
+		SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, SB.getName());
+
+		item.setName(GlobalCore.Translations.Get(SB.getName()));
+
+		final Spinner spinner = item.getSpinner();
+
+		spinner.setDrageble();
+
+		final SpinnerAdapter adapter = new SpinnerAdapter()
+		{
+
+			@Override
+			public String getText(int position)
+			{
+				return String.valueOf(SB.getValues()[position]);
+			}
+
+			@Override
+			public Drawable getIcon(int Position)
+			{
+				return null;
+			}
+
+			@Override
+			public int getCount()
+			{
+				return SB.getValues().length;
+			}
+		};
+
+		spinner.setAdapter(adapter);
+		spinner.setSelection(SB.getIndex());
+
+		spinner.setSelectionChangedListner(new selectionChangedListner()
+		{
+			@Override
+			public void selectionChanged(int index)
+			{
+				SB.setValue(SB.getValueFromIndex(index));
+			}
+		});
+
+		item.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// zeige Beschreibung der Einstellung
+
+				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()));
+
+				return false;
+			}
+
+		});
+
+		return item;
 
 	}
 
@@ -766,150 +756,117 @@ public class SettingsActivity extends ActivityBase
 
 	private CB_View_Base getFolderView(final SettingFolder SB, int backgroundChanger)
 	{
-		// LayoutInflater inflater = getLayoutInflater();
-		// View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
-		//
-		// LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
-		// if (BackgroundChanger)
-		// {
-		// LL.setBackgroundResource(R.drawable.settings_list_background);
-		// }
-		// else
-		// {
-		// LL.setBackgroundResource(R.drawable.settings_list_background2);
-		// }
-		//
-		// TextView label = (TextView) row.findViewById(R.id.textView1);
-		// label.setText(GlobalCore.Translations.Get(SB.getName()));
-		// label.setTextSize(UiSizes.getScaledFontSize_big());
-		// label.setTextColor(Global.getColor(R.attr.TextColor));
-		//
-		// TextView label2 = (TextView) row.findViewById(R.id.textView2);
-		//
-		// label2.setText(SB.getValue());
-		// label2.setTextSize((float) UiSizes.getScaledFontSize());
-		// label2.setTextColor(Global.getColor(R.attr.TextColor));
-		//
-		// row.setOnClickListener(new OnClickListener()
-		// {
-		//
-		// @Override
-		// public void onClick(View arg0)
-		// {
-		// SettingsScrollView.EditKey = SB.getName();
-		//
-		// Intent intent = new Intent(FileManagerIntents.ACTION_PICK_DIRECTORY);
-		//
-		// // Construct URI from file name.
-		// File file = new File(SB.getValue());
-		// intent.setData(Uri.fromFile(file));
-		//
-		// // Set fancy title and button (optional)
-		// intent.putExtra(FileManagerIntents.EXTRA_TITLE, "Select Folder");
-		// intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, "Select");
-		// selectedItem = SB;
-		// try
-		// {
-		// SettingsScrollView.Me.startActivityForResult(intent, Global.REQUEST_CODE_PICK_DIRECTORY);
-		// }
-		// catch (ActivityNotFoundException e)
-		// {
-		// // No compatible file manager was found.
-		// Toast.makeText(main.mainActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
-		// }
-		// }
-		// });
-		//
-		// row.setOnLongClickListener(new OnLongClickListener()
-		// {
-		//
-		// @Override
-		// public boolean onLongClick(View arg0)
-		// {
-		// // zeige Beschreibung der Einstellung
-		//
-		// MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
-		//
-		// return false;
-		// }
-		// });
 
-		return null;
+		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
+
+		item.setName(GlobalCore.Translations.Get(SB.getName()));
+		item.setDefault(SB.getValue());
+
+		item.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				EditKey = SB.getName();
+				File file = new File(SB.getValue());
+
+				platformConector.getFolder("initialPath", "TitleText", "ButtonText", new IgetFolderReturnListner()
+				{
+
+					@Override
+					public void getFolderReturn(String Path)
+					{
+						SB.setValue(Path);
+						resortList();
+					}
+				});
+
+				return true;
+			}
+
+		});
+
+		item.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// zeige Beschreibung der Einstellung
+
+				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()));
+
+				return false;
+			}
+
+		});
+
+		return item;
 
 	}
 
 	private CB_View_Base getFileView(final SettingFile SB, int backgroundChanger)
 	{
-		// LayoutInflater inflater = getLayoutInflater();
-		// View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
-		//
-		// LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
-		// if (BackgroundChanger)
-		// {
-		// LL.setBackgroundResource(R.drawable.settings_list_background);
-		// }
-		// else
-		// {
-		// LL.setBackgroundResource(R.drawable.settings_list_background2);
-		// }
-		//
-		// TextView label = (TextView) row.findViewById(R.id.textView1);
-		// // label.setText(SB.getName());
-		// label.setText(GlobalCore.Translations.Get(SB.getName()));
-		// label.setTextSize(UiSizes.getScaledFontSize_big());
-		// label.setTextColor(Global.getColor(R.attr.TextColor));
-		//
-		// TextView label2 = (TextView) row.findViewById(R.id.textView2);
-		//
-		// label2.setText(SB.getValue());
-		// label2.setTextSize((float) UiSizes.getScaledFontSize());
-		// label2.setTextColor(Global.getColor(R.attr.TextColor));
-		//
-		// row.setOnClickListener(new OnClickListener()
-		// {
-		//
-		// @Override
-		// public void onClick(View arg0)
-		// {
-		// SettingsScrollView.EditKey = SB.getName();
-		//
-		// Intent intent = new Intent(FileManagerIntents.ACTION_PICK_FILE);
-		//
-		// // Construct URI from file name.
-		// File file = new File(SB.getValue());
-		// intent.setData(Uri.fromFile(file));
-		//
-		// // Set fancy title and button (optional)
-		// intent.putExtra(FileManagerIntents.EXTRA_TITLE, "Select file to open");
-		// intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, "Select");
-		// selectedItem = SB;
-		// try
-		// {
-		// SettingsScrollView.Me.startActivityForResult(intent, Global.REQUEST_CODE_PICK_FILE);
-		// }
-		// catch (ActivityNotFoundException e)
-		// {
-		// // No compatible file manager was found.
-		// Toast.makeText(main.mainActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
-		// }
-		// }
-		// });
-		//
-		// row.setOnLongClickListener(new OnLongClickListener()
-		// {
-		//
-		// @Override
-		// public boolean onLongClick(View arg0)
-		// {
-		// // zeige Beschreibung der Einstellung
-		//
-		// MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
-		//
-		// return false;
-		// }
-		// });
+		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
 
-		return null;
+		item.setName(GlobalCore.Translations.Get(SB.getName()));
+		item.setDefault(SB.getValue());
+
+		item.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				EditKey = SB.getName();
+				File file = new File(SB.getValue());
+
+				String Path = file.getParent();
+
+				platformConector.getFile(Path, SB.getExt(), GlobalCore.Translations.Get("select_file"),
+						GlobalCore.Translations.Get("select"), new IgetFileReturnListner()
+						{
+
+							@Override
+							public void getFieleReturn(String Path)
+							{
+								SB.setValue(Path);
+							}
+						});
+
+				platformConector.getFolder("initialPath", "TitleText", "ButtonText", new IgetFolderReturnListner()
+				{
+
+					@Override
+					public void getFolderReturn(String Path)
+					{
+						SB.setValue(Path);
+						resortList();
+					}
+				});
+
+				return true;
+			}
+
+		});
+
+		item.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// zeige Beschreibung der Einstellung
+
+				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()));
+
+				return false;
+			}
+
+		});
+
+		return item;
 
 	}
 
@@ -1110,13 +1067,43 @@ public class SettingsActivity extends ActivityBase
 		final String[] items = new String[Sprachen.size()];
 		int index = 0;
 		int selection = -1;
+
+		File file1 = new File(Config.settings.Sel_LanguagePath.getValue());
+
 		for (Langs tmp : Sprachen)
 		{
-			if (Config.settings.Sel_LanguagePath.getValue().equals(tmp.Path)) selection = index;
+			File file2 = new File(tmp.Path);
+			if (file1.getAbsoluteFile().compareTo(file2.getAbsoluteFile()) == 0)
+			{
+				selection = index;
+			}
+
 			items[index++] = tmp.Name;
 		}
 
-		final Spinner spinner = new Spinner(ButtonRec, "LangSpinner", items, new selectionChangedListner()
+		SpinnerAdapter adapter = new SpinnerAdapter()
+		{
+
+			@Override
+			public String getText(int position)
+			{
+				return items[position];
+			}
+
+			@Override
+			public Drawable getIcon(int Position)
+			{
+				return null;
+			}
+
+			@Override
+			public int getCount()
+			{
+				return items.length;
+			}
+		};
+
+		final Spinner spinner = new Spinner(ButtonRec, "LangSpinner", adapter, new selectionChangedListner()
 		{
 
 			@Override
@@ -1145,7 +1132,6 @@ public class SettingsActivity extends ActivityBase
 
 		spinner.setSelection(selection);
 
-		// TODO Prompt in Spinner einbauen
 		spinner.setPrompt(GlobalCore.Translations.Get("SelectLanguage"));
 
 		spinner.setDrageble();
