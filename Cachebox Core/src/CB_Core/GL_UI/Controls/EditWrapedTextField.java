@@ -1270,7 +1270,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				leftPos = xCursor;
 			}
 			// Prüfen, ob der Cursr rechts außen ist
-			if (xCursor > leftPos + maxTextWidth)
+			if ((xCursor > leftPos + maxTextWidth) && (maxTextWidth > 0))
 			{
 				leftPos = xCursor - maxTextWidth;
 			}
