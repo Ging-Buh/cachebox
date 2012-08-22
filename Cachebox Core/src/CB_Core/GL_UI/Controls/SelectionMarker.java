@@ -104,13 +104,15 @@ public class SelectionMarker extends CB_View_Base
 			// neue gewünschte Koordinaten rel. links unten
 			float newX = this.getX() + x - touchDownPos.x;
 			float newY = this.getY() + y - touchDownPos.y;
-
+			// System.out.println("getX()=" + this.getX() + " x=" + x + " - newX=" + newX);
 			// neue gewünschte Koordinaten am Einfügepunkt des Markers
 			newX = newX + markerXPos;
 			newY = newY + height;
 			Point cursorPos = textField.GetNextCursorPos(new Point((int) newX, (int) newY), type, true);
 			if (cursorPos != null)
 			{
+				// System.out.println("x=" + x + " - aktX=" + this.getX() + " - touchX=" + touchDownPos.x);
+
 				// SelectionMarker verschieben
 				moveTo(cursorPos.x, cursorPos.y);
 			}
@@ -138,8 +140,22 @@ public class SelectionMarker extends CB_View_Base
 		return true;
 	}
 
+	// move absolute
 	public void moveTo(float x, float y)
 	{
+		float oldX = this.getX();
+		float oldY = this.getY();
 		this.setPos(x - markerXPos, y - height);
+		if (this.ThisWorldRec != null)
+		{
+			this.ThisWorldRec.offset(x - markerXPos - oldX, y - height - oldY);
+		}
+	}
+
+	// move relative
+	public void moveBy(float dx, float dy)
+	{
+		if ((Math.abs(dx) < 0.5) && (Math.abs(dy) < 0.5)) return;
+		this.setPos(this.getX() + dx, this.getY() + dy);
 	}
 }

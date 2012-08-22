@@ -35,6 +35,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 	static protected final char DELETE = 127;
 	static protected final char BULLET = 149;
 
+	// factor for the size of the selectinMarkers
+	static protected final double markerFactor = 2.0;
 	protected final float x = 0;
 	protected final float y = 0;
 
@@ -371,7 +373,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 					cursorHeight = displayText.get(0).textBounds.height + font.getDescent() / 2;
 
-					cursorPatch.draw(batch, getCursorX(), getCursorY(), cursorPatch.getMinWidth(), cursorHeight);
+					cursorPatch.draw(batch, getCursorX() - leftPos, getCursorY(), cursorPatch.getMinWidth(), cursorHeight);
 
 				}
 			}
@@ -413,7 +415,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		{
 			xpos = dt.glyphPositions.get(dt.glyphPositions.size - 1); // letztes Zeichen
 		}
-		return x + style.background.getLeftWidth() + xpos - 1;
+		return x + style.background.getLeftWidth() + xpos - 1 - leftPos;
 	}
 
 	private float getCursorY()
@@ -688,8 +690,11 @@ public class EditWrapedTextField extends EditTextFieldBase
 	{
 		if (mouseDown != null)
 		{
+			float oldTopLine = topLine;
+			float oldLeftPos = leftPos;
 			if (isMultiLine())
 			{
+
 				// Scrollen Oben - Unten
 				if (displayText.size() < maxLineCount)
 				{
@@ -732,6 +737,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 					}
 				}
 			}
+			moveSelectionMarkers((oldLeftPos - leftPos), (topLine - oldTopLine) * lineHeight);
 		}
 		GL_Listener.glListener.renderOnce("EditWrapedTextField");
 		return true;
@@ -869,7 +875,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		case Center:
 			if (selectionMarkerCenter == null)
 			{
-				selectionMarkerCenter = new SelectionMarker(this, 0, 0, (int) (lineHeight * 1.5), type);
+				selectionMarkerCenter = new SelectionMarker(this, 0, 0, (int) (lineHeight * markerFactor), type);
 				parent.addChild(selectionMarkerCenter);
 			}
 			selectionMarkerCenter.moveTo(getX() + getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getY()
@@ -878,7 +884,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		case Left:
 			if (selectionMarkerLeft == null)
 			{
-				selectionMarkerLeft = new SelectionMarker(this, 0, 0, (int) (lineHeight * 1.5), type);
+				selectionMarkerLeft = new SelectionMarker(this, 0, 0, (int) (lineHeight * markerFactor), type);
 				parent.addChild(selectionMarkerLeft);
 			}
 			selectionMarkerLeft
@@ -887,7 +893,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		case Right:
 			if (selectionMarkerRight == null)
 			{
-				selectionMarkerRight = new SelectionMarker(this, 0, 0, (int) (lineHeight * 1.5), type);
+				selectionMarkerRight = new SelectionMarker(this, 0, 0, (int) (lineHeight * markerFactor), type);
 				parent.addChild(selectionMarkerRight);
 			}
 			selectionMarkerRight.moveTo(getX() + getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getY()
@@ -896,6 +902,14 @@ public class EditWrapedTextField extends EditTextFieldBase
 		}
 
 		markerIsShohing = true;
+	}
+
+	private void moveSelectionMarkers(float dx, float dy)
+	{
+		if (selectionMarkerCenter != null)
+		{
+			selectionMarkerCenter.moveBy(dx, dy);
+		}
 	}
 
 	protected void hideSelectionMarker()
