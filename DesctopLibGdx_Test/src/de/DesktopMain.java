@@ -84,28 +84,27 @@ public class DesktopMain
 			@Override
 			public boolean isOnline()
 			{
-				// TODO Auto-generated method stub
+
 				return true;
 			}
 
 			@Override
 			public boolean isGPSon()
 			{
-				// TODO Auto-generated method stub
+
 				return true;
 			}
 
 			@Override
 			public void vibrate()
 			{
-				// TODO Auto-generated method stub
 
 			}
 
 			@Override
 			public GpsStatus getGpsStatus()
 			{
-				// TODO Auto-generated method stub
+
 				return null;
 			}
 		});
@@ -150,18 +149,6 @@ public class DesktopMain
 					if (returnListner != null) returnListner.getFieleReturn(chooser.getSelectedFile().getAbsolutePath());
 					System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
 				}
-
-				// FileDialog filedia = new FileDialog(frame, ButtonText);
-				// filedia.setDirectory(initialPath);
-				// filedia.setFile(extension);
-				// filedia.setTitle(TitleText);
-				// filedia.show();
-				// String filename = filedia.getDirectory() + filedia.getFile();
-				// if (filename != null)
-				// {
-				// if (returnListner != null) returnListner.getFieleReturn(filename);
-				// }
-				// filedia.dispose();
 
 			}
 		});

@@ -43,6 +43,7 @@ public class QuickButtonItem extends ListViewItemBase
 	private Image mButtonIcon;
 	private String mActionDesc;
 	private Button mButton;
+	private QuickActions quickActionsEnum;
 
 	/**
 	 * Constructor
@@ -54,10 +55,10 @@ public class QuickButtonItem extends ListViewItemBase
 	 * @param Desc
 	 *            Action Beschreibung
 	 */
-	public QuickButtonItem(CB_RectF rec, int Index, CB_Action action, String Desc)
+	public QuickButtonItem(CB_RectF rec, int Index, CB_Action action, String Desc, QuickActions type)
 	{
 		super(rec, Index, action.getName());
-
+		quickActionsEnum = type;
 		mAction = action;
 		mButtonIcon = new Image(rec.ScaleCenter(0.7f), "QuickListItemImage");
 		mButtonIcon.setDrawable(new SpriteDrawable(action.getIcon()));
@@ -175,5 +176,10 @@ public class QuickButtonItem extends ListViewItemBase
 	@Override
 	protected void SkinIsChanged()
 	{
+	}
+
+	public QuickActions getAction()
+	{
+		return quickActionsEnum;
 	}
 }

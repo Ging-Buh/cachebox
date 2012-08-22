@@ -40,7 +40,7 @@ public class Sample_Control extends GL_View_Base
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
-		// TODO Auto-generated method stub
+
 		return false;
 	}
 

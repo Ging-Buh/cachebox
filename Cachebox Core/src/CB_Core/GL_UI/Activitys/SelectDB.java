@@ -51,6 +51,14 @@ public class SelectDB extends ActivityBase
 		super(rec, Name);
 		MusstSelect = mustSelect;
 		DBPath = FileIO.GetDirectoryName(Config.settings.DatabasePath.getValue());
+
+		if (DBPath.endsWith(".db3"))
+		{
+			Config.settings.DatabasePath.setValue(DBPath);
+			Config.AcceptChanges();
+			DBPath = FileIO.GetDirectoryName(DBPath);
+		}
+
 		String DBFile = FileIO.GetFileName(Config.settings.DatabasePath.getValue());
 
 		// lvFiles = (ListView) findViewById(R.id.sdb_list);
@@ -222,7 +230,8 @@ public class SelectDB extends ActivityBase
 		for (int i = 0; i < lvAdapter.getCount(); i++)
 		{
 			File file = lvAdapter.getItem(i);
-			if (file.equals(AktFile))
+
+			if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0)
 			{
 				lvFiles.setSelection(i);
 			}

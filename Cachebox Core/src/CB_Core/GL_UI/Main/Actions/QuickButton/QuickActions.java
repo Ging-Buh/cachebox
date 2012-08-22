@@ -80,8 +80,11 @@ public enum QuickActions
 				int EnumId = Integer.parseInt(s);
 				if (EnumId > -1)
 				{
+
+					QuickActions type = QuickActions.values()[EnumId];
+
 					QuickButtonItem tmp = new QuickButtonItem(new CB_RectF(0, 0, height, height), index,
-							QuickActions.getActionEnumById(EnumId), QuickActions.getName(EnumId));
+							QuickActions.getActionEnumById(EnumId), QuickActions.getName(EnumId), type);
 
 					retVel.add(tmp);
 				}
@@ -153,7 +156,7 @@ public enum QuickActions
 		return null;
 	}
 
-	private static String getName(int id)
+	public static String getName(int id)
 	{
 		switch (id)
 		{

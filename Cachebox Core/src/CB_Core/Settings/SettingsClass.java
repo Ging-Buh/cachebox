@@ -188,6 +188,7 @@ public class SettingsClass extends SettingsList
 		addInternalSettings();
 		addAPISettings();
 		addSkinSettings();
+		addQuickbuttonsSettings();
 		addDebugSettings();
 	}
 
@@ -320,6 +321,15 @@ public class SettingsClass extends SettingsList
 
 	}
 
+	private void addQuickbuttonsSettings()
+	{
+		SettingCategory cat = SettingCategory.QuickList;
+		addSetting(quickButtonShow = new SettingBool("quickButtonShow", cat, NORMAL, true, true));
+		addSetting(quickButtonLastShow = new SettingBool("quickButtonLastShow", cat, INVISIBLE, false, true));
+		addSetting(quickButtonList = new SettingString("quickButtonList", cat, INVISIBLE, "5,0,1,3,2", true));
+
+	}
+
 	private void addInternalSettings()
 	{
 		SettingCategory cat = SettingCategory.Internal;
@@ -327,7 +337,7 @@ public class SettingsClass extends SettingsList
 		addSetting(SettingsShowExpert = new SettingBool("SettingsShowExpert", cat, NEVER, false, true));
 		addSetting(SettingsShowAll = new SettingBool("SettingsShowAll", cat, NEVER, false, true));
 		addSetting(nightMode = new SettingBool("nightMode", cat, NEVER, false, true));
-		addSetting(quickButtonShow = new SettingBool("quickButtonShow", cat, NEVER, true, true));
+
 		addSetting(ImportGpx = new SettingBool("ImportGpx", cat, INVISIBLE, true, true));
 		addSetting(CacheMapData = new SettingBool("CacheMapData", cat, INVISIBLE, false, true));
 		addSetting(CacheImageData = new SettingBool("CacheImageData", cat, INVISIBLE, true, true));
@@ -338,7 +348,6 @@ public class SettingsClass extends SettingsList
 
 		addSetting(MultiDBAsk = new SettingBool("MultiDBAsk", cat, NEVER, true, true));
 
-		addSetting(quickButtonLastShow = new SettingBool("quickButtonLastShow", cat, NEVER, false, true));
 		addSetting(newInstall = new SettingBool("newInstall", cat, NEVER, false, true));
 
 		// int
@@ -352,7 +361,6 @@ public class SettingsClass extends SettingsList
 				"http://129.206.229.146/openrouteservice/php/OpenLSRS_DetermineRoute.php", true));
 
 		addSetting(SpoilersDescriptionTags = new SettingString("SpoilersDescriptionTags", cat, INVISIBLE, "", true));
-		addSetting(quickButtonList = new SettingString("quickButtonList", cat, NEVER, "5,0,1,3,2", true));
 
 		addSetting(hasCallPermission = new SettingBool("hasCallPermission", cat, NEVER, false, true));
 		addSetting(hasPQ_PlugIn = new SettingBool("hasPQ_PlugIn", cat, NEVER, false, true));

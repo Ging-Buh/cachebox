@@ -33,8 +33,8 @@ public class StringInputBox extends GL_MsgBox
 		editText = new EditWrapedTextField(msgBox, textFieldRec, type, "MsgBoxLabel");
 		editText.setZeroPos();
 		editText.setY(margin * 2);
-
 		editText.setText(initialString);
+		editText.setCursorPosition(initialString.length());
 
 		float topBottom = editText.getStyle().background.getTopHeight() + editText.getStyle().background.getBottomHeight();
 

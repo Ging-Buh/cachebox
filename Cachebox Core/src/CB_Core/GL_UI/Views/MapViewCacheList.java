@@ -55,7 +55,7 @@ public class MapViewCacheList
 			}
 			catch (Exception ex)
 			{
-				String s = ex.getMessage();
+				// String s = ex.getMessage();
 			}
 			queueProcessor.start();
 		}
@@ -68,7 +68,7 @@ public class MapViewCacheList
 		@Override
 		public void run()
 		{
-			boolean queueEmpty = false;
+			// boolean queueEmpty = false;
 			try
 			{
 				do
@@ -407,6 +407,9 @@ public class MapViewCacheList
 
 	public void update(Vector2 point1, Vector2 point2, int zoom, boolean doNotCheck)
 	{
+
+		if (point1 == null || point2 == null || lastPoint1 == null || lastPoint2 == null) return;
+
 		if (state.get() != 0) return;
 		if ((zoom == lastzoom) && (!doNotCheck))
 		{

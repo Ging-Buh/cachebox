@@ -63,7 +63,7 @@ public class FileIO
 
 	public static String GetFileName(String filename)
 	{
-		int slashposition = filename.lastIndexOf("/");
+		int slashposition = Math.max(filename.lastIndexOf("/"), filename.lastIndexOf("\\"));
 		if (slashposition >= 0) filename = filename.substring(slashposition + 1, filename.length());
 		return filename;
 
@@ -71,7 +71,7 @@ public class FileIO
 
 	public static String GetDirectoryName(String filename)
 	{
-		int slashposition = filename.lastIndexOf("/");
+		int slashposition = Math.max(filename.lastIndexOf("/"), filename.lastIndexOf("\\"));
 		if (slashposition >= 0) filename = filename.substring(0, slashposition);
 		return filename;
 	}

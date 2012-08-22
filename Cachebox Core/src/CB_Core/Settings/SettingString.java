@@ -25,6 +25,13 @@ public class SettingString extends SettingBase
 
 	public void setValue(String value)
 	{
+
+		if (value == null)
+		{
+			int i = 0;
+			i++;
+		}
+
 		if (this.value.equals(value)) return;
 		this.value = value;
 		setDirty();
@@ -66,6 +73,7 @@ public class SettingString extends SettingBase
 	@Override
 	public void loadFromLastValue()
 	{
+		if (lastValue == null) throw new IllegalArgumentException("You have never saved the last value! Call SaveToLastValue()");
 		value = lastValue;
 	}
 

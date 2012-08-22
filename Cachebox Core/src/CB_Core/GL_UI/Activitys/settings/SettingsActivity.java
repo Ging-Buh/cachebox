@@ -88,6 +88,12 @@ public class SettingsActivity extends ActivityBase
 		fillContent();
 	}
 
+	@Override
+	public void onShow()
+	{
+		Config.settings.SaveToLastValue();
+	}
+
 	private void createButtons()
 	{
 		float btnW = (innerWidth - UiSizes.getButtonWidth()) / 2;
@@ -209,10 +215,10 @@ public class SettingsActivity extends ActivityBase
 
 			addControlToLinearLayout(langView, margin);
 
-			SettingsListCategoryButton quick = new SettingsListCategoryButton("QuickList", SettingCategory.Button, SettingModus.Normal,
-					true);
-			CB_View_Base quickView = getButtonView(quick, 0);
-			addControlToLinearLayout(quickView, margin);
+			// SettingsListCategoryButton quick = new SettingsListCategoryButton("QuickList", SettingCategory.Button, SettingModus.Normal,
+			// true);
+			// CB_View_Base quickView = getButtonView(quick, 0);
+			// addControlToLinearLayout(quickView, margin);
 
 			ArrayList<SettingBase> SortedSettingList = new ArrayList<SettingBase>();// Config.settings.values().toArray();
 
@@ -256,6 +262,14 @@ public class SettingsActivity extends ActivityBase
 					SettingsListGetApiButton lgIn = new SettingsListGetApiButton(cat.name(), SettingCategory.Button, SettingModus.Normal,
 							true);
 					final CB_View_Base btnLgIn = getView(lgIn, 1);
+					lay.addChild(btnLgIn);
+					entrieCount++;
+				}
+
+				if (cat == SettingCategory.QuickList)
+				{
+
+					final SettingsItem_QuickButton btnLgIn = new SettingsItem_QuickButton(itemRec, "QuickButtonEditor");
 					lay.addChild(btnLgIn);
 					entrieCount++;
 				}
@@ -771,16 +785,17 @@ public class SettingsActivity extends ActivityBase
 				EditKey = SB.getName();
 				File file = new File(SB.getValue());
 
-				platformConector.getFolder("initialPath", "TitleText", "ButtonText", new IgetFolderReturnListner()
-				{
+				platformConector.getFolder(file.getAbsolutePath(), GlobalCore.Translations.Get("select_folder"),
+						GlobalCore.Translations.Get("select"), new IgetFolderReturnListner()
+						{
 
-					@Override
-					public void getFolderReturn(String Path)
-					{
-						SB.setValue(Path);
-						resortList();
-					}
-				});
+							@Override
+							public void getFolderReturn(String Path)
+							{
+								SB.setValue(Path);
+								resortList();
+							}
+						});
 
 				return true;
 			}
@@ -832,19 +847,9 @@ public class SettingsActivity extends ActivityBase
 							public void getFieleReturn(String Path)
 							{
 								SB.setValue(Path);
+								resortList();
 							}
 						});
-
-				platformConector.getFolder("initialPath", "TitleText", "ButtonText", new IgetFolderReturnListner()
-				{
-
-					@Override
-					public void getFolderReturn(String Path)
-					{
-						SB.setValue(Path);
-						resortList();
-					}
-				});
 
 				return true;
 			}

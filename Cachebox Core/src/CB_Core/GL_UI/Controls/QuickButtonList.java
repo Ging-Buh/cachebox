@@ -1,7 +1,5 @@
 package CB_Core.GL_UI.Controls;
 
-import java.util.ArrayList;
-
 import CB_Core.Config;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -12,6 +10,7 @@ import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Main.Actions.QuickButton.QuickActions;
 import CB_Core.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Types.MoveableList;
 
 public class QuickButtonList extends H_ListView
 {
@@ -116,7 +115,7 @@ public class QuickButtonList extends H_ListView
 		return super.onTouchDragged(x, y, pointer, KineticPan);
 	}
 
-	ArrayList<QuickButtonItem> quickButtonList;
+	public static MoveableList<QuickButtonItem> quickButtonList;
 
 	public class CustomAdapter implements Adapter
 	{
