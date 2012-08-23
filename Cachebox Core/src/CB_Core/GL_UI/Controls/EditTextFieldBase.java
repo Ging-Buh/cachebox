@@ -22,6 +22,12 @@ import com.badlogic.gdx.utils.Clipboard;
 
 public abstract class EditTextFieldBase extends CB_View_Base
 {
+	static public final char BACKSPACE = 8;
+	static public final char ENTER_DESKTOP = '\r';
+	static public final char ENTER_ANDROID = '\n';
+	static public final char TAB = '\t';
+	static public final char DELETE = 127;
+	static public final char BULLET = 149;
 
 	public EditTextFieldBase that;
 

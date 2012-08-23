@@ -60,16 +60,8 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	}
 
 	@Override
-	public void onHide()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void onFree()
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -116,42 +108,40 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	@Override
 	public void onRezised(CB_RectF rec)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void onParentRezised(CB_RectF rec)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public boolean onLongClick(int x, int y, int pointer, int button)
 	{
-		// TODO Auto-generated method stub
+
 		return false;
 	}
 
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
-		// TODO Auto-generated method stub
+
 		return false;
 	}
 
 	@Override
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
-		// TODO Auto-generated method stub
+
 		return false;
 	}
 
 	@Override
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
-		// TODO Auto-generated method stub
+
 		return false;
 	}
 

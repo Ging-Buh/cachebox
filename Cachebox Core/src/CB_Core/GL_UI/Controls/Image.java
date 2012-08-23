@@ -66,7 +66,7 @@ public class Image extends CB_View_Base
 			Matrix4 matrix = new Matrix4();
 
 			matrix.idt();
-			matrix.translate(this.getX() + mOriginX, this.getY() + mOriginY, 0);
+			matrix.translate(mOriginX, mOriginY, 0);
 			matrix.rotate(0, 0, 1, mRotate);
 			matrix.scale(mScale, mScale, 1);
 			matrix.translate(-mOriginX, -mOriginY, 0);

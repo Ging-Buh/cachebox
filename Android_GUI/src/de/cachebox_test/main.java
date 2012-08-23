@@ -14,10 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.SortedMap;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.TreeMap;
 
 import org.openintents.intents.FileManagerIntents;
 
@@ -96,7 +94,6 @@ import android.content.pm.ServiceInfo;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.database.Cursor;
-import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -210,8 +207,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static JokerView jokerView = null; // ID 12
 	private static TrackableListView trackablelistView = null; // ID 14
 
-	private static devicesSizes ui;
-
 	/**
 	 * viewGl kann mehrere ID beinhalten, vieGL ist nur die Basis für alle Views auf Basis von GL_View_Base </br> TestView = 16 </br>
 	 * CreditsView = 17 </br> MapView = 18 </br>
@@ -271,8 +266,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public HorizontalListView QuickButtonList;
 
 	private String GcCode = null;
-	private String name = null;
-	private String guid = null;
+
 	private boolean mustRunSearch = false;
 
 	private Mic_On_Flash Mic_Icon;
@@ -462,7 +456,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 				catch (IOException e1)
 				{
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 
@@ -485,11 +478,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (extras != null)
 		{
 			GcCode = extras.getString("GcCode");
-			name = extras.getString("name");
-			guid = extras.getString("guid");
 
-			// MessageBox.Show("GcCode=" + GcCode + String.format("%n") +
-			// "name =" + name + String.format("%n") + "guid =" + guid);
 			mustRunSearch = true;
 
 		}
@@ -1053,12 +1042,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	Dialog pWaitD;
-	private int WaitPos = -1;
 	private boolean stopped = false;
 
 	private void showWaitToRenderStartet()
 	{
-		WaitPos = GL_Listener.glListener.getFpsInfoPos();
 		pWaitD = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("waitForGL"), "", MessageBoxButtons.NOTHING, MessageBoxIcon.None,
 				null);
 		stopped = false;
@@ -1133,7 +1120,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		counter.cancel();
@@ -1801,12 +1787,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			/*
 			 * Longri: Ich habe die Zeiten und Distanzen der Location Updates angepasst. Der Network Provider hat eine schlechte
-			 * genauigkeit, darher reich es wenn er alle 10sec einen wert liefert, wen der alte um 500m abweicht. Beim GPS Provider habe ich
-			 * die aktualiesierungs Zeit verkürzt, damit bei deaktiviertem Hardware Kompass aber die Werte trotzdem noch in einem gesunden
-			 * Verhältnis zwichen Performance und Stromverbrauch, geliefert werden. Andere apps haben hier 0.
+			 * genauigkeit, darher reicht es wenn er alle 10sec einen wert liefert, wen der alte um 500m abweicht. Beim GPS Provider habe
+			 * ich die aktualiesierungs Zeit verkürzt, damit bei deaktiviertem Hardware Kompass aber die Werte trotzdem noch in einem
+			 * gesunden Verhältnis zwichen Performance und Stromverbrauch, geliefert werden. Andere apps haben hier 0.
 			 */
 
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+			long updateTime = Config.settings.gpsUpdateTime.getValue();
+
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, this);
 			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 500, this);
 
 			locationManager.addNmeaListener(this);
@@ -1818,15 +1806,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			e.printStackTrace();
 		}
 
-	}
-
-	// Zwischenspeicher für die touchDown Positionen der einzelnen Finger
-	private SortedMap<Integer, Point> touchDownPos = new TreeMap<Integer, Point>();
-
-	// Abstand zweier Punkte
-	private int distance(Point p1, Point p2)
-	{
-		return (int) Math.round(Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)));
 	}
 
 	private void initialViewGL()
@@ -3279,6 +3258,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		Config.AcceptChanges();
 	}
 
+	@SuppressWarnings("unused")
 	private void inflateToView(int rowCtr, PackageManager packageManager, String packageName)
 	{
 		try
@@ -3317,7 +3297,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					}
 					catch (Exception e)
 					{
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 
@@ -3408,6 +3387,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				main.vibrate();
 			}
 
+			@SuppressWarnings("unused")
 			@Override
 			public CB_Core.Locator.GpsStatus getGpsStatus()
 			{

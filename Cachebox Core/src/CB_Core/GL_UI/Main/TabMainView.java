@@ -39,6 +39,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackListView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackableListView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowWaypointView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_Show_SelectDB_Dialog;
+import CB_Core.GL_UI.Main.Actions.CB_Action_Show_Settings;
 import CB_Core.GL_UI.Main.Actions.CB_Action_switch_DayNight;
 import CB_Core.GL_UI.Views.AboutView;
 import CB_Core.GL_UI.Views.CacheListView;
@@ -90,7 +91,7 @@ public class TabMainView extends MainViewBase
 	private CB_Action_ShowTrackableListView actionShowTrackableListView;
 	public static CB_Action_ShowTrackListView actionShowTrackListView;
 	public static CB_Action_ShowWaypointView actionShowWaypointView;
-	public static CB_Action_ShowActivity actionShowSettings;
+	public static CB_Action_Show_Settings actionShowSettings;
 	private CB_Action_ShowActivity actionNavigateTo1;
 	private CB_Action_ShowActivity actionNavigateTo2;
 	public static CB_Action_Show_SelectDB_Dialog actionShowSelectDbDialog = new CB_Action_Show_SelectDB_Dialog();
@@ -169,8 +170,7 @@ public class TabMainView extends MainViewBase
 		actionShowTrackListView = new CB_Action_ShowTrackListView();
 		actionShowWaypointView = new CB_Action_ShowWaypointView();
 		actionTestView = new CB_Action_ShowTestView();
-		actionShowSettings = new CB_Action_ShowActivity("settings", CB_Action.AID_SHOW_SETTINGS, ViewConst.SETTINGS,
-				SpriteCache.Icons.get(26));
+		actionShowSettings = new CB_Action_Show_Settings();
 
 		actionNavigateTo1 = actionNavigateTo2 = new CB_Action_ShowActivity("NavigateTo", CB_Action.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO,
 				SpriteCache.Icons.get(46));
@@ -374,7 +374,6 @@ public class TabMainView extends MainViewBase
 		actionShowCreditsView.setTab(this, Tab);
 		actionShowTrackableListView.setTab(this, Tab);
 		actionShowTrackListView.setTab(this, Tab);
-		actionShowSettings.setTab(this, Tab);
 		actionShowCompassView.setTab(this, Tab);
 		actionShowLogView.setTab(this, Tab);
 		actionShowFieldNotesView.setTab(this, Tab);

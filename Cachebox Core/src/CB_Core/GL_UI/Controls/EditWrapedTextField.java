@@ -141,14 +141,12 @@ public class EditWrapedTextField extends EditTextFieldBase
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -371,7 +369,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 					float xpos = getCursorX();
 					textY = (int) height - textHeight - bgTopHeight;
 
-					cursorHeight = displayText.get(0).textBounds.height + font.getDescent() / 2;
+					cursorHeight = font.getLineHeight() + font.getDescent() / 2;
 
 					cursorPatch.draw(batch, getCursorX() - leftPos, getCursorY(), cursorPatch.getMinWidth(), cursorHeight);
 
@@ -400,21 +398,27 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	private float getCursorX(Cursor aCursor)
 	{
-		DisplayText dt = displayText.get(aCursor.line);
+
 		float xpos = 0;
 
-		if (aCursor.pos < dt.glyphPositions.size)
+		if (displayText.size() > aCursor.line)
 		{
-			xpos = dt.glyphPositions.get(aCursor.pos);
+			DisplayText dt = displayText.get(aCursor.line);
+
+			if (aCursor.pos < dt.glyphPositions.size)
+			{
+				xpos = dt.glyphPositions.get(aCursor.pos);
+			}
+			else if (dt.glyphPositions.size == 0)
+			{
+				xpos = 0;
+			}
+			else
+			{
+				xpos = dt.glyphPositions.get(dt.glyphPositions.size - 1); // letztes Zeichen
+			}
 		}
-		else if (dt.glyphPositions.size == 0)
-		{
-			xpos = 0;
-		}
-		else
-		{
-			xpos = dt.glyphPositions.get(dt.glyphPositions.size - 1); // letztes Zeichen
-		}
+
 		return x + style.background.getLeftWidth() + xpos - 1 - leftPos;
 	}
 
@@ -1746,7 +1750,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 	@Override
 	public boolean keyUp(int KeyCode)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 

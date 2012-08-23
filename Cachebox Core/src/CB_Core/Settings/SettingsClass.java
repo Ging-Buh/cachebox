@@ -113,6 +113,7 @@ public class SettingsClass extends SettingsList
 	public SettingInt LastMapToggleBtnState;
 	public SettingInt dynamicZoomLevelMax;
 	public SettingInt dynamicZoomLevelMin;
+	public SettingInt gpsUpdateTime;
 
 	public SettingTime ScreenLock;
 
@@ -249,6 +250,7 @@ public class SettingsClass extends SettingsList
 
 		addSetting(HardwareCompassLevel = new SettingInt("HardwareCompassLevel", cat, NORMAL, 5, true));
 		addSetting(HardwareCompass = new SettingBool("HardwareCompass", cat, NORMAL, true, true));
+		addSetting(gpsUpdateTime = new SettingInt("gpsUpdateTime", cat, NORMAL, 100, true));
 	}
 
 	private void addMapSettings()

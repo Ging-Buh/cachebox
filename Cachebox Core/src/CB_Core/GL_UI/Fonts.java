@@ -76,8 +76,8 @@ public class Fonts
 	static String defaultFontPath;
 	static String defaultFontPathNight;
 
-	static String costumFontPath;
-	static String costumFontPathNight;
+	static String CustomFontPath;
+	static String CustomFontPathNight;
 
 	private static BitmapFont loadScaledFont(int Size, double density, boolean night)
 	{
@@ -98,8 +98,8 @@ public class Fonts
 
 		String path = Config.settings.SkinFolder.getValue();
 
-		costumFontPath = path + "/day/fonts/" + strScaled + ".png";
-		costumFontPathNight = path + "/night/fonts/" + strScaled + ".png";
+		CustomFontPath = path + "/day/fonts/" + strScaled + ".png";
+		CustomFontPathNight = path + "/night/fonts/" + strScaled + ".png";
 
 		String defaultPath = path;
 		int pos = defaultPath.lastIndexOf("/");
@@ -110,12 +110,12 @@ public class Fonts
 
 		if (night)
 		{
-			if (FileIO.FileExists(costumFontPathNight)) fontPath = costumFontPathNight;
+			if (FileIO.FileExists(CustomFontPathNight)) fontPath = CustomFontPathNight;
 			if (fontPath == null) if (FileIO.FileExists(defaultFontPathNight)) fontPath = defaultFontPathNight;
 		}
 		else
 		{
-			if (FileIO.FileExists(costumFontPath)) fontPath = costumFontPath;
+			if (FileIO.FileExists(CustomFontPath)) fontPath = CustomFontPath;
 		}
 
 		if (fontPath == null)

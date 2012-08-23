@@ -95,19 +95,19 @@ public class SpriteCache
 	public static ButtonSprites QuickButton;
 
 	private static String PathDefault;
-	private static String PathCostum;
+	private static String PathCustom;
 	private static String PathDefaultNight;
-	private static String PathCostumNight;
+	private static String PathCustomNight;
 
 	private static TextureAtlas atlasDefault;
 	private static TextureAtlas atlasDefaultNight;
-	private static TextureAtlas atlasCostum;
-	private static TextureAtlas atlasCostumtNight;
+	private static TextureAtlas atlasCustom;
+	private static TextureAtlas atlasCustomtNight;
 
 	private static Boolean atlasDefaultIsNeverUsed = true;
 	private static Boolean atlasDefaultNightIsNeverUsed = true;
-	private static Boolean atlasCostumIsNeverUsed = true;
-	private static Boolean atlasCostumtNightIsNeverUsed = true;
+	private static Boolean atlasCustomIsNeverUsed = true;
+	private static Boolean atlasCustomtNightIsNeverUsed = true;
 	public static ArrayList<Sprite> LogIcons;
 
 	public static Drawable activityBackground;
@@ -149,19 +149,19 @@ public class SpriteCache
 
 		atlasDefaultIsNeverUsed = true;
 		atlasDefaultNightIsNeverUsed = true;
-		atlasCostumIsNeverUsed = true;
-		atlasCostumtNightIsNeverUsed = true;
+		atlasCustomIsNeverUsed = true;
+		atlasCustomtNightIsNeverUsed = true;
 
-		PathCostum = path + "/day/UI_IconPack.spp";
-		PathCostumNight = path + "/night/UI_IconPack.spp";
+		PathCustom = path + "/day/UI_IconPack.spp";
+		PathCustomNight = path + "/night/UI_IconPack.spp";
 
 		String defaultPath = path;
 		int pos = defaultPath.lastIndexOf("/");
 		if (GlobalCore.useSmallSkin)
 		{
 			defaultPath = defaultPath.substring(0, pos) + "/small";
-			PathCostum = "";
-			PathCostumNight = "";
+			PathCustom = "";
+			PathCustomNight = "";
 		}
 		else
 		{
@@ -183,25 +183,25 @@ public class SpriteCache
 			atlasDefaultNight = null;
 		}
 
-		if (atlasCostum != null)
+		if (atlasCustom != null)
 		{
-			atlasCostum.dispose();
-			atlasCostum = null;
+			atlasCustom.dispose();
+			atlasCustom = null;
 		}
 
-		if (atlasCostumtNight != null)
+		if (atlasCustomtNight != null)
 		{
-			atlasCostumtNight.dispose();
-			atlasCostumtNight = null;
+			atlasCustomtNight.dispose();
+			atlasCustomtNight = null;
 		}
 
 		if (FileIO.FileExists(PathDefault)) atlasDefault = new TextureAtlas(Gdx.files.absolute(PathDefault));
 		if (FileIO.FileExists(PathDefaultNight)) atlasDefaultNight = new TextureAtlas(Gdx.files.absolute(PathDefaultNight));
 
-		if (!PathDefault.equals(PathCostum))
+		if (!PathDefault.equals(PathCustom))
 		{
-			if (FileIO.FileExists(PathCostum)) atlasCostum = new TextureAtlas(Gdx.files.absolute(PathCostum));
-			if (FileIO.FileExists(PathCostumNight)) atlasCostumtNight = new TextureAtlas(Gdx.files.absolute(PathCostumNight));
+			if (FileIO.FileExists(PathCustom)) atlasCustom = new TextureAtlas(Gdx.files.absolute(PathCustom));
+			if (FileIO.FileExists(PathCustomNight)) atlasCustomtNight = new TextureAtlas(Gdx.files.absolute(PathCustomNight));
 		}
 	}
 
@@ -215,15 +215,15 @@ public class SpriteCache
 		Sprite tmp = null;
 		if (Config.settings.nightMode.getValue())
 		{
-			tmp = createSprite(atlasCostumtNight, name);
+			tmp = createSprite(atlasCustomtNight, name);
 			if (tmp == null)
 			{
-				tmp = createSprite(atlasCostum, name);
-				if (tmp != null) tmp = setNightColorMatrix(name, atlasCostum);
+				tmp = createSprite(atlasCustom, name);
+				if (tmp != null) tmp = setNightColorMatrix(name, atlasCustom);
 			}
 			else
 			{
-				atlasCostumtNightIsNeverUsed = false;
+				atlasCustomtNightIsNeverUsed = false;
 			}
 
 			if (tmp == null)
@@ -241,13 +241,13 @@ public class SpriteCache
 			}
 			else
 			{
-				atlasCostumIsNeverUsed = false;
+				atlasCustomIsNeverUsed = false;
 			}
 
 		}
 		else
 		{
-			tmp = createSprite(atlasCostum, name);
+			tmp = createSprite(atlasCustom, name);
 		}
 
 		if (tmp == null)
@@ -256,7 +256,7 @@ public class SpriteCache
 		}
 		else
 		{
-			atlasCostumIsNeverUsed = false;
+			atlasCustomIsNeverUsed = false;
 		}
 
 		if (tmp != null) tmp.setScale(scale);
@@ -713,16 +713,16 @@ public class SpriteCache
 			atlasDefaultNight = null;
 		}
 
-		if (atlasCostum != null)
+		if (atlasCustom != null)
 		{
-			atlasCostum.dispose();
-			atlasCostum = null;
+			atlasCustom.dispose();
+			atlasCustom = null;
 		}
 
-		if (atlasCostumtNight != null)
+		if (atlasCustomtNight != null)
 		{
-			atlasCostumtNight.dispose();
-			atlasCostumtNight = null;
+			atlasCustomtNight.dispose();
+			atlasCustomtNight = null;
 		}
 	}
 
@@ -743,16 +743,16 @@ public class SpriteCache
 			atlasDefaultNight = null;
 		}
 
-		if (atlasCostumIsNeverUsed && atlasCostum != null)
+		if (atlasCustomIsNeverUsed && atlasCustom != null)
 		{
-			atlasCostum.dispose();
-			atlasCostum = null;
+			atlasCustom.dispose();
+			atlasCustom = null;
 		}
 
-		if (atlasCostumtNightIsNeverUsed && atlasCostumtNight != null)
+		if (atlasCustomtNightIsNeverUsed && atlasCustomtNight != null)
 		{
-			atlasCostumtNight.dispose();
-			atlasCostumtNight = null;
+			atlasCustomtNight.dispose();
+			atlasCustomtNight = null;
 		}
 
 	}

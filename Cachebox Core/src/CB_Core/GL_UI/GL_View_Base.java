@@ -500,16 +500,28 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void onShow()
 	{
-		// synchronized (childs)
-		// {
+
 		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 		{
 			// alle renderChilds() der in dieser GL_View_Base
 			// enthaltenen Childs auf rufen.
 			GL_View_Base view = iterator.next();
-			view.onShow();
+			if (view != null) view.onShow();
 		}
-		// }
+
+	}
+
+	public void onHide()
+	{
+
+		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+		{
+			// alle renderChilds() der in dieser GL_View_Base
+			// enthaltenen Childs auf rufen.
+			GL_View_Base view = iterator.next();
+			if (view != null) view.onHide();
+		}
+
 	}
 
 	public void onStop()

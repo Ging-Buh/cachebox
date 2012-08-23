@@ -3,8 +3,8 @@ package CB_Core.GL_UI.Controls.PopUps;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
+import CB_Core.GL_UI.Controls.ImageButton;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -15,9 +15,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 public class CopiePastePopUp extends PopUp_Base
 {
 
-	private Button btnCopy;
-	private Button btnCut;
-	private Button btnPaste;
+	private ImageButton btnCopy;
+	private ImageButton btnCut;
+	private ImageButton btnPaste;
 
 	public CopiePastePopUp(String Name, final EditTextFieldBase textField)
 	{
@@ -31,7 +31,7 @@ public class CopiePastePopUp extends PopUp_Base
 
 		CB_RectF rec = new CB_RectF(0, 0, UiSizes.getButtonHeight(), UiSizes.getButtonHeight());
 
-		btnPaste = new Button(rec, "PasteButton");
+		btnPaste = new ImageButton(rec, "PasteButton");
 		btnPaste.setFont(Fonts.getBubbleNormal());
 		btnPaste.setImage(SpriteCache.paste);
 		btnPaste.setY(rec.getHeight() * 0.4f);
@@ -50,7 +50,7 @@ public class CopiePastePopUp extends PopUp_Base
 
 		this.addChild(btnPaste);
 
-		btnCopy = new Button(rec, "CopyButton");
+		btnCopy = new ImageButton(rec, "CopyButton");
 		btnCopy.setFont(Fonts.getBubbleNormal());
 		btnCopy.setImage(SpriteCache.copy);
 		btnCopy.setY(rec.getHeight() * 0.4f);
@@ -69,7 +69,7 @@ public class CopiePastePopUp extends PopUp_Base
 
 		this.addChild(btnCopy);
 
-		btnCut = new Button(rec, "CutButton");
+		btnCut = new ImageButton(rec, "CutButton");
 		btnCut.setFont(Fonts.getBubbleNormal());
 		btnCut.setImage(SpriteCache.cut);
 		btnCut.setY(rec.getHeight() * 0.4f);

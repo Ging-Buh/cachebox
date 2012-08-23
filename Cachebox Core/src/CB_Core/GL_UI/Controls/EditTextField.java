@@ -16,12 +16,6 @@ import com.badlogic.gdx.utils.FloatArray;
 
 public class EditTextField extends EditTextFieldBase
 {
-	static protected final char BACKSPACE = 8;
-	static protected final char ENTER_DESKTOP = '\r';
-	static protected final char ENTER_ANDROID = '\n';
-	static protected final char TAB = '\t';
-	static protected final char DELETE = 127;
-	static protected final char BULLET = 149;
 
 	protected final float x = 0;
 	protected final float y = 0;

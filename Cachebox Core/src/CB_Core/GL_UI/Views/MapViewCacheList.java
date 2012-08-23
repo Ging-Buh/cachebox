@@ -408,13 +408,18 @@ public class MapViewCacheList
 	public void update(Vector2 point1, Vector2 point2, int zoom, boolean doNotCheck)
 	{
 
-		if (point1 == null || point2 == null || lastPoint1 == null || lastPoint2 == null) return;
+		if (point1 == null || point2 == null) return;
 
 		if (state.get() != 0) return;
 		if ((zoom == lastzoom) && (!doNotCheck))
 		{
-			// Prüfen, ob überhaupt eine neue Liste berechnet werden muß
-			if ((point1.x >= lastPoint1.x) && (point2.x <= lastPoint2.x) && (point1.y >= lastPoint1.y) && (point2.y <= lastPoint2.y)) return;
+			// wenn LastPoint == 0 muss eine neue Liste Berechnet werden!
+			if (lastPoint1 != null && lastPoint2 != null)
+			{
+				// Prüfen, ob überhaupt eine neue Liste berechnet werden muß
+				if ((point1.x >= lastPoint1.x) && (point2.x <= lastPoint2.x) && (point1.y >= lastPoint1.y) && (point2.y <= lastPoint2.y)) return;
+			}
+
 		}
 
 		// Bereich erweitern, damit von vorne herein gleiche mehr Caches geladen werden und diese Liste nicht so oft berechnet werden muss

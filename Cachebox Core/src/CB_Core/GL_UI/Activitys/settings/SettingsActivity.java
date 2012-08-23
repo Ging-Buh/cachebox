@@ -8,11 +8,13 @@ import java.util.Iterator;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Events.PositionChangedEventList;
 import CB_Core.Events.platformConector;
 import CB_Core.Events.platformConector.IgetFileReturnListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CollabseBox.animatetHeightChangedListner;
@@ -31,6 +33,8 @@ import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListnerDouble;
 import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_Core.GL_UI.Main.Actions.CB_Action;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowActivity;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListButtonLangSpinner;
@@ -79,6 +83,7 @@ public class SettingsActivity extends ActivityBase
 	{
 		super(ActivityBase.ActivityRec(), "Settings");
 		that = this;
+		Config.settings.SaveToLastValue();
 		ButtonRec = new CB_RectF(Left, 0, this.width - this.drawableBackground.getLeftWidth() - this.drawableBackground.getRightWidth(),
 				UiSizes.getButtonHeight());
 
@@ -91,7 +96,7 @@ public class SettingsActivity extends ActivityBase
 	@Override
 	public void onShow()
 	{
-		Config.settings.SaveToLastValue();
+
 	}
 
 	private void createButtons()
@@ -205,6 +210,26 @@ public class SettingsActivity extends ActivityBase
 		}
 
 		Iterator<SettingCategory> iteratorCat = Categorys.iterator();
+
+		// Debug Button alt Settings
+		SettingsListCategoryButton dbgBtn = new SettingsListCategoryButton("Debug", SettingCategory.Button, SettingModus.Normal, true);
+
+		final Button setBtn = (Button) getView(dbgBtn, 1);
+
+		setBtn.setText("Alt Settings");
+
+		setBtn.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				new CB_Action_ShowActivity("settings", CB_Action.AID_SHOW_SETTINGS, ViewConst.SETTINGS, null).Execute();
+				return false;
+			}
+		});
+
+		addControlToLinearLayout(setBtn, margin);
 
 		if (iteratorCat != null && iteratorCat.hasNext())
 		{
@@ -509,7 +534,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()));
+				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return false;
 			}
@@ -573,7 +598,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()));
+				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return false;
 			}
@@ -636,7 +661,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()));
+				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return false;
 			}
@@ -698,7 +723,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()));
+				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return false;
 			}
@@ -757,7 +782,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()));
+				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return false;
 			}
@@ -810,7 +835,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()));
+				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return false;
 			}
@@ -864,7 +889,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()));
+				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return false;
 			}
@@ -883,25 +908,13 @@ public class SettingsActivity extends ActivityBase
 
 		btn.setText(GlobalCore.Translations.Get(SB.getName()));
 
-		if (SB.getName().equals("QuickList") || SB.getName().equals("DebugDisplayInfo"))
+		if (SB.getName().equals("DebugDisplayInfo"))
 		{
 			btn.setOnClickListener(new OnClickListener()
 			{
 				@Override
 				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 				{
-
-					// wenn QuickList Button, dann öffne Activity
-					if (SB.getName().equals("QuickList"))
-					{
-						// SettingsScrollView.EditKey = SB.getName();
-						//
-						// Intent intent = new Intent().setClass(SettingsScrollView.Me, SettingsListEditQuickButton.class);
-						//
-						// SettingsScrollView.Me.startActivityForResult(intent, Global.REQUEST_CODE_EDIT_QUICK_LIST);
-						//
-						// return;
-					}
 
 					if (SB.getName().equals("DebugDisplayInfo"))
 					{
@@ -913,7 +926,10 @@ public class SettingsActivity extends ActivityBase
 						info += "Scale= " + String.valueOf(UiSizes.getScale()) + GlobalCore.br;
 						info += "FontSize= " + String.valueOf(UiSizes.getScaledFontSize()) + GlobalCore.br;
 
-						GL_MsgBox.Show(info);
+						info += "GPS Thread Time= " + String.valueOf(PositionChangedEventList.maxEventListTime) + GlobalCore.br;
+
+						GL_MsgBox.Show(info, MsgBoxreturnListner);
+
 						return true;
 					}
 
@@ -931,7 +947,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()));
+				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return false;
 			}
@@ -1252,7 +1268,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()));
+				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return true;
 			}
@@ -1263,8 +1279,21 @@ public class SettingsActivity extends ActivityBase
 
 	}
 
+	OnMsgBoxClickListener MsgBoxreturnListner = new OnMsgBoxClickListener()
+	{
+
+		@Override
+		public boolean onClick(int which)
+		{
+			that.show();
+			return true;
+		}
+	};
+
 	private void resortList()
 	{
+		that.show();
+
 		float scrollPos = scrollBox.getScrollY();
 		scrollBox = null;
 		LinearLayout = null;

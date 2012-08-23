@@ -234,7 +234,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 
 		public CustomAdapter(CacheList cacheList)
 		{
-			Logger.DEBUG("CacheList new Costum Adapter");
+			Logger.DEBUG("CacheList new Custom Adapter");
 			this.cacheList = cacheList;
 		}
 

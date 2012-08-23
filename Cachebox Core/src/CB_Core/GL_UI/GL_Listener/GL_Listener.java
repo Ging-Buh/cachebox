@@ -1046,8 +1046,10 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 
 		child.setClickable(false);
 		ActivityIsShown = true;
-
+		if (!GlobalCore.isTab) child.onHide();
 		actActivity.onShow();
+
+		platformConector.showForDialog();
 	}
 
 	public void closeActivity()
@@ -1064,6 +1066,9 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		mActivity.removeChildsDirekt();
 		child.setClickable(true);
 		child.invalidate();
+
+		if (!GlobalCore.isTab) child.onShow();
+
 		ActivityIsShown = false;
 		darknesAlpha = 0f;
 		mDarknesSprite = null;// Create new Pixmap on next call

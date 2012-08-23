@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
@@ -176,18 +177,27 @@ public class NumerikInputBox extends GL_MsgBox
 
 			if (value.equals("O"))
 			{
+
+				String StringValue = editText.getText();
+
+				// Replase Linebraek
+				StringValue = StringValue.replace("\n", "");
+				StringValue = StringValue.replace("\r", "");
+
+				boolean ParseError = false;
+
 				if (isDoubleInputBox)
 				{
 					if (mReturnListnerDouble != null)
 					{
 						try
 						{
-							double dblValue = Double.parseDouble(editText.getText());
+							double dblValue = Double.parseDouble(StringValue);
 							mReturnListnerDouble.returnValue(dblValue);
 						}
 						catch (NumberFormatException e)
 						{
-							e.printStackTrace();
+							ParseError = true;
 						}
 					}
 				}
@@ -197,17 +207,26 @@ public class NumerikInputBox extends GL_MsgBox
 					{
 						try
 						{
-							int intValue = Integer.parseInt(editText.getText());
+
+							int intValue = Integer.parseInt(StringValue);
 							mReturnListner.returnValue(intValue);
 						}
 						catch (NumberFormatException e)
 						{
-							e.printStackTrace();
+							ParseError = true;
 						}
 					}
 				}
 
-				GL_Listener.glListener.closeDialog(that);
+				if (ParseError)
+				{
+					GL_Listener.glListener.Toast(GlobalCore.Translations.Get("wrongValueEnterd"));
+				}
+				else
+				{
+					GL_Listener.glListener.closeDialog(that);
+				}
+
 			}
 			else if (value.equals("C"))
 			{
