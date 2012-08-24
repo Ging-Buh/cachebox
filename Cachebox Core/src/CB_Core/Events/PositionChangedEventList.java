@@ -3,6 +3,7 @@ package CB_Core.Events;
 import java.util.ArrayList;
 
 import CB_Core.Config;
+import CB_Core.Energy;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Locator.Locator;
@@ -30,11 +31,19 @@ public class PositionChangedEventList
 
 	}
 
+	public static long minPosEventTime = Long.MAX_VALUE;
+	public static long minOrientationEventTime = Long.MAX_VALUE;
+
+	public static long lastPosTime = 0;
+	public static long lastOrientTime = 0;
+
 	public static long maxEventListTime = 0;
 	private static long lastPositionChanged = 0;
 
 	public static void PositionChanged(final Locator locator)
 	{
+		minPosEventTime = Math.min(minPosEventTime, System.currentTimeMillis() - lastPosTime);
+		lastPosTime = System.currentTimeMillis();
 
 		if (lastPositionChanged != 0 && lastPositionChanged > System.currentTimeMillis() - Config.settings.gpsUpdateTime.getValue()) return;
 		lastPositionChanged = System.currentTimeMillis();
@@ -58,6 +67,10 @@ public class PositionChangedEventList
 				{
 					for (PositionChangedEvent event : list)
 					{
+						// Bei ausgesachltenem Display nur an GlobalLocationReceiver senden!!!
+						if (Energy.DisplayOff()
+								&& !(event.getReceiverName().equalsIgnoreCase("GlobalLocationReceiver") || event.getReceiverName()
+										.equalsIgnoreCase("Core.MainViewBase"))) continue;
 						try
 						{
 							event.PositionChanged(locator);
@@ -88,6 +101,11 @@ public class PositionChangedEventList
 
 	public static void Orientation(final float heading)
 	{
+
+		if (Energy.DisplayOff()) return; // Hier braucht niemand ein OriantationChangedEvent
+
+		minOrientationEventTime = Math.min(minOrientationEventTime, System.currentTimeMillis() - lastOrientTime);
+		lastOrientTime = System.currentTimeMillis();
 
 		if (lastOrintationChangedEvent != 0
 				&& lastOrintationChangedEvent > System.currentTimeMillis() - Config.settings.gpsUpdateTime.getValue()) return;

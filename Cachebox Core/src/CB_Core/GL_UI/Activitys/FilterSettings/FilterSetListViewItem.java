@@ -74,6 +74,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 		if (isPressed)
 		{
+			GL_Listener.glListener.renderOnce("");
 			isPressed = GL_Listener.isTouchDown();
 		}
 
@@ -181,20 +182,24 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		}
 
 		boolean rClick = false;
-		if (this.isPressed)
+		if (this.lastItemTouchPos != null)
 		{
-			rClick = rBounds.contains(this.lastItemTouchPos);
-
-			if (rClick) Clicked = true;
-		}
-		else
-		{
-			if (Clicked)
+			if (this.isPressed)
 			{
-				Clicked = false;
 				rClick = rBounds.contains(this.lastItemTouchPos);
-				if (rClick) stateClick();
+
+				if (rClick) Clicked = true;
 			}
+			else
+			{
+				if (Clicked)
+				{
+					Clicked = false;
+					rClick = rBounds.contains(this.lastItemTouchPos);
+					if (rClick) stateClick();
+				}
+			}
+
 		}
 
 	}
@@ -230,19 +235,22 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		}
 
 		boolean rClick = false;
-		if (this.isPressed)
+		if (this.lastItemTouchPos != null)
 		{
-			rClick = rBounds.contains(this.lastItemTouchPos);
-
-			if (rClick) Clicked = true;
-		}
-		else
-		{
-			if (Clicked)
+			if (this.isPressed)
 			{
-				Clicked = false;
 				rClick = rBounds.contains(this.lastItemTouchPos);
-				if (rClick) stateClick();
+
+				if (rClick) Clicked = true;
+			}
+			else
+			{
+				if (Clicked)
+				{
+					Clicked = false;
+					rClick = rBounds.contains(this.lastItemTouchPos);
+					if (rClick) stateClick();
+				}
 			}
 		}
 
@@ -267,22 +275,25 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 		boolean rClick = false;
 		boolean lClick = false;
-		if (this.isPressed)
+		if (this.lastItemTouchPos != null)
 		{
-			lClick = lBounds.contains(this.lastItemTouchPos);
-			rClick = rBounds.contains(this.lastItemTouchPos);
-
-			if (lClick || rClick) Clicked = true;
-		}
-		else
-		{
-			if (Clicked)
+			if (this.isPressed)
 			{
-				Clicked = false;
 				lClick = lBounds.contains(this.lastItemTouchPos);
 				rClick = rBounds.contains(this.lastItemTouchPos);
-				if (rClick) plusClick();
-				if (lClick) minusClick();
+
+				if (lClick || rClick) Clicked = true;
+			}
+			else
+			{
+				if (Clicked)
+				{
+					Clicked = false;
+					lClick = lBounds.contains(this.lastItemTouchPos);
+					rClick = rBounds.contains(this.lastItemTouchPos);
+					if (rClick) plusClick();
+					if (lClick) minusClick();
+				}
 			}
 		}
 
@@ -371,6 +382,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		this.mFilterSetEntry.plusClick();
 		setValueFont = true;
 		FilterSetListView.mustSaveFilter = true;
+		this.isPressed = false;
 	}
 
 	public void minusClick()
@@ -378,12 +390,14 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		this.mFilterSetEntry.minusClick();
 		setValueFont = true;
 		FilterSetListView.mustSaveFilter = true;
+		this.isPressed = false;
 	}
 
 	public void stateClick()
 	{
 		this.mFilterSetEntry.stateClick();
 		FilterSetListView.mustSaveFilter = true;
+		this.isPressed = false;
 	}
 
 	public void setValue(int value)

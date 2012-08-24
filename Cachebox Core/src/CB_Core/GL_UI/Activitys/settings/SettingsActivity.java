@@ -927,6 +927,9 @@ public class SettingsActivity extends ActivityBase
 						info += "FontSize= " + String.valueOf(UiSizes.getScaledFontSize()) + GlobalCore.br;
 
 						info += "GPS Thread Time= " + String.valueOf(PositionChangedEventList.maxEventListTime) + GlobalCore.br;
+						info += "GPS min pos Time= " + String.valueOf(PositionChangedEventList.minPosEventTime) + GlobalCore.br;
+						info += "GPS min Orientation Time= " + String.valueOf(PositionChangedEventList.minOrientationEventTime)
+								+ GlobalCore.br;
 
 						GL_MsgBox.Show(info, MsgBoxreturnListner);
 

@@ -92,12 +92,12 @@ public abstract class ListViewBase extends CB_View_Base
 	protected int mLastTouch = 0;
 	protected float mLastPos_onTouch = 0;
 
-	protected String mEmptaMsg = null;
+	protected String mEmptyMsg = null;
 	protected BitmapFontCache emptyMsg;
 
 	public void setEmptyMsg(String Msg)
 	{
-		mEmptaMsg = Msg;
+		mEmptyMsg = Msg;
 		emptyMsg = null;
 		GL_Listener.glListener.renderOnce("ListView.setEmptyMsg");
 	}
@@ -174,6 +174,9 @@ public abstract class ListViewBase extends CB_View_Base
 
 		// Position setzen, damit die items neu geladen werden
 		setListPos(mPos, false);
+
+		GL_Listener.glListener.renderOnce("");
+
 	}
 
 	/**
@@ -260,10 +263,10 @@ public abstract class ListViewBase extends CB_View_Base
 
 		if (this.mBaseAdapter == null || this.mBaseAdapter.getCount() == 0)
 		{
-			if (emptyMsg == null && mEmptaMsg != null)
+			if (emptyMsg == null && mEmptyMsg != null)
 			{
 				emptyMsg = new BitmapFontCache(Fonts.getBig());
-				TextBounds bounds = emptyMsg.setText(mEmptaMsg, 0, 0);
+				TextBounds bounds = emptyMsg.setText(mEmptyMsg, 0, 0);
 				emptyMsg.setPosition(this.halfWidth - (bounds.width / 2), this.halfHeight - (bounds.height / 2));
 			}
 			if (emptyMsg != null) emptyMsg.draw(batch, 0.5f);

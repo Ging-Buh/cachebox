@@ -215,7 +215,7 @@ public class Menu extends Dialog
 	public MenuItem addItem(int ID, String StringId, Sprite icon)
 	{
 		MenuItem item = addItem(ID, StringId);
-		item.setIcon(new SpriteDrawable(icon));
+		if (icon != null) item.setIcon(new SpriteDrawable(icon));
 		return item;
 	}
 

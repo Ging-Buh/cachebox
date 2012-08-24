@@ -222,10 +222,7 @@ public abstract class GL_View_Base extends CB_RectF
 			@Override
 			public void run()
 			{
-				// synchronized (childs)
-				// {
 				childs.clear();
-				// }
 			}
 		});
 	}
@@ -237,10 +234,7 @@ public abstract class GL_View_Base extends CB_RectF
 			@Override
 			public void run()
 			{
-				// synchronized (childs)
-				// {
 				childs.remove(Childs);
-				// }
 			}
 		});
 	}
@@ -249,11 +243,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void RunOnGL(runOnGL run)
 	{
-		// synchronized (runOnGL_List)
-		// {
 		runOnGL_List.add(run);
-		// }
-
 	}
 
 	public float getLeftWidth()

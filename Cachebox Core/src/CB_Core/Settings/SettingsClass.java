@@ -191,6 +191,7 @@ public class SettingsClass extends SettingsList
 		addSkinSettings();
 		addQuickbuttonsSettings();
 		addDebugSettings();
+		addPositionSettings();
 	}
 
 	private void addCarModeSettings()
@@ -223,8 +224,7 @@ public class SettingsClass extends SettingsList
 		addSetting(SuppressPowerSaving = new SettingBool("SuppressPowerSaving", cat, NORMAL, true, true));
 		addSetting(ImperialUnits = new SettingBool("ImperialUnits", cat, NORMAL, false, true));
 		addSetting(ScreenLock = new SettingTime("ScreenLock", cat, NORMAL, 60000, true));
-		addSetting(ParkingLatitude = new SettingDouble("ParkingLatitude", SettingCategory.Gps, EXPERT, 0, true));
-		addSetting(ParkingLongitude = new SettingDouble("ParkingLongitude", SettingCategory.Gps, EXPERT, 0, true));
+
 		addSetting(MapViewDPIFaktor = new SettingDouble("MapViewDPIFaktor", SettingCategory.Map, EXPERT, GlobalCore.displayDensity, true));
 		addSetting(MapViewFontFaktor = new SettingDouble("MapViewFontFaktor", SettingCategory.Map, EXPERT, 1.0, true));
 		addSetting(vibrateFeedback = new SettingBool("vibrateFeedback", cat, NORMAL, true, true));
@@ -250,7 +250,18 @@ public class SettingsClass extends SettingsList
 
 		addSetting(HardwareCompassLevel = new SettingInt("HardwareCompassLevel", cat, NORMAL, 5, true));
 		addSetting(HardwareCompass = new SettingBool("HardwareCompass", cat, NORMAL, true, true));
-		addSetting(gpsUpdateTime = new SettingInt("gpsUpdateTime", cat, NORMAL, 100, true));
+		addSetting(gpsUpdateTime = new SettingInt("gpsUpdateTime", cat, NORMAL, 150, true));
+	}
+
+	private void addPositionSettings()
+	{
+		SettingCategory cat = SettingCategory.Positions;
+
+		addSetting(MapInitLatitude = new SettingDouble("MapInitLatitude", cat, EXPERT, -1000, true));
+		addSetting(MapInitLongitude = new SettingDouble("MapInitLongitude", cat, EXPERT, -1000, true));
+		addSetting(ParkingLatitude = new SettingDouble("ParkingLatitude", cat, EXPERT, 0, true));
+		addSetting(ParkingLongitude = new SettingDouble("ParkingLongitude", cat, EXPERT, 0, true));
+
 	}
 
 	private void addMapSettings()
@@ -272,8 +283,6 @@ public class SettingsClass extends SettingsList
 		addSetting(MapNorthOriented = new SettingBool("MapNorthOriented", cat, NORMAL, true, true));
 		addSetting(LastMapToggleBtnState = new SettingInt("LastMapToggleBtnState", cat, INVISIBLE, 0, true));
 
-		addSetting(MapInitLatitude = new SettingDouble("MapInitLatitude", SettingCategory.Gps, EXPERT, -1000, true));
-		addSetting(MapInitLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Gps, EXPERT, -1000, true));
 		addSetting(CurrentMapLayer = new SettingString("CurrentMapLayer", cat, EXPERT, "Mapnik", true));
 
 		addSetting(MapMaxCachesDisplay_config = new SettingInt("MapMaxCachesDisplay_config", cat, INVISIBLE, 10000, true));
@@ -387,8 +396,6 @@ public class SettingsClass extends SettingsList
 
 	private void addSkinSettings()
 	{
-		String Work = Config.WorkPath;
-
 		SettingCategory cat = SettingCategory.Skin;
 		addSetting(MapsforgeDayTheme = new SettingFile("MapsforgeDayTheme", cat, NORMAL, "", true, "xml"));
 		addSetting(MapsforgeNightTheme = new SettingFile("MapsforgeNightTheme", cat, NORMAL, "", true, "xml"));

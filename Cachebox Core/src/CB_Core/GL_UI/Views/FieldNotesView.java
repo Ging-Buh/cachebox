@@ -37,10 +37,6 @@ import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.FieldNoteList;
 import CB_Core.Types.Waypoint;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 public class FieldNotesView extends V_ListView
 {
 	public static FieldNotesView that;
@@ -49,6 +45,8 @@ public class FieldNotesView extends V_ListView
 	FieldNoteList lFieldNotes;
 	CustomAdapter lvAdapter;
 	public static CB_RectF ItemRec;
+
+	public static boolean firstShow = true;
 
 	public FieldNotesView(CB_RectF rec, String Name)
 	{
@@ -65,28 +63,8 @@ public class FieldNotesView extends V_ListView
 		lvAdapter = new CustomAdapter(lFieldNotes);
 		this.setBaseAdapter(lvAdapter);
 
-	}
-
-	BitmapFontCache emptyMsg;
-
-	@Override
-	public void render(SpriteBatch batch)
-	{
-		// if Fildnotes List empty, draw empty Msg
-		if (lFieldNotes != null && lFieldNotes.size() == 0)
-		{
-			if (emptyMsg == null)
-			{
-				emptyMsg = new BitmapFontCache(Fonts.getBig());
-				TextBounds bounds = emptyMsg.setText(GlobalCore.Translations.Get("EmptyFieldNotes"), 0, 0);
-				emptyMsg.setPosition(this.halfWidth - (bounds.width / 2), this.halfHeight - (bounds.height / 2));
-			}
-			if (emptyMsg != null) emptyMsg.draw(batch, 0.5f);
-		}
-		else
-		{
-			super.render(batch);
-		}
+		this.setEmptyMsg(GlobalCore.Translations.Get("EmptyFieldNotes"));
+		firstShow = true;
 	}
 
 	@Override
@@ -94,7 +72,18 @@ public class FieldNotesView extends V_ListView
 	{
 		if (lFieldNotes.size() == 0) lFieldNotes.LoadFieldNotes("");
 		this.notifyDataSetChanged();
-		showContextMenu();
+		if (firstShow)
+		{
+			firstShow = false;
+			showContextMenu();
+		}
+
+	}
+
+	@Override
+	public void onHide()
+	{
+		firstShow = true;
 	}
 
 	@Override
@@ -162,7 +151,14 @@ public class FieldNotesView extends V_ListView
 			float cacheIfoHeight = (UiSizes.getButtonHeight() / 1.5f) + Dialog.margin + Fonts.Mesure("T").height;
 			float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic()
 					- ListViewItemBackground.getRightWidthStatic() - (Dialog.margin * 2);
-			float commentHeight = (Dialog.margin * 3) + Fonts.MesureWrapped(fne.comment, mesurdWidth).height;
+
+			float mh = 0;
+			if (fne.comment != null && !fne.comment.isEmpty())
+			{
+				mh = Fonts.MesureWrapped(fne.comment, mesurdWidth).height;
+			}
+
+			float commentHeight = (Dialog.margin * 3) + mh;
 
 			return headHeight + cacheIfoHeight + commentHeight;
 		}
@@ -503,6 +499,9 @@ public class FieldNotesView extends V_ListView
 		@Override
 		public void returnedFieldNote(FieldNoteEntry fieldNote)
 		{
+
+			FieldNotesView.firstShow = false;
+
 			efnActivity.dispose();
 			efnActivity = null;
 
@@ -642,7 +641,13 @@ public class FieldNotesView extends V_ListView
 					aktFieldNote = null;
 					aktFieldNoteIndex = -1;
 
-					that.notifyDataSetChanged();
+					lFieldNotes = new FieldNoteList();
+					lFieldNotes.LoadFieldNotes("");
+
+					that.setBaseAdapter(null);
+					lvAdapter = new CustomAdapter(lFieldNotes);
+					that.setBaseAdapter(lvAdapter);
+
 					break;
 				case GL_MsgBox.BUTTON_NEGATIVE:
 					// No button clicked

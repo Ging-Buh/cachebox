@@ -42,7 +42,8 @@ public class Fonts
 
 	private static BitmapFont night_fontAB15_out;
 	private static BitmapFont night_fontAB16_out;
-	private static BitmapFont night_fontAB17_out;
+
+	// private static BitmapFont night_fontAB17_out;
 
 	/**
 	 * Lädt die verwendeten Bitmap Fonts und berechnet die entsprechenden Größen
@@ -70,7 +71,7 @@ public class Fonts
 
 		night_fontAB15_out = loadScaledFont("15_out", true);
 		night_fontAB16_out = loadScaledFont("16_out", true);
-		night_fontAB17_out = loadScaledFont("17_out", true);
+		// night_fontAB17_out = loadScaledFont("17_out", true);
 	}
 
 	static String defaultFontPath;

@@ -6,8 +6,8 @@ package CB_Core.Settings;
  */
 public enum SettingCategory
 {
-	Login("Login"), Map("Map"), Gps("Gps"), Misc("Misc"), Skin("Skin"), API("API"), Folder("Folder"), Templates("Templates"), Internal(
-			"Internal"), CarMode("CarMode"), QuickList("QuickList"), Debug("Debug"), Button("Button"), ;
+	Login("Login"), QuickList("QuickList"), Map("Map"), Gps("Gps"), Misc("Misc"), Skin("Skin"), API("API"), Folder("Folder"), Templates(
+			"Templates"), Internal("Internal"), CarMode("CarMode"), Debug("Debug"), Button("Button"), Positions("Positions"), ;
 
 	private String langString;
 
