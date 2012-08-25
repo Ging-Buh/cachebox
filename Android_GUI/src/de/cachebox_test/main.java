@@ -75,6 +75,8 @@ import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -187,6 +189,9 @@ import de.cachebox_test.Views.Forms.ScreenLock;
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
 		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent
 {
+
+	private static final int NOTIFICATION_EX = 1;
+	private NotificationManager notificationManager;
 
 	// private static final boolean useGL_Tab = true;
 	static private final char BACKSPACE = 8;
@@ -336,6 +341,32 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+		// Initial CB running notification Icon
+		{
+			notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+			int icon = R.drawable.cb;
+			CharSequence tickerText = "CB";
+			long when = System.currentTimeMillis();
+
+			Notification notification = new Notification(icon, tickerText, when);
+
+			Context context = getApplicationContext();
+			CharSequence contentTitle = "CB is running";
+			CharSequence contentText = "";
+
+			// Intent notificationIntent = new Intent(this, main.class);
+			// PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+			// notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+
+			notification.setLatestEventInfo(context, contentTitle, contentText, null);
+
+			notification.flags |= Notification.FLAG_NO_CLEAR;
+
+			notificationManager.notify(NOTIFICATION_EX, notification);
+
+		}
 
 		if (GlobalCore.isTab)
 		{
@@ -1028,6 +1059,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		if (!dontStop) stopped = true;
 		Logger.LogCat("Main=> onPause");
+
 		if (input == null)
 		{
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
@@ -1035,6 +1067,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 					: config.resolutionStrategy);
 			input = new AndroidInput(this, graphics.getView(), config);
+		}
+
+		if (isFinishing())
+		{
+			notificationManager.cancel(NOTIFICATION_EX);
 		}
 
 		super.onPause();
