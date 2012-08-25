@@ -36,13 +36,13 @@ public class SelectionMarker extends CB_View_Base
 		switch (type)
 		{
 		case Center:
-			markerXPos = ((orgWidth - 1) / 2) / Width * orgWidth;
+			markerXPos = ((orgWidth - 1) / 2) / orgWidth * Width;
 			break;
 		case Right:
 			markerXPos = 0;
 			break;
 		case Left:
-			markerXPos = (orgWidth - 1) / Width * orgWidth;
+			markerXPos = (orgWidth - 1) / orgWidth * Width;
 			break;
 		}
 		this.setWidth(Width);
