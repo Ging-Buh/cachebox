@@ -33,16 +33,15 @@ public class Box extends CB_View_Base
 	}
 
 	@Override
-	protected void SkinIsChanged()
+	protected void Initial()
 	{
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	protected void Initial()
+	protected void SkinIsChanged()
 	{
-		isInitial = true;
+
 	}
 
 }

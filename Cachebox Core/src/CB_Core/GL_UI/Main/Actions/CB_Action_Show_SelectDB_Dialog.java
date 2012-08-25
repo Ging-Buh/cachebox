@@ -1,7 +1,6 @@
 package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.Config;
-import CB_Core.FileList;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;
@@ -44,16 +43,6 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 	@Override
 	public void Execute()
 	{
-		FileList fileList = null;
-		try
-		{
-			fileList = new FileList(Config.WorkPath, "DB3");
-		}
-		catch (Exception ex)
-		{
-			Logger.Error("slpash.Initial()", "search number of DB3 files", ex);
-		}
-
 		selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL_Listener.glListener.getWidth(), GL_Listener.glListener.getHeight()),
 				"SelectDbDialog", false);
 		selectDBDialog.setReturnListner(new ReturnListner()

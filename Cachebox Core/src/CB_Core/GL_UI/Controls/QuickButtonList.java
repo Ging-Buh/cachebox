@@ -1,5 +1,7 @@
 package CB_Core.GL_UI.Controls;
 
+import java.util.ConcurrentModificationException;
+
 import CB_Core.Config;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -18,10 +20,12 @@ public class QuickButtonList extends H_ListView
 	private float btnHeight;
 	private float btnYPos;
 
+	public static QuickButtonList that;
+
 	public QuickButtonList(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-
+		that = this;
 		btnHeight = rec.getHeight() * 0.93f;
 		setBackground(SpriteCache.ButtonBack);
 
@@ -103,16 +107,23 @@ public class QuickButtonList extends H_ListView
 	@Override
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
-		synchronized (this.childs)
+		try
 		{
-
-			for (GL_View_Base btn : this.childs)
+			synchronized (this.childs)
 			{
-				btn.onTouchDragged(x, y, pointer, KineticPan);
-			}
 
+				for (GL_View_Base btn : this.childs)
+				{
+					btn.onTouchDragged(x, y, pointer, KineticPan);
+				}
+
+			}
+			return super.onTouchDragged(x, y, pointer, KineticPan);
 		}
-		return super.onTouchDragged(x, y, pointer, KineticPan);
+		catch (ConcurrentModificationException e)
+		{
+			return false;
+		}
 	}
 
 	public static MoveableList<QuickButtonItem> quickButtonList;
@@ -164,6 +175,14 @@ public class QuickButtonList extends H_ListView
 			quickButtonList = QuickActions.getListFromConfig(ConfigList, btnHeight);
 		}
 		chkIsDrageble();
+	}
+
+	@Override
+	public void notifyDataSetChanged()
+	{
+		quickButtonList = null;
+		readQuickButtonItemsList();
+		super.notifyDataSetChanged();
 	}
 
 	@Override

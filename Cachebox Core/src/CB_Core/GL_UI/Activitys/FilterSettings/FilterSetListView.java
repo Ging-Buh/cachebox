@@ -258,7 +258,7 @@ public class FilterSetListView extends V_ListView
 		FilterSetListViewItem General = addFilterSetCollabseItem(null, GlobalCore.Translations.Get("General"), COLLABSE_BUTTON_ITEM);
 		NotAvailable = General.addChild(addFilterSetItem(SpriteCache.getThemedSprite("disabled"), GlobalCore.Translations.Get("disabled"),
 				THREE_STATE_ITEM));
-		Archived = General.addChild(addFilterSetItem(SpriteCache.getThemedSprite("not_available"), GlobalCore.Translations.Get("archived"),
+		Archived = General.addChild(addFilterSetItem(SpriteCache.getThemedSprite("not-available"), GlobalCore.Translations.Get("archived"),
 				THREE_STATE_ITEM));
 		Finds = General.addChild(addFilterSetItem(SpriteCache.getThemedSprite("log0icon"), GlobalCore.Translations.Get("myfinds"),
 				THREE_STATE_ITEM));
@@ -270,7 +270,7 @@ public class FilterSetListView extends V_ListView
 				THREE_STATE_ITEM));
 		HasUserData = General.addChild(addFilterSetItem(SpriteCache.getThemedSprite("userdata"),
 				GlobalCore.Translations.Get("hasuserdata"), THREE_STATE_ITEM));
-		ListingChanged = General.addChild(addFilterSetItem(SpriteCache.getThemedSprite("warning_icon"),
+		ListingChanged = General.addChild(addFilterSetItem(SpriteCache.getThemedSprite("warning-icon"),
 				GlobalCore.Translations.Get("ListingChanged"), THREE_STATE_ITEM));
 		WithManualWaypoint = General.addChild(addFilterSetItem(SpriteCache.getThemedSprite("big16icon"),
 				GlobalCore.Translations.Get("manualwaypoint"), THREE_STATE_ITEM));

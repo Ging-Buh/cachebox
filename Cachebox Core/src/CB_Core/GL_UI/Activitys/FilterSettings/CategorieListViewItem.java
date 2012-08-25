@@ -389,17 +389,19 @@ public class CategorieListViewItem extends ListViewItemBackground
 
 	public void plusClick()
 	{
+		isPressed = false;
 		this.categorieEntry.plusClick();
-
 	}
 
 	public void minusClick()
 	{
+		isPressed = false;
 		this.categorieEntry.minusClick();
 	}
 
 	public void stateClick()
 	{
+		isPressed = false;
 		this.categorieEntry.stateClick();
 	}
 

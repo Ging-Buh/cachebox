@@ -44,6 +44,8 @@ import CB_Core.Events.platformConector.IHardwarStateListner;
 import CB_Core.Events.platformConector.IShowViewListner;
 import CB_Core.Events.platformConector.IgetFileListner;
 import CB_Core.Events.platformConector.IgetFileReturnListner;
+import CB_Core.Events.platformConector.IgetFolderListner;
+import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.Events.platformConector.trackListListner;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
@@ -77,6 +79,7 @@ import CB_Core.Types.Waypoint;
 import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -133,10 +136,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.Window;
-import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -192,6 +193,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private static final int NOTIFICATION_EX = 1;
 	private NotificationManager notificationManager;
+
+	public HorizontalListView QuickButtonList;
 
 	// private static final boolean useGL_Tab = true;
 	static private final char BACKSPACE = 8;
@@ -268,7 +271,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private LinearLayout TopLayout;
 	public downSlider InfoDownSlider;
-	public HorizontalListView QuickButtonList;
 
 	private String GcCode = null;
 
@@ -356,11 +358,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			CharSequence contentTitle = "CB is running";
 			CharSequence contentText = "";
 
-			// Intent notificationIntent = new Intent(this, main.class);
-			// PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-			// notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+			Intent notificationIntent = new Intent(this, main.class);
+			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+			notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
 
-			notification.setLatestEventInfo(context, contentTitle, contentText, null);
+			// notification.setLatestEventInfo(context, contentTitle, contentText, null);
 
 			notification.flags |= Notification.FLAG_NO_CLEAR;
 
@@ -422,7 +424,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		initialViewGL();
 		initalMicIcon();
-		initialCaheInfoSlider();
 
 		Search = new search(this);
 
@@ -896,6 +897,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					if (filePath != null)
 					{
 						if (getFileReturnListner != null) getFileReturnListner.getFieleReturn(filePath);
+						if (getFolderReturnListner != null) getFolderReturnListner.getFolderReturn(filePath);
 					}
 				}
 			}
@@ -1771,7 +1773,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void findViewsById()
 	{
-
+		QuickButtonList = (HorizontalListView) this.findViewById(R.id.main_quick_button_list);
 		TopLayout = (LinearLayout) this.findViewById(R.id.layoutTop);
 		frame = (FrameLayout) this.findViewById(R.id.layoutContent);
 		tabFrame = (FrameLayout) this.findViewById(R.id.tabletLayoutContent);
@@ -1783,9 +1785,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		Mic_Icon = (Mic_On_Flash) this.findViewById(R.id.mic_flash);
 
 		cacheNameView = (CacheNameView) this.findViewById(R.id.main_cache_name_view);
-
-		QuickButtonList = (HorizontalListView) this.findViewById(R.id.main_quick_button_list);
-		QuickButtonList.setBackgroundDrawable(Global.BtnIcons[20]);
 
 		strengthLayout = (LinearLayout) this.findViewById(R.id.main_strength_control);
 
@@ -1978,17 +1977,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				setVoiceRecIsStart(false);
 			}
 		});
-	}
-
-	/*
-	 * InfoSlider
-	 */
-
-	private void initialCaheInfoSlider()
-	{
-
-		QuickButtonList.setHeight(UiSizes.getQuickButtonListHeight());
-
 	}
 
 	private void showParkingDialog()
@@ -2972,45 +2960,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	/**
-	 * Adapter für die QuickButton Lists.
-	 * 
-	 * @author Longri
-	 */
-	public BaseAdapter QuickButtonsAdapter = new BaseAdapter()
-	{
-
-		@Override
-		public int getCount()
-		{
-			return Global.QuickButtonList.size();
-		}
-
-		@Override
-		public Object getItem(int position)
-		{
-			return null;
-		}
-
-		@Override
-		public long getItemId(int position)
-		{
-			return 0;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent)
-		{
-			return Global.QuickButtonList.get(position);
-		}
-
-	};
-
-	public static int getQuickButtonHeight()
-	{
-		return ((main) mainActivity).QuickButtonList.getHeight();
-	}
-
-	/**
 	 * Überprüft ob das GPS eingeschaltet ist. Wenn nicht, wird eine Meldung ausgegeben.
 	 */
 	private void chkGpsIsOn()
@@ -3683,6 +3632,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					IgetFileReturnListner returnListner)
 			{
 				getFileReturnListner = returnListner;
+				getFolderReturnListner = null;
 
 				Intent intent = new Intent(FileManagerIntents.ACTION_PICK_FILE);
 
@@ -3707,9 +3657,41 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		});
 
+		CB_Core.Events.platformConector.setGetFolderListner(new IgetFolderListner()
+		{
+
+			@Override
+			public void getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListner returnListner)
+			{
+				getFileReturnListner = null;
+				getFolderReturnListner = returnListner;
+
+				Intent intent = new Intent(FileManagerIntents.ACTION_PICK_DIRECTORY);
+
+				// Construct URI from file name.
+				File file = new File(initialPath);
+				intent.setData(Uri.fromFile(file));
+
+				// Set fancy title and button (optional)
+				intent.putExtra(FileManagerIntents.EXTRA_TITLE, TitleText);
+				intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, ButtonText);
+
+				try
+				{
+					main.mainActivity.startActivityForResult(intent, Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR);
+				}
+				catch (ActivityNotFoundException e)
+				{
+					// No compatible file manager was found.
+					Toast.makeText(main.mainActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
+
 	}
 
 	IgetFileReturnListner getFileReturnListner = null;
+	IgetFolderReturnListner getFolderReturnListner = null;
 
 	// #########################################################
 

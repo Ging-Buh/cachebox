@@ -273,4 +273,10 @@ public class MoveableList<T> extends ArrayList<T>
 		return iterator;
 	}
 
+	@SuppressWarnings("unchecked")
+	public MoveableList<T> clone()
+	{
+		return (MoveableList<T>) super.clone();
+	}
+
 }

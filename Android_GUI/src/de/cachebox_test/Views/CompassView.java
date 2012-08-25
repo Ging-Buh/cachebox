@@ -6,6 +6,7 @@ import CB_Core.UnitFormatter;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.ViewConst;
+import CB_Core.GL_UI.Controls.QuickButtonList;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.SelectedLangChangedEvent;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
@@ -101,7 +102,7 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu, Positio
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
 		DescriptionTextView.setHeight(UiSizes.getCacheInfoHeight());
-		ToggleButtonLayout.getLayoutParams().height = UiSizes.getWindowWidth() + 30 - main.getQuickButtonHeight();
+		ToggleButtonLayout.getLayoutParams().height = UiSizes.getWindowWidth() + 30 - ((int) QuickButtonList.that.getHeight());
 
 	}
 

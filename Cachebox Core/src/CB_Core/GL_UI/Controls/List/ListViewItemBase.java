@@ -20,7 +20,7 @@ public abstract class ListViewItemBase extends CB_View_Base
 		mIndex = Index;
 	}
 
-	private int mIndex;
+	protected int mIndex;
 
 	public int getIndex()
 	{

@@ -1,6 +1,7 @@
 package CB_Core.GL_UI;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
@@ -472,16 +473,22 @@ public abstract class GL_View_Base extends CB_RectF
 		debugRec = null;
 
 		// Eine Größenänderung an die Childs Melden
-		// synchronized (childs)
-		// {
-		for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+
+		try
 		{
-			// alle renderChilds() der in dieser GL_View_Base
-			// enthaltenen Childs auf rufen.
-			GL_View_Base view = iterator.next();
-			if (view != null) view.onParentRezised(this);
+			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			{
+				// alle renderChilds() der in dieser GL_View_Base
+				// enthaltenen Childs auf rufen.
+				GL_View_Base view = iterator.next();
+				if (view != null) view.onParentRezised(this);
+			}
 		}
-		// }
+		catch (ConcurrentModificationException e)
+		{
+			// keine ahnung was ich machen soll, wen dieser fehler auftritt!
+		}
+
 	}
 
 	public abstract void onRezised(CB_RectF rec);

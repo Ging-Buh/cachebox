@@ -143,7 +143,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		mi = cm.addItem(MI_AUTO_RESORT, "AutoResort");
 		mi.setCheckable(true);
 		mi.setChecked(GlobalCore.autoResort);
-		cm.addItem(MI_CHK_STATE_API, "chkState");
+		cm.addItem(MI_CHK_STATE_API, "chkState", SpriteCache.Icons.get(35));
 
 		cm.show();
 

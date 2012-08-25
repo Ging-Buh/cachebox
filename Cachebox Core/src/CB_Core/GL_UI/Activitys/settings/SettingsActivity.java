@@ -21,6 +21,7 @@ import CB_Core.GL_UI.Controls.CollabseBox.animatetHeightChangedListner;
 import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.LinearCollabseBox;
 import CB_Core.GL_UI.Controls.Linearlayout;
+import CB_Core.GL_UI.Controls.QuickButtonList;
 import CB_Core.GL_UI.Controls.ScrollBox;
 import CB_Core.GL_UI.Controls.Spinner;
 import CB_Core.GL_UI.Controls.Spinner.selectionChangedListner;
@@ -35,6 +36,7 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowActivity;
+import CB_Core.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListButtonLangSpinner;
@@ -91,12 +93,6 @@ public class SettingsActivity extends ActivityBase
 
 		createButtons();
 		fillContent();
-	}
-
-	@Override
-	public void onShow()
-	{
-
 	}
 
 	private void createButtons()
@@ -165,8 +161,25 @@ public class SettingsActivity extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
+
+				String ActionsString = "";
+				int counter = 0;
+				for (QuickButtonItem tmp : SettingsItem_QuickButton.tmpQuickList)
+				{
+					ActionsString += String.valueOf(tmp.getAction().ordinal());
+					if (counter < SettingsItem_QuickButton.tmpQuickList.size() - 1)
+					{
+						ActionsString += ",";
+					}
+					counter++;
+				}
+				Config.settings.quickButtonList.setValue(ActionsString);
+
 				Config.settings.SaveToLastValue();
 				Config.AcceptChanges();
+
+				// Notify QuickButtonList
+				QuickButtonList.that.notifyDataSetChanged();
 
 				finish();
 				return true;

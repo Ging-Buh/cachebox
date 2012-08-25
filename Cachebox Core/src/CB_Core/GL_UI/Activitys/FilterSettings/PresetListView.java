@@ -125,7 +125,7 @@ public class PresetListView extends V_ListView
 		addPresetItem(SpriteCache.getThemedSprite("star"), GlobalCore.Translations.Get("Highlights"), FilterProperties.presets[5]);
 		addPresetItem(SpriteCache.getThemedSprite("favorit"), GlobalCore.Translations.Get("Favorites"), FilterProperties.presets[6]);
 		addPresetItem(SpriteCache.getThemedSprite("delete"), GlobalCore.Translations.Get("PrepareToArchive"), FilterProperties.presets[7]);
-		addPresetItem(SpriteCache.getThemedSprite("warning_icon"), GlobalCore.Translations.Get("ListingChanged"),
+		addPresetItem(SpriteCache.getThemedSprite("warning-icon"), GlobalCore.Translations.Get("ListingChanged"),
 				FilterProperties.presets[8]);
 
 		// add User Presets

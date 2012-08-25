@@ -91,7 +91,6 @@ public class CB_Action_ShowSolverView2 extends CB_Action_ShowView
 			}
 		});
 
-		MenuItem mi;
 		cm.addItem(MI_CHANGE_LINE, "Zeile ändern", SpriteCache.Icons.get(13));
 		cm.addItem(MI_INSERT_LINE, "Zeile einfügen", SpriteCache.Icons.get(13));
 		cm.addItem(MI_DELETE_LINE, "Zeile löschen", SpriteCache.Icons.get(13));

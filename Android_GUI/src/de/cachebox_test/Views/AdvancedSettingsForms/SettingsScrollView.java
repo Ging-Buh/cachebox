@@ -18,47 +18,28 @@ package de.cachebox_test.Views.AdvancedSettingsForms;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.openintents.intents.FileManagerIntents;
-
 import CB_Core.Config;
 import CB_Core.GlobalCore;
-import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
-import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox;
-import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
-import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListnerDouble;
-import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
-import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
-import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListButtonLangSpinner;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListButtonSkinSpinner;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListCategoryButton;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListGetApiButton;
 import CB_Core.Map.ManagerBase;
 import CB_Core.Math.UiSizes;
 import CB_Core.Settings.SettingBase;
-import CB_Core.Settings.SettingBool;
 import CB_Core.Settings.SettingCategory;
-import CB_Core.Settings.SettingDouble;
-import CB_Core.Settings.SettingEnum;
 import CB_Core.Settings.SettingFile;
 import CB_Core.Settings.SettingFolder;
-import CB_Core.Settings.SettingInt;
-import CB_Core.Settings.SettingIntArray;
 import CB_Core.Settings.SettingModus;
-import CB_Core.Settings.SettingString;
 import CB_Core.Settings.SettingTime;
 import CB_Core.Solver.Functions.Function;
-import CB_Core.TranslationEngine.LangStrings.Langs;
 import android.R.color;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -78,14 +59,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
@@ -226,18 +203,6 @@ public class SettingsScrollView extends Activity
 		if (iteratorCat != null && iteratorCat.hasNext())
 		{
 
-			SettingsListButtonLangSpinner lang = new SettingsListButtonLangSpinner("Lang", SettingCategory.Button, SettingModus.Normal,
-					true);
-			View langView = getLangSpinnerView(lang, content);
-			langView.setMinimumWidth(UiSizes.getQuickButtonWidth());
-			langView.setMinimumHeight(UiSizes.getQuickButtonHeight());
-			content.addView(langView);
-
-			SettingsListCategoryButton quick = new SettingsListCategoryButton("QuickList", SettingCategory.Button, SettingModus.Normal,
-					true);
-			View quickView = getButtonView(quick, content, false);
-			content.addView(quickView);
-
 			ArrayList<SettingBase> SortedSettingList = new ArrayList<SettingBase>();// Config.settings.values().toArray();
 
 			for (Iterator<SettingBase> it = Config.settings.values().iterator(); it.hasNext();)
@@ -284,8 +249,7 @@ public class SettingsScrollView extends Activity
 					SettingsListButtonSkinSpinner skin = new SettingsListButtonSkinSpinner("Skin", SettingCategory.Button,
 							SettingModus.Normal, true);
 					View skinView = getSkinSpinnerView(skin, content);
-					langView.setMinimumWidth(UiSizes.getQuickButtonWidth());
-					langView.setMinimumHeight(UiSizes.getQuickButtonHeight());
+
 					lay.addView(skinView);
 					entrieCount++;
 				}
@@ -314,7 +278,7 @@ public class SettingsScrollView extends Activity
 									position++;
 
 									View view = getView(settingItem, lay, BackGroundChanger);
-
+									if (view == null) continue;
 									lay.addView(view);
 									entrieCount++;
 									if (settingItem.getName().equals(EditKey))
@@ -329,6 +293,8 @@ public class SettingsScrollView extends Activity
 								position++;
 
 								View view = getView(settingItem, lay, BackGroundChanger);
+
+								if (view == null) continue;
 
 								lay.addView(view);
 								entrieCount++;
@@ -439,103 +405,13 @@ public class SettingsScrollView extends Activity
 		}
 	};
 
-	private View getBoolView(final SettingBool SB, ViewGroup parent, boolean BackgroundChanger)
-	{
-
-		LayoutInflater inflater = getLayoutInflater();
-		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_bool, parent, false);
-
-		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
-		if (BackgroundChanger)
-		{
-			LL.setBackgroundResource(R.drawable.settings_list_background);
-		}
-		else
-		{
-			LL.setBackgroundResource(R.drawable.settings_list_background2);
-		}
-
-		TextView label = (TextView) row.findViewById(R.id.textView1);
-		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(UiSizes.getScaledFontSize_big());
-		label.setTextColor(Global.getColor(R.attr.TextColor));
-
-		TextView label2 = (TextView) row.findViewById(R.id.textView2);
-
-		label2.setText("default: " + String.valueOf(SB.getDefaultValue()));
-		label2.setTextSize((float) UiSizes.getScaledFontSize());
-		label2.setTextColor(Global.getColor(R.attr.TextColor));
-
-		CheckBox chk = (CheckBox) row.findViewById(R.id.checkBox1);
-
-		chk.setChecked(SB.getValue());
-		chk.setOnCheckedChangeListener(new OnCheckedChangeListener()
-		{
-
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-			{
-				SB.setValue(isChecked);
-
-			}
-		});
-
-		row.setOnLongClickListener(new OnLongClickListener()
-		{
-
-			@Override
-			public boolean onLongClick(View arg0)
-			{
-				// zeige Beschreibung der Einstellung
-
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
-
-				return false;
-			}
-		});
-
-		return row;
-
-	}
-
 	private View getView(SettingBase SB, ViewGroup parent, boolean BackgroundChanger)
 	{
-		if (SB instanceof SettingBool)
-		{
-			return getBoolView((SettingBool) SB, parent, BackgroundChanger);
-		}
-		else if (SB instanceof SettingIntArray)
-		{
-			return getIntArrayView((SettingIntArray) SB, parent, BackgroundChanger);
-		}
-		else if (SB instanceof SettingTime)
+		if (SB instanceof SettingTime)
 		{
 			return getTimeView((SettingTime) SB, parent, BackgroundChanger);
 		}
-		else if (SB instanceof SettingInt)
-		{
-			return getIntView((SettingInt) SB, parent, BackgroundChanger);
-		}
-		else if (SB instanceof SettingDouble)
-		{
-			return getDblView((SettingDouble) SB, parent, BackgroundChanger);
-		}
-		else if (SB instanceof SettingFolder)
-		{
-			return getFolderView((SettingFolder) SB, parent, BackgroundChanger);
-		}
-		else if (SB instanceof SettingFile)
-		{
-			return getFileView((SettingFile) SB, parent, BackgroundChanger);
-		}
-		else if (SB instanceof SettingEnum)
-		{
-			return getEnumView((SettingEnum) SB, parent, BackgroundChanger);
-		}
-		else if (SB instanceof SettingString)
-		{
-			return getStringView((SettingString) SB, parent, BackgroundChanger);
-		}
+
 		else if (SB instanceof SettingsListCategoryButton)
 		{
 			return getButtonView((SettingsListCategoryButton) SB, parent, BackgroundChanger);
@@ -544,548 +420,13 @@ public class SettingsScrollView extends Activity
 		{
 			return getApiKeyButtonView((SettingsListGetApiButton) SB, parent, BackgroundChanger);
 		}
-		else if (SB instanceof SettingsListButtonLangSpinner)
-		{
-			return getLangSpinnerView((SettingsListButtonLangSpinner) SB, parent);
-		}
+
 		else if (SB instanceof SettingsListButtonSkinSpinner)
 		{
 			return getSkinSpinnerView((SettingsListButtonSkinSpinner) SB, parent);
 		}
 
 		return null;
-	}
-
-	private View getStringView(final SettingString SB, ViewGroup parent, boolean BackgroundChanger)
-	{
-		LayoutInflater inflater = getLayoutInflater();
-		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
-
-		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
-		if (BackgroundChanger)
-		{
-			LL.setBackgroundResource(R.drawable.settings_list_background);
-		}
-		else
-		{
-			LL.setBackgroundResource(R.drawable.settings_list_background2);
-		}
-
-		TextView label = (TextView) row.findViewById(R.id.textView1);
-		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(UiSizes.getScaledFontSize_big());
-		label.setTextColor(Global.getColor(R.attr.TextColor));
-
-		TextView label2 = (TextView) row.findViewById(R.id.textView2);
-
-		label2.setText(SB.getValue());
-		label2.setTextSize((float) UiSizes.getScaledFontSize());
-		label2.setTextColor(Global.getColor(R.attr.TextColor));
-
-		row.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View arg0)
-			{
-				SettingsScrollView.EditKey = SB.getName();
-				selectedItem = SB;
-				// Show NumPad Int Edit
-				StringInputBox.Show(TextFieldType.SingleLine, SB.getName(), "default: " + SB.getDefaultValue(), SB.getValue(),
-						new OnMsgBoxClickListener()
-						{
-
-							@Override
-							public boolean onClick(int which)
-							{
-								String text = StringInputBox.editText.getText().toString();
-								if (which == GL_MsgBox.BUTTON_POSITIVE)
-								{
-									SettingString value = (SettingString) Config.settings.get(SettingsScrollView.EditKey);
-									if (value != null) value.setValue(text);
-									SettingsScrollView.Me.ListInvalidate();
-
-								}
-								// Activity wieder anzeigen
-								main.mainActivity.startActivity(aktIntent);
-								return true;
-							}
-						});
-
-				// Activity ausblenden, damit OpenGL-InputBox sichtbar wird
-				finish();
-
-			}
-		});
-
-		row.setOnLongClickListener(new OnLongClickListener()
-		{
-
-			@Override
-			public boolean onLongClick(View arg0)
-			{
-				// zeige Beschreibung der Einstellung
-
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
-
-				return false;
-			}
-		});
-
-		return row;
-
-	}
-
-	private View getEnumView(final SettingEnum SB, ViewGroup parent, boolean BackgroundChanger)
-	{
-		LayoutInflater inflater = getLayoutInflater();
-		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_enum, parent, false);
-
-		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
-		if (BackgroundChanger)
-		{
-			LL.setBackgroundResource(R.drawable.settings_list_background);
-		}
-		else
-		{
-			LL.setBackgroundResource(R.drawable.settings_list_background2);
-		}
-
-		TextView label = (TextView) row.findViewById(R.id.textView1);
-		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(UiSizes.getScaledFontSize_big());
-		label.setTextColor(Global.getColor(R.attr.TextColor));
-
-		final Spinner spinner = (Spinner) row.findViewById(R.id.spinner1);
-
-		if (spinner.getAdapter() == null)
-		{
-			ArrayAdapter<String> enumAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, SB.getValues());
-			enumAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			spinner.setAdapter(enumAdapter);
-			spinner.setSelection(SB.getValues().indexOf(SB.getValue()));
-
-			spinner.setOnItemSelectedListener(new OnItemSelectedListener()
-			{
-
-				@Override
-				public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
-				{
-					if (SB != null)
-					{
-						selectedItem = SB;
-						SB.setValue((String) SB.getValues().get(arg2));
-					}
-				}
-
-				@Override
-				public void onNothingSelected(AdapterView<?> arg0)
-				{
-					if (SB != null)
-					{
-						selectedItem = SB;
-
-					}
-				}
-			});
-		}
-
-		row.setOnLongClickListener(new OnLongClickListener()
-		{
-
-			@Override
-			public boolean onLongClick(View arg0)
-			{
-				// zeige Beschreibung der Einstellung
-
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
-
-				return false;
-			}
-		});
-
-		return row;
-
-	}
-
-	private View getIntArrayView(final SettingIntArray SB, ViewGroup parent, boolean BackgroundChanger)
-	{
-		LayoutInflater inflater = getLayoutInflater();
-		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_enum, parent, false);
-
-		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
-		if (BackgroundChanger)
-		{
-			LL.setBackgroundResource(R.drawable.settings_list_background);
-		}
-		else
-		{
-			LL.setBackgroundResource(R.drawable.settings_list_background2);
-		}
-
-		TextView label = (TextView) row.findViewById(R.id.textView1);
-		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(UiSizes.getScaledFontSize_big());
-		label.setTextColor(Global.getColor(R.attr.TextColor));
-
-		final Spinner spinner = (Spinner) row.findViewById(R.id.spinner1);
-
-		if (spinner.getAdapter() == null)
-		{
-			ArrayAdapter<Integer> enumAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, SB.getValues());
-			enumAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			spinner.setAdapter(enumAdapter);
-			spinner.setSelection(SB.getIndex());
-
-			spinner.setOnItemSelectedListener(new OnItemSelectedListener()
-			{
-
-				@Override
-				public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
-				{
-					if (SB != null)
-					{
-						selectedItem = SB;
-						SB.setValue(SB.getValueFromIndex(arg2));
-					}
-				}
-
-				@Override
-				public void onNothingSelected(AdapterView<?> arg0)
-				{
-					if (SB != null)
-					{
-						selectedItem = SB;
-
-					}
-				}
-			});
-		}
-
-		row.setOnLongClickListener(new OnLongClickListener()
-		{
-
-			@Override
-			public boolean onLongClick(View arg0)
-			{
-				// zeige Beschreibung der Einstellung
-
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
-
-				return false;
-			}
-		});
-
-		return row;
-
-	}
-
-	private View getIntView(final SettingInt SB, ViewGroup parent, boolean BackgroundChanger)
-	{
-		LayoutInflater inflater = getLayoutInflater();
-		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
-
-		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
-		if (BackgroundChanger)
-		{
-			LL.setBackgroundResource(R.drawable.settings_list_background);
-		}
-		else
-		{
-			LL.setBackgroundResource(R.drawable.settings_list_background2);
-		}
-
-		TextView label = (TextView) row.findViewById(R.id.textView1);
-		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(UiSizes.getScaledFontSize_big());
-		label.setTextColor(Global.getColor(R.attr.TextColor));
-
-		TextView label2 = (TextView) row.findViewById(R.id.textView2);
-
-		label2.setText(String.valueOf(SB.getValue()));
-		label2.setTextSize((float) UiSizes.getScaledFontSize());
-		label2.setTextColor(Global.getColor(R.attr.TextColor));
-
-		row.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View arg0)
-			{
-				selectedItem = SB;
-				SettingsScrollView.EditKey = SB.getName();
-				// Show NumPad Int Edit
-				NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()), SB.getValue(),
-						new returnValueListner()
-						{
-							@Override
-							public void returnValue(int value)
-							{
-								SettingInt SetValue = (SettingInt) Config.settings.get(SettingsScrollView.EditKey);
-								if (SetValue != null) SetValue.setValue(value);
-								SettingsScrollView.Me.ListInvalidate();
-								// Activity wieder anzeigen
-								main.mainActivity.startActivity(aktIntent);
-							}
-
-							@Override
-							public void cancelClicked()
-							{
-								// Activity wieder anzeigen
-								main.mainActivity.startActivity(aktIntent);
-							}
-
-						});
-				// Activity ausblenden, damit OpenGL-InputBox sichtbar wird
-				finish();
-			}
-		});
-
-		row.setOnLongClickListener(new OnLongClickListener()
-		{
-
-			@Override
-			public boolean onLongClick(View arg0)
-			{
-				// zeige Beschreibung der Einstellung
-
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
-
-				return false;
-			}
-		});
-
-		return row;
-
-	}
-
-	private View getDblView(final SettingDouble SB, ViewGroup parent, boolean BackgroundChanger)
-	{
-		LayoutInflater inflater = getLayoutInflater();
-		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
-
-		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
-		if (BackgroundChanger)
-		{
-			LL.setBackgroundResource(R.drawable.settings_list_background);
-		}
-		else
-		{
-			LL.setBackgroundResource(R.drawable.settings_list_background2);
-		}
-
-		TextView label = (TextView) row.findViewById(R.id.textView1);
-		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(UiSizes.getScaledFontSize_big());
-		label.setTextColor(Global.getColor(R.attr.TextColor));
-
-		TextView label2 = (TextView) row.findViewById(R.id.textView2);
-
-		label2.setText(String.valueOf(SB.getValue()));
-		label2.setTextSize((float) UiSizes.getScaledFontSize());
-		label2.setTextColor(Global.getColor(R.attr.TextColor));
-
-		row.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View arg0)
-			{
-				selectedItem = SB;
-				SettingsScrollView.EditKey = SB.getName();
-				// Show NumPad Int Edit
-				NumerikInputBox input = NumerikInputBox.Show(SB.getName(), "default: " + String.valueOf(SB.getDefaultValue()),
-						SB.getValue(), new returnValueListnerDouble()
-						{
-							@Override
-							public void returnValue(double value)
-							{
-								SettingDouble setValue = (SettingDouble) Config.settings.get(SettingsScrollView.EditKey);
-								if (setValue != null) setValue.setValue(value);
-								SettingsScrollView.Me.ListInvalidate();
-								// Activity wieder anzeigen
-								main.mainActivity.startActivity(aktIntent);
-							}
-
-							@Override
-							public void cancelClicked()
-							{
-								// Activity wieder anzeigen
-								main.mainActivity.startActivity(aktIntent);
-							}
-
-						});
-
-				// Activity ausblenden, damit OpenGL-InputBox sichtbar wird
-				finish();
-			}
-		});
-
-		row.setOnLongClickListener(new OnLongClickListener()
-		{
-
-			@Override
-			public boolean onLongClick(View arg0)
-			{
-				// zeige Beschreibung der Einstellung
-
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
-
-				return false;
-			}
-		});
-
-		return row;
-
-	}
-
-	private View getFolderView(final SettingFolder SB, ViewGroup parent, boolean BackgroundChanger)
-	{
-		LayoutInflater inflater = getLayoutInflater();
-		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
-
-		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
-		if (BackgroundChanger)
-		{
-			LL.setBackgroundResource(R.drawable.settings_list_background);
-		}
-		else
-		{
-			LL.setBackgroundResource(R.drawable.settings_list_background2);
-		}
-
-		TextView label = (TextView) row.findViewById(R.id.textView1);
-		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(UiSizes.getScaledFontSize_big());
-		label.setTextColor(Global.getColor(R.attr.TextColor));
-
-		TextView label2 = (TextView) row.findViewById(R.id.textView2);
-
-		label2.setText(SB.getValue());
-		label2.setTextSize((float) UiSizes.getScaledFontSize());
-		label2.setTextColor(Global.getColor(R.attr.TextColor));
-
-		row.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View arg0)
-			{
-				SettingsScrollView.EditKey = SB.getName();
-
-				Intent intent = new Intent(FileManagerIntents.ACTION_PICK_DIRECTORY);
-
-				// Construct URI from file name.
-				File file = new File(SB.getValue());
-				intent.setData(Uri.fromFile(file));
-
-				// Set fancy title and button (optional)
-				intent.putExtra(FileManagerIntents.EXTRA_TITLE, "Select Folder");
-				intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, "Select");
-				selectedItem = SB;
-				try
-				{
-					SettingsScrollView.Me.startActivityForResult(intent, Global.REQUEST_CODE_PICK_DIRECTORY);
-				}
-				catch (ActivityNotFoundException e)
-				{
-					// No compatible file manager was found.
-					Toast.makeText(main.mainActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
-				}
-			}
-		});
-
-		row.setOnLongClickListener(new OnLongClickListener()
-		{
-
-			@Override
-			public boolean onLongClick(View arg0)
-			{
-				// zeige Beschreibung der Einstellung
-
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
-
-				return false;
-			}
-		});
-
-		return row;
-
-	}
-
-	private View getFileView(final SettingFile SB, ViewGroup parent, boolean BackgroundChanger)
-	{
-		LayoutInflater inflater = getLayoutInflater();
-		View row = inflater.inflate(R.layout.advanced_settings_list_view_item, parent, false);
-
-		LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
-		if (BackgroundChanger)
-		{
-			LL.setBackgroundResource(R.drawable.settings_list_background);
-		}
-		else
-		{
-			LL.setBackgroundResource(R.drawable.settings_list_background2);
-		}
-
-		TextView label = (TextView) row.findViewById(R.id.textView1);
-		// label.setText(SB.getName());
-		label.setText(GlobalCore.Translations.Get(SB.getName()));
-		label.setTextSize(UiSizes.getScaledFontSize_big());
-		label.setTextColor(Global.getColor(R.attr.TextColor));
-
-		TextView label2 = (TextView) row.findViewById(R.id.textView2);
-
-		label2.setText(SB.getValue());
-		label2.setTextSize((float) UiSizes.getScaledFontSize());
-		label2.setTextColor(Global.getColor(R.attr.TextColor));
-
-		row.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View arg0)
-			{
-				SettingsScrollView.EditKey = SB.getName();
-
-				Intent intent = new Intent(FileManagerIntents.ACTION_PICK_FILE);
-
-				// Construct URI from file name.
-				File file = new File(SB.getValue());
-				intent.setData(Uri.fromFile(file));
-
-				// Set fancy title and button (optional)
-				intent.putExtra(FileManagerIntents.EXTRA_TITLE, "Select file to open");
-				intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, "Select");
-				selectedItem = SB;
-				try
-				{
-					SettingsScrollView.Me.startActivityForResult(intent, Global.REQUEST_CODE_PICK_FILE);
-				}
-				catch (ActivityNotFoundException e)
-				{
-					// No compatible file manager was found.
-					Toast.makeText(main.mainActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
-				}
-			}
-		});
-
-		row.setOnLongClickListener(new OnLongClickListener()
-		{
-
-			@Override
-			public boolean onLongClick(View arg0)
-			{
-				// zeige Beschreibung der Einstellung
-
-				MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
-
-				return false;
-			}
-		});
-
-		return row;
-
 	}
 
 	private View getButtonView(final SettingsListCategoryButton SB, ViewGroup parent, boolean BackgroundChanger)
@@ -1105,18 +446,6 @@ public class SettingsScrollView extends Activity
 			@Override
 			public void onClick(View v)
 			{
-
-				// wenn QuickList Button, dann öffne Activity
-				if (SB.getName().equals("QuickList"))
-				{
-					SettingsScrollView.EditKey = SB.getName();
-
-					Intent intent = new Intent().setClass(SettingsScrollView.Me, SettingsListEditQuickButton.class);
-
-					SettingsScrollView.Me.startActivityForResult(intent, Global.REQUEST_CODE_EDIT_QUICK_LIST);
-
-					return;
-				}
 
 				if (SB.getName().equals("DebugDisplayInfo"))
 				{
@@ -1295,72 +624,6 @@ public class SettingsScrollView extends Activity
 		wheel.setVisibleItems(3);
 		wheel.setCyclic(true);
 		wheel.setEnabled(true);
-	}
-
-	ArrayList<Langs> Sprachen;
-
-	private View getLangSpinnerView(final SettingsListButtonLangSpinner SB, ViewGroup parent)
-	{
-		LayoutInflater inflater = getLayoutInflater();
-		View row = inflater.inflate(R.layout.advanced_settings_list_view_item_lang_spinner, parent, false);
-
-		final Spinner spinner = (Spinner) row.findViewById(R.id.Spinner);
-
-		int Height = (int) (UiSizes.getScaledRefSize_normal() * 4);
-		spinner.setMinimumHeight(Height);
-
-		spinner.setPrompt(GlobalCore.Translations.Get("SelectLanguage"));
-		if (spinner.getAdapter() == null)
-		{
-			Sprachen = GlobalCore.Translations.GetLangs(Config.settings.LanguagePath.getValue());
-			String[] items = new String[Sprachen.size()];
-			int index = 0;
-			int selection = -1;
-			for (Langs tmp : Sprachen)
-			{
-				if (Config.settings.Sel_LanguagePath.getValue().equals(tmp.Path)) selection = index;
-				items[index++] = tmp.Name;
-			}
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
-			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			spinner.setAdapter(adapter);
-			spinner.setSelection(selection);
-
-			spinner.setOnItemSelectedListener(new OnItemSelectedListener()
-			{
-
-				@Override
-				public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
-				{
-					String selected = (String) spinner.getSelectedItem();
-					for (Langs tmp : Sprachen)
-					{
-						if (selected.equals(tmp.Name))
-						{
-							Config.settings.Sel_LanguagePath.setValue(tmp.Path);
-							try
-							{
-								GlobalCore.Translations.ReadTranslationsFile(tmp.Path);
-							}
-							catch (IOException e)
-							{
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							break;
-						}
-
-					}
-				}
-
-				@Override
-				public void onNothingSelected(AdapterView<?> arg0)
-				{
-					// do nothing
-				}
-			});
-		}
-		return row;
 	}
 
 	private View getSkinSpinnerView(final SettingsListButtonSkinSpinner SB, ViewGroup parent)

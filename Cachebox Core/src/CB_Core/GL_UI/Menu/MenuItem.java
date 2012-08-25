@@ -34,6 +34,8 @@ public class MenuItem extends ListViewItemBackground
 	{
 		super(new CB_RectF(size), Index, Name);
 		mID = ID;
+
+		mIndex = ID;
 	}
 
 	public int getMenuItemId()

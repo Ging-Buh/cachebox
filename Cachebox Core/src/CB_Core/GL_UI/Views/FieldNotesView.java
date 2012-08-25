@@ -241,7 +241,7 @@ public class FieldNotesView extends V_ListView
 			}
 		});
 
-		cm.addItem(MI_UPLOAD_FIELDNOTE, "uploadFieldNotes", SpriteCache.getThemedSprite(""));
+		cm.addItem(MI_UPLOAD_FIELDNOTE, "uploadFieldNotes", SpriteCache.Icons.get(35));
 		cm.addItem(MI_DELETE_ALL_FIELDNOTES, "DeleteAllNotes", SpriteCache.getThemedSprite("delete"));
 
 		cm.show();

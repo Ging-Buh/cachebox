@@ -104,10 +104,6 @@ public class SpriteCache
 	private static TextureAtlas atlasCustom;
 	private static TextureAtlas atlasCustomtNight;
 
-	private static Boolean atlasDefaultIsNeverUsed = true;
-	private static Boolean atlasDefaultNightIsNeverUsed = true;
-	private static Boolean atlasCustomIsNeverUsed = true;
-	private static Boolean atlasCustomtNightIsNeverUsed = true;
 	public static ArrayList<Sprite> LogIcons;
 
 	public static Drawable activityBackground;
@@ -146,11 +142,6 @@ public class SpriteCache
 			Gdx.gl11.glFlush();
 			Gdx.gl11.glFinish();
 		}
-
-		atlasDefaultIsNeverUsed = true;
-		atlasDefaultNightIsNeverUsed = true;
-		atlasCustomIsNeverUsed = true;
-		atlasCustomtNightIsNeverUsed = true;
 
 		PathCustom = path + "/day/UI_IconPack.spp";
 		PathCustomNight = path + "/night/UI_IconPack.spp";
@@ -221,10 +212,6 @@ public class SpriteCache
 				tmp = createSprite(atlasCustom, name);
 				if (tmp != null) tmp = setNightColorMatrix(name, atlasCustom);
 			}
-			else
-			{
-				atlasCustomtNightIsNeverUsed = false;
-			}
 
 			if (tmp == null)
 			{
@@ -234,14 +221,7 @@ public class SpriteCache
 				{
 					tmp = setNightColorMatrix(name, atlasDefault);
 				}
-				else
-				{
-					atlasDefaultNightIsNeverUsed = false;
-				}
-			}
-			else
-			{
-				atlasCustomIsNeverUsed = false;
+
 			}
 
 		}
@@ -253,10 +233,6 @@ public class SpriteCache
 		if (tmp == null)
 		{
 			tmp = createSprite(atlasDefault, name);
-		}
-		else
-		{
-			atlasCustomIsNeverUsed = false;
 		}
 
 		if (tmp != null) tmp.setScale(scale);
@@ -603,13 +579,14 @@ public class SpriteCache
 			Icons.add(getThemedSprite("favorit")); // 42
 			Icons.add(getThemedSprite("star")); // 43
 			Icons.add(getThemedSprite("disabled")); // 44
-			Icons.add(getThemedSprite("not-available")); // 45
+			Icons.add(getThemedSprite("log11icon")); // 45
 			Icons.add(getThemedSprite("navigate")); // 46
 			Icons.add(getThemedSprite("log10icon")); // 47
 			Icons.add(getThemedSprite("d-n")); // 48
 			Icons.add(getThemedSprite("cb")); // 49
 			Icons.add(getThemedSprite("userdata")); // 50
 			Icons.add(getThemedSprite("day-spinner")); // 51
+			Icons.add(getThemedSprite("add-icon")); // 52
 
 		}
 
@@ -617,7 +594,6 @@ public class SpriteCache
 
 		createDrawables();
 
-		// cleanUp();
 	}
 
 	private static void createDrawables()
@@ -724,37 +700,6 @@ public class SpriteCache
 			atlasCustomtNight.dispose();
 			atlasCustomtNight = null;
 		}
-	}
-
-	private static void cleanUp()
-	{
-
-		// die TextureAtlanten, welche nicht benutzt werden, werden hier Disposed
-
-		if (atlasDefaultIsNeverUsed && atlasDefault != null)
-		{
-			atlasDefault.dispose();
-			atlasDefault = null;
-		}
-
-		if (atlasDefaultNightIsNeverUsed && atlasDefaultNight != null)
-		{
-			atlasDefaultNight.dispose();
-			atlasDefaultNight = null;
-		}
-
-		if (atlasCustomIsNeverUsed && atlasCustom != null)
-		{
-			atlasCustom.dispose();
-			atlasCustom = null;
-		}
-
-		if (atlasCustomtNightIsNeverUsed && atlasCustomtNight != null)
-		{
-			atlasCustomtNight.dispose();
-			atlasCustomtNight = null;
-		}
-
 	}
 
 }

@@ -80,6 +80,7 @@ public class H_ListView extends ListViewBase
 
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void addVisibleItems(boolean Kinetic)
 	{
 		if (mBaseAdapter == null) return;
@@ -222,7 +223,6 @@ public class H_ListView extends ListViewBase
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -238,7 +238,7 @@ public class H_ListView extends ListViewBase
 		calcDefaultPosList();
 		reloadItems();
 
-		if (mcalcAllSizeBase > this.width)
+		if (mAllSize > this.width)
 		{
 			this.setDragable();
 		}

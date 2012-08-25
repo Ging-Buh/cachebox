@@ -26,6 +26,7 @@ import CB_Core.Events.GpsStateChangeEvent;
 import CB_Core.Events.GpsStateChangeEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.GL_UI.Controls.QuickButtonList;
 import CB_Core.Math.CB_Rect;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
@@ -241,7 +242,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		if (!drag && !AnimationIsRunning && !ButtonDrag)
 		{
-			yPos = QuickButtonHeight = Config.settings.quickButtonShow.getValue() ? main.getQuickButtonHeight() : 0;
+			yPos = QuickButtonHeight = Config.settings.quickButtonShow.getValue() ? ((int) QuickButtonList.that.getHeight()) : 0;
 		}
 
 		float FSize = ((float) (UiSizes.getScaledFontSize_big() * 1.3));

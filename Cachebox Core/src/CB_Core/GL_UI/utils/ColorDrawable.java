@@ -9,6 +9,7 @@ public class ColorDrawable extends EmptyDrawable
 {
 
 	private Texture tex;
+	private Color mColor;
 
 	public ColorDrawable(Color color)
 	{
@@ -18,11 +19,28 @@ public class ColorDrawable extends EmptyDrawable
 	@Override
 	public void draw(SpriteBatch batch, float x, float y, float width, float height)
 	{
-		batch.draw(tex, x, y, width, height);
+		if (tex != null)
+		{
+			Color altColor = batch.getColor();
+
+			float r = altColor.r;
+			float g = altColor.g;
+			float b = altColor.b;
+			float a = altColor.a;
+
+			batch.setColor(mColor);
+			batch.draw(tex, x, y, width, height);
+			batch.setColor(r, g, b, a);
+		}
+		else
+		{
+			setColor(mColor);
+		}
 	}
 
 	public void setColor(Color color)
 	{
+		mColor = color;
 		int w = 2;
 		int h = 2;
 		Pixmap p = new Pixmap(w, h, Pixmap.Format.RGB565);
@@ -36,7 +54,7 @@ public class ColorDrawable extends EmptyDrawable
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			tex = null;
 		}
 
 		p.dispose();

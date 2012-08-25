@@ -383,6 +383,8 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		setValueFont = true;
 		FilterSetListView.mustSaveFilter = true;
 		this.isPressed = false;
+		this.lastItemTouchPos = null;
+		GL_Listener.glListener.renderOnce("");
 	}
 
 	public void minusClick()
@@ -391,6 +393,8 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		setValueFont = true;
 		FilterSetListView.mustSaveFilter = true;
 		this.isPressed = false;
+		this.lastItemTouchPos = null;
+		GL_Listener.glListener.renderOnce("");
 	}
 
 	public void stateClick()
@@ -398,6 +402,8 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		this.mFilterSetEntry.stateClick();
 		FilterSetListView.mustSaveFilter = true;
 		this.isPressed = false;
+		this.lastItemTouchPos = null;
+		GL_Listener.glListener.renderOnce("");
 	}
 
 	public void setValue(int value)

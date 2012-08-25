@@ -6,6 +6,7 @@ import java.util.Date;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_Core.Log.Logger;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.JokerList;
@@ -28,7 +29,6 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import de.CB_PlugIn.IPlugIn;
-import de.cachebox_test.Custom_Controls.QuickButtonList.QuickButtonItem;
 
 public class Global
 {

@@ -436,6 +436,11 @@ public abstract class ListViewBase extends CB_View_Base
 		return mBaseAdapter.getView(mSelectedIndex);
 	}
 
+	public int getSelectedIndex()
+	{
+		return mSelectedIndex;
+	}
+
 	public void setSelection(int i)
 	{
 		if (mSelectedIndex != i && i >= 0)
