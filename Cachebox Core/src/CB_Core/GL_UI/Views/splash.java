@@ -26,7 +26,9 @@ import CB_Core.Map.Layer;
 import CB_Core.Map.ManagerBase;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
+import CB_Core.Types.Waypoint;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -344,7 +346,7 @@ public class splash extends TabMainView
 		{
 			Logger.Error("slpash.Initial()", "search number of DB3 files", ex);
 		}
-		if ((fileList.size() > 1) && Config.settings.MultiDBAsk.getValue())
+		if ((fileList.size() > 1) && Config.settings.MultiDBAsk.getValue() && !GlobalCore.restartAfterKill)
 		{
 			breakForWait = true;
 			selectDBDialog = new SelectDB(this, "SelectDbDialog", true);
@@ -430,6 +432,31 @@ public class splash extends TabMainView
 	{
 		GL_Listener.glListener.removeRenderView(this);
 		((Tab_GL_Listner) GL_Listener.glListener).switchToTabMainView();
+
+		if (GlobalCore.restartCache != null)
+		{
+			Cache c = Database.Data.Query.GetCacheByGcCode(GlobalCore.restartCache);
+			if (GlobalCore.restartWaypoint != null && c != null && c.waypoints != null)
+			{
+				Waypoint w = null;
+
+				for (Waypoint wp : c.waypoints)
+				{
+					if (wp.GcCode.equalsIgnoreCase(GlobalCore.restartWaypoint))
+					{
+						w = wp;
+					}
+				}
+
+				GlobalCore.SelectedWaypoint(c, w);
+			}
+			else
+			{
+				GlobalCore.SelectedCache(c);
+			}
+
+		}
+
 	}
 
 	public void dispose()

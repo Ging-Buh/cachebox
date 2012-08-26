@@ -34,6 +34,7 @@ import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
+import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.GpsStateChangeEvent;
 import CB_Core.Events.GpsStateChangeEventList;
@@ -65,6 +66,7 @@ import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Map.RouteOverlay.Track;
+import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
@@ -332,16 +334,81 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 	}
 
-	/*
-	 * Overrides
-	 */
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState)
+	{
+		savedInstanceState.putBoolean("isTab", GlobalCore.isTab);
+		savedInstanceState.putBoolean("useSmallSkin", GlobalCore.useSmallSkin);
+		savedInstanceState.putString("WorkPath", Config.WorkPath);
+
+		savedInstanceState.putInt("WindowWidth", UiSizes.ui.Window.width);
+		savedInstanceState.putInt("WindowHeight", UiSizes.ui.Window.height);
+
+		if (GlobalCore.SelectedCache() != null) savedInstanceState.putString("selectedCacheID", GlobalCore.SelectedCache().GcCode);
+		if (GlobalCore.SelectedWaypoint() != null) savedInstanceState.putString("selectedWayPoint", GlobalCore.SelectedWaypoint().GcCode);
+
+		// save more
+
+		super.onSaveInstanceState(savedInstanceState);
+	}
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-		ActivityUtils.onActivityCreateSetTheme(this);
 		super.onCreate(savedInstanceState);
+		if (savedInstanceState != null)
+		{
+			// restore ACB after Kill
+			Logger.LogCat("restore ACB after Kill");
+			GlobalCore.restartAfterKill = true;
+			GlobalCore.isTab = savedInstanceState.getBoolean("isTab");
+			GlobalCore.useSmallSkin = savedInstanceState.getBoolean("useSmallSkin");
+			String workPath = savedInstanceState.getString("WorkPath");
+
+			// Read Config
+			Config.Initialize(workPath, workPath + "/cachebox.config");
+
+			// hier muss die Config Db initialisiert werden
+			Database.Settings = new AndroidDB(DatabaseType.Settings, this);
+			if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
+			Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
+			// initialize Database
+			Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
+			Database.FieldNotes = new AndroidDB(DatabaseType.FieldNotes, this);
+
+			Config.AcceptChanges();
+
+			Resources res = this.getResources();
+			devicesSizes ui = new devicesSizes();
+
+			ui.Window = new Size(savedInstanceState.getInt("WindowWidth"), savedInstanceState.getInt("WindowHeight"));
+			ui.Density = res.getDisplayMetrics().density;
+			ui.ButtonSize = new Size(res.getDimensionPixelSize(R.dimen.BtnSize),
+					(int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * ui.Density)));
+			ui.RefSize = res.getDimensionPixelSize(R.dimen.RefSize);
+			ui.TextSize_Normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
+			ui.ButtonTextSize = res.getDimensionPixelSize(R.dimen.BtnTextSize);
+			ui.IconSize = res.getDimensionPixelSize(R.dimen.IconSize);
+			ui.Margin = res.getDimensionPixelSize(R.dimen.Margin);
+			ui.ArrowSizeList = res.getDimensionPixelSize(R.dimen.ArrowSize_List);
+			ui.ArrowSizeMap = res.getDimensionPixelSize(R.dimen.ArrowSize_Map);
+			ui.TB_IconSize = res.getDimensionPixelSize(R.dimen.TB_icon_Size);
+			ui.isLandscape = false;
+
+			UiSizes.initial(ui);
+			Global.Paints.init(this);
+			Global.InitIcons(this);
+
+			new de.cachebox_test.Map.AndroidManager();
+
+			GlobalCore.restartCache = savedInstanceState.getString("selectedCacheID");
+			GlobalCore.restartWaypoint = savedInstanceState.getString("selectedWayPoint");
+
+		}
+
+		ActivityUtils.onActivityCreateSetTheme(this);
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		// Initial CB running notification Icon
@@ -1193,11 +1260,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 
 				GlobalCore.Translations.writeMisingStringsFile();
-
-				// Config.settings.MapInitLatitude.setValue(mapViewGlListener.center.Latitude);
-				// Config.settings.MapInitLongitude.setValue(mapViewGlListener.center.Longitude);
-				// Config.settings.MapInitLatitude.setValue(MapViewForGl.center.Latitude);
-				// Config.settings.MapInitLongitude.setValue(MapViewForGl.center.Longitude);
 
 				Config.settings.WriteToDB();
 

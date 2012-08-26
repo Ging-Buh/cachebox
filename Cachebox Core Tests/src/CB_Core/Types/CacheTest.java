@@ -1,7 +1,7 @@
 package CB_Core.Types;
 
-import CB_Core.GlobalCore;
 import junit.framework.TestCase;
+import CB_Core.GlobalCore;
 
 public class CacheTest extends TestCase
 {
@@ -43,11 +43,9 @@ public class CacheTest extends TestCase
 		coordinate2.Latitude = 49.427700;
 		coordinate2.Longitude = 6.204300;
 
-		
 		GlobalCore.LastValidPosition = coordinate2;
-		
-		
-		// TODO Distanzberechnung
+
+		// Distanzberechnung
 		float distance = mCache.Distance(true);
 		assertTrue("Entfernung muss 100m sein", (distance > 99.38390) && (distance < 99.38392));
 
