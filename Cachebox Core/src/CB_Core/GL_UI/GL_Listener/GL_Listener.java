@@ -668,48 +668,63 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		if (!touchDownPos.containsKey(pointer)) return false; // für diesen Pointer ist kein touchDownPos gespeichert ->
 																// dürfte nicht passieren!!!
 		TouchDownPointer first = touchDownPos.get(pointer);
-		Point akt = new Point(x, y);
-		if (distance(akt, first.point) < first.view.getClickTolerance())
-		{
-			// Finger wurde losgelassen ohne viel Bewegung -> onClick erzeugen
-			// glListener.onClick(akt.x, akt.y, pointer, 0);
-			if (first.view.isClickable())
-			{
-				// Testen, ob dies ein Doppelklick ist
-				if ((System.currentTimeMillis() < lastClickTime + mDoubleClickTime) && (lastClickPoint != null)
-						&& (distance(akt, lastClickPoint) < first.view.getClickTolerance()))
-				{
-					boolean handled = first.view.doubleClick(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
-							- (int) first.view.ThisWorldRec.getY(), pointer, button);
-					if (handled) platformConector.vibrate();
 
-					lastClickTime = 0;
-					lastClickPoint = null;
-				}
-				else
+		try
+		{
+			Point akt = new Point(x, y);
+			if (distance(akt, first.point) < first.view.getClickTolerance())
+			{
+				// Finger wurde losgelassen ohne viel Bewegung -> onClick erzeugen
+				// glListener.onClick(akt.x, akt.y, pointer, 0);
+				if (first.view.isClickable())
 				{
-					// normaler Click
-					boolean handled = first.view.click(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
-							- (int) first.view.ThisWorldRec.getY(), pointer, button);
-					if (handled) platformConector.vibrate();
-					// Logger.LogCat("GL_Listner => onTouchUpBase (Click) : " + first.view.getName());
-					lastClickTime = System.currentTimeMillis();
-					lastClickPoint = akt;
+					// Testen, ob dies ein Doppelklick ist
+					if ((System.currentTimeMillis() < lastClickTime + mDoubleClickTime) && (lastClickPoint != null)
+							&& (distance(akt, lastClickPoint) < first.view.getClickTolerance()))
+					{
+						boolean handled = first.view.doubleClick(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight()
+								- y - (int) first.view.ThisWorldRec.getY(), pointer, button);
+						if (handled) platformConector.vibrate();
+
+						lastClickTime = 0;
+						lastClickPoint = null;
+					}
+					else
+					{
+						// normaler Click
+						boolean handled = first.view.click(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
+								- (int) first.view.ThisWorldRec.getY(), pointer, button);
+						if (handled) platformConector.vibrate();
+						// Logger.LogCat("GL_Listner => onTouchUpBase (Click) : " + first.view.getName());
+						lastClickTime = System.currentTimeMillis();
+						lastClickPoint = akt;
+					}
 				}
 			}
 		}
-
-		if (first.kineticPan != null)
+		catch (Exception e)
 		{
-			first.kineticPan.start();
-			first.startKinetic(this, x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
-					- (int) first.view.ThisWorldRec.getY());
+			CB_Core.Log.Logger.Error("GL_Listner.onTouchUpBase()", "", e);
 		}
-		else
+
+		try
 		{
-			// onTouchUp immer auslösen
-			first.view.touchUp(x, (int) testingView.getHeight() - y, pointer, button);
-			touchDownPos.remove(pointer);
+			if (first.kineticPan != null)
+			{
+				first.kineticPan.start();
+				first.startKinetic(this, x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
+						- (int) first.view.ThisWorldRec.getY());
+			}
+			else
+			{
+				// onTouchUp immer auslösen
+				first.view.touchUp(x, (int) testingView.getHeight() - y, pointer, button);
+				touchDownPos.remove(pointer);
+			}
+		}
+		catch (Exception e)
+		{
+			CB_Core.Log.Logger.Error("GL_Listner.onTouchUpBase()", "", e);
 		}
 		// Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
 		// glListener.onTouchUp(x, y, pointer, 0);

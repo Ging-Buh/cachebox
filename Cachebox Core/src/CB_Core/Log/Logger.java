@@ -111,6 +111,7 @@ public class Logger
 	{
 		String Ex = "";
 		if (e != null && e.getMessage() != null) Ex = "Ex = [" + e.getMessage() + "]";
+		else if (e != null && e.getLocalizedMessage() != null) Ex = "Ex = [" + e.getLocalizedMessage() + "]";
 
 		String Short = "[ERR]" + Name + " [" + Msg + "] ";
 		Msg = "[ERROR]- at " + Name + "- [" + Msg + "] " + Ex;
