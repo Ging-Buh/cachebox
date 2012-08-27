@@ -47,25 +47,17 @@
 					android:pathPrefix="/seek/cache_details.aspx" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".Views.Forms.EditCoordinate" android:screenOrientation="behind" android:theme="@style/Theme.Transparent"></activity>
-		<activity android:name=".Views.Forms.EditWaypoint" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent"></activity>
 		<activity android:name=".Views.Forms.ScreenLock"
 			android:theme="@style/Theme.Transparent" android:screenOrientation="behind"></activity>
-		<activity android:name=".Views.Forms.EditFieldNote" android:screenOrientation="behind" android:theme="@style/Theme.Transparent"></activity>
-		<activity android:name=".Views.FilterSettings.EditFilterSettings" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent"></activity>
 		<activity android:name=".Views.Forms.ProgressDialog"
 			android:theme="@style/ThemeHintDialog" android:screenOrientation="behind"></activity>
 		<activity android:name=".Views.Forms.ImportDialog" android:theme="@style/Theme_day_transparent" android:screenOrientation="behind"></activity>
-		<activity android:name=".Views.Forms.projectionCoordinate" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent"></activity>
 		<activity android:name=".Views.Forms.GcApiLogin" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent"></activity>
-		<activity android:name=".Views.Forms.MeasureCoordinateActivity" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent"></activity>
 		<activity android:name=".Views.Forms.selectSolverFunction" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent"></activity>
 		<activity android:name=".Views.Forms.ApiPQDialog" android:theme="@style/Theme_day_transparent" android:screenOrientation="behind"></activity>
 		<activity android:name=".Views.Forms.ApiSearchPosDialog" android:theme="@style/Theme_day_transparent" android:screenOrientation="behind"></activity>
 		<activity android:name=".Views.AdvancedSettingsForms.SettingsScrollView" android:screenOrientation="behind" android:theme="@style/Theme.Transparent"></activity>
-		<activity android:theme="@style/Theme_day_transparent" android:name=".Views.AdvancedSettingsForms.SettingsListEditQuickButton" android:screenOrientation="behind"></activity>
 		<activity android:name=".Views.Forms.DeleteDialog" android:theme="@style/Theme_day_transparent" android:screenOrientation="behind"></activity><activity android:theme="@style/Theme_day_transparent" android:name=".Views.Forms.ParkingDialog" android:screenOrientation="behind"></activity>
-		<activity android:name=".Views.Forms.EditFieldNote" android:theme="@style/Theme_day_transparent"></activity>
  
 	</application>
 </manifest>

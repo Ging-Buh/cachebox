@@ -1219,6 +1219,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			this.mWakeLock.acquire();
 		}
 
+		try
+		{
+			initialOnTouchListner();
+		}
+		catch (Exception e)
+		{
+			Logger.Error("onResume", "initialOnTouchListner", e);
+		}
 	}
 
 	@Override
@@ -1951,67 +1959,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					break;
 				}
 
-				gdxView.setOnTouchListener(new OnTouchListener()
-				{
-					@Override
-					public boolean onTouch(View v, final MotionEvent event)
-					{
-						// Weitergabe der Toucheingabe an den Gl_Listener
-						// ToDo: noch nicht fertig!!!!!!!!!!!!!
-						final int p = event.getActionIndex();
-						try
-						{
-							switch (event.getActionMasked())
-							{
-							case MotionEvent.ACTION_POINTER_DOWN:
-							case MotionEvent.ACTION_DOWN:
-								Thread threadDown = new Thread(new Runnable()
-								{
-									@Override
-									public void run()
-									{
-										glListener.onTouchDownBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
-									}
-								});
-								threadDown.run();
-
-								break;
-							case MotionEvent.ACTION_MOVE:
-								Thread threadMove = new Thread(new Runnable()
-								{
-									@Override
-									public void run()
-									{
-										glListener.onTouchDraggedBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p));
-									}
-								});
-								threadMove.run();
-
-								break;
-							case MotionEvent.ACTION_POINTER_UP:
-							case MotionEvent.ACTION_UP:
-
-								Thread threadUp = new Thread(new Runnable()
-								{
-									@Override
-									public void run()
-									{
-										glListener.onTouchUpBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
-									}
-								});
-								threadUp.run();
-
-								break;
-							}
-						}
-						catch (Exception e)
-						{
-							e.printStackTrace();
-							return false;
-						}
-						return true;
-					}
-				});
+				initialOnTouchListner();
 
 				viewGL = new ViewGL(this, inflater, gdxView, glListener);
 
@@ -2035,6 +1983,74 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			e.printStackTrace();
 		}
 
+	}
+
+	private void initialOnTouchListner() throws Exception
+	{
+
+		if (gdxView == null) throw new Exception("gdx view nicht initialisiert");
+
+		gdxView.setOnTouchListener(new OnTouchListener()
+		{
+			@Override
+			public boolean onTouch(View v, final MotionEvent event)
+			{
+				// Weitergabe der Toucheingabe an den Gl_Listener
+				// ToDo: noch nicht fertig!!!!!!!!!!!!!
+				final int p = event.getActionIndex();
+				try
+				{
+					switch (event.getActionMasked())
+					{
+					case MotionEvent.ACTION_POINTER_DOWN:
+					case MotionEvent.ACTION_DOWN:
+						Thread threadDown = new Thread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								glListener.onTouchDownBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
+							}
+						});
+						threadDown.run();
+
+						break;
+					case MotionEvent.ACTION_MOVE:
+						Thread threadMove = new Thread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								glListener.onTouchDraggedBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p));
+							}
+						});
+						threadMove.run();
+
+						break;
+					case MotionEvent.ACTION_POINTER_UP:
+					case MotionEvent.ACTION_UP:
+
+						Thread threadUp = new Thread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								glListener.onTouchUpBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
+							}
+						});
+						threadUp.run();
+
+						break;
+					}
+				}
+				catch (Exception e)
+				{
+					Logger.Error("gdxView.OnTouchListener", "", e);
+					return false;
+				}
+				return true;
+			}
+		});
 	}
 
 	private void initalMicIcon()
