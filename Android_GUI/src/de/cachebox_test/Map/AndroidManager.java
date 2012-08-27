@@ -24,7 +24,6 @@ import org.mapsforge.android.maps.mapgenerator.databaserenderer.ExternalRenderTh
 import org.mapsforge.android.maps.rendertheme.InternalRenderTheme;
 import org.mapsforge.core.Tile;
 import org.mapsforge.map.reader.MapDatabase;
-import org.mapsforge.map.reader.header.FileOpenResult;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
@@ -105,7 +104,7 @@ public class AndroidManager extends ManagerBase
 				mapFile = new File(CB_Core.Config.settings.MapPackFolder.getValue() + "/" + layer.Name);
 				mapDatabase = new MapDatabase();
 				mapDatabase.closeFile();
-				FileOpenResult fileOpenResult = mapDatabase.openFile(mapFile);
+				mapDatabase.openFile(mapFile);
 				Logger.DEBUG("Open MapsForge Map: " + mapFile);
 
 				databaseRenderer = (DatabaseRenderer) mapGenerator;
@@ -163,7 +162,7 @@ public class AndroidManager extends ManagerBase
 					baos.close();
 				}
 				catch (IOException e)
-				{ // TODO Auto-generated catch block e.printStackTrace(); } return result; }
+				{
 				}
 			}
 
@@ -190,7 +189,7 @@ public class AndroidManager extends ManagerBase
 		 * 
 		 * byte[] result = baos.toByteArray();
 		 * 
-		 * try { baos.close(); } catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); } return result; }
+		 * try { baos.close(); } catch (IOException e) { } return result; }
 		 */
 		try
 		{
@@ -273,8 +272,8 @@ public class AndroidManager extends ManagerBase
 		 * renderer.tileBitmap.copy(Config.RGB_565, true);
 		 * 
 		 * ByteArrayOutputStream baos = new ByteArrayOutputStream(); renderer.tileBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-		 * Bitmap bitj = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.size()); try { baos.close(); } catch (IOException e) { //
-		 * TODO Auto-generated catch block e.printStackTrace(); } return bitj; }
+		 * Bitmap bitj = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.size()); try { baos.close(); } catch (IOException e) { }
+		 * return bitj; }
 		 */
 		try
 		{
@@ -353,7 +352,7 @@ public class AndroidManager extends ManagerBase
 				response.getEntity().writeTo(out);
 				out.close();
 
-				String responseString = out.toString();
+				// String responseString = out.toString();
 
 				// Verzeichnis anlegen
 				synchronized (this)

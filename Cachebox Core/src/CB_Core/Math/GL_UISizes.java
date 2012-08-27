@@ -35,13 +35,23 @@ public class GL_UISizes implements SizeChangedEvent
 	 */
 	public static void initial(float width, float height)
 	{
+
+		Logger.DEBUG("Initial UISizes => " + width + "/" + height);
+		Logger.DEBUG("DPI = " + DPI);
+
 		if (DPI != (float) Config.settings.MapViewDPIFaktor.getValue()
 				|| FontFaktor != (float) Config.settings.MapViewFontFaktor.getValue())
 		{
+
 			DPI = (float) Config.settings.MapViewDPIFaktor.getValue();
+
+			Logger.DEBUG("DPI != MapViewDPIFaktor " + DPI);
+
 			FontFaktor = (float) (0.666666666667 * DPI * Config.settings.MapViewFontFaktor.getValue());
 			isInitial = false; // grössen müssen neu Berechnet werden
 		}
+
+		Logger.DEBUG("Initial UISizes => isInitial" + isInitial);
 
 		if (SurfaceSize == null)
 		{
@@ -200,6 +210,8 @@ public class GL_UISizes implements SizeChangedEvent
 	 */
 	private static void calcPos()
 	{
+		Logger.DEBUG("GL_UISizes.calcPos()");
+
 		float w = GlobalCore.isTab ? UI_Right.width : UI_Left.width;
 		float h = GlobalCore.isTab ? UI_Right.height : UI_Left.height;
 
@@ -224,27 +236,6 @@ public class GL_UISizes implements SizeChangedEvent
 
 		// Aufräumen
 		CompassMargin = null;
-		// System.gc();
-
-		if (false)
-		{
-			Logger.LogCat("------ GL UI Sizes--------");
-
-			writeDebug("UI_Left", UI_Left);
-			writeDebug("UI_Right", UI_Right);
-			writeDebug("Info", Info);
-			writeDebug("Toggle", Toggle);
-			writeDebug("ZoomBtn", ZoomBtn);
-			writeDebug("PosMarkerSize", PosMarkerSize);
-			writeDebug("TargetArrow", TargetArrow);
-			writeDebug("UnderlaySizes", UnderlaySizes);
-			writeDebug("WPSizes", WPSizes);
-
-			writeDebug("Button", UiSizes.Button.asFloat());
-			writeDebug("RefWidth", UiSizes.RefWidth);
-
-			Logger.LogCat("------ GL UI Sizes--------");
-		}
 
 	}
 
@@ -265,6 +256,7 @@ public class GL_UISizes implements SizeChangedEvent
 	 */
 	private static void calcSizes()
 	{
+		Logger.DEBUG("GL_UISizes.caclsizes()");
 		// größe der Frames berechnen
 		int frameLeftwidth = UiSizes.RefWidth;
 
@@ -353,6 +345,7 @@ public class GL_UISizes implements SizeChangedEvent
 	@Override
 	public void sizeChanged()
 	{
+		Logger.DEBUG("GL_UISizes.sizeChanged()");
 		calcPos();
 
 	}

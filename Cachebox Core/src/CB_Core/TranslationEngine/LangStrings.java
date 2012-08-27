@@ -5,14 +5,16 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
-import CB_Core.Log.Logger;
+import CB_Core.GlobalCore;
 
 public class LangStrings
 {
@@ -295,13 +297,76 @@ public class LangStrings
 		return LangID;
 	}
 
-	public void writeMisingStringsFile()
+	public void writeMisingStringsFile() throws IOException
 	{
-		Logger.DEBUG("List of missing lang strings:");
-		for (Iterator<_Translations> it = _MissingStringList.iterator(); it.hasNext();)
+		File file = new File(Config.WorkPath + "/debug.txt");
+
+		if (file.exists())
 		{
-			Logger.DEBUG(it.next().IdString);
+			String br = GlobalCore.br;
+
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			StringBuilder sb = new StringBuilder();
+			String line;
+
+			boolean override = false;
+
+			while ((line = reader.readLine()) != null)
+			{
+				if (!override) sb.append(line + br);
+				if (line.contains("##########  Missing Lang Strings ######"))
+				{
+					// Beginn des schreibbereichs
+					for (Iterator<_Translations> it = _MissingStringList.iterator(); it.hasNext();)
+					{
+						sb.append(it.next().IdString + br);
+					}
+					override = true;
+				}
+				if (override && line.contains("############################"))
+				{
+					// jetzt kann weiter gelesen werden
+					override = false;
+					sb.append(line + br);
+				}
+			}
+			reader.close();
+
+			// zurück schreiben
+			PrintWriter writer = new PrintWriter(new FileWriter(file));
+
+			writer.write(sb.toString());
+			writer.close();
+
 		}
+
+	}
+
+	public void readMissingStringsFile() throws IOException
+	{
+		File file = new File(Config.WorkPath + "/debug.txt");
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String line;
+
+		boolean read = false;
+
+		while ((line = reader.readLine()) != null)
+		{
+			if (read && line.contains("############################")) break;
+
+			if (read)
+			{
+				_Translations notFound = new _Translations(line, "??");
+				if (!_MissingStringList.contains(notFound))
+				{
+					_MissingStringList.add(notFound);
+				}
+			}
+
+			if (line.contains("##########  Missing Lang Strings ######")) read = true;
+
+		}
+		reader.close();
 
 	}
 

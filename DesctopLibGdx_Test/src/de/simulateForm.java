@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -111,7 +110,6 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 	@Override
 	public void windowClosed(WindowEvent arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -124,31 +122,24 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 	@Override
 	public void windowDeactivated(WindowEvent arg0)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void windowDeiconified(WindowEvent arg0)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void windowIconified(WindowEvent arg0)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void windowOpened(WindowEvent arg0)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void actionPerformed(ActionEvent event)
 	{
@@ -206,6 +197,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
 	private static int Bearing = 45;
 
+	@SuppressWarnings("deprecation")
 	private void loadSimulateRoute(String Path)
 	{
 
@@ -250,7 +242,6 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
 	private static int trackPointIndex = 0;
 	private static int trackPointIndexEnd = 0;
-	private static Date trackStartTime;
 
 	private static boolean BreakSimulate = false;
 
@@ -287,7 +278,6 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 		NetworkSend = false;
 
 		trackPointIndexEnd = simulationRoute.Points.size() - 1;
-		trackStartTime = simulationRoute.Points.get(trackPointIndex).TimeStamp;
 		long nextTimeStamp = (simulationRoute.Points.get(trackPointIndex + 1).TimeStamp.getTime() - simulationRoute.Points
 				.get(trackPointIndex).TimeStamp.getTime());
 

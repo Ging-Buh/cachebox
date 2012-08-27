@@ -104,7 +104,7 @@ public class SettingsScrollView extends Activity
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 		super.onCreate(savedInstanceState);

@@ -86,14 +86,14 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	@Override
 	public void OnFree()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 
 	@Override
 	public void ActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

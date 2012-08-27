@@ -454,7 +454,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

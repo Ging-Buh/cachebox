@@ -247,7 +247,7 @@ public final class DebugInfoPanel extends View
 		@Override
 		public void onTick(long millisUntilFinished)
 		{
-			// TODO Auto-generated method stub
+			 
 
 		}
 	}

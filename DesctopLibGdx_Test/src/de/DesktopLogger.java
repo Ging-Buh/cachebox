@@ -19,13 +19,13 @@ public class DesktopLogger implements ILog
 	
 	@Override
 	public void receiveLog(String Msg) {
-		// TODO Auto-generated method stub
+		 
 		
 	}
 
 	@Override
 	public void receiveShortLog(String Msg) {
-		// TODO Auto-generated method stub
+		 
 		
 	}
 

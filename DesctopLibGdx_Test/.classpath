@@ -2,14 +2,14 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="Lib/sqlite-jdbc-3.7.8-20111025.014814-1.jar"/>
-	<classpathentry kind="lib" path="Lib/gdx-backend-lwjgl-natives.jar"/>
-	<classpathentry kind="lib" path="Lib/gdx-natives.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Cachebox Core"/>
-	<classpathentry kind="lib" path="Lib/log4j-1.2.16.jar"/>
-	<classpathentry kind="lib" path="Lib/httpclient-4.0-alpha1.jar"/>
-	<classpathentry kind="lib" path="Lib/httpcore-4.0-alpha5.jar"/>
-	<classpathentry kind="lib" path="Lib/gdx-backend-lwjgl.jar"/>
-	<classpathentry kind="lib" path="Lib/gdx.jar"/>
+	<classpathentry exported="true" kind="lib" path="Lib/sqlite-jdbc-3.7.8-20111025.014814-1.jar"/>
+	<classpathentry exported="true" kind="lib" path="Lib/gdx-backend-lwjgl-natives.jar"/>
+	<classpathentry exported="true" kind="lib" path="Lib/gdx-natives.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Cachebox Core"/>
+	<classpathentry exported="true" kind="lib" path="Lib/log4j-1.2.16.jar"/>
+	<classpathentry exported="true" kind="lib" path="Lib/httpclient-4.0-alpha1.jar"/>
+	<classpathentry exported="true" kind="lib" path="Lib/httpcore-4.0-alpha5.jar"/>
+	<classpathentry exported="true" kind="lib" path="Lib/gdx-backend-lwjgl.jar"/>
+	<classpathentry exported="true" kind="lib" path="Lib/gdx.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

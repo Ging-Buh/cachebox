@@ -60,14 +60,14 @@ public class EditTextField extends EditTextFieldBase
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 
@@ -624,7 +624,7 @@ public class EditTextField extends EditTextFieldBase
 	@Override
 	public boolean keyUp(int KeyCode)
 	{
-		// TODO Auto-generated method stub
+		 
 		return false;
 	}
 

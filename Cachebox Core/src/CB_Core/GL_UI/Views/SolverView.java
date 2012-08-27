@@ -42,14 +42,14 @@ public class SolverView extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

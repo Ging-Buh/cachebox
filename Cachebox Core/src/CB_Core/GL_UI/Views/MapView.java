@@ -434,7 +434,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public void dispose()
 	{
-		// TODO Auto-generated method stub
+		 
 	}
 
 	@Override
@@ -2462,7 +2462,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

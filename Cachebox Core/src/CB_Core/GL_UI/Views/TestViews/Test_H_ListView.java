@@ -42,7 +42,7 @@ public class Test_H_ListView extends H_ListView
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

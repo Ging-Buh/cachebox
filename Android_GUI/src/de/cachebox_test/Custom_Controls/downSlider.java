@@ -39,7 +39,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.location.LocationManager;
 import android.os.Handler;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout;
@@ -571,7 +570,6 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		@Override
 		public void run()
 		{
-			String provider = LocationManager.GPS_PROVIDER;
 			Coordinate location = null;
 			if (GlobalCore.Locator != null)
 			{

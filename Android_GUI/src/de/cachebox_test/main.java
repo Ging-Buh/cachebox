@@ -2,7 +2,6 @@ package de.cachebox_test;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -337,6 +336,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState)
 	{
+		Logger.DEBUG(" => onSaveInstanceState");
+
 		savedInstanceState.putBoolean("isTab", GlobalCore.isTab);
 		savedInstanceState.putBoolean("useSmallSkin", GlobalCore.useSmallSkin);
 		savedInstanceState.putString("WorkPath", Config.WorkPath);
@@ -347,7 +348,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (GlobalCore.SelectedCache() != null) savedInstanceState.putString("selectedCacheID", GlobalCore.SelectedCache().GcCode);
 		if (GlobalCore.SelectedWaypoint() != null) savedInstanceState.putString("selectedWayPoint", GlobalCore.SelectedWaypoint().GcCode);
 
-		// save more
+		// TODO onSaveInstanceState => save more
 
 		super.onSaveInstanceState(savedInstanceState);
 	}
@@ -360,7 +361,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (savedInstanceState != null)
 		{
 			// restore ACB after Kill
-			Logger.LogCat("restore ACB after Kill");
+			Logger.DEBUG("restore ACB after Kill");
+
 			GlobalCore.restartAfterKill = true;
 			GlobalCore.isTab = savedInstanceState.getBoolean("isTab");
 			GlobalCore.useSmallSkin = savedInstanceState.getBoolean("useSmallSkin");
@@ -397,6 +399,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			ui.isLandscape = false;
 
 			UiSizes.initial(ui);
+
 			Global.Paints.init(this);
 			Global.InitIcons(this);
 
@@ -404,6 +407,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			GlobalCore.restartCache = savedInstanceState.getString("selectedCacheID");
 			GlobalCore.restartWaypoint = savedInstanceState.getString("selectedWayPoint");
+
+			// TODO onCreate => restore more from onSaveInstanceState
 
 		}
 
@@ -1175,9 +1180,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			invalidateTextureEventList.Call();
 		}
 
-		Logger.LogCat("Main=> onResume");
+		Logger.DEBUG("Main=> onResume");
 		if (input == null)
 		{
+			Logger.DEBUG("Main=> onResume input== null");
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 			config.useGL20 = true;
 			graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
@@ -1203,6 +1209,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		 */
 		if (Config.settings.SuppressPowerSaving.getValue())
 		{
+			Logger.DEBUG("Main=> onResume SuppressPowerSaving");
+
 			final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 
 			int flags = runsWithAkku ? PowerManager.SCREEN_BRIGHT_WAKE_LOCK : PowerManager.SCREEN_DIM_WAKE_LOCK;
@@ -1216,7 +1224,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onStop()
 	{
-		Logger.LogCat("Main=> onStop");
+		Logger.DEBUG("Main=> onStop");
 
 		if (mSensorManager != null) mSensorManager.unregisterListener(mListener);
 
@@ -1226,7 +1234,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Logger.Error("Main=> onStop", "unregisterReceiver", e);
 		}
 		counter.cancel();
 		super.onStop();
@@ -1247,10 +1255,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public void onDestroy()
 	{
 
-		Logger.LogCat("Main=> onDestroy");
+		Logger.DEBUG("Main=> onDestroy");
 		frame.removeAllViews();
 		if (isRestart)
 		{
+			Logger.DEBUG("Main=> onDestroy isRestart");
 			super.onDestroy();
 			isRestart = false;
 		}
@@ -1258,8 +1267,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (isFinishing())
 			{
-
-				GlobalCore.Translations.writeMisingStringsFile();
+				Logger.DEBUG("Main=> onDestroy isFinishing");
 
 				Config.settings.WriteToDB();
 
@@ -1322,6 +1330,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 			else
 			{
+				Logger.DEBUG("Main=> onDestroy isFinishing==false");
+
 				if (aktView != null) aktView.OnHide();
 				if (aktTabView != null) aktTabView.OnHide();
 				super.onDestroy();
@@ -1375,6 +1385,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	 */
 	public void startScreenLock(boolean force)
 	{
+		Logger.DEBUG("Start Screenlock (force:" + force + ")");
 
 		if (!force)
 		{
@@ -2874,52 +2885,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	public void receiveLog(String Msg)
 	{
-		synchronized (lockObject)
-		{
-			File file = new File(Config.WorkPath + "/debug.txt");
 
-			if (!file.exists())
-			{
-				// schreibe UI Sizes als erstes in die dbug.txt
-				String br = GlobalCore.br;
-				devicesSizes ui = UiSizes.ui;
+		Log.d("CACHEBOX", Msg);
 
-				StringBuilder sb = new StringBuilder();
-				sb.append("################  Ui Sizes ############" + br);
-				sb.append("Window = " + ui.Window.toString() + br);
-				sb.append("Density = " + ui.Density + br);
-				sb.append("ButtonSize = " + ui.ButtonSize.toString() + br);
-				sb.append("RefSize = " + ui.RefSize + br);
-				sb.append("TextSize_Normal = " + ui.TextSize_Normal + br);
-				sb.append("ButtonTextSize = " + ui.ButtonTextSize + br);
-				sb.append("IconSize = " + ui.IconSize + br);
-				sb.append("ArrowSizeList = " + ui.ArrowSizeList + br);
-				sb.append("ArrowSizeMap = " + ui.ArrowSizeMap + br);
-				sb.append("TB_IconSize = " + ui.TB_IconSize + br);
-				sb.append("isLandscape = " + ui.isLandscape + br);
-				sb.append("    " + br);
-				sb.append("MapViewDPIFaktor = " + Config.settings.MapViewDPIFaktor.getValue() + br);
-				sb.append("MapViewFontFaktor = " + Config.settings.MapViewFontFaktor.getValue() + br);
-				sb.append("#######################################" + br + br);
-				Msg = sb.toString() + Msg;
-
-			}
-
-			FileWriter writer;
-			try
-			{
-				writer = new FileWriter(file, true);
-				writer.write(Msg);
-				writer.close();
-			}
-			catch (IOException e)
-			{
-
-				e.printStackTrace();
-			}
-
-			Log.d("CACHEBOX", Msg);
-		}
 	}
 
 	/**

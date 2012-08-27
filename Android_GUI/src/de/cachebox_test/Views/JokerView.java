@@ -196,7 +196,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 	@Override
 	public void OnHide()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 
@@ -215,21 +215,21 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 	@Override
 	public int GetContextMenuId()
 	{
-		// TODO Auto-generated method stub
+		 
 		return 0;
 	}
 
 	@Override
 	public void BeforeShowContextMenu(Menu menu)
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 
 	@Override
 	public boolean ContextMenuItemSelected(MenuItem item)
 	{
-		// TODO Auto-generated method stub
+		 
 		return false;
 	}
 }

@@ -35,7 +35,6 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -82,7 +81,7 @@ public class TestDB extends Database
 	@Override
 	public CoreCursor rawQuery(String sql, String[] args)
 	{
-		if(myDB==null)return null;
+		if (myDB == null) return null;
 		ResultSet rs = null;
 
 		try
@@ -102,7 +101,6 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -131,7 +129,6 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -141,7 +138,7 @@ public class TestDB extends Database
 	@Override
 	public void execSQL(String sql)
 	{
-		if(myDB==null)return;
+		if (myDB == null) return;
 		Statement statement;
 		try
 		{
@@ -150,7 +147,7 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 
@@ -159,8 +156,8 @@ public class TestDB extends Database
 	@Override
 	public long update(String tablename, Parameters val, String whereClause, String[] whereArgs)
 	{
-		if(myDB==null)return 0;
-		
+		if (myDB == null) return 0;
+
 		StringBuilder sql = new StringBuilder();
 
 		sql.append("update ");
@@ -218,7 +215,7 @@ public class TestDB extends Database
 	@Override
 	public long insert(String tablename, Parameters val)
 	{
-if(myDB==null)return 0;
+		if (myDB == null) return 0;
 		StringBuilder sql = new StringBuilder();
 
 		sql.append("insert into ");
@@ -275,7 +272,7 @@ if(myDB==null)return 0;
 	@Override
 	public long delete(String tablename, String whereClause, String[] whereArgs)
 	{
-		if(myDB==null)return 0;
+		if (myDB == null) return 0;
 		StringBuilder sql = new StringBuilder();
 
 		sql.append("delete from ");
@@ -314,11 +311,11 @@ if(myDB==null)return 0;
 	{
 		try
 		{
-			if(myDB!=null)myDB.setAutoCommit(false);
+			if (myDB != null) myDB.setAutoCommit(false);
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 	}
@@ -328,11 +325,10 @@ if(myDB==null)return 0;
 	{
 		try
 		{
-			if(myDB!=null)myDB.commit();
+			if (myDB != null) myDB.commit();
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -342,11 +338,10 @@ if(myDB==null)return 0;
 	{
 		try
 		{
-			if(myDB!=null)myDB.setAutoCommit(true);
+			if (myDB != null) myDB.setAutoCommit(true);
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -355,8 +350,8 @@ if(myDB==null)return 0;
 	@Override
 	public long insertWithConflictReplace(String tablename, Parameters val)
 	{
-		if(myDB==null)return 0;
-		
+		if (myDB == null) return 0;
+
 		StringBuilder sql = new StringBuilder();
 
 		sql.append("insert OR REPLACE into ");
@@ -413,8 +408,8 @@ if(myDB==null)return 0;
 	@Override
 	public long insertWithConflictIgnore(String tablename, Parameters val)
 	{
-		if(myDB!=null) return 0;
-		
+		if (myDB != null) return 0;
+
 		StringBuilder sql = new StringBuilder();
 
 		sql.append("insert OR IGNORE into ");
@@ -469,24 +464,27 @@ if(myDB==null)return 0;
 	}
 
 	@Override
-	public int getCacheCountInDB(String filename) {
-		
-		if(myDB==null)return 0;
-		
-		
+	public int getCacheCountInDB(String filename)
+	{
+
+		if (myDB == null) return 0;
+
 		int count = 0;
 		Connection myDB = null;
-		try {
+		try
+		{
 			myDB = DriverManager.getConnection("jdbc:sqlite:" + filename);
-			
+
 			Statement statement = myDB.createStatement();
 			ResultSet result = statement.executeQuery("select count(*) from caches");
-		//	result.first();
+			// result.first();
 			count = result.getInt(1);
-			result.close();			
+			result.close();
 			myDB.close();
-		} catch (SQLException e) {
-			String s = e.getMessage();
+		}
+		catch (SQLException e)
+		{
+			// String s = e.getMessage();
 		}
 		return count;
 	}

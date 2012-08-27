@@ -153,7 +153,7 @@ public class FieldNotesView extends V_ListView
 					- ListViewItemBackground.getRightWidthStatic() - (Dialog.margin * 2);
 
 			float mh = 0;
-			if (fne.comment != null && !fne.comment.isEmpty())
+			if (fne.comment != null && !(fne.comment.length() == 0))
 			{
 				mh = Fonts.MesureWrapped(fne.comment, mesurdWidth).height;
 			}

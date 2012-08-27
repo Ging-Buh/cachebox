@@ -109,8 +109,8 @@ public class CategorieListViewItem extends ListViewItemBackground
 			lPinBounds.offset(-(width - (halfSize * 2) - rChkBounds.getWidth()), 0);
 		}
 
-		boolean selected = false;
-		if (this.categorieEntry == CategorieListView.aktCategorieEntry) selected = true;
+		// boolean selected = false;
+		// if (this.categorieEntry == CategorieListView.aktCategorieEntry) selected = true;
 
 		switch (this.categorieEntry.getItemType())
 		{
@@ -453,7 +453,6 @@ public class CategorieListViewItem extends ListViewItemBackground
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
 
 	}
 

@@ -2,6 +2,7 @@ package CB_Core.GL_UI;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.Log.Logger;
 import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.Gdx;
@@ -50,6 +51,8 @@ public class Fonts
 	 */
 	public static void LoadCalcFonts()
 	{
+
+		Logger.DEBUG("Fonts.LoadCalcFonts()");
 
 		double density = UiSizes.getScale();
 

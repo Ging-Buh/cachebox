@@ -20,13 +20,11 @@ public abstract class PopUp_Base extends CB_View_Base
 	public PopUp_Base(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
 
 	}
 

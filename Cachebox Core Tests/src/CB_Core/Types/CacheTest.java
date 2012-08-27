@@ -11,7 +11,7 @@ public class CacheTest extends TestCase
 	@Override
 	public void setUp() throws Exception
 	{
-		// TODO Auto-generated method stub
+		 
 		super.setUp();
 		mCache = new Cache();
 	}
@@ -19,7 +19,7 @@ public class CacheTest extends TestCase
 	@Override
 	protected void tearDown() throws Exception
 	{
-		// TODO Auto-generated method stub
+		 
 		super.tearDown();
 		mCache = null;
 	}

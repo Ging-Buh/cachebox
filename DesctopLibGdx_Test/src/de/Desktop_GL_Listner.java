@@ -1,14 +1,11 @@
 package de;
 
-import java.awt.Point;
-
 import CB_Core.Events.KeyCodes;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
 import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class Desktop_GL_Listner extends Tab_GL_Listner implements InputProcessor
 {
@@ -21,10 +18,10 @@ public class Desktop_GL_Listner extends Tab_GL_Listner implements InputProcessor
 
 	// # ImputProzessor Implamantations
 
-	private Point lastTouchDown;
-	private Point aktTouch;
-	private int lastPointer;
-	private int lastbutton;
+	// private Point lastTouchDown;
+	// private Point aktTouch;
+	// private int lastPointer;
+	// private int lastbutton;
 
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button)
@@ -59,15 +56,15 @@ public class Desktop_GL_Listner extends Tab_GL_Listner implements InputProcessor
 
 	}
 
-	private Stage mStage;
+	// private Stage mStage;
 
-	private void chkStageInitial()
-	{
-		if (mStage == null)
-		{// initial a virtual stage
-			mStage = new Stage(UiSizes.getWindowWidth(), UiSizes.getWindowHeight(), false);
-		}
-	}
+	// private void chkStageInitial()
+	// {
+	// if (mStage == null)
+	// {// initial a virtual stage
+	// mStage = new Stage(UiSizes.getWindowWidth(), UiSizes.getWindowHeight(), false);
+	// }
+	// }
 
 	@Override
 	public boolean keyTyped(char character)

@@ -385,12 +385,12 @@ public class main extends JFrame
 		}
 		catch (IllegalArgumentException e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 		catch (XMLParserException e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 		catch (FileNotFoundException e)
@@ -719,7 +719,7 @@ public class main extends JFrame
 		}
 		catch (InterruptedException e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 

@@ -42,7 +42,7 @@ public class DesktopMain
 	{
 		GlobalCore.platform = Plattform.Desktop;
 		frame.setVisible(false);
-		DesktopLogger iLogger = new DesktopLogger();
+		new DesktopLogger();
 
 		InitalConfig();
 
@@ -50,6 +50,19 @@ public class DesktopMain
 
 		GL_View_Base.debug = debug;
 		GL_View_Base.disableScissor = scissor;
+
+		if (Config.settings.installRev.getValue() < GlobalCore.CurrentRevision)
+		{
+
+			Config.settings.installRev.setValue(GlobalCore.CurrentRevision);
+			Config.settings.newInstall.setValue(true);
+			Config.AcceptChanges();
+		}
+		else
+		{
+			Config.settings.newInstall.setValue(false);
+			Config.AcceptChanges();
+		}
 
 		new DesctopManager();
 
@@ -233,13 +246,14 @@ public class DesktopMain
 			e.printStackTrace();
 		}
 
+		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
+
 		try
 		{
 			Database.Data = new TestDB(DatabaseType.CacheBox);
 		}
 		catch (ClassNotFoundException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -249,7 +263,6 @@ public class DesktopMain
 		}
 		catch (ClassNotFoundException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
@@ -261,7 +274,6 @@ public class DesktopMain
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

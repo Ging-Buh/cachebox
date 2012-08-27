@@ -37,7 +37,6 @@ public class JokerViewItem extends View
 
 	public JokerViewItem(Context context, Cache cache, JokerEntry joker, Boolean BackColorId)
 	{
-		// TODO Auto-generated constructor stub
 		super(context);
 		this.cache = cache;
 		this.joker = joker;

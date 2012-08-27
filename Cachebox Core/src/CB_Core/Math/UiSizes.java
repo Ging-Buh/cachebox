@@ -17,6 +17,7 @@
 package CB_Core.Math;
 
 import CB_Core.GlobalCore;
+import CB_Core.Log.Logger;
 
 //import de.cachebox_test.R;
 
@@ -69,6 +70,7 @@ public class UiSizes
 
 	public static Size initial(devicesSizes ini)
 	{
+		Logger.DEBUG("UISizes.initial()");
 		ui = ini;
 		windowWidth = ini.Window.width;// d.getWidth();
 		windowHeight = ini.Window.height;// d.getHeight();

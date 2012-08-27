@@ -113,7 +113,7 @@ public class TestView extends CB_View_Base
 		@Override
 		public boolean onClick(int which)
 		{
-			// TODO Auto-generated method stub
+			 
 			return false;
 		}
 	};
@@ -202,7 +202,7 @@ public class TestView extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 
@@ -219,7 +219,7 @@ public class TestView extends CB_View_Base
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

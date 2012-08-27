@@ -75,7 +75,7 @@ public class SolverViewItem extends ListViewItemBackground
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

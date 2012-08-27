@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.GL_Listener;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.SortedMap;
@@ -161,8 +162,15 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	@Override
 	public void dispose()
 	{
-
 		SpriteCache.destroyCache();
+		try
+		{
+			GlobalCore.Translations.writeMisingStringsFile();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 
 	}
 

@@ -29,7 +29,7 @@ public class TestCursor extends CoreCursor {
 
 	@Override
 	public boolean isAfterLast() {
-		// TODO Auto-generated method stub
+		 
 		try {
 			return rs.isAfterLast();
 		} catch (SQLException e) {

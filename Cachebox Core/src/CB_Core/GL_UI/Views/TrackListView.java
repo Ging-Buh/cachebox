@@ -65,7 +65,7 @@ public class TrackListView extends V_ListView
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 
@@ -190,7 +190,7 @@ public class TrackListView extends V_ListView
 		@Override
 		public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
-			// TODO Auto-generated method stub
+			 
 			return false;
 		}
 	};

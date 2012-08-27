@@ -31,7 +31,7 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 	}
@@ -98,7 +98,7 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 
@@ -127,7 +127,7 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 
@@ -145,7 +145,7 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 
@@ -312,7 +312,7 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 	}
@@ -326,7 +326,7 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 	}
@@ -340,7 +340,7 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 

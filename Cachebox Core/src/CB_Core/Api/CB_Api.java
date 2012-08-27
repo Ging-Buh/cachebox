@@ -73,7 +73,7 @@ public class CB_Api
 				return json.getString("GcAuth_ACB");
 				
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
+				 
 				e.printStackTrace();
 			}
 

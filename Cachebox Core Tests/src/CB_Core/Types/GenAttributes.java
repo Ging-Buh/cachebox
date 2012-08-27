@@ -107,7 +107,7 @@ public class GenAttributes extends TestCase
 			}
 			catch (JSONException e)
 			{
-				// TODO Auto-generated catch block
+				 
 				e.printStackTrace();
 			}
 

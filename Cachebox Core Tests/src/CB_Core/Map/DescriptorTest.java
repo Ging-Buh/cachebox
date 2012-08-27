@@ -1,10 +1,10 @@
 package CB_Core.Map;
 
+import junit.framework.TestCase;
 import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.MeasuredCoord;
 import CB_Core.Types.MeasuredCoordList;
-import junit.framework.TestCase;
 
 public class DescriptorTest extends TestCase
 {
@@ -17,7 +17,6 @@ public class DescriptorTest extends TestCase
 	@Override
 	public void setUp() throws Exception
 	{
-		// TODO Auto-generated method stub
 		super.setUp();
 		mDescriptor = new Descriptor(0, 0, projectionZoom);
 		mMeasuredCoordList = new MeasuredCoordList();
@@ -26,7 +25,6 @@ public class DescriptorTest extends TestCase
 	@Override
 	protected void tearDown() throws Exception
 	{
-		// TODO Auto-generated method stub
 		super.tearDown();
 		mDescriptor = null;
 		mMeasuredCoordList = null;
@@ -58,23 +56,17 @@ public class DescriptorTest extends TestCase
 		double medianLat = MeasuredCoord.Referenz.Latitude;
 		double medianLon = MeasuredCoord.Referenz.Longitude;
 
-		double peakLat = Math.max(
-				Math.abs(mMeasuredCoordList.get(0).getLatitude() - medianLat),
-				Math.abs(mMeasuredCoordList.get(mMeasuredCoordList.size() - 1)
-						.getLatitude() - medianLat));
-		double peakLon = Math.max(
-				Math.abs(mMeasuredCoordList.get(0).getLongitude() - medianLon),
-				Math.abs(mMeasuredCoordList.get(mMeasuredCoordList.size() - 1)
-						.getLongitude() - medianLon));
+		double peakLat = Math.max(Math.abs(mMeasuredCoordList.get(0).getLatitude() - medianLat),
+				Math.abs(mMeasuredCoordList.get(mMeasuredCoordList.size() - 1).getLatitude() - medianLat));
+		double peakLon = Math.max(Math.abs(mMeasuredCoordList.get(0).getLongitude() - medianLon),
+				Math.abs(mMeasuredCoordList.get(mMeasuredCoordList.size() - 1).getLongitude() - medianLon));
 
 		// Umrechnung in XY
 		double medianX = Descriptor.LongitudeToTileX(projectionZoom, medianLon);
 		double medianY = Descriptor.LatitudeToTileY(projectionZoom, medianLat);
 
-		double extremeX = Descriptor.LongitudeToTileX(projectionZoom, peakLon
-				+ medianLon);
-		double extremeY = Descriptor.LatitudeToTileY(projectionZoom, peakLat
-				+ medianLat);
+		double extremeX = Descriptor.LongitudeToTileX(projectionZoom, peakLon + medianLon);
+		double extremeY = Descriptor.LatitudeToTileY(projectionZoom, peakLat + medianLat);
 
 		double peakX = Math.abs(extremeX - medianX);
 		double peakY = Math.abs(extremeY - medianY);
@@ -89,17 +81,14 @@ public class DescriptorTest extends TestCase
 		for (int i = 1; i < mMeasuredCoordList.size(); i++)
 		{
 
-			PointD lastDrawEntry = Descriptor.projectCoordinate(
-					mMeasuredCoordList.get(i - 1).getLatitude(),
-					mMeasuredCoordList.get(i - 1).getLongitude(),
-					projectionZoom);
+			PointD lastDrawEntry = Descriptor.projectCoordinate(mMeasuredCoordList.get(i - 1).getLatitude(), mMeasuredCoordList.get(i - 1)
+					.getLongitude(), projectionZoom);
 
 			int lastX = (int) (centerX + (lastDrawEntry.X - medianX) * factor);
 			int lastY = (int) (centerY - (lastDrawEntry.Y - medianY) * factor);
 
-			PointD thisDrawEntry = Descriptor.projectCoordinate(
-					mMeasuredCoordList.get(i).getLatitude(), mMeasuredCoordList
-							.get(i).getLongitude(), projectionZoom);
+			PointD thisDrawEntry = Descriptor.projectCoordinate(mMeasuredCoordList.get(i).getLatitude(), mMeasuredCoordList.get(i)
+					.getLongitude(), projectionZoom);
 
 			int x = (int) (centerX + (thisDrawEntry.X - medianX) * factor);
 			int y = (int) (centerY - (thisDrawEntry.Y - medianY) * factor);

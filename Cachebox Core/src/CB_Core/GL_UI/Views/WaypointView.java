@@ -168,7 +168,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

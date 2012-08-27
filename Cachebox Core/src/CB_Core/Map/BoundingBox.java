@@ -40,7 +40,7 @@ public class BoundingBox
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 		Stride = MaxX - MinX + 1;
@@ -69,7 +69,7 @@ public class BoundingBox
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 	}
@@ -85,7 +85,7 @@ public class BoundingBox
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 			return null;
 		}

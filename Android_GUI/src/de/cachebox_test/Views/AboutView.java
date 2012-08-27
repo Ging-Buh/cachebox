@@ -389,7 +389,6 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	@Override
 	public void OrientationChanged(float heading)
 	{
-		// TODO Auto-generated method stub
 
 	}
 

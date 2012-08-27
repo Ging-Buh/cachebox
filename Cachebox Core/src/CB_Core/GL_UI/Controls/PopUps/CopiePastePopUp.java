@@ -118,7 +118,7 @@ public class CopiePastePopUp extends PopUp_Base
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 }

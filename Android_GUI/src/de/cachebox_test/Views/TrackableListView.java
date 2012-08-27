@@ -302,7 +302,7 @@ public class TrackableListView extends ListView implements ViewOptionsMenu
 	@Override
 	public void ActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

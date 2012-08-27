@@ -20,7 +20,7 @@ public class GpxFilename implements Comparable<GpxFilename> {
 
 	@Override
 	public int compareTo(GpxFilename arg0) {
-		// TODO Auto-generated method stub
+		 
 		return 0;
 	}
 

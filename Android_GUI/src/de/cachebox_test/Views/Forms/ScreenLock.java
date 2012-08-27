@@ -1,11 +1,10 @@
 package de.cachebox_test.Views.Forms;
 
+import CB_Core.Log.Logger;
 import android.app.Activity;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.KeyEvent;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import de.cachebox_test.R;
@@ -22,8 +21,8 @@ public class ScreenLock extends Activity
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.screenlock);
-		this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
-		RelativeLayout layout = (RelativeLayout) findViewById(R.layout.screenlock);
+		// this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		// RelativeLayout layout = (RelativeLayout) findViewById(R.layout.screenlock);
 
 		Slider = (SeekBar) findViewById(R.id.unlock_slider);
 		Slider.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
@@ -35,6 +34,7 @@ public class ScreenLock extends Activity
 				SliderMoves = false;
 				if (arg0.getProgress() > 80 || arg0.getProgress() < 20)
 				{
+					Logger.DEBUG("Release Screenlock");
 					finish();
 				}
 				else
@@ -85,6 +85,7 @@ public class ScreenLock extends Activity
 
 		if (main.ScreenLockOff)
 		{
+			Logger.DEBUG("Release Screenlock from Main");
 			main.ScreenLockOff = false;
 			finish();
 		}

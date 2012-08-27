@@ -36,7 +36,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 
@@ -147,7 +147,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

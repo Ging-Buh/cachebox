@@ -34,10 +34,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.view.Display;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -121,7 +119,7 @@ public class splash extends Activity
 		{
 			String uriHost = uri.getHost().toLowerCase();
 			String uriPath = uri.getPath().toLowerCase();
-			String uriQuery = uri.getQuery();
+			// String uriQuery = uri.getQuery();
 
 			if (uriHost.contains("geocaching.com") == true)
 			{
@@ -266,7 +264,7 @@ public class splash extends Activity
 				}
 				else if (setting instanceof SettingEnum)
 				{
-					((SettingEnum) setting).setValue(Config.GetString(setting.getName()));
+					((SettingEnum<?>) setting).setValue(Config.GetString(setting.getName()));
 				}
 				else if (setting instanceof SettingEncryptedString)
 				{
@@ -307,8 +305,8 @@ public class splash extends Activity
 		// UiSize Structur für die Berechnung der Größen zusammen stellen!
 		Resources res = this.getResources();
 
-		WindowManager w = this.getWindowManager();
-		Display d = w.getDefaultDisplay();
+		// WindowManager w = this.getWindowManager();
+		// Display d = w.getDefaultDisplay();
 
 		FrameLayout frame = (FrameLayout) findViewById(R.id.frameLayout1);
 		int width = frame.getMeasuredWidth();

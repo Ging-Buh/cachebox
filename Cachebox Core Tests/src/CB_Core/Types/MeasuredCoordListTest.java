@@ -33,7 +33,7 @@ public class MeasuredCoordListTest extends TestCase
 	@Override
 	public void setUp() throws Exception
 	{
-		// TODO Auto-generated method stub
+		 
 		super.setUp();
 		mMeasuredCoordList = new MeasuredCoordList();
 	}
@@ -41,7 +41,7 @@ public class MeasuredCoordListTest extends TestCase
 	@Override
 	protected void tearDown() throws Exception
 	{
-		// TODO Auto-generated method stub
+		 
 		super.tearDown();
 		mMeasuredCoordList = null;
 	}

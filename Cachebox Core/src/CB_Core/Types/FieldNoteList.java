@@ -85,7 +85,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 		;

@@ -128,7 +128,7 @@ public class InfoBubble extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

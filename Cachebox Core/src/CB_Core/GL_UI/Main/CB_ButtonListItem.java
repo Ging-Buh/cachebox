@@ -49,7 +49,7 @@ public class CB_ButtonListItem extends ListViewItemBase
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

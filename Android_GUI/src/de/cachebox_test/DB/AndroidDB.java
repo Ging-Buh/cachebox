@@ -79,7 +79,6 @@ public class AndroidDB extends Database
 		}
 		catch (Exception ex)
 		{
-			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
 	}
