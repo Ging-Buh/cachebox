@@ -76,6 +76,16 @@ public abstract class Dialog extends CB_View_Base
 		{
 			overlay.add(view);
 			mContent.addChildDirekt(view);
+
+			if (mContent != null)
+			{
+				mContent.addChildDirekt(view);
+			}
+			else
+			{
+				childs.add(view);
+			}
+
 		}
 		else
 		{
@@ -91,7 +101,15 @@ public abstract class Dialog extends CB_View_Base
 		if (view instanceof SelectionMarker)
 		{
 			overlay.remove(view);
-			mContent.removeChildsDirekt(view);
+			if (mContent != null)
+			{
+				mContent.removeChildsDirekt(view);
+			}
+			else
+			{
+				childs.remove(view);
+			}
+
 		}
 		else
 		{
