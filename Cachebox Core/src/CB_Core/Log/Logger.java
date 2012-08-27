@@ -210,6 +210,8 @@ public class Logger
 			String br = GlobalCore.br;
 			devicesSizes ui = UiSizes.ui;
 
+			if (ui == null) return; // Bin noch nicht soweit!
+
 			StringBuilder sb = new StringBuilder();
 			sb.append("###################################" + br);
 			sb.append("##  CB Version: " + GlobalCore.getVersionString() + "         ##" + br);
