@@ -80,8 +80,8 @@ import CB_Core.Types.Waypoint;
 import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.app.Service;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -155,6 +155,7 @@ import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 
 import de.CB_PlugIn.IPlugIn;
+import de.cachebox_test.NotifyService.LocalBinder;
 import de.cachebox_test.Components.CacheNameView;
 import de.cachebox_test.Components.search;
 import de.cachebox_test.Components.search.searchMode;
@@ -192,8 +193,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent
 {
 
-	private static final int NOTIFICATION_EX = 1;
-	private NotificationManager notificationManager;
+	public static final int NOTIFICATION_EX = 1;
+	private static NotificationManager notificationManager;
+	private static Notification runNotification;
+	private static Notification killNotification;
+
+	private ServiceConnection mConnection;
+	private Service myNotifyService;
 
 	public HorizontalListView QuickButtonList;
 
@@ -418,27 +424,29 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		// Initial CB running notification Icon
 		{
-			notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			// TODO Start Notify Service
 
-			int icon = R.drawable.cb;
-			CharSequence tickerText = "CB";
-			long when = System.currentTimeMillis();
+			Intent service = new Intent(this, NotifyService.class);
+			// startService(i);
 
-			Notification notification = new Notification(icon, tickerText, when);
+			mConnection = new ServiceConnection()
+			{
 
-			Context context = getApplicationContext();
-			CharSequence contentTitle = "CB is running";
-			CharSequence contentText = "";
+				@Override
+				public void onServiceConnected(ComponentName name, IBinder service)
+				{
+					myNotifyService = ((LocalBinder) service).getService();
+				}
 
-			Intent notificationIntent = new Intent(this, main.class);
-			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-			notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+				@Override
+				public void onServiceDisconnected(ComponentName name)
+				{
+					myNotifyService.unbindService(this);
+				}
+			};
 
-			// notification.setLatestEventInfo(context, contentTitle, contentText, null);
-
-			notification.flags |= Notification.FLAG_NO_CLEAR;
-
-			notificationManager.notify(NOTIFICATION_EX, notification);
+			NotifyService.finish = false;
+			bindService(service, mConnection, Context.BIND_AUTO_CREATE);
 
 		}
 
@@ -1145,7 +1153,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (isFinishing())
 		{
-			notificationManager.cancel(NOTIFICATION_EX);
+			// TODO Stop Notify Service
+			NotifyService.finish = true;
+			unbindService(mConnection);
 		}
 
 		super.onPause();
@@ -1263,10 +1273,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public void onDestroy()
 	{
 
-		Logger.DEBUG("Main=> onDestroy");
+		Log.d("CACHEBOX", "Main=> onDestroy");
 		frame.removeAllViews();
 		if (isRestart)
 		{
+			Log.d("CACHEBOX", "Main=> onDestroy isFinishing");
 			Logger.DEBUG("Main=> onDestroy isRestart");
 			super.onDestroy();
 			isRestart = false;
@@ -1275,7 +1286,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (isFinishing())
 			{
-				Logger.DEBUG("Main=> onDestroy isFinishing");
+				Log.d("CACHEBOX", "Main=> onDestroy isFinishing");
 
 				Config.settings.WriteToDB();
 
@@ -1338,10 +1349,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 			else
 			{
-				Logger.DEBUG("Main=> onDestroy isFinishing==false");
+				Log.d("CACHEBOX", "Main=> onDestroy isFinishing==false");
 
 				if (aktView != null) aktView.OnHide();
 				if (aktTabView != null) aktTabView.OnHide();
+
 				super.onDestroy();
 			}
 		}

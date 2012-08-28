@@ -80,7 +80,7 @@ public class Menu extends Dialog
 		}
 
 		super.Initial();
-
+		super.initialDialog();
 	}
 
 	public class CustomAdapter implements Adapter
@@ -111,6 +111,7 @@ public class Menu extends Dialog
 	{
 		menuItem.setOnClickListener(MenuItemClickListner);
 		mItems.add(menuItem);
+		mListView.notifyDataSetChanged();
 	}
 
 	public MenuItem addItem(int ID, String StringId)
@@ -168,7 +169,7 @@ public class Menu extends Dialog
 
 		item.setTitle(trans);
 		addItem(item);
-		mListView.notifyDataSetChanged();
+
 		return item;
 	}
 

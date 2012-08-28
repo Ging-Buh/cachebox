@@ -127,32 +127,28 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 				@Override
 				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 				{
-					for (CB_ActionButton ba : mButtonActions)
-					{
-						CB_Action action = ba.getAction();
-						if (action == null) continue;
-						int mId = ((MenuItem) v).getMenuItemId();
-						if (mId == action.getId())
-						{
-							// Action ausführen
-							action.CallExecute();
-							if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
-							// else
-							// aktActionView = null;
-							break;
-						}
-					}
+
+					int mId = ((MenuItem) v).getMenuItemId();
+					CB_ActionButton ba = mButtonActions.get(mId);
+					CB_Action action = ba.getAction();
+
+					action.CallExecute();
+					if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
 
 					GL_Listener.glListener.closeToast();
 
 					return true;
 				}
 			});
+
+			int index = 0;
+
 			for (CB_ActionButton ba : mButtonActions)
 			{
 				CB_Action action = ba.getAction();
 				if (action == null) continue;
-				MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtention());
+				// MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtention());
+				MenuItem mi = cm.addItem(index++, action.getName(), action.getNameExtention());
 				mi.setEnabled(action.getEnabled());
 				mi.setCheckable(action.getIsCheckable());
 				mi.setChecked(action.getIsChecked());
