@@ -133,9 +133,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		});
 		MenuItem mi;
 
+		int Index = 0;
 		for (Layer layer : ManagerBase.Manager.Layers)
 		{
-			mi = icm.addItem(MI_LAYER, "", layer.Name);
+			mi = icm.addItem(Index++, "", layer.Name);
 			mi.setData(layer);
 			mi.setCheckable(true);
 			if (layer == TabMainView.mapView.CurrentLayer)

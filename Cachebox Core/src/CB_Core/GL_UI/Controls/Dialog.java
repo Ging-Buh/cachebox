@@ -27,6 +27,12 @@ public abstract class Dialog extends CB_View_Base
 	/**
 	 * enthällt die Controls, welche über allen anderen gezeichnet werden zB. Selection Marker des TextFields
 	 */
+	private ArrayList<GL_View_Base> overlayForTextMarker = new ArrayList<GL_View_Base>(); // TODO das Handling der Marker in den Dialogen
+																							// überarbeiten!
+
+	/**
+	 * Overlay über alles wird als letztes Gerändert
+	 */
 	private ArrayList<GL_View_Base> overlay = new ArrayList<GL_View_Base>();
 
 	protected NinePatch mTitle9patch;
@@ -74,7 +80,7 @@ public abstract class Dialog extends CB_View_Base
 
 		if (view instanceof SelectionMarker)
 		{
-			overlay.add(view);
+			overlayForTextMarker.add(view);
 			mContent.addChildDirekt(view);
 
 			if (mContent != null)
@@ -100,7 +106,7 @@ public abstract class Dialog extends CB_View_Base
 	{
 		if (view instanceof SelectionMarker)
 		{
-			overlay.remove(view);
+			overlayForTextMarker.remove(view);
 			if (mContent != null)
 			{
 				mContent.removeChildsDirekt(view);
@@ -175,9 +181,9 @@ public abstract class Dialog extends CB_View_Base
 
 		super.addChild(mContent);
 
-		if (overlay.size() > 0)
+		if (overlayForTextMarker.size() > 0)
 		{
-			for (GL_View_Base view : overlay)
+			for (GL_View_Base view : overlayForTextMarker)
 			{
 				mContent.addChildDirekt(view);
 			}
@@ -213,6 +219,45 @@ public abstract class Dialog extends CB_View_Base
 		batch.end();
 
 		super.renderChilds(batch, parentInfo);
+
+		for (Iterator<GL_View_Base> iterator = overlay.iterator(); iterator.hasNext();)
+		{
+			// alle renderChilds() der in dieser GL_View_Base
+			// enthaltenen Childs auf rufen.
+
+			GL_View_Base view;
+			try
+			{
+				view = iterator.next();
+
+				// hier nicht view.render(batch) aufrufen, da sonnst die in der
+				// view enthaldenen Childs nicht aufgerufen werden.
+				if (view != null && view.getVisibility() == VISIBLE)
+				{
+
+					if (childsInvalidate) view.invalidate();
+
+					ParentInfo myInfoForChild = myParentInfo.cpy();
+					myInfoForChild.setWorldDrawRec(intersectRec);
+
+					myInfoForChild.add(view.getX(), view.getY());
+
+					batch.setProjectionMatrix(myInfoForChild.Matrix());
+					nDepthCounter++;
+
+					view.renderChilds(batch, myInfoForChild);
+					nDepthCounter--;
+					batch.setProjectionMatrix(myParentInfo.Matrix());
+				}
+
+			}
+			catch (java.util.ConcurrentModificationException e)
+			{
+				// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
+				break;
+			}
+		}
+
 	}
 
 	public SizeF getContentSize()
@@ -272,6 +317,16 @@ public abstract class Dialog extends CB_View_Base
 		boolean ret = super.setSize(rec);
 		this.initialDialog();
 		return ret;
+	}
+
+	public void addChildToOverlay(GL_View_Base view)
+	{
+		overlay.add(view);
+	}
+
+	public void RemoveChildsFromOverlay()
+	{
+		overlay.clear();
 	}
 
 }

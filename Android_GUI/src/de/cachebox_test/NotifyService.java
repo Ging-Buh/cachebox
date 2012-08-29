@@ -26,7 +26,7 @@ public class NotifyService extends Service
 	{
 
 		/**
-		 * Damit erhalten wir Zugriff auf unseren Service. Gibt unsere Instanz des StorageService zurück.
+		 * Damit erhalten wir Zugriff auf unseren Service. Gibt unsere Instanz des NotifyService zurück.
 		 */
 		NotifyService getService()
 		{
@@ -45,26 +45,6 @@ public class NotifyService extends Service
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
 		// The service is starting, due to a call to startService()
-
-		// NotifyService ns = new NotifyService();
-		// notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		// Context context = getApplicationContext();
-		// Intent notificationIntent = new Intent(this, main.class);
-		// PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-		//
-		// int icon = R.drawable.cb;
-		// CharSequence tickerText = "CB";
-		// long when = System.currentTimeMillis();
-		//
-		// runNotification = new Notification(icon, tickerText, when);
-		//
-		// CharSequence contentTitle = "CB is running";
-		// CharSequence contentText = "";
-		//
-		// runNotification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
-
-		// The intent to launch when the user clicks the expanded notification
-
 		return mStartMode;
 	}
 
@@ -140,6 +120,21 @@ public class NotifyService extends Service
 	public void onDestroy()
 	{
 		// The service is no longer used and is being destroyed
+
+		if (!finish)
+		{
+			Log.d("CACHEBOX", "Service => ACB is killed");
+			Intent mainIntent = new Intent(this, main.class);
+
+			PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
+
+			// This constructor is deprecated. Use Notification.Builder instead
+			Notification notice = new Notification(R.drawable.cb_killed, "Cachebox", System.currentTimeMillis());
+
+			// This method is deprecated. Use Notification.Builder instead.
+			notice.setLatestEventInfo(this, "Cachebox", "was killing", pendIntent);
+
+		}
 	}
 
 }

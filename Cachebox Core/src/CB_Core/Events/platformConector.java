@@ -255,4 +255,24 @@ public class platformConector
 
 	// ----------------------------------------
 
+	// ------ Quitt ------
+
+	public interface IQuit
+	{
+		public void Quit();
+	}
+
+	static IQuit quitListner;
+
+	public static void setQuitListner(IQuit listner)
+	{
+		quitListner = listner;
+	}
+
+	public static void callQuitt()
+	{
+		if (quitListner != null) quitListner.Quit();
+	}
+	// ----------------------------------------
+
 }

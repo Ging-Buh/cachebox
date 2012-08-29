@@ -415,7 +415,7 @@ public abstract class GL_View_Base extends CB_RectF
 	public CB_RectF intersectRec;
 	public ParentInfo myParentInfo;
 	private boolean mustSetScissor = false;
-	private boolean childsInvalidate = false;
+	protected boolean childsInvalidate = false;
 	private boolean thisInvalidate = true;
 
 	public CB_RectF getWorldRec()

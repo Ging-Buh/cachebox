@@ -222,6 +222,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	protected void onDraw(Canvas canvas)
 	{
 		if (ScreenLock.SliderMoves) return;
+		if (QuickButtonList.that == null) return; // noch nicht initialisiert
 
 		/**
 		 * Beim ersten Zeichnen, wird der Letzte Zustand abgefragt!

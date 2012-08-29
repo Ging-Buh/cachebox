@@ -116,7 +116,7 @@ public class Spinner extends Button
 
 	public void setSelection(int i)
 	{
-		if (mAdapter != null && mAdapter.getCount() >= i)
+		if (mAdapter != null && mAdapter.getCount() >= i && i > -1)
 		{
 			String Text = mAdapter.getText(i);
 			mSelectedIndex = i;

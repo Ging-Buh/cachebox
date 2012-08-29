@@ -22,6 +22,7 @@ import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
@@ -132,7 +133,7 @@ public class SelectDB extends ActivityBase
 				stopTimer();
 				if (MusstSelect)
 				{
-					selectDB();
+					TabMainView.actionClose.CallExecute();
 				}
 				else
 				{

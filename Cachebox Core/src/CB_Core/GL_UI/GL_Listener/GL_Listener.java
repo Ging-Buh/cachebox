@@ -14,6 +14,7 @@ import CB_Core.GlobalCore;
 import CB_Core.GlobalLocationReceiver;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.ParentInfo;
@@ -1111,7 +1112,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		if (!DialogIsShown) return;
 
-		if (MsgToPlatformConector) platformConector.hideForDialog();
+		if (MsgToPlatformConector || ActivityIsShown) platformConector.hideForDialog();
 		if (actDialog != null) actDialog.onHide();
 		actDialog = null;
 		mDialog.removeChildsDirekt();
@@ -1183,11 +1184,11 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 	{
 		if (toast == null)
 		{
-			toast = new CB_Core.GL_UI.Controls.Dialogs.Toast(new CB_RectF(0, 0, 100, GL_UISizes.BottomButtonHeight / 2), "StringToast");
+			toast = new CB_Core.GL_UI.Controls.Dialogs.Toast(new CB_RectF(0, 0, 100, GL_UISizes.BottomButtonHeight / 1.5f), "StringToast");
 		}
 		toast.setText(string);
 
-		float mesuredWidth = toast.getMesuredWidth();
+		float mesuredWidth = Fonts.Mesure(string).width + (toast.Left * 3);
 		toast.setWidth(mesuredWidth);
 
 		toast.setPos((width / 2) - (mesuredWidth / 2), GL_UISizes.BottomButtonHeight * 1.3f);

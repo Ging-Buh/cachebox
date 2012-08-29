@@ -28,7 +28,7 @@ public class ViewConst
 
 	public static final ViewID SETTINGS = new ViewID(ViewID.SETTINGS, UI_Type.Activity, null, null);
 	public static final ViewID FILTER_SETTINGS = new ViewID(ViewID.FILTER_SETTINGS, UI_Type.Activity, null, null);
-	public static final ViewID IMPORT = new ViewID(ViewID.IMPORT, UI_Type.Activity, null, null);
+
 	public static final ViewID SEARCH = new ViewID(ViewID.SEARCH, UI_Type.Activity, null, null);
 	public static final ViewID MANAGE_DB = new ViewID(ViewID.MANAGE_DB, UI_Type.Activity, null, null);
 	public static final ViewID CHK_STATE_API = new ViewID(ViewID.CHK_STATE_API, UI_Type.Activity, null, null);
@@ -41,5 +41,5 @@ public class ViewConst
 	public static final ViewID PARKING = new ViewID(ViewID.PARKING, UI_Type.Activity, null, null);
 	public static final ViewID DAY_NIGHT = new ViewID(ViewID.DAY_NIGHT, UI_Type.Activity, null, null);
 	public static final ViewID LOCK = new ViewID(ViewID.LOCK, UI_Type.Activity, null, null);
-	public static final ViewID QUIT = new ViewID(ViewID.QUIT, UI_Type.Activity, null, null);
+
 }

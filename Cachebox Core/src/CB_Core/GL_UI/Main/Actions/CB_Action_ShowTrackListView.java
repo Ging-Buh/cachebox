@@ -287,6 +287,9 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					@Override
 					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
 					{
+
+						if (targetCoord == null || startCoord == null) return;
+
 						float[] dist = new float[4];
 						TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
 						Track route = new Track(null, TrackColor);
@@ -319,6 +322,9 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					@Override
 					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
 					{
+
+						if (targetCoord == null || startCoord == null) return;
+
 						float[] dist = new float[4];
 						TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
 						Track route = new Track(null, TrackColor);
@@ -353,6 +359,9 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					@Override
 					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
 					{
+
+						if (targetCoord == null || startCoord == null) return;
+
 						float[] dist = new float[4];
 						TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
 						Track route = new Track(null, TrackColor);

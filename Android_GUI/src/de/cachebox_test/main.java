@@ -40,7 +40,9 @@ import CB_Core.Events.GpsStateChangeEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.invalidateTextureEventList;
+import CB_Core.Events.platformConector;
 import CB_Core.Events.platformConector.IHardwarStateListner;
+import CB_Core.Events.platformConector.IQuit;
 import CB_Core.Events.platformConector.IShowViewListner;
 import CB_Core.Events.platformConector.IgetFileListner;
 import CB_Core.Events.platformConector.IgetFileReturnListner;
@@ -78,8 +80,6 @@ import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import android.app.Dialog;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.ActivityNotFoundException;
@@ -183,7 +183,6 @@ import de.cachebox_test.Views.AdvancedSettingsForms.SettingsScrollView;
 import de.cachebox_test.Views.Forms.ApiSearchPosDialog;
 import de.cachebox_test.Views.Forms.DeleteDialog;
 import de.cachebox_test.Views.Forms.GcApiLogin;
-import de.cachebox_test.Views.Forms.ImportDialog;
 import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.ParkingDialog;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
@@ -192,11 +191,6 @@ import de.cachebox_test.Views.Forms.ScreenLock;
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
 		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent
 {
-
-	public static final int NOTIFICATION_EX = 1;
-	private static NotificationManager notificationManager;
-	private static Notification runNotification;
-	private static Notification killNotification;
 
 	private ServiceConnection mConnection;
 	private Service myNotifyService;
@@ -830,7 +824,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (keyCode == KeyEvent.KEYCODE_BACK)
 		{
-			if (!GL_Listener.glListener.keyBackCliced()) Quitt();
+			if (!GL_Listener.glListener.keyBackCliced()) TabMainView.actionClose.Execute();
 
 			return true;
 		}
@@ -848,38 +842,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	private ArrayList<Character> sonderzeichen;
-
-	private void Quitt()
-	{
-		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
-		{
-			@Override
-			public void onClick(DialogInterface dialog, int which)
-			{
-				switch (which)
-				{
-				case -1:
-					// Yes button clicked
-					try
-					{
-						finish();
-					}
-					catch (Throwable e)
-					{
-
-						e.printStackTrace();
-					}
-					break;
-				case -2:
-					// No button clicked
-					dialog.dismiss();
-					break;
-				}
-			}
-		};
-		MessageBox.Show(GlobalCore.Translations.Get("QuitReally"), GlobalCore.Translations.Get("Quit?"), MessageBoxButtons.YesNo,
-				MessageBoxIcon.Question, dialogClickListener);
-	}
 
 	@Override
 	public void CacheListChangedEvent()
@@ -1519,11 +1481,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			final Intent mainIntent1 = new Intent().setClass(mainActivity, EditFilterSettings.class);
 			mainActivity.startActivity(mainIntent1);
 		}
-		else if (ID == ViewConst.IMPORT)
-		{
-			final Intent mainIntent2 = new Intent().setClass(mainActivity, ImportDialog.class);
-			mainActivity.startActivity(mainIntent2);
-		}
 		else if (ID == ViewConst.SEARCH)
 		{
 			Search.Show();
@@ -1564,10 +1521,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		else if (ID == ViewConst.LOCK)
 		{
 			startScreenLock(true);
-		}
-		else if (ID == ViewConst.QUIT)
-		{
-			Quitt();
 		}
 
 	}
@@ -1749,9 +1702,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case R.id.miDeleteCaches:
 				DeleteFilterSelection();
 				break;
-			case R.id.miClose:
-				Quitt();
-				break;
 
 			case R.id.miSettings:
 				showView(ViewConst.SETTINGS);
@@ -1767,9 +1717,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				break;
 			case R.id.miAbout:
 				showView(ViewConst.CREDITS_VIEW); // Show CreditsView
-				break;
-			case R.id.miImport:
-				showView(ViewConst.IMPORT);
 				break;
 			case R.id.miLogView:
 				showView(ViewConst.LOG_VIEW);
@@ -3401,7 +3348,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		GlobalCore.platform = Plattform.Android;
 
-		CB_Core.Events.platformConector.setisOnlineListner(new IHardwarStateListner()
+		platformConector.setisOnlineListner(new IHardwarStateListner()
 		{
 			/*
 			 * isOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen
@@ -3456,7 +3403,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		});
 
-		CB_Core.Events.platformConector.setShowViewListner(new IShowViewListner()
+		platformConector.setShowViewListner(new IShowViewListner()
 		{
 
 			@Override
@@ -3652,7 +3599,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		});
 
-		CB_Core.Events.platformConector.setGetTrackListner(new trackListListner()
+		platformConector.setGetTrackListner(new trackListListner()
 		{
 
 			@Override
@@ -3682,7 +3629,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (cm != null) GlobalCore.setDefaultClipboard(acb);
 
-		CB_Core.Events.platformConector.setGetFileListner(new IgetFileListner()
+		platformConector.setGetFileListner(new IgetFileListner()
 		{
 
 			@Override
@@ -3715,7 +3662,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		});
 
-		CB_Core.Events.platformConector.setGetFolderListner(new IgetFolderListner()
+		platformConector.setGetFolderListner(new IgetFolderListner()
 		{
 
 			@Override
@@ -3743,6 +3690,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					// No compatible file manager was found.
 					Toast.makeText(main.mainActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
 				}
+			}
+		});
+
+		platformConector.setQuitListner(new IQuit()
+		{
+
+			@Override
+			public void Quit()
+			{
+				finish();
 			}
 		});
 

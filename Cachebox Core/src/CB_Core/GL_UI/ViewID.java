@@ -49,7 +49,7 @@ public class ViewID
 
 	public final static int SETTINGS = 102;
 	public final static int FILTER_SETTINGS = 101;
-	public final static int IMPORT = 103;
+
 	public final static int SEARCH = 104;
 	public final static int MANAGE_DB = 105;
 	public final static int CHK_STATE_API = 106;
@@ -63,7 +63,6 @@ public class ViewID
 	public final static int PARKING = 114;
 	public final static int DAY_NIGHT = 115;
 	public final static int LOCK = 116;
-	public final static int QUIT = 117;
 
 	public enum UI_Pos
 	{

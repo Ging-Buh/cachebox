@@ -5,7 +5,6 @@ import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Activitys.settings.SettingsActivity;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditTextField;
@@ -95,8 +94,7 @@ public class TestView extends CB_View_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				SettingsActivity imp = new SettingsActivity();
-				imp.show();
+				GL_Listener.glListener.Toast(" ein langer text zum Anzeigen");
 				return false;
 			}
 		});
@@ -113,7 +111,7 @@ public class TestView extends CB_View_Base
 		@Override
 		public boolean onClick(int which)
 		{
-			 
+
 			return false;
 		}
 	};
@@ -202,7 +200,6 @@ public class TestView extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		 
 
 	}
 
@@ -219,7 +216,6 @@ public class TestView extends CB_View_Base
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 

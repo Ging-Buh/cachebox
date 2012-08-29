@@ -823,7 +823,10 @@ public class SettingsActivity extends ActivityBase
 				EditKey = SB.getName();
 				File file = new File(SB.getValue());
 
-				platformConector.getFolder(file.getAbsolutePath(), GlobalCore.Translations.Get("select_folder"),
+				String ApsolutePath = "";
+				if (file != null) ApsolutePath = file.getAbsolutePath();
+
+				platformConector.getFolder(ApsolutePath, GlobalCore.Translations.Get("select_folder"),
 						GlobalCore.Translations.Get("select"), new IgetFolderReturnListner()
 						{
 
@@ -876,6 +879,8 @@ public class SettingsActivity extends ActivityBase
 				File file = new File(SB.getValue());
 
 				String Path = file.getParent();
+
+				if (Path == null) Path = "";
 
 				platformConector.getFile(Path, SB.getExt(), GlobalCore.Translations.Get("select_file"),
 						GlobalCore.Translations.Get("select"), new IgetFileReturnListner()
@@ -1101,6 +1106,9 @@ public class SettingsActivity extends ActivityBase
 	private CB_View_Base getLangSpinnerView(final SettingsListButtonLangSpinner SB)
 	{
 		Sprachen = GlobalCore.Translations.GetLangs(Config.settings.LanguagePath.getValue());
+
+		if (Sprachen == null || Sprachen.size() == 0) return null;
+
 		final String[] items = new String[Sprachen.size()];
 		int index = 0;
 		int selection = -1;

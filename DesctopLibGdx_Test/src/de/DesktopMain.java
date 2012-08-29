@@ -17,6 +17,7 @@ import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.platformConector;
 import CB_Core.Events.platformConector.IHardwarStateListner;
+import CB_Core.Events.platformConector.IQuit;
 import CB_Core.Events.platformConector.IgetFileListner;
 import CB_Core.Events.platformConector.IgetFileReturnListner;
 import CB_Core.Events.platformConector.IgetFolderListner;
@@ -185,6 +186,17 @@ public class DesktopMain
 					if (returnListner != null) returnListner.getFolderReturn(chooser.getSelectedFile().getAbsolutePath());
 					System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
 				}
+
+			}
+		});
+
+		platformConector.setQuitListner(new IQuit()
+		{
+
+			@Override
+			public void Quit()
+			{
+				System.exit(0);
 
 			}
 		});
