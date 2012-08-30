@@ -32,12 +32,10 @@
 				android:fillViewport="true">
 				<EditText android:text="EditText" android:id="@+id/solverText"
 					android:gravity="top" android:layout_width="match_parent"
-					android:textAppearance="?android:attr/textAppearanceLarge"
 					android:scrollHorizontally="true" android:fillViewport="true"
 					android:layout_weight="1" android:layout_height="match_parent"></EditText>
 				<EditText android:text="EditText" android:id="@+id/solverResult"
 					android:fillViewport="true" android:layout_width="match_parent"
-					android:textAppearance="?android:attr/textAppearanceLarge"
 					android:scrollHorizontally="true" android:layout_weight="1"
 					android:editable="false" android:gravity="top"
 					android:layout_height="match_parent"></EditText>

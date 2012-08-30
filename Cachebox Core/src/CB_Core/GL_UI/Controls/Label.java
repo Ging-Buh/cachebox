@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Label extends CB_View_Base
 {
@@ -74,6 +75,12 @@ public class Label extends CB_View_Base
 
 	private void calcInnerRec()
 	{
+
+		left = drawableBackground != null ? drawableBackground.getLeftWidth() : 0;
+		right = drawableBackground != null ? drawableBackground.getRightWidth() : 0;
+		top = drawableBackground != null ? drawableBackground.getTopHeight() : 0;
+		bottom = drawableBackground != null ? drawableBackground.getBottomHeight() : 0;
+
 		innerRec = new CB_RectF(left, bottom, width - right - left, height - top - bottom);
 		innerWidth = innerRec.getWidth();
 	}
@@ -93,6 +100,8 @@ public class Label extends CB_View_Base
 
 	}
 
+	// TODO Center bei Wraped und Multi Line passt Hier irgendwie nicht mehr
+
 	private void fontPropertyChanged()
 	{
 
@@ -103,7 +112,7 @@ public class Label extends CB_View_Base
 
 		if (this.halignment == HAlignment.CENTER && innerRec.getWidth() > bounds.width)
 		{
-			x = (innerRec.getWidth() / 2f) - (bounds.width / 2f);
+			x = (innerRec.getHalfWidth()) - (bounds.width / 2f);
 		}
 		else if (this.halignment == HAlignment.RIGHT && innerRec.getWidth() > bounds.width)
 		{
@@ -130,13 +139,13 @@ public class Label extends CB_View_Base
 			switch (valignment)
 			{
 			case TOP:
-				cache.setPosition(cache.getX(), (bounds.height + cache.getFont().getDescent()) - 1);
+				cache.setPosition(x, (innerRec.getHeight() - bounds.height) + bottom);
 				break;
 			case CENTER:
-				cache.setPosition(cache.getX(), (innerRec.getHeight() - bounds.height) / 2);
+				cache.setPosition(x, ((innerRec.getHeight() - bounds.height) / 2) + bottom);
 				break;
 			case BOTTOM:
-				cache.setPosition(cache.getX(), 0);
+				cache.setPosition(x, 0);
 				break;
 			}
 		}
@@ -174,7 +183,7 @@ public class Label extends CB_View_Base
 		lineCount = 1;
 		try
 		{
-			bounds = cache.setText(this.text, 0, cache.getFont().isFlipped() ? 0 : cache.getFont().getCapHeight());
+			bounds = cache.setText(this.text, 0, cache.getFont().getCapHeight());
 		}
 		catch (Exception e)
 		{
@@ -200,7 +209,7 @@ public class Label extends CB_View_Base
 
 		bounds = cache.getFont().getMultiLineBounds(text);
 		// cache.setMultiLineText(text, 0, cache.getFont().isFlipped() ? 0 : bounds.height);
-		cache.setMultiLineText(this.text, 0, cache.getFont().isFlipped() ? 0 : bounds.height, innerWidth, alignment);
+		bounds = cache.setMultiLineText(this.text, 0, bounds.height, innerWidth, alignment);
 		fontPropertyChanged();
 	}
 
@@ -217,8 +226,7 @@ public class Label extends CB_View_Base
 		this.halignment = alignment;
 		wrapType = WrapType.wrapped;
 		bounds = cache.getFont().getWrappedBounds(text, innerWidth);
-		cache.setWrappedText(this.text, 0, cache.getFont().isFlipped() ? bounds.height : cache.getFont().getLineHeight(), innerWidth,
-				alignment);
+		bounds = cache.setWrappedText(this.text, 0, bounds.height, innerWidth, alignment);
 		fontPropertyChanged();
 
 		return bounds;
@@ -322,7 +330,6 @@ public class Label extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		 
 
 	}
 
@@ -383,6 +390,13 @@ public class Label extends CB_View_Base
 
 		this.setHeight(h);
 
+	}
+
+	@Override
+	public void setBackground(Drawable background)
+	{
+		super.setBackground(background);
+		fontPropertyChanged();
 	}
 
 }

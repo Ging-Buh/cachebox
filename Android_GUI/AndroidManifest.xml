@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="de.cachebox_test" android:installLocation="preferExternal"
-	android:versionCode="6" android:versionName="0.5.650 (test)">
+	android:versionCode="6" android:versionName="0.5.1079 (test)">
 	<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="7" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
@@ -49,11 +49,7 @@
 		</activity>
 		<activity android:name=".Views.Forms.ScreenLock"
 			android:theme="@style/Theme.Transparent" android:screenOrientation="behind"></activity>
-		<activity android:name=".Views.Forms.ProgressDialog"
-			android:theme="@style/ThemeHintDialog" android:screenOrientation="behind"></activity>
-		<activity android:name=".Views.Forms.ImportDialog" android:theme="@style/Theme_day_transparent" android:screenOrientation="behind"></activity>
 		<activity android:name=".Views.Forms.GcApiLogin" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent"></activity>
-		<activity android:name=".Views.Forms.selectSolverFunction" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent"></activity>
 		<activity android:name=".Views.Forms.ApiPQDialog" android:theme="@style/Theme_day_transparent" android:screenOrientation="behind"></activity>
 		<activity android:name=".Views.Forms.ApiSearchPosDialog" android:theme="@style/Theme_day_transparent" android:screenOrientation="behind"></activity>
 		<activity android:name=".Views.AdvancedSettingsForms.SettingsScrollView" android:screenOrientation="behind" android:theme="@style/Theme.Transparent"></activity>

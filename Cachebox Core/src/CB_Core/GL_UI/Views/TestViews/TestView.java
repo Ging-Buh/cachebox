@@ -1,10 +1,11 @@
 package CB_Core.GL_UI.Views.TestViews;
 
 import CB_Core.GL_UI.CB_View_Base;
-import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Activitys.SelectSolverFunction;
+import CB_Core.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditTextField;
@@ -13,10 +14,9 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL_Listener;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.Solver.Functions.Function;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
@@ -84,17 +84,38 @@ public class TestView extends CB_View_Base
 		// ####################################################
 
 		// Setting Button
-		Button btnSetting = new Button(this.width - Dialog.margin - UiSizes.getButtonWidthWide(), this.height - Dialog.margin
-				- UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight(), "");
+		Button btnSetting = new Button(this.width - Dialog.margin - (UiSizes.getButtonWidthWide() * 2), this.height - Dialog.margin
+				- UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide() * 2, UiSizes.getButtonHeight(), "");
 
-		btnSetting.setText("Setting");
+		btnSetting.setText("selectFunction");
 		btnSetting.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				GL_Listener.glListener.Toast(" ein langer text zum Anzeigen");
+				// neue selectsolver Activity erstellen und anzeigen!
+				new SelectSolverFunction(new IFunctionResult()
+				{
+
+					@Override
+					public void selectedFunction(Function function)
+					{
+						// ausgewählte Funktion verarbeiten!
+						// wenn funktion==null wurde Cancel gedrückt
+
+						if (function != null)
+						{
+							GL_Listener.glListener.Toast("Returned Function :" + function.getShortcut());
+						}
+						else
+						{
+							GL_Listener.glListener.Toast("Keine Funktion ausgewählt");
+						}
+
+					}
+				}).show();
+
 				return false;
 			}
 		});
@@ -125,32 +146,6 @@ public class TestView extends CB_View_Base
 	}
 
 	String str;
-
-	private void drawHausVomNikolaus(SpriteBatch batch)
-	{
-		Sprite ArrowSprite = SpriteCache.Arrows.get(5);
-
-		ArrowSprite.setColor(Color.BLACK);
-		DrawUtils.drawSpriteLine(batch, ArrowSprite, 1f, 100, 100, 300, 300);
-
-		ArrowSprite.setColor(Color.RED);
-		DrawUtils.drawSpriteLine(batch, ArrowSprite, 1f, 300, 300, 100, 300);
-
-		ArrowSprite.setColor(Color.BLUE);
-		DrawUtils.drawSpriteLine(batch, ArrowSprite, 1f, 100, 300, 100, 100);
-
-		ArrowSprite.setColor(Color.CYAN);
-		DrawUtils.drawSpriteLine(batch, ArrowSprite, 1f, 100, 100, 300, 100);
-
-		ArrowSprite.setColor(Color.ORANGE);
-		DrawUtils.drawSpriteLine(batch, ArrowSprite, 1f, 300, 100, 300, 300);
-
-		ArrowSprite.setColor(Color.MAGENTA);
-		DrawUtils.drawSpriteLine(batch, ArrowSprite, 1f, 300, 300, 200, 400);
-
-		ArrowSprite.setColor(Color.YELLOW);
-		DrawUtils.drawSpriteLine(batch, ArrowSprite, 1f, 200, 400, 100, 300);
-	}
 
 	private void renderDebugInfo(SpriteBatch batch)
 	{

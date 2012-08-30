@@ -39,7 +39,6 @@ public class Global
 	/**
 	 * Activity Result ID´s
 	 */
-	public static final int RESULT_SELECT_SOLVER_FUNCTION = 29021972;
 	public static final int RESULT_SELECT_PQ_LIST = 771971;
 	public static final int RESULT_ADVANCED_SETTINGS = 12112011;
 	public static final int REQUEST_CODE_PICK_FILE_OR_DIRECTORY = 98765;

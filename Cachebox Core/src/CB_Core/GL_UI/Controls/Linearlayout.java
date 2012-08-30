@@ -68,6 +68,8 @@ public class Linearlayout extends CB_View_Base
 
 		this.setHeight(lastYPos);
 
+		this.setZeroPos();
+
 		if (mLayoutChangedListner != null) mLayoutChangedListner.LayoutIsChanged(this, lastYPos);
 
 	}

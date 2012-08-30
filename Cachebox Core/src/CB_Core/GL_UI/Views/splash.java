@@ -158,7 +158,10 @@ public class splash extends TabMainView
 		bounds = Fonts.getNormal().getMultiLineBounds(GlobalCore.splashMsg);
 
 		descTextView = new Label(0, versionTextView.getY() - ref - bounds.height, this.width, bounds.height + 10, "DescLabel");
-		descTextView.setMultiLineText(GlobalCore.splashMsg);
+
+		// descTextView.setMultiLineText(GlobalCore.splashMsg);
+		descTextView.setWrappedText(GlobalCore.splashMsg, HAlignment.CENTER);
+
 		descTextView.setHAlignment(HAlignment.CENTER);
 		this.addChild(descTextView);
 

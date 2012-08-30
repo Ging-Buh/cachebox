@@ -1,11 +1,10 @@
 package de.cachebox_test.Views;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
+import CB_Core.GL_UI.Activitys.SelectSolverFunction;
+import CB_Core.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.Solver.Solver;
@@ -16,23 +15,19 @@ import CB_Core.Types.Waypoint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Views.Forms.MessageBox;
-import de.cachebox_test.Views.Forms.selectSolverFunction;
 
 public class SolverView extends FrameLayout implements ViewOptionsMenu
 {
@@ -78,11 +73,58 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			@Override
 			public void onClick(View arg0)
 			{
-				// Funktion Auswahl Dialog öffnen
-				Intent intent = new Intent().setClass(bFunct.getContext(), selectSolverFunction.class);
+				new SelectSolverFunction(new IFunctionResult()
+				{
 
-				main.mainActivity.startActivityForResult(intent, Global.RESULT_SELECT_SOLVER_FUNCTION);
+					@Override
+					public void selectedFunction(final Function function)
+					{
+						// ausgewählte Funktion verarbeiten!
+						// wenn funktion==null wurde Cancel gedrückt
 
+						if (function != null)
+						{
+
+							// muss in UI-Thread verarbeitet werden nicht im GL-Thread, wo wir gerade her kommen!
+
+							main.mainActivity.runOnUiThread(new Runnable()
+							{
+								@Override
+								public void run()
+								{
+									CharSequence selection = edSolver.getText().subSequence(edSolver.getSelectionStart(),
+											edSolver.getSelectionEnd());
+									// String newFunction = function.getShortcut();
+									String newFunction = function.getLongLocalName();
+									int newFunctionLength = newFunction.length();
+									String zeichen = "";
+									if (function.needsTextArgument())
+									{
+										zeichen = "\"";
+										if ((selection.length() > 0) && (selection.charAt(0) == '"'))
+										{
+											// Anführungszeichen bereits vorhanden
+											zeichen = "";
+										}
+									}
+									newFunction += "(" + zeichen + selection + zeichen + ")";
+									int newSelectionStart = edSolver.getSelectionStart() + newFunctionLength + 1 + zeichen.length()
+											+ selection.length();
+
+									int start = edSolver.getSelectionStart();
+									int end = edSolver.getSelectionEnd();
+									edSolver.getText().replace(Math.min(start, end), Math.max(start, end), newFunction, 0,
+											newFunction.length());
+									edSolver.setSelection(newSelectionStart);
+									edSolver.invalidate();
+
+								}
+							});
+
+						}
+
+					}
+				}).show();
 			}
 		});
 
@@ -154,7 +196,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	protected void solve()
 	{
 		// Hide Keyboard when Calculating
-		showVirturalKeyboard(false);
+		// showVirturalKeyboard(false);
 		Solver solver = new Solver(edSolver.getText().toString());
 		if (!solver.Solve())
 		{
@@ -267,62 +309,26 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 		return 0;
 	}
 
-	@Override
-	public void ActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		if (data == null) return;
-		Bundle bundle = data.getExtras();
-		if (bundle != null)
-		{
-			Function function = (Function) bundle.getSerializable("FunctionResult");
-			if (function != null)
-			{
-				CharSequence selection = edSolver.getText().subSequence(edSolver.getSelectionStart(), edSolver.getSelectionEnd());
-				// String newFunction = function.getShortcut();
-				String newFunction = function.getLongLocalName();
-				int newFunctionLength = newFunction.length();
-				String zeichen = "";
-				if (function.needsTextArgument())
-				{
-					zeichen = "\"";
-					if ((selection.length() > 0) && (selection.charAt(0) == '"'))
-					{
-						// Anführungszeichen bereits vorhanden
-						zeichen = "";
-					}
-				}
-				newFunction += "(" + zeichen + selection + zeichen + ")";
-				int newSelectionStart = edSolver.getSelectionStart() + newFunctionLength + 1 + zeichen.length() + selection.length();
-
-				int start = edSolver.getSelectionStart();
-				int end = edSolver.getSelectionEnd();
-				edSolver.getText().replace(Math.min(start, end), Math.max(start, end), newFunction, 0, newFunction.length());
-				edSolver.setSelection(newSelectionStart);
-				showVirturalKeyboard(true);
-			}
-		}
-	}
-
-	private void showVirturalKeyboard(final boolean show)
-	{
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				InputMethodManager m = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-
-				if (m != null)
-				{
-					if (show) m.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
-					else
-						m.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
-				}
-			}
-
-		}, 100);
-	}
+	// private void showVirturalKeyboard(final boolean show)
+	// {
+	// Timer timer = new Timer();
+	// timer.schedule(new TimerTask()
+	// {
+	// @Override
+	// public void run()
+	// {
+	// InputMethodManager m = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+	//
+	// if (m != null)
+	// {
+	// if (show) m.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+	// else
+	// m.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+	// }
+	// }
+	//
+	// }, 100);
+	// }
 
 	@Override
 	public int GetContextMenuId()
@@ -342,26 +348,33 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 		return false;
 	}
 
+	// @Override
+	// protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+	// {
+	//
+	// final int proposedheight = MeasureSpec.getSize(heightMeasureSpec);
+	// final int actualHeight = getHeight();
+	//
+	// if (actualHeight > proposedheight)
+	// {
+	// // Keyboard is shown set Buttons Gone
+	// ButtonsLayout.setVisibility(GONE);
+	//
+	// }
+	// else
+	// {
+	// // Keyboard is hidden set Buttons Visible
+	// ButtonsLayout.setVisibility(VISIBLE);
+	//
+	// }
+	// super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+	// }
+
 	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+	public void ActivityResult(int requestCode, int resultCode, Intent data)
 	{
+		// TODO Auto-generated method stub
 
-		final int proposedheight = MeasureSpec.getSize(heightMeasureSpec);
-		final int actualHeight = getHeight();
-
-		if (actualHeight > proposedheight)
-		{
-			// Keyboard is shown set Buttons Gone
-			ButtonsLayout.setVisibility(GONE);
-
-		}
-		else
-		{
-			// Keyboard is hidden set Buttons Visible
-			ButtonsLayout.setVisibility(VISIBLE);
-
-		}
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}
 
 }
