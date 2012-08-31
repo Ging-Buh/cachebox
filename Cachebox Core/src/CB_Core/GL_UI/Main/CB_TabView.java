@@ -8,7 +8,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.H_ListView;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 
@@ -121,7 +121,7 @@ public class CB_TabView extends CB_View_Base
 	public void ShowView(CB_View_Base view)
 	{
 
-		GL_Listener.glListener.clearRenderViews();
+		GL.that.clearRenderViews();
 
 		// delete all Views up to the ButtonList
 		if (aktView != null)
@@ -142,7 +142,7 @@ public class CB_TabView extends CB_View_Base
 		aktView.setVisibility(VISIBLE);
 		sendOnShow2aktView();
 
-		GL_Listener.glListener.renderOnce(aktView.getName() + " TabView=>ShowView()");
+		GL.that.renderOnce(aktView.getName() + " TabView=>ShowView()");
 
 	}
 

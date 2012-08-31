@@ -9,7 +9,7 @@ import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
@@ -34,7 +34,7 @@ public class Menu extends Dialog
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
-			GL_Listener.glListener.closeDialog(that);
+			GL.that.closeDialog(that);
 			if (mOnItemClickListner != null) mOnItemClickListner.onClick(v, x, y, pointer, button);
 
 			return true;
@@ -209,7 +209,7 @@ public class Menu extends Dialog
 			}
 		}
 
-		GL_Listener.glListener.showDialog(this);
+		GL.that.showDialog(this);
 
 	}
 

@@ -7,7 +7,7 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -74,8 +74,8 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 		if (isPressed)
 		{
-			GL_Listener.glListener.renderOnce("");
-			isPressed = GL_Listener.isTouchDown();
+			GL.that.renderOnce("");
+			isPressed = GL.getIsTouchDown();
 		}
 
 		// initial
@@ -384,7 +384,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		FilterSetListView.mustSaveFilter = true;
 		this.isPressed = false;
 		this.lastItemTouchPos = null;
-		GL_Listener.glListener.renderOnce("");
+		GL.that.renderOnce("");
 	}
 
 	public void minusClick()
@@ -394,7 +394,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		FilterSetListView.mustSaveFilter = true;
 		this.isPressed = false;
 		this.lastItemTouchPos = null;
-		GL_Listener.glListener.renderOnce("");
+		GL.that.renderOnce("");
 	}
 
 	public void stateClick()
@@ -403,7 +403,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		FilterSetListView.mustSaveFilter = true;
 		this.isPressed = false;
 		this.lastItemTouchPos = null;
-		GL_Listener.glListener.renderOnce("");
+		GL.that.renderOnce("");
 	}
 
 	public void setValue(int value)

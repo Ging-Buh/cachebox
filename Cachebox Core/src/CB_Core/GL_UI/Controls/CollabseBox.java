@@ -3,7 +3,7 @@ package CB_Core.GL_UI.Controls;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 
 public class CollabseBox extends Box
@@ -117,7 +117,7 @@ public class CollabseBox extends Box
 		super.setHeight(Height);
 		collabse = (Height == 0);
 		if (listner != null) listner.animatetHeightCanged(Height);
-		GL_Listener.glListener.renderOnce("CollabseBox.setAnimationHeight");
+		GL.that.renderOnce("CollabseBox.setAnimationHeight");
 	}
 
 }

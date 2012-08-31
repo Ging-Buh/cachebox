@@ -9,7 +9,7 @@ import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
@@ -81,7 +81,7 @@ public class WaitDialog extends GL_MsgBox
 
 		waitDialog.addChild(label);
 		setButtonCaptions(waitDialog, MessageBoxButtons.NOTHING);
-		GL_Listener.glListener.showDialog(waitDialog);
+		GL.that.showDialog(waitDialog);
 
 		waitDialog.rotateAngle = 0;
 
@@ -107,7 +107,7 @@ public class WaitDialog extends GL_MsgBox
 				rotateAngle += 5;
 				if (rotateAngle > 360) rotateAngle = 0;
 				iconImage.setRotate(rotateAngle);
-				GL_Listener.glListener.renderOnce("WaitRotateAni");
+				GL.that.renderOnce("WaitRotateAni");
 			}
 		}
 	};
@@ -117,7 +117,7 @@ public class WaitDialog extends GL_MsgBox
 		RotateTimer.cancel();
 		iconImage.dispose();
 
-		GL_Listener.glListener.closeDialog(that);
+		GL.that.closeDialog(that);
 	}
 
 }

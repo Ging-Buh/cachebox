@@ -4,11 +4,11 @@ import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Controls.EditTextField;
+import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
@@ -22,8 +22,8 @@ public class SolverDialog extends GL_MsgBox
 	}
 
 	private GL_MsgBox mMsgBox;
-	private EditTextField mVariableField;
-	private EditTextField mFormulaField;
+	private EditWrapedTextField mVariableField;
+	private EditWrapedTextField mFormulaField;
 	private String mSolverString;
 	private SloverBackStringListner mBackStringListner;
 
@@ -59,7 +59,7 @@ public class SolverDialog extends GL_MsgBox
 		// initial VariableField
 		float TextFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
 		CB_RectF rec = new CB_RectF(0, msgBoxContentSize.height - TextFieldHeight, msgBoxContentSize.width, TextFieldHeight);
-		mVariableField = new EditTextField(this, rec, "SolverDialogTextField");
+		mVariableField = new EditWrapedTextField(this, rec, "SolverDialogTextField");
 		mVariableField.setText(sVar);
 		// mVariableField.setMsg("Enter formula");
 		mMsgBox.addChild(mVariableField);
@@ -73,7 +73,7 @@ public class SolverDialog extends GL_MsgBox
 
 		// initial FormulaField
 		rec = new CB_RectF(0, msgBoxContentSize.height - TextFieldHeight * 3, msgBoxContentSize.width, TextFieldHeight);
-		mFormulaField = new EditTextField(this, rec, "SolverDialogTextField");
+		mFormulaField = new EditWrapedTextField(this, rec, "SolverDialogTextField");
 		mFormulaField.setText(sForm);
 		// mFormulaField.setMsg("Enter formula");
 
@@ -106,7 +106,7 @@ public class SolverDialog extends GL_MsgBox
 	{
 		mBackStringListner = listner;
 		initialLayout();
-		GL_Listener.glListener.showDialog(mMsgBox);
+		GL.that.showDialog(mMsgBox);
 
 	}
 

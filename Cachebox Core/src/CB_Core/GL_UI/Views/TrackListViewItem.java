@@ -10,7 +10,7 @@ import CB_Core.GL_UI.Activitys.ColorPicker.IReturnListner;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Map.RouteOverlay.Track;
 import CB_Core.Math.CB_RectF;
 
@@ -85,7 +85,7 @@ public class TrackListViewItem extends ListViewItemBackground
 				e.printStackTrace();
 			}
 
-			isPressed = GL_Listener.isTouchDown();
+			isPressed = GL.getIsTouchDown();
 		}
 		else
 		{
@@ -141,7 +141,7 @@ public class TrackListViewItem extends ListViewItemBackground
 			this.addChild(EntryLength);
 		}
 
-		GL_Listener.glListener.renderOnce("CreateTrackListItem_Label");
+		GL.that.renderOnce("CreateTrackListItem_Label");
 	}
 
 	private void drawColorRec(SpriteBatch batch)
@@ -211,7 +211,7 @@ public class TrackListViewItem extends ListViewItemBackground
 				if (mRouteChangedListner != null) mRouteChangedListner.RouteChanged(mRoute);
 			}
 		});
-		GL_Listener.glListener.renderOnce("TrackListViewItem_Click_Color_Rec");
+		GL.that.renderOnce("TrackListViewItem_Click_Color_Rec");
 	}
 
 	private void colorClick()
@@ -237,7 +237,7 @@ public class TrackListViewItem extends ListViewItemBackground
 				clrPick.show();
 			}
 		});
-		GL_Listener.glListener.renderOnce("TrackListViewItem_Click_Color_Rec");
+		GL.that.renderOnce("TrackListViewItem_Click_Color_Rec");
 	}
 
 	public void notifyTrackChanged(Track route)

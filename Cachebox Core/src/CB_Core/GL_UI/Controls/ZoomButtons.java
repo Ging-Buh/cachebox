@@ -23,7 +23,7 @@ import java.util.TimerTask;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -350,7 +350,7 @@ public class ZoomButtons extends CB_View_Base
 			@Override
 			public void run()
 			{
-				GL_Listener.glListener.addRenderView(THIS, GL_Listener.FRAME_RATE_ACTION);
+				GL.that.addRenderView(THIS, GL.FRAME_RATE_ACTION);
 				cancelTimerToFadeOut();
 			}
 		};
@@ -383,7 +383,7 @@ public class ZoomButtons extends CB_View_Base
 					fadeOut = false;
 					// this.setVisibility(INVISIBLE);
 					virtualVisible = false;
-					GL_Listener.glListener.removeRenderView(this);
+					GL.that.removeRenderView(this);
 				}
 				timeLastAction = new Date();
 			}
@@ -399,7 +399,7 @@ public class ZoomButtons extends CB_View_Base
 					// Log.d("CACHEBOX", "Ende Fade In");
 					FadeValue = 1f;
 					fadeIn = false;
-					GL_Listener.glListener.removeRenderView(this);
+					GL.that.removeRenderView(this);
 				}
 				timeLastAction = new Date();
 			}

@@ -5,7 +5,7 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -48,7 +48,7 @@ public class ProgressBar extends CB_View_Base
 			progressFill = SpriteCache.ProgressFill;
 		}
 
-		GL_Listener.glListener.renderOnce("InitialProgressBar reday");
+		GL.that.renderOnce("InitialProgressBar reday");
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class ProgressBar extends CB_View_Base
 		progress = value;
 		if (progress > 100) progress = 100;
 		progressDrawWidth = (width / 100) * progress;
-		GL_Listener.glListener.renderOnce("ProgressBar state changed");
+		GL.that.renderOnce("ProgressBar state changed");
 	}
 
 	public void setProgress(int value, final String Msg)
@@ -81,7 +81,7 @@ public class ProgressBar extends CB_View_Base
 			}
 		});
 
-		GL_Listener.glListener.renderOnce("ProgressBar state changed");
+		GL.that.renderOnce("ProgressBar state changed");
 	}
 
 	public void setProgressFill(Drawable drawable)

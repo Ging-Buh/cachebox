@@ -10,7 +10,7 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.Handler;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.runOnGL;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
@@ -108,7 +108,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		yPos = value;
 		mSlideBox.setY(value);
 		setQuickButtonListHeight();
-		GL_Listener.glListener.renderOnce(this.name);
+		GL.that.renderOnce(this.name);
 	}
 
 	private void setQuickButtonListHeight()
@@ -141,7 +141,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	{
 		if (KineticPan)
 		{
-			GL_Listener.glListener.StopKinetic(x, y, pointer, true);
+			GL.that.StopKinetic(x, y, pointer, true);
 			isKinetigPan = true;
 			return onTouchUp(x, y, pointer, 0);
 		}

@@ -1,7 +1,7 @@
 package CB_Core.GL_UI.Controls.List;
 
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -62,7 +62,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	{
 		if (isPressed)
 		{
-			isPressed = GL_Listener.isTouchDown();
+			isPressed = GL.getIsTouchDown();
 		}
 
 		if (!this.isVisible()) return;
@@ -95,7 +95,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
 		isPressed = true;
-		GL_Listener.glListener.renderOnce(this.getName() + " touchDown");
+		GL.that.renderOnce(this.getName() + " touchDown");
 
 		return false;
 	}

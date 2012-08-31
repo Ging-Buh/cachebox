@@ -11,7 +11,6 @@ import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
 import CB_Core.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
-import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.DefaultOnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
@@ -21,7 +20,7 @@ import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Spinner;
 import CB_Core.GL_UI.Controls.Spinner.selectionChangedListner;
 import CB_Core.GL_UI.Controls.SpinnerAdapter;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.LangStrings;
@@ -42,7 +41,7 @@ public class EditWaypoint extends ActivityBase
 	private Label tvCacheName = null;
 	private Label tvTyp = null;
 	private Label tvTitle = null;
-	private EditTextField etTitle = null;
+	private EditWrapedTextField etTitle = null;
 	private Label tvDescription = null;
 	private EditWrapedTextField etDescription = null;
 	private Label tvClue = null;
@@ -90,7 +89,7 @@ public class EditWaypoint extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				for (EditTextFieldBase tmp : allTextFields)
+				for (EditWrapedTextField tmp : allTextFields)
 				{
 					tmp.resetFocus();
 				}
@@ -106,7 +105,7 @@ public class EditWaypoint extends ActivityBase
 	@Override
 	protected void Initial()
 	{
-		GL_Listener.glListener.renderForTextField(etTitle);
+		GL.that.renderForTextField(etTitle);
 	}
 
 	private void iniCacheNameLabel()
@@ -272,7 +271,7 @@ public class EditWaypoint extends ActivityBase
 	private void iniTitleTextField()
 	{
 		CB_RectF rec = new CB_RectF(Left, tvTitle.getY() - UiSizes.getButtonHeight(), width - Left - Right, UiSizes.getButtonHeight());
-		etTitle = new EditTextField(this, rec, "TitleTextField");
+		etTitle = new EditWrapedTextField(this, rec, "TitleTextField");
 
 		String txt = (waypoint.Title == null) ? "" : waypoint.Title;
 
@@ -407,11 +406,11 @@ public class EditWaypoint extends ActivityBase
 		registerTextField(etClue);
 	}
 
-	private ArrayList<EditTextFieldBase> allTextFields = new ArrayList<EditTextFieldBase>();
+	private ArrayList<EditWrapedTextField> allTextFields = new ArrayList<EditWrapedTextField>();
 
 	private OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
-	public void registerTextField(final EditTextFieldBase textField)
+	public void registerTextField(final EditWrapedTextField textField)
 	{
 		textField.setOnscreenKeyboard(new OnscreenKeyboard()
 		{
@@ -419,7 +418,7 @@ public class EditWaypoint extends ActivityBase
 			public void show(boolean arg0)
 			{
 
-				for (EditTextFieldBase tmp : allTextFields)
+				for (EditWrapedTextField tmp : allTextFields)
 				{
 					tmp.resetFocus();
 				}

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
@@ -138,7 +138,7 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		if (mViewState == visibility) return;
 		mViewState = visibility;
-		GL_Listener.glListener.renderOnce(this.getName() + "setVisibility");
+		GL.that.renderOnce(this.getName() + "setVisibility");
 	}
 
 	public MoveableList<GL_View_Base> getchilds()
@@ -385,6 +385,7 @@ public abstract class GL_View_Base extends CB_RectF
 			}
 			catch (java.util.ConcurrentModificationException e)
 			{
+				e.printStackTrace();
 				// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
 				break;
 			}
@@ -516,6 +517,7 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		catch (ConcurrentModificationException e)
 		{
+			e.printStackTrace();
 			// keine ahnung was ich machen soll, wen dieser fehler auftritt!
 		}
 
@@ -699,6 +701,7 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		catch (IndexOutOfBoundsException e)
 		{
+			e.printStackTrace();
 			return null;
 		}
 
@@ -710,7 +713,7 @@ public abstract class GL_View_Base extends CB_RectF
 			if (behandelt) resultView = this;
 		}
 
-		GL_Listener.glListener.renderOnce(this.getName() + " touchDown");
+		GL.that.renderOnce(this.getName() + " touchDown");
 
 		return resultView;
 	}
@@ -736,6 +739,7 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		catch (IndexOutOfBoundsException e)
 		{
+			e.printStackTrace();
 			return false;
 		}
 
@@ -771,6 +775,7 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		catch (IndexOutOfBoundsException e)
 		{
+			e.printStackTrace();
 			return false;
 		}
 
@@ -894,7 +899,7 @@ public abstract class GL_View_Base extends CB_RectF
 		if (this.getY() == i) return;
 		super.setY(i);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL_Listener.glListener.renderOnce(this.getName() + " setY");
+		GL.that.renderOnce(this.getName() + " setY");
 
 	}
 
@@ -904,7 +909,7 @@ public abstract class GL_View_Base extends CB_RectF
 		if (this.getX() == i) return;
 		super.setX(i);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL_Listener.glListener.renderOnce(this.getName() + " setX");
+		GL.that.renderOnce(this.getName() + " setX");
 	}
 
 	@Override
@@ -913,21 +918,21 @@ public abstract class GL_View_Base extends CB_RectF
 		if (this.getPos().x == Pos.x && this.getPos().y == Pos.y) return;
 		super.setPos(Pos);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL_Listener.glListener.renderOnce(this.getName() + " setPos(Vector)");
+		GL.that.renderOnce(this.getName() + " setPos(Vector)");
 	}
 
 	public void setZeroPos()
 	{
 		super.setPos(new Vector2(0, 0));
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL_Listener.glListener.renderOnce(this.getName() + " setZeroPos");
+		GL.that.renderOnce(this.getName() + " setZeroPos");
 	}
 
 	public void setPos(float x, float y)
 	{
 		super.setPos(x, y);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL_Listener.glListener.renderOnce(this.getName() + " setPos(float)");
+		GL.that.renderOnce(this.getName() + " setPos(float)");
 	}
 
 	// Abfrage der clickToleranz, mit der Bestimmt wird ab welcher Bewegung ein onTouchDragged erzeugt wird und beim loslassen kein click

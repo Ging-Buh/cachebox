@@ -10,7 +10,7 @@ import CB_Core.GL_UI.GL_View_Base.OnLongClickListener;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.GestureHelp;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowView;
@@ -135,7 +135,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 					action.CallExecute();
 					if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
 
-					GL_Listener.glListener.closeToast();
+					GL.that.closeToast();
 
 					return true;
 				}
@@ -177,7 +177,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 			CB_RectF rec = this.ThisWorldRec;
 
 			help.setPos(rec.getX(), rec.getMaxY());
-			GL_Listener.glListener.Toast(help, 2000);
+			GL.that.Toast(help, 2000);
 		}
 
 		return true;
@@ -296,7 +296,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 
 		if (!GestureIsOn) return false;
 
-		if (KineticPan) GL_Listener.glListener.StopKinetic(x, y, pointer, true);
+		if (KineticPan) GL.that.StopKinetic(x, y, pointer, true);
 		isDragged = true;
 		return true;
 	}

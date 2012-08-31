@@ -19,7 +19,6 @@ import CB_Core.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
 import CB_Core.GL_UI.Activitys.FilterSettings.FilterSetListViewItem;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
-import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.DefaultOnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
@@ -31,7 +30,7 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.FieldNoteEntry;
@@ -49,8 +48,8 @@ public class EditFieldNotes extends ActivityBase
 	private EditWrapedTextField etComment = null;
 	private Image ivTyp = null;
 	private Label tvFounds = null;
-	private EditTextField tvDate = null;
-	private EditTextField tvTime = null;
+	private EditWrapedTextField tvDate = null;
+	private EditWrapedTextField tvTime = null;
 	private Label lblDate = null;
 	private Label lblTime = null;
 	private Box scrollBox = null;
@@ -182,7 +181,7 @@ public class EditFieldNotes extends ActivityBase
 							@Override
 							public void run()
 							{
-								GL_Listener.glListener.showDialog(msg);
+								GL.that.showDialog(msg);
 							}
 						};
 
@@ -261,7 +260,7 @@ public class EditFieldNotes extends ActivityBase
 		CB_RectF rec = new CB_RectF(lblDate.getMaxX() + margin, lblDate.getY() - margin, width - lblDate.getMaxX() - margin - Right,
 				MesuredLabelHeight * 2);
 
-		tvDate = new EditTextField(this, rec, "");
+		tvDate = new EditWrapedTextField(this, rec, "");
 		scrollBox.addChild(tvDate);
 	}
 
@@ -275,7 +274,7 @@ public class EditFieldNotes extends ActivityBase
 		CB_RectF rec = new CB_RectF(lblTime.getMaxX() + margin, lblTime.getY() - margin, width - lblTime.getMaxX() - margin - Right,
 				MesuredLabelHeight * 2);
 
-		tvTime = new EditTextField(this, rec, "");
+		tvTime = new EditWrapedTextField(this, rec, "");
 		scrollBox.addChild(tvTime);
 	}
 
@@ -337,11 +336,11 @@ public class EditFieldNotes extends ActivityBase
 		registerTextField(tvTime);
 	}
 
-	private ArrayList<EditTextFieldBase> allTextFields = new ArrayList<EditTextFieldBase>();
+	private ArrayList<EditWrapedTextField> allTextFields = new ArrayList<EditWrapedTextField>();
 
 	private OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
-	public void registerTextField(final EditTextFieldBase textField)
+	public void registerTextField(final EditWrapedTextField textField)
 	{
 		textField.setOnscreenKeyboard(new OnscreenKeyboard()
 		{
@@ -349,7 +348,7 @@ public class EditFieldNotes extends ActivityBase
 			public void show(boolean arg0)
 			{
 
-				for (EditTextFieldBase tmp : allTextFields)
+				for (EditWrapedTextField tmp : allTextFields)
 				{
 					tmp.resetFocus();
 				}

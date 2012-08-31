@@ -3,7 +3,7 @@ package CB_Core.GL_UI;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.interfaces.ViewOptionsMenu;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
@@ -77,7 +77,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			@Override
 			public void run()
 			{
-				GL_Listener.glListener.renderOnce("ResetInitial");
+				GL.that.renderOnce("ResetInitial");
 			}
 		}, 50);
 	}

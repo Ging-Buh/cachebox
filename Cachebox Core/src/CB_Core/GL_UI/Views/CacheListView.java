@@ -17,7 +17,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Menu.CB_AllContextMenuHandler;
 import CB_Core.Locator.Locator;
 import CB_Core.Log.Logger;
@@ -49,7 +49,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 		// Logger.LogCat("CacheListView => Initial()");
 		// this.setListPos(0, false);
 		chkSlideBack();
-		GL_Listener.glListener.renderOnce(this.getName() + " Initial()");
+		GL.that.renderOnce(this.getName() + " Initial()");
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 		Timer timer = new Timer();
 		timer.schedule(task, 150);
 
-		GL_Listener.glListener.renderOnce(this.getName() + " onShow()");
+		GL.that.renderOnce(this.getName() + " onShow()");
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 		}
 
 		chkSlideBack();
-		GL_Listener.glListener.renderOnce(this.getName() + " setSelectedCachVisible");
+		GL.that.renderOnce(this.getName() + " setSelectedCachVisible");
 	}
 
 	@Override
@@ -319,13 +319,13 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 	@Override
 	public void PositionChanged(Locator locator)
 	{
-		GL_Listener.glListener.renderOnce("Core.CacheListView");
+		GL.that.renderOnce("Core.CacheListView");
 	}
 
 	@Override
 	public void OrientationChanged(float heading)
 	{
-		GL_Listener.glListener.renderOnce("Core.CacheListView");
+		GL.that.renderOnce("Core.CacheListView");
 	}
 
 	@Override

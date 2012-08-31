@@ -1,6 +1,6 @@
 package de.cachebox_test.Views;
 
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_Core.Log.Logger;
 import android.content.Context;
@@ -21,15 +21,15 @@ import de.cachebox_test.Events.ViewOptionsMenu;
 
 public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listener_Interface
 {
-	public GL_Listener glListener;
+	public GL glListener;
 
 	public static View ViewGl;
 
-	public ViewGL(Context context, LayoutInflater inflater, View glView, GL_Listener glListener)
+	public ViewGL(Context context, LayoutInflater inflater, View glView, GL glListener)
 	{
 		super(context);
 		ViewGl = glView;
-		GL_Listener.listenerInterface = this;
+		GL.listenerInterface = this;
 		this.glListener = glListener;
 		try
 		{

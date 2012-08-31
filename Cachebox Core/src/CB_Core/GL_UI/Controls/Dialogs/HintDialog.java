@@ -5,7 +5,7 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.Size;
 
 public class HintDialog extends GL_MsgBox
@@ -49,13 +49,13 @@ public class HintDialog extends GL_MsgBox
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				GL_MsgBox msgBox = (GL_MsgBox) GL_Listener.glListener.getActDialog();
+				GL_MsgBox msgBox = (GL_MsgBox) GL.that.getActDialog();
 				msgBox.setText(GlobalCore.Rot13(msgBox.getText()));
 				return true;
 			}
 		});
 
-		GL_Listener.glListener.showDialog(msgBox);
+		GL.that.showDialog(msgBox);
 
 	}
 }

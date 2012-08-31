@@ -8,7 +8,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Views.TrackListViewItem.RouteChangedListner;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Map.RouteOverlay.Track;
@@ -168,7 +168,7 @@ public class TrackListView extends V_ListView
 	{
 		aktRouteItem.notifyTrackChanged(GlobalCore.AktuelleRoute);
 
-		GL_Listener.glListener.renderOnce("ActTrackChanged");
+		GL.that.renderOnce("ActTrackChanged");
 	}
 
 	private OnClickListener onItemClickListner = new OnClickListener()

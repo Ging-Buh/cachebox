@@ -21,7 +21,7 @@ import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
@@ -116,7 +116,7 @@ public class SelectDB extends ActivityBase
 				stopTimer();
 				if (AktFile == null)
 				{
-					GL_Listener.glListener.Toast("Please select Database!", Toast.LENGTH_SHORT);
+					GL.that.Toast("Please select Database!", Toast.LENGTH_SHORT);
 					return false;
 				}
 				selectDB();
@@ -343,7 +343,7 @@ public class SelectDB extends ActivityBase
 	{
 		if (AktFile == null)
 		{
-			GL_Listener.glListener.Toast("no DB selected", 200);
+			GL.that.Toast("no DB selected", 200);
 			return;
 		}
 
@@ -371,7 +371,7 @@ public class SelectDB extends ActivityBase
 	@Override
 	protected void finish()
 	{
-		GL_Listener.glListener.closeActivity(!MusstSelect);
+		GL.that.closeActivity(!MusstSelect);
 	}
 
 	private void setAutoStartText()

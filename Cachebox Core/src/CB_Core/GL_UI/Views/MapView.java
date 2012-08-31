@@ -30,7 +30,7 @@ import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.ZoomButtons;
 import CB_Core.GL_UI.Controls.ZoomScale;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_Core.Locator.Locator;
@@ -226,8 +226,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System
 						.currentTimeMillis() + 1000);
-				GL_Listener.glListener.addRenderView(that, frameRateAction);
-				GL_Listener.glListener.renderOnce(that.getName() + " ZoomButtonClick");
+				GL.that.addRenderView(that, frameRateAction);
+				GL.that.renderOnce(that.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
 				return true;
 			}
@@ -245,8 +245,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System
 						.currentTimeMillis() + 1000);
-				GL_Listener.glListener.addRenderView(that, frameRateAction);
-				GL_Listener.glListener.renderOnce(that.getName() + " ZoomButtonClick");
+				GL.that.addRenderView(that, frameRateAction);
+				GL.that.renderOnce(that.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
 				return true;
 			}
@@ -562,7 +562,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			if (kineticZoom.getFertig())
 			{
 				setZoomScale(zoomBtn.getZoom());
-				GL_Listener.glListener.removeRenderView(this);
+				GL.that.removeRenderView(this);
 				kineticZoom = null;
 			}
 			else
@@ -591,7 +591,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		if (reduceFps)
 		{
-			GL_Listener.glListener.removeRenderView(this);
+			GL.that.removeRenderView(this);
 		}
 
 		synchronized (screenCenterT)
@@ -1463,7 +1463,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			screenCenterT.y = (long) (-newCenter.y);
 		}
 		// if (camera != null) camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
-		GL_Listener.glListener.renderOnce(this.getName() + " setScreenCenter");
+		GL.that.renderOnce(this.getName() + " setScreenCenter");
 	}
 
 	public void setCenter(Coordinate value)
@@ -1609,8 +1609,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				// kineticZoom = new KineticZoom(camera.zoom, lastDynamicZoom, System.currentTimeMillis(), System.currentTimeMillis() +
 				// 1000);
 
-				GL_Listener.glListener.addRenderView(that, frameRateAction);
-				GL_Listener.glListener.renderOnce(that.getName() + " ZoomButtonClick");
+				GL.that.addRenderView(that, frameRateAction);
+				GL.that.renderOnce(that.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
 			}
 
@@ -1856,7 +1856,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			tileState = TileGL.TileState.Present;
 			addLoadedTile(desc, bytes, tileState);
 			// Redraw Map after a new Tile was loaded or generated
-			GL_Listener.glListener.renderOnce(this.getName() + " loadTile");
+			GL.that.renderOnce(this.getName() + " loadTile");
 		}
 		else
 		{
@@ -1972,8 +1972,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				// kineticZoom = new KineticZoom(camera.zoom, lastDynamicZoom, System.currentTimeMillis(), System.currentTimeMillis() +
 				// 1000);
 
-				GL_Listener.glListener.addRenderView(that, frameRateAction);
-				GL_Listener.glListener.renderOnce(that.getName() + " ZoomButtonClick");
+				GL.that.addRenderView(that, frameRateAction);
+				GL.that.renderOnce(that.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
 			}
 
@@ -1995,7 +1995,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					{
 						inputState = InputState.Pan;
 						// GL_Listener.glListener.addRenderView(this, frameRateAction);
-						GL_Listener.glListener.renderOnce(this.getName() + " Dragged");
+						GL.that.renderOnce(this.getName() + " Dragged");
 						// xxx startTimer(frameRateAction);
 						// xxx ((GLSurfaceView) MapViewGL.ViewGl).requestRender();
 					}
@@ -2024,7 +2024,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				zoomBtn.resetFadeOut();
 
 				// GL_Listener.glListener.addRenderView(this, frameRateAction);
-				GL_Listener.glListener.renderOnce(this.getName() + " Pan");
+				GL.that.renderOnce(this.getName() + " Pan");
 				// debugString = "";
 				long faktor = getMapTilePosFactor(aktZoom);
 				// debugString += faktor;
@@ -2156,9 +2156,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			inputState = InputState.Idle;
 			// wieder langsam rendern
-			GL_Listener.glListener.renderOnce(this.getName() + " touchUp");
+			GL.that.renderOnce(this.getName() + " touchUp");
 
-			if ((kineticZoom == null) && (kineticPan == null)) GL_Listener.glListener.removeRenderView(this);
+			if ((kineticZoom == null) && (kineticPan == null)) GL.that.removeRenderView(this);
 
 			if (kineticPan != null) kineticPan.start();
 		}
@@ -2307,7 +2307,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		setCenter(target);
 
-		GL_Listener.glListener.addRenderView(MapView.that, GL_Listener.FRAME_RATE_ACTION);
+		GL.that.addRenderView(MapView.that, GL.FRAME_RATE_ACTION);
 
 		// für 2sec rendern lassen, bis Änderungen der WPI-list neu berechnet wurden
 		TimerTask task = new TimerTask()
@@ -2315,7 +2315,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			@Override
 			public void run()
 			{
-				GL_Listener.glListener.removeRenderView(MapView.that);
+				GL.that.removeRenderView(MapView.that);
 			}
 		};
 
@@ -2456,7 +2456,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		zoomScale.setSize((float) (44.6666667 * GL_UISizes.DPI),
 				this.height - info.getHeight() - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
 
-		GL_Listener.glListener.renderOnce(this.getName() + " requestLayout");
+		GL.that.renderOnce(this.getName() + " requestLayout");
 	}
 
 	@Override

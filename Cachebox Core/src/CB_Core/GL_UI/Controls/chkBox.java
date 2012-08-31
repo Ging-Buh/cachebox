@@ -1,7 +1,7 @@
 package CB_Core.GL_UI.Controls;
 
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -33,7 +33,7 @@ public class chkBox extends Button
 		if (drawableNormal == null || drawablePressed == null || drawableDisabledChk == null || drawableDisabled == null)
 		{
 			Initial();
-			GL_Listener.glListener.renderOnce(this.getName() + " render");
+			GL.that.renderOnce(this.getName() + " render");
 		}
 
 		if (!isChk && !isDisabled)
@@ -102,7 +102,7 @@ public class chkBox extends Button
 		if (!isDisabled)
 		{
 
-			GL_Listener.glListener.renderOnce(this.getName() + " touchDown");
+			GL.that.renderOnce(this.getName() + " touchDown");
 		}
 		return dragableButton ? false : true;
 	}
@@ -111,7 +111,7 @@ public class chkBox extends Button
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 
-		GL_Listener.glListener.renderOnce(this.getName() + " Dragged");
+		GL.that.renderOnce(this.getName() + " Dragged");
 		return false;
 	}
 
@@ -119,7 +119,7 @@ public class chkBox extends Button
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
 
-		GL_Listener.glListener.renderOnce(this.getName() + " touchUp");
+		GL.that.renderOnce(this.getName() + " touchUp");
 		return dragableButton ? false : true;
 	}
 

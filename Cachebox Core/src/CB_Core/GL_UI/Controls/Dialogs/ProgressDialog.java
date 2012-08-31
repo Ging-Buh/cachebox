@@ -12,7 +12,7 @@ import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ProgressBar;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
@@ -98,7 +98,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 		PD.setHeight(PD.getHeight() + (PD.mesuredLabelHeight * 2f));
 
 		PD.setTitle(titleText);
-		GL_Listener.glListener.showDialog(PD);
+		GL.that.showDialog(PD);
 
 		return PD;
 	}

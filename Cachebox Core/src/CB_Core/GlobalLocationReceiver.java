@@ -5,7 +5,7 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.PositionChangedEvent;
 import CB_Core.Events.PositionChangedEventList;
 import CB_Core.GL_UI.Controls.Dialogs.Toast;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Locator.Locator;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
@@ -100,7 +100,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 						initialFixSoundCompleted = false;
 					}
 
-					GL_Listener.glListener.Toast("Network-Position", Toast.LENGTH_LONG);
+					GL.that.Toast("Network-Position", Toast.LENGTH_LONG);
 				}
 			}
 		}

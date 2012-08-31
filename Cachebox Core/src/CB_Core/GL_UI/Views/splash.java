@@ -17,7 +17,7 @@ import CB_Core.GL_UI.Activitys.SelectDB.ReturnListner;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ProgressBar;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Log.Logger;
@@ -44,7 +44,7 @@ public class splash extends TabMainView
 	public splash(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height, Name);
-		GL_Listener.glListener.addRenderView(this, GL_Listener.FRAME_RATE_IDLE);
+		GL.that.addRenderView(this, GL.FRAME_RATE_IDLE);
 		workPath = Config.WorkPath;
 	}
 
@@ -433,8 +433,8 @@ public class splash extends TabMainView
 	 */
 	private void ini_TabMainView()
 	{
-		GL_Listener.glListener.removeRenderView(this);
-		((Tab_GL_Listner) GL_Listener.glListener).switchToTabMainView();
+		GL.that.removeRenderView(this);
+		((Tab_GL_Listner) GL.that).switchToTabMainView();
 
 		if (GlobalCore.restartCache != null)
 		{

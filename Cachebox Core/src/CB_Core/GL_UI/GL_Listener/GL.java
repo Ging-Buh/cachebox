@@ -24,6 +24,9 @@ import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
+import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.SelectionMarker;
+import CB_Core.GL_UI.Controls.SelectionMarker.Type;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Main.TabMainView;
@@ -46,78 +49,72 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-public class GL_Listener implements ApplicationListener // , InputProcessor
+public class GL implements ApplicationListener
 {
-
-	public static GL_Listener_Interface listenerInterface;
-	public static GL_Listener glListener;
-	// # private Member
-	private HashMap<GL_View_Base, Integer> renderViews = new HashMap<GL_View_Base, Integer>();
-	protected MainViewBase child;
-	protected CB_View_Base mDialog;
-	protected CB_View_Base mActivity;
-	protected CB_View_Base mToastOverlay;
-	private static AtomicBoolean started = new AtomicBoolean(false);
-	static boolean useNewInput = true;
-
-	private long mLongClickTime = 0;
-	private long mDoubleClickTime = 500;
-	private long lastClickTime = 0; // zur Erkennung von Doppenklicks
-	private Point lastClickPoint = null;
-
+	// Public Static Constants
 	public static final int MAX_KINETIC_SCROLL_DISTANCE = 100;
 	public static final int FRAME_RATE_IDLE = 200;
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 15;
 	public static final int FRAME_RATE_TEXT_FIELD = 35;// TODO wird nicht mehr benötigt Blinken geht auch mit gestoppten Renderer
 
-	// # public static member
+	// Public Static Member
+	public static GL_Listener_Interface listenerInterface;
+	public static GL that;
 	public static SpriteBatch batch;
 	public static OrthographicCamera camera;
-	private ParentInfo prjMatrix;
+	private static Timer myTimer;
+	private static long timerValue;
+
+	// Private Static Member
+	private static AtomicBoolean started = new AtomicBoolean(false);
 	private static boolean misTouchDown = false;
-	private boolean touchDraggedActive = false;
 
-	protected static EditTextFieldBase keyboardFocus;
-
-	public static boolean isTouchDown()
-	{
-		return misTouchDown;
-	}
-
-	protected int width = 0;
-	protected int height = 0;
-
-	private Texture FpsInfoTexture;
-	private Sprite FpsInfoSprite;
+	// private Member
+	private boolean touchDraggedActive = false, ToastIsShown = false, stopRender = false, darknesAnimationRuns = false,
+			MarkerIsShown = false;
 	private int FpsInfoPos = 0;
+	private float darknesAlpha = 0f;
+	private long mLongClickTime = 0, mDoubleClickTime = 500, lastClickTime = 0;
+	private HashMap<GL_View_Base, Integer> renderViews = new HashMap<GL_View_Base, Integer>();
+	private Point lastClickPoint = null;
+	private ParentInfo prjMatrix;
+	private CB_View_Base actDialog, actActivity;
+	private PopUp_Base aktPopUp = null;
+	private CB_Core.GL_UI.Controls.Dialogs.Toast toast;
+	private Stage mStage;
+	private Timer longClickTimer;
+	private Texture FpsInfoTexture;
+	private Sprite FpsInfoSprite, mDarknesSprite;
+	protected EditWrapedTextField keyboardFocus;
 
-	public int getFpsInfoPos()
-	{
-		return FpsInfoPos;
-	}
+	/**
+	 * Zwischenspeicher für die touchDown Positionen der einzelnen Finger
+	 */
+	private SortedMap<Integer, TouchDownPointer> touchDownPos = new TreeMap<Integer, TouchDownPointer>();
 
-	public float getWidth()
-	{
-		return width;
-	}
+	// private Listner
+	private renderStartet renderStartetListner = null;
 
-	public float getHeight()
-	{
-		return height;
-	}
+	// Protected Member
+	protected MainViewBase child;
+	protected CB_View_Base mDialog, mActivity, mToastOverlay, mMarkerOverlay;
+	protected SelectionMarker selectionMarkerCenter, selectionMarkerLeft, selectionMarkerRight;
+	protected boolean DialogIsShown = false, ActivityIsShown = false;
+	protected int width = 0, height = 0;
 
 	/**
 	 * Constructor
 	 */
-	public GL_Listener(int initalWidth, int initialHeight)
+	public GL(int initalWidth, int initialHeight)
 	{
-		glListener = this;
+		that = this;
 		width = initalWidth;
 		height = initialHeight;
 		mLongClickTime = Config.settings.LongClicktime.getValue();
-
 	}
+
+	// Overrides
 
 	@Override
 	public void create()
@@ -127,7 +124,6 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		GL_UISizes.initial(width, height);
 
 		Initialize();
-		startTime = System.currentTimeMillis();
 
 		Pixmap p = new Pixmap(4, 4, Pixmap.Format.RGBA8888);
 		Pixmap.setBlending(Blending.None);
@@ -141,6 +137,94 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		FpsInfoSprite.setSize(4, 4);
 
 		GlobalCore.receiver = new GlobalLocationReceiver();
+	}
+
+	@Override
+	public void render()
+	{
+
+		if (!started.get() || stopRender) return;
+
+		if (renderStartetListner != null)
+		{
+			renderStartetListner.renderIsStartet();
+			renderStartetListner = null;
+		}
+
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		if (Config.settings.nightMode.getValue())
+		{
+			Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+		}
+		else
+		{
+			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
+		}
+
+		batch.setProjectionMatrix(prjMatrix.Matrix());
+
+		// if Tablet, so the Activity is smaller the screen size
+		// render childs and darkness Sprite
+		if (GlobalCore.isTab)
+		{
+			child.renderChilds(batch, prjMatrix);
+			if (ActivityIsShown && mActivity.getCildCount() > 0)
+			{
+				// Zeichne Transparentes Rec um den Hintergrund abzudunkeln.
+				drawDarknessSprite();
+				mActivity.renderChilds(batch, prjMatrix);
+			}
+		}
+
+		if (ActivityIsShown && !GlobalCore.isTab)
+		{
+			mActivity.renderChilds(batch, prjMatrix);
+		}
+
+		if (!ActivityIsShown)
+		{
+			child.renderChilds(batch, prjMatrix);
+		}
+
+		if (DialogIsShown && mDialog.getCildCount() > 0)
+		{
+			// Zeichne Transparentes Rec um den Hintergrund abzudunkeln.
+			drawDarknessSprite();
+			mDialog.renderChilds(batch, prjMatrix);
+		}
+
+		if (ToastIsShown)
+		{
+			mToastOverlay.renderChilds(batch, prjMatrix);
+		}
+
+		if (MarkerIsShown)
+		{
+			mMarkerOverlay.renderChilds(batch, prjMatrix);
+		}
+
+		batch.begin();
+		batch.draw(FpsInfoSprite, FpsInfoPos, 2, 4, 4);
+		FpsInfoPos++;
+		if (FpsInfoPos > 60) FpsInfoPos = 0;
+		batch.end();
+
+		Gdx.gl.glFlush();
+		Gdx.gl.glFinish();
+
+	}
+
+	@Override
+	public void resize(int Width, int Height)
+	{
+		width = Width;
+		height = Height;
+
+		if (child != null) child.setSize(width, height);
+		camera = new OrthographicCamera(width, height);
+		prjMatrix = new ParentInfo(new Matrix4().setToOrtho2D(0, 0, width, height), new Vector2(0, 0), new CB_RectF(0, 0, width, height));
+
 	}
 
 	@Override
@@ -214,386 +298,45 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		child.onStop();
 	}
 
-	public GL_View_Base onTouchDown(int x, int y, int pointer, int button)
+	public static boolean getIsTouchDown()
 	{
-		GL_View_Base view = null;
-
-		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
-
-		view = testingView.touchDown(x, (int) testingView.getHeight() - y, pointer, button);
-
-		return view;
+		return misTouchDown;
 	}
 
-	public boolean onTouchDragged(int x, int y, int pointer)
+	public int getFpsInfoPos()
 	{
-		boolean behandelt = false;
-
-		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
-
-		behandelt = testingView.touchDragged(x, (int) testingView.getHeight() - y, pointer, false);
-
-		return behandelt;
+		return FpsInfoPos;
 	}
 
-	public boolean onTouchUp(int x, int y, int pointer, int button)
+	public float getWidth()
 	{
-		boolean behandelt = false;
-
-		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
-
-		behandelt = testingView.touchUp(x, (int) testingView.getHeight() - y, pointer, button);
-
-		return behandelt;
+		return width;
 	}
 
-	@Override
-	public void resize(int Width, int Height)
+	public float getHeight()
 	{
-		width = Width;
-		height = Height;
-
-		if (child != null) child.setSize(width, height);
-		camera = new OrthographicCamera(width, height);
-		prjMatrix = new ParentInfo(new Matrix4().setToOrtho2D(0, 0, width, height), new Vector2(0, 0), new CB_RectF(0, 0, width, height));
-
-	}
-
-	public static void startTimer(long delay, final String Name)
-	{
-		if (timerValue == delay) return;
-		stopTimer();
-		// Logger.LogCat("Start Timer: " + delay + " (" + Name + ")");
-
-		timerValue = delay;
-		myTimer = new Timer();
-		myTimer.schedule(new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				TimerMethod();
-			}
-
-			private void TimerMethod()
-			{
-				if (listenerInterface != null) listenerInterface.RequestRender("Timer" + Name);
-
-			}
-
-		}, 0, delay);
-		// if (listenerInterface != null) listenerInterface.RenderDirty();
-	}
-
-	public static long timerValue;
-	long startTime;
-	static Timer myTimer;
-
-	public static void stopTimer()
-	{
-		// Logger.LogCat("Stop Timer");
-		if (myTimer != null)
-		{
-			myTimer.cancel();
-			myTimer = null;
-		}
-		timerValue = 0;
-		// if (listenerInterface != null) listenerInterface.RenderContinous();
-	}
-
-	private float darknesAlpha = 0f;
-	private boolean darknesAnimationRuns = false;
-
-	public interface renderStartet
-	{
-		public void renderIsStartet();
-	}
-
-	private renderStartet renderStartetListner = null;
-
-	public void registerRenderStartetListner(renderStartet listner)
-	{
-		renderStartetListner = listner;
-	}
-
-	@Override
-	public void render()
-	{
-
-		if (!started.get() || stopRender) return;
-
-		if (renderStartetListner != null)
-		{
-			renderStartetListner.renderIsStartet();
-			renderStartetListner = null;
-		}
-
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		if (Config.settings.nightMode.getValue())
-		{
-			Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
-		}
-		else
-		{
-			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
-		}
-
-		batch.setProjectionMatrix(prjMatrix.Matrix());
-
-		// if Tablet, so the Activity is smaller the screen size
-		// render childs and darkness Sprite
-		if (GlobalCore.isTab)
-		{
-			child.renderChilds(batch, prjMatrix);
-			if (ActivityIsShown && mActivity.getCildCount() > 0)
-			{
-				// Zeichne Transparentes Rec um den Hintergrund abzudunkeln.
-				drawDarknessSprite();
-				mActivity.renderChilds(batch, prjMatrix);
-			}
-		}
-
-		if (ActivityIsShown && !GlobalCore.isTab)
-		{
-			mActivity.renderChilds(batch, prjMatrix);
-		}
-
-		if (!ActivityIsShown)
-		{
-			child.renderChilds(batch, prjMatrix);
-		}
-
-		if (DialogIsShown && mDialog.getCildCount() > 0)
-		{
-			// Zeichne Transparentes Rec um den Hintergrund abzudunkeln.
-			drawDarknessSprite();
-			mDialog.renderChilds(batch, prjMatrix);
-		}
-
-		if (ToastIsShown)
-		{
-
-			mToastOverlay.renderChilds(batch, prjMatrix);
-
-		}
-
-		batch.begin();
-		batch.draw(FpsInfoSprite, FpsInfoPos, 2, 4, 4);
-		FpsInfoPos++;
-		if (FpsInfoPos > 60) FpsInfoPos = 0;
-		batch.end();
-
-		Gdx.gl.glFlush();
-		Gdx.gl.glFinish();
-
-	}
-
-	private void drawDarknessSprite()
-	{
-		if (mDarknesSprite == null)
-		{
-			int w = CB_View_Base.getNextHighestPO2((int) width);
-			int h = CB_View_Base.getNextHighestPO2((int) height);
-			Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-			if (Config.settings.nightMode.getValue()) p.setColor(0.07f, 0f, 0f, 0.96f);
-			else
-				p.setColor(0f, 0.1f, 0f, 0.9f);
-
-			p.fillRectangle(0, 0, width, height);
-
-			Texture tex = new Texture(p, Pixmap.Format.RGBA8888, false);
-
-			mDarknesSprite = new Sprite(tex, (int) width, (int) height);
-		}
-
-		batch.begin();
-
-		mDarknesSprite.draw(batch, darknesAlpha);
-		if (darknesAnimationRuns)
-		{
-			darknesAlpha += 0.1f;
-			if (darknesAlpha > 1f)
-			{
-				darknesAlpha = 1f;
-				darknesAnimationRuns = false;
-				// unregister TabmainView, we have register on ShowDialog for the animation time
-				removeRenderView(TabMainView.that);
-			}
-		}
-
-		batch.end();
-	}
-
-	private Sprite mDarknesSprite;
-
-	// private void reduceFPS()
-	// {
-	// if (useNewInput) return;
-	// long endTime = System.currentTimeMillis();
-	// long dt = endTime - startTime;
-	// if (dt < 33)
-	// {
-	// try
-	// {
-	// if (20 - dt > 0) Thread.sleep(20 - dt);
-	// }
-	// catch (InterruptedException e)
-	// {
-	// e.printStackTrace();
-	// }
-	// }
-	// startTime = System.currentTimeMillis();
-	// }
-
-	public void Initialize()
-	{
-		// Logger.LogCat("GL_Listner => Initialize");
-
-		if (batch == null)
-		{
-			batch = new SpriteBatch();
-		}
-
-		if (child == null)
-		{
-			child = new MainViewBase(0, 0, width, height, "MainView");
-			child.setClickable(true);
-		}
-
-		if (mDialog == null)
-		{
-			mDialog = new MainViewBase(0, 0, width, height, "Dialog");
-			mDialog.setClickable(true);
-		}
-
-		if (mActivity == null)
-		{
-			mActivity = new MainViewBase(0, 0, width, height, "Dialog");
-			mActivity.setClickable(true);
-		}
-	}
-
-	public void setGLViewID(ViewID id)
-	{
-		if (child == null) Initialize();
-		child.setGLViewID(id);
-	}
-
-	public void addRenderView(GL_View_Base view, int delay)
-	{
-		if (renderViews.containsKey(view))
-		{
-			renderViews.remove(view);
-		}
-		renderViews.put(view, delay);
-		calcNewRenderSpeed();
-		if (listenerInterface != null) listenerInterface.RequestRender("");
-	}
-
-	public void removeRenderView(GL_View_Base view)
-	{
-		if (renderViews.containsKey(view))
-		{
-			renderViews.remove(view);
-			calcNewRenderSpeed();
-			// Logger.LogCat("removeRenderView " + view.getName() + "/verbleibende RenderViews" + renderViews.size());
-		}
-	}
-
-	public void renderForTextField(EditTextFieldBase textField)
-	{
-		addRenderView(textField, FRAME_RATE_TEXT_FIELD);
-	}
-
-	/**
-	 * Fürt EINEN Render Durchgang aus
-	 * 
-	 * @param view
-	 *            Aufrufendes GL_View_Base für Debug zwecke. Kann auch null sein.
-	 */
-	public void renderOnce(String requestName)
-	{
-
-		if (requestName == null)
-		{
-			return;
-		}
-
-		if (listenerInterface != null) listenerInterface.RequestRender(requestName);
-	}
-
-	private void calcNewRenderSpeed()
-	{
-		int minDelay = 0;
-		Iterator<Integer> it = renderViews.values().iterator();
-		while (it.hasNext())
-		{
-			int delay = it.next();
-			if (delay > minDelay) minDelay = delay;
-		}
-		if (minDelay == 0) stopTimer();
-		else
-			startTimer(minDelay, "GL_Listner calcNewRenderSpeed()");
+		return height;
 	}
 
 	// TouchEreignisse die von der View gesendet werden
 	// hier wird entschieden, wann TouchDonw, TouchDragged, TouchUp und Clicked, LongClicked Ereignisse gesendet werden müssen
-
-	// Timer für Long-Click
-	private Timer longTimer;
-
-	private void startLongClickTimer(final int pointer, final int x, final int y)
-	{
-		cancelLongClickTimer();
-
-		longTimer = new Timer();
-		TimerTask task = new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				if (!touchDownPos.containsKey(pointer)) return;
-				// für diesen Pointer ist kein touchDownPos gespeichert ->
-				// dürfte nicht passieren!!!
-				TouchDownPointer first = touchDownPos.get(pointer);
-				Point akt = new Point(x, y);
-				if (distance(akt, first.point) < first.view.getClickTolerance())
-				{
-					if (first.view.isClickable())
-					{
-						boolean handled = first.view.longClick(x - (int) first.view.ThisWorldRec.getX(), (int) child.getHeight() - y
-								- (int) first.view.ThisWorldRec.getY(), pointer, 0);
-						// Logger.LogCat("GL_Listner => onLongClick : " + first.view.getName());
-						// für diesen TouchDownn darf kein normaler Click mehr ausgeführt werden
-						touchDownPos.remove(pointer);
-						// onTouchUp nach Long-Click direkt auslösen
-						first.view.touchUp(x, (int) child.getHeight() - y, pointer, 0);
-						// Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
-						if (handled) platformConector.vibrate();
-					}
-				}
-			}
-		};
-		longTimer.schedule(task, mLongClickTime);
-	}
-
-	private void cancelLongClickTimer()
-	{
-		if (longTimer != null)
-		{
-			longTimer.cancel();
-			longTimer = null;
-		}
-	}
-
 	public boolean onTouchDownBase(int x, int y, int pointer, int button)
 	{
 		misTouchDown = true;
 		touchDraggedActive = false;
-		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
 
-		GL_View_Base view = testingView.touchDown(x, (int) testingView.getHeight() - y, pointer, button);
+		GL_View_Base view = null;
+
+		if (MarkerIsShown)// zuerst Marker Testen
+		{
+			view = mMarkerOverlay.touchDown(x, (int) mMarkerOverlay.getHeight() - y, pointer, button);
+		}
+		if (view == null)
+		{
+			CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
+			view = testingView.touchDown(x, (int) testingView.getHeight() - y, pointer, button);
+		}
+
 		if (view == null) return false;
 
 		if (touchDownPos.containsKey(pointer))
@@ -611,19 +354,9 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		return true;
 	}
 
-	public void StopKinetic(int x, int y, int pointer, boolean forceTouchUp)
-	{
-		TouchDownPointer first = touchDownPos.get(pointer);
-		if (first != null)
-		{
-			first.stopKinetic();
-			first.kineticPan = null;
-			if (forceTouchUp) first.view.touchUp(x, y, pointer, 0);
-		}
-	}
-
 	public boolean onTouchDraggedBase(int x, int y, int pointer)
 	{
+
 		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
 
 		if (!touchDownPos.containsKey(pointer)) return false; // für diesen Pointer ist kein touchDownPos gespeichert ->
@@ -705,6 +438,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			CB_Core.Log.Logger.Error("GL_Listner.onTouchUpBase()", "", e);
 		}
 
@@ -725,12 +459,293 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			CB_Core.Log.Logger.Error("GL_Listner.onTouchUpBase()", "", e);
 		}
 		// Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
 		// glListener.onTouchUp(x, y, pointer, 0);
 
 		return true;
+	}
+
+	public GL_View_Base onTouchDown(int x, int y, int pointer, int button)
+	{
+		GL_View_Base view = null;
+
+		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
+
+		view = testingView.touchDown(x, (int) testingView.getHeight() - y, pointer, button);
+
+		return view;
+	}
+
+	public boolean onTouchDragged(int x, int y, int pointer)
+	{
+		boolean behandelt = false;
+
+		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
+
+		behandelt = testingView.touchDragged(x, (int) testingView.getHeight() - y, pointer, false);
+
+		return behandelt;
+	}
+
+	public boolean onTouchUp(int x, int y, int pointer, int button)
+	{
+		boolean behandelt = false;
+
+		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
+
+		behandelt = testingView.touchUp(x, (int) testingView.getHeight() - y, pointer, button);
+
+		return behandelt;
+	}
+
+	public static void startTimer(long delay, final String Name)
+	{
+		if (timerValue == delay) return;
+		stopTimer();
+		// Logger.LogCat("Start Timer: " + delay + " (" + Name + ")");
+
+		timerValue = delay;
+		myTimer = new Timer();
+		myTimer.schedule(new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				TimerMethod();
+			}
+
+			private void TimerMethod()
+			{
+				if (listenerInterface != null) listenerInterface.RequestRender("Timer" + Name);
+
+			}
+
+		}, 0, delay);
+		// if (listenerInterface != null) listenerInterface.RenderDirty();
+	}
+
+	public static void stopTimer()
+	{
+		// Logger.LogCat("Stop Timer");
+		if (myTimer != null)
+		{
+			myTimer.cancel();
+			myTimer = null;
+		}
+		timerValue = 0;
+		// if (listenerInterface != null) listenerInterface.RenderContinous();
+	}
+
+	public interface renderStartet
+	{
+		public void renderIsStartet();
+	}
+
+	public void registerRenderStartetListner(renderStartet listner)
+	{
+		renderStartetListner = listner;
+	}
+
+	private void drawDarknessSprite()
+	{
+		if (mDarknesSprite == null)
+		{
+			int w = CB_View_Base.getNextHighestPO2((int) width);
+			int h = CB_View_Base.getNextHighestPO2((int) height);
+			Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+			if (Config.settings.nightMode.getValue()) p.setColor(0.07f, 0f, 0f, 0.96f);
+			else
+				p.setColor(0f, 0.1f, 0f, 0.9f);
+
+			p.fillRectangle(0, 0, width, height);
+
+			Texture tex = new Texture(p, Pixmap.Format.RGBA8888, false);
+
+			mDarknesSprite = new Sprite(tex, (int) width, (int) height);
+		}
+
+		batch.begin();
+
+		mDarknesSprite.draw(batch, darknesAlpha);
+		if (darknesAnimationRuns)
+		{
+			darknesAlpha += 0.1f;
+			if (darknesAlpha > 1f)
+			{
+				darknesAlpha = 1f;
+				darknesAnimationRuns = false;
+				// unregister TabmainView, we have register on ShowDialog for the animation time
+				removeRenderView(TabMainView.that);
+			}
+		}
+
+		batch.end();
+	}
+
+	public void Initialize()
+	{
+		// Logger.LogCat("GL_Listner => Initialize");
+
+		if (batch == null)
+		{
+			batch = new SpriteBatch();
+		}
+
+		if (child == null)
+		{
+			child = new MainViewBase(0, 0, width, height, "MainView");
+			child.setClickable(true);
+		}
+
+		if (mDialog == null)
+		{
+			mDialog = new MainViewBase(0, 0, width, height, "Dialog");
+			mDialog.setClickable(true);
+		}
+
+		if (mActivity == null)
+		{
+			mActivity = new MainViewBase(0, 0, width, height, "Dialog");
+			mActivity.setClickable(true);
+		}
+
+		initialMarkerOverlay();
+	}
+
+	private void initialMarkerOverlay()
+	{
+		mMarkerOverlay = new Box(new CB_RectF(0, 0, width, height), "MarkerOverlay");
+		selectionMarkerCenter = new SelectionMarker(SelectionMarker.Type.Center);
+		selectionMarkerLeft = new SelectionMarker(SelectionMarker.Type.Left);
+		selectionMarkerRight = new SelectionMarker(SelectionMarker.Type.Right);
+
+		hideMarker();
+
+		mMarkerOverlay.addChild(selectionMarkerCenter);
+		mMarkerOverlay.addChild(selectionMarkerLeft);
+		mMarkerOverlay.addChild(selectionMarkerRight);
+
+	}
+
+	public void setGLViewID(ViewID id)
+	{
+		if (child == null) Initialize();
+		child.setGLViewID(id);
+	}
+
+	public void addRenderView(GL_View_Base view, int delay)
+	{
+		if (renderViews.containsKey(view))
+		{
+			renderViews.remove(view);
+		}
+		renderViews.put(view, delay);
+		calcNewRenderSpeed();
+		if (listenerInterface != null) listenerInterface.RequestRender("");
+	}
+
+	public void removeRenderView(GL_View_Base view)
+	{
+		if (renderViews.containsKey(view))
+		{
+			renderViews.remove(view);
+			calcNewRenderSpeed();
+			// Logger.LogCat("removeRenderView " + view.getName() + "/verbleibende RenderViews" + renderViews.size());
+		}
+	}
+
+	public void renderForTextField(EditTextFieldBase textField)
+	{
+		addRenderView(textField, FRAME_RATE_TEXT_FIELD);
+	}
+
+	/**
+	 * Fürt EINEN Render Durchgang aus
+	 * 
+	 * @param view
+	 *            Aufrufendes GL_View_Base für Debug zwecke. Kann auch null sein.
+	 */
+	public void renderOnce(String requestName)
+	{
+
+		if (requestName == null)
+		{
+			return;
+		}
+
+		if (listenerInterface != null) listenerInterface.RequestRender(requestName);
+	}
+
+	private void calcNewRenderSpeed()
+	{
+		int minDelay = 0;
+		Iterator<Integer> it = renderViews.values().iterator();
+		while (it.hasNext())
+		{
+			int delay = it.next();
+			if (delay > minDelay) minDelay = delay;
+		}
+		if (minDelay == 0) stopTimer();
+		else
+			startTimer(minDelay, "GL_Listner calcNewRenderSpeed()");
+	}
+
+	private void startLongClickTimer(final int pointer, final int x, final int y)
+	{
+		cancelLongClickTimer();
+
+		longClickTimer = new Timer();
+		TimerTask task = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				if (!touchDownPos.containsKey(pointer)) return;
+				// für diesen Pointer ist kein touchDownPos gespeichert ->
+				// dürfte nicht passieren!!!
+				TouchDownPointer first = touchDownPos.get(pointer);
+				Point akt = new Point(x, y);
+				if (distance(akt, first.point) < first.view.getClickTolerance())
+				{
+					if (first.view.isClickable())
+					{
+						boolean handled = first.view.longClick(x - (int) first.view.ThisWorldRec.getX(), (int) child.getHeight() - y
+								- (int) first.view.ThisWorldRec.getY(), pointer, 0);
+						// Logger.LogCat("GL_Listner => onLongClick : " + first.view.getName());
+						// für diesen TouchDownn darf kein normaler Click mehr ausgeführt werden
+						touchDownPos.remove(pointer);
+						// onTouchUp nach Long-Click direkt auslösen
+						first.view.touchUp(x, (int) child.getHeight() - y, pointer, 0);
+						// Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
+						if (handled) platformConector.vibrate();
+					}
+				}
+			}
+		};
+		longClickTimer.schedule(task, mLongClickTime);
+	}
+
+	private void cancelLongClickTimer()
+	{
+		if (longClickTimer != null)
+		{
+			longClickTimer.cancel();
+			longClickTimer = null;
+		}
+	}
+
+	public void StopKinetic(int x, int y, int pointer, boolean forceTouchUp)
+	{
+		TouchDownPointer first = touchDownPos.get(pointer);
+		if (first != null)
+		{
+			first.stopKinetic();
+			first.kineticPan = null;
+			if (forceTouchUp) first.view.touchUp(x, y, pointer, 0);
+		}
 	}
 
 	// Abstand zweier Punkte
@@ -744,10 +759,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		return (int) Math.round(Math.sqrt(Math.pow(x1 - x1, 2) + Math.pow(y1 - y2, 2)));
 	}
 
-	// Zwischenspeicher für die touchDown Positionen der einzelnen Finger
-	private SortedMap<Integer, TouchDownPointer> touchDownPos = new TreeMap<Integer, TouchDownPointer>();
-
-	class TouchDownPointer
+	private class TouchDownPointer
 	{
 		private Point point;
 		private int pointer;
@@ -763,7 +775,7 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 			this.kineticPan = null;
 		}
 
-		public void startKinetic(final GL_Listener listener, final int x, final int y)
+		public void startKinetic(final GL listener, final int x, final int y)
 		{
 			timer = new Timer();
 			timer.schedule(new TimerTask()
@@ -933,18 +945,10 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		}
 	}
 
-	protected boolean DialogIsShown = false;
-	private CB_View_Base actDialog;
-
-	protected boolean ActivityIsShown = false;
-	private CB_View_Base actActivity;
-
 	public CB_View_Base getActDialog()
 	{
 		return actDialog;
 	}
-
-	private PopUp_Base aktPopUp = null;
 
 	public void showPopUp(PopUp_Base popUp, float x, float y)
 	{
@@ -1126,8 +1130,6 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		renderOnce("Close Dialog");
 	}
 
-	private boolean ToastIsShown = false;
-
 	public void Toast(CB_View_Base view)
 	{
 		Toast(view, 2000);
@@ -1173,8 +1175,6 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		}
 	}
 
-	private CB_Core.GL_UI.Controls.Dialogs.Toast toast;
-
 	public void Toast(String string)
 	{
 		Toast(string, 2000);
@@ -1196,8 +1196,6 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		Toast(toast, length);
 	}
 
-	private Stage mStage;
-
 	private void chkStageInitial()
 	{
 		if (mStage == null)
@@ -1206,31 +1204,11 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		}
 	}
 
-	public boolean keyDown(int keycode)
-	{
-		chkStageInitial();
-		return mStage.keyDown(keycode);
-	}
-
-	public boolean keyTyped(char character)
-	{
-		chkStageInitial();
-		return mStage.keyTyped(character);
-	}
-
-	public boolean keyUp(int keycode)
-	{
-		chkStageInitial();
-		return mStage.keyUp(keycode);
-	}
-
 	public boolean scrolled(int amount)
 	{
 		chkStageInitial();
 		return mStage.scrolled(amount);
 	}
-
-	private boolean stopRender = false;
 
 	/**
 	 * Stopt den Rendervorgang bis er durch RestartRender() wieder gestartet wird
@@ -1269,19 +1247,96 @@ public class GL_Listener implements ApplicationListener // , InputProcessor
 		return false;
 	}
 
-	public static void setKeyboardFocus(EditTextFieldBase view)
+	// TextFiled Methodes
+
+	public boolean keyDown(int keycode)
 	{
-		keyboardFocus = view;
+		chkStageInitial();
+		return mStage.keyDown(keycode);
 	}
 
-	public static EditTextFieldBase getKeyboardFocus()
+	public boolean keyTyped(char character)
+	{
+		chkStageInitial();
+		return mStage.keyTyped(character);
+	}
+
+	public boolean keyUp(int keycode)
+	{
+		chkStageInitial();
+		return mStage.keyUp(keycode);
+	}
+
+	public void setKeyboardFocus(EditWrapedTextField view)
+	{
+		keyboardFocus = view;
+
+		if (keyboardFocus == null) hideMarker();
+	}
+
+	public EditWrapedTextField getKeyboardFocus()
 	{
 		return keyboardFocus;
 	}
 
-	public static boolean hasFocus(EditTextFieldBase view)
+	public boolean hasFocus(EditTextFieldBase view)
 	{
 		return view == keyboardFocus;
+	}
+
+	public void hideMarker()
+	{
+		if (selectionMarkerCenter == null || selectionMarkerLeft == null || selectionMarkerRight == null) initialMarkerOverlay();
+		selectionMarkerCenter.setVisibility(GL_View_Base.INVISIBLE);
+		selectionMarkerLeft.setVisibility(GL_View_Base.INVISIBLE);
+		selectionMarkerRight.setVisibility(GL_View_Base.INVISIBLE);
+
+		MarkerIsShown = false;
+	}
+
+	public void showMarker(Type type)
+	{
+		if (selectionMarkerCenter == null || selectionMarkerLeft == null || selectionMarkerRight == null) initialMarkerOverlay();
+
+		switch (type)
+		{
+		case Center:
+			selectionMarkerCenter.setVisibility(GL_View_Base.VISIBLE);
+			break;
+		case Left:
+			selectionMarkerLeft.setVisibility(GL_View_Base.VISIBLE);
+			break;
+		case Right:
+			selectionMarkerRight.setVisibility(GL_View_Base.VISIBLE);
+			break;
+		}
+
+		MarkerIsShown = true;
+	}
+
+	public void selectionMarkerCenterMoveTo(float f, float g)
+	{
+		selectionMarkerCenter.moveTo(f, g);
+	}
+
+	public void selectionMarkerLeftMoveTo(float f, float g)
+	{
+		selectionMarkerLeft.moveTo(f, g);
+	}
+
+	public void selectionMarkerRightMoveTo(float f, float g)
+	{
+		selectionMarkerRight.moveTo(f, g);
+	}
+
+	public boolean selectionMarkerCenterisShown()
+	{
+		return selectionMarkerCenter.isVisible();
+	}
+
+	public void selectionMarkerCenterMoveBy(float dx, float dy)
+	{
+		selectionMarkerCenter.moveBy(dx, dy);
 	}
 
 }

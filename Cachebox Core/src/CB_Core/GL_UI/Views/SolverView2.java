@@ -21,7 +21,7 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
@@ -106,7 +106,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		this.setListPos(0, false);
 
 		this.invalidate();
-		GL_Listener.glListener.renderOnce(this.getName() + " onShow()");
+		GL.that.renderOnce(this.getName() + " onShow()");
 	}
 
 	private void reloadList()
@@ -125,7 +125,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		}
 
 		this.invalidate();
-		GL_Listener.glListener.renderOnce(this.getName() + " onShow()");
+		GL.that.renderOnce(this.getName() + " onShow()");
 	}
 
 	@Override
@@ -143,7 +143,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		Logger.LogCat("SolverView2 => Initial()");
 		this.setListPos(0, false);
 		chkSlideBack();
-		GL_Listener.glListener.renderOnce(this.getName() + " Initial()");
+		GL.that.renderOnce(this.getName() + " Initial()");
 	}
 
 	private OnClickListener onItemClickListner = new OnClickListener()

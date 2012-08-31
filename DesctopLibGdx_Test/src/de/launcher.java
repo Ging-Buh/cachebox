@@ -4,8 +4,10 @@ package de;
 import java.awt.Button;
 import java.awt.Checkbox;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -42,6 +44,10 @@ class Gui extends Frame implements ActionListener, WindowListener
 		setBackground(Color.LIGHT_GRAY);
 		setLayout(new FlowLayout());
 		addWindowListener(this); // listen for events on this Window
+
+		Button pushButton6 = new Button("Desctop Full");
+		// TODO Activate Full Screen=> add(pushButton6);
+		pushButton6.addActionListener(this); // listen for Button press
 
 		Button pushButton = new Button("Phone 480x800 HDPI");
 		add(pushButton);
@@ -96,7 +102,10 @@ class Gui extends Frame implements ActionListener, WindowListener
 		{
 			DesktopMain.start(iniHighPhone(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
 		}
-		// System.exit(0);
+		if (event.getActionCommand().equals("Desctop Full"))
+		{
+			DesktopMain.start(iniDesktop(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
+		}
 	}
 
 	// define methods in WindowListener interface
@@ -127,6 +136,18 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	public void windowOpened(WindowEvent event)
 	{
+	}
+
+	private static devicesSizes iniDesktop()
+	{
+
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+
+		Size myInitialSize = new Size(dim.width, dim.height);
+		devicesSizes ui = getLDPI(myInitialSize);
+
+		return ui;
+
 	}
 
 	private static devicesSizes iniPhone()

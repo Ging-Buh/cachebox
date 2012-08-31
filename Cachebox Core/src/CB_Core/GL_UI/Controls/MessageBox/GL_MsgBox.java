@@ -12,7 +12,7 @@ import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
@@ -72,7 +72,7 @@ public class GL_MsgBox extends Dialog
 
 	private static boolean ButtonClick(int button)
 	{
-		GL_Listener.glListener.closeDialog(that);
+		GL.that.closeDialog(that);
 		if (mMsgBoxClickListner != null) return mMsgBoxClickListner.onClick(button);
 		return false;
 	}
@@ -119,7 +119,7 @@ public class GL_MsgBox extends Dialog
 		label.setWrappedText(msg);
 		msgBox.addChild(label);
 		setButtonCaptions(msgBox, MessageBoxButtons.OK);
-		GL_Listener.glListener.showDialog(msgBox);
+		GL.that.showDialog(msgBox);
 		return msgBox;
 	}
 
@@ -158,7 +158,7 @@ public class GL_MsgBox extends Dialog
 		label.setWrappedText(msg);
 		msgBox.addChild(label);
 		setButtonCaptions(msgBox, buttons);
-		GL_Listener.glListener.showDialog(msgBox);
+		GL.that.showDialog(msgBox);
 		return msgBox;
 	}
 
@@ -187,7 +187,7 @@ public class GL_MsgBox extends Dialog
 		label.setWrappedText(msg);
 		msgBox.addChild(label);
 
-		GL_Listener.glListener.showDialog(msgBox);
+		GL.that.showDialog(msgBox);
 		return msgBox;
 	}
 
@@ -408,7 +408,7 @@ public class GL_MsgBox extends Dialog
 
 	public void close()
 	{
-		GL_Listener.glListener.closeDialog(that);
+		GL.that.closeDialog(that);
 	}
 
 	@Override

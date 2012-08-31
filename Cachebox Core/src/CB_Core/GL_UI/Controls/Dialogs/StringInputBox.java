@@ -5,7 +5,7 @@ import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 
@@ -64,7 +64,7 @@ public class StringInputBox extends GL_MsgBox
 
 		setButtonCaptions(msgBox, MessageBoxButtons.OKCancel);
 
-		GL_Listener.glListener.showDialog(msgBox, true);
+		GL.that.showDialog(msgBox, true);
 
 	}
 

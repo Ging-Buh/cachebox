@@ -9,7 +9,7 @@ import CB_Core.GL_UI.Views.splash;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Tab_GL_Listner extends GL_Listener
+public class Tab_GL_Listner extends GL
 {
 
 	public Tab_GL_Listner(int initalWidth, int initialHeight)

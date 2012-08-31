@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import CB_Core.Config;
 import CB_Core.Energy;
 import CB_Core.GlobalCore;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Locator.Locator;
 import CB_Core.Log.Logger;
 
@@ -84,7 +84,7 @@ public class PositionChangedEventList
 				}
 
 				// alle events abgearbeitet, jetzt kann die GL_View einmal Rendern
-				GL_Listener.glListener.renderOnce(null);
+				GL.that.renderOnce(null);
 
 				maxEventListTime = Math.max(maxEventListTime, System.currentTimeMillis() - thradStart);
 
@@ -137,7 +137,7 @@ public class PositionChangedEventList
 				}
 
 				// alle events abgearbeitet, jetzt kann die GL_View einmal Rendern
-				GL_Listener.glListener.renderOnce(null);
+				GL.that.renderOnce(null);
 
 				maxEventListTime = Math.max(maxEventListTime, System.currentTimeMillis() - thradStart);
 

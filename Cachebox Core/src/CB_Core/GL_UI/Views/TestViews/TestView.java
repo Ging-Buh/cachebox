@@ -8,10 +8,9 @@ import CB_Core.GL_UI.Activitys.SelectSolverFunction;
 import CB_Core.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
-import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Solver.Functions.Function;
@@ -45,7 +44,7 @@ public class TestView extends CB_View_Base
 
 		CB_RectF TextFieldRec = new CB_RectF(0, 150, UiSizes.getButtonWidth() * 6, UiSizes.getButtonHeight() * 3);
 
-		wrappedTextField = new CB_Core.GL_UI.Controls.EditWrapedTextField(this, TextFieldRec, EditTextField.getDefaultStyle(), "",
+		wrappedTextField = new CB_Core.GL_UI.Controls.EditWrapedTextField(this, TextFieldRec, EditWrapedTextField.getDefaultStyle(), "",
 				EditWrapedTextField.TextFieldType.MultiLineWraped);
 		wrappedTextField.setText(splashMsg);
 		// wrappedTextField.setText("");
@@ -60,7 +59,7 @@ public class TestView extends CB_View_Base
 		// CB_RectF TextFieldRec2 = new CB_RectF(0, this.height - (UiSizes.getButtonHeight() * 1.1f), UiSizes.getButtonWidth() * 7,
 		// UiSizes.getButtonHeight() * 1.1f);
 
-		textField = new EditWrapedTextField(this, TextFieldRec2, EditTextField.getDefaultStyle(), "Test",
+		textField = new EditWrapedTextField(this, TextFieldRec2, EditWrapedTextField.getDefaultStyle(), "Test",
 				EditWrapedTextField.TextFieldType.SingleLine);
 		this.addChild(textField);
 
@@ -106,11 +105,11 @@ public class TestView extends CB_View_Base
 
 						if (function != null)
 						{
-							GL_Listener.glListener.Toast("Returned Function :" + function.getShortcut());
+							GL.that.Toast("Returned Function :" + function.getShortcut());
 						}
 						else
 						{
-							GL_Listener.glListener.Toast("Keine Funktion ausgewählt");
+							GL.that.Toast("Keine Funktion ausgewählt");
 						}
 
 					}
@@ -189,7 +188,7 @@ public class TestView extends CB_View_Base
 	private void requestLayout()
 	{
 
-		GL_Listener.glListener.renderOnce(this.getName() + " requestLayout");
+		GL.that.renderOnce(this.getName() + " requestLayout");
 	}
 
 	@Override

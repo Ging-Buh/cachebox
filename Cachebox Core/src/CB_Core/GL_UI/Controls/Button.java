@@ -22,7 +22,7 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -111,10 +111,10 @@ public class Button extends CB_View_Base
 	{
 		if (dragableButton)
 		{
-			if (isPressed && !GL_Listener.isTouchDown())
+			if (isPressed && !GL.getIsTouchDown())
 			{
 				isPressed = false;
-				GL_Listener.glListener.renderOnce(this.getName() + " Dragged");
+				GL.that.renderOnce(this.getName() + " Dragged");
 			}
 		}
 
@@ -127,7 +127,7 @@ public class Button extends CB_View_Base
 			else
 			{
 				Initial();
-				GL_Listener.glListener.renderOnce(this.getName() + " render");
+				GL.that.renderOnce(this.getName() + " render");
 			}
 		}
 		else if (isPressed)
@@ -153,7 +153,7 @@ public class Button extends CB_View_Base
 		if (!isDisabled)
 		{
 			isPressed = true;
-			GL_Listener.glListener.renderOnce(this.getName() + " touchDown");
+			GL.that.renderOnce(this.getName() + " touchDown");
 		}
 		return dragableButton ? false : true;
 	}
@@ -162,7 +162,7 @@ public class Button extends CB_View_Base
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 		isPressed = false;
-		GL_Listener.glListener.renderOnce(this.getName() + " Dragged");
+		GL.that.renderOnce(this.getName() + " Dragged");
 		return false;
 	}
 
@@ -171,7 +171,7 @@ public class Button extends CB_View_Base
 	{
 
 		isPressed = false;
-		GL_Listener.glListener.renderOnce(this.getName() + " touchUp");
+		GL.that.renderOnce(this.getName() + " touchUp");
 		return dragableButton ? false : true;
 	}
 
@@ -219,7 +219,7 @@ public class Button extends CB_View_Base
 			}
 
 			lblTxt = null;
-			GL_Listener.glListener.renderOnce(this.getName() + " setText");
+			GL.that.renderOnce(this.getName() + " setText");
 			return;
 		}
 
@@ -250,7 +250,7 @@ public class Button extends CB_View_Base
 		}
 
 		lblTxt.setText(Text);
-		GL_Listener.glListener.renderOnce(this.getName() + " setText2");
+		GL.that.renderOnce(this.getName() + " setText2");
 	}
 
 	@Override

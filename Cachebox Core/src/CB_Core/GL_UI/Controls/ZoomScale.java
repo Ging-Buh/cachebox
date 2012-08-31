@@ -9,7 +9,7 @@ import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 
@@ -259,7 +259,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 			@Override
 			public void run()
 			{
-				GL_Listener.glListener.addRenderView(THIS, GL_Listener.FRAME_RATE_ACTION);
+				GL.that.addRenderView(THIS, GL.FRAME_RATE_ACTION);
 				cancelTimerToFadeOut();
 			}
 		};
@@ -291,7 +291,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 					FadeValue = 0f;
 					fadeOut = false;
 					this.setVisibility(INVISIBLE);
-					GL_Listener.glListener.removeRenderView(this);
+					GL.that.removeRenderView(this);
 				}
 				timeLastAction = new Date();
 			}
@@ -307,7 +307,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 					// Log.d("CACHEBOX", "Ende Fade In");
 					FadeValue = 1f;
 					fadeIn = false;
-					GL_Listener.glListener.removeRenderView(this);
+					GL.that.removeRenderView(this);
 				}
 				timeLastAction = new Date();
 			}

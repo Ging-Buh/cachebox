@@ -5,7 +5,7 @@ import CB_Core.UnitFormatter;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Types.Coordinate;
@@ -33,7 +33,7 @@ public class MapInfoPanel extends CB_View_Base
 				aktCoord = Coord;
 				lblLatitude.setText(GlobalCore.FormatLatitudeDM(Coord.Latitude));
 				lblLongitude.setText(GlobalCore.FormatLongitudeDM(Coord.Longitude));
-				GL_Listener.glListener.renderOnce(this.getName() + " setCoord");
+				GL.that.renderOnce(this.getName() + " setCoord");
 			}
 
 		}
@@ -58,7 +58,7 @@ public class MapInfoPanel extends CB_View_Base
 		if (distance == -1) lblDistance.setText("?");
 		else
 			lblDistance.setText(UnitFormatter.DistanceString(distance));
-		GL_Listener.glListener.renderOnce(this.getName() + " setDistance");
+		GL.that.renderOnce(this.getName() + " setDistance");
 	}
 
 	private float aktBearing = 0;
@@ -70,7 +70,7 @@ public class MapInfoPanel extends CB_View_Base
 		if (arrow != null)
 		{
 			arrow.setRotate(-Bearing);
-			GL_Listener.glListener.renderOnce(this.getName() + " setBearing");
+			GL.that.renderOnce(this.getName() + " setBearing");
 		}
 	}
 

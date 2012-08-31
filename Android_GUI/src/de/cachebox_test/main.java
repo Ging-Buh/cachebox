@@ -57,8 +57,8 @@ import CB_Core.GL_UI.ViewID.UI_Type;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
-import CB_Core.GL_UI.GL_Listener.GL_Listener.renderStartet;
+import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.GL_UI.GL_Listener.GL.renderStartet;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Locator.Locator;
@@ -227,7 +227,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	 */
 	private View gdxView = null;
 
-	private GL_Listener glListener = null;
+	private GL glListener = null;
 
 	public static LinearLayout strengthLayout;
 
@@ -824,7 +824,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (keyCode == KeyEvent.KEYCODE_BACK)
 		{
-			if (!GL_Listener.glListener.keyBackCliced()) TabMainView.actionClose.Execute();
+			if (!GL.that.keyBackCliced()) TabMainView.actionClose.Execute();
 
 			return true;
 		}
@@ -1132,7 +1132,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		pWaitD = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("waitForGL"), "", MessageBoxButtons.NOTHING, MessageBoxIcon.None,
 				null);
 		stopped = false;
-		GL_Listener.glListener.registerRenderStartetListner(new renderStartet()
+		GL.that.registerRenderStartetListner(new renderStartet()
 		{
 
 			@Override

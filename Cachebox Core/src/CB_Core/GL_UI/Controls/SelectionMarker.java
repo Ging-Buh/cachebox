@@ -2,7 +2,9 @@ package CB_Core.GL_UI.Controls;
 
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Map.Point;
+import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -14,7 +16,7 @@ public class SelectionMarker extends CB_View_Base
 		Center, Left, Right
 	}
 
-	protected EditWrapedTextField textField;
+	// protected EditWrapedTextField textField;
 	protected Type type;
 	protected Drawable marker;
 	// Breite des Markers
@@ -22,9 +24,15 @@ public class SelectionMarker extends CB_View_Base
 	// X-Position des Einfügepunktes des Markers relativ zur linke Seite
 	protected float markerXPos;
 
-	public SelectionMarker(EditWrapedTextField textField, float X, float Y, float Height, Type type)
+	public SelectionMarker(Type type)
 	{
-		super(X, Y, Height, Height, "");
+
+		super(0, 0, 10, 10, "");
+
+		float Height = UiSizes.getButtonHeight() / 2;
+
+		this.setSize(Height, Height);
+
 		this.type = type;
 		Initial();
 		// Orginalgröße des Marker-Sprites
@@ -46,7 +54,7 @@ public class SelectionMarker extends CB_View_Base
 			break;
 		}
 		this.setWidth(Width);
-		this.textField = textField;
+
 	}
 
 	@Override
@@ -108,7 +116,7 @@ public class SelectionMarker extends CB_View_Base
 			// neue gewünschte Koordinaten am Einfügepunkt des Markers
 			newX = newX + markerXPos;
 			newY = newY + height;
-			Point cursorPos = textField.GetNextCursorPos(new Point((int) newX, (int) newY), type, true);
+			Point cursorPos = GL.that.getKeyboardFocus().GetNextCursorPos(new Point((int) newX, (int) newY), type, true);
 			if (cursorPos != null)
 			{
 				// System.out.println("x=" + x + " - aktX=" + this.getX() + " - touchX=" + touchDownPos.x);
@@ -134,7 +142,7 @@ public class SelectionMarker extends CB_View_Base
 			// neue gewünschte Koordinaten am Einfügepunkt des Markers
 			newX = newX + markerXPos;
 			newY = newY + height;
-			Point cursorPos = textField.GetNextCursorPos(new Point((int) newX, (int) newY), type, true);
+			Point cursorPos = GL.that.getKeyboardFocus().GetNextCursorPos(new Point((int) newX, (int) newY), type, true);
 			touchDownPos = null;
 		}
 		return true;

@@ -9,7 +9,7 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.Gdx;
@@ -99,7 +99,7 @@ public abstract class ListViewBase extends CB_View_Base
 	{
 		mEmptyMsg = Msg;
 		emptyMsg = null;
-		GL_Listener.glListener.renderOnce("ListView.setEmptyMsg");
+		GL.that.renderOnce("ListView.setEmptyMsg");
 	}
 
 	/**
@@ -175,7 +175,7 @@ public abstract class ListViewBase extends CB_View_Base
 		// Position setzen, damit die items neu geladen werden
 		setListPos(mPos, false);
 
-		GL_Listener.glListener.renderOnce("");
+		GL.that.renderOnce("");
 
 	}
 
@@ -206,7 +206,7 @@ public abstract class ListViewBase extends CB_View_Base
 		mMustSetPosValue = value;
 		mMustSetPos = true;
 		mMustSetPosKinetic = Kinetic;
-		GL_Listener.glListener.renderOnce(this.getName() + " setListPos");
+		GL.that.renderOnce(this.getName() + " setListPos");
 	}
 
 	protected abstract void RenderThreadSetPos(float value, boolean Kinetic);
@@ -478,7 +478,7 @@ public abstract class ListViewBase extends CB_View_Base
 					reloadItems();
 				}
 			}
-			GL_Listener.glListener.renderOnce(this.getName() + " setListPos");
+			GL.that.renderOnce(this.getName() + " setListPos");
 
 		}
 

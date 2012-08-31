@@ -3,7 +3,7 @@ package CB_Core.GL_UI.Activitys.FilterSettings;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.Activitys.FilterSettings.PresetListView.PresetEntry;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -51,7 +51,7 @@ public class PresetListViewItem extends ListViewItemBackground
 
 		if (isPressed)
 		{
-			isPressed = GL_Listener.isTouchDown();
+			isPressed = GL.getIsTouchDown();
 		}
 
 		// initial

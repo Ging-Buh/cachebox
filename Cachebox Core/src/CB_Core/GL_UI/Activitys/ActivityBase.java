@@ -5,7 +5,7 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Dialog;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -68,19 +68,19 @@ public class ActivityBase extends Dialog
 
 	protected void finish()
 	{
-		GL_Listener.glListener.closeActivity();
+		GL.that.closeActivity();
 	}
 
 	@Override
 	public void onShow()
 	{
 		// register for TextField render, the most Activitys have an Textfield
-		GL_Listener.glListener.addRenderView(this, GL_Listener.FRAME_RATE_TEXT_FIELD);
+		GL.that.addRenderView(this, GL.FRAME_RATE_TEXT_FIELD);
 	}
 
 	public void show()
 	{
-		GL_Listener.glListener.showActivity(this);
+		GL.that.showActivity(this);
 	}
 
 	public static CB_RectF ActivityRec()

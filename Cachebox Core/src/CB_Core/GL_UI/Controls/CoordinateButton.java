@@ -4,7 +4,7 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.EditCoord;
 import CB_Core.GL_UI.Activitys.EditCoord.ReturnListner;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Types.Coordinate;
 
@@ -79,7 +79,7 @@ public class CoordinateButton extends Button
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
 			if (edCo == null) initialEdCo();
-			GL_Listener.glListener.showActivity(edCo);
+			GL.that.showActivity(edCo);
 
 			return true;
 		}

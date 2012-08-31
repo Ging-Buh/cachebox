@@ -15,7 +15,7 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -199,7 +199,7 @@ public class PresetListView extends V_ListView
 				{
 					final int delItemIndex = ((PresetListViewItem) v).getIndex();
 
-					GL_Listener.glListener.closeActivity();
+					GL.that.closeActivity();
 					GL_MsgBox.Show(GlobalCore.Translations.Get("?DelUserPreset"), GlobalCore.Translations.Get("DelUserPreset"),
 							MessageBoxButtons.YesNo, MessageBoxIcon.Question, new OnMsgBoxClickListener()
 							{

@@ -15,7 +15,7 @@ import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Activitys.FilterSettings.PresetListViewItem;
 import CB_Core.GL_UI.Controls.Slider;
 import CB_Core.GL_UI.Controls.Dialogs.Toast;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_Action_RecTrack;
@@ -130,7 +130,7 @@ public class TabMainView extends MainViewBase
 		super(X, Y, Width, Height, Name);
 
 		that = (TabMainView) (mainView = this);
-		GL_Listener.glListener.addRenderView(this, GL_Listener.FRAME_RATE_IDLE);
+		GL.that.addRenderView(this, GL.FRAME_RATE_IDLE);
 	}
 
 	@Override
@@ -223,7 +223,7 @@ public class TabMainView extends MainViewBase
 
 		platformConector.FirstShow();
 		filterSetChanged();
-		GL_Listener.glListener.removeRenderView(this);
+		GL.that.removeRenderView(this);
 	}
 
 	private void addPhoneTab()
@@ -552,13 +552,13 @@ public class TabMainView extends MainViewBase
 
 	public void switchDayNight()
 	{
-		GL_Listener.glListener.StopRender();
+		GL.that.StopRender();
 		Config.changeDayNight();
 		ManagerBase.RenderThemeChanged = true;
-		GL_Listener.glListener.onStop();
+		GL.that.onStop();
 
 		SpriteCache.LoadSprites(true);
-		GL_Listener.glListener.onStart();
+		GL.that.onStart();
 		CallSkinChanged();
 
 		this.removeChilds();
@@ -574,7 +574,7 @@ public class TabMainView extends MainViewBase
 
 		String state = Config.settings.nightMode.getValue() ? "Night" : "Day";
 
-		GL_Listener.glListener.Toast("Switch to " + state, Toast.LENGTH_SHORT);
+		GL.that.Toast("Switch to " + state, Toast.LENGTH_SHORT);
 
 		platformConector.DayNightSwitched();
 
@@ -588,7 +588,7 @@ public class TabMainView extends MainViewBase
 				}
 			}
 		}
-		GL_Listener.glListener.RestartRender();
+		GL.that.RestartRender();
 	}
 
 	public void filterSetChanged()

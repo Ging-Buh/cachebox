@@ -10,7 +10,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.SelectDB;
 import CB_Core.GL_UI.Activitys.SelectDB.ReturnListner;
 import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Types.Cache;
@@ -43,7 +43,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 	@Override
 	public void Execute()
 	{
-		selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL_Listener.glListener.getWidth(), GL_Listener.glListener.getHeight()),
+		selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL.that.getWidth(), GL.that.getHeight()),
 				"SelectDbDialog", false);
 		selectDBDialog.setReturnListner(new ReturnListner()
 		{
@@ -61,7 +61,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 
 	private void returnFromSelectDB()
 	{
-		GL_Listener.glListener.closeActivity();
+		GL.that.closeActivity();
 		wd = WaitDialog.ShowWait("Load DB ...");
 
 		Thread thread = new Thread(new Runnable()
@@ -72,7 +72,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 			{
 				synchronized (Database.Data.Query)
 				{
-					GL_Listener.glListener.showDialog(wd);
+					GL.that.showDialog(wd);
 					Config.settings.ReadFromDB();
 
 					GlobalCore.Categories = new Categories();

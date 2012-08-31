@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import CB_Core.GL_UI.GL_View_Base;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 
 public class V_ListView extends ListViewBase
@@ -169,7 +169,7 @@ public class V_ListView extends ListViewBase
 				}
 
 				// RenderRequest
-				GL_Listener.glListener.renderOnce(this.getName() + " addVisibleItems");
+				GL.that.renderOnce(this.getName() + " addVisibleItems");
 
 				if (selectionchanged)
 				{
@@ -253,7 +253,7 @@ public class V_ListView extends ListViewBase
 		{
 			if (sollPos - (firstItemSize * 3) > 0 || sollPos + (lastItemSize * 3) < mcalcAllSizeBase)
 			{
-				if (KineticPan) GL_Listener.glListener.StopKinetic(x, y, pointer, true);
+				if (KineticPan) GL.that.StopKinetic(x, y, pointer, true);
 				return true;
 			}
 

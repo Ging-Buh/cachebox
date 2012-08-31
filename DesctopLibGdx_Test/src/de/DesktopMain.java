@@ -23,21 +23,23 @@ import CB_Core.Events.platformConector.IgetFileReturnListner;
 import CB_Core.Events.platformConector.IgetFolderListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.GL_UI.GL_View_Base;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Locator.GpsStatus;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import de.Map.DesctopManager;
 
 public class DesktopMain
 {
 
-	static GL_Listener CB_UI;
+	static GL CB_UI;
 
 	public static void start(devicesSizes ui, boolean debug, boolean scissor, final boolean simulate, final Frame frame)
 	{
@@ -78,7 +80,21 @@ public class DesktopMain
 		GlobalCore.isTab = sw > 400 ? true : false;
 
 		UiSizes.initial(ui);
-		new LwjglApplication(CB_UI, "Game", ui.Window.width, ui.Window.height, false);
+
+		// TODO Activate Full Screen
+		if (false)
+		{
+			LwjglApplicationConfiguration lwjglAppCfg = new LwjglApplicationConfiguration();
+			DisplayMode dispMode = LwjglApplicationConfiguration.getDesktopDisplayMode();
+			lwjglAppCfg.setFromDisplayMode(dispMode);
+			lwjglAppCfg.fullscreen = true;
+
+			new LwjglApplication(CB_UI, lwjglAppCfg);
+		}
+		else
+		{
+			new LwjglApplication(CB_UI, "Game", ui.Window.width, ui.Window.height, false);
+		}
 
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask()

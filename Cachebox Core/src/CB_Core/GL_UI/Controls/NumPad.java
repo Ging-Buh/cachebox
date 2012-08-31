@@ -298,10 +298,10 @@ public class NumPad extends CB_View_Base
 
 	// ######## Register TextFields
 
-	private ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
-	private EditTextField focusedTextField = null;
+	private ArrayList<EditWrapedTextField> allTextFields = new ArrayList<EditWrapedTextField>();
+	private EditWrapedTextField focusedTextField = null;
 
-	public void registerTextField(final EditTextField textField)
+	public void registerTextField(final EditWrapedTextField textField)
 	{
 		textField.setOnscreenKeyboard(new OnscreenKeyboard()
 		{
@@ -309,7 +309,7 @@ public class NumPad extends CB_View_Base
 			public void show(boolean arg0)
 			{
 
-				for (EditTextField tmp : allTextFields)
+				for (EditWrapedTextField tmp : allTextFields)
 				{
 					tmp.resetFocus();
 				}

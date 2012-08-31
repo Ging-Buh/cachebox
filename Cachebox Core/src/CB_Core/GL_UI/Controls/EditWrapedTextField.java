@@ -6,7 +6,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 
@@ -76,15 +76,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 	final Lock displayTextLock = new ReentrantLock();
 
 	protected TextFieldType type = TextFieldType.SingleLine;
-
-	protected SelectionMarker selectionMarkerCenter = null;
-	protected SelectionMarker selectionMarkerLeft = null;
-	protected SelectionMarker selectionMarkerRight = null;
-
-	/**
-	 * true wenn ein Marker angezeigt wird. Beim verlust des Focuses, werden dann alle Marker ausgeblendet!
-	 */
-	protected boolean markerIsShohing = false;
 
 	public EditWrapedTextField(CB_View_Base parent, CB_RectF rec, String Name)
 	{
@@ -247,7 +238,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 			float bgRightWidth = 0;
 			float bgTopHeight = 0;
 			float bgBottomHeight = 0;
-			boolean focused = GL_Listener.hasFocus(this);
+			boolean focused = GL.that.hasFocus(this);
 
 			if (focused)
 			{
@@ -262,8 +253,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 			}
 			else
 			{
-				// Marker ausblenden, wenn das TextField kein Focus mehr hat!
-				if (markerIsShohing) hideSelectionMarker();
 
 				if (style.background != null)
 				{
@@ -743,7 +732,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 			}
 			moveSelectionMarkers((oldLeftPos - leftPos), (topLine - oldTopLine) * lineHeight);
 		}
-		GL_Listener.glListener.renderOnce("EditWrapedTextField");
+		GL.that.renderOnce("EditWrapedTextField");
 		return true;
 	};
 
@@ -805,7 +794,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 	public boolean click(int X, int Y, int pointer, int button)
 	{
 		if (pointer != 0) return false;
-		GL_Listener.setKeyboardFocus(this);
+		GL.that.setKeyboardFocus(this);
 		keyboard.show(true);
 		clearSelection();
 		cursorOn = false;
@@ -815,7 +804,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 		cursor.pos = newCursor.pos;
 		setCursorLine(newCursor.line, true);
-		GL_Listener.glListener.renderOnce("EditWrapedTextField");
+		GL.that.renderOnce("EditWrapedTextField");
 		showSelectionMarker(SelectionMarker.Type.Center);
 		return true;
 	}
@@ -874,67 +863,41 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	protected void showSelectionMarker(SelectionMarker.Type type, Cursor tmpCursor)
 	{
+
+		GL.that.showMarker(type);
+
 		switch (type)
 		{
 		case Center:
-			if (selectionMarkerCenter == null)
-			{
-				selectionMarkerCenter = new SelectionMarker(this, 0, 0, (int) (lineHeight * markerFactor), type);
-				parent.addChild(selectionMarkerCenter);
-			}
-			selectionMarkerCenter.moveTo(getX() + getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getY()
+
+			GL.that.selectionMarkerCenterMoveTo(getX() + getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getY()
 					+ getCursorY(tmpCursor.line));
 			break;
 		case Left:
-			if (selectionMarkerLeft == null)
-			{
-				selectionMarkerLeft = new SelectionMarker(this, 0, 0, (int) (lineHeight * markerFactor), type);
-				parent.addChild(selectionMarkerLeft);
-			}
-			selectionMarkerLeft
-					.moveTo(getX() + getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getY() + getCursorY(tmpCursor.line));
+
+			GL.that.selectionMarkerLeftMoveTo(getX() + getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getY()
+					+ getCursorY(tmpCursor.line));
 			break;
 		case Right:
-			if (selectionMarkerRight == null)
-			{
-				selectionMarkerRight = new SelectionMarker(this, 0, 0, (int) (lineHeight * markerFactor), type);
-				parent.addChild(selectionMarkerRight);
-			}
-			selectionMarkerRight.moveTo(getX() + getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getY()
+
+			GL.that.selectionMarkerRightMoveTo(getX() + getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getY()
 					+ getCursorY(tmpCursor.line));
 			break;
 		}
 
-		markerIsShohing = true;
 	}
 
 	private void moveSelectionMarkers(float dx, float dy)
 	{
-		if (selectionMarkerCenter != null)
+		if (GL.that.selectionMarkerCenterisShown())
 		{
-			selectionMarkerCenter.moveBy(dx, dy);
+			GL.that.selectionMarkerCenterMoveBy(dx, dy);
 		}
 	}
 
 	protected void hideSelectionMarker()
 	{
-		if (selectionMarkerCenter != null)
-		{
-			parent.removeChild(selectionMarkerCenter);
-			selectionMarkerCenter = null;
-		}
-		if (selectionMarkerLeft != null)
-		{
-			parent.removeChild(selectionMarkerLeft);
-			selectionMarkerLeft = null;
-		}
-		if (selectionMarkerRight != null)
-		{
-			parent.removeChild(selectionMarkerRight);
-			selectionMarkerRight = null;
-		}
-
-		markerIsShohing = false;
+		GL.that.hideMarker();
 	}
 
 	public void moveSelectionMarker(SelectionMarker.Type type, int newCursor, int newCursorLine)
@@ -1031,7 +994,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		try
 		{
 
-			if (GL_Listener.hasFocus(this))
+			if (GL.that.hasFocus(this))
 			{
 				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))
 				{
@@ -1136,7 +1099,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						clearSelection();
 					}
 				}
-				GL_Listener.glListener.renderOnce("EditWrapedTextField");
+				GL.that.renderOnce("EditWrapedTextField");
 
 				return true;
 			}
@@ -1436,7 +1399,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		DisplayText dt = getAktDisplayText();
 		if (dt == null || disabled) return false;
 
-		if (GL_Listener.hasFocus(this))
+		if (GL.that.hasFocus(this))
 		{
 			if (character == BACKSPACE)
 			{
@@ -1454,7 +1417,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						updateDisplayText(dt, true);
 						cursor.pos--;
 						checkCursorVisible(true);
-						GL_Listener.glListener.renderOnce("EditWrapedTextField");
+						GL.that.renderOnce("EditWrapedTextField");
 						return true;
 					}
 					else
@@ -1472,7 +1435,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 							int lineCount = displayText.size();
 							if (listener != null) listener.lineCountChanged(this, lineCount, lineHeight * lineCount);
 						}
-						GL_Listener.glListener.renderOnce("EditWrapedTextField");
+						GL.that.renderOnce("EditWrapedTextField");
 						return true;
 					}
 				}
@@ -1491,7 +1454,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						dt.displayText = dt.displayText.substring(0, cursor.pos)
 								+ dt.displayText.substring(cursor.pos + 1, dt.displayText.length());
 						updateDisplayText(dt, true);
-						GL_Listener.glListener.renderOnce("EditWrapedTextField");
+						GL.that.renderOnce("EditWrapedTextField");
 						return true;
 					}
 					else
@@ -1504,7 +1467,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 							displayText.remove(dt2);
 							dt.displayText += dt2.displayText;
 							updateDisplayText(dt, true);
-							GL_Listener.glListener.renderOnce("EditWrapedTextField");
+							GL.that.renderOnce("EditWrapedTextField");
 						}
 						return true;
 					}
@@ -1588,7 +1551,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				// checkCursorVisible(true);
 				// clearSelection();
 				// }
-				GL_Listener.glListener.renderOnce("EditWrapedTextField");
+				GL.that.renderOnce("EditWrapedTextField");
 			}
 			if (listener != null) listener.keyTyped(this, character);
 			return true;
@@ -1839,6 +1802,30 @@ public class EditWrapedTextField extends EditTextFieldBase
 	public BitmapFont getFont()
 	{
 		return style.font;
+	}
+
+	public void setFocus()
+	{
+		setFocus(true);
+	}
+
+	public void setFocus(boolean value)
+	{
+		hasFocus = value;
+		if (value == true) GL.that.setKeyboardFocus(this);
+		else
+		{
+			if (GL.that.getKeyboardFocus() == this) GL.that.setKeyboardFocus(null);
+		}
+		GL.that.renderForTextField(this);
+
+	}
+
+	public void resetFocus()
+	{
+		hasFocus = false;
+		GL.that.setKeyboardFocus(null);
+
 	}
 
 }

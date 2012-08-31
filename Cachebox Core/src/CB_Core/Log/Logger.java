@@ -110,10 +110,13 @@ public class Logger
 	public static void Error(String Name, String Msg, Exception e)
 	{
 		String Ex = "";
-		if (e != null && e.getMessage() != null) Ex = "Ex = [" + e.getMessage() + "]";
-		else if (e != null && e.getLocalizedMessage() != null) Ex = "Ex = [" + e.getLocalizedMessage() + "]";
-		else
-			Ex = "Ex = [" + e.toString() + "]";
+		if (e != null)
+		{
+			if (e != null && e.getMessage() != null) Ex = "Ex = [" + e.getMessage() + "]";
+			else if (e != null && e.getLocalizedMessage() != null) Ex = "Ex = [" + e.getLocalizedMessage() + "]";
+			else
+				Ex = "Ex = [" + e.toString() + "]";
+		}
 
 		String Short = "[ERR]" + Name + " [" + Msg + "] ";
 		Msg = "[ERROR]- at " + Name + "- [" + Msg + "] " + Ex;

@@ -8,7 +8,7 @@ import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.NumPad;
 import CB_Core.GL_UI.Controls.NumPad.keyEventListner;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 
@@ -83,8 +83,8 @@ public class NumerikInputBox extends GL_MsgBox
 		msgBox.addFooterChild(numPad);
 		msgBox.mFooterHeight = numPad.getHeight() + (margin * 2);
 
-		GL_Listener.glListener.showDialog(msgBox);
-		GL_Listener.glListener.addRenderView(msgBox, GL_Listener.FRAME_RATE_IDLE);// Cursor blink
+		GL.that.showDialog(msgBox);
+		GL.that.addRenderView(msgBox, GL.FRAME_RATE_IDLE);// Cursor blink
 
 		return msgBox;
 	}
@@ -145,8 +145,8 @@ public class NumerikInputBox extends GL_MsgBox
 		msgBox.addFooterChild(numPad);
 		msgBox.mFooterHeight = numPad.getHeight() + (margin * 2);
 
-		GL_Listener.glListener.showDialog(msgBox);
-		GL_Listener.glListener.addRenderView(msgBox, GL_Listener.FRAME_RATE_IDLE);// Cursor blink
+		GL.that.showDialog(msgBox);
+		GL.that.addRenderView(msgBox, GL.FRAME_RATE_IDLE);// Cursor blink
 
 		return msgBox;
 	}
@@ -220,11 +220,11 @@ public class NumerikInputBox extends GL_MsgBox
 
 				if (ParseError)
 				{
-					GL_Listener.glListener.Toast(GlobalCore.Translations.Get("wrongValueEnterd"));
+					GL.that.Toast(GlobalCore.Translations.Get("wrongValueEnterd"));
 				}
 				else
 				{
-					GL_Listener.glListener.closeDialog(that);
+					GL.that.closeDialog(that);
 				}
 
 			}
@@ -245,7 +245,7 @@ public class NumerikInputBox extends GL_MsgBox
 					}
 				}
 
-				GL_Listener.glListener.closeDialog(that);
+				GL.that.closeDialog(that);
 			}
 			else if (value.equals("<"))
 			{

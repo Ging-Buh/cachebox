@@ -35,7 +35,7 @@ import CB_Core.GL_UI.Controls.chkBox.OnCheckedChangeListener;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
@@ -728,7 +728,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 				EditFilterSettings.ApplyFilter(props);
 
-				GL_Listener.glListener.Toast(Msg, 3000);
+				GL.that.Toast(Msg, 3000);
 
 			}
 		};
@@ -815,7 +815,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 					rotateAngle += 5;
 					if (rotateAngle > 360) rotateAngle = 0;
 					iconImage.setRotate(rotateAngle);
-					GL_Listener.glListener.renderOnce("WaitRotateAni");
+					GL.that.renderOnce("WaitRotateAni");
 				}
 			}
 		};

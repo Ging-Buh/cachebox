@@ -1,7 +1,7 @@
 package CB_Core.Events;
 
 import CB_Core.GL_UI.ViewID;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Locator.GpsStatus;
 
 public class platformConector
@@ -35,7 +35,7 @@ public class platformConector
 	{
 		if (showViewListner != null)
 		{
-			GL_Listener.glListener.clearRenderViews();
+			GL.that.clearRenderViews();
 			showViewListner.show(viewID, (int) x, (int) y, (int) width, (int) height);
 		}
 	}
@@ -68,7 +68,7 @@ public class platformConector
 	{
 		if (showViewListner != null)
 		{
-			GL_Listener.glListener.clearRenderViews();
+			GL.that.clearRenderViews();
 			showViewListner.showForDialog();
 		}
 	}

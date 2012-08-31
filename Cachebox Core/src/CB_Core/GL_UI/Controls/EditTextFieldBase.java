@@ -9,7 +9,7 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.PopUps.CopiePastePopUp;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -67,7 +67,7 @@ public abstract class EditTextFieldBase extends CB_View_Base
 			public void run()
 			{
 				cursorOn = !cursorOn;
-				GL_Listener.glListener.renderOnce("TextFieldBase: CursorBlink");
+				GL.that.renderOnce("TextFieldBase: CursorBlink");
 			}
 		};
 		blinkTimer.scheduleAtFixedRate(blinkTimerTask, 0, blinkTime);
@@ -235,30 +235,6 @@ public abstract class EditTextFieldBase extends CB_View_Base
 	}
 
 	boolean hasFocus = false;
-
-	public void setFocus()
-	{
-		setFocus(true);
-	}
-
-	public void setFocus(boolean value)
-	{
-		hasFocus = value;
-		if (value == true) GL_Listener.setKeyboardFocus(this);
-		else
-		{
-			if (GL_Listener.getKeyboardFocus() == this) GL_Listener.setKeyboardFocus(null);
-		}
-		GL_Listener.glListener.renderForTextField(this);
-
-	}
-
-	public void resetFocus()
-	{
-		hasFocus = false;
-		GL_Listener.setKeyboardFocus(null);
-
-	}
 
 	/** Default is an instance of {@link DefaultOnscreenKeyboard}. */
 	public OnscreenKeyboard getOnscreenKeyboard()

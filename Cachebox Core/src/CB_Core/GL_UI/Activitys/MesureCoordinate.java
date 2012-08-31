@@ -7,7 +7,7 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.SatBarChart;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Locator.Locator;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
@@ -154,7 +154,7 @@ public class MesureCoordinate extends ActivityBase implements PositionChangedEve
 		chart.dispose();
 		chart = null;
 		drawing = null;
-		GL_Listener.glListener.removeRenderView(this);
+		GL.that.removeRenderView(this);
 		super.finish();
 	}
 
@@ -164,7 +164,7 @@ public class MesureCoordinate extends ActivityBase implements PositionChangedEve
 	protected void Initial()
 	{
 		repaintPreview();
-		GL_Listener.glListener.addRenderView(this, GL_Listener.FRAME_RATE_TEXT_FIELD);
+		GL.that.addRenderView(this, GL.FRAME_RATE_TEXT_FIELD);
 	}
 
 	@Override
@@ -181,7 +181,7 @@ public class MesureCoordinate extends ActivityBase implements PositionChangedEve
 
 	private void repaintPreview()
 	{
-		GL_Listener.glListener.addRenderView(this, GL_Listener.FRAME_RATE_TEXT_FIELD);
+		GL.that.addRenderView(this, GL.FRAME_RATE_TEXT_FIELD);
 		if (inRepaint) return;
 		inRepaint = true;
 
@@ -280,7 +280,7 @@ public class MesureCoordinate extends ActivityBase implements PositionChangedEve
 
 		redraw = false;
 
-		GL_Listener.glListener.renderOnce("MesureCoord");
+		GL.that.renderOnce("MesureCoord");
 	}
 
 	@Override
@@ -288,7 +288,7 @@ public class MesureCoordinate extends ActivityBase implements PositionChangedEve
 	{
 		if (mMeasureList == null)
 		{
-			GL_Listener.glListener.Toast("MeasureList = null");
+			GL.that.Toast("MeasureList = null");
 			return;
 		}
 

@@ -3,7 +3,7 @@ package CB_Core.GL_UI.Controls;
 import CB_Core.Events.GpsStateChangeEvent;
 import CB_Core.Events.GpsStateChangeEventList;
 import CB_Core.GL_UI.CB_View_Base;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Locator.GPS;
 import CB_Core.Locator.GpsStatus;
 import CB_Core.Locator.GpsStrength;
@@ -126,7 +126,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 		drawing.flip(false, true);
 		p.dispose();
 		redraw = false;
-		GL_Listener.glListener.renderOnce("MesureCoord");
+		GL.that.renderOnce("MesureCoord");
 
 	}
 

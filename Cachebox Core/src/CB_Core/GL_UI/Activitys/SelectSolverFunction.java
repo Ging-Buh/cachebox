@@ -12,7 +12,7 @@ import CB_Core.GL_UI.Controls.LinearCollabseBox;
 import CB_Core.GL_UI.Controls.Linearlayout;
 import CB_Core.GL_UI.Controls.Linearlayout.LayoutChanged;
 import CB_Core.GL_UI.Controls.ScrollBox;
-import CB_Core.GL_UI.GL_Listener.GL_Listener;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Solver.Solver;
@@ -264,7 +264,7 @@ public class SelectSolverFunction extends ActivityBase
 								selectedFunction = fct;
 
 								// hier muss einmal gerendert werden, damit die Änderungen übernommen werden
-								GL_Listener.glListener.renderOnce("Function Select Changed");
+								GL.that.renderOnce("Function Select Changed");
 
 								return false;
 							}
