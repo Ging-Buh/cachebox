@@ -108,6 +108,13 @@ public class SelectionMarker extends CB_View_Base
 	{
 		if ((pointer == 0) && (touchDownPos != null) && (!KineticPan))
 		{
+			// Korrektur der Position
+			EditWrapedTextField tv = GL.that.getKeyboardFocus();
+			if (tv != null)
+			{
+				x -= tv.ThisWorldRec.getX();
+				y -= tv.ThisWorldRec.getY();
+			}
 			// SelectionMarker verschieben
 			// neue gewünschte Koordinaten rel. links unten
 			float newX = this.getX() + x - touchDownPos.x;
@@ -151,13 +158,20 @@ public class SelectionMarker extends CB_View_Base
 	// move absolute
 	public void moveTo(float x, float y)
 	{
+		EditWrapedTextField tv = GL.that.getKeyboardFocus();
+		if (tv != null)
+		{
+			x += tv.ThisWorldRec.getX();
+			y += tv.ThisWorldRec.getY();
+		}
+
 		float oldX = this.getX();
 		float oldY = this.getY();
 		this.setPos(x - markerXPos, y - height);
-		if (this.ThisWorldRec != null)
-		{
-			this.ThisWorldRec.offset(x - markerXPos - oldX, y - height - oldY);
-		}
+		// if (this.ThisWorldRec != null)
+		// {
+		// this.ThisWorldRec.offset(x - markerXPos - oldX, y - height - oldY);
+		// }
 	}
 
 	// move relative

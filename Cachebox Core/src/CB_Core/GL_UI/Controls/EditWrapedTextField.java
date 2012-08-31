@@ -870,18 +870,15 @@ public class EditWrapedTextField extends EditTextFieldBase
 		{
 		case Center:
 
-			GL.that.selectionMarkerCenterMoveTo(getX() + getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getY()
-					+ getCursorY(tmpCursor.line));
+			GL.that.selectionMarkerCenterMoveTo(getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getCursorY(tmpCursor.line));
 			break;
 		case Left:
 
-			GL.that.selectionMarkerLeftMoveTo(getX() + getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getY()
-					+ getCursorY(tmpCursor.line));
+			GL.that.selectionMarkerLeftMoveTo(getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getCursorY(tmpCursor.line));
 			break;
 		case Right:
 
-			GL.that.selectionMarkerRightMoveTo(getX() + getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getY()
-					+ getCursorY(tmpCursor.line));
+			GL.that.selectionMarkerRightMoveTo(getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getCursorY(tmpCursor.line));
 			break;
 		}
 
@@ -915,8 +912,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	public Point GetNextCursorPos(Point touch, SelectionMarker.Type type, boolean setCursor)
 	{
-		float x = touch.x - this.getX() - style.backgroundFocused.getLeftWidth() + leftPos;
-		float clickPos = touch.y - this.getY() + cursorHeight / 2;
+		float x = touch.x - style.backgroundFocused.getLeftWidth() + leftPos;
+		float clickPos = touch.y + cursorHeight / 2;
 		int clickedCursorLine = (int) ((this.height - style.font.getLineHeight() - clickPos + (lineHeight)) / lineHeight) - 1;
 		clickedCursorLine += topLine;
 		if (clickedCursorLine < 0) return null;
@@ -930,9 +927,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 			if (pos > x)
 			{
 				int tmpCursor = Math.max(0, i - 1);
-				Point result = new Point(
-						(int) (getX() + getCursorX(new Cursor(tmpCursor, clickedCursorLine)) + style.cursor.getMinWidth() / 2),
-						(int) (getY() + getCursorY(clickedCursorLine)));
+				Point result = new Point((int) (getCursorX(new Cursor(tmpCursor, clickedCursorLine)) + style.cursor.getMinWidth() / 2),
+						(int) (getCursorY(clickedCursorLine)));
 				if (setCursor)
 				{
 					switch (type)
@@ -959,8 +955,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 			}
 		}
 		int tmpCursor = Math.max(0, dt.glyphPositions.size - 1);
-		Point result = new Point((int) (getX() + getCursorX(new Cursor(tmpCursor, clickedCursorLine)) + style.cursor.getMinWidth() / 2),
-				(int) (getY() + getCursorY(clickedCursorLine)));
+		Point result = new Point((int) (getCursorX(new Cursor(tmpCursor, clickedCursorLine)) + style.cursor.getMinWidth() / 2),
+				(int) (getCursorY(clickedCursorLine)));
 		if (setCursor)
 		{
 			switch (type)
