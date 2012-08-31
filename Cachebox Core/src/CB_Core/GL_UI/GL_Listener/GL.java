@@ -980,6 +980,8 @@ public class GL implements ApplicationListener
 
 	public void showDialog(final CB_View_Base dialog, boolean atTop)
 	{
+		setKeyboardFocus(null);
+
 		if (dialog instanceof ActivityBase) throw new IllegalArgumentException(
 				"don´t show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
 
@@ -1046,6 +1048,7 @@ public class GL implements ApplicationListener
 
 	public void showActivity(final ActivityBase activity)
 	{
+		setKeyboardFocus(null);
 		clearRenderViews();
 		platformConector.showForDialog();
 
@@ -1271,7 +1274,7 @@ public class GL implements ApplicationListener
 	{
 		keyboardFocus = view;
 
-		if (keyboardFocus == null) hideMarker();
+		hideMarker();
 	}
 
 	public EditWrapedTextField getKeyboardFocus()
