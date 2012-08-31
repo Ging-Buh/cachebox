@@ -29,7 +29,7 @@ public class SelectionMarker extends CB_View_Base
 
 		super(0, 0, 10, 10, "");
 
-		float Height = UiSizes.getButtonHeight() / 2;
+		float Height = UiSizes.getButtonHeight();
 
 		this.setSize(Height, Height);
 

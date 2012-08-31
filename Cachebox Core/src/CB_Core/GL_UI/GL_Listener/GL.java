@@ -1342,4 +1342,24 @@ public class GL implements ApplicationListener
 		selectionMarkerCenter.moveBy(dx, dy);
 	}
 
+	public boolean selectionMarkerLeftisShown()
+	{
+		return selectionMarkerLeft.isVisible();
+	}
+
+	public void selectionMarkerLeftMoveBy(float dx, float dy)
+	{
+		selectionMarkerLeft.moveBy(dx, dy);
+	}
+
+	public boolean selectionMarkerRightisShown()
+	{
+		return selectionMarkerRight.isVisible();
+	}
+
+	public void selectionMarkerRightMoveBy(float dx, float dy)
+	{
+		selectionMarkerRight.moveBy(dx, dy);
+	}
+
 }

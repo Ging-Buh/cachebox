@@ -890,6 +890,14 @@ public class EditWrapedTextField extends EditTextFieldBase
 		{
 			GL.that.selectionMarkerCenterMoveBy(dx, dy);
 		}
+		if (GL.that.selectionMarkerLeftisShown())
+		{
+			GL.that.selectionMarkerLeftMoveBy(dx, dy);
+		}
+		if (GL.that.selectionMarkerRightisShown())
+		{
+			GL.that.selectionMarkerRightMoveBy(dx, dy);
+		}
 	}
 
 	protected void hideSelectionMarker()
