@@ -114,7 +114,7 @@ public class PocketQuery
 			}
 			catch (JSONException e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 		}
@@ -169,7 +169,7 @@ public class PocketQuery
 			}
 			catch (JSONException e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 		}
@@ -224,6 +224,10 @@ public class PocketQuery
 					fs.write(resultByte);
 					fs.close();
 
+					resultByte = null;
+					result = null;
+					System.gc();
+
 					return 0;
 				}
 				else
@@ -239,7 +243,7 @@ public class PocketQuery
 			}
 			catch (JSONException e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 		}
