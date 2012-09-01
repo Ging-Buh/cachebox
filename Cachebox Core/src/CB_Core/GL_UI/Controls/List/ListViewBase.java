@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Controls.List;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -128,9 +129,16 @@ public abstract class ListViewBase extends CB_View_Base
 		{
 			synchronized (childs)
 			{
-				for (GL_View_Base v : childs)
+				try
 				{
-					v.dispose();
+					for (GL_View_Base v : childs)
+					{
+						v.dispose();
+					}
+				}
+				catch (ConcurrentModificationException e)
+				{
+					// Dann Disposen wir halt nicht, dann muss der GC ran!
 				}
 			}
 		}
