@@ -16,6 +16,7 @@ import CB_Core.GL_UI.Controls.EditTextFieldBase.DefaultOnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Spinner;
 import CB_Core.GL_UI.Controls.Spinner.selectionChangedListner;
@@ -291,7 +292,7 @@ public class EditWaypoint extends ActivityBase
 	private void iniTitleTextDesc()
 	{
 		CB_RectF rec = new CB_RectF(Left, tvDescription.getY() - UiSizes.getButtonHeight(), width - Left - Right, UiSizes.getButtonHeight());
-		etDescription = new EditWrapedTextField(this, rec, "DescTextField");
+		etDescription = new EditWrapedTextField(this, rec, TextFieldType.MultiLineWraped, "DescTextField");
 
 		String txt = (waypoint.Description == null) ? "" : waypoint.Description;
 
@@ -328,7 +329,7 @@ public class EditWaypoint extends ActivityBase
 	private void iniTitleTextClue()
 	{
 		CB_RectF rec = new CB_RectF(Left, tvClue.getY() - UiSizes.getButtonHeight(), width - Left - Right, UiSizes.getButtonHeight());
-		etClue = new EditWrapedTextField(this, rec, "ClueTextField");
+		etClue = new EditWrapedTextField(this, rec, TextFieldType.MultiLineWraped, "ClueTextField");
 
 		String txt = (waypoint.Clue == null) ? "" : waypoint.Clue;
 

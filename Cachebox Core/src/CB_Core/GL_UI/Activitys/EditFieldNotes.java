@@ -24,6 +24,7 @@ import CB_Core.GL_UI.Controls.EditTextFieldBase.DefaultOnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -84,7 +85,6 @@ public class EditFieldNotes extends ActivityBase
 
 		setDefaultValues();
 
-		layoutTextFields();
 	}
 
 	private void setDefaultValues()
@@ -239,8 +239,8 @@ public class EditFieldNotes extends ActivityBase
 
 	private void iniFoundLabel()
 	{
-		tvFounds = new Label(secondTab, ivTyp.getMaxY() - MesuredLabelHeight, width - secondTab - Right - margin, MesuredLabelHeight,
-				"CacheNameLabel");
+		tvFounds = new Label(secondTab, ivTyp.getMaxY() - UiSizes.getButtonHeight(), width - secondTab - Right - margin,
+				UiSizes.getButtonHeight(), "CacheNameLabel");
 		tvFounds.setFont(Fonts.getBig());
 		scrollBox.addChild(tvFounds);
 	}
@@ -253,12 +253,13 @@ public class EditFieldNotes extends ActivityBase
 				Fonts.Mesure(GlobalCore.Translations.Get("time")).width);
 		LabelWidth *= 1.3;// use Big Font
 
-		lblDate = new Label(secondTab, tvFounds.getY() - MesuredLabelHeight - (margin * 3), LabelWidth, MesuredLabelHeight, "");
+		lblDate = new Label(secondTab, tvFounds.getY() - UiSizes.getButtonHeight() - (margin * 3), LabelWidth, UiSizes.getButtonHeight(),
+				"");
 		lblDate.setFont(Fonts.getBig());
 		lblDate.setText(GlobalCore.Translations.Get("date") + ":");
 		scrollBox.addChild(lblDate);
 		CB_RectF rec = new CB_RectF(lblDate.getMaxX() + margin, lblDate.getY() - margin, width - lblDate.getMaxX() - margin - Right,
-				MesuredLabelHeight * 2);
+				UiSizes.getButtonHeight());
 
 		tvDate = new EditWrapedTextField(this, rec, "");
 		scrollBox.addChild(tvDate);
@@ -267,12 +268,12 @@ public class EditFieldNotes extends ActivityBase
 	private void iniTime()
 	{
 
-		lblTime = new Label(secondTab, lblDate.getY() - MesuredLabelHeight - (margin * 3), LabelWidth, MesuredLabelHeight, "");
+		lblTime = new Label(secondTab, lblDate.getY() - UiSizes.getButtonHeight() - (margin * 3), LabelWidth, UiSizes.getButtonHeight(), "");
 		lblTime.setFont(Fonts.getBig());
 		lblTime.setText(GlobalCore.Translations.Get("time") + ":");
 		scrollBox.addChild(lblTime);
 		CB_RectF rec = new CB_RectF(lblTime.getMaxX() + margin, lblTime.getY() - margin, width - lblTime.getMaxX() - margin - Right,
-				MesuredLabelHeight * 2);
+				UiSizes.getButtonHeight());
 
 		tvTime = new EditWrapedTextField(this, rec, "");
 		scrollBox.addChild(tvTime);
@@ -306,8 +307,23 @@ public class EditFieldNotes extends ActivityBase
 			rec = new CB_RectF(Left, lblTime.getY() - UiSizes.getButtonHeight() - margin, width - Left - Right, UiSizes.getButtonHeight());
 		}
 
-		etComment = new EditWrapedTextField(this, rec, "DescTextField");
+		etComment = new EditWrapedTextField(this, rec, TextFieldType.MultiLineWraped, "DescTextField");
 		etComment.setText(fieldNote.comment);
+
+		// set Size to linecount
+		float maxTextFieldHeight = this.height / 2.3f;
+		float rand = etComment.getStyle().background.getBottomHeight() + etComment.getStyle().background.getTopHeight();
+		float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getMesuredHeight() + rand);
+		descriptionHeight = Math.max(descriptionHeight, UiSizes.getButtonHeight());
+		etComment.setHeight(descriptionHeight);
+		if (GcVote != null)
+		{
+			etComment.setY(GcVote.getY() - descriptionHeight);
+		}
+		else
+		{
+			etComment.setY(lblTime.getY() - descriptionHeight - margin);
+		}
 
 		etComment.setTextFieldListener(new TextFieldListener()
 		{

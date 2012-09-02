@@ -1655,7 +1655,15 @@ public class EditWrapedTextField extends EditTextFieldBase
 			index++;
 		}
 
-		return sb.toString();
+		String ret = sb.toString();
+
+		if (this.type == TextFieldType.SingleLine)
+		{
+			ret = ret.replace("\n", "");
+			ret = ret.replace("\r", "");
+		}
+
+		return ret;
 	}
 
 	/** Sets the selected text. */
