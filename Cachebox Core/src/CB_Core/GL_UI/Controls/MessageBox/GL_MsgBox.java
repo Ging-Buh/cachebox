@@ -116,7 +116,7 @@ public class GL_MsgBox extends Dialog
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, false, true, false), "MsgBox");
 		Label label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
 		label.setZeroPos();
-		label.setWrappedText(msg);
+		label.setWrappedText(msg + "uuuuuuuuuuuuu");
 		msgBox.addChild(label);
 		setButtonCaptions(msgBox, MessageBoxButtons.OK);
 		GL.that.showDialog(msgBox);

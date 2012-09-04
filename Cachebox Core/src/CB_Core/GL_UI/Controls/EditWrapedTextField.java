@@ -75,6 +75,9 @@ public class EditWrapedTextField extends EditTextFieldBase
 	protected char passwordCharacter = BULLET;
 	final Lock displayTextLock = new ReentrantLock();
 
+	float bgTopHeight = 0;
+	float bgBottomHeight = 0;
+
 	protected TextFieldType type = TextFieldType.SingleLine;
 
 	public EditWrapedTextField(CB_View_Base parent, CB_RectF rec, String Name)
@@ -236,8 +239,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 			float bgLeftWidth = 0;
 			float bgRightWidth = 0;
-			float bgTopHeight = 0;
-			float bgBottomHeight = 0;
+			bgTopHeight = 0;
+			bgBottomHeight = 0;
 			boolean focused = GL.that.hasFocus(this);
 
 			if (focused)
@@ -249,6 +252,11 @@ public class EditWrapedTextField extends EditTextFieldBase
 					bgRightWidth = style.background.getRightWidth();
 					bgTopHeight = style.background.getTopHeight();
 					bgBottomHeight = style.background.getBottomHeight();
+					if (type == TextFieldType.SingleLine)
+					{
+						bgTopHeight = (height - lineHeight) / 2;
+						bgBottomHeight = (height - lineHeight) / 2;
+					}
 				}
 			}
 			else
@@ -261,6 +269,11 @@ public class EditWrapedTextField extends EditTextFieldBase
 					bgRightWidth = style.background.getRightWidth();
 					bgTopHeight = style.background.getTopHeight();
 					bgBottomHeight = style.background.getBottomHeight();
+					if (type == TextFieldType.SingleLine)
+					{
+						bgTopHeight = (height - lineHeight) / 2;
+						bgBottomHeight = (height - lineHeight) / 2;
+					}
 				}
 			}
 
@@ -279,7 +292,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 			}
 
 			float textY = (int) (height / 2 + textHeight / 2 + font.getDescent());
-			textY = (int) height - textHeight - bgTopHeight;
+			textY = (int) height /*- textHeight*/- bgTopHeight + font.getDescent();
 			maxLineCount = (height - bgTopHeight - bgBottomHeight - lineHeight / 2) / lineHeight;
 			maxTextWidth = width - bgLeftWidth - bgRightWidth;
 			calculateOffsets();
@@ -356,11 +369,12 @@ public class EditWrapedTextField extends EditTextFieldBase
 					// xpos = dt.glyphPositions.get(dt.glyphPositions.size - 1); // letztes Zeichen
 					// }
 					float xpos = getCursorX();
-					textY = (int) height - textHeight - bgTopHeight;
+					textY = (int) height - bgTopHeight + font.getDescent();
 
 					cursorHeight = font.getLineHeight() + font.getDescent() / 2;
 
-					cursorPatch.draw(batch, getCursorX() - leftPos, getCursorY(), cursorPatch.getMinWidth(), cursorHeight);
+					cursorPatch.draw(batch, getCursorX() - leftPos, getCursorY() + cursorHeight + font.getDescent(),
+							cursorPatch.getMinWidth(), cursorHeight);
 
 				}
 			}
@@ -418,8 +432,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	private float getCursorY(int aCursorLine)
 	{
-		float textY = (int) height - textHeight - style.background.getTopHeight();
-		return (y + textY - style.background.getTopHeight() - lineHeight * (aCursorLine - topLine)) + style.font.getDescent();
+		float textY = (int) height - bgTopHeight + style.font.getDescent();
+		return (int) (y + textY - lineHeight * (aCursorLine - topLine) - lineHeight * 1.5);
 	}
 
 	private void updateDisplayTextList()
