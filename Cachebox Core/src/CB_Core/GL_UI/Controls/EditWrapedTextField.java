@@ -1308,6 +1308,12 @@ public class EditWrapedTextField extends EditTextFieldBase
 	@Override
 	public void copyToClipboard()
 	{
+		if (selection != null)
+		{
+			String content = "";
+			content = this.getSelectedText();
+			clipboard.setContents(content);
+		}
 		// if (hasSelection && clipboard != null)
 		// {
 		// int minIndex = Math.min(cursor, selectionStart);
@@ -1330,20 +1336,36 @@ public class EditWrapedTextField extends EditTextFieldBase
 	public void pasteFromClipboard()
 	{
 		if (clipboard == null) return;
-
-		String content = clipboard.getContents();
-		if (content != null)
+		if (selection != null)
 		{
-			StringBuilder builder = new StringBuilder();
-			for (int i = 0; i < content.length(); i++)
-			{
-				char c = content.charAt(i);
-				if (style.font.containsCharacter(c)) builder.append(c);
-			}
-			content = builder.toString();
+			// zuerst evtl. markierten Text löschen
+			delete();
+		}
 
-			// if (!hasSelection)
+		String[] contents = clipboard.getContents().split("\n");
+
+		if ((contents != null) && (contents.length > 0))
+		{
+			boolean firstLine = true;
+			// nach Zeilenvorschüben trennen
+			for (String content : contents)
 			{
+				StringBuilder builder = new StringBuilder();
+				content = content.replace("\b", "");
+				if (!firstLine)
+				{
+					// bei jeder weiteren Zeile vor dem Einfügen einen Zeilenvorschub machen
+					insertNewLine();
+				}
+				firstLine = false;
+				// Zeile für Zeile
+				for (int i = 0; i < content.length(); i++)
+				{
+					char c = content.charAt(i);
+					if (style.font.containsCharacter(c)) builder.append(c);
+				}
+				content = builder.toString();
+
 				DisplayText dt = getDisplayText(cursor.line);
 				dt.displayText = dt.displayText.substring(0, cursor.pos) + content
 						+ dt.displayText.substring(cursor.pos, dt.displayText.length());
@@ -1669,6 +1691,47 @@ public class EditWrapedTextField extends EditTextFieldBase
 			index++;
 		}
 
+		String ret = sb.toString();
+
+		if (this.type == TextFieldType.SingleLine)
+		{
+			ret = ret.replace("\n", "");
+			ret = ret.replace("\r", "");
+		}
+
+		return ret;
+	}
+
+	public String getSelectedText()
+	{
+		if (selection == null) return "";
+
+		StringBuilder sb = new StringBuilder();
+
+		// Alle Zeilen durchgehen, in denen selectierter Text liegt
+		for (int line = selection.cursorStart.line; line <= selection.cursorEnd.line; line++)
+		{
+			DisplayText dt = getDisplayText(line);
+
+			int startPos = 0;
+			int endPos = dt.displayText.length();
+
+			if (line == selection.cursorStart.line)
+			{
+				startPos = selection.cursorStart.pos;
+			}
+			if (line == selection.cursorEnd.line)
+			{
+				endPos = selection.cursorEnd.pos;
+			}
+
+			sb.append(dt.displayText.substring(startPos, endPos));
+			if (line < selection.cursorEnd.line)
+			{
+				sb.append(GlobalCore.br);
+			}
+
+		}
 		String ret = sb.toString();
 
 		if (this.type == TextFieldType.SingleLine)

@@ -81,7 +81,7 @@ public class CopiePastePopUp extends PopUp_Base
 			{
 				// Logger.LogCat("Cut Button Clicked");
 				close();
-				textField.copyToClipboard();
+				textField.cutToClipboard();
 				return false;
 			}
 		});
@@ -118,7 +118,6 @@ public class CopiePastePopUp extends PopUp_Base
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 }
