@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.GL_Listener;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.SortedMap;
@@ -79,7 +80,9 @@ public class GL implements ApplicationListener
 	private HashMap<GL_View_Base, Integer> renderViews = new HashMap<GL_View_Base, Integer>();
 	private Point lastClickPoint = null;
 	private ParentInfo prjMatrix;
-	private CB_View_Base actDialog, actActivity;
+	private CB_View_Base actActivity;
+	private Dialog actDialog;
+	private ArrayList<Dialog> dialogHistory = new ArrayList<Dialog>();
 	private PopUp_Base aktPopUp = null;
 	private CB_Core.GL_UI.Controls.Dialogs.Toast toast;
 	private Stage mStage;
@@ -970,7 +973,7 @@ public class GL implements ApplicationListener
 
 	}
 
-	public void showDialog(final CB_View_Base dialog)
+	public void showDialog(final Dialog dialog)
 	{
 		if (dialog instanceof ActivityBase) throw new IllegalArgumentException(
 				"don´t show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
@@ -978,7 +981,7 @@ public class GL implements ApplicationListener
 		showDialog(dialog, false);
 	}
 
-	public void showDialog(final CB_View_Base dialog, boolean atTop)
+	public void showDialog(final Dialog dialog, boolean atTop)
 	{
 		setKeyboardFocus(null);
 
@@ -998,6 +1001,9 @@ public class GL implements ApplicationListener
 		if (actDialog != null)
 		{
 			actDialog.onHide();
+			actDialog.setEnabled(false);
+			// am Anfang der Liste einfügen
+			dialogHistory.add(0, actDialog);
 			// mDialog.removeChilds();
 		}
 
@@ -1121,13 +1127,25 @@ public class GL implements ApplicationListener
 
 		if (MsgToPlatformConector || ActivityIsShown) platformConector.hideForDialog();
 		if (actDialog != null) actDialog.onHide();
-		actDialog = null;
-		mDialog.removeChildsDirekt();
-		child.setClickable(true);
-		child.invalidate();
-		DialogIsShown = false;
-		darknesAlpha = 0f;
-		mDarknesSprite = null;// Create new Pixmap on next call
+		if (dialogHistory.size() > 0)
+		{
+			mDialog.removeChild(actDialog);
+			// letzten Dialog wiederherstellen
+			actDialog = dialogHistory.get(0);
+			actDialog.setEnabled(true);
+			dialogHistory.remove(0);
+			DialogIsShown = true;
+		}
+		else
+		{
+			actDialog = null;
+			mDialog.removeChildsDirekt();
+			child.setClickable(true);
+			child.invalidate();
+			DialogIsShown = false;
+			darknesAlpha = 0f;
+			mDarknesSprite = null;// Create new Pixmap on next call
+		}
 
 		clearRenderViews();
 		renderOnce("Close Dialog");

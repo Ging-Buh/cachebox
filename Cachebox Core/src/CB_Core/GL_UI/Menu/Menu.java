@@ -164,7 +164,7 @@ public class Menu extends Dialog
 
 		if (withoutTranslation) trans = StringId;
 
-		layout();
+		// layout();
 		MenuItem item = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), ID, "Menu Item@" + ID);
 
 		item.setTitle(trans);
@@ -175,7 +175,7 @@ public class Menu extends Dialog
 
 	private void layout()
 	{
-		float higherValue = this.height + ItemHeight + mListView.getDividerHeight();
+		float higherValue = this.height + ItemHeight * mItems.size() + mListView.getDividerHeight();
 
 		if (higherValue < UiSizes.getWindowHeight() * 0.8f)
 		{
@@ -190,7 +190,7 @@ public class Menu extends Dialog
 
 	public void show()
 	{
-
+		layout();
 		// wenn irgent ein Item Chackable ist, dann alle Titles Einrücken.
 		boolean oneIsChakable = false;
 		for (Iterator<MenuItem> iterator = mItems.iterator(); iterator.hasNext();)

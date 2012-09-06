@@ -95,7 +95,14 @@ public abstract class Dialog extends CB_View_Base
 		}
 		else
 		{
-			contentChilds.add(view);
+			if (mContent != null)
+			{
+				mContent.addChildDirekt(view);
+			}
+			else
+			{
+				contentChilds.add(view);
+			}
 		}
 
 		return view;
@@ -119,7 +126,14 @@ public abstract class Dialog extends CB_View_Base
 		}
 		else
 		{
-			contentChilds.remove(view);
+			if (mContent != null)
+			{
+				mContent.removeChildsDirekt(view);
+			}
+			else
+			{
+				contentChilds.remove(view);
+			}
 		}
 
 	}
@@ -142,6 +156,11 @@ public abstract class Dialog extends CB_View_Base
 
 	protected void initialDialog()
 	{
+		if (mContent != null)
+		{
+			// InitialDialog wurde schon aufgerufen!!!
+			return;
+		}
 		super.removeChildsDirekt();
 		mTitleHeight = 0;
 
@@ -308,7 +327,7 @@ public abstract class Dialog extends CB_View_Base
 	public boolean setSize(float Width, float Height)
 	{
 		boolean ret = super.setSize(Width, Height);
-		this.initialDialog();
+		// this.initialDialog();
 		return ret;
 	}
 

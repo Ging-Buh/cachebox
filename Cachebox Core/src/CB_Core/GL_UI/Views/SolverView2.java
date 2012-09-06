@@ -48,9 +48,8 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		Logger.LogCat("Create SolverView2 => " + rec.toString());
 		/*
 		 * Label lblDummy = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "DummyLabel"); lblDummy.setFont(Fonts.getNormal());
-		 * lblDummy.setText("Dummy SolverView"); setBackground(SpriteCache.ListBack);
-		 * 
-		 * if (GlobalCore.platform == Plattform.Desktop) this.addChild(lblDummy);
+		 * lblDummy.setText("Dummy SolverView"); setBackground(SpriteCache.ListBack); ^ if (GlobalCore.platform == Plattform.Desktop)
+		 * this.addChild(lblDummy);
 		 */
 
 		cache = GlobalCore.SelectedCache();

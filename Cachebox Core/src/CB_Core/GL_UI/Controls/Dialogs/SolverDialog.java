@@ -9,17 +9,17 @@ import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
-import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_Core.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class SolverDialog extends GL_MsgBox implements OnStateChangeListener
+public class SolverDialog extends ButtonDialog implements OnStateChangeListener
 {
 	private enum pages
 	{
@@ -54,14 +54,13 @@ public class SolverDialog extends GL_MsgBox implements OnStateChangeListener
 		public void BackString(String backString);
 	}
 
-	private GL_MsgBox mMsgBox;
 	private EditWrapedTextField mVariableField;
 	private String mSolverString;
 	private SloverBackStringListner mBackStringListner;
 
 	public SolverDialog(CB_RectF rec, String name, String SolverString)
 	{
-		super(rec, name);
+		super(rec, name, "Solver", GlobalCore.Translations.Get("solver_formula"), MessageBoxButtons.OKCancel, MessageBoxIcon.None, null);
 		mSolverString = SolverString;
 		ignoreStateChange = false;
 		page = pages.Text;
@@ -83,12 +82,7 @@ public class SolverDialog extends GL_MsgBox implements OnStateChangeListener
 			sForm = solverStrings[1];
 		}
 
-		// initial MsgBox
-		mMsgBox = new GL_MsgBox(new Size((int) width, (int) height), "MsgBox");
-		mMsgBox.setTitle(GlobalCore.Translations.Get("solver_formula"));
-
-		setButtonCaptions(mMsgBox, MessageBoxButtons.OKCancel);
-		msgBoxContentSize = mMsgBox.getContentSize();
+		msgBoxContentSize = getContentSize();
 		// initial VariableField
 		TextFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
 
@@ -98,7 +92,7 @@ public class SolverDialog extends GL_MsgBox implements OnStateChangeListener
 		mVariableField = new EditWrapedTextField(this, rec, EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextField");
 		mVariableField.setText(sVar);
 		// mVariableField.setMsg("Enter formula");
-		mMsgBox.addChild(mVariableField);
+		addChild(mVariableField);
 		y -= TextFieldHeight;
 
 		rec = new CB_RectF(0, y, msgBoxContentSize.width, TextFieldHeight);
@@ -106,26 +100,26 @@ public class SolverDialog extends GL_MsgBox implements OnStateChangeListener
 		lbGleich.setFont(Fonts.getNormal());
 		lbGleich.setText("=");
 		setBackground(SpriteCache.ListBack);
-		mMsgBox.addChild(lbGleich);
+		addChild(lbGleich);
 		y -= TextFieldHeight;
 
 		// Buttons zur Auswahl des Dialog-Typs
 		float w = msgBoxContentSize.width / 5;
 		float x = 0;
 		btnTxt = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "TXT");
-		mMsgBox.addChild(btnTxt);
+		addChild(btnTxt);
 		x += w;
 		btnFx = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "f(x)");
-		mMsgBox.addChild(btnFx);
+		addChild(btnFx);
 		x += w;
 		btnVar = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "@");
-		mMsgBox.addChild(btnVar);
+		addChild(btnVar);
 		x += w;
 		btnOp = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "+-");
-		mMsgBox.addChild(btnOp);
+		addChild(btnOp);
 		x += w;
 		btnWp = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "$GC");
-		mMsgBox.addChild(btnWp);
+		addChild(btnWp);
 		y -= UiSizes.getButtonHeight();
 
 		// startposition for further controls
@@ -165,7 +159,7 @@ public class SolverDialog extends GL_MsgBox implements OnStateChangeListener
 		button1.setText(GlobalCore.Translations.Get("Ok"));
 
 		button1.setOnClickListener(OnOkClickListner);
-		showPageText();
+		// showPageText();
 	}
 
 	private OnClickListener OnOkClickListner = new OnClickListener()
@@ -178,8 +172,7 @@ public class SolverDialog extends GL_MsgBox implements OnStateChangeListener
 			if (result.length() > 0) result += "=";
 			result += mFormulaField.getText();
 			if (mBackStringListner != null) mBackStringListner.BackString(result);
-			mMsgBox.close();
-			mMsgBox.dispose();
+			GL.that.closeDialog(SolverDialog.this);
 			return true;
 		}
 	};
@@ -188,7 +181,7 @@ public class SolverDialog extends GL_MsgBox implements OnStateChangeListener
 	{
 		mBackStringListner = listner;
 		initialLayout();
-		GL.that.showDialog(mMsgBox);
+		GL.that.showDialog(this);
 
 	}
 
@@ -299,8 +292,8 @@ public class SolverDialog extends GL_MsgBox implements OnStateChangeListener
 
 	private void hidePageVariable()
 	{
-		mMsgBox.removeChild(tbVariable);
-		mMsgBox.removeChild(bVariable);
+		removeChild(tbVariable);
+		removeChild(bVariable);
 		tbVariable = null;
 		bVariable = null;
 
@@ -314,7 +307,7 @@ public class SolverDialog extends GL_MsgBox implements OnStateChangeListener
 
 	private void hidePageText()
 	{
-		mMsgBox.removeChild(mFormulaField);
+		removeChild(mFormulaField);
 		mFormulaField = null;
 	}
 
@@ -337,11 +330,11 @@ public class SolverDialog extends GL_MsgBox implements OnStateChangeListener
 		CB_RectF rec = new CB_RectF(0, y, msgBoxContentSize.width - TextFieldHeight * 2, TextFieldHeight);
 		tbVariable = new EditWrapedTextField(this, rec, EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextField");
 		tbVariable.setText(sForm);
-		mMsgBox.addChild(tbVariable);
+		addChild(tbVariable);
 		bVariable = new Button(msgBoxContentSize.width - TextFieldHeight * 2, y, TextFieldHeight * 2, TextFieldHeight,
 				"SolverDialogBtnVariable");
 		bVariable.setText("Var");
-		mMsgBox.addChild(bVariable);
+		addChild(bVariable);
 		y -= TextFieldHeight;
 	}
 
@@ -353,13 +346,15 @@ public class SolverDialog extends GL_MsgBox implements OnStateChangeListener
 
 	private void showPageText()
 	{
+		// ButtonDialog bd = new ButtonDialog("Name", "Title", "Message", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+		// bd.Show();
+		// if (true) return;
 		// initial FormulaField
 		float y = startY;
 		CB_RectF rec = new CB_RectF(0, y, msgBoxContentSize.width, TextFieldHeight);
 		mFormulaField = new EditWrapedTextField(this, rec, EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextField");
 		mFormulaField.setText(sForm);
-		mMsgBox.addChild(mFormulaField);
+		addChild(mFormulaField);
 		y -= TextFieldHeight;
 	}
-
 }

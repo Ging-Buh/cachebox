@@ -74,6 +74,7 @@ public abstract class GL_View_Base extends CB_RectF
 	protected static int nDepthCounter = 0;
 
 	private Sprite debugRec = null;
+	private boolean enabled = true;
 
 	// # Constructors
 
@@ -700,6 +701,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 				// Invisible Views can not be clicked!
 				if (view == null || !view.isVisible()) continue;
+				if (!view.getEnabled()) continue;
 				if (view.contains(x, y))
 				{
 					// touch innerhalb des Views
@@ -1021,6 +1023,16 @@ public abstract class GL_View_Base extends CB_RectF
 	public Color getColorFilter()
 	{
 		return mColorFilter;
+	}
+
+	public void setEnabled(boolean value)
+	{
+		enabled = value;
+	}
+
+	public boolean getEnabled()
+	{
+		return enabled;
 	}
 
 }
