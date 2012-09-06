@@ -7,6 +7,7 @@ import CB_Core.GL_UI.Activitys.SelectSolverFunction;
 import CB_Core.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverZeile;
 import CB_Core.Solver.Functions.Function;
@@ -73,7 +74,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			@Override
 			public void onClick(View arg0)
 			{
-				new SelectSolverFunction(new IFunctionResult()
+				SelectSolverFunction ssf = new SelectSolverFunction(new IFunctionResult()
 				{
 
 					@Override
@@ -124,7 +125,8 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 						}
 
 					}
-				}).show();
+				});
+				GL.that.showDialog(ssf);
 			}
 		});
 

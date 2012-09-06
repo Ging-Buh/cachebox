@@ -1078,10 +1078,10 @@ public class EditWrapedTextField extends EditTextFieldBase
 						checkCursorVisible(true);
 					}
 
-					cursor.pos = Math.max(0, cursor.pos);
-					cursor.pos = Math.min(text.length(), cursor.pos);
-					// überprüfen, ob der Cursor sichtbar ist
-					checkCursorVisible(true);
+					/*
+					 * cursor.pos = Math.max(0, cursor.pos); cursor.pos = Math.min(text.length(), cursor.pos); // überprüfen, ob der Cursor
+					 * sichtbar ist checkCursorVisible(true);
+					 */
 				}
 				else
 				{

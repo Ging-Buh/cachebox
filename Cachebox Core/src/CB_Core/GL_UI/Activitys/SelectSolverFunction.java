@@ -12,6 +12,9 @@ import CB_Core.GL_UI.Controls.LinearCollabseBox;
 import CB_Core.GL_UI.Controls.Linearlayout;
 import CB_Core.GL_UI.Controls.Linearlayout.LayoutChanged;
 import CB_Core.GL_UI.Controls.ScrollBox;
+import CB_Core.GL_UI.Controls.MessageBox.ButtonDialog;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
@@ -21,7 +24,7 @@ import CB_Core.Solver.Functions.Functions;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class SelectSolverFunction extends ActivityBase
+public class SelectSolverFunction extends ButtonDialog
 {
 	private Button bOK, bCancel;
 	private Label desc;
@@ -38,12 +41,12 @@ public class SelectSolverFunction extends ActivityBase
 
 	public SelectSolverFunction(IFunctionResult resultListner)
 	{
-		super(ActivityRec(), "SelectSolverFunctionActivity");
+		super(ActivityRec(), "SelectSolverFunctionActivity", "", "", MessageBoxButtons.OKCancel, MessageBoxIcon.None, null);
 		mResultListner = resultListner;
 
 		// Grössen für die CategoryButtons und ItemButtons berechnen!
-		categoryBtnRec = new CB_RectF(Left, 0, this.width - this.drawableBackground.getLeftWidth()
-				- this.drawableBackground.getRightWidth(), UiSizes.getButtonHeight());
+		categoryBtnRec = new CB_RectF(Left, 0, this.width - mCenter9patch.getLeftWidth() - mCenter9patch.getRightWidth() - Left - Right,
+				UiSizes.getButtonHeight());
 
 		itemBtnRec = new CB_RectF(Left, 0, categoryBtnRec.getWidth() - Left - Right, UiSizes.getButtonHeight());
 
@@ -61,23 +64,19 @@ public class SelectSolverFunction extends ActivityBase
 
 	}
 
+	public static CB_RectF ActivityRec()
+	{
+		float w = Math.min(UiSizes.getSmallestWidth(), UiSizes.getWindowHeight() * 0.66f);
+
+		return new CB_RectF(0, 0, w, (int) (UiSizes.getWindowHeight() * 0.95));
+	}
+
 	private void iniOkCancel()
 	{
-		CB_RectF btnRec = new CB_RectF(Left, Bottom, (width - Left - Right) / 2, UiSizes.getButtonHeight());
-		bOK = new Button(btnRec, "OkButton");
 
-		btnRec.setX(bOK.getMaxX());
-		bCancel = new Button(btnRec, "CancelButton");
-
-		bOK.setText(GlobalCore.Translations.Get("ok"));
-		bCancel.setText(GlobalCore.Translations.Get("cancel"));
-
-		this.addChild(bOK);
-		this.addChild(bCancel);
-
-		bOK.setOnClickListener(new OnClickListener()
+		button1.setText(GlobalCore.Translations.Get("Ok"));
+		button1.setOnClickListener(new OnClickListener()
 		{
-
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
@@ -92,14 +91,13 @@ public class SelectSolverFunction extends ActivityBase
 						throw new IllegalArgumentException("Der Returnlistner kann hier die Rückgabe von NULL nicht verarbeiten!");
 					}
 				}
-				finish();
+				GL.that.closeDialog(SelectSolverFunction.this);
 				return true;
 			}
 		});
-
-		bCancel.setOnClickListener(new OnClickListener()
+		button3.setText(GlobalCore.Translations.Get("Cancel"));
+		button3.setOnClickListener(new OnClickListener()
 		{
-
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
@@ -111,17 +109,70 @@ public class SelectSolverFunction extends ActivityBase
 				{
 					throw new IllegalArgumentException("Der Returnlistner kann hier die Rückgabe von NULL nicht verarbeiten!");
 				}
-				finish();
+				GL.that.closeDialog(SelectSolverFunction.this);
 				return true;
 			}
 		});
+
+		// CB_RectF btnRec = new CB_RectF(Left, Bottom, (width - Left - Right) / 2, UiSizes.getButtonHeight());
+		// bOK = new Button(btnRec, "OkButton");
+		//
+		// btnRec.setX(bOK.getMaxX());
+		// bCancel = new Button(btnRec, "CancelButton");
+		//
+		// bOK.setText(GlobalCore.Translations.Get("ok"));
+		// bCancel.setText(GlobalCore.Translations.Get("cancel"));
+		//
+		// this.addChild(bOK);
+		// this.addChild(bCancel);
+		//
+		// bOK.setOnClickListener(new OnClickListener()
+		// {
+		//
+		// @Override
+		// public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+		// {
+		// if (mResultListner != null)
+		// {
+		// try
+		// {
+		// mResultListner.selectedFunction(selectedFunction);
+		// }
+		// catch (NullPointerException e)
+		// {
+		// throw new IllegalArgumentException("Der Returnlistner kann hier die Rückgabe von NULL nicht verarbeiten!");
+		// }
+		// }
+		// GL.that.closeDialog(SelectSolverFunction.this);
+		// return true;
+		// }
+		// });
+		//
+		// bCancel.setOnClickListener(new OnClickListener()
+		// {
+		//
+		// @Override
+		// public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+		// {
+		// if (mResultListner != null) try
+		// {
+		// mResultListner.selectedFunction(null);
+		// }
+		// catch (NullPointerException e)
+		// {
+		// throw new IllegalArgumentException("Der Returnlistner kann hier die Rückgabe von NULL nicht verarbeiten!");
+		// }
+		// GL.that.closeDialog(SelectSolverFunction.this);
+		// return true;
+		// }
+		// });
 
 	}
 
 	private void iniDescLabel()
 	{
 		// rechteck für Label erstellen
-		CB_RectF rec = new CB_RectF(0, bOK.getMaxY() + margin, this.width, UiSizes.getButtonHeight() * 1.5f);
+		CB_RectF rec = new CB_RectF(0, Bottom, this.width, UiSizes.getButtonHeight() * 1.5f);
 
 		desc = new Label(rec, "description");
 
@@ -136,7 +187,7 @@ public class SelectSolverFunction extends ActivityBase
 	{
 		// rechteck für die List erstellen.
 		// diese ergibt sich aus dem Platzangebot oberhalb des desc Labels
-		CB_RectF rec = new CB_RectF(0, desc.getMaxY(), desc.getWidth(), this.height - desc.getMaxY());
+		CB_RectF rec = new CB_RectF(0, desc.getMaxY(), desc.getWidth(), this.height - desc.getMaxY() - this.getFooterHeight());
 
 		// Die Einträge der Function List werden aber nicht in einer ListView dargestellt, sondern werden in ein LinearLayout von oben nach
 		// unten geschrieben.
