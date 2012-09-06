@@ -49,7 +49,7 @@ public class StringInputBox extends GL_MsgBox
 			editText.setHeight(topBottom + (SingleLineHeight * 5));
 		}
 		msgBox.setHeight(msgBox.getHeight() + editText.getHeight() + (margin * 4));
-		msgBox.initialDialog();
+		msgBox.reziseContentBox();
 
 		CB_RectF LabelRec = msgBox.getContentSize().getBounds();
 		LabelRec.setHeight(LabelRec.getHeight() - editText.getHeight());

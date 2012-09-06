@@ -23,6 +23,7 @@ public abstract class Dialog extends CB_View_Base
 	private String mTitle;
 	private Box mContent;
 	private ArrayList<GL_View_Base> contentChilds = new ArrayList<GL_View_Base>();
+	private Label titleLabel;
 
 	/**
 	 * enthällt die Controls, welche über allen anderen gezeichnet werden zB. Selection Marker des TextFields
@@ -162,27 +163,6 @@ public abstract class Dialog extends CB_View_Base
 			return;
 		}
 		super.removeChildsDirekt();
-		mTitleHeight = 0;
-
-		if (mTitle != null && !mTitle.equals(""))
-		{
-			mHasTitle = true;
-
-			TextBounds bounds = Fonts.Mesure(mTitle);
-			mTitleWidth = bounds.width + (6.666f * pW);
-			if (mTitleWidth > this.width) mTitleWidth = this.width;// - (1.666f * pW);
-
-			mTitleHeight = bounds.height * 3f;
-
-			Label titleLabel = new Label(new CB_RectF((1.666f * pW), this.height - bounds.height - (margin * 3), mTitleWidth
-					- (4.1666f * pW), (5.16666f * pW)), "DialogTitleLabel");
-			titleLabel.setFont(Fonts.getNormal());
-			titleLabel.setText(mTitle);
-
-			bounds = null;
-			super.addChildDirekt(titleLabel);
-
-		}
 
 		mContent = new Box(this.ScaleCenter(0.95f), "Dialog Content Box");
 
@@ -206,8 +186,40 @@ public abstract class Dialog extends CB_View_Base
 		}
 	}
 
-	private void reziseContentBox()
+	protected void reziseContentBox()
 	{
+
+		if (mContent == null)
+		{
+			this.initialDialog();
+			return;
+		}
+
+		mTitleHeight = 0;
+
+		if (mTitle != null && !mTitle.equals(""))
+		{
+			mHasTitle = true;
+
+			TextBounds bounds = Fonts.Mesure(mTitle);
+			mTitleWidth = bounds.width + (6.666f * pW);
+			if (mTitleWidth > this.width) mTitleWidth = this.width;// - (1.666f * pW);
+
+			mTitleHeight = bounds.height * 3f;
+
+			if (titleLabel != null && childs.contains(titleLabel)) childs.remove(titleLabel);
+
+			titleLabel = new Label(new CB_RectF((1.666f * pW), this.height - bounds.height - (margin * 3), mTitleWidth - (4.1666f * pW),
+					(5.16666f * pW)), "DialogTitleLabel");
+			titleLabel.setFont(Fonts.getNormal());
+			titleLabel.setText(mTitle);
+
+			bounds = null;
+			super.addChildDirekt(titleLabel);
+
+		}
+
+		mContent.setWidth(this.getWidth() * 0.95f);
 		mContent.setHeight(this.height - mHeaderHight - getFooterHeight() - mTitleHeight - margin);
 		float centerversatzX = this.halfWidth - mContent.getHalfWidth();
 		float centerversatzY = getFooterHeight();// this.halfHeight - mContent.getHalfHeight();
@@ -286,14 +298,14 @@ public abstract class Dialog extends CB_View_Base
 
 	public SizeF getContentSize()
 	{
-		if (mContent == null) this.initialDialog();
+		reziseContentBox();
 		return mContent.getSize();
 	}
 
 	public void setTitle(String title)
 	{
-		// TODO Der Titel wird nicht mehr angezeigt
 		mTitle = title;
+		reziseContentBox();
 	}
 
 	public static float calcHeaderHeight()
@@ -309,13 +321,13 @@ public abstract class Dialog extends CB_View_Base
 	public void setWidth(float Width)
 	{
 		super.setWidth(Width);
-		this.initialDialog();
+		reziseContentBox();
 	}
 
 	public void setHeight(float Height)
 	{
 		super.setHeight(Height);
-		this.initialDialog();
+		reziseContentBox();
 	}
 
 	public boolean setSize(SizeF Size)
@@ -333,14 +345,14 @@ public abstract class Dialog extends CB_View_Base
 	public boolean setSize(float Width, float Height)
 	{
 		boolean ret = super.setSize(Width, Height);
-		// this.initialDialog();
+		reziseContentBox();
 		return ret;
 	}
 
 	public boolean setSize(CB_RectF rec)
 	{
 		boolean ret = super.setSize(rec);
-		this.initialDialog();
+		reziseContentBox();
 		return ret;
 	}
 
@@ -358,14 +370,7 @@ public abstract class Dialog extends CB_View_Base
 	public void onRezised(CB_RectF rec)
 	{
 		super.onRezised(rec);
-		if (mContent == null)
-		{
-			this.initialDialog();
-		}
-		else
-		{
-			reziseContentBox();
-		}
+		reziseContentBox();
 	}
 
 	public float getFooterHeight()
@@ -376,14 +381,7 @@ public abstract class Dialog extends CB_View_Base
 	public void setFooterHeight(float mFooterHeight)
 	{
 		this.mFooterHeight = mFooterHeight;
-		if (mContent == null)
-		{
-			this.initialDialog();
-		}
-		else
-		{
-			reziseContentBox();
-		}
+		reziseContentBox();
 	}
 
 }

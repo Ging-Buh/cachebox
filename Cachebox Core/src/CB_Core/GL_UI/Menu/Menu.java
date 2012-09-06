@@ -89,6 +89,9 @@ public class Menu extends Dialog
 		public ListViewItemBase getView(int position)
 		{
 			ListViewItemBase v = mItems.get(position);
+
+			v.setWidth(mListView.getWidth());
+
 			v.resetInitial();
 			return v;
 		}
@@ -175,17 +178,32 @@ public class Menu extends Dialog
 
 	private void layout()
 	{
-		float higherValue = mHeaderHight + getFooterHeight() + (margin * 2) + (ItemHeight + mListView.getDividerHeight()) * mItems.size();
+		float higherValue = mTitleHeight + mHeaderHight + getFooterHeight() + (margin * 2) + (ItemHeight + mListView.getDividerHeight())
+				* mItems.size();
 
-		if (higherValue < UiSizes.getWindowHeight() * 0.95f)
-		{
-			this.setSize(GL_UISizes.UI_Left.getWidth() / 1.2f, higherValue);
+		higherValue = Math.min(higherValue, UiSizes.getWindowHeight() * 0.95f);
 
-			this.resetInitial();
-		}
+		float MenuWidth = GL_UISizes.UI_Left.getWidth();
+
+		if (!GlobalCore.isTab) MenuWidth /= 1.2f;
+
+		this.setSize(MenuWidth, higherValue);
+
+		this.resetInitial();
 
 		mListView.setSize(this.getContentSize());
 		mListView.setZeroPos();
+
+		// Alle Items in der Breite anpassen
+
+		float w = mListView.getWidth();
+		for (MenuItem item : mItems)
+		{
+			item.setWidth(w);
+			item.resetInitial();
+		}
+
+		mListView.notifyDataSetChanged();
 	}
 
 	public void show()
@@ -235,13 +253,9 @@ public class Menu extends Dialog
 
 	public void setPrompt(String Prompt)
 	{
-
 		// set Title with full width, add many blanks
 		this.setTitle(Prompt + "                                                       ");
-		super.initialDialog();
-
-		this.setHeight(this.height + mTitleHeight);
-
+		layout();
 	}
 
 	@Override
