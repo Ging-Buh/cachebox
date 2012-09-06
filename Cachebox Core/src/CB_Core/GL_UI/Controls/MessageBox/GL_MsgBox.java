@@ -60,7 +60,7 @@ public class GL_MsgBox extends Dialog
 	public GL_MsgBox(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-		mFooterHeight = 80;
+		setFooterHeight(80);
 		that = this;
 	}
 
@@ -77,7 +77,7 @@ public class GL_MsgBox extends Dialog
 		return false;
 	}
 
-	protected static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon)
+	public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon)
 	{
 		float Width = (((UiSizes.getButtonWidthWide() + margin) * 3) + margin);
 
@@ -247,7 +247,7 @@ public class GL_MsgBox extends Dialog
 		else
 		{
 			// no Buttons
-			msgBox.mFooterHeight = calcFooterHeight(false);
+			msgBox.setFooterHeight(calcFooterHeight(false));
 		}
 	}
 
@@ -344,7 +344,7 @@ public class GL_MsgBox extends Dialog
 
 		}
 
-		msgBox.mFooterHeight = calcFooterHeight(true);
+		msgBox.setFooterHeight(calcFooterHeight(true));
 	}
 
 	private static void setButtonListner()

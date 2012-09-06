@@ -11,12 +11,14 @@ import CB_Core.Events.PositionChangedEvent;
 import CB_Core.Events.PositionChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
+import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Menu.CB_AllContextMenuHandler;
 import CB_Core.Locator.Locator;
@@ -31,8 +33,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class CacheListView extends V_ListView implements CacheListChangedEventListner, SelectedCacheEvent, PositionChangedEvent
+public class CacheListView extends CB_View_Base implements CacheListChangedEventListner, SelectedCacheEvent, PositionChangedEvent
 {
+
+	V_ListView listView;
+
+	public static CacheListView that;
 	private CustomAdapter lvAdapter;
 	private BitmapFontCache emptyMsg;
 
@@ -41,6 +47,10 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 		super(rec, Name);
 		registerSkinChangedEvent();
 		CachListChangedEventList.Add(this);
+		that = this;
+		listView = new V_ListView(rec, Name);
+		listView.setZeroPos();
+		this.addChild(listView);
 	}
 
 	@Override
@@ -48,7 +58,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 	{
 		// Logger.LogCat("CacheListView => Initial()");
 		// this.setListPos(0, false);
-		chkSlideBack();
+		listView.chkSlideBack();
 		GL.that.renderOnce(this.getName() + " Initial()");
 	}
 
@@ -79,6 +89,13 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 	{
 
 		if (isShown) return;
+
+		if (searchPlaceholder > 0)
+		{
+			// Blende Search Dialog wieder ein
+			if (SearchDialog.that != null) SearchDialog.that.showNotCloseAutomaticly();
+		}
+
 		isShown = true;
 		Logger.LogCat("CacheList onShow");
 		setBackground(SpriteCache.ListBack);
@@ -90,18 +107,18 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 		synchronized (Database.Data.Query)
 		{
 			lvAdapter = new CustomAdapter(Database.Data.Query);
-			this.setBaseAdapter(lvAdapter);
+			listView.setBaseAdapter(lvAdapter);
 
 			int itemCount = Database.Data.Query.size();
-			int itemSpace = this.getMaxItemCount();
+			int itemSpace = listView.getMaxItemCount();
 
 			if (itemSpace >= itemCount)
 			{
-				this.setUndragable();
+				listView.setUndragable();
 			}
 			else
 			{
-				this.setDragable();
+				listView.setDragable();
 			}
 		}
 		TimerTask task = new TimerTask()
@@ -116,7 +133,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 
 				}
 				else
-					setSelection(0);
+					listView.setSelection(0);
 
 				resetInitial();
 			}
@@ -133,7 +150,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 	 */
 	public void setSelectedCacheVisible()
 	{
-		int centerList = mMaxItemCount / 2;
+		int centerList = listView.getMaxItemCount() / 2;
 		setSelectedCacheVisible(-centerList);
 	}
 
@@ -144,10 +161,10 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 	 */
 	public void setSelectedCacheVisible(int pos)
 	{
-		if (!this.isDrageble()) return;
+		if (!listView.isDrageble()) return;
 		int id = 0;
-		int first = this.getFirstVisiblePosition();
-		int last = this.getLastVisiblePosition();
+		int first = listView.getFirstVisiblePosition();
+		int last = listView.getLastVisiblePosition();
 
 		synchronized (Database.Data.Query)
 		{
@@ -155,15 +172,15 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 			{
 				if (ca == GlobalCore.SelectedCache())
 				{
-					this.setSelection(id);
-					if (!(first <= id && last >= id)) this.scrollToItem(id - pos);
+					listView.setSelection(id);
+					if (!(first <= id && last >= id)) listView.scrollToItem(id - pos);
 					break;
 				}
 				id++;
 			}
 		}
 
-		chkSlideBack();
+		listView.chkSlideBack();
 		GL.that.renderOnce(this.getName() + " setSelectedCachVisible");
 	}
 
@@ -175,8 +192,15 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 		SelectedCacheEventList.Remove(this);
 		CachListChangedEventList.Remove(this);
 		PositionChangedEventList.Remove(this);
+
+		if (searchPlaceholder > 0)
+		{
+			// Blende Search Dialog aus
+			SearchDialog.that.close();
+		}
+
 		lvAdapter = null;
-		this.setBaseAdapter(lvAdapter);
+		listView.setBaseAdapter(lvAdapter);
 	}
 
 	private OnClickListener onItemClickListner = new OnClickListener()
@@ -198,7 +222,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 				Waypoint waypoint = cache.GetFinalWaypoint();
 				GlobalCore.SelectedWaypoint(cache, waypoint);
 			}
-			setSelection(selectionIndex);
+			listView.setSelection(selectionIndex);
 			return true;
 		}
 	};
@@ -232,43 +256,70 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 	{
 		private CacheList cacheList;
 
+		private int Count = 0;
+
 		public CustomAdapter(CacheList cacheList)
 		{
 			Logger.DEBUG("CacheList new Custom Adapter");
-			this.cacheList = cacheList;
+			synchronized (cacheList)
+			{
+				this.cacheList = cacheList;
+
+				Count = cacheList.size();
+			}
+
 		}
 
 		public int getCount()
 		{
 			if (cacheList == null) return 0;
-			return cacheList.size();
+
+			return Count;
 		}
 
-		public Object getItem(int position)
-		{
-			if (cacheList == null) return null;
-			return cacheList.get(position);
-		}
+		// public Object getItem(int position)
+		// {
+		// if (cacheList == null) return null;
+		// return cacheList.get(position);
+		// }
 
 		@Override
 		public ListViewItemBase getView(int position)
 		{
 			if (cacheList == null) return null;
-			Cache cache = cacheList.get(position);
-			CacheListViewItem v = new CacheListViewItem(UiSizes.getCacheListItemRec().asFloat(), position, cache);
-			v.setClickable(true);
-			v.setOnClickListener(onItemClickListner);
-			v.setOnLongClickListener(onItemLongClickListner);
 
-			return v;
+			synchronized (cacheList)
+			{
+				Cache cache = cacheList.get(position);
+
+				if (!cache.isSearchVisible()) return null;
+
+				CacheListViewItem v = new CacheListViewItem(UiSizes.getCacheListItemRec().asFloat(), position, cache);
+				v.setClickable(true);
+				v.setOnClickListener(onItemClickListner);
+				v.setOnLongClickListener(onItemLongClickListner);
+
+				return v;
+			}
+
 		}
 
 		@Override
 		public float getItemSize(int position)
 		{
 			if (cacheList == null) return 0;
-			// alle Items haben die gleiche Größe (Höhe)
-			return UiSizes.getCacheListItemRec().getHeight();
+
+			synchronized (cacheList)
+			{
+				if (cacheList.size() == 0) return 0;
+				Cache cache = cacheList.get(position);
+
+				if (!cache.isSearchVisible()) return 0;
+
+				// alle Items haben die gleiche Größe (Höhe)
+				return UiSizes.getCacheListItemRec().getHeight();
+			}
+
 		}
 
 	}
@@ -277,26 +328,26 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 	public void CacheListChangedEvent()
 	{
 		Logger.DEBUG("CacheListChangetEvent on Cache List");
-		this.setBaseAdapter(null);
+		listView.setBaseAdapter(null);
 		synchronized (Database.Data.Query)
 		{
 			lvAdapter = new CustomAdapter(Database.Data.Query);
 
-			this.setBaseAdapter(lvAdapter);
+			listView.setBaseAdapter(lvAdapter);
 
 			int itemCount = Database.Data.Query.size();
-			int itemSpace = this.getMaxItemCount();
+			int itemSpace = listView.getMaxItemCount();
 
 			if (itemSpace >= itemCount)
 			{
-				this.setUndragable();
+				listView.setUndragable();
 			}
 			else
 			{
-				this.setDragable();
+				listView.setDragable();
 			}
 		}
-		chkSlideBack();
+		listView.chkSlideBack();
 	}
 
 	@Override
@@ -311,7 +362,7 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 	@Override
 	protected void SkinIsChanged()
 	{
-		reloadItems();
+		listView.reloadItems();
 		setBackground(SpriteCache.ListBack);
 		CacheListViewItem.ResetBackground();
 	}
@@ -332,6 +383,34 @@ public class CacheListView extends V_ListView implements CacheListChangedEventLi
 	public String getReceiverName()
 	{
 		return "Core.CacheListView";
+	}
+
+	@Override
+	public void onRezised(CB_RectF rec)
+	{
+		super.onRezised(rec);
+		listView.setSize(rec);
+		listView.setHeight(rec.getHeight() - searchPlaceholder);
+		listView.setZeroPos();
+	}
+
+	private float searchPlaceholder = 0;
+
+	public void setTopPlaceHolder(float PlaceHoldHeight)
+	{
+		searchPlaceholder = PlaceHoldHeight;
+		onRezised(this);
+	}
+
+	public void resetPlaceHolder()
+	{
+		searchPlaceholder = 0;
+		onRezised(this);
+	}
+
+	public V_ListView getListView()
+	{
+		return listView;
 	}
 
 }

@@ -24,6 +24,7 @@ public class CoordinateButton extends Button
 	public CoordinateButton(CB_RectF rec, String name, Coordinate coord)
 	{
 		super(rec, name);
+		if (coord == null) coord = new Coordinate();
 		mActCoord = coord;
 		setText();
 		this.setOnClickListener(click);

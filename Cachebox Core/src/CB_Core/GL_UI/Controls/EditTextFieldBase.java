@@ -306,4 +306,39 @@ public abstract class EditTextFieldBase extends CB_View_Base
 
 	public abstract void cutToClipboard();
 
+	protected void sendKeyTyped(final char character)
+	{
+		if (listener != null)
+		{
+			Thread th = new Thread(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					listener.keyTyped(that, character);
+				}
+			});
+			th.start();
+		}
+	}
+
+	protected void sendLineCountChanged(final int lineCount, final float textHeight)
+	{
+		if (listener != null)
+		{
+			Thread th = new Thread(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					listener.lineCountChanged(that, lineCount, textHeight);
+				}
+			});
+			th.start();
+		}
+
+	}
+
 }

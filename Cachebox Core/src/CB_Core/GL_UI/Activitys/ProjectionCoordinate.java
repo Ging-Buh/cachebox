@@ -10,7 +10,6 @@ import CB_Core.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.NumPad;
-import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
@@ -85,7 +84,6 @@ public class ProjectionCoordinate extends ActivityBase
 	@Override
 	protected void Initial()
 	{
-		GL.that.renderForTextField(valueDistance);
 	}
 
 	private void iniCacheNameLabel()

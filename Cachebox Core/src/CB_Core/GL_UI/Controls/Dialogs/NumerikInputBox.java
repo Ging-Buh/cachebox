@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
@@ -12,14 +13,14 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 
-public class NumerikInputBox extends GL_MsgBox
+public class NumerikInputBox extends CB_View_Base
 {
 
 	private static NumerikInputBox that;
 
-	public NumerikInputBox(Size size, String name)
+	public NumerikInputBox(String name)
 	{
-		super(size, name);
+		super(name);
 		that = this;
 	}
 
@@ -27,15 +28,18 @@ public class NumerikInputBox extends GL_MsgBox
 	public static returnValueListner mReturnListner;
 	public static returnValueListnerDouble mReturnListnerDouble;
 
-	public static NumerikInputBox Show(String msg, String title, int initialValue, returnValueListner Listner)
+	public static GL_MsgBox Show(String msg, String title, int initialValue, returnValueListner Listner)
 	{
 		mReturnListner = Listner;
 		isDoubleInputBox = false;
-		Size msgBoxSize = calcMsgBoxSize(msg, true, true, false);
-		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, (msgBoxSize.width - (margin * 2)) / 5 * 4);
 
-		NumerikInputBox msgBox = new NumerikInputBox(msgBoxSize, "MsgBox");
+		Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
+
+		float margin = GL_MsgBox.margin;
+		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);
+
+		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, (msgBoxSize.width - (margin * 2)) / 5 * 4);
 
 		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 
@@ -81,7 +85,7 @@ public class NumerikInputBox extends GL_MsgBox
 		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withoutDotOkCancel, listner);
 		numPad.setY(margin);
 		msgBox.addFooterChild(numPad);
-		msgBox.mFooterHeight = numPad.getHeight() + (margin * 2);
+		msgBox.setFooterHeight(numPad.getHeight() + (margin * 2));
 
 		GL.that.showDialog(msgBox);
 		GL.that.addRenderView(msgBox, GL.FRAME_RATE_IDLE);// Cursor blink
@@ -89,15 +93,17 @@ public class NumerikInputBox extends GL_MsgBox
 		return msgBox;
 	}
 
-	public static NumerikInputBox Show(String msg, String title, double initialValue, returnValueListnerDouble Listner)
+	public static GL_MsgBox Show(String msg, String title, double initialValue, returnValueListnerDouble Listner)
 	{
 		mReturnListnerDouble = Listner;
 		isDoubleInputBox = true;
-		Size msgBoxSize = calcMsgBoxSize(msg, true, true, false);
-		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, (msgBoxSize.width - (margin * 2)) / 5 * 4);
+		Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
 
-		NumerikInputBox msgBox = new NumerikInputBox(msgBoxSize, "MsgBox");
+		float margin = GL_MsgBox.margin;
+		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);
+
+		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, (msgBoxSize.width - (margin * 2)) / 5 * 4);
 
 		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 
@@ -143,7 +149,7 @@ public class NumerikInputBox extends GL_MsgBox
 		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withOkCancel, listner);
 		numPad.setY(margin);
 		msgBox.addFooterChild(numPad);
-		msgBox.mFooterHeight = numPad.getHeight() + (margin * 2);
+		msgBox.setFooterHeight(numPad.getHeight() + (margin * 2));
 
 		GL.that.showDialog(msgBox);
 		GL.that.addRenderView(msgBox, GL.FRAME_RATE_IDLE);// Cursor blink
@@ -286,6 +292,20 @@ public class NumerikInputBox extends GL_MsgBox
 
 		// register Textfield render
 		editText.setFocus();
+	}
+
+	@Override
+	protected void Initial()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }

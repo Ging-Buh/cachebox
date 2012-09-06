@@ -11,6 +11,7 @@ import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.Import;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
+import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
@@ -86,14 +87,20 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					}
 					return true;
 				case MI_FilterSet:
-					// new CB_Action_ShowActivity("filtersettings", MI_FilterSet, ViewConst.FILTER_SETTINGS, SpriteCache.Icons.get(13))
-					// .Execute();
+
 					EditFilterSettings edFi = new EditFilterSettings(ActivityBase.ActivityRec(), "EditCoord");
 					edFi.show();
 
 					return true;
 				case MI_SEARCH:
-					new CB_Action_ShowActivity("search", MI_SEARCH, ViewConst.SEARCH, SpriteCache.Icons.get(27)).Execute();
+
+					if (SearchDialog.that == null)
+					{
+						new SearchDialog();
+					}
+
+					SearchDialog.that.showNotCloseAutomaticly();
+
 					return true;
 				case MI_IMPORT:
 					Import imp = new Import();

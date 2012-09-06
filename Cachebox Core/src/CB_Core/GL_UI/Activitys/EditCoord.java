@@ -310,7 +310,6 @@ public class EditCoord extends ActivityBase
 		createTrSec();
 		createTrUtn();
 
-		GL.that.renderForTextField(tbUZone);
 	}
 
 	private void createTrUtn()

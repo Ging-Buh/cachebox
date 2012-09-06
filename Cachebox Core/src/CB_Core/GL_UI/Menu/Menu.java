@@ -48,14 +48,14 @@ public class Menu extends Dialog
 
 		if (ItemHeight == -1f) ItemHeight = UiSizes.getButtonHeight();
 
-		MENU_REC = new CB_RectF(new SizeF(400, mHeaderHight + mFooterHeight + (margin * 2)));
+		MENU_REC = new CB_RectF(new SizeF(400, mHeaderHight + getFooterHeight() + (margin * 2)));
 
 		this.setRec(MENU_REC);
 
 		mListView = new V_ListView(this, "MenuList");
-
-		mListView.setWidth(this.width);
-		mListView.setHeight(this.height);
+		mListView.setSize(this.getContentSize());
+		// mListView.setWidth(this.width - Left - Right);
+		// mListView.setHeight(this.height);
 
 		mListView.setZeroPos();
 		this.addChild(mListView);
@@ -175,9 +175,9 @@ public class Menu extends Dialog
 
 	private void layout()
 	{
-		float higherValue = this.height + ItemHeight * mItems.size() + mListView.getDividerHeight();
+		float higherValue = mHeaderHight + getFooterHeight() + (margin * 2) + (ItemHeight + mListView.getDividerHeight()) * mItems.size();
 
-		if (higherValue < UiSizes.getWindowHeight() * 0.8f)
+		if (higherValue < UiSizes.getWindowHeight() * 0.95f)
 		{
 			this.setSize(GL_UISizes.UI_Left.getWidth() / 1.2f, higherValue);
 
@@ -242,6 +242,17 @@ public class Menu extends Dialog
 
 		this.setHeight(this.height + mTitleHeight);
 
+	}
+
+	@Override
+	public void onRezised(CB_RectF rec)
+	{
+		super.onRezised(rec);
+		if (mListView != null)
+		{
+			mListView.setSize(this.getContentSize());
+			mListView.setZeroPos();
+		}
 	}
 
 }

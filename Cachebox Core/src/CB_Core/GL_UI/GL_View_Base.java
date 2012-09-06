@@ -327,9 +327,6 @@ public abstract class GL_View_Base extends CB_RectF
 
 		batch.end();
 
-		// synchronized (runOnGL_List)
-		// {
-
 		if (runOnGL_List.size() > 0)
 		{
 			for (runOnGL run : runOnGL_List)
@@ -339,7 +336,6 @@ public abstract class GL_View_Base extends CB_RectF
 
 			runOnGL_List.clear();
 		}
-		// }
 
 		batch.begin();
 		this.render(batch);

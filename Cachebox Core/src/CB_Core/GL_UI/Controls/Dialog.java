@@ -46,7 +46,7 @@ public abstract class Dialog extends CB_View_Base
 	protected boolean mHasTitle = false;
 
 	protected float mHeaderHight = 200;
-	protected float mFooterHeight = 200;
+	private float mFooterHeight = 200;
 
 	public static float margin = 5f;
 
@@ -56,7 +56,7 @@ public abstract class Dialog extends CB_View_Base
 	{
 		super(rec, Name);
 		mHeaderHight = margin = calcHeaderHeight();
-		mFooterHeight = calcFooterHeight(false);
+		setFooterHeight(calcFooterHeight(false));
 		// calcBase
 		pW = (int) (SpriteCache.Dialog.get(2).getWidth() / 8);
 
@@ -188,10 +188,7 @@ public abstract class Dialog extends CB_View_Base
 
 		// debug mContent.setBackground(new ColorDrawable(Color.RED));
 
-		mContent.setHeight(this.height - mHeaderHight - mFooterHeight - mTitleHeight - margin);
-		float centerversatzX = this.halfWidth - mContent.getHalfWidth();
-		float centerversatzY = mFooterHeight;// this.halfHeight - mContent.getHalfHeight();
-		mContent.setPos(new Vector2(centerversatzX, centerversatzY));
+		reziseContentBox();
 
 		for (Iterator<GL_View_Base> iterator = contentChilds.iterator(); iterator.hasNext();)
 		{
@@ -209,6 +206,14 @@ public abstract class Dialog extends CB_View_Base
 		}
 	}
 
+	private void reziseContentBox()
+	{
+		mContent.setHeight(this.height - mHeaderHight - getFooterHeight() - mTitleHeight - margin);
+		float centerversatzX = this.halfWidth - mContent.getHalfWidth();
+		float centerversatzY = getFooterHeight();// this.halfHeight - mContent.getHalfHeight();
+		mContent.setPos(new Vector2(centerversatzX, centerversatzY));
+	}
+
 	@Override
 	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
 	{
@@ -216,10 +221,10 @@ public abstract class Dialog extends CB_View_Base
 		batch.begin();
 
 		if (mHeader9patch != null) mHeader9patch.draw(batch, 0, this.height - mTitleHeight - mHeaderHight, this.width, mHeaderHight);
-		if (mFooter9patch != null) mFooter9patch.draw(batch, 0, 0, this.width, mFooterHeight + 2);
+		if (mFooter9patch != null) mFooter9patch.draw(batch, 0, 0, this.width, getFooterHeight() + 2);
 
-		if (mCenter9patch != null) mCenter9patch.draw(batch, 0, mFooterHeight, this.width,
-				(this.height - mFooterHeight - mHeaderHight - mTitleHeight) + 3.5f);
+		if (mCenter9patch != null) mCenter9patch.draw(batch, 0, getFooterHeight(), this.width, (this.height - getFooterHeight()
+				- mHeaderHight - mTitleHeight) + 3.5f);
 
 		if (mHasTitle)
 		{
@@ -287,6 +292,7 @@ public abstract class Dialog extends CB_View_Base
 
 	public void setTitle(String title)
 	{
+		// TODO Der Titel wird nicht mehr angezeigt
 		mTitle = title;
 	}
 
@@ -346,6 +352,38 @@ public abstract class Dialog extends CB_View_Base
 	public void RemoveChildsFromOverlay()
 	{
 		overlay.clear();
+	}
+
+	@Override
+	public void onRezised(CB_RectF rec)
+	{
+		super.onRezised(rec);
+		if (mContent == null)
+		{
+			this.initialDialog();
+		}
+		else
+		{
+			reziseContentBox();
+		}
+	}
+
+	public float getFooterHeight()
+	{
+		return mFooterHeight;
+	}
+
+	public void setFooterHeight(float mFooterHeight)
+	{
+		this.mFooterHeight = mFooterHeight;
+		if (mContent == null)
+		{
+			this.initialDialog();
+		}
+		else
+		{
+			reziseContentBox();
+		}
 	}
 
 }

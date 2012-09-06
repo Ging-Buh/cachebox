@@ -14,12 +14,13 @@ import CB_Core.Math.CB_RectF;
  */
 public abstract class PopUp_Base extends CB_View_Base
 {
-
-	private final int SHOW_TIME = 4000;
+	public static final int SHOW_TIME_NEVER_CLOSE = -1;
+	public static final int SHOW_TIME_NORMAL = 4000;
 
 	public PopUp_Base(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
+
 	}
 
 	@Override
@@ -30,13 +31,23 @@ public abstract class PopUp_Base extends CB_View_Base
 
 	public void show(float x, float y)
 	{
-		show(x, y, SHOW_TIME);
+		show(x, y, SHOW_TIME_NORMAL);
+	}
+
+	public void showNotCloseAutomaticly(float x, float y)
+	{
+		show(x, y, SHOW_TIME_NEVER_CLOSE);
+	}
+
+	public void showNotCloseAutomaticly()
+	{
+		show(this.getX(), this.getY(), SHOW_TIME_NEVER_CLOSE);
 	}
 
 	public void show(float x, float y, int msec)
 	{
 		GL.that.showPopUp(this, x, y);
-		startCloseTimer(msec);
+		if (msec != SHOW_TIME_NEVER_CLOSE) startCloseTimer(msec);
 	}
 
 	public void close()

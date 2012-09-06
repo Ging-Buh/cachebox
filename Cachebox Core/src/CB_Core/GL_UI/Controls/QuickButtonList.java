@@ -107,23 +107,24 @@ public class QuickButtonList extends H_ListView
 	@Override
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
-		try
-		{
-			synchronized (this.childs)
-			{
 
+		synchronized (this.childs)
+		{
+
+			try
+			{
 				for (GL_View_Base btn : this.childs)
 				{
 					btn.onTouchDragged(x, y, pointer, KineticPan);
 				}
-
 			}
-			return super.onTouchDragged(x, y, pointer, KineticPan);
+			catch (ConcurrentModificationException e)
+			{
+				return false;
+			}
 		}
-		catch (ConcurrentModificationException e)
-		{
-			return false;
-		}
+
+		return super.onTouchDragged(x, y, pointer, KineticPan);
 	}
 
 	public static MoveableList<QuickButtonItem> quickButtonList;

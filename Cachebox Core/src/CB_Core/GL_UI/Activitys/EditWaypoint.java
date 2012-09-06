@@ -106,7 +106,7 @@ public class EditWaypoint extends ActivityBase
 	@Override
 	protected void Initial()
 	{
-		GL.that.renderForTextField(etTitle);
+
 	}
 
 	private void iniCacheNameLabel()

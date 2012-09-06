@@ -176,7 +176,7 @@ public abstract class ListViewBase extends CB_View_Base
 
 	protected boolean mReloadItems = false;
 
-	protected void reloadItems()
+	public void reloadItems()
 	{
 		mReloadItems = true;
 
@@ -337,7 +337,7 @@ public abstract class ListViewBase extends CB_View_Base
 	 * Überprüft ob die Liste oben oder unten Platz hat und lösst eine Animation aus, in der die Liste auf die erste oder letzte Position
 	 * scrollt.
 	 */
-	protected void chkSlideBack()
+	public void chkSlideBack()
 	{
 		// Logger.LogCat("chkSlideBack()");
 		if (!mIsDrageble)

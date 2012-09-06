@@ -692,4 +692,16 @@ public class Cache implements Comparable<Cache>
 		gcLogin = null;
 	}
 
+	private boolean isSearchVisible = true;
+
+	public void setSearchVisible(boolean value)
+	{
+		isSearchVisible = value;
+	}
+
+	public boolean isSearchVisible()
+	{
+		return isSearchVisible;
+	}
+
 }

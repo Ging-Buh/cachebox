@@ -136,12 +136,22 @@ public class Button extends CB_View_Base
 			{
 				drawablePressed.draw(batch, 0, 0, width, height);
 			}
+			else
+			{
+				Initial();
+				GL.that.renderOnce(this.getName() + " render");
+			}
 		}
 		else
 		{
 			if (drawableDisabled != null)
 			{
 				drawableDisabled.draw(batch, 0, 0, width, height);
+			}
+			else
+			{
+				Initial();
+				GL.that.renderOnce(this.getName() + " render");
 			}
 		}
 
@@ -303,6 +313,12 @@ public class Button extends CB_View_Base
 	public void performClick()
 	{
 		click(0, 0, 0, 0);
+
+	}
+
+	public void setEnable(boolean value)
+	{
+		isDisabled = !value;
 
 	}
 

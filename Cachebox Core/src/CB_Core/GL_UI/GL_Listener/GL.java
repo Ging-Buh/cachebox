@@ -962,15 +962,21 @@ public class GL implements ApplicationListener
 
 		aktView.addChild(popUp);
 		aktPopUp = popUp;
-
+		aktPopUp.onShow();
 	}
 
 	public void closePopUp(PopUp_Base popUp)
 	{
 		CB_View_Base aktView = DialogIsShown ? mDialog : child;
 		aktView.removeChild(popUp);
+		aktPopUp.onHide();
 		aktPopUp = null;
 
+	}
+
+	public boolean PopUpIsShown()
+	{
+		return (aktPopUp != null);
 	}
 
 	public void showDialog(final Dialog dialog)
@@ -997,6 +1003,11 @@ public class GL implements ApplicationListener
 		if (atTop) y = height - dialog.getHeight() - (Dialog.margin * 4);
 
 		dialog.setPos(x, y);
+
+		if (aktPopUp != null)
+		{
+			closePopUp(aktPopUp);
+		}
 
 		if (actDialog != null)
 		{
@@ -1057,6 +1068,11 @@ public class GL implements ApplicationListener
 		setKeyboardFocus(null);
 		clearRenderViews();
 		platformConector.showForDialog();
+
+		if (aktPopUp != null)
+		{
+			closePopUp(aktPopUp);
+		}
 
 		if (GlobalCore.isTab)
 		{

@@ -23,8 +23,11 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 
 public class MultiToggleButton extends Button
 {
@@ -43,7 +46,7 @@ public class MultiToggleButton extends Button
 
 	private States aktState;
 	private int StateId = 0;
-	private Sprite led;
+	private Drawable led;
 	private ArrayList<States> State = new ArrayList<MultiToggleButton.States>();
 	private OnStateChangeListener mOnStateChangeListener;
 
@@ -69,6 +72,14 @@ public class MultiToggleButton extends Button
 	@Override
 	public boolean click(int x, int y, int pointer, int button)
 	{
+		// wenn Button disabled ein Behandelt zurück schicken,
+		// damit keine weiteren Abfragen durchgereicht werden.
+		// Auch wenn dieser Button ein OnClickListner hat.
+		if (isDisabled)
+		{
+			return true;
+		}
+
 		if (lastStateWithLongClick)
 		{
 			if (StateId == State.size() - 2)
@@ -87,12 +98,21 @@ public class MultiToggleButton extends Button
 
 		setState(StateId, true);
 
-		return true;
+		return super.click(x, y, pointer, button);
+
 	}
 
 	@Override
 	public boolean longClick(int x, int y, int pointer, int button)
 	{
+		// wenn Button disabled ein Behandelt zurück schicken,
+		// damit keine weiteren Abfragen durchgereicht werden.
+		// Auch wenn dieser Button ein OnClickListner hat.
+		if (isDisabled)
+		{
+			return true;
+		}
+
 		if (lastStateWithLongClick)
 		{
 			setState(State.size() - 1, true);
@@ -199,10 +219,27 @@ public class MultiToggleButton extends Button
 		// Draw LED
 		if (aktState != null)
 		{
-			led = SpriteCache.ToggleBtn.get(2);
-			led.setBounds(0, 0, width, height);
-			led.setColor(aktState.color);
-			led.draw(batch);
+			if (led == null)
+			{
+				Sprite sprite = SpriteCache.ToggleBtn.get(2);
+				int patch = (int) ((sprite.getWidth() / 2) - 5);
+				led = new NinePatchDrawable(new NinePatch(sprite, patch, patch, 1, 1));
+			}
+
+			float A = 0, R = 0, G = 0, B = 0; // Farbwerte der batch um diese wieder einzustellen, wenn ein ColorFilter angewandt wurde!
+
+			Color c = batch.getColor();
+			A = c.a;
+			R = c.r;
+			G = c.g;
+			B = c.b;
+
+			batch.setColor(aktState.color);
+
+			led.draw(batch, 0, 0, width, height);
+
+			// alte abgespeicherte Farbe des Batches wieder herstellen!
+			batch.setColor(R, G, B, A);
 		}
 
 	}

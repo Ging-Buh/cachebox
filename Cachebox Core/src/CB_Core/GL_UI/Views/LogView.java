@@ -88,6 +88,8 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 		if (itemList == null) itemList = new ArrayList<LogViewItem>();
 		itemList.clear();
 
+		if (cache == null) return; // Kein Cache angewählt
+
 		ArrayList<LogEntry> cleanLogs = new ArrayList<LogEntry>();
 		cleanLogs = Database.Logs(cache);// cache.Logs();
 
@@ -151,6 +153,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 		@Override
 		public float getItemSize(int position)
 		{
+			if (itemList.size() == 0) return 0;
 			return itemList.get(position).getHeight();
 		}
 

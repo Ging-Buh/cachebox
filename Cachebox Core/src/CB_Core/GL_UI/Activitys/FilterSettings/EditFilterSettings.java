@@ -285,7 +285,7 @@ public class EditFilterSettings extends ActivityBase
 	{
 
 		props = Props;
-		pd = WaitDialog.ShowWait(GlobalCore.Translations.Get("LoadCaches"));
+		pd = WaitDialog.ShowWait(GlobalCore.Translations.Get("FilterCaches"));
 
 		Thread thread = new Thread()
 		{

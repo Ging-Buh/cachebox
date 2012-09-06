@@ -74,8 +74,7 @@ public class ActivityBase extends Dialog
 	@Override
 	public void onShow()
 	{
-		// register for TextField render, the most Activitys have an Textfield
-		GL.that.addRenderView(this, GL.FRAME_RATE_TEXT_FIELD);
+
 	}
 
 	public void show()

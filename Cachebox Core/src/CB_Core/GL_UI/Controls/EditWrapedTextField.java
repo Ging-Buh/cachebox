@@ -464,7 +464,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		}
 
 		int lineCount = displayText.size();
-		if (listener != null) listener.lineCountChanged(this, lineCount, lineHeight * lineCount);
+		sendLineCountChanged(lineCount, lineHeight * lineCount);
 	}
 
 	// Wenn calcCursor == true -> Cursorposition wird evtl. angepasst, sonst nicht
@@ -521,7 +521,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						// komplette Zeile löschen
 						displayText.remove(dt);
 						int lineCount = displayText.size();
-						if (listener != null) listener.lineCountChanged(this, lineCount, lineHeight * lineCount);
+						sendLineCountChanged(lineCount, lineHeight * lineCount);
 					}
 					else
 					{
@@ -1192,7 +1192,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 		int lineCount = displayText.size();
 
-		if (listener != null) listener.lineCountChanged(this, lineCount, lineHeight * lineCount);
+		sendLineCountChanged(lineCount, lineHeight * lineCount);
 
 	}
 
@@ -1446,6 +1446,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				if (selection != null)
 				{
 					delete();
+					sendKeyTyped(character);
 					return true;
 				}
 				else
@@ -1458,6 +1459,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						cursor.pos--;
 						checkCursorVisible(true);
 						GL.that.renderOnce("EditWrapedTextField");
+						sendKeyTyped(character);
 						return true;
 					}
 					else
@@ -1473,9 +1475,10 @@ public class EditWrapedTextField extends EditTextFieldBase
 							updateDisplayText(dt2, true);
 
 							int lineCount = displayText.size();
-							if (listener != null) listener.lineCountChanged(this, lineCount, lineHeight * lineCount);
+							sendLineCountChanged(lineCount, lineHeight * lineCount);
 						}
 						GL.that.renderOnce("EditWrapedTextField");
+						sendKeyTyped(character);
 						return true;
 					}
 				}
@@ -1495,6 +1498,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 								+ dt.displayText.substring(cursor.pos + 1, dt.displayText.length());
 						updateDisplayText(dt, true);
 						GL.that.renderOnce("EditWrapedTextField");
+						sendKeyTyped(character);
 						return true;
 					}
 					else
@@ -1509,6 +1513,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 							updateDisplayText(dt, true);
 							GL.that.renderOnce("EditWrapedTextField");
 						}
+						sendKeyTyped(character);
 						return true;
 					}
 				}
@@ -1550,6 +1555,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 					if (selection != null) delete();
 					insertNewLine();
 					clearSelection();
+					sendKeyTyped(character);
 					return true;
 				}
 			}
@@ -1593,7 +1599,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				// }
 				GL.that.renderOnce("EditWrapedTextField");
 			}
-			if (listener != null) listener.keyTyped(this, character);
+			sendKeyTyped(character);
 			return true;
 		}
 		else
@@ -1610,15 +1616,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 	private boolean isWraped()
 	{
 		return type == TextFieldType.MultiLineWraped;
-	}
-
-	/**
-	 * @param listener
-	 *            May be null.
-	 */
-	public void setTextFieldListener(TextFieldListener listener)
-	{
-		this.listener = listener;
 	}
 
 	/**

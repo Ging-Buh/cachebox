@@ -6,10 +6,10 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
@@ -239,7 +239,12 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 				return true;
 
 			case MI_SEARCH:
-				new CB_Action_ShowActivity("search", MI_SEARCH, ViewConst.SEARCH, SpriteCache.Icons.get(27)).Execute();
+				if (SearchDialog.that == null)
+				{
+					new SearchDialog();
+				}
+
+				SearchDialog.that.showNotCloseAutomaticly();
 				return true;
 
 			case MI_TREC_REC:

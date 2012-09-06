@@ -92,6 +92,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool hasPQ_PlugIn;
 	public SettingBool hasFTF_PlugIn;
 	public SettingBool dynamicZoom;
+	public SettingBool dynamicFilterAtSearch;
 
 	// int
 	public SettingInt LogMaxMonthAge;
@@ -229,6 +230,8 @@ public class SettingsClass extends SettingsList
 		addSetting(MapViewFontFaktor = new SettingDouble("MapViewFontFaktor", SettingCategory.Map, EXPERT, 1.0, true));
 		addSetting(vibrateFeedback = new SettingBool("vibrateFeedback", cat, NORMAL, true, true));
 		addSetting(LongClicktime = new SettingInt("LongClicktime", cat, NORMAL, 600, true));
+
+		addSetting(dynamicFilterAtSearch = new SettingBool("dynamicFilterAtSearch", cat, NORMAL, true, true));
 
 	}
 

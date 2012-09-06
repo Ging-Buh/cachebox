@@ -1,5 +1,7 @@
 package CB_Core.GL_UI.Controls;
 
+import java.util.ArrayList;
+
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Plattform;
@@ -24,7 +26,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class Slider extends CB_View_Base implements SelectedCacheEvent
 {
 	private final int ANIMATION_TIME = 50;// 50;
-	private static Slider that;
+	public static Slider that;
 	private QuickButtonList quickButtonList;
 
 	private Label mLblCacheName;
@@ -42,6 +44,31 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	private boolean isKinetigPan = false;
 
 	private Handler handler = new Handler();
+
+	private ArrayList<YPositionChanged> eventList = new ArrayList<YPositionChanged>();
+
+	public interface YPositionChanged
+	{
+		public void Position(float top, float Bottom);
+	}
+
+	public void registerPosChangedEvent(YPositionChanged listner)
+	{
+		if (!eventList.contains(listner)) eventList.add(listner);
+	}
+
+	public void removePosChangedEvent(YPositionChanged listner)
+	{
+		eventList.remove(listner);
+	}
+
+	private void callPosChangedEvent()
+	{
+		for (YPositionChanged event : eventList)
+		{
+			event.Position(mSlideBox.getMaxY(), mSlideBox.getY());
+		}
+	}
 
 	private float yPos = 0;
 
@@ -109,6 +136,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		mSlideBox.setY(value);
 		setQuickButtonListHeight();
 		GL.that.renderOnce(this.name);
+		callPosChangedEvent();
 	}
 
 	private void setQuickButtonListHeight()

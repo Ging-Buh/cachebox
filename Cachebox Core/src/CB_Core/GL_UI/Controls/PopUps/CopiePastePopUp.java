@@ -98,7 +98,6 @@ public class CopiePastePopUp extends PopUp_Base
 	@Override
 	public void Initial()
 	{
-
 	}
 
 	public void flipX()

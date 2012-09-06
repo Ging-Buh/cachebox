@@ -164,7 +164,6 @@ public class MesureCoordinate extends ActivityBase implements PositionChangedEve
 	protected void Initial()
 	{
 		repaintPreview();
-		GL.that.addRenderView(this, GL.FRAME_RATE_TEXT_FIELD);
 	}
 
 	@Override
@@ -181,7 +180,6 @@ public class MesureCoordinate extends ActivityBase implements PositionChangedEve
 
 	private void repaintPreview()
 	{
-		GL.that.addRenderView(this, GL.FRAME_RATE_TEXT_FIELD);
 		if (inRepaint) return;
 		inRepaint = true;
 

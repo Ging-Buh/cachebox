@@ -77,7 +77,7 @@ public class ButtonDialog extends Dialog
 		addChild(label);
 		mMsgBoxClickListner = Listener;
 
-		mFooterHeight = 80;
+		setFooterHeight(80);
 	}
 
 	@Override
@@ -159,7 +159,7 @@ public class ButtonDialog extends Dialog
 		else
 		{
 			// no Buttons
-			mFooterHeight = calcFooterHeight(false);
+			setFooterHeight(calcFooterHeight(false));
 		}
 	}
 
@@ -207,7 +207,7 @@ public class ButtonDialog extends Dialog
 
 		}
 
-		mFooterHeight = calcFooterHeight(true);
+		setFooterHeight(calcFooterHeight(true));
 	}
 
 	public void addFooterChild(CB_View_Base view)

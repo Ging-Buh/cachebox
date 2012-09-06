@@ -2608,12 +2608,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				Database.Data.GPXFilenameUpdateCacheCount();
 
-				// if (mapView.isShown())
-				// {
-				// mapView.updateCacheList();
-				// mapView.Render(true);
-				// }
-
 			}
 
 			onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));

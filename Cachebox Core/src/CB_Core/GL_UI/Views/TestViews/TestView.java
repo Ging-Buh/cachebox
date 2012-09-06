@@ -4,8 +4,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Activitys.SelectSolverFunction;
-import CB_Core.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
+import CB_Core.GL_UI.Activitys.SearchOverPosition;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
@@ -13,7 +12,6 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
-import CB_Core.Solver.Functions.Function;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -85,35 +83,14 @@ public class TestView extends CB_View_Base
 		Button btnSetting = new Button(this.width - Dialog.margin - (UiSizes.getButtonWidthWide() * 2), this.height - Dialog.margin
 				- UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide() * 2, UiSizes.getButtonHeight(), "");
 
-		btnSetting.setText("selectFunction");
+		btnSetting.setText("searchOverPos");
 		btnSetting.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				// neue selectsolver Activity erstellen und anzeigen!
-				new SelectSolverFunction(new IFunctionResult()
-				{
-
-					@Override
-					public void selectedFunction(Function function)
-					{
-						// ausgewählte Funktion verarbeiten!
-						// wenn funktion==null wurde Cancel gedrückt
-
-						if (function != null)
-						{
-							GL.that.Toast("Returned Function :" + function.getShortcut());
-						}
-						else
-						{
-							GL.that.Toast("Keine Funktion ausgewählt");
-						}
-
-					}
-				}).show();
-
+				new SearchOverPosition().show();
 				return false;
 			}
 		});
