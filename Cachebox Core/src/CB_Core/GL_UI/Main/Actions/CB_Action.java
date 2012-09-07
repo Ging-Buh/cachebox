@@ -48,6 +48,7 @@ public class CB_Action
 	public static int AID_SHOW_SELECT_DB_DIALOG = 34;
 	public static int AID_SHOW_TRACK_MENU = 35;
 	public static int AID_SHOW_QUIT = 36;
+	public static int AID_QUICK_FIELDNOTE = 37;
 
 	protected String name;
 	protected int id;

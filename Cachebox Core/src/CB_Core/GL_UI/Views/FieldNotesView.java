@@ -41,8 +41,8 @@ public class FieldNotesView extends V_ListView
 {
 	public static FieldNotesView that;
 	public static FieldNoteEntry aktFieldNote;
-	private int aktFieldNoteIndex = -1;
-	FieldNoteList lFieldNotes;
+	private static int aktFieldNoteIndex = -1;
+	static FieldNoteList lFieldNotes;
 	CustomAdapter lvAdapter;
 	public static CB_RectF ItemRec;
 
@@ -75,7 +75,7 @@ public class FieldNotesView extends V_ListView
 		if (firstShow)
 		{
 			firstShow = false;
-			showContextMenu();
+			getContextMenu().show();
 		}
 
 	}
@@ -175,7 +175,7 @@ public class FieldNotesView extends V_ListView
 	private static final int MI_EDIT_FIELDNOTE = 8;
 	private static final int MI_SELECT_CACHE = 9;
 
-	public void showContextMenu()
+	public Menu getContextMenu()
 	{
 		Menu cm = new Menu("CacheListContextMenu");
 
@@ -214,7 +214,7 @@ public class FieldNotesView extends V_ListView
 		cm.addItem(MI_NOTE, "writenote", SpriteCache.getThemedSprite("log2icon"));
 		cm.addItem(MI_MANAGE, "ManageNotes");
 
-		cm.show();
+		return cm;
 
 	}
 
@@ -399,7 +399,12 @@ public class FieldNotesView extends V_ListView
 		}
 	};
 
-	private void addNewFieldnote(int type)
+	public static void addNewFieldnote(int type)
+	{
+		addNewFieldnote(type, false);
+	}
+
+	public static void addNewFieldnote(int type, boolean witoutShowEdit)
 	{
 		Cache cache = GlobalCore.SelectedCache();
 
@@ -437,6 +442,15 @@ public class FieldNotesView extends V_ListView
 			// gilt nur für Found It! und DNF.
 			// needMaintance oder Note können zusätzlich angelegt werden
 			int index = 0;
+
+			if (lFieldNotes == null)
+			{
+				lFieldNotes = new FieldNoteList();
+
+			}
+
+			lFieldNotes.LoadFieldNotes("");
+
 			for (FieldNoteEntry nfne : lFieldNotes)
 			{
 				if ((nfne.CacheId == cache.Id) && (nfne.type == type))
@@ -489,11 +503,47 @@ public class FieldNotesView extends V_ListView
 			break;
 		}
 
-		efnActivity = new EditFieldNotes(newFieldNote, returnListner);
-		efnActivity.show();
+		if (!witoutShowEdit)
+		{
+			efnActivity = new EditFieldNotes(newFieldNote, returnListner);
+			efnActivity.show();
+		}
+		else
+		{
+			newFieldNote.WriteToDatabase();
+
+			if (newFieldNote.type == 1)
+			{
+				// Found it! -> Cache als gefunden markieren
+				if (!GlobalCore.SelectedCache().Found)
+				{
+					GlobalCore.SelectedCache().Found = true;
+					CacheDAO cacheDAO = new CacheDAO();
+					cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
+					Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
+					Config.AcceptChanges();
+				}
+			}
+			else if (newFieldNote.type == 2)
+			{
+				// DidNotFound -> Cache als nicht gefunden markieren
+				if (GlobalCore.SelectedCache().Found)
+				{
+					GlobalCore.SelectedCache().Found = false;
+					CacheDAO cacheDAO = new CacheDAO();
+					cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
+					Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
+					Config.AcceptChanges();
+				}
+				// und eine evtl. vorhandene FieldNote FoundIt löschen
+				lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.SelectedCache().Id, 1);
+			}
+
+			FieldNoteList.CreateVisitsTxt();
+		}
 	}
 
-	private EditFieldNotes.ReturnListner returnListner = new ReturnListner()
+	private static EditFieldNotes.ReturnListner returnListner = new ReturnListner()
 	{
 
 		@Override
@@ -557,7 +607,7 @@ public class FieldNotesView extends V_ListView
 		}
 	};
 
-	private String ReplaceTemplate(String template, FieldNoteEntry fieldNote)
+	private static String ReplaceTemplate(String template, FieldNoteEntry fieldNote)
 	{
 		DateFormat iso8601Format = new SimpleDateFormat("HH:mm");
 		String stime = iso8601Format.format(fieldNote.timestamp);
@@ -575,7 +625,7 @@ public class FieldNotesView extends V_ListView
 		return template;
 	}
 
-	EditFieldNotes efnActivity;
+	static EditFieldNotes efnActivity;
 
 	private void editFieldNote()
 	{
@@ -787,5 +837,15 @@ public class FieldNotesView extends V_ListView
 			return true;
 		}
 	};
+
+	public void notifyDatasetChanged()
+	{
+		lFieldNotes = new FieldNoteList();
+		lFieldNotes.LoadFieldNotes("");
+
+		that.setBaseAdapter(null);
+		lvAdapter = new CustomAdapter(lFieldNotes);
+		that.setBaseAdapter(lvAdapter);
+	}
 
 }

@@ -2,6 +2,7 @@ package CB_Core.GL_UI.GL_Listener;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.SortedMap;
@@ -32,6 +33,7 @@ import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.Log.Logger;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
@@ -57,7 +59,6 @@ public class GL implements ApplicationListener
 	public static final int FRAME_RATE_IDLE = 200;
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 15;
-	public static final int FRAME_RATE_TEXT_FIELD = 35;// TODO wird nicht mehr benötigt Blinken geht auch mit gestoppten Renderer
 
 	// Public Static Member
 	public static GL_Listener_Interface listenerInterface;
@@ -94,7 +95,8 @@ public class GL implements ApplicationListener
 	/**
 	 * Zwischenspeicher für die touchDown Positionen der einzelnen Finger
 	 */
-	private SortedMap<Integer, TouchDownPointer> touchDownPos = new TreeMap<Integer, TouchDownPointer>();
+	private SortedMap<Integer, TouchDownPointer> touchDownPos = Collections
+			.synchronizedSortedMap((new TreeMap<Integer, TouchDownPointer>()));
 
 	// private Listner
 	private renderStartet renderStartetListner = null;
@@ -321,12 +323,18 @@ public class GL implements ApplicationListener
 		return height;
 	}
 
+	private long downTime = 0;
+
 	// TouchEreignisse die von der View gesendet werden
 	// hier wird entschieden, wann TouchDonw, TouchDragged, TouchUp und Clicked, LongClicked Ereignisse gesendet werden müssen
 	public boolean onTouchDownBase(int x, int y, int pointer, int button)
 	{
 		misTouchDown = true;
 		touchDraggedActive = false;
+
+		// TODO lösche Debug code ######
+		downTime = System.currentTimeMillis();
+		// ##############################
 
 		GL_View_Base view = null;
 
@@ -362,8 +370,17 @@ public class GL implements ApplicationListener
 
 		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
 
-		if (!touchDownPos.containsKey(pointer)) return false; // für diesen Pointer ist kein touchDownPos gespeichert ->
-																// dürfte nicht passieren!!!
+		if (!touchDownPos.containsKey(pointer))
+		{
+			// für diesen Pointer ist kein touchDownPos gespeichert ->
+			// dürfte nicht passieren!!!
+
+			// Wenn Doch, dann Logge
+			Logger.Error("onTouchDraggedBase", "Keine TouchdownPos gespeichert");
+
+			return false;
+		}
+
 		TouchDownPointer first = touchDownPos.get(pointer);
 
 		try
@@ -397,13 +414,27 @@ public class GL implements ApplicationListener
 
 	public boolean onTouchUpBase(int x, int y, int pointer, int button)
 	{
+
+		// TODO lösche Debug code ######
+		if (System.currentTimeMillis() - downTime < 10) Logger.DEBUG("onTouchUp<10ms nach touchDown");
+		// ##############################
+
 		misTouchDown = false;
 		cancelLongClickTimer();
 
 		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
 
-		if (!touchDownPos.containsKey(pointer)) return false; // für diesen Pointer ist kein touchDownPos gespeichert ->
-																// dürfte nicht passieren!!!
+		if (!touchDownPos.containsKey(pointer))
+		{
+			// für diesen Pointer ist kein touchDownPos gespeichert ->
+			// dürfte nicht passieren!!!
+
+			// Wenn Doch, dann Logge
+			Logger.Error("onTouchDraggedBase", "Keine TouchdownPos gespeichert");
+
+			return false;
+		}
+
 		TouchDownPointer first = touchDownPos.get(pointer);
 
 		try
@@ -658,11 +689,6 @@ public class GL implements ApplicationListener
 			calcNewRenderSpeed();
 			// Logger.LogCat("removeRenderView " + view.getName() + "/verbleibende RenderViews" + renderViews.size());
 		}
-	}
-
-	public void renderForTextField(EditTextFieldBase textField)
-	{
-		addRenderView(textField, FRAME_RATE_TEXT_FIELD);
 	}
 
 	/**
@@ -1009,7 +1035,7 @@ public class GL implements ApplicationListener
 			closePopUp(aktPopUp);
 		}
 
-		if (actDialog != null)
+		if (actDialog != null && actDialog != dialog)
 		{
 			actDialog.onHide();
 			actDialog.setEnabled(false);

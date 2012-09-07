@@ -59,7 +59,7 @@ public class CB_Action_ShowSolverView2 extends CB_Action_ShowView
 	}
 
 	@Override
-	public boolean ShowContextMenu()
+	public Menu getContextMenu()
 	{
 		Menu cm = new Menu("CacheListContextMenu");
 
@@ -96,8 +96,6 @@ public class CB_Action_ShowSolverView2 extends CB_Action_ShowView
 		cm.addItem(MI_DELETE_LINE, "Zeile löschen", SpriteCache.Icons.get(13));
 		cm.addItem(MI_SET_AS_WAYPOINT, "Waypoint einfügen", SpriteCache.Icons.get(13));
 		cm.addItem(MI_SET_AS_MAPCENTER, "Map-Center setzen", SpriteCache.Icons.get(13));
-		cm.show();
-
-		return true;
+		return cm;
 	}
 }

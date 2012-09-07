@@ -43,8 +43,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 	@Override
 	public void Execute()
 	{
-		selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL.that.getWidth(), GL.that.getHeight()),
-				"SelectDbDialog", false);
+		selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL.that.getWidth(), GL.that.getHeight()), "SelectDbDialog", false);
 		selectDBDialog.setReturnListner(new ReturnListner()
 		{
 			@Override
@@ -61,7 +60,6 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 
 	private void returnFromSelectDB()
 	{
-		GL.that.closeActivity();
 		wd = WaitDialog.ShowWait("Load DB ...");
 
 		Thread thread = new Thread(new Runnable()
@@ -70,9 +68,18 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 			@Override
 			public void run()
 			{
+
 				synchronized (Database.Data.Query)
 				{
-					GL.that.showDialog(wd);
+					try
+					{
+						Thread.sleep(50);
+					}
+					catch (InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+
 					Config.settings.ReadFromDB();
 
 					GlobalCore.Categories = new Categories();
@@ -108,8 +115,11 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 							}
 						}
 					}
+
+					wd.dismis();
+
 				}
-				wd.dismis();
+
 			}
 		});
 

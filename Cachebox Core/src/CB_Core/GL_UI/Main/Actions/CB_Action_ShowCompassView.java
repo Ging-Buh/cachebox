@@ -44,15 +44,4 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 		return SpriteCache.Icons.get(6);
 	}
 
-	@Override
-	public boolean HasContextMenu()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean ShowContextMenu()
-	{
-		return false;
-	}
 }

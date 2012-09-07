@@ -24,7 +24,7 @@ public class Menu extends Dialog
 	public static CB_RectF MENU_REC = new CB_RectF(0, 0, 400, 60); // wird mit jedem Item größer
 	public float ItemHeight = -1f;
 
-	private ArrayList<MenuItem> mItems = new ArrayList<MenuItem>();
+	private ArrayList<MenuItemBase> mItems = new ArrayList<MenuItemBase>();
 	private V_ListView mListView;
 	private Menu that;
 
@@ -70,15 +70,6 @@ public class Menu extends Dialog
 		this.addChild(mListView);
 		mListView.setBaseAdapter(new CustomAdapter());
 
-		if (mListView.getMaxItemCount() < mItems.size())
-		{
-			mListView.setDragable();
-		}
-		else
-		{
-			mListView.setUndragable();
-		}
-
 		super.Initial();
 		super.initialDialog();
 	}
@@ -110,7 +101,7 @@ public class Menu extends Dialog
 		}
 	}
 
-	public void addItem(MenuItem menuItem)
+	public void addItem(MenuItemBase menuItem)
 	{
 		menuItem.setOnClickListener(MenuItemClickListner);
 		mItems.add(menuItem);
@@ -178,10 +169,19 @@ public class Menu extends Dialog
 
 	private void layout()
 	{
-		float higherValue = mTitleHeight + mHeaderHight + getFooterHeight() + (margin * 2) + (ItemHeight + mListView.getDividerHeight())
-				* mItems.size();
+		float higherValue = mTitleHeight + mHeaderHight + getFooterHeight() + (margin * 2);
+
+		for (MenuItemBase item : mItems)
+		{
+			higherValue += item.getHeight() + mListView.getDividerHeight();
+		}
 
 		higherValue = Math.min(higherValue, UiSizes.getWindowHeight() * 0.95f);
+
+		if (higherValue > UiSizes.getWindowHeight() * 0.95f)
+		{
+			higherValue = UiSizes.getWindowHeight() * 0.95f;
+		}
 
 		float MenuWidth = GL_UISizes.UI_Left.getWidth();
 
@@ -197,7 +197,7 @@ public class Menu extends Dialog
 		// Alle Items in der Breite anpassen
 
 		float w = mListView.getWidth();
-		for (MenuItem item : mItems)
+		for (MenuItemBase item : mItems)
 		{
 			item.setWidth(w);
 			item.resetInitial();
@@ -211,19 +211,27 @@ public class Menu extends Dialog
 		layout();
 		// wenn irgent ein Item Chackable ist, dann alle Titles Einrücken.
 		boolean oneIsChakable = false;
-		for (Iterator<MenuItem> iterator = mItems.iterator(); iterator.hasNext();)
+		for (Iterator<MenuItemBase> iterator = mItems.iterator(); iterator.hasNext();)
 		{
-			if (iterator.next().isCheckable())
+			MenuItemBase tmp = iterator.next();
+			if (tmp instanceof MenuItem)
 			{
-				oneIsChakable = true;
-				break;
+				if (((MenuItem) tmp).isCheckable())
+				{
+					oneIsChakable = true;
+					break;
+				}
 			}
 		}
 		if (oneIsChakable)
 		{
-			for (Iterator<MenuItem> iterator = mItems.iterator(); iterator.hasNext();)
+			for (Iterator<MenuItemBase> iterator = mItems.iterator(); iterator.hasNext();)
 			{
-				iterator.next().setLeft(true);
+				MenuItemBase tmp = iterator.next();
+				if (tmp instanceof MenuItem)
+				{
+					((MenuItem) tmp).setLeft(true);
+				}
 			}
 		}
 
@@ -243,6 +251,11 @@ public class Menu extends Dialog
 	public void setItemClickListner(OnClickListener onItemClickListner)
 	{
 		this.mOnItemClickListner = onItemClickListner;
+	}
+
+	public OnClickListener getItemClickListner()
+	{
+		return this.mOnItemClickListner;
 	}
 
 	@Override
@@ -267,6 +280,38 @@ public class Menu extends Dialog
 			mListView.setSize(this.getContentSize());
 			mListView.setZeroPos();
 		}
+	}
+
+	public ArrayList<MenuItemBase> getItems()
+	{
+		return mItems;
+	}
+
+	public void addItems(ArrayList<MenuItemBase> items)
+	{
+		mItems.addAll(items);
+	}
+
+	public void addDivider()
+	{
+		MenuItemDivider item = new MenuItemDivider(new SizeF(mListView.getWidth(), ItemHeight / 5), mItems.size(), "Menu Devider");
+
+		item.setEnabled(false);
+
+		addItem(item);
+	}
+
+	/**
+	 * Die indexes der Items werden neu erstellt.
+	 */
+	public void reorganizeIndexes()
+	{
+		int Index = 0;
+		for (MenuItemBase item : mItems)
+		{
+			item.setIndex(Index++);
+		}
+
 	}
 
 }

@@ -363,9 +363,9 @@ public class SelectDB extends ActivityBase
 
 		// reload settings for get filter form selected DB
 		Config.settings.ReadFromDB();
-
-		if (returnListner != null) returnListner.back();
 		finish();
+		if (returnListner != null) returnListner.back();
+
 	}
 
 	@Override

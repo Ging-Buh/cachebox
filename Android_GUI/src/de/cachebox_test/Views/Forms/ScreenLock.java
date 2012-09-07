@@ -5,12 +5,16 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
 
-public class ScreenLock extends Activity
+public class ScreenLock extends Activity implements OnTouchListener
 {
 	public static boolean SliderMoves = false;
 	public static boolean isShown = false;
@@ -90,6 +94,8 @@ public class ScreenLock extends Activity
 			finish();
 		}
 
+		((RelativeLayout) findViewById(R.id.screenLockLayout)).setOnTouchListener(this);
+
 	}
 
 	@Override
@@ -141,6 +147,13 @@ public class ScreenLock extends Activity
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event)
+	{
+		// Behandelt zurück senden, damit die Touch Events nicht durchgereicht werden!
+		return true;
 	}
 
 }

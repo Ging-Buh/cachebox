@@ -54,6 +54,7 @@ public enum QuickActions
 	Parking, // 17
 	Day_Night, // 18
 	FieldNotes, // 19
+	QuickFieldNotes, // 20
 
 	empty, ;
 
@@ -155,6 +156,9 @@ public enum QuickActions
 			return action_DayNight;
 		case 19:
 			return TabMainView.actionShowFieldNotesView;
+		case 20:
+			return TabMainView.actionQuickFieldNote;
+
 		}
 		return null;
 	}
@@ -203,6 +207,8 @@ public enum QuickActions
 			return GlobalCore.Translations.Get("DayNight");
 		case 19:
 			return GlobalCore.Translations.Get("Fieldnotes");
+		case 20:
+			return GlobalCore.Translations.Get("QuickFieldNote");
 		}
 		return "empty";
 	}

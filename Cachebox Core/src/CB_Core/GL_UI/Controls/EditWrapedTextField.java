@@ -1903,8 +1903,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 		{
 			if (GL.that.getKeyboardFocus() == this) GL.that.setKeyboardFocus(null);
 		}
-		GL.that.renderForTextField(this);
-
 	}
 
 	public void resetFocus()

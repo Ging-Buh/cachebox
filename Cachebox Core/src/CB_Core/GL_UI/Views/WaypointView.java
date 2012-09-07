@@ -154,7 +154,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			}
 
 			setSelection(selectionIndex);
-			ShowContextMenu();
+			getContextMenu().show();
 			return true;
 		}
 	};
@@ -168,7 +168,6 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 
@@ -317,7 +316,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	private final int MI_PROJECTION = 3;
 	private final int MI_FROM_GPS = 4;
 
-	public void ShowContextMenu()
+	public Menu getContextMenu()
 	{
 		Menu cm = new Menu("CacheListContextMenu");
 
@@ -357,8 +356,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 		cm.addItem(MI_FROM_GPS, "FromGps");
 
-		cm.show();
-
+		return cm;
 	}
 
 	private void addWP()

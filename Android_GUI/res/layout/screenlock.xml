@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
+<RelativeLayout android:layout_width="match_parent" android:id="@+id/screenLockLayout"
 	android:layout_height="match_parent" android:background="#00000000"
 	android:gravity="bottom" xmlns:android="http://schemas.android.com/apk/res/android">
 	<SeekBar android:id="@+id/unlock_slider" android:layout_width="fill_parent"

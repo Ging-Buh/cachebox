@@ -101,7 +101,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	}
 
 	@Override
-	public boolean ShowContextMenu()
+	public Menu getContextMenu()
 	{
 		Menu cm = new Menu("TrackListContextMenu");
 
@@ -241,8 +241,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 			cm.addItem(DELETE, "delete");
 		}
 
-		cm.show();
-		return true;
+		return cm;
 	}
 
 	private void showMenuCreate()

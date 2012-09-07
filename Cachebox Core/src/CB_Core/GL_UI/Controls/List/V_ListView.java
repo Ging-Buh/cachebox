@@ -239,6 +239,15 @@ public class V_ListView extends ListViewBase
 		mMaxItemCount = (int) (this.height / minimumItemSize);
 		if (mMaxItemCount < 1) mMaxItemCount = 1;
 
+		if (mAllSize > this.height)
+		{
+			this.setDragable();
+		}
+		else
+		{
+			this.setUndragable();
+		}
+
 	}
 
 	@Override
@@ -286,7 +295,6 @@ public class V_ListView extends ListViewBase
 	@Override
 	protected void Initial()
 	{
-		 
 
 	}
 
@@ -301,15 +309,6 @@ public class V_ListView extends ListViewBase
 	{
 		calcDefaultPosList();
 		reloadItems();
-
-		if (mAllSize > this.height)
-		{
-			this.setDragable();
-		}
-		else
-		{
-			this.setUndragable();
-		}
 
 		if (mBaseAdapter != null && mBaseAdapter.getCount() <= mSelectedIndex) setSelection(mBaseAdapter.getCount() - 1);
 

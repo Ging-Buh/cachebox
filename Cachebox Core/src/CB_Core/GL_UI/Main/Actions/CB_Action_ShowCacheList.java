@@ -68,7 +68,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 	}
 
 	@Override
-	public boolean ShowContextMenu()
+	public Menu getContextMenu()
 	{
 		Menu cm = new Menu("CacheListContextMenu");
 
@@ -152,8 +152,6 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		mi.setChecked(GlobalCore.autoResort);
 		cm.addItem(MI_CHK_STATE_API, "chkState", SpriteCache.Icons.get(35));
 
-		cm.show();
-
-		return true;
+		return cm;
 	}
 }

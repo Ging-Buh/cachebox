@@ -75,7 +75,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 	}
 
 	@Override
-	public boolean ShowContextMenu()
+	public Menu getContextMenu()
 	{
 
 		Menu icm = new Menu("menu_mapviewgl");
@@ -95,25 +95,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		mi = icm.addItem(MI_MAPVIEW_VIEW, "view");
 		mi = icm.addItem(MI_TREC_REC, "TrackRec");
 
-		icm.show();
-
-		// mi = cm.addItem(MI_LAYER, "Layer");
-		// for (Layer layer : ManagerBase.Manager.Layers)
-		// {
-		// mi = cm.addItem(MI_LAYER, "", layer.Name);
-		// mi.setData(layer);
-		// mi.setCheckable(true);
-		// if (layer == TabMainView.mapView.CurrentLayer)
-		// {
-		// mi.setChecked(true);
-		// }
-		// }
-		// mi = cm.addItem(MI_ROTATE, "Rotate Map");
-		// mi.setCheckable(true);
-		// mi.setChecked(TabMainView.mapView.GetAlignToCompass());
-		//
-		// cm.show();
-		return true;
+		return icm;
 	}
 
 	public void showMapLayerMenu()

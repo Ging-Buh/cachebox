@@ -456,6 +456,7 @@ public class SpriteCache
 			Dialog.add(getThemedSprite("dialog-center"));
 			Dialog.add(getThemedSprite("dialog-footer"));
 			Dialog.add(getThemedSprite("dialog-title"));
+			Dialog.add(getThemedSprite("menu-divider"));
 
 		}
 
@@ -588,6 +589,7 @@ public class SpriteCache
 			Icons.add(getThemedSprite("day-spinner")); // 51
 			Icons.add(getThemedSprite("add-icon")); // 52
 			Icons.add(getThemedSprite("target-day")); // 53
+			Icons.add(getThemedSprite("FieldNote")); // 54
 
 		}
 

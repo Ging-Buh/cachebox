@@ -318,13 +318,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		public ScreenLockTimer(long millisInFuture, long countDownInterval)
 		{
 			super(millisInFuture, countDownInterval);
+			Logger.DEBUG("create ScreenLockTimer innstanz: " + millisInFuture + "/" + countDownInterval);
 		}
 
 		@Override
 		public void onFinish()
 		{
+			Logger.DEBUG("ScreenLockTimer => onFinish");
+
 			startScreenLock();
-			// Toast.makH_LONG).show();
 		}
 
 		@Override
@@ -990,8 +992,19 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (requestCode == 12345)
 		{
+			Logger.DEBUG("Main back from ScreenLock");
+
+			if (runsWithAkku)
+			{
+				counter.start();
+			}
+			else
+			{
+				counter.cancel();
+			}
+
 			counterStopped = false;
-			counter.start();
+
 			return;
 		}
 		if (requestCode == 123456)
@@ -1101,8 +1114,17 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onPause()
 	{
-		if (!dontStop) stopped = true;
 		Logger.LogCat("Main=> onPause");
+
+		if (!dontStop)
+		{
+			stopped = true;
+		}
+		else
+		{
+			stopped = false;
+			graphics.isShown = true;
+		}
 
 		if (input == null)
 		{
@@ -1121,7 +1143,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 		super.onPause();
-		// graphics.isShown = true;
+
 	}
 
 	Dialog pWaitD;
@@ -1165,7 +1187,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		super.onResume();
 
-		if (runsWithAkku) counter.start();
+		if (counter != null)
+		{
+			if (runsWithAkku)
+			{
+				counter.start();
+			}
+			else
+			{
+				counter.cancel();
+			}
+		}
+
 		if (mSensorManager != null) mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
 		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
@@ -1890,7 +1923,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (viewGL == null)
 			{
+
+				if (gdxView != null) Logger.DEBUG("gdxView war initialisiert=" + gdxView.toString());
 				gdxView = initializeForView(glListener, false);
+
+				Logger.DEBUG("Initial new gdxView=" + gdxView.toString());
 
 				int GlSurfaceType = -1;
 				if (gdxView instanceof GLSurfaceView20) GlSurfaceType = ViewGL.GLSURFACE_VIEW20;
@@ -1956,10 +1993,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				// Weitergabe der Toucheingabe an den Gl_Listener
 				// ToDo: noch nicht fertig!!!!!!!!!!!!!
-				final int p = event.getActionIndex();
+
+				int action = event.getAction() & MotionEvent.ACTION_MASK;
+				final int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
+
 				try
 				{
-					switch (event.getActionMasked())
+					switch (action & MotionEvent.ACTION_MASK)
 					{
 					case MotionEvent.ACTION_POINTER_DOWN:
 					case MotionEvent.ACTION_DOWN:
@@ -1968,7 +2008,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							@Override
 							public void run()
 							{
-								glListener.onTouchDownBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
+								glListener.onTouchDownBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
+										event.getPointerId(pointerIndex), 0);
 							}
 						});
 						threadDown.run();
@@ -1980,7 +2021,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							@Override
 							public void run()
 							{
-								glListener.onTouchDraggedBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p));
+								glListener.onTouchDraggedBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
+										event.getPointerId(pointerIndex));
 							}
 						});
 						threadMove.run();
@@ -1994,7 +2036,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							@Override
 							public void run()
 							{
-								glListener.onTouchUpBase((int) event.getX(p), (int) event.getY(p), event.getPointerId(p), 0);
+								glListener.onTouchUpBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
+										event.getPointerId(pointerIndex), 0);
 							}
 						});
 						threadUp.run();
@@ -2837,6 +2880,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public void setScreenLockTimerNew(int value)
 	{
+		Logger.DEBUG("setScreenLockTimerNew");
 		counter.cancel();
 		counter = new ScreenLockTimer(value, value);
 		if (runsWithAkku) counter.start();

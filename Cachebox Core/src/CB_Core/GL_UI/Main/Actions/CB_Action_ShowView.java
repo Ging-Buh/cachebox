@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Main.Actions;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Main.CB_TabView;
 import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.GL_UI.Menu.Menu;
 
 public abstract class CB_Action_ShowView extends CB_Action
 {
@@ -36,10 +37,28 @@ public abstract class CB_Action_ShowView extends CB_Action
 		return false;
 	}
 
-	// zeigt, falls vorhanden das Contectmenü dieser View an und gibt true zurück
-	// oder gibt false zurück, falls kein Contextmenü vorhanden ist
-	public boolean ShowContextMenu()
+	/**
+	 * zeigt, falls vorhanden das Contectmenü dieser View an
+	 * 
+	 * @return gibt true zurück // oder gibt false zurück, falls kein Contextmenü vorhanden ist
+	 */
+	public final boolean ShowContextMenu()
 	{
-		return false;
+		Menu cm = getContextMenu();
+
+		if (cm == null) return false;
+
+		cm.show();
+		return true;
+	}
+
+	/**
+	 * gibt das ContextMenu dieser View zurück
+	 * 
+	 * @return
+	 */
+	public Menu getContextMenu()
+	{
+		return null;
 	}
 }

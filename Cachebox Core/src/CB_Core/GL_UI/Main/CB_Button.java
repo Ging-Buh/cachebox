@@ -120,41 +120,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 
 		if (mButtonActions.size() > 1)
 		{
-			Menu cm = new Menu("Name");
-
-			cm.setItemClickListner(new OnClickListener()
-			{
-				@Override
-				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-				{
-
-					int mId = ((MenuItem) v).getMenuItemId();
-					CB_ActionButton ba = mButtonActions.get(mId);
-					CB_Action action = ba.getAction();
-
-					action.CallExecute();
-					if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
-
-					GL.that.closeToast();
-
-					return true;
-				}
-			});
-
-			int index = 0;
-
-			for (CB_ActionButton ba : mButtonActions)
-			{
-				CB_Action action = ba.getAction();
-				if (action == null) continue;
-				// MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtention());
-				MenuItem mi = cm.addItem(index++, action.getName(), action.getNameExtention());
-				mi.setEnabled(action.getEnabled());
-				mi.setCheckable(action.getIsCheckable());
-				mi.setChecked(action.getIsChecked());
-				mi.setIcon(new SpriteDrawable(action.getIcon()));
-			}
-			cm.show();
+			getLongClickMenu().show();
 		}
 		else if (mButtonActions.size() == 1)
 		{
@@ -183,6 +149,45 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 		return true;
 	}
 
+	private Menu getLongClickMenu()
+	{
+		Menu cm = new Menu("Name");
+
+		cm.setItemClickListner(new OnClickListener()
+		{
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+
+				int mId = ((MenuItem) v).getMenuItemId();
+				CB_ActionButton ba = mButtonActions.get(mId);
+				CB_Action action = ba.getAction();
+
+				action.CallExecute();
+				if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
+
+				GL.that.closeToast();
+
+				return true;
+			}
+		});
+
+		int index = 0;
+
+		for (CB_ActionButton ba : mButtonActions)
+		{
+			CB_Action action = ba.getAction();
+			if (action == null) continue;
+			// MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtention());
+			MenuItem mi = cm.addItem(index++, action.getName(), action.getNameExtention());
+			mi.setEnabled(action.getEnabled());
+			mi.setCheckable(action.getIsCheckable());
+			mi.setChecked(action.getIsChecked());
+			mi.setIcon(new SpriteDrawable(action.getIcon()));
+		}
+		return cm;
+	}
+
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 	{
@@ -197,7 +202,45 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 					{
 						// Dieses View ist aktuell das Sichtbare
 						// -> ein Click auf den Menü-Button zeigt das Contextmenü
-						if (aktActionView.ShowContextMenu()) return true;
+						// if (aktActionView.ShowContextMenu()) return true;
+
+						if (aktActionView.HasContextMenu())
+						{
+							// das View Context Menü mit dem LongKlick Menü zusammen führen!
+
+							Menu viewContextMenu = aktActionView.getContextMenu();
+							// OnClickListener viewContextClickListner = viewContextMenu.getItemClickListner();
+
+							// Menu zusammen stellen!
+							// zuerst das View Context Menu
+							Menu compoundMenu = new Menu("compoundMenu");
+
+							// compoundMenu.setOnClickListener(new OnClickListener()
+							// {
+							//
+							// @Override
+							// public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+							// {
+							// // TODO Eventuell an den viewContextClickListner übergeben.
+							//
+							// return false;
+							// }
+							// });
+
+							compoundMenu.addItems(viewContextMenu.getItems());
+
+							// add divider
+							compoundMenu.addDivider();
+
+							compoundMenu.addItems(getLongClickMenu().getItems());
+
+							compoundMenu.reorganizeIndexes();
+
+							compoundMenu.show();
+
+							return true;
+						}
+
 					}
 				}
 			}

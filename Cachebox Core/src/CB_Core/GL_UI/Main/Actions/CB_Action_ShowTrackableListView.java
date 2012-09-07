@@ -40,17 +40,4 @@ public class CB_Action_ShowTrackableListView extends CB_Action_ShowView
 	{
 		return TabMainView.trackableListView;
 	}
-
-	@Override
-	public boolean HasContextMenu()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean ShowContextMenu()
-	{
-		return false;
-	}
-
 }

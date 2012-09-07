@@ -18,6 +18,7 @@ import CB_Core.GL_UI.Controls.Dialogs.Toast;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
+import CB_Core.GL_UI.Main.Actions.CB_Action_QuickFieldNote;
 import CB_Core.GL_UI.Main.Actions.CB_Action_RecTrack;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowAbout;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowActivity;
@@ -95,6 +96,8 @@ public class TabMainView extends MainViewBase
 	private CB_Action_ShowActivity actionNavigateTo1;
 	private CB_Action_ShowActivity actionNavigateTo2;
 	public static CB_Action_Show_SelectDB_Dialog actionShowSelectDbDialog = new CB_Action_Show_SelectDB_Dialog();
+
+	public static CB_Action_QuickFieldNote actionQuickFieldNote = new CB_Action_QuickFieldNote();
 
 	public static CB_Action_RecTrack actionRecTrack;
 	private CB_Action_ShowActivity actionRecVoice;
@@ -300,22 +303,23 @@ public class TabMainView extends MainViewBase
 		btn2.addAction(new CB_ActionButton(actionShowHint, false));
 		btn2.addAction(new CB_ActionButton(actionShowSpoilerView, false));
 		btn2.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
-		btn2.addAction(new CB_ActionButton(actionShowJokerView, false));
 		btn2.addAction(new CB_ActionButton(actionShowNotesView, false));
-		btn2.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
-		btn2.addAction(new CB_ActionButton(actionShowSolverView2, false));
 
+		btn3.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
+		btn3.addAction(new CB_ActionButton(actionShowCompassView, false, GestureDirection.Right));
+		btn3.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
+		btn3.addAction(new CB_ActionButton(actionTestView, false));
+
+		btn4.addAction(new CB_ActionButton(actionQuickFieldNote, false));
 		btn4.addAction(new CB_ActionButton(actionRecTrack, false));
 		btn4.addAction(new CB_ActionButton(actionRecVoice, false));
 		btn4.addAction(new CB_ActionButton(actionRecPicture, false));
 		btn4.addAction(new CB_ActionButton(actionRecVideo, false));
 		btn4.addAction(new CB_ActionButton(actionDelCaches, false));
 		btn4.addAction(new CB_ActionButton(actionParking, false));
-
-		btn3.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
-		btn3.addAction(new CB_ActionButton(actionShowCompassView, false, GestureDirection.Right));
-		btn3.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
-		btn3.addAction(new CB_ActionButton(actionTestView, false));
+		btn4.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
+		btn4.addAction(new CB_ActionButton(actionShowSolverView2, false));
+		btn4.addAction(new CB_ActionButton(actionShowJokerView, false));
 
 		btn5.addAction(new CB_ActionButton(actionShowAboutView, true, GestureDirection.Up));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
@@ -397,18 +401,20 @@ public class TabMainView extends MainViewBase
 		btn2.addAction(new CB_ActionButton(actionShowLogView, false, GestureDirection.Down));
 		btn2.addAction(new CB_ActionButton(actionShowHint, false));
 		btn2.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
-		btn2.addAction(new CB_ActionButton(actionShowJokerView, false));
 		btn2.addAction(new CB_ActionButton(actionShowNotesView, false));
 
 		btn3.addAction(new CB_ActionButton(actionShowCompassView, true, GestureDirection.Right));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
 
+		btn4.addAction(new CB_ActionButton(actionQuickFieldNote, false));
 		btn4.addAction(new CB_ActionButton(actionRecTrack, false));
 		btn4.addAction(new CB_ActionButton(actionRecVoice, false));
 		btn4.addAction(new CB_ActionButton(actionRecPicture, false));
 		btn4.addAction(new CB_ActionButton(actionRecVideo, false));
 		btn4.addAction(new CB_ActionButton(actionDelCaches, false));
 		btn4.addAction(new CB_ActionButton(actionParking, false));
+		btn4.addAction(new CB_ActionButton(actionShowSolverView2, false));
+		btn4.addAction(new CB_ActionButton(actionShowJokerView, false));
 
 		btn5.addAction(new CB_ActionButton(actionShowAboutView, true, GestureDirection.Up));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
@@ -437,11 +443,13 @@ public class TabMainView extends MainViewBase
 
 		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCache.Cache);
 		CB_Button btn3 = new CB_Button(btnRec, "Button3", SpriteCache.Nav);
+		CB_Button btn4 = new CB_Button(btnRec, "Button4", SpriteCache.Tool);
 
 		CB_ButtonList btnList = new CB_ButtonList();
 
 		btnList.addButton(btn2);
 		btnList.addButton(btn3);
+		btnList.addButton(btn4);
 
 		Tab.addButtonList(btnList);
 
@@ -458,13 +466,13 @@ public class TabMainView extends MainViewBase
 
 		// Actions den Buttons zuweisen
 		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true));
-		btn2.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
-		btn2.addAction(new CB_ActionButton(actionShowSolverView2, false));
 		btn2.addAction(new CB_ActionButton(actionShowSpoilerView, false));
 
 		btn3.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo2, false, GestureDirection.Down));
 		btn3.addAction(new CB_ActionButton(actionTestView, false));
+
+		btn4.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
 
 		btn3.performClick();// actionShowMap.Execute();
 	}

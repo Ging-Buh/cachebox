@@ -5,7 +5,6 @@ import java.awt.Menu;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
-import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 
@@ -13,7 +12,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class MenuItem extends ListViewItemBackground
+public class MenuItem extends MenuItemBase
 {
 	private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 
@@ -21,10 +20,10 @@ public class MenuItem extends ListViewItemBackground
 	private boolean mIsEnabled = true;
 	private Drawable mIcon;
 	private Label mLabel;
-	private boolean mIsCheckable = false;
-	private boolean mIsChecked = false;
-	private boolean mLeft = false;
-	private Object data = null;
+
+	protected boolean mIsCheckable = false;
+	protected boolean mIsChecked = false;
+	protected boolean mLeft = false;
 
 	private int mID;
 
@@ -35,7 +34,7 @@ public class MenuItem extends ListViewItemBackground
 		super(new CB_RectF(size), Index, Name);
 		mID = ID;
 
-		mIndex = ID;
+		mIndex = Index;
 	}
 
 	public int getMenuItemId()
@@ -101,7 +100,7 @@ public class MenuItem extends ListViewItemBackground
 		}
 
 		mLabel.setPos(x, y);
-		mLabel.setText(mTitle);
+		if (mTitle != null) mLabel.setText(mTitle);
 		if (!mIsEnabled)
 		{
 			mLabel.setTextColor(DISABLE_COLOR);

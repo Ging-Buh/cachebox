@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Main.Actions;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Views.WaypointView;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -49,10 +50,10 @@ public class CB_Action_ShowWaypointView extends CB_Action_ShowView
 	}
 
 	@Override
-	public boolean ShowContextMenu()
+	public Menu getContextMenu()
 	{
 
-		if (WaypointView.that != null) WaypointView.that.ShowContextMenu();
-		return true;
+		if (WaypointView.that != null) return WaypointView.that.getContextMenu();
+		return null;
 	}
 }

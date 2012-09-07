@@ -124,6 +124,15 @@ public class Logger
 		sendMsg(Msg, Short);
 	}
 
+	public static void Error(String Name, String Msg)
+	{
+		String Short = "[ERR]" + Name + " [" + Msg + "] ";
+		Msg = "[ERROR]- at " + Name + "- [" + Msg + "] ";
+
+		sendMsg(Msg, Short);
+
+	}
+
 	/**
 	 * Meldet eine generelle Msg
 	 * 
