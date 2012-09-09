@@ -217,7 +217,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public static LinearLayout strengthLayout;
 
-	public LinearLayout searchLayout;
+	// public LinearLayout searchLayout;
 
 	// Media
 
@@ -1105,13 +1105,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (isFinishing())
 		{
-			// TODO Stop Notify Service
 			NotifyService.finish = true;
 			unbindService(mConnection);
 		}
 
 		super.onPause();
 
+		Logger.DEBUG("Main=> onPause release SuppressPowerSaving");
+
+		this.mWakeLock.release();
 	}
 
 	Dialog pWaitD;
@@ -1700,7 +1702,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		strengthLayout = (LinearLayout) this.findViewById(R.id.main_strength_control);
 
-		searchLayout = (LinearLayout) this.findViewById(R.id.searchDialog);
+		// searchLayout = (LinearLayout) this.findViewById(R.id.searchDialog);
 
 	}
 

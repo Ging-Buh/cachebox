@@ -22,6 +22,7 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowActivity;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowHint;
+import CB_Core.GL_UI.Main.Actions.CB_Action_Show_Search;
 import CB_Core.GL_UI.Main.Actions.CB_Action_switch_Autoresort;
 import CB_Core.GL_UI.Main.Actions.CB_Action_switch_DayNight;
 import CB_Core.Math.CB_RectF;
@@ -224,7 +225,7 @@ public enum QuickActions
 
 		action_Voicerec = new CB_Action_ShowActivity("VoiceRec", CB_Action.AID_VOICE_REC, ViewConst.VOICE_REC, SpriteCache.Icons.get(11));
 
-		action_Search = new CB_Action_ShowActivity("search", CB_Action.AID_SEARCH, ViewConst.SEARCH, SpriteCache.Icons.get(27));
+		action_Search = new CB_Action_Show_Search();
 
 		action_Filtersettings = new CB_Action_ShowActivity("filtersettings", CB_Action.AID_SHOW_FILTER_SETTINGS, ViewConst.FILTER_SETTINGS,
 				SpriteCache.Icons.get(13));

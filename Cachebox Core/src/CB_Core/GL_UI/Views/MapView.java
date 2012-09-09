@@ -1659,9 +1659,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 		}
 
-		// im CarMode keine Richtungs Änderungen unter 10kmh
-		if (alignToCompassCarMode && GlobalCore.Locator.SpeedOverGround() < 10) return;
-
 		if (this.locator != null)
 		{
 			heading = this.locator.getHeading();
@@ -1670,6 +1667,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			heading = GlobalCore.Locator.getHeading();
 		}
+
+		// im CarMode keine Richtungs Änderungen unter 10kmh
+		if (alignToCompassCarMode && GlobalCore.Locator.SpeedOverGround() < 10) heading = this.mapHeading;
 
 		if (alignToCompass || alignToCompassCarMode)
 		{

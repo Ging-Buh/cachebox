@@ -1,12 +1,19 @@
 package CB_Core.GL_UI.Controls.PopUps;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Core.Config;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.DAO.CacheDAO;
+import CB_Core.DAO.CategoryDAO;
+import CB_Core.DAO.ImageDAO;
+import CB_Core.DAO.LogDAO;
+import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
+import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.SearchOverPosition;
@@ -27,10 +34,17 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Views.CacheListView;
+import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Log.Logger;
+import CB_Core.Map.Descriptor;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
+import CB_Core.Types.Category;
+import CB_Core.Types.Coordinate;
+import CB_Core.Types.GpxFilename;
+import CB_Core.Types.ImageEntry;
+import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -412,7 +426,10 @@ public class SearchDialog extends PopUp_Base
 		{
 			mBtnFilter.enable();
 		}
-		filterSearchByTextChnge();
+
+		// TODO Sofort Filter hat eine schlechte Performance, deshalb habe ich ihn ersteinmal abgeschalten.
+		// Es wäre aber ein schönes Feature!
+		// filterSearchByTextChnge();
 	}
 
 	/**
@@ -460,15 +477,6 @@ public class SearchDialog extends PopUp_Base
 			{
 
 				tmp = CacheListIterator.next();
-
-				// criterionMatches = (mSearchState == 0 &&
-				// tmp.Name.toLowerCase().contains(searchPattern))
-				// || (mSearchState == 1 &&
-				// tmp.GcCode.toLowerCase().contains(searchPattern))
-				// || (mSearchState == 2 &&
-				// tmp.Owner.toLowerCase().contains(searchPattern))
-				// || (mSearchState == 2 &&
-				// tmp.PlacedBy.toLowerCase().contains(searchPattern));
 
 				switch (mSearchState)
 				{
@@ -580,7 +588,217 @@ public class SearchDialog extends PopUp_Base
 	 */
 	private void searchAPI()
 	{
-		// TODO searchOnline();
+		if ("".equals(Config.GetAccessToken()))
+		{
+			GL_MsgBox.Show(GlobalCore.Translations.Get("apiKeyNeeded"), GlobalCore.Translations.Get("Clue"), MessageBoxButtons.OK,
+					MessageBoxIcon.Exclamation, null);
+		}
+		else
+		{
+
+			wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("chkApiState"), new IcancelListner()
+			{
+
+				@Override
+				public void isCanceld()
+				{
+					closeWaitDialog();
+				}
+			}, new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					int ret = GroundspeakAPI.GetMembershipType(Config.GetAccessToken());
+					if (ret == 3)
+					{
+						searchOnlineNow();
+
+					}
+					else
+					{
+						GL_MsgBox.Show(GlobalCore.Translations.Get("GC_basic"), GlobalCore.Translations.Get("GC_title"),
+								MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+								{
+
+									@Override
+									public boolean onClick(int which)
+									{
+										if (which == GL_MsgBox.BUTTON_POSITIVE) searchOnlineNow();
+										else
+											closeWaitDialog();
+										return true;
+									}
+								});
+					}
+
+				}
+			});
+
+		}
+	}
+
+	CancelWaitDialog wd = null;
+
+	private void closeWaitDialog()
+	{
+		if (wd != null) wd.close();
+	}
+
+	private void searchOnlineNow()
+	{
+		wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("searchOverAPI"), new IcancelListner()
+		{
+
+			@Override
+			public void isCanceld()
+			{
+				closeWaitDialog();
+			}
+		}, new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				String accessToken = Config.GetAccessToken();
+
+				Coordinate searchCoord = null;
+
+				if (MapView.that != null && MapView.that.isVisible())
+				{
+					searchCoord = MapView.that.center;
+				}
+				else
+				{
+					searchCoord = GlobalCore.LastValidPosition;
+				}
+
+				if (searchCoord == null)
+				{
+					return;
+				}
+
+				// alle per API importierten Caches landen in der Category und
+				// GpxFilename
+				// API-Import
+				// Category suchen, die dazu gehört
+				CategoryDAO categoryDAO = new CategoryDAO();
+				Category category = categoryDAO.GetCategory(GlobalCore.Categories, "API-Import");
+				if (category == null) return; // should not happen!!!
+
+				GpxFilename gpxFilename = categoryDAO.CreateNewGpxFilename(category, "API-Import");
+				if (gpxFilename == null) return;
+
+				ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+				ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+				ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
+
+				CB_Core.Api.SearchForGeocaches.Search searchC = null;
+
+				String searchPattern = mEingabe.getText().toLowerCase();
+
+				// * 0 = Title <br/>
+				// * 1 = Gc-Code <br/>
+				// * 2 = Owner <br/>
+
+				switch (mSearchState)
+				{
+				case 0:
+					CB_Core.Api.SearchForGeocaches.SearchGCName searchCName = new CB_Core.Api.SearchForGeocaches.SearchGCName();
+					searchCName.pos = searchCoord;
+					searchCName.distanceInMeters = 5000000;
+					searchCName.number = 50;
+					searchCName.gcName = searchPattern;
+					searchC = searchCName;
+					break;
+
+				case 1:
+					CB_Core.Api.SearchForGeocaches.SearchGC searchCGC = new CB_Core.Api.SearchForGeocaches.SearchGC();
+					searchCGC.gcCode = searchPattern;
+					searchCGC.number = 1;
+					searchC = searchCGC;
+					break;
+
+				case 2:
+					CB_Core.Api.SearchForGeocaches.SearchGCOwner searchCOwner = new CB_Core.Api.SearchForGeocaches.SearchGCOwner();
+					searchCOwner.OwnerName = searchPattern;
+					searchCOwner.number = 50;
+					searchCOwner.pos = searchCoord;
+					searchCOwner.distanceInMeters = 5000000;
+
+					searchC = searchCOwner;
+					break;
+				}
+
+				if (searchC == null)
+				{
+
+					return;
+				}
+
+				CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id);
+
+				if (apiCaches.size() > 0)
+				{
+					Database.Data.beginTransaction();
+
+					CacheDAO cacheDAO = new CacheDAO();
+					LogDAO logDAO = new LogDAO();
+					ImageDAO imageDAO = new ImageDAO();
+					WaypointDAO waypointDAO = new WaypointDAO();
+
+					int counter = 0;
+					for (Cache cache : apiCaches)
+					{
+						counter++;
+						cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
+						cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
+						if (Database.Data.Query.GetCacheById(cache.Id) == null)
+						{
+							Database.Data.Query.add(cache);
+
+							cacheDAO.WriteToDatabase(cache);
+
+							for (LogEntry log : apiLogs)
+							{
+								if (log.CacheId != cache.Id) continue;
+								// Write Log to database
+								logDAO.WriteToDatabase(log);
+							}
+
+							for (ImageEntry image : apiImages)
+							{
+								if (image.CacheId != cache.Id) continue;
+								// Write Image to database
+								imageDAO.WriteToDatabase(image, false);
+							}
+
+							for (Waypoint waypoint : cache.waypoints)
+							{
+								waypointDAO.WriteToDatabase(waypoint);
+							}
+						}
+					}
+					Database.Data.setTransactionSuccessful();
+					Database.Data.endTransaction();
+
+					Database.Data.GPXFilenameUpdateCacheCount();
+
+					CachListChangedEventList.Call();
+
+					if (counter == 1)
+					{
+						// select this Cache
+						Cache cache = Database.Data.Query.GetCacheById(apiCaches.get(0).Id);
+						GlobalCore.SelectedCache(cache);
+					}
+
+				}
+				closeWaitDialog();
+			}
+		});
 	}
 
 	/**
@@ -626,7 +844,8 @@ public class SearchDialog extends PopUp_Base
 
 		Logger.DEBUG("addSearch " + searchPattern);
 
-		// TODO weiß nicht mehr was ich damit bezwecke=> show(searchPattern, Mode.ordinal());
+		mEingabe.setText(searchPattern);
+		switchSearcheMode(Mode.ordinal());
 
 		// auf Online schalten
 		mTglBtnOnline.setState(1);
@@ -711,7 +930,7 @@ public class SearchDialog extends PopUp_Base
 				@Override
 				public void isCanceld()
 				{
-					// TODO Auto-generated method stub
+					// TODO Handle Cancel
 
 				}
 			}, new Runnable()

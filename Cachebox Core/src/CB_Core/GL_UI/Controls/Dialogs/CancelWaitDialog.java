@@ -69,6 +69,8 @@ public class CancelWaitDialog extends WaitDialog
 	protected static CancelWaitDialog createDialog(String msg, IcancelListner listner, Runnable runnable)
 	{
 
+		if (msg == null) msg = "";
+
 		Size size = calcMsgBoxSize(msg, false, false, true);
 
 		CancelWaitDialog waitDialog = new CancelWaitDialog(size, "WaitDialog", listner, runnable);

@@ -232,15 +232,22 @@ public class SelectDB extends ActivityBase
 		{
 			File file = lvAdapter.getItem(i);
 
-			if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0)
+			try
 			{
-				lvFiles.setSelection(i);
+				if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0)
+				{
+					lvFiles.setSelection(i);
+				}
+
+				int first = lvFiles.getFirstVisiblePosition();
+				int last = lvFiles.getLastVisiblePosition();
+
+				if (!(first < i && last > i)) lvFiles.scrollToItem(i);
 			}
-
-			int first = lvFiles.getFirstVisiblePosition();
-			int last = lvFiles.getLastVisiblePosition();
-
-			if (!(first < i && last > i)) lvFiles.scrollToItem(i);
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		int itemSpace = lvFiles.getMaxItemCount();
