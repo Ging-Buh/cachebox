@@ -1,15 +1,16 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
 import java.util.Timer;
-import java.util.TimerTask;
 
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
-import CB_Core.GL_UI.Controls.MessageBox.ButtonDialog;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
@@ -17,38 +18,60 @@ import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class WaitDialog extends ButtonDialog
+/**
+ * Ein Wait Dialog mit übergabe eines Runable zur Abarbeitung, welcher abgebrochen werden kann
+ * 
+ * @author Longri
+ */
+public class CancelWaitDialog extends WaitDialog
 {
 
-	static Image iconImage;
-	WaitDialog that;
+	CancelWaitDialog that;
 
-	public WaitDialog(Size size, String name)
+	public interface IcancelListner
 	{
-		super(size.getBounds().asFloat(), name, "", "", null, null, null);
+		public void isCanceld();
+	}
+
+	private IcancelListner cancelListner;
+	private Runnable runnable;
+
+	public CancelWaitDialog(Size size, String name, IcancelListner listner, Runnable runnable)
+	{
+		super(size, name);
+		this.cancelListner = listner;
+		this.runnable = runnable;
 		that = this;
 	}
 
-	public static WaitDialog ShowWait()
+	public static CancelWaitDialog ShowWait(String Msg, IcancelListner listner, Runnable runnable)
 	{
-		WaitDialog wd = createDialog("");
+		final CancelWaitDialog wd = createDialog(Msg, listner, runnable);
+
+		wd.setButtonCaptions(MessageBoxButtons.Cancel);
+		wd.mMsgBoxClickListner = new GL_MsgBox.OnMsgBoxClickListener()
+		{
+
+			@Override
+			public boolean onClick(int which)
+			{
+				if (wd.mRunnThread != null) wd.mRunnThread.Cancel();
+				wd.button3.disable();
+				wd.button3.setText(GlobalCore.Translations.Get("waitForCancel"));
+				return false;
+			}
+		};
+
 		wd.Show();
 		return wd;
 	}
 
-	public static WaitDialog ShowWait(String Msg)
-	{
-		WaitDialog wd = createDialog(Msg);
-		wd.Show();
-		return wd;
-	}
-
-	protected static WaitDialog createDialog(String msg)
+	protected static CancelWaitDialog createDialog(String msg, IcancelListner listner, Runnable runnable)
 	{
 
 		Size size = calcMsgBoxSize(msg, false, false, true);
 
-		WaitDialog waitDialog = new WaitDialog(size, "WaitDialog");
+		CancelWaitDialog waitDialog = new CancelWaitDialog(size, "WaitDialog", listner, runnable);
 		waitDialog.setTitle("");
 
 		SizeF contentSize = waitDialog.getContentSize();
@@ -92,35 +115,35 @@ public class WaitDialog extends ButtonDialog
 
 		waitDialog.RotateTimer.schedule(waitDialog.rotateTimertask, 60, 60);
 
-		return (WaitDialog) waitDialog;
+		return (CancelWaitDialog) waitDialog;
 
 	}
 
-	boolean canceld = false;
+	RunnableReadyHandler mRunnThread;
 
-	Timer RotateTimer;
-	float rotateAngle = 0;
-	TimerTask rotateTimertask = new TimerTask()
+	@Override
+	public void onShow()
 	{
-		@Override
-		public void run()
+		if (this.runnable != null)
 		{
-			if (iconImage != null)
+
+			// start runnable on new Thread
+			mRunnThread = new RunnableReadyHandler(runnable)
 			{
-				rotateAngle += 5;
-				if (rotateAngle > 360) rotateAngle = 0;
-				iconImage.setRotate(rotateAngle);
-				GL.that.renderOnce("WaitRotateAni");
-			}
+
+				@Override
+				public void RunnableReady(boolean isCanceld)
+				{
+					that.close();
+					if (isCanceld && cancelListner != null)
+					{
+						cancelListner.isCanceld();
+					}
+
+				}
+			};
+			mRunnThread.run();
 		}
-	};
 
-	public void dismis()
-	{
-		RotateTimer.cancel();
-		iconImage.dispose();
-
-		GL.that.closeDialog(that);
 	}
-
 }

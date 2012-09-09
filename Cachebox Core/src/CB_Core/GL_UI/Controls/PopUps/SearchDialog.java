@@ -5,6 +5,7 @@ import java.util.Iterator;
 import CB_Core.Config;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -18,7 +19,10 @@ import CB_Core.GL_UI.Controls.ImageButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.Slider;
 import CB_Core.GL_UI.Controls.Slider.YPositionChanged;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
@@ -294,7 +298,7 @@ public class SearchDialog extends PopUp_Base
 				if (mTglBtnOnline.getState() == 1)
 				{
 					close();
-					new SearchOverPosition().show();
+					askPremium();
 				}
 				else
 				{
@@ -689,5 +693,63 @@ public class SearchDialog extends PopUp_Base
 
 		}
 	};
+
+	private void askPremium()
+	{
+
+		if ("".equals(Config.GetAccessToken()))
+		{
+			GL_MsgBox.Show(GlobalCore.Translations.Get("apiKeyNeeded"), GlobalCore.Translations.Get("Clue"), MessageBoxButtons.OK,
+					MessageBoxIcon.Exclamation, null);
+		}
+		else
+		{
+
+			CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("chkApiState"), new IcancelListner()
+			{
+
+				@Override
+				public void isCanceld()
+				{
+					// TODO Auto-generated method stub
+
+				}
+			}, new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					int ret = GroundspeakAPI.GetMembershipType(Config.GetAccessToken());
+					if (ret == 3)
+					{
+						// searchOnlineNow();
+						showTargetApiDialog();
+					}
+					else
+					{
+						GL_MsgBox.Show(GlobalCore.Translations.Get("GC_basic"), GlobalCore.Translations.Get("GC_title"),
+								MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+								{
+
+									@Override
+									public boolean onClick(int which)
+									{
+										if (which == GL_MsgBox.BUTTON_POSITIVE) showTargetApiDialog();
+										return true;
+									}
+								});
+					}
+				}
+			});
+
+		}
+
+	}
+
+	private void showTargetApiDialog()
+	{
+		new SearchOverPosition().show();
+	}
 
 }

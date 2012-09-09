@@ -62,7 +62,7 @@ public class ButtonDialog extends Dialog
 		CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(),
 				UiSizes.getButtonHeight());
 
-		if (icon != MessageBoxIcon.None)
+		if (icon != MessageBoxIcon.None && icon != null)
 		{
 			Image iconImage = new Image(imageRec, "MsgBoxIcon");
 			iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
@@ -109,8 +109,10 @@ public class ButtonDialog extends Dialog
 		GL.that.closeDialog(this);
 	}
 
-	protected void setButtonCaptions(MessageBoxButtons buttons)
+	public void setButtonCaptions(MessageBoxButtons buttons)
 	{
+		if (buttons == null) buttons = MessageBoxButtons.NOTHING;
+
 		int button = buttons.ordinal();
 		if (button == 0)
 		{
@@ -276,6 +278,7 @@ public class ButtonDialog extends Dialog
 
 	private Sprite getIcon(MessageBoxIcon msgIcon)
 	{
+		if (msgIcon == null) return null;
 
 		Sprite icon;
 

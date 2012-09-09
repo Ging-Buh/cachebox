@@ -7,7 +7,6 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.Import;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
@@ -121,7 +120,9 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					}
 					return true;
 				case MI_CHK_STATE_API:
-					new CB_Action_ShowActivity("chkState", MI_CHK_STATE_API, ViewConst.CHK_STATE_API, SpriteCache.Icons.get(35)).Execute();
+					new CB_Action_Command_chkState().Execute();
+					// new CB_Action_ShowActivity("chkState", MI_CHK_STATE_API, ViewConst.CHK_STATE_API,
+					// SpriteCache.Icons.get(35)).Execute();
 					return true;
 				}
 				return false;

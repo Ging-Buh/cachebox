@@ -3,8 +3,6 @@ package CB_Core.GL_UI.Views;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
@@ -29,6 +27,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
+import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
@@ -278,8 +277,10 @@ public class FieldNotesView extends V_ListView
 	private void UploadFieldNotes()
 	{
 		ThreadCancel = false;
-		final Thread UploadFieldNotesdThread = new Thread()
+		final RunnableReadyHandler UploadFieldNotesdThread = new RunnableReadyHandler(new Runnable()
 		{
+
+			@Override
 			public void run()
 			{
 				ProgresssChangedEventList.Call("Upload", "", 0);
@@ -328,15 +329,27 @@ public class FieldNotesView extends V_ListView
 
 				PD.close();
 
-				if (!ThreadCancel)
+			}
+		})
+		{
+
+			@Override
+			public void RunnableReady(boolean canceld)
+			{
+				if (!UploadMeldung.equals(""))
 				{
-					ProgressReady.run();
+					GL_MsgBox.Show(UploadMeldung, GlobalCore.Translations.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+				}
+				else
+				{
+					GL_MsgBox.Show(GlobalCore.Translations.Get("uploadFinished"), GlobalCore.Translations.Get("uploadFieldNotes"),
+							MessageBoxIcon.GC_Live);
 				}
 			}
 		};
 
 		// ProgressDialog Anzeigen und den Abarbeitungs Thread übergeben.
-		PD = ProgressDialog.Show("Upload FieldNotes", UploadFieldNotesdThread, ProgressCanceld);
+		PD = ProgressDialog.Show("Upload FieldNotes", UploadFieldNotesdThread);
 
 	}
 
@@ -359,45 +372,8 @@ public class FieldNotesView extends V_ListView
 	}
 
 	private Boolean ThreadCancel = false;
-	final Runnable ProgressCanceld = new Runnable()
-	{
-		public void run()
-		{
-			ThreadCancel = true;
-			GL_MsgBox.Show(GlobalCore.Translations.Get("uploadCanceled"));
-		}
-	};
 
 	private String UploadMeldung = "";
-
-	final Runnable ProgressReady = new Runnable()
-	{
-		public void run()
-		{
-			Timer runTimer = new Timer();
-			TimerTask task = new TimerTask()
-			{
-
-				@Override
-				public void run()
-				{
-					if (!UploadMeldung.equals(""))
-					{
-						GL_MsgBox.Show(UploadMeldung, GlobalCore.Translations.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error,
-								null);
-					}
-					else
-					{
-						GL_MsgBox.Show(GlobalCore.Translations.Get("uploadFinished"), GlobalCore.Translations.Get("uploadFieldNotes"),
-								MessageBoxIcon.GC_Live);
-					}
-				}
-			};
-
-			runTimer.schedule(task, 200);
-
-		}
-	};
 
 	public static void addNewFieldnote(int type)
 	{

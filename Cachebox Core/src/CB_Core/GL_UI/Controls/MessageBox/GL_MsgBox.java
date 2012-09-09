@@ -114,11 +114,12 @@ public class GL_MsgBox extends Dialog
 	{
 		resetClickListner();
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, false, true, false), "MsgBox");
-		Label label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
-		label.setZeroPos();
-		label.setWrappedText(msg + "uuuuuuuuuuuuu");
-		msgBox.addChild(label);
 		setButtonCaptions(msgBox, MessageBoxButtons.OK);
+		label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
+		label.setZeroPos();
+		label.setWrappedText(msg);
+		msgBox.addChild(label);
+
 		GL.that.showDialog(msgBox);
 		return msgBox;
 	}

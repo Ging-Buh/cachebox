@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Controls.Dialogs;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Core.GlobalCore;
 import CB_Core.Events.ProgressChangedEvent;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GL_UI.Fonts;
@@ -13,6 +14,7 @@ import CB_Core.GL_UI.Controls.ProgressBar;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
@@ -33,24 +35,9 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				// ProgressThread.stop();
-				if (CancelRunable != null)
-				{
-
-					Timer runTimer = new Timer();
-					TimerTask task = new TimerTask()
-					{
-
-						@Override
-						public void run()
-						{
-							CancelRunable.run();
-						}
-					};
-
-					runTimer.schedule(task, 250);
-				}
-				close();
+				ProgressThread.Cancel();
+				button3.disable();
+				button3.setText(GlobalCore.Translations.Get("waitForCancel"));
 				return true;
 			}
 		});
@@ -75,12 +62,11 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 	private Label messageTextView;
 	private Label progressMessageTextView;
 	private ProgressBar progressBar;
-	private static Thread ProgressThread;
+	private static RunnableReadyHandler ProgressThread;
 	private static String titleText;
-	private static Runnable CancelRunable;
 	private static ProgressDialog that;
 
-	public static ProgressDialog Show(String title, Thread RunThread, Runnable cancel)
+	public static ProgressDialog Show(String title, RunnableReadyHandler RunThread)
 	{
 
 		if (ProgressThread != null)
@@ -91,7 +77,6 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 
 		ProgressThread = RunThread;
 		titleText = title;
-		CancelRunable = cancel;
 
 		ProgressDialog PD = new ProgressDialog(calcMsgBoxSize(title, true, true, true), "");
 
@@ -132,7 +117,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 				}
 			};
 
-			runTimer.schedule(task, 100);
+			runTimer.schedule(task, 20);
 
 		}
 

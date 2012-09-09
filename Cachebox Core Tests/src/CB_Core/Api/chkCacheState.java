@@ -1,11 +1,8 @@
 package CB_Core.Api;
 
-import java.util.ArrayList;
-
 import junit.framework.TestCase;
 import CB_Core.Config;
 import CB_Core.InitTestDBs;
-import CB_Core.Types.Cache;
 
 public class chkCacheState extends TestCase
 {
@@ -39,21 +36,9 @@ public class chkCacheState extends TestCase
 	public void testCache()
 	{
 
-		ArrayList<Cache> testCaches = new ArrayList<Cache>();
+		// TODO geht eine chkState Abfrage mit 100 Blöcken viel schneller als eine mit 10 Blöcken
+		// bei 10 Blöcken brauch nicht so lange auf ein cancel gewartet werden!
 
-		Cache c1 = new Cache();
-		c1.GcCode = "GC2NFTY";
-
-		Cache c2 = new Cache();
-		c2.GcCode = "GC33V5M";
-
-		testCaches.add(c1);
-		testCaches.add(c2);
-
-		int test = GroundspeakAPI.GetGeocacheStatus(Config.GetAccessToken(), testCaches);
-
-		assertFalse("ProjC40 sollte not Available sein", testCaches.get(0).Available);
-		assertTrue("ProjC40 sollte Archived sein", testCaches.get(0).Archived);
 	}
 
 }

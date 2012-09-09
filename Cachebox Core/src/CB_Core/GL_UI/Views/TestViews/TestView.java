@@ -4,12 +4,13 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Activitys.SearchOverPosition;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -90,7 +91,32 @@ public class TestView extends CB_View_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				new SearchOverPosition().show();
+				ProgressDialog.Show("Title", new RunnableReadyHandler(new Runnable()
+				{
+
+					@Override
+					public void run()
+					{
+						try
+						{
+							Thread.sleep(4000);
+						}
+						catch (InterruptedException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				})
+				{
+
+					@Override
+					public void RunnableReady(boolean canceld)
+					{
+						// TODO Auto-generated method stub
+
+					}
+				});
 				return false;
 			}
 		});

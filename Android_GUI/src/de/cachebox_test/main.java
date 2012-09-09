@@ -11,7 +11,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,13 +24,8 @@ import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Plattform;
 import CB_Core.TrackRecorder;
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
-import CB_Core.DAO.CategoryDAO;
-import CB_Core.DAO.ImageDAO;
-import CB_Core.DAO.LogDAO;
-import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.CachListChangedEventList;
@@ -57,6 +51,8 @@ import CB_Core.GL_UI.ViewID.UI_Type;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
+import CB_Core.GL_UI.Controls.PopUps.SearchDialog.searchMode;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.GL_Listener.GL.renderStartet;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
@@ -64,7 +60,6 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Locator.Locator;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
-import CB_Core.Map.Descriptor;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Map.RouteOverlay.Track;
 import CB_Core.Math.Size;
@@ -73,11 +68,7 @@ import CB_Core.Math.devicesSizes;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
-import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
-import CB_Core.Types.GpxFilename;
-import CB_Core.Types.ImageEntry;
-import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -115,7 +106,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -157,8 +147,6 @@ import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.NotifyService.LocalBinder;
 import de.cachebox_test.Components.CacheNameView;
-import de.cachebox_test.Components.search;
-import de.cachebox_test.Components.search.searchMode;
 import de.cachebox_test.Custom_Controls.DebugInfoPanel;
 import de.cachebox_test.Custom_Controls.Mic_On_Flash;
 import de.cachebox_test.Custom_Controls.downSlider;
@@ -180,7 +168,6 @@ import de.cachebox_test.Views.SpoilerView;
 import de.cachebox_test.Views.TrackableListView;
 import de.cachebox_test.Views.ViewGL;
 import de.cachebox_test.Views.AdvancedSettingsForms.SettingsScrollView;
-import de.cachebox_test.Views.Forms.ApiSearchPosDialog;
 import de.cachebox_test.Views.Forms.DeleteDialog;
 import de.cachebox_test.Views.Forms.GcApiLogin;
 import de.cachebox_test.Views.Forms.MessageBox;
@@ -232,12 +219,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public static LinearLayout strengthLayout;
 
 	public LinearLayout searchLayout;
-	private search Search;
-
-	// /**
-	// * Night Mode aktive
-	// */
-	// public static Boolean N = false;
 
 	// Media
 
@@ -501,8 +482,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		initialViewGL();
 		initalMicIcon();
 
-		Search = new search(this);
-
 		initialViewGL();
 
 		glListener.onStart();
@@ -637,8 +616,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							if (flag)
 							{
 								flag = false;
-								Search.Show();
-								Search.addSearch(GcCode, searchMode.GcCode);
+
+								if (SearchDialog.that == null)
+								{
+									new SearchDialog();
+								}
+
+								SearchDialog.that.showNotCloseAutomaticly();
+								SearchDialog.that.addSearch(GcCode, searchMode.GcCode);
 							}
 							else
 							{
@@ -1022,22 +1007,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				SettingsScrollView.Me.ListInvalidate();
 			}
-		}
-
-		if (requestCode == Global.REQUEST_CODE_API_TARGET_DIALOG)
-		{
-			if (data == null) return;
-			Bundle bundle = data.getExtras();
-			if (bundle != null)
-			{
-				searchCoord = (Coordinate) bundle.getSerializable("CoordResult");
-				if (searchCoord != null)
-				{
-					searchOnlineNow();
-				}
-			}
-
-			return;
 		}
 
 		// Intent Result Delete Caches
@@ -1514,14 +1483,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			final Intent mainIntent1 = new Intent().setClass(mainActivity, EditFilterSettings.class);
 			mainActivity.startActivity(mainIntent1);
 		}
-		else if (ID == ViewConst.SEARCH)
-		{
-			Search.Show();
-		}
-		else if (ID == ViewConst.CHK_STATE_API)
-		{
-			chkCachesStateFilterSelection();
-		}
 		else if (ID == ViewConst.RELOAD_CACHE)
 		{
 			if (descriptionView != null) descriptionView.reloadCacheInfo();
@@ -1805,17 +1766,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case R.id.miAutoResort:
 				switchAutoResort();
 				break;
-			case R.id.miSearch:
-				ListSearch();
-				break;
 			case R.id.miAddCache:
 				addCache();
-				break;
-			// case R.id.searchcaches_online:
-			// searchOnline();
-			// break;
-			case R.id.miChkState:
-				chkCachesStateFilterSelection();
 				break;
 			case R.id.miTbList:
 				showTbList();
@@ -2344,11 +2296,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 	}
 
-	public void ListSearch()
-	{
-		Search.Show();
-	}
-
 	private void NavigateTo()
 	{
 		if (GlobalCore.SelectedCache() != null)
@@ -2458,326 +2405,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		Intent gcApiLogin = new Intent().setClass(mainActivity, GcApiLogin.class);
 		mainActivity.startActivityForResult(gcApiLogin, 987654321);
 	}
-
-	public void searchOnline()
-	{
-		if ("".equals(Config.GetAccessToken()))
-		{
-			MessageBox.Show(GlobalCore.Translations.Get("apiKeyNeeded"), GlobalCore.Translations.Get("Clue"), MessageBoxButtons.OK,
-					MessageBoxIcon.Exclamation, null);
-		}
-		else
-		{
-			IsPremiumThread = new isPremiumThread();
-			IsPremiumThread.execute("");
-			pd = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("chkApiState"), "Groundspeak API", MessageBoxButtons.Cancel,
-					MessageBoxIcon.GC_Live, Cancel1ClickListner);
-		}
-	}
-
-	private isPremiumThread IsPremiumThread;
-
-	private final DialogInterface.OnClickListener Cancel1ClickListner = new DialogInterface.OnClickListener()
-	{
-		@Override
-		public void onClick(DialogInterface dialog, int button)
-		{
-			IsPremiumThread.cancel(false);
-			dialog.dismiss();
-		}
-	};
-
-	private class isPremiumThread extends AsyncTask<String, Integer, Integer>
-	{
-
-		@Override
-		protected Integer doInBackground(String... params)
-		{
-			int ret = GroundspeakAPI.GetMembershipType(Config.GetAccessToken());
-			isPremiumReadyHandler.sendMessage(isPremiumReadyHandler.obtainMessage(ret));
-			return null;
-		}
-
-	}
-
-	private Handler isPremiumReadyHandler = new Handler()
-	{
-		public void handleMessage(Message msg)
-		{
-			pd.dismiss();
-
-			if (msg.what == 3)
-			{
-				// searchOnlineNow();
-				showTargetApiDialog();
-			}
-			else
-			{
-				MessageBox.Show(GlobalCore.Translations.Get("GC_basic"), GlobalCore.Translations.Get("GC_title"),
-						MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, PremiumMemberResult);
-			}
-		}
-	};
-
-	private DialogInterface.OnClickListener PremiumMemberResult = new DialogInterface.OnClickListener()
-	{
-
-		@Override
-		public void onClick(DialogInterface dialog, int button)
-		{
-			switch (button)
-			{
-			case -1:
-				showTargetApiDialog();
-				break;
-
-			}
-
-			dialog.dismiss();
-
-		}
-	};
-
-	private DialogInterface pd;
-	private loaderThread LoaderThread;
-	private chkStateThread ChkStateThread;
-
-	private void showTargetApiDialog()
-	{
-		final Intent mainIntent = new Intent().setClass(this, ApiSearchPosDialog.class);
-		this.startActivityForResult(mainIntent, Global.REQUEST_CODE_API_TARGET_DIALOG);
-	}
-
-	private void searchOnlineNow()
-	{
-		LoaderThread = new loaderThread();
-		LoaderThread.execute("");
-		pd = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("searchingOnline"), "Groundspeak API", MessageBoxButtons.Cancel,
-				MessageBoxIcon.GC_Live, CancelClickListner);
-	}
-
-	private final DialogInterface.OnClickListener CancelClickListner = new DialogInterface.OnClickListener()
-	{
-		@Override
-		public void onClick(DialogInterface dialog, int button)
-		{
-			LoaderThread.cancel(false);
-			dialog.dismiss();
-		}
-	};
-
-	private Coordinate searchCoord = null;
-
-	private class loaderThread extends AsyncTask<String, Integer, Integer>
-	{
-
-		@Override
-		protected Integer doInBackground(String... params)
-		{
-			if (searchCoord == null)
-			{
-				onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(2));
-				return null;
-			}
-
-			String accessToken = Config.GetAccessToken();
-
-			// alle per API importierten Caches landen in der Category und
-			// GpxFilename
-			// API-Import
-			// Category suchen, die dazu gehört
-			CategoryDAO categoryDAO = new CategoryDAO();
-			Category category = categoryDAO.GetCategory(GlobalCore.Categories, "API-Import");
-			if (category == null) return null; // should not happen!!!
-
-			GpxFilename gpxFilename = categoryDAO.CreateNewGpxFilename(category, "API-Import");
-			if (gpxFilename == null) return null;
-
-			ArrayList<Cache> apiCaches = new ArrayList<Cache>();
-			ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-			ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
-			CB_Core.Api.SearchForGeocaches.SearchCoordinate searchC = new CB_Core.Api.SearchForGeocaches.SearchCoordinate();
-
-			searchC.withoutFinds = Config.settings.SearchWithoutFounds.getValue();
-			searchC.withoutOwn = Config.settings.SearchWithoutOwns.getValue();
-
-			searchC.pos = searchCoord;
-			searchC.distanceInMeters = Config.settings.lastSearchRadius.getValue() * 1000;
-			searchC.number = 50;
-			CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id);
-			if (apiCaches.size() > 0)
-			{
-				Database.Data.beginTransaction();
-
-				CacheDAO cacheDAO = new CacheDAO();
-				LogDAO logDAO = new LogDAO();
-				ImageDAO imageDAO = new ImageDAO();
-				WaypointDAO waypointDAO = new WaypointDAO();
-
-				for (Cache cache : apiCaches)
-				{
-					cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
-					cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
-					if (Database.Data.Query.GetCacheById(cache.Id) == null)
-					{
-						Database.Data.Query.add(cache);
-						cacheDAO.WriteToDatabase(cache);
-
-						for (LogEntry log : apiLogs)
-						{
-							if (log.CacheId != cache.Id) continue;
-							// Write Log to database
-
-							logDAO.WriteToDatabase(log);
-						}
-
-						for (ImageEntry image : apiImages)
-						{
-							if (image.CacheId != cache.Id) continue;
-							// Write Image to database
-
-							imageDAO.WriteToDatabase(image, false);
-						}
-
-						for (Waypoint waypoint : cache.waypoints)
-						{
-
-							waypointDAO.WriteToDatabase(waypoint);
-						}
-					}
-				}
-				Database.Data.setTransactionSuccessful();
-				Database.Data.endTransaction();
-
-				Database.Data.GPXFilenameUpdateCacheCount();
-
-			}
-
-			onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
-			// MapView benachrichtigen, dass die Waypoint-Liste aktualisiert werden muß!!!
-			return null;
-		}
-
-	}
-
-	private void chkCachesStateFilterSelection()
-	{
-
-		ChkStateThread = new chkStateThread();
-		ChkStateThread.execute("");
-		pd = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("chkState"), "Groundspeak API", MessageBoxButtons.Cancel,
-				MessageBoxIcon.GC_Live, ChkStateThreadCancelClickListner);
-
-	}
-
-	private class chkStateThread extends AsyncTask<String, Integer, Integer>
-	{
-
-		@Override
-		protected Integer doInBackground(String... params)
-		{
-			ArrayList<Cache> chkList = new ArrayList<Cache>();
-			Iterator<Cache> cIterator = Database.Data.Query.iterator();
-
-			do
-			{
-				chkList.add(cIterator.next());
-			}
-			while (cIterator.hasNext());
-
-			// in 100èrter Blöcke Teilen
-
-			int start = 0;
-			int stop = 100;
-			ArrayList<Cache> addedReturnList = new ArrayList<Cache>();
-
-			int result;
-			ArrayList<Cache> chkList100;
-			do
-			{
-				Iterator<Cache> Iterator2 = chkList.iterator();
-				chkList100 = new ArrayList<Cache>();
-
-				int index = 0;
-				do
-				{
-					if (index >= start && index <= stop)
-					{
-						chkList100.add(Iterator2.next());
-					}
-					else
-					{
-						Iterator2.next();
-					}
-					index++;
-				}
-				while (Iterator2.hasNext());
-
-				result = GroundspeakAPI.GetGeocacheStatus(Config.GetAccessToken(), chkList100);
-				addedReturnList.addAll(chkList100);
-				start += 101;
-				stop += 101;
-			}
-			while (chkList100.size() == 101);
-
-			if (result == 0)
-			{
-				Database.Data.beginTransaction();
-
-				Iterator<Cache> iterator = addedReturnList.iterator();
-				CacheDAO dao = new CacheDAO();
-				do
-				{
-					Cache writeTmp = iterator.next();
-					dao.UpdateDatabaseCacheState(writeTmp);
-				}
-				while (iterator.hasNext());
-
-				Database.Data.setTransactionSuccessful();
-				Database.Data.endTransaction();
-				onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
-
-			}
-			else
-			{
-				onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(2));
-
-			}
-			return null;
-		}
-
-	}
-
-	private final DialogInterface.OnClickListener ChkStateThreadCancelClickListner = new DialogInterface.OnClickListener()
-	{
-		@Override
-		public void onClick(DialogInterface dialog, int button)
-		{
-			ChkStateThread.cancel(false);
-			dialog.dismiss();
-		}
-	};
-
-	private Handler onlineSearchReadyHandler = new Handler()
-	{
-		public void handleMessage(Message msg)
-		{
-			switch (msg.what)
-			{
-			case 1:
-
-				pd.dismiss();
-				break;
-
-			case 2:
-
-				pd.dismiss();
-				MessageBox.Show(GlobalCore.Translations.Get("errorAPI"), GlobalCore.Translations.Get("Error"), MessageBoxIcon.Error);
-				break;
-
-			}
-		}
-	};
 
 	/*
 	 * Setter
