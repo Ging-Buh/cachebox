@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:title="Upload Fieldnotes" android:id="@+id/fieldnotesview_upload"></item>
-	<item android:title="Delete all Fieldnotes" android:id="@+id/fieldnotesview_deleteall"></item>
-
-</menu>

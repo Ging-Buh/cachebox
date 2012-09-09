@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu
-  xmlns:android="http://schemas.android.com/apk/res/android">
-   <item android:id="@+id/mapview_smooth_none" android:title="None" android:checkable="true"></item><item android:id="@+id/mapview_smooth_normal" android:title="Normal" android:checkable="true"></item><item android:id="@+id/mapview_smooth_fine" android:title="Fine" android:checkable="true"></item><item android:id="@+id/mapview_smooth_superfine" android:title="Superfine" android:checkable="true"></item>
-</menu>

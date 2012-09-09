@@ -46,11 +46,8 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -68,8 +65,6 @@ import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Components.Animations;
 import de.cachebox_test.Custom_Controls.downSlider;
-import de.cachebox_test.Custom_Controls.IconContextMenu.IconContextMenu;
-import de.cachebox_test.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
 import de.cachebox_test.Custom_Controls.wheel.OnWheelScrollListener;
 import de.cachebox_test.Custom_Controls.wheel.WheelView;
 import de.cachebox_test.Custom_Controls.wheel.adapters.NumericWheelAdapter;
@@ -104,7 +99,7 @@ public class SettingsScrollView extends Activity
 		}
 		catch (Exception e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 		super.onCreate(savedInstanceState);
@@ -360,50 +355,6 @@ public class SettingsScrollView extends Activity
 	{
 		return super.onCreateOptionsMenu(menu);
 	}
-
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu)
-	{
-		menu.clear();
-
-		IconContextMenu icm = new IconContextMenu(this, R.menu.menu_settings_view_mode);
-		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-		Menu IconMenu = icm.getMenu();
-
-		MenuItem miExpert = IconMenu.findItem(R.id.miSettings_show_Expert);
-		MenuItem miAll = IconMenu.findItem(R.id.miSettings_show_All);
-
-		miExpert.setChecked(Config.settings.SettingsShowExpert.getValue());
-		miAll.setChecked(Config.settings.SettingsShowAll.getValue());
-
-		icm.show();
-
-		return super.onPrepareOptionsMenu(IconMenu);
-	}
-
-	public IconContextItemSelectedListener OnIconContextItemSelectedListener = new IconContextItemSelectedListener()
-	{
-
-		@Override
-		public void onIconContextItemSelected(MenuItem item, Object info)
-		{
-			switch (item.getItemId())
-			{
-
-			case R.id.miSettings_show_Expert:
-				Config.settings.SettingsShowExpert.setValue(!Config.settings.SettingsShowExpert.getValue());
-				resortList();
-				return;
-
-			case R.id.miSettings_show_All:
-				Config.settings.SettingsShowAll.setValue(!Config.settings.SettingsShowAll.getValue());
-				resortList();
-				return;
-
-			}
-
-		}
-	};
 
 	private View getView(SettingBase SB, ViewGroup parent, boolean BackgroundChanger)
 	{
@@ -778,23 +729,6 @@ public class SettingsScrollView extends Activity
 
 		Timer timer = new Timer();
 		timer.schedule(task, 500);
-	}
-
-	public void onCreateContextMenu(final ContextMenu menu, View v, ContextMenuInfo menuInfo)
-	{
-
-		IconContextMenu icm = new IconContextMenu(this, R.menu.menu_settings_view_mode);
-		icm.setOnIconContextItemSelectedListener(OnIconContextItemSelectedListener);
-		Menu IconMenu = icm.getMenu();
-
-		MenuItem miExpert = IconMenu.findItem(R.id.miMap_HideFinds);
-		MenuItem miAll = IconMenu.findItem(R.id.miMap_ShowRatings);
-
-		miExpert.setChecked(Config.settings.SettingsShowExpert.getValue());
-		miAll.setChecked(Config.settings.SettingsShowAll.getValue());
-
-		icm.show();
-
 	}
 
 }

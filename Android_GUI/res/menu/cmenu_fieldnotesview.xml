@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/c_fnv_selectcache" android:title="Select Cache"></item>
-	<item android:title="Edit" android:id="@+id/c_fnv_edit"></item>
-	<item android:title="Delete" android:id="@+id/c_fnv_delete"></item>
-</menu>

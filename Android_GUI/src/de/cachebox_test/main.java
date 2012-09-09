@@ -150,7 +150,6 @@ import de.cachebox_test.Components.CacheNameView;
 import de.cachebox_test.Custom_Controls.DebugInfoPanel;
 import de.cachebox_test.Custom_Controls.Mic_On_Flash;
 import de.cachebox_test.Custom_Controls.downSlider;
-import de.cachebox_test.Custom_Controls.IconContextMenu.IconContextMenu.IconContextItemSelectedListener;
 import de.cachebox_test.Custom_Controls.QuickButtonList.HorizontalListView;
 import de.cachebox_test.DB.AndroidDB;
 import de.cachebox_test.Events.PositionEventList;
@@ -1674,118 +1673,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		((View) aktTabView).forceLayout();
 
 	}
-
-	/*
-	 * 
-	 * 
-	 * show ContextMenus
-	 */
-
-	public IconContextItemSelectedListener OnIconContextItemSelectedListener = new IconContextItemSelectedListener()
-	{
-
-		@Override
-		public void onIconContextItemSelected(MenuItem item, Object info)
-		{
-
-			switch (item.getItemId())
-			{
-			case R.id.miScreenLock:
-				startScreenLock(true);
-				break;
-			case R.id.miDeleteCaches:
-				DeleteFilterSelection();
-				break;
-
-			case R.id.miSettings:
-				showView(ViewConst.SETTINGS);
-				break;
-			case R.id.miVoiceRecorder:
-				recVoice();
-				break;
-			case R.id.miParking:
-				showParkingDialog();
-				break;
-			case R.id.miRecordVideo:
-				recVideo();
-				break;
-			case R.id.miAbout:
-				showView(ViewConst.CREDITS_VIEW); // Show CreditsView
-				break;
-			case R.id.miLogView:
-				showView(ViewConst.LOG_VIEW);
-				break;
-			case R.id.miSpoilerView:
-				showView(ViewConst.SPOILER_VIEW);
-				break;
-			case R.id.miFieldNotes:
-				showView(ViewConst.FIELD_NOTES_VIEW);
-				openOptionsMenu();
-				break;
-			case R.id.miTelJoker:
-				showJoker();
-				break;
-			case R.id.miCompassView:
-				showView(ViewConst.COMPASS_VIEW);
-				break;
-			case R.id.miMapView:
-				showView(ViewConst.MAP_VIEW);
-				break;
-			case R.id.miViewGL:
-				showView(ViewConst.MAP_CONTROL_TEST_VIEW);
-				// showView(ViewConst.TEST_VIEW);
-				break;
-			case R.id.miViewMap3:
-				showView(ViewConst.GL_MAP_VIEW);
-				break;
-			case R.id.miDescription:
-				showView(ViewConst.DESCRIPTION_VIEW);
-				break;
-			case R.id.miWaypoints:
-				showView(ViewConst.WAYPOINT_VIEW);
-				break;
-			case R.id.miNotes:
-				showView(ViewConst.NOTES_VIEW);
-				break;
-			case R.id.miSolver:
-				showView(ViewConst.SOLVER_VIEW);
-				break;
-			case R.id.miCacheList:
-				showView(ViewConst.CACHE_LIST_VIEW);
-				break;
-			case R.id.miTrackList:
-				showView(ViewConst.TRACK_LIST_VIEW);
-				break;
-			case R.id.miFilterset:
-				showView(ViewConst.FILTER_SETTINGS);
-				break;
-
-			case R.id.miResort:
-				Database.Data.Query.Resort();
-				break;
-			case R.id.miAutoResort:
-				switchAutoResort();
-				break;
-			case R.id.miAddCache:
-				addCache();
-				break;
-			case R.id.miTbList:
-				showTbList();
-				break;
-			case R.id.miTakePhoto:
-				takePhoto();
-				break;
-			case R.id.miNavigateTo:
-				NavigateTo();
-				break;
-
-			default: // wenn kein Eintrag gefunden wurde, versuch es im Akt View
-				if (aktView != null) aktView.ItemSelected(item);
-
-			}
-		}
-
-	};
 
 	public static void vibrate()
 	{

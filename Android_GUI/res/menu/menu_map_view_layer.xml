@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu
-  xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:id="@+id/miMap_HideFinds" android:title="Hide Finds" android:checkable="true"></item><item android:id="@+id/miMap_ShowRatings" android:title="Show Rating" android:checkable="true"></item><item android:id="@+id/miMap_ShowDT" android:title="Show D/T" android:checkable="true"></item><item android:id="@+id/miMap_ShowTitles" android:title="Show Titles" android:checkable="true"></item>
-  <item android:title="Show direkt line" android:id="@+id/miMap_ShowDirektLine" android:checkable="true"></item>
-</menu>

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu
-  xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:checkable="true" android:id="@+id/miSettings_show_Expert" android:title="Expert"></item><item android:checkable="true" android:id="@+id/miSettings_show_All" android:title="All"></item>
-</menu>

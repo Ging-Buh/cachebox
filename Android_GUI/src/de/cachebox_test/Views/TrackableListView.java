@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import de.cachebox_test.R;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Views.Forms.MessageBox;
@@ -222,9 +221,9 @@ public class TrackableListView extends ListView implements ViewOptionsMenu
 		switch (item.getItemId())
 		{
 
-		case R.id.menu_tracklistview_loadMy:
-			LoadInventoryOverApi();
-			break;
+		// case R.id.menu_tracklistview_loadMy:
+		// LoadInventoryOverApi();
+		// break;
 
 		}
 		return true;
@@ -302,7 +301,6 @@ public class TrackableListView extends ListView implements ViewOptionsMenu
 	@Override
 	public void ActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		 
 
 	}
 

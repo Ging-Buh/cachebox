@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu
-  xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_tracklistview_generate" android:title="Generate"></item>
-    <item android:title="Load" android:id="@+id/menu_tracklistview_load"></item>
-    <item android:title="Delete" android:id="@+id/menu_tracklistview_delete"></item>
-</menu>
