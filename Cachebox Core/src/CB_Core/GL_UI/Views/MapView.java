@@ -32,6 +32,7 @@ import CB_Core.GL_UI.Controls.ZoomButtons;
 import CB_Core.GL_UI.Controls.ZoomScale;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.MainViewBase;
+import CB_Core.GL_UI.Views.MapViewCacheList.MapViewCacheListUpdateData;
 import CB_Core.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_Core.Locator.Locator;
 import CB_Core.Log.Logger;
@@ -1009,6 +1010,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				{
 					if (wpi.Selected)
 					{
+						// wenn der Wp selectiert ist, dann immer in der größten Darstellung
+						renderWPI(batch, GL_UISizes.WPSizes[2], GL_UISizes.UnderlaySizes[2], wpi);
+					}
+					else if (alignToCompassCarMode)
+					{
+						// wenn CarMode dann immer in der größten Darstellung
 						renderWPI(batch, GL_UISizes.WPSizes[2], GL_UISizes.UnderlaySizes[2], wpi);
 					}
 					else
@@ -1236,8 +1243,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	private void loadTiles()
 	{
-
-		mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, false);
+		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(
+				mapIntWidth, mapIntHeight)), aktZoom, false);
+		mapCacheList.update(data);
 
 		if (ManagerBase.Manager == null) return; // Kann nichts laden, wenn der Manager Null ist!
 
@@ -1552,6 +1560,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if (locator == null) return;
 		if (locator.getLocation() == null) return;
 
+		if (alignToCompassCarMode)
+		{
+			// im CarMode keine Netzwerk Koordinaten zulassen
+			if (!locator.isGPSprovided()) return;
+		}
+
 		this.locator = locator;
 		GlobalCore.LastValidPosition = new Coordinate(locator.getLocation().Latitude, locator.getLocation().Longitude);
 		GlobalCore.LastValidPosition.Elevation = locator.getAlt();
@@ -1644,6 +1658,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				info.setBearing((float) (bearing - GlobalCore.Locator.getHeading()));
 			}
 		}
+
+		// im CarMode keine Richtungs Änderungen unter 10kmh
+		if (alignToCompassCarMode && GlobalCore.Locator.SpeedOverGround() < 10) return;
 
 		if (this.locator != null)
 		{
@@ -2242,8 +2259,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 							GlobalCore.SelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
 							// FormMain.WaypointListPanel.AlignSelected();
 							// updateCacheList();
-							mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)),
-									aktZoom, true);
+							MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)),
+									screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
+							mapCacheList.update(data);
 						}
 
 					}
@@ -2294,7 +2312,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		 */
 
 		// mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
-		mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
+		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(
+				mapIntWidth, mapIntHeight)), aktZoom, true);
+		mapCacheList.update(data);
 
 		if (togBtn.getState() > 0 && togBtn.getState() != 2) return;
 
@@ -2519,7 +2539,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	protected void SkinIsChanged()
 	{
 		setBackground(SpriteCache.ListBack);
-		mapCacheList.update(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
+		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(
+				mapIntWidth, mapIntHeight)), aktZoom, true);
+		mapCacheList.update(data);
 		if (infoBubble.isVisible())
 		{
 			infoBubble.setCache(infoBubble.getCache(), infoBubble.getWaypoint(), true);

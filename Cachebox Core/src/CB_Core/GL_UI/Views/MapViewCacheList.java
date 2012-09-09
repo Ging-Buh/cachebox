@@ -21,10 +21,14 @@ public class MapViewCacheList
 {
 	private int maxZoomLevel;
 	private queueProcessor queueProcessor = null;
-	// State 0: warten auf neuen Update Befehl
-	// State 1: Berechnen
-	// State 2: Berechnung in Gang
-	// State 3: Berechnung fertig - warten auf abholen
+
+	/**
+	 * State 0: warten auf neuen Update Befehl <br>
+	 * State 1: Berechnen <br>
+	 * State 2: Berechnung in Gang <br>
+	 * State 3: Berechnung fertig - warten auf abholen <br>
+	 * State 4: queueProcessor abgebrochen
+	 */
 	private AtomicInteger state = new AtomicInteger(0);
 	private Vector2 point1;
 	private Vector2 point2;
@@ -46,20 +50,28 @@ public class MapViewCacheList
 		super();
 		this.maxZoomLevel = maxZoomLevel;
 
-		if (queueProcessor == null)
-		{
-			try
-			{
-				queueProcessor = new queueProcessor();
-				queueProcessor.setPriority(Thread.MIN_PRIORITY);
-			}
-			catch (Exception ex)
-			{
-				// String s = ex.getMessage();
-			}
-			queueProcessor.start();
-		}
+		StartQueueProcessor();
 		hideMyFinds = Config.settings.MapHideMyFinds.getValue();
+	}
+
+	private void StartQueueProcessor()
+	{
+
+		try
+		{
+			Logger.DEBUG("MapCacheList.queueProcessor Create");
+			queueProcessor = new queueProcessor();
+			queueProcessor.setPriority(Thread.MIN_PRIORITY);
+		}
+		catch (Exception ex)
+		{
+			Logger.Error("MapCacheList.queueProcessor", "onCreate", ex);
+		}
+
+		Logger.DEBUG("MapCacheList.queueProcessor Start");
+		queueProcessor.start();
+
+		state.set(0);
 	}
 
 	private class queueProcessor extends Thread
@@ -353,7 +365,14 @@ public class MapViewCacheList
 						Thread.sleep(50);
 						state.set(0);
 						anz++;
-						// State ist jetzt 3
+						if (savedQuery != null)
+						{
+							// es steht noch eine Anfrage an!
+							// Diese jetzt ausführen!
+							MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(savedQuery);
+							savedQuery = null;
+							update(data);
+						}
 					}
 					else
 					{
@@ -368,8 +387,8 @@ public class MapViewCacheList
 			}
 			finally
 			{
-				// damit im Falle einer Exception der Thread neu gestartet wird
-				// queueProcessor = null;
+				// wenn der Thread beendet wurde, muss er neu gestartet werden!
+				state.set(4);
 			}
 			return;
 		}
@@ -405,37 +424,80 @@ public class MapViewCacheList
 	private Vector2 lastPoint2;
 	private int lastzoom;
 
-	public void update(Vector2 point1, Vector2 point2, int zoom, boolean doNotCheck)
+	public static class MapViewCacheListUpdateData
+	{
+		public Vector2 point1;
+		public Vector2 point2;
+		public int zoom;
+		public boolean doNotCheck;
+
+		public MapViewCacheListUpdateData(Vector2 point1, Vector2 point2, int zoom, boolean doNotCheck)
+		{
+			this.point1 = point1;
+			this.point2 = point2;
+			this.zoom = zoom;
+			this.doNotCheck = doNotCheck;
+		}
+
+		public MapViewCacheListUpdateData(MapViewCacheListUpdateData data)
+		{
+			this.point1 = data.point1;
+			this.point2 = data.point2;
+			this.zoom = data.zoom;
+			this.doNotCheck = data.doNotCheck;
+		}
+	}
+
+	MapViewCacheListUpdateData savedQuery = null;
+
+	public void update(MapViewCacheListUpdateData data)
 	{
 
-		if (point1 == null || point2 == null) return;
+		// this.point1 = data.point1;
+		// this.point2 = data.point2;
+		// this.zoom = data.zoom;
 
-		if (state.get() != 0) return;
-		if ((zoom == lastzoom) && (!doNotCheck))
+		if (data.point1 == null || data.point2 == null) return;
+
+		if (state.get() == 4)
+		{
+			// der queueProcessor wurde gestoppt und muss neu gestartet werden
+			StartQueueProcessor();
+		}
+
+		if (state.get() != 0)
+		{
+			// Speichere Update anfrage und führe sie aus, wenn der queueProcessor wieder bereit ist!
+			savedQuery = data;
+			return;
+		}
+
+		if ((data.zoom == lastzoom) && (!data.doNotCheck))
 		{
 			// wenn LastPoint == 0 muss eine neue Liste Berechnet werden!
 			if (lastPoint1 != null && lastPoint2 != null)
 			{
 				// Prüfen, ob überhaupt eine neue Liste berechnet werden muß
-				if ((point1.x >= lastPoint1.x) && (point2.x <= lastPoint2.x) && (point1.y >= lastPoint1.y) && (point2.y <= lastPoint2.y)) return;
+				if ((data.point1.x >= lastPoint1.x) && (data.point2.x <= lastPoint2.x) && (data.point1.y >= lastPoint1.y)
+						&& (data.point2.y <= lastPoint2.y)) return;
 			}
 
 		}
 
 		// Bereich erweitern, damit von vorne herein gleiche mehr Caches geladen werden und diese Liste nicht so oft berechnet werden muss
-		Vector2 size = new Vector2(point2.x - point1.x, point2.y - point1.y);
-		point1.x -= size.x;
-		point2.x += size.x;
-		point1.y -= size.y;
-		point2.y += size.y;
+		Vector2 size = new Vector2(data.point2.x - data.point1.x, data.point2.y - data.point1.y);
+		data.point1.x -= size.x;
+		data.point2.x += size.x;
+		data.point1.y -= size.y;
+		data.point2.y += size.y;
 
-		this.lastzoom = zoom;
-		lastPoint1 = point1;
-		lastPoint2 = point2;
+		this.lastzoom = data.zoom;
+		lastPoint1 = data.point1;
+		lastPoint2 = data.point2;
 
-		this.zoom = zoom;
-		this.point1 = point1;
-		this.point2 = point2;
+		this.zoom = data.zoom;
+		this.point1 = data.point1;
+		this.point2 = data.point2;
 		state.set(1);
 	}
 

@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.GlobalLocationReceiver;
+import CB_Core.Plattform;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
@@ -375,8 +376,8 @@ public class GL implements ApplicationListener
 			// für diesen Pointer ist kein touchDownPos gespeichert ->
 			// dürfte nicht passieren!!!
 
-			// Wenn Doch, dann Logge
-			Logger.Error("onTouchDraggedBase", "Keine TouchdownPos gespeichert");
+			// Wenn Doch, dann Logge auser auf dem Desctop, hier kommt das Event bei MouseMove
+			if (GlobalCore.platform != Plattform.Desktop) Logger.Error("onTouchDraggedBase", "Keine TouchdownPos gespeichert");
 
 			return false;
 		}
