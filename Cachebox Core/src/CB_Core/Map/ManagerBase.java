@@ -34,6 +34,14 @@ public abstract class ManagerBase
 
 	public ArrayList<Layer> Layers = new ArrayList<Layer>();
 
+	protected String RenderTheme;
+
+	public void setRenderTheme(String theme)
+	{
+		RenderTheme = theme;
+		RenderThemeChanged = true;
+	}
+
 	public PackBase CreatePack(String file) throws IOException
 	{
 		return new PackBase(this, file);
@@ -94,6 +102,13 @@ public abstract class ManagerBase
 		tmp = getImageFromData(imgData);
 
 		return tmp;
+	}
+
+	protected boolean useInvertedNightTheme;
+
+	public void setUseInvertedNightTheme(boolean value)
+	{
+		useInvertedNightTheme = value;
 	}
 
 	protected boolean mapsforgeNightThemeExist()

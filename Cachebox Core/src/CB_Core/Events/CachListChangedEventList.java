@@ -2,6 +2,8 @@ package CB_Core.Events;
 
 import java.util.ArrayList;
 
+import CB_Core.Energy;
+
 public class CachListChangedEventList
 {
 	public static ArrayList<CacheListChangedEventListner> list = new ArrayList<CacheListChangedEventListner>();
@@ -24,6 +26,9 @@ public class CachListChangedEventList
 
 	public static void Call()
 	{
+
+		if (Energy.DisplayOff()) return;
+
 		Thread thread = new Thread(new Runnable()
 		{
 

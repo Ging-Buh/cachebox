@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_Core.Config;
+import CB_Core.Energy;
 import CB_Core.GlobalCore;
 import CB_Core.GlobalLocationReceiver;
 import CB_Core.Plattform;
@@ -148,6 +149,8 @@ public class GL implements ApplicationListener
 	@Override
 	public void render()
 	{
+
+		if (Energy.DisplayOff()) return;
 
 		if (!started.get() || stopRender) return;
 

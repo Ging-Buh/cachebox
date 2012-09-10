@@ -25,7 +25,6 @@ import org.mapsforge.android.maps.rendertheme.InternalRenderTheme;
 import org.mapsforge.core.Tile;
 import org.mapsforge.map.reader.MapDatabase;
 
-import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.Log.Logger;
 import CB_Core.Map.BoundingBox;
@@ -118,11 +117,8 @@ public class AndroidManager extends ManagerBase
 			{
 				try
 				{
-					String themePath = Config.settings.nightMode.getValue() ? Config.settings.MapsforgeNightTheme.getValue()
-							: Config.settings.MapsforgeDayTheme.getValue();
-
-					Logger.DEBUG("Suche RenderTheme: " + themePath);
-					File file = new File(themePath);
+					Logger.DEBUG("Suche RenderTheme: " + RenderTheme);
+					File file = new File(RenderTheme);
 					if (file.exists())
 					{
 						Logger.DEBUG("RenderTheme found!");

@@ -21,7 +21,7 @@ import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Spinner;
 import CB_Core.GL_UI.Controls.Spinner.selectionChangedListner;
 import CB_Core.GL_UI.Controls.SpinnerAdapter;
-import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.LangStrings;
@@ -381,6 +381,10 @@ public class EditWaypoint extends ActivityBase
 					waypoint.Clue = etClue.getText();
 					mReturnListner.returnedWP(waypoint);
 				}
+
+				// Änderungen auch an die MapView melden
+				if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+
 				finish();
 				return true;
 			}

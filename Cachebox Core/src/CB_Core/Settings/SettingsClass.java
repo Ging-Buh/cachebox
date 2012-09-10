@@ -101,6 +101,7 @@ public class SettingsClass extends SettingsList
 	public SettingInt MapIniWidth;
 	public SettingInt MapIniHeight;
 	public SettingInt LongClicktime;
+	public SettingInt VibrateTime;
 
 	// public SettingInt OsmCoverage;
 	public SettingInt FoundOffset;
@@ -229,8 +230,8 @@ public class SettingsClass extends SettingsList
 		addSetting(MapViewDPIFaktor = new SettingDouble("MapViewDPIFaktor", SettingCategory.Map, EXPERT, GlobalCore.displayDensity, true));
 		addSetting(MapViewFontFaktor = new SettingDouble("MapViewFontFaktor", SettingCategory.Map, EXPERT, 1.0, true));
 		addSetting(vibrateFeedback = new SettingBool("vibrateFeedback", cat, NORMAL, true, true));
+		addSetting(VibrateTime = new SettingInt("VibrateTime", cat, NORMAL, 20, true));
 		addSetting(LongClicktime = new SettingInt("LongClicktime", cat, NORMAL, 600, true));
-
 		addSetting(dynamicFilterAtSearch = new SettingBool("dynamicFilterAtSearch", cat, NORMAL, true, true));
 
 	}

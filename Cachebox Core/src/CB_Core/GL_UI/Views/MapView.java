@@ -12,6 +12,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.security.auth.DestroyFailedException;
 
 import CB_Core.Config;
+import CB_Core.Energy;
+import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Events.PositionChangedEvent;
@@ -84,7 +86,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private Lock queuedTilesLock = new ReentrantLock();
 	private Thread queueProcessor = null;
 	private boolean alignToCompass = false;
-	private boolean alignToCompassCarMode = false;
+	private boolean CarMode = false;
 	private boolean autoResortFromCarMode = false;
 	// private boolean centerGps = false;
 	private float mapHeading = 0;
@@ -303,13 +305,17 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			public void onStateChange(GL_View_Base v, int State)
 			{
 
+				boolean wasCarMode = CarMode;
+
 				Config.settings.LastMapToggleBtnState.setValue(State);
 				Config.AcceptChanges();
 
 				if (State == 4)
 				{
+					if (wasCarMode) return; // Brauchen wir nicht noch einmal machen!
+
 					// Car mode
-					alignToCompassCarMode = true;
+					CarMode = true;
 					if (!GlobalCore.autoResort)
 					{
 						GlobalCore.autoResort = true;
@@ -323,6 +329,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 						}
 						autoResortFromCarMode = true;
 					}
+
+					setNewSettings(INITIAL_THEME);
 
 				}
 
@@ -348,7 +356,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				if (State != 4)
 				{
-					alignToCompassCarMode = false;
+					if (!wasCarMode) return; // brauchen wir nicht noch einmal machen
+					CarMode = false;
 
 					if (autoResortFromCarMode)
 					{
@@ -356,6 +365,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 						GlobalCore.autoResort = false;
 						Config.settings.AutoResort.setValue(GlobalCore.autoResort);
 					}
+
+					setNewSettings(INITIAL_THEME);
 				}
 
 			}
@@ -416,8 +427,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		alignToCompass = !Config.settings.MapNorthOriented.getValue();
 
-		alignToCompassCarMode = (togBtn.getState() == 4);
-		if (!alignToCompassCarMode)
+		CarMode = (togBtn.getState() == 4);
+		if (!CarMode)
 		{
 			drawingWidth = mapIntWidth;
 			drawingHeight = mapIntHeight;
@@ -524,7 +535,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	protected void render(SpriteBatch batch)
 	{
 
-		if (Config.settings.MoveMapCenterWithSpeed.getValue() && alignToCompassCarMode && this.locator != null && this.locator.hasSpeed())
+		if (Config.settings.MoveMapCenterWithSpeed.getValue() && CarMode && this.locator != null && this.locator.hasSpeed())
 		{
 
 			double maxSpeed = Config.settings.MoveMapCenterMaxSpeed.getValue();
@@ -649,7 +660,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		float dxr = dx;
 		float dyr = dy;
 
-		if (alignToCompass || alignToCompassCarMode)
+		if (alignToCompass || CarMode)
 		{
 			camera.up.x = 0;
 			camera.up.y = 1;
@@ -1013,7 +1024,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 						// wenn der Wp selectiert ist, dann immer in der größten Darstellung
 						renderWPI(batch, GL_UISizes.WPSizes[2], GL_UISizes.UnderlaySizes[2], wpi);
 					}
-					else if (alignToCompassCarMode)
+					else if (CarMode)
 					{
 						// wenn CarMode dann immer in der größten Darstellung
 						renderWPI(batch, GL_UISizes.WPSizes[2], GL_UISizes.UnderlaySizes[2], wpi);
@@ -1433,28 +1444,146 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			// zoomChanged();
 		}
 
-		setNewSettings();
+		setNewSettings(INITIAL_ALL);
 	}
 
-	public void setNewSettings()
+	public static int INITIAL_NEW_SETTINGS = 3;
+	public static int INITIAL_SETTINGS = 1;
+	public static int INITIAL_THEME = 2;
+	public static int INITIAL_WP_LIST = 4;
+	public static int INITIAL_ALL = 7;
+
+	public void setNewSettings(int InitialFlags)
 	{
-		showRating = Config.settings.MapShowRating.getValue();
-		showDT = Config.settings.MapShowDT.getValue();
-		showTitles = Config.settings.MapShowTitles.getValue();
-		hideMyFinds = Config.settings.MapHideMyFinds.getValue();
-		showCompass = Config.settings.MapShowCompass.getValue();
-		showDirektLine = Config.settings.ShowDirektLine.getValue();
-		// nightMode = Config.settings.nightMode.getValue();
-		iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
-		aktZoom = Config.settings.lastZoomLevel.getValue();
-		zoomBtn.setMaxZoom(Config.settings.OsmMaxLevel.getValue());
-		zoomBtn.setMinZoom(Config.settings.OsmMinLevel.getValue());
-		zoomBtn.setZoom(aktZoom);
+		if ((InitialFlags & INITIAL_SETTINGS) != 0)
+		{
+			showRating = Config.settings.MapShowRating.getValue();
+			showDT = Config.settings.MapShowDT.getValue();
+			showTitles = Config.settings.MapShowTitles.getValue();
+			hideMyFinds = Config.settings.MapHideMyFinds.getValue();
+			showCompass = Config.settings.MapShowCompass.getValue();
+			showDirektLine = Config.settings.ShowDirektLine.getValue();
+			iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
+			aktZoom = Config.settings.lastZoomLevel.getValue();
+			zoomBtn.setMaxZoom(Config.settings.OsmMaxLevel.getValue());
+			zoomBtn.setMinZoom(Config.settings.OsmMinLevel.getValue());
+			zoomBtn.setZoom(aktZoom);
 
-		zoomScale.setMaxZoom(Config.settings.OsmMaxLevel.getValue());
-		zoomScale.setMinZoom(Config.settings.OsmMinLevel.getValue());
-		setZoomScale(aktZoom);
+			zoomScale.setMaxZoom(Config.settings.OsmMaxLevel.getValue());
+			zoomScale.setMinZoom(Config.settings.OsmMinLevel.getValue());
+			setZoomScale(aktZoom);
+		}
 
+		if ((InitialFlags & INITIAL_THEME) != 0)
+		{
+			String themePath = null;
+
+			boolean useInvertNightTheme = false;
+
+			// Zustand der Karte CarMode/NormalMode
+			if (CarMode)
+			{
+				if (Config.settings.nightMode.getValue())
+				{
+					// zuerst schauen, ob ein Render Theme im Custom Skin Ordner Liegt
+					themePath = ifCarThemeExist(GlobalCore.PathCustomNight);
+
+					if (themePath == null)
+					{// wenn kein Night Custum skin vorhanden, dann nach einem Day CostumTheme suchen, welches dann Invertiert wird!
+						themePath = ifCarThemeExist(GlobalCore.PathCustom);
+						if (themePath != null) useInvertNightTheme = true;
+					}
+
+					if (themePath == null)
+					{
+						// ist ein Default night Theme enthalten
+						themePath = ifCarThemeExist(GlobalCore.PathDefaultNight);
+					}
+
+					if (themePath == null)
+					{// wenn kein Night Default skin vorhanden, dann nach einem Day DayTheme suchen, welches dann Invertiert wird!
+						themePath = ifCarThemeExist(GlobalCore.PathCustom);
+						if (themePath != null) useInvertNightTheme = true;
+					}
+
+				}
+				else
+				{
+					// zuerst schauen, ob ein Render Theme im Custom Skin Ordner Liegt
+					themePath = ifCarThemeExist(GlobalCore.PathCustom);
+
+					if (themePath == null) themePath = ifCarThemeExist(GlobalCore.PathDefault);
+				}
+
+				if (themePath == null)
+				{
+					// kein Spezieller CarTheme gefunden, dann Versuchen wir es mal mit den in den Settings hinterlegten Themes
+					if (Config.settings.nightMode.getValue()) themePath = ifThemeExist(Config.settings.MapsforgeNightTheme.getValue());
+
+					if (themePath == null)
+					{
+						// wenn kein Night Theme vorhanden, dann nach einem Day Theme suchen, welches dann Invertiert wird!
+						themePath = ifThemeExist(Config.settings.MapsforgeDayTheme.getValue());
+						if (themePath != null && Config.settings.nightMode.getValue()) useInvertNightTheme = true;
+					}
+				}
+
+			}
+
+			if (themePath == null)
+			{
+
+				// Entweder wir sind nicht im CarMode oder es wurde kein Passender Theme für den CarMode gefunden!
+				if (Config.settings.nightMode.getValue())
+				{
+					themePath = ifThemeExist(Config.settings.MapsforgeNightTheme.getValue());
+				}
+
+				if (themePath == null)
+				{
+					themePath = ifThemeExist(Config.settings.MapsforgeDayTheme.getValue());
+					if (themePath != null && Config.settings.nightMode.getValue()) useInvertNightTheme = true;
+				}
+
+				if (themePath == null)
+				{
+					themePath = Config.settings.MapsforgeDayTheme.getValue();
+				}
+
+			}
+
+			if (themePath != null)
+			{
+				ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
+				ManagerBase.Manager.setRenderTheme(themePath);
+			}
+
+			invalidateTexture();
+		}
+
+		if ((InitialFlags & INITIAL_WP_LIST) != 0)
+		{
+			if (mapCacheList != null)
+			{
+				MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)),
+						screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
+				mapCacheList.update(data);
+			}
+
+		}
+
+	}
+
+	private String ifCarThemeExist(String Path)
+	{
+		Path = Path + "CarTheme.xml";
+		return ifThemeExist(Path);
+	}
+
+	private String ifThemeExist(String Path)
+	{
+		if (FileIO.FileExists(Path)) return Path;
+		return null;
 	}
 
 	public void saveToSettings()
@@ -1515,10 +1644,17 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private Vector2 screenToWorld(Vector2 point)
 	{
 		Vector2 result = new Vector2(0, 0);
-		synchronized (screenCenterW)
+		try
 		{
-			result.x = screenCenterW.x + ((long) point.x - mapIntWidth / 2) * camera.zoom;
-			result.y = -screenCenterW.y + ((long) point.y - mapIntHeight / 2) * camera.zoom;
+			synchronized (screenCenterW)
+			{
+				result.x = screenCenterW.x + ((long) point.x - mapIntWidth / 2) * camera.zoom;
+				result.y = -screenCenterW.y + ((long) point.y - mapIntHeight / 2) * camera.zoom;
+			}
+		}
+		catch (Exception e)
+		{
+			// wenn hier ein Fehler auftritt, dann geben wir einen Vector 0,0 zurück!
 		}
 		return result;
 	}
@@ -1560,7 +1696,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if (locator == null) return;
 		if (locator.getLocation() == null) return;
 
-		if (alignToCompassCarMode)
+		if (CarMode)
 		{
 			// im CarMode keine Netzwerk Koordinaten zulassen
 			if (!locator.isGPSprovided()) return;
@@ -1668,10 +1804,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			heading = GlobalCore.Locator.getHeading();
 		}
 
-		// im CarMode keine Richtungs Änderungen unter 10kmh
-		if (alignToCompassCarMode && GlobalCore.Locator.SpeedOverGround() < 10) heading = this.mapHeading;
+		// im CarMode keine Richtungs Änderungen unter 20kmh
+		if (CarMode && GlobalCore.Locator.SpeedOverGround() < 20) heading = this.mapHeading;
 
-		if (alignToCompass || alignToCompassCarMode)
+		if (alignToCompass || CarMode)
 		{
 			this.mapHeading = heading;
 			this.arrowHeading = 0;
@@ -1754,8 +1890,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				do
 				{
 					Descriptor desc = null;
-					if (queuedTiles.size() > 0)
+					if (!Energy.DisplayOff() && MapView.that.isVisible() && queuedTiles.size() > 0)
 					{
+
 						try
 						{
 							queuedTilesLock.lock();
@@ -1836,6 +1973,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 						{
 							Logger.Error("MapViewGL.queueProcessor.doInBackground()", "1", ex1);
 						}
+
 					}
 					else
 					{

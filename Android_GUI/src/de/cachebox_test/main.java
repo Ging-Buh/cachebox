@@ -1113,7 +1113,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		Logger.DEBUG("Main=> onPause release SuppressPowerSaving");
 
-		this.mWakeLock.release();
+		if (this.mWakeLock != null) this.mWakeLock.release();
 	}
 
 	Dialog pWaitD;
@@ -1678,7 +1678,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public static void vibrate()
 	{
-		if (Config.settings.vibrateFeedback.getValue()) vibrator.vibrate(15);
+		if (Config.settings.vibrateFeedback.getValue()) vibrator.vibrate(Config.settings.VibrateTime.getValue());
 	}
 
 	/*

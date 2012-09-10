@@ -39,6 +39,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_ShowActivity;
 import CB_Core.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
+import CB_Core.GL_UI.Views.MapView;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListButtonLangSpinner;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListButtonSkinSpinner;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListCategoryButton;
@@ -180,6 +181,8 @@ public class SettingsActivity extends ActivityBase
 
 				// Notify QuickButtonList
 				QuickButtonList.that.notifyDataSetChanged();
+
+				if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_NEW_SETTINGS);
 
 				finish();
 				return true;

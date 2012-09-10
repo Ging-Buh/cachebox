@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1097;
+	public static final int CurrentRevision = 1098;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -41,6 +41,13 @@ public class GlobalCore
 	public static Plattform platform = Plattform.undef;
 
 	public static CB_Core.Locator.Locator Locator = null;
+
+	// ######### theme Path ###############
+	public static String PathDefault;
+	public static String PathCustom;
+	public static String PathDefaultNight;
+	public static String PathCustomNight;
+	// ######################################
 
 	public static RouteOverlay.Track AktuelleRoute = null;
 	public static int aktuelleRouteCount = 0;

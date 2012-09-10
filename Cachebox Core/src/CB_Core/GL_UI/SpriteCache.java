@@ -94,11 +94,6 @@ public class SpriteCache
 	public static ButtonSprites Misc;
 	public static ButtonSprites QuickButton;
 
-	private static String PathDefault;
-	private static String PathCustom;
-	private static String PathDefaultNight;
-	private static String PathCustomNight;
-
 	private static TextureAtlas atlasDefault;
 	private static TextureAtlas atlasDefaultNight;
 	private static TextureAtlas atlasCustom;
@@ -134,6 +129,11 @@ public class SpriteCache
 
 	public static int patch;
 
+	public static String PathDefaultAtlas;
+	public static String PathCustomAtlas;
+	public static String PathDefaultNightAtlas;
+	public static String PathCustomNightAtlas;
+
 	private static void setPath(String path)
 	{
 
@@ -143,24 +143,30 @@ public class SpriteCache
 			Gdx.gl11.glFinish();
 		}
 
-		PathCustom = path + "/day/UI_IconPack.spp";
-		PathCustomNight = path + "/night/UI_IconPack.spp";
+		GlobalCore.PathCustom = path + "/day/";
+		GlobalCore.PathCustomNight = path + "/night/";
+		PathCustomAtlas = path + "/day/UI_IconPack.spp";
+		PathCustomNightAtlas = path + "/night/UI_IconPack.spp";
 
 		String defaultPath = path;
 		int pos = defaultPath.lastIndexOf("/");
 		if (GlobalCore.useSmallSkin)
 		{
 			defaultPath = defaultPath.substring(0, pos) + "/small";
-			PathCustom = "";
-			PathCustomNight = "";
+			GlobalCore.PathCustom = "";
+			GlobalCore.PathCustomNight = "";
+			PathCustomAtlas = "";
+			PathCustomNightAtlas = "";
 		}
 		else
 		{
 			defaultPath = defaultPath.substring(0, pos) + "/default";
 		}
 
-		PathDefault = defaultPath + "/day/UI_IconPack.spp";
-		PathDefaultNight = defaultPath + "/night/UI_IconPack.spp";
+		GlobalCore.PathDefault = defaultPath + "/day/";
+		GlobalCore.PathDefaultNight = defaultPath + "/night/";
+		PathDefaultAtlas = defaultPath + "/day/UI_IconPack.spp";
+		PathDefaultNightAtlas = defaultPath + "/night/UI_IconPack.spp";
 
 		if (atlasDefault != null)
 		{
@@ -186,13 +192,13 @@ public class SpriteCache
 			atlasCustomtNight = null;
 		}
 
-		if (FileIO.FileExists(PathDefault)) atlasDefault = new TextureAtlas(Gdx.files.absolute(PathDefault));
-		if (FileIO.FileExists(PathDefaultNight)) atlasDefaultNight = new TextureAtlas(Gdx.files.absolute(PathDefaultNight));
+		if (FileIO.FileExists(PathDefaultAtlas)) atlasDefault = new TextureAtlas(Gdx.files.absolute(PathDefaultAtlas));
+		if (FileIO.FileExists(PathDefaultNightAtlas)) atlasDefaultNight = new TextureAtlas(Gdx.files.absolute(PathDefaultNightAtlas));
 
-		if (!PathDefault.equals(PathCustom))
+		if (!PathDefaultAtlas.equals(PathCustomAtlas))
 		{
-			if (FileIO.FileExists(PathCustom)) atlasCustom = new TextureAtlas(Gdx.files.absolute(PathCustom));
-			if (FileIO.FileExists(PathCustomNight)) atlasCustomtNight = new TextureAtlas(Gdx.files.absolute(PathCustomNight));
+			if (FileIO.FileExists(PathCustomAtlas)) atlasCustom = new TextureAtlas(Gdx.files.absolute(PathCustomAtlas));
+			if (FileIO.FileExists(PathCustomNightAtlas)) atlasCustomtNight = new TextureAtlas(Gdx.files.absolute(PathCustomNightAtlas));
 		}
 	}
 
