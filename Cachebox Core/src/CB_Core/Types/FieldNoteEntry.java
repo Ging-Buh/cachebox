@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
@@ -149,8 +150,10 @@ public class FieldNoteEntry implements Serializable
 	public String GetDateTimeString()
 	{
 		SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
+		datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 		String sDate = datFormat.format(timestamp);
 		datFormat = new SimpleDateFormat("HH:mm:ss");
+		datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 		sDate += "T" + datFormat.format(timestamp) + "Z";
 		return sDate;
 	}
