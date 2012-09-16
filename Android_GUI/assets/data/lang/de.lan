@@ -57,6 +57,46 @@
 	manage = DB Auswahl
 	screenlock = Bildschirmsperre 
 
+	QuickFieldNote = Quick Fieldnote
+	RecTrack = Track Recorder
+	EmptyLogList = Leere Loglist
+	TestView = Testview
+
+
+	AddOwnFilterPreset = Eigene Filter Voreinstellung hinzufügen
+	att_45_1 = Lost & Found Tour
+	Cache List = Cache List
+	Cancel = Abbruch
+	CarMode = Fahrzeug Modus
+	dynamicFilterAtSearch = Dynamischer Filter beim Suchen
+	dynamicZoom = Dynamischer Zoom
+	dynamicZoomLevelMax = Dynamischer Zoom Min
+	dynamicZoomLevelMin = Dynamischer Zoom Max
+	EmptyCacheList = Leere Cache List
+	EmptyPqList = Leere PQ List
+	EmptyTrackList = Leere Track List
+	FilterCaches = Filter Caches
+	gpsUpdateTime = GPS Aktualisierungszeit
+	HardwareCompass = Hardware Compass
+	HardwareCompassLevel = Hardware Compass Level
+	LoadPqList = Lade PQ List
+	Map-Center setzen = Setze Zentrum
+	MapNorthOriented = Karte Nordorientiert
+	Ok = OK
+	Positions = Positionen
+	quickButtonShow = Zeige Quick Buttons
+	refreshPqList = Akrualisiere PQ List
+	SelectSkin = Skin auswählen
+	Show Logs = Zeige Logs
+	SoundPath = Soundverzeichnis
+	TestView = Test Anzeige
+	Waypoint einfügen = Wegpunkt einfügen
+	Zeile ändern = Zeile ändern
+	Zeile einfügen = Zeile einfügen
+	Zeile löschen = Zeile löschen
+
+
+	
 // AboutViewPanel
 	caches_found = Gefundene Caches:
 	gps = GPS:
@@ -287,7 +327,6 @@
 		solverFuncMid = Mid
 		solverDescMid = Teilstring ausliefern. Parameter 3: Default=1 \nMid("String";StartPosition;[Zeichenzahl])
 
-		
 	//CompassViewPanel
 		SatHdop = Sats/Hdop:
 		BearSpeed = Richt./Geschw.:
@@ -529,6 +568,47 @@
 	SolverErrPostfix =
 	InvalidVariableName = Fehler: Ungültiger Variablen-Name: {1}
 	LeftMustBeAVariable = Fehler: Links muss eine Variable stehen [{1}]
+
+
+	quickButtonLastShow = Show Last Quick Button
+	quickButtonList = Quick Button List
+	LastMapToggleBtnState = Last Map Togglebutton State
+	CurrentMapLayer = Current Map Layer
+	MapMaxCachesDisplay_config = Max Caches Display
+	mapMaxCachesDisplayLarge_config = Max Caches Display Large
+	MapMaxCachesLabel = Max Caches Label
+	OsmMaxImportLevel = OSM Max Importlevel
+	MapIniWidth = Initial Map Width
+	MapIniHeight = Initial Map Height
+	MapViewDPIFaktor = Map View DPI Factor
+	MapViewFontFaktor = Map View Font Factor
+	VibrateTime = Vibration Time (ms)
+	GCAdditionalImageDownload = Download Additional Images (Spoiler)
+	Sel_LanguagePath = Languagefiles Folder
+	FieldNotesGarminPath = Fieldnotes Folder
+	SkinFolder = Skin Folder
+	CacheMapData = Cache Mapdata
+	CacheImageData = Cache Imagedata
+	ImportLayerOsm = Importlayer OSM
+	GCAutoSyncCachesFound = Autosync Found Caches
+	LogMaxMonthAge = Max Log Age (in Months)
+	LogMinCount = Number of Logs to keep at least
+	NavigationProvider = Navigation Provider
+	SpoilersDescriptionTags = Spoilertags To Load (split with ; )
+	DebugShowPanel = Show Debugpanel
+	DebugMemory = Debug Memory
+	DebugShowMsg = Show Debugmessages
+	DebugShowMarker = Show Marker
+	DebugShowLog = Show Debuglog
+	OverrideUrl = Override URL
+	MapInitLatitude = Map Init Latitude
+	MapInitLongitude = Map Init Longitude
+	ParkingLatitude = Parking Latitude
+	ParkingLongitude = Parking Longitude
+	Spoiler = Spoiler
+	Hint = Hint
+	waitForCancel = Wait for Cancel
+
 	
 	
 // Attributes

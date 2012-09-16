@@ -57,6 +57,46 @@ utf8
 	manage = Gestion des bases
 	screenlock = Screenlock
 
+	QuickFieldNote = Quick Fieldnote
+	RecTrack = Track Recorder
+	EmptyLogList = Empty Loglist
+	TestView = Testview
+
+
+	AddOwnFilterPreset = Add own filter preset
+	att_45_1 = Lost & Found Tour
+	Cache List = Cache List
+	Cancel = Cancel
+	CarMode = Car Mode
+	dynamicFilterAtSearch = Dynamic Filter At Search
+	dynamicZoom = Dynamic Zoom
+	dynamicZoomLevelMax = Dynamic Zoomlevel Min
+	dynamicZoomLevelMin = Dynamic Zoomlevel Max
+	EmptyCacheList = Empty Cache List
+	EmptyPqList = Empty PQ List
+	EmptyTrackList = Empty Track List
+	FilterCaches = Filter Caches
+	gpsUpdateTime = GPS Update Time
+	HardwareCompass = Hardware Compass
+	HardwareCompassLevel = Hardware Compass Level
+	LoadPqList = Load PQ List
+	Map-Center setzen = Set Map Center
+	MapNorthOriented = Map North Oriented
+	Ok = OK
+	Positions = Positions
+	quickButtonShow = Show Quick Buttons
+	refreshPqList = Refresh PQ List
+	SelectSkin = Select Skin
+	Show Logs = Show Logs
+	SoundPath = Sound Path
+	TestView = Test View
+	Waypoint einfügen = Insert Waypoint
+	Zeile ändern = Edit Row
+	Zeile einfügen = Insert Row
+	Zeile löschen = Delete Row
+
+
+
 // AboutViewPanel
 	caches_found = Caches trouvées:
 	gps = GPS:
@@ -86,6 +126,7 @@ utf8
 	
 	CanntProcessUpdateFiles = Mise à jour impossible!
 	ErrDbStartup = Erreur de base de données au démarrage!
+	ErrDbFNStartup = Erreur alors que commencer de la base Fieldnote!
 	CanntCreateProxy = Création proxy impossible!
 	
 	Quit? = Quitter?
@@ -185,7 +226,8 @@ utf8
 	//WaypointViewPanel
 		Projection = Projection
 		EnterMan = Saisie manuelle
-		FromGps = Depuis le GPS
+		FromGps = du GPS
+		FromMap = de la carte
 		details = Détails
 		delete = Effacement
 		DecDeg = Degrés décimaux
@@ -204,8 +246,18 @@ utf8
 		PasteCoord = Coller les coordonnées
 		CopyCoord = Copier les coordonnées
 		CopyGcCode = Copier le code GC
-		Clue = Clue
+		type = Type
+		Clue = Pointe
+		wyptDefTitle = manual
 
+	//Waypoint Type select
+		Reference = Reference
+		StageofMulti = Stage de multicache
+		Question2Answer = Question
+		Trailhead = Point de départ
+		Parking = Stationnement
+		Final = Final
+		
 	//SolverViewPanel
 		Solve = Résolution
 		Funct. = Fonction
@@ -302,7 +354,9 @@ utf8
 	//GPS
 	CompatibleWithGpsModDriver? = Compatible avec GpsModDriver?
 	UseHtcCompass = Utilisation de la boussole HTV
+	Desc_HtcCompass = If Compass available it is used for bearing. Otherwise Bearing is appropriated by last GPS-Positions.
 	DescHtcLevel = Niveau de vitesse pour la boussole. \n-1 = GPS non utilisé.
+	Desc_HtcLevel = For driving GPS Bearing is suggested. For walking bearing by compass is more detailed.
 	
 	//Data
 	AdjustFounds = Ajustement du nombre de caches trouvées...
@@ -349,8 +403,11 @@ utf8
 	units = Unités:	
 	AllowInternet = Accès Internet autorisé
 	AllowLandscape = Allow Landscape view
+	Desc_AllowLandscape = Display is rotated if device is rotated. (Could cause design problems)
 	ShowKeypad = Clavier visible
+	Desc_ShowKeypad = allows keypad displayed in fieldnotes, notes, waypoints,...
 	SuppressPowerSaving = Arrêt de la mise en veille
+	Desc_SuppressPowerSaving = prevents the power saving mode of device
 	UploadAllFieldnotes = Téléchargement de toutes les notes? (Date ignorée)
 	LogIn = Connexion au site geocaching.com
 	GCPW = Mot de passe pour geocaching.com
@@ -370,12 +427,12 @@ utf8
 
 	GC_DownloadDescription = Download Description 
 	
-//needs translation
+//new needs translation
 	AppliedFilter1 = Applied filter. Found
 	AppliedFilter2 = Caches!
 	ManuallyAddCache = Manually Add Cache
 	FindCachesOnline = Find Caches Online
-	TBList = TB list
+	TBList = TB List
 	ReloadCacheAPI = Reload Cache (API)
 	Fieldnotes = Fieldnotes
 	writenote = Write Note
@@ -385,15 +442,15 @@ utf8
 	LoadTrack = Load Track
 	SaveTrack = Save Track
 	NoTrackSelected = No track selected!
-	IsActualTrack = Currently used track can't be deleted!
+	IsActualTrack = Current track cannot be deleted
 	renActualTrack = Rename of current track is not allowed!
 	actualTrack = Actual Track
 	recordetTrack = Recordet Track
-	Point2Point = Point to Point	
+	Point2Point = Point to Point
 	Circle = Circle
+	length = Distance
 	rename = Rename
 	RenameTrack = Rename Track as
-	length = Distance
 	fromPoint = From Point
 	toPoint = To Point
 	centerPoint = Cener Point
@@ -401,7 +458,7 @@ utf8
 	setting = Setting
 	category = Category
 	AllCaches = All caches
-	AllCachesToFind = All caches to find
+	AllCachesToFind = All active caches
 	QuickCaches = Quick caches
 	GrabTB = Grab some travelbugs
 	DropTB = Drop off travelbugs
@@ -428,8 +485,9 @@ utf8
 	NoCacheFound = No Cache found
 	NavigateTo = Navigate to...
 	Layer = Map type
-	AlignToCompass = Align compass
+	AlignToCompass = Align to compass
 	SmoothScrolling = Smooth scrolling
+	Desc_SmoothScrolling = The map is displayed more smoothly during scrolling 
 	view = View
 	none = None
 	normal = Normal
@@ -440,9 +498,11 @@ utf8
 	ShowDT = Show D/T
 	ShowTitle = Show Titles
 	ShowDirectLine = Show Direct Line
+	Desc_ShowDirectLine = Draws a line between own and cache position. Helpful if cache outside of displayed map
 	start = Start
 	DayNight = Day/Night
-	ScreenLock = ScreenLock
+	ScreenLock = ScreenLock [min/sec] 
+	Desc_ScreenLock = Screenlock
 	SelectCache = Select Cache
 	Maps = Maps
 	PQfromGC = Pocket Query from geocaching.com
@@ -453,6 +513,9 @@ utf8
 	getApiKey = Get API key
 	DescMapLayer = Auto-download map layer
 	MoveMapCenterWithSpeed = Move map center with speed
+	Desc_MoveMapCenterWithSpeed = own position is displayed lower in mapview, so you have a better view on the map. Useful for driving. (Only available if map is alligned to compass)
+	MoveMapCenterMaxSpeed = Switches to driving mode at x km/h
+	Desc_MoveMapCenterMaxSpeed = speed of changing the own position displayed in the mapview 
 	DPIaware = DPI-aware rendering
 	StartTrackRecOnStart = Start Track Recorder on startup
 	TrackEvery = Track every
@@ -461,9 +524,9 @@ utf8
 	up = Up
 	down = Down
 	add = Add
-	deleteFieldnote = Fieldnote löschen
-	confirmFieldnoteDeletion = Soll die Fieldnote\n\n[{1}]\n\ndes Caches\n\n[{2}]\n\ngelöscht werden?
-	confirmFieldnoteDeletionRst = \n\nDer Found Status des Caches wird dabei zurückgesetzt!
+	deleteFieldnote = Delete Fieldnote
+	confirmFieldnoteDeletion = Really delete Fieldnote\n\n[{1}]\n\nof cache\n\n[{2}]?
+	confirmFieldnoteDeletionRst = \n\nThe "found it"-flag will be resetted!
 	solverErrParamCount = This function needs {1} parameters
 	apiKeyNeeded = No API-Key found.\nSee login settings.
 	chkApiState = Checking API state
@@ -480,13 +543,6 @@ utf8
 	internetError = Error accessing internet
 	errorAPI = Error during API access
 	chkState = Checking state
-	wyptDefTitle = manual
-	wyptTypeRef = Reference
-	wyptTypeStage =Stage of a Multicache
-	wyptTypeQuestion = Question to answer
-	wyptTypeTrail = Trailhead
-	wyptTypeParking = Parking Area
-	wyptTypeFinal = Final
 	solverErrParamType = Error: function {1}/parameter {2} ({3}) is no valid {4}: [{5}]
 	CacheOrWaypointNotFound = Error: cache/waypoint [{1}] not found
     // ALL error texts MUST begin with this prefix
@@ -512,7 +568,48 @@ utf8
 	SolverErrPostfix =
 	InvalidVariableName = Error: invalid variable name: {1}
 	LeftMustBeAVariable = Error: Left of assignment must be a variable [{1}]
-	
+
+
+	quickButtonLastShow = Show Last Quick Button
+	quickButtonList = Quick Button List
+	LastMapToggleBtnState = Last Map Togglebutton State
+	CurrentMapLayer = Current Map Layer
+	MapMaxCachesDisplay_config = Max Caches Display
+	mapMaxCachesDisplayLarge_config = Max Caches Display Large
+	MapMaxCachesLabel = Max Caches Label
+	OsmMaxImportLevel = OSM Max Importlevel
+	MapIniWidth = Initial Map Width
+	MapIniHeight = Initial Map Height
+	MapViewDPIFaktor = Map View DPI Factor
+	MapViewFontFaktor = Map View Font Factor
+	VibrateTime = Vibration Time (ms)
+	GCAdditionalImageDownload = Download Additional Images (Spoiler)
+	Sel_LanguagePath = Languagefiles Folder
+	FieldNotesGarminPath = Fieldnotes Folder
+	SkinFolder = Skin Folder
+	CacheMapData = Cache Mapdata
+	CacheImageData = Cache Imagedata
+	ImportLayerOsm = Importlayer OSM
+	GCAutoSyncCachesFound = Autosync Found Caches
+	LogMaxMonthAge = Max Log Age (in Months)
+	LogMinCount = Number of Logs to keep at least
+	NavigationProvider = Navigation Provider
+	SpoilersDescriptionTags = Spoilertags To Load (split with ; )
+	DebugShowPanel = Show Debugpanel
+	DebugMemory = Debug Memory
+	DebugShowMsg = Show Debugmessages
+	DebugShowMarker = Show Marker
+	DebugShowLog = Show Debuglog
+	OverrideUrl = Override URL
+	MapInitLatitude = Map Init Latitude
+	MapInitLongitude = Map Init Longitude
+	ParkingLatitude = Parking Latitude
+	ParkingLongitude = Parking Longitude
+	Spoiler = Spoiler
+	Hint = Hint
+	waitForCancel = Wait for Cancel
+
+
 
 // Attributes
 	att_1_0 = dogs does not permit
