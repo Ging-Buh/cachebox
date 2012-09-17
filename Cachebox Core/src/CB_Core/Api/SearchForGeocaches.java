@@ -310,11 +310,25 @@ public class SearchForGeocaches
 						}
 						cache.GPXFilename_ID = gpxFilenameId;
 						cache.hasUserData = false;
-						cache.hint = jCache.getString("EncodedHints");
+						try
+						{
+							cache.hint = jCache.getString("EncodedHints");
+						}
+						catch (Exception e1)
+						{
+							cache.hint = "";
+						}
 						cache.Id = Cache.GenerateCacheId(cache.GcCode);
 						cache.listingChanged = false;
 
-						cache.longDescription = jCache.getString("LongDescription");
+						try
+						{
+							cache.longDescription = jCache.getString("LongDescription");
+						}
+						catch (Exception e1)
+						{
+							cache.longDescription = "";
+						}
 						if (jCache.getBoolean("LongDescriptionIsHtml") == false)
 						{
 							cache.longDescription = cache.longDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
@@ -335,7 +349,14 @@ public class SearchForGeocaches
 						}
 						cache.Rating = 0;
 						// cache.Rating =
-						cache.shortDescription = jCache.getString("ShortDescription");
+						try
+						{
+							cache.shortDescription = jCache.getString("ShortDescription");
+						}
+						catch (Exception e)
+						{
+							cache.shortDescription = "";
+						}
 						if (jCache.getBoolean("ShortDescriptionIsHtml") == false)
 						{
 							cache.shortDescription = cache.shortDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
@@ -479,7 +500,7 @@ public class SearchForGeocaches
 			}
 			catch (JSONException e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 

@@ -16,6 +16,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Activitys.ActivityBase;
+import CB_Core.GL_UI.Controls.API_Button;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CollabseBox.animatetHeightChangedListner;
 import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
@@ -69,11 +70,12 @@ public class SettingsActivity extends ActivityBase
 	private final int MI_SHOW_EXPERT = 0;
 	private final int MI_SHOW_ALL = 1;
 
-	private static SettingsActivity that;
+	public static SettingsActivity that;
 	private ArrayList<SettingCategory> Categorys = new ArrayList<SettingCategory>();
 	private Button btnOk, btnCancel, btnMenu;
 	private ScrollBox scrollBox;
 	private CB_RectF ButtonRec, itemRec;
+	private API_Button apiBtn;
 
 	/***
 	 * Enthält den Key des zu Editierenden Wertes der SettingsList
@@ -412,6 +414,9 @@ public class SettingsActivity extends ActivityBase
 			while (iteratorCat.hasNext());
 
 		}
+
+		apiBtn.setImage();
+
 	}
 
 	private void addControlToLinearLayout(CB_View_Base view, float itemMargin)
@@ -528,7 +533,16 @@ public class SettingsActivity extends ActivityBase
 								if (which == GL_MsgBox.BUTTON_POSITIVE)
 								{
 									SettingString value = (SettingString) Config.settings.get(EditKey);
+
+									// api ohne lineBreak
+									if (EditKey.equalsIgnoreCase("GcAPI"))
+									{
+										text = text.replace("\r", "");
+										text = text.replace("\n", "");
+									}
+
 									if (value != null) value.setValue(text);
+
 									resortList();
 								}
 								// Activity wieder anzeigen
@@ -983,46 +997,9 @@ public class SettingsActivity extends ActivityBase
 
 	private CB_View_Base getApiKeyButtonView(final SettingsListGetApiButton SB, int backgroundChanger)
 	{
-		// LayoutInflater inflater = getLayoutInflater();
-		// View row = inflater.inflate(R.layout.advanced_settings_list_view_item_button, parent, false);
-		//
-		// LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
-		// if (BackgroundChanger)
-		// {
-		// LL.setBackgroundResource(R.drawable.settings_list_background);
-		// }
-		// else
-		// {
-		// LL.setBackgroundResource(R.drawable.settings_list_background2);
-		// }
-		//
-		// Button button = (Button) row.findViewById(R.id.Button);
-		// button.setText(GlobalCore.Translations.Get("getApiKey"));
-		// button.setTextSize(UiSizes.getScaledFontSize_btn());
-		// button.setTextColor(Global.getColor(R.attr.TextColor));
-		//
-		// int Height = (int) (UiSizes.getScaledRefSize_normal() * 4);
-		// button.setMinimumHeight(Height);
-		//
-		// if (Config.settings.GcAPI.getValue().equals(""))
-		// {
-		// button.setCompoundDrawablesWithIntrinsicBounds(null, null, Global.Icons[39], null);
-		// }
-		// else
-		// {
-		// button.setCompoundDrawablesWithIntrinsicBounds(null, null, Global.Icons[27], null);
-		// }
-		//
-		// button.setOnClickListener(new OnClickListener()
-		// {
-		// @Override
-		// public void onClick(View v)
-		// {
-		// ((main) main.mainActivity).GetApiAuth();
-		// }
-		// });
-
-		return null;
+		apiBtn = new API_Button(itemRec);
+		apiBtn.setImage();
+		return apiBtn;
 	}
 
 	private CB_View_Base getTimeView(final SettingTime SB, int backgroundChanger)
@@ -1317,7 +1294,7 @@ public class SettingsActivity extends ActivityBase
 		}
 	};
 
-	private void resortList()
+	public void resortList()
 	{
 		that.show();
 

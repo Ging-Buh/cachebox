@@ -123,11 +123,15 @@ public class CancelWaitDialog extends WaitDialog
 
 	RunnableReadyHandler mRunnThread;
 
+	private boolean isRunning = false;
+
 	@Override
 	public void onShow()
 	{
-		if (this.runnable != null)
+		if (!isRunning && this.runnable != null)
 		{
+
+			isRunning = true;
 
 			// start runnable on new Thread
 			mRunnThread = new RunnableReadyHandler(runnable)

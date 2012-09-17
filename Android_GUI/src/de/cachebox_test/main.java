@@ -481,7 +481,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		initialViewGL();
 		initalMicIcon();
 
-		initialViewGL();
+		// initialViewGL();
 
 		glListener.onStart();
 		if (tabFrame != null) tabFrame.setVisibility(View.INVISIBLE);
@@ -561,7 +561,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 		final Bundle extras = getIntent().getExtras();
-		if (extras != null)
+		if (!GlobalCore.restartAfterKill && extras != null)
 		{
 			GcCode = extras.getString("GcCode");
 
@@ -579,7 +579,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		fillPluginList();
 		bindPluginServices();
 
-		descriptionView = new DescriptionView(this, inflater);
+		// descriptionView = new DescriptionView(this, inflater);
 
 	}
 
@@ -1318,6 +1318,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				if (aktView != null) aktView.OnHide();
 				if (aktTabView != null) aktTabView.OnHide();
+
+				Database.Settings.Close();
+				Database.Data.Close();
+				Database.FieldNotes.Close();
 
 				super.onDestroy();
 			}
@@ -2289,12 +2293,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		MessageBox.Show("Cache hinzufügen ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
 	}
 
-	public void GetApiAuth()
-	{
-		Intent gcApiLogin = new Intent().setClass(mainActivity, GcApiLogin.class);
-		mainActivity.startActivityForResult(gcApiLogin, 987654321);
-	}
-
 	/*
 	 * Setter
 	 */
@@ -2629,7 +2627,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						{
 						case -1:
 							// yes get Api key
-							GetApiAuth();
+							// (new GcApiLogin()).RunRequest();
 							break;
 						case -2:
 							// no, we check GPS
@@ -3391,5 +3389,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	};
 
 	// #########################################################
-
+	public void GetApiAuth()
+	{
+		Intent gcApiLogin = new Intent().setClass(mainActivity, GcApiLogin.class);
+		mainActivity.startActivityForResult(gcApiLogin, 987654321);
+	}
 }

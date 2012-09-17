@@ -11,6 +11,7 @@ public abstract class RunnableReadyHandler implements Runnable
 	Runnable mRunnable;
 	Thread mRunThread;
 	boolean isCanceld = false;
+	boolean isRunning = false;
 
 	public RunnableReadyHandler(Runnable runnable)
 	{
@@ -21,17 +22,22 @@ public abstract class RunnableReadyHandler implements Runnable
 
 	public void run()
 	{
-		mRunThread = new Thread(new Runnable()
+		if (!isRunning)
 		{
-
-			@Override
-			public void run()
+			isRunning = true;
+			mRunThread = new Thread(new Runnable()
 			{
-				mRunnable.run();
-				RunnableReady(isCanceld);
-			}
-		});
-		mRunThread.start();
+
+				@Override
+				public void run()
+				{
+					mRunnable.run();
+					RunnableReady(isCanceld);
+				}
+			});
+			mRunThread.start();
+
+		}
 
 	}
 

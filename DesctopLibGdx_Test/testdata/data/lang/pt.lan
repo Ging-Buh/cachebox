@@ -56,6 +56,45 @@
 	ChkUpdate = Procurar Actualizações
 	manage = Gerir
 	screenlock = Screenlock
+
+	QuickFieldNote = Quick Fieldnote
+	RecTrack = Track Recorder
+	EmptyLogList = Empty Loglist
+	TestView = Testview
+
+
+	AddOwnFilterPreset = Add own filter preset
+	att_45_1 = Lost & Found Tour
+	Cache List = Cache List
+	Cancel = Cancel
+	CarMode = Car Mode
+	dynamicFilterAtSearch = Dynamic Filter At Search
+	dynamicZoom = Dynamic Zoom
+	dynamicZoomLevelMax = Dynamic Zoomlevel Min
+	dynamicZoomLevelMin = Dynamic Zoomlevel Max
+	EmptyCacheList = Empty Cache List
+	EmptyPqList = Empty PQ List
+	EmptyTrackList = Empty Track List
+	FilterCaches = Filter Caches
+	gpsUpdateTime = GPS Update Time
+	HardwareCompass = Hardware Compass
+	HardwareCompassLevel = Hardware Compass Level
+	LoadPqList = Load PQ List
+	Map-Center setzen = Set Map Center
+	MapNorthOriented = Map North Oriented
+	Ok = OK
+	Positions = Positions
+	quickButtonShow = Show Quick Buttons
+	refreshPqList = Refresh PQ List
+	SelectSkin = Select Skin
+	Show Logs = Show Logs
+	SoundPath = Sound Path
+	TestView = Test View
+	Waypoint einfügen = Insert Waypoint
+	Zeile ändern = Edit Row
+	Zeile einfügen = Insert Row
+	Zeile löschen = Delete Row
+
 	
 
 // AboutViewPanel
@@ -188,6 +227,7 @@
 		Projection = Projecção
 		EnterMan = Introd. Manualmente
 		FromGps = Do GPS
+		FromMap = Do map
 		details = Detalhes
 		delete = Apagar
 		DecDeg = Graus Decimais
@@ -208,7 +248,16 @@
 		CopyGcCode = Copiar Código
 		type = Type
 		Clue = Clue
+		wyptDefTitle = manual
 				
+	//Waypoint Type select
+		Reference = reference
+		StageofMulti = Stage of a multicache
+		Question2Answer = question to answer
+		Trailhead = trailhead
+		Parking = parking
+		Final = final
+		
 	//SolverViewPanel
 		Solve = Resolver
 		Funct. = Funcões
@@ -305,7 +354,9 @@
 	//GPS
 	CompatibleWithGpsModDriver? = Compatível com GpsModDriver?
 	UseHtcCompass = Usar bússola Htc
-	DescHtcLevel = Rácio de velocidade para bússola HTC ou GPS. \n-1 = GPS não é usado de todo.
+	Desc_HtcCompass = If Compass available it is used for bearing. Otherwise Bearing is appropriated by last GPS-Positions.
+	DescHtcLevel = Speed level for Hardware or GPS compass. \n-1 = GPS is not used at all.
+	Desc_HtcLevel = Rácio de velocidade para bússola HTC ou GPS. \n-1 = GPS não é usado de todo.
 	
 	//Data
 	AdjustFounds = Ajustar número de finds...
@@ -352,8 +403,11 @@
 	units = Unidades:	
 	AllowInternet = Permitir acesso Internet
 	AllowLandscape = Allow Landscape view
+	Desc_AllowLandscape = Display is rotated if device is rotated. (Could cause design problems)
 	ShowKeypad = Mostrar Teclado
+	Desc_ShowKeypad = allows keypad displayed in fieldnotes, notes, waypoints,...
 	SuppressPowerSaving = Evitar 'Power Saving'
+	Desc_SuppressPowerSaving = prevents the power saving mode of device
 	UploadAllFieldnotes = Enviar todas as Fieldnotes? (Ignorar Data)
 	LogIn = Login no geocaching.com
 	GCPW = Password no geocaching.com
@@ -373,12 +427,12 @@
 
 	GC_DownloadDescription = Download Description 
 	
-//needs translation
+//new needs translation
 	AppliedFilter1 = Applied filter. Found
 	AppliedFilter2 = Caches!
 	ManuallyAddCache = Manually Add Cache
 	FindCachesOnline = Find Caches Online
-	TBList = TB list
+	TBList = TB List
 	ReloadCacheAPI = Reload Cache (API)
 	Fieldnotes = Fieldnotes
 	writenote = Write Note
@@ -388,15 +442,15 @@
 	LoadTrack = Load Track
 	SaveTrack = Save Track
 	NoTrackSelected = No track selected!
-	IsActualTrack = Currently used track can't be deleted!
+	IsActualTrack = Current track cannot be deleted
 	renActualTrack = Rename of current track is not allowed!
 	actualTrack = Actual Track
 	recordetTrack = Recordet Track
 	Point2Point = Point to Point
 	Circle = Circle
+	length = Distance
 	rename = Rename
 	RenameTrack = Rename Track as
-	length = Distance
 	fromPoint = From Point
 	toPoint = To Point
 	centerPoint = Cener Point
@@ -404,7 +458,7 @@
 	setting = Setting
 	category = Category
 	AllCaches = All caches
-	AllCachesToFind = All caches to find
+	AllCachesToFind = All active caches
 	QuickCaches = Quick caches
 	GrabTB = Grab some travelbugs
 	DropTB = Drop off travelbugs
@@ -431,8 +485,9 @@
 	NoCacheFound = No Cache found
 	NavigateTo = Navigate to...
 	Layer = Map type
-	AlignToCompass = Align compass
+	AlignToCompass = Align to compass
 	SmoothScrolling = Smooth scrolling
+	Desc_SmoothScrolling = The map is displayed more smoothly during scrolling 
 	view = View
 	none = None
 	normal = Normal
@@ -443,9 +498,11 @@
 	ShowDT = Show D/T
 	ShowTitle = Show Titles
 	ShowDirectLine = Show Direct Line
+	Desc_ShowDirectLine = Draws a line between own and cache position. Helpful if cache outside of displayed map
 	start = Start
 	DayNight = Day/Night
-	ScreenLock = ScreenLock
+	ScreenLock = ScreenLock [min/sec] 
+	Desc_ScreenLock = Screenlock
 	SelectCache = Select Cache
 	Maps = Maps
 	PQfromGC = Pocket Query from geocaching.com
@@ -456,6 +513,9 @@
 	getApiKey = Get API key
 	DescMapLayer = Auto-download map layer
 	MoveMapCenterWithSpeed = Move map center with speed
+	Desc_MoveMapCenterWithSpeed = own position is displayed lower in mapview, so you have a better view on the map. Useful for driving. (Only available if map is alligned to compass)
+	MoveMapCenterMaxSpeed = Switches to driving mode at x km/h
+	Desc_MoveMapCenterMaxSpeed = speed of changing the own position displayed in the mapview 
 	DPIaware = DPI-aware rendering
 	StartTrackRecOnStart = Start Track Recorder on startup
 	TrackEvery = Track every
@@ -464,10 +524,10 @@
 	up = Up
 	down = Down
 	add = Add
-	deleteFieldnote = Fieldnote löschen
-	confirmFieldnoteDeletion = Soll die Fieldnote\n\n[{1}]\n\ndes Caches\n\n[{2}]\n\ngelöscht werden?
-	confirmFieldnoteDeletionRst = \n\nDer Found Status des Caches wird dabei zurückgesetzt!
-	solverErrParamCount = This function needs {1} parameters	
+	deleteFieldnote = Delete Fieldnote
+	confirmFieldnoteDeletion = Really delete Fieldnote\n\n[{1}]\n\nof cache\n\n[{2}]?
+	confirmFieldnoteDeletionRst = \n\nThe "found it"-flag will be resetted!
+	solverErrParamCount = This function needs {1} parameters
 	apiKeyNeeded = No API-Key found.\nSee login settings.
 	chkApiState = Checking API state
 	searchingOnline = Running online search
@@ -483,14 +543,7 @@
 	internetError = Error accessing internet
 	errorAPI = Error during API access
 	chkState = Checking state
-	wyptDefTitle = manual
-	wyptTypeRef = Reference
-	wyptTypeStage =Stage of a Multicache
-	wyptTypeQuestion = Question to answer
-	wyptTypeTrail = Trailhead
-	wyptTypeParking = Parking Area
-	wyptTypeFinal = Final
-		solverErrParamType = Error: function {1}/parameter {2} ({3}) is no valid {4}: [{5}]
+	solverErrParamType = Error: function {1}/parameter {2} ({3}) is no valid {4}: [{5}]
 	CacheOrWaypointNotFound = Error: cache/waypoint [{1}] not found
     // ALL error texts MUST begin with this prefix
     solverErrorPrefix = Error:
@@ -515,7 +568,48 @@
 	SolverErrPostfix =
 	InvalidVariableName = Error: invalid variable name: {1}
 	LeftMustBeAVariable = Error: Left of assignment must be a variable [{1}]
-	
+
+
+	quickButtonLastShow = Show Last Quick Button
+	quickButtonList = Quick Button List
+	LastMapToggleBtnState = Last Map Togglebutton State
+	CurrentMapLayer = Current Map Layer
+	MapMaxCachesDisplay_config = Max Caches Display
+	mapMaxCachesDisplayLarge_config = Max Caches Display Large
+	MapMaxCachesLabel = Max Caches Label
+	OsmMaxImportLevel = OSM Max Importlevel
+	MapIniWidth = Initial Map Width
+	MapIniHeight = Initial Map Height
+	MapViewDPIFaktor = Map View DPI Factor
+	MapViewFontFaktor = Map View Font Factor
+	VibrateTime = Vibration Time (ms)
+	GCAdditionalImageDownload = Download Additional Images (Spoiler)
+	Sel_LanguagePath = Languagefiles Folder
+	FieldNotesGarminPath = Fieldnotes Folder
+	SkinFolder = Skin Folder
+	CacheMapData = Cache Mapdata
+	CacheImageData = Cache Imagedata
+	ImportLayerOsm = Importlayer OSM
+	GCAutoSyncCachesFound = Autosync Found Caches
+	LogMaxMonthAge = Max Log Age (in Months)
+	LogMinCount = Number of Logs to keep at least
+	NavigationProvider = Navigation Provider
+	SpoilersDescriptionTags = Spoilertags To Load (split with ; )
+	DebugShowPanel = Show Debugpanel
+	DebugMemory = Debug Memory
+	DebugShowMsg = Show Debugmessages
+	DebugShowMarker = Show Marker
+	DebugShowLog = Show Debuglog
+	OverrideUrl = Override URL
+	MapInitLatitude = Map Init Latitude
+	MapInitLongitude = Map Init Longitude
+	ParkingLatitude = Parking Latitude
+	ParkingLongitude = Parking Longitude
+	Spoiler = Spoiler
+	Hint = Hint
+	waitForCancel = Wait for Cancel
+
+
 
 // Attributes
 	att_1_0 = dogs does not permit

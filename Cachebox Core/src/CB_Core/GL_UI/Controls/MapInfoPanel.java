@@ -16,6 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 public class MapInfoPanel extends CB_View_Base
 {
 
+	private Image compass_frame;
+	private Image compas_scale;
 	private Image arrow;
 	private Label lblSpeed;
 	private Label lblDistance;
@@ -61,15 +63,18 @@ public class MapInfoPanel extends CB_View_Base
 		GL.that.renderOnce(this.getName() + " setDistance");
 	}
 
+	private float aktHeading = 0;
 	private float aktBearing = 0;
 
-	public void setBearing(float Bearing)
+	public void setBearing(float Heading, float Bearing)
 	{
-		if (aktBearing == Bearing) return;
+		if (aktHeading == Heading) return;
+		aktHeading = Heading;
 		aktBearing = Bearing;
-		if (arrow != null)
+		if (arrow != null && compas_scale != null)
 		{
-			arrow.setRotate(-Bearing);
+			arrow.setRotate(-Heading);
+			compas_scale.setRotate(Bearing);
 			GL.that.renderOnce(this.getName() + " setBearing");
 		}
 	}
@@ -89,31 +94,43 @@ public class MapInfoPanel extends CB_View_Base
 
 		// initial Image
 
-		CB_RectF arrowRec = new CB_RectF(0, 0, this.height, this.height);
+		CB_RectF CompassRec = new CB_RectF(0, 0, this.height, this.height);
 
-		arrow = new Image(arrowRec, "Test_Image");
+		compass_frame = new Image(CompassRec, "Test_Image");
+		compass_frame.setDrawable(SpriteCache.Compass.get(2));
+		compass_frame.setOrigin(CompassRec.getWidth() / 2, CompassRec.getHeight() / 2);
+		compass_frame.setScale(0.80f);
+		this.addChild(compass_frame);
+
+		compas_scale = new Image(CompassRec, "Test_Image");
+		compas_scale.setDrawable(SpriteCache.Compass.get(3));
+		compas_scale.setOrigin(CompassRec.getWidth() / 2, CompassRec.getHeight() / 2);
+		compas_scale.setScale(0.80f);
+		this.addChild(compas_scale);
+
+		arrow = new Image(CompassRec, "Test_Image");
 		arrow.setDrawable(new SpriteDrawable(SpriteCache.Arrows.get(0)));
-		arrow.setOrigin(arrowRec.getWidth() / 2, arrowRec.getHeight() / 2);
-		arrow.setScale(0.65f);
+		arrow.setOrigin(CompassRec.getWidth() / 2, CompassRec.getHeight() / 2);
+		arrow.setScale(0.50f);
 		this.addChild(arrow);
 
 		float margin = GL_UISizes.margin;
 
 		lblSpeed = new Label(this.ScaleCenter(0.4f), "lblSpeed");
 		lblSpeed.setFont(Fonts.getSmall());
-		lblSpeed.setPos(new Vector2(arrowRec.getWidth() + margin, this.height * 0.1f));
+		lblSpeed.setPos(new Vector2(CompassRec.getWidth() + margin, this.height * 0.1f));
 		lblSpeed.setText("---");
 		this.addChild(lblSpeed);
 
 		lblDistance = new Label(this.ScaleCenter(0.4f), "lblDistance");
 		lblDistance.setFont(Fonts.getBig());
-		lblDistance.setPos(new Vector2(arrowRec.getWidth() + margin, arrowRec.getWidth() / 2));
+		lblDistance.setPos(new Vector2(CompassRec.getWidth() + margin, CompassRec.getWidth() / 2));
 		lblDistance.setText("---");
 		this.addChild(lblDistance);
 
 		lblLatitude = new Label(this.ScaleCenter(0.4f), "lblLatitude");
 		lblLatitude.setFont(Fonts.getSmall());
-		lblLatitude.setPos(new Vector2(this.getWidth() - lblLatitude.getWidth(), arrowRec.getWidth() / 2));
+		lblLatitude.setPos(new Vector2(this.getWidth() - lblLatitude.getWidth(), CompassRec.getWidth() / 2));
 		lblLatitude.setText("---");
 		this.addChild(lblLatitude);
 

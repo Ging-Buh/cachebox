@@ -222,8 +222,11 @@ public class TrackRecorder
 				try
 				{
 					rand = new RandomAccessFile(gpxfile, "rw");
+
+					// suche letzte "</trk>"
+
 					int i = (int) rand.length();
-					byte[] bEnde = new byte[24];
+					byte[] bEnde = new byte[insertPos];
 					rand.seek(i - insertPos); // Seek to start point of file
 
 					for (int ct = 0; ct < insertPos; ct++)

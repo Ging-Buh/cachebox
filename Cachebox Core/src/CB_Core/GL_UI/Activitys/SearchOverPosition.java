@@ -534,6 +534,10 @@ public class SearchOverPosition extends ActivityBase
 				}
 				else
 				{
+
+					// Notify Map
+					if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+
 					bOK.enable();
 				}
 				importRuns = false;

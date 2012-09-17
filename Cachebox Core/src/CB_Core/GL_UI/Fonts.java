@@ -203,6 +203,7 @@ public class Fonts
 
 	public static TextBounds Mesure(String txt)
 	{
+		if (txt == null || txt.equals("")) txt = "text";
 		if (mesureNormalCache == null) mesureNormalCache = new BitmapFontCache(Fonts.getNormal());
 		TextBounds bounds = mesureNormalCache.setText(txt, 0, 0);
 

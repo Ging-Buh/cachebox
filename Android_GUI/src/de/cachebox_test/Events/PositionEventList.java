@@ -41,6 +41,9 @@ public class PositionEventList
 		if (location.getProvider().equalsIgnoreCase(LocationManager.GPS_PROVIDER))
 		{
 			GlobalCore.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());
+
+			GlobalCore.LastValidPosition.Elevation = location.getAltitude();
+
 			GlobalCore.LastValidPosition.Valid = true;
 		}
 		else

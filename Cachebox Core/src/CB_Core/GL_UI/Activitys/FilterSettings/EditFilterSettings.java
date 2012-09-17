@@ -21,6 +21,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
@@ -300,6 +301,9 @@ public class EditFilterSettings extends ActivityBase
 				CachListChangedEventList.Call();
 				pd.dismis();
 				TabMainView.that.filterSetChanged();
+
+				// Notify Map
+				if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
 			}
 
 		};

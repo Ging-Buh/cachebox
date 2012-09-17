@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Views.TestViews;
 
+import CB_Core.Api.GcApiLogin;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -7,10 +8,8 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
-import CB_Core.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
@@ -84,40 +83,29 @@ public class TestView extends CB_View_Base
 		Button btnSetting = new Button(this.width - Dialog.margin - (UiSizes.getButtonWidthWide() * 2), this.height - Dialog.margin
 				- UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide() * 2, UiSizes.getButtonHeight(), "");
 
-		btnSetting.setText("searchOverPos");
+		btnSetting.setText("Get API");
 		btnSetting.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				ProgressDialog.Show("Title", new RunnableReadyHandler(new Runnable()
-				{
+				//
+				// PasswortDialog PWD = new PasswortDialog(new returnListner()
+				// {
+				//
+				// @Override
+				// public void returnFromPW_Dialog(String User, String PW)
+				// {
+				// // TODO Auto-generated method stub
+				//
+				// }
+				// });
+				//
+				// GL.that.showDialog(PWD, true);
 
-					@Override
-					public void run()
-					{
-						try
-						{
-							Thread.sleep(4000);
-						}
-						catch (InterruptedException e)
-						{
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				})
-				{
-
-					@Override
-					public void RunnableReady(boolean canceld)
-					{
-						// TODO Auto-generated method stub
-
-					}
-				});
-				return false;
+				(new GcApiLogin()).RunRequest();
+				return true;
 			}
 		});
 

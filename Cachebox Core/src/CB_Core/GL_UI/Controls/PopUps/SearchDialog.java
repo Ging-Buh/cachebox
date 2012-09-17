@@ -16,6 +16,7 @@ import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Activitys.SearchOverPosition;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Controls.Button;
@@ -913,6 +914,9 @@ public class SearchDialog extends PopUp_Base
 		}
 	};
 
+	CancelWaitDialog WD;
+	GL_MsgBox MSB;
+
 	private void askPremium()
 	{
 
@@ -924,7 +928,7 @@ public class SearchDialog extends PopUp_Base
 		else
 		{
 
-			CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("chkApiState"), new IcancelListner()
+			WD = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("chkApiState"), new IcancelListner()
 			{
 
 				@Override
@@ -947,17 +951,33 @@ public class SearchDialog extends PopUp_Base
 					}
 					else
 					{
-						GL_MsgBox.Show(GlobalCore.Translations.Get("GC_basic"), GlobalCore.Translations.Get("GC_title"),
-								MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
-								{
+						closeWD();
 
-									@Override
-									public boolean onClick(int which)
-									{
-										if (which == GL_MsgBox.BUTTON_POSITIVE) showTargetApiDialog();
-										return true;
-									}
-								});
+						GL.that.RunOnGL(new runOnGL()
+						{
+
+							@Override
+							public void run()
+							{
+								MSB = GL_MsgBox.Show(GlobalCore.Translations.Get("GC_basic"), GlobalCore.Translations.Get("GC_title"),
+										MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+										{
+
+											@Override
+											public boolean onClick(int which)
+											{
+												closeMsgBox();
+												if (which == GL_MsgBox.BUTTON_POSITIVE)
+												{
+													showTargetApiDialog();
+												}
+
+												return true;
+											}
+										});
+							}
+						});
+
 					}
 				}
 			});
@@ -966,9 +986,28 @@ public class SearchDialog extends PopUp_Base
 
 	}
 
+	private void closeMsgBox()
+	{
+		MSB.close();
+	}
+
+	private void closeWD()
+	{
+		if (WD != null) WD.close();
+	}
+
 	private void showTargetApiDialog()
 	{
-		new SearchOverPosition().show();
+		GL.that.RunOnGL(new runOnGL()
+		{
+
+			@Override
+			public void run()
+			{
+				new SearchOverPosition().show();
+			}
+		});
+
 	}
 
 }

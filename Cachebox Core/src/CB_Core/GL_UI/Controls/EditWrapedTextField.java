@@ -1451,34 +1451,41 @@ public class EditWrapedTextField extends EditTextFieldBase
 				}
 				else
 				{
-					if (cursor.pos > 0)
+					try
 					{
-						dt.displayText = dt.displayText.substring(0, cursor.pos - 1)
-								+ dt.displayText.substring(cursor.pos, dt.displayText.length());
-						updateDisplayText(dt, true);
-						cursor.pos--;
-						checkCursorVisible(true);
-						GL.that.renderOnce("EditWrapedTextField");
-						sendKeyTyped(character);
-						return true;
-					}
-					else
-					{
-						if (cursor.line > 0)
+						if (cursor.pos > 0)
 						{
-							setCursorLine(cursor.line - 1, true);
-							DisplayText dt2 = getAktDisplayText();
-							cursor.pos = dt2.displayText.length();
+							dt.displayText = dt.displayText.substring(0, cursor.pos - 1)
+									+ dt.displayText.substring(cursor.pos, dt.displayText.length());
+							updateDisplayText(dt, true);
+							cursor.pos--;
 							checkCursorVisible(true);
-							dt2.displayText += dt.displayText;
-							displayText.remove(cursor.line + 1);
-							updateDisplayText(dt2, true);
-
-							int lineCount = displayText.size();
-							sendLineCountChanged(lineCount, lineHeight * lineCount);
+							GL.that.renderOnce("EditWrapedTextField");
+							sendKeyTyped(character);
+							return true;
 						}
-						GL.that.renderOnce("EditWrapedTextField");
-						sendKeyTyped(character);
+						else
+						{
+							if (cursor.line > 0)
+							{
+								setCursorLine(cursor.line - 1, true);
+								DisplayText dt2 = getAktDisplayText();
+								cursor.pos = dt2.displayText.length();
+								checkCursorVisible(true);
+								dt2.displayText += dt.displayText;
+								displayText.remove(cursor.line + 1);
+								updateDisplayText(dt2, true);
+
+								int lineCount = displayText.size();
+								sendLineCountChanged(lineCount, lineHeight * lineCount);
+							}
+							GL.that.renderOnce("EditWrapedTextField");
+							sendKeyTyped(character);
+							return true;
+						}
+					}
+					catch (Exception e)
+					{
 						return true;
 					}
 				}
@@ -1600,6 +1607,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 				GL.that.renderOnce("EditWrapedTextField");
 			}
 			sendKeyTyped(character);
+			if (passwordMode) updateDisplayTextList();
 			return true;
 		}
 		else
@@ -1910,6 +1918,11 @@ public class EditWrapedTextField extends EditTextFieldBase
 		hasFocus = false;
 		GL.that.setKeyboardFocus(null);
 
+	}
+
+	public void setPasswordMode()
+	{
+		passwordMode = true;
 	}
 
 }

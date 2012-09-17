@@ -293,7 +293,7 @@ public class GL_UISizes implements SizeChangedEvent
 		PosMarkerSize = (float) (46.666667 * DPI);
 		halfPosMarkerSize = PosMarkerSize / 2;
 
-		TargetArrow = new SizeF((float) (14 * DPI), (float) (42.666667 * DPI));
+		TargetArrow = new SizeF((float) (10 * DPI), (float) (30 * DPI));
 
 		UnderlaySizes = new SizeF[]
 			{ new SizeF(13 * DPI, 13 * DPI), new SizeF(14 * DPI, 14 * DPI), new SizeF(21 * DPI, 21 * DPI) };

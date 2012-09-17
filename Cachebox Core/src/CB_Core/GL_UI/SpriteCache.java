@@ -68,6 +68,7 @@ public class SpriteCache
 	public static ArrayList<Sprite> MapStars = null;
 	public static SpriteList Stars = null;
 	public static ArrayList<Sprite> Bubble = null;
+	public static ArrayList<Drawable> Compass = null;
 
 	public static ArrayList<Sprite> ToggleBtn = null;
 	public static ArrayList<Sprite> ZoomBtn = null;
@@ -325,6 +326,17 @@ public class SpriteCache
 			MapIconsSmall.add(getThemedSprite("small6no"));
 			MapIconsSmall.add(getThemedSprite("small7no"));
 			MapIconsSmall.add(getThemedSprite("20"));
+
+		}
+
+		if (Compass == null) Compass = new ArrayList<Drawable>();
+		synchronized (Compass)
+		{
+			Compass.clear();
+			Compass.add(new SpriteDrawable(getThemedSprite("compass-frame")));
+			Compass.add(new SpriteDrawable(getThemedSprite("compass-scale")));
+			Compass.add(new SpriteDrawable(getThemedSprite("compass-frame-small")));
+			Compass.add(new SpriteDrawable(getThemedSprite("compass-scale-small")));
 
 		}
 

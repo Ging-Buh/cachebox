@@ -24,6 +24,7 @@ import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewID;
+import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Dialog;
@@ -94,6 +95,8 @@ public class GL implements ApplicationListener
 	private Sprite FpsInfoSprite, mDarknesSprite;
 	protected EditWrapedTextField keyboardFocus;
 
+	private ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
+
 	/**
 	 * Zwischenspeicher für die touchDown Positionen der einzelnen Finger
 	 */
@@ -144,6 +147,14 @@ public class GL implements ApplicationListener
 		FpsInfoSprite.setSize(4, 4);
 
 		GlobalCore.receiver = new GlobalLocationReceiver();
+	}
+
+	public void RunOnGL(runOnGL run)
+	{
+		synchronized (runOnGL_List)
+		{
+			runOnGL_List.add(run);
+		}
 	}
 
 	@Override
@@ -218,6 +229,20 @@ public class GL implements ApplicationListener
 		FpsInfoPos++;
 		if (FpsInfoPos > 60) FpsInfoPos = 0;
 		batch.end();
+
+		synchronized (runOnGL_List)
+		{
+			if (runOnGL_List.size() > 0)
+			{
+				for (runOnGL run : runOnGL_List)
+				{
+					if (run != null) run.run();
+				}
+
+				runOnGL_List.clear();
+			}
+
+		}
 
 		Gdx.gl.glFlush();
 		Gdx.gl.glFinish();

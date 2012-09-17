@@ -1779,22 +1779,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		if (GlobalCore.Locator == null) return;
 
-		if (info != null)
-		{
-			Coordinate position = null;
-			// if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
-			if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;
-			else
-				position = new Coordinate();
-			if (GlobalCore.SelectedCache() != null)
-			{
-				Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos
-						: GlobalCore.SelectedCache().Pos;
-				double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
-				info.setBearing((float) (bearing - GlobalCore.Locator.getHeading()));
-			}
-		}
-
 		if (this.locator != null)
 		{
 			heading = this.locator.getHeading();
@@ -1835,6 +1819,22 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			this.arrowHeading = heading;
 			drawingWidth = mapIntWidth;
 			drawingHeight = mapIntHeight;
+		}
+
+		if (info != null)
+		{
+			Coordinate position = null;
+			// if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
+			if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;
+			else
+				position = new Coordinate();
+			if (GlobalCore.SelectedCache() != null)
+			{
+				Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos
+						: GlobalCore.SelectedCache().Pos;
+				double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
+				info.setBearing((float) (bearing - GlobalCore.Locator.getHeading()), this.mapHeading);
+			}
 		}
 
 	}

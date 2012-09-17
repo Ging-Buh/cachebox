@@ -1,4 +1,4 @@
-﻿English
+English
 // Main Menu
 	Misc = Misc
 	Find = Find
@@ -43,7 +43,7 @@
 	pause = Pause
 	continue = Continue
 	stop = Stop
-	export = Export
+	export = Export	
 	TrackRec = Track Recorder
 	VoiceRec = Voice Recorder
 	createPQ = Create Pocket Query
@@ -55,8 +55,48 @@
 	RecVideo = Record Video
 	ChkUpdate = Check for Updates
 	manage = Manage DB
-	screenlock = Screenlock 
-	
+	screenlock = Screenlock
+
+	QuickFieldNote = Quick Fieldnote
+	RecTrack = Track Recorder
+	EmptyLogList = Empty Loglist
+	TestView = Testview
+
+
+	AddOwnFilterPreset = Add own filter preset
+	att_45_1 = Lost & Found Tour
+	Cache List = Cache List
+	Cancel = Cancel
+	CarMode = Car Mode
+	dynamicFilterAtSearch = Dynamic Filter At Search
+	dynamicZoom = Dynamic Zoom
+	dynamicZoomLevelMax = Dynamic Zoomlevel Min
+	dynamicZoomLevelMin = Dynamic Zoomlevel Max
+	EmptyCacheList = Empty Cache List
+	EmptyPqList = Empty PQ List
+	EmptyTrackList = Empty Track List
+	FilterCaches = Filter Caches
+	gpsUpdateTime = GPS Update Time
+	HardwareCompass = Hardware Compass
+	HardwareCompassLevel = Hardware Compass Level
+	LoadPqList = Load PQ List
+	Map-Center setzen = Set Map Center
+	MapNorthOriented = Map North Oriented
+	Ok = OK
+	Positions = Positions
+	quickButtonShow = Show Quick Buttons
+	refreshPqList = Refresh PQ List
+	SelectSkin = Select Skin
+	Show Logs = Show Logs
+	SoundPath = Sound Path
+	TestView = Test View
+	Waypoint einfügen = Insert Waypoint
+	Zeile ändern = Edit Row
+	Zeile einfügen = Insert Row
+	Zeile löschen = Delete Row
+
+
+
 // AboutViewPanel
 	caches_found = Caches Found:
 	gps = GPS:
@@ -408,9 +448,9 @@
 	recordetTrack = Recordet Track
 	Point2Point = Point to Point
 	Circle = Circle
+	length = Distance
 	rename = Rename
 	RenameTrack = Rename Track as
-	length = Distance
 	fromPoint = From Point
 	toPoint = To Point
 	centerPoint = Cener Point
@@ -528,7 +568,48 @@
 	SolverErrPostfix =
 	InvalidVariableName = Error: invalid variable name: {1}
 	LeftMustBeAVariable = Error: Left of assignment must be a variable [{1}]
-	
+
+
+	quickButtonLastShow = Show Last Quick Button
+	quickButtonList = Quick Button List
+	LastMapToggleBtnState = Last Map Togglebutton State
+	CurrentMapLayer = Current Map Layer
+	MapMaxCachesDisplay_config = Max Caches Display
+	mapMaxCachesDisplayLarge_config = Max Caches Display Large
+	MapMaxCachesLabel = Max Caches Label
+	OsmMaxImportLevel = OSM Max Importlevel
+	MapIniWidth = Initial Map Width
+	MapIniHeight = Initial Map Height
+	MapViewDPIFaktor = Map View DPI Factor
+	MapViewFontFaktor = Map View Font Factor
+	VibrateTime = Vibration Time (ms)
+	GCAdditionalImageDownload = Download Additional Images (Spoiler)
+	Sel_LanguagePath = Languagefiles Folder
+	FieldNotesGarminPath = Fieldnotes Folder
+	SkinFolder = Skin Folder
+	CacheMapData = Cache Mapdata
+	CacheImageData = Cache Imagedata
+	ImportLayerOsm = Importlayer OSM
+	GCAutoSyncCachesFound = Autosync Found Caches
+	LogMaxMonthAge = Max Log Age (in Months)
+	LogMinCount = Number of Logs to keep at least
+	NavigationProvider = Navigation Provider
+	SpoilersDescriptionTags = Spoilertags To Load (split with ; )
+	DebugShowPanel = Show Debugpanel
+	DebugMemory = Debug Memory
+	DebugShowMsg = Show Debugmessages
+	DebugShowMarker = Show Marker
+	DebugShowLog = Show Debuglog
+	OverrideUrl = Override URL
+	MapInitLatitude = Map Init Latitude
+	MapInitLongitude = Map Init Longitude
+	ParkingLatitude = Parking Latitude
+	ParkingLongitude = Parking Longitude
+	Spoiler = Spoiler
+	Hint = Hint
+	waitForCancel = Wait for Cancel
+
+
 
 // Attributes
 	att_1_0 = dogs does not permit
@@ -775,3 +856,9 @@
 	Credits = Credits
 	
 	CenterWP = Center => WP
+	
+	date = Date
+	time = Time
+	
+	wrongDate = Wrong date or time entered!
+	EmptyFieldNotes = No Fieldnotes entered!

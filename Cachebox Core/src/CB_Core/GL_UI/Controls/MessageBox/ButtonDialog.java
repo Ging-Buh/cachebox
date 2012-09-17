@@ -8,6 +8,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Image;
@@ -25,6 +26,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class ButtonDialog extends Dialog
 {
+
+	private ButtonDialog that;
 
 	public final int BUTTON_POSITIVE = 1;
 	public final int BUTTON_NEUTRAL = 2;
@@ -55,6 +58,7 @@ public class ButtonDialog extends Dialog
 			OnMsgBoxClickListener Listener)
 	{
 		super(rec, Name);
+		that = this;
 		setTitle(title);
 		setButtonCaptions(buttons);
 		SizeF contentSize = getContentSize();
@@ -273,7 +277,16 @@ public class ButtonDialog extends Dialog
 
 	public void Show()
 	{
-		GL.that.showDialog(this);
+		GL.that.RunOnGL(new runOnGL()
+		{
+
+			@Override
+			public void run()
+			{
+				GL.that.showDialog(that);
+			}
+		});
+
 	}
 
 	private Sprite getIcon(MessageBoxIcon msgIcon)
