@@ -43,6 +43,7 @@ import CB_Core.Events.platformConector.IgetFileListner;
 import CB_Core.Events.platformConector.IgetFileReturnListner;
 import CB_Core.Events.platformConector.IgetFolderListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
+import CB_Core.Events.platformConector.IsetScreenLockTime;
 import CB_Core.Events.platformConector.trackListListner;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
@@ -168,7 +169,6 @@ import de.cachebox_test.Views.SolverView;
 import de.cachebox_test.Views.SpoilerView;
 import de.cachebox_test.Views.TrackableListView;
 import de.cachebox_test.Views.ViewGL;
-import de.cachebox_test.Views.AdvancedSettingsForms.SettingsScrollView;
 import de.cachebox_test.Views.Forms.DeleteDialog;
 import de.cachebox_test.Views.Forms.GcApiLogin;
 import de.cachebox_test.Views.Forms.MessageBox;
@@ -402,10 +402,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		// Initial CB running notification Icon
 		{
-			// TODO Start Notify Service
-
 			Intent service = new Intent(this, NotifyService.class);
-			// startService(i);
 
 			mConnection = new ServiceConnection()
 			{
@@ -1190,7 +1187,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 
-			int flags = runsWithAkku ? PowerManager.SCREEN_BRIGHT_WAKE_LOCK : PowerManager.SCREEN_DIM_WAKE_LOCK;
+			int flags = PowerManager.SCREEN_BRIGHT_WAKE_LOCK;
 
 			this.mWakeLock = pm.newWakeLock(flags, "My Tag");
 			this.mWakeLock.acquire();
@@ -1477,20 +1474,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void showActivity(ViewID ID)
 	{
-		if (ID == ViewConst.SETTINGS)
-		{
-			final Intent mainIntent = new Intent().setClass(mainActivity, SettingsScrollView.class);
-			Bundle b = new Bundle();
-			b.putSerializable("Show", -1);
-			mainIntent.putExtras(b);
-			mainActivity.startActivity(mainIntent);
-		}
-		else if (ID == ViewConst.FILTER_SETTINGS)
-		{
-			final Intent mainIntent1 = new Intent().setClass(mainActivity, EditFilterSettings.class);
-			mainActivity.startActivity(mainIntent1);
-		}
-		else if (ID == ViewConst.RELOAD_CACHE)
+		if (ID == ViewConst.RELOAD_CACHE)
 		{
 			if (descriptionView != null) descriptionView.reloadCacheInfo();
 		}
@@ -3264,6 +3248,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			public void GetApiKey()
 			{
 				GetApiAuth();
+			}
+		});
+
+		platformConector.setsetScreenLockTimeListner(new IsetScreenLockTime()
+		{
+
+			@Override
+			public void setScreenLockTime(int value)
+			{
+				setScreenLockTimerNew(value);
 			}
 		});
 

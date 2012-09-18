@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Activitys.settings;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +15,6 @@ import CB_Core.Events.platformConector.IgetFileReturnListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
-import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.API_Button;
 import CB_Core.GL_UI.Controls.Button;
@@ -32,11 +32,10 @@ import CB_Core.GL_UI.Controls.chkBox.OnCheckedChangeListener;
 import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox;
 import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
 import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListnerDouble;
+import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListnerTime;
 import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
-import CB_Core.GL_UI.Main.Actions.CB_Action;
-import CB_Core.GL_UI.Main.Actions.CB_Action_ShowActivity;
 import CB_Core.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
@@ -186,6 +185,9 @@ public class SettingsActivity extends ActivityBase
 
 				if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_NEW_SETTINGS);
 
+				int Time = Config.settings.ScreenLock.getValue();
+				platformConector.callsetScreenLockTimet(Time);
+
 				finish();
 				return true;
 			}
@@ -228,26 +230,6 @@ public class SettingsActivity extends ActivityBase
 		}
 
 		Iterator<SettingCategory> iteratorCat = Categorys.iterator();
-
-		// Debug Button alt Settings
-		SettingsListCategoryButton dbgBtn = new SettingsListCategoryButton("Debug", SettingCategory.Button, SettingModus.Normal, true);
-
-		final Button setBtn = (Button) getView(dbgBtn, 1);
-
-		setBtn.setText("Alt Settings");
-
-		setBtn.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				new CB_Action_ShowActivity("settings", CB_Action.AID_SHOW_SETTINGS, ViewConst.SETTINGS, null).Execute();
-				return false;
-			}
-		});
-
-		addControlToLinearLayout(setBtn, margin);
 
 		if (iteratorCat != null && iteratorCat.hasNext())
 		{
@@ -1004,81 +986,79 @@ public class SettingsActivity extends ActivityBase
 
 	private CB_View_Base getTimeView(final SettingTime SB, int backgroundChanger)
 	{
-		// LayoutInflater inflater = getLayoutInflater();
-		// View row = inflater.inflate(R.layout.advanced_settings_list_view_time, parent, false);
-		//
-		// WheelView wheel_m = (WheelView) row.findViewById(R.id.settings_time_m);
-		// WheelView wheel_sec = (WheelView) row.findViewById(R.id.settings_time_sec);
-		//
-		// initWheel(wheel_m, 0, 10);
-		// initWheel(wheel_sec, 0, 59);
-		//
-		// wheel_m.setCurrentItem(SB.getMin());
-		// wheel_sec.setCurrentItem(SB.getSec());
-		//
-		// LinearLayout LL = (LinearLayout) row.findViewById(R.id.backLayout);
-		// if (BackgroundChanger)
-		// {
-		// LL.setBackgroundResource(R.drawable.settings_list_background);
-		// }
-		// else
-		// {
-		// LL.setBackgroundResource(R.drawable.settings_list_background2);
-		// }
-		//
-		// TextView label = (TextView) row.findViewById(R.id.textView1);
-		// label.setText(GlobalCore.Translations.Get(SB.getName()));
-		// label.setTextSize(UiSizes.getScaledFontSize_big());
-		// label.setTextColor(Global.getColor(R.attr.TextColor));
-		//
-		// wheel_m.addScrollingListener(new OnWheelScrollListener()
-		// {
-		//
-		// @Override
-		// public void onScrollingStarted(WheelView wheel)
-		// {
-		//
-		// }
-		//
-		// @Override
-		// public void onScrollingFinished(WheelView wheel)
-		// {
-		// SB.setMin(wheel.getCurrentItem());
-		// }
-		// });
-		//
-		// wheel_sec.addScrollingListener(new OnWheelScrollListener()
-		// {
-		//
-		// @Override
-		// public void onScrollingStarted(WheelView wheel)
-		// {
-		//
-		// }
-		//
-		// @Override
-		// public void onScrollingFinished(WheelView wheel)
-		// {
-		// SB.setSec(wheel.getCurrentItem());
-		// }
-		// });
-		//
-		// row.setOnLongClickListener(new OnLongClickListener()
-		// {
-		//
-		// @Override
-		// public boolean onLongClick(View arg0)
-		// {
-		// // zeige Beschreibung der Einstellung
-		//
-		// MessageBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), SettingsScrollView.Me);
-		//
-		// return false;
-		// }
-		// });
 
-		return null;
+		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
 
+		item.setName(GlobalCore.Translations.Get(SB.getName()));
+		item.setDefault(intToTime(SB.getValue()));
+
+		item.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				EditKey = SB.getName();
+
+				String Value = intToTime(SB.getValue());
+				String[] s = Value.split(":");
+
+				int intValueMin = Integer.parseInt(s[0]);
+				int intValueSec = Integer.parseInt(s[1]);
+
+				// Show NumPad Int Edit
+				NumerikInputBox.Show("default: " + GlobalCore.br + intToTime(SB.getDefaultValue()), SB.getName(), intValueMin, intValueSec,
+						new returnValueListnerTime()
+						{
+							@Override
+							public void returnValue(int min, int sec)
+							{
+								SettingTime SetValue = (SettingTime) Config.settings.get(EditKey);
+								int value = (min * 60 * 1000) + (sec * 1000);
+								if (SetValue != null) SetValue.setValue(value);
+								resortList();
+								// Activity wieder anzeigen
+								that.show();
+							}
+
+							@Override
+							public void cancelClicked()
+							{
+								// Activity wieder anzeigen
+								that.show();
+							}
+						});
+				return true;
+			}
+
+		});
+
+		item.setOnLongClickListener(new OnLongClickListener()
+		{
+
+			@Override
+			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// zeige Beschreibung der Einstellung
+
+				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+
+				return false;
+			}
+
+		});
+
+		return item;
+
+	}
+
+	private String intToTime(int milliseconds)
+	{
+		int seconds = (int) (milliseconds / 1000) % 60;
+		int minutes = (int) ((milliseconds / (1000 * 60)) % 60);
+		// int hours = (int) ((milliseconds / (1000*60*60)) % 24);
+
+		return String.valueOf(minutes) + ":" + String.valueOf(seconds);
 	}
 
 	ArrayList<Langs> Sprachen;
@@ -1167,81 +1147,98 @@ public class SettingsActivity extends ActivityBase
 	private CB_View_Base getSkinSpinnerView(final SettingsListButtonSkinSpinner SB)
 	{
 
-		// View row = inflater.inflate(R.layout.advanced_settings_list_view_item_lang_spinner, parent, false);
-		//
-		// final Spinner spinner = (Spinner) row.findViewById(R.id.Spinner);
-		//
-		// int Height = (int) (UiSizes.getScaledRefSize_normal() * 4);
-		// spinner.setMinimumHeight(Height);
-		//
-		// spinner.setPrompt(GlobalCore.Translations.Get("SelectSkin"));
-		// if (spinner.getAdapter() == null)
-		// {
-		//
-		// String SkinFolder = Config.WorkPath + "/skins";
-		// File dir = new File(SkinFolder);
-		//
-		// final ArrayList<String> skinFolders = new ArrayList<String>();
-		// dir.listFiles(new FileFilter()
-		// {
-		//
-		// public boolean accept(File f)
-		// {
-		// if (f.isDirectory())
-		// {
-		// Object Path = f.getAbsolutePath();
-		// skinFolders.add((String) Path);
-		// }
-		//
-		// return false;
-		// }
-		// });
-		//
-		// String[] items = new String[skinFolders.size()];
-		// int index = 0;
-		// int selection = -1;
-		// for (String tmp : skinFolders)
-		// {
-		// if (Config.settings.SkinFolder.getValue().equals(tmp)) selection = index;
-		//
-		// // cut folder name
-		// int Pos = tmp.lastIndexOf("/");
-		// tmp = tmp.substring(Pos + 1);
-		//
-		// items[index++] = tmp;
-		// }
-		// ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
-		// adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		// spinner.setAdapter(adapter);
-		// spinner.setSelection(selection);
-		//
-		// spinner.setOnItemSelectedListener(new OnItemSelectedListener()
-		// {
-		//
-		// @Override
-		// public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
-		// {
-		// String selected = (String) skinFolders.get(arg2);
-		// for (String tmp : skinFolders)
-		// {
-		// if (selected.equals(tmp))
-		// {
-		// Config.settings.SkinFolder.setValue(tmp);
-		//
-		// break;
-		// }
-		//
-		// }
-		// }
-		//
-		// @Override
-		// public void onNothingSelected(AdapterView<?> arg0)
-		// {
-		// // do nothing
-		// }
-		// });
-		// }
-		return null;
+		String SkinFolder = Config.WorkPath + "/skins";
+		File dir = new File(SkinFolder);
+
+		final ArrayList<String> skinFolders = new ArrayList<String>();
+		dir.listFiles(new FileFilter()
+		{
+
+			public boolean accept(File f)
+			{
+				if (f.isDirectory())
+				{
+					String Path = f.getAbsolutePath();
+					if (!Path.contains(".svn"))
+					{
+						skinFolders.add(Path);
+					}
+
+				}
+
+				return false;
+			}
+		});
+
+		final String[] items = new String[skinFolders.size()];
+		int index = 0;
+		int selection = -1;
+		for (String tmp : skinFolders)
+		{
+			if (Config.settings.SkinFolder.getValue().equals(tmp)) selection = index;
+
+			// cut folder name
+			int Pos = tmp.lastIndexOf("/");
+			if (Pos == -1) Pos = tmp.lastIndexOf("\\");
+			tmp = tmp.substring(Pos + 1);
+
+			items[index++] = tmp;
+		}
+
+		SpinnerAdapter adapter = new SpinnerAdapter()
+		{
+
+			@Override
+			public String getText(int position)
+			{
+				return items[position];
+			}
+
+			@Override
+			public Drawable getIcon(int Position)
+			{
+				return null;
+			}
+
+			@Override
+			public int getCount()
+			{
+				return items.length;
+			}
+		};
+
+		final Spinner spinner = new Spinner(itemRec, "SkinSpinner", adapter, new selectionChangedListner()
+		{
+
+			@Override
+			public void selectionChanged(int index)
+			{
+				String selected = items[index];
+				for (String tmp : skinFolders)
+				{
+					// cut folder name
+					int Pos = tmp.lastIndexOf("/");
+					if (Pos == -1) Pos = tmp.lastIndexOf("\\");
+					String tmp2 = tmp.substring(Pos + 1);
+
+					if (selected.equals(tmp2))
+					{
+						Config.settings.SkinFolder.setValue(tmp);
+
+						break;
+					}
+
+				}
+			}
+		});
+
+		spinner.setSelection(selection);
+
+		spinner.setPrompt(GlobalCore.Translations.Get("SelectSkin"));
+
+		spinner.setDrageble();
+
+		return spinner;
 	}
 
 	private CB_View_Base getBoolView(final SettingBool SB, int backgroundChanger)

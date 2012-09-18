@@ -24,14 +24,22 @@ public class NumerikInputBox extends CB_View_Base
 		that = this;
 	}
 
+	private enum type
+	{
+		intType, doubleType, timeType
+	}
+
+	private static type mType;
+
 	public static EditWrapedTextField editText;
 	public static returnValueListner mReturnListner;
 	public static returnValueListnerDouble mReturnListnerDouble;
+	public static returnValueListnerTime mReturnListnerTime;
 
 	public static GL_MsgBox Show(String msg, String title, int initialValue, returnValueListner Listner)
 	{
 		mReturnListner = Listner;
-		isDoubleInputBox = false;
+		mType = type.intType;
 
 		Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
 
@@ -88,7 +96,6 @@ public class NumerikInputBox extends CB_View_Base
 		msgBox.setFooterHeight(numPad.getHeight() + (margin * 2));
 
 		GL.that.showDialog(msgBox);
-		GL.that.addRenderView(msgBox, GL.FRAME_RATE_IDLE);// Cursor blink
 
 		return msgBox;
 	}
@@ -96,7 +103,7 @@ public class NumerikInputBox extends CB_View_Base
 	public static GL_MsgBox Show(String msg, String title, double initialValue, returnValueListnerDouble Listner)
 	{
 		mReturnListnerDouble = Listner;
-		isDoubleInputBox = true;
+		mType = type.doubleType;
 		Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
 
 		float margin = GL_MsgBox.margin;
@@ -152,7 +159,73 @@ public class NumerikInputBox extends CB_View_Base
 		msgBox.setFooterHeight(numPad.getHeight() + (margin * 2));
 
 		GL.that.showDialog(msgBox);
-		GL.that.addRenderView(msgBox, GL.FRAME_RATE_IDLE);// Cursor blink
+
+		return msgBox;
+	}
+
+	public static GL_MsgBox Show(String msg, String title, int initialMin, int initialSec, returnValueListnerTime Listner)
+	{
+		mReturnListnerTime = Listner;
+		mType = type.timeType;
+
+		Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
+
+		float margin = GL_MsgBox.margin;
+		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
+		msgBox.setTitle(title);
+
+		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, (msgBoxSize.width - (margin * 2)) / 5 * 4);
+
+		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
+
+		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
+
+		editText = new EditWrapedTextField(msgBox, textFieldRec, "MsgBoxLabel");
+		editText.setZeroPos();
+		editText.setY(margin * 3);
+
+		String initialValue = String.valueOf(initialMin) + ":" + String.valueOf(initialSec);
+
+		editText.setText(String.valueOf(initialValue));
+		editText.setCursorPosition((String.valueOf(initialValue)).length());
+
+		float topBottom = editText.getStyle().background.getTopHeight() + editText.getStyle().background.getBottomHeight();
+		float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
+
+		editText.setHeight(topBottom + SingleLineHeight);
+
+		editText.setOnscreenKeyboard(new OnscreenKeyboard()
+		{
+
+			@Override
+			public void show(boolean arg0)
+			{
+				// do nothing, don´t show Keybord
+			}
+		});
+		editText.setFocus();
+
+		CB_RectF LabelRec = msgBox.getContentSize().getBounds();
+		LabelRec.setHeight(LabelRec.getHeight() - textFieldRec.getHeight());
+
+		Label label = new Label(LabelRec, "MsgBoxLabel");
+		label.setZeroPos();
+		label.setY(editText.getMaxY() + margin);
+		label.setWrappedText(msg);
+		msgBox.addChild(label);
+
+		msgBox.setHeight(msgBox.getHeight() + editText.getHeight() + numPadRec.getHeight());
+
+		msgBox.addChild(editText);
+
+		// ######### NumPad ################
+
+		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withDoubleDotOkCancel, listner);
+		numPad.setY(margin);
+		msgBox.addFooterChild(numPad);
+		msgBox.setFooterHeight(numPad.getHeight() + (margin * 2));
+
+		GL.that.showDialog(msgBox);
 
 		return msgBox;
 	}
@@ -171,7 +244,12 @@ public class NumerikInputBox extends CB_View_Base
 		public void cancelClicked();
 	}
 
-	private static boolean isDoubleInputBox = false;
+	public interface returnValueListnerTime
+	{
+		public void returnValue(int min, int sec);
+
+		public void cancelClicked();
+	}
 
 	static keyEventListner listner = new keyEventListner()
 	{
@@ -192,7 +270,7 @@ public class NumerikInputBox extends CB_View_Base
 
 				boolean ParseError = false;
 
-				if (isDoubleInputBox)
+				if (mType == type.doubleType)
 				{
 					if (mReturnListnerDouble != null)
 					{
@@ -207,7 +285,7 @@ public class NumerikInputBox extends CB_View_Base
 						}
 					}
 				}
-				else
+				else if (mType == type.doubleType)
 				{
 					if (mReturnListner != null)
 					{
@@ -216,6 +294,25 @@ public class NumerikInputBox extends CB_View_Base
 
 							int intValue = Integer.parseInt(StringValue);
 							mReturnListner.returnValue(intValue);
+						}
+						catch (NumberFormatException e)
+						{
+							ParseError = true;
+						}
+					}
+				}
+
+				else if (mType == type.timeType)
+				{
+					if (mReturnListnerTime != null)
+					{
+						try
+						{
+							String[] s = StringValue.split(":");
+
+							int intValueMin = Integer.parseInt(s[0]);
+							int intValueSec = Integer.parseInt(s[1]);
+							mReturnListnerTime.returnValue(intValueMin, intValueSec);
 						}
 						catch (NumberFormatException e)
 						{
@@ -236,18 +333,26 @@ public class NumerikInputBox extends CB_View_Base
 			}
 			else if (value.equals("C"))
 			{
-				if (isDoubleInputBox)
+				if (mType == type.doubleType)
+
 				{
 					if (mReturnListnerDouble != null)
 					{
 						mReturnListnerDouble.cancelClicked();
 					}
 				}
-				else
+				else if (mType == type.intType)
 				{
 					if (mReturnListner != null)
 					{
 						mReturnListner.cancelClicked();
+					}
+				}
+				else if (mType == type.timeType)
+				{
+					if (mReturnListnerTime != null)
+					{
+						mReturnListnerTime.cancelClicked();
 					}
 				}
 
@@ -289,23 +394,17 @@ public class NumerikInputBox extends CB_View_Base
 	public void onShow()
 	{
 		super.onShow();
-
-		// register Textfield render
 		editText.setFocus();
 	}
 
 	@Override
 	protected void Initial()
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 }

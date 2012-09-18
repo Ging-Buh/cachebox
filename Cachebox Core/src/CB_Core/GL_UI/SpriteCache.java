@@ -151,6 +151,7 @@ public class SpriteCache
 
 		String defaultPath = path;
 		int pos = defaultPath.lastIndexOf("/");
+		if (pos == -1) pos = defaultPath.lastIndexOf("\\");
 		if (GlobalCore.useSmallSkin)
 		{
 			defaultPath = defaultPath.substring(0, pos) + "/small";
@@ -392,7 +393,7 @@ public class SpriteCache
 			Arrows.add(getThemedSprite("arrow-Compass-Trans"));
 			Arrows.add(getThemedSprite("arrow-GPS"));
 			Arrows.add(getThemedSprite("arrow-GPS-Trans"));
-			Arrows.add(getThemedSprite("target-arrow", scale));
+			Arrows.add(getThemedSprite("target-arrow"));
 			Arrows.add(getThemedSprite("track-line", scale));
 			Arrows.add(getThemedSprite("arrow-down"));
 			Arrows.add(getThemedSprite("arrow-up"));
@@ -403,7 +404,7 @@ public class SpriteCache
 			Arrows.add(getThemedSprite("ambilwarna-arrow-down"));
 			Arrows.add(getThemedSprite("draw-line", scale));
 			Arrows.add(getThemedSprite("draw-point", scale));
-			Arrows.add(getThemedSprite("arrow-Compass-car", scale));
+			Arrows.add(getThemedSprite("arrow-Compass-car"));
 
 		}
 

@@ -276,7 +276,7 @@ public class platformConector
 
 	// ----------------------------------------
 
-	// ------ GetApiKeyt ------
+	// ------ GetApiKey ------
 
 	public interface IGetApiKey
 	{
@@ -293,6 +293,27 @@ public class platformConector
 	public static void callGetApiKeyt()
 	{
 		if (GetApiKeyListner != null) GetApiKeyListner.GetApiKey();
+	}
+
+	// ----------------------------------------
+
+	// ------ setScreenLockTime ------
+
+	public interface IsetScreenLockTime
+	{
+		public void setScreenLockTime(int value);
+	}
+
+	static IsetScreenLockTime setScreenLockTimeListner;
+
+	public static void setsetScreenLockTimeListner(IsetScreenLockTime listner)
+	{
+		setScreenLockTimeListner = listner;
+	}
+
+	public static void callsetScreenLockTimet(int value)
+	{
+		if (setScreenLockTimeListner != null) setScreenLockTimeListner.setScreenLockTime(value);
 	}
 	// ----------------------------------------
 

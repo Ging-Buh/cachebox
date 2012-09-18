@@ -14,7 +14,7 @@ public class NumPad extends CB_View_Base
 
 	public enum Type
 	{
-		withDot, withOkCancel, withoutDotOkCancel
+		withDot, withOkCancel, withoutDotOkCancel, withDoubleDotOkCancel,
 	}
 
 	public interface keyEventListner
@@ -115,15 +115,15 @@ public class NumPad extends CB_View_Base
 		btn_5.setPos(btn_4.getMaxX(), y);
 		btn_6.setPos(btn_5.getMaxX(), y);
 
-		if (mType == Type.withDot || mType == Type.withOkCancel)
+		if (mType == Type.withDot || mType == Type.withOkCancel || mType == Type.withDoubleDotOkCancel)
 		{
 			btn_Dot.setPos(btn_6.getMaxX(), y);
 			this.addChild(btn_Dot);
 		}
 
-		if (mType == Type.withOkCancel || mType == Type.withoutDotOkCancel)
+		if (mType == Type.withOkCancel || mType == Type.withoutDotOkCancel || mType == Type.withDoubleDotOkCancel)
 		{
-			if (mType == Type.withoutDotOkCancel)
+			if (mType == Type.withoutDotOkCancel || mType != Type.withDoubleDotOkCancel)
 			{
 				btn_Cancel.setPos(btn_6.getMaxX(), y);
 				this.addChild(btn_Cancel);
@@ -140,7 +140,7 @@ public class NumPad extends CB_View_Base
 		btn_2.setPos(btn_1.getMaxX(), y);
 		btn_3.setPos(btn_2.getMaxX(), y);
 
-		if (mType == Type.withOkCancel || mType == Type.withoutDotOkCancel)
+		if (mType == Type.withOkCancel || mType == Type.withoutDotOkCancel || mType == Type.withDoubleDotOkCancel)
 		{
 			btn_OK.setPos(btn_3.getMaxX(), y);
 			this.addChild(btn_OK);
@@ -200,7 +200,11 @@ public class NumPad extends CB_View_Base
 		btn_7.setText("7");
 		btn_8.setText("8");
 		btn_9.setText("9");
-		btn_Dot.setText(".");
+
+		if (mType == Type.withDoubleDotOkCancel) btn_Dot.setText(":");
+		else
+			btn_Dot.setText(".");
+
 		btn_Del.setText("Del");
 		btn_OK.setText(GlobalCore.Translations.Get("ok"));
 		btn_Cancel.setText(GlobalCore.Translations.Get("cancel"));
