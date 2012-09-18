@@ -882,6 +882,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				arrowId = Transparency ? 3 : 2;
 			}
 
+			if (CarMode) arrowId = 15;
+
 			Sprite arrow = SpriteCache.Arrows.get(arrowId);
 			arrow.setRotation(-arrowHeading);
 			arrow.setBounds(myPointOnScreen.x - GL_UISizes.halfPosMarkerSize, myPointOnScreen.y - GL_UISizes.halfPosMarkerSize,

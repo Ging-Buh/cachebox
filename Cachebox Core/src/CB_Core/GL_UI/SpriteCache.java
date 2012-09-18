@@ -403,6 +403,7 @@ public class SpriteCache
 			Arrows.add(getThemedSprite("ambilwarna-arrow-down"));
 			Arrows.add(getThemedSprite("draw-line", scale));
 			Arrows.add(getThemedSprite("draw-point", scale));
+			Arrows.add(getThemedSprite("arrow-Compass-car", scale));
 
 		}
 

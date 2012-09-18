@@ -273,6 +273,27 @@ public class platformConector
 	{
 		if (quitListner != null) quitListner.Quit();
 	}
+
+	// ----------------------------------------
+
+	// ------ GetApiKeyt ------
+
+	public interface IGetApiKey
+	{
+		public void GetApiKey();
+	}
+
+	static IGetApiKey GetApiKeyListner;
+
+	public static void setGetApiKeyListner(IGetApiKey listner)
+	{
+		GetApiKeyListner = listner;
+	}
+
+	public static void callGetApiKeyt()
+	{
+		if (GetApiKeyListner != null) GetApiKeyListner.GetApiKey();
+	}
 	// ----------------------------------------
 
 }

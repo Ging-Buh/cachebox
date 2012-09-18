@@ -221,23 +221,6 @@ public class SettingsScrollView extends Activity
 				// add Cat einträge
 				final LinearLayout lay = new LinearLayout(this);
 				int entrieCount = 0;
-				if (cat == SettingCategory.Login)
-				{
-					SettingsListGetApiButton lgIn = new SettingsListGetApiButton(cat.name(), SettingCategory.Button, SettingModus.Normal,
-							true);
-					final View btnLgIn = getView(lgIn, content, true);
-					lay.addView(btnLgIn);
-					entrieCount++;
-				}
-
-				if (cat == SettingCategory.Debug)
-				{
-					SettingsListCategoryButton disp = new SettingsListCategoryButton("DebugDisplayInfo", SettingCategory.Button,
-							SettingModus.Normal, true);
-					final View btnDisp = getView(disp, content, true);
-					lay.addView(btnDisp);
-					entrieCount++;
-				}
 
 				if (cat == SettingCategory.Skin)
 				{

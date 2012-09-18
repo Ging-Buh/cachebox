@@ -35,6 +35,7 @@ import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.Events.platformConector;
+import CB_Core.Events.platformConector.IGetApiKey;
 import CB_Core.Events.platformConector.IHardwarStateListner;
 import CB_Core.Events.platformConector.IQuit;
 import CB_Core.Events.platformConector.IShowViewListner;
@@ -49,6 +50,7 @@ import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.ViewID.UI_Pos;
 import CB_Core.GL_UI.ViewID.UI_Type;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
+import CB_Core.GL_UI.Activitys.settings.SettingsActivity;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
@@ -1000,11 +1002,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// Intent Result get API key
 		if (requestCode == 987654321)
 		{
-			// no, we check GPS
+			// now, we check GPS
 			chkGpsIsOn();
-			if (SettingsScrollView.Me != null)
+			if (SettingsActivity.that != null)
 			{
-				SettingsScrollView.Me.ListInvalidate();
+				SettingsActivity.that.resortList();
 			}
 		}
 
@@ -3252,6 +3254,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			public void Quit()
 			{
 				finish();
+			}
+		});
+
+		platformConector.setGetApiKeyListner(new IGetApiKey()
+		{
+
+			@Override
+			public void GetApiKey()
+			{
+				GetApiAuth();
 			}
 		});
 

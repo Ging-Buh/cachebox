@@ -2,7 +2,9 @@ package CB_Core.GL_UI.Controls;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Plattform;
 import CB_Core.Api.GcApiLogin;
+import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
@@ -72,7 +74,15 @@ public class API_Button extends Button
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
-			(new GcApiLogin()).RunRequest();
+			if (GlobalCore.platform == Plattform.Desktop)
+			{
+				(new GcApiLogin()).RunRequest();
+			}
+			else
+			{
+				platformConector.callGetApiKeyt();
+			}
+
 			return true;
 		}
 	};
