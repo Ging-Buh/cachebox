@@ -328,7 +328,8 @@ public class SettingsClass extends SettingsList
 
 		addSetting(TrackFolder = new SettingFolder("TrackFolder", cat, NORMAL, Work + "/User/Tracks", true));
 
-		addSetting(Sel_LanguagePath = new SettingFile("Sel_LanguagePath", cat, INVISIBLE, Work + "/data/lang/en.lan", true, "lan"));
+		addSetting(Sel_LanguagePath = new SettingFile("Sel_LanguagePath", cat, INVISIBLE, Work + "/data/lang/en-GB/strings.ini", true,
+				"lan"));
 		addSetting(DatabasePath = new SettingFile("DatabasePath", cat, NORMAL, Work + "/cachebox.db3", true, "db3"));
 		addSetting(FieldNotesGarminPath = new SettingFile("FieldNotesGarminPath", cat, INVISIBLE, Work + "/User/geocache_visits.txt", true));
 

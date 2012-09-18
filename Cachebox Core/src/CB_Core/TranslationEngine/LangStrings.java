@@ -2,7 +2,6 @@ package CB_Core.TranslationEngine;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -71,6 +70,9 @@ public class LangStrings
 		BufferedReader reader;
 		reader = new BufferedReader(new FileReader(FilePath));
 		String Value = reader.readLine().trim();
+		int pos = Value.indexOf("=");
+		Value = Value.substring(pos + 1);
+
 		reader.close();
 		return Value;
 	}
@@ -88,12 +90,11 @@ public class LangStrings
 
 		if (_RefTranslation == null)
 		{
-			int pos = FilePath.lastIndexOf("/") + 1;
-			String LangFileName = FilePath.substring(pos);
-			String RefPath = FilePath.replace(LangFileName, "en.lan");
-			_RefTranslation = ReadFile(RefPath);
+			int pos = FilePath.lastIndexOf("lang/") + 5;
+			String LangFileName = FilePath.substring(0, pos) + "en-GB/strings.ini";
+			_RefTranslation = ReadFile(LangFileName);
 		}
-		if (FilePath.endsWith("lang")) FilePath = FilePath.replace(".lang", ".lan");
+
 		_StringList = ReadFile(FilePath);
 
 		String tmp = FilePath;
@@ -151,7 +152,7 @@ public class LangStrings
 				continue;
 			}
 
-			String readID = line.substring(0, pos - 1);
+			String readID = line.substring(0, pos);
 			String readTransl = line.substring(pos + 1);
 			String ReplacedRead = readTransl.trim().replace("\\n", String.format("%n"));
 			Temp.add(new _Translations(readID.trim(), ReplacedRead));
@@ -254,31 +255,24 @@ public class LangStrings
 		ArrayList<Langs> Temp = new ArrayList<Langs>();
 
 		File Dir = new File(FilePath);
-		final ArrayList<String> files = new ArrayList<String>();
-		Dir.listFiles(new FileFilter()
-		{
+		final String[] files;
 
-			public boolean accept(File f)
-			{
-				if (f.isFile())
-				{
-					String Path = f.getAbsolutePath();
-					int dot = Path.lastIndexOf(".");
-					String ext = Path.substring(dot + 1);
-					if (ext.equalsIgnoreCase("lan")) files.add(Path);
-
-				}
-
-				return false;
-			}
-		});
+		files = Dir.list();
 
 		for (String tmp : files)
 		{
 			try
 			{
-				String tmpName = getLangNameFromFile(tmp);
-				Temp.add(new Langs(tmpName, tmp));
+				tmp = FilePath + "/" + tmp;
+
+				String stringFile = tmp + "/strings.ini";
+
+				if (FileIO.FileExists(stringFile))
+				{
+					String tmpName = getLangNameFromFile(stringFile);
+					Temp.add(new Langs(tmpName, stringFile));
+				}
+
 			}
 			catch (IOException e)
 			{
