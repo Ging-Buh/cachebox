@@ -244,7 +244,8 @@ public class TrackListViewItem extends ListViewItemBackground
 	{
 		mRoute = route;
 		if (EntryLength != null) EntryLength.setText(GlobalCore.Translations.Get("length") + ": "
-				+ UnitFormatter.DistanceString((float) mRoute.TrackLength));
+				+ UnitFormatter.DistanceString((float) mRoute.TrackLength) + " / "
+				+ UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
 
 	}
 
