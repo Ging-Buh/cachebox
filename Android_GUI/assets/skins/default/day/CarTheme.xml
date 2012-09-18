@@ -51,8 +51,20 @@ Sebastian Wimmer, s.wimmer@web.de
 			</rule>
 		</rule>
 		
+		 <!-- render land above water -->
+        <rule e="way" k="*" v="*">
+            <rule e="way" k="natural" v="sea">
+                <area fill="#a5bfdd" />
+            </rule>
+            <rule e="way" k="natural" v="nosea">
+                <area fill="#f8f8f8" stroke="#f8f8f8" stroke-width="1.0" />
+            </rule>
+        </rule>
+	
 
-
+                <rule e="way" k="natural" v="water">
+                        <area fill="#a5bfdd" />
+                </rule>
 
 
 		<!-- waterways -->
