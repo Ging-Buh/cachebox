@@ -169,6 +169,7 @@ public class GL implements ApplicationListener
 		{
 			renderStartetListner.renderIsStartet();
 			renderStartetListner = null;
+			removeRenderView(child);
 		}
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -610,6 +611,9 @@ public class GL implements ApplicationListener
 	public void registerRenderStartetListner(renderStartet listner)
 	{
 		renderStartetListner = listner;
+
+		// wenn kein Render Auftrag kommt, wird auch der waitDialog nicht ausgeblendet!
+		addRenderView(child, FRAME_RATE_FAST_ACTION);
 	}
 
 	private void drawDarknessSprite()

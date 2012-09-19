@@ -85,7 +85,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 				id++;
 				if (wp == aktWaypoint)
 				{
-					if (!(first < id && last > id)) this.setSelection(id - 2);
+					if (!(first < id && last > id)) this.setSelection(id);
 					break;
 				}
 			}

@@ -248,6 +248,7 @@ public class SettingsItem_QuickButton extends CB_View_Base
 		boxForListView.setBackground(SpriteCache.activityBackground);
 
 		listView = new V_ListView(rec.copy(), "");
+		listView.setDisposeFlag(false);
 		boxForListView.addChildDirekt(listView);
 
 		{
@@ -328,6 +329,8 @@ public class SettingsItem_QuickButton extends CB_View_Base
 					return false;
 				}
 			});
+
+			mi.setIndex(position);
 
 			return mi;
 		}

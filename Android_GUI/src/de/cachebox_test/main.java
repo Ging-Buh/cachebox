@@ -1120,18 +1120,23 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void showWaitToRenderStartet()
 	{
-		pWaitD = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("waitForGL"), "", MessageBoxButtons.NOTHING, MessageBoxIcon.None,
-				null);
-		stopped = false;
-		GL.that.registerRenderStartetListner(new renderStartet()
+		if (pWaitD == null)
 		{
 
-			@Override
-			public void renderIsStartet()
+			pWaitD = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("waitForGL"), "", MessageBoxButtons.NOTHING,
+					MessageBoxIcon.None, null);
+			stopped = false;
+			GL.that.registerRenderStartetListner(new renderStartet()
 			{
-				pWaitD.dismiss();
-			}
-		});
+
+				@Override
+				public void renderIsStartet()
+				{
+					pWaitD.dismiss();
+					pWaitD = null;
+				}
+			});
+		}
 	}
 
 	@Override

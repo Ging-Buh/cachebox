@@ -69,7 +69,8 @@ public class FieldNotesView extends V_ListView
 	@Override
 	public void onShow()
 	{
-		if (lFieldNotes.size() == 0) lFieldNotes.LoadFieldNotes("");
+		lFieldNotes = new FieldNoteList();
+		lFieldNotes.LoadFieldNotes("");
 		this.notifyDataSetChanged();
 		if (firstShow)
 		{
@@ -486,8 +487,41 @@ public class FieldNotesView extends V_ListView
 		}
 		else
 		{
-			newFieldNote.WriteToDatabase();
+			// newFieldNote.WriteToDatabase();
+			//
+			// if (newFieldNote.type == 1)
+			// {
+			// // Found it! -> Cache als gefunden markieren
+			// if (!GlobalCore.SelectedCache().Found)
+			// {
+			// GlobalCore.SelectedCache().Found = true;
+			// CacheDAO cacheDAO = new CacheDAO();
+			// cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
+			// Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
+			// Config.AcceptChanges();
+			// }
+			// }
+			// else if (newFieldNote.type == 2)
+			// {
+			// // DidNotFound -> Cache als nicht gefunden markieren
+			// if (GlobalCore.SelectedCache().Found)
+			// {
+			// GlobalCore.SelectedCache().Found = false;
+			// CacheDAO cacheDAO = new CacheDAO();
+			// cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
+			// Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
+			// Config.AcceptChanges();
+			// }
+			// // und eine evtl. vorhandene FieldNote FoundIt löschen
+			// lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.SelectedCache().Id, 1);
+			// }
+			//
+			// FieldNoteList.CreateVisitsTxt();
 
+			// neue FieldNote
+			lFieldNotes.add(0, newFieldNote);
+			newFieldNote.WriteToDatabase();
+			aktFieldNote = newFieldNote;
 			if (newFieldNote.type == 1)
 			{
 				// Found it! -> Cache als gefunden markieren
@@ -516,6 +550,9 @@ public class FieldNotesView extends V_ListView
 			}
 
 			FieldNoteList.CreateVisitsTxt();
+
+			that.notifyDataSetChanged();
+
 		}
 	}
 
