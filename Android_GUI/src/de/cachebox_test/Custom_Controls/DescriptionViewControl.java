@@ -1,5 +1,6 @@
 package de.cachebox_test.Custom_Controls;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -334,11 +335,12 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 		do
 		{
-
 			Attributes attribute = attrs.next();
+			File result = new File(Config.WorkPath + "/data/Attributes/" + attribute.getImageName() + ".png");
+
 			sb.append("<form action=\"Attr\">");
-			sb.append("<input name=\"Button\" type=\"image\" src=\"file://" + Config.WorkPath + "/data/Attributes/"
-					+ attribute.getImageName() + ".png\" value=\" " + attribute.getImageName() + " \">");
+			sb.append("<input name=\"Button\" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\" "
+					+ attribute.getImageName() + " \">");
 		}
 		while (attrs.hasNext());
 

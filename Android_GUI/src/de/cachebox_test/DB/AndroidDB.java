@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import CB_Core.FileIO;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
+import CB_Core.Log.Logger;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -55,12 +56,26 @@ public class AndroidDB extends Database
 
 		try
 		{
-			myDB = activity.openOrCreateDatabase(databasePath, Context.MODE_WORLD_WRITEABLE, null);
+			myDB = activity.openOrCreateDatabase(getDatabasePath(databasePath).getAbsolutePath(), Context.MODE_WORLD_WRITEABLE, null);
 			newDB = true;
 		}
 		catch (Exception exc)
 		{
+			Logger.Error("AndroidDb", "resetDB", exc);
 		}
+	}
+
+	public File getDatabasePath(String dbfile)
+	{
+
+		File result = new File(dbfile);
+
+		if (!result.getParentFile().exists())
+		{
+			result.getParentFile().mkdirs();
+		}
+
+		return result;
 	}
 
 	@Override

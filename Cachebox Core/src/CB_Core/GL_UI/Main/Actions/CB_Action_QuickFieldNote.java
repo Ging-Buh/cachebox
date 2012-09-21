@@ -48,12 +48,12 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 				{
 				case MI_FOUND:
 					FieldNotesView.addNewFieldnote(1, true);
-					if (FieldNotesView.that != null) FieldNotesView.that.notifyDatasetChanged();
+					if (FieldNotesView.that != null) FieldNotesView.that.notifyDataSetChanged();
 					CachListChangedEventList.Call(); // damit der Status geändert wird
 					return true;
 				case MI_NOT_FOUND:
 					FieldNotesView.addNewFieldnote(2, true);
-					if (FieldNotesView.that != null) FieldNotesView.that.notifyDatasetChanged();
+					if (FieldNotesView.that != null) FieldNotesView.that.notifyDataSetChanged();
 					CachListChangedEventList.Call(); // damit der Status geändert wird
 					return true;
 				}

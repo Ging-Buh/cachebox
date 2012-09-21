@@ -302,7 +302,6 @@ public class TabMainView extends MainViewBase
 		btn2.addAction(new CB_ActionButton(actionShowLogView, false, GestureDirection.Down));
 		btn2.addAction(new CB_ActionButton(actionShowHint, false));
 		btn2.addAction(new CB_ActionButton(actionShowSpoilerView, false));
-		btn2.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
 		btn2.addAction(new CB_ActionButton(actionShowNotesView, false));
 
 		btn3.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
@@ -311,6 +310,7 @@ public class TabMainView extends MainViewBase
 		btn3.addAction(new CB_ActionButton(actionTestView, false));
 
 		btn4.addAction(new CB_ActionButton(actionQuickFieldNote, false));
+		btn4.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
 		btn4.addAction(new CB_ActionButton(actionRecTrack, false));
 		btn4.addAction(new CB_ActionButton(actionRecVoice, false));
 		btn4.addAction(new CB_ActionButton(actionRecPicture, false));
@@ -400,13 +400,13 @@ public class TabMainView extends MainViewBase
 		btn2.addAction(new CB_ActionButton(actionShowWaypointView, true, GestureDirection.Right));
 		btn2.addAction(new CB_ActionButton(actionShowLogView, false, GestureDirection.Down));
 		btn2.addAction(new CB_ActionButton(actionShowHint, false));
-		btn2.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
 		btn2.addAction(new CB_ActionButton(actionShowNotesView, false));
 
 		btn3.addAction(new CB_ActionButton(actionShowCompassView, true, GestureDirection.Right));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
 
 		btn4.addAction(new CB_ActionButton(actionQuickFieldNote, false));
+		btn4.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
 		btn4.addAction(new CB_ActionButton(actionRecTrack, false));
 		btn4.addAction(new CB_ActionButton(actionRecVoice, false));
 		btn4.addAction(new CB_ActionButton(actionRecPicture, false));

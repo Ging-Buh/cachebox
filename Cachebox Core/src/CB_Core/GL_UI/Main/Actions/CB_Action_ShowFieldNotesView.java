@@ -34,7 +34,7 @@ public class CB_Action_ShowFieldNotesView extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(54);
+		return SpriteCache.Icons.get(55);
 	}
 
 	@Override

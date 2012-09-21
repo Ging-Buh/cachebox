@@ -34,7 +34,7 @@ public class CB_Action_ShowWaypointView extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(8);
+		return SpriteCache.Icons.get(56);
 	}
 
 	@Override

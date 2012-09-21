@@ -615,8 +615,9 @@ public class FieldNotesView extends V_ListView
 
 					FieldNoteList.CreateVisitsTxt();
 				}
-				that.notifyDataSetChanged();
+
 			}
+			that.notifyDataSetChanged();
 		}
 	};
 
@@ -851,7 +852,8 @@ public class FieldNotesView extends V_ListView
 		}
 	};
 
-	public void notifyDatasetChanged()
+	@Override
+	public void notifyDataSetChanged()
 	{
 		lFieldNotes = new FieldNoteList();
 		lFieldNotes.LoadFieldNotes("");
@@ -859,6 +861,8 @@ public class FieldNotesView extends V_ListView
 		that.setBaseAdapter(null);
 		lvAdapter = new CustomAdapter(lFieldNotes);
 		that.setBaseAdapter(lvAdapter);
+
+		super.notifyDataSetChanged();
 	}
 
 }

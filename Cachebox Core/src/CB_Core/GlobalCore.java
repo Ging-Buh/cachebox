@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1107;
+	public static final int CurrentRevision = 1109;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -259,6 +259,22 @@ public class GlobalCore
 	{
 		final String ret = "Version: " + CurrentVersion + String.valueOf(CurrentRevision) + "  "
 				+ (VersionPrefix.equals("") ? "" : "(" + VersionPrefix + ")");
+		return ret;
+	}
+
+	public static Coordinate getSelectedCoord()
+	{
+		Coordinate ret = null;
+
+		if (selectedWaypoint != null)
+		{
+			ret = selectedWaypoint.Pos;
+		}
+		else if (selectedCache != null)
+		{
+			ret = selectedCache.Pos;
+		}
+
 		return ret;
 	}
 

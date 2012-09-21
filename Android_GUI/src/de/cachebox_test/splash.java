@@ -1,6 +1,9 @@
 package de.cachebox_test;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Iterator;
 
 import CB_Core.Config;
@@ -77,6 +80,36 @@ public class splash extends Activity
 
 		// check if Layout forced from User
 		workPath = Environment.getExternalStorageDirectory() + "/cachebox";
+
+		// chk gibt es eine Pfad Umleitung
+
+		if (FileIO.FileExists(workPath + "/redirection.txt"))
+		{
+			BufferedReader Filereader;
+
+			try
+			{
+				Filereader = new BufferedReader(new FileReader(workPath + "/redirection.txt"));
+				String line;
+
+				while ((line = Filereader.readLine()) != null)
+				{
+					// chk ob der umleitungs Ordner exestiert
+					if (FileIO.FileExists(line))
+					{
+						workPath = line;
+					}
+				}
+
+				Filereader.close();
+			}
+			catch (IOException e)
+			{
+				Logger.Error("read redirection", "", e);
+				e.printStackTrace();
+			}
+
+		}
 
 		if (FileIO.FileExists(workPath + "/.forcePhone"))
 		{

@@ -610,6 +610,8 @@ public class SpriteCache
 			Icons.add(getThemedSprite("add-icon")); // 52
 			Icons.add(getThemedSprite("target-day")); // 53
 			Icons.add(getThemedSprite("FieldNote")); // 54
+			Icons.add(getThemedSprite("fieldnote-list-icon")); // 55
+			Icons.add(getThemedSprite("waypoint-list-icon")); // 56
 
 		}
 

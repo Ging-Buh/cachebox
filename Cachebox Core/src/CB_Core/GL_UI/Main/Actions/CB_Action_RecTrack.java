@@ -26,7 +26,7 @@ public class CB_Action_RecTrack extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(48);
+		return SpriteCache.Icons.get(8);
 	}
 
 	@Override
