@@ -189,7 +189,7 @@ public class Config
 		validateSetting("ImportLayerOsm", "true");
 		validateSetting("CurrentMapLayer", "Mapnik");
 		validateSetting("AutoUpdate", "http://www.getcachebox.net/latest-stable");
-		validateSetting("NavigationProvider", "http://129.206.229.146/openrouteservice/php/OpenLSRS_DetermineRoute.php");
+		validateSetting("NavigationProvider", "http://openrouteservice.org/php/OpenLSRS_DetermineRoute.php");
 		validateSetting("TrackRecorderStartup", "false");
 		validateSetting("MapShowCompass", "true");
 		validateSetting("FoundTemplate", "<br>###finds##, ##time##, Found it with DroidCachebox!");
@@ -425,7 +425,7 @@ public class Config
 		}
 		catch (IOException e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 

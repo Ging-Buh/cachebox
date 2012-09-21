@@ -1,6 +1,26 @@
 package CB_Core.GL_UI.Main.Actions;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.impl.client.AbstractHttpClient;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
@@ -93,6 +113,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	private static final int P2P = 6;
 	private static final int PROJECT = 7;
 	private static final int CIRCLE = 8;
+	private static final int OPENROUTE = 9;
 
 	@Override
 	public boolean HasContextMenu()
@@ -264,6 +285,20 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 				case CIRCLE:
 					GenTrackCircle();
 					return true;
+				case OPENROUTE:
+
+					Thread tread = new Thread(new Runnable()
+					{
+
+						@Override
+						public void run()
+						{
+							GenOpenRoute();
+						}
+					});
+					tread.start();
+
+					return true;
 				}
 				return false;
 			}
@@ -271,6 +306,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 		cm2.addItem(P2P, "Point2Point");
 		cm2.addItem(PROJECT, "Projection");
 		cm2.addItem(CIRCLE, "Circle");
+		cm2.addItem(OPENROUTE, "OpenRoute");
 
 		cm2.show();
 	}
@@ -372,7 +408,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						Coordinate Projektion = new Coordinate();
 						Coordinate LastCoord = new Coordinate();
 
-						for (int i = 0; i <= 360; i += 10)
+						for (int i = 0; i <= 360; i += 10) // Achtung der Kreis darf nicht mehr als 50 Punkte haben, sonst gibt es Probleme
+															// mit dem Reduktionsalgorythmus
 						{
 							Projektion = Coordinate.Project(startCoord.Latitude, startCoord.Longitude, (double) i, distance);
 
@@ -399,6 +436,187 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 				}, Type.circle);
 
 		pC.show();
+	}
+
+	private void GenOpenRoute()
+	{
+
+		Coordinate start = new Coordinate();
+		Coordinate target = new Coordinate();
+		Coordinate lastAcceptedCoordinate = null;
+		float[] dist = new float[4];
+		double Distance = 0;
+		Coordinate FromPosition = new Coordinate();
+		boolean IsRoute = false;
+		boolean RouteGeometryBlockFound = false;
+
+		if ((GlobalCore.Locator == null && !GlobalCore.LastValidPosition.Valid) || !GlobalCore.Locator.isGPSprovided())
+		{
+			GL_MsgBox.Show("GPS ungültig", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+			return;
+		}
+		else
+		{
+			start = GlobalCore.LastValidPosition;
+		}
+
+		if (GlobalCore.SelectedWaypoint() != null)
+		{
+			target = GlobalCore.SelectedWaypoint().Pos;
+		}
+		else if (GlobalCore.SelectedCache() != null)
+		{
+			target = GlobalCore.SelectedCache().Pos;
+		}
+		else
+		{
+			GL_MsgBox.Show("Cache / WP ungültig", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+			return;
+		}
+
+		// String Url = Config.settings.NavigationProvider.getValue();
+		String Url = "http://openrouteservice.org/php/OpenLSRS_DetermineRoute.php";
+
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpPost httppost = new HttpPost(Url);
+
+		httppost.setHeader("User-Agent", "cachebox rev " + String.valueOf(GlobalCore.CurrentRevision));
+		httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+
+		// Create a local instance of cookie store
+		CookieStore cookieStore = new BasicCookieStore();
+
+		((AbstractHttpClient) httpclient).setCookieStore(cookieStore);
+
+		// Create local HTTP context
+		HttpContext localContext = new BasicHttpContext();
+		// Bind custom cookie store to the local context
+		localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+
+		// Execute HTTP Post Request
+		try
+		{
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(12);
+			nameValuePairs.add(new BasicNameValuePair("Start", String.valueOf(start.Longitude) + "," + String.valueOf(start.Latitude)));
+			nameValuePairs.add(new BasicNameValuePair("End", String.valueOf(target.Longitude) + "," + String.valueOf(target.Latitude)));
+
+			nameValuePairs.add(new BasicNameValuePair("Via", ""));
+			nameValuePairs.add(new BasicNameValuePair("lang", "de"));
+			nameValuePairs.add(new BasicNameValuePair("distunit", "KM"));
+			nameValuePairs.add(new BasicNameValuePair("routepref", "Fastest"));
+			nameValuePairs.add(new BasicNameValuePair("avoidAreas", ""));
+			nameValuePairs.add(new BasicNameValuePair("useTMC", "false"));
+			nameValuePairs.add(new BasicNameValuePair("noMotorways", "false"));
+			nameValuePairs.add(new BasicNameValuePair("noTollways", "false"));
+			nameValuePairs.add(new BasicNameValuePair("instructions", "false"));
+			nameValuePairs.add(new BasicNameValuePair("_", ""));
+			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			// Execute HTTP Post Request
+			HttpResponse response = httpclient.execute(httppost, localContext);
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+			StringBuilder builder = new StringBuilder();
+			String line = "";
+			TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
+			Track route = new Track(null, TrackColor);
+			route.Name = "OpenRouteService";
+			route.ShowRoute = true;
+
+			try
+			{
+				while ((line = reader.readLine()) != null)
+				{
+					builder.append(line).append("\n");
+					if (line.indexOf("<xls:Error ") >= 0)
+					{
+						int errorIdx = line.indexOf("message=\"");
+						int endIdx = line.indexOf("\"", errorIdx + 9);
+						String errorMessage = line.substring(errorIdx + 9, endIdx);
+						GL_MsgBox.Show(errorMessage, "OpenRouteService", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+						return;
+					}
+
+					if (line.indexOf("<xls:RouteGeometry>") >= 0) // suche <xls:RouteGeometry> Block
+					{
+						RouteGeometryBlockFound = true;
+					}
+
+					int idx;
+					if (((idx = line.indexOf("<gml:pos>")) > 0) & RouteGeometryBlockFound)
+					{
+						int seperator = line.indexOf(" ", idx + 1);
+						int endIdx = line.indexOf("</gml:pos>", seperator + 1);
+
+						String lonStr = line.substring(idx + 9, seperator);
+						String latStr = line.substring(seperator + 1, endIdx);
+
+						double lat = Double.valueOf(latStr);
+						double lon = Double.valueOf(lonStr);
+
+						lastAcceptedCoordinate = new Coordinate(lat, lon);
+
+						route.Points.add(new TrackPoint(lastAcceptedCoordinate.Longitude, lastAcceptedCoordinate.Latitude, 0, 0, null));
+
+						// Calculate the length of a Track
+						if (!FromPosition.Valid)
+						{
+							FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
+							FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
+							FromPosition.Valid = true;
+						}
+						else
+						{
+							Coordinate.distanceBetween(FromPosition.Latitude, FromPosition.Longitude, lastAcceptedCoordinate.Latitude,
+									lastAcceptedCoordinate.Longitude, dist);
+							Distance += dist[0];
+							FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
+							FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
+							IsRoute = true; // min. 2 Punkte, damit es eine gültige Route ist
+						}
+					}
+				}
+
+				if (IsRoute)
+				{
+					route.TrackLength = Distance;
+					RouteOverlay.Routes.add(route);
+					if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
+				}
+				else
+				{
+					GL_MsgBox.Show("OpenRouteService", "no route found", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+					return;
+				}
+
+			}
+			catch (Exception e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			String page = builder.toString();
+
+			if (page != null)
+			{
+				// BreakPoint hier
+				page = "";
+				return;
+			}
+
+		}
+		catch (ClientProtocolException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 }

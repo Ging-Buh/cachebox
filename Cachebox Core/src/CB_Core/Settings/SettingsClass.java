@@ -374,7 +374,7 @@ public class SettingsClass extends SettingsList
 		addSetting(MultiDBAutoStartTime = new SettingInt("MultiDBAutoStartTime", cat, NEVER, 0, true));
 
 		addSetting(NavigationProvider = new SettingString("NavigationProvider", cat, INVISIBLE,
-				"http://129.206.229.146/openrouteservice/php/OpenLSRS_DetermineRoute.php", true));
+				"http://openrouteservice.org/php/OpenLSRS_DetermineRoute.php", true));
 
 		addSetting(SpoilersDescriptionTags = new SettingString("SpoilersDescriptionTags", cat, INVISIBLE, "", true));
 
