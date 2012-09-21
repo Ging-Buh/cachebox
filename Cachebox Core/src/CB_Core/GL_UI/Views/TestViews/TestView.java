@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Views.TestViews;
 
-import CB_Core.Api.GcApiLogin;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -8,6 +7,9 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.Dialogs.RouteDialog;
+import CB_Core.GL_UI.Controls.Dialogs.RouteDialog.returnListner;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
@@ -83,28 +85,28 @@ public class TestView extends CB_View_Base
 		Button btnSetting = new Button(this.width - Dialog.margin - (UiSizes.getButtonWidthWide() * 2), this.height - Dialog.margin
 				- UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide() * 2, UiSizes.getButtonHeight(), "");
 
-		btnSetting.setText("Get API");
+		btnSetting.setText("Create Route");
 		btnSetting.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				//
-				// PasswortDialog PWD = new PasswortDialog(new returnListner()
-				// {
-				//
-				// @Override
-				// public void returnFromPW_Dialog(String User, String PW)
-				// {
-				// // TODO Auto-generated method stub
-				//
-				// }
-				// });
-				//
-				// GL.that.showDialog(PWD, true);
 
-				(new GcApiLogin()).RunRequest();
+				RouteDialog routeDia = new RouteDialog(new returnListner()
+				{
+
+					@Override
+					public void returnFromRoute_Dialog(boolean canceld, boolean Motoway, boolean CycleWay, boolean FootWay, boolean UseTmc)
+					{
+						// TODO Auto-generated method stub
+						GL_MsgBox.Show("return");
+					}
+
+				});
+
+				GL.that.showDialog(routeDia, true);
+
 				return true;
 			}
 		});
