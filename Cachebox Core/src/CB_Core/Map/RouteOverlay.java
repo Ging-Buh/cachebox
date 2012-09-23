@@ -16,6 +16,7 @@ import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.GL_UI.utils.HSV_Color;
 import CB_Core.Log.Logger;
@@ -38,6 +39,7 @@ public class RouteOverlay
 	public static void RoutesChanged()
 	{
 		mRoutesChanged = true;
+		GL.that.renderOnce("RouteChanged");
 	}
 
 	public static class Track
@@ -313,13 +315,13 @@ public class RouteOverlay
 
 		catch (FileNotFoundException e)
 		{
-			 
+
 			e.printStackTrace();
 			return null;
 		}
 		catch (IOException e)
 		{
-			 
+
 			e.printStackTrace();
 			return null;
 		}

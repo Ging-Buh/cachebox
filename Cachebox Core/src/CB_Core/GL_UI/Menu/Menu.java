@@ -48,7 +48,7 @@ public class Menu extends Dialog
 
 		if (ItemHeight == -1f) ItemHeight = UiSizes.getButtonHeight();
 
-		MENU_REC = new CB_RectF(new SizeF(400, mHeaderHight + getFooterHeight() + (margin * 2)));
+		MENU_REC = new CB_RectF(new SizeF(UiSizes.getWindowWidth() * 0.83f, mHeaderHight + getFooterHeight() + (margin * 2)));
 
 		this.setRec(MENU_REC);
 

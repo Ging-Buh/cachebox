@@ -34,11 +34,16 @@ import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate.Type;
 import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_Core.GL_UI.Controls.Dialogs.RouteDialog;
+import CB_Core.GL_UI.Controls.Dialogs.RouteDialog.returnListner;
 import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
@@ -227,7 +232,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 										@Override
 										public boolean onClick(int which)
 										{
-											// hier btauchen wir nichts machen!
+											// hier brauchen wir nichts machen!
 											return true;
 										}
 									});
@@ -438,17 +443,18 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 		pC.show();
 	}
 
+	private static Coordinate start = new Coordinate();
+	private static Coordinate target = new Coordinate();
+	private static Coordinate lastAcceptedCoordinate = null;
+	private static float[] dist = new float[4];
+	private static double Distance = 0;
+	private static Coordinate FromPosition = new Coordinate();
+	private static boolean IsRoute = false;
+	private static boolean RouteGeometryBlockFound = false;
+	private static String routepref = "Fastest";
+
 	private void GenOpenRoute()
 	{
-
-		Coordinate start = new Coordinate();
-		Coordinate target = new Coordinate();
-		Coordinate lastAcceptedCoordinate = null;
-		float[] dist = new float[4];
-		double Distance = 0;
-		Coordinate FromPosition = new Coordinate();
-		boolean IsRoute = false;
-		boolean RouteGeometryBlockFound = false;
 
 		if ((GlobalCore.Locator == null && !GlobalCore.LastValidPosition.Valid) || !GlobalCore.Locator.isGPSprovided())
 		{
@@ -474,148 +480,189 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 			return;
 		}
 
-		// String Url = Config.settings.NavigationProvider.getValue();
-		String Url = "http://openrouteservice.org/php/OpenLSRS_DetermineRoute.php";
-
-		HttpClient httpclient = new DefaultHttpClient();
-		HttpPost httppost = new HttpPost(Url);
-
-		httppost.setHeader("User-Agent", "cachebox rev " + String.valueOf(GlobalCore.CurrentRevision));
-		httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
-
-		// Create a local instance of cookie store
-		CookieStore cookieStore = new BasicCookieStore();
-
-		((AbstractHttpClient) httpclient).setCookieStore(cookieStore);
-
-		// Create local HTTP context
-		HttpContext localContext = new BasicHttpContext();
-		// Bind custom cookie store to the local context
-		localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
-
-		// Execute HTTP Post Request
-		try
+		RouteDialog routeDia = new RouteDialog(new returnListner()
 		{
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(12);
-			nameValuePairs.add(new BasicNameValuePair("Start", String.valueOf(start.Longitude) + "," + String.valueOf(start.Latitude)));
-			nameValuePairs.add(new BasicNameValuePair("End", String.valueOf(target.Longitude) + "," + String.valueOf(target.Latitude)));
 
-			nameValuePairs.add(new BasicNameValuePair("Via", ""));
-			nameValuePairs.add(new BasicNameValuePair("lang", "de"));
-			nameValuePairs.add(new BasicNameValuePair("distunit", "KM"));
-			nameValuePairs.add(new BasicNameValuePair("routepref", "Fastest"));
-			nameValuePairs.add(new BasicNameValuePair("avoidAreas", ""));
-			nameValuePairs.add(new BasicNameValuePair("useTMC", "false"));
-			nameValuePairs.add(new BasicNameValuePair("noMotorways", "false"));
-			nameValuePairs.add(new BasicNameValuePair("noTollways", "false"));
-			nameValuePairs.add(new BasicNameValuePair("instructions", "false"));
-			nameValuePairs.add(new BasicNameValuePair("_", ""));
-			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-			// Execute HTTP Post Request
-			HttpResponse response = httpclient.execute(httppost, localContext);
-
-			BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-			StringBuilder builder = new StringBuilder();
-			String line = "";
-			TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
-			Track route = new Track(null, TrackColor);
-			route.Name = "OpenRouteService";
-			route.ShowRoute = true;
-
-			try
+			@Override
+			public void returnFromRoute_Dialog(final boolean canceld, final boolean Motoway, final boolean CycleWay, final boolean FootWay,
+					boolean UseTmc)
 			{
-				while ((line = reader.readLine()) != null)
+
+				CancelWaitDialog wd = CancelWaitDialog.ShowWait("generateRoute", new IcancelListner()
 				{
-					builder.append(line).append("\n");
-					if (line.indexOf("<xls:Error ") >= 0)
+
+					@Override
+					public void isCanceld()
 					{
-						int errorIdx = line.indexOf("message=\"");
-						int endIdx = line.indexOf("\"", errorIdx + 9);
-						String errorMessage = line.substring(errorIdx + 9, endIdx);
-						GL_MsgBox.Show(errorMessage, "OpenRouteService", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
-						return;
+						// TODO Handle Cancel Clicket
+
 					}
+				}, new Runnable()
+				{
 
-					if (line.indexOf("<xls:RouteGeometry>") >= 0) // suche <xls:RouteGeometry> Block
+					@Override
+					public void run()
 					{
-						RouteGeometryBlockFound = true;
-					}
+						if (canceld) return;
+						if (Motoway) routepref = "Fastest";
+						if (CycleWay) routepref = "Bicycle";
+						if (FootWay) routepref = "Pedestrain";
 
-					int idx;
-					if (((idx = line.indexOf("<gml:pos>")) > 0) & RouteGeometryBlockFound)
-					{
-						int seperator = line.indexOf(" ", idx + 1);
-						int endIdx = line.indexOf("</gml:pos>", seperator + 1);
+						String Url = Config.settings.NavigationProvider.getValue();
+						// String Url = "http://openrouteservice.org/php/OpenLSRS_DetermineRoute.php";
 
-						String lonStr = line.substring(idx + 9, seperator);
-						String latStr = line.substring(seperator + 1, endIdx);
+						HttpClient httpclient = new DefaultHttpClient();
+						HttpPost httppost = new HttpPost(Url);
 
-						double lat = Double.valueOf(latStr);
-						double lon = Double.valueOf(lonStr);
+						httppost.setHeader("User-Agent", "cachebox rev " + String.valueOf(GlobalCore.CurrentRevision));
+						httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
-						lastAcceptedCoordinate = new Coordinate(lat, lon);
+						// Create a local instance of cookie store
+						CookieStore cookieStore = new BasicCookieStore();
 
-						route.Points.add(new TrackPoint(lastAcceptedCoordinate.Longitude, lastAcceptedCoordinate.Latitude, 0, 0, null));
+						((AbstractHttpClient) httpclient).setCookieStore(cookieStore);
 
-						// Calculate the length of a Track
-						if (!FromPosition.Valid)
+						// Create local HTTP context
+						HttpContext localContext = new BasicHttpContext();
+						// Bind custom cookie store to the local context
+						localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+
+						// Execute HTTP Post Request
+						try
 						{
-							FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
-							FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
-							FromPosition.Valid = true;
+							List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(12);
+							nameValuePairs.add(new BasicNameValuePair("Start", String.valueOf(start.Longitude) + ","
+									+ String.valueOf(start.Latitude)));
+							nameValuePairs.add(new BasicNameValuePair("End", String.valueOf(target.Longitude) + ","
+									+ String.valueOf(target.Latitude)));
+
+							nameValuePairs.add(new BasicNameValuePair("Via", ""));
+							nameValuePairs.add(new BasicNameValuePair("lang", "de"));
+							nameValuePairs.add(new BasicNameValuePair("distunit", "KM"));
+							nameValuePairs.add(new BasicNameValuePair("routepref", routepref));
+							nameValuePairs.add(new BasicNameValuePair("avoidAreas", ""));
+							nameValuePairs.add(new BasicNameValuePair("useTMC", "false"));
+							nameValuePairs.add(new BasicNameValuePair("noMotorways", "false"));
+							nameValuePairs.add(new BasicNameValuePair("noTollways", "false"));
+							nameValuePairs.add(new BasicNameValuePair("instructions", "false"));
+							nameValuePairs.add(new BasicNameValuePair("_", ""));
+							httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+							// Execute HTTP Post Request
+							HttpResponse response = httpclient.execute(httppost, localContext);
+
+							BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+							StringBuilder builder = new StringBuilder();
+							String line = "";
+							TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
+							Track route = new Track(null, TrackColor);
+							route.Name = "OpenRouteService";
+							route.ShowRoute = true;
+
+							try
+							{
+								while ((line = reader.readLine()) != null)
+								{
+									builder.append(line).append("\n");
+									if (line.indexOf("<xls:Error ") >= 0)
+									{
+										int errorIdx = line.indexOf("message=\"");
+										int endIdx = line.indexOf("\"", errorIdx + 9);
+										String errorMessage = line.substring(errorIdx + 9, endIdx);
+										GL_MsgBox.Show(errorMessage, "OpenRouteService", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+										return;
+									}
+
+									if (line.indexOf("<xls:RouteGeometry>") >= 0) // suche <xls:RouteGeometry> Block
+									{
+										RouteGeometryBlockFound = true;
+									}
+
+									int idx;
+									if (((idx = line.indexOf("<gml:pos>")) > 0) & RouteGeometryBlockFound)
+									{
+										int seperator = line.indexOf(" ", idx + 1);
+										int endIdx = line.indexOf("</gml:pos>", seperator + 1);
+
+										String lonStr = line.substring(idx + 9, seperator);
+										String latStr = line.substring(seperator + 1, endIdx);
+
+										double lat = Double.valueOf(latStr);
+										double lon = Double.valueOf(lonStr);
+
+										lastAcceptedCoordinate = new Coordinate(lat, lon);
+
+										route.Points.add(new TrackPoint(lastAcceptedCoordinate.Longitude, lastAcceptedCoordinate.Latitude,
+												0, 0, null));
+
+										// Calculate the length of a Track
+										if (!FromPosition.Valid)
+										{
+											FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
+											FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
+											FromPosition.Valid = true;
+										}
+										else
+										{
+											Coordinate.distanceBetween(FromPosition.Latitude, FromPosition.Longitude,
+													lastAcceptedCoordinate.Latitude, lastAcceptedCoordinate.Longitude, dist);
+											Distance += dist[0];
+											FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
+											FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
+											IsRoute = true; // min. 2 Punkte, damit es eine gültige Route ist
+										}
+									}
+								}
+
+								if (IsRoute)
+								{
+									route.TrackLength = Distance;
+									RouteOverlay.Routes.add(route);
+									if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
+								}
+								else
+								{
+									GL_MsgBox.Show("OpenRouteService", "no route found", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+									return;
+								}
+
+							}
+							catch (Exception e)
+							{
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+
+							String page = builder.toString();
+
+							if (page != null)
+							{
+								// BreakPoint hier
+								page = "";
+								return;
+							}
+
 						}
-						else
+						catch (ClientProtocolException e)
 						{
-							Coordinate.distanceBetween(FromPosition.Latitude, FromPosition.Longitude, lastAcceptedCoordinate.Latitude,
-									lastAcceptedCoordinate.Longitude, dist);
-							Distance += dist[0];
-							FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
-							FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
-							IsRoute = true; // min. 2 Punkte, damit es eine gültige Route ist
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
+						catch (IOException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						RouteOverlay.RoutesChanged();
+
 					}
-				}
-
-				if (IsRoute)
-				{
-					route.TrackLength = Distance;
-					RouteOverlay.Routes.add(route);
-					if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
-				}
-				else
-				{
-					GL_MsgBox.Show("OpenRouteService", "no route found", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
-					return;
-				}
+				});
 
 			}
-			catch (Exception e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 
-			String page = builder.toString();
+		});
 
-			if (page != null)
-			{
-				// BreakPoint hier
-				page = "";
-				return;
-			}
-
-		}
-		catch (ClientProtocolException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		GL.that.showDialog(routeDia, true);
 
 	}
 
