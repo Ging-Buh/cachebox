@@ -445,11 +445,6 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 	private static Coordinate start = new Coordinate();
 	private static Coordinate target = new Coordinate();
-	private static Coordinate lastAcceptedCoordinate = null;
-	private static float[] dist = new float[4];
-	private static double Distance = 0;
-	private static Coordinate FromPosition = new Coordinate();
-	private static String routepref = "Fastest";
 
 	private void GenOpenRoute()
 	{
@@ -501,6 +496,12 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					@Override
 					public void run()
 					{
+						Coordinate lastAcceptedCoordinate = null;
+						float[] dist = new float[4];
+						double Distance = 0;
+						Coordinate FromPosition = new Coordinate();
+						String routepref = "Fastest";
+
 						if (canceld) return;
 						if (Motoway) routepref = "Fastest";
 						if (CycleWay) routepref = "Bicycle";
@@ -633,15 +634,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 								e.printStackTrace();
 							}
 
-							String page = builder.toString();
-
-							if (page != null)
-							{
-								// BreakPoint hier
-								page = "";
-								return;
-							}
-
+							// String page = builder.toString(); //page enthält komplette zurückgelieferte Web-Seite
 						}
 						catch (ClientProtocolException e)
 						{
