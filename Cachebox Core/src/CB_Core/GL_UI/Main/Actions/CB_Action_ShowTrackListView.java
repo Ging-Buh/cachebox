@@ -449,8 +449,6 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	private static float[] dist = new float[4];
 	private static double Distance = 0;
 	private static Coordinate FromPosition = new Coordinate();
-	private static boolean IsRoute = false;
-	private static boolean RouteGeometryBlockFound = false;
 	private static String routepref = "Fastest";
 
 	private void GenOpenRoute()
@@ -558,6 +556,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 							Track route = new Track(null, TrackColor);
 							route.Name = "OpenRouteService";
 							route.ShowRoute = true;
+							boolean RouteGeometryBlockFound = false;
+							boolean IsRoute = false;
 
 							try
 							{
