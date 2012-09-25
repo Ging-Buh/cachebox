@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import CB_Core.GL_UI.Views.TrackListView;
 import CB_Core.Map.Descriptor.TrackPoint;
@@ -28,6 +27,11 @@ public class TrackRecorder
 	// / Letzte aufgezeichnete Position des Empfängers
 	public static Coordinate LastRecordedPosition = new Coordinate();
 
+	// Achtung: der Trackrecorder ist auf die Verwendung mit dem JOSM zugeschnitten
+	// http://www.getcachebox.net/wiki/index.php?title=JOSM/de
+	// Änderungen an der gpx-Struktur (besonderst an den Zeiten) können zur folge haben, dass JOSM einen
+	// Track evtl. nicht mehr mit einer Sprachaufnahme oder einem Foto synchronisieren kann.
+	// Deshalb bei Änderungen gewissenhaft testen oder den "ersthelfer" kontaktieren!!!
 	public static void StartRecording()
 	{
 
@@ -50,7 +54,13 @@ public class TrackRecorder
 				{
 					writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 					writer.append("<gpx version=\"1.0\" creator=\"cachebox track recorder\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n");
-					writer.append("<time>" + GetDateTimeString() + "</time>\n");
+					Date now = new Date();
+					SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
+					String sDate = datFormat.format(now);
+					datFormat = new SimpleDateFormat("HH:mm:ss");
+					sDate += "T" + datFormat.format(now) + "Z";
+
+					writer.append("<time>" + sDate + "</time>\n");
 					// set real bounds or basecamp (mapsource) will not import this track
 					// writer.append("<bounds minlat=\"-90\" minlon=\"-180\" maxlat=\"90\" maxlon=\"180\"/>\n");
 					writer.append("<trk><trkseg>\n");
@@ -90,18 +100,6 @@ public class TrackRecorder
 		// updateRecorderButtonAccessibility();
 	}
 
-	private static String GetDateTimeString()
-	{
-		Date timestamp = new Date();
-		SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
-		datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-		String sDate = datFormat.format(timestamp);
-		datFormat = new SimpleDateFormat("HH:mm:ss");
-		datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-		sDate += "T" + datFormat.format(timestamp) + "Z";
-		return sDate;
-	}
-
 	private static boolean writeAnnotateMedia = false;
 
 	private static int insertPos = 24;
@@ -112,6 +110,11 @@ public class TrackRecorder
 	static Coordinate mMediaCoord = null;
 	static String mTimestamp = "";
 
+	// Achtung: der Trackrecorder ist auf die Verwendung mit dem JOSM zugeschnitten
+	// http://www.getcachebox.net/wiki/index.php?title=JOSM/de
+	// Änderungen an der gpx-Struktur (besonderst an den Zeiten) können zur folge haben, dass JOSM einen
+	// Track evtl. nicht mehr mit einer Sprachaufnahme oder einem Foto synchronisieren kann.
+	// Deshalb bei Änderungen gewissenhaft testen oder den "ersthelfer" kontaktieren!!!
 	public static void AnnotateMedia(final String friendlyName, final String mediaPath, final Coordinate coordinate, final String timestamp)
 	{
 		writeAnnotateMedia = true;
@@ -179,6 +182,11 @@ public class TrackRecorder
 	private static boolean mustRecPos = false;
 	private static boolean writePos = false;
 
+	// Achtung: der Trackrecorder ist auf die Verwendung mit dem JOSM zugeschnitten
+	// http://www.getcachebox.net/wiki/index.php?title=JOSM/de
+	// Änderungen an der gpx-Struktur (besonderst an den Zeiten) können zur folge haben, dass JOSM einen
+	// Track evtl. nicht mehr mit einer Sprachaufnahme oder einem Foto synchronisieren kann.
+	// Deshalb bei Änderungen gewissenhaft testen oder den "ersthelfer" kontaktieren!!!
 	public static void recordPosition()
 	{
 
@@ -214,7 +222,12 @@ public class TrackRecorder
 				sb.append("<trkpt lat=\"" + String.valueOf(GlobalCore.LastValidPosition.Latitude) + "\" lon=\""
 						+ String.valueOf(GlobalCore.LastValidPosition.Longitude) + "\">\n");
 				sb.append("   <ele>" + String.valueOf(GlobalCore.LastValidPosition.Elevation) + "</ele>\n");
-				sb.append("   <time>" + GetDateTimeString() + "</time>\n");
+				Date now = new Date();
+				SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String sDate = datFormat.format(now);
+				datFormat = new SimpleDateFormat("HH:mm:ss");
+				sDate += "T" + datFormat.format(now) + "Z";
+				sb.append("   <time>" + sDate + "</time>\n");
 				sb.append("   <course>" + String.valueOf(GlobalCore.Locator.getHeading()) + "</course>\n");
 				sb.append("   <speed>" + String.valueOf(GlobalCore.Locator.SpeedOverGround()) + "</speed>\n");
 				sb.append("</trkpt>\n");

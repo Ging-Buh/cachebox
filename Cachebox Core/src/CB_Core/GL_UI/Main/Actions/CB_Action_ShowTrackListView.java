@@ -505,7 +505,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						if (canceld) return;
 						if (Motoway) routepref = "Fastest";
 						if (CycleWay) routepref = "Bicycle";
-						if (FootWay) routepref = "Pedestrain";
+						if (FootWay) routepref = "Pedestrian";
 
 						String Url = Config.settings.NavigationProvider.getValue();
 						// String Url = "http://openrouteservice.org/php/OpenLSRS_DetermineRoute.php";
