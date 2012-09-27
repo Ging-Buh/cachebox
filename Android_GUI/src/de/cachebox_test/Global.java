@@ -3,6 +3,7 @@ package de.cachebox_test;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.TimeZone;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
@@ -373,11 +374,13 @@ public class Global
 
 	public static String GetTrackDateTimeString()
 	{
-		Date now = new Date();
+		Date timestamp = new Date();
 		SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
-		String sDate = datFormat.format(now);
+		datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		String sDate = datFormat.format(timestamp);
 		datFormat = new SimpleDateFormat("HH:mm:ss");
-		sDate += "T" + datFormat.format(now) + "Z";
+		datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		sDate += "T" + datFormat.format(timestamp) + "Z";
 		return sDate;
 	}
 
