@@ -315,6 +315,27 @@ public class platformConector
 	{
 		if (setScreenLockTimeListner != null) setScreenLockTimeListner.setScreenLockTime(value);
 	}
+
+	// ----------------------------------------
+
+	// ------ setKeybordFocus ------
+
+	public interface IsetKeybordFocus
+	{
+		public void setKeybordFocus(boolean value);
+	}
+
+	static IsetKeybordFocus setKeybordFocusListner;
+
+	public static void setsetKeybordFocusListner(IsetKeybordFocus listner)
+	{
+		setKeybordFocusListner = listner;
+	}
+
+	public static void callsetKeybordFocust(boolean value)
+	{
+		if (setKeybordFocusListner != null) setKeybordFocusListner.setKeybordFocus(value);
+	}
 	// ----------------------------------------
 
 }

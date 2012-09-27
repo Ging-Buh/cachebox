@@ -1366,8 +1366,10 @@ public class GL implements ApplicationListener
 	public void setKeyboardFocus(EditWrapedTextField view)
 	{
 		keyboardFocus = view;
-
 		hideMarker();
+
+		platformConector.callsetKeybordFocust(view != null);
+
 	}
 
 	public EditWrapedTextField getKeyboardFocus()

@@ -49,12 +49,13 @@
 		</activity>
 		<activity android:name=".Views.Forms.ScreenLock"
 			android:theme="@style/Theme.Transparent" android:screenOrientation="behind"></activity>
-		<activity android:name=".Views.Forms.GcApiLogin" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent"></activity>
+		<activity android:theme="@style/Theme.Transparent" android:name=".Views.Forms.keyBooardActivity" android:screenOrientation="behind"></activity><activity android:name=".Views.Forms.GcApiLogin" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent"></activity>
 		<activity android:name=".Views.Forms.ApiPQDialog" android:theme="@style/Theme_day_transparent" android:screenOrientation="behind"></activity>
 		<activity android:name=".Views.Forms.ApiSearchPosDialog" android:theme="@style/Theme_day_transparent" android:screenOrientation="behind"></activity>
 		<activity android:name=".Views.AdvancedSettingsForms.SettingsScrollView" android:screenOrientation="behind" android:theme="@style/Theme.Transparent"></activity>
 		<activity android:name=".Views.Forms.DeleteDialog" android:theme="@style/Theme_day_transparent" android:screenOrientation="behind"></activity><activity android:theme="@style/Theme_day_transparent" android:name=".Views.Forms.ParkingDialog" android:screenOrientation="behind"></activity>
 		<service android:name="NotifyService"></service>
+		
  
 	</application>
 </manifest>

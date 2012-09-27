@@ -42,7 +42,8 @@ public class TestView extends CB_View_Base
 
 		setBackground(SpriteCache.ListBack);
 
-		CB_RectF TextFieldRec = new CB_RectF(0, 150, UiSizes.getButtonWidth() * 6, UiSizes.getButtonHeight() * 3);
+		CB_RectF TextFieldRec = new CB_RectF(0, this.height - (UiSizes.getButtonHeight() * 3), UiSizes.getButtonWidth() * 6,
+				UiSizes.getButtonHeight() * 3);
 
 		wrappedTextField = new CB_Core.GL_UI.Controls.EditWrapedTextField(this, TextFieldRec, EditWrapedTextField.getDefaultStyle(), "",
 				EditWrapedTextField.TextFieldType.MultiLineWraped);
@@ -53,14 +54,15 @@ public class TestView extends CB_View_Base
 
 		// ####################################################
 
-		CB_RectF TextFieldRec2 = new CB_RectF(0, wrappedTextField.getMaxY() + 25, UiSizes.getButtonWidth() * 6, UiSizes.getButtonHeight());
-
-		// CB_RectF TextFieldRec2 = new CB_RectF(0, this.height - (UiSizes.getButtonHeight() * 1.1f), UiSizes.getButtonWidth() * 7,
-		// UiSizes.getButtonHeight() * 1.1f);
-
-		textField = new EditWrapedTextField(this, TextFieldRec2, EditWrapedTextField.getDefaultStyle(), "Test",
-				EditWrapedTextField.TextFieldType.SingleLine);
-		this.addChild(textField);
+		// CB_RectF TextFieldRec2 = new CB_RectF(0, wrappedTextField.getMaxY() + 25, UiSizes.getButtonWidth() * 6,
+		// UiSizes.getButtonHeight());
+		//
+		// // CB_RectF TextFieldRec2 = new CB_RectF(0, this.height - (UiSizes.getButtonHeight() * 1.1f), UiSizes.getButtonWidth() * 7,
+		// // UiSizes.getButtonHeight() * 1.1f);
+		//
+		// textField = new EditWrapedTextField(this, TextFieldRec2, EditWrapedTextField.getDefaultStyle(), "Test",
+		// EditWrapedTextField.TextFieldType.SingleLine);
+		// this.addChild(textField);
 
 		// ####################################################
 		// CB_RectF GradiantRec = new CB_RectF(10, 40, this.width - 20, UiSizes.getButtonHeight() * 1.5f);
@@ -82,8 +84,8 @@ public class TestView extends CB_View_Base
 		// ####################################################
 
 		// Setting Button
-		Button btnSetting = new Button(this.width - Dialog.margin - (UiSizes.getButtonWidthWide() * 2), this.height - Dialog.margin
-				- UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide() * 2, UiSizes.getButtonHeight(), "");
+		Button btnSetting = new Button(this.width - Dialog.margin - (UiSizes.getButtonWidthWide() * 2), wrappedTextField.getY()
+				- Dialog.margin - UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide() * 2, UiSizes.getButtonHeight(), "");
 
 		btnSetting.setText("Create Route");
 		btnSetting.setOnClickListener(new OnClickListener()

@@ -74,7 +74,17 @@ public class FieldNoteViewItem extends ListViewItemBackground
 	{
 		SimpleDateFormat postFormater = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
 		String dateString = postFormater.format(fieldnote.timestamp);
-		float DateLength = Fonts.Mesure(dateString).width;
+		float DateLength = 100;
+
+		try
+		{
+			DateLength = Fonts.Mesure(dateString).width;
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		lblDate = new Label(this.width - RightWidth - DateLength, lblFounds.getY(), DateLength, MesuredLabelHeight, "");
 		lblDate.setFont(Fonts.getNormal());
