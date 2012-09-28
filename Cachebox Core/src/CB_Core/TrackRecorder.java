@@ -36,6 +36,7 @@ public class TrackRecorder
 		GlobalCore.AktuelleRoute.IsActualTrack = true;
 		GlobalCore.aktuelleRouteCount = 0;
 		GlobalCore.AktuelleRoute.TrackLength = 0;
+		GlobalCore.AktuelleRoute.AltitudeDifference = 0;
 
 		String directory = Config.settings.TrackFolder.getValue();
 		if (!FileIO.DirectoryExists(directory)) return;
@@ -54,7 +55,6 @@ public class TrackRecorder
 					// set real bounds or basecamp (mapsource) will not import this track
 					// writer.append("<bounds minlat=\"-90\" minlon=\"-180\" maxlat=\"90\" maxlon=\"180\"/>\n");
 					writer.append("<trk><trkseg>\n");
-
 					writer.flush();
 				}
 				catch (IOException e)
@@ -198,6 +198,7 @@ public class TrackRecorder
 		{
 			writePos = true;
 			TrackPoint NewPoint;
+			double AltDiff = 0;
 
 			// wurden seit dem letzten aufgenommenen Wegpunkt mehr als x Meter
 			// zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
@@ -218,7 +219,7 @@ public class TrackRecorder
 				sb.append("   <course>" + String.valueOf(GlobalCore.Locator.getHeading()) + "</course>\n");
 				sb.append("   <speed>" + String.valueOf(GlobalCore.Locator.SpeedOverGround()) + "</speed>\n");
 				sb.append("</trkpt>\n");
-
+				AltDiff = Math.abs(LastRecordedPosition.Elevation - GlobalCore.LastValidPosition.Elevation);
 				RandomAccessFile rand;
 				try
 				{
@@ -263,6 +264,7 @@ public class TrackRecorder
 				RouteOverlay.RoutesChanged();
 				LastRecordedPosition = GlobalCore.LastValidPosition;
 				GlobalCore.AktuelleRoute.TrackLength += cachedDistance;
+				GlobalCore.AktuelleRoute.AltitudeDifference += AltDiff;
 				writePos = false;
 
 				if (mustWriteMedia)

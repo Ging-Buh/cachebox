@@ -298,12 +298,10 @@ public class RouteOverlay
 								Coordinate.distanceBetween(FromPosition.Latitude, FromPosition.Longitude, lastAcceptedCoordinate.Latitude,
 										lastAcceptedCoordinate.Longitude, dist);
 								Distance += dist[0];
+								AltitudeDifference += Math.abs(FromPosition.Elevation - lastAcceptedCoordinate.Elevation);
 								FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
 								FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
-								AltitudeDifference += Math.abs(FromPosition.Elevation - lastAcceptedCoordinate.Elevation);
-
-								// Höhendifferenzen nur in 10m Schritten
-								if (AltitudeDifference > 10) FromPosition.Elevation = lastAcceptedCoordinate.Elevation;
+								FromPosition.Elevation = lastAcceptedCoordinate.Elevation;
 							}
 						}
 					}
