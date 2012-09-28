@@ -33,6 +33,10 @@ public class keyBoardActivity extends Activity implements OnTouchListener
 	private static hiddenTextField mTextField;
 	private static RelativeLayout layout;
 	public static boolean isInitial = false;
+	private String beforeS;
+	private int beforeStart;
+	private int beforeCount;
+	private int beforeAfter;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -148,6 +152,47 @@ public class keyBoardActivity extends Activity implements OnTouchListener
 			{
 				// int BreakPoint = 1;
 				// if (BreakPoint == 1) BreakPoint++;
+				String newText = s.toString().substring(start, start + count);
+				String oldText = beforeS.substring(beforeStart, beforeStart + beforeCount);
+
+				// OldText mit newText vergleichen. Alle Zeichen, die in oldText stehen, in newText aber nicht mehr drin sind im Editor
+				// löschen
+				for (int i = beforeCount; i >= 0; i--)
+				{
+					if (newText.length() < i)
+					{
+						// 1 Zeichen aus dem Editor muß mit Sicherheit gelöscht werden!
+						char BACKSPACE = 8;
+						CB_Core.Events.platformConector.sendKey(BACKSPACE);
+						System.out.println("DEL");
+					}
+					else
+					{
+						// oldText mit newText vergleichen und zwar immer von Anfang an bis zu i
+						String tmpNew = newText.substring(0, i);
+						String tmpOld = oldText.substring(0, i);
+						if (tmpOld.equals(tmpNew))
+						{
+							// bis i ist alles gleiche -> nichts mehr muß gelöscht werden
+							// Neue Zeichen können eingefügt werden, und zwar ab dem Zeichen i in newText
+							for (int j = i; j < newText.length(); j++)
+							{
+								System.out.println("NEW: " + newText.charAt(j));
+
+								CB_Core.Events.platformConector.sendKey(newText.charAt(j));
+							}
+							// Fertig
+							break;
+						}
+						else
+						{
+							// bis i sind noch Unterschiede -> ein Zeichen löschen
+							System.out.println("DEL");
+							char BACKSPACE = 8;
+							CB_Core.Events.platformConector.sendKey(BACKSPACE);
+						}
+					}
+				}
 			}
 
 			@Override
@@ -155,6 +200,10 @@ public class keyBoardActivity extends Activity implements OnTouchListener
 			{
 				// int BreakPoint = 1;
 				// if (BreakPoint == 1) BreakPoint++;
+				beforeS = s.toString();
+				beforeStart = start;
+				beforeCount = count;
+				beforeAfter = after;
 			}
 
 			@Override
@@ -163,8 +212,8 @@ public class keyBoardActivity extends Activity implements OnTouchListener
 				isInitial = true;
 				try
 				{
-					CB_Core.Events.platformConector.sendKey(s.charAt(s.length() - 1));
-					mTextField.selectAll();
+					// CB_Core.Events.platformConector.sendKey(s.charAt(s.length() - 1));
+					// mTextField.selectAll();
 				}
 				catch (Exception e)
 				{
@@ -339,7 +388,7 @@ public class keyBoardActivity extends Activity implements OnTouchListener
 			final int proposedheight = MeasureSpec.getSize(heightMeasureSpec);
 			final int actualHeight = getHeight();
 
-			if (actualHeight > proposedheight)
+			if (actualHeight >= proposedheight)
 			{
 				// Keyboard is shown
 				wasVisible = true;
