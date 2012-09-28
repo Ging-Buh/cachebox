@@ -332,7 +332,7 @@ public class platformConector
 		setKeybordFocusListner = listner;
 	}
 
-	public static void callsetKeybordFocust(boolean value)
+	public static void callsetKeybordFocus(boolean value)
 	{
 		if (setKeybordFocusListner != null) setKeybordFocusListner.setKeybordFocus(value);
 	}

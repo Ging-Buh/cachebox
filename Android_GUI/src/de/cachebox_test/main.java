@@ -122,6 +122,7 @@ import android.text.ClipboardManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -753,84 +754,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 	}
 
-	private long lastKeyEventTime = 0;
-
-	// @Override
-	// public boolean dispatchKeyEvent(KeyEvent event)
-	// {
-	//
-	// return super.dispatchKeyEvent(event);
-	//
-	// // handle only umlaute
-	//
-	// // if (event.getAction() != KeyEvent.ACTION_DOWN)
-	// // {
-	// // // send KeyCode to OpenGL-UI if umlaut
-	// // if (sonderzeichen == null)
-	// // {
-	// // sonderzeichen = new ArrayList<Character>();
-	// // sonderzeichen.add(("ä").charAt(0));
-	// // sonderzeichen.add(("Ä").charAt(0));
-	// // sonderzeichen.add(("ü").charAt(0));
-	// // sonderzeichen.add(("Ü").charAt(0));
-	// // sonderzeichen.add(("ö").charAt(0));
-	// // sonderzeichen.add(("Ö").charAt(0));
-	// //
-	// // }
-	// // Character chr;
-	// //
-	// // if (event.getCharacters() != null && event.getCharacters().length() > 0)
-	// // {
-	// // chr = (char) event.getCharacters().charAt(0);
-	// // }
-	// // else
-	// // {
-	// // chr = (char) event.getUnicodeChar();
-	// // }
-	// //
-	// // if (sonderzeichen.contains(chr))
-	// // {
-	// // if (lastKeyEventTime == event.getEventTime()) return true;
-	// // lastKeyEventTime = event.getEventTime();
-	// //
-	// // boolean handeld = CB_Core.Events.platformConector.sendKeyDown(event.getKeyCode());
-	// // boolean handeld2 = CB_Core.Events.platformConector.sendKey(chr);
-	// //
-	// // if (handeld && handeld2) return true;
-	// // }
-	// //
-	// // }
-	//
-	// }
-	//
-	// @Override
-	// public boolean onKeyUp(int keyCode, KeyEvent event)
-	// {
-	// return CB_Core.Events.platformConector.sendKeyUp(keyCode);
-	// }
-	//
-	// @Override
-	// public boolean onKeyDown(int keyCode, KeyEvent event)
-	// {
-	//
-	// if (keyCode == KeyEvent.KEYCODE_BACK)
-	// {
-	// if (!GL.that.keyBackCliced()) TabMainView.actionClose.Execute();
-	//
-	// return true;
-	// }
-	//
-	// // send KeyCode to OpenGL-UI
-	// Character chr = (char) event.getUnicodeChar();
-	// if (keyCode == Keys.BACKSPACE) chr = BACKSPACE;
-	//
-	// boolean handeld = CB_Core.Events.platformConector.sendKeyDown(event.getKeyCode());
-	// boolean handeld2 = CB_Core.Events.platformConector.sendKey(chr);
-	//
-	// if (handeld && handeld2) return true;
-	//
-	// return false;
-	// }
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event)
+	{
+		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
+		{
+			if (!GL.that.keyBackCliced()) TabMainView.actionClose.Execute();
+			return true;
+		}
+		return super.dispatchKeyEvent(event);
+	}
 
 	private ArrayList<Character> sonderzeichen;
 

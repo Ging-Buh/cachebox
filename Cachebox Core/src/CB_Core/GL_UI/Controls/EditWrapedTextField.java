@@ -40,6 +40,8 @@ public class EditWrapedTextField extends EditTextFieldBase
 	protected final float x = 0;
 	protected final float y = 0;
 
+	protected boolean dontShowKeyBoard = false;
+
 	protected TextFieldStyle style;
 	protected String text, messageText;
 	protected ArrayList<DisplayText> displayText;
@@ -1925,4 +1927,18 @@ public class EditWrapedTextField extends EditTextFieldBase
 		passwordMode = true;
 	}
 
+	public void dontShowSoftKeyBoardOnFocus()
+	{
+		dontShowSoftKeyBoardOnFocus(true);
+	}
+
+	public void dontShowSoftKeyBoardOnFocus(boolean value)
+	{
+		dontShowKeyBoard = value;
+	}
+
+	public boolean dontShowKeyBoard()
+	{
+		return dontShowKeyBoard;
+	}
 }

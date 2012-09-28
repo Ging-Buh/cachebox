@@ -87,8 +87,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private Thread queueProcessor = null;
 	private boolean alignToCompass = false;
 	private boolean CarMode = false;
-	private boolean autoResortFromCarMode = false;
-	// private boolean centerGps = false;
+
 	private float mapHeading = 0;
 	private float arrowHeading = 0;
 	private MapViewCacheList mapCacheList;
@@ -316,20 +315,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 					// Car mode
 					CarMode = true;
-					if (!GlobalCore.autoResort)
-					{
-						GlobalCore.autoResort = true;
-						Config.settings.AutoResort.setValue(GlobalCore.autoResort);
-						if (GlobalCore.autoResort)
-						{
-							synchronized (Database.Data.Query)
-							{
-								Database.Data.Query.Resort();
-							}
-						}
-						autoResortFromCarMode = true;
-					}
-
 					setNewSettings(INITIAL_THEME);
 
 				}
@@ -358,13 +343,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				{
 					if (!wasCarMode) return; // brauchen wir nicht noch einmal machen
 					CarMode = false;
-
-					if (autoResortFromCarMode)
-					{
-						autoResortFromCarMode = false;
-						GlobalCore.autoResort = false;
-						Config.settings.AutoResort.setValue(GlobalCore.autoResort);
-					}
 
 					setNewSettings(INITIAL_THEME);
 				}

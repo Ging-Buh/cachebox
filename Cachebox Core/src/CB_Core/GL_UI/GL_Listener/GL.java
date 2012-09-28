@@ -1388,8 +1388,14 @@ public class GL implements ApplicationListener
 		keyboardFocus = view;
 		hideMarker();
 
-		platformConector.callsetKeybordFocust(view != null);
-
+		if (keyboardFocus != null)
+		{
+			if (!keyboardFocus.dontShowKeyBoard()) platformConector.callsetKeybordFocus(true);
+		}
+		else
+		{
+			platformConector.callsetKeybordFocus(false);
+		}
 	}
 
 	public EditWrapedTextField getKeyboardFocus()

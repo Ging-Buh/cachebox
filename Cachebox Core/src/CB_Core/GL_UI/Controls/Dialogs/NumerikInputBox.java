@@ -54,6 +54,7 @@ public class NumerikInputBox extends CB_View_Base
 		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
 
 		editText = new EditWrapedTextField(msgBox, textFieldRec, "MsgBoxLabel");
+		editText.dontShowSoftKeyBoardOnFocus();
 		editText.setZeroPos();
 		editText.setY(margin * 3);
 		editText.setText(String.valueOf(initialValue));
@@ -117,6 +118,7 @@ public class NumerikInputBox extends CB_View_Base
 		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
 
 		editText = new EditWrapedTextField(msgBox, textFieldRec, "MsgBoxLabel");
+		editText.dontShowSoftKeyBoardOnFocus();
 		editText.setZeroPos();
 		editText.setY(margin * 3);
 		editText.setText(String.valueOf(initialValue));
@@ -181,6 +183,7 @@ public class NumerikInputBox extends CB_View_Base
 		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
 
 		editText = new EditWrapedTextField(msgBox, textFieldRec, "MsgBoxLabel");
+		editText.dontShowSoftKeyBoardOnFocus();
 		editText.setZeroPos();
 		editText.setY(margin * 3);
 
@@ -285,7 +288,7 @@ public class NumerikInputBox extends CB_View_Base
 						}
 					}
 				}
-				else if (mType == type.doubleType)
+				else if (mType == type.intType)
 				{
 					if (mReturnListner != null)
 					{
