@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent" android:id="@+id/layoutTextField"
-	android:layout_height="match_parent" android:background="#00000000"
-	android:gravity="bottom" xmlns:android="http://schemas.android.com/apk/res/android">
-	
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" 
+     android:id="@+id/layoutTextField">
+
+        <LinearLayout
+            android:id="@+id/layoutTop"
+            android:layout_width="match_parent"
+            android:layout_height="65dip"
+            android:layout_alignParentTop="true"
+            android:orientation="vertical" >
+
+           
+        </LinearLayout>
+    
+    
+         <LinearLayout
+            android:id="@+id/layoutBottom"
+            android:layout_width="match_parent"
+            android:layout_height="65dip"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical" >
+
+           
+        </LinearLayout>
+    
+        
+      
+     
+   
+
 </RelativeLayout>

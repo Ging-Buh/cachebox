@@ -174,6 +174,7 @@ import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.ParkingDialog;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 import de.cachebox_test.Views.Forms.ScreenLock;
+import de.cachebox_test.Views.Forms.keyBoardActivity;
 
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
 		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent
@@ -475,6 +476,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
+		Config.settings.DebugMode.setValue(false);
 		Config.AcceptChanges();
 
 		initialLocationManager();
@@ -3285,8 +3287,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				// Iniitial HiddenTextField
 				if (value)
 				{
-					new virtualHiddenKeybord(mainActivity);
-					virtualHiddenKeybord.setEditTextFocus(value);
+					if (keyBoardActivity.isInitial)
+					{
+
+					}
+					else
+					{
+						dontStop = true;
+						Intent intent = new Intent().setClass(mainActivity, keyBoardActivity.class);
+						mainActivity.startActivityForResult(intent, 9999999);
+					}
 				}
 			}
 		});

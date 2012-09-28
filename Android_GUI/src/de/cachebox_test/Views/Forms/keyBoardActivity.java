@@ -2,40 +2,46 @@ package de.cachebox_test.Views.Forms;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
-import de.cachebox_test.Custom_Controls.hiddenTextField;
 
-public class keyBooardActivity extends Activity implements OnTouchListener
+public class keyBoardActivity extends Activity implements OnTouchListener
 {
 
-	private static keyBooardActivity that;
+	public static keyBoardActivity that;
 	private static hiddenTextField mTextField;
 	private static RelativeLayout layout;
-	private static boolean isInitial = false;
+	public static boolean isInitial = false;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
 
 		super.onCreate(savedInstanceState);
 		that = this;
-		setContentView(R.layout.key_activity);
+		KeyBoardActivityLayout searchLayout = new KeyBoardActivityLayout(this, null);
+
+		setContentView(searchLayout);
 
 		mTextField = new hiddenTextField(this);
 
@@ -46,21 +52,7 @@ public class keyBooardActivity extends Activity implements OnTouchListener
 			@Override
 			public void onFocusChange(View v, boolean hasFocus)
 			{
-				// if (v == mTextField)
-				// {
-				// if (hasFocus)
-				// {
-				// // open keyboard
-				// ((InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mTextField,
-				// InputMethodManager.SHOW_FORCED);
-				//
-				// }
-				// else
-				// { // close keyboard
-				// ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
-				// mTextField.getWindowToken(), 0);
-				// }
-				// }
+				if (!mTextField.hasFocus()) mTextField.requestFocus();
 			}
 		});
 
@@ -195,22 +187,59 @@ public class keyBooardActivity extends Activity implements OnTouchListener
 
 		layout.setOnTouchListener(this);
 
+		showSoftKeyBord();
+
+	}
+
+	boolean wasVisible = false;
+
+	@Override
+	protected void onPause()
+	{
+		// wenn die Activity ein on Pause erhällt, wird sie Kommplett geschlossen
+		if (isFinishing())
+		{
+			isInitial = false;
+			wasVisible = false;
+		}
+		else
+		{
+			Log.d("CACHEBOX_INPUT", "onPause => force finish");
+			this.finish();
+		}
+		super.onPause();
+	}
+
+	@Override
+	protected void onStart()
+	{
+		isInitial = true;
+		super.onStart();
+	}
+
+	public void showSoftKeyBord()
+	{
 		mTextField.setCursorVisible(true);
 		mTextField.setFocusable(true);
 		mTextField.setFocusableInTouchMode(true);
+
 		mTextField.requestFocus();
 
-		mTextField.postDelayed(new Runnable()
+	}
+
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event)
+	{
+		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
 		{
-			@Override
-			public void run()
+			if (event.getAction() == KeyEvent.ACTION_UP)
 			{
-				InputMethodManager keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-				keyboard.showSoftInput(mTextField, 0);
-
+				// Close the Activity if Back-Key Pressed, like hide soft-KeyBoard
+				this.finish();
 			}
-		}, 200);
-
+			return true;
+		}
+		return super.dispatchKeyEvent(event);
 	}
 
 	protected Object getNumericValueFromKeyCode(int keyCode)
@@ -229,17 +258,6 @@ public class keyBooardActivity extends Activity implements OnTouchListener
 		return null;
 	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event)
-	{
-		Log.d("CACHEBOX", "on KeyActivity Key event code " + keyCode);
-		if (keyCode == KeyEvent.KEYCODE_BACK)
-		{
-			return true;
-		}
-		return false;
-	}
-
 	public static boolean isKeyBoardVisible()
 	{
 		if (!isInitial) return true;
@@ -250,6 +268,7 @@ public class keyBooardActivity extends Activity implements OnTouchListener
 
 	public static void close()
 	{
+		Log.d("CACHEBOX_INPUT", "close()");
 		if (!isInitial) return;
 		isInitial = false;
 		that.finish();
@@ -258,11 +277,83 @@ public class keyBooardActivity extends Activity implements OnTouchListener
 	@Override
 	public boolean onTouch(View v, MotionEvent event)
 	{
-		int mOffset[] = new int[2];
-		v.getLocationOnScreen(mOffset);
-
-		event.offsetLocation(mOffset[0], mOffset[1]);
+		// int mOffset[] = new int[2];
+		// v.getLocationOnScreen(mOffset);
+		//
+		// mOffset[1] *= -1;
+		//
+		// event.offsetLocation(mOffset[0], mOffset[1]);
 
 		return ((main) main.mainActivity).sendMotionEvent(event);
 	}
+
+	// ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+	// ###########################################################
+
+	private class hiddenTextField extends EditText
+	{
+
+		public hiddenTextField(Context context)
+		{
+			super(context);
+		}
+
+		@Override
+		protected void onDraw(Canvas canvas)
+		{
+			canvas.drawColor(Color.TRANSPARENT);
+
+			// Debug
+			// canvas.drawColor(Color.argb(50, 0, 0, 255));
+		}
+
+		@Override
+		public boolean onKeyPreIme(int keyCode, KeyEvent event)
+		{
+			if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
+			{
+				close();
+			}
+			return super.onKeyPreIme(keyCode, event);
+		}
+
+	}
+
+	public class KeyBoardActivityLayout extends LinearLayout
+	{
+
+		public KeyBoardActivityLayout(Context context, AttributeSet attributeSet)
+		{
+			super(context, attributeSet);
+			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			inflater.inflate(R.layout.key_activity, this);
+
+		}
+
+		@Override
+		protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+		{
+			Log.d("CACHEBOX_INPUT", "Handling Keyboard Window shown");
+
+			final int proposedheight = MeasureSpec.getSize(heightMeasureSpec);
+			final int actualHeight = getHeight();
+
+			if (actualHeight > proposedheight)
+			{
+				// Keyboard is shown
+				wasVisible = true;
+				Log.d("CACHEBOX_INPUT", "Keyboard is shown");
+			}
+			else
+			{
+				// Keyboard is hidden
+				Log.d("CACHEBOX_INPUT", "Keyboard is hidden");
+
+				if (wasVisible) close();
+			}
+			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		}
+	}
+
 }

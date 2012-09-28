@@ -386,15 +386,15 @@ public abstract class GL_View_Base extends CB_RectF
 				// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
 
 				// wir müssen aber eventuell den Batch beenden?
-				try
-				{
-					batch.end();
-				}
-				catch (Exception e1)
-				{
-					// war wohl schon beendet // TODO es gibt noch keine Möglichkeit zu Testen ob ein Batch läuft!
-					e1.printStackTrace();
-				}
+				// try
+				// {
+				// batch.end();
+				// }
+				// catch (Exception e1)
+				// {
+				// // war wohl schon beendet // TODO es gibt noch keine Möglichkeit zu Testen ob ein Batch läuft!
+				// e1.printStackTrace();
+				// }
 
 				break;
 			}

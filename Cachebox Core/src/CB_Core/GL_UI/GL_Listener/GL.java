@@ -172,6 +172,20 @@ public class GL implements ApplicationListener
 			removeRenderView(child);
 		}
 
+		synchronized (runOnGL_List)
+		{
+			if (runOnGL_List.size() > 0)
+			{
+				for (runOnGL run : runOnGL_List)
+				{
+					if (run != null) run.run();
+				}
+
+				runOnGL_List.clear();
+			}
+
+		}
+
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		if (Config.settings.nightMode.getValue())
@@ -231,16 +245,22 @@ public class GL implements ApplicationListener
 		if (FpsInfoPos > 60) FpsInfoPos = 0;
 		batch.end();
 
-		synchronized (runOnGL_List)
-		{
-			if (runOnGL_List.size() > 0)
-			{
-				for (runOnGL run : runOnGL_List)
-				{
-					if (run != null) run.run();
-				}
+		GL_View_Base.debug = Config.settings.DebugMode.getValue();
 
-				runOnGL_List.clear();
+		if (GL_View_Base.debug && misTouchDown)
+		{
+			Sprite point = SpriteCache.LogIcons.get(14);
+			TouchDownPointer first = touchDownPos.get(0);
+
+			if (first != null)
+			{
+				int x = first.point.x;
+				int y = this.height - first.point.y;
+				int pointSize = 20;
+
+				batch.begin();
+				batch.draw(point, x - (pointSize / 2), y - (pointSize / 2), pointSize, pointSize);
+				batch.end();
 			}
 
 		}

@@ -72,6 +72,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool DebugShowPanel;
 	public SettingBool DebugMemory;
 	public SettingBool DebugShowMsg;
+	public SettingBool DebugMode;
 	public SettingBool nightMode;
 	public SettingBool DebugShowLog;
 	public SettingBool DescriptionNoAttributes;
@@ -410,6 +411,7 @@ public class SettingsClass extends SettingsList
 	{
 		SettingCategory cat = SettingCategory.Debug;
 
+		addSetting(DebugMode = new SettingBool("DebugMode", cat, EXPERT, false, true));
 		addSetting(DebugShowPanel = new SettingBool("DebugShowPanel", cat, EXPERT, false, true));
 		addSetting(DebugMemory = new SettingBool("DebugMemory", cat, EXPERT, false, true));
 		addSetting(DebugShowMsg = new SettingBool("DebugShowMsg", cat, EXPERT, false, true));
