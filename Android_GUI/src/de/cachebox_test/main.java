@@ -2308,12 +2308,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				try
 				{
 					if (s[11].equals("")) return;
+					if (!s[6].equals("1") & !s[6].equals("2")) return; // Fix ungültig
 					double altCorrection = Double.valueOf(s[11]);
+					if (altCorrection == 0) return;
 					Logger.General("AltCorrection: " + String.valueOf(altCorrection));
 					GlobalCore.Locator.altCorrection = altCorrection;
+					Log.d("NMEA.AltCorrection", Double.toString(altCorrection));
 					// Höhenkorrektur ändert sich normalerweise nicht, einmal
 					// auslesen reicht...
-					locationManager.removeNmeaListener(this);
+					// locationManager.removeNmeaListener(this);
 				}
 				catch (Exception exc)
 				{
