@@ -21,13 +21,12 @@ public class StringInputBox extends GL_MsgBox
 
 	public static void Show(TextFieldType type, String msg, String title, String initialString, OnMsgBoxClickListener Listener)
 	{
-		mMsgBoxClickListner = Listener;
 
 		Size msgBoxSize = calcMsgBoxSize(msg, true, true, false);
 
 		StringInputBox msgBox = new StringInputBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);
-
+		msgBox.mMsgBoxClickListner = Listener;
 		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 
 		editText = new EditWrapedTextField(msgBox, textFieldRec, type, "MsgBoxLabel");
@@ -62,7 +61,7 @@ public class StringInputBox extends GL_MsgBox
 		msgBox.addChild(editText);
 		msgBox.addChild(label);
 
-		setButtonCaptions(msgBox, MessageBoxButtons.OKCancel);
+		msgBox.setButtonCaptions(MessageBoxButtons.OKCancel);
 
 		GL.that.showDialog(msgBox, true);
 

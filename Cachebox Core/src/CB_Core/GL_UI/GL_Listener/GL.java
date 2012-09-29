@@ -1483,4 +1483,21 @@ public class GL implements ApplicationListener
 		selectionMarkerRight.moveBy(dx, dy);
 	}
 
+	public boolean closeShownDialog()
+	{
+		if (DialogIsShown)
+		{
+			closeDialog(actDialog);
+			return true;
+		}
+
+		if (ActivityIsShown)
+		{
+			closeActivity();
+			return true;
+		}
+
+		return false;
+	}
+
 }

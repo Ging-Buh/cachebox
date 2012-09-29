@@ -18,9 +18,13 @@ public class CB_Action_ShowQuit extends CB_Action
 		super("quit", AID_SHOW_QUIT);
 	}
 
+	private static boolean askIsShown = false;
+
 	@Override
 	public void Execute()
 	{
+		if (askIsShown) return;
+
 		GL_MsgBox.Show(GlobalCore.Translations.Get("QuitReally"), GlobalCore.Translations.Get("Quit?"), MessageBoxButtons.OKCancel,
 				MessageBoxIcon.Stop, new OnMsgBoxClickListener()
 				{
@@ -28,6 +32,7 @@ public class CB_Action_ShowQuit extends CB_Action
 					@Override
 					public boolean onClick(int which)
 					{
+						askIsShown = false;
 						if (which == GL_MsgBox.BUTTON_POSITIVE)
 						{
 							platformConector.callQuitt();
@@ -35,6 +40,7 @@ public class CB_Action_ShowQuit extends CB_Action
 						return true;
 					}
 				});
+		askIsShown = true;
 	}
 
 	@Override

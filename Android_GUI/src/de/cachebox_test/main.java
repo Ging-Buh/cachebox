@@ -757,15 +757,17 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event)
 	{
-		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
+		if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK)
 		{
+
+			// if Dialog or Activity shown, close that first
+			if (GL.that.closeShownDialog()) return true;
+
 			if (!GL.that.keyBackCliced()) TabMainView.actionClose.Execute();
 			return true;
 		}
 		return super.dispatchKeyEvent(event);
 	}
-
-	private ArrayList<Character> sonderzeichen;
 
 	@Override
 	public void CacheListChangedEvent()
@@ -959,11 +961,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				CacheListDAO dao = new CacheListDAO();
 				nun = dao.DelArchiv();
-				FilterProperties props = GlobalCore.LastFilter;
-				String sqlWhere = props.getSqlWhere();
-				Logger.General("Main.ApplyFilter: " + sqlWhere);
-				Database.Data.Query.clear();
-				dao.ReadCacheList(Database.Data.Query, sqlWhere);
+
+				EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
+
 				String msg = GlobalCore.Translations.Get("DeletedCaches", String.valueOf(nun));
 				Toast(msg);
 				return;
@@ -972,11 +972,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				CacheListDAO dao = new CacheListDAO();
 				nun = dao.DelFound();
-				FilterProperties props = GlobalCore.LastFilter;
-				String sqlWhere = props.getSqlWhere();
-				Logger.General("Main.ApplyFilter: " + sqlWhere);
-				Database.Data.Query.clear();
-				dao.ReadCacheList(Database.Data.Query, sqlWhere);
+
+				EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
+
 				String msg = GlobalCore.Translations.Get("DeletedCaches", String.valueOf(nun));
 				Toast(msg);
 				return;
@@ -985,8 +983,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				CacheListDAO dao = new CacheListDAO();
 				nun = dao.DelFilter(GlobalCore.LastFilter.getSqlWhere());
-				GlobalCore.LastFilter = new FilterProperties(FilterProperties.presets[0]);
-				EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
+
+				// reset Filter
+				EditFilterSettings.ApplyFilter(new FilterProperties(FilterProperties.presets[0]));// all Caches
+
 				String msg = GlobalCore.Translations.Get("DeletedCaches", String.valueOf(nun));
 				Toast(msg);
 				return;

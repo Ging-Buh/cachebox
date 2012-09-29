@@ -30,20 +30,20 @@ public class HintDialog extends GL_MsgBox
 
 		Size maxTextSize = decodedSize.height > encodedSize.height ? decodedSize : encodedSize;
 
-		mMsgBoxClickListner = null;
 		GL_MsgBox msgBox = new GL_MsgBox(maxTextSize, "MsgBox");
 		msgBox.setTitle(GlobalCore.Translations.Get("hint"));
-		setButtonCaptions(msgBox, MessageBoxButtons.OKCancel);
+		msgBox.setButtonCaptions(MessageBoxButtons.OKCancel);
+		msgBox.mMsgBoxClickListner = null;
 
 		label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
 		label.setZeroPos();
 		label.setWrappedText(hintTextDecoded);
 		msgBox.addChild(label);
 
-		button3.setText(GlobalCore.Translations.Get("close"));
-		button1.setText(GlobalCore.Translations.Get("decode"));
+		msgBox.button3.setText(GlobalCore.Translations.Get("close"));
+		msgBox.button1.setText(GlobalCore.Translations.Get("decode"));
 
-		button1.setOnClickListener(new OnClickListener()
+		msgBox.button1.setOnClickListener(new OnClickListener()
 		{
 
 			@Override

@@ -293,17 +293,24 @@ public class EditFilterSettings extends ActivityBase
 			@Override
 			public void run()
 			{
-				String sqlWhere = props.getSqlWhere();
-				Logger.General("Main.ApplyFilter: " + sqlWhere);
-				Database.Data.Query.clear();
-				CacheListDAO cacheListDAO = new CacheListDAO();
-				cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
-				CachListChangedEventList.Call();
-				pd.dismis();
-				TabMainView.that.filterSetChanged();
+				try
+				{
+					String sqlWhere = props.getSqlWhere();
+					Logger.General("Main.ApplyFilter: " + sqlWhere);
+					Database.Data.Query.clear();
+					CacheListDAO cacheListDAO = new CacheListDAO();
+					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+					CachListChangedEventList.Call();
+					pd.dismis();
+					TabMainView.that.filterSetChanged();
 
-				// Notify Map
-				if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+					// Notify Map
+					if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+				}
+				catch (Exception e)
+				{
+					pd.dismis();
+				}
 			}
 
 		};

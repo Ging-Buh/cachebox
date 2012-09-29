@@ -31,16 +31,16 @@ public class GL_MsgBox extends Dialog
 
 	private ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
 
-	protected static Button button1;
-	protected static Button button2;
-	protected static Button button3;
+	// TODO make private with getter and setter *********
+	public Button button1;
+	public Button button2;
+	public Button button3;
+	public OnMsgBoxClickListener mMsgBoxClickListner;
+	public OnClickListener positiveButtonClickListener;
+	public OnClickListener neutralButtonClickListener;
+	public OnClickListener negativeButtonClickListener;
 
-	protected static OnMsgBoxClickListener mMsgBoxClickListner;
-
-	protected static OnClickListener positiveButtonClickListener;
-
-	protected static OnClickListener neutralButtonClickListener;
-	protected static OnClickListener negativeButtonClickListener;
+	// **************************************************
 
 	/**
 	 * Interface used to allow the creator of a dialog to run some code when an item on the dialog is clicked..
@@ -70,7 +70,7 @@ public class GL_MsgBox extends Dialog
 		that = this;
 	}
 
-	private static boolean ButtonClick(int button)
+	private boolean ButtonClick(int button)
 	{
 		GL.that.closeDialog(that);
 		if (mMsgBoxClickListner != null) return mMsgBoxClickListner.onClick(button);
@@ -112,9 +112,8 @@ public class GL_MsgBox extends Dialog
 
 	public static GL_MsgBox Show(String msg)
 	{
-		resetClickListner();
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, false, true, false), "MsgBox");
-		setButtonCaptions(msgBox, MessageBoxButtons.OK);
+		msgBox.setButtonCaptions(MessageBoxButtons.OK);
 		label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
 		label.setZeroPos();
 		label.setWrappedText(msg);
@@ -124,7 +123,7 @@ public class GL_MsgBox extends Dialog
 		return msgBox;
 	}
 
-	private static void resetClickListner()
+	private void resetClickListner()
 	{
 		mMsgBoxClickListner = null;
 		if (button1 != null) button1.setOnClickListener(null);
@@ -138,9 +137,7 @@ public class GL_MsgBox extends Dialog
 
 	public static GL_MsgBox Show(String msg, OnMsgBoxClickListener Listener)
 	{
-		resetClickListner();
-		mMsgBoxClickListner = Listener;
-		return Show(msg);
+		return Show(msg, "", Listener);
 	}
 
 	public static GL_MsgBox Show(String msg, String title, OnMsgBoxClickListener Listener)
@@ -150,27 +147,26 @@ public class GL_MsgBox extends Dialog
 
 	public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, OnMsgBoxClickListener Listener)
 	{
-		resetClickListner();
-		mMsgBoxClickListner = Listener;
+
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), false), "MsgBox");
+		msgBox.mMsgBoxClickListner = Listener;
 		msgBox.setTitle(title);
 		label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
 		label.setZeroPos();
 		label.setWrappedText(msg);
 		msgBox.addChild(label);
-		setButtonCaptions(msgBox, buttons);
+		msgBox.setButtonCaptions(buttons);
 		GL.that.showDialog(msgBox);
 		return msgBox;
 	}
 
 	public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener)
 	{
-		resetClickListner();
-		mMsgBoxClickListner = Listener;
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true), "MsgBox");
+		msgBox.mMsgBoxClickListner = Listener;
 		msgBox.setTitle(title);
 
-		setButtonCaptions(msgBox, buttons);
+		msgBox.setButtonCaptions(buttons);
 
 		SizeF contentSize = msgBox.getContentSize();
 
@@ -198,49 +194,49 @@ public class GL_MsgBox extends Dialog
 
 	}
 
-	protected static void setButtonCaptions(GL_MsgBox msgBox, MessageBoxButtons buttons)
+	public void setButtonCaptions(MessageBoxButtons buttons)
 	{
 		int button = buttons.ordinal();
 		if (button == 0)
 		{
-			createButtons(msgBox, 3);
+			createButtons(this, 3);
 			button1.setText(GlobalCore.Translations.Get("abort"));
 			button2.setText(GlobalCore.Translations.Get("retry"));
 			button3.setText(GlobalCore.Translations.Get("ignore"));
 		}
 		else if (button == 1)
 		{
-			createButtons(msgBox, 1);
+			createButtons(this, 1);
 			button1.setText(GlobalCore.Translations.Get("ok"));
 		}
 		else if (button == 2)
 		{
-			createButtons(msgBox, 2);
+			createButtons(this, 2);
 			button1.setText(GlobalCore.Translations.Get("ok"));
 			button3.setText(GlobalCore.Translations.Get("cancel"));
 		}
 		else if (button == 3)
 		{
-			createButtons(msgBox, 2);
+			createButtons(this, 2);
 			button1.setText(GlobalCore.Translations.Get("retry"));
 			button3.setText(GlobalCore.Translations.Get("cancel"));
 		}
 		else if (button == 4)
 		{
-			createButtons(msgBox, 2);
+			createButtons(this, 2);
 			button1.setText(GlobalCore.Translations.Get("yes"));
 			button3.setText(GlobalCore.Translations.Get("no"));
 		}
 		else if (button == 5)
 		{
-			createButtons(msgBox, 3);
+			createButtons(this, 3);
 			button1.setText(GlobalCore.Translations.Get("yes"));
 			button2.setText(GlobalCore.Translations.Get("no"));
 			button3.setText(GlobalCore.Translations.Get("cancel"));
 		}
 		else if (button == 6)
 		{
-			createButtons(msgBox, 3);
+			createButtons(this, 3);
 			button1.setVisibility(CB_View_Base.INVISIBLE);
 			button2.setVisibility(CB_View_Base.INVISIBLE);
 			button3.setText(GlobalCore.Translations.Get("cancel"));
@@ -248,7 +244,7 @@ public class GL_MsgBox extends Dialog
 		else
 		{
 			// no Buttons
-			msgBox.setFooterHeight(calcFooterHeight(false));
+			this.setFooterHeight(calcFooterHeight(false));
 		}
 	}
 
@@ -301,7 +297,7 @@ public class GL_MsgBox extends Dialog
 		return icon;
 	}
 
-	protected static void createButtons(GL_MsgBox msgBox, int anzahl)
+	protected void createButtons(GL_MsgBox msgBox, int anzahl)
 	{
 		setButtonListner();
 
@@ -348,7 +344,7 @@ public class GL_MsgBox extends Dialog
 		msgBox.setFooterHeight(calcFooterHeight(true));
 	}
 
-	private static void setButtonListner()
+	private void setButtonListner()
 	{
 		positiveButtonClickListener = new OnClickListener()
 		{
