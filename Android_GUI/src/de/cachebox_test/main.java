@@ -3229,9 +3229,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					}
 					else
 					{
-						dontStop = true;
-						Intent intent = new Intent().setClass(mainActivity, keyBoardActivity.class);
-						mainActivity.startActivityForResult(intent, 9999999);
+						mainActivity.runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								dontStop = true;
+								Intent intent = new Intent().setClass(mainActivity, keyBoardActivity.class);
+								mainActivity.startActivityForResult(intent, 9999999);
+							}
+						});
 					}
 				}
 			}
