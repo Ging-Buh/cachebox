@@ -37,12 +37,14 @@ public class keyBoardActivity extends Activity implements OnTouchListener
 	private int beforeStart;
 	private int beforeCount;
 	private int beforeAfter;
+	public static long lastShown = -1;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
 
 		super.onCreate(savedInstanceState);
 		that = this;
+		lastShown = System.currentTimeMillis();
 		KeyBoardActivityLayout searchLayout = new KeyBoardActivityLayout(this, null);
 
 		setContentView(searchLayout);
@@ -250,6 +252,7 @@ public class keyBoardActivity extends Activity implements OnTouchListener
 		{
 			isInitial = false;
 			wasVisible = false;
+			lastShown = System.currentTimeMillis();
 		}
 		else
 		{
@@ -281,9 +284,10 @@ public class keyBoardActivity extends Activity implements OnTouchListener
 	{
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
 		{
-			if (event.getAction() == KeyEvent.ACTION_UP)
+			if (event.getAction() == KeyEvent.ACTION_DOWN)
 			{
 				// Close the Activity if Back-Key Pressed, like hide soft-KeyBoard
+				lastShown = System.currentTimeMillis();
 				this.finish();
 			}
 			return true;

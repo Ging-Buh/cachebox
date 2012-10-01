@@ -759,6 +759,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK)
 		{
 
+			if (keyBoardActivity.lastShown + 300 > System.currentTimeMillis()) return true;
+
 			// if Dialog or Activity shown, close that first
 			if (GL.that.closeShownDialog()) return true;
 
