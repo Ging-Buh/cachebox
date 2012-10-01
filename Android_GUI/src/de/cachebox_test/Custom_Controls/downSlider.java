@@ -55,7 +55,6 @@ import de.cachebox_test.Components.CacheDraw;
 import de.cachebox_test.Components.CacheDraw.DrawStyle;
 import de.cachebox_test.Locator.GPS;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Views.Forms.ScreenLock;
 
 public final class downSlider extends View implements SelectedCacheEvent, GpsStateChangeEvent
 {
@@ -221,7 +220,6 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	@Override
 	protected void onDraw(Canvas canvas)
 	{
-		if (ScreenLock.SliderMoves) return;
 		if (QuickButtonList.that == null) return; // noch nicht initialisiert
 
 		/**

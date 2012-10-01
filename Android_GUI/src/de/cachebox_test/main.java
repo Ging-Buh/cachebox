@@ -94,6 +94,8 @@ import android.content.pm.ServiceInfo;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.database.Cursor;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -118,6 +120,9 @@ import android.os.PowerManager;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.ClipboardManager;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -129,12 +134,18 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
+import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewParent;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -173,8 +184,6 @@ import de.cachebox_test.Views.Forms.GcApiLogin;
 import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.ParkingDialog;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
-import de.cachebox_test.Views.Forms.ScreenLock;
-import de.cachebox_test.Views.Forms.keyBoardActivity;
 
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
 		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent
@@ -187,6 +196,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	// private static final boolean useGL_Tab = true;
 	static private final char BACKSPACE = 8;
+
+	private static hiddenTextField mTextField;
 
 	/*
 	 * private static member
@@ -582,8 +593,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		fillPluginList();
 		bindPluginServices();
 
-		// descriptionView = new DescriptionView(this, inflater);
-
+		// initial hidden EditText
+		initialHiddenEditText();
 	}
 
 	boolean flag = false;
@@ -758,8 +769,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK)
 		{
-
-			if (keyBoardActivity.lastShown + 300 > System.currentTimeMillis()) return true;
 
 			// if Dialog or Activity shown, close that first
 			if (GL.that.closeShownDialog()) return true;
@@ -978,16 +987,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		Logger.LogCat("Main=> onPause");
 
-		if (!dontStop)
-		{
-			stopped = true;
-		}
-		else
-		{
-			stopped = false;
-			graphics.isShown = true;
-		}
-
 		if (input == null)
 		{
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
@@ -1037,12 +1036,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onResume()
 	{
-
-		if (dontStop)
-		{
-			super.onResume();
-			return;
-		}
 
 		if (stopped)
 		{
@@ -1292,11 +1285,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if ((Config.settings.ScreenLock.getValue() / 1000 < 10)) return;
 		}
 
-		dontStop = true;
-		ScreenLock.isShown = true;
-
-		final Intent mainIntent = new Intent().setClass(this, ScreenLock.class);
-		this.startActivityForResult(mainIntent, Global.REQUEST_CODE_SCREENLOCK);
+		// TODO move/create ScreenLock on GDX
 	}
 
 	/*
@@ -2279,7 +2268,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					Log.d("NMEA.AltCorrection", Double.toString(altCorrection));
 					// Höhenkorrektur ändert sich normalerweise nicht, einmal
 					// auslesen reicht...
-					// locationManager.removeNmeaListener(this);
+					locationManager.removeNmeaListener(this);
 				}
 				catch (Exception exc)
 				{
@@ -3186,23 +3175,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				// Iniitial HiddenTextField
 				if (value)
 				{
-					if (keyBoardActivity.isInitial)
-					{
+					mTextField.requestFocus();
+					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mTextField,
+							InputMethodManager.SHOW_FORCED);
+				}
+				else
+				{
+					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
+							mTextField.getWindowToken(), 0);
 
-					}
-					else
-					{
-						mainActivity.runOnUiThread(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								dontStop = true;
-								Intent intent = new Intent().setClass(mainActivity, keyBoardActivity.class);
-								mainActivity.startActivityForResult(intent, Global.REQUEST_CODE_KEYBOARDACTIVITY);
-							}
-						});
-					}
 				}
 			}
 		});
@@ -3344,6 +3325,216 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		Intent gcApiLogin = new Intent().setClass(mainActivity, GcApiLogin.class);
 		mainActivity.startActivityForResult(gcApiLogin, Global.REQUEST_CODE_GET_API_KEY);
+	}
+
+	// ###########################################################
+
+	private class hiddenTextField extends EditText
+	{
+		public hiddenTextField(Context context)
+		{
+			super(context);
+		}
+
+		@Override
+		protected void onDraw(Canvas canvas)
+		{
+			canvas.drawColor(Color.TRANSPARENT);
+
+			// Debug
+			// canvas.drawColor(Color.argb(50, 0, 0, 255));
+		}
+	}
+
+	private String beforeS;
+	private int beforeStart;
+	private int beforeCount;
+	private int beforeAfter;
+
+	private void initialHiddenEditText()
+	{
+		mTextField = new hiddenTextField(this);
+
+		mTextField.setRawInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+
+		mTextField.setOnFocusChangeListener(new OnFocusChangeListener()
+		{
+			@Override
+			public void onFocusChange(View v, boolean hasFocus)
+			{
+				if (!mTextField.hasFocus()) mTextField.requestFocus();
+			}
+		});
+
+		mTextField.setOnKeyListener(new OnKeyListener()
+		{
+
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event)
+			{
+				// nach GL umleiten
+				boolean handeld = false;
+
+				if (event.getAction() == KeyEvent.ACTION_UP && getNumericValueFromKeyCode(keyCode) != null)
+				{
+					return CB_Core.Events.platformConector.sendKey((Character) getNumericValueFromKeyCode(keyCode));
+				}
+
+				if (event.getAction() == KeyEvent.ACTION_DOWN)
+				{
+					if (keyCode == 66)// Enter
+					{
+
+						return true;
+					}
+					else if (keyCode == 67)// Enter
+					{
+
+						return true;
+					}
+					else
+					{
+						handeld = CB_Core.Events.platformConector.sendKeyDown(keyCode);
+					}
+
+				}
+				else if (event.getAction() == KeyEvent.ACTION_UP)
+				{
+					if (keyCode == 66)// Enter
+					{
+						handeld = CB_Core.Events.platformConector.sendKey('\n');
+						return handeld;
+					}
+					else if (keyCode == 67)// Enter
+					{
+						// Back
+						char BACKSPACE = 8;
+						return CB_Core.Events.platformConector.sendKey(BACKSPACE);
+					}
+					else
+					{
+						handeld = CB_Core.Events.platformConector.sendKeyUp(keyCode);
+					}
+				}
+
+				return handeld;
+			}
+
+		});
+
+		mTextField.setOnEditorActionListener(new OnEditorActionListener()
+		{
+
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+			{
+				try
+				{
+					boolean handeld = CB_Core.Events.platformConector.sendKeyDown(event.getKeyCode());
+					// boolean handeld2 = CB_Core.Events.platformConector.sendKey(chr);
+					return handeld;
+				}
+				catch (Exception e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				}
+
+			}
+		});
+
+		mTextField.addTextChangedListener(new TextWatcher()
+		{
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count)
+			{
+				// int BreakPoint = 1;
+				// if (BreakPoint == 1) BreakPoint++;
+				String newText = s.toString().substring(start, start + count);
+				String oldText = beforeS.substring(beforeStart, beforeStart + beforeCount);
+
+				// OldText mit newText vergleichen. Alle Zeichen, die in oldText stehen, in newText aber nicht mehr drin sind im Editor
+				// löschen
+				for (int i = beforeCount; i >= 0; i--)
+				{
+					if (newText.length() < i)
+					{
+						// 1 Zeichen aus dem Editor muß mit Sicherheit gelöscht werden!
+						char BACKSPACE = 8;
+						CB_Core.Events.platformConector.sendKey(BACKSPACE);
+						System.out.println("DEL");
+					}
+					else
+					{
+						// oldText mit newText vergleichen und zwar immer von Anfang an bis zu i
+						String tmpNew = newText.substring(0, i);
+						String tmpOld = oldText.substring(0, i);
+						if (tmpOld.equals(tmpNew))
+						{
+							// bis i ist alles gleiche -> nichts mehr muß gelöscht werden
+							// Neue Zeichen können eingefügt werden, und zwar ab dem Zeichen i in newText
+							for (int j = i; j < newText.length(); j++)
+							{
+								System.out.println("NEW: " + newText.charAt(j));
+
+								CB_Core.Events.platformConector.sendKey(newText.charAt(j));
+							}
+							// Fertig
+							break;
+						}
+						else
+						{
+							// bis i sind noch Unterschiede -> ein Zeichen löschen
+							System.out.println("DEL");
+							char BACKSPACE = 8;
+							CB_Core.Events.platformConector.sendKey(BACKSPACE);
+						}
+					}
+				}
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after)
+			{
+				// int BreakPoint = 1;
+				// if (BreakPoint == 1) BreakPoint++;
+				beforeS = s.toString();
+				beforeStart = start;
+				beforeCount = count;
+				beforeAfter = after;
+			}
+
+			@Override
+			public void afterTextChanged(Editable s)
+			{
+			}
+		});
+
+		mTextField.setBackgroundDrawable(null);
+		mTextField.setClickable(false);
+
+		RelativeLayout layout = (RelativeLayout) findViewById(R.id.layoutTextField);
+
+		layout.addView(mTextField);
+
+	}
+
+	protected Object getNumericValueFromKeyCode(int keyCode)
+	{
+		if (keyCode == KeyEvent.KEYCODE_0) return '0';
+		if (keyCode == KeyEvent.KEYCODE_1) return '1';
+		if (keyCode == KeyEvent.KEYCODE_2) return '2';
+		if (keyCode == KeyEvent.KEYCODE_3) return '3';
+		if (keyCode == KeyEvent.KEYCODE_4) return '4';
+		if (keyCode == KeyEvent.KEYCODE_5) return '5';
+		if (keyCode == KeyEvent.KEYCODE_6) return '6';
+		if (keyCode == KeyEvent.KEYCODE_7) return '7';
+		if (keyCode == KeyEvent.KEYCODE_8) return '8';
+		if (keyCode == KeyEvent.KEYCODE_9) return '9';
+
+		return null;
 	}
 
 }
