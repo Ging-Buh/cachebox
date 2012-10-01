@@ -52,6 +52,9 @@ public class Global
 	public static final int REQUEST_CODE_DELETE_DIALOG = 15122011;
 	public static final int REQUEST_CODE_PARKING_DIALOG = 40120112;
 	public static final int REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR = 2082012;
+	public static final int REQUEST_CODE_GET_API_KEY = 987654321;
+	public static final int REQUEST_CODE_SCREENLOCK = 12345;
+	public static final int REQUEST_CODE_KEYBOARDACTIVITY = 11012;
 
 	/**
 	 * Liste der Buttons in der QuickButton Leiste

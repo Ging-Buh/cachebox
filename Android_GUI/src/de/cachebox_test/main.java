@@ -71,7 +71,6 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Categories;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 import android.app.Dialog;
@@ -779,55 +778,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		// Back from Activitiy
-		glListener.onStart();
-
-		// SelectDB
-		if (requestCode == 546132)
+		if (requestCode != Global.REQUEST_CODE_KEYBOARDACTIVITY && requestCode != Global.REQUEST_CODE_SCREENLOCK)
 		{
-			if (resultCode == RESULT_OK)
-			{
-				// Toast.makeText(getApplicationContext(),
-				// "DB wechsel momentan nur mit Neustart...",
-				// Toast.LENGTH_LONG).show();
-				Database db = new AndroidDB(Database.DatabaseType.CacheBox, mainActivity);
-				if (!db.StartUp(Config.settings.DatabasePath.getValue())) return;
-				Database.Data = null;
-				Database.Data = db;
-				/*
-				 * SqlCeCommand command = new SqlCeCommand(" select GcCode from FieldNotes WHERE Type = 1 " ,
-				 * Database.FieldNotes.Connection); SqlCeDataReader reader = command.ExecuteReader(); if (reader == null) throw new
-				 * Exception ("Startup: Cannot execute SQL statement Copy Founds to TB"); string GcCode = ""; while (reader.Read()) GcCode
-				 * += "'" + reader.GetString(0) + "', "; if (GcCode.Length > 0) { GcCode = GcCode.Substring(0, GcCode.Length - 2);
-				 * SqlCeCommand commandUpdate = new SqlCeCommand(" UPDATE Caches SET Found = 1 WHERE GcCode IN (" + GcCode + ") ",
-				 * Database.Data.Connection); int founds = commandUpdate.ExecuteNonQuery(); }
-				 */
-
-				Config.settings.ReadFromDB();
-
-				GlobalCore.Categories = new Categories();
-				GlobalCore.LastFilter = (Config.settings.Filter.getValue().length() == 0) ? new FilterProperties(
-						FilterProperties.presets[0]) : new FilterProperties(Config.settings.Filter.getValue());
-				// filterSettings.LoadFilterProperties(GlobalCore.LastFilter);
-				Database.Data.GPXFilenameUpdateCacheCount();
-
-				String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
-				Logger.General("Main.ApplyFilter: " + sqlWhere);
-				Database.Data.Query.clear();
-				CacheListDAO cacheListDAO = new CacheListDAO();
-				cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
-
-				// Database.Data.GPXFilenameUpdateCacheCount();
-
-				GlobalCore.SelectedCache(null);
-				GlobalCore.SelectedWaypoint(null, null);
-				CachListChangedEventList.Call();
-
-				// beim zurückkehren aus der DB-Auswahl muss der Slider neu
-				// initialisiert werden
-				downSlider.isInitial = false;
-			}
+			glListener.onStart();
+		}
+		else
+		{
 			return;
 		}
+
 		// Intent Result Take Photo
 		if (requestCode == Global.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE)
 		{
@@ -914,7 +873,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		}
 
-		if (requestCode == 12345)
+		if (requestCode == Global.REQUEST_CODE_SCREENLOCK)
 		{
 			Logger.DEBUG("Main back from ScreenLock");
 
@@ -931,14 +890,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			return;
 		}
-		if (requestCode == 123456)
-		{
-
-			return;
-		}
 
 		// Intent Result get API key
-		if (requestCode == 987654321)
+		if (requestCode == Global.REQUEST_CODE_GET_API_KEY)
 		{
 			// now, we check GPS
 			chkGpsIsOn();
@@ -1333,7 +1287,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		ScreenLock.isShown = true;
 
 		final Intent mainIntent = new Intent().setClass(this, ScreenLock.class);
-		this.startActivityForResult(mainIntent, 12345);
+		this.startActivityForResult(mainIntent, Global.REQUEST_CODE_SCREENLOCK);
 	}
 
 	/*
@@ -3236,7 +3190,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							{
 								dontStop = true;
 								Intent intent = new Intent().setClass(mainActivity, keyBoardActivity.class);
-								mainActivity.startActivityForResult(intent, 9999999);
+								mainActivity.startActivityForResult(intent, Global.REQUEST_CODE_KEYBOARDACTIVITY);
 							}
 						});
 					}
@@ -3380,7 +3334,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public void GetApiAuth()
 	{
 		Intent gcApiLogin = new Intent().setClass(mainActivity, GcApiLogin.class);
-		mainActivity.startActivityForResult(gcApiLogin, 987654321);
+		mainActivity.startActivityForResult(gcApiLogin, Global.REQUEST_CODE_GET_API_KEY);
 	}
 
 }

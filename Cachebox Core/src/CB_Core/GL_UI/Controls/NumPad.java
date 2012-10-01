@@ -123,14 +123,14 @@ public class NumPad extends CB_View_Base
 
 		if (mType == Type.withOkCancel || mType == Type.withoutDotOkCancel || mType == Type.withDoubleDotOkCancel)
 		{
-			if (mType == Type.withoutDotOkCancel || mType != Type.withDoubleDotOkCancel)
+			if (mType == Type.withOkCancel || mType == Type.withDot || mType == Type.withDoubleDotOkCancel)
 			{
-				btn_Cancel.setPos(btn_6.getMaxX(), y);
+				btn_Cancel.setPos(btn_Dot.getMaxX(), y);
 				this.addChild(btn_Cancel);
 			}
 			else
 			{
-				btn_Cancel.setPos(btn_Dot.getMaxX(), y);
+				btn_Cancel.setPos(btn_6.getMaxX(), y);
 				this.addChild(btn_Cancel);
 			}
 		}
