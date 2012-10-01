@@ -1037,6 +1037,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onResume()
 	{
+
+		if (dontStop)
+		{
+			super.onResume();
+			return;
+		}
+
 		if (stopped)
 		{
 			showWaitToRenderStartet();
