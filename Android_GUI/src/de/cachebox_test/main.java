@@ -987,6 +987,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		Logger.LogCat("Main=> onPause");
 
+		stopped = true;
+
 		if (input == null)
 		{
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
