@@ -9,8 +9,11 @@ import CB_Core.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
+import CB_Core.GL_UI.Controls.Linearlayout;
+import CB_Core.GL_UI.Controls.Linearlayout.LayoutChanged;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
+import CB_Core.GL_UI.Controls.ScrollBox;
 import CB_Core.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -29,6 +32,8 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener
 		Nothing, Text, Function, Variable, Operator, Waypoint
 	}
 
+	private ScrollBox scrollBox;
+	private Linearlayout mLinearLayout;
 	private boolean ignoreStateChange = false;
 	private MultiToggleButton btnTxt;
 	private MultiToggleButton btnFx;
@@ -165,6 +170,45 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener
 		button1.setText(GlobalCore.Translations.Get("Ok"));
 
 		button1.setOnClickListener(OnOkClickListner);
+
+		// Dieses LinearLayout wird dann in eine ScrollBox verpackt, damit dies Scrollbar ist, wenn die Länge den Anzeige Bereich
+		// überschreitet!
+
+		rec = new CB_RectF(0, y, msgBoxContentSize.width, 100);
+		// initial ScrollBox mit einer Inneren Höhe des halben rec´s.
+		// Die Innere Höhe muss angepasst werden, wenn sich die Höhe des LinearLayouts verändert hat.
+		// Entweder wenn ein Control hinzugefügt wurde oder wenn eine CollabseBox geöffnrt oder geschlossen wird!
+		scrollBox = new ScrollBox(rec, rec.getHalfHeight(), "ScrollBox");
+
+		// damit die Scrollbox auch Events erhällt
+		scrollBox.setClickable(true);
+
+		// die ScrollBox erhält den Selben Hintergrund wie die Activity und wird damit ein wenig abgegrenzt von den Restlichen Controls
+		scrollBox.setBackground(this.getBackground());
+
+		// Initial LinearLayout
+		// Dieses wird nur mit der Breite Initialisiert, die Höhe ergibt sich aus dem Inhalt
+		mLinearLayout = new Linearlayout(rec.getWidth(), "SelectSolverFunction-LinearLayout");
+
+		// damit das LinearLayout auch Events erhällt
+		mLinearLayout.setClickable(true);
+
+		mLinearLayout.setZeroPos();
+
+		// hier setzen wir ein LayoutChanged Listner, um die innere Höhe der ScrollBox bei einer veränderung der Höhe zu setzen!
+		mLinearLayout.setLayoutChangedListner(new LayoutChanged()
+		{
+			@Override
+			public void LayoutIsChanged(Linearlayout linearLayout, float newHeight)
+			{
+				mLinearLayout.setZeroPos();
+				scrollBox.setInerHeight(newHeight);
+			}
+		});
+
+		// add LinearLayout zu ScrollBox und diese zu der Activity
+		scrollBox.addChild(mLinearLayout);
+		this.addChild(scrollBox);
 
 		showPage(pages.Text);
 	}
@@ -303,8 +347,8 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener
 		sForm += ")";
 		// Parameter entfernen
 		removeFunctionParam();
-		removeChild(tbFunction);
-		removeChild(bFunction);
+		mLinearLayout.removeChild(tbFunction);
+		mLinearLayout.removeChild(bFunction);
 		tbFunction = null;
 		bFunction = null;
 	}
@@ -315,7 +359,7 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener
 		{
 			for (int i = 0; i < tbFunctionParam.length; i++)
 			{
-				removeChild(tbFunctionParam[i]);
+				mLinearLayout.removeChild(tbFunctionParam[i]);
 			}
 			tbFunctionParam = null;
 		}
@@ -323,7 +367,7 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener
 		{
 			for (int i = 0; i < lFunctionParam.length; i++)
 			{
-				removeChild(lFunctionParam[i]);
+				mLinearLayout.removeChild(lFunctionParam[i]);
 			}
 			lFunctionParam = null;
 		}
@@ -333,7 +377,7 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener
 	{
 		// geänderten Text merken
 		sForm = mFormulaField.getText();
-		removeChild(mFormulaField);
+		mLinearLayout.removeChild(mFormulaField);
 		mFormulaField = null;
 	}
 
@@ -360,7 +404,8 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener
 		final CB_RectF rec = new CB_RectF(0, y, msgBoxContentSize.width - TextFieldHeight * 2, TextFieldHeight);
 		tbFunction = new EditWrapedTextField(this, rec, EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextField");
 		tbFunction.setText(sForm);
-		addChild(tbFunction);
+		tbFunction.setZeroPos();
+		mLinearLayout.addChild(tbFunction);
 		bFunction = new Button(msgBoxContentSize.width - TextFieldHeight * 2, y, TextFieldHeight * 2, TextFieldHeight,
 				"SolverDialogBtnVariable");
 		bFunction.setText("F(x)");
@@ -388,12 +433,14 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener
 				rec2.setY(rec2.getY() - TextFieldHeight * 3 / 4);
 				lFunctionParam[i] = new Label(rec2, "LabelFunctionParam");
 				lFunctionParam[i].setText("Parameter " + i);
-				addChild(lFunctionParam[i]);
+				lFunctionParam[i].setZeroPos();
+				mLinearLayout.addChild(lFunctionParam[i]);
 				rec2.setY(rec2.getY() - lFunctionParam[i].getHeight() * 3 / 4);
 				tbFunctionParam[i] = new EditWrapedTextField(SolverDialog.this, rec2, EditWrapedTextField.TextFieldType.SingleLine,
 						"SolverDialogTextFieldParam");
 				tbFunctionParam[i].setText(parameters[i].trim());
-				addChild(tbFunctionParam[i]);
+				tbFunctionParam[i].setZeroPos();
+				mLinearLayout.addChild(tbFunctionParam[i]);
 
 			}
 		}
@@ -420,11 +467,13 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener
 							rec.setY(rec.getY() - TextFieldHeight * 3 / 4);
 							lFunctionParam[i] = new Label(rec, "LabelFunctionParam");
 							lFunctionParam[i].setText("Parameter " + i);
-							addChild(lFunctionParam[i]);
+							lFunctionParam[i].setZeroPos();
+							mLinearLayout.addChild(lFunctionParam[i]);
 							rec.setY(rec.getY() - lFunctionParam[i].getHeight() * 3 / 4);
 							tbFunctionParam[i] = new EditWrapedTextField(SolverDialog.this, rec,
 									EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextFieldParam");
-							addChild(tbFunctionParam[i]);
+							tbFunctionParam[i].setZeroPos();
+							mLinearLayout.addChild(tbFunctionParam[i]);
 						}
 					}
 				});
@@ -432,7 +481,7 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener
 				return true;
 			}
 		});
-		addChild(bFunction);
+		mLinearLayout.addChild(bFunction);
 		y -= TextFieldHeight;
 	}
 
@@ -446,7 +495,8 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener
 		CB_RectF rec = new CB_RectF(0, y, msgBoxContentSize.width, TextFieldHeight);
 		mFormulaField = new EditWrapedTextField(this, rec, EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextField");
 		mFormulaField.setText(sForm);
-		addChild(mFormulaField);
+		mFormulaField.setZeroPos();
+		mLinearLayout.addChild(mFormulaField);
 		y -= TextFieldHeight;
 	}
 }

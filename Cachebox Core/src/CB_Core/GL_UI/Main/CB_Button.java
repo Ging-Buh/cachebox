@@ -183,7 +183,10 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 			mi.setEnabled(action.getEnabled());
 			mi.setCheckable(action.getIsCheckable());
 			mi.setChecked(action.getIsChecked());
-			mi.setIcon(new SpriteDrawable(action.getIcon()));
+			Sprite icon = action.getIcon();
+			if (icon != null) mi.setIcon(new SpriteDrawable(action.getIcon()));
+			else
+				icon = null;
 		}
 		return cm;
 	}

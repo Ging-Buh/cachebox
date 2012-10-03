@@ -3175,14 +3175,34 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				// Iniitial HiddenTextField
 				if (value)
 				{
-					mTextField.requestFocus();
-					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mTextField,
-							InputMethodManager.SHOW_FORCED);
+					try
+					{
+						runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								mTextField.requestFocus();
+								((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mTextField,
+										InputMethodManager.SHOW_FORCED);
+							}
+						});
+					}
+					catch (Exception ex)
+					{
+						String s = ex.getMessage();
+					}
 				}
 				else
 				{
-					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
-							mTextField.getWindowToken(), 0);
+					runOnUiThread(new Runnable()
+					{
+						public void run()
+						{
+							((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
+									mTextField.getWindowToken(), 0);
+						}
+					});
 
 				}
 			}
