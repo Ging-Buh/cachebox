@@ -27,35 +27,16 @@ public class CacheInfo extends CB_View_Base
 	public static final int SHOW_COMPASS = 1;
 	public static final int SHOW_NAME = 2;
 	public static final int SHOW_OWNER = 4;
-	public static final int SHOW_CORRDS = 8;
+	public static final int SHOW_COORDS = 8;
 	public static final int SHOW_GC = 16;
 	public static final int SHOW_LAST_FOUND = 32;
 	public static final int SHOW_ATTRIBUTES = 64;
 
-	/**
-	 * SHOW_COMPASS, SHOW_NAME, SHOW_GC
-	 */
-	public static final int VIEW_MODE_CACHE_LIST = 19;
-
-	/**
-	 * SHOW_COMPASS, SHOW_OWNER, SHOW_CORRDS, SHOW_GC
-	 */
-	public static final int VIEW_MODE_DESCRIPTION = 29;
-
-	/**
-	 * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS, SHOW_GC, SHOW_LAST_FOUND, SHOW_ATTRIBUTES
-	 */
-	public static final int VIEW_MODE_SLIDER = 126;
-
-	/**
-	 * SHOW_COMPASS, SHOW_NAME
-	 */
-	public static final int VIEW_MODE_WAYPOINTS = 11;
-
-	/**
-	 * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS, SHOW_GC
-	 */
-	public static final int VIEW_MODE_BUBBLE = 30;
+	public static final int VIEW_MODE_CACHE_LIST = SHOW_GC + SHOW_NAME + SHOW_COMPASS; // 19;
+	public static final int VIEW_MODE_DESCRIPTION = SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_COMPASS; // 29;
+	public static final int VIEW_MODE_SLIDER = SHOW_ATTRIBUTES + SHOW_LAST_FOUND + SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_NAME; // 126
+	public static final int VIEW_MODE_WAYPOINTS = SHOW_COORDS + SHOW_NAME + SHOW_COMPASS; // 11
+	public static final int VIEW_MODE_BUBBLE = SHOW_COORDS + SHOW_OWNER + SHOW_NAME; // SHOW_GC & 30
 
 	private static final SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
 
@@ -70,7 +51,7 @@ public class CacheInfo extends CB_View_Base
 	private Sprite mIconSprite;
 	private Sprite mFoundOwnerSprite;
 	private Sprite mFavoriteSprite;
-	private Sprite mAvibleSprite;
+	private Sprite mAvailableSprite;
 	private Sprite mSSprite;
 	private Sprite mDSprite;
 	private Sprite mTSprite;
@@ -126,7 +107,7 @@ public class CacheInfo extends CB_View_Base
 		if (mTBSprite != null) mTBSprite.draw(batch);
 		if (mInfo_FontCache != null) mInfo_FontCache.draw(batch);
 		if (mFavoriteSprite != null) mFavoriteSprite.draw(batch);
-		if (mAvibleSprite != null) mAvibleSprite.draw(batch);
+		if (mAvailableSprite != null) mAvailableSprite.draw(batch);
 	}
 
 	@Override
@@ -145,7 +126,7 @@ public class CacheInfo extends CB_View_Base
 		mTBSprite = null;
 		mInfo_FontCache = null;
 		mFavoriteSprite = null;
-		mAvibleSprite = null;
+		mAvailableSprite = null;
 	}
 
 	private void requestLayout()
@@ -240,7 +221,7 @@ public class CacheInfo extends CB_View_Base
 			StringBuilder text = new StringBuilder();
 			if (ifModeFlag(SHOW_NAME)) text.append(mCache.Name + br);
 			if (ifModeFlag(SHOW_OWNER)) text.append("by " + mCache.Owner + ", " + postFormater.format(mCache.DateHidden) + br);
-			if (ifModeFlag(SHOW_CORRDS)) text.append(mCache.Pos.FormatCoordinate() + br);
+			if (ifModeFlag(SHOW_COORDS)) text.append(mCache.Pos.FormatCoordinate() + br);
 			if (ifModeFlag(SHOW_GC)) text.append(mCache.GcCode + br);
 			if (ifModeFlag(SHOW_LAST_FOUND))
 			{
@@ -256,7 +237,6 @@ public class CacheInfo extends CB_View_Base
 			if (mCache.Archived || !mCache.Available)
 			{
 				mInfo_FontCache.setColor(Color.RED);
-
 			}
 
 		}
@@ -302,16 +282,16 @@ public class CacheInfo extends CB_View_Base
 
 			if (mCache.Archived)
 			{
-				mAvibleSprite = new Sprite(SpriteCache.Icons.get(45));
+				mAvailableSprite = new Sprite(SpriteCache.Icons.get(45));
 			}
 			else if (!mCache.Available)
 			{
-				mAvibleSprite = new Sprite(SpriteCache.Icons.get(44));
+				mAvailableSprite = new Sprite(SpriteCache.Icons.get(44));
 			}
-			if (mAvibleSprite != null)
+			if (mAvailableSprite != null)
 			{
-				mAvibleSprite.setSize(infoSize, infoSize);
-				mAvibleSprite.setPosition(mSpriteCachePos.x + infoSize, mSpriteCachePos.y);
+				mAvailableSprite.setSize(infoSize, infoSize);
+				mAvailableSprite.setPosition(mSpriteCachePos.x + infoSize, mSpriteCachePos.y);
 			}
 		}
 

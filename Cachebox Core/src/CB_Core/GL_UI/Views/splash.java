@@ -55,7 +55,6 @@ public class splash extends TabMainView
 	Image LibGdx_Logo;
 	Image FX2_Logo;
 	Image GC_Logo;
-	Label versionTextView;
 	Label descTextView;
 	SelectDB selectDBDialog;
 
@@ -141,38 +140,24 @@ public class splash extends TabMainView
 	{
 
 		float ref = UiSizes.getWindowHeight() / 13;
-
 		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref, ref * 5,
 				(ref * 5) / 4.11f);
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
 		CB_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("cachebox_logo")));
 		this.addChild(CB_Logo);
 
-		TextBounds bounds = Fonts.getNormal().getMultiLineBounds(GlobalCore.getVersionString());
-
-		versionTextView = new Label(0, CB_Logo.getY() - ref - bounds.height, this.width, bounds.height + 10, "VesionLabel");
-		versionTextView.setMultiLineText(GlobalCore.getVersionString());
-		versionTextView.setHAlignment(HAlignment.CENTER);
-		this.addChild(versionTextView);
-
-		bounds = Fonts.getNormal().getMultiLineBounds(GlobalCore.splashMsg);
-
-		descTextView = new Label(0, versionTextView.getY() - ref - bounds.height, this.width, bounds.height + 10, "DescLabel");
-
-		// descTextView.setMultiLineText(GlobalCore.splashMsg);
-		descTextView.setWrappedText(GlobalCore.splashMsg, HAlignment.CENTER);
-
-		descTextView.setHAlignment(HAlignment.CENTER);
+		String VersionString = GlobalCore.getVersionString();
+		TextBounds bounds = Fonts.getNormal().getMultiLineBounds(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.splashMsg);
+		descTextView = new Label(0, CB_Logo.getY() - ref - bounds.height, this.width, bounds.height + 10, "DescLabel");
+		// HAlignment.CENTER funktioniert (hier) (noch) nicht, es kommt rechtsbündig raus
+		descTextView.setWrappedText(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.splashMsg, HAlignment.CENTER);
 		this.addChild(descTextView);
 
 		int patch = (UiSizes.getWindowWidth() > 330) ? 16 : 8;
-
 		progress = new ProgressBar(new CB_RectF(0, 0, this.width, ref / 1.5f), "Splash.ProgressBar");
-
 		Drawable ProgressBack = new NinePatchDrawable(new NinePatch(atlas.createSprite("btn_normal"), patch, patch, patch, patch));
 		Drawable ProgressFill = new NinePatchDrawable(new NinePatch(atlas.createSprite("progress"), patch - 1, patch - 1, patch - 1,
 				patch - 1));
-
 		progress.setBackground(ProgressBack);
 		progress.setProgressFill(ProgressFill);
 		this.addChild(progress);
@@ -468,7 +453,6 @@ public class splash extends TabMainView
 
 		if (selectDBDialog != null) selectDBDialog.dispose();
 		if (descTextView != null) descTextView.dispose();
-		if (versionTextView != null) versionTextView.dispose();
 		if (GC_Logo != null) GC_Logo.dispose();
 		if (FX2_Logo != null) FX2_Logo.dispose();
 		if (LibGdx_Logo != null) LibGdx_Logo.dispose();
@@ -479,7 +463,6 @@ public class splash extends TabMainView
 
 		selectDBDialog = null;
 		descTextView = null;
-		versionTextView = null;
 		GC_Logo = null;
 		FX2_Logo = null;
 		LibGdx_Logo = null;

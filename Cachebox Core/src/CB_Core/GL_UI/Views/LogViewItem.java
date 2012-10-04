@@ -64,7 +64,8 @@ public class LogViewItem extends ListViewItemBackground
 
 	private void iniDateLabel()
 	{
-		SimpleDateFormat postFormater = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+		// SimpleDateFormat postFormater = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+		SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy");
 		String dateString = postFormater.format(logEntry.Timestamp);
 		float DateLength = Fonts.Mesure(dateString).width;
 

@@ -179,12 +179,14 @@ public class Fonts
 
 	public static BitmapFont getBubbleNormal()
 	{
-		return Config.settings.nightMode.getValue() ? night_normalBubble : normalBubble;
+		// return Config.settings.nightMode.getValue() ? night_normalBubble : normalBubble;
+		return Config.settings.nightMode.getValue() ? night_normal : normal;
 	}
 
-	public static BitmapFont getBubbleSmall()
+	public static BitmapFont getBubbleSmall() // D/T Zeile
 	{
-		return Config.settings.nightMode.getValue() ? night_smallBubble : smallBubble;
+		// return Config.settings.nightMode.getValue() ? night_smallBubble : smallBubble;
+		return Config.settings.nightMode.getValue() ? night_normal : normal;
 	}
 
 	public static BitmapFont get16_Out()

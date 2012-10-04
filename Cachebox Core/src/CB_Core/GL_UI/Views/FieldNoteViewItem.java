@@ -72,7 +72,8 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 	private void iniDateLabel()
 	{
-		SimpleDateFormat postFormater = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+		// SimpleDateFormat postFormater = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+		SimpleDateFormat postFormater = new SimpleDateFormat("dd.MMM (HH:mm)");
 		String dateString = postFormater.format(fieldnote.timestamp);
 		float DateLength = 100;
 

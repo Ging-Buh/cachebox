@@ -36,8 +36,8 @@ public class SizeF
 	/**
 	 * Constructor
 	 * 
-	 * @param mapIntWidth
-	 * @param mapIntHeight
+	 * @param float Width
+	 * @param float Height
 	 */
 	public SizeF(float Width, float Height)
 	{

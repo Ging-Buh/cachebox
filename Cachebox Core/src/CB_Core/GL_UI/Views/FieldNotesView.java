@@ -441,6 +441,7 @@ public class FieldNotesView extends V_ListView
 				if ((nfne.CacheId == cache.Id) && (nfne.type == type))
 				{
 					newFieldNote = nfne;
+					newFieldNote.timestamp = new Date();
 					aktFieldNote = newFieldNote;
 					aktFieldNoteIndex = index;
 				}

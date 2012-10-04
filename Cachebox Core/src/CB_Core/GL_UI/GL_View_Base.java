@@ -910,7 +910,6 @@ public abstract class GL_View_Base extends CB_RectF
 		super.setY(i);
 		this.invalidate(); // Scissor muss neu berechnet werden
 		GL.that.renderOnce(this.getName() + " setY");
-
 	}
 
 	@Override

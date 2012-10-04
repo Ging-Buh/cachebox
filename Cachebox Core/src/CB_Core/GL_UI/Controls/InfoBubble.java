@@ -75,7 +75,8 @@ public class InfoBubble extends CB_View_Base
 		mCache = value;
 		mCacheId = value.Id;
 		mWaypoint = waypoint;
-		SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
+		// SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
+		SizeF size = new SizeF(0.96f * width, 0.72f * height);
 
 		cacheInfo = new CacheInfo(size, "CacheInfo", value);
 		cacheInfo.setViewMode(CacheInfo.VIEW_MODE_BUBBLE);
@@ -98,12 +99,10 @@ public class InfoBubble extends CB_View_Base
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-
 		Sprite sprite = (mCache == GlobalCore.SelectedCache()) ? SpriteCache.Bubble.get(1) : SpriteCache.Bubble.get(0);
 		sprite.setPosition(0, 0);
 		sprite.setSize(width, height);
 		sprite.draw(batch);
-
 	}
 
 	@Override
@@ -115,7 +114,8 @@ public class InfoBubble extends CB_View_Base
 	private void requestLayout()
 	{
 		// Logger.LogCat("InfoBubble RequestLayout");
-		SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
+		// SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
+		SizeF size = new SizeF(0.96f * width, 0.72f * height);
 		cacheInfo.setSize(size);
 		cacheInfo.setY(height - size.height);
 	}
@@ -128,7 +128,6 @@ public class InfoBubble extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		 
 
 	}
 
