@@ -157,6 +157,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		}
 
 		fontCache = new BitmapFontCache(Fonts.getNormal());
+		fontCache.setColor(Fonts.getFontColor());
 
 		TextBounds bounds = fontCache.setText(distanceString, 0, fontCache.getFont().isFlipped() ? 0 : fontCache.getFont().getCapHeight());
 

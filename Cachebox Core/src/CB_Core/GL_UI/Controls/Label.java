@@ -112,7 +112,10 @@ public class Label extends CB_View_Base
 
 		if (this.halignment == HAlignment.CENTER && innerRec.getWidth() > bounds.width)
 		{
-			x = (innerRec.getHalfWidth()) - (bounds.width / 2f);
+			if (wrapType == WrapType.singleLine)
+			{
+				x = (innerRec.getHalfWidth()) - (bounds.width / 2f);
+			}
 		}
 		else if (this.halignment == HAlignment.RIGHT && innerRec.getWidth() > bounds.width)
 		{
@@ -239,6 +242,7 @@ public class Label extends CB_View_Base
 		if (cache == null) initialedLineCount = 0;
 
 		cache = new BitmapFontCache(mBmpFont);
+		cache.setColor(Fonts.getFontColor());
 
 		if (lineCount != initialedLineCount) return;
 		change();

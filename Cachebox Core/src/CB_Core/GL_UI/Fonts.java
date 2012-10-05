@@ -1,17 +1,19 @@
 package CB_Core.GL_UI;
 
+import java.io.File;
+import java.io.FilenameFilter;
+
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.Log.Logger;
 import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 /**
  * Enthält die benutzten und geladenen GDX-Fonts
@@ -20,6 +22,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class Fonts
 {
+
+	private static Color day_fontColor;
+	private static Color day_fontColorDisable;
+
+	private static Color night_fontColor;
+	private static Color night_fontColorDisable;
 
 	private static int FONT_SIZE_BIG = 18;
 	private static int FONT_SIZE_NORMAL = 15;
@@ -30,19 +38,6 @@ public class Fonts
 	private static BitmapFont small;
 	private static BitmapFont normalBubble;
 	private static BitmapFont smallBubble;
-
-	private static BitmapFont fontAB15_out;
-	private static BitmapFont fontAB16_out;
-	private static BitmapFont fontAB17_out;
-
-	private static BitmapFont night_big;
-	private static BitmapFont night_normal;
-	private static BitmapFont night_small;
-	private static BitmapFont night_normalBubble;
-	private static BitmapFont night_smallBubble;
-
-	private static BitmapFont night_fontAB15_out;
-	private static BitmapFont night_fontAB16_out;
 
 	// private static BitmapFont night_fontAB17_out;
 
@@ -56,25 +51,59 @@ public class Fonts
 
 		double density = UiSizes.getScale();
 
-		big = loadScaledFont(FONT_SIZE_BIG, density, false);
-		normal = loadScaledFont(FONT_SIZE_NORMAL, density, false);
-		small = loadScaledFont(FONT_SIZE_SMALL, density, false);
-		normalBubble = loadScaledFont((int) (FONT_SIZE_NORMAL * 0.7), density, false);
-		smallBubble = loadScaledFont((int) (FONT_SIZE_SMALL * 0.7), density, false);
+		String path = Config.settings.SkinFolder.getValue();
 
-		fontAB15_out = loadScaledFont("15_out", false);
-		fontAB16_out = loadScaledFont("16_out", false);
-		fontAB17_out = loadScaledFont("17_out", false);
+		String day_skinPath = path + "\\day\\skin.json";
+		Skin day_skin = new Skin(Gdx.files.absolute(day_skinPath));
+		day_fontColor = day_skin.getColor("font-color");
+		day_fontColorDisable = day_skin.getColor("font-color-disable");
 
-		night_big = loadScaledFont(FONT_SIZE_BIG, density, true);
-		night_normal = loadScaledFont(FONT_SIZE_NORMAL, density, true);
-		night_small = loadScaledFont(FONT_SIZE_SMALL, density, true);
-		night_normalBubble = loadScaledFont((int) (FONT_SIZE_NORMAL * 0.7), density, true);
-		night_smallBubble = loadScaledFont((int) (FONT_SIZE_SMALL * 0.7), density, true);
+		String night_skinPath = path + "\\night\\skin.json";
+		Skin night_skin = new Skin(Gdx.files.absolute(night_skinPath));
+		night_fontColor = night_skin.getColor("font-color");
+		night_fontColorDisable = night_skin.getColor("font-color-disable");
 
-		night_fontAB15_out = loadScaledFont("15_out", true);
-		night_fontAB16_out = loadScaledFont("16_out", true);
-		// night_fontAB17_out = loadScaledFont("17_out", true);
+		// get the first founded ttf-font
+		File skinDir = new File(path);
+		String FontName = null;
+		String[] ttfFonts = skinDir.list(new FilenameFilter()
+		{
+			@Override
+			public boolean accept(File arg0, String arg1)
+			{
+				if (arg1.endsWith(".ttf")) return true;
+				return false;
+			}
+		});
+
+		if (ttfFonts != null && ttfFonts.length > 0 && ttfFonts[0] != null) FontName = ttfFonts[0];
+		if (FontName == null)
+		{
+			// no skin font found, use default font
+			path = Config.settings.SkinFolder.getDefaultValue();
+			File defaultSkinDir = new File(path);
+			String[] defaultTtfFonts = defaultSkinDir.list(new FilenameFilter()
+			{
+				@Override
+				public boolean accept(File arg0, String arg1)
+				{
+					if (arg1.endsWith(".ttf")) return true;
+					return false;
+				}
+			});
+			FontName = defaultTtfFonts[0];
+		}
+
+		String ttfPath = path + "/" + FontName;
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.absolute(ttfPath));
+
+		big = generator.generateFont((int) (FONT_SIZE_BIG * density));
+		normal = generator.generateFont((int) (FONT_SIZE_NORMAL * density));
+		small = generator.generateFont((int) (FONT_SIZE_SMALL * density));
+		normalBubble = generator.generateFont((int) (FONT_SIZE_NORMAL * density * 0.8));
+		smallBubble = generator.generateFont((int) (FONT_SIZE_NORMAL * density * 0.8));
+
+		generator.dispose();
 	}
 
 	static String defaultFontPath;
@@ -83,60 +112,14 @@ public class Fonts
 	static String CustomFontPath;
 	static String CustomFontPathNight;
 
-	private static BitmapFont loadScaledFont(int Size, double density, boolean night)
+	public static Color getFontColor()
 	{
-		int scaled = (int) (Size * density);
-
-		if (scaled < 6) scaled = 6;
-		if (scaled > 44) scaled = 44;
-
-		String strScaled = String.valueOf(scaled);
-
-		return loadScaledFont(strScaled, night);
+		return Config.settings.nightMode.getValue() ? night_fontColor : day_fontColor;
 	}
 
-	private static BitmapFont loadScaledFont(String strScaled, boolean night)
+	public static Color getDisableFontColor()
 	{
-
-		String fontPath = null;
-
-		String path = Config.settings.SkinFolder.getValue();
-
-		CustomFontPath = path + "/day/fonts/" + strScaled + ".png";
-		CustomFontPathNight = path + "/night/fonts/" + strScaled + ".png";
-
-		String defaultPath = path;
-		int pos = defaultPath.lastIndexOf("/");
-		defaultPath = defaultPath.substring(0, pos) + "/default";
-
-		defaultFontPath = defaultPath + "/day/fonts/" + strScaled + ".png";
-		defaultFontPathNight = defaultPath + "/night/fonts/" + strScaled + ".png";
-
-		if (night)
-		{
-			if (FileIO.FileExists(CustomFontPathNight)) fontPath = CustomFontPathNight;
-			if (fontPath == null) if (FileIO.FileExists(defaultFontPathNight)) fontPath = defaultFontPathNight;
-		}
-		else
-		{
-			if (FileIO.FileExists(CustomFontPath)) fontPath = CustomFontPath;
-		}
-
-		if (fontPath == null)
-		{
-			fontPath = defaultFontPath;
-			;
-		}
-
-		Texture tex = new Texture(Gdx.files.absolute(fontPath));
-		tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		TextureRegion region = new TextureRegion(tex);
-
-		fontPath = fontPath.replace(".png", ".fnt");
-
-		BitmapFont ret = new BitmapFont(Gdx.files.absolute(fontPath), region, false);
-
-		return ret;
+		return Config.settings.nightMode.getValue() ? night_fontColorDisable : day_fontColorDisable;
 	}
 
 	public static void dispose()
@@ -147,56 +130,37 @@ public class Fonts
 		normalBubble.dispose();
 		smallBubble.dispose();
 
-		fontAB15_out.dispose();
-		fontAB16_out.dispose();
-		fontAB17_out.dispose();
-
 		big = null;
 		normal = null;
 		small = null;
 		normalBubble = null;
 		smallBubble = null;
 
-		fontAB15_out = null;
-		fontAB16_out = null;
-		fontAB17_out = null;
 	}
 
 	public static BitmapFont getBig()
 	{
-		return Config.settings.nightMode.getValue() ? night_big : big;
+		return big;
 	}
 
 	public static BitmapFont getNormal()
 	{
-		return Config.settings.nightMode.getValue() ? night_normal : normal;
+		return normal;
 	}
 
 	public static BitmapFont getSmall()
 	{
-		return Config.settings.nightMode.getValue() ? night_small : small;
+		return small;
 	}
 
 	public static BitmapFont getBubbleNormal()
 	{
-		// return Config.settings.nightMode.getValue() ? night_normalBubble : normalBubble;
-		return Config.settings.nightMode.getValue() ? night_normal : normal;
+		return normalBubble;
 	}
 
-	public static BitmapFont getBubbleSmall() // D/T Zeile
+	public static BitmapFont getBubbleSmall()
 	{
-		// return Config.settings.nightMode.getValue() ? night_smallBubble : smallBubble;
-		return Config.settings.nightMode.getValue() ? night_normal : normal;
-	}
-
-	public static BitmapFont get16_Out()
-	{
-		return Config.settings.nightMode.getValue() ? night_fontAB16_out : fontAB16_out;
-	}
-
-	public static BitmapFont get15_Out()
-	{
-		return Config.settings.nightMode.getValue() ? night_fontAB15_out : fontAB15_out;
+		return smallBubble;
 	}
 
 	private static BitmapFontCache mesureNormalCache;

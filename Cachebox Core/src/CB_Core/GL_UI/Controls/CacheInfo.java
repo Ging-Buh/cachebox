@@ -142,6 +142,7 @@ public class CacheInfo extends CB_View_Base
 		mCompasswidth = ifModeFlag(SHOW_COMPASS) ? width / 6 : 0;
 
 		mS_FontCache = new BitmapFontCache(mBitmapFontSmall);
+		mS_FontCache.setColor(Fonts.getFontColor());
 		mS_FontCache.setText("S", 0, 0);
 
 		mBottom += mS_FontCache.getBounds().height;
@@ -160,6 +161,7 @@ public class CacheInfo extends CB_View_Base
 		mLeft += mSSprite.getWidth() + mMargin + mMargin;
 
 		mD_FontCache = new BitmapFontCache(mBitmapFontSmall);
+		mD_FontCache.setColor(Fonts.getFontColor());
 		mD_FontCache.setText("D", mLeft, mBottom);
 
 		mLeft += mD_FontCache.getBounds().width + mMargin;
@@ -171,6 +173,7 @@ public class CacheInfo extends CB_View_Base
 		mLeft += mDSprite.getWidth() + mMargin + mMargin;
 
 		mT_FontCache = new BitmapFontCache(mBitmapFontSmall);
+		mT_FontCache.setColor(Fonts.getFontColor());
 		mT_FontCache.setText("T", mLeft, mBottom);
 
 		mLeft += mT_FontCache.getBounds().width + mMargin;
@@ -237,6 +240,10 @@ public class CacheInfo extends CB_View_Base
 			if (mCache.Archived || !mCache.Available)
 			{
 				mInfo_FontCache.setColor(Color.RED);
+			}
+			else
+			{
+				mInfo_FontCache.setColor(Fonts.getFontColor());
 			}
 
 		}

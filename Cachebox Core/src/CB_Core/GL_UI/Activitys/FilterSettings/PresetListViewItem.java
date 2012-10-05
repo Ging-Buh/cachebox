@@ -64,7 +64,7 @@ public class PresetListViewItem extends ListViewItemBackground
 		if (EntryName == null)
 		{
 			EntryName = new BitmapFontCache(Fonts.getNormal());
-
+			EntryName.setColor(Fonts.getFontColor());
 			EntryName.setMultiLineText(name, left + 10, top);
 		}
 		EntryName.draw(batch);

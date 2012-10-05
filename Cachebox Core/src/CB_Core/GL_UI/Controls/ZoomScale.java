@@ -91,11 +91,11 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 			valueBack.draw(batch, FadeValue);
 		}
 
-		com.badlogic.gdx.graphics.Color c = Fonts.getNormal().getColor();
-		Fonts.getNormal().setColor(1f, 1f, 1f, FadeValue);
+		com.badlogic.gdx.graphics.Color c = Fonts.getFontColor();
+		Fonts.getNormal().setColor(c.r, c.g, c.b, FadeValue);
 		Fonts.getNormal().draw(batch, String.valueOf(zoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
 				ValueRec.getY() + ValueRec.getHeight() / 1.15f);
-		Fonts.getNormal().setColor(c.r, c.g, c.b, c.a);
+		Fonts.getNormal().setColor(c.r, c.g, c.b, 1f);
 
 		invalidateTextureEventList.Add(this);
 	}

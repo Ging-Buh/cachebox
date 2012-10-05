@@ -222,10 +222,10 @@ public abstract class EditTextFieldBase extends CB_View_Base
 		ret.background = SpriteCache.textFiledBackground;
 		ret.backgroundFocused = SpriteCache.textFiledBackgroundFocus;
 		ret.font = Fonts.getNormal();
-		ret.fontColor = Color.WHITE;
+		ret.fontColor = Fonts.getFontColor();
 
 		ret.messageFont = Fonts.getSmall();
-		ret.messageFontColor = Color.WHITE;
+		ret.messageFontColor = Fonts.getFontColor();
 
 		ret.cursor = SpriteCache.textFieldCursor;
 

@@ -78,6 +78,8 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		this.mCache = cache;
 		this.mWaypoint = waypoint;
 
+		distance.setColor(Fonts.getFontColor());
+
 		if (waypoint == null) // this Item is the Cache
 		{
 			info = new extendedCacheInfo(UiSizes.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
@@ -243,6 +245,10 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			mNameCache = new BitmapFontCache(Fonts.getNormal());
 			mDescCache = new BitmapFontCache(Fonts.getBubbleNormal());
 			mCoordCache = new BitmapFontCache(Fonts.getBubbleNormal());
+
+			mNameCache.setColor(Fonts.getFontColor());
+			mDescCache.setColor(Fonts.getFontColor());
+			mCoordCache.setColor(Fonts.getFontColor());
 
 			float textYPos = this.height - mMargin;
 

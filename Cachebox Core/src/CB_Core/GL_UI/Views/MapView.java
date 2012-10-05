@@ -1115,8 +1115,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			String Name = drawAsWaypoint ? wpi.Waypoint.Description : wpi.Cache.Name;
 
-			float halfWidth = Fonts.get16_Out().getBounds(wpi.Cache.Name).width / 2;
-			Fonts.get16_Out().draw(batch, Name, screen.x - halfWidth, screen.y - WpUnderlay.halfHeight - NameYMovement);
+			float halfWidth = Fonts.getNormal().getBounds(wpi.Cache.Name).width / 2;
+			Fonts.getNormal().draw(batch, Name, screen.x - halfWidth, screen.y - WpUnderlay.halfHeight - NameYMovement);
 		}
 
 		// Show D/T-Rating

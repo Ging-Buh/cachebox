@@ -73,7 +73,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		mCache = cache;
 		info = new extendedCacheInfo(UiSizes.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
 		info.setZeroPos();
-
+		distance.setColor(Fonts.getFontColor());
 		this.addChild(info);
 		PositionChangedEventList.Add(this);
 

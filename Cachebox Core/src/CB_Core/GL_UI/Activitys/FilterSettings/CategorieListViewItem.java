@@ -151,15 +151,18 @@ public class CategorieListViewItem extends ListViewItemBackground
 			Count += " Caches";
 
 			EntryName = new BitmapFontCache(Fonts.getNormal());
+			EntryName.setColor(Fonts.getFontColor());
 			EntryName.setMultiLineText(Name, left + UiSizes.getMargin(), top);
 
 			top = margin + margin + Fonts.MesureSmall(Count).height;
 
 			EntryDate = new BitmapFontCache(Fonts.getSmall());
+			EntryDate.setColor(Fonts.getFontColor());
 			EntryDate.setMultiLineText(Date, left + UiSizes.getMargin(), top);
 
 			float mesure = Fonts.Mesure(Count).width;
 			EntryCount = new BitmapFontCache(Fonts.getSmall());
+			EntryCount.setColor(Fonts.getFontColor());
 			EntryCount.setMultiLineText(Count, rBounds.getX() - margin - mesure, top);
 
 			// layoutEntryName = new StaticLayout(Name, textPaint, innerWidthName, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);

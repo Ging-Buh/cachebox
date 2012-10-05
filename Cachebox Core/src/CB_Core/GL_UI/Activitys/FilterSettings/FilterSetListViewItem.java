@@ -101,6 +101,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		if (EntryName == null)
 		{
 			EntryName = new BitmapFontCache(Fonts.getNormal());
+			EntryName.setColor(Fonts.getFontColor());
 			if (this.mFilterSetEntry.getItemType() == FilterSetListView.THREE_STATE_ITEM)
 			{
 				float TextWidth = width - (left + 20) - RightWidth - height;
@@ -118,6 +119,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 			if (Value == null)
 			{
 				Value = new BitmapFontCache(Fonts.getBig());
+				Value.setColor(Fonts.getFontColor());
 				setValueFont = true;
 			}
 			if (setValueFont) Value.setText(String.valueOf(getValue()), (width / 1.5f), (height / 1.8f));
@@ -307,6 +309,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		if (Minus == null)
 		{
 			Minus = new BitmapFontCache(Fonts.getBig());
+			Minus.setColor(Fonts.getFontColor());
 			Minus.setText("-", 0, 0);
 			Minus.setPosition(lBounds.getCenterPos().x - (Minus.getBounds().width / 2), lBounds.getCenterPos().y
 					+ (Minus.getBounds().height / 2));
@@ -315,6 +318,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		if (Plus == null)
 		{
 			Plus = new BitmapFontCache(Fonts.getBig());
+			Plus.setColor(Fonts.getFontColor());
 			Plus.setText("+", 0, 0);
 			Plus.setPosition(rBounds.getCenterPos().x - (Plus.getBounds().width / 2), rBounds.getCenterPos().y
 					+ (Plus.getBounds().height / 2));
@@ -454,7 +458,6 @@ public class FilterSetListViewItem extends ListViewItemBackground
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 

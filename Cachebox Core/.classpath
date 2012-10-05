@@ -12,8 +12,7 @@
 	<classpathentry kind="lib" path="lib/kxml2-2.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/sjxp-2.2.jar" sourcepath="C:/Users/dirkr/workspace/sjxp-2.2-sources.jar"/>
 	<classpathentry kind="lib" path="lib/xpp3-1.1.4c.jar"/>
+	<classpathentry kind="lib" path="lib/gdx-freetype.jar"/>
 	<classpathentry kind="lib" path="lib/gdx.jar"/>
-	<classpathentry kind="lib" path="lib/gdx-natives.jar"/>
-	<classpathentry kind="lib" path="lib/gdx-openal.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
