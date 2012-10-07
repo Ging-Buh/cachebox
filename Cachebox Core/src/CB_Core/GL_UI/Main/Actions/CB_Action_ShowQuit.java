@@ -23,7 +23,7 @@ public class CB_Action_ShowQuit extends CB_Action
 	@Override
 	public void Execute()
 	{
-		if (askIsShown) return;
+		// if (askIsShown) return;
 
 		GL_MsgBox.Show(GlobalCore.Translations.Get("QuitReally"), GlobalCore.Translations.Get("Quit?"), MessageBoxButtons.OKCancel,
 				MessageBoxIcon.Stop, new OnMsgBoxClickListener()
