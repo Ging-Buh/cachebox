@@ -18,6 +18,7 @@ import CB_Core.GL_UI.Controls.Dialogs.Toast;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
+import CB_Core.GL_UI.Main.Actions.CB_Action_GenerateRoute;
 import CB_Core.GL_UI.Main.Actions.CB_Action_QuickFieldNote;
 import CB_Core.GL_UI.Main.Actions.CB_Action_RecTrack;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowAbout;
@@ -96,6 +97,8 @@ public class TabMainView extends MainViewBase
 	private CB_Action_ShowActivity actionNavigateTo1;
 	private CB_Action_ShowActivity actionNavigateTo2;
 	public static CB_Action_Show_SelectDB_Dialog actionShowSelectDbDialog = new CB_Action_Show_SelectDB_Dialog();
+
+	public static CB_Action_GenerateRoute actionGenerateRoute = new CB_Action_GenerateRoute();
 
 	public static CB_Action_QuickFieldNote actionQuickFieldNote = new CB_Action_QuickFieldNote();
 
@@ -307,6 +310,7 @@ public class TabMainView extends MainViewBase
 		btn3.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
 		btn3.addAction(new CB_ActionButton(actionShowCompassView, false, GestureDirection.Right));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
+		btn3.addAction(new CB_ActionButton(actionGenerateRoute, false, GestureDirection.Left));
 		btn3.addAction(new CB_ActionButton(actionTestView, false));
 
 		btn4.addAction(new CB_ActionButton(actionQuickFieldNote, false));
@@ -404,6 +408,7 @@ public class TabMainView extends MainViewBase
 
 		btn3.addAction(new CB_ActionButton(actionShowCompassView, true, GestureDirection.Right));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
+		btn3.addAction(new CB_ActionButton(actionGenerateRoute, false, GestureDirection.Left));
 
 		btn4.addAction(new CB_ActionButton(actionQuickFieldNote, false));
 		btn4.addAction(new CB_ActionButton(actionShowFieldNotesView, false));

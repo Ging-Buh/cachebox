@@ -50,6 +50,7 @@ public class CB_Action
 	public static int AID_SHOW_QUIT = 36;
 	public static int AID_QUICK_FIELDNOTE = 37;
 	public static int AID_CHK_STATE = 38;
+	public static int AID_GENERATE_ROUTE = 39;
 
 	protected String name;
 	protected int id;
