@@ -1139,6 +1139,7 @@ public class GL implements ApplicationListener
 		// register render view to darknes animation ready.
 		// use TabMainView to register
 		addRenderView(TabMainView.that, FRAME_RATE_ACTION);
+		renderOnce("ShowDialog");
 
 	}
 

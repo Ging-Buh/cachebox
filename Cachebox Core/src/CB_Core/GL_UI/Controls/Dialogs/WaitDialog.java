@@ -84,7 +84,8 @@ public class WaitDialog extends ButtonDialog
 
 		waitDialog.addChild(waitDialog.label);
 		waitDialog.setButtonCaptions(MessageBoxButtons.NOTHING);
-		GL.that.showDialog(waitDialog);
+		// Dialog will be shown later automatically...
+		// GL.that.showDialog(waitDialog);
 
 		waitDialog.rotateAngle = 0;
 
