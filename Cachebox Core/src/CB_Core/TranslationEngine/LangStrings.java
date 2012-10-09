@@ -90,8 +90,8 @@ public class LangStrings
 
 		if (_RefTranslation == null)
 		{
-			int pos = FilePath.lastIndexOf("lang/") + 5;
-			String LangFileName = FilePath.substring(0, pos) + "en-GB/strings.ini";
+			int pos = FilePath.lastIndexOf("lang") + 4;
+			String LangFileName = FilePath.substring(0, pos) + "/en-GB/strings.ini";
 			_RefTranslation = ReadFile(LangFileName);
 		}
 
