@@ -32,7 +32,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 	private Label lblComment;
 
 	private float secondTab = 0;
-	private static float MesuredLabelHeight = 0;
+	private static float MeasuredLabelHeight = 0;
 
 	public FieldNoteViewItem(CB_RectF rec, int Index, FieldNoteEntry fieldnote)
 	{
@@ -40,7 +40,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 		this.fieldnote = fieldnote;
 		mBackIsInitial = false;
-		MesuredLabelHeight = Fonts.Mesure("T").height * 1.5f;
+		MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
 		headHeight = (UiSizes.getButtonHeight() / 1.5f) + (Dialog.margin);
 
 		iniImage();
@@ -63,8 +63,8 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 	private void iniFoundLabel()
 	{
-		lblFounds = new Label(secondTab, this.height - (headHeight / 2) - (MesuredLabelHeight / 2), width - secondTab - RightWidth
-				- Dialog.margin, MesuredLabelHeight, "");
+		lblFounds = new Label(secondTab, this.height - (headHeight / 2) - (MeasuredLabelHeight / 2), width - secondTab - RightWidth
+				- Dialog.margin, MeasuredLabelHeight, "");
 		lblFounds.setFont(Fonts.getNormal());
 		lblFounds.setText(fieldnote.typeString);
 		this.addChild(lblFounds);
@@ -79,7 +79,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 		try
 		{
-			DateLength = Fonts.Mesure(dateString).width;
+			DateLength = Fonts.Measure(dateString).width;
 		}
 		catch (Exception e)
 		{
@@ -87,7 +87,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 			e.printStackTrace();
 		}
 
-		lblDate = new Label(this.width - RightWidth - DateLength, lblFounds.getY(), DateLength, MesuredLabelHeight, "");
+		lblDate = new Label(this.width - RightWidth - DateLength, lblFounds.getY(), DateLength, MeasuredLabelHeight, "");
 		lblDate.setFont(Fonts.getNormal());
 		lblDate.setText(dateString);
 		this.addChild(lblDate);
@@ -105,8 +105,8 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 	private void iniCacheNameLabel()
 	{
-		lblCacheName = new Label(ivCacheType.getMaxX() + Dialog.margin, this.height - headHeight - MesuredLabelHeight - Dialog.margin,
-				this.width - ivCacheType.getMaxX() - (Dialog.margin * 2), MesuredLabelHeight, "");
+		lblCacheName = new Label(ivCacheType.getMaxX() + Dialog.margin, this.height - headHeight - MeasuredLabelHeight - Dialog.margin,
+				this.width - ivCacheType.getMaxX() - (Dialog.margin * 2), MeasuredLabelHeight, "");
 		lblCacheName.setFont(Fonts.getNormal());
 		lblCacheName.setText(fieldnote.CacheName);
 		this.addChild(lblCacheName);
@@ -115,8 +115,8 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 	private void iniGcCodeLabel()
 	{
-		lblGcCode = new Label(lblCacheName.getX(), lblCacheName.getY() - MesuredLabelHeight - Dialog.margin, this.width
-				- ivCacheType.getMaxX() - (Dialog.margin * 2), MesuredLabelHeight, "");
+		lblGcCode = new Label(lblCacheName.getX(), lblCacheName.getY() - MeasuredLabelHeight - Dialog.margin, this.width
+				- ivCacheType.getMaxX() - (Dialog.margin * 2), MeasuredLabelHeight, "");
 		lblGcCode.setFont(Fonts.getNormal());
 		lblGcCode.setText(fieldnote.gcCode);
 		this.addChild(lblGcCode);

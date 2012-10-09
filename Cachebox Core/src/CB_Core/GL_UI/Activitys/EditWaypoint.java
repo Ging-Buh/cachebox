@@ -111,7 +111,7 @@ public class EditWaypoint extends ActivityBase
 
 	private void iniCacheNameLabel()
 	{
-		tvCacheName = new Label(Left + margin, height - Top - MesuredLabelHeight, width - Left - Right - margin, MesuredLabelHeight,
+		tvCacheName = new Label(Left + margin, height - Top - MeasuredLabelHeight, width - Left - Right - margin, MeasuredLabelHeight,
 				"CacheNameLabel");
 		tvCacheName.setFont(Fonts.getBubbleNormal());
 		tvCacheName.setText(GlobalCore.SelectedCache().Name);
@@ -138,7 +138,7 @@ public class EditWaypoint extends ActivityBase
 
 	private void iniLabelTyp()
 	{
-		tvTyp = new Label(Left + margin, bCoord.getY() - margin - MesuredLabelHeight, width - Left - Right - margin, MesuredLabelHeight,
+		tvTyp = new Label(Left + margin, bCoord.getY() - margin - MeasuredLabelHeight, width - Left - Right - margin, MeasuredLabelHeight,
 				"TypeLabel");
 		tvTyp.setFont(Fonts.getBubbleNormal());
 		tvTyp.setText(GlobalCore.Translations.Get("type"));
@@ -262,7 +262,7 @@ public class EditWaypoint extends ActivityBase
 
 	private void iniLabelTitle()
 	{
-		tvTitle = new Label(Left + margin, sType.getY() - margin - MesuredLabelHeight, width - Left - Right - margin, MesuredLabelHeight,
+		tvTitle = new Label(Left + margin, sType.getY() - margin - MeasuredLabelHeight, width - Left - Right - margin, MeasuredLabelHeight,
 				"TitleLabel");
 		tvTitle.setFont(Fonts.getBubbleNormal());
 		tvTitle.setText(GlobalCore.Translations.Get("Title"));
@@ -282,8 +282,8 @@ public class EditWaypoint extends ActivityBase
 
 	private void iniLabelDesc()
 	{
-		tvDescription = new Label(Left + margin, etTitle.getY() - margin - MesuredLabelHeight, width - Left - Right - margin,
-				MesuredLabelHeight, "DescLabel");
+		tvDescription = new Label(Left + margin, etTitle.getY() - margin - MeasuredLabelHeight, width - Left - Right - margin,
+				MeasuredLabelHeight, "DescLabel");
 		tvDescription.setFont(Fonts.getBubbleNormal());
 		tvDescription.setText(GlobalCore.Translations.Get("Description"));
 		scrollBox.addChild(tvDescription);
@@ -319,8 +319,8 @@ public class EditWaypoint extends ActivityBase
 
 	private void iniLabelClue()
 	{
-		tvClue = new Label(Left + margin, etDescription.getY() - margin - MesuredLabelHeight, width - Left - Right - margin,
-				MesuredLabelHeight, "ClueLabel");
+		tvClue = new Label(Left + margin, etDescription.getY() - margin - MeasuredLabelHeight, width - Left - Right - margin,
+				MeasuredLabelHeight, "ClueLabel");
 		tvClue.setFont(Fonts.getBubbleNormal());
 		tvClue.setText(GlobalCore.Translations.Get("Clue"));
 		scrollBox.addChild(tvClue);
@@ -441,7 +441,7 @@ public class EditWaypoint extends ActivityBase
 	{
 		if (y < this.halfHeight)// wird von softKeyboard verdeckt
 		{
-			scrollBox.setY(this.height - maxY - MesuredLabelHeight);
+			scrollBox.setY(this.height - maxY - MeasuredLabelHeight);
 		}
 		else
 		{
@@ -453,8 +453,8 @@ public class EditWaypoint extends ActivityBase
 	{
 		float maxTextFieldHeight = this.height / 2.3f;
 		float rand = etClue.getStyle().background.getBottomHeight() + etClue.getStyle().background.getTopHeight();
-		float descriptionHeight = Math.min(maxTextFieldHeight, etDescription.getMesuredHeight() + rand);
-		float clueHeight = Math.min(maxTextFieldHeight, etClue.getMesuredHeight() + rand);
+		float descriptionHeight = Math.min(maxTextFieldHeight, etDescription.getMeasuredHeight() + rand);
+		float clueHeight = Math.min(maxTextFieldHeight, etClue.getMeasuredHeight() + rand);
 
 		descriptionHeight = Math.max(descriptionHeight, UiSizes.getButtonHeight());
 		clueHeight = Math.max(clueHeight, UiSizes.getButtonHeight());
@@ -464,7 +464,7 @@ public class EditWaypoint extends ActivityBase
 
 		etDescription.setY(tvDescription.getY() - descriptionHeight);
 
-		tvClue.setY(etDescription.getY() - margin - MesuredLabelHeight);
+		tvClue.setY(etDescription.getY() - margin - MeasuredLabelHeight);
 
 		etClue.setY(tvClue.getY() - clueHeight);
 

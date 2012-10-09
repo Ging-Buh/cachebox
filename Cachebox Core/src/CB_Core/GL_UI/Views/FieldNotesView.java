@@ -129,7 +129,7 @@ public class FieldNotesView extends V_ListView
 			FieldNoteEntry fne = fieldNoteList.get(position);
 
 			CB_RectF rec = ItemRec.copy().ScaleCenter(0.97f);
-			rec.setHeight(mesureItemHeight(fne));
+			rec.setHeight(MeasureItemHeight(fne));
 			FieldNoteViewItem v = new FieldNoteViewItem(rec, position, fne);
 
 			v.setOnLongClickListener(itemLogClickListner);
@@ -142,13 +142,13 @@ public class FieldNotesView extends V_ListView
 		{
 			if (position > fieldNoteList.size() || fieldNoteList.size() == 0) return 0;
 			FieldNoteEntry fne = fieldNoteList.get(position);
-			return mesureItemHeight(fne);
+			return MeasureItemHeight(fne);
 		}
 
-		private float mesureItemHeight(FieldNoteEntry fne)
+		private float MeasureItemHeight(FieldNoteEntry fne)
 		{
 			float headHeight = (UiSizes.getButtonHeight() / 1.5f) + (Dialog.margin);
-			float cacheIfoHeight = (UiSizes.getButtonHeight() / 1.5f) + Dialog.margin + Fonts.Mesure("T").height;
+			float cacheIfoHeight = (UiSizes.getButtonHeight() / 1.5f) + Dialog.margin + Fonts.Measure("T").height;
 			float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic()
 					- ListViewItemBackground.getRightWidthStatic() - (Dialog.margin * 2);
 
@@ -157,7 +157,7 @@ public class FieldNotesView extends V_ListView
 			{
 				if (fne.comment != null && !(fne.comment.length() == 0))
 				{
-					mh = Fonts.MesureWrapped(fne.comment, mesurdWidth).height;
+					mh = Fonts.MeasureWrapped(fne.comment, mesurdWidth).height;
 				}
 			}
 			catch (Exception e)

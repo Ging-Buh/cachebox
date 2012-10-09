@@ -32,11 +32,11 @@ public class CacheInfo extends CB_View_Base
 	public static final int SHOW_LAST_FOUND = 32;
 	public static final int SHOW_ATTRIBUTES = 64;
 
-	public static final int VIEW_MODE_CACHE_LIST = SHOW_GC + SHOW_NAME + SHOW_COMPASS; // 19;
-	public static final int VIEW_MODE_DESCRIPTION = SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_COMPASS; // 29;
-	public static final int VIEW_MODE_SLIDER = SHOW_ATTRIBUTES + SHOW_LAST_FOUND + SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_NAME; // 126
-	public static final int VIEW_MODE_WAYPOINTS = SHOW_COORDS + SHOW_NAME + SHOW_COMPASS; // 11
-	public static final int VIEW_MODE_BUBBLE = SHOW_COORDS + SHOW_OWNER + SHOW_NAME; // SHOW_GC & 30
+	public static final int VIEW_MODE_CACHE_LIST = SHOW_GC | SHOW_NAME | SHOW_COMPASS; // 19;
+	public static final int VIEW_MODE_DESCRIPTION = SHOW_GC | SHOW_COORDS | SHOW_OWNER | SHOW_COMPASS; // 29;
+	public static final int VIEW_MODE_SLIDER = SHOW_ATTRIBUTES | SHOW_LAST_FOUND | SHOW_GC | SHOW_COORDS | SHOW_OWNER | SHOW_NAME; // 126
+	public static final int VIEW_MODE_WAYPOINTS = SHOW_COORDS | SHOW_NAME | SHOW_COMPASS; // 11
+	public static final int VIEW_MODE_BUBBLE = SHOW_GC | SHOW_COORDS | SHOW_OWNER | SHOW_NAME; // 30
 
 	private static final SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
 
@@ -132,59 +132,67 @@ public class CacheInfo extends CB_View_Base
 	private void requestLayout()
 	{
 		this.removeChilds();
-		float scaleFactor = width / UiSizes.getCacheListItemRec().getWidth();
-		float mLeft = 3 * scaleFactor;
-		float mTop = 3 * scaleFactor;
-		mMargin = mLeft;
 
+		float scaleFactor = width / UiSizes.getCacheListItemRec().getWidth();
+		mMargin = 3 * scaleFactor;
+
+		float mLeft = mMargin;
+		float mTop = mMargin;
 		float mBottom = mMargin;
 
 		mCompasswidth = ifModeFlag(SHOW_COMPASS) ? width / 6 : 0;
-
+		// Size
 		mS_FontCache = new BitmapFontCache(mBitmapFontSmall);
 		mS_FontCache.setColor(Fonts.getFontColor());
-		mS_FontCache.setText("S", 0, 0);
-
+		String CacheSize = "";
+		switch ((int) (mCache.Size.ordinal()))
+		{
+		case 1:
+			CacheSize = "M"; // micro;
+			break;
+		case 2:
+			CacheSize = "S"; // small;
+			break;
+		case 3:
+			CacheSize = "R"; // regular;
+			break;
+		case 4:
+			CacheSize = "L"; // large;
+			break;
+		default:
+			CacheSize = "O"; // other;
+			break;
+		}
+		mS_FontCache.setText(CacheSize, 0, 0);
 		mBottom += mS_FontCache.getBounds().height;
 		float mSpriteBottom = mMargin;
-
 		mS_FontCache.setPosition(mLeft, mBottom);
-
 		mLeft += mS_FontCache.getBounds().width + mMargin;
 		float starHeight = mS_FontCache.getBounds().height * 1.1f;
 		mStarSize = new SizeF(starHeight * 5, starHeight);
 		mStarSize.scale(scaleFactor);
-
 		mSSprite = new Sprite(SpriteCache.SizesIcons.get((int) (mCache.Size.ordinal())));
 		mSSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
-
+		// Difficulty
 		mLeft += mSSprite.getWidth() + mMargin + mMargin;
-
 		mD_FontCache = new BitmapFontCache(mBitmapFontSmall);
 		mD_FontCache.setColor(Fonts.getFontColor());
 		mD_FontCache.setText("D", mLeft, mBottom);
-
 		mLeft += mD_FontCache.getBounds().width + mMargin;
-
 		mDSprite = new Sprite(SpriteCache.Stars.get((int) (mCache.Difficulty * 2)));
 		mDSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
 		mDSprite.setRotation(0);
-
+		// Terrain
 		mLeft += mDSprite.getWidth() + mMargin + mMargin;
-
 		mT_FontCache = new BitmapFontCache(mBitmapFontSmall);
 		mT_FontCache.setColor(Fonts.getFontColor());
 		mT_FontCache.setText("T", mLeft, mBottom);
-
 		mLeft += mT_FontCache.getBounds().width + mMargin;
-
 		mTSprite = new Sprite(SpriteCache.Stars.get((int) (mCache.Terrain * 2)));
 		mTSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
 		mTSprite.setRotation(0);
-
-		mLeft += mTSprite.getWidth() + mMargin + mMargin + mMargin + mMargin;
-
 		// Draw TB
+		mLeft += mTSprite.getWidth() + mMargin + mMargin + mMargin + mMargin;
 		int numTb = mCache.NumTravelbugs;
 		if (numTb > 0)
 		{
@@ -202,9 +210,8 @@ public class CacheInfo extends CB_View_Base
 				mTB_FontCache.setText("x" + String.valueOf(numTb), mLeft, mBottom);
 			}
 		}
-
-		mLeft = 4 * scaleFactor;
-		mLeft *= -1;
+		// Rating stars
+		mLeft = -4 * scaleFactor;
 		mIconSize = mT_FontCache.getBounds().height * 3.5f * scaleFactor;
 		mStarSize.scale(0.7f);
 		mRatingSprite = new Sprite(SpriteCache.Stars.get((int) Math.min(mCache.Rating * 2, 5 * 2)));
@@ -213,9 +220,8 @@ public class CacheInfo extends CB_View_Base
 		mRatingSprite.setOrigin(0, mStarSize.halfHeight);
 		mRatingSprite.setRotation(90);
 		mRatingSprite.setColor(gcVoteColor);
-
+		//
 		mLeft += starHeight;
-
 		Vector2 mSpriteCachePos = new Vector2(mLeft + mMargin, height - mTop - mIconSize);
 
 		{// Text zusammensetzen

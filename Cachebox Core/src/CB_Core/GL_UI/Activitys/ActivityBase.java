@@ -14,8 +14,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class ActivityBase extends Dialog
 {
 	protected ActivityBase that;
-	protected float MesuredLabelHeight;
-	protected float MesuredLabelHeightBig;
+	protected float MeasuredLabelHeight;
+	protected float MeasuredLabelHeightBig;
 	protected float ButtonHeight;
 	protected float innerWidth;
 
@@ -28,8 +28,8 @@ public class ActivityBase extends Dialog
 
 		Left = Right = Top = Bottom = drawableBackground.getLeftWidth() / 2;
 		innerWidth = this.width - Left - Left;
-		MesuredLabelHeight = Fonts.Mesure("T").height * 1.5f;
-		MesuredLabelHeightBig = Fonts.MesureBig("T").height * 1.5f;
+		MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
+		MeasuredLabelHeightBig = Fonts.MeasureBig("T").height * 1.5f;
 		ButtonHeight = UiSizes.getButtonHeight();
 	}
 

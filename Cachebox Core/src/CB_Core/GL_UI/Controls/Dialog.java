@@ -201,7 +201,7 @@ public abstract class Dialog extends CB_View_Base
 		{
 			mHasTitle = true;
 
-			TextBounds bounds = Fonts.Mesure(mTitle);
+			TextBounds bounds = Fonts.Measure(mTitle);
 			mTitleWidth = bounds.width + (6.666f * pW);
 			if (mTitleWidth > this.width) mTitleWidth = this.width;// - (1.666f * pW);
 
@@ -310,7 +310,7 @@ public abstract class Dialog extends CB_View_Base
 
 	public static float calcHeaderHeight()
 	{
-		return (Fonts.Mesure("T").height) / 2;
+		return (Fonts.Measure("T").height) / 2;
 	}
 
 	public static float calcFooterHeight(boolean hasButtons)

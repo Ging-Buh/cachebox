@@ -104,7 +104,7 @@ public class JokerViewItem extends View
 		else
 		{
 			// Measure the text
-			result = (int) Global.Paints.mesurePaint.measureText(cache.Name) + getPaddingLeft() + getPaddingRight();
+			result = (int) Global.Paints.measurePaint.measureText(cache.Name) + getPaddingLeft() + getPaddingRight();
 			if (specMode == MeasureSpec.AT_MOST)
 			{
 				// Respect AT_MOST value if that was what is called for by
@@ -129,7 +129,7 @@ public class JokerViewItem extends View
 		int specMode = MeasureSpec.getMode(measureSpec);
 		int specSize = MeasureSpec.getSize(measureSpec);
 
-		mAscent = (int) Global.Paints.mesurePaint.ascent();
+		mAscent = (int) Global.Paints.measurePaint.ascent();
 		if (specMode == MeasureSpec.EXACTLY)
 		{
 			// We were told how big to be
@@ -138,7 +138,7 @@ public class JokerViewItem extends View
 		else
 		{
 			// Measure the text (beware: ascent is a negative number)
-			result = (int) (-mAscent + Global.Paints.mesurePaint.descent()) + getPaddingTop() + getPaddingBottom();
+			result = (int) (-mAscent + Global.Paints.measurePaint.descent()) + getPaddingTop() + getPaddingBottom();
 			if (specMode == MeasureSpec.AT_MOST)
 			{
 				// Respect AT_MOST value if that was what is called for by

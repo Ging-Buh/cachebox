@@ -173,7 +173,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 		pgBar.setProgress(0, "");
 
-		float SmallLineHeight = Fonts.MesureSmall("T").height;
+		float SmallLineHeight = Fonts.MeasureSmall("T").height;
 
 		lblProgressMsg = new Label(Left + margin, lblTitle.getY() - margin - SmallLineHeight, this.getWidth() - Left - Right - margin
 				- margin, SmallLineHeight, "ProgressMsg");
@@ -711,7 +711,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 				finish();
 
-				// finish close activity and notifay changes
+				// finish close activity and notify changes
 
 				CachListChangedEventList.Call();
 

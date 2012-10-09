@@ -282,7 +282,7 @@ public class Global
 
 	public static class Paints
 	{
-		public static Paint mesurePaint;
+		public static Paint measurePaint;
 		public static Paint ListBackground;
 
 		public static class Day
@@ -309,8 +309,8 @@ public class Global
 
 			// calc sizes
 
-			mesurePaint = new Paint();
-			mesurePaint.setTextSize(UiSizes.getScaledFontSize());
+			measurePaint = new Paint();
+			measurePaint.setTextSize(UiSizes.getScaledFontSize());
 
 			ListBackground = new Paint();
 			Night.ListBackground_second = new Paint();

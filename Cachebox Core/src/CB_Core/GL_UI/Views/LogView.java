@@ -97,7 +97,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 		for (LogEntry logEntry : cleanLogs)
 		{
 			CB_RectF rec = ItemRec.copy();
-			rec.setHeight(mesureItemHeight(logEntry));
+			rec.setHeight(MeasureItemHeight(logEntry));
 			LogViewItem v = new LogViewItem(rec, index++, logEntry);
 
 			itemList.add(v);
@@ -105,14 +105,14 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 
 	}
 
-	private float mesureItemHeight(LogEntry logEntry)
+	private float MeasureItemHeight(LogEntry logEntry)
 	{
 		float headHeight = (UiSizes.getButtonHeight() / 1.5f) + (Dialog.margin);
 
 		float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic()
 				- (Dialog.margin * 2);
 
-		float commentHeight = (Dialog.margin * 3) + Fonts.MesureWrapped(logEntry.Comment, mesurdWidth).height;
+		float commentHeight = (Dialog.margin * 3) + Fonts.MeasureWrapped(logEntry.Comment, mesurdWidth).height;
 
 		return headHeight + commentHeight;
 	}

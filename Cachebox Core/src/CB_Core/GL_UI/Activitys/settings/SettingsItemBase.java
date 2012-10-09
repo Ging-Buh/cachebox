@@ -9,7 +9,7 @@ public class SettingsItemBase extends ListViewItemBackground
 {
 	protected Label lblName, lblDefault;
 
-	private static float MesuredLabelHeight = -1;
+	private static float MeasuredLabelHeight = -1;
 
 	public SettingsItemBase(CB_RectF rec, int Index, String Name)
 	{
@@ -17,7 +17,7 @@ public class SettingsItemBase extends ListViewItemBackground
 		Initial();
 		Left = Right = Top = Bottom = LeftWidth / 2;
 
-		if (MesuredLabelHeight == -1) MesuredLabelHeight = Fonts.MesureSmall("Tg").height;
+		if (MeasuredLabelHeight == -1) MeasuredLabelHeight = Fonts.MeasureSmall("Tg").height;
 
 		CB_RectF LblRec = new CB_RectF(Left, 0, this.width - Left - Right, this.halfHeight);
 
@@ -25,8 +25,8 @@ public class SettingsItemBase extends ListViewItemBackground
 		lblDefault.setFont(Fonts.getSmall());
 		this.addChild(lblDefault);
 
-		LblRec.setY(MesuredLabelHeight);
-		LblRec.setHeight(this.height - MesuredLabelHeight);
+		LblRec.setY(MeasuredLabelHeight);
+		LblRec.setHeight(this.height - MeasuredLabelHeight);
 
 		lblName = new Label(LblRec, "");
 		lblName.setFont(Fonts.getNormal());
@@ -42,14 +42,14 @@ public class SettingsItemBase extends ListViewItemBackground
 	public void setName(String name)
 	{
 		lblName.setWrappedText(name);
-		lblName.setMesuredHeight();
+		lblName.setMeasuredHeight();
 		layout();
 	}
 
 	public void setDefault(String def)
 	{
 		lblDefault.setWrappedText(def);
-		lblDefault.setMesuredHeight();
+		lblDefault.setMeasuredHeight();
 		layout();
 	}
 

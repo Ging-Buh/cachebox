@@ -163,39 +163,41 @@ public class Fonts
 		return smallBubble;
 	}
 
-	private static BitmapFontCache mesureNormalCache;
-	private static BitmapFontCache mesureSmallCache;
-	private static BitmapFontCache mesureBigCache;
+	private static BitmapFontCache measureNormalCache;
+	private static BitmapFontCache measureSmallCache;
+	private static BitmapFontCache measureBigCache;
 
-	public static TextBounds Mesure(String txt)
+	//
+
+	public static TextBounds Measure(String txt)
 	{
 		if (txt == null || txt.equals("")) txt = "text";
-		if (mesureNormalCache == null) mesureNormalCache = new BitmapFontCache(Fonts.getNormal());
-		TextBounds bounds = mesureNormalCache.setText(txt, 0, 0);
+		if (measureNormalCache == null) measureNormalCache = new BitmapFontCache(Fonts.getNormal());
+		TextBounds bounds = measureNormalCache.setText(txt, 0, 0);
 
 		return bounds;
 	}
 
-	public static TextBounds MesureSmall(String txt)
+	public static TextBounds MeasureSmall(String txt)
 	{
-		if (mesureSmallCache == null) mesureSmallCache = new BitmapFontCache(Fonts.getSmall());
-		TextBounds bounds = mesureSmallCache.setText(txt, 0, 0);
+		if (measureSmallCache == null) measureSmallCache = new BitmapFontCache(Fonts.getSmall());
+		TextBounds bounds = measureSmallCache.setText(txt, 0, 0);
 
 		return bounds;
 	}
 
-	public static TextBounds MesureBig(String txt)
+	public static TextBounds MeasureBig(String txt)
 	{
-		if (mesureBigCache == null) mesureBigCache = new BitmapFontCache(Fonts.getBig());
-		TextBounds bounds = mesureBigCache.setText(txt, 0, 0);
+		if (measureBigCache == null) measureBigCache = new BitmapFontCache(Fonts.getBig());
+		TextBounds bounds = measureBigCache.setText(txt, 0, 0);
 
 		return bounds;
 	}
 
-	public static TextBounds MesureWrapped(String txt, float width)
+	public static TextBounds MeasureWrapped(String txt, float width)
 	{
-		if (mesureNormalCache == null) mesureNormalCache = new BitmapFontCache(Fonts.getNormal());
-		TextBounds bounds = mesureNormalCache.setWrappedText(txt, 0, 0, width);
+		if (measureNormalCache == null) measureNormalCache = new BitmapFontCache(Fonts.getNormal());
+		TextBounds bounds = measureNormalCache.setWrappedText(txt, 0, 0, width);
 
 		return bounds;
 	}

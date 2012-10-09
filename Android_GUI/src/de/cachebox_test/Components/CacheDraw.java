@@ -54,7 +54,7 @@ public class CacheDraw
 		DrawInfo(cache, canvas, DrawChangedRect, BackgroundColor, drawStyle, false);
 	}
 
-	// Static Mesured Member
+	// Static Measured Member
 
 	private static int VoteWidth = 0;
 	private static int rightBorder = 0;
@@ -144,7 +144,7 @@ public class CacheDraw
 		final int SDTImageTop = (int) (height - (UiSizes.getScaledFontSize() / 0.9)) + rec.getPos().y;
 		final int SDTLineTop = SDTImageTop + UiSizes.getScaledFontSize();
 
-		// Mesure
+		// Measure
 		if (VoteWidth == 0) // Grössen noch nicht berechnet
 		{
 

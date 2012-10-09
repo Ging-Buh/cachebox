@@ -21,7 +21,7 @@ import CB_Core.Math.UiSizes;
 
 public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 {
-	public float mesuredLabelHeight = 0;
+	public float measuredLabelHeight = 0;
 
 	public ProgressDialog(Size size, String name)
 	{
@@ -42,9 +42,9 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 			}
 		});
 
-		mesuredLabelHeight = Fonts.Mesure("T").height * 1.5f;
+		measuredLabelHeight = Fonts.Measure("T").height * 1.5f;
 
-		progressMessageTextView = new Label(Left, margin, this.width - Left - Right, mesuredLabelHeight, "");
+		progressMessageTextView = new Label(Left, margin, this.width - Left - Right, measuredLabelHeight, "");
 		this.addChild(progressMessageTextView);
 
 		CB_RectF rec = new CB_RectF(0, progressMessageTextView.getMaxY() + margin, this.getContentSize().width,
@@ -54,7 +54,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 		progressBar.setProgress(0);
 		this.addChild(progressBar);
 
-		messageTextView = new Label(Left, progressBar.getMaxY() + margin, this.width - Left - Right, mesuredLabelHeight, "");
+		messageTextView = new Label(Left, progressBar.getMaxY() + margin, this.width - Left - Right, measuredLabelHeight, "");
 		this.addChild(messageTextView);
 
 	}
@@ -80,7 +80,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 
 		ProgressDialog PD = new ProgressDialog(calcMsgBoxSize(title, true, true, true), "");
 
-		PD.setHeight(PD.getHeight() + (PD.mesuredLabelHeight * 2f));
+		PD.setHeight(PD.getHeight() + (PD.measuredLabelHeight * 2f));
 
 		PD.setTitle(titleText);
 		GL.that.showDialog(PD);

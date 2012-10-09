@@ -347,14 +347,14 @@ public class ButtonDialog extends Dialog
 
 		float MsgWidth = (Width * 0.95f) - 5 - UiSizes.getButtonHeight();
 
-		TextBounds bounds = Fonts.MesureWrapped(Text, MsgWidth);
-		float mesuredTextHeight = bounds.height + (margin * 2);
+		TextBounds bounds = Fonts.MeasureWrapped(Text, MsgWidth);
+		float MeasuredTextHeight = bounds.height + (margin * 2);
 
-		int Height = (int) (hasIcon ? Math.max(mesuredTextHeight, (int) UiSizes.getButtonHeight()) : (int) mesuredTextHeight);
+		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, (int) UiSizes.getButtonHeight()) : (int) MeasuredTextHeight);
 
 		if (hasTitle)
 		{
-			TextBounds titleBounds = Fonts.Mesure("T");
+			TextBounds titleBounds = Fonts.Measure("T");
 			Height += (titleBounds.height * 3);
 			Height += margin * 2;
 		}

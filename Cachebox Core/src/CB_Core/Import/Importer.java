@@ -130,12 +130,12 @@ public class Importer
 			}
 			catch (FileNotFoundException e1)
 			{
-				 
+
 				e1.printStackTrace();
 			}
 			catch (IOException e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 
@@ -162,7 +162,7 @@ public class Importer
 			}
 			catch (InterruptedException e2)
 			{
-				return; // Thread Canceld
+				return; // Thread Canceled
 			}
 
 			ip.ProgressInkrement("ImportGPX", "Import: " + File.getName(), false);

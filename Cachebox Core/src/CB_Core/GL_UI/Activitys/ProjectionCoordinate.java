@@ -88,7 +88,7 @@ public class ProjectionCoordinate extends ActivityBase
 
 	private void iniCacheNameLabel()
 	{
-		CB_RectF rec = new CB_RectF(Left + margin, height - Top - MesuredLabelHeight, width - Left - Right - margin, MesuredLabelHeight);
+		CB_RectF rec = new CB_RectF(Left + margin, height - Top - MeasuredLabelHeight, width - Left - Right - margin, MeasuredLabelHeight);
 
 		Title = new Label(rec, "CacheNameLabel");
 		Title.setText(this.name);
@@ -117,8 +117,8 @@ public class ProjectionCoordinate extends ActivityBase
 	private void iniCoordButton2()
 	{
 
-		CB_RectF labelRec = new CB_RectF(Left + margin, bCoord.getY() - ButtonHeight - MesuredLabelHeight, this.width - Left - Right,
-				MesuredLabelHeight);
+		CB_RectF labelRec = new CB_RectF(Left + margin, bCoord.getY() - ButtonHeight - MeasuredLabelHeight, this.width - Left - Right,
+				MeasuredLabelHeight);
 
 		lblP2P = new Label(labelRec, "lblBearing");
 		lblP2P.setText(GlobalCore.Translations.Get("toPoint"));
@@ -143,17 +143,17 @@ public class ProjectionCoordinate extends ActivityBase
 
 	private void iniTextFields()
 	{
-		// mesure label width
+		// measure label width
 		String sBearing = GlobalCore.Translations.Get("Bearing");
 		String sDistance = radius ? "Radius" : GlobalCore.Translations.Get("Distance");
 		String sUnit = ImperialUnits ? "yd" : "m";
 
-		float wB = Fonts.Mesure(sBearing).width;
-		float wD = Fonts.Mesure(sDistance).width;
+		float wB = Fonts.Measure(sBearing).width;
+		float wD = Fonts.Measure(sDistance).width;
 		float wMax = Math.max(wB, wD);
 
 		float y = bCoord.getY() - ButtonHeight;
-		float eWidth = Fonts.Mesure(sUnit).width;
+		float eWidth = Fonts.Measure(sUnit).width;
 		CB_RectF labelRec = new CB_RectF(Left, y, wMax, ButtonHeight);
 		CB_RectF textFieldRec = new CB_RectF(labelRec.getMaxX(), y, width - Left - Right - labelRec.getWidth() - eWidth - (margin * 2),
 				ButtonHeight);

@@ -156,8 +156,8 @@ public class SearchOverPosition extends ActivityBase
 		String sRadius = GlobalCore.Translations.Get("Radius");
 		String sEinheit = Config.settings.ImperialUnits.getValue() ? "mi" : "km";
 
-		float wRadius = Fonts.Mesure(sRadius).width;
-		float wEinheit = Fonts.Mesure(sEinheit).width;
+		float wRadius = Fonts.Measure(sRadius).width;
+		float wEinheit = Fonts.Measure(sEinheit).width;
 
 		float y = box.getHeight() - margin - lineHeight;
 

@@ -23,11 +23,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class MesureCoordinate extends ActivityBase implements PositionChangedEvent
+public class MeasureCoordinate extends ActivityBase implements PositionChangedEvent
 {
 	private Button bOK = null;
 	private Button bCancel = null;
-	private MesureCoordinate that;
+	private MeasureCoordinate that;
 	private MeasuredCoordList mMeasureList = new MeasuredCoordList();
 	private Label lblMeasureCount;
 	private Label lblMeasureCoord;
@@ -48,7 +48,7 @@ public class MesureCoordinate extends ActivityBase implements PositionChangedEve
 		public void returnCoord(Coordinate coord);
 	}
 
-	public MesureCoordinate(CB_RectF rec, String Name, ReturnListner listner)
+	public MeasureCoordinate(CB_RectF rec, String Name, ReturnListner listner)
 	{
 		super(rec, Name);
 		mReturnListner = listner;
@@ -116,10 +116,10 @@ public class MesureCoordinate extends ActivityBase implements PositionChangedEve
 	private void iniLabels()
 	{
 		float y = bOK.getMaxY() + (that.width - Left - Right) + (margin * 3);
-		float w = Math.max(Fonts.Mesure(GlobalCore.Translations.Get("MeasureCoord")).width,
-				Fonts.Mesure(GlobalCore.Translations.Get("MeasureCount")).width);
-		CB_RectF rec = new CB_RectF(Left + margin, y, w, MesuredLabelHeight);
-		CB_RectF rec2 = new CB_RectF(rec.getMaxX() + margin, y, width - Left - Right - w - margin, MesuredLabelHeight);
+		float w = Math.max(Fonts.Measure(GlobalCore.Translations.Get("MeasureCoord")).width,
+				Fonts.Measure(GlobalCore.Translations.Get("MeasureCount")).width);
+		CB_RectF rec = new CB_RectF(Left + margin, y, w, MeasuredLabelHeight);
+		CB_RectF rec2 = new CB_RectF(rec.getMaxX() + margin, y, width - Left - Right - w - margin, MeasuredLabelHeight);
 
 		lblDescMeasureCount = new Label(rec, "");
 
@@ -278,7 +278,7 @@ public class MesureCoordinate extends ActivityBase implements PositionChangedEve
 
 		redraw = false;
 
-		GL.that.renderOnce("MesureCoord");
+		GL.that.renderOnce("MeasureCoord");
 	}
 
 	@Override
@@ -321,7 +321,7 @@ public class MesureCoordinate extends ActivityBase implements PositionChangedEve
 	@Override
 	public String getReceiverName()
 	{
-		return "MesureCoordinate";
+		return "MeasureCoordinate";
 	}
 
 }

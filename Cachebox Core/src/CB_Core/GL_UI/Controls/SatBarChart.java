@@ -126,7 +126,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 		drawing.flip(false, true);
 		p.dispose();
 		redraw = false;
-		GL.that.renderOnce("MesureCoord");
+		GL.that.renderOnce("MeasureCoord");
 
 	}
 

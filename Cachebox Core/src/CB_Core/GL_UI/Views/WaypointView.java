@@ -13,7 +13,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.EditWaypoint;
 import CB_Core.GL_UI.Activitys.EditWaypoint.ReturnListner;
-import CB_Core.GL_UI.Activitys.MesureCoordinate;
+import CB_Core.GL_UI.Activitys.MeasureCoordinate;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate.Type;
 import CB_Core.GL_UI.Controls.List.Adapter;
@@ -341,7 +341,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 					addProjection();
 					return true;
 				case MI_FROM_GPS:
-					addMesure();
+					addMeasure();
 					return true;
 
 				}
@@ -525,11 +525,11 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 	}
 
-	private void addMesure()
+	private void addMeasure()
 	{
 		createNewWaypoint = true;
 
-		MesureCoordinate mC = new MesureCoordinate(ActivityBase.ActivityRec(), "Projection", new MesureCoordinate.ReturnListner()
+		MeasureCoordinate mC = new MeasureCoordinate(ActivityBase.ActivityRec(), "Projection", new MeasureCoordinate.ReturnListner()
 		{
 
 			@Override

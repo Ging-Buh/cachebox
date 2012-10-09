@@ -23,7 +23,7 @@ public class Linearlayout extends CB_View_Base
 	public Linearlayout(float width, String Name)
 	{
 		super(new CB_RectF(0, 0, width, 0), Name);
-		margin = (Fonts.Mesure("T").height) / 2;
+		margin = (Fonts.Measure("T").height) / 2;
 	}
 
 	public interface LayoutChanged

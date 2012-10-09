@@ -384,7 +384,7 @@ public class Label extends CB_View_Base
 	/**
 	 * setzt die Höhe des Labels auf die gemessene Höhe!
 	 */
-	public void setMesuredHeight()
+	public void setMeasuredHeight()
 	{
 		float m = cache.getFont().getLineHeight() + (cache.getFont().getAscent() * 2);
 

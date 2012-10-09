@@ -219,7 +219,7 @@ public class EditFieldNotes extends ActivityBase
 
 	private void iniNameLabel()
 	{
-		tvCacheName = new Label(Left + margin, height - Top - MesuredLabelHeight, width - Left - Right - margin, MesuredLabelHeight,
+		tvCacheName = new Label(Left + margin, height - Top - MeasuredLabelHeight, width - Left - Right - margin, MeasuredLabelHeight,
 				"CacheNameLabel");
 		tvCacheName.setFont(Fonts.getBig());
 		tvCacheName.setText(fieldNote.CacheName);
@@ -249,8 +249,8 @@ public class EditFieldNotes extends ActivityBase
 
 	private void iniDate()
 	{
-		LabelWidth = Math.max(Fonts.Mesure(GlobalCore.Translations.Get("date")).width,
-				Fonts.Mesure(GlobalCore.Translations.Get("time")).width);
+		LabelWidth = Math.max(Fonts.Measure(GlobalCore.Translations.Get("date")).width,
+				Fonts.Measure(GlobalCore.Translations.Get("time")).width);
 		LabelWidth *= 1.3;// use Big Font
 
 		lblDate = new Label(secondTab, tvFounds.getY() - UiSizes.getButtonHeight() - (margin * 3), LabelWidth, UiSizes.getButtonHeight(),
@@ -313,7 +313,7 @@ public class EditFieldNotes extends ActivityBase
 		// set Size to linecount
 		float maxTextFieldHeight = this.height / 2.3f;
 		float rand = etComment.getStyle().background.getBottomHeight() + etComment.getStyle().background.getTopHeight();
-		float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getMesuredHeight() + rand);
+		float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getMeasuredHeight() + rand);
 		descriptionHeight = Math.max(descriptionHeight, UiSizes.getButtonHeight());
 		etComment.setHeight(descriptionHeight);
 		if (GcVote != null)
@@ -382,7 +382,7 @@ public class EditFieldNotes extends ActivityBase
 	{
 		if (y < this.halfHeight)// wird von softKeyboard verdeckt
 		{
-			scrollBox.setY(this.height - maxY - MesuredLabelHeight);
+			scrollBox.setY(this.height - maxY - MeasuredLabelHeight);
 		}
 		else
 		{
@@ -394,7 +394,7 @@ public class EditFieldNotes extends ActivityBase
 	{
 		float maxTextFieldHeight = this.height / 2.3f;
 		float rand = etComment.getStyle().background.getBottomHeight() + etComment.getStyle().background.getTopHeight();
-		float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getMesuredHeight() + rand);
+		float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getMeasuredHeight() + rand);
 
 		descriptionHeight = Math.max(descriptionHeight, UiSizes.getButtonHeight());
 

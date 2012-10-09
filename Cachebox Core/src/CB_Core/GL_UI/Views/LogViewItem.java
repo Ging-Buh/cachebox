@@ -27,7 +27,7 @@ public class LogViewItem extends ListViewItemBackground
 	private Label lblComment;
 
 	private float secondTab = 0;
-	private static float MesuredLabelHeight = 0;
+	private static float MeasuredLabelHeight = 0;
 
 	public LogViewItem(CB_RectF rec, int Index, LogEntry logEntry)
 	{
@@ -35,7 +35,7 @@ public class LogViewItem extends ListViewItemBackground
 
 		this.logEntry = logEntry;
 		mBackIsInitial = false;
-		MesuredLabelHeight = Fonts.Mesure("T").height * 1.5f;
+		MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
 		headHeight = (UiSizes.getButtonHeight() / 1.5f) + (Dialog.margin);
 
 		iniImage();
@@ -55,8 +55,8 @@ public class LogViewItem extends ListViewItemBackground
 
 	private void iniFoundLabel()
 	{
-		lblFoundByName = new Label(secondTab, this.height - (headHeight / 2) - (MesuredLabelHeight / 2), width - secondTab - RightWidth
-				- Dialog.margin, MesuredLabelHeight, "");
+		lblFoundByName = new Label(secondTab, this.height - (headHeight / 2) - (MeasuredLabelHeight / 2), width - secondTab - RightWidth
+				- Dialog.margin, MeasuredLabelHeight, "");
 		lblFoundByName.setFont(Fonts.getNormal());
 		lblFoundByName.setText(logEntry.Finder);
 		this.addChild(lblFoundByName);
@@ -67,10 +67,10 @@ public class LogViewItem extends ListViewItemBackground
 		// SimpleDateFormat postFormater = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
 		SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy");
 		String dateString = postFormater.format(logEntry.Timestamp);
-		float DateLength = Fonts.Mesure(dateString).width;
+		float DateLength = Fonts.Measure(dateString).width;
 
-		lblDate = new Label(this.width - RightWidth - DateLength, this.height - (headHeight / 2) - (MesuredLabelHeight / 2), DateLength,
-				MesuredLabelHeight, "");
+		lblDate = new Label(this.width - RightWidth - DateLength, this.height - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength,
+				MeasuredLabelHeight, "");
 		lblDate.setFont(Fonts.getNormal());
 		lblDate.setText(dateString);
 		this.addChild(lblDate);

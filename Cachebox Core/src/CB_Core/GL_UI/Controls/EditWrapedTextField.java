@@ -1858,7 +1858,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		}
 	}
 
-	public float getMesuredHeight()
+	public float getMeasuredHeight()
 	{
 
 		float h = 0;
