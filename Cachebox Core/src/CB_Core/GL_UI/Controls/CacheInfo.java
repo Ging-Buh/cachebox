@@ -235,6 +235,7 @@ public class CacheInfo extends CB_View_Base
 			{
 				mLeft += mTBSprite.getWidth() + mMargin;
 				mTB_FontCache = new BitmapFontCache(mBitmapFontSmall);
+				mTB_FontCache.setColor(Fonts.getFontColor());
 				mTB_FontCache.setText("x" + String.valueOf(numTb), mLeft, mBottom);
 			}
 		}

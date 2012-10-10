@@ -4,12 +4,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
@@ -118,7 +120,17 @@ public class WaitDialog extends ButtonDialog
 
 	public void dismis()
 	{
-		GL.that.closeDialog(that);
+		Logger.LogCat("WaitDialog.Dismis");
+		GL.that.RunOnGL(new runOnGL()
+		{
+			@Override
+			public void run()
+			{
+				if (RotateTimer != null) RotateTimer.cancel();
+				GL.that.closeDialog(that);
+				GL.that.renderOnce("dismis WaitDialog");
+			}
+		});
 	}
 
 	@Override
@@ -130,6 +142,7 @@ public class WaitDialog extends ButtonDialog
 		RotateTimer = null;
 		iconImage = null;
 		super.dispose();
+		Logger.LogCat("WaitDialog.disposed");
 	}
 
 }

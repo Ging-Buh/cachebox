@@ -149,6 +149,9 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	@Override
 	public void dispose()
 	{
+		// Remove from RenderViews if registered
+		GL.that.removeRenderView(this);
+
 		if (childs == null)
 		{
 			// set this to null!

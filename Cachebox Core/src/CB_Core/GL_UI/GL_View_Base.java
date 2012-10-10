@@ -209,10 +209,7 @@ public abstract class GL_View_Base extends CB_RectF
 			@Override
 			public void run()
 			{
-				// synchronized (childs)
-				// {
 				if (childs != null) childs.remove(view);
-				// }
 			}
 		});
 	}
@@ -224,7 +221,7 @@ public abstract class GL_View_Base extends CB_RectF
 			@Override
 			public void run()
 			{
-				childs.clear();
+				if (childs != null) childs.clear();
 			}
 		});
 	}
@@ -236,7 +233,7 @@ public abstract class GL_View_Base extends CB_RectF
 			@Override
 			public void run()
 			{
-				childs.remove(Childs);
+				if (childs != null) childs.remove(Childs);
 			}
 		});
 	}

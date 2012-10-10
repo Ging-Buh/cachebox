@@ -155,6 +155,8 @@ public class GL implements ApplicationListener
 		{
 			runOnGL_List.add(run);
 		}
+
+		renderOnce("RunOnGL called");
 	}
 
 	@Override
@@ -740,7 +742,6 @@ public class GL implements ApplicationListener
 		{
 			renderViews.remove(view);
 			calcNewRenderSpeed();
-			// Logger.LogCat("removeRenderView " + view.getName() + "/verbleibende RenderViews" + renderViews.size());
 		}
 	}
 
@@ -1140,7 +1141,7 @@ public class GL implements ApplicationListener
 		// use TabMainView to register
 		addRenderView(TabMainView.that, FRAME_RATE_ACTION);
 		renderOnce("ShowDialog");
-
+		Logger.LogCat("ShowDialog: " + actDialog.toString());
 	}
 
 	public void showActivity(final ActivityBase activity)
@@ -1247,15 +1248,16 @@ public class GL implements ApplicationListener
 			mDarknesSprite = null;// Create new Pixmap on next call
 		}
 
-		// dispose des Dialogs im nächsten Rendervorgang aufrufen.
-		RunOnGL(new runOnGL()
+		Thread t = new Thread(new Runnable()
 		{
+
 			@Override
 			public void run()
 			{
 				dialog.dispose();
 			}
 		});
+		t.start();
 
 		clearRenderViews();
 		renderOnce("Close Dialog");
