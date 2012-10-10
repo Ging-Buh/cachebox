@@ -142,7 +142,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 						if (canceld) return;
 						if (Motoway) routepref = "Fastest";
 						if (CycleWay) routepref = "Bicycle";
-						if (FootWay) routepref = "Pedestrain";
+						if (FootWay) routepref = "Pedestrian";
 
 						String Url = Config.settings.NavigationProvider.getValue();
 						// String Url = "http://openrouteservice.org/php/OpenLSRS_DetermineRoute.php";
@@ -164,6 +164,8 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 						localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 
 						// Execute HTTP Post Request
+						// see http://wiki.openstreetmap.org/wiki/DE:OpenRouteService#ORS_.22API.22
+						// for more information
 						try
 						{
 							List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(12);
