@@ -45,6 +45,8 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	private BitmapFontCache mDescCache;
 	private BitmapFontCache mCoordCache;
 
+	private int ViewMode = CacheInfo.VIEW_MODE_WAYPOINTS;
+
 	/**
 	 * mit ausgeschaltener scissor berechnung
 	 * 
@@ -75,6 +77,19 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	public WaypointViewItem(CB_RectF rec, int Index, Cache cache, Waypoint waypoint)
 	{
 		super(rec, Index, "");
+		ViewMode = CacheInfo.VIEW_MODE_WAYPOINTS;
+		initial(Index, cache, waypoint);
+	}
+
+	public WaypointViewItem(CB_RectF rec, int Index, Cache cache, Waypoint waypoint, int viewMode)
+	{
+		super(rec, Index, "");
+		ViewMode = viewMode;
+		initial(Index, cache, waypoint);
+	}
+
+	private void initial(int Index, Cache cache, Waypoint waypoint)
+	{
 		this.mCache = cache;
 		this.mWaypoint = waypoint;
 
@@ -82,30 +97,46 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 		if (waypoint == null) // this Item is the Cache
 		{
+
+			if (cache == null)
+			{
+				arrow = null;
+				distance = null;
+				return;
+			}
+
 			info = new extendedCacheInfo(UiSizes.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
 			info.setZeroPos();
-			info.setViewMode(CacheInfo.VIEW_MODE_WAYPOINTS);
+			info.setViewMode(ViewMode);
 
 			this.addChild(info);
 		}
 
-		PositionChangedEventList.Add(this);
-
-		float size = this.height / 2.3f;
-		ArrowRec = new CB_RectF(this.width - (size * 1.2f), this.height - (size * 1.6f), size, size);
-		arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
-		arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
-
-		if (GlobalCore.LastValidPosition == null || GlobalCore.Locator == null)
+		if (ViewMode != CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)// For Compass without own compass
 		{
-			arrow.setColor(DISABLE_COLOR);
-			setDistanceString("---");
+			PositionChangedEventList.Add(this);
+
+			float size = this.height / 2.3f;
+			ArrowRec = new CB_RectF(this.width - (size * 1.2f), this.height - (size * 1.6f), size, size);
+			arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
+			arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
+
+			if (GlobalCore.LastValidPosition == null || GlobalCore.Locator == null)
+			{
+				arrow.setColor(DISABLE_COLOR);
+				setDistanceString("---");
+			}
+			else
+			{
+				setActLocator();
+			}
+
 		}
 		else
 		{
-			setActLocator();
+			arrow = null;
+			distance = null;
 		}
-
 	}
 
 	public Waypoint getWaypoint()
@@ -135,21 +166,25 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			double cacheBearing = -(bearing - heading);
 			setDistanceString(UnitFormatter.DistanceString(distance));
 
-			arrow.setRotation((float) cacheBearing);
-			if (arrow.getColor() == DISABLE_COLOR)
+			if (ViewMode != CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)
 			{
-				float size = this.height / 2.3f;
-				arrow = new Sprite(SpriteCache.Arrows.get(0));
-				arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
-				arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
+				arrow.setRotation((float) cacheBearing);
+				if (arrow.getColor() == DISABLE_COLOR)
+				{
+					float size = this.height / 2.3f;
+					arrow = new Sprite(SpriteCache.Arrows.get(0));
+					arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
+					arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
+				}
 			}
+
 		}
 	}
 
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		super.render(batch);
+		if (mIndex != -1) super.render(batch);
 
 		if (arrow != null) arrow.draw(batch);
 		if (distance != null) distance.draw(batch);
@@ -255,10 +290,29 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			textYPos -= (mNameCache.setMultiLineText(mWaypoint.GcCode + ": " + mWaypoint.Title, mSpriteCachePos.x + mIconSize + mMargin,
 					textYPos)).height + mMargin + mMargin;
 
-			textYPos -= (mDescCache.setMultiLineText(mWaypoint.Description, mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height
-					+ mMargin + mMargin;
+			if (ViewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)
+			{
+				mDescCache = null;
+			}
+			else
+			{
+				if (!mWaypoint.Description.equals(""))
+				{
+					textYPos -= (mDescCache.setMultiLineText(mWaypoint.Description, mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height
+							+ mMargin + mMargin;
+				}
+			}
 
-			String sCoord = GlobalCore.FormatLatitudeDM(mWaypoint.Latitude()) + " / " + GlobalCore.FormatLongitudeDM(mWaypoint.Longitude());
+			String sCoord = "";
+
+			if (ViewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)
+			{
+				sCoord = mWaypoint.Pos.FormatCoordinateLineBreake();
+			}
+			else
+			{
+				sCoord = mWaypoint.Pos.FormatCoordinate();
+			}
 
 			textYPos -= (mCoordCache.setMultiLineText(sCoord, mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height + mMargin
 					+ mMargin;

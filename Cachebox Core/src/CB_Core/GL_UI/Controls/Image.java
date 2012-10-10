@@ -160,6 +160,12 @@ public class Image extends CB_View_Base
 		mOriginY = originY;
 	}
 
+	public void setOriginCenter()
+	{
+		mOriginX = this.halfWidth;
+		mOriginY = this.halfHeight;
+	}
+
 	/**
 	 * setzt den Scale Factor des dargestellten Images, wobei die Größe nicht verändert wird. Ist das Image größer, wird es abgeschnitten
 	 * 

@@ -70,6 +70,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 {
 	public static MapView that = null; // für Zugriff aus Listeners heraus auf this
 
+	private boolean CompassMode = false;
+
 	// ####### Enthaltene Controls ##########
 	private MultiToggleButton togBtn;
 	private ZoomButtons zoomBtn;
@@ -167,10 +169,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	boolean useNewInput = true;
 
-	public MapView(CB_RectF rec, String Name)
+	public MapView(CB_RectF rec, boolean compassMode, String Name)
 	{
 		super(rec, Name);
 		that = this;
+
+		CompassMode = compassMode;
+
 		invalidateTextureEventList.Add(this);
 		registerSkinChangedEvent();
 		setBackground(SpriteCache.ListBack);
@@ -209,7 +214,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, this.halfWidth, GL_UISizes.ZoomBtn.getHalfWidth() / 4),
 				"mapScale", this);
 
-		this.addChild(mapScale);
+		if (!CompassMode) this.addChild(mapScale);
 
 		// initial Zoom Buttons
 		zoomBtn = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
@@ -253,7 +258,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				return true;
 			}
 		});
-		this.addChild(zoomBtn);
+		if (!CompassMode) this.addChild(zoomBtn);
 
 		this.setOnClickListener(onClickListner);
 
@@ -265,7 +270,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		ZoomScaleRec.setPos(new Vector2(GL_UISizes.margin, zoomBtn.getMaxY() + GL_UISizes.margin));
 
 		zoomScale = new ZoomScale(ZoomScaleRec, "zoomScale", 2, 21, 12);
-		this.addChild(zoomScale);
+		if (!CompassMode) this.addChild(zoomScale);
 
 		InitializeMap();
 
@@ -351,7 +356,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		});
 		togBtn.registerSkinChangedEvent();
 		togBtn.setState(Config.settings.LastMapToggleBtnState.getValue(), true);
-		this.addChild(togBtn);
+		if (!CompassMode) this.addChild(togBtn);
 
 		infoBubble = new InfoBubble(GL_UISizes.Bubble, "infoBubble");
 		infoBubble.setVisibility(GL_View_Base.INVISIBLE);
@@ -366,7 +371,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				return true;
 			}
 		});
-		this.addChild(infoBubble);
+		if (!CompassMode) this.addChild(infoBubble);
 
 		resize(rec.getWidth(), rec.getHeight());
 
@@ -403,7 +408,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		CB_Core.Events.PositionChangedEventList.Add(this);
 		PositionChanged(GlobalCore.Locator);
 
-		alignToCompass = !Config.settings.MapNorthOriented.getValue();
+		alignToCompass = CompassMode ? true : !Config.settings.MapNorthOriented.getValue();
 
 		CarMode = (togBtn.getState() == 4);
 		if (!CarMode)
@@ -611,7 +616,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if ((aktZoom >= 13) && (aktZoom <= 14)) iconSize = 1; // 13x13
 		else if (aktZoom > 14) iconSize = 2; // default Images
 
-		CB_Core.Map.RouteOverlay.RenderRoute(batch, aktZoom, ySpeedVersatz);
+		if (!CompassMode) CB_Core.Map.RouteOverlay.RenderRoute(batch, aktZoom, ySpeedVersatz);
 		renderWPs(GL_UISizes.WPSizes[iconSize], GL_UISizes.UnderlaySizes[iconSize], batch);
 		renderPositionMarker(batch);
 		RenderTargetArrow(batch);
@@ -896,10 +901,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if (TargetArrowScreenRec == null)
 		{
 			TargetArrowScreenRec = new CB_RectF(0, 0, mapIntWidth, mapIntHeight);
-			TargetArrowScreenRec.ScaleCenter(0.9f);
-			TargetArrowScreenRec.setHeight(TargetArrowScreenRec.getHeight() - (TargetArrowScreenRec.getHeight() - info.getY())
-					- zoomBtn.getHeight());
-			TargetArrowScreenRec.setY(zoomBtn.getMaxY());
+			if (!CompassMode)
+			{
+				TargetArrowScreenRec.ScaleCenter(0.9f);
+				TargetArrowScreenRec.setHeight(TargetArrowScreenRec.getHeight() - (TargetArrowScreenRec.getHeight() - info.getY())
+						- zoomBtn.getHeight());
+				TargetArrowScreenRec.setY(zoomBtn.getMaxY());
+			}
+
 		}
 
 		Vector2 ScreenCenter = new Vector2(halfWidth, halfHeight);
@@ -1437,12 +1446,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		if ((InitialFlags & INITIAL_SETTINGS) != 0)
 		{
-			showRating = Config.settings.MapShowRating.getValue();
-			showDT = Config.settings.MapShowDT.getValue();
-			showTitles = Config.settings.MapShowTitles.getValue();
+			showRating = CompassMode ? false : Config.settings.MapShowRating.getValue();
+			showDT = CompassMode ? false : Config.settings.MapShowDT.getValue();
+			showTitles = CompassMode ? false : Config.settings.MapShowTitles.getValue();
 			hideMyFinds = Config.settings.MapHideMyFinds.getValue();
-			showCompass = Config.settings.MapShowCompass.getValue();
-			showDirektLine = Config.settings.ShowDirektLine.getValue();
+			showCompass = CompassMode ? false : Config.settings.MapShowCompass.getValue();
+			showDirektLine = CompassMode ? false : Config.settings.ShowDirektLine.getValue();
 			iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
 			aktZoom = Config.settings.lastZoomLevel.getValue();
 			zoomBtn.setMaxZoom(Config.settings.OsmMaxLevel.getValue());
@@ -1821,6 +1830,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	public void SetAlignToCompass(boolean value)
 	{
+		if (!CompassMode) return;
 		alignToCompass = value;
 		if (!value)
 		{
@@ -2679,4 +2689,19 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		AccuracyTexture = null;
 
 	}
+
+	public boolean doubleClick(int x, int y, int pointer, int button)
+	{
+		if (CompassMode)
+		{
+			// Center map on CompassMode
+			togBtn.setState(1);
+			return true;
+		}
+		else
+		{
+			return super.doubleClick(x, y, pointer, button);
+		}
+	}
+
 }

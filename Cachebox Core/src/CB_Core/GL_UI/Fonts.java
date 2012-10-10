@@ -29,10 +29,12 @@ public class Fonts
 	private static Color night_fontColor;
 	private static Color night_fontColorDisable;
 
+	private static int FONT_SIZE_COMPASS_DISTANCE = 27;
 	private static int FONT_SIZE_BIG = 18;
 	private static int FONT_SIZE_NORMAL = 15;
 	private static int FONT_SIZE_SMALL = 13;
 
+	private static BitmapFont compass;
 	private static BitmapFont big;
 	private static BitmapFont normal;
 	private static BitmapFont small;
@@ -97,6 +99,7 @@ public class Fonts
 		String ttfPath = path + "/" + FontName;
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.absolute(ttfPath));
 
+		compass = generator.generateFont((int) (FONT_SIZE_COMPASS_DISTANCE * density));
 		big = generator.generateFont((int) (FONT_SIZE_BIG * density));
 		normal = generator.generateFont((int) (FONT_SIZE_NORMAL * density));
 		small = generator.generateFont((int) (FONT_SIZE_SMALL * density));
@@ -124,6 +127,7 @@ public class Fonts
 
 	public static void dispose()
 	{
+		compass.dispose();
 		big.dispose();
 		normal.dispose();
 		small.dispose();
@@ -136,6 +140,11 @@ public class Fonts
 		normalBubble = null;
 		smallBubble = null;
 
+	}
+
+	public static BitmapFont getCompass()
+	{
+		return compass;
 	}
 
 	public static BitmapFont getBig()

@@ -45,7 +45,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 	public void Execute()
 	{
 		if ((TabMainView.mapView == null) && (tabMainView != null) && (tab != null)) TabMainView.mapView = new MapView(tab.getContentRec(),
-				"MapView");
+				false, "MapView");
 
 		if ((TabMainView.mapView != null) && (tab != null)) tab.ShowView(TabMainView.mapView);
 	}

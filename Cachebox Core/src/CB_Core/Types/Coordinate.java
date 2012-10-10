@@ -3,6 +3,7 @@ package CB_Core.Types;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import CB_Core.GlobalCore;
 import CB_Core.Converter.Formatter;
 import CB_Core.Converter.UTMConvert;
 import CB_Core.Log.Logger;
@@ -233,6 +234,18 @@ public class Coordinate implements Serializable
 	public String FormatCoordinate()
 	{
 		if (Valid) return Formatter.FormatLatitudeDM(Latitude) + " / " + Formatter.FormatLongitudeDM(Longitude);
+		else
+			return "not Valid";
+	}
+
+	/**
+	 * Gibt einen Formatierten String dieser Koordinate in zwei Zeilen wieder
+	 * 
+	 * @return
+	 */
+	public String FormatCoordinateLineBreake()
+	{
+		if (Valid) return Formatter.FormatLatitudeDM(Latitude) + GlobalCore.br + Formatter.FormatLongitudeDM(Longitude);
 		else
 			return "not Valid";
 	}

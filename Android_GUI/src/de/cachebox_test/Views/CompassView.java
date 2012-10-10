@@ -219,9 +219,6 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu, Positio
 			Coordinate position = GlobalCore.LastValidPosition;
 			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
 			if (!align) heading = 0;
-			// FillArrow: Luftfahrt
-			// Bearing: Luftfahrt
-			// Heading: Im Uhrzeigersinn, Geocaching-Norm
 
 			Coordinate dest = aktCache.Pos;
 			float distance = aktCache.Distance(false);
@@ -232,7 +229,6 @@ public class CompassView extends FrameLayout implements ViewOptionsMenu, Positio
 			}
 			double bearing = Coordinate.Bearing(position, dest);
 			double relativeBearing = bearing - heading;
-			// double relativeBearingRad = relativeBearing * Math.PI / 180.0;
 
 			compassControl.setInfo(heading, relativeBearing, UnitFormatter.DistanceString(distance));
 

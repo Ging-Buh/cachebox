@@ -54,33 +54,6 @@ public class TestView extends CB_View_Base
 
 		// ####################################################
 
-		// CB_RectF TextFieldRec2 = new CB_RectF(0, wrappedTextField.getMaxY() + 25, UiSizes.getButtonWidth() * 6,
-		// UiSizes.getButtonHeight());
-		//
-		// // CB_RectF TextFieldRec2 = new CB_RectF(0, this.height - (UiSizes.getButtonHeight() * 1.1f), UiSizes.getButtonWidth() * 7,
-		// // UiSizes.getButtonHeight() * 1.1f);
-		//
-		// textField = new EditWrapedTextField(this, TextFieldRec2, EditWrapedTextField.getDefaultStyle(), "Test",
-		// EditWrapedTextField.TextFieldType.SingleLine);
-		// this.addChild(textField);
-
-		// ####################################################
-		// CB_RectF GradiantRec = new CB_RectF(10, 40, this.width - 20, UiSizes.getButtonHeight() * 1.5f);
-		//
-		// GradiantFill fill = new GradiantFill(Color.RED, Color.RED, 0);
-		//
-		// for (int i = 60; i < 300; i += 60)
-		// {
-		// HSV_Color c = new HSV_Color(Color.RED);
-		// c.setHue(i);
-		// GradiantStop stop = new GradiantStop(c.cpy(), (float) i / 360f);
-		// fill.addStop(stop);
-		// // break;
-		// }
-		//
-		// GradiantFilledRectangle testRec = new GradiantFilledRectangle(GradiantRec, fill);
-		// this.addChild(testRec);
-
 		// ####################################################
 
 		// Setting Button

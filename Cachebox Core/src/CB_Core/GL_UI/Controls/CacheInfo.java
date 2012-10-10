@@ -31,12 +31,42 @@ public class CacheInfo extends CB_View_Base
 	public static final int SHOW_GC = 16;
 	public static final int SHOW_LAST_FOUND = 32;
 	public static final int SHOW_ATTRIBUTES = 64;
+	public static final int SHOW_CORRDS_WITH_LINEBRAKE = 128;
 
-	public static final int VIEW_MODE_CACHE_LIST = SHOW_GC | SHOW_NAME | SHOW_COMPASS; // 19;
-	public static final int VIEW_MODE_DESCRIPTION = SHOW_GC | SHOW_COORDS | SHOW_OWNER | SHOW_COMPASS; // 29;
-	public static final int VIEW_MODE_SLIDER = SHOW_ATTRIBUTES | SHOW_LAST_FOUND | SHOW_GC | SHOW_COORDS | SHOW_OWNER | SHOW_NAME; // 126
-	public static final int VIEW_MODE_WAYPOINTS = SHOW_COORDS | SHOW_NAME | SHOW_COMPASS; // 11
-	public static final int VIEW_MODE_BUBBLE = SHOW_GC | SHOW_COORDS | SHOW_OWNER | SHOW_NAME; // 30
+	/**
+	 * SHOW_GC, SHOW_NAME, SHOW_COMPASS
+	 */
+	public static final int VIEW_MODE_CACHE_LIST = SHOW_GC + SHOW_NAME + SHOW_COMPASS; // 19;
+
+	/**
+	 * SHOW_COMPASS, SHOW_OWNER, SHOW_CORRDS, SHOW_GC
+	 */
+	public static final int VIEW_MODE_DESCRIPTION = SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_COMPASS; // 29;
+
+	/**
+	 * SHOW_OWNER, SHOW_CORRDS, SHOW_GC, SHOW_LAST_FOUND
+	 */
+	public static final int VIEW_MODE_COMPAS = 60;
+
+	/**
+	 * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS, SHOW_GC, SHOW_LAST_FOUND, SHOW_ATTRIBUTES
+	 */
+	public static final int VIEW_MODE_SLIDER = SHOW_ATTRIBUTES + SHOW_LAST_FOUND + SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_NAME; // 126
+
+	/**
+	 * SHOW_COORDS, SHOW_COMPASS, SHOW_NAME
+	 */
+	public static final int VIEW_MODE_WAYPOINTS = SHOW_COORDS + SHOW_NAME + SHOW_COMPASS; // 11
+
+	/**
+	 * SHOW_COORDS, SHOW_COMPASS, SHOW_NAME
+	 */
+	public static final int VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK = SHOW_COORDS + SHOW_NAME + SHOW_CORRDS_WITH_LINEBRAKE; // 138
+
+	/**
+	 * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS
+	 */
+	public static final int VIEW_MODE_BUBBLE = SHOW_COORDS + SHOW_OWNER + SHOW_NAME; // 30
 
 	private static final SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
 
@@ -44,7 +74,6 @@ public class CacheInfo extends CB_View_Base
 
 	private Cache mCache;
 	private float mIconSize = 0;
-	private float mCompasswidth = 0;
 	private SizeF mStarSize = new SizeF();
 	private float mMargin = 0;
 	private Sprite mRatingSprite;
@@ -140,7 +169,6 @@ public class CacheInfo extends CB_View_Base
 		float mTop = mMargin;
 		float mBottom = mMargin;
 
-		mCompasswidth = ifModeFlag(SHOW_COMPASS) ? width / 6 : 0;
 		// Size
 		mS_FontCache = new BitmapFontCache(mBitmapFontSmall);
 		mS_FontCache.setColor(Fonts.getFontColor());
@@ -230,7 +258,18 @@ public class CacheInfo extends CB_View_Base
 			StringBuilder text = new StringBuilder();
 			if (ifModeFlag(SHOW_NAME)) text.append(mCache.Name + br);
 			if (ifModeFlag(SHOW_OWNER)) text.append("by " + mCache.Owner + ", " + postFormater.format(mCache.DateHidden) + br);
-			if (ifModeFlag(SHOW_COORDS)) text.append(mCache.Pos.FormatCoordinate() + br);
+			if (ifModeFlag(SHOW_COORDS))
+			{
+				if (ifModeFlag(SHOW_CORRDS_WITH_LINEBRAKE))
+				{
+					text.append(mCache.Pos.FormatCoordinateLineBreake() + br);
+				}
+				else
+				{
+					text.append(mCache.Pos.FormatCoordinate() + br);
+				}
+			}
+
 			if (ifModeFlag(SHOW_GC)) text.append(mCache.GcCode + br);
 			if (ifModeFlag(SHOW_LAST_FOUND))
 			{
@@ -354,6 +393,7 @@ public class CacheInfo extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
+		cacheIsInitial = true;
 		requestLayout();
 	}
 

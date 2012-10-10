@@ -103,6 +103,7 @@ public class SpriteCache
 	public static ArrayList<Sprite> LogIcons;
 
 	public static Drawable activityBackground;
+	public static Drawable activityBorderMask;
 	public static Drawable InfoBack;
 	public static Drawable ProgressBack;
 	public static Drawable ProgressFill;
@@ -626,6 +627,8 @@ public class SpriteCache
 		patch = (SpriteCache.getThemedSprite("activity-back").getWidth() > 60) ? 16 : 8;
 
 		activityBackground = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("activity-back"), patch, patch, patch, patch));
+		activityBorderMask = new NinePatchDrawable(
+				new NinePatch(SpriteCache.getThemedSprite("activity-border"), patch, patch, patch, patch));
 		ListBack = new NinePatchDrawable(new NinePatch(getThemedSprite("background"), 1, 1, 1, 1));
 		ButtonBack = new SpriteDrawable(getThemedSprite("button-list-back"));
 		AboutBack = new SpriteDrawable(getThemedSprite("splash-back"));
