@@ -1217,9 +1217,13 @@ public class GL implements ApplicationListener
 		closeDialog(dialog, true);
 	}
 
-	public void closeDialog(CB_View_Base dialog, boolean MsgToPlatformConector)
+	public void closeDialog(final CB_View_Base dialog, boolean MsgToPlatformConector)
 	{
-		if (!DialogIsShown) return;
+		if (!DialogIsShown)
+		{
+			dialog.dispose();
+			return;
+		}
 
 		if (MsgToPlatformConector || ActivityIsShown) platformConector.hideForDialog();
 		if (actDialog != null) actDialog.onHide();
@@ -1242,6 +1246,16 @@ public class GL implements ApplicationListener
 			darknesAlpha = 0f;
 			mDarknesSprite = null;// Create new Pixmap on next call
 		}
+
+		// dispose des Dialogs im nächsten Rendervorgang aufrufen.
+		RunOnGL(new runOnGL()
+		{
+			@Override
+			public void run()
+			{
+				dialog.dispose();
+			}
+		});
 
 		clearRenderViews();
 		renderOnce("Close Dialog");

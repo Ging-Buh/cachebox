@@ -147,7 +147,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 								{
 									if (Path != null)
 									{
-										TrackColor = RouteOverlay.ColorField[(RouteOverlay.Routes.size()) % RouteOverlay.ColorField.length];
+										TrackColor = RouteOverlay.getNextColor();
 
 										RouteOverlay.MultiLoadRoute(Path, TrackColor);
 										Logger.LogCat("Load Track :" + Path);
@@ -291,7 +291,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						if (targetCoord == null || startCoord == null) return;
 
 						float[] dist = new float[4];
-						TrackColor = RouteOverlay.ColorField[(RouteOverlay.Routes.size()) % RouteOverlay.ColorField.length];
+						TrackColor = RouteOverlay.getNextColor();
 						Track route = new Track(null, TrackColor);
 
 						route.Name = "Point 2 Point Route";
@@ -326,7 +326,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						if (targetCoord == null || startCoord == null) return;
 
 						float[] dist = new float[4];
-						TrackColor = RouteOverlay.ColorField[(RouteOverlay.Routes.size()) % RouteOverlay.ColorField.length];
+						TrackColor = RouteOverlay.getNextColor();
 						Track route = new Track(null, TrackColor);
 						route.Name = "Projected Route";
 
@@ -363,7 +363,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						if (targetCoord == null || startCoord == null) return;
 
 						float[] dist = new float[4];
-						TrackColor = RouteOverlay.ColorField[(RouteOverlay.Routes.size()) % RouteOverlay.ColorField.length];
+						TrackColor = RouteOverlay.getNextColor();
 						Track route = new Track(null, TrackColor);
 						route.Name = "Circle Route";
 

@@ -36,8 +36,8 @@ public class PasswortDialog extends ButtonDialog
 
 	public PasswortDialog(returnListner listner)
 	{
-		super(Menu.MENU_REC, "PW-Dialog", "", GlobalCore.Translations.Get("enterPW"), MessageBoxButtons.OKCancel, MessageBoxIcon.GC_Live,
-				null);
+		super(Menu.getMenuRec(), "PW-Dialog", "", GlobalCore.Translations.Get("enterPW"), MessageBoxButtons.OKCancel,
+				MessageBoxIcon.GC_Live, null);
 		mReturnListner = listner;
 
 		msgBoxContentSize = getContentSize();

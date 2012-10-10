@@ -21,7 +21,21 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class Menu extends Dialog
 {
-	public static CB_RectF MENU_REC = new CB_RectF(0, 0, 400, 60); // wird mit jedem Item größer
+	protected static CB_RectF MENU_REC = new CB_RectF(0, 0, 400, 60); // wird mit jedem Item größer
+	private static boolean sizeIsInitial = false;
+
+	private static void initialSize()
+	{
+		MENU_REC = new CB_RectF(new SizeF(UiSizes.getWindowWidth() * 0.83f, 50));
+		sizeIsInitial = true;
+	}
+
+	public static CB_RectF getMenuRec()
+	{
+		if (!sizeIsInitial) initialSize();
+		return MENU_REC;
+	}
+
 	public float ItemHeight = -1f;
 
 	private ArrayList<MenuItemBase> mItems = new ArrayList<MenuItemBase>();

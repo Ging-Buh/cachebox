@@ -33,8 +33,16 @@ import com.badlogic.gdx.math.Vector2;
 
 public class RouteOverlay
 {
+	public static Color getNextColor()
+	{
+		Color ret = ColorField[(Routes.size()) % ColorField.length];
+		if (ret == null) initialColorField();
+		return ColorField[(Routes.size()) % ColorField.length];
+	}
 
-	public static Color[] ColorField = new Color[13];
+	private static Color[] ColorField = new Color[13];
+
+	private static void initialColorField()
 	{
 		ColorField[0] = Color.RED;
 		ColorField[1] = Color.YELLOW;

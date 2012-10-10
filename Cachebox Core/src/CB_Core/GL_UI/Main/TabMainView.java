@@ -10,6 +10,7 @@ import CB_Core.TrackRecorder;
 import CB_Core.DB.Database;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Activitys.FilterSettings.PresetListViewItem;
@@ -69,6 +70,7 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class TabMainView extends MainViewBase
 {
@@ -622,5 +624,11 @@ public class TabMainView extends MainViewBase
 	public void showCacheList()
 	{
 		actionShowCacheList.Execute();
+	}
+
+	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
+	{
+		if (childs == null) return;
+		super.renderChilds(batch, parentInfo);
 	}
 }

@@ -118,10 +118,18 @@ public class WaitDialog extends ButtonDialog
 
 	public void dismis()
 	{
-		RotateTimer.cancel();
-		iconImage.dispose();
-
 		GL.that.closeDialog(that);
+	}
+
+	@Override
+	public void dispose()
+	{
+		if (RotateTimer != null) RotateTimer.cancel();
+		if (iconImage != null) iconImage.dispose();
+
+		RotateTimer = null;
+		iconImage = null;
+		super.dispose();
 	}
 
 }

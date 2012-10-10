@@ -42,7 +42,7 @@ public class RouteDialog extends ButtonDialog
 
 	public RouteDialog(returnListner listner)
 	{
-		super(Menu.MENU_REC, "PW-Dialog", "", GlobalCore.Translations.Get("RouteToWaypoit"), MessageBoxButtons.OKCancel, null, null);
+		super(Menu.getMenuRec(), "PW-Dialog", "", GlobalCore.Translations.Get("RouteToWaypoit"), MessageBoxButtons.OKCancel, null, null);
 		mReturnListner = listner;
 
 		msgBoxContentSize = getContentSize();

@@ -1,5 +1,6 @@
 package CB_Core.GL_UI;
 
+import java.util.ConcurrentModificationException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -148,21 +149,56 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	@Override
 	public void dispose()
 	{
-		synchronized (childs)
+		if (childs == null)
 		{
-			for (GL_View_Base v : childs)
-			{
-				removeChild(v);
-				v.dispose();
-			}
+			// set this to null!
+			setToNull(this);
+		}
+		else
+		{
 
-			childs.clear();
+			try
+			{
+				synchronized (childs)
+				{
+					for (GL_View_Base v : childs)
+					{
+						removeChild(v);
+						v.dispose();
+					}
+
+					childs.clear();
+					// set this to null!
+					setToNull(this);
+				}
+			}
+			catch (ConcurrentModificationException e)
+			{
+				setToNull(this);
+			}
 		}
 
 	}
 
+	public static void setToNull(CB_View_Base view)
+	{
+		if (view.childs == null)
+		{
+			view = null;
+		}
+		else
+		{
+			synchronized (view.childs)
+			{
+				view.childs = null;
+				view = null;
+			}
+		}
+	}
+
 	public int getCildCount()
 	{
+		if (childs == null) return -1;
 		synchronized (childs)
 		{
 			return childs.size();
@@ -171,6 +207,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	public GL_View_Base addChildDirekt(final GL_View_Base view)
 	{
+		if (childs == null) return null;
 		synchronized (childs)
 		{
 			childs.add(view);
@@ -181,6 +218,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	public GL_View_Base addChildDirektLast(final GL_View_Base view)
 	{
+		if (childs == null) return null;
 		synchronized (childs)
 		{
 			childs.add(0, view);
@@ -191,6 +229,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	public void removeChildsDirekt()
 	{
+		if (childs == null) return;
 		synchronized (childs)
 		{
 			childs.clear();
@@ -199,6 +238,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	public void removeChildsDirekt(GL_View_Base view)
 	{
+		if (childs == null) return;
 		synchronized (childs)
 		{
 			childs.remove(view);
@@ -207,6 +247,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	public void removeChildsDirekt(MoveableList<GL_View_Base> childs)
 	{
+		if (childs == null) return;
 		synchronized (childs)
 		{
 			childs.remove(childs);
@@ -215,6 +256,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	public GL_View_Base getChild(int i)
 	{
+		if (childs == null) return null;
 		synchronized (childs)
 		{
 			if (childs.size() < i || childs.size() == 0) return null;

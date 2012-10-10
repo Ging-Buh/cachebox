@@ -23,6 +23,7 @@ import org.apache.http.protocol.HttpContext;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.UnitFormatter;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
@@ -189,7 +190,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 							BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 							StringBuilder builder = new StringBuilder();
 							String line = "";
-							TrackColor = RouteOverlay.ColorField[(RouteOverlay.Routes.size()) % RouteOverlay.ColorField.length];
+							TrackColor = RouteOverlay.getNextColor();
 							Track route = new Track(null, TrackColor);
 							route.Name = "OpenRouteService";
 							route.ShowRoute = true;
@@ -265,9 +266,24 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 
 								if (IsRoute)
 								{
+									final String sDistance = UnitFormatter.DistanceString((float) Distance);
 									route.TrackLength = Distance;
 									RouteOverlay.Routes.add(route);
 									if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
+
+									routeDia.close();
+
+									GL.that.RunOnGL(new runOnGL()
+									{
+										// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
+										// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+										@Override
+										public void run()
+										{
+											String msg = GlobalCore.Translations.Get("generateRouteLength ") + sDistance;
+											GL_MsgBox.Show(msg, "OpenRouteService", MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+										}
+									});
 								}
 								else
 								{
