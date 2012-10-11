@@ -110,7 +110,7 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener
 		Label lbGleich = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "=");
 		lbGleich.setFont(Fonts.getNormal());
 		lbGleich.setText("=");
-		setBackground(SpriteCache.ListBack);
+		setBackground(SpriteCache.activityBackground);
 		addChild(lbGleich);
 		y -= TextFieldHeight;
 
@@ -131,7 +131,6 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener
 		x += w;
 		btnWp = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "$GC");
 		addChild(btnWp);
-		y -= UiSizes.getButtonHeight();
 
 		// startposition for further controls
 		this.startY = y;
@@ -171,10 +170,12 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener
 
 		button1.setOnClickListener(OnOkClickListner);
 
+		y -= UiSizes.getButtonHeight();
+		float restPlatz = this.height - y - UiSizes.getButtonHeight() - margin - margin;
 		// Dieses LinearLayout wird dann in eine ScrollBox verpackt, damit dies Scrollbar ist, wenn die Länge den Anzeige Bereich
 		// überschreitet!
 
-		rec = new CB_RectF(0, y, msgBoxContentSize.width, 100);
+		rec = new CB_RectF(0, y - restPlatz, msgBoxContentSize.width, restPlatz);
 		// initial ScrollBox mit einer Inneren Höhe des halben rec´s.
 		// Die Innere Höhe muss angepasst werden, wenn sich die Höhe des LinearLayouts verändert hat.
 		// Entweder wenn ein Control hinzugefügt wurde oder wenn eine CollabseBox geöffnrt oder geschlossen wird!

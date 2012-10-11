@@ -26,25 +26,32 @@ public class SolverViewItem extends ListViewItemBackground
 	private BitmapFontCache mS_FontCacheResult;
 
 	@Override
+	protected void Initial()
+	{
+		super.Initial();
+
+		mS_FontCache = new BitmapFontCache(mBitmapFont);
+		mS_FontCache.setColor(Fonts.getFontColor());
+		mS_FontCache.setText(solverZeile.getOrgText(), LeftWidth, this.height - TopHight);
+
+		mS_FontCacheResult = new BitmapFontCache(mBitmapFont);
+		mS_FontCacheResult.setText(solverZeile.Solution, LeftWidth * 3, BottomHeight * 2);
+		mS_FontCacheResult.setColor(Fonts.getFontColor());
+	}
+
+	@Override
 	protected void render(SpriteBatch batch)
 	{
 		super.render(batch);
-
-		mS_FontCache = new BitmapFontCache(mBitmapFont);
-		mS_FontCache.setText(solverZeile.getOrgText(), 0, 0);
-		mS_FontCache.setPosition(10, 45);
-		mS_FontCache.draw(batch);
-
-		mS_FontCacheResult = new BitmapFontCache(mBitmapFont);
-		mS_FontCacheResult.setText(solverZeile.Solution, 0, 0);
-		mS_FontCacheResult.setPosition(30, 20);
-		mS_FontCacheResult.draw(batch);
-
+		if (mS_FontCache != null) mS_FontCache.draw(batch);
+		if (mS_FontCacheResult != null) mS_FontCacheResult.draw(batch);
 	}
 
 	@Override
 	public void dispose()
 	{
+		mS_FontCache = null;
+		mS_FontCacheResult = null;
 	}
 
 	@Override
@@ -75,7 +82,6 @@ public class SolverViewItem extends ListViewItemBackground
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 

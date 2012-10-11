@@ -206,11 +206,11 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			});
 
 			MenuItem mi;
-			cm.addItem(MI_CHANGE_LINE, "Zeile ändern", SpriteCache.Icons.get(13));
-			cm.addItem(MI_INSERT_LINE, "Zeile einfügen", SpriteCache.Icons.get(13));
-			cm.addItem(MI_DELETE_LINE, "Zeile löschen", SpriteCache.Icons.get(13));
-			cm.addItem(MI_SET_AS_WAYPOINT, "Waypoint einfügen", SpriteCache.Icons.get(13));
-			cm.addItem(MI_SET_AS_MAPCENTER, "Map-Center setzen", SpriteCache.Icons.get(13));
+			cm.addItem(MI_CHANGE_LINE, "editLine");
+			cm.addItem(MI_INSERT_LINE, "addLine");
+			cm.addItem(MI_DELETE_LINE, "delLine");
+			cm.addItem(MI_SET_AS_WAYPOINT, "addWaypoint");
+			cm.addItem(MI_SET_AS_MAPCENTER, "setMapCenter");
 			cm.show();
 
 			return true;
