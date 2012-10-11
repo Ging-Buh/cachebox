@@ -172,7 +172,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	public MapView(CB_RectF rec, boolean compassMode, String Name)
 	{
 		super(rec, Name);
-		that = this;
+		// statischen that nur setzen wenn die HauptMapView initialisiert wird
+		if (!compassMode) that = this;
 
 		CompassMode = compassMode;
 
@@ -233,8 +234,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System
 						.currentTimeMillis() + 1000);
-				GL.that.addRenderView(that, frameRateAction);
-				GL.that.renderOnce(that.getName() + " ZoomButtonClick");
+				GL.that.addRenderView(MapView.this, frameRateAction);
+				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
 				return true;
 			}
@@ -252,8 +253,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System
 						.currentTimeMillis() + 1000);
-				GL.that.addRenderView(that, frameRateAction);
-				GL.that.renderOnce(that.getName() + " ZoomButtonClick");
+				GL.that.addRenderView(MapView.this, frameRateAction);
+				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
 				return true;
 			}
@@ -1748,8 +1749,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				// kineticZoom = new KineticZoom(camera.zoom, lastDynamicZoom, System.currentTimeMillis(), System.currentTimeMillis() +
 				// 1000);
 
-				GL.that.addRenderView(that, frameRateAction);
-				GL.that.renderOnce(that.getName() + " ZoomButtonClick");
+				GL.that.addRenderView(MapView.this, frameRateAction);
+				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
 			}
 
@@ -1880,7 +1881,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				do
 				{
 					Descriptor desc = null;
-					if (!Energy.DisplayOff() && MapView.that.isVisible() && queuedTiles.size() > 0)
+					if (!Energy.DisplayOff() && MapView.this.isVisible() && queuedTiles.size() > 0)
 					{
 
 						try
@@ -2117,8 +2118,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				// kineticZoom = new KineticZoom(camera.zoom, lastDynamicZoom, System.currentTimeMillis(), System.currentTimeMillis() +
 				// 1000);
 
-				GL.that.addRenderView(that, frameRateAction);
-				GL.that.renderOnce(that.getName() + " ZoomButtonClick");
+				GL.that.addRenderView(MapView.this, frameRateAction);
+				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
 			}
 
@@ -2455,7 +2456,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		setCenter(target);
 
-		GL.that.addRenderView(MapView.that, GL.FRAME_RATE_ACTION);
+		GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 
 		// für 2sec rendern lassen, bis Änderungen der WPI-list neu berechnet wurden
 		TimerTask task = new TimerTask()
@@ -2463,7 +2464,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			@Override
 			public void run()
 			{
-				GL.that.removeRenderView(MapView.that);
+				GL.that.removeRenderView(MapView.this);
 			}
 		};
 
