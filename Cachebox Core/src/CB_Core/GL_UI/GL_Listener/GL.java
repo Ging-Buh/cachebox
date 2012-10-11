@@ -658,7 +658,7 @@ public class GL implements ApplicationListener
 
 		batch.begin();
 
-		mDarknesSprite.draw(batch, darknesAlpha);
+		if (mDarknesSprite != null) mDarknesSprite.draw(batch, darknesAlpha);
 		if (darknesAnimationRuns)
 		{
 			darknesAlpha += 0.1f;

@@ -27,64 +27,65 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-
-
 /**
- * Diese Klasse stellt eine verbindung zu Team-Cachebox.de her und gibt dort hinterlegte Informationen
- * zurük. (GCAuth url ; Versionsnummer)
+ * Diese Klasse stellt eine verbindung zu Team-Cachebox.de her und gibt dort hinterlegte Informationen zurük. (GCAuth url ; Versionsnummer)
+ * 
  * @author Longri
- *
  */
-public class CB_Api 
+public class CB_Api
 {
-	
-	private static final String CB_API_URL_GET_URLS = "http://team-cachebox.de/CB_API/index.php?get=url_ACB"; 
-	
+
+	private static final String CB_API_URL_GET_URLS = "http://team-cachebox.de/CB_API/index.php?get=url_ACB";
 
 	/**
 	 * Gibt die bei Team-Cachebox.de hinterlegte GC Auth url zurück
+	 * 
 	 * @return String
 	 */
 	public static String getGcAuthUrl()
 	{
 		String result = "";
 
-		try {
+		try
+		{
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httppost = new HttpPost(CB_API_URL_GET_URLS);
-						
+
 			httppost.setHeader("Accept", "application/json");
 			httppost.setHeader("Content-type", "application/json");
 
 			// Execute HTTP Post Request
 			HttpResponse response = httpclient.execute(httppost);
 
-			BufferedReader rd = new BufferedReader(new InputStreamReader(
-					response.getEntity().getContent()));
+			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 			String line = "";
-			while ((line = rd.readLine()) != null) {
+			while ((line = rd.readLine()) != null)
+			{
 				result += line + "\n";
 			}
 
-			try // Parse JSON Result
+			try
+			// Parse JSON Result
 			{
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
 				return json.getString("GcAuth_ACB");
-				
-			} catch (JSONException e) {
-				 
+
+			}
+			catch (JSONException e)
+			{
 				e.printStackTrace();
 			}
 
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
 			return "";
 		}
 
 		return "";
-		
+
 	}
-	
-	
+
 }

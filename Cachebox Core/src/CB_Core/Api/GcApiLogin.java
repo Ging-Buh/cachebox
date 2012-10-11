@@ -91,38 +91,47 @@ public class GcApiLogin
 
 	private void runOnWaitDialog()
 	{
-		State = 0;
-		String GC_AuthUrl;
+		Thread t = new Thread(new Runnable()
+		{
 
-		if (Config.settings.OverrideUrl.getValue().equals(""))
-		{
-			GC_AuthUrl = CB_Api.getGcAuthUrl();
-		}
-		else
-		{
-			GC_AuthUrl = Config.settings.OverrideUrl.getValue();
-		}
+			@Override
+			public void run()
+			{
+				State = 0;
+				String GC_AuthUrl;
 
-		if (GC_AuthUrl.equals(""))
-		{
-			Error = ERROR_API_URL_NOT_FOUND;
-			return;
-		}
+				if (Config.settings.OverrideUrl.getValue().equals(""))
+				{
+					GC_AuthUrl = CB_Api.getGcAuthUrl();
+				}
+				else
+				{
+					GC_AuthUrl = Config.settings.OverrideUrl.getValue();
+				}
 
-		try
-		{
-			Call_OAuth_Page(GC_AuthUrl);
-		}
-		catch (ClientProtocolException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				if (GC_AuthUrl.equals(""))
+				{
+					Error = ERROR_API_URL_NOT_FOUND;
+					return;
+				}
+
+				try
+				{
+					Call_OAuth_Page(GC_AuthUrl);
+				}
+				catch (ClientProtocolException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		t.start();
 	}
 
 	Cookie GeoPtCookie = null;
