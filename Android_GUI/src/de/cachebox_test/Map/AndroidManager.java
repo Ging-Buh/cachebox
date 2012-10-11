@@ -146,20 +146,27 @@ public class AndroidManager extends ManagerBase
 
 			MapGeneratorJob job = new MapGeneratorJob(tile, mapFile, jobParameters, debugSettings);
 
-			if (databaseRenderer.executeJob(job, tileBitmap))
+			try
 			{
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				tileBitmap.compress(Bitmap.CompressFormat.PNG, 50, baos);
-
-				result = baos.toByteArray();
-
-				try
+				if (databaseRenderer.executeJob(job, tileBitmap))
 				{
-					baos.close();
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					tileBitmap.compress(Bitmap.CompressFormat.PNG, 50, baos);
+
+					result = baos.toByteArray();
+
+					try
+					{
+						baos.close();
+					}
+					catch (IOException e)
+					{
+					}
 				}
-				catch (IOException e)
-				{
-				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
 			}
 
 			return result;
