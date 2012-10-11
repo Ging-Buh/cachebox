@@ -62,6 +62,9 @@ public class PositionChangedEventList
 
 				}
 
+				// copy AltCorrection to the new Locator because this value is queried only once from the nmeaListener
+				if (GlobalCore.Locator != null) locator.altCorrection = GlobalCore.Locator.altCorrection;
+
 				GlobalCore.Locator = locator;
 				synchronized (list)
 				{
