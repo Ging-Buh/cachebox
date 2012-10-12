@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Events.KeyboardFocusChangedEvent;
+import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -31,7 +33,7 @@ import CB_Core.Types.Waypoint;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class EditWaypoint extends ActivityBase
+public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEvent
 {
 
 	private Waypoint waypoint;
@@ -422,14 +424,7 @@ public class EditWaypoint extends ActivityBase
 			@Override
 			public void show(boolean arg0)
 			{
-
-				for (EditWrapedTextField tmp : allTextFields)
-				{
-					tmp.resetFocus();
-				}
-
 				textField.setFocus(true);
-				keyboard.show(true);
 				scrollToY(textField.getY(), textField.getMaxY());
 			}
 		});
@@ -476,6 +471,22 @@ public class EditWaypoint extends ActivityBase
 		// onShow switch to editCoord Dialog if this the first show
 		if (firstShow && showCoordinateDialog) bCoord.performClick();
 		firstShow = false;
+		KeyboardFocusChangedEventList.Add(this);
+	}
+
+	@Override
+	public void onHide()
+	{
+		KeyboardFocusChangedEventList.Remove(this);
+	}
+
+	@Override
+	public void KeyboardFocusChanged(EditTextFieldBase focus)
+	{
+		if (focus == null)
+		{
+			scrollBox.setY(0);
+		}
 	}
 
 }

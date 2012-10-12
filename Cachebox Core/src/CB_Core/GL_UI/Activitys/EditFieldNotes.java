@@ -11,6 +11,8 @@ import java.util.TimerTask;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Events.KeyboardFocusChangedEvent;
+import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -39,7 +41,7 @@ import CB_Core.Types.FieldNoteEntry;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class EditFieldNotes extends ActivityBase
+public class EditFieldNotes extends ActivityBase implements KeyboardFocusChangedEvent
 {
 	private FieldNoteEntry altfieldNote;
 	private FieldNoteEntry fieldNote;
@@ -363,14 +365,7 @@ public class EditFieldNotes extends ActivityBase
 			@Override
 			public void show(boolean arg0)
 			{
-
-				for (EditWrapedTextField tmp : allTextFields)
-				{
-					tmp.resetFocus();
-				}
-
 				textField.setFocus(true);
-				keyboard.show(true);
 				scrollToY(textField.getY(), textField.getMaxY());
 			}
 		});
@@ -459,5 +454,26 @@ public class EditFieldNotes extends ActivityBase
 		lblTime = null;
 		scrollBox = null;
 		GcVote = null;
+	}
+
+	@Override
+	public void onShow()
+	{
+		KeyboardFocusChangedEventList.Add(this);
+	}
+
+	@Override
+	public void onHide()
+	{
+		KeyboardFocusChangedEventList.Remove(this);
+	}
+
+	@Override
+	public void KeyboardFocusChanged(EditTextFieldBase focus)
+	{
+		if (focus == null)
+		{
+			scrollBox.setY(0);
+		}
 	}
 }

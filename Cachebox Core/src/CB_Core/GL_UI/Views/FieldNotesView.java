@@ -590,7 +590,7 @@ public class FieldNotesView extends V_ListView
 				if ((aktFieldNote != null) && (aktFieldNoteIndex != -1))
 				{
 					// Änderungen in aktFieldNote übernehmen
-					lFieldNotes.remove(aktFieldNoteIndex);
+					if (lFieldNotes.size() > 0) lFieldNotes.remove(aktFieldNoteIndex);
 					aktFieldNote = fieldNote;
 					lFieldNotes.add(aktFieldNoteIndex, aktFieldNote);
 					aktFieldNote.UpdateDatabase();

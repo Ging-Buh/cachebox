@@ -3388,7 +3388,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			canvas.drawColor(Color.TRANSPARENT);
 
 			// Debug
-			canvas.drawColor(Color.argb(100, 255, 0, 0));
+			// canvas.drawColor(Color.argb(100, 255, 0, 0));
 		}
 	}
 

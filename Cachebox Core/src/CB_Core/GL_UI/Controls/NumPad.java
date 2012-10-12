@@ -312,17 +312,12 @@ public class NumPad extends CB_View_Base
 			@Override
 			public void show(boolean arg0)
 			{
-
-				for (EditWrapedTextField tmp : allTextFields)
-				{
-					tmp.resetFocus();
-				}
-
 				textField.setFocus(true);
 				focusedTextField = textField;
 			}
 		});
 
+		textField.dontShowSoftKeyBoardOnFocus();
 		allTextFields.add(textField);
 	}
 
