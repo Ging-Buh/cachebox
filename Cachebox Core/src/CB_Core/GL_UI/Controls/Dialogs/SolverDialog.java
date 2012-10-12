@@ -1,6 +1,8 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
 import CB_Core.GlobalCore;
+import CB_Core.Events.KeyboardFocusChangedEvent;
+import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ParentInfo;
@@ -8,6 +10,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.SelectSolverFunction;
 import CB_Core.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
 import CB_Core.GL_UI.Controls.Button;
+import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
@@ -20,6 +23,7 @@ import CB_Core.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
@@ -28,12 +32,14 @@ import CB_Core.Solver.Functions.Function;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class SolverDialog extends ButtonDialog implements OnStateChangeListener
+public class SolverDialog extends ButtonDialog implements OnStateChangeListener, KeyboardFocusChangedEvent
 {
 	private enum pages
 	{
 		Nothing, Text, Function, Variable, Operator, Waypoint
 	}
+
+	private float initialYpos;
 
 	private ScrollBox scrollBox;
 	private Linearlayout mLinearLayout;
@@ -517,5 +523,45 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener
 		if (mTitle9patch != null) mTitle9patch = null;
 
 		super.renderChilds(batch, parentInfo);
+	}
+
+	@Override
+	public void onShow()
+	{
+		initialYpos = this.getY();
+		KeyboardFocusChangedEventList.Add(this);
+	}
+
+	@Override
+	public void onHide()
+	{
+		KeyboardFocusChangedEventList.Remove(this);
+	}
+
+	@Override
+	public void KeyboardFocusChanged(EditTextFieldBase focus)
+	{
+		Logger.LogCat("SolverDialog FocusChangedEvent");
+
+		if (focus == null)
+		{
+			this.setY(initialYpos);
+			Logger.LogCat("SolverDialog set InitialPos - noFocus");
+		}
+		else
+		{
+			float WorldY = focus.getWorldRec().getY();
+			if (UiSizes.getWindowHeight() / 2 > WorldY)
+			{
+				this.setY(UiSizes.getWindowHeight() - WorldY);
+				Logger.LogCat("SolverDialog set Pos - " + (UiSizes.getWindowHeight() - WorldY));
+			}
+			else
+			{
+				Logger.LogCat("SolverDialog dont set Pos - " + WorldY);
+			}
+		}
+
+		GL.that.renderOnce("SolverDialog Y-Pos Changed");
 	}
 }

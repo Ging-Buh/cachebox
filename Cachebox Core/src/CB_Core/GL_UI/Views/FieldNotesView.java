@@ -441,6 +441,7 @@ public class FieldNotesView extends V_ListView
 				if ((nfne.CacheId == cache.Id) && (nfne.type == type))
 				{
 					newFieldNote = nfne;
+					newFieldNote.DeleteFromDatabase();
 					newFieldNote.timestamp = new Date();
 					aktFieldNote = newFieldNote;
 					aktFieldNoteIndex = index;
@@ -463,6 +464,11 @@ public class FieldNotesView extends V_ListView
 			newFieldNote.fillType();
 			aktFieldNoteIndex = -1;
 			aktFieldNote = newFieldNote;
+		}
+		else
+		{
+			lFieldNotes.remove(newFieldNote);
+
 		}
 
 		switch (type)
@@ -542,6 +548,8 @@ public class FieldNotesView extends V_ListView
 					Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
 					Config.AcceptChanges();
 				}
+				// und eine evtl. vorhandene FieldNote DNF löschen
+				lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.SelectedCache().Id, 2);
 			}
 			else if (newFieldNote.type == 2)
 			{
@@ -560,7 +568,7 @@ public class FieldNotesView extends V_ListView
 
 			FieldNoteList.CreateVisitsTxt();
 
-			that.notifyDataSetChanged();
+			if (that != null) that.notifyDataSetChanged();
 
 		}
 	}
@@ -606,6 +614,8 @@ public class FieldNotesView extends V_ListView
 							Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
 							Config.AcceptChanges();
 						}
+						// und eine evtl. vorhandene FieldNote FoundIt löschen
+						lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.SelectedCache().Id, 2);
 					}
 					else if (fieldNote.type == 2)
 					{

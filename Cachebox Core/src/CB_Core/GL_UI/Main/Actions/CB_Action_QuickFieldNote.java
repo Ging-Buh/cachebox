@@ -1,9 +1,12 @@
 package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
+import CB_Core.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.FieldNotesView;
@@ -50,11 +53,17 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 					FieldNotesView.addNewFieldnote(1, true);
 					if (FieldNotesView.that != null) FieldNotesView.that.notifyDataSetChanged();
 					CachListChangedEventList.Call(); // damit der Status geändert wird
+					QuickFieldNoteFeedbackPopUp pop = new QuickFieldNoteFeedbackPopUp(true);
+					pop.show(PopUp_Base.SHOW_TIME_SHORT);
+					platformConector.vibrate();
 					return true;
 				case MI_NOT_FOUND:
 					FieldNotesView.addNewFieldnote(2, true);
 					if (FieldNotesView.that != null) FieldNotesView.that.notifyDataSetChanged();
 					CachListChangedEventList.Call(); // damit der Status geändert wird
+					QuickFieldNoteFeedbackPopUp pop2 = new QuickFieldNoteFeedbackPopUp(false);
+					pop2.show(PopUp_Base.SHOW_TIME_SHORT);
+					platformConector.vibrate();
 					return true;
 				}
 				return false;

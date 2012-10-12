@@ -6,6 +6,7 @@ import java.util.TimerTask;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UiSizes;
 
 /**
  * Eine View Base zur anzeige eines PopUp´s
@@ -16,6 +17,7 @@ public abstract class PopUp_Base extends CB_View_Base
 {
 	public static final int SHOW_TIME_NEVER_CLOSE = -1;
 	public static final int SHOW_TIME_NORMAL = 4000;
+	public static final int SHOW_TIME_SHORT = 2000;
 
 	public PopUp_Base(CB_RectF rec, String Name)
 	{
@@ -27,6 +29,22 @@ public abstract class PopUp_Base extends CB_View_Base
 	protected void Initial()
 	{
 
+	}
+
+	public void show(int msec)
+	{
+		float x = (UiSizes.getWindowWidth() / 2) - this.halfWidth;
+		float y = (UiSizes.getWindowHeight() / 2) - this.halfHeight;
+
+		show(x, y, msec);
+	}
+
+	public void show()
+	{
+		float x = (UiSizes.getWindowWidth() / 2) - this.halfWidth;
+		float y = (UiSizes.getWindowHeight() / 2) - this.halfHeight;
+
+		show(x, y, SHOW_TIME_NORMAL);
 	}
 
 	public void show(float x, float y)

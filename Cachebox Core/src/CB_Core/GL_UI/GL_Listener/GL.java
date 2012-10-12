@@ -16,6 +16,7 @@ import CB_Core.Energy;
 import CB_Core.GlobalCore;
 import CB_Core.GlobalLocationReceiver;
 import CB_Core.Plattform;
+import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
@@ -401,6 +402,15 @@ public class GL implements ApplicationListener
 		}
 
 		if (view == null) return false;
+
+		// wenn dieser TouchDown ausserhalb einer TextView war, dann resete den TextField Focus
+		if (GL.that.getKeyboardFocus() != null)
+		{
+			if (!(view instanceof EditTextFieldBase) && !(view instanceof SelectionMarker) && !GL.that.PopUpIsShown())
+			{
+				GL.that.setKeyboardFocus(null);
+			}
+		}
 
 		if (touchDownPos.containsKey(pointer))
 		{
@@ -1043,15 +1053,17 @@ public class GL implements ApplicationListener
 		aktView.addChild(popUp);
 		aktPopUp = popUp;
 		aktPopUp.onShow();
+		renderOnce("Show PopUp");
 	}
 
 	public void closePopUp(PopUp_Base popUp)
 	{
 		CB_View_Base aktView = DialogIsShown ? mDialog : child;
 		aktView.removeChild(popUp);
-		aktPopUp.onHide();
+		if (aktPopUp != null) aktPopUp.onHide();
 		aktPopUp = null;
-
+		if (popUp != null) popUp.dispose();
+		renderOnce("Close PopUp");
 	}
 
 	public boolean PopUpIsShown()
@@ -1226,16 +1238,18 @@ public class GL implements ApplicationListener
 			return;
 		}
 
-		if (MsgToPlatformConector || ActivityIsShown) platformConector.hideForDialog();
+		if (MsgToPlatformConector) platformConector.hideForDialog();
 		if (actDialog != null) actDialog.onHide();
 		if (dialogHistory.size() > 0)
 		{
 			mDialog.removeChild(actDialog);
 			// letzten Dialog wiederherstellen
 			actDialog = dialogHistory.get(0);
+			actDialog.onShow();
 			actDialog.setEnabled(true);
 			dialogHistory.remove(0);
 			DialogIsShown = true;
+			platformConector.showForDialog();
 		}
 		else
 		{
@@ -1254,12 +1268,13 @@ public class GL implements ApplicationListener
 			@Override
 			public void run()
 			{
-				dialog.dispose();
+				if (dialog != null) dialog.dispose();
 			}
 		});
 		t.start();
 
 		clearRenderViews();
+		if (ActivityIsShown) platformConector.showForDialog();
 		renderOnce("Close Dialog");
 	}
 
@@ -1402,6 +1417,14 @@ public class GL implements ApplicationListener
 
 	public void setKeyboardFocus(EditWrapedTextField view)
 	{
+
+		String sView = "NULL";
+		if (view != null) sView = view.toString();
+		Logger.LogCat("GL => set KeyBoardFocus to " + sView);
+
+		// fire event
+		KeyboardFocusChangedEventList.Call(view);
+
 		keyboardFocus = view;
 		hideMarker();
 

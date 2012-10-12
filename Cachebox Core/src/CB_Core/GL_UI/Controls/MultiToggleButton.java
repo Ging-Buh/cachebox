@@ -236,7 +236,7 @@ public class MultiToggleButton extends Button
 
 			batch.setColor(aktState.color);
 
-			led.draw(batch, 0, 0, width, height);
+			if (led != null) led.draw(batch, 0, 0, width, height);
 
 			// alte abgespeicherte Farbe des Batches wieder herstellen!
 			batch.setColor(R, G, B, A);

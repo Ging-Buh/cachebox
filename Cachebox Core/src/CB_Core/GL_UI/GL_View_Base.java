@@ -724,7 +724,6 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 
 		GL.that.renderOnce(this.getName() + " touchDown");
-
 		return resultView;
 	}
 

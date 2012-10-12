@@ -2243,7 +2243,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					zoom--;
 				}
 				zoomBtn.setZoom(zoom);
-				zoomScale.resetFadeOut();
+				if (!CarMode) zoomScale.resetFadeOut();
 				setZoomScale(zoom);
 				zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), true);
 				aktZoom = zoom;
@@ -2265,7 +2265,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private void setZoomScale(int zoom)
 	{
 		// Logger.LogCat("set zoom");
-		zoomScale.setZoom(zoom);
+		if (!CarMode) zoomScale.setZoom(zoom);
 		mapScale.zoomChanged();
 	}
 

@@ -6,6 +6,7 @@ import CB_Core.Log.Logger;
 import android.content.Context;
 import android.content.Intent;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -86,14 +87,12 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	@Override
 	public void OnFree()
 	{
-		 
 
 	}
 
 	@Override
 	public void ActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		 
 
 	}
 
@@ -239,4 +238,33 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 			break;
 		}
 	}
+
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+	{
+		int mesuredWidth = measure(widthMeasureSpec);
+		int mesuredHeight = measure(heightMeasureSpec);
+
+		Log.d("CACHEBOX", "With/Height " + mesuredWidth + " / " + mesuredHeight);
+
+		setMeasuredDimension(mesuredWidth, mesuredHeight);
+
+	}
+
+	/**
+	 * Determines the width of this view
+	 * 
+	 * @param measureSpec
+	 *            A measureSpec packed into an int
+	 * @return The width of the view, honoring constraints from measureSpec
+	 */
+	private int measure(int measureSpec)
+	{
+		int result = 0;
+		int specSize = MeasureSpec.getSize(measureSpec);
+		result = specSize;
+
+		return result;
+	}
+
 }

@@ -31,6 +31,8 @@ import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.GpsStateChangeEvent;
 import CB_Core.Events.GpsStateChangeEventList;
+import CB_Core.Events.KeyboardFocusChangedEvent;
+import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.invalidateTextureEventList;
@@ -53,6 +55,7 @@ import CB_Core.GL_UI.ViewID.UI_Pos;
 import CB_Core.GL_UI.ViewID.UI_Type;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Activitys.settings.SettingsActivity;
+import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
@@ -186,11 +189,13 @@ import de.cachebox_test.Views.Forms.ParkingDialog;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
-		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent
+		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent, KeyboardFocusChangedEvent
 {
 
 	private ServiceConnection mConnection;
 	private Service myNotifyService;
+
+	public boolean KeybordShown = false;
 
 	public HorizontalListView QuickButtonList;
 
@@ -1103,6 +1108,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			Logger.Error("onResume", "initialOnTouchListner", e);
 		}
+
+		// register KeyboardFocusChangedEvent
+		KeyboardFocusChangedEventList.Add(this);
 	}
 
 	@Override
@@ -1133,6 +1141,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
 			this.mWakeLock.acquire();
 		}
+
+		// unregister KeyboardFocusChangedEvent
+		KeyboardFocusChangedEventList.Remove(this);
 	}
 
 	@Override
@@ -3184,9 +3195,21 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							@Override
 							public void run()
 							{
+								mTextField.setVisibility(View.VISIBLE);
 								mTextField.requestFocus();
 								((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mTextField,
 										InputMethodManager.SHOW_FORCED);
+								Timer timer = new Timer();
+								TimerTask task = new TimerTask()
+								{
+									@Override
+									public void run()
+									{
+										KeybordShown = true;
+									}
+								};
+								timer.schedule(task, 500);
+
 							}
 						});
 					}
@@ -3203,6 +3226,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						{
 							((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
 									mTextField.getWindowToken(), 0);
+							KeybordShown = false;
 						}
 					});
 
@@ -3364,7 +3388,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			canvas.drawColor(Color.TRANSPARENT);
 
 			// Debug
-			// canvas.drawColor(Color.argb(50, 0, 0, 255));
+			canvas.drawColor(Color.argb(100, 255, 0, 0));
 		}
 	}
 
@@ -3541,6 +3565,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		layout.addView(mTextField);
 
+		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mTextField.getLayoutParams();
+		params.height = 1;
+		mTextField.setLayoutParams(params);
+
 	}
 
 	protected Object getNumericValueFromKeyCode(int keyCode)
@@ -3557,6 +3585,28 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (keyCode == KeyEvent.KEYCODE_9) return '9';
 
 		return null;
+	}
+
+	@Override
+	public void KeyboardFocusChanged(final EditTextFieldBase focus)
+	{
+		this.runOnUiThread(new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				if (focus != null)
+				{
+					// ;
+				}
+				else
+				{
+					mTextField.setVisibility(View.GONE);
+				}
+			}
+		});
+
 	}
 
 }
