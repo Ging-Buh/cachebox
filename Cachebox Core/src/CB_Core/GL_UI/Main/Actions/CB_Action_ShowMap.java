@@ -121,7 +121,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 			mi = icm.addItem(Index++, "", layer.Name);
 			mi.setData(layer);
 			mi.setCheckable(true);
-			if (layer == TabMainView.mapView.CurrentLayer)
+			if (layer == MapView.mapTileLoader.CurrentLayer)
 			{
 				mi.setChecked(true);
 			}

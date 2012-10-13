@@ -16,6 +16,8 @@ public class TileGL implements Destroyable
 	public Descriptor Descriptor = null;
 
 	public TileState State;
+	// zum speichern beliebiger Zusatzinfos
+	public Object data;
 
 	// / <summary>
 	// / Textur der Kachel

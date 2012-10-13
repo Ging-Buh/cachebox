@@ -63,6 +63,8 @@ public class Descriptor implements Comparable<Descriptor>
 	public static int[] TilesPerLine = null;
 	public static int[] TilesPerColumn = null;
 	static int[] tileOffset = null;
+	// zur Übergabe beliebiger Daten
+	public Object Data = null;
 
 	public static void Init()
 	{

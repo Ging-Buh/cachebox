@@ -6,13 +6,8 @@ import java.util.SortedMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import javax.security.auth.DestroyFailedException;
 
 import CB_Core.Config;
-import CB_Core.Energy;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
@@ -42,6 +37,7 @@ import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Map.Layer;
 import CB_Core.Map.ManagerBase;
+import CB_Core.Map.MapTileLoader;
 import CB_Core.Map.Point;
 import CB_Core.Map.PointL;
 import CB_Core.Map.RouteOverlay;
@@ -84,11 +80,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	protected SortedMap<Integer, Integer> DistanceZoomLevel;
 
 	private Locator locator = null;
-	protected SortedMap<Long, TileGL> loadedTiles = new TreeMap<Long, TileGL>();
-	final Lock loadedTilesLock = new ReentrantLock();
-	protected SortedMap<Long, Descriptor> queuedTiles = new TreeMap<Long, Descriptor>();
-	private Lock queuedTilesLock = new ReentrantLock();
-	private Thread queueProcessor = null;
+	public static MapTileLoader mapTileLoader = new MapTileLoader();
 	private boolean alignToCompass = false;
 	private boolean CarMode = false;
 
@@ -114,7 +106,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private boolean showCompass;
 	public boolean showDirektLine;
 	// private boolean nightMode;
-	private int aktZoom;
+	public int aktZoom;
 	// private float startCameraZoom;
 	// private float endCameraZoom;
 	// private float diffCameraZoom;
@@ -133,9 +125,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	// #################################################################
 
 	String str = "";
-	public static final int MAX_MAP_ZOOM = 22;
 
-	int maxNumTiles = 100;
 	float maxTilesPerScreen = 0;
 	float iconFactor = 1.5f;
 
@@ -143,7 +133,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	long posy = 5685;
 
 	// screencenter in World Coordinates (Pixels in Zoom Level maxzoom
-	PointL screenCenterW = new PointL(0, 0); // wird am Anfang von Render() gesetzt
+	public PointL screenCenterW = new PointL(0, 0); // wird am Anfang von Render() gesetzt
 	PointL screenCenterT = new PointL(0, 0); // speichert dauerhaft den Zustand
 	int mapIntWidth;
 	int mapIntHeight;
@@ -157,7 +147,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	private boolean positionInitialized = false;
 	// String CurrentLayer = "germany-0.2.4.map";
-	public Layer CurrentLayer = null;
 
 	OrthographicCamera camera;
 
@@ -180,7 +169,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		invalidateTextureEventList.Add(this);
 		registerSkinChangedEvent();
 		setBackground(SpriteCache.ListBack);
-
+		int maxNumTiles = 0;
 		// calculate max Map Tile cache
 		try
 		{
@@ -205,12 +194,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		maxNumTiles = Math.min(maxNumTiles, 150);
 		maxNumTiles = Math.max(maxNumTiles, 15);
 
-		if (queueProcessor == null)
-		{
-			queueProcessor = new queueProcessor();
-			queueProcessor.setPriority(Thread.MIN_PRIORITY);
-			queueProcessor.start();
-		}
+		mapTileLoader.setMaxNumTiles(maxNumTiles);
 
 		mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, this.halfWidth, GL_UISizes.ZoomBtn.getHalfWidth() / 4),
 				"mapScale", this);
@@ -232,8 +216,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				lastDynamicZoom = zoomBtn.getZoom();
 
-				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System
-						.currentTimeMillis() + 1000);
+				kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()),
+						System.currentTimeMillis(), System.currentTimeMillis() + 1000);
 				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
@@ -251,8 +235,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				lastDynamicZoom = zoomBtn.getZoom();
 
-				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System
-						.currentTimeMillis() + 1000);
+				kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()),
+						System.currentTimeMillis(), System.currentTimeMillis() + 1000);
 				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
@@ -278,14 +262,15 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		// initial Zoom Scale
 		// zoomScale = new GL_ZoomScale(6, 20, 13);
 
-		mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
+		mapCacheList = new MapViewCacheList(MapTileLoader.MAX_MAP_ZOOM);
 
 		// from create
 
 		String currentLayerName = Config.settings.CurrentMapLayer.getValue();
 		if (ManagerBase.Manager != null)
 		{
-			CurrentLayer = ManagerBase.Manager.GetLayerByName((currentLayerName == "") ? "Mapnik" : currentLayerName, currentLayerName, "");
+			if (mapTileLoader.CurrentLayer == null) mapTileLoader.CurrentLayer = ManagerBase.Manager.GetLayerByName(
+					(currentLayerName == "") ? "Mapnik" : currentLayerName, currentLayerName, "");
 		}
 
 		mapIntWidth = (int) rec.getWidth();
@@ -453,7 +438,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		aktZoom = zoomBtn.getZoom();
 		setZoomScale(aktZoom);
-		camera.zoom = getMapTilePosFactor(aktZoom);
+		camera.zoom = mapTileLoader.getMapTilePosFactor(aktZoom);
 		// endCameraZoom = camera.zoom;
 		// diffCameraZoom = 0;
 		// camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
@@ -485,33 +470,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		Config.settings.CurrentMapLayer.setValue(newLayer.Name);
 		Config.AcceptChanges();
 
-		CurrentLayer = newLayer;
+		mapTileLoader.CurrentLayer = newLayer;
 
-		clearLoadedTiles();
-	}
-
-	private void clearLoadedTiles()
-	{
-		loadedTilesLock.lock();
-		try
-		{
-			for (TileGL tile : loadedTiles.values())
-			{
-				try
-				{
-					tile.destroy();
-				}
-				catch (DestroyFailedException e)
-				{
-					e.printStackTrace();
-				}
-			}
-			loadedTiles.clear();
-		}
-		finally
-		{
-			loadedTilesLock.unlock();
-		}
+		mapTileLoader.clearLoadedTiles();
 	}
 
 	protected SortedMap<Long, TileGL> tilesToDraw = new TreeMap<Long, TileGL>();
@@ -541,7 +502,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			camera.zoom = kineticZoom.getAktZoom();
 
-			int zoom = MAX_MAP_ZOOM;
+			int zoom = MapTileLoader.MAX_MAP_ZOOM;
 			float tmpZoom = camera.zoom;
 			float faktor = 1.5f;
 			faktor = faktor - iconFactor + 1;
@@ -568,7 +529,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		if ((kineticPan != null) && (kineticPan.started))
 		{
-			long faktor = getMapTilePosFactor(aktZoom);
+			long faktor = mapTileLoader.getMapTilePosFactor(aktZoom);
 			Point pan = kineticPan.getAktPan();
 			// debugString = pan.x + " - " + pan.y;
 			// camera.position.add(pan.x * faktor, pan.y * faktor, 0);
@@ -676,10 +637,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		try
 		{
 			// das Alter aller Tiles um 1 erhöhen
-			for (TileGL tile : loadedTiles.values())
-			{
-				tile.Age++;
-			}
+			mapTileLoader.increaseLoadedTilesAge();
 		}
 		catch (Exception e)
 		{
@@ -707,7 +665,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					TileGL tile = null;
 					try
 					{
-						tile = loadedTiles.get(desc.GetHashCode());
+						tile = mapTileLoader.getLoadedTile(desc);
 					}
 					catch (Exception ex)
 					{
@@ -744,7 +702,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				{
 					// Faktor, mit der dieses MapTile vergrößert gezeichnet
 					// werden muß
-					long posFactor = getMapTilePosFactor(tile.Descriptor.Zoom);
+					long posFactor = mapTileLoader.getMapTilePosFactor(tile.Descriptor.Zoom);
 
 					long xPos = (long) tile.Descriptor.X * posFactor * 256 - screenCenterW.x;
 					long yPos = -(tile.Descriptor.Y + 1) * posFactor * 256 - screenCenterW.y;
@@ -772,7 +730,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		str = String.valueOf(aktZoom) + " - camzoom: " + Math.round(camera.zoom * 100) / 100;
 		Fonts.getNormal().draw(batch, str, 20, 80);
 
-		str = "lTiles: " + loadedTiles.size() + " - qTiles: " + queuedTiles.size();
+		str = "lTiles: " + mapTileLoader.LoadedTilesSize() + " - qTiles: " + mapTileLoader.QueuedTilesSize();
 		Fonts.getNormal().draw(batch, str, 20, 60);
 
 		str = "TrackPoi: " + RouteOverlay.AllTrackPoints + " -  " + RouteOverlay.ReduceTrackPoints + " [" + RouteOverlay.DrawedLineCount
@@ -788,8 +746,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		if (locator != null)
 		{
-			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MAX_MAP_ZOOM, GlobalCore.LastValidPosition.Longitude),
-					Descriptor.LatitudeToTileY(MAX_MAP_ZOOM, GlobalCore.LastValidPosition.Latitude), MAX_MAP_ZOOM, MAX_MAP_ZOOM);
+			PointD point = Descriptor.ToWorld(
+					Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, GlobalCore.LastValidPosition.Longitude),
+					Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, GlobalCore.LastValidPosition.Latitude),
+					MapTileLoader.MAX_MAP_ZOOM, MapTileLoader.MAX_MAP_ZOOM);
 
 			Vector2 vPoint = new Vector2((float) point.X, -(float) point.Y);
 
@@ -892,8 +852,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		Coordinate coord = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos : GlobalCore.SelectedCache().Pos;
 
-		float x = (float) (256.0 * Descriptor.LongitudeToTileX(MAX_MAP_ZOOM, coord.Longitude));
-		float y = (float) (-256.0 * Descriptor.LatitudeToTileY(MAX_MAP_ZOOM, coord.Latitude));
+		float x = (float) (256.0 * Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, coord.Longitude));
+		float y = (float) (-256.0 * Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, coord.Latitude));
 
 		float halfHeight = (mapIntHeight / 2) - ySpeedVersatz;
 		float halfWidth = mapIntWidth / 2;
@@ -1172,7 +1132,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		TileGL tile = null;
 		try
 		{
-			tile = loadedTiles.get(desc.GetHashCode());
+			tile = mapTileLoader.getLoadedTile(desc);
 		}
 		catch (Exception ex)
 		{
@@ -1217,7 +1177,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				TileGL tile = null;
 				try
 				{
-					tile = loadedTiles.get(desc.GetHashCode());
+					tile = mapTileLoader.getLoadedTile(desc);
 				}
 				catch (Exception ex)
 				{
@@ -1229,7 +1189,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					// eigentlich nicht das richtige Tile ist!!!
 					// tile.Age = 0;
 				}
-				else if ((zoomzoom <= aktZoom + 0) && (zoomzoom <= MAX_MAP_ZOOM))
+				else if ((zoomzoom <= aktZoom + 0) && (zoomzoom <= MapTileLoader.MAX_MAP_ZOOM))
 				{
 					// für den aktuellen Zoom ist kein Tile vorhanden -> größere
 					// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden
@@ -1249,9 +1209,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				mapIntWidth, mapIntHeight)), aktZoom, false);
 		mapCacheList.update(data);
 
-		if (ManagerBase.Manager == null) return; // Kann nichts laden, wenn der Manager Null ist!
-
-		deleteUnusedTiles();
 		// alle notwendigen Tiles zum Laden einstellen in die Queue
 		// (queuedTiles)
 
@@ -1267,96 +1224,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		Descriptor ru = screenToDescriptor(new Vector2(halfMapIntWidth + drawingWidth / 2 + extensionRight, halfMapIntHeight
 				+ drawingHeight / 2 + extensionBottom), aktZoom);
 
-		loadedTilesLock.lock();
-		queuedTilesLock.lock();
-		// Queue jedesmal löschen, damit die Tiles, die eigentlich
-		// mal
-		// gebraucht wurden aber trotzdem noch nicht geladen sind
-		// auch nicht mehr geladen werden
-		queuedTiles.clear();
-		try
-		{
-			for (int i = lo.X; i <= ru.X; i++)
-			{
-				for (int j = lo.Y; j <= ru.Y; j++)
-				{
-					Descriptor desc = new Descriptor(i, j, aktZoom);
+		mapTileLoader.loadTiles(this, lo, ru, aktZoom);
 
-					try
-					{
-						if (loadedTiles.containsKey(desc.GetHashCode()))
-						{
-							continue; // Dieses
-										// Tile
-										// existiert
-										// schon!
-						}
-						if (queuedTiles.containsKey(desc.GetHashCode())) continue;
-						queueTile(desc);
-					}
-					catch (Exception e)
-					{
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-		finally
-		{
-			queuedTilesLock.unlock();
-			loadedTilesLock.unlock();
-		}
-	}
-
-	private void deleteUnusedTiles()
-	{
-		// Ist Auslagerung überhaupt nötig?
-		if (numLoadedTiles() <= maxNumTiles) return;
-		// Wenn die Anzahl der maximal gleichzeitig geladenen Tiles
-		// überschritten ist
-		// die ältesten Tiles löschen
-		do
-		{
-			loadedTilesLock.lock();
-			try
-			{
-				// Kachel mit maximalem Alter suchen
-				long maxAge = Integer.MIN_VALUE;
-				Descriptor maxDesc = null;
-
-				for (TileGL tile : loadedTiles.values())
-					if (/* tile.texture != null && */tile.Age > maxAge)
-					{
-						maxAge = tile.Age;
-						maxDesc = tile.Descriptor;
-					}
-
-				// Instanz freigeben und Eintrag löschen
-				if (maxDesc != null)
-				{
-					try
-					{
-						TileGL tile = loadedTiles.get(maxDesc.GetHashCode());
-						loadedTiles.remove(maxDesc.GetHashCode());
-						tile.destroy();
-					}
-					catch (Exception ex)
-					{
-						Logger.Error("MapView.preemptTile()", "", ex);
-					}
-				}
-			}
-			finally
-			{
-				loadedTilesLock.unlock();
-			}
-		}
-		while (numLoadedTiles() > maxNumTiles);
-	}
-
-	int numLoadedTiles()
-	{
-		return loadedTiles.size();
 	}
 
 	public void InitializeMap()
@@ -1568,7 +1437,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				ManagerBase.Manager.setRenderTheme(themePath);
 			}
 
-			invalidateTexture();
+			// Initial_all wird vom Constructor der MapView übergeben. Beim Constructor müssen die Texturen nicht ungültig gemacht werden
+			if (InitialFlags != INITIAL_ALL) invalidateTexture();
 		}
 
 		if ((InitialFlags & INITIAL_WP_LIST) != 0)
@@ -1627,25 +1497,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 			center = value;
 
-			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MAX_MAP_ZOOM, center.Longitude),
-					Descriptor.LatitudeToTileY(MAX_MAP_ZOOM, center.Latitude), MAX_MAP_ZOOM, MAX_MAP_ZOOM);
+			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, center.Longitude),
+					Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, center.Latitude), MapTileLoader.MAX_MAP_ZOOM,
+					MapTileLoader.MAX_MAP_ZOOM);
 
 			setScreenCenter(new Vector2((float) point.X, (float) point.Y));
 		}
-	}
-
-	private long getMapTilePosFactor(float zoom)
-	{
-		long result = 1;
-
-		// for (int z = zoom; z < MAX_MAP_ZOOM; z++)
-		// {
-		// result *= 2;
-		// }
-
-		result = (long) Math.pow(2.0, MAX_MAP_ZOOM - zoom);
-
-		return result;
 	}
 
 	/**
@@ -1687,7 +1544,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		// World-Koordinaten in Pixel
 		Vector2 world = screenToWorld(point);
-		for (int i = MAX_MAP_ZOOM; i > zoom; i--)
+		for (int i = MapTileLoader.MAX_MAP_ZOOM; i > zoom; i--)
 		{
 			world.x /= 2;
 			world.y /= 2;
@@ -1763,7 +1620,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				zoomBtn.setZoom((int) lastDynamicZoom);
 				inputState = InputState.Idle;
 
-				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(),
+				kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(),
 						System.currentTimeMillis() + 1000);
 
 				// kineticZoom = new KineticZoom(camera.zoom, lastDynamicZoom, System.currentTimeMillis(), System.currentTimeMillis() +
@@ -1813,7 +1670,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				zoomBtn.setZoom(setZoomTo);
 				inputState = InputState.Idle;
 
-				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(setZoomTo), System.currentTimeMillis(),
+				kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(setZoomTo), System.currentTimeMillis(),
 						System.currentTimeMillis() + 1000);
 
 				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
@@ -1918,195 +1775,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		return alignToCompass;
 	}
 
-	private void queueTile(Descriptor desc)
-	{
-		queuedTilesLock.lock();
-		try
-		{
-			if (queuedTiles.containsKey(desc.GetHashCode())) return;
-
-			queuedTiles.put(desc.GetHashCode(), desc);
-		}
-		finally
-		{
-			queuedTilesLock.unlock();
-		}
-
-	}
-
-	private class queueProcessor extends Thread
-	{
-		@Override
-		public void run()
-		{
-			try
-			{
-
-				do
-				{
-					Descriptor desc = null;
-					if (!Energy.DisplayOff() && MapView.this.isVisible() && queuedTiles.size() > 0)
-					{
-
-						try
-						{
-							queuedTilesLock.lock();
-							try
-							{
-								// ArrayList<KachelOrder> kOrder = new
-								// ArrayList<KachelOrder>();
-								// long posFactor = getMapTilePosFactor(zoom);
-								// for (int i = lo.X; i <= ru.X; i++)
-								// {
-								// for (int j = lo.Y; j <= ru.Y; j++)
-								// {
-								// Descriptor desc = new Descriptor(i, j, zoom);
-								// double dist = Math.sqrt(Math.pow((double)
-								// desc.X * posFactor * 256 +
-								// 128 - screenCenterW.X, 2)
-								// + Math.pow((double) desc.Y * posFactor * 256
-								// - 128 + screenCenterW.Y,
-								// 2));
-								// kOrder.add(new KachelOrder(desc, dist));
-								// }
-								// }
-								// Collections.sort(kOrder);
-
-								Descriptor nearestDesc = null;
-								double nearestDist = Double.MAX_VALUE;
-								int nearestZoom = 0;
-								for (Descriptor tmpDesc : queuedTiles.values())
-								{
-									long posFactor = getMapTilePosFactor(tmpDesc.Zoom);
-
-									double dist = Math.sqrt(Math.pow((double) tmpDesc.X * posFactor * 256 + 128 * posFactor
-											- screenCenterW.x, 2)
-											+ Math.pow((double) tmpDesc.Y * posFactor * 256 + 128 * posFactor + screenCenterW.y, 2));
-
-									if (Math.abs(aktZoom - nearestZoom) > Math.abs(aktZoom - tmpDesc.Zoom))
-									{
-										// der Zoomfaktor des bisher besten
-										// Tiles ist weiter entfernt vom
-										// aktuellen Zoom als der vom tmpDesc ->
-										// tmpDesc verwenden
-										nearestDist = dist;
-										nearestDesc = tmpDesc;
-										nearestZoom = tmpDesc.Zoom;
-									}
-
-									if (dist < nearestDist)
-									{
-										if (Math.abs(aktZoom - nearestZoom) < Math.abs(aktZoom - tmpDesc.Zoom))
-										{
-											// zuerst die Tiles, die dem
-											// aktuellen Zoom Faktor am nächsten
-											// sind.
-											continue;
-										}
-										nearestDist = dist;
-										nearestDesc = tmpDesc;
-										nearestZoom = tmpDesc.Zoom;
-									}
-								}
-								desc = nearestDesc;
-
-							}
-							finally
-							{
-								queuedTilesLock.unlock();
-							}
-
-							// if (desc.Zoom == zoom)
-							{
-								LoadTile(desc);
-							}
-
-							if (queuedTiles.size() < maxTilesPerScreen) Thread.sleep(100);
-
-						}
-						catch (Exception ex1)
-						{
-							Logger.Error("MapViewGL.queueProcessor.doInBackground()", "1", ex1);
-						}
-
-					}
-					else
-					{
-						Thread.sleep(200);
-					}
-				}
-				while (true);
-			}
-			catch (Exception ex3)
-			{
-				Logger.Error("MapViewGL.queueProcessor.doInBackground()", "3", ex3);
-			}
-			finally
-			{
-				// damit im Falle einer Exception der Thread neu gestartet wird
-				// queueProcessor = null;
-			}
-			return;
-		}
-	}
-
-	private void LoadTile(Descriptor desc)
-	{
-		TileGL.TileState tileState = TileGL.TileState.Disposed;
-
-		byte[] bytes = null;
-		if (ManagerBase.Manager != null)
-		{
-			bytes = ManagerBase.Manager.LoadInvertedPixmap(CurrentLayer, desc);
-		}
-		// byte[] bytes = MapManagerEventPtr.OnGetMapTile(CurrentLayer, desc);
-		// Texture texture = new Texture(new Pixmap(bytes, 0, bytes.length));
-		if (bytes != null && bytes.length > 0)
-		{
-			tileState = TileGL.TileState.Present;
-			addLoadedTile(desc, bytes, tileState);
-			// Redraw Map after a new Tile was loaded or generated
-			GL.that.renderOnce(this.getName() + " loadTile");
-		}
-		else
-		{
-			ManagerBase.Manager.CacheTile(CurrentLayer, desc);
-		}
-	}
-
-	private void addLoadedTile(Descriptor desc, byte[] bytes, TileGL.TileState state)
-	{
-		loadedTilesLock.lock();
-		try
-		{
-			if (loadedTiles.containsKey(desc.GetHashCode()))
-			{
-
-			}
-			else
-			{
-				TileGL tile = new TileGL(desc, bytes, state);
-				loadedTiles.put(desc.GetHashCode(), tile);
-			}
-
-		}
-		finally
-		{
-			loadedTilesLock.unlock();
-		}
-
-		queuedTilesLock.lock();
-		try
-		{
-			if (queuedTiles.containsKey(desc.GetHashCode())) queuedTiles.remove(desc.GetHashCode());
-		}
-		finally
-		{
-			queuedTilesLock.unlock();
-		}
-
-	}
-
 	// InputProcessor
 	public enum InputState
 	{
@@ -2176,7 +1844,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				zoomBtn.setZoom((int) lastDynamicZoom);
 				inputState = InputState.Idle;
 
-				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(),
+				kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(),
 						System.currentTimeMillis() + 500);
 
 				// kineticZoom = new KineticZoom(camera.zoom, lastDynamicZoom, System.currentTimeMillis(), System.currentTimeMillis() +
@@ -2236,7 +1904,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				// GL_Listener.glListener.addRenderView(this, frameRateAction);
 				GL.that.renderOnce(this.getName() + " Pan");
 				// debugString = "";
-				long faktor = getMapTilePosFactor(aktZoom);
+				long faktor = mapTileLoader.getMapTilePosFactor(aktZoom);
 				// debugString += faktor;
 				Point lastPoint = (Point) fingerDown.values().toArray()[0];
 				// debugString += " - " + (lastPoint.x - x) * faktor + " - " + (y - lastPoint.y) * faktor;
@@ -2281,19 +1949,19 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				float ratio = originalDistance / currentDistance;
 				camera.zoom = camera.zoom * ratio;
 
-				if (camera.zoom < getMapTilePosFactor(zoomBtn.getMaxZoom()))
+				if (camera.zoom < mapTileLoader.getMapTilePosFactor(zoomBtn.getMaxZoom()))
 				{
-					camera.zoom = getMapTilePosFactor(zoomBtn.getMaxZoom());
+					camera.zoom = mapTileLoader.getMapTilePosFactor(zoomBtn.getMaxZoom());
 				}
-				if (camera.zoom > getMapTilePosFactor(zoomBtn.getMinZoom()))
+				if (camera.zoom > mapTileLoader.getMapTilePosFactor(zoomBtn.getMinZoom()))
 				{
-					camera.zoom = getMapTilePosFactor(zoomBtn.getMinZoom());
+					camera.zoom = mapTileLoader.getMapTilePosFactor(zoomBtn.getMinZoom());
 				}
 
 				// endCameraZoom = camera.zoom;
 
 				System.out.println(camera.zoom);
-				int zoom = MAX_MAP_ZOOM;
+				int zoom = MapTileLoader.MAX_MAP_ZOOM;
 
 				lastDynamicZoom = camera.zoom;
 
@@ -2478,9 +2146,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private void calcCenter()
 	{
 		// berechnet anhand des ScreenCenterW die Center-Coordinaten
-		PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, MAX_MAP_ZOOM, MAX_MAP_ZOOM);
+		PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, MapTileLoader.MAX_MAP_ZOOM, MapTileLoader.MAX_MAP_ZOOM);
 
-		center = new Coordinate(Descriptor.TileYToLatitude(MAX_MAP_ZOOM, -point.Y), Descriptor.TileXToLongitude(MAX_MAP_ZOOM, point.X));
+		center = new Coordinate(Descriptor.TileYToLatitude(MapTileLoader.MAX_MAP_ZOOM, -point.Y), Descriptor.TileXToLongitude(
+				MapTileLoader.MAX_MAP_ZOOM, point.X));
 	}
 
 	public float pixelsPerMeter = 0;
@@ -2753,7 +2422,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public void invalidateTexture()
 	{
-		clearLoadedTiles();
+		mapTileLoader.clearLoadedTiles();
 		tilesToDraw.clear();
 		if (directLineOverlay != null) directLineOverlay.getTexture().dispose();
 		directLineOverlay = null;
