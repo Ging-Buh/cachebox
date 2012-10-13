@@ -62,7 +62,7 @@ public class GL implements ApplicationListener
 	public static final int MAX_KINETIC_SCROLL_DISTANCE = 100;
 	public static final int FRAME_RATE_IDLE = 200;
 	public static final int FRAME_RATE_ACTION = 50;
-	public static final int FRAME_RATE_FAST_ACTION = 15;
+	public static final int FRAME_RATE_FAST_ACTION = 40;
 
 	// Public Static Member
 	public static GL_Listener_Interface listenerInterface;

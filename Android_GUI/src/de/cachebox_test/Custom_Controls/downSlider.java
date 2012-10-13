@@ -27,8 +27,6 @@ import CB_Core.Events.GpsStateChangeEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.Controls.QuickButtonList;
-import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_Rect;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
@@ -114,25 +112,9 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
 	{
-
-		Logger.LogCat("downSlider.onMeasure");
-		if (GL.that.getKeyboardFocus() != null && nextMeasureCloseKeyboard && ((main) main.mainActivity).KeybordShown)
-		{
-			// Keybord Closed
-			GL.that.setKeyboardFocus(null);
-			nextMeasureCloseKeyboard = false;
-			((main) main.mainActivity).KeybordShown = false;
-		}
-		else if (GL.that.getKeyboardFocus() != null)
-		{
-			nextMeasureCloseKeyboard = true;
-		}
-
 		this.width = measure(widthMeasureSpec);
 		this.height = measure(heightMeasureSpec);
-
 		imgSize = (int) ((height / 5) * 0.6);
-
 		setMeasuredDimension(this.width, this.height);
 	}
 

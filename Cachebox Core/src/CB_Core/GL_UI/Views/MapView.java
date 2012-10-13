@@ -81,6 +81,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private MapScale mapScale;
 	// ########################################
 
+	protected SortedMap<Integer, Integer> DistanceZoomLevel;
+
 	private Locator locator = null;
 	protected SortedMap<Long, TileGL> loadedTiles = new TreeMap<Long, TileGL>();
 	final Lock loadedTilesLock = new ReentrantLock();
@@ -132,8 +134,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	String str = "";
 	public static final int MAX_MAP_ZOOM = 22;
-	int frameRateIdle = 200;
-	int frameRateAction = 30;
 
 	int maxNumTiles = 100;
 	float maxTilesPerScreen = 0;
@@ -234,7 +234,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System
 						.currentTimeMillis() + 1000);
-				GL.that.addRenderView(MapView.this, frameRateAction);
+				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
 				return true;
@@ -253,7 +253,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System
 						.currentTimeMillis() + 1000);
-				GL.that.addRenderView(MapView.this, frameRateAction);
+				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
 				return true;
@@ -1455,14 +1455,33 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			showCompass = CompassMode ? false : Config.settings.MapShowCompass.getValue();
 			showDirektLine = CompassMode ? false : Config.settings.ShowDirektLine.getValue();
 			iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
-			aktZoom = Config.settings.lastZoomLevel.getValue();
-			zoomBtn.setMaxZoom(Config.settings.OsmMaxLevel.getValue());
-			zoomBtn.setMinZoom(Config.settings.OsmMinLevel.getValue());
+
+			int setAktZoom = CompassMode ? Config.settings.lastZoomLevel.getValue() : Config.settings.lastZoomLevel.getValue();
+			int setMaxZoom = CompassMode ? Config.settings.CompassMapMaxZommLevel.getValue() : Config.settings.OsmMaxLevel.getValue();
+			int setMinZoom = CompassMode ? Config.settings.CompassMapMinZoomLevel.getValue() : Config.settings.OsmMinLevel.getValue();
+
+			aktZoom = setAktZoom;
+			zoomBtn.setMaxZoom(setMaxZoom);
+			zoomBtn.setMinZoom(setMinZoom);
 			zoomBtn.setZoom(aktZoom);
 
-			zoomScale.setMaxZoom(Config.settings.OsmMaxLevel.getValue());
-			zoomScale.setMinZoom(Config.settings.OsmMinLevel.getValue());
+			zoomScale.setMaxZoom(setMaxZoom);
+			zoomScale.setMinZoom(setMinZoom);
 			setZoomScale(aktZoom);
+
+			if (CompassMode)
+			{
+				// Berechne die darstellbare Entfernung für jedes ZoomLevel
+				DistanceZoomLevel = new TreeMap<Integer, Integer>();
+
+				int posiblePixel = (int) this.getHalfHeight();
+
+				for (int i = setMaxZoom; i > setMinZoom; i--)
+				{
+					float PixelForZoomLevel = getPixelsPerMeter(i);
+					DistanceZoomLevel.put(i, (int) (posiblePixel / PixelForZoomLevel));
+				}
+			}
 		}
 
 		if ((InitialFlags & INITIAL_THEME) != 0)
@@ -1750,7 +1769,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				// kineticZoom = new KineticZoom(camera.zoom, lastDynamicZoom, System.currentTimeMillis(), System.currentTimeMillis() +
 				// 1000);
 
-				GL.that.addRenderView(MapView.this, frameRateAction);
+				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
 			}
@@ -1761,8 +1780,52 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		}
 
+		if (CompassMode)
+		{
+			// Berechne den Zoom so, dass eigene Position und WP auf der Map zu sehen sind.
+			Coordinate position = null;
+			// if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
+			if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;
+			else
+				position = new Coordinate();
+
+			float distance = -1;
+			if (GlobalCore.SelectedCache() != null && position.Valid)
+			{
+				if (GlobalCore.SelectedWaypoint() == null) distance = position.Distance(GlobalCore.SelectedCache().Pos);
+				else
+					distance = position.Distance(GlobalCore.SelectedWaypoint().Pos);
+			}
+			int setZoomTo = zoomBtn.getMinZoom();
+
+			for (int i = zoomBtn.getMaxZoom(); i > zoomBtn.getMinZoom(); i--)
+			{
+				if (distance < DistanceZoomLevel.get(i))
+				{
+					setZoomTo = i;
+					break;
+				}
+			}
+
+			if (setZoomTo != lastCompassMapZoom)
+			{
+				lastCompassMapZoom = setZoomTo;
+				zoomBtn.setZoom(setZoomTo);
+				inputState = InputState.Idle;
+
+				kineticZoom = new KineticZoom(camera.zoom, getMapTilePosFactor(setZoomTo), System.currentTimeMillis(),
+						System.currentTimeMillis() + 1000);
+
+				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
+				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
+				calcPixelsPerMeter();
+			}
+
+		}
+
 	}
 
+	private int lastCompassMapZoom = -1;
 	private float lastDynamicZoom = -1;
 
 	@Override
@@ -2119,7 +2182,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				// kineticZoom = new KineticZoom(camera.zoom, lastDynamicZoom, System.currentTimeMillis(), System.currentTimeMillis() +
 				// 1000);
 
-				GL.that.addRenderView(MapView.this, frameRateAction);
+				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
 			}
@@ -2243,7 +2306,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					zoom--;
 				}
 				zoomBtn.setZoom(zoom);
-				if (!CarMode) zoomScale.resetFadeOut();
+				if (!CarMode && !CompassMode) zoomScale.resetFadeOut();
 				setZoomScale(zoom);
 				zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), true);
 				aktZoom = zoom;
@@ -2265,8 +2328,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private void setZoomScale(int zoom)
 	{
 		// Logger.LogCat("set zoom");
-		if (!CarMode) zoomScale.setZoom(zoom);
-		mapScale.zoomChanged();
+		if (!CarMode && !CompassMode) zoomScale.setZoom(zoom);
+		if (!CompassMode) mapScale.zoomChanged();
 	}
 
 	@Override
@@ -2429,6 +2492,15 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		double l2 = Descriptor.LongitudeToTileX(zoomBtn.getZoom(), dummy.Longitude);
 		double diff = Math.abs(l2 - l1);
 		pixelsPerMeter = (float) ((diff * 256) / 1000);
+	}
+
+	private float getPixelsPerMeter(int ZoomLevel)
+	{
+		Coordinate dummy = Coordinate.Project(center.Latitude, center.Longitude, 90, 1000);
+		double l1 = Descriptor.LongitudeToTileX(ZoomLevel, center.Longitude);
+		double l2 = Descriptor.LongitudeToTileX(ZoomLevel, dummy.Longitude);
+		double diff = Math.abs(l2 - l1);
+		return (float) ((diff * 256) / 1000);
 	}
 
 	// @Override

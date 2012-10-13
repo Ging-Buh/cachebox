@@ -158,6 +158,9 @@ public class SettingsClass extends SettingsList
 	public SettingIntArray OsmMaxImportLevel;
 	public SettingIntArray OsmMaxLevel;
 
+	public SettingIntArray CompassMapMaxZommLevel;
+	public SettingIntArray CompassMapMinZoomLevel;
+
 	public Integer Level[] = new Integer[21];
 	public Integer CrossLevel[] = new Integer[8];
 	public Integer[] approach = new Integer[]
@@ -202,11 +205,11 @@ public class SettingsClass extends SettingsList
 		SettingCategory cat = SettingCategory.CarMode;
 
 		addSetting(MoveMapCenterWithSpeed = new SettingBool("MoveMapCenterWithSpeed", cat, NORMAL, false, true));
-		addSetting(MoveMapCenterMaxSpeed = new SettingInt("MoveMapCenterMaxSpeed", cat, NORMAL, 20, true));
+		addSetting(MoveMapCenterMaxSpeed = new SettingInt("MoveMapCenterMaxSpeed", cat, NORMAL, 60, true));
 
 		addSetting(dynamicZoom = new SettingBool("dynamicZoom", cat, NORMAL, true, true));
-		addSetting(dynamicZoomLevelMax = new SettingInt("dynamicZoomLevelMax", cat, NORMAL, 16, true));
-		addSetting(dynamicZoomLevelMin = new SettingInt("dynamicZoomLevelMin", cat, NORMAL, 14, true));
+		addSetting(dynamicZoomLevelMax = new SettingInt("dynamicZoomLevelMax", cat, NORMAL, 17, true));
+		addSetting(dynamicZoomLevelMin = new SettingInt("dynamicZoomLevelMin", cat, NORMAL, 15, true));
 
 	}
 
@@ -274,8 +277,11 @@ public class SettingsClass extends SettingsList
 		SettingCategory cat = SettingCategory.Map;
 
 		addSetting(ZoomCross = new SettingIntArray("ZoomCross", cat, NORMAL, 16, true, CrossLevel));
-		addSetting(OsmMaxLevel = new SettingIntArray("OsmMaxLevel", cat, NORMAL, 17, true, Level));
-		addSetting(OsmMinLevel = new SettingIntArray("OsmMinLevel", cat, NORMAL, 8, true, Level));
+		addSetting(OsmMaxLevel = new SettingIntArray("OsmMaxLevel", cat, NORMAL, 19, true, Level));
+		addSetting(OsmMinLevel = new SettingIntArray("OsmMinLevel", cat, NORMAL, 7, true, Level));
+
+		addSetting(CompassMapMaxZommLevel = new SettingIntArray("CompassMapMaxZommLevel", cat, NORMAL, 20, true, Level));
+		addSetting(CompassMapMinZoomLevel = new SettingIntArray("CompassMapMinZoomLevel", cat, NORMAL, 13, true, Level));
 
 		addSetting(ShowDirektLine = new SettingBool("ShowDirektLine", cat, NORMAL, false, true));
 		addSetting(MapHideMyFinds = new SettingBool("MapHideMyFinds", cat, NORMAL, false, true));

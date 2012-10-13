@@ -774,12 +774,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK)
 		{
+			if (KeyboardWasClosed)
+			{
+				KeyboardWasClosed = false;
+				return true;
+			}
+			else
+			{
+				// if Dialog or Activity shown, close that first
+				if (GL.that.closeShownDialog()) return true;
 
-			// if Dialog or Activity shown, close that first
-			if (GL.that.closeShownDialog()) return true;
+				if (!GL.that.keyBackCliced()) TabMainView.actionClose.Execute();
+				return true;
+			}
 
-			if (!GL.that.keyBackCliced()) TabMainView.actionClose.Execute();
-			return true;
 		}
 		return super.dispatchKeyEvent(event);
 	}
@@ -3396,10 +3404,26 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private int beforeStart;
 	private int beforeCount;
 	private int beforeAfter;
+	private boolean KeyboardWasClosed = false;
 
 	private void initialHiddenEditText()
 	{
-		mTextField = new hiddenTextField(this);
+		// mTextField = new hiddenTextField(this);
+
+		mTextField = new hiddenTextField(inflater.getContext())
+		{
+			@Override
+			public boolean onKeyPreIme(int keyCode, KeyEvent event)
+			{
+				if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
+				{
+					GL.that.setKeyboardFocus(null);
+					KeyboardWasClosed = true;
+					return true;
+				}
+				return super.onKeyPreIme(keyCode, event);
+			}
+		};
 
 		mTextField.setRawInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 
@@ -3567,6 +3591,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mTextField.getLayoutParams();
 		params.height = 1;
+
+		// params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+
 		mTextField.setLayoutParams(params);
 
 	}
