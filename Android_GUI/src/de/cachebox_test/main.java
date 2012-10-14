@@ -47,7 +47,6 @@ import CB_Core.Events.platformConector.IgetFolderListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.Events.platformConector.IsetKeybordFocus;
 import CB_Core.Events.platformConector.IsetScreenLockTime;
-import CB_Core.Events.platformConector.trackListListner;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.ViewID;
@@ -67,8 +66,6 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Locator.Locator;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
-import CB_Core.Map.RouteOverlay;
-import CB_Core.Map.RouteOverlay.Track;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
@@ -3063,30 +3060,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		});
 
-		platformConector.setGetTrackListner(new trackListListner()
-		{
-
-			@Override
-			public String[] getTracks()
-			{
-				String[] ret = null;
-
-				if (RouteOverlay.Routes != null)
-				{
-					ret = new String[RouteOverlay.Routes.size()];
-
-					int i = 0;
-					for (Track r : RouteOverlay.Routes)
-					{
-						ret[i] = r.FileName;
-					}
-				}
-				return ret;
-			}
-		});
-
 		// set AndroidClipboard
-
 		ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
 		AndroidClipboard acb = new AndroidClipboard(cm);

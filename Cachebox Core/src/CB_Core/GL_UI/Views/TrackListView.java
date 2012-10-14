@@ -65,7 +65,6 @@ public class TrackListView extends V_ListView
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 
@@ -81,10 +80,9 @@ public class TrackListView extends V_ListView
 		@Override
 		public int getCount()
 		{
-
-			if (GlobalCore.AktuelleRoute != null) return RouteOverlay.Routes.size() + 1;
-
-			return RouteOverlay.Routes.size();
+			int size = RouteOverlay.getRouteCount();
+			if (GlobalCore.AktuelleRoute != null) size++;
+			return size;
 		}
 
 		@Override
@@ -113,7 +111,7 @@ public class TrackListView extends V_ListView
 				position--;
 			}
 
-			TrackListViewItem v = new TrackListViewItem(ItemRec, index, RouteOverlay.Routes.get(position), new RouteChangedListner()
+			TrackListViewItem v = new TrackListViewItem(ItemRec, index, RouteOverlay.getRoute(position), new RouteChangedListner()
 			{
 
 				@Override
@@ -181,17 +179,6 @@ public class TrackListView extends V_ListView
 
 			setSelection(selectedTrackItem);
 			return true;
-		}
-	};
-
-	private OnLongClickListener onItemLongClickListner = new OnLongClickListener()
-	{
-
-		@Override
-		public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
-		{
-			 
-			return false;
 		}
 	};
 

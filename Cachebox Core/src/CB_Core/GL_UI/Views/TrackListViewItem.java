@@ -31,7 +31,6 @@ public class TrackListViewItem extends ListViewItemBackground
 	// private Member
 	private Track mRoute;
 	private float left;
-	private float top;
 
 	private Label EntryName;
 	private Label EntryLength;
@@ -102,7 +101,6 @@ public class TrackListViewItem extends ListViewItemBackground
 
 		// initial
 		left = LeftWidth;
-		top = this.height - TopHight;
 
 		drawColorRec(batch);
 

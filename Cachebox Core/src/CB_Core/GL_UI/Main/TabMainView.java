@@ -69,7 +69,6 @@ import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class TabMainView extends MainViewBase
@@ -486,8 +485,6 @@ public class TabMainView extends MainViewBase
 
 	private void autoLoadTrack()
 	{
-		RouteOverlay.Routes.clear();
-
 		String trackPath = Config.settings.TrackFolder.getValue() + "/Autoload";
 		if (FileIO.DirectoryExists(trackPath))
 		{
@@ -499,7 +496,7 @@ public class TabMainView extends MainViewBase
 				{
 					for (String file : files)
 					{
-						LoadTrack(trackPath, file);
+						RouteOverlay.LoadTrack(trackPath, file);
 
 					}
 				}
@@ -510,44 +507,6 @@ public class TabMainView extends MainViewBase
 			File sddir = new File(trackPath);
 			sddir.mkdirs();
 		}
-	}
-
-	public void LoadTrack(String trackPath)
-	{
-		LoadTrack(trackPath, "");
-	}
-
-	public void LoadTrack(String trackPath, String file)
-	{
-		Color[] ColorField = new Color[13];
-		{
-			ColorField[0] = Color.RED;
-			ColorField[1] = Color.YELLOW;
-			ColorField[2] = Color.BLACK;
-			ColorField[3] = Color.LIGHT_GRAY;
-			ColorField[4] = Color.GREEN;
-			ColorField[5] = Color.BLUE;
-			ColorField[6] = Color.CYAN;
-			ColorField[7] = Color.GRAY;
-			ColorField[8] = Color.MAGENTA;
-			ColorField[9] = Color.ORANGE;
-			ColorField[10] = Color.DARK_GRAY;
-			ColorField[11] = Color.PINK;
-			ColorField[12] = Color.WHITE;
-		}
-		Color TrackColor;
-		TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
-
-		String absolutPath = "";
-		if (file.equals(""))
-		{
-			absolutPath = trackPath;
-		}
-		else
-		{
-			absolutPath = trackPath + "/" + file;
-		}
-		RouteOverlay.MultiLoadRoute(absolutPath, TrackColor);
 	}
 
 	public void setContentMaxY(float y)

@@ -82,7 +82,11 @@ public class GL implements ApplicationListener
 	private int FpsInfoPos = 0;
 	private float darknesAlpha = 0f;
 	private long mLongClickTime = 0, mDoubleClickTime = 500, lastClickTime = 0;
-	private HashMap<GL_View_Base, Integer> renderViews = new HashMap<GL_View_Base, Integer>();
+
+	/**
+	 * Static for Debug
+	 */
+	protected static HashMap<GL_View_Base, Integer> renderViews = new HashMap<GL_View_Base, Integer>();
 	private Point lastClickPoint = null;
 	private ParentInfo prjMatrix;
 	private CB_View_Base actActivity;
@@ -737,6 +741,16 @@ public class GL implements ApplicationListener
 
 	public void addRenderView(GL_View_Base view, int delay)
 	{
+		if (!view.isVisible())
+		{
+			if (renderViews.containsKey(view))
+			{
+				renderViews.remove(view);
+				calcNewRenderSpeed();
+				if (listenerInterface != null) listenerInterface.RequestRender("");
+			}
+			return;
+		}
 		if (renderViews.containsKey(view))
 		{
 			renderViews.remove(view);

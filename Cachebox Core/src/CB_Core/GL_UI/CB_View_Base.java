@@ -179,6 +179,10 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			{
 				setToNull(this);
 			}
+			catch (NullPointerException e)
+			{
+				setToNull(this);
+			}
 		}
 
 	}

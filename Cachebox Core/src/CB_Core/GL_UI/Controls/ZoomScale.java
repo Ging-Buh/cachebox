@@ -268,7 +268,11 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 	private void checkFade()
 	{
-		if (!fadeOut && !fadeIn && this.isVisible())
+		if (!fadeOut && !fadeIn && !this.isVisible())
+		{
+			GL.that.removeRenderView(this);
+		}
+		else if (!fadeOut && !fadeIn && this.isVisible())
 		{
 			Date now = new Date();
 			if (now.getTime() - timeLastAction.getTime() > timeToFadeOut)
@@ -365,6 +369,19 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 		storedRec = null;
 		if (CachedScaleSprite != null) CachedScaleSprite.getTexture().dispose();
 		CachedScaleSprite = null;
+	}
+
+	@Override
+	public void onShow()
+	{
+		super.onShow();
+	}
+
+	@Override
+	public void onHide()
+	{
+		super.onHide();
+		GL.that.removeRenderView(this);
 	}
 
 }

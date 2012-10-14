@@ -33,6 +33,14 @@ import com.badlogic.gdx.math.Vector2;
 
 public class RouteOverlay
 {
+	/**
+	 * ist in Routes eine von openRouteService generierter Track enthalten, dann enthällt diese Vatiable diesen track.
+	 */
+	private static Track OpenRoute;
+
+	private static ArrayList<Track> Routes = new ArrayList<Track>();
+	public static boolean mRoutesChanged = false;
+
 	public static Color getNextColor()
 	{
 		Color ret = ColorField[(Routes.size()) % ColorField.length];
@@ -58,9 +66,6 @@ public class RouteOverlay
 		ColorField[11] = Color.PINK;
 		ColorField[12] = Color.WHITE;
 	}
-
-	public static ArrayList<Track> Routes = new ArrayList<Track>();
-	public static boolean mRoutesChanged = false;
 
 	public static void RoutesChanged()
 	{
@@ -218,7 +223,7 @@ public class RouteOverlay
 							route.ShowRoute = true;
 							route.TrackLength = Distance;
 							route.AltitudeDifference = AltitudeDifference;
-							RouteOverlay.Routes.add(route);
+							add(route);
 							isSeg = false;
 							break;
 						}
@@ -229,7 +234,7 @@ public class RouteOverlay
 							route.ShowRoute = true;
 							route.TrackLength = Distance;
 							route.AltitudeDifference = AltitudeDifference;
-							RouteOverlay.Routes.add(route);
+							add(route);
 							isRte = false;
 							break;
 						}
@@ -395,23 +400,59 @@ public class RouteOverlay
 		return null;
 	}
 
-	public static int AllTrackPoints = 0;
-	public static int ReduceTrackPoints = 0;
-	public static int DrawedLineCount = 0;
-	public static double Tolleranz = 0;
+	// Debug
+	// public static int AllTrackPoints = 0;
+	// public static int ReduceTrackPoints = 0;
+	// public static int DrawedLineCount = 0;
 
+	public static double Tolleranz = 0;
 	public static int aktCalcedZoomLevel = -1;
 
 	public class Route
 	{
+		private boolean mIsOpenRoute = false;
 		private Color mColor;
 		protected ArrayList<TrackPoint> Points;
+
+		Sprite ArrowSprite;
+		Sprite PointSprite;
+		float overlap = 0.9f;
 
 		public Route(Color color)
 		{
 			mColor = color;
 			Points = new ArrayList<TrackPoint>();
+			ArrowSprite = SpriteCache.Arrows.get(5);
+			PointSprite = SpriteCache.Arrows.get(10);
+			overlap = 0.9f;
 		}
+
+		public Route(Color color, boolean isOpenRoute)
+		{
+			mIsOpenRoute = isOpenRoute;
+			if (isOpenRoute)
+			{
+				ArrowSprite = new Sprite(SpriteCache.Arrows.get(5));
+				PointSprite = new Sprite(SpriteCache.Arrows.get(10));
+				ArrowSprite.scale(1.6f);
+				PointSprite.scale(0.2f);
+				overlap = 1.9f;
+			}
+			else
+			{
+				ArrowSprite = SpriteCache.Arrows.get(5);
+				PointSprite = SpriteCache.Arrows.get(10);
+				overlap = 0.9f;
+			}
+			mColor = color;
+			Points = new ArrayList<TrackPoint>();
+		}
+
+		public boolean isOpenRoute()
+		{
+			return mIsOpenRoute;
+		}
+
 	}
 
 	private static ArrayList<Route> DrawRoutes;
@@ -450,18 +491,18 @@ public class RouteOverlay
 
 		}
 
-		DrawedLineCount = 0;
+		// DrawedLineCount = 0;
 
 		if (DrawRoutes != null && DrawRoutes.size() > 0)
 		{
 			for (Route rt : DrawRoutes)
 			{
-				Sprite ArrowSprite = SpriteCache.Arrows.get(5);
+
+				Sprite ArrowSprite = rt.ArrowSprite;
+				Sprite PointSprite = rt.PointSprite;
+				float overlap = rt.overlap;
 				ArrowSprite.setColor(rt.mColor);
-
-				Sprite PointSprite = SpriteCache.Arrows.get(10);
 				PointSprite.setColor(rt.mColor);
-
 				float scale = UiSizes.getScale();
 
 				for (int ii = 0; ii < rt.Points.size() - 1; ii++)
@@ -485,16 +526,17 @@ public class RouteOverlay
 					// chk if line on Screen
 					if (chkRec.contains(screen1.x, screen1.y) || chkRec.contains(screen2.x, screen2.y))
 					{
-						DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, 0.9f * scale, screen1.x, screen1.y, screen2.x, screen2.y);
-						DrawedLineCount++;
+						DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, overlap * scale, screen1.x, screen1.y, screen2.x,
+								screen2.y);
+						// DrawedLineCount++;
 					}
 					else
 					{// chk if intersection
 						if (chkRec.getIntersection(screen1, screen2, 2) != null)
 						{
-							DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, 0.9f * scale, screen1.x, screen1.y, screen2.x,
+							DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, overlap * scale, screen1.x, screen1.y, screen2.x,
 									screen2.y);
-							DrawedLineCount++;
+							// DrawedLineCount++;
 						}
 
 						// the line is not on the screen
@@ -525,10 +567,12 @@ public class RouteOverlay
 				reducedPoints = PolylineReduction.DouglasPeuckerReduction(track.Points, tolerance);
 			}
 
-			AllTrackPoints = track.Points.size();
-			ReduceTrackPoints = reducedPoints.size();
+			// AllTrackPoints = track.Points.size();
+			// ReduceTrackPoints = reducedPoints.size();
 
-			Route tmp = (new RouteOverlay()).new Route(track.mColor);
+			boolean isOpenRoute = track == OpenRoute;
+
+			Route tmp = (new RouteOverlay()).new Route(track.mColor, isOpenRoute);
 			tmp.Points = reducedPoints;
 
 			DrawRoutes.add(tmp);
@@ -591,21 +635,88 @@ public class RouteOverlay
 				writer.append("   <time>" + sDate + "</time>\n");
 				writer.append("</trkpt>\n");
 			}
-
 			writer.append("</trkseg>\n");
 			writer.append("</trk>\n");
-
 			writer.append("</gpx>\n");
 			writer.flush();
 			writer.close();
 		}
-
 		catch (IOException e)
 		{
 			CB_Core.Log.Logger.Error("SaveTrack", "IOException", e);
 		}
 		writer = null;
+	}
 
+	public void LoadTrack(String trackPath)
+	{
+		LoadTrack(trackPath, "");
+	}
+
+	public static void LoadTrack(String trackPath, String file)
+	{
+
+		String absolutPath = "";
+		if (file.equals(""))
+		{
+			absolutPath = trackPath;
+		}
+		else
+		{
+			absolutPath = trackPath + "/" + file;
+		}
+		MultiLoadRoute(absolutPath, getNextColor());
+	}
+
+	public static void remove(Track route)
+	{
+		if (route == OpenRoute)
+		{
+			OpenRoute = null;
+		}
+		Routes.remove(route);
+		RoutesChanged();
+	}
+
+	/**
+	 * Dont use this for OpenRoute Track!! Use addOpenRoute(Track route)
+	 * 
+	 * @param route
+	 */
+	public static void add(Track route)
+	{
+		Routes.add(route);
+		RoutesChanged();
+	}
+
+	public static void addOpenRoute(Track route)
+	{
+		if (OpenRoute == null)
+		{
+			route.setColor(new Color(0.85f, 0.1f, 0.2f, 1f));
+			Routes.add(0, route);
+			OpenRoute = route;
+		}
+		else
+		{
+			// erst die alte route löschen
+			Routes.remove(OpenRoute);
+			route.setColor(OpenRoute.getColor());
+			Routes.add(0, route);
+			OpenRoute = route;
+		}
+
+		RoutesChanged();
+	}
+
+	public static int getRouteCount()
+	{
+		return Routes.size();
+	}
+
+	public static Track getRoute(int position)
+	{
+		return Routes.get(position);
 	}
 
 }

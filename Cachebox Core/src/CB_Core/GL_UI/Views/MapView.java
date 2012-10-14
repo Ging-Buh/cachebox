@@ -199,7 +199,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, this.halfWidth, GL_UISizes.ZoomBtn.getHalfWidth() / 4),
 				"mapScale", this);
 
-		if (!CompassMode) this.addChild(mapScale);
+		if (!CompassMode)
+		{
+			this.addChild(mapScale);
+		}
+		else
+		{
+			mapScale.setVisibility(CB_View_Base.INVISIBLE);
+		}
 
 		// initial Zoom Buttons
 		zoomBtn = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
@@ -243,7 +250,15 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				return true;
 			}
 		});
-		if (!CompassMode) this.addChild(zoomBtn);
+
+		if (!CompassMode)
+		{
+			this.addChild(zoomBtn);
+		}
+		else
+		{
+			zoomBtn.setVisibility(CB_View_Base.INVISIBLE);
+		}
 
 		this.setOnClickListener(onClickListner);
 
@@ -732,10 +747,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		str = "lTiles: " + mapTileLoader.LoadedTilesSize() + " - qTiles: " + mapTileLoader.QueuedTilesSize();
 		Fonts.getNormal().draw(batch, str, 20, 60);
-
-		str = "TrackPoi: " + RouteOverlay.AllTrackPoints + " -  " + RouteOverlay.ReduceTrackPoints + " [" + RouteOverlay.DrawedLineCount
-				+ "]";
-		Fonts.getNormal().draw(batch, str, 20, 40);
 
 		str = "lastMove: " + lastMovement.x + " - " + lastMovement.y;
 		Fonts.getNormal().draw(batch, str, 20, 20);
@@ -2362,24 +2373,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	public void LoadTrack(String trackPath, String file)
 	{
-		Color[] ColorField = new Color[13];
-		{
-			ColorField[0] = Color.RED;
-			ColorField[1] = Color.YELLOW;
-			ColorField[2] = Color.BLACK;
-			ColorField[3] = Color.LIGHT_GRAY;
-			ColorField[4] = Color.GREEN;
-			ColorField[5] = Color.BLUE;
-			ColorField[6] = Color.CYAN;
-			ColorField[7] = Color.GRAY;
-			ColorField[8] = Color.MAGENTA;
-			ColorField[9] = Color.ORANGE;
-			ColorField[10] = Color.DARK_GRAY;
-			ColorField[11] = Color.PINK;
-			ColorField[12] = Color.WHITE;
-		}
-		Color TrackColor;
-		TrackColor = ColorField[(RouteOverlay.Routes.size()) % ColorField.length];
 
 		String absolutPath = "";
 		if (file.equals(""))
@@ -2390,7 +2383,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			absolutPath = trackPath + "/" + file;
 		}
-		RouteOverlay.MultiLoadRoute(absolutPath, TrackColor);
+		RouteOverlay.MultiLoadRoute(absolutPath, RouteOverlay.getNextColor());
 		RouteOverlay.RoutesChanged();
 	}
 

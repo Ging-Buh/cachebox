@@ -244,6 +244,7 @@ public class CB_RectF
 
 	public boolean contains(Vector2 ret)
 	{
+		if (ret == null) return false;
 		return contains(ret.x, ret.y);
 	}
 

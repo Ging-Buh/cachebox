@@ -206,7 +206,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 							return false;
 						}
 
-						RouteOverlay.Routes.remove(selectedTrackItem.getRoute());
+						RouteOverlay.remove(selectedTrackItem.getRoute());
 						selectedTrackItem = null;
 						TrackListView.that.notifyDataSetChanged();
 						return true;
@@ -303,7 +303,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						route.TrackLength = dist[0];
 
 						route.ShowRoute = true;
-						RouteOverlay.Routes.add(route);
+						RouteOverlay.add(route);
 						if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
 					}
 				}, Type.p2p);
@@ -338,7 +338,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						route.TrackLength = dist[0];
 
 						route.ShowRoute = true;
-						RouteOverlay.Routes.add(route);
+						RouteOverlay.add(route);
 						if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
 					}
 
@@ -368,7 +368,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						route.Name = "Circle Route";
 
 						route.ShowRoute = true;
-						RouteOverlay.Routes.add(route);
+						RouteOverlay.add(route);
 
 						Coordinate Projektion = new Coordinate();
 						Coordinate LastCoord = new Coordinate();

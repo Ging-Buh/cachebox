@@ -47,8 +47,6 @@ public class ZoomButtons extends CB_View_Base
 	private boolean fadeIn = false;
 	private float FadeValue = 1.0f;
 
-	private ZoomButtons THIS;
-
 	// # Constructors
 	/**
 	 * Constructor für ein neues TestView mit Angabe der linken unteren Ecke und der Höhe und Breite
@@ -61,7 +59,6 @@ public class ZoomButtons extends CB_View_Base
 	public ZoomButtons(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height, Name);
-		THIS = this;
 		onRezised(this);
 		resetFadeOut();
 	}
@@ -69,7 +66,6 @@ public class ZoomButtons extends CB_View_Base
 	public ZoomButtons(CB_RectF rec, GL_View_Base view, String name)
 	{
 		super(rec, view, name);
-		THIS = this;
 		onRezised(this);
 		resetFadeOut();
 	}
@@ -350,7 +346,7 @@ public class ZoomButtons extends CB_View_Base
 			@Override
 			public void run()
 			{
-				GL.that.addRenderView(THIS, GL.FRAME_RATE_ACTION);
+				GL.that.addRenderView(ZoomButtons.this, GL.FRAME_RATE_ACTION);
 				cancelTimerToFadeOut();
 			}
 		};
@@ -359,7 +355,11 @@ public class ZoomButtons extends CB_View_Base
 
 	private void checkFade()
 	{
-		if (!fadeOut && !fadeIn && this.isVisible())
+		if (!fadeOut && !fadeIn && !this.isVisible())
+		{
+			GL.that.removeRenderView(this);
+		}
+		else if (!fadeOut && !fadeIn && this.isVisible())
 		{
 			Date now = new Date();
 			if (now.getTime() - timeLastAction.getTime() > timeToFadeOut)
@@ -436,14 +436,12 @@ public class ZoomButtons extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		 
 
 	}
 
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 
@@ -453,7 +451,18 @@ public class ZoomButtons extends CB_View_Base
 		super.setVisibility(value);
 
 		cancelTimerToFadeOut();
-
 	}
 
+	@Override
+	public void onShow()
+	{
+		super.onShow();
+	}
+
+	@Override
+	public void onHide()
+	{
+		super.onHide();
+		GL.that.removeRenderView(this);
+	}
 }
