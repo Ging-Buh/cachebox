@@ -17,6 +17,7 @@ import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class WaitDialog extends ButtonDialog
@@ -143,6 +144,12 @@ public class WaitDialog extends ButtonDialog
 		iconImage = null;
 		super.dispose();
 		Logger.LogCat("WaitDialog.disposed");
+	}
+
+	@Override
+	public void render(SpriteBatch batch)
+	{
+		super.render(batch);
 	}
 
 }

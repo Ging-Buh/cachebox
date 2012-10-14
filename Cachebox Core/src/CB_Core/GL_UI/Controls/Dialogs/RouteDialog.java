@@ -109,12 +109,10 @@ public class RouteDialog extends ButtonDialog
 
 					if (mReturnListner != null) mReturnListner.returnFromRoute_Dialog(false, state == 0, state == 1, state == 2,
 							chkTmc.isChecked());
-					close();
 				}
 				else
 				{
 					if (mReturnListner != null) mReturnListner.returnFromRoute_Dialog(true, false, false, false, false);
-					close();
 				}
 
 				return true;

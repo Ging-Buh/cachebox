@@ -276,7 +276,7 @@ public class ButtonDialog extends Dialog
 
 	public void Show()
 	{
-		GL.that.showDialog(that);
+		GL.that.showDialog(this);
 	}
 
 	private Sprite getIcon(MessageBoxIcon msgIcon)

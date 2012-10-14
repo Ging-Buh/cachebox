@@ -213,7 +213,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		if (childs == null) return null;
 		synchronized (childs)
 		{
-			childs.add(view);
+			if (!childs.contains(view)) childs.add(view);
 		}
 
 		return view;
@@ -224,7 +224,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		if (childs == null) return null;
 		synchronized (childs)
 		{
-			childs.add(0, view);
+			if (!childs.contains(view)) childs.add(0, view);
 		}
 
 		return view;
@@ -244,7 +244,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		if (childs == null) return;
 		synchronized (childs)
 		{
-			childs.remove(view);
+			if (childs.contains(view)) childs.remove(view);
 		}
 	}
 

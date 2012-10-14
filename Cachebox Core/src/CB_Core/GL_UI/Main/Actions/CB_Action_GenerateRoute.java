@@ -82,6 +82,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 	private Coordinate start = new Coordinate();
 	private Coordinate target = new Coordinate();
 	private RouteDialog routeDia;
+	private CancelWaitDialog wd;
 
 	private void GenOpenRoute()
 	{
@@ -117,8 +118,8 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 			public void returnFromRoute_Dialog(final boolean canceld, final boolean Motoway, final boolean CycleWay, final boolean FootWay,
 					boolean UseTmc)
 			{
-
-				CancelWaitDialog wd = CancelWaitDialog.ShowWait("generateRoute", new IcancelListner()
+				routeDia.close();
+				wd = CancelWaitDialog.ShowWait("generateRoute", new IcancelListner()
 				{
 
 					@Override
@@ -209,7 +210,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 										int errorIdx = line.indexOf("message=\"");
 										int endIdx = line.indexOf("\"", errorIdx + 9);
 										final String errorMessage = line.substring(errorIdx + 9, endIdx);
-										routeDia.close();
+										wd.close();
 										GL.that.RunOnGL(new runOnGL()
 										{
 											// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
@@ -273,7 +274,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 									RouteOverlay.Routes.add(route);
 									if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
 
-									routeDia.close();
+									wd.close();
 
 									GL.that.RunOnGL(new runOnGL()
 									{
@@ -289,7 +290,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 								}
 								else
 								{
-									routeDia.close();
+									wd.close();
 
 									GL.that.RunOnGL(new runOnGL()
 									{
@@ -329,7 +330,6 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 
 					}
 				});
-
 			}
 
 		});

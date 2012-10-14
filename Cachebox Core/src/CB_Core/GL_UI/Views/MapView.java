@@ -1752,7 +1752,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	public void SetAlignToCompass(boolean value)
 	{
-		if (!CompassMode) return;
 		alignToCompass = value;
 		if (!value)
 		{

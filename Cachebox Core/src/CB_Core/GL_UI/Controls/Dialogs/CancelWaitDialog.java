@@ -9,7 +9,6 @@ import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
@@ -109,7 +108,6 @@ public class CancelWaitDialog extends WaitDialog
 
 		waitDialog.addChild(waitDialog.label);
 		waitDialog.setButtonCaptions(MessageBoxButtons.NOTHING);
-		GL.that.showDialog(waitDialog);
 
 		waitDialog.rotateAngle = 0;
 

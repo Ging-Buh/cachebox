@@ -209,7 +209,7 @@ public abstract class GL_View_Base extends CB_RectF
 			@Override
 			public void run()
 			{
-				if (childs != null) childs.remove(view);
+				if (childs != null && childs.size() > 0) childs.remove(view);
 			}
 		});
 	}
@@ -221,7 +221,7 @@ public abstract class GL_View_Base extends CB_RectF
 			@Override
 			public void run()
 			{
-				if (childs != null) childs.clear();
+				if (childs != null && childs.size() > 0) childs.clear();
 			}
 		});
 	}
@@ -233,7 +233,7 @@ public abstract class GL_View_Base extends CB_RectF
 			@Override
 			public void run()
 			{
-				if (childs != null) childs.remove(Childs);
+				if (childs != null && childs.size() > 0) childs.remove(Childs);
 			}
 		});
 	}
@@ -343,7 +343,7 @@ public abstract class GL_View_Base extends CB_RectF
 		this.renderWithoutScissor(batch);
 		batch.end();
 
-		if (childs != null)
+		if (childs != null && childs.size() > 0)
 		{
 			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 			{
@@ -510,7 +510,7 @@ public abstract class GL_View_Base extends CB_RectF
 		debugRec = null;
 
 		// Eine Größenänderung an die Childs Melden
-		if (childs != null)
+		if (childs != null && childs.size() > 0)
 		{
 			try
 			{
@@ -536,7 +536,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void onShow()
 	{
-		if (childs != null)
+		if (childs != null && childs.size() > 0)
 		{
 			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 			{
@@ -551,7 +551,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void onHide()
 	{
-		if (childs != null)
+		if (childs != null && childs.size() > 0)
 		{
 			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 			{
@@ -566,7 +566,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void onStop()
 	{
-		if (childs != null)
+		if (childs != null && childs.size() > 0)
 		{
 			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
 			{
@@ -583,7 +583,7 @@ public abstract class GL_View_Base extends CB_RectF
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht ï¿½berschrieben werden!!!
 		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
 		boolean behandelt = false;
-		if (childs != null)
+		if (childs != null && childs.size() > 0)
 		{
 			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 			{
@@ -620,7 +620,7 @@ public abstract class GL_View_Base extends CB_RectF
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht ï¿½berschrieben werden!!!
 		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
 		boolean behandelt = false;
-		if (childs != null)
+		if (childs != null && childs.size() > 0)
 		{
 			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 			{
@@ -648,7 +648,7 @@ public abstract class GL_View_Base extends CB_RectF
 		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
 		boolean behandelt = false;
 
-		if (childs != null)
+		if (childs != null && childs.size() > 0)
 		{
 			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 			{
@@ -685,7 +685,7 @@ public abstract class GL_View_Base extends CB_RectF
 		// touchDown liefert die View zurück, die dieses TochDown Ereignis angenommen hat
 		GL_View_Base resultView = null;
 
-		if (childs != null)
+		if (childs != null && childs.size() > 0)
 		{
 			try
 			{
@@ -733,7 +733,7 @@ public abstract class GL_View_Base extends CB_RectF
 		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
 		boolean behandelt = false;
 
-		if (childs != null)
+		if (childs != null && childs.size() > 0)
 		{
 			try
 			{
@@ -770,7 +770,7 @@ public abstract class GL_View_Base extends CB_RectF
 		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
 		boolean behandelt = false;
 
-		if (childs != null)
+		if (childs != null && childs.size() > 0)
 		{
 			try
 			{

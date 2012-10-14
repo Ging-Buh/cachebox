@@ -48,6 +48,7 @@ import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class SearchDialog extends PopUp_Base
@@ -146,7 +147,10 @@ public class SearchDialog extends PopUp_Base
 
 		if (GlobalCore.isTab)
 		{
-			// TODO Set Background mit Rahmen
+			this.setBackground(SpriteCache.activityBackground);
+			this.setWidth(this.width * 1.4f);
+			this.setX((UiSizes.getWindowWidth() / 2) - this.halfWidth);
+			this.setY((UiSizes.getWindowHeight() / 2) - this.halfHeight);
 		}
 		else
 		{
@@ -155,6 +159,7 @@ public class SearchDialog extends PopUp_Base
 		// initial Buttons
 
 		float margin = UiSizes.getMargin();
+		if (GlobalCore.isTab) margin *= 2;
 		float btnWidth = (this.width - (margin * 7)) / 4;
 
 		CB_RectF rec = new CB_RectF(0, 0, btnWidth, UiSizes.getButtonHeight());
@@ -1008,6 +1013,34 @@ public class SearchDialog extends PopUp_Base
 			}
 		});
 
+	}
+
+	@Override
+	public boolean onTouchDown(int x, int y, int pointer, int button)
+	{
+		lastPoint = new Vector2(this.getX(), this.getY());
+		return true;
+	}
+
+	private Vector2 lastPoint;
+
+	@Override
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
+	{
+
+		// TODO SearchDialog verschiebbar machen auf dem Tablett
+
+		// if (KineticPan) return true;
+		//
+		// int dx = (int) (lastPoint.x - x);
+		// int dy = (int) (y - lastPoint.y);
+		//
+		// this.setX(this.getX() + dx);
+		// this.setY(this.getY() + dy);
+		//
+		// lastPoint.x = this.getX();
+		// lastPoint.y = this.getY();
+		return true;
 	}
 
 }

@@ -1146,6 +1146,8 @@ public class GL implements ApplicationListener
 		DialogIsShown = true;
 		darknesAnimationRuns = true;
 		actDialog.onShow();
+		actDialog.setEnabled(true);
+		actDialog.setVisibility(CB_View_Base.VISIBLE);
 
 		platformConector.showForDialog();
 
@@ -1232,7 +1234,7 @@ public class GL implements ApplicationListener
 
 	public void closeDialog(final CB_View_Base dialog, boolean MsgToPlatformConector)
 	{
-		if (!DialogIsShown)
+		if (!DialogIsShown || !mDialog.contains(dialog))
 		{
 			dialog.dispose();
 			return;
