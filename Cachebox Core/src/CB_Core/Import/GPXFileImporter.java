@@ -11,7 +11,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
@@ -999,7 +1001,13 @@ public class GPXFileImporter
 		cache.GPXFilename_ID = gpxFilename.Id;
 
 		allImages = DescriptionImageGrabber.GetAllImages(cache);
-
+		ArrayList<String> apiImages = new ArrayList<String>();
+		GroundspeakAPI.getImagesForGeocache(Config.GetAccessToken(), cache.GcCode, apiImages);
+		for (String image : apiImages)
+		{
+			if (image.contains("/log/")) continue; // do not import log-images
+			if (!allImages.contains(image)) allImages.add(image);
+		}
 		while (allImages != null && allImages.size() > 0)
 		{
 			String url;

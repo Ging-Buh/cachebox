@@ -408,7 +408,7 @@ public class TestDB extends Database
 	@Override
 	public long insertWithConflictIgnore(String tablename, Parameters val)
 	{
-		if (myDB != null) return 0;
+		if (myDB == null) return 0;
 
 		StringBuilder sql = new StringBuilder();
 
