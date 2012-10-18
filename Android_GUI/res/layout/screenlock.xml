@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent" android:id="@+id/screenLockLayout"
-	android:layout_height="match_parent" android:background="#00000000"
-	android:gravity="bottom" xmlns:android="http://schemas.android.com/apk/res/android">
-	<SeekBar android:id="@+id/unlock_slider" android:layout_width="fill_parent"
-		android:layout_height="130dip" android:layout_marginBottom="-35dip"
-		android:max="100" android:progress="50" android:secondaryProgress="100"
-		android:progressDrawable="@drawable/unlock_slider" android:thumb="@drawable/seek_thumb" />
-</RelativeLayout>

@@ -2,7 +2,11 @@ package CB_Core.Events;
 
 import java.util.ArrayList;
 
+import CB_Core.Config;
 import CB_Core.Energy;
+import CB_Core.DB.Database;
+import CB_Core.Enums.CacheTypes;
+import CB_Core.Types.Cache;
 
 public class CachListChangedEventList
 {
@@ -28,6 +32,18 @@ public class CachListChangedEventList
 	{
 
 		if (Energy.DisplayOff()) return;
+
+		Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
+
+		if (cache != null) Database.Data.Query.remove(cache);
+
+		// add Parking Cache
+		if (Config.settings.ParkingLatitude.getValue() != 0)
+		{
+			cache = new Cache(Config.settings.ParkingLatitude.getValue(), Config.settings.ParkingLongitude.getValue(), "My Parking area",
+					CacheTypes.MyParking, "CBPark");
+			Database.Data.Query.add(0, cache);
+		}
 
 		Thread thread = new Thread(new Runnable()
 		{

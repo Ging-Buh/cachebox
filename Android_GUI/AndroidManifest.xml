@@ -47,10 +47,6 @@
 					android:pathPrefix="/seek/cache_details.aspx" />
 			</intent-filter>
 		</activity><activity android:name=".Views.Forms.GcApiLogin" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent"></activity>
-		<activity android:name=".Views.Forms.ApiPQDialog" android:theme="@style/Theme_day_transparent" android:screenOrientation="behind"></activity>
-		<activity android:name=".Views.Forms.ApiSearchPosDialog" android:theme="@style/Theme_day_transparent" android:screenOrientation="behind"></activity>
-		<activity android:name=".Views.AdvancedSettingsForms.SettingsScrollView" android:screenOrientation="behind" android:theme="@style/Theme.Transparent"></activity>
-		<activity android:name=".Views.Forms.DeleteDialog" android:theme="@style/Theme_day_transparent" android:screenOrientation="behind"></activity><activity android:theme="@style/Theme_day_transparent" android:name=".Views.Forms.ParkingDialog" android:screenOrientation="behind"></activity>
 		<service android:name="NotifyService"></service>
 		
  

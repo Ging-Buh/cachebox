@@ -21,11 +21,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import CB_Core.DAO.CacheDAO;
+import CB_Core.DAO.ImageDAO;
+import CB_Core.DAO.LogDAO;
+import CB_Core.DAO.WaypointDAO;
+import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Log.Logger;
+import CB_Core.Map.Descriptor;
 import CB_Core.Types.Cache;
+import CB_Core.Types.ImageEntry;
+import CB_Core.Types.LogEntry;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
+import CB_Core.Types.Waypoint;
 
 public class GroundspeakAPI
 {
@@ -712,6 +721,64 @@ public class GroundspeakAPI
 			result += line + "\n";
 		}
 		return result;
+	}
+
+	public static void WriteCachesLogsImages_toDB(ArrayList<Cache> apiCaches, ArrayList<LogEntry> apiLogs, ArrayList<ImageEntry> apiImages)
+			throws InterruptedException
+	{
+		// Auf eventuellen Thread Abbruch reagieren
+		Thread.sleep(2);
+
+		Database.Data.beginTransaction();
+
+		CacheDAO cacheDAO = new CacheDAO();
+		LogDAO logDAO = new LogDAO();
+		ImageDAO imageDAO = new ImageDAO();
+		WaypointDAO waypointDAO = new WaypointDAO();
+
+		for (Cache cache : apiCaches)
+		{
+			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
+			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
+			if (Database.Data.Query.GetCacheById(cache.Id) == null)
+			{
+				Database.Data.Query.add(cache);
+				cacheDAO.WriteToDatabase(cache);
+			}
+			else
+			{
+				Database.Data.Query.remove(Database.Data.Query.GetCacheById(cache.Id));
+				Database.Data.Query.add(cache);
+				cacheDAO.UpdateDatabase(cache);
+			}
+
+			for (LogEntry log : apiLogs)
+			{
+				if (log.CacheId != cache.Id) continue;
+				// Write Log to database
+
+				logDAO.WriteToDatabase(log);
+			}
+
+			for (ImageEntry image : apiImages)
+			{
+				if (image.CacheId != cache.Id) continue;
+				// Write Image to database
+
+				imageDAO.WriteToDatabase(image, false);
+			}
+
+			for (Waypoint waypoint : cache.waypoints)
+			{
+
+				waypointDAO.WriteToDatabase(waypoint);
+			}
+
+		}
+		Database.Data.setTransactionSuccessful();
+		Database.Data.endTransaction();
+
+		Database.Data.GPXFilenameUpdateCacheCount();
 	}
 
 }

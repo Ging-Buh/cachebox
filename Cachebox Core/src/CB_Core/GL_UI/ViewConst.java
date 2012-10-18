@@ -12,7 +12,6 @@ public class ViewConst
 	public static final ViewID SPOILER_VIEW = new ViewID(ViewID.SPOILER_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Right);
 	public static final ViewID NOTES_VIEW = new ViewID(ViewID.NOTES_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Right);
 	public static final ViewID SOLVER_VIEW = new ViewID(ViewID.SOLVER_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Right);
-	public static final ViewID COMPASS_VIEW = new ViewID(ViewID.COMPASS_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
 	public static final ViewID FIELD_NOTES_VIEW = new ViewID(ViewID.FIELD_NOTES_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Right);
 	public static final ViewID ABOUT_VIEW = new ViewID(ViewID.ABOUT_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
 	public static final ViewID JOKER_VIEW = new ViewID(ViewID.JOKER_VIEW, UI_Type.Android, UI_Pos.Left, UI_Pos.Left);
@@ -37,8 +36,6 @@ public class ViewConst
 	public static final ViewID VOICE_REC = new ViewID(ViewID.VOICE_REC, UI_Type.Activity, null, null);
 	public static final ViewID TAKE_PHOTO = new ViewID(ViewID.TAKE_PHOTO, UI_Type.Activity, null, null);
 	public static final ViewID VIDEO_REC = new ViewID(ViewID.VIDEO_REC, UI_Type.Activity, null, null);
-	public static final ViewID DELETE_CACHES = new ViewID(ViewID.DELETE_CACHES, UI_Type.Activity, null, null);
-	public static final ViewID PARKING = new ViewID(ViewID.PARKING, UI_Type.Activity, null, null);
 	public static final ViewID DAY_NIGHT = new ViewID(ViewID.DAY_NIGHT, UI_Type.Activity, null, null);
 	public static final ViewID LOCK = new ViewID(ViewID.LOCK, UI_Type.Activity, null, null);
 

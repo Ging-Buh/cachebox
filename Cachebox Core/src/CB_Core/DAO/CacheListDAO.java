@@ -111,15 +111,6 @@ public class CacheListDAO
 			Logger.Error("CacheListDAO.ReadCacheList()", "Sort ERROR", e);
 		}
 
-		// add Parking Cache
-		if (Config.settings.ParkingLatitude.getValue() != 0)
-		{
-			Cache cache = new Cache(Config.settings.ParkingLatitude.getValue(), Config.settings.ParkingLongitude.getValue(),
-					"My Parking area", CacheTypes.MyParking, "CBPark");
-
-			cacheList.add(0, cache);
-		}
-
 		return cacheList;
 	}
 

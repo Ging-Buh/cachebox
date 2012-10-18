@@ -20,12 +20,10 @@ import org.openintents.intents.FileManagerIntents;
 import CB_Core.Config;
 import CB_Core.Energy;
 import CB_Core.FileIO;
-import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Plattform;
 import CB_Core.TrackRecorder;
 import CB_Core.DAO.CacheDAO;
-import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.CachListChangedEventList;
@@ -52,7 +50,7 @@ import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.ViewID.UI_Pos;
 import CB_Core.GL_UI.ViewID.UI_Type;
-import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
+import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Activitys.settings.SettingsActivity;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -171,7 +169,6 @@ import de.cachebox_test.Locator.GPS;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AndroidClipboard;
 import de.cachebox_test.Views.AboutView;
-import de.cachebox_test.Views.CompassView;
 import de.cachebox_test.Views.DescriptionView;
 import de.cachebox_test.Views.JokerView;
 import de.cachebox_test.Views.NotesView;
@@ -179,10 +176,8 @@ import de.cachebox_test.Views.SolverView;
 import de.cachebox_test.Views.SpoilerView;
 import de.cachebox_test.Views.TrackableListView;
 import de.cachebox_test.Views.ViewGL;
-import de.cachebox_test.Views.Forms.DeleteDialog;
 import de.cachebox_test.Views.Forms.GcApiLogin;
 import de.cachebox_test.Views.Forms.MessageBox;
-import de.cachebox_test.Views.Forms.ParkingDialog;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
@@ -212,7 +207,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static SpoilerView spoilerView = null; // ID 5
 	private static NotesView notesView = null; // ID 6
 	private static SolverView solverView = null; // ID 7
-	private static CompassView compassView = null; //
 	private static AboutView aboutView = null; // ID 11
 	private static JokerView jokerView = null; // ID 12
 	private static TrackableListView trackablelistView = null; // ID 14
@@ -363,6 +357,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			// restore ACB after Kill
 			Logger.DEBUG("restore ACB after Kill");
+
+			GL.that.resetIsInitial();
 
 			GlobalCore.restartAfterKill = true;
 			GlobalCore.isTab = savedInstanceState.getBoolean("isTab");
@@ -813,16 +809,23 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (resultCode == RESULT_OK)
 			{
-				// Log.d("DroidCachebox", "Picture taken!!!");
-				if (GlobalCore.SelectedCache() != null) GlobalCore.SelectedCache().ReloadSpoilerRessources();
-				String MediaFolder = Config.settings.UserImageFolder.getValue();
-				String TrackFolder = Config.settings.TrackFolder.getValue();
-				String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
-				// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und
-				// die Koordinaten nach der Aufnahme verwendet werden.
-				mediaTimeString = Global.GetTrackDateTimeString();
-				TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", GlobalCore.LastValidPosition,
-						mediaTimeString);
+				GL.that.RunIfInitial(new runOnGL()
+				{
+
+					@Override
+					public void run()
+					{
+						if (GlobalCore.SelectedCache() != null) GlobalCore.SelectedCache().ReloadSpoilerRessources();
+						String MediaFolder = Config.settings.UserImageFolder.getValue();
+						String TrackFolder = Config.settings.TrackFolder.getValue();
+						String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
+						// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und
+						// die Koordinaten nach der Aufnahme verwendet werden.
+						mediaTimeString = Global.GetTrackDateTimeString();
+						TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", GlobalCore.LastValidPosition,
+								mediaTimeString);
+					}
+				});
 
 				return;
 			}
@@ -858,32 +861,37 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (resultCode == RESULT_OK)
 			{
-				// Log.d("DroidCachebox", "Video taken!!!");
-				// Global.selectedCache.ReloadSpoilerRessources();
-
-				String[] projection =
-					{ MediaStore.Video.Media.DATA, MediaStore.Video.Media.SIZE };
-				Cursor cursor = managedQuery(cameraVideoURI, projection, null, null, null);
-				int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-				cursor.moveToFirst();
-				String recordedVideoFilePath = cursor.getString(column_index_data);
-
-				String ext = FileIO.GetFileExtension(recordedVideoFilePath);
-				String MediaFolder = Config.settings.UserImageFolder.getValue();
-
-				// Video in Media-Ordner verschieben
-				File source = new File(recordedVideoFilePath);
-				File destination = new File(MediaFolder + "/" + basename + "." + ext);
-				// Datei wird umbenannt/verschoben
-				if (!source.renameTo(destination))
+				GL.that.RunIfInitial(new runOnGL()
 				{
-					// Log.d("DroidCachebox", "Fehler beim Umbenennen der Datei: " + source.getName());
-				}
 
-				String TrackFolder = Config.settings.TrackFolder.getValue();
-				String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
-				TrackRecorder.AnnotateMedia(basename + "." + ext, relativPath + "/" + basename + "." + ext, mediaCoordinate,
-						mediaTimeString);
+					@Override
+					public void run()
+					{
+						String[] projection =
+							{ MediaStore.Video.Media.DATA, MediaStore.Video.Media.SIZE };
+						Cursor cursor = managedQuery(cameraVideoURI, projection, null, null, null);
+						int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+						cursor.moveToFirst();
+						String recordedVideoFilePath = cursor.getString(column_index_data);
+
+						String ext = FileIO.GetFileExtension(recordedVideoFilePath);
+						String MediaFolder = Config.settings.UserImageFolder.getValue();
+
+						// Video in Media-Ordner verschieben
+						File source = new File(recordedVideoFilePath);
+						File destination = new File(MediaFolder + "/" + basename + "." + ext);
+						// Datei wird umbenannt/verschoben
+						if (!source.renameTo(destination))
+						{
+							// Log.d("DroidCachebox", "Fehler beim Umbenennen der Datei: " + source.getName());
+						}
+
+						String TrackFolder = Config.settings.TrackFolder.getValue();
+						String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
+						TrackRecorder.AnnotateMedia(basename + "." + ext, relativPath + "/" + basename + "." + ext, mediaCoordinate,
+								mediaTimeString);
+					}
+				});
 
 				return;
 			}
@@ -894,80 +902,22 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		}
 
-		if (requestCode == Global.REQUEST_CODE_SCREENLOCK)
-		{
-			Logger.DEBUG("Main back from ScreenLock");
-
-			if (runsWithAkku)
-			{
-				counter.start();
-			}
-			else
-			{
-				counter.cancel();
-			}
-
-			counterStopped = false;
-
-			return;
-		}
-
 		// Intent Result get API key
 		if (requestCode == Global.REQUEST_CODE_GET_API_KEY)
 		{
-			// now, we check GPS
-			chkGpsIsOn();
-			if (SettingsActivity.that != null)
+			GL.that.RunIfInitial(new runOnGL()
 			{
-				SettingsActivity.that.resortList();
-			}
-		}
 
-		// Intent Result Delete Caches
-		if (requestCode == Global.REQUEST_CODE_DELETE_DIALOG)
-		{
-			if (data == null) return;
-			Bundle bundle = data.getExtras();
-			int selection = bundle.getInt("DelResult");// enthält Rückgabe Wert
-			long nun = 0;
-			switch (selection)
-			{
-			case 0: // Archived gewählt
-			{
-				CacheListDAO dao = new CacheListDAO();
-				nun = dao.DelArchiv();
+				@Override
+				public void run()
+				{
+					if (SettingsActivity.that != null)
+					{
+						SettingsActivity.that.resortList();
+					}
+				}
+			});
 
-				EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
-
-				String msg = GlobalCore.Translations.Get("DeletedCaches", String.valueOf(nun));
-				Toast(msg);
-				return;
-			}
-			case 1:// Found gewählt
-			{
-				CacheListDAO dao = new CacheListDAO();
-				nun = dao.DelFound();
-
-				EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
-
-				String msg = GlobalCore.Translations.Get("DeletedCaches", String.valueOf(nun));
-				Toast(msg);
-				return;
-			}
-			case 2:// Filter gewählt
-			{
-				CacheListDAO dao = new CacheListDAO();
-				nun = dao.DelFilter(GlobalCore.LastFilter.getSqlWhere());
-
-				// reset Filter
-				EditFilterSettings.ApplyFilter(new FilterProperties(FilterProperties.presets[0]));// all Caches
-
-				String msg = GlobalCore.Translations.Get("DeletedCaches", String.valueOf(nun));
-				Toast(msg);
-				return;
-			}
-			}
-			return;
 		}
 
 		if (aktView != null) aktView.ActivityResult(requestCode, resultCode, data);
@@ -1377,12 +1327,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 
 		}
-		else if (ID == ViewConst.COMPASS_VIEW)
-		{
-			compassView = new CompassView(this, inflater);
-			compassView.reInit();
-			return compassView;
-		}
 		return null;
 	}
 
@@ -1408,15 +1352,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			recVideo();
 		}
-		else if (ID == ViewConst.DELETE_CACHES)
-		{
-			DeleteFilterSelection();
-		}
-		else if (ID == ViewConst.PARKING)
-		{
-			showParkingDialog();
-		}
-
 		else if (ID == ViewConst.LOCK)
 		{
 			startScreenLock(true);
@@ -1464,13 +1399,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				aktView = null;
 				aboutView.OnFree();
 				aboutView = null;
-			}
-			else if (aktView.equals(compassView))
-			{
-				// Instanz löschenn
-				aktView = null;
-				compassView.OnFree();
-				compassView = null;
 			}
 			else if (aktView.equals(solverView))
 			{
@@ -1821,12 +1749,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		});
 	}
 
-	private void showParkingDialog()
-	{
-		final Intent parkingIntent = new Intent().setClass(mainActivity, ParkingDialog.class);
-		mainActivity.startActivityForResult(parkingIntent, Global.REQUEST_CODE_PARKING_DIALOG);
-	}
-
 	private void takePhoto()
 	{
 		// Log.d("DroidCachebox", "Starting camera on the phone...");
@@ -1971,12 +1893,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			setVoiceRecIsStart(false);
 			return;
 		}
-	}
-
-	private void DeleteFilterSelection()
-	{
-		final Intent delIntent = new Intent().setClass(mainActivity, DeleteDialog.class);
-		mainActivity.startActivityForResult(delIntent, Global.REQUEST_CODE_DELETE_DIALOG);
 	}
 
 	private void showJoker()

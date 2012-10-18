@@ -6,12 +6,8 @@ import java.util.TimerTask;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
-import CB_Core.DAO.CacheDAO;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CategoryDAO;
-import CB_Core.DAO.ImageDAO;
-import CB_Core.DAO.LogDAO;
-import CB_Core.DAO.WaypointDAO;
-import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -27,7 +23,6 @@ import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.chkBox;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Views.MapView;
-import CB_Core.Map.Descriptor;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
@@ -36,7 +31,6 @@ import CB_Core.Types.Coordinate;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
-import CB_Core.Types.Waypoint;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -466,54 +460,7 @@ public class SearchOverPosition extends ActivityBase
 										gpxFilename.Id);
 								if (apiCaches.size() > 0)
 								{
-
-									// Auf eventuellen Thread Abbruch reagieren
-									Thread.sleep(2);
-
-									Database.Data.beginTransaction();
-
-									CacheDAO cacheDAO = new CacheDAO();
-									LogDAO logDAO = new LogDAO();
-									ImageDAO imageDAO = new ImageDAO();
-									WaypointDAO waypointDAO = new WaypointDAO();
-
-									for (Cache cache : apiCaches)
-									{
-										cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
-										cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
-										if (Database.Data.Query.GetCacheById(cache.Id) == null)
-										{
-											Database.Data.Query.add(cache);
-											cacheDAO.WriteToDatabase(cache);
-
-											for (LogEntry log : apiLogs)
-											{
-												if (log.CacheId != cache.Id) continue;
-												// Write Log to database
-
-												logDAO.WriteToDatabase(log);
-											}
-
-											for (ImageEntry image : apiImages)
-											{
-												if (image.CacheId != cache.Id) continue;
-												// Write Image to database
-
-												imageDAO.WriteToDatabase(image, false);
-											}
-
-											for (Waypoint waypoint : cache.waypoints)
-											{
-
-												waypointDAO.WriteToDatabase(waypoint);
-											}
-										}
-									}
-									Database.Data.setTransactionSuccessful();
-									Database.Data.endTransaction();
-
-									Database.Data.GPXFilenameUpdateCacheCount();
-
+									GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
 								}
 
 							}
@@ -542,6 +489,7 @@ public class SearchOverPosition extends ActivityBase
 				}
 				importRuns = false;
 			}
+
 		});
 
 		thread.setPriority(Thread.MAX_PRIORITY);

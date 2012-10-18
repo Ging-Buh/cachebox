@@ -79,7 +79,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		this.addChild(scale);
 
 		arrow = new Image(imageRec, "arrow");
-		arrow.setDrawable(new SpriteDrawable(SpriteCache.Arrows.get(0)));
+		arrow.setDrawable(SpriteCache.Compass.get(4));
 		this.addChild(arrow);
 
 		info = new CacheInfo(

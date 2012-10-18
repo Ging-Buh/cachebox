@@ -1,16 +1,24 @@
 package CB_Core.GL_UI.Main.Actions;
 
+import java.util.ArrayList;
+
+import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.ViewConst;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.DescriptionView;
+import CB_Core.Types.Cache;
+import CB_Core.Types.ImageEntry;
+import CB_Core.Types.LogEntry;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -58,6 +66,8 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 		return true;
 	}
 
+	CancelWaitDialog wd = null;
+
 	@Override
 	public Menu getContextMenu()
 	{
@@ -78,8 +88,48 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 
 					return true;
 				case MI_RELOAD_CACHE:
-					new CB_Action_ShowActivity("reload_CacheInfo", MI_RELOAD_CACHE, ViewConst.RELOAD_CACHE, SpriteCache.Icons.get(35))
-							.Execute();
+
+					wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("ReloadCacheAPI"), new IcancelListner()
+					{
+
+						@Override
+						public void isCanceld()
+						{
+							// TODO Auto-generated method stub
+
+						}
+					}, new Runnable()
+					{
+
+						@Override
+						public void run()
+						{
+							String accessToken = Config.GetAccessToken();
+
+							CB_Core.Api.SearchForGeocaches.SearchGC searchC = new CB_Core.Api.SearchForGeocaches.SearchGC();
+							searchC.gcCode = GlobalCore.SelectedCache().GcCode;
+
+							searchC.number = 1;
+
+							ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+							ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+							ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
+
+							CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages, 0);
+
+							try
+							{
+								GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
+							}
+							catch (InterruptedException e)
+							{
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+
+							wd.close();
+						}
+					});
 					return true;
 				}
 				return false;
@@ -101,7 +151,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 			mi.setEnabled(false);
 		}
 
-		mi = cm.addItem(MI_RELOAD_CACHE, "chkState", SpriteCache.Icons.get(35));
+		mi = cm.addItem(MI_RELOAD_CACHE, "ReloadCacheAPI", SpriteCache.Icons.get(35));
 		mi.setEnabled(isSelected);
 		return cm;
 	}

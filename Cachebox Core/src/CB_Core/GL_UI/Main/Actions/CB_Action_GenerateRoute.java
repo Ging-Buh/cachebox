@@ -120,7 +120,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 			{
 				routeDia.close();
 
-				GL.that.RunOnGL(new runOnGL()
+				if (!canceld) GL.that.RunOnGL(new runOnGL()
 				{
 
 					@Override

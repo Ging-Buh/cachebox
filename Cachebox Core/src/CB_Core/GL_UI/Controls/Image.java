@@ -141,7 +141,6 @@ public class Image extends CB_View_Base
 	{
 		if (mImageTex != null) mImageTex.dispose();
 		mImageTex = null;
-
 		mDrawable = null;
 	}
 
@@ -189,7 +188,9 @@ public class Image extends CB_View_Base
 
 	public void setColor(Color color)
 	{
-		mColor = color;
+		if (color == null) mColor = new Color(1, 1, 1, 1);
+		else
+			mColor = color;
 	}
 
 }

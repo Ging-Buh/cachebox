@@ -41,6 +41,8 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSpoilerView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTestView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackListView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowWaypointView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_Show_Delete_Dialog;
+import CB_Core.GL_UI.Main.Actions.CB_Action_Show_Parking_Dialog;
 import CB_Core.GL_UI.Main.Actions.CB_Action_Show_SelectDB_Dialog;
 import CB_Core.GL_UI.Main.Actions.CB_Action_Show_Settings;
 import CB_Core.GL_UI.Main.Actions.CB_Action_switch_DayNight;
@@ -100,15 +102,14 @@ public class TabMainView extends MainViewBase
 	public static CB_Action_Show_SelectDB_Dialog actionShowSelectDbDialog = new CB_Action_Show_SelectDB_Dialog();
 
 	public static CB_Action_GenerateRoute actionGenerateRoute = new CB_Action_GenerateRoute();
-
 	public static CB_Action_QuickFieldNote actionQuickFieldNote = new CB_Action_QuickFieldNote();
+	public static CB_Action_Show_Parking_Dialog actionParking = new CB_Action_Show_Parking_Dialog();
+	public static CB_Action_Show_Delete_Dialog actionDelCaches = new CB_Action_Show_Delete_Dialog();
 
 	public static CB_Action_RecTrack actionRecTrack;
 	private CB_Action_ShowActivity actionRecVoice;
 	private CB_Action_ShowActivity actionRecPicture;
 	private CB_Action_ShowActivity actionRecVideo;
-	private CB_Action_ShowActivity actionDelCaches;
-	private CB_Action_ShowActivity actionParking;
 
 	private CB_Action_switch_DayNight actionDayNight;
 	private CB_Action_ShowActivity actionScreenLock;
@@ -187,9 +188,6 @@ public class TabMainView extends MainViewBase
 		actionRecPicture = new CB_Action_ShowActivity("TakePhoto", CB_Action.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO,
 				SpriteCache.Icons.get(47));
 		actionRecVideo = new CB_Action_ShowActivity("RecVideo", CB_Action.AID_VIDEO_REC, ViewConst.VIDEO_REC, SpriteCache.Icons.get(10));
-		actionDelCaches = new CB_Action_ShowActivity("DeleteCaches", CB_Action.AID_DELETE_CACHES, ViewConst.DELETE_CACHES,
-				SpriteCache.Icons.get(28));
-		actionParking = new CB_Action_ShowActivity("Parking", CB_Action.AID_PARKING, ViewConst.PARKING, SpriteCache.BigIcons.get(20));
 
 		actionDayNight = new CB_Action_switch_DayNight();
 		actionScreenLock = new CB_Action_ShowActivity("screenlock", CB_Action.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
@@ -288,8 +286,6 @@ public class TabMainView extends MainViewBase
 		actionRecVoice.setTab(this, Tab);
 		actionRecPicture.setTab(this, Tab);
 		actionRecVideo.setTab(this, Tab);
-		actionDelCaches.setTab(this, Tab);
-		actionParking.setTab(this, Tab);
 		actionTestView.setTab(this, Tab);
 
 		actionScreenLock.setTab(this, Tab);
@@ -392,8 +388,6 @@ public class TabMainView extends MainViewBase
 		actionRecVoice.setTab(this, Tab);
 		actionRecPicture.setTab(this, Tab);
 		actionRecVideo.setTab(this, Tab);
-		actionDelCaches.setTab(this, Tab);
-		actionParking.setTab(this, Tab);
 
 		actionScreenLock.setTab(this, Tab);
 

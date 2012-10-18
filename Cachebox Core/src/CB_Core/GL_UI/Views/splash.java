@@ -10,6 +10,7 @@ import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
+import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.SelectDB;
@@ -379,6 +380,8 @@ public class splash extends TabMainView
 		CacheListDAO cacheListDAO = new CacheListDAO();
 		cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
 
+		CachListChangedEventList.Call();
+
 		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
 		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 
@@ -444,7 +447,7 @@ public class splash extends TabMainView
 			}
 
 		}
-
+		GL.that.setIsInitial();
 	}
 
 	public void dispose()

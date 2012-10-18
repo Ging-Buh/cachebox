@@ -114,15 +114,7 @@
                 android:id="@+id/main_cache_name_view"
                 android:layout_width="fill_parent"
                 android:layout_height="@+dimen/SliderHeight" />
-
-            <include
-                android:id="@+id/searchDialog"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                layout="@layout/search_dialog_layout"
-                android:visibility="gone" >
-            </include>
+            
         </LinearLayout>
         
     </RelativeLayout>

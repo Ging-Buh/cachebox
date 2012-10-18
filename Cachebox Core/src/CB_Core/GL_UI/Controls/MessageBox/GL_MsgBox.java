@@ -108,6 +108,14 @@ public class GL_MsgBox extends Dialog
 	public void addFooterChild(CB_View_Base view)
 	{
 		FooterItems.add(view);
+
+		float maxItemY = 0;
+
+		for (CB_View_Base item : FooterItems)
+		{
+			if (item.getMaxY() > maxItemY) maxItemY = item.getMaxY();
+		}
+		mFooterHeight = maxItemY + margin;
 	}
 
 	public static GL_MsgBox Show(String msg)
@@ -150,12 +158,13 @@ public class GL_MsgBox extends Dialog
 
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), false), "MsgBox");
 		msgBox.mMsgBoxClickListner = Listener;
+		msgBox.setButtonCaptions(buttons);
 		msgBox.setTitle(title);
 		label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
 		label.setZeroPos();
 		label.setWrappedText(msg);
 		msgBox.addChild(label);
-		msgBox.setButtonCaptions(buttons);
+
 		GL.that.showDialog(msgBox);
 		return msgBox;
 	}

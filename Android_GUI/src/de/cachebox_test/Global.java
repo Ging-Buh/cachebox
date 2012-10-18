@@ -49,8 +49,6 @@ public class Global
 	public static final int REQUEST_CODE_API_TARGET_DIALOG = 24112011;
 	public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
 	public static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 61216517;
-	public static final int REQUEST_CODE_DELETE_DIALOG = 15122011;
-	public static final int REQUEST_CODE_PARKING_DIALOG = 40120112;
 	public static final int REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR = 2082012;
 	public static final int REQUEST_CODE_GET_API_KEY = 987654321;
 	public static final int REQUEST_CODE_SCREENLOCK = 12345;
@@ -495,7 +493,7 @@ public class Global
 
 		Arrows = new Drawable[]
 			{ getDrawable(R.drawable.arrow, R.drawable.night_arrow, res),
-					getDrawable(R.drawable.arrow_small, R.drawable.night_arrow_small, res), getDrawable(R.drawable.compass_arrow, res), };
+					getDrawable(R.drawable.arrow_small, R.drawable.night_arrow_small, res), };
 
 		LogIcons = new Drawable[]
 			{ getDrawable(R.drawable.log0, res), getDrawable(R.drawable.log1, res), getDrawable(R.drawable.log2, res),

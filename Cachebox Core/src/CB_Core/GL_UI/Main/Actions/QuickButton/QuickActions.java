@@ -152,7 +152,7 @@ public enum QuickActions
 		case 16:
 			return action_Hint;
 		case 17:
-			return action_Parking;
+			return TabMainView.actionParking;
 		case 18:
 			return action_DayNight;
 		case 19:
@@ -216,8 +216,6 @@ public enum QuickActions
 
 	public static void InitialActions()
 	{
-		action_Parking = new CB_Action_ShowActivity("Parking", CB_Action.AID_PARKING, ViewConst.PARKING, SpriteCache.BigIcons.get(20));
-
 		action_TakePhoto = new CB_Action_ShowActivity("TakePhoto", CB_Action.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO,
 				SpriteCache.Icons.get(47));
 
@@ -235,7 +233,6 @@ public enum QuickActions
 	}
 
 	private static CB_Action action_TakePhoto;
-	private static CB_Action action_Parking;
 	private static CB_Action action_TakeVideo;
 
 	private static CB_Action action_Voicerec;

@@ -112,7 +112,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 		float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic()
 				- (Dialog.margin * 2);
 
-		float commentHeight = (Dialog.margin * 3) + Fonts.MeasureWrapped(logEntry.Comment, mesurdWidth).height;
+		float commentHeight = (Dialog.margin * 4) + Fonts.MeasureWrapped(logEntry.Comment, mesurdWidth).height;
 
 		return headHeight + commentHeight;
 	}

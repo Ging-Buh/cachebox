@@ -339,6 +339,7 @@ public class SpriteCache
 			Compass.add(new SpriteDrawable(getThemedSprite("compass-scale")));
 			Compass.add(new SpriteDrawable(getThemedSprite("compass-frame-small")));
 			Compass.add(new SpriteDrawable(getThemedSprite("compass-scale-small")));
+			Compass.add(new SpriteDrawable(getThemedSprite("compass_arrow")));
 
 		}
 
@@ -663,6 +664,11 @@ public class SpriteCache
 		int hp = patch / 2;
 		shaddowRec = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("shaddowrect"), hp, hp, hp, hp));
 
+	}
+
+	public static SpriteDrawable getSpriteDrawable(String name)
+	{
+		return new SpriteDrawable(getThemedSprite(name));
 	}
 
 	private static void loadButtnSprites()

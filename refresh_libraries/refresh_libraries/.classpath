@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="libs/gdx-freetype.jar"/>
 	<classpathentry kind="lib" path="libs/gdx-sources.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Cachebox Core"/>
+	<classpathentry kind="lib" path="libs/gdx-tools.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

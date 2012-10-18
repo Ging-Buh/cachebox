@@ -15,6 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import CB_Core.Events.PositionChangedEventList;
 import CB_Core.Locator.Locator;
 import CB_Core.Map.Descriptor.TrackPoint;
@@ -167,6 +168,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 				Bearing += 5;
 				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, 2, true, Bearing, 95, "GPS");
 				PositionChangedEventList.PositionChanged(Loc);
+				GlobalCore.LastValidPosition = Loc.getLocation();
 			}
 
 		}

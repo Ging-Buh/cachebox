@@ -403,4 +403,17 @@ public class Label extends CB_View_Base
 		fontPropertyChanged();
 	}
 
+	@Override
+	public void dispose()
+	{
+		cache = null;
+		valignment = null;
+		text = null;
+		bounds = null;
+		innerRec = null;
+		wrapType = null;
+		halignment = null;
+		mBmpFont.dispose();
+	}
+
 }

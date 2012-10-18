@@ -101,6 +101,19 @@ public class GL implements ApplicationListener
 	protected EditWrapedTextField keyboardFocus;
 
 	private ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
+	private ArrayList<runOnGL> runIfInitial = new ArrayList<runOnGL>();
+
+	private boolean ifAllInitial = false;
+
+	public void setIsInitial()
+	{
+		ifAllInitial = true;
+	}
+
+	public void resetIsInitial()
+	{
+		ifAllInitial = false;
+	}
 
 	/**
 	 * Zwischenspeicher für die touchDown Positionen der einzelnen Finger
@@ -164,6 +177,16 @@ public class GL implements ApplicationListener
 		renderOnce("RunOnGL called");
 	}
 
+	public void RunIfInitial(runOnGL run)
+	{
+		synchronized (runIfInitial)
+		{
+			runIfInitial.add(run);
+		}
+
+		renderOnce("runIfInitial called");
+	}
+
 	@Override
 	public void render()
 	{
@@ -191,6 +214,22 @@ public class GL implements ApplicationListener
 				runOnGL_List.clear();
 			}
 
+		}
+
+		if (ifAllInitial)
+		{
+			synchronized (runIfInitial)
+			{
+				if (runIfInitial.size() > 0)
+				{
+					for (runOnGL run : runIfInitial)
+					{
+						if (run != null) run.run();
+					}
+
+					runIfInitial.clear();
+				}
+			}
 		}
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -1296,7 +1335,7 @@ public class GL implements ApplicationListener
 
 	public void Toast(CB_View_Base view)
 	{
-		Toast(view, 2000);
+		Toast(view, 4000);
 	}
 
 	public void closeToast()
@@ -1341,7 +1380,7 @@ public class GL implements ApplicationListener
 
 	public void Toast(String string)
 	{
-		Toast(string, 2000);
+		Toast(string, 4000);
 	}
 
 	public void Toast(String string, int length)

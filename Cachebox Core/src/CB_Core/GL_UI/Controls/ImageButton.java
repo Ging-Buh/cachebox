@@ -2,6 +2,8 @@ package CB_Core.GL_UI.Controls;
 
 import CB_Core.Math.CB_RectF;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class ImageButton extends Button
@@ -20,6 +22,20 @@ public class ImageButton extends Button
 		super(rec, name);
 		image = new Image(this.ScaleCenter(0.8f), "");
 		this.addChild(image);
+	}
+
+	@Override
+	protected void render(SpriteBatch batch)
+	{
+		super.render(batch);
+		if (isDisabled)
+		{
+			image.setColor(new Color(1f, 1f, 1f, 0.5f));
+		}
+		else
+		{
+			image.setColor(null);
+		}
 	}
 
 	public void setImage(Drawable drawable)
@@ -52,5 +68,12 @@ public class ImageButton extends Button
 		image.setRec(this.ScaleCenter(0.8f * mScale));
 		image.setRotate(mAngle);
 		image.setOrigin(image.getHalfWidth(), image.getHalfHeight());
+	}
+
+	@Override
+	public void dispose()
+	{
+		image.dispose();
+		super.dispose();
 	}
 }
