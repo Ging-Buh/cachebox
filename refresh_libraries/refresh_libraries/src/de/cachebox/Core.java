@@ -857,6 +857,12 @@ public class Core implements ApplicationListener
 		Name = "UI_IconPack.spp";
 		TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
 
+		// Pack Default day
+		inputFolder = imageWorkPath + "\\LibgdxPacker\\default\\input\\splash";
+		outputFolder = imageWorkPath + "\\LibgdxPacker\\default\\Output\\day";
+		Name = "SplashPack.spp";
+		TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
+
 		writeMsg("Copy Textures");
 		writeMsg("Copy: ");
 
