@@ -34,7 +34,6 @@ import CB_Core.Types.Waypoint;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
@@ -51,11 +50,8 @@ public class splash extends TabMainView
 
 	TextureAtlas atlas;
 	ProgressBar progress;
-	Image CB_Logo;
-	Image Mapsforge_Logo;
-	Image LibGdx_Logo;
-	Image FX2_Logo;
-	Image GC_Logo;
+	Image CB_Logo, OSM_Logo, Route_Logo, Mapsforge_Logo, LibGdx_Logo, FX2_Logo, GC_Logo;
+
 	Label descTextView;
 	SelectDB selectDBDialog;
 
@@ -81,7 +77,7 @@ public class splash extends TabMainView
 
 				String path = defaultPath + "/day/SplashPack.spp";
 				atlas = new TextureAtlas(Gdx.files.absolute(path));
-				setBackground(new SpriteDrawable(atlas.createSprite("splash_back")));
+				setBackground(new SpriteDrawable(atlas.createSprite("splash-back")));
 				break;
 			case 1:
 				ini_Progressbar();
@@ -144,7 +140,7 @@ public class splash extends TabMainView
 		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref, ref * 5,
 				(ref * 5) / 4.11f);
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
-		CB_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("cachebox_logo")));
+		CB_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("cachebox-logo")));
 		this.addChild(CB_Logo);
 
 		String VersionString = GlobalCore.getVersionString();
@@ -154,11 +150,13 @@ public class splash extends TabMainView
 		descTextView.setWrappedText(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.splashMsg, HAlignment.CENTER);
 		this.addChild(descTextView);
 
-		int patch = (UiSizes.getWindowWidth() > 330) ? 16 : 8;
-		progress = new ProgressBar(new CB_RectF(0, 0, this.width, ref / 1.5f), "Splash.ProgressBar");
-		Drawable ProgressBack = new NinePatchDrawable(new NinePatch(atlas.createSprite("btn_normal"), patch, patch, patch, patch));
-		Drawable ProgressFill = new NinePatchDrawable(new NinePatch(atlas.createSprite("progress"), patch - 1, patch - 1, patch - 1,
-				patch - 1));
+		Drawable ProgressBack = new NinePatchDrawable(atlas.createPatch("btn-normal"));
+		Drawable ProgressFill = new NinePatchDrawable(atlas.createPatch("progress"));
+
+		float ProgressHeight = Math.max(ProgressBack.getBottomHeight() + ProgressBack.getTopHeight(), ref / 1.5f);
+
+		progress = new ProgressBar(new CB_RectF(0, 0, this.width, ProgressHeight), "Splash.ProgressBar");
+
 		progress.setBackground(ProgressBack);
 		progress.setProgressFill(ProgressFill);
 		this.addChild(progress);
@@ -169,6 +167,8 @@ public class splash extends TabMainView
 		CB_RectF rec_Mapsforge_Logo = new CB_RectF(200, 50, logoCalcRef, logoCalcRef / 1.142f);
 		CB_RectF rec_FX2_Logo = new CB_RectF(rec_Mapsforge_Logo);
 		CB_RectF rec_LibGdx_Logo = new CB_RectF(20, 50, logoCalcRef * 4.17f * 0.8f, logoCalcRef * 0.8f);
+		CB_RectF rec_OSM = new CB_RectF(rec_Mapsforge_Logo);
+		CB_RectF rec_Route = new CB_RectF(rec_Mapsforge_Logo);
 
 		rec_FX2_Logo.setX(400);
 
@@ -184,6 +184,12 @@ public class splash extends TabMainView
 		LibGdx_Logo = new Image(rec_LibGdx_Logo, "LibGdx_Logo");
 		LibGdx_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("libgdx")));
 
+		Route_Logo = new Image(rec_OSM, "Route_Logo");
+		Route_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("openrouteservice_logo")));
+
+		OSM_Logo = new Image(rec_Route, "OSM_Logo");
+		OSM_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("osm_logo")));
+
 		float yPos = descTextView.getY() - GC_Logo.getHeight();
 		float xPos = (this.width - (ref * 2) - GC_Logo.getWidth() - Mapsforge_Logo.getWidth() - FX2_Logo.getWidth()) / 2;
 
@@ -198,10 +204,20 @@ public class splash extends TabMainView
 		yPos -= GC_Logo.getHeight();// + refHeight;
 		LibGdx_Logo.setPos(this.getHalfWidth() - LibGdx_Logo.getHalfWidth(), yPos);
 
+		yPos -= GC_Logo.getHeight();//
+		xPos = (this.width - (ref) - Route_Logo.getWidth() - OSM_Logo.getWidth()) / 2;
+
+		Route_Logo.setPos(xPos, yPos);
+
+		xPos += Route_Logo.getWidth() + ref;
+		OSM_Logo.setPos(xPos, yPos);
+
 		this.addChild(GC_Logo);
 		this.addChild(Mapsforge_Logo);
 		this.addChild(FX2_Logo);
 		this.addChild(LibGdx_Logo);
+		this.addChild(Route_Logo);
+		this.addChild(OSM_Logo);
 
 	}
 

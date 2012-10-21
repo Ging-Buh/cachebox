@@ -34,7 +34,6 @@ import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.XMLParserException;
 import com.thebuzzmedia.sjxp.rule.DefaultRule;
 import com.thebuzzmedia.sjxp.rule.IRule;
-import com.thebuzzmedia.sjxp.rule.IRule.Type;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free for non-commercial use. If Jigloo is
@@ -353,7 +352,8 @@ public class main extends JFrame
 
 		List<IRule<Map<String, String>>> ruleList = new ArrayList<IRule<Map<String, String>>>();
 
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE, "/manifest", "package", "android:versionName")
+		ruleList.add(new DefaultRule<Map<String, String>>(com.thebuzzmedia.sjxp.rule.IRule.Type.ATTRIBUTE, "/manifest", "package",
+				"android:versionName")
 		{
 			@Override
 			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
@@ -363,7 +363,8 @@ public class main extends JFrame
 			}
 		});
 
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE, "/manifest/application", "android:icon")
+		ruleList.add(new DefaultRule<Map<String, String>>(com.thebuzzmedia.sjxp.rule.IRule.Type.ATTRIBUTE, "/manifest/application",
+				"android:icon")
 		{
 			@Override
 			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
@@ -385,12 +386,12 @@ public class main extends JFrame
 		}
 		catch (IllegalArgumentException e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 		catch (XMLParserException e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 		catch (FileNotFoundException e)
@@ -719,7 +720,7 @@ public class main extends JFrame
 		}
 		catch (InterruptedException e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 
