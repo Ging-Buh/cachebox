@@ -256,7 +256,7 @@ public class GL_UISizes implements SizeChangedEvent
 	 */
 	private static void calcSizes()
 	{
-		Logger.DEBUG("GL_UISizes.caclsizes()");
+		Logger.DEBUG("GL_UISizes.calcSizes()");
 		// größe der Frames berechnen
 		int frameLeftwidth = UiSizes.RefWidth;
 

@@ -417,7 +417,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			drawingWidth = mapIntWidth;
 			drawingHeight = mapIntHeight;
 		}
-		MapView.this.setVisibility(CB_View_Base.VISIBLE);
+		setVisibility(CB_View_Base.VISIBLE);
 	}
 
 	@Override
@@ -425,7 +425,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		CB_Core.Events.SelectedCacheEventList.Remove(this);
 		CB_Core.Events.PositionChangedEventList.Remove(this);
-		MapView.this.setVisibility(CB_View_Base.INVISIBLE);
+		setVisibility(CB_View_Base.INVISIBLE);
 	}
 
 	@Override

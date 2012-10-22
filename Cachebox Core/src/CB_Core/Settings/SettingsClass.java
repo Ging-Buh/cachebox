@@ -15,6 +15,7 @@ public class SettingsClass extends SettingsList
 
 	// Settings Map
 	public SettingBool MapHideMyFinds;
+	public SettingBool ShowWaypoints;
 
 	// Invisible
 	public SettingLongString Filter;
@@ -285,6 +286,7 @@ public class SettingsClass extends SettingsList
 
 		addSetting(ShowDirektLine = new SettingBool("ShowDirektLine", cat, NORMAL, false, true));
 		addSetting(MapHideMyFinds = new SettingBool("MapHideMyFinds", cat, NORMAL, false, true));
+		addSetting(ShowWaypoints = new SettingBool("ShowWaypoints", cat, NORMAL, false, true));
 		addSetting(MapShowRating = new SettingBool("MapShowRating", cat, NORMAL, true, true));
 		addSetting(MapShowDT = new SettingBool("MapShowDT", cat, NORMAL, true, true));
 		addSetting(MapShowTitles = new SettingBool("MapShowTitles", cat, NORMAL, true, true));

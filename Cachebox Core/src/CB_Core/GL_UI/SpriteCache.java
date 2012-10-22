@@ -391,22 +391,22 @@ public class SpriteCache
 			float scale = UiSizes.getScale();
 
 			Arrows.clear();
-			Arrows.add(getThemedSprite("arrow-Compass"));
-			Arrows.add(getThemedSprite("arrow-Compass-Trans"));
-			Arrows.add(getThemedSprite("arrow-GPS"));
-			Arrows.add(getThemedSprite("arrow-GPS-Trans"));
-			Arrows.add(getThemedSprite("target-arrow"));
-			Arrows.add(getThemedSprite("track-line", scale));
-			Arrows.add(getThemedSprite("arrow-down"));
-			Arrows.add(getThemedSprite("arrow-up"));
-			Arrows.add(getThemedSprite("arrow-left"));
-			Arrows.add(getThemedSprite("arrow-right"));
-			Arrows.add(getThemedSprite("track-point", scale));
-			Arrows.add(getThemedSprite("ambilwarna-arrow-right"));
-			Arrows.add(getThemedSprite("ambilwarna-arrow-down"));
-			Arrows.add(getThemedSprite("draw-line", scale));
-			Arrows.add(getThemedSprite("draw-point", scale));
-			Arrows.add(getThemedSprite("arrow-Compass-car"));
+			Arrows.add(getThemedSprite("arrow-Compass")); // 0
+			Arrows.add(getThemedSprite("arrow-Compass-Trans")); // 1
+			Arrows.add(getThemedSprite("arrow-GPS")); // 2
+			Arrows.add(getThemedSprite("arrow-GPS-Trans")); // 3
+			Arrows.add(getThemedSprite("target-arrow")); // 4
+			Arrows.add(getThemedSprite("track-line", scale)); // 5
+			Arrows.add(getThemedSprite("arrow-down")); // 6
+			Arrows.add(getThemedSprite("arrow-up")); // 7
+			Arrows.add(getThemedSprite("arrow-left")); // 8
+			Arrows.add(getThemedSprite("arrow-right")); // 9
+			Arrows.add(getThemedSprite("track-point", scale)); // 10
+			Arrows.add(getThemedSprite("ambilwarna-arrow-right")); // 11
+			Arrows.add(getThemedSprite("ambilwarna-arrow-down")); // 12
+			Arrows.add(getThemedSprite("draw-line", scale)); // 13
+			Arrows.add(getThemedSprite("draw-point", scale)); // 14
+			Arrows.add(getThemedSprite("arrow-Compass-car")); // 15
 
 		}
 
