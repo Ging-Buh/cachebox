@@ -106,11 +106,18 @@ public class MapViewCacheList
 									// Wenn ein Mystery-Cache einen Final-Waypoint hat,
 									// werden die Koordinaten des Caches nicht gezeichnet,
 									// sondern der Final-Waypoint wird später aus der Query MysterySolutions gezeichnet.
+									if (Config.settings.ShowWaypoints.getValue() || GlobalCore.SelectedCache() == cache)
+									{
+										addWaypoints(cache, true); // Parking , Referencepoints, ...?
+									}
 									continue;
 								}
 								else
 								{
-									if (Config.settings.ShowWaypoints.getValue() || GlobalCore.SelectedCache() == cache) addWaypoints(cache);
+									if (Config.settings.ShowWaypoints.getValue() || GlobalCore.SelectedCache() == cache)
+									{
+										addWaypoints(cache);
+									}
 								}
 
 								WaypointRenderInfo wpi = new WaypointRenderInfo();
@@ -194,10 +201,12 @@ public class MapViewCacheList
 								// bei allen Caches ausser den Mysterys sollen die
 								// Finals nicht
 								// gezeichnet werden, wenn der Zoom klein ist
-								if ((zoom < 14) && (solution.Cache.Type != CacheTypes.Mystery)) continue;
+								// doch, da der Mysterie selber nicht gezeichnet wird
+								// if ((zoom < 14) && (solution.Cache.Type != CacheTypes.Mystery)) continue;
 
 								// is already in list
-								if (GlobalCore.SelectedCache() == solution.Cache) continue;
+								// nicht mehr
+								// if (GlobalCore.SelectedCache() == solution.Cache) continue;
 
 								if (hideMyFinds && solution.Cache.Found) continue;
 
@@ -346,10 +355,19 @@ public class MapViewCacheList
 
 	private void addWaypoints(Cache cache)
 	{
+		addWaypoints(cache, false);
+	}
+
+	private void addWaypoints(Cache cache, boolean withoutFinal)
+	{
 		ArrayList<Waypoint> wps = cache.waypoints;
 
 		for (Waypoint wp : wps)
 		{
+			if (withoutFinal)
+			{
+				if (wp.Type == CacheTypes.Final) continue;
+			}
 			WaypointRenderInfo wpi = new WaypointRenderInfo();
 			double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, wp.Pos.Longitude);
 			double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, wp.Pos.Latitude);
