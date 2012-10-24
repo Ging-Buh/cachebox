@@ -1287,9 +1287,9 @@ public class GL implements ApplicationListener
 
 	public void closeDialog(final CB_View_Base dialog, boolean MsgToPlatformConector)
 	{
-		if (!DialogIsShown || !mDialog.contains(dialog))
+		if (!DialogIsShown || !mDialog.getchilds().contains((dialog)))
 		{
-			dialog.dispose();
+			if (dialog != null) dialog.dispose();
 			return;
 		}
 

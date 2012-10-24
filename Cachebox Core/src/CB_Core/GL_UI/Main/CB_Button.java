@@ -212,25 +212,15 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 							// das View Context Menü mit dem LongKlick Menü zusammen führen!
 
 							Menu viewContextMenu = aktActionView.getContextMenu();
-							// OnClickListener viewContextClickListner = viewContextMenu.getItemClickListner();
+							OnClickListener viewContextClickListner = viewContextMenu.getItemClickListner();
 
 							// Menu zusammen stellen!
 							// zuerst das View Context Menu
 							Menu compoundMenu = new Menu("compoundMenu");
 
-							// compoundMenu.setOnClickListener(new OnClickListener()
-							// {
-							//
-							// @Override
-							// public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-							// {
-							// // TODO Eventuell an den viewContextClickListner übergeben.
-							//
-							// return false;
-							// }
-							// });
-
 							compoundMenu.addItems(viewContextMenu.getItems());
+
+							if (viewContextClickListner != null) compoundMenu.setItemClickListner(viewContextClickListner);
 
 							// add divider
 							compoundMenu.addDivider();

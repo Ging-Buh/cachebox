@@ -1043,4 +1043,11 @@ public class SearchDialog extends PopUp_Base
 		return true;
 	}
 
+	@Override
+	public void dispose()
+	{
+		super.dispose();
+		that = null;
+	}
+
 }

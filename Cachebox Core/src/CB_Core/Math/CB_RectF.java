@@ -270,6 +270,7 @@ public class CB_RectF
 	 */
 	public boolean contains(CB_RectF rec)
 	{
+		if (rec == null) return false;
 		boolean ret = this.contains(rec.Pos);
 		ret &= this.contains(rec.crossPos);
 

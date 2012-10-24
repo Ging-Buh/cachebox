@@ -60,7 +60,15 @@ public class TileGL implements Destroyable
 	@Override
 	public void destroy() throws DestroyFailedException
 	{
-		if (texture != null) texture.dispose();
+		try
+		{
+			if (texture != null) texture.dispose();
+		}
+		catch (java.lang.NullPointerException e)
+		{
+			e.printStackTrace();
+		}
+		texture = null;
 		bytes = null;
 	}
 

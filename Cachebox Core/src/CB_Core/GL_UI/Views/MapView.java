@@ -356,7 +356,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 		});
 		togBtn.registerSkinChangedEvent();
-		togBtn.setState(Config.settings.LastMapToggleBtnState.getValue(), true);
+		togBtn.setState(CompassMode ? 1 : Config.settings.LastMapToggleBtnState.getValue(), true);
+
 		if (!CompassMode) this.addChild(togBtn);
 
 		infoBubble = new InfoBubble(GL_UISizes.Bubble, "infoBubble");

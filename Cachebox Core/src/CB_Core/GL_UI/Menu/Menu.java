@@ -303,7 +303,12 @@ public class Menu extends Dialog
 
 	public void addItems(ArrayList<MenuItemBase> items)
 	{
-		mItems.addAll(items);
+		for (MenuItemBase menuItem : items)
+		{
+			menuItem.setOnClickListener(MenuItemClickListner);
+			mItems.add(menuItem);
+			mListView.notifyDataSetChanged();
+		}
 	}
 
 	public void addDivider()

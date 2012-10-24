@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Controls.Dialogs;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
+import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
@@ -16,12 +17,9 @@ import CB_Core.Math.Size;
 public class NumerikInputBox extends CB_View_Base
 {
 
-	private static NumerikInputBox that;
-
 	public NumerikInputBox(String name)
 	{
 		super(name);
-		that = this;
 	}
 
 	private enum type
@@ -91,7 +89,7 @@ public class NumerikInputBox extends CB_View_Base
 
 		// ######### NumPad ################
 
-		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withoutDotOkCancel, listner);
+		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withoutDotOkCancel, getkeyListner(msgBox));
 		numPad.setY(margin);
 		msgBox.addFooterChild(numPad);
 		msgBox.setFooterHeight(numPad.getHeight() + (margin * 2));
@@ -155,7 +153,7 @@ public class NumerikInputBox extends CB_View_Base
 
 		// ######### NumPad ################
 
-		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withOkCancel, listner);
+		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withOkCancel, getkeyListner(msgBox));
 		numPad.setY(margin);
 		msgBox.addFooterChild(numPad);
 		msgBox.setFooterHeight(numPad.getHeight() + (margin * 2));
@@ -223,7 +221,7 @@ public class NumerikInputBox extends CB_View_Base
 
 		// ######### NumPad ################
 
-		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withDoubleDotOkCancel, listner);
+		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withDoubleDotOkCancel, getkeyListner(msgBox));
 		numPad.setY(margin);
 		msgBox.addFooterChild(numPad);
 		msgBox.setFooterHeight(numPad.getHeight() + (margin * 2));
@@ -254,144 +252,149 @@ public class NumerikInputBox extends CB_View_Base
 		public void cancelClicked();
 	}
 
-	static keyEventListner listner = new keyEventListner()
+	static keyEventListner getkeyListner(final GL_MsgBox msgBox)
 	{
 
-		@Override
-		public void KeyPressed(String value)
+		keyEventListner keyListner = new keyEventListner()
 		{
-			int cursorPos = editText.getCursorPosition();
 
-			if (value.equals("O"))
+			@Override
+			public void KeyPressed(String value)
 			{
+				int cursorPos = editText.getCursorPosition();
 
-				String StringValue = editText.getText();
-
-				// Replase Linebraek
-				StringValue = StringValue.replace("\n", "");
-				StringValue = StringValue.replace("\r", "");
-
-				boolean ParseError = false;
-
-				if (mType == type.doubleType)
+				if (value.equals("O"))
 				{
-					if (mReturnListnerDouble != null)
+
+					String StringValue = editText.getText();
+
+					// Replase Linebraek
+					StringValue = StringValue.replace("\n", "");
+					StringValue = StringValue.replace("\r", "");
+
+					boolean ParseError = false;
+
+					if (mType == type.doubleType)
 					{
-						try
+						if (mReturnListnerDouble != null)
 						{
-							double dblValue = Double.parseDouble(StringValue);
-							mReturnListnerDouble.returnValue(dblValue);
-						}
-						catch (NumberFormatException e)
-						{
-							ParseError = true;
+							try
+							{
+								double dblValue = Double.parseDouble(StringValue);
+								mReturnListnerDouble.returnValue(dblValue);
+							}
+							catch (NumberFormatException e)
+							{
+								ParseError = true;
+							}
 						}
 					}
-				}
-				else if (mType == type.intType)
-				{
-					if (mReturnListner != null)
+					else if (mType == type.intType)
 					{
-						try
+						if (mReturnListner != null)
 						{
+							try
+							{
 
-							int intValue = Integer.parseInt(StringValue);
-							mReturnListner.returnValue(intValue);
-						}
-						catch (NumberFormatException e)
-						{
-							ParseError = true;
+								int intValue = Integer.parseInt(StringValue);
+								mReturnListner.returnValue(intValue);
+							}
+							catch (NumberFormatException e)
+							{
+								ParseError = true;
+							}
 						}
 					}
-				}
 
-				else if (mType == type.timeType)
-				{
-					if (mReturnListnerTime != null)
+					else if (mType == type.timeType)
 					{
-						try
+						if (mReturnListnerTime != null)
 						{
-							String[] s = StringValue.split(":");
+							try
+							{
+								String[] s = StringValue.split(":");
 
-							int intValueMin = Integer.parseInt(s[0]);
-							int intValueSec = Integer.parseInt(s[1]);
-							mReturnListnerTime.returnValue(intValueMin, intValueSec);
-						}
-						catch (NumberFormatException e)
-						{
-							ParseError = true;
+								int intValueMin = Integer.parseInt(s[0]);
+								int intValueSec = Integer.parseInt(s[1]);
+								mReturnListnerTime.returnValue(intValueMin, intValueSec);
+							}
+							catch (NumberFormatException e)
+							{
+								ParseError = true;
+							}
 						}
 					}
-				}
 
-				if (ParseError)
+					if (ParseError)
+					{
+						GL.that.Toast(GlobalCore.Translations.Get("wrongValueEnterd"));
+					}
+					else
+					{
+						close(msgBox);
+					}
+
+				}
+				else if (value.equals("C"))
 				{
-					GL.that.Toast(GlobalCore.Translations.Get("wrongValueEnterd"));
+					if (mType == type.doubleType)
+
+					{
+						if (mReturnListnerDouble != null)
+						{
+							mReturnListnerDouble.cancelClicked();
+						}
+					}
+					else if (mType == type.intType)
+					{
+						if (mReturnListner != null)
+						{
+							mReturnListner.cancelClicked();
+						}
+					}
+					else if (mType == type.timeType)
+					{
+						if (mReturnListnerTime != null)
+						{
+							mReturnListnerTime.cancelClicked();
+						}
+					}
+
+					close(msgBox);
+				}
+				else if (value.equals("<"))
+				{
+					if (cursorPos == 0) cursorPos = 1; // cursorPos darf nicht 0 sein
+					editText.setCursorPosition(cursorPos - 1);
+				}
+				else if (value.equals(">"))
+				{
+					editText.setCursorPosition(cursorPos + 1);
+				}
+				else if (value.equals("D"))
+				{
+					if (cursorPos > 0)
+					{
+						String text2 = editText.getText().substring(cursorPos);
+						String text1 = editText.getText().substring(0, cursorPos - 1);
+
+						editText.setText(text1 + text2);
+						editText.setCursorPosition(cursorPos + -1);
+					}
 				}
 				else
 				{
-					GL.that.closeDialog(that);
-				}
-
-			}
-			else if (value.equals("C"))
-			{
-				if (mType == type.doubleType)
-
-				{
-					if (mReturnListnerDouble != null)
-					{
-						mReturnListnerDouble.cancelClicked();
-					}
-				}
-				else if (mType == type.intType)
-				{
-					if (mReturnListner != null)
-					{
-						mReturnListner.cancelClicked();
-					}
-				}
-				else if (mType == type.timeType)
-				{
-					if (mReturnListnerTime != null)
-					{
-						mReturnListnerTime.cancelClicked();
-					}
-				}
-
-				GL.that.closeDialog(that);
-			}
-			else if (value.equals("<"))
-			{
-				if (cursorPos == 0) cursorPos = 1; // cursorPos darf nicht 0 sein
-				editText.setCursorPosition(cursorPos - 1);
-			}
-			else if (value.equals(">"))
-			{
-				editText.setCursorPosition(cursorPos + 1);
-			}
-			else if (value.equals("D"))
-			{
-				if (cursorPos > 0)
-				{
 					String text2 = editText.getText().substring(cursorPos);
-					String text1 = editText.getText().substring(0, cursorPos - 1);
+					String text1 = editText.getText().substring(0, cursorPos);
 
-					editText.setText(text1 + text2);
-					editText.setCursorPosition(cursorPos + -1);
+					editText.setText(text1 + value + text2);
+					editText.setCursorPosition(cursorPos + value.length());
 				}
-			}
-			else
-			{
-				String text2 = editText.getText().substring(cursorPos);
-				String text1 = editText.getText().substring(0, cursorPos);
 
-				editText.setText(text1 + value + text2);
-				editText.setCursorPosition(cursorPos + value.length());
 			}
-
-		}
-	};
+		};
+		return keyListner;
+	}
 
 	@Override
 	public void onShow()
@@ -408,6 +411,20 @@ public class NumerikInputBox extends CB_View_Base
 	@Override
 	protected void SkinIsChanged()
 	{
+	}
+
+	private static void close(final GL_MsgBox msgBox)
+	{
+		GL.that.RunOnGL(new runOnGL()
+		{
+
+			@Override
+			public void run()
+			{
+				GL.that.closeDialog(msgBox);
+			}
+		});
+
 	}
 
 }
