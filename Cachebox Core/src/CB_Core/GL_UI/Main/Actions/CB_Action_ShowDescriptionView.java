@@ -14,6 +14,7 @@ import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.DescriptionView;
 import CB_Core.Types.Cache;
@@ -24,9 +25,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 {
-
-	private static final int MI_FAVORIT = 0;
-	private static final int MI_RELOAD_CACHE = 1;
 
 	public CB_Action_ShowDescriptionView()
 	{
@@ -73,7 +71,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 	{
 		Menu cm = new Menu("CacheListContextMenu");
 
-		cm.setItemClickListner(new OnClickListener()
+		cm.addItemClickListner(new OnClickListener()
 		{
 
 			@Override
@@ -81,13 +79,13 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 			{
 				switch (((MenuItem) v).getMenuItemId())
 				{
-				case MI_FAVORIT:
+				case MenuID.MI_FAVORIT:
 					GlobalCore.SelectedCache().setFavorit(!GlobalCore.SelectedCache().Favorit());
 					CacheDAO dao = new CacheDAO();
 					dao.UpdateDatabase(GlobalCore.SelectedCache());
 
 					return true;
-				case MI_RELOAD_CACHE:
+				case MenuID.MI_RELOAD_CACHE:
 
 					wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("ReloadCacheAPI"), new IcancelListner()
 					{
@@ -140,7 +138,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 
 		boolean isSelected = (GlobalCore.SelectedCache() != null);
 
-		mi = cm.addItem(MI_FAVORIT, "Favorite", SpriteCache.Icons.get(42));
+		mi = cm.addItem(MenuID.MI_FAVORIT, "Favorite", SpriteCache.Icons.get(42));
 		mi.setCheckable(true);
 		if (isSelected)
 		{
@@ -151,7 +149,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 			mi.setEnabled(false);
 		}
 
-		mi = cm.addItem(MI_RELOAD_CACHE, "ReloadCacheAPI", SpriteCache.Icons.get(35));
+		mi = cm.addItem(MenuID.MI_RELOAD_CACHE, "ReloadCacheAPI", SpriteCache.Icons.get(35));
 		mi.setEnabled(isSelected);
 		return cm;
 	}

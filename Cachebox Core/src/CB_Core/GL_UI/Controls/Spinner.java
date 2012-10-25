@@ -68,7 +68,7 @@ public class Spinner extends Button
 
 				// show Menu to select
 				Menu icm = new Menu("SpinnerSelection" + that.name);
-				icm.setItemClickListner(new OnClickListener()
+				icm.addItemClickListner(new OnClickListener()
 				{
 					@Override
 					public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)

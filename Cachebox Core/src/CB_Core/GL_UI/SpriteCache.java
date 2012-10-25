@@ -124,6 +124,7 @@ public class SpriteCache
 	public static Drawable textFieldCursor;
 	public static Drawable textFiledBackground;
 	public static Drawable textFiledBackgroundFocus;
+	public static Drawable logo;
 
 	public static Drawable copy;
 	public static Drawable paste;
@@ -654,6 +655,7 @@ public class SpriteCache
 		selection_set = new SpriteDrawable(getThemedSprite("Selection-set"));
 		selection_left = new SpriteDrawable(getThemedSprite("Selection-Left"));
 		selection_right = new SpriteDrawable(getThemedSprite("Selection-Right"));
+		logo = new SpriteDrawable(getThemedSprite("cachebox-logo"));
 
 		copy = new SpriteDrawable(getThemedSprite("tf-copy"));
 		paste = new SpriteDrawable(getThemedSprite("tf-paste"));

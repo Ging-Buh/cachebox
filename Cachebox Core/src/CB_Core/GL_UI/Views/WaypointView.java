@@ -24,6 +24,7 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
@@ -310,17 +311,11 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		SetSelectedCache(cache, aktWaypoint);
 	}
 
-	private final int MI_EDIT = 0;
-	private final int MI_ADD = 1;
-	private final int MI_DELETE = 2;
-	private final int MI_PROJECTION = 3;
-	private final int MI_FROM_GPS = 4;
-
 	public Menu getContextMenu()
 	{
 		Menu cm = new Menu("CacheListContextMenu");
 
-		cm.setItemClickListner(new OnClickListener()
+		cm.addItemClickListner(new OnClickListener()
 		{
 
 			@Override
@@ -328,19 +323,19 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			{
 				switch (((MenuItem) v).getMenuItemId())
 				{
-				case MI_ADD:
+				case MenuID.MI_ADD:
 					addWP();
 					return true;
-				case MI_EDIT:
+				case MenuID.MI_EDIT:
 					editWP();
 					return true;
-				case MI_DELETE:
+				case MenuID.MI_DELETE:
 					deleteWP();
 					return true;
-				case MI_PROJECTION:
+				case MenuID.MI_PROJECTION:
 					addProjection();
 					return true;
-				case MI_FROM_GPS:
+				case MenuID.MI_FROM_GPS:
 					addMeasure();
 					return true;
 
@@ -349,12 +344,12 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			}
 		});
 
-		if (aktWaypoint != null) cm.addItem(MI_EDIT, "edit");
-		cm.addItem(MI_ADD, "addWaypoint");
-		if ((aktWaypoint != null) && (aktWaypoint.IsUserWaypoint)) cm.addItem(MI_DELETE, "delete");
-		if (aktWaypoint != null || aktCache != null) cm.addItem(MI_PROJECTION, "Projection");
+		if (aktWaypoint != null) cm.addItem(MenuID.MI_EDIT, "edit");
+		cm.addItem(MenuID.MI_ADD, "addWaypoint");
+		if ((aktWaypoint != null) && (aktWaypoint.IsUserWaypoint)) cm.addItem(MenuID.MI_DELETE, "delete");
+		if (aktWaypoint != null || aktCache != null) cm.addItem(MenuID.MI_PROJECTION, "Projection");
 
-		cm.addItem(MI_FROM_GPS, "FromGps");
+		cm.addItem(MenuID.MI_FROM_GPS, "FromGps");
 
 		return cm;
 	}

@@ -38,6 +38,7 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListButtonLangSpinner;
@@ -66,8 +67,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class SettingsActivity extends ActivityBase
 {
-	private final int MI_SHOW_EXPERT = 0;
-	private final int MI_SHOW_ALL = 1;
 
 	public static SettingsActivity that;
 	private ArrayList<SettingCategory> Categorys = new ArrayList<SettingCategory>();
@@ -117,7 +116,7 @@ public class SettingsActivity extends ActivityBase
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				Menu icm = new Menu("menu_mapviewgl");
-				icm.setItemClickListner(new OnClickListener()
+				icm.addItemClickListner(new OnClickListener()
 				{
 
 					@Override
@@ -125,12 +124,12 @@ public class SettingsActivity extends ActivityBase
 					{
 						switch (((MenuItem) v).getMenuItemId())
 						{
-						case MI_SHOW_EXPERT:
+						case MenuID.MI_SHOW_EXPERT:
 							Config.settings.SettingsShowExpert.setValue(!Config.settings.SettingsShowExpert.getValue());
 							resortList();
 							return true;
 
-						case MI_SHOW_ALL:
+						case MenuID.MI_SHOW_ALL:
 							Config.settings.SettingsShowAll.setValue(!Config.settings.SettingsShowAll.getValue());
 							resortList();
 							return true;
@@ -141,11 +140,11 @@ public class SettingsActivity extends ActivityBase
 				});
 				MenuItem mi;
 
-				mi = icm.addItem(MI_SHOW_EXPERT, "Settings_Expert");
+				mi = icm.addItem(MenuID.MI_SHOW_EXPERT, "Settings_Expert");
 				mi.setCheckable(true);
 				mi.setChecked(Config.settings.SettingsShowExpert.getValue());
 
-				mi = icm.addItem(MI_SHOW_ALL, "Settings_All");
+				mi = icm.addItem(MenuID.MI_SHOW_ALL, "Settings_All");
 
 				mi.setCheckable(true);
 				mi.setChecked(Config.settings.SettingsShowAll.getValue());
@@ -336,38 +335,20 @@ public class SettingsActivity extends ActivityBase
 									.getValue()) && (settingItem.getModus() != SettingModus.Never))
 						{
 
-							if (settingItem.getName().equals("GcJoker"))
+							CB_View_Base view = getView(settingItem, position++);
+
+							if (view instanceof Button)
 							{
-								if (Config.settings.hasCallPermission.getValue())
-								{
-
-									CB_View_Base view = getView(settingItem, position++);
-
-									lay.addChild(view);
-									entrieCount++;
-									if (settingItem.getName().equals(EditKey))
-									{
-										expandLayout = true;
-									}
-								}
+								view.setSize(itemRec);
 							}
-							else
+
+							lay.addChild(view);
+							entrieCount++;
+							if (settingItem.getName().equals(EditKey))
 							{
-
-								CB_View_Base view = getView(settingItem, position++);
-
-								if (view instanceof Button)
-								{
-									view.setSize(itemRec);
-								}
-
-								lay.addChild(view);
-								entrieCount++;
-								if (settingItem.getName().equals(EditKey))
-								{
-									expandLayout = true;
-								}
+								expandLayout = true;
 							}
+
 						}
 					}
 				}

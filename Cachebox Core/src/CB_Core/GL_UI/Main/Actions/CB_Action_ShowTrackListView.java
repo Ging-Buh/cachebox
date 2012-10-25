@@ -21,6 +21,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.TrackListView;
 import CB_Core.GL_UI.Views.TrackListViewItem;
@@ -70,16 +71,6 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 		return TabMainView.trackListView;
 	}
 
-	private static final int GENERATE = 1;
-	private static final int RENAME = 2;
-	private static final int LOAD = 3;
-	private static final int SAVE = 4;
-	private static final int DELETE = 5;
-	private static final int P2P = 6;
-	private static final int PROJECT = 7;
-	private static final int CIRCLE = 8;
-	private static final int OPENROUTE = 9;
-
 	@Override
 	public boolean HasContextMenu()
 	{
@@ -91,7 +82,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	{
 		Menu cm = new Menu("TrackListContextMenu");
 
-		cm.setItemClickListner(new OnClickListener()
+		cm.addItemClickListner(new OnClickListener()
 		{
 
 			@Override
@@ -99,11 +90,11 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 			{
 				switch (((MenuItem) v).getMenuItemId())
 				{
-				case GENERATE:
+				case MenuID.MI_GENERATE:
 					showMenuCreate();
 					return true;
 
-				case RENAME:
+				case MenuID.MI_RENAME:
 					if (TrackListView.that != null)
 					{
 						final TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
@@ -138,7 +129,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					}
 					return true;
 
-				case LOAD:
+				case MenuID.MI_LOAD:
 					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", GlobalCore.Translations.Get("LoadTrack"),
 							GlobalCore.Translations.Get("load"), new IgetFileReturnListner()
 							{
@@ -158,7 +149,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 					return true;
 
-				case SAVE:
+				case MenuID.MI_SAVE:
 					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", GlobalCore.Translations.Get("SaveTrack"),
 							GlobalCore.Translations.Get("save"), new IgetFileReturnListner()
 							{
@@ -178,7 +169,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 					return true;
 
-				case DELETE:
+				case MenuID.MI_DELETE_TRACK:
 					if (TrackListView.that != null)
 					{
 						TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
@@ -217,14 +208,14 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 		});
 
 		TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
-		cm.addItem(LOAD, "load");
-		cm.addItem(GENERATE, "generate");
+		cm.addItem(MenuID.MI_LOAD, "load");
+		cm.addItem(MenuID.MI_GENERATE, "generate");
 		// rename, save, delete darf nicht mit dem aktuellen Track gemacht werden....
 		if (selectedTrackItem != null && !selectedTrackItem.getRoute().IsActualTrack)
 		{
-			cm.addItem(RENAME, "rename");
-			cm.addItem(SAVE, "save");
-			cm.addItem(DELETE, "delete");
+			cm.addItem(MenuID.MI_RENAME, "rename");
+			cm.addItem(MenuID.MI_SAVE, "save");
+			cm.addItem(MenuID.MI_DELETE_TRACK, "delete");
 		}
 
 		return cm;
@@ -233,7 +224,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	private void showMenuCreate()
 	{
 		Menu cm2 = new Menu("TrackListCreateContextMenu");
-		cm2.setItemClickListner(new OnClickListener()
+		cm2.addItemClickListner(new OnClickListener()
 		{
 
 			@Override
@@ -241,16 +232,16 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 			{
 				switch (((MenuItem) v).getMenuItemId())
 				{
-				case P2P:
+				case MenuID.MI_P2P:
 					GenTrackP2P();
 					return true;
-				case PROJECT:
+				case MenuID.MI_PROJECT:
 					GenTrackProjection();
 					return true;
-				case CIRCLE:
+				case MenuID.MI_CIRCLE:
 					GenTrackCircle();
 					return true;
-				case OPENROUTE:
+				case MenuID.MI_OPENROUTE:
 
 					Thread tread = new Thread(new Runnable()
 					{
@@ -268,10 +259,10 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 				return false;
 			}
 		});
-		cm2.addItem(P2P, "Point2Point");
-		cm2.addItem(PROJECT, "Projection");
-		cm2.addItem(CIRCLE, "Circle");
-		cm2.addItem(OPENROUTE, "OpenRoute");
+		cm2.addItem(MenuID.MI_P2P, "Point2Point");
+		cm2.addItem(MenuID.MI_PROJECT, "Projection");
+		cm2.addItem(MenuID.MI_CIRCLE, "Circle");
+		cm2.addItem(MenuID.MI_OPENROUTE, "OpenRoute");
 
 		cm2.show();
 	}

@@ -53,6 +53,8 @@ import CB_Core.GL_UI.ViewID.UI_Type;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Activitys.settings.SettingsActivity;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
@@ -79,7 +81,6 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -177,7 +178,6 @@ import de.cachebox_test.Views.SpoilerView;
 import de.cachebox_test.Views.TrackableListView;
 import de.cachebox_test.Views.ViewGL;
 import de.cachebox_test.Views.Forms.GcApiLogin;
-import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
@@ -557,7 +557,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					e1.printStackTrace();
 				}
 
-				MessageBox.Show(Welcome, GlobalCore.Translations.Get("welcome"), MessageBoxIcon.None);
+				GL_MsgBox.Show(Welcome, GlobalCore.Translations.Get("welcome"), MessageBoxIcon.None);
 
 			}
 
@@ -1897,99 +1897,115 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void showJoker()
 	{
-		if (!Config.settings.hasCallPermission.getValue()) return;
 
-		// Debug add Joker
-		// Global.Jokers.AddJoker("Andre", "Höpfner", "Katipa", "12", "030 ++++++", "24/7");
-		// Global.Jokers.AddJoker("Andre", "Höpfner", "Katipa", "12", "030 ++++++", "24/7");
+		Thread thread = new Thread(new Runnable()
+		{
 
-		if (Global.Jokers.isEmpty())
-		{ // Wenn Telefonjoker-Liste leer neu laden
-
-			try
+			@Override
+			public void run()
 			{
-				URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.settings.GcJoker.getValue() + "&wpt="
-						+ GlobalCore.SelectedCache().GcCode);
-				URLConnection urlConnection = url.openConnection();
-				HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
+				// Debug add Joker
+				// Global.Jokers.AddJoker("Andre", "Höpfner", "Katipa", "12", "030 ++++++", "24/7");
+				// Global.Jokers.AddJoker("Andre", "Höpfner", "Katipa", "12", "030 ++++++", "24/7");
 
-				// Get the HTTP response code
-				if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK)
-				{
-					InputStream inputStream = httpConnection.getInputStream();
-					if (inputStream != null)
+				if (Global.Jokers.isEmpty())
+				{ // Wenn Telefonjoker-Liste leer neu laden
+
+					try
 					{
-						String line;
-						try
+						URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.settings.GcJoker.getValue() + "&wpt="
+								+ GlobalCore.SelectedCache().GcCode);
+						URLConnection urlConnection = url.openConnection();
+						HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
+
+						// Get the HTTP response code
+						if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK)
 						{
-							BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-							while ((line = reader.readLine()) != null)
+							InputStream inputStream = httpConnection.getInputStream();
+							if (inputStream != null)
 							{
-								String[] s = line.split(";", 7);
+								String line;
 								try
 								{
-									if (s[0].equals("2")) // 2 entspricht
-									// Fehler,
-									// Fehlerursache ist
-									// in S[1]
+									BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+									while ((line = reader.readLine()) != null)
 									{
-										MessageBox.Show(s[1]);
-										break;
+										String[] s = line.split(";", 7);
+										try
+										{
+											if (s[0].equals("2")) // 2 entspricht
+											// Fehler,
+											// Fehlerursache ist
+											// in S[1]
+											{
+												GL_MsgBox.Show(s[1]);
+												break;
+											}
+											if (s[0].equals("1")) // 1 entspricht
+											// Warnung, Ursache
+											// ist in S[1]
+											{ // es können aber noch gültige Einträge
+												// folgen
+												GL_MsgBox.Show(s[1]);
+											}
+											if (s[0].equals("0")) // Normaler Eintrag
+											{
+												Global.Jokers.AddJoker(s[1], s[2], s[3], s[4], s[5], s[6]);
+											}
+										}
+										catch (Exception exc)
+										{
+											Logger.Error("main.initialBtnInfoContextMenu()", "HTTP response Jokers", exc);
+											return;
+										}
 									}
-									if (s[0].equals("1")) // 1 entspricht
-									// Warnung, Ursache
-									// ist in S[1]
-									{ // es können aber noch gültige Einträge
-										// folgen
-										MessageBox.Show(s[1]);
-									}
-									if (s[0].equals("0")) // Normaler Eintrag
-									{
-										Global.Jokers.AddJoker(s[1], s[2], s[3], s[4], s[5], s[6]);
-									}
+
 								}
-								catch (Exception exc)
+								finally
 								{
-									Logger.Error("main.initialBtnInfoContextMenu()", "HTTP response Jokers", exc);
-									return;
+									inputStream.close();
 								}
 							}
-
-						}
-						finally
-						{
-							inputStream.close();
 						}
 					}
+					catch (MalformedURLException urlEx)
+					{
+						Logger.Error("main.initialBtnInfoContextMenu()", "MalformedURLException HTTP response Jokers", urlEx);
+						// Log.d("DroidCachebox", urlEx.getMessage());
+					}
+					catch (IOException ioEx)
+					{
+						Logger.Error("main.initialBtnInfoContextMenu()", "IOException HTTP response Jokers", ioEx);
+						// Log.d("DroidCachebox", ioEx.getMessage());
+						GL_MsgBox.Show(GlobalCore.Translations.Get("internetError"));
+					}
+					catch (Exception ex)
+					{
+						Logger.Error("main.initialBtnInfoContextMenu()", "HTTP response Jokers", ex);
+						// Log.d("DroidCachebox", ex.getMessage());
+					}
+				}
+
+				if (Global.Jokers.isEmpty())
+				{
+					GL_MsgBox.Show(GlobalCore.Translations.Get("noJokers"));
+				}
+				else
+				{
+					Logger.General("Open JokerView...");
+
+					main.this.runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							showView(ViewConst.JOKER_VIEW);
+						}
+					});
 				}
 			}
-			catch (MalformedURLException urlEx)
-			{
-				Logger.Error("main.initialBtnInfoContextMenu()", "MalformedURLException HTTP response Jokers", urlEx);
-				// Log.d("DroidCachebox", urlEx.getMessage());
-			}
-			catch (IOException ioEx)
-			{
-				Logger.Error("main.initialBtnInfoContextMenu()", "IOException HTTP response Jokers", ioEx);
-				// Log.d("DroidCachebox", ioEx.getMessage());
-				MessageBox.Show(GlobalCore.Translations.Get("internetError"));
-			}
-			catch (Exception ex)
-			{
-				Logger.Error("main.initialBtnInfoContextMenu()", "HTTP response Jokers", ex);
-				// Log.d("DroidCachebox", ex.getMessage());
-			}
-		}
-
-		if (Global.Jokers.isEmpty())
-		{
-			MessageBox.Show(GlobalCore.Translations.Get("noJokers"));
-		}
-		else
-		{
-			Logger.General("Open JokerView...");
-			showView(ViewConst.JOKER_VIEW);
-		}
+		});
+		thread.start();
 
 	}
 
@@ -2110,9 +2126,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		 */
 
 		int status = CB_Core.Api.GroundspeakAPI.GetCacheLimits(Config.GetAccessToken());
-		if (status != 0) MessageBox.Show(CB_Core.Api.GroundspeakAPI.LastAPIError);
+		if (status != 0) GL_MsgBox.Show(CB_Core.Api.GroundspeakAPI.LastAPIError);
 
-		MessageBox.Show("Cache hinzufügen ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
+		GL_MsgBox.Show("Cache hinzufügen ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
 	}
 
 	/*
@@ -2359,11 +2375,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							@Override
 							public void run()
 							{
-								MessageBox.Show(GlobalCore.Translations.Get("GPSon?"), GlobalCore.Translations.Get("GPSoff"),
-										MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener()
+								GL_MsgBox.Show(GlobalCore.Translations.Get("GPSon?"), GlobalCore.Translations.Get("GPSoff"),
+										MessageBoxButtons.YesNo, MessageBoxIcon.Question, new OnMsgBoxClickListener()
 										{
 											@Override
-											public void onClick(DialogInterface dialog, int button)
+											public boolean onClick(int button)
 											{
 												// Behandle das ergebniss
 												switch (button)
@@ -2383,7 +2399,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 													break;
 												}
 
-												dialog.dismiss();
+												return true;
 											}
 
 										});
@@ -2441,11 +2457,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void askToGetApiKey()
 	{
-		MessageBox.Show(GlobalCore.Translations.Get("wantApi"), GlobalCore.Translations.Get("welcome"), MessageBoxButtons.YesNo,
-				MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener()
+		GL_MsgBox.Show(GlobalCore.Translations.Get("wantApi"), GlobalCore.Translations.Get("welcome"), MessageBoxButtons.YesNo,
+				MessageBoxIcon.GC_Live, new OnMsgBoxClickListener()
 				{
 					@Override
-					public void onClick(DialogInterface dialog, int button)
+					public boolean onClick(int button)
 					{
 						// Behandle das ergebniss
 						switch (button)
@@ -2463,7 +2479,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							break;
 						}
 
-						dialog.dismiss();
+						return true;
 					}
 
 				});
@@ -3211,31 +3227,31 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case 2:
 			{
 				waitPD.dismiss();
-				MessageBox.Show(message, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
+				GL_MsgBox.Show(message, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
 						MessageBoxIcon.Powerd_by_GC_Live, null);
 				break;
 			}
 			case 3:
 			{
 				waitPD.dismiss();
-				MessageBox.Show(message, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
+				GL_MsgBox.Show(message, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
 						MessageBoxIcon.Powerd_by_GC_Live, DownloadCacheDialogResult);
 				break;
 			}
 			case 4:
 			{
 				waitPD.dismiss();
-				DownloadCacheDialogResult.onClick(null, -1);
+				DownloadCacheDialogResult.onClick(-1);
 				break;
 			}
 			}
 		}
 	};
 
-	private DialogInterface.OnClickListener DownloadCacheDialogResult = new DialogInterface.OnClickListener()
+	private OnMsgBoxClickListener DownloadCacheDialogResult = new OnMsgBoxClickListener()
 	{
 		@Override
-		public void onClick(DialogInterface dialog, int button)
+		public boolean onClick(int button)
 		{
 			switch (button)
 			{
@@ -3254,13 +3270,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						s += "Downloads left for today: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
 						s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
 
-						MessageBox.Show(s, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
+						GL_MsgBox.Show(s, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
 								MessageBoxIcon.Powerd_by_GC_Live, null);
 					}
 				}
 				break;
 			}
-			if (dialog != null) dialog.dismiss();
+			return true;
 		}
 	};
 

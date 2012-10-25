@@ -13,6 +13,7 @@ import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.CacheListView;
 
@@ -20,13 +21,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowCacheList extends CB_Action_ShowView
 {
-	public final int MI_MANAGE_DB = 1;
-	public final int MI_AUTO_RESORT = 2;
-	public final int MI_RESORT = 3;
-	public final int MI_FilterSet = 4;
-	public final int MI_SEARCH = 5;
-	public final int MI_IMPORT = 6;
-	public final int MI_CHK_STATE_API = 7;
 
 	public CB_Action_ShowCacheList()
 	{
@@ -71,7 +65,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 	{
 		Menu cm = new Menu("CacheListContextMenu");
 
-		cm.setItemClickListner(new OnClickListener()
+		cm.addItemClickListner(new OnClickListener()
 		{
 
 			@Override
@@ -79,19 +73,19 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 			{
 				switch (((MenuItem) v).getMenuItemId())
 				{
-				case MI_RESORT:
+				case MenuID.MI_RESORT:
 					synchronized (Database.Data.Query)
 					{
 						Database.Data.Query.Resort();
 					}
 					return true;
-				case MI_FilterSet:
+				case MenuID.MI_FilterSet:
 
 					EditFilterSettings edFi = new EditFilterSettings(ActivityBase.ActivityRec(), "EditCoord");
 					edFi.show();
 
 					return true;
-				case MI_SEARCH:
+				case MenuID.MI_SEARCH_LIST:
 
 					if (SearchDialog.that == null)
 					{
@@ -101,14 +95,14 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					SearchDialog.that.showNotCloseAutomaticly();
 
 					return true;
-				case MI_IMPORT:
+				case MenuID.MI_IMPORT:
 					Import imp = new Import();
 					imp.show();
 					return true;
-				case MI_MANAGE_DB:
+				case MenuID.MI_MANAGE_DB:
 					TabMainView.actionShowSelectDbDialog.Execute();
 					return true;
-				case MI_AUTO_RESORT:
+				case MenuID.MI_AUTO_RESORT:
 					GlobalCore.autoResort = !(GlobalCore.autoResort);
 					Config.settings.AutoResort.setValue(GlobalCore.autoResort);
 					if (GlobalCore.autoResort)
@@ -119,7 +113,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 						}
 					}
 					return true;
-				case MI_CHK_STATE_API:
+				case MenuID.MI_CHK_STATE_API:
 					new CB_Action_Command_chkState().Execute();
 					// new CB_Action_ShowActivity("chkState", MI_CHK_STATE_API, ViewConst.CHK_STATE_API,
 					// SpriteCache.Icons.get(35)).Execute();
@@ -143,15 +137,15 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		}
 
 		MenuItem mi;
-		cm.addItem(MI_RESORT, "ResortList", SpriteCache.Icons.get(39));
-		cm.addItem(MI_FilterSet, "filter", SpriteCache.Icons.get(13));
-		cm.addItem(MI_SEARCH, "search", SpriteCache.Icons.get(12));
-		cm.addItem(MI_IMPORT, "import", SpriteCache.Icons.get(40));
-		mi = cm.addItem(MI_MANAGE_DB, "manage", "  (" + DBName + ")", SpriteCache.Icons.get(41));
-		mi = cm.addItem(MI_AUTO_RESORT, "AutoResort");
+		cm.addItem(MenuID.MI_RESORT, "ResortList", SpriteCache.Icons.get(39));
+		cm.addItem(MenuID.MI_FilterSet, "filter", SpriteCache.Icons.get(13));
+		cm.addItem(MenuID.MI_SEARCH, "search", SpriteCache.Icons.get(12));
+		cm.addItem(MenuID.MI_IMPORT, "import", SpriteCache.Icons.get(40));
+		mi = cm.addItem(MenuID.MI_MANAGE_DB, "manage", "  (" + DBName + ")", SpriteCache.Icons.get(41));
+		mi = cm.addItem(MenuID.MI_AUTO_RESORT, "AutoResort");
 		mi.setCheckable(true);
 		mi.setChecked(GlobalCore.autoResort);
-		cm.addItem(MI_CHK_STATE_API, "chkState", SpriteCache.Icons.get(35));
+		cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", SpriteCache.Icons.get(35));
 
 		return cm;
 	}

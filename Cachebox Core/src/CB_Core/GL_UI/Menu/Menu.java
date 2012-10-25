@@ -49,7 +49,13 @@ public class Menu extends Dialog
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
 			GL.that.closeDialog(that);
-			if (mOnItemClickListner != null) mOnItemClickListner.onClick(v, x, y, pointer, button);
+			if (mOnItemClickListner != null)
+			{
+				for (OnClickListener tmp : mOnItemClickListner)
+				{
+					if (tmp.onClick(v, x, y, pointer, button)) break;
+				}
+			}
 
 			return true;
 		}
@@ -260,14 +266,21 @@ public class Menu extends Dialog
 		return item;
 	}
 
-	private OnClickListener mOnItemClickListner;
+	private ArrayList<OnClickListener> mOnItemClickListner;
 
-	public void setItemClickListner(OnClickListener onItemClickListner)
+	public void addItemClickListner(OnClickListener onItemClickListner)
 	{
-		this.mOnItemClickListner = onItemClickListner;
+		if (this.mOnItemClickListner == null) this.mOnItemClickListner = new ArrayList<GL_View_Base.OnClickListener>();
+		this.mOnItemClickListner.add(onItemClickListner);
 	}
 
-	public OnClickListener getItemClickListner()
+	public void addItemClickListner(ArrayList<OnClickListener> onItemClickListner)
+	{
+		if (this.mOnItemClickListner == null) this.mOnItemClickListner = new ArrayList<GL_View_Base.OnClickListener>();
+		this.mOnItemClickListner.addAll(onItemClickListner);
+	}
+
+	public ArrayList<OnClickListener> getItemClickListner()
 	{
 		return this.mOnItemClickListner;
 	}

@@ -8,6 +8,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
 import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.FieldNotesView;
 
@@ -33,15 +34,12 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 		return SpriteCache.Icons.get(54);
 	}
 
-	private final int MI_FOUND = 0;
-	private final int MI_NOT_FOUND = 1;
-
 	@Override
 	public void Execute()
 	{
 		Menu cm = new Menu("QuickFieldNote");
 
-		cm.setItemClickListner(new OnClickListener()
+		cm.addItemClickListner(new OnClickListener()
 		{
 
 			@Override
@@ -49,7 +47,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 			{
 				switch (((MenuItem) v).getMenuItemId())
 				{
-				case MI_FOUND:
+				case MenuID.MI_QUICK_FOUND:
 					FieldNotesView.addNewFieldnote(1, true);
 					if (FieldNotesView.that != null) FieldNotesView.that.notifyDataSetChanged();
 					CachListChangedEventList.Call(); // damit der Status geändert wird
@@ -57,7 +55,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 					pop.show(PopUp_Base.SHOW_TIME_SHORT);
 					platformConector.vibrate();
 					return true;
-				case MI_NOT_FOUND:
+				case MenuID.MI_QUICK_NOT_FOUND:
 					FieldNotesView.addNewFieldnote(2, true);
 					if (FieldNotesView.that != null) FieldNotesView.that.notifyDataSetChanged();
 					CachListChangedEventList.Call(); // damit der Status geändert wird
@@ -70,8 +68,8 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 			}
 		});
 
-		cm.addItem(MI_FOUND, "found", SpriteCache.getThemedSprite("log0icon"));
-		cm.addItem(MI_NOT_FOUND, "DNF", SpriteCache.getThemedSprite("log1icon"));
+		cm.addItem(MenuID.MI_QUICK_FOUND, "found", SpriteCache.getThemedSprite("log0icon"));
+		cm.addItem(MenuID.MI_QUICK_NOT_FOUND, "DNF", SpriteCache.getThemedSprite("log1icon"));
 
 		cm.show();
 

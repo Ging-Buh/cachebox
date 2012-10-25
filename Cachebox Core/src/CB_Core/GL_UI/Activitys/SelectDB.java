@@ -24,6 +24,7 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
@@ -461,13 +462,6 @@ public class SelectDB extends ActivityBase
 		public void back();
 	}
 
-	private final int MI_START_WITHOUT_SELECTION = 0;
-	private final int MI_AUTO_START_DISABLED = 1;
-	private final int MI_5 = 2;
-	private final int MI_10 = 3;
-	private final int MI_25 = 4;
-	private final int MI_60 = 5;
-
 	Timer updateTimer;
 
 	private void showSelectionMenu()
@@ -482,7 +476,7 @@ public class SelectDB extends ActivityBase
 
 		Menu cm = new Menu("MiscContextMenu");
 
-		cm.setItemClickListner(new OnClickListener()
+		cm.addItemClickListner(new OnClickListener()
 		{
 
 			@Override
@@ -491,27 +485,27 @@ public class SelectDB extends ActivityBase
 
 				switch (((MenuItem) v).getMenuItemId())
 				{
-				case MI_START_WITHOUT_SELECTION:
+				case MenuID.MI_START_WITHOUT_SELECTION:
 					autoStartTime = -1;
 					setAutoStartText();
 					break;
-				case MI_AUTO_START_DISABLED:
+				case MenuID.MI_AUTO_START_DISABLED:
 					autoStartTime = 0;
 					setAutoStartText();
 					break;
-				case MI_5:
+				case MenuID.MI_5:
 					autoStartTime = 5;
 					setAutoStartText();
 					break;
-				case MI_10:
+				case MenuID.MI_10:
 					autoStartTime = 10;
 					setAutoStartText();
 					break;
-				case MI_25:
+				case MenuID.MI_25:
 					autoStartTime = 25;
 					setAutoStartText();
 					break;
-				case MI_60:
+				case MenuID.MI_60:
 					autoStartTime = 60;
 					setAutoStartText();
 					break;
@@ -522,12 +516,12 @@ public class SelectDB extends ActivityBase
 			}
 		});
 
-		cm.addItem(MI_START_WITHOUT_SELECTION, cs[0], true);
-		cm.addItem(MI_AUTO_START_DISABLED, cs[1], true);
-		cm.addItem(MI_5, cs[2], true);
-		cm.addItem(MI_10, cs[3], true);
-		cm.addItem(MI_25, cs[4], true);
-		cm.addItem(MI_60, cs[5], true);
+		cm.addItem(MenuID.MI_START_WITHOUT_SELECTION, cs[0], true);
+		cm.addItem(MenuID.MI_AUTO_START_DISABLED, cs[1], true);
+		cm.addItem(MenuID.MI_5, cs[2], true);
+		cm.addItem(MenuID.MI_10, cs[3], true);
+		cm.addItem(MenuID.MI_25, cs[4], true);
+		cm.addItem(MenuID.MI_60, cs[5], true);
 
 		cm.show();
 	}

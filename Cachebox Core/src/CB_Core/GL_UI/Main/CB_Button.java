@@ -153,7 +153,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 	{
 		Menu cm = new Menu("Name");
 
-		cm.setItemClickListner(new OnClickListener()
+		cm.addItemClickListner(new OnClickListener()
 		{
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
@@ -212,7 +212,6 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 							// das View Context Menü mit dem LongKlick Menü zusammen führen!
 
 							Menu viewContextMenu = aktActionView.getContextMenu();
-							OnClickListener viewContextClickListner = viewContextMenu.getItemClickListner();
 
 							// Menu zusammen stellen!
 							// zuerst das View Context Menu
@@ -220,12 +219,14 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 
 							compoundMenu.addItems(viewContextMenu.getItems());
 
-							if (viewContextClickListner != null) compoundMenu.setItemClickListner(viewContextClickListner);
+							compoundMenu.addItemClickListner(viewContextMenu.getItemClickListner());
 
 							// add divider
 							compoundMenu.addDivider();
 
-							compoundMenu.addItems(getLongClickMenu().getItems());
+							Menu LongClickMenu = getLongClickMenu();
+							compoundMenu.addItems(LongClickMenu.getItems());
+							compoundMenu.addItemClickListner(LongClickMenu.getItemClickListner());
 
 							compoundMenu.reorganizeIndexes();
 

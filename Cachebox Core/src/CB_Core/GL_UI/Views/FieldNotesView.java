@@ -26,6 +26,7 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Core.Math.CB_RectF;
@@ -172,22 +173,11 @@ public class FieldNotesView extends V_ListView
 		}
 	}
 
-	private static final int MI_FOUND = 0;
-	private static final int MI_NOT_FOUND = 1;
-	private static final int MI_MAINTANCE = 2;
-	private static final int MI_NOTE = 3;
-	private static final int MI_MANAGE = 4;
-	private static final int MI_UPLOAD_FIELDNOTE = 5;
-	private static final int MI_DELETE_ALL_FIELDNOTES = 6;
-	private static final int MI_DELETE_FIELDNOTE = 7;
-	private static final int MI_EDIT_FIELDNOTE = 8;
-	private static final int MI_SELECT_CACHE = 9;
-
 	public Menu getContextMenu()
 	{
 		Menu cm = new Menu("CacheListContextMenu");
 
-		cm.setItemClickListner(new OnClickListener()
+		cm.addItemClickListner(new OnClickListener()
 		{
 
 			@Override
@@ -195,20 +185,20 @@ public class FieldNotesView extends V_ListView
 			{
 				switch (((MenuItem) v).getMenuItemId())
 				{
-				case MI_FOUND:
+				case MenuID.MI_FOUND:
 					addNewFieldnote(1);
 					return true;
-				case MI_NOT_FOUND:
+				case MenuID.MI_NOT_FOUND:
 					addNewFieldnote(2);
 					return true;
-				case MI_MAINTANCE:
+				case MenuID.MI_MAINTANCE:
 					addNewFieldnote(3);
 					return true;
-				case MI_NOTE:
+				case MenuID.MI_NOTE:
 					addNewFieldnote(4);
 					return true;
 
-				case MI_MANAGE:
+				case MenuID.MI_MANAGE:
 					manageFieldNote();
 					return true;
 				}
@@ -216,11 +206,11 @@ public class FieldNotesView extends V_ListView
 			}
 		});
 
-		cm.addItem(MI_FOUND, "found", SpriteCache.getThemedSprite("log0icon"));
-		cm.addItem(MI_NOT_FOUND, "DNF", SpriteCache.getThemedSprite("log1icon"));
-		cm.addItem(MI_MAINTANCE, "maintenance", SpriteCache.getThemedSprite("log5icon"));
-		cm.addItem(MI_NOTE, "writenote", SpriteCache.getThemedSprite("log2icon"));
-		cm.addItem(MI_MANAGE, "ManageNotes");
+		cm.addItem(MenuID.MI_FOUND, "found", SpriteCache.getThemedSprite("log0icon"));
+		cm.addItem(MenuID.MI_NOT_FOUND, "DNF", SpriteCache.getThemedSprite("log1icon"));
+		cm.addItem(MenuID.MI_MAINTANCE, "maintenance", SpriteCache.getThemedSprite("log5icon"));
+		cm.addItem(MenuID.MI_NOTE, "writenote", SpriteCache.getThemedSprite("log2icon"));
+		cm.addItem(MenuID.MI_MANAGE, "ManageNotes");
 
 		return cm;
 
@@ -230,7 +220,7 @@ public class FieldNotesView extends V_ListView
 	{
 		Menu cm = new Menu("CacheListContextMenu");
 
-		cm.setItemClickListner(new OnClickListener()
+		cm.addItemClickListner(new OnClickListener()
 		{
 
 			@Override
@@ -238,10 +228,10 @@ public class FieldNotesView extends V_ListView
 			{
 				switch (((MenuItem) v).getMenuItemId())
 				{
-				case MI_UPLOAD_FIELDNOTE:
+				case MenuID.MI_UPLOAD_FIELDNOTE:
 					UploadFieldnotes();
 					return true;
-				case MI_DELETE_ALL_FIELDNOTES:
+				case MenuID.MI_DELETE_ALL_FIELDNOTES:
 					deleteAllFieldNote();
 					return true;
 				}
@@ -249,8 +239,8 @@ public class FieldNotesView extends V_ListView
 			}
 		});
 
-		cm.addItem(MI_UPLOAD_FIELDNOTE, "uploadFieldNotes", SpriteCache.Icons.get(35));
-		cm.addItem(MI_DELETE_ALL_FIELDNOTES, "DeleteAllNotes", SpriteCache.getThemedSprite("delete"));
+		cm.addItem(MenuID.MI_UPLOAD_FIELDNOTE, "uploadFieldNotes", SpriteCache.Icons.get(35));
+		cm.addItem(MenuID.MI_DELETE_ALL_FIELDNOTES, "DeleteAllNotes", SpriteCache.getThemedSprite("delete"));
 
 		cm.show();
 
@@ -839,7 +829,7 @@ public class FieldNotesView extends V_ListView
 
 			Menu cm = new Menu("CacheListContextMenu");
 
-			cm.setItemClickListner(new OnClickListener()
+			cm.addItemClickListner(new OnClickListener()
 			{
 
 				@Override
@@ -847,13 +837,13 @@ public class FieldNotesView extends V_ListView
 				{
 					switch (((MenuItem) v).getMenuItemId())
 					{
-					case MI_SELECT_CACHE:
+					case MenuID.MI_SELECT_CACHE:
 						selectCacheFromFieldNote();
 						return true;
-					case MI_EDIT_FIELDNOTE:
+					case MenuID.MI_EDIT_FIELDNOTE:
 						editFieldNote();
 						return true;
-					case MI_DELETE_FIELDNOTE:
+					case MenuID.MI_DELETE_FIELDNOTE:
 						deleteFieldNote();
 						return true;
 
@@ -862,9 +852,9 @@ public class FieldNotesView extends V_ListView
 				}
 			});
 
-			cm.addItem(MI_SELECT_CACHE, "SelectCache");
-			cm.addItem(MI_EDIT_FIELDNOTE, "edit");
-			cm.addItem(MI_DELETE_FIELDNOTE, "delete");
+			cm.addItem(MenuID.MI_SELECT_CACHE, "SelectCache");
+			cm.addItem(MenuID.MI_EDIT_FIELDNOTE, "edit");
+			cm.addItem(MenuID.MI_DELETE_FIELDNOTE, "delete");
 
 			cm.show();
 			return true;

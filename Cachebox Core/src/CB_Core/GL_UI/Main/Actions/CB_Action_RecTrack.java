@@ -5,6 +5,7 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -37,15 +38,11 @@ public class CB_Action_RecTrack extends CB_ActionCommand
 		// new CB_Action_ShowActivity("DayNight", CB_Action.AID_DAY_NIGHT, ViewConst.DAY_NIGHT, SpriteCache.Icons.get(48)).Execute();
 	}
 
-	private static final int START = 1;
-	private static final int PAUSE = 2;
-	private static final int STOP = 3;
-
 	private void showMenuTrackRecording()
 	{
 		MenuItem mi;
 		Menu cm2 = new Menu("TrackRecordContextMenu");
-		cm2.setItemClickListner(new OnClickListener()
+		cm2.addItemClickListner(new OnClickListener()
 		{
 
 			@Override
@@ -53,29 +50,29 @@ public class CB_Action_RecTrack extends CB_ActionCommand
 			{
 				switch (((MenuItem) v).getMenuItemId())
 				{
-				case START:
+				case MenuID.MI_START:
 					TrackRecorder.StartRecording();
 					return true;
-				case PAUSE:
+				case MenuID.MI_PAUSE:
 					TrackRecorder.PauseRecording();
 					return true;
-				case STOP:
+				case MenuID.MI_STOP:
 					TrackRecorder.StopRecording();
 					return true;
 				}
 				return false;
 			}
 		});
-		mi = cm2.addItem(START, "start");
+		mi = cm2.addItem(MenuID.MI_START, "start");
 		mi.setEnabled(!TrackRecorder.recording);
 
-		if (TrackRecorder.pauseRecording) mi = cm2.addItem(PAUSE, "continue");
+		if (TrackRecorder.pauseRecording) mi = cm2.addItem(MenuID.MI_PAUSE, "continue");
 		else
-			mi = cm2.addItem(PAUSE, "pause");
+			mi = cm2.addItem(MenuID.MI_PAUSE, "pause");
 
 		mi.setEnabled(TrackRecorder.recording);
 
-		mi = cm2.addItem(STOP, "stop");
+		mi = cm2.addItem(MenuID.MI_STOP, "stop");
 		mi.setEnabled(TrackRecorder.recording | TrackRecorder.pauseRecording);
 
 		cm2.show();

@@ -93,7 +93,7 @@ public class SettingsItem_QuickButton extends CB_View_Base
 		}
 
 		Menu icm = new Menu("Select QuickButtonItem");
-		icm.setItemClickListner(new OnClickListener()
+		icm.addItemClickListner(new OnClickListener()
 		{
 
 			@Override

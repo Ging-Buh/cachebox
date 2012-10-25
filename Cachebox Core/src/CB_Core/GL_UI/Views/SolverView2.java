@@ -24,6 +24,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
@@ -160,12 +161,6 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		}
 	};
 
-	public final int MI_CHANGE_LINE = 2;
-	public final int MI_DELETE_LINE = 3;
-	public final int MI_INSERT_LINE = 4;
-	public final int MI_SET_AS_WAYPOINT = 5;
-	public final int MI_SET_AS_MAPCENTER = 6;
-
 	private OnLongClickListener onItemLongClickListner = new OnLongClickListener()
 	{
 
@@ -175,47 +170,54 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			int selectionIndex = ((ListViewItemBase) v).getIndex();
 			setSelection(selectionIndex);
 
-			Menu cm = new Menu("SolverViewItemContextMenu");
-
-			cm.setItemClickListner(new OnClickListener()
-			{
-
-				@Override
-				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-				{
-					switch (((MenuItem) v).getMenuItemId())
-					{
-					case MI_CHANGE_LINE:
-						TabMainView.solverView2.ChangeLine();
-						return true;
-					case MI_INSERT_LINE:
-						TabMainView.solverView2.InsertLine();
-						return true;
-					case MI_DELETE_LINE:
-						TabMainView.solverView2.DeleteLine();
-						return true;
-					case MI_SET_AS_WAYPOINT:
-						TabMainView.solverView2.SetAsWaypoint();
-						break;
-					case MI_SET_AS_MAPCENTER:
-						TabMainView.solverView2.SetAsMapCenter();
-						break;
-					}
-					return false;
-				}
-			});
-
-			MenuItem mi;
-			cm.addItem(MI_CHANGE_LINE, "editLine");
-			cm.addItem(MI_INSERT_LINE, "addLine");
-			cm.addItem(MI_DELETE_LINE, "delLine");
-			cm.addItem(MI_SET_AS_WAYPOINT, "addWaypoint");
-			cm.addItem(MI_SET_AS_MAPCENTER, "setMapCenter");
+			Menu cm = getContextMenu();
 			cm.show();
 
 			return true;
 		}
+
 	};
+
+	public Menu getContextMenu()
+	{
+		Menu cm = new Menu("SolverViewItemContextMenu");
+
+		cm.addItemClickListner(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				switch (((MenuItem) v).getMenuItemId())
+				{
+				case MenuID.MI_CHANGE_LINE:
+					TabMainView.solverView2.ChangeLine();
+					return true;
+				case MenuID.MI_INSERT_LINE:
+					TabMainView.solverView2.InsertLine();
+					return true;
+				case MenuID.MI_DELETE_LINE:
+					TabMainView.solverView2.DeleteLine();
+					return true;
+				case MenuID.MI_SET_AS_WAYPOINT:
+					TabMainView.solverView2.SetAsWaypoint();
+					break;
+				case MenuID.MI_SET_AS_MAPCENTER:
+					TabMainView.solverView2.SetAsMapCenter();
+					break;
+				}
+				return false;
+			}
+		});
+
+		MenuItem mi;
+		cm.addItem(MenuID.MI_CHANGE_LINE, "editLine");
+		cm.addItem(MenuID.MI_INSERT_LINE, "addLine");
+		cm.addItem(MenuID.MI_DELETE_LINE, "delLine");
+		cm.addItem(MenuID.MI_SET_AS_WAYPOINT, "addWaypoint");
+		cm.addItem(MenuID.MI_SET_AS_MAPCENTER, "setMapCenter");
+		return cm;
+	}
 
 	public class CustomAdapter implements Adapter
 	{
