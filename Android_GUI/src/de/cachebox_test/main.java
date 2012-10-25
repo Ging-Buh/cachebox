@@ -178,6 +178,7 @@ import de.cachebox_test.Views.SpoilerView;
 import de.cachebox_test.Views.TrackableListView;
 import de.cachebox_test.Views.ViewGL;
 import de.cachebox_test.Views.Forms.GcApiLogin;
+import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
@@ -357,8 +358,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			// restore ACB after Kill
 			Logger.DEBUG("restore ACB after Kill");
-
-			GL.that.resetIsInitial();
 
 			GlobalCore.restartAfterKill = true;
 			GlobalCore.isTab = savedInstanceState.getBoolean("isTab");
@@ -557,7 +556,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					e1.printStackTrace();
 				}
 
-				GL_MsgBox.Show(Welcome, GlobalCore.Translations.Get("welcome"), MessageBoxIcon.None);
+				MessageBox.Show(Welcome, GlobalCore.Translations.Get("welcome"), MessageBoxIcon.None);
 
 			}
 
