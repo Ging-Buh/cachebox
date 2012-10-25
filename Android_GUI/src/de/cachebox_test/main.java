@@ -81,6 +81,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -2374,11 +2375,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							@Override
 							public void run()
 							{
-								GL_MsgBox.Show(GlobalCore.Translations.Get("GPSon?"), GlobalCore.Translations.Get("GPSoff"),
-										MessageBoxButtons.YesNo, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+								MessageBox.Show(GlobalCore.Translations.Get("GPSon?"), GlobalCore.Translations.Get("GPSoff"),
+										MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener()
 										{
 											@Override
-											public boolean onClick(int button)
+											public void onClick(DialogInterface dialog, int button)
 											{
 												// Behandle das ergebniss
 												switch (button)
@@ -2398,7 +2399,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 													break;
 												}
 
-												return true;
+												dialog.dismiss();
 											}
 
 										});
@@ -2456,18 +2457,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void askToGetApiKey()
 	{
-		GL_MsgBox.Show(GlobalCore.Translations.Get("wantApi"), GlobalCore.Translations.Get("welcome"), MessageBoxButtons.YesNo,
-				MessageBoxIcon.GC_Live, new OnMsgBoxClickListener()
+		MessageBox.Show(GlobalCore.Translations.Get("wantApi"), GlobalCore.Translations.Get("welcome"), MessageBoxButtons.YesNo,
+				MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener()
 				{
 					@Override
-					public boolean onClick(int button)
+					public void onClick(DialogInterface dialog, int button)
 					{
 						// Behandle das ergebniss
 						switch (button)
 						{
 						case -1:
 							// yes get Api key
-							// (new GcApiLogin()).RunRequest();
+							GetApiAuth();
 							break;
 						case -2:
 							// no, we check GPS
@@ -2478,7 +2479,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							break;
 						}
 
-						return true;
+						dialog.dismiss();
 					}
 
 				});
