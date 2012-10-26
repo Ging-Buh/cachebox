@@ -22,7 +22,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 	public CB_Action_ShowMap()
 	{
-		super("Map", AID_SHOW_MAP);
+		super("Map", MenuID.AID_SHOW_MAP);
 	}
 
 	@Override
@@ -125,6 +125,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		mi.setCheckable(true);
 		mi.setChecked(MapView.that.hideMyFinds);
 
+		mi = icm.addItem(MenuID.MI_SHOW_ALL_WAYPOINTS, "ShowAllWaypoints");
+		mi.setCheckable(true);
+		mi.setChecked(MapView.that.showAllWaypoints);
+
 		mi = icm.addItem(MenuID.MI_SHOW_RATINGS, "ShowRatings");
 		mi.setCheckable(true);
 		mi.setChecked(MapView.that.showRating);
@@ -167,6 +171,12 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 			case MenuID.MI_HIDE_FINDS:
 				MapView.that.hideMyFinds = !MapView.that.hideMyFinds;
+				MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+				return true;
+
+			case MenuID.MI_SHOW_ALL_WAYPOINTS:
+				MapView.that.showAllWaypoints = !MapView.that.showAllWaypoints;
+				MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
 				return true;
 
 			case MenuID.MI_SHOW_RATINGS:

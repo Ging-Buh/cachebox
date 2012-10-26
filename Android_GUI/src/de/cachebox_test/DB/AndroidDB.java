@@ -174,7 +174,7 @@ public class AndroidDB extends Database
 	@Override
 	public void Close()
 	{
-		myDB.close();
+		if (myDB != null) myDB.close();
 		myDB = null;
 	}
 

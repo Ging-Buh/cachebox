@@ -11,6 +11,7 @@ import CB_Core.GL_UI.Activitys.SelectDB;
 import CB_Core.GL_UI.Activitys.SelectDB.ReturnListner;
 import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Types.Cache;
@@ -23,7 +24,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 
 	public CB_Action_Show_SelectDB_Dialog()
 	{
-		super("manageDB", AID_SHOW_SELECT_DB_DIALOG);
+		super("manageDB", MenuID.AID_SHOW_SELECT_DB_DIALOG);
 	}
 
 	@Override

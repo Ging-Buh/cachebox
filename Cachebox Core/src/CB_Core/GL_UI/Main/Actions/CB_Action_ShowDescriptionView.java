@@ -28,7 +28,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 
 	public CB_Action_ShowDescriptionView()
 	{
-		super("Description", AID_SHOW_DESCRIPTION);
+		super("Description", MenuID.AID_SHOW_DESCRIPTION);
 	}
 
 	@Override

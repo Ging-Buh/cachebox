@@ -7,53 +7,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class CB_Action
 {
 
-	public static int AID_TEST_VIEW = -1;
-	public static int AID_TEST2 = -2;
-
-	public static int AID_SHOW_MAP = 0;
-	public static int AID_SHOW_HINT = 1;
-	public static int AID_SHOW_CACHELIST = 2;
-	public static int AID_SHOW_CACHELIST_CONTEXT_MENU = 3;
-	public static int AID_SHOW_COMPASS = 3;
-	public static int AID_SHOW_CREDITS = 4;
-	public static int AID_SHOW_DESCRIPTION = 5;
-	public static int AID_SHOW_FIELDNOTES = 6;
-	public static int AID_SHOW_JOKERS = 7;
-	public static int AID_SHOW_LOGS = 8;
-	public static int AID_SHOW_NOTES = 9;
-	public static int AID_SHOW_SOLVER = 10;
-	public static int AID_SHOW_SPOILER = 11;
-	public static int AID_SHOW_TRACKABLELIST = 12;
-	public static int AID_SHOW_TRACKLIST = 13;
-	public static int AID_SHOW_WAYPOINTS = 14;
-	public static int AID_SHOW_SETTINGS = 15;
-	public static int AID_TRACKLIST_CREATE = 16;
-	public static int AID_TRACKLIST_LOAD = 17;
-	public static int AID_TRACKLIST_DELETE = 18;
-	public static int AID_SHOW_FILTER_SETTINGS = 19;
-	public static int AID_NAVIGATE_TO = 20;
-	public static int AID_TRACK_REC = 21;
-	public static int AID_VOICE_REC = 22;
-	public static int AID_TAKE_PHOTO = 23;
-	public static int AID_VIDEO_REC = 24;
-	public static int AID_DELETE_CACHES = 25;
-	public static int AID_PARKING = 26;
-	public static int AID_DAY_NIGHT = 27;
-	public static int AID_LOCK = 28;
-	public static int AID_QUIT = 29;
-	public static int AID_SHOW_ABOUT = 30;
-	public static int AID_SHOW_SOLVER2 = 31;
-	public static int AID_SEARCH = 32;
-	public static int AID_AUTO_RESORT = 33;
-	public static int AID_SHOW_SELECT_DB_DIALOG = 34;
-	public static int AID_SHOW_TRACK_MENU = 35;
-	public static int AID_SHOW_QUIT = 36;
-	public static int AID_QUICK_FIELDNOTE = 37;
-	public static int AID_CHK_STATE = 38;
-	public static int AID_GENERATE_ROUTE = 39;
-	public static int AID_SHOW_PARKING_DIALOG = 40;
-	public static int AID_SHOW_DELETE_DIALOG = 41;
-
 	protected String name;
 	protected int id;
 	protected String nameExtention = "";

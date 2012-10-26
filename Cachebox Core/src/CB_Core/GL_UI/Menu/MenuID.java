@@ -113,4 +113,55 @@ public class MenuID
 	public static final int MI_ROTATE = 79;
 	public static final int MI_CENTER_WP = 80;
 
+	public static final int MI_SHOW_ALL_WAYPOINTS = 81;
+
+	// Action ID´s
+
+	public static int AID_TEST_VIEW = -1;
+	public static int AID_TEST2 = -2;
+
+	public static int AID_SHOW_MAP = 100;
+	public static int AID_SHOW_HINT = 101;
+	public static int AID_SHOW_CACHELIST = 102;
+	public static int AID_SHOW_CACHELIST_CONTEXT_MENU = 103;
+	public static int AID_SHOW_COMPASS = 103;
+	public static int AID_SHOW_CREDITS = 104;
+	public static int AID_SHOW_DESCRIPTION = 105;
+	public static int AID_SHOW_FIELDNOTES = 106;
+	public static int AID_SHOW_JOKERS = 107;
+	public static int AID_SHOW_LOGS = 108;
+	public static int AID_SHOW_NOTES = 109;
+	public static int AID_SHOW_SOLVER = 110;
+	public static int AID_SHOW_SPOILER = 111;
+	public static int AID_SHOW_TRACKABLELIST = 112;
+	public static int AID_SHOW_TRACKLIST = 113;
+	public static int AID_SHOW_WAYPOINTS = 114;
+	public static int AID_SHOW_SETTINGS = 115;
+	public static int AID_TRACKLIST_CREATE = 116;
+	public static int AID_TRACKLIST_LOAD = 117;
+	public static int AID_TRACKLIST_DELETE = 118;
+	public static int AID_SHOW_FILTER_SETTINGS = 119;
+	public static int AID_NAVIGATE_TO = 120;
+	public static int AID_TRACK_REC = 121;
+	public static int AID_VOICE_REC = 122;
+	public static int AID_TAKE_PHOTO = 123;
+	public static int AID_VIDEO_REC = 124;
+	public static int AID_DELETE_CACHES = 125;
+	public static int AID_PARKING = 126;
+	public static int AID_DAY_NIGHT = 127;
+	public static int AID_LOCK = 128;
+	public static int AID_QUIT = 129;
+	public static int AID_SHOW_ABOUT = 130;
+	public static int AID_SHOW_SOLVER2 = 131;
+	public static int AID_SEARCH = 132;
+	public static int AID_AUTO_RESORT = 133;
+	public static int AID_SHOW_SELECT_DB_DIALOG = 134;
+	public static int AID_SHOW_TRACK_MENU = 135;
+	public static int AID_SHOW_QUIT = 136;
+	public static int AID_QUICK_FIELDNOTE = 137;
+	public static int AID_CHK_STATE = 138;
+	public static int AID_GENERATE_ROUTE = 139;
+	public static int AID_SHOW_PARKING_DIALOG = 140;
+	public static int AID_SHOW_DELETE_DIALOG = 141;
+
 }

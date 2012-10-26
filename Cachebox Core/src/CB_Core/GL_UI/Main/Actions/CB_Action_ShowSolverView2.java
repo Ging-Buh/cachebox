@@ -4,6 +4,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Views.SolverView2;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -13,7 +14,7 @@ public class CB_Action_ShowSolverView2 extends CB_Action_ShowView
 
 	public CB_Action_ShowSolverView2()
 	{
-		super("Solver v2", AID_SHOW_SOLVER2);
+		super("Solver v2", MenuID.AID_SHOW_SOLVER2);
 	}
 
 	@Override

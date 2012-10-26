@@ -132,6 +132,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	{
 		PositionChangedEventList.Add(this);
 		if (map != null) map.onShow();
+
+		PositionChanged(null); // PositionChanged() use only last valid positions
 	}
 
 	@Override

@@ -18,7 +18,6 @@ import CB_Core.GL_UI.Controls.Slider;
 import CB_Core.GL_UI.Controls.Dialogs.Toast;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.CB_ActionButton.GestureDirection;
-import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_Action_GenerateRoute;
 import CB_Core.GL_UI.Main.Actions.CB_Action_QuickFieldNote;
 import CB_Core.GL_UI.Main.Actions.CB_Action_RecTrack;
@@ -46,6 +45,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_Show_Parking_Dialog;
 import CB_Core.GL_UI.Main.Actions.CB_Action_Show_SelectDB_Dialog;
 import CB_Core.GL_UI.Main.Actions.CB_Action_Show_Settings;
 import CB_Core.GL_UI.Main.Actions.CB_Action_switch_DayNight;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Views.AboutView;
 import CB_Core.GL_UI.Views.CacheListView;
 import CB_Core.GL_UI.Views.CompassView;
@@ -180,17 +180,16 @@ public class TabMainView extends MainViewBase
 		actionTestView = new CB_Action_ShowTestView();
 		actionShowSettings = new CB_Action_Show_Settings();
 
-		actionNavigateTo1 = actionNavigateTo2 = new CB_Action_ShowActivity("NavigateTo", CB_Action.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO,
+		actionNavigateTo1 = actionNavigateTo2 = new CB_Action_ShowActivity("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO,
 				SpriteCache.Icons.get(46));
 
 		actionRecTrack = new CB_Action_RecTrack();
-		actionRecVoice = new CB_Action_ShowActivity("VoiceRec", CB_Action.AID_VOICE_REC, ViewConst.VOICE_REC, SpriteCache.Icons.get(11));
-		actionRecPicture = new CB_Action_ShowActivity("TakePhoto", CB_Action.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO,
-				SpriteCache.Icons.get(47));
-		actionRecVideo = new CB_Action_ShowActivity("RecVideo", CB_Action.AID_VIDEO_REC, ViewConst.VIDEO_REC, SpriteCache.Icons.get(10));
+		actionRecVoice = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, SpriteCache.Icons.get(11));
+		actionRecPicture = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, SpriteCache.Icons.get(47));
+		actionRecVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, SpriteCache.Icons.get(10));
 
 		actionDayNight = new CB_Action_switch_DayNight();
-		actionScreenLock = new CB_Action_ShowActivity("screenlock", CB_Action.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
+		actionScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
 
 		if (GlobalCore.isTab) addTabletTabs();
 		else

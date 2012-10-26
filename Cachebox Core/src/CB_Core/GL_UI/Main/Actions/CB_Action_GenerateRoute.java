@@ -34,6 +34,7 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Views.TrackListView;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
@@ -50,7 +51,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 
 	public CB_Action_GenerateRoute()
 	{
-		super("GenerateRoute", AID_GENERATE_ROUTE);
+		super("GenerateRoute", MenuID.AID_GENERATE_ROUTE);
 	}
 
 	@Override

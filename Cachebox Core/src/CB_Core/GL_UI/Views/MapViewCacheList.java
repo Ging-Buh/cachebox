@@ -3,7 +3,6 @@ package CB_Core.GL_UI.Views;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
@@ -37,6 +36,7 @@ public class MapViewCacheList
 	public ArrayList<WaypointRenderInfo> tmplist;
 	public int anz = 0;
 	private boolean hideMyFinds = false;
+	private boolean showAllWaypoints = false;
 
 	// public ArrayList<ArrayList<Sprite>> NewMapIcons = null;
 	// public ArrayList<ArrayList<Sprite>> NewMapOverlay = null;
@@ -47,7 +47,7 @@ public class MapViewCacheList
 		this.maxZoomLevel = maxZoomLevel;
 
 		StartQueueProcessor();
-		hideMyFinds = Config.settings.MapHideMyFinds.getValue();
+
 	}
 
 	private void StartQueueProcessor()
@@ -106,7 +106,7 @@ public class MapViewCacheList
 									// Wenn ein Mystery-Cache einen Final-Waypoint hat,
 									// werden die Koordinaten des Caches nicht gezeichnet,
 									// sondern der Final-Waypoint wird später aus der Query MysterySolutions gezeichnet.
-									if (Config.settings.ShowWaypoints.getValue() || GlobalCore.SelectedCache() == cache)
+									if (showAllWaypoints || GlobalCore.SelectedCache() == cache)
 									{
 										addWaypoints(cache, true); // Parking , Referencepoints, ...?
 									}
@@ -114,7 +114,7 @@ public class MapViewCacheList
 								}
 								else
 								{
-									if (Config.settings.ShowWaypoints.getValue() || GlobalCore.SelectedCache() == cache)
+									if (showAllWaypoints || GlobalCore.SelectedCache() == cache)
 									{
 										addWaypoints(cache);
 									}
@@ -329,6 +329,8 @@ public class MapViewCacheList
 							// es steht noch eine Anfrage an!
 							// Diese jetzt ausführen!
 							MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(savedQuery);
+							data.hideMyFinds = MapViewCacheList.this.hideMyFinds;
+							data.showAllWaypoints = MapViewCacheList.this.showAllWaypoints;
 							savedQuery = null;
 							update(data);
 						}
@@ -419,6 +421,8 @@ public class MapViewCacheList
 		public Vector2 point2;
 		public int zoom;
 		public boolean doNotCheck;
+		public boolean hideMyFinds = false;
+		public boolean showAllWaypoints = false;
 
 		public MapViewCacheListUpdateData(Vector2 point1, Vector2 point2, int zoom, boolean doNotCheck)
 		{
@@ -442,9 +446,8 @@ public class MapViewCacheList
 	public void update(MapViewCacheListUpdateData data)
 	{
 
-		// this.point1 = data.point1;
-		// this.point2 = data.point2;
-		// this.zoom = data.zoom;
+		this.showAllWaypoints = data.showAllWaypoints;
+		this.hideMyFinds = data.hideMyFinds;
 
 		if (data.point1 == null || data.point2 == null) return;
 

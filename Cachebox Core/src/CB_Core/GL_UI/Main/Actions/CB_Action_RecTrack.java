@@ -15,7 +15,7 @@ public class CB_Action_RecTrack extends CB_ActionCommand
 
 	public CB_Action_RecTrack()
 	{
-		super("RecTrack", AID_SHOW_TRACK_MENU);
+		super("RecTrack", MenuID.AID_SHOW_TRACK_MENU);
 	}
 
 	@Override

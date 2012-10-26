@@ -160,13 +160,20 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 			{
 
 				int mId = ((MenuItem) v).getMenuItemId();
-				CB_ActionButton ba = mButtonActions.get(mId);
-				CB_Action action = ba.getAction();
 
-				action.CallExecute();
-				if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
+				for (CB_ActionButton ba : mButtonActions)
+				{
+					if (ba.getAction().getId() == mId)
+					{
+						CB_Action action = ba.getAction();
 
-				GL.that.closeToast();
+						action.CallExecute();
+						if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
+
+						GL.that.closeToast();
+						break;
+					}
+				}
 
 				return true;
 			}
@@ -179,7 +186,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 			CB_Action action = ba.getAction();
 			if (action == null) continue;
 			// MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtention());
-			MenuItem mi = cm.addItem(index++, action.getName(), action.getNameExtention());
+			MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtention());
 			mi.setEnabled(action.getEnabled());
 			mi.setCheckable(action.getIsCheckable());
 			mi.setChecked(action.getIsChecked());

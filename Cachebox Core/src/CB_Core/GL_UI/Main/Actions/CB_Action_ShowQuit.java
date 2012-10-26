@@ -7,6 +7,7 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Menu.MenuID;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -15,7 +16,7 @@ public class CB_Action_ShowQuit extends CB_Action
 
 	public CB_Action_ShowQuit()
 	{
-		super("quit", AID_SHOW_QUIT);
+		super("quit", MenuID.AID_SHOW_QUIT);
 	}
 
 	private static boolean askIsShown = false;

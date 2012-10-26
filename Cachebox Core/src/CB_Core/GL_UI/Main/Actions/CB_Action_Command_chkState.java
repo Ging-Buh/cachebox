@@ -13,6 +13,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Core.Types.Cache;
 
@@ -23,7 +24,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 
 	public CB_Action_Command_chkState()
 	{
-		super("chkState", AID_CHK_STATE);
+		super("chkState", MenuID.AID_CHK_STATE);
 
 	}
 

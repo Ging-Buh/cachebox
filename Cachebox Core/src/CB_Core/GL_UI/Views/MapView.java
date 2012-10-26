@@ -105,6 +105,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	public boolean hideMyFinds;
 	private boolean showCompass;
 	public boolean showDirektLine;
+	public boolean showAllWaypoints;
 	// private boolean nightMode;
 	public int aktZoom;
 	// private float startCameraZoom;
@@ -419,6 +420,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			drawingHeight = mapIntHeight;
 		}
 		setVisibility(CB_View_Base.VISIBLE);
+		SelectedCacheChanged(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
 	}
 
 	@Override
@@ -1219,6 +1221,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(
 				mapIntWidth, mapIntHeight)), aktZoom, false);
+		data.hideMyFinds = this.hideMyFinds;
+		data.showAllWaypoints = this.showAllWaypoints;
 		mapCacheList.update(data);
 
 		// alle notwendigen Tiles zum Laden einstellen in die Queue
@@ -1335,6 +1339,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			hideMyFinds = Config.settings.MapHideMyFinds.getValue();
 			showCompass = CompassMode ? false : Config.settings.MapShowCompass.getValue();
 			showDirektLine = CompassMode ? false : Config.settings.ShowDirektLine.getValue();
+			showAllWaypoints = CompassMode ? false : Config.settings.ShowAllWaypoints.getValue();
+
 			iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
 
 			int setAktZoom = CompassMode ? Config.settings.lastZoomLevel.getValue() : Config.settings.lastZoomLevel.getValue();
@@ -1459,6 +1465,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			{
 				MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)),
 						screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
+				data.hideMyFinds = this.hideMyFinds;
+				data.showAllWaypoints = this.showAllWaypoints;
 				mapCacheList.update(data);
 			}
 
@@ -2133,6 +2141,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 							// updateCacheList();
 							MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)),
 									screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
+							data.hideMyFinds = MapView.this.hideMyFinds;
+							data.showAllWaypoints = MapView.this.showAllWaypoints;
 							mapCacheList.update(data);
 						}
 
@@ -2196,6 +2206,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		// mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
 		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(
 				mapIntWidth, mapIntHeight)), aktZoom, true);
+		data.hideMyFinds = this.hideMyFinds;
+		data.showAllWaypoints = this.showAllWaypoints;
 		mapCacheList.update(data);
 
 		if (togBtn.getState() > 0 && togBtn.getState() != 2) return;
@@ -2405,11 +2417,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		setBackground(SpriteCache.ListBack);
 		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(
 				mapIntWidth, mapIntHeight)), aktZoom, true);
+		data.hideMyFinds = this.hideMyFinds;
+		data.showAllWaypoints = this.showAllWaypoints;
 		mapCacheList.update(data);
 		if (infoBubble.isVisible())
 		{
 			infoBubble.setCache(infoBubble.getCache(), infoBubble.getWaypoint(), true);
 		}
+		invalidateTexture();
 	}
 
 	@Override

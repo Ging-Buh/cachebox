@@ -188,7 +188,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private ServiceConnection mConnection;
 	private Service myNotifyService;
-
+	private BroadcastReceiver mReceiver;
 	public boolean KeybordShown = false;
 
 	public HorizontalListView QuickButtonList;
@@ -414,6 +414,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		// Initial CB running notification Icon
+		if (mConnection == null)
 		{
 			Intent service = new Intent(this, NotifyService.class);
 
@@ -435,26 +436,27 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			NotifyService.finish = false;
 			bindService(service, mConnection, Context.BIND_AUTO_CREATE);
-
 		}
 
 		if (GlobalCore.isTab)
 		{
 			// Tab Modus nur Landscape
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
 		}
 		else
 		{
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
 		}
 
 		// initialize receiver for screen switched on/off
 		IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
-		BroadcastReceiver mReceiver = new ScreenReceiver();
-		registerReceiver(mReceiver, filter);
+
+		if (mReceiver == null)
+		{
+			mReceiver = new ScreenReceiver();
+			registerReceiver(mReceiver, filter);
+		}
 
 		Logger.Add(this);
 
@@ -962,6 +964,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			NotifyService.finish = true;
 			unbindService(mConnection);
+			mConnection = null;
 		}
 
 		super.onPause();
@@ -1104,6 +1107,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	public void onDestroy()
 	{
+
+		if (mReceiver != null) this.unregisterReceiver(mReceiver);
+		mReceiver = null;
 
 		Log.d("CACHEBOX", "Main=> onDestroy");
 		frame.removeAllViews();
@@ -2599,7 +2605,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// Log.d(LOG_TAG, "fillPluginList: " + list);
 
 		Config.settings.hasFTF_PlugIn.setValue(false);
-		Config.settings.hasFTF_PlugIn.setValue(false);
+		Config.settings.hasPQ_PlugIn.setValue(false);
 		int i;
 		try
 		{

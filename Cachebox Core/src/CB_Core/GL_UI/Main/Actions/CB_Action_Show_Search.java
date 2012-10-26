@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Main.Actions;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
 import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Views.CacheListView;
 import CB_Core.GL_UI.Views.MapView;
 
@@ -13,7 +14,7 @@ public class CB_Action_Show_Search extends CB_Action
 
 	public CB_Action_Show_Search()
 	{
-		super("search", AID_SEARCH);
+		super("search", MenuID.AID_SEARCH);
 	}
 
 	@Override

@@ -491,7 +491,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 					@Override
 					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
 					{
-						if (coord == null || targetCoord.equals(coord)) return;
+						if (coord == null || targetCoord == null || targetCoord.equals(coord)) return;
 
 						String newGcCode = "";
 						try

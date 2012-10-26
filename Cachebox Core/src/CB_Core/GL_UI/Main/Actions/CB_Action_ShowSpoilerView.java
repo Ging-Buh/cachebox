@@ -4,6 +4,7 @@ import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Views.SpoilerView;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -13,7 +14,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView
 
 	public CB_Action_ShowSpoilerView()
 	{
-		super("spoiler", AID_SHOW_SPOILER);
+		super("spoiler", MenuID.AID_SHOW_SPOILER);
 	}
 
 	@Override

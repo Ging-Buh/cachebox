@@ -25,6 +25,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_ShowHint;
 import CB_Core.GL_UI.Main.Actions.CB_Action_Show_Search;
 import CB_Core.GL_UI.Main.Actions.CB_Action_switch_Autoresort;
 import CB_Core.GL_UI.Main.Actions.CB_Action_switch_DayNight;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Types.MoveableList;
 
@@ -216,19 +217,18 @@ public enum QuickActions
 
 	public static void InitialActions()
 	{
-		action_TakePhoto = new CB_Action_ShowActivity("TakePhoto", CB_Action.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO,
-				SpriteCache.Icons.get(47));
+		action_TakePhoto = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, SpriteCache.Icons.get(47));
 
-		action_TakeVideo = new CB_Action_ShowActivity("RecVideo", CB_Action.AID_VIDEO_REC, ViewConst.VIDEO_REC, SpriteCache.Icons.get(10));
+		action_TakeVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, SpriteCache.Icons.get(10));
 
-		action_Voicerec = new CB_Action_ShowActivity("VoiceRec", CB_Action.AID_VOICE_REC, ViewConst.VOICE_REC, SpriteCache.Icons.get(11));
+		action_Voicerec = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, SpriteCache.Icons.get(11));
 
 		action_Search = new CB_Action_Show_Search();
 
-		action_Filtersettings = new CB_Action_ShowActivity("filtersettings", CB_Action.AID_SHOW_FILTER_SETTINGS, ViewConst.FILTER_SETTINGS,
+		action_Filtersettings = new CB_Action_ShowActivity("filtersettings", MenuID.AID_SHOW_FILTER_SETTINGS, ViewConst.FILTER_SETTINGS,
 				SpriteCache.Icons.get(13));
 
-		action_ScreenLock = new CB_Action_ShowActivity("screenlock", CB_Action.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
+		action_ScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
 
 	}
 

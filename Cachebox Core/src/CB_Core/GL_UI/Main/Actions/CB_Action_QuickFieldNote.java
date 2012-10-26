@@ -19,7 +19,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 
 	public CB_Action_QuickFieldNote()
 	{
-		super("QuickFieldNote", AID_QUICK_FIELDNOTE);
+		super("QuickFieldNote", MenuID.AID_QUICK_FIELDNOTE);
 	}
 
 	@Override

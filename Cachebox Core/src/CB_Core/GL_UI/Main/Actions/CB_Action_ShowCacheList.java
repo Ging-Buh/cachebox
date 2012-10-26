@@ -24,7 +24,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 
 	public CB_Action_ShowCacheList()
 	{
-		super("cacheList", "  (" + String.valueOf(Database.Data.Query.size()) + ")", AID_SHOW_CACHELIST);
+		super("cacheList", "  (" + String.valueOf(Database.Data.Query.size()) + ")", MenuID.AID_SHOW_CACHELIST);
 	}
 
 	@Override
@@ -139,7 +139,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		MenuItem mi;
 		cm.addItem(MenuID.MI_RESORT, "ResortList", SpriteCache.Icons.get(39));
 		cm.addItem(MenuID.MI_FilterSet, "filter", SpriteCache.Icons.get(13));
-		cm.addItem(MenuID.MI_SEARCH, "search", SpriteCache.Icons.get(12));
+		cm.addItem(MenuID.MI_SEARCH_LIST, "search", SpriteCache.Icons.get(12));
 		cm.addItem(MenuID.MI_IMPORT, "import", SpriteCache.Icons.get(40));
 		mi = cm.addItem(MenuID.MI_MANAGE_DB, "manage", "  (" + DBName + ")", SpriteCache.Icons.get(41));
 		mi = cm.addItem(MenuID.MI_AUTO_RESORT, "AutoResort");

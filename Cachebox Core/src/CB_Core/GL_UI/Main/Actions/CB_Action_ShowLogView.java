@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Main.Actions;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Views.LogView;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -12,7 +13,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView
 
 	public CB_Action_ShowLogView()
 	{
-		super("ShowLogs", AID_SHOW_LOGS);
+		super("ShowLogs", MenuID.AID_SHOW_LOGS);
 	}
 
 	@Override

@@ -41,7 +41,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 	public CB_Action_ShowTrackListView()
 	{
-		super("Tracks", AID_SHOW_TRACKLIST);
+		super("Tracks", MenuID.AID_SHOW_TRACKLIST);
 	}
 
 	@Override
