@@ -685,9 +685,9 @@ public abstract class Database
 		// If a mystery has a final waypoint, the distance will be calculated to
 		// the final not the the cache coordinates
 		Coordinate toPos = cache.Pos;
-		if (waypoint != null) toPos = new Coordinate(waypoint.Pos.Latitude, waypoint.Pos.Longitude);
+		if (waypoint != null) toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
 		float[] dist = new float[4];
-		Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude, toPos.Latitude, toPos.Longitude, dist);
+		Coordinate.distanceBetween(fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(), dist);
 		return (float) dist[0];
 	}
 

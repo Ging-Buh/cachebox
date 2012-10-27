@@ -368,7 +368,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		}
 		Coordinate coord = GlobalCore.LastValidPosition;
 		if ((coord == null) || (!coord.Valid)) coord = GlobalCore.SelectedCache().Pos;
-		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.Latitude, coord.Longitude,
+		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(),
 				GlobalCore.SelectedCache().Id, "", GlobalCore.Translations.Get("wyptDefTitle"));
 		editWP(newWP);
 
@@ -503,8 +503,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 							return;
 						}
-						Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", targetCoord.Latitude,
-								targetCoord.Longitude, GlobalCore.SelectedCache().Id, "", "projiziert");
+						Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", targetCoord.getLatitude(),
+								targetCoord.getLongitude(), GlobalCore.SelectedCache().Id, "", "projiziert");
 						GlobalCore.SelectedCache().waypoints.add(newWP);
 						that.setBaseAdapter(lvAdapter);
 						aktWaypoint = newWP;
@@ -542,8 +542,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 					return;
 				}
-				Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoord.Latitude,
-						returnCoord.Longitude, GlobalCore.SelectedCache().Id, "", "Measured");
+				Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoord.getLatitude(),
+						returnCoord.getLongitude(), GlobalCore.SelectedCache().Id, "", "Measured");
 				GlobalCore.SelectedCache().waypoints.add(newWP);
 				that.setBaseAdapter(lvAdapter);
 				aktWaypoint = newWP;

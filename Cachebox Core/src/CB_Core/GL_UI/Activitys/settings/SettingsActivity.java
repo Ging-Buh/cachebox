@@ -692,14 +692,14 @@ public class SettingsActivity extends ActivityBase
 								if (SetValue != null) SetValue.setValue(value);
 								resortList();
 								// Activity wieder anzeigen
-								that.show();
+								show();
 							}
 
 							@Override
 							public void cancelClicked()
 							{
 								// Activity wieder anzeigen
-								that.show();
+								show();
 							}
 
 						});
@@ -1267,14 +1267,14 @@ public class SettingsActivity extends ActivityBase
 		@Override
 		public boolean onClick(int which)
 		{
-			that.show();
+			show();
 			return true;
 		}
 	};
 
 	public void resortList()
 	{
-		that.show();
+		show();
 
 		float scrollPos = scrollBox.getScrollY();
 		scrollBox = null;

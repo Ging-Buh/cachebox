@@ -128,8 +128,8 @@ public class SearchForGeocaches
 				requestString += "\"PointRadius\":{";
 				requestString += "\"DistanceInMeters\":" + "5000000" + ",";
 				requestString += "\"Point\":{";
-				requestString += "\"Latitude\":" + String.valueOf(searchC.pos.Latitude) + ",";
-				requestString += "\"Longitude\":" + String.valueOf(searchC.pos.Longitude);
+				requestString += "\"Latitude\":" + String.valueOf(searchC.pos.getLatitude()) + ",";
+				requestString += "\"Longitude\":" + String.valueOf(searchC.pos.getLongitude());
 				requestString += "}";
 				requestString += "},";
 
@@ -156,8 +156,8 @@ public class SearchForGeocaches
 				requestString += "\"PointRadius\":{";
 				requestString += "\"DistanceInMeters\":" + "5000000" + ",";
 				requestString += "\"Point\":{";
-				requestString += "\"Latitude\":" + String.valueOf(searchC.pos.Latitude) + ",";
-				requestString += "\"Longitude\":" + String.valueOf(searchC.pos.Longitude);
+				requestString += "\"Latitude\":" + String.valueOf(searchC.pos.getLatitude()) + ",";
+				requestString += "\"Longitude\":" + String.valueOf(searchC.pos.getLongitude());
 				requestString += "}";
 				requestString += "},";
 				//
@@ -178,8 +178,8 @@ public class SearchForGeocaches
 				requestString += "\"PointRadius\":{";
 				requestString += "\"DistanceInMeters\":" + String.valueOf(searchC.distanceInMeters) + ",";
 				requestString += "\"Point\":{";
-				requestString += "\"Latitude\":" + String.valueOf(searchC.pos.Latitude) + ",";
-				requestString += "\"Longitude\":" + String.valueOf(searchC.pos.Longitude);
+				requestString += "\"Latitude\":" + String.valueOf(searchC.pos.getLatitude()) + ",";
+				requestString += "\"Longitude\":" + String.valueOf(searchC.pos.getLongitude());
 				requestString += "}";
 				requestString += "},";
 				requestString += "\"GeocacheExclusions\":{";
@@ -198,8 +198,8 @@ public class SearchForGeocaches
 				requestString += "\"PointRadius\":{";
 				requestString += "\"DistanceInMeters\":" + String.valueOf((int) searchC.distanceInMeters) + ",";
 				requestString += "\"Point\":{";
-				requestString += "\"Latitude\":" + String.valueOf(searchC.pos.Latitude) + ",";
-				requestString += "\"Longitude\":" + String.valueOf(searchC.pos.Longitude);
+				requestString += "\"Latitude\":" + String.valueOf(searchC.pos.getLatitude()) + ",";
+				requestString += "\"Longitude\":" + String.valueOf(searchC.pos.getLongitude());
 				requestString += "}";
 				requestString += "},";
 

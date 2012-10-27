@@ -286,10 +286,10 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						Track route = new Track(null, TrackColor);
 
 						route.Name = "Point 2 Point Route";
-						route.Points.add(new TrackPoint(targetCoord.Longitude, targetCoord.Latitude, 0, 0, new Date()));
-						route.Points.add(new TrackPoint(startCoord.Longitude, startCoord.Latitude, 0, 0, new Date()));
+						route.Points.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
+						route.Points.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
-						Coordinate.distanceBetween(targetCoord.Latitude, targetCoord.Longitude, startCoord.Latitude, startCoord.Longitude,
+						Coordinate.distanceBetween(targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(),
 								dist);
 						route.TrackLength = dist[0];
 
@@ -321,10 +321,10 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						Track route = new Track(null, TrackColor);
 						route.Name = "Projected Route";
 
-						route.Points.add(new TrackPoint(targetCoord.Longitude, targetCoord.Latitude, 0, 0, new Date()));
-						route.Points.add(new TrackPoint(startCoord.Longitude, startCoord.Latitude, 0, 0, new Date()));
+						route.Points.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
+						route.Points.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
-						Coordinate.distanceBetween(targetCoord.Latitude, targetCoord.Longitude, startCoord.Latitude, startCoord.Longitude,
+						Coordinate.distanceBetween(targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(),
 								dist);
 						route.TrackLength = dist[0];
 
@@ -367,9 +367,9 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						for (int i = 0; i <= 360; i += 10) // Achtung der Kreis darf nicht mehr als 50 Punkte haben, sonst gibt es Probleme
 															// mit dem Reduktionsalgorythmus
 						{
-							Projektion = Coordinate.Project(startCoord.Latitude, startCoord.Longitude, (double) i, distance);
+							Projektion = Coordinate.Project(startCoord.getLatitude(), startCoord.getLongitude(), (double) i, distance);
 
-							route.Points.add(new TrackPoint(Projektion.Longitude, Projektion.Latitude, 0, 0, new Date()));
+							route.Points.add(new TrackPoint(Projektion.getLongitude(), Projektion.getLatitude(), 0, 0, new Date()));
 
 							if (!LastCoord.Valid)
 							{
@@ -378,8 +378,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 							}
 							else
 							{
-								Coordinate.distanceBetween(Projektion.Latitude, Projektion.Longitude, LastCoord.Latitude,
-										LastCoord.Longitude, dist);
+								Coordinate.distanceBetween(Projektion.getLatitude(), Projektion.getLongitude(), LastCoord.getLatitude(),
+										LastCoord.getLongitude(), dist);
 								route.TrackLength += dist[0];
 								LastCoord = Projektion;
 								LastCoord.Valid = true;

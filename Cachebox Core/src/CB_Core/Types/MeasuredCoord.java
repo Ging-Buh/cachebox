@@ -117,7 +117,7 @@ public class MeasuredCoord implements Comparable<MeasuredCoord>
 	{
 		float[] dist = new float[4];
 		Coordinate.distanceBetween(this.Latitude, this.Longitude,
-				Referenz.Latitude, Referenz.Longitude, dist);
+				Referenz.getLatitude(), Referenz.getLongitude(), dist);
 
 		return (float) dist[0];
 	}

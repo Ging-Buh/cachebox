@@ -21,18 +21,6 @@ public class Waypoint implements Serializable
 
 	public Coordinate Pos;
 
-	// / Breitengrad
-	public double Latitude()
-	{
-		return Pos.Latitude;
-	}
-
-	// / Längengrad
-	public double Longitude()
-	{
-		return Pos.Longitude;
-	}
-
 	// / Titel des Wegpunktes
 	public String Title = "";
 
@@ -84,18 +72,18 @@ public class Waypoint implements Serializable
 	{
 		Coordinate fromPos = GlobalCore.LastValidPosition;
 		float[] dist = new float[4];
-		Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude, Pos.Latitude, Pos.Longitude, dist);
+		Coordinate.distanceBetween(fromPos.getLatitude(), fromPos.getLongitude(), Pos.getLatitude(), Pos.getLongitude(), dist);
 		return dist[0];
 	}
 
 	public void setLatitude(double parseDouble)
 	{
-		Pos.Latitude = parseDouble;
+		Pos.setLatitude(parseDouble);
 	}
 
 	public void setLongitude(double parseDouble)
 	{
-		Pos.Longitude = parseDouble;
+		Pos.setLongitude(parseDouble);
 	}
 
 	public void setCoordinate(Coordinate result)
@@ -161,7 +149,7 @@ public class Waypoint implements Serializable
 
 	public Waypoint copy()
 	{
-		return new Waypoint(GcCode, Type, Description, Latitude(), Longitude(), CacheId, Clue, Title);
+		return new Waypoint(GcCode, Type, Description, Pos.getLatitude(), Pos.getLongitude(), CacheId, Clue, Title);
 	}
 
 }

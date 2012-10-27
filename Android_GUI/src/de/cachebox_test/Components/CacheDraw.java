@@ -351,7 +351,8 @@ public class CacheDraw
 		{
 			Coordinate position = GlobalCore.LastValidPosition;
 			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
-			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude(), cache.Longitude());
+			double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), cache.Pos.getLatitude(),
+					cache.Pos.getLongitude());
 			double cacheBearing = bearing - heading;
 			String cacheDistance = UnitFormatter.DistanceString(cache.Distance(false));
 			DrawBearing(cache, canvas, drawingRec, cacheDistance, cacheBearing);
@@ -365,7 +366,8 @@ public class CacheDraw
 		{
 			Coordinate position = GlobalCore.LastValidPosition;
 			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
-			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, waypoint.Latitude(), waypoint.Longitude());
+			double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), waypoint.Pos.getLatitude(),
+					waypoint.Pos.getLongitude());
 			double waypointBearing = bearing - heading;
 			float distance = 0;
 			if (waypoint == null)

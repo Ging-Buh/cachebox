@@ -97,8 +97,9 @@ public final class WayPointInfoControl extends View
 		if (waypoint.Clue != null) Clue = waypoint.Clue;
 		LayoutTextPaint.setAntiAlias(true);
 		LayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
-		LayoutCord = new StaticLayout(GlobalCore.FormatLatitudeDM(waypoint.Latitude()) + " / "
-				+ GlobalCore.FormatLongitudeDM(waypoint.Longitude()), LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		LayoutCord = new StaticLayout(GlobalCore.FormatLatitudeDM(waypoint.Pos.getLatitude()) + " / "
+				+ GlobalCore.FormatLongitudeDM(waypoint.Pos.getLongitude()), LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f,
+				0.0f, false);
 		LayoutDesc = new StaticLayout(waypoint.Description, LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		LayoutClue = new StaticLayout(Clue, LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		LayoutTextPaintBold = new TextPaint(LayoutTextPaint);

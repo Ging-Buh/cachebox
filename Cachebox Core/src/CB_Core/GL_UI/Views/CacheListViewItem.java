@@ -114,7 +114,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		{
 			Coordinate position = GlobalCore.LastValidPosition;
 
-			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, mCache.Latitude(), mCache.Longitude());
+			double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), mCache.Latitude(), mCache.Longitude());
 			double cacheBearing = -(bearing - heading);
 			setDistanceString(UnitFormatter.DistanceString(mCache.Distance(true)));
 

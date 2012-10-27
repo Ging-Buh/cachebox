@@ -712,8 +712,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 								if (waypoint.Clue != null) Clue = waypoint.Clue;
 								WPLayoutTextPaint.setAntiAlias(true);
 								WPLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
-								WPLayoutCord = new StaticLayout(GlobalCore.FormatLatitudeDM(waypoint.Latitude()) + " / "
-										+ GlobalCore.FormatLongitudeDM(waypoint.Longitude()), WPLayoutTextPaint, TextWidth,
+								WPLayoutCord = new StaticLayout(GlobalCore.FormatLatitudeDM(waypoint.Pos.getLatitude()) + " / "
+										+ GlobalCore.FormatLongitudeDM(waypoint.Pos.getLongitude()), WPLayoutTextPaint, TextWidth,
 										Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 								WPLayoutDesc = new StaticLayout(waypoint.Description, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL,
 										1.0f, 0.0f, false);

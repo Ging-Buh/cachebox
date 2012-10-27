@@ -540,15 +540,15 @@ public class EditCoord extends ActivityBase
 			bMin.setState(0);
 			bSec.setState(0);
 			bUtm.setState(0);
-			if (coord.Latitude > 0) bDLat.setText("N");
+			if (coord.getLatitude() > 0) bDLat.setText("N");
 			else
 				bDLat.setText("S");
-			if (coord.Longitude > 0) bDLon.setText("E");
+			if (coord.getLongitude() > 0) bDLon.setText("E");
 			else
 				bDLon.setText("W");
-			tbDLat.setText(String.format("%.5f", coord.Latitude).replace(",", "."));
+			tbDLat.setText(String.format("%.5f", coord.getLatitude()).replace(",", "."));
 			tbDLat.setFocus();
-			tbDLon.setText(String.format("%.5f", coord.Longitude).replace(",", "."));
+			tbDLon.setText(String.format("%.5f", coord.getLongitude()).replace(",", "."));
 
 			showNumPad(NumPad.Type.withDot);
 
@@ -568,21 +568,21 @@ public class EditCoord extends ActivityBase
 			bMin.setState(1);
 			bSec.setState(0);
 			bUtm.setState(0);
-			if (coord.Latitude >= 0) bDLat.setText("N");
+			if (coord.getLatitude() >= 0) bDLat.setText("N");
 			else
 				bDLat.setText("S");
-			if (coord.Longitude >= 0) bDLon.setText("E");
+			if (coord.getLongitude() >= 0) bDLon.setText("E");
 			else
 				bDLon.setText("W");
 
-			double deg = (int) Math.abs(coord.Latitude);
-			double frac = Math.abs(coord.Latitude) - deg;
+			double deg = (int) Math.abs(coord.getLatitude());
+			double frac = Math.abs(coord.getLatitude()) - deg;
 			double min = frac * 60;
 			tbMLatDeg.setText(String.format("%.0f", deg).replace(",", "."));
 			tbMLatMin.setText(String.format("%.3f", min).replace(",", "."));
 
-			deg = (int) Math.abs(coord.Longitude);
-			frac = Math.abs(coord.Longitude) - deg;
+			deg = (int) Math.abs(coord.getLongitude());
+			frac = Math.abs(coord.getLongitude()) - deg;
 			min = frac * 60;
 			tbMLonDeg.setText(String.format("%.0f", deg).replace(",", "."));
 			tbMLonMin.setText(String.format("%.3f", min).replace(",", "."));
@@ -608,17 +608,17 @@ public class EditCoord extends ActivityBase
 			bSec.setState(1);
 			bUtm.setState(0);
 
-			deg = Math.abs((int) coord.Latitude);
-			frac = Math.abs(coord.Latitude) - deg;
+			deg = Math.abs((int) coord.getLatitude());
+			frac = Math.abs(coord.getLatitude()) - deg;
 			min = frac * 60;
 			int imin = (int) min;
 			frac = min - imin;
 			double sec = frac * 60;
 
-			if (coord.Latitude >= 0) bDLat.setText("N");
+			if (coord.getLatitude() >= 0) bDLat.setText("N");
 			else
 				bDLat.setText("S");
-			if (coord.Longitude >= 0) bDLon.setText("E");
+			if (coord.getLongitude() >= 0) bDLon.setText("E");
 			else
 				bDLon.setText("W");
 
@@ -626,8 +626,8 @@ public class EditCoord extends ActivityBase
 			tbSLatMin.setText(String.valueOf(imin).replace(",", "."));
 			tbSLatSec.setText(String.format("%.2f", sec).replace(",", "."));
 
-			deg = Math.abs((int) coord.Longitude);
-			frac = Math.abs(coord.Longitude) - deg;
+			deg = Math.abs((int) coord.getLongitude());
+			frac = Math.abs(coord.getLongitude()) - deg;
 			min = frac * 60;
 			imin = (int) min;
 			frac = min - imin;
@@ -661,7 +661,7 @@ public class EditCoord extends ActivityBase
 			double nording = 0;
 			double easting = 0;
 			String zone = "";
-			convert.iLatLon2UTM(coord.Latitude, coord.Longitude);
+			convert.iLatLon2UTM(coord.getLatitude(), coord.getLongitude());
 			nording = convert.UTMNorthing;
 			easting = convert.UTMEasting;
 			zone = convert.sUtmZone;
@@ -671,10 +671,10 @@ public class EditCoord extends ActivityBase
 			tbUX.setText(String.format("%.1f", easting).replace(",", "."));
 			tbUZone.setText(zone);
 
-			if (coord.Latitude >= 0) bDLat.setText("N");
+			if (coord.getLatitude() >= 0) bDLat.setText("N");
 			else
 				bDLat.setText("S");
-			if (coord.Longitude >= 0) bDLon.setText("E");
+			if (coord.getLongitude() >= 0) bDLon.setText("E");
 			else
 				bDLon.setText("W");
 

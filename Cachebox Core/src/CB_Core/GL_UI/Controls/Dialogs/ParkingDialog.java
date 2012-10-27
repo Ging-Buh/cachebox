@@ -110,8 +110,8 @@ public class ParkingDialog extends ButtonDialog
 			{
 				if (GlobalCore.LastValidPosition != null)
 				{
-					CB_Core.Config.settings.ParkingLatitude.setValue(GlobalCore.LastValidPosition.Latitude);
-					CB_Core.Config.settings.ParkingLongitude.setValue(GlobalCore.LastValidPosition.Longitude);
+					CB_Core.Config.settings.ParkingLatitude.setValue(GlobalCore.LastValidPosition.getLatitude());
+					CB_Core.Config.settings.ParkingLongitude.setValue(GlobalCore.LastValidPosition.getLongitude());
 					CB_Core.Config.AcceptChanges();
 					CachListChangedEventList.Call();
 				}

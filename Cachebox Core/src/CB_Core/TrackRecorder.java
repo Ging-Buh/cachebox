@@ -127,8 +127,8 @@ public class TrackRecorder
 
 		if (gpxfile == null) return;
 
-		String xml = "<wpt lat=\"" + String.valueOf(coordinate.Latitude) + "\" lon=\"" + String.valueOf(coordinate.Longitude) + "\">\n"
-				+ "   <ele>" + String.valueOf(GlobalCore.LastValidPosition.Elevation) + "</ele>\n" + "   <time>" + timestamp + "</time>\n"
+		String xml = "<wpt lat=\"" + String.valueOf(coordinate.getLatitude()) + "\" lon=\"" + String.valueOf(coordinate.getLongitude()) + "\">\n"
+				+ "   <ele>" + String.valueOf(GlobalCore.LastValidPosition.getElevation()) + "</ele>\n" + "   <time>" + timestamp + "</time>\n"
 				+ "   <name>" + friendlyName + "</name>\n" + "   <link href=\"" + mediaPath + "\" />\n" + "</wpt>\n";
 
 		RandomAccessFile rand;
@@ -204,22 +204,22 @@ public class TrackRecorder
 			// zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
 			float[] dist = new float[4];
 
-			Coordinate.distanceBetween(LastRecordedPosition.Latitude, LastRecordedPosition.Longitude,
-					GlobalCore.LastValidPosition.Latitude, GlobalCore.LastValidPosition.Longitude, dist);
+			Coordinate.distanceBetween(LastRecordedPosition.getLatitude(), LastRecordedPosition.getLongitude(),
+					GlobalCore.LastValidPosition.getLatitude(), GlobalCore.LastValidPosition.getLongitude(), dist);
 			float cachedDistance = dist[0];
 
 			if (cachedDistance > GlobalCore.TrackDistance)
 			{
 				StringBuilder sb = new StringBuilder();
 
-				sb.append("<trkpt lat=\"" + String.valueOf(GlobalCore.LastValidPosition.Latitude) + "\" lon=\""
-						+ String.valueOf(GlobalCore.LastValidPosition.Longitude) + "\">\n");
-				sb.append("   <ele>" + String.valueOf(GlobalCore.LastValidPosition.Elevation) + "</ele>\n");
+				sb.append("<trkpt lat=\"" + String.valueOf(GlobalCore.LastValidPosition.getLatitude()) + "\" lon=\""
+						+ String.valueOf(GlobalCore.LastValidPosition.getLongitude()) + "\">\n");
+				sb.append("   <ele>" + String.valueOf(GlobalCore.LastValidPosition.getElevation()) + "</ele>\n");
 				sb.append("   <time>" + GetDateTimeString() + "</time>\n");
 				sb.append("   <course>" + String.valueOf(GlobalCore.Locator.getHeading()) + "</course>\n");
 				sb.append("   <speed>" + String.valueOf(GlobalCore.Locator.SpeedOverGround()) + "</speed>\n");
 				sb.append("</trkpt>\n");
-				AltDiff = Math.abs(LastRecordedPosition.Elevation - GlobalCore.LastValidPosition.Elevation);
+				AltDiff = Math.abs(LastRecordedPosition.getElevation() - GlobalCore.LastValidPosition.getElevation());
 				RandomAccessFile rand;
 				try
 				{
@@ -253,8 +253,8 @@ public class TrackRecorder
 					CB_Core.Log.Logger.Error("Trackrecorder", "IOException", e);
 				}
 
-				NewPoint = new TrackPoint(GlobalCore.LastValidPosition.Longitude, GlobalCore.LastValidPosition.Latitude,
-						GlobalCore.LastValidPosition.Elevation, GlobalCore.Locator.getHeading(), new Date());
+				NewPoint = new TrackPoint(GlobalCore.LastValidPosition.getLongitude(), GlobalCore.LastValidPosition.getLatitude(),
+						GlobalCore.LastValidPosition.getElevation(), GlobalCore.Locator.getHeading(), new Date());
 
 				GlobalCore.AktuelleRoute.Points.add(NewPoint);
 

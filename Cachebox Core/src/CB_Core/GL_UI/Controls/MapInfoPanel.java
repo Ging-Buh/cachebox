@@ -33,8 +33,8 @@ public class MapInfoPanel extends CB_View_Base
 			if (aktCoord == null || !aktCoord.equals(Coord))
 			{
 				aktCoord = Coord;
-				lblLatitude.setText(GlobalCore.FormatLatitudeDM(Coord.Latitude));
-				lblLongitude.setText(GlobalCore.FormatLongitudeDM(Coord.Longitude));
+				lblLatitude.setText(GlobalCore.FormatLatitudeDM(Coord.getLatitude()));
+				lblLongitude.setText(GlobalCore.FormatLongitudeDM(Coord.getLongitude()));
 				GL.that.renderOnce(this.getName() + " setCoord");
 			}
 

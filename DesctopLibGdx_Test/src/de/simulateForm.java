@@ -166,7 +166,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 			{
 				Locator Loc = new Locator();
 				Bearing += 5;
-				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, 2, true, Bearing, 95, "GPS");
+				Loc.setLocation(pos.getLatitude(), pos.getLongitude(), 100, true, 2, true, Bearing, 95, "GPS");
 				PositionChangedEventList.PositionChanged(Loc);
 				GlobalCore.LastValidPosition = Loc.getLocation();
 			}
@@ -297,7 +297,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 				Coordinate pos = new Coordinate(trk.Y, trk.X);
 				Locator Loc = new Locator();
 
-				Loc.setLocation(pos.Latitude, pos.Longitude, 100, true, speed, true, (float) trk.Direction, 95, "GPS");
+				Loc.setLocation(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true, (float) trk.Direction, 95, "GPS");
 				Loc.setCompassHeading((float) trk.Direction);
 				Loc.LastUsedCompass = true;
 

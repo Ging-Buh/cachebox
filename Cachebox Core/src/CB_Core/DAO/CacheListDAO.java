@@ -81,12 +81,15 @@ public class CacheListDAO
 					{
 						if (wp.Type == CacheTypes.Final)
 						{
-							MysterySolution solution = new MysterySolution();
-							solution.Cache = cache;
-							solution.Waypoint = wp;
-							solution.Latitude = wp.Pos.Latitude;
-							solution.Longitude = wp.Pos.Longitude;
-							cacheList.MysterySolutions.add(solution);
+							if (!(wp.Pos.getLatitude() == 0 && wp.Pos.getLongitude() == 0))
+							{
+								MysterySolution solution = new MysterySolution();
+								solution.Cache = cache;
+								solution.Waypoint = wp;
+								solution.Latitude = wp.Pos.getLatitude();
+								solution.Longitude = wp.Pos.getLongitude();
+								cacheList.MysterySolutions.add(solution);
+							}
 						}
 					}
 

@@ -118,8 +118,8 @@ public class CoordinateEntity extends Entity
 			// MessageBox(s, "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, DiffCac//heListener);
 			return GlobalCore.Translations.Get("solverErrDiffCache", coord.FormatCoordinate(), dbWaypoint.Title, cache.Name);
 		}
-		dbWaypoint.Pos.Latitude = coord.Latitude;
-		dbWaypoint.Pos.Longitude = coord.Longitude;
+		dbWaypoint.Pos.setLatitude(coord.getLatitude());
+		dbWaypoint.Pos.setLongitude(coord.getLongitude());
 		waypointDAO.UpdateDatabase(dbWaypoint);
 
 		// evtl. bereits geladenen Waypoint aktualisieren
@@ -130,14 +130,14 @@ public class CoordinateEntity extends Entity
 			{
 				if (wp.GcCode.equalsIgnoreCase(this.gcCode))
 				{
-					wp.Pos.Latitude = coord.Latitude;
-					wp.Pos.Longitude = coord.Longitude;
+					wp.Pos.setLatitude(coord.getLatitude());
+					wp.Pos.setLongitude(coord.getLongitude());
 					for (MysterySolution sol : Database.Data.Query.MysterySolutions)
 					{
 						if ((sol.Cache == cacheFromCacheList) && (sol.Waypoint == wp))
 						{
-							sol.Latitude = coord.Latitude;
-							sol.Longitude = coord.Longitude;
+							sol.Latitude = coord.getLatitude();
+							sol.Longitude = coord.getLongitude();
 						}
 					}
 					break;

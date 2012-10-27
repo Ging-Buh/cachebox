@@ -42,7 +42,7 @@ public class PositionEventList
 		{
 			GlobalCore.LastValidPosition = new Coordinate(location.getLatitude(), location.getLongitude());
 
-			GlobalCore.LastValidPosition.Elevation = location.getAltitude();
+			GlobalCore.LastValidPosition.setElevation(location.getAltitude());
 
 			GlobalCore.LastValidPosition.Valid = true;
 		}

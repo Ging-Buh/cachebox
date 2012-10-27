@@ -263,7 +263,7 @@ public class ProjectionCoordinate extends ActivityBase
 
 			if (ImperialUnits) Distance *= 0.9144f;
 
-			Coordinate newCoord = Coordinate.Project(coord.Latitude, coord.Longitude, Bearing, Distance);
+			Coordinate newCoord = Coordinate.Project(coord.getLatitude(), coord.getLongitude(), Bearing, Distance);
 
 			if (newCoord.Valid)
 			{

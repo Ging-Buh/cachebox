@@ -202,8 +202,8 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		if (mMeasureList.size() > 0)
 		{
 			// Gemittelter Punkt der GPS-Messungen
-			double medianLat = MeasuredCoord.Referenz.Latitude;
-			double medianLon = MeasuredCoord.Referenz.Longitude;
+			double medianLat = MeasuredCoord.Referenz.getLatitude();
+			double medianLon = MeasuredCoord.Referenz.getLongitude();
 
 			MeasuredCoordList sortetdList = (MeasuredCoordList) mMeasureList.clone();
 			sortetdList.sort();

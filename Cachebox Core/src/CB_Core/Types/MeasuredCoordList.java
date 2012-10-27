@@ -154,8 +154,8 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 		String ret = "";
 		if (this.getAccuWeightedAverageCoord().Valid)
 		{
-			ret = GlobalCore.FormatLatitudeDM(this.getAccuWeightedAverageCoord().Latitude) + " / "
-					+ GlobalCore.FormatLongitudeDM(this.getAccuWeightedAverageCoord().Longitude);
+			ret = GlobalCore.FormatLatitudeDM(this.getAccuWeightedAverageCoord().getLatitude()) + " / "
+					+ GlobalCore.FormatLongitudeDM(this.getAccuWeightedAverageCoord().getLongitude());
 		}
 
 		return ret;

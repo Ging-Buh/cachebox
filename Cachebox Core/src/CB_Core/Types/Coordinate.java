@@ -14,9 +14,9 @@ public class Coordinate implements Serializable
 	private static final long serialVersionUID = 1235642315487L;
 
 	public boolean Valid;
-	public double Latitude = 0;
-	public double Longitude = 0;
-	public double Elevation = 0;
+	private double Latitude = 0;
+	private double Longitude = 0;
+	private double Elevation = 0;
 
 	/**
 	 * Die Genauigkeit dieser Coordinate! Wird beim Messen benutzt
@@ -42,37 +42,27 @@ public class Coordinate implements Serializable
 
 	public Coordinate(double latitude, double longitude)
 	{
-		this.Latitude = latitude;
-		this.Longitude = longitude;
-		this.Elevation = 0;
+		this.setLatitude(latitude);
+		this.setLongitude(longitude);
+		this.setElevation(0);
 		Valid = true;
 	}
 
 	public Coordinate(double latitude, double longitude, int accuracy)
 	{
-		this.Latitude = latitude;
-		this.Longitude = longitude;
-		this.Elevation = 0;
+		this.setLatitude(latitude);
+		this.setLongitude(longitude);
+		this.setElevation(0);
 		Accuracy = accuracy;
 		Valid = true;
 	}
 
 	public Coordinate(Coordinate parent)
 	{
-		this.Latitude = parent.Latitude;
-		this.Longitude = parent.Longitude;
-		this.Elevation = parent.Elevation;
+		this.setLatitude(parent.getLatitude());
+		this.setLongitude(parent.getLongitude());
+		this.setElevation(parent.getElevation());
 		this.Valid = parent.Valid;
-	}
-
-	public double getLatitude()
-	{
-		return this.Latitude;
-	}
-
-	public double getLongitude()
-	{
-		return this.Longitude;
 	}
 
 	public boolean hasAccuracy()
@@ -117,8 +107,8 @@ public class Coordinate implements Serializable
 					ddlat = Math.rint(ddlat * 1000000) / 1000000;
 					ddlon = Math.rint(ddlon * 1000000) / 1000000;
 					this.Valid = true;
-					this.Latitude = ddlat;
-					this.Longitude = ddlon;
+					this.setLatitude(ddlat);
+					this.setLongitude(ddlon);
 					return;
 				}
 				catch (Exception ex)
@@ -215,15 +205,15 @@ public class Coordinate implements Serializable
 			Valid = false;
 			return;
 		}
-		this.Latitude = lat;
-		this.Longitude = lon;
-		if (dlat == 'S') this.Latitude = -this.Latitude;
-		if (dlon == 'W') this.Longitude = -this.Longitude;
+		this.setLatitude(lat);
+		this.setLongitude(lon);
+		if (dlat == 'S') this.setLatitude(-this.getLatitude());
+		if (dlon == 'W') this.setLongitude(-this.getLongitude());
 		this.Valid = true;
-		if (this.Latitude > 180.00001) this.Valid = false;
-		if (this.Latitude < -180.00001) this.Valid = false;
-		if (this.Longitude > 180.00001) this.Valid = false;
-		if (this.Longitude < -180.00001) this.Valid = false;
+		if (this.getLatitude() > 180.00001) this.Valid = false;
+		if (this.getLatitude() < -180.00001) this.Valid = false;
+		if (this.getLongitude() > 180.00001) this.Valid = false;
+		if (this.getLongitude() < -180.00001) this.Valid = false;
 	}
 
 	/**
@@ -233,7 +223,7 @@ public class Coordinate implements Serializable
 	 */
 	public String FormatCoordinate()
 	{
-		if (Valid) return Formatter.FormatLatitudeDM(Latitude) + " / " + Formatter.FormatLongitudeDM(Longitude);
+		if (Valid) return Formatter.FormatLatitudeDM(getLatitude()) + " / " + Formatter.FormatLongitudeDM(getLongitude());
 		else
 			return "not Valid";
 	}
@@ -245,7 +235,7 @@ public class Coordinate implements Serializable
 	 */
 	public String FormatCoordinateLineBreake()
 	{
-		if (Valid) return Formatter.FormatLatitudeDM(Latitude) + GlobalCore.br + Formatter.FormatLongitudeDM(Longitude);
+		if (Valid) return Formatter.FormatLatitudeDM(getLatitude()) + GlobalCore.br + Formatter.FormatLongitudeDM(getLongitude());
 		else
 			return "not Valid";
 	}
@@ -260,7 +250,7 @@ public class Coordinate implements Serializable
 	// / <returns>Die projizierte Koordinate</returns>
 	public static Coordinate Project(Coordinate coord, double Direction, double Distance)
 	{
-		return Project(coord.Latitude, coord.Longitude, Direction, Distance);
+		return Project(coord.getLatitude(), coord.getLongitude(), Direction, Distance);
 	}
 
 	public static Coordinate Project(double Latitude, double Longitude, double Direction, double Distance)
@@ -284,8 +274,8 @@ public class Coordinate implements Serializable
 		double q = (360 - Direction) * Math.PI / 180.0;
 		double b = Math.acos(Math.cos(q) * Math.sin(a) * Math.sin(c) + Math.cos(a) * Math.cos(c));
 
-		result.Latitude = 90 - (b * 180 / Math.PI);
-		if (result.Latitude > 90) result.Latitude -= 180;
+		result.setLatitude(90 - (b * 180 / Math.PI));
+		if (result.getLatitude() > 90) result.setLatitude(result.getLatitude() - 180);
 
 		double g = 0;
 		try
@@ -300,7 +290,7 @@ public class Coordinate implements Serializable
 
 		if (Direction <= 180) g = -g;
 
-		result.Longitude = Longitude - g * 180 / Math.PI;
+		result.setLongitude(Longitude - g * 180 / Math.PI);
 
 		result.Valid = true;
 		return result;
@@ -308,7 +298,7 @@ public class Coordinate implements Serializable
 
 	public static double Bearing(Coordinate coord1, Coordinate coord2)
 	{
-		return Bearing(coord1.Latitude, coord1.Longitude, coord2.Latitude, coord2.Longitude);
+		return Bearing(coord1.getLatitude(), coord1.getLongitude(), coord2.getLatitude(), coord2.getLongitude());
 	}
 
 	// / <summary>
@@ -322,12 +312,12 @@ public class Coordinate implements Serializable
 	public static double Bearing(double froLatitude, double fromLongitude, double toLatitude, double toLongitude)
 	{
 		Coordinate loc = new Coordinate();
-		loc.Latitude = froLatitude;
-		loc.Longitude = fromLongitude;
+		loc.setLatitude(froLatitude);
+		loc.setLongitude(fromLongitude);
 
 		Coordinate loc2 = new Coordinate("");
-		loc2.Latitude = toLatitude;
-		loc2.Longitude = toLongitude;
+		loc2.setLatitude(toLatitude);
+		loc2.setLongitude(toLongitude);
 
 		return loc.bearingTo(loc2);
 
@@ -347,13 +337,13 @@ public class Coordinate implements Serializable
 		synchronized (mResults)
 		{
 			// See if we already have the result
-			if (Latitude != mLat1 || Longitude != mLon1 || dest.Latitude != mLat2 || dest.Longitude != mLon2)
+			if (getLatitude() != mLat1 || getLongitude() != mLon1 || dest.getLatitude() != mLat2 || dest.getLongitude() != mLon2)
 			{
-				computeDistanceAndBearing(Latitude, Longitude, dest.Latitude, dest.Longitude, mResults);
-				mLat1 = Latitude;
-				mLon1 = Longitude;
-				mLat2 = dest.Latitude;
-				mLon2 = dest.Longitude;
+				computeDistanceAndBearing(getLatitude(), getLongitude(), dest.getLatitude(), dest.getLongitude(), mResults);
+				mLat1 = getLatitude();
+				mLon1 = getLongitude();
+				mLat2 = dest.getLatitude();
+				mLon2 = dest.getLongitude();
 				mInitialBearing = mResults[1];
 			}
 			return mInitialBearing;
@@ -363,7 +353,7 @@ public class Coordinate implements Serializable
 	public float Distance(Coordinate coord)
 	{
 		float[] dist = new float[4];
-		distanceBetween(Latitude, Longitude, coord.Latitude, coord.Longitude, dist);
+		distanceBetween(getLatitude(), getLongitude(), coord.getLatitude(), coord.getLongitude(), dist);
 		return dist[0];
 	}
 
@@ -491,8 +481,8 @@ public class Coordinate implements Serializable
 
 	public boolean equals(Coordinate coord)
 	{
-		if (this.Latitude != coord.Latitude) return false;
-		if (this.Longitude != coord.Longitude) return false;
+		if (this.getLatitude() != coord.getLatitude()) return false;
+		if (this.getLongitude() != coord.getLongitude()) return false;
 
 		return true;
 	}
@@ -503,14 +493,14 @@ public class Coordinate implements Serializable
 
 		double[] x = new double[4];
 		double[] y = new double[4];
-		x[0] = coord1.Longitude;
-		y[0] = coord1.Latitude;
-		x[1] = coord2.Longitude;
-		y[1] = coord2.Latitude;
-		x[2] = coord3.Longitude;
-		y[2] = coord3.Latitude;
-		x[3] = coord4.Longitude;
-		y[3] = coord4.Latitude;
+		x[0] = coord1.getLongitude();
+		y[0] = coord1.getLatitude();
+		x[1] = coord2.getLongitude();
+		y[1] = coord2.getLatitude();
+		x[2] = coord3.getLongitude();
+		y[2] = coord3.getLatitude();
+		x[3] = coord4.getLongitude();
+		y[3] = coord4.getLatitude();
 
 		// Steigungen
 		double steig1 = (y[1] - y[0]) / (x[1] - x[0]);
@@ -530,7 +520,7 @@ public class Coordinate implements Serializable
 	public static Coordinate Crossbearing(Coordinate coord1, double direction1, Coordinate coord2, double direction2)
 	{
 		float[] dist = new float[4];
-		distanceBetween(coord1.Latitude, coord1.Longitude, coord2.Latitude, coord2.Longitude, dist);
+		distanceBetween(coord1.getLatitude(), coord1.getLongitude(), coord2.getLatitude(), coord2.getLongitude(), dist);
 		double distance = dist[0];
 		Coordinate coord3 = Project(coord1, direction1, distance);
 		Coordinate coord4 = Project(coord2, direction2, distance);
@@ -541,5 +531,35 @@ public class Coordinate implements Serializable
 	public Coordinate copy()
 	{
 		return new Coordinate(this);
+	}
+
+	public double getElevation()
+	{
+		return Elevation;
+	}
+
+	public void setElevation(double elevation)
+	{
+		Elevation = elevation;
+	}
+
+	public double getLatitude()
+	{
+		return Latitude;
+	}
+
+	public void setLatitude(double latitude)
+	{
+		Latitude = latitude;
+	}
+
+	public double getLongitude()
+	{
+		return Longitude;
+	}
+
+	public void setLongitude(double longitude)
+	{
+		Longitude = longitude;
 	}
 }

@@ -6,12 +6,12 @@ public class SettingBase implements Comparable<SettingBase>
 	protected String name;
 	protected SettingModus modus;
 	/**
-	 * true, if this setting should be stored in global setting databsae, otherwise in local database file
+	 * true, if this setting should be stored in global setting database, otherwise in local database file
 	 */
 	protected boolean global;
 
 	/**
-	 * saves whethter this setting is changed and needs to be saved
+	 * saves whether this setting is changed and needs to be saved
 	 */
 	protected boolean dirty;
 

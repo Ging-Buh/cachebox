@@ -57,9 +57,9 @@ public class FunctionProjection extends Function
 			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncProjection", "3", "$angle", "$number", parameter[2]);
 		}
 
-		Coordinate result = Coordinate.Project(coord.Latitude, coord.Longitude, angle, distance);
+		Coordinate result = Coordinate.Project(coord.getLatitude(), coord.getLongitude(), angle, distance);
 		if (!result.Valid) return GlobalCore.Translations.Get("InvalidCoordinate", "$solverFuncProjection",
-				"Lat: " + String.valueOf(coord.Latitude) + ", Lon: " + String.valueOf(coord.Longitude));
+				"Lat: " + String.valueOf(coord.getLatitude()) + ", Lon: " + String.valueOf(coord.getLongitude()));
 		return result.FormatCoordinate();
 	}
 

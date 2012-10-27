@@ -2038,12 +2038,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (GlobalCore.SelectedCache() != null)
 		{
 			double lat = GlobalCore.SelectedCache().Latitude();
-			double lon = GlobalCore.SelectedCache().Longitude();
+			double lon = GlobalCore.SelectedCache().Pos.getLongitude();
 
 			if (GlobalCore.SelectedWaypoint() != null)
 			{
-				lat = GlobalCore.SelectedWaypoint().Latitude();
-				lon = GlobalCore.SelectedWaypoint().Longitude();
+				lat = GlobalCore.SelectedWaypoint().Pos.getLatitude();
+				lon = GlobalCore.SelectedWaypoint().Pos.getLongitude();
 			}
 
 			/*

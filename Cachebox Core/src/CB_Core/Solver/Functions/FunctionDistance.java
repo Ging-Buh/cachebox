@@ -40,7 +40,7 @@ public class FunctionDistance extends Function
 		float[] dist = new float[2];
 		try
 		{
-			Coordinate.distanceBetween(coord[0].Latitude, coord[0].Longitude, coord[1].Latitude, coord[1].Longitude, dist);
+			Coordinate.distanceBetween(coord[0].getLatitude(), coord[0].getLongitude(), coord[1].getLatitude(), coord[1].getLongitude(), dist);
 			return String.valueOf(dist[0]);
 		}
 		catch (Exception ex)

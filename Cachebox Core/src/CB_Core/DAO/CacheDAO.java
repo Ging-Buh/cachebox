@@ -120,8 +120,8 @@ public class CacheDAO
 		args.put("Id", cache.Id);
 		args.put("GcCode", cache.GcCode);
 		args.put("GcId", cache.GcId);
-		args.put("Latitude", cache.Pos.Latitude);
-		args.put("Longitude", cache.Pos.Longitude);
+		args.put("Latitude", cache.Pos.getLatitude());
+		args.put("Longitude", cache.Pos.getLongitude());
 		args.put("Name", cache.Name);
 		try
 		{
@@ -222,8 +222,8 @@ public class CacheDAO
 		// args.put("Id", cache.Id);
 		// args.put("GcCode", cache.GcCode);
 		// args.put("GcId", cache.GcId);
-		args.put("Latitude", cache.Pos.Latitude);
-		args.put("Longitude", cache.Pos.Longitude);
+		args.put("Latitude", cache.Pos.getLatitude());
+		args.put("Longitude", cache.Pos.getLongitude());
 		args.put("Name", cache.Name);
 		try
 		{

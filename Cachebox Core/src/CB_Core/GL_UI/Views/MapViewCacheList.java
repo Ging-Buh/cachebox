@@ -206,11 +206,8 @@ public class MapViewCacheList
 							// Final-Waypoints von Mysteries einzeichnen
 							for (MysterySolution solution : Database.Data.Query.MysterySolutions)
 							{
-								// bei allen Caches ausser den Mysterys sollen die
-								// Finals nicht
-								// gezeichnet werden, wenn der Zoom klein ist
-								// doch, da der Mysterie selber nicht gezeichnet wird
-								// if ((zoom < 14) && (solution.Cache.Type != CacheTypes.Mystery)) continue;
+								// Finals nicht zeichnen für Nicht-Mysteries bei zoom<14
+								if ((zoom < 14) && (solution.Cache.Type != CacheTypes.Mystery)) continue;
 
 								// is already in list
 								// nicht mehr
@@ -382,8 +379,8 @@ public class MapViewCacheList
 				if (withoutFinal) continue;
 			}
 			// im Bild?
-			double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, wp.Pos.Longitude);
-			double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, wp.Pos.Latitude);
+			double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, wp.Pos.getLongitude());
+			double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, wp.Pos.getLatitude());
 			if ((MapX >= point1.x) && (MapX < point2.x) && (Math.abs(MapY) > Math.abs(point1.y)) && (Math.abs(MapY) < Math.abs(point2.y)))
 			{
 				WaypointRenderInfo wpi = new WaypointRenderInfo();

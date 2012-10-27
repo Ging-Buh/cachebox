@@ -343,7 +343,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				}
 				else if (State > 0)
 				{
-					setCenter(new Coordinate(GlobalCore.LastValidPosition.Latitude, GlobalCore.LastValidPosition.Longitude));
+					setCenter(new Coordinate(GlobalCore.LastValidPosition.getLatitude(), GlobalCore.LastValidPosition.getLongitude()));
 				}
 
 				if (State != 4)
@@ -388,18 +388,18 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				return true;
 			}
 		});
-		center.Latitude = Config.settings.MapInitLatitude.getValue();
-		center.Longitude = Config.settings.MapInitLongitude.getValue();
+		center.setLatitude(Config.settings.MapInitLatitude.getValue());
+		center.setLongitude(Config.settings.MapInitLongitude.getValue());
 		aktZoom = Config.settings.lastZoomLevel.getValue();
 		zoomBtn.setZoom(aktZoom);
 		calcPixelsPerMeter();
 		mapScale.zoomChanged();
 
-		if ((center.Latitude == -1000) && (center.Longitude == -1000))
+		if ((center.getLatitude() == -1000) && (center.getLongitude() == -1000))
 		{
 			// not initialized
-			center.Latitude = 48;
-			center.Longitude = 12;
+			center.setLatitude(48);
+			center.setLongitude(12);
 		}
 
 	}
@@ -476,8 +476,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public void onStop()
 	{
-		Config.settings.MapInitLatitude.setValue(center.Latitude);
-		Config.settings.MapInitLongitude.setValue(center.Longitude);
+		Config.settings.MapInitLatitude.setValue(center.getLatitude());
+		Config.settings.MapInitLongitude.setValue(center.getLongitude());
 		Config.settings.lastZoomLevel.setValue(aktZoom);
 		Config.settings.WriteToDB();
 		super.onStop();
@@ -761,8 +761,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if (locator != null)
 		{
 			PointD point = Descriptor.ToWorld(
-					Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, GlobalCore.LastValidPosition.Longitude),
-					Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, GlobalCore.LastValidPosition.Latitude),
+					Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, GlobalCore.LastValidPosition.getLongitude()),
+					Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, GlobalCore.LastValidPosition.getLatitude()),
 					MapTileLoader.MAX_MAP_ZOOM, MapTileLoader.MAX_MAP_ZOOM);
 
 			Vector2 vPoint = new Vector2((float) point.X, -(float) point.Y);
@@ -866,8 +866,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		Coordinate coord = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos : GlobalCore.SelectedCache().Pos;
 
-		float x = (float) (256.0 * Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, coord.Longitude));
-		float y = (float) (-256.0 * Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, coord.Latitude));
+		float x = (float) (256.0 * Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, coord.getLongitude()));
+		float y = (float) (-256.0 * Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, coord.getLatitude()));
 
 		float halfHeight = (mapIntHeight / 2) - ySpeedVersatz;
 		float halfWidth = mapIntWidth / 2;
@@ -1284,8 +1284,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 									{
 										// Koordinaten des ersten Caches der Datenbank
 										// nehmen
-										setCenter(new Coordinate(Database.Data.Query.get(0).Latitude(), Database.Data.Query.get(0)
-												.Longitude()));
+										setCenter(new Coordinate(Database.Data.Query.get(0).Pos.getLatitude(),
+												Database.Data.Query.get(0).Pos.getLongitude()));
 										positionInitialized = true;
 										// setLockPosition(0);
 									}
@@ -1517,8 +1517,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 			center = value;
 
-			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, center.Longitude),
-					Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, center.Latitude), MapTileLoader.MAX_MAP_ZOOM,
+			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, center.getLongitude()),
+					Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, center.getLatitude()), MapTileLoader.MAX_MAP_ZOOM,
 					MapTileLoader.MAX_MAP_ZOOM);
 
 			setScreenCenter(new Vector2((float) point.X, (float) point.Y));
@@ -1590,8 +1590,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 
 		this.locator = locator;
-		GlobalCore.LastValidPosition = new Coordinate(locator.getLocation().Latitude, locator.getLocation().Longitude);
-		GlobalCore.LastValidPosition.Elevation = locator.getAlt();
+		GlobalCore.LastValidPosition = new Coordinate(locator.getLocation().getLatitude(), locator.getLocation().getLongitude());
+		GlobalCore.LastValidPosition.setElevation(locator.getAlt());
 
 		if (info != null)
 		{
@@ -1617,8 +1617,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		}
 
-		if (togBtn.getState() > 0 && togBtn.getState() != 2) setCenter(new Coordinate(locator.getLocation().Latitude,
-				locator.getLocation().Longitude));
+		if (togBtn.getState() > 0 && togBtn.getState() != 2) setCenter(new Coordinate(locator.getLocation().getLatitude(), locator
+				.getLocation().getLongitude()));
 
 		if (togBtn.getState() == 4 && Config.settings.dynamicZoom.getValue())
 		{
@@ -1763,7 +1763,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			{
 				Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos
 						: GlobalCore.SelectedCache().Pos;
-				double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, cache.Latitude, cache.Longitude);
+				double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), cache.getLatitude(),
+						cache.getLongitude());
 				info.setBearing((float) (bearing - GlobalCore.Locator.getHeading()), this.mapHeading);
 			}
 		}
@@ -2177,18 +2178,18 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	private void calcPixelsPerMeter()
 	{
-		Coordinate dummy = Coordinate.Project(center.Latitude, center.Longitude, 90, 1000);
-		double l1 = Descriptor.LongitudeToTileX(zoomBtn.getZoom(), center.Longitude);
-		double l2 = Descriptor.LongitudeToTileX(zoomBtn.getZoom(), dummy.Longitude);
+		Coordinate dummy = Coordinate.Project(center.getLatitude(), center.getLongitude(), 90, 1000);
+		double l1 = Descriptor.LongitudeToTileX(zoomBtn.getZoom(), center.getLongitude());
+		double l2 = Descriptor.LongitudeToTileX(zoomBtn.getZoom(), dummy.getLongitude());
 		double diff = Math.abs(l2 - l1);
 		pixelsPerMeter = (float) ((diff * 256) / 1000);
 	}
 
 	private float getPixelsPerMeter(int ZoomLevel)
 	{
-		Coordinate dummy = Coordinate.Project(center.Latitude, center.Longitude, 90, 1000);
-		double l1 = Descriptor.LongitudeToTileX(ZoomLevel, center.Longitude);
-		double l2 = Descriptor.LongitudeToTileX(ZoomLevel, dummy.Longitude);
+		Coordinate dummy = Coordinate.Project(center.getLatitude(), center.getLongitude(), 90, 1000);
+		double l1 = Descriptor.LongitudeToTileX(ZoomLevel, center.getLongitude());
+		double l2 = Descriptor.LongitudeToTileX(ZoomLevel, dummy.getLongitude());
 		double diff = Math.abs(l2 - l1);
 		return (float) ((diff * 256) / 1000);
 	}
@@ -2216,8 +2217,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		if (togBtn.getState() != 2) togBtn.setState(0, true);
 
-		Coordinate target = (waypoint != null) ? new Coordinate(waypoint.Latitude(), waypoint.Longitude()) : new Coordinate(
-				cache.Latitude(), cache.Longitude());
+		Coordinate target = (waypoint != null) ? new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude()) : new Coordinate(
+				cache.Pos.getLatitude(), cache.Pos.getLongitude());
 
 		setCenter(target);
 

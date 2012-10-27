@@ -156,13 +156,13 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		if (GlobalCore.LastValidPosition.Valid)
 		{
 
-			double lat = (mWaypoint == null) ? mCache.Latitude() : mWaypoint.Latitude();
-			double lon = (mWaypoint == null) ? mCache.Longitude() : mWaypoint.Longitude();
+			double lat = (mWaypoint == null) ? mCache.Latitude() : mWaypoint.Pos.getLatitude();
+			double lon = (mWaypoint == null) ? mCache.Longitude() : mWaypoint.Pos.getLongitude();
 			float distance = (mWaypoint == null) ? mCache.Distance(true) : mWaypoint.Distance();
 
 			Coordinate position = GlobalCore.LastValidPosition;
 			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
-			double bearing = Coordinate.Bearing(position.Latitude, position.Longitude, lat, lon);
+			double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), lat, lon);
 			double cacheBearing = -(bearing - heading);
 			setDistanceString(UnitFormatter.DistanceString(distance));
 

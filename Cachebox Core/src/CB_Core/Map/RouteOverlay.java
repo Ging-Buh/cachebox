@@ -292,7 +292,7 @@ public class RouteOverlay
 
 							String couStr = line.substring(couIdx, couEndIdx);
 
-							lastAcceptedCoordinate.Elevation = Double.valueOf(couStr);
+							lastAcceptedCoordinate.setElevation(Double.valueOf(couStr));
 
 						}
 
@@ -313,26 +313,26 @@ public class RouteOverlay
 						{
 							// trkpt abgeschlossen, jetzt kann der Trackpunkt erzeugt werden
 							IStrkptORrtept = false;
-							route.Points.add(new TrackPoint(lastAcceptedCoordinate.Longitude, lastAcceptedCoordinate.Latitude,
-									lastAcceptedCoordinate.Elevation, lastAcceptedDirection, lastAcceptedTime));
+							route.Points.add(new TrackPoint(lastAcceptedCoordinate.getLongitude(), lastAcceptedCoordinate.getLatitude(),
+									lastAcceptedCoordinate.getElevation(), lastAcceptedDirection, lastAcceptedTime));
 
 							// Calculate the length of a Track
 							if (!FromPosition.Valid)
 							{
-								FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
-								FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
-								FromPosition.Elevation = lastAcceptedCoordinate.Elevation;
+								FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
+								FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());
+								FromPosition.setElevation(lastAcceptedCoordinate.getElevation());
 								FromPosition.Valid = true;
 							}
 							else
 							{
-								Coordinate.distanceBetween(FromPosition.Latitude, FromPosition.Longitude, lastAcceptedCoordinate.Latitude,
-										lastAcceptedCoordinate.Longitude, dist);
+								Coordinate.distanceBetween(FromPosition.getLatitude(), FromPosition.getLongitude(),
+										lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getLongitude(), dist);
 								Distance += dist[0];
-								AltitudeDifference += Math.abs(FromPosition.Elevation - lastAcceptedCoordinate.Elevation);
-								FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
-								FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
-								FromPosition.Elevation = lastAcceptedCoordinate.Elevation;
+								AltitudeDifference += Math.abs(FromPosition.getElevation() - lastAcceptedCoordinate.getElevation());
+								FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
+								FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());
+								FromPosition.setElevation(lastAcceptedCoordinate.getElevation());
 							}
 						}
 					}

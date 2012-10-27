@@ -108,11 +108,10 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	{
 		CB_RectF btnRec = new CB_RectF(Left, Bottom, (width - Left - Right) / 2, UiSizes.getButtonHeight());
 		bOK = new Button(btnRec, "OkButton");
+		bOK.setText(GlobalCore.Translations.Get("ok"));
 
 		btnRec.setX(bOK.getMaxX());
 		bCancel = new Button(btnRec, "CancelButton");
-
-		bOK.setText(GlobalCore.Translations.Get("ok"));
 		bCancel.setText(GlobalCore.Translations.Get("cancel"));
 
 		this.addChild(bOK);

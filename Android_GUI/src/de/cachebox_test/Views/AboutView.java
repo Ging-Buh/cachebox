@@ -283,14 +283,14 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		if (GlobalCore.SelectedCache() != null) if (GlobalCore.SelectedWaypoint() != null)
 		{
 			WP.setText(GlobalCore.SelectedWaypoint().GcCode);
-			Cord.setText(GlobalCore.FormatLatitudeDM(GlobalCore.SelectedWaypoint().Latitude()) + " "
-					+ GlobalCore.FormatLongitudeDM(GlobalCore.SelectedWaypoint().Longitude()));
+			Cord.setText(GlobalCore.FormatLatitudeDM(GlobalCore.SelectedWaypoint().Pos.getLatitude()) + " "
+					+ GlobalCore.FormatLongitudeDM(GlobalCore.SelectedWaypoint().Pos.getLongitude()));
 		}
 		else
 		{
 			WP.setText(GlobalCore.SelectedCache().GcCode);
-			Cord.setText(GlobalCore.FormatLatitudeDM(GlobalCore.SelectedCache().Latitude()) + " "
-					+ GlobalCore.FormatLongitudeDM(GlobalCore.SelectedCache().Longitude()));
+			Cord.setText(GlobalCore.FormatLatitudeDM(GlobalCore.SelectedCache().Pos.getLatitude()) + " "
+					+ GlobalCore.FormatLongitudeDM(GlobalCore.SelectedCache().Pos.getLongitude()));
 		}
 
 		this.invalidate();

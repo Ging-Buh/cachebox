@@ -293,8 +293,8 @@ public class SearchOverPosition extends ActivityBase
 				if (MapView.that == null)
 				{
 					actSearchPos = new Coordinate();
-					actSearchPos.Latitude = Config.settings.MapInitLatitude.getValue();
-					actSearchPos.Longitude = Config.settings.MapInitLongitude.getValue();
+					actSearchPos.setLatitude(Config.settings.MapInitLatitude.getValue());
+					actSearchPos.setLongitude(Config.settings.MapInitLongitude.getValue());
 				}
 				else
 				{

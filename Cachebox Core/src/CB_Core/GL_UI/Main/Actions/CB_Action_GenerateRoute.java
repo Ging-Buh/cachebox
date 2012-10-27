@@ -178,10 +178,10 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 								try
 								{
 									List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(12);
-									nameValuePairs.add(new BasicNameValuePair("Start", String.valueOf(start.Longitude) + ","
-											+ String.valueOf(start.Latitude)));
-									nameValuePairs.add(new BasicNameValuePair("End", String.valueOf(target.Longitude) + ","
-											+ String.valueOf(target.Latitude)));
+									nameValuePairs.add(new BasicNameValuePair("Start", String.valueOf(start.getLongitude()) + ","
+											+ String.valueOf(start.getLatitude())));
+									nameValuePairs.add(new BasicNameValuePair("End", String.valueOf(target.getLongitude()) + ","
+											+ String.valueOf(target.getLatitude())));
 
 									nameValuePairs.add(new BasicNameValuePair("Via", ""));
 									nameValuePairs.add(new BasicNameValuePair("lang", "de"));
@@ -253,23 +253,23 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 
 												lastAcceptedCoordinate = new Coordinate(lat, lon);
 
-												route.Points.add(new TrackPoint(lastAcceptedCoordinate.Longitude,
-														lastAcceptedCoordinate.Latitude, 0, 0, null));
+												route.Points.add(new TrackPoint(lastAcceptedCoordinate.getLongitude(),
+														lastAcceptedCoordinate.getLatitude(), 0, 0, null));
 
 												// Calculate the length of a Track
 												if (!FromPosition.Valid)
 												{
-													FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
-													FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
+													FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
+													FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());
 													FromPosition.Valid = true;
 												}
 												else
 												{
-													Coordinate.distanceBetween(FromPosition.Latitude, FromPosition.Longitude,
-															lastAcceptedCoordinate.Latitude, lastAcceptedCoordinate.Longitude, dist);
+													Coordinate.distanceBetween(FromPosition.getLatitude(), FromPosition.getLongitude(),
+															lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getLongitude(), dist);
 													Distance += dist[0];
-													FromPosition.Longitude = lastAcceptedCoordinate.Longitude;
-													FromPosition.Latitude = lastAcceptedCoordinate.Latitude;
+													FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
+													FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());
 													IsRoute = true; // min. 2 Punkte, damit es eine gültige Route ist
 												}
 											}

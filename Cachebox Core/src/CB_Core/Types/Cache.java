@@ -84,7 +84,7 @@ public class Cache implements Comparable<Cache>
 	 */
 	public double Latitude()
 	{
-		return Pos.Latitude;
+		return Pos.getLatitude();
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class Cache implements Comparable<Cache>
 	 */
 	public double Longitude()
 	{
-		return Pos.Longitude;
+		return Pos.getLongitude();
 	}
 
 	/**
@@ -301,8 +301,8 @@ public class Cache implements Comparable<Cache>
 	 */
 	public Cache(double Latitude, double Longitude, String Name, CacheTypes type, String GcCode)
 	{
-		this.Pos.Latitude = Latitude;
-		this.Pos.Longitude = Longitude;
+		this.Pos.setLatitude(Latitude);
+		this.Pos.setLongitude(Longitude);
 		this.Name = Name;
 		this.Type = type;
 		this.DateHidden = new Date();
@@ -336,7 +336,7 @@ public class Cache implements Comparable<Cache>
 		{
 			if (wp.Type == CacheTypes.Final)
 			{
-				if (!(wp.Latitude() == 0 && wp.Longitude() == 0)) x = true;
+				if (!(wp.Pos.getLatitude() == 0 && wp.Pos.getLongitude() == 0)) x = true;
 			}
 		}
 		;
@@ -542,9 +542,9 @@ public class Cache implements Comparable<Cache>
 		// If a mystery has a final waypoint, the distance will be calculated to
 		// the final not the the cache coordinates
 		Coordinate toPos = Pos;
-		if (waypoint != null) toPos = new Coordinate(waypoint.Pos.Latitude, waypoint.Pos.Longitude);
+		if (waypoint != null) toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
 		float[] dist = new float[4];
-		Coordinate.distanceBetween(fromPos.Latitude, fromPos.Longitude, toPos.Latitude, toPos.Longitude, dist);
+		Coordinate.distanceBetween(fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(), dist);
 		cachedDistance = dist[0];
 		return (float) cachedDistance;
 	}

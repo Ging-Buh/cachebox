@@ -21,8 +21,8 @@ public class WaypointDAO
 		Parameters args = new Parameters();
 		args.put("gccode", WP.GcCode);
 		args.put("cacheid", WP.CacheId);
-		args.put("latitude", WP.Latitude());
-		args.put("longitude", WP.Longitude());
+		args.put("latitude", WP.Pos.getLatitude());
+		args.put("longitude", WP.Pos.getLongitude());
 		args.put("description", WP.Description);
 		args.put("type", WP.Type.ordinal());
 		args.put("syncexclude", WP.IsSyncExcluded);
@@ -55,8 +55,8 @@ public class WaypointDAO
 			Parameters args = new Parameters();
 			args.put("gccode", WP.GcCode);
 			args.put("cacheid", WP.CacheId);
-			args.put("latitude", WP.Latitude());
-			args.put("longitude", WP.Longitude());
+			args.put("latitude", WP.Pos.getLatitude());
+			args.put("longitude", WP.Pos.getLongitude());
 			args.put("description", WP.Description);
 			args.put("type", WP.Type.ordinal());
 			args.put("syncexclude", WP.IsSyncExcluded);
@@ -113,8 +113,8 @@ public class WaypointDAO
 	{
 		// for Replication
 		String sCheckSum = WP.GcCode;
-		sCheckSum += GlobalCore.FormatLatitudeDM(WP.Latitude());
-		sCheckSum += GlobalCore.FormatLongitudeDM(WP.Longitude());
+		sCheckSum += GlobalCore.FormatLatitudeDM(WP.Pos.getLatitude());
+		sCheckSum += GlobalCore.FormatLongitudeDM(WP.Pos.getLongitude());
 		sCheckSum += WP.Description;
 		sCheckSum += WP.Type.ordinal();
 		sCheckSum += WP.Clue;
@@ -148,8 +148,8 @@ public class WaypointDAO
 		Parameters args = new Parameters();
 		args.put("gccode", WP.GcCode);
 		args.put("cacheid", WP.CacheId);
-		args.put("latitude", WP.Latitude());
-		args.put("longitude", WP.Longitude());
+		args.put("latitude", WP.Pos.getLatitude());
+		args.put("longitude", WP.Pos.getLongitude());
 		args.put("description", WP.Description);
 		args.put("type", WP.Type.ordinal());
 		args.put("syncexclude", WP.IsSyncExcluded);
