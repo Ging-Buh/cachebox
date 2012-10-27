@@ -108,9 +108,17 @@ public class MapViewCacheList
 									// sondern der Final-Waypoint wird später aus der Query MysterySolutions gezeichnet.
 									if (showAllWaypoints || GlobalCore.SelectedCache() == cache)
 									{
-										addWaypoints(cache, true); // Parking , Referencepoints, ...?
+										if (addWaypoints(cache, true))
+										{
+											// Parking , Referencepoints, ...?
+											continue;
+										}
+										else
+										{
+											// es gibt keinen Final
+											// dann wird der Cache gezeigt
+										}
 									}
-									continue;
 								}
 								else
 								{
@@ -119,7 +127,7 @@ public class MapViewCacheList
 										addWaypoints(cache);
 									}
 								}
-
+								// Cache zeigen
 								WaypointRenderInfo wpi = new WaypointRenderInfo();
 								wpi.MapX = (float) MapX;
 								wpi.MapY = (float) MapY;
@@ -315,6 +323,7 @@ public class MapViewCacheList
 								tmplist.add(wpiF);
 							}
 						}
+
 						synchronized (list)
 						{
 							list.clear();
@@ -355,34 +364,41 @@ public class MapViewCacheList
 		}
 	}
 
-	private void addWaypoints(Cache cache)
+	private boolean addWaypoints(Cache cache)
 	{
-		addWaypoints(cache, false);
+		return addWaypoints(cache, false);
 	}
 
-	private void addWaypoints(Cache cache, boolean withoutFinal)
+	private boolean addWaypoints(Cache cache, boolean withoutFinal)
 	{
 		ArrayList<Waypoint> wps = cache.waypoints;
+		boolean finalExists = false;
 
 		for (Waypoint wp : wps)
 		{
-			if (withoutFinal)
+			if (wp.Type == CacheTypes.Final)
 			{
-				if (wp.Type == CacheTypes.Final) continue;
+				finalExists = true;
+				if (withoutFinal) continue;
 			}
-			WaypointRenderInfo wpi = new WaypointRenderInfo();
+			// im Bild?
 			double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, wp.Pos.Longitude);
 			double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, wp.Pos.Latitude);
-			wpi.MapX = (float) MapX;
-			wpi.MapY = (float) MapY;
-			wpi.Icon = SpriteCache.MapIcons.get((int) wp.Type.ordinal());
-			wpi.Cache = cache;
-			wpi.Waypoint = wp;
-			wpi.Selected = (GlobalCore.SelectedWaypoint() == wp);
-			wpi.UnderlayIcon = getUnderlayIcon(wpi.Cache, wpi.Waypoint);
+			if ((MapX >= point1.x) && (MapX < point2.x) && (Math.abs(MapY) > Math.abs(point1.y)) && (Math.abs(MapY) < Math.abs(point2.y)))
+			{
+				WaypointRenderInfo wpi = new WaypointRenderInfo();
+				wpi.MapX = (float) MapX;
+				wpi.MapY = (float) MapY;
+				wpi.Icon = SpriteCache.MapIcons.get((int) wp.Type.ordinal());
+				wpi.Cache = cache;
+				wpi.Waypoint = wp;
+				wpi.Selected = (GlobalCore.SelectedWaypoint() == wp);
+				wpi.UnderlayIcon = getUnderlayIcon(wpi.Cache, wpi.Waypoint);
 
-			tmplist.add(wpi);
+				tmplist.add(wpi);
+			}
 		}
+		return finalExists;
 	}
 
 	private Sprite getUnderlayIcon(Cache cache, Waypoint waypoint)
