@@ -39,8 +39,8 @@ public class DescriptorTest extends TestCase
 	{
 		Coordinate Referenz = new Coordinate();
 		assertTrue("Objekt muss konstruierbar sein", Referenz != null);
-		Referenz.Latitude = 49.427700;
-		Referenz.Longitude = 6.204300;
+		Referenz.setLatitude(49.427700);
+		Referenz.setLongitude(6.204300);
 
 		MeasuredCoord.Referenz = Referenz;
 
@@ -53,8 +53,8 @@ public class DescriptorTest extends TestCase
 		mMeasuredCoordList.sort();
 
 		// Gemittelter Punkt der GPS-Messungen
-		double medianLat = MeasuredCoord.Referenz.Latitude;
-		double medianLon = MeasuredCoord.Referenz.Longitude;
+		double medianLat = MeasuredCoord.Referenz.getLatitude();
+		double medianLon = MeasuredCoord.Referenz.getLongitude();
 
 		double peakLat = Math.max(Math.abs(mMeasuredCoordList.get(0).getLatitude() - medianLat),
 				Math.abs(mMeasuredCoordList.get(mMeasuredCoordList.size() - 1).getLatitude() - medianLat));

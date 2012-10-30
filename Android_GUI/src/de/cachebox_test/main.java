@@ -193,9 +193,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public HorizontalListView QuickButtonList;
 
-	// private static final boolean useGL_Tab = true;
-	static private final char BACKSPACE = 8;
-
 	private static hiddenTextField mTextField;
 
 	/*

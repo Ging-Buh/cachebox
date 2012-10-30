@@ -293,8 +293,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		lblMaps.setFont(Fonts.getNormal());
 		lblMaps.setText(GlobalCore.Translations.Get("Maps"));
 
-		scrollBox.addChild(checkBoxImportMaps);
-		scrollBox.addChild(lblMaps);
+		// TODO wieder einschalten wenn Implementiert
+		// scrollBox.addChild(checkBoxImportMaps);
+		// scrollBox.addChild(lblMaps);
 	}
 
 	private void Layout()
@@ -554,6 +555,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 					if (checkBoxPreloadImages.isChecked())
 					{
+						ip.addStep(ip.new Step("importImageUrls", 4));
 						ip.addStep(ip.new Step("importImages", 4));
 					}
 
@@ -683,7 +685,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 					if (checkBoxPreloadImages.isChecked())
 					{
-						importer.importImages(GlobalCore.LastFilter.getSqlWhere(), ip);
+						importer.importImages(ip);
 						if (importCancel)
 						{
 							importCanceld();

@@ -49,8 +49,8 @@ public class GSAKGpxImportTest extends TestCase
 
 		assertTrue("Cache muss zurückgegeben werden", cache != null);
 
-		assertTrue("Pos: Latitude falsch", cache.Pos.Latitude == 52.579333);
-		assertTrue("Pos: Longitude falsch", cache.Pos.Longitude == 13.40545);
+		assertTrue("Pos: Latitude falsch", cache.Pos.getLatitude() == 52.579333);
+		assertTrue("Pos: Longitude falsch", cache.Pos.getLongitude() == 13.40545);
 		assertTrue("Pos ist ungültig", cache.Pos.Valid);
 
 		assertEquals("GcCode falsch", "GC1XCEW", cache.GcCode);

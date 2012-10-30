@@ -11,11 +11,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.zip.ZipException;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery.PQ;
+import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.GCVoteDAO;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.Events.ProgresssChangedEventList;
@@ -23,6 +26,7 @@ import CB_Core.GCVote.GCVote;
 import CB_Core.GCVote.GCVoteCacheInfo;
 import CB_Core.GCVote.RatingData;
 import CB_Core.Log.Logger;
+import CB_Core.Types.ImageEntry;
 
 public class Importer
 {
@@ -87,7 +91,7 @@ public class Importer
 
 		try
 		{
-			Thread.sleep(2000);
+			Thread.sleep(50);
 		}
 		catch (InterruptedException e2)
 		{
@@ -153,6 +157,9 @@ public class Importer
 			countwpt += count;
 		}
 
+		// Indiziere DB
+		CacheInfoList.IndexDB();
+
 		ip.setJobMax("ImportGPX", FileList.length + countwpt);
 		for (File File : FileList)
 		{
@@ -184,6 +191,10 @@ public class Importer
 		}
 
 		importHandler.GPXFilenameUpdateCacheCount();
+
+		// Indexierte CacheInfos zurück schreiben
+		CacheInfoList.writeListToDB();
+		CacheInfoList.dispose();
 
 	}
 
@@ -309,11 +320,34 @@ public class Importer
 
 	}
 
-	public void importImages(String whereClause, ImporterProgress ip) // wir brachen kein delay mehr
+	public void importImages(ImporterProgress ip) // wir brachen kein delay mehr
 	{
+		CacheDAO CacheDao = new CacheDAO();
+
+		// Index DB
+		CacheInfoList.IndexDB();
+
+		// get all GcCodes from Listing changed caches without Typ==4 (ErthCache)
+		ArrayList<String> gcCodes = CacheDao.getGcCodesFromMustLoadImages();
+
+		// refresch all Image Url´s
+		ip.setJobMax("importImageUrls", gcCodes.size());
+		int counter = 0;
+		for (String gccode : gcCodes)
+		{
+			importApiImages(gccode, CacheInfoList.getIDfromGcCode(gccode));
+			ip.ProgressInkrement("importImageUrls",
+					"get Image Url´s for " + gccode + " (" + String.valueOf(counter++) + " / " + String.valueOf(gcCodes.size()) + ")",
+					false);
+		}
+
 		ImageDAO imageDAO = new ImageDAO();
 
-		Integer count = imageDAO.getImageCount(whereClause);
+		// Die Where Clusel sorgt dfür, dass nur die Anzahl der zu ladenden Bilder zurück gegeben wird.
+		// Da keine Bilder von ErthCaches geladen werden, wird hier auch der Typ 4 ausgelassen.
+		String where = " Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)";
+
+		Integer count = imageDAO.getImageCount(where);
 
 		ip.setJobMax("importImages", count);
 
@@ -323,8 +357,6 @@ public class Importer
 			return;
 		}
 
-		ArrayList<String> gcCodes = imageDAO.getGcCodes(whereClause);
-
 		int i = 0;
 
 		for (String gccode : gcCodes)
@@ -332,11 +364,13 @@ public class Importer
 			Boolean downloadedImage = false;
 			ArrayList<String> imageURLs = imageDAO.getImageURLsForCache(gccode);
 
+			boolean downloadFaild = false;
+
 			for (String url : imageURLs)
 			{
 				try
 				{
-					Thread.sleep(20);
+					Thread.sleep(5);
 				}
 				catch (InterruptedException e2)
 				{
@@ -347,7 +381,10 @@ public class Importer
 				if (!FileIO.FileExists(localFile))
 				{
 					downloadedImage = true;
-					DescriptionImageGrabber.Download(url, localFile);
+					if (downloadFaild || !DescriptionImageGrabber.Download(url, localFile))
+					{
+						downloadFaild = true;
+					}
 				}
 
 				i++;
@@ -362,6 +399,45 @@ public class Importer
 						"Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
 
 			}
+			if (!downloadFaild)
+			{
+				// set DescriptionImagesUpdated and ImagesUpdated
+				CacheInfoList.setImageUpdated(gccode);
+			}
+		}
+
+		// Write CacheInfoList back
+		CacheInfoList.writeListToDB();
+		CacheInfoList.dispose();
+	}
+
+	private void importApiImages(String GcCode, long ID)
+	{
+
+		ImportHandler importHandler = new ImportHandler();
+		LinkedList<String> allImages = new LinkedList<String>();
+		ArrayList<String> apiImages = new ArrayList<String>();
+		GroundspeakAPI.getImagesForGeocache(Config.GetAccessToken(), GcCode, apiImages);
+		for (String image : apiImages)
+		{
+			if (image.contains("/log/")) continue; // do not import log-images
+			if (!allImages.contains(image)) allImages.add(image);
+		}
+		while (allImages != null && allImages.size() > 0)
+		{
+			String url;
+			url = allImages.poll();
+
+			ImageEntry image = new ImageEntry();
+
+			image.CacheId = ID;
+			image.GcCode = GcCode;
+			image.Name = url.substring(url.lastIndexOf("/") + 1);
+			image.Description = "";
+			image.ImageUrl = url;
+			image.IsCacheImage = true;
+
+			importHandler.handleImage(image, true);
 
 		}
 	}

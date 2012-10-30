@@ -33,7 +33,7 @@ public class MeasuredCoordListTest extends TestCase
 	@Override
 	public void setUp() throws Exception
 	{
-		 
+
 		super.setUp();
 		mMeasuredCoordList = new MeasuredCoordList();
 	}
@@ -41,7 +41,7 @@ public class MeasuredCoordListTest extends TestCase
 	@Override
 	protected void tearDown() throws Exception
 	{
-		 
+
 		super.tearDown();
 		mMeasuredCoordList = null;
 	}
@@ -56,8 +56,8 @@ public class MeasuredCoordListTest extends TestCase
 
 		Coordinate Referenz = new Coordinate();
 		assertTrue("Objekt muss konstruierbar sein", Referenz != null);
-		Referenz.Latitude = 49.427700;
-		Referenz.Longitude = 6.204300;
+		Referenz.setLatitude(49.427700);
+		Referenz.setLongitude(6.204300);
 
 		MeasuredCoord.Referenz = Referenz;
 
@@ -76,8 +76,7 @@ public class MeasuredCoordListTest extends TestCase
 		mMeasuredCoordList.add(new MeasuredCoord(49.428337, 6.203633, 43.0f));
 
 		// Die Liste sollte jetzt 12 Werte haben.
-		assertTrue("mMeasuredCoordList muss 12 Werte haben",
-				mMeasuredCoordList.size() == 12);
+		assertTrue("mMeasuredCoordList muss 12 Werte haben", mMeasuredCoordList.size() == 12);
 
 		// Teste Sortierung
 		mMeasuredCoordList.sort();
@@ -97,20 +96,15 @@ public class MeasuredCoordListTest extends TestCase
 			{
 				if (tmp.Distance() == mMeasuredCoordList.get(index).Distance())
 				{
-					if (tmp.getAccuracy() != mMeasuredCoordList.get(index)
-							.getAccuracy())
+					if (tmp.getAccuracy() != mMeasuredCoordList.get(index).getAccuracy())
 					{
-						assertTrue(
-								"mMeasuredCoordList ist falsch Sortiert",
-								tmp.getAccuracy() > mMeasuredCoordList.get(
-										index).getAccuracy());
+						assertTrue("mMeasuredCoordList ist falsch Sortiert", tmp.getAccuracy() > mMeasuredCoordList.get(index)
+								.getAccuracy());
 					}
 				}
 				else
 				{
-					assertTrue("mMeasuredCoordList ist falsch Sortiert",
-							tmp.Distance() > mMeasuredCoordList.get(index)
-									.Distance());
+					assertTrue("mMeasuredCoordList ist falsch Sortiert", tmp.Distance() > mMeasuredCoordList.get(index).Distance());
 				}
 
 			}
@@ -121,11 +115,9 @@ public class MeasuredCoordListTest extends TestCase
 		// Teste bei Sortierung entstandene Referenz Koordinate
 
 		boolean test = true;
-		if (MeasuredCoord.Referenz.Latitude != 49.40959516666667) test = false;
-		else if (MeasuredCoord.Referenz.Longitude != 6.203408499999999) test = false;
-		assertTrue(
-				"mMeasuredCoordList hat beim Sortieren eine falsche Referenz erzeugt",
-				test);
+		if (MeasuredCoord.Referenz.getLatitude() != 49.40959516666667) test = false;
+		else if (MeasuredCoord.Referenz.getLongitude() != 6.203408499999999) test = false;
+		assertTrue("mMeasuredCoordList hat beim Sortieren eine falsche Referenz erzeugt", test);
 
 		// eleminiere Ausreisser Werte mit einer Referenz Distanz > 50m
 

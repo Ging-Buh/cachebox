@@ -527,6 +527,27 @@ public class CacheDAO
 				WriteToDatabase(cache);
 			}
 		}
+	}
 
+	public ArrayList<String> getGcCodesFromMustLoadImages()
+	{
+
+		ArrayList<String> GcCodes = new ArrayList<String>();
+
+		CoreCursor reader = Database.Data.rawQuery(
+				"select GcCode from Caches where Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)", null);
+
+		if (reader.getCount() > 0)
+		{
+			reader.moveToFirst();
+			while (reader.isAfterLast() == false)
+			{
+				String GcCode = reader.getString(0);
+				GcCodes.add(GcCode);
+				reader.moveToNext();
+			}
+		}
+		reader.close();
+		return GcCodes;
 	}
 }

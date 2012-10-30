@@ -7,13 +7,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import CB_Core.Config;
 import CB_Core.GlobalCore;
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
@@ -23,7 +20,6 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.GpxFilename;
-import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
@@ -56,8 +52,6 @@ public class GPXFileImporter
 
 	private String gpxName = "";
 	private String gpxAuthor = "";
-
-	private LinkedList<String> allImages = new LinkedList<String>();
 
 	public GPXFileImporter(File gpxFileName)
 	{
@@ -1000,32 +994,6 @@ public class GPXFileImporter
 
 		cache.GPXFilename_ID = gpxFilename.Id;
 
-		allImages = DescriptionImageGrabber.GetAllImages(cache);
-		ArrayList<String> apiImages = new ArrayList<String>();
-		GroundspeakAPI.getImagesForGeocache(Config.GetAccessToken(), cache.GcCode, apiImages);
-		for (String image : apiImages)
-		{
-			if (image.contains("/log/")) continue; // do not import log-images
-			if (!allImages.contains(image)) allImages.add(image);
-		}
-		while (allImages != null && allImages.size() > 0)
-		{
-			String url;
-			url = allImages.poll();
-
-			ImageEntry image = new ImageEntry();
-
-			image.CacheId = cache.Id;
-			image.GcCode = cache.GcCode;
-			image.Name = url.substring(url.lastIndexOf("/") + 1);
-			image.Description = "";
-			image.ImageUrl = url;
-			image.IsCacheImage = true;
-
-			mImportHandler.handleImage(image, true);
-
-		}
-
 		currentwpt++;
 
 		StringBuilder info = new StringBuilder();
@@ -1047,6 +1015,17 @@ public class GPXFileImporter
 		if (mip != null) mip.ProgressInkrement("ImportGPX", info.toString(), false);
 
 		mImportHandler.handleCache(cache);
+
+		// Merge mit cache info
+		if (CacheInfoList.ExistCache(cache.GcCode))
+		{
+			CacheInfoList.mergeCacheInfo(cache);
+		}
+		else
+		{
+			// Neue CacheInfo erstellen und zur Liste Hinzufügen
+			CacheInfoList.putNewInfo(cache);
+		}
 
 		cache.clear();
 

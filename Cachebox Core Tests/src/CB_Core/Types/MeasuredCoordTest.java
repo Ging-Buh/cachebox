@@ -31,7 +31,7 @@ public class MeasuredCoordTest extends TestCase
 	@Override
 	public void setUp() throws Exception
 	{
-		 
+
 		super.setUp();
 		mMeasuredCoord = new MeasuredCoord(49.428333, 6.203333, 12.0f);
 	}
@@ -39,7 +39,7 @@ public class MeasuredCoordTest extends TestCase
 	@Override
 	protected void tearDown() throws Exception
 	{
-		 
+
 		super.tearDown();
 		mMeasuredCoord = null;
 	}
@@ -51,15 +51,14 @@ public class MeasuredCoordTest extends TestCase
 
 	public void testDistance()
 	{
-		
+
 		Coordinate Referenz = new Coordinate();
 		assertTrue("Objekt muss konstruierbar sein", Referenz != null);
-		Referenz.Latitude = 49.427700;
-		Referenz.Longitude = 6.204300;
+		Referenz.setLatitude(49.427700);
+		Referenz.setLongitude(6.204300);
 
 		MeasuredCoord.Referenz = Referenz;
-		
-		
+
 		float distance = mMeasuredCoord.Distance();
 		assertTrue("Entfernung muss 99.38391m sein", (distance > 99.38390) && (distance < 99.38392));
 

@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1169;
+	public static final int CurrentRevision = 1173;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -147,14 +147,13 @@ public class GlobalCore
 
 	public static CB_Core.Types.Categories Categories = null;
 
-	// / <summary>
-	// / SDBM-Hash algorithm for storing hash values into the database. This is
-	// neccessary to be compatible to the CacheBox@Home project. Because the
-	// / standard .net Hash algorithm differs from compact edition to the normal
-	// edition.
-	// / </summary>
-	// / <param name="str"></param>
-	// / <returns></returns>
+	/**
+	 * SDBM-Hash algorithm for storing hash values into the database. This is neccessary to be compatible to the CacheBox@Home project.
+	 * Because the standard .net Hash algorithm differs from compact edition to the normal edition.
+	 * 
+	 * @param str
+	 * @return
+	 */
 	public static long sdbm(String str)
 	{
 		if (str == null || str.equals("")) return 0;
