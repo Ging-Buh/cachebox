@@ -108,11 +108,11 @@ public class MapViewCacheList
 									// sondern der Final-Waypoint wird später aus der Query MysterySolutions gezeichnet.
 									if (showAllWaypoints || GlobalCore.SelectedCache() == cache)
 									{
+										// Parking , Referencepoints, ...?
+										// aber Final später hinzufügen (MysterySolutions)
 										if (addWaypoints(cache, true))
 										{
-											// Parking , Referencepoints, ...?
-											// aber Final später hinzufügen (MysterySolutions)
-											continue;
+											// Find ich zwar nicht sinnvoll, aber dann halt kein continue;
 										}
 										else
 										{
