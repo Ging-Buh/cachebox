@@ -100,7 +100,7 @@ public class MapViewCacheList
 										.abs(point2.y)))) continue;
 								// Funde
 								if (hideMyFinds && cache.Found) continue;
-								// geloeste Mysteries
+								// geloeste Cache
 								if (cache.MysterySolved())
 								{
 									// Wenn ein Mystery-Cache einen Final-Waypoint hat,
@@ -213,11 +213,14 @@ public class MapViewCacheList
 							// Final-Waypoints von Mysteries einzeichnen
 							for (MysterySolution solution : Database.Data.Query.MysterySolutions)
 							{
+								// Der Original Cache wird eh nicht mehr angezeigt
+								// Besser man sieht es an den korrigierten Koordinaten
+								// Daher ist die Abfrage überflüssig
 								// Finals nicht zeichnen für Nicht-Mysteries bei zoom<14
-								if ((zoom < 14) && (solution.Cache.Type != CacheTypes.Mystery)) continue;
+								// if ((zoom < 14) && (solution.Cache.Type != CacheTypes.Mystery)) continue;
 
 								// is already in list
-								// nicht mehr
+								// nicht mehr, siehe oben
 								// if (GlobalCore.SelectedCache() == solution.Cache) continue;
 
 								if (hideMyFinds && solution.Cache.Found) continue;
