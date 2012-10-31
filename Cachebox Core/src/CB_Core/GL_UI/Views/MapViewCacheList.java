@@ -111,6 +111,7 @@ public class MapViewCacheList
 										if (addWaypoints(cache, true))
 										{
 											// Parking , Referencepoints, ...?
+											// aber Final später hinzufügen (MysterySolutions)
 											continue;
 										}
 										else
@@ -118,6 +119,12 @@ public class MapViewCacheList
 											// es gibt keinen Final
 											// dann wird der Cache gezeigt
 										}
+									}
+									else
+									{
+										// nicht selektierten,
+										if (cache.HasFinalWaypoint()) continue; // Final zeigen
+										// Original zeigen
 									}
 								}
 								else
