@@ -93,32 +93,30 @@ public class MapViewCacheList
 						{
 							for (Cache cache : Database.Data.Query)
 							{
-								// im Bild?
-								double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.Longitude());
-								double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.Latitude());
-								if (!((MapX >= point1.x) && (MapX < point2.x) && (Math.abs(MapY) > Math.abs(point1.y)) && (Math.abs(MapY) < Math
-										.abs(point2.y)))) continue;
 								// Funde
 								if (hideMyFinds && cache.Found) continue;
+								// im Bild ?
+								double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.Longitude());
+								double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.Latitude());
+								boolean CacheIsNotVisible = !((MapX >= point1.x) && (MapX < point2.x)
+										&& (Math.abs(MapY) > Math.abs(point1.y)) && (Math.abs(MapY) < Math.abs(point2.y)));
+								if (CacheIsNotVisible && !(showAllWaypoints || GlobalCore.SelectedCache() == cache))
+								{
+									continue;
+								}
+								// zuerst Wegpunkte hinzufügen, auch wenn Cache nicht im Bild ist
 								// geloeste Cache
 								if (cache.MysterySolved())
 								{
 									// Wenn ein Mystery-Cache einen Final-Waypoint hat,
-									// werden die Koordinaten des Caches nicht gezeichnet,
-									// sondern der Final-Waypoint wird später aus der Query MysterySolutions gezeichnet.
+									// werden die Koordinaten des Caches nicht gezeichnet.
+									// (Ausser er ist selektiert oder showAllWaypoints ist aktiv)
+									// Der Final-Waypoint wird später aus der Query MysterySolutions gezeichnet.
 									if (showAllWaypoints || GlobalCore.SelectedCache() == cache)
 									{
 										// Parking , Referencepoints, ...?
 										// aber Final später hinzufügen (MysterySolutions)
-										if (addWaypoints(cache, true))
-										{
-											// Find ich zwar nicht sinnvoll, aber dann halt kein continue;
-										}
-										else
-										{
-											// es gibt keinen Final
-											// dann wird der Cache gezeigt
-										}
+										addWaypoints(cache, true);
 									}
 									else
 									{
@@ -134,6 +132,8 @@ public class MapViewCacheList
 										addWaypoints(cache);
 									}
 								}
+								// im Bild?
+								if (CacheIsNotVisible) continue;
 								// Cache zeigen
 								WaypointRenderInfo wpi = new WaypointRenderInfo();
 								wpi.MapX = (float) MapX;
