@@ -317,6 +317,16 @@ public class MapViewCacheList
 
 									if (solution.Cache.Found) iconId = 6;
 									if (solution.Cache.ImTheOwner()) iconId = 7;
+									if (GlobalCore.SelectedCache() == solution.Cache)
+									{
+										// das Icon des geloesten Mysterys als
+										// Final
+										// anzeigen, wenn dieser Selected ist
+										// show the Icon of solved mysterys as
+										// final when
+										// cache is selected
+										iconId = solution.Waypoint.Type.ordinal();
+									}
 
 									if (solution.Cache.Archived || !solution.Cache.Available) iconId += 8;
 									wpiF.Icon = SpriteCache.MapIconsSmall.get(iconId);
