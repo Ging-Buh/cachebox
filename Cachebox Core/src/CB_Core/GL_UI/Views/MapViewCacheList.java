@@ -116,7 +116,7 @@ public class MapViewCacheList
 									{
 										// Parking , Referencepoints, ...?
 										// aber Final später hinzufügen (MysterySolutions)
-										addWaypoints(cache, true);
+										addWaypoints(cache, false);
 									}
 									else
 									{
@@ -221,7 +221,7 @@ public class MapViewCacheList
 
 								// is already in list
 								// nicht mehr, siehe oben
-								// if (GlobalCore.SelectedCache() == solution.Cache) continue;
+								if (GlobalCore.SelectedCache() == solution.Cache) continue;
 
 								if (hideMyFinds && solution.Cache.Found) continue;
 
