@@ -320,9 +320,9 @@ public class Cache implements Comparable<Cache>
 	 */
 
 	/**
-	 * wenn ein Wegpunkt "Final" existiert, ist das mystery-Rätsel gelöst.
+	 * -- korrigierte Koordinaten (kommt nur aus GSAK? bzw CacheWolf-Import) -- oder Mystery mit gültigem Final
 	 */
-	public boolean MysterySolved()
+	public boolean CorrectedCoordiantesOrMysterySolved()
 	{
 		if (this.CorrectedCoordinates) return true;
 
@@ -501,20 +501,6 @@ public class Cache implements Comparable<Cache>
 			}
 		}
 
-	}
-
-	/**
-	 * Returns the MapIconId of this Cache
-	 * 
-	 * @return interger
-	 */
-	public int GetMapIconId()
-	{
-		if (this.ImTheOwner()) return 22;
-		if (this.Found) return 19;
-		if ((Type == CacheTypes.Mystery) && this.MysterySolved()) return 21;
-
-		return Type.ordinal();
 	}
 
 	/**

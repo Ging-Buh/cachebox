@@ -69,7 +69,7 @@ public class CacheList extends MoveableList<Cache>
 								}
 								else
 								{
-									if (nextCache.MysterySolved())
+									if (nextCache.CorrectedCoordiantesOrMysterySolved())
 									{
 										break;
 									}

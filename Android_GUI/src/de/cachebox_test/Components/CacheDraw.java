@@ -180,7 +180,7 @@ public class CacheDraw
 		int correctPos = (int) (UiSizes.getScaledFontSize() * 1.3);
 
 		// Draw Icon
-		if (cache.MysterySolved())
+		if (cache.CorrectedCoordiantesOrMysterySolved())
 		{
 			ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[19], left + VoteWidth - correctPos,
 					top - (int) (UiSizes.getScaledFontSize() / 2), UiSizes.getIconSize());

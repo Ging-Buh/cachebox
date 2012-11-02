@@ -298,7 +298,7 @@ public class CacheInfo extends CB_View_Base
 
 		{ // Icon Sprite erstellen
 
-			if (mCache.MysterySolved())
+			if (mCache.CorrectedCoordiantesOrMysterySolved())
 			{
 				mIconSprite = new Sprite(SpriteCache.BigIcons.get(21));
 			}

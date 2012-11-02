@@ -204,7 +204,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 								if (!cache.Available) continue;
 								if (cache.Found) continue;
 								if (cache.ImTheOwner()) continue;
-								if (cache.Type == CacheTypes.Mystery) if (!cache.MysterySolved()) continue;
+								if (cache.Type == CacheTypes.Mystery) if (!cache.CorrectedCoordiantesOrMysterySolved()) continue;
 								if (cache.Distance(true) < GlobalCore.NearestCache().Distance(true))
 								{
 									resort = true;
